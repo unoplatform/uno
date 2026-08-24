@@ -61,12 +61,37 @@ Evidence labels: **Compile** = built; **Package** = packed/inspected; **Runtime*
   (2019); it normalizes `net10.0`/`net11.0` dependency-group TFMs to `.NETFramework10.0/11.0`. The modern client
   tolerates this (deps still flow, verified above); the existing `Uno.WinUI.nuspec` uses the same net10/net11
   groups, so any fix belongs to the branch's net10/11 bring-up, not the drawing-backend packaging.
-- **Full app-run (still pending)**: requires the complete multi-leg CI build — `packages-all.slnf` (needs Android
-  API-37 platform SDK installed + a prerelease PackageVersion to avoid NU5104 on host auto-pack) + the Windows-only
-  build leg (`Uno.WinUI.nuspec` also carries `net10.0-windows`/`net11.0-windows` WinAppSDK assets via
-  `$winuisourcepath$`) + reference leg, then pack all 10 nuspecs + Uno.Sdk, a local feed, and a scaffolded app.
-  This is the "package creation on the build machine" step the plan anticipated. tvos workload installed;
-  Android API-37 not yet. `global.json` left with `allowPrerelease:true` on the host (net11 SDK selection).
+## FULL CI-STYLE BUILD + PACK + SDK-RESOLVE (Windows host, second pass)
+- **packages-all.slnf** (the CI packaging leg) builds **clean, 0 errors** in Release across net10+net11 with the
+  filter fix — and auto-packs all 7 `Uno.WinUI.Runtime.Skia.*` host packages + `Uno.Sdk.Private` at 7.0.0-dev.1.
+  Prereqs installed on the host: **tvos** workload + **Android API-37** platform SDK (`-t:InstallAndroidDependencies`).
+  A prerelease PackageVersion (7.0.0-dev.1) is required or the host auto-pack trips NU5104.
+- **Uno.WinUI pack**: packed a Skia-slice `Uno.WinUI.nuspec` (net10/net11 lib groups; the `net*-windows` WinAppSDK
+  sections dropped — see blocker below). Inspected the nupkg: **`Uno.UI.Composition.Drawing` + `.Managed` present in
+  BOTH `lib/net10.0` and `lib/net11.0` (4/4)** — the core nuspec change is proven in the produced artifact.
+- **SDK feature resolution** (ran the real `Uno.Sdk.Private` `ImplicitPackagesResolver` task via
+  `dotnet msbuild -t:UnoImplicitPackages -getItem:PackageReference`, local feed):
+  - `skia`  → injects `Uno.UI.Composition.Skia` (+ SkiaSharp.Views, Skottie). ✓
+  - `''` (empty) → skia force-implied → same as `skia`. ✓
+  - `skiarenderer` → identical to `skia` (legacy feature mapped for back-compat). ✓
+  - `webgpu` / `skia;webgpu` → **adds `Uno.UI.Composition.WebGpu`** and keeps Skia (additive). ✓
+  This validates the entire UnoFeature wiring change end-to-end through the actual resolver.
+
+## BLOCKER (pre-existing, env-level, NOT this change): WinAppSDK/WinUI build leg
+The `net*-windows` (WinAppSDK) library builds — `Uno.UI.Toolkit.Windows`, `Uno.UI.MSAL.Windows`,
+`Uno.WinUI.Graphics2DSK.Windows` — cannot build on this net10/net11-preview-only bench: WindowsAppSDK **1.0.0**'s
+XAML markup compiler (`Microsoft.UI.Xaml.Markup.Compiler.dll`, 2021) fails to instantiate under the modern MSBuild
+task host (`MissingMethodException` / "Type must be a type provided by the runtime" on `CompileXaml..ctor`), under
+BOTH the net11 preview SDK and the net10 stable SDK. WindowsAppSDK 1.0.0 is pinned framework-wide
+(`src/Uno.UI.Toolkit/Uno.UI.Toolkit.Windows.csproj` + others). This is entirely in the WinUI/WinAppSDK packaging leg
+and orthogonal to the drawing-backend abstraction; CI builds this leg on a different (older-MSBuild) toolchain combo.
+Consequence: the stock `BuildNuGetPackage` (which packs all 10 nuspecs incl. the Windows assets + the Toolkit.Windows
+PRI `<Error>` guard) can't run unmodified here. Validated the Skia slice instead (above), which is exactly what a Skia
+desktop/mobile/wasm app consumes; the WinAppSDK head does not consume the drawing-backend assemblies.
+
+Host left with: `global.json` `allowPrerelease:true` (net11 SDK selection — uncommitted, `git checkout` reverts);
+tvos + Android-API-37 installed; `E:\uno\_pkgout` holds the produced `Uno.UI.Composition.Skia` + Skia-slice `Uno.WinUI`
+nupkgs for reference.
 
 REMAINING (pack-machine / follow-up):
 - WebGPU package: nuspec + native wgpu provisioning (buildTransitive targets or pre-fetched runtimes/) + pack Exec.
