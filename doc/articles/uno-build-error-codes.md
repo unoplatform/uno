@@ -197,6 +197,22 @@ To suppress it:
 </PropertyGroup>
 ```
 
+### UNOB0023: A runtime-enabled package provided no runtime assembly
+
+Packages such as `Uno.WinRT` and `Uno.Foundation` ship a platform-neutral compile surface under `lib/` and the assemblies that actually run under `uno-runtime/`. This diagnostic reports that one of them contributed no runtime assembly for the target framework being built, which means the reference assemblies would be deployed instead and every call into them would throw `NotImplementedException` at runtime.
+
+The usual causes are a partially restored package, a `PackageBasePath` pointing at a location that does not contain the expected `uno-runtime` folder, or a mismatched set of Uno Platform package versions. Verify that all `Uno.*` package versions match, then clear `obj/` and `bin/` and restore again.
+
+Before Uno Platform 7.0 this situation was reported only as a build message, so it surfaced as a runtime failure rather than a build failure.
+
+To suppress it:
+
+```xml
+<PropertyGroup>
+  <UnoDisableUNOB0023Validation>true</UnoDisableUNOB0023Validation>
+</PropertyGroup>
+```
+
 ## Compiler Errors
 
 ### UNO0001

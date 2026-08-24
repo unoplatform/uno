@@ -111,6 +111,15 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 				if (!isSingleLayer && !isTwoLayer)
 				{
+					// An empty set of identifiers is a plain netX.0 project, which this task has no business
+					// rewriting. Anything else is a configuration that names a mode we cannot serve, and
+					// returning silently there ships the reference facade in a green build.
+					if (!string.IsNullOrWhiteSpace(UnoUIRuntimeIdentifier) || !string.IsNullOrWhiteSpace(UnoWinRTRuntimeIdentifier))
+					{
+						this.Log.LogError($"The combination of UnoRuntimeIdentifier '{UnoRuntimeIdentifier}', UnoUIRuntimeIdentifier '{UnoUIRuntimeIdentifier}' and UnoWinRTRuntimeIdentifier '{UnoWinRTRuntimeIdentifier}' does not name a supported runtime asset selection mode");
+						return false;
+					}
+
 					return true;
 				}
 
