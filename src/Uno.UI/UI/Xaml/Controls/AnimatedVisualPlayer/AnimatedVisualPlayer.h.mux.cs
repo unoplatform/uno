@@ -27,6 +27,7 @@ partial class AnimatedVisualPlayer
 		private readonly float m_fromProgress;
 		private readonly float m_toProgress;
 		private readonly bool m_looped;
+		private TimeSpan m_playDuration;
 
 		private readonly TaskCompletionSource<object?> m_taskCompletionSource = new();
 		private AnimationController? m_controller;
