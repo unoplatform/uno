@@ -30,7 +30,16 @@ internal static class BorderHelper
 
 	public static void UpdateBackground(this IBorderInfoProvider @this)
 	{
-		@this.BorderVisual.BackgroundBrush = @this.Background?.GetOrCreateCompositionBrush(@this.BorderVisual.Compositor);
+		if (@this is Uno.UI.Xaml.Islands.XamlIslandRoot { HasTransparentBackground: true })
+		{
+			// MUX BaseContentRenderer::PanelRenderContent skips the island root's background primitive
+			// while the island is transparent; the Background property keeps its theme brush.
+			@this.BorderVisual.BackgroundBrush = null;
+		}
+		else
+		{
+			@this.BorderVisual.BackgroundBrush = @this.Background?.GetOrCreateCompositionBrush(@this.BorderVisual.Compositor);
+		}
 	}
 
 	public static void UpdateBorderBrush(this IBorderInfoProvider @this)

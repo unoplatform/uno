@@ -56,7 +56,7 @@ App.MainWindow.SystemBackdrop = null;
 
 Tips:
 
-- Make the page/window background transparent so the backdrop shows through (for example: `Page.Background = new SolidColorBrush(Colors.Transparent)` or via XAML). The SamplesApp test performs a traversal of the visual tree and temporarily replaces opaque backgrounds with transparent brushes so the effect is visible.
+- Make your own page and control backgrounds transparent so the backdrop shows through (for example: `Page.Background = new SolidColorBrush(Colors.Transparent)` or via XAML). Setting a backdrop drops the window's own root background, but your content is left untouched — as in WinUI, an opaque page hides the material.
 - On Windows, ensure your app is running on a supported Windows 11 build (22621+). Uno logs a warning when an unsupported backdrop is requested on older builds.
 
 ## Limitations and recommendations
