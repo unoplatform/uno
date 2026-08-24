@@ -98,13 +98,8 @@ namespace TestRepro
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_PagΞ0_Gri(global::Microsoft.UI.Xaml.Controls.Grid __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
-<<<<<<< HEAD:src/SourceGenerators/Uno.UI.SourceGenerators.Tests/XamlCodeGeneratorTests/Out/Given_HotReloadEnabledInBuild/SeBaUrInInOuFoFrEl/XamlCodeGenerator_MainPage_d6cd66944958ced0c513e0a04797b51d.cs
 			global::Uno.UI.Extras.VisibleBoundsPadding.SetPaddingMask(__p1, global::Uno.UI.Extras.VisibleBoundsPadding.PaddingMask.Top);
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d, "file:///C:/Project/0/MainPage.xaml", 8, 3);
-=======
-			global::Uno.UI.Toolkit.VisibleBoundsPadding.SetPaddingMask(__p1, global::Uno.UI.Toolkit.VisibleBoundsPadding.PaddingMask.Top);
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a, "file://///Project/0/MainPage.xaml", 8, 3);
->>>>>>> origin/master:src/SourceGenerators/Uno.UI.SourceGenerators.Tests/XamlCodeGeneratorTests/Out/Given_HotReloadEnabledInBuild/SeBaUrInInOuFoFrEl/XamlCodeGenerator_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a.cs
 			__p1.CreationComplete();
 		}
 

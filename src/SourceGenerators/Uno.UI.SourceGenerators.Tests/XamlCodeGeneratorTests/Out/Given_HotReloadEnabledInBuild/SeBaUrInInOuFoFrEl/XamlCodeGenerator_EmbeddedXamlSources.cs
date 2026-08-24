@@ -97,11 +97,7 @@ internal static class EmbeddedXamlSourcesProvider
 	private static (string hash, string payload) GetSources_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a()
 	{
 		return (
-<<<<<<< HEAD
-			"f581a99cf10f74b81a36a655b8acca2d60edd9b4", // hash
-=======
-			"5b492878a56c6631b91e794ce2172a7cb91336dc", // hash
->>>>>>> origin/master
+			"fbb299ad859e1f762c93ba333c8a3b50a2ac65ea", // hash
 			_utf8.GetString("""
 			<Page x:Class="TestRepro.MainPage"
 					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
