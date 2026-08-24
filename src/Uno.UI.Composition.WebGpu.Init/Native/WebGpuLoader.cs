@@ -62,11 +62,19 @@ internal static class WebGpuLoader
 			"libwgpu_native.so";
 
 		// The app base dir and the assembly's own dir aren't on the OS loader path on Linux/macOS, so try full paths.
+		// Also probe runtimes/<rid>/native under each: a framework-dependent app consuming the NuGet package keeps the
+		// native there (NuGet does not flatten runtimes/ into the output root), and NativeLibrary's bare-name search
+		// doesn't reliably reach it — so name it explicitly.
+		var rid = RuntimeInformation.RuntimeIdentifier;
 		foreach (var dir in new[] { AppContext.BaseDirectory, Path.GetDirectoryName(assembly.Location) })
 		{
 			if (!string.IsNullOrEmpty(dir))
 			{
 				yield return Path.Combine(dir!, file);
+				if (!string.IsNullOrEmpty(rid))
+				{
+					yield return Path.Combine(dir!, "runtimes", rid, "native", file);
+				}
 			}
 		}
 		// Bare names as a fallback (honors LD_LIBRARY_PATH / rpath / Windows app-dir search).
