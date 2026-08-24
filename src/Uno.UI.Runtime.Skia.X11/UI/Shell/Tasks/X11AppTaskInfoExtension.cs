@@ -155,7 +155,6 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 				.WaitAsync(TimeSpan.FromSeconds(5))
 				.ConfigureAwait(false);
 		}
-
 		catch (Exception error)
 		{
 			if (typeof(X11AppTaskInfoExtension).Log().IsEnabled(LogLevel.Debug))
@@ -200,19 +199,40 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 	}
 
 	private static string GetSignature(AppTaskInfoSnapshot task) =>
-		$"{task.State}\n{task.Title}\n{task.Subtitle}\n{task.Content.ExecutingStep}\n{task.Content.TextSummary}\n{task.Content.Question}";
+		string.Join(
+			'\n',
+			task.State,
+			task.Title,
+			task.Subtitle,
+			task.IconUri,
+			task.Content.ExecutingStep,
+			task.Content.TextSummary,
+			task.Content.Question,
+			string.Join('\n', task.Content.GeneratedAssets.Select(static asset => $"{asset.Name}|{asset.AssetUri}")));
 
 	private static string GetBody(AppTaskInfoSnapshot task)
 	{
-		var content = !string.IsNullOrEmpty(task.Content.ExecutingStep)
-			? task.Content.ExecutingStep
-			: !string.IsNullOrEmpty(task.Content.TextSummary)
-				? task.Content.TextSummary
-				: task.Subtitle;
-
+		var content = GetContentText(task);
 		return string.IsNullOrEmpty(task.Content.Question)
 			? $"{task.State}: {content}"
 			: $"{task.Content.Question}\n{task.State}: {content}";
+	}
+
+	private static string GetContentText(AppTaskInfoSnapshot task)
+	{
+		if (!string.IsNullOrEmpty(task.Content.ExecutingStep))
+		{
+			return task.Content.ExecutingStep;
+		}
+
+		if (!string.IsNullOrEmpty(task.Content.TextSummary))
+		{
+			return task.Content.TextSummary;
+		}
+
+		return task.Content.GeneratedAssets.Length > 0
+			? string.Join(", ", task.Content.GeneratedAssets.Select(static asset => asset.Name))
+			: task.Subtitle;
 	}
 
 	private static string GetIcon(Uri iconUri) =>

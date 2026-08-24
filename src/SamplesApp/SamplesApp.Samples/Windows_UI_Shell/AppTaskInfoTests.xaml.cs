@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -60,7 +61,7 @@ public sealed partial class AppTaskInfoTests : Page
 			Log($"Sample loaded with {_trackedTasks.Count} persisted task(s).");
 			RefreshVisualState();
 		}
-		catch (Exception error)
+		catch (Exception error) when (error is IOException or UnauthorizedAccessException or InvalidOperationException)
 		{
 			Log($"Unable to initialize AppTaskInfo: {error.Message}");
 			SupportTextBlock.Text = "AppTaskInfo initialization failed. See the action log for details.";

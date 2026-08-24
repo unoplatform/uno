@@ -248,6 +248,16 @@ internal sealed class AppTaskTextInputReceiver : BroadcastReceiver
 			AppTaskValidation.UserTextInputPlaceholder,
 			Uri.EscapeDataString(input),
 			StringComparison.Ordinal);
+		if (!Uri.TryCreate(actionUri, UriKind.Absolute, out _))
+		{
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"The app task text-input template of '{taskId}' does not produce an absolute URI.");
+			}
+
+			return;
+		}
+
 		var launchIntent = new Intent(Intent.ActionView, AUri.Parse(actionUri));
 		launchIntent.SetPackage(context.PackageName);
 		launchIntent.AddFlags(ActivityFlags.NewTask | ActivityFlags.ClearTop);

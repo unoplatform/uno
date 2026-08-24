@@ -86,12 +86,16 @@ public sealed class AppTaskInfo
 	/// Returns all app tasks that were created by the current application.
 	/// </summary>
 	/// <returns>All tasks created by the app that have not been removed.</returns>
+	/// <remarks>
+	/// Each call returns freshly created handles, so two handles that represent the same task are never
+	/// reference-equal and must be compared through <see cref="Id"/>.
+	/// </remarks>
 	public static AppTaskInfo[] FindAll() => AppTaskInfoRegistry.FindAll();
 
 	/// <summary>
 	/// Creates a new app task with the specified parameters.
 	/// </summary>
-	/// <param name="title">The required title used to group related tasks.</param>
+	/// <param name="title">The title used to group related tasks.</param>
 	/// <param name="subtitle">An optional subtitle that provides additional context. This value can be an empty string.</param>
 	/// <param name="deepLink">A URI that launches the app in the context of this task.</param>
 	/// <param name="iconUri">The path to an icon that represents the task.</param>
@@ -104,13 +108,16 @@ public sealed class AppTaskInfo
 		Uri iconUri,
 		AppTaskContent content)
 	{
-		ValidateTitle(title);
-		ArgumentNullException.ThrowIfNull(subtitle);
 		AppTaskValidation.RequireAbsoluteUri(deepLink, nameof(deepLink));
 		AppTaskValidation.RequireAbsoluteUri(iconUri, nameof(iconUri));
 		ArgumentNullException.ThrowIfNull(content);
 
-		return AppTaskInfoRegistry.Create(title, subtitle, deepLink, iconUri, content.CreateSnapshot());
+		return AppTaskInfoRegistry.Create(
+			title ?? string.Empty,
+			subtitle ?? string.Empty,
+			deepLink,
+			iconUri,
+			content.CreateSnapshot());
 	}
 
 	/// <summary>
@@ -139,7 +146,7 @@ public sealed class AppTaskInfo
 		{
 			State = state,
 			Content = contentSnapshot,
-			EndTime = GetUpdatedEndTime(snapshot.EndTime, state),
+			EndTime = GetUpdatedEndTime(snapshot, state),
 		});
 	}
 
@@ -154,7 +161,7 @@ public sealed class AppTaskInfo
 		UpdateSnapshot(snapshot => snapshot with
 		{
 			State = state,
-			EndTime = GetUpdatedEndTime(snapshot.EndTime, state),
+			EndTime = GetUpdatedEndTime(snapshot, state),
 		});
 	}
 
@@ -165,9 +172,9 @@ public sealed class AppTaskInfo
 	/// <param name="subtitle">The new optional subtitle. This value can be an empty string.</param>
 	public void UpdateTitles(string title, string subtitle)
 	{
-		ValidateTitle(title);
-		ArgumentNullException.ThrowIfNull(subtitle);
-		UpdateSnapshot(snapshot => snapshot with { Title = title, Subtitle = subtitle });
+		AppTaskValidation.RequireNonEmpty(title, nameof(title));
+		var newSubtitle = subtitle ?? string.Empty;
+		UpdateSnapshot(snapshot => snapshot with { Title = title, Subtitle = newSubtitle });
 	}
 
 	/// <summary>
@@ -195,16 +202,6 @@ public sealed class AppTaskInfo
 		});
 	}
 
-	private static void ValidateTitle(string title)
-	{
-		ArgumentNullException.ThrowIfNull(title);
-
-		if (string.IsNullOrEmpty(title))
-		{
-			throw new ArgumentException("The task title is required.", nameof(title));
-		}
-	}
-
 	private static void ValidateState(AppTaskState state)
 	{
 		if (state is < AppTaskState.Running or > AppTaskState.Error)
@@ -213,8 +210,19 @@ public sealed class AppTaskInfo
 		}
 	}
 
-	private static DateTimeOffset? GetUpdatedEndTime(DateTimeOffset? currentEndTime, AppTaskState state) =>
-		currentEndTime ?? (state is AppTaskState.Completed or AppTaskState.Error ? DateTimeOffset.UtcNow : null);
+	// The ending timestamp tracks the current state: it is cleared when the task leaves an ending
+	// state and re-stamped whenever it enters a different one.
+	private static DateTimeOffset? GetUpdatedEndTime(AppTaskInfoSnapshot snapshot, AppTaskState state)
+	{
+		if (state is not (AppTaskState.Completed or AppTaskState.Error))
+		{
+			return null;
+		}
+
+		return snapshot.State == state && snapshot.EndTime is { } endTime
+			? endTime
+			: DateTimeOffset.UtcNow;
+	}
 
 	private AppTaskInfoSnapshot GetCurrentSnapshot()
 	{

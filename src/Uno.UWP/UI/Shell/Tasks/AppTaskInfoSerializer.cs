@@ -87,7 +87,6 @@ internal static class AppTaskInfoSerializer
 	private static AppTaskInfoSnapshot FromStorage(AppTaskStoreItem task)
 	{
 		if (string.IsNullOrEmpty(task.Id)
-			|| string.IsNullOrEmpty(task.Title)
 			|| string.IsNullOrEmpty(task.DeepLink)
 			|| string.IsNullOrEmpty(task.IconUri))
 		{
@@ -119,21 +118,9 @@ internal static class AppTaskInfoSerializer
 			throw new InvalidDataException($"Persisted app task '{task.Id}' contains a null generated asset.");
 		}
 
-		var textInputActionUriTemplate = content.TextInputActionUriTemplate ?? string.Empty;
-		if (!string.IsNullOrEmpty(textInputActionUriTemplate)
-			&& (!textInputActionUriTemplate.Contains(AppTaskValidation.UserTextInputPlaceholder, StringComparison.Ordinal)
-				|| !Uri.TryCreate(
-					textInputActionUriTemplate.Replace(AppTaskValidation.UserTextInputPlaceholder, "example", StringComparison.Ordinal),
-					UriKind.Absolute,
-					out _)))
-		{
-			throw new InvalidDataException(
-				$"Persisted app task '{task.Id}' contains an invalid text-input action URI template.");
-		}
-
 		return new(
 			task.Id,
-			task.Title,
+			task.Title ?? string.Empty,
 			task.Subtitle ?? string.Empty,
 			CreateAbsoluteUri(task.DeepLink, nameof(task.DeepLink)),
 			CreateAbsoluteUri(task.IconUri, nameof(task.IconUri)),
@@ -156,12 +143,12 @@ internal static class AppTaskInfoSerializer
 					.ToArray(),
 				buttons
 					.Select(static button => new AppTaskButtonSnapshot(
-						RequireValue(button.Text, nameof(button.Text)),
+						button.Text ?? string.Empty,
 						CreateAbsoluteUri(button.ActionUri, nameof(button.ActionUri))))
 					.ToArray(),
 				content.Question ?? string.Empty,
 				content.TextInputPlaceholder ?? string.Empty,
-				textInputActionUriTemplate));
+				content.TextInputActionUriTemplate ?? string.Empty));
 	}
 
 	private static AppTaskState ParseState(int value) => value switch

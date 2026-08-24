@@ -22,7 +22,7 @@ namespace Windows.UI.Shell.Tasks;
 [Threading(ThreadingModel.Both)]
 public sealed class AppTaskContent
 {
-	private const uint UnoMaxButtons = 3;
+	private const uint WindowsMaxButtons = 2;
 
 	private readonly object _gate = new();
 	private readonly List<AppTaskButtonSnapshot> _buttons = new();
@@ -35,6 +35,7 @@ public sealed class AppTaskContent
 	private string _question = string.Empty;
 	private string _textInputPlaceholder = string.Empty;
 	private string _textInputActionUriTemplate = string.Empty;
+	private bool _hasTextInput;
 
 	private AppTaskContent(
 		AppTaskContentKind kind,
@@ -55,27 +56,23 @@ public sealed class AppTaskContent
 	/// <summary>
 	/// Gets the maximum number of buttons that can be added to task content.
 	/// </summary>
-	public static uint MaxButtons => UnoMaxButtons;
+	public static uint MaxButtons => WindowsMaxButtons;
 
 	/// <summary>
 	/// Creates task content that displays a sequence of steps showing task progress.
 	/// </summary>
 	/// <param name="completedSteps">The sequence of steps that have already been completed.</param>
-	/// <param name="executingStep">The step that is currently executing.</param>
+	/// <param name="executingStep">The step that is currently executing. This value is required.</param>
 	/// <returns>Task content that displays the specified sequence of steps.</returns>
 	public static AppTaskContent CreateSequenceOfSteps(string[] completedSteps, string executingStep)
 	{
-		ArgumentNullException.ThrowIfNull(completedSteps);
-		ArgumentNullException.ThrowIfNull(executingStep);
-
-		if (completedSteps.Any(static step => step is null))
-		{
-			throw new ArgumentException("Completed steps cannot contain null values.", nameof(completedSteps));
-		}
+		AppTaskValidation.RequireNonEmpty(executingStep, nameof(executingStep));
 
 		return new(
 			AppTaskContentKind.SequenceOfSteps,
-			completedSteps: (string[])completedSteps.Clone(),
+			completedSteps: completedSteps is null
+				? Array.Empty<string>()
+				: completedSteps.Select(static step => step ?? string.Empty).ToArray(),
 			executingStep: executingStep);
 	}
 
@@ -85,25 +82,20 @@ public sealed class AppTaskContent
 	/// <param name="imageUri">The URI of the preview thumbnail.</param>
 	/// <param name="executingStep">The step that is currently executing.</param>
 	/// <returns>Task content that displays the specified preview thumbnail.</returns>
-	public static AppTaskContent CreatePreviewThumbnail(Uri imageUri, string executingStep)
-	{
-		ArgumentNullException.ThrowIfNull(imageUri);
-		ArgumentNullException.ThrowIfNull(executingStep);
-
-		return new(
+	public static AppTaskContent CreatePreviewThumbnail(Uri imageUri, string executingStep) =>
+		new(
 			AppTaskContentKind.PreviewThumbnail,
-			executingStep: executingStep,
+			executingStep: executingStep ?? string.Empty,
 			imageUri: AppTaskValidation.RequireAbsoluteUri(imageUri, nameof(imageUri)));
-	}
 
 	/// <summary>
 	/// Creates task content that displays a text summary of the task result.
 	/// </summary>
-	/// <param name="text">The text summary to display.</param>
+	/// <param name="text">The text summary to display. This value is required.</param>
 	/// <returns>Task content that displays the specified text summary.</returns>
 	public static AppTaskContent CreateTextSummaryResult(string text)
 	{
-		ArgumentNullException.ThrowIfNull(text);
+		AppTaskValidation.RequireNonEmpty(text, nameof(text));
 		return new(AppTaskContentKind.TextSummary, textSummary: text);
 	}
 
@@ -131,19 +123,21 @@ public sealed class AppTaskContent
 	/// </summary>
 	/// <param name="text">The text displayed on the button.</param>
 	/// <param name="actionUri">The URI launched when the user clicks the button.</param>
+	/// <exception cref="ArgumentException">
+	/// <see cref="MaxButtons"/> buttons have already been added, or <paramref name="actionUri"/> is not absolute.
+	/// </exception>
 	public void AddButton(string text, Uri actionUri)
 	{
-		ArgumentNullException.ThrowIfNull(text);
-		ArgumentNullException.ThrowIfNull(actionUri);
+		AppTaskValidation.RequireAbsoluteUri(actionUri, nameof(actionUri));
 
 		lock (_gate)
 		{
 			if (_buttons.Count >= MaxButtons)
 			{
-				throw new InvalidOperationException($"Task content supports at most {MaxButtons} buttons.");
+				throw new ArgumentException($"Task content supports at most {MaxButtons} buttons.");
 			}
 
-			_buttons.Add(new(text, AppTaskValidation.RequireAbsoluteUri(actionUri, nameof(actionUri))));
+			_buttons.Add(new(text ?? string.Empty, actionUri));
 		}
 	}
 
@@ -152,30 +146,21 @@ public sealed class AppTaskContent
 	/// </summary>
 	/// <param name="placeholderText">The placeholder text displayed in the input field to guide the user.</param>
 	/// <param name="actionUriTemplate">
-	/// A URI template string containing <c>{userTextInput}</c> that is replaced with the user's escaped input text when submitted.
+	/// A URI template string. Any <c>{userTextInput}</c> occurrence is replaced with the user's escaped input text when submitted.
 	/// </param>
+	/// <exception cref="ArgumentException">A text input has already been set on this content.</exception>
 	public void SetTextInput(string placeholderText, string actionUriTemplate)
 	{
-		ArgumentNullException.ThrowIfNull(placeholderText);
-		ArgumentNullException.ThrowIfNull(actionUriTemplate);
-
-		if (!actionUriTemplate.Contains(AppTaskValidation.UserTextInputPlaceholder, StringComparison.Ordinal))
-		{
-			throw new ArgumentException(
-				$"The URI template must contain {AppTaskValidation.UserTextInputPlaceholder}.",
-				nameof(actionUriTemplate));
-		}
-
-		var exampleUri = actionUriTemplate.Replace(AppTaskValidation.UserTextInputPlaceholder, "example", StringComparison.Ordinal);
-		if (!Uri.TryCreate(exampleUri, UriKind.Absolute, out _))
-		{
-			throw new ArgumentException("The text-input URI template must produce an absolute URI.", nameof(actionUriTemplate));
-		}
-
 		lock (_gate)
 		{
-			_textInputPlaceholder = placeholderText;
-			_textInputActionUriTemplate = actionUriTemplate;
+			if (_hasTextInput)
+			{
+				throw new ArgumentException("A text input has already been set on this task content.");
+			}
+
+			_hasTextInput = true;
+			_textInputPlaceholder = placeholderText ?? string.Empty;
+			_textInputActionUriTemplate = actionUriTemplate ?? string.Empty;
 		}
 	}
 
@@ -185,11 +170,9 @@ public sealed class AppTaskContent
 	/// <param name="question">The question to display.</param>
 	public void SetQuestion(string question)
 	{
-		ArgumentNullException.ThrowIfNull(question);
-
 		lock (_gate)
 		{
-			_question = question;
+			_question = question ?? string.Empty;
 		}
 	}
 

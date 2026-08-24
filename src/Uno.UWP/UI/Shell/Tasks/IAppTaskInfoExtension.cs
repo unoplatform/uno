@@ -79,7 +79,7 @@ internal abstract class AppTaskInfoExtensionBase : IAppTaskInfoExtension
 		{
 			await ProcessQueueAsync();
 		}
-		catch (Exception error)
+		catch (Exception error) when (IsRecoverable(error))
 		{
 			lock (_synchronizationGate)
 			{
@@ -97,6 +97,15 @@ internal abstract class AppTaskInfoExtensionBase : IAppTaskInfoExtension
 			}
 		}
 	}
+
+	// Presenter failures must never tear down the app, but process-level failures still have to surface.
+	private static bool IsRecoverable(Exception error) =>
+		error is not (OutOfMemoryException
+			or AccessViolationException
+			or BadImageFormatException
+			or InvalidProgramException
+			or AppDomainUnloadedException
+			or CannotUnloadAppDomainException);
 
 	private async Task ProcessQueueAsync()
 	{
@@ -121,7 +130,7 @@ internal abstract class AppTaskInfoExtensionBase : IAppTaskInfoExtension
 					_lastRevision = Math.Max(_lastRevision, revision);
 				}
 			}
-			catch (Exception error)
+			catch (Exception error) when (IsRecoverable(error))
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{

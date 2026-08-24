@@ -19,4 +19,14 @@ internal static class AppTaskValidation
 
 		return uri;
 	}
+
+	internal static string RequireNonEmpty(string value, string parameterName)
+	{
+		if (string.IsNullOrEmpty(value))
+		{
+			throw new ArgumentException($"'{parameterName}' is required and cannot be empty.", parameterName);
+		}
+
+		return value;
+	}
 }

@@ -63,8 +63,15 @@ public class Given_AppTaskInfo
 		Assert.AreEqual("Publish", task.GetExecutingStep());
 
 		var endTime = task.EndTime;
+		task.UpdateState(AppTaskState.Completed);
+		Assert.AreEqual(endTime, task.EndTime, "Re-applying the same ending state keeps the ending timestamp.");
+
 		task.UpdateState(AppTaskState.Running);
-		Assert.AreEqual(endTime, task.EndTime, "The first terminal timestamp remains the task's ending timestamp.");
+		Assert.IsNull(task.EndTime, "Leaving an ending state clears the ending timestamp.");
+
+		task.UpdateState(AppTaskState.Error);
+		Assert.IsNotNull(task.EndTime, "Entering another ending state stamps a new ending timestamp.");
+		Assert.IsTrue(task.EndTime >= endTime);
 
 		task.Remove();
 		task.Remove();
@@ -148,22 +155,80 @@ public class Given_AppTaskInfo
 	[TestMethod]
 	public void When_Content_Interactions_Are_Invalid_Then_They_Are_Rejected()
 	{
+		Assert.AreEqual(2u, AppTaskContent.MaxButtons, "Windows caps app task content at two buttons.");
+
 		var content = AppTaskContent.CreateTextSummaryResult("Summary");
 		for (var index = 0; index < AppTaskContent.MaxButtons; index++)
 		{
 			content.AddButton($"Action {index}", new Uri($"sample-app://tasks/action/{index}"));
 		}
 
-		Assert.ThrowsExactly<InvalidOperationException>(() =>
+		Assert.ThrowsExactly<ArgumentException>(() =>
 			content.AddButton("Too many", new Uri("sample-app://tasks/action/too-many")));
 		Assert.ThrowsExactly<ArgumentException>(() =>
-			content.SetTextInput("Reply", "sample-app://tasks/reply?text={0}"));
+			content.AddButton("Relative", new Uri("/relative", UriKind.Relative)));
 
 		content.SetTextInput("Reply", "sample-app://tasks/reply?text={userTextInput}");
+		Assert.ThrowsExactly<ArgumentException>(
+			() => content.SetTextInput("Reply", "sample-app://tasks/reply?text={userTextInput}"),
+			"Windows rejects a second SetTextInput call on the same content.");
+
 		Assert.AreEqual(
 			0,
 			typeof(AppTaskResultAsset).GetProperties(BindingFlags.Instance | BindingFlags.Public).Length,
 			"Windows SDK exposes only the AppTaskResultAsset constructor.");
+	}
+
+	[TestMethod]
+	public void When_Content_Is_Created_Then_Windows_Argument_Contract_Is_Matched()
+	{
+		// Verified against Windows 11 26200.9106 through the Windows.UI.Shell.Tasks activation factories.
+		Assert.ThrowsExactly<ArgumentException>(() => AppTaskContent.CreateSequenceOfSteps(["One"], string.Empty));
+		Assert.ThrowsExactly<ArgumentException>(() => AppTaskContent.CreateSequenceOfSteps(["One"], null!));
+		Assert.ThrowsExactly<ArgumentException>(() => AppTaskContent.CreateTextSummaryResult(string.Empty));
+		Assert.ThrowsExactly<ArgumentNullException>(() => AppTaskContent.CreatePreviewThumbnail(null!, "Step"));
+		Assert.ThrowsExactly<ArgumentException>(
+			() => AppTaskContent.CreatePreviewThumbnail(new Uri("relative", UriKind.Relative), "Step"));
+
+		var nullSteps = AppTaskContent.CreateSequenceOfSteps(null!, "Step");
+		var task = AppTaskInfo.Create(
+			null!,
+			null!,
+			new Uri("sample-app://tasks/contract"),
+			new Uri("ms-appx:///Assets/StoreLogo.png"),
+			nullSteps);
+
+		Assert.AreEqual(string.Empty, task.Title, "Windows accepts an empty title in Create.");
+		Assert.AreEqual(string.Empty, task.Subtitle);
+		Assert.AreEqual(0, task.GetCompletedSteps().Length);
+
+		// A null step entry is projected as an empty string instead of being rejected.
+		var withNullStep = AppTaskContent.CreateSequenceOfSteps([null!, "Two"], "Step");
+		task.Update(AppTaskState.Running, withNullStep);
+		CollectionAssert.AreEqual(new[] { string.Empty, "Two" }, task.GetCompletedSteps());
+
+		// A text input template does not have to contain the placeholder or be a valid URI.
+		var freeFormContent = AppTaskContent.CreateTextSummaryResult("Summary");
+		freeFormContent.SetTextInput(null!, "no-placeholder-here");
+		freeFormContent.SetQuestion(null!);
+		task.Update(AppTaskState.Running, freeFormContent);
+
+		Assert.ThrowsExactly<ArgumentException>(() => task.UpdateTitles(string.Empty, "Subtitle"));
+		Assert.ThrowsExactly<ArgumentException>(() => task.UpdateTitles(null!, "Subtitle"));
+		task.UpdateTitles("Title", null!);
+		Assert.AreEqual(string.Empty, task.Subtitle, "Windows accepts a null subtitle in UpdateTitles.");
+		Assert.ThrowsExactly<ArgumentException>(
+			() => task.UpdateDeepLink(new Uri("relative", UriKind.Relative)));
+	}
+
+	[TestMethod]
+	public void When_Task_Is_Created_Then_Id_Uses_The_Windows_Format()
+	{
+		var task = CreateTask();
+
+		StringAssert.StartsWith(task.Id, "{");
+		StringAssert.EndsWith(task.Id, "}");
+		Assert.IsTrue(Guid.TryParseExact(task.Id, "B", out _));
 	}
 
 	[TestMethod]
@@ -233,8 +298,8 @@ public class Given_AppTaskInfo
 	[TestMethod]
 	public void When_File_Store_Is_Repeatedly_Quarantined_Then_Only_Recent_Files_Are_Retained()
 	{
-		var directory = Path.Combine(Path.GetTempPath(), $"uno-app-task-tests-{Guid.NewGuid():N}");
-		var filePath = Path.Combine(directory, "tasks.json");
+		var directory = Path.Join(Path.GetTempPath(), Path.GetFileName($"uno-app-task-tests-{Guid.NewGuid():N}"));
+		var filePath = Path.Join(directory, "tasks.json");
 		try
 		{
 			var store = new FileAppTaskInfoStore(filePath);
@@ -264,22 +329,45 @@ public class Given_AppTaskInfo
 	}
 
 	[TestMethod]
-	public void When_Persisted_Action_Template_Is_Tampered_Then_It_Is_Quarantined()
+	public void When_Persisted_State_Is_Tampered_Then_It_Is_Quarantined()
 	{
-		var content = AppTaskContent.CreateTextSummaryResult("Summary");
-		content.SetTextInput("Reply", "sample-app://tasks/reply?text={userTextInput}");
-		_ = AppTaskInfo.Create(
-			"Tamper test",
-			string.Empty,
-			new Uri("sample-app://tasks/tamper"),
-			new Uri("ms-appx:///Assets/StoreLogo.png"),
-			content);
-		_store.Value = _store.Value!.Replace("{userTextInput}", "{tampered}", StringComparison.Ordinal);
+		_ = CreateTask();
+		_store.Value = _store.Value!.Replace("\"state\":0", "\"state\":42", StringComparison.Ordinal);
 
 		AppTaskInfoRegistry.ConfigureForTests(_store, new TestAppTaskInfoExtension(isSupported: true));
 
 		Assert.AreEqual(0, AppTaskInfo.FindAll().Length);
 		Assert.AreEqual(1, _store.QuarantineCount);
+	}
+
+	[TestMethod]
+	public void When_Persisted_Deep_Link_Is_Tampered_Then_It_Is_Quarantined()
+	{
+		_ = CreateTask();
+		_store.Value = _store.Value!.Replace("sample-app://tasks/test", "not a uri", StringComparison.Ordinal);
+
+		AppTaskInfoRegistry.ConfigureForTests(_store, new TestAppTaskInfoExtension(isSupported: true));
+
+		Assert.AreEqual(0, AppTaskInfo.FindAll().Length);
+		Assert.AreEqual(1, _store.QuarantineCount);
+	}
+
+	[TestMethod]
+	public void When_Text_Input_Template_Has_No_Placeholder_Then_It_Round_Trips()
+	{
+		var content = AppTaskContent.CreateTextSummaryResult("Summary");
+		content.SetTextInput("Reply", "sample-app://tasks/reply");
+		_ = AppTaskInfo.Create(
+			"Free-form template",
+			string.Empty,
+			new Uri("sample-app://tasks/free-form"),
+			new Uri("ms-appx:///Assets/StoreLogo.png"),
+			content);
+
+		AppTaskInfoRegistry.ConfigureForTests(_store, new TestAppTaskInfoExtension(isSupported: true));
+
+		Assert.AreEqual(1, AppTaskInfo.FindAll().Length);
+		Assert.AreEqual(0, _store.QuarantineCount, "Windows does not constrain the text-input template.");
 	}
 
 	[TestMethod]
@@ -388,7 +476,7 @@ public class Given_AppTaskInfo
 			AppTaskContent.CreateSequenceOfSteps(Array.Empty<string>(), "Prepare"));
 
 	private static AppTaskInfoSnapshot CreateSnapshot(string title) => new(
-		Guid.NewGuid().ToString("D"),
+		Guid.NewGuid().ToString("B"),
 		title,
 		string.Empty,
 		new Uri("sample-app://tasks/test"),

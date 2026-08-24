@@ -82,7 +82,7 @@ internal static class AppTaskInfoRegistry
 			?? throw new PlatformNotSupportedException("App tasks are not supported on the current platform.");
 
 		var snapshot = new AppTaskInfoSnapshot(
-			Guid.NewGuid().ToString("D"),
+			Guid.NewGuid().ToString("B"),
 			title,
 			subtitle,
 			deepLink,
