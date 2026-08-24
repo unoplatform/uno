@@ -357,7 +357,6 @@ internal class SkiaDrawingSession : IDrawingSession
 	{
 		BlendMode.Src => SKBlendMode.Src,
 		BlendMode.Plus => SKBlendMode.Plus,
-		BlendMode.Modulate => SKBlendMode.Modulate,
 		BlendMode.Multiply => SKBlendMode.Multiply,
 		BlendMode.DstIn => SKBlendMode.DstIn,
 		BlendMode.DstOut => SKBlendMode.DstOut,

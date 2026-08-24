@@ -725,7 +725,6 @@ fn bnonsep(cb: vec3<f32>, cs: vec3<f32>, mode: i32) -> vec3<f32> {
   s = s * u.params.y;                                 // opacity (premultiplied)
   let d = textureSampleLevel(dst, smp, i.uv, 0.0);    // premultiplied destination
   let sa = s.a; let da = d.a; let mode = i32(u.params.z + 0.5);
-  if (mode == 3) { return vec4<f32>(s.rgb * d.rgb, sa * da); }   // Modulate: premultiplied product
   // Porter-Duff operators (B = source): co = Fa*Sca + Fb*Dca, ao = Fa*sa + Fb*da.
   var fa = 1.0; var fb = 1.0 - sa; var pd = true;
   if (mode == 0)       { fa = 1.0;      fb = 1.0 - sa; }   // SrcOver
