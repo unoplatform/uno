@@ -14,7 +14,7 @@ function Assert-ExitCodeIsZero()
     }
 }
 
-# TODO Uno (HotDesign 7.0): drop this switch.
+# TODO Uno (7.0 dependents): drop this switch.
 # Uno.UI.HotDesign is implicitly referenced by every Debug app build and is still compiled against
 # the pre-7.0 `Uno` assembly, which no longer exists after the Uno.WinRT rename. The job that runs
 # this script is disabled in .azure-devops-tests-templates.yml for the same reason; both come back

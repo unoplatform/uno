@@ -8,7 +8,7 @@ jobs:
 
 - job: Dotnet_Template_Tests_NetCoreMobile_windows
   displayName: 'Windows' ## Name is concatenated with the matrix group name
-  # TODO Uno (HotDesign 7.0): re-enable this job.
+  # TODO Uno (7.0 dependents): re-enable this job.
   # Disabled for the Uno.WinRT assembly rename. Uno.UI.HotDesign is SDK-injected into every
   # Debug app build and, like Uno.Toolkit.WinUI and Uno.Themes.WinUI beneath it, is still
   # compiled against the pre-7.0 `Uno` assembly, so template Debug builds fail with CS0012 on
@@ -75,7 +75,7 @@ jobs:
 
 - job: Dotnet_Template_Tests_NetCoreMobile_macos
   displayName: 'macOS' ## Name is concatenated with the matrix group name
-  # TODO Uno (HotDesign 7.0): re-enable this job.
+  # TODO Uno (7.0 dependents): re-enable this job.
   # Disabled for the Uno.WinRT assembly rename. Uno.UI.HotDesign is SDK-injected into every
   # Debug app build and, like Uno.Toolkit.WinUI and Uno.Themes.WinUI beneath it, is still
   # compiled against the pre-7.0 `Uno` assembly, so template Debug builds fail with CS0012 on
@@ -160,7 +160,7 @@ jobs:
 
 - job: Dotnet_Template_Tests_net7_Linux
   displayName: 'Linux' ## Name is concatenated with the matrix group name
-  # TODO Uno (HotDesign 7.0): re-enable this job.
+  # TODO Uno (7.0 dependents): re-enable this job.
   # Disabled for the Uno.WinRT assembly rename. Uno.UI.HotDesign is SDK-injected into every
   # Debug app build and, like Uno.Toolkit.WinUI and Uno.Themes.WinUI beneath it, is still
   # compiled against the pre-7.0 `Uno` assembly, so template Debug builds fail with CS0012 on
