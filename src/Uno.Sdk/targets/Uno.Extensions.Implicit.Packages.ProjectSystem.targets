@@ -63,7 +63,6 @@
 		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Controls" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Controls.Compatibility" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Graphics" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Controls.Build.Tasks" ProjectSystem="true" Condition="$(SingleProject) == 'true'"/>
 
 		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Navigation.UI" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
 		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Navigation.Fragment" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />

@@ -15,12 +15,12 @@
 
 		<!-- Support net10.0, without a platform identifier -->
 		<_UnoResizetizerIsCompatibleApp Condition=" 
-			$(_IsUnoSingleProjectAndLegacy) == 'true' 
+			$(_IsUnoSingleProject) == 'true' 
 			AND '$(TargetFramework)' != '' 
 			AND  $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == '' ">true</_UnoResizetizerIsCompatibleApp>
 	</PropertyGroup>
 
-	<ItemGroup Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' ">
+	<ItemGroup Condition=" $(_IsUnoSingleProject) == 'true' ">
 		<UnoIcon Include="$(UnoIconBackgroundFile)"
 			ForegroundFile="$(UnoIconForegroundFile)"
 			ForegroundScale="$(UnoIconForegroundScale)"
