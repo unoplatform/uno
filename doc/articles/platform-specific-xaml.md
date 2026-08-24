@@ -112,14 +112,19 @@ both.
 | `tvos` | `netX.0-tvos` | `http://uno.ui/tvos` | yes |
 | `desktop` | `netX.0-desktop` | `http://uno.ui/desktop` | yes |
 | `wasm` | `netX.0-browserwasm` | `http://uno.ui/wasm` | yes |
-| `winappsdk` | `netX.0-windows10.x` (WinAppSDK) | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no |
+| `winappsdk`, or `win` | `netX.0-windows10.x` (WinAppSDK) | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no |
 
-Each has a negated counterpart — `not_android`, `not_ios`, `not_tvos`, `not_desktop`, `not_wasm`, `not_winappsdk` —
-which applies to every target framework the positive one does not. The negated prefixes use the default
-presentation namespace and do not need to be listed in `mc:Ignorable`, with the exception of `not_winappsdk`, which
-the WinAppSDK XAML compiler cannot resolve.
+Each has a negated counterpart — `not_android`, `not_ios`, `not_tvos`, `not_desktop`, `not_wasm`, and
+`not_winappsdk` (or `not_win`) — which applies to every target framework the positive one does not. The negated
+prefixes use the default presentation namespace and do not need to be listed in `mc:Ignorable`, with the exception
+of `not_winappsdk` / `not_win`, which the WinAppSDK XAML compiler cannot resolve.
 
-`win` and `not_win` are the historical spelling of `winappsdk` and `not_winappsdk` and behave identically.
+> [!NOTE]
+> `win` and `not_win` are **not deprecated**. They are the original spelling of `winappsdk` and `not_winappsdk`,
+> both spellings resolve identically, and both remain fully supported — `win` and `not_win` are still the more
+> common form across Uno Platform's own markup. Nothing here retires them, and no migration is required. Pick one
+> spelling per file rather than mixing the two, since a file that uses `win:` alongside `not_winappsdk:` reads as
+> though the two name different conditions when they are exact opposites.
 
 More visually:
 
@@ -171,6 +176,12 @@ Specifying CLR namespaces in platform specific XAML namespace can be done as fol
 ```
 
 In this example, types prefixed in the `android` XAML namespace will be looked up in `My.Custom.Namespace1`, `MyCustomNamespace2` then in all the namespaces defined in default namespace `http://schemas.microsoft.com/winfx/2006/xaml/presentation`.
+
+Several CLR namespaces are covered by listing them in one `#using:` segment, separated by `;`, as above. **The XAML
+prefix itself must be spelled exactly** as one of the names in the table above — matching is an exact comparison
+against the prefix, so a decorated variant such as `xmlns:androidNamespace1` is not recognised as conditional and
+is treated as an ordinary namespace. One conditional prefix per platform per file, with the CLR namespaces it needs
+listed after `#using:`.
 
 > [!NOTE]
 > When using Uno Platform 4.x and in the absence of CLR namespace specification (using the `#using:` prefix), type matching is done through partial name based matching, without using the namespace information. In Uno Platform 4.8, this partial matching can be controlled by the `UnoEnableXamlFuzzyMatching` msbuild property. Uno Platform 5.0 and later will be setting `UnoEnableXamlFuzzyMatching` to `false` by default and will force explicit type matching.
