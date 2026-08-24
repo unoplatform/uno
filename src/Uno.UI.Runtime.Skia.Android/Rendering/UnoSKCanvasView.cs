@@ -34,6 +34,9 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 		SetEGLContextClientVersion(2);
 		SetEGLConfigChooser(8, 8, 8, 8, 0, 8);
 		SetRenderer(_renderer = new InternalRenderer());
+		// The scene is still presented through GL, but when not hardware-accelerated it is
+		// rasterized on the CPU first, which is what IsSoftwareRenderer reflects.
+		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = !_renderer.HardwareAccelerated;
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
 		TextInputPlugin = new TextInputPlugin(this);
 		ViewCompat.SetAccessibilityDelegate(this, ExploreByTouchHelper);
@@ -175,6 +178,8 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 		private const GRSurfaceOrigin SurfaceOrigin = GRSurfaceOrigin.BottomLeft;
 
 		private readonly bool _hardwareAccelerated = FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid;
+
+		internal bool HardwareAccelerated => _hardwareAccelerated;
 
 		private GRContext? _context;
 		private GRGlFramebufferInfo _glInfo;

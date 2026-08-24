@@ -28,6 +28,13 @@ internal sealed class CaretWithStemAndThumb : Grid
 
 	public PointerPoint LastPointerDown { get; set; }
 
+	/// <summary>
+	/// Vertical distance (in the text surface's coordinates) from the finger to the caret line it points at,
+	/// captured when the gripper is pressed. The thumb hangs below the line, so the drag must subtract this to
+	/// sample the text on the caret's own line instead of the one below it. See TextSelectionGripperPresenter.
+	/// </summary>
+	public double GrabOffsetY { get; set; }
+
 	/// <param name="repositionCallback">
 	/// Invoked once per rendered frame while the gripper is showing, so the owner
 	/// can keep the gripper glued to its anchor character as the text moves.

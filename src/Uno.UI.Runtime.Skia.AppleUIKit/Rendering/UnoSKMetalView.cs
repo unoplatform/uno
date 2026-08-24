@@ -63,6 +63,8 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 			_queue = queue;
 
+			Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = false;
+
 			ColorPixelFormat = MTLPixelFormat.BGRA8Unorm;
 			DepthStencilPixelFormat = MTLPixelFormat.Depth32Float_Stencil8;
 			SampleCount = 1;
