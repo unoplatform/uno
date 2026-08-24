@@ -42,6 +42,28 @@ jobs:
     displayName: Build Wasm Skia Head
 
   - pwsh: |
+      # The published wwwroot is mounted at two different roots: the runtime-test job serves it at
+      # localhost:8000/ (wasm-run-skia-runtime-tests.sh) and PR staging serves it from
+      # /pr-<N>/wasm-skia-net9/. It must therefore stay relocatable.
+      $wwwroot = "$(Build.SourcesDirectory)/src/SamplesApp/SamplesApp/bin/Release/$(netCurrentTargetFramework)-browserwasm/publish/wwwroot"
+      $files = @(Get-ChildItem -Path $wwwroot -Recurse -File -Include 'index.html','uno-config.js')
+      if ($files.Count -eq 0) {
+        Write-Host "##vso[task.logissue type=error]No index.html/uno-config.js found under $wwwroot - the publish layout changed."
+        exit 1
+      }
+      $bad = @($files | Where-Object { (Get-Content -Raw $_.FullName) -match '"/package_' })
+      if ($bad.Count -gt 0) {
+        foreach ($f in $bad) {
+          $path = $f.FullName
+          Write-Host "##vso[task.logissue type=error]$path references assets with an absolute /package_ path, which 404s under the sub-folder PR staging deployment. Set WasmShellWebAppBasePath to ./ in src/SamplesApp/SamplesApp/SamplesApp.csproj."
+        }
+        exit 1
+      }
+      $count = $files.Count
+      Write-Host "Base path check passed: $count file(s), no absolute /package_ references."
+    displayName: 'Verify wasm assets are sub-folder relocatable'
+
+  - pwsh: |
       $artifactName = "samplesapp-wasm-skia"
       if ([int]$env:SYSTEM_JOBATTEMPT -gt 1) { $artifactName += "-attempt$env:SYSTEM_JOBATTEMPT" }
       Write-Host "Publishing Samples App artifact: $artifactName"
