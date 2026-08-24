@@ -15,7 +15,7 @@ public class Given_RuntimeEnabledPackage
 	private const string NeutralTargetFramework = "net10.0";
 	private const string AndroidTargetFramework = "net10.0-android30.0";
 
-	private static readonly string[] WinRTAssemblies = ["Uno", "Uno.Foundation", "Uno.UI.Dispatching"];
+	private static readonly string[] WinRTAssemblies = ["Uno.WinRT", "Uno.Foundation", "Uno.UI.Dispatching"];
 	private static readonly string[] OtherAssemblies = ["Contoso.CrossRuntime"];
 
 	private static (RuntimeAssetsSelectorTask_v0 Task, string PackageBasePath) CreateTask(
@@ -48,14 +48,14 @@ public class Given_RuntimeEnabledPackage
 			ResolvedCompileFileDefinitionsInput =
 			[
 				PackageCacheFixture.Item(
-					Path.Combine(fixture.Root, "Uno.WinRT", "1.0.0", "lib", NeutralTargetFramework, "Uno.dll"),
+					Path.Combine(fixture.Root, "Uno.WinRT", "1.0.0", "lib", NeutralTargetFramework, "Uno.WinRT.dll"),
 					("NuGetPackageId", "Uno.WinRT"), ("NuGetPackageVersion", "1.0.0")),
 				PackageCacheFixture.Item(plainNeutralAsset, ("NuGetPackageId", "Contoso.Sensors")),
 			],
 			RuntimeCopyLocalItemsInput =
 			[
 				PackageCacheFixture.Item(
-					Path.Combine(fixture.Root, "Uno.WinRT", "1.0.0", "lib", NeutralTargetFramework, "Uno.dll"),
+					Path.Combine(fixture.Root, "Uno.WinRT", "1.0.0", "lib", NeutralTargetFramework, "Uno.WinRT.dll"),
 					("NuGetPackageId", "Uno.WinRT")),
 				PackageCacheFixture.Item(plainNeutralAsset, ("NuGetPackageId", "Contoso.Sensors")),
 			],
@@ -87,7 +87,7 @@ public class Given_RuntimeEnabledPackage
 
 		// Everything else stays on the Skia build.
 		added.Should().Contain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/skia/Contoso.CrossRuntime.dll", StringComparison.Ordinal));
-		added.Should().NotContain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/skia/Uno.dll", StringComparison.Ordinal));
+		added.Should().NotContain(path => path.EndsWith($"uno-runtime/{NeutralTargetFramework}/skia/Uno.WinRT.dll", StringComparison.Ordinal));
 		added.Should().NotContain(path => path.Contains("/webassembly/", StringComparison.Ordinal));
 	}
 
@@ -160,7 +160,7 @@ public class Given_RuntimeEnabledPackage
 			"a non-WinRT assembly keeps the union compile surface");
 
 		compileAdded.Should().Contain(
-			path => path.EndsWith($"lib/{AndroidTargetFramework}/Uno.dll", StringComparison.Ordinal),
+			path => path.EndsWith($"lib/{AndroidTargetFramework}/Uno.WinRT.dll", StringComparison.Ordinal),
 			"a WinRT assembly compiles against the platform implementation");
 	}
 }
