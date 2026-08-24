@@ -8,7 +8,6 @@
     xmlns:ios="http://nventive.com/ios"
     xmlns:local="Uno.UI.Samples.Content.UITests.GridView"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:u="using:nVentive.Umbrella.Views.Controls"
     xmlns:uBehaviors="using:nVentive.Umbrella.Views.Behaviors"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"

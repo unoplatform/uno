@@ -6,7 +6,6 @@
     xmlns:local="using:UITests.Playground"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:monaco="using:Monaco"
-    xmlns:not_wasm="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     d:DesignHeight="300"
     d:DesignWidth="400"
     mc:Ignorable="d">
@@ -28,12 +27,12 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <not_wasm:Grid>
+            <Grid>
                 <TextBox
                     x:Name="xamlText"
                     AcceptsReturn="True"
                     FontFamily="ms-appx:///Assets/Fonts/CascadiaCode-Regular.ttf" />
-            </not_wasm:Grid>
+            </Grid>
 
             <ContentControl x:Name="renderSurface" Grid.Column="1" />
         </Grid>

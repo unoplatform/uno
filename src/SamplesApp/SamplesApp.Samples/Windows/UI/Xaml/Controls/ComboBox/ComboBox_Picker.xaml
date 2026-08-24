@@ -5,7 +5,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:Uno.UI.Samples.Content.UITests.ComboBox"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:not_win="http://uno.ui/not_win"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     d:DesignHeight="300"
@@ -67,7 +66,7 @@
                                     Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}"
                                     Text="{TemplateBinding PlaceholderText}" />
                             </ContentPresenter>
-                            <not_android:FontIcon
+                            <FontIcon
                                 x:Name="DropDownGlyph"
                                 Grid.Row="1"
                                 Grid.Column="1"
