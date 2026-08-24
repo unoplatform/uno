@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
-#if XAMARIN
+#if __ANDROID__ || __APPLE_UIKIT__
 using Microsoft.UI.Xaml.Controls;
 #else
 using Microsoft.UI.Xaml.Controls;

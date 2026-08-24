@@ -5,10 +5,10 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:UITests.Windows_UI_Xaml_Controls.ScrollViewerTests"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:not_skia="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:skia="http://uno.ui/skia"
+    xmlns:not_winappsdk="http://uno.ui/not_winappsdk"
+    xmlns:winappsdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    mc:Ignorable="d skia">
+    mc:Ignorable="d not_winappsdk">
 
     <Page.Resources>
         <!--  Note: This template is the same as the XamlDefaultStyle except that is does not have platform specific flags  -->
@@ -37,7 +37,7 @@
                         x:Name="VerticalScrollBar"
                         Grid.Column="1"
                         HorizontalAlignment="Right"
-                        skia:Width="16"
+                        not_winappsdk:Width="16"
                         IsTabStop="False"
                         Maximum="{TemplateBinding ScrollableHeight}"
                         Orientation="Vertical"
@@ -49,7 +49,7 @@
                     <ScrollBar
                         x:Name="HorizontalScrollBar"
                         Grid.Row="1"
-                        skia:Height="16"
+                        not_winappsdk:Height="16"
                         IsTabStop="False"
                         Maximum="{TemplateBinding ScrollableWidth}"
                         Orientation="Horizontal"
@@ -292,8 +292,8 @@
                 <Grid
                     Width="1024"
                     Height="1024"
-                    skia:Background="Red">
-                    <not_skia:Grid.Background>
+                    not_winappsdk:Background="Red">
+                    <winappsdk:Grid.Background>
                         <LinearGradientBrush StartPoint=".45,.05" EndPoint=".65,.95">
                             <LinearGradientBrush.GradientStops>
                                 <GradientStopCollection>
@@ -310,7 +310,7 @@
                                 </GradientStopCollection>
                             </LinearGradientBrush.GradientStops>
                         </LinearGradientBrush>
-                    </not_skia:Grid.Background>
+                    </winappsdk:Grid.Background>
                     <TextBlock
                         Margin="20"
                         FontSize="30"
@@ -334,8 +334,8 @@
                 <Grid
                     Width="1024"
                     Height="1024"
-                    skia:Background="Red">
-                    <not_skia:Grid.Background>
+                    not_winappsdk:Background="Red">
+                    <winappsdk:Grid.Background>
                         <LinearGradientBrush StartPoint=".45,.05" EndPoint=".65,.95">
                             <LinearGradientBrush.GradientStops>
                                 <GradientStopCollection>
@@ -352,7 +352,7 @@
                                 </GradientStopCollection>
                             </LinearGradientBrush.GradientStops>
                         </LinearGradientBrush>
-                    </not_skia:Grid.Background>
+                    </winappsdk:Grid.Background>
                     <TextBlock
                         Margin="20"
                         FontSize="30"

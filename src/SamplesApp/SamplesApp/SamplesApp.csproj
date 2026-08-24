@@ -269,8 +269,7 @@
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(_Platform)' == 'android'">
-		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
-		<DefineConstants Condition=" '$(UseMonoRuntime)' == 'false' ">$(DefineConstants);RUNTIME_CORECLR</DefineConstants>
+		<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
 		<!-- Pin the shrinker, as the netcoremobile head does. Left unset, R8 9.1.31 crashes with
 		     an NPE in its API-model database while desugaring androidx.core. -->
 		<AndroidLinkTool Condition="'$(DoNotSetAndroidLinkTool)' != 'true'">r8</AndroidLinkTool>
@@ -417,8 +416,7 @@
 	<!--
 	Android needs AndroidResourcesGenerator to emit the DrawableHelper.SetDrawableResolver call —
 	without it every ms-appx local asset lookup throws "Drawable resources were not initialized" at
-	runtime. Must stay below the Runtime.Skia.Android import above, which sets UnoUIRuntimeIdentifier=Skia
-	for the generators to read; reversed, they pick XamarinProjectType=android and emit wrong output.
+	runtime.
 	-->
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props"
 	        Condition="'$(_Platform)' == 'android'" />

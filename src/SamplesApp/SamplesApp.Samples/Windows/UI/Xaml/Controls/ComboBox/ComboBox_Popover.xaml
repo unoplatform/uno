@@ -2,18 +2,14 @@
     x:Class="SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_Popover"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:android="http://uno.ui/android"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ios="http://uno.ui/ios"
     xmlns:local="using:Uno.UI.Samples.Content.UITests.ComboBox"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:not_ios="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:not_win="http://uno.ui/not_win"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     d:DesignHeight="300"
     d:DesignWidth="400"
-    mc:Ignorable="d ios android not_win">
+    mc:Ignorable="d not_win">
 
     <UserControl.Resources>
 
@@ -93,7 +89,7 @@
                                     Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}"
                                     Text="{TemplateBinding PlaceholderText}" />
                             </ContentPresenter>
-                            <not_android:FontIcon
+                            <FontIcon
                                 x:Name="DropDownGlyph"
                                 Grid.Row="1"
                                 Grid.Column="1"
@@ -106,20 +102,7 @@
                                 Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
                                 Glyph="&#xE0E5;"
                                 IsHitTestVisible="False" />
-                            <android:TextBlock
-                                x:Name="DropDownGlyph"
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Margin="0,10,10,10"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                AutomationProperties.AccessibilityView="Raw"
-                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                FontSize="12"
-                                Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
-                                IsHitTestVisible="False"
-                                Text="&#xE0E5;" />
-                            <not_ios:Popup x:Name="Popup">
+                            <Popup x:Name="Popup">
                                 <Border
                                     x:Name="PopupBorder"
                                     Margin="0,-1,0,-1"
@@ -146,39 +129,7 @@
                                         <ItemsPresenter Margin="{ThemeResource ComboBoxDropdownContentMargin}" />
                                     </ScrollViewer>
                                 </Border>
-                            </not_ios:Popup>
-                            <ios:Popover
-                                x:Name="Popup"
-                                MaxHeight="{TemplateBinding MaxDropDownHeight}"
-                                Anchor="{Binding ElementName=Background}"
-                                IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}">
-                                <Border
-                                    x:Name="PopupBorder"
-                                    Margin="0,-1,0,-1"
-                                    HorizontalAlignment="Stretch"
-                                    Background="{ThemeResource SystemControlBackgroundChromeMediumLowBrush}"
-                                    BorderBrush="{ThemeResource SystemControlForegroundChromeHighBrush}"
-                                    BorderThickness="{ThemeResource ComboBoxDropdownBorderThickness}">
-                                    <ScrollViewer
-                                        x:Name="ScrollViewer"
-                                        MinWidth="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.DropDownContentMinWidth}"
-                                        AutomationProperties.AccessibilityView="Raw"
-                                        BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}"
-                                        Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
-                                        HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-                                        HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
-                                        IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}"
-                                        IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}"
-                                        IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}"
-                                        VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-                                        VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
-                                        VerticalSnapPointsAlignment="Near"
-                                        VerticalSnapPointsType="OptionalSingle"
-                                        ZoomMode="Disabled">
-                                        <ItemsPresenter />
-                                    </ScrollViewer>
-                                </Border>
-                            </ios:Popover>
+                            </Popup>
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Normal" />
@@ -269,7 +220,7 @@
                                     <VisualState x:Name="PointerFocused" />
                                     <VisualState x:Name="FocusedDropDown">
                                         <Storyboard>
-                                            <not_ios:ObjectAnimationUsingKeyFrames
+                                            <ObjectAnimationUsingKeyFrames
                                                 Storyboard.TargetName="PopupBorder"
                                                 Storyboard.TargetProperty="Visibility"
                                                 Duration="0">
@@ -278,7 +229,7 @@
                                                         <Visibility>Visible</Visibility>
                                                     </DiscreteObjectKeyFrame.Value>
                                                 </DiscreteObjectKeyFrame>
-                                            </not_ios:ObjectAnimationUsingKeyFrames>
+                                            </ObjectAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </VisualState>
                                 </VisualStateGroup>

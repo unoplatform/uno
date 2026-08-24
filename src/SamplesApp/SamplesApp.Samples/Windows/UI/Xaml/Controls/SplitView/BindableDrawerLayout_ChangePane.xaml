@@ -2,28 +2,15 @@
     x:Class="UITests.Windows_UI_Xaml_Controls.SplitView.BindableDrawerLayout_ChangePane"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:android="http://uno.ui/android#using:Uno.UI.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:UITests.Windows_UI_Xaml_Controls.SplitView"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    mc:Ignorable="d android">
+    mc:Ignorable="d">
 
     <Grid>
         <SplitView x:Name="RootSplitView" OpenPaneLength="312">
             <!--  mimic LeftDrawerSplitViewStyle  -->
-            <android:SplitView.Template>
-                <ControlTemplate TargetType="SplitView">
-                    <android:BindableDrawerLayout
-                        Content="{TemplateBinding Content}"
-                        IsLeftPaneEnabled="{Binding (toolkit:SplitViewExtensions.IsPaneEnabled), RelativeSource={RelativeSource TemplatedParent}}"
-                        IsLeftPaneOpen="{TemplateBinding IsPaneOpen,
-                                                         Mode=TwoWay}"
-                        LeftPane="{TemplateBinding Pane}"
-                        LeftPaneBackground="{TemplateBinding PaneBackground}"
-                        LeftPaneOpenLength="{TemplateBinding OpenPaneLength}" />
-                </ControlTemplate>
-            </android:SplitView.Template>
 
             <SplitView.Content>
                 <Grid>

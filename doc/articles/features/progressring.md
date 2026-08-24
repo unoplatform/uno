@@ -28,22 +28,22 @@ On Android and iOS, the WUX `ProgressRing` uses native controls by default (`UIA
 <ProgressRing Style="{StaticResource DefaultWuxProgressRingStyle}" />
 ```
 
-To use the MUX `ProgressRing` on non-Skia targets and WUX `ProgressRing` on Skia targets you can utilize platform-specific XAML syntax:
+To use the MUX `ProgressRing` on WinAppSDK and the WUX `ProgressRing` on Uno Platform targets you can utilize platform-specific XAML syntax:
 
 ```xaml
 <Page
    ...
-   mux="using:Microsoft.UI.Xaml.Controls"
-   not_skia="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-   skia="http://uno.ui/skia"
-   mc:Ignorable="d skia">
+   xmlns:mux="using:Microsoft.UI.Xaml.Controls"
+   xmlns:winappsdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+   xmlns:not_winappsdk="http://uno.ui/not_winappsdk"
+   mc:Ignorable="d not_winappsdk">
    <Grid>
-      <skia:Border>
+      <not_winappsdk:Border>
         <ProgressRing />
-      </skia:Border>
-      <not_skia:Border>
+      </not_winappsdk:Border>
+      <winappsdk:Border>
         <mux:ProgressRing />
-      </not_skia:Border>
+      </winappsdk:Border>
    </Grid>
 </Page>
 ```
