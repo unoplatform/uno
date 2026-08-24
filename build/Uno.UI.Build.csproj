@@ -148,6 +148,8 @@
 		<ItemGroup>
 			<_NuspecFiles Include=".\nuget\Uno.WinUI.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.UI.Composition.Skia.nuspec" />
+			<_NuspecFiles Include=".\nuget\Uno.UI.Composition.WebGpu.Init.nuspec" />
+			<_NuspecFiles Include=".\nuget\Uno.UI.Composition.WebGpu.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.Foundation.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.WinRT.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.WinUI.Lottie.nuspec" />
@@ -166,6 +168,9 @@
 		
 		<!-- Update Uno.WinRT references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinRT']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
+
+		<!-- Update Uno.UI.Composition.WebGpu.Init references version (the WebGpu renderer depends on it) -->
+		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.UI.Composition.WebGpu.Init']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
 
 		<!-- Update Uno.WinUI.DevServer.Messaging references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.DevServer.Messaging']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
@@ -197,6 +202,8 @@
 		<!-- Create the packages -->
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.UI.Composition.Skia.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack nuget\Uno.UI.Composition.WebGpu.Init.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack nuget\Uno.UI.Composition.WebGpu.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.Foundation.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinRT.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.Lottie.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
