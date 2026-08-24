@@ -6,6 +6,7 @@ using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
+using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
@@ -64,15 +65,23 @@ internal interface ITextSelectionGripperHost
 	/// <summary>The gripper was long-pressed: open the context menu.</summary>
 	void RequestGripperContextMenu(PointerRoutedEventArgs args);
 
-	/// <summary>A gripper interaction ended: queue a selection-flyout visibility update.</summary>
-	void QueueGripperSelectionFlyout(PointerRoutedEventArgs args);
+	/// <summary>
+	/// A gripper interaction ended: queue a selection-flyout visibility update. <paramref name="allowEmptySelection"/>
+	/// is set when the gripper was tapped (not dragged), so the flyout re-opens even over a collapsed caret (the single
+	/// insertion handle) — mirroring the native iOS/Android insertion-handle popup. The host still restricts this to its
+	/// mobile touch conventions.
+	/// </summary>
+	void QueueGripperSelectionFlyout(PointerRoutedEventArgs args, bool allowEmptySelection);
 
 	/// <summary>
-	/// The gripper was tapped (not dragged or held): treat it like a tap on the text. <paramref name="press"/>
-	/// is the tap's <em>press</em> point, so the host can fold it into its multi-tap counter (a tap landing on
-	/// the insertion handle is still the second tap of a double-tap-to-select-word).
+	/// The gripper was tapped (not dragged or held): treat it like a tap on the text at the character the gripper
+	/// points at. <paramref name="anchorIndex"/> is that character index (the gripper's own selection edge / caret),
+	/// so the tap pins there instead of re-sampling the finger — which sits on the thumb below the caret line and
+	/// would spill onto the line below (on a single-line box, the end of the text). <paramref name="press"/> is the
+	/// tap's <em>press</em> point, so the host can fold it into its multi-tap counter (a tap landing on the insertion
+	/// handle is still the second tap of a double-tap-to-select-word).
 	/// </summary>
-	void OnGripperTapped(PointerPoint press, PointerRoutedEventArgs args);
+	void OnGripperTapped(PointerPoint press, int anchorIndex);
 }
 
 /// <summary>
@@ -88,12 +97,17 @@ internal sealed class TextSelectionGripperPresenter
 	private CaretWithStemAndThumb _startGripper;
 	private CaretWithStemAndThumb _endGripper;
 
+	// One frame-driven reposition pass for the pair: a per-gripper subscription runs Update - and the
+	// ancestor-clip walk behind GripperClipBounds - once per showing gripper per frame.
+	private CompositionTarget _frameLoop;
+	private bool _repositionFailureLogged;
+
 	public TextSelectionGripperPresenter(ITextSelectionGripperHost host)
 	{
 		_host = host;
 
-		_startGripper = new CaretWithStemAndThumb(Update);
-		_endGripper = new CaretWithStemAndThumb(Update);
+		_startGripper = new CaretWithStemAndThumb();
+		_endGripper = new CaretWithStemAndThumb();
 
 		foreach (var gripper in (ReadOnlySpan<CaretWithStemAndThumb>)[_startGripper, _endGripper])
 		{
@@ -119,8 +133,51 @@ internal sealed class TextSelectionGripperPresenter
 
 	public void Hide()
 	{
+		UnsubscribeFromFrameLoop();
 		_startGripper.Hide();
 		_endGripper.Hide();
+	}
+
+	// Subscribed for as long as the grippers are showing. Unsubscribing from inside the callback is safe:
+	// FrameRendered is an Action event, so the in-flight invocation walks a snapshot of the handler list.
+	private void SubscribeToFrameLoop()
+	{
+		if (_frameLoop is null && _host.GripperTextSurface.XamlRoot is { } xamlRoot)
+		{
+			_frameLoop = xamlRoot.VisualTree.ContentRoot.CompositionTarget;
+			_frameLoop.FrameRendered += OnFrameRendered;
+		}
+	}
+
+	private void UnsubscribeFromFrameLoop()
+	{
+		if (_frameLoop is { } frameLoop)
+		{
+			_frameLoop = null;
+			frameLoop.FrameRendered -= OnFrameRendered;
+		}
+	}
+
+	// The subscription outlives the grippers' visibility - a culled gripper still needs frames to notice its anchor
+	// scrolling back in - so an exception escaping Update would take the window's render loop with it.
+	private void OnFrameRendered()
+	{
+		try
+		{
+			Update();
+		}
+		catch (Exception e)
+		{
+			// First failure only: it would otherwise repeat every rendered frame.
+			if (!_repositionFailureLogged)
+			{
+				_repositionFailureLogged = true;
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("Failed to reposition the text selection grippers.", e);
+				}
+			}
+		}
 	}
 
 	/// <summary>
@@ -136,7 +193,11 @@ internal sealed class TextSelectionGripperPresenter
 			return;
 		}
 
+		SubscribeToFrameLoop();
+
 		var surface = _host.GripperTextSurface;
+		// An axis-aligned bbox (GetGlobalBoundsWithOptions reduces the ancestor clip path to its Bounds), so a
+		// rotated ancestor over-approximates its clip and culls less than it could.
 		var clip = _host.GripperClipBounds;
 		var lower = _host.SelectionLowerIndex;
 		var upper = _host.SelectionUpperIndex;
@@ -161,9 +222,20 @@ internal sealed class TextSelectionGripperPresenter
 			// ParsedText rects are relative to the text origin; the surface draws translated by its Padding.
 			rect.X += surface.Padding.Left;
 			rect.Y += surface.Padding.Top;
-			gripper.Height = rect.Height + 16;
+			gripper.Height = rect.Height + CaretWithStemAndThumb.ThumbSize;
 			var transform = surface.TransformToVisual(null);
-			if (transform.TransformBounds(rect).IntersectWith(clip) is not null)
+			// Cull on the point the thumb hangs from - the bottom-center of the caret line - rather than on the
+			// caret line as a whole. The grippers are drawn in an unclipped popup above the tree, so a line that is
+			// only fractionally visible at the edge of the clip would still paint a whole thumb past it. This is
+			// what native Android checks too (Editor.HandleView.isPositionVisible).
+			// A 1px probe rather than a bare point: both sides of the test come from float matrices, and a caret
+			// line that ends flush with the clip (a selectable TextBlock's last line) must not flicker on rounding.
+			var anchor = new Rect(rect.GetMidX() - 0.5, rect.Bottom - 0.5, 1, 1);
+			// Never cull the gripper the finger is holding: hiding it closes its popup, and unloading an element
+			// releases its pointer captures (UIElement.Pointers.ClearPointersStateOnUnload), which would end the drag.
+			// The cost is a dragged gripper painting outside the clip until the finger lifts; native instead
+			// auto-scrolls the container when a handle reaches the edge, which we don't do.
+			if (gripper.HasPointerCapture || transform.TransformBounds(anchor).IntersectWith(clip) is not null)
 			{
 				var matrixTransform = (MatrixTransform)transform;
 				var surfaceMatrix = matrixTransform.Matrix.ToMatrix3x2();
@@ -178,6 +250,16 @@ internal sealed class TextSelectionGripperPresenter
 			}
 			else
 			{
+				// On the transition only. An empty clip here means GripperClipBounds computed nothing (host out of
+				// the live tree, or zero-sized) rather than the anchor genuinely being scrolled away.
+				if (gripper.IsShowing && this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"Culling a text selection gripper: anchor {transform.TransformBounds(anchor)} is outside the clip {clip}.");
+				}
+
+				// Closed rather than collapsed: the reposition loop is driven by the presenter, not by the popups, so
+				// nothing depends on a culled gripper's popup staying open - and an open one shows up in the public
+				// VisualTreeHelper.GetOpenPopupsForXamlRoot.
 				gripper.Hide();
 			}
 		}
@@ -288,13 +370,18 @@ internal sealed class TextSelectionGripperPresenter
 		else if (IsMultiTapGesture((previous.PointerId, previous.Timestamp, previous.Position), current))
 		{
 			args.Handled = true;
-			_host.OnGripperTapped(previous, args);
-			_host.QueueGripperSelectionFlyout(args);
+			// Pin the tap to the character this gripper points at (its selection edge / caret). The finger grabbed
+			// the thumb below the caret line, so re-sampling the release point would spill onto the line below and
+			// jump to the end of the text — the same hazard the drag path avoids with GrabOffsetY.
+			var anchorIndex = gripper == _startGripper ? _host.SelectionLowerIndex : _host.SelectionUpperIndex;
+			_host.OnGripperTapped(previous, anchorIndex);
+			// A tap on the (single) insertion handle re-opens the flyout even over a collapsed caret.
+			_host.QueueGripperSelectionFlyout(args, allowEmptySelection: true);
 		}
 		else
 		{
 			// The gripper was dragged to adjust the selection: keep the thumbs and re-show the selection toolbar.
-			_host.QueueGripperSelectionFlyout(args);
+			_host.QueueGripperSelectionFlyout(args, allowEmptySelection: false);
 		}
 	}
 

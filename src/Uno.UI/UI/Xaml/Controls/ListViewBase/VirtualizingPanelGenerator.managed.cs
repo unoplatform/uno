@@ -250,6 +250,21 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <param name="index">The item index that the container is currently bound to</param>
 		public void ScrapViewForItem(FrameworkElement container, int index)
 		{
+			// Scrapping is the ONE container handoff that does not unlink from the panel -- the container stays a
+			// child so it can be picked straight back up by DequeueViewForItem(). That makes a silent overwrite
+			// here unrecoverable: the displaced container would be in no cache and no materialized line, yet still
+			// be a child of the panel, so it would never be recycled and never be re-arranged again, while
+			// RepairIndices() kept re-stamping it with a current index. Recycle it instead, which unlinks it.
+			if (_scrapCache.TryGetValue(index, out var displaced) && displaced != container)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"{GetMethodTag()} two containers claim index={index}; recycling the displaced one");
+				}
+
+				RecycleViewForItem(displaced, index, clearContainer: true);
+			}
+
 			_scrapCache[index] = container;
 		}
 
@@ -294,6 +309,13 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (CollectionChangedOperation.Offset(kvp.Key, collectionChanges) is int finalNewIndexValue)
 				{
+					// Same overwrite hazard as ScrapViewForItem(): two pre-change indices can remap onto one
+					// post-change index, and the loser would be orphaned in the panel's Children. Recycle it.
+					if (_scrapCache.TryGetValue(finalNewIndexValue, out var displaced) && displaced != kvp.Value)
+					{
+						RecycleViewForItem(displaced, finalNewIndexValue, clearContainer: true);
+					}
+
 					_scrapCache[finalNewIndexValue] = kvp.Value;
 				}
 				else

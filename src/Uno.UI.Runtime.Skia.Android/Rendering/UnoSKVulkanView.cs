@@ -173,6 +173,7 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 		_nativeWindow = ANativeWindow_fromSurface(
 			JNIEnv.Handle,
 			surface.Handle);
+		GC.KeepAlive(surface);
 
 		if (_nativeWindow == IntPtr.Zero)
 			throw new InvalidOperationException("Failed to get ANativeWindow from Surface");

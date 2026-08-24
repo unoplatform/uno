@@ -1,6 +1,8 @@
 <Project>
 	<PropertyGroup>
 		<IsAndroid>true</IsAndroid>
+		<!-- androidx.wear.protolayout (Xamarin.AndroidX.Wear.Tiles) requires minSdk 26 -->
+		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' AND $(UnoFeatures.Contains(';androidwear;')) ">26.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">21.0</SupportedOSPlatformVersion>
 		<EnableDefaultAndroidItems Condition="$(EnableDefaultAndroidItems) == ''">false</EnableDefaultAndroidItems>
 

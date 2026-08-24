@@ -678,18 +678,63 @@ namespace Microsoft.UI.Xaml
 			return new RoutedEventArgs(src);
 		}
 
+		/// <summary>
+		/// Removes <see cref="UIElementNativeRegistrar"/> entries whose key <see cref="Type"/> belongs
+		/// to a non-default (collectible) <see cref="System.Runtime.Loader.AssemblyLoadContext"/>. A downstream host that
+		/// loads previewed apps into their own collectible AssemblyLoadContexts creates elements of the
+		/// app's control types; the process-lifetime registrar then keeps each such <see cref="Type"/>
+		/// alive for the process lifetime, pinning the context after unload. Called from the ALC
+		/// cleanup hook (<c>Application.CleanupNonDefaultAlcCaches</c>). The corresponding JS-side
+		/// registration map holds only strings (no managed reference / ALC pin) and is intentionally
+		/// left intact: its ids are assigned from a shared counter, so removing entries there could
+		/// collide with still-live registrations. Re-registration after the sweep simply produces a
+		/// fresh id and a few duplicate string entries, which is harmless.
+		/// </summary>
+		internal static void ClearNonDefaultAlcElementRegistrations()
+			=> UIElementNativeRegistrar.ClearNonDefaultAlcEntries();
+
 		private static class UIElementNativeRegistrar
 		{
+			// Guarded by _classNamesGate: registrations happen on the UI thread, but the ALC
+			// teardown sweep can reach this map from other teardown paths, and Dictionary corrupts
+			// under concurrent mutation.
 			private static readonly Dictionary<Type, int> _classNames = new Dictionary<Type, int>();
+			private static readonly object _classNamesGate = new();
 
 			internal static int GetForType(Type type)
 			{
-				if (!_classNames.TryGetValue(type, out var classNamesRegistrationId))
+				lock (_classNamesGate)
 				{
-					_classNames[type] = classNamesRegistrationId = WindowManagerInterop.RegisterUIElement(type.FullName, GetClassesForType(type).ToArray(), type.Is<FrameworkElement>());
+					if (_classNames.TryGetValue(type, out var classNamesRegistrationId))
+					{
+						return classNamesRegistrationId;
+					}
 				}
 
-				return classNamesRegistrationId;
+				// The JS-side registration runs outside the lock; a racing registration for the
+				// same type merely produces a duplicate (harmless) string entry on the JS side.
+				var registrationId = WindowManagerInterop.RegisterUIElement(type.FullName, GetClassesForType(type).ToArray(), type.Is<FrameworkElement>());
+
+				lock (_classNamesGate)
+				{
+					_classNames[type] = registrationId;
+				}
+
+				return registrationId;
+			}
+
+			internal static void ClearNonDefaultAlcEntries()
+			{
+				int removed;
+				lock (_classNamesGate)
+				{
+					removed = Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_classNames);
+				}
+
+				if (removed > 0 && typeof(UIElement).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				{
+					typeof(UIElement).Log().Debug($"[ALC-CLEANUP] UIElementNativeRegistrar: removed {removed} non-default-ALC element registration(s).");
+				}
 			}
 
 			private static IEnumerable<string> GetClassesForType(Type type)

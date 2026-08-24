@@ -561,6 +561,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		// Skia-WASM: wheel notches are dropped so the index never reaches the last item, see https://github.com/unoplatform/uno/issues/24145
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_ScrollWheel()
 		{
 			var flipView = new FlipView()
@@ -608,7 +610,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.WaitFor(() => flipView.SelectedIndex == 2, timeoutMS: 5000, message: "WheelDown should advance SelectedIndex to 2");
 			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
 			mouse.WheelDown();
-			await UITestHelper.WaitForIdle();
+			// FlipView.managed.cs:561 gates the offset recompute on !m_animateNewIndex, which is set at :1487
+			// because UseTouchAnimationsForAllNavigation defaults to true (FlipView.cs:30), so two non-intermediate
+			// ViewChanged events are needed before the index settles.
+			await WindowHelper.WaitFor(() => flipView.SelectedIndex, 2, messageBuilder: index => $"SelectedIndex should settle back on the last item, was {index}", timeoutMS: 5000);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			await WindowHelper.WaitFor(() => flipView.SelectedIndex, 2, messageBuilder: index => $"SelectedIndex should not advance past the last item, was {index} after settling", timeoutMS: 5000);
 			Assert.AreEqual(2, flipView.SelectedIndex, "SelectedIndex should not advance past the last item");
 			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
 			mouse.WheelUp();
@@ -618,7 +625,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.WaitFor(() => flipView.SelectedIndex == 0, timeoutMS: 5000, message: "WheelUp should move SelectedIndex to 0");
 			await Task.Delay(FLIP_VIEW_DISTINCT_SCROLL_WHEEL_DELAY_MS);
 			mouse.WheelUp();
-			await UITestHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => flipView.SelectedIndex, 0, messageBuilder: index => $"SelectedIndex should settle back on the first item, was {index}", timeoutMS: 5000);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+			await WindowHelper.WaitFor(() => flipView.SelectedIndex, 0, messageBuilder: index => $"SelectedIndex should not move before the first item, was {index} after settling", timeoutMS: 5000);
 			Assert.AreEqual(0, flipView.SelectedIndex, "SelectedIndex should not move before the first item");
 		}
 
