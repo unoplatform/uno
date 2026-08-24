@@ -77,9 +77,40 @@ occurrences outright, and 4 decides which of the rest are legitimately named aft
 |---|---|
 | `uno-runtime/<tfm>/skia` folder | Published package layout. `PackageDiffIgnore.xml` shows `generatepkgdiff.exe` reads assemblies under `uno-runtime/`; whether it resolves those folders **by hardcoded name** cannot be determined from this repo, and the tool ships as a binary. A CI run has to prove the API-diff gate survives |
 | `netX.0-skia` hot-reload pseudo-TFM | A DevServer wire value (`ConfigureServer.RuntimeTargetFramework`) matched server-side. Client and server version independently, so it needs a transition that accepts both spellings |
-| `Uno.WinUI.Runtime.Skia.*` package names | Public NuGet identities with an ecosystem of references, templates and docs. A rename is a migration, not a sweep |
+| `Uno.WinUI.Runtime.Skia.*` package names | Public NuGet identities with an ecosystem of references, templates and docs. A rename is a migration, not a sweep — see §4.3 |
 
-### 4.3 Explicitly out of scope
+### 4.3 The runtime host packages — measured, not assumed
+
+The question is whether `Uno.WinUI.Runtime.Skia.*` still names anything true once the backend is pluggable.
+Measured against `feature/drawing-backend-abstraction`:
+
+| Evidence | Result |
+|---|---|
+| `SkiaSharp` / `Composition.Skia` / `SkiaBackend` references in each host's `.csproj` | **0 of 8**, except `Headless` (1) |
+| Host `.cs` files mentioning `SkiaSharp` / `SKSurface` / `SKCanvas` / `GRContext` | **7 of 358** |
+| `MacOS`, `AppleUIKit`, `WebAssembly.Browser`, `Headless` | **zero** Skia references of any kind |
+| What the 7 residual files are | all `GRContext`, all under `Rendering/` — the swapchain/graphics-context seam the drawing SPI negotiates over |
+
+`Uno.UI.Runtime.Skia.Win32` even references `Uno.UI.Composition.WebGpu.Init` and no Skia project at all. These
+are **platform hosts** — windowing, input, lifecycle, swapchain — not renderers. The name is no longer true.
+
+**Recommendation: drop the `.Skia.` segment rather than replace it.** `Uno.WinUI.Runtime.Skia.Win32` becomes
+`Uno.WinUI.Runtime.Win32`. That segment only ever disambiguated these from the *native* runtime hosts, which
+7.0 removed, so there is nothing left to disambiguate against. `Generic` would be actively wrong here: these
+are the most platform-specific projects in the repository. `Generic` belongs on the flavour axis (spec 059),
+where the thing it names really is platform-neutral.
+
+Two things to settle before doing it:
+
+1. **`Uno.WinUI.Runtime.Skia.WebAssembly.Browser` → `Uno.WinUI.Runtime.WebAssembly.Browser`** sits one segment
+   away from `Uno.WinUI.Runtime.WebAssembly`, the native browser host removed in 7.0 but still resolvable on
+   nuget.org. Reusing that prefix for a package with opposite semantics invites the wrong restore.
+2. **Scale.** 421 files reference `Uno.*.Runtime.Skia.*` (376 `.cs` — namespaces and usings — 23 `.csproj`,
+   12 `.md`, 6 `.targets`, 3 `.yml`, 1 `.json`), plus directory renames, nuspecs, solution filters, the
+   `Uno.Sdk` implicit package references, and the templates. This is a migration with a deprecation story,
+   not a sweep.
+
+### 4.4 Explicitly out of scope
 
 `_LibraryUnoRuntimeIdentifier`'s `skia` default in `uno.winui.runtime-replace.targets`. That is the folder a
 **third-party** cross-runtime library already packed into, on nuget.org today, under a name its author chose
