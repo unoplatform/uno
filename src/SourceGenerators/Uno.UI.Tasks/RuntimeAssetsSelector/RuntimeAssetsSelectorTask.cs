@@ -30,11 +30,34 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		[Required]
 		public Microsoft.Build.Framework.ITaskItem[]? RuntimeCopyLocalItemsInput { get; set; }
 
-		public string UnoRuntimeIdentifier { get; set; } = "";
+		/// <summary>
+		/// The platform of the target framework being built, e.g. "android", or empty for a plain netX.0 head.
+		/// </summary>
+		public string TargetPlatformIdentifier { get; set; } = "";
 
-		public string UnoUIRuntimeIdentifier { get; set; } = "";
+		/// <summary>
+		/// Package-layout convention, frozen by every runtime-enabled package already published. Neither folder
+		/// names a drawing backend: "skia" holds the build every target framework drawn by Uno shares, and
+		/// "webassembly" the browser's WinRT implementation.
+		/// </summary>
+		private const string SharedRuntimeFolder = "skia";
 
-		public string UnoWinRTRuntimeIdentifier { get; set; } = "";
+		private const string WebAssemblyRuntimeFolder = "webassembly";
+
+		/// <summary>
+		/// Where a package's WinRT assemblies come from. Everything else always comes from the shared folder.
+		/// </summary>
+		private enum WinRTSource
+		{
+			/// <summary>Desktop and headless heads: the shared folder carries the implementation.</summary>
+			SharedFolder,
+
+			/// <summary>Browser heads: the sibling folder next to the shared one.</summary>
+			WebAssemblyFolder,
+
+			/// <summary>Mobile heads: the package's own lib/netX.0-&lt;platform&gt; asset.</summary>
+			PlatformLib,
+		}
 
 		/// <remarks>
 		/// Note that this property is not set to [Required] because
@@ -61,33 +84,20 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		{
 			try
 			{
-				if (UnoRuntimeIdentifier == "reference")
-				{
-					return true;
-				}
-
 				// We have two types of packages
 				// 1. Packages that are runtime-enabled (e.g, contains uno-runtime - which is signified by <UnoRuntimeEnabledPackage Include="PackageName" PackageBasePath="..." /> in package props/targets)
 				// 2. Packages that are not runtime-enabled.
 				//
-				// We also have two modes:
-				// 1. Single layer mode (non-null UnoRuntimeIdentifier, expected to be either skia or webassembly).
-				// 2. Two layer mode (UnoUIRuntimeIdentifier being skia, while UnoWinRTRuntimeIdentifier expected to be webassembly, android, or ios).
+				// For runtime-enabled packages the assemblies always come from the shared runtime folder, except
+				// the WinRT ones (see IsWinRTAssembly), which follow the head's platform:
+				//     - desktop and headless: the shared folder holds the implementation already.
+				//     - browser: the sibling webassembly folder. Compile references are left alone, since the
+				//       platform-neutral surface is the one to bind against.
+				//     - android, iOS and tvOS: the package's own lib/netX.0-<platform> asset, and compile
+				//       references are rewritten so a WinRT call binds the platform implementation.
 				//
-				//
-				// For runtime-enabled packages:
-				//     Single layer mode:
-				//         - Don't alter compile file definitions, we still keep reference to be passed to the compiler.
-				//         - Adjust RuntimeCopyLocalItems such that reference binaries are removed and binaries from uno-runtime/[skia|wasm] are added.
-				//
-				//     Two layer mode:
-				//         - Adjust RuntimeCopyLocalItems such that WinRT assemblies are added from uno-runtime/webassembly or from lib/netX.0-[android|ios] and other assemblies from uno-runtime/skia.
-				//         - For Wasm Skia, don't alter compile file definitions, we still keep reference to be passed to the compiler.
-				//         - For Android Skia and iOS Skia, modify compile file definitions such that reference is passed (except for WinRT assemblies, we pass the actual implementation).
-				//
-				//
-				// For non-runtime-enabled packages we do nothing in either mode: NuGet's own target framework
-				// selection stands, so a multi-targeted library keeps its netX.0-[android|ios|tvos] asset.
+				// For non-runtime-enabled packages we do nothing: NuGet's own target framework selection stands,
+				// so a multi-targeted library keeps its netX.0-[android|ios|tvos] asset.
 
 				var runtimeCopyLocalItemsToAdd = new List<ITaskItem>();
 				var runtimeCopyLocalItemsToRemove = new List<ITaskItem>();
@@ -95,37 +105,35 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				var compileFileDefinitionsToRemove = new List<ITaskItem>();
 				var pdbFilesToAdd = new List<ITaskItem>();
 
-				var isSingleLayer = !string.IsNullOrWhiteSpace(UnoRuntimeIdentifier);
-				if (isSingleLayer && UnoRuntimeIdentifier is not ("skia" or "webassembly"))
+				var platform = TargetPlatformIdentifier.ToLower(CultureInfo.InvariantCulture);
+				WinRTSource winRTSource;
+				switch (platform)
 				{
-					this.Log.LogError($"The value '{UnoRuntimeIdentifier}' not expected for 'UnoRuntimeIdentifier'");
-					return false;
-				}
+					case "":
+					case "desktop":
+						winRTSource = WinRTSource.SharedFolder;
+						break;
 
-				var isTwoLayer = !isSingleLayer && UnoUIRuntimeIdentifier == "skia";
-				if (isTwoLayer && !IsSkiaMobileOrWasmRuntimeIdentifier(UnoWinRTRuntimeIdentifier))
-				{
-					this.Log.LogError($"The combination of UnoUIRuntimeIdentifier '{UnoUIRuntimeIdentifier}' and UnoWinRTRuntimeIdentifier '{UnoWinRTRuntimeIdentifier}' is not expected");
-					return false;
-				}
+					case "browserwasm":
+						winRTSource = WinRTSource.WebAssemblyFolder;
+						break;
 
-				if (!isSingleLayer && !isTwoLayer)
-				{
-					// An empty set of identifiers is a plain netX.0 project, which this task has no business
-					// rewriting. Anything else is a configuration that names a mode we cannot serve, and
-					// returning silently there ships the reference facade in a green build.
-					if (!string.IsNullOrWhiteSpace(UnoUIRuntimeIdentifier) || !string.IsNullOrWhiteSpace(UnoWinRTRuntimeIdentifier))
-					{
-						this.Log.LogError($"The combination of UnoRuntimeIdentifier '{UnoRuntimeIdentifier}', UnoUIRuntimeIdentifier '{UnoUIRuntimeIdentifier}' and UnoWinRTRuntimeIdentifier '{UnoWinRTRuntimeIdentifier}' does not name a supported runtime asset selection mode");
+					case "android":
+					case "ios":
+					case "tvos":
+						winRTSource = WinRTSource.PlatformLib;
+						break;
+
+					default:
+						// Returning silently here leaves every runtime-enabled package on its reference facade
+						// in an otherwise green build, which only fails once the application runs.
+						this.Log.LogError($"The target platform '{TargetPlatformIdentifier}' has no Uno Platform runtime assets");
 						return false;
-					}
-
-					return true;
 				}
 
 				foreach (var package in UnoRuntimeEnabledPackage ?? Array.Empty<ITaskItem>())
 				{
-					HandleForRuntimeEnabled(package, runtimeCopyLocalItemsToAdd, runtimeCopyLocalItemsToRemove, compileFileDefinitionsToAdd, compileFileDefinitionsToRemove, pdbFilesToAdd, isTwoLayer);
+					HandleForRuntimeEnabled(package, runtimeCopyLocalItemsToAdd, runtimeCopyLocalItemsToRemove, compileFileDefinitionsToAdd, compileFileDefinitionsToRemove, pdbFilesToAdd, winRTSource, platform);
 				}
 
 				RuntimeCopyLocalItemsToAdd = runtimeCopyLocalItemsToAdd.ToArray();
@@ -162,26 +170,13 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			return null;
 		}
 
-		private string? GetPlatformSpecificDirectoryForRuntimeEnabled(string runtimeDirectory, Version targetFrameworkVersion, bool isTwoLayer)
+		/// <remarks>
+		/// The shared folder's file listing is the authoritative asset list: an assembly is deployed because it
+		/// appears here, and only then is it redirected per <see cref="WinRTSource"/>.
+		/// </remarks>
+		private string? GetPlatformSpecificDirectoryForRuntimeEnabled(string runtimeDirectory, Version targetFrameworkVersion)
 		{
-			string runtimeIdentifier;
-			if (isTwoLayer)
-			{
-				// Two layer mode.
-				// We use Skia, except for WinRT assemblies (see IsWinRTAssembly).
-				// We will adjust for those dlls later.
-				if (UnoUIRuntimeIdentifier != "skia")
-				{
-					throw new Exception($"Unexpected UnoUIRuntimeIdentifier '{UnoUIRuntimeIdentifier}'");
-				}
-
-				runtimeIdentifier = UnoUIRuntimeIdentifier;
-			}
-			else
-			{
-				// Single layer mode
-				runtimeIdentifier = UnoRuntimeIdentifier;
-			}
+			var runtimeIdentifier = SharedRuntimeFolder;
 
 			this.Log.LogMessage($"Searching for '{runtimeIdentifier}' in '{runtimeDirectory}'");
 
@@ -246,26 +241,21 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 		private bool IsWinRTAssembly(string fileNameWithoutExtension)
 			=> fileNameWithoutExtension.ToLower(CultureInfo.InvariantCulture) is "uno.winrt" or "uno.ui.dispatching" or "uno.foundation" or "uno.ui.msal";
 
-		private string GetWinRTAssembly(string runtimeDirectory, string assembly, Version targetFrameworkVersion)
+		private string GetWinRTAssembly(string runtimeDirectory, string assembly, Version targetFrameworkVersion, WinRTSource winRTSource, string platform)
 		{
 			// Assembly is on the form:
-			// <NuGetPackageRoot>/<PackageName>/<PackageVersion>/uno-runtime/<TargetFramework>/<RuntimeIdentifier>/<AssemblyName>.dll
+			// <NuGetPackageRoot>/<PackageName>/<PackageVersion>/uno-runtime/<TargetFramework>/<RuntimeFolder>/<AssemblyName>.dll
 			assembly = Path.GetFullPath(assembly);
 			var unoRuntimeTfmDirectory = Path.GetDirectoryName(Path.GetDirectoryName(assembly));
-			if (UnoWinRTRuntimeIdentifier == "webassembly")
+			if (winRTSource == WinRTSource.WebAssemblyFolder)
 			{
-				var webAssemblyAsset = Path.GetFullPath(Path.Combine(unoRuntimeTfmDirectory, "webassembly", Path.GetFileName(assembly)));
+				var webAssemblyAsset = Path.GetFullPath(Path.Combine(unoRuntimeTfmDirectory, WebAssemblyRuntimeFolder, Path.GetFileName(assembly)));
 				if (!File.Exists(webAssemblyAsset))
 				{
 					throw new Exception($"Cannot get WinRT assembly for '{assembly}', the expected asset '{webAssemblyAsset}' does not exist");
 				}
 
 				return webAssemblyAsset;
-			}
-
-			if (!IsSkiaMobileRuntimeIdentifier(UnoWinRTRuntimeIdentifier))
-			{
-				throw new Exception($"Unexpected UnoWinRTRuntimeIdentifier '{UnoWinRTRuntimeIdentifier}'");
 			}
 
 			var packageRoot = Path.GetDirectoryName(Path.GetDirectoryName(unoRuntimeTfmDirectory));
@@ -276,7 +266,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			foreach (var dir in Directory.GetDirectories(lib))
 			{
 				var tfm = Path.GetFileName(dir);
-				var dashIndex = tfm.IndexOf($"-{UnoWinRTRuntimeIdentifier}", StringComparison.Ordinal);
+				var dashIndex = tfm.IndexOf($"-{platform}", StringComparison.Ordinal);
 				if (tfm.StartsWith("net", StringComparison.Ordinal) && dashIndex >= 6 &&
 					Version.TryParse(tfm.Substring(3, dashIndex - 3), out var currentVersion) &&
 					targetFrameworkVersion >= currentVersion)
@@ -310,7 +300,8 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			List<ITaskItem> compileFileDefinitionsToAdd,
 			List<ITaskItem> compileFileDefinitionsToRemove,
 			List<ITaskItem> pdbFilesToAdd,
-			bool isTwoLayer)
+			WinRTSource winRTSource,
+			string platform)
 		{
 			var packageIdentity = package.GetMetadata("Identity");
 			this.Log.LogMessage($"Processing runtime-enabled package: {packageIdentity}");
@@ -327,7 +318,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 			runtimeCopyLocalItemsToRemove.AddRange(RuntimeCopyLocalItemsInput.Where(item => packageIdentity.Equals(item.GetMetadata("NuGetPackageId"), StringComparison.OrdinalIgnoreCase)));
 
-			var platformDirectory = GetPlatformSpecificDirectoryForRuntimeEnabled(runtimeDirectory, targetFrameworkVersion, isTwoLayer);
+			var platformDirectory = GetPlatformSpecificDirectoryForRuntimeEnabled(runtimeDirectory, targetFrameworkVersion);
 			if (platformDirectory is null)
 			{
 				// This can happen for "legacy convention" (uno-runtime/<runtime-identifier>) which is handled by MSBuild logic in ReplaceUnoRuntime
@@ -343,10 +334,10 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			{
 				var assemblyFileNameWithoutExtension = Path.GetFileNameWithoutExtension(assembly);
 				var adjustedAssembly = assembly;
-				var isWinRTAssembly = isTwoLayer && IsWinRTAssembly(assemblyFileNameWithoutExtension);
+				var isWinRTAssembly = winRTSource != WinRTSource.SharedFolder && IsWinRTAssembly(assemblyFileNameWithoutExtension);
 				if (isWinRTAssembly)
 				{
-					adjustedAssembly = GetWinRTAssembly(runtimeDirectory, assembly, targetFrameworkVersion);
+					adjustedAssembly = GetWinRTAssembly(runtimeDirectory, assembly, targetFrameworkVersion, winRTSource, platform);
 					this.Log.LogMessage($"Assembly '{assemblyFileNameWithoutExtension}' follows the WinRT layer: replacing '{assembly}' with '{adjustedAssembly}'");
 				}
 
@@ -371,7 +362,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 						}));
 				}
 
-				if (isTwoLayer && IsSkiaMobileRuntimeIdentifier(UnoWinRTRuntimeIdentifier))
+				if (winRTSource == WinRTSource.PlatformLib)
 				{
 					var compileTimeAssembly = adjustedAssembly;
 					if (!isWinRTAssembly)
@@ -426,11 +417,5 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			var pathInPackage = assembly.Substring(packageRoot.Length);
 			return pathInPackage.Replace('\\', '/').TrimStart('/');
 		}
-
-		private bool IsSkiaMobileRuntimeIdentifier(string runtimeIdentifier)
-			=> runtimeIdentifier is "android" or "ios" or "tvos";
-
-		private bool IsSkiaMobileOrWasmRuntimeIdentifier(string runtimeIdentifier) =>
-			IsSkiaMobileRuntimeIdentifier(runtimeIdentifier) || runtimeIdentifier is "webassembly";
 	}
 }
