@@ -27,7 +27,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.Add(
-			DiagnosticResult.CompilerError("UXAML0006").WithSpan("C:/Project/0/MainPage.xaml", 4, 2, 4, 2).WithArguments(
+			DiagnosticResult.CompilerError("UXAML0006").WithSpan("//Project/0/MainPage.xaml", 4, 2, 4, 2).WithArguments(
 				"""The 'clr-namespace:' XAML namespace form is not supported. Replace 'xmlns:local="clr-namespace:TestRepro.Controls;assembly=TestRepro"' with 'xmlns:local="using:TestRepro.Controls"'"""));
 
 		await test.RunAsync();
@@ -54,7 +54,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind, _myControl } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.Add(
-			DiagnosticResult.CompilerError("UXAML0006").WithSpan("C:/Project/0/MainPage.xaml", 4, 2, 4, 2).WithArguments(
+			DiagnosticResult.CompilerError("UXAML0006").WithSpan("//Project/0/MainPage.xaml", 4, 2, 4, 2).WithArguments(
 				"""The 'clr-namespace:' XAML namespace form is not supported. Replace 'xmlns:local="clr-namespace:TestRepro"' with 'xmlns:local="using:TestRepro"'"""));
 
 		await test.RunAsync();
@@ -84,7 +84,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.Add(
-			DiagnosticResult.CompilerError("UXAML0006").WithSpan("C:/Project/0/MainPage.xaml", 6, 34, 6, 34).WithArguments(
+			DiagnosticResult.CompilerError("UXAML0006").WithSpan("//Project/0/MainPage.xaml", 6, 34, 6, 34).WithArguments(
 				"""The 'clr-namespace:' XAML namespace form is not supported. Replace 'xmlns:local="clr-namespace:TestRepro.Controls"' with 'xmlns:local="using:TestRepro.Controls"'"""));
 
 		await test.RunAsync();

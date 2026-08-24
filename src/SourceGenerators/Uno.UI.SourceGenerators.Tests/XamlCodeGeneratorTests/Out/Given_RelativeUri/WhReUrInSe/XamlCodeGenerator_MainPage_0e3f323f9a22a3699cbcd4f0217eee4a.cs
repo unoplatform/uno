@@ -37,9 +37,9 @@ namespace TestRepro
 	partial class MainPage : global::Microsoft.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
+		private const string __baseUri_prefix_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
+		private const string __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a = "ms-appx:///TestProject/0/MainPage.xaml";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
@@ -56,15 +56,15 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.Style
 						{
 							TargetType = typeof(global::Microsoft.UI.Xaml.Controls.Image),
-							// Source 0\MainPage.xaml (Line 6:4)
+							// Source MainPage.xaml (Line 6:4)
 							Setters = 
 							{
 								global::MyProject.GlobalStaticResources.__PreserveProperties(
 									new global::Microsoft.UI.Xaml.Setter
 									{
 										Property = global::Microsoft.UI.Xaml.Controls.Image.SourceProperty,
-										Value = __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d + @"Assets/asset.png",
-										// Source 0\MainPage.xaml (Line 7:5)
+										Value = __baseUri_prefix_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a + @"Assets/asset.png",
+										// Source MainPage.xaml (Line 7:5)
 									}
 								)
 								,
@@ -83,7 +83,7 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.Style
 						{
 							TargetType = typeof(global::Microsoft.UI.Xaml.Controls.HyperlinkButton),
-							// Source 0\MainPage.xaml (Line 9:4)
+							// Source MainPage.xaml (Line 9:4)
 							Setters = 
 							{
 								global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -91,7 +91,7 @@ namespace TestRepro
 									{
 										Property = global::Microsoft.UI.Xaml.Controls.HyperlinkButton.NavigateUriProperty,
 										Value = new System.Uri(@"ms-resource:///Files/Assets/doc.pdf", global::System.UriKind.RelativeOrAbsolute),
-										// Source 0\MainPage.xaml (Line 10:5)
+										// Source MainPage.xaml (Line 10:5)
 									}
 								)
 								,
@@ -110,7 +110,7 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.Style
 						{
 							TargetType = typeof(global::TestRepro.UriHolder),
-							// Source 0\MainPage.xaml (Line 12:4)
+							// Source MainPage.xaml (Line 12:4)
 							Setters = 
 							{
 								global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -118,7 +118,7 @@ namespace TestRepro
 									{
 										Property = global::TestRepro.UriHolder.UriProperty,
 										Value = new System.Uri(@"ms-resource:///Files/Assets/asset.png", global::System.UriKind.RelativeOrAbsolute),
-										// Source 0\MainPage.xaml (Line 13:5)
+										// Source MainPage.xaml (Line 13:5)
 									}
 								)
 								,
@@ -126,8 +126,8 @@ namespace TestRepro
 									new global::Microsoft.UI.Xaml.Setter
 									{
 										Property = global::TestRepro.UriHolder.ImageSourceProperty,
-										Value = __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d + @"Assets/asset.png",
-										// Source 0\MainPage.xaml (Line 14:5)
+										Value = __baseUri_prefix_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a + @"Assets/asset.png",
+										// Source MainPage.xaml (Line 14:5)
 									}
 								)
 								,
@@ -138,27 +138,27 @@ namespace TestRepro
 			}
 			)
 			;
-			// Source 0\MainPage.xaml (Line 1:2)
+			// Source MainPage.xaml (Line 1:2)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
 				new global::Microsoft.UI.Xaml.Controls.StackPanel
 				{
 					IsParsing = true,
-					// Source 0\MainPage.xaml (Line 17:3)
+					// Source MainPage.xaml (Line 17:3)
 					Children = 
 					{
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
 							new global::Microsoft.UI.Xaml.Controls.Image
 							{
 								IsParsing = true,
-								// Source 0\MainPage.xaml (Line 18:4)
+								// Source MainPage.xaml (Line 18:4)
 							}
-							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 							{
 							/* _isTopLevelDictionary:False */
 							__that._component_0 = __p1;
 							global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Image.StyleProperty, "ImageStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
 							__p1.CreationComplete();
 							}
 							))
@@ -168,14 +168,14 @@ namespace TestRepro
 							new global::Microsoft.UI.Xaml.Controls.HyperlinkButton
 							{
 								IsParsing = true,
-								// Source 0\MainPage.xaml (Line 19:4)
+								// Source MainPage.xaml (Line 19:4)
 							}
-							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 							{
 							/* _isTopLevelDictionary:False */
 							__that._component_1 = __p1;
 							global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.HyperlinkButton.StyleProperty, "LinkStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
 							__p1.CreationComplete();
 							}
 							))
@@ -185,14 +185,14 @@ namespace TestRepro
 							new global::TestRepro.UriHolder
 							{
 								IsParsing = true,
-								// Source 0\MainPage.xaml (Line 20:4)
+								// Source MainPage.xaml (Line 20:4)
 							}
-							.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
+							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
 							{
 							/* _isTopLevelDictionary:False */
 							__that._component_2 = __p1;
 							global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::TestRepro.UriHolder.StyleProperty, "HolderStyle", isThemeResourceExtension: false, isHotReloadSupported: false, context: global::MyProject.GlobalStaticResources.__ParseContext_);
-							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
 							__p1.CreationComplete();
 							}
 							))
@@ -200,9 +200,9 @@ namespace TestRepro
 						,
 					}
 				}
-				.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
+				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
 				{
-				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
 				__p1.CreationComplete();
 				}
 				))
@@ -210,17 +210,17 @@ namespace TestRepro
 			;
 			
 			this
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
+			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
 			{
-			// Source 0\MainPage.xaml (Line 1:2)
+			// Source MainPage.xaml (Line 1:2)
 			
-			// [WARNING] C:/Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
+			// [WARNING] //Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
+			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
 			{
 			// Class TestRepro.MainPage
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
 			__p1.CreationComplete();
 			}
 			))
@@ -306,53 +306,53 @@ namespace TestRepro
 }
 namespace MyProject
 {
-	static class MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions
+	static class MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions
 	{
 		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Setter instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Setter MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Setter instance, XamlApplyHandler0 handler)
+		public static global::Microsoft.UI.Xaml.Setter MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Setter instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Style instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Style MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Style instance, XamlApplyHandler1 handler)
+		public static global::Microsoft.UI.Xaml.Style MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Style instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.Image instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Image MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Image instance, XamlApplyHandler2 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Image MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Image instance, XamlApplyHandler2 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler3(global::Microsoft.UI.Xaml.Controls.HyperlinkButton instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.HyperlinkButton MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.HyperlinkButton instance, XamlApplyHandler3 handler)
+		public static global::Microsoft.UI.Xaml.Controls.HyperlinkButton MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.HyperlinkButton instance, XamlApplyHandler3 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler4(global::TestRepro.UriHolder instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::TestRepro.UriHolder MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::TestRepro.UriHolder instance, XamlApplyHandler4 handler)
+		public static global::TestRepro.UriHolder MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::TestRepro.UriHolder instance, XamlApplyHandler4 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler5(global::Microsoft.UI.Xaml.Controls.StackPanel instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.StackPanel MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.StackPanel instance, XamlApplyHandler5 handler)
+		public static global::Microsoft.UI.Xaml.Controls.StackPanel MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.StackPanel instance, XamlApplyHandler5 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler6(global::Microsoft.UI.Xaml.Controls.Page instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler6 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler6 handler)
 		{
 			handler(instance);
 			return instance;
