@@ -31,10 +31,10 @@
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\bin\Release\net11.0\Uno.UI.Composition.WebGpu.dll" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\bin\Release\net11.0\Uno.UI.Composition.WebGpu.pdb" target="lib\net11.0" />
 
-		<!-- wgpu-native runtime (pinned v29.0.1.1), fetched by wgpu-native.targets. The Init loader's
-		     DllImportResolver probes the app output dir, where NuGet lays down runtimes/<rid>/native. -->
-		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\lib\libwgpu_native.so" target="runtimes\linux-x64\native" />
-		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\lib\wgpu_native.dll" target="runtimes\win-x64\native" />
+		<!-- wgpu-native runtime (pinned v29.0.1.1), fetched by wgpu-native.targets. Shipped under the DllImport's own
+		     name (webgpu) so the runtime's default [DllImport("webgpu")] resolution finds it in runtimes/<rid>/native. -->
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\lib\libwgpu_native.so" target="runtimes\linux-x64\native\libwebgpu.so" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\lib\wgpu_native.dll" target="runtimes\win-x64\native\webgpu.dll" />
 	</files>
 
 </package>

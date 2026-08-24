@@ -1,9 +1,11 @@
-// <auto-provisioning loader> Resolves the "webgpu" DllImport to the pinned wgpu-native (modern ABI) placed
-// next to the app by wgpu-native.targets. Registered via a module initializer so it's active before any P/Invoke.
+// <auto-provisioning loader> Resolves the "webgpu" DllImport to the pinned wgpu-native (modern ABI). On desktop the
+// native is provisioned under the DllImport's own name (libwebgpu.so / webgpu.dll / libwebgpu.dylib, see
+// wgpu-native.targets), so the runtime's default resolution finds it (app dir, runtimes/<rid>/native via deps.json,
+// rpath/LD_LIBRARY_PATH) with no explicit probing here. This resolver only covers the cases default resolution can't:
+// Apple static linking (symbols in the main program image) and Android (packed as libwgpu_native.so per ABI).
+// Registered via a module initializer so it's active before any P/Invoke.
 #nullable enable
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -37,48 +39,29 @@ internal static class WebGpuLoader
 		// iOS/tvOS (and any statically-linked host): wgpu-native is a static lib linked into the app, not a
 		// loadable dylib — Apple platforms forbid dlopen'ing arbitrary dylibs. Its symbols live in the main
 		// program image, so resolve "webgpu" to the main-program handle. (Requires the build to link the
-		// wgpu-native xcframework with force-load; see wgpu-native.targets iOS provisioning.)
+		// wgpu-native static lib with force-load; see wgpu-native.targets iOS provisioning.)
 		if (OperatingSystem.IsIOS() || OperatingSystem.IsTvOS() || OperatingSystem.IsMacCatalyst())
 		{
 			try { return NativeLibrary.GetMainProgramHandle(); }
-			catch { /* fall through to the file-based candidates below */ }
+			catch { /* fall through */ }
 		}
 
-		foreach (var candidate in Candidates(assembly))
+		// Android packs the native per-ABI as libwgpu_native.so (its own name, not the DllImport's); resolve it by
+		// bare name through the Android loader. On desktop this fails harmlessly and we fall through to Zero, letting
+		// default resolution find the DllImport-named artifact (libwebgpu.*).
+		if (OperatingSystem.IsAndroid())
 		{
-			if (NativeLibrary.TryLoad(candidate, out var handle))
+			foreach (var candidate in new[] { "wgpu_native", "libwgpu_native" })
 			{
-				return handle;
-			}
-		}
-		return IntPtr.Zero;
-	}
-
-	private static IEnumerable<string> Candidates(Assembly assembly)
-	{
-		string file =
-			RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "wgpu_native.dll" :
-			RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? "libwgpu_native.dylib" :
-			"libwgpu_native.so";
-
-		// The app base dir and the assembly's own dir aren't on the OS loader path on Linux/macOS, so try full paths.
-		// Also probe runtimes/<rid>/native under each: a framework-dependent app consuming the NuGet package keeps the
-		// native there (NuGet does not flatten runtimes/ into the output root), and NativeLibrary's bare-name search
-		// doesn't reliably reach it — so name it explicitly.
-		var rid = RuntimeInformation.RuntimeIdentifier;
-		foreach (var dir in new[] { AppContext.BaseDirectory, Path.GetDirectoryName(assembly.Location) })
-		{
-			if (!string.IsNullOrEmpty(dir))
-			{
-				yield return Path.Combine(dir!, file);
-				if (!string.IsNullOrEmpty(rid))
+				if (NativeLibrary.TryLoad(candidate, out var handle))
 				{
-					yield return Path.Combine(dir!, "runtimes", rid, "native", file);
+					return handle;
 				}
 			}
 		}
-		// Bare names as a fallback (honors LD_LIBRARY_PATH / rpath / Windows app-dir search).
-		yield return "wgpu_native";
-		yield return "libwgpu_native";
+
+		// Desktop and WASM: decline so the runtime's default resolution handles "webgpu" (desktop finds the
+		// DllImport-named artifact; WASM resolves the emdawnwebgpu-linked symbols).
+		return IntPtr.Zero;
 	}
 }
