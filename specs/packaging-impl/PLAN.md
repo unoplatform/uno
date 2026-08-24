@@ -59,7 +59,13 @@ to `NBGV_SemVer2`. Skipping that left `Uno.WinUI` depending on `Uno.WinRT >= 2.4
 version + replicate the exact CI XmlPokes for every produced-package dependency ID before packing. All deployed
 assemblies then verified consistent (`7.0.0-dev.1+<commit>`).
 
-**Second real fix (committed `de54d8b42cc`): `WebGpuLoader` now probes `runtimes/<rid>/native`.** With the feed
+**Second real fix — native discovery.** (Initial form `de54d8b42cc` taught `WebGpuLoader` to probe
+`runtimes/<rid>/native`; **superseded by `33499b79f61`**, which instead ships the desktop native under the DllImport's
+own name — `libwebgpu.so`/`webgpu.dll`/`libwebgpu.dylib` — so the runtime's DEFAULT `[DllImport("webgpu")]` resolution
+finds it with no probing. The DllImport name must stay `webgpu` because the Init binding is one shared net10.0 assembly
+used by desktop AND WASM, where emdawnwebgpu resolves that name — so the file is renamed to match the name, not vice
+versa. The loader now only covers Apple static-link + Android bare-name; desktop/WASM fall through to default. Re-validated
+on lavapipe with only `libwebgpu.so` present.) With the feed
 consistent, the external app booted but WebGpu was declined: `DllNotFoundException: Unable to load shared library
 'webgpu'` (captured via a first-chance handler — the host swallows it at Warn). The loader probed only the app base dir
 + assembly dir + bare names; that finds the native in a run-from-build/publish layout (flattened next to the app, as in
