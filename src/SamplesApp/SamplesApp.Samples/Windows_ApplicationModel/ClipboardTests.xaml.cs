@@ -273,10 +273,17 @@ namespace UITests.Windows_ApplicationModel
 			if (Bitmap is null && package.Contains(StandardDataFormats.Bitmap))
 			{
 				var bitmapReference = await package.GetBitmapAsync();
-				var bitmapStream = await bitmapReference.OpenReadAsync();
+				using var bitmapStream = await bitmapReference.OpenReadAsync();
+
+				// Clipboard bitmap streams are asynchronous-only on wasm; buffer into a
+				// synchronously readable stream before handing them to SetSource.
+				// See https://github.com/unoplatform/uno/issues/24188
+				var buffer = new MemoryStream();
+				await bitmapStream.AsStreamForRead().CopyToAsync(buffer);
+				buffer.Position = 0;
 
 				var bitmapImage = new BitmapImage();
-				bitmapImage.SetSource(bitmapStream);
+				bitmapImage.SetSource(buffer.AsRandomAccessStream());
 
 				Bitmap = bitmapImage;
 			}
