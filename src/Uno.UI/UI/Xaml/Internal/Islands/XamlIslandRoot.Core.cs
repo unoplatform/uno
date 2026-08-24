@@ -29,6 +29,21 @@ internal partial class XamlIslandRoot
 
 	internal ContentRoot ContentRoot => _contentRoot;
 
+	internal bool HasTransparentBackground { get; private set; }
+
+	/// <summary>
+	/// Suppresses the island root's own background so a <see cref="Microsoft.UI.Xaml.Media.SystemBackdrop"/>
+	/// shows through, without disturbing the <see cref="Panel.Background"/> property itself.
+	/// </summary>
+	internal void SetHasTransparentBackground(bool hasTransparentBackground)
+	{
+		if (HasTransparentBackground != hasTransparentBackground)
+		{
+			HasTransparentBackground = hasTransparentBackground;
+			this.UpdateBackground();
+		}
+	}
+
 	private void SetPublicRootVisual(
 		UIElement? rootVisual,
 		ScrollViewer? rootScrollViewer,
