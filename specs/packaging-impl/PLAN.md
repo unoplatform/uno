@@ -3,6 +3,23 @@
 Core (done): Uno.UI.Composition.Drawing + .Managed added to Uno.WinUI.nuspec.
 Skia-imply flip (done): Uno.Features.targets force-implies `skia` (was `skiarenderer`).
 
+## RUNTIME PROOF: `;webgpu;` present + WebGpu impl set in host builder → WebGpu actually renders
+The SDK `;webgpu;` feature's only job is to make `Uno.UI.Composition.WebGpu` PRESENT (verified: the resolver injects
+it, above). Whether WebGpu is *used* is decided at runtime by the app registering it in the host builder
+(`builder.GraphicsBackend(new WebGpuGraphicsProvider())`, which `GraphicsRegistry.Register`s it) + the host
+negotiation. **Runtime-validated headless on X11 + lavapipe (llvmpipe software GPU, Xvfb :77), HEAD build of
+SamplesApp.Skia.Generic (both backends compiled: UnoDrawingBackendSkia+WebGpu default true):**
+- **`UNO_WEBGPU=1`** (→ explicit `WebGpuGraphicsProvider` registration): log shows
+  `[webgpu] init device` → `[webgpu] engine init — msaa=4x` → `Graphics backend 'WebGpuGraphicsProvider' won
+  negotiation on context kind 'WebGpu'.` → `[webgpu] surface 1024x768 ... present=Fifo`. Full device→engine→
+  swapchain→present, app UI loaded (SampleChooser). Ran clean to timeout in 3/4 runs (one flaky software-GPU SIGBUS
+  AFTER negotiation won — a lavapipe/Xvfb artifact, not a selection regression).
+- **Default (no `UNO_WEBGPU`)**: `Graphics backend 'SkiaGraphicsProvider' won negotiation on context kind 'Vulkan'`,
+  ZERO webgpu engine inits — proving the switch is real and Skia is the default (WebGpu is opt-in, not accidental).
+- Decisive selection log lives at `GraphicsRegistry.InitializeAsync` (LogLevel.Information); the `[webgpu] *` lines are
+  raw Console writes in `WebGpuEngine`/device init. `WebGpuGraphicsProvider.PreferredContexts => [WebGpu]` only, so it
+  can only win the WebGpu kind; the X11 host builds the WebGpu context for that kind via the neutral ContextFactory.
+
 ## Remaining
 1. UnoFeature.cs: drop `SkiaRenderer`; add `WebGpu` ([UnoArea.Core]).
 2. Sdk.props.buildschema.json: drop SkiaRenderer entry; add WebGpu.
