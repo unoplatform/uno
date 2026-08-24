@@ -77,7 +77,7 @@ on macOS with Skia rendering. To migrate:
 | Removed / changed | Migration |
 |---|---|
 | `Uno.WinUI.WebAssembly` package removed (and the older `Uno.WinUI.Runtime.WebAssembly`) | Use `Uno.WinUI.Runtime.Skia.WebAssembly.Browser`. The UI renders to a canvas; there is no DOM tree. With the `Uno.SDK`, the Skia browser head is referenced implicitly — there is nothing to add. |
-| `Uno.WinUI.Skia.X11`, `Uno.WinUI.Skia.MacOS`, and `Uno.WinUI.Skia.Linux.FrameBuffer` bootstrapper packages removed | These were empty meta-packages that only redirected to the real head. With the `Uno.SDK`, remove the reference — the matching `Uno.WinUI.Runtime.Skia.*` head is referenced implicitly for executable heads. For a hand-rolled (non-`Uno.SDK`) head, replace it with the corresponding `Uno.WinUI.Runtime.Skia.<variant>` package. |
+| `Uno.WinUI.Skia.X11`, `Uno.WinUI.Skia.MacOS`, and `Uno.WinUI.Skia.Linux.FrameBuffer` bootstrapper packages removed | These were empty meta-packages that only redirected to the real head. Remove the reference — the matching `Uno.WinUI.Runtime.Skia.*` head is referenced implicitly for executable heads. |
 | `Uno.UI.BindingHelper.Android` assembly removed | Remove the reference; Skia-on-Android needs no Java/JNI binding. |
 | `Uno.UI.FluentTheme.v1` assembly removed | The Fluent Design **V1** styles were deleted several releases ago and the assembly has shipped empty since. `Uno.UI.FluentTheme` still ships and is what `XamlControlsResources` has always loaded, so there is nothing to change unless you referenced the V1 types directly — see *Fluent Design resource-version types* under **Public API removed**. |
 | `Uno.UI.FluentTheme.v2` assembly merged into `Uno.UI.FluentTheme` | With V1 gone there is a single set of Fluent styles, so the two assemblies were collapsed into one. All the styles ship in `Uno.UI.FluentTheme`; both assemblies come from the `Uno.WinUI` package, so no reference changes. Only a direct reference to the `Uno.UI.FluentTheme.v2` assembly, or to `XamlControlsResourcesV2`, needs updating. |
@@ -742,6 +742,36 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 `*.Wasm` (DOM) heads in favor of the Skia heads (`Skia.netcoremobile`,
 `Skia.WebAssembly.Browser`, and the desktop Skia head) and remove native bootstrap code.
 
+### The `Uno.Sdk` is required for applications
+
+The legacy project format is removed. An Uno Platform **application** must now be a single
+`Sdk="Uno.Sdk"` project:
+
+```diff
+- <Project Sdk="Microsoft.NET.Sdk">
++ <Project Sdk="Uno.Sdk">
+```
+
+Concretely, the following are no longer supported:
+
+- Getting Uno Platform into an app head through a `PackageReference` to `Uno.WinUI` on a plain
+  `Microsoft.NET.Sdk` project. Application heads that do this now fail with
+  [UNOB0021](xref:Build.Solution.error-codes#unob0021-uno-platform-application-projects-must-use-the-unosdk).
+- The one-head-project-per-platform layout (`MyApp` shared library + `MyApp.Mobile`,
+  `MyApp.Wasm`, `MyApp.Skia.Gtk`, `MyApp.Skia.Linux.FrameBuffer`, `MyApp.Windows`, `MyApp.UWP`,
+  and `MyApp.Shared`/`.shproj` projects). One cross-targeted project replaces all of them.
+- The Uno Platform 5.1-and-earlier `SingleProject` property, superseded by `UnoSingleProject`
+  ([UNOB0022](xref:Build.Solution.error-codes#unob0022-the-singleproject-property-is-no-longer-supported)).
+- `uap10.0.*` (UWP) heads. The `Uno.WinUI` package no longer carries UWP build logic.
+
+Follow the [Migrating Projects to Single Project](xref:Uno.Development.MigratingToSingleProject)
+guide to convert an app. Once converted, the Uno Platform package versions are driven by the
+`Uno.Sdk` entry in `global.json` rather than by individual `PackageReference` versions.
+
+**Class libraries are not affected by this diagnostic.** A library may keep referencing the
+`Uno.WinUI` package from a `Microsoft.NET.Sdk` project, although `Sdk="Uno.Sdk"` is the
+recommended and templated form. Windows App SDK heads are likewise unaffected.
+
 ## Migration checklist
 
 1. Remove `<UnoFeatures>skiarenderer</UnoFeatures>` (now implicit) — and any native-only
@@ -763,7 +793,9 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 12. Update assembly-qualified type names that reach MRT Core (`Microsoft.Windows.ApplicationModel.Resources.*`) — the assembly is now `Uno.WinRT`, not `Uno.UI`.
 13. Retype `Window.VisibilityChanged` handlers to `WindowVisibilityChangedEventArgs`, and drop
    any explicit `Window*EventHandler` delegate construction.
-14. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+14. Convert the application to a single `Sdk="Uno.Sdk"` project and delete the per-platform head
+    projects.
+15. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)
