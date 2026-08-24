@@ -289,9 +289,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 				// This gets around some GC quirks where the objects from the last instance of the control
 				// stick around until this test method returns
-#if __SKIA__
-				if (OperatingSystem.IsBrowser() || OperatingSystem.IsLinux() || OperatingSystem.IsIOS() || OperatingSystem.IsAndroid())
-#endif
 				{
 					await Task.Yield();
 					GC.Collect();
