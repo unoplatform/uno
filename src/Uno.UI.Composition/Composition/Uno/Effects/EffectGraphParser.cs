@@ -36,7 +36,7 @@ internal static class EffectGraphParser
 	/// Parses <paramref name="effect"/> (a graph node or a source-parameter leaf) into an <see cref="EffectNode"/>
 	/// tree bounded by <paramref name="bounds"/> (the region non-backdrop sources are rasterized over).
 	/// </summary>
-	public static EffectNode Parse(object? effect, Rect bounds, Func<string, CompositionBrush?> resolveSource)
+	public static EffectNode Parse(object? effect, Rect bounds, Func<string, CompositionBrush?> resolveSource, IDrawingFactory factory)
 	{
 		switch (effect)
 		{
@@ -55,18 +55,18 @@ internal static class EffectGraphParser
 
 					// Non-backdrop brush/image/noise input: rasterize it to a backend texture once, so the backend never
 					// paints a compositor brush. The texture is placed back at the source's bounds by the fuser.
-					return RasterizeSource(brush, bounds);
+					return RasterizeSource(factory, brush, bounds);
 				}
 
 			case IGraphicsEffectD2D1Interop interop:
-				return ParseNode(interop, bounds, resolveSource);
+				return ParseNode(interop, bounds, resolveSource, factory);
 
 			default:
 				return new UnsupportedEffectNode(effect?.GetType().Name ?? "null", null);
 		}
 	}
 
-	private static TextureInput RasterizeSource(CompositionBrush source, Rect bounds, Vector2? intrinsicSize = null, EdgeExtend extendX = EdgeExtend.None, EdgeExtend extendY = EdgeExtend.None)
+	private static TextureInput RasterizeSource(IDrawingFactory factory, CompositionBrush source, Rect bounds, Vector2? intrinsicSize = null, EdgeExtend extendX = EdgeExtend.None, EdgeExtend extendY = EdgeExtend.None)
 	{
 		// A Border input is rasterized at its own intrinsic size (the repeating/extend unit); everything else is
 		// rasterized over the effect bounds.
@@ -74,7 +74,7 @@ internal static class EffectGraphParser
 		var width = Math.Max(1, (int)Math.Ceiling(region.Width));
 		var height = Math.Max(1, (int)Math.Ceiling(region.Height));
 
-		var texture = DrawingFactory.Current.RenderOffscreen(width, height, session =>
+		var texture = factory.RenderOffscreen(width, height, session =>
 		{
 			// The source paints in region-space; translate so the region's origin maps to the offscreen origin.
 			if (region.X != 0 || region.Y != 0)
@@ -88,9 +88,9 @@ internal static class EffectGraphParser
 		return new TextureInput(texture, extendX, extendY);
 	}
 
-	private static EffectNode ParseNode(IGraphicsEffectD2D1Interop e, Rect bounds, Func<string, CompositionBrush?> resolveSource)
+	private static EffectNode ParseNode(IGraphicsEffectD2D1Interop e, Rect bounds, Func<string, CompositionBrush?> resolveSource, IDrawingFactory factory)
 	{
-		EffectNode Src(uint i) => Parse(e.GetSource(i), bounds, resolveSource);
+		EffectNode Src(uint i) => Parse(e.GetSource(i), bounds, resolveSource, factory);
 		object Prop(string name)
 		{
 			e.GetNamedPropertyMapping(name, out var index, out _);
@@ -340,7 +340,7 @@ internal static class EffectGraphParser
 						&& resolveSource(sourceParameter.Name) is { } borderBrush and not CompositionBackdropBrush
 						&& (borderBrush as ISizedBrush)?.Size is { } size)
 					{
-						return RasterizeSource(borderBrush, bounds, size, extendX, extendY);
+						return RasterizeSource(factory, borderBrush, bounds, size, extendX, extendY);
 					}
 
 					return Src(0);

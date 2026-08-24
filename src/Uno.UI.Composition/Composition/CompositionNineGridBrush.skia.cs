@@ -32,7 +32,7 @@ namespace Microsoft.UI.Composition
 
 			// Rasterize the source brush into an offscreen backend texture and draw it nine-sliced onto the target
 			// (no CPU round-trip — the offscreen result is already the texture the draw verb consumes).
-			using var texture = DrawingFactory.Current.RenderOffscreen(pixelWidth, pixelHeight, s => Source.TryPaint(s, opacity, sourceBounds));
+			using var texture = session.Factory.RenderOffscreen(pixelWidth, pixelHeight, s => Source.TryPaint(s, opacity, sourceBounds));
 
 			var centerSlice = new Rect(
 				new Point(LeftInset * LeftInsetScale, TopInset * TopInsetScale),

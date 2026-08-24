@@ -23,7 +23,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 
 	internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
 	{
-		UpdateFilter(bounds);
+		UpdateFilter(session.Factory, bounds);
 		if (_filter is { } filter)
 		{
 			session.DrawEffectBackdrop(filter, opacity);
@@ -41,7 +41,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 			else if (source is { } src)
 			{
 				var count = session.Save();
-				session.SaveLayer(DrawingFactory.Current.CreateColorMatrixColorFilter(matrix));
+				session.SaveLayer(session.Factory.CreateColorMatrixColorFilter(matrix));
 				src.TryPaint(session, opacity, bounds);
 				session.RestoreToCount(count);
 			}
@@ -49,7 +49,7 @@ public partial class CompositionEffectBrush : CompositionBrush
 		return true;
 	}
 
-	private void UpdateFilter(Rect bounds)
+	private void UpdateFilter(IDrawingFactory factory, Rect bounds)
 	{
 		if (_currentBounds == bounds && _filter is not null)
 		{
@@ -63,8 +63,8 @@ public partial class CompositionEffectBrush : CompositionBrush
 		// deferred leaf), then have the backend fuse it into one filter. hasBackdrop is a tree property, computed
 		// here — not reported by the backend. A null filter means the backend can't realize it (e.g. WebGPU for a
 		// per-pixel colour effect); TryPaint then falls back to the recipe path. Not an error.
-		_tree = EffectGraphParser.Parse(_effect, bounds, GetSourceParameter);
-		_filter = DrawingFactory.Current.CreateEffectFilter(_tree, bounds);
+		_tree = EffectGraphParser.Parse(_effect, bounds, GetSourceParameter, factory);
+		_filter = factory.CreateEffectFilter(_tree, bounds);
 		HasBackdropBrushInput = _tree.ContainsSourceInput();
 		_currentBounds = bounds;
 	}

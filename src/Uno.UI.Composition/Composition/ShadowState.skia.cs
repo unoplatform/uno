@@ -17,6 +17,6 @@ internal record ShadowState(float Dx, float Dy, float SigmaX, float SigmaY, Colo
 	/// <see cref="IDrawingSession.SaveLayer(IEffectFilter)"/> to derive a shadow from arbitrary content on the
 	/// non-analytic fallback path.
 	/// </summary>
-	public IEffectFilter ShadowFilter =>
-		_shadowFilter ??= DrawingFactory.Current.CreateDropShadowFilter(Dx, Dy, SigmaX, SigmaY, Color);
+	public IEffectFilter GetShadowFilter(IDrawingFactory factory) =>
+		_shadowFilter ??= factory.CreateDropShadowFilter(Dx, Dy, SigmaX, SigmaY, Color);
 }
