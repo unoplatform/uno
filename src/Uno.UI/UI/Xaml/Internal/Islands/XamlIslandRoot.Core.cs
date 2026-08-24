@@ -25,6 +25,12 @@ internal partial class XamlIslandRoot
 	{
 		_contentRoot = coreServices.ContentRootCoordinator.CreateContentRoot(ContentRootType.XamlIslandRoot, Colors.Transparent, this);
 		_contentRoot.XamlIslandRoot = this;
+
+		// MUX applies CXamlIslandRoot::NotifyThemeChangedCore from InitializeCommon() and again on every
+		// theme change, so the initial and runtime colours come from one place. CreateContentRoot's
+		// backgroundColor is discarded on this branch (VisualTree only uses it when it owns a RootVisual),
+		// so seed it here from the same source CoreServices.NotifyThemeChange uses.
+		((IRootElement)this).SetBackgroundColor(ThemingHelper.FromArgb(coreServices.Theming.GetRootVisualBackground()));
 	}
 
 	internal ContentRoot ContentRoot => _contentRoot;
