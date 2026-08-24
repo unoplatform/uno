@@ -69,6 +69,7 @@ namespace Uno.UI.Samples.Tests
 		private const string DefaultTestBodyTimeoutVariable = "UNO_TEST_DEFAULT_TIMEOUT_SECONDS";
 		private const int MaxTestBodyTimeoutSeconds = 24 * 60 * 60;
 
+		private static string _rejectedTestBodyTimeout;
 		private static readonly TimeSpan? DefaultTestBodyTimeout = GetDefaultTestBodyTimeout();
 
 #if !WINAPPSDK
@@ -772,6 +773,11 @@ namespace Uno.UI.Samples.Tests
 					? $"Default test body budget: {defaultBudget} (override with {DefaultTestBodyTimeoutVariable})"
 					: $"Default test body budget: none ({DefaultTestBodyTimeoutVariable} opted out, or DEBUG build)");
 
+				if (_rejectedTestBodyTimeout is { } rejected)
+				{
+					_log?.Error($"Ignored {DefaultTestBodyTimeoutVariable}='{rejected}': expected a whole number of seconds.");
+				}
+
 				foreach (var type in testTypes)
 				{
 					if (ct.IsCancellationRequested)
@@ -1406,8 +1412,9 @@ namespace Uno.UI.Samples.Tests
 
 			if (!int.TryParse(configured, NumberStyles.Integer, CultureInfo.InvariantCulture, out var seconds))
 			{
-				typeof(UnitTestsControl).Log().Warn(
-					$"Ignoring {DefaultTestBodyTimeoutVariable}='{configured}': expected a whole number of seconds.");
+				// Reported from the run header rather than here: this runs at type init, before there is
+				// anywhere to report to.
+				_rejectedTestBodyTimeout = configured;
 
 				return DefaultTestBodyTimeoutFallback;
 			}
