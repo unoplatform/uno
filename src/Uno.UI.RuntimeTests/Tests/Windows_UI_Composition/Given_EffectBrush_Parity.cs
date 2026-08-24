@@ -38,6 +38,33 @@ public class Given_EffectBrush_Parity
 	}
 
 	[TestMethod]
+	public async Task When_Multiply_Cyan_Yellow_Is_Green()
+	{
+		// Multiply blend is per-channel product: cyan(0,1,1) × yellow(1,1,0) = (0,1,0) green. Multi-source path.
+		var compositor = TestServices.WindowHelper.XamlRoot.Compositor;
+		var effect = new BlendEffect
+		{
+			Background = new CompositionEffectSourceParameter("bg"),
+			Foreground = new CompositionEffectSourceParameter("fg"),
+			Mode = BlendEffectMode.Multiply,
+		};
+		var brush = compositor.CreateEffectFactory(effect).CreateBrush();
+		brush.SetSourceParameter("bg", compositor.CreateColorBrush(Colors.Cyan));
+		brush.SetSourceParameter("fg", compositor.CreateColorBrush(Colors.Yellow));
+
+		var sprite = compositor.CreateSpriteVisual();
+		sprite.Brush = brush;
+		sprite.Size = new Vector2(64, 64);
+		var host = new Border { Width = 64, Height = 64 };
+		ElementCompositionPreview.SetElementChildVisual(host, sprite);
+		TestServices.WindowHelper.WindowContent = host;
+		await TestServices.WindowHelper.WaitForLoaded(host);
+		await TestServices.WindowHelper.WaitForIdle();
+		var bmp = await UITestHelper.ScreenShot(host);
+		ImageAssert.HasColorAt(bmp, bmp.Width / 2, bmp.Height / 2, Color.FromArgb(255, 0, 255, 0), tolerance: 16);
+	}
+
+	[TestMethod]
 	public async Task When_Invert_Of_Red_Is_Cyan()
 	{
 		var effect = new InvertEffect { Source = new CompositionEffectSourceParameter("source") };
