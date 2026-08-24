@@ -179,63 +179,66 @@ public class Given_Window
 	[RunsOnUIThread]
 	public async Task When_Transparent_Background_Then_Root_Keeps_Its_Brush()
 	{
-		AssertSupportsMultipleWindows();
+		var content = new Border { Width = 100, Height = 100 };
+		TestServices.WindowHelper.WindowContent = content;
+		await TestServices.WindowHelper.WaitForLoaded(content);
 
-		var sut = await OpenSecondaryWindowAsync(new NoBackgroundWindow());
-
-		var root = (XamlIslandRoot)sut.Content.XamlRoot.VisualTree.RootElement;
+		var root = (XamlIslandRoot)content.XamlRoot.VisualTree.RootElement;
 		var background = root.Background;
+		var wasTransparent = root.HasTransparentBackground;
 
 		Assert.IsInstanceOfType(background, typeof(SolidColorBrush));
-		Assert.IsFalse(root.HasTransparentBackground);
 
-		root.SetHasTransparentBackground(true);
+		try
+		{
+			root.SetHasTransparentBackground(true);
 
-		// Only the rendered primitive is suppressed - the property keeps its theme brush, so a
-		// later theme change still resolves against it.
-		Assert.IsTrue(root.HasTransparentBackground);
-		Assert.AreSame(background, root.Background);
+			// Only the rendered primitive is suppressed - the property keeps its theme brush, so a
+			// later theme change still resolves against it.
+			Assert.IsTrue(root.HasTransparentBackground);
+			Assert.AreSame(background, root.Background);
 
-		root.SetHasTransparentBackground(false);
+			root.SetHasTransparentBackground(false);
 
-		Assert.IsFalse(root.HasTransparentBackground);
-		Assert.AreSame(background, root.Background);
+			Assert.IsFalse(root.HasTransparentBackground);
+			Assert.AreSame(background, root.Background);
+		}
+		finally
+		{
+			root.SetHasTransparentBackground(wasTransparent);
+		}
 	}
 
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_SystemBackdrop_Set_Then_Content_Background_Is_Untouched()
 	{
-		AssertSupportsMultipleWindows();
-
 		var red = new SolidColorBrush(Colors.Red);
-		var content = new Grid { Background = red };
-		var sut = await OpenSecondaryWindowAsync(new Window { Content = content });
+		var content = new Grid { Background = red, Width = 100, Height = 100 };
+		TestServices.WindowHelper.WindowContent = content;
+		await TestServices.WindowHelper.WaitForLoaded(content);
 
-		sut.SystemBackdrop = new MicaBackdrop();
-		await TestServices.WindowHelper.WaitForIdle();
+		var window = TestServices.WindowHelper.CurrentTestWindow;
+		var previousBackdrop = window.SystemBackdrop;
 
-		// WinUI leaves app content alone when a backdrop is applied, so an opaque page keeps
-		// hiding the material rather than being rewritten to transparent.
-		Assert.AreSame(red, content.Background);
+		try
+		{
+			window.SystemBackdrop = new MicaBackdrop();
+			await TestServices.WindowHelper.WaitForIdle();
 
-		sut.SystemBackdrop = null;
-		await TestServices.WindowHelper.WaitForIdle();
+			// WinUI leaves app content alone when a backdrop is applied, so an opaque page keeps
+			// hiding the material rather than being rewritten to transparent.
+			Assert.AreSame(red, content.Background);
 
-		Assert.AreSame(red, content.Background);
-	}
+			window.SystemBackdrop = null;
+			await TestServices.WindowHelper.WaitForIdle();
 
-	private static async Task<TWindow> OpenSecondaryWindowAsync<TWindow>(TWindow window)
-		where TWindow : Window
-	{
-		var activated = false;
-		window.Activated += (s, e) => activated = true;
-		window.Activate();
-
-		await TestServices.WindowHelper.WaitFor(() => activated);
-		await TestServices.WindowHelper.WaitForLoaded(window.Content as FrameworkElement);
-
-		return window;
+			Assert.AreSame(red, content.Background);
+		}
+		finally
+		{
+			window.SystemBackdrop = previousBackdrop;
+		}
 	}
 #endif
 
