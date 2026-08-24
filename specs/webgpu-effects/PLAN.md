@@ -101,3 +101,22 @@ backdrop, deferred + captured at present time by the acrylic kind-6 path). So sp
 ## Order to execute
 Phase 0 → 3 first (0/1 remove the recipe + close colour; 2 is a quick win; 3 is the reachable blend-mode payoff).
 Phase 4 last (rare, heaviest shaders). Each phase keeps Skia untouched (WebGPU-only), so no cross-backend risk.
+
+## EXECUTION STATUS (updated)
+Landed + Skia≡WebGPU parity-validated on X11/lavapipe (runtime tests `Given_EffectBrush_Parity`, 4/4 both backends):
+- **Phase 0** (`5fedfe2e2cf`): evaluator foundation — leaves, ColorMatrixEffectNode (Grayscale/Invert/Sepia/Hue/Saturation/…),
+  Unsupported→source; additive over the acrylic/recipe path.
+- **Phase 2** (`2d5fe8d9e63`): Blur (`BlurInto` reusing BlurPyramid) — fixed the standalone-blur no-op. Parity harness added.
+- **Phase 3** (`1f04d59aee5` + `8c65c4f6121`): Blend + Composite (all 27 modes, restored CompositeBlend two-texture pass);
+  CrossFade / ArithmeticComposite / AlphaMask (one general EffectCombine shader). Multiply(cyan,yellow)=green verified both.
+
+Parity tests green on both backends: Invert→Cyan, Grayscale, GaussianBlur-preserves-interior, Multiply-blend.
+
+REMAINING (long tail — each a per-effect shader port + parity test):
+- **Contrast, GammaTransfer** — per-channel non-linear (Skia uses SkSL runtime shaders; port the exact quadratic/pow to
+  WGSL). Currently blank on WebGPU (recipe doesn't cover them). LuminanceToAlpha/LinearTransfer/Modulate already render
+  via the recipe; route through the evaluator for one unified path when convenient.
+- **Phase 4**: Lighting (distant/point/spot × diffuse/specular — normal-from-alpha-gradient shaders) + WhiteNoise.
+- **Backdrop trees**: fold the backdrop capture (acrylic kind-6 path) into the evaluator so SourceInput sub-trees compose.
+- **CrossFade Skia divergence**: CrossFade(red,blue,0.5) renders correct (128,0,128) on WebGPU but BLANK on Skia in the
+  harness (Multiply with the same 2-ColorBrush setup passes) — investigate the Skia-side CrossFade path.
