@@ -265,15 +265,16 @@ _Danger 3-4. Heavier multi-file changes: remove the legacy templated-parent mech
 - [x] **#2163** — Remove the `ContentPresenter` bypass  `d2·M` · **[impact spec](bc2163-remove-contentpresenter-bypass.md)**
   - `ContentControl` skipped the `ContentPresenter` and parented `Content` directly when it had no
     `Template` and its default style declared none — an Android 4.4 stack-depth workaround. **Already
-    inert before the change:** `Uno.UI` is Skia-only, so `_IsNetStdRef` is always true and the
-    `netstdref:`-gated default `ControlTemplate` was always applied. Mostly dead-code removal; also drops
-    the `Type`-keyed `HasDefaultTemplate` memo and the ALC-teardown sweep that only existed to unpin it.
+    inert before the change:** `Uno.UI` is Skia-only, so the conditionally-gated default `ControlTemplate`
+    (`netstdref:` at the time, `not_winappsdk:` after the prefix cleanup) was always applied. Mostly
+    dead-code removal; also drops the `Type`-keyed `HasDefaultTemplate` memo and the ALC-teardown sweep
+    that only existed to unpin it.
   - Behaviour delta: a `ContentControl` subclass with its own `DefaultStyleKey` and no `Template` no longer
     renders `Content` (WinUI parity). `ContentControl.ContentTemplateRoot` goes from always-null to
     populated by the templated `ContentPresenter`, which supersedes BC36 (Phase 5).
   - Files: `src/Uno.UI/UI/Xaml/Controls/ContentControl/ContentControl.cs`, `…/ContentPresenter/ContentPresenter.cs`,
     `…/Primitives/ButtonBase/ButtonBase.cs`, `…/Button/HyperlinkButton.mux.cs`, `…/UI/Xaml/FrameworkElement.Layout.cs`,
-    `…/UI/Xaml/Application.Alc.cs`, `…/UI/Xaml/Style/Generic/Generic.xaml`,
+    `…/UI/Xaml/Application.Alc.cs`,
     `src/Uno.WinAppSDKSyncGenerator/Helpers/SymbolMatchingHelpers.cs`, `build/PackageDiffIgnore.xml`
 - [ ] **BC39** — Clean up `DependencyPropertyValuePrecedences` enum  `d2·M` · PR #15684
   - Hard-remove obsolete enum members (no `[EditorBrowsable]` aliases).

@@ -1,4 +1,4 @@
-# #2163 — Remove the `ContentPresenter` bypass
+﻿# #2163 — Remove the `ContentPresenter` bypass
 
 **Epic:** [#8339](https://github.com/unoplatform/uno/issues/8339) · **Danger:** 2/5 · **Effort:** M
 
@@ -15,13 +15,19 @@ The issue reads as a behavioural fix ("we are using `ContentPresenter` bypass, w
 behavior against WinUI"). Measured against the code, the bypass had **already stopped engaging** on every
 target Uno.UI ships. Recording this so the next reader does not go looking for a rendering change.
 
-The default `ContentControl` template in `Generic.xaml` was written `<netstdref:Setter Property="Template">`,
-which reads like "reference build only". It is not: `_IsNetStdRef` is true when `UnoRuntimeIdentifier` is
-`Skia` or `WebAssembly`, or when the target framework is plain `netX.0`
-(`SourceGenerators/Uno.UI.SourceGenerators/Content/Uno.UI.SourceGenerators.props`). `Uno.UI.csproj` sets
-`UnoRuntimeIdentifier=Skia` and targets Skia TFMs only — there is no native Android/iOS `Uno.UI` build any
-more — so the setter was always included, `HasDefaultTemplate(typeof(ContentControl))` was always `true`,
-and `IsContentPresenterBypassEnabled` was always `false` for a bare `ContentControl`.
+The default `ContentControl` template in `Generic.xaml` is gated on a conditional-XAML prefix, and at the
+time of writing that prefix was spelled `netstdref:` — which reads like "reference/stub build only". It
+never meant that: `_IsNetStdRef` was true whenever `UnoRuntimeIdentifier` was `Skia` or `WebAssembly`, or
+the target framework was plain `netX.0`. `Uno.UI.csproj` sets `UnoRuntimeIdentifier=Skia` and targets Skia
+TFMs only — there is no native Android/iOS `Uno.UI` build any more — so the setter was always included,
+`HasDefaultTemplate(typeof(ContentControl))` was always `true`, and `IsContentPresenterBypassEnabled` was
+always `false` for a bare `ContentControl`.
+
+The `netstdref` / `not_netstdref` prefixes have since been retired from the whole repo; the setter now
+carries `not_winappsdk:`, which says what it means — emit this template on every head Uno draws, and leave
+it out of the WinAppSDK head, where WinUI supplies it. For `Uno.UI` that is unconditionally true, so the
+conclusion is unchanged; only the misleading spelling is gone. **This PR therefore makes no change to
+`Generic.xaml`.**
 
 An independent record of the same fact already lived in the test suite, in
 `Uno.UI.UnitTests/Windows_UI_Xaml/Given_FrameworkTemplate.cs`:
@@ -42,8 +48,8 @@ stack limit, fixed by ART and irrelevant since the native rendering layer was dr
    `OnDataContextChanged` / `MeasureOverride` overrides that existed only to drive it. The
    `Content` / `ContentTemplate` / `ContentTemplateSelector` / `ContentTransitions` properties and the
    `protected virtual On*Changed` overridables are unchanged.
-2. **`Generic.xaml`** — the `netstdref:` prefix is dropped from the `Template` setter. No behavioural
-   effect on a Skia-only assembly; it was actively misleading.
+2. **`Generic.xaml`** — unchanged. The prefix cleanup that retired `netstdref:` in favour of
+   `not_winappsdk:` landed on the base branch independently.
 3. **`Application.Alc.cs`** loses the `ClearHasDefaultTemplateCache` teardown step (and
    `Uno.UI.UnitTests/ContentControlTests/Given_ContentControl_DefaultTemplateMemo.cs`, the test guarding
    it). The memo was a `Type`-keyed static that pinned collectible ALCs; deleting it removes both the leak
@@ -123,6 +129,6 @@ roots — is unchanged, because it was already the shipping behaviour.
 `src/Uno.UI/UI/Xaml/Controls/ContentControl/ContentControl.cs`,
 `…/Controls/ContentPresenter/ContentPresenter.cs`, `…/Controls/Primitives/ButtonBase/ButtonBase.cs`,
 `…/UI/Xaml/FrameworkElement.Layout.cs`, `…/UI/Xaml/Application.Alc.cs`,
-`…/UI/Xaml/Style/Generic/Generic.xaml`, `…/Controls/Button/HyperlinkButton.mux.cs`,
+`…/Controls/Button/HyperlinkButton.mux.cs`,
 `src/Uno.WinAppSDKSyncGenerator/Helpers/SymbolMatchingHelpers.cs`, `build/PackageDiffIgnore.xml`,
 `doc/articles/migrating-to-uno-7.md`, plus `Uno.UI.RuntimeTests` / `Uno.UI.UnitTests` adaptations.
