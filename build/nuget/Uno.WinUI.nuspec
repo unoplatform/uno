@@ -70,6 +70,7 @@
 				<reference file="Uno.UI.dll" />
 				<reference file="Uno.UI.Composition.dll" />
 				<reference file="Uno.UI.Composition.Drawing.dll" />
+				<reference file="Uno.UI.Composition.Managed.dll" />
 				<reference file="Uno.UI.Toolkit.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
 				<reference file="Uno.UI.FluentTheme.v1.dll" />
@@ -82,6 +83,7 @@
 				<reference file="Uno.UI.dll" />
 				<reference file="Uno.UI.Composition.dll" />
 				<reference file="Uno.UI.Composition.Drawing.dll" />
+				<reference file="Uno.UI.Composition.Managed.dll" />
 				<reference file="Uno.UI.Toolkit.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
 				<reference file="Uno.UI.FluentTheme.v1.dll" />
@@ -135,6 +137,8 @@
 		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition\Release\net11.0\Uno.UI.Composition.pdb" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.Composition.Drawing\bin\Uno.UI.Composition.Drawing\Release\net11.0\Uno.UI.Composition.Drawing.dll" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.Composition.Drawing\bin\Uno.UI.Composition.Drawing\Release\net11.0\Uno.UI.Composition.Drawing.pdb" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Composition.Managed\bin\Uno.UI.Composition.Managed\Release\net11.0\Uno.UI.Composition.Managed.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Composition.Managed\bin\Uno.UI.Composition.Managed\Release\net11.0\Uno.UI.Composition.Managed.pdb" target="lib\net11.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net11.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme\Release\net11.0\Uno.UI.FluentTheme.dll" target="lib\net11.0" />
@@ -154,6 +158,8 @@
 		<file src="..\..\src\Uno.UI.Composition\bin\Uno.UI.Composition\Release\net10.0\Uno.UI.Composition.pdb" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.Composition.Drawing\bin\Uno.UI.Composition.Drawing\Release\net10.0\Uno.UI.Composition.Drawing.dll" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.Composition.Drawing\bin\Uno.UI.Composition.Drawing\Release\net10.0\Uno.UI.Composition.Drawing.pdb" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Composition.Managed\bin\Uno.UI.Composition.Managed\Release\net10.0\Uno.UI.Composition.Managed.dll" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Composition.Managed\bin\Uno.UI.Composition.Managed\Release\net10.0\Uno.UI.Composition.Managed.pdb" target="lib\net10.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\bin\Release\netstandard2.0\Uno.Xaml.dll" target="lib\net10.0" />
 		<file src="..\..\src\SourceGenerators\System.Xaml\Bin\Release\netstandard2.0\Uno.Xaml.pdb" target="lib\net10.0" />
 		<file src="..\..\src\Uno.UI.FluentTheme\bin\Uno.UI.FluentTheme\Release\net10.0\Uno.UI.FluentTheme.dll" target="lib\net10.0" />
