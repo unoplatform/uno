@@ -1,4 +1,4 @@
-﻿
+
 #nullable enable
 
 using System;
@@ -86,42 +86,35 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		private void CheckMetadataUpdatesSupport()
 		{
-			// Single layer uno runtime identifier
-			var unoRuntimeIdentifier = GetMSBuildProperty("UnoRuntimeIdentifier");
-
-			// two layer uno runtime identifier, UnoWinRTRuntimeIdentifier defines the actual running target.
-			var unoWinRTRuntimeIdentifier = GetMSBuildProperty("UnoWinRTRuntimeIdentifier");
-
 			var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio").Equals("true", StringComparison.OrdinalIgnoreCase);
 			// This is only set when Uno's mono debugger is used inside VS Code
 			_runningInsideVSCodeExtension = Environment.GetEnvironmentVariable("__UNO_SUPPORT_DEBUG_HOT_RELOAD__") == "true";
 
-			var unoEffectiveRuntimeIdentifier = string.IsNullOrWhiteSpace(unoWinRTRuntimeIdentifier)
-				? unoRuntimeIdentifier
-				: unoWinRTRuntimeIdentifier;
-
 			var isForcedMetadata = _forcedHotReloadMode is HotReloadMode.MetadataUpdates;
-			var isSkia = unoEffectiveRuntimeIdentifier.Equals("skia", StringComparison.OrdinalIgnoreCase);
-			var isWasm = unoEffectiveRuntimeIdentifier.Equals("webassembly", StringComparison.OrdinalIgnoreCase);
+
+			// Determined at runtime, like the mobile checks below: the target framework is what distinguishes
+			// these heads, and asking it here needs no MSBuild property capture.
+			var isBrowser = OperatingSystem.IsBrowser();
+			var isDesktop = !isBrowser && !OperatingSystem.IsAndroid() && !OperatingSystem.IsIOS() && !OperatingSystem.IsTvOS();
 
 			var devServerEnabled = isForcedMetadata
 
 				// CoreCLR Debugger under VS Win already handles metadata updates
 				// CoreCLR Debugger under VS Code prevents metadata based hot reload
-				|| (!Debugger.IsAttached && !buildingInsideVisualStudio && isSkia)
+				|| (!Debugger.IsAttached && !buildingInsideVisualStudio && isDesktop)
 
 				// Uno's Mono Debugger under VS Code handles metadata based hot reload
 				|| _runningInsideVSCodeExtension
 
 				// Mono Debugger under VS Win already handles metadata updates
 				// Mono Debugger under Rider prevents metadata based hot reload
-				|| (!Debugger.IsAttached && !buildingInsideVisualStudio && isWasm)
+				|| (!Debugger.IsAttached && !buildingInsideVisualStudio && isBrowser)
 				|| (!Debugger.IsAttached && !buildingInsideVisualStudio && OperatingSystem.IsAndroid())
 				|| (!Debugger.IsAttached && !buildingInsideVisualStudio && OperatingSystem.IsIOS());
 
 			var vsEnabled = isForcedMetadata
-				|| (buildingInsideVisualStudio && isSkia)
-				|| (buildingInsideVisualStudio && isWasm)
+				|| (buildingInsideVisualStudio && isDesktop)
+				|| (buildingInsideVisualStudio && isBrowser)
 				|| (buildingInsideVisualStudio && Debugger.IsAttached && OperatingSystem.IsAndroid())
 				|| (buildingInsideVisualStudio && Debugger.IsAttached && OperatingSystem.IsIOS());
 
@@ -130,7 +123,7 @@ namespace Uno.UI.RemoteControl.HotReload
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"ServerMetadataUpdates Enabled:{_serverMetadataUpdatesEnabled} DebuggerAttached:{Debugger.IsAttached} BuildingInsideVS: {buildingInsideVisualStudio} RunningInsideVSCodeExtension: {_runningInsideVSCodeExtension} unorid: {unoRuntimeIdentifier}");
+				this.Log().Trace($"ServerMetadataUpdates Enabled:{_serverMetadataUpdatesEnabled} DebuggerAttached:{Debugger.IsAttached} BuildingInsideVS: {buildingInsideVisualStudio} RunningInsideVSCodeExtension: {_runningInsideVSCodeExtension} Desktop: {isDesktop} Browser: {isBrowser}");
 			}
 		}
 
