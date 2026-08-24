@@ -68,8 +68,6 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	public IntPtr CompositeDstIn;
 	public IntPtr CompositeBgl;         // SrcOver's group(0) layout
 	public IntPtr CompositeDstInBgl;    // DstIn's group(0) layout (auto-layouts aren't interchangeable)
-	public IntPtr CompositeBlend;       // general Porter-Duff + separable/non-separable blend (reads a dst copy; writes replace)
-	public IntPtr CompositeBlendBgl;    // group(0): src tex, sampler, uniform, dst tex
 	public IntPtr DummyTex;                 // 1x1 placeholder for the clip coverage binding when no path clip
 	public WebGpuTexturePool Pool;                // transient offscreen pool (reused across frames)
 	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
@@ -656,101 +654,6 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
   return c * u.params.y;
 }";
 
-	// General composite: Porter-Duff operators + separable/non-separable blend modes, on PREMULTIPLIED values, reading
-	// a copy of the destination (binding 3). Writes the fully-composited pixel, so its pipeline uses a REPLACE blend
-	// state. params.x = colour-matrix flag, params.y = opacity, params.z = mode id (see WebGpuBackend.BlendShaderId).
-	private const string CompositeBlendWgsl = @"
-struct CU { params: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec4<f32>, m3: vec4<f32>, off: vec4<f32> };
-@group(0) @binding(0) var src: texture_2d<f32>;
-@group(0) @binding(1) var smp: sampler;
-@group(0) @binding(2) var<uniform> u: CU;
-@group(0) @binding(3) var dst: texture_2d<f32>;
-struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
-@vertex fn vs(@builtin(vertex_index) vi: u32) -> VO {
-  var pts = array<vec2<f32>, 3>(vec2<f32>(-1.0, -1.0), vec2<f32>(3.0, -1.0), vec2<f32>(-1.0, 3.0));
-  let p = pts[vi];
-  var o: VO; o.p = vec4<f32>(p, 0.0, 1.0); o.uv = vec2<f32>((p.x + 1.0) * 0.5, (1.0 - p.y) * 0.5); return o;
-}
-fn lum(c: vec3<f32>) -> f32 { return dot(c, vec3<f32>(0.3, 0.59, 0.11)); }
-fn clipColor(c: vec3<f32>) -> vec3<f32> {
-  let l = lum(c); let n = min(c.r, min(c.g, c.b)); let x = max(c.r, max(c.g, c.b));
-  var r = c;
-  if (n < 0.0) { r = l + (c - l) * l / max(l - n, 1e-6); }
-  if (x > 1.0) { r = l + (r - l) * (1.0 - l) / max(x - l, 1e-6); }
-  return r;
-}
-fn setLum(c: vec3<f32>, l: f32) -> vec3<f32> { return clipColor(c + (l - lum(c))); }
-fn sat(c: vec3<f32>) -> f32 { return max(c.r, max(c.g, c.b)) - min(c.r, min(c.g, c.b)); }
-fn setSat(c: vec3<f32>, s: f32) -> vec3<f32> {
-  let mn = min(c.r, min(c.g, c.b)); let mx = max(c.r, max(c.g, c.b));
-  if (mx > mn) { return (c - mn) * s / (mx - mn); }
-  return vec3<f32>(0.0);
-}
-fn bsep(cb: f32, cs: f32, mode: i32) -> f32 {
-  if (mode == 4)  { return cb * cs; }                                                   // Multiply
-  if (mode == 13) { return cb + cs - cb * cs; }                                         // Screen
-  if (mode == 14) { return min(cb, cs); }                                               // Darken
-  if (mode == 15) { return max(cb, cs); }                                               // Lighten
-  if (mode == 21) { return abs(cb - cs); }                                              // Difference
-  if (mode == 22) { return cb + cs - 2.0 * cb * cs; }                                   // Exclusion
-  if (mode == 16) { if (cb >= 1.0) { return 1.0; } if (cs <= 0.0) { return 0.0; } return 1.0 - min(1.0, (1.0 - cb) / cs); } // ColorBurn
-  if (mode == 17) { if (cb <= 0.0) { return 0.0; } if (cs >= 1.0) { return 1.0; } return min(1.0, cb / (1.0 - cs)); }       // ColorDodge
-  if (mode == 18) { if (cb <= 0.5) { return 2.0 * cb * cs; } return 1.0 - 2.0 * (1.0 - cb) * (1.0 - cs); }                  // Overlay = HardLight(cs,cb)
-  if (mode == 20) { if (cs <= 0.5) { return 2.0 * cs * cb; } return 1.0 - 2.0 * (1.0 - cs) * (1.0 - cb); }                  // HardLight
-  if (mode == 19) {                                                                     // SoftLight
-    let d = select(((16.0 * cb - 12.0) * cb + 4.0) * cb, sqrt(cb), cb > 0.25);
-    if (cs <= 0.5) { return cb - (1.0 - 2.0 * cs) * cb * (1.0 - cb); }
-    return cb + (2.0 * cs - 1.0) * (d - cb);
-  }
-  return cs;
-}
-fn bnonsep(cb: vec3<f32>, cs: vec3<f32>, mode: i32) -> vec3<f32> {
-  if (mode == 23) { return setLum(setSat(cs, sat(cb)), lum(cb)); }  // Hue
-  if (mode == 24) { return setLum(setSat(cb, sat(cs)), lum(cb)); }  // Saturation
-  if (mode == 25) { return setLum(cs, lum(cb)); }                   // Color
-  if (mode == 26) { return setLum(cb, lum(cs)); }                   // Luminosity
-  return cs;
-}
-@fragment fn fs(i: VO) -> @location(0) vec4<f32> {
-  var s = textureSampleLevel(src, smp, i.uv, 0.0);   // premultiplied layer content
-  if (u.params.x > 0.5) {
-    var us = s; if (s.a > 0.0) { us = vec4<f32>(s.rgb / s.a, s.a); }
-    let r = vec4<f32>(dot(u.m0, us) + u.off.x, dot(u.m1, us) + u.off.y, dot(u.m2, us) + u.off.z, dot(u.m3, us) + u.off.w);
-    let rc = clamp(r, vec4<f32>(0.0), vec4<f32>(1.0));
-    s = vec4<f32>(rc.rgb * rc.a, rc.a);
-  }
-  s = s * u.params.y;                                 // opacity (premultiplied)
-  let d = textureSampleLevel(dst, smp, i.uv, 0.0);    // premultiplied destination
-  let sa = s.a; let da = d.a; let mode = i32(u.params.z + 0.5);
-  if (mode == 3) { return vec4<f32>(s.rgb * d.rgb, sa * da); }   // Modulate: premultiplied product
-  // Porter-Duff operators (B = source): co = Fa*Sca + Fb*Dca, ao = Fa*sa + Fb*da.
-  var fa = 1.0; var fb = 1.0 - sa; var pd = true;
-  if (mode == 0)       { fa = 1.0;      fb = 1.0 - sa; }   // SrcOver
-  else if (mode == 1)  { fa = 1.0;      fb = 0.0; }        // Src
-  else if (mode == 2)  { fa = 1.0;      fb = 1.0; }        // Plus
-  else if (mode == 5)  { fa = 0.0;      fb = sa; }         // DstIn
-  else if (mode == 6)  { fa = 0.0;      fb = 1.0 - sa; }   // DstOut
-  else if (mode == 7)  { fa = da;       fb = 0.0; }        // SrcIn
-  else if (mode == 8)  { fa = 1.0 - da; fb = 1.0; }        // DstOver
-  else if (mode == 9)  { fa = 1.0 - da; fb = 0.0; }        // SrcOut
-  else if (mode == 10) { fa = da;       fb = 1.0 - sa; }   // SrcATop
-  else if (mode == 11) { fa = 1.0 - da; fb = sa; }         // DstATop
-  else if (mode == 12) { fa = 1.0 - da; fb = 1.0 - sa; }   // Xor
-  else { pd = false; }
-  if (pd) {
-    let co = fa * s.rgb + fb * d.rgb;
-    return vec4<f32>(co, fa * sa + fb * da);
-  }
-  // Blend modes: source-over coverage with a per-mode blend function on un-premultiplied colours.
-  let cs = select(vec3<f32>(0.0), s.rgb / sa, sa > 0.0);
-  let cb = select(vec3<f32>(0.0), d.rgb / da, da > 0.0);
-  var bl: vec3<f32>;
-  if (mode >= 23) { bl = bnonsep(cb, cs, mode); }
-  else { bl = vec3<f32>(bsep(cb.r, cs.r, mode), bsep(cb.g, cs.g, mode), bsep(cb.b, cs.b, mode)); }
-  let co = (1.0 - da) * s.rgb + (1.0 - sa) * d.rgb + sa * da * bl;
-  return vec4<f32>(co, sa + da * (1.0 - sa));
-}";
-
 	private void CreateCompositePipelines()
 	{
 		var module = Module(CompositeWgsl);
@@ -764,12 +667,6 @@ fn bnonsep(cb: vec3<f32>, cs: vec3<f32>, mode: i32) -> vec3<f32> {
 		CompositeDstIn = MakeComposite(module, vs, fs, &dstIn, &ds);
 		CompositeBgl = wgpuRenderPipelineGetBindGroupLayout(CompositeSrcOver, 0);
 		CompositeDstInBgl = wgpuRenderPipelineGetBindGroupLayout(CompositeDstIn, 0);
-
-		// General blend/composite: the fragment shader emits the fully-composited pixel, so the pipeline REPLACES.
-		var blendModule = Module(CompositeBlendWgsl);
-		var replace = new WGPUBlendState { Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.Zero, Operation = WGPUBlendOperation.Add }, Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.Zero, Operation = WGPUBlendOperation.Add } };
-		CompositeBlend = MakeComposite(blendModule, vs, fs, &replace, &ds);
-		CompositeBlendBgl = wgpuRenderPipelineGetBindGroupLayout(CompositeBlend, 0);
 	}
 
 	private IntPtr MakeComposite(IntPtr module, WGPUStringView vs, WGPUStringView fs, WGPUBlendState* blend, WGPUDepthStencilState* ds)

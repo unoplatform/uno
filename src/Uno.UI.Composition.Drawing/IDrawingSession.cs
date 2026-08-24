@@ -53,8 +53,10 @@ public interface IDrawingSession
 	/// <summary>Begins an offscreen layer whose content is transformed by <paramref name="colorFilter"/> on restore.</summary>
 	void SaveLayer(IColorFilter colorFilter, bool antialias = false);
 
-	/// <summary>Begins an offscreen layer composited back with <paramref name="blendMode"/> on restore.</summary>
-	void SaveLayer(BlendMode blendMode, bool antialias = false);
+	/// <summary>Begins an offscreen layer composited back as a <c>DstIn</c> alpha mask on restore — the drawn
+	/// content keeps only the pixels covered by a subsequently-drawn mask's alpha. (This is the only blend the
+	/// layer path needs; general blend/composite modes belong to the effect and color-filter seams.)</summary>
+	void SaveLayerMask(bool antialias = false);
 
 	/// <summary>
 	/// Begins an offscreen layer whose content is transformed by <paramref name="filter"/> when the matching

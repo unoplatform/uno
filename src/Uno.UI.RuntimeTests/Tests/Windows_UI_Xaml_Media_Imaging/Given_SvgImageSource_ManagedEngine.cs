@@ -296,7 +296,7 @@ public class Given_SvgImageSource_ManagedEngine
 		// Unused verbs for these SVGs.
 		public void SaveLayer(bool antialias = false) => Save();
 		public void SaveLayer(IColorFilter colorFilter, bool antialias = false) => Save();
-		public void SaveLayer(BlendMode blendMode, bool antialias = false) => Save();
+		public void SaveLayerMask(bool antialias = false) => Save();
 		public void SaveLayer(IEffectFilter filter) => Save();
 		public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) { }
 		public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) { }

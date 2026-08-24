@@ -430,51 +430,8 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		}
 		PushLayer(0, null);
 	}
-	public void SaveLayer(BlendMode blendMode, bool antialias = false) => PushLayer(CompositeModeFor(blendMode), null);
+	public void SaveLayerMask(bool antialias = false) => PushLayer(1, null);   // 1 = DstIn composite
 	public void SaveLayer(IEffectFilter filter) => PushLayer(0, null, filter as WebGpuEffectFilter);
-
-	// The layer composite encoding: 0 = SrcOver and 1 = DstIn keep their dedicated fast fixed-function pipelines
-	// (the only modes real callers use). Every other mode is composited by the general blend shader (which reads a
-	// copy of the destination) and is encoded as 100 + its CompositeBlendWgsl mode id.
-	internal static int CompositeModeFor(BlendMode mode) => mode switch
-	{
-		BlendMode.SrcOver => 0,
-		BlendMode.DstIn => 1,
-		_ => 100 + BlendShaderId(mode),
-	};
-
-	// Stable mode ids matching the switch in CompositeBlendWgsl (independent of the BlendMode enum's ordinal values).
-	internal static int BlendShaderId(BlendMode mode) => mode switch
-	{
-		BlendMode.SrcOver => 0,
-		BlendMode.Src => 1,
-		BlendMode.Plus => 2,
-		BlendMode.Modulate => 3,
-		BlendMode.Multiply => 4,
-		BlendMode.DstIn => 5,
-		BlendMode.DstOut => 6,
-		BlendMode.SrcIn => 7,
-		BlendMode.DstOver => 8,
-		BlendMode.SrcOut => 9,
-		BlendMode.SrcATop => 10,
-		BlendMode.DstATop => 11,
-		BlendMode.Xor => 12,
-		BlendMode.Screen => 13,
-		BlendMode.Darken => 14,
-		BlendMode.Lighten => 15,
-		BlendMode.ColorBurn => 16,
-		BlendMode.ColorDodge => 17,
-		BlendMode.Overlay => 18,
-		BlendMode.SoftLight => 19,
-		BlendMode.HardLight => 20,
-		BlendMode.Difference => 21,
-		BlendMode.Exclusion => 22,
-		BlendMode.Hue => 23,
-		BlendMode.Saturation => 24,
-		BlendMode.Color => 25,
-		BlendMode.Luminosity => 26,
-		_ => 0,
-	};
 	// Device-space AABB of a mapped rect (its 4 corners), for the scissor / fast reject.
 	private Vector4 DeviceAabb(in Rect rect)
 	{
@@ -2531,7 +2488,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 						var cu = new float[24];
 						cu[0] = lyr.ColorMatrix is { Length: >= 20 } ? 1f : 0f; cu[1] = 1f;
-						if (lyr.CompositeMode >= 100) { cu[2] = lyr.CompositeMode - 100; }   // params.z = general-blend mode id
 						if (lyr.ColorMatrix is { Length: >= 20 } mm)
 						{
 							cu[4] = mm[0]; cu[5] = mm[1]; cu[6] = mm[2]; cu[7] = mm[3];        // m0
@@ -2546,18 +2502,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						lentries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = layerSurface.View };
 						lentries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
 						lentries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = lubuf, Offset = 0, Size = 96 };
-						if (lyr.CompositeMode >= 100)
-						{
-							// General blend (any mode but SrcOver/DstIn): the 4-entry bind group needs the destination copy,
-							// which only exists at draw time — carry the layer view (b0) + uniform (b1) and build it in the dispatch.
-							ops.Add(new DrawOp(4, (nint)layerSurface.View, (uint)lyr.CompositeMode, (nint)lubuf, false, lyr.Clip, 0));
-						}
-						else
-						{
-							var lbgd = new WGPUBindGroupDescriptor { Layout = lyr.CompositeMode == 1 ? _d.CompositeDstInBgl : _d.CompositeBgl, EntryCount = 3, Entries = lentries };
-							var lbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &lbgd));
-							ops.Add(new DrawOp(4, (nint)lbg, (uint)lyr.CompositeMode, 0, false, lyr.Clip, 0));
-						}
+						var lbgd = new WGPUBindGroupDescriptor { Layout = lyr.CompositeMode == 1 ? _d.CompositeDstInBgl : _d.CompositeBgl, EntryCount = 3, Entries = lentries };
+						var lbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &lbgd));
+						ops.Add(new DrawOp(4, (nint)lbg, (uint)lyr.CompositeMode, 0, false, lyr.Clip, 0));
 						break;
 					}
 				case BackdropCmd bk:
@@ -2834,48 +2781,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						EncVb((IntPtr)b1, 0, (nuint)(12 * sizeof(float)));
 						EncDraw(6);
 						break;
-					case 4 when u0 >= 100:
-						{
-							// General blend composite (any mode but SrcOver/DstIn): the blend shader needs the destination.
-							// End the pass so the parent resolves into target.View, copy that into a scratch surface (a
-							// passthrough SrcOver into a cleared surface), reopen the pass loading the parent back, then draw
-							// the blend shader sampling the layer (b0, src) + the scratch (dst); its pipeline REPLACES.
-							wgpuRenderPassEncoderEnd(pass);
-							var scratch = new WebGpuRenderSurface(_d, (int)_s.Width, (int)_s.Height, _d.Pool);
-							var idu = MakeUniform(96);
-							var idc = stackalloc float[24]; idc[1] = 1f;   // params.x=0 (no matrix), params.y=1 (opacity)
-							wgpuQueueWriteBuffer(_d.Q, idu, 0, (IntPtr)idc, 96);
-							var ce = stackalloc WGPUBindGroupEntry[3];
-							ce[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = target.View };
-							ce[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-							ce[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = idu, Offset = 0, Size = 96 };
-							var cbgd = new WGPUBindGroupDescriptor { Layout = _d.CompositeBgl, EntryCount = 3, Entries = ce };
-							var cbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &cbgd));
-							var cca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = scratch.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? scratch.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
-							var cdsa = new WGPURenderPassDepthStencilAttachment { View = scratch.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
-							var crp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &cca, DepthStencilAttachment = &cdsa };
-							var cpass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &crp);
-							wgpuRenderPassEncoderSetPipeline(cpass, _d.CompositeSrcOver);
-							wgpuRenderPassEncoderSetBindGroup(cpass, 0, (IntPtr)cbg, 0, (uint*)null);
-							wgpuRenderPassEncoderDraw(cpass, 3, 1, 0, 0);
-							wgpuRenderPassEncoderEnd(cpass);
-							var bca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = target.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero, LoadOp = WGPULoadOp.Load, StoreOp = WGPUStoreOp.Store, ClearValue = default };
-							var bdsa = new WGPURenderPassDepthStencilAttachment { View = target.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
-							var brp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &bca, DepthStencilAttachment = &bdsa };
-							pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &brp);
-							lastX = lastY = lastW = lastH = -1; curFan = null; curAabb = default;
-							var be = stackalloc WGPUBindGroupEntry[4];
-							be[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = (IntPtr)b0 };      // layer (src, premultiplied)
-							be[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-							be[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = (IntPtr)b1, Offset = 0, Size = 96 };
-							be[3] = new WGPUBindGroupEntry { Binding = 3, TextureView = scratch.View };      // parent copy (dst)
-							var bbgd = new WGPUBindGroupDescriptor { Layout = _d.CompositeBlendBgl, EntryCount = 4, Entries = be };
-							var bbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bbgd));
-							wgpuRenderPassEncoderSetPipeline(pass, _d.CompositeBlend);
-							wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)bbg, 0, (uint*)null);
-							wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
-							break;
-						}
 					case 4:
 						wgpuRenderPassEncoderSetPipeline(pass, u0 == 1 ? _d.CompositeDstIn : _d.CompositeSrcOver);
 						EncBg(0, (IntPtr)b0);
@@ -3113,7 +3018,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	public void RestoreToCount(int count) { while (_presentScaleStack.Count > count) { Restore(); } }
 	public void SaveLayer(bool antialias = false) => _overlay.SaveLayer(antialias);
 	public void SaveLayer(IColorFilter colorFilter, bool antialias = false) => _overlay.SaveLayer(colorFilter, antialias);
-	public void SaveLayer(BlendMode blendMode, bool antialias = false) => _overlay.SaveLayer(blendMode, antialias);
+	public void SaveLayerMask(bool antialias = false) => _overlay.SaveLayerMask(antialias);
 	public void SaveLayer(IEffectFilter filter) => _overlay.SaveLayer(filter);
 	public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) => _overlay.ClipRect(rect, operation, antialias);
 	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) => _overlay.ClipRoundRect(roundRect, operation, antialias);
