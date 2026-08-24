@@ -6117,14 +6117,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	// Repro tests for https://github.com/unoplatform/uno/issues/2136
 	[TestClass]
 	[RunsOnUIThread]
-#if __APPLE_UIKIT__
-	[Ignore("Disable all listview tests until crash is resolved https://github.com/unoplatform/uno/issues/17101")]
-#endif
 	public class Given_ItemsStackPanel_Stretch
 	{
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/2136")]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+#if __APPLE_UIKIT__
+		[Ignore("Disable all listview tests until crash is resolved https://github.com/unoplatform/uno/issues/17101")]
+#endif
 		public async Task When_ListView_ItemsStackPanel_Children_Are_Stretched_To_Full_Width()
 		{
 			const double ContainerWidth = 300;
@@ -6134,12 +6134,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Width = ContainerWidth,
 				Height = 400,
 				ItemsSource = new[] { "Item 1", "Item 2", "Item 3" },
-				ItemTemplate = (DataTemplate)XamlReader.Load(
-					@"<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
-						<Border Height=""50"" Background=""Blue"" HorizontalAlignment=""Stretch"">
-							<TextBlock Text=""{Binding}"" VerticalAlignment=""Center"" HorizontalAlignment=""Center"" />
+				ItemTemplate = XamlHelper.LoadXaml<DataTemplate>("""
+					<DataTemplate>
+						<Border Height="50" Background="Blue" HorizontalAlignment="Stretch">
+							<TextBlock Text="{Binding}" VerticalAlignment="Center" HorizontalAlignment="Center" />
 						</Border>
-					</DataTemplate>"),
+					</DataTemplate>
+					"""),
 			};
 
 			await UITestHelper.Load(sut, x => x.IsLoaded);
