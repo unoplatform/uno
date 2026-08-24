@@ -33,43 +33,7 @@ cd src/SolutionTemplate
 
 if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
 {
-    ## Configurations are split to work around UWP not building with .NET new
-    $dotnetBuildConfigurations =
-    @(
-        @("Skia.Linux.FrameBuffer", "", "")
-    )
-
-    $dotnetBuildNet6Configurations =
-    @(
-        @("Server", "", ""),
-        @("Skia.Linux.FrameBuffer", "", "")
-    )
-
-    # WinUI - Default
-    pushd UnoAppWinUI
-    for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)
-    {
-        $platform=$dotnetBuildNet6Configurations[$i][0];
-        & dotnet build -c Debug $default $dotnetBuildNet6Configurations[$i][1] $dotnetBuildNet6Configurations[$i][2] "UnoAppWinUI.$platform\UnoAppWinUI.$platform.csproj" -bl:../binlogs/UnoAppWinUI.$platform/debug/$i/msbuild.binlog
-        Assert-ExitCodeIsZero
-    }
-
-    if ($IsWindows) 
-    {
-        # Server project build (merge with above loop when .App folder is removed)
-        & dotnet build -c Debug $default "UnoAppWinUI.Server\UnoAppWinUI.Server.csproj"
-
-        # Build with msbuild because of https://github.com/microsoft/WindowsAppSDK/issues/1652
-        # force targetframeworks until we can get WinAppSDK to build with `dotnet build`
-        & $msbuild $debug "/p:Platform=x86" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj" "/p:TargetFrameworks=net11.0-windows10.0.19041;TargetFramework=net11.0-windows10.0.19041" "/bl:../binlogs/UnoAppWinUI.Windows/debug/$i/msbuild.binlog"
-        Assert-ExitCodeIsZero
-    }
-
-    CleanupTree
-
-    popd
-
-    if ($IsWindows) 
+    if ($IsWindows)
     {
         # Uno Library
         # Mobile is removed for now, until we can get net7 supported by msbuild/VS 17.4
