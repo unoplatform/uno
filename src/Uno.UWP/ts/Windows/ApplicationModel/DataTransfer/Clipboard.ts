@@ -142,23 +142,16 @@ namespace Uno.Utils {
 
 			const texts: ClipboardTextEntry[] = [];
 			const files: File[] = [];
-			const seenFiles = new Set<File>();
 
-			const fileList = event.clipboardData.files;
-			if (fileList) {
-				for (const file of fileList) {
-					seenFiles.add(file);
-					files.push(file);
-				}
-			}
-
+			// clipboardData.files is a projection of the file-kind items, so items alone yields
+			// each file exactly once. Enumerating both and deduplicating by identity is unreliable:
+			// Chromium mints a fresh File instance per access for pasted image data.
 			const items = event.clipboardData.items;
 			if (items) {
 				for (const item of items) {
 					if (item.kind === "file") {
 						const file = item.getAsFile();
-						if (file && !seenFiles.has(file)) {
-							seenFiles.add(file);
+						if (file) {
 							files.push(file);
 						}
 					} else if (item.kind === "string") {
