@@ -19,7 +19,7 @@
 		  -->
 		<NoWarn>$(NoWarn);NU5104</NoWarn>
 
-		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+		<UnoRuntimeFlavor>Generic</UnoRuntimeFlavor>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 	</PropertyGroup>
 
