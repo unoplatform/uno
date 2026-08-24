@@ -4,7 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
-#elif XAMARIN || UNO_REFERENCE_API
+#elif __ANDROID__ || __APPLE_UIKIT__ || UNO_REFERENCE_API
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
 #else

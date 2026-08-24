@@ -7,11 +7,6 @@ using System.Security;
 
 [assembly: SecurityTransparent]
 
-#if !XAMARIN
-[assembly: AllowPartiallyTrustedCallers]
-[assembly: SecurityRules(SecurityRuleSet.Level1)]
-#endif
-
 #if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 #else

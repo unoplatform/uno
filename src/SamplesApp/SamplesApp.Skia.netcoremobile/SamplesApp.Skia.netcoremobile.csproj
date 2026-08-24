@@ -10,7 +10,7 @@
 		<SingleProject>true</SingleProject>
 
 		<AssemblyName>SamplesApp</AssemblyName>
-		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
+		<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
 		<IsUnoHead>true</IsUnoHead>
 
 		<ApplicationId Condition=" '$(ApplicationId)' != '' ">$(ApplicationId)</ApplicationId>
