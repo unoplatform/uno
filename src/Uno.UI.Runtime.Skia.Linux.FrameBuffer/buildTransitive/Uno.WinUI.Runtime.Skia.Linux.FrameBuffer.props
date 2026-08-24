@@ -1,6 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
+		<!-- A concrete Uno runtime host is referenced, so this project runs the runtime implementations
+		     rather than the reference facade in lib/. It does not name a drawing backend. -->
+		<UnoHasRuntimeHost>true</UnoHasRuntimeHost>
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<SupportsFontManifest>true</SupportsFontManifest>
 		<UnoIsSkiaLinuxFramebufferHead>true</UnoIsSkiaLinuxFramebufferHead>
