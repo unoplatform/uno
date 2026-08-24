@@ -1701,6 +1701,46 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		}
 	}
 
+	// Standalone single-input per-channel colour function (Contrast / GammaTransfer). u20 = 20 floats = the FU uniform
+	// (params, amp, exps, offs, dis — 5 vec4). Fullscreen pass into the target surface.
+	internal void ColorFuncInto(WebGpuTexture src, float[] u20)
+	{
+		lock (_d.RenderGate)
+		{
+			var owns = _frameEncoder == IntPtr.Zero;
+			if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); }
+			try
+			{
+				var ubuf = MakeUniform(80);
+				fixed (float* p = u20) { wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)p, 80); }
+				var e = stackalloc WGPUBindGroupEntry[3];
+				e[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = src.View };
+				e[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+				e[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 80 };
+				var bgd = new WGPUBindGroupDescriptor { Layout = _d.ColorFuncBgl, EntryCount = 3, Entries = e };
+				var bgh = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
+				var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _s.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? _s.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
+				var dsa = new WGPURenderPassDepthStencilAttachment { View = _s.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
+				var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
+				var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
+				wgpuRenderPassEncoderSetPipeline(pass, _d.ColorFunc);
+				wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)bgh, 0, (uint*)null);
+				wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+				wgpuRenderPassEncoderEnd(pass);
+			}
+			finally
+			{
+				if (owns)
+				{
+					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
+					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+					_ = wgpuDevicePoll(_d.Dev, 0u, null);
+					_frameEncoder = IntPtr.Zero;
+				}
+			}
+		}
+	}
+
 	private void BlurPass(IntPtr src, IntPtr dst, Vector2 dir, Vector2 texel, bool downsample, Vector2 srcOrigin, Vector2 srcScale)
 	{
 		var bu = new float[12];
@@ -3506,6 +3546,18 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 		return new WebGpuTexture(_device, tex, view, w, h);
 	}
 
+	// Single-input per-channel colour function (Contrast / GammaTransfer) into a fresh offscreen texture.
+	private ITexture RunColorFunc(WebGpuTexture src, float[] u20)
+	{
+		int w = src.PixelWidth, h = src.PixelHeight;
+		var surface = new WebGpuRenderSurface(_device, w, h);
+		var present = new WebGpuPresentSession(_device, surface, this);
+		present.ColorFuncInto(src, u20);
+		var (tex, view) = surface.DetachColor();
+		surface.Dispose();
+		return new WebGpuTexture(_device, tex, view, w, h);
+	}
+
 	// General evaluator for NON-backdrop trees (leaves + colour-matrix + blur + blend/composite + Unsupported→source).
 	// Renders the tree to a texture using offscreen composition; returns null for any node not handled yet, so the
 	// caller keeps the existing acrylic/recipe path (additive — no regression). Extended per phase.
@@ -3563,6 +3615,24 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 				if (TryEvaluateTree(am.Source, bounds) is not WebGpuTexture src2) { return null; }
 				if (TryEvaluateTree(am.Mask, bounds) is not WebGpuTexture mask) { return null; }
 				return RunCombine(src2, mask, 0f, 0f, 0f, 0f, alphaMask: true);
+			}
+			case ContrastEffectNode ct:
+			{
+				if (TryEvaluateTree(ct.Source, bounds) is not WebGpuTexture s) { return null; }
+				var u = new float[20];
+				u[0] = 0f; u[1] = ct.Contrast; u[2] = ct.Clamp ? 1f : 0f;
+				return RunColorFunc(s, u);
+			}
+			case GammaTransferEffectNode g:
+			{
+				if (TryEvaluateTree(g.Source, bounds) is not WebGpuTexture s) { return null; }
+				var u = new float[20];
+				u[0] = 1f; u[2] = g.Clamp ? 1f : 0f;
+				u[4] = g.Amplitudes[0]; u[5] = g.Amplitudes[1]; u[6] = g.Amplitudes[2]; u[7] = g.Amplitudes[3];
+				u[8] = g.Exponents[0]; u[9] = g.Exponents[1]; u[10] = g.Exponents[2]; u[11] = g.Exponents[3];
+				u[12] = g.Offsets[0]; u[13] = g.Offsets[1]; u[14] = g.Offsets[2]; u[15] = g.Offsets[3];
+				u[16] = g.Disable[0] ? 1f : 0f; u[17] = g.Disable[1] ? 1f : 0f; u[18] = g.Disable[2] ? 1f : 0f; u[19] = g.Disable[3] ? 1f : 0f;
+				return RunColorFunc(s, u);
 			}
 			case BlurEffectNode b:
 			{
