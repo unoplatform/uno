@@ -5,8 +5,6 @@
 		<!-- A concrete Uno runtime host is referenced, so this project runs the runtime implementations
 		     rather than the reference facade in lib/. It does not name a drawing backend. -->
 		<UnoHasRuntimeHost>true</UnoHasRuntimeHost>
-		<UnoWinRTRuntimeIdentifier>Android</UnoWinRTRuntimeIdentifier>
-		<UnoUIRuntimeIdentifier>Skia</UnoUIRuntimeIdentifier>
 
 		<DefineConstants>$(DefineConstants);UNO_REFERENCE_API;HAS_UNO_SKIA;__UNO_SKIA__</DefineConstants>
 		<SupportsFontManifest>true</SupportsFontManifest>

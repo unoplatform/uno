@@ -213,6 +213,20 @@ To suppress it:
 </PropertyGroup>
 ```
 
+### UNOB0024: A runtime identifier property no longer has any effect
+
+`UnoRuntimeIdentifier`, `UnoUIRuntimeIdentifier` and `UnoWinRTRuntimeIdentifier` used to tell the build which runtime assets to deploy. As of Uno Platform 7.0 that is decided by the target framework, so setting them on an application head does nothing and the properties can be removed.
+
+`UnoRuntimeIdentifier` keeps one meaning: a cross-runtime *library* uses it to name the `uno-runtime/<identifier>` folder its output is packed into. It is not reported for that use.
+
+To suppress it:
+
+```xml
+<PropertyGroup>
+  <UnoDisableUNOB0024Validation>true</UnoDisableUNOB0024Validation>
+</PropertyGroup>
+```
+
 ## Compiler Errors
 
 ### UNO0001
