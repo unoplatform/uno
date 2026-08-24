@@ -63,6 +63,27 @@ that alone removes the blank-render for the "genuinely unmappable" class. Phases
 DOES produce and Skia DOES realize but WebGPU currently drops (Blur, Blend, Composite, Arithmetic, CrossFade,
 AlphaMask, Lighting, WhiteNoise) — that, not "everything but colour", is the actual WebGPU-specific gap.
 
+## Acceptance criterion: Skia≡WebGPU parity
+The bar is **identical render output between Skia and WebGPU** for every graph the parser produces (the shared
+"unsupported floor" — `SceneLightingEffect`, unmodeled D2D effects, odd ArithmeticComposite — stays dropped-to-source
+on BOTH, so it's already at parity and is out of scope). Skia is the golden.
+
+## Parity harness (build first)
+The rendering backend is process-global, so parity is verified by running the SAME runtime test under each backend:
+- New `Given_EffectBrush_Parity` runtime tests: build an `IGraphicsEffect` graph, put it on an element, screenshot
+  (`UITestHelper`/`RawBitmap`), and `ImageAssert.HasColorAt` at points whose expected colour is computed from the
+  effect definition (== what Skia produces). Both backends asserting the same expected values == parity with the spec.
+- Run each test twice: Skia (default) and WebGPU (`UNO_WEBGPU=1`) on X11/lavapipe. A phase lands only when its tests
+  pass on BOTH. One `[TestMethod]` per effect/mode; add fail-before/pass-after with each phase's commit.
+
+## Source model (refines the phases)
+Parser leaves are already textures (`TextureInput`, via `IDrawingFactory.RenderOffscreen`) except `SourceInput` (the
+backdrop, deferred + captured at present time by the acrylic kind-6 path). So split by leaf kind:
+- **Non-backdrop trees** (leaves = `TextureInput`/`ColorInput`) — the evaluator runs entirely on offscreen textures;
+  no backdrop machinery. **Phases 0–4 target these first** (most effect brushes: effect-over-image/element).
+- **Backdrop trees** (contain `SourceInput`) — keep the current acrylic path until a late phase folds backdrop capture
+  into the evaluator (evaluate the sub-tree above the captured backdrop texture). Tracked, not Phase 0.
+
 ## Validation
 - Per phase: render the same `IGraphicsEffect` graph on **Skia vs WebGPU** and diff pixels (Skia = golden). Harness:
   the `EffectBrushTests` sample + targeted runtime tests driving each effect; run under `UNO_WEBGPU=1` on X11/lavapipe.
