@@ -245,6 +245,9 @@
 			<TargetPath>WebContent/%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
 		</WasmShellExtraFilesToDeploy>
 	</ItemGroup>
+
+	<Import Condition="'$(_Platform)' == 'browserwasm'" Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\build\*.Runtime.Skia.WebAssembly.Browser.props" />
+	<Import Condition="'$(_Platform)' == 'browserwasm'" Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\build\*.Runtime.Skia.WebAssembly.Browser.targets" />
 	<!-- ==================== android (Skia) ==================== -->
 	<ItemGroup Condition="'$(_Platform)' == 'android'">
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
