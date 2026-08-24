@@ -11,7 +11,7 @@
 		     use the Skia runtime identifier so that NativeDispatcher.skia.cs is included.
 		     Use GetTargetPlatformIdentifier() instead of $(TargetPlatformIdentifier) because the latter
 		     is set in Sdk.targets (after project file evaluation) and would always be empty here. -->
-		<UnoRuntimeIdentifier Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))' == ''">Skia</UnoRuntimeIdentifier>
+		<UnoRuntimeFlavor Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))' == ''">Skia</UnoRuntimeFlavor>
 	</PropertyGroup>
 
 	<PropertyGroup>
