@@ -22,6 +22,26 @@ FIX (this pass): author `Uno.UI.Composition.WebGpu.Init` + `Uno.UI.Composition.W
   (`_NuspecFiles` + `nuget pack` Exec + a WebGpu.Init dep-version XmlPoke). The `;webgpu;` feature (already wired)
   references the renderer package, which pulls Init transitively; host packages' existing Init dep now resolves.
 
+## EXTERNAL VALIDATION: fresh app consuming the PRODUCED packages (not SamplesApp)
+Assembled a local feed (`E:\uno\_feed`) of every `7.0.0-dev.1` nupkg the CI build produced: the auto-packed host
+packages (Runtime.Skia + X11/Win32/MacOS/Linux.FrameBuffer/Android/AppleUIKit/WASM), Uno.Sdk.Private, DevServer.Messaging,
+Adapter, Foundation.Logging, MediaPlayer/WebView/etc., plus the nuspec packs (Uno.WinUI [Skia slice], Uno.Foundation,
+Uno.WinRT, Uno.UI.Composition.Skia, Uno.UI.Composition.WebGpu.Init, Uno.UI.Composition.WebGpu, Lottie, DevServer,
+Graphics2DSK [Skia slice]). Then, in throwaway projects OUTSIDE the repo tree, against `feed + nuget.org`:
+- **Manual-reference restore** — a plain net10.0 project referencing `Uno.WinUI.Runtime.Skia.X11` + `Uno.UI.Composition.WebGpu`
+  restored with **0 unresolved packages**. The previously-dangling `Uno.UI.Composition.WebGpu.Init` resolved cleanly
+  (it would have been NU1101 before the fix); the whole transitive host+WebGpu graph resolved.
+- **SDK feature restore** — a fresh `net10.0-desktop` app, `Uno.Sdk.Private` via global.json, `UnoFeatures=skia;webgpu`,
+  restored with **0 unresolved packages**. The `;webgpu;` feature pulled `Uno.UI.Composition.WebGpu` (+ Init transitively)
+  from the produced packages — the SDK wiring works end-to-end against real nupkgs, not ProjectReferences.
+- **Compile-link** — an external source file using the packaged public API compiled + linked clean (`Build succeeded`):
+  `new Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider()` + `builder.GraphicsBackend(...)` (the neutral host-builder
+  selector shipped in Uno.WinUI). Confirms the produced assemblies' public surface is intact and consumable externally.
+- Not done here: a full external-app RUN rendering with WebGPU — needs the feed on Linux/lavapipe with the renderer
+  package's `runtimes/linux-x64/native/libwgpu_native.so` (this Windows feed packed the win-x64 native only, since a
+  Windows build fetches only the host-RID wgpu native). The two halves are each proven separately: external package
+  consumption (here) + runtime WebGpu selection via the host-builder option (below).
+
 ## RUNTIME PROOF: `;webgpu;` present + WebGpu impl set in host builder → WebGpu actually renders
 The SDK `;webgpu;` feature's only job is to make `Uno.UI.Composition.WebGpu` PRESENT (verified: the resolver injects
 it, above). Whether WebGpu is *used* is decided at runtime by the app registering it in the host builder
