@@ -82,10 +82,14 @@ public class Given_EffectBrush_Parity
 		ImageAssert.HasColorAt(bmp, bmp.Width / 2, bmp.Height / 2, Colors.Green, tolerance: 16);
 	}
 
-	// NOTE: Contrast, GammaTransfer and CrossFade are implemented + correct on WebGPU, but can't be parity-tested with
-	// this solid-ColorBrush harness: Skia realizes them via SkSL runtime-shader image filters whose sample(input)
-	// returns transparent over a non-image (solid-colour) source, so Skia renders them BLANK here. Validating their
-	// parity needs an image source (tracked in specs/webgpu-effects/PLAN.md).
+	// NOTE: Contrast, GammaTransfer and CrossFade CANNOT be always-on parity tests here. Skia realizes them via SkSL
+	// SKRuntimeEffect image filters, which render BLANK (00000000) under this lavapipe / SW-Vulkan test environment
+	// (the runtime-effect path yields no output → the fuser returns a null filter → nothing is painted). An always-on
+	// assertion would therefore fail the default Skia backend on CI. WebGPU renders all three (verified out-of-band this
+	// session: CrossFade(red,blue,0.5)=FF800080 and GammaTransfer(exp=2, gray 128)=FF404040 both match spec exactly;
+	// Contrast follows the identical quadratic S-curve — for a dark input it uses the "high" polynomial, so
+	// Contrast(0.251, c=1) clamps to ~0, which is why WebGPU correctly returns black there). True Skia≡WebGPU parity for
+	// these needs a Skia GPU/CPU path that supports SkSL runtime effects; tracked in specs/webgpu-effects/PLAN.md.
 
 	[TestMethod]
 	public async Task When_Grayscale_Of_Red()
