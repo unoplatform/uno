@@ -216,6 +216,20 @@ To suppress it:
 </PropertyGroup>
 ```
 
+### UNOB0024: A runtime identifier property no longer has any effect
+
+`UnoRuntimeIdentifier`, `UnoUIRuntimeIdentifier` and `UnoWinRTRuntimeIdentifier` used to tell the build which runtime assets to deploy. As of Uno Platform 7.0 that is decided by the target framework, so setting them on an application head does nothing and the properties can be removed.
+
+`UnoRuntimeIdentifier` keeps one meaning: a cross-runtime *library* uses it to name the `uno-runtime/<identifier>` folder its output is packed into. It is not reported for that use.
+
+To suppress it:
+
+```xml
+<PropertyGroup>
+  <UnoDisableUNOB0024Validation>true</UnoDisableUNOB0024Validation>
+</PropertyGroup>
+```
+
 ### UNOB0027: The file suffix is no longer recognized by Uno Platform 7.0
 
 Uno Platform 7.0 removed the `*.Apple.cs`, `*.iOSmacOS.cs`, and `*.reference.cs` file suffixes. The build no longer excludes these files from any target framework, so each of them now compiles for every target framework of the project, the WinAppSDK one included. Rename or remove the file:
