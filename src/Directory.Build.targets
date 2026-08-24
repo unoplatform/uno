@@ -3,7 +3,7 @@
 
 	<PropertyGroup>
 		<Product>$(AssemblyName) $(TargetFramework)</Product>
-		<Product Condition="'$(UnoRuntimeIdentifier)' != ''">$(AssemblyName) ($(TargetFramework) $(UnoRuntimeIdentifier))</Product>
+		<Product Condition="'$(UnoRuntimeFlavor)' != ''">$(AssemblyName) ($(TargetFramework) $(UnoRuntimeFlavor))</Product>
 		<CommunityToolkitMvvmVersion>8.2.2</CommunityToolkitMvvmVersion>
 	</PropertyGroup>
 

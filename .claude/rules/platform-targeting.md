@@ -11,9 +11,19 @@ paths:
 > `doc/articles/platform-specific-csharp.md`, `doc/articles/platform-specific-xaml.md`, and the proposal in
 > `specs/056-platform-targeting-vocabulary/spec.md`.
 
-Preprocessor symbols and file-suffix exclusion are injected by `src/Uno.CrossTargetting.targets` from `UnoRuntimeIdentifier` / `TargetPlatformIdentifier` — **never** set platform `DefineConstants` or `Compile Remove` for suffixes in a `.csproj`. Symbols are **mutually exclusive per build**: a single compilation never has both `__SKIA__` and `__WASM__`.
+Preprocessor symbols and file-suffix exclusion are injected by `src/Uno.CrossTargetting.targets` from `UnoRuntimeFlavor` / `TargetPlatformIdentifier` — **never** set platform `DefineConstants` or `Compile Remove` for suffixes in a `.csproj`. Symbols are **mutually exclusive per build**: a single compilation never has both `__SKIA__` and `__WASM__`.
 
-Current symbols: `__ANDROID__`, `__APPLE_UIKIT__` (iOS/tvOS), `__WASM__`, `__SKIA__`, `__NETSTD_REFERENCE__` / `UNO_REFERENCE_API`, `__CROSSRUNTIME__` (true for Skia, WebAssembly, Reference).
+`UnoRuntimeFlavor` names **which build of a multi-flavour project this is**, and takes exactly three values. It is not a drawing backend and not a runtime identifier — `Uno.UI` picks its backend (Skia, WebGPU, …) at run time, so no build-time value can name one.
+
+| `UnoRuntimeFlavor` | Which projects | Selects | Ships in |
+|---|---|---|---|
+| `Generic` | `*.Skia.csproj` and every single-flavour project | `*.skia.cs`, `__SKIA__` | `uno-runtime/<tfm>/skia` |
+| `Wasm` | `*.Wasm.csproj` | `*.wasm.cs`, `__WASM__` | `uno-runtime/<tfm>/webassembly` |
+| `Reference` | `*.Reference.csproj` | `*.reference.cs`, `__NETSTD_REFERENCE__` | `lib/<tfm>` |
+
+The `uno-runtime` folder names in the last column are a **frozen packaging convention** set by the nuspecs, deliberately not derived from the value — renaming the value must never move the published layout.
+
+Current symbols: `__ANDROID__`, `__APPLE_UIKIT__` (iOS/tvOS), `__WASM__`, `__SKIA__`, `__NETSTD_REFERENCE__` / `UNO_REFERENCE_API`, `__CROSSRUNTIME__` (true for all three flavours).
 
 ## Scope: Skia-first
 New UI features target **Skia** (incl. Skia-on-Android/iOS/WASM); the **native** UI targets (native Android Views, iOS/UIKit, WASM DOM) are **maintenance-only** — keep them building and behaving, but don't add features there unless the task says so. This is the *UI* layer only: platform-specific **non-UI WinRT APIs** in `Uno.WinRT`/`Uno.Foundation` (rule 5 below) are still actively enhanced, since Skia compiles and uses those per-platform implementations. See AGENTS.md → "Development scope".
