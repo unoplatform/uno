@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Diagnostics;
@@ -18,6 +18,13 @@ namespace Uno.UI.Samples.Tests;
 /// from a fully frozen process. Each tick probes the UI dispatcher and the thread pool
 /// separately, which separates "UI thread blocked" from "thread pool starved" from
 /// "whole process stopped" (no heartbeat line at all).
+///
+/// The dispatcher is probed at two priorities because they can starve independently. Almost
+/// every wait in the runtime tests funnels through <c>WindowHelper.WaitForIdle</c>, which
+/// enqueues at <see cref="Windows.UI.Core.CoreDispatcherPriority.Idle"/> -- the lowest of the
+/// dispatcher's four queues, and one that is only served when every higher queue is empty. A
+/// steady stream of normal-priority work therefore leaves <c>dispatcher</c> looking healthy
+/// while every test wait blocks forever, so a normal-priority probe alone cannot see it.
 /// </remarks>
 internal sealed class TestRunStallMonitor : IDisposable
 {
@@ -31,6 +38,7 @@ internal sealed class TestRunStallMonitor : IDisposable
 	private readonly TimeSpan _interval;
 	private readonly TimeSpan _stallThreshold;
 	private readonly Func<Task>? _dispatcherProbe;
+	private readonly Func<Task>? _idleProbe;
 	private readonly Stopwatch _runElapsed = Stopwatch.StartNew();
 	private readonly CancellationTokenSource _cts = new();
 	private readonly Thread _thread;
@@ -39,11 +47,18 @@ internal sealed class TestRunStallMonitor : IDisposable
 	private long _currentTestStartedAt;
 	private bool _disposed;
 
-	private TestRunStallMonitor(TimeSpan interval, TimeSpan stallThreshold, Func<Task>? dispatcherProbe)
+	// A blocked idle queue never completes its probe, so exactly one stays outstanding and its
+	// age is reported. Enqueuing a fresh one per tick would pile up work that all runs at once
+	// the moment the queue drains.
+	private Task? _idleProbeTask;
+	private long _idleProbeStartedAt;
+
+	private TestRunStallMonitor(TimeSpan interval, TimeSpan stallThreshold, Func<Task>? dispatcherProbe, Func<Task>? idleProbe)
 	{
 		_interval = interval;
 		_stallThreshold = stallThreshold;
 		_dispatcherProbe = dispatcherProbe;
+		_idleProbe = idleProbe;
 		_currentTestStartedAt = _runElapsed.ElapsedMilliseconds;
 
 		_thread = new Thread(Loop)
@@ -59,7 +74,7 @@ internal sealed class TestRunStallMonitor : IDisposable
 	/// Starts a monitor, or returns <c>null</c> when disabled. Enabled by default on CI;
 	/// set <c>UNO_TEST_STALL_MONITOR_INTERVAL_SECONDS</c> to opt in locally, or to 0 to disable.
 	/// </summary>
-	public static TestRunStallMonitor? TryStart(Func<Task>? dispatcherProbe)
+	public static TestRunStallMonitor? TryStart(Func<Task>? dispatcherProbe, Func<Task>? idleProbe)
 	{
 		var interval = GetSeconds(IntervalVariable, defaultSeconds: DefaultIntervalSeconds);
 		if (interval <= 0)
@@ -76,7 +91,8 @@ internal sealed class TestRunStallMonitor : IDisposable
 		return new TestRunStallMonitor(
 			TimeSpan.FromSeconds(interval),
 			TimeSpan.FromSeconds(threshold),
-			dispatcherProbe);
+			dispatcherProbe,
+			idleProbe);
 	}
 
 	private static int DefaultIntervalSeconds =>
@@ -108,7 +124,7 @@ internal sealed class TestRunStallMonitor : IDisposable
 				var inCurrentTest = TimeSpan.FromMilliseconds(
 					_runElapsed.ElapsedMilliseconds - Interlocked.Read(ref _currentTestStartedAt));
 
-				var (dispatcher, threadPool) = (ProbeDispatcher(), ProbeThreadPool());
+				var (dispatcher, dispatcherIdle, threadPool) = (ProbeDispatcher(), ProbeIdleQueue(), ProbeThreadPool());
 				var gcPause = TotalGcPause();
 				var gcDelta = gcPause - previousGcPause;
 				previousGcPause = gcPause;
@@ -120,6 +136,7 @@ internal sealed class TestRunStallMonitor : IDisposable
 					$"elapsed={Format(_runElapsed.Elapsed)} " +
 					$"inTest={Format(inCurrentTest)} " +
 					$"dispatcher={dispatcher} " +
+					$"dispatcherIdle={dispatcherIdle} " +
 					$"threadPool={threadPool} " +
 					$"gcPauseDelta={gcDelta.TotalMilliseconds.ToString("F0", CultureInfo.InvariantCulture)}ms " +
 					$"test='{_currentTest}'");
@@ -149,6 +166,44 @@ internal sealed class TestRunStallMonitor : IDisposable
 		}
 		catch (Exception e)
 		{
+			return $"error({e.GetType().Name})";
+		}
+	}
+
+	/// <summary>
+	/// Round-trip of an idle-priority work item -- the queue every <c>WaitForIdle</c> waits on.
+	/// </summary>
+	private string ProbeIdleQueue()
+	{
+		if (_idleProbe is null)
+		{
+			return "n/a";
+		}
+
+		if (_idleProbeTask is { IsCompleted: false })
+		{
+			var blockedFor = TimeSpan.FromMilliseconds(_runElapsed.ElapsedMilliseconds - _idleProbeStartedAt);
+			return $"BLOCKED({Format(blockedFor)})";
+		}
+
+		var sw = Stopwatch.StartNew();
+		try
+		{
+			_idleProbeStartedAt = _runElapsed.ElapsedMilliseconds;
+			var task = _idleProbe();
+			_idleProbeTask = task;
+
+			if (!task.Wait(ProbeTimeout))
+			{
+				return $"BLOCKED(>{ProbeTimeout.TotalSeconds:F0}s)";
+			}
+
+			_idleProbeTask = null;
+			return $"{sw.ElapsedMilliseconds}ms";
+		}
+		catch (Exception e)
+		{
+			_idleProbeTask = null;
 			return $"error({e.GetType().Name})";
 		}
 	}
