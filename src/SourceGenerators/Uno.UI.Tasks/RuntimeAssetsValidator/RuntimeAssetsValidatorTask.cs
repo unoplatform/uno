@@ -48,6 +48,8 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 
 	public bool DisablePlatformAssetValidation { get; set; }
 
+	public bool DisableUIRuntimeValidation { get; set; }
+
 	public override bool Execute()
 	{
 		bool succeeded = true;
@@ -88,15 +90,26 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 					continue;
 				}
 
-				if (GetAssemblyMetadata(originalAssembly, UnoUIRuntimeIdentifierKey) is { Length: > 0 } identifier
+				if (!DisableUIRuntimeValidation
+					&& GetAssemblyMetadata(originalAssembly, UnoUIRuntimeIdentifierKey) is { Length: > 0 } identifier
 					&& !SharedUIRuntimeIdentifier.Equals(identifier, StringComparison.OrdinalIgnoreCase))
 				{
 					succeeded = false;
 
 					Log.LogError(
-						$"The assembly {assembly.ItemSpec} was built for the '{identifier}' UI runtime, which Uno Platform no longer provides. " +
-						"Update the package to a version built for this release."
-					);
+						subcategory: null,
+						errorCode: "UNOB0026",
+						helpKeyword: null,
+						file: null,
+						lineNumber: 0,
+						columnNumber: 0,
+						endLineNumber: 0,
+						endColumnNumber: 0,
+						message: "The assembly '{0}' was built for the '{1}' UI runtime, which Uno Platform no longer provides. " +
+							"Update the package to a version built for this release. https://aka.platform.uno/UNOB0026",
+						// The value is a foreign assembly's string heap content: unbounded, and free to contain
+						// control characters a log processor would act on.
+						messageArgs: [assembly.ItemSpec, PlatformAssetValidator.Sanitize(identifier)]);
 				}
 
 				platformAssetValidator?.Validate(originalAssembly, assemblyPath);
@@ -285,7 +298,7 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 		/// <summary>
 		/// Type names come from a foreign assembly's string heap, which allows control characters.
 		/// </summary>
-		private static string Sanitize(string name)
+		internal static string Sanitize(string name)
 		{
 			var builder = new StringBuilder(name.Length);
 

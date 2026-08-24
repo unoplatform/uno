@@ -75,4 +75,25 @@ public class UnoMissingAssemblyAnalyzerTests
 		await test.RunAsync();
 	}
 
+	[TestMethod]
+	public async Task UseProgressRingOutsideAHead_NoDiagnostic()
+	{
+		var code = """
+			using Microsoft.UI.Xaml.Controls;
+			public class C
+			{
+				public ProgressRing M() => new ProgressRing();
+			}
+			""";
+
+		// A library cannot know which packages the head will reference, so the analyzer stays quiet there.
+		var test = new Verify.Test()
+		{
+			TestCode = code,
+			FixedCode = code,
+			ReferenceAssemblies = _net80WithUno,
+		};
+
+		await test.RunAsync();
+	}
 }
