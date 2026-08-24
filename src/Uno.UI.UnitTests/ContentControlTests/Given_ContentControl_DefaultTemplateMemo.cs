@@ -32,7 +32,8 @@ namespace Uno.UI.Tests.ContentControlTests
 			var collectibleType = EmitCollectibleControlType();
 			before(collectibleType);
 
-			Application.CleanupNonDefaultAlcCaches();
+			// Explicit all-secondary sweep: this test exercises the global-teardown (unscoped) semantics.
+			Application.CleanupAllSecondaryAlcCaches();
 
 			var after = (Func<Type, bool>)field.GetValue(null)!;
 			Assert.AreNotSame(

@@ -631,7 +631,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/480")]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
+		// Skia-WASM: the item resolves the application theme instead of the owner's subtree theme, see https://github.com/unoplatform/uno/issues/24143
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native | RuntimeTestPlatforms.SkiaWasm)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
 		public async Task When_MenuFlyout_Item_Uses_Owner_Subtree_Theme_Light_Under_Dark_App()
 		{
 #if HAS_UNO
@@ -683,12 +684,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForLoaded(item);
 				await WindowHelper.WaitForIdle();
 
-				// The popup-presented item resolves its {ThemeResource} foreground asynchronously after load;
-				// wait for the brush to resolve before asserting its color (raced on slower runtimes, e.g. WASM).
-				await UITestHelper.WaitFor(
-					() => (item.Foreground as SolidColorBrush) is not null,
-					timeoutMS: 5000,
-					message: "Menu item {ThemeResource} foreground brush should have resolved");
+				// The popup-presented item inherits the owner's theme and resolves its {ThemeResource}
+				// foreground asynchronously after load; wait for both to converge before asserting
+				// (raced on slower runtimes, e.g. WASM). The predicate must be the converged value:
+				// the item already holds a non-null brush from parse time, so a null check never waits.
+				await WindowHelper.WaitFor(
+					() => (Theme: item.ActualTheme, Foreground: (item.Foreground as SolidColorBrush)?.Color),
+					(Theme: ElementTheme.Light, Foreground: (Color?)Colors.Green),
+					messageBuilder: actual =>
+						$"Menu item did not converge on the owner's Light theme with the Light sentinel (Green); " +
+						$"last observed theme {actual.Theme}, foreground {actual.Foreground?.ToString() ?? "(null)"}",
+					timeoutMS: 5000);
 
 				Assert.AreEqual(ElementTheme.Light, owner.ActualTheme, "Owner should be in the Light subtree.");
 				Assert.AreEqual(ElementTheme.Light, item.ActualTheme, "Menu item should inherit the owner's Light theme.");
@@ -734,7 +740,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// ------------------------------------------------------------------
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
+		// Skia-WASM: the item resolves the application theme instead of the owner's subtree theme, see https://github.com/unoplatform/uno/issues/24143
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native | RuntimeTestPlatforms.SkiaWasm)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/480")]
 		public async Task When_MenuFlyout_Opens_First_Time_Foreground_Should_Not_Flash_Wrong_Theme()
 		{
@@ -809,6 +816,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await WindowHelper.WaitForIdle();
 				Snapshot("after-second-idle");
+
+				// The corrective theme walk lands asynchronously, so poll for the converged state instead
+				// of racing it. The four visible checkpoints above are already recorded, so this wait
+				// cannot hide a flash — it only decides whether convergence ever happened.
+				await WindowHelper.WaitFor(
+					() => (Theme: item.ActualTheme, Foreground: (item.Foreground as SolidColorBrush)?.Color),
+					(Theme: ElementTheme.Light, Foreground: (Color?)Colors.Green),
+					messageBuilder: actual =>
+						$"Menu item never converged on the owner's Light theme with the Light sentinel (Green); " +
+						$"last observed theme {actual.Theme}, foreground {actual.Foreground?.ToString() ?? "(null)"}. " +
+						$"All observations (checkpoint → color): " +
+						$"[{string.Join(", ", observed.Select(o => $"{o.Checkpoint}={o.Color}"))}]",
+					timeoutMS: 5000);
 
 				// Final state must be the Light sentinel — confirms the existing fix
 				// converges, so any Red below is a transient flash, not a final regression.
