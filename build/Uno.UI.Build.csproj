@@ -147,6 +147,7 @@
 
 		<ItemGroup>
 			<_NuspecFiles Include=".\nuget\Uno.WinUI.nuspec" />
+			<_NuspecFiles Include=".\nuget\Uno.UI.Composition.Skia.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.Foundation.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.WinRT.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.WinUI.Lottie.nuspec" />
@@ -195,6 +196,7 @@
 
 		<!-- Create the packages -->
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack nuget\Uno.UI.Composition.Skia.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.Foundation.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinRT.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.Lottie.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />

@@ -547,10 +547,6 @@
 					"description": "Adds support for Serialization using Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/feature-serialization"
 				},
-				"SkiaRenderer": {
-					"description": "No-op, kept for backwards compatibility. Skia is always used as the UI renderer on Uno Platform targets. The WinAppSDK target always renders natively with WinUI.",
-					"helpUrl": "https://aka.platform.uno/skia-rendering"
-				},
 				"Storage": {
 					"description": "Adds support for Storage using Uno.Extensions.",
 					"helpUrl": "https://aka.platform.uno/feature-storage"
@@ -586,6 +582,10 @@
 				"Skia": {
 					"description": "Adds support for SkiaSharp.",
 					"helpUrl": "https://aka.platform.uno/feature-skia"
+				},
+				"WebGpu": {
+					"description": "Adds the WebGPU rendering backend, used alongside the default Skia backend.",
+					"helpUrl": "https://aka.platform.uno/feature-webgpu"
 				},
 				"Lottie": {
 					"description": "Adds support for Lottie animations.",
