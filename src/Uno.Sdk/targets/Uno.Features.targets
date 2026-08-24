@@ -6,11 +6,13 @@
 		<UnoFeatures Condition="!$(UnoFeatures.StartsWith(';'))">;$(UnoFeatures)</UnoFeatures>
 		<UnoFeatures Condition="!$(UnoFeatures.EndsWith(';'))">$(UnoFeatures);</UnoFeatures>
 
-		<!-- Native UI rendering is removed: Skia is the only renderer. The 'nativerenderer' feature is
-		     ignored and 'skiarenderer' is always implied, so apps are always Skia even when neither is
-		     listed under UnoFeatures. This makes 'skiarenderer' effectively a no-op. -->
+		<!-- Native UI rendering is removed: Skia is the only default renderer, so the 'skia' feature is always
+		     implied (it references the SkiaSharp backend and its supporting packages) even when not listed under
+		     UnoFeatures. The legacy 'nativerenderer' token is ignored, and 'skiarenderer' is mapped to 'skia'
+		     for backwards compatibility. -->
 		<UnoFeatures>$(UnoFeatures.Replace(';nativerenderer;', ';'))</UnoFeatures>
-		<UnoFeatures Condition="!$(UnoFeatures.Contains(';skiarenderer;'))">$(UnoFeatures)skiarenderer;</UnoFeatures>
+		<UnoFeatures>$(UnoFeatures.Replace(';skiarenderer;', ';'))</UnoFeatures>
+		<UnoFeatures Condition="!$(UnoFeatures.Contains(';skia;'))">$(UnoFeatures)skia;</UnoFeatures>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauiembedding;'))">

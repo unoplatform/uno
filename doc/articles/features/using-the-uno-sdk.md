@@ -36,7 +36,6 @@ You can use the `UnoFeatures` property in the `csproj` or `Directory.Build.props
     Serialization;
     Localization;
     Navigation;
-    SkiaRenderer;
 </UnoFeatures>
 ```
 
@@ -78,8 +77,7 @@ Here are the supported features:
 | `Prism`              | Adds [Prism](https://github.com/PrismLibrary/Prism) support for Uno Platform applications WinUI.                                                                                                                                           |
 | `Serialization`      | Adds support for [Serialization](xref:Uno.Extensions.Serialization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                         |
 | `SimpleTheme`        | Adds support for the [Simple Design Theme](xref:Uno.Themes.Simple.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the Simple Design Toolkit library.                                                    |
-| `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp).                                                                                                                                                                           |
-| `SkiaRenderer`       | No-op, kept for backwards compatibility. Skia is always used as the graphics rendering engine on Uno Platform targets. The WinAppSDK target is not provided by Uno Platform and always renders natively with WinUI. For more details, see [Skia Rendering documentation](xref:uno.features.renderer.skia). |
+| `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp) — the default rendering backend on Uno Platform targets. It is implied even when not listed, and the legacy `SkiaRenderer` feature is mapped to it for backwards compatibility. The WinAppSDK target is not provided by Uno Platform and always renders natively with WinUI. For more details, see [Skia Rendering documentation](xref:uno.features.renderer.skia). |
 | `SpellChecking`      | Adds support for [spell-checking](xref:Uno.Features.SpellChecking) in TextBox controls on all Skia-based targets via [Uno.WinUI.SpellChecking](https://www.nuget.org/packages/Uno.WinUI.SpellChecking).                                    |
 | `Storage`            | Adds support for [Storage](xref:Uno.Extensions.Storage.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
 | `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, and Android. This option is not needed when only targeting WebAssembly and WinAppSDK.                                                                                          |
@@ -167,7 +165,6 @@ Those properties can be set from `Directory.Build.props` or may be set in the `c
         Navigation;
         ThemeService;
         Mvvm;
-        SkiaRenderer;
       </UnoFeatures>
       
       <UnoToolkitVersion>6.3.6</UnoToolkitVersion>
