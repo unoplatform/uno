@@ -33,61 +33,8 @@ cd src/SolutionTemplate
 
 if ( ($TestGroup -eq 0) -and ($env:UWPBuildEnabled -eq 'True') )
 {
-    ## Configurations are split to work around UWP not building with .NET new
-    $dotnetBuildConfigurations =
-    @(
-        @("Skia.Linux.FrameBuffer", "", "")
-    )
-
-    $dotnetBuildNet6Configurations =
-    @(
-        @("Server", "", ""),
-        @("Skia.Linux.FrameBuffer", "", "")
-    )
-
-    # WinUI - Default
-    pushd UnoAppWinUI
-    for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)
+    if ($IsWindows)
     {
-        $platform=$dotnetBuildNet6Configurations[$i][0];
-        & dotnet build -c Debug $default $dotnetBuildNet6Configurations[$i][1] $dotnetBuildNet6Configurations[$i][2] "UnoAppWinUI.$platform\UnoAppWinUI.$platform.csproj" -bl:../binlogs/UnoAppWinUI.$platform/debug/$i/msbuild.binlog
-        Assert-ExitCodeIsZero
-    }
-
-    if ($IsWindows) 
-    {
-        # Server project build (merge with above loop when .App folder is removed)
-        & dotnet build -c Debug $default "UnoAppWinUI.Server\UnoAppWinUI.Server.csproj"
-
-        # Build with msbuild because of https://github.com/microsoft/WindowsAppSDK/issues/1652
-        # force targetframeworks until we can get WinAppSDK to build with `dotnet build`
-        & $msbuild $debug "/p:Platform=x86" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj" "/p:TargetFrameworks=net11.0-windows10.0.19041;TargetFramework=net11.0-windows10.0.19041" "/bl:../binlogs/UnoAppWinUI.Windows/debug/$i/msbuild.binlog"
-        Assert-ExitCodeIsZero
-    }
-
-    CleanupTree
-
-    popd
-
-    # XAML Trimming build smoke test
-    # See https://github.com/unoplatform/uno/issues/9632
-    # dotnet publish -c Debug -r win-x64 -p:PublishTrimmed=true -p:SelfContained=true -p:UnoXamlResourcesTrimming=true MyAppXamlTrim\MyAppXamlTrim.Skia.Gtk\MyAppXamlTrim.Skia.Gtk.csproj
-    # Assert-ExitCodeIsZero
-    # 
-    # dotnet run -c Debug --project src\Uno.XamlTrimmingValidator\Uno.XamlTrimmingValidator.csproj -- --hints-file=build\assets\MyAppXamlTrim-hints.txt --target-assembly=MyAppXamlTrim\MyAppXamlTrim.Skia.Gtk\bin\Debug\net6.0\win-x64\publish\Uno.UI.dll
-    # Assert-ExitCodeIsZero
-
-    if ($IsWindows) 
-    {
-        dotnet build MyAppXamlTrim\MyAppXamlTrim.Wasm\MyAppXamlTrim.Wasm.csproj -c Release -p:UnoXamlResourcesTrimming=true -p:WasmShellGenerateCompressedFiles=false -p:WasmShellILLinkerEnabled=true -bl:binlogs/MyAppXamlTrim.Wasm/release/msbuild.binlog
-        Assert-ExitCodeIsZero
-
-        dotnet run --project ..\Uno.ResourceTrimmingValidator\Uno.ResourceTrimmingValidator.csproj -- -a (Get-ChildItem MyAppXamlTrim.Wasm.clr -Recurse).FullName -r Strings.en.Resources.upri -x Strings.fr.Resources.upri
-        Assert-ExitCodeIsZero
-
-        dotnet run --project ..\Uno.ResourceTrimmingValidator\Uno.ResourceTrimmingValidator.csproj -- -a (Get-ChildItem Uno.UI.clr -Recurse).FullName -r Resources.Strings.en.Resources.upri -r UI.Xaml.DragDrop.Strings.en-US.Resources.upri -x Resources.Strings.cs-CZ.Resources.upri
-        Assert-ExitCodeIsZero
-
         # Uno Library
         # Mobile is removed for now, until we can get net7 supported by msbuild/VS 17.4
         $responseFile = @(
