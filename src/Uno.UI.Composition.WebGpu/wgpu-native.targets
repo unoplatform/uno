@@ -1,7 +1,9 @@
 <Project>
 	<!-- Fetches the pinned wgpu-native (modern webgpu.h ABI) release for the host OS/arch and drops the native
-	     library next to the consuming output so the DllImportResolver ("webgpu") finds it. Import this from the
-	     WebGpu backend project and from any app head that renders with the WebGPU backend. Cached under obj/. -->
+	     library next to the consuming output UNDER THE DllImport's OWN NAME (libwebgpu.so / webgpu.dll /
+	     libwebgpu.dylib) so the runtime's DEFAULT [DllImport("webgpu")] resolution finds it (app dir,
+	     runtimes/<rid>/native via deps.json, rpath) — no custom probing needed. Import this from the WebGpu backend
+	     project and from any app head that renders with the WebGPU backend. Cached under obj/. -->
 	<PropertyGroup>
 		<WgpuNativeVersion>v29.0.1.1</WgpuNativeVersion>
 		<WgpuNativeCacheDir>$(MSBuildThisFileDirectory)obj\wgpu-native\$(WgpuNativeVersion)\</WgpuNativeCacheDir>
@@ -60,6 +62,15 @@
 			<_WgpuAsset>wgpu-macos-x86_64-release.zip</_WgpuAsset>
 			<_WgpuNativeFile>libwgpu_native.dylib</_WgpuNativeFile>
 		</PropertyGroup>
+
+		<!-- The desktop output/pack name matches the DllImport ("webgpu") so default resolution finds it with no
+		     custom probing. (Android keeps wgpu-native's own name — packed per-ABI and resolved by bare name — and
+		     iOS/tvOS is static-linked, so neither uses this.) -->
+		<PropertyGroup>
+			<_WgpuOutputFile Condition="$(_WgpuNativeFile.EndsWith('.dll'))">webgpu.dll</_WgpuOutputFile>
+			<_WgpuOutputFile Condition="$(_WgpuNativeFile.EndsWith('.so'))">libwebgpu.so</_WgpuOutputFile>
+			<_WgpuOutputFile Condition="$(_WgpuNativeFile.EndsWith('.dylib'))">libwebgpu.dylib</_WgpuOutputFile>
+		</PropertyGroup>
 	</Target>
 
 	<!-- Download + unzip the pinned release into the obj cache (once; OS-agnostic HTTP + unzip, so cross-provisioning
@@ -81,9 +92,9 @@
 	     library would otherwise leave a loose desktop .so next to its dll, which .NET-Android harvests transitively and
 	     packs into every APK lib/<abi>/, shadowing the real per-ABI bionic binaries (dlopen then fails on libdl.so.2). -->
 	<Target Name="ProvisionWgpuNative" AfterTargets="Build" DependsOnTargets="_FetchWgpuNative">
-		<Message Importance="high" Text="ProvisionWgpuNative: asset=$(_WgpuAsset) outputType=$(OutputType) -> $(OutDir)" />
+		<Message Importance="high" Text="ProvisionWgpuNative: asset=$(_WgpuAsset) outputType=$(OutputType) -> $(OutDir)$(_WgpuOutputFile)" />
 		<Copy Condition="'$(_WgpuAsset)' != '' And '$(OutDir)' != '' And '$(OutputType)' != 'Library'"
-			SourceFiles="$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+			SourceFiles="$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)" DestinationFiles="$(OutDir)$(_WgpuOutputFile)" SkipUnchangedFiles="true" />
 	</Target>
 
 	<!-- Publish: register the native as a real publish item so `dotnet publish` (incl. `-o <dir>` and self-contained)
@@ -93,7 +104,7 @@
 	<Target Name="_AddWgpuNativeToPublish" AfterTargets="ComputeFilesToPublish" DependsOnTargets="_FetchWgpuNative">
 		<ItemGroup>
 			<ResolvedFileToPublish Include="$(WgpuNativeCacheDir)lib\$(_WgpuNativeFile)" Condition="'$(_WgpuNativeFile)' != ''">
-				<RelativePath>$(_WgpuNativeFile)</RelativePath>
+				<RelativePath>$(_WgpuOutputFile)</RelativePath>
 				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
 			</ResolvedFileToPublish>
 		</ItemGroup>
