@@ -72,6 +72,8 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	public IntPtr CompositeBlendBgl;    // group(0): fg tex, sampler, uniform (params.z = mode id), bg tex
 	public IntPtr EffectCombine;        // two-texture linear combine (CrossFade/ArithmeticComposite) + AlphaMask
 	public IntPtr EffectCombineBgl;
+	public IntPtr ColorFunc;            // single-input per-channel colour function (Contrast / GammaTransfer)
+	public IntPtr ColorFuncBgl;
 	public IntPtr DummyTex;                 // 1x1 placeholder for the clip coverage binding when no path clip
 	public WebGpuTexturePool Pool;                // transient offscreen pool (reused across frames)
 	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
@@ -772,6 +774,43 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
   return clamp(o, vec4<f32>(0.0), vec4<f32>(1.0));
 }";
 
+	// Single-input per-channel colour function on un-premultiplied colour, matching SkiaEffectFuser exactly.
+	// params.x = mode (0 = Contrast, 1 = GammaTransfer), params.y = contrast value, params.z = clamp flag.
+	// Contrast clamps its INPUT (Skia); Gamma clamps its RESULT. Gamma: per channel amp*pow(abs(c),exp)+off, or c if disabled.
+	private const string ColorFuncWgsl = @"
+struct FU { params: vec4<f32>, amp: vec4<f32>, exps: vec4<f32>, offs: vec4<f32>, dis: vec4<f32> };
+@group(0) @binding(0) var input: texture_2d<f32>;
+@group(0) @binding(1) var smp: sampler;
+@group(0) @binding(2) var<uniform> u: FU;
+struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
+@vertex fn vs(@builtin(vertex_index) vi: u32) -> VO {
+  var pts = array<vec2<f32>, 3>(vec2<f32>(-1.0, -1.0), vec2<f32>(3.0, -1.0), vec2<f32>(-1.0, 3.0));
+  let p = pts[vi];
+  var o: VO; o.p = vec4<f32>(p, 0.0, 1.0); o.uv = vec2<f32>((p.x + 1.0) * 0.5, (1.0 - p.y) * 0.5); return o;
+}
+@fragment fn fs(i: VO) -> @location(0) vec4<f32> {
+  var s = textureSampleLevel(input, smp, i.uv, 0.0);
+  let mode = i32(u.params.x + 0.5);
+  let clampf = u.params.z > 0.5;
+  if (mode == 0) {
+    if (clampf) { s = clamp(s, vec4<f32>(0.0), vec4<f32>(1.0)); }
+    var rgb = select(vec3<f32>(0.0), s.rgb / s.a, s.a > 0.0);
+    let cc = u.params.y; let sp = 1.0 - 0.75 * cc;
+    let c2 = sp - 1.0; let b2 = 4.0 - 3.0 * sp; let a2 = 2.0 * c2; let b1 = sp; let a1 = -a2;
+    let low = rgb * (rgb * a1 + b1);
+    let high = rgb * (rgb * a2 + b2) + c2;
+    let comp = select(vec3<f32>(0.0), vec3<f32>(1.0), rgb < vec3<f32>(0.5));
+    rgb = mix(low, high, comp);
+    return vec4<f32>(rgb * s.a, s.a);
+  }
+  var c = s; if (s.a > 0.0) { c = vec4<f32>(s.rgb / s.a, s.a); }
+  let g = u.amp * pow(abs(c), u.exps) + u.offs;
+  c = select(g, c, u.dis > vec4<f32>(0.5));
+  var o = vec4<f32>(c.rgb * c.a, c.a);
+  if (clampf) { o = clamp(o, vec4<f32>(0.0), vec4<f32>(1.0)); }
+  return o;
+}";
+
 	private void CreateCompositePipelines()
 	{
 		var module = Module(CompositeWgsl);
@@ -795,6 +834,10 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 		var combineModule = Module(EffectCombineWgsl);
 		EffectCombine = MakeComposite(combineModule, vs, fs, &replace, &ds);
 		EffectCombineBgl = wgpuRenderPipelineGetBindGroupLayout(EffectCombine, 0);
+
+		var colorFuncModule = Module(ColorFuncWgsl);
+		ColorFunc = MakeComposite(colorFuncModule, vs, fs, &replace, &ds);
+		ColorFuncBgl = wgpuRenderPipelineGetBindGroupLayout(ColorFunc, 0);
 	}
 
 	private IntPtr MakeComposite(IntPtr module, WGPUStringView vs, WGPUStringView fs, WGPUBlendState* blend, WGPUDepthStencilState* ds)
