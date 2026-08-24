@@ -100,7 +100,7 @@ public static partial class CoreApplication
 
 	/// <summary>
 	/// This property is kept in sync with the Application.RequestedTheme to enable
-	/// native UI elements in non Uno.WinRT to resolve the currently set Application theme.
+	/// native UI elements outside Uno.WinRT to resolve the currently set Application theme.
 	/// </summary>
 	internal static SystemTheme RequestedTheme { get; set; }
 

@@ -225,7 +225,7 @@
 	<IgnoreSet baseVersion="4.4.20">
 		<Types>
 			<!-- BEGIN Android Resources ignore -->
-			<Member fullName="Uno.WinRT.Resource" reason="Unused public member, performance improvement" />
+			<Member fullName="Uno.UWP.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Windows.Foundation.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Uno.Foundation.Logging.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Uno.UI.Composition.Resource" reason="Unused public member, performance improvement" />
@@ -235,7 +235,7 @@
 			<Member fullName="Uno.UI.FluentTheme.v2.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Uno.UI.Toolkit.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Uno.Xaml.Resource" reason="Unused public member, performance improvement" />
-			<Member fullName="Uno.WinRT.Resource" reason="Unused public member, performance improvement" />
+			<Member fullName="Uno.UWP.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Windows.Foundation.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Uno.Foundation.Logging.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Uno.UI.Composition.Resource" reason="Unused public member, performance improvement" />
@@ -245,7 +245,7 @@
 			<Member fullName="Uno.UI.FluentTheme.v2.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Uno.UI.Toolkit.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Uno.Xaml.Resource" reason="Unused public member, performance improvement" />
-			<Member fullName="Uno.WinRT.Resource" reason="Unused public member, performance improvement" />
+			<Member fullName="Uno.UWP.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Windows.Foundation.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Uno.UI.BindingHelper.Android.netcoremobile.Resource" reason="Unused public member, performance improvement" />
 			<Member fullName="Uno.UI.Composition.Resource" reason="Unused public member, performance improvement" />
@@ -348,7 +348,7 @@
 	<IgnoreSet baseVersion="4.5">
 	  <Types>
 		  <!-- BEGIN Android Resources ignore -->
-		  <Member fullName="Uno.WinRT.Resource" reason="Unused public member, performance improvement" />
+		  <Member fullName="Uno.UWP.Resource" reason="Unused public member, performance improvement" />
 		  <Member fullName="Windows.Foundation.Resource" reason="Unused public member, performance improvement" />
 		  <Member fullName="Uno.Foundation.Logging.Resource" reason="Unused public member, performance improvement" />
 		  <Member fullName="Uno.UI.Composition.Resource" reason="Unused public member, performance improvement" />
@@ -358,7 +358,7 @@
 		  <Member fullName="Uno.UI.FluentTheme.v2.Resource" reason="Unused public member, performance improvement" />
 		  <Member fullName="Uno.UI.Toolkit.Resource" reason="Unused public member, performance improvement" />
 		  <Member fullName="Uno.Xaml.Resource" reason="Unused public member, performance improvement" />
-		  <Member fullName="Uno.WinRT.Resource" reason="Unused public member, performance improvement" />
+		  <Member fullName="Uno.UWP.Resource" reason="Unused public member, performance improvement" />
 		  <Member fullName="Windows.Foundation.Resource" reason="Unused public member, performance improvement" />
 		  <Member fullName="Uno.Foundation.Logging.Resource" reason="Unused public member, performance improvement" />
 		  <Member fullName="Uno.UI.Composition.Resource" reason="Unused public member, performance improvement" />
@@ -368,7 +368,7 @@
 		  <Member fullName="Uno.UI.FluentTheme.v2.Resource" reason="Unused public member, performance improvement" />
 		  <Member fullName="Uno.UI.Toolkit.Resource" reason="Unused public member, performance improvement" />
 		  <Member fullName="Uno.Xaml.Resource" reason="Unused public member, performance improvement" />
-		  <Member fullName="Uno.WinRT.Resource" reason="Unused public member, performance improvement" />
+		  <Member fullName="Uno.UWP.Resource" reason="Unused public member, performance improvement" />
 		  <Member fullName="Windows.Foundation.Resource" reason="Unused public member, performance improvement" />
 		  <Member fullName="Uno.UI.BindingHelper.Android.net6.Resource" reason="Unused public member, performance improvement" />
 		  <Member fullName="Uno.UI.Composition.Resource" reason="Unused public member, performance improvement" />
