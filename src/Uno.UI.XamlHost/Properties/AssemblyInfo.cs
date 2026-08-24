@@ -10,7 +10,6 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Composition")]
 
 [assembly: InternalsVisibleTo("SamplesApp")]
-[assembly: InternalsVisibleTo("SamplesApp.macOS")]
 
 [assembly: InternalsVisibleTo("Uno.WinRT")]
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]

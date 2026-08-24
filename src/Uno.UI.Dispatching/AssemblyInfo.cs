@@ -22,7 +22,6 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.Win32")]
 
 [assembly: InternalsVisibleTo("SamplesApp")]
-[assembly: InternalsVisibleTo("SamplesApp.macOS")]
 
 [assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DGL")]
 

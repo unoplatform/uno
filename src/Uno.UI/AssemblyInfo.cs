@@ -16,7 +16,6 @@ using Uno.UI.Graphics;
 [assembly: InternalsVisibleTo("Uno.UI.Svg")]
 [assembly: InternalsVisibleTo("Uno.UI.XamlHost")]
 [assembly: InternalsVisibleTo("SamplesApp")]
-[assembly: InternalsVisibleTo("SamplesApp.macOS")]
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.X11")]

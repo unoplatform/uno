@@ -20,7 +20,6 @@ using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("SamplesApp")]
 [assembly: InternalsVisibleTo("SamplesApp.Windows")]
-[assembly: InternalsVisibleTo("SamplesApp.macOS")]
 
 [assembly: InternalsVisibleTo("Uno.WinUI.Graphics2DSK")]
 [assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DGL")]

@@ -22,7 +22,6 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.WinUI.Graphics3DGL")]
 
 [assembly: InternalsVisibleTo("SamplesApp")]
-[assembly: InternalsVisibleTo("SamplesApp.macOS")]
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]
 
