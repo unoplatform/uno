@@ -38,7 +38,7 @@ namespace Uno.UI.Extras
 				"NavigationCommand",
 				typeof(AppBarButton),
 				typeof(CommandBarExtensions),
-#if XAMARIN
+#if HAS_UNO
 				new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueInheritsDataContext)
 #else
 				new PropertyMetadata(null)
@@ -108,7 +108,7 @@ namespace Uno.UI.Extras
 				"BackButtonForeground",
 				typeof(Brush),
 				typeof(CommandBarExtensions),
-#if XAMARIN
+#if HAS_UNO
 				new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueInheritsDataContext)
 #else
 				new PropertyMetadata(null)

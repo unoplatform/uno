@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using Windows.Storage;
 
-#if XAMARIN || UNO_REFERENCE_API
+#if __ANDROID__ || __APPLE_UIKIT__ || UNO_REFERENCE_API
 using Microsoft.UI.Xaml.Controls;
 #else
 using Windows.Graphics.Imaging;

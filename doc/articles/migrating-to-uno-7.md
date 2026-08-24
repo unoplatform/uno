@@ -58,8 +58,7 @@ The `net*-maccatalyst` target framework is no longer supported. The `Uno.Sdk` no
 produces a Mac Catalyst head: `maccatalyst` is not a recognized `TargetFramework`, the
 `Platforms/MacCatalyst/` folder is no longer picked up, and the `MacCatalystProjectFolder`
 property is gone. The `__MACCATALYST__` conditional symbol is never defined, and the
-`.iOS.cs`, `.UIKit.cs`, and `.Apple.cs` file suffixes now apply only to `net10.0-ios` and
-`net10.0-tvos`.
+`.iOS.cs` and `.UIKit.cs` file suffixes now apply only to `net10.0-ios` and `net10.0-tvos`.
 
 macOS remains a fully supported target through the **`net10.0-desktop`** head, which runs
 on macOS with Skia rendering. To migrate:
@@ -122,6 +121,76 @@ shim: the old namespaces stop resolving.
 The other namespaces carried by that assembly keep their names, so code using
 `DiagnosticsOverlay` (`Uno.Diagnostics.UI`), `FromJsonExtension` (`Uno.UI.Markup`) or
 `ColorExtensions` / `ImageHelper` (`Uno.Helpers`) needs no change.
+
+### Platform targeting in multi-targeted libraries
+
+A library that multi-targets `net10.0-ios`, `net10.0-android`, or `net10.0-tvos` alongside a plain `net10.0` now
+keeps its platform-specific asset on the matching application head. In 6.x those assets were replaced by the
+library's `netX.0` asset, so `#if __IOS__` and `#if __ANDROID__` blocks inside a library never ran and a `netX.0`
+target framework was mandatory. Both are no longer true: the `net10.0-ios` assembly is what an iOS head compiles
+against and deploys.
+
+Three related mechanisms now follow the target framework rather than an internal runtime identifier, for class
+libraries and application heads alike:
+
+| Mechanism | 6.x | 7.0 |
+|---|---|---|
+| `android:` / `ios:` / `wasm:` XAML prefixes | never applied — every target rendered with Skia, which won | apply on `net*-android` / `net*-ios` / `net*-browserwasm` |
+| `tvos:` and `desktop:` XAML prefixes | did not exist | apply on `net*-tvos` / `net*-desktop` |
+| `winappsdk:` XAML prefix | spelled `win:` | `net*-windows10.x`; `win:` kept as a synonym |
+| `*.skia.cs`, `*.crossruntime.cs` | compiled only for `net*-desktop` | compiled for every target framework except the WinAppSDK one |
+| `__DESKTOP__` | application heads only | any `net*-desktop` project |
+| `__WASM__` | application heads, and libraries referencing the WebAssembly runtime package | any `net*-browserwasm` project |
+
+What this means for an upgrade:
+
+- Re-test `#if`-guarded code and conditional XAML inside multi-targeted libraries. Code that was written under the
+  assumption that it was dead on mobile now executes. In particular `not_android:` and `not_ios:` no longer apply
+  on Android and iOS.
+- Rename a `*.skia.cs` file that was really desktop-only to `*.desktop.cs`. It now compiles on every Uno target.
+- Recompile every multi-targeted library against 7.0. Its `net*-ios`/`net*-android` assets are now deployed rather
+  than discarded, so a stale asset built against the 6.x binaries fails at run time instead of being silently
+  replaced. The build reports [UNOB0020](xref:Build.Solution.error-codes) when it can detect this.
+- Nothing to do if your libraries already ship a `netX.0` asset. It is still the asset used by the
+  `net10.0-desktop` and `net10.0-browserwasm` heads, and workarounds built for the 6.x behavior keep working.
+
+> [!NOTE]
+> `*.skia.cs` means "compiled by Uno Platform rather than by WinUI". It does not name a drawing backend: `Uno.UI`
+> is compiled once and resolves its backend at run time.
+
+#### Removed XAML prefixes
+
+Every conditional prefix is now named after a target framework, so the prefixes that named a renderer or a
+long-gone distinction are removed. Markup using them no longer resolves and must be rewritten:
+
+| Removed prefix | Replacement |
+|---|---|
+| `skia:`, `netstdref:` | `not_winappsdk:` |
+| `not_skia:`, `not_netstdref:` | `winappsdk:` |
+| `androidskia:`, `iosskia:`, `tvosskia:`, `wasmskia:` | `android:`, `ios:`, `tvos:`, `wasm:` |
+| `macos:` | `desktop:` |
+| `not_mux:` | drop the attribute — it dates from UWP support and never applied |
+| `xamarin:`, `legacy:` | drop the prefix |
+
+#### Removed file suffixes
+
+| Removed suffix | Replacement |
+|---|---|
+| `*.Apple.cs` | `*.UIKit.cs` — the rule was always identical |
+| `*.reference.cs` | delete the file, or fold it into `*.crossruntime.cs`. It was gated on a build flavor an application never selected, so it compiled nowhere |
+| `*.iOSmacOS.cs` | `*.iOS.cs`. It named the native macOS target, removed in 7.0 |
+
+#### Removed preprocessor symbols
+
+`HAS_UNO_SKIA_WIN32`, `HAS_UNO_SKIA_X11`, `HAS_UNO_SKIA_MACOS`, `HAS_UNO_SKIA_LINUX_FB`,
+`HAS_UNO_SKIA_ANDROID`, `HAS_UNO_SKIA_APPLE_UIKIT`, `HAS_UNO_SKIA_HEADLESS`,
+`HAS_UNO_SKIA_WEBASSEMBLY_BROWSER` and their `__UNO_SKIA_*__` counterparts are gone
+([#17684](https://github.com/unoplatform/uno/issues/17684)).
+
+They read as a compile-time host discriminator but could never be one: the SDK references every desktop host
+package together, so all of them were defined at once in a `netX.0-desktop` head. Use
+`OperatingSystem.IsWindows()` / `IsLinux()` / `IsMacOS()`, which is the only check that can be correct for a
+target framework that runs on all three. `HAS_UNO_SKIA` and `__UNO_SKIA__` are unaffected.
 
 ### Public API removed
 
@@ -509,16 +578,18 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 2. Retarget any `net*-maccatalyst` head to `net10.0-desktop` and delete
    `Platforms/MacCatalyst/`.
 3. Recompile **every** Uno-dependent library against 7.0.
-4. Remove references to the deleted assemblies/types and to native element hosting.
-5. Delete native-only `FeatureConfiguration` calls.
-6. Replace the WASM DOM head with the Skia WebAssembly Browser head; remove any DOM/CSS
+4. Re-test `#if __IOS__` / `#if __ANDROID__` code and `ios:` / `android:` XAML inside multi-targeted libraries —
+   those assets are now deployed on mobile heads instead of being replaced by the `netX.0` asset.
+5. Remove references to the deleted assemblies/types and to native element hosting.
+6. Delete native-only `FeatureConfiguration` calls.
+7. Replace the WASM DOM head with the Skia WebAssembly Browser head; remove any DOM/CSS
    customization and `HtmlElement` usage.
-7. Remove manual `ConfigureUniversalImageLoader();` (Android) and other native bootstrap.
-8. Convert every `xmlns:…="clr-namespace:…"` declaration in your XAML to the `using:` form.
-9. Convert the Android `Application` class to override `CreateHost()` instead of passing an
+8. Remove manual `ConfigureUniversalImageLoader();` (Android) and other native bootstrap.
+9. Convert every `xmlns:…="clr-namespace:…"` declaration in your XAML to the `using:` form.
+10. Convert the Android `Application` class to override `CreateHost()` instead of passing an
    `AppBuilder` delegate to the base constructor.
-10. Rename `Uno.UI.Toolkit` usings and `xmlns` declarations to `Uno.UI.Extras`.
-11. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+11. Rename `Uno.UI.Toolkit` usings and `xmlns` declarations to `Uno.UI.Extras`.
+12. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)

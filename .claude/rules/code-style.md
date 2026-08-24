@@ -36,4 +36,16 @@ Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_o
 - A `// MUX Reference …` attribution line (above) is not a history comment — keep it.
 
 ## Conditional symbols
-`#if IS_UNIT_TESTS` and `#if !UNO_REFERENCE_API` gate code per build flavor; platform symbols are covered in `platform-targeting.md`. Global usings (`GlobalUsings.cs`) only define **Android** aliases (e.g. `AView`) and only under `__ANDROID__` — don't assume other platforms have global aliases.
+`#if IS_UNIT_TESTS` gates code per build flavor; platform symbols are covered in `platform-targeting.md`. Global usings (`GlobalUsings.cs`) only define **Android** aliases (e.g. `AView`) and only under `__ANDROID__` — don't assume other platforms have global aliases. `UNO_REFERENCE_API` is a legacy synonym of **`HAS_UNO`** ("drawn by Uno, not WinUI") — prefer `HAS_UNO` in new code.
+
+**A symbol being undefined does not make it deletable.** Before removing any `#if`, place it in one of these categories — the first four are deliberate and must be left alone:
+
+| Category | Examples | Why it looks dead |
+|---|---|---|
+| **Parked ported code** | `ApplicableRangeType`, `LOOPING_SELECTOR_AVAILABLE`, `FOCUS_IMPLEMENTED`, `WIP` | Never defined *by design* — keeps un-ported WinUI visible but uncompiled. Usually carries a `// UNO TODO` |
+| **Developer diagnostics** | `TRACE_HIT_TESTING`, `TRACE_LEAKS`, `DEBUG_VERBOSE`, `REPORT_FPS`, `CHECK_LAYOUTED` | Opt-in switches you define locally while debugging |
+| **MUX port fidelity** | `MUX_PRERELEASE`, `USING_TAEF`, `MUX_DEBUG`, `MUX` | Carried verbatim from upstream; the porting rules require fidelity |
+| **Vendored third-party** | the `NO_*` family and `NO_EXPOSED_NULLANNOTATIONS` (`WeCantSpell.Hunspell`), `SYSTEM_PRIVATE_CORELIB`, and everything under `System.Xaml*` / `XamlGenerationTests` | Still resynced from upstream — diverging makes the next merge harder |
+| **Genuinely dead** | a platform Uno no longer targets, or a renderer removed in 7.0 | Safe to remove *only* after checking the code behind it isn't reachable by another route |
+
+The last row is the trap: `SUPPORTS_NATIVE_DATEPICKER` looked dead but guarded a live Skia-Android path, so the undefined symbol was the bug, not the code. Symbols emitted by generators (`UNO_MIXIN_GENERATION`) or consumed via `[Conditional("X")]` (`IS_CI_OR_DEBUG`) are invisible to a plain `#if` search — grep for the string, not just the directive.

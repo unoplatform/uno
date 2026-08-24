@@ -5,11 +5,8 @@
     xmlns:legacy="using:Uno.UI.Controls.Legacy"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:ios="http://uno.ui/ios#using:Uno.UI.Controls.Legacy"
-	xmlns:android="http://uno.ui/android#using:Uno.UI.Controls.Legacy"
 	xmlns:not_win="http://uno.ui/not_win"
-	xmlns:wasm="http://uno.ui/wasm"
-	mc:Ignorable="d not_win ios android wasm">
+	mc:Ignorable="d not_win">
 
 
 	<!-- Default style for Uno.UI.Controls.Legacy.ProgressRing -->
@@ -282,25 +279,7 @@
 		</Setter>
 	</Style>
 
-	<android:Style TargetType="legacy:ProgressRing" x:Key="NativeWuxProgressRingStyle">
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="legacy:ProgressRing">
-					<android:NativeProgressRing />
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</android:Style>
 
-	<ios:Style TargetType="legacy:ProgressRing" x:Key="NativeWuxProgressRingStyle">
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="legacy:ProgressRing">
-					<ios:NativeProgressRing />
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</ios:Style>
 
 	<Style TargetType="legacy:ProgressRing" BasedOn="{StaticResource DefaultWuxProgressRingStyle}" />
 
