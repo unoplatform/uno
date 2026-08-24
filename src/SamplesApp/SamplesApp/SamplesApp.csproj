@@ -41,13 +41,13 @@
 		<AssemblyName Condition="'$(_Platform)' == 'windows'">SamplesApp.Windows</AssemblyName>
 
 		<!--
-		Uno.Sdk sets UnoRuntimeIdentifier=Skia for desktop (Uno.Common.Desktop.targets) but not for
+		Uno.Sdk sets UnoRuntimeFlavor=Skia for desktop (Uno.Common.Desktop.targets) but not for
 		browserwasm, where this is the only source — without it Uno.CrossTargetting drops the .skia.cs
 		variants and __SKIA__. It must stay empty on android/ios/tvos so the native file suffixes win,
 		and on WinUI (native rendering).
 		-->
 		<_IsDesktopOrWasm Condition="'$(_Platform)' == 'desktop' OR '$(_Platform)' == 'browserwasm'">true</_IsDesktopOrWasm>
-		<UnoRuntimeIdentifier Condition="'$(UnoRuntimeIdentifier)' == '' AND '$(_IsDesktopOrWasm)' == 'true'">Skia</UnoRuntimeIdentifier>
+		<UnoRuntimeFlavor Condition="'$(UnoRuntimeFlavor)' == '' AND '$(_IsDesktopOrWasm)' == 'true'">Skia</UnoRuntimeFlavor>
 		<!-- True for every non-WinUI TFM (desktop/wasm/android/ios/tvos) — gates the Skia framework refs. -->
 		<_IsSkiaTfm Condition="'$(_Platform)' != 'windows'">true</_IsSkiaTfm>
 		<!-- Apple UIKit (iOS + tvOS; no MacCatalyst). NOTE: these TFMs require macOS to build — not

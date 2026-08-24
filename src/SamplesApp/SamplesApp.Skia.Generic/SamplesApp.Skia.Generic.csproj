@@ -151,7 +151,7 @@
 		<Exec Command="rsync -a --exclude='$(AssemblyName).app' '$(OutputPath)/' '$(_AppBundleMacOSDir)/'" />
 		<Message Importance="high" Text="Created macOS app bundle: $(_AppBundleDir)" />
 	</Target>
-	<!--<Target Name="_UnoOverrideReferenceCopyLocalPaths" Condition="'$(UnoRuntimeIdentifier)'!=''" BeforeTargets="_CopyFilesMarkedCopyLocal">
+	<!--<Target Name="_UnoOverrideReferenceCopyLocalPaths" Condition="'$(UnoRuntimeFlavor)'!=''" BeforeTargets="_CopyFilesMarkedCopyLocal">
 
 		<ItemGroup>
 			--><!--
@@ -171,7 +171,7 @@
 
 	</Target>-->
 
-	<!--<Target Name="_UnoAdjustUserRuntimeAssembly" Condition="'$(UnoRuntimeIdentifier)'!=''" AfterTargets="_ComputeUserRuntimeAssemblies">
+	<!--<Target Name="_UnoAdjustUserRuntimeAssembly" Condition="'$(UnoRuntimeFlavor)'!=''" AfterTargets="_ComputeUserRuntimeAssemblies">
 
 		<ItemGroup>
 			--><!--

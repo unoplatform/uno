@@ -130,29 +130,49 @@ exercised the do-nothing path and would have stayed green through a change that 
   frameworks, and whether `SkiaSharp.Skottie` and `Svg.Skia` are usable on `browserwasm` has to be
   established first. Separate change.
 
-## 6. What `UnoRuntimeIdentifier` still means
+## 6. The two names, now separated
 
-One thing, for library authors only: the `uno-runtime/<identifier>` folder a **cross-runtime library** packs
-its per-runtime output into (`build/nuget/uno.winui.cross-runtime.targets`). It is narrowed and documented
-rather than renamed — adding a fresh alias to a mechanism we intend to retire is the wrong kind of cleanup.
+The property carried two unrelated jobs under one name. They are now two names:
 
-That authoring model is superseded by multi-targeting now that per-platform target frameworks behave normally
-(spec 056 and the 7.0 platform-asset change). Documented as superseded; not removed, because published
-packages depend on the *consuming* half.
+| | In-repo build flavour | Library-authoring contract |
+|---|---|---|
+| Property | `UnoRuntimeFlavor` | `UnoRuntimeIdentifier` |
+| Set by | the 33 multi-flavour and single-flavour projects under `src/` | a third-party cross-runtime library |
+| Values | `Generic`, `Wasm`, `Reference` | the `uno-runtime/<name>` folder to pack into |
+| Read by | `src/Uno.CrossTargetting.targets` (never packed) | `build/nuget/uno.winui.cross-runtime.targets` (shipped) |
+
+`UnoRuntimeFlavor` names **which build of a multi-flavour project this is** — nothing more. It is not a runtime
+identifier and not a drawing backend: `Uno.UI` compiles once and resolves its backend at run time, so no
+build-time value can name one. `Skia` became `Generic` because that flavour is the build every drawn-by-Uno
+target framework shares; `WebAssembly` became `Wasm`, matching `*.wasm.cs`, `wasm:` and `__WASM__`.
+
+**Why the rename could not move the published layout.** `build/nuget/Uno.WinRT.nuspec` and
+`Uno.Foundation.nuspec` hardcode both the source path (`bin\Uno.WinRT.Skia\…`, a project name) and the target
+(`uno-runtime\net11.0\skia`). Nothing there reads the property, and no in-repo project imports the
+`build/nuget` packing targets — those exist for third-party library authors, where `UnoRuntimeIdentifier`
+remains the contract. The only in-repo place a flavour value became a folder path was the
+`UnoNugetOverrideVersion` dev loop, which now maps through `_UnoRuntimeFolderName` (`Generic` → `skia`,
+`Wasm` → `webassembly`) so it writes where the packages actually ship.
+
+The library-authoring model is superseded by multi-targeting now that per-platform target frameworks behave
+normally (spec 056 and the 7.0 platform-asset change). Documented as superseded; not removed, because
+published packages depend on the *consuming* half.
 
 ## 7. Deliberately not done
 
 - **Renaming the `uno-runtime/<tfm>/{skia,webassembly}` folders.** See §4.1. If it ever happens it needs the
   UNOB0023 guard shipped and soaked first, plus a released transition period probing both names.
-- **The in-repo `UnoRuntimeIdentifier` → `UnoRuntimeFlavor` rename.** `src/Uno.CrossTargetting.targets` uses
-  the property for file-suffix and symbol selection across the whole framework, *and* the same value feeds the
-  packed folder name through `build/nuget/*.targets`. Renaming the property without first decoupling the
-  folder name from its value would silently change the published layout — exactly the failure §4.1 is about.
-  It is a self-contained follow-up: introduce a folder-name map, then rename.
 - **The third-party wasm enumeration defect.** On a browser head, a third-party cross-runtime package's
   assembly is taken from the shared folder rather than its browser build. Real, but a behaviour change for
   shipped packages and not what this work is about.
-- **`__SKIA__`, `HAS_UNO_SKIA`, `*.skia.cs`.** Spec 056 owns these.
+- **`__SKIA__`, `HAS_UNO_SKIA`, `*.skia.cs`.** Spec 056 owns these. `UnoRuntimeFlavor=Generic` now defines
+  `__SKIA__` and selects `*.skia.cs`, so the symbol and the suffix are the last in-repo spellings of `skia` on
+  this axis. Renaming them is mechanical but touches thousands of `#if` sites, which is why it is its own
+  change rather than a rider on this one.
+- **The `uno-runtime/<tfm>/{skia,webassembly}` folder names themselves**, and the `skia` host pseudo-platform
+  in the hot-reload protocol. Both are shipped surface that a drawing-backend axis would actually collide
+  with, and both need coordinating with the drawing-backend work (unoplatform/uno#24153) rather than being
+  decided here.
 - **The `skia` host pseudo-platform in the hot-reload protocol** — reported for a desktop head by
   `GetRuntimeTargetFramework` and matched server-side by the `['', 'desktop', 'skia']` family. It re-occupies
   the name the moment this work frees it, so freeing `skia` is incomplete until it moves. Belongs with the
