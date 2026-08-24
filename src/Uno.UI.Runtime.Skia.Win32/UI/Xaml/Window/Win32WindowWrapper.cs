@@ -59,6 +59,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	// same factory the renderer uses (rather than the global DrawingFactory.Current).
 	internal IDrawingFactory GraphicsFactory { get; private set; } = null!;
 	private bool _vulkanSuppressedForBackdrop;
+	private FrameworkElement? _frameThemeSource;
 
 	private Win32Accessibility? _accessibility;
 	private bool _rendererDisposed;
@@ -157,9 +158,37 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 	}
 
-	private unsafe void OnSystemThemeChanged(object? _, EventArgs __)
+	private void OnSystemThemeChanged(object? _, EventArgs __) => UpdateFrameTheme();
+
+	private void OnContentActualThemeChanged(FrameworkElement sender, object args) => UpdateFrameTheme();
+
+	/// <summary>
+	/// Applies the theme DWM uses for this window's caption and, on Windows 11, for the tint of a
+	/// system backdrop.
+	/// </summary>
+	/// <remarks>
+	/// MUX drives <c>SystemBackdropConfiguration.Theme</c> from <c>XamlRoot.Content.ActualTheme</c>
+	/// (SystemBackdrop_Partial.cpp), so an app running light on a dark desktop gets a light material.
+	/// DWM exposes a single per-window flag for both the material tint and the caption, so this follows
+	/// the content's theme rather than the desktop's.
+	/// </remarks>
+	private unsafe void UpdateFrameTheme()
 	{
-		BOOL value = Win32SystemThemeHelperExtension.Instance.GetSystemTheme() is SystemTheme.Dark;
+		if (_window?.Content is FrameworkElement content && !ReferenceEquals(content, _frameThemeSource))
+		{
+			if (_frameThemeSource is not null)
+			{
+				_frameThemeSource.ActualThemeChanged -= OnContentActualThemeChanged;
+			}
+
+			_frameThemeSource = content;
+			content.ActualThemeChanged += OnContentActualThemeChanged;
+		}
+
+		BOOL value = _frameThemeSource is { } themeSource
+			? themeSource.ActualTheme == ElementTheme.Dark
+			: Application.Current?.RequestedTheme == ApplicationTheme.Dark;
+
 		var hResult = PInvoke.DwmSetWindowAttribute(_hwnd, DWMWINDOWATTRIBUTE.DWMWA_USE_IMMERSIVE_DARK_MODE, &value, (uint)Marshal.SizeOf(value));
 		if (hResult.Failed)
 		{
@@ -525,6 +554,11 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		(_renderer as IDisposable)?.Dispose();
 		_context.Dispose();
 		_rendererDisposed = true;
+		if (_frameThemeSource is not null)
+		{
+			_frameThemeSource.ActualThemeChanged -= OnContentActualThemeChanged;
+			_frameThemeSource = null;
+		}
 		DestroyIcons();
 		XamlRootMap.Unregister(XamlRoot!);
 	}
@@ -1050,6 +1084,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// area ("sheet of glass" MARGINS {-1,-1,-1,-1}) so the transparent client pixels reveal the
 		// material instead of black; otherwise it restores the title-bar/border configuration. Keeping
 		// this in the presenter avoids fighting it over the frame margins and corner preference.
+		UpdateFrameTheme();
 		UpdateClientAreaExtension();
 		RecreateRendererForBackdropChange();
 	}
