@@ -531,6 +531,8 @@
 	flattens the output to mipmap-<dpi>\icon.png, which is what @mipmap/icon resolves to.
 	Android only: on desktop the relative Link is what lays the scale-suffixed logos out under Assets\.
 	The resizetizer warns that UnoIcon.Link "will be ignored"; it is not, it is read as the output alias.
+	TODO Uno (resizetizer app kind): drop once the Uno.Resizetizer version in Uno.Sdk's packages.json
+	carries unoplatform/uno.resizetizer#377 — android then stops importing the windows/skia targets.
 	-->
 	<ItemGroup Condition="'$(_Platform)' == 'android'">
 		<UnoIcon Update="Assets\Icons\icon.svg" Link="icon.svg" />
@@ -662,6 +664,9 @@
 	no mipmap/* resources and aapt2 fails on the manifest's @mipmap/icon (APT2260), while ios silently
 	ships an icon.ico instead of an asset catalog. This has to sit below the import above, because that
 	is where the package's targets — and the property they overwrite — come from.
+	TODO Uno (resizetizer app kind): this block and the splash manifest one below both go away once the
+	Uno.Resizetizer version in Uno.Sdk's packages.json carries unoplatform/uno.resizetizer#377, which
+	stops a Skia-rendered platform head matching the skia app kind in the first place.
 	-->
 	<PropertyGroup Condition="'$(_Platform)' == 'android'">
 		<UnoResizetizerPlatformType>android</UnoResizetizerPlatformType>
@@ -669,4 +674,31 @@
 	<PropertyGroup Condition="'$(_Platform)' == 'ios'">
 		<UnoResizetizerPlatformType>ios</UnoResizetizerPlatformType>
 	</PropertyGroup>
+
+	<!--
+	Second casualty of that same double match: the apple and the skia targets files each define a target
+	named ProcessUnoSplashScreens, and the skia one is imported last, so it replaces the apple one. Only
+	the apple version publishes the UnoInfo.plist that GenerateUnoSplashApple writes as a
+	PartialAppManifest, and that partial manifest is what repoints UILaunchStoryboardName at the generated
+	UnoSplash storyboard. Left unpublished, the bundle keeps Info.plist's UILaunchStoryboardName=LaunchScreen
+	— a storyboard nothing ships — and UIKit aborts on launch with "Could not find a storyboard named
+	'LaunchScreen'", before a single runtime test runs. Republish it under a name nothing can overwrite,
+	through CollectAppManifestsDependsOn, which is the extension point Xamarin.Shared.targets documents for
+	adding PartialAppManifest items: it runs ahead of _CompileAppManifestInputs, which snapshots them.
+	-->
+	<PropertyGroup Condition="'$(_Platform)' == 'ios'">
+		<CollectAppManifestsDependsOn>
+			$(CollectAppManifestsDependsOn);
+			_UnoSamplesAppPublishSplashPartialManifest
+		</CollectAppManifestsDependsOn>
+	</PropertyGroup>
+	<Target Name="_UnoSamplesAppPublishSplashPartialManifest"
+			DependsOnTargets="ProcessUnoSplashScreens"
+			Condition="'@(UnoSplashScreen)' != '' AND '$(DesignTimeBuild)' != 'true'">
+		<ItemGroup>
+			<_UnoSamplesAppSplashPartialManifest Include="$(_UnoIntermediateSplashScreen)UnoInfo.plist" Condition="Exists('$(_UnoIntermediateSplashScreen)UnoInfo.plist')" />
+			<PartialAppManifest Include="@(_UnoSamplesAppSplashPartialManifest)" />
+			<FileWrites Include="@(_UnoSamplesAppSplashPartialManifest)" />
+		</ItemGroup>
+	</Target>
 </Project>
