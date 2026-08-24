@@ -104,6 +104,16 @@ exercised the do-nothing path and would have stayed green through a change that 
   described them, so who sets them is unknown, and silently dropping their effect is the outcome to prevent.
 - `_UnoValidateReferencesUnoRuntimeIdentifier` is renamed to `_UnoValidateRuntimeAssets`, with the old name
   kept as an alias target so `Before/AfterTargets` hooks still order correctly.
+- **The `MediaPlayerElement` half of UNO0007 is removed** — a consumer-visible diagnostic, called out rather
+  than slipped in. Both of its branches were unreachable: one compared `UnoRuntimeIdentifier` against a value
+  no shipped package has set since native WebAssembly was removed, the other looked for
+  `Uno.UI.Runtime.Skia.Gtk`. All three packages it recommended no longer ship. The `ProgressRing` half does
+  not read the property and is untouched.
+- **The Lottie and Svg dependency checks keep firing on exactly the heads they fired on before** (desktop and
+  headless), now testing that condition directly. They have never run on mobile or browser heads, so the
+  dependency gap there is real — widening them turns a silent gap into a new hard build error on four target
+  frameworks, and whether `SkiaSharp.Skottie` and `Svg.Skia` are usable on `browserwasm` has to be
+  established first. Separate change.
 
 ## 6. What `UnoRuntimeIdentifier` still means
 
