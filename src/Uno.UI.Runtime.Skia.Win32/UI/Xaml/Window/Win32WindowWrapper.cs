@@ -52,7 +52,15 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private static readonly Dictionary<HWND, Win32WindowWrapper> _hwndToWrapper = new();
 
 	private readonly HWND _hwnd;
+<<<<<<< HEAD
 	private readonly IRenderer _renderer;
+=======
+
+	// The negotiated backend's drawing factory, so native-element hosting composes clip geometry through the
+	// same factory the renderer uses (rather than the global DrawingFactory.Current).
+	internal IDrawingFactory GraphicsFactory { get; private set; } = null!;
+	private bool _vulkanSuppressedForBackdrop;
+>>>>>>> 6808899 (fix(win32): Show system backdrops on the default renderer)
 
 	private Win32Accessibility? _accessibility;
 	private bool _rendererDisposed;
@@ -104,6 +112,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Win32Host.RegisterWindow(_hwnd);
 
+<<<<<<< HEAD
 		_renderer = FeatureConfiguration.Rendering.UseVulkanOnWin32
 			? (IRenderer?)VulkanRenderer.TryCreateVulkanRenderer(_hwnd)
 				?? (FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
@@ -115,6 +124,9 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = _renderer.IsSoftware();
 
+=======
+		InitializeGraphics();
+>>>>>>> 6808899 (fix(win32): Show system backdrops on the default renderer)
 		InitializeRenderThread();
 
 		RegisterForBackgroundColor();
@@ -896,7 +908,76 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;
 
+<<<<<<< HEAD
 	private void RegisterForBackgroundColor()
+=======
+	/// <summary>
+	/// Negotiates the graphics context and backend for this window.
+	/// </summary>
+	private void InitializeGraphics()
+	{
+		_vulkanSuppressedForBackdrop = false;
+
+		// Register the per-kind window+context factory and negotiate; the app-registered backend owns the kind order.
+		// Set on every negotiation, as the factory is process-wide and the last created window owns it.
+		GraphicsRegistry.ContextFactory = kind => Task.FromResult(CreateWindowAndContext(kind));
+
+		var init = GraphicsRegistry.Initialize();
+		_context = init.Context;
+		GraphicsFactory = init.DrawingFactory;
+		_renderer = init.Renderer;
+
+		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = init.Context.Kind == GraphicsContextKind.Software;
+	}
+
+	/// <summary>
+	/// Whether negotiation should skip Vulkan for this window.
+	/// </summary>
+	/// <remarks>
+	/// Vulkan presents through a swapchain bound straight to the HWND, bypassing the window's
+	/// redirection surface - which is the surface DWM composites against the extended frame. A window
+	/// with a system backdrop would therefore show a flat opaque rectangle instead of the material, so
+	/// those windows use OpenGL (or software), both of which composite their per-pixel alpha correctly.
+	/// Vulkan is kept when the app forced it by disabling both of those.
+	/// </remarks>
+	private bool ShouldSuppressVulkanForBackdrop()
+	{
+		var disabled = GraphicsRegistry.DisabledContextKinds;
+		return HasActiveSystemBackdrop()
+			&& !(disabled.Contains(GraphicsContextKind.OpenGL) && disabled.Contains(GraphicsContextKind.Software));
+	}
+
+	/// <summary>
+	/// Renegotiates the graphics context when a backdrop is attached to, or removed from, an already-shown window.
+	/// </summary>
+	private void RecreateRendererForBackdropChange()
+	{
+		if (_rendererDisposed)
+		{
+			return;
+		}
+
+		var needsRenegotiation = ShouldSuppressVulkanForBackdrop()
+			? _context.Kind == GraphicsContextKind.Vulkan
+			: _vulkanSuppressedForBackdrop;
+		if (!needsRenegotiation)
+		{
+			return;
+		}
+
+		// Same ordering as Dispose: joining the render thread first makes the backend and context
+		// unreachable from any in-flight present before they are freed.
+		StopRenderThread();
+		(_renderer as IDisposable)?.Dispose();
+		_context.Dispose();
+
+		InitializeGraphics();
+		InitializeRenderThread();
+		_renderThread?.SignalNewFrame();
+	}
+
+	Windows.UI.Color? IXamlRootHost.BackgroundColor
+>>>>>>> 6808899 (fix(win32): Show system backdrops on the default renderer)
 	{
 		UpdateRendererBackground();
 		_backgroundDisposable = _window?.RegisterBackgroundChangedEvent((_, _) => UpdateRendererBackground());
@@ -988,5 +1069,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// material instead of black; otherwise it restores the title-bar/border configuration. Keeping
 		// this in the presenter avoids fighting it over the frame margins and corner preference.
 		UpdateClientAreaExtension();
+		RecreateRendererForBackdropChange();
 	}
 }
