@@ -1,4 +1,4 @@
----
+﻿---
 uid: Uno.Development.MigratingToUno7
 ---
 
@@ -309,6 +309,12 @@ re-baseline visual tests:
   appearance changes on Android/iOS.
 - **Animation timing:** Skia interpolation replaces `CABasicAnimation` — standard easing
   matches; exotic timing may not.
+- **`ContentControl` subclasses without a `ControlTemplate`:** Uno used to bypass the
+  `ContentPresenter` and parent `Content` directly when a control had no template at all,
+  so a custom `ContentControl` that set its own `DefaultStyleKey` but shipped no
+  `Template` setter still rendered its content. That leniency is gone; as on WinUI, such a
+  control now renders nothing. Give it a default style with a `Template`, or leave
+  `DefaultStyleKey` alone so it inherits the `ContentControl` default template.
 
 ### Type-hierarchy changes (WinUI parity)
 
