@@ -56,25 +56,44 @@ jobs:
       artifact: runtime-tests-wasm-skia-failures
       path: '$(build.sourcesdirectory)/build/uitests-failure-results'
 
+  # Marks the test step as not-yet-reached. The publish tasks below key off this so a job killed
+  # during dependency install reports one failure (the real one) instead of also claiming the
+  # results file is missing. Fail-safe: only an explicit 'false' suppresses the publish.
+  - bash: echo "##vso[task.setvariable variable=UNO_TESTS_STEP_RAN]false"
+    displayName: Arm the test-step sentinel
+
   - template: ../templates/dotnet-install.yml
 
   - template: ../templates/linux-install-deps.yml
+    parameters:
+      # This job only runs Chrome under a virtual display. The vlc/gtk/webkit -dev packages in
+      # the default set exist for the Skia desktop X11 host and pull ~200 MB nothing here loads.
+      packages: 'xvfb fluxbox'
 
   - bash: |
         set -euo pipefail
         set -x
         # We use google-chrome instead of chromium-browser because ubuntu uses snap
         # for the chromium package, and snapd isn't available in CI
-        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-        sudo apt-get update
-        sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
+        wget --tries=3 --timeout=60 https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        # No apt-get update here: the .deb carries its own dependency list, and refreshing the
+        # mirror indexes is exactly where the long stalls happen.
+        apt_opts="-o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Dpkg::Use-Pty=0"
+        if ! sudo timeout --kill-after=30s 5m apt-get install -y $apt_opts ./google-chrome-stable_current_amd64.deb; then
+          # Chrome pulls its runtime dependencies from the .deb; refresh the indexes only if
+          # they turn out not to be resolvable from the pre-baked ones.
+          sudo dpkg --configure -a || true
+          sudo timeout --kill-after=30s 3m apt-get update $apt_opts
+          sudo timeout --kill-after=30s 5m apt-get install -y $apt_opts ./google-chrome-stable_current_amd64.deb
+        fi
     displayName: Install chrome
+    timeoutInMinutes: 10
 
   - bash: build/test-scripts/wasm-run-skia-runtime-tests.sh
     displayName: Run WebAssembly Skia Runtime Tests
 
   - task: PublishTestResults@2
-    condition: always()
+    condition: and(always(), ne(variables['UNO_TESTS_STEP_RAN'], 'false'))
     inputs:
       testRunTitle: 'WebAssembly Skia Runtime Tests $(UITEST_RUNTIME_TEST_GROUP)'
       testResultsFormat: 'NUnit'
@@ -83,7 +102,7 @@ jobs:
       failTaskOnMissingResultsFile: true
 
   - task: PublishBuildArtifacts@1
-    condition: always()
+    condition: and(always(), ne(variables['UNO_TESTS_STEP_RAN'], 'false'))
     displayName: Publish Failed Tests Results
     retryCountOnTaskFailure: 3
     inputs:

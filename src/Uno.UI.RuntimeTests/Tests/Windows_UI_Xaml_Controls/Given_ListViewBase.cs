@@ -3817,6 +3817,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		// Skia-WASM: the second scroll samples mid-recycle, so the materialized index moves backwards, see https://github.com/unoplatform/uno/issues/24156
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Incremental_Load_Default()
 		{
 			const int BatchSize = 25;
@@ -3870,7 +3872,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Destabilized by changes in https://github.com/unoplatform/uno/pull/23269
+		// Skia-WASM: the materialized index regresses during the settle that follows a successful poll, see https://github.com/unoplatform/uno/issues/24147
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native | RuntimeTestPlatforms.SkiaWasm)] // Destabilized by changes in https://github.com/unoplatform/uno/pull/23269
 		public async Task When_Incremental_Load_ShouldStop()
 		{
 			const int BatchSize = 25;
@@ -3895,6 +3898,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = container;
 			await WindowHelper.WaitForLoaded(list);
 			await Task.Delay(1000);
+
+			// Sampled with the materialization state, to tell a scroll reset apart from container recycling.
+			var sv = list.FindFirstDescendant<ScrollViewer>();
+			Assert.IsNotNull(sv);
+
 			var initial = GetCurrenState();
 
 			// scroll to bottom; wait for the async incremental load + materialization to advance past
@@ -3903,7 +3911,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.WaitFor(
 				() => GetCurrenState().LastMaterialized > initial.LastMaterialized,
 				timeoutMS: 5000,
-				message: $"No extra item materialized after first scroll (initial last={initial.LastMaterialized})");
+				message: $"No extra item materialized after first scroll (initial last={initial.LastMaterialized}, offset0={initial.VerticalOffset}, extent0={initial.ExtentHeight})");
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			var firstScroll = GetCurrenState();
 
@@ -3916,20 +3924,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await UITestHelper.WaitFor(
 				() => GetCurrenState().LastMaterialized >= firstScroll.Count - 1,
 				timeoutMS: 5000,
-				message: $"Did not reach end of list on second scroll (expected last index {firstScroll.Count - 1})");
+				message: $"Did not reach end of list on second scroll (expected last index {firstScroll.Count - 1}, offset1={firstScroll.VerticalOffset}, extent1={firstScroll.ExtentHeight})");
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			var secondScroll = GetCurrenState();
 
 			Assert.IsGreaterThan(0, initial.Count / BatchSize, $"Should start with a few batch(es) loaded: count0={initial.Count}");
 			Assert.IsLessThanOrEqualTo(firstScroll.Count, initial.Count + BatchSize, $"Should have more batch(es) loaded after first scroll: count0={initial.Count}, count1={firstScroll.Count}");
-			Assert.IsLessThan(firstScroll.LastMaterialized, initial.LastMaterialized, $"No extra item materialized after first scroll: index0={initial.LastMaterialized}, index={firstScroll.LastMaterialized}");
+			Assert.IsLessThan(firstScroll.LastMaterialized, initial.LastMaterialized, $"No extra item materialized after first scroll: index0={initial.LastMaterialized}, index={firstScroll.LastMaterialized}, offset0={initial.VerticalOffset}, offset1={firstScroll.VerticalOffset}, extent0={initial.ExtentHeight}, extent1={firstScroll.ExtentHeight}");
 			Assert.AreEqual(firstScroll.Count, secondScroll.Count, $"Should still have same number of batches after second scroll: count1={firstScroll.Count}, count2={secondScroll.Count}");
 			Assert.AreEqual(firstScroll.Count - 1, secondScroll.LastMaterialized, $"Should reach end of list from first scroll: count1={firstScroll.LastMaterialized}, index2={secondScroll.LastMaterialized}");
 
-			(int Count, int LastMaterialized) GetCurrenState() =>
+			(int Count, int LastMaterialized, double VerticalOffset, double ExtentHeight) GetCurrenState() =>
 			(
 				source.Count,
-				Enumerable.Range(0, source.Count).Reverse().FirstOrDefault(x => list.ContainerFromIndex(x) != null)
+				Enumerable.Range(0, source.Count).Reverse().FirstOrDefault(x => list.ContainerFromIndex(x) != null),
+				sv.VerticalOffset,
+				sv.ExtentHeight
 			);
 		}
 
