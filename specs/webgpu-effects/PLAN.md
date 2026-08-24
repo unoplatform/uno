@@ -112,11 +112,24 @@ Landed + Skia≡WebGPU parity-validated on X11/lavapipe (runtime tests `Given_Ef
 
 Parity tests green on both backends: Invert→Cyan, Grayscale, GaussianBlur-preserves-interior, Multiply-blend.
 
-REMAINING (long tail — each a per-effect shader port + parity test):
-- **Contrast, GammaTransfer** — per-channel non-linear (Skia uses SkSL runtime shaders; port the exact quadratic/pow to
-  WGSL). Currently blank on WebGPU (recipe doesn't cover them). LuminanceToAlpha/LinearTransfer/Modulate already render
-  via the recipe; route through the evaluator for one unified path when convenient.
-- **Phase 4**: Lighting (distant/point/spot × diffuse/specular — normal-from-alpha-gradient shaders) + WhiteNoise.
+Landed on WebGPU + value-verified (NOT always-on parity tests — see the runtime-shader note below):
+- **Contrast, GammaTransfer** — per-channel non-linear passes (ColorFunc WGSL: Contrast quadratic S-curve clamping the
+  input; Gamma amp*pow(|c|,exp)+off per channel). GammaTransfer(exp=2, gray 128)=FF404040 verified exact on WebGPU.
+- **CrossFade** (EffectCombine linear lerp) — CrossFade(red,blue,0.5)=FF800080 verified exact on WebGPU.
+- **WhiteNoise** (`015a636b640`) — procedural hash+bilinear generator (EffectNoise WGSL), no source input.
+
+RUNTIME-SHADER PARITY LIMITATION (root-caused this session): Contrast / GammaTransfer / CrossFade render BLANK
+(00000000) on the **Skia** backend in the lavapipe / SW-Vulkan runtime-test environment — Skia realizes them via SkSL
+`SKRuntimeEffect` image filters, whose runtime-effect path produces no output here, so the fuser returns a null filter
+and nothing is painted (all built-in-colorfilter effects and the two-texture blend path render fine). This is a
+Skia-in-this-env limitation, not a WebGPU gap: WebGPU renders all three correctly (values above). Consequently these
+three can't be added to the always-on `Given_EffectBrush_Parity` suite (they would fail the default Skia backend on
+CI). True Skia≡WebGPU parity for them needs a Skia GPU/CPU path that supports SkSL runtime effects (confirm on real
+hardware). The 4 always-on parity tests (Invert, Grayscale, GaussianBlur, Multiply) stay green on BOTH backends.
+
+REMAINING:
+- **Phase 4 Lighting** — distant/point/spot × diffuse/specular (normal-from-alpha-gradient + Phong). NOT YET
+  implemented on WebGPU. Deferred: it is in the same SkSL-image-filter class as the three above (Skia blanks it here),
+  so it has no golden to validate against in this environment; implementing ~150 lines of WGSL blind would violate the
+  parity acceptance bar. Do it once a runtime-effect-capable Skia validation path exists.
 - **Backdrop trees**: fold the backdrop capture (acrylic kind-6 path) into the evaluator so SourceInput sub-trees compose.
-- **CrossFade Skia divergence**: CrossFade(red,blue,0.5) renders correct (128,0,128) on WebGPU but BLANK on Skia in the
-  harness (Multiply with the same 2-ColorBrush setup passes) — investigate the Skia-side CrossFade path.
