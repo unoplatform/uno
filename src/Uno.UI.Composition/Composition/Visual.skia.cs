@@ -429,7 +429,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					renderData = recording.Finish();
 				}
 
-				session.Session.SaveLayer(ShadowState.ShadowFilter);
+				session.Session.SaveLayer(ShadowState.GetShadowFilter(session.Session.Factory));
 				renderData.Replay(session.Session);
 				session.Session.Restore();
 

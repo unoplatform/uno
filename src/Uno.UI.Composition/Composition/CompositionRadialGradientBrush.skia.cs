@@ -7,7 +7,7 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionRadialGradientBrush : CompositionGradientBrush
 	{
-		private protected override bool TryBuildShader(Rect bounds, float opacity, out IShader? shader)
+		private protected override bool TryBuildShader(IDrawingFactory factory, Rect bounds, float opacity, out IShader? shader)
 		{
 			var center = EllipseCenter;
 			var gradientOrigin = GradientOriginOffset;
@@ -29,7 +29,7 @@ namespace Microsoft.UI.Composition
 			gradientOrigin.X += (float)bounds.Left;
 			gradientOrigin.Y += (float)bounds.Top;
 
-			shader = DrawingFactory.Current.CreateRadialGradientShader(
+			shader = factory.CreateRadialGradientShader(
 				center, gradientOrigin, radius.X, radius.Y, GetNeutralColors(opacity), ColorPositions!, NeutralTileMode, transform);
 			return true;
 		}

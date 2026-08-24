@@ -24,7 +24,7 @@ namespace Microsoft.UI.Composition
 				UpdateColorStops(ColorStops);
 			}
 
-			if (!TryBuildShader(bounds, opacity, out var shader) || shader is null)
+			if (!TryBuildShader(session.Factory, bounds, opacity, out var shader) || shader is null)
 			{
 				// This gradient kind can't build a neutral shader; nothing is painted.
 				return false;
@@ -35,7 +35,7 @@ namespace Microsoft.UI.Composition
 		}
 
 		/// <summary>Builds this gradient's shader (with <paramref name="opacity"/> baked into the stop alphas) through the backend factory. Default returns false (not migrated).</summary>
-		private protected virtual bool TryBuildShader(Rect bounds, float opacity, out IShader? shader)
+		private protected virtual bool TryBuildShader(IDrawingFactory factory, Rect bounds, float opacity, out IShader? shader)
 		{
 			shader = null;
 			return false;

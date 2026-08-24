@@ -56,7 +56,7 @@ internal class SkiaAcrylicBrush : CompositionBrush
 		}
 		else
 		{
-			EnsureFilter(bounds);
+			EnsureFilter(session.Factory, bounds);
 			if (_filter is { } filter)
 			{
 				session.DrawEffectBackdrop(filter, opacity);
@@ -94,7 +94,7 @@ internal class SkiaAcrylicBrush : CompositionBrush
 		session.Restore();
 	}
 
-	private void EnsureFilter(Rect bounds)
+	private void EnsureFilter(IDrawingFactory factory, Rect bounds)
 	{
 		if (_filter is not null && _cachedBounds == bounds)
 		{
@@ -114,7 +114,7 @@ internal class SkiaAcrylicBrush : CompositionBrush
 				new ColorInput(_tintColor),
 				BlendMode.Color);
 
-		_filter = DrawingFactory.Current.CreateEffectFilter(tree, bounds);
+		_filter = factory.CreateEffectFilter(tree, bounds);
 		_cachedBounds = bounds;
 	}
 
