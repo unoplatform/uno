@@ -409,7 +409,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var reasons = new List<AutoSuggestionBoxTextChangeReason>();
 			SUT.TextChanged += (s, e) =>
 			{
-				reasons.Add(e.Reason);
+				if (e.Reason != UserInput || reasons.Count == 0 || reasons[^1] != UserInput)
+				{
+					reasons.Add(e.Reason);
+				}
 			};
 
 			// Simulate choosing a suggestion by selecting an item in the suggestion list.
@@ -427,7 +430,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			expectations.Add(UserInput);
 			SUT.Focus(FocusState.Programmatic);
 #if __SKIA__
-			await KeyboardHelper.InputText("manual");
+			await InputUserText(textBox, "manual");
 #else
 			textBox.ProcessTextInput("manual");
 #endif
@@ -440,8 +443,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			expectations.Add(UserInput);
 			SUT.Focus(FocusState.Programmatic);
-#if __SKIA__ // We want to test the behaviour of "typing individual characters in sequence", not setting the Text in one shot. The behaviour is currently only accurate on skia.
-			await KeyboardHelper.InputText("manual");
+#if __SKIA__
+			await InputUserText(textBox, "manual");
 #else
 			textBox.ProcessTextInput("manual");
 #endif
@@ -457,16 +460,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			suggestionsList.SelectedIndex = 0; // selects "ab"
 			await WindowHelper.WaitFor(() => reasons.Count == expectations.Count);
 
-			// remove repeating UserInputs in a sequence as a result of typing individual characters. WinUI has a timer
-			// that will only fire an event with UserInput once it has waited a bit and found no new characters coming
-			reasons = reasons
-				.Where((reason, i) => i == 0 || !(reason == UserInput && reasons[i - 1] == UserInput))
-				.ToList();
-
-			CollectionAssert.AreEquivalent(expectations, reasons, string.Join("; ",
+			CollectionAssert.AreEqual(expectations, reasons, string.Join("; ",
 				$"expectations[{expectations.Count}]: {string.Join(",", expectations)}",
 				$"actual[{reasons.Count}]: {string.Join(",", reasons)}"
 			));
+
+#if __SKIA__
+			static async Task InputUserText(TextBox textBox, string text)
+			{
+				if (OperatingSystem.IsIOS())
+				{
+					textBox.ProcessTextInput(text);
+					return;
+				}
+
+				foreach (var character in text)
+				{
+					await KeyboardHelper.InputText(character.ToString());
+					await Task.Delay(250);
+				}
+			}
+#endif
 		}
 
 		[TestMethod]
@@ -1480,14 +1494,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var originalPopupRadius = popupBorder.CornerRadius;
 
 				AutoSuggestBoxHelper.SetKeepInteriorCornersSquare(SUT, true);
+				await WindowHelper.WaitFor(() =>
+					HasSquaredInteriorCorners(textBox.CornerRadius) &&
+					HasSquaredInteriorCorners(popupBorder.CornerRadius));
 				AssertHasSquaredInteriorCorners(textBox.CornerRadius);
 				AssertHasSquaredInteriorCorners(popupBorder.CornerRadius);
 
 				AutoSuggestBoxHelper.SetKeepInteriorCornersSquare(SUT, false);
+				await WindowHelper.WaitFor(() =>
+					textBox.CornerRadius == originalTextBoxRadius &&
+					popupBorder.CornerRadius == originalPopupRadius);
 				Assert.AreEqual(originalTextBoxRadius, textBox.CornerRadius);
 				Assert.AreEqual(originalPopupRadius, popupBorder.CornerRadius);
 
 				AutoSuggestBoxHelper.SetKeepInteriorCornersSquare(SUT, true);
+				await WindowHelper.WaitFor(() =>
+					HasSquaredInteriorCorners(textBox.CornerRadius) &&
+					HasSquaredInteriorCorners(popupBorder.CornerRadius));
 				AssertHasSquaredInteriorCorners(textBox.CornerRadius);
 				AssertHasSquaredInteriorCorners(popupBorder.CornerRadius);
 
@@ -1508,7 +1531,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				SUT.IsSuggestionListOpen = true;
 				await WindowHelper.WaitFor(() => reappliedPopup.IsOpen);
-				await WindowHelper.WaitForIdle();
+				await WindowHelper.WaitFor(() =>
+					HasSquaredInteriorCorners(reappliedTextBox.CornerRadius) &&
+					HasSquaredInteriorCorners(reappliedPopupBorder.CornerRadius));
 
 				AssertHasSquaredInteriorCorners(reappliedTextBox.CornerRadius);
 				AssertHasSquaredInteriorCorners(reappliedPopupBorder.CornerRadius);
@@ -1650,12 +1675,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if HAS_UNO
+		private static bool HasSquaredInteriorCorners(CornerRadius radius)
+			=> (radius.BottomLeft == 0 && radius.BottomRight == 0) ||
+				(radius.TopLeft == 0 && radius.TopRight == 0);
+
 		private static void AssertHasSquaredInteriorCorners(CornerRadius radius)
-		{
-			var opensDown = radius.BottomLeft == 0 && radius.BottomRight == 0;
-			var opensUp = radius.TopLeft == 0 && radius.TopRight == 0;
-			Assert.IsTrue(opensDown || opensUp);
-		}
+			=> Assert.IsTrue(HasSquaredInteriorCorners(radius));
 
 		[MethodImpl(MethodImplOptions.NoInlining)]
 		private static WeakReference CreateTextChangedEventArgs(out AutoSuggestBoxTextChangedEventArgs args)
