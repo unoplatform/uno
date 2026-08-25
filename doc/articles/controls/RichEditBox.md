@@ -25,6 +25,8 @@ For safe cross-platform transport, active or externally linked RTF destinations 
 
 Math layout uses an installed OpenType MATH font when available and otherwise falls back to bounded managed layout.
 
+Very large documents (roughly 2 MiB of text or more) switch to bounded per-paragraph layout so editing stays incremental. On WebAssembly the browser's 32-bit heap limits how much shaped text can be held at once, so documents of that size may exhaust memory before they finish laying out; keep WebAssembly documents well below that threshold.
+
 ## Using RichEditBox with Uno
 
 No Uno-specific setup is required when using a Skia target.
