@@ -135,6 +135,10 @@ public partial class Given_RichEditBox
 
 	[TestMethod]
 	[RunsOnUIThread]
+	// Crossing the character threshold requires shaping a single 2 MiB paragraph, whose cluster graph
+	// exceeds the 32-bit browser heap. When_Bounded_Layout_Ends_Fragment_Heavy_Story_Is_Released covers
+	// the same release contract on WebAssembly through the fragment threshold.
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 	public async Task When_Bounded_Layout_Ends_Large_Story_Is_Released()
 	{
 		var editor = new RichEditBox
@@ -157,6 +161,51 @@ public partial class Given_RichEditBox
 
 			Assert.IsFalse(editor.UsesBoundedRichLayout);
 			Assert.AreEqual(0, editor.BoundedRichLayoutCachedParagraphCount);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Bounded_Layout_Ends_Fragment_Heavy_Story_Is_Released()
+	{
+		const int paragraphCount = 2_000;
+		const int runsPerParagraph = 6;
+		var editor = new RichEditBox
+		{
+			Width = 480,
+			Height = 120,
+			TextWrapping = TextWrapping.NoWrap,
+		};
+		try
+		{
+			var rtf = new StringBuilder(@"{\rtf1\ansi ");
+			for (var paragraphIndex = 0; paragraphIndex < paragraphCount; paragraphIndex++)
+			{
+				for (var runIndex = 0; runIndex < runsPerParagraph; runIndex++)
+				{
+					rtf.Append(runIndex % 2 == 0 ? @"\b x" : @"\b0 x");
+				}
+				rtf.Append(@"\par ");
+			}
+			rtf.Append('}');
+			editor.Document.SetText(TextSetOptions.FormatRtf, rtf.ToString());
+			WindowHelper.WindowContent = editor;
+			await WindowHelper.WaitForLoaded(editor);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(editor.UsesBoundedRichLayout);
+			Assert.AreEqual(paragraphCount, editor.BoundedRichLayoutCachedParagraphCount);
+
+			editor.Document.SetText(TextSetOptions.None, "small");
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(editor.UsesBoundedRichLayout);
+			Assert.AreEqual(0, editor.BoundedRichLayoutCachedParagraphCount);
+			Assert.AreEqual("small", editor.Document.GetTextInRange(0, editor.Document.TextLength));
 		}
 		finally
 		{
