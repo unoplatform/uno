@@ -1801,8 +1801,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					var targetType = GetType(targetTypeName);
 					var implicitKey = GetImplicitDictionaryResourceKey(style);
-					if (_isUnoFluentAssembly ||
-						SymbolEqualityComparer.Default.Equals(targetType.ContainingAssembly, _metadataHelper.Compilation.Assembly))
+					if (SymbolEqualityComparer.Default.Equals(targetType.ContainingAssembly, _metadataHelper.Compilation.Assembly))
 					{
 						var isNativeStyle = IsNativeStyle(style);
 
@@ -2919,15 +2918,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (symbol.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value)))
 					{
 						var safeTypeName = LinkerHintsHelpers.GetPropertyAvailableName(symbol.GetFullMetadataName());
-						var linkerHintNamespace = _defaultNamespace;
-						if (_isUnoFluentAssembly &&
-							SymbolEqualityComparer.Default.Equals(
-								symbol.ContainingAssembly,
-								Generation.DependencyObjectSymbol.Value.ContainingAssembly))
-						{
-							linkerHintNamespace = symbol.ContainingAssembly.Name;
-						}
-						var linkerHintClass = LinkerHintsHelpers.GetLinkerHintsClassName(linkerHintNamespace);
+						var linkerHintClass = LinkerHintsHelpers.GetLinkerHintsClassName(_defaultNamespace);
 
 						prefix($"global::{linkerHintClass}.{safeTypeName}");
 
