@@ -289,10 +289,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnIsTextSelectionEnabledChanged()
 		{
-			ProtectedCursor = IsTextSelectionEnabled ? InputSystemCursor.Create(InputSystemCursorShape.IBeam) : null;
+			UpdateProtectedCursor();
 			RecalculateSubscribeToPointerEvents();
 			OnIsTextSelectionEnabledChangedPartial();
 		}
+
+		// The cursor while hovering a hyperlink takes precedence over the text-selection I-beam,
+		// matching WinUI where the innermost element wins the cursor resolution.
+		private void UpdateProtectedCursor() =>
+			ProtectedCursor = HyperlinkOver is not null
+				? InputSystemCursor.Create(InputSystemCursorShape.Hand)
+				: IsTextSelectionEnabled
+					? InputSystemCursor.Create(InputSystemCursorShape.IBeam)
+					: null;
 
 		partial void OnIsTextSelectionEnabledChangedPartial();
 

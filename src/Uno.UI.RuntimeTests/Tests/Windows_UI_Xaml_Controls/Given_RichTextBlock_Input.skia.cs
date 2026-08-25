@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
@@ -364,6 +365,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			rtb.Blocks.Add(plainPara);
 
 			return (rtb, hyperlink);
+		}
+
+		[TestMethod]
+		public async Task When_Selectable_Without_Hyperlink_Cursor_Is_IBeam()
+		{
+			// IsTextSelectionEnabled defaults to true, so nothing ever raises its changed callback
+			// and a RichTextBlock with no hyperlink has no other trigger to seed the cursor.
+			var SUT = CreateSingleLine("Just some selectable text");
+
+			try
+			{
+				await UITestHelper.Load(SUT);
+
+				Assert.AreEqual(InputSystemCursorShape.IBeam, SUT.CalculatedFinalCursor,
+					"Selectable text should show the I-beam cursor without needing a property change");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Pointer_Over_Hyperlink_Cursor_Is_Hand()
+		{
+			var (SUT, _) = CreateHyperlinkSut();
+
+			try
+			{
+				await UITestHelper.Load(SUT);
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var mouse = injector.GetMouse();
+
+				var bounds = SUT.GetAbsoluteBounds();
+				var centerX = bounds.X + bounds.Width / 2;
+
+				// First line (top quarter) holds the hyperlink, second line holds plain text.
+				mouse.MoveTo(new Point(centerX, bounds.Y + bounds.Height * 0.25));
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(InputSystemCursorShape.Hand, SUT.CalculatedFinalCursor,
+					"Hovering a hyperlink should show the hand cursor");
+
+				mouse.MoveTo(new Point(centerX, bounds.Y + bounds.Height * 0.75));
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(InputSystemCursorShape.IBeam, SUT.CalculatedFinalCursor,
+					"Hovering selectable text outside a hyperlink should fall back to the I-beam");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
