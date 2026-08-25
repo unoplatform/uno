@@ -317,12 +317,9 @@ public sealed class AppNotificationManager
 					return AppNotificationPostingResult.NotPosted;
 				}
 
-				if (!defersCompletion)
+				if (!defersCompletion && !state.TryMarkShown(record))
 				{
-					if (!state.TryMarkShown(record))
-					{
-						return ResolvePostingStateConflict(state, deliveryCorrelation);
-					}
+					return ResolvePostingStateConflict(state, deliveryCorrelation);
 				}
 				notification.SetNotificationId(record.Id);
 				if (!defersCompletion)
@@ -351,12 +348,10 @@ public sealed class AppNotificationManager
 			try
 			{
 				notification.SetNotificationId(record.Id);
-				if (backend is not IDeferredAppNotificationManagerBackend { DefersShowCompletion: true })
+				if (backend is not IDeferredAppNotificationManagerBackend { DefersShowCompletion: true } &&
+					!state.TryMarkShown(record))
 				{
-					if (!state.TryMarkShown(record))
-					{
-						return ResolvePostingStateConflict(state, deliveryCorrelation);
-					}
+					return ResolvePostingStateConflict(state, deliveryCorrelation);
 				}
 			}
 			catch
