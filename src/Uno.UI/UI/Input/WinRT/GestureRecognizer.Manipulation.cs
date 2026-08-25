@@ -26,9 +26,14 @@ namespace Windows.UI.Input
 		// Note: this is also responsible to handle "Drag manipulations"
 		internal partial class Manipulation
 		{
-			internal static readonly Thresholds StartTouch = new() { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
-			internal static readonly Thresholds StartPen = new() { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
-			internal static readonly Thresholds StartMouse = new() { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
+			// Start thresholds ("dead-zone"): movement required to promote a press to a manipulation.
+			// MUX configures none of these — it delegates recognition to the Win32 InteractionContext
+			// (see GestureConfigurationBuilder.cpp), so these are Uno values, not ported ones.
+			// Mouse uses the Win32 drag threshold (SM_CXDRAG, default 4px); touch/pen use a slop close to
+			// the ~2.7mm at typical DPI that Windows, iOS and Android all land near.
+			internal static readonly Thresholds StartTouch = new() { TranslateX = 10, TranslateY = 10, Rotate = 5, Expansion = 10 };
+			internal static readonly Thresholds StartPen = new() { TranslateX = 10, TranslateY = 10, Rotate = 5, Expansion = 10 };
+			internal static readonly Thresholds StartMouse = new() { TranslateX = 4, TranslateY = 4, Rotate = 1, Expansion = 4 };
 
 			internal static readonly Thresholds DeltaTouch = new() { TranslateX = 2, TranslateY = 2, Rotate = .1, Expansion = 1 };
 			internal static readonly Thresholds DeltaPen = new() { TranslateX = 2, TranslateY = 2, Rotate = .1, Expansion = 1 };
@@ -371,22 +376,18 @@ namespace Windows.UI.Input
 						_status = ManipulationStatus.Started;
 						_contacts.onStart = _contacts.current;
 
-						// Note: We first start with an empty delta, then invoke Update.
-						//		 This is required to patch a common issue in applications that are using only the
-						//		 ManipulationUpdated.Delta property to track the pointer (like the WCT GridSplitter).
-						//		 UWP seems to do that only for Touch and Pen (i.e. the Delta is not empty on start with a mouse),
-						//		 but there is no side effect to use the same behavior for all pointer types.
-						_recognizer.ManipulationStarted?.Invoke(
-							_recognizer,
-							new ManipulationStartedEventArgs(_currents.Identifiers, _origins.State.Center, ManipulationDelta.Empty, _contacts.onStart));
-
+						// Railing must be applied before the Cumulative is reported below.
 						ApplyRailing(ref changeSet);
 
-						CommitChanges(changeSet);
-						Debug.Assert(changeSet.Delta == changeSet.Cumulative);
-						_recognizer.ManipulationUpdated?.Invoke(
+						// The distance travelled to reach the recognition point is reported only through the
+						// Cumulative of ManipulationStarted, then committed without raising ManipulationUpdated:
+						// it must not be recovered as a delta (#20473). Matches MUX GestureOutputMapper::
+						// OnManipulationStarted, which fills m_cumulative and never m_delta.
+						_recognizer.ManipulationStarted?.Invoke(
 							_recognizer,
-							new ManipulationUpdatedEventArgs(this, _currents.Identifiers, changeSet.Position, changeSet.Delta, changeSet.Cumulative, ManipulationVelocities.Empty, isInertial: false, _contacts.onStart, _contacts.current));
+							new ManipulationStartedEventArgs(_currents.Identifiers, _origins.State.Center, changeSet.Cumulative, _contacts.onStart));
+
+						CommitChanges(changeSet);
 						break;
 
 					case ManipulationStatus.Started when pointerRemoved && InertiaProcessor.TryStart(this, ref _inertia, changeSet):
@@ -680,7 +681,7 @@ namespace Windows.UI.Input
 				}
 
 				// Note: We use the TapRange and not the manipulation's start threshold as, for mouse and pen,
-				//		 those thresholds are lower than a Tap (and actually only 1px), which does not math the UWP behavior.
+				//		 those thresholds are lower than a Tap, which does not match the UWP behavior.
 				var down = _origins.Pointer1;
 				var current = _currents.Pointer1;
 				var isOutOfRange = IsOutOfTapRange(down.Position, current.Position);

@@ -19,7 +19,7 @@ using Private.Infrastructure;
 using Windows.Foundation;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Extras.DevTools.Input;
+using Uno.UI.DevTools.Input;
 
 #if HAS_UNO_WINUI
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;

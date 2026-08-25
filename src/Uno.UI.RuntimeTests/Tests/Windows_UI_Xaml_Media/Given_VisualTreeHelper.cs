@@ -16,7 +16,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media.VisualTreeHelperPages;
-using Uno.UI.Extras.DevTools.Input;
+using Uno.UI.DevTools.Input;
 using Windows.Foundation;
 using Windows.UI;
 using static Private.Infrastructure.TestServices;

@@ -25,7 +25,7 @@ using Combinatorial.MSTest;
 using Microsoft.UI.Windowing;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
-using Uno.UI.Extras.DevTools.Input;
+using Uno.UI.DevTools.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {

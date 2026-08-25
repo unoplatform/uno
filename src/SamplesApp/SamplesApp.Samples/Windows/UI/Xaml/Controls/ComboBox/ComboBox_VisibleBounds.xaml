@@ -3,9 +3,9 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:extras="using:Uno.UI.Extras"
     xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ComboBox"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uub="using:Uno.UI.Behaviors"
     d:DesignHeight="300"
     d:DesignWidth="400"
     mc:Ignorable="d">
@@ -277,7 +277,7 @@
 
         <Border
             Padding="0,28,0,0"
-            extras:VisibleBoundsPadding.PaddingMask="Top"
+            uub:VisibleBoundsPadding.PaddingMask="Top"
             Background="Black" />
 
         <!--  HEADER  -->

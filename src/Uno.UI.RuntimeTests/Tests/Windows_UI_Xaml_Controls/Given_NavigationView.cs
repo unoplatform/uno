@@ -13,7 +13,7 @@ using Private.Infrastructure;
 using Uno.UI.Extensions;
 using SamplesApp.UITests;
 using Uno.UI.RuntimeTests.ListViewPages;
-using Uno.UI.Extras.DevTools.Input;
+using Uno.UI.DevTools.Input;
 #if __APPLE_UIKIT__
 using UIKit;
 #else
@@ -37,7 +37,6 @@ using Uno.Extensions;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
-using Uno.UI.Extras.Extensions;
 using Microsoft.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls

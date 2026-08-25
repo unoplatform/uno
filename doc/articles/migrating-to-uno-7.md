@@ -1,4 +1,4 @@
----
+﻿---
 uid: Uno.Development.MigratingToUno7
 ---
 
@@ -87,7 +87,7 @@ on macOS with Skia rendering. To migrate:
 | `Xamarin.AndroidX.*` transitive deps removed (AppCompat, RecyclerView, Activity, Browser, SwipeRefreshLayout) | If *your own* code uses AndroidX, add explicit `PackageReference`s. |
 | `SkiaSharp.Views.Uno.WinUI` no longer referenced implicitly | The `Uno.Sdk` used to add it to every Uno Platform target, and to WebAssembly heads using the `lottie`, `svg`, `material`, `cupertino`, or `simpletheme` features. Nothing in Uno Platform needs it anymore — SVG draws through `Uno.WinUI.Graphics2DSK` and Lottie through `SkiaSharp.Skottie`. If *your own* code uses `SKXamlCanvas` or `SKSwapChainPanel`, switch to [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), which is hardware-accelerated and referenced implicitly; otherwise add an explicit `PackageReference`. |
 | Windows App SDK default moved from 1.7 to 2.3.1 | Windows heads now build against Windows App SDK 2.x, so packaged apps take a framework dependency on `Microsoft.WindowsAppRuntime.2` and end users need the matching [Windows App Runtime](https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads) — 2.3.1 or later from the **Stable release** section — installed. To stay on 1.x, set `<WinAppSdkVersion>` (and `<WinAppSdkBuildToolsVersion>`) explicitly in your Windows head. |
-| `Uno.UI.Toolkit.dll` renamed to `Uno.UI.Extras.dll` | The old name was routinely confused with the separate Uno Toolkit (`Uno.Toolkit.UI`). Update `using Uno.UI.Toolkit;` to `using Uno.UI.Extras;` and `xmlns:toolkit="using:Uno.UI.Toolkit"` to `using:Uno.UI.Extras`. Types keep their names. `Uno.Diagnostics.UI`, `Uno.UI.Markup`, `Uno.Helpers` and `Uno.UI.Maps` are unaffected — only the `Uno.UI.Toolkit*` namespaces moved. |
+| `Uno.UI.Toolkit` types moved to the `Uno.UI.*` namespaces | The old name was routinely confused with the separate Uno Toolkit (`Uno.Toolkit.UI`). Each type now sits in the namespace it belongs to — see [the mapping table below](#unouitoolkit-types-move-to-the-unoui-namespaces). Type names and behavior are unchanged. `Uno.Diagnostics.UI`, `Uno.UI.Markup`, `Uno.Helpers` and `Uno.UI.Maps` are unaffected — only the `Uno.UI.Toolkit*` namespaces moved. |
 
 > [!IMPORTANT]
 > This is a hard rename — there is no type-forwarder and no `xmlns` alias. `Uno.UI.Toolkit.dll`
@@ -103,20 +103,27 @@ on macOS with Skia rendering. To migrate:
 > alongside the Skia browser head raises the `UNOB0017` build diagnostic. Removing the
 > explicit reference resolves it.
 
-### `Uno.UI.Toolkit` is renamed to `Uno.UI.Extras`
+### `Uno.UI.Toolkit` types move to the `Uno.UI.*` namespaces
 
-The `Uno.UI.Toolkit` assembly — which ships inside the `Uno.WinUI` package — was routinely
+The `Uno.UI.Toolkit` namespace — which ships inside the `Uno.WinUI` package — was routinely
 mistaken for the separate [Uno Toolkit](xref:Toolkit.GettingStarted) product
-(`Uno.Toolkit.UI`); the two names are a word-order swap apart. It is now
-`Uno.UI.Extras`. Type names and behavior are unchanged, and there is **no** forwarding
-shim: the old namespaces stop resolving.
+(`Uno.Toolkit.UI`); the two names are a word-order swap apart. Its types now sit in the
+namespace each one belongs to, alongside the rest of the framework. Type names and behavior
+are unchanged, and there is **no** forwarding shim: the old namespaces stop resolving.
 
-| Before | After |
-|---|---|
-| `using Uno.UI.Toolkit;` | `using Uno.UI.Extras;` |
-| `using Uno.UI.Toolkit.Extensions;` | `using Uno.UI.Extras.Extensions;` |
-| `using Uno.UI.Toolkit.DevTools.Input;` (and `.DevTools.Xaml`) | `using Uno.UI.Extras.DevTools.Input;` |
-| `xmlns:toolkit="using:Uno.UI.Toolkit"` | `xmlns:extras="using:Uno.UI.Extras"` |
+| Type | Before | After |
+|---|---|---|
+| `ElevatedView`, `CommandBarExtensions`, `SplitViewExtensions` | `Uno.UI.Toolkit` | `Uno.UI.Xaml.Controls` |
+| `UIElementExtensions` | `Uno.UI.Toolkit` | `Uno.UI.Xaml` |
+| `AutomationPropertiesExtensions` | `Uno.UI.Toolkit` | `Uno.UI.Xaml.Automation` |
+| `VisibleBoundsPadding` | `Uno.UI.Toolkit` | `Uno.UI.Behaviors` |
+| `StorageFileHelper` | `Uno.UI.Toolkit` | `Uno.Storage` |
+| input injection dev helpers | `Uno.UI.Toolkit.DevTools.Input` (and `.DevTools.Xaml`) | `Uno.UI.DevTools.Input` (and `.DevTools.Xaml`) |
+
+XAML declarations follow the same mapping, for example
+`xmlns:toolkit="using:Uno.UI.Toolkit"` becomes `xmlns:uuxc="using:Uno.UI.Xaml.Controls"` for
+`ElevatedView` and the `CommandBar`/`SplitView` extensions, or
+`xmlns:uub="using:Uno.UI.Behaviors"` for `VisibleBoundsPadding`.
 
 The other namespaces carried by that assembly keep their names, so code using
 `DiagnosticsOverlay` (`Uno.Diagnostics.UI`), `FromJsonExtension` (`Uno.UI.Markup`) or
@@ -218,7 +225,7 @@ target framework that runs on all three. `HAS_UNO_SKIA` and `__UNO_SKIA__` are u
   `MenuFlyoutExtensions.CancelTextIosOverride` (custom cancel-button caption). Remove the
   attributes; style the `MenuFlyoutItem` directly for a destructive look.
   `UICommand.IsDestructive` is **not** removed — it still drives the native iOS
-  `MessageDialog` — but its `Uno.UI.Extras` wrapper is (see below); set the property directly.
+  `MessageDialog` — but its Uno Platform wrapper is (see below); set the property directly.
 - **Native default styles:** the whole `Generic.Native.xaml` dictionary is gone, so the
   `NativeDefaultButton`, `NativeDefaultCheckBox`, `NativeDefaultCommandBar`,
   `NativeDefaultAppBarButton`, `NativeDefaultFrame`, `NativeDefaultPivot`,
@@ -238,8 +245,8 @@ target framework that runs on all three. `HAS_UNO_SKIA` and `__UNO_SKIA__` are u
   `Style.RegisterDefaultStyleForType(Type, IXamlResourceDictionaryProvider, bool)` also loses its
   `isNative` parameter; it is `[EditorBrowsable(Never)]` and normally only called from
   XAML-generated code, so rebuilding regenerates the correct call.
-- **`Uno.UI.Extras` members that only ever ran on native targets:**
-  `Uno.UI.ViewHelper` (the `Uno.UI.Extras` one, whose only member `Architecture` always
+- **`Uno.UI.Toolkit` members that only ever ran on native targets:**
+  `Uno.UI.ViewHelper` (the `Uno.UI.Toolkit` one, whose only member `Architecture` always
   returned `null` — the unrelated `Uno.UI.ViewHelper` in `Uno.UI` stays) and
   `UICommandExtensions.SetDestructive`. To flag a destructive `UICommand`, set
   `UICommand.IsDestructive` directly from an iOS-targeted head.
@@ -378,6 +385,27 @@ re-baseline visual tests:
   appearance changes on Android/iOS.
 - **Animation timing:** Skia interpolation replaces `CABasicAnimation` — standard easing
   matches; exotic timing may not.
+- **`ContentControl` subclasses without a `ControlTemplate`:** Uno used to bypass the
+  `ContentPresenter` and parent `Content` directly when a control had no template at all,
+  so a custom `ContentControl` that set its own `DefaultStyleKey` but shipped no
+  `Template` setter still rendered its content. That leniency is gone; as on WinUI, such a
+  control now renders nothing. Give it a default style with a `Template`, or leave
+  `DefaultStyleKey` alone so it inherits the `ContentControl` default template.
+
+Independently of rendering, manipulation recognition was realigned with WinUI:
+
+- **No `ManipulationDelta` immediately after `ManipulationStarted`.** The distance travelled
+  before a manipulation is recognized is now reported through `ManipulationStarted`'s
+  `Cumulative` and is never replayed as a delta, so a pan no longer visibly jumps by the
+  recognition threshold the moment it starts. This matches WinUI, where a manipulation can
+  complete without raising a single `ManipulationDelta`. Handlers that positioned content by
+  accumulating `ManipulationDelta.Delta` alone (the classic `GridSplitter` pattern) will now
+  under-track by the recognition distance — read `Cumulative` instead, which still measures
+  from the press point and is the value WinUI's own samples use.
+- **Manipulation start thresholds changed.** Touch and pen go from 15px to 10px, so panning
+  starts sooner. Mouse goes from 1px to 4px, matching the Win32 system drag threshold
+  (`SM_CXDRAG`), so a small wiggle during a click is no longer reported as a drag. Code that
+  relied on a near-zero mouse threshold to start a drag should re-test.
 
 ### Type-hierarchy changes (WinUI parity)
 
@@ -582,7 +610,7 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 9. Convert every `xmlns:…="clr-namespace:…"` declaration in your XAML to the `using:` form.
 10. Convert the Android `Application` class to override `CreateHost()` instead of passing an
    `AppBuilder` delegate to the base constructor.
-11. Rename `Uno.UI.Toolkit` usings and `xmlns` declarations to `Uno.UI.Extras`.
+11. Rename `Uno.UI.Toolkit` usings and `xmlns` declarations to their new `Uno.UI.*` namespaces.
 12. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 

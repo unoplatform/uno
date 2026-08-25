@@ -7,7 +7,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
-using Uno.UI.Extras.DevTools.Input;
+using Uno.UI.DevTools.Input;
 
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.CommandBarPages;
 
