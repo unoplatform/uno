@@ -2,6 +2,7 @@
 
 using System;
 using System.Globalization;
+using System.Numerics;
 using System.Text;
 using Windows.Globalization.NumberFormatting;
 
@@ -14,8 +15,11 @@ namespace Uno.Globalization.NumberFormatting
 		private const string PositiveInfinitySymbol = "∞";
 		private const string ZeroDigits = "0";
 
-		// Doubles round-trip through 17 significant digits, which is the precision WinRT prints.
-		private const string RoundTripFormat = "G17";
+		// WinRT renders a double with the classic Windows conversion: the 15 significant digits that
+		// Double.ToString has always produced, falling back to 17 when they do not round-trip. See the
+		// "R" specifier in the .NET standard numeric format string documentation for the same algorithm.
+		private const string ShortPrecisionFormat = "G15";
+		private const int RoundTripPrecision = 17;
 
 		private const NumberStyles IntegerStyles = NumberStyles.AllowLeadingSign | NumberStyles.AllowThousands;
 		private const NumberStyles DecimalStyles = IntegerStyles | NumberStyles.AllowDecimalPoint;
@@ -121,90 +125,200 @@ namespace Uno.Globalization.NumberFormatting
 		/// <summary>
 		/// Formats an integral value given as its sign and its exact magnitude digits.
 		/// </summary>
-		public void AppendFormatIntegral(bool isNegative, string digits, StringBuilder stringBuilder)
+		public void AppendFormatIntegral(bool isNegative, string digits, StringBuilder stringBuilder) =>
+			AppendFormatDecimal(isNegative, digits, digits.Length, stringBuilder);
+
+		public void AppendFormatDouble(double value, StringBuilder stringBuilder)
 		{
+			var (digits, point) = GetRoundTripDecimal(Math.Abs(value));
+
+			AppendFormatDecimal(value < 0, digits, point, stringBuilder);
+		}
+
+		/// <summary>
+		/// Writes a value given as its magnitude digits and the position of its decimal point.
+		/// </summary>
+		/// <remarks>
+		/// WinRT never rounds to <see cref="FractionDigits"/>: those options are minimums that pad the
+		/// fraction with zeros, while the digits themselves always come from the round-trip conversion.
+		/// <see cref="SignificantDigits"/> counts from the first significant digit, which is why the
+		/// padding is measured against <paramref name="point"/> rather than the printed integer digits.
+		/// </remarks>
+		private void AppendFormatDecimal(bool isNegative, string digits, int point, StringBuilder stringBuilder)
+		{
+			var integerText = point <= 0
+				? ZeroDigits
+				: point >= digits.Length
+					? digits + new string('0', point - digits.Length)
+					: digits.Substring(0, point);
+
+			var fractionText = point <= 0
+				? new string('0', -point) + digits
+				: point >= digits.Length
+					? ""
+					: digits.Substring(point);
+
 			if (isNegative)
 			{
 				stringBuilder.Append(NumberFormat.NegativeSign);
 			}
 
+			var isZeroInteger = IsZero(integerText);
+
 			if (FractionDigits == 0 &&
 				IntegerDigits == 0 &&
-				IsZero(digits))
+				isZeroInteger &&
+				fractionText.Length == 0)
 			{
 				stringBuilder.Append('0');
 			}
 
-			AppendIntegerPart(digits, stringBuilder);
-
-			var fractionDigits = GetFractionDigits(digits.Length);
-
-			if (!IsDecimalPointAlwaysDisplayed &&
-				fractionDigits == 0)
+			if (!(IntegerDigits == 0 && isZeroInteger))
 			{
+				var padding = IntegerDigits - integerText.Length;
+
+				AppendGroupedDigits(padding > 0 ? new string('0', padding) + integerText : integerText, stringBuilder);
+			}
+
+			var fractionDigits = Math.Max(FractionDigits, SignificantDigits - point);
+
+			if (fractionText.Length < fractionDigits)
+			{
+				fractionText += new string('0', fractionDigits - fractionText.Length);
+			}
+
+			if (fractionText.Length == 0)
+			{
+				if (IsDecimalPointAlwaysDisplayed)
+				{
+					stringBuilder.Append(NumberFormat.NumberDecimalSeparator);
+				}
+
 				return;
 			}
 
 			stringBuilder.Append(NumberFormat.NumberDecimalSeparator);
-			stringBuilder.Append('0', fractionDigits);
-		}
-
-		public void AppendFormatDouble(double value, StringBuilder stringBuilder)
-		{
-			var digits = GetIntegerDigits(Math.Abs(Math.Truncate(value)));
-
-			if (value < 0)
-			{
-				stringBuilder.Append(NumberFormat.NegativeSign);
-			}
-
-			AppendIntegerPart(digits, stringBuilder);
-			AppendFormatFractionPart(value, GetFractionDigits(digits.Length), stringBuilder);
+			stringBuilder.Append(fractionText);
 		}
 
 		private static bool IsZero(string digits) => digits.Length == 1 && digits[0] == '0';
 
-		private int GetFractionDigits(int integerDigitCount) =>
-			Math.Max(FractionDigits, SignificantDigits - integerDigitCount);
-
 		/// <summary>
-		/// Gets the exact integer digits of an integral <paramref name="magnitude"/>.
+		/// Gets the decimal digits WinRT prints for <paramref name="magnitude"/>, together with the
+		/// position of the decimal point relative to the first digit.
 		/// </summary>
 		/// <remarks>
-		/// A custom numeric picture would round to 15 significant digits and "F0" would print the exact
-		/// binary expansion; WinRT prints the 17 significant digits that round-trip a double, padded with
-		/// zeros, which is what expanding the round-trip form produces.
+		/// The 15 significant digits that <see cref="double.ToString()"/> has always produced are used
+		/// when they round-trip, and 17 otherwise - the conversion the "R" specifier documents. The 17
+		/// digit form is computed from the exact binary expansion because ties have to break away from
+		/// zero, whereas "G17" breaks them to even.
 		/// </remarks>
-		private static string GetIntegerDigits(double magnitude)
+		private static (string Digits, int Point) GetRoundTripDecimal(double magnitude)
 		{
-			var text = magnitude.ToString(RoundTripFormat, CultureInfo.InvariantCulture);
-			var exponentIndex = text.IndexOf('E');
+			var text = magnitude.ToString(ShortPrecisionFormat, CultureInfo.InvariantCulture);
 
-			if (exponentIndex < 0)
+			if (double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed) &&
+				parsed == magnitude)
 			{
-				return text;
+				return Decompose(text);
 			}
 
-			var exponent = int.Parse(text.Substring(exponentIndex + 1), CultureInfo.InvariantCulture);
-			var mantissa = text.Substring(0, exponentIndex);
-			var pointIndex = mantissa.IndexOf('.');
-			var digits = pointIndex < 0 ? mantissa : mantissa.Remove(pointIndex, 1);
-			var trailingZeros = exponent - (pointIndex < 0 ? 0 : mantissa.Length - pointIndex - 1);
-
-			return trailingZeros <= 0 ? digits : digits + new string('0', trailingZeros);
+			return RoundToSignificantDigits(GetExactDecimal(magnitude), RoundTripPrecision);
 		}
 
-		private void AppendIntegerPart(string digits, StringBuilder stringBuilder)
+		private static (string Digits, int Point) Decompose(string text)
 		{
-			if (IntegerDigits == 0 &&
-				IsZero(digits))
+			var exponentIndex = text.IndexOf('E');
+			var mantissa = exponentIndex < 0 ? text : text.Substring(0, exponentIndex);
+			var exponent = exponentIndex < 0 ? 0 : int.Parse(text.Substring(exponentIndex + 1), CultureInfo.InvariantCulture);
+			var pointIndex = mantissa.IndexOf('.');
+			var digits = pointIndex < 0 ? mantissa : mantissa.Remove(pointIndex, 1);
+
+			return Normalize(digits, (pointIndex < 0 ? mantissa.Length : pointIndex) + exponent);
+		}
+
+		private static (string Digits, int Point) Normalize(string digits, int point)
+		{
+			var start = 0;
+
+			while (start < digits.Length && digits[start] == '0')
 			{
-				return;
+				start++;
+				point--;
 			}
 
-			var padding = IntegerDigits - digits.Length;
+			digits = start >= digits.Length ? "" : digits.Substring(start).TrimEnd('0');
 
-			AppendGroupedDigits(padding > 0 ? new string('0', padding) + digits : digits, stringBuilder);
+			return digits.Length == 0 ? (ZeroDigits, 1) : (digits, point);
+		}
+
+		/// <summary>
+		/// Gets the exact decimal expansion of <paramref name="magnitude"/>, which always terminates
+		/// because a double is a dyadic rational.
+		/// </summary>
+		private static (string Digits, int Point) GetExactDecimal(double magnitude)
+		{
+			var bits = BitConverter.DoubleToInt64Bits(magnitude);
+			var exponent = (int)((bits >> 52) & 0x7FF);
+			var mantissa = bits & 0xF_FFFF_FFFF_FFFF;
+
+			if (exponent == 0)
+			{
+				exponent = 1;
+			}
+			else
+			{
+				mantissa |= 1L << 52;
+			}
+
+			exponent -= 1075;
+
+			if (exponent >= 0)
+			{
+				var whole = (new BigInteger(mantissa) << exponent).ToString(CultureInfo.InvariantCulture);
+
+				return Normalize(whole, whole.Length);
+			}
+
+			// Scaling by 10^-exponent keeps the value integral because 10^n / 2^n is 5^n.
+			var scaled = (new BigInteger(mantissa) * BigInteger.Pow(5, -exponent)).ToString(CultureInfo.InvariantCulture);
+
+			return Normalize(scaled, scaled.Length + exponent);
+		}
+
+		private static (string Digits, int Point) RoundToSignificantDigits((string Digits, int Point) value, int significantDigits)
+		{
+			var (digits, point) = value;
+
+			if (digits.Length <= significantDigits)
+			{
+				return value;
+			}
+
+			var kept = digits.Substring(0, significantDigits).ToCharArray();
+
+			if (digits[significantDigits] >= '5')
+			{
+				var index = significantDigits - 1;
+
+				for (; index >= 0; index--)
+				{
+					if (kept[index] != '9')
+					{
+						kept[index]++;
+						break;
+					}
+
+					kept[index] = '0';
+				}
+
+				if (index < 0)
+				{
+					return Normalize("1" + new string(kept), point + 1);
+				}
+			}
+
+			return Normalize(new string(kept), point);
 		}
 
 		private void AppendGroupedDigits(string digits, StringBuilder stringBuilder)
@@ -261,72 +375,6 @@ namespace Uno.Globalization.NumberFormatting
 				stringBuilder.Append(digits, index, groupSizes[i]);
 				index += groupSizes[i];
 			}
-		}
-
-		private void AppendFormatFractionPart(double value, int fractionDigits, StringBuilder stringBuilder)
-		{
-			var numberDecimalSeparator = NumberFormat.NumberDecimalSeparator;
-
-			var rounded = Math.Round(value, fractionDigits, MidpointRounding.AwayFromZero);
-			var needZeros = value == rounded;
-			var formattedFractionPart = needZeros ? value.ToString($"F{fractionDigits}", NumberFormat) : GetFixedPointText(value);
-			var indexOfDecimalSeperator = formattedFractionPart.LastIndexOf(numberDecimalSeparator, StringComparison.Ordinal);
-
-			if (indexOfDecimalSeperator != -1)
-			{
-				stringBuilder.Append(formattedFractionPart, indexOfDecimalSeperator, formattedFractionPart.Length - indexOfDecimalSeperator);
-			}
-			else if (IsDecimalPointAlwaysDisplayed)
-			{
-				stringBuilder.Append(NumberFormat.NumberDecimalSeparator);
-			}
-		}
-
-		/// <summary>
-		/// Writes the round-trip digits of <paramref name="value"/> in fixed-point notation.
-		/// </summary>
-		/// <remarks>
-		/// .NET switches to scientific notation below 1e-4, which leaves no decimal separator for the
-		/// fraction to be taken from and silently drops it; WinRT always writes the digits out in full,
-		/// so "1e-5" formats as "0.00001".
-		/// </remarks>
-		private string GetFixedPointText(double value)
-		{
-			var text = Math.Abs(value).ToString("R", CultureInfo.InvariantCulture);
-			var exponentIndex = text.IndexOf('E');
-			var mantissa = exponentIndex < 0 ? text : text.Substring(0, exponentIndex);
-			var exponent = exponentIndex < 0 ? 0 : int.Parse(text.Substring(exponentIndex + 1), CultureInfo.InvariantCulture);
-			var pointIndex = mantissa.IndexOf('.');
-			var digits = pointIndex < 0 ? mantissa : mantissa.Remove(pointIndex, 1);
-			var point = (pointIndex < 0 ? mantissa.Length : pointIndex) + exponent;
-
-			var builder = new StringBuilder(digits.Length + Math.Abs(point) + 2);
-
-			if (value < 0)
-			{
-				builder.Append(NumberFormat.NegativeSign);
-			}
-
-			if (point <= 0)
-			{
-				builder.Append('0');
-				builder.Append(NumberFormat.NumberDecimalSeparator);
-				builder.Append('0', -point);
-				builder.Append(digits);
-			}
-			else if (point >= digits.Length)
-			{
-				builder.Append(digits);
-				builder.Append('0', point - digits.Length);
-			}
-			else
-			{
-				builder.Append(digits, 0, point);
-				builder.Append(NumberFormat.NumberDecimalSeparator);
-				builder.Append(digits, point, digits.Length - point);
-			}
-
-			return builder.ToString();
 		}
 
 		private bool HasInvalidGroupSize(string text)

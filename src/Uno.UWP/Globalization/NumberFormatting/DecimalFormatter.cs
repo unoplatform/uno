@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Uno;
@@ -115,8 +116,16 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			if (NumberRounder is not null)
 			{
-				// WinRT rounds through the integral members, keeping every digit past 2^53.
-				value = NumberRounder.RoundInt64(value);
+				// WinRT rounds through the integral members, keeping every digit past 2^53, and reports a
+				// rounder that leaves the integral range as an infinity rather than propagating the throw.
+				try
+				{
+					value = NumberRounder.RoundInt64(value);
+				}
+				catch (ArithmeticException)
+				{
+					return FormatOverflow(value < 0);
+				}
 			}
 
 			var magnitude = IntegralRounding.GetMagnitude(value, out var isNegative);
@@ -128,10 +137,24 @@ namespace Windows.Globalization.NumberFormatting
 		{
 			if (NumberRounder is not null)
 			{
-				value = NumberRounder.RoundUInt64(value);
+				try
+				{
+					value = NumberRounder.RoundUInt64(value);
+				}
+				catch (ArithmeticException)
+				{
+					return FormatOverflow(false);
+				}
 			}
 
 			return FormatIntegral(false, value);
+		}
+
+		private string FormatOverflow(bool isNegative)
+		{
+			_formatterHelper.TryValidate(isNegative ? double.NegativeInfinity : double.PositiveInfinity, out var text);
+
+			return text;
 		}
 
 		private string FormatIntegral(bool isNegative, ulong magnitude)
