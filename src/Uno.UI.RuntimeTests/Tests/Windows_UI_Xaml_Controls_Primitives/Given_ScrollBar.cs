@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Toolkit;
 using Uno.UI.Toolkit.DevTools.Input;
 using Windows.Foundation;
 using Windows.UI;
@@ -54,10 +55,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 				Minimum = 0,
 				Maximum = 100,
 				ViewportSize = 100,
-				IndicatorMode = ScrollingIndicatorMode.MouseIndicator,
 				Width = isVertical ? 24 : 200,
 				Height = isVertical ? 200 : 24,
 			};
+
+			SUT.SetIsTouchThumbDragEnabled(true);
 
 			var scrollEvents = new List<ScrollEventType>();
 			SUT.Scroll += (_, e) => scrollEvents.Add(e.ScrollEventType);
@@ -92,11 +94,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		}
 
 		[TestMethod]
-		[Ignore("A ScrollBar not hosted by a ScrollViewer keeps IndicatorMode at None, so no interactive indicator is ever raised for it and the thumb stays out of reach - the DataGrid case.")]
-		public async Task When_Touch_Drags_Thumb_With_Default_IndicatorMode_Then_Value_Changes()
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Touch_Drags_Thumb_Without_OptIn_Then_Value_Is_Unchanged()
 		{
-			// A ScrollBar not hosted by a ScrollViewer -- the shape used by DataGrid -- keeps
-			// IndicatorMode at its default, so nothing raises the interactive indicator for it.
+			// WinUI has the ScrollBar parts ignore touch on purpose, so the default must stay that way.
+			var SUT = new ScrollBar
+			{
+				Orientation = Orientation.Vertical,
+				Minimum = 0,
+				Maximum = 100,
+				ViewportSize = 100,
+				IndicatorMode = ScrollingIndicatorMode.MouseIndicator,
+				Width = 24,
+				Height = 200,
+			};
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			try
+			{
+				await UITestHelper.Load(SUT);
+
+				var thumb = FindTemplateChild<Thumb>(SUT, "VerticalThumb");
+				Assert.IsNotNull(thumb, "The vertical thumb should be part of the ScrollBar template.");
+
+				finger.Press(Center(thumb.GetAbsoluteBounds()));
+				finger.MoveBy(0, 50, steps: 50);
+				finger.Release();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(0, SUT.Value, "Without opting in, a touch drag on the thumb must not move the ScrollBar.");
+			}
+			finally
+			{
+				finger.Release();
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Touch_Drags_Standalone_Thumb_Then_Value_Changes()
+		{
+			// A ScrollBar not hosted by a ScrollViewer -- the shape DataGrid uses -- has nothing to
+			// raise its indicator, so the extension has to hold it interactive on its own.
 			var SUT = new ScrollBar
 			{
 				Orientation = Orientation.Vertical,
@@ -106,6 +152,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 				Width = 24,
 				Height = 200,
 			};
+
+			SUT.SetIsTouchThumbDragEnabled(true);
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var finger = injector.GetFinger();
@@ -123,7 +171,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 				finger.Release();
 				await TestServices.WindowHelper.WaitForIdle();
 
-				Assert.IsTrue(SUT.Value > 0, $"A finger drag should change the Value with the default IndicatorMode ({SUT.IndicatorMode}), but it stayed at {SUT.Value}.");
+				Assert.IsTrue(SUT.Value > 0, $"A finger drag should change the Value of a standalone ScrollBar (IndicatorMode={SUT.IndicatorMode}), but it stayed at {SUT.Value}.");
 			}
 			finally
 			{
@@ -150,8 +198,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 				var scrollBar = FindTemplateChild<ScrollBar>(SUT, "VerticalScrollBar");
 				Assert.IsNotNull(scrollBar, "The ScrollViewer template should contain a VerticalScrollBar.");
 
-				// Touch has no hover, so raise the indicator explicitly instead of racing its auto-hide.
-				scrollBar.IndicatorMode = ScrollingIndicatorMode.MouseIndicator;
+				scrollBar.SetIsTouchThumbDragEnabled(true);
 				await TestServices.WindowHelper.WaitForIdle();
 
 				var thumb = FindTemplateChild<Thumb>(scrollBar, "VerticalThumb");
@@ -193,7 +240,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 				var scrollBar = FindTemplateChild<ScrollBar>(SUT, "VerticalScrollBar");
 				Assert.IsNotNull(scrollBar, "The ScrollViewer template should contain a VerticalScrollBar.");
 
-				scrollBar.IndicatorMode = ScrollingIndicatorMode.MouseIndicator;
+				scrollBar.SetIsTouchThumbDragEnabled(true);
 				await TestServices.WindowHelper.WaitForIdle();
 
 				// Inside the scrollbar strip but clear of the thumb, which sits at the top while the offset is 0.
