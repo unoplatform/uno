@@ -94,6 +94,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24159")]
 		public async Task When_Explicit_Style_Uses_Fluent_Default_Value()
 		{
+			// WinUI resolves a control's built-in style from the framework's generic.xaml, and its
+			// {ThemeResource} setters let Application.Resources (i.e. XamlControlsResources) override
+			// the resolved value. A ToggleButton carrying an explicit style that doesn't set
+			// Background must therefore surface the Fluent ToggleButtonBackground, not the legacy one.
 			var expected = Application.Current.Resources["ToggleButtonBackground"] as SolidColorBrush;
 			Assert.IsNotNull(expected);
 
@@ -116,6 +120,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				TestServices.WindowHelper.WindowContent = null;
 			}
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24159")]
+		public async Task When_Explicit_Style_Uses_Uwp_Default_Value()
+		{
+			// Counterpart of When_Explicit_Style_Uses_Fluent_Default_Value: without
+			// XamlControlsResources the built-in style must still resolve to the legacy value.
+			using var uwpStyles = StyleHelper.UseUwpStyles();
+
+			var expected = Application.Current.Resources["SystemControlBackgroundBaseLowBrush"] as SolidColorBrush;
+			Assert.IsNotNull(expected);
+
+			var button = new ToggleButton
+			{
+				Content = "Explicit style",
+				Style = new Style(typeof(ToggleButton)),
+			};
+
+			try
+			{
+				await UITestHelper.Load(button);
+
+				var actual = button.Background as SolidColorBrush;
+				Assert.IsNotNull(actual);
+				Assert.AreEqual(expected.Color, actual.Color);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
