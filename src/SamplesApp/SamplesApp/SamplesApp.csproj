@@ -226,15 +226,14 @@
 		pre-unification head used) is the correct value.
 		-->
 		<WasmShellWebAppBasePath>./</WasmShellWebAppBasePath>
+		<UseMonoRuntime>false</UseMonoRuntime>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(_Platform)' == 'browserwasm' AND '$(Configuration)'=='Debug'">
-		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
 		<DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 	<ItemGroup Condition="'$(_Platform)' == 'browserwasm'">
-		<WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=1024m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
 		<LinkerDescriptor Include="Platforms\WebAssembly\LinkerConfig.xml" />
 		<EmbeddedResource Include="Platforms\WebAssembly\WasmScripts\AppManifest.js" />
 		<Content Include="..\LinkedFiles\WebContent\**\*.*">
