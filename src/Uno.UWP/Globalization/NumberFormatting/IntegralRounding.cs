@@ -1,6 +1,5 @@
 #nullable enable
 
-using System;
 using Windows.Globalization.NumberFormatting;
 
 namespace Uno.Globalization.NumberFormatting;
@@ -10,7 +9,7 @@ namespace Uno.Globalization.NumberFormatting;
 /// round without going through <see cref="double"/> to stay exact past 2^53.
 /// </summary>
 /// <remarks>
-/// A rounded value that no longer fits its type raises <see cref="ArithmeticException"/>, which is what
+/// A rounded value that no longer fits its type raises <see cref="System.ArithmeticException"/>, which is what
 /// native WinRT reports and what the formatters turn into an infinity.
 /// </remarks>
 internal static class IntegralRounding
