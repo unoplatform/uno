@@ -55,6 +55,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	// this visual's own painted content; _childrenContent is a collapsed subtree cache.
 	private IRenderRecord? _content;
 	private IRenderRecord? _childrenContent;
+	// Cached subtree recording for the non-analytic drop-shadow fallback (recorded in this visual's local space,
+	// so ancestor moves — e.g. scrolling — keep it valid; invalidated like _childrenContent plus own PaintDirty).
+	private IRenderRecord? _shadowFallbackContent;
+	private float _shadowFallbackOpacity;
+	// Cached analytic-shadow silhouette walk result (regions are in this visual's local space, so ancestor moves
+	// keep them valid). The walk does per-visual geometry booleans over the whole subtree — far too expensive to
+	// redo every frame for every shadowed item in a scrolling list. Same invalidation gates as the fallback cache.
+	private ShadowPathAccumulator? _analyticShadowCache;
+	private bool _hasAnalyticShadowVerdict;
+	private bool _analyticShadowFailed;
 	private int _framesSinceSubtreeNotChanged;
 
 	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty | VisualFlags.ChildrenSKPictureInvalid;
@@ -408,6 +418,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 			if (ShadowState is null || TryRenderAnalyticShadow(session.Session, ShadowState))
 			{
+				if (_shadowFallbackContent is not null)
+				{
+					_shadowFallbackContent.Dispose();
+					_shadowFallbackContent = null;
+				}
 				PaintStep(this, session);
 				PostPaintingClipStep(this, in session);
 				RenderChildrenStep(this, session, applyChildOptimization);
@@ -416,17 +431,37 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			{
 				// Non-analytic fallback: record the subtree once, then replay it twice — first through a
 				// drop-shadow-filtered layer (which composites the shadow), then directly (the content on top).
-				var recording = CreateRecording();
-				// child.Render will reapply the total transform matrix, so we need to invert ours.
-				Matrix4x4.Invert(TotalMatrix, out var rootTransform);
-				_factory.CreateInstance(this, recording, ref rootTransform, session.Opacity, session.Damage, out var childSession);
-				IRenderRecord renderData;
-				using (childSession)
+				// The recording is local-space, so it survives ancestor moves (scroll) — re-recorded only when the
+				// subtree or this visual's own paint changed (a static card costs two replays, not a re-record).
+				var renderData = _shadowFallbackContent;
+				if (renderData is null || _subtreeChangedThisFrame
+					|| (_flags & VisualFlags.PaintDirty) != 0
+					|| RequiresRepaintOnEveryFrame
+					|| _shadowFallbackOpacity != session.Opacity)
 				{
-					PaintStep(this, childSession);
-					PostPaintingClipStep(this, in childSession);
-					RenderChildrenStep(this, childSession, applyChildOptimization);
-					renderData = recording.Finish();
+					var recording = CreateRecording();
+					// child.Render will reapply the total transform matrix, so we need to invert ours.
+					Matrix4x4.Invert(TotalMatrix, out var rootTransform);
+					_factory.CreateInstance(this, recording, ref rootTransform, session.Opacity, session.Damage, out var childSession);
+					using (childSession)
+					{
+						PaintStep(this, childSession);
+						PostPaintingClipStep(this, in childSession);
+						RenderChildrenStep(this, childSession, applyChildOptimization);
+						renderData = recording.Finish();
+					}
+
+					_shadowFallbackContent?.Dispose();
+					// A descendant can invalidate mid-render (see RenderChildrenStep) — don't cache a stale record.
+					if ((_flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
+					{
+						_shadowFallbackContent = renderData;
+						_shadowFallbackOpacity = session.Opacity;
+					}
+					else
+					{
+						_shadowFallbackContent = null;
+					}
 				}
 
 				session.Session.SaveLayer(ShadowState.GetShadowFilter(session.Session.Factory));
@@ -434,7 +469,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				session.Session.Restore();
 
 				renderData.Replay(session.Session);
-				renderData.Dispose();
+				if (!ReferenceEquals(renderData, _shadowFallbackContent))
+				{
+					renderData.Dispose();
+				}
 			}
 		}
 
@@ -613,20 +651,85 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	private protected virtual bool TryAddShadowPaths(List<(IGeometry path, float alpha)> output) => !CanPaint();
 
+	// The constant alpha a brush paints with, for the analytic-shadow silhouette: solid colours use their own
+	// alpha; a gradient of fully-opaque stops is opaque everywhere inside the geometry. Anything else (image,
+	// surface, effect, translucent gradient) can't be reduced to a constant-α path.
+	private protected static bool TryGetShadowBrushAlpha(CompositionBrush? brush, out float alpha)
+	{
+		alpha = 0f;
+		while (brush is CompositionBrushWrapper wrapper)
+		{
+			brush = wrapper.WrappedBrush;
+		}
+		switch (brush)
+		{
+			case null:
+				return true;
+			case CompositionColorBrush color:
+				alpha = color.Color.A / 255f;
+				return true;
+			case CompositionGradientBrush gradient:
+				foreach (var stop in gradient.ColorStops)
+				{
+					if (stop.Color.A != 255)
+					{
+						return false;
+					}
+				}
+				alpha = gradient.ColorStops.Count > 0 ? 1f : 0f;
+				return true;
+			default:
+				return false;
+		}
+	}
+
 	private bool TryRenderAnalyticShadow(IDrawingSession session, ShadowState shadow)
 	{
-		var rootMatrix = TotalMatrix.ToMatrix3x2();
-		if (!Matrix3x2.Invert(rootMatrix, out var inverseRoot))
+		// The walk's result is expressed relative to this visual (toRoot = child.TotalMatrix × our inverse), so
+		// it only depends on the subtree's content — ancestor moves (scrolling) keep it valid. Re-walking every
+		// frame costs per-visual geometry booleans over the whole subtree, so reuse the last verdict + regions
+		// under the same gates as the fallback-recording cache.
+		var cacheValid = _hasAnalyticShadowVerdict && !_subtreeChangedThisFrame
+			&& (_flags & VisualFlags.PaintDirty) == 0
+			&& !RequiresRepaintOnEveryFrame;
+		if (!cacheValid)
+		{
+			var rootMatrix = TotalMatrix.ToMatrix3x2();
+			if (!Matrix3x2.Invert(rootMatrix, out var inverseRoot))
+			{
+				_hasAnalyticShadowVerdict = false;
+				return false;
+			}
+
+			var accumulator = new ShadowPathAccumulator();
+			var walkOk = WalkShadowSilhouette(this, this, inverseRoot, ancestorClipInRoot: null, 1f, accumulator);
+			// A descendant can invalidate mid-walk-frame (see RenderChildrenStep) — don't cache a stale result.
+			if ((_flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
+			{
+				_analyticShadowCache = walkOk ? accumulator : null;
+				_analyticShadowFailed = !walkOk;
+				_hasAnalyticShadowVerdict = true;
+			}
+			else
+			{
+				_hasAnalyticShadowVerdict = false;
+			}
+			if (!walkOk)
+			{
+				return false;
+			}
+			return RenderAnalyticShadowRegions(session, shadow, accumulator);
+		}
+
+		if (_analyticShadowFailed || _analyticShadowCache is null)
 		{
 			return false;
 		}
+		return RenderAnalyticShadowRegions(session, shadow, _analyticShadowCache);
+	}
 
-		var accumulator = new ShadowPathAccumulator();
-		if (!WalkShadowSilhouette(this, this, inverseRoot, ancestorClipInRoot: null, 1f, accumulator))
-		{
-			return false;
-		}
-
+	private bool RenderAnalyticShadowRegions(IDrawingSession session, ShadowState shadow, ShadowPathAccumulator accumulator)
+	{
 		var totalRegions = accumulator.Count;
 		if (totalRegions == 0)
 		{
