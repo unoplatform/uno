@@ -11,7 +11,6 @@ using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.Input.Preview.Injection;
 using Uno.UI.Extras.DevTools.Input;
-using GestureRecognizer = Microsoft.UI.Input.GestureRecognizer;
 
 #if HAS_UNO_WINUI || WINAPPSDK
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
@@ -230,7 +229,12 @@ public partial class Given_InteractionTracker
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 		var finger = injector.GetFinger();
 		const double drag = 50;
-		var threshold = GestureRecognizer.Manipulation.StartTouch.TranslateX;
+#if HAS_UNO
+		var threshold = Microsoft.UI.Input.GestureRecognizer.Manipulation.StartTouch.TranslateX;
+#else
+		// Not reachable: the test is [Ignore]d on WinAppSDK, where the threshold type is internal to Uno.
+		const double threshold = 10;
+#endif
 		// Moves of exactly one threshold: the manipulation is recognized on the first one, so exactly one
 		// threshold is absorbed and never applied to the tracker (#20473).
 		var expectedX = -(float)(drag - threshold);

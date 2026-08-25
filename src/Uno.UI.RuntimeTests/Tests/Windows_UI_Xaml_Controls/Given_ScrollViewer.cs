@@ -28,7 +28,6 @@ using Uno.UI.Extras.DevTools.Input;
 
 using static Private.Infrastructure.TestServices;
 using Disposable = Uno.Disposables.Disposable;
-using GestureRecognizer = Microsoft.UI.Input.GestureRecognizer;
 using ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
 using ScrollViewer = Microsoft.UI.Xaml.Controls.ScrollViewer;
 
@@ -1754,7 +1753,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var finger = input.GetFinger();
 			var bounds = SUT.GetAbsoluteBounds();
 			const double drag = 50;
-			var threshold = GestureRecognizer.Manipulation.StartTouch.TranslateY;
+#if HAS_UNO
+			var threshold = Microsoft.UI.Input.GestureRecognizer.Manipulation.StartTouch.TranslateY;
+#else
+			// Not reachable: the test is [Ignore]d on WinAppSDK, where the threshold type is internal to Uno.
+			const double threshold = 10;
+#endif
 
 			finger.Press(bounds.GetCenter());
 			// Moves of exactly one threshold: the manipulation is recognized on the first one, and that
