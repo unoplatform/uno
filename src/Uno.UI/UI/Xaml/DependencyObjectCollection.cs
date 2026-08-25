@@ -69,8 +69,9 @@ namespace Microsoft.UI.Xaml
 		private int _count;
 
 		/// <summary>
-		/// Incremented on every mutation, so that enumerators can detect concurrent
-		/// modifications the same way <see cref="List{T}"/> does.
+		/// Incremented on every structural mutation, so that enumerators can detect concurrent
+		/// modifications. Replacing an item through the indexer is not structural and does not
+		/// invalidate, matching CDOCollection's CompactInlineVector element replacement.
 		/// </summary>
 		private int _version;
 
@@ -366,8 +367,6 @@ namespace Microsoft.UI.Xaml
 			{
 				_inlineItems[index] = item;
 			}
-
-			_version++;
 			OnItemsMutated();
 		}
 
