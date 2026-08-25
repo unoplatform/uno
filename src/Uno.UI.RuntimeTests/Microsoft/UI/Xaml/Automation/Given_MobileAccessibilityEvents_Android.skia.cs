@@ -42,6 +42,29 @@ public class Given_MobileAccessibilityEvents_Android
 		Assert.IsNotNull(snapshot, "Element must have a virtual ID before the test mutates it.");
 	}
 
+	// Announcements go through the SkiaAccessibilityBase debounce timer, so the record only
+	// appears after it fires. Polling keeps the wait bounded but load-independent, unlike a
+	// fixed sleep sized to the debounce window.
+	private static async Task<bool> WaitForAnnouncementAsync(XamlRoot root, string text, int timeoutMs = 5000)
+	{
+		var deadline = System.DateTimeOffset.UtcNow.AddMilliseconds(timeoutMs);
+		do
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			if (GetAndClearEvents(root).Any(e =>
+				e.Kind == AccessibilityNativeEventKind.Announcement &&
+				e.Text?.Contains(text) is true))
+			{
+				return true;
+			}
+
+			await Task.Delay(25);
+		}
+		while (System.DateTimeOffset.UtcNow < deadline);
+
+		return false;
+	}
+
 	// Hook registration ---------------------------------------------------------
 
 	[TestMethod]
@@ -254,16 +277,10 @@ public class Given_MobileAccessibilityEvents_Android
 			"Test announcement text",
 			"test-activity");
 
-		// SkiaAccessibilityBase debounces announcements by 100 ms; wait past that
-		// before reading the log so the timer fires on the main thread first.
-		await Task.Delay(150);
-		await TestServices.WindowHelper.WaitForIdle();
-
-		var events = GetAndClearEvents(button.XamlRoot!);
+		// SkiaAccessibilityBase debounces announcements by 100 ms; poll until the timer
+		// fires on the main thread instead of sleeping for a fixed window.
 		Assert.IsTrue(
-			events.Any(e =>
-				e.Kind == AccessibilityNativeEventKind.Announcement &&
-				e.Text?.Contains("Test announcement text") is true),
+			await WaitForAnnouncementAsync(button.XamlRoot!, "Test announcement text"),
 			"Expected Announcement event with the notification text.");
 	}
 
@@ -291,12 +308,8 @@ public class Given_MobileAccessibilityEvents_Android
 			backgroundPeer.SetAPEventsSource(new OwnerlessLiveRegionAutomationPeer("Background update"));
 
 			backgroundPeer.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
-			await Task.Delay(300);
-			await TestServices.WindowHelper.WaitForIdle();
 			Assert.IsTrue(
-				GetAndClearEvents(root.XamlRoot!).Any(e =>
-					e.Kind == AccessibilityNativeEventKind.Announcement &&
-					e.Text?.Contains("Background update") is true),
+				await WaitForAnnouncementAsync(root.XamlRoot!, "Background update"),
 				"An ownerless EventsSource must route through its rooted source peer when no modal is active.");
 
 			// Queue before the modal opens to verify delivery revalidates modal scope.
@@ -326,13 +339,8 @@ public class Given_MobileAccessibilityEvents_Android
 				"Background notifications must not bypass the active modal.");
 
 			modalContent.GetOrCreateAutomationPeer()!.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
-			await Task.Delay(300);
-			await TestServices.WindowHelper.WaitForIdle();
-
 			Assert.IsTrue(
-				GetAndClearEvents(root.XamlRoot!).Any(e =>
-					e.Kind == AccessibilityNativeEventKind.Announcement &&
-					e.Text?.Contains("Modal update") is true),
+				await WaitForAnnouncementAsync(root.XamlRoot!, "Modal update"),
 				"Live regions inside the popup modal must remain announceable.");
 		}
 		finally
