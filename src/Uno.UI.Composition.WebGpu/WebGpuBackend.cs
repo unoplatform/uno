@@ -843,6 +843,16 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			return;
 		}
 		var (mode, tint) = ResolveTint(colorFilter);
+
+		// Unreachable by design: the only IColorFilter routed to DrawImage is the SrcIn blend-mode tint
+		// (CompositionSurfaceBrush.MonochromeColor); colour matrices are handled above. mode == 0 with a filter
+		// present means an unsupported filter reached here and is being silently dropped — render output will be
+		// wrong. If this fires, a new caller has broken that invariant; fix the caller or implement the case.
+		if (mode == 0 && colorFilter is not null && this.Log().IsEnabled(LogLevel.Error))
+		{
+			this.Log().Error($"WebGPU DrawImage reached with an unsupported IColorFilter ('{colorFilter.GetType().Name}'); only a SrcIn blend-mode tint or a colour matrix is honored. The filter is being ignored — this path is not expected to be taken.");
+		}
+
 		{ var ip0 = Map(x, y); var ip1 = Map(x + w, y); var ip2 = Map(x + w, y + h); var ip3 = Map(x, y + h); _target.Add(new ImageCmd { P0 = ip0, P1 = ip1, P2 = ip2, P3 = ip3, View = t.View, W = w, H = h, Opacity = 1f, TintMode = mode, Tint = tint, ColorMatrix = _pendingColorMatrix, Clip = RelaxedClip(ip0, ip1, ip2, ip3) }); }
 	}
 
