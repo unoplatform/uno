@@ -189,6 +189,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var textBlock = new TextBlock
 			{
 				FontSize = fontSize,
+				// Pin a bundled font so the expected geometry comes from known metrics rather than from
+				// whatever the host happens to resolve. Roboto-Regular publishes post.underlinePosition
+				// (-150/2048 em) and underlineThickness (100/2048 em).
+				FontFamily = new FontFamily(RobotoAsset),
 				// MaxHeight line stacking keeps the baseline at -Ascent and puts the extra room below the
 				// text, so the underline can never be clipped by the line box.
 				LineHeight = fontSize * 2,
@@ -208,10 +212,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.Load(container);
 
+			// Font assets resolve asynchronously, so wait until the run actually paints with Roboto.
+			await UITestHelper.WaitFor(
+				() => run.FontInfo.SKFont.Typeface?.FamilyName == RobotoFamily,
+				5000,
+				$"Timed out waiting for {RobotoAsset} to be resolved for the run.");
+			await UITestHelper.WaitForIdle();
+
 			var metrics = run.FontInfo.SKFontMetrics;
 			if (metrics.UnderlinePosition is not { } underlinePosition || metrics.UnderlineThickness is not { } underlineThickness)
 			{
-				Assert.Inconclusive("The resolved font does not publish underline metrics.");
+				Assert.Fail($"{RobotoFamily} publishes underline metrics, so their absence means the run did not resolve to the bundled asset.");
 				return;
 			}
 
@@ -238,6 +249,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if __SKIA__
+		private const string RobotoAsset = "ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/Roboto-Regular.ttf";
+		private const string RobotoFamily = "Roboto";
+
 		private static List<int> GetInkRows(RawBitmap bitmap)
 		{
 			var rows = new List<int>();
