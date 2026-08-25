@@ -36,5 +36,16 @@ namespace Uno.UI.FluentTheme.v2
 		}
 
 		ResourceDictionary IXamlResourceDictionaryProvider.GetResourceDictionary() => this;
+
+#if __NETSTD_REFERENCE__
+		/// <summary>
+		/// The reference assembly carries no XAML, so the source generator does not emit the
+		/// code-behind for this dictionary. The stub keeps the reference API surface aligned with
+		/// the runtime assemblies, which Uno.ReferenceImplComparer validates.
+		/// </summary>
+		public void InitializeComponent()
+		{
+		}
+#endif
 	}
 }
