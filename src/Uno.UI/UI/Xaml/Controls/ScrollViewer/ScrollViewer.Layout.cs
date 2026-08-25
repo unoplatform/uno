@@ -88,7 +88,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if ((ActualHeight != vpHeight || ActualWidth != vpWidth) &&
 				this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"ScrollViewer setting ViewportHeight={ActualHeight}, ViewportWidth={ActualWidth}");
+				this.Log().LogDebug($"ScrollViewer setting ViewportHeight={vpHeight}, ViewportWidth={vpWidth}");
 			}
 
 			ViewportHeight = vpHeight;

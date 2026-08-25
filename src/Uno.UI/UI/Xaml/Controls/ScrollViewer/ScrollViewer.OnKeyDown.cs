@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var newOffset = key switch
+			double? newOffset = key switch
 			{
 				VirtualKey.Up => Math.Max(0, oldVerticalOffset - GetDelta(ActualHeight)),
 				VirtualKey.Down => Math.Min(oldVerticalOffset + GetDelta(ActualHeight), ScrollableHeight),
@@ -66,10 +66,10 @@ namespace Microsoft.UI.Xaml.Controls
 				VirtualKey.PageDown => Math.Min(oldVerticalOffset + ActualHeight, ScrollableHeight),
 				VirtualKey.Home => 0,
 				VirtualKey.End => ScrollableHeight,
-				_ => double.E
+				_ => null
 			};
 
-			if (newOffset == double.E)
+			if (newOffset is not { } targetOffset)
 			{
 				return;
 			}
@@ -81,12 +81,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (canScrollHorizontally && key is VirtualKey.Left or VirtualKey.Right)
 				{
-					ScrollToHorizontalOffset(newOffset);
+					ScrollToHorizontalOffset(targetOffset);
 					args.Handled = !NumericExtensions.AreClose(oldHorizontalOffset, Presenter.TargetHorizontalOffset);
 				}
 				else if (canScrollVertically && key is not (VirtualKey.Left or VirtualKey.Right))
 				{
-					ScrollToVerticalOffset(newOffset);
+					ScrollToVerticalOffset(targetOffset);
 					args.Handled = !NumericExtensions.AreClose(oldVerticalOffset, Presenter.TargetVerticalOffset);
 				}
 
