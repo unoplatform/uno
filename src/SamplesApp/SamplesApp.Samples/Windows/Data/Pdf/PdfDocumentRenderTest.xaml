@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:uno="using:Uno.UI.Xaml"
+    xmlns:uux="using:Uno.UI.Xaml"
     d:DesignHeight="300"
     d:DesignWidth="400"
     mc:Ignorable="d">
@@ -83,7 +83,7 @@
                 Margin="10"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"
-                uno:UIElementExtensions.Elevation="2"
+                uux:UIElementExtensions.Elevation="2"
                 Background="White">
                 <Image
                     x:Name="Output"

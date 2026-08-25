@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:uno="using:Uno.UI.Xaml.Controls"
+    xmlns:uuxc="using:Uno.UI.Xaml.Controls"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
@@ -22,7 +22,7 @@
         <TextBlock FontSize="15">Those elevated views should all be identical</TextBlock>
 
         <StackPanel Orientation="Horizontal" Spacing="15">
-            <uno:ElevatedView
+            <uuxc:ElevatedView
                 Width="120"
                 Height="120"
                 Margin="0,30"
@@ -33,8 +33,8 @@
                     Width="120"
                     Height="120"
                     Fill="Orange" />
-            </uno:ElevatedView>
-            <uno:ElevatedView
+            </uuxc:ElevatedView>
+            <uuxc:ElevatedView
                 Width="120"
                 Height="120"
                 Margin="0,30"
@@ -42,7 +42,7 @@
                 CornerRadius="{Binding Value, ElementName=radius}"
                 Elevation="{Binding Value, ElementName=elevation}" />
             <StackPanel Margin="0,30">
-                <uno:ElevatedView
+                <uuxc:ElevatedView
                     Width="120"
                     Height="120"
                     Background="Orange"
@@ -50,7 +50,7 @@
                     Elevation="{Binding Value, ElementName=elevation}" />
             </StackPanel>
             <ScrollViewer Padding="30">
-                <uno:ElevatedView
+                <uuxc:ElevatedView
                     Width="120"
                     Height="120"
                     Background="Orange"
@@ -58,7 +58,7 @@
                     Elevation="{Binding Value, ElementName=elevation}" />
             </ScrollViewer>
             <ScrollViewer>
-                <uno:ElevatedView
+                <uuxc:ElevatedView
                     Width="120"
                     Height="120"
                     Margin="0,30"

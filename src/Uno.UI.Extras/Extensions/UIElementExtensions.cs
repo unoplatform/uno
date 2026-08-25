@@ -1,4 +1,4 @@
-﻿#nullable disable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -20,7 +20,7 @@ internal static partial class UIElementExtensions
 			return padding;
 		}
 
-		var property = uiElement.FindDependencyPropertyUsingReflection<Thickness>("PaddingProperty");
+		var property = uiElement.FindDependencyPropertyUsingReflection("PaddingProperty");
 		return property != null && uiElement.GetValue(property) is Thickness t ? t : default;
 	}
 
@@ -31,7 +31,7 @@ internal static partial class UIElementExtensions
 			return true;
 		}
 
-		var property = uiElement.FindDependencyPropertyUsingReflection<Thickness>("PaddingProperty");
+		var property = uiElement.FindDependencyPropertyUsingReflection("PaddingProperty");
 		if (property != null)
 		{
 			uiElement.SetValue(property, padding);
@@ -98,14 +98,14 @@ internal static partial class UIElementExtensions
 		return false;
 	}
 
-	private static Dictionary<(Type type, string property), DependencyProperty> _dependencyPropertyReflectionCache;
+	private static Dictionary<(Type type, string property), DependencyProperty?>? _dependencyPropertyReflectionCache;
 
-	internal static DependencyProperty FindDependencyPropertyUsingReflection<TProperty>(this UIElement uiElement, string propertyName)
+	internal static DependencyProperty? FindDependencyPropertyUsingReflection(this UIElement uiElement, string propertyName)
 	{
 		var type = GetType(uiElement);
 		var key = (ownerType: type, propertyName);
 
-		_dependencyPropertyReflectionCache ??= new Dictionary<(Type, string), DependencyProperty>(2);
+		_dependencyPropertyReflectionCache ??= new Dictionary<(Type, string), DependencyProperty?>(2);
 
 		if (_dependencyPropertyReflectionCache.TryGetValue(key, out var property))
 		{

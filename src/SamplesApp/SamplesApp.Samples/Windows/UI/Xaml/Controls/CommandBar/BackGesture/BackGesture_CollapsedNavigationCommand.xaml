@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:uno="using:Uno.UI.Xaml.Controls"
+    xmlns:uuxc="using:Uno.UI.Xaml.Controls"
     mc:Ignorable="d">
 
     <Grid Background="Purple">
@@ -15,13 +15,13 @@
         </Grid.RowDefinitions>
 
         <CommandBar Content="Collapsed NavigationCommand" Visibility="Collapsed">
-            <uno:CommandBarExtensions.NavigationCommand>
+            <uuxc:CommandBarExtensions.NavigationCommand>
                 <AppBarButton Command="{Binding Command}" Label="MyLabel">
                     <AppBarButton.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
                     </AppBarButton.Icon>
                 </AppBarButton>
-            </uno:CommandBarExtensions.NavigationCommand>
+            </uuxc:CommandBarExtensions.NavigationCommand>
         </CommandBar>
 
         <TextBlock

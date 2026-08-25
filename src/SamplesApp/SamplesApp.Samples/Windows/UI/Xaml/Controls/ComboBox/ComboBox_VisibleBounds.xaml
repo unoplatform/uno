@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ComboBox"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:uno="using:Uno.UI.Behaviors"
+    xmlns:uub="using:Uno.UI.Behaviors"
     d:DesignHeight="300"
     d:DesignWidth="400"
     mc:Ignorable="d">
@@ -277,7 +277,7 @@
 
         <Border
             Padding="0,28,0,0"
-            uno:VisibleBoundsPadding.PaddingMask="Top"
+            uub:VisibleBoundsPadding.PaddingMask="Top"
             Background="Black" />
 
         <!--  HEADER  -->

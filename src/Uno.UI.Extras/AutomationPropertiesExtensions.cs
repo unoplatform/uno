@@ -21,8 +21,8 @@ namespace Uno.UI.Xaml.Automation;
 ///
 /// XAML usage:
 /// <code>
-/// xmlns:uno="using:Uno.UI.Xaml.Automation"
-/// &lt;Button uno:AutomationPropertiesExtensions.Role="tab" /&gt;
+/// xmlns:uuxa="using:Uno.UI.Xaml.Automation"
+/// &lt;Button uuxa:AutomationPropertiesExtensions.Role="tab" /&gt;
 /// </code>
 /// </remarks>
 public static class AutomationPropertiesExtensions

@@ -1,4 +1,4 @@
-﻿---
+---
 uid: Uno.Development.MigratingToUno7
 ---
 
@@ -87,7 +87,7 @@ on macOS with Skia rendering. To migrate:
 | `Xamarin.AndroidX.*` transitive deps removed (AppCompat, RecyclerView, Activity, Browser, SwipeRefreshLayout) | If *your own* code uses AndroidX, add explicit `PackageReference`s. |
 | `SkiaSharp.Views.Uno.WinUI` no longer referenced implicitly | The `Uno.Sdk` used to add it to every Uno Platform target, and to WebAssembly heads using the `lottie`, `svg`, `material`, `cupertino`, or `simpletheme` features. Nothing in Uno Platform needs it anymore — SVG draws through `Uno.WinUI.Graphics2DSK` and Lottie through `SkiaSharp.Skottie`. If *your own* code uses `SKXamlCanvas` or `SKSwapChainPanel`, switch to [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), which is hardware-accelerated and referenced implicitly; otherwise add an explicit `PackageReference`. |
 | Windows App SDK default moved from 1.7 to 2.3.1 | Windows heads now build against Windows App SDK 2.x, so packaged apps take a framework dependency on `Microsoft.WindowsAppRuntime.2` and end users need the matching [Windows App Runtime](https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads) — 2.3.1 or later from the **Stable release** section — installed. To stay on 1.x, set `<WinAppSdkVersion>` (and `<WinAppSdkBuildToolsVersion>`) explicitly in your Windows head. |
-| `Uno.UI.Toolkit.dll` renamed to `Uno.UI.Extras.dll` | The old name was routinely confused with the separate Uno Toolkit (`Uno.Toolkit.UI`). Update `using Uno.UI.Toolkit;` to `using Uno.UI.Extras;` and `xmlns:toolkit="using:Uno.UI.Toolkit"` to `using:Uno.UI.Extras`. Types keep their names. `Uno.Diagnostics.UI`, `Uno.UI.Markup`, `Uno.Helpers` and `Uno.UI.Maps` are unaffected — only the `Uno.UI.Toolkit*` namespaces moved. |
+| `Uno.UI.Toolkit` types moved to the `Uno.UI.*` namespaces | The old name was routinely confused with the separate Uno Toolkit (`Uno.Toolkit.UI`). Each type now sits in the namespace it belongs to — see [the mapping table below](#unouitoolkit-types-move-to-the-unoui-namespaces). Type names and behavior are unchanged. `Uno.Diagnostics.UI`, `Uno.UI.Markup`, `Uno.Helpers` and `Uno.UI.Maps` are unaffected — only the `Uno.UI.Toolkit*` namespaces moved. |
 
 > [!IMPORTANT]
 > This is a hard rename — there is no type-forwarder and no `xmlns` alias. `Uno.UI.Toolkit.dll`
@@ -121,9 +121,9 @@ are unchanged, and there is **no** forwarding shim: the old namespaces stop reso
 | input injection dev helpers | `Uno.UI.Toolkit.DevTools.Input` (and `.DevTools.Xaml`) | `Uno.UI.DevTools.Input` (and `.DevTools.Xaml`) |
 
 XAML declarations follow the same mapping, for example
-`xmlns:toolkit="using:Uno.UI.Toolkit"` becomes `xmlns:uno="using:Uno.UI.Xaml.Controls"` for
+`xmlns:toolkit="using:Uno.UI.Toolkit"` becomes `xmlns:uuxc="using:Uno.UI.Xaml.Controls"` for
 `ElevatedView` and the `CommandBar`/`SplitView` extensions, or
-`xmlns:uno="using:Uno.UI.Behaviors"` for `VisibleBoundsPadding`.
+`xmlns:uub="using:Uno.UI.Behaviors"` for `VisibleBoundsPadding`.
 
 The other namespaces carried by that assembly keep their names, so code using
 `DiagnosticsOverlay` (`Uno.Diagnostics.UI`), `FromJsonExtension` (`Uno.UI.Markup`) or

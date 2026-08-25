@@ -14,16 +14,16 @@ This Uno-specific attached property lets you explicitly override the accessibili
 Add the `Uno.UI.Xaml.Automation` namespace to your XAML, then set the `AutomationPropertiesExtensions.Role` attached property on any element:
 
 ```xml
-<Page xmlns:uno="using:Uno.UI.Xaml.Automation">
+<Page xmlns:uuxa="using:Uno.UI.Xaml.Automation">
 
     <!-- Declare a navigation landmark -->
-    <StackPanel uno:AutomationPropertiesExtensions.Role="navigation">
+    <StackPanel uuxa:AutomationPropertiesExtensions.Role="navigation">
         <Button Content="Home" />
         <Button Content="Settings" />
     </StackPanel>
 
     <!-- Force a specific role on a control -->
-    <Button uno:AutomationPropertiesExtensions.Role="tab"
+    <Button uuxa:AutomationPropertiesExtensions.Role="tab"
             Content="Overview" />
 </Page>
 ```
@@ -36,7 +36,7 @@ Setting the value to an empty string or `null` removes the override, reverting t
 
 ```xml
 <!-- Remove a previously set role override -->
-<Button uno:AutomationPropertiesExtensions.Role="" Content="Regular button" />
+<Button uuxa:AutomationPropertiesExtensions.Role="" Content="Regular button" />
 ```
 
 Or in code-behind:
@@ -70,7 +70,7 @@ For standard landmark regions, prefer `AutomationProperties.LandmarkType` — it
 <StackPanel AutomationProperties.LandmarkType="Navigation" />
 
 <!-- Use Role override for non-standard or specific ARIA roles -->
-<StackPanel uno:AutomationPropertiesExtensions.Role="complementary" />
+<StackPanel uuxa:AutomationPropertiesExtensions.Role="complementary" />
 ```
 
 Use `AutomationPropertiesExtensions.Role` when:

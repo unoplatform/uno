@@ -1,4 +1,4 @@
-﻿---
+---
 uid: Uno.Features.ElevatedView
 ---
 
@@ -12,10 +12,10 @@ This control is very useful for creating cards with both rounded corners and an 
 
 ## How to use the `ElevatedView`
 
-First you need to add the `extras` namespace in your XAML file:
+First you need to add the Uno controls namespace to your XAML file:
 
 ```xml
-xmlns:uno="using:Uno.UI.Xaml.Controls"
+xmlns:uuxc="using:Uno.UI.Xaml.Controls"
 ```
 
 After that, use the `ElevatedView` to host the content you need to be elevated:
@@ -25,9 +25,9 @@ After that, use the `ElevatedView` to host the content you need to be elevated:
 
     <Button>Non-Elevated Button</Button>
 
-    <uno:ElevatedView Elevation="10" Background="Gray" ShadowColor="Black">
+    <uuxc:ElevatedView Elevation="10" Background="Gray" ShadowColor="Black">
         <Button>Elevated Button</Button>
-    </uno:ElevatedView>
+    </uuxc:ElevatedView>
 
 </StackPanel>
 ```
@@ -36,7 +36,7 @@ Will produce the following result:
 
 ![ElevatedView sample](../Assets/features/elevatedview/elevatedview-sample.png)
 
-> **ATTENTION FOR WinUI**: When there is an error resolving the `<uno:ElevatedView>` on WinUI, the common mistake is to forget to include the `Uno.WinUI` package for all platforms, including WinUI. On WinUI, the `Uno.WinUI` package contributes only these Uno Platform additions on top of WinUI.
+> **ATTENTION FOR WinUI**: When there is an error resolving the `<uuxc:ElevatedView>` on WinUI, the common mistake is to forget to include the `Uno.WinUI` package for all platforms, including WinUI. On WinUI, the `Uno.WinUI` package contributes only these Uno Platform additions on top of WinUI.
 
 ## Settings
 
@@ -49,4 +49,4 @@ You can set the following properties:
 
 ## Particularities
 
-* Make sure to _give room_ for the shadow in the layout (eg. by setting a `Margin` on the `ElevatedView`).  Some platforms like macOS may clip the shadow otherwise. For the same reason, avoid wrapping the `<uno:ElevatedView>` directly in a `<ScrollViewer>` because it's designed to clip its content.
+* Make sure to _give room_ for the shadow in the layout (eg. by setting a `Margin` on the `ElevatedView`).  Some platforms like macOS may clip the shadow otherwise. For the same reason, avoid wrapping the `<uuxc:ElevatedView>` directly in a `<ScrollViewer>` because it's designed to clip its content.

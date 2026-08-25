@@ -1,4 +1,4 @@
-﻿---
+---
 uid: Uno.Development.ConsumeWebApi
 ---
 
@@ -890,7 +890,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels"
         xmlns:datamodels="using:TheCatApiClient.Models.DataModels"
-        xmlns:uno="using:Uno.UI.Behaviors"
+        xmlns:uub="using:Uno.UI.Behaviors"
         mc:Ignorable="d"
         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -898,7 +898,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
             <viewmodels:MainViewModel x:Name="ViewModel" />
         </Page.DataContext>
 
-        <Grid uno:VisibleBoundsPadding.PaddingMask="All">
+        <Grid uub:VisibleBoundsPadding.PaddingMask="All">
             <Grid Padding="12">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -935,12 +935,12 @@ In this task you will create the XAML for the UI and implement the bindings for 
         ...
         xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels"
         xmlns:datamodels="using:TheCatApiClient.Models.DataModels"
-        xmlns:uno="using:Uno.UI.Behaviors"
+        xmlns:uub="using:Uno.UI.Behaviors"
         ...
     >
     ```
 
-    `Uno.UI.Behaviors` is added so that **uno:VisibleBoundsPadding** can be added - this ensures that the UI will adapt appropriately when the app is running on a device that has a "notch", etc.
+    `Uno.UI.Behaviors` is added so that **uub:VisibleBoundsPadding** can be added - this ensures that the UI will adapt appropriately when the app is running on a device that has a "notch", etc.
 
     Also note how the view-model **MainViewModel** is instantiated and assigned as the **DataContext**. The view-model can then be referred to as **ViewModel** in the `x:Bind` expressions you will add shortly.
 
@@ -1017,7 +1017,7 @@ In this task you will create the XAML for the UI and implement the bindings for 
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewmodels="using:TheCatApiClient.Models.ViewModels"
         xmlns:datamodels="using:TheCatApiClient.Models.DataModels"
-        xmlns:uno="using:Uno.UI.Behaviors"
+        xmlns:uub="using:Uno.UI.Behaviors"
         mc:Ignorable="d"
         Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 

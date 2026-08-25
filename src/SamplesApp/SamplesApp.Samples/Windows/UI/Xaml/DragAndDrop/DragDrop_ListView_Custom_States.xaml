@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:UITests.Windows_UI_Xaml.DragAndDrop"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:uno="using:Uno.UI.Xaml.Controls"
+    xmlns:uuxc="using:Uno.UI.Xaml.Controls"
     d:DesignHeight="300"
     d:DesignWidth="400"
     mc:Ignorable="d">
@@ -40,7 +40,7 @@
                                     <TranslateTransform x:Name="ContentPresenterTranslateTransform" />
                                 </Grid.RenderTransform>
                                 <!--  Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl  -->
-                                <uno:ElevatedView
+                                <uuxc:ElevatedView
                                     x:Name="ElevatedView"
                                     Margin="3"
                                     Background="Beige"
@@ -54,7 +54,7 @@
                                         ContentTemplate="{TemplateBinding ContentTemplate}"
                                         ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
                                         ContentTransitions="{TemplateBinding ContentTransitions}" />
-                                </uno:ElevatedView>
+                                </uuxc:ElevatedView>
                             </Grid>
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="CommonStates">

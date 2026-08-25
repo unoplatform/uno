@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:uno="using:Uno.UI.Xaml"
+    xmlns:uux="using:Uno.UI.Xaml"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
@@ -15,7 +15,7 @@
             Canvas.Top="100"
             Width="60"
             Height="60"
-            uno:UIElementExtensions.Elevation="24"
+            uux:UIElementExtensions.Elevation="24"
             Background="{ThemeResource SystemControlBackgroundAccentBrush}" />
     </Canvas>
 </Page>

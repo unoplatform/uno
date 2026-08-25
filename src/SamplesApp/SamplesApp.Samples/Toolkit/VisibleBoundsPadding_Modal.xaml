@@ -5,12 +5,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:UITests.Toolkit"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:uno="using:Uno.UI.Behaviors"
+    xmlns:uub="using:Uno.UI.Behaviors"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
     <Grid
-        uno:VisibleBoundsPadding.PaddingMask="All"
+        uub:VisibleBoundsPadding.PaddingMask="All"
         AutomationProperties.AutomationId="ContainerGrid"
         Background="Blue">
         <Rectangle AutomationProperties.AutomationId="TestRectangle" Fill="Red" />

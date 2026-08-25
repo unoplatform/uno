@@ -5,12 +5,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:UITests.Toolkit"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:uno="using:Uno.UI.Xaml.Controls"
+    xmlns:uuxc="using:Uno.UI.Xaml.Controls"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
     <Grid Background="White">
-        <uno:ElevatedView
+        <uuxc:ElevatedView
             x:Name="Elevation"
             Width="300"
             Height="300"
@@ -28,6 +28,6 @@
                 This sample is used by automated unit tests to ensure the
                 elevation's drop shadow is drawn properly on all platforms.
             </TextBlock>
-        </uno:ElevatedView>
+        </uuxc:ElevatedView>
     </Grid>
 </Page>

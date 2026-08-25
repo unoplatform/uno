@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Uno.UI.Samples.Content.UITests.CommandBar"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:uno="using:Uno.UI.Xaml.Controls"
+    xmlns:uuxc="using:Uno.UI.Xaml.Controls"
     x:Name="ThePage">
 
     <StackPanel VerticalAlignment="Top">
@@ -70,13 +70,13 @@
             Foreground="Red">
 
             <!--  Burger Menu  -->
-            <uno:CommandBarExtensions.NavigationCommand>
+            <uuxc:CommandBarExtensions.NavigationCommand>
                 <AppBarButton Label="Label">
                     <AppBarButton.Icon>
                         <BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
                     </AppBarButton.Icon>
                 </AppBarButton>
-            </uno:CommandBarExtensions.NavigationCommand>
+            </uuxc:CommandBarExtensions.NavigationCommand>
 
             <CommandBar.PrimaryCommands>
                 <AppBarButton Content="Button" />

@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:Uno.UI.Samples.Content.UITests.CommandBar"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:uno="using:Uno.UI.Xaml.Controls"
+    xmlns:uuxc="using:Uno.UI.Xaml.Controls"
     d:DesignHeight="300"
     d:DesignWidth="400"
     mc:Ignorable="d">
@@ -58,13 +58,13 @@
 
             <TextBlock Text="Empty" />
             <CommandBar Background="Orange">
-                <uno:CommandBarExtensions.NavigationCommand>
+                <uuxc:CommandBarExtensions.NavigationCommand>
                     <AppBarButton Command="{Binding Command}" Label="Label">
                         <AppBarButton.Icon>
                             <BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
                         </AppBarButton.Icon>
                     </AppBarButton>
-                </uno:CommandBarExtensions.NavigationCommand>
+                </uuxc:CommandBarExtensions.NavigationCommand>
                 <CommandBar.PrimaryCommands>
                     <AppBarButton Content="Button" />
                     <AppBarButton>
@@ -80,13 +80,13 @@
                 Background="LightGreen"
                 Content="String"
                 Foreground="DarkGray">
-                <uno:CommandBarExtensions.NavigationCommand>
+                <uuxc:CommandBarExtensions.NavigationCommand>
                     <AppBarButton Command="{Binding Command}" Label="Label">
                         <AppBarButton.Icon>
                             <BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
                         </AppBarButton.Icon>
                     </AppBarButton>
-                </uno:CommandBarExtensions.NavigationCommand>
+                </uuxc:CommandBarExtensions.NavigationCommand>
                 <CommandBar.PrimaryCommands>
                     <AppBarButton Content="Button" />
                     <AppBarButton>
@@ -102,13 +102,13 @@
                 <CommandBar.Content>
                     <Border Background="Red" />
                 </CommandBar.Content>
-                <uno:CommandBarExtensions.NavigationCommand>
+                <uuxc:CommandBarExtensions.NavigationCommand>
                     <AppBarButton Command="{Binding Command}" Label="Label">
                         <AppBarButton.Icon>
                             <BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
                         </AppBarButton.Icon>
                     </AppBarButton>
-                </uno:CommandBarExtensions.NavigationCommand>
+                </uuxc:CommandBarExtensions.NavigationCommand>
                 <CommandBar.PrimaryCommands>
                     <AppBarButton>
                         <AppBarButton.Icon>
@@ -131,13 +131,13 @@
                         VerticalAlignment="Center"
                         Background="Red" />
                 </CommandBar.Content>
-                <uno:CommandBarExtensions.NavigationCommand>
+                <uuxc:CommandBarExtensions.NavigationCommand>
                     <AppBarButton Command="{Binding Command}" Label="Label">
                         <AppBarButton.Icon>
                             <BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
                         </AppBarButton.Icon>
                     </AppBarButton>
-                </uno:CommandBarExtensions.NavigationCommand>
+                </uuxc:CommandBarExtensions.NavigationCommand>
                 <CommandBar.PrimaryCommands>
                     <AppBarButton Content="Button" />
                     <AppBarButton>
@@ -153,13 +153,13 @@
                 <CommandBar.Content>
                     <TextBlock VerticalAlignment="Center" Text="TextBlock" />
                 </CommandBar.Content>
-                <uno:CommandBarExtensions.NavigationCommand>
+                <uuxc:CommandBarExtensions.NavigationCommand>
                     <AppBarButton Command="{Binding Command}" Label="Label">
                         <AppBarButton.Icon>
                             <BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
                         </AppBarButton.Icon>
                     </AppBarButton>
-                </uno:CommandBarExtensions.NavigationCommand>
+                </uuxc:CommandBarExtensions.NavigationCommand>
                 <CommandBar.SecondaryCommands>
                     <AppBarButton Foreground="DarkBlue" Label="SecondaryCommand1" />
                     <AppBarButton Foreground="DarkBlue">
@@ -178,13 +178,13 @@
                         <TextBlock Text="TextBlock" />
                     </StackPanel>
                 </CommandBar.Content>
-                <uno:CommandBarExtensions.NavigationCommand>
+                <uuxc:CommandBarExtensions.NavigationCommand>
                     <AppBarButton Command="{Binding Command}" Label="Label">
                         <AppBarButton.Icon>
                             <BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
                         </AppBarButton.Icon>
                     </AppBarButton>
-                </uno:CommandBarExtensions.NavigationCommand>
+                </uuxc:CommandBarExtensions.NavigationCommand>
                 <CommandBar.PrimaryCommands>
                     <AppBarButton Content="Button" />
                     <AppBarButton>
@@ -200,13 +200,13 @@
                 <CommandBar.Content>
                     <TextBox PlaceholderText="TextBox" Style="{StaticResource XamlDefaultTextBox}" />
                 </CommandBar.Content>
-                <uno:CommandBarExtensions.NavigationCommand>
+                <uuxc:CommandBarExtensions.NavigationCommand>
                     <AppBarButton Command="{Binding Command}" Label="Label">
                         <AppBarButton.Icon>
                             <BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
                         </AppBarButton.Icon>
                     </AppBarButton>
-                </uno:CommandBarExtensions.NavigationCommand>
+                </uuxc:CommandBarExtensions.NavigationCommand>
                 <CommandBar.PrimaryCommands>
                     <AppBarButton>
                         <AppBarButton.Icon>
@@ -222,13 +222,13 @@
                 <CommandBar.Content>
                     <TextBlock Text="TextBlock" />
                 </CommandBar.Content>
-                <uno:CommandBarExtensions.NavigationCommand>
+                <uuxc:CommandBarExtensions.NavigationCommand>
                     <AppBarButton Command="{Binding Command}" Label="Label">
                         <AppBarButton.Icon>
                             <BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
                         </AppBarButton.Icon>
                     </AppBarButton>
-                </uno:CommandBarExtensions.NavigationCommand>
+                </uuxc:CommandBarExtensions.NavigationCommand>
                 <CommandBar.PrimaryCommands>
                     <AppBarButton Content="Button" />
                     <AppBarButton Label="Icon">
@@ -244,13 +244,13 @@
                 <CommandBar.Content>
                     <TextBlock Text="{Binding}" />
                 </CommandBar.Content>
-                <uno:CommandBarExtensions.NavigationCommand>
+                <uuxc:CommandBarExtensions.NavigationCommand>
                     <AppBarButton Command="{Binding Command}" Label="Label">
                         <AppBarButton.Icon>
                             <BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
                         </AppBarButton.Icon>
                     </AppBarButton>
-                </uno:CommandBarExtensions.NavigationCommand>
+                </uuxc:CommandBarExtensions.NavigationCommand>
                 <CommandBar.PrimaryCommands>
                     <AppBarButton Content="Button" />
                     <AppBarButton>
