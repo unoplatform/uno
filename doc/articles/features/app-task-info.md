@@ -152,4 +152,6 @@ UNUserNotificationCenter.Current.RequestAuthorization(
 
 ## See app tasks in action
 
-Run SamplesApp and open **Windows.UI.Shell.Tasks > AppTaskInfo**. The sample exercises every task state and content factory, restores persisted tasks, updates deep links, and shows the persisted public task properties beside the platform shell approximation.
+Run SamplesApp on an Uno head — Skia Desktop, WebAssembly, Android, or iOS — and open **Windows.UI.Shell.Tasks > AppTaskInfo**. The sample exercises every task state and content factory, restores persisted tasks, updates deep links, and shows the persisted public task properties beside the platform shell approximation.
+
+The sample is excluded from `SamplesApp.Windows`, because `Microsoft.Windows.SDK.NET.Ref` does not project the experimental `Windows.UI.Shell.Tasks` types yet. Use the native Windows API directly from a packaged WinUI app until that projection ships.

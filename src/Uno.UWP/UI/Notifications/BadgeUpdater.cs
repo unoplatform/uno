@@ -12,6 +12,7 @@ namespace Windows.UI.Notifications
 	{
 		private const string BadgeNodeXPath = "/badge";
 		private const string ValueAttribute = "value";
+		private const string NoBadgeGlyph = "none";
 		private static readonly object BadgeGate = new();
 		private static BadgeUpdater? _coordinatorUpdater;
 		private static string? _explicitBadge;
@@ -53,7 +54,12 @@ namespace Windows.UI.Notifications
 		{
 			lock (BadgeGate)
 			{
-				_explicitBadge = string.IsNullOrEmpty(value) ? null : value;
+				// The "none" glyph is how a badge notification asks for the badge to be removed, so it
+				// must not keep overriding the app-task count.
+				_explicitBadge = string.IsNullOrWhiteSpace(value)
+					|| string.Equals(value, NoBadgeGlyph, StringComparison.OrdinalIgnoreCase)
+					? null
+					: value;
 				ApplyEffectiveBadgeLocked();
 			}
 		}

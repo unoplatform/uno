@@ -467,6 +467,24 @@ public class Given_AppTaskInfo
 		Assert.IsNull(TestBadgeUpdaterExtension.Instance.Value);
 	}
 
+	[TestMethod]
+	public void When_Explicit_Badge_Is_Cleared_By_Glyph_Then_App_Task_Badge_Returns()
+	{
+		ApiExtensibility.Register(typeof(IBadgeUpdaterExtension), _ => TestBadgeUpdaterExtension.Instance);
+		var updater = BadgeUpdateManager.CreateBadgeUpdaterForApplication();
+
+		BadgeUpdater.SetAppTaskBadge(4);
+		var xml = BadgeUpdateManager.GetTemplateContent(BadgeTemplateType.BadgeGlyph);
+		var badge = (Windows.Data.Xml.Dom.XmlElement)xml.SelectSingleNode("/badge")!;
+		badge.SetAttribute("value", "none");
+		updater.Update(new BadgeNotification(xml));
+
+		Assert.AreEqual(4, TestBadgeUpdaterExtension.Instance.Value, "The 'none' glyph removes the badge instead of overriding it.");
+
+		BadgeUpdater.SetAppTaskBadge(null);
+		Assert.IsNull(TestBadgeUpdaterExtension.Instance.Value);
+	}
+
 	private static AppTaskInfo CreateTask() =>
 		AppTaskInfo.Create(
 			"Test task",

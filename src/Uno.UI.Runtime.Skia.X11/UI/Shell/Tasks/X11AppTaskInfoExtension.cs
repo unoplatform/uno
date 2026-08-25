@@ -73,11 +73,6 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 		var notifications = service.CreateNotifications(ObjectPath);
 		var currentIds = tasks.Select(static task => task.Id).ToHashSet(StringComparer.Ordinal);
 		var removedIds = _signatures.Keys.Where(id => !currentIds.Contains(id)).ToArray();
-		var changedTasks = tasks
-			.Where(task =>
-				!_signatures.TryGetValue(task.Id, out var previous)
-				|| previous != GetSignature(task))
-			.ToArray();
 
 		foreach (var removedId in removedIds)
 		{
@@ -92,22 +87,28 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 			_signatures.Remove(removedId);
 		}
 
-		foreach (var task in changedTasks)
+		foreach (var task in tasks)
 		{
+			var payload = CreatePayload(task);
+			if (_signatures.TryGetValue(task.Id, out var previous) && previous == payload.Signature)
+			{
+				continue;
+			}
+
 			_notificationIds.TryGetValue(task.Id, out var replacesId);
 			var notificationId = await notifications.NotifyAsync(
 				"Uno Platform",
 				replacesId,
-				GetIcon(task.IconUri),
-				EscapeMarkup(task.Title),
-				EscapeMarkup(GetBody(task)),
+				payload.Icon,
+				payload.Summary,
+				payload.Body,
 				Array.Empty<string>(),
 				new Dictionary<string, VariantValue>(),
 				expireTimeout: -1)
 				.WaitAsync(TimeSpan.FromSeconds(5))
 				.ConfigureAwait(false);
 			_notificationIds[task.Id] = notificationId;
-			_signatures[task.Id] = GetSignature(task);
+			_signatures[task.Id] = payload.Signature;
 		}
 	}
 
@@ -198,17 +199,8 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 		}
 	}
 
-	private static string GetSignature(AppTaskInfoSnapshot task) =>
-		string.Join(
-			'\n',
-			task.State,
-			task.Title,
-			task.Subtitle,
-			task.IconUri,
-			task.Content.ExecutingStep,
-			task.Content.TextSummary,
-			task.Content.Question,
-			string.Join('\n', task.Content.GeneratedAssets.Select(static asset => $"{asset.Name}|{asset.AssetUri}")));
+	private static NotificationPayload CreatePayload(AppTaskInfoSnapshot task) =>
+		new(GetIcon(task.IconUri), EscapeMarkup(task.Title), EscapeMarkup(GetBody(task)));
 
 	private static string GetBody(AppTaskInfoSnapshot task)
 	{
@@ -243,4 +235,11 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 			.Replace("&", "&amp;", StringComparison.Ordinal)
 			.Replace("<", "&lt;", StringComparison.Ordinal)
 			.Replace(">", "&gt;", StringComparison.Ordinal);
+
+	// Deriving the change signature from the published payload keeps the two in lockstep: content that
+	// the notification does not render can never be missed, and can never force a spurious re-publish.
+	private readonly record struct NotificationPayload(string Icon, string Summary, string Body)
+	{
+		internal string Signature => string.Join('\n', Icon, Summary, Body);
+	}
 }

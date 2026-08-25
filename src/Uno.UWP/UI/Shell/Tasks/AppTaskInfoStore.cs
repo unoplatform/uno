@@ -27,7 +27,7 @@ internal sealed class FileAppTaskInfoStore : IAppTaskInfoStore
 	private readonly string _lockFilePath;
 
 	internal FileAppTaskInfoStore()
-		: this(Path.Combine(ApplicationData.Current.LocalFolder.Path, "UnoPlatform", "ShellTasks", "tasks.json"))
+		: this(Path.Join(ApplicationData.Current.LocalFolder.Path, "UnoPlatform", "ShellTasks", "tasks.json"))
 	{
 	}
 
@@ -52,7 +52,7 @@ internal sealed class FileAppTaskInfoStore : IAppTaskInfoStore
 			return;
 		}
 
-		var temporaryPath = Path.Combine(directory, $".{Path.GetFileName(_filePath)}.{Guid.NewGuid():N}.tmp");
+		var temporaryPath = Path.Join(directory, $".{Path.GetFileName(_filePath)}.{Guid.NewGuid():N}.tmp");
 		try
 		{
 			using (var stream = new FileStream(temporaryPath, FileMode.CreateNew, FileAccess.Write, FileShare.None))
@@ -88,7 +88,7 @@ internal sealed class FileAppTaskInfoStore : IAppTaskInfoStore
 
 		var directory = Path.GetDirectoryName(_filePath)
 			?? throw new InvalidOperationException($"Unable to determine the app task storage directory for '{_filePath}'.");
-		var quarantinePath = Path.Combine(
+		var quarantinePath = Path.Join(
 			directory,
 			$"{Path.GetFileNameWithoutExtension(_filePath)}.corrupt.{DateTimeOffset.UtcNow:yyyyMMddHHmmss}.{Guid.NewGuid():N}{Path.GetExtension(_filePath)}");
 		File.Move(_filePath, quarantinePath);
