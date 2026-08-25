@@ -75,6 +75,44 @@ public class Given_ManagedLottie
 		}
 	}
 
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)]
+	public async Task When_Trim_Animation_Renders_And_Animates()
+	{
+		// 4930-checkbox-animation.json exercises trim paths (tm) + ellipses + fills/strokes — the managed engine's
+		// trim support. Renderer-agnostic: passes on Skottie and on the managed engine (UNO_MANAGED_LOTTIE=1).
+		var source = new LottieVisualSource();
+		var player = new AnimatedVisualPlayer { Width = 100, Height = 100, AutoPlay = false, Source = source };
+		var host = new Border { Width = 120, Height = 120, Background = new SolidColorBrush(Colors.White), Child = player };
+
+		try
+		{
+			await UITestHelper.Load(host);
+			await source.SetSourceAsync(new Uri("ms-appx:///Lottie/4930-checkbox-animation.json"));
+			await TestServices.WindowHelper.WaitFor(() => player.IsAnimatedVisualLoaded, timeoutMS: 5000, "checkbox animation should load.");
+			await TestServices.WindowHelper.WaitForIdle();
+
+			player.SetProgress(0.3);
+			await TestServices.WindowHelper.WaitForIdle();
+			var frameA = await UITestHelper.ScreenShot(host);
+			await frameA.Populate();
+
+			player.SetProgress(0.9);
+			await TestServices.WindowHelper.WaitForIdle();
+			var frameB = await UITestHelper.ScreenShot(host);
+			await frameB.Populate();
+
+			var w = (int)host.ActualWidth;
+			var h = (int)host.ActualHeight;
+			Assert.IsTrue(NonBackgroundPixels(frameA, w, h, Colors.White) > 20, "The trim-path animation should render visible content.");
+			Assert.IsTrue(DifferentPixels(frameA, frameB, w, h) > 20, "The trim-path animation should animate across progress (trim start/end changing).");
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
 	private static int NonBackgroundPixels(RawBitmap bmp, int w, int h, Color background)
 	{
 		var count = 0;
