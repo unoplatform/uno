@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.ExceptionServices;
+using Uno.Foundation.Logging;
 
 namespace Microsoft.Windows.AppNotifications.Internal;
 
@@ -92,7 +92,6 @@ internal static class AppNotificationActivationBroker
 
 	private static void Drain()
 	{
-		List<Exception>? failures = null;
 		while (true)
 		{
 			Action<AppNotificationActivation> handler;
@@ -102,7 +101,7 @@ internal static class AppNotificationActivationBroker
 				if (_handler is null || _pending.Count == 0)
 				{
 					_isDraining = false;
-					break;
+					return;
 				}
 				handler = _handler;
 				activation = _pending.Dequeue();
@@ -116,8 +115,12 @@ internal static class AppNotificationActivationBroker
 			}
 			catch (Exception exception)
 			{
-				// A failing handler must not strand the activations that are still queued.
-				(failures ??= new List<Exception>()).Add(exception);
+				// Activations are dispatched from native callbacks, so a failing handler must neither
+				// strand the queued activations nor let the exception reach the platform.
+				if (typeof(AppNotificationActivationBroker).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(AppNotificationActivationBroker).Log().LogError($"An app notification activation handler failed: {exception}");
+				}
 			}
 			finally
 			{
@@ -131,15 +134,6 @@ internal static class AppNotificationActivationBroker
 					}
 				}
 			}
-		}
-
-		if (failures is { Count: > 0 })
-		{
-			if (failures.Count == 1)
-			{
-				ExceptionDispatchInfo.Capture(failures[0]).Throw();
-			}
-			throw new AggregateException(failures);
 		}
 	}
 

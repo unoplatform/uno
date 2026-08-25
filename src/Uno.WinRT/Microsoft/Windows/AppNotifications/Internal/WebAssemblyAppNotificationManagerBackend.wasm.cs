@@ -292,7 +292,21 @@ internal static partial class WebAssemblyAppNotificationActivation
 {
 	[JSExport]
 	internal static int Dispatch(string argument)
-		=> AppNotificationActivationBroker.Publish(new AppNotificationActivation(argument ?? string.Empty, new Dictionary<string, string>())) ? 0 : -1;
+	{
+		try
+		{
+			return AppNotificationActivationBroker.Publish(new AppNotificationActivation(argument ?? string.Empty, new Dictionary<string, string>())) ? 0 : -1;
+		}
+		catch (Exception exception)
+		{
+			// A managed exception must not cross the JS interop boundary; the failure is reported to the caller instead.
+			if (typeof(WebAssemblyAppNotificationActivation).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(WebAssemblyAppNotificationActivation).Log().LogWarning($"An app notification activation handler failed: {exception.Message}");
+			}
+			return -1;
+		}
+	}
 
 	[JSExport]
 	internal static int DispatchShowResult(string operationCorrelation, int id, bool succeeded)
