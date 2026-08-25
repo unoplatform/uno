@@ -128,8 +128,10 @@ public partial class AutoSuggestBoxHelper
 
 		revokers.PopupOpenedRevoker?.Dispose();
 		revokers.PopupClosedRevoker?.Dispose();
+		revokers.PopupBorderLoadedRevoker?.Dispose();
 		revokers.PopupOpenedRevoker = null;
 		revokers.PopupClosedRevoker = null;
+		revokers.PopupBorderLoadedRevoker = null;
 
 		var popup = autoSuggestBox.GetTemplateChild(c_popupName) as Popup;
 		if (popup is not null)
@@ -158,6 +160,20 @@ public partial class AutoSuggestBoxHelper
 
 			revokers.PopupOpenedRevoker = Disposable.Create(() => popup.Opened -= OnPopupOpened);
 			revokers.PopupClosedRevoker = Disposable.Create(() => popup.Closed -= OnPopupClosed);
+
+			if (autoSuggestBox.GetTemplateChild(c_popupBorderName) is FrameworkElement popupBorder)
+			{
+				void OnPopupBorderLoaded(object? s, RoutedEventArgs e)
+				{
+					if (autoSuggestBoxWeakRef.TryGetTarget(out var asb))
+					{
+						UpdateCornerRadius(asb, popup.IsOpen);
+					}
+				}
+
+				popupBorder.Loaded += OnPopupBorderLoaded;
+				revokers.PopupBorderLoadedRevoker = Disposable.Create(() => popupBorder.Loaded -= OnPopupBorderLoaded);
+			}
 
 			UpdateCornerRadius(autoSuggestBox, popup.IsOpen);
 		}
@@ -240,12 +256,14 @@ public partial class AutoSuggestBoxHelper
 		public IDisposable? LoadedRevoker { get; set; }
 		public IDisposable? PopupOpenedRevoker { get; set; }
 		public IDisposable? PopupClosedRevoker { get; set; }
+		public IDisposable? PopupBorderLoadedRevoker { get; set; }
 
 		public void Dispose()
 		{
 			LoadedRevoker?.Dispose();
 			PopupOpenedRevoker?.Dispose();
 			PopupClosedRevoker?.Dispose();
+			PopupBorderLoadedRevoker?.Dispose();
 		}
 	}
 }

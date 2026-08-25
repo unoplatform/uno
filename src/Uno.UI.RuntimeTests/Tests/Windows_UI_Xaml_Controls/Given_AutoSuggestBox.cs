@@ -1491,13 +1491,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
 				var popup = (Popup)SUT.GetTemplateChild("SuggestionsPopup");
+				var popupBorder = (Border)SUT.GetTemplateChild("SuggestionsContainer");
 
 				SUT.Focus(FocusState.Keyboard);
 				SUT.Text = "Item";
 
-				await WindowHelper.WaitFor(() => popup.IsOpen);
-				await WindowHelper.WaitForIdle();
-				var popupBorder = (Border)SUT.GetTemplateChild("SuggestionsContainer");
+				await WindowHelper.WaitFor(() => popup.IsOpen && popupBorder.IsLoaded);
 				var originalTextBoxRadius = textBox.CornerRadius;
 				var originalPopupRadius = popupBorder.CornerRadius;
 
@@ -1538,7 +1537,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreNotSame(popup, reappliedPopup);
 
 				SUT.IsSuggestionListOpen = true;
-				await WindowHelper.WaitFor(() => reappliedPopup.IsOpen);
+				await WindowHelper.WaitFor(() => reappliedPopup.IsOpen && reappliedPopupBorder.IsLoaded);
 				await WindowHelper.WaitFor(() =>
 					HasSquaredInteriorCorners(reappliedTextBox.CornerRadius) &&
 					HasSquaredInteriorCorners(reappliedPopupBorder.CornerRadius));
