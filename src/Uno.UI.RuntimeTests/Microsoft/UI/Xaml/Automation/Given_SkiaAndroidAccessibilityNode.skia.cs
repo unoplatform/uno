@@ -754,7 +754,8 @@ public partial class Given_SkiaAndroidAutomationId
 		var segment = resourceName.Substring(resourceName.LastIndexOf('/') + 1);
 		Assert.AreEqual(14, segment.Length, $"'My_Button_XXXX' = 14 chars; got '{segment}'.");
 		Assert.IsTrue(
-			System.Text.RegularExpressions.Regex.IsMatch(segment, @"^My_Button_[0-9a-f]{4}$"),
+			segment.StartsWith("My_Button_", StringComparison.Ordinal) &&
+				segment.Substring("My_Button_".Length).All(c => char.IsAsciiDigit(c) || (c >= 'a' && c <= 'f')),
 			$"Segment should match 'My_Button_XXXX'; got '{segment}'.");
 	}
 
