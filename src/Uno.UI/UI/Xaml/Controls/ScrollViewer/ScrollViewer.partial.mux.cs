@@ -911,9 +911,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// MUX pretends the flag was set to False because a logical-scrolling panel is the IScrollInfo
 				// and cannot animate. Uno-specific: the ScrollContentPresenter remains the physical scroll
 				// client even when a provider is present, and it does animate the jump, so the request is only
-				// demoted when the presenter is not the client. Forcing it here made every ListView/ComboBox
-				// ChangeView instantaneous, which let the offset-intent recompute chase a growing extent
-				// without any pacing (unbounded incremental loading).
+				// demoted when the presenter is not the client.
 				if (!IsScrollContentPresenterScrollClient())
 				{
 					disableAnimation = true;
