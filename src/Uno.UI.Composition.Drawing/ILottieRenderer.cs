@@ -14,8 +14,12 @@ namespace Uno.UI.Composition.Drawing;
 /// </summary>
 public interface ILottieRenderer
 {
-	/// <summary>Parses a Lottie animation from its JSON, or null when the text isn't an animation the renderer can handle.</summary>
-	ILottieAnimation? Load(string animationJson);
+	/// <summary>
+	/// Parses a Lottie animation from its JSON, or null when the text isn't an animation the renderer can handle.
+	/// <paramref name="geometry"/> is the process geometry engine a managed renderer builds its shapes with (the
+	/// Skottie add-in ignores it, mirroring how <c>ISvgRenderer.Parse</c> carries the same factory).
+	/// </summary>
+	ILottieAnimation? Load(string animationJson, IGeometryFactory geometry);
 }
 
 /// <summary>

@@ -66,7 +66,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 				try
 				{
-					if (renderer.Load(animationJson) is not { } animation)
+					if (renderer.Load(animationJson, Uno.UI.Composition.Drawing.GeometryFactory.Current) is not { } animation)
 					{
 						if (typeof(LottieAnimatedVisual).Log().IsEnabled(LogLevel.Warning))
 						{
