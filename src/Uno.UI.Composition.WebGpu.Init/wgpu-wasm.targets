@@ -48,13 +48,21 @@
 				// Two helpers grafted onto Module: importJsDevice (JS-created device -> C handle) and jsObject
 				// (resolve a wgpu handle ptr back to its JS object, so managed code can mapAsync a readback buffer
 				// off the event loop — the in-WASM DevicePoll busy-spin can't yield for the map to complete).
+				// importTexture/importTextureView let the browser context create the offscreen resolve target in JS
+				// (jsDevice.createTexture) — JS-primary, symmetric with the JS-created device — then import both into the
+				// C handle table for present, while the JS GPUTextureView crosses the seam as IWebGpuRenderTarget.JsColorView.
 				if (!patched.Contains("unoWebGpuImportDevice")) {
 					patched = patched.Replace("$WebGPU__deps: [],",
-						"$WebGPU__deps: [],\n  $WebGPU__postset: \"Module['unoWebGpuImportDevice'] = function(d, p) { return WebGPU.importJsDevice(d, p); }; Module['unoWebGpuJsObject'] = function(p) { return WebGPU.Internals.jsObjects[p]; };\",");
-				} else if (!patched.Contains("unoWebGpuJsObject")) {
-					// File was patched by an older build that installed only the device helper; append jsObject to it.
-					patched = patched.Replace("return WebGPU.importJsDevice(d, p); };",
-						"return WebGPU.importJsDevice(d, p); }; Module['unoWebGpuJsObject'] = function(p) { return WebGPU.Internals.jsObjects[p]; };");
+						"$WebGPU__deps: [],\n  $WebGPU__postset: \"Module['unoWebGpuImportDevice'] = function(d, p) { return WebGPU.importJsDevice(d, p); }; Module['unoWebGpuJsObject'] = function(p) { return WebGPU.Internals.jsObjects[p]; }; Module['unoWebGpuImportTexture'] = function(t, p) { return WebGPU.importJsTexture(t, p); }; Module['unoWebGpuImportTextureView'] = function(v, p) { return WebGPU.importJsTextureView(v, p); };\",");
+				} else {
+					if (!patched.Contains("unoWebGpuJsObject")) {
+						patched = patched.Replace("return WebGPU.importJsDevice(d, p); };",
+							"return WebGPU.importJsDevice(d, p); }; Module['unoWebGpuJsObject'] = function(p) { return WebGPU.Internals.jsObjects[p]; };");
+					}
+					if (!patched.Contains("unoWebGpuImportTexture'")) {
+						patched = patched.Replace("return WebGPU.Internals.jsObjects[p]; };",
+							"return WebGPU.Internals.jsObjects[p]; }; Module['unoWebGpuImportTexture'] = function(t, p) { return WebGPU.importJsTexture(t, p); }; Module['unoWebGpuImportTextureView'] = function(v, p) { return WebGPU.importJsTextureView(v, p); };");
+					}
 				}
 				if (patched != text) { System.IO.File.WriteAllText(File, patched); }
 			]]></Code>
