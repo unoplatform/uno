@@ -764,6 +764,10 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				Unregister(handle);
 				window._nativeWindow.Destroyed();
 				window.Closed?.Invoke(window, EventArgs.Empty);
+				// Dispose the per-window graphics context (device/queue/swapchain). The renderer (_renderer) is the
+				// process-shared IDrawingFactory registered as DrawingFactory.Current — not per-window and not
+				// disposable — so it is intentionally left alone. Mirrors X11/Win32 window-close teardown.
+				window._context?.Dispose();
 			}
 		}
 		catch (Exception e)
