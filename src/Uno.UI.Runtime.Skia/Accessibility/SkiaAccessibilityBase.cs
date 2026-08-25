@@ -215,6 +215,8 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		ReemitDescendantPositions(scrollSource);
 	}
 
+	// Called on the UI thread from the scroll notification path only; the shared stack is
+	// reused to avoid per-scroll allocations and is not safe for re-entrant use.
 	private void ReemitDescendantPositions(UIElement element)
 	{
 		_reemitStack.Clear();
@@ -349,7 +351,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 			UpdateRoleDescription(element.Visual.Handle, AriaMapper.GetAriaAttributes(peer).RoleDescription);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.LocalizedLandmarkTypeProperty &&
-			TryGetPeerOwner(peer, out element))
+			TryGetPeerOwner(peer, sourcePeer, out element))
 		{
 			UpdateRoleDescription(element.Visual.Handle, AriaMapper.GetAriaAttributes(peer).RoleDescription);
 		}
