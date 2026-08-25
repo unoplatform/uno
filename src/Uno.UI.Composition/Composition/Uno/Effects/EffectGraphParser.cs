@@ -74,6 +74,11 @@ internal static class EffectGraphParser
 		var width = Math.Max(1, (int)Math.Ceiling(region.Width));
 		var height = Math.Max(1, (int)Math.Ceiling(region.Height));
 
+		// If the source itself rasterizes offscreen (e.g. a nested effect brush), realize that now — BEFORE opening
+		// our RenderOffscreen — so its passes run sequentially rather than nested inside ours. Nested/re-entrant
+		// RenderOffscreen isn't part of the drawing contract and can corrupt a backend's per-pass scratch.
+		source.PrepareForOffscreenRasterization(factory, region);
+
 		var texture = factory.RenderOffscreen(width, height, session =>
 		{
 			// The source paints in region-space; translate so the region's origin maps to the offscreen origin.

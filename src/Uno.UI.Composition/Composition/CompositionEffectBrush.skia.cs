@@ -49,13 +49,39 @@ public partial class CompositionEffectBrush : CompositionBrush
 		return true;
 	}
 
+	// Set by PrepareForOffscreenRasterization, consumed by the very next UpdateFilter: "the graph was just parsed
+	// outside the caller's offscreen; don't re-parse (which would re-rasterize sources INSIDE that offscreen and
+	// re-enter RenderOffscreen)". One-shot so per-frame re-parse of dynamic sources is otherwise unchanged.
+	private bool _preparedThisPass;
+
+	// Pre-parse the effect graph (rasterizing any nested-brush sources) BEFORE this brush is painted into a caller's
+	// offscreen, so those nested RenderOffscreen passes run sequentially rather than re-entering the outer one.
+	// Re-entrant offscreen rendering isn't contractual and can corrupt a backend's per-pass scratch. Always parses
+	// (dynamic sources), then flags the following paint to reuse it.
+	internal override void PrepareForOffscreenRasterization(IDrawingFactory factory, Rect bounds)
+	{
+		ParseGraph(factory, bounds);
+		_preparedThisPass = true;
+	}
+
 	private void UpdateFilter(IDrawingFactory factory, Rect bounds)
 	{
+		if (_preparedThisPass && _currentBounds == bounds)
+		{
+			_preparedThisPass = false;   // consume: reuse the graph PrepareForOffscreenRasterization just parsed
+			return;
+		}
+
 		if (_currentBounds == bounds && _filter is not null)
 		{
 			return;
 		}
 
+		ParseGraph(factory, bounds);
+	}
+
+	private void ParseGraph(IDrawingFactory factory, Rect bounds)
+	{
 		DisposeTree();
 		_filter?.Dispose();
 

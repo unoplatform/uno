@@ -65,6 +65,33 @@ public class Given_EffectBrush_Parity
 	}
 
 	[TestMethod]
+	public async Task When_Nested_EffectBrushes_Invert_Of_Invert_Is_Identity()
+	{
+		// An effect brush whose source parameter is bound to ANOTHER effect brush: Invert(Invert(red)) = red.
+		// Exercises EffectGraphParser rasterizing a nested effect-brush source (RenderOffscreen within the paint) —
+		// which re-enters RenderOffscreen and can corrupt a backend's per-pass scratch unless
+		// PrepareForOffscreenRasterization de-nests it. Reentrant backends (Skia/WebGPU) render red either way.
+		var compositor = TestServices.WindowHelper.XamlRoot.Compositor;
+
+		var inner = compositor.CreateEffectFactory(new InvertEffect { Source = new CompositionEffectSourceParameter("src") }).CreateBrush();
+		inner.SetSourceParameter("src", compositor.CreateColorBrush(Colors.Red));
+
+		var outer = compositor.CreateEffectFactory(new InvertEffect { Source = new CompositionEffectSourceParameter("inner") }).CreateBrush();
+		outer.SetSourceParameter("inner", inner);
+
+		var sprite = compositor.CreateSpriteVisual();
+		sprite.Brush = outer;
+		sprite.Size = new Vector2(64, 64);
+		var host = new Border { Width = 64, Height = 64 };
+		ElementCompositionPreview.SetElementChildVisual(host, sprite);
+		TestServices.WindowHelper.WindowContent = host;
+		await TestServices.WindowHelper.WaitForLoaded(host);
+		await TestServices.WindowHelper.WaitForIdle();
+		var bmp = await UITestHelper.ScreenShot(host);
+		ImageAssert.HasColorAt(bmp, bmp.Width / 2, bmp.Height / 2, Color.FromArgb(255, 255, 0, 0), tolerance: 12);
+	}
+
+	[TestMethod]
 	public async Task When_Invert_Of_Red_Is_Cyan()
 	{
 		var effect = new InvertEffect { Source = new CompositionEffectSourceParameter("source") };
