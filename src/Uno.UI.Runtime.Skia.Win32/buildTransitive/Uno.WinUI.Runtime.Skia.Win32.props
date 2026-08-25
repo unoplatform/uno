@@ -4,4 +4,23 @@
 		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
 		<SupportsFontManifest>true</SupportsFontManifest>
 	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetPlatformIdentifier)' == ''">
+		<WindowsSdkPackageVersion Condition="'$(WindowsSdkPackageVersion)' == ''">10.0.26100.57</WindowsSdkPackageVersion>
+		<EnableCoreMrtTooling>false</EnableCoreMrtTooling>
+		<ExpandPriResources>false</ExpandPriResources>
+		<AppxGeneratePriEnabled>false</AppxGeneratePriEnabled>
+		<AppxGeneratePrisForPortableLibrariesEnabled>false</AppxGeneratePrisForPortableLibrariesEnabled>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<_UnoWindowsAppSdkRuntimeBuildAssetsImported Condition="'$(MicrosoftWindowsAppSDKPackageDir)' != ''">true</_UnoWindowsAppSdkRuntimeBuildAssetsImported>
+		<_UnoWindowsAppSdkRuntimePackageDir Condition="'$(PkgMicrosoft_WindowsAppSDK_Runtime)' != ''">$([MSBuild]::EnsureTrailingSlash('$(PkgMicrosoft_WindowsAppSDK_Runtime)'))</_UnoWindowsAppSdkRuntimePackageDir>
+		<_UnoWindowsAppSdkRuntimePackageDir Condition="'$(_UnoWindowsAppSdkRuntimePackageDir)' == '' and '$(NuGetPackageRoot)' != ''">$([MSBuild]::EnsureTrailingSlash('$(NuGetPackageRoot)'))microsoft.windowsappsdk.runtime\2.3.1\</_UnoWindowsAppSdkRuntimePackageDir>
+		<_UnoWindowsAppSdkRuntimePackageDir Condition="'$(_UnoWindowsAppSdkRuntimePackageDir)' == '' and '$(NUGET_PACKAGES)' != ''">$([MSBuild]::EnsureTrailingSlash('$(NUGET_PACKAGES)'))microsoft.windowsappsdk.runtime\2.3.1\</_UnoWindowsAppSdkRuntimePackageDir>
+	</PropertyGroup>
+
+	<Import
+		Project="$(_UnoWindowsAppSdkRuntimePackageDir)buildTransitive\Microsoft.WindowsAppSDK.Runtime.props"
+		Condition="'$(_UnoWindowsAppSdkRuntimeBuildAssetsImported)' != 'true' and Exists('$(_UnoWindowsAppSdkRuntimePackageDir)buildTransitive\Microsoft.WindowsAppSDK.Runtime.props')" />
 </Project>

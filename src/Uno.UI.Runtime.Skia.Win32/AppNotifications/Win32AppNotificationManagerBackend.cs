@@ -129,7 +129,7 @@ internal sealed class Win32AppNotificationManagerBackend : IAppNotificationManag
 	{
 		lock (_gate)
 		{
-			if (_manager is { } manager)
+			if (GetManager() is { } manager)
 			{
 				manager.UnregisterAll();
 				manager.NotificationInvoked -= OnNotificationInvoked;
