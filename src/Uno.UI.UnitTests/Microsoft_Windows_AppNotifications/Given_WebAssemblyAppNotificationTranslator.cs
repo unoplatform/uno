@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Windows.AppNotifications;
 using Microsoft.Windows.AppNotifications.Builder;
@@ -24,7 +25,7 @@ public class Given_WebAssemblyAppNotificationTranslator
 			.MuteAudio()
 			.BuildNotification();
 
-		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(17, notification), supportsActions: false);
+		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(17, notification), useServiceWorker: false);
 
 		Assert.AreEqual((uint)17, command.Id);
 		Assert.AreEqual("uno.appnotifications.17", command.NativeTag);
@@ -48,7 +49,7 @@ public class Given_WebAssemblyAppNotificationTranslator
 			.AddButton(new AppNotificationButton().SetToolTip("Dismiss").AddArgument("action", "dismiss"))
 			.BuildNotification();
 
-		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification), supportsActions: false);
+		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification), useServiceWorker: false);
 
 		Assert.AreEqual("action=body", command.LaunchArgument);
 		Assert.AreEqual(2, command.Actions.Length);
@@ -70,13 +71,42 @@ public class Given_WebAssemblyAppNotificationTranslator
 			.AddTextBox("reply")
 			.BuildNotification();
 
-		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification), supportsActions: true);
+		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification), useServiceWorker: true);
 
 		Assert.AreEqual(1, command.Actions.Length);
 		Assert.AreEqual("Open", command.Actions[0].Title);
 		CollectionAssert.DoesNotContain(command.UnsupportedFeatures, "actions");
 		CollectionAssert.Contains(command.UnsupportedFeatures, "context-menu actions");
 		CollectionAssert.Contains(command.UnsupportedFeatures, "inputs");
+	}
+
+	[TestMethod]
+	public void When_Delivery_Mode_Changes_Actions_Are_Emitted_Identically_And_Only_The_Warning_Differs()
+	{
+		var notification = new AppNotificationBuilder()
+			.AddButton(new AppNotificationButton("Open").AddArgument("action", "open"))
+			.AddButton(new AppNotificationButton("Snooze").AddArgument("action", "snooze"))
+			.BuildNotification();
+
+		var document = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification), useServiceWorker: false);
+		var serviceWorker = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification), useServiceWorker: true);
+
+		CollectionAssert.AreEqual(
+			document.Actions.Select(action => (action.Id, action.Title, action.Argument)).ToArray(),
+			serviceWorker.Actions.Select(action => (action.Id, action.Title, action.Argument)).ToArray());
+		CollectionAssert.Contains(document.UnsupportedFeatures, "actions");
+		CollectionAssert.DoesNotContain(serviceWorker.UnsupportedFeatures, "actions");
+		CollectionAssert.AreEquivalent(
+			document.UnsupportedFeatures.Where(feature => feature != "actions").ToArray(),
+			serviceWorker.UnsupportedFeatures);
+	}
+
+	[TestMethod]
+	public void When_Delivery_Mode_Is_Evaluated_Action_Capability_Follows_The_Service_Worker()
+	{
+		Assert.IsFalse(WebAssemblyAppNotificationCapabilities.SupportsActions(useServiceWorker: false));
+		Assert.IsTrue(WebAssemblyAppNotificationCapabilities.SupportsActions(useServiceWorker: true));
+		Assert.IsFalse(WebAssemblyAppNotificationCapabilities.SupportsProgressUpdates);
 	}
 
 	[TestMethod]
@@ -93,7 +123,7 @@ public class Given_WebAssemblyAppNotificationTranslator
 			.BuildNotification();
 		notification.ExpiresOnReboot = true;
 
-		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification), supportsActions: false);
+		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification), useServiceWorker: false);
 
 		CollectionAssert.AreEquivalent(
 			new[] { "additional text", "attribution text", "inputs", "progress", "context-menu actions", "expires-on-reboot" },
@@ -106,7 +136,7 @@ public class Given_WebAssemblyAppNotificationTranslator
 		var notification = new AppNotificationBuilder().BuildNotification();
 		notification.Priority = AppNotificationPriority.High;
 
-		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification), supportsActions: false);
+		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification), useServiceWorker: false);
 
 		Assert.IsTrue(command.RequireInteraction);
 		Assert.AreEqual("auto", command.Direction);
@@ -121,7 +151,7 @@ public class Given_WebAssemblyAppNotificationTranslator
 			"<actions><action content='Open' arguments='https://example.com/action' activationType='protocol'/></actions>" +
 			"</toast>");
 
-		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification), supportsActions: false);
+		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification), useServiceWorker: false);
 
 		Assert.AreEqual("https://example.com/body", command.ProtocolUri);
 		Assert.AreEqual("https://example.com/action", command.Actions[0].ProtocolUri);
