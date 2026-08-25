@@ -773,6 +773,56 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Touch_Selection_Shows_Selection_Flyout()
+		{
+			// Mirrors WinUI TextControlHelper.h:22 VerifySelectingTextWithTouchShowsSelectionFlyout, reached
+			// from RichEditBoxIntegrationTests.cpp:165: a touch selection opens the SelectionFlyout, and
+			// collapsing the selection back to a caret closes it.
+			var flyout = new MenuFlyout();
+			flyout.Items.Add(new MenuFlyoutItem { Text = "Selection" });
+			var SUT = new RichEditBox { Width = 400, SelectionFlyout = flyout };
+			var opened = 0;
+			var closed = 0;
+			flyout.Opened += (_, _) => opened++;
+			flyout.Closed += (_, _) => closed++;
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Document.SetText(TextSetOptions.None, "Hello world");
+				await WindowHelper.WaitForIdle();
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var finger = injector.GetFinger();
+				finger.Press(GetTextPoint(SUT, 8));
+				finger.Release();
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsGreaterThan(
+					SUT.Document.Selection.StartPosition,
+					SUT.Document.Selection.EndPosition,
+					"A touch tap on a word should produce a non-empty selection.");
+				await WindowHelper.WaitFor(() => opened == 1);
+				Assert.AreEqual(0, closed);
+
+				flyout.Hide();
+				await WindowHelper.WaitFor(() => closed == 1);
+
+				finger.Press(GetTextPoint(SUT, 1));
+				finger.Release();
+				await WindowHelper.WaitForIdle();
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(SUT.Document.Selection.StartPosition, SUT.Document.Selection.EndPosition);
+				Assert.AreEqual(1, opened, "A caret-only touch tap must not reopen the SelectionFlyout.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_Mouse_Triple_Click_Selects_Logical_Line()
 		{
 			var SUT = new RichEditBox { Width = 400 };
