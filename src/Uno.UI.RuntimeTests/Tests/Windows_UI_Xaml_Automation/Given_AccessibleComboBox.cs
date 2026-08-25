@@ -661,8 +661,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 					message: "Timed out waiting for the semantic combobox head element to be created.");
 				await UITestHelper.WaitForIdle();
 
-				var viewportNodesWhileClosed = DescribeViewportSizedSemanticNodes();
-
 				comboBox.IsDropDownOpen = true;
 				await UITestHelper.WaitForIdle();
 				await UITestHelper.WaitFor(() => GetListBoxOptionCount(comboBox) == 2, timeoutMS: 5000,
@@ -677,24 +675,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 					message: "The open ComboBox head did not publish aria-expanded=\"true\" with an aria-controls target — " +
 						"that association is the ARIA replacement for a light-dismiss child.");
 
-				Assert.AreEqual(0, CountSemanticNodesNamed("Close"),
+				Assert.AreEqual("ok", VerifyOptionsParentedUnderListBox(comboBox),
+					"The aria-controls target must be the role=listbox owning the options; that association, not a " +
+					"'Close' child, is how the browser object model links the head to its popup.");
+				Assert.AreEqual("0|0", GetDuplicateParagraphsAndOptionDialogs(),
+					"The open drop-down must add no extra wrapper node: no role=dialog around the options and no " +
+					"duplicated option text. The light-dismiss surface is likewise never emitted.");
+				Assert.AreEqual(0, CountSemanticNodesNamedClose(),
 					"Uno must not surface a light-dismiss 'Close' node in the browser accessibility tree.");
-
-				var viewportNodesWhileOpen = DescribeViewportSizedSemanticNodes();
-				Assert.AreEqual(viewportNodesWhileClosed, viewportNodesWhileOpen,
-					$"Opening the drop-down must not add a viewport-sized node; the light-dismiss surface stays out of the semantic DOM. " +
-					$"closed=[{viewportNodesWhileClosed}] open=[{viewportNodesWhileOpen}]");
 
 				comboBox.IsDropDownOpen = false;
 				await UITestHelper.WaitFor(() => GetSemanticAttribute(comboBox, "aria-expanded") == "false", timeoutMS: 3000,
 					message: "Closing the drop-down did not reset aria-expanded.");
 				await UITestHelper.WaitFor(() => GetSemanticAttribute(comboBox, "aria-activedescendant").Length == 0, timeoutMS: 3000,
 					message: "Closing the drop-down must clear aria-activedescendant so it never dangles.");
-
-				var viewportNodesAfterClose = DescribeViewportSizedSemanticNodes();
-				Assert.AreEqual(viewportNodesWhileClosed, viewportNodesAfterClose,
-					$"Closing the drop-down must leave no viewport-sized node behind. " +
-					$"before=[{viewportNodesWhileClosed}] after=[{viewportNodesAfterClose}]");
+				Assert.AreEqual(0, CountSemanticNodesNamedClose(),
+					"Closing the drop-down must not leave a light-dismiss node behind.");
 			}
 			finally
 			{
@@ -703,26 +699,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			}
 		}
 
-		/// <summary>
-		/// Counts semantic nodes whose accessible name is <paramref name="name"/>.
-		/// </summary>
-		private static int CountSemanticNodesNamed(string name)
-			=> int.Parse(InvokeBrowserJs(
-				$"(function(){{const root=document.getElementById('uno-semantics-root');if(!root){{return '0';}}return String(Array.from(root.querySelectorAll('*')).filter(e=>(e.getAttribute('aria-label')||'').trim()==='{name}').length);}})()"),
-				System.Globalization.CultureInfo.InvariantCulture);
+		// Number of semantic nodes whose accessible name is "Close" — the name WinUI gives its
+		// light-dismiss element (UIA_LIGHTDISMISS_NAME). Returns -1 when the semantic root or the
+		// scan is unavailable so a broken probe fails loudly instead of reading as "none found".
+		private static int CountSemanticNodesNamedClose()
+		{
+			var js =
+				"(function(){" +
+				"var root = document.getElementById('uno-semantics-root');" +
+				"if (!root) { return '-1'; }" +
+				"var matches = Array.from(root.querySelectorAll('*')).filter(function(e){" +
+				"return (e.getAttribute('aria-label') || '').trim() === 'Close';" +
+				"});" +
+				"return String(matches.length);" +
+				"})()";
 
-		/// <summary>
-		/// Describes every semantic node that covers essentially the whole viewport, as
-		/// <c>id:role</c> pairs. A light-dismiss overlay leaking into the tree would show up here as a
-		/// full-page node sitting over the reading order; returning the descriptors (rather than a
-		/// bare count) makes any regression immediately identifiable from the failure message.
-		/// </summary>
-		private static string DescribeViewportSizedSemanticNodes()
-			=> InvokeBrowserJs(
-				"(function(){const root=document.getElementById('uno-semantics-root');if(!root){return '';}" +
-				"const w=window.innerWidth;const h=window.innerHeight;" +
-				"return Array.from(root.querySelectorAll('*')).filter(function(e){const r=e.getBoundingClientRect();return r.width>=w*0.9&&r.height>=h*0.9;})" +
-				".map(function(e){return (e.id||'(no id)')+':'+(e.getAttribute('role')||'(no role)');}).sort().join(',');})()");
+			return int.TryParse(InvokeBrowserJs(js), System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out var count)
+				? count
+				: -1;
+		}
 
 
 
