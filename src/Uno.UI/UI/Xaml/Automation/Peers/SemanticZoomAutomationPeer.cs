@@ -17,8 +17,6 @@ public partial class SemanticZoomAutomationPeer : FrameworkElementAutomationPeer
 
 	}
 
-	// Deconstructor
-
 	protected override object? GetPatternCore(PatternInterface patternInterface)
 	{
 		if (patternInterface == PatternInterface.Toggle)

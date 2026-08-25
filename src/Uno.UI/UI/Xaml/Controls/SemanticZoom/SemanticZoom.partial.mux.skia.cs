@@ -72,6 +72,10 @@ partial class SemanticZoom
 	// Initializes a new instance of the SemanticZoom class.
 	public SemanticZoom()
 	{
+		// Uno-specific: the default style lives in the WinUI v2 theme resources, so the
+		// control has to advertise that dictionary for implicit-style resolution.
+		this.SetDefaultStyleKey();
+
 		m_isInitializing = true;
 		m_isPendingViewChange = false;
 		m_isProcessingKeyboardInput = false;
