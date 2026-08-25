@@ -26,22 +26,39 @@ namespace Microsoft.UI.Composition
 
 		private protected override bool TryAddShadowPaths(List<(IGeometry path, float alpha)> output)
 		{
-			// SpriteVisual fills its bounds with its Brush. Only solid-color brushes are describable
-			// analytically
+			// SpriteVisual fills its bounds with its Brush.
 			if (Brush is null)
 			{
 				return true;
 			}
-			if (Brush is not CompositionColorBrush color)
-			{
-				return false;
-			}
-			if (color.Color.A == 0 || Size.X <= 0 || Size.Y <= 0)
+			if (Size.X <= 0 || Size.Y <= 0)
 			{
 				return true;
 			}
 
-			output.Add((GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, Size.X, Size.Y)), color.Color.A / 255f));
+			var brush = Brush;
+			while (brush is CompositionBrushWrapper wrapper)
+			{
+				brush = wrapper.WrappedBrush;
+			}
+			// Surface (image) content: ShadowState only ever carries an elevation shadow (ThemeShadow /
+			// ElevatedView), which WinUI casts from the element's BOUNDS, not its sampled alpha — a full-alpha
+			// rect silhouette is parity-correct and keeps the walk analytic for image-bearing subtrees.
+			if (brush is CompositionSurfaceBrush or CompositionNineGridBrush)
+			{
+				output.Add((GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, Size.X, Size.Y)), 1f));
+				return true;
+			}
+			if (!TryGetShadowBrushAlpha(brush, out var alpha))
+			{
+				return false;
+			}
+			if (alpha <= 0)
+			{
+				return true;
+			}
+
+			output.Add((GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, Size.X, Size.Y)), alpha));
 			return true;
 		}
 	}

@@ -117,6 +117,58 @@ public partial class ShapeVisual
 
 	internal override bool CanPaint() => base.CanPaint() || (_shapes?.Any(s => s.CanPaint()) ?? false);
 
+	private protected override bool TryAddShadowPaths(global::System.Collections.Generic.List<(IGeometry path, float alpha)> output)
+	{
+		if (_shapes is not { Count: > 0 } shapes || Size.X == 0 || Size.Y == 0)
+		{
+			return true;
+		}
+
+		foreach (var shape in shapes)
+		{
+			if (shape is not CompositionSpriteShape sprite)
+			{
+				return false;
+			}
+			if (!TryGetShadowBrushAlpha(sprite.FillBrush, out var fillAlpha) || !TryGetShadowBrushAlpha(sprite.StrokeBrush, out var strokeAlpha))
+			{
+				return false;
+			}
+			var hasFill = sprite.FillBrush is not null;
+			var hasStroke = sprite.StrokeBrush is not null && sprite.StrokeThickness > 0;
+			if (!hasFill && !hasStroke)
+			{
+				continue;
+			}
+			// BuildRenderGeometry unions the filled area and the stroke band, so the shape is describable as
+			// one constant-α path only when every painted part carries the same alpha.
+			if (hasFill && hasStroke && fillAlpha != strokeAlpha)
+			{
+				return false;
+			}
+			var alpha = hasFill ? fillAlpha : strokeAlpha;
+			if (alpha <= 0)
+			{
+				continue;
+			}
+			if (sprite.BuildRenderGeometry() is not { } geometry)
+			{
+				continue;
+			}
+			if (ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
+			{
+				var m = Matrix3x2.CreateTranslation(-viewBox.Offset.X, -viewBox.Offset.Y)
+					* Matrix3x2.CreateScale(Size.X / viewBox.Size.X, Size.Y / viewBox.Size.Y);
+				var previous = geometry;
+				geometry = geometry.Transform(m);
+				previous.Dispose();
+			}
+			output.Add((geometry, alpha));
+		}
+
+		return true;
+	}
+
 	/// <remarks>This does NOT take the clipping into account.</remarks>
 	internal override bool HitTest(Point point)
 	{
