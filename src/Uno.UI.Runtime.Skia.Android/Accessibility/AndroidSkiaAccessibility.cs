@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using Android.OS;
 using Java.Lang;
@@ -390,7 +391,7 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 
 	protected override void OnChildAdded(UIElement parent, UIElement child, int? index)
 	{
-		Trace($"Child added at index {index?.ToString() ?? "end"}.");
+		Trace($"Child added at index {index?.ToString(CultureInfo.InvariantCulture) ?? "end"}.");
 		_helper?.MarkAccessibilityTreeDirty();
 		_pendingScrollSubscriptionRoots.Add(child);
 		ScheduleRootInvalidation();
