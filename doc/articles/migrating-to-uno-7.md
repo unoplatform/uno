@@ -501,6 +501,31 @@ Independently of rendering, manipulation recognition was realigned with WinUI:
   (`SM_CXDRAG`), so a small wiggle during a click is no longer reported as a drag. Code that
   relied on a near-zero mouse threshold to start a drag should re-test.
 
+### `SystemBackdrop` no longer rewrites your content's backgrounds
+
+Setting `Window.SystemBackdrop` used to walk the whole visual tree and replace the
+`Background` of every `Panel`, `Border`, `ContentPresenter`, and `Control` that had an opaque
+`SolidColorBrush` with a transparent one, re-walking whenever new content was loaded. That is
+not what WinUI does, and it was observable from app code — a `Grid` you had explicitly painted
+red read back as `Transparent` afterwards.
+
+7.0 matches WinUI: applying a backdrop drops the **window's own root background** only, and your
+content is left exactly as you set it.
+
+- **If your app relied on the old behaviour**, the material will now be hidden behind your own
+  opaque backgrounds. Make the surfaces you want the material to show through transparent
+  yourself — typically the root `Page` or panel:
+
+  ```xml
+  <Page Background="Transparent">
+  ```
+
+  This is what WinUI has always required, so the same markup works on Windows.
+- **Backgrounds bound with `{ThemeResource}` are no longer clobbered.** The old walk wrote its
+  transparent brush with local precedence, which silently stopped those backgrounds from
+  re-resolving on a theme change. They now update correctly.
+- Reading `Background` back after setting a backdrop returns your own brush again.
+
 ### Type-hierarchy changes (WinUI parity)
 
 7.0 realigns several types to their WinUI base classes. Most code is unaffected — the
@@ -789,7 +814,9 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 14. Raise `SupportedOSPlatformVersion` to **15.0** (iOS/tvOS) and **24.0** (Android), and
    `TargetPlatformMinVersion` to **10.0.19041.0** (WinAppSDK), in any head that pins them
    explicitly.
-15. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+15. If you use `Window.SystemBackdrop`, make your own root `Page`/panel transparent — the
+   framework no longer does it for you.
+16. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)
