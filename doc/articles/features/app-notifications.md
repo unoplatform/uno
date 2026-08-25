@@ -17,7 +17,7 @@ uid: Uno.Features.AppNotifications
 | `Register` / `Unregister` / `UnregisterAll` | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
 | `IsSupported()` and `Setting` | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
 | `Show` (text, images, audio, scenario) | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
-| Buttons, text boxes, combo boxes | ✔ | ✔ | ✔ | ✔ (buttons only) | ✔ | ✔ (buttons only) |
+| Buttons, text boxes, combo boxes | ✔ | ✔ | ✔ | ✔ (buttons, service-worker mode only) | ✔ | ✔ (buttons only) |
 | `NotificationInvoked` activation, including user input | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
 | Cold-start activation (app launched by the notification) | ✔ | ✔ | ✔ | ✔ (service-worker mode) | ✔ | ✔ |
 | `UpdateAsync` (progress bar updates) | ✔ | ✔ | ✖ | ✖ | ✖ | ✔ |
@@ -29,7 +29,7 @@ uid: Uno.Features.AppNotifications
 Notes and platform constraints:
 
 * **Progress updates** require a platform that can mutate a notification that is already on screen. Apple platforms and browsers replace the notification instead of updating it, so `UpdateAsync` returns `AppNotificationProgressResult.Unsupported` there rather than silently re-posting.
-* **Combo boxes** have no representation in the browser Notification API or in the freedesktop notification specification; those payload parts are dropped and reported through the Uno log.
+* **Combo boxes** have no representation in the browser Notification API or in the freedesktop notification specification; those payload parts are dropped and reported through the Uno log. Browser action buttons are only rendered by `ServiceWorkerRegistration.showNotification()`, so they are reported as unsupported in the default document mode.
 * **Linux** uses the `org.freedesktop.Notifications` D-Bus service. When no notification daemon is running, `AppNotificationManager.IsSupported()` is `false` and the remove operations fault instead of reporting a success that did not happen.
 * **Web (WASM)** requires a secure context (`https://` or `localhost`) and user-granted notification permission. Scheduling (`ToastNotifier.AddToSchedule`) has no browser equivalent and is not emulated.
 * **Windows** uses the Windows App SDK notification platform. For non-packaged Skia Win32 applications, the Windows App Runtime bootstrapper is initialized automatically; when it is unavailable, `IsSupported()` returns `false` and `Setting` returns `AppNotificationSetting.Unsupported`.
