@@ -3912,6 +3912,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				() => GetCurrenState().LastMaterialized > initial.LastMaterialized,
 				timeoutMS: 5000,
 				message: $"No extra item materialized after first scroll (initial last={initial.LastMaterialized}, offset0={initial.VerticalOffset}, extent0={initial.ExtentHeight})");
+			// The batch fetch itself is asynchronous and completes after materialization reaches the end of
+			// the loaded range, so wait for the source to grow rather than sampling mid-fetch.
+			await UITestHelper.WaitFor(
+				() => GetCurrenState().Count > initial.Count,
+				timeoutMS: 5000,
+				message: $"No extra batch loaded after first scroll (initial count={initial.Count})");
 			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
 			var firstScroll = GetCurrenState();
 
