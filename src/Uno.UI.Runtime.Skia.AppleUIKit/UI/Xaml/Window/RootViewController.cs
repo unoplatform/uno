@@ -43,8 +43,9 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	{
 		if (_accessibility is { } acc)
 		{
-			AccessibilityRouter.NotifyDisposed(this);
+			// Contract order (mobile-adapter-contract §1): dispose the adapter, then notify the router.
 			acc.Dispose();
+			AccessibilityRouter.NotifyDisposed(this);
 			_accessibility = null;
 		}
 	}
