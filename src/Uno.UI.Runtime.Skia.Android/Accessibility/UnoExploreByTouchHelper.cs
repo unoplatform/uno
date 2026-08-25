@@ -531,7 +531,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		if (_automationIdByResourceSegment.TryGetValue(segment, out var existingId) &&
 			!string.Equals(existingId, automationId, StringComparison.Ordinal))
 		{
-			var collisionSuffix = Fnv1a32(automationId).ToString("x8");
+			var collisionSuffix = Fnv1a32(automationId).ToString("x8", CultureInfo.InvariantCulture);
 			var collisionBase = $"{segment}_{collisionSuffix}";
 			segment = collisionBase;
 			var collisionIndex = 2;
@@ -2219,14 +2219,6 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		ApplyCulture(node, effectivePeer);
 	}
 
-	private static Windows.Foundation.Rect GetLogicalBounds(UIElement element, AutomationPeer peer)
-	{
-		var peerBounds = peer.GetBoundingRectangle();
-		return HasUsableBounds(peerBounds)
-			? peerBounds
-			: GetElementLogicalBounds(element);
-	}
-
 	private static Windows.Foundation.Rect GetElementLogicalBounds(UIElement element)
 	{
 		var transform = UIElement.GetTransform(from: element, to: null);
@@ -2755,21 +2747,6 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	private static bool IsSameRoot(UIElement a, UIElement b)
 		=> a.XamlRoot is { } ra && b.XamlRoot is { } rb && ReferenceEquals(ra, rb);
-
-	private static int ConvertHeadingLevel(AutomationHeadingLevel level)
-		=> level switch
-		{
-			AutomationHeadingLevel.Level1 => 1,
-			AutomationHeadingLevel.Level2 => 2,
-			AutomationHeadingLevel.Level3 => 3,
-			AutomationHeadingLevel.Level4 => 4,
-			AutomationHeadingLevel.Level5 => 5,
-			AutomationHeadingLevel.Level6 => 6,
-			AutomationHeadingLevel.Level7 => 7,
-			AutomationHeadingLevel.Level8 => 8,
-			AutomationHeadingLevel.Level9 => 9,
-			_ => 0,
-		};
 
 	// AccessibilityPeerHelper hook implementations ------------------------------
 	// These private methods back the static hooks registered in Initialize so the
@@ -3679,7 +3656,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		}
 
 		sb.Append('_');
-		sb.Append((Fnv1a32(id) & 0xFFFFu).ToString("x4"));
+		sb.Append((Fnv1a32(id) & 0xFFFFu).ToString("x4", CultureInfo.InvariantCulture));
 		return sb.ToString();
 	}
 
