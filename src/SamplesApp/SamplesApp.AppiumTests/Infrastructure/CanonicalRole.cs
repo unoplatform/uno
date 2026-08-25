@@ -188,16 +188,34 @@ internal static class CanonicalRole
 
 	public static string Normalize(string? rawRole, AppiumPlatform platform, int? level = null, string? landmark = null)
 	{
-		if (level is not null)
-		{
-			return "heading";
-		}
-
 		if (!string.IsNullOrWhiteSpace(landmark))
 		{
 			return "landmark";
 		}
 
+		var role = NormalizeRole(rawRole, platform);
+
+		// A level only means "heading" on an element whose role is otherwise text-like: Win32 exposes a
+		// heading as ControlType.Text plus a Level, and macOS as AXStaticText plus a disclosure level, so
+		// the collapse is what makes headings comparable across platforms. UIA Level / aria-level is also
+		// carried by hierarchical items (treeitem, listitem, row), and those must keep their own role.
+		if (level is not null && s_levelMeansHeading.Contains(role))
+		{
+			return "heading";
+		}
+
+		return role;
+	}
+
+	private static readonly HashSet<string> s_levelMeansHeading = new(System.StringComparer.Ordinal)
+	{
+		string.Empty,
+		"text",
+		"heading",
+	};
+
+	private static string NormalizeRole(string? rawRole, AppiumPlatform platform)
+	{
 		if (string.IsNullOrWhiteSpace(rawRole))
 		{
 			return string.Empty;
