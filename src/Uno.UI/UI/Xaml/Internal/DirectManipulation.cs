@@ -206,8 +206,13 @@ internal sealed class DirectManipulation : InputManager.PointerManager.IGestureR
 		}
 	}
 
+	// An additional pointer may join a manipulation that is already interacting, or one that is still
+	// preparing but able to become multi-pointer (pinch/rotate). Adopting a second pointer into a
+	// translation-only manipulation that has not started yet would silently swallow the events of an
+	// unrelated press (e.g. a tap on an item while a stale pointer is still down).
 	private bool CanContinueWith(_PointerEventArgs args)
-		=> _state is States.Preparing or States.Interacting
+		=> (_state is States.Interacting
+				|| (_state is States.Preparing && (_settings & (GestureSettings.ManipulationScale | GestureSettings.ManipulationRotate)) != 0))
 			&& _claimedPointers.Count == 1
 			&& !_claimedPointers.Contains(args.CurrentPoint.Pointer)
 			&& Handlers.Any(handler => handler.CanAddPointerAt(args.CurrentPoint.Position));
