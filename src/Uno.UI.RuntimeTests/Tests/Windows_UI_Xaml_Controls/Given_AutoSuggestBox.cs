@@ -1082,11 +1082,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await When_Popup_Position(VerticalAlignment.Bottom, (SUT, popup) =>
 			{
 				var popupPoint = popup.Child.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
-				var suggestBoxPoint = SUT.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
+
+				// The suggestion list is aligned to the TextBox's ScrollViewer, not to the AutoSuggestBox
+				// edge, so its bottom lands inside the TextBox border.
+				var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+				var contentElement = (FrameworkElement)textBox.GetTemplateChild("ContentElement");
+				var contentPoint = contentElement.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
+
 				Assert.IsLessThanOrEqualTo(
-					suggestBoxPoint.Y + 1, // Added 1 to adjust for border on Windows
+					contentPoint.Y + 1,
 					popupPoint.Y + popup.Child.ActualSize.Y,
-					$"Expected `{popupPoint.Y} + {popup.Child.ActualSize.Y}`={popupPoint.Y + popup.Child.ActualSize.Y} <= {suggestBoxPoint.Y + 1}");
+					$"Expected `{popupPoint.Y} + {popup.Child.ActualSize.Y}`={popupPoint.Y + popup.Child.ActualSize.Y} <= {contentPoint.Y + 1}");
 			});
 		}
 
