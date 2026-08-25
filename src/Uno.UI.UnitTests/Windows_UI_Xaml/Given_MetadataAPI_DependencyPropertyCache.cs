@@ -117,7 +117,7 @@ public class Given_MetadataAPI_DependencyPropertyCache
 		Parallel.For(0, 4096, i =>
 		{
 			Assert.AreSame(cached, MetadataAPI.TryGetDependencyPropertyByName(type, "Counted"));
-			Assert.IsNull(MetadataAPI.TryGetDependencyPropertyByName(type, "Absent" + (i % 64).ToString()));
+			Assert.IsNull(MetadataAPI.TryGetDependencyPropertyByName(type, "Absent" + (i % 64)));
 		});
 
 		Assert.AreEqual(
