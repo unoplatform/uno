@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using Uno;
 using Uno.Globalization.NumberFormatting;
 
 namespace Windows.Globalization.NumberFormatting;
@@ -43,28 +42,32 @@ public partial class SignificantDigitsNumberRounder : INumberRounder
 	{
 	}
 
-	[NotImplemented]
-	public int RoundInt32(int value)
-	{
-		throw new global::System.NotImplementedException("The member int SignificantDigitsNumberRounder.RoundInt32(int value) is not implemented in Uno.");
-	}
+	public int RoundInt32(int value) => IntegralRounding.ToInt32(RoundInt64(value), value);
 
-	[NotImplemented]
-	public uint RoundUInt32(uint value)
-	{
-		throw new global::System.NotImplementedException("The member uint SignificantDigitsNumberRounder.RoundUInt32(uint value) is not implemented in Uno.");
-	}
+	public uint RoundUInt32(uint value) => IntegralRounding.ToUInt32(RoundUInt64(value), value);
 
-	[NotImplemented]
 	public long RoundInt64(long value)
 	{
-		throw new global::System.NotImplementedException("The member long SignificantDigitsNumberRounder.RoundInt64(long value) is not implemented in Uno.");
+		var magnitude = IntegralRounding.GetMagnitude(value, out var isNegative);
+		var rounded = RoundMagnitude(magnitude, isNegative);
+
+		return IntegralRounding.ToInt64(rounded, isNegative, value);
 	}
 
-	[NotImplemented]
-	public ulong RoundUInt64(ulong value)
+	public ulong RoundUInt64(ulong value) => RoundMagnitude(value, false);
+
+	private ulong RoundMagnitude(ulong magnitude, bool isNegative)
 	{
-		throw new global::System.NotImplementedException("The member ulong SignificantDigitsNumberRounder.RoundUInt64(ulong value) is not implemented in Uno.");
+		var digitCount = Rounder.GetDigitCount(magnitude);
+
+		if (digitCount <= SignificantDigits)
+		{
+			return magnitude;
+		}
+
+		var increment = Rounder.GetPowerOfTen(digitCount - (int)SignificantDigits);
+
+		return Rounder.RoundMagnitude(magnitude, increment, isNegative, RoundingAlgorithm);
 	}
 
 	public float RoundSingle(float value)

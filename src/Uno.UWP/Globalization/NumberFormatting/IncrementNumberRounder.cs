@@ -84,6 +84,51 @@ public partial class IncrementNumberRounder : INumberRounder
 	{
 	}
 
+	public int RoundInt32(int value) => IntegralRounding.ToInt32(RoundInt64(value), value);
+
+	public uint RoundUInt32(uint value) => IntegralRounding.ToUInt32(RoundUInt64(value), value);
+
+	public long RoundInt64(long value)
+	{
+		if (!TryGetIntegralIncrement(out var incrementMagnitude))
+		{
+			return value;
+		}
+
+		var magnitude = IntegralRounding.GetMagnitude(value, out var isNegative);
+		var rounded = Rounder.RoundMagnitude(magnitude, incrementMagnitude, isNegative, RoundingAlgorithm);
+
+		return IntegralRounding.ToInt64(rounded, isNegative, value);
+	}
+
+	public ulong RoundUInt64(ulong value) =>
+		TryGetIntegralIncrement(out var incrementMagnitude)
+			? Rounder.RoundMagnitude(value, incrementMagnitude, false, RoundingAlgorithm)
+			: value;
+
+	public float RoundSingle(float value) => (float)RoundDouble(value);
+
+	/// <summary>
+	/// Gets the increment as an exact integer magnitude.
+	/// </summary>
+	/// <remarks>
+	/// Increments below 1 are always 1/n (validated by <see cref="Increment"/>), so every integral value
+	/// is already a multiple of them and rounding is a no-op. Increments at or beyond the UInt64 range
+	/// cannot be represented, so the value is left untouched.
+	/// </remarks>
+	private bool TryGetIntegralIncrement(out ulong incrementMagnitude)
+	{
+		if (increment < 1 ||
+			increment >= 18446744073709551616d)
+		{
+			incrementMagnitude = 0;
+			return false;
+		}
+
+		incrementMagnitude = (ulong)increment;
+		return true;
+	}
+
 	public double RoundDouble(double value)
 	{
 		var rounded = value / increment;

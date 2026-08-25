@@ -13,6 +13,102 @@ internal static class Rounder
 
 	internal const long SignificandMask = 0x000F_FFFF_FFFF_FFFF;
 
+	/// <summary>
+	/// Rounds <paramref name="magnitude"/> to a multiple of <paramref name="increment"/> using integer
+	/// arithmetic, so that values beyond 2^53 keep every digit.
+	/// </summary>
+	/// <remarks>
+	/// When the rounded result would leave the <see cref="ulong"/> range the value is rounded towards
+	/// zero instead, which is the only representable outcome.
+	/// </remarks>
+	public static ulong RoundMagnitude(ulong magnitude, ulong increment, bool isNegative, RoundingAlgorithm roundingAlgorithm)
+	{
+		if (increment <= 1)
+		{
+			return magnitude;
+		}
+
+		var quotient = magnitude / increment;
+		var remainder = magnitude - quotient * increment;
+
+		if (remainder == 0)
+		{
+			return magnitude;
+		}
+
+		if (RoundsAwayFromZero(quotient, remainder, increment, isNegative, roundingAlgorithm) &&
+			quotient + 1 <= ulong.MaxValue / increment)
+		{
+			quotient++;
+		}
+
+		return quotient * increment;
+	}
+
+	private static bool RoundsAwayFromZero(ulong quotient, ulong remainder, ulong increment, bool isNegative, RoundingAlgorithm roundingAlgorithm)
+	{
+		switch (roundingAlgorithm)
+		{
+			case RoundingAlgorithm.RoundDown:
+				return isNegative;
+			case RoundingAlgorithm.RoundUp:
+				return !isNegative;
+			case RoundingAlgorithm.RoundTowardsZero:
+				return false;
+			case RoundingAlgorithm.RoundAwayFromZero:
+				return true;
+		}
+
+		// Comparing the two distances avoids overflowing when doubling the remainder.
+		var complement = increment - remainder;
+
+		if (remainder != complement)
+		{
+			return remainder > complement;
+		}
+
+		return roundingAlgorithm switch
+		{
+			RoundingAlgorithm.RoundHalfDown => isNegative,
+			RoundingAlgorithm.RoundHalfUp => !isNegative,
+			RoundingAlgorithm.RoundHalfTowardsZero => false,
+			RoundingAlgorithm.RoundHalfToEven => quotient % 2 != 0,
+			RoundingAlgorithm.RoundHalfToOdd => quotient % 2 == 0,
+			_ => true,
+		};
+	}
+
+	/// <summary>
+	/// Gets the number of decimal digits of <paramref name="magnitude"/>, counting zero as one digit.
+	/// </summary>
+	public static int GetDigitCount(ulong magnitude)
+	{
+		var count = 1;
+
+		while (magnitude >= 10)
+		{
+			magnitude /= 10;
+			count++;
+		}
+
+		return count;
+	}
+
+	/// <summary>
+	/// Gets 10^<paramref name="exponent"/> for the exponents that fit in a <see cref="ulong"/> (0-19).
+	/// </summary>
+	public static ulong GetPowerOfTen(int exponent)
+	{
+		var result = 1UL;
+
+		for (var i = 0; i < exponent; i++)
+		{
+			result *= 10;
+		}
+
+		return result;
+	}
+
 	public static double Round(double value, int digits, RoundingAlgorithm roundingAlgorithm)
 	{
 		var pow10 = Math.Pow(10, digits);

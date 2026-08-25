@@ -12,41 +12,11 @@ namespace Windows.Globalization.NumberFormatting
 		// Skipping already declared property RoundingAlgorithm
 		// Skipping already declared method Windows.Globalization.NumberFormatting.IncrementNumberRounder.IncrementNumberRounder()
 		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.IncrementNumberRounder()
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public int RoundInt32(int value)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.IncrementNumberRounder", "RoundInt32(int value)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public uint RoundUInt32(uint value)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.IncrementNumberRounder", "RoundUInt32(uint value)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public long RoundInt64(long value)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.IncrementNumberRounder", "RoundInt64(long value)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ulong RoundUInt64(ulong value)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.IncrementNumberRounder", "RoundUInt64(ulong value)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public float RoundSingle(float value)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.IncrementNumberRounder", "RoundSingle(float value)");
-		}
-#endif
+		// Skipping already declared method Windows.Globalization.NumberFormatting.IncrementNumberRounder.RoundInt32(int)
+		// Skipping already declared method Windows.Globalization.NumberFormatting.IncrementNumberRounder.RoundUInt32(uint)
+		// Skipping already declared method Windows.Globalization.NumberFormatting.IncrementNumberRounder.RoundInt64(long)
+		// Skipping already declared method Windows.Globalization.NumberFormatting.IncrementNumberRounder.RoundUInt64(ulong)
+		// Skipping already declared method Windows.Globalization.NumberFormatting.IncrementNumberRounder.RoundSingle(float)
 		// Skipping already declared method Windows.Globalization.NumberFormatting.IncrementNumberRounder.RoundDouble(double)
 		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.Increment.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.IncrementNumberRounder.Increment.set
