@@ -1085,8 +1085,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				// The suggestion list is aligned to the TextBox's ScrollViewer, not to the AutoSuggestBox
 				// edge, so its bottom lands inside the TextBox border.
-				var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
-				var contentElement = (FrameworkElement)textBox.GetTemplateChild("ContentElement");
+				var textBox = FindVisualChildByName<TextBox>(SUT, "TextBox");
+				Assert.IsNotNull(textBox);
+				var contentElement = FindVisualChildByName<FrameworkElement>(textBox, "ContentElement");
+				Assert.IsNotNull(contentElement);
 				var contentPoint = contentElement.TransformToVisual(WindowHelper.WindowContent).TransformPoint(default);
 
 				Assert.IsLessThanOrEqualTo(
@@ -1678,6 +1680,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 #endif
 			}
+		}
+
+		private static T FindVisualChildByName<T>(DependencyObject root, string name)
+			where T : FrameworkElement
+		{
+			for (var index = 0; index < VisualTreeHelper.GetChildrenCount(root); index++)
+			{
+				var child = VisualTreeHelper.GetChild(root, index);
+				if (child is T element && element.Name == name)
+				{
+					return element;
+				}
+
+				if (FindVisualChildByName<T>(child, name) is { } descendant)
+				{
+					return descendant;
+				}
+			}
+
+			return null;
 		}
 
 #if HAS_UNO
