@@ -53,7 +53,7 @@ namespace TestRepro
 			{
 				return 
 					global::MyProject.GlobalStaticResources.__PreserveProperties(
-						new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_Pag_ResΞ0_DatTem)
+						global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(__ResourceOwner_1, Build_Pag_ResΞ0_DatTem)
 						.GenericApply(__that, __nameScope, ApplyTo_Pag_ResΞ0_DatTem)
 					)
 				;
@@ -84,7 +84,7 @@ namespace TestRepro
 								IsParsing = true,
 								Name = "ButtonWithEmptyDataTemplate",
 								ContentTemplate = 								global::MyProject.GlobalStaticResources.__PreserveProperties(
-									new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem)
+									global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(this, Build_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem)
 									.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem)
 								)
 								,
@@ -110,7 +110,7 @@ namespace TestRepro
 			((global::Microsoft.UI.Xaml.FrameworkElement)this).Unloaded += __StopTracking;
 		}
 		partial void OnInitializeCompleted();
-		private _View Build_Pag_ResΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private _View Build_Pag_ResΞ0_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 		{
 			"57da9b656b835e38693ff13bc03602d0df7d40b5".ToString(); // Forces this method to be updated (and use updated sub class type) when the file is being updated through Hot Reload
 			return new __EmptyDataTemplatePage_14a64d66c7071a2b54a8c9a36712e00c.__Pag_ResΞ0_DatTem().Build(__owner, __settings);
@@ -134,7 +134,7 @@ namespace TestRepro
 			__p1.CreationComplete();
 		}
 
-		private _View Build_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private _View Build_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 		{
 			"57da9b656b835e38693ff13bc03602d0df7d40b5".ToString(); // Forces this method to be updated (and use updated sub class type) when the file is being updated through Hot Reload
 			return new __EmptyDataTemplatePage_14a64d66c7071a2b54a8c9a36712e00c.__PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem().Build(__owner, __settings);
@@ -223,7 +223,7 @@ namespace TestRepro
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
-				public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+				public _View Build(object __ResourceOwner_1, global::Uno.UI.TemplateMaterializationSettings __settings)
 				{
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;
@@ -254,7 +254,7 @@ namespace TestRepro
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
-				public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+				public _View Build(object __ResourceOwner_1, global::Uno.UI.TemplateMaterializationSettings __settings)
 				{
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;

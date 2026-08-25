@@ -3,16 +3,14 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:TODO="http://uno.ui/TODO"
-    xmlns:android="http://uno.ui/android"
     xmlns:controls="using:Uno.UI.Samples.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ios="http://uno.ui/ios"
     xmlns:local="using:Uno.UI.Samples.Content.UITests"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:u="using:nVentive.Umbrella.Views.Controls"
     xmlns:uBehaviors="using:nVentive.Umbrella.Views.Behaviors"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    mc:Ignorable="d ios android TODO">
+    mc:Ignorable="d TODO">
 
     <controls:SampleControl SampleDescription="GridView_HeaderFooterTemplateControl">
         <controls:SampleControl.SampleContent>
@@ -23,17 +21,14 @@
                     ItemsSource="{Binding [SampleItems]}">
                     <GridView.HeaderTemplate>
                         <DataTemplate>
-                            <Border ios:Height="60" Background="Green">
+                            <Border Background="Green">
                                 <TextBlock Foreground="Red" Text="{Binding}" />
                             </Border>
                         </DataTemplate>
                     </GridView.HeaderTemplate>
                     <GridView.ItemTemplate>
                         <DataTemplate>
-                            <Border
-                                Margin="10"
-                                ios:Height="20"
-                                Background="Orange">
+                            <Border Margin="10" Background="Orange">
                                 <TextBlock
                                     Width="60"
                                     Foreground="Blue"
@@ -43,7 +38,7 @@
                     </GridView.ItemTemplate>
                     <GridView.FooterTemplate>
                         <DataTemplate>
-                            <Border ios:Height="150" Background="DeepSkyBlue">
+                            <Border Background="DeepSkyBlue">
                                 <TextBlock Foreground="Orchid" Text="{Binding}" />
                             </Border>
                         </DataTemplate>

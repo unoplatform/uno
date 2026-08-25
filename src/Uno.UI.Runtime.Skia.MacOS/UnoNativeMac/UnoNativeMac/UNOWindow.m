@@ -321,8 +321,19 @@ NSWindow* uno_window_create(double width, double height)
     id device = uno_application_get_metal_device();
     if (device) {
         UNOMetalFlippedView *v = [[UNOMetalFlippedView alloc] initWithFrame:size device:device];
-        v.enableSetNeedsDisplay = YES;
+        // Disable MTKView auto-draw; frames are driven by the managed render thread via
+        // uno_window_acquire_next_frame / uno_window_present_frame.
+        v.paused = YES;
+        v.enableSetNeedsDisplay = NO;
         v.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
+
+        // Keep the default triple-buffering (3 drawables). Dropping to 2 saves one VSync of
+        // present latency but leaves no headroom: when a frame overruns a VSync interval (GC
+        // pause, slow first frame, resize, or a CPU-constrained CI agent) there is no spare
+        // drawable, so nextDrawable blocks for ~1s and then returns nil. Losing frames that way
+        // is far more costly than the latency it saves.
+        CAMetalLayer* metalLayer = (CAMetalLayer*)v.layer;
+        metalLayer.maximumDrawableCount = 3;
         window.metalViewDelegate = [[UNOMetalViewDelegate alloc] initWithMetalKitView:v];
         v.delegate = window.metalViewDelegate;
         window.renderingView = v;
@@ -1013,6 +1024,30 @@ void uno_set_ime_active(UNOWindow* window, bool active)
             [window makeFirstResponder:renderingView];
         }
     }
+}
+
+double uno_window_get_refresh_rate(NSWindow* window)
+{
+    NSScreen* screen = window.screen;
+    if (screen == nil)
+    {
+        // An off-screen window (never ordered front, or on a headless agent) has no screen;
+        // fall back to the main screen so the render loop still gets a sane pace.
+        screen = NSScreen.mainScreen;
+    }
+    if (screen == nil)
+    {
+        return 0;
+    }
+    if (@available(macOS 12.0, *))
+    {
+        NSInteger fps = screen.maximumFramesPerSecond;
+        if (fps > 0)
+        {
+            return (double)fps;
+        }
+    }
+    return 0;
 }
 
 void uno_window_get_metal_handles(UNOWindow* window, void** device, void** queue)

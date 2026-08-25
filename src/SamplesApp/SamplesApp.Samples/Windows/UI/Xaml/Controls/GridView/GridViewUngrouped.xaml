@@ -9,7 +9,6 @@
     xmlns:ios="http://uno.ui/ios"
     xmlns:local="using:Uno.UI.Samples.Content.UITests"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:u="using:nVentive.Umbrella.Views.Controls"
     xmlns:uBehaviors="using:nVentive.Umbrella.Views.Behaviors"
     xmlns:uWinRTBehaviors="using:Uno.UI.WinRT.Behaviors"

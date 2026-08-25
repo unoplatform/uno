@@ -19,16 +19,10 @@ using Uno.UI.Dispatching;
 using Windows.Foundation.Metadata;
 using Windows.System;
 
-#if METRO
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Markup;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
 using System.Text;
 using System.Runtime.CompilerServices;
-#endif
 
 
 namespace Microsoft.UI.Xaml
@@ -72,6 +66,16 @@ namespace Microsoft.UI.Xaml
 		private readonly Dictionary<FrameworkTemplate, TemplateInfo> _templates = new(FrameworkTemplate.FrameworkTemplateEqualityComparer.Default);
 		private IFrameworkTemplatePoolPlatformProvider _platformProvider = new FrameworkTemplatePoolDefaultPlatformProvider();
 		private static bool _isPoolingEnabled;
+
+		/// <summary>
+		/// The members of each materialized template content, keyed by the root they belong to.
+		/// </summary>
+		/// <remarks>
+		/// Keyed rather than listed per template so that reuse is a single lookup and an entry is dropped
+		/// with its root, instead of a list that grows with every materialization until it is scavenged.
+		/// The entry only holds weak references, so it never keeps its own key alive.
+		/// </remarks>
+		private readonly ConditionalWeakTable<View, MaterializedEntry> _materializedTemplates = new();
 
 #if USE_HARD_REFERENCES
 		/// <summary>
@@ -182,7 +186,6 @@ namespace Microsoft.UI.Xaml
 
 					return remove;
 				});
-				template.MaterializedInstance.RemoveAll(x => !x.TemplateRoot.IsAlive);
 			}
 
 			if (removedInstancesCount > 0)
@@ -236,7 +239,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (_trace.IsEnabled)
 				{
-					_trace.WriteEventActivity(TraceProvider.CreateTemplate, EventOpcode.Send, new[] { template.ViewFactoryInner?.Method.DeclaringType?.FullName });
+					_trace.WriteEventActivity(TraceProvider.CreateTemplate, EventOpcode.Send, new[] { template.ViewFactory?.Method.DeclaringType?.FullName });
 				}
 
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -267,7 +270,7 @@ namespace Microsoft.UI.Xaml
 					this.Log().Debug($"Recycling template,    id={GetTemplateDebugId(template)}, {info.PooledInstances.Count} items remaining in cache");
 				}
 
-				if (info.MaterializedInstance.FirstOrDefault(x => x.TemplateRoot.Target == instance) is { } materializedInfo)
+				if (_materializedTemplates.TryGetValue(instance, out var materializedInfo))
 				{
 					materializedInfo.UpdateTemplatedParent(templatedParent);
 				}
@@ -289,13 +292,11 @@ namespace Microsoft.UI.Xaml
 			return instance;
 		}
 
-		internal void TrackMaterializedTemplate(FrameworkTemplate template, View templateRoot, IEnumerable<DependencyObject> templateMembers)
+		internal void TrackMaterializedTemplate(View templateRoot, IEnumerable<DependencyObject> templateMembers)
 		{
-			if (TryGetTemplatePool(template) is { } info)
+			if (_isPoolingEnabled)
 			{
-				var entry = new MaterializedEntry(templateRoot, templateMembers);
-
-				info.MaterializedInstance.Add(entry);
+				_materializedTemplates.AddOrUpdate(templateRoot, new MaterializedEntry(templateMembers));
 			}
 		}
 
@@ -310,7 +311,7 @@ namespace Microsoft.UI.Xaml
 
 			if (!_templates.TryGetValue(template, out var info))
 			{
-				_templates[template] = info = new([], []);
+				_templates[template] = info = new([]);
 			}
 
 			return info;
@@ -500,7 +501,7 @@ namespace Microsoft.UI.Xaml
 		private string GetTemplateDebugId(FrameworkTemplate? template)
 		{
 			// Grossly inefficient, should only be used for debug logging
-			if (template?.ViewFactoryInner?.Method is { } method &&
+			if (template?.ViewFactory?.Method is { } method &&
 				_templates.Keys.IndexOf(template) is { } index && index != -1)
 			{
 				return $"{index}({method.DeclaringType}.{method.Name})";
@@ -511,7 +512,7 @@ namespace Microsoft.UI.Xaml
 
 		internal bool ContainsKey(FrameworkTemplate template) => _templates.ContainsKey(template);
 
-		private record TemplateInfo(List<MaterializedEntry> MaterializedInstance, List<TemplateEntry> PooledInstances);
+		private record TemplateInfo(List<TemplateEntry> PooledInstances);
 
 		private class TemplateEntry
 		{
@@ -528,15 +529,12 @@ namespace Microsoft.UI.Xaml
 
 		private class MaterializedEntry
 		{
-			public MaterializedEntry(View templateRoot, IEnumerable<DependencyObject> templateMembers)
-			{
-				this.TemplateRoot = WeakReferencePool.RentWeakReference(this, templateRoot);
-				this.TemplateMembers = templateMembers
+			public MaterializedEntry(IEnumerable<DependencyObject> templateMembers)
+				// A DependencyObject provides its own weak reference, so nothing is rented from the pool here.
+				=> TemplateMembers = templateMembers
 					.Select(x => WeakReferencePool.RentWeakReference(this, x))
 					.ToArray();
-			}
 
-			public ManagedWeakReference TemplateRoot { get; init; }
 			public ManagedWeakReference[] TemplateMembers { get; init; }
 
 			public void UpdateTemplatedParent(DependencyObject? templatedParent)

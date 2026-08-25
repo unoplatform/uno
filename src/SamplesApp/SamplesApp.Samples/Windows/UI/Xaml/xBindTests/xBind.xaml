@@ -2,16 +2,13 @@
     x:Class="UITests.Shared.Windows_UI_Xaml.xBind.xBind"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:android="http://uno.ui/android"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ios="http://uno.ui/ios"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:sys="using:System"
-    xmlns:wasm="http://uno.ui/wasm"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     d:DesignHeight="300"
     d:DesignWidth="400"
-    mc:Ignorable="d ios android wasm">
+    mc:Ignorable="d">
 
     <UserControl.Resources>
         <Style x:Key="UnsupportedTextStyle" TargetType="TextBlock">
@@ -50,9 +47,6 @@
                 Margin="0,0,0,20"
                 FontSize="30"
                 Text="{x:Bind sys:DateTime.Now.ToLongTimeString()}" />
-            <ios:TextBlock Style="{StaticResource UnsupportedTextStyle}" />
-            <android:TextBlock Style="{StaticResource UnsupportedTextStyle}" />
-            <wasm:TextBlock Style="{StaticResource UnsupportedTextStyle}" />
         </StackPanel>
     </Grid>
 </UserControl>

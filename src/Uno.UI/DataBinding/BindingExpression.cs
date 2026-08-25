@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Data
 			{
 				if (ParentBinding.IsTemplateBinding)
 				{
-					return (_view?.Target as DependencyObject)?.GetTemplatedParent2();
+					return (_view?.Target as DependencyObject)?.GetTemplatedParent();
 				}
 				if (_isElementNameSource || ExplicitSource != null)
 				{

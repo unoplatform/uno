@@ -448,23 +448,31 @@ Many Uno projects and libraries make use of a `winappsdk-workaround.targets` fil
 
 ## Cross Targeting Support
 
-By Default when using the Uno.Sdk you get the added benefit of default includes for an easier time building Cross Targeted Applications. The supported file extensions are as shown below:
+By Default when using the Uno.Sdk you get the added benefit of default includes for an easier time building Cross Targeted Applications. A file carrying one of the suffixes below is compiled only for the target frameworks it names, in class libraries and application heads alike:
 
-- `*.wasm.cs` (WebAssembly)
-- `*.desktop.cs` (Desktop)
-- `*.iOS.cs` (iOS)
-- `*.tvOS.cs`(tvOS)
-- `*.UIKit.cs`, `*.Apple.cs` (iOS & tvOS)
-- `*.Android.cs` (Android)
-- `*.WinAppSDK.cs` (Windows App SDK)
+| Suffix | Compiled for |
+|---|---|
+| `*.Android.cs` | `netX.0-android` |
+| `*.iOS.cs` | `netX.0-ios` |
+| `*.tvOS.cs` | `netX.0-tvos` |
+| `*.UIKit.cs` | `netX.0-ios` and `netX.0-tvos` |
+| `*.desktop.cs` | `netX.0-desktop` |
+| `*.wasm.cs`, `*.browserwasm.cs` | `netX.0-browserwasm` |
+| `*.WinAppSDK.cs` | `netX.0-windows10.x` |
+| `*.crossruntime.cs`, `*.skia.cs` | every target framework except `netX.0-windows10.x` |
 
-For class libraries we also provide:
-
-- `*.reference.cs` (Reference only)
-- `*.crossruntime.cs` (WebAssembly, Desktop, or Reference)
+`*.crossruntime.cs` and `*.skia.cs` are equivalent, and hold code for the targets Uno Platform renders itself as opposed to the WinAppSDK one. Neither names a drawing backend: `Uno.UI` is compiled once and resolves its backend at run time.
 
 > [!NOTE]
-> For backwards compatibility, using `.skia.cs` is currently equivalent to `.desktop.cs`. This might change in the future, so we recommend using the suffixes above instead.
+> Before Uno Platform 7.0, `*.skia.cs` and `*.crossruntime.cs` were compiled only for `netX.0-desktop`, which made
+> `*.skia.cs` an alias of `*.desktop.cs`. A file that is genuinely desktop-only should be renamed to `*.desktop.cs`.
+
+<!-- Separates two adjacent alerts, which markdownlint would otherwise read as one blockquote (MD028). -->
+
+> [!NOTE]
+> `*.reference.cs`, `*.iOSmacOS.cs` and `*.Apple.cs` are no longer recognized. `*.reference.cs` and
+> `*.iOSmacOS.cs` named build flavors that no longer exist and can be removed; rename `*.Apple.cs` to
+> `*.UIKit.cs`, which always had the identical rule.
 
 As discussed above setting `EnableDefaultUnoItems` to false will disable these includes.
 

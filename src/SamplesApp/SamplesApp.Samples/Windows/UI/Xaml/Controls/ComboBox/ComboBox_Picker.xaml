@@ -2,17 +2,14 @@
     x:Class="SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_Picker"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:android="http://nventive.com/android"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:ios="http://nventive.com/ios"
     xmlns:local="using:Uno.UI.Samples.Content.UITests.ComboBox"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:not_win="http://uno.ui/not_win"
     xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     d:DesignHeight="300"
     d:DesignWidth="400"
-    mc:Ignorable="d ios not_win android">
+    mc:Ignorable="d not_win">
 
     <UserControl.Resources>
 
@@ -69,7 +66,7 @@
                                     Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}"
                                     Text="{TemplateBinding PlaceholderText}" />
                             </ContentPresenter>
-                            <not_android:FontIcon
+                            <FontIcon
                                 x:Name="DropDownGlyph"
                                 Grid.Row="1"
                                 Grid.Column="1"
@@ -82,19 +79,6 @@
                                 Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
                                 Glyph="&#xE0E5;"
                                 IsHitTestVisible="False" />
-                            <android:TextBlock
-                                x:Name="DropDownGlyph"
-                                Grid.Row="1"
-                                Grid.Column="1"
-                                Margin="0,10,10,10"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                AutomationProperties.AccessibilityView="Raw"
-                                FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                FontSize="12"
-                                Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
-                                IsHitTestVisible="False"
-                                Text="&#xE0E5;" />
                             <Popup x:Name="Popup" IsLightDismissEnabled="False">
                                 <Popup.Child>
                                     <Grid>
@@ -136,15 +120,6 @@
                                                         </ToggleButton.Template>
                                                     </ToggleButton>
                                                 </Border>
-                                                <ios:Picker
-                                                    Height="180"
-                                                    DisplayMemberPath="{TemplateBinding DisplayMemberPath}"
-                                                    ItemContainerStyle="{StaticResource PickerItemStyle}"
-                                                    ItemTemplate="{TemplateBinding ItemTemplate}"
-                                                    ItemTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-                                                    ItemsSource="{TemplateBinding ItemsSource}"
-                                                    Placeholder="{TemplateBinding PlaceholderText}"
-                                                    SelectedItem="{Binding SelectedItem, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" />
                                             </StackPanel>
                                         </Border>
                                     </Grid>
@@ -306,36 +281,12 @@
             </Setter>
         </Style>
 
-        <ios:Style x:Key="PickerItemStyle" TargetType="SelectorItem">
-            <Setter Property="FontSize" Value="22" />
-            <Setter Property="FontWeight" Value="Medium" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
-            <Setter Property="HorizontalContentAlignment" Value="Center" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="SelectorItem">
-                        <ContentPresenter
-                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                            VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                            Content="{TemplateBinding Content}"
-                            ContentTemplate="{TemplateBinding ContentTemplate}"
-                            ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </ios:Style>
 
     </UserControl.Resources>
 
     <StackPanel>
 
         <TextBlock Text="This sample only works on iOS" />
-        <ios:ComboBox
-            x:Name="theComboBox"
-            IsPopupFullscreen="true"
-            ItemsSource="{Binding VariableLengthItems}"
-            SelectedItem="{Binding test}"
-            Style="{StaticResource PickerComboBoxStyle}" />
 
     </StackPanel>
 

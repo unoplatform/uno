@@ -7,7 +7,7 @@ using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
 using Private.Infrastructure;
 
-#if XAMARIN
+#if __ANDROID__ || __APPLE_UIKIT__
 using Microsoft.UI.Xaml.Controls;
 #else
 using Microsoft.UI.Xaml.Controls;

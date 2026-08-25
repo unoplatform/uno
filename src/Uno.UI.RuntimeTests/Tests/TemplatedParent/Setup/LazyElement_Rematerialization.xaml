@@ -1,0 +1,16 @@
+<Page x:Class="Uno.UI.RuntimeTests.Tests.TemplatedParent.Setup.LazyElement_Rematerialization"
+	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<Button x:Name="HostButton" x:FieldModifier="Public" Content="AsdAsd">
+		<Button.Template>
+			<ControlTemplate TargetType="Button">
+				<StackPanel Orientation="Vertical">
+					<TextBlock Text="Qwe" />
+					<ContentPresenter x:Name="LazyPresenter" x:Load="False" Content="{TemplateBinding Content}" />
+					<TextBlock Text="Zxc" />
+				</StackPanel>
+			</ControlTemplate>
+		</Button.Template>
+	</Button>
+</Page>

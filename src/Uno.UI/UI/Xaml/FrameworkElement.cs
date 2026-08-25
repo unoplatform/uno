@@ -716,7 +716,7 @@ namespace Microsoft.UI.Xaml
 			return this.IsHeightConstrainedSimple();
 		}
 
-		internal override bool IsViewHit() => HasCompositionChildVisual;
+		internal override bool IsViewHit() => false;
 
 		/// <summary>
 		/// The list of available children render phases, if this
@@ -877,15 +877,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 			return null;
-		}
-
-		internal DependencyObject GetTemplatedParent()
-		{
-			return (this as DependencyObject)?.GetTemplatedParent2();
-		}
-		internal void SetTemplatedParent(DependencyObject tp)
-		{
-			(this as DependencyObject)?.SetTemplatedParent2(tp);
 		}
 
 		protected FrameworkElement()

@@ -49,7 +49,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// FrameworkTemplate pooling to function properly when an ItemTemplateSelector has been
 		/// specified.
 		/// </summary>
-		private readonly static DataTemplate InnerContentPresenterTemplate = new DataTemplate(() => new ContentPresenter());
+		private readonly static DataTemplate InnerContentPresenterTemplate = new DataTemplate(null, (_, _) => new ContentPresenter());
 
 		public static ItemsControl GetItemsOwner(DependencyObject element)
 		{

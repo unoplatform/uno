@@ -69,7 +69,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			{
 				Setters =
 				{
-					new Setter(TemplateProperty, new ControlTemplate(() => new Grid())
+					new Setter(TemplateProperty, new ControlTemplate(null, (_, _) => new Grid())
 					{
 						TargetType = typeof(OnApplyTemplateCounterControl),
 					})
@@ -214,7 +214,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				{
 					Setters =
 					{
-						new Setter(Control.TemplateProperty, new ControlTemplate(() => new Grid())
+						new Setter(Control.TemplateProperty, new ControlTemplate(null, (_, _) => new Grid())
 						{
 							TargetType = typeof(OnApplyTemplateCounterControl),
 						})

@@ -4,12 +4,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:skia="http://uno.ui/skia"
+    xmlns:not_winappsdk="http://uno.ui/not_winappsdk"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    mc:Ignorable="d skia">
+    mc:Ignorable="d not_winappsdk">
 
-    <skia:ScrollViewer Padding="16">
-        <skia:StackPanel Spacing="16">
+    <not_winappsdk:ScrollViewer Padding="16">
+        <not_winappsdk:StackPanel Spacing="16">
 
             <!--  Header  -->
             <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="BrowserInputHelper Manual Tests" />
@@ -103,6 +103,6 @@
                 </ScrollViewer>
             </Border>
 
-        </skia:StackPanel>
-    </skia:ScrollViewer>
+        </not_winappsdk:StackPanel>
+    </not_winappsdk:ScrollViewer>
 </Page>
