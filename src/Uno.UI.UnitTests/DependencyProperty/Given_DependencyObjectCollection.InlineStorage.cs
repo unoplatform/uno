@@ -361,6 +361,32 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
+		[DataRow(1)]
+		[DataRow(2)]
+		[DataRow(4)]
+		public void When_Replaced_During_Enumeration_Then_Enumeration_Continues(int count)
+		{
+			// Replacing through the indexer is not a structural change, so - as with List<T> -
+			// it must not invalidate in-flight enumerators.
+			var SUT = CreateCollection(CreateItems(count));
+			var replacement = new MyDependencyObject();
+
+			var enumerator = SUT.GetEnumeratorFast();
+			Assert.IsTrue(enumerator.MoveNext());
+
+			SUT[count - 1] = replacement;
+
+			var visited = 1;
+			while (enumerator.MoveNext())
+			{
+				visited++;
+			}
+
+			Assert.AreEqual(count, visited);
+			Assert.AreSame(replacement, SUT[count - 1]);
+		}
+
+		[TestMethod]
 		public void When_Enumerating_Fast_Then_No_Allocation()
 		{
 			var SUT = CreateCollection(CreateItems(2));
