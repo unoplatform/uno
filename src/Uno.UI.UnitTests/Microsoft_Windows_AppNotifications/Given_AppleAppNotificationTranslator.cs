@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Windows.AppNotifications;
 using Microsoft.Windows.AppNotifications.Builder;
@@ -147,14 +148,102 @@ public class Given_AppleAppNotificationTranslator
 	[TestMethod]
 	public void When_Scheduled_Toast_Is_Translated_Separate_Native_Namespace_Is_Used()
 	{
+		const string scheduleIdentifier = "0123456789abcdef0123456789abcdef";
 		const string payload = "<toast><visual><binding template='ToastGeneric'><text>Title</text></binding></visual></toast>";
 
-		var command = AppleAppNotificationTranslator.TranslateScheduled("schedule", payload, "tag", "group", false);
+		var command = AppleAppNotificationTranslator.TranslateScheduled(scheduleIdentifier, payload, "tag", "group", false);
 
-		Assert.AreEqual("uno.toastschedules.schedule", command.RequestIdentifier);
+		Assert.AreEqual("uno.toastschedules." + scheduleIdentifier, command.RequestIdentifier);
 		Assert.IsTrue(AppleAppNotificationTranslator.TryGetScheduleIdentifier(command.RequestIdentifier, out var identifier));
-		Assert.AreEqual("schedule", identifier);
+		Assert.AreEqual(scheduleIdentifier, identifier);
 		Assert.IsFalse(AppleAppNotificationTranslator.TryGetNotificationId(command.RequestIdentifier, out _));
+	}
+
+	[TestMethod]
+	public void When_Replacement_Post_Fails_Original_Request_Is_Not_Removed()
+	{
+		var command = AppleAppNotificationTranslator.Translate(CreateEnvelope(
+			17,
+			new AppNotificationBuilder().AddText("Original").BuildNotification()));
+		var nativeIdentifiers = new HashSet<string>(StringComparer.Ordinal) { command.RequestIdentifier };
+		AppleAppNotificationCommand? postingCommand = null;
+
+		var posted = AppleAppNotificationPosting.TryPost(
+			command,
+			staged => AppleAppNotificationTranslator.GetReplacedRequestIdentifiers(
+				staged,
+				nativeIdentifiers),
+			staged =>
+			{
+				postingCommand = staged;
+				return false;
+			},
+			identifiers =>
+			{
+				foreach (var identifier in identifiers)
+				{
+					nativeIdentifiers.Remove(identifier);
+				}
+			});
+
+		Assert.IsFalse(posted);
+		Assert.IsNotNull(postingCommand);
+		Assert.AreNotEqual(command.RequestIdentifier, postingCommand!.RequestIdentifier);
+		Assert.IsTrue(AppleAppNotificationTranslator.TryGetNotificationId(postingCommand.RequestIdentifier, out var id));
+		Assert.AreEqual((uint)17, id);
+		CollectionAssert.AreEqual(new[] { command.RequestIdentifier }, new List<string>(nativeIdentifiers));
+	}
+
+	[TestMethod]
+	public void When_Replacement_Post_Succeeds_Original_Request_Is_Removed_After_New_Request_Is_Added()
+	{
+		var command = AppleAppNotificationTranslator.Translate(CreateEnvelope(
+			17,
+			new AppNotificationBuilder().AddText("Original").BuildNotification()));
+		var nativeIdentifiers = new HashSet<string>(StringComparer.Ordinal) { command.RequestIdentifier };
+		AppleAppNotificationCommand? postingCommand = null;
+
+		var posted = AppleAppNotificationPosting.TryPost(
+			command,
+			staged => AppleAppNotificationTranslator.GetReplacedRequestIdentifiers(staged, nativeIdentifiers),
+			staged =>
+			{
+				postingCommand = staged;
+				nativeIdentifiers.Add(staged.RequestIdentifier);
+				return true;
+			},
+			identifiers =>
+			{
+				Assert.IsNotNull(postingCommand);
+				Assert.IsTrue(nativeIdentifiers.Contains(postingCommand!.RequestIdentifier));
+				foreach (var identifier in identifiers)
+				{
+					nativeIdentifiers.Remove(identifier);
+				}
+			});
+
+		Assert.IsTrue(posted);
+		CollectionAssert.AreEqual(new[] { postingCommand!.RequestIdentifier }, new List<string>(nativeIdentifiers));
+	}
+
+	[TestMethod]
+	public void When_Native_Request_Identifiers_Are_Unique_Immediate_And_Scheduled_Namespaces_Remain_Disjoint()
+	{
+		const string expectedScheduleIdentifier = "0123456789abcdef0123456789abcdef";
+		const string payload = "<toast><visual><binding template='ToastGeneric'><text>Title</text></binding></visual></toast>";
+		var immediate = AppleAppNotificationTranslator.PrepareForPosting(
+			AppleAppNotificationTranslator.Translate(CreateEnvelope(42, new AppNotification(payload))));
+		var scheduled = AppleAppNotificationTranslator.PrepareForPosting(
+			AppleAppNotificationTranslator.TranslateScheduled(expectedScheduleIdentifier, payload, string.Empty, string.Empty, false));
+
+		Assert.IsTrue(AppleAppNotificationTranslator.TryGetNotificationId(immediate.RequestIdentifier, out var id));
+		Assert.AreEqual((uint)42, id);
+		Assert.IsFalse(AppleAppNotificationTranslator.TryGetScheduleIdentifier(immediate.RequestIdentifier, out _));
+		Assert.IsTrue(AppleAppNotificationTranslator.TryGetScheduleIdentifier(scheduled.RequestIdentifier, out var scheduleIdentifier));
+		Assert.AreEqual(expectedScheduleIdentifier, scheduleIdentifier);
+		Assert.IsFalse(AppleAppNotificationTranslator.TryGetNotificationId(scheduled.RequestIdentifier, out _));
+		Assert.IsFalse(AppleAppNotificationTranslator.TryGetNotificationId("uno.appnotifications.42.invalid", out _));
+		Assert.IsFalse(AppleAppNotificationTranslator.TryGetScheduleIdentifier("uno.toastschedules.invalid.invalid", out _));
 	}
 
 	private static AppNotificationEnvelope CreateEnvelope(uint id, AppNotification notification)

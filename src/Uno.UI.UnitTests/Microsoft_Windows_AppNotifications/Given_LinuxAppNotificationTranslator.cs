@@ -39,6 +39,20 @@ public class Given_LinuxAppNotificationTranslator
 	}
 
 	[TestMethod]
+	[DataRow("ms-appx:///Assets/My%20Icon%23%25%E2%9C%93.png")]
+	[DataRow("file:///tmp/My%20Icon%23%25%E2%9C%93.png")]
+	public void When_Escaped_App_Logo_Uri_Is_Translated_Escaping_Is_Preserved(string source)
+	{
+		var notification = new AppNotificationBuilder()
+			.SetAppLogoOverride(new Uri(source))
+			.BuildNotification();
+
+		var command = LinuxAppNotificationTranslator.Translate(CreateEnvelope(1, notification), DateTimeOffset.UtcNow);
+
+		Assert.AreEqual(source, command.AppIcon);
+	}
+
+	[TestMethod]
 	public void When_Actions_Are_Translated_Stable_Keys_And_Arguments_Are_Preserved()
 	{
 		var notification = new AppNotificationBuilder()

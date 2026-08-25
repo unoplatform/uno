@@ -11,7 +11,7 @@ namespace Uno.UI.Tests.Microsoft_Windows_AppNotifications;
 [TestClass]
 public class Given_LegacyToastNotificationPayloadAdapter
 {
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow("ToastImageAndText01", 1, true, 2, "", "Text 1")]
 	[DataRow("ToastImageAndText02", 2, true, 2, "Text 1", "Text 2")]
 	[DataRow("ToastImageAndText03", 2, true, 2, "Text 1", "Text 2")]

@@ -3,6 +3,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Windows.AppNotifications;
 using Microsoft.Windows.AppNotifications.Internal;
@@ -147,6 +148,191 @@ public class Given_AppNotificationStateStore
 	}
 
 	[TestMethod]
+	public void When_Operation_Lease_Is_Live_Another_Owner_Cannot_Claim_It()
+	{
+		var pending = Record(1, "tag", AppNotificationPostingState.Posting) with
+		{
+			Revision = 7,
+			OperationOwner = "owner-a",
+			OperationLeaseExpirationUtc = Now.AddMinutes(1),
+		};
+		var store = new AppNotificationStateStore(new InMemoryAppNotificationStatePersistence(
+			new AppNotificationStateSnapshot(AppNotificationStateSnapshot.CurrentSchemaVersion, 2, new[] { pending })));
+
+		var liveClaim = store.TryClaimExpiredOperation(pending, "owner-b", Now.AddMinutes(2), Now, out _);
+		var expiredClaim = store.TryClaimExpiredOperation(pending, "owner-b", Now.AddMinutes(3), Now.AddMinutes(2), out var claimed);
+
+		Assert.IsFalse(liveClaim);
+		Assert.IsTrue(expiredClaim);
+		Assert.AreEqual("owner-b", claimed?.OperationOwner);
+		Assert.AreEqual(8L, claimed?.Revision);
+	}
+
+	[TestMethod]
+	public void When_Foreign_Posting_Lease_Is_Live_Show_Reservation_Does_Not_Mutate_It()
+	{
+		var pending = Record(1, "tag", AppNotificationPostingState.Posting) with
+		{
+			Group = "group",
+			Revision = 7,
+			OperationOwner = "owner-a",
+			OperationLeaseExpirationUtc = Now.AddMinutes(1),
+		};
+		var persistence = new InMemoryAppNotificationStatePersistence(
+			new AppNotificationStateSnapshot(AppNotificationStateSnapshot.CurrentSchemaVersion, 2, new[] { pending }));
+		var store = new AppNotificationStateStore(persistence);
+
+		var reservation = store.PrepareShow(
+			pending.Payload,
+			pending.Tag,
+			pending.Group,
+			pending.ExpirationUtc,
+			pending.ExpiresOnReboot,
+			pending.BootIdentifier,
+			pending.Priority,
+			pending.SuppressDisplay,
+			pending.Progress,
+			Now,
+			"owner-b",
+			Now.AddMinutes(1),
+			replaceTagAndGroup: true);
+
+		Assert.AreEqual(AppNotificationShowReservationKind.Busy, reservation.Kind);
+		Assert.AreEqual(pending, persistence.Load().Records.Single());
+	}
+
+	[TestMethod]
+	public void When_Foreign_Update_Lease_Is_Live_Progress_Update_Does_Not_Mutate_It()
+	{
+		var pending = Record(1, "tag", AppNotificationPostingState.Updating) with
+		{
+			Group = "group",
+			Progress = Snapshot(1, 0.1),
+			Revision = 7,
+			OperationOwner = "owner-a",
+			OperationLeaseExpirationUtc = Now.AddMinutes(1),
+		};
+		var persistence = new InMemoryAppNotificationStatePersistence(
+			new AppNotificationStateSnapshot(AppNotificationStateSnapshot.CurrentSchemaVersion, 2, new[] { pending }));
+		var store = new AppNotificationStateStore(persistence);
+
+		var result = store.BeginProgressUpdate(
+			"tag",
+			"group",
+			Snapshot(2, 0.2),
+			"owner-b",
+			Now.AddMinutes(1),
+			Now,
+			out var updates);
+
+		Assert.AreEqual(AppNotificationProgressResult.AppNotificationNotFound, result);
+		Assert.AreEqual(0, updates.Count);
+		Assert.AreEqual(pending, persistence.Load().Records.Single());
+	}
+
+	[TestMethod]
+	public void When_Foreign_Posting_Lease_Is_Live_Progress_Update_Does_Not_Mutate_Other_Matches()
+	{
+		var shown = Record(1, "tag", AppNotificationPostingState.Shown) with { Group = "group" };
+		var posting = Record(2, "tag", AppNotificationPostingState.Posting) with
+		{
+			Group = "group",
+			Revision = 7,
+			OperationOwner = "owner-a",
+			OperationLeaseExpirationUtc = Now.AddMinutes(1),
+		};
+		var persistence = new InMemoryAppNotificationStatePersistence(
+			new AppNotificationStateSnapshot(AppNotificationStateSnapshot.CurrentSchemaVersion, 3, new[] { shown, posting }));
+		var store = new AppNotificationStateStore(persistence);
+
+		var result = store.BeginProgressUpdate(
+			"tag",
+			"group",
+			Snapshot(2, 0.2),
+			"owner-b",
+			Now.AddMinutes(1),
+			Now,
+			out var updates);
+
+		Assert.AreEqual(AppNotificationProgressResult.AppNotificationNotFound, result);
+		Assert.AreEqual(0, updates.Count);
+		CollectionAssert.AreEqual(new[] { shown, posting }, persistence.Load().Records.ToArray());
+	}
+
+	[TestMethod]
+	public void When_Awaited_Record_Revision_Is_Stale_It_Cannot_Remove_A_Replacement()
+	{
+		var persistence = new InMemoryAppNotificationStatePersistence();
+		var store = new AppNotificationStateStore(persistence);
+		var original = PrepareShow(store, "tag", "group", string.Empty, "owner-a").Record!;
+		store.TryMarkShown(original);
+		var captured = new AppNotificationStateStore(persistence).GetShown().Single();
+		var replacement = PrepareShow(store, "tag", "group", string.Empty, "owner-b").Record!;
+
+		var removed = store.TryRemove(captured);
+
+		Assert.IsFalse(removed);
+		Assert.AreEqual(replacement.Revision, new AppNotificationStateStore(persistence).GetPendingUpdates().Single().Revision);
+	}
+
+	[TestMethod]
+	public async Task When_Delivery_Correlation_Is_Reserved_Concurrently_Only_One_Record_Is_Created()
+	{
+		const string correlation = "0123456789abcdef0123456789abcdef";
+		var persistence = new InMemoryAppNotificationStatePersistence();
+		var first = new AppNotificationStateStore(persistence);
+		var second = new AppNotificationStateStore(persistence);
+
+		var reservations = await Task.WhenAll(
+			Task.Run(() => PrepareShow(first, "first", string.Empty, correlation, "owner-a")),
+			Task.Run(() => PrepareShow(second, "second", string.Empty, correlation, "owner-b")));
+
+		CollectionAssert.AreEquivalent(
+			new[] { AppNotificationShowReservationKind.New, AppNotificationShowReservationKind.Busy },
+			reservations.Select(reservation => reservation.Kind).ToArray());
+		Assert.AreEqual(1, persistence.Load().Records.Count);
+	}
+
+	[TestMethod]
+	public void When_Tag_And_Group_Are_Replaced_Reservation_Is_Atomic_And_Reuses_The_Id()
+	{
+		var persistence = new InMemoryAppNotificationStatePersistence();
+		var first = new AppNotificationStateStore(persistence);
+		var second = new AppNotificationStateStore(persistence);
+		var original = PrepareShow(first, "tag", "group", string.Empty, "owner-a").Record!;
+		first.TryMarkShown(original);
+
+		var replacement = PrepareShow(second, "tag", "group", string.Empty, "owner-b");
+
+		Assert.AreEqual(AppNotificationShowReservationKind.Replacement, replacement.Kind);
+		Assert.AreEqual(original.Id, replacement.Record?.Id);
+		Assert.AreEqual(1, persistence.Load().Records.Count);
+	}
+
+	[TestMethod]
+	public void When_Duplicate_Tag_And_Group_Records_Are_Replaced_They_Are_Atomically_Reserved_For_Removal()
+	{
+		var first = Record(1, "tag", AppNotificationPostingState.Shown) with { Group = "group" };
+		var second = Record(2, "tag", AppNotificationPostingState.Shown) with { Group = "group" };
+		var persistence = new InMemoryAppNotificationStatePersistence(new AppNotificationStateSnapshot(
+			AppNotificationStateSnapshot.CurrentSchemaVersion,
+			3,
+			new[] { first, second }));
+		var store = new AppNotificationStateStore(persistence);
+
+		var reservation = PrepareShow(store, "tag", "group", string.Empty, "owner");
+
+		Assert.AreEqual(AppNotificationShowReservationKind.Replacement, reservation.Kind);
+		Assert.AreEqual(1, reservation.DuplicateRecords.Count);
+		Assert.AreEqual(AppNotificationPostingState.Removing, reservation.DuplicateRecords[0].Removal.PostingState);
+		CollectionAssert.AreEquivalent(
+			new[] { AppNotificationPostingState.Updating, AppNotificationPostingState.Removing },
+			persistence.Load().Records.Select(record => record.PostingState).ToArray());
+		Assert.IsTrue(store.TryResolveFailedShow(reservation.Record!, reservation.PreviousRecord, reservation.DuplicateRecords));
+		Assert.IsTrue(persistence.Load().Records.All(record => record.PostingState == AppNotificationPostingState.Shown));
+	}
+
+	[TestMethod]
 	public void When_File_State_Is_Saved_It_RoundTrips_All_Fields()
 	{
 		var folder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
@@ -163,6 +349,9 @@ public class Given_AppNotificationStateStore
 				Priority = AppNotificationPriority.High,
 				SuppressDisplay = true,
 				Progress = Snapshot(3, 0.75),
+				Revision = 9,
+				OperationOwner = "owner",
+				OperationLeaseExpirationUtc = Now.AddMinutes(1),
 			};
 			persistence.Save(new AppNotificationStateSnapshot(AppNotificationStateSnapshot.CurrentSchemaVersion, 43, new[] { record }));
 
@@ -196,6 +385,14 @@ public class Given_AppNotificationStateStore
 		{
 			File.Delete(path);
 		}
+	}
+
+	[TestMethod]
+	public void When_Persisted_State_Has_No_Records_It_Is_Rejected_As_Corrupt()
+	{
+		var state = new AppNotificationStateSnapshot(AppNotificationStateSnapshot.CurrentSchemaVersion, 1, null!);
+
+		Assert.ThrowsExactly<InvalidDataException>(() => FileAppNotificationStatePersistence.ValidateSnapshot(state));
 	}
 
 	[TestMethod]
@@ -328,6 +525,18 @@ public class Given_AppNotificationStateStore
 	}
 
 	[TestMethod]
+	public void When_Delivery_Receipts_Are_At_Capacity_Expired_Receipts_Are_Removed_Before_New_Ones_Are_Added()
+	{
+		var changes = AppNotificationDeliveryReceiptRetention.CreatePlan(
+			new[] { "oldest", "middle", "newest" },
+			new[] { "middle", "newest", "new" },
+			maximumCount: 3);
+
+		CollectionAssert.AreEqual(new[] { "oldest" }, changes.Removed.ToArray());
+		CollectionAssert.AreEqual(new[] { "new" }, changes.Added.ToArray());
+	}
+
+	[TestMethod]
 	public void When_State_Contains_Duplicate_Ids_Save_Is_Rejected()
 	{
 		var path = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"), "state.bin");
@@ -402,6 +611,28 @@ public class Given_AppNotificationStateStore
 			suppressDisplay: false,
 			progress: null,
 			Now);
+
+	private static AppNotificationShowReservation PrepareShow(
+		AppNotificationStateStore store,
+		string tag,
+		string group,
+		string deliveryCorrelation,
+		string owner)
+		=> store.PrepareShow(
+			"<toast><visual><binding template='ToastGeneric'><text>Title</text></binding></visual></toast>",
+			tag,
+			group,
+			DateTimeOffset.FromFileTime(0),
+			false,
+			null,
+			AppNotificationPriority.Default,
+			false,
+			null,
+			Now,
+			owner,
+			Now.AddMinutes(1),
+			replaceTagAndGroup: true,
+			deliveryCorrelation: deliveryCorrelation);
 
 	private static AppNotificationStateRecord Record(uint id, string tag, AppNotificationPostingState state)
 		=> new(

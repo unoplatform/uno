@@ -60,6 +60,29 @@ public class Given_AppNotificationBuilder
 	}
 
 	[TestMethod]
+	public void When_Asset_Uri_Is_Escaped_The_Escaping_Is_Preserved()
+	{
+		var notification = new AppNotificationBuilder()
+			.SetInlineImage(new Uri("ms-appx:///Assets/My%20Image.png"))
+			.AddButton(new AppNotificationButton("Open").SetIcon(new Uri("ms-appx:///Assets/My%20Icon.png")))
+			.BuildNotification();
+
+		StringAssert.Contains(notification.Payload, "ms-appx:///Assets/My%20Image.png");
+		StringAssert.Contains(notification.Payload, "ms-appx:///Assets/My%20Icon.png");
+	}
+
+	[TestMethod]
+	public void When_Asset_Or_Protocol_Uri_Is_Relative_It_Is_Rejected()
+	{
+		var relative = new Uri("Assets/image.png", UriKind.Relative);
+
+		Assert.ThrowsExactly<ArgumentException>(() => new AppNotificationBuilder().SetInlineImage(relative));
+		Assert.ThrowsExactly<ArgumentException>(() => new AppNotificationBuilder().SetAudioUri(relative));
+		Assert.ThrowsExactly<ArgumentException>(() => new AppNotificationButton().SetIcon(relative));
+		Assert.ThrowsExactly<ArgumentException>(() => new AppNotificationButton().SetInvokeUri(relative));
+	}
+
+	[TestMethod]
 	public void When_Audio_And_Actions_Are_Added_Payload_Matches_Windows_App_Sdk()
 	{
 		var notification = new AppNotificationBuilder()

@@ -179,7 +179,124 @@ public class Given_ScheduledToastNotification
 			ToastNotificationSchedulerRuntime.Deliver(scheduled.ScheduleIdentifier, new AppNotificationManager(appBackend)));
 
 		Assert.AreEqual(2, schedulerBackend.Scheduled.Count);
-		Assert.AreEqual(scheduled.ScheduleIdentifier, scheduler.BeginDelivery(scheduled.ScheduleIdentifier)?.ScheduleIdentifier);
+		Assert.AreEqual(
+			scheduled.ScheduleIdentifier,
+			scheduler.BeginDelivery(scheduled.ScheduleIdentifier)?.Record.ScheduleIdentifier);
+	}
+
+	[TestMethod]
+	public void When_Scheduled_Posting_Is_Disabled_Delivery_Is_Retained_For_Retry()
+	{
+		var schedulerBackend = new TestSchedulerBackend();
+		var scheduler = new ToastNotificationScheduler(
+			new ToastNotificationScheduleStore(new InMemoryToastNotificationSchedulePersistence()),
+			schedulerBackend);
+		ToastNotificationSchedulerRuntime.SetSchedulerForTests(scheduler);
+		var scheduled = new ScheduledToastNotification(CreateContent(), DateTimeOffset.UtcNow.AddMinutes(1));
+		scheduler.Add(ToastNotificationSchedulerRuntime.ToRecord(scheduled), DateTimeOffset.UtcNow);
+		var appBackend = new TestAppNotificationBackend { Setting = AppNotificationSetting.DisabledForUser };
+
+		ToastNotificationSchedulerRuntime.Deliver(scheduled.ScheduleIdentifier, new AppNotificationManager(appBackend));
+
+		Assert.AreEqual(0, appBackend.Shown.Count);
+		Assert.AreEqual(2, schedulerBackend.Scheduled.Count);
+		Assert.AreEqual(1, scheduler.GetAll().Count);
+		Assert.IsTrue(schedulerBackend.ScheduledRecords[^1].DeliveryTimeUtc > schedulerBackend.ScheduledRecords[0].DeliveryTimeUtc);
+	}
+
+	[TestMethod]
+	public void When_Scheduled_Backend_Declines_Post_Delivery_Is_Retained_For_Retry()
+	{
+		var schedulerBackend = new TestSchedulerBackend();
+		var scheduler = new ToastNotificationScheduler(
+			new ToastNotificationScheduleStore(new InMemoryToastNotificationSchedulePersistence()),
+			schedulerBackend);
+		ToastNotificationSchedulerRuntime.SetSchedulerForTests(scheduler);
+		var scheduled = new ScheduledToastNotification(CreateContent(), DateTimeOffset.UtcNow.AddMinutes(1));
+		scheduler.Add(ToastNotificationSchedulerRuntime.ToRecord(scheduled), DateTimeOffset.UtcNow);
+		var appBackend = new TestAppNotificationBackend { TryShowResult = false };
+
+		ToastNotificationSchedulerRuntime.Deliver(scheduled.ScheduleIdentifier, new AppNotificationManager(appBackend));
+
+		Assert.AreEqual(0, appBackend.Shown.Count);
+		Assert.AreEqual(2, schedulerBackend.Scheduled.Count);
+		Assert.AreEqual(1, scheduler.GetAll().Count);
+	}
+
+	[TestMethod]
+	public void When_Foreign_Post_With_Same_Correlation_Is_Pending_Schedule_Is_Not_Completed()
+	{
+		var schedulerBackend = new TestSchedulerBackend();
+		var scheduler = new ToastNotificationScheduler(
+			new ToastNotificationScheduleStore(new InMemoryToastNotificationSchedulePersistence()),
+			schedulerBackend);
+		ToastNotificationSchedulerRuntime.SetSchedulerForTests(scheduler);
+		var scheduled = new ScheduledToastNotification(CreateContent(), DateTimeOffset.UtcNow.AddMinutes(1));
+		var record = ToastNotificationSchedulerRuntime.ToRecord(scheduled);
+		scheduler.Add(record, DateTimeOffset.UtcNow);
+		var now = DateTimeOffset.UtcNow;
+		var pending = new AppNotificationStateRecord(
+			1,
+			record.Payload,
+			record.Tag,
+			record.Group,
+			now,
+			DateTimeOffset.MaxValue,
+			false,
+			null,
+			AppNotificationPriority.Default,
+			record.SuppressPopup,
+			AppNotificationPostingState.Posting,
+			null,
+			record.ScheduleIdentifier,
+			1,
+			"foreign-process",
+			now.AddMinutes(5));
+		var appPersistence = new InMemoryAppNotificationStatePersistence(new AppNotificationStateSnapshot(
+			AppNotificationStateSnapshot.CurrentSchemaVersion,
+			2,
+			new[] { pending },
+			Array.Empty<string>()));
+		var appBackend = new TestAppNotificationBackend();
+
+		ToastNotificationSchedulerRuntime.Deliver(
+			record.ScheduleIdentifier,
+			new AppNotificationManager(appBackend, appPersistence));
+
+		Assert.AreEqual(0, appBackend.Shown.Count);
+		Assert.AreEqual(1, scheduler.GetAll().Count);
+		Assert.AreEqual(2, schedulerBackend.Scheduled.Count);
+	}
+
+	[TestMethod]
+	public void When_Durable_Completion_Fails_Delivery_Is_Unwedged_And_Retry_Is_Idempotent()
+	{
+		var schedulePersistence = new FailOnSaveToastNotificationSchedulePersistence { FailOnSaveCall = 4 };
+		var schedulerBackend = new TestSchedulerBackend();
+		var scheduler = new ToastNotificationScheduler(
+			new ToastNotificationScheduleStore(schedulePersistence),
+			schedulerBackend);
+		ToastNotificationSchedulerRuntime.SetSchedulerForTests(scheduler);
+		var scheduled = new ScheduledToastNotification(CreateContent(), DateTimeOffset.UtcNow.AddMinutes(1));
+		scheduler.Add(ToastNotificationSchedulerRuntime.ToRecord(scheduled), DateTimeOffset.UtcNow);
+		var appPersistence = new InMemoryAppNotificationStatePersistence();
+		var appBackend = new TestAppNotificationBackend();
+
+		Assert.ThrowsExactly<InvalidOperationException>(() =>
+			ToastNotificationSchedulerRuntime.Deliver(
+				scheduled.ScheduleIdentifier,
+				new AppNotificationManager(appBackend, appPersistence)));
+
+		Assert.AreEqual(1, appBackend.Shown.Count);
+		Assert.AreEqual(2, schedulerBackend.Scheduled.Count);
+		Assert.AreEqual(1, scheduler.GetAll().Count);
+
+		ToastNotificationSchedulerRuntime.Deliver(
+			scheduled.ScheduleIdentifier,
+			new AppNotificationManager(appBackend, appPersistence));
+
+		Assert.AreEqual(1, appBackend.Shown.Count);
+		Assert.AreEqual(0, scheduler.GetAll().Count);
 	}
 
 	[TestMethod]
@@ -221,9 +338,12 @@ public class Given_ScheduledToastNotification
 	{
 		public List<string> Scheduled { get; } = new();
 
+		public List<ToastNotificationScheduleRecord> ScheduledRecords { get; } = new();
+
 		public void Schedule(ToastNotificationScheduleRecord record)
 		{
 			Scheduled.Add(record.ScheduleIdentifier);
+			ScheduledRecords.Add(record);
 		}
 
 		public void Cancel(string scheduleIdentifier)
@@ -235,13 +355,15 @@ public class Given_ScheduledToastNotification
 	{
 		public bool IsSupported => true;
 
-		public AppNotificationSetting Setting => AppNotificationSetting.Enabled;
+		public AppNotificationSetting Setting { get; set; } = AppNotificationSetting.Enabled;
 
 		public string? BootIdentifier => "boot";
 
 		public List<AppNotificationEnvelope> Shown { get; } = new();
 
 		public Exception? ShowException { get; set; }
+
+		public bool TryShowResult { get; set; } = true;
 
 		public void Register()
 		{
@@ -265,6 +387,10 @@ public class Given_ScheduledToastNotification
 			{
 				throw ShowException;
 			}
+			if (!TryShowResult)
+			{
+				return false;
+			}
 			Shown.Add(notification);
 			return true;
 		}
@@ -280,5 +406,25 @@ public class Given_ScheduledToastNotification
 		}
 
 		public IReadOnlyCollection<uint>? GetActiveNotificationIds() => null;
+	}
+
+	private sealed class FailOnSaveToastNotificationSchedulePersistence : IToastNotificationSchedulePersistence
+	{
+		private readonly InMemoryToastNotificationSchedulePersistence _inner = new();
+		private int _saveCount;
+
+		public int FailOnSaveCall { get; set; }
+
+		public ToastNotificationScheduleSnapshot Load() => _inner.Load();
+
+		public void Save(ToastNotificationScheduleSnapshot state)
+		{
+			_saveCount++;
+			if (_saveCount == FailOnSaveCall)
+			{
+				throw new InvalidOperationException("persistence failed");
+			}
+			_inner.Save(state);
+		}
 	}
 }

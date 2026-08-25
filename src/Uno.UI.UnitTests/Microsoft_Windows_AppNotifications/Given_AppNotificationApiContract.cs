@@ -212,10 +212,14 @@ public class Given_AppNotificationApiContract
 	public void When_AppNotifications_Contract_Is_Queried_Stable_Implemented_Versions_Are_Reported()
 	{
 		const string contractName = "Microsoft.Windows.AppNotifications.AppNotificationsContract";
+		const string builderContractName = "Microsoft.Windows.AppNotifications.Builder.AppNotificationBuilderContract";
 
 		Assert.IsTrue(ApiInformation.IsApiContractPresent(contractName, 1));
 		Assert.IsTrue(ApiInformation.IsApiContractPresent(contractName, 3));
 		Assert.IsFalse(ApiInformation.IsApiContractPresent(contractName, 4));
+		Assert.IsTrue(ApiInformation.IsApiContractPresent(builderContractName, 1));
+		Assert.IsTrue(ApiInformation.IsApiContractPresent(builderContractName, 2));
+		Assert.IsFalse(ApiInformation.IsApiContractPresent(builderContractName, 3));
 	}
 
 	[TestMethod]
@@ -226,6 +230,19 @@ public class Given_AppNotificationApiContract
 		AssertContractVersion(typeof(AppNotification), 1);
 		AssertContractVersion(typeof(AppNotificationProgressData), 1);
 		AssertContractVersion(typeof(AppNotificationActivatedEventArgs).GetProperty(nameof(AppNotificationActivatedEventArgs.Arguments))!, 3);
+		AssertContractVersion(typeof(AppNotificationBuilderContract), 2);
+		Assert.IsTrue(typeof(AppNotificationBuilderContract).IsDefined(typeof(ApiContractAttribute)));
+		AssertContractVersion(typeof(AppNotificationBuilder), 1);
+		AssertContractVersion(typeof(AppNotificationButton), 1);
+		AssertContractVersion(typeof(AppNotificationComboBox), 1);
+		AssertContractVersion(typeof(AppNotificationProgressBar), 1);
+		AssertContractVersion(typeof(AppNotificationTextProperties), 1);
+		AssertContractVersion(typeof(AppNotificationAudioLooping), 1);
+		AssertContractVersion(typeof(AppNotificationButtonStyle), 1);
+		AssertContractVersion(typeof(AppNotificationDuration), 1);
+		AssertContractVersion(typeof(AppNotificationImageCrop), 1);
+		AssertContractVersion(typeof(AppNotificationScenario), 1);
+		AssertContractVersion(typeof(AppNotificationSoundEvent), 1);
 
 		var overloads = typeof(AppNotificationManager)
 			.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
@@ -234,6 +251,16 @@ public class Given_AppNotificationApiContract
 			.Select(attribute => (string)attribute.ConstructorArguments.Single().Value!)
 			.ToArray();
 		CollectionAssert.AreEquivalent(new[] { "UpdateAsync", "UpdateAsync2" }, overloads);
+
+		AssertOverloads<AppNotificationBuilder>(nameof(AppNotificationBuilder.AddText), "AddText", "AddText2");
+		AssertOverloads<AppNotificationBuilder>(nameof(AppNotificationBuilder.SetAttributionText), "SetAttributionText", "SetAttributionText2");
+		AssertOverloads<AppNotificationBuilder>(nameof(AppNotificationBuilder.SetInlineImage), "SetInlineImage", "SetInlineImage2", "SetInlineImage3");
+		AssertOverloads<AppNotificationBuilder>(nameof(AppNotificationBuilder.SetAppLogoOverride), "SetAppLogoOverride", "SetAppLogoOverride2", "SetAppLogoOverride3");
+		AssertOverloads<AppNotificationBuilder>(nameof(AppNotificationBuilder.SetHeroImage), "SetHeroImage", "SetHeroImage2");
+		AssertOverloads<AppNotificationBuilder>(nameof(AppNotificationBuilder.SetAudioUri), "SetAudioUri", "SetAudioUri2");
+		AssertOverloads<AppNotificationBuilder>(nameof(AppNotificationBuilder.SetAudioEvent), "SetAudioEvent", "SetAudioEvent2");
+		AssertOverloads<AppNotificationBuilder>(nameof(AppNotificationBuilder.AddTextBox), "AddTextBox", "AddTextBox2");
+		AssertOverloads<AppNotificationButton>(nameof(AppNotificationButton.SetInvokeUri), "SetInvokeUri", "SetInvokeUri2");
 	}
 
 	private static void AssertSurface<T>(string expectedSurface)
@@ -274,6 +301,17 @@ public class Given_AppNotificationApiContract
 		var attribute = member.CustomAttributes.Single(attribute => attribute.AttributeType == typeof(ContractVersionAttribute));
 		var encodedVersion = (uint)attribute.ConstructorArguments[^1].Value!;
 		Assert.AreEqual(expectedMajorVersion, encodedVersion >> 16);
+	}
+
+	private static void AssertOverloads<T>(string methodName, params string[] expected)
+	{
+		var actual = typeof(T)
+			.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+			.Where(method => method.Name == methodName)
+			.Select(method => method.CustomAttributes.Single(attribute => attribute.AttributeType == typeof(OverloadAttribute)))
+			.Select(attribute => (string)attribute.ConstructorArguments.Single().Value!)
+			.ToArray();
+		CollectionAssert.AreEquivalent(expected, actual);
 	}
 
 	private static string FormatParameters(IEnumerable<ParameterInfo> parameters)

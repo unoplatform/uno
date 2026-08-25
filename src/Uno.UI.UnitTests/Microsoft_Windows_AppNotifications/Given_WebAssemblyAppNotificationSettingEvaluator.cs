@@ -20,9 +20,9 @@ public class Given_WebAssemblyAppNotificationSettingEvaluator
 	public void When_Api_Is_Missing_Notifications_Are_Unsupported()
 		=> Assert.IsFalse(WebAssemblyAppNotificationSettingEvaluator.IsSupported(true, false));
 
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow("granted", AppNotificationSetting.Enabled)]
-	[DataRow("denied", AppNotificationSetting.DisabledForUser)]
+	[DataRow("denied", AppNotificationSetting.DisabledForApplication)]
 	[DataRow("default", AppNotificationSetting.DisabledForApplication)]
 	[DataRow("unknown", AppNotificationSetting.DisabledForApplication)]
 	public void When_Permission_Is_Evaluated_Setting_Is_Mapped(string permission, AppNotificationSetting expected)
