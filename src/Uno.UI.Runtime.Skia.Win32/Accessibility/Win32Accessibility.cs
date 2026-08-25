@@ -1443,6 +1443,11 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		_pendingStructureChanges.Clear();
 		_pendingAddedProviders.Clear();
 		_disconnectedProviders.Clear();
+
+		// The providers are gone, but UIA still keeps this hwnd in its bridge map. WinUI clears it
+		// from CUIAWindow::Deinit via FlushUiaBridgeEventTable; without it UIA can hand stale
+		// entries to clients after the window is destroyed.
+		Win32UIAutomationInterop.FlushUiaBridgeEventTable(_hwnd);
 	}
 
 	// ──────────────────────────────────────────────────────────────

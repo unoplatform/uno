@@ -397,11 +397,50 @@ internal static class Win32UIAutomationInterop
 		[MarshalAs(UnmanagedType.SafeArray, SafeArraySubType = VarEnum.VT_BSTR)] string[]? changedData);
 
 	[DllImport("uiautomationcore.dll")]
+	private static extern int UiaGetReservedNotSupportedValue(
+		[MarshalAs(UnmanagedType.IUnknown)] out object notSupportedValue);
+
+	private static object? _reservedNotSupportedValue;
+
+	/// <summary>
+	/// Returns the process-wide UIA "not supported" sentinel, or <c>null</c> when it cannot be
+	/// obtained. Providers must return this value — never <c>VT_EMPTY</c>/<c>null</c> — for text
+	/// attributes they do not implement, so clients can tell "unsupported" apart from "no value".
+	/// WinUI does the same translation in <c>CUIATextRangeProviderWrapper::GetAttributeValue</c>.
+	/// </summary>
+	internal static object? GetReservedNotSupportedValue()
+	{
+		if (_reservedNotSupportedValue is { } cached)
+		{
+			return cached;
+		}
+
+		// The sentinel is a process-wide singleton, so a benign race just re-fetches the same object.
+		var hResult = UiaGetReservedNotSupportedValue(out var value);
+		if (hResult < 0)
+		{
+			if (typeof(Win32UIAutomationInterop).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(Win32UIAutomationInterop).Log().Warn(
+					$"[UIA] UiaGetReservedNotSupportedValue failed with HRESULT 0x{hResult:X8}.");
+			}
+
+			return null;
+		}
+
+		_reservedNotSupportedValue = value;
+		return value;
+	}
+
+	[DllImport("uiautomationcore.dll")]
 	private static extern int UiaDisconnectProvider(
 		[MarshalAs(UnmanagedType.Interface)] IRawElementProviderSimple provider);
 
 	/// <summary>
 	/// Handles WM_GETOBJECT by returning the root UIA provider to the automation framework.
+	/// Every object id is forwarded — matching WinUI's <c>CJupiterControl::HandleGetObjectMessage</c>,
+	/// which passes wParam/lParam straight through — so the UIA-to-MSAA bridge can also serve
+	/// legacy <c>OBJID_CLIENT</c> clients instead of falling back to <c>DefWindowProc</c>.
 	/// </summary>
 	internal static LRESULT HandleGetObject(HWND hwnd, WPARAM wParam, LPARAM lParam, Win32RawElementProvider? rootProvider)
 	{
@@ -425,5 +464,20 @@ internal static class Win32UIAutomationInterop
 		}
 
 		return new LRESULT(result);
+	}
+
+	/// <summary>
+	/// Tells UIA that it can drop every map entry referring to <paramref name="hwnd"/>, which is
+	/// required once a window that previously returned providers goes away. Mirrors WinUI's
+	/// <c>CUIAWindow::FlushUiaBridgeEventTable</c>.
+	/// </summary>
+	internal static void FlushUiaBridgeEventTable(nint hwnd)
+	{
+		if (hwnd == 0)
+		{
+			return;
+		}
+
+		UiaReturnRawElementProvider(hwnd, 0, 0, null);
 	}
 }
