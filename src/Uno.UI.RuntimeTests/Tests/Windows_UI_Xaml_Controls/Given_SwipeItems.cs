@@ -1,6 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
-
+#if HAS_UNO
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,17 +7,16 @@ using System.Reflection;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation.Collections;
 
-namespace Uno.UI.RuntimeTests.MUX.Windows_UI_Xaml_Controls.SwipeControl;
+namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
+// First/GetMany/ReplaceAll are absent from the WinUI C# projection, so the whole fixture is Uno-only.
 [TestClass]
 public class Given_SwipeItems
 {
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23882")]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_CompatibilityVectorMethodsAreHidden()
 	{
-#if HAS_UNO
 		var publicMethods = typeof(SwipeItems).GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
 
 		foreach (var methodName in new[] { "First", "GetMany", "ReplaceAll" })
@@ -28,16 +25,13 @@ public class Given_SwipeItems
 			Assert.IsNotNull(method.GetCustomAttribute<ObsoleteAttribute>());
 			Assert.AreEqual(EditorBrowsableState.Never, method.GetCustomAttribute<EditorBrowsableAttribute>()?.State);
 		}
-#endif
 	}
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23882")]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_CompatibilityVectorMethodsWork()
 	{
-#if HAS_UNO
 		var items = new SwipeItems();
 		var first = new SwipeItem();
 		var second = new SwipeItem();
@@ -79,16 +73,13 @@ public class Given_SwipeItems
 		Assert.AreSame(items, list);
 		Assert.AreEqual(1, items.Count);
 		Assert.AreSame(second, list[0]);
-#endif
 	}
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23882")]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_ReplaceAllValidationFails_Then_ItemsAreUnchanged()
 	{
-#if HAS_UNO
 		var items = new SwipeItems { Mode = SwipeMode.Execute };
 		var original = new SwipeItem();
 		items.Add(original);
@@ -107,16 +98,13 @@ public class Given_SwipeItems
 		Assert.IsTrue(enumerator.MoveNext());
 		Assert.AreSame(original, enumerator.Current);
 		Assert.IsFalse(enumerator.MoveNext());
-#endif
 	}
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23882")]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_ReplaceAll_Then_OutstandingEnumeratorIsInvalidated()
 	{
-#if HAS_UNO
 		var removedFirst = new SwipeItem();
 		var removedSecond = new SwipeItem();
 		var replacement = new SwipeItem();
@@ -131,16 +119,13 @@ public class Given_SwipeItems
 
 		Assert.ThrowsExactly<InvalidOperationException>(() => enumerator.MoveNext());
 		CollectionAssert.AreEqual(new[] { replacement }, items.ToArray());
-#endif
 	}
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23882")]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_ReplaceAllWithEmptyArray_Then_EnumeratorIsInvalidatedAndResetRaised()
 	{
-#if HAS_UNO
 		var items = new SwipeItems { new SwipeItem() };
 		var enumerator = items.GetEnumerator();
 		Assert.IsTrue(enumerator.MoveNext());
@@ -160,16 +145,13 @@ public class Given_SwipeItems
 		Assert.AreEqual(1, changeCount);
 		Assert.AreEqual(CollectionChange.Reset, changedArgs.CollectionChange);
 		Assert.AreEqual(0, items.Count);
-#endif
 	}
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23882")]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_RemoveRaisesVectorChanged()
 	{
-#if HAS_UNO
 		var items = new SwipeItems();
 		var item = new SwipeItem();
 		var changeCount = 0;
@@ -180,6 +162,6 @@ public class Given_SwipeItems
 		Assert.IsTrue(items.Remove(item));
 		Assert.AreEqual(1, changeCount);
 		Assert.AreEqual(0, items.Count);
-#endif
 	}
 }
+#endif
