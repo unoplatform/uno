@@ -36,6 +36,14 @@ internal readonly partial struct UnicodeText : IParsedText
 	private const int UBIDI_RTL = 1;
 	private const string HorizontalEllipsis = "\u2026";
 
+	// Fallbacks for fonts that don't publish underline/strikeout metrics, as a fraction of the em
+	// size so they track the font size. They approximate what real fonts publish (measured on
+	// Segoe UI/Arial/Times New Roman/Consolas: ~0.05 em thickness, ~0.1 em under and ~0.25 em over
+	// the baseline). Positions are the top edge of the line, positive downwards.
+	private const float FallbackDecorationThicknessRatio = 1f / 20f;
+	private const float FallbackUnderlinePositionRatio = 1f / 10f;
+	private const float FallbackStrikethroughPositionRatio = -1f / 4f;
+
 	internal interface IFontCacheUpdateListener
 	{
 		void Invalidate();
@@ -98,7 +106,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private static readonly SKPaint _spareSelectionPaint = new() { IsStroke = false, IsAntialias = true };
 	private static readonly SKPaint _spareSpellCheckPaint = new() { Color = SKColors.Red, Style = SKPaintStyle.Stroke, IsAntialias = true };
 	private static readonly SKPaint _spareCompositionUnderlinePaint = new() { Style = SKPaintStyle.Stroke, StrokeWidth = 1, IsAntialias = true };
-	private static readonly SKPaint _spareTextDecorationPaint = new() { Style = SKPaintStyle.Stroke, IsAntialias = true };
+	private static readonly SKPaint _spareTextDecorationPaint = new() { IsStroke = false, IsAntialias = true };
 	private static readonly Dictionary<int, HashSet<IFontCacheUpdateListener>> _codepointToListeners = new();
 	private static readonly Dictionary<string, HashSet<IFontCacheUpdateListener>> _fontFamilyToListeners = new();
 	private readonly string _text;
@@ -114,7 +122,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly List<LinkedListNode<Cluster>> _clustersInLogicalOrder;
 	private readonly LinkedList<Glyph> _glyphs;
 	private readonly List<(int end, FlowDirection direction)> _bidiBreaks;
-	private readonly List<(int end, Brush? foreground, FlowDirection direction, global::Windows.UI.Text.TextDecorations decorations)> _runBreaks;
+	private readonly List<(int end, Brush? foreground, FlowDirection direction, TextDecorations decorations)> _runBreaks;
 	private readonly List<(int correctionStart, int correctionEnd)?>? _corrections;
 	private readonly Size _availableSize;
 
@@ -138,7 +146,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		var stringBuilder = new StringBuilder();
 		_hyperlinkRanges = new List<(int start, int end, Hyperlink hyperlink)>();
-		_runBreaks = new List<(int end, Brush? foreground, FlowDirection direction, global::Windows.UI.Text.TextDecorations decorations)>();
+		_runBreaks = new List<(int end, Brush? foreground, FlowDirection direction, TextDecorations decorations)>();
 		var scriptBreaks = new List<int>();
 		var fontBreaks = new List<(int end, FontDetails fontDetails)>();
 		var lineOpportunityBreaks = new List<int>();
@@ -766,7 +774,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	private static List<(int start, int end, FontDetails fontDetails, FlowDirection direction)> EnumerateShapingRuns(
-		List<(int end, Brush? foreground, FlowDirection direction, global::Windows.UI.Text.TextDecorations decorations)> runBreaks,
+		List<(int end, Brush? foreground, FlowDirection direction, TextDecorations decorations)> runBreaks,
 		List<int> scriptBreaks,
 		List<(int end, FlowDirection direction)> bidiBreaks,
 		List<(int end, FontDetails fontDetails)> fontBreaks)
@@ -853,7 +861,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		Dictionary<SKColor, Dictionary<SKFont, (List<ushort> glyphs, List<SKPoint> positions)>> _colorToFontToGlyphs = new();
 		List<(SKPath path, float strokeThickness)> spellCheckUnderlines = new();
 		List<(float x1, float x2, float y, SKColor color)> compositionUnderlines = new();
-		List<(float x1, float x2, float y, float thickness, SKColor color)> textDecorationLines = new();
+		List<(float x1, float x2, float top, float thickness, SKColor color)> textDecorationLines = new();
 
 		SKRect? caretRect = default;
 
@@ -1026,12 +1034,14 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 
 			var runDecorations = _runBreaks[runBreakIndex].decorations;
-			if (runDecorations != global::Windows.UI.Text.TextDecorations.None)
+			if (runDecorations != TextDecorations.None)
 			{
-				// TextDecorations (Underline/Strikethrough): the line position and thickness come from the
-				// font metrics and the color follows the run's foreground, matching WinUI's DWrite text renderer
-				// (DWriteTextRenderer::DrawUnderline / DrawStrikethrough draw at baseline + offset with the
-				// foreground brush). Drawn per cluster so the line stays continuous across the run.
+				// Underline/strikethrough are filled rects whose top edge sits at baseline + the font's
+				// decoration position and whose height is the font's decoration thickness, matching
+				// DWriteTextRenderer::DrawUnderline/DrawStrikethrough, which offset the baseline by
+				// DWRITE_UNDERLINE.offset and hand D2DTextDrawingContext::DrawLine a { 0, 0, width,
+				// thickness } rect. SKFontMetrics reports the same top-edge offsets (-post.underlinePosition
+				// and -OS/2.yStrikeoutPosition scaled to the em size), so they are used as-is.
 
 				// WinUI/DWrite do not decorate collapsed line-trailing whitespace, so clamp the line to the
 				// visible content extent (widthWithoutTrailingSpaces, the same width the alignment uses).
@@ -1054,22 +1064,36 @@ internal readonly partial struct UnicodeText : IParsedText
 				if (decorationRightX > decorationLeftX)
 				{
 					var decorationBaseline = y + line.baselineOffset;
-					var decorationColor = BrushToColor(_runBreaks[runBreakIndex].foreground, session.Opacity);
+					// The decoration follows the run's foreground, or the high-contrast foreground when the
+					// backplate is active, matching D2DTextDrawingContext::HWRenderLines which resolves the
+					// line brush through GetAlternativeForegroundBrush. Unlike glyphs, it is not affected by
+					// a TextHighlighter foreground, since WinUI keeps the run brush on the decoration line.
+					var decorationColor = useHighContrastAdjustment
+						? ToSkColor(highContrastForeground, effectiveOpacity)
+						: BrushToColor(_runBreaks[runBreakIndex].foreground, effectiveOpacity);
 					var decorationMetrics = fontDetails.SKFontMetrics;
+					var fallbackThickness = Math.Max(1f, fontDetails.SKFontSize * FallbackDecorationThicknessRatio);
 
-					if ((runDecorations & global::Windows.UI.Text.TextDecorations.Underline) != 0)
+					if ((runDecorations & TextDecorations.Underline) != 0)
 					{
-						var underlineThickness = decorationMetrics.UnderlineThickness ?? Math.Max(1f, fontDetails.SKFontSize / 20f);
-						var decorationUnderlineY = decorationBaseline + (decorationMetrics.UnderlinePosition ?? fontDetails.SKFontSize / 10f);
-						textDecorationLines.Add((decorationLeftX, decorationRightX, decorationUnderlineY, underlineThickness, decorationColor));
+						AddDecoration(
+							textDecorationLines,
+							decorationLeftX,
+							decorationRightX,
+							decorationBaseline + (decorationMetrics.UnderlinePosition ?? fontDetails.SKFontSize * FallbackUnderlinePositionRatio),
+							decorationMetrics.UnderlineThickness ?? fallbackThickness,
+							decorationColor);
 					}
 
-					if ((runDecorations & global::Windows.UI.Text.TextDecorations.Strikethrough) != 0)
+					if ((runDecorations & TextDecorations.Strikethrough) != 0)
 					{
-						var strikethroughThickness = decorationMetrics.StrikeoutThickness ?? Math.Max(1f, fontDetails.SKFontSize / 20f);
-						// Strikeout sits above the baseline; in this y-down space that is a negative offset.
-						var strikethroughY = decorationBaseline + (decorationMetrics.StrikeoutPosition ?? fontDetails.SKFontSize / -3f);
-						textDecorationLines.Add((decorationLeftX, decorationRightX, strikethroughY, strikethroughThickness, decorationColor));
+						AddDecoration(
+							textDecorationLines,
+							decorationLeftX,
+							decorationRightX,
+							decorationBaseline + (decorationMetrics.StrikeoutPosition ?? fontDetails.SKFontSize * FallbackStrikethroughPositionRatio),
+							decorationMetrics.StrikeoutThickness ?? fallbackThickness,
+							decorationColor);
 					}
 				}
 			}
@@ -1092,6 +1116,14 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		FlushHighContrastBackplate(session.Canvas, ref pendingHighContrastBackplate);
+
+		// WinUI renders the decoration lines before the glyphs (D2DTextDrawingContext::HWRender calls
+		// HWRenderLines then HWRenderGlyphTextures), so a decoration never covers the text it belongs to.
+		foreach (var (x1, x2, top, thickness, color) in textDecorationLines)
+		{
+			_spareTextDecorationPaint.Color = color;
+			session.Canvas.DrawRect(new SKRect(x1, top, x2, top + thickness), _spareTextDecorationPaint);
+		}
 
 		// This would probably be more efficient with SKCanvas::DrawGlyphs, but it isn't exposed in SkiaSharp
 		using var textBlobBuilder = new SKTextBlobBuilder();
@@ -1118,13 +1150,6 @@ internal readonly partial struct UnicodeText : IParsedText
 			session.Canvas.DrawLine(x1, underlineY, x2, underlineY, _spareCompositionUnderlinePaint);
 		}
 
-		foreach (var (x1, x2, decorationY, thickness, color) in textDecorationLines)
-		{
-			_spareTextDecorationPaint.Color = color;
-			_spareTextDecorationPaint.StrokeWidth = thickness;
-			session.Canvas.DrawLine(x1, decorationY, x2, decorationY, _spareTextDecorationPaint);
-		}
-
 		if (caretRect is null && caret?.index == _text.Length) // ending new line or empty text
 		{
 			var alignmentOffset = GetAlignmentOffsetForLine(null);
@@ -1138,6 +1163,38 @@ internal readonly partial struct UnicodeText : IParsedText
 		{
 			caret!.Value.brush.Paint(session.Canvas, effectiveOpacity, caretRect.Value);
 		}
+	}
+
+	// Decorations are collected per cluster, but abutting antialiased rects leave a seam where they
+	// meet, so contiguous segments of the same line are merged. WinUI has the same granularity: LS and
+	// DWrite emit one decoration rect per run per line, not per cluster. Only the last two entries can
+	// match, since a run with both decorations appends them in pairs.
+	private static void AddDecoration(List<(float x1, float x2, float top, float thickness, SKColor color)> decorations, float x1, float x2, float top, float thickness, SKColor color)
+	{
+		const float joinTolerance = 0.01f;
+
+		for (var i = decorations.Count - 1; i >= 0 && i >= decorations.Count - 2; i--)
+		{
+			var previous = decorations[i];
+			if (previous.top != top || previous.thickness != thickness || previous.color != color)
+			{
+				continue;
+			}
+
+			if (Math.Abs(previous.x2 - x1) <= joinTolerance)
+			{
+				decorations[i] = (previous.x1, Math.Max(previous.x2, x2), top, thickness, color);
+				return;
+			}
+
+			if (Math.Abs(x2 - previous.x1) <= joinTolerance)
+			{
+				decorations[i] = (Math.Min(x1, previous.x1), previous.x2, top, thickness, color);
+				return;
+			}
+		}
+
+		decorations.Add((x1, x2, top, thickness, color));
 	}
 
 	public (int replaceIndexStart, int replaceIndexEnd, List<string> suggestions)? GetSpellCheckSuggestions(int correctionStart, int correctionEnd)

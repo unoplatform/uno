@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
@@ -133,5 +135,132 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await ImageAssert.AreEqualAsync(withTrailingShot, withoutTrailingShot);
 		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23687")]
+		public async Task When_TextDecorations_Changed_Then_Rerendered()
+		{
+			// Ported from WinUI's TextBlockTests::ChangeTextDecorations: toggling TextDecorations after the
+			// text is laid out must invalidate and repaint, both from the TextBlock and from an inline Run.
+			var run = new Run { Text = "Deco" };
+			var textBlock = new TextBlock { FontSize = 40, Foreground = new SolidColorBrush(Colors.Red) };
+			textBlock.Inlines.Add(run);
+			var container = MakeContainer(textBlock);
+
+			await UITestHelper.Load(container);
+			var plain = await UITestHelper.ScreenShot(container);
+
+			textBlock.TextDecorations = TextDecorations.Underline;
+			await UITestHelper.WaitForIdle();
+			var underlined = await UITestHelper.ScreenShot(container);
+			await ImageAssert.AreNotEqualAsync(underlined, plain);
+
+			textBlock.TextDecorations = TextDecorations.Strikethrough | TextDecorations.Underline;
+			await UITestHelper.WaitForIdle();
+			var both = await UITestHelper.ScreenShot(container);
+			await ImageAssert.AreNotEqualAsync(both, underlined);
+
+			textBlock.TextDecorations = TextDecorations.None;
+			await UITestHelper.WaitForIdle();
+			await ImageAssert.AreEqualAsync(await UITestHelper.ScreenShot(container), plain);
+
+			run.TextDecorations = TextDecorations.Underline;
+			await UITestHelper.WaitForIdle();
+			await ImageAssert.AreEqualAsync(await UITestHelper.ScreenShot(container), underlined);
+
+			run.TextDecorations = TextDecorations.None;
+			await UITestHelper.WaitForIdle();
+			await ImageAssert.AreEqualAsync(await UITestHelper.ScreenShot(container), plain);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23687")]
+		public async Task When_Underline_Then_Drawn_At_Font_Metrics_Offset()
+		{
+#if __SKIA__
+			// WinUI draws the underline as a rect whose top edge is at baseline + the font's underline
+			// position and whose height is the font's underline thickness (DWriteTextRenderer::DrawUnderline
+			// offsets the baseline by DWRITE_UNDERLINE.offset, then D2DTextDrawingContext fills a
+			// { 0, 0, width, thickness } rect). SKFontMetrics reports the same top-edge offset, so the
+			// painted band must start at the metric offset instead of being centred on it.
+			const int fontSize = 200;
+
+			var run = new Run { Text = "X", TextDecorations = TextDecorations.Underline };
+			var textBlock = new TextBlock
+			{
+				FontSize = fontSize,
+				// MaxHeight line stacking keeps the baseline at -Ascent and puts the extra room below the
+				// text, so the underline can never be clipped by the line box.
+				LineHeight = fontSize * 2,
+				Foreground = new SolidColorBrush(Colors.Red),
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+			textBlock.Inlines.Add(run);
+
+			var container = new Border
+			{
+				Background = new SolidColorBrush(Colors.White),
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Child = textBlock,
+			};
+
+			await UITestHelper.Load(container);
+
+			var metrics = run.FontInfo.SKFontMetrics;
+			if (metrics.UnderlinePosition is not { } underlinePosition || metrics.UnderlineThickness is not { } underlineThickness)
+			{
+				Assert.Inconclusive("The resolved font does not publish underline metrics.");
+				return;
+			}
+
+			var screenshot = await UITestHelper.ScreenShot(container);
+			var inkRows = GetInkRows(screenshot);
+			Assert.IsTrue(inkRows.Count > 0, "Nothing was painted.");
+
+			// "X" sits entirely above the baseline, so the last contiguous band of ink is the underline.
+			var bandEnd = inkRows[^1];
+			var bandStart = bandEnd;
+			for (var i = inkRows.Count - 2; i >= 0 && inkRows[i] == bandStart - 1; i--)
+			{
+				bandStart = inkRows[i];
+			}
+
+			Assert.AreNotEqual(inkRows[0], bandStart, "The underline was not painted below the glyph.");
+
+			var expectedTop = -metrics.Ascent + underlinePosition;
+			Assert.AreEqual(expectedTop, bandStart, 2d, $"Underline top row is {bandStart}, expected {expectedTop}.");
+			Assert.AreEqual(underlineThickness, bandEnd - bandStart + 1, 2d, $"Underline is {bandEnd - bandStart + 1} rows, expected {underlineThickness}.");
+#else
+			await Task.CompletedTask;
+#endif
+		}
+
+#if __SKIA__
+		private static List<int> GetInkRows(RawBitmap bitmap)
+		{
+			var rows = new List<int>();
+			for (var y = 0; y < bitmap.Height; y++)
+			{
+				var inkCount = 0;
+				for (var x = 0; x < bitmap.Width; x++)
+				{
+					var pixel = bitmap.GetPixel(x, y);
+					if (pixel.R > 128 && pixel.G < 128 && pixel.B < 128)
+					{
+						inkCount++;
+					}
+				}
+
+				if (inkCount >= 3)
+				{
+					rows.Add(y);
+				}
+			}
+
+			return rows;
+		}
+#endif
 	}
 }
