@@ -201,6 +201,65 @@ public class Given_Visual_Damage
 #endif
 	}
 
+	// A RedirectVisual paints its Source's whole subtree at its own location, but the Source visual itself is
+	// typically a non-painting container (an element visual leaves the painting to its children). If the
+	// redirect reports that it paints nothing, its region is never damaged: the mirrored content shows up
+	// only on a full repaint (a window resize) and never follows the source afterwards.
+	[TestMethod]
+	[RunsOnUIThread]
+#if !__SKIA__
+	[Ignore("Damage-region rendering is specific to the Skia compositor.")]
+#endif
+	public async Task When_RedirectVisual_Repaints_Then_Its_Own_Region_Is_Damaged()
+	{
+#if __SKIA__
+		var compositor = Compositor.GetSharedCompositor();
+
+		var root = compositor.CreateContainerVisual();
+		root.Size = new Vector2(200, 200);
+
+		var source = compositor.CreateContainerVisual();
+		source.Size = new Vector2(50, 50);
+		root.Children.InsertAtTop(source);
+
+		var sourceContent = compositor.CreateSpriteVisual();
+		sourceContent.Brush = compositor.CreateColorBrush(Colors.Magenta);
+		sourceContent.Size = new Vector2(50, 50);
+		source.Children.InsertAtTop(sourceContent);
+
+		var redirect = compositor.CreateRedirectVisual(source);
+		redirect.Size = new Vector2(50, 50);
+		redirect.Offset = new Vector3(100, 0, 0);
+		root.Children.InsertAtTop(redirect);
+
+		using var damage = new DamageRegion();
+		RenderFrame(root, damage);
+
+		// Nothing in the scene changed, but a RedirectVisual repaints on every frame, so the region it
+		// mirrors into must be reported every frame too.
+		damage.Reset();
+		RenderFrame(root, damage);
+
+		using var reported = SnapshotDamage(damage);
+
+		Assert.IsFalse(
+			reported.IsEmpty,
+			"A RedirectVisual reported no damage, so the region it mirrors into would keep the previous frame's pixels.");
+
+		Assert.IsTrue(
+			reported.Bounds.Left >= 90 && reported.Bounds.Right >= 148,
+			$"Damage does not cover the redirect's own region at x=100..150 (damage bounds: {reported.Bounds}).");
+
+		// Falling back to the whole surface would satisfy the assertion above while defeating partial
+		// repaint, so bound the reported region to the mirrored content plus antialiasing slack.
+		Assert.IsTrue(
+			reported.Bounds.Right <= 160,
+			$"Damage is far wider than the mirrored content, partial repaint is being defeated (damage bounds: {reported.Bounds}).");
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
 	// BorderVisual is the visual that the moved-visual fast path actually applies to: it has an exact content
 	// path (so it would otherwise take the expensive branch) and guarantees it paints within its Size (so the
 	// cheap branch is allowed to answer for it). Moving it must still damage both positions in full.
