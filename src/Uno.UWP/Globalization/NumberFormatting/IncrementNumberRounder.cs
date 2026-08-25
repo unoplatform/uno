@@ -84,9 +84,9 @@ public partial class IncrementNumberRounder : INumberRounder
 	{
 	}
 
-	public int RoundInt32(int value) => IntegralRounding.ToInt32(RoundInt64(value), value);
+	public int RoundInt32(int value) => IntegralRounding.ToInt32(RoundInt64(value));
 
-	public uint RoundUInt32(uint value) => IntegralRounding.ToUInt32(RoundUInt64(value), value);
+	public uint RoundUInt32(uint value) => IntegralRounding.ToUInt32(RoundUInt64(value));
 
 	public long RoundInt64(long value)
 	{
@@ -98,7 +98,7 @@ public partial class IncrementNumberRounder : INumberRounder
 		var magnitude = IntegralRounding.GetMagnitude(value, out var isNegative);
 		var rounded = Rounder.RoundMagnitude(magnitude, incrementMagnitude, isNegative, RoundingAlgorithm);
 
-		return IntegralRounding.ToInt64(rounded, isNegative, value);
+		return IntegralRounding.ToInt64(rounded, isNegative);
 	}
 
 	public ulong RoundUInt64(ulong value) =>

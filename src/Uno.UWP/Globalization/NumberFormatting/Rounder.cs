@@ -17,10 +17,7 @@ internal static class Rounder
 	/// Rounds <paramref name="magnitude"/> to a multiple of <paramref name="increment"/> using integer
 	/// arithmetic, so that values beyond 2^53 keep every digit.
 	/// </summary>
-	/// <remarks>
-	/// When the rounded result would leave the <see cref="ulong"/> range the value is rounded towards
-	/// zero instead, which is the only representable outcome.
-	/// </remarks>
+	/// <exception cref="ArithmeticException">The rounded value leaves the <see cref="ulong"/> range.</exception>
 	public static ulong RoundMagnitude(ulong magnitude, ulong increment, bool isNegative, RoundingAlgorithm roundingAlgorithm)
 	{
 		if (increment <= 1)
@@ -36,9 +33,13 @@ internal static class Rounder
 			return magnitude;
 		}
 
-		if (RoundsAwayFromZero(quotient, remainder, increment, isNegative, roundingAlgorithm) &&
-			quotient + 1 <= ulong.MaxValue / increment)
+		if (RoundsAwayFromZero(quotient, remainder, increment, isNegative, roundingAlgorithm))
 		{
+			if (quotient + 1 > ulong.MaxValue / increment)
+			{
+				ExceptionHelper.ThrowArithmeticException();
+			}
+
 			quotient++;
 		}
 

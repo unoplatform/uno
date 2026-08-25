@@ -9,6 +9,10 @@ namespace Uno.Globalization.NumberFormatting;
 /// Sign/magnitude conversions shared by the integral <see cref="INumberRounder"/> members, which must
 /// round without going through <see cref="double"/> to stay exact past 2^53.
 /// </summary>
+/// <remarks>
+/// A rounded value that no longer fits its type raises <see cref="ArithmeticException"/>, which is what
+/// native WinRT reports and what the formatters turn into an infinity.
+/// </remarks>
 internal static class IntegralRounding
 {
 	private const ulong Int64MinValueMagnitude = (ulong)long.MaxValue + 1;
@@ -20,28 +24,43 @@ internal static class IntegralRounding
 		return isNegative ? (ulong)(-(value + 1)) + 1 : (ulong)value;
 	}
 
-	/// <summary>
-	/// Rebuilds a <see cref="long"/> from a rounded magnitude, keeping <paramref name="value"/> when
-	/// rounding pushed it out of the Int64 range.
-	/// </summary>
-	public static long ToInt64(ulong magnitude, bool isNegative, long value)
+	public static long ToInt64(ulong magnitude, bool isNegative)
 	{
 		if (isNegative)
 		{
 			if (magnitude > Int64MinValueMagnitude)
 			{
-				return value;
+				ExceptionHelper.ThrowArithmeticException();
 			}
 
 			return magnitude == Int64MinValueMagnitude ? long.MinValue : -(long)magnitude;
 		}
 
-		return magnitude > long.MaxValue ? value : (long)magnitude;
+		if (magnitude > long.MaxValue)
+		{
+			ExceptionHelper.ThrowArithmeticException();
+		}
+
+		return (long)magnitude;
 	}
 
-	public static int ToInt32(long rounded, int value) =>
-		rounded is < int.MinValue or > int.MaxValue ? value : (int)rounded;
+	public static int ToInt32(long rounded)
+	{
+		if (rounded is < int.MinValue or > int.MaxValue)
+		{
+			ExceptionHelper.ThrowArithmeticException();
+		}
 
-	public static uint ToUInt32(ulong rounded, uint value) =>
-		rounded > uint.MaxValue ? value : (uint)rounded;
+		return (int)rounded;
+	}
+
+	public static uint ToUInt32(ulong rounded)
+	{
+		if (rounded > uint.MaxValue)
+		{
+			ExceptionHelper.ThrowArithmeticException();
+		}
+
+		return (uint)rounded;
+	}
 }
