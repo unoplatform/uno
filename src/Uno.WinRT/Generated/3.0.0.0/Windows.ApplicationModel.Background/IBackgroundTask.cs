@@ -3,13 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Background
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IBackgroundTask
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		void Run(global::Windows.ApplicationModel.Background.IBackgroundTaskInstance taskInstance);
-#endif
+		// Skipping already declared method Windows.ApplicationModel.Background.IBackgroundTask.Run(Windows.ApplicationModel.Background.IBackgroundTaskInstance)
 	}
 }

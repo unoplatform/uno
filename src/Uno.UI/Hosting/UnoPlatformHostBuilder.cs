@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
+using Windows.ApplicationModel.Background;
 
 namespace Uno.UI.Hosting;
 
@@ -42,6 +43,13 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 		if (_appBuilder is null || _appType is null)
 		{
 			throw new InvalidOperationException($"No app builder delegate was provided via the .App extension method.");
+		}
+
+		if (BackgroundTaskActivation.TryGetActivation(
+			Environment.GetCommandLineArgs(),
+			out var backgroundTaskActivation))
+		{
+			return new BackgroundTaskHost(backgroundTaskActivation);
 		}
 
 		foreach (var hostBuilderFunc in _hostBuilders)
