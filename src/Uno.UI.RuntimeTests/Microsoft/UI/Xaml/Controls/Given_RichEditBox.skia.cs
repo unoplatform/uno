@@ -5256,6 +5256,47 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_TextChanged_Handler_Reapplies_CharacterFormat_Typing_Stays_Stable()
+		{
+			// Mirrors WinUI RichEditBoxTests.cs:43 UpdateCharacterFormatForTextChangedEvent (the Sticky Notes
+			// pattern): the handler toggles CharacterFormat from inside TextChanged for every keystroke. The
+			// reentrant document mutation must not recurse indefinitely nor drop typed characters.
+			var SUT = new RichEditBox();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var oldText = string.Empty;
+			var handlerInvocations = 0;
+			SUT.TextChanged += (s, e) =>
+			{
+				handlerInvocations++;
+				var document = SUT.Document;
+				document.GetText(TextGetOptions.None, out var currentText);
+				if (currentText != oldText)
+				{
+					oldText = currentText;
+					var range = document.GetRange(0, 0);
+					range.Expand(TextRangeUnit.CharacterFormat);
+					var format = range.CharacterFormat;
+					format.Bold = FormatEffect.Toggle;
+					range.CharacterFormat = format;
+				}
+			};
+
+			const int keystrokes = 25;
+			await TypeAsync(SUT, new string('a', keystrokes));
+
+			GetTextWithoutFinalEop(SUT.Document, out var text);
+			Assert.AreEqual(new string('a', keystrokes), text);
+			Assert.IsGreaterThanOrEqualTo(keystrokes, handlerInvocations);
+			// A reentrant format toggle must settle instead of re-entering once per nested change.
+			Assert.IsLessThanOrEqualTo(keystrokes * 4, handlerInvocations);
+		}
+
+		[TestMethod]
 		public async Task When_SelectionChanged_Raised_On_Programmatic_Selection()
 		{
 			var SUT = new RichEditBox();
