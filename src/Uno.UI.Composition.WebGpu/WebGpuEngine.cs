@@ -79,6 +79,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	public IntPtr DummyTex;                 // 1x1 placeholder for the clip coverage binding when no path clip
 	public WebGpuTexturePool Pool;                // transient offscreen pool (reused across frames)
 	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
+	public WebGpuClipSlab ClipSlab;               // chunked uniform slab backing every owned/restamped ClipU
 	public WebGpuSlab SolidSlab;                  // persistent shared slab: all recordings' solid verts (6 floats/v)
 	public WebGpuSlab RrectSlab;                  // persistent shared slab: all recordings' rrect verts (22 floats/v)
 												  // Transform-TABLE shared slabs: local (identity-baked) verts + a trailing per-vertex slot index (solid = 7
@@ -94,6 +95,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	public readonly object RenderGate = new();
 	private readonly System.Collections.Generic.List<nint> _pendingBindGroups = new();
 	private readonly System.Collections.Generic.List<nint> _pendingBuffers = new();
+	private readonly System.Collections.Generic.List<nint> _pendingClipSlots = new();
 	// Transient image textures whose owning IRenderRecord was disposed; drained (GPU-released) at the next frame start.
 	// Concurrent because a frame is disposed on the UI thread while BeginFrameResources runs on the render thread.
 	private readonly System.Collections.Concurrent.ConcurrentQueue<(nint view, nint tex)> _pendingTextures = new();
@@ -150,6 +152,9 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		while (_pendingTextures.TryDequeue(out var t)) { if (t.view != IntPtr.Zero) { wgpuTextureViewRelease((IntPtr)t.view); } if (t.tex != IntPtr.Zero) { wgpuTextureRelease((IntPtr)t.tex); } }
 		_pendingBindGroups.Clear();
 		_pendingBuffers.Clear();
+		// Clip-slab slots ride the same deferred pipeline as the buffers/bind groups that referenced them.
+		foreach (var s in _pendingClipSlots) { ClipSlab.Free(s); }
+		_pendingClipSlots.Clear();
 
 		EvictStaleBindGroups();
 
@@ -268,6 +273,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		if (owned is null || System.Threading.Interlocked.Exchange(ref owned.Released, 1) != 0) { return false; }
 		_pendingBuffers.AddRange(owned.Buffers);
 		_pendingBindGroups.AddRange(owned.BindGroups);
+		if (owned.ClipSlots is { } slots) { _pendingClipSlots.AddRange(slots); }
 		return true;
 	}
 	// Defers a single GPU buffer (e.g. an outgrown slab buffer) for release at the next frame start.
@@ -340,6 +346,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		DummyTex = CreateColorTarget(1, 1);
 		Pool = new WebGpuTexturePool(this);
 		BufferPool = new WebGpuBufferPool(this);
+		ClipSlab = new WebGpuClipSlab(this);
 		SolidSlab = new WebGpuSlab(this, 6);
 		RrectSlab = new WebGpuSlab(this, 22);
 		SolidTableSlab = new WebGpuSlab(this, 7);
@@ -1602,6 +1609,8 @@ internal sealed class OwnedResources
 {
 	public System.Collections.Generic.List<nint> Buffers = new();
 	public System.Collections.Generic.List<nint> BindGroups = new();
+	// Clip-slab slot handles this bag's bind groups reference; freed with the bag (see WebGpuClipSlab).
+	public System.Collections.Generic.List<nint> ClipSlots;
 	// Release-once claim: a rebuild (render thread) and the recording's Dispose (UI thread) can both hand the
 	// same bag to DeferRelease — the rebuild reads the compiled entry before it stores the replacement, so a
 	// Dispose in that window re-defers the old bag. Double-releasing recycles wgpu ids under in-flight uses
@@ -1678,6 +1687,88 @@ internal sealed unsafe class WebGpuSlab
 		src.Slice(lo, len).CopyTo(slot.Slice(lo, len));
 		fixed (float* p = &dst[voff * _stride + lo]) { wgpuQueueWriteBuffer(_d.Q, Buf, (nuint)(byteOff + lo * sizeof(float)), (IntPtr)p, (nuint)(len * sizeof(float))); }
 		return byteOff;
+	}
+}
+
+// One chunked uniform buffer backing every OWNED (restampable) ClipU. A stamp is a stable 512-byte slice —
+// chunk buffers never move, so the op's clip bind group survives for the slot's lifetime — written into a CPU
+// shadow; a frame's restamps flush as ONE queue write per dirty chunk range instead of one wgpuQueueWriteBuffer
+// per op (a scrolling table restamps thousands of ClipUs per frame; the per-call/per-copy overhead dominated
+// opsBuild and submit). Slot handles are 1-based nints so 0 keeps meaning "none" at the call sites.
+internal sealed unsafe class WebGpuClipSlab : IDisposable
+{
+	// ClipU is 288 bytes; uniform bind offsets must align to minUniformBufferOffsetAlignment (256 under the
+	// default WebGPU limits), so slots sit on 512-byte boundaries.
+	public const int SlotBytes = 512;
+	public const int ClipUFloats = 72;
+	private const int SlotFloats = SlotBytes / sizeof(float);
+	private const int ChunkSlots = 2048;   // 1MB of GPU + 1MB of shadow per chunk
+
+	private sealed class Chunk
+	{
+		public IntPtr Buf;
+		public float[] Shadow = new float[ChunkSlots * SlotFloats];
+		public int DirtyMin = int.MaxValue;
+		public int DirtyMax = -1;
+	}
+
+	private readonly WebGpuDevice _d;
+	private readonly List<Chunk> _chunks = new();
+	private readonly Stack<nint> _free = new();
+	private int _next;   // 0-based next-new slot; public handles are +1
+
+	public WebGpuClipSlab(WebGpuDevice d) => _d = d;
+
+	public nint Alloc()
+	{
+		if (_free.Count > 0) { return _free.Pop(); }
+		var slot = _next++;
+		if (slot / ChunkSlots >= _chunks.Count)
+		{
+			var bd = new WGPUBufferDescriptor { Size = (nuint)(ChunkSlots * SlotBytes), Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
+			_chunks.Add(new Chunk { Buf = wgpuDeviceCreateBuffer(_d.Dev, &bd) });
+		}
+		return slot + 1;
+	}
+
+	public void Free(nint slot)
+	{
+		if (slot != 0) { _free.Push(slot); }
+	}
+
+	public IntPtr BufferOf(nint slot) => _chunks[(int)(slot - 1) / ChunkSlots].Buf;
+	public uint OffsetOf(nint slot) => (uint)((int)(slot - 1) % ChunkSlots * SlotBytes);
+
+	public void Write(nint slot, float[] clipU)
+	{
+		var idx = (int)(slot - 1);
+		var c = _chunks[idx / ChunkSlots];
+		idx %= ChunkSlots;
+		Array.Copy(clipU, 0, c.Shadow, idx * SlotFloats, ClipUFloats);
+		if (idx < c.DirtyMin) { c.DirtyMin = idx; }
+		if (idx > c.DirtyMax) { c.DirtyMax = idx; }
+	}
+
+	/// <summary>One queue write per dirty chunk range — call before any submit whose commands read clips.</summary>
+	public void Flush()
+	{
+		foreach (var c in _chunks)
+		{
+			if (c.DirtyMax < 0) { continue; }
+			int lo = c.DirtyMin * SlotFloats, len = (c.DirtyMax + 1 - c.DirtyMin) * SlotFloats;
+			fixed (float* p = &c.Shadow[lo]) { wgpuQueueWriteBuffer(_d.Q, c.Buf, (nuint)(lo * sizeof(float)), (IntPtr)p, (nuint)(len * sizeof(float))); }
+			c.DirtyMin = int.MaxValue;
+			c.DirtyMax = -1;
+		}
+	}
+
+	public void Dispose()
+	{
+		foreach (var c in _chunks)
+		{
+			if (c.Buf != IntPtr.Zero) { wgpuBufferRelease(c.Buf); }
+		}
+		_chunks.Clear();
 	}
 }
 

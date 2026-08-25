@@ -1194,6 +1194,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			if (owns)
 			{
 				long t1 = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
+				_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
 				var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 				wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 				if (_emitStats && (_frameStatsCounter++ % 60) == 0)
@@ -1536,24 +1537,26 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		return foldedAabb;
 	}
 
-	// In-place restamp of an existing owned ClipU buffer: the write is queue-ordered, so frames already submitted
-	// read the old floats; the bind group survives, making a per-frame restamp allocation-free.
-	private bool RewriteClipU(nint buf, ClipData cd, Matrix3x2 xform, Matrix3x2 finv)
+	// In-place restamp of an existing owned ClipU slab slot: the shadow write flushes as part of ONE per-chunk
+	// queue write before submit (queue-ordered, so frames already submitted read the old floats); the bind group
+	// survives, making a per-frame restamp free of native calls.
+	private bool RewriteClipU(nint slot, ClipData cd, Matrix3x2 xform, Matrix3x2 finv)
 	{
 		var folded = FillClipU(cd, xform, finv);
-		fixed (float* p = _clipU) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, ClipUBytes); }
+		_d.ClipSlab.Write(slot, _clipU);
 		return folded;
 	}
 
-	// Owned variant exposing the ClipU buffer handle so a later restamp can RewriteClipU it in place.
+	// Owned variant exposing the ClipU slab slot so a later restamp can RewriteClipU it in place.
 	private IntPtr MakeClipBgOwned(IntPtr bgl, ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU)
 	{
 		aabbInClipU = FillClipU(cd, xform, finv);
-		var b = Ubuf(ClipUBytes, owned);
-		fixed (float* p = _clipU) { wgpuQueueWriteBuffer(_d.Q, b, 0, (IntPtr)p, ClipUBytes); }
-		var e = new WGPUBindGroupEntry { Binding = 0, Buffer = b, Offset = 0, Size = ClipUBytes };
+		var slot = _d.ClipSlab.Alloc();
+		_d.ClipSlab.Write(slot, _clipU);
+		(owned.ClipSlots ??= new()).Add(slot);
+		var e = new WGPUBindGroupEntry { Binding = 0, Buffer = _d.ClipSlab.BufferOf(slot), Offset = _d.ClipSlab.OffsetOf(slot), Size = ClipUBytes };
 		var bgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 1, Entries = &e };
-		buf = b;
+		buf = slot;
 		return Bg(ref bgd, owned);
 	}
 
@@ -1702,6 +1705,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			{
 				if (owns)
 				{
+					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
 					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 					_ = wgpuDevicePoll(_d.Dev, 0u, null);
@@ -1745,6 +1749,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			{
 				if (owns)
 				{
+					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
 					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 					_ = wgpuDevicePoll(_d.Dev, 0u, null);
@@ -1787,6 +1792,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			{
 				if (owns)
 				{
+					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
 					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 					_ = wgpuDevicePoll(_d.Dev, 0u, null);
@@ -1827,6 +1833,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			{
 				if (owns)
 				{
+					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
 					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 					_ = wgpuDevicePoll(_d.Dev, 0u, null);
@@ -1866,6 +1873,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			{
 				if (owns)
 				{
+					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
 					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 					_ = wgpuDevicePoll(_d.Dev, 0u, null);
