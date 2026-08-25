@@ -24,7 +24,7 @@ public class Given_WebAssemblyAppNotificationTranslator
 			.MuteAudio()
 			.BuildNotification();
 
-		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(17, notification));
+		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(17, notification), supportsActions: false);
 
 		Assert.AreEqual((uint)17, command.Id);
 		Assert.AreEqual("uno.appnotifications.17", command.NativeTag);
@@ -48,7 +48,7 @@ public class Given_WebAssemblyAppNotificationTranslator
 			.AddButton(new AppNotificationButton().SetToolTip("Dismiss").AddArgument("action", "dismiss"))
 			.BuildNotification();
 
-		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification));
+		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification), supportsActions: false);
 
 		Assert.AreEqual("action=body", command.LaunchArgument);
 		Assert.AreEqual(2, command.Actions.Length);
@@ -59,6 +59,24 @@ public class Given_WebAssemblyAppNotificationTranslator
 		Assert.AreEqual("Dismiss", command.Actions[1].Title);
 		Assert.AreEqual("action=dismiss", command.Actions[1].Argument);
 		CollectionAssert.Contains(command.UnsupportedFeatures, "actions");
+	}
+
+	[TestMethod]
+	public void When_Service_Worker_Renders_Actions_They_Are_Not_Reported_As_Unsupported()
+	{
+		var notification = new AppNotificationBuilder()
+			.AddButton(new AppNotificationButton("Open").AddArgument("action", "open"))
+			.AddButton(new AppNotificationButton("Menu").AddArgument("action", "menu").SetContextMenuPlacement())
+			.AddTextBox("reply")
+			.BuildNotification();
+
+		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification), supportsActions: true);
+
+		Assert.AreEqual(1, command.Actions.Length);
+		Assert.AreEqual("Open", command.Actions[0].Title);
+		CollectionAssert.DoesNotContain(command.UnsupportedFeatures, "actions");
+		CollectionAssert.Contains(command.UnsupportedFeatures, "context-menu actions");
+		CollectionAssert.Contains(command.UnsupportedFeatures, "inputs");
 	}
 
 	[TestMethod]
@@ -75,7 +93,7 @@ public class Given_WebAssemblyAppNotificationTranslator
 			.BuildNotification();
 		notification.ExpiresOnReboot = true;
 
-		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification));
+		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification), supportsActions: false);
 
 		CollectionAssert.AreEquivalent(
 			new[] { "additional text", "attribution text", "inputs", "progress", "context-menu actions", "expires-on-reboot" },
@@ -88,7 +106,7 @@ public class Given_WebAssemblyAppNotificationTranslator
 		var notification = new AppNotificationBuilder().BuildNotification();
 		notification.Priority = AppNotificationPriority.High;
 
-		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification));
+		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification), supportsActions: false);
 
 		Assert.IsTrue(command.RequireInteraction);
 		Assert.AreEqual("auto", command.Direction);
@@ -103,7 +121,7 @@ public class Given_WebAssemblyAppNotificationTranslator
 			"<actions><action content='Open' arguments='https://example.com/action' activationType='protocol'/></actions>" +
 			"</toast>");
 
-		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification));
+		var command = WebAssemblyAppNotificationTranslator.Translate(CreateEnvelope(1, notification), supportsActions: false);
 
 		Assert.AreEqual("https://example.com/body", command.ProtocolUri);
 		Assert.AreEqual("https://example.com/action", command.Actions[0].ProtocolUri);
