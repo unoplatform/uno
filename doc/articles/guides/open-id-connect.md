@@ -99,10 +99,10 @@ Add the following lines in your application, in `[Project-name]/MainPage.xaml`:
 ```xml
 
 <!--Add this line with the other dependencies-->
-xmlns:extras="using:Uno.UI.Extras"
+xmlns:uub="using:Uno.UI.Behaviors"
 
 <!--This will replace the initial Grid-->
-<Border extras:VisibleBoundsPadding.PaddingMask="All">
+<Border uub:VisibleBoundsPadding.PaddingMask="All">
     <StackPanel Spacing="10" Margin="10">
         <StackPanel Orientation="Horizontal" Spacing="5">
             <Button Click="SignIn_Clicked" x:Name="btnSignin" IsEnabled="False">Sign In</Button>

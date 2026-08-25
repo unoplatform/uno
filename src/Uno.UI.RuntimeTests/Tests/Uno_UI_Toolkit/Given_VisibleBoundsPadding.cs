@@ -7,7 +7,7 @@ using Private.Infrastructure;
 using Uno.Disposables;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Extras;
+using Uno.UI.Behaviors;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;

@@ -265,7 +265,7 @@ build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceF
 			protected override Project ApplyCompilationOptions(Project project)
 			{
 				// Tests using WithUnoPackage() pull a pre-7.0 Uno.WinUI package, which still ships
-				// Uno.UI.Toolkit.dll. Its types were renamed to Uno.UI.Extras, so the package copy no
+				// Uno.UI.Toolkit.dll. Its types moved to the Uno.UI.* namespaces, so the package copy no
 				// longer matches the local build and would resolve the old namespace instead. The local
 				// build is authoritative.
 				var supersededByLocalBuild = project.MetadataReferences

@@ -5,7 +5,7 @@
     xmlns:controls="using:Uno.UI.Samples.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:uut="using:Uno.UI.Extras"
+    xmlns:uuxa="using:Uno.UI.Xaml.Automation"
     d:DesignHeight="400"
     d:DesignWidth="400"
     mc:Ignorable="d">
@@ -22,21 +22,21 @@
             <!--  Landmark roles  -->
             <Border
                 Padding="8"
-                uut:AutomationPropertiesExtensions.Role="main"
+                uuxa:AutomationPropertiesExtensions.Role="main"
                 Background="CornflowerBlue">
                 <TextBlock Foreground="White" Text="Border with role='main'" />
             </Border>
 
             <Border
                 Padding="8"
-                uut:AutomationPropertiesExtensions.Role="navigation"
+                uuxa:AutomationPropertiesExtensions.Role="navigation"
                 Background="SteelBlue">
                 <TextBlock Foreground="White" Text="Border with role='navigation'" />
             </Border>
 
             <Border
                 Padding="8"
-                uut:AutomationPropertiesExtensions.Role="region"
+                uuxa:AutomationPropertiesExtensions.Role="region"
                 Background="MediumSlateBlue">
                 <TextBlock Foreground="White" Text="Border with role='region'" />
             </Border>
@@ -44,14 +44,14 @@
             <!--  Non-landmark overrides  -->
             <Border
                 Padding="8"
-                uut:AutomationPropertiesExtensions.Role="application"
+                uuxa:AutomationPropertiesExtensions.Role="application"
                 Background="DarkSlateBlue">
                 <TextBlock Foreground="White" Text="Border with role='application'" />
             </Border>
 
             <Border
                 Padding="8"
-                uut:AutomationPropertiesExtensions.Role="presentation"
+                uuxa:AutomationPropertiesExtensions.Role="presentation"
                 Background="SlateGray">
                 <TextBlock Foreground="White" Text="Border with role='presentation'" />
             </Border>
@@ -59,29 +59,29 @@
             <!--  Widget-level overrides  -->
             <Border
                 Padding="8"
-                uut:AutomationPropertiesExtensions.Role="tablist"
+                uuxa:AutomationPropertiesExtensions.Role="tablist"
                 Background="Teal">
                 <TextBlock Foreground="White" Text="Border with role='tablist'" />
             </Border>
 
             <Border
                 Padding="8"
-                uut:AutomationPropertiesExtensions.Role="tab"
+                uuxa:AutomationPropertiesExtensions.Role="tab"
                 Background="CadetBlue">
                 <TextBlock Foreground="White" Text="Border with role='tab'" />
             </Border>
 
             <!--  Button – role clears back to default (null/empty)  -->
-            <Button uut:AutomationPropertiesExtensions.Role="" Content="Button with role cleared (default)" />
+            <Button uuxa:AutomationPropertiesExtensions.Role="" Content="Button with role cleared (default)" />
 
-            <ComboBox uut:AutomationPropertiesExtensions.Role="listbox">
+            <ComboBox uuxa:AutomationPropertiesExtensions.Role="listbox">
                 <ComboBoxItem Content="ComboBox with role='listbox'" />
                 <ComboBoxItem Content="Item 2" />
                 <ComboBoxItem Content="Item 3" />
                 <ComboBoxItem Content="Item 4" />
             </ComboBox>
 
-            <CheckBox uut:AutomationPropertiesExtensions.Role="application" Content="CheckBox with role='application'" />
+            <CheckBox uuxa:AutomationPropertiesExtensions.Role="application" Content="CheckBox with role='application'" />
         </StackPanel>
     </ScrollViewer>
 
