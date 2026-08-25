@@ -45,6 +45,40 @@ public sealed class CanonicalRoleTests
 
 	[TestMethod]
 	[TestCategory(TestCategories.HostIndependent)]
+	public void Normalize_KeepsHierarchicalRolesWhenLevelIsPresent()
+	{
+		// UIA Level / aria-level is carried by hierarchical items as well as headings, so a level
+		// must never clobber a role that already identifies the element.
+		var cases = new[]
+		{
+			(rawRole: "treeitem", platform: AppiumPlatform.Wasm, expected: "treeitem"),
+			(rawRole: "listitem", platform: AppiumPlatform.Wasm, expected: "listitem"),
+			(rawRole: "ControlType.TreeItem", platform: AppiumPlatform.Windows, expected: "treeitem"),
+			(rawRole: "tree item", platform: AppiumPlatform.Windows, expected: "treeitem"),
+			(rawRole: "AXRow", platform: AppiumPlatform.Mac, expected: "listitem"),
+		};
+
+		foreach (var @case in cases)
+		{
+			var canonical = CanonicalRole.Normalize(@case.rawRole, @case.platform, level: 2);
+
+			canonical.Should().Be(
+				@case.expected,
+				$"a level on '{@case.rawRole}' ({@case.platform}) marks hierarchy depth, not a heading.");
+		}
+	}
+
+	[TestMethod]
+	[TestCategory(TestCategories.HostIndependent)]
+	public void Normalize_PrefersHeadingWhenLevelIsPresentOnRolelessElement()
+	{
+		CanonicalRole.Normalize(null, AppiumPlatform.Wasm, level: 2).Should().Be("heading");
+		CanonicalRole.Normalize("heading", AppiumPlatform.Wasm, level: 2).Should().Be("heading");
+		CanonicalRole.Normalize("AXStaticText", AppiumPlatform.Mac, level: 2).Should().Be("heading");
+	}
+
+	[TestMethod]
+	[TestCategory(TestCategories.HostIndependent)]
 	public void Normalize_PrefersLandmarkWhenLandmarkIsPresent()
 	{
 		var canonical = CanonicalRole.Normalize("group", AppiumPlatform.Wasm, landmark: "navigation");
