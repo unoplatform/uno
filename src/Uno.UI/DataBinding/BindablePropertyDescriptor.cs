@@ -28,7 +28,7 @@ namespace Uno.UI.DataBinding
 		/// <returns>A bindable type descriptor.</returns>
 		internal static BindablePropertyDescriptor GetPropertByBindableMetadataProvider(Type originalType, string property)
 		{
-			var bindableType = BindingPropertyHelper.BindableMetadataProvider.GetBindableTypeByType(originalType);
+			var bindableType = BindingPropertyHelper.GetValidatedBindableType(originalType);
 
 			if (bindableType != null)
 			{
@@ -44,7 +44,7 @@ namespace Uno.UI.DataBinding
 
 					if (dpDescriptor != null)
 					{
-						bindableType = BindingPropertyHelper.BindableMetadataProvider.GetBindableTypeByType(dpDescriptor.OwnerType);
+						bindableType = BindingPropertyHelper.GetValidatedBindableType(dpDescriptor.OwnerType);
 
 						if (bindableType != null)
 						{

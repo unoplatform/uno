@@ -89,6 +89,52 @@ Phase 4 (WASM — validated on a published Skia-WASM head via Playwright DOM ass
   `HasSemanticElement`, so a node-less (e.g. Collapsed) target no longer produces a dangling IDREF.
 - **WA-05** — already handled: region/form gated on a name, main/nav/search kept unnamed
   (ARIA-valid), including landmark-only elements promoted onto the generic factory path.
+- ✅ **WA-07** — the 14 stale `[JSImport]` declarations left on
+  `WebAssemblyAccessibility.NativeMethods` (element-creation entry points whose signatures had
+  drifted from the TS, plus duplicates of `SemanticElementFactory`/`AccessibilityDebugger` imports)
+  are removed; every remaining declaration in that class has a call site.
+
+Phase 6 (Win32 bridge — second parity pass):
+- ✅ **W32-01** — `UiaTextRangeProviderWrapper.GetChildren` resolves each managed child through
+  `Win32Accessibility.GetProviderForPeer` instead of handing UIA the non-COM managed provider,
+  matching `CUIATextRangeProviderWrapper::GetChildren`
+  (`dxaml/xcp/win/shared/UIAPatternProviderWrapper.cpp`), which wraps every child AP with
+  `CreateProviderForAP` + `QueryInterface(IUnknown)`.
+- ✅ **W32-07 (reserved values)** — `GetAttributeValue` now returns the process-wide UIA
+  "not supported" sentinel (`UiaGetReservedNotSupportedValue`) instead of `null` when the range does
+  not implement an attribute, matching the `E_NOT_SUPPORTED → m_punkNotSupportedValue` mapping in
+  `CUIATextRangeProviderWrapper::GetAttributeValue`. Test: `Given_Win32UiaBridge`. (Backing
+  Line/Word units and per-range rects with the Skia text layout remains open.)
+- ✅ **W32-09 (WM_GETOBJECT)** — every object id is forwarded to `UiaReturnRawElementProvider`
+  rather than only `UiaRootObjectId`, so Microsoft Active Accessibility clients are served by the
+  UIA-to-MSAA bridge. This matches WinUI (`CJupiterWindow::WndProc` →
+  `CJupiterControl::HandleGetObjectMessage`, which passes wParam/lParam through) and the documented
+  requirement to forward them "without filtering". Test: `Given_Win32UiaBridge`.
+- ✅ **W32-09 (bridge map flush)** — `Win32Accessibility.DisposeCore` calls
+  `UiaReturnRawElementProvider(hwnd, 0, 0, null)` after disconnecting the providers, mirroring
+  `CUIAWindow::FlushUiaBridgeEventTable`, so UIA drops the raised-event map entries for a destroyed
+  window instead of holding stale provider references.
+
+**Audit corrections (findings that turned out not to be parity gaps):**
+- **W32-09 (focus raise gating)** — not reachable, so no duplicate announcements occur:
+  `AutomationPeer.SetFocusHelper` is only entered from the base `SetFocusCore`, and
+  `FrameworkElementAutomationPeer` always overrides it with `Control.Focus(Programmatic)`; for
+  non-`FrameworkElementAutomationPeer` peers `GetFocusManagerNoRef()` returns null and the method
+  exits early. The real entry point, `AutomationHelper.SetAutomationFocusIfListener`, already checks
+  `ListenerExistsHelper(AutomationFocusChanged)`. Adding the listener check inside `SetFocusHelper`
+  would be dead code; making it reachable requires porting WinUI's
+  `CAutomationPeer::GetRootNoRef` peer-owner chain first.
+- **WA-03 (PasswordBox value event)** — WinUI does not raise it either: only
+  `CTextBox::UpdateTextProperty` raises `APValueValueProperty`
+  (`dxaml/xcp/core/native/text/Controls/TextBox.cpp`), and `CPasswordBox` is a sibling
+  `CTextBoxBase` subclass that never does. Uno's `peer is TextBoxAutomationPeer` gate therefore
+  matches WinUI; raising it for `PasswordBox` would be a divergence (and would leak password
+  mutations to AT).
+- **WA-08 (IsOffscreen on WASM)** — the code comment blaming a `GetGlobalBoundsWithOptions` stub is
+  stale (it is implemented for Skia and already backs `IsOffscreenImpl`), but honoring offscreen in
+  the WASM overlay still needs scroll-driven re-evaluation of descendants: scrolling only raises
+  `OnSizeOrOffsetChanged` for the scrolled content visual, so descendants hidden while off-viewport
+  would never be re-shown. It stays open pending that re-evaluation path.
 
 **Deferred / not-actionable (with rationale):**
 - **XP-02** (live property-change consolidation) is the FR-010 architectural item — it needs new

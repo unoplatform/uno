@@ -125,9 +125,11 @@ public partial class TextBox : ITextSelectionGripperHost
 	// OperatingSystem.IsAndroid()/IsIOS() are both false and the OS-derived default is Desktop.
 	internal TouchTextSelectionConvention TouchSelectionConvention { get; set; } = GetDefaultTouchTextSelectionConvention();
 
+	// A browser on a phone or tablet must follow that device's touch conventions too: on WebAssembly the
+	// OS APIs report "browser", so the host device comes from DeviceTargetHelper.BrowserHost.
 	private static TouchTextSelectionConvention GetDefaultTouchTextSelectionConvention()
-		=> OperatingSystem.IsAndroid() ? TouchTextSelectionConvention.Android
-			: Uno.UI.Helpers.DeviceTargetHelper.IsUIKit() ? TouchTextSelectionConvention.iOS
+		=> OperatingSystem.IsAndroid() || DeviceTargetHelper.BrowserHost is BrowserHostPlatform.Android ? TouchTextSelectionConvention.Android
+			: DeviceTargetHelper.IsUIKit() || DeviceTargetHelper.BrowserHost is BrowserHostPlatform.iOS ? TouchTextSelectionConvention.iOS
 			: TouchTextSelectionConvention.Desktop;
 
 	public static DependencyProperty CanUndoProperty { get; } = DependencyProperty.Register(
@@ -952,6 +954,40 @@ public partial class TextBox : ITextSelectionGripperHost
 				KeyDownBack(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
 				break;
 		}
+	}
+
+	partial void OnCharacterReceivedPartial(CharacterReceivedRoutedEventArgs e)
+	{
+		// Characters produced by a key press are inserted by OnKeyDownSkia. Only characters
+		// that can't be delivered through a key press — composed on a key release, i.e.
+		// Windows Alt+numpad codes — arrive solely through this event.
+		if (!_isSkiaTextBox || e.Handled || e.OriginalSource != this || !e.KeyStatus.IsKeyReleased)
+		{
+			return;
+		}
+
+		if (IsReadOnly || HasPointerCapture || ShouldSwallowKeyDuringComposition || char.IsControl(e.Character))
+		{
+			return;
+		}
+
+		e.Handled = true;
+		TrySetCurrentlyTyping(true);
+
+		var (selectionStart, selectionLength) = _selection.selectionEndsAtTheStart
+			? (_selection.start + _selection.length, -_selection.length)
+			: (_selection.start, _selection.length);
+		var text = Text;
+		var start = Math.Min(selectionStart, selectionStart + selectionLength);
+		var end = Math.Max(selectionStart, selectionStart + selectionLength);
+		text = text[..start] + e.Character + text[end..];
+
+		_suppressCurrentlyTyping = true;
+		_clearHistoryOnTextChanged = false;
+		_pendingSelection = (start + 1, 0);
+		ProcessTextInput(text);
+		_clearHistoryOnTextChanged = true;
+		_suppressCurrentlyTyping = false;
 	}
 
 	private void OnKeyDownSkia(KeyRoutedEventArgs args)
@@ -1879,11 +1915,11 @@ public partial class TextBox : ITextSelectionGripperHost
 	}
 
 	// Which platform's native touch text-selection conventions the Skia TextBox follows.
-	// Defaults to the running OS; runtime tests override it to exercise the mobile behavior on
-	// Skia Desktop, where OperatingSystem.IsAndroid()/IsIOS() are both false.
+	// Defaults to the running device (on WebAssembly, the device hosting the browser); runtime tests override
+	// it to exercise the mobile behavior on Skia Desktop, where OperatingSystem.IsAndroid()/IsIOS() are both false.
 	internal enum TouchTextSelectionConvention
 	{
-		// Desktop convention (Windows, macOS and Linux): the OS-derived default for every non-mobile target.
+		// Desktop convention (Windows, macOS, Linux and desktop browsers).
 		Desktop,
 		Android,
 		iOS
@@ -1934,7 +1970,13 @@ public partial class TextBox : ITextSelectionGripperHost
 
 	TextBlock ITextSelectionGripperHost.GripperTextSurface => TextBoxView.DisplayBlock;
 
-	Rect ITextSelectionGripperHost.GripperClipBounds => this.GetAbsoluteBoundsRect();
+	// Ancestor-clipped, not the raw bounds: a TextBox scrolled out of an enclosing ScrollViewer still has
+	// valid bounds, and the grippers live in an unclipped popup above the tree - so culling against the raw
+	// bounds leaves them painted over whatever the ScrollViewer scrolled them onto.
+	Rect ITextSelectionGripperHost.GripperClipBounds => this.GetGlobalBoundsWithOptions(
+		ignoreClipping: false,
+		ignoreClippingOnScrollContentPresenters: false,
+		useTargetInformation: false);
 
 	GripperMode ITextSelectionGripperHost.GripperMode => _caretMode switch
 	{

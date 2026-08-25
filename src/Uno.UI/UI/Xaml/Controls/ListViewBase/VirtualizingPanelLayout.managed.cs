@@ -549,7 +549,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			// Make sure that the reorder item has been rendered
-			if (GetAndUpdateReorderingIndex() is { } reorderIndex && _materializedLines.None(line => line.Contains(reorderIndex)))
+			if (GetAndUpdateReorderingIndex() is { } reorderIndex && !IsMaterialized(reorderIndex))
 			{
 				AddLine(Forward, reorderIndex);
 			}
@@ -805,7 +805,11 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug($"{GetMethodTag()} Begin");
 			}
 
-			// Estimate remaining extent based on current average line height and remaining unmaterialized items
+			// Estimate remaining extent based on current average line height and remaining unmaterialized items.
+			// The last index and the measured end it is extrapolated from must come off the SAME line: GetContentEnd()
+			// is the bottommost materialized pixel, which includes the dragged item's line -- FillLayout() parks that
+			// one past the last row whenever the pointer is out of view -- so pairing the two counts a row that a
+			// reorder only MOVES as if it had been appended, inflating the extent for the rest of the gesture.
 			var lastIndexPath = GetLastMaterializedIndexPath();
 			if (lastIndexPath == null)
 			{
@@ -819,11 +823,14 @@ namespace Microsoft.UI.Xaml.Controls
 			int itemsPerLine = GetItemsPerLine();
 			var remainingLines = remainingItems / itemsPerLine + remainingItems % itemsPerLine;
 
-			double estimatedExtent = GetContentEnd() + remainingLines * _averageLineHeight;
+			var contentEnd = FindViewByIndexPath(lastIndexPath.Value) is { } lastView
+				? GetMeasuredEnd(lastView)
+				: GetContentEnd();
+			double estimatedExtent = contentEnd + remainingLines * _averageLineHeight;
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"{GetMethodTag()}=>{estimatedExtent}, GetContentEnd()={GetContentEnd()}, remainingLines={remainingLines}, averageLineHeight={_averageLineHeight}");
+				this.Log().LogDebug($"{GetMethodTag()}=>{estimatedExtent}, contentEnd={contentEnd}, GetContentEnd()={GetContentEnd()}, remainingLines={remainingLines}, averageLineHeight={_averageLineHeight}");
 			}
 
 			return estimatedExtent;
@@ -936,21 +943,13 @@ namespace Microsoft.UI.Xaml.Controls
 		/// </summary>
 		private void ScrapLayout()
 		{
+			// _dynamicSeedStart is where the item FOLLOWING _dynamicSeedIndex gets placed (see FillForward/
+			// GetItemsEnd), so it is the topmost materialized PIXEL -- including the dragged item's line, which the
+			// refill puts back at that same pixel. Reading it off any lower line instead walks the whole realized
+			// window one row down the panel per pass, and the extent with it.
 			var firstVisibleItem = GetFirstMaterializedIndexPath();
 			var seed = GetDynamicSeedIndex(firstVisibleItem);
 			var offset = GetContentStart();
-
-			// Generally the _materializedLines are sorted, so normally offsetting -1 to the firstVisibleItem index
-			// should give us an unmaterialized item ahead of current viewport (or null if out of bounds).
-			// However, when an drag-n-drop reorder is in progress, the _materializedLines may be unsorted.
-			// In such case, we take the lowest index from the materialized, and substract 1 from it to get the unmaterialized index ahead of viewport.
-			// note: _pendingReorder can be null while the drad-n-drop is still in progress if the cursor leave the items panel.
-			if (seed is { } s &&
-				_materializedLines.SelectMany(line => line.Items).Select(x => x.index).Min() is { } lowest &&
-				s >= lowest)
-			{
-				seed = GetNextUnmaterializedItem(Backward, lowest);
-			}
 
 			SetDynamicSeed(seed, offset);
 
@@ -1083,31 +1082,121 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		// POSITIONAL, and deliberately so: these two are paired with _materializedLines.RemoveFromFront()/
+		// RemoveFromBack() in UnfillLayout(), so the line they return must be the one that removal will drop.
+		// They are NOT index-ordered -- see GetFirstMaterializedIndexPath() for why.
 		private Line? GetFirstMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[0] : null;
 
 		private Line? GetLastMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[_materializedLines.Count - 1] : null;
 
-		private Uno.UI.IndexPath? GetFirstMaterializedIndexPath() => GetFirstMaterializedLine()?.FirstItem;
-
-		private Uno.UI.IndexPath? GetLastMaterializedIndexPath() => GetLastMaterializedLine()?.LastItem;
-
-		private double? GetItemsStart()
+		/// <summary>
+		/// Whether any materialized line already holds <paramref name="index"/>. Generating a second container
+		/// for an already-materialized index leaves the first one orphaned in the panel's Children (see
+		/// VirtualizingPanelGenerator.ScrapViewForItem), so every caller that can substitute an index must
+		/// check this first.
+		/// </summary>
+		private protected bool IsMaterialized(Uno.UI.IndexPath index)
 		{
-			var firstView = GetFirstMaterializedLine()?.FirstView;
-			if (firstView != null)
+			for (var i = 0; i < _materializedLines.Count; i++)
 			{
-				return GetMeasuredStart(firstView);
+				if (_materializedLines[i].Contains(index))
+				{
+					return true;
+				}
 			}
 
-			return null;
+			return false;
 		}
 
+		/// <summary>
+		/// The lowest materialized item index, ignoring the item being dragged.
+		/// </summary>
+		/// <remarks>
+		/// These two are the index-domain frontiers: FillBackward/FillForward resume from them, and ScrapLayout()
+		/// seeds the refill off the first one. All three want the frontier of the ORDINARY fill, which skips the
+		/// dragged item (see GetNextUnmaterializedItem) -- handing back its index instead makes the fill walk from
+		/// the DRAGGED item's neighbour rather than the frontier's, leaving a hole in the realized window.
+		///
+		/// They are also not readable off the ends of the deque: FillLayout() appends the dragged item's line to
+		/// the BACK whatever its index, so the deque is index-unsorted for the duration of the drag.
+		/// </remarks>
+		private Uno.UI.IndexPath? GetFirstMaterializedIndexPath()
+		{
+			var reorderIndex = GetAndUpdateReorderingIndex();
+			Uno.UI.IndexPath? lowest = null;
+			for (var i = 0; i < _materializedLines.Count; i++)
+			{
+				foreach (var (_, index) in _materializedLines[i].Items)
+				{
+					if (index != reorderIndex && (lowest is null || index < lowest))
+					{
+						lowest = index;
+					}
+				}
+			}
+
+			return lowest;
+		}
+
+		/// <summary>
+		/// The highest materialized item index, ignoring the item being dragged. See <see cref="GetFirstMaterializedIndexPath"/>.
+		/// </summary>
+		private Uno.UI.IndexPath? GetLastMaterializedIndexPath()
+		{
+			var reorderIndex = GetAndUpdateReorderingIndex();
+			Uno.UI.IndexPath? highest = null;
+			for (var i = 0; i < _materializedLines.Count; i++)
+			{
+				foreach (var (_, index) in _materializedLines[i].Items)
+				{
+					if (index != reorderIndex && (highest is null || index > highest))
+					{
+						highest = index;
+					}
+				}
+			}
+
+			return highest;
+		}
+
+		/// <summary>
+		/// The topmost (leftmost) materialized pixel, i.e. the minimum measured start over all materialized
+		/// lines rather than the start of whichever line sits at the front of the deque.
+		/// </summary>
+		private double? GetItemsStart()
+		{
+			double? start = null;
+			for (var i = 0; i < _materializedLines.Count; i++)
+			{
+				var lineStart = GetMeasuredStart(_materializedLines[i].FirstView);
+				if (start is null || lineStart < start)
+				{
+					start = lineStart;
+				}
+			}
+
+			return start;
+		}
+
+		/// <summary>
+		/// The bottommost (rightmost) materialized pixel, i.e. the maximum measured end over all materialized
+		/// lines. See <see cref="GetItemsStart"/>.
+		/// </summary>
 		private double? GetItemsEnd()
 		{
-			var lastView = GetLastMaterializedLine()?.LastView;
-			if (lastView != null)
+			double? end = null;
+			for (var i = 0; i < _materializedLines.Count; i++)
 			{
-				return GetMeasuredEnd(lastView);
+				var lineEnd = GetMeasuredEnd(_materializedLines[i].LastView);
+				if (end is null || lineEnd > end)
+				{
+					end = lineEnd;
+				}
+			}
+
+			if (end is not null)
+			{
+				return end;
 			}
 
 			// This will be null except

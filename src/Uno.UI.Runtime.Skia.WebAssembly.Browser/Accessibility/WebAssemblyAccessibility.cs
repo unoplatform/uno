@@ -2602,33 +2602,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.announceAssertive")]
 		internal static partial void AnnounceAssertive(string text);
 
-		// ===== New Type-Specific Element Creation Methods =====
-
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createButtonElement")]
-		internal static partial void CreateButtonElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, bool disabled);
-
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createSliderElement")]
-		internal static partial void CreateSliderElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, double value, double min, double max, double step, string orientation, string? valueText);
-
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createTextBoxElement")]
-		internal static partial void CreateTextBoxElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string value, bool multiline, bool password, bool readOnly, int selectionStart, int selectionEnd);
-
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createCheckboxElement")]
-		internal static partial void CreateCheckboxElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? checkedState, string? label);
-
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createRadioElement")]
-		internal static partial void CreateRadioElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, bool isChecked, string? label, string? groupName);
-
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createComboBoxElement")]
-		internal static partial void CreateComboBoxElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, bool expanded, string? selectedValue);
-
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createListBoxElement")]
-		internal static partial void CreateListBoxElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, bool multiselect);
-
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createListItemElement")]
-		internal static partial void CreateListItemElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, bool selected, int positionInSet, int sizeOfSet);
-
-		// ===== New State Update Methods =====
+		// ===== State Update Methods =====
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateSliderValue")]
 		internal static partial void UpdateSliderValue(IntPtr handle, double value, double min, double max, string? valueText);
@@ -2638,9 +2612,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateTextBoxReadOnly")]
 		internal static partial void UpdateTextBoxReadOnly(IntPtr handle, bool isReadOnly);
-
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateTextBoxPlaceholder")]
-		internal static partial void UpdateTextBoxPlaceholder(IntPtr handle, string placeholder);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.updateExpandCollapseState")]
 		internal static partial void UpdateExpandCollapseState(IntPtr handle, bool expanded);
@@ -2668,24 +2639,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaLevel")]
 		internal static partial void UpdateAriaLevel(IntPtr handle, int level);
 
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createHeadingElement")]
-		internal static partial void CreateHeadingElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, int level, string? label);
-
-		// ===== Toggle Button / Switch Element Creation =====
-
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createToggleButtonElement")]
-		internal static partial void CreateToggleButtonElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, string pressed, bool disabled);
-
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.SemanticElements.createSwitchElement")]
-		internal static partial void CreateSwitchElement(IntPtr parentHandle, IntPtr handle, int? index, float x, float y, float width, float height, string? label, string isOn, bool disabled);
-
 		// ===== Additional ARIA Attribute Updates =====
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updatePositionInSet")]
 		internal static partial void UpdatePositionInSet(IntPtr handle, int positionInSet, int sizeOfSet);
-
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaRequired")]
-		internal static partial void UpdateAriaRequired(IntPtr handle, bool required);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateAriaInvalid")]
 		internal static partial void UpdateAriaInvalid(IntPtr handle, bool invalid);
@@ -2725,11 +2682,6 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.updateRovingTabindex")]
 		internal static partial void UpdateRovingTabindex(IntPtr groupHandle, IntPtr activeHandle);
-
-		// ===== Debug Mode =====
-
-		[JSImport("globalThis.Uno.UI.Runtime.Skia.Accessibility.enableDebugMode")]
-		internal static partial void EnableDebugMode(bool enabled);
 
 		// ===== Focus Management =====
 
