@@ -1556,6 +1556,14 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			return;
 		}
 
+		// ExploreByTouchHelper.requestKeyboardFocusForVirtualView calls View.requestFocus() when
+		// the host is not focused. The Skia render view shares native focus with the invisible
+		// text-input view, so never force it here — only mirror when the host already owns it.
+		if (!_host.IsFocused)
+		{
+			return;
+		}
+
 		var previous = _nativeKeyboardFocusedId;
 		if (previous >= 0)
 		{
