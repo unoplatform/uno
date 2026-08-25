@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Microsoft.Windows.AppNotifications.Internal;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 
@@ -1184,9 +1185,9 @@ public sealed class AppNotificationManager
 						_operationOwner,
 						now + OperationLeaseDuration,
 						now,
-						out var uncertainPosting))
+						out var uncertainPosting) &&
+						TryRemoveAbandoned(backend, uncertainPosting!))
 					{
-						backend.Remove(uncertainPosting!);
 						state.TryRemove(uncertainPosting!);
 					}
 					break;
@@ -1218,15 +1219,34 @@ public sealed class AppNotificationManager
 						_operationOwner,
 						now + OperationLeaseDuration,
 						now,
-						out var pendingRemoval))
+						out var pendingRemoval) &&
+						TryRemoveAbandoned(backend, pendingRemoval!))
 					{
-						backend.Remove(pendingRemoval!);
 						state.TryRemove(pendingRemoval!);
 					}
 					break;
 			}
 		}
 		return activeIds;
+	}
+
+	// Recovery of operations abandoned by an earlier process must not fail the caller's own
+	// operation; the record stays durable so a later recovery pass can retry it.
+	private static bool TryRemoveAbandoned(IAppNotificationManagerBackend backend, AppNotificationStateRecord record)
+	{
+		try
+		{
+			backend.Remove(record);
+			return true;
+		}
+		catch (Exception exception)
+		{
+			if (typeof(AppNotificationManager).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(AppNotificationManager).Log().LogWarning($"An abandoned app notification operation could not be completed: {exception.Message}");
+			}
+			return false;
+		}
 	}
 
 	private void RemoveWithAcknowledgement(IAppNotificationManagerBackend backend, AppNotificationStateRecord record)
