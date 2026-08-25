@@ -164,7 +164,17 @@ internal static class AppTaskInfoRegistry
 				}
 
 				updated = update(current);
-				_tasks[id] = updated;
+				if (AppTaskValidation.IsDefinedState(updated.State))
+				{
+					_tasks[id] = updated;
+				}
+				else
+				{
+					// Windows drops a task from FindAll as soon as it enters an undefined state, and
+					// returning to a defined state does not bring it back.
+					_tasks.Remove(id);
+				}
+
 				try
 				{
 					(revision, snapshots) = PersistLocked(store);
@@ -292,6 +302,12 @@ internal static class AppTaskInfoRegistry
 			loadedTasks = new(StringComparer.Ordinal);
 			foreach (var snapshot in snapshots)
 			{
+				if (!AppTaskValidation.IsDefinedState(snapshot.State))
+				{
+					// Undefined states are evicted on write; a persisted one can only come from tampering.
+					continue;
+				}
+
 				if (!loadedTasks.TryAdd(snapshot.Id, snapshot))
 				{
 					throw new InvalidDataException($"The persisted app task ID '{snapshot.Id}' is duplicated.");

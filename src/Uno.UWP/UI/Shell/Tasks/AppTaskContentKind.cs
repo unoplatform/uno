@@ -9,4 +9,9 @@ internal enum AppTaskContentKind
 	PreviewThumbnail,
 	TextSummary,
 	GeneratedAssets,
+
+	/// <summary>
+	/// The task was created without content, which Windows allows. Content accessors are rejected.
+	/// </summary>
+	None,
 }

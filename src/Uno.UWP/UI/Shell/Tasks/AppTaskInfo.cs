@@ -99,7 +99,7 @@ public sealed class AppTaskInfo
 	/// <param name="subtitle">An optional subtitle that provides additional context. This value can be an empty string.</param>
 	/// <param name="deepLink">A URI that launches the app in the context of this task.</param>
 	/// <param name="iconUri">The path to an icon that represents the task.</param>
-	/// <param name="content">The initial content to display for this task.</param>
+	/// <param name="content">The initial content to display for this task. This value can be <c>null</c>.</param>
 	/// <returns>A new object that represents the task.</returns>
 	public static AppTaskInfo Create(
 		string title,
@@ -110,14 +110,13 @@ public sealed class AppTaskInfo
 	{
 		AppTaskValidation.RequireAbsoluteUri(deepLink, nameof(deepLink));
 		AppTaskValidation.RequireAbsoluteUri(iconUri, nameof(iconUri));
-		ArgumentNullException.ThrowIfNull(content);
 
 		return AppTaskInfoRegistry.Create(
 			title ?? string.Empty,
 			subtitle ?? string.Empty,
 			deepLink,
 			iconUri,
-			content.CreateSnapshot());
+			content is null ? AppTaskContentSnapshot.Empty : content.CreateSnapshot());
 	}
 
 	/// <summary>
@@ -136,17 +135,28 @@ public sealed class AppTaskInfo
 	/// </summary>
 	/// <param name="state">The new state of the task.</param>
 	/// <param name="content">The new content of the task.</param>
+	/// <exception cref="ArgumentException">
+	/// <paramref name="content"/> is <c>null</c>, or <paramref name="state"/> is
+	/// <see cref="AppTaskState.NeedsAttention"/> and <paramref name="content"/> has no question.
+	/// </exception>
 	public void Update(AppTaskState state, AppTaskContent content)
 	{
-		ValidateState(state);
-		ArgumentNullException.ThrowIfNull(content);
+		if (content is null)
+		{
+			throw new ArgumentException("Task content is required.", nameof(content));
+		}
+
 		var contentSnapshot = content.CreateSnapshot();
 
-		UpdateSnapshot(snapshot => snapshot with
+		UpdateSnapshot(snapshot =>
 		{
-			State = state,
-			Content = contentSnapshot,
-			EndTime = GetUpdatedEndTime(snapshot, state),
+			RequireAttentionQuestion(state, contentSnapshot);
+			return snapshot with
+			{
+				State = state,
+				Content = contentSnapshot,
+				EndTime = GetUpdatedEndTime(snapshot, state),
+			};
 		});
 	}
 
@@ -154,14 +164,19 @@ public sealed class AppTaskInfo
 	/// Updates the state of this task without changing its content.
 	/// </summary>
 	/// <param name="state">The new state of the task.</param>
+	/// <exception cref="ArgumentException">
+	/// <paramref name="state"/> is <see cref="AppTaskState.NeedsAttention"/> and the current content has no question.
+	/// </exception>
 	public void UpdateState(AppTaskState state)
 	{
-		ValidateState(state);
-
-		UpdateSnapshot(snapshot => snapshot with
+		UpdateSnapshot(snapshot =>
 		{
-			State = state,
-			EndTime = GetUpdatedEndTime(snapshot, state),
+			RequireAttentionQuestion(state, snapshot.Content);
+			return snapshot with
+			{
+				State = state,
+				EndTime = GetUpdatedEndTime(snapshot, state),
+			};
 		});
 	}
 
@@ -181,13 +196,19 @@ public sealed class AppTaskInfo
 	/// Gets the sequence of steps that have been completed for this task.
 	/// </summary>
 	/// <returns>The completed task steps, or an empty array if the task doesn't use sequence content.</returns>
-	public string[] GetCompletedSteps() => (string[])GetCurrentSnapshot().Content.CompletedSteps.Clone();
+	/// <exception cref="ArgumentException">The task was created without content.</exception>
+	public string[] GetCompletedSteps()
+	{
+		var content = RequireContent(GetCurrentSnapshot().Content);
+		return (string[])content.CompletedSteps.Clone();
+	}
 
 	/// <summary>
 	/// Gets the step that is currently executing for this task.
 	/// </summary>
 	/// <returns>The executing step, or an empty string if the task doesn't use step-based content.</returns>
-	public string GetExecutingStep() => GetCurrentSnapshot().Content.ExecutingStep;
+	/// <exception cref="ArgumentException">The task was created without content.</exception>
+	public string GetExecutingStep() => RequireContent(GetCurrentSnapshot().Content).ExecutingStep;
 
 	/// <summary>
 	/// Updates the deep link URI for this task.
@@ -202,11 +223,18 @@ public sealed class AppTaskInfo
 		});
 	}
 
-	private static void ValidateState(AppTaskState state)
+	private static AppTaskContentSnapshot RequireContent(AppTaskContentSnapshot content) =>
+		content.Kind == AppTaskContentKind.None
+			? throw new ArgumentException("The task was created without content.")
+			: content;
+
+	private static void RequireAttentionQuestion(AppTaskState state, AppTaskContentSnapshot content)
 	{
-		if (state is < AppTaskState.Running or > AppTaskState.Error)
+		if (state == AppTaskState.NeedsAttention && string.IsNullOrEmpty(content.Question))
 		{
-			throw new ArgumentOutOfRangeException(nameof(state));
+			throw new ArgumentException(
+				"The NeedsAttention state requires task content with a question.",
+				nameof(state));
 		}
 	}
 

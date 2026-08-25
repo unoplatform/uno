@@ -167,6 +167,7 @@ public class Given_AppTaskInfo
 			content.AddButton("Too many", new Uri("sample-app://tasks/action/too-many")));
 		Assert.ThrowsExactly<ArgumentException>(() =>
 			content.AddButton("Relative", new Uri("/relative", UriKind.Relative)));
+		Assert.ThrowsExactly<ArgumentException>(() => content.AddButton("Null", null!));
 
 		content.SetTextInput("Reply", "sample-app://tasks/reply?text={userTextInput}");
 		Assert.ThrowsExactly<ArgumentException>(
@@ -186,7 +187,7 @@ public class Given_AppTaskInfo
 		Assert.ThrowsExactly<ArgumentException>(() => AppTaskContent.CreateSequenceOfSteps(["One"], string.Empty));
 		Assert.ThrowsExactly<ArgumentException>(() => AppTaskContent.CreateSequenceOfSteps(["One"], null!));
 		Assert.ThrowsExactly<ArgumentException>(() => AppTaskContent.CreateTextSummaryResult(string.Empty));
-		Assert.ThrowsExactly<ArgumentNullException>(() => AppTaskContent.CreatePreviewThumbnail(null!, "Step"));
+		Assert.ThrowsExactly<ArgumentException>(() => AppTaskContent.CreatePreviewThumbnail(null!, "Step"));
 		Assert.ThrowsExactly<ArgumentException>(
 			() => AppTaskContent.CreatePreviewThumbnail(new Uri("relative", UriKind.Relative), "Step"));
 
@@ -219,6 +220,125 @@ public class Given_AppTaskInfo
 		Assert.AreEqual(string.Empty, task.Subtitle, "Windows accepts a null subtitle in UpdateTitles.");
 		Assert.ThrowsExactly<ArgumentException>(
 			() => task.UpdateDeepLink(new Uri("relative", UriKind.Relative)));
+		Assert.ThrowsExactly<ArgumentException>(() => task.UpdateDeepLink(null!));
+	}
+
+	[TestMethod]
+	public void When_Generated_Assets_Are_Built_Then_Windows_Argument_Contract_Is_Matched()
+	{
+		// CreateGeneratedAssetsResult rejects a null or empty array but accepts null entries,
+		// which is the opposite of CreateSequenceOfSteps.
+		Assert.ThrowsExactly<ArgumentException>(() => AppTaskContent.CreateGeneratedAssetsResult(null!));
+		Assert.ThrowsExactly<ArgumentException>(() => AppTaskContent.CreateGeneratedAssetsResult([]));
+
+		var asset = new AppTaskResultAsset(
+			null!,
+			null!,
+			new Uri("ms-appx:///Assets/StoreLogo.png"),
+			new Uri("ms-appx:///Assets/output.png"));
+		var content = AppTaskContent.CreateGeneratedAssetsResult([asset, null!]);
+		var task = AppTaskInfo.Create(
+			"Assets",
+			string.Empty,
+			new Uri("sample-app://tasks/assets"),
+			new Uri("ms-appx:///Assets/StoreLogo.png"),
+			content);
+
+		Assert.AreEqual(AppTaskState.Running, task.State);
+		Assert.ThrowsExactly<ArgumentException>(() => new AppTaskResultAsset("n", "c", null!, new Uri("ms-appx:///a.png")));
+		Assert.ThrowsExactly<ArgumentException>(() => new AppTaskResultAsset("n", "c", new Uri("ms-appx:///a.png"), null!));
+	}
+
+	[TestMethod]
+	public void When_Task_Is_Created_Without_Content_Then_Content_Accessors_Are_Rejected()
+	{
+		// Windows returns S_OK for Create(content: null) and E_INVALIDARG from the content accessors.
+		var task = AppTaskInfo.Create(
+			"No content",
+			"sub",
+			new Uri("sample-app://tasks/no-content"),
+			new Uri("ms-appx:///Assets/StoreLogo.png"),
+			null!);
+
+		Assert.AreEqual(1, AppTaskInfo.FindAll().Length);
+		Assert.AreEqual(AppTaskState.Running, task.State);
+		Assert.ThrowsExactly<ArgumentException>(() => task.GetCompletedSteps());
+		Assert.ThrowsExactly<ArgumentException>(() => task.GetExecutingStep());
+
+		task.Update(AppTaskState.Running, AppTaskContent.CreateSequenceOfSteps(["One"], "Two"));
+		CollectionAssert.AreEqual(new[] { "One" }, task.GetCompletedSteps());
+		Assert.AreEqual("Two", task.GetExecutingStep());
+
+		// Update rejects a null content and leaves the task untouched.
+		Assert.ThrowsExactly<ArgumentException>(() => task.Update(AppTaskState.Completed, null!));
+		Assert.AreEqual(AppTaskState.Running, task.State);
+		Assert.AreEqual("Two", task.GetExecutingStep());
+	}
+
+	[TestMethod]
+	public void When_State_Is_Undefined_Then_Task_Is_Evicted_From_Enumeration()
+	{
+		var keeper = CreateTask();
+		var evicted = AppTaskInfo.Create(
+			"Evicted",
+			string.Empty,
+			new Uri("sample-app://tasks/evicted"),
+			new Uri("ms-appx:///Assets/StoreLogo.png"),
+			AppTaskContent.CreateTextSummaryResult("Summary"));
+
+		Assert.AreEqual(2, AppTaskInfo.FindAll().Length);
+
+		// Windows accepts undefined values and keeps them on the handle.
+		evicted.UpdateState((AppTaskState)5);
+		Assert.AreEqual((AppTaskState)5, evicted.State);
+		Assert.IsNull(evicted.EndTime);
+		Assert.AreEqual(1, AppTaskInfo.FindAll().Length, "An undefined state drops the task from FindAll.");
+		Assert.AreEqual(keeper.Id, AppTaskInfo.FindAll().Single().Id);
+
+		// Returning to a defined state does not restore the task.
+		evicted.UpdateState(AppTaskState.Running);
+		Assert.AreEqual(AppTaskState.Running, evicted.State);
+		Assert.AreEqual(1, AppTaskInfo.FindAll().Length);
+
+		evicted.UpdateTitles("Evicted again", "still detached");
+		Assert.AreEqual("Evicted again", evicted.Title);
+		evicted.Remove();
+		Assert.AreEqual(1, AppTaskInfo.FindAll().Length);
+
+		var byUpdate = CreateTask();
+		Assert.AreEqual(2, AppTaskInfo.FindAll().Length);
+		byUpdate.Update((AppTaskState)(-1), AppTaskContent.CreateTextSummaryResult("Summary"));
+		Assert.AreEqual((AppTaskState)(-1), byUpdate.State);
+		Assert.AreEqual(1, AppTaskInfo.FindAll().Length);
+	}
+
+	[TestMethod]
+	public void When_NeedsAttention_Has_No_Question_Then_It_Is_Rejected()
+	{
+		// Windows returns E_INVALIDARG and leaves the stored task unchanged unless the content has a question.
+		var task = CreateTask();
+
+		Assert.ThrowsExactly<ArgumentException>(() => task.UpdateState(AppTaskState.NeedsAttention));
+		Assert.AreEqual(AppTaskState.Running, task.State, "A rejected transition must not change the stored task.");
+
+		var withoutQuestion = AppTaskContent.CreateTextSummaryResult("Summary");
+		withoutQuestion.AddButton("Open", new Uri("sample-app://tasks/open"));
+		withoutQuestion.SetTextInput("Reply", "sample-app://tasks/reply?text={userTextInput}");
+		Assert.ThrowsExactly<ArgumentException>(() => task.Update(AppTaskState.NeedsAttention, withoutQuestion));
+		Assert.AreEqual(AppTaskState.Running, task.State);
+
+		var emptyQuestion = AppTaskContent.CreateTextSummaryResult("Summary");
+		emptyQuestion.SetQuestion(string.Empty);
+		Assert.ThrowsExactly<ArgumentException>(() => task.Update(AppTaskState.NeedsAttention, emptyQuestion));
+
+		var withQuestion = AppTaskContent.CreateTextSummaryResult("Summary");
+		withQuestion.SetQuestion("Continue?");
+		task.Update(AppTaskState.NeedsAttention, withQuestion);
+		Assert.AreEqual(AppTaskState.NeedsAttention, task.State);
+		Assert.IsNull(task.EndTime);
+
+		task.UpdateState(AppTaskState.NeedsAttention);
+		Assert.AreEqual(AppTaskState.NeedsAttention, task.State, "The current content still carries the question.");
 	}
 
 	[TestMethod]
@@ -329,15 +449,15 @@ public class Given_AppTaskInfo
 	}
 
 	[TestMethod]
-	public void When_Persisted_State_Is_Tampered_Then_It_Is_Quarantined()
+	public void When_Persisted_State_Is_Undefined_Then_Task_Is_Dropped()
 	{
 		_ = CreateTask();
 		_store.Value = _store.Value!.Replace("\"state\":0", "\"state\":42", StringComparison.Ordinal);
 
 		AppTaskInfoRegistry.ConfigureForTests(_store, new TestAppTaskInfoExtension(isSupported: true));
 
-		Assert.AreEqual(0, AppTaskInfo.FindAll().Length);
-		Assert.AreEqual(1, _store.QuarantineCount);
+		Assert.AreEqual(0, AppTaskInfo.FindAll().Length, "Undefined states are evicted, not enumerated.");
+		Assert.AreEqual(0, _store.QuarantineCount, "An undefined state is not a structural corruption.");
 	}
 
 	[TestMethod]

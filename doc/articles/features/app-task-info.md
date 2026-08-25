@@ -77,28 +77,40 @@ The text-input URI template is free-form. When it contains `{userTextInput}`, pl
 
 ### Windows contract parity
 
-The managed implementation follows the behavior observed on Windows 11 (build 26200) through the `Windows.UI.Shell.Tasks` activation factories:
+The managed implementation follows the behavior observed on Windows 11 (build 26200) by calling the `Windows.UI.Shell.Tasks` activation factories directly, because `Microsoft.Windows.SDK.NET.Ref` does not project these experimental types.
 
-| Behavior | Result |
-|----------|--------|
-| `AppTaskContent.MaxButtons` | `2` |
-| `AddButton` past the limit, or with a relative URI | `ArgumentException` |
-| `SetTextInput` called twice on the same content | `ArgumentException` |
-| `SetTextInput` template contents | Not validated |
-| `CreateSequenceOfSteps` with an empty `executingStep` | `ArgumentException` |
-| `CreateSequenceOfSteps` with `null` steps or `null` entries | Accepted; `null` entries become empty strings |
-| `CreateTextSummaryResult` with an empty string | `ArgumentException` |
-| `Create` with an empty title or subtitle | Accepted |
-| `UpdateTitles` with an empty title | `ArgumentException` |
-| `UpdateDeepLink` with a relative URI | `ArgumentException` |
-| `EndTime` | Set when the task enters `Completed` or `Error`, kept while the state is unchanged, cleared when the task leaves that state, and re-stamped when it enters another ending state |
-| `Id` | A braced GUID, for example `{2c7f5d61-6f7c-4f7b-9ee0-2f6b0e0b1a55}` |
-| `FindAll` ordering | Ascending start time |
+| Behavior | Windows result | Uno |
+|----------|----------------|-----|
+| `AppTaskContent.MaxButtons` | `2` | `2` |
+| `AddButton` past the limit, with a relative URI, or with `null` | `E_INVALIDARG` | `ArgumentException` |
+| `SetTextInput` called twice on the same content | `E_INVALIDARG` | `ArgumentException` |
+| `SetTextInput` template contents, `SetQuestion(null)`, `AddButton(null, uri)` | Not validated | Not validated |
+| `CreateSequenceOfSteps` with an empty `executingStep` | `E_INVALIDARG` | `ArgumentException` |
+| `CreateSequenceOfSteps` with `null` steps or `null` entries | `S_OK`; entries become empty strings | Same |
+| `CreateTextSummaryResult` with an empty string | `E_INVALIDARG` | `ArgumentException` |
+| `CreateGeneratedAssetsResult` with `null` or an empty array | `E_INVALIDARG` | `ArgumentException` |
+| `CreateGeneratedAssetsResult` with `null` entries | `S_OK` | Accepted; `null` entries are dropped |
+| `AppTaskResultAsset` with a `null` name or context | `S_OK` | Accepted as empty strings |
+| `Create` with an empty title or subtitle | `S_OK` | Accepted |
+| `Create` with `content: null` | `S_OK`; `GetCompletedSteps`/`GetExecutingStep` then return `E_INVALIDARG` | Accepted; both accessors throw `ArgumentException` |
+| `Update` with `content: null` | `E_INVALIDARG`, task unchanged | `ArgumentException`, task unchanged |
+| `UpdateTitles` with an empty title | `E_INVALIDARG` | `ArgumentException` |
+| `UpdateDeepLink` with a relative URI | `E_INVALIDARG` | `ArgumentException` |
+| `UpdateState`/`Update` to `NeedsAttention` without a non-empty question | `E_INVALIDARG`, stored task unchanged | `ArgumentException`, task unchanged |
+| `UpdateState`/`Update` with a value outside `AppTaskState` | `S_OK`; the handle keeps the value and the task is permanently dropped from `FindAll` | Same |
+| `EndTime` | Set when the task enters `Completed` or `Error`, kept while that state is re-applied, cleared when the task leaves it, and re-stamped on another ending state | Same |
+| `Id` | A braced GUID, for example `{2c7f5d61-6f7c-4f7b-9ee0-2f6b0e0b1a55}` | Same |
+| `FindAll` ordering | Ascending start time | Same |
+| Mutating an `AppTaskContent` after it was passed to `Create`/`Update` | No effect on the task | Same |
 
-Two deliberate differences remain:
+Two behaviors are not reproduced, because Windows has no defined result to reproduce:
 
-- `Create` and `Update` reject a `null` `content` argument with `ArgumentNullException` instead of accepting it.
-- `UpdateState` and `Update` reject values outside the `AppTaskState` enumeration with `ArgumentOutOfRangeException`, because Uno persists the state and cannot round-trip undefined values.
+- **`null` URI arguments.** `AppTaskInfo.Create` and the `AppTaskResultAsset` constructor dereference a `null` `Uri` and terminate the process with an access violation (`0xC0000005`) instead of returning an `HRESULT`. Uno raises `ArgumentException`, which is what the same argument produces on the API's other entry points.
+- **Remote preview thumbnails.** `CreatePreviewThumbnail` accepts `ms-appx`, `ms-appdata` and `file` URIs but returns `E_POINTER` for `http`, `https` and custom schemes, which the C#/WinRT projection surfaces as `NullReferenceException`. Uno accepts any absolute URI: the Uno shell presenters do not consume the thumbnail, and `NullReferenceException` is not a contract an app can act on.
+
+### Platforms without an implementation
+
+`AppTaskInfo.Create` throws `PlatformNotSupportedException` on targets where Uno has no app-task implementation at all — currently only the `netstandard2.0` reference assembly, which has no local storage to persist tasks into. This is Uno's standard signal for an unimplemented target rather than a contract difference; the Windows documentation states that the APIs "will not have any effect" when the operating-system feature is missing, but that path could not be exercised on the validation machine because `AppTaskInfo.IsSupported()` reports `true` there. On every implemented target, always guard calls with `AppTaskInfo.IsSupported()`.
 
 ### Restore tasks at startup
 

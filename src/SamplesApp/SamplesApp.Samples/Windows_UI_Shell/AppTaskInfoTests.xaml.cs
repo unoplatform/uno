@@ -161,7 +161,9 @@ public sealed partial class AppTaskInfoTests : Page
 			return;
 		}
 
-		task.UpdateState(AppTaskState.NeedsAttention);
+		// NeedsAttention requires content that carries a question, so the state is updated together
+		// with sequence content that sets one.
+		task.Update(AppTaskState.NeedsAttention, CreateSequenceContent(_primaryStepIndex));
 		Log("Marked the primary task as needing attention.");
 		RefreshVisualState();
 	}

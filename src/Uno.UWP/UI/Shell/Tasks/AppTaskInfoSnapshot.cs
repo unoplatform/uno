@@ -32,6 +32,18 @@ internal sealed record AppTaskContentSnapshot(
 {
 	private static readonly IEqualityComparer ArrayComparer = StructuralComparisons.StructuralEqualityComparer;
 
+	internal static AppTaskContentSnapshot Empty { get; } = new(
+		AppTaskContentKind.None,
+		Array.Empty<string>(),
+		string.Empty,
+		null,
+		string.Empty,
+		Array.Empty<AppTaskResultAssetSnapshot>(),
+		Array.Empty<AppTaskButtonSnapshot>(),
+		string.Empty,
+		string.Empty,
+		string.Empty);
+
 	public bool Equals(AppTaskContentSnapshot? other) =>
 		ReferenceEquals(this, other)
 		|| (other is not null

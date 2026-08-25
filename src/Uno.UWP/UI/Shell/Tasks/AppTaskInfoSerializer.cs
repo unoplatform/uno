@@ -94,29 +94,16 @@ internal static class AppTaskInfoSerializer
 		}
 
 		var content = task.Content ?? throw new InvalidDataException($"Persisted app task '{task.Id}' has no content.");
-		var completedSteps = content.CompletedSteps ?? Array.Empty<string>();
-		if (completedSteps.Any(static step => step is null))
-		{
-			throw new InvalidDataException($"Persisted app task '{task.Id}' contains a null completed step.");
-		}
 
-		var buttons = content.Buttons ?? Array.Empty<AppTaskStoreButton>();
-		if (buttons.Any(static button => button is null))
-		{
-			throw new InvalidDataException($"Persisted app task '{task.Id}' contains a null button.");
-		}
-
-		if (buttons.Length > AppTaskContent.MaxButtons)
-		{
-			throw new InvalidDataException(
-				$"Persisted app task '{task.Id}' contains {buttons.Length} buttons; the maximum is {AppTaskContent.MaxButtons}.");
-		}
-
-		var generatedAssets = content.GeneratedAssets ?? Array.Empty<AppTaskStoreResultAsset>();
-		if (generatedAssets.Any(static asset => asset is null))
-		{
-			throw new InvalidDataException($"Persisted app task '{task.Id}' contains a null generated asset.");
-		}
+		// The store mirrors what the public API produces, so it applies the same normalization instead
+		// of treating values the API accepts as corruption.
+		var completedSteps = content.CompletedSteps is { } steps
+			? steps.Select(static step => step ?? string.Empty).ToArray()
+			: Array.Empty<string>();
+		var buttons = content.Buttons?.Where(static button => button is not null).ToArray()
+			?? Array.Empty<AppTaskStoreButton>();
+		var generatedAssets = content.GeneratedAssets?.Where(static asset => asset is not null).ToArray()
+			?? Array.Empty<AppTaskStoreResultAsset>();
 
 		return new(
 			task.Id,
@@ -136,14 +123,14 @@ internal static class AppTaskInfoSerializer
 				content.TextSummary ?? string.Empty,
 				generatedAssets
 					.Select(static asset => new AppTaskResultAssetSnapshot(
-						RequireValue(asset.Name, nameof(asset.Name)),
-						RequireValue(asset.Context, nameof(asset.Context)),
+						asset!.Name ?? string.Empty,
+						asset.Context ?? string.Empty,
 						CreateAbsoluteUri(asset.IconUri, nameof(asset.IconUri)),
 						CreateAbsoluteUri(asset.AssetUri, nameof(asset.AssetUri))))
 					.ToArray(),
 				buttons
 					.Select(static button => new AppTaskButtonSnapshot(
-						button.Text ?? string.Empty,
+						button!.Text ?? string.Empty,
 						CreateAbsoluteUri(button.ActionUri, nameof(button.ActionUri))))
 					.ToArray(),
 				content.Question ?? string.Empty,
@@ -151,15 +138,7 @@ internal static class AppTaskInfoSerializer
 				content.TextInputActionUriTemplate ?? string.Empty));
 	}
 
-	private static AppTaskState ParseState(int value) => value switch
-	{
-		(int)AppTaskState.Running => AppTaskState.Running,
-		(int)AppTaskState.Completed => AppTaskState.Completed,
-		(int)AppTaskState.NeedsAttention => AppTaskState.NeedsAttention,
-		(int)AppTaskState.Paused => AppTaskState.Paused,
-		(int)AppTaskState.Error => AppTaskState.Error,
-		_ => throw new InvalidDataException($"Persisted app task state '{value}' is invalid."),
-	};
+	private static AppTaskState ParseState(int value) => (AppTaskState)value;
 
 	private static AppTaskContentKind ParseContentKind(int value) => value switch
 	{
@@ -167,6 +146,7 @@ internal static class AppTaskInfoSerializer
 		(int)AppTaskContentKind.PreviewThumbnail => AppTaskContentKind.PreviewThumbnail,
 		(int)AppTaskContentKind.TextSummary => AppTaskContentKind.TextSummary,
 		(int)AppTaskContentKind.GeneratedAssets => AppTaskContentKind.GeneratedAssets,
+		(int)AppTaskContentKind.None => AppTaskContentKind.None,
 		_ => throw new InvalidDataException($"Persisted app task content kind '{value}' is invalid."),
 	};
 
@@ -195,9 +175,6 @@ internal static class AppTaskInfoSerializer
 
 		return result;
 	}
-
-	private static string RequireValue(string? value, string propertyName) =>
-		value ?? throw new InvalidDataException($"Persisted app task property '{propertyName}' is missing.");
 }
 
 internal sealed class AppTaskStoreDocument
