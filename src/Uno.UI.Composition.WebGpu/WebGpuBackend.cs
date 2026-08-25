@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Uno.WebGpu.Native;
 using static Uno.WebGpu.Native.WGPU;
 using Uno.UI.Composition.Drawing;
+using Uno.Foundation.Logging;
 using Windows.Graphics.Effects.Interop;
 using Windows.Foundation;
 using WColor = Windows.UI.Color;
@@ -433,6 +434,16 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			_pendingColorMatrix = matrix;
 			return;
 		}
+
+		// Unreachable by design: every IColorFilter produced by the factory that reaches SaveLayer is a colour
+		// matrix (CreateColorMatrixColorFilter — alpha mask / effect recipe). A blend-mode filter is only ever
+		// routed to DrawImage. If this fires, a new caller has broken that invariant and the filter is being
+		// silently dropped (a plain layer, below) — render output will be wrong. Fix the caller or implement the case.
+		if (this.Log().IsEnabled(LogLevel.Error))
+		{
+			this.Log().Error($"WebGPU SaveLayer(IColorFilter) reached with a non-colour-matrix filter ('{colorFilter?.GetType().Name ?? "null"}'); only colour-matrix layer filters are supported. The filter is being ignored — this path is not expected to be taken.");
+		}
+
 		PushLayer(0, null);
 	}
 	public void SaveLayerMask(bool antialias = false) => PushLayer(1, null);   // 1 = DstIn composite
