@@ -41,7 +41,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new RichTextBlock { Width = 200, Height = 50 };
 
 			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForLoaded(SUT, x => x.IsLoaded);
 			await WindowHelper.WaitForIdle();
 
 			// Empty RichTextBlock should have non-negative height
@@ -495,7 +495,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new RichTextBlock { Width = 300, Height = 100 };
 
 			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForLoaded(SUT, x => x.IsLoaded);
 			await WindowHelper.WaitForIdle();
 
 			var paragraph = new Paragraph();
@@ -620,7 +620,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new RichTextBlock { Width = 200, Height = 50 };
 
 			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForLoaded(SUT, x => x.IsLoaded);
 
 			Assert.AreEqual(TextWrapping.Wrap, SUT.TextWrapping, "Default TextWrapping should be Wrap");
 			Assert.AreEqual(TextTrimming.None, SUT.TextTrimming, "Default TextTrimming should be None");
@@ -773,6 +773,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.SelectAll();
 
+			await WindowHelper.WaitForIdle();
+
 			Assert.IsTrue(eventFired, "SelectionChanged should fire after SelectAll");
 		}
 
@@ -844,7 +846,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new RichTextBlock { Width = 200, Height = 50 };
 
 			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForLoaded(SUT, x => x.IsLoaded);
 
 			Assert.AreEqual(0, SUT.Blocks.Count);
 		}
@@ -972,6 +974,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var smallHeight = SUT.ActualHeight;
 
 			SUT.FontSize = 40;
+			SUT.UpdateLayout();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsTrue(SUT.ActualHeight > smallHeight,
@@ -997,6 +1000,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var noWrapHeight = SUT.ActualHeight;
 
 			SUT.TextWrapping = TextWrapping.Wrap;
+			SUT.UpdateLayout();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsTrue(SUT.ActualHeight > noWrapHeight,
@@ -1018,6 +1022,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var unlimitedHeight = SUT.ActualHeight;
 
 			SUT.MaxLines = 1;
+			SUT.UpdateLayout();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsTrue(SUT.ActualHeight < unlimitedHeight,
@@ -1059,6 +1064,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var noPaddingWidth = SUT.ActualWidth;
 
 			SUT.Padding = new Thickness(30);
+			SUT.UpdateLayout();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsTrue(SUT.ActualHeight > noPaddingHeight,
@@ -1357,6 +1363,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var originalWidth = SUT.ActualWidth;
 
 			run.Text = "A much longer replacement text string";
+			SUT.UpdateLayout();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsTrue(SUT.ActualWidth > originalWidth,
@@ -1378,6 +1385,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var originalWidth = SUT.ActualWidth;
 
 			paragraph.Inlines.Add(new Run { Text = " additional text added" });
+			SUT.UpdateLayout();
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsTrue(SUT.ActualWidth > originalWidth,
@@ -1433,7 +1441,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// After content change, SelectAll should work on new content
 			SUT.SelectAll();
-			Assert.AreEqual("New text", SUT.SelectedText);
+			// WinUI keeps the trailing paragraph terminator in SelectedText here.
+			Assert.AreEqual("New text", SUT.SelectedText.TrimEnd('\r', '\n'));
 		}
 
 		[TestMethod]
@@ -1503,7 +1512,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Blocks.Add(paragraph);
 
 			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForLoaded(SUT, x => x.IsLoaded);
 			await WindowHelper.WaitForIdle();
 
 #if HAS_UNO
@@ -1521,7 +1530,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Blocks.Add(paragraph);
 
 			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForLoaded(SUT, x => x.IsLoaded);
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsTrue(SUT.DesiredSize.Height > 0, "LineBreaks should produce some desired height");
@@ -1552,7 +1561,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Blocks.Add(paragraph);
 
 			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForLoaded(SUT, x => x.IsLoaded);
 			await WindowHelper.WaitForIdle();
 
 #if HAS_UNO
