@@ -146,6 +146,83 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual(AutomationControlType.ComboBox, controlType);
 		}
 
+#if HAS_UNO
+		/// <summary>
+		/// WinUI parity for the ComboBox light-dismiss automation element
+		/// (MUX <c>ComboBoxAutomationPeer_Partial.cpp</c> <c>GetChildrenCore</c>, which appends the
+		/// <c>ComboBoxLightDismiss</c> peer while the drop-down is open).
+		/// Upstream ComboBox opts out of the Popup light-dismiss chain — it only registers
+		/// <c>WindowSizeChange</c> as a dismissal trigger and creates its own giant
+		/// <c>CComboBoxLightDismiss</c> canvas inside the popup child — so upstream's generic
+		/// <c>PopupRootAutomationPeer</c> "Close" affordance never applies to it and has to be
+		/// duplicated per ComboBox. Uno's ComboBox instead sets <c>Popup.IsLightDismissEnabled</c>
+		/// and is dismissed through the shared <c>PopupRoot</c> chain, so it has no such element
+		/// and no per-ComboBox peer to surface.
+		///
+		/// The UIA dismissal affordance Uno exposes in its place is the ExpandCollapse pattern on
+		/// the ComboBox peer itself, which upstream also exposes. This asserts both halves: the
+		/// peer's children are exactly upstream's minus that element (realized item peers only — no
+		/// synthesized light-dismiss child, no template parts), and Collapse() genuinely closes the
+		/// drop-down. Uno-only: native WinUI does expose the extra light-dismiss child here, and that
+		/// difference is the documented adaptation.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_DropDown_Open_Then_Peer_Children_Are_Items_And_Collapse_Dismisses()
+		{
+			var comboBox = new ComboBox();
+			comboBox.Items.Add("Option A");
+			comboBox.Items.Add("Option B");
+			comboBox.SelectedIndex = 0;
+
+			try
+			{
+				await UITestHelper.Load(comboBox);
+
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(comboBox) as ComboBoxAutomationPeer;
+				Assert.IsNotNull(peer, "ComboBox should have a ComboBoxAutomationPeer");
+
+				Assert.AreEqual(0, peer.GetChildren().Count,
+					"A closed ComboBox exposes no automation children; the selected value is carried by the Value pattern.");
+
+				comboBox.IsDropDownOpen = true;
+				await UITestHelper.WaitForIdle();
+				await UITestHelper.WaitFor(
+					() => peer.GetChildren().Count == comboBox.Items.Count,
+					timeoutMS: 5000,
+					message: "Timed out waiting for the open ComboBox to expose one automation child per item.");
+
+				var children = peer.GetChildren();
+				Assert.AreEqual(comboBox.Items.Count, children.Count,
+					"An open ComboBox exposes exactly one automation child per item — no light-dismiss child and no template parts.");
+
+				foreach (var child in children)
+				{
+					Assert.AreEqual(AutomationControlType.ListItem, child.GetAutomationControlType(),
+						"Every automation child of an open ComboBox must be an item peer.");
+					Assert.AreNotEqual("Close", child.GetName(),
+						"Uno must not synthesize a light-dismiss 'Close' child; dismissal is exposed through ExpandCollapse.");
+				}
+
+				var expandCollapse = (IExpandCollapseProvider)peer.GetPattern(PatternInterface.ExpandCollapse);
+				Assert.AreEqual(ExpandCollapseState.Expanded, expandCollapse.ExpandCollapseState);
+
+				expandCollapse.Collapse();
+				await UITestHelper.WaitForIdle();
+
+				Assert.IsFalse(comboBox.IsDropDownOpen,
+					"IExpandCollapseProvider.Collapse() must dismiss the drop-down — this is the UIA affordance that replaces upstream's light-dismiss Invoke.");
+				Assert.AreEqual(ExpandCollapseState.Collapsed, expandCollapse.ExpandCollapseState);
+				Assert.AreEqual(0, peer.GetChildren().Count, "Closing the drop-down must retract the item peers.");
+			}
+			finally
+			{
+				comboBox.IsDropDownOpen = false;
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+#endif
+
 #if __SKIA__
 		/// <summary>
 		/// Verifies that an open ComboBox dropdown exposes its options as a proper WAI-ARIA
@@ -548,6 +625,87 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual("false", GetSemanticAttribute(comboBox, "aria-expanded"), "A closed ComboBox must emit aria-expanded=\"false\".");
 			Assert.AreEqual("listbox", GetSemanticAttribute(comboBox, "aria-haspopup"), "A ComboBox must emit aria-haspopup=\"listbox\".");
 		}
+
+		/// <summary>
+		/// WinUI parity for the ComboBox light-dismiss automation element, browser half.
+		///
+		/// Upstream (MUX <c>ComboBoxAutomationPeer_Partial.cpp</c>) appends a
+		/// <c>ComboBoxLightDismiss</c> peer — ControlType Button, name "Close", Invoke pattern — as a
+		/// child of the ComboBox while the drop-down is open, because its giant hit-test canvas would
+		/// otherwise be invisible to UIA. Uno's browser accessibility tree is built from the visual
+		/// tree, not from <c>GetChildrenCore</c>, and the ARIA 1.2 combobox pattern has no place for a
+		/// button child: the popup is associated through <c>aria-controls</c> and dismissal is the
+		/// Escape key. Surfacing the light-dismiss surface would inject a viewport-sized node over the
+		/// whole page, which is why the popup wrapper is already suppressed for these drop-downs.
+		///
+		/// This pins that adaptation: while the drop-down is open the head keeps the full ARIA
+		/// contract, and the semantic DOM gains no viewport-sized node from the light-dismiss surface.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_DropDown_Opened_Then_No_LightDismiss_Node_And_Aria_Contract_Holds()
+		{
+			var comboBox = new ComboBox();
+			comboBox.Items.Add("Option A");
+			comboBox.Items.Add("Option B");
+			comboBox.SelectedIndex = 0;
+
+			try
+			{
+				await UITestHelper.Load(comboBox);
+				comboBox.GetOrCreateAutomationPeer();
+
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(() => ComboBoxHeadExists(comboBox), timeoutMS: 5000,
+					message: "Timed out waiting for the semantic combobox head element to be created.");
+
+				var viewportNodesWhileClosed = CountViewportSizedSemanticNodes();
+
+				comboBox.IsDropDownOpen = true;
+				await UITestHelper.WaitFor(() => GetListBoxOptionCount(comboBox) == 2, timeoutMS: 5000,
+					message: "Timed out waiting for the two dropdown options.");
+
+				Assert.AreEqual("true", GetSemanticAttribute(comboBox, "aria-expanded"),
+					"An open ComboBox must report aria-expanded=\"true\".");
+				Assert.AreNotEqual(string.Empty, GetSemanticAttribute(comboBox, "aria-controls"),
+					"The head must associate the popup listbox through aria-controls — this is the ARIA replacement for a light-dismiss child.");
+				Assert.AreEqual(0, CountSemanticNodesNamed("Close"),
+					"Uno must not surface a light-dismiss 'Close' node in the browser accessibility tree.");
+				Assert.AreEqual(viewportNodesWhileClosed, CountViewportSizedSemanticNodes(),
+					"Opening the drop-down must not add a viewport-sized node; the light-dismiss surface stays out of the semantic DOM.");
+
+				comboBox.IsDropDownOpen = false;
+				await UITestHelper.WaitFor(() => GetSemanticAttribute(comboBox, "aria-expanded") == "false", timeoutMS: 3000,
+					message: "Closing the drop-down did not reset aria-expanded.");
+				Assert.AreEqual(string.Empty, GetSemanticAttribute(comboBox, "aria-activedescendant"),
+					"Closing the drop-down must clear aria-activedescendant so it never dangles.");
+				Assert.AreEqual(viewportNodesWhileClosed, CountViewportSizedSemanticNodes(),
+					"Closing the drop-down must leave no viewport-sized node behind.");
+			}
+			finally
+			{
+				comboBox.IsDropDownOpen = false;
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		/// <summary>
+		/// Counts semantic nodes whose accessible name is <paramref name="name"/>.
+		/// </summary>
+		private static int CountSemanticNodesNamed(string name)
+			=> int.Parse(InvokeBrowserJs(
+				$"(function(){{const root=document.getElementById('uno-semantics-root');if(!root){{return '0';}}return String(Array.from(root.querySelectorAll('*')).filter(e=>(e.getAttribute('aria-label')||'').trim()==='{name}').length);}})()"),
+				System.Globalization.CultureInfo.InvariantCulture);
+
+		/// <summary>
+		/// Counts semantic nodes that cover essentially the whole viewport. A light-dismiss overlay
+		/// leaking into the tree would show up here as a full-page node intercepting the reading order.
+		/// </summary>
+		private static int CountViewportSizedSemanticNodes()
+			=> int.Parse(InvokeBrowserJs(
+				"(function(){const root=document.getElementById('uno-semantics-root');if(!root){return '0';}const w=window.innerWidth;const h=window.innerHeight;return String(Array.from(root.querySelectorAll('*')).filter(e=>{const r=e.getBoundingClientRect();return r.width>=w*0.9&&r.height>=h*0.9;}).length);})()"),
+				System.Globalization.CultureInfo.InvariantCulture);
 
 
 
