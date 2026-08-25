@@ -228,14 +228,24 @@ public partial class Given_InteractionTracker
 
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 		var finger = injector.GetFinger();
-		finger.Drag(new(position.Left + 50, position.Top + 50), new(position.Left + 100, position.Top + 50), stepOffsetInMilliseconds: 0);
+		const double drag = 50;
+#if HAS_UNO
+		var threshold = Microsoft.UI.Input.GestureRecognizer.Manipulation.StartTouch.TranslateX;
+#else
+		// Not reachable: the test is [Ignore]d on WinAppSDK, where the threshold type is internal to Uno.
+		const double threshold = 10;
+#endif
+		// Moves of exactly one threshold: the manipulation is recognized on the first one, so exactly one
+		// threshold is absorbed and never applied to the tracker (#20473).
+		var expectedX = -(float)(drag - threshold);
+		finger.Drag(new(position.Left + 50, position.Top + 50), new(position.Left + 50 + drag, position.Top + 50), steps: (uint)(drag / threshold) - 1, stepOffsetInMilliseconds: 0);
 
 		string logs = await WaitTrackerLogs(tracker);
 		var helper = new TrackerAssertHelper(logs);
 
 		Assert.AreEqual(
 			TrackerLogsConstructingHelper.GetInteractingStateEntered(
-				trackerPosition: new(-50.0f, 0.0f, 0.0f),
+				trackerPosition: new(expectedX, 0.0f, 0.0f),
 				requestId: 0),
 			helper.Current);
 
@@ -247,16 +257,16 @@ public partial class Given_InteractionTracker
 
 		Assert.AreEqual(
 			TrackerLogsConstructingHelper.GetValuesChanged(
-				trackerPosition: new(-50.0f, 0.0f, 0.0f),
+				trackerPosition: new(expectedX, 0.0f, 0.0f),
 				requestId: 0,
-				argsPosition: new(-50.0f, 0.0f, 0.0f)),
+				argsPosition: new(expectedX, 0.0f, 0.0f)),
 			helper.Current);
 
 		helper.Advance();
 
 		Assert.AreEqual(
 			TrackerLogsConstructingHelper.GetIdleStateEntered(
-				trackerPosition: new(-50.0f, 0.0f, 0.0f),
+				trackerPosition: new(expectedX, 0.0f, 0.0f),
 				requestId: 0),
 			helper.Current);
 

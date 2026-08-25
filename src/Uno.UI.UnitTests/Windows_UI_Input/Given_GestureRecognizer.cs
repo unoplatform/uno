@@ -341,8 +341,51 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 + step, 25).WithDelta(step, 0).WithCumulative(step, 0)
+				v => v.Started().At(25, 25).WithCumulative(step, 0)
+			);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20473")]
+		public void Manipulation_Begin_DoesNotRecoverThresholdAsDelta()
+		{
+			// The distance travelled before recognition is reported through Started.Cumulative and must
+			// never be replayed as a delta, otherwise a pan visibly jumps by the dead-zone once recognized.
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
+			var result = new ManipulationRecorder(sut);
+			var threshold = GestureRecognizer.Manipulation.StartTouch.TranslateX;
+			var move = 7; // deliberately != threshold, so reporting the wrong one fails the assertion
+
+			sut.ProcessDownEvent(25, 25);
+			sut.ProcessMoveEvent(25 + threshold, 25);
+			sut.ProcessMoveEvent(25 + threshold + move, 25);
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().At(25, 25).WithCumulative(threshold, 0),
+				// Delta covers only the movement since recognition; Cumulative still tracks from the press.
+				v => v.Delta().At(25 + threshold + move, 25).WithDelta(move, 0).WithCumulative(threshold + move, 0)
+			);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20473")]
+		public void Manipulation_Begin_AbsorbsWholeCrossingMove()
+		{
+			// A single coalesced move that overshoots the threshold is absorbed in full: the whole distance
+			// is reported through Started.Cumulative and no ManipulationUpdated fires. Pins the behaviour
+			// against a return to clamping the absorbed amount to the dead-zone.
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
+			var result = new ManipulationRecorder(sut);
+			var threshold = GestureRecognizer.Manipulation.StartTouch.TranslateX;
+			var overshoot = 15; // deliberately larger than the threshold
+
+			sut.ProcessDownEvent(25, 25);
+			sut.ProcessMoveEvent(25 + threshold + overshoot, 25);
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().At(25, 25).WithCumulative(threshold + overshoot, 0)
 			);
 		}
 
@@ -390,8 +433,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 + step, 25).WithDelta(step, 0).WithCumulative(step, 0),
+				v => v.Started().At(25, 25).WithCumulative(step, 0),
 				v => v.Delta().At(25 + step * 2, 25).WithDelta(step, 0).WithCumulative(step * 2, 0)
 			);
 		}
@@ -409,8 +451,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 + step, 25).WithDelta(step, 0).WithCumulative(step, 0),
+				v => v.Started().At(25, 25).WithCumulative(step, 0),
 				v => v.End().At(25 + step + 1, 25).WithCumulative(step + 1, 0)
 			);
 		}
@@ -430,8 +471,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 + step, 25).WithDelta(step, 0).WithCumulative(step, 0),
+				v => v.Started().At(25, 25).WithCumulative(step, 0),
 				v => v.Delta().At(25 + step * 2, 25).WithDelta(step, 0).WithCumulative(step * 2, 0),
 				v => v.End().At(25 + step * 2 + 2, 25).WithCumulative(step * 2 + 2, 0)
 			);
@@ -454,8 +494,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 + stepX, 25 + stepY).WithDelta(stepX, 0).WithCumulative(stepX, 0),
+				v => v.Started().At(25, 25).WithCumulative(stepX, 0),
 				v => v.Delta().At(25 + stepX * 2, 25 + stepY * 2).WithDelta(stepX, 0).WithCumulative(stepX * 2, 0),
 				v => v.End().At(25 + stepX * 2 + 1, 25 + stepY * 2 + 1).WithCumulative(stepX * 2 + 1, 0)
 			);
@@ -478,8 +517,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 + stepX, 25 + stepY).WithDelta(0, stepY).WithCumulative(0, stepY),
+				v => v.Started().At(25, 25).WithCumulative(0, stepY),
 				v => v.Delta().At(25 + stepX * 2, 25 + stepY * 2).WithDelta(0, stepY).WithCumulative(0, stepY * 2),
 				v => v.End().At(25 + stepX * 2 + 1, 25 + stepY * 2 + 1).WithCumulative(0, stepX * 2 + 1)
 			);
@@ -502,8 +540,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 - stepX, 25 - stepY).WithDelta(-stepX, 0).WithCumulative(-stepX, 0),
+				v => v.Started().At(25, 25).WithCumulative(-stepX, 0),
 				v => v.Delta().At(25 - stepX * 2, 25 - stepY * 2).WithDelta(-stepX, 0).WithCumulative(-stepX * 2, 0),
 				v => v.End().At(25 - stepX * 2 - 1, 25 - stepY * 2 - 1).WithCumulative(-stepX * 2 - 1, 0)
 			);
@@ -526,8 +563,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 - stepX, 25 - stepY).WithDelta(0, -stepY).WithCumulative(0, -stepY),
+				v => v.Started().At(25, 25).WithCumulative(0, -stepY),
 				v => v.Delta().At(25 - stepX * 2, 25 - stepY * 2).WithDelta(0, -stepY).WithCumulative(0, -stepY * 2),
 				v => v.End().At(25 - stepX * 2 - 1, 25 - stepY * 2 - 1).WithCumulative(0, -stepX * 2 - 1)
 			);
@@ -1038,8 +1074,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().WithCumulative(scale: 1),
-				v => v.Delta().WithDelta(tX: 90, tY: 90).WithCumulative(tX: 90, tY: 90),
+				v => v.Started().WithCumulative(tX: 90, tY: 90, scale: 1),
 				v => v.Inertia(),
 				v => v.Delta().IsInertial(),
 				v => v.Delta().IsInertial(),
@@ -1085,8 +1120,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().WithCumulative(scale: 1),
-				v => v.Delta().WithDelta(tX: 90, tY: 0).WithCumulative(tX: 90, tY: 0),
+				v => v.Started().WithCumulative(tX: 90, tY: 0, scale: 1),
 				v => v.Inertia(),
 				v => v.Delta().IsInertial(),
 				v => v.Delta().IsInertial(),
@@ -1132,8 +1166,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().WithCumulative(scale: 1),
-				v => v.Delta().WithDelta(tX: 0, tY: 90).WithCumulative(tX: 0, tY: 90),
+				v => v.Started().WithCumulative(tX: 0, tY: 90, scale: 1),
 				v => v.Inertia(),
 				v => v.Delta().IsInertial(),
 				v => v.Delta().IsInertial(),
@@ -1179,8 +1212,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().WithCumulative(scale: 1),
-				v => v.Delta().WithDelta(tX: 90, tY: 90).WithCumulative(tX: 90, tY: 90),
+				v => v.Started().WithCumulative(tX: 90, tY: 90, scale: 1),
 				v => v.Inertia(),
 				v => v.Delta().IsInertial(),
 				v => v.Delta().IsInertial(),

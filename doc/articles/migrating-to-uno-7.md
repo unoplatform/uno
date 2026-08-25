@@ -392,6 +392,21 @@ re-baseline visual tests:
   control now renders nothing. Give it a default style with a `Template`, or leave
   `DefaultStyleKey` alone so it inherits the `ContentControl` default template.
 
+Independently of rendering, manipulation recognition was realigned with WinUI:
+
+- **No `ManipulationDelta` immediately after `ManipulationStarted`.** The distance travelled
+  before a manipulation is recognized is now reported through `ManipulationStarted`'s
+  `Cumulative` and is never replayed as a delta, so a pan no longer visibly jumps by the
+  recognition threshold the moment it starts. This matches WinUI, where a manipulation can
+  complete without raising a single `ManipulationDelta`. Handlers that positioned content by
+  accumulating `ManipulationDelta.Delta` alone (the classic `GridSplitter` pattern) will now
+  under-track by the recognition distance — read `Cumulative` instead, which still measures
+  from the press point and is the value WinUI's own samples use.
+- **Manipulation start thresholds changed.** Touch and pen go from 15px to 10px, so panning
+  starts sooner. Mouse goes from 1px to 4px, matching the Win32 system drag threshold
+  (`SM_CXDRAG`), so a small wiggle during a click is no longer reported as a drag. Code that
+  relied on a near-zero mouse threshold to start a drag should re-test.
+
 ### Type-hierarchy changes (WinUI parity)
 
 7.0 realigns several types to their WinUI base classes. Most code is unaffected — the
