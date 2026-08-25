@@ -64,16 +64,16 @@ internal sealed partial class WebAssemblyAppNotificationManagerBackend : IAppNot
 	}
 
 	public bool TryShow(AppNotificationEnvelope notification)
-		=> TryPost(WebAssemblyAppNotificationTranslator.Translate(notification), Guid.NewGuid().ToString("N"));
+		=> TryPost(WebAssemblyAppNotificationTranslator.Translate(notification, _useServiceWorker), Guid.NewGuid().ToString("N"));
 
 	public bool TryShow(AppNotificationEnvelope notification, string operationCorrelation)
-		=> TryPost(WebAssemblyAppNotificationTranslator.Translate(notification), operationCorrelation);
+		=> TryPost(WebAssemblyAppNotificationTranslator.Translate(notification, _useServiceWorker), operationCorrelation);
 
 	public bool TryUpdate(AppNotificationStateRecord notification)
-		=> TryPost(WebAssemblyAppNotificationTranslator.Translate(notification.ToEnvelope()), Guid.NewGuid().ToString("N"));
+		=> TryPost(WebAssemblyAppNotificationTranslator.Translate(notification.ToEnvelope(), _useServiceWorker), Guid.NewGuid().ToString("N"));
 
 	public bool TryUpdate(AppNotificationStateRecord notification, string operationCorrelation)
-		=> TryPost(WebAssemblyAppNotificationTranslator.Translate(notification.ToEnvelope()), operationCorrelation);
+		=> TryPost(WebAssemblyAppNotificationTranslator.Translate(notification.ToEnvelope(), _useServiceWorker), operationCorrelation);
 
 	public void Remove(AppNotificationStateRecord notification)
 		=> NativeMethods.Close(NativeTagPrefix + notification.Id);
@@ -84,7 +84,7 @@ internal sealed partial class WebAssemblyAppNotificationManagerBackend : IAppNot
 		=> _useServiceWorker ? null : ParseActiveIds(NativeMethods.GetActiveIds(NativeTagPrefix));
 
 	public Task<bool> TryUpdateAsync(AppNotificationStateRecord notification)
-		=> TryPostAsync(WebAssemblyAppNotificationTranslator.Translate(notification.ToEnvelope()));
+		=> TryPostAsync(WebAssemblyAppNotificationTranslator.Translate(notification.ToEnvelope(), _useServiceWorker));
 
 	public Task<bool> RemoveAsync(AppNotificationStateRecord notification)
 		=> NativeMethods.CloseAsync(NativeTagPrefix + notification.Id);

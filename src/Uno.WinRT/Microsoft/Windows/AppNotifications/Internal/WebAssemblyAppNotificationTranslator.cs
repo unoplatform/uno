@@ -10,7 +10,7 @@ internal static class WebAssemblyAppNotificationTranslator
 {
 	private const string NativeTagPrefix = "uno.appnotifications.";
 
-	public static WebAssemblyAppNotificationCommand Translate(AppNotificationEnvelope notification)
+	public static WebAssemblyAppNotificationCommand Translate(AppNotificationEnvelope notification, bool supportsActions)
 	{
 		var unsupportedFeatures = new List<string>();
 		if (notification.Payload.Texts.Length > 2)
@@ -37,7 +37,9 @@ internal static class WebAssemblyAppNotificationTranslator
 		{
 			unsupportedFeatures.Add("pending-update actions");
 		}
-		if (notification.Payload.Actions.Any(action => !action.ContextMenuPlacement))
+		// Action buttons are only rendered by ServiceWorkerRegistration.showNotification; document-scoped
+		// notifications drop them.
+		if (!supportsActions && notification.Payload.Actions.Any(action => !action.ContextMenuPlacement))
 		{
 			unsupportedFeatures.Add("actions");
 		}
