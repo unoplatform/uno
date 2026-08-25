@@ -821,6 +821,144 @@ namespace Uno.UI.Tests.Windows_Globalization
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		// WinRT prints the 15 significant digits Double.ToString has always produced, falling back to 17
+		// when they do not round-trip, and breaks the 17-digit ties away from zero (where "G17" would
+		// break them to even).
+		[DataRow(562949953421312.125, "562949953421312.13")]
+		[DataRow(1125899906842624.25, "1125899906842624.3")]
+		[DataRow(300000000000000.625, "300000000000000.63")]
+		[DataRow(123456789012345.6, "123456789012345.59")]
+		[DataRow(1e-5, "0.00001")]
+		[DataRow(1e-20, "0.00000000000000000001")]
+		[DataRow(2.4999, "2.4999")]
+		public void When_FractionDigitsIsZero_Then_RoundTripDigitsArePrinted(double value, string expected)
+		{
+			var sut = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				IntegerDigits = 1,
+				FractionDigits = 0,
+			};
+
+			Assert.AreEqual(expected, sut.FormatDouble(value));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		// FractionDigits is a minimum that pads with zeros - it never rounds the value away.
+		[DataRow(0.125, 2, "0.125")]
+		[DataRow(70368744177664.015625, 2, "70368744177664.016")]
+		[DataRow(99999999999999.984375, 2, "99999999999999.984")]
+		[DataRow(1000000000000000.125, 2, "1000000000000000.10")]
+		[DataRow(2251799813685247.75, 2, "2251799813685247.80")]
+		[DataRow(1.5, 20, "1.50000000000000000000")]
+		[DataRow(1234.5, 2, "1234.50")]
+		public void When_FractionDigitsIsSet_Then_ItOnlyPads(double value, int fractionDigits, string expected)
+		{
+			var sut = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				IntegerDigits = 1,
+				FractionDigits = fractionDigits,
+			};
+
+			Assert.AreEqual(expected, sut.FormatDouble(value));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		// SignificantDigits counts from the first significant digit, so a value below one pads past its
+		// leading fraction zeros.
+		[DataRow(3, 1e-10, "0.000000000100")]
+		[DataRow(6, 1e-10, "0.000000000100000")]
+		[DataRow(17, 1e-10, "0.00000000010000000000000000")]
+		[DataRow(3, 0.001, "0.00100")]
+		[DataRow(6, 0.5, "0.500000")]
+		[DataRow(6, 42d, "42.0000")]
+		[DataRow(17, 1234.5, "1234.5000000000000")]
+		[DataRow(3, 1e19, "10000000000000000000.00")]
+		[DataRow(17, 0d, "0.0000000000000000")]
+		public void When_SignificantDigitsIsSet_Then_PaddingStartsAtTheFirstSignificantDigit(int significantDigits, double value, string expected)
+		{
+			var sut = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				IntegerDigits = 1,
+				FractionDigits = 2,
+				SignificantDigits = significantDigits,
+			};
+
+			Assert.AreEqual(expected, sut.FormatDouble(value));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		// Subnormals are the one range where WinRT's own 15-digit round-trip test is inconsistent
+		// (15 digits for 5e-324 and 1e-320, 17 for 1e-323 and 3e-310). The invariant that has to hold
+		// is that whatever is printed reads back as the very same double.
+		[DataRow(5e-324)]
+		[DataRow(1e-323)]
+		[DataRow(1e-320)]
+		[DataRow(1.5e-320)]
+		[DataRow(3e-310)]
+		[DataRow(2.2250738585072014e-308)]
+		public void When_ValueIsSubnormal_Then_OutputStillRoundTrips(double value)
+		{
+			var sut = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				IntegerDigits = 1,
+				FractionDigits = 0,
+			};
+
+			var formatted = sut.FormatDouble(value);
+			var parsed = sut.ParseDouble(formatted);
+
+			Assert.IsTrue(parsed.HasValue, $"'{formatted}' must parse.");
+			Assert.AreEqual(
+				BitConverter.DoubleToInt64Bits(value),
+				BitConverter.DoubleToInt64Bits(parsed!.Value),
+				$"'{formatted}' must read back as the same double.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		// A rounder that pushes the value out of the integral range surfaces as an infinity.
+		public void When_RounderOverflowsTheIntegralRange_Then_InfinityIsFormatted()
+		{
+			var sut = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				IntegerDigits = 1,
+				FractionDigits = 2,
+				NumberRounder = new IncrementNumberRounder { Increment = 100, RoundingAlgorithm = RoundingAlgorithm.RoundAwayFromZero },
+			};
+
+			Assert.AreEqual("\u221e", sut.FormatInt(long.MaxValue));
+			Assert.AreEqual("-\u221e", sut.FormatInt(long.MinValue));
+			Assert.AreEqual("\u221e", sut.FormatUInt(ulong.MaxValue));
+
+			var down = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				IntegerDigits = 1,
+				FractionDigits = 2,
+				NumberRounder = new IncrementNumberRounder { Increment = 100, RoundingAlgorithm = RoundingAlgorithm.RoundDown },
+			};
+
+			Assert.AreEqual("9223372036854775800.00", down.FormatInt(long.MaxValue));
+			Assert.AreEqual("18446744073709551600.00", down.FormatUInt(ulong.MaxValue));
+			Assert.AreEqual("-\u221e", down.FormatInt(long.MinValue));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		public void When_RounderOverflows_Then_IntegralRoundersThrow()
+		{
+			var rounder = new IncrementNumberRounder { Increment = 100, RoundingAlgorithm = RoundingAlgorithm.RoundAwayFromZero };
+
+			Assert.ThrowsExactly<ArithmeticException>(() => rounder.RoundInt64(long.MaxValue));
+			Assert.ThrowsExactly<ArithmeticException>(() => rounder.RoundUInt64(ulong.MaxValue));
+			Assert.AreEqual(200L, rounder.RoundInt64(150));
+			Assert.AreEqual(200UL, rounder.RoundUInt64(150));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		[DataRow("en-US", "US", "00,000,000")]
 		[DataRow("en-IN", "IN", "0,00,00,000")]
 		public void When_GroupedZeroIsPadded_Then_LocaleGroupSizesApply(string language, string geographicRegion, string expected)
@@ -919,7 +1057,8 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.IsTrue(double.IsNaN(sut.ParseDouble(nan)!.Value), $"'{nan}' must round-trip.");
 
 			// Only the formatter's own symbol is accepted, whichever one the locale data yields.
-			Assert.IsNull(sut.ParseDouble(nan == "NaN" ? "ep\u00e4luku" : "NaN"));
+			Assert.IsNull(sut.ParseDouble(nan + "x"));
+			Assert.IsNull(sut.ParseDouble(nan == "NaN" ? "nan" : "NaN"));
 
 #if HAS_UNO || IS_UNIT_TESTS
 			// Uno resolves the NaN symbol from the same locale data .NET exposes. Native WinRT reads the
