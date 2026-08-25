@@ -231,7 +231,7 @@ namespace Microsoft.UI.Xaml
 
 			if (count != 0 || replacement.Count != 0)
 			{
-				RaiseVectorChanged(CollectionChange.Reset, index);
+				RaiseVectorChanged(CollectionChange.Reset, 0);
 			}
 		}
 
