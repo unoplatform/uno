@@ -319,7 +319,17 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		Inst = ctx.Instance;
 		Adapter = ctx.Adapter;
 		Dev = ctx.Device;
-		Q = ctx.Queue != IntPtr.Zero ? ctx.Queue : wgpuDeviceGetQueue(Dev);
+		var ownImport = false;
+		// Browser: the neutral seam hands us the live JS GPUDevice. Convert it to a wgpu pointer HERE — the backend's
+		// own emdawn import — rather than relying on a pre-imported native pointer in the contract (a direct-JS backend
+		// would use the JS object as-is). This is a SECOND import of the same JS device; the host's swapchain holds the
+		// first for present. Both wgpu handles wrap the same underlying JS GPUDevice.
+		if (OperatingSystem.IsBrowser() && ctx.JsDevice is { } jsDev)
+		{
+			var p = WebGpuJsInterop.ImportDevice(jsDev, (int)ctx.Instance);
+			if (p != 0) { Dev = (IntPtr)p; ownImport = true; System.Console.WriteLine($"[webgpu] backend imported JS device ptr={p}"); }
+		}
+		Q = (!ownImport && ctx.Queue != IntPtr.Zero) ? ctx.Queue : wgpuDeviceGetQueue(Dev);
 		MsaaSamples = ctx.SampleCount == 0 ? 4u : ctx.SampleCount;
 		FinishInit();
 	}

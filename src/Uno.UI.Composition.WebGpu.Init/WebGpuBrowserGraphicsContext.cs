@@ -79,6 +79,7 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 	nint IWebGpuDeviceContext.Queue => _device.Q;
 	uint IWebGpuDeviceContext.ColorFormat => (uint)_device.ColorFormat;
 	uint IWebGpuDeviceContext.SampleCount => _device.MsaaSamples;
+	System.Runtime.InteropServices.JavaScript.JSObject IWebGpuDeviceContext.JsDevice => _device.JsDeviceObject;
 	public GraphicsContextKind Kind => GraphicsContextKind.WebGpu;
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
