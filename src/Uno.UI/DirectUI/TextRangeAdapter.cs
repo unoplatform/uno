@@ -461,13 +461,19 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 				break;
 			case TextUnit.Paragraph:
 			case TextUnit.Line:
-				// Treat the whole text as a single line/paragraph — adequate for
-				// single-line or wrap-only controls without a layout-aware text store.
-				_start = 0;
-				_end = text.Length;
-				break;
 			case TextUnit.Word:
-				ExpandToWord(text);
+				// Reuse the same segmentation the endpoint moves use so that "current line",
+				// "current paragraph" and "current word" agree with traversal.
+				if (TryGetTextSegment(_owner, text, unit, _start, forward: true, out var segmentStart, out var segmentEnd))
+				{
+					_start = segmentStart;
+					_end = segmentEnd;
+				}
+				else
+				{
+					_start = 0;
+					_end = text.Length;
+				}
 				break;
 			case TextUnit.Character:
 				if (_start < text.Length)
@@ -481,30 +487,6 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 				_end = text.Length;
 				break;
 		}
-	}
-
-	private void ExpandToWord(string text)
-	{
-		if (text.Length == 0)
-		{
-			_start = 0;
-			_end = 0;
-			return;
-		}
-
-		var idx = Math.Clamp(_start, 0, text.Length - 1);
-		var startIdx = idx;
-		while (startIdx > 0 && !char.IsWhiteSpace(text[startIdx - 1]))
-		{
-			startIdx--;
-		}
-		var endIdx = idx;
-		while (endIdx < text.Length && !char.IsWhiteSpace(text[endIdx]))
-		{
-			endIdx++;
-		}
-		_start = startIdx;
-		_end = endIdx;
 	}
 
 	public ITextRangeProvider? FindAttribute(int attributeId, object value, bool backward)
@@ -1030,7 +1012,14 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 				}
 
 			default:
-				goto case TextUnit.Character;
+				{
+					// Word/Line/Paragraph/Format move by real units, matching the segmentation
+					// used by MoveEndpointByUnit instead of approximating with characters.
+					var target = MovePosition(_owner, text, _start, unit, count, out var unitsMoved);
+					_start = target;
+					_end = _start;
+					return unitsMoved;
+				}
 		}
 	}
 
