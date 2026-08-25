@@ -279,7 +279,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 	/// <summary>
 	/// Invokes the real native focus-notification path for the given element.
-	/// Posts UIAccessibilityPostNotification.ScreenChanged to the stable element.
+	/// Posts UIAccessibilityPostNotification.LayoutChanged targeting the stable element, which
+	/// moves VoiceOver focus without the full-screen reset a ScreenChanged notification causes.
 	/// Returns false if the element has no registered native node.
 	/// Registered as <see cref="AccessibilityPeerHelper.IOSAccessibilityFocusAccessor"/>.
 	/// </summary>
@@ -1136,19 +1137,59 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			UIAccessibilityScrollDirection.Next;
 		var amount = forward ? ScrollAmount.SmallIncrement : ScrollAmount.SmallDecrement;
 
+		bool scrolled;
+		bool horizontal;
 		if (direction is UIAccessibilityScrollDirection.Right or UIAccessibilityScrollDirection.Left)
 		{
-			return provider.HorizontallyScrollable &&
+			horizontal = true;
+			scrolled = provider.HorizontallyScrollable &&
+				AccessibilityPeerHelper.TryScroll(peer, amount, ScrollAmount.NoAmount);
+		}
+		else if (provider.VerticallyScrollable)
+		{
+			horizontal = false;
+			scrolled = AccessibilityPeerHelper.TryScroll(peer, ScrollAmount.NoAmount, amount);
+		}
+		else
+		{
+			horizontal = true;
+			scrolled = provider.HorizontallyScrollable &&
 				AccessibilityPeerHelper.TryScroll(peer, amount, ScrollAmount.NoAmount);
 		}
 
-		if (provider.VerticallyScrollable)
+		if (scrolled)
 		{
-			return AccessibilityPeerHelper.TryScroll(peer, ScrollAmount.NoAmount, amount);
+			// UIKit contract: a successful accessibilityScroll must post PageScrolled with a
+			// description of the new position, otherwise VoiceOver stays silent after the gesture.
+			// https://developer.apple.com/documentation/uikit/uiaccessibility/notification/pagescrolled
+			PostScrollPositionAnnouncement(provider, horizontal);
 		}
 
-		return provider.HorizontallyScrollable &&
-			AccessibilityPeerHelper.TryScroll(peer, amount, ScrollAmount.NoAmount);
+		return scrolled;
+	}
+
+	private void PostScrollPositionAnnouncement(IScrollProvider provider, bool horizontal)
+	{
+		var percent = horizontal ? provider.HorizontalScrollPercent : provider.VerticalScrollPercent;
+		if (!double.IsFinite(percent) || percent < 0)
+		{
+			return;
+		}
+
+		// Percentage is the only position information IScrollProvider exposes; it is formatted
+		// with the current culture so VoiceOver reads a localized value.
+		var description = string.Format(CultureInfo.CurrentCulture, "{0:P0}", percent / 100d);
+
+		PostOnMain(() =>
+		{
+			if (IsDisposed)
+			{
+				return;
+			}
+
+			using var content = new NSString(description);
+			UIAccessibility.PostNotification(UIAccessibilityPostNotification.PageScrolled, content);
+		});
 	}
 
 	internal bool PerformEscape(nint handle)
@@ -1185,7 +1226,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					Localize("Expand"),
 					_ =>
 					{
-						if (!weakSelf.TryGetTarget(out var self)) return false;
+						if (!weakSelf.TryGetTarget(out var self))
+						{
+							return false;
+						}
 						var p = self.ResolvePeer(handle);
 						return p is not null && AccessibilityPeerHelper.TryExpand(p);
 					}));
@@ -1196,7 +1240,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					Localize("Collapse"),
 					_ =>
 					{
-						if (!weakSelf.TryGetTarget(out var self)) return false;
+						if (!weakSelf.TryGetTarget(out var self))
+						{
+							return false;
+						}
 						var p = self.ResolvePeer(handle);
 						return p is not null && AccessibilityPeerHelper.TryCollapse(p);
 					}));
@@ -1218,7 +1265,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 				label,
 				_ =>
 				{
-					if (!weakSelf.TryGetTarget(out var self)) return false;
+					if (!weakSelf.TryGetTarget(out var self))
+					{
+						return false;
+					}
 					var p = self.ResolvePeer(handle);
 					return p is not null && AccessibilityPeerHelper.TryToggleSelection(p);
 				}));
@@ -1231,14 +1281,20 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 				Localize("Scroll Forward"),
 				_ =>
 				{
-					if (!weakSelf.TryGetTarget(out var self)) return false;
+					if (!weakSelf.TryGetTarget(out var self))
+					{
+						return false;
+					}
 					return self.Scroll(handle, UIAccessibilityScrollDirection.Down);
 				}));
 			list.Add(CreateCustomAction(
 				Localize("Scroll Backward"),
 				_ =>
 				{
-					if (!weakSelf.TryGetTarget(out var self)) return false;
+					if (!weakSelf.TryGetTarget(out var self))
+					{
+						return false;
+					}
 					return self.Scroll(handle, UIAccessibilityScrollDirection.Up);
 				}));
 		}
@@ -1249,7 +1305,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 				Localize("Scroll Into View"),
 				_ =>
 				{
-					if (!weakSelf.TryGetTarget(out var self)) return false;
+					if (!weakSelf.TryGetTarget(out var self))
+					{
+						return false;
+					}
 					var p = self.ResolvePeer(handle);
 					return p is not null && AccessibilityPeerHelper.TryScrollIntoView(p);
 				}));
@@ -1261,7 +1320,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 				Localize("Realize"),
 				_ =>
 				{
-					if (!weakSelf.TryGetTarget(out var self)) return false;
+					if (!weakSelf.TryGetTarget(out var self))
+					{
+						return false;
+					}
 					var p = self.ResolvePeer(handle);
 					return p is not null && AccessibilityPeerHelper.TryRealize(p);
 				}));
@@ -1273,7 +1335,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 				Localize("Dismiss"),
 				_ =>
 				{
-					if (!weakSelf.TryGetTarget(out var self)) return false;
+					if (!weakSelf.TryGetTarget(out var self))
+					{
+						return false;
+					}
 					var p = self.ResolvePeer(handle);
 					return p is not null && AccessibilityPeerHelper.TryClose(p);
 				}));
@@ -1290,7 +1355,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					Localize("Maximize"),
 					_ =>
 					{
-						if (!weakSelf.TryGetTarget(out var self)) return false;
+						if (!weakSelf.TryGetTarget(out var self))
+						{
+							return false;
+						}
 						var p = self.ResolvePeer(handle);
 						return p is not null &&
 							AccessibilityPeerHelper.TrySetWindowVisualState(p, WindowVisualState.Maximized);
@@ -1303,7 +1371,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					Localize("Minimize"),
 					_ =>
 					{
-						if (!weakSelf.TryGetTarget(out var self)) return false;
+						if (!weakSelf.TryGetTarget(out var self))
+						{
+							return false;
+						}
 						var p = self.ResolvePeer(handle);
 						return p is not null &&
 							AccessibilityPeerHelper.TrySetWindowVisualState(p, WindowVisualState.Minimized);
@@ -1316,7 +1387,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					Localize("Restore"),
 					_ =>
 					{
-						if (!weakSelf.TryGetTarget(out var self)) return false;
+						if (!weakSelf.TryGetTarget(out var self))
+						{
+							return false;
+						}
 						var p = self.ResolvePeer(handle);
 						return p is not null &&
 							AccessibilityPeerHelper.TrySetWindowVisualState(p, WindowVisualState.Normal);
@@ -1351,7 +1425,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 						Localize(viewLabel),
 						_ =>
 						{
-							if (!weakSelf.TryGetTarget(out var self)) return false;
+							if (!weakSelf.TryGetTarget(out var self))
+							{
+								return false;
+							}
 							var p = self.ResolvePeer(handle);
 							return p is not null && AccessibilityPeerHelper.TryChangeView(p, capturedId);
 						}));
@@ -1367,7 +1444,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 				Localize("Zoom In"),
 				_ =>
 				{
-					if (!weakSelf.TryGetTarget(out var self)) return false;
+					if (!weakSelf.TryGetTarget(out var self))
+					{
+						return false;
+					}
 					var p = self.ResolvePeer(handle);
 					return p is not null && AccessibilityPeerHelper.TryZoomByUnit(p, ZoomUnit.SmallIncrement);
 				}));
@@ -1375,7 +1455,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 				Localize("Zoom Out"),
 				_ =>
 				{
-					if (!weakSelf.TryGetTarget(out var self)) return false;
+					if (!weakSelf.TryGetTarget(out var self))
+					{
+						return false;
+					}
 					var p = self.ResolvePeer(handle);
 					return p is not null && AccessibilityPeerHelper.TryZoomByUnit(p, ZoomUnit.SmallDecrement);
 				}));
@@ -1391,7 +1474,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 				{ DockPosition.Top, DockPosition.Left, DockPosition.Bottom,
 				  DockPosition.Right, DockPosition.Fill, DockPosition.None })
 			{
-				if (pos == currentPos) continue;
+				if (pos == currentPos)
+				{
+					continue;
+				}
 				var capturedPos = pos;
 				var posLabel = pos switch
 				{
@@ -1407,7 +1493,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					Localize(posLabel),
 					_ =>
 					{
-						if (!weakSelf.TryGetTarget(out var self)) return false;
+						if (!weakSelf.TryGetTarget(out var self))
+						{
+							return false;
+						}
 						var p = self.ResolvePeer(handle);
 						return p is not null && AccessibilityPeerHelper.TrySetDockPosition(p, capturedPos);
 					}));
@@ -1521,70 +1610,112 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			case AccessibilityNativeAction.ChangeView:
 			{
 				var peer = ResolvePeer(el.NodeId);
-				if (peer is null || !peer.IsEnabled()) return false;
-				if (!double.IsFinite(request.Number) || request.Number != Math.Truncate(request.Number)) return false;
+				if (peer is null || !peer.IsEnabled())
+				{
+					return false;
+				}
+				if (!double.IsFinite(request.Number) || request.Number != Math.Truncate(request.Number))
+				{
+					return false;
+				}
 				return AccessibilityPeerHelper.TryChangeView(peer, (int)request.Number);
 			}
 
 			case AccessibilityNativeAction.ZoomIn:
 			{
 				var peer = ResolvePeer(el.NodeId);
-				if (peer is null || !peer.IsEnabled()) return false;
+				if (peer is null || !peer.IsEnabled())
+				{
+					return false;
+				}
 				return AccessibilityPeerHelper.TryZoomByUnit(peer, ZoomUnit.SmallIncrement);
 			}
 
 			case AccessibilityNativeAction.ZoomOut:
 			{
 				var peer = ResolvePeer(el.NodeId);
-				if (peer is null || !peer.IsEnabled()) return false;
+				if (peer is null || !peer.IsEnabled())
+				{
+					return false;
+				}
 				return AccessibilityPeerHelper.TryZoomByUnit(peer, ZoomUnit.SmallDecrement);
 			}
 
 			case AccessibilityNativeAction.Zoom:
 			{
 				var peer = ResolvePeer(el.NodeId);
-				if (peer is null || !peer.IsEnabled()) return false;
+				if (peer is null || !peer.IsEnabled())
+				{
+					return false;
+				}
 				return AccessibilityPeerHelper.TryZoom(peer, request.Number);
 			}
 
 			case AccessibilityNativeAction.SetDockPosition:
 			{
 				var peer = ResolvePeer(el.NodeId);
-				if (peer is null || !peer.IsEnabled()) return false;
-				if (!double.IsFinite(request.Number) || request.Number != Math.Truncate(request.Number)) return false;
+				if (peer is null || !peer.IsEnabled())
+				{
+					return false;
+				}
+				if (!double.IsFinite(request.Number) || request.Number != Math.Truncate(request.Number))
+				{
+					return false;
+				}
 				var posInt = (int)request.Number;
-				if (posInt < (int)DockPosition.Top || posInt > (int)DockPosition.None) return false;
+				if (posInt < (int)DockPosition.Top || posInt > (int)DockPosition.None)
+				{
+					return false;
+				}
 				return AccessibilityPeerHelper.TrySetDockPosition(peer, (DockPosition)posInt);
 			}
 
 			case AccessibilityNativeAction.SetWindowVisualState:
 			{
 				var peer = ResolvePeer(el.NodeId);
-				if (peer is null || !peer.IsEnabled()) return false;
-				if (!double.IsFinite(request.Number) || request.Number != Math.Truncate(request.Number)) return false;
+				if (peer is null || !peer.IsEnabled())
+				{
+					return false;
+				}
+				if (!double.IsFinite(request.Number) || request.Number != Math.Truncate(request.Number))
+				{
+					return false;
+				}
 				var stateInt = (int)request.Number;
-				if (stateInt < (int)WindowVisualState.Normal || stateInt > (int)WindowVisualState.Minimized) return false;
+				if (stateInt < (int)WindowVisualState.Normal || stateInt > (int)WindowVisualState.Minimized)
+				{
+					return false;
+				}
 				return AccessibilityPeerHelper.TrySetWindowVisualState(peer, (WindowVisualState)stateInt);
 			}
 
 			case AccessibilityNativeAction.Move:
 			{
 				var peer = ResolvePeer(el.NodeId);
-				if (peer is null || !peer.IsEnabled()) return false;
+				if (peer is null || !peer.IsEnabled())
+				{
+					return false;
+				}
 				return AccessibilityPeerHelper.TryMove(peer, request.Number, request.Number2);
 			}
 
 			case AccessibilityNativeAction.Resize:
 			{
 				var peer = ResolvePeer(el.NodeId);
-				if (peer is null || !peer.IsEnabled()) return false;
+				if (peer is null || !peer.IsEnabled())
+				{
+					return false;
+				}
 				return AccessibilityPeerHelper.TryResize(peer, request.Number, request.Number2);
 			}
 
 			case AccessibilityNativeAction.Rotate:
 			{
 				var peer = ResolvePeer(el.NodeId);
-				if (peer is null || !peer.IsEnabled()) return false;
+				if (peer is null || !peer.IsEnabled())
+				{
+					return false;
+				}
 				return AccessibilityPeerHelper.TryRotate(peer, request.Number);
 			}
 
@@ -1607,8 +1738,6 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		{
 			AccessibilityNativeAction.Expand => "Expand",
 			AccessibilityNativeAction.Collapse => "Collapse",
-			AccessibilityNativeAction.ScrollForward => "Scroll Forward",
-			AccessibilityNativeAction.ScrollBackward => "Scroll Backward",
 			AccessibilityNativeAction.ScrollIntoView => "Scroll Into View",
 			AccessibilityNativeAction.Realize => "Realize",
 			_ => null,
@@ -1798,11 +1927,44 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		var capturedText = text;
 		PostOnMain(() =>
 		{
-			if (IsDisposed) return;
-			using var content = new NSString(capturedText);
-			UIAccessibility.PostNotification(UIAccessibilityPostNotification.Announcement, content);
+			if (IsDisposed)
+			{
+				return;
+			}
+
+			if (!assertive ||
+				!SupportsAnnouncementPriority ||
+				!TryPostAssertiveAnnouncement(capturedText))
+			{
+				using var content = new NSString(capturedText);
+				UIAccessibility.PostNotification(UIAccessibilityPostNotification.Announcement, content);
+			}
+
 			RecordEvent(AccessibilityNativeEventKind.Announcement, text: capturedText);
 		});
+	}
+
+	private static bool SupportsAnnouncementPriority =>
+		OperatingSystem.IsIOSVersionAtLeast(17) ||
+		OperatingSystem.IsTvOSVersionAtLeast(17) ||
+		OperatingSystem.IsMacCatalystVersionAtLeast(17);
+
+	// Assertive live regions must interrupt VoiceOver. Plain announcements are queued, so the
+	// iOS 17+ announcement-priority speech attribute is required to honour the assertive policy.
+	// https://developer.apple.com/documentation/uikit/uiaccessibilitypriority
+	private static bool TryPostAssertiveAnnouncement(string text)
+	{
+		if (UIAccessibilityPriorityExtensions.GetConstant(UIAccessibilityPriority.High) is not { } priority)
+		{
+			return false;
+		}
+
+		using var attributes = new NSMutableDictionary<NSString, NSObject>();
+		attributes[UIView.SpeechAttributeAnnouncementPriority] = priority;
+
+		using var content = new NSAttributedString(text, attributes);
+		UIAccessibility.PostNotification(UIAccessibilityPostNotification.Announcement, content);
+		return true;
 	}
 
 	protected override void DisposeCore()
@@ -1898,7 +2060,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		if (NativeDispatcher.Main.HasThreadAccess)
 		{
 			// All dictionary/set access on the main thread only.
-			if (!_nodeElements.TryGetValue(handle, out var element)) return;
+			if (!_nodeElements.TryGetValue(handle, out var element))
+			{
+				return;
+			}
 			element.InvalidateCachedAccessibilityData();
 			_pendingInvalidationHandles.Add(handle);
 			Trace($"Queued targeted invalidation for handle {handle}.");
@@ -1997,7 +2162,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 	public override void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
 	{
-		if (IsDisposed || !IsAccessibilityEnabled) return;
+		if (IsDisposed || !IsAccessibilityEnabled)
+		{
+			return;
+		}
 		Trace($"Automation event routed: {eventId}.");
 		base.NotifyAutomationEvent(peer, eventId);
 
@@ -2068,7 +2236,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		AutomationTextEditChangeType changeType,
 		System.Collections.Generic.IReadOnlyList<string> changedData)
 	{
-		if (IsDisposed || !IsAccessibilityEnabled) return;
+		if (IsDisposed || !IsAccessibilityEnabled)
+		{
+			return;
+		}
 		base.NotifyTextEditTextChangedEvent(peer, changeType, changedData);
 
 		// Base called UpdateTextValue; record the text-edit change and ensure invalidation.
@@ -2708,6 +2879,13 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			!rv.IsReadOnly)
 		{
 			traits |= UIAccessibilityTrait.Adjustable;
+		}
+
+		// Live regions change on their own; the trait lets VoiceOver coalesce speech for them
+		// instead of interrupting on every update (capability matrix: LiveSetting -> iOS).
+		if (peer.GetLiveSetting() != AutomationLiveSetting.Off)
+		{
+			traits |= UIAccessibilityTrait.UpdatesFrequently;
 		}
 
 		// Selected item: UIKit reads this on focused elements to announce selection state.
