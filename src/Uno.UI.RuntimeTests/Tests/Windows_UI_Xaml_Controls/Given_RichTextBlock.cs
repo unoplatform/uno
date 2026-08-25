@@ -501,6 +501,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var paragraph = new Paragraph();
 			paragraph.Inlines.Add(new Run { Text = "Dynamically added paragraph" });
 			SUT.Blocks.Add(paragraph);
+			SUT.UpdateLayout();
 
 			await WindowHelper.WaitForIdle();
 
@@ -747,6 +748,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			paragraph.Inlines.Clear();
 			paragraph.Inlines.Add(new Run { Text = "This is a very very very long text that needs trimming" });
 			SUT.Width = 50;
+			SUT.UpdateLayout();
 
 			await WindowHelper.WaitForIdle();
 
