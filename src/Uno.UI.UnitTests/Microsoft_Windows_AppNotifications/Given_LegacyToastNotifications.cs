@@ -16,7 +16,7 @@ namespace Uno.UI.Tests.Microsoft_Windows_AppNotifications;
 [TestClass]
 public class Given_LegacyToastNotifications
 {
-	[DataTestMethod]
+	[TestMethod]
 	[DataRow(ToastTemplateType.ToastImageAndText01, 1, 1)]
 	[DataRow(ToastTemplateType.ToastImageAndText02, 2, 1)]
 	[DataRow(ToastTemplateType.ToastImageAndText03, 2, 1)]
@@ -62,6 +62,20 @@ public class Given_LegacyToastNotifications
 		Assert.AreEqual("Title", shown.Payload.Title?.Content);
 		Assert.AreEqual("Body", shown.Payload.Body?.Content);
 
+	}
+
+	[TestMethod]
+	public void When_Manager_Is_Unregistered_Legacy_Show_Can_Initialize_Posting_Again()
+	{
+		var backend = new LegacyTestBackend();
+		var manager = new AppNotificationManager(backend, new InMemoryAppNotificationStatePersistence());
+		var notifier = new ToastNotifier(manager);
+		manager.Register();
+		manager.Unregister();
+
+		notifier.Show(CreateToast("tag", string.Empty));
+
+		Assert.AreEqual(1, backend.Shown.Count);
 	}
 
 	[TestMethod]
@@ -120,6 +134,23 @@ public class Given_LegacyToastNotifications
 	}
 
 	[TestMethod]
+	public void When_Legacy_History_Contains_An_Untagged_Toast_It_RoundTrips()
+	{
+		var backend = new LegacyTestBackend();
+		var manager = new AppNotificationManager(backend, new InMemoryAppNotificationStatePersistence());
+		var notifier = new ToastNotifier(manager);
+		var history = new ToastNotificationHistory(manager);
+		var content = new XmlDocument();
+		content.LoadXml("<toast><visual><binding template='ToastText01'><text id='1'>Body</text></binding></visual></toast>");
+
+		notifier.Show(new ToastNotification(content));
+
+		var restored = history.GetHistory().Single();
+		Assert.AreEqual(string.Empty, restored.Tag);
+		StringAssert.Contains(restored.Content.GetXml(), "Body");
+	}
+
+	[TestMethod]
 	public void When_Legacy_History_Selectors_Are_Used_Matching_Records_Are_Removed()
 	{
 		var backend = new LegacyTestBackend();
@@ -141,6 +172,24 @@ public class Given_LegacyToastNotifications
 			new[] { first.AppNotificationId, second.AppNotificationId, third.AppNotificationId },
 			backend.Removed.Select(record => record.Id).ToArray());
 		Assert.AreEqual(0, history.GetHistory().Count);
+	}
+
+	[TestMethod]
+	public void When_Legacy_Tag_Only_History_Remove_Is_Used_Only_The_Default_Group_Is_Removed()
+	{
+		var backend = new LegacyTestBackend();
+		var manager = new AppNotificationManager(backend, new InMemoryAppNotificationStatePersistence());
+		var notifier = new ToastNotifier(manager);
+		var history = new ToastNotificationHistory(manager);
+		var defaultGroup = CreateToast("tag", string.Empty);
+		var namedGroup = CreateToast("tag", "named");
+		notifier.Show(defaultGroup);
+		notifier.Show(namedGroup);
+
+		history.Remove("tag");
+
+		CollectionAssert.AreEqual(new[] { defaultGroup.AppNotificationId }, backend.Removed.Select(record => record.Id).ToArray());
+		CollectionAssert.AreEqual(new[] { namedGroup.AppNotificationId }, history.GetHistory().Select(toast => toast.AppNotificationId).ToArray());
 	}
 
 	[TestMethod]
@@ -182,7 +231,7 @@ public class Given_LegacyToastNotifications
 		var history = new ToastNotificationHistory(new AppNotificationManager(new LegacyTestBackend()));
 		Assert.ThrowsExactly<ArgumentException>(() => history.Remove(string.Empty));
 		Assert.ThrowsExactly<ArgumentException>(() => history.RemoveGroup(string.Empty));
-		Assert.ThrowsExactly<ArgumentException>(() => history.Remove("tag", string.Empty));
+		history.Remove("tag", string.Empty);
 	}
 
 	private static ToastNotification CreateToast(string tag, string group)

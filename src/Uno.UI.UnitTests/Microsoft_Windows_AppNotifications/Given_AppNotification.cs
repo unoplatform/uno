@@ -48,11 +48,15 @@ public class Given_AppNotification
 	}
 
 	[TestMethod]
-	public void When_Payload_Exceeds_Size_Limit_It_Throws()
+	public void When_Raw_Payload_Exceeds_Builder_Limit_It_Is_Accepted()
 	{
-		var payload = $"<toast>{new string('A', 5121)}</toast>";
+		var text = new string('A', 12_000);
+		var payload = $"<toast><visual><binding template='ToastGeneric'><text>{text}</text></binding></visual></toast>";
 
-		Assert.ThrowsExactly<FormatException>(() => new AppNotification(payload));
+		var notification = new AppNotification(payload);
+		var parsed = Microsoft.Windows.AppNotifications.Internal.AppNotificationPayloadParser.Parse(notification.Payload);
+
+		Assert.AreEqual(text, parsed.Title?.Content);
 	}
 
 	[TestMethod]

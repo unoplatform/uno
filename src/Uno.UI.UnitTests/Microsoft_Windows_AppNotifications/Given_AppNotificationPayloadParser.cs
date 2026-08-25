@@ -216,17 +216,16 @@ public class Given_AppNotificationPayloadParser
 	}
 
 	[TestMethod]
-	public void When_Payload_Reaches_Size_Limit_Only_Oversized_Payload_Is_Rejected()
+	public void When_Raw_Payload_Exceeds_Builder_Limit_It_Is_Parsed()
 	{
 		const string prefix = "<toast><visual><binding template='ToastGeneric'><text>";
 		const string suffix = "</text></binding></visual></toast>";
-		var content = new string('A', 5120 - prefix.Length - suffix.Length);
-		var maximumPayload = prefix + content + suffix;
+		var content = new string('A', 12_000);
+		var payload = prefix + content + suffix;
 
-		var result = AppNotificationPayloadParser.Parse(maximumPayload);
+		var result = AppNotificationPayloadParser.Parse(payload);
 
 		Assert.AreEqual(content.Length, result.Title?.Content.Length);
-		Assert.ThrowsExactly<FormatException>(() => AppNotificationPayloadParser.Parse(maximumPayload + " "));
 	}
 
 	[TestMethod]
