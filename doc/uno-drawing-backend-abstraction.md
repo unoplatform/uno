@@ -445,7 +445,7 @@ clipPath/mask/filter/pattern, embedded images, CSS-class styling (fall back to t
 Lottie (Bodymovin JSON) plugs in through a backend-neutral seam, mirroring `ISvgRenderer`:
 
 ```csharp
-public interface ILottieRenderer { ILottieAnimation? Load(string animationJson); }
+public interface ILottieRenderer { ILottieAnimation? Load(string animationJson, IGeometryFactory geometry); }
 public interface ILottieAnimation : IDisposable
 {
     Vector2 Size { get; }
@@ -454,16 +454,30 @@ public interface ILottieAnimation : IDisposable
 }
 ```
 
-- **Renderer** — the `Uno.UI.Lottie` add-in's `SkottieLottieRenderer` wraps `SkiaSharp.Skottie`. Its `Render`
-  fast-paths on `NativeSurface is SKCanvas` (draws straight into the frame), else rasterizes to an offscreen and
-  goes through `session.Factory.CreateTexture(...)` → `DrawImage` — so Lottie plays on WebGPU too (the old
-  `SKCanvasElement` path only had a GL-island fallback). Resolved reflectively by the host builder when the
-  add-in is referenced, with a `.LottieRenderer(...)` override; `LottieRenderer.Current` is null when none is
-  registered, and the `AnimatedVisualPlayer` then shows its fallback content (no silent drop).
+`Load` carries the process `IGeometryFactory` (mirroring `ISvgRenderer.Parse`) so a managed renderer can build
+its shapes with the registered geometry engine; the Skottie add-in ignores it. Two renderers implement the seam:
+
+- **`ManagedLottieRenderer`** (`Uno.UI.Composition.Managed`, the built-in default) — a **SkiaSharp-free** managed
+  Lottie engine (`ManagedLottie`) that parses the Bodymovin JSON and draws each frame straight through
+  `IDrawingSession`/`IGeometryFactory` (no Skottie, no rasterize-to-SKSurface), mirroring `ManagedSvg`. v1 covers
+  the shape-layer subset that fits most UI/icon files: composition + shape/null layers, layer parenting, in/out
+  visibility, layer & group transforms (anchor/position/scale/rotation/opacity), bézier/rect/ellipse paths, solid
+  fills (+ fill rule) and strokes, with full keyframe interpolation (linear + cubic-bézier easing + hold, over
+  scalars/vectors/colors/bézier-paths). Gradients, trim paths, repeaters, merge paths, stars, masks, mattes,
+  precomps, image/text layers and effects are not modelled yet — an unsupported item is skipped, never fatal.
+- **`SkottieLottieRenderer`** (`Uno.UI.Lottie` add-in) — wraps `SkiaSharp.Skottie`. `Render` fast-paths on
+  `NativeSurface is SKCanvas` (draws straight into the frame), else rasterizes to an offscreen and goes through
+  `session.Factory.CreateTexture(...)` → `DrawImage` — so it plays on WebGPU too.
+
+Resolution (host builder, `Build()`): the Skottie add-in wins when referenced, else the managed engine; a
+`.LottieRenderer(...)` override takes precedence over both, and `UNO_MANAGED_LOTTIE=1` forces the managed engine
+even when Skottie is present (A/B, like `UNO_MANAGED_GEOMETRY`). `LottieRenderer.Current` is never null on a normal
+head (the managed engine is always available); the `AnimatedVisualPlayer` shows its fallback content only if an
+app clears the seam.
+
 - **Visual** — `LottieVisualSource`'s `IAnimatedVisual` is a plain `ContainerVisual` that overrides `Paint` to
   call `ILottieAnimation.Render(session, progress, area)`, reading the player-driven `Progress` scalar
-  (`AddContext` repaints it each tick). The source is now SkiaSharp-free; only the Skottie renderer references
-  SkiaSharp. A managed (SkiaSharp-free) Lottie engine could later register against the same seam.
+  (`AddContext` repaints it each tick). The source is SkiaSharp-free; only the Skottie renderer references SkiaSharp.
 
 ---
 
