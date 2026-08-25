@@ -36,6 +36,8 @@ public partial class ContainerVisual : Visual
 			}
 
 			InvalidateParentChildrenPicture(true);
+			// A child added/removed changes this container's own silhouette too.
+			InvalidateParentShadowCaches(includeSelf: true);
 
 			// We need to force a redraw because at this point it's not necessarily true that
 			// a visual in the composition tree was changed, only that it was added/removed,
@@ -159,15 +161,15 @@ public partial class ContainerVisual : Visual
 			: baseClip.Combine(arrangeClip, GeometryCombineMode.Intersect);
 	}
 
-	internal override bool SetMatrixDirty()
+	internal override bool SetMatrixDirtyFromAncestor()
 	{
-		if (base.SetMatrixDirty())
+		if (base.SetMatrixDirtyFromAncestor())
 		{
 			// We use InnerList to avoid boxing the enumerator.
 			// Currently, VisualCollection.GetEnumerator returns IEnumerator<Visual> instead of a concrete struct type to match WinUI API surface.
 			foreach (var child in Children.InnerList)
 			{
-				child.SetMatrixDirty();
+				child.SetMatrixDirtyFromAncestor();
 			}
 
 			return true;

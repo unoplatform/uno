@@ -65,6 +65,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private ShadowPathAccumulator? _analyticShadowCache;
 	private bool _hasAnalyticShadowVerdict;
 	private bool _analyticShadowFailed;
+	private bool _shadowSubtreeChangedThisFrame;
 	private int _framesSinceSubtreeNotChanged;
 
 	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty | VisualFlags.ChildrenSKPictureInvalid;
@@ -150,7 +151,17 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal virtual bool RequiresRepaintOnEveryFrame => false;
 
 	/// <returns>true if wasn't dirty</returns>
-	internal virtual bool SetMatrixDirty()
+	internal bool SetMatrixDirty()
+	{
+		// A change on THIS visual moves it relative to its parent: ancestor shadow silhouettes contain that
+		// placement and go stale. Descendants reached by the cascade below keep their (local-space) caches.
+		InvalidateParentShadowCaches(includeSelf: false);
+		return SetMatrixDirtyFromAncestor();
+	}
+
+	/// <summary>Marks the matrix dirty without invalidating shadow caches — the variant the ancestor-move
+	/// cascade uses, since a pure ancestor move keeps every descendant's local-space shadow cache valid.</summary>
+	internal virtual bool SetMatrixDirtyFromAncestor()
 	{
 		var matrixDirty = (_flags & VisualFlags.MatrixDirty) != 0;
 		_flags |= VisualFlags.MatrixDirty;
@@ -250,6 +261,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		_content = null;
 		_flags |= VisualFlags.PaintDirty;
 		InvalidateParentChildrenPicture(false);
+		// Own content feeds ancestor silhouettes; own caches are gated on PaintDirty directly.
+		InvalidateParentShadowCaches(includeSelf: false);
 	}
 
 	/// <summary>
@@ -275,6 +288,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			parent._childrenContent?.Dispose();
 			parent._childrenContent = null;
 			parent._flags |= VisualFlags.ChildrenSKPictureInvalid;
+			parent = parent.Parent;
+		}
+	}
+
+	internal void InvalidateParentShadowCaches(bool includeSelf)
+	{
+		var parent = includeSelf ? this : Parent;
+		while (parent is not null && (parent._flags & VisualFlags.ShadowCacheInvalid) == 0)
+		{
+			parent._flags |= VisualFlags.ShadowCacheInvalid;
 			parent = parent.Parent;
 		}
 	}
@@ -409,6 +432,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			// A descendant changed this frame; a drop shadow cast by this visual must re-damage its silhouette.
 			_subtreeChangedThisFrame = true;
 		}
+		// Content/internal-layout change signal for the shadow caches — deliberately NOT raised by a pure
+		// ancestor move (scrolling), which keeps the local-space silhouette walk result valid.
+		_shadowSubtreeChangedThisFrame = (_flags & VisualFlags.ShadowCacheInvalid) != 0;
+		_flags &= ~VisualFlags.ShadowCacheInvalid;
 
 		CreateLocalSession(in parentSession, out var session);
 
@@ -689,7 +716,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// it only depends on the subtree's content — ancestor moves (scrolling) keep it valid. Re-walking every
 		// frame costs per-visual geometry booleans over the whole subtree, so reuse the last verdict + regions
 		// under the same gates as the fallback-recording cache.
-		var cacheValid = _hasAnalyticShadowVerdict && !_subtreeChangedThisFrame
+		var cacheValid = _hasAnalyticShadowVerdict && !_shadowSubtreeChangedThisFrame
 			&& (_flags & VisualFlags.PaintDirty) == 0
 			&& !RequiresRepaintOnEveryFrame;
 		if (!cacheValid)
@@ -704,7 +731,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			var accumulator = new ShadowPathAccumulator();
 			var walkOk = WalkShadowSilhouette(this, this, inverseRoot, ancestorClipInRoot: null, 1f, accumulator);
 			// A descendant can invalidate mid-walk-frame (see RenderChildrenStep) — don't cache a stale result.
-			if ((_flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
+			if ((_flags & VisualFlags.ShadowCacheInvalid) == 0)
 			{
 				_analyticShadowCache = walkOk ? accumulator : null;
 				_analyticShadowFailed = !walkOk;
@@ -1023,5 +1050,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		MatrixDirty = 8,
 		PaintDirty = 16,
 		ChildrenSKPictureInvalid = 32, // some child in the subtree of this visual is dirty.
+		// The subtree's CONTENT or internal layout changed, so cached shadow silhouettes/recordings are stale.
+		// Unlike ChildrenSKPictureInvalid this is NOT set by the matrix-dirty cascade of a pure ancestor move
+		// (e.g. scrolling): shadow caches are local-space, so only relative changes inside the subtree matter.
+		ShadowCacheInvalid = 64,
 	}
 }
