@@ -8,7 +8,6 @@
 
 	<PropertyGroup>
 		<WindowsAppSdkFoundationVersion>2.3.5</WindowsAppSdkFoundationVersion>
-		<WindowsAppSdkRuntimeVersion>2.3.1</WindowsAppSdkRuntimeVersion>
 		<WindowsSdkNetRefVersion>10.0.26100.57</WindowsSdkNetRefVersion>
 		<!-- NuGetPackageRoot is not guaranteed to end with a directory separator (e.g. when NUGET_PACKAGES is set on CI). -->
 		<_UnoNuGetPackageRoot Condition="'$(NuGetPackageRoot)' != ''">$([MSBuild]::EnsureTrailingSlash('$(NuGetPackageRoot)'))</_UnoNuGetPackageRoot>
@@ -44,8 +43,6 @@
 		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106" />
 		<PackageReference Include="Microsoft.WindowsAppSDK.Foundation" Version="$(WindowsAppSdkFoundationVersion)" IncludeAssets="runtime;native" PrivateAssets="compile;contentfiles;build;buildmultitargeting;buildtransitive;analyzers" GeneratePathProperty="true" />
 		<PackageReference Include="Microsoft.WindowsAppSDK.InteractiveExperiences" Version="2.1.3" IncludeAssets="runtime;native" PrivateAssets="compile;contentfiles;build;buildmultitargeting;buildtransitive;analyzers" />
-		<!-- Project references must not apply Windows App SDK build checks to generic TFMs. The packed targets re-import the supported Runtime deployment targets. -->
-		<PackageReference Include="Microsoft.WindowsAppSDK.Runtime" Version="[$(WindowsAppSdkRuntimeVersion)]" IncludeAssets="runtime;build;native;buildtransitive" PrivateAssets="compile;contentfiles;build;buildmultitargeting;buildtransitive;analyzers" />
 		<PackageReference Include="Microsoft.Windows.SDK.NET.Ref" Version="$(WindowsSdkNetRefVersion)" PrivateAssets="all" ExcludeAssets="all" GeneratePathProperty="true" />
 		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="Uno.icu-win" />
