@@ -459,7 +459,7 @@ public class Given_WebView2_Improvements
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaMacOS)]
-	public async Task When_MacOS_Fragment_Navigation_Is_Cancelled_No_Completion_Is_Raised()
+	public async Task When_MacOS_Fragment_Navigation_Is_Cancelled_The_Document_Is_Unchanged()
 	{
 		var filePath = Path.Combine(Path.GetTempPath(), $"uno-webview2-fragment-{Guid.NewGuid():N}.html");
 		await File.WriteAllTextAsync(filePath, "<html><body><div id='target'>target</div></body></html>");
@@ -471,10 +471,11 @@ public class Given_WebView2_Improvements
 			webView.NavigationCompleted += (_, _) => initialNavigationCompleted = true;
 			webView.CoreWebView2.Navigate(new Uri(filePath).AbsoluteUri);
 			await TestServices.WindowHelper.WaitFor(() => initialNavigationCompleted, 10_000);
-			var fragmentUrl = $"{webView.Source.AbsoluteUri.Split('#')[0]}#target";
+			var documentUrl = webView.Source.AbsoluteUri.Split('#')[0];
+			var fragmentUrl = $"{documentUrl}#target";
 
 			ulong? cancelledNavigation = null;
-			var cancelledNavigationCompleted = false;
+			CoreWebView2NavigationCompletedEventArgs? cancelledCompletion = null;
 			webView.NavigationStarting += (_, args) =>
 			{
 				if (args.Uri == fragmentUrl)
@@ -484,14 +485,19 @@ public class Given_WebView2_Improvements
 				}
 			};
 			webView.NavigationCompleted += (_, args) =>
-				cancelledNavigationCompleted |= args.NavigationId == cancelledNavigation;
+			{
+				if (args.NavigationId == cancelledNavigation)
+				{
+					cancelledCompletion = args;
+				}
+			};
 
 			webView.CoreWebView2.Navigate(fragmentUrl);
-			await TestServices.WindowHelper.WaitFor(() => cancelledNavigation is not null, 5_000);
-			await TestServices.WindowHelper.WaitForIdle();
-			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitFor(() => cancelledCompletion is not null, 5_000);
 
-			Assert.IsFalse(cancelledNavigationCompleted);
+			Assert.IsFalse(cancelledCompletion!.IsSuccess);
+			Assert.AreEqual(CoreWebView2WebErrorStatus.OperationCanceled, cancelledCompletion.WebErrorStatus);
+			Assert.AreEqual(documentUrl, webView.Source.AbsoluteUri);
 		}
 		finally
 		{
@@ -566,28 +572,37 @@ public class Given_WebView2_Improvements
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
-	public async Task When_Wasm_Navigation_Is_Cancelled_No_Completion_Is_Raised()
+	public async Task When_Navigation_Is_Cancelled_Completion_Reports_OperationCanceled()
 	{
 		var webView = await CreateWebViewAsync();
+		var cancelRequested = false;
 		ulong? cancelledNavigation = null;
-		var completed = false;
+		var completions = new List<CoreWebView2NavigationCompletedEventArgs>();
 		webView.NavigationStarting += (_, args) =>
 		{
-			if (args.Uri?.StartsWith("data:", StringComparison.OrdinalIgnoreCase) == true)
+			if (cancelRequested && cancelledNavigation is null)
 			{
 				cancelledNavigation = args.NavigationId;
 				args.Cancel = true;
 			}
 		};
-		webView.NavigationCompleted += (_, args) => completed |= args.NavigationId == cancelledNavigation;
+		webView.NavigationCompleted += (_, args) =>
+		{
+			if (args.NavigationId == cancelledNavigation)
+			{
+				completions.Add(args);
+			}
+		};
 
+		cancelRequested = true;
 		webView.NavigateToString("<html><body>cancelled</body></html>");
-		await TestServices.WindowHelper.WaitFor(() => cancelledNavigation is not null, 5_000);
+		await TestServices.WindowHelper.WaitFor(() => completions.Count > 0, 10_000);
 		await TestServices.WindowHelper.WaitForIdle();
 		await TestServices.WindowHelper.WaitForIdle();
 
-		Assert.IsFalse(completed);
+		Assert.AreEqual(1, completions.Count);
+		Assert.IsFalse(completions[0].IsSuccess);
+		Assert.AreEqual(CoreWebView2WebErrorStatus.OperationCanceled, completions[0].WebErrorStatus);
 	}
 
 	private static async Task<WebView2> CreateWebViewAsync()
