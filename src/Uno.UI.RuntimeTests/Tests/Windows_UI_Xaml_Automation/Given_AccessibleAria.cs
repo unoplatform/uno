@@ -1575,6 +1575,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				"Menu arrow navigation must not descend into a nested submenu's items.");
 		}
 
+		/// <summary>
+		/// Modal background isolation relies on the <c>inert</c> attribute, which removes a whole
+		/// subtree from both the accessibility tree and the tab order. Browsers that do not honour
+		/// <c>inert</c> would otherwise let Tab walk out of the dialog into the background, so the
+		/// focus trap falls back to forcing every background semantic element out of the tab order
+		/// and restoring the previous values when the dialog closes. Asserts that fallback directly.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Inert_Unsupported_Then_Background_Tab_Stops_Are_Suppressed_And_Restored()
+		{
+			await UITestHelper.Load(new Border { Width = 10, Height = 10 });
+
+			var result = InvokeBrowserJs("""
+				(function () {
+					const host = document.createElement('div');
+					host.id = 'uno-semantics-trap-host';
+					host.innerHTML =
+						'<button id="uno-semantics-9001" tabindex="0"></button>' +
+						'<div id="uno-semantics-9002"><button id="uno-semantics-9003"></button></div>';
+					document.body.appendChild(host);
+					try {
+						const restore = globalThis.Uno.UI.Runtime.Skia.FocusTrap.suppressTabStops(host);
+						const suppressed = Array.from(host.querySelectorAll('[id^="uno-semantics-"]'))
+							.concat([host])
+							.every(element => element.getAttribute('tabindex') === '-1');
+
+						for (const item of restore) {
+							if (item.value !== null) {
+								item.element.setAttribute('tabindex', item.value);
+							} else {
+								item.element.removeAttribute('tabindex');
+							}
+						}
+
+						const restored =
+							document.getElementById('uno-semantics-9001').getAttribute('tabindex') === '0' &&
+							!document.getElementById('uno-semantics-9002').hasAttribute('tabindex') &&
+							!document.getElementById('uno-semantics-9003').hasAttribute('tabindex') &&
+							!host.hasAttribute('tabindex');
+
+						return (suppressed ? 'suppressed' : 'not-suppressed') + '|' +
+							(restored ? 'restored' : 'not-restored');
+					} finally {
+						host.remove();
+					}
+				})()
+				""");
+
+			Assert.AreEqual("suppressed|restored", result,
+				"The focus trap must remove every background semantic element from the tab order and restore the original tabindex values.");
+		}
+
 #endif
 	}
 }

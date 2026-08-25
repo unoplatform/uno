@@ -4,7 +4,12 @@ namespace Uno.UI.Runtime.Skia {
 		modalHandle: number;
 		triggerHandle: number;
 		focusableHandles: number[];
-		hiddenElements: { element: HTMLElement; originalAriaHidden: string | null; originalInert: string | null }[];
+		hiddenElements: {
+			element: HTMLElement;
+			originalAriaHidden: string | null;
+			originalInert: string | null;
+			originalTabIndexes: { element: HTMLElement; value: string | null }[];
+		}[];
 		keydownHandler: (e: KeyboardEvent) => void;
 		parentState: FocusTrapState | null;
 	}
@@ -16,6 +21,32 @@ namespace Uno.UI.Runtime.Skia {
 	 */
 	export class FocusTrap {
 		private static activeTrap: FocusTrapState | null = null;
+
+		/**
+		 * True when the browser honours the `inert` attribute, which removes a whole subtree from
+		 * both the accessibility tree and the tab order. Browsers that ignore it need the explicit
+		 * per-element `tabindex="-1"` fallback below, otherwise Tab would walk out of the modal
+		 * into the background content.
+		 */
+		public static supportsInert(): boolean {
+			return "inert" in HTMLElement.prototype;
+		}
+
+		/**
+		 * Forces every semantic element of a background subtree out of the tab order and returns the
+		 * values that were replaced, so the subtree can be restored exactly when the modal closes.
+		 * Only used when `supportsInert()` is false.
+		 */
+		public static suppressTabStops(subtreeRoot: HTMLElement): { element: HTMLElement; value: string | null }[] {
+			const targets = [subtreeRoot].concat(
+				Array.from(subtreeRoot.querySelectorAll("[id^='uno-semantics-']")) as HTMLElement[]);
+
+			return targets.map(element => {
+				const value = element.getAttribute("tabindex");
+				element.setAttribute("tabindex", "-1");
+				return { element, value };
+			});
+		}
 
 		/**
 		 * Activates a focus trap for a modal dialog.
@@ -30,6 +61,7 @@ namespace Uno.UI.Runtime.Skia {
 			const semanticsRoot = Accessibility.getSemanticsRoot();
 			const modalElement = Accessibility.getSemanticElementByHandle(modalHandle);
 			const hiddenElements: FocusTrapState["hiddenElements"] = [];
+			const needsTabIndexFallback = !FocusTrap.supportsInert();
 
 			if (semanticsRoot && modalElement) {
 				let current: HTMLElement = modalElement;
@@ -47,7 +79,10 @@ namespace Uno.UI.Runtime.Skia {
 						hiddenElements.push({
 							element: sibling,
 							originalAriaHidden: sibling.getAttribute("aria-hidden"),
-							originalInert: sibling.getAttribute("inert")
+							originalInert: sibling.getAttribute("inert"),
+							originalTabIndexes: needsTabIndexFallback
+								? FocusTrap.suppressTabStops(sibling)
+								: []
 						});
 						sibling.setAttribute("aria-hidden", "true");
 						sibling.setAttribute("inert", "");
@@ -218,6 +253,13 @@ namespace Uno.UI.Runtime.Skia {
 					item.element.setAttribute("inert", item.originalInert);
 				} else {
 					item.element.removeAttribute("inert");
+				}
+				for (const tabIndex of item.originalTabIndexes) {
+					if (tabIndex.value !== null) {
+						tabIndex.element.setAttribute("tabindex", tabIndex.value);
+					} else {
+						tabIndex.element.removeAttribute("tabindex");
+					}
 				}
 			}
 		}
