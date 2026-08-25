@@ -809,6 +809,39 @@ public class Given_Binding
 	}
 
 	[TestMethod]
+	public async Task When_TemplateBinding_Targets_Attached_Property()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml",
+				"""
+				<Page
+					x:Class="TestRepro.MainPage"
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<Page.Resources>
+						<Style x:Key="ButtonStyle" TargetType="Button">
+							<Setter Property="Template">
+								<Setter.Value>
+									<ControlTemplate TargetType="Button">
+										<Grid>
+											<ContentPresenter Grid.Row="{TemplateBinding TabIndex}" />
+										</Grid>
+									</ControlTemplate>
+								</Setter.Value>
+							</Setter>
+						</Style>
+					</Page.Resources>
+				</Page>
+				"""),
+		};
+
+		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
 	public async Task When_Static_XBind_Property_In_DataTemplate_Without_DataType()
 	{
 		var xamlFiles = new[]
