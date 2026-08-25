@@ -9,15 +9,17 @@ namespace SamplesApp.AppiumTests.Infrastructure;
 
 /// <summary>
 /// Walks the live automation tree exposed by <see cref="IPlatformAdapter"/>
-/// and builds a normalized <see cref="AccessibilityNode"/> graph suitable
-/// for snapshot serialization and diffing.
+/// and builds a normalized <see cref="AccessibilityNode"/> graph. The result is
+/// the diagnostic <c>*.tree.json</c> artifact written beside a failing canonical
+/// snapshot; the committed baselines themselves are built by
+/// <see cref="AccessibilitySnapshotBuilder"/> and compared by <see cref="SnapshotComparer"/>.
 /// </summary>
 public static class TreeDumper
 {
 	/// <summary>
 	/// AutomationIds that come from WinUI control templates / window chrome
-	/// rather than the sample under test. Excluded from snapshots so the
-	/// recorded baselines are stable across host frameworks and sample
+	/// rather than the sample under test. Excluded from the diagnostic tree so a
+	/// failure dump stays readable and stable across host frameworks and sample
 	/// changes that don't touch these parts.
 	/// </summary>
 	private static readonly HashSet<string> s_noiseAutomationIds = new(StringComparer.Ordinal)

@@ -542,7 +542,11 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 		{
 			automationId = peer.GetAutomationId();
 		}
-		NativeUno.uno_accessibility_update_identifier(handle, automationId);
+		// The native setter maps null to nil but an empty string to @"", which leaves the element
+		// advertising a present-but-empty AXIdentifier (and never clears a previously set one).
+		NativeUno.uno_accessibility_update_identifier(
+			handle,
+			string.IsNullOrEmpty(automationId) ? null : automationId);
 
 		if (!string.IsNullOrEmpty(attributes.Description))
 		{
