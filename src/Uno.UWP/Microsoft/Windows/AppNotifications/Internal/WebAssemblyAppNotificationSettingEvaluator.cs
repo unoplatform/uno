@@ -17,3 +17,14 @@ internal static class WebAssemblyAppNotificationSettingEvaluator
 				_ => AppNotificationSetting.DisabledForApplication,
 			};
 }
+
+internal static class WebAssemblyAppNotificationCapabilities
+{
+	public static bool SupportsProgressUpdates => false;
+
+	/// <summary>
+	/// Action buttons are only rendered by <c>ServiceWorkerRegistration.showNotification()</c>;
+	/// a document-scoped <c>new Notification(...)</c> ignores the <c>actions</c> option.
+	/// </summary>
+	public static bool SupportsActions(bool useServiceWorker) => useServiceWorker;
+}

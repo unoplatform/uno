@@ -24,7 +24,7 @@ internal sealed partial class WebAssemblyAppNotificationManagerBackend : IAppNot
 
 	public bool DefersShowCompletion => _useServiceWorker;
 
-	public bool SupportsProgressUpdates => false;
+	public bool SupportsProgressUpdates => WebAssemblyAppNotificationCapabilities.SupportsProgressUpdates;
 
 	public bool RequiresActiveIdsForStateChanges => _useServiceWorker;
 
