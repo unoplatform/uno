@@ -323,6 +323,8 @@ In addition to navigation events, `CoreWebView2` exposes `ContentLoading`, `DOMC
 
 The document/content events depend on equivalent callbacks from the native browser backend and may not be available on every target.
 
+Setting `CoreWebView2NavigationStartingEventArgs.Cancel` leaves the current document intact and completes the abandoned navigation with a `NavigationCompleted` whose `IsSuccess` is `false` and whose `WebErrorStatus` is `CoreWebView2WebErrorStatus.OperationCanceled`, matching WebView2 on every target.
+
 Call `WebView2.Close()` when the control will not be used again. Closing releases native browser resources and is terminal: subsequent navigation, script execution, or initialization calls throw `ObjectDisposedException`.
 
 ## Querying the environment and the profile (Windows)

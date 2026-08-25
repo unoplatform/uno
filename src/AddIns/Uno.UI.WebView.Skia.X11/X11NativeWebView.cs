@@ -222,6 +222,7 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 	private readonly string _title = $"Uno WebView {Random.Shared.Next()}";
 
 	private bool _dontRaiseNextNavigationCompleted;
+	private bool _isCancelling;
 
 	[DllImport("libc", CallingConvention = CallingConvention.Cdecl, SetLastError = true)]
 	private static extern int setenv(string name, string value, int overwrite);
@@ -572,9 +573,13 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 					{
 						_presenter.DispatcherQueue.TryEnqueue(() =>
 						{
+							_isCancelling = false;
 							_coreWebView.RaiseNavigationStarting(uri, out var cancel);
 							if (cancel)
 							{
+								// The shared layer already raised the OperationCanceled completion,
+								// so the load-failed callback triggered by StopLoading must stay silent.
+								_isCancelling = true;
 								GLib.Idle.Add(() =>
 								{
 									_webview.StopLoading();
@@ -617,6 +622,12 @@ public class X11NativeWebView : INativeWebView, ISupportsUserAgent, ISupportsScr
 	private void WebViewOnLoadFailed(object o, LoadFailedArgs args)
 	{
 		_dontRaiseNextNavigationCompleted = true;
+		if (_isCancelling)
+		{
+			_isCancelling = false;
+			return;
+		}
+
 		Uri.TryCreate(args.FailingUri, UriKind.Absolute, out var uri);
 		_presenter.DispatcherQueue.TryEnqueue(() =>
 		{

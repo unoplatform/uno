@@ -677,6 +677,20 @@ public partial class CoreWebView2
 		NavigationStarting?.Invoke(this, args);
 
 		cancel = args.Cancel;
+
+		if (cancel && _nativeWebView is not IReportsCanceledNavigations)
+		{
+			// WebView2 reports a cancelled navigation through NavigationCompleted with
+			// OperationCanceled. Engines that don't surface the cancellation themselves
+			// get the completion synthesized here so the contract is the same everywhere.
+			RaiseNavigationCompleted(
+				navigationData as Uri,
+				isSuccess: false,
+				httpStatusCode: 0,
+				CoreWebView2WebErrorStatus.OperationCanceled,
+				shouldSetSource: false,
+				navigationId: actualNavigationId);
+		}
 	}
 
 	internal void RaiseNewWindowRequested(string target, Uri referer, out bool handled)

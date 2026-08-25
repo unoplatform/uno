@@ -13,7 +13,7 @@ using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
-internal abstract class Win32NativeWebViewBase : INativeWebView
+internal abstract class Win32NativeWebViewBase : INativeWebView, IReportsCanceledNavigations
 {
 	private const string WindowClassName = "UnoPlatformWebViewWindow";
 	private const uint SC_MASK = 0xFFF0;
