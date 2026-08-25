@@ -185,7 +185,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			if (isTwoLayer)
 			{
 				// Two layer mode.
-				// We use Skia, except for Uno.dll, Uno.Foundation.dll, and Uno.Dispatching.dll
+				// We use Skia, except for WinRT assemblies (see IsWinRTAssembly).
 				// We will adjust for those dlls later.
 				if (UnoUIRuntimeIdentifier != "skia")
 				{
@@ -258,8 +258,10 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			throw new Exception($"Unable to find reference directory from runtime directory '{runtimeDirectory}'");
 		}
 
+		// Uno.UI.MSAL only depends on the WinRT layer (Uno.UWP), so it must follow the
+		// WinRT layer selection to keep its platform-specific helpers (https://github.com/unoplatform/uno/issues/20601).
 		private bool IsWinRTAssembly(string fileNameWithoutExtension)
-			=> fileNameWithoutExtension.ToLower(CultureInfo.InvariantCulture) is "uno" or "uno.ui.dispatching" or "uno.foundation";
+			=> fileNameWithoutExtension.ToLower(CultureInfo.InvariantCulture) is "uno.winrt" or "uno.ui.dispatching" or "uno.foundation" or "uno.ui.msal";
 
 		private string GetWinRTAssembly(string runtimeDirectory, string assembly, Version targetFrameworkVersion)
 		{
@@ -269,7 +271,13 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			var unoRuntimeTfmDirectory = Path.GetDirectoryName(Path.GetDirectoryName(assembly));
 			if (UnoWinRTRuntimeIdentifier == "webassembly")
 			{
-				return Path.GetFullPath(Path.Combine(unoRuntimeTfmDirectory, "webassembly", Path.GetFileName(assembly)));
+				var webAssemblyAsset = Path.GetFullPath(Path.Combine(unoRuntimeTfmDirectory, "webassembly", Path.GetFileName(assembly)));
+				if (!File.Exists(webAssemblyAsset))
+				{
+					throw new Exception($"Cannot get WinRT assembly for '{assembly}', the expected asset '{webAssemblyAsset}' does not exist");
+				}
+
+				return webAssemblyAsset;
 			}
 
 			if (!IsSkiaMobileRuntimeIdentifier(UnoWinRTRuntimeIdentifier))
@@ -303,7 +311,13 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				throw new Exception($"Cannot get WinRT assembly for '{assembly}'");
 			}
 
-			return Path.GetFullPath(Path.Combine(lib, bestTfmMatch, Path.GetFileName(assembly)));
+			var winRTAssembly = Path.GetFullPath(Path.Combine(lib, bestTfmMatch, Path.GetFileName(assembly)));
+			if (!File.Exists(winRTAssembly))
+			{
+				throw new Exception($"Cannot get WinRT assembly for '{assembly}', the expected asset '{winRTAssembly}' does not exist");
+			}
+
+			return winRTAssembly;
 		}
 
 		private void HandleForRuntimeEnabled(
@@ -350,6 +364,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				if (isWinRTAssembly)
 				{
 					adjustedAssembly = GetWinRTAssembly(runtimeDirectory, assembly, targetFrameworkVersion);
+					this.Log.LogMessage($"Assembly '{assemblyFileNameWithoutExtension}' follows the WinRT layer: replacing '{assembly}' with '{adjustedAssembly}'");
 				}
 
 				this.Log.LogMessage($"Processing assembly: {adjustedAssembly}");

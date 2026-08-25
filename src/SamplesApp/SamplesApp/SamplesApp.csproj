@@ -36,7 +36,7 @@
 		<UnoSingleProject>true</UnoSingleProject>
 		<!-- Explicit because nine InternalsVisibleTo("SamplesApp") grants key off this exact name. -->
 		<AssemblyName>SamplesApp</AssemblyName>
-		<!-- WinUI keeps the old head's name, which is deliberately absent from the Uno.UI.Toolkit /
+		<!-- WinUI keeps the old head's name, which is deliberately absent from the Uno.UI.Extras /
 		     Uno.Foundation IVT lists — that is what avoids the duplicate-type collision there. -->
 		<AssemblyName Condition="'$(_Platform)' == 'windows'">SamplesApp.Windows</AssemblyName>
 
@@ -96,7 +96,7 @@
 		<ProjectReference Include="..\..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Adapter.Microsoft.Extensions.Logging\Uno.UI.Adapter.Microsoft.Extensions.Logging.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
-		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Extras\Uno.UI.Extras.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Skia.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
@@ -109,7 +109,7 @@
 	<!-- Desktop framework variants + runtimes + AddIns (Win32/X11/FrameBuffer/macOS) -->
 	<ItemGroup Condition="'$(_Platform)' == 'desktop'">
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
-		<ProjectReference Include="..\..\Uno.UWP\Uno.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Win32\Uno.UI.Runtime.Skia.Win32.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Win32.Support\Uno.UI.Runtime.Skia.Win32.Support.csproj" />
@@ -125,7 +125,7 @@
 	<!-- browserwasm framework variants + runtime -->
 	<ItemGroup Condition="'$(_Platform)' == 'browserwasm'">
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
-		<ProjectReference Include="..\..\Uno.UWP\Uno.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.Wasm.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\Uno.UI.Runtime.Skia.WebAssembly.Browser.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Skia.csproj" />
@@ -133,7 +133,7 @@
 
 	<!-- Windows / WinAppSDK: NATIVE WinUI (no Uno.UI / SkiaSharp). Only the .Windows helper variants. -->
 	<ItemGroup Condition="'$(_Platform)' == 'windows'">
-		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.Windows.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Extras\Uno.UI.Extras.Windows.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Windows.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Windows.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" AdditionalProperties="BuildGraphics3DGLForWindows=true" />
@@ -218,6 +218,14 @@
 		<WasmBuildNative>true</WasmBuildNative>
 		<!-- Workaround for https://github.com/dotnet/aspnetcore/issues/63970 -->
 		<WasmFingerprintAssets>false</WasmFingerprintAssets>
+		<!--
+		This wwwroot is mounted at two roots: the runtime tests serve it at localhost:8000/ and PR
+		staging from /pr-<N>/wasm-skia-net9/. Uno.Sdk defaults this to "/" for deep-link routing, which
+		bakes absolute /package_<hash>/ paths into index.html and uno-config.js and 404s under any
+		sub-folder. SamplesApp routes by query string, so "./" (the bootstrapper default, and what the
+		pre-unification head used) is the correct value.
+		-->
+		<WasmShellWebAppBasePath>./</WasmShellWebAppBasePath>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(_Platform)' == 'browserwasm' AND '$(Configuration)'=='Debug'">
 		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
@@ -237,10 +245,13 @@
 			<TargetPath>WebContent/%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
 		</WasmShellExtraFilesToDeploy>
 	</ItemGroup>
+
+	<Import Condition="'$(_Platform)' == 'browserwasm'" Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\build\*.Runtime.Skia.WebAssembly.Browser.props" />
+	<Import Condition="'$(_Platform)' == 'browserwasm'" Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\build\*.Runtime.Skia.WebAssembly.Browser.targets" />
 	<!-- ==================== android (Skia) ==================== -->
 	<ItemGroup Condition="'$(_Platform)' == 'android'">
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
-		<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.Android\Uno.UI.Runtime.Skia.Android.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.netcoremobile.csproj" />
@@ -301,7 +312,7 @@
 	     SamplesApp.Skia base lib (referenced for all Skia TFMs above). Not compile-validated on Windows. -->
 	<ItemGroup Condition="'$(_IsUIKit)' == 'true'">
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
-		<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj" />
+		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Dispatching\Uno.UI.Dispatching.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.netcoremobile.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.AppleUIKit\Uno.UI.Runtime.Skia.AppleUIKit.csproj" />
@@ -346,6 +357,46 @@
 	</ItemGroup>
 	<PropertyGroup Condition="'$(_Platform)' == 'tvos'">
 		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">tvossimulator-x64</RuntimeIdentifier>
+	</PropertyGroup>
+
+	<!--
+	Xamarin.Shared.props defaults NoSymbolStrip=true for every simulator build, and Configuration is not part of
+	that condition. With composite ReadyToRun that leaves crossgen2's ~5.4M diagnostic local symbols in the image:
+	of SamplesApp.r2r's 1.99 GB, 1.61 GB was the Mach-O symbol table and only 236 MB was native code. Exactly one
+	symbol is external, so stripping costs us nothing but simulator crash symbolication. Device builds already
+	strip - this only restores the same behaviour on the simulator. Measured: 1.99 GB -> 384 MB, .app 2.19 GB -> 575 MB.
+	-->
+	<PropertyGroup Condition="'$(_IsUIKit)' == 'true' AND '$(RuntimeIdentifier)' != '' AND $(RuntimeIdentifier.Contains('simulator'))">
+		<NoSymbolStrip>false</NoSymbolStrip>
+	</PropertyGroup>
+
+	<!--
+	Xamarin.Shared.Sdk.Trimming.props:58 turns linking off for CoreCLR on the simulator, so nothing is
+	trimmed and crossgen2 AOT-compiles every method of every assembly - Microsoft.Graph, Roslyn,
+	BenchmarkDotNet and Silk.NET included. That is the single largest cost in this build. The SDK's own
+	fallback default at :74 is SdkOnly, i.e. device builds - what users actually ship - are trimmed; the
+	untrimmed simulator build is the outlier, and it was the only configuration CI exercised.
+
+	Measured locally, cleared bin/obj between runs, R2R enabled throughout:
+	    none (previous)  ILLink+R2R 2.9 min   .app 551 MB   .r2r 384.3 MB
+	    SdkOnly          ILLink+R2R 1.5 min   .app 274 MB   .r2r 163.2 MB
+	    Full             ILLink+R2R 1.4 min   .app 243 MB   .r2r 142.5 MB
+
+	Full rather than SdkOnly, to match what Android already does: the android-nativeaot-skia stage
+	publishes this same project with PublishAot=true, and NativeAOT requires whole-program trimming
+	via ILC - strictly more aggressive than Full. The reflective sample discovery and runtime-test
+	discovery here already survive that on Android, so trimming app assemblies on iOS is not new
+	ground. Full also keeps the two Skia heads' trimming behaviour consistent.
+
+	Release-only, so local Debug iteration and Hot Reload are unaffected - see UHR001 in
+	Uno.WinUI.DevServer.targets, which warns Hot Reload misbehaves when linking is enabled.
+
+	Trimming is a runtime risk rather than a build risk: sample discovery and the runtime-test harness
+	both resolve types reflectively, and this project suppresses the IL2xxx trim warnings
+	(_UnoTrimmingNoWarn above), so a clean build proves little. The iOS runtime tests are the real gate.
+	-->
+	<PropertyGroup Condition="'$(_IsUIKit)' == 'true' AND '$(Configuration)' == 'Release' AND '$(RuntimeIdentifier)' != '' AND $(RuntimeIdentifier.Contains('simulator'))">
+		<MtouchLink>Full</MtouchLink>
 	</PropertyGroup>
 
 	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.props" />

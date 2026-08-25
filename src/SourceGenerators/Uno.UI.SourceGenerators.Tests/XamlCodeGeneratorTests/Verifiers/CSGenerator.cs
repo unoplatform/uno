@@ -19,7 +19,6 @@ using CommunityToolkit.Mvvm.SourceGenerators;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Testing;
-using Uno.UI.SourceGenerators.MetadataUpdates;
 using Uno.UI.SourceGenerators.XamlGenerator;
 
 namespace Uno.UI.SourceGenerators.Tests.Verifiers
@@ -214,8 +213,30 @@ build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
 
 			protected override Project ApplyCompilationOptions(Project project)
 			{
+				// Tests using WithUnoPackage() pull a pre-7.0 Uno.WinUI package, which still ships
+				// Uno.UI.Toolkit.dll. Its types were renamed to Uno.UI.Extras, so the package copy no
+				// longer matches the local build and would resolve the old namespace instead. The local
+				// build is authoritative.
+				var supersededByLocalBuild = project.MetadataReferences
+					.Where(r => Path.GetFileName((r as PortableExecutableReference)?.FilePath ?? string.Empty) == "Uno.UI.Toolkit.dll")
+					.ToArray();
+
+				// The same package still ships Uno.dll.
+				// That used to be shadowed by the local build sharing its assembly identity; since the
+				// rename to Uno.WinRT the two are distinct, so every Windows.* type would be defined twice
+				// and GetTypeByMetadataName would return null. The local build is authoritative.
+				var supersededByLocalWinRT = project.MetadataReferences
+					.Where(r => Path.GetFileName((r as PortableExecutableReference)?.FilePath ?? string.Empty) == "Uno.dll")
+					.ToArray();
+
 				project = project
+					.WithMetadataReferences(project.MetadataReferences.Except(supersededByLocalBuild).Except(supersededByLocalWinRT))
 					.AddMetadataReferences(UnoAssemblyHelper.LoadAssemblies());
+
+				if (supersededByLocalBuild.Length > 0)
+				{
+					project = project.AddMetadataReferences(UnoAssemblyHelper.LoadExtrasAssemblies());
+				}
 
 				return base.ApplyCompilationOptions(project);
 			}

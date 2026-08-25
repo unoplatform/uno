@@ -22,11 +22,11 @@ internal static partial class UnoAssemblyHelper
 				[TFMPrevious, TFMCurrent]
 			)),
 			.. LoadAssemblies(GetBinDirectory(
-				"Uno.UWP",
-				"Uno.dll",
+				"Uno.WinRT",
+				"Uno.WinRT.dll",
 				[
-					"Uno.Skia",
-					"Uno.Reference",
+					"Uno.WinRT.Skia",
+					"Uno.WinRT.Reference",
 				],
 				[TFMPrevious, TFMCurrent]
 			)),
@@ -58,6 +58,22 @@ internal static partial class UnoAssemblyHelper
 				[TFMPrevious, TFMCurrent]
 			)),
 		];
+
+	/// <summary>
+	/// Replacement for the Uno.UI.Toolkit assembly shipped by pre-7.0 Uno.WinUI packages, whose
+	/// types now live in Uno.UI.Extras. Loaded only where that package assembly was referenced,
+	/// so tests that never saw the Toolkit keep their existing reference set.
+	/// </summary>
+	public static PortableExecutableReference[] LoadExtrasAssemblies() =>
+		LoadAssemblies(GetBinDirectory(
+			"Uno.UI.Extras",
+			"Uno.UI.Extras.dll",
+			[
+				"Uno.UI.Extras.Skia",
+				"Uno.UI.Extras.Reference",
+			],
+			[TFMPrevious, TFMCurrent]
+		));
 
 	public static PortableExecutableReference[] LoadAndroidAssemblies() =>
 		LoadAssemblies(GetBinDirectory(

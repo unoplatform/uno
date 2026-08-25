@@ -23,7 +23,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 using SplitButton = Microsoft.UI.Xaml.Controls.SplitButton;
 using ToggleSplitButton = Microsoft.UI.Xaml.Controls.ToggleSplitButton;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Extras.DevTools.Input;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 {

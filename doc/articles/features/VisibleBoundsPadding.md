@@ -7,7 +7,7 @@ uid: Uno.Features.VisibleBoundsPadding
 > [!IMPORTANT]
 > The [`SafeArea`](xref:Toolkit.Controls.SafeArea) control is now preferred to `VisibleBoundsPadding`.
 
-The `Uno.UI.Toolkit.VisibleBoundsPadding` is a behavior that overrides the `Padding` property of a control to ensure that its inner content is always inside the `ApplicationView.VisibleBounds` rectangle.
+The `Uno.UI.Extras.VisibleBoundsPadding` is a behavior that overrides the `Padding` property of a control to ensure that its inner content is always inside the `ApplicationView.VisibleBounds` rectangle.
 
 The `ApplicationView.VisibleBounds` is the rectangular area of the screen which is completely unobscured by any window decoration, such as the status bar, rounded screen corners or some screen notch (e.g. the iPhone X or Essential Phone top sensors notch).
 
@@ -21,8 +21,8 @@ The behavior can be placed on any control that provides a Padding property (e.g.
 <UserControl x:Class="Uno.UI.Samples.Controls.SampleChooserControl"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-            xmlns:toolkit="using:Uno.UI.Toolkit">
-    <Grid toolkit:VisibleBoundsPadding.PaddingMask="All">
+            xmlns:extras="using:Uno.UI.Extras">
+    <Grid extras:VisibleBoundsPadding.PaddingMask="All">
     </Grid>
 </UserControl>
 ```
@@ -31,7 +31,7 @@ This grid will automatically be assigned a padding, and will be refreshed every 
 
 ### Specifying a target
 
-The `Uno.UI.Toolkit.VisibleBoundsPadding` behavior defines a `PaddingMask` property that specifies if you want to set the padding to a specific bound of the UI. The values are:
+The `Uno.UI.Extras.VisibleBoundsPadding` behavior defines a `PaddingMask` property that specifies if you want to set the padding to a specific bound of the UI. The values are:
 
 - `None` (*default value*)
 - `All`
@@ -46,8 +46,8 @@ Usage is as follows:
 <UserControl x:Class="Uno.UI.Samples.Controls.SampleChooserControl"
             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-            xmlns:toolkit="using:Uno.UI.Toolkit">
-    <Grid toolkit:VisibleBoundsPadding.PaddingMask="Bottom" />
+            xmlns:extras="using:Uno.UI.Extras">
+    <Grid extras:VisibleBoundsPadding.PaddingMask="Bottom" />
 </UserControl>
 ```
 

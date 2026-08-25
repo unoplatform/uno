@@ -23,8 +23,8 @@ using Color = Windows.UI.Color;
 using Point = Windows.Foundation.Point;
 #if HAS_INPUT_INJECTOR
 using Windows.UI.Input.Preview.Injection;
-using Uno.UI.Toolkit.DevTools.Input;
-using Uno.UI.Toolkit.Extensions;
+using Uno.UI.Extras.DevTools.Input;
+using Uno.UI.Extras.Extensions;
 #endif
 #if __APPLE_UIKIT__
 using UIKit;

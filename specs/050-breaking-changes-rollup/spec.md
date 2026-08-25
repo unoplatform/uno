@@ -8,7 +8,7 @@ _Generated 2026-06-15 from a per-item investigation of the current `dev/mazi/bre
 
 1. **Hard-remove everything now** — no `[Obsolete]`/`[EditorBrowsable]` deprecation shims. This is THE breaking major; many items have been pending since 2022.
 2. **Match WinUI exactly** — when reducing visibility / changing signatures, the target shape is the WinUI one. Do not invent intermediate Uno-only surfaces. Native divergences are removed, not preserved.
-3. **Native targets are being dropped** (native Android Views, iOS/UIKit, WASM DOM). Native-only changes are therefore very safe and ship first. _Non-UI WinRT APIs in `Uno.UWP`/`Uno.Foundation` are NOT being dropped_ (Skia-on-Android still consumes them) — those are judged on normal merit.
+3. **Native targets are being dropped** (native Android Views, iOS/UIKit, WASM DOM). Native-only changes are therefore very safe and ship first. _Non-UI WinRT APIs in `Uno.WinRT`/`Uno.Foundation` are NOT being dropped_ (Skia-on-Android still consumes them) — those are judged on normal merit.
 4. **The 5 pervasive type-system items get their own impact specs** (BC14, BC26, BC38, BC58 + BC54 folded into BC58) with Pros/Cons. They ship last, one stabilized PR each.
 5. **Validate at runtime, not compile-only.** For anything that changes behaviour (Phase 5 especially) prove it with a runtime test that fails-before/passes-after.
 
@@ -121,7 +121,7 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
   - Files: `src/Uno.UI/FeatureConfiguration.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators.Internal/Mixins/DependencyPropertyMixinGenerator.cs`
 - [ ] **BC55** — Replace deprecated Android `PreferenceManager` ⚠️  `d2·S` · #1833
   - Use `Context.GetSharedPreferences` with the legacy default name (or `AndroidX.Preference`) — MUST read the **same backing file** so existing user settings survive upgrade.
-  - Files: `src/Uno.UWP/Storage/ApplicationDataContainer.Android.cs`
+  - Files: `src/Uno/Storage/ApplicationDataContainer.Android.cs`
 - [x] **BC37** — Remove non-DP (CLR) `Setter` codegen fallback  `d2·S` · PR #16134
   - Hard-delete.
   - Files: `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs`, `src/Uno.UI/UI/Xaml/Setter.Generic.cs`, `src/SamplesApp/SamplesApp.Samples/Windows_UI_Xaml_Controls/ComboBox/ComboBox_FullScreen_Popup.xaml`
@@ -228,7 +228,7 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
   - Files: `src/Uno.UI/UI/Xaml/Controls/TextBoxCore/*.cs` (new), `src/Uno.UI/UI/Xaml/Controls/PasswordBox/PasswordBox.cs`, `src/Uno.UI/UI/Xaml/Controls/TextBox/TextBox*.cs`, `src/Uno.UI/UI/Xaml/Controls/CommandBarFlyout/TextCommandBarFlyout.mux.cs`, `src/Uno.UI/UI/Xaml/Internal/TextControlFlyoutHelper.cs`
 - [ ] **BC74** — Android drawable extension in retarget keys  `d3·S` · PR #15891
   - Adjust signature to match WinUI.
-  - Files: `src/Uno.UWP/Helpers/AndroidResourceNameEncoder.cs`, `src/Uno.UWP/Helpers/DrawableHelper.Android.cs`, `src/SourceGenerators/Uno.UI.Tasks/ResourceConverters/AndroidResourceConverter.cs`
+  - Files: `src/Uno/Helpers/AndroidResourceNameEncoder.cs`, `src/Uno/Helpers/DrawableHelper.Android.cs`, `src/SourceGenerators/Uno.UI.Tasks/ResourceConverters/AndroidResourceConverter.cs`
 - [x] **BC50** — Remove `UseLegacyPrimaryLanguageOverride`  `d3·S` · #13704
   - Hard-remove the flag and the legacy path; `PrimaryLanguageOverride` is always restart-to-apply (WinUI). **Behavior change** — the flag defaulted to `true`, so runtime language-switch apps must set the culture themselves; migration note added.
   - Files: `src/Uno.UWP/FeatureConfiguration/WinRTFeatureConfiguration.cs`, `src/Uno.UWP/Globalization/ApplicationLanguages.cs`, `src/Uno.UI/UI/Xaml/Application.cs`
@@ -246,8 +246,8 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
 - [ ] **BC21** — Delete legacy `AutomationProperties` member ⚠️  `d3·S`
   - **INVESTIGATE / likely drop.** The member at ~L44 (`AnnotationsProperty`) is valid WinUI and must NOT be deleted — the line ref drifted. Real target is probably the native `OnAutomationIdChanged` branches in `AutomationProperties.uno.cs`.
   - Files: `src/Uno.UI/UI/Xaml/Automation/AutomationProperties.cs`, `src/Uno.UI/UI/Xaml/Automation/AutomationProperties.uno.cs`
-- [ ] **BC75** — Move MRT Core (`ApplicationModel.Resources`) -> `Uno.UWP`  `d3·M`
-  - Move the MRT-Core types to `Uno.UWP` (lower risk than a new assembly).
+- [ ] **BC75** — Move MRT Core (`ApplicationModel.Resources`) -> `Uno.WinRT`  `d3·M`
+  - Move the MRT-Core types to the WinRT library at `src/Uno` (lower risk than a new assembly).
   - Files: `src/Uno.UI/Windows/ApplicationModel/Resources/ResourceLoader.cs`, `src/Uno.UI/Windows/ApplicationModel/Resources/IResourceContext.cs`, `src/Uno.UI/Windows/ApplicationModel/Resources/IResourceManager.cs`
 
 ---
@@ -262,15 +262,22 @@ _Danger 3-4. Heavier multi-file changes: remove the legacy templated-parent mech
 - [ ] **BC39** — Clean up `DependencyPropertyValuePrecedences` enum  `d2·M` · PR #15684
   - Hard-remove obsolete enum members (no `[EditorBrowsable]` aliases).
   - Files: `src/Uno.UI/UI/Xaml/DependencyPropertyValuePrecedences.cs`, `src/Uno.UI/UI/Xaml/DependencyObjectStore.cs`, `src/Uno.UI/UI/Xaml/Internal/DependencyPropertyHelper.cs`
-- [ ] **BC71** — Remove Fluent V1 public surface  `d2·M` · #14765
-  - Hard-remove `XamlControlsResourcesV1` + `ControlsResourcesVersion.Version1` + build/package scaffolding (V1 content is already gone).
-  - Files: `src/Uno.UI.FluentTheme.v1/XamlControlsResourcesV1.cs`, `src/Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Skia.csproj`, `src/Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Wasm.csproj`
-- [ ] **BC53** — Rename `Uno.UI.Toolkit` assembly/namespace ⚠️  `d4·M` · #12322
-  - **DECIDE the new assembly/namespace name.** Hard rename, no type-forwarders / xmlns alias (per hard-remove policy).
-  - Files: `src/Uno.UI.Toolkit/`, `src/Uno.UI.Toolkit/Uno.UI.Toolkit.Skia.csproj`, `src/Uno.UI.Toolkit/Uno.UI.Toolkit.Wasm.csproj`
+- [ ] **BC53** — Rename `Uno.UI.Toolkit` assembly/namespace -> **`Uno.UI.Extras`**  `d4·M` · #12322
+  - Name decided. Hard rename, no type-forwarders / xmlns alias (per hard-remove policy). Only the `Uno.UI.Toolkit`, `.DevTools.*` and `.Extensions` namespaces move; `Uno.Diagnostics.UI`, `Uno.UI.Markup`, `Uno.Helpers`, `Uno.UI` and `Uno.UI.Maps` stay. See [spec 056](../056-assembly-renames/spec.md).
+- [x] **BC71** — Remove the Fluent resource-version surface  `d2·M` · #14765
+  - Hard-removed `XamlControlsResourcesV1`, the whole `ControlsResourcesVersion` enum, and `XamlControlsResources.ControlsResourcesVersion` (WinAppSDK has no such surface and V2 was already forced unconditionally), plus the `Uno.UI.FluentTheme.v1` project and its build/pack scaffolding. Collapsed the now-single-version theme-resource plumbing. Verified against the WinUI source at `winui3/release/1.8.2`: `XamlControlsResources` now matches its IDL 1:1 (ctor, `EnsureRevealLights`, `UseCompactResources`, `UseCompactResourcesProperty`) and `ControlsResourcesVersion` / `XamlControlsResourcesV1` / `XamlControlsResourcesV2` appear nowhere upstream.
+  - With V1 gone the "v2" naming had nothing left to distinguish, so `Uno.UI.FluentTheme.v2` was merged into `Uno.UI.FluentTheme`: one assembly, one `GlobalStaticResources` init in the ctor, `Resources/Version2/**` flattened to `Resources/**`, and the merged dictionary renamed `themeresources_v2.xaml` -> `themeresources.xaml` (the name WinUI uses; the `_v2` suffix never existed upstream). This removed `XamlControlsResourcesV2`, which had no WinAppSDK counterpart and had become a duplicate of `XamlControlsResources` — the acrylic `TintLuminosityOpacity` table now exists once. Its public `ms-appx:` URI changes, so a hand-merged `ResourceDictionary.Source` needs updating; merging `XamlControlsResources` is unaffected.
+  - Files: `src/Uno.UI.FluentTheme.v1/` (deleted), `src/Uno.UI.FluentTheme.v2/` (merged into `src/Uno.UI.FluentTheme/`), `src/Uno.UI/UI/Xaml/Controls/ControlsResourcesVersion.cs`, `src/Uno.UI.FluentTheme/XamlControlsResources.cs`, `src/Uno.UI.FluentTheme/FluentMerge.targets`, `src/Uno.UI/UI/Xaml/XamlFilePathHelper.shared.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.cs`, `build/nuget/Uno.WinUI.nuspec`, `build/PackageDiffIgnore.xml`
+  - Follow-up (deliberately out of scope here): the MUX `*_v1.xaml` API-contract dictionaries under `src/Uno.UI/UI/Xaml/Controls/**` still compile into `Uno.UI` — unrelated to Fluent V1. Eight of the ten contribute live content to `mergedstyles.xaml` (implicit `InfoBar`/`RatingControl` styles, `MUX_TreeViewItemStyle`, `DefaultTreeViewStyle`, `TreeViewItemDataTemplate`, `DefaultTwoPaneViewStyle`), forming the base tier that the Fluent dictionary overrides when merged; `ColorPicker_v1.xaml`, `TreeView_themeresources_v1.xaml` and `TwoPaneView_rs1.xaml` contribute nothing. The open question is whether that base tier is reachable at all in 7.0 — upstream deleted all 99 `*_v1.xaml` at the fork.
+  - WinUI-parity gaps found while diffing against `winui3/release/1.8.2`, all pre-existing and none blocking BC71:
+    - `UseCompactResources` is inert here (no changed-callback). Upstream registers `OnUseCompactResourcesPropertyChanged`, which throws `hresult_invalid_argument` outside prerelease builds and otherwise re-sources to `compact_themeresources.xaml`. Matching it means restoring an `UpdateSource()` method (upstream calls it from both the ctor and the callback) and clearing `ThemeDictionaries` before reassigning `Source`, as upstream does.
+    - The real fix for the acrylic block is to restore the `TintLuminosityOpacity` attribute in the ported Fluent dictionaries — WinUI 3 carries it inline in `AcrylicBrush_themeresources.xaml` and does no programmatic assignment; our C# fix-up would then delete itself. (WinUI **2** did assign it in code, with the same values, which is where our copy came from.)
+    - Root cause of all of the above: our `XamlControlsResources` is a port of **WinUI 2**, not WinUI 3. The pre-fork `dev/dll/XamlControlsResources.h` declares `UpdateAcrylicBrushesLightTheme`/`DarkTheme`, `UpdateTintLuminosityOpacity`, `UpdateSource` and `IsUsingControlsResourcesVersion2` — our file mirrors all of them, including the write-only `_isUsingResourcesVersion2` (upstream's `s_tlsIsControlsResourcesVersion2`, which upstream actually *read* from Controls; we never ported the reader). WinUI 3 dropped the whole versioning concept at the repo fork (`aac7a6ddf`, 2023-10-19): 99 `*_v1.xaml` files deleted and `ControlsResourcesVersion` removed from the IDL in one commit. A future pass should re-baseline this type against WinUI 3 rather than patch the WinUI 2 port further.
+    - `EnsureRevealLights` is marked `[NotImplemented]` but upstream's body is an empty no-op kept only for compat, so we are already at parity — the attribute misreports it.
+    - `CppWinRTHelpers.SetDefaultStyleKey` points `DefaultStyleResourceUri` at the theme-resources URI; upstream's `SetDefaultStyleKeyWorker` points it at `Themes/generic.xaml`. `Given_Control.When_Non_BuiltIn_Control` asserts the Uno value, so changing it means updating that test.
 - [ ] **BC76** — Remove/internalize `Windows.UI.Input.*` (~173 types)  `d4·M` · #18875
   - Hard-remove the ~173 stub types. The **real** `InputInjector` family (test infra) -> move to `Microsoft.UI.Input.Preview.Injection` and update call sites.
-  - Files: `src/Uno.UWP/Generated/3.0.0.0/Windows.UI.Input`, `src/Uno.UWP/Generated/3.0.0.0/Windows.UI.Input.Spatial`, `src/Uno.UWP/Generated/3.0.0.0/Windows.UI.Input.Inking`
+  - Files: `src/Uno/Generated/3.0.0.0/Windows.UI.Input`, `src/Uno/Generated/3.0.0.0/Windows.UI.Input.Spatial`, `src/Uno/Generated/3.0.0.0/Windows.UI.Input.Inking`
 
 ---
 
