@@ -10,7 +10,6 @@ namespace Microsoft.UI.Xaml
 {
 	public sealed partial class TargetPropertyPath
 	{
-
 		public object? Target
 		{
 			get;

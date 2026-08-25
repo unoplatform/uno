@@ -94,7 +94,6 @@ partial class InputManager
 			}
 
 			_reRouted = new ReRouted(routedArgs, from, to);
-
 		}
 		#endregion
 
