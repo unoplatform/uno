@@ -138,8 +138,15 @@ internal sealed partial class ManagedLottie
 				};
 			case "tr":
 				return new TransformShape { Transform = ParseTransform(it) };
+			case "tm":
+				return new TrimShape
+				{
+					Start = it.TryGetProperty("s", out var ts) ? ParseScalar(ts) : AnimatedScalar.Constant(0),
+					End = it.TryGetProperty("e", out var te) ? ParseScalar(te) : AnimatedScalar.Constant(100),
+					Offset = it.TryGetProperty("o", out var to) ? ParseScalar(to) : AnimatedScalar.Constant(0),
+				};
 			default:
-				return null; // gf/gs/tm/rp/mm/sr/… not modelled in v1 — skipped, not fatal
+				return null; // gf/gs/rp/mm/sr/… not modelled in v1 — skipped, not fatal
 		}
 	}
 

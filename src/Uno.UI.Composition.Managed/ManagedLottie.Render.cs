@@ -82,6 +82,22 @@ internal sealed partial class ManagedLottie
 
 		// One geometry for all direct path/rect/ellipse items in this group (fills/strokes paint that union).
 		IGeometry? combined = BuildGeometry(geometry, items, frame);
+
+		// Trim paths (tm): keep the [start,end] arc-length fraction of the group's paths (offset-rotated).
+		foreach (var it in items)
+		{
+			if (it is TrimShape trim && combined is not null)
+			{
+				var trimmed = ApplyTrim(combined, trim, frame);
+				if (!ReferenceEquals(trimmed, combined))
+				{
+					combined.Dispose();
+					combined = trimmed;
+				}
+				break;
+			}
+		}
+
 		if (combined is not null)
 		{
 			foreach (var it in items)
@@ -115,6 +131,43 @@ internal sealed partial class ManagedLottie
 		}
 
 		session.Restore();
+	}
+
+	// Trim [Start,End]% of the concatenated path length, rotated by Offset (deg, 360 = full). Returns the original
+	// when the trim is a no-op (full path). Wrap (range crossing the seam) is a best-effort union of the two arcs.
+	private static IGeometry? ApplyTrim(IGeometry geom, TrimShape trim, float frame)
+	{
+		var offset = trim.Offset.Evaluate(frame) / 360f;
+		var a = trim.Start.Evaluate(frame) / 100f + offset;
+		var b = trim.End.Evaluate(frame) / 100f + offset;
+		if (b < a)
+		{
+			(a, b) = (b, a);
+		}
+		var len = b - a;
+		if (len <= 1e-4f)
+		{
+			return geom.GetFilledGeometry(0f, 0f) is { } empty ? empty : geom;   // nothing visible
+		}
+		if (len >= 1f)
+		{
+			return geom;   // whole path
+		}
+		// Rotate the seam so a ∈ [0,1).
+		var shift = MathF.Floor(a);
+		a -= shift;
+		b -= shift;
+		if (b <= 1f)
+		{
+			return geom.GetFilledGeometry(a, b);
+		}
+		// Wrap across the seam: [a,1] ∪ [0,b-1].
+		var g1 = geom.GetFilledGeometry(a, 1f);
+		var g2 = geom.GetFilledGeometry(0f, b - 1f);
+		var union = g1.Combine(g2, GeometryCombineMode.Union);
+		g1.Dispose();
+		g2.Dispose();
+		return union;
 	}
 
 	private static IGeometry? BuildGeometry(IGeometryFactory geometry, IReadOnlyList<ShapeItem> items, float frame)

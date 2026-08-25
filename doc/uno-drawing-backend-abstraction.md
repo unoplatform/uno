@@ -462,9 +462,10 @@ its shapes with the registered geometry engine; the Skottie add-in ignores it. T
   `IDrawingSession`/`IGeometryFactory` (no Skottie, no rasterize-to-SKSurface), mirroring `ManagedSvg`. v1 covers
   the shape-layer subset that fits most UI/icon files: composition + shape/null layers, layer parenting, in/out
   visibility, layer & group transforms (anchor/position/scale/rotation/opacity), bézier/rect/ellipse paths, solid
-  fills (+ fill rule) and strokes, with full keyframe interpolation (linear + cubic-bézier easing + hold, over
-  scalars/vectors/colors/bézier-paths). Gradients, trim paths, repeaters, merge paths, stars, masks, mattes,
-  precomps, image/text layers and effects are not modelled yet — an unsupported item is skipped, never fatal.
+  fills (+ fill rule) and strokes, and trim paths (via `IGeometry.GetFilledGeometry`), with full keyframe
+  interpolation (linear + cubic-bézier easing + hold, over scalars/vectors/colors/bézier-paths). Gradients,
+  repeaters, merge paths, stars, masks, mattes, precomps, image/text layers and effects are not modelled yet —
+  an unsupported item is skipped, never fatal.
 - **`SkottieLottieRenderer`** (`Uno.UI.Lottie` add-in) — wraps `SkiaSharp.Skottie`. `Render` fast-paths on
   `NativeSurface is SKCanvas` (draws straight into the frame), else rasterizes to an offscreen and goes through
   `session.Factory.CreateTexture(...)` → `DrawImage` — so it plays on WebGPU too.

@@ -73,6 +73,10 @@ internal sealed partial class ManagedLottie
 
 	public sealed class TransformShape : ShapeItem { public Transform Transform = new(); }
 
+	// Trim paths (tm): keep the arc-length fraction [Start,End] (0..100%) of the group's paths, rotated by Offset
+	// (degrees; 360 = one full length). v1 assumes simultaneous mode (trim over the concatenated length).
+	public sealed class TrimShape : ShapeItem { public AnimatedScalar Start = AnimatedScalar.Constant(0); public AnimatedScalar End = AnimatedScalar.Constant(100); public AnimatedScalar Offset = AnimatedScalar.Constant(0); }
+
 	// ---- animated properties ----
 
 	// One keyframe segment: value goes from Start (at Frame) toward the next keyframe's value, eased by the cubic
