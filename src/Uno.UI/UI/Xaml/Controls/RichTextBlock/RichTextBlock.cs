@@ -44,7 +44,20 @@ namespace Microsoft.UI.Xaml.Controls
 		private Range _selectionOnPointerPressed;
 #endif
 
-		private Hyperlink? _hyperlinkOver;
+		private Hyperlink? _hyperlinkOver; // do not use: use HyperlinkOver instead
+		private Hyperlink? HyperlinkOver
+		{
+			get => _hyperlinkOver;
+			set
+			{
+				if (_hyperlinkOver != value)
+				{
+					_hyperlinkOver = value;
+					UpdateProtectedCursor();
+				}
+			}
+		}
+
 		private bool _subscribeToPointerEvents;
 		private Action? _foregroundChanged;
 		private Range _selection;
@@ -80,6 +93,10 @@ namespace Microsoft.UI.Xaml.Controls
 			Blocks.VectorChanged += OnBlocksChanged;
 
 			_hyperlinks.CollectionChanged += HyperlinksOnCollectionChanged;
+
+			// IsTextSelectionEnabled defaults to true, so its changed callback never fires for the
+			// default value - seed the cursor here or selectable text would keep the arrow.
+			UpdateProtectedCursor();
 
 			InitializePartial();
 		}
@@ -329,10 +346,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			var hyperlink = that.FindHyperlinkAt(e);
-			if (that._hyperlinkOver != hyperlink)
+			if (that.HyperlinkOver != hyperlink)
 			{
-				that._hyperlinkOver?.ReleasePointerOver(e.Pointer);
-				that._hyperlinkOver = hyperlink;
+				that.HyperlinkOver?.ReleasePointerOver(e.Pointer);
+				that.HyperlinkOver = hyperlink;
 				hyperlink?.SetPointerOver(e.Pointer);
 			}
 
@@ -369,7 +386,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			var hyperlink = that.FindHyperlinkAt(e);
-			that._hyperlinkOver = hyperlink;
+			that.HyperlinkOver = hyperlink;
 			hyperlink?.SetPointerOver(e.Pointer);
 		};
 
@@ -380,8 +397,8 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			that._hyperlinkOver?.ReleasePointerOver(e.Pointer);
-			that._hyperlinkOver = null;
+			that.HyperlinkOver?.ReleasePointerOver(e.Pointer);
+			that.HyperlinkOver = null;
 		};
 
 		private bool AbortHyperlinkCaptures(Pointer pointer)
@@ -393,8 +410,8 @@ namespace Microsoft.UI.Xaml.Controls
 				aborted |= hyperlink.ReleasePointerOver(pointer);
 			}
 
-			aborted |= _hyperlinkOver?.ReleasePointerOver(pointer) ?? false;
-			_hyperlinkOver = null;
+			aborted |= HyperlinkOver?.ReleasePointerOver(pointer) ?? false;
+			HyperlinkOver = null;
 
 			return aborted;
 		}
@@ -417,7 +434,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateHyperlinks()
 		{
-			_hyperlinkOver = null;
+			HyperlinkOver = null;
 			var previousHyperLinks = _hyperlinks.ToHashSet();
 			_hyperlinks.Clear();
 
