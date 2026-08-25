@@ -560,6 +560,15 @@ public partial class DependencyObjectStore
 		{
 			return parentStore.WalkTheme;
 		}
+
+		// An app that never switches theme at runtime has no established per-object themes (only
+		// a theme walk persists them), and ResolveOwnerTheme's owner-less fallback reads the
+		// requested-theme-for-subtree slot — mid-boundary already carrying the very theme being
+		// escaped. Use the application base theme instead (#24021).
+		if ((Parent as IDependencyObjectStoreProvider)?.Store.GetTheme() is null or Theme.None)
+		{
+			return Uno.UI.Xaml.Core.CoreServices.Instance.Theming.GetBaseTheme();
+		}
 #endif
 
 		return ThemeResolution.ResolveOwnerTheme(Parent as DependencyObject);
