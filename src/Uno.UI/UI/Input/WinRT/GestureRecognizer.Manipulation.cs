@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections;
@@ -26,9 +26,14 @@ namespace Windows.UI.Input
 		// Note: this is also responsible to handle "Drag manipulations"
 		internal partial class Manipulation
 		{
-			internal static readonly Thresholds StartTouch = new() { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
-			internal static readonly Thresholds StartPen = new() { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
-			internal static readonly Thresholds StartMouse = new() { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
+			// Start thresholds ("dead-zone"): movement required to promote a press to a manipulation.
+			// MUX configures none of these - it delegates recognition to the Win32 InteractionContext
+			// (see GestureConfigurationBuilder.cpp), so these are Uno values, not ported ones.
+			// Mouse uses the Win32 drag threshold (SM_CXDRAG, default 4px); touch/pen use a slop close to
+			// the ~2.7mm at typical DPI that Windows, iOS and Android all land near.
+			internal static readonly Thresholds StartTouch = new() { TranslateX = 10, TranslateY = 10, Rotate = 5, Expansion = 10 };
+			internal static readonly Thresholds StartPen = new() { TranslateX = 10, TranslateY = 10, Rotate = 5, Expansion = 10 };
+			internal static readonly Thresholds StartMouse = new() { TranslateX = 4, TranslateY = 4, Rotate = 1, Expansion = 4 };
 
 			internal static readonly Thresholds DeltaTouch = new() { TranslateX = 2, TranslateY = 2, Rotate = .1, Expansion = 1 };
 			internal static readonly Thresholds DeltaPen = new() { TranslateX = 2, TranslateY = 2, Rotate = .1, Expansion = 1 };
