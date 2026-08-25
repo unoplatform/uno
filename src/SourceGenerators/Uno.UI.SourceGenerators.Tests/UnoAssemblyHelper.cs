@@ -17,13 +17,12 @@ internal static partial class UnoAssemblyHelper
 				"Uno.UI.dll",
 				[
 					"Uno.UI",
-					"Uno.UI.Reference",
 				],
 				[TFMPrevious, TFMCurrent]
 			)),
 			.. LoadAssemblies(GetBinDirectory(
 				"Uno.WinRT",
-				"Uno.dll",
+				"Uno.WinRT.dll",
 				[
 					"Uno.WinRT.Skia",
 					"Uno.WinRT.Reference",
@@ -44,7 +43,6 @@ internal static partial class UnoAssemblyHelper
 				"Uno.UI.Composition.dll",
 				[
 					"Uno.UI.Composition",
-					"Uno.UI.Composition.Reference",
 				],
 				[TFMPrevious, TFMCurrent]
 			)),

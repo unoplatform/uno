@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -125,15 +125,6 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		}
 
 
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-		// Regardless the setup, XamlReader still uses the new templated-parent impl, including the new framework-template.ctor.
-		// But because they are not referenced anywhere, they could be trimmed and leads to:
-		// > MissingMethodException: MissingConstructor_Name, Microsoft.UI.Xaml.DataTemplate
-		// note: This is only needed while we are still supporting legacy codegen. It can be safely deleted once we moved to the new setup.
-		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(ControlTemplate))]
-		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(DataTemplate))]
-		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(ItemsPanelTemplate))]
-#endif
 		private object? LoadObject(
 			XamlObjectDefinition? control,
 			object? rootInstance,
@@ -161,11 +152,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					{
 						fe.SetBaseUri(fe.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
 					}
-					if (settings?.TemplatedParent is { } tp)
-					{
-						fe.SetTemplatedParent(tp);
-						settings.TemplateMemberCreatedCallback?.Invoke(fe);
-					}
+					settings?.OnMemberCreated(fe);
 				}
 			}
 
@@ -226,7 +213,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 			if (type.Is<FrameworkTemplate>())
 			{
-				NewFrameworkTemplateBuilder builder = (o, s) =>
+				FrameworkTemplateBuilder builder = (o, s) =>
 				{
 					var contentOwner = unknownContent;
 
@@ -237,7 +224,15 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				// reported even if we're not materializing the content explicitly.
 				ValidateContent(unknownContent?.Objects.FirstOrDefault());
 
-				var created = Activator.CreateInstance(type, /* owner: */null, /* factory: */builder)!;
+				// Constructed directly rather than reflectively: the builder ctors are internal, and a static
+				// reference also keeps them from being trimmed.
+				object created = type switch
+				{
+					_ when type == typeof(DataTemplate) => Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(null, builder),
+					_ when type == typeof(ControlTemplate) => Uno.UI.Helpers.MarkupHelper.CreateControlTemplate(null, builder),
+					_ when type == typeof(ItemsPanelTemplate) => Uno.UI.Helpers.MarkupHelper.CreateItemsPanelTemplate(null, builder),
+					_ => Activator.CreateInstance(type, /* owner: */null, /* factory: */builder)!,
+				};
 				TrySetContextualProperties(created, control);
 
 				foreach (var member in control.Members.Where(m => m != unknownContent && m != initializationMember))

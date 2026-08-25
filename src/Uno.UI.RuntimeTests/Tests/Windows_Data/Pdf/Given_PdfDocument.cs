@@ -1,5 +1,5 @@
 ﻿#nullable enable
-#if !HAS_UNO || XAMARIN_ANDROID
+#if !HAS_UNO
 using System;
 using System.IO;
 using System.Linq;
@@ -16,7 +16,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Data.Pdf;
 
 [TestClass]
 [RunsOnUIThread]
-#if HAS_UNO && !XAMARIN_ANDROID
+#if HAS_UNO
 [Ignore("Not implemented yet.")]
 #endif
 [PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]

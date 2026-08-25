@@ -218,6 +218,14 @@
 		<WasmBuildNative>true</WasmBuildNative>
 		<!-- Workaround for https://github.com/dotnet/aspnetcore/issues/63970 -->
 		<WasmFingerprintAssets>false</WasmFingerprintAssets>
+		<!--
+		This wwwroot is mounted at two roots: the runtime tests serve it at localhost:8000/ and PR
+		staging from /pr-<N>/wasm-skia-net9/. Uno.Sdk defaults this to "/" for deep-link routing, which
+		bakes absolute /package_<hash>/ paths into index.html and uno-config.js and 404s under any
+		sub-folder. SamplesApp routes by query string, so "./" (the bootstrapper default, and what the
+		pre-unification head used) is the correct value.
+		-->
+		<WasmShellWebAppBasePath>./</WasmShellWebAppBasePath>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(_Platform)' == 'browserwasm' AND '$(Configuration)'=='Debug'">
 		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
@@ -237,6 +245,9 @@
 			<TargetPath>WebContent/%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
 		</WasmShellExtraFilesToDeploy>
 	</ItemGroup>
+
+	<Import Condition="'$(_Platform)' == 'browserwasm'" Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\build\*.Runtime.Skia.WebAssembly.Browser.props" />
+	<Import Condition="'$(_Platform)' == 'browserwasm'" Project="..\..\Uno.UI.Runtime.Skia.WebAssembly.Browser\build\*.Runtime.Skia.WebAssembly.Browser.targets" />
 	<!-- ==================== android (Skia) ==================== -->
 	<ItemGroup Condition="'$(_Platform)' == 'android'">
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
@@ -258,8 +269,7 @@
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(_Platform)' == 'android'">
-		<DefineConstants>$(DefineConstants);XAMARIN;HAS_UNO</DefineConstants>
-		<DefineConstants Condition=" '$(UseMonoRuntime)' == 'false' ">$(DefineConstants);RUNTIME_CORECLR</DefineConstants>
+		<DefineConstants>$(DefineConstants);HAS_UNO</DefineConstants>
 		<!-- Pin the shrinker, as the netcoremobile head does. Left unset, R8 9.1.31 crashes with
 		     an NPE in its API-model database while desugaring androidx.core. -->
 		<AndroidLinkTool Condition="'$(DoNotSetAndroidLinkTool)' != 'true'">r8</AndroidLinkTool>
@@ -406,8 +416,7 @@
 	<!--
 	Android needs AndroidResourcesGenerator to emit the DrawableHelper.SetDrawableResolver call —
 	without it every ms-appx local asset lookup throws "Drawable resources were not initialized" at
-	runtime. Must stay below the Runtime.Skia.Android import above, which sets UnoUIRuntimeIdentifier=Skia
-	for the generators to read; reversed, they pick XamarinProjectType=android and emit wrong output.
+	runtime.
 	-->
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props"
 	        Condition="'$(_Platform)' == 'android'" />

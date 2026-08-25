@@ -38,7 +38,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 #endif
 		}
 
-#if XAMARIN
+#if __ANDROID__ || __APPLE_UIKIT__
 		[Preserve(AllMembers = true)]
 #endif
 		public class MyViewModel

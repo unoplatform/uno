@@ -96,7 +96,7 @@ internal partial class SplitViewPaneAutomationPeer : FrameworkElementAutomationP
 	{
 		if (Owner is FrameworkElement fe)
 		{
-			var splitView = fe.TemplatedParent as SplitView;
+			var splitView = fe.GetTemplatedParent() as SplitView;
 			if (splitView is not null)
 			{
 				// CanLightDismiss: the pane acts as a window overlay in Overlay and CompactOverlay modes

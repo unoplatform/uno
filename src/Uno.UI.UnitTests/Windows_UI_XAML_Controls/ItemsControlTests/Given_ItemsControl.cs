@@ -91,7 +91,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			var style = new Style(typeof(ItemsControl))
 			{
 				Setters =  {
-					new Setter(Control.TemplateProperty, new ControlTemplate(() => itemsPresenter))
+					new Setter(Control.TemplateProperty, new ControlTemplate(null, (_, _) => itemsPresenter))
 				}
 			};
 
@@ -99,7 +99,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 
 			var SUT = new ItemsControl()
 			{
-				ItemsPanel = new ItemsPanelTemplate(() => panel),
+				ItemsPanel = new ItemsPanelTemplate(null, (_, _) => panel),
 				Items = {
 					new Border { Name = "b1" }
 				},
@@ -128,7 +128,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			{
 				ItemsPanelRoot = panel,
 				InternalItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					count++;
 					return new Border();
@@ -223,7 +223,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			{
 				ItemsPanelRoot = panel,
 				InternalItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() => { return new Border(); }),
+				ItemTemplate = new DataTemplate(null, (_, _) => { return new Border(); }),
 				ItemsSource = source
 			};
 
@@ -260,7 +260,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			{
 				ItemsPanelRoot = panel,
 				InternalItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					count++;
 					return new Border();
@@ -297,7 +297,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			{
 				ItemsPanelRoot = panel,
 				InternalItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					count++;
 					return new Border();
@@ -322,7 +322,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			{
 				ItemsPanelRoot = panel,
 				InternalItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					count++;
 					return new Border();
@@ -357,7 +357,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			{
 				ItemsPanelRoot = panel,
 				InternalItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					count++;
 					return new Border();
@@ -392,7 +392,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			{
 				ItemsPanelRoot = panel,
 				InternalItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					count++;
 					return new Border();
@@ -436,7 +436,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 				ItemsPanelRoot = panel,
 				ItemContainerStyle = BuildBasicContainerStyle(),
 				InternalItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					count++;
 					return new Border();
@@ -496,7 +496,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 				ItemsPanelRoot = panel,
 				ItemContainerStyle = BuildBasicContainerStyle(),
 				InternalItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					count++;
 					return new Border();
@@ -539,7 +539,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 				ItemsPanelRoot = panel,
 				ItemContainerStyle = BuildBasicContainerStyle(),
 				InternalItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					count++;
 					return new Border();

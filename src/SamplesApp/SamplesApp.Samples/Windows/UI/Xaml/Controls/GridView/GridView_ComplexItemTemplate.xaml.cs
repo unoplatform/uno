@@ -22,7 +22,7 @@ using Uno.UI.Samples.Controls;
 
 #if WINAPPSDK
 using System.Runtime.InteropServices.WindowsRuntime;
-#elif XAMARIN
+#elif __ANDROID__ || __APPLE_UIKIT__
 #endif
 
 namespace Uno.UI.Samples.Content.UITests.GridView

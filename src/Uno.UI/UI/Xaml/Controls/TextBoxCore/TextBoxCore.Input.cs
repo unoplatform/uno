@@ -1826,7 +1826,13 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 
 	TextBlock ITextSelectionGripperHost.GripperTextSurface => TextBoxView.DisplayBlock;
 
-	Rect ITextSelectionGripperHost.GripperClipBounds => Owner.GetAbsoluteBoundsRect();
+	// Ancestor-clipped, not the raw bounds: a TextBox scrolled out of an enclosing ScrollViewer still has
+	// valid bounds, and the grippers live in an unclipped popup above the tree - so culling against the raw
+	// bounds leaves them painted over whatever the ScrollViewer scrolled them onto.
+	Rect ITextSelectionGripperHost.GripperClipBounds => Owner.GetGlobalBoundsWithOptions(
+		ignoreClipping: false,
+		ignoreClippingOnScrollContentPresenters: false,
+		useTargetInformation: false);
 
 	GripperMode ITextSelectionGripperHost.GripperMode => _caretMode switch
 	{

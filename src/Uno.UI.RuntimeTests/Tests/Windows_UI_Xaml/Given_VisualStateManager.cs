@@ -220,7 +220,7 @@ public partial class Given_VisualStateManager
 		var contentControl = new ContentControl
 		{
 			Content = "0",
-			ContentTemplate = new DataTemplate(() =>
+			ContentTemplate = new DataTemplate(null, (_, _) =>
 			{
 				return uc;
 			})

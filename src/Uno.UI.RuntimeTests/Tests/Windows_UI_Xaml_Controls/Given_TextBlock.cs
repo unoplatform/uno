@@ -816,6 +816,74 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19731")]
+		[DataRow("ms-appdata:///local/MsAppDataFontTest/Roboto-Regular.ttf")]
+		[DataRow("ms-appdata:///local/MsAppDataFontTest/Roboto-Regular.ttf#Roboto")]
+		public async Task When_FontFamily_From_MsAppData_Local(string font)
+		{
+			var sourceUri = new Uri("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/Roboto-Regular.ttf");
+			var sourceFile = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(sourceUri);
+
+			// Unique per-invocation folder so the two DataRow variants never race on the same directory.
+			var folderName = $"MsAppDataFontTest_{Guid.NewGuid():N}";
+			var localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+			Windows.Storage.StorageFolder fontsFolder = null;
+
+			try
+			{
+				fontsFolder = await localFolder.CreateFolderAsync(
+					folderName,
+					Windows.Storage.CreationCollisionOption.FailIfExists);
+				await sourceFile.CopyAsync(fontsFolder, "Roboto-Regular.ttf", Windows.Storage.NameCollisionOption.ReplaceExisting);
+
+				var SUT = new TextBlock { Text = "abcd" };
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				var size = new Size(1000, 1000);
+				SUT.Measure(size);
+
+				var originalSize = SUT.DesiredSize;
+
+				Assert.AreNotEqual(0, SUT.DesiredSize.Width);
+				Assert.AreNotEqual(0, SUT.DesiredSize.Height);
+
+				SUT.FontFamily = new FontFamily(font.Replace("MsAppDataFontTest", folderName));
+
+				int counter = 3;
+
+				do
+				{
+					await WindowHelper.WaitForIdle();
+					await Task.Delay(100);
+
+					SUT.InvalidateMeasure();
+				}
+				while (SUT.DesiredSize == originalSize && counter-- > 0);
+
+				Assert.AreNotEqual(originalSize, SUT.DesiredSize);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+
+				if (fontsFolder is not null)
+				{
+					try
+					{
+						await fontsFolder.DeleteAsync(Windows.Storage.StorageDeleteOption.PermanentDelete);
+					}
+					catch (Exception ex)
+					{
+						// Cleanup is best-effort — a throw here would mask the real test failure.
+						Console.WriteLine($"Failed to delete '{folderName}': {ex}");
+					}
+				}
+			}
+		}
+
+		[TestMethod]
 #if !__ANDROID__
 		[Ignore("Android-only test for AndroidAssets backward compatibility")]
 #endif
@@ -1533,6 +1601,68 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsNull(sut.SelectionGrippersForTesting);
+#endif
+		}
+
+		// A selectable TextBlock is culled against the same ancestor-clipped GripperClipBounds as a TextBox, and it
+		// is the host the presenter's 1px anchor probe is written for (its flush last line must not flicker).
+		// Mirror of Given_TextBox.When_Scrolled_Out_Of_View_Grippers_Are_Hidden.
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_IsTextSelectionEnabled_Scrolled_Out_Of_View_Then_Hides_Grippers()
+		{
+#if !__SKIA__
+			Assert.Inconclusive("Touch selection grippers are only implemented on Skia.");
+#else
+			using var _ = new DisposableAction(() =>
+				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach((_, p) => p.IsOpen = false));
+
+			var sut = new TextBlock
+			{
+				Text = "hello uno",
+				IsTextSelectionEnabled = true,
+			};
+
+			var scrollViewer = new ScrollViewer
+			{
+				Width = 320,
+				Height = 150,
+				Content = new StackPanel
+				{
+					Children =
+					{
+						sut,
+						new Border { Height = 800 },
+					}
+				}
+			};
+
+			await UITestHelper.Load(scrollViewer);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var bounds = sut.GetAbsoluteBoundsRect();
+			finger.Press(new Point(bounds.X + bounds.Width / 4, bounds.GetCenter().Y));
+			finger.Release();
+			await WindowHelper.WaitFor(
+				() => sut.SelectionGrippersForTesting is { } g && g.start.IsShowing && g.end.IsShowing,
+				message: "the tap should select a word and show both grippers");
+
+			scrollViewer.ChangeView(null, 400, null, disableAnimation: true);
+			await WindowHelper.WaitFor(() => scrollViewer.VerticalOffset > 300, message: "the form should have scrolled");
+			await WindowHelper.WaitFor(
+				() => sut.SelectionGrippersForTesting is { } g && !g.start.IsShowing && !g.end.IsShowing,
+				timeoutMS: 5000,
+				message: "both grippers must be hidden once the TextBlock is scrolled out of view");
+
+			scrollViewer.ChangeView(null, 0, null, disableAnimation: true);
+			await WindowHelper.WaitFor(
+				() => sut.SelectionGrippersForTesting is { } g && g.start.IsShowing && g.end.IsShowing,
+				timeoutMS: 5000,
+				message: "both grippers must come back when the TextBlock is scrolled back into view");
 #endif
 		}
 

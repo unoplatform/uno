@@ -159,7 +159,7 @@
 			but the Skia build should be in the output folder.
 			--><!--
 			<_PlatformSpecificFiles Include="$(MSBuildThisFileDirectory)..\..\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Skia\$(Configuration)\$(TargetFramework)\Uno.UI.Dispatching.dll" />
-			<_PlatformSpecificFiles Include="$(MSBuildThisFileDirectory)..\..\Uno.WinRT\bin\Uno.WinRT.Skia\$(Configuration)\$(TargetFramework)\Uno.dll" />
+			<_PlatformSpecificFiles Include="$(MSBuildThisFileDirectory)..\..\Uno.WinRT\bin\Uno.WinRT.Skia\$(Configuration)\$(TargetFramework)\Uno.WinRT.dll" />
 
 			<_ReferenceCopyLocalPathsToRemove Include="@(ReferenceCopyLocalPaths)" CrossFileName="%(_PlatformSpecificFiles.FileName)%(_PlatformSpecificFiles.Extension)" />
 			<_ReferenceCopyLocalPathsToRemove Remove="@(_ReferenceCopyLocalPathsToRemove)" Condition="'%(_ReferenceCopyLocalPathsToRemove.FileName)%(_ReferenceCopyLocalPathsToRemove.Extension)' != '%(_ReferenceCopyLocalPathsToRemove.CrossFileName)'" />
@@ -180,7 +180,7 @@
 			--><!--
 
 			<_PlatformSpecificFiles2 Include="$(MSBuildThisFileDirectory)..\..\Uno.UI.Dispatching\bin\Uno.UI.Dispatching.Skia\$(Configuration)\$(TargetFramework)\Uno.UI.Dispatching.dll" />
-			<_PlatformSpecificFiles2 Include="$(MSBuildThisFileDirectory)..\..\Uno.WinRT\bin\Uno.WinRT.Skia\$(Configuration)\$(TargetFramework)\Uno.dll" />
+			<_PlatformSpecificFiles2 Include="$(MSBuildThisFileDirectory)..\..\Uno.WinRT\bin\Uno.WinRT.Skia\$(Configuration)\$(TargetFramework)\Uno.WinRT.dll" />
 
 			<_UserRuntimeAssemblyToRemove Include="@(UserRuntimeAssembly)" CrossFileName="%(_PlatformSpecificFiles2.FileName)%(_PlatformSpecificFiles2.Extension)" />
 			<_UserRuntimeAssemblyToRemove Remove="@(_UserRuntimeAssemblyToRemove)" Condition="'%(_UserRuntimeAssemblyToRemove.FileName)%(_UserRuntimeAssemblyToRemove.Extension)' != '%(_UserRuntimeAssemblyToRemove.CrossFileName)'" />

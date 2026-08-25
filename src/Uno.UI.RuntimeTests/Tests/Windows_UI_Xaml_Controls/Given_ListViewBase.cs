@@ -1552,7 +1552,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -1599,7 +1599,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -1654,7 +1654,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
@@ -1715,7 +1715,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
@@ -1786,7 +1786,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var list = new ListView
 			{
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -2121,7 +2121,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -2189,7 +2189,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -2251,7 +2251,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -4421,7 +4421,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				ItemsSource = Enumerable.Range(0, NumberOfItems).Select(x => $"Item {x}").ToList(),
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -4502,7 +4502,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new ListView()
 			{
 				ItemContainerStyle = BasicContainerStyle,
-				HeaderTemplate = new DataTemplate(() =>
+				HeaderTemplate = new DataTemplate(null, (_, _) =>
 				{
 					var s = new StackPanel
 					{
@@ -4695,7 +4695,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Height = 400,
 				ItemsSource = Enumerable.Range(0, 100).Select(i => $"item {i}" + new string('\n', random.Next(0, 5))).ToArray(),
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
@@ -5942,7 +5942,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 						new ListView
 						{
 							ItemsSource = Enumerable.Range(0, 200).Select(x => $"asd {x}"),
-							HeaderTemplate = new DataTemplate(() => new StackPanel
+							HeaderTemplate = new DataTemplate(null, (_, _) => new StackPanel
 							{
 								Children =
 								{
@@ -6111,6 +6111,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		public class SubclassOfObservableCollection : ObservableCollection<string>
 		{
+		}
+	}
+
+	// Repro tests for https://github.com/unoplatform/uno/issues/2136
+	[TestClass]
+	[RunsOnUIThread]
+	public class Given_ItemsStackPanel_Stretch
+	{
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/2136")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+#if __APPLE_UIKIT__
+		[Ignore("Disable all listview tests until crash is resolved https://github.com/unoplatform/uno/issues/17101")]
+#endif
+		public async Task When_ListView_ItemsStackPanel_Children_Are_Stretched_To_Full_Width()
+		{
+			const double ContainerWidth = 300;
+
+			var sut = new ListView
+			{
+				Width = ContainerWidth,
+				Height = 400,
+				ItemsSource = new[] { "Item 1", "Item 2", "Item 3" },
+				ItemTemplate = XamlHelper.LoadXaml<DataTemplate>("""
+					<DataTemplate>
+						<Border Height="50" Background="Blue" HorizontalAlignment="Stretch">
+							<TextBlock Text="{Binding}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+						</Border>
+					</DataTemplate>
+					"""),
+			};
+
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+			await UITestHelper.WaitForIdle();
+			await UITestHelper.WaitFor(() => sut.ItemsPanelRoot?.ActualWidth > 0, timeoutMS: 3000);
+
+			var panel = sut.ItemsPanelRoot;
+			Assert.IsNotNull(panel, "ItemsPanelRoot should not be null.");
+
+			// #2136 is specific to ItemsStackPanel, so fail loudly if the default panel ever changes.
+			Assert.IsInstanceOfType(panel, typeof(ItemsStackPanel),
+				$"Expected the default ListView ItemsPanel to be an ItemsStackPanel, but got {panel.GetType().Name}.");
+
+			Assert.AreEqual(ContainerWidth, panel.ActualWidth, 2d,
+				$"Expected ItemsPanelRoot to have ActualWidth={ContainerWidth}, but got {panel.ActualWidth}.");
+
+			await UITestHelper.WaitFor(() => sut.ContainerFromIndex(0) is ListViewItem, timeoutMS: 3000);
+			var container = sut.ContainerFromIndex(0) as ListViewItem;
+			Assert.IsNotNull(container, "Expected container for index 0.");
+			await UITestHelper.WaitFor(() => container.ActualWidth > 0, timeoutMS: 3000);
+
+			// The regression is items failing to fill the panel, so measure the container against the panel itself.
+			Assert.AreEqual(panel.ActualWidth, container.ActualWidth, 2d,
+				$"Expected ListViewItem to be stretched to the panel width ({panel.ActualWidth}px), but got {container.ActualWidth}.");
 		}
 	}
 }

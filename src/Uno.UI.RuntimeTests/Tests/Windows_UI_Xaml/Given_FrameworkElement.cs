@@ -593,7 +593,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 					new Microsoft.UI.Xaml.Controls.ItemsRepeater
 						{
 							ItemsSource="0123456789",
-							ItemTemplate = new DataTemplate(() => new Border
+							ItemTemplate = new DataTemplate(null, (_, _) => new Border
 							{
 								BorderBrush= new SolidColorBrush(Microsoft.UI.Colors.Red),
 								Margin= new Thickness(5),

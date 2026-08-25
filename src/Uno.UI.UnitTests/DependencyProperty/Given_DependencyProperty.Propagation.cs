@@ -383,7 +383,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			var SUT = new ContentControl() { Tag = 42 };
 			DoubleAnimation anim = null;
 
-			var template = new ControlTemplate(() =>
+			var template = new ControlTemplate(null, (_, _) =>
 			{
 				var g = new Grid();
 
