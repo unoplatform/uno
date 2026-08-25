@@ -18,6 +18,16 @@ public static partial class WebGpuJsInterop
 	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.createImportedDevice")]
 	public static partial Task<int> CreateImportedDeviceAsync(int instancePtr);
 
+	/// <summary>Reverse-looks-up the live JS object emdawn's handle table has for a wgpu handle pointer (here: a
+	/// device). Lets the neutral context expose the JS GPUDevice as the honest browser handle.</summary>
+	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.getJsObject")]
+	public static partial JSObject GetJsObject(int handlePtr);
+
+	/// <summary>Imports a JS GPUDevice object into emdawn's handle table under the given instance and returns its
+	/// wgpu WGPUDevice pointer. A backend calls this to convert the neutral JS handle to a native pointer.</summary>
+	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.importDevice")]
+	public static partial int ImportDevice(JSObject jsDevice, int instancePtr);
+
 	/// <summary>Maps a readback buffer (by its wgpu handle ptr) off the event loop and inspects it as RGBA8
 	/// (rows padded to <paramref name="bytesPerRow"/>). Returns the non-transparent pixel count, or -1 on failure,
 	/// and stashes a PNG of the frame on window.__unoLastFramePng.</summary>

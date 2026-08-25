@@ -1,5 +1,7 @@
 #nullable enable
 
+using System.Runtime.InteropServices.JavaScript;
+
 namespace Uno.UI.Composition.Drawing;
 
 /// <summary>
@@ -14,6 +16,14 @@ public interface IWebGpuDeviceContext : IGraphicsContext
 	nint Adapter { get; }
 	nint Device { get; }
 	nint Queue { get; }
+
+	/// <summary>
+	/// Browser only (null on every native target): the live JavaScript <c>GPUDevice</c> object. On WASM the device
+	/// is created via <c>navigator.gpu</c> in JS, so the honest handle across the seam is the JS object — a backend
+	/// converts it to whatever it needs (Uno's emdawn backend imports it to a wgpu pointer; a direct-JS backend uses
+	/// it as-is), rather than the contract presupposing a native pointer / emdawn import.
+	/// </summary>
+	JSObject? JsDevice => null;
 
 	/// <summary>The WebGPU colour-format enum value the backend's pipelines must use, chosen by the host. 0 means the backend's default.</summary>
 	uint ColorFormat { get; }

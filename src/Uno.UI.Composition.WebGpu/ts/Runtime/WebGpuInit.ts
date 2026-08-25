@@ -37,6 +37,24 @@ namespace Uno.UI.Runtime.Skia {
 			}
 		}
 
+		// Returns the live JS object emdawn's handle table holds for a wgpu handle pointer (reverse of import).
+		public static getJsObject(handlePtr: number): any {
+			const module = (window as any).Module;
+			return module && typeof module.unoWebGpuJsObject === "function" ? module.unoWebGpuJsObject(handlePtr >>> 0) : null;
+		}
+
+		// Imports a JS GPUDevice into emdawn's handle table and returns its wgpu WGPUDevice pointer.
+		public static importDevice(device: any, instancePtr: number): number {
+			const module = (window as any).Module;
+			if (!module || typeof module.unoWebGpuImportDevice !== "function") {
+				console.error("WebGpuInit.importDevice: Module.unoWebGpuImportDevice is missing");
+				return 0;
+			}
+			const ptr = module.unoWebGpuImportDevice(device, instancePtr) >>> 0;
+			console.log("WebGpuInit: (backend) imported device ptr=" + ptr);
+			return ptr;
+		}
+
 		// Maps a readback buffer (by its wgpu handle ptr) off the event loop and inspects it as RGBA8 (rows padded to
 		// bytesPerRow). Returns the count of non-transparent pixels (alpha != 0), or -1 on failure, logs luminance
 		// min/max, and stashes a PNG data-URL of the frame on window.__unoLastFramePng so a headless driver can save

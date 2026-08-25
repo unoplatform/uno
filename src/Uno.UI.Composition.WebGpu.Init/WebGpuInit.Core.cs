@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
 using Uno.WebGpu.Native;
 using static Uno.WebGpu.Native.WGPU;
@@ -59,6 +60,9 @@ internal static class WebGpuContext
 		}
 
 		var device = WebGpuInitDevice.FromImported(WGPUTextureFormat.RGBA8Unorm, inst, (IntPtr)devPtr);
+		// Expose the live JS GPUDevice as the honest browser handle (reverse-lookup of the just-imported pointer),
+		// so a backend converts it itself rather than the contract handing over a native (emdawn-imported) pointer.
+		device.JsDeviceObject = WebGpuJsInterop.GetJsObject(devPtr);
 		return new WebGpuBrowserGraphicsContext(device, canvasId ?? "");
 	}
 }
@@ -78,6 +82,7 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 	// PickSampleCount because the WebGPU spec only guarantees sample counts 1 and 4.
 	public uint MsaaSamples { get; private set; } = 2;
 	public IntPtr Smp;                       // present-blit sampler (used by the swapchain/browser contexts)
+	public JSObject JsDeviceObject;          // browser only: the live JS GPUDevice (the honest neutral handle)
 	private bool _hasFormatFeatures;
 	private readonly bool _browser;
 
@@ -250,6 +255,7 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 	nint IWebGpuDeviceContext.Queue => Q;
 	uint IWebGpuDeviceContext.ColorFormat => (uint)ColorFormat;
 	uint IWebGpuDeviceContext.SampleCount => MsaaSamples;
+	JSObject IWebGpuDeviceContext.JsDevice => JsDeviceObject;
 	public GraphicsContextKind Kind => GraphicsContextKind.WebGpu;
 
 	public void Dispose()
