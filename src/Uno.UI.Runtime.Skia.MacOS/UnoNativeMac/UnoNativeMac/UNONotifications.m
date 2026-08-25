@@ -3,6 +3,7 @@
 //
 
 #import "UNONotifications.h"
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -13,14 +14,47 @@ static NSString *const UNOLaunchArgumentKey = @"uno.appnotifications.launchArgum
 static NSString *const UNOProtocolUriKey = @"uno.appnotifications.protocolUri";
 static NSString *const UNOMuteAudioKey = @"uno.appnotifications.muteAudio";
 static NSString *const UNOSuppressDisplayKey = @"uno.appnotifications.suppressDisplay";
+static const int64_t UNONotificationOperationTimeoutSeconds = 10;
 static uno_notification_activated_fn_ptr uno_notification_activated;
 static uno_notification_delivered_fn_ptr uno_notification_delivered;
 static UNAuthorizationStatus uno_authorization_status = UNAuthorizationStatusNotDetermined;
+static BOOL uno_authorization_status_ready = NO;
+static NSUInteger uno_authorization_refresh_generation = 0;
+static NSUInteger uno_authorization_completed_generation = 0;
 static NSMutableSet<NSString *> *uno_pending_identifiers;
 static NSMutableSet<NSString *> *uno_delivered_identifiers;
 static BOOL uno_identifiers_ready = NO;
 static NSUInteger uno_identifier_generation = 0;
 static NSUInteger uno_refresh_generation = 0;
+
+@interface UNONotificationPostOperation : NSObject
+{
+@public
+	dispatch_semaphore_t completion;
+}
+
+@property(nonatomic, copy) NSString *identifier;
+@property(nonatomic) BOOL completed;
+@property(nonatomic) BOOL canceled;
+@property(nonatomic) BOOL succeeded;
+
+- (instancetype)initWithIdentifier:(NSString *)identifier;
+
+@end
+
+@implementation UNONotificationPostOperation
+
+- (instancetype)initWithIdentifier:(NSString *)identifier
+{
+	self = [super init];
+	if (self != nil) {
+		completion = dispatch_semaphore_create(0);
+		_identifier = [identifier copy];
+	}
+	return self;
+}
+
+@end
 
 static NSObject *UNOStateGate(void)
 {
@@ -30,6 +64,16 @@ static NSObject *UNOStateGate(void)
 		gate = [[NSObject alloc] init];
 	});
 	return gate;
+}
+
+static NSCondition *UNOAuthorizationCondition(void)
+{
+	static NSCondition *condition;
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		condition = [[NSCondition alloc] init];
+	});
+	return condition;
 }
 
 static NSMutableDictionary<NSString *, UNNotificationCategory *> *UNORegisteredCategories(void)
@@ -42,14 +86,14 @@ static NSMutableDictionary<NSString *, UNNotificationCategory *> *UNORegisteredC
 	return categories;
 }
 
-static NSMutableDictionary<NSString *, NSString *> *UNORequestTokens(void)
+static NSMutableDictionary<NSString *, UNONotificationPostOperation *> *UNORequestOperations(void)
 {
-	static NSMutableDictionary<NSString *, NSString *> *tokens;
+	static NSMutableDictionary<NSString *, UNONotificationPostOperation *> *operations;
 	static dispatch_once_t onceToken;
 	dispatch_once(&onceToken, ^{
-		tokens = [NSMutableDictionary dictionary];
+		operations = [NSMutableDictionary dictionary];
 	});
-	return tokens;
+	return operations;
 }
 
 static NSString *UNOString(NSDictionary *dictionary, NSString *key)
@@ -71,12 +115,52 @@ static BOOL UNOIsRequestIdentifier(NSString *identifier)
 
 static void UNORefreshAuthorizationStatus(void)
 {
+	NSCondition *condition = UNOAuthorizationCondition();
+	[condition lock];
+	NSUInteger refreshGeneration = ++uno_authorization_refresh_generation;
+	[condition broadcast];
+	[condition unlock];
 	[[UNUserNotificationCenter currentNotificationCenter]
 		getNotificationSettingsWithCompletionHandler:^(UNNotificationSettings *settings) {
-			@synchronized (UNOStateGate()) {
+			[condition lock];
+			if (refreshGeneration == uno_authorization_refresh_generation) {
 				uno_authorization_status = settings.authorizationStatus;
+				uno_authorization_status_ready = YES;
+				uno_authorization_completed_generation = refreshGeneration;
 			}
+			[condition broadcast];
+			[condition unlock];
 		}];
+}
+
+static BOOL UNORefreshAuthorizationStatusAndWait(void)
+{
+	UNORefreshAuthorizationStatus();
+	NSCondition *condition = UNOAuthorizationCondition();
+	NSDate *timeout = [NSDate dateWithTimeIntervalSinceNow:UNONotificationOperationTimeoutSeconds];
+	[condition lock];
+	while (!uno_authorization_status_ready ||
+		uno_authorization_completed_generation != uno_authorization_refresh_generation) {
+		if (![condition waitUntilDate:timeout]) {
+			[condition unlock];
+			return NO;
+		}
+	}
+	[condition unlock];
+	return YES;
+}
+
+static BOOL UNOEnsureAuthorizationStatusReady(void)
+{
+	NSCondition *condition = UNOAuthorizationCondition();
+	[condition lock];
+	BOOL ready = uno_authorization_status_ready &&
+		uno_authorization_completed_generation == uno_authorization_refresh_generation;
+	[condition unlock];
+	if (ready) {
+		return YES;
+	}
+	return UNORefreshAuthorizationStatusAndWait();
 }
 
 static void UNORefreshIdentifiers(void)
@@ -126,7 +210,7 @@ static void UNORefreshIdentifiers(void)
 
 @interface UNOUserNotificationCenterDelegate : NSObject <UNUserNotificationCenterDelegate>
 
-@property(nonatomic, weak, nullable) id<UNUserNotificationCenterDelegate> previousDelegate;
+@property(nonatomic, strong, nullable) id<UNUserNotificationCenterDelegate> previousDelegate;
 
 @end
 
@@ -280,22 +364,138 @@ static UNNotificationAction *UNOCreateAction(NSDictionary *action)
 	return [UNNotificationAction actionWithIdentifier:identifier title:title options:options];
 }
 
-static UNMutableNotificationContent *UNOCreateContent(NSDictionary *command);
-static void UNOAddRequest(NSDictionary *command, double delaySeconds, NSString *requestToken);
+typedef void (^UNOBoolCompletion)(BOOL succeeded);
+typedef void (^UNOIdentifiersCompletion)(NSArray<NSString *> *identifiers);
 
-static BOOL UNORegisterCategoryAndPost(NSDictionary *command, double delaySeconds, NSString *requestToken)
+static UNMutableNotificationContent *UNOCreateContent(NSDictionary *command);
+
+static BOOL UNOIsPostingIdentifierSuffix(NSString *value)
+{
+	if (value.length != 32) {
+		return NO;
+	}
+	NSCharacterSet *invalidCharacters = [[NSCharacterSet characterSetWithCharactersInString:@"0123456789abcdefABCDEF"] invertedSet];
+	return [value rangeOfCharacterFromSet:invalidCharacters].location == NSNotFound;
+}
+
+static NSString * _Nullable UNOLogicalRequestIdentifier(NSDictionary *command)
+{
+	id commandId = command[@"id"];
+	if ([commandId isKindOfClass:[NSNumber class]]) {
+		unsigned long long identifier = [commandId unsignedLongLongValue];
+		if (identifier > 0 && identifier <= UINT32_MAX) {
+			return [NSString stringWithFormat:@"%@%llu", UNOImmediatePrefix, identifier];
+		}
+	}
+
+	NSString *requestIdentifier = UNOString(command, @"requestIdentifier");
+	if (![requestIdentifier hasPrefix:UNOScheduledPrefix]) {
+		return nil;
+	}
+	NSString *value = [requestIdentifier substringFromIndex:UNOScheduledPrefix.length];
+	NSRange separator = [value rangeOfString:@"."];
+	NSString *scheduleIdentifier = separator.location == NSNotFound
+		? value
+		: [value substringToIndex:separator.location];
+	return !UNOIsPostingIdentifierSuffix(scheduleIdentifier)
+		? nil
+		: [UNOScheduledPrefix stringByAppendingString:scheduleIdentifier];
+}
+
+static BOOL UNOIdentifierMatchesLogicalIdentifier(NSString *identifier, NSString *logicalIdentifier)
+{
+	if ([identifier isEqualToString:logicalIdentifier]) {
+		return YES;
+	}
+	NSString *postingPrefix = [logicalIdentifier stringByAppendingString:@"."];
+	return [identifier hasPrefix:postingPrefix] &&
+		UNOIsPostingIdentifierSuffix([identifier substringFromIndex:postingPrefix.length]);
+}
+
+static BOOL UNOIsOperationActive(UNONotificationPostOperation *operation)
+{
+	@synchronized (operation) {
+		return !operation.completed && !operation.canceled;
+	}
+}
+
+static void UNOFinalizePostOperation(UNONotificationPostOperation *operation)
+{
+	NSMutableDictionary<NSString *, UNONotificationPostOperation *> *operations = UNORequestOperations();
+	@synchronized (operations) {
+		if (operations[operation.identifier] == operation) {
+			[operations removeObjectForKey:operation.identifier];
+		}
+	}
+	dispatch_semaphore_signal(operation->completion);
+}
+
+static BOOL UNOCompletePostOperation(UNONotificationPostOperation *operation, BOOL succeeded)
+{
+	BOOL completed = NO;
+	@synchronized (operation) {
+		if (!operation.completed) {
+			operation.completed = YES;
+			operation.succeeded = succeeded;
+			completed = YES;
+		}
+	}
+	if (completed) {
+		UNOFinalizePostOperation(operation);
+	}
+	return completed;
+}
+
+static BOOL UNOCancelPostOperation(UNONotificationPostOperation *operation)
+{
+	BOOL canceled = NO;
+	@synchronized (operation) {
+		if (!operation.completed) {
+			operation.canceled = YES;
+			operation.completed = YES;
+			operation.succeeded = NO;
+			canceled = YES;
+		}
+	}
+	if (canceled) {
+		UNOFinalizePostOperation(operation);
+	}
+	return canceled;
+}
+
+static void UNORemoveRequestIdentifier(NSString *identifier)
+{
+	UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+	[center removePendingNotificationRequestsWithIdentifiers:@[identifier]];
+	[center removeDeliveredNotificationsWithIdentifiers:@[identifier]];
+	@synchronized (UNOStateGate()) {
+		[uno_pending_identifiers removeObject:identifier];
+		[uno_delivered_identifiers removeObject:identifier];
+		uno_identifier_generation++;
+	}
+}
+
+static void UNORegisterCategory(
+	NSDictionary *command,
+	UNONotificationPostOperation *operation,
+	UNOBoolCompletion completionHandler)
 {
 	NSString *categoryIdentifier = UNOString(command, @"categoryIdentifier");
 	NSArray *actionCommands = command[@"actions"];
-	if (categoryIdentifier.length == 0 || ![actionCommands isKindOfClass:[NSArray class]] || actionCommands.count == 0) {
-		UNOAddRequest(command, delaySeconds, requestToken);
-		return YES;
+	if (categoryIdentifier.length == 0 || ([actionCommands isKindOfClass:[NSArray class]] && actionCommands.count == 0)) {
+		completionHandler(YES);
+		return;
+	}
+	if (![actionCommands isKindOfClass:[NSArray class]]) {
+		completionHandler(NO);
+		return;
 	}
 
 	NSMutableArray<UNNotificationAction *> *actions = [NSMutableArray arrayWithCapacity:actionCommands.count];
 	for (id value in actionCommands) {
 		if (![value isKindOfClass:[NSDictionary class]]) {
-			return NO;
+			completionHandler(NO);
+			return;
 		}
 		[actions addObject:UNOCreateAction(value)];
 	}
@@ -311,6 +511,9 @@ static BOOL UNORegisterCategoryAndPost(NSDictionary *command, double delaySecond
 
 	[[UNUserNotificationCenter currentNotificationCenter]
 		getNotificationCategoriesWithCompletionHandler:^(NSSet<UNNotificationCategory *> *categories) {
+			if (!UNOIsOperationActive(operation)) {
+				return;
+			}
 			NSDictionary<NSString *, UNNotificationCategory *> *registeredSnapshot;
 			@synchronized (registeredCategories) {
 				registeredSnapshot = [registeredCategories copy];
@@ -325,9 +528,51 @@ static BOOL UNORegisterCategoryAndPost(NSDictionary *command, double delaySecond
 			}
 			[merged addObjectsFromArray:registeredSnapshot.allValues];
 			[[UNUserNotificationCenter currentNotificationCenter] setNotificationCategories:merged];
-			UNOAddRequest(command, delaySeconds, requestToken);
+			completionHandler(YES);
 		}];
-	return YES;
+}
+
+static void UNOGetReplacedRequestIdentifiers(
+	NSString *logicalIdentifier,
+	NSString *postingIdentifier,
+	UNONotificationPostOperation *operation,
+	UNOIdentifiersCompletion completionHandler)
+{
+	UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+	dispatch_group_t group = dispatch_group_create();
+	__block NSArray<UNNotificationRequest *> *pending = @[];
+	__block NSArray<UNNotification *> *delivered = @[];
+
+	dispatch_group_enter(group);
+	[center getPendingNotificationRequestsWithCompletionHandler:^(NSArray<UNNotificationRequest *> *requests) {
+		pending = requests ?: @[];
+		dispatch_group_leave(group);
+	}];
+	dispatch_group_enter(group);
+	[center getDeliveredNotificationsWithCompletionHandler:^(NSArray<UNNotification *> *notifications) {
+		delivered = notifications ?: @[];
+		dispatch_group_leave(group);
+	}];
+	dispatch_group_notify(group, dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
+		if (!UNOIsOperationActive(operation)) {
+			return;
+		}
+		NSMutableSet<NSString *> *identifiers = [NSMutableSet set];
+		for (UNNotificationRequest *request in pending) {
+			if (![request.identifier isEqualToString:postingIdentifier] &&
+				UNOIdentifierMatchesLogicalIdentifier(request.identifier, logicalIdentifier)) {
+				[identifiers addObject:request.identifier];
+			}
+		}
+		for (UNNotification *notification in delivered) {
+			NSString *identifier = notification.request.identifier;
+			if (![identifier isEqualToString:postingIdentifier] &&
+				UNOIdentifierMatchesLogicalIdentifier(identifier, logicalIdentifier)) {
+				[identifiers addObject:identifier];
+			}
+		}
+		completionHandler(identifiers.allObjects);
+	});
 }
 
 static UNMutableNotificationContent *UNOCreateContent(NSDictionary *command)
@@ -386,7 +631,11 @@ static UNMutableNotificationContent *UNOCreateContent(NSDictionary *command)
 	return content;
 }
 
-static void UNOAddRequest(NSDictionary *command, double delaySeconds, NSString *requestToken)
+static void UNOAddRequest(
+	NSDictionary *command,
+	double delaySeconds,
+	NSString *logicalIdentifier,
+	UNONotificationPostOperation *operation)
 {
 	NSString *identifier = UNOString(command, @"requestIdentifier");
 	UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
@@ -398,37 +647,53 @@ static void UNOAddRequest(NSDictionary *command, double delaySeconds, NSString *
 		content:UNOCreateContent(command)
 		trigger:trigger];
 
-	NSMutableDictionary<NSString *, NSString *> *requestTokens = UNORequestTokens();
-	@synchronized (requestTokens) {
-		if (![requestTokens[identifier] isEqualToString:requestToken]) {
+	if (!UNOIsOperationActive(operation)) {
+		return;
+	}
+	[center addNotificationRequest:request withCompletionHandler:^(NSError *error) {
+		if (error != nil) {
+			NSLog(@"Unable to add app notification request: %@", error);
+			UNOCompletePostOperation(operation, NO);
 			return;
 		}
-		[center removePendingNotificationRequestsWithIdentifiers:@[identifier]];
-		[center removeDeliveredNotificationsWithIdentifiers:@[identifier]];
-		@synchronized (UNOStateGate()) {
-			[uno_delivered_identifiers removeObject:identifier];
-			[uno_pending_identifiers addObject:identifier];
-			uno_identifier_generation++;
+		if (!UNOIsOperationActive(operation)) {
+			UNORemoveRequestIdentifier(identifier);
+			return;
 		}
-		[center addNotificationRequest:request withCompletionHandler:^(NSError *error) {
-			BOOL isCurrentRequest;
-			@synchronized (requestTokens) {
-				isCurrentRequest = [requestTokens[identifier] isEqualToString:requestToken];
-				if (isCurrentRequest) {
-					[requestTokens removeObjectForKey:identifier];
-				}
-			}
-			if (error != nil) {
-				if (isCurrentRequest) {
-					@synchronized (UNOStateGate()) {
-						[uno_pending_identifiers removeObject:identifier];
-						uno_identifier_generation++;
+		UNOGetReplacedRequestIdentifiers(
+			logicalIdentifier,
+			identifier,
+			operation,
+			^(NSArray<NSString *> *replacedIdentifiers) {
+				BOOL committed = NO;
+				BOOL removePostingIdentifier = NO;
+				@synchronized (operation) {
+					if (operation.completed || operation.canceled) {
+						removePostingIdentifier = YES;
+					} else {
+						[center removePendingNotificationRequestsWithIdentifiers:replacedIdentifiers];
+						[center removeDeliveredNotificationsWithIdentifiers:replacedIdentifiers];
+						@synchronized (UNOStateGate()) {
+							[uno_pending_identifiers minusSet:[NSSet setWithArray:replacedIdentifiers]];
+							[uno_delivered_identifiers minusSet:[NSSet setWithArray:replacedIdentifiers]];
+							if (![uno_delivered_identifiers containsObject:identifier]) {
+								[uno_pending_identifiers addObject:identifier];
+							}
+							uno_identifier_generation++;
+						}
+						operation.completed = YES;
+						operation.succeeded = YES;
+						committed = YES;
 					}
 				}
-				NSLog(@"Unable to add app notification request: %@", error);
-			}
-		}];
-	}
+				if (removePostingIdentifier) {
+					UNORemoveRequestIdentifier(identifier);
+				} else if (committed) {
+					UNOFinalizePostOperation(operation);
+					UNORefreshIdentifiers();
+				}
+			});
+	}];
 }
 
 void uno_notifications_set_callbacks(
@@ -450,15 +715,20 @@ int32_t uno_notifications_get_setting(void)
 	if (!uno_notifications_is_supported()) {
 		return 5;
 	}
-	@synchronized (UNOStateGate()) {
-		return (int32_t)uno_authorization_status;
+	if (!UNORefreshAuthorizationStatusAndWait()) {
+		return 0;
 	}
+	NSCondition *condition = UNOAuthorizationCondition();
+	[condition lock];
+	int32_t status = (int32_t)uno_authorization_status;
+	[condition unlock];
+	return status;
 }
 
-void uno_notifications_initialize(void)
+bool uno_notifications_initialize(void)
 {
 	if (!uno_notifications_is_supported()) {
-		return;
+		return false;
 	}
 	@synchronized (UNOStateGate()) {
 		if (uno_pending_identifiers == nil) {
@@ -469,19 +739,17 @@ void uno_notifications_initialize(void)
 	UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
 	if (uno_notification_center_delegate == nil || center.delegate != uno_notification_center_delegate) {
 		UNOUserNotificationCenterDelegate *delegate = [[UNOUserNotificationCenterDelegate alloc] init];
-		if (center.delegate != delegate) {
-			delegate.previousDelegate = center.delegate;
-		}
+		delegate.previousDelegate = center.delegate;
 		uno_notification_center_delegate = delegate;
 		center.delegate = delegate;
 	}
-	UNORefreshAuthorizationStatus();
 	UNORefreshIdentifiers();
+	return UNOEnsureAuthorizationStatusReady();
 }
 
 void uno_notifications_request_authorization(void)
 {
-	uno_notifications_initialize();
+	(void)uno_notifications_initialize();
 	if (!uno_notifications_is_supported()) {
 		return;
 	}
@@ -509,15 +777,42 @@ bool uno_notifications_post(const char *command_json, double delay_seconds)
 	}
 	NSDictionary *command = parsed;
 	NSString *identifier = UNOString(command, @"requestIdentifier");
-	if (!UNOIsRequestIdentifier(identifier)) {
+	NSString *logicalIdentifier = UNOLogicalRequestIdentifier(command);
+	NSString *postingPrefix = [logicalIdentifier stringByAppendingString:@"."];
+	if (logicalIdentifier == nil ||
+		![identifier hasPrefix:postingPrefix] ||
+		!UNOIsPostingIdentifierSuffix([identifier substringFromIndex:postingPrefix.length])) {
 		return false;
 	}
-	NSString *requestToken = NSUUID.UUID.UUIDString;
-	NSMutableDictionary<NSString *, NSString *> *requestTokens = UNORequestTokens();
-	@synchronized (requestTokens) {
-		requestTokens[identifier] = requestToken;
+	UNONotificationPostOperation *operation = [[UNONotificationPostOperation alloc] initWithIdentifier:identifier];
+	NSMutableDictionary<NSString *, UNONotificationPostOperation *> *operations = UNORequestOperations();
+	@synchronized (operations) {
+		operations[identifier] = operation;
 	}
-	return UNORegisterCategoryAndPost(command, delay_seconds, requestToken);
+	UNORegisterCategory(
+		command,
+		operation,
+		^(BOOL succeeded) {
+			if (!succeeded) {
+				UNOCompletePostOperation(operation, NO);
+			} else if (UNOIsOperationActive(operation)) {
+				UNOAddRequest(command, delay_seconds, logicalIdentifier, operation);
+			}
+		});
+
+	dispatch_time_t timeout = dispatch_time(
+		DISPATCH_TIME_NOW,
+		UNONotificationOperationTimeoutSeconds * NSEC_PER_SEC);
+	if (dispatch_semaphore_wait(operation->completion, timeout) != 0) {
+		if (UNOCancelPostOperation(operation)) {
+			UNORemoveRequestIdentifier(identifier);
+			NSLog(@"Timed out while adding an app notification request.");
+			return false;
+		}
+	}
+	@synchronized (operation) {
+		return operation.succeeded;
+	}
 }
 
 bool uno_notifications_remove(const char *request_identifier)
@@ -529,18 +824,15 @@ bool uno_notifications_remove(const char *request_identifier)
 	if (!UNOIsRequestIdentifier(identifier)) {
 		return false;
 	}
-	NSMutableDictionary<NSString *, NSString *> *requestTokens = UNORequestTokens();
-	@synchronized (requestTokens) {
-		[requestTokens removeObjectForKey:identifier];
+	NSMutableDictionary<NSString *, UNONotificationPostOperation *> *operations = UNORequestOperations();
+	UNONotificationPostOperation *operation;
+	@synchronized (operations) {
+		operation = operations[identifier];
 	}
-	UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-	[center removePendingNotificationRequestsWithIdentifiers:@[identifier]];
-	[center removeDeliveredNotificationsWithIdentifiers:@[identifier]];
-	@synchronized (UNOStateGate()) {
-		[uno_pending_identifiers removeObject:identifier];
-		[uno_delivered_identifiers removeObject:identifier];
-		uno_identifier_generation++;
+	if (operation != nil) {
+		UNOCancelPostOperation(operation);
 	}
+	UNORemoveRequestIdentifier(identifier);
 	return true;
 }
 
@@ -587,13 +879,19 @@ bool uno_notifications_remove_all(const char *request_identifier_prefix)
 	if (prefix.length == 0) {
 		return false;
 	}
-	NSMutableDictionary<NSString *, NSString *> *requestTokens = UNORequestTokens();
-	@synchronized (requestTokens) {
-		for (NSString *identifier in [requestTokens.allKeys copy]) {
+	NSMutableDictionary<NSString *, UNONotificationPostOperation *> *operations = UNORequestOperations();
+	NSArray<UNONotificationPostOperation *> *matchingOperations;
+	@synchronized (operations) {
+		NSMutableArray<UNONotificationPostOperation *> *matches = [NSMutableArray array];
+		for (NSString *identifier in operations) {
 			if ([identifier hasPrefix:prefix]) {
-				[requestTokens removeObjectForKey:identifier];
+				[matches addObject:operations[identifier]];
 			}
 		}
+		matchingOperations = matches;
+	}
+	for (UNONotificationPostOperation *operation in matchingOperations) {
+		UNOCancelPostOperation(operation);
 	}
 	NSMutableSet<NSString *> *cachedIdentifiers = [NSMutableSet set];
 	@synchronized (UNOStateGate()) {
@@ -617,6 +915,8 @@ bool uno_notifications_remove_all(const char *request_identifier_prefix)
 		[uno_delivered_identifiers minusSet:cachedIdentifiers];
 		uno_identifier_generation++;
 	}
+	dispatch_group_t removals = dispatch_group_create();
+	dispatch_group_enter(removals);
 	[center getPendingNotificationRequestsWithCompletionHandler:^(NSArray<UNNotificationRequest *> *requests) {
 		NSMutableArray<NSString *> *identifiers = [NSMutableArray array];
 		for (UNNotificationRequest *request in requests) {
@@ -629,7 +929,9 @@ bool uno_notifications_remove_all(const char *request_identifier_prefix)
 			[uno_pending_identifiers minusSet:[NSSet setWithArray:identifiers]];
 			uno_identifier_generation++;
 		}
+		dispatch_group_leave(removals);
 	}];
+	dispatch_group_enter(removals);
 	[center getDeliveredNotificationsWithCompletionHandler:^(NSArray<UNNotification *> *notifications) {
 		NSMutableArray<NSString *> *identifiers = [NSMutableArray array];
 		for (UNNotification *notification in notifications) {
@@ -642,7 +944,16 @@ bool uno_notifications_remove_all(const char *request_identifier_prefix)
 			[uno_delivered_identifiers minusSet:[NSSet setWithArray:identifiers]];
 			uno_identifier_generation++;
 		}
+		dispatch_group_leave(removals);
 	}];
+	dispatch_time_t timeout = dispatch_time(
+		DISPATCH_TIME_NOW,
+		UNONotificationOperationTimeoutSeconds * NSEC_PER_SEC);
+	if (dispatch_group_wait(removals, timeout) != 0) {
+		NSLog(@"Timed out while removing app notification requests.");
+		return false;
+	}
+	UNORefreshIdentifiers();
 	return true;
 }
 

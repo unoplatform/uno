@@ -1,11 +1,15 @@
+using Windows.Foundation.Metadata;
+
 namespace Microsoft.Windows.AppNotifications.Builder;
 
+[ContractVersion(typeof(AppNotificationBuilderContract), 1 * 0x10000u)]
 public enum AppNotificationAudioLooping
 {
 	None = 0,
 	Loop = 1,
 }
 
+[ContractVersion(typeof(AppNotificationBuilderContract), 1 * 0x10000u)]
 public enum AppNotificationButtonStyle
 {
 	Default = 0,
@@ -13,18 +17,21 @@ public enum AppNotificationButtonStyle
 	Critical = 2,
 }
 
+[ContractVersion(typeof(AppNotificationBuilderContract), 1 * 0x10000u)]
 public enum AppNotificationDuration
 {
 	Default = 0,
 	Long = 1,
 }
 
+[ContractVersion(typeof(AppNotificationBuilderContract), 1 * 0x10000u)]
 public enum AppNotificationImageCrop
 {
 	Default = 0,
 	Circle = 1,
 }
 
+[ContractVersion(typeof(AppNotificationBuilderContract), 1 * 0x10000u)]
 public enum AppNotificationScenario
 {
 	Default = 0,
@@ -34,6 +41,7 @@ public enum AppNotificationScenario
 	Urgent = 4,
 }
 
+[ContractVersion(typeof(AppNotificationBuilderContract), 1 * 0x10000u)]
 public enum AppNotificationSoundEvent
 {
 	Default = 0,

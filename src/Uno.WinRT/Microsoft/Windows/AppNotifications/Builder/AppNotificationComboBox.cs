@@ -3,9 +3,11 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.Foundation.Metadata;
 
 namespace Microsoft.Windows.AppNotifications.Builder;
 
+[ContractVersion(typeof(AppNotificationBuilderContract), 1 * 0x10000u)]
 public sealed class AppNotificationComboBox
 {
 	private readonly string _id;

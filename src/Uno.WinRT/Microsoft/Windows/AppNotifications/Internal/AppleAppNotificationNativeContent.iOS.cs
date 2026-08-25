@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Foundation;
 using UserNotifications;
@@ -10,7 +9,7 @@ using Windows.ApplicationModel;
 
 namespace Microsoft.Windows.AppNotifications.Internal;
 
-internal static class AppleAppNotificationNativeContent
+internal static partial class AppleAppNotificationNativeContent
 {
 	private static readonly NSString LaunchArgumentKey = new("uno.appnotifications.launchArgument");
 	private static readonly NSString ProtocolUriKey = new("uno.appnotifications.protocolUri");
@@ -147,20 +146,10 @@ internal static class AppleAppNotificationNativeContent
 
 	private static UNNotificationAttachment? TryCreateAttachment(string source)
 	{
-		if (string.IsNullOrEmpty(source) || !Uri.TryCreate(source, UriKind.Absolute, out var uri))
-		{
-			return null;
-		}
-		string? path = null;
-		if (uri.IsFile)
-		{
-			path = uri.LocalPath;
-		}
-		else if (uri.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase))
-		{
-			path = Path.Combine(Package.Current.InstalledPath, uri.AbsolutePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
-		}
-		if (path is null || !File.Exists(path))
+		var installedPath = source.StartsWith("ms-appx:", StringComparison.OrdinalIgnoreCase)
+			? Package.Current.InstalledPath
+			: string.Empty;
+		if (ResolveAttachmentPath(source, installedPath) is not { } path)
 		{
 			return null;
 		}

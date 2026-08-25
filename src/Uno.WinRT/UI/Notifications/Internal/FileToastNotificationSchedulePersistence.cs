@@ -2,8 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Xml;
 using Windows.Storage;
 
@@ -20,94 +23,104 @@ internal static class ToastNotificationSchedulePersistenceFactory
 	}
 }
 
-internal sealed class FileToastNotificationSchedulePersistence : IToastNotificationSchedulePersistence
+internal sealed class FileToastNotificationSchedulePersistence : IToastNotificationSchedulePersistence, IMergingToastNotificationSchedulePersistence
 {
 	private const int Magic = 0x554E4F53;
 	private const int MaxStringBytes = 32_768;
 	private const long MaxSnapshotBytes = 16 * 1024 * 1024;
+	private static readonly TimeSpan LockTimeout = TimeSpan.FromSeconds(10);
 	private static readonly Encoding StrictUtf8 = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
 	private readonly string _path;
+	private readonly string _backupPath;
+	private readonly string _lockPath;
 
 	public FileToastNotificationSchedulePersistence(string path)
 	{
 		_path = path ?? throw new ArgumentNullException(nameof(path));
+		_backupPath = path + ".bak";
+		_lockPath = path + ".lock";
 	}
 
 	public ToastNotificationScheduleSnapshot Load()
 	{
-		if (!File.Exists(_path))
-		{
-			return ToastNotificationScheduleSnapshot.Empty;
-		}
-
-		try
-		{
-			return ReadSnapshot();
-		}
-		catch (Exception exception) when (IsCorruptStateException(exception))
-		{
-			var quarantinePath = _path + ".corrupt." + Guid.NewGuid().ToString("N");
-			File.Move(_path, quarantinePath);
-			return ToastNotificationScheduleSnapshot.Empty;
-		}
-	}
-
-	private ToastNotificationScheduleSnapshot ReadSnapshot()
-	{
-		using var stream = File.Open(_path, FileMode.Open, FileAccess.Read, FileShare.Read);
-		if (stream.Length > MaxSnapshotBytes)
-		{
-			throw new InvalidDataException("Toast notification schedule state exceeds the maximum size.");
-		}
-		using var reader = new BinaryReader(stream, StrictUtf8, leaveOpen: true);
-		if (reader.ReadInt32() != Magic || reader.ReadInt32() != ToastNotificationScheduleSnapshot.CurrentSchemaVersion)
-		{
-			throw new InvalidDataException("Invalid toast notification schedule state header.");
-		}
-		var count = reader.ReadInt32();
-		if (count < 0 || count > ToastNotificationScheduleStore.MaximumScheduledNotifications)
-		{
-			throw new InvalidDataException("Invalid scheduled notification count.");
-		}
-
-		var records = new List<ToastNotificationScheduleRecord>(count);
-		var identifiers = new HashSet<string>(StringComparer.Ordinal);
-		for (var index = 0; index < count; index++)
-		{
-			var record = ReadRecord(reader);
-			if (!Guid.TryParseExact(record.ScheduleIdentifier, "N", out _) ||
-				!identifiers.Add(record.ScheduleIdentifier) ||
-				record.Status is not ToastNotificationScheduleStatus.Active and not ToastNotificationScheduleStatus.Canceling and not ToastNotificationScheduleStatus.Delivering ||
-				record.Id.Length > 16 ||
-				record.Tag.Length > 64 ||
-				record.Group.Length > 64)
-			{
-				throw new InvalidDataException("Invalid scheduled notification record.");
-			}
-			ValidateRecord(record);
-			records.Add(record);
-		}
-		if (stream.Position != stream.Length)
-		{
-			throw new InvalidDataException("Toast notification schedule state contains trailing data.");
-		}
-		return new ToastNotificationScheduleSnapshot(ToastNotificationScheduleSnapshot.CurrentSchemaVersion, records);
+		using var stateLock = AcquireLock();
+		return Clone(Normalize(LoadCore()));
 	}
 
 	public void Save(ToastNotificationScheduleSnapshot state)
 	{
 		ArgumentNullException.ThrowIfNull(state);
-		if (state.SchemaVersion != ToastNotificationScheduleSnapshot.CurrentSchemaVersion ||
-			state.Records.Count > ToastNotificationScheduleStore.MaximumScheduledNotifications)
+		ValidateSnapshot(state);
+		using var stateLock = AcquireLock();
+		SaveCore(state);
+	}
+
+	public ToastNotificationScheduleSnapshot MergeAndSave(
+		ToastNotificationScheduleSnapshot baseline,
+		ToastNotificationScheduleSnapshot state)
+	{
+		ArgumentNullException.ThrowIfNull(baseline);
+		ArgumentNullException.ThrowIfNull(state);
+		baseline = Normalize(baseline);
+		state = Normalize(state);
+		ValidateSnapshot(baseline);
+		ValidateSnapshot(state);
+
+		using var stateLock = AcquireLock();
+		var latest = Normalize(LoadCore());
+		var merged = ToastNotificationScheduleSnapshotMerger.Merge(baseline, state, latest);
+		ValidateSnapshot(merged);
+		SaveCore(merged);
+		return Clone(merged);
+	}
+
+	private ToastNotificationScheduleSnapshot LoadCore()
+	{
+		if (!File.Exists(_path) && !File.Exists(_backupPath))
 		{
-			throw new InvalidDataException("Invalid toast notification schedule state metadata.");
+			return ToastNotificationScheduleSnapshot.Empty;
+		}
+		if (!File.Exists(_path))
+		{
+			return ReadSnapshot(_backupPath);
 		}
 
+		try
+		{
+			return ReadSnapshot(_path);
+		}
+		catch (Exception primaryException) when (IsCorruptStateException(primaryException))
+		{
+			if (File.Exists(_backupPath))
+			{
+				try
+				{
+					var backup = ReadSnapshot(_backupPath);
+					Quarantine(_path);
+					return backup;
+				}
+				catch (Exception backupException) when (IsCorruptStateException(backupException))
+				{
+					Quarantine(_path);
+					Quarantine(_backupPath);
+					return ToastNotificationScheduleSnapshot.Empty;
+				}
+			}
+
+			Quarantine(_path);
+			return ToastNotificationScheduleSnapshot.Empty;
+		}
+	}
+
+	private void SaveCore(ToastNotificationScheduleSnapshot state)
+	{
+		ValidateSnapshot(state);
 		var directory = Path.GetDirectoryName(_path);
 		if (!string.IsNullOrEmpty(directory))
 		{
 			Directory.CreateDirectory(directory);
 		}
+
 		var temporaryPath = _path + "." + Guid.NewGuid().ToString("N") + ".tmp";
 		try
 		{
@@ -115,20 +128,18 @@ internal sealed class FileToastNotificationSchedulePersistence : IToastNotificat
 			using (var writer = new BinaryWriter(stream, StrictUtf8, leaveOpen: true))
 			{
 				writer.Write(Magic);
-				writer.Write(state.SchemaVersion);
+				writer.Write(ToastNotificationScheduleSnapshot.CurrentSchemaVersion);
+				writer.Write(state.Revision);
 				writer.Write(state.Records.Count);
 				foreach (var record in state.Records)
 				{
-					if (!Guid.TryParseExact(record.ScheduleIdentifier, "N", out _) ||
-						record.Status is not ToastNotificationScheduleStatus.Active and not ToastNotificationScheduleStatus.Canceling and not ToastNotificationScheduleStatus.Delivering ||
-						record.Id.Length > 16 ||
-						record.Tag.Length > 64 ||
-						record.Group.Length > 64)
-					{
-						throw new InvalidDataException("Invalid scheduled notification record.");
-					}
-					ValidateRecord(record);
 					WriteRecord(writer, record);
+				}
+				var operations = GetOperations(state);
+				writer.Write(operations.Count);
+				foreach (var operation in operations)
+				{
+					WriteOperation(writer, operation);
 				}
 				writer.Flush();
 				if (stream.Length > MaxSnapshotBytes)
@@ -140,6 +151,15 @@ internal sealed class FileToastNotificationSchedulePersistence : IToastNotificat
 
 			if (File.Exists(_path))
 			{
+				try
+				{
+					ReadSnapshot(_path);
+					File.Copy(_path, _backupPath, overwrite: true);
+				}
+				catch (Exception exception) when (IsCorruptStateException(exception))
+				{
+					// Keep the last known-good backup when replacing a corrupt primary snapshot.
+				}
 				File.Replace(temporaryPath, _path, null, ignoreMetadataErrors: true);
 			}
 			else
@@ -156,8 +176,101 @@ internal sealed class FileToastNotificationSchedulePersistence : IToastNotificat
 		}
 	}
 
-	private static ToastNotificationScheduleRecord ReadRecord(BinaryReader reader)
-		=> new(
+	private FileStream AcquireLock()
+	{
+		var directory = Path.GetDirectoryName(_lockPath);
+		if (!string.IsNullOrEmpty(directory))
+		{
+			Directory.CreateDirectory(directory);
+		}
+		var timeout = Stopwatch.StartNew();
+		while (true)
+		{
+			try
+			{
+				return File.Open(_lockPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+			}
+			catch (IOException) when (timeout.Elapsed < LockTimeout)
+			{
+				Thread.Sleep(25);
+			}
+		}
+	}
+
+	private static ToastNotificationScheduleSnapshot ReadSnapshot(string path)
+	{
+		using var stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+		if (stream.Length > MaxSnapshotBytes)
+		{
+			throw new InvalidDataException("Toast notification schedule state exceeds the maximum size.");
+		}
+		using var reader = new BinaryReader(stream, StrictUtf8, leaveOpen: true);
+		if (reader.ReadInt32() != Magic)
+		{
+			throw new InvalidDataException("Invalid toast notification schedule state header.");
+		}
+		var schemaVersion = reader.ReadInt32();
+		if (schemaVersion is < 1 or > ToastNotificationScheduleSnapshot.CurrentSchemaVersion)
+		{
+			throw new InvalidDataException("Unsupported toast notification schedule state version.");
+		}
+		var revision = schemaVersion >= 2 ? reader.ReadInt64() : 0;
+		var count = reader.ReadInt32();
+		if (revision < 0 || count < 0 || count > ToastNotificationScheduleStore.MaximumScheduledNotifications)
+		{
+			throw new InvalidDataException("Invalid toast notification schedule state metadata.");
+		}
+
+		var records = new List<ToastNotificationScheduleRecord>(count);
+		var identifiers = new HashSet<string>(StringComparer.Ordinal);
+		for (var index = 0; index < count; index++)
+		{
+			var record = ReadRecord(reader, schemaVersion);
+			if (!identifiers.Add(record.ScheduleIdentifier))
+			{
+				throw new InvalidDataException("Duplicate scheduled notification identifier.");
+			}
+			ValidateRecord(record);
+			if (record.Revision > revision)
+			{
+				throw new InvalidDataException("Scheduled notification revision exceeds the snapshot revision.");
+			}
+			records.Add(record);
+		}
+		var operations = new List<ToastNotificationNativeOperation>();
+		if (schemaVersion >= 3)
+		{
+			var operationCount = reader.ReadInt32();
+			if (operationCount < 0 || operationCount > ToastNotificationScheduleStore.MaximumScheduledNotifications)
+			{
+				throw new InvalidDataException("Invalid scheduled notification native operation count.");
+			}
+			var operationIdentifiers = new HashSet<string>(StringComparer.Ordinal);
+			for (var index = 0; index < operationCount; index++)
+			{
+				var operation = ReadOperation(reader);
+				if (!operationIdentifiers.Add(operation.ScheduleIdentifier))
+				{
+					throw new InvalidDataException("Duplicate scheduled notification native operation identifier.");
+				}
+				ValidateOperation(operation, records);
+				if (operation.Revision > revision)
+				{
+					throw new InvalidDataException("Scheduled notification native operation revision exceeds the snapshot revision.");
+				}
+				operations.Add(operation);
+			}
+		}
+		if (stream.Position != stream.Length)
+		{
+			throw new InvalidDataException("Toast notification schedule state contains trailing data.");
+		}
+		return new ToastNotificationScheduleSnapshot(schemaVersion, records, revision, operations);
+	}
+
+	private static ToastNotificationScheduleRecord ReadRecord(BinaryReader reader, int schemaVersion)
+	{
+		var record = new ToastNotificationScheduleRecord(
 			ReadString(reader),
 			ReadString(reader),
 			ReadDateTimeOffset(reader),
@@ -170,6 +283,21 @@ internal sealed class FileToastNotificationSchedulePersistence : IToastNotificat
 			reader.ReadUInt32(),
 			(ToastNotificationScheduleStatus)reader.ReadInt32(),
 			(NotificationMirroring)reader.ReadInt32());
+		if (schemaVersion >= 2)
+		{
+			record = record with { Revision = reader.ReadInt64() };
+		}
+		if (schemaVersion >= 3)
+		{
+			record = record with
+			{
+				DeliveryClaimOwner = ReadString(reader),
+				DeliveryClaimToken = ReadString(reader),
+				DeliveryClaimExpirationUtc = ReadDateTimeOffset(reader),
+			};
+		}
+		return record;
+	}
 
 	private static void WriteRecord(BinaryWriter writer, ToastNotificationScheduleRecord record)
 	{
@@ -193,6 +321,27 @@ internal sealed class FileToastNotificationSchedulePersistence : IToastNotificat
 		writer.Write(record.MaximumSnoozeCount);
 		writer.Write((int)record.Status);
 		writer.Write((int)record.NotificationMirroring);
+		writer.Write(record.Revision);
+		WriteString(writer, record.DeliveryClaimOwner);
+		WriteString(writer, record.DeliveryClaimToken);
+		WriteDateTimeOffset(writer, record.DeliveryClaimExpirationUtc);
+	}
+
+	private static ToastNotificationNativeOperation ReadOperation(BinaryReader reader)
+		=> new(
+			ReadString(reader),
+			(ToastNotificationNativeOperationKind)reader.ReadInt32(),
+			ReadString(reader),
+			reader.ReadInt64(),
+			reader.ReadInt64());
+
+	private static void WriteOperation(BinaryWriter writer, ToastNotificationNativeOperation operation)
+	{
+		WriteString(writer, operation.ScheduleIdentifier);
+		writer.Write((int)operation.Kind);
+		WriteString(writer, operation.OperationIdentifier);
+		writer.Write(operation.RecordRevision);
+		writer.Write(operation.Revision);
 	}
 
 	private static DateTimeOffset ReadDateTimeOffset(BinaryReader reader)
@@ -227,14 +376,71 @@ internal sealed class FileToastNotificationSchedulePersistence : IToastNotificat
 		writer.Write(bytes);
 	}
 
+	private static void ValidateSnapshot(ToastNotificationScheduleSnapshot state)
+	{
+		if (state.SchemaVersion != ToastNotificationScheduleSnapshot.CurrentSchemaVersion ||
+			state.Revision < 0 ||
+			state.Records.Count > ToastNotificationScheduleStore.MaximumScheduledNotifications ||
+			GetOperations(state).Count > ToastNotificationScheduleStore.MaximumScheduledNotifications)
+		{
+			throw new InvalidDataException("Invalid toast notification schedule state metadata.");
+		}
+
+		var identifiers = new HashSet<string>(StringComparer.Ordinal);
+		foreach (var record in state.Records)
+		{
+			if (!identifiers.Add(record.ScheduleIdentifier))
+			{
+				throw new InvalidDataException("Duplicate scheduled notification identifier.");
+			}
+			ValidateRecord(record);
+			if (record.Revision > state.Revision)
+			{
+				throw new InvalidDataException("Scheduled notification revision exceeds the snapshot revision.");
+			}
+		}
+		var operationIdentifiers = new HashSet<string>(StringComparer.Ordinal);
+		foreach (var operation in GetOperations(state))
+		{
+			if (!operationIdentifiers.Add(operation.ScheduleIdentifier))
+			{
+				throw new InvalidDataException("Duplicate scheduled notification native operation identifier.");
+			}
+			ValidateOperation(operation, state.Records);
+			if (operation.Revision > state.Revision)
+			{
+				throw new InvalidDataException("Scheduled notification native operation revision exceeds the snapshot revision.");
+			}
+		}
+	}
+
 	private static void ValidateRecord(ToastNotificationScheduleRecord record)
 	{
-		if (record.NotificationMirroring is not NotificationMirroring.Allowed and not NotificationMirroring.Disabled ||
+		if (!Guid.TryParseExact(record.ScheduleIdentifier, "N", out _) ||
+			record.Revision < 0 ||
+			record.Status is not ToastNotificationScheduleStatus.Active and not ToastNotificationScheduleStatus.Canceling and not ToastNotificationScheduleStatus.Delivering ||
+			record.Id.Length > 16 ||
+			record.Tag.Length > 64 ||
+			record.Group.Length > 64 ||
+			record.NotificationMirroring is not NotificationMirroring.Allowed and not NotificationMirroring.Disabled ||
+			record.DeliveryClaimOwner.Length > MaxStringBytes ||
+			record.DeliveryClaimToken.Length > MaxStringBytes ||
+			record.Status != ToastNotificationScheduleStatus.Delivering &&
+				(record.DeliveryClaimOwner.Length > 0 ||
+					record.DeliveryClaimToken.Length > 0 ||
+					record.DeliveryClaimExpirationUtc != DateTimeOffset.MinValue) ||
+			record.Status == ToastNotificationScheduleStatus.Delivering &&
+				(record.DeliveryClaimOwner.Length == 0) != (record.DeliveryClaimToken.Length == 0) ||
+			record.Status == ToastNotificationScheduleStatus.Delivering &&
+				record.DeliveryClaimOwner.Length == 0 &&
+				record.DeliveryClaimExpirationUtc != DateTimeOffset.MinValue ||
+			record.DeliveryClaimOwner.Length > 0 &&
+				record.DeliveryClaimExpirationUtc == DateTimeOffset.MinValue ||
 			record.SnoozeInterval is null && record.MaximumSnoozeCount != 0 ||
 			record.SnoozeInterval is { } interval &&
 				(interval < TimeSpan.FromMinutes(1) || interval > TimeSpan.FromMinutes(60) || record.MaximumSnoozeCount is < 1 or > 5))
 		{
-			throw new InvalidDataException("Invalid scheduled notification values.");
+			throw new InvalidDataException("Invalid scheduled notification record.");
 		}
 		try
 		{
@@ -243,6 +449,64 @@ internal sealed class FileToastNotificationSchedulePersistence : IToastNotificat
 		catch (Exception exception) when (exception is FormatException or NotSupportedException or XmlException or ArgumentException)
 		{
 			throw new InvalidDataException("Invalid scheduled notification payload.", exception);
+		}
+	}
+
+	private static void ValidateOperation(
+		ToastNotificationNativeOperation operation,
+		IReadOnlyCollection<ToastNotificationScheduleRecord> records)
+	{
+		var record = records.FirstOrDefault(candidate => candidate.ScheduleIdentifier == operation.ScheduleIdentifier);
+		if (!Guid.TryParseExact(operation.ScheduleIdentifier, "N", out _) ||
+			!Guid.TryParseExact(operation.OperationIdentifier, "N", out _) ||
+			operation.Kind is not ToastNotificationNativeOperationKind.Schedule and
+				not ToastNotificationNativeOperationKind.Cancel and
+				not ToastNotificationNativeOperationKind.Retry ||
+			operation.RecordRevision < 0 ||
+			operation.Revision < 0 ||
+			operation.Kind is ToastNotificationNativeOperationKind.Schedule or ToastNotificationNativeOperationKind.Retry &&
+				(record is null ||
+					record.Status != ToastNotificationScheduleStatus.Active ||
+					record.Revision != operation.RecordRevision))
+		{
+			throw new InvalidDataException("Invalid scheduled notification native operation.");
+		}
+	}
+
+	private static ToastNotificationScheduleSnapshot Normalize(ToastNotificationScheduleSnapshot state)
+	{
+		if (state.SchemaVersion is < 1 or > ToastNotificationScheduleSnapshot.CurrentSchemaVersion)
+		{
+			throw new InvalidDataException("Unsupported toast notification schedule state version.");
+		}
+		return state with
+		{
+			SchemaVersion = ToastNotificationScheduleSnapshot.CurrentSchemaVersion,
+			Records = state.Records
+				.Select(record => record with { Revision = Math.Max(0, record.Revision) })
+				.ToArray(),
+			Revision = Math.Max(0, state.Revision),
+			NativeOperations = GetOperations(state)
+				.Select(operation => operation with
+				{
+					RecordRevision = Math.Max(0, operation.RecordRevision),
+					Revision = Math.Max(0, operation.Revision),
+				})
+				.ToArray(),
+		};
+	}
+
+	private static ToastNotificationScheduleSnapshot Clone(ToastNotificationScheduleSnapshot state)
+		=> ToastNotificationScheduleSnapshotMerger.Clone(state);
+
+	private static IReadOnlyList<ToastNotificationNativeOperation> GetOperations(ToastNotificationScheduleSnapshot state)
+		=> ToastNotificationScheduleSnapshotMerger.GetOperations(state);
+
+	private static void Quarantine(string path)
+	{
+		if (File.Exists(path))
+		{
+			File.Move(path, path + ".corrupt." + Guid.NewGuid().ToString("N"));
 		}
 	}
 

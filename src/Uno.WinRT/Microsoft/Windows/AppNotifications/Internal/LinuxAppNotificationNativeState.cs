@@ -4,81 +4,45 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using Windows.Storage;
 
 namespace Microsoft.Windows.AppNotifications.Internal;
 
 internal sealed record LinuxAppNotificationNativeIdRecord(uint NotificationId, uint NativeId);
 
-internal sealed record LinuxAppNotificationNativeStateSnapshot(
-	int SchemaVersion,
-	string ServerOwner,
-	IReadOnlyList<LinuxAppNotificationNativeIdRecord> Records)
-{
-	public const int CurrentSchemaVersion = 1;
-
-	public static LinuxAppNotificationNativeStateSnapshot Empty { get; } = new(CurrentSchemaVersion, string.Empty, Array.Empty<LinuxAppNotificationNativeIdRecord>());
-}
-
-internal interface ILinuxAppNotificationNativeStatePersistence
-{
-	LinuxAppNotificationNativeStateSnapshot Load();
-
-	void Save(LinuxAppNotificationNativeStateSnapshot state);
-}
-
-internal sealed class InMemoryLinuxAppNotificationNativeStatePersistence : ILinuxAppNotificationNativeStatePersistence
-{
-	private LinuxAppNotificationNativeStateSnapshot _state;
-
-	public InMemoryLinuxAppNotificationNativeStatePersistence(LinuxAppNotificationNativeStateSnapshot? state = null)
-	{
-		_state = Clone(state ?? LinuxAppNotificationNativeStateSnapshot.Empty);
-	}
-
-	public LinuxAppNotificationNativeStateSnapshot Load() => Clone(_state);
-
-	public void Save(LinuxAppNotificationNativeStateSnapshot state) => _state = Clone(state);
-
-	private static LinuxAppNotificationNativeStateSnapshot Clone(LinuxAppNotificationNativeStateSnapshot state)
-		=> state with { Records = state.Records.ToArray() };
-}
-
 internal sealed class LinuxAppNotificationNativeStateStore
 {
+	// Native IDs and activation commands are valid only while their D-Bus signal subscription is live.
 	internal const int MaximumRecords = 10_000;
 	private readonly object _gate = new();
-	private readonly ILinuxAppNotificationNativeStatePersistence _persistence;
-	private LinuxAppNotificationNativeStateSnapshot _state;
+	private readonly Dictionary<uint, LinuxAppNotificationCommand> _commands = new();
+	private long _nextSessionId;
+	private long _activeSessionId;
+	private IReadOnlyList<LinuxAppNotificationNativeIdRecord> _records = Array.Empty<LinuxAppNotificationNativeIdRecord>();
 
-	public LinuxAppNotificationNativeStateStore(ILinuxAppNotificationNativeStatePersistence persistence)
+	public LinuxAppNotificationNativeStateSession StartSession(string serverOwner)
 	{
-		_persistence = persistence ?? throw new ArgumentNullException(nameof(persistence));
-		var loaded = persistence.Load();
-		_state = loaded.SchemaVersion == LinuxAppNotificationNativeStateSnapshot.CurrentSchemaVersion && IsValid(loaded)
-			? loaded with { Records = loaded.Records.ToArray() }
-			: LinuxAppNotificationNativeStateSnapshot.Empty;
-	}
-
-	public bool SetServerOwner(string serverOwner)
-	{
-		ArgumentNullException.ThrowIfNull(serverOwner);
+		ArgumentException.ThrowIfNullOrEmpty(serverOwner);
 		lock (_gate)
 		{
-			if (_state.ServerOwner == serverOwner)
-			{
-				return false;
-			}
-			Commit(new LinuxAppNotificationNativeStateSnapshot(
-				LinuxAppNotificationNativeStateSnapshot.CurrentSchemaVersion,
-				serverOwner,
-				Array.Empty<LinuxAppNotificationNativeIdRecord>()));
-			return true;
+			var sessionId = ++_nextSessionId;
+			_activeSessionId = sessionId;
+			_records = Array.Empty<LinuxAppNotificationNativeIdRecord>();
+			_commands.Clear();
+			return new LinuxAppNotificationNativeStateSession(this, sessionId, serverOwner);
 		}
 	}
 
-	public void Set(uint notificationId, uint nativeId)
+	internal bool IsActive(long sessionId)
+	{
+		lock (_gate)
+		{
+			return IsActiveCore(sessionId);
+		}
+	}
+
+	internal bool TrySet(long sessionId, uint notificationId, uint nativeId, LinuxAppNotificationCommand? command)
 	{
 		if (notificationId == 0 || nativeId == 0)
 		{
@@ -86,7 +50,11 @@ internal sealed class LinuxAppNotificationNativeStateStore
 		}
 		lock (_gate)
 		{
-			var records = _state.Records
+			if (!IsActiveCore(sessionId))
+			{
+				return false;
+			}
+			var records = _records
 				.Where(record => record.NotificationId != notificationId && record.NativeId != nativeId)
 				.Append(new LinuxAppNotificationNativeIdRecord(notificationId, nativeId))
 				.ToArray();
@@ -94,199 +62,198 @@ internal sealed class LinuxAppNotificationNativeStateStore
 			{
 				throw new InvalidOperationException("The Linux app-notification native ID store is full.");
 			}
-			Commit(_state with { Records = records });
-		}
-	}
-
-	public uint? GetNativeId(uint notificationId)
-	{
-		lock (_gate)
-		{
-			return _state.Records.FirstOrDefault(record => record.NotificationId == notificationId)?.NativeId;
-		}
-	}
-
-	public uint? GetNotificationId(uint nativeId)
-	{
-		lock (_gate)
-		{
-			return _state.Records.FirstOrDefault(record => record.NativeId == nativeId)?.NotificationId;
-		}
-	}
-
-	public IReadOnlyList<LinuxAppNotificationNativeIdRecord> GetAll()
-	{
-		lock (_gate)
-		{
-			return _state.Records.ToArray();
-		}
-	}
-
-	public bool RemoveByNotificationId(uint notificationId)
-		=> Remove(record => record.NotificationId == notificationId);
-
-	public bool RemoveByNativeId(uint nativeId)
-		=> Remove(record => record.NativeId == nativeId);
-
-	public void RemoveAll()
-	{
-		lock (_gate)
-		{
-			if (_state.Records.Count > 0)
+			foreach (var record in _records.Where(record => record.NotificationId == notificationId || record.NativeId == nativeId))
 			{
-				Commit(_state with { Records = Array.Empty<LinuxAppNotificationNativeIdRecord>() });
+				_commands.Remove(record.NotificationId);
 			}
-		}
-	}
-
-	private bool Remove(Func<LinuxAppNotificationNativeIdRecord, bool> predicate)
-	{
-		lock (_gate)
-		{
-			var records = _state.Records.Where(record => !predicate(record)).ToArray();
-			if (records.Length == _state.Records.Count)
+			_records = records;
+			if (command is not null)
 			{
-				return false;
+				_commands[notificationId] = command;
 			}
-			Commit(_state with { Records = records });
 			return true;
 		}
 	}
 
-	private void Commit(LinuxAppNotificationNativeStateSnapshot state)
+	internal uint? GetNativeId(long sessionId, uint notificationId)
 	{
-		_persistence.Save(state);
-		_state = state;
+		lock (_gate)
+		{
+			return IsActiveCore(sessionId)
+				? _records.FirstOrDefault(record => record.NotificationId == notificationId)?.NativeId
+				: null;
+		}
 	}
 
-	private static bool IsValid(LinuxAppNotificationNativeStateSnapshot state)
-		=> state.Records.Count <= MaximumRecords &&
-			state.Records.All(record => record.NotificationId != 0 && record.NativeId != 0) &&
-			state.Records.Select(record => record.NotificationId).Distinct().Count() == state.Records.Count &&
-			state.Records.Select(record => record.NativeId).Distinct().Count() == state.Records.Count;
+	internal uint? GetNotificationId(long sessionId, uint nativeId)
+	{
+		lock (_gate)
+		{
+			return IsActiveCore(sessionId)
+				? _records.FirstOrDefault(record => record.NativeId == nativeId)?.NotificationId
+				: null;
+		}
+	}
+
+	internal LinuxAppNotificationCommand? GetCommand(long sessionId, uint nativeId)
+	{
+		lock (_gate)
+		{
+			if (!IsActiveCore(sessionId) ||
+				_records.FirstOrDefault(record => record.NativeId == nativeId) is not { } record)
+			{
+				return null;
+			}
+			return _commands.GetValueOrDefault(record.NotificationId);
+		}
+	}
+
+	internal IReadOnlyList<LinuxAppNotificationNativeIdRecord> GetAll(long sessionId)
+	{
+		lock (_gate)
+		{
+			return IsActiveCore(sessionId)
+				? _records.ToArray()
+				: Array.Empty<LinuxAppNotificationNativeIdRecord>();
+		}
+	}
+
+	internal bool RemoveByNotificationId(long sessionId, uint notificationId)
+		=> Remove(sessionId, record => record.NotificationId == notificationId);
+
+	internal bool RemoveByNativeId(long sessionId, uint nativeId)
+		=> Remove(sessionId, record => record.NativeId == nativeId);
+
+	internal bool RemoveAll(long sessionId)
+	{
+		lock (_gate)
+		{
+			if (!IsActiveCore(sessionId) || _records.Count == 0)
+			{
+				return false;
+			}
+			_records = Array.Empty<LinuxAppNotificationNativeIdRecord>();
+			_commands.Clear();
+			return true;
+		}
+	}
+
+	internal bool EndSession(long sessionId)
+	{
+		lock (_gate)
+		{
+			if (!IsActiveCore(sessionId))
+			{
+				return false;
+			}
+			_activeSessionId = 0;
+			_records = Array.Empty<LinuxAppNotificationNativeIdRecord>();
+			_commands.Clear();
+			return true;
+		}
+	}
+
+	private bool Remove(long sessionId, Func<LinuxAppNotificationNativeIdRecord, bool> predicate)
+	{
+		lock (_gate)
+		{
+			if (!IsActiveCore(sessionId))
+			{
+				return false;
+			}
+			var records = _records.Where(record => !predicate(record)).ToArray();
+			if (records.Length == _records.Count)
+			{
+				return false;
+			}
+			foreach (var record in _records.Where(predicate))
+			{
+				_commands.Remove(record.NotificationId);
+			}
+			_records = records;
+			return true;
+		}
+	}
+
+	private bool IsActiveCore(long sessionId)
+		=> sessionId != 0 && sessionId == _activeSessionId;
 }
 
-internal static class LinuxAppNotificationNativeStatePersistenceFactory
+internal sealed class LinuxAppNotificationNativeStateSession : IDisposable
 {
-	public static ILinuxAppNotificationNativeStatePersistence Create()
+	private readonly LinuxAppNotificationNativeStateStore _store;
+	private readonly long _sessionId;
+	private int _isDisposed;
+
+	internal LinuxAppNotificationNativeStateSession(LinuxAppNotificationNativeStateStore store, long sessionId, string serverOwner)
+	{
+		_store = store;
+		_sessionId = sessionId;
+		ServerOwner = serverOwner;
+	}
+
+	public string ServerOwner { get; }
+
+	public bool IsActive => Volatile.Read(ref _isDisposed) == 0 && _store.IsActive(_sessionId);
+
+	public bool TrySet(uint notificationId, uint nativeId, LinuxAppNotificationCommand? command = null)
+		=> Volatile.Read(ref _isDisposed) == 0 && _store.TrySet(_sessionId, notificationId, nativeId, command);
+
+	public uint? GetNativeId(uint notificationId)
+		=> Volatile.Read(ref _isDisposed) == 0 ? _store.GetNativeId(_sessionId, notificationId) : null;
+
+	public uint? GetNotificationId(uint nativeId)
+		=> Volatile.Read(ref _isDisposed) == 0 ? _store.GetNotificationId(_sessionId, nativeId) : null;
+
+	public LinuxAppNotificationCommand? GetCommand(uint nativeId)
+		=> Volatile.Read(ref _isDisposed) == 0 ? _store.GetCommand(_sessionId, nativeId) : null;
+
+	public IReadOnlyList<LinuxAppNotificationNativeIdRecord> GetAll()
+		=> Volatile.Read(ref _isDisposed) == 0
+			? _store.GetAll(_sessionId)
+			: Array.Empty<LinuxAppNotificationNativeIdRecord>();
+
+	public bool RemoveByNotificationId(uint notificationId)
+		=> Volatile.Read(ref _isDisposed) == 0 && _store.RemoveByNotificationId(_sessionId, notificationId);
+
+	public bool RemoveByNativeId(uint nativeId)
+		=> Volatile.Read(ref _isDisposed) == 0 && _store.RemoveByNativeId(_sessionId, nativeId);
+
+	public bool RemoveAll()
+		=> Volatile.Read(ref _isDisposed) == 0 && _store.RemoveAll(_sessionId);
+
+	internal bool End()
+		=> Interlocked.Exchange(ref _isDisposed, 1) == 0 && _store.EndSession(_sessionId);
+
+	public void Dispose() => End();
+}
+
+internal static class LinuxAppNotificationNativeStateStoreFactory
+{
+	private const string LegacyStateFileName = ".uno-linux-appnotifications-v1.bin";
+
+	public static LinuxAppNotificationNativeStateStore Create()
+	{
+		ClearLegacyPersistedState();
+		return new LinuxAppNotificationNativeStateStore();
+	}
+
+	private static void ClearLegacyPersistedState()
 	{
 		var folder = ApplicationData.Current.LocalFolder.Path;
-		return string.IsNullOrEmpty(folder)
-			? new InMemoryLinuxAppNotificationNativeStatePersistence()
-			: new FileLinuxAppNotificationNativeStatePersistence(Path.Combine(folder, ".uno-linux-appnotifications-v1.bin"));
-	}
-}
-
-internal sealed class FileLinuxAppNotificationNativeStatePersistence : ILinuxAppNotificationNativeStatePersistence
-{
-	private const int Magic = 0x554E4F4C;
-	private const int MaximumOwnerBytes = 1024;
-	private readonly string _path;
-
-	public FileLinuxAppNotificationNativeStatePersistence(string path)
-	{
-		_path = path ?? throw new ArgumentNullException(nameof(path));
-	}
-
-	public LinuxAppNotificationNativeStateSnapshot Load()
-	{
-		if (!File.Exists(_path))
+		if (string.IsNullOrEmpty(folder))
 		{
-			return LinuxAppNotificationNativeStateSnapshot.Empty;
+			return;
 		}
+
+		// The freedesktop protocol cannot verify native IDs or deliver activation across process lifetimes.
 		try
 		{
-			using var stream = File.Open(_path, FileMode.Open, FileAccess.Read, FileShare.Read);
-			using var reader = new BinaryReader(stream, Encoding.UTF8, leaveOpen: true);
-			if (reader.ReadInt32() != Magic || reader.ReadInt32() != LinuxAppNotificationNativeStateSnapshot.CurrentSchemaVersion)
-			{
-				throw new InvalidDataException("Invalid Linux app-notification native state header.");
-			}
-			var ownerLength = reader.ReadInt32();
-			if (ownerLength < 0 || ownerLength > MaximumOwnerBytes)
-			{
-				throw new InvalidDataException("Invalid Linux app-notification server owner.");
-			}
-			var ownerBytes = reader.ReadBytes(ownerLength);
-			if (ownerBytes.Length != ownerLength)
-			{
-				throw new EndOfStreamException();
-			}
-			var count = reader.ReadInt32();
-			if (count < 0 || count > LinuxAppNotificationNativeStateStore.MaximumRecords)
-			{
-				throw new InvalidDataException("Invalid Linux app-notification native state count.");
-			}
-			var records = new LinuxAppNotificationNativeIdRecord[count];
-			for (var index = 0; index < count; index++)
-			{
-				records[index] = new LinuxAppNotificationNativeIdRecord(reader.ReadUInt32(), reader.ReadUInt32());
-			}
-			if (stream.Position != stream.Length)
-			{
-				throw new InvalidDataException("Linux app-notification native state contains trailing data.");
-			}
-			return new LinuxAppNotificationNativeStateSnapshot(
-				LinuxAppNotificationNativeStateSnapshot.CurrentSchemaVersion,
-				Encoding.UTF8.GetString(ownerBytes),
-				records);
+			File.Delete(Path.Combine(folder, LegacyStateFileName));
 		}
-		catch (Exception exception) when (exception is IOException or InvalidDataException or EndOfStreamException or DecoderFallbackException)
+		catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
 		{
-			File.Move(_path, _path + ".corrupt." + Guid.NewGuid().ToString("N"));
-			return LinuxAppNotificationNativeStateSnapshot.Empty;
-		}
-	}
-
-	public void Save(LinuxAppNotificationNativeStateSnapshot state)
-	{
-		ArgumentNullException.ThrowIfNull(state);
-		var ownerBytes = Encoding.UTF8.GetBytes(state.ServerOwner);
-		if (state.SchemaVersion != LinuxAppNotificationNativeStateSnapshot.CurrentSchemaVersion ||
-			state.Records.Count > LinuxAppNotificationNativeStateStore.MaximumRecords ||
-			ownerBytes.Length > MaximumOwnerBytes)
-		{
-			throw new InvalidDataException("Invalid Linux app-notification native state.");
-		}
-		var directory = Path.GetDirectoryName(_path);
-		if (!string.IsNullOrEmpty(directory))
-		{
-			Directory.CreateDirectory(directory);
-		}
-		var temporaryPath = _path + "." + Guid.NewGuid().ToString("N") + ".tmp";
-		try
-		{
-			using (var stream = File.Open(temporaryPath, FileMode.CreateNew, FileAccess.Write, FileShare.None))
-			using (var writer = new BinaryWriter(stream, Encoding.UTF8, leaveOpen: true))
-			{
-				writer.Write(Magic);
-				writer.Write(state.SchemaVersion);
-				writer.Write(ownerBytes.Length);
-				writer.Write(ownerBytes);
-				writer.Write(state.Records.Count);
-				foreach (var record in state.Records)
-				{
-					writer.Write(record.NotificationId);
-					writer.Write(record.NativeId);
-				}
-				writer.Flush();
-				stream.Flush(flushToDisk: true);
-			}
-			if (File.Exists(_path))
-			{
-				File.Replace(temporaryPath, _path, null, ignoreMetadataErrors: true);
-			}
-			else
-			{
-				File.Move(temporaryPath, _path);
-			}
-		}
-		finally
-		{
-			if (File.Exists(temporaryPath))
-			{
-				File.Delete(temporaryPath);
-			}
+			// The legacy file is never read again, so cleanup is best effort.
 		}
 	}
 }

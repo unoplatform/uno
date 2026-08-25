@@ -6,9 +6,11 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 using Microsoft.Windows.AppNotifications.Internal;
+using Windows.Foundation.Metadata;
 
 namespace Microsoft.Windows.AppNotifications.Builder;
 
+[ContractVersion(typeof(AppNotificationBuilderContract), 1 * 0x10000u)]
 public sealed class AppNotificationBuilder
 {
 	private readonly List<string> _textLines = new();
@@ -60,6 +62,7 @@ public sealed class AppNotificationBuilder
 		return this;
 	}
 
+	[Overload("AddText")]
 	public AppNotificationBuilder AddText(string text)
 	{
 		ThrowIfMaximumReached(_textLines.Count, AppNotificationBuilderUtility.MaxTextElements, "A notification supports at most three text elements.");
@@ -67,6 +70,7 @@ public sealed class AppNotificationBuilder
 		return this;
 	}
 
+	[Overload("AddText2")]
 	public AppNotificationBuilder AddText(string text, AppNotificationTextProperties properties)
 	{
 		ArgumentNullException.ThrowIfNull(properties);
@@ -79,12 +83,14 @@ public sealed class AppNotificationBuilder
 		return this;
 	}
 
+	[Overload("SetAttributionText")]
 	public AppNotificationBuilder SetAttributionText(string text)
 	{
 		_attributionText = $"<text placement='attribution'>{AppNotificationBuilderUtility.EncodeXml(text)}</text>";
 		return this;
 	}
 
+	[Overload("SetAttributionText2")]
 	public AppNotificationBuilder SetAttributionText(string text, string language)
 	{
 		if (string.IsNullOrEmpty(language))
@@ -96,86 +102,98 @@ public sealed class AppNotificationBuilder
 		return this;
 	}
 
+	[Overload("SetInlineImage")]
 	public AppNotificationBuilder SetInlineImage(Uri imageUri)
 	{
-		ArgumentNullException.ThrowIfNull(imageUri);
-		_inlineImage = $"<image src='{AppNotificationBuilderUtility.EncodeXml(imageUri.ToString())}'/>";
+		var source = AppNotificationBuilderUtility.GetAbsoluteUri(imageUri, nameof(imageUri));
+		_inlineImage = $"<image src='{AppNotificationBuilderUtility.EncodeXml(source)}'/>";
 		return this;
 	}
 
+	[Overload("SetInlineImage2")]
 	public AppNotificationBuilder SetInlineImage(Uri imageUri, AppNotificationImageCrop imageCrop)
 	{
-		ArgumentNullException.ThrowIfNull(imageUri);
+		var source = AppNotificationBuilderUtility.GetAbsoluteUri(imageUri, nameof(imageUri));
 		var crop = imageCrop == AppNotificationImageCrop.Circle ? " hint-crop='circle'" : string.Empty;
-		_inlineImage = $"<image src='{AppNotificationBuilderUtility.EncodeXml(imageUri.ToString())}'{crop}/>";
+		_inlineImage = $"<image src='{AppNotificationBuilderUtility.EncodeXml(source)}'{crop}/>";
 		return this;
 	}
 
+	[Overload("SetInlineImage3")]
 	public AppNotificationBuilder SetInlineImage(Uri imageUri, AppNotificationImageCrop imagecrop, string alternateText)
 	{
-		ValidateImageWithAlternateText(imageUri, alternateText);
+		var source = ValidateImageWithAlternateText(imageUri, alternateText);
 		var crop = imagecrop == AppNotificationImageCrop.Circle ? " hint-crop='circle'" : string.Empty;
-		_inlineImage = $"<image src='{AppNotificationBuilderUtility.EncodeXml(imageUri.ToString())}' alt='{AppNotificationBuilderUtility.EncodeXml(alternateText)}'{crop}/>";
+		_inlineImage = $"<image src='{AppNotificationBuilderUtility.EncodeXml(source)}' alt='{AppNotificationBuilderUtility.EncodeXml(alternateText)}'{crop}/>";
 		return this;
 	}
 
+	[Overload("SetAppLogoOverride")]
 	public AppNotificationBuilder SetAppLogoOverride(Uri imageUri)
 	{
-		ArgumentNullException.ThrowIfNull(imageUri);
-		_appLogoOverride = $"<image placement='appLogoOverride' src='{AppNotificationBuilderUtility.EncodeXml(imageUri.ToString())}'/>";
+		var source = AppNotificationBuilderUtility.GetAbsoluteUri(imageUri, nameof(imageUri));
+		_appLogoOverride = $"<image placement='appLogoOverride' src='{AppNotificationBuilderUtility.EncodeXml(source)}'/>";
 		return this;
 	}
 
+	[Overload("SetAppLogoOverride2")]
 	public AppNotificationBuilder SetAppLogoOverride(Uri imageUri, AppNotificationImageCrop imageCrop)
 	{
-		ArgumentNullException.ThrowIfNull(imageUri);
+		var source = AppNotificationBuilderUtility.GetAbsoluteUri(imageUri, nameof(imageUri));
 		var crop = imageCrop == AppNotificationImageCrop.Circle ? " hint-crop='circle'" : string.Empty;
-		_appLogoOverride = $"<image placement='appLogoOverride' src='{AppNotificationBuilderUtility.EncodeXml(imageUri.ToString())}'{crop}/>";
+		_appLogoOverride = $"<image placement='appLogoOverride' src='{AppNotificationBuilderUtility.EncodeXml(source)}'{crop}/>";
 		return this;
 	}
 
+	[Overload("SetAppLogoOverride3")]
 	public AppNotificationBuilder SetAppLogoOverride(Uri imageUri, AppNotificationImageCrop imageCrop, string alternateText)
 	{
-		ValidateImageWithAlternateText(imageUri, alternateText);
+		var source = ValidateImageWithAlternateText(imageUri, alternateText);
 		var crop = imageCrop == AppNotificationImageCrop.Circle ? " hint-crop='circle'" : string.Empty;
-		_appLogoOverride = $"<image placement='appLogoOverride' src='{AppNotificationBuilderUtility.EncodeXml(imageUri.ToString())}' alt='{AppNotificationBuilderUtility.EncodeXml(alternateText)}'{crop}/>";
+		_appLogoOverride = $"<image placement='appLogoOverride' src='{AppNotificationBuilderUtility.EncodeXml(source)}' alt='{AppNotificationBuilderUtility.EncodeXml(alternateText)}'{crop}/>";
 		return this;
 	}
 
+	[Overload("SetHeroImage")]
 	public AppNotificationBuilder SetHeroImage(Uri imageUri)
 	{
-		ArgumentNullException.ThrowIfNull(imageUri);
-		_heroImage = $"<image placement='hero' src='{AppNotificationBuilderUtility.EncodeXml(imageUri.ToString())}'/>";
+		var source = AppNotificationBuilderUtility.GetAbsoluteUri(imageUri, nameof(imageUri));
+		_heroImage = $"<image placement='hero' src='{AppNotificationBuilderUtility.EncodeXml(source)}'/>";
 		return this;
 	}
 
+	[Overload("SetHeroImage2")]
 	public AppNotificationBuilder SetHeroImage(Uri imageUri, string alternateText)
 	{
-		ValidateImageWithAlternateText(imageUri, alternateText);
-		_heroImage = $"<image placement='hero' src='{AppNotificationBuilderUtility.EncodeXml(imageUri.ToString())}' alt='{AppNotificationBuilderUtility.EncodeXml(alternateText)}'/>";
+		var source = ValidateImageWithAlternateText(imageUri, alternateText);
+		_heroImage = $"<image placement='hero' src='{AppNotificationBuilderUtility.EncodeXml(source)}' alt='{AppNotificationBuilderUtility.EncodeXml(alternateText)}'/>";
 		return this;
 	}
 
+	[Overload("SetAudioUri")]
 	public AppNotificationBuilder SetAudioUri(Uri audioUri)
 	{
-		ArgumentNullException.ThrowIfNull(audioUri);
-		_audio = $"<audio src='{AppNotificationBuilderUtility.EncodeXml(audioUri.ToString())}'/>";
+		var source = AppNotificationBuilderUtility.GetAbsoluteUri(audioUri, nameof(audioUri));
+		_audio = $"<audio src='{AppNotificationBuilderUtility.EncodeXml(source)}'/>";
 		return this;
 	}
 
+	[Overload("SetAudioUri2")]
 	public AppNotificationBuilder SetAudioUri(Uri audioUri, AppNotificationAudioLooping loop)
 	{
-		ArgumentNullException.ThrowIfNull(audioUri);
-		_audio = $"<audio src='{AppNotificationBuilderUtility.EncodeXml(audioUri.ToString())}' loop='{(loop == AppNotificationAudioLooping.Loop ? "true" : "false")}'/>";
+		var source = AppNotificationBuilderUtility.GetAbsoluteUri(audioUri, nameof(audioUri));
+		_audio = $"<audio src='{AppNotificationBuilderUtility.EncodeXml(source)}' loop='{(loop == AppNotificationAudioLooping.Loop ? "true" : "false")}'/>";
 		return this;
 	}
 
+	[Overload("SetAudioEvent")]
 	public AppNotificationBuilder SetAudioEvent(AppNotificationSoundEvent appNotificationSoundEvent)
 	{
 		_audio = $"<audio src='{AppNotificationBuilderUtility.GetSoundEventUri(appNotificationSoundEvent)}'/>";
 		return this;
 	}
 
+	[Overload("SetAudioEvent2")]
 	public AppNotificationBuilder SetAudioEvent(AppNotificationSoundEvent appNotificationSoundEvent, AppNotificationAudioLooping loop)
 	{
 		_audio = $"<audio src='{AppNotificationBuilderUtility.GetSoundEventUri(appNotificationSoundEvent)}' loop='{(loop == AppNotificationAudioLooping.Loop ? "true" : "false")}'/>";
@@ -188,6 +206,7 @@ public sealed class AppNotificationBuilder
 		return this;
 	}
 
+	[Overload("AddTextBox")]
 	public AppNotificationBuilder AddTextBox(string id)
 	{
 		ValidateInput(id);
@@ -195,6 +214,7 @@ public sealed class AppNotificationBuilder
 		return this;
 	}
 
+	[Overload("AddTextBox2")]
 	public AppNotificationBuilder AddTextBox(string id, string placeHolderText, string title)
 	{
 		ValidateInput(id);
@@ -323,12 +343,13 @@ public sealed class AppNotificationBuilder
 		}
 	}
 
-	private static void ValidateImageWithAlternateText(Uri imageUri, string alternateText)
+	private static string ValidateImageWithAlternateText(Uri imageUri, string alternateText)
 	{
-		ArgumentNullException.ThrowIfNull(imageUri);
+		var source = AppNotificationBuilderUtility.GetAbsoluteUri(imageUri, nameof(imageUri));
 		if (string.IsNullOrEmpty(alternateText))
 		{
 			throw new ArgumentException("Alternate text is required.", nameof(alternateText));
 		}
+		return source;
 	}
 }

@@ -14,20 +14,29 @@ namespace Microsoft.Windows.AppNotifications;
 [ContractVersion(typeof(AppNotificationsContract), 1 * 0x10000u)]
 public sealed class AppNotificationManager
 {
+	private static readonly TimeSpan OperationLeaseDuration = TimeSpan.FromMinutes(1);
 	private static readonly AppNotificationManager _default = new();
 	private readonly object _gate = new();
 	private readonly object _lifecycleGate = new();
+	private readonly Dictionary<string, DeferredShowOperation> _deferredShowOperations = new(StringComparer.Ordinal);
+	private readonly Dictionary<uint, List<string>> _deferredShowOperationsById = new();
 	private readonly Func<IAppNotificationManagerBackend?> _backendFactory;
 	private readonly Func<AppNotificationStateStore> _stateStoreFactory;
+	private readonly string _operationOwner = Guid.NewGuid().ToString("N");
 	private IAppNotificationManagerBackend? _backend;
 	private AppNotificationStateStore? _stateStore;
+	private Task _persistentStateRecoveryTask = Task.CompletedTask;
 	private TypedEventHandler<AppNotificationManager, AppNotificationActivatedEventArgs>? _notificationInvoked;
 	private volatile bool _hasRegistration;
 	private bool _isRegistered;
 	private bool _isLifecycleTransitioning;
+	private bool _isBackendConfigured;
 
 	private AppNotificationManager()
 	{
+#if __WASM__
+		WebAssemblyAppNotificationConfiguration.Capture();
+#endif
 		_backendFactory = AppNotificationManagerBackendFactory.Create;
 		_stateStoreFactory = () => new AppNotificationStateStore(AppNotificationStatePersistenceFactory.Create());
 	}
@@ -224,22 +233,22 @@ public sealed class AppNotificationManager
 	}
 
 	public void Show(AppNotification notification)
-		=> Show(notification, replaceTagAndGroup: false, requiresRegistration: true);
+		=> _ = Show(notification, replaceTagAndGroup: true, requiresRegistration: true);
 
 	internal void ShowReplacingTagAndGroup(AppNotification notification)
-		=> Show(notification, replaceTagAndGroup: true, requiresRegistration: false);
+		=> _ = Show(notification, replaceTagAndGroup: true, requiresRegistration: false);
 
-	internal void ShowScheduled(AppNotification notification, string deliveryCorrelation)
+	internal AppNotificationPostingResult ShowScheduled(AppNotification notification, string deliveryCorrelation)
 	{
 		ArgumentNullException.ThrowIfNull(deliveryCorrelation);
-		Show(notification, replaceTagAndGroup: true, requiresRegistration: false, deliveryCorrelation);
+		return Show(notification, replaceTagAndGroup: true, requiresRegistration: false, deliveryCorrelation);
 	}
 
-	private void Show(AppNotification notification, bool replaceTagAndGroup, bool requiresRegistration, string deliveryCorrelation = "")
+	private AppNotificationPostingResult Show(AppNotification notification, bool replaceTagAndGroup, bool requiresRegistration, string deliveryCorrelation = "")
 	{
 		if (GetBackend() is not { IsSupported: true } backend)
 		{
-			return;
+			return AppNotificationPostingResult.NotPosted;
 		}
 		ArgumentNullException.ThrowIfNull(notification);
 
@@ -247,7 +256,7 @@ public sealed class AppNotificationManager
 		{
 			if (requiresRegistration && !_hasRegistration)
 			{
-				return;
+				return AppNotificationPostingResult.NotPosted;
 			}
 			var snapshot = notification.CaptureSnapshot();
 			if (snapshot.Id != 0)
@@ -258,51 +267,17 @@ public sealed class AppNotificationManager
 			var payload = AppNotificationPayloadParser.Parse(snapshot.Payload);
 			if (backend.Setting != AppNotificationSetting.Enabled)
 			{
-				return;
+				return AppNotificationPostingResult.NotPosted;
 			}
 
+			var state = GetStateStore();
+			state.Reload();
 			var activeIds = RecoverPendingOperations(backend);
 			SweepExpired(backend);
-			var state = GetStateStore();
-			if (deliveryCorrelation.Length > 0 && state.HasDeliveryReceipt(deliveryCorrelation))
-			{
-				return;
-			}
-			if (activeIds is not null)
-			{
-				state.ReconcileActiveIds(activeIds);
-			}
+			ReconcileActiveIds(state.GetAllRecords(), activeIds);
+			var now = DateTimeOffset.UtcNow;
 			var progress = snapshot.Progress is null ? null : AppNotificationProgressSnapshot.From(snapshot.Progress);
-			if (replaceTagAndGroup && snapshot.Tag.Length > 0 && state.GetByTagAndGroup(snapshot.Tag, snapshot.Group) is { Count: > 0 } matches)
-			{
-				var replacement = state.BeginReplacement(
-					matches[0].Id,
-					snapshot.Payload,
-					snapshot.Tag,
-					snapshot.Group,
-					snapshot.Expiration,
-					snapshot.ExpiresOnReboot,
-					backend.BootIdentifier,
-					snapshot.Priority,
-					snapshot.SuppressDisplay,
-					progress,
-					DateTimeOffset.UtcNow,
-					deliveryCorrelation);
-				if (!backend.TryUpdate(replacement))
-				{
-					return;
-				}
-
-				state.MarkShown(replacement.Id);
-				notification.SetNotificationId(replacement.Id);
-				foreach (var duplicate in matches.Skip(1))
-				{
-					backend.Remove(duplicate);
-					state.RemoveById(duplicate.Id);
-				}
-				return;
-			}
-			var record = state.Reserve(
+			var reservation = state.PrepareShow(
 				snapshot.Payload,
 				snapshot.Tag,
 				snapshot.Group,
@@ -312,8 +287,49 @@ public sealed class AppNotificationManager
 				snapshot.Priority,
 				snapshot.SuppressDisplay,
 				progress,
-				DateTimeOffset.UtcNow,
+				now,
+				_operationOwner,
+				now + OperationLeaseDuration,
+				replaceTagAndGroup,
 				deliveryCorrelation);
+			if (reservation.Kind == AppNotificationShowReservationKind.Duplicate)
+			{
+				return AppNotificationPostingResult.AlreadyPosted;
+			}
+			if (reservation.Kind == AppNotificationShowReservationKind.Busy)
+			{
+				return AppNotificationPostingResult.NotPosted;
+			}
+			var record = reservation.Record!;
+			if (reservation.Kind == AppNotificationShowReservationKind.Replacement)
+			{
+				var previous = reservation.PreviousRecord!;
+				var defersCompletion = backend is IDeferredAppNotificationManagerBackend { DefersShowCompletion: true };
+				if (!TryUpdate(
+					backend,
+					record,
+					previous,
+					DeferredFailureBehavior.Restore,
+					reservation.DuplicateRecords))
+				{
+					state.TryResolveFailedShow(record, previous, reservation.DuplicateRecords);
+					return AppNotificationPostingResult.NotPosted;
+				}
+
+				if (!defersCompletion)
+				{
+					if (!state.TryMarkShown(record))
+					{
+						return ResolvePostingStateConflict(state, deliveryCorrelation);
+					}
+				}
+				notification.SetNotificationId(record.Id);
+				if (!defersCompletion)
+				{
+					RemoveDuplicateRecords(backend, reservation.DuplicateRecords);
+				}
+				return AppNotificationPostingResult.Posted;
+			}
 			var envelope = new AppNotificationEnvelope(
 				record.Id,
 				payload,
@@ -325,23 +341,29 @@ public sealed class AppNotificationManager
 				snapshot.Priority,
 				progress,
 				snapshot.Payload);
-			if (!backend.TryShow(envelope))
+			if (!TryShow(backend, envelope, record))
 			{
-				state.Abort(record.Id);
-				return;
+				state.TryAbort(record);
+				return AppNotificationPostingResult.NotPosted;
 			}
 
 			try
 			{
-				state.MarkShown(record.Id);
 				notification.SetNotificationId(record.Id);
+				if (backend is not IDeferredAppNotificationManagerBackend { DefersShowCompletion: true })
+				{
+					if (!state.TryMarkShown(record))
+					{
+						return ResolvePostingStateConflict(state, deliveryCorrelation);
+					}
+				}
 			}
 			catch
 			{
 				try
 				{
 					backend.Remove(record);
-					state.Abort(record.Id);
+					state.TryAbort(record);
 				}
 				catch
 				{
@@ -349,7 +371,18 @@ public sealed class AppNotificationManager
 				}
 				throw;
 			}
+			return AppNotificationPostingResult.Posted;
 		}
+	}
+
+	private static AppNotificationPostingResult ResolvePostingStateConflict(
+		AppNotificationStateStore state,
+		string deliveryCorrelation)
+	{
+		state.Reload();
+		return deliveryCorrelation.Length > 0 && state.HasDeliveryReceipt(deliveryCorrelation)
+			? AppNotificationPostingResult.AlreadyPosted
+			: AppNotificationPostingResult.NotPosted;
 	}
 
 	[Overload("UpdateAsync")]
@@ -361,8 +394,12 @@ public sealed class AppNotificationManager
 		}
 		ArgumentNullException.ThrowIfNull(data);
 		ValidateIdentifier(tag, nameof(tag));
-		ValidateIdentifier(group, nameof(group));
+		ValidateGroup(group, nameof(group));
 		var progress = AppNotificationProgressSnapshot.From(data.Clone());
+		if (GetBackend() is IAsyncAppNotificationManagerBackend asyncBackend)
+		{
+			return UpdateAsyncCore(asyncBackend, progress, tag, group).AsAsyncOperation();
+		}
 		return Task.Run(() => Update(progress, tag, group)).AsAsyncOperation();
 	}
 
@@ -376,7 +413,11 @@ public sealed class AppNotificationManager
 		ArgumentNullException.ThrowIfNull(data);
 		ValidateIdentifier(tag, nameof(tag));
 		var progress = AppNotificationProgressSnapshot.From(data.Clone());
-		return Task.Run(() => Update(progress, tag, group: null)).AsAsyncOperation();
+		if (GetBackend() is IAsyncAppNotificationManagerBackend asyncBackend)
+		{
+			return UpdateAsyncCore(asyncBackend, progress, tag, string.Empty).AsAsyncOperation();
+		}
+		return Task.Run(() => Update(progress, tag, string.Empty)).AsAsyncOperation();
 	}
 
 	public IAsyncAction RemoveByIdAsync(uint notificationId)
@@ -389,6 +430,10 @@ public sealed class AppNotificationManager
 		{
 			throw new ArgumentException("A non-zero notification ID is required.", nameof(notificationId));
 		}
+		if (GetBackend() is IAsyncAppNotificationManagerBackend asyncBackend)
+		{
+			return RemoveAsyncCore(asyncBackend, store => store.GetById(notificationId)).AsAsyncAction();
+		}
 		return Task.Run(() => RemoveById(notificationId)).AsAsyncAction();
 	}
 
@@ -399,6 +444,10 @@ public sealed class AppNotificationManager
 			return Task.CompletedTask.AsAsyncAction();
 		}
 		ValidateIdentifier(tag, nameof(tag));
+		if (GetBackend() is IAsyncAppNotificationManagerBackend asyncBackend)
+		{
+			return RemoveAsyncCore(asyncBackend, store => store.GetByTag(tag)).AsAsyncAction();
+		}
 		return Task.Run(() => RemoveByTag(tag)).AsAsyncAction();
 	}
 
@@ -409,7 +458,11 @@ public sealed class AppNotificationManager
 			return Task.CompletedTask.AsAsyncAction();
 		}
 		ValidateIdentifier(tag, nameof(tag));
-		ValidateIdentifier(group, nameof(group));
+		ValidateGroup(group, nameof(group));
+		if (GetBackend() is IAsyncAppNotificationManagerBackend asyncBackend)
+		{
+			return RemoveAsyncCore(asyncBackend, store => store.GetByTagAndGroup(tag, group)).AsAsyncAction();
+		}
 		return Task.Run(() => RemoveByTagAndGroup(tag, group)).AsAsyncAction();
 	}
 
@@ -420,14 +473,22 @@ public sealed class AppNotificationManager
 			return Task.CompletedTask.AsAsyncAction();
 		}
 		ValidateIdentifier(group, nameof(group));
+		if (GetBackend() is IAsyncAppNotificationManagerBackend asyncBackend)
+		{
+			return RemoveAsyncCore(asyncBackend, store => store.GetByGroup(group)).AsAsyncAction();
+		}
 		return Task.Run(() => RemoveByGroup(group)).AsAsyncAction();
 	}
 
 	public IAsyncAction RemoveAllAsync()
-		=> Task.Run(RemoveAll).AsAsyncAction();
+		=> GetBackend() is IAsyncAppNotificationManagerBackend asyncBackend
+			? RemoveAllAsyncCore(asyncBackend).AsAsyncAction()
+			: Task.Run(RemoveAll).AsAsyncAction();
 
 	public IAsyncOperation<IList<AppNotification>> GetAllAsync()
-		=> Task.Run<IList<AppNotification>>(GetAll).AsAsyncOperation();
+		=> GetBackend() is IAsyncAppNotificationManagerBackend asyncBackend
+			? GetAllAsyncCore(asyncBackend).AsAsyncOperation()
+			: Task.Run<IList<AppNotification>>(GetAll).AsAsyncOperation();
 
 	public event TypedEventHandler<AppNotificationManager, AppNotificationActivatedEventArgs> NotificationInvoked
 	{
@@ -449,11 +510,179 @@ public sealed class AppNotificationManager
 	{
 		if (_backend is not null)
 		{
+			ConfigureBackend(_backend);
 			return _backend;
 		}
 		lock (_gate)
 		{
-			return _backend ??= _backendFactory();
+			var backend = _backend ??= _backendFactory();
+			if (backend is not null)
+			{
+				ConfigureBackend(backend);
+			}
+			return backend;
+		}
+	}
+
+	private void ConfigureBackend(IAppNotificationManagerBackend backend)
+	{
+		if (_isBackendConfigured)
+		{
+			return;
+		}
+		lock (_gate)
+		{
+			if (_isBackendConfigured)
+			{
+				return;
+			}
+			if (backend is IDeferredAppNotificationManagerBackend deferred)
+			{
+				deferred.SetShowCompletedHandler(OnDeferredShowCompleted);
+			}
+			_isBackendConfigured = true;
+			if (backend is IAsyncAppNotificationManagerBackend asyncBackend &&
+				backend is IAppNotificationActiveIdRefreshCapability { RequiresActiveIdsForStateChanges: true })
+			{
+				_persistentStateRecoveryTask = RecoverPersistentStateAsync(backend, asyncBackend);
+			}
+		}
+	}
+
+	private void OnDeferredShowCompleted(string operationCorrelation, uint id, bool succeeded)
+	{
+		lock (_gate)
+		{
+			if (!_deferredShowOperations.TryGetValue(operationCorrelation, out var operation) || operation.PendingRecord.Id != id)
+			{
+				return;
+			}
+
+			var state = GetStateStore();
+			state.Reload();
+			var resolvedRecord = succeeded
+				? operation.PendingRecord with { PostingState = AppNotificationPostingState.Shown }
+				: operation.RollbackRecord;
+			PropagateDeferredResolution(operation, resolvedRecord);
+			if (succeeded)
+			{
+				if (state.TryMarkShown(operation.PendingRecord) && operation.DuplicateRecords.Count > 0)
+				{
+					RemoveDuplicateRecords(GetBackend()!, operation.DuplicateRecords);
+				}
+			}
+			else if (operation.FailureBehavior == DeferredFailureBehavior.Abort)
+			{
+				state.TryResolveFailedShow(
+					operation.PendingRecord,
+					restore: null,
+					duplicates: operation.DuplicateRecords);
+			}
+			else if (operation.FailureBehavior == DeferredFailureBehavior.Restore)
+			{
+				state.TryResolveFailedShow(
+					operation.PendingRecord,
+					operation.RollbackRecord,
+					operation.DuplicateRecords);
+			}
+			RemoveDeferredOperation(operationCorrelation);
+		}
+	}
+
+	private bool TryShow(
+		IAppNotificationManagerBackend backend,
+		AppNotificationEnvelope notification,
+		AppNotificationStateRecord pendingRecord)
+	{
+		if (backend is not IDeferredAppNotificationManagerBackend { DefersShowCompletion: true } deferred)
+		{
+			return backend.TryShow(notification);
+		}
+
+		var operation = RegisterDeferredOperation(pendingRecord, rollbackRecord: null, DeferredFailureBehavior.Abort);
+		if (deferred.TryShow(notification, operation.Correlation))
+		{
+			return true;
+		}
+		RemoveDeferredOperation(operation.Correlation);
+		return false;
+	}
+
+	private bool TryUpdate(
+		IAppNotificationManagerBackend backend,
+		AppNotificationStateRecord pendingRecord,
+		AppNotificationStateRecord? rollbackRecord,
+		DeferredFailureBehavior failureBehavior,
+		IReadOnlyList<AppNotificationDuplicateReservation>? duplicateRecords = null)
+	{
+		if (backend is not IDeferredAppNotificationManagerBackend { DefersShowCompletion: true } deferred)
+		{
+			return backend.TryUpdate(pendingRecord);
+		}
+
+		var operation = RegisterDeferredOperation(pendingRecord, rollbackRecord, failureBehavior, duplicateRecords);
+		if (deferred.TryUpdate(pendingRecord, operation.Correlation))
+		{
+			return true;
+		}
+		RemoveDeferredOperation(operation.Correlation);
+		return false;
+	}
+
+	private DeferredShowOperation RegisterDeferredOperation(
+		AppNotificationStateRecord pendingRecord,
+		AppNotificationStateRecord? rollbackRecord,
+		DeferredFailureBehavior failureBehavior,
+		IReadOnlyList<AppNotificationDuplicateReservation>? duplicateRecords = null)
+	{
+		var operation = new DeferredShowOperation(
+			Guid.NewGuid().ToString("N"),
+			pendingRecord,
+			rollbackRecord,
+			failureBehavior,
+			duplicateRecords ?? Array.Empty<AppNotificationDuplicateReservation>());
+		_deferredShowOperations.Add(operation.Correlation, operation);
+		if (!_deferredShowOperationsById.TryGetValue(pendingRecord.Id, out var correlations))
+		{
+			correlations = new List<string>();
+			_deferredShowOperationsById.Add(pendingRecord.Id, correlations);
+		}
+		correlations.Add(operation.Correlation);
+		return operation;
+	}
+
+	private void PropagateDeferredResolution(DeferredShowOperation operation, AppNotificationStateRecord? resolvedRecord)
+	{
+		if (!_deferredShowOperationsById.TryGetValue(operation.PendingRecord.Id, out var correlations))
+		{
+			return;
+		}
+
+		var operationIndex = correlations.IndexOf(operation.Correlation);
+		for (var index = operationIndex + 1; index < correlations.Count; index++)
+		{
+			if (_deferredShowOperations.TryGetValue(correlations[index], out var later) &&
+				later.RollbackRecord is { } rollback &&
+				rollback.Id == operation.PendingRecord.Id &&
+				rollback.Revision == operation.PendingRecord.Revision)
+			{
+				later.RollbackRecord = resolvedRecord;
+			}
+		}
+	}
+
+	private void RemoveDeferredOperation(string operationCorrelation)
+	{
+		if (!_deferredShowOperations.Remove(operationCorrelation, out var operation) ||
+			!_deferredShowOperationsById.TryGetValue(operation.PendingRecord.Id, out var correlations))
+		{
+			return;
+		}
+
+		correlations.Remove(operationCorrelation);
+		if (correlations.Count == 0)
+		{
+			_deferredShowOperationsById.Remove(operation.PendingRecord.Id);
 		}
 	}
 
@@ -469,30 +698,40 @@ public sealed class AppNotificationManager
 		}
 	}
 
-	private AppNotificationProgressResult Update(AppNotificationProgressSnapshot progress, string tag, string? group)
+	private AppNotificationProgressResult Update(AppNotificationProgressSnapshot progress, string tag, string group)
 	{
 		if (GetBackend() is not { IsSupported: true } backend)
+		{
+			return AppNotificationProgressResult.Unsupported;
+		}
+		if (backend is IAppNotificationProgressUpdateCapability { SupportsProgressUpdates: false })
 		{
 			return AppNotificationProgressResult.Unsupported;
 		}
 
 		lock (_gate)
 		{
-			var activeIds = RecoverPendingOperations(backend);
-			var unresolvedUpdates = GetStateStore().GetPendingUpdates();
-			SweepExpired(backend);
 			var state = GetStateStore();
-			if (activeIds is not null)
-			{
-				state.ReconcileActiveIds(activeIds);
-			}
-			var result = state.BeginProgressUpdate(tag, group, progress, out var updates);
+			state.Reload();
+			var activeIds = RecoverPendingOperations(backend);
+			SweepExpired(backend);
+			ReconcileActiveIds(state.GetAllRecords(), activeIds);
+			var unresolvedUpdates = state.GetPendingUpdates();
+			var now = DateTimeOffset.UtcNow;
+			var result = state.BeginProgressUpdate(
+				tag,
+				group,
+				progress,
+				_operationOwner,
+				now + OperationLeaseDuration,
+				now,
+				out var updates);
 			if (result != AppNotificationProgressResult.Succeeded || updates.Count == 0)
 			{
 				return result == AppNotificationProgressResult.Succeeded &&
 					unresolvedUpdates.Any(record =>
 						record.Tag == tag &&
-						(group is null || record.Group == group) &&
+						record.Group == group &&
 						record.Progress?.SequenceNumber == progress.SequenceNumber)
 					? AppNotificationProgressResult.AppNotificationNotFound
 					: result;
@@ -501,13 +740,299 @@ public sealed class AppNotificationManager
 			var succeeded = 0;
 			foreach (var record in updates)
 			{
-				if (backend.TryUpdate(record))
+				if (TryUpdate(backend, record, rollbackRecord: null, DeferredFailureBehavior.Preserve))
 				{
-					state.MarkShown(record.Id);
+					if (backend is not IDeferredAppNotificationManagerBackend { DefersShowCompletion: true })
+					{
+						state.TryMarkShown(record);
+					}
 					succeeded++;
 				}
 			}
 			return succeeded > 0 ? AppNotificationProgressResult.Succeeded : AppNotificationProgressResult.AppNotificationNotFound;
+		}
+	}
+
+	private async Task<AppNotificationProgressResult> UpdateAsyncCore(
+		IAsyncAppNotificationManagerBackend asyncBackend,
+		AppNotificationProgressSnapshot progress,
+		string tag,
+		string group)
+	{
+		if (GetBackend() is not { IsSupported: true } backend)
+		{
+			return AppNotificationProgressResult.Unsupported;
+		}
+		if (backend is IAppNotificationProgressUpdateCapability { SupportsProgressUpdates: false })
+		{
+			return AppNotificationProgressResult.Unsupported;
+		}
+		if (backend is IDeferredAppNotificationManagerBackend deferred)
+		{
+			await deferred.WaitForPendingShowsAsync();
+		}
+		await WaitForPersistentStateRecoveryAsync();
+		if (!await RefreshAndReconcileStateAsync(backend, asyncBackend))
+		{
+			return AppNotificationProgressResult.AppNotificationNotFound;
+		}
+
+		IReadOnlyList<AppNotificationStateRecord> updates;
+		lock (_gate)
+		{
+			var state = GetStateStore();
+			state.Reload();
+			var unresolvedUpdates = state.GetPendingUpdates();
+			var now = DateTimeOffset.UtcNow;
+			var result = state.BeginProgressUpdate(
+				tag,
+				group,
+				progress,
+				_operationOwner,
+				now + OperationLeaseDuration,
+				now,
+				out updates);
+			if (result != AppNotificationProgressResult.Succeeded || updates.Count == 0)
+			{
+				return result == AppNotificationProgressResult.Succeeded &&
+					unresolvedUpdates.Any(record =>
+						record.Tag == tag &&
+						record.Group == group &&
+						record.Progress?.SequenceNumber == progress.SequenceNumber)
+					? AppNotificationProgressResult.AppNotificationNotFound
+					: result;
+			}
+		}
+
+		var succeeded = 0;
+		foreach (var record in updates)
+		{
+			if (await asyncBackend.TryUpdateAsync(record))
+			{
+				TryMarkShown(record);
+				succeeded++;
+			}
+		}
+		return succeeded > 0 ? AppNotificationProgressResult.Succeeded : AppNotificationProgressResult.AppNotificationNotFound;
+	}
+
+	private async Task WaitForPersistentStateRecoveryAsync()
+	{
+		Task recovery;
+		lock (_gate)
+		{
+			recovery = _persistentStateRecoveryTask;
+		}
+		await recovery;
+	}
+
+	private async Task RecoverPersistentStateAsync(
+		IAppNotificationManagerBackend backend,
+		IAsyncAppNotificationManagerBackend asyncBackend)
+	{
+		try
+		{
+			await RefreshAndReconcileStateAsync(backend, asyncBackend);
+		}
+		catch
+		{
+			// A later asynchronous operation will retry the persistent refresh.
+		}
+	}
+
+	private async Task<bool> RefreshAndReconcileStateAsync(
+		IAppNotificationManagerBackend backend,
+		IAsyncAppNotificationManagerBackend asyncBackend)
+	{
+		IReadOnlyList<AppNotificationStateRecord> captured;
+		lock (_gate)
+		{
+			var state = GetStateStore();
+			state.Reload();
+			captured = state.GetAllRecords();
+		}
+		var activeIds = await asyncBackend.GetActiveNotificationIdsAsync();
+		if (activeIds is null &&
+			backend is IAppNotificationActiveIdRefreshCapability { RequiresActiveIdsForStateChanges: true })
+		{
+			return false;
+		}
+		await ReconcileAwaitedState(backend, asyncBackend, captured, activeIds);
+		return true;
+	}
+
+	private async Task ReconcileAwaitedState(
+		IAppNotificationManagerBackend backend,
+		IAsyncAppNotificationManagerBackend asyncBackend,
+		IReadOnlyList<AppNotificationStateRecord> captured,
+		IReadOnlyCollection<uint>? activeIds)
+	{
+		var active = activeIds?.ToHashSet();
+		var now = DateTimeOffset.UtcNow;
+		foreach (var record in captured)
+		{
+			var isActive = active?.Contains(record.Id);
+			var isExpired = IsExpired(record, now, backend.BootIdentifier);
+			if (HasForeignLiveOperationLease(record, now) &&
+				(record.PostingState == AppNotificationPostingState.Updating || isExpired))
+			{
+				continue;
+			}
+			if (isExpired)
+			{
+				if (isActive == false)
+				{
+					TryRemove(record);
+				}
+				else
+				{
+					await RemoveWithAcknowledgementAsync(asyncBackend, record, now);
+				}
+				continue;
+			}
+
+			switch (record.PostingState)
+			{
+				case AppNotificationPostingState.Shown when isActive == false:
+					TryRemove(record);
+					break;
+				case AppNotificationPostingState.Posting when isActive == true:
+					TryMarkShown(record);
+					break;
+				case AppNotificationPostingState.Posting when isActive == false:
+					if (TryClaimExpired(record, now, out var abandonedPosting))
+					{
+						TryRemove(abandonedPosting!);
+					}
+					break;
+				case AppNotificationPostingState.Posting when
+					backend is not IAppNotificationActiveIdRefreshCapability { RequiresActiveIdsForStateChanges: true }:
+					if (TryClaimExpired(record, now, out var uncertainPosting) &&
+						await asyncBackend.RemoveAsync(uncertainPosting!))
+					{
+						TryRemove(uncertainPosting!);
+					}
+					break;
+				case AppNotificationPostingState.Updating when isActive == false:
+					TryRemove(record);
+					break;
+				case AppNotificationPostingState.Updating when isActive == true:
+					if (TryClaimExpired(record, now, out var pendingUpdate) &&
+						await asyncBackend.TryUpdateAsync(pendingUpdate!))
+					{
+						TryMarkShown(pendingUpdate!);
+					}
+					break;
+				case AppNotificationPostingState.Removing when isActive == false:
+					TryRemove(record);
+					break;
+				case AppNotificationPostingState.Removing:
+					if (TryClaimExpired(record, now, out var pendingRemoval) &&
+						await asyncBackend.RemoveAsync(pendingRemoval!))
+					{
+						TryRemove(pendingRemoval!);
+					}
+					break;
+			}
+		}
+	}
+
+	private async Task RemoveWithAcknowledgementAsync(
+		IAsyncAppNotificationManagerBackend asyncBackend,
+		AppNotificationStateRecord record,
+		DateTimeOffset now)
+	{
+		AppNotificationStateRecord? removal;
+		lock (_gate)
+		{
+			var state = GetStateStore();
+			state.Reload();
+			if (!state.TryBeginRemoval(record, _operationOwner, now + OperationLeaseDuration, out removal))
+			{
+				return;
+			}
+		}
+		if (await asyncBackend.RemoveAsync(removal!))
+		{
+			TryRemove(removal!);
+		}
+	}
+
+	private async Task RemoveAsyncCore(
+		IAsyncAppNotificationManagerBackend asyncBackend,
+		Func<AppNotificationStateStore, IReadOnlyList<AppNotificationStateRecord>> select)
+	{
+		if (GetBackend() is not { IsSupported: true } backend)
+		{
+			return;
+		}
+		if (backend is IDeferredAppNotificationManagerBackend deferred)
+		{
+			await deferred.WaitForPendingShowsAsync();
+		}
+		await WaitForPersistentStateRecoveryAsync();
+		if (!await RefreshAndReconcileStateAsync(backend, asyncBackend))
+		{
+			return;
+		}
+		IReadOnlyList<AppNotificationStateRecord> records;
+		lock (_gate)
+		{
+			var state = GetStateStore();
+			state.Reload();
+			records = select(state);
+		}
+		foreach (var record in records)
+		{
+			await RemoveWithAcknowledgementAsync(asyncBackend, record, DateTimeOffset.UtcNow);
+		}
+	}
+
+	private async Task RemoveAllAsyncCore(IAsyncAppNotificationManagerBackend asyncBackend)
+	{
+		if (GetBackend() is not { IsSupported: true } backend)
+		{
+			return;
+		}
+		if (backend is IDeferredAppNotificationManagerBackend deferred)
+		{
+			await deferred.WaitForPendingShowsAsync();
+		}
+		await WaitForPersistentStateRecoveryAsync();
+		if (!await RefreshAndReconcileStateAsync(backend, asyncBackend))
+		{
+			return;
+		}
+		IReadOnlyList<AppNotificationStateRecord> records;
+		lock (_gate)
+		{
+			var state = GetStateStore();
+			state.Reload();
+			records = state.GetAllRecords();
+		}
+		foreach (var record in records)
+		{
+			await RemoveWithAcknowledgementAsync(asyncBackend, record, DateTimeOffset.UtcNow);
+		}
+	}
+
+	private async Task<IList<AppNotification>> GetAllAsyncCore(IAsyncAppNotificationManagerBackend asyncBackend)
+	{
+		if (GetBackend() is not { IsSupported: true } backend)
+		{
+			return new List<AppNotification>();
+		}
+		if (backend is IDeferredAppNotificationManagerBackend deferred)
+		{
+			await deferred.WaitForPendingShowsAsync();
+		}
+		await WaitForPersistentStateRecoveryAsync();
+		await RefreshAndReconcileStateAsync(backend, asyncBackend);
+		lock (_gate)
+		{
+			var state = GetStateStore();
+			state.Reload();
+			return state.GetShown().Select(CreateNotification).ToList();
 		}
 	}
 
@@ -555,16 +1080,15 @@ public sealed class AppNotificationManager
 		}
 		lock (_gate)
 		{
+			var state = GetStateStore();
+			state.Reload();
 			RecoverPendingOperations(backend);
 			SweepExpired(backend);
-			var state = GetStateStore();
-			var records = state.GetShown();
+			var records = state.GetAllRecords();
 			foreach (var record in records)
 			{
-				backend.Remove(record);
+				RemoveWithAcknowledgement(backend, record);
 			}
-			backend.RemoveAll();
-			state.RemoveAll();
 		}
 	}
 
@@ -577,13 +1101,11 @@ public sealed class AppNotificationManager
 
 		lock (_gate)
 		{
+			GetStateStore().Reload();
 			var activeIds = RecoverPendingOperations(backend);
 			SweepExpired(backend);
 			var state = GetStateStore();
-			if (activeIds is not null)
-			{
-				state.ReconcileActiveIds(activeIds);
-			}
+			ReconcileActiveIds(state.GetAllRecords(), activeIds);
 			return state.GetShown().Select(CreateNotification).ToList();
 		}
 	}
@@ -592,17 +1114,14 @@ public sealed class AppNotificationManager
 	{
 		lock (_gate)
 		{
+			GetStateStore().Reload();
 			RecoverPendingOperations(backend);
 			SweepExpired(backend);
 			var state = GetStateStore();
 			var records = remove(state);
 			foreach (var record in records)
 			{
-				backend.Remove(record);
-			}
-			foreach (var record in records)
-			{
-				state.RemoveById(record.Id);
+				RemoveWithAcknowledgement(backend, record);
 			}
 		}
 	}
@@ -610,14 +1129,14 @@ public sealed class AppNotificationManager
 	private void SweepExpired(IAppNotificationManagerBackend backend)
 	{
 		var state = GetStateStore();
-		var records = state.GetExpired(DateTimeOffset.UtcNow, backend.BootIdentifier);
+		var now = DateTimeOffset.UtcNow;
+		var records = state.GetExpired(now, backend.BootIdentifier);
 		foreach (var record in records)
 		{
-			backend.Remove(record);
-		}
-		foreach (var record in records)
-		{
-			state.RemoveById(record.Id);
+			if (!HasForeignLiveOperationLease(record, now))
+			{
+				RemoveWithAcknowledgement(backend, record);
+			}
 		}
 	}
 
@@ -626,27 +1145,194 @@ public sealed class AppNotificationManager
 		var state = GetStateStore();
 		var activeIds = backend.GetActiveNotificationIds();
 		var active = activeIds?.ToHashSet();
-		foreach (var record in state.GetPendingPostings())
+		var deferredBackend = backend as IDeferredAppNotificationManagerBackend;
+		var now = DateTimeOffset.UtcNow;
+		foreach (var record in state.GetAllRecords())
 		{
-			if (active is null || active.Contains(record.Id))
+			var isActive = active?.Contains(record.Id);
+			if (record.PostingState is AppNotificationPostingState.Posting or AppNotificationPostingState.Updating &&
+				deferredBackend?.IsShowPending(record.Id) == true)
 			{
-				backend.Remove(record);
+				continue;
 			}
-			state.Abort(record.Id);
-		}
-		foreach (var record in state.GetPendingUpdates())
-		{
-			if (active is not null && !active.Contains(record.Id))
+			if (isActive is null &&
+				backend is IAppNotificationActiveIdRefreshCapability { RequiresActiveIdsForStateChanges: true } &&
+				record.PostingState is AppNotificationPostingState.Posting or AppNotificationPostingState.Updating)
 			{
-				state.Abort(record.Id);
+				continue;
 			}
-			else if (backend.TryUpdate(record))
+
+			switch (record.PostingState)
 			{
-				state.MarkShown(record.Id);
+				case AppNotificationPostingState.Posting when isActive == true:
+					state.TryMarkShown(record);
+					break;
+				case AppNotificationPostingState.Posting when isActive == false:
+					if (state.TryClaimExpiredOperation(
+						record,
+						_operationOwner,
+						now + OperationLeaseDuration,
+						now,
+						out var abandonedPosting))
+					{
+						state.TryRemove(abandonedPosting!);
+					}
+					break;
+				case AppNotificationPostingState.Posting:
+					if (state.TryClaimExpiredOperation(
+						record,
+						_operationOwner,
+						now + OperationLeaseDuration,
+						now,
+						out var uncertainPosting))
+					{
+						backend.Remove(uncertainPosting!);
+						state.TryRemove(uncertainPosting!);
+					}
+					break;
+				case AppNotificationPostingState.Updating when isActive == false:
+					if (!HasForeignLiveOperationLease(record, now))
+					{
+						state.TryRemove(record);
+					}
+					break;
+				case AppNotificationPostingState.Updating when isActive != false:
+					if (state.TryClaimExpiredOperation(
+						record,
+						_operationOwner,
+						now + OperationLeaseDuration,
+						now,
+						out var pendingUpdate) &&
+						TryUpdate(backend, pendingUpdate!, rollbackRecord: null, DeferredFailureBehavior.Preserve) &&
+						deferredBackend is not { DefersShowCompletion: true })
+					{
+						state.TryMarkShown(pendingUpdate!);
+					}
+					break;
+				case AppNotificationPostingState.Removing when isActive == false:
+					state.TryRemove(record);
+					break;
+				case AppNotificationPostingState.Removing:
+					if (state.TryClaimExpiredOperation(
+						record,
+						_operationOwner,
+						now + OperationLeaseDuration,
+						now,
+						out var pendingRemoval))
+					{
+						backend.Remove(pendingRemoval!);
+						state.TryRemove(pendingRemoval!);
+					}
+					break;
 			}
 		}
 		return activeIds;
 	}
+
+	private void RemoveWithAcknowledgement(IAppNotificationManagerBackend backend, AppNotificationStateRecord record)
+	{
+		var state = GetStateStore();
+		if (!state.TryBeginRemoval(
+			record,
+			_operationOwner,
+			DateTimeOffset.UtcNow + OperationLeaseDuration,
+			out var removal))
+		{
+			return;
+		}
+		backend.Remove(removal!);
+		state.TryRemove(removal!);
+	}
+
+	private void RemoveDuplicateRecords(
+		IAppNotificationManagerBackend backend,
+		IReadOnlyList<AppNotificationDuplicateReservation> duplicates)
+	{
+		var state = GetStateStore();
+		foreach (var duplicate in duplicates)
+		{
+			try
+			{
+				backend.Remove(duplicate.Removal);
+				state.TryRemove(duplicate.Removal);
+			}
+			catch
+			{
+				// Keep durable state when native duplicate cleanup is not acknowledged.
+			}
+		}
+	}
+
+	private void ReconcileActiveIds(
+		IReadOnlyList<AppNotificationStateRecord> captured,
+		IReadOnlyCollection<uint>? activeIds)
+	{
+		if (activeIds is null)
+		{
+			return;
+		}
+		var active = activeIds.ToHashSet();
+		foreach (var record in captured)
+		{
+			if (record.PostingState == AppNotificationPostingState.Shown && !active.Contains(record.Id))
+			{
+				TryRemove(record);
+			}
+		}
+	}
+
+	private bool TryClaimExpired(
+		AppNotificationStateRecord record,
+		DateTimeOffset now,
+		out AppNotificationStateRecord? claimed)
+	{
+		lock (_gate)
+		{
+			var state = GetStateStore();
+			state.Reload();
+			return state.TryClaimExpiredOperation(
+				record,
+				_operationOwner,
+				now + OperationLeaseDuration,
+				now,
+				out claimed);
+		}
+	}
+
+	private bool TryMarkShown(AppNotificationStateRecord record)
+	{
+		lock (_gate)
+		{
+			var state = GetStateStore();
+			state.Reload();
+			return state.TryMarkShown(record);
+		}
+	}
+
+	private bool TryRemove(AppNotificationStateRecord record)
+	{
+		lock (_gate)
+		{
+			var state = GetStateStore();
+			state.Reload();
+			return state.TryRemove(record);
+		}
+	}
+
+	private static bool IsExpired(
+		AppNotificationStateRecord record,
+		DateTimeOffset now,
+		string? bootIdentifier)
+		=> (record.ExpirationUtc > DateTimeOffset.FromFileTime(0) && record.ExpirationUtc <= now) ||
+			(record.ExpiresOnReboot &&
+				record.BootIdentifier is not null &&
+				bootIdentifier is not null &&
+				!string.Equals(record.BootIdentifier, bootIdentifier, StringComparison.Ordinal));
+
+	private bool HasForeignLiveOperationLease(AppNotificationStateRecord record, DateTimeOffset now)
+		=> record.PostingState is AppNotificationPostingState.Posting or AppNotificationPostingState.Updating &&
+			!string.Equals(record.OperationOwner, _operationOwner, StringComparison.Ordinal) &&
+			record.OperationLeaseExpirationUtc > now;
 
 	private static AppNotification CreateNotification(AppNotificationStateRecord record)
 	{
@@ -670,6 +1356,48 @@ public sealed class AppNotificationManager
 		}
 	}
 
+	private static void ValidateGroup(string value, string parameterName)
+	{
+		if (value is null)
+		{
+			throw new ArgumentNullException(parameterName);
+		}
+	}
+
 	private void OnNotificationActivated(AppNotificationActivation activation)
 		=> _notificationInvoked?.Invoke(this, new AppNotificationActivatedEventArgs(activation.Argument, activation.UserInput));
+
+	private enum DeferredFailureBehavior
+	{
+		Abort,
+		Restore,
+		Preserve,
+	}
+
+	private sealed class DeferredShowOperation
+	{
+		public DeferredShowOperation(
+			string correlation,
+			AppNotificationStateRecord pendingRecord,
+			AppNotificationStateRecord? rollbackRecord,
+			DeferredFailureBehavior failureBehavior,
+			IReadOnlyList<AppNotificationDuplicateReservation> duplicateRecords)
+		{
+			Correlation = correlation;
+			PendingRecord = pendingRecord;
+			RollbackRecord = rollbackRecord;
+			FailureBehavior = failureBehavior;
+			DuplicateRecords = duplicateRecords;
+		}
+
+		public string Correlation { get; }
+
+		public AppNotificationStateRecord PendingRecord { get; }
+
+		public AppNotificationStateRecord? RollbackRecord { get; set; }
+
+		public DeferredFailureBehavior FailureBehavior { get; }
+
+		public IReadOnlyList<AppNotificationDuplicateReservation> DuplicateRecords { get; }
+	}
 }

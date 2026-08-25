@@ -1,7 +1,10 @@
 #nullable enable
 
+using Windows.Foundation.Metadata;
+
 namespace Microsoft.Windows.AppNotifications.Builder;
 
+[ContractVersion(typeof(AppNotificationBuilderContract), 1 * 0x10000u)]
 public sealed class AppNotificationTextProperties
 {
 	private string _language = string.Empty;

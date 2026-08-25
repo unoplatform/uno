@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Foundation;
 using Uno.Foundation.Logging;
+using UIKit;
 using UserNotifications;
 using Windows.UI.Notifications.Internal;
 
@@ -16,20 +17,34 @@ internal static class AppleAppNotificationRuntime
 {
 	private static readonly object _gate = new();
 	private static readonly TimeSpan NativeOperationTimeout = TimeSpan.FromSeconds(10);
+	private static readonly AppleAppNotificationSettingCache _settingCache = new();
+	private static readonly List<NSObject> _settingsRefreshObservers = new();
+	private static readonly HashSet<string> _registeredCategoryIdentifiers = new(StringComparer.Ordinal);
 	private static AppleUserNotificationCenterDelegate? _delegate;
-	private static AppleAppNotificationAuthorizationStatus _authorizationStatus;
 
 	public static AppNotificationSetting Setting
-		=> AppleAppNotificationSettingEvaluator.Evaluate(_authorizationStatus);
+	{
+		get
+		{
+			InitializeEarly();
+			if (!_settingCache.TryWaitForCurrentRefresh(NativeOperationTimeout, out var status))
+			{
+				LogWarning("Timed out while reading Apple notification settings.");
+				return AppNotificationSetting.DisabledForApplication;
+			}
+			return AppleAppNotificationSettingEvaluator.Evaluate(status);
+		}
+	}
 
 	public static void InitializeEarly()
 	{
 		lock (_gate)
 		{
 			var center = UNUserNotificationCenter.Current;
+			EnsureSettingsRefreshObservers();
 			if (_delegate is not null && ReferenceEquals(center.Delegate, _delegate))
 			{
-				RefreshSettings(center);
+				EnsureSettingsRefreshStarted(center);
 				return;
 			}
 
@@ -37,13 +52,13 @@ internal static class AppleAppNotificationRuntime
 			if (previous is not null && previous is not UNUserNotificationCenterDelegate)
 			{
 				LogWarning("An existing notification-center delegate could not be chained, so Uno app-notification activation was not installed.");
-				RefreshSettings(center);
+				EnsureSettingsRefreshStarted(center);
 				return;
 			}
 
 			_delegate = new AppleUserNotificationCenterDelegate(previous as UNUserNotificationCenterDelegate);
 			center.Delegate = _delegate;
-			RefreshSettings(center);
+			EnsureSettingsRefreshStarted(center);
 		}
 	}
 
@@ -71,11 +86,22 @@ internal static class AppleAppNotificationRuntime
 			{
 				return false;
 			}
-			var request = UNNotificationRequest.FromIdentifier(
-				command.RequestIdentifier,
-				AppleAppNotificationNativeContent.Create(command),
-				trigger);
-			return AddRequest(request);
+			try
+			{
+				return AppleAppNotificationPosting.TryPost(
+					command,
+					postingCommand => GetReplacedRequestIdentifiers(postingCommand),
+					postingCommand => AddRequest(UNNotificationRequest.FromIdentifier(
+						postingCommand.RequestIdentifier,
+						AppleAppNotificationNativeContent.Create(postingCommand),
+						trigger)),
+					Remove);
+			}
+			catch (TimeoutException exception)
+			{
+				LogWarning(exception.Message);
+				return false;
+			}
 		}
 	}
 
@@ -85,6 +111,18 @@ internal static class AppleAppNotificationRuntime
 		var center = UNUserNotificationCenter.Current;
 		center.RemovePendingNotificationRequests(identifiers);
 		center.RemoveDeliveredNotifications(identifiers);
+	}
+
+	public static void RemoveNotification(uint id)
+	{
+		Remove(AppleAppNotificationTranslator.GetNotificationRequestIdentifier(id));
+		RemoveAll(AppleAppNotificationTranslator.GetNotificationRequestIdentifierPrefix(id));
+	}
+
+	public static void RemoveScheduled(string scheduleIdentifier)
+	{
+		Remove(AppleAppNotificationTranslator.GetScheduledRequestIdentifier(scheduleIdentifier));
+		RemoveAll(AppleAppNotificationTranslator.GetScheduledRequestIdentifierPrefix(scheduleIdentifier));
 	}
 
 	public static void RemoveAll(string requestIdentifierPrefix)
@@ -160,10 +198,36 @@ internal static class AppleAppNotificationRuntime
 			.Distinct(StringComparer.Ordinal)
 			.ToArray();
 
+	private static IReadOnlyCollection<string> GetReplacedRequestIdentifiers(AppleAppNotificationCommand command)
+		=> AppleAppNotificationTranslator.GetReplacedRequestIdentifiers(
+			command,
+			GetPendingRequests()
+				.Select(request => request.Identifier)
+				.Concat(GetDeliveredNotifications().Select(notification => notification.Request.Identifier)));
+
+	private static void Remove(IReadOnlyCollection<string> requestIdentifiers)
+	{
+		if (requestIdentifiers.Count == 0)
+		{
+			return;
+		}
+		var identifiers = requestIdentifiers.ToArray();
+		var center = UNUserNotificationCenter.Current;
+		center.RemovePendingNotificationRequests(identifiers);
+		center.RemoveDeliveredNotifications(identifiers);
+	}
+
 	private static bool EnsureCategory(AppleAppNotificationCommand command)
 	{
 		var category = AppleAppNotificationNativeContent.CreateCategory(command);
 		if (category is null)
+		{
+			return true;
+		}
+
+		// The identifier is derived from the action set, so an identifier already registered in this
+		// process describes an equivalent category and does not need another native round-trip.
+		if (_registeredCategoryIdentifiers.Contains(category.Identifier))
 		{
 			return true;
 		}
@@ -183,6 +247,7 @@ internal static class AppleAppNotificationRuntime
 				.Append(category)
 				.ToArray();
 			center.SetNotificationCategories(new NSSet<UNNotificationCategory>(categories));
+			_registeredCategoryIdentifiers.Add(category.Identifier);
 			return true;
 		}
 		catch (Exception exception)
@@ -240,18 +305,54 @@ internal static class AppleAppNotificationRuntime
 			: throw new TimeoutException("Timed out while reading delivered Apple notifications.");
 	}
 
-	private static void RefreshSettings(UNUserNotificationCenter center)
-		=> center.GetNotificationSettings(settings =>
+	private static void EnsureSettingsRefreshObservers()
+	{
+		if (_settingsRefreshObservers.Count > 0)
 		{
-			_authorizationStatus = settings.AuthorizationStatus switch
+			return;
+		}
+
+		var center = NSNotificationCenter.DefaultCenter;
+		_settingsRefreshObservers.Add(center.AddObserver(
+			UIApplication.WillEnterForegroundNotification,
+			_ => RefreshSettings(UNUserNotificationCenter.Current)));
+		_settingsRefreshObservers.Add(center.AddObserver(
+			UIApplication.DidBecomeActiveNotification,
+			_ => RefreshSettings(UNUserNotificationCenter.Current)));
+		if (OperatingSystem.IsIOSVersionAtLeast(13) || OperatingSystem.IsMacCatalystVersionAtLeast(13))
+		{
+			_settingsRefreshObservers.Add(center.AddObserver(
+				UIScene.WillEnterForegroundNotification,
+				_ => RefreshSettings(UNUserNotificationCenter.Current)));
+			_settingsRefreshObservers.Add(center.AddObserver(
+				UIScene.DidActivateNotification,
+				_ => RefreshSettings(UNUserNotificationCenter.Current)));
+		}
+	}
+
+	private static void EnsureSettingsRefreshStarted(UNUserNotificationCenter center)
+	{
+		if (!_settingCache.HasRefresh)
+		{
+			RefreshSettings(center);
+		}
+	}
+
+	private static void RefreshSettings(UNUserNotificationCenter center)
+	{
+		var generation = _settingCache.BeginRefresh();
+		center.GetNotificationSettings(settings =>
+		{
+			_settingCache.CompleteRefresh(generation, settings.AuthorizationStatus switch
 			{
 				UNAuthorizationStatus.Denied => AppleAppNotificationAuthorizationStatus.Denied,
 				UNAuthorizationStatus.Authorized => AppleAppNotificationAuthorizationStatus.Authorized,
 				UNAuthorizationStatus.Provisional => AppleAppNotificationAuthorizationStatus.Provisional,
 				UNAuthorizationStatus.Ephemeral => AppleAppNotificationAuthorizationStatus.Ephemeral,
 				_ => AppleAppNotificationAuthorizationStatus.NotDetermined,
-			};
+			});
 		});
+	}
 
 	private static void LogWarning(string message)
 	{

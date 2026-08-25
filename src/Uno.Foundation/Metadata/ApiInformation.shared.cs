@@ -51,6 +51,9 @@ public partial class ApiInformation
 				// Stable App Notifications surface implemented through contract v3; v4 conferencing APIs are excluded.
 				return majorVersion <= 3;
 
+			case "Microsoft.Windows.AppNotifications.Builder.AppNotificationBuilderContract":
+				return majorVersion <= 2;
+
 			case "Uno.WinUI":
 #if HAS_UNO_WINUI
 				return true;

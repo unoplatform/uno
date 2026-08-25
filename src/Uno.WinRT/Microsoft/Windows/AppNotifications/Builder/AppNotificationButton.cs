@@ -4,9 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Windows.AppNotifications.Internal;
+using Windows.Foundation.Metadata;
 
 namespace Microsoft.Windows.AppNotifications.Builder;
 
+[ContractVersion(typeof(AppNotificationBuilderContract), 1 * 0x10000u)]
 public sealed class AppNotificationButton
 {
 	private IDictionary<string, string> _arguments = new SortedDictionary<string, string>(StringComparer.Ordinal);
@@ -79,6 +81,7 @@ public sealed class AppNotificationButton
 
 	public AppNotificationButton SetIcon(Uri value)
 	{
+		_ = AppNotificationBuilderUtility.GetAbsoluteUri(value, nameof(value));
 		Icon = value;
 		return this;
 	}
@@ -111,9 +114,11 @@ public sealed class AppNotificationButton
 		return this;
 	}
 
+	[Overload("SetInvokeUri")]
 	public AppNotificationButton SetInvokeUri(Uri protocolUri)
 		=> SetInvokeUriCore(protocolUri, string.Empty);
 
+	[Overload("SetInvokeUri2")]
 	public AppNotificationButton SetInvokeUri(Uri protocolUri, string targetAppId)
 		=> SetInvokeUriCore(protocolUri, targetAppId ?? string.Empty);
 
@@ -122,7 +127,8 @@ public sealed class AppNotificationButton
 		var xml = new StringBuilder($"<action content='{AppNotificationBuilderUtility.EncodeXml(Content)}'");
 		if (InvokeUri is not null)
 		{
-			xml.Append($" arguments='{AppNotificationBuilderUtility.EncodeXml(InvokeUri.ToString())}' activationType='protocol'");
+			var invokeUri = AppNotificationBuilderUtility.GetAbsoluteUri(InvokeUri, nameof(InvokeUri));
+			xml.Append($" arguments='{AppNotificationBuilderUtility.EncodeXml(invokeUri)}' activationType='protocol'");
 			if (TargetAppId.Length > 0)
 			{
 				xml.Append($" protocolActivationTargetApplicationPfn='{AppNotificationBuilderUtility.EncodeXml(TargetAppId)}'");
@@ -139,7 +145,8 @@ public sealed class AppNotificationButton
 		}
 		if (Icon is not null)
 		{
-			xml.Append($" imageUri='{AppNotificationBuilderUtility.EncodeXml(Icon.ToString())}'");
+			var icon = AppNotificationBuilderUtility.GetAbsoluteUri(Icon, nameof(Icon));
+			xml.Append($" imageUri='{AppNotificationBuilderUtility.EncodeXml(icon)}'");
 		}
 		if (InputId.Length > 0)
 		{
@@ -160,7 +167,7 @@ public sealed class AppNotificationButton
 
 	private AppNotificationButton SetInvokeUriCore(Uri protocolUri, string targetAppId)
 	{
-		ArgumentNullException.ThrowIfNull(protocolUri);
+		_ = AppNotificationBuilderUtility.GetAbsoluteUri(protocolUri, nameof(protocolUri));
 		if (_arguments.Count > 0)
 		{
 			throw new ArgumentException("Arguments and protocol activation cannot be combined.", nameof(protocolUri));

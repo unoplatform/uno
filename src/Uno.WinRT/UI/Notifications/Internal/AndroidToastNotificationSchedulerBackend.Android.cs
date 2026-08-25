@@ -1,14 +1,15 @@
 #nullable enable
 
 using System;
+using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
+using Android.Content.PM;
 using Android.OS;
-using System.Threading.Tasks;
 
 namespace Windows.UI.Notifications.Internal;
 
-internal sealed class AndroidToastNotificationSchedulerBackend : IToastNotificationSchedulerBackend
+internal sealed class AndroidToastNotificationSchedulerBackend : IToastNotificationSchedulerBackend, IToastNotificationScheduleLifecycleProvider
 {
 	private readonly Context _context = Application.Context;
 	private readonly AlarmManager _alarmManager;
@@ -38,6 +39,10 @@ internal sealed class AndroidToastNotificationSchedulerBackend : IToastNotificat
 		}
 	}
 
+	IToastNotificationScheduleLifecycle IToastNotificationScheduleLifecycleProvider.CreateScheduleLifecycle(
+		IToastNotificationSchedulePersistence persistence)
+		=> CreateBootReceiverLifecycle(_context, persistence);
+
 	private PendingIntent? CreatePendingIntent(string scheduleIdentifier, PendingIntentFlags flags)
 	{
 		var intent = new Intent(_context, typeof(AndroidToastNotificationScheduleReceiver));
@@ -56,6 +61,42 @@ internal sealed class AndroidToastNotificationSchedulerBackend : IToastNotificat
 
 	private static PendingIntentFlags GetPendingIntentFlags(PendingIntentFlags flags)
 		=> Build.VERSION.SdkInt >= BuildVersionCodes.M ? flags | PendingIntentFlags.Immutable : flags;
+
+	private static AndroidToastNotificationBootReceiverLifecycle CreateBootReceiverLifecycle(
+		Context context,
+		IToastNotificationSchedulePersistence persistence)
+		=> new(
+			persistence,
+			enabled => SetBootReceiverEnabled(context, enabled));
+
+	private static void SetBootReceiverEnabled(Context context, bool enabled)
+	{
+		var packageManager = context.PackageManager
+			?? throw new InvalidOperationException("Android package manager is unavailable.");
+		using var receiverIntent = new Intent(context, typeof(AndroidToastNotificationBootReceiver));
+		var componentName = receiverIntent.Component
+			?? throw new InvalidOperationException("Android could not resolve the scheduled notification boot receiver.");
+		var desiredState = enabled ? ComponentEnabledState.Enabled : ComponentEnabledState.Disabled;
+		try
+		{
+			if (packageManager.GetComponentEnabledSetting(componentName) != desiredState)
+			{
+				packageManager.SetComponentEnabledSetting(
+					componentName,
+					desiredState,
+					ComponentEnableOption.DontKillApp);
+			}
+			if (packageManager.GetComponentEnabledSetting(componentName) != desiredState)
+			{
+				throw new InvalidOperationException("Android did not persist the scheduled notification boot receiver state.");
+			}
+		}
+		catch (Exception exception)
+		{
+			var action = enabled ? "enable" : "disable";
+			throw new InvalidOperationException($"Android could not {action} scheduled notification recovery.", exception);
+		}
+	}
 }
 
 [BroadcastReceiver(Exported = false, Enabled = true)]
@@ -91,13 +132,13 @@ internal sealed class AndroidToastNotificationScheduleReceiver : BroadcastReceiv
 	}
 }
 
-[BroadcastReceiver(Exported = false, Enabled = true)]
-[IntentFilter(new[] { Intent.ActionBootCompleted })]
+[BroadcastReceiver(Exported = false, Enabled = false)]
+[IntentFilter(new[] { Intent.ActionBootCompleted, Intent.ActionMyPackageReplaced })]
 internal sealed class AndroidToastNotificationBootReceiver : BroadcastReceiver
 {
 	public override void OnReceive(Context? context, Intent? intent)
 	{
-		if (intent?.Action == Intent.ActionBootCompleted)
+		if (AndroidToastNotificationRecoveryActions.ShouldRecover(intent?.Action))
 		{
 			var pendingResult = GoAsync();
 			_ = Task.Run(() =>

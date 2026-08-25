@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -16,7 +17,61 @@ internal static class AppleAppNotificationTranslator
 	internal const string ActionIdentifierPrefix = "uno.appnotifications.action.";
 
 	public static AppleAppNotificationCommand Translate(AppNotificationEnvelope notification)
-		=> Translate(notification, RequestIdentifierPrefix + notification.Id);
+		=> Translate(notification, GetNotificationRequestIdentifier(notification.Id));
+
+	public static AppleAppNotificationCommand PrepareForPosting(AppleAppNotificationCommand command)
+	{
+		ArgumentNullException.ThrowIfNull(command);
+		return command with
+		{
+			RequestIdentifier = GetLogicalRequestIdentifier(command) + "." + Guid.NewGuid().ToString("N"),
+		};
+	}
+
+	public static IReadOnlyCollection<string> GetReplacedRequestIdentifiers(
+		AppleAppNotificationCommand command,
+		IEnumerable<string> requestIdentifiers)
+	{
+		ArgumentNullException.ThrowIfNull(command);
+		ArgumentNullException.ThrowIfNull(requestIdentifiers);
+		var scheduleIdentifier = command.Id == 0 && TryGetScheduleIdentifier(command.RequestIdentifier, out var parsedScheduleIdentifier)
+			? parsedScheduleIdentifier
+			: string.Empty;
+		return requestIdentifiers
+			.Where(identifier =>
+				!identifier.Equals(command.RequestIdentifier, StringComparison.Ordinal) &&
+				(command.Id != 0
+					? TryGetNotificationId(identifier, out var id) && id == command.Id
+					: scheduleIdentifier.Length > 0 &&
+						TryGetScheduleIdentifier(identifier, out var candidateScheduleIdentifier) &&
+						candidateScheduleIdentifier.Equals(scheduleIdentifier, StringComparison.Ordinal)))
+			.Distinct(StringComparer.Ordinal)
+			.ToArray();
+	}
+
+	public static string GetNotificationRequestIdentifier(uint id)
+	{
+		if (id == 0)
+		{
+			throw new ArgumentOutOfRangeException(nameof(id));
+		}
+		return RequestIdentifierPrefix + id.ToString(CultureInfo.InvariantCulture);
+	}
+
+	public static string GetNotificationRequestIdentifierPrefix(uint id)
+		=> GetNotificationRequestIdentifier(id) + ".";
+
+	public static string GetScheduledRequestIdentifier(string scheduleIdentifier)
+	{
+		if (!Guid.TryParseExact(scheduleIdentifier, "N", out _))
+		{
+			throw new ArgumentException("A valid schedule identifier is required.", nameof(scheduleIdentifier));
+		}
+		return ScheduledRequestIdentifierPrefix + scheduleIdentifier;
+	}
+
+	public static string GetScheduledRequestIdentifierPrefix(string scheduleIdentifier)
+		=> GetScheduledRequestIdentifier(scheduleIdentifier) + ".";
 
 	public static AppleAppNotificationCommand TranslateScheduled(
 		string scheduleIdentifier,
@@ -25,7 +80,10 @@ internal static class AppleAppNotificationTranslator
 		string group,
 		bool suppressDisplay)
 	{
-		ArgumentNullException.ThrowIfNull(scheduleIdentifier);
+		if (!Guid.TryParseExact(scheduleIdentifier, "N", out _))
+		{
+			throw new ArgumentException("A valid schedule identifier is required.", nameof(scheduleIdentifier));
+		}
 		ArgumentNullException.ThrowIfNull(payload);
 		return Translate(
 			new AppNotificationEnvelope(
@@ -43,22 +101,51 @@ internal static class AppleAppNotificationTranslator
 	public static bool TryGetNotificationId(string requestIdentifier, out uint id)
 	{
 		id = 0;
-		return requestIdentifier.StartsWith(RequestIdentifierPrefix, StringComparison.Ordinal) &&
-			uint.TryParse(requestIdentifier.AsSpan(RequestIdentifierPrefix.Length), out id) &&
-			id != 0;
+		if (!requestIdentifier.StartsWith(RequestIdentifierPrefix, StringComparison.Ordinal))
+		{
+			return false;
+		}
+		var value = requestIdentifier.AsSpan(RequestIdentifierPrefix.Length);
+		var separator = value.IndexOf('.');
+		var idValue = separator < 0 ? value : value[..separator];
+		return uint.TryParse(idValue, out id) &&
+			id != 0 &&
+			(separator < 0 || IsPostingIdentifierSuffix(value[(separator + 1)..]));
 	}
 
 	public static bool TryGetScheduleIdentifier(string requestIdentifier, out string scheduleIdentifier)
 	{
-		if (requestIdentifier.StartsWith(ScheduledRequestIdentifierPrefix, StringComparison.Ordinal) &&
-			requestIdentifier.Length > ScheduledRequestIdentifierPrefix.Length)
+		if (requestIdentifier.StartsWith(ScheduledRequestIdentifierPrefix, StringComparison.Ordinal))
 		{
-			scheduleIdentifier = requestIdentifier[ScheduledRequestIdentifierPrefix.Length..];
-			return true;
+			var value = requestIdentifier.AsSpan(ScheduledRequestIdentifierPrefix.Length);
+			var separator = value.IndexOf('.');
+			var identifierValue = separator < 0 ? value : value[..separator];
+			if (Guid.TryParseExact(identifierValue, "N", out _) &&
+				(separator < 0 || IsPostingIdentifierSuffix(value[(separator + 1)..])))
+			{
+				scheduleIdentifier = identifierValue.ToString();
+				return true;
+			}
 		}
 		scheduleIdentifier = string.Empty;
 		return false;
 	}
+
+	private static string GetLogicalRequestIdentifier(AppleAppNotificationCommand command)
+	{
+		if (command.Id != 0)
+		{
+			return GetNotificationRequestIdentifier(command.Id);
+		}
+		if (TryGetScheduleIdentifier(command.RequestIdentifier, out var scheduleIdentifier))
+		{
+			return GetScheduledRequestIdentifier(scheduleIdentifier);
+		}
+		throw new ArgumentException("The Apple notification command has an invalid request identifier.", nameof(command));
+	}
+
+	private static bool IsPostingIdentifierSuffix(ReadOnlySpan<char> value)
+		=> value.Length == 32 && Guid.TryParseExact(value, "N", out _);
 
 	private static AppleAppNotificationCommand Translate(AppNotificationEnvelope notification, string requestIdentifier)
 	{

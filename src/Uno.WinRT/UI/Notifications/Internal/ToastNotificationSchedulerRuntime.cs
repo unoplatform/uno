@@ -1,6 +1,8 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 using Microsoft.Windows.AppNotifications;
 
 namespace Windows.UI.Notifications.Internal;
@@ -23,9 +25,7 @@ internal static class ToastNotificationSchedulerRuntime
 				{
 					return null;
 				}
-				_scheduler = new ToastNotificationScheduler(
-					new ToastNotificationScheduleStore(ToastNotificationSchedulePersistenceFactory.Create()),
-					backend);
+				_scheduler = CreateScheduler(ToastNotificationSchedulePersistenceFactory.Create(), backend);
 			}
 			if (recover && !_wasRecovered)
 			{
@@ -70,39 +70,93 @@ internal static class ToastNotificationSchedulerRuntime
 		return completed;
 	}
 
+	internal static IReadOnlyList<ToastNotificationScheduleRecord> GetDeliveredHistory()
+		=> GetSchedulerForDeliveredHistory()?.GetDeliveredHistory() ?? Array.Empty<ToastNotificationScheduleRecord>();
+
+	internal static void RemoveDeliveredHistory(Func<ToastNotificationScheduleRecord, bool> predicate)
+		=> GetSchedulerForDeliveredHistory()?.RemoveDeliveredHistory(predicate);
+
 	internal static void Deliver(string scheduleIdentifier, AppNotificationManager manager)
 	{
 		ArgumentNullException.ThrowIfNull(scheduleIdentifier);
 		ArgumentNullException.ThrowIfNull(manager);
 		var scheduler = GetScheduler(recover: false);
-		var record = scheduler?.BeginDelivery(scheduleIdentifier);
-		EnsureRecovered(scheduler);
-		if (record is null)
+		var claim = scheduler?.BeginDelivery(scheduleIdentifier);
+		if (claim is null)
 		{
-			return;
-		}
-		if (ToastNotificationScheduler.IsExpired(record, DateTimeOffset.UtcNow))
-		{
-			scheduler!.CompleteDelivery(scheduleIdentifier);
+			EnsureRecovered(scheduler);
 			return;
 		}
 
+		var record = claim.Record;
+		var retryAttempted = false;
+		Exception? failure = null;
 		try
 		{
-			var notification = new AppNotification(record.Payload)
+			EnsureRecovered(scheduler);
+			if (ToastNotificationScheduler.IsExpired(record, DateTimeOffset.UtcNow))
 			{
-				Tag = record.Tag,
-				Group = record.Group,
-				Expiration = record.ExpirationTimeUtc ?? DateTimeOffset.FromFileTime(0),
-				SuppressDisplay = record.SuppressPopup,
-			};
-			manager.ShowScheduled(notification, record.ScheduleIdentifier);
-			scheduler!.CompleteDelivery(scheduleIdentifier);
+				scheduler!.CompleteDelivery(claim);
+			}
+			else
+			{
+				var notification = new AppNotification(record.Payload)
+				{
+					Tag = record.Tag,
+					Group = record.Group,
+					Expiration = record.ExpirationTimeUtc ?? DateTimeOffset.FromFileTime(0),
+					SuppressDisplay = record.SuppressPopup,
+				};
+				var postingResult = manager.ShowScheduled(notification, record.ScheduleIdentifier);
+				if (postingResult == AppNotificationPostingResult.NotPosted)
+				{
+					retryAttempted = true;
+					scheduler!.RetryDelivery(claim, DateTimeOffset.UtcNow);
+				}
+				else
+				{
+					scheduler!.CompleteDelivery(claim);
+				}
+			}
 		}
-		catch
+		catch (Exception exception)
 		{
-			scheduler!.RetryDelivery(scheduleIdentifier, DateTimeOffset.UtcNow);
-			throw;
+			failure = exception;
+			if (!retryAttempted)
+			{
+				try
+				{
+					retryAttempted = true;
+					scheduler!.RetryDelivery(claim, DateTimeOffset.UtcNow);
+				}
+				catch (Exception retryException)
+				{
+					failure = new AggregateException(
+						"Scheduled notification delivery failed and could not be prepared for retry.",
+						exception,
+						retryException);
+				}
+			}
+		}
+		finally
+		{
+			try
+			{
+				scheduler!.ReleaseDeliveryClaim(claim, DateTimeOffset.UtcNow);
+			}
+			catch (Exception releaseException)
+			{
+				failure = failure is null
+					? releaseException
+					: new AggregateException(
+						"Scheduled notification delivery failed and its durable claim could not be released.",
+						failure,
+						releaseException);
+			}
+		}
+		if (failure is not null)
+		{
+			ExceptionDispatchInfo.Capture(failure).Throw();
 		}
 	}
 
@@ -144,6 +198,24 @@ internal static class ToastNotificationSchedulerRuntime
 		return notification;
 	}
 
+	internal static ToastNotification FromDeliveredRecord(ToastNotificationScheduleRecord record)
+	{
+		ArgumentNullException.ThrowIfNull(record);
+		var content = new Windows.Data.Xml.Dom.XmlDocument();
+		content.LoadXml(LegacyToastNotificationPayloadAdapter.Restore(record.Payload));
+		var notification = new ToastNotification(content)
+		{
+			ExpirationTime = record.ExpirationTimeUtc?.ToLocalTime(),
+			Group = record.Group,
+			SuppressPopup = record.SuppressPopup,
+		};
+		if (record.Tag.Length > 0)
+		{
+			notification.Tag = record.Tag;
+		}
+		return notification;
+	}
+
 	internal static void SetSchedulerForTests(ToastNotificationScheduler? scheduler)
 	{
 		lock (_gate)
@@ -159,9 +231,33 @@ internal static class ToastNotificationSchedulerRuntime
 		ArgumentNullException.ThrowIfNull(backend);
 		lock (_gate)
 		{
-			_scheduler = new ToastNotificationScheduler(new ToastNotificationScheduleStore(persistence), backend);
+			_scheduler = CreateScheduler(persistence, backend);
 			_scheduler.Recover(now);
 			_wasRecovered = true;
+		}
+	}
+
+	private static ToastNotificationScheduler CreateScheduler(
+		IToastNotificationSchedulePersistence persistence,
+		IToastNotificationSchedulerBackend backend)
+		=> new(
+			new ToastNotificationScheduleStore(persistence),
+			backend,
+			(backend as IToastNotificationScheduleLifecycleProvider)?.CreateScheduleLifecycle(persistence));
+
+	private static ToastNotificationScheduler? GetSchedulerForDeliveredHistory()
+	{
+		lock (_gate)
+		{
+			var scheduler = GetScheduler(recover: false);
+			if (scheduler is null)
+			{
+				return null;
+			}
+			_wasRecovered = scheduler.Recover(DateTimeOffset.UtcNow);
+			return _wasRecovered
+				? scheduler
+				: throw new InvalidOperationException("Native delivered-toast history could not be reconciled.");
 		}
 	}
 
