@@ -1261,8 +1261,7 @@ namespace Microsoft.UI.Xaml.Controls
 					)
 				{
 					if (HorizontalSnapPointsType != SnapPointsType.None
-						|| VerticalSnapPointsType != SnapPointsType.None
-						|| ShouldSnapToTouchTextBox())
+						|| VerticalSnapPointsType != SnapPointsType.None)
 					{
 						_horizontalOffsetForSnapPoints = horizontalOffset;
 						_verticalOffsetForSnapPoints = verticalOffset;

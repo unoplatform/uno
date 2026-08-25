@@ -720,7 +720,11 @@ namespace Microsoft.UI.Xaml.Controls
 		#region ITextSelectionGripperHost
 		TextBlock ITextSelectionGripperHost.GripperTextSurface => this;
 
-		Rect ITextSelectionGripperHost.GripperClipBounds => this.GetAbsoluteBoundsRect();
+		// Ancestor-clipped, not the raw bounds: see the matching comment on TextBox.
+		Rect ITextSelectionGripperHost.GripperClipBounds => this.GetGlobalBoundsWithOptions(
+			ignoreClipping: false,
+			ignoreClippingOnScrollContentPresenters: false,
+			useTargetInformation: false);
 
 		GripperMode ITextSelectionGripperHost.GripperMode => _grippersShown ? GripperMode.Both : GripperMode.Hidden;
 
