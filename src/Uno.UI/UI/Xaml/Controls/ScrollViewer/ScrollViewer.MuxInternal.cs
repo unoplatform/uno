@@ -5,6 +5,7 @@ using DirectUI;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
+using Uno.Disposables;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
@@ -16,6 +17,10 @@ namespace Microsoft.UI.Xaml.Controls
 	partial class ScrollViewer
 	{
 		private bool m_isPointerLeftButtonPressed;
+
+#if !__SKIA__
+		private IDisposable? _directManipulationHandlerSubscription;
+#endif
 
 		internal bool m_templatedParentHandlesMouseButton;
 
@@ -99,6 +104,43 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 #if __SKIA__
 			m_pDMStateChangeHandler = handler;
+
+			if (handler is not null)
+			{
+				// Consumers of the DM state machine (CalendarView, SemanticZoom) read the view
+				// characteristics right after a state change, so the view must not lag behind
+				// the presenter by a layout pass.
+				UpdatesMode = ScrollViewerUpdatesMode.Synchronous;
+			}
+#else
+			_directManipulationHandlerSubscription?.Dispose();
+
+			if (handler is null)
+			{
+				return;
+			}
+
+			var weakHandler = WeakReferencePool.RentWeakReference(this, handler);
+			UpdatesMode = ScrollViewerUpdatesMode.Synchronous;
+			ViewChanged += OnViewChanged;
+			_directManipulationHandlerSubscription = Disposable.Create(() =>
+			{
+				ViewChanged -= OnViewChanged;
+				WeakReferencePool.ReturnWeakReference(this, weakHandler);
+			});
+
+			void OnViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
+			{
+				if (args.IsIntermediate)
+				{
+					return;
+				}
+
+				if (weakHandler.Target is IDirectManipulationStateChangeHandler h)
+				{
+					h.NotifyStateChange(DMManipulationState.DMManipulationCompleted, default, default, default, default, default, default, default, default);
+				}
+			}
 #endif
 		}
 
