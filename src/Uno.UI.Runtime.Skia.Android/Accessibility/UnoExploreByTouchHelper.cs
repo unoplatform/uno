@@ -216,12 +216,16 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		internal int ItemCount { get; }
 	}
 
-	private const int CustomActionChangeViewBase = 0x01010000;
-	private const int CustomActionZoomIn = 0x01020001;
-	private const int CustomActionZoomOut = 0x01020002;
-	private const int CustomActionScrollIntoView = 0x01030001;
-	private const int CustomActionRealize = 0x01030002;
-	private const int CustomActionDockBase = 0x01040000;
+	// Custom-action IDs must not collide with the framework AccessibilityAction IDs, which all
+	// live in the android package resource range (0x0102xxxx). 0x00A1xxxx sits inside the range
+	// reserved for programmatically generated IDs (View.generateViewId), so it can never clash
+	// with an aapt-generated R.id either.
+	private const int CustomActionChangeViewBase = 0x00A11000;
+	private const int CustomActionZoomIn = 0x00A12001;
+	private const int CustomActionZoomOut = 0x00A12002;
+	private const int CustomActionScrollIntoView = 0x00A13001;
+	private const int CustomActionRealize = 0x00A13002;
+	private const int CustomActionDockBase = 0x00A14000;
 
 	// ActionSetProgress was added in AndroidX.Core 1.0 / API 24; access defensively.
 	private static readonly int s_actionSetProgressId = GetActionSetProgressId();
@@ -933,6 +937,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 		if (_nativeFocusedId == id && _orderedIdSet.Contains(id))
 		{
+			SyncNativeKeyboardFocusIfFocusable(id);
 			return true;
 		}
 
@@ -947,21 +952,29 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			// internal mFocusedVirtualViewId is updated and the proper
 			// TYPE_VIEW_ACCESSIBILITY_FOCUSED event reaches the framework.
 			var provider = GetAccessibilityNodeProvider(_host);
-			if (provider?.PerformAction(id, ActionAccessibilityFocusId, null) is true)
+			if (provider?.PerformAction(id, ActionAccessibilityFocusId, null) is not true)
 			{
-				return true;
+				// Fallback for environments where no accessibility service is active
+				// (unit tests, emulator without TalkBack): send the event directly and
+				// invalidate the node so it is re-read with the correct focus state.
+				TrySendEventForVirtualView(id, TypeViewAccessibilityFocused, "focus");
+				InvalidateVirtualView(id);
 			}
-
-			// Fallback for environments where no accessibility service is active
-			// (unit tests, emulator without TalkBack): send the event directly and
-			// invalidate the node so it is re-read with the correct focus state.
-			TrySendEventForVirtualView(id, TypeViewAccessibilityFocused, "focus");
-			InvalidateVirtualView(id);
-			return true;
 		}
 		finally
 		{
 			_settingNativeFocus = false;
+		}
+
+		SyncNativeKeyboardFocusIfFocusable(id);
+		return true;
+	}
+
+	private void SyncNativeKeyboardFocusIfFocusable(int id)
+	{
+		if (TryGetVisiblePeer(id, out var peer) && peer.IsKeyboardFocusable())
+		{
+			SyncNativeKeyboardFocus(id);
 		}
 	}
 
@@ -1502,8 +1515,15 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			return;
 		}
 
-		if (_settingNativeFocus ||
-			_unroutablePeerIds.Contains(virtualViewId) ||
+		// The request originated from SyncNativeKeyboardFocus mirroring an existing XAML
+		// focus, so the XAML side is already focused; only the native tracking is updated.
+		if (_settingNativeFocus)
+		{
+			_nativeKeyboardFocusedId = virtualViewId;
+			return;
+		}
+
+		if (_unroutablePeerIds.Contains(virtualViewId) ||
 			!TryGetVisiblePeer(virtualViewId, out var peer) ||
 			!peer.IsKeyboardFocusable() ||
 			!TryGetVisibleElement(virtualViewId, out var element) ||
@@ -1522,6 +1542,45 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		finally
 		{
 			_settingNativeFocus = false;
+		}
+	}
+
+	// AccessibilityNodeInfo.isFocused is written by ExploreByTouchHelper.createNodeForChild from
+	// its own mKeyboardFocusedVirtualViewId, and that field only moves through ACTION_FOCUS /
+	// ACTION_CLEAR_FOCUS. Programmatic XAML focus therefore has to be mirrored through the
+	// provider, otherwise the input-focus state and FindFocus(FOCUS_INPUT) stay stale.
+	private void SyncNativeKeyboardFocus(int id)
+	{
+		if (_nativeKeyboardFocusedId == id)
+		{
+			return;
+		}
+
+		var previous = _nativeKeyboardFocusedId;
+		if (previous >= 0)
+		{
+			ClearNativeKeyboardFocus(previous);
+		}
+
+		_settingNativeFocus = true;
+		try
+		{
+			var provider = GetAccessibilityNodeProvider(_host);
+			provider?.PerformAction(id, ActionFocusId, arguments: null);
+		}
+		catch (System.Exception error)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error(
+					$"Android keyboard focus sync failed for virtual ID {id}.",
+					error);
+			}
+		}
+		finally
+		{
+			_settingNativeFocus = false;
+			_nativeKeyboardFocusedId = id;
 		}
 	}
 
@@ -1985,9 +2044,10 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		node.Heading = effectivePeer.GetHeadingLevel() != AutomationHeadingLevel.None;
 		node.HintText = effectivePeer.GetHelpText() ?? "";
 		node.Focusable = effectivePeer.IsKeyboardFocusable();
-		node.Focused =
-			effectivePeer.HasKeyboardFocus() ||
-			_nativeKeyboardFocusedId == virtualViewId;
+		// node.Focused is intentionally not set here: ExploreByTouchHelper.createNodeForChild
+		// overwrites it with its own mKeyboardFocusedVirtualViewId tracking right after this
+		// callback returns. XAML keyboard focus is mirrored into that tracking by
+		// SyncNativeKeyboardFocus so the value the framework writes is already correct.
 
 		// AutomationId: normalize to a valid Android resource name segment, expose the
 		// original unmodified value in UniqueId and Extras for machine-readable lookup.
@@ -2627,8 +2687,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		bool required = effectivePeer.IsRequiredForForm();
 		if (required)
 		{
-			var extras = node.Extras ?? new global::Android.OS.Bundle();
-			extras.PutBoolean("androidx.view.accessibility.required", true);
+			node.Extras?.PutBoolean("androidx.view.accessibility.required", true);
 		}
 
 		var localizedLandmark = effectivePeer.GetLocalizedLandmarkType();
