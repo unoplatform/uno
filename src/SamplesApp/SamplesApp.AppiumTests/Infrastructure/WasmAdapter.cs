@@ -422,7 +422,7 @@ return document.readyState === 'complete' &&
 
 				if (string.Equals(state, "ready", StringComparison.Ordinal))
 				{
-					Thread.Sleep(options.PollInterval);
+					WaitForSemanticTreeToSettle(driver, options, deadline);
 					return;
 				}
 
@@ -476,6 +476,48 @@ return document.readyState === 'complete' &&
 		return element is null
 			? executor.ExecuteScript(script) as string
 			: executor.ExecuteScript(script, element) as string;
+	}
+
+	/// <summary>
+	/// Blocks until the semantic DOM stops changing, so callers observe a fully populated tree
+	/// rather than the first frame the runtime happened to publish. The signature is the element
+	/// count plus the concatenated ids, which changes whenever a node is added, removed, or
+	/// re-keyed; two identical consecutive readings mean the runtime finished its build pass.
+	/// </summary>
+	private static void WaitForSemanticTreeToSettle(IWebDriver driver, AppiumTestOptions options, DateTime deadline)
+	{
+		const string signatureScript = """
+			const root = document.getElementById('uno-semantics-root');
+			if (!root) {
+				return '';
+			}
+			const nodes = root.querySelectorAll('[id^="uno-semantics-"]');
+			return nodes.length + ':' + Array.from(nodes, node => node.id).join(',');
+			""";
+
+		string? previousSignature = null;
+
+		while (DateTime.UtcNow < deadline)
+		{
+			string? signature;
+			try
+			{
+				signature = ExecuteScript(driver, signatureScript);
+			}
+			catch (WebDriverException)
+			{
+				// The document can be swapped while the app finishes booting; retry until the deadline.
+				signature = null;
+			}
+
+			if (!string.IsNullOrEmpty(signature) && string.Equals(signature, previousSignature, StringComparison.Ordinal))
+			{
+				return;
+			}
+
+			previousSignature = signature;
+			Thread.Sleep(options.PollInterval);
+		}
 	}
 
 	private static bool? ParseBool(string? value)

@@ -6,9 +6,9 @@ namespace SamplesApp.AppiumTests.Infrastructure;
 
 /// <summary>
 /// Platform-neutral snapshot of a single accessibility element. The full tree
-/// is represented by linking these via <see cref="Children"/>. Persisted to
-/// JSON by <see cref="SnapshotSerializer"/>; compared by
-/// <see cref="SnapshotComparer"/>.
+/// is represented by linking these via <see cref="Children"/>. Captured by
+/// <see cref="TreeDumper"/> and persisted to JSON by <see cref="SnapshotSerializer"/>
+/// as the diagnostic tree written alongside a failing canonical snapshot.
 /// </summary>
 public sealed class AccessibilityNode
 {

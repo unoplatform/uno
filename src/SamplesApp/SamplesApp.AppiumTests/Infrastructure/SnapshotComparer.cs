@@ -40,6 +40,13 @@ public sealed class SnapshotDiff
 /// Compares committed canonical snapshots by element id and reports explicit,
 /// actionable semantic diffs.
 /// </summary>
+/// <remarks>
+/// The raw per-platform attributes captured in <see cref="AccessibilityNode.Extras"/> are
+/// deliberately kept out of the canonical snapshot and therefore out of every comparison:
+/// they exist only to make a failing run debuggable through the diagnostic tree dump, and
+/// they differ legitimately between hosts and driver versions. Gating snapshot equality on
+/// them would produce failures that say nothing about accessibility semantics.
+/// </remarks>
 public static class SnapshotComparer
 {
 	public static SnapshotDiff Compare(AccessibilitySnapshot expected, AccessibilitySnapshot actual)

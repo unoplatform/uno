@@ -56,6 +56,9 @@ export UNO_APPIUM_CHROME_BINARY="$CHROME_BINARY"
 export UNO_APPIUM_CHROME_ARGUMENTS='--headless=new|--no-sandbox|--disable-gpu|--disable-dev-shm-usage'
 export UNO_APPIUM_TIMEOUT_SECONDS=30
 export UNO_APPIUM_ARTIFACTS_DIR="$FAILURE_DIR"
+# Pin the committed baselines to the checkout instead of the compile-time [CallerFilePath],
+# so the run keeps working if build and test ever happen on different agents.
+export UNO_APPIUM_SNAPSHOTS_DIR="$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.AppiumTests/Snapshots"
 
 dotnet test \
 	--project "$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.AppiumTests/SamplesApp.AppiumTests.csproj" \

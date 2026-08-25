@@ -17,8 +17,10 @@ public sealed class WasmAccessibilityStandardsTests : AppiumFixtureBase
 	{
 		if (Session.Options.Platform != AppiumPlatform.Wasm)
 		{
-			Assert.Inconclusive(
-				$"{nameof(WasmAccessibilityStandardsTests)} requires {AppiumTestOptions.EnvVarPlatform}=wasm.");
+			Assert.Fail(
+				$"{nameof(WasmAccessibilityStandardsTests)} requires {AppiumTestOptions.EnvVarPlatform}=wasm " +
+				$"but ran with '{Session.Options.Platform}'. The harness fails fast on misconfiguration " +
+				$"instead of silently skipping ({Session.DiagnosticContext}).");
 			return;
 		}
 
