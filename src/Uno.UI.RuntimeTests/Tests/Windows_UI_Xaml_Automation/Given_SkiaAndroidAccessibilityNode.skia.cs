@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -1382,15 +1381,7 @@ public partial class Given_SkiaAndroidAutomationId
 		Assert.IsFalse(result);
 		Assert.AreEqual(0, textBox.SelectionStart);
 		Assert.AreEqual(0, textBox.SelectionLength);
-#if __SKIA__
 		Assert.IsFalse(textBox.IsBackwardSelection);
-#else
-		var isBackwardSelection = textBox
-			.GetType()
-			.GetProperty("IsBackwardSelection", BindingFlags.Instance | BindingFlags.NonPublic);
-		Assert.IsNotNull(isBackwardSelection);
-		Assert.IsFalse((bool)isBackwardSelection.GetValue(textBox)!);
-#endif
 	}
 
 	[TestMethod]

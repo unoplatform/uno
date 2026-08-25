@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.ObjectModel;
@@ -259,7 +259,7 @@ public class Given_MobileAccessibilityLifecycle_US7_Android
 
 	[TestMethod]
 	[RunsOnUIThread]
-	public async Task When_Action_Called_From_Background_Thread_Then_Returns_False_And_Click_Is_Queued()
+	public async Task When_Action_Called_From_Background_Thread_Then_Click_Is_Queued_For_UI_Thread()
 	{
 		Assert.IsNotNull(
 			AccessibilityPeerHelper.AndroidAccessibilityActionAccessor,
@@ -614,7 +614,7 @@ public class Given_MobileAccessibilityLifecycle_US7_IOS
 
 	[TestMethod]
 	[RunsOnUIThread]
-	public async Task When_Action_Called_From_Background_Thread_Then_Returns_False_And_Click_Is_Queued()
+	public async Task When_Action_Called_From_Background_Thread_Then_Click_Is_Queued_For_UI_Thread()
 	{
 		Assert.IsNotNull(
 			AccessibilityPeerHelper.IOSAccessibilityActionAccessor,
