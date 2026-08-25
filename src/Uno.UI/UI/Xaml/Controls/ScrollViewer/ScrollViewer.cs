@@ -1705,7 +1705,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (_indicatorResetDisabled)
 			{
-				ShowScrollIndicator(forced: true);
+				ShowScrollIndicator(PointerDeviceType.Mouse, forced: true);
 			}
 			else
 			{
@@ -1714,19 +1714,20 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private static void ShowScrollIndicator(object sender, PointerRoutedEventArgs e) // OnPointerMove
-			=> (sender as ScrollViewer)?.ShowScrollIndicator();
+			=> (sender as ScrollViewer)?.ShowScrollIndicator(e.Pointer.PointerDeviceType);
 
-		private void ShowScrollIndicator(bool forced = false)
+		private void ShowScrollIndicator(PointerDeviceType type, bool forced = false)
 		{
 			if (!forced && !ComputedIsVerticalScrollEnabled && !ComputedIsHorizontalScrollEnabled)
 			{
 				return;
 			}
 
-			// Uno Specific: WinUI shows the TouchIndicator for touch, as touch scrolling goes through
-			// DirectManipulation there. That state collapses the interactive scrollbar root, which leaves
-			// touch-only devices with nothing to drag, so every pointer type gets the MouseIndicator.
-			var indicatorState = VisualStates.ScrollingIndicator.Mouse;
+			var indicatorState = type switch
+			{
+				PointerDeviceType.Touch => VisualStates.ScrollingIndicator.Touch,
+				_ => VisualStates.ScrollingIndicator.Mouse // Mouse and pen are using the MouseIndicator
+			};
 			if (_indicatorState != indicatorState) // Avoid costly GoToState if useless
 			{
 				VisualStateManager.GoToState(this, indicatorState, true);
