@@ -805,5 +805,338 @@ namespace Uno.UI.Tests.Windows_Globalization
 			Assert.IsNull(sut.ParseDouble("1" + new string('0', 400)));
 			Assert.AreEqual(0d, sut.ParseDouble("0." + new string('0', 400) + "1"));
 		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		// The integer part is printed with the 17 significant digits that round-trip a double, padded
+		// with zeros - not the exact binary expansion and not a 15 significant digit picture.
+		[DataRow(1e19, "10000000000000000000.00")]
+		[DataRow(1.2345678901234567e19, "12345678901234567000.00")]
+		[DataRow(1e21, "1000000000000000000000.00")]
+		[DataRow(9223372036854775808d, "9223372036854775800.00")]
+		public void When_ValueExceedsInt64Range_Then_RoundTripDigitsArePreserved(double value, string expected)
+		{
+			var sut = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				IntegerDigits = 1,
+				FractionDigits = 2,
+			};
+
+			Assert.AreEqual(expected, sut.FormatDouble(value));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		public void When_ValueIsMaxDouble_Then_SeventeenSignificantDigitsArePrinted()
+		{
+			var sut = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				IntegerDigits = 1,
+				FractionDigits = 0,
+			};
+
+			var expected = "17976931348623157" + new string('0', 292);
+
+			Assert.AreEqual(expected, sut.FormatDouble(double.MaxValue));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		// WinRT localizes NaN but never infinity, which always uses "∞" and an ASCII hyphen.
+		[DataRow("en-US", "US")]
+		[DataRow("fr-FR", "FR")]
+		[DataRow("fi-FI", "FI")]
+		[DataRow("ar-SA", "SA")]
+		[DataRow("sv-SE", "SE")]
+		public void When_SpecialValues_Then_NaNIsLocalizedAndInfinityIsNot(string language, string geographicRegion)
+		{
+			var sut = new DecimalFormatter(new[] { language }, geographicRegion);
+			var expectedNaN = System.Globalization.CultureInfo.GetCultureInfo(language).NumberFormat.NaNSymbol;
+
+			Assert.AreEqual(expectedNaN, sut.FormatDouble(double.NaN));
+			Assert.AreEqual("\u221e", sut.FormatDouble(double.PositiveInfinity));
+			Assert.AreEqual("-\u221e", sut.FormatDouble(double.NegativeInfinity));
+
+			Assert.IsTrue(double.IsNaN(sut.ParseDouble(expectedNaN)!.Value));
+			Assert.AreEqual(double.PositiveInfinity, sut.ParseDouble("\u221e"));
+			Assert.AreEqual(double.NegativeInfinity, sut.ParseDouble("-\u221e"));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		public void When_LocaleHasOwnNaNSymbol_Then_InvariantSymbolIsRejected()
+		{
+			var sut = new DecimalFormatter(new[] { "fi-FI" }, "FI");
+			var localized = sut.FormatDouble(double.NaN);
+
+			Assert.AreNotEqual("NaN", localized, "fi-FI is expected to localize NaN.");
+			Assert.IsTrue(double.IsNaN(sut.ParseDouble(localized)!.Value));
+			Assert.IsNull(sut.ParseDouble("NaN"));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		// .NET treats SPACE, NO-BREAK SPACE and NARROW NO-BREAK SPACE as interchangeable group
+		// separators; WinRT only pairs SPACE with NO-BREAK SPACE.
+		[DataRow("fr-FR", "FR", "1\u202f234,50", 1234.5)]
+		[DataRow("fr-FR", "FR", "1\u00a0234,50", null)]
+		[DataRow("fr-FR", "FR", "1 234,50", null)]
+		[DataRow("sv-SE", "SE", "1\u00a0234,50", 1234.5)]
+		[DataRow("sv-SE", "SE", "1 234,50", 1234.5)]
+		[DataRow("sv-SE", "SE", "1\u202f234,50", null)]
+		[DataRow("en-US", "US", "1\u00a0234.50", null)]
+		[DataRow("en-US", "US", "1 234.50", null)]
+		[DataRow("en-US", "US", "1\u202f234.50", null)]
+		public void When_SeparatorIsSpaceLike_Then_OnlyEquivalentSpacesParse(string language, string geographicRegion, string text, double? expected)
+		{
+			var sut = new DecimalFormatter(new[] { language }, geographicRegion)
+			{
+				IsGrouped = true,
+				IntegerDigits = 1,
+				FractionDigits = 2,
+			};
+
+			Assert.AreEqual(expected, sut.ParseDouble(text));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		public void When_FormatIntegral_Then_MatchesFormatOverloads()
+		{
+			var sut = new DecimalFormatter(new[] { "en-US" }, "US");
+
+			Assert.AreEqual("-42.00", sut.FormatInt(-42));
+			Assert.AreEqual("42.00", sut.FormatUInt(42));
+			Assert.AreEqual("-42.00", sut.Format(-42L));
+			Assert.AreEqual("42.00", sut.Format(42UL));
+			Assert.AreEqual("0.00", sut.FormatInt(0));
+			Assert.AreEqual("0.00", sut.FormatUInt(0));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		public void When_FormatIntegralAtTypeLimits_Then_EveryDigitIsKept()
+		{
+			var sut = new DecimalFormatter(new[] { "en-US" }, "US");
+
+			Assert.AreEqual("9223372036854775807.00", sut.FormatInt(long.MaxValue));
+			Assert.AreEqual("-9223372036854775808.00", sut.FormatInt(long.MinValue));
+			Assert.AreEqual("18446744073709551615.00", sut.FormatUInt(ulong.MaxValue));
+
+			sut.IsGrouped = true;
+
+			Assert.AreEqual("9,223,372,036,854,775,807.00", sut.FormatInt(long.MaxValue));
+			Assert.AreEqual("18,446,744,073,709,551,615.00", sut.FormatUInt(ulong.MaxValue));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		public void When_FormatIntegral_Then_OptionsApply()
+		{
+			var sut = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				IsGrouped = true,
+				IntegerDigits = 6,
+				FractionDigits = 2,
+			};
+
+			Assert.AreEqual("001,234.00", sut.FormatInt(1234));
+			Assert.AreEqual("-001,234.00", sut.FormatInt(-1234));
+
+			var indian = new DecimalFormatter(new[] { "en-IN" }, "IN")
+			{
+				IsGrouped = true,
+				IntegerDigits = 6,
+				FractionDigits = 2,
+			};
+
+			Assert.AreEqual("0,01,234.00", indian.FormatInt(1234));
+			Assert.AreEqual("12,34,56,789.00", indian.FormatInt(123456789));
+
+			var minimal = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				IntegerDigits = 0,
+				FractionDigits = 0,
+			};
+
+			Assert.AreEqual("0", minimal.FormatInt(0));
+			Assert.AreEqual("7", minimal.FormatInt(7));
+
+			minimal.IsDecimalPointAlwaysDisplayed = true;
+			minimal.IntegerDigits = 1;
+
+			Assert.AreEqual("7.", minimal.FormatInt(7));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		public void When_FormatIntegralIsArabic_Then_DigitsAreTranslated()
+		{
+			var sut = new DecimalFormatter(new[] { "ar-SA" }, "SA")
+			{
+				IsGrouped = true,
+				IntegerDigits = 1,
+				FractionDigits = 2,
+			};
+
+			var formatted = sut.FormatInt(-1234567);
+
+			Assert.AreEqual('-', formatted[0]);
+			Assert.IsTrue(formatted.Contains('\u066c'), "Expected the Arabic thousands separator.");
+			Assert.IsTrue(formatted.Contains('\u066b'), "Expected the Arabic decimal separator.");
+			Assert.AreEqual(-1234567L, sut.ParseInt(formatted.Substring(0, formatted.IndexOf('\u066b'))));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		// SignificantDigits pads the fraction with (SignificantDigits - integer digit count) zeros,
+		// counting a zero value as one digit.
+		public void When_SignificantDigits_Then_IntegralAndZeroArePadded()
+		{
+			var sut = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				SignificantDigits = 6,
+				IntegerDigits = 1,
+				FractionDigits = 2,
+			};
+
+			Assert.AreEqual("42.0000", sut.FormatInt(42));
+			Assert.AreEqual("-42.0000", sut.FormatInt(-42));
+			Assert.AreEqual("1234567.00", sut.FormatInt(1234567));
+			Assert.AreEqual("0.00000", sut.FormatInt(0));
+			Assert.AreEqual("0.00000", sut.FormatDouble(0d));
+
+			sut.IntegerDigits = 3;
+			sut.FractionDigits = 1;
+
+			Assert.AreEqual("000.00000", sut.FormatDouble(0d));
+			Assert.AreEqual("005.00000", sut.FormatInt(5));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		public void When_NumberRounderIsSet_Then_IntegralOverloadsRoundExactly()
+		{
+			var increment = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				IntegerDigits = 1,
+				FractionDigits = 2,
+				NumberRounder = new IncrementNumberRounder { Increment = 1000 },
+			};
+
+			Assert.AreEqual("2000.00", increment.FormatInt(1500));
+			Assert.AreEqual("-1000.00", increment.FormatInt(-1500));
+			Assert.AreEqual("3000.00", increment.FormatInt(2500));
+			Assert.AreEqual("2000.00", increment.FormatUInt(1500));
+
+			var identity = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				IntegerDigits = 1,
+				FractionDigits = 2,
+				NumberRounder = new IncrementNumberRounder { Increment = 1 },
+			};
+
+			Assert.AreEqual("9223372036854775807.00", identity.FormatInt(long.MaxValue));
+			Assert.AreEqual("18446744073709551615.00", identity.FormatUInt(ulong.MaxValue));
+			Assert.AreEqual("-9223372036854775808.00", identity.FormatInt(long.MinValue));
+
+			var fractionalIncrement = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				IntegerDigits = 1,
+				FractionDigits = 2,
+				NumberRounder = new IncrementNumberRounder { Increment = 0.5 },
+			};
+
+			Assert.AreEqual("7.00", fractionalIncrement.FormatInt(7));
+			Assert.AreEqual("9223372036854775807.00", fractionalIncrement.FormatInt(long.MaxValue));
+
+			var significant = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				IntegerDigits = 1,
+				FractionDigits = 2,
+				NumberRounder = new SignificantDigitsNumberRounder { SignificantDigits = 3 },
+			};
+
+			Assert.AreEqual("123000.00", significant.FormatInt(123456));
+			Assert.AreEqual("-123000.00", significant.FormatInt(-123456));
+			Assert.AreEqual("12.00", significant.FormatInt(12));
+			Assert.AreEqual("18400000000000000000.00", significant.FormatUInt(ulong.MaxValue));
+			Assert.AreEqual("-9220000000000000000.00", significant.FormatInt(long.MinValue));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		[DataRow("-42", -42L, null)]
+		[DataRow("42", 42L, 42UL)]
+		[DataRow("0", 0L, 0UL)]
+		[DataRow("-0", 0L, null)]
+		[DataRow("42.00", 42L, 42UL)]
+		[DataRow("42.", 42L, 42UL)]
+		[DataRow(".0", 0L, 0UL)]
+		[DataRow("-.0", 0L, null)]
+		[DataRow("0.000", 0L, 0UL)]
+		[DataRow("007", 7L, 7UL)]
+		[DataRow("1.5", null, null)]
+		[DataRow("-1.5", null, null)]
+		[DataRow(".5", null, null)]
+		[DataRow("1.00000000000000000001", null, null)]
+		[DataRow("+42", null, null)]
+		[DataRow("1e2", null, null)]
+		[DataRow("-", null, null)]
+		[DataRow("", null, null)]
+		[DataRow("--1", null, null)]
+		[DataRow(" 42", null, null)]
+		[DataRow("42 ", null, null)]
+		[DataRow("NaN", null, null)]
+		[DataRow("\u221e", null, null)]
+		[DataRow("9223372036854775807", long.MaxValue, 9223372036854775807UL)]
+		[DataRow("9223372036854775808", null, 9223372036854775808UL)]
+		[DataRow("-9223372036854775808", long.MinValue, null)]
+		[DataRow("-9223372036854775809", null, null)]
+		[DataRow("18446744073709551615", null, ulong.MaxValue)]
+		[DataRow("18446744073709551616", null, null)]
+		public void When_ParseIntegral_Then_MatchesWinRT(string text, long? expectedInt, ulong? expectedUInt)
+		{
+			var sut = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				IsGrouped = true,
+				IntegerDigits = 1,
+				FractionDigits = 2,
+			};
+
+			Assert.AreEqual(expectedInt, sut.ParseInt(text), $"ParseInt(\"{text}\")");
+			Assert.AreEqual(expectedUInt, sut.ParseUInt(text), $"ParseUInt(\"{text}\")");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		public void When_ParseIntegralIsGrouped_Then_GroupSizesAreValidated()
+		{
+			var sut = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				IsGrouped = true,
+				IntegerDigits = 1,
+				FractionDigits = 2,
+			};
+
+			Assert.AreEqual(1234L, sut.ParseInt("1,234"));
+			Assert.AreEqual(1234UL, sut.ParseUInt("1,234"));
+			Assert.AreEqual(-1234L, sut.ParseInt("-1,234"));
+			Assert.IsNull(sut.ParseUInt("-1,234"));
+			Assert.AreEqual(1L, sut.ParseInt("0,001"));
+			Assert.IsNull(sut.ParseInt("12,34"));
+			Assert.IsNull(sut.ParseInt("1,2,3"));
+			Assert.IsNull(sut.ParseInt("1,234.99"));
+
+			var french = new DecimalFormatter(new[] { "fr-FR" }, "FR")
+			{
+				IsGrouped = true,
+				IntegerDigits = 1,
+				FractionDigits = 2,
+			};
+
+			Assert.AreEqual(1234L, french.ParseInt("1\u202f234"));
+			Assert.IsNull(french.ParseInt("1\u00a0234"));
+		}
 	}
 }
