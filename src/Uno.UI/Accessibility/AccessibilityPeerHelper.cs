@@ -752,12 +752,7 @@ internal static class AccessibilityPeerHelper
 
 	internal static bool CanCopyText(AutomationPeer peer)
 		=> !ResolveProviderPeer(peer).IsPassword() &&
-			GetTextBox(peer) is
-		{
-			IsEnabled: true,
-			FocusState: not FocusState.Unfocused,
-			SelectionLength: > 0,
-		} textBox &&
+			GetTextBox(peer) is { IsEnabled: true, FocusState: not FocusState.Unfocused, SelectionLength: > 0 } textBox &&
 			textBox is not PasswordBox;
 
 	internal static bool CanCutText(AutomationPeer peer)

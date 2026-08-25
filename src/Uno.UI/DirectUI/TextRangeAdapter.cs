@@ -498,6 +498,7 @@ internal sealed class TextRangeAdapter : ITextRangeProvider
 		return end > start;
 	}
 
+#if __SKIA__
 	private static bool TryGetLetterOrDigitRun(
 		string text,
 		int segmentStart,
@@ -530,6 +531,7 @@ internal sealed class TextRangeAdapter : ITextRangeProvider
 
 		return end > start;
 	}
+#endif
 
 	private static bool TryGetLineSegment(
 		FrameworkElement? owner,

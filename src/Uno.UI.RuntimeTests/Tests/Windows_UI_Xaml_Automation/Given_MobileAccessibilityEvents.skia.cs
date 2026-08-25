@@ -127,7 +127,9 @@ public class Given_MobileAccessibilityEvents
 		public void NotifyStructureChangedEvent(
 			AutomationPeer peer,
 			AutomationStructureChangeType structureChangeType,
-			AutomationPeer? child) { }
+			AutomationPeer? child)
+		{
+		}
 
 		public void NotifyInvalidatePeer(AutomationPeer peer) { }
 
@@ -136,12 +138,16 @@ public class Given_MobileAccessibilityEvents
 			AutomationNotificationKind notificationKind,
 			AutomationNotificationProcessing notificationProcessing,
 			string displayString,
-			string activityId) { }
+			string activityId)
+		{
+		}
 
 		public void NotifyTextEditTextChangedEvent(
 			AutomationPeer peer,
 			AutomationTextEditChangeType changeType,
-			IReadOnlyList<string> changedData) { }
+			IReadOnlyList<string> changedData)
+		{
+		}
 
 		public void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId) { }
 
