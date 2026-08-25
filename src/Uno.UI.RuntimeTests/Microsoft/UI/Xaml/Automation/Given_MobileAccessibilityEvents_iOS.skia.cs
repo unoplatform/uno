@@ -34,6 +34,32 @@ public class Given_MobileAccessibilityEvents_iOS
 	private static AccessibilityNativeNodeSnapshot? GetSnapshot(UIElement element)
 		=> AccessibilityPeerHelper.IOSAccessibilityNodeSnapshotAccessor?.Invoke(element);
 
+	// Announcements are posted from the SkiaAccessibilityBase debounce timer, so poll for the
+	// record instead of sleeping for a fixed window sized to the debounce.
+	private static async Task<AccessibilityNativeEventRecord?> WaitForAnnouncementAsync(
+		XamlRoot root,
+		string? text = null,
+		int timeoutMs = 5000)
+	{
+		var deadline = DateTimeOffset.UtcNow.AddMilliseconds(timeoutMs);
+		do
+		{
+			await UITestHelper.WaitForIdle();
+			var match = GetEvents(root).FirstOrDefault(e =>
+				e.Kind == AccessibilityNativeEventKind.Announcement &&
+				(text is null || e.Text?.Contains(text) is true));
+			if (match is not null)
+			{
+				return match;
+			}
+
+			await Task.Delay(25);
+		}
+		while (DateTimeOffset.UtcNow < deadline);
+
+		return null;
+	}
+
 	// Hook registration
 
 	[TestMethod]
@@ -355,11 +381,8 @@ public class Given_MobileAccessibilityEvents_iOS
 			"ios-us4-1");
 
 		// Debounce delay before posting.
-		await Task.Delay(300);
-		await UITestHelper.WaitForIdle();
-
-		Assert.IsTrue(
-			GetEvents(root).Any(e => e.Kind == AccessibilityNativeEventKind.Announcement),
+		Assert.IsNotNull(
+			await WaitForAnnouncementAsync(root),
 			"Expected Announcement event after RaiseNotificationEvent.");
 	}
 
@@ -379,10 +402,7 @@ public class Given_MobileAccessibilityEvents_iOS
 			text,
 			"ios-us4-2");
 
-		await Task.Delay(300);
-		await UITestHelper.WaitForIdle();
-
-		var rec = GetEvents(root).FirstOrDefault(e => e.Kind == AccessibilityNativeEventKind.Announcement);
+		var rec = await WaitForAnnouncementAsync(root);
 		Assert.IsNotNull(rec, "Expected an Announcement event.");
 		Assert.AreEqual(text, rec.Text, "Announcement text must match the notification display string.");
 	}
@@ -411,12 +431,8 @@ public class Given_MobileAccessibilityEvents_iOS
 			backgroundPeer.SetAPEventsSource(new OwnerlessLiveRegionAutomationPeer("Background update"));
 
 			backgroundPeer.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
-			await Task.Delay(300);
-			await UITestHelper.WaitForIdle();
-			Assert.IsTrue(
-				GetEvents(root.XamlRoot!).Any(e =>
-					e.Kind == AccessibilityNativeEventKind.Announcement &&
-					e.Text?.Contains("Background update") is true),
+			Assert.IsNotNull(
+				await WaitForAnnouncementAsync(root.XamlRoot!, "Background update"),
 				"An ownerless EventsSource must route through its rooted source peer when no modal is active.");
 			ClearEvents(root.XamlRoot!);
 
@@ -449,13 +465,8 @@ public class Given_MobileAccessibilityEvents_iOS
 			ClearEvents(root.XamlRoot!);
 
 			modalContent.GetOrCreateAutomationPeer()!.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
-			await Task.Delay(300);
-			await UITestHelper.WaitForIdle();
-
-			Assert.IsTrue(
-				GetEvents(root.XamlRoot!).Any(e =>
-					e.Kind == AccessibilityNativeEventKind.Announcement &&
-					e.Text?.Contains("Modal update") is true),
+			Assert.IsNotNull(
+				await WaitForAnnouncementAsync(root.XamlRoot!, "Modal update"),
 				"Live regions inside the popup modal must remain announceable.");
 		}
 		finally
