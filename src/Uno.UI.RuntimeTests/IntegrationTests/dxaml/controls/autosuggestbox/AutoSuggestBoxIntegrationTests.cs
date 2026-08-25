@@ -65,19 +65,26 @@ public class AutoSuggestBoxIntegrationTests : BaseDxamlTestClass
 	}
 
 	[TestMethod]
-	[RunsOnUIThread]
 	public async Task CanEnterAndLeaveLiveTree()
 	{
+		// Keep lifecycle waits off the UI dispatcher; Loaded and Unloaded complete on that dispatcher.
 		var asb = new AutoSuggestBox();
-		bool loaded = false;
-		bool unloaded = false;
-		asb.Loaded += (s, e) => loaded = true;
-		asb.Unloaded += (s, e) => unloaded = true;
-		TestServices.WindowHelper.WindowContent = asb;
-		await TestServices.WindowHelper.WaitFor(() => loaded);
+		var loadedCount = 0;
+		var unloadedCount = 0;
+		await RunOnUIThread(() =>
+		{
+			asb.Loaded += (s, e) => loadedCount++;
+			asb.Unloaded += (s, e) => unloadedCount++;
+		});
 
-		TestServices.WindowHelper.WindowContent = null;
-		await TestServices.WindowHelper.WaitFor(() => unloaded);
+		for (var iteration = 1; iteration <= 3; iteration++)
+		{
+			await RunOnUIThread(() => TestServices.WindowHelper.WindowContent = asb);
+			await TestServices.WindowHelper.WaitFor(() => loadedCount == iteration);
+
+			await RunOnUIThread(() => TestServices.WindowHelper.WindowContent = null);
+			await TestServices.WindowHelper.WaitFor(() => unloadedCount == iteration);
+		}
 	}
 
 	[TestMethod]
