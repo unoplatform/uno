@@ -248,10 +248,9 @@ partial class PropertyPathParser // src\dxaml\xcp\dxaml\lib\PropertyPathParser.c
 					var szIndex = path.Slice(iIndex, cIndex);
 
 					// Create the right type of indexer
-					if (IsNumericIndex(szIndex))
+					if (TryGetIntIndex(szIndex, out var index))
 					{
-						AppendStepDescriptor(
-							PropertyPathStepDescriptor.CreateIntIndexer(int.Parse(szIndex, NumberStyles.Integer, CultureInfo.InvariantCulture)));
+						AppendStepDescriptor(PropertyPathStepDescriptor.CreateIntIndexer(index));
 					}
 					else
 					{
@@ -315,17 +314,29 @@ partial class PropertyPathParser // src\dxaml\xcp\dxaml\lib\PropertyPathParser.c
 	private static string GetSegment(string source, int start, int length)
 		=> start == 0 && length == source.Length ? source : source.Substring(start, length);
 
-	private static bool IsNumericIndex(ReadOnlySpan<char> szIndex)
+	/// <summary>
+	/// Mirrors the native <c>std::iswdigit</c> + <c>_wtoi</c> pair: only ASCII digits form an integer
+	/// indexer (so e.g. Arabic-Indic digits stay a string indexer) and an empty index is 0.
+	/// </summary>
+	private static bool TryGetIntIndex(ReadOnlySpan<char> szIndex, out int index)
 	{
 		foreach (var c in szIndex)
 		{
-			if (!char.IsDigit(c)) // std::iswdigit -> "0123456789"
+			if ((uint)(c - '0') > 9) // std::iswdigit -> "0123456789"
 			{
+				index = 0;
 				return false;
 			}
 		}
 
-		return true;
+		if (szIndex.IsEmpty)
+		{
+			index = 0;
+			return true;
+		}
+
+		// An index too large for an int falls back to a string indexer instead of throwing.
+		return int.TryParse(szIndex, NumberStyles.None, CultureInfo.InvariantCulture, out index);
 	}
 
 	private PropertyPathStepDescriptor CreateDependencyPropertyPathStepDescriptor(
