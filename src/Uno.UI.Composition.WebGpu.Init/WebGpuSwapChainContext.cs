@@ -331,15 +331,18 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 /// <see cref="ColorView"/>. Lifetime is the swapchain context's (recreated on resize).</summary>
 internal sealed class WebGpuSwapchainTarget : IWebGpuRenderTarget
 {
-	public WebGpuSwapchainTarget(nint colorView, int width, int height, GraphicsColorFormat colorFormat)
+	public WebGpuSwapchainTarget(nint colorView, int width, int height, GraphicsColorFormat colorFormat, System.Runtime.InteropServices.JavaScript.JSObject? jsColorView = null)
 	{
 		ColorView = colorView;
+		JsColorViewObject = jsColorView;
 		Width = width;
 		Height = height;
 		ColorFormat = colorFormat;
 	}
 
 	public nint ColorView { get; }
+	public System.Runtime.InteropServices.JavaScript.JSObject? JsColorViewObject { get; }
+	System.Runtime.InteropServices.JavaScript.JSObject? IWebGpuRenderTarget.JsColorView => JsColorViewObject;
 	public int Width { get; }
 	public int Height { get; }
 	public GraphicsColorFormat ColorFormat { get; }

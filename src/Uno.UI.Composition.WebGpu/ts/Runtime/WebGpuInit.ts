@@ -55,6 +55,32 @@ namespace Uno.UI.Runtime.Skia {
 			return ptr;
 		}
 
+		// Creates the offscreen resolve texture in JS (JS-primary) and imports it into emdawn's handle table.
+		public static createAndImportOffscreenTexture(device: any, width: number, height: number, usage: number): number {
+			const module = (window as any).Module;
+			if (!module || typeof module.unoWebGpuImportTexture !== "function") {
+				console.error("WebGpuInit.createAndImportOffscreenTexture: Module.unoWebGpuImportTexture is missing");
+				return 0;
+			}
+			const tex = device.createTexture({
+				size: { width: width, height: height, depthOrArrayLayers: 1 },
+				format: "rgba8unorm",
+				sampleCount: 1,
+				usage: usage >>> 0,
+			});
+			return module.unoWebGpuImportTexture(tex, 0) >>> 0;
+		}
+
+		// Imports a JS GPUTextureView into emdawn's handle table and returns its wgpu view pointer.
+		public static importTextureView(view: any, parentPtr: number): number {
+			const module = (window as any).Module;
+			if (!module || typeof module.unoWebGpuImportTextureView !== "function") {
+				console.error("WebGpuInit.importTextureView: Module.unoWebGpuImportTextureView is missing");
+				return 0;
+			}
+			return module.unoWebGpuImportTextureView(view, parentPtr >>> 0) >>> 0;
+		}
+
 		// Maps a readback buffer (by its wgpu handle ptr) off the event loop and inspects it as RGBA8 (rows padded to
 		// bytesPerRow). Returns the count of non-transparent pixels (alpha != 0), or -1 on failure, logs luminance
 		// min/max, and stashes a PNG data-URL of the frame on window.__unoLastFramePng so a headless driver can save

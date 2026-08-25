@@ -3478,6 +3478,7 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 	// into the host's colour — the same "backend brings its own depth/stencil" contract every other target follows.
 	private WebGpuRenderSurface _mainSurface;
 	private int _mainW, _mainH;
+	private IntPtr _mainColorView;   // the resolve view the backend renders into (imported from JsColorView on WASM)
 
 	internal WebGpuDrawingFactory(WebGpuDevice device) { _device = device; }
 
@@ -3492,11 +3493,23 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 			_mainSurface = new WebGpuRenderSurface(_device, target.Width, target.Height, externalColor: true);
 			_mainW = target.Width;
 			_mainH = target.Height;
+			// Browser: the host hands the resolve target as a live JS GPUTextureView; convert it to a wgpu view HERE
+			// (the backend's own emdawn import) — symmetric with the device import — rather than consuming a raw
+			// pointer from the contract. Imported once per size. Native targets have JsColorView == null → use the
+			// pointer directly. The imported handle wraps the same JS view the host presents from (shared underlying).
+			if (OperatingSystem.IsBrowser() && target.JsColorView is { } jsView)
+			{
+				_mainColorView = (IntPtr)WebGpuJsInterop.ImportTextureView(jsView, 0);
+				System.Console.WriteLine($"[webgpu] backend imported JS color view ptr={_mainColorView}");
+			}
+			else
+			{
+				_mainColorView = target.ColorView;
+			}
 		}
-		// Point the backend surface at THIS frame's host resolve colour view (host owns its lifetime; _ownsColor=false,
-		// and the underlying texture stays host-side — the render pass only needs the view).
-		_mainSurface.View = target.ColorView;
-		if (_device.MsaaSamples == 1) { _mainSurface.MsaaColorView = target.ColorView; }   // 1x: render straight into it
+		// Point the backend surface at the resolve colour view (host owns its lifetime; the render pass only needs the view).
+		_mainSurface.View = _mainColorView;
+		if (_device.MsaaSamples == 1) { _mainSurface.MsaaColorView = _mainColorView; }   // 1x: render straight into it
 		return new WebGpuPresentSession(_device, _mainSurface, this);
 	}
 

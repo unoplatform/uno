@@ -28,6 +28,17 @@ public static partial class WebGpuJsInterop
 	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.importDevice")]
 	public static partial int ImportDevice(JSObject jsDevice, int instancePtr);
 
+	/// <summary>Creates the offscreen resolve texture in JS (jsDevice.createTexture, rgba8unorm) — JS-primary,
+	/// symmetric with the JS-created device — imports it into emdawn's handle table and returns its wgpu texture
+	/// pointer. The host derives the view (and its JS object) from this.</summary>
+	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.createAndImportOffscreenTexture")]
+	public static partial int CreateAndImportOffscreenTexture(JSObject jsDevice, int width, int height, int usage);
+
+	/// <summary>Imports a JS GPUTextureView object into emdawn's handle table and returns its wgpu view pointer.
+	/// A backend calls this to convert IWebGpuRenderTarget.JsColorView to a native view it can render into.</summary>
+	[JSImport("globalThis.Uno.UI.Runtime.Skia.WebGpuInit.importTextureView")]
+	public static partial int ImportTextureView(JSObject jsView, int parentPtr);
+
 	/// <summary>Maps a readback buffer (by its wgpu handle ptr) off the event loop and inspects it as RGBA8
 	/// (rows padded to <paramref name="bytesPerRow"/>). Returns the non-transparent pixel count, or -1 on failure,
 	/// and stashes a PNG of the frame on window.__unoLastFramePng.</summary>

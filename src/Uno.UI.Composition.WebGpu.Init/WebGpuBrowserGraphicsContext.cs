@@ -173,21 +173,20 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 		if (_presentView != IntPtr.Zero) { wgpuTextureViewRelease(_presentView); _presentView = IntPtr.Zero; }
 		if (_presentTex != IntPtr.Zero) { wgpuTextureRelease(_presentTex); _presentTex = IntPtr.Zero; }
 
-		// Offscreen single-sample resolve target (copied to the canvas each present).
-		var td = new WGPUTextureDescriptor
-		{
-			Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 },
-			Format = _device.ColorFormat,
-			MipLevelCount = 1,
-			SampleCount = 1,
-			Dimension = WGPUTextureDimension._2D,
-			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding,
-		};
-		_presentTex = wgpuDeviceCreateTexture(_device.Dev, &td);
+		// Offscreen single-sample resolve target, created JS-PRIMARY (jsDevice.createTexture in JS) so the seam hands
+		// it across as a live JS GPUTextureView (JsColorView), symmetric with the JS-created device; it's imported
+		// into emdawn's handle table for this side's present blit.
+		var usage = (int)(WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding);
+		_presentTex = (IntPtr)WebGpuJsInterop.CreateAndImportOffscreenTexture(_device.JsDeviceObject, width, height, usage);
 		_presentView = wgpuTextureCreateView(_presentTex, null);
 
+		// Expose the offscreen resolve view as its live JS GPUTextureView too (reverse-lookup of the wgpu handle),
+		// so the seam hands the render target as a JS object — symmetric with JsDevice. A direct-JS backend renders
+		// into it directly; Uno's emdawn backend imports it. emdawn created the view, so a JS object is always tabled.
+		var jsColorView = WebGpuJsInterop.GetJsObject((int)_presentView);
 		_target = new WebGpuSwapchainTarget(_presentView, width, height,
-			_device.ColorFormat == WGPUTextureFormat.BGRA8Unorm ? GraphicsColorFormat.Bgra8888 : GraphicsColorFormat.Rgba8888);
+			_device.ColorFormat == WGPUTextureFormat.BGRA8Unorm ? GraphicsColorFormat.Bgra8888 : GraphicsColorFormat.Rgba8888,
+			jsColorView);
 
 		var format = _device.ColorFormat;
 		var alphaMode = WGPUCompositeAlphaMode.Opaque;
