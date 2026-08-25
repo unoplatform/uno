@@ -68,20 +68,37 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 	}
 
 	public override PointInt32 ConvertLocalToScreen(Point localPoint)
-	{
-		NativeUno.uno_window_convert_local_to_screen(_nativeWindow.Handle, localPoint.X, localPoint.Y, out var x, out var y);
-		var scale = RasterizationScale == 0 ? 1 : RasterizationScale;
-		return new PointInt32((int)Math.Round(x * scale), (int)Math.Round(y * scale));
-	}
+		=> TryConvertLocalToScreen(localPoint, out var screenPoint)
+			? screenPoint
+			: base.ConvertLocalToScreen(localPoint);
 
 	public override bool TryConvertLocalToScreen(Point localPoint, out PointInt32 screenPoint)
 	{
-		screenPoint = ConvertLocalToScreen(localPoint);
-		return NativeWindow is not null;
+		screenPoint = default;
+		if (_nativeWindow.Handle == nint.Zero)
+		{
+			return false;
+		}
+
+		NativeUno.uno_window_convert_local_to_screen(_nativeWindow.Handle, localPoint.X, localPoint.Y, out var x, out var y);
+		var scale = RasterizationScale == 0 ? 1 : RasterizationScale;
+		screenPoint = new PointInt32((int)Math.Round(x * scale), (int)Math.Round(y * scale));
+		return true;
 	}
 
 	public override Point ConvertScreenToLocal(PointInt32 screenPoint)
+		=> TryConvertScreenToLocal(screenPoint, out var localPoint)
+			? localPoint
+			: base.ConvertScreenToLocal(screenPoint);
+
+	public override bool TryConvertScreenToLocal(PointInt32 screenPoint, out Point localPoint)
 	{
+		localPoint = default;
+		if (_nativeWindow.Handle == nint.Zero)
+		{
+			return false;
+		}
+
 		var scale = RasterizationScale == 0 ? 1 : RasterizationScale;
 		NativeUno.uno_window_convert_screen_to_local(
 			_nativeWindow.Handle,
@@ -89,13 +106,8 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 			screenPoint.Y / scale,
 			out var x,
 			out var y);
-		return new Point(x, y);
-	}
-
-	public override bool TryConvertScreenToLocal(PointInt32 screenPoint, out Point localPoint)
-	{
-		localPoint = ConvertScreenToLocal(screenPoint);
-		return NativeWindow is not null;
+		localPoint = new Point(x, y);
+		return true;
 	}
 
 	private void OnHostPositionChanged(double x, double y)
