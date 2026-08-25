@@ -353,9 +353,6 @@ public partial class ScrollBar
 
 	private void AttachEvents()
 	{
-		// Uno Specific: WinUI makes the thumbs ignore touch, as touch scrolling goes through
-		// DirectManipulation there. Touch-only devices have no other affordance, and the ScrollBar
-		// itself already captures the touch and marks it handled, so ignoring it leaves a dead zone.
 		if (m_tpElementHorizontalThumb != null || m_tpElementVerticalThumb != null)
 		{
 			if (m_tpElementHorizontalThumb != null)
@@ -366,6 +363,7 @@ public partial class ScrollBar
 				m_ElementHorizontalThumbDragDeltaToken.Disposable = Disposable.Create(() => m_tpElementHorizontalThumb.DragDelta -= OnThumbDragDelta);
 				m_tpElementHorizontalThumb.DragCompleted += OnThumbDragCompleted;
 				m_ElementHorizontalThumbDragCompletedToken.Disposable = Disposable.Create(() => m_tpElementHorizontalThumb.DragCompleted -= OnThumbDragCompleted);
+				m_tpElementHorizontalThumb.IgnoreTouchInput = true;
 			}
 
 			if (m_tpElementVerticalThumb != null)
@@ -376,6 +374,7 @@ public partial class ScrollBar
 				m_ElementVerticalThumbDragDeltaToken.Disposable = Disposable.Create(() => m_tpElementVerticalThumb.DragDelta -= OnThumbDragDelta);
 				m_tpElementVerticalThumb.DragCompleted += OnThumbDragCompleted;
 				m_ElementVerticalThumbDragCompletedToken.Disposable = Disposable.Create(() => m_tpElementVerticalThumb.DragCompleted -= OnThumbDragCompleted);
+				m_tpElementVerticalThumb.IgnoreTouchInput = true;
 			}
 		}
 
