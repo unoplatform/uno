@@ -222,7 +222,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			var children = peer.GetChildren();
 			Assert.IsNotNull(children, "A realized ListView must expose item children.");
 
-			ItemAutomationPeer? childPeer = null;
+			ItemAutomationPeer childPeer = null;
 			foreach (var child in children)
 			{
 				if (child is ItemAutomationPeer { Item: "Beta" } itemPeer)
