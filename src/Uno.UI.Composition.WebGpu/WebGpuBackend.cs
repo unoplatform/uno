@@ -324,6 +324,7 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 	internal List<WebGpuCommand> Commands = new();
 	internal WColor? ClearColor;
 	internal bool? Cacheable;   // memoized: all commands are simple primitives with no path clip
+	internal Vector4? IdentityBounds;   // memoized union AABB of Commands (recorded/identity space), for layer bounding
 								// The compiled GPU draw-list for this recording (the persistent retained state IRenderRecord is contracted to hold):
 								// built once on the render thread at first replay, reused every frame, freed (deferred to the render thread) when
 								// this recording is disposed. Written by the render thread, taken by the UI thread's Dispose — via Interlocked.
@@ -1234,6 +1235,71 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	}
 	private Vector2 Ndc(Vector2 dev) => new(2f * dev.X / _s.Width - 1f, 1f - 2f * dev.Y / _s.Height);
 
+	// Device-space union AABB (L,T,R,B) of a command list — bounds a layer's blur region and culls layers whose
+	// content is entirely clipped/off-surface (e.g. a scrolled-out card casting a shadow). Conservative: each
+	// command's bounds intersect its clip AABB; a backdrop is unbounded (falls back to its clip or the surface).
+	private static readonly Vector4 _emptyBounds = new(float.MaxValue, float.MaxValue, float.MinValue, float.MinValue);
+
+	private static Vector4 CmdListBounds(List<WebGpuCommand> cmds)
+	{
+		var b = _emptyBounds;
+		foreach (var cmd in cmds)
+		{
+			var cb = cmd switch
+			{
+				RectCommand r => QuadBounds(r.P0, r.P1, r.P2, r.P3, r.Clip),
+				RoundedRectCmd rr => QuadBounds(rr.P0, rr.P1, rr.P2, rr.P3, rr.Clip),
+				ImageCmd im => QuadBounds(im.P0, im.P1, im.P2, im.P3, im.Clip),
+				GradientCmd g => QuadBounds(g.P0, g.P1, g.P2, g.P3, g.Clip),
+				PathFill p => ClampToClip(new Vector4(p.BbMin.X, p.BbMin.Y, p.BbMax.X, p.BbMax.Y), p.Clip),
+				ShadowCmd sh => ClampToClip(Inflate(new Vector4(sh.BbMin.X, sh.BbMin.Y, sh.BbMax.X, sh.BbMax.Y), MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f), sh.Clip),
+				LayerCmd l => ClampToClip(LayerBounds(l), l.Clip),
+				ReplayRefCmd rr => ClampToClip(TransformBounds(rr.Data.IdentityBounds ??= CmdListBounds(rr.Commands), rr.Transform), rr.Clip),
+				// A backdrop samples/draws within its clip; with no finite clip it can cover the whole surface.
+				BackdropCmd bk => IsFiniteAabb(bk.Clip.Aabb) ? bk.Clip.Aabb : new Vector4(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue),
+				_ => new Vector4(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue),
+			};
+			b = new Vector4(MathF.Min(b.X, cb.X), MathF.Min(b.Y, cb.Y), MathF.Max(b.Z, cb.Z), MathF.Max(b.W, cb.W));
+		}
+		return b;
+	}
+
+	private static Vector4 LayerBounds(LayerCmd l)
+	{
+		var b = CmdListBounds(l.Commands);
+		if (l.ShadowEffect is { } fx && b.X <= b.Z)
+		{
+			var pad = MathF.Ceiling(3f * MathF.Max(fx.SigmaX, fx.SigmaY)) + 2f;
+			var sb = Inflate(new Vector4(b.X + fx.Dx, b.Y + fx.Dy, b.Z + fx.Dx, b.W + fx.Dy), pad);
+			b = new Vector4(MathF.Min(b.X, sb.X), MathF.Min(b.Y, sb.Y), MathF.Max(b.Z, sb.Z), MathF.Max(b.W, sb.W));
+		}
+		return b;
+	}
+
+	private static Vector4 QuadBounds(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, in ClipData clip)
+	{
+		var min = Vector2.Min(Vector2.Min(p0, p1), Vector2.Min(p2, p3));
+		var max = Vector2.Max(Vector2.Max(p0, p1), Vector2.Max(p2, p3));
+		return ClampToClip(new Vector4(min.X, min.Y, max.X, max.Y), clip);
+	}
+
+	private static Vector4 ClampToClip(Vector4 b, in ClipData clip)
+		=> IsFiniteAabb(clip.Aabb)
+			? new Vector4(MathF.Max(b.X, clip.Aabb.X), MathF.Max(b.Y, clip.Aabb.Y), MathF.Min(b.Z, clip.Aabb.Z), MathF.Min(b.W, clip.Aabb.W))
+			: b;
+
+	private static Vector4 Inflate(Vector4 b, float pad) => new(b.X - pad, b.Y - pad, b.Z + pad, b.W + pad);
+
+	private static Vector4 TransformBounds(Vector4 b, Matrix4x4 m)
+	{
+		if (b.X > b.Z) { return b; }   // empty stays empty
+		Vector2 T(float x, float y) => new(x * m.M11 + y * m.M21 + m.M41, x * m.M12 + y * m.M22 + m.M42);
+		var q0 = T(b.X, b.Y); var q1 = T(b.Z, b.Y); var q2 = T(b.Z, b.W); var q3 = T(b.X, b.W);
+		var min = Vector2.Min(Vector2.Min(q0, q1), Vector2.Min(q2, q3));
+		var max = Vector2.Max(Vector2.Max(q0, q1), Vector2.Max(q2, q3));
+		return new Vector4(min.X, min.Y, max.X, max.Y);
+	}
+
 	// Reused scratch so the per-frame op rebuild doesn't allocate a List + array per primitive (the whole frame is
 	// rebuilt every present). Safe: each primitive fills the scratch, uploads it (copied to GPU immediately), and is
 	// done before the next — no builder holds the scratch across a nested RenderInto. _clipU backs MakeClipBg's
@@ -1556,7 +1622,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		_d.Pool.Return(cov.DepthView);
 
 		// 2) blur pyramid (2x downsample + separable gaussian), matching the original's 3-pass shadow blur.
-		return BlurPyramid(cov.View, sw, sh2, sh.SigmaX, sh.SigmaY);
+		var blurred = BlurPyramid(cov.View, sw, sh2, sh.SigmaX, sh.SigmaY);
+		// The coverage resolve was consumed by the pyramid's first downsample pass — re-rentable this frame.
+		_d.Pool.Return(cov.View);
+		return blurred;
 	}
 
 	// Blur pyramid over a REGION of `src`: extract the device-px rect (rx,ry,rw,rh) out of the fullW×fullH source
@@ -1581,12 +1650,17 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			int nw = Math.Max(1, cw >> 1), nh = Math.Max(1, ch >> 1);
 			var nx = _d.Pool.Rent(nw, nh, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 			BlurPass(cur, nx, default, default, downsample: true, Vector2.Zero, Vector2.One);
+			// The consumed level is safe to re-rent within the frame: passes encode sequentially into the one
+			// frame encoder, so a later renter's write is ordered after this read.
+			_d.Pool.Return(cur);
 			cur = nx; cw = nw; ch = nh;
 		}
 		var hh = _d.Pool.Rent(cw, ch, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 		BlurPass(cur, hh, new Vector2(1f, 0f), new Vector2(1f / cw, 0f), downsample: false, Vector2.Zero, Vector2.One);
+		_d.Pool.Return(cur);
 		var vv = _d.Pool.Rent(cw, ch, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 		BlurPass(hh, vv, new Vector2(0f, 1f), new Vector2(0f, 1f / ch), downsample: false, Vector2.Zero, Vector2.One);
+		_d.Pool.Return(hh);
 		return vv;
 	}
 
@@ -2673,6 +2747,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					}
 				case ShadowCmd sh:
 					{
+						// Cull a shadow whose blurred extent is entirely clipped out or off-surface (e.g. a
+						// scrolled-out card) — otherwise it still pays a coverage render + blur every frame.
+						var shPad = MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f;
+						var shExt = ClampToClip(Inflate(new Vector4(sh.BbMin.X, sh.BbMin.Y, sh.BbMax.X, sh.BbMax.Y), shPad), sh.Clip);
+						if (shExt.X >= shExt.Z || shExt.Y >= shExt.W || shExt.Z <= 0 || shExt.W <= 0 || shExt.X >= _s.Width || shExt.Y >= _s.Height)
+						{
+							break;
+						}
 						// Render the blurred coverage offscreen, then composite it as a SrcIn-tinted image (tint =
 						// shadow color) at its device placement — reusing the image draw path (kind 2), incl. clip.
 						var blurView = RenderShadow(sh, out var origin, out var size);
@@ -2696,6 +2778,26 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					}
 				case LayerCmd lyr:
 					{
+						// Cull a plain (SrcOver, no colour-matrix) layer whose content — including its shadow's offset+blur
+						// reach — is entirely clipped out or off-surface: a scrolled-out card with a ThemeShadow otherwise
+						// still pays a full offscreen render + blur every frame. Mask (DstIn) and colour-matrix layers keep
+						// full-surface semantics (an empty mask must still erase; a matrix offset can produce coverage).
+						var contentBounds = ClampToClip(CmdListBounds(lyr.Commands), lyr.Clip);
+						if (lyr.CompositeMode == 0 && lyr.ColorMatrix is null)
+						{
+							var vis = contentBounds;
+							if (lyr.ShadowEffect is { } sfx && contentBounds.X <= contentBounds.Z)
+							{
+								var spad = MathF.Ceiling(3f * MathF.Max(sfx.SigmaX, sfx.SigmaY)) + 2f;
+								var sb = ClampToClip(Inflate(new Vector4(contentBounds.X + sfx.Dx, contentBounds.Y + sfx.Dy, contentBounds.Z + sfx.Dx, contentBounds.W + sfx.Dy), spad), lyr.Clip);
+								vis = new Vector4(MathF.Min(vis.X, sb.X), MathF.Min(vis.Y, sb.Y), MathF.Max(vis.Z, sb.Z), MathF.Max(vis.W, sb.W));
+							}
+							if (vis.X >= vis.Z || vis.Y >= vis.W || vis.Z <= 0 || vis.W <= 0 || vis.X >= _s.Width || vis.Y >= _s.Height)
+							{
+								break;
+							}
+						}
+
 						// Render the layer's commands into a full-size offscreen surface, then composite (kind 4). Both the
 						// offscreen render and this composite record into the frame's single encoder, so wgpu barriers the
 						// offscreen resolve before the composite samples it — no explicit flush needed.
@@ -2704,26 +2806,35 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 						// SaveLayer(IEffectFilter) drop shadow: blur the content, draw it tinted+offset behind, then
 						// the content on top. Reuses the image path (SrcIn tint) for the shadow — same as DrawShadow.
+						// The pyramid runs only over the content's region (padded by the blur reach), not the full
+						// window — a card-sized caster costs card-sized blur passes.
 						if (lyr.ShadowEffect is { } fx)
 						{
-							var blur = BlurPyramid(layerSurface.View, _s.Width, _s.Height, fx.SigmaX, fx.SigmaY);
-							var subuf = MakeUniform((int)112);
-							var sop = stackalloc float[8];
-							sop[0] = 1f; sop[1] = 1f; sop[2] = 0; sop[3] = 0;
-							sop[4] = fx.Color.R / 255f; sop[5] = fx.Color.G / 255f; sop[6] = fx.Color.B / 255f; sop[7] = fx.Color.A / 255f;
-							wgpuQueueWriteBuffer(_d.Q, subuf, 0, (IntPtr)sop, 32);
-							var sfe = stackalloc WGPUBindGroupEntry[3];
-							sfe[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = blur };
-							sfe[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-							sfe[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = subuf, Offset = 0, Size = 112 };
-							var sfbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = sfe };
-							var sfbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &sfbgd));
-							var fq = new float[24];
-							void FQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); fq[idx] = n.X; fq[idx + 1] = n.Y; fq[idx + 2] = u; fq[idx + 3] = vv; }
-							var off = new Vector2(fx.Dx, fx.Dy);
-							FQV(0, new Vector2(0, 0) + off, 0, 0); FQV(4, new Vector2(_s.Width, 0) + off, 1, 0); FQV(8, new Vector2(_s.Width, _s.Height) + off, 1, 1);
-							FQV(12, new Vector2(0, 0) + off, 0, 0); FQV(16, new Vector2(_s.Width, _s.Height) + off, 1, 1); FQV(20, new Vector2(0, _s.Height) + off, 0, 1);
-							ops.Add(new DrawOp(2, (nint)sfbg, 0, (nint)MakeBuffer(fq), false, lyr.Clip, (nint)MakeClipBg(_d.ImageClipBgl, lyr.Clip)));
+							var pad = MathF.Ceiling(3f * MathF.Max(fx.SigmaX, fx.SigmaY)) + 2f;
+							var rg = Inflate(contentBounds, pad);
+							float rx = MathF.Max(0f, MathF.Floor(rg.X)), ry = MathF.Max(0f, MathF.Floor(rg.Y));
+							float rw = MathF.Min(_s.Width, MathF.Ceiling(rg.Z)) - rx, rh = MathF.Min(_s.Height, MathF.Ceiling(rg.W)) - ry;
+							if (rw >= 1f && rh >= 1f)
+							{
+								var blur = BlurPyramidRegion(layerSurface.View, _s.Width, _s.Height, rx, ry, rw, rh, fx.SigmaX, fx.SigmaY);
+								var subuf = MakeUniform((int)112);
+								var sop = stackalloc float[8];
+								sop[0] = 1f; sop[1] = 1f; sop[2] = 0; sop[3] = 0;
+								sop[4] = fx.Color.R / 255f; sop[5] = fx.Color.G / 255f; sop[6] = fx.Color.B / 255f; sop[7] = fx.Color.A / 255f;
+								wgpuQueueWriteBuffer(_d.Q, subuf, 0, (IntPtr)sop, 32);
+								var sfe = stackalloc WGPUBindGroupEntry[3];
+								sfe[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = blur };
+								sfe[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+								sfe[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = subuf, Offset = 0, Size = 112 };
+								var sfbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = sfe };
+								var sfbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &sfbgd));
+								var fq = new float[24];
+								void FQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); fq[idx] = n.X; fq[idx + 1] = n.Y; fq[idx + 2] = u; fq[idx + 3] = vv; }
+								var off = new Vector2(fx.Dx + rx, fx.Dy + ry);
+								FQV(0, off, 0, 0); FQV(4, new Vector2(rw, 0) + off, 1, 0); FQV(8, new Vector2(rw, rh) + off, 1, 1);
+								FQV(12, off, 0, 0); FQV(16, new Vector2(rw, rh) + off, 1, 1); FQV(20, new Vector2(0, rh) + off, 0, 1);
+								ops.Add(new DrawOp(2, (nint)sfbg, 0, (nint)MakeBuffer(fq), false, lyr.Clip, (nint)MakeClipBg(_d.ImageClipBgl, lyr.Clip)));
+							}
 						}
 
 						var cu = new float[24];
