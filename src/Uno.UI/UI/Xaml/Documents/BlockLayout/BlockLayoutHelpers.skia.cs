@@ -3,7 +3,6 @@
 // MUX Reference BlockLayoutHelpers.h, BlockLayoutHelpers.cpp, tag winui3/release/1.8.2, commit 4a1c6184c
 
 #nullable enable
-#pragma warning disable CS8600, CS8602, CS8604, CS8618, CS0219, CS0414 // TODO Uno (Stage 5): WIP drafts not yet fully nullable-annotated
 
 using System;
 using System.Globalization;
@@ -93,7 +92,7 @@ internal static class BlockLayoutHelpers
 		if (pEffectiveParagraph == null)
 		{
 			// Use the layout owner as the effective paragraph.
-			pEffectiveParagraph = pLayoutOwner;
+			pEffectiveParagraph = pLayoutOwner!;
 		}
 
 		// Since GetFormatting and GetInheritedAttachedProperties expect one "paragraph" element, use
@@ -105,7 +104,7 @@ internal static class BlockLayoutHelpers
 		// formatting (FontFamily/FontSize/FontWeight/FontStyle/FontStretch/CharacterSpacing/TextDecorations) is read
 		// off the effective paragraph's inherited TextElement formatting; GetFormatting / GetInheritedAttachedProperties
 		// are not yet ported, so resolve these from the effective paragraph's DPs.
-		GetTextAlignment(pParagraph, pLayoutOwner, out textAlignment);
+		GetTextAlignment(pParagraph, pLayoutOwner!, out textAlignment);
 
 		// TODO Uno (integrate): inherited formatting resolution. The values below should come from the effective
 		// paragraph's resolved (inherited) TextElement formatting, not directly from the layout owner. Until
@@ -139,16 +138,16 @@ internal static class BlockLayoutHelpers
 			CultureInfo.CurrentCulture);
 
 		pTextParagraphProperties = new TextParagraphProperties(
-			GetFlowDirection(pLayoutOwner),
+			GetFlowDirection(pLayoutOwner!),
 			pDefaultTextRunProperties,
-			GetParagraphIndent(pParagraph, pLayoutOwner),
-			GetTextWrapping(pLayoutOwner),
-			GetTextLineBounds(pLayoutOwner),
-			GetTextAlignment(pLayoutOwner));
+			GetParagraphIndent(pParagraph, pLayoutOwner!),
+			GetTextWrapping(pLayoutOwner!),
+			GetTextLineBounds(pLayoutOwner!),
+			GetTextAlignment(pLayoutOwner!));
 
 		pTextParagraphProperties.SetFlags(TextParagraphProperties.Flags.Justify, textAlignment == TextAlignment.Justify);
-		pTextParagraphProperties.SetFlags(TextParagraphProperties.Flags.TrimSideBearings, GetOpticalMarginAlignment(pLayoutOwner) == OpticalMarginAlignment.TrimSideBearings);
-		pTextParagraphProperties.SetFlags(TextParagraphProperties.Flags.DetermineTextReadingOrderFromContent, GetTextReadingOrder(pLayoutOwner) == TextReadingOrder.DetectFromContent);
+		pTextParagraphProperties.SetFlags(TextParagraphProperties.Flags.TrimSideBearings, GetOpticalMarginAlignment(pLayoutOwner!) == OpticalMarginAlignment.TrimSideBearings);
+		pTextParagraphProperties.SetFlags(TextParagraphProperties.Flags.DetermineTextReadingOrderFromContent, GetTextReadingOrder(pLayoutOwner!) == TextReadingOrder.DetectFromContent);
 		pTextParagraphProperties.SetFlags(TextParagraphProperties.Flags.DetermineAlignmentFromContent, textAlignment == TextAlignment.DetectFromContent);
 
 		ppTextParagraphProperties = pTextParagraphProperties;
@@ -178,7 +177,7 @@ internal static class BlockLayoutHelpers
 		if (pEffectiveParagraph == null)
 		{
 			// Use the layout owner as the effective paragraph.
-			pEffectiveParagraph = pLayoutOwner;
+			pEffectiveParagraph = pLayoutOwner!;
 		}
 
 		// TODO Uno (integrate): UNICODE_ELLIPSIS constant ('…'); shared with ParagraphTextSource's
@@ -494,7 +493,7 @@ internal static class BlockLayoutHelpers
 		else
 		{
 			// TODO Uno (integrate): CUIElement::DesiredSize — fall back to the element's measured desired height.
-			pBaseline = (float)pElement.DesiredSize.Height;
+			pBaseline = (float)pElement!.DesiredSize.Height;
 		}
 	}
 
@@ -530,7 +529,7 @@ internal static class BlockLayoutHelpers
 		if (pEffectiveParagraph == null)
 		{
 			// Use the layout owner as the effective paragraph.
-			pEffectiveParagraph = pLayoutOwner;
+			pEffectiveParagraph = pLayoutOwner!;
 		}
 
 		// Formatting can always be read from the paragraph, and font context from the control.
@@ -545,7 +544,7 @@ internal static class BlockLayoutHelpers
 
 			// CFontFamily::GetTextLineBoundsMetrics — default baseline / line advance for the resolved
 			// font, constrained by the owner's TextLineBounds.
-			(pDefaultFontBaseline, pDefaultFontLineAdvance) = details.GetTextLineBoundsMetrics(GetTextLineBounds(pLayoutOwner));
+			(pDefaultFontBaseline, pDefaultFontLineAdvance) = details.GetTextLineBoundsMetrics(GetTextLineBounds(pLayoutOwner!));
 		}
 
 		// LineHeight and LineStackingStrategy must be read from the paragraph if set locally, the control otherwise.
@@ -827,7 +826,6 @@ internal static class BlockLayoutHelpers
 		TextRunProperties pTextRunProperties,
 		out float pCollapsingCharWidth)
 	{
-		ushort uGlyphId = 0;
 		float eAdvance = 0.0f;
 		uint character = pCollapsingChar;
 
