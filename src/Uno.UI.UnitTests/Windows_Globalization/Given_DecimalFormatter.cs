@@ -848,46 +848,41 @@ namespace Uno.UI.Tests.Windows_Globalization
 		[DataRow("fi-FI", "FI")]
 		[DataRow("ar-SA", "SA")]
 		[DataRow("sv-SE", "SE")]
-		public void When_SpecialValues_Then_NaNIsLocalizedAndInfinityIsNot(string language, string geographicRegion)
+		public void When_SpecialValues_Then_InfinityIsNotLocalizedAndNaNRoundTrips(string language, string geographicRegion)
 		{
 			var sut = new DecimalFormatter(new[] { language }, geographicRegion);
-			var expectedNaN = System.Globalization.CultureInfo.GetCultureInfo(language).NumberFormat.NaNSymbol;
 
-			Assert.AreEqual(expectedNaN, sut.FormatDouble(double.NaN));
 			Assert.AreEqual("\u221e", sut.FormatDouble(double.PositiveInfinity));
 			Assert.AreEqual("-\u221e", sut.FormatDouble(double.NegativeInfinity));
-
-			Assert.IsTrue(double.IsNaN(sut.ParseDouble(expectedNaN)!.Value));
 			Assert.AreEqual(double.PositiveInfinity, sut.ParseDouble("\u221e"));
 			Assert.AreEqual(double.NegativeInfinity, sut.ParseDouble("-\u221e"));
-		}
 
-		[TestMethod]
-		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
-		public void When_LocaleHasOwnNaNSymbol_Then_InvariantSymbolIsRejected()
-		{
-			var sut = new DecimalFormatter(new[] { "fi-FI" }, "FI");
-			var localized = sut.FormatDouble(double.NaN);
+			var nan = sut.FormatDouble(double.NaN);
 
-			Assert.AreNotEqual("NaN", localized, "fi-FI is expected to localize NaN.");
-			Assert.IsTrue(double.IsNaN(sut.ParseDouble(localized)!.Value));
-			Assert.IsNull(sut.ParseDouble("NaN"));
+			Assert.IsTrue(double.IsNaN(sut.ParseDouble(nan)!.Value), $"'{nan}' must round-trip.");
+
+			// Only the formatter's own symbol is accepted, whichever one the locale data yields.
+			Assert.IsNull(sut.ParseDouble(nan == "NaN" ? "ep\u00e4luku" : "NaN"));
+
+#if HAS_UNO || IS_UNIT_TESTS
+			// Uno resolves the NaN symbol from the same locale data .NET exposes. Native WinRT reads the
+			// Windows locale data instead, which carries a different CLDR revision for a few languages.
+			Assert.AreEqual(
+				System.Globalization.CultureInfo.GetCultureInfo(language).NumberFormat.NaNSymbol,
+				nan);
+#endif
 		}
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		// .NET treats SPACE, NO-BREAK SPACE and NARROW NO-BREAK SPACE as interchangeable group
-		// separators; WinRT only pairs SPACE with NO-BREAK SPACE.
-		[DataRow("fr-FR", "FR", "1\u202f234,50", 1234.5)]
-		[DataRow("fr-FR", "FR", "1\u00a0234,50", null)]
-		[DataRow("fr-FR", "FR", "1 234,50", null)]
-		[DataRow("sv-SE", "SE", "1\u00a0234,50", 1234.5)]
-		[DataRow("sv-SE", "SE", "1 234,50", 1234.5)]
-		[DataRow("sv-SE", "SE", "1\u202f234,50", null)]
-		[DataRow("en-US", "US", "1\u00a0234.50", null)]
-		[DataRow("en-US", "US", "1 234.50", null)]
-		[DataRow("en-US", "US", "1\u202f234.50", null)]
-		public void When_SeparatorIsSpaceLike_Then_OnlyEquivalentSpacesParse(string language, string geographicRegion, string text, double? expected)
+		// separators; WinRT only pairs SPACE with NO-BREAK SPACE. The separator is read back from the
+		// formatter because which one a locale uses depends on the locale data revision.
+		[DataRow("fr-FR", "FR")]
+		[DataRow("sv-SE", "SE")]
+		[DataRow("en-US", "US")]
+		[DataRow("de-DE", "DE")]
+		public void When_Grouped_Then_OnlyEquivalentSpacesParse(string language, string geographicRegion)
 		{
 			var sut = new DecimalFormatter(new[] { language }, geographicRegion)
 			{
@@ -896,7 +891,27 @@ namespace Uno.UI.Tests.Windows_Globalization
 				FractionDigits = 2,
 			};
 
-			Assert.AreEqual(expected, sut.ParseDouble(text));
+			var formatted = sut.FormatDouble(1234.5);
+			var separator = formatted[1];
+
+			Assert.AreEqual(1234.5, sut.ParseDouble(formatted), $"'{language}' must parse its own output.");
+
+			var separatorIsSpaceLike = separator is ' ' or '\u00a0';
+
+			foreach (var candidate in new[] { ' ', '\u00a0', '\u202f' })
+			{
+				if (candidate == separator)
+				{
+					continue;
+				}
+
+				var expected = separatorIsSpaceLike && candidate is ' ' or '\u00a0' ? 1234.5 : (double?)null;
+
+				Assert.AreEqual(
+					expected,
+					sut.ParseDouble(formatted.Replace(separator, candidate)),
+					$"'{language}' with U+{(int)candidate:X4} as the separator");
+			}
 		}
 
 		[TestMethod]
@@ -1135,8 +1150,13 @@ namespace Uno.UI.Tests.Windows_Globalization
 				FractionDigits = 2,
 			};
 
-			Assert.AreEqual(1234L, french.ParseInt("1\u202f234"));
-			Assert.IsNull(french.ParseInt("1\u00a0234"));
+			// Which space character groups a locale depends on the locale data revision, so it is read
+			// back from the formatter rather than pinned.
+			var separator = french.FormatInt(1234)[1];
+			var foreign = separator == '\u202f' ? '\u00a0' : '\u202f';
+
+			Assert.AreEqual(1234L, french.ParseInt($"1{separator}234"));
+			Assert.IsNull(french.ParseInt($"1{foreign}234"));
 		}
 	}
 }
