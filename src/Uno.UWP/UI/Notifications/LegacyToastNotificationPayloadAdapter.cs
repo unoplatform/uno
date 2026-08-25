@@ -105,7 +105,6 @@ internal static class LegacyToastNotificationPayloadAdapter
 		content.LoadXml(Restore(notification.Payload));
 		var toast = new ToastNotification(content)
 		{
-			Tag = notification.Tag,
 			Group = notification.Group,
 			ExpirationTime = notification.Expiration == DateTimeOffset.FromFileTime(0).ToLocalTime()
 				? null
@@ -117,6 +116,10 @@ internal static class LegacyToastNotificationPayloadAdapter
 			SuppressPopup = notification.SuppressDisplay,
 			AppNotificationId = notification.Id,
 		};
+		if (notification.Tag.Length > 0)
+		{
+			toast.Tag = notification.Tag;
+		}
 		return toast;
 	}
 }

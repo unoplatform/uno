@@ -14,8 +14,6 @@ namespace Microsoft.Windows.AppNotifications.Internal;
 
 internal static class AppNotificationPayloadParser
 {
-	private const int MaxPayloadCharacters = 5120;
-
 	public static AppNotificationPayload Parse(string payload)
 	{
 		var document = LoadDocument(payload);
@@ -103,16 +101,11 @@ internal static class AppNotificationPayloadParser
 	private static XDocument LoadDocument(string payload)
 	{
 		ArgumentNullException.ThrowIfNull(payload);
-		if (payload.Length > MaxPayloadCharacters)
-		{
-			throw new FormatException("The app notification payload exceeds 5120 characters.");
-		}
 
 		using var textReader = new StringReader(payload);
 		using var xmlReader = XmlReader.Create(textReader, new XmlReaderSettings
 		{
 			DtdProcessing = DtdProcessing.Prohibit,
-			MaxCharactersInDocument = MaxPayloadCharacters,
 			XmlResolver = null,
 		});
 		return XDocument.Load(xmlReader, LoadOptions.None);

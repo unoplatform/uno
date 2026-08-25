@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 
 namespace Microsoft.Windows.AppNotifications.Internal;
 
@@ -91,6 +92,7 @@ internal static class AppNotificationActivationBroker
 
 	private static void Drain()
 	{
+		List<Exception>? failures = null;
 		while (true)
 		{
 			Action<AppNotificationActivation> handler;
@@ -100,7 +102,7 @@ internal static class AppNotificationActivationBroker
 				if (_handler is null || _pending.Count == 0)
 				{
 					_isDraining = false;
-					return;
+					break;
 				}
 				handler = _handler;
 				activation = _pending.Dequeue();
@@ -112,13 +114,10 @@ internal static class AppNotificationActivationBroker
 			{
 				handler(activation);
 			}
-			catch
+			catch (Exception exception)
 			{
-				lock (_gate)
-				{
-					_isDraining = false;
-				}
-				throw;
+				// A failing handler must not strand the activations that are still queued.
+				(failures ??= new List<Exception>()).Add(exception);
 			}
 			finally
 			{
@@ -132,6 +131,15 @@ internal static class AppNotificationActivationBroker
 					}
 				}
 			}
+		}
+
+		if (failures is { Count: > 0 })
+		{
+			if (failures.Count == 1)
+			{
+				ExceptionDispatchInfo.Capture(failures[0]).Throw();
+			}
+			throw new AggregateException(failures);
 		}
 	}
 

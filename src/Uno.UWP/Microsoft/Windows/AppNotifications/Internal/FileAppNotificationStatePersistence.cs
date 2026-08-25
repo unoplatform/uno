@@ -2,9 +2,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
+using System.Xml;
 using Windows.Storage;
 
 namespace Microsoft.Windows.AppNotifications.Internal;
@@ -13,30 +17,157 @@ internal static class AppNotificationStatePersistenceFactory
 {
 	public static IAppNotificationStatePersistence Create()
 	{
+#if __WASM__
+		if (WebAssemblyAppNotificationConfiguration.UseServiceWorker && WebAssemblyAppNotificationStatePersistence.IsSupported)
+		{
+			return new WebAssemblyAppNotificationStatePersistence();
+		}
+		return new InMemoryAppNotificationStatePersistence();
+#else
 		var folder = ApplicationData.Current.LocalFolder.Path;
 		return string.IsNullOrEmpty(folder)
 			? new InMemoryAppNotificationStatePersistence()
 			: new FileAppNotificationStatePersistence(Path.Combine(folder, ".uno-appnotifications-v1.bin"));
+#endif
 	}
 }
 
-internal sealed class FileAppNotificationStatePersistence : IAppNotificationStatePersistence
+internal sealed class FileAppNotificationStatePersistence : IAppNotificationStatePersistence, IMergingAppNotificationStatePersistence, IAppNotificationIdAllocator, ITransactionalAppNotificationStatePersistence
 {
 	private const int Magic = 0x554E4F4E;
 	private const int MaxRecords = 10_000;
 	private const int MaxStringBytes = 32_768;
 	private const long MaxSnapshotBytes = 16 * 1024 * 1024;
+	private static readonly TimeSpan LockTimeout = TimeSpan.FromSeconds(10);
 	private static readonly Encoding StrictUtf8 = new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
 	private readonly string _path;
 	private readonly string _backupPath;
+	private readonly string _lockPath;
+	private AppNotificationStateSnapshot _baseline = AppNotificationStateSnapshot.Empty;
 
 	public FileAppNotificationStatePersistence(string path)
 	{
 		_path = path ?? throw new ArgumentNullException(nameof(path));
 		_backupPath = path + ".bak";
+		_lockPath = path + ".lock";
 	}
 
 	public AppNotificationStateSnapshot Load()
+	{
+		using var stateLock = AcquireLock();
+		_baseline = LoadCore();
+		return Clone(_baseline);
+	}
+
+	public void Save(AppNotificationStateSnapshot state)
+	{
+		ArgumentNullException.ThrowIfNull(state);
+		ValidateSnapshot(state);
+		using var stateLock = AcquireLock();
+		SaveCore(state);
+		_baseline = Clone(state);
+	}
+
+	public AppNotificationStateSnapshot MergeAndSave(AppNotificationStateSnapshot state)
+	{
+		ArgumentNullException.ThrowIfNull(state);
+		ValidateSnapshot(state);
+		using var stateLock = AcquireLock();
+		var latest = LoadCore();
+		var baselineById = _baseline.Records.ToDictionary(record => record.Id);
+		var nextById = state.Records.ToDictionary(record => record.Id);
+		var latestById = latest.Records.ToDictionary(record => record.Id);
+
+		foreach (var id in baselineById.Keys.Union(nextById.Keys))
+		{
+			baselineById.TryGetValue(id, out var baselineRecord);
+			nextById.TryGetValue(id, out var nextRecord);
+			if (Equals(baselineRecord, nextRecord))
+			{
+				continue;
+			}
+			latestById.TryGetValue(id, out var latestRecord);
+			if (!Equals(baselineRecord, latestRecord))
+			{
+				throw new InvalidOperationException($"App notification state record {id} was changed by another process.");
+			}
+		}
+
+		foreach (var id in baselineById.Keys.Union(nextById.Keys))
+		{
+			baselineById.TryGetValue(id, out var baselineRecord);
+			nextById.TryGetValue(id, out var nextRecord);
+			if (Equals(baselineRecord, nextRecord))
+			{
+				continue;
+			}
+			if (nextRecord is null)
+			{
+				latestById.Remove(id);
+			}
+			else
+			{
+				latestById[id] = nextRecord;
+			}
+		}
+
+		var baselineReceipts = (_baseline.DeliveryReceipts ?? Array.Empty<string>()).ToHashSet(StringComparer.Ordinal);
+		var nextReceipts = (state.DeliveryReceipts ?? Array.Empty<string>()).ToHashSet(StringComparer.Ordinal);
+		var removedReceipts = baselineReceipts.Except(nextReceipts).ToHashSet(StringComparer.Ordinal);
+		var mergedReceipts = (latest.DeliveryReceipts ?? Array.Empty<string>())
+			.Where(receipt => !removedReceipts.Contains(receipt))
+			.Concat(nextReceipts.Except(baselineReceipts))
+			.Distinct(StringComparer.Ordinal)
+			.TakeLast(MaxRecords)
+			.ToArray();
+		var merged = new AppNotificationStateSnapshot(
+			AppNotificationStateSnapshot.CurrentSchemaVersion,
+			state.NextId,
+			latestById.Values.OrderBy(record => record.CreatedUtc).ToArray(),
+			mergedReceipts);
+		SaveCore(merged);
+		_baseline = Clone(merged);
+		return Clone(_baseline);
+	}
+
+	public uint AllocateId(IReadOnlyCollection<uint> localIds)
+	{
+		ArgumentNullException.ThrowIfNull(localIds);
+		using var stateLock = AcquireLock();
+		return AllocateIdCore(LoadCore(), localIds);
+	}
+
+	public AppNotificationStateSnapshot ExecuteTransaction(Func<AppNotificationStateTransactionContext, AppNotificationStateSnapshot> mutation)
+	{
+		ArgumentNullException.ThrowIfNull(mutation);
+		using var stateLock = AcquireLock();
+		var latest = LoadCore();
+		var next = mutation(new AppNotificationStateTransactionContext(
+			Clone(latest),
+			localIds => AllocateIdCore(latest, localIds)));
+		ValidateSnapshot(next);
+		SaveCore(next);
+		_baseline = Clone(next);
+		return Clone(next);
+	}
+
+	private static uint AllocateIdCore(AppNotificationStateSnapshot state, IReadOnlyCollection<uint> localIds)
+	{
+		var used = state.Records.Select(record => record.Id).Concat(localIds).ToHashSet();
+		Span<byte> bytes = stackalloc byte[sizeof(uint)];
+		for (var attempt = 0; attempt < 128; attempt++)
+		{
+			RandomNumberGenerator.Fill(bytes);
+			var id = BitConverter.ToUInt32(bytes);
+			if (id != 0 && !used.Contains(id))
+			{
+				return id;
+			}
+		}
+		throw new InvalidOperationException("Unable to allocate a unique app notification ID.");
+	}
+
+	private AppNotificationStateSnapshot LoadCore()
 	{
 		if (!File.Exists(_path) && !File.Exists(_backupPath))
 		{
@@ -73,9 +204,8 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 		}
 	}
 
-	public void Save(AppNotificationStateSnapshot state)
+	private void SaveCore(AppNotificationStateSnapshot state)
 	{
-		ArgumentNullException.ThrowIfNull(state);
 		ValidateSnapshot(state);
 		var directory = Path.GetDirectoryName(_path);
 		if (!string.IsNullOrEmpty(directory))
@@ -138,6 +268,34 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 		}
 	}
 
+	private FileStream AcquireLock()
+	{
+		var directory = Path.GetDirectoryName(_lockPath);
+		if (!string.IsNullOrEmpty(directory))
+		{
+			Directory.CreateDirectory(directory);
+		}
+		var timeout = Stopwatch.StartNew();
+		while (true)
+		{
+			try
+			{
+				return File.Open(_lockPath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+			}
+			catch (IOException) when (timeout.Elapsed < LockTimeout)
+			{
+				Thread.Sleep(25);
+			}
+		}
+	}
+
+	private static AppNotificationStateSnapshot Clone(AppNotificationStateSnapshot state)
+		=> state with
+		{
+			Records = state.Records.ToArray(),
+			DeliveryReceipts = (state.DeliveryReceipts ?? Array.Empty<string>()).ToArray(),
+		};
+
 	private static AppNotificationStateSnapshot ReadSnapshot(string path)
 	{
 		using var stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
@@ -151,9 +309,13 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 			throw new InvalidDataException("Invalid app notification state header.");
 		}
 		var schemaVersion = reader.ReadInt32();
-		if (schemaVersion is < 1 or > AppNotificationStateSnapshot.CurrentSchemaVersion)
+		if (schemaVersion > AppNotificationStateSnapshot.CurrentSchemaVersion)
 		{
 			throw new AppNotificationStateVersionException(schemaVersion);
+		}
+		if (schemaVersion < 1)
+		{
+			throw new InvalidDataException("Invalid app notification state schema version.");
 		}
 		var nextId = reader.ReadUInt32();
 		if (nextId == 0)
@@ -224,6 +386,9 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 				ReadString(reader));
 		}
 		var deliveryCorrelation = schemaVersion >= 2 ? ReadString(reader) : string.Empty;
+		var revision = schemaVersion >= 4 ? reader.ReadInt64() : 1;
+		var operationOwner = schemaVersion >= 4 ? ReadString(reader) : "legacy";
+		var operationLeaseExpirationUtc = schemaVersion >= 4 ? ReadDateTimeOffset(reader) : DateTimeOffset.MinValue;
 		return new AppNotificationStateRecord(
 			id,
 			payload,
@@ -237,7 +402,10 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 			suppressDisplay,
 			postingState,
 			progress,
-			deliveryCorrelation);
+			deliveryCorrelation,
+			revision,
+			operationOwner,
+			operationLeaseExpirationUtc);
 	}
 
 	private static void WriteRecord(BinaryWriter writer, AppNotificationStateRecord record)
@@ -263,6 +431,9 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 			WriteString(writer, progress.Status);
 		}
 		WriteString(writer, record.DeliveryCorrelation);
+		writer.Write(record.Revision);
+		WriteString(writer, record.OperationOwner);
+		WriteDateTimeOffset(writer, record.OperationLeaseExpirationUtc);
 	}
 
 	private static DateTimeOffset ReadDateTimeOffset(BinaryReader reader)
@@ -309,13 +480,15 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 		writer.Write(bytes);
 	}
 
-	private static void ValidateSnapshot(AppNotificationStateSnapshot state)
+	internal static void ValidateSnapshot(AppNotificationStateSnapshot state, bool allowPreviousSchemaVersions = false)
 	{
-		if (state.SchemaVersion != AppNotificationStateSnapshot.CurrentSchemaVersion)
+		if (allowPreviousSchemaVersions
+			? state.SchemaVersion is < 1 or > AppNotificationStateSnapshot.CurrentSchemaVersion
+			: state.SchemaVersion != AppNotificationStateSnapshot.CurrentSchemaVersion)
 		{
 			throw new AppNotificationStateVersionException(state.SchemaVersion);
 		}
-		if (state.NextId == 0 || state.Records.Count > MaxRecords)
+		if (state.NextId == 0 || state.Records is null || state.Records.Count > MaxRecords)
 		{
 			throw new InvalidDataException("Invalid app notification state metadata.");
 		}
@@ -324,11 +497,16 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 		long encodedBytes = sizeof(int) * 3 + sizeof(uint);
 		foreach (var record in state.Records)
 		{
+			if (record is null)
+			{
+				throw new InvalidDataException("App notification state contains a null record.");
+			}
 			ValidateRecord(record, ids);
 			encodedBytes += GetEncodedByteCount(record.Payload);
 			encodedBytes += GetEncodedByteCount(record.Tag);
 			encodedBytes += GetEncodedByteCount(record.Group);
 			encodedBytes += GetEncodedByteCount(record.DeliveryCorrelation);
+			encodedBytes += GetEncodedByteCount(record.OperationOwner);
 			encodedBytes += record.BootIdentifier is null ? 0 : GetEncodedByteCount(record.BootIdentifier);
 			if (record.Progress is { } progress)
 			{
@@ -343,7 +521,7 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 		}
 		var deliveryReceipts = state.DeliveryReceipts ?? Array.Empty<string>();
 		if (deliveryReceipts.Count > MaxRecords ||
-			deliveryReceipts.Any(receipt => receipt.Length == 0) ||
+			deliveryReceipts.Any(string.IsNullOrEmpty) ||
 			deliveryReceipts.Distinct(StringComparer.Ordinal).Count() != deliveryReceipts.Count)
 		{
 			throw new InvalidDataException("Invalid app notification delivery receipts.");
@@ -364,8 +542,17 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 		{
 			throw new InvalidDataException("App notification state contains an invalid or duplicate ID.");
 		}
+		if (record.Payload is null || record.Tag is null || record.Group is null || record.DeliveryCorrelation is null ||
+			record.OperationOwner is null || record.Revision <= 0 ||
+			record.Progress is { Title: null } or { ValueStringOverride: null } or { Status: null })
+		{
+			throw new InvalidDataException("App notification state contains a null string.");
+		}
 		if (record.Priority is not AppNotificationPriority.Default and not AppNotificationPriority.High ||
-			record.PostingState is not AppNotificationPostingState.Posting and not AppNotificationPostingState.Shown and not AppNotificationPostingState.Updating)
+			record.PostingState is not AppNotificationPostingState.Posting and
+				not AppNotificationPostingState.Shown and
+				not AppNotificationPostingState.Updating and
+				not AppNotificationPostingState.Removing)
 		{
 			throw new InvalidDataException("App notification state contains an unknown enum value.");
 		}
@@ -373,11 +560,15 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 		{
 			throw new InvalidDataException("App notification state contains an invalid progress sequence.");
 		}
+		if (record.PostingState != AppNotificationPostingState.Shown && record.OperationOwner.Length == 0)
+		{
+			throw new InvalidDataException("App notification state contains an operation without an owner.");
+		}
 		try
 		{
 			AppNotificationPayloadParser.Parse(record.Payload);
 		}
-		catch (Exception exception) when (exception is ArgumentException or InvalidOperationException or FormatException)
+		catch (Exception exception) when (exception is ArgumentException or InvalidOperationException or FormatException or NotSupportedException or XmlException)
 		{
 			throw new InvalidDataException("App notification state contains an invalid payload.", exception);
 		}

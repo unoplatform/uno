@@ -20,17 +20,21 @@ internal static partial class MacOSAppNotificationRuntime
 	private static readonly object _gate = new();
 	private static bool _isInitialized;
 
-	public static unsafe void Initialize()
+	public static unsafe bool Initialize()
 	{
 		lock (_gate)
 		{
 			if (_isInitialized)
 			{
-				return;
+				return true;
 			}
 			NativeUno.uno_notifications_set_callbacks(&OnActivated, &OnDelivered);
-			NativeUno.uno_notifications_initialize();
+			if (!NativeUno.uno_notifications_initialize())
+			{
+				return false;
+			}
 			_isInitialized = true;
+			return true;
 		}
 	}
 
@@ -47,11 +51,14 @@ internal static partial class MacOSAppNotificationRuntime
 	{
 		get
 		{
-			Initialize();
+			if (!Initialize())
+			{
+				return AppNotificationSetting.DisabledForApplication;
+			}
 			return NativeUno.uno_notifications_get_setting() switch
 			{
 				2 or 3 => AppNotificationSetting.Enabled,
-				1 => AppNotificationSetting.DisabledForUser,
+				1 => AppNotificationSetting.DisabledForApplication,
 				5 => AppNotificationSetting.Unsupported,
 				_ => AppNotificationSetting.DisabledForApplication,
 			};
@@ -66,8 +73,11 @@ internal static partial class MacOSAppNotificationRuntime
 
 	public static bool TryPost(AppleAppNotificationCommand command, TimeSpan? delay = null)
 	{
-		Initialize();
-		var nativeCommand = ResolveAttachment(command);
+		if (!Initialize())
+		{
+			return false;
+		}
+		var nativeCommand = ResolveAttachment(AppleAppNotificationTranslator.PrepareForPosting(command));
 		var json = JsonSerializer.Serialize(
 			nativeCommand,
 			typeof(AppleAppNotificationCommand),
@@ -80,6 +90,14 @@ internal static partial class MacOSAppNotificationRuntime
 		Initialize();
 		return NativeUno.uno_notifications_remove(requestIdentifier);
 	}
+
+	public static bool RemoveNotification(uint id)
+		=> Remove(AppleAppNotificationTranslator.GetNotificationRequestIdentifier(id)) &&
+			RemoveAll(AppleAppNotificationTranslator.GetNotificationRequestIdentifierPrefix(id));
+
+	public static bool RemoveScheduled(string scheduleIdentifier)
+		=> Remove(AppleAppNotificationTranslator.GetScheduledRequestIdentifier(scheduleIdentifier)) &&
+			RemoveAll(AppleAppNotificationTranslator.GetScheduledRequestIdentifierPrefix(scheduleIdentifier));
 
 	public static bool RemoveAll(string requestIdentifierPrefix)
 	{
@@ -136,16 +154,16 @@ internal static partial class MacOSAppNotificationRuntime
 
 	private static AppleAppNotificationCommand ResolveAttachment(AppleAppNotificationCommand command)
 	{
-		if (string.IsNullOrEmpty(command.AttachmentSource) ||
-			!Uri.TryCreate(command.AttachmentSource, UriKind.Absolute, out var uri))
+		var installedPath = command.AttachmentSource.StartsWith("ms-appx:", StringComparison.OrdinalIgnoreCase)
+			? Package.Current.InstalledPath
+			: string.Empty;
+		if (!AppleAppNotificationAssetPathResolver.TryResolve(
+			command.AttachmentSource,
+			installedPath,
+			out var path))
 		{
 			return command with { AttachmentSource = string.Empty };
 		}
-		var path = uri.IsFile
-			? uri.LocalPath
-			: uri.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase)
-				? Path.Combine(Package.Current.InstalledPath, uri.AbsolutePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar))
-				: string.Empty;
 		return command with { AttachmentSource = File.Exists(path) ? path : string.Empty };
 	}
 

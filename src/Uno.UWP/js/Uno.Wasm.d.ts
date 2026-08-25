@@ -701,31 +701,140 @@ interface UnoAppNotificationCommand {
     protocolUri: string | null;
     actions: UnoAppNotificationActionCommand[];
 }
+interface UnoAppNotificationActivation {
+    token: string;
+    argument: string;
+    protocolUri: string | null;
+}
+interface UnoAppNotificationActivationRecord {
+    id: number;
+    revision?: string;
+    pending?: boolean;
+    body: UnoAppNotificationActivation;
+    actions: Record<string, UnoAppNotificationActivation>;
+}
+interface UnoAppNotificationActivationWriteResult {
+    succeeded: boolean;
+    previous: UnoAppNotificationActivationRecord | null;
+}
+interface UnoAppNotificationLockRecord {
+    owner: string;
+    choosing: boolean;
+    ticket: number;
+    expires: number;
+}
 declare namespace Windows.UI.Notifications {
+    class AppNotificationStatePersistence {
+        static isSupported(): boolean;
+        static getItem(key: string): string | null;
+        static setItem(key: string, value: string): void;
+        static getItems(prefix: string): string;
+        static removeItem(key: string): void;
+        static removeItems(prefix: string): void;
+        static createNotificationId(): number;
+        static acquireTransactionLock(lockName: string, owner: string, timeoutMilliseconds: number, leaseMilliseconds: number): boolean;
+        static renewTransactionLock(lockName: string, owner: string, leaseMilliseconds: number): void;
+        static releaseTransactionLock(lockName: string, owner: string): void;
+        static commitTransactionVersion(lockName: string, owner: string, versionKey: string, expectedVersion: string, nextVersion: string): boolean;
+        private static hasEarlierLockContender;
+        private static getLockRecords;
+        private static readLockRecord;
+        private static writeLockRecord;
+        private static getLockKey;
+        private static spinWait;
+        private static getStorageKey;
+    }
     class AppNotificationManager {
         private static readonly tagPrefix;
+        private static readonly serviceWorkerScriptName;
+        private static readonly serviceWorkerAppIdParameter;
+        private static readonly appId;
+        private static readonly activationStoragePrefix;
+        private static readonly activationStateLockName;
+        private static readonly activationStateLockTimeoutMilliseconds;
+        private static readonly activationStateLockLeaseMilliseconds;
         private static readonly activeNotifications;
         private static readonly activeIds;
         private static readonly expirationTimers;
+        private static serviceWorkerRegistration;
+        private static persistentOperation;
+        private static registrationGeneration;
         private static stateKnown;
         private static initialized;
+        private static activationRegistered;
+        private static useServiceWorker;
         private static dispatchActivation;
-        static isSupported(): boolean;
+        private static dispatchShowResult;
+        private static readonly serviceWorkerMessageHandler;
+        private static handleServiceWorkerMessage;
+        static isSupported(useServiceWorker?: boolean): boolean;
         static getPermission(): string;
-        static initialize(): void;
+        static initialize(useServiceWorker?: boolean): void;
+        static initializePosting(useServiceWorker?: boolean): void;
         static uninitialize(): void;
         static requestPermission(): void;
-        static show(commandJson: string): boolean;
+        static show(commandJson: string, operationCorrelation: string): boolean;
+        static showAsync(commandJson: string, operationCorrelation: string): Promise<boolean>;
         static close(tag: string): void;
         static closeAll(tagPrefix: string): void;
+        static closeAsync(tag: string): Promise<boolean>;
+        static closeAllAsync(tagPrefix: string): Promise<boolean>;
+        static unregisterAllAsync(tagPrefix: string): Promise<boolean>;
+        static unregisterAll(tagPrefix: string): void;
         static getActiveIds(tagPrefix: string): string | null;
+        static getActiveIdsAsync(tagPrefix: string): Promise<string | null>;
+        private static showPersistent;
+        private static showPersistentAsync;
+        private static closePersistent;
+        private static closeAllPersistent;
+        private static closeAllPersistentCore;
+        private static refreshPersistentNotifications;
+        private static refreshPersistentNotificationsCore;
+        private static enqueuePersistentOperation;
         private static createOptions;
+        private static createPersistentOptions;
+        private static waitForActiveWorker;
+        private static getPersistentRegistrations;
+        private static isNotificationWorker;
+        private static isUnmarkedLegacyNotificationWorker;
+        private static unregisterEmptyLegacyWorkers;
+        private static resolveUrl;
+        private static dispatchPendingActivation;
+        private static getClientUrl;
+        private static isOwnedNotification;
+        private static isLegacyOwnedNotification;
+        private static isOwnedWorkerMessage;
+        private static createActivationRecord;
+        private static createActivationRevision;
+        private static createActivationToken;
+        private static isValidActivationToken;
+        private static consumeAndActivate;
+        private static getActivationRecords;
+        private static isValidActivationRecord;
+        private static isValidActivationRevision;
+        private static isValidActivation;
+        private static replaceActivationRecord;
+        private static rollbackActivationRecord;
+        private static commitActivationRecord;
+        private static removeActivationRecord;
+        private static clearActivationRecords;
+        private static pruneActivationRecords;
+        private static getActivationRecord;
+        private static activationRecordsMatch;
+        private static withActivationStateLock;
+        private static getActivationStorageKey;
+        private static cleanupPreviousPersistentMode;
         private static activate;
         private static navigateProtocol;
         private static isValidCommand;
+        private static isValidOperationCorrelation;
+        private static parseCommand;
         private static scheduleExpiration;
+        private static schedulePersistentExpiration;
         private static removeActive;
         private static removeActiveId;
+        private static addActiveId;
+        private static getId;
         private static clearExpiration;
     }
 }

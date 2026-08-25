@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Text;
 
 namespace Microsoft.Windows.AppNotifications.Builder;
@@ -34,6 +35,16 @@ internal static class AppNotificationBuilderUtility
 		}
 
 		return encoded.ToString();
+	}
+
+	public static string GetAbsoluteUri(Uri value, string parameterName)
+	{
+		ArgumentNullException.ThrowIfNull(value, parameterName);
+		if (!value.IsAbsoluteUri)
+		{
+			throw new ArgumentException("An absolute URI is required.", parameterName);
+		}
+		return value.AbsoluteUri;
 	}
 
 	public static string GetSoundEventUri(AppNotificationSoundEvent soundEvent)

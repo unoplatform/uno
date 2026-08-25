@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Windows.AppNotifications;
 using Microsoft.Windows.AppNotifications.Internal;
 using Uno.Foundation.Extensibility;
@@ -10,7 +11,7 @@ using Windows.UI.Notifications.Internal;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
-internal sealed class MacOSAppNotificationManagerBackend : IAppNotificationManagerBackend
+internal sealed class MacOSAppNotificationManagerBackend : IAppNotificationManagerBackend, IAppNotificationProgressUpdateCapability
 {
 	private static readonly MacOSAppNotificationManagerBackend _instance = new();
 
@@ -29,6 +30,8 @@ internal sealed class MacOSAppNotificationManagerBackend : IAppNotificationManag
 	public AppNotificationSetting Setting => MacOSAppNotificationRuntime.Setting;
 
 	public string? BootIdentifier => null;
+
+	public bool SupportsProgressUpdates => AppleAppNotificationCapabilities.SupportsProgressUpdates;
 
 	public void Register() => MacOSAppNotificationRuntime.RequestAuthorization();
 
@@ -50,7 +53,7 @@ internal sealed class MacOSAppNotificationManagerBackend : IAppNotificationManag
 
 	public void Remove(AppNotificationStateRecord notification)
 	{
-		if (!MacOSAppNotificationRuntime.Remove(AppleAppNotificationTranslator.RequestIdentifierPrefix + notification.Id))
+		if (!MacOSAppNotificationRuntime.RemoveNotification(notification.Id))
 		{
 			throw new InvalidOperationException("macOS could not remove the app notification.");
 		}
@@ -106,7 +109,7 @@ internal sealed class MacOSToastNotificationSchedulerBackend : IToastNotificatio
 	public void Cancel(string scheduleIdentifier)
 	{
 		ArgumentNullException.ThrowIfNull(scheduleIdentifier);
-		if (!MacOSAppNotificationRuntime.Remove(AppleAppNotificationTranslator.ScheduledRequestIdentifierPrefix + scheduleIdentifier))
+		if (!MacOSAppNotificationRuntime.RemoveScheduled(scheduleIdentifier))
 		{
 			throw new InvalidOperationException("macOS could not remove the scheduled toast notification.");
 		}
@@ -117,4 +120,28 @@ internal sealed class MacOSToastNotificationSchedulerBackend : IToastNotificatio
 
 	public IReadOnlyCollection<string>? GetDeliveredScheduleIdentifiers()
 		=> MacOSAppNotificationRuntime.GetDeliveredScheduleIdentifiers();
+
+	public IReadOnlyCollection<string>? GetDeliveryReceiptIdentifiers()
+		=> AppleToastNotificationDeliveryReceiptStore.GetIdentifiers();
+
+	public bool TryPersistDeliveryReceipt(string scheduleIdentifier)
+		=> AppleToastNotificationDeliveryReceiptStore.TryPersist(scheduleIdentifier);
+
+	public void ConsumeDeliveryReceipt(string scheduleIdentifier)
+		=> AppleToastNotificationDeliveryReceiptStore.TryConsume(scheduleIdentifier);
+
+	public void CleanupDeliveryReceipts(IReadOnlyCollection<string> retainedScheduleIdentifiers)
+		=> AppleToastNotificationDeliveryReceiptStore.TryCleanup(retainedScheduleIdentifiers);
+
+	public bool TryPersistDeliveredHistory(ToastNotificationScheduleRecord record)
+		=> AppleToastNotificationDeliveredHistoryStore.TryPersist(record);
+
+	public IReadOnlyCollection<ToastNotificationScheduleRecord>? GetDeliveredHistory()
+		=> AppleToastNotificationDeliveredHistoryStore.GetAll();
+
+	public bool TryRemoveDeliveredHistory(string scheduleIdentifier)
+		=> AppleToastNotificationDeliveredHistoryStore.TryRemove(scheduleIdentifier);
+
+	public bool TryCleanupDeliveredHistory(IReadOnlyCollection<string> activeScheduleIdentifiers)
+		=> AppleToastNotificationDeliveredHistoryStore.TryCleanup(activeScheduleIdentifiers);
 }

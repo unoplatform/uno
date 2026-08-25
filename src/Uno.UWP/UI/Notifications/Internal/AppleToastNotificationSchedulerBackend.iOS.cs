@@ -29,7 +29,7 @@ internal sealed class AppleToastNotificationSchedulerBackend : IToastNotificatio
 	public void Cancel(string scheduleIdentifier)
 	{
 		ArgumentNullException.ThrowIfNull(scheduleIdentifier);
-		AppleAppNotificationRuntime.Remove(AppleAppNotificationTranslator.ScheduledRequestIdentifierPrefix + scheduleIdentifier);
+		AppleAppNotificationRuntime.RemoveScheduled(scheduleIdentifier);
 	}
 
 	public IReadOnlyCollection<string>? GetPendingScheduleIdentifiers()
@@ -37,4 +37,28 @@ internal sealed class AppleToastNotificationSchedulerBackend : IToastNotificatio
 
 	public IReadOnlyCollection<string>? GetDeliveredScheduleIdentifiers()
 		=> AppleAppNotificationRuntime.GetDeliveredScheduleIdentifiers();
+
+	public IReadOnlyCollection<string>? GetDeliveryReceiptIdentifiers()
+		=> AppleToastNotificationDeliveryReceiptStore.GetIdentifiers();
+
+	public bool TryPersistDeliveryReceipt(string scheduleIdentifier)
+		=> AppleToastNotificationDeliveryReceiptStore.TryPersist(scheduleIdentifier);
+
+	public void ConsumeDeliveryReceipt(string scheduleIdentifier)
+		=> AppleToastNotificationDeliveryReceiptStore.TryConsume(scheduleIdentifier);
+
+	public void CleanupDeliveryReceipts(IReadOnlyCollection<string> retainedScheduleIdentifiers)
+		=> AppleToastNotificationDeliveryReceiptStore.TryCleanup(retainedScheduleIdentifiers);
+
+	public bool TryPersistDeliveredHistory(ToastNotificationScheduleRecord record)
+		=> AppleToastNotificationDeliveredHistoryStore.TryPersist(record);
+
+	public IReadOnlyCollection<ToastNotificationScheduleRecord>? GetDeliveredHistory()
+		=> AppleToastNotificationDeliveredHistoryStore.GetAll();
+
+	public bool TryRemoveDeliveredHistory(string scheduleIdentifier)
+		=> AppleToastNotificationDeliveredHistoryStore.TryRemove(scheduleIdentifier);
+
+	public bool TryCleanupDeliveredHistory(IReadOnlyCollection<string> activeScheduleIdentifiers)
+		=> AppleToastNotificationDeliveredHistoryStore.TryCleanup(activeScheduleIdentifiers);
 }

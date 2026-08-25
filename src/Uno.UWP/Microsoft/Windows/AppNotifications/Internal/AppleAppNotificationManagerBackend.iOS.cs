@@ -6,13 +6,15 @@ using Uno.Foundation.Logging;
 
 namespace Microsoft.Windows.AppNotifications.Internal;
 
-internal sealed class AppleAppNotificationManagerBackend : IAppNotificationManagerBackend
+internal sealed class AppleAppNotificationManagerBackend : IAppNotificationManagerBackend, IAppNotificationProgressUpdateCapability
 {
 	public bool IsSupported => true;
 
 	public AppNotificationSetting Setting => AppleAppNotificationRuntime.Setting;
 
 	public string? BootIdentifier => null;
+
+	public bool SupportsProgressUpdates => AppleAppNotificationCapabilities.SupportsProgressUpdates;
 
 	public void Register() => AppleAppNotificationRuntime.RequestAuthorization();
 
@@ -30,13 +32,10 @@ internal sealed class AppleAppNotificationManagerBackend : IAppNotificationManag
 		=> TryPost(AppleAppNotificationTranslator.Translate(notification));
 
 	public bool TryUpdate(AppNotificationStateRecord notification)
-	{
-		AppleAppNotificationRuntime.Remove(AppleAppNotificationTranslator.RequestIdentifierPrefix + notification.Id);
-		return TryPost(AppleAppNotificationTranslator.Translate(notification.ToEnvelope()));
-	}
+		=> TryPost(AppleAppNotificationTranslator.Translate(notification.ToEnvelope()));
 
 	public void Remove(AppNotificationStateRecord notification)
-		=> AppleAppNotificationRuntime.Remove(AppleAppNotificationTranslator.RequestIdentifierPrefix + notification.Id);
+		=> AppleAppNotificationRuntime.RemoveNotification(notification.Id);
 
 	public void RemoveAll()
 		=> AppleAppNotificationRuntime.RemoveAll(AppleAppNotificationTranslator.RequestIdentifierPrefix);

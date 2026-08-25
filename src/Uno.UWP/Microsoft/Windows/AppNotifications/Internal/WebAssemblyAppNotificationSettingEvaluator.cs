@@ -13,7 +13,7 @@ internal static class WebAssemblyAppNotificationSettingEvaluator
 			: permission switch
 			{
 				"granted" => AppNotificationSetting.Enabled,
-				"denied" => AppNotificationSetting.DisabledForUser,
+				"denied" => AppNotificationSetting.DisabledForApplication,
 				_ => AppNotificationSetting.DisabledForApplication,
 			};
 }

@@ -1,9 +1,7 @@
 #nullable enable
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Windows.AppNotifications;
@@ -23,9 +21,9 @@ internal sealed class LinuxAppNotificationManagerBackend : IAppNotificationManag
 	private const string BusServiceName = "org.freedesktop.DBus";
 	private const string BusServicePath = "/org/freedesktop/DBus";
 	private static readonly TimeSpan OperationTimeout = TimeSpan.FromSeconds(10);
+	private static readonly IReadOnlyCollection<uint> EmptyNotificationIds = Array.Empty<uint>();
 	private readonly object _initializationGate = new();
-	private readonly LinuxAppNotificationNativeStateStore _nativeState = new(LinuxAppNotificationNativeStatePersistenceFactory.Create());
-	private readonly ConcurrentDictionary<uint, LinuxAppNotificationCommand> _commands = new();
+	private readonly LinuxAppNotificationNativeStateStore _nativeState = LinuxAppNotificationNativeStateStoreFactory.Create();
 	private Task<ConnectionContext?>? _initialization;
 
 	private LinuxAppNotificationManagerBackend()
@@ -64,10 +62,12 @@ internal sealed class LinuxAppNotificationManagerBackend : IAppNotificationManag
 		{
 			throw new InvalidOperationException("The Linux notification service is unavailable.");
 		}
+		LinuxAppNotificationNativeStateSession nativeState;
 		try
 		{
+			nativeState = GetNativeState(context);
 			EnsureServerOwner(context);
-			if (_nativeState.GetNativeId(notification.Id) is not { } nativeId)
+			if (nativeState.GetNativeId(notification.Id) is not { } nativeId)
 			{
 				return;
 			}
@@ -79,20 +79,30 @@ internal sealed class LinuxAppNotificationManagerBackend : IAppNotificationManag
 			LogWarning($"Linux could not close app notification {notification.Id}: {exception.Message}");
 			throw;
 		}
-		_nativeState.RemoveByNotificationId(notification.Id);
-		_commands.TryRemove(notification.Id, out _);
+		nativeState.RemoveByNotificationId(notification.Id);
 	}
 
 	public void RemoveAll()
 	{
-		var records = _nativeState.GetAll();
-		if (records.Count == 0)
-		{
-			_commands.Clear();
-			return;
-		}
 		var context = GetContext()
 			?? throw new InvalidOperationException("The Linux notification service is unavailable.");
+		LinuxAppNotificationNativeStateSession nativeState;
+		try
+		{
+			EnsureServerOwner(context);
+			nativeState = GetNativeState(context);
+		}
+		catch (Exception exception)
+		{
+			InvalidateContext(context);
+			LogWarning($"Linux could not read app notifications before closing them: {exception.Message}");
+			throw;
+		}
+		var records = nativeState.GetAll();
+		if (records.Count == 0)
+		{
+			return;
+		}
 		Exception? failure = null;
 		foreach (var record in records)
 		{
@@ -113,26 +123,25 @@ internal sealed class LinuxAppNotificationManagerBackend : IAppNotificationManag
 		{
 			throw new InvalidOperationException("Linux could not close all app notifications.", failure);
 		}
-		_nativeState.RemoveAll();
-		_commands.Clear();
+		nativeState.RemoveAll();
 	}
 
 	public IReadOnlyCollection<uint>? GetActiveNotificationIds()
 	{
 		if (GetContext() is not { } context)
 		{
-			return null;
+			return EmptyNotificationIds;
 		}
 		try
 		{
 			EnsureServerOwner(context);
-			return _nativeState.GetAll().Select(record => record.NotificationId).ToArray();
+			return GetNativeState(context).GetAll().Select(record => record.NotificationId).ToArray();
 		}
 		catch (Exception exception)
 		{
 			InvalidateContext(context);
 			LogWarning($"Linux app-notification history could not be read: {exception.Message}");
-			return null;
+			return EmptyNotificationIds;
 		}
 	}
 
@@ -148,13 +157,14 @@ internal sealed class LinuxAppNotificationManagerBackend : IAppNotificationManag
 		try
 		{
 			EnsureServerOwner(context);
-			var replacesId = replaceExisting ? _nativeState.GetNativeId(command.Id) ?? 0 : 0;
+			var nativeState = GetNativeState(context);
+			var replacesId = replaceExisting ? nativeState.GetNativeId(command.Id) ?? 0 : 0;
 			var actions = BuildActions(command, context.Capabilities);
 			var hints = BuildHints(command, context.Capabilities);
 			nativeId = Wait(context.Notifications.NotifyAsync(
 				GetApplicationName(),
 				replacesId,
-				ResolveIcon(command.AppIcon),
+				LinuxAppNotificationAssetResolver.ResolveIcon(command.AppIcon),
 				command.Summary,
 				context.Capabilities.Contains("body") ? FormatBody(command.Body, context.Capabilities) : string.Empty,
 				actions,
@@ -164,8 +174,10 @@ internal sealed class LinuxAppNotificationManagerBackend : IAppNotificationManag
 			{
 				return false;
 			}
-			_nativeState.Set(command.Id, nativeId);
-			_commands[command.Id] = command;
+			if (!nativeState.TrySet(command.Id, nativeId, command))
+			{
+				throw new InvalidOperationException("The Linux notification connection changed while posting.");
+			}
 			if (command.UnsupportedFeatures.Length > 0)
 			{
 				LogWarning($"Linux app notifications do not support {string.Join(", ", command.UnsupportedFeatures)}; those features were ignored.");
@@ -201,13 +213,39 @@ internal sealed class LinuxAppNotificationManagerBackend : IAppNotificationManag
 		{
 			if (!initialization.Wait(OperationTimeout))
 			{
-				ResetInitialization(initialization);
+				AbandonInitialization(initialization);
 				return null;
 			}
 			var context = initialization.Result;
 			if (context is null)
 			{
 				ResetInitialization(initialization);
+				return null;
+			}
+
+			var isCurrent = false;
+			lock (_initializationGate)
+			{
+				if (ReferenceEquals(_initialization, initialization))
+				{
+					if (context.IsDisposed)
+					{
+						_initialization = null;
+					}
+					else
+					{
+						if (context.NativeState is null)
+						{
+							context.Activate(_nativeState);
+						}
+						isCurrent = true;
+					}
+				}
+			}
+			if (!isCurrent)
+			{
+				context.Dispose();
+				return null;
 			}
 			return context;
 		}
@@ -226,6 +264,7 @@ internal sealed class LinuxAppNotificationManagerBackend : IAppNotificationManag
 			return null;
 		}
 		var connection = new DBusConnection(address);
+		ConnectionContext? context = null;
 		try
 		{
 			await connection.ConnectAsync().ConfigureAwait(false);
@@ -238,58 +277,68 @@ internal sealed class LinuxAppNotificationManagerBackend : IAppNotificationManag
 			var owner = await bus.GetNameOwnerAsync(ServiceName).ConfigureAwait(false);
 			var notifications = new DBusService(connection, owner).CreateNotifications(ServicePath);
 			var capabilities = (await notifications.GetCapabilitiesAsync().ConfigureAwait(false)).ToHashSet(StringComparer.Ordinal);
-			var context = new ConnectionContext(connection, bus, notifications, capabilities, owner);
-			context.Subscriptions.Add(await notifications.WatchNotificationClosedAsync(OnNotificationClosed, emitOnCapturedContext: false).ConfigureAwait(false));
-			context.Subscriptions.Add(await notifications.WatchActionInvokedAsync(OnActionInvoked, emitOnCapturedContext: false).ConfigureAwait(false));
-			context.Subscriptions.Add(await notifications.WatchActivationTokenAsync(OnActivationToken, emitOnCapturedContext: false).ConfigureAwait(false));
-			if (_nativeState.SetServerOwner(owner))
-			{
-				_commands.Clear();
-			}
+			context = new ConnectionContext(connection, bus, notifications, capabilities, owner);
+			var capturedContext = context;
+			context.Subscriptions.Add(await notifications.WatchNotificationClosedAsync(
+				(exception, signal) => OnNotificationClosed(capturedContext, exception, signal),
+				emitOnCapturedContext: false).ConfigureAwait(false));
+			context.Subscriptions.Add(await notifications.WatchActionInvokedAsync(
+				(exception, signal) => OnActionInvoked(capturedContext, exception, signal),
+				emitOnCapturedContext: false).ConfigureAwait(false));
+			context.Subscriptions.Add(await notifications.WatchActivationTokenAsync(
+				(exception, signal) => OnActivationToken(capturedContext, exception, signal),
+				emitOnCapturedContext: false).ConfigureAwait(false));
 			return context;
 		}
 		catch
 		{
-			connection.Dispose();
+			if (context is not null)
+			{
+				context.Dispose();
+			}
+			else
+			{
+				connection.Dispose();
+			}
 			throw;
 		}
 	}
 
 	private void EnsureServerOwner(ConnectionContext context)
 	{
+		var nativeState = GetNativeState(context);
 		var owner = Wait(context.Bus.GetNameOwnerAsync(ServiceName));
-		if (!string.Equals(owner, context.ServerOwner, StringComparison.Ordinal))
+		if (!string.Equals(owner, nativeState.ServerOwner, StringComparison.Ordinal))
 		{
-			_nativeState.SetServerOwner(owner);
-			_commands.Clear();
 			InvalidateContext(context);
 			throw new InvalidOperationException("The Linux notification service restarted.");
 		}
 	}
 
-	private void OnNotificationClosed(Exception? exception, (uint Id, uint Reason) signal)
+	private void OnNotificationClosed(ConnectionContext context, Exception? exception, (uint Id, uint Reason) signal)
 	{
 		if (exception is not null)
 		{
+			InvalidateContext(context, deferDisposal: true);
 			LogWarning($"Linux notification closure signal failed: {exception.Message}");
 			return;
 		}
-		if (_nativeState.GetNotificationId(signal.Id) is { } notificationId)
+		if (context.NativeState is { IsActive: true } nativeState)
 		{
-			_nativeState.RemoveByNativeId(signal.Id);
-			_commands.TryRemove(notificationId, out _);
+			nativeState.RemoveByNativeId(signal.Id);
 		}
 	}
 
-	private void OnActionInvoked(Exception? exception, (uint Id, string ActionKey) signal)
+	private void OnActionInvoked(ConnectionContext context, Exception? exception, (uint Id, string ActionKey) signal)
 	{
 		if (exception is not null)
 		{
+			InvalidateContext(context, deferDisposal: true);
 			LogWarning($"Linux notification action signal failed: {exception.Message}");
 			return;
 		}
-		if (_nativeState.GetNotificationId(signal.Id) is not { } notificationId ||
-			!TryGetCommand(notificationId, out var command))
+		if (context.NativeState is not { IsActive: true } nativeState ||
+			nativeState.GetCommand(signal.Id) is not { } command)
 		{
 			return;
 		}
@@ -305,37 +354,26 @@ internal sealed class LinuxAppNotificationManagerBackend : IAppNotificationManag
 		}
 	}
 
-	private void OnActivationToken(Exception? exception, (uint Id, string ActivationToken) signal)
+	private void OnActivationToken(ConnectionContext context, Exception? exception, (uint Id, string ActivationToken) signal)
 	{
-		if (exception is null && _nativeState.GetNotificationId(signal.Id) is not null && signal.ActivationToken.Length > 0)
+		if (exception is not null)
+		{
+			InvalidateContext(context, deferDisposal: true);
+			LogWarning($"Linux notification activation-token signal failed: {exception.Message}");
+			return;
+		}
+		if (context.NativeState is { IsActive: true } nativeState &&
+			nativeState.GetNotificationId(signal.Id) is not null &&
+			signal.ActivationToken.Length > 0)
 		{
 			Environment.SetEnvironmentVariable("XDG_ACTIVATION_TOKEN", signal.ActivationToken);
 		}
 	}
 
-	private bool TryGetCommand(uint notificationId, out LinuxAppNotificationCommand command)
-	{
-		if (_commands.TryGetValue(notificationId, out command!))
-		{
-			return true;
-		}
-		try
-		{
-			var record = AppNotificationStatePersistenceFactory.Create().Load().Records.FirstOrDefault(item => item.Id == notificationId);
-			if (record is not null)
-			{
-				command = LinuxAppNotificationTranslator.Translate(record.ToEnvelope(), DateTimeOffset.UtcNow);
-				_commands[notificationId] = command;
-				return true;
-			}
-		}
-		catch (Exception exception)
-		{
-			LogWarning($"Linux could not restore app-notification activation state: {exception.Message}");
-		}
-		command = null!;
-		return false;
-	}
+	private static LinuxAppNotificationNativeStateSession GetNativeState(ConnectionContext context)
+		=> context.NativeState is { IsActive: true } nativeState
+			? nativeState
+			: throw new InvalidOperationException("The Linux notification signal subscription is unavailable.");
 
 	private static void Activate(string argument, string? protocolUri)
 	{
@@ -396,24 +434,6 @@ internal sealed class LinuxAppNotificationManagerBackend : IAppNotificationManag
 				.Replace(">", "&gt;", StringComparison.Ordinal)
 			: body;
 
-	private static string ResolveIcon(string source)
-	{
-		if (string.IsNullOrEmpty(source) || !Uri.TryCreate(source, UriKind.Absolute, out var uri))
-		{
-			return string.Empty;
-		}
-		if (uri.IsFile)
-		{
-			return uri.AbsoluteUri;
-		}
-		if (uri.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase))
-		{
-			var path = Path.Combine(Package.Current.InstalledPath, uri.AbsolutePath.TrimStart('/').Replace('/', Path.DirectorySeparatorChar));
-			return File.Exists(path) ? new Uri(path).AbsoluteUri : string.Empty;
-		}
-		return string.Empty;
-	}
-
 	private static string GetApplicationName()
 		=> string.IsNullOrEmpty(Package.Current.DisplayName) ? AppDomain.CurrentDomain.FriendlyName : Package.Current.DisplayName;
 
@@ -428,7 +448,35 @@ internal sealed class LinuxAppNotificationManagerBackend : IAppNotificationManag
 		}
 	}
 
-	private void InvalidateContext(ConnectionContext context)
+	private void AbandonInitialization(Task<ConnectionContext?> initialization)
+	{
+		var abandoned = false;
+		lock (_initializationGate)
+		{
+			if (ReferenceEquals(_initialization, initialization) && !initialization.IsCompleted)
+			{
+				_initialization = null;
+				abandoned = true;
+			}
+		}
+		if (abandoned)
+		{
+			_ = DisposeWhenCompletedAsync(initialization);
+		}
+	}
+
+	private static async Task DisposeWhenCompletedAsync(Task<ConnectionContext?> initialization)
+	{
+		try
+		{
+			(await initialization.ConfigureAwait(false))?.Dispose();
+		}
+		catch
+		{
+		}
+	}
+
+	private void InvalidateContext(ConnectionContext context, bool deferDisposal = false)
 	{
 		lock (_initializationGate)
 		{
@@ -437,8 +485,16 @@ internal sealed class LinuxAppNotificationManagerBackend : IAppNotificationManag
 			{
 				_initialization = null;
 			}
+			context.Deactivate();
 		}
-		context.Dispose();
+		if (deferDisposal)
+		{
+			_ = Task.Run(context.Dispose);
+		}
+		else
+		{
+			context.Dispose();
+		}
 	}
 
 	private static T Wait<T>(Task<T> task)
@@ -465,7 +521,9 @@ internal sealed class LinuxAppNotificationManagerBackend : IAppNotificationManag
 
 	private sealed class ConnectionContext : IDisposable
 	{
+		private LinuxAppNotificationNativeStateSession? _nativeState;
 		private int _isDisposed;
+
 		public ConnectionContext(DBusConnection connection, DBusProxy bus, Notifications notifications, IReadOnlySet<string> capabilities, string serverOwner)
 		{
 			Connection = connection;
@@ -485,7 +543,23 @@ internal sealed class LinuxAppNotificationManagerBackend : IAppNotificationManag
 
 		public string ServerOwner { get; }
 
+		public LinuxAppNotificationNativeStateSession? NativeState => System.Threading.Volatile.Read(ref _nativeState);
+
+		public bool IsDisposed => System.Threading.Volatile.Read(ref _isDisposed) != 0;
+
 		public List<IDisposable> Subscriptions { get; } = new();
+
+		public void Activate(LinuxAppNotificationNativeStateStore store)
+		{
+			if (IsDisposed)
+			{
+				throw new ObjectDisposedException(nameof(ConnectionContext));
+			}
+			System.Threading.Volatile.Write(ref _nativeState, store.StartSession(ServerOwner));
+		}
+
+		public bool Deactivate()
+			=> System.Threading.Interlocked.Exchange(ref _nativeState, null)?.End() == true;
 
 		public void Dispose()
 		{
@@ -493,6 +567,7 @@ internal sealed class LinuxAppNotificationManagerBackend : IAppNotificationManag
 			{
 				return;
 			}
+			Deactivate();
 			foreach (var subscription in Subscriptions)
 			{
 				subscription.Dispose();

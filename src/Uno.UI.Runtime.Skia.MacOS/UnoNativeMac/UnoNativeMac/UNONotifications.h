@@ -20,7 +20,7 @@ typedef void (*uno_notification_delivered_fn_ptr)(const char *request_identifier
 
 bool uno_notifications_is_supported(void);
 int32_t uno_notifications_get_setting(void);
-void uno_notifications_initialize(void);
+bool uno_notifications_initialize(void);
 void uno_notifications_request_authorization(void);
 bool uno_notifications_post(const char *command_json, double delay_seconds);
 bool uno_notifications_remove(const char *request_identifier);

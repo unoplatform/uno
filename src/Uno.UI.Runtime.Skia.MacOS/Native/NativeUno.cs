@@ -269,7 +269,8 @@ internal static partial class NativeUno
 	internal static partial int uno_notifications_get_setting();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_notifications_initialize();
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_notifications_initialize();
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_notifications_request_authorization();
