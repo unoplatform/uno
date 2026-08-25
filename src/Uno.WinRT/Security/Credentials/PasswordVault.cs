@@ -16,7 +16,7 @@ namespace Windows.Security.Credentials;
 
 public partial class PasswordVault
 {
-	private readonly object _updateGate = new object();
+	private static readonly object PersistenceGate = new();
 	private readonly IPersister _persister;
 
 	private ImmutableList<PasswordCredential> _credentials;
@@ -68,34 +68,31 @@ public partial class PasswordVault
 
 	public void Remove(PasswordCredential credential)
 	{
-		while (true)
+		lock (PersistenceGate)
 		{
-			var capture = _credentials;
+			using var persistenceLock =
+				(_persister as ISynchronizedPersister)?.AcquireLock();
+			var capture = Load();
 			var updated = capture.Remove(credential, Comparer.Instance);
 
 			if (capture == updated)
 			{
+				_credentials = capture;
 				return;
 			}
 
-			lock (_updateGate)
-			{
-				if (capture == _credentials)
-				{
-					Persist(updated);
-					_credentials = updated;
-
-					return;
-				}
-			}
+			Persist(updated);
+			_credentials = updated;
 		}
 	}
 
 	public void Add(PasswordCredential credential)
 	{
-		while (true)
+		lock (PersistenceGate)
 		{
-			var capture = _credentials;
+			using var persistenceLock =
+				(_persister as ISynchronizedPersister)?.AcquireLock();
+			var capture = Load();
 			var existing = capture.FirstOrDefault(c => Comparer.Instance.Equals(c, credential));
 
 			ImmutableList<PasswordCredential> updated;
@@ -111,22 +108,15 @@ public partial class PasswordVault
 				if (existing.Password == credential.Password)
 				{
 					// no change, abort update!
+					_credentials = capture;
 					return;
 				}
 
 				updated = capture.Replace(existing, credential);
 			}
 
-			lock (_updateGate)
-			{
-				if (capture == _credentials)
-				{
-					Persist(updated);
-					_credentials = updated;
-
-					return;
-				}
-			}
+			Persist(updated);
+			_credentials = updated;
 		}
 	}
 
@@ -155,7 +145,7 @@ public partial class PasswordVault
 				}
 			}
 		}
-		catch (Exception e)
+		catch (Exception e) when (e is not PasswordVaultUnavailableException)
 		{
 			this.Log().Warn("Failed to load values from persister, assume empty.", e);
 		}
@@ -203,6 +193,11 @@ public partial class PasswordVault
 		/// <param name="outputStream">The target stream where credentials can be stored</param>
 		/// <returns>A <see cref="WriteTransaction"/> which ensure to atomatically update the credentials</returns>
 		WriteTransaction OpenWrite(out Stream outputStream);
+	}
+
+	protected interface ISynchronizedPersister
+	{
+		IDisposable AcquireLock();
 	}
 
 	/// <summary>

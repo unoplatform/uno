@@ -488,6 +488,15 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_native_dispose(nint element);
 
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static partial int uno_password_vault_read(string scope, out nint data, out int length);
+
+	[LibraryImport("libUnoNativeMac.dylib", StringMarshalling = StringMarshalling.Utf8)]
+	internal static unsafe partial int uno_password_vault_write(string scope, byte* data, int length);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_password_vault_free(nint data, int length);
+
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static unsafe partial nint uno_set_execute_callback(delegate* unmanaged[Cdecl]<IntPtr, sbyte*, sbyte*, void> callback);
 
