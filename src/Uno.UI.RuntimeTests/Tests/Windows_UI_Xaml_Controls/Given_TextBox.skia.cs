@@ -5507,7 +5507,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// room below the box to start a drag without the finger ever touching the box itself.
 		private static (ScrollViewer scrollViewer, TextBox textBox) CreateScrollableForm(
 			string text,
-			TextBox.TouchTextSelectionConvention convention,
+			TextBoxCore.TouchTextSelectionConvention convention,
 			double fillerAbove = 120)
 		{
 			var textBox = new TextBox
@@ -5548,8 +5548,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// (TextSelectionGripperPresenter.Update), so the scroll lock is gone.
 		private static async Task AssertTouchCaretDoesNotLockScrollViewer(
 			string text,
-			TextBox.TouchTextSelectionConvention convention,
-			TextBox.CaretDisplayMode expectedCaret,
+			TextBoxCore.TouchTextSelectionConvention convention,
+			TextBoxCore.CaretDisplayMode expectedCaret,
 			bool doubleTap,
 			bool flick)
 		{
@@ -5625,8 +5625,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public Task When_Touch_Tap_Does_Not_Lock_ScrollViewer_Android()
 			=> AssertTouchCaretDoesNotLockScrollViewer(
 				"Some Text",
-				TextBox.TouchTextSelectionConvention.Android,
-				TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				TextBoxCore.TouchTextSelectionConvention.Android,
+				TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
 				doubleTap: false,
 				flick: false);
 
@@ -5637,8 +5637,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public Task When_Touch_Tap_Empty_Does_Not_Lock_ScrollViewer_Android()
 			=> AssertTouchCaretDoesNotLockScrollViewer(
 				"",
-				TextBox.TouchTextSelectionConvention.Android,
-				TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				TextBoxCore.TouchTextSelectionConvention.Android,
+				TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
 				doubleTap: false,
 				flick: false);
 
@@ -5648,8 +5648,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public Task When_Touch_Selection_Does_Not_Lock_ScrollViewer_Android()
 			=> AssertTouchCaretDoesNotLockScrollViewer(
 				"Some Text",
-				TextBox.TouchTextSelectionConvention.Android,
-				TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				TextBoxCore.TouchTextSelectionConvention.Android,
+				TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
 				doubleTap: true,
 				flick: false);
 
@@ -5658,8 +5658,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public Task When_Touch_Selection_Does_Not_Lock_ScrollViewer_iOS()
 			=> AssertTouchCaretDoesNotLockScrollViewer(
 				"Some Text",
-				TextBox.TouchTextSelectionConvention.iOS,
-				TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				TextBoxCore.TouchTextSelectionConvention.iOS,
+				TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
 				doubleTap: true,
 				flick: false);
 
@@ -5670,8 +5670,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public Task When_Touch_Selection_Flick_Does_Not_Lock_ScrollViewer_Android()
 			=> AssertTouchCaretDoesNotLockScrollViewer(
 				"Some Text",
-				TextBox.TouchTextSelectionConvention.Android,
-				TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				TextBoxCore.TouchTextSelectionConvention.Android,
+				TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
 				doubleTap: true,
 				flick: true);
 
@@ -5687,7 +5687,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var __ = new DisposableAction(() =>
 				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
 
-			var (scrollViewer, SUT) = CreateScrollableForm("Some Text", TextBox.TouchTextSelectionConvention.Android);
+			var (scrollViewer, SUT) = CreateScrollableForm("Some Text", TextBoxCore.TouchTextSelectionConvention.Android);
 			await UITestHelper.Load(scrollViewer);
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
@@ -5720,7 +5720,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
 
 			// Enough filler above the box that it can be parked anywhere in the viewport, bottom edge included.
-			var (scrollViewer, SUT) = CreateScrollableForm("Some Text", TextBox.TouchTextSelectionConvention.Android, fillerAbove: 400);
+			var (scrollViewer, SUT) = CreateScrollableForm("Some Text", TextBoxCore.TouchTextSelectionConvention.Android, fillerAbove: 400);
 			await UITestHelper.Load(scrollViewer);
 
 			scrollViewer.ChangeView(null, 200, null, disableAnimation: true);
@@ -5804,7 +5804,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Height = 400,
 				AcceptsReturn = true,
 				Text = string.Join("\r", Enumerable.Range(1, 10).Select(i => $"Line {i}")),
-				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android,
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android,
 			};
 
 			var scrollViewer = new ScrollViewer
@@ -6895,7 +6895,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// Pinned instead of left to the platform default, so every target reaches the same state: on the
 				// Android convention a single tap leaves the insertion handle up, where iOS leaves a thumbless caret
 				// and Desktop selects the tapped word. The handle is the state the removed scroll lock keyed on.
-				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
+				TouchSelectionConvention = TextBoxCore.TouchTextSelectionConvention.Android
 			};
 
 			var sv = new ScrollViewer()
@@ -6943,7 +6943,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
 			finger.Release();
 			await WindowHelper.WaitFor(
-				() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
 				message: "the tap should leave the insertion handle up");
 			await UITestHelper.WaitForIdle(true);
 
