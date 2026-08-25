@@ -764,6 +764,63 @@ namespace Uno.UI.Tests.Windows_Globalization
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		// .NET renders magnitudes below 1e-4 in scientific notation, which has no decimal separator to
+		// take the fraction from; WinRT always writes the digits out in full.
+		[DataRow(1e-5, "0.00001")]
+		[DataRow(-1e-5, "-0.00001")]
+		[DataRow(1.5e-7, "0.00000015")]
+		[DataRow(1.5e-5, "0.000015")]
+		[DataRow(1.2345e-9, "0.0000000012345")]
+		[DataRow(1e-20, "0.00000000000000000001")]
+		[DataRow(1.234567890123e-5, "0.00001234567890123")]
+		public void When_ValueIsBelowFractionDigits_Then_FixedPointDigitsArePrinted(double value, string expected)
+		{
+			var sut = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				IntegerDigits = 1,
+				FractionDigits = 2,
+			};
+
+			var formatted = sut.FormatDouble(value);
+
+			Assert.AreEqual(expected, formatted);
+			Assert.AreEqual(value, sut.ParseDouble(formatted));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		public void When_SmallValueLocaleUsesComma_Then_FixedPointUsesLocaleSeparator()
+		{
+			var culture = System.Globalization.CultureInfo.GetCultureInfo("fr-FR");
+			var sut = new DecimalFormatter(new[] { "fr-FR" }, "FR")
+			{
+				IntegerDigits = 1,
+				FractionDigits = 2,
+			};
+
+			Assert.AreEqual($"0{culture.NumberFormat.NumberDecimalSeparator}00001", sut.FormatDouble(1e-5));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		// The sign has to be written before the "0" the zero fallback emits, otherwise the two would
+		// come out in the wrong order.
+		public void When_FormatIntegralIsNegativeZeroWithoutDigits_Then_SignLeads()
+		{
+			var sut = new DecimalFormatter(new[] { "en-US" }, "US")
+			{
+				IsZeroSigned = true,
+				IntegerDigits = 0,
+				FractionDigits = 0,
+			};
+
+			Assert.AreEqual("-0", sut.FormatDouble(-0d));
+			Assert.AreEqual("0", sut.FormatDouble(0d));
+			Assert.AreEqual("0", sut.FormatInt(0));
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		[DataRow("en-US", "US", "00,000,000")]
 		[DataRow("en-IN", "IN", "0,00,00,000")]
 		public void When_GroupedZeroIsPadded_Then_LocaleGroupSizesApply(string language, string geographicRegion, string expected)
