@@ -3344,6 +3344,9 @@
 		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.Controls.ContentPresenter.get_ContentTemplateRoot()" reason="Reduced ContentPresenter.ContentTemplateRoot to internal (BC36, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ContentPresenter.set_ContentTemplateRoot(Microsoft.UI.Xaml.UIElement value)" reason="Reduced ContentPresenter.ContentTemplateRoot to internal (BC36, breaking changes for 7.0)" />
 
+		  <!-- ContentPresenter bypass removal (#2163): the bypass materialized ContentTemplate itself when no ControlTemplate was present, so ContentControl carried a parallel copy of the ContentPresenter logic. With the bypass gone, UpdateContentTemplateRoot/SyncDataContext and the visibility, data-context and measure overrides that only drove it are removed, and ContentTemplateRoot is now reported by the template ContentPresenter (setter protected to internal, matching WinUI where the property is get-only). -->
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.ContentControl(::|\.)(set_ContentTemplateRoot|UpdateContentTemplateRoot|SyncDataContext|MeasureOverride|OnVisibilityChanged|OnDataContextChanged)\(.*\)" reason="Removed the ContentPresenter bypass from ContentControl (#2163, breaking changes for 7.0, uno#8339)" isRegex="true" />
+
 		  <!-- ImageBrush->TileBrush reparent accessors (paired with the <Properties> entry above): get_/set_ for AlignmentX/AlignmentY/Stretch and the get_ DP-field accessors, now inherited from TileBrush. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.ImageBrush(::|\.)(get_AlignmentX|set_AlignmentX|get_AlignmentY|set_AlignmentY|get_Stretch|set_Stretch|get_AlignmentXProperty|get_AlignmentYProperty|get_StretchProperty)\(.*\)" reason="Moved AlignmentX/AlignmentY/Stretch owner from ImageBrush to TileBrush base for WinUI parity (breaking changes for 7.0, uno#8339)" isRegex="true" />
 

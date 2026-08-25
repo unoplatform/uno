@@ -1,4 +1,4 @@
-# Uno Platform — Breaking-Changes Rollout (Epic [#8339](https://github.com/unoplatform/uno/issues/8339))
+﻿# Uno Platform — Breaking-Changes Rollout (Epic [#8339](https://github.com/unoplatform/uno/issues/8339))
 
 > Ordered, danger-ranked checklist for the next major. Items are sequenced **least dangerous first** (native-only & dead code) to **most dangerous last** (pervasive type-system changes). Each unchecked item is meant to be picked up by a single subagent in its own worktree.
 
@@ -219,6 +219,9 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
   - Files: `src/Uno.UI/UI/Xaml/Controls/TextBox/TextBox.cs`, `src/Uno.UI/UI/Xaml/Controls/ContentPresenter/ContentPresenter.cs`
 - [x] **BC36** — `ContentPresenter.ContentTemplateRoot` -> internal  `d3·S` · #16148
   - Make `internal` (not `private` — in-assembly callers read it cross-type).
+  - **Superseded by #2163:** it is now `private`. The cross-type callers were only reading it because
+    `ContentControl.ContentTemplateRoot` (the real WinUI accessor) was always null; the presenter now
+    reports its root there instead.
   - Files: `src/Uno.UI/UI/Xaml/Controls/ContentPresenter/ContentPresenter.cs`, `src/Uno.UI/UI/Xaml/Controls/Button/HyperlinkButton.mux.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.cs`
 - [x] **BC52** — Reparent `RadioMenuFlyoutItem` -> `MenuFlyoutItem`  `d3·M`
   - Reparent to `MenuFlyoutItem`; re-implement the toggle behavior currently inherited from `ToggleMenuFlyoutItem`.
@@ -256,6 +259,20 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
 
 _Danger 3-4. Heavier multi-file changes: remove the legacy templated-parent mechanism, repurpose the precedence enum, tear down Fluent V1 scaffolding, rename the Toolkit assembly, and remove the legacy `Windows.UI.Input.*` surface. Each is its own PR._
 
+- [x] **#2163** — Remove the `ContentPresenter` bypass  `d2·M` · **[impact spec](bc2163-remove-contentpresenter-bypass.md)**
+  - `ContentControl` skipped the `ContentPresenter` and parented `Content` directly when it had no
+    `Template` and its default style declared none — an Android 4.4 stack-depth workaround. **Already
+    inert before the change:** `Uno.UI` is Skia-only, so the conditionally-gated default `ControlTemplate`
+    (`netstdref:` at the time, `not_winappsdk:` after the prefix cleanup) was always applied. Mostly
+    dead-code removal; also drops the `Type`-keyed `HasDefaultTemplate` memo and the ALC-teardown sweep
+    that only existed to unpin it.
+  - Behaviour delta: a `ContentControl` subclass with its own `DefaultStyleKey` and no `Template` no longer
+    renders `Content` (WinUI parity). `ContentControl.ContentTemplateRoot` goes from always-null to
+    populated by the templated `ContentPresenter`, which supersedes BC36 (Phase 5).
+  - Files: `src/Uno.UI/UI/Xaml/Controls/ContentControl/ContentControl.cs`, `…/ContentPresenter/ContentPresenter.cs`,
+    `…/Primitives/ButtonBase/ButtonBase.cs`, `…/Button/HyperlinkButton.mux.cs`, `…/UI/Xaml/FrameworkElement.Layout.cs`,
+    `…/UI/Xaml/Application.Alc.cs`,
+    `src/Uno.WinAppSDKSyncGenerator/Helpers/SymbolMatchingHelpers.cs`, `build/PackageDiffIgnore.xml`
 - [x] **BC01** — Remove legacy templated-parent mechanism  `d3·L` · #18672
   - Hard-removed the ambient `TemplatedParentScope` (including its `DependencyObjectStore` ctor hook), both `ENABLE_LEGACY_*` symbols, both `Microsoft.UI.Xaml` builder delegates (`FrameworkTemplateBuilder` **and** `NewFrameworkTemplateBuilder`), every builder ctor (now internal behind `MarkupHelper.Create*`), the TP-less `Func<View?>` factories, and the vestigial `DependencyObject.TemplatedParent` DP.
   - The surviving factory shape is `Uno.UI.FrameworkTemplateBuilder` — `(object? owner, TemplateMaterializationSettings settings) => UIElement?`. Both it and `Uno.UI.TemplateMaterializationSettings` sit next to `TemplateManager` rather than in the WinUI namespace: neither has a WinUI counterpart, so neither belongs under `Microsoft.UI.Xaml`. The settings are framework-constructed only (internal ctor); a builder still reads the properties.
@@ -319,6 +336,9 @@ _Danger 4-5. Ship last, never batched — each lands as its own separately-stabi
 - **Setter pipeline (Phase 3):** `BC37` (remove CLR-property Setter codegen) → `BC44` (remove `Setter<T>`) → `BC63` (remove `SetterBase.set_Property`). Land adjacently, in order.
 - **DataContext / DependencyObject (Phase 7):** do `BC58` (generator-wide DataContext->FE-only) **first**; it gates `BC54` (FlyoutBase symptom) and de-risks `BC26` (DependencyObject->class). All touch the same generated DO mixin.
 - **Background / UserControl (Phase 7):** `BC38` (Background -> Control) precedes `BC14` (UserControl -> Control) so the property relocation is not redone.
+- **Templated parent (Phase 6):** `#2163` makes the `ContentPresenter` report its materialized root to
+  `GetTemplatedParent()`. `BC01` removes the *legacy* templated-parent mechanism (the DP), not that
+  accessor — but land `#2163` first, or re-verify the report site after `BC01`.
 - **Behaviour-drift items (validate at runtime):** `BC50` (culture no longer changes on setter), `BC45` (Center/Center default — source-breaking only; the flag defaulted to `false`, so default users are unaffected), `BC74` (drawable key collision), `BC42` (drop `clr-namespace:`), `BC51` (`ms-resource:///` rewrite) — most change runtime behaviour even for default users.
 - **Verify-first / open-decision items:** `BC16` (struct design maybe obsolete), `BC21` (line ref drifted; may drop), `BC53` (needs a new name), `BC55` (must preserve the prefs backing file).
 
