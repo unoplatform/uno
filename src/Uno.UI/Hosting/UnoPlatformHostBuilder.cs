@@ -108,9 +108,10 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 	private const string SvgAddInBackendTypeName = "Uno.UI.Svg.SvgBackend, Uno.UI.Svg";
 	private const string ManagedSvgRendererTypeName = "Uno.UI.Composition.Drawing.ManagedSvgRenderer, Uno.UI.Composition.Managed";
 
-	// Lottie ships as the optional Uno.UI.Lottie add-in; when referenced it becomes the default, otherwise playback
-	// is unavailable.
+	// Lottie: the Skottie add-in (Uno.UI.Lottie) is the default when referenced, else the SkiaSharp-free managed
+	// engine (Uno.UI.Composition.Managed). UNO_MANAGED_LOTTIE=1 forces the managed engine even when Skottie is present.
 	private const string SkottieLottieRendererTypeName = "Uno.UI.Lottie.SkottieLottieRenderer, Uno.UI.Lottie";
+	private const string ManagedLottieRendererTypeName = "Uno.UI.Composition.Drawing.ManagedLottieRenderer, Uno.UI.Composition.Managed";
 
 	private static readonly object _fallbackGate = new();
 	private static Type? _skiaBackendType;
@@ -242,7 +243,10 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 			return;
 		}
 
-		if (InvokeStaticFactory<Drawing.ILottieRenderer>(SkottieLottieRendererTypeName, "CreateLottieRenderer") is { } renderer)
+		var forceManaged = Environment.GetEnvironmentVariable("UNO_MANAGED_LOTTIE") is "1" or "true";
+		var renderer = (forceManaged ? null : InvokeStaticFactory<Drawing.ILottieRenderer>(SkottieLottieRendererTypeName, "CreateLottieRenderer"))
+			?? InvokeStaticFactory<Drawing.ILottieRenderer>(ManagedLottieRendererTypeName, "CreateLottieRenderer");
+		if (renderer is not null)
 		{
 			Drawing.LottieRenderer.RegisterDefault(renderer);
 		}

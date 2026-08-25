@@ -21,7 +21,7 @@ internal sealed class SkottieLottieRenderer : ILottieRenderer
 	// Reflective bootstrap entry point (found by name from UnoPlatformHostBuilder); keep the type/method name stable.
 	internal static ILottieRenderer CreateLottieRenderer() => new SkottieLottieRenderer();
 
-	public ILottieAnimation? Load(string animationJson)
+	public ILottieAnimation? Load(string animationJson, IGeometryFactory geometry)
 	{
 		using var stream = new Utf8StringStream(animationJson);
 		return SkiaSharp.Skottie.Animation.TryCreate(stream, out var animation) && animation is not null
