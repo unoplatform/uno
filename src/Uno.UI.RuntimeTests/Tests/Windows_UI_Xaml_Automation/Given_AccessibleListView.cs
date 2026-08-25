@@ -198,5 +198,83 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				"Multiple-selection ListView must report CanSelectMultiple=true in Collection details.");
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Selection_Queried_Then_Item_Peer_Identity_Matches_Children()
+		{
+			var listView = new ListView
+			{
+				ItemsSource = new List<string> { "Alpha", "Beta", "Gamma" },
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+
+			await UITestHelper.Load(listView);
+			listView.SelectedIndex = 1;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var peer = (ItemsControlAutomationPeer)FrameworkElementAutomationPeer.CreatePeerForElement(listView);
+
+			// Resolve through the pattern path first: this is the ordering that used to hand
+			// out a second peer instance for the same item once the children tree was built.
+			var patternPeer = peer.CreateItemAutomationPeer("Beta");
+			Assert.IsNotNull(patternPeer, "The pattern path must resolve an item peer.");
+
+			var children = peer.GetChildren();
+			Assert.IsNotNull(children, "A realized ListView must expose item children.");
+
+			ItemAutomationPeer? childPeer = null;
+			foreach (var child in children)
+			{
+				if (child is ItemAutomationPeer { Item: "Beta" } itemPeer)
+				{
+					childPeer = itemPeer;
+					break;
+				}
+			}
+
+			Assert.IsNotNull(childPeer, "The children tree must contain a peer for the selected item.");
+			Assert.AreSame(
+				patternPeer,
+				childPeer,
+				"The children tree and the pattern providers must hand out the same ItemAutomationPeer instance.");
+			Assert.AreSame(
+				patternPeer,
+				peer.CreateItemAutomationPeer("Beta"),
+				"Resolving the item again after the tree was built must keep the same peer instance.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Items_Are_Duplicated_Then_Each_Container_Gets_Its_Own_Peer()
+		{
+			var duplicate = "Same";
+			var listView = new ListView
+			{
+				ItemsSource = new List<string> { duplicate, duplicate },
+			};
+
+			await UITestHelper.Load(listView);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var peer = (ItemsControlAutomationPeer)FrameworkElementAutomationPeer.CreatePeerForElement(listView);
+			var children = peer.GetChildren();
+			Assert.IsNotNull(children);
+
+			var itemPeers = new List<ItemAutomationPeer>();
+			foreach (var child in children)
+			{
+				if (child is ItemAutomationPeer itemPeer)
+				{
+					itemPeers.Add(itemPeer);
+				}
+			}
+
+			Assert.AreEqual(2, itemPeers.Count, "Both duplicate occurrences must be projected.");
+			Assert.AreNotSame(
+				itemPeers[0],
+				itemPeers[1],
+				"Duplicate item values must not share a peer, otherwise both resolve to the same index.");
+		}
+
 	}
 }
