@@ -2510,6 +2510,17 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					}
 				case ReplayRefCmd rr:
 					{
+						// Cull a recording whose (transformed) content is entirely clipped out or off-surface: the
+						// widened cull-only scissor no longer rejects it, so a scrolled-out row/card would otherwise
+						// still pay its per-frame stamps/rebuilds and its draws every frame. A culled recording's
+						// slab slices are reclaimed by RetainOnly and re-Put when it scrolls back in (TryByteOffset
+						// handles the reclaimed-slice case).
+						var rrBounds = ClampToClip(TransformBounds(rr.Data.IdentityBounds ??= CmdListBounds(rr.Commands), rr.Transform), rr.Clip);
+						if (rrBounds.X >= rrBounds.Z || rrBounds.Y >= rrBounds.W
+							|| rrBounds.Z <= 0 || rrBounds.W <= 0 || rrBounds.X >= _s.Width || rrBounds.Y >= _s.Height)
+						{
+							break;
+						}
 						// FRAME-SOLID path (ramez arena baseline): any recording that contains rects — a Border background,
 						// a Button (background + border + glyphs) — re-emits its SOLIDS into the SHARED per-pass buffer
 						// every frame so sibling visuals sharing a clip collapse to ONE draw (the cross-visual draw-count
