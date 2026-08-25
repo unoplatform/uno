@@ -10,7 +10,7 @@ internal static class WebAssemblyAppNotificationTranslator
 {
 	private const string NativeTagPrefix = "uno.appnotifications.";
 
-	public static WebAssemblyAppNotificationCommand Translate(AppNotificationEnvelope notification, bool supportsActions)
+	public static WebAssemblyAppNotificationCommand Translate(AppNotificationEnvelope notification, bool useServiceWorker)
 	{
 		var unsupportedFeatures = new List<string>();
 		if (notification.Payload.Texts.Length > 2)
@@ -37,9 +37,10 @@ internal static class WebAssemblyAppNotificationTranslator
 		{
 			unsupportedFeatures.Add("pending-update actions");
 		}
-		// Action buttons are only rendered by ServiceWorkerRegistration.showNotification; document-scoped
-		// notifications drop them.
-		if (!supportsActions && notification.Payload.Actions.Any(action => !action.ContextMenuPlacement))
+		// The actions themselves are always emitted; only the delivery mode decides whether the
+		// browser will render them, so the warning must follow the same capability.
+		if (!WebAssemblyAppNotificationCapabilities.SupportsActions(useServiceWorker) &&
+			notification.Payload.Actions.Any(action => !action.ContextMenuPlacement))
 		{
 			unsupportedFeatures.Add("actions");
 		}
