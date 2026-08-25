@@ -27,20 +27,6 @@ public partial class Visual
 
 	internal virtual float DamageRegionSamplingMargin => 0;
 
-	// Above this many path segments, skip the geometry-shaped damage region and use the bounding box instead:
-	// the boolean Combine to build/clip the tight region costs more than the extra pixels it would save.
-	private const int DamageTightPathMaxSegments = 64;
-
-	// Neutral analog of bc's stroke-4px-round outset used to grow a content path to cover antialiasing bleed.
-	private static readonly StrokeStyle _outsetStroke = new()
-	{
-		Thickness = 4f,
-		StartCap = StrokeCap.Round,
-		EndCap = StrokeCap.Round,
-		LineJoin = StrokeJoin.Round,
-		MiterLimit = 4f,
-	};
-
 	/// <summary>
 	/// A visual removed from the tree won't be visited next frame, so nothing would damage the area it occupied.
 	/// Damage this visual's (and every descendant's) last-rendered bounds into <paramref name="target"/> so the
@@ -82,17 +68,9 @@ public partial class Visual
 		// render walk; only changed/moved visuals reach this point, so the re-walk stays cheap in practice.
 		using var clip = GetTotalClipPath(skipPostPaintingClipping: true);
 
-		if (TryGetPaintDamageRegion(clip, out var bounds, out var regionPath))
+		if (TryGetPaintDamageRegion(clip, out var bounds))
 		{
-			if (regionPath is not null)
-			{
-				damage.Union(regionPath);
-				regionPath.Dispose();
-			}
-			else
-			{
-				damage.UnionRect(bounds);
-			}
+			damage.UnionRect(bounds);
 
 			if (_hasLastRenderBounds && (matrix != _lastRenderMatrix || !RectEquals(bounds, _lastRenderBounds)))
 			{
@@ -110,38 +88,19 @@ public partial class Visual
 		}
 	}
 
-	private bool TryGetPaintDamageRegion(IGeometry clip, out Rect bounds, out IGeometry? regionPath)
+	private bool TryGetPaintDamageRegion(IGeometry clip, out Rect bounds)
 	{
 		bounds = default;
-		regionPath = null;
 
 		if (clip.IsEmpty)
 		{
 			return false;
 		}
 
+		// Rect-only, deliberately: DamageRegion accumulates rects (a geometry contribution is reduced to its
+		// bounds anyway), so a geometry-shaped region here would pay polygon booleans — pathological on the
+		// managed geometry engine when every visual moves (scrolling) — for no tighter final damage.
 		var clipRect = clip.Bounds;
-
-		// The tight (geometry-shaped) damage region is only worth its cost for simple shapes. For a complex path
-		// its boolean Combine (outset + clip) is expensive — pathologically so on a managed geometry engine, where
-		// it flattens curves and runs an O(n^2) boolean — while adding little over the bounding-box fallback below.
-		if (ShadowState is null && DamageRegionSamplingMargin == 0
-			&& _ownContentPath is { IsEmpty: false } ownContent
-			&& ownContent.SegmentCount <= DamageTightPathMaxSegments)
-		{
-			using var inRoot = ownContent.Transform(TotalMatrix.ToMatrix3x2());
-			using var outset = OutsetForAntialiasing(inRoot);
-			var clipped = outset.Combine(clip, GeometryCombineMode.Intersect);
-			if (clipped.IsEmpty)
-			{
-				clipped.Dispose();
-				return false;
-			}
-
-			bounds = clipped.Bounds;
-			regionPath = clipped;
-			return true;
-		}
 
 		if (TryGetLocalContentBounds(out var local))
 		{
@@ -176,12 +135,6 @@ public partial class Visual
 
 		bounds = clipRect;
 		return true;
-	}
-
-	private static IGeometry OutsetForAntialiasing(IGeometry path)
-	{
-		using var band = path.GetStrokeFillGeometry(_outsetStroke);
-		return path.Combine(band, GeometryCombineMode.Union);
 	}
 
 	internal virtual bool TryGetLocalContentBounds(out Rect localBounds)
