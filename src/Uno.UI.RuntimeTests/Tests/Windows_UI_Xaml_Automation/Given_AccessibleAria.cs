@@ -186,6 +186,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		}
 
 		/// <summary>
+		/// A UIA Thumb (the gripper inside a Slider or ScrollBar) has no ARIA equivalent. Mapping it to
+		/// <c>role="slider"</c> nests a second, nameless and valueless slider inside the real control,
+		/// which ARIA forbids and screen readers announce as a phantom widget. Guards the control-type
+		/// table against re-introducing that mapping and keeps it consistent with
+		/// <c>AutomationProperties.GetImplicitRole</c>, which already resolves Thumb to no role.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Thumb_Then_No_Aria_Role()
+		{
+			var thumb = new Thumb { Width = 20, Height = 20 };
+
+			await UITestHelper.Load(thumb);
+
+			var peer = thumb.GetOrCreateAutomationPeer();
+			Assert.IsNotNull(peer, "Thumb should have an automation peer");
+			Assert.AreEqual(AutomationControlType.Thumb, peer.GetAutomationControlType(),
+				"Thumb must keep its UIA control type; only the ARIA projection changes.");
+
+			Assert.IsNull(AriaMapper.GetAriaRole(AutomationControlType.Thumb),
+				"AutomationControlType.Thumb must not project to any ARIA role.");
+			Assert.IsNull(AriaMapper.GetAriaAttributes(peer).Role,
+				"A Thumb's semantic element must carry no ARIA role (never 'slider').");
+		}
+
+		/// <summary>
 		/// T031 (FR-028): AccessKey maps to AriaAttributes.AccessKey (→ HTML accesskey) and must NOT be
 		/// folded into KeyShortcuts (aria-keyshortcuts). AcceleratorKey alone drives KeyShortcuts.
 		/// </summary>
@@ -1471,10 +1497,83 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual(string.Empty, GetSemanticAttribute(field, "aria-invalid"), "aria-invalid must be removed when the field becomes valid again.");
 		}
 
+		/// <summary>
+		/// WAI-ARIA APG (Tree View): Up/Down arrow navigation moves between the tree items that are
+		/// actually visible. Items inside a collapsed branch are hidden, so they must not be part of the
+		/// navigation order — focusing one would move focus to an invisible node. Exercises the runtime's
+		/// own item-collection helper against a synthetic tree so the contract is asserted directly.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Tree_Has_Collapsed_Branch_Then_Navigation_Skips_Hidden_Items()
+		{
+			await UITestHelper.Load(new Border { Width = 10, Height = 10 });
 
+			var visited = InvokeBrowserJs("""
+				(function () {
+					const host = document.createElement('div');
+					host.innerHTML =
+						'<div role="tree" id="nav-tree">' +
+						'<div role="treeitem" id="nav-item-1"></div>' +
+						'<div role="group" hidden><div role="treeitem" id="nav-item-hidden"></div></div>' +
+						'<div role="treeitem" id="nav-item-2"></div>' +
+						'</div>';
+					document.body.appendChild(host);
+					try {
+						const tree = host.querySelector('#nav-tree');
+						return globalThis.Uno.UI.Runtime.Skia.SemanticElements
+							.getNavigableItems(tree, 'treeitem', null)
+							.map(item => item.id)
+							.join(',');
+					} finally {
+						host.remove();
+					}
+				})()
+				""");
 
+			Assert.AreEqual("nav-item-1,nav-item-2", visited,
+				"Tree arrow navigation must skip tree items inside a hidden (collapsed) branch.");
+		}
 
+		/// <summary>
+		/// WAI-ARIA APG (Menu): Up/Down arrow navigation stays inside the menu that owns the focused
+		/// item. A submenu's items belong to the submenu's own roving group, so a descendant query
+		/// must not pull them into the parent menu's navigation order.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Menu_Has_Submenu_Then_Navigation_Stays_In_Parent_Menu()
+		{
+			await UITestHelper.Load(new Border { Width = 10, Height = 10 });
 
+			var visited = InvokeBrowserJs("""
+				(function () {
+					const host = document.createElement('div');
+					host.innerHTML =
+						'<div role="menu" id="nav-menu">' +
+						'<div role="menuitem" id="nav-menu-1"></div>' +
+						'<div role="menuitem" id="nav-menu-2">' +
+						'<div role="menu" id="nav-submenu"><div role="menuitem" id="nav-submenu-1"></div></div>' +
+						'</div>' +
+						'</div>';
+					document.body.appendChild(host);
+					try {
+						const menu = host.querySelector('#nav-menu');
+						return globalThis.Uno.UI.Runtime.Skia.SemanticElements
+							.getNavigableItems(menu, 'menuitem', 'menu')
+							.map(item => item.id)
+							.join(',');
+					} finally {
+						host.remove();
+					}
+				})()
+				""");
+
+			Assert.AreEqual("nav-menu-1,nav-menu-2", visited,
+				"Menu arrow navigation must not descend into a nested submenu's items.");
+		}
 
 #endif
 	}
