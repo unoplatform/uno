@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Concurrent;
 using System.Globalization;
 using Uno;
 
@@ -14,6 +15,8 @@ namespace Uno.Globalization.NumberFormatting;
 /// </summary>
 internal static class GeographicRegionHelper
 {
+	private static readonly ConcurrentDictionary<string, NumberFormatInfo> _signNormalizedNumberFormats = new(StringComparer.Ordinal);
+
 	// Native WinRT uses the Windows NLS geographic data exposed by GetGeoInfoEx/EnumSystemGeoNames.
 	// Keep this complete, sorted list aligned with that data; WinRT also accepts 900-999.
 	private static readonly int[] _supportedNumericM49Regions =
@@ -44,6 +47,35 @@ internal static class GeographicRegionHelper
 		876, 882, 887, 894,
 	];
 
+	// ISO 3166-1 codes that the same NLS data reports as assigned, excluding the user-assigned
+	// ranges recognized by IsUserAssignedRegion. Sorted, fixed-width records.
+	private const string _assignedAlpha2Regions =
+		"ADAEAFAGAIALAMANAOAQARASATAUAWAXAZBABBBDBEBFBGBHBIBJ" +
+		"BLBMBNBOBQBRBSBTBVBWBYBZCACCCDCFCGCHCICKCLCMCNCOCRCU" +
+		"CVCWCXCYCZDEDJDKDMDODZECEEEGERESETFIFJFKFMFOFRGAGBGD" +
+		"GEGFGGGHGIGLGMGNGPGQGRGSGTGUGWGYHKHMHNHRHTHUIDIEILIM" +
+		"INIOIQIRISITJEJMJOJPKEKGKHKIKMKNKPKRKWKYKZLALBLCLILK" +
+		"LRLSLTLULVLYMAMCMDMEMFMGMHMKMLMMMNMOMPMQMRMSMTMUMVMW" +
+		"MXMYMZNANCNENFNGNINLNONPNRNUNZOMOOPAPEPFPGPHPKPLPMPN" +
+		"PRPSPTPWPYQARERORSRURWSASBSCSDSESGSHSISJSKSLSMSNSOSR" +
+		"SSSTSVSXSYSZTCTDTFTGTHTJTKTLTMTNTOTRTTTVTWTZUAUGUMUS" +
+		"UYUZVAVCVEVGVIVNVUWFWSYEYTZAZMZW";
+
+	private const string _assignedAlpha3Regions =
+		"ABWAFGAGOAIAALAALBANDANTAREARGARMASMATAATFATGAUSAUTAZEBDIBEL" +
+		"BENBESBFABGDBGRBHRBHSBIHBLMBLRBLZBMUBOLBRABRBBRNBTNBVTBWACAF" +
+		"CANCCKCHECHLCHNCIVCMRCODCOGCOKCOLCOMCPVCRICUBCUWCXRCYMCYPCZE" +
+		"DEUDJIDMADNKDOMDZAECUEGYERIESPESTETHFINFJIFLKFRAFROFSMGABGBR" +
+		"GEOGGYGHAGIBGINGLPGMBGNBGNQGRCGRDGRLGTMGUFGUMGUYHKGHMDHNDHRV" +
+		"HTIHUNIDNIMNINDIOTIRLIRNIRQISLISRITAJAMJEYJORJPNKAZKENKGZKHM" +
+		"KIRKNAKORKWTLAOLBNLBRLBYLCALIELKALSOLTULUXLVAMACMAFMARMCOMDA" +
+		"MDGMDVMEXMHLMKDMLIMLTMMRMNEMNGMNPMOZMRTMSRMTQMUSMWIMYSMYTNAM" +
+		"NCLNERNFKNGANICNIUNLDNORNPLNRUNZLOMNOOOPAKPANPCNPERPHLPLWPNG" +
+		"POLPRIPRKPRTPRYPSEPYFQATREUROURUSRWASAUSDNSENSGPSGSSHNSJMSLB" +
+		"SLESLVSMRSOMSPMSRBSSDSTPSURSVKSVNSWESWZSXMSYCSYRTCATCDTGOTHA" +
+		"TJKTKLTKMTLSTONTTOTUNTURTUVTWNTZAUGAUKRUMIURYUSAUZBVATVCTVEN" +
+		"VGBVIRVNMVUTWLFWSMYEMZAFZMBZWE";
+
 	/// <summary>
 	/// Validates <paramref name="geographicRegion"/>, throwing the same exceptions real WinRT throws
 	/// for a null/empty/unrecognized region (mirrors <see cref="NumeralSystemTranslator"/>'s validation
@@ -52,17 +84,75 @@ internal static class GeographicRegionHelper
 	public static void ValidateGeographicRegion(string? geographicRegion)
 	{
 		if (geographicRegion is null ||
-			!IsUppercaseAlpha2(geographicRegion) &&
-			!IsNumericM49(geographicRegion))
+			!IsSupportedRegion(geographicRegion))
 		{
 			ExceptionHelper.ThrowArgumentException(nameof(geographicRegion));
 		}
 	}
 
-	private static bool IsUppercaseAlpha2(string region) =>
-		region.Length == 2 &&
-		region[0] is >= 'A' and <= 'Z' &&
-		region[1] is >= 'A' and <= 'Z';
+	private static bool IsSupportedRegion(string region) => region.Length switch
+	{
+		2 => IsUppercaseAlpha(region) &&
+			(IsUserAssignedRegion(region) || ContainsRegion(_assignedAlpha2Regions, region)),
+		3 => IsNumericM49(region) ||
+			IsUppercaseAlpha(region) &&
+			(IsUserAssignedRegion(region) || ContainsRegion(_assignedAlpha3Regions, region)),
+		_ => false,
+	};
+
+	private static bool IsUppercaseAlpha(string region)
+	{
+		for (var i = 0; i < region.Length; i++)
+		{
+			if (region[i] is < 'A' or > 'Z')
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	// ISO 3166-1 user-assigned ranges, which WinRT accepts in full: AA/QM-QZ/XA-XZ/ZZ for alpha-2
+	// and the matching AAA-AAZ/QMA-QZZ/XAA-XZZ/ZZA-ZZZ blocks for alpha-3.
+	private static bool IsUserAssignedRegion(string region) =>
+		region[0] switch
+		{
+			'A' => region[1] == 'A',
+			'Q' => region[1] >= 'M',
+			'X' => true,
+			'Z' => region[1] == 'Z',
+			_ => false,
+		};
+
+	private static bool ContainsRegion(string table, string region)
+	{
+		var width = region.Length;
+		var low = 0;
+		var high = table.Length / width - 1;
+
+		while (low <= high)
+		{
+			var middle = low + (high - low) / 2;
+			var comparison = string.CompareOrdinal(table, middle * width, region, 0, width);
+
+			if (comparison == 0)
+			{
+				return true;
+			}
+
+			if (comparison < 0)
+			{
+				low = middle + 1;
+			}
+			else
+			{
+				high = middle - 1;
+			}
+		}
+
+		return false;
+	}
 
 	private static bool IsNumericM49(string region)
 	{
@@ -117,8 +207,24 @@ internal static class GeographicRegionHelper
 			return CultureInfo.InvariantCulture.NumberFormat;
 		}
 
-		return TryResolveCulture(resolvedLanguage, resolvedGeographicRegion)?.NumberFormat ?? CultureInfo.InvariantCulture.NumberFormat;
+		var culture = TryResolveCulture(resolvedLanguage, resolvedGeographicRegion);
+		return culture is null ? CultureInfo.InvariantCulture.NumberFormat : GetSignNormalizedNumberFormat(culture);
 	}
+
+	private static NumberFormatInfo GetSignNormalizedNumberFormat(CultureInfo culture) =>
+		_signNormalizedNumberFormats.GetOrAdd(
+			culture.Name,
+			static (_, source) =>
+			{
+				// WinRT reads the signs from the Windows NLS locale data, which uses ASCII "-"/"+" for every
+				// locale, whereas ICU (and therefore .NET) reports U+2212 MINUS SIGN for sv/fi/lt/et/nb and
+				// bidi-marked signs for ar/fa/he. Normalizing keeps both formatting and parsing WinRT-compatible.
+				var numberFormat = (NumberFormatInfo)source.NumberFormat.Clone();
+				numberFormat.NegativeSign = "-";
+				numberFormat.PositiveSign = "+";
+				return numberFormat;
+			},
+			culture);
 
 	private static bool IsArabicNumeralSystem(string numeralSystem) =>
 		numeralSystem.Equals("Arab", StringComparison.Ordinal) ||

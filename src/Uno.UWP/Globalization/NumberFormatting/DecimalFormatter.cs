@@ -136,6 +136,11 @@ namespace Windows.Globalization.NumberFormatting
 
 		public double? ParseDouble(string text)
 		{
+			if (FormatterHelper.TryParseSpecialValue(text, out var specialValue))
+			{
+				return specialValue;
+			}
+
 			text = _translator.TranslateBackNumerals(text);
 			return _formatterHelper.ParseDouble(text);
 		}

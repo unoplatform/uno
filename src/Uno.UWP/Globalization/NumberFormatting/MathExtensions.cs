@@ -19,6 +19,22 @@ internal static class MathExtensions
 		return (int)Math.Floor(Math.Log10(Math.Abs(input))) + 1;
 	}
 
+	/// <summary>
+	/// Gets the number of digits in the integer part of <paramref name="value"/>, counting zero as
+	/// a single digit. Unlike <see cref="GetLength(int)"/> this stays correct beyond <see cref="int"/> range.
+	/// </summary>
+	public static int GetIntegerDigitCount(this double value)
+	{
+		var integerPart = Math.Abs(Math.Truncate(value));
+
+		if (integerPart < 1)
+		{
+			return 1;
+		}
+
+		return (int)Math.Floor(Math.Log10(integerPart)) + 1;
+	}
+
 	public static double MultiplyByPow10(this double value, int pow10)
 	{
 		if (double.IsInfinity(value))
