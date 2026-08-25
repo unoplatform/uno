@@ -37,9 +37,9 @@ namespace TestRepro
 	partial class MainPage : global::Microsoft.UI.Xaml.Controls.Page
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
+		private const string __baseUri_prefix_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
+		private const string __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a = "ms-appx:///TestProject/0/MainPage.xaml";
 		private global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
@@ -56,7 +56,7 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.Style
 						{
 							TargetType = typeof(global::Microsoft.UI.Xaml.Controls.Button),
-							// Source 0\MainPage.xaml (Line 6:4)
+							// Source MainPage.xaml (Line 6:4)
 							Setters = 
 							{
 								global::MyProject.GlobalStaticResources.__PreserveProperties(
@@ -67,7 +67,7 @@ namespace TestRepro
 											new global::Microsoft.UI.Xaml.Controls.ControlTemplate(__ResourceOwner_1, Build_Pag_ResΞ0_StyΞ0_Set_ValΞ0_ConTem)
 										)
 										,
-										// Source 0\MainPage.xaml (Line 7:5)
+										// Source MainPage.xaml (Line 7:5)
 									}
 								)
 								,
@@ -78,21 +78,21 @@ namespace TestRepro
 			}
 			)
 			;
-			// Source 0\MainPage.xaml (Line 1:2)
+			// Source MainPage.xaml (Line 1:2)
 			;
 			
 			this
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
-			// Source 0\MainPage.xaml (Line 1:2)
+			// Source MainPage.xaml (Line 1:2)
 			
-			// [WARNING] C:/Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
+			// [WARNING] //Project/0/MainPage.xaml(1,2): Property 'base' does not exist on 'Page', this error was however considered irrelevant by the XamlFileGenerator.
 			}
 			))
-			.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
+			.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 			{
 			// Class TestRepro.MainPage
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
 			__p1.CreationComplete();
 			}
 			))
@@ -104,12 +104,12 @@ namespace TestRepro
 		private static _View Build_Pag_ResΞ0_StyΞ0_Set_ValΞ0_ConTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
 		{
 			
-			return new __MainPage_d6cd66944958ced0c513e0a04797b51d.__Pag_ResΞ0_StyΞ0_Set_ValΞ0_ConTem().Build(__owner, __settings);
+			return new __MainPage_0e3f323f9a22a3699cbcd4f0217eee4a.__Pag_ResΞ0_StyΞ0_Set_ValΞ0_ConTem().Build(__owner, __settings);
 		}
 
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]
-		private class __MainPage_d6cd66944958ced0c513e0a04797b51d
+		private class __MainPage_0e3f323f9a22a3699cbcd4f0217eee4a
 		{
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
@@ -118,9 +118,9 @@ namespace TestRepro
 			public class __Pag_ResΞ0_StyΞ0_Set_ValΞ0_ConTem
 			{
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-				private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
+				private const string __baseUri_prefix_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a = "ms-appx:///TestProject/";
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-				private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
+				private const string __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a = "ms-appx:///TestProject/0/MainPage.xaml";
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
@@ -130,22 +130,60 @@ namespace TestRepro
 					this.__ResourceOwner_1 = __ResourceOwner_1;
 					this.__rootInstance = 
 					global::MyProject.GlobalStaticResources.__PreserveProperties(
-						new global::Microsoft.UI.Xaml.Controls.Grid
+						new global::Microsoft.UI.Xaml.Controls.StackPanel
 						{
 							IsParsing = true,
-							// Source 0\MainPage.xaml (Line 10:8)
+							// Source MainPage.xaml (Line 10:8)
 							Children = 
 							{
 								global::MyProject.GlobalStaticResources.__PreserveProperties(
 									new global::Microsoft.UI.Xaml.Controls.ContentPresenter
 									{
 										IsParsing = true,
-										// Source 0\MainPage.xaml (Line 11:9)
+										// Source MainPage.xaml (Line 11:9)
 									}
-									.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
+									.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 									{
-									global::Uno.UI.Xaml.BindingHelper.SetTemplateBinding(__p1, global::Microsoft.UI.Xaml.Controls.Grid.RowProperty, global::Microsoft.UI.Xaml.Controls.Button.TabIndexProperty, @"TabIndex");
-									global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+									global::Uno.UI.Xaml.BindingHelper.SetTemplateBinding(__p1, global::Microsoft.UI.Xaml.Controls.ContentPresenter.ContentProperty, global::Microsoft.UI.Xaml.Controls.Button.ContentProperty, @"Content");
+									global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+									__p1.CreationComplete();
+									}
+									))
+								)
+								,
+								global::MyProject.GlobalStaticResources.__PreserveProperties(
+									new global::Microsoft.UI.Xaml.Controls.TextBlock
+									{
+										IsParsing = true,
+										// Source MainPage.xaml (Line 12:9)
+									}
+									.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
+									{
+									__p1.SetBinding(
+										global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
+										new Microsoft.UI.Xaml.Data.Binding()
+										{
+											Path = @"Tag",
+											Mode = global::Microsoft.UI.Xaml.Data.BindingMode.TwoWay,
+											RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
+										}
+									);
+									global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
+									__p1.CreationComplete();
+									}
+									))
+								)
+								,
+								global::MyProject.GlobalStaticResources.__PreserveProperties(
+									new global::Microsoft.UI.Xaml.Controls.ScrollViewer
+									{
+										IsParsing = true,
+										// Source MainPage.xaml (Line 13:9)
+									}
+									.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler5)(__p1 => 
+									{
+									global::Uno.UI.Xaml.BindingHelper.SetTemplateBinding(__p1, global::Microsoft.UI.Xaml.Controls.ScrollViewer.HorizontalScrollModeProperty, global::Microsoft.UI.Xaml.Controls.ScrollViewer.HorizontalScrollModeProperty, @"(Microsoft.UI.Xaml.Controls:ScrollViewer.HorizontalScrollMode)");
+									global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
 									__p1.CreationComplete();
 									}
 									))
@@ -153,9 +191,9 @@ namespace TestRepro
 								,
 							}
 						}
-						.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler4)(__p1 => 
+						.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler6)(__p1 => 
 						{
-						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
+						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
 						__p1.CreationComplete();
 						}
 						))
@@ -178,39 +216,53 @@ namespace TestRepro
 }
 namespace MyProject
 {
-	static class MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions
+	static class MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions
 	{
 		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Setter instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Setter MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Setter instance, XamlApplyHandler0 handler)
+		public static global::Microsoft.UI.Xaml.Setter MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Setter instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler1(global::Microsoft.UI.Xaml.Style instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Style MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Style instance, XamlApplyHandler1 handler)
+		public static global::Microsoft.UI.Xaml.Style MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Style instance, XamlApplyHandler1 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler2(global::Microsoft.UI.Xaml.Controls.Page instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler2 handler)
+		public static global::Microsoft.UI.Xaml.Controls.Page MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.Page instance, XamlApplyHandler2 handler)
 		{
 			handler(instance);
 			return instance;
 		}
 		public delegate void XamlApplyHandler3(global::Microsoft.UI.Xaml.Controls.ContentPresenter instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.ContentPresenter MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.ContentPresenter instance, XamlApplyHandler3 handler)
+		public static global::Microsoft.UI.Xaml.Controls.ContentPresenter MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.ContentPresenter instance, XamlApplyHandler3 handler)
 		{
 			handler(instance);
 			return instance;
 		}
-		public delegate void XamlApplyHandler4(global::Microsoft.UI.Xaml.Controls.Grid instance);
+		public delegate void XamlApplyHandler4(global::Microsoft.UI.Xaml.Controls.TextBlock instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.Grid MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply(this global::Microsoft.UI.Xaml.Controls.Grid instance, XamlApplyHandler4 handler)
+		public static global::Microsoft.UI.Xaml.Controls.TextBlock MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.TextBlock instance, XamlApplyHandler4 handler)
+		{
+			handler(instance);
+			return instance;
+		}
+		public delegate void XamlApplyHandler5(global::Microsoft.UI.Xaml.Controls.ScrollViewer instance);
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static global::Microsoft.UI.Xaml.Controls.ScrollViewer MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.ScrollViewer instance, XamlApplyHandler5 handler)
+		{
+			handler(instance);
+			return instance;
+		}
+		public delegate void XamlApplyHandler6(global::Microsoft.UI.Xaml.Controls.StackPanel instance);
+		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		public static global::Microsoft.UI.Xaml.Controls.StackPanel MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.StackPanel instance, XamlApplyHandler6 handler)
 		{
 			handler(instance);
 			return instance;
