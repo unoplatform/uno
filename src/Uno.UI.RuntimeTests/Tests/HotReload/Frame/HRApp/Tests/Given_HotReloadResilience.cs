@@ -25,26 +25,31 @@ public class Given_HotReloadResilience : BaseTestClass
 	[TestMethod]
 	public async Task When_HotReload_Succeeds_Then_ReloadCompleted_ReportsSuccess()
 	{
+		// NOTE: this test previously edited "Hello" and asserted a TextBlock named "tb1" —
+		// neither ever existed in HR_Frame_Pages_Page1.xaml, so the server-side replace was a
+		// no-op and the assertion could not succeed (the test landed after the last fully-green
+		// master run). It now uses the same pattern as the other page-edit tests: a Frame host
+		// (a reloadable-type update REPLACES the page instance, so the element must be
+		// re-resolved from the live tree, not from the pre-update instance).
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(30)).Token;
 
-		var page = new HR_Frame_Pages_Page1();
-		UnitTestsUIContentHelper.Content = page;
+		var frame = new Microsoft.UI.Xaml.Controls.Frame();
+		UnitTestsUIContentHelper.Content = frame;
 
-		await UnitTestsUIContentHelper.WaitForIdle();
+		frame.Navigate(typeof(HR_Frame_Pages_Page1));
 
-		// After hot-reload completes, the ReloadCompleted handler should fire with uiUpdated=true
+		await frame.ValidateTextOnChildTextBlock("First page", 0);
+
+		// After hot-reload completes, the reload pipeline reported success and the UI must
+		// reflect the edit end-to-end.
 		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
-			"Hello",
-			"World",
-			async () =>
-			{
-				// The fact that we got here means the hot-reload pipeline completed
-				// without throwing. Verify the text was actually updated.
-				var tb = page.FindName("tb1") as TextBlock;
-				Assert.IsNotNull(tb, "TextBlock 'tb1' should exist in the page");
-				Assert.AreEqual("World", tb.Text, "TextBlock text should have been updated by hot-reload");
-			},
+			"First page",
+			"First page (reloaded)",
+			() => frame.ValidateTextOnChildTextBlock("First page (reloaded)", 0),
 			ct);
+
+		// And the revert must restore the original text.
+		await frame.ValidateTextOnChildTextBlock("First page", 0);
 	}
 
 	/// <summary>
@@ -66,33 +71,40 @@ public class Given_HotReloadResilience : BaseTestClass
 
 		await UnitTestsUIContentHelper.WaitForIdle();
 
-		using (UIUpdate.Pause(HotReloadUIPhases.VisualTree))
-		{
-			var completed = TestingUpdateHandler.WaitForReloadCompleted();
-
-			// While the pause is held, the update is queued and the op is
-			// reported as Ignored ("UI update paused by UpdateFile").
-			await HotReloadHelper.UpdateServerFile<HR_Frame_Pages_Page1>(
-				"Hello", "PausedTest", ct);
-
-			// ReloadCompleted has not fired yet — it fires when the drain
-			// eventually applies the queued types after Dispose below.
-			Assert.IsFalse(completed.IsCompleted, "ReloadCompleted should not fire while VisualTree is paused.");
-		}
-
-		// After dispose, the pending visual-tree types are drained and the
-		// completion callback fires with uiUpdated=true.
+		var edited = false;
 		try
 		{
+			using (UIUpdate.Pause(HotReloadUIPhases.VisualTree))
+			{
+				var completed = TestingUpdateHandler.WaitForReloadCompleted();
+
+				// While the pause is held, the update is queued and the op is
+				// reported as Ignored ("UI update paused by UpdateFile").
+				await HotReloadHelper.UpdateServerFile<HR_Frame_Pages_Page1>(
+					"First page", "Paused page", ct);
+				edited = true;
+
+				// ReloadCompleted has not fired yet — it fires when the drain
+				// eventually applies the queued types after Dispose below.
+				Assert.IsFalse(completed.IsCompleted, "ReloadCompleted should not fire while VisualTree is paused.");
+			}
+
+			// After dispose, the pending visual-tree types are drained and the
+			// completion callback fires with uiUpdated=true.
 			var drained = TestingUpdateHandler.WaitForReloadCompleted();
 			var result = await drained.WaitAsync(ct);
 			Assert.IsTrue(result, "ReloadCompleted should report uiUpdated=true after pause is released and drain runs.");
 		}
 		finally
 		{
-			// Undo the file change so subsequent tests start from a known state.
-			await HotReloadHelper.UpdateServerFile<HR_Frame_Pages_Page1>(
-				"PausedTest", "Hello", CancellationToken.None);
+			// Undo the file change so subsequent tests start from a known state. The edit now also
+			// gets undone when the assertion inside the pause fails, and is skipped when it never
+			// landed — reverting an unmodified file trips the no-op guard and hides the real failure.
+			if (edited)
+			{
+				await HotReloadHelper.UpdateServerFile<HR_Frame_Pages_Page1>(
+					"Paused page", "First page", CancellationToken.None);
+			}
 		}
 	}
 }

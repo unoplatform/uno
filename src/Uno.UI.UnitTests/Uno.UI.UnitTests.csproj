@@ -123,6 +123,9 @@
 		<Compile Include="..\SourceGenerators\Uno.UI.Tasks\ResourceConverters\iOSResourceConverter.cs">
 			<Link>Resources\iOSResourceConverter.cs</Link>
 		</Compile>
+		<Compile Include="..\SourceGenerators\Uno.UI.Tasks\ResourcesGenerator\ResourceQualifierPathResolver.cs">
+			<Link>Resources\ResourceQualifierPathResolver.cs</Link>
+		</Compile>
 	</ItemGroup>
 	<ItemGroup>
 		<!--

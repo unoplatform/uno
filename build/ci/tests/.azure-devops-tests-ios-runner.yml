@@ -124,7 +124,10 @@ jobs:
       $(build.sourcesdirectory)/build/test-scripts/ios-uitest-run.sh
 
     displayName: Run iOS Simulator Tests (re-run)
-    condition: eq(variables.UITEST_ALLOW_RERUN, 'true')
+    # Also re-run when the harness died before any test started -- a boot or install failure
+    # is worth one more attempt, unlike a genuine test failure, which would not fit the
+    # 90 minute job budget a second time.
+    condition: or(eq(variables.UITEST_ALLOW_RERUN, 'true'), eq(variables.UNO_IOS_HARNESS_CRASHED, 'true'))
 
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
@@ -140,7 +143,10 @@ jobs:
       SAMPLESAPP_BUNDLE_ID: "${{ parameters.SAMPLESAPP_BUNDLE_ID }}"
 
   - task: PublishTestResults@2
-    condition: eq(variables.UITEST_ALLOW_RERUN, 'true')
+    # Also re-run when the harness died before any test started -- a boot or install failure
+    # is worth one more attempt, unlike a genuine test failure, which would not fit the
+    # 90 minute job budget a second time.
+    condition: or(eq(variables.UITEST_ALLOW_RERUN, 'true'), eq(variables.UNO_IOS_HARNESS_CRASHED, 'true'))
     inputs:
       testRunTitle: ${{ parameters.TestRunName }}
       testResultsFormat: 'NUnit'
@@ -179,7 +185,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     displayName: Publish Failed Tests Results List
     condition: always()
-    retryCountOnTaskFailure: 10
+    retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
       ArtifactName: ${{ parameters.TEST_KIND }}-tests-ios-${{ parameters.UITEST_VARIANT }}-failures

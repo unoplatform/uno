@@ -36,16 +36,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		// Skipping already declared property CanBeScrollAnchorProperty
 		// Skipping already declared property CanDragProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.RoutedEvent CharacterReceivedEvent
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.UIElement", "CharacterReceivedEvent");
-			}
-		}
-#endif
+		// Skipping already declared property CharacterReceivedEvent
 		// Skipping already declared property ClipProperty
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
@@ -1099,22 +1090,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		// Skipping already declared event Microsoft.UI.Xaml.UIElement.AccessKeyInvoked
 		// Skipping already declared event Microsoft.UI.Xaml.UIElement.BringIntoViewRequested
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.UIElement, global::Microsoft.UI.Xaml.Input.CharacterReceivedRoutedEventArgs> CharacterReceived
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event CharacterReceived");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.UIElement", "event CharacterReceived");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.UIElement.CharacterReceived
 		// Skipping already declared event Microsoft.UI.Xaml.UIElement.ContextCanceled
 		// Skipping already declared event Microsoft.UI.Xaml.UIElement.ContextRequested
 		// Skipping already declared event Microsoft.UI.Xaml.UIElement.DoubleTapped
