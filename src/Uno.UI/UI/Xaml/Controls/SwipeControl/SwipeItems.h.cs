@@ -38,9 +38,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			ArgumentNullException.ThrowIfNull(items);
 
-			if (startIndex > m_items.Count)
+			// VectorInnerImpl::GetMany returns 0 rather than throwing when the start index is
+			// past the end, and SwipeItems adds no bounds check of its own for this member.
+			if (startIndex >= (uint)m_items.Count)
 			{
-				throw new IndexOutOfRangeException();
+				return 0;
 			}
 
 			var count = Math.Min(items.Length, m_items.Count - (int)startIndex);
@@ -69,7 +71,8 @@ namespace Microsoft.UI.Xaml.Controls
 				m_items.Add(item);
 			}
 
-			m_vectorChangedEventSource?.Invoke(this, new VectorChangedEventArgs(CollectionChange.Reset, 0));
+			// Like every other SwipeItems mutation, the notification carries null args (SwipeItems.cpp).
+			m_vectorChangedEventSource?.Invoke(this, null);
 		}
 		#endregion
 
