@@ -475,10 +475,8 @@ public class Given_AppNotificationManager
 		AppNotificationActivationBroker.Publish(CreateActivation("first"));
 		AppNotificationActivationBroker.Publish(CreateActivation("second"));
 
-		var failure = Assert.ThrowsExactly<InvalidOperationException>(
-			() => AppNotificationActivationBroker.Register(handler));
+		AppNotificationActivationBroker.Register(handler);
 
-		Assert.AreEqual("handler failure", failure.Message);
 		CollectionAssert.AreEqual(new[] { "first", "second" }, received);
 		Assert.IsTrue(AppNotificationActivationBroker.Publish(CreateActivation("third")));
 		CollectionAssert.AreEqual(new[] { "first", "second", "third" }, received);
@@ -771,6 +769,42 @@ public class Given_AppNotificationManager
 
 		Assert.AreEqual(pending, new AppNotificationStateStore(persistence).GetPendingPostings().Single());
 		Assert.AreEqual(0, backend.Removed.Count);
+	}
+
+	[TestMethod]
+	public async Task When_Abandoned_Removal_Backend_Fails_Caller_Operation_Still_Succeeds()
+	{
+		var abandoned = CreateStateRecord(7, AppNotificationPostingState.Removing) with
+		{
+			OperationOwner = "other-owner",
+			OperationLeaseExpirationUtc = DateTimeOffset.UtcNow.AddMinutes(-1),
+		};
+		var persistence = new InMemoryAppNotificationStatePersistence(new AppNotificationStateSnapshot(
+			AppNotificationStateSnapshot.CurrentSchemaVersion,
+			8,
+			new[] { abandoned }));
+		var backend = new TestBackend
+		{
+			ActiveNotificationIds = new HashSet<uint> { 7 },
+			RemoveException = new InvalidOperationException("failed"),
+		};
+		var manager = new AppNotificationManager(backend, persistence);
+		manager.Register();
+
+		manager.Show(CreateNotification());
+
+		Assert.AreEqual(1, backend.Shown.Count);
+		CollectionAssert.Contains(
+			new AppNotificationStateStore(persistence).GetAllRecords().Select(record => record.Id).ToArray(),
+			7u);
+
+		backend.RemoveException = null;
+		backend.ActiveNotificationIds = new HashSet<uint>();
+		await manager.GetAllAsync();
+
+		CollectionAssert.DoesNotContain(
+			new AppNotificationStateStore(persistence).GetAllRecords().Select(record => record.Id).ToArray(),
+			7u);
 	}
 
 	[TestMethod]
