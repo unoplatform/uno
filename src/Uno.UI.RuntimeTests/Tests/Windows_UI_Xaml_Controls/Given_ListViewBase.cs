@@ -3949,6 +3949,89 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native | RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Incremental_Load_ScrollToEnd_Then_LoadingIsBounded()
+		{
+			// A single ChangeView past the end must not turn into an unbounded fetch loop: the offset
+			// intent is re-clamped after every layout pass, so if the view jumps straight to the new
+			// end each time a batch lands, the source keeps materializing its last item and requests
+			// another batch, and another. A user-visible "scroll to bottom" must settle after a couple
+			// of batches instead of downloading the whole (potentially infinite) source.
+			const int BatchSize = 25;
+			const int MaxBatchesPerScroll = 3;
+
+			var container = new Grid { Height = 210, VerticalAlignment = VerticalAlignment.Bottom };
+			var list = new ListView
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				ItemTemplate = FixedSizeItemTemplate // height=29
+			};
+			container.Children.Add(list);
+
+			var source = new InfiniteSource<int>(async start =>
+			{
+				await Task.Delay(25);
+				return Enumerable.Range(start, BatchSize).ToArray();
+			});
+			list.ItemsSource = source;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(list);
+			await Task.Delay(1000);
+
+			var sv = list.FindFirstDescendant<ScrollViewer>();
+			Assert.IsNotNull(sv);
+
+			var initialCount = source.Count;
+
+			ScrollTo(list, 10000);
+			await UITestHelper.WaitFor(
+				() => source.Count > initialCount,
+				timeoutMS: 5000,
+				message: $"No batch was loaded after scrolling to the end (count={source.Count})");
+
+			// Let the view settle: the runaway only shows up once the post-layout offset recompute has had
+			// a few passes to chase the extent that each freshly loaded batch adds.
+			await Task.Delay(500);
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+			Assert.IsLessThanOrEqualTo(
+				initialCount + (MaxBatchesPerScroll * BatchSize),
+				source.Count,
+				$"A single scroll-to-end must load a bounded number of batches, got {source.Count} items " +
+				$"(started at {initialCount}, offset={sv.VerticalOffset}, extent={sv.ExtentHeight})");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ListViewBase_Then_ScrollViewerZoomIsDisabled()
+		{
+			// ScrollViewer.ZoomMode defaults to Enabled (matching WinUI), so the ListViewBase styles have
+			// to opt out exactly like generic.xaml does. Leaving it enabled makes the inner
+			// ScrollContentPresenter advertise a pinch-capable manipulation, which in turn makes any
+			// descendant gesture (e.g. a SwipeControl's horizontal pan) cancel the list's vertical scroll.
+			var listView = new ListView { ItemsSource = Enumerable.Range(0, 10).ToArray(), Height = 100 };
+			var gridView = new GridView { ItemsSource = Enumerable.Range(0, 10).ToArray(), Height = 100 };
+			var panel = new StackPanel();
+			panel.Children.Add(listView);
+			panel.Children.Add(gridView);
+
+			await UITestHelper.Load(panel);
+
+			Assert.AreEqual(ZoomMode.Disabled, ScrollViewer.GetZoomMode(listView), "ListView must disable ScrollViewer zoom");
+			Assert.AreEqual(ZoomMode.Disabled, ScrollViewer.GetZoomMode(gridView), "GridView must disable ScrollViewer zoom");
+
+			var listScrollViewer = listView.FindFirstDescendant<ScrollViewer>();
+			Assert.IsNotNull(listScrollViewer);
+			Assert.AreEqual(ZoomMode.Disabled, listScrollViewer.ZoomMode, "The ListView's inner ScrollViewer must inherit the disabled zoom mode");
+
+			var gridScrollViewer = gridView.FindFirstDescendant<ScrollViewer>();
+			Assert.IsNotNull(gridScrollViewer);
+			Assert.AreEqual(ZoomMode.Disabled, gridScrollViewer.ZoomMode, "The GridView's inner ScrollViewer must inherit the disabled zoom mode");
+		}
+
 #if __APPLE_UIKIT__ || __ANDROID__
 		[TestMethod]
 		public async Task When_Smooth_Scrolling()
