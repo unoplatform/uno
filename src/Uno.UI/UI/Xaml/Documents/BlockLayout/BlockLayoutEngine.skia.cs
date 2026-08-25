@@ -3,7 +3,6 @@
 // MUX Reference BlockLayoutEngine.h, BlockLayoutEngine.cpp, tag winui3/release/1.8.2, commit 4a1c6184c
 
 #nullable enable
-#pragma warning disable CS8600, CS8602, CS8604, CS8618, CS0219, CS0414 // TODO Uno (Stage 5): WIP drafts not yet fully nullable-annotated
 
 using Microsoft.UI.Xaml.Controls;
 using static Microsoft.UI.Xaml.Controls._Tracing;
@@ -28,7 +27,6 @@ internal sealed class BlockLayoutEngine
 		DependencyObject pOwner)
 	{
 		m_pOwner = pOwner;
-		MUX_ASSERT(m_pOwner != null);
 	}
 
 	//---------------------------------------------------------------------------
@@ -62,7 +60,7 @@ internal sealed class BlockLayoutEngine
 		// TODO Uno (integrate): IFCCATASTROPHIC_RETURN(pPageOwner) — fail fast when the page owner is null.
 		MUX_ASSERT(pPageOwner != null);
 
-		return new PageNode(this, pBlocks, pPageOwner);
+		return new PageNode(this, pBlocks, pPageOwner!);
 	}
 
 	public DependencyObject GetOwner() => m_pOwner;

@@ -3,7 +3,6 @@
 // MUX Reference PageNode.h, PageNode.cpp, tag winui3/release/1.8.2, commit 4a1c6184c
 
 #nullable enable
-#pragma warning disable CS8600, CS8602, CS8604, CS8618, CS0219, CS0414 // TODO Uno (Stage 5): WIP drafts not yet fully nullable-annotated
 
 using System;
 using Uno.UI.Extensions;
@@ -92,7 +91,7 @@ internal sealed class PageNode : ContainerNode
 		}
 
 		// TODO Uno (integrate): CInlineUIContainer::GetChild - returns the hosted UIElement child.
-		UIElement pElement = pContainer.GetChild();
+		UIElement pElement = pContainer.GetChild()!;
 
 		// Reparent the element if it is not parented by this page's container.
 		if (pElement.GetParentInternal() != m_pPageOwner)
@@ -139,7 +138,7 @@ internal sealed class PageNode : ContainerNode
 		uint elementIndex)
 	{
 		// TODO Uno (integrate): CInlineUIContainer::GetChild
-		UIElement pElement = pContainer.GetChild();
+		UIElement pElement = pContainer.GetChild()!;
 		// TODO Uno (integrate): CFrameworkElement::RemoveChild
 		m_pPageOwner.RemoveChild(pElement);
 		m_embeddedElements.RemoveAt((int)elementIndex);
@@ -243,7 +242,7 @@ internal sealed class PageNode : ContainerNode
 	{
 		uint positionOfIUC = 0;
 		bool found = false;
-		BlockCollection pBlocks = (BlockCollection)m_pElement;
+		BlockCollection pBlocks = (BlockCollection)m_pElement!;
 
 		DependencyObject? previousBlock = null;
 		// TODO Uno (integrate): CBlockCollection::GetCollection - underlying ordered block list.
@@ -860,7 +859,7 @@ internal sealed class PageNode : ContainerNode
 				arrangeRect.Y = m_renderSize.Height;
 			}
 
-			if (pElement.HasLayoutStorage)
+			if (pElement!.HasLayoutStorage)
 			{
 				arrangeRect.Width = pElement.DesiredSize.Width;//pElement->GetLayoutStorage()->m_desiredSize.width;
 				arrangeRect.Height = pElement.DesiredSize.Height;//pElement->GetLayoutStorage()->m_desiredSize.height;

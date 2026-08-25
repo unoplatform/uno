@@ -3,7 +3,6 @@
 // MUX Reference ParagraphNode.h, ParagraphNode.cpp, tag winui3/release/1.8.2, commit 4a1c6184c
 
 #nullable enable
-#pragma warning disable CS8600, CS8602, CS8604, CS8618, CS0219, CS0414 // TODO Uno (Stage 5): WIP drafts not yet fully nullable-annotated
 
 using System;
 using Uno.UI.Extensions;
@@ -45,7 +44,7 @@ internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 		ContainerNode? pParentNode)
 		: base(pBlockLayoutEngine, pParagraph, pParentNode)
 	{
-		m_textSource = new ParagraphTextSource(pParagraph, pBlockLayoutEngine.GetOwner() as FrameworkElement);
+		m_textSource = new ParagraphTextSource(pParagraph, (pBlockLayoutEngine.GetOwner() as FrameworkElement)!);
 		m_pTextRunCache = null;
 		m_pPageNode = null;
 		m_untrimmedDesiredWidth = 0;

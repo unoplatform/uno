@@ -10,7 +10,7 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Documents;
 
-// This implemention was based heavily off of CPointCollection
+// This implementation was based heavily off of CPointCollection
 internal partial class TextRangeCollection
 {
 	// CCollection overrides

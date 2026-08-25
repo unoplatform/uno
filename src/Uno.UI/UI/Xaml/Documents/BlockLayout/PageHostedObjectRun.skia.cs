@@ -3,7 +3,6 @@
 // MUX Reference PageHostedObjectRun.h, PageHostedObjectRun.cpp, tag winui3/release/1.8.2, commit 4a1c6184c
 
 #nullable enable
-#pragma warning disable CS8600, CS8602, CS8604, CS8618, CS0219, CS0414 // TODO Uno (Stage 5): WIP drafts not yet fully nullable-annotated
 
 using Microsoft.UI.Xaml.Documents.RichTextServices;
 using Uno.UI.Extensions;
