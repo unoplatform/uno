@@ -13,8 +13,8 @@ public static class HostBuilder
 {
 	public static IUnoPlatformHostBuilder UseX11(this IUnoPlatformHostBuilder builder)
 	{
-		LinuxPasswordVaultExtensions.Register();
 		builder.AddHostBuilder(() => new X11HostBuilder());
+		LinuxPasswordVaultExtensions.Register();
 		return builder;
 	}
 
@@ -22,11 +22,11 @@ public static class HostBuilder
 	{
 		// Eager: AddHostBuilder defers the callback, so a null would only fault when the host is built.
 		ArgumentNullException.ThrowIfNull(action);
-		LinuxPasswordVaultExtensions.Register();
 
 		builder.AddHostBuilder(() =>
 		{
 			var x11Builder = new X11HostBuilder();
+			LinuxPasswordVaultExtensions.Register();
 			if (((IPlatformHostBuilder)x11Builder).IsSupported)
 			{
 				action.Invoke(x11Builder);

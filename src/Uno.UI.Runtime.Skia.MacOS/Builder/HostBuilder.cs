@@ -13,11 +13,11 @@ public static class HostBuilder
 {
 	public static IUnoPlatformHostBuilder UseMacOS(this IUnoPlatformHostBuilder builder)
 	{
+		builder.AddHostBuilder(() => new MacOSHostBuilder());
 		if (OperatingSystem.IsMacOS())
 		{
 			MacOSPasswordVaultExtension.Register();
 		}
-		builder.AddHostBuilder(() => new MacOSHostBuilder());
 		return builder;
 	}
 }
