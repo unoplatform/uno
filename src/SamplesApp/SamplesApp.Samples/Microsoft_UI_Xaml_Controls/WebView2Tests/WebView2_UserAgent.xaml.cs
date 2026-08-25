@@ -16,7 +16,17 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 
 		private async void OnLoaded(object sender, RoutedEventArgs e)
 		{
-			await WebView.EnsureCoreWebView2Async();
+			try
+			{
+				await WebView.EnsureCoreWebView2Async();
+			}
+			catch (Exception ex)
+			{
+				// async void: an unobserved exception would tear the app down.
+				StatusText.Text = $"Initialization failed: {ex.Message}";
+				return;
+			}
+
 			UpdateStatus();
 		}
 

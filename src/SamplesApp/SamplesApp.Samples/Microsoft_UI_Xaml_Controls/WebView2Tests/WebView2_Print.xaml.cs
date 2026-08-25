@@ -17,7 +17,19 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 		public WebView2_Print()
 		{
 			this.InitializeComponent();
-			this.Loaded += async (_, _) => await WebView.EnsureCoreWebView2Async();
+			this.Loaded += OnLoaded;
+		}
+
+		private async void OnLoaded(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				await WebView.EnsureCoreWebView2Async();
+			}
+			catch (Exception ex)
+			{
+				StatusText.Text = $"Initialization failed: {ex.Message}";
+			}
 		}
 
 		private async void OnPrintPdfClick(object sender, RoutedEventArgs e)
@@ -47,6 +59,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 			}
 			catch (Exception ex)
 			{
+				// async void: an unobserved exception would tear the app down, so every failure is reported here.
 				StatusText.Text = $"PrintToPdf failed: {ex.Message}";
 			}
 		}
@@ -63,7 +76,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 				WebView.CoreWebView2.ShowPrintUI(CoreWebView2PrintDialogKind.System);
 				StatusText.Text = "Print UI opened.";
 			}
-			catch (Exception ex)
+			catch (Exception ex) when (ex is InvalidOperationException or NotSupportedException)
 			{
 				StatusText.Text = $"ShowPrintUI failed: {ex.Message}";
 			}

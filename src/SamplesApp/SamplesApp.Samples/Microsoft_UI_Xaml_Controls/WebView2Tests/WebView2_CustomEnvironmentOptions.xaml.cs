@@ -44,6 +44,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 			}
 			catch (Exception ex)
 			{
+				// async void: an unobserved exception would tear the app down, so every failure is reported here.
 				StatusText.Text = $"Failed: {ex.Message}";
 			}
 		}

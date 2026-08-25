@@ -50,8 +50,16 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 
 		private async void OnLoaded(object sender, RoutedEventArgs e)
 		{
-			await WebView.EnsureCoreWebView2Async();
-			WebView.NavigateToString(HostedHtml);
+			try
+			{
+				await WebView.EnsureCoreWebView2Async();
+				WebView.NavigateToString(HostedHtml);
+			}
+			catch (Exception ex)
+			{
+				// async void: an unobserved exception would tear the app down.
+				MessageInput.PlaceholderText = $"Initialization failed: {ex.Message}";
+			}
 		}
 
 		private void OnPostStringClick(object sender, RoutedEventArgs e)

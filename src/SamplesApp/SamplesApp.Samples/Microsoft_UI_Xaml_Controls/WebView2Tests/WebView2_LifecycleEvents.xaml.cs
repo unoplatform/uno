@@ -16,19 +16,31 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 		{
 			this.InitializeComponent();
 			EventLog.ItemsSource = _entries;
-			this.Loaded += async (_, _) =>
+			this.Loaded += OnLoaded;
+		}
+
+		private async void OnLoaded(object sender, RoutedEventArgs e)
+		{
+			try
 			{
 				await WebView.EnsureCoreWebView2Async();
-				var core = WebView.CoreWebView2;
-				if (core is null)
-				{
-					return;
-				}
-				core.NavigationStarting += (_, e) => Log($"NavigationStarting uri={e.Uri}");
-				core.NavigationCompleted += (_, e) => Log($"NavigationCompleted success={e.IsSuccess} status={e.HttpStatusCode}");
-				core.ContentLoading += (_, e) => Log($"ContentLoading navId={e.NavigationId} isErrorPage={e.IsErrorPage}");
-				core.DOMContentLoaded += (_, e) => Log($"DOMContentLoaded navId={e.NavigationId}");
-			};
+			}
+			catch (Exception ex)
+			{
+				Log($"EnsureCoreWebView2Async failed: {ex.Message}");
+				return;
+			}
+
+			var core = WebView.CoreWebView2;
+			if (core is null)
+			{
+				return;
+			}
+
+			core.NavigationStarting += (_, args) => Log($"NavigationStarting uri={args.Uri}");
+			core.NavigationCompleted += (_, args) => Log($"NavigationCompleted success={args.IsSuccess} status={args.HttpStatusCode} error={args.WebErrorStatus}");
+			core.ContentLoading += (_, args) => Log($"ContentLoading navId={args.NavigationId} isErrorPage={args.IsErrorPage}");
+			core.DOMContentLoaded += (_, args) => Log($"DOMContentLoaded navId={args.NavigationId}");
 		}
 
 		private void Log(string entry)

@@ -13,7 +13,19 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 		public WebView2_CookieManager()
 		{
 			this.InitializeComponent();
-			this.Loaded += async (_, _) => await WebView.EnsureCoreWebView2Async();
+			this.Loaded += OnLoaded;
+		}
+
+		private async void OnLoaded(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				await WebView.EnsureCoreWebView2Async();
+			}
+			catch (Exception ex)
+			{
+				OutputText.Text = $"Initialization failed: {ex.Message}";
+			}
 		}
 
 		private void OnAddClick(object sender, RoutedEventArgs e)
@@ -30,7 +42,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 				WebView.CoreWebView2.CookieManager.AddOrUpdateCookie(cookie);
 				OutputText.Text = $"Added/updated {cookie.Name}={cookie.Value} (domain={cookie.Domain}, path={cookie.Path})";
 			}
-			catch (Exception ex)
+			catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or NotSupportedException)
 			{
 				OutputText.Text = $"Add failed: {ex.Message}";
 			}
@@ -61,6 +73,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 			}
 			catch (Exception ex)
 			{
+				// async void: an unobserved exception would tear the app down, so every failure is reported here.
 				OutputText.Text = $"List failed: {ex.Message}";
 			}
 		}
@@ -72,7 +85,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 				WebView.CoreWebView2?.CookieManager.DeleteCookies(NameInput.Text, "https://httpbin.org");
 				OutputText.Text = $"Deleted cookies with name '{NameInput.Text}' on httpbin.org";
 			}
-			catch (Exception ex)
+			catch (Exception ex) when (ex is ArgumentException or InvalidOperationException or NotSupportedException)
 			{
 				OutputText.Text = $"Delete failed: {ex.Message}";
 			}
@@ -85,11 +98,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 				WebView.CoreWebView2?.CookieManager.DeleteAllCookies();
 				OutputText.Text = "Deleted all cookies.";
 			}
-			catch (InvalidOperationException ex)
-			{
-				OutputText.Text = $"Delete-all failed: {ex.Message}";
-			}
-			catch (NotSupportedException ex)
+			catch (Exception ex) when (ex is InvalidOperationException or NotSupportedException)
 			{
 				OutputText.Text = $"Delete-all failed: {ex.Message}";
 			}

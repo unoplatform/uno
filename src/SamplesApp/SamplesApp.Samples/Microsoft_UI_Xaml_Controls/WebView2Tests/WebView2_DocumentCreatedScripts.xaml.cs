@@ -15,7 +15,19 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 		{
 			this.InitializeComponent();
 			ScriptList.ItemsSource = _ids;
-			this.Loaded += async (_, _) => await WebView.EnsureCoreWebView2Async();
+			this.Loaded += OnLoaded;
+		}
+
+		private async void OnLoaded(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				await WebView.EnsureCoreWebView2Async();
+			}
+			catch (Exception ex)
+			{
+				_ids.Add($"FAILED: {ex.Message}");
+			}
 		}
 
 		private async void OnAddClick(object sender, RoutedEventArgs e)
@@ -32,6 +44,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 			}
 			catch (Exception ex)
 			{
+				// async void: an unobserved exception would tear the app down, so every failure is reported here.
 				_ids.Add($"FAILED: {ex.Message}");
 			}
 		}
