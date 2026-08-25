@@ -3705,7 +3705,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var propertyValue = GetCustomMarkupExtensionValue(member, closure, resourceOwner);
 				if (!propertyValue.IsNullOrEmpty())
 				{
-					writer.AppendIndented($"{closure}.{member.Member.Name} = {propertyValue};\r\n");
+					// AppendLineIndented rather than a hardcoded CRLF: every other line of the generated
+					// file ends with Environment.NewLine, so a literal "\r\n" here is the one place a
+					// Unix build produces a file with mixed line endings.
+					writer.AppendLineIndented($"{closure}.{member.Member.Name} = {propertyValue};");
 				}
 			}
 		}
@@ -4161,7 +4164,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void BuildComplexPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string? prefix, string? closureName = null, bool generateAssignation = true, ComponentDefinition? componentDefinition = null)
 		{
 			TryAnnotateWithGeneratorSource(writer);
-			Func<string, string> formatLine = format => prefix + format + (!prefix.IsNullOrEmpty() ? ";\r\n" : "");
+			// Environment.NewLine rather than a hardcoded CRLF: the caller appends this through
+			// AppendLineInvariantIndented, so this newline is the blank line that follows the statement
+			// and it has to be the same one the rest of the file uses, or a Unix build ends up with a
+			// file whose line endings are mixed.
+			Func<string, string> formatLine = format => prefix + format + (!prefix.IsNullOrEmpty() ? ";" + Environment.NewLine : "");
 			var postfix = !prefix.IsNullOrEmpty() ? ";" : "";
 
 			var bindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Binding");

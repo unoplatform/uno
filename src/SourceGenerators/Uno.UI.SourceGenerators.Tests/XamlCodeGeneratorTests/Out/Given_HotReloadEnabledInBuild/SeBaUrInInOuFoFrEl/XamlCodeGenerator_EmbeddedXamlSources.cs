@@ -31,7 +31,7 @@ internal static class EmbeddedXamlSourcesProvider
 	// The content of this method only changes when the file list changes
 	private static global::System.Collections.Generic.IDictionary<string, (string ActualPath, global::System.Func<(string Hash, string Payload)> Getter)> EnsureInitialize()
 	{
-		const string currentListHash = "d6cd66944958ced0c513e0a04797b51d"; // that's the hash of all the paths, used to detect changes in the file list following a HR operation
+		const string currentListHash = "0e3f323f9a22a3699cbcd4f0217eee4a"; // that's the hash of all the paths, used to detect changes in the file list following a HR operation
 
 		// Determine if the sources have been updated or not initialized yet
 		var previousHashList = _XamlSources;
@@ -42,7 +42,7 @@ internal static class EmbeddedXamlSourcesProvider
 			var xamlSources = new global::System.Collections.Generic.Dictionary<string, (string ActualPath, global::System.Func<(string Hash, string Payload)> Getter)>(1, global::System.StringComparer.OrdinalIgnoreCase);
 
 			// Use method groups to avoid closure allocation and ensure no lambda is created, to allow proper HR support
-			xamlSources[NormalizePath(@"C:/Project/0/MainPage.xaml")] = (NormalizePath(@"C:/Project/0/MainPage.xaml"), GetSources_MainPage_d6cd66944958ced0c513e0a04797b51d);
+			xamlSources[NormalizePath(@"//Project/0/MainPage.xaml")] = (NormalizePath(@"//Project/0/MainPage.xaml"), GetSources_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
 
 			if (global::System.Threading.Interlocked.CompareExchange(ref _XamlSources, xamlSources, previousHashList) == previousHashList)
 			{
@@ -93,11 +93,11 @@ internal static class EmbeddedXamlSourcesProvider
 
 	private static string NormalizePath(string path) => path.Replace('\\', '/');
 
-	#region Sources for C:/Project/0/MainPage.xaml
-	private static (string hash, string payload) GetSources_MainPage_d6cd66944958ced0c513e0a04797b51d()
+	#region Sources for //Project/0/MainPage.xaml
+	private static (string hash, string payload) GetSources_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a()
 	{
 		return (
-			"f581a99cf10f74b81a36a655b8acca2d60edd9b4", // hash
+			"fbb299ad859e1f762c93ba333c8a3b50a2ac65ea", // hash
 			_utf8.GetString("""
 			<Page x:Class="TestRepro.MainPage"
 					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
