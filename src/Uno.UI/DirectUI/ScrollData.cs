@@ -146,6 +146,16 @@ namespace DirectUI
 
 			m_Offset.Y = offset;
 		}
+
+		// Uno-specific: adopts offsets that were already applied (and already notified) by the
+		// managed scrolling path, without re-notifying the scroll owner.
+		public void SyncAppliedOffset(double offsetX, double offsetY)
+		{
+			m_Offset.X = offsetX;
+			m_Offset.Y = offsetY;
+			m_ComputedOffset.X = offsetX;
+			m_ComputedOffset.Y = offsetY;
+		}
 	}
 
 	internal class OffsetMemento

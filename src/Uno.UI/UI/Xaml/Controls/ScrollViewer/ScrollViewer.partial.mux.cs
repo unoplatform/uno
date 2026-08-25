@@ -1021,7 +1021,6 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					// ScrollViewer operates with logical-based horizontal offsets.
 					global::System.Diagnostics.Debug.Assert(spProvider != null && orientation == Orientation.Horizontal);
-					global::System.Diagnostics.Debug.Assert(disableAnimation);
 
 					if (isBringIntoViewportCallAllowed)
 					{
@@ -1102,7 +1101,6 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					// ScrollViewer operates with logical-based vertical offsets.
 					global::System.Diagnostics.Debug.Assert(spProvider != null && orientation == Orientation.Vertical);
-					global::System.Diagnostics.Debug.Assert(disableAnimation);
 
 					if (isBringIntoViewportCallAllowed)
 					{
@@ -1159,8 +1157,6 @@ namespace Microsoft.UI.Xaml.Controls
 				// Target view is the current or imminent view
 				if (!disableAnimation)
 				{
-					global::System.Diagnostics.Debug.Assert(spProvider == null);
-
 					// Check if the target view is illegal from a mandatory snap points respect.
 					adjustedTargetHorizontalOffset = targetHorizontalOffset;
 					adjustedTargetVerticalOffset = targetVerticalOffset;
@@ -1396,13 +1392,29 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						if (m_trElementScrollContentPresenter is not null)
 						{
+							// Uno-specific: the ScrollContentPresenter stays the scroll client even when an
+							// IManipulationDataProvider is present (ManipulationDataProviderScrollInfo), a
+							// combination WinUI never produces. In that case the offsets above came from the
+							// logical branch, which leaves the pixel extents at their -1 sentinel, so resolve
+							// them here — the presenter clamps the requested offsets against them.
+							if (currentUnzoomedPixelExtentWidth < 0.0)
+							{
+								ComputePixelExtentWidth(true /*ignoreZoomFactor*/, null /*pProvider*/, out currentUnzoomedPixelExtentWidth);
+							}
+
+							if (currentUnzoomedPixelExtentHeight < 0.0)
+							{
+								ComputePixelExtentHeight(true /*ignoreZoomFactor*/, null /*pProvider*/, out currentUnzoomedPixelExtentHeight);
+							}
+
 							// Jump to the target offsets
 							m_trElementScrollContentPresenter.SetOffsetsWithExtents(
 								targetHorizontalOffset,
 								targetVerticalOffset,
 								currentUnzoomedPixelExtentWidth * targetZoomFactor,
 								currentUnzoomedPixelExtentHeight * targetZoomFactor,
-								targetZoomFactor);
+								targetZoomFactor,
+								disableAnimation);
 						}
 					}
 					else

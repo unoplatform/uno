@@ -613,7 +613,8 @@ namespace Microsoft.UI.Xaml.Controls
 			double offsetY,
 			double extentWidth,
 			double extentHeight,
-			float zoomFactor)
+			float zoomFactor,
+			bool disableAnimation = true)
 		{
 			var bIsOffsetChanged = false;
 			ScrollData pScrollData = null;
@@ -664,7 +665,7 @@ namespace Microsoft.UI.Xaml.Controls
 					horizontalOffset: appliedOffsetX,
 					verticalOffset: appliedOffsetY,
 					zoomFactor,
-					disableAnimation: true);
+					disableAnimation: disableAnimation);
 			}
 		}
 
@@ -2043,9 +2044,6 @@ namespace Microsoft.UI.Xaml.Controls
 					toBeAdjustedDesiredSize.Width = desiredViewportSizeFromPanel.Width - desiredSize.Width;
 					toBeAdjustedDesiredSize.Height = desiredViewportSizeFromPanel.Height - desiredSize.Height;
 				}
-
-				// Give opportunity to the content to define the viewport size itself.
-				(spChild as ICustomScrollInfo)?.ApplyViewport(ref desiredSize);
 			}
 
 			desiredSize.Width += headersDesiredSize.Width;
@@ -2218,6 +2216,11 @@ namespace Microsoft.UI.Xaml.Controls
 				desiredSize.Width = Math.Min(availableSize.Width, desiredSize.Width);
 				desiredSize.Height = Math.Min(availableSize.Height, desiredSize.Height);
 			}
+
+			// Uno-specific: give the content the opportunity to define the viewport size itself. This only
+			// affects the size reported to the parent — the IScrollInfo extent published above must stay
+			// based on the child's desired size, otherwise the scrollable range collapses to the viewport.
+			(spChild as ICustomScrollInfo)?.ApplyViewport(ref desiredSize);
 
 			m_isChildActualWidthUpdated = true;
 			m_isChildActualHeightUpdated = true;

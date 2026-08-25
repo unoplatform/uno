@@ -432,6 +432,14 @@ namespace Microsoft.UI.Xaml.Controls
 			var updatedVerticalOffset = VerticalOffset;
 			var contentElt = Content as UIElement;
 
+#if __SKIA__
+			// The managed scroll path (wheel, touch inertia, scrollbars, animations) is authoritative for
+			// the rendered position, while the WinUI port keeps its own copy in ScrollData. Publishing the
+			// applied offsets here keeps both in sync; otherwise the next VerifyScrollData coerces the
+			// presenter back to the stale ScrollData offset and the content visibly snaps back.
+			SyncPortScrollDataOffsets(updatedHorizontalOffset, updatedVerticalOffset);
+#endif
+
 			if ((updated || options.IsTouch) &&
 				contentElt is not null &&
 				!options.IsTouch &&
@@ -792,6 +800,21 @@ namespace Microsoft.UI.Xaml.Controls
 			horizontalOffset = -translationX + centeringOffsetX;
 			verticalOffset = -translationY + centeringOffsetY;
 		}
+
+#if __SKIA__
+		// Mirrors the offsets applied by the managed scrolling path into the WinUI port's ScrollData so
+		// GetVerticalOffset/GetHorizontalOffset, CoerceOffsets and VerifyScrollData observe the position
+		// that is actually rendered.
+		private void SyncPortScrollDataOffsets(double horizontalOffset, double verticalOffset)
+		{
+			if (!IsScrollClient())
+			{
+				return;
+			}
+
+			GetScrollData().SyncAppliedOffset(horizontalOffset, verticalOffset);
+		}
+#endif
 
 		private void BeginProgrammaticManipulation(
 			UIElement content,
