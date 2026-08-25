@@ -47,7 +47,7 @@ namespace TestRepro
 			{
 				return 
 					global::MyProject.GlobalStaticResources.__PreserveProperties(
-						new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_ResDicΞ0_DatTem)
+						global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(__ResourceOwner_1, Build_ResDicΞ0_DatTem)
 					)
 				;
 			}
@@ -55,7 +55,7 @@ namespace TestRepro
 			;
 		}
 
-		private static _View Build_ResDicΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private static _View Build_ResDicΞ0_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 		{
 			
 			return new __MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.__ResDicΞ0_DatTem().Build(__owner, __settings);
@@ -78,7 +78,7 @@ namespace TestRepro
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
-				public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+				public _View Build(object __ResourceOwner_1, global::Uno.UI.TemplateMaterializationSettings __settings)
 				{
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;
@@ -92,6 +92,7 @@ namespace TestRepro
 						}
 						.MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_XamlApply((MyResourceDictionary_92716e07ff456818f6d4125e055d4d57XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 						{
+						global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 						/* _isTopLevelDictionary:True */
 						__that._component_0 = __p1;
 						__nameScope.RegisterName("tb", __p1);
@@ -200,7 +201,7 @@ namespace MyProject
 			[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 			private object Get_1(object __ResourceOwner_1) =>
 				global::MyProject.GlobalStaticResources.__PreserveProperties(
-					new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_ResDicΞ0_DatTem)
+					global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(__ResourceOwner_1, Build_ResDicΞ0_DatTem)
 				)
 				;
 
@@ -225,7 +226,7 @@ namespace MyProject
 			}
 
 			global::Microsoft.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary;
-			private static _View Build_ResDicΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+			private static _View Build_ResDicΞ0_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 			{
 				
 				return new __Resources.__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.__ResDicΞ0_DatTem().Build(__owner, __settings);
@@ -255,7 +256,7 @@ namespace MyProject.__Resources
 			global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 			global::System.Object __ResourceOwner_1;
 			_View __rootInstance = null;
-			public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+			public _View Build(object __ResourceOwner_1, global::Uno.UI.TemplateMaterializationSettings __settings)
 			{
 				var __that = this;
 				this.__ResourceOwner_1 = __ResourceOwner_1;
@@ -269,6 +270,7 @@ namespace MyProject.__Resources
 					}
 					.MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_XamlApply((MyResourceDictionary_92716e07ff456818f6d4125e055d4d57XamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 					{
+					global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 					/* _isTopLevelDictionary:True */
 					__that._component_0 = __p1;
 					__nameScope.RegisterName("tb", __p1);

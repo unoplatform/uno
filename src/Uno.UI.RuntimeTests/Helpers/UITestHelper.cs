@@ -323,7 +323,7 @@ public class DynamicDataTemplate : IDisposable
 		_templates.Add(Id, factory);
 
 #if HAS_UNO
-		Value = new DataTemplate(factory);
+		Value = new DataTemplate(null, (_, _) => factory());
 #else
 		Value = (DataTemplate)XamlReader.Load($@"
 			<DataTemplate 

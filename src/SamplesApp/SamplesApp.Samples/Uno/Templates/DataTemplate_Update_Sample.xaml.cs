@@ -26,7 +26,7 @@ namespace Uno.UI.Samples.UITests.Templates
 #if !WINAPPSDK
 			if (Resources["SharedTemplate"] is DataTemplate dt)
 			{
-				Uno.UI.TemplateManager.UpdateDataTemplate(dt, () =>
+				Uno.UI.TemplateManager.UpdateDataTemplate(dt, _ => (_, _) =>
 				{
 					var rect = new Rectangle
 					{
@@ -47,7 +47,7 @@ namespace Uno.UI.Samples.UITests.Templates
 #if !WINAPPSDK
 			if (Resources["SharedTemplate"] is DataTemplate dt)
 			{
-				Uno.UI.TemplateManager.UpdateDataTemplate(dt, () =>
+				Uno.UI.TemplateManager.UpdateDataTemplate(dt, _ => (_, _) =>
 				{
 					var rect = new Rectangle
 					{

@@ -53,7 +53,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 			{
 				return 
 					global::MyProject.GlobalStaticResources.__PreserveProperties(
-						new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_Pag_ResΞ0_DatTem)
+						global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(__ResourceOwner_1, Build_Pag_ResΞ0_DatTem)
 					)
 				;
 			}
@@ -82,7 +82,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 
 		}
 		partial void OnInitializeCompleted();
-		private static _View Build_Pag_ResΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private static _View Build_Pag_ResΞ0_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 		{
 			
 			return new __RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7.__Pag_ResΞ0_DatTem().Build(__owner, __settings);
@@ -105,7 +105,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
-				public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+				public _View Build(object __ResourceOwner_1, global::Uno.UI.TemplateMaterializationSettings __settings)
 				{
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;
@@ -134,6 +134,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 										}
 										.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 										{
+										global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 										__p1.Add(
 											global::MyProject.GlobalStaticResources.__PreserveProperties(
 												new global::Microsoft.UI.Xaml.Controls.SwipeItem
@@ -142,6 +143,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 												}
 												.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 												{
+												global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 												/* _isTopLevelDictionary:False */
 												__that._component_0 = __p1;
 												global::Microsoft.UI.Xaml.NameScope.SetNameScope(__that._component_0, __nameScope);
@@ -164,6 +166,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 						}
 						.RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7_XamlApply((RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7XamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 						{
+						global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 						/* _isTopLevelDictionary:False */
 						__that._component_1 = __p1;
 						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_RD_WNWSRAE_377332cf85ab03464098c34d0e55b3e7);

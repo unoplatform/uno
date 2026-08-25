@@ -48,7 +48,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var TemplateCreated = 0;
 			List<TemplatePoolAwareControl> _created = new List<TemplatePoolAwareControl>();
-			var dataTemplate = new DataTemplate(() =>
+			var dataTemplate = new DataTemplate(null, (_, _) =>
 			{
 				TemplateCreated++;
 				var b = new TemplatePoolAwareControl();
@@ -89,7 +89,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var templateCreatedCount = 0;
 			var flagValues = new List<bool>();
-			var template = new ControlTemplate(() =>
+			var template = new ControlTemplate(null, (_, _) =>
 			{
 				var presenter = new ContentPresenter();
 				presenter.DataContextChanged += (s, e) =>
@@ -126,7 +126,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var TemplateCreated = 0;
 			List<TemplatePoolAwareControl> _created = new List<TemplatePoolAwareControl>();
-			var dataTemplate = new DataTemplate(() =>
+			var dataTemplate = new DataTemplate(null, (_, _) =>
 			{
 				TemplateCreated++;
 				var b = new TemplatePoolAwareControl();
@@ -170,7 +170,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			_mockProvider.CanUseMemoryManager = false;
 
 			List<TemplatePoolAwareControl> _created = new();
-			var dataTemplate = new DataTemplate(() =>
+			var dataTemplate = new DataTemplate(null, (_, _) =>
 			{
 				var b = new TemplatePoolAwareControl();
 				_created.Add(b);
@@ -211,7 +211,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			_mockProvider.AppMemoryUsageLimit = 100;
 
 			List<TemplatePoolAwareControl> _created = new();
-			var dataTemplate = new DataTemplate(() =>
+			var dataTemplate = new DataTemplate(null, (_, _) =>
 			{
 				var b = new TemplatePoolAwareControl();
 				_created.Add(b);

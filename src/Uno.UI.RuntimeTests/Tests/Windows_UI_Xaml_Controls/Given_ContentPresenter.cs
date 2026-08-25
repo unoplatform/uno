@@ -259,7 +259,7 @@ public partial class Given_ContentPresenter
 		{
 			//if ((x as DependencyObject)? is { } dos)
 			//{
-			//	yield return $"TP={PrettyPrint.FormatType(dos.GetTemplatedParent2())}";
+			//	yield return $"TP={PrettyPrint.FormatType(dos.GetTemplatedParent())}";
 			//}
 			if (x is FrameworkElement fe)
 			{

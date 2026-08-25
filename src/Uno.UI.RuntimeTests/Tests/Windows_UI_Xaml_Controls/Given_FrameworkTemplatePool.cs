@@ -240,7 +240,7 @@ public class Given_FrameworkTemplatePool
 			FrameworkTemplatePool.InternalIsPoolingEnabled = false;
 
 			var capture = new object();
-			var template = new DataTemplate(() => new ContentPresenter { Content = capture });
+			var template = new DataTemplate(null, (_, _) => new ContentPresenter { Content = capture });
 
 			Assert.IsFalse(FrameworkTemplatePool.Instance.ContainsKey(template));
 			template.LoadContentCached();

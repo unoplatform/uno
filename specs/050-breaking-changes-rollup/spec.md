@@ -259,9 +259,6 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
 
 _Danger 3-4. Heavier multi-file changes: remove the legacy templated-parent mechanism, repurpose the precedence enum, tear down Fluent V1 scaffolding, rename the Toolkit assembly, and remove the legacy `Windows.UI.Input.*` surface. Each is its own PR._
 
-- [ ] **BC01** — Remove legacy templated-parent mechanism  `d3·L` · #18672
-  - Hard-remove legacy path incl. public `FrameworkTemplateBuilder` delegate + legacy ctors. **First** fix the tests that currently force `_isLegacyTemplate=true`.
-  - Files: `src/Uno.UI/UI/Xaml/FrameworkTemplate.cs`, `src/Uno.UI/UI/Xaml/TemplatedParentScope.cs`, `src/Uno.UI/UI/Xaml/ControlTemplate.cs`
 - [x] **#2163** — Remove the `ContentPresenter` bypass  `d2·M` · **[impact spec](bc2163-remove-contentpresenter-bypass.md)**
   - `ContentControl` skipped the `ContentPresenter` and parented `Content` directly when it had no
     `Template` and its default style declared none — an Android 4.4 stack-depth workaround. **Already
@@ -276,6 +273,12 @@ _Danger 3-4. Heavier multi-file changes: remove the legacy templated-parent mech
     `…/Primitives/ButtonBase/ButtonBase.cs`, `…/Button/HyperlinkButton.mux.cs`, `…/UI/Xaml/FrameworkElement.Layout.cs`,
     `…/UI/Xaml/Application.Alc.cs`,
     `src/Uno.WinAppSDKSyncGenerator/Helpers/SymbolMatchingHelpers.cs`, `build/PackageDiffIgnore.xml`
+- [x] **BC01** — Remove legacy templated-parent mechanism  `d3·L` · #18672
+  - Hard-removed the ambient `TemplatedParentScope` (including its `DependencyObjectStore` ctor hook), both `ENABLE_LEGACY_*` symbols, both `Microsoft.UI.Xaml` builder delegates (`FrameworkTemplateBuilder` **and** `NewFrameworkTemplateBuilder`), every builder ctor (now internal behind `MarkupHelper.Create*`), the TP-less `Func<View?>` factories, and the vestigial `DependencyObject.TemplatedParent` DP.
+  - The surviving factory shape is `Uno.UI.FrameworkTemplateBuilder` — `(object? owner, TemplateMaterializationSettings settings) => UIElement?`. Both it and `Uno.UI.TemplateMaterializationSettings` sit next to `TemplateManager` rather than in the WinUI namespace: neither has a WinUI counterpart, so neither belongs under `Microsoft.UI.Xaml`. The settings are framework-constructed only (internal ctor); a builder still reads the properties.
+  - Assigning the templated parent moved off the call sites onto `TemplateMaterializationSettings.OnMemberCreated`, so `LoadContent` decides it once and the two call sites stop diverging (the `XamlReader` path had been skipping non-`FrameworkElement` members and, when the templated parent was null, the member callback too). It is an instance method rather than a delegate deliberately: lazily materialized members (`x:Load`, `VisualState`) capture the settings, so a closure over the templated parent would pin it for as long as the template content, which outlives it in the pool. `TemplateMemberCreatedCallback` is removed. Covered by `Given_FrameworkTemplate_And_Leak`, which fails against a closure-capturing implementation.
+  - The stated prerequisite ("fix the tests that force `_isLegacyTemplate=true`") was already moot: `_isLegacyTemplate` is a `private const` nothing assigns, and the suites pass with it `false`.
+  - Files: `src/Uno.UI/UI/Xaml/FrameworkTemplate.cs`, `src/Uno.UI/UI/Xaml/TemplatedParentScope.cs` (deleted), `src/Uno.UI/UI/Xaml/ControlTemplate.cs`, `src/Uno.UI/Uno/TemplateMaterializationSettings.cs`, `src/Uno.UI/Uno/FrameworkTemplateBuilder.cs`, `src/Uno.UI/UI/Xaml/Markup/Reader/XamlObjectBuilder.cs`
 - [ ] **BC39** — Clean up `DependencyPropertyValuePrecedences` enum  `d2·M` · PR #15684
   - Hard-remove obsolete enum members (no `[EditorBrowsable]` aliases).
   - Files: `src/Uno.UI/UI/Xaml/DependencyPropertyValuePrecedences.cs`, `src/Uno.UI/UI/Xaml/DependencyObjectStore.cs`, `src/Uno.UI/UI/Xaml/Internal/DependencyPropertyHelper.cs`

@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -13,22 +13,11 @@ using View = Microsoft.UI.Xaml.UIElement;
 
 namespace Microsoft.UI.Xaml
 {
-	/// <summary>
-	/// Defines a builder to be used in <see cref="FrameworkTemplate"/>
-	/// </summary>
-	public delegate View? FrameworkTemplateBuilder(object? owner);
-
-	/// <summary>
-	/// Defines a builder to be used in <see cref="FrameworkTemplate"/>
-	/// </summary>
-	public delegate View? NewFrameworkTemplateBuilder(object? owner, TemplateMaterializationSettings settings);
-
 	[ContentProperty(Name = "Template")]
 	public partial class FrameworkTemplate : DependencyObject, IFrameworkTemplateInternal
 	{
 		private readonly int _hashCode;
 		private readonly ManagedWeakReference? _ownerRef;
-		private const bool _isLegacyTemplate = true; // Tests fails if set to false, so we keep it true for now.
 
 		/// <summary>
 		/// XAML scope captured during template creation, used as context provider for resource resolution when materializing template content.
@@ -42,72 +31,38 @@ namespace Microsoft.UI.Xaml
 		/// scenarios (e.g., hot reload, design-time updates). Outside of this mode, the field
 		/// should remain unchanged. See Uno.UI.TemplateManager for details.
 		/// </summary>
-		/// <remarks>
-		/// This delegate may be wrapped to align its signature with <see cref="NewFrameworkTemplateBuilder"/>.
-		/// The original factory method can always be found in <see cref="ViewFactoryInner"/>.
-		/// </remarks>
-		internal IDelegate<NewFrameworkTemplateBuilder>? ViewFactory { get; private set; }
-
-		internal IDelegate<Delegate>? ViewFactoryInner { get; private set; }
+		internal IDelegate<FrameworkTemplateBuilder>? ViewFactory { get; private set; }
 
 		protected FrameworkTemplate()
 			=> throw new NotSupportedException("Use the factory constructors");
 
-		public FrameworkTemplate(Func<View?>? factory)
-			: this(null, factory, true)
-		{
-			// TODO: to be removed on next major update.
-			// This overload simply should not exist, since the materialized members do not have the tp injected.
-			// It can lead to issues like template-parent binding not working...
-			// Currently, it seems to be only used in unit tests & runtime tests.
-
-			SetViewFactory(factory, AdaptViewFactory);
-		}
-
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-		public FrameworkTemplate(object? owner, FrameworkTemplateBuilder? factory)
-			: this(owner, factory, true)
-		{
-			// TODO: to be removed on next major update.
-
-			SetViewFactory(factory, AdaptFrameworkTemplateBuilder);
-		}
-#endif
-
-		public FrameworkTemplate(object? owner, NewFrameworkTemplateBuilder? factory)
-			: this(owner, factory, false)
-		{
-			SetViewFactory(factory);
-		}
-
-		private FrameworkTemplate(object? owner, Delegate? rawFactory, bool legacy)
+		internal FrameworkTemplate(object? owner, FrameworkTemplateBuilder? factory)
 		{
 			InitializeBinder();
-
-			// TODO: to restore; but, see note about _isLegacyTemplate first
-			//_isLegacyTemplate = legacy;
 
 			_ownerRef = WeakReferencePool.RentWeakReference(this, owner);
 
 			// Compute the hash for this template once, it will be used a lot
 			// in the ControlPool's internal dictionary.
-			_hashCode = HashCode.Combine(rawFactory?.Target, rawFactory?.Method);
+			_hashCode = HashCode.Combine(factory?.Target, factory?.Method);
 #if DEBUG
-			TemplateSource = $"{rawFactory?.Method.DeclaringType}.{rawFactory?.Method.Name}";
-			if (rawFactory?.Target is { })
+			TemplateSource = $"{factory?.Method.DeclaringType}.{factory?.Method.Name}";
+			if (factory?.Target is { })
 			{
-				TemplateSource += $", target={rawFactory.Target.GetType()}";
+				TemplateSource += $", target={factory.Target.GetType()}";
 			}
 #endif
 
 			_xamlScope = ResourceResolver.CurrentScope;
+
+			SetViewFactory(factory);
 		}
 
 		/// <summary>
 		/// Sets the view factory. Internal method to avoid unwanted changes from outside the framework.
 		/// </summary>
 		/// <param name="factory">The new factory to set</param>
-		internal void SetViewFactory(NewFrameworkTemplateBuilder? factory)
+		internal void SetViewFactory(FrameworkTemplateBuilder? factory)
 		{
 			// When the factory target is a top-level XAML class (e.g. Page, ResourceDictionary, ...) which commonly implements IWeakReferenceProvider,
 			// we wrap the delegate in a weak reference so that the template does not keep that object alive and cause memory leaks.
@@ -120,35 +75,6 @@ namespace Microsoft.UI.Xaml
 				{ } => DelegateHelper.CreateLiteral(factory),
 				null => null,
 			};
-			ViewFactoryInner = ViewFactory;
-		}
-
-		internal void SetViewFactory<TDelegate>(TDelegate? factory, Func<object?, TemplateMaterializationSettings, IDelegate<TDelegate>, View?> adapter)
-			where TDelegate : Delegate
-		{
-			if (factory is { })
-			{
-				// When the factory target is a top-level XAML class (e.g. Page, ResourceDictionary, ...) which commonly implements IWeakReferenceProvider,
-				// we wrap the delegate in a weak reference so that the template does not keep that object alive and cause memory leaks.
-				// When the target does not implement IWeakReferenceProvider (typically a compiler-generated closure class), we keep a strong
-				// reference via LiteralDelegate so the closure stays alive. If the factory doesn't have a target (no capture), we also use the literal
-				// delegate without additional overhead.
-				var inner = factory.Target is IWeakReferenceProvider
-					? DelegateHelper.CreateWeak(factory)
-					: DelegateHelper.CreateLiteral(factory) as IDelegate<TDelegate>;
-				// the adapted factory must not be a weak delegate, as we would lose the captures otherwise.
-				var adapted = DelegateHelper.CreateLiteral<NewFrameworkTemplateBuilder>(
-					(o, s) => adapter(o, s, inner)
-				);
-
-				ViewFactory = adapted;
-				ViewFactoryInner = inner;
-			}
-			else
-			{
-				ViewFactory = null;
-				ViewFactoryInner = null;
-			}
 		}
 
 		/// <summary>
@@ -181,39 +107,24 @@ namespace Microsoft.UI.Xaml
 			try
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-				TemplatedParentScope.PushScope(templatedParent, _isLegacyTemplate);
-#endif
 
-				if (!FrameworkTemplatePool.IsPoolingEnabled || _isLegacyTemplate)
+				var members = FrameworkTemplatePool.IsPoolingEnabled ? new List<DependencyObject>() : null;
+				var settings = new TemplateMaterializationSettings(templatedParent, members);
+
+				var view = ViewFactory?.Delegate?.Invoke(_ownerRef?.Target, settings);
+
+				if (view is { } && members is { })
 				{
-					var settings = new TemplateMaterializationSettings(templatedParent, null);
-
-					var view = ViewFactory?.Delegate?.Invoke(_ownerRef?.Target, settings);
-
-					return view;
+					// TODO: impl recycling (tp update) for tracked template members. Lazily materialized
+					// ones (x:Load, VisualState) do get their templated parent, but they are created
+					// after this snapshot is taken, so they are absent from the tracked set.
+					FrameworkTemplatePool.Instance.TrackMaterializedTemplate(view, members);
 				}
-				else
-				{
-					var members = new List<DependencyObject>();
-					var settings = new TemplateMaterializationSettings(templatedParent, members.Add);
 
-					var view = ViewFactory?.Delegate?.Invoke(_ownerRef?.Target, settings);
-
-					if (view is { })
-					{
-						// TODO: impl recycling (tp update) for tracked template members
-						FrameworkTemplatePool.Instance.TrackMaterializedTemplate(this, view, members);
-					}
-
-					return view;
-				}
+				return view;
 			}
 			finally
 			{
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-				TemplatedParentScope.PopScope();
-#endif
 				ResourceResolver.PopScope();
 			}
 		}
@@ -236,16 +147,6 @@ namespace Microsoft.UI.Xaml
 #if DEBUG
 		public string TemplateSource { get; init; }
 #endif
-
-		private static View? AdaptFrameworkTemplateBuilder(object? owner, TemplateMaterializationSettings settings, IDelegate<FrameworkTemplateBuilder> del)
-		{
-			return del.Delegate?.Invoke(owner);
-		}
-
-		private static View? AdaptViewFactory(object? owner, TemplateMaterializationSettings settings, IDelegate<Func<View?>> del)
-		{
-			return del.Delegate?.Invoke();
-		}
 
 		internal class FrameworkTemplateEqualityComparer : IEqualityComparer<FrameworkTemplate>
 		{
@@ -287,25 +188,7 @@ namespace Microsoft.UI.Xaml
 			);
 		}
 
-		internal bool UpdateFactory(Func<View?> value)
-		{
-			if (value?.Method != ViewFactoryInner?.Method)
-			{
-				SetViewFactory(value, AdaptViewFactory);
-
-				// Only invoke handlers if they exist for this instance
-				if (_templateUpdatedHandlers.TryGetValue(this, out var handlers))
-				{
-					handlers.Invoke(this, null);
-				}
-
-				return true;
-			}
-
-			return false;
-		}
-
-		internal bool UpdateFactory(Func<NewFrameworkTemplateBuilder?, NewFrameworkTemplateBuilder?> update)
+		internal bool UpdateFactory(Func<FrameworkTemplateBuilder?, FrameworkTemplateBuilder?> update)
 		{
 			// Special case to update the factory without creating a new instance.
 			// A special mode is required for it to work and is activated directly in the Uno.UI.TemplateManager.
