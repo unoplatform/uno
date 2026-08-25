@@ -134,7 +134,9 @@ public static partial class GlobalizationPreferences
 			{
 				try
 				{
-					var languages = MarshalString.FromAbi(handle).Split(Delimiter);
+					// A trailing delimiter (or an empty profile entry) would otherwise surface as an
+					// empty language tag, breaking the guarantee that Languages[0] is a usable tag.
+					var languages = MarshalString.FromAbi(handle).Split(Delimiter, StringSplitOptions.RemoveEmptyEntries);
 					return languages.Length > 0 ? languages : GetCurrentCultureLanguages();
 				}
 				finally
