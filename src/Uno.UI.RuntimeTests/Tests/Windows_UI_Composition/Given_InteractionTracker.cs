@@ -228,14 +228,16 @@ public partial class Given_InteractionTracker
 
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 		var finger = injector.GetFinger();
-		finger.Drag(new(position.Left + 50, position.Top + 50), new(position.Left + 100, position.Top + 50), stepOffsetInMilliseconds: 0);
+		// 5 moves of exactly StartTouch.TranslateX: the manipulation is recognized on the first one, so
+		// exactly one threshold is absorbed and never applied to the tracker (#20473), leaving 40px.
+		finger.Drag(new(position.Left + 50, position.Top + 50), new(position.Left + 100, position.Top + 50), steps: 4, stepOffsetInMilliseconds: 0);
 
 		string logs = await WaitTrackerLogs(tracker);
 		var helper = new TrackerAssertHelper(logs);
 
 		Assert.AreEqual(
 			TrackerLogsConstructingHelper.GetInteractingStateEntered(
-				trackerPosition: new(-50.0f, 0.0f, 0.0f),
+				trackerPosition: new(-40.0f, 0.0f, 0.0f),
 				requestId: 0),
 			helper.Current);
 
@@ -247,16 +249,16 @@ public partial class Given_InteractionTracker
 
 		Assert.AreEqual(
 			TrackerLogsConstructingHelper.GetValuesChanged(
-				trackerPosition: new(-50.0f, 0.0f, 0.0f),
+				trackerPosition: new(-40.0f, 0.0f, 0.0f),
 				requestId: 0,
-				argsPosition: new(-50.0f, 0.0f, 0.0f)),
+				argsPosition: new(-40.0f, 0.0f, 0.0f)),
 			helper.Current);
 
 		helper.Advance();
 
 		Assert.AreEqual(
 			TrackerLogsConstructingHelper.GetIdleStateEntered(
-				trackerPosition: new(-50.0f, 0.0f, 0.0f),
+				trackerPosition: new(-40.0f, 0.0f, 0.0f),
 				requestId: 0),
 			helper.Current);
 

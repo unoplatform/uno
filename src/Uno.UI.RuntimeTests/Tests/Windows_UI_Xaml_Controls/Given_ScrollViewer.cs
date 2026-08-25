@@ -1753,10 +1753,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			using var finger = input.GetFinger();
 			var bounds = SUT.GetAbsoluteBounds();
 			finger.Press(bounds.GetCenter());
-			finger.MoveTo(bounds.GetCenter().Offset(0, -50));
+			// 5 moves of exactly StartTouch.TranslateY: the manipulation is recognized on the first one,
+			// and that distance is absorbed rather than replayed as a delta (#20473), leaving 40px.
+			finger.MoveTo(bounds.GetCenter().Offset(0, -50), steps: 4);
 			finger.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(50, SUT.VerticalOffset);
+			Assert.AreEqual(40, SUT.VerticalOffset);
 		}
 
 		[TestMethod]
