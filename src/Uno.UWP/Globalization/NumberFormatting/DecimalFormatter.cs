@@ -1,6 +1,7 @@
 #nullable enable
 
 using System.Collections.Generic;
+using System.Globalization;
 using Uno;
 using Uno.Globalization.NumberFormatting;
 
@@ -55,7 +56,8 @@ namespace Windows.Globalization.NumberFormatting
 
 			_formatterHelper = new FormatterHelper
 			{
-				NumberFormat = GeographicRegionHelper.ResolveNumberFormat(_translator.ResolvedLanguage, _numberFormatGeographicRegion, _translator.NumeralSystem)
+				NumberFormat = GeographicRegionHelper.ResolveNumberFormat(_translator.ResolvedLanguage, _numberFormatGeographicRegion, _translator.NumeralSystem),
+				NaNSymbol = GeographicRegionHelper.ResolveNaNSymbol(_translator.ResolvedLanguage, _numberFormatGeographicRegion),
 			};
 		}
 
@@ -105,6 +107,43 @@ namespace Windows.Globalization.NumberFormatting
 
 		public string Format(double value) => FormatDouble(value);
 
+		public string Format(long value) => FormatInt(value);
+
+		public string Format(ulong value) => FormatUInt(value);
+
+		public string FormatInt(long value)
+		{
+			if (NumberRounder is not null)
+			{
+				// WinRT rounds through the integral members, keeping every digit past 2^53.
+				value = NumberRounder.RoundInt64(value);
+			}
+
+			var magnitude = IntegralRounding.GetMagnitude(value, out var isNegative);
+
+			return FormatIntegral(isNegative, magnitude);
+		}
+
+		public string FormatUInt(ulong value)
+		{
+			if (NumberRounder is not null)
+			{
+				value = NumberRounder.RoundUInt64(value);
+			}
+
+			return FormatIntegral(false, value);
+		}
+
+		private string FormatIntegral(bool isNegative, ulong magnitude)
+		{
+			var stringBuilder = StringBuilderCache.Acquire();
+
+			_formatterHelper.AppendFormatIntegral(isNegative, magnitude.ToString(CultureInfo.InvariantCulture), stringBuilder);
+			_translator.TranslateNumerals(stringBuilder);
+
+			return StringBuilderCache.GetStringAndRelease(stringBuilder);
+		}
+
 		public string FormatDouble(double value)
 		{
 			if (!_formatterHelper.TryValidate(value, out string text))
@@ -136,7 +175,7 @@ namespace Windows.Globalization.NumberFormatting
 
 		public double? ParseDouble(string text)
 		{
-			if (FormatterHelper.TryParseSpecialValue(text, out var specialValue))
+			if (_formatterHelper.TryParseSpecialValue(text, out var specialValue))
 			{
 				return specialValue;
 			}
@@ -144,5 +183,9 @@ namespace Windows.Globalization.NumberFormatting
 			text = _translator.TranslateBackNumerals(text);
 			return _formatterHelper.ParseDouble(text);
 		}
+
+		public long? ParseInt(string text) => _formatterHelper.ParseInt(_translator.TranslateBackNumerals(text));
+
+		public ulong? ParseUInt(string text) => _formatterHelper.ParseUInt(_translator.TranslateBackNumerals(text));
 	}
 }

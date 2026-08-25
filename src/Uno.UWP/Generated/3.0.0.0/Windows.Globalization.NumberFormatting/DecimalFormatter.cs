@@ -24,50 +24,14 @@ namespace Windows.Globalization.NumberFormatting
 		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.DecimalFormatter()
 		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.DecimalFormatter(System.Collections.Generic.IEnumerable<string>, string)
 		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.DecimalFormatter(System.Collections.Generic.IEnumerable<string>, string)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Format(long value)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "Format(long value)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string Format(ulong value)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "Format(ulong value)");
-		}
-#endif
+		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.Format(long)
+		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.Format(ulong)
 		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.Format(double)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string FormatInt(long value)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "FormatInt(long value)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public string FormatUInt(ulong value)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "FormatUInt(ulong value)");
-		}
-#endif
+		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.FormatInt(long)
+		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.FormatUInt(ulong)
 		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.FormatDouble(double)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public long? ParseInt(string text)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "ParseInt(string text)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public ulong? ParseUInt(string text)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.Globalization.NumberFormatting.DecimalFormatter", "ParseUInt(string text)");
-		}
-#endif
+		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.ParseInt(string)
+		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.ParseUInt(string)
 		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.ParseDouble(string)
 		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.FractionDigits.get
 		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.FractionDigits.set

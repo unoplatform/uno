@@ -230,6 +230,17 @@ internal static class GeographicRegionHelper
 		numeralSystem.Equals("Arab", StringComparison.Ordinal) ||
 		numeralSystem.Equals("ArabExt", StringComparison.Ordinal);
 
+	/// <summary>
+	/// Resolves the NaN symbol of the locale.
+	/// </summary>
+	/// <remarks>
+	/// Unlike <see cref="ResolveNumberFormat"/> this never falls back to the invariant data for
+	/// Arabic-Indic numeral systems: WinRT localizes NaN even when it formats punctuation invariantly.
+	/// </remarks>
+	public static string ResolveNaNSymbol(string resolvedLanguage, string resolvedGeographicRegion) =>
+		TryResolveCulture(resolvedLanguage, resolvedGeographicRegion)?.NumberFormat.NaNSymbol ??
+			CultureInfo.InvariantCulture.NumberFormat.NaNSymbol;
+
 	private static CultureInfo? TryResolveCulture(string resolvedLanguage, string resolvedGeographicRegion)
 	{
 		if (TryGetCultureInfo(resolvedLanguage, out var culture))

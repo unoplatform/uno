@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Globalization;
@@ -9,14 +9,16 @@ namespace Uno.Globalization.NumberFormatting
 {
 	internal partial class FormatterHelper : ISignificantDigitsOption, ISignedZeroOption
 	{
-		// WinRT formats (and parses back) these exact symbols for every locale, independently of the
-		// NaN/infinity symbols reported by the locale data.
-		private const string NaNSymbol = "NaN";
+		// WinRT uses the same infinity symbols for every locale, always with an ASCII hyphen, while the
+		// NaN symbol follows the locale (see NaNSymbol).
 		private const string PositiveInfinitySymbol = "∞";
-		private const string NegativeInfinitySymbol = "-∞";
+		private const string ZeroDigits = "0";
 
-		// 2^63, the first magnitude a long can no longer represent.
-		private const double MaxExactLongMagnitude = 9223372036854775808d;
+		// Doubles round-trip through 17 significant digits, which is the precision WinRT prints.
+		private const string RoundTripFormat = "G17";
+
+		private const NumberStyles IntegerStyles = NumberStyles.AllowLeadingSign | NumberStyles.AllowThousands;
+		private const NumberStyles DecimalStyles = IntegerStyles | NumberStyles.AllowDecimalPoint;
 
 		public FormatterHelper()
 		{
@@ -27,6 +29,12 @@ namespace Uno.Globalization.NumberFormatting
 		/// It remains invariant when <see cref="NumeralSystemTranslator"/> localizes punctuation.
 		/// </summary>
 		public NumberFormatInfo NumberFormat { get; set; } = CultureInfo.InvariantCulture.NumberFormat;
+
+		/// <summary>
+		/// Gets or sets the NaN symbol of the resolved locale, which is independent of
+		/// <see cref="NumberFormat"/> because Arabic-Indic numeral systems format punctuation invariantly.
+		/// </summary>
+		public string NaNSymbol { get; set; } = "NaN";
 
 		public bool IsDecimalPointAlwaysDisplayed { get; set; }
 
@@ -39,6 +47,8 @@ namespace Uno.Globalization.NumberFormatting
 		public bool IsZeroSigned { get; set; }
 
 		public int SignificantDigits { get; set; }
+
+		private string NegativeInfinitySymbol => NumberFormat.NegativeSign + PositiveInfinitySymbol;
 
 		public bool TryValidate(double value, out string text)
 		{
@@ -71,30 +81,33 @@ namespace Uno.Globalization.NumberFormatting
 		/// WinRT round-trips these case-sensitively and rejects any sign variation (for example "+∞"
 		/// or a U+2212 MINUS SIGN), so the comparison is ordinal and exact.
 		/// </remarks>
-		public static bool TryParseSpecialValue(string text, out double value)
+		public bool TryParseSpecialValue(string text, out double value)
 		{
-			switch (text)
+			if (string.Equals(text, NaNSymbol, StringComparison.Ordinal))
 			{
-				case NaNSymbol:
-					value = double.NaN;
-					return true;
-				case PositiveInfinitySymbol:
-					value = double.PositiveInfinity;
-					return true;
-				case NegativeInfinitySymbol:
-					value = double.NegativeInfinity;
-					return true;
-				default:
-					value = 0d;
-					return false;
+				value = double.NaN;
+				return true;
 			}
+
+			if (string.Equals(text, PositiveInfinitySymbol, StringComparison.Ordinal))
+			{
+				value = double.PositiveInfinity;
+				return true;
+			}
+
+			if (string.Equals(text, NegativeInfinitySymbol, StringComparison.Ordinal))
+			{
+				value = double.NegativeInfinity;
+				return true;
+			}
+
+			value = 0d;
+			return false;
 		}
 
 		public void AppendFormatZero(double value, StringBuilder stringBuilder)
 		{
-			var isNegative = value.IsNegative();
-
-			if (IsZeroSigned && isNegative)
+			if (IsZeroSigned && value.IsNegative())
 			{
 				stringBuilder.Append(NumberFormat.NegativeSign);
 			}
@@ -102,90 +115,153 @@ namespace Uno.Globalization.NumberFormatting
 			AppendFormatZero(stringBuilder);
 		}
 
-		public void AppendFormatZero(StringBuilder stringBuilder)
+		public void AppendFormatZero(StringBuilder stringBuilder) =>
+			AppendFormatIntegral(false, ZeroDigits, stringBuilder);
+
+		/// <summary>
+		/// Formats an integral value given as its sign and its exact magnitude digits.
+		/// </summary>
+		public void AppendFormatIntegral(bool isNegative, string digits, StringBuilder stringBuilder)
 		{
 			if (FractionDigits == 0 &&
-				IntegerDigits == 0)
+				IntegerDigits == 0 &&
+				IsZero(digits))
 			{
 				stringBuilder.Append('0');
 			}
 
-			// Zero goes through the same picture as any other value so that grouping and the
-			// locale group sizes still apply to the padded integer digits.
-			AppendFormatIntegerPart(0d, stringBuilder);
+			AppendIntegerPart(isNegative, digits, stringBuilder);
+
+			var fractionDigits = GetFractionDigits(digits.Length);
 
 			if (!IsDecimalPointAlwaysDisplayed &&
-				FractionDigits == 0)
+				fractionDigits == 0)
 			{
 				return;
 			}
 
 			stringBuilder.Append(NumberFormat.NumberDecimalSeparator);
-			stringBuilder.Append('0', FractionDigits);
+			stringBuilder.Append('0', fractionDigits);
 		}
 
 		public void AppendFormatDouble(double value, StringBuilder stringBuilder)
 		{
-			AppendFormatIntegerPart(value, stringBuilder);
-			AppendFormatFractionPart(value, stringBuilder);
+			var digits = GetIntegerDigits(Math.Abs(Math.Truncate(value)));
+
+			AppendIntegerPart(value < 0, digits, stringBuilder);
+			AppendFormatFractionPart(value, GetFractionDigits(digits.Length), stringBuilder);
 		}
 
-		private void AppendFormatIntegerPart(double value, StringBuilder stringBuilder)
+		private static bool IsZero(string digits) => digits.Length == 1 && digits[0] == '0';
+
+		private int GetFractionDigits(int integerDigitCount) =>
+			Math.Max(FractionDigits, SignificantDigits - integerDigitCount);
+
+		/// <summary>
+		/// Gets the exact integer digits of an integral <paramref name="magnitude"/>.
+		/// </summary>
+		/// <remarks>
+		/// A custom numeric picture would round to 15 significant digits and "F0" would print the exact
+		/// binary expansion; WinRT prints the 17 significant digits that round-trip a double, padded with
+		/// zeros, which is what expanding the round-trip form produces.
+		/// </remarks>
+		private static string GetIntegerDigits(double magnitude)
 		{
-			// Truncate first: a custom numeric picture rounds, and only the integer digits belong here.
-			var integerPart = Math.Truncate(value);
+			var text = magnitude.ToString(RoundTripFormat, CultureInfo.InvariantCulture);
+			var exponentIndex = text.IndexOf('E');
 
-			if (integerPart == 0 &&
-				IntegerDigits == 0)
+			if (exponentIndex < 0)
 			{
-				// The picture would emit nothing, so the sign of a value such as -0.5 has to be carried over.
-				if (value < 0)
-				{
-					stringBuilder.Append(NumberFormat.NegativeSign);
-				}
+				return text;
+			}
 
+			var exponent = int.Parse(text.Substring(exponentIndex + 1), CultureInfo.InvariantCulture);
+			var mantissa = text.Substring(0, exponentIndex);
+			var pointIndex = mantissa.IndexOf('.');
+			var digits = pointIndex < 0 ? mantissa : mantissa.Remove(pointIndex, 1);
+			var trailingZeros = exponent - (pointIndex < 0 ? 0 : mantissa.Length - pointIndex - 1);
+
+			return trailingZeros <= 0 ? digits : digits + new string('0', trailingZeros);
+		}
+
+		private void AppendIntegerPart(bool isNegative, string digits, StringBuilder stringBuilder)
+		{
+			if (isNegative)
+			{
+				stringBuilder.Append(NumberFormat.NegativeSign);
+			}
+
+			if (IntegerDigits == 0 &&
+				IsZero(digits))
+			{
 				return;
 			}
 
-			var formatBuilder = StringBuilderCache.Acquire();
-			formatBuilder.Append("{0:");
+			var padding = IntegerDigits - digits.Length;
 
-			if (IsGrouped)
-			{
-				// A "," only acts as the group separator when it sits between two digit placeholders,
-				// so the leading "#" is required for IntegerDigits == 1.
-				formatBuilder.Append("#,");
-			}
-
-			if (IntegerDigits == 0)
-			{
-				formatBuilder.Append('#');
-			}
-			else
-			{
-				formatBuilder.Append('0', IntegerDigits);
-			}
-
-			formatBuilder.Append('}');
-
-			var format = StringBuilderCache.GetStringAndRelease(formatBuilder);
-
-			// A custom picture applied to a double rounds to 15 significant digits, so route the
-			// integer part through long whenever it fits to keep every digit of values such as 2^53.
-			// Zero stays on the double path so that the sign of -0 survives (for example "-0.50").
-			var formattable = integerPart != 0 && Math.Abs(integerPart) < MaxExactLongMagnitude
-				? (object)(long)integerPart
-				: integerPart;
-
-			stringBuilder.AppendFormat(NumberFormat, format, formattable);
+			AppendGroupedDigits(padding > 0 ? new string('0', padding) + digits : digits, stringBuilder);
 		}
 
-		private void AppendFormatFractionPart(double value, StringBuilder stringBuilder)
+		private void AppendGroupedDigits(string digits, StringBuilder stringBuilder)
+		{
+			if (!IsGrouped)
+			{
+				stringBuilder.Append(digits);
+				return;
+			}
+
+			var groupSizes = NumberFormat.NumberGroupSizes;
+			var lastSizeIndex = groupSizes.Length - 1;
+			var remaining = digits.Length;
+			var sizeIndex = 0;
+			var groupCount = 0;
+
+			// Walk the sizes from the least significant end; the last entry repeats and a zero stops grouping.
+			while (true)
+			{
+				var size = groupSizes[Math.Min(sizeIndex, lastSizeIndex)];
+
+				if (size <= 0 ||
+					remaining <= size)
+				{
+					break;
+				}
+
+				remaining -= size;
+				groupCount++;
+
+				if (sizeIndex < lastSizeIndex)
+				{
+					sizeIndex++;
+				}
+			}
+
+			var separator = NumberFormat.NumberGroupSeparator;
+			var index = remaining;
+
+			stringBuilder.Append(digits, 0, remaining);
+
+			// The sizes appear mirrored when emitting left to right: the repeating entry first, then the
+			// leading entries in reverse order.
+			for (var repeat = groupCount - lastSizeIndex; repeat > 0; repeat--)
+			{
+				stringBuilder.Append(separator);
+				stringBuilder.Append(digits, index, groupSizes[lastSizeIndex]);
+				index += groupSizes[lastSizeIndex];
+			}
+
+			for (var i = Math.Min(groupCount, lastSizeIndex) - 1; i >= 0; i--)
+			{
+				stringBuilder.Append(separator);
+				stringBuilder.Append(digits, index, groupSizes[i]);
+				index += groupSizes[i];
+			}
+		}
+
+		private void AppendFormatFractionPart(double value, int fractionDigits, StringBuilder stringBuilder)
 		{
 			var numberDecimalSeparator = NumberFormat.NumberDecimalSeparator;
 
-			var integerPartLen = value.GetIntegerDigitCount();
-			var fractionDigits = Math.Max(FractionDigits, SignificantDigits - integerPartLen);
 			var rounded = Math.Round(value, fractionDigits, MidpointRounding.AwayFromZero);
 			var needZeros = value == rounded;
 			var formattedFractionPart = needZeros ? value.ToString($"F{fractionDigits}", NumberFormat) : value.ToString(NumberFormat);
@@ -244,24 +320,57 @@ namespace Uno.Globalization.NumberFormatting
 				leftmostExpectedSize > 0 && groups[0].Length > leftmostExpectedSize;
 		}
 
+		/// <summary>
+		/// Rejects the space characters .NET's parser accepts interchangeably but WinRT does not.
+		/// </summary>
+		/// <remarks>
+		/// WinRT treats SPACE and NO-BREAK SPACE as the same separator but NARROW NO-BREAK SPACE as a
+		/// distinct one, while .NET accepts all three whenever any of them is the group separator.
+		/// </remarks>
+		private bool HasUnsupportedSpace(string text)
+		{
+			var groupSeparator = NumberFormat.NumberGroupSeparator;
+			var separator = groupSeparator.Length == 1 ? groupSeparator[0] : '\0';
+			var allowsSpace = separator is ' ' or '\u00a0';
+			var allowsNarrowSpace = separator is '\u202f';
+
+			foreach (var character in text)
+			{
+				switch (character)
+				{
+					case ' ':
+					case '\u00a0':
+						if (!allowsSpace)
+						{
+							return true;
+						}
+						break;
+					case '\u202f':
+						if (!allowsNarrowSpace)
+						{
+							return true;
+						}
+						break;
+				}
+			}
+
+			return false;
+		}
+
+		private bool IsParseable(string text) =>
+			(string.IsNullOrEmpty(NumberFormat.PositiveSign) ||
+				!text.StartsWith(NumberFormat.PositiveSign, StringComparison.Ordinal)) &&
+			!HasUnsupportedSpace(text) &&
+			!HasInvalidGroupSize(text);
+
 		public double? ParseDouble(string text)
 		{
-			if (!string.IsNullOrEmpty(NumberFormat.PositiveSign) &&
-				text.StartsWith(NumberFormat.PositiveSign, StringComparison.Ordinal))
+			if (!IsParseable(text))
 			{
 				return null;
 			}
 
-			if (HasInvalidGroupSize(text))
-			{
-				return null;
-			}
-
-			if (!double.TryParse(text,
-				NumberStyles.AllowLeadingSign |
-				NumberStyles.AllowDecimalPoint |
-				NumberStyles.AllowThousands,
-				NumberFormat, out double value))
+			if (!double.TryParse(text, DecimalStyles, NumberFormat, out double value))
 			{
 				return null;
 			}
@@ -282,6 +391,84 @@ namespace Uno.Globalization.NumberFormatting
 			}
 
 			return value;
+		}
+
+		public long? ParseInt(string text) =>
+			TryGetIntegerText(text, out var integerText) &&
+			long.TryParse(integerText, IntegerStyles, NumberFormat, out var value)
+				? value
+				: null;
+
+		public ulong? ParseUInt(string text) =>
+			!text.StartsWith(NumberFormat.NegativeSign, StringComparison.Ordinal) &&
+			TryGetIntegerText(text, out var integerText) &&
+			ulong.TryParse(integerText, IntegerStyles, NumberFormat, out var value)
+				? value
+				: null;
+
+		/// <summary>
+		/// Extracts the integer part of a text that WinRT would accept as an integer.
+		/// </summary>
+		/// <remarks>
+		/// WinRT accepts a fraction made only of zeros ("42.00" and "-.0" are integers) but rejects any
+		/// non-zero fraction digit, even one the conversion to double would round away.
+		/// </remarks>
+		private bool TryGetIntegerText(string text, out string integerText)
+		{
+			integerText = "";
+
+			if (!IsParseable(text))
+			{
+				return false;
+			}
+
+			var separator = NumberFormat.NumberDecimalSeparator;
+			var separatorIndex = text.LastIndexOf(separator, StringComparison.Ordinal);
+			var hasFractionDigit = false;
+
+			if (separatorIndex < 0)
+			{
+				integerText = text;
+			}
+			else
+			{
+				for (var i = separatorIndex + separator.Length; i < text.Length; i++)
+				{
+					if (text[i] != '0')
+					{
+						return false;
+					}
+
+					hasFractionDigit = true;
+				}
+
+				integerText = text.Substring(0, separatorIndex);
+			}
+
+			if (!ContainsDigit(integerText))
+			{
+				if (!hasFractionDigit)
+				{
+					return false;
+				}
+
+				integerText += ZeroDigits;
+			}
+
+			return true;
+		}
+
+		private static bool ContainsDigit(string text)
+		{
+			foreach (var character in text)
+			{
+				if (character is >= '0' and <= '9')
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 }
