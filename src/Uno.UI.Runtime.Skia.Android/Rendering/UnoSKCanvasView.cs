@@ -60,9 +60,18 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 
 	public void InvalidateRender()
 	{
-		ExploreByTouchHelper.InvalidateRoot();
 		// Request the call of IRenderer.OnDrawFrame for one frame
 		RequestRender();
+	}
+
+	protected override void OnSizeChanged(int width, int height, int oldWidth, int oldHeight)
+	{
+		base.OnSizeChanged(width, height, oldWidth, oldHeight);
+
+		if (width != oldWidth || height != oldHeight)
+		{
+			ExploreByTouchHelper.InvalidateAccessibilityRoot();
+		}
 	}
 
 	public override bool OnCheckIsTextEditor()
@@ -76,8 +85,20 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 			return base.DispatchHoverEvent(e);
 		}
 
-		return ExploreByTouchHelper.DispatchHoverEvent(e) ||
-			base.DispatchHoverEvent(e);
+		try
+		{
+			return ExploreByTouchHelper.DispatchHoverEvent(e) ||
+				base.DispatchHoverEvent(e);
+		}
+		catch (System.Exception error)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error("Android accessibility hover dispatch failed.", error);
+			}
+
+			return base.DispatchHoverEvent(e);
+		}
 	}
 
 	public override bool DispatchKeyEvent(KeyEvent? e)
@@ -87,8 +108,20 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 			return base.DispatchKeyEvent(e);
 		}
 
-		return ExploreByTouchHelper.DispatchKeyEvent(e) ||
-			base.DispatchKeyEvent(e);
+		try
+		{
+			return ExploreByTouchHelper.DispatchKeyEvent(e) ||
+				base.DispatchKeyEvent(e);
+		}
+		catch (System.Exception error)
+		{
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error("Android accessibility key dispatch failed.", error);
+			}
+
+			return base.DispatchKeyEvent(e);
+		}
 	}
 
 	protected override void OnFocusChanged(bool gainFocus, [GeneratedEnum] FocusSearchDirection direction, Rect? previouslyFocusedRect)

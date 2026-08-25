@@ -4,6 +4,7 @@
 
 using System;
 using System.Text;
+using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
@@ -1472,26 +1473,27 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void PasteFromClipboard()
 		{
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, async () =>
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () => _ = PasteFromClipboardAsync());
+		}
+
+		private async Task PasteFromClipboardAsync()
+		{
+			try
 			{
 				var content = Clipboard.GetContent();
-				string clipboardText;
 				if (content.AvailableFormats.Contains(StandardDataFormats.Text))
 				{
-					try
-					{
-						clipboardText = await content.GetTextAsync();
-						PasteFromClipboard(clipboardText);
-					}
-					catch (InvalidOperationException e)
-					{
-						if (this.Log().IsEnabled(LogLevel.Debug))
-						{
-							this.Log().Debug("TextBox.PasteFromClipboard failed during DataPackageView.GetTextAsync: " + e);
-						}
-					}
+					var clipboardText = await content.GetTextAsync();
+					PasteFromClipboard(clipboardText);
 				}
-			});
+			}
+			catch (Exception error)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("TextBox.PasteFromClipboard failed.", error);
+				}
+			}
 		}
 
 		/// <summary>

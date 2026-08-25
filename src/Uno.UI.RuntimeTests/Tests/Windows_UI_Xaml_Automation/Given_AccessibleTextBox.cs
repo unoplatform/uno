@@ -5,8 +5,10 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Automation.Text;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
+using Uno.UI;
 using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO
@@ -432,5 +434,79 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.IsTrue(capabilities.CanValue, "TextBox should have CanValue capability");
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
+		public async Task When_TextBox_On_Mobile_Then_Native_TextState_Is_Editable()
+		{
+			var textBox = new TextBox { Text = "editable content" };
+			AutomationProperties.SetAutomationId(textBox, "textbox-textstate-t045");
+
+			await UITestHelper.Load(textBox);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var snapshot = MobileAccessibilityTestHelper.TryGetNativeSnapshot(textBox);
+			Assert.IsNotNull(snapshot, "Native snapshot must be available on mobile Skia.");
+			Assert.IsNotNull(snapshot.Details?.TextState, "TextState must be populated for a TextBox.");
+
+			var ts = snapshot.Details!.TextState!;
+			Assert.IsTrue(ts.IsEditable, "An enabled TextBox must report IsEditable=true.");
+			Assert.IsFalse(ts.IsReadOnly, "A non-read-only TextBox must report IsReadOnly=false.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Range_Expanded_To_Paragraph_Then_Only_Current_Paragraph_Is_Covered()
+		{
+			var textBlock = new TextBlock { Text = "First paragraph line.\nSecond paragraph line." };
+			await UITestHelper.Load(textBlock);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBlock);
+			Assert.IsNotNull(peer);
+			var textProvider = peer.GetPattern(PatternInterface.Text) as ITextProvider;
+			Assert.IsNotNull(textProvider, "A TextBlock must expose the Text pattern.");
+
+			var range = textProvider!.DocumentRange;
+			Assert.IsNotNull(range);
+
+			// Collapse onto the second paragraph, then expand: the range must cover that
+			// paragraph only, not the whole document.
+			range.MoveEndpointByUnit(TextPatternRangeEndpoint.Start, TextUnit.Paragraph, 1);
+			range.MoveEndpointByUnit(TextPatternRangeEndpoint.End, TextUnit.Paragraph, -1);
+			range.ExpandToEnclosingUnit(TextUnit.Paragraph);
+
+			var expanded = range.GetText(-1);
+			Assert.AreNotEqual(
+				textBlock.Text,
+				expanded,
+				"Expanding to a paragraph must not return the whole document.");
+			StringAssert.Contains(expanded, "Second paragraph line.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Range_Moved_By_Word_Then_Word_Granularity_Is_Used()
+		{
+			var textBlock = new TextBlock { Text = "alpha beta gamma" };
+			await UITestHelper.Load(textBlock);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBlock);
+			var textProvider = peer!.GetPattern(PatternInterface.Text) as ITextProvider;
+			Assert.IsNotNull(textProvider, "A TextBlock must expose the Text pattern.");
+
+			var range = textProvider!.DocumentRange;
+			var moved = range.Move(TextUnit.Word, 1);
+			Assert.AreEqual(1, moved, "Moving by one word must report one unit moved.");
+
+			range.ExpandToEnclosingUnit(TextUnit.Word);
+			var word = range.GetText(-1);
+			Assert.IsTrue(
+				word.Length > 1,
+				$"Move(Word) must move by a word, not a character (got '{word}').");
+			StringAssert.Contains(word, "beta");
+		}
 	}
 }
