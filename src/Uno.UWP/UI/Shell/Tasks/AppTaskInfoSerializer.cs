@@ -138,6 +138,8 @@ internal static class AppTaskInfoSerializer
 				content.TextInputActionUriTemplate ?? string.Empty));
 	}
 
+	// Windows accepts undefined AppTaskState values, so persisted ones are round-tripped rather than
+	// treated as corruption; AppTaskInfoRegistry drops them on load exactly as the shell evicts them.
 	private static AppTaskState ParseState(int value) => (AppTaskState)value;
 
 	private static AppTaskContentKind ParseContentKind(int value) => value switch

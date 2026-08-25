@@ -14,9 +14,12 @@ namespace Windows.UI.Notifications
 		private const string ValueAttribute = "value";
 		private const string NoBadgeGlyph = "none";
 		private static readonly object BadgeGate = new();
+		private static readonly object ApplyGate = new();
 		private static BadgeUpdater? _coordinatorUpdater;
 		private static string? _explicitBadge;
 		private static string? _appTaskBadge;
+		private static long _badgeVersion;
+		private static long _appliedBadgeVersion;
 
 		internal BadgeUpdater()
 		{
@@ -43,15 +46,21 @@ namespace Windows.UI.Notifications
 
 		internal static void SetAppTaskBadge(int? value)
 		{
+			string? effective;
+			long version;
 			lock (BadgeGate)
 			{
 				_appTaskBadge = value?.ToString(CultureInfo.InvariantCulture);
-				ApplyEffectiveBadgeLocked();
+				(effective, version) = CaptureEffectiveBadgeLocked();
 			}
+
+			ApplyEffectiveBadge(effective, version);
 		}
 
 		private static void SetExplicitBadge(string? value)
 		{
+			string? effective;
+			long version;
 			lock (BadgeGate)
 			{
 				// The "none" glyph is how a badge notification asks for the badge to be removed, so it
@@ -60,14 +69,29 @@ namespace Windows.UI.Notifications
 					|| string.Equals(value, NoBadgeGlyph, StringComparison.OrdinalIgnoreCase)
 					? null
 					: value;
-				ApplyEffectiveBadgeLocked();
+				(effective, version) = CaptureEffectiveBadgeLocked();
 			}
+
+			ApplyEffectiveBadge(effective, version);
 		}
 
-		private static void ApplyEffectiveBadgeLocked()
+		private static (string? Value, long Version) CaptureEffectiveBadgeLocked() =>
+			(_explicitBadge ?? _appTaskBadge, ++_badgeVersion);
+
+		// The platform back-ends run outside the state lock so a native or JS badge call can never block
+		// an unrelated badge update; the version guard keeps a slower call from overwriting a newer value.
+		private static void ApplyEffectiveBadge(string? value, long version)
 		{
-			_coordinatorUpdater ??= new BadgeUpdater();
-			_coordinatorUpdater.SetBadge(_explicitBadge ?? _appTaskBadge);
+			lock (ApplyGate)
+			{
+				if (version < _appliedBadgeVersion)
+				{
+					return;
+				}
+
+				_appliedBadgeVersion = version;
+				(_coordinatorUpdater ??= new BadgeUpdater()).SetBadge(value);
+			}
 		}
 	}
 }
