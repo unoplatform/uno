@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation;
+using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -35,6 +36,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(SUT.IsTextSelectionEnabled, "IsTextSelectionEnabled should default to true on RichTextBlock");
 		}
 
+		// Uno-only: WinUI throws ArgumentException here, Uno throws ArgumentNullException.
+		// Measured on the WinAppSDK head.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		[TestMethod]
 		public void When_Select_Null_Throws()
 		{
@@ -179,6 +183,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// Uno-only: WinUI keeps the previously cached SelectedText here. CRichTextBlock::OnContentChanged
+		// (RichTextBlock.cpp:775-780) collapses the selection with TextSelection->Select(0, 0) directly,
+		// which bypasses NotifySelectionChanged - the only place that resets m_strSelectedText
+		// (TextSelectionManager.cpp:1235). Uno additionally clears its flat Selection, which recomputes
+		// SelectedText to empty. Measured on the WinAppSDK head.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		[TestMethod]
 		public async Task When_Content_Changes_Selection_Is_Cleared()
 		{
@@ -229,6 +239,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// Uno-only: WinUI leaves the cached SelectedText intact when selection is disabled, for the same
+		// reason as above - m_strSelectedText is reset only by NotifySelectionChanged. Measured on the
+		// WinAppSDK head.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		[TestMethod]
 		public async Task When_IsTextSelectionEnabled_Toggled_Off_Clears_Selection()
 		{
