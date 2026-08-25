@@ -566,7 +566,7 @@
 							</VisualStateGroup>
 
 						</VisualStateManager.VisualStateGroups>
-						<Grid x:Name="HorizontalRoot" x:Load="False" Visibility="Collapsed" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}">
+						<Grid x:Name="HorizontalRoot" x:Load="False" Visibility="Collapsed" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False">
 
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
@@ -590,7 +590,7 @@
 							<Border x:Name="HorizontalPanningThumb" VerticalAlignment="Bottom" HorizontalAlignment="Left" Background="{ThemeResource ScrollBarPanningThumbBackground}" BorderThickness="0" Height="2" MinWidth="32" Margin="0,2,0,2" />
 
 						</Grid>
-						<Grid x:Name="VerticalRoot" x:Load="False" Visibility="Collapsed" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}">
+						<Grid x:Name="VerticalRoot" x:Load="False" Visibility="Collapsed" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False">
 
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto" />
@@ -987,7 +987,7 @@
 							</VisualStateGroup>
 
 						</VisualStateManager.VisualStateGroups>
-						<Grid x:Name="HorizontalRoot" x:Load="False" Visibility="Collapsed" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}">
+						<Grid x:Name="HorizontalRoot" x:Load="False" Visibility="Collapsed" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False">
 
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
@@ -1011,7 +1011,7 @@
 							<Border x:Name="HorizontalPanningThumb" VerticalAlignment="Bottom" HorizontalAlignment="Left" Background="{ThemeResource ScrollBarPanningThumbBackground}" BorderThickness="0" Height="2" MinWidth="32" Margin="0,2,0,2" />
 
 						</Grid>
-						<Grid x:Name="VerticalRoot" x:Load="False" Visibility="Collapsed" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}">
+						<Grid x:Name="VerticalRoot" x:Load="False" Visibility="Collapsed" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" IsHitTestVisible="False">
 
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto" />
