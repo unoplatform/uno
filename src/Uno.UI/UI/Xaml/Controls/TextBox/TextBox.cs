@@ -458,6 +458,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			var oldPlaceholder = (string)e.OldValue ?? string.Empty;
 			var newPlaceholder = (string)e.NewValue ?? string.Empty;
+			if (!AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged))
+			{
+				return;
+			}
+
 			switch (GetOrCreateAutomationPeer())
 			{
 				case TextBoxAutomationPeer textPeer:

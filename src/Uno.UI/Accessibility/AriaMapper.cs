@@ -56,7 +56,9 @@ public static class AriaMapper
 		{ AutomationControlType.Pane, "region" },
 		{ AutomationControlType.Spinner, "spinbutton" },
 		{ AutomationControlType.StatusBar, "status" },
-		{ AutomationControlType.Thumb, "slider" },
+		// Note: AutomationControlType.Thumb intentionally omitted. A Thumb is a gripper inside a
+		// Slider/ScrollBar; mapping it to "slider" would nest a second (nameless, valueless) slider
+		// inside the real one, which ARIA forbids and screen readers announce as a phantom control.
 		{ AutomationControlType.ToolBar, "toolbar" },
 	};
 

@@ -210,6 +210,5 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.OnBringIntoViewRequested(e);
 		}
-
 	}
 }

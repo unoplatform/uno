@@ -38,6 +38,40 @@ namespace Uno.UI.Runtime.Skia {
 	export class SemanticElements {
 
 		/**
+		 * Returns the items of a composite widget that arrow-key navigation may move to.
+		 *
+		 * Only items that are actually reachable count: an item inside a collapsed branch is
+		 * hidden (WAI-ARIA APG requires Up/Down to move between *visible* nodes only), and an
+		 * item that belongs to a nested composite (a submenu inside a menu) belongs to that
+		 * inner widget's own roving group, not to this one.
+		 */
+		public static getNavigableItems(
+			container: Element | null,
+			itemRole: string,
+			nestedContainerRole: string | null
+		): HTMLElement[] {
+			if (!container) {
+				return [];
+			}
+
+			const items = Array.from(container.querySelectorAll(`[role="${itemRole}"]`)) as HTMLElement[];
+			return items.filter(item => {
+				if (item.closest("[hidden]") !== null) {
+					return false;
+				}
+
+				if (nestedContainerRole !== null) {
+					const owningContainer = item.parentElement?.closest(`[role="${nestedContainerRole}"], [role="${itemRole}"]`);
+					if (owningContainer && owningContainer !== container) {
+						return false;
+					}
+				}
+
+				return true;
+			});
+		}
+
+		/**
 		 * Gets the semantics root element.
 		 */
 		private static getSemanticsRoot(): HTMLElement | null {
@@ -1278,7 +1312,7 @@ namespace Uno.UI.Runtime.Skia {
 				} else if (e.key === 'ArrowDown') {
 					// Move to next visible tree item
 					e.preventDefault();
-					const allItems = Array.from(element.closest('[role="tree"]')?.querySelectorAll('[role="treeitem"]') ?? []) as HTMLElement[];
+					const allItems = SemanticElements.getNavigableItems(element.closest('[role="tree"]'), 'treeitem', null);
 					const currentIndex = allItems.indexOf(element);
 					if (currentIndex >= 0 && currentIndex < allItems.length - 1) {
 						allItems[currentIndex + 1].focus();
@@ -1286,7 +1320,7 @@ namespace Uno.UI.Runtime.Skia {
 				} else if (e.key === 'ArrowUp') {
 					// Move to previous visible tree item
 					e.preventDefault();
-					const allItems = Array.from(element.closest('[role="tree"]')?.querySelectorAll('[role="treeitem"]') ?? []) as HTMLElement[];
+					const allItems = SemanticElements.getNavigableItems(element.closest('[role="tree"]'), 'treeitem', null);
 					const currentIndex = allItems.indexOf(element);
 					if (currentIndex > 0) {
 						allItems[currentIndex - 1].focus();
@@ -1294,16 +1328,16 @@ namespace Uno.UI.Runtime.Skia {
 				} else if (e.key === 'Home') {
 					// Move to first tree item
 					e.preventDefault();
-					const firstItem = element.closest('[role="tree"]')?.querySelector('[role="treeitem"]') as HTMLElement;
+					const firstItem = SemanticElements.getNavigableItems(element.closest('[role="tree"]'), 'treeitem', null)[0];
 					if (firstItem) {
 						firstItem.focus();
 					}
 				} else if (e.key === 'End') {
-					// Move to last tree item
+					// Move to last visible tree item
 					e.preventDefault();
-					const allItems = element.closest('[role="tree"]')?.querySelectorAll('[role="treeitem"]');
-					if (allItems && allItems.length > 0) {
-						(allItems[allItems.length - 1] as HTMLElement).focus();
+					const allItems = SemanticElements.getNavigableItems(element.closest('[role="tree"]'), 'treeitem', null);
+					if (allItems.length > 0) {
+						allItems[allItems.length - 1].focus();
 					}
 				}
 			});
@@ -1601,17 +1635,17 @@ namespace Uno.UI.Runtime.Skia {
 						callbacks.onInvoke(handle);
 					}
 				} else if (e.key === 'ArrowDown') {
-					// Move to next menu item
+					// Move to next item of this menu (submenu items belong to their own roving group)
 					e.preventDefault();
-					const allItems = Array.from(element.parentElement?.querySelectorAll('[role="menuitem"]') ?? []) as HTMLElement[];
+					const allItems = SemanticElements.getNavigableItems(element.parentElement, 'menuitem', 'menu');
 					const currentIndex = allItems.indexOf(element);
 					if (currentIndex >= 0 && currentIndex < allItems.length - 1) {
 						allItems[currentIndex + 1].focus();
 					}
 				} else if (e.key === 'ArrowUp') {
-					// Move to previous menu item
+					// Move to previous item of this menu
 					e.preventDefault();
-					const allItems = Array.from(element.parentElement?.querySelectorAll('[role="menuitem"]') ?? []) as HTMLElement[];
+					const allItems = SemanticElements.getNavigableItems(element.parentElement, 'menuitem', 'menu');
 					const currentIndex = allItems.indexOf(element);
 					if (currentIndex > 0) {
 						allItems[currentIndex - 1].focus();

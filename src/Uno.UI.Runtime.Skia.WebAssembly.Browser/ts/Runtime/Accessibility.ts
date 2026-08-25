@@ -1821,13 +1821,29 @@ namespace Uno.UI.Runtime.Skia {
 				? activeEl.id.replace("uno-semantics-", "")
 				: "none";
 
-			this.debugOverlayElement.innerHTML =
-				`<b>A11y Debug</b><br>` +
-				`Elements: ${semanticCount}<br>` +
-				`Avg frame: ${avgFrameOverheadMs.toFixed(2)}ms (${totalFrames} frames)<br>` +
-				`Virtualized containers: ${virtualizedContainers}<br>` +
-				`Focus: ${focusInfo}<br>` +
-				`Modal: ${modalState}`;
+			const overlay = this.debugOverlayElement;
+			while (overlay.firstChild) {
+				overlay.removeChild(overlay.firstChild);
+			}
+
+			const title = document.createElement("b");
+			title.textContent = "A11y Debug";
+			overlay.appendChild(title);
+
+			const lines = [
+				`Elements: ${semanticCount}`,
+				`Avg frame: ${avgFrameOverheadMs.toFixed(2)}ms (${totalFrames} frames)`,
+				`Virtualized containers: ${virtualizedContainers}`,
+				`Focus: ${focusInfo}`,
+				`Modal: ${modalState}`
+			];
+
+			// Text nodes rather than innerHTML: modalState and the focus id are runtime-supplied,
+			// and the overlay must never turn them into markup.
+			for (const line of lines) {
+				overlay.appendChild(document.createElement("br"));
+				overlay.appendChild(document.createTextNode(line));
+			}
 		}
 	}
 }
