@@ -25,6 +25,10 @@ public partial class ScrollViewer
 	private bool RecomputeOffsetsFromIntent()
 	{
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER
+		// Never re-target while a scroll animation is in flight: the intent is re-clamped after every
+		// layout pass, so chasing an extent that keeps growing (incremental loading) would turn a single
+		// "scroll to the end" into an unbounded fetch loop. Waiting for the current animation to land
+		// paces the chase to one view change at a time.
 		if ((_presenter as ScrollContentPresenter)?.IsScrollAnimationInProgress == true)
 		{
 			return false;
