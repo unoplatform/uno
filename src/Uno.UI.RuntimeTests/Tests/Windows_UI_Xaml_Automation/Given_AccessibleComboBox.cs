@@ -659,29 +659,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				EnableAccessibilityThroughDom();
 				await UITestHelper.WaitFor(() => ComboBoxHeadExists(comboBox), timeoutMS: 5000,
 					message: "Timed out waiting for the semantic combobox head element to be created.");
+				await UITestHelper.WaitForIdle();
 
-				var viewportNodesWhileClosed = CountViewportSizedSemanticNodes();
+				var viewportNodesWhileClosed = DescribeViewportSizedSemanticNodes();
 
 				comboBox.IsDropDownOpen = true;
+				await UITestHelper.WaitForIdle();
 				await UITestHelper.WaitFor(() => GetListBoxOptionCount(comboBox) == 2, timeoutMS: 5000,
 					message: "Timed out waiting for the two dropdown options.");
 
-				Assert.AreEqual("true", GetSemanticAttribute(comboBox, "aria-expanded"),
-					"An open ComboBox must report aria-expanded=\"true\".");
-				Assert.AreNotEqual(string.Empty, GetSemanticAttribute(comboBox, "aria-controls"),
-					"The head must associate the popup listbox through aria-controls — this is the ARIA replacement for a light-dismiss child.");
+				// aria-expanded and aria-controls are published from the accessibility update pass that
+				// follows the drop-down opening, so settle on them instead of sampling a single frame.
+				await UITestHelper.WaitFor(
+					() => GetSemanticAttribute(comboBox, "aria-expanded") == "true" &&
+						GetSemanticAttribute(comboBox, "aria-controls").Length > 0,
+					timeoutMS: 5000,
+					message: "The open ComboBox head did not publish aria-expanded=\"true\" with an aria-controls target — " +
+						"that association is the ARIA replacement for a light-dismiss child.");
+
 				Assert.AreEqual(0, CountSemanticNodesNamed("Close"),
 					"Uno must not surface a light-dismiss 'Close' node in the browser accessibility tree.");
-				Assert.AreEqual(viewportNodesWhileClosed, CountViewportSizedSemanticNodes(),
-					"Opening the drop-down must not add a viewport-sized node; the light-dismiss surface stays out of the semantic DOM.");
+
+				var viewportNodesWhileOpen = DescribeViewportSizedSemanticNodes();
+				Assert.AreEqual(viewportNodesWhileClosed, viewportNodesWhileOpen,
+					$"Opening the drop-down must not add a viewport-sized node; the light-dismiss surface stays out of the semantic DOM. " +
+					$"closed=[{viewportNodesWhileClosed}] open=[{viewportNodesWhileOpen}]");
 
 				comboBox.IsDropDownOpen = false;
 				await UITestHelper.WaitFor(() => GetSemanticAttribute(comboBox, "aria-expanded") == "false", timeoutMS: 3000,
 					message: "Closing the drop-down did not reset aria-expanded.");
-				Assert.AreEqual(string.Empty, GetSemanticAttribute(comboBox, "aria-activedescendant"),
-					"Closing the drop-down must clear aria-activedescendant so it never dangles.");
-				Assert.AreEqual(viewportNodesWhileClosed, CountViewportSizedSemanticNodes(),
-					"Closing the drop-down must leave no viewport-sized node behind.");
+				await UITestHelper.WaitFor(() => GetSemanticAttribute(comboBox, "aria-activedescendant").Length == 0, timeoutMS: 3000,
+					message: "Closing the drop-down must clear aria-activedescendant so it never dangles.");
+
+				var viewportNodesAfterClose = DescribeViewportSizedSemanticNodes();
+				Assert.AreEqual(viewportNodesWhileClosed, viewportNodesAfterClose,
+					$"Closing the drop-down must leave no viewport-sized node behind. " +
+					$"before=[{viewportNodesWhileClosed}] after=[{viewportNodesAfterClose}]");
 			}
 			finally
 			{
@@ -699,13 +712,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				System.Globalization.CultureInfo.InvariantCulture);
 
 		/// <summary>
-		/// Counts semantic nodes that cover essentially the whole viewport. A light-dismiss overlay
-		/// leaking into the tree would show up here as a full-page node intercepting the reading order.
+		/// Describes every semantic node that covers essentially the whole viewport, as
+		/// <c>id:role</c> pairs. A light-dismiss overlay leaking into the tree would show up here as a
+		/// full-page node sitting over the reading order; returning the descriptors (rather than a
+		/// bare count) makes any regression immediately identifiable from the failure message.
 		/// </summary>
-		private static int CountViewportSizedSemanticNodes()
-			=> int.Parse(InvokeBrowserJs(
-				"(function(){const root=document.getElementById('uno-semantics-root');if(!root){return '0';}const w=window.innerWidth;const h=window.innerHeight;return String(Array.from(root.querySelectorAll('*')).filter(e=>{const r=e.getBoundingClientRect();return r.width>=w*0.9&&r.height>=h*0.9;}).length);})()"),
-				System.Globalization.CultureInfo.InvariantCulture);
+		private static string DescribeViewportSizedSemanticNodes()
+			=> InvokeBrowserJs(
+				"(function(){const root=document.getElementById('uno-semantics-root');if(!root){return '';}" +
+				"const w=window.innerWidth;const h=window.innerHeight;" +
+				"return Array.from(root.querySelectorAll('*')).filter(function(e){const r=e.getBoundingClientRect();return r.width>=w*0.9&&r.height>=h*0.9;})" +
+				".map(function(e){return (e.id||'(no id)')+':'+(e.getAttribute('role')||'(no role)');}).sort().join(',');})()");
 
 
 
