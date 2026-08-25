@@ -4644,6 +4644,56 @@ public class Given_ElementTheme
 		Assert.IsTrue((foreground.Color.R + foreground.Color.G + foreground.Color.B) / 3 > 200,
 			$"Focused editable ComboBox text should be light in dark theme, but was {foreground.Color}");
 	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24021")]
+	public async Task When_Editable_ComboBox_Focused_In_Dark_Theme_Without_Theme_Walk_Text_Is_Light()
+	{
+		// An app that simply starts dark never runs a theme walk, so every per-object theme stays
+		// Theme.None — the state #24021 reports. Recreate it: switch the app theme to get a Dark
+		// base (the harness starts Light), then clear the per-object themes the switch persisted
+		// on the subtree, so the boundary escape cannot lean on an established parent theme.
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+		var comboBox = new ComboBox { Width = 150, IsEditable = true };
+		WindowHelper.WindowContent = comboBox;
+		await WindowHelper.WaitForLoaded(comboBox);
+		await WindowHelper.WaitForIdle();
+
+		ResetPersistedThemes(comboBox);
+
+		var editableText = comboBox.FindFirstDescendant<TextBox>("EditableText");
+		Assert.IsNotNull(editableText, "EditableText should exist in the ComboBox template");
+
+		editableText.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		editableText.Text = "888";
+		await WindowHelper.WaitForIdle();
+
+		var displayBlock = editableText.FindFirstDescendant<TextBlock>(tb => tb.Text == "888");
+		Assert.IsNotNull(displayBlock, "The text display block should exist in the TextBox visual tree");
+
+		var foreground = displayBlock.Foreground as SolidColorBrush;
+		Assert.IsNotNull(foreground, "The display block Foreground should be a SolidColorBrush");
+		Assert.IsTrue((foreground.Color.R + foreground.Color.G + foreground.Color.B) / 3 > 200,
+			$"Focused editable ComboBox text should be light in a dark app that never switched theme, but was {foreground.Color}");
+	}
+
+	private static void ResetPersistedThemes(UIElement element)
+	{
+		element.SetTheme(Theme.None);
+		var count = VisualTreeHelper.GetChildrenCount(element);
+		for (var i = 0; i < count; i++)
+		{
+			if (VisualTreeHelper.GetChild(element, i) is UIElement child)
+			{
+				ResetPersistedThemes(child);
+			}
+		}
+	}
 #endif
 
 	#endregion
