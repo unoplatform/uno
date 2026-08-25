@@ -123,6 +123,11 @@ namespace Uno.Globalization.NumberFormatting
 		/// </summary>
 		public void AppendFormatIntegral(bool isNegative, string digits, StringBuilder stringBuilder)
 		{
+			if (isNegative)
+			{
+				stringBuilder.Append(NumberFormat.NegativeSign);
+			}
+
 			if (FractionDigits == 0 &&
 				IntegerDigits == 0 &&
 				IsZero(digits))
@@ -130,7 +135,7 @@ namespace Uno.Globalization.NumberFormatting
 				stringBuilder.Append('0');
 			}
 
-			AppendIntegerPart(isNegative, digits, stringBuilder);
+			AppendIntegerPart(digits, stringBuilder);
 
 			var fractionDigits = GetFractionDigits(digits.Length);
 
@@ -148,7 +153,12 @@ namespace Uno.Globalization.NumberFormatting
 		{
 			var digits = GetIntegerDigits(Math.Abs(Math.Truncate(value)));
 
-			AppendIntegerPart(value < 0, digits, stringBuilder);
+			if (value < 0)
+			{
+				stringBuilder.Append(NumberFormat.NegativeSign);
+			}
+
+			AppendIntegerPart(digits, stringBuilder);
 			AppendFormatFractionPart(value, GetFractionDigits(digits.Length), stringBuilder);
 		}
 
@@ -184,13 +194,8 @@ namespace Uno.Globalization.NumberFormatting
 			return trailingZeros <= 0 ? digits : digits + new string('0', trailingZeros);
 		}
 
-		private void AppendIntegerPart(bool isNegative, string digits, StringBuilder stringBuilder)
+		private void AppendIntegerPart(string digits, StringBuilder stringBuilder)
 		{
-			if (isNegative)
-			{
-				stringBuilder.Append(NumberFormat.NegativeSign);
-			}
-
 			if (IntegerDigits == 0 &&
 				IsZero(digits))
 			{
@@ -264,7 +269,7 @@ namespace Uno.Globalization.NumberFormatting
 
 			var rounded = Math.Round(value, fractionDigits, MidpointRounding.AwayFromZero);
 			var needZeros = value == rounded;
-			var formattedFractionPart = needZeros ? value.ToString($"F{fractionDigits}", NumberFormat) : value.ToString(NumberFormat);
+			var formattedFractionPart = needZeros ? value.ToString($"F{fractionDigits}", NumberFormat) : GetFixedPointText(value);
 			var indexOfDecimalSeperator = formattedFractionPart.LastIndexOf(numberDecimalSeparator, StringComparison.Ordinal);
 
 			if (indexOfDecimalSeperator != -1)
@@ -275,6 +280,53 @@ namespace Uno.Globalization.NumberFormatting
 			{
 				stringBuilder.Append(NumberFormat.NumberDecimalSeparator);
 			}
+		}
+
+		/// <summary>
+		/// Writes the round-trip digits of <paramref name="value"/> in fixed-point notation.
+		/// </summary>
+		/// <remarks>
+		/// .NET switches to scientific notation below 1e-4, which leaves no decimal separator for the
+		/// fraction to be taken from and silently drops it; WinRT always writes the digits out in full,
+		/// so "1e-5" formats as "0.00001".
+		/// </remarks>
+		private string GetFixedPointText(double value)
+		{
+			var text = Math.Abs(value).ToString("R", CultureInfo.InvariantCulture);
+			var exponentIndex = text.IndexOf('E');
+			var mantissa = exponentIndex < 0 ? text : text.Substring(0, exponentIndex);
+			var exponent = exponentIndex < 0 ? 0 : int.Parse(text.Substring(exponentIndex + 1), CultureInfo.InvariantCulture);
+			var pointIndex = mantissa.IndexOf('.');
+			var digits = pointIndex < 0 ? mantissa : mantissa.Remove(pointIndex, 1);
+			var point = (pointIndex < 0 ? mantissa.Length : pointIndex) + exponent;
+
+			var builder = new StringBuilder(digits.Length + Math.Abs(point) + 2);
+
+			if (value < 0)
+			{
+				builder.Append(NumberFormat.NegativeSign);
+			}
+
+			if (point <= 0)
+			{
+				builder.Append('0');
+				builder.Append(NumberFormat.NumberDecimalSeparator);
+				builder.Append('0', -point);
+				builder.Append(digits);
+			}
+			else if (point >= digits.Length)
+			{
+				builder.Append(digits);
+				builder.Append('0', point - digits.Length);
+			}
+			else
+			{
+				builder.Append(digits, 0, point);
+				builder.Append(NumberFormat.NumberDecimalSeparator);
+				builder.Append(digits, point, digits.Length - point);
+			}
+
+			return builder.ToString();
 		}
 
 		private bool HasInvalidGroupSize(string text)
@@ -458,17 +510,6 @@ namespace Uno.Globalization.NumberFormatting
 			return true;
 		}
 
-		private static bool ContainsDigit(string text)
-		{
-			foreach (var character in text)
-			{
-				if (character is >= '0' and <= '9')
-				{
-					return true;
-				}
-			}
-
-			return false;
-		}
+		private static bool ContainsDigit(string text) => text.AsSpan().ContainsAnyInRange('0', '9');
 	}
 }
