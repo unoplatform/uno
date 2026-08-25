@@ -1481,13 +1481,13 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 				var capturedPos = pos;
 				var posLabel = pos switch
 				{
-					DockPosition.Top    => "Dock to Top",
-					DockPosition.Left   => "Dock to Left",
+					DockPosition.Top => "Dock to Top",
+					DockPosition.Left => "Dock to Left",
 					DockPosition.Bottom => "Dock to Bottom",
-					DockPosition.Right  => "Dock to Right",
-					DockPosition.Fill   => "Dock to Fill",
-					DockPosition.None   => "Undock",
-					_                   => $"Dock {pos}",
+					DockPosition.Right => "Dock to Right",
+					DockPosition.Fill => "Dock to Fill",
+					DockPosition.None => "Undock",
+					_ => $"Dock {pos}",
 				};
 				list.Add(CreateCustomAction(
 					Localize(posLabel),
@@ -1553,50 +1553,50 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 				return el.AccessibilityActivate();
 
 			case AccessibilityNativeAction.Increment:
-			{
-				// Translate disabled/read-only to native failure before calling the UIKit path.
-				var peer = ResolvePeer(el.NodeId);
-				if (peer is null || !peer.IsEnabled())
 				{
-					return false;
-				}
+					// Translate disabled/read-only to native failure before calling the UIKit path.
+					var peer = ResolvePeer(el.NodeId);
+					if (peer is null || !peer.IsEnabled())
+					{
+						return false;
+					}
 
-				if (peer.GetPattern(PatternInterface.RangeValue) is not IRangeValueProvider rangeInc ||
-					rangeInc.IsReadOnly)
-				{
-					return false;
-				}
+					if (peer.GetPattern(PatternInterface.RangeValue) is not IRangeValueProvider rangeInc ||
+						rangeInc.IsReadOnly)
+					{
+						return false;
+					}
 
-				el.AccessibilityIncrement();
-				return true;
-			}
+					el.AccessibilityIncrement();
+					return true;
+				}
 
 			case AccessibilityNativeAction.Decrement:
-			{
-				var peer = ResolvePeer(el.NodeId);
-				if (peer is null || !peer.IsEnabled())
 				{
-					return false;
-				}
+					var peer = ResolvePeer(el.NodeId);
+					if (peer is null || !peer.IsEnabled())
+					{
+						return false;
+					}
 
-				if (peer.GetPattern(PatternInterface.RangeValue) is not IRangeValueProvider rangeDec ||
-					rangeDec.IsReadOnly)
-				{
-					return false;
-				}
+					if (peer.GetPattern(PatternInterface.RangeValue) is not IRangeValueProvider rangeDec ||
+						rangeDec.IsReadOnly)
+					{
+						return false;
+					}
 
-				el.AccessibilityDecrement();
-				return true;
-			}
+					el.AccessibilityDecrement();
+					return true;
+				}
 
 			case AccessibilityNativeAction.SetValue:
-			{
-				var peer = ResolvePeer(el.NodeId);
-				return peer is not null &&
-					peer.IsEnabled() &&
-					request.Text is not null &&
-					AccessibilityPeerHelper.TrySetValue(peer, request.Text);
-			}
+				{
+					var peer = ResolvePeer(el.NodeId);
+					return peer is not null &&
+						peer.IsEnabled() &&
+						request.Text is not null &&
+						AccessibilityPeerHelper.TrySetValue(peer, request.Text);
+				}
 
 			case AccessibilityNativeAction.ScrollForward:
 				return el.AccessibilityScroll(UIAccessibilityScrollDirection.Down);
@@ -1608,116 +1608,116 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 				return el.AccessibilityPerformEscape();
 
 			case AccessibilityNativeAction.ChangeView:
-			{
-				var peer = ResolvePeer(el.NodeId);
-				if (peer is null || !peer.IsEnabled())
 				{
-					return false;
+					var peer = ResolvePeer(el.NodeId);
+					if (peer is null || !peer.IsEnabled())
+					{
+						return false;
+					}
+					if (!double.IsFinite(request.Number) || request.Number != Math.Truncate(request.Number))
+					{
+						return false;
+					}
+					return AccessibilityPeerHelper.TryChangeView(peer, (int)request.Number);
 				}
-				if (!double.IsFinite(request.Number) || request.Number != Math.Truncate(request.Number))
-				{
-					return false;
-				}
-				return AccessibilityPeerHelper.TryChangeView(peer, (int)request.Number);
-			}
 
 			case AccessibilityNativeAction.ZoomIn:
-			{
-				var peer = ResolvePeer(el.NodeId);
-				if (peer is null || !peer.IsEnabled())
 				{
-					return false;
+					var peer = ResolvePeer(el.NodeId);
+					if (peer is null || !peer.IsEnabled())
+					{
+						return false;
+					}
+					return AccessibilityPeerHelper.TryZoomByUnit(peer, ZoomUnit.SmallIncrement);
 				}
-				return AccessibilityPeerHelper.TryZoomByUnit(peer, ZoomUnit.SmallIncrement);
-			}
 
 			case AccessibilityNativeAction.ZoomOut:
-			{
-				var peer = ResolvePeer(el.NodeId);
-				if (peer is null || !peer.IsEnabled())
 				{
-					return false;
+					var peer = ResolvePeer(el.NodeId);
+					if (peer is null || !peer.IsEnabled())
+					{
+						return false;
+					}
+					return AccessibilityPeerHelper.TryZoomByUnit(peer, ZoomUnit.SmallDecrement);
 				}
-				return AccessibilityPeerHelper.TryZoomByUnit(peer, ZoomUnit.SmallDecrement);
-			}
 
 			case AccessibilityNativeAction.Zoom:
-			{
-				var peer = ResolvePeer(el.NodeId);
-				if (peer is null || !peer.IsEnabled())
 				{
-					return false;
+					var peer = ResolvePeer(el.NodeId);
+					if (peer is null || !peer.IsEnabled())
+					{
+						return false;
+					}
+					return AccessibilityPeerHelper.TryZoom(peer, request.Number);
 				}
-				return AccessibilityPeerHelper.TryZoom(peer, request.Number);
-			}
 
 			case AccessibilityNativeAction.SetDockPosition:
-			{
-				var peer = ResolvePeer(el.NodeId);
-				if (peer is null || !peer.IsEnabled())
 				{
-					return false;
+					var peer = ResolvePeer(el.NodeId);
+					if (peer is null || !peer.IsEnabled())
+					{
+						return false;
+					}
+					if (!double.IsFinite(request.Number) || request.Number != Math.Truncate(request.Number))
+					{
+						return false;
+					}
+					var posInt = (int)request.Number;
+					if (posInt < (int)DockPosition.Top || posInt > (int)DockPosition.None)
+					{
+						return false;
+					}
+					return AccessibilityPeerHelper.TrySetDockPosition(peer, (DockPosition)posInt);
 				}
-				if (!double.IsFinite(request.Number) || request.Number != Math.Truncate(request.Number))
-				{
-					return false;
-				}
-				var posInt = (int)request.Number;
-				if (posInt < (int)DockPosition.Top || posInt > (int)DockPosition.None)
-				{
-					return false;
-				}
-				return AccessibilityPeerHelper.TrySetDockPosition(peer, (DockPosition)posInt);
-			}
 
 			case AccessibilityNativeAction.SetWindowVisualState:
-			{
-				var peer = ResolvePeer(el.NodeId);
-				if (peer is null || !peer.IsEnabled())
 				{
-					return false;
+					var peer = ResolvePeer(el.NodeId);
+					if (peer is null || !peer.IsEnabled())
+					{
+						return false;
+					}
+					if (!double.IsFinite(request.Number) || request.Number != Math.Truncate(request.Number))
+					{
+						return false;
+					}
+					var stateInt = (int)request.Number;
+					if (stateInt < (int)WindowVisualState.Normal || stateInt > (int)WindowVisualState.Minimized)
+					{
+						return false;
+					}
+					return AccessibilityPeerHelper.TrySetWindowVisualState(peer, (WindowVisualState)stateInt);
 				}
-				if (!double.IsFinite(request.Number) || request.Number != Math.Truncate(request.Number))
-				{
-					return false;
-				}
-				var stateInt = (int)request.Number;
-				if (stateInt < (int)WindowVisualState.Normal || stateInt > (int)WindowVisualState.Minimized)
-				{
-					return false;
-				}
-				return AccessibilityPeerHelper.TrySetWindowVisualState(peer, (WindowVisualState)stateInt);
-			}
 
 			case AccessibilityNativeAction.Move:
-			{
-				var peer = ResolvePeer(el.NodeId);
-				if (peer is null || !peer.IsEnabled())
 				{
-					return false;
+					var peer = ResolvePeer(el.NodeId);
+					if (peer is null || !peer.IsEnabled())
+					{
+						return false;
+					}
+					return AccessibilityPeerHelper.TryMove(peer, request.Number, request.Number2);
 				}
-				return AccessibilityPeerHelper.TryMove(peer, request.Number, request.Number2);
-			}
 
 			case AccessibilityNativeAction.Resize:
-			{
-				var peer = ResolvePeer(el.NodeId);
-				if (peer is null || !peer.IsEnabled())
 				{
-					return false;
+					var peer = ResolvePeer(el.NodeId);
+					if (peer is null || !peer.IsEnabled())
+					{
+						return false;
+					}
+					return AccessibilityPeerHelper.TryResize(peer, request.Number, request.Number2);
 				}
-				return AccessibilityPeerHelper.TryResize(peer, request.Number, request.Number2);
-			}
 
 			case AccessibilityNativeAction.Rotate:
-			{
-				var peer = ResolvePeer(el.NodeId);
-				if (peer is null || !peer.IsEnabled())
 				{
-					return false;
+					var peer = ResolvePeer(el.NodeId);
+					if (peer is null || !peer.IsEnabled())
+					{
+						return false;
+					}
+					return AccessibilityPeerHelper.TryRotate(peer, request.Number);
 				}
-				return AccessibilityPeerHelper.TryRotate(peer, request.Number);
-			}
 
 			default:
 				return InvokeMatchingCustomAction(el, request);
@@ -2224,10 +2224,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 				break;
 
-			// StructureChanged, LayoutInvalidated, AsyncContentLoaded, SelectionPatternOnInvalidated:
-			// base schedules a rebuild; StructureChanged is recorded in RebuildTree when the
-			// rebuild detects an actual change in element order or membership.
-			// LiveRegionChanged: base announces with correct assertiveness via AnnounceOnPlatform.
+				// StructureChanged, LayoutInvalidated, AsyncContentLoaded, SelectionPatternOnInvalidated:
+				// base schedules a rebuild; StructureChanged is recorded in RebuildTree when the
+				// rebuild detects an actual change in element order or membership.
+				// LiveRegionChanged: base announces with correct assertiveness via AnnounceOnPlatform.
 		}
 	}
 
