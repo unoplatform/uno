@@ -89,7 +89,7 @@ The managed implementation follows the behavior observed on Windows 11 (build 26
 | `CreateSequenceOfSteps` with `null` steps or `null` entries | `S_OK`; entries become empty strings | Same |
 | `CreateTextSummaryResult` with an empty string | `E_INVALIDARG` | `ArgumentException` |
 | `CreateGeneratedAssetsResult` with `null` or an empty array | `E_INVALIDARG` | `ArgumentException` |
-| `CreateGeneratedAssetsResult` with `null` entries | `S_OK` | Accepted; `null` entries are dropped |
+| `CreateGeneratedAssetsResult` with `null` entries, including an all-`null` array | `S_OK`; only the array itself is validated | Accepted; `null` entries are dropped |
 | `AppTaskResultAsset` with a `null` name or context | `S_OK` | Accepted as empty strings |
 | `Create` with an empty title or subtitle | `S_OK` | Accepted |
 | `Create` with `content: null` | `S_OK`; `GetCompletedSteps`/`GetExecutingStep` then return `E_INVALIDARG` | Accepted; both accessors throw `ArgumentException` |

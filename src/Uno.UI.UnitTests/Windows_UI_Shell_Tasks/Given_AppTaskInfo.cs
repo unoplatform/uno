@@ -247,6 +247,11 @@ public class Given_AppTaskInfo
 		Assert.AreEqual(AppTaskState.Running, task.State);
 		Assert.ThrowsExactly<ArgumentException>(() => new AppTaskResultAsset("n", "c", null!, new Uri("ms-appx:///a.png")));
 		Assert.ThrowsExactly<ArgumentException>(() => new AppTaskResultAsset("n", "c", new Uri("ms-appx:///a.png"), null!));
+
+		// Only the array is validated: an array of nothing but null entries is still accepted.
+		var allNull = AppTaskContent.CreateGeneratedAssetsResult([null!, null!]);
+		task.Update(AppTaskState.Completed, allNull);
+		Assert.AreEqual(AppTaskState.Completed, task.State);
 	}
 
 	[TestMethod]
