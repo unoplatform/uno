@@ -417,17 +417,34 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
     // Radial: map the device delta from the (device-space) center into unit-ellipse space via M — the inverse of
     // the gradient's local->device linear map, per-axis normalized by the local radii. M carries rotation, so a
     // rotated elliptical gradient (and an off-centre focal under rotation) is exact, not axis-aligned-approximate.
-    // Then param along the ray from the focal origin so t=0 at the origin and t=1 at the ellipse edge.
+    // Two-point-conical solve (matches D2D/Skia): interpolate the circle (focal,r=0)->(center,r=1); t solves
+    // |pn - on*(1-t)| = t, i.e. A t^2 + B t + C = 0 with A=|on|^2-1, B=2·(pn-on)·on, C=|pn-on|^2. Handles a focal
+    // ORIGIN OUTSIDE the ellipse (A>0): where the focal ray misses the ellipse (disc<0) the pixel is beyond the
+    // gradient's reach → clamp to the far color, not a fabricated mid value.
     let c = g.geo.xy;
     let m = mat2x2<f32>(g.geo.z, g.geo.w, g.origin.z, g.origin.w);
     let pn = m * (gfc - c);
     let on = m * (g.origin.xy - c);
-    let dir = pn - on; let aa = dot(dir, dir);
-    if (aa < 1e-9) { t = 0.0; }
-    else {
-      let bb = 2.0 * dot(on, dir); let cc = dot(on, on) - 1.0;
-      let s = (-bb + sqrt(max(bb * bb - 4.0 * aa * cc, 0.0))) / (2.0 * aa);
-      t = 1.0 / max(s, 1e-6);
+    let d0 = pn - on;
+    let A = dot(on, on) - 1.0;
+    let B = 2.0 * dot(d0, on);
+    let C = dot(d0, d0);
+    if (abs(A) < 1e-7) {
+      // Focal on the ellipse boundary → the quadratic degenerates to linear.
+      t = select(0.0, -C / B, abs(B) > 1e-9);
+    } else {
+      let disc = B * B - 4.0 * A * C;
+      if (disc < 0.0) {
+        t = 1.0;   // focal-ray misses the ellipse (only when the focal is outside) → clamp to the far edge color
+      } else {
+        let sq = sqrt(disc);
+        let inv = 0.5 / A;
+        let lo = min((-B - sq) * inv, (-B + sq) * inv);
+        let hi = max((-B - sq) * inv, (-B + sq) * inv);
+        // The pixel's circle in the (focal,0)->(center,1) pencil: take the smallest non-negative t (the first
+        // circle to reach it as t grows from the focal). No non-negative root ⇒ outside the cone ⇒ far color.
+        if (lo >= 0.0) { t = lo; } else if (hi >= 0.0) { t = hi; } else { t = 1.0; }
+      }
     }
   }
   let tm = g.header.z;
