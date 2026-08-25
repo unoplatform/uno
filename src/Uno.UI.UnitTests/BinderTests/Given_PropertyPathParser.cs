@@ -136,6 +136,46 @@ public class Given_PropertyPathParser
 	}
 
 	[TestMethod]
+	public void When_EmptyIndexer_Then_ZeroIntIndexer()
+	{
+		var parser = Parse("Items[]");
+
+		Assert.AreEqual(2, parser.DescriptorCount);
+		AssertPropertyAccess(parser, 0, "Items");
+
+		var indexer = parser.GetDescriptorAt(1);
+		Assert.AreEqual(PropertyPathStepDescriptorKind.IntIndexer, indexer.Kind);
+		Assert.AreEqual(0, indexer.Index);
+	}
+
+	[TestMethod]
+	public void When_NonAsciiDigitIndexer_Then_StringIndexer()
+	{
+		// std::iswdigit only matches ASCII digits, so these must not be parsed as an integer index.
+		var parser = Parse("Items[\u0661\u0662\u0663]");
+
+		Assert.AreEqual(2, parser.DescriptorCount);
+		AssertPropertyAccess(parser, 0, "Items");
+
+		var indexer = parser.GetDescriptorAt(1);
+		Assert.AreEqual(PropertyPathStepDescriptorKind.StringIndexer, indexer.Kind);
+		Assert.AreEqual("\u0661\u0662\u0663", indexer.Name);
+	}
+
+	[TestMethod]
+	public void When_IndexerLargerThanInt_Then_StringIndexer()
+	{
+		var parser = Parse("Items[99999999999]");
+
+		Assert.AreEqual(2, parser.DescriptorCount);
+		AssertPropertyAccess(parser, 0, "Items");
+
+		var indexer = parser.GetDescriptorAt(1);
+		Assert.AreEqual(PropertyPathStepDescriptorKind.StringIndexer, indexer.Kind);
+		Assert.AreEqual("99999999999", indexer.Name);
+	}
+
+	[TestMethod]
 	public void When_AttachedProperty()
 	{
 		var expected = Grid.RowProperty;
