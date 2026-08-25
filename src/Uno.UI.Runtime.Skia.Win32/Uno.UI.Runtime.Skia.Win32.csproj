@@ -8,9 +8,19 @@
 
 	<PropertyGroup>
 		<WindowsAppSdkFoundationVersion>2.3.5</WindowsAppSdkFoundationVersion>
+		<WindowsAppSdkRuntimeVersion>2.3.1</WindowsAppSdkRuntimeVersion>
 		<WindowsSdkNetRefVersion>10.0.26100.57</WindowsSdkNetRefVersion>
-		<PkgMicrosoft_WindowsAppSDK_Foundation Condition="'$(PkgMicrosoft_WindowsAppSDK_Foundation)' == ''">$(NuGetPackageRoot)microsoft.windowsappsdk.foundation\$(WindowsAppSdkFoundationVersion)</PkgMicrosoft_WindowsAppSDK_Foundation>
-		<PkgMicrosoft_Windows_SDK_NET_Ref Condition="'$(PkgMicrosoft_Windows_SDK_NET_Ref)' == ''">$(NuGetPackageRoot)microsoft.windows.sdk.net.ref\$(WindowsSdkNetRefVersion)</PkgMicrosoft_Windows_SDK_NET_Ref>
+		<!-- NuGetPackageRoot is not guaranteed to end with a directory separator (e.g. when NUGET_PACKAGES is set on CI). -->
+		<_UnoNuGetPackageRoot Condition="'$(NuGetPackageRoot)' != ''">$([MSBuild]::EnsureTrailingSlash('$(NuGetPackageRoot)'))</_UnoNuGetPackageRoot>
+		<_UnoNuGetPackageRoot Condition="'$(_UnoNuGetPackageRoot)' == '' and '$(NUGET_PACKAGES)' != ''">$([MSBuild]::EnsureTrailingSlash('$(NUGET_PACKAGES)'))</_UnoNuGetPackageRoot>
+		<_UnoNuGetPackageRoot Condition="'$(_UnoNuGetPackageRoot)' == ''">$([MSBuild]::EnsureTrailingSlash('$([System.IO.Path]::Combine($([System.Environment]::GetFolderPath(SpecialFolder.UserProfile)), '.nuget', 'packages'))'))</_UnoNuGetPackageRoot>
+		<PkgMicrosoft_WindowsAppSDK_Foundation Condition="'$(PkgMicrosoft_WindowsAppSDK_Foundation)' == ''">$(_UnoNuGetPackageRoot)microsoft.windowsappsdk.foundation\$(WindowsAppSdkFoundationVersion)</PkgMicrosoft_WindowsAppSDK_Foundation>
+		<PkgMicrosoft_Windows_SDK_NET_Ref Condition="'$(PkgMicrosoft_Windows_SDK_NET_Ref)' == ''">$(_UnoNuGetPackageRoot)microsoft.windows.sdk.net.ref\$(WindowsSdkNetRefVersion)</PkgMicrosoft_Windows_SDK_NET_Ref>
+		<WindowsSdkPackageVersion Condition="'$(WindowsSdkPackageVersion)' == ''">$(WindowsSdkNetRefVersion)</WindowsSdkPackageVersion>
+		<EnableCoreMrtTooling>false</EnableCoreMrtTooling>
+		<ExpandPriResources>false</ExpandPriResources>
+		<AppxGeneratePriEnabled>false</AppxGeneratePriEnabled>
+		<AppxGeneratePrisForPortableLibrariesEnabled>false</AppxGeneratePrisForPortableLibrariesEnabled>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<Description>This package provides the platform support for Skia in Uno Platform projects.</Description>
 
@@ -32,8 +42,10 @@
 		<PackageReference Include="Microsoft.Web.WebView2" Aliases="mswebview2" PrivateAssets="all" />
 
 		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106" />
-		<PackageReference Include="Microsoft.WindowsAppSDK.Foundation" Version="$(WindowsAppSdkFoundationVersion)" PrivateAssets="all" ExcludeAssets="all" GeneratePathProperty="true" />
-		<PackageReference Include="Microsoft.WindowsAppSDK.InteractiveExperiences" Version="2.1.3" PrivateAssets="all" ExcludeAssets="all" />
+		<PackageReference Include="Microsoft.WindowsAppSDK.Foundation" Version="$(WindowsAppSdkFoundationVersion)" IncludeAssets="runtime;native" PrivateAssets="compile;contentfiles;build;buildmultitargeting;buildtransitive;analyzers" GeneratePathProperty="true" />
+		<PackageReference Include="Microsoft.WindowsAppSDK.InteractiveExperiences" Version="2.1.3" IncludeAssets="runtime;native" PrivateAssets="compile;contentfiles;build;buildmultitargeting;buildtransitive;analyzers" />
+		<!-- Project references must not apply Windows App SDK build checks to generic TFMs. The packed targets re-import the supported Runtime deployment targets. -->
+		<PackageReference Include="Microsoft.WindowsAppSDK.Runtime" Version="[$(WindowsAppSdkRuntimeVersion)]" IncludeAssets="runtime;build;native;buildtransitive" PrivateAssets="compile;contentfiles;build;buildmultitargeting;buildtransitive;analyzers" />
 		<PackageReference Include="Microsoft.Windows.SDK.NET.Ref" Version="$(WindowsSdkNetRefVersion)" PrivateAssets="all" ExcludeAssets="all" GeneratePathProperty="true" />
 		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="Uno.icu-win" />
@@ -47,7 +59,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\runtimes\win-x64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" Link="runtimes\win-x64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" CopyToOutputDirectory="PreserveNewest" Pack="true" PackagePath="runtimes\win-x64\native" />
+		<None Include="buildTransitive/*.*">
+			<Pack>true</Pack>
+			<PackagePath>buildTransitive</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\runtimes\win-x64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" Pack="true" PackagePath="runtimes\win-x64\native" />
 		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\runtimes\win-x86\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" Link="runtimes\win-x86\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" Pack="true" PackagePath="runtimes\win-x86\native" />
 		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\runtimes\win-arm64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" Link="runtimes\win-arm64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" Pack="true" PackagePath="runtimes\win-arm64\native" />
 		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\metadata\Microsoft.Windows.AppNotifications.winmd" Pack="true" PackagePath="runtimes\win\native" />
@@ -78,12 +97,38 @@
 		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Content Include="buildTransitive/*.*">
-			<Pack>true</Pack>
-			<PackagePath>buildTransitive</PackagePath>
-		</Content>
-	</ItemGroup>
+	<Target Name="_UnoIncludeWin32AppNotificationProjectAssets" BeforeTargets="AssignTargetPaths">
+		<PropertyGroup>
+			<_UnoWin32AppRuntimeArchitecture Condition="'$(RuntimeIdentifier)' != '' and $(RuntimeIdentifier.EndsWith('-x86'))">x86</_UnoWin32AppRuntimeArchitecture>
+			<_UnoWin32AppRuntimeArchitecture Condition="'$(RuntimeIdentifier)' != '' and $(RuntimeIdentifier.EndsWith('-x64'))">x64</_UnoWin32AppRuntimeArchitecture>
+			<_UnoWin32AppRuntimeArchitecture Condition="'$(RuntimeIdentifier)' != '' and $(RuntimeIdentifier.EndsWith('-arm64'))">arm64</_UnoWin32AppRuntimeArchitecture>
+			<_UnoWin32AppRuntimeArchitecture Condition="'$(_UnoWin32AppRuntimeArchitecture)' == '' and ('$(PlatformTarget)' == 'x86' or '$(Platform)' == 'x86' or '$(Platform)' == 'Win32')">x86</_UnoWin32AppRuntimeArchitecture>
+			<_UnoWin32AppRuntimeArchitecture Condition="'$(_UnoWin32AppRuntimeArchitecture)' == '' and ('$(PlatformTarget)' == 'x64' or '$(Platform)' == 'x64')">x64</_UnoWin32AppRuntimeArchitecture>
+			<_UnoWin32AppRuntimeArchitecture Condition="'$(_UnoWin32AppRuntimeArchitecture)' == '' and ('$(PlatformTarget)' == 'arm64' or '$(Platform)' == 'arm64')">arm64</_UnoWin32AppRuntimeArchitecture>
+			<_UnoWin32AppRuntimeArchitecture Condition="'$(_UnoWin32AppRuntimeArchitecture)' == '' and '$(NETCoreSdkRuntimeIdentifier)' == 'win-x86'">x86</_UnoWin32AppRuntimeArchitecture>
+			<_UnoWin32AppRuntimeArchitecture Condition="'$(_UnoWin32AppRuntimeArchitecture)' == '' and '$(NETCoreSdkRuntimeIdentifier)' == 'win-x64'">x64</_UnoWin32AppRuntimeArchitecture>
+			<_UnoWin32AppRuntimeArchitecture Condition="'$(_UnoWin32AppRuntimeArchitecture)' == '' and '$(NETCoreSdkRuntimeIdentifier)' == 'win-arm64'">arm64</_UnoWin32AppRuntimeArchitecture>
+			<_UnoWin32AppRuntimeBootstrapPath Condition="'$(_UnoWin32AppRuntimeArchitecture)' != ''">$(PkgMicrosoft_WindowsAppSDK_Foundation)\runtimes\win-$(_UnoWin32AppRuntimeArchitecture)\native\Microsoft.WindowsAppRuntime.Bootstrap.dll</_UnoWin32AppRuntimeBootstrapPath>
+		</PropertyGroup>
+		<Error
+			Condition="'$(_UnoWin32AppRuntimeArchitecture)' == '' and $([MSBuild]::IsOsPlatform('Windows'))"
+			Text="Unable to determine the Windows architecture for Microsoft.WindowsAppRuntime.Bootstrap.dll." />
+		<Error
+			Condition="'$(_UnoWin32AppRuntimeBootstrapPath)' != '' and !Exists('$(_UnoWin32AppRuntimeBootstrapPath)')"
+			Text="The Windows App SDK bootstrap DLL was not found at '$(_UnoWin32AppRuntimeBootstrapPath)'." />
+		<ItemGroup>
+			<Content Include="$(_UnoWin32AppRuntimeBootstrapPath)" Condition="'$(_UnoWin32AppRuntimeBootstrapPath)' != ''">
+				<TargetPath>Microsoft.WindowsAppRuntime.Bootstrap.dll</TargetPath>
+				<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			</Content>
+			<Content Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\metadata\Microsoft.Windows.AppNotifications.winmd">
+				<TargetPath>Microsoft.Windows.AppNotifications.winmd</TargetPath>
+				<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			</Content>
+		</ItemGroup>
+	</Target>
 
 	<Target Name="_UnoUpdateAdditionalAssemblies" AfterTargets="DispatchToInnerBuilds">
 		<ItemGroup>
@@ -104,6 +149,22 @@
 				<PackagePath>lib/$(NetCurrent)</PackagePath>
 			</Content>
 		</ItemGroup>
+	</Target>
+
+	<Target Name="_UnoValidateWin32AppNotificationPackageAssets" BeforeTargets="GenerateNuspec">
+		<ItemGroup>
+			<_UnoRequiredWin32AppNotificationPackageAsset Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\runtimes\win-x86\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" />
+			<_UnoRequiredWin32AppNotificationPackageAsset Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\runtimes\win-x64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" />
+			<_UnoRequiredWin32AppNotificationPackageAsset Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\runtimes\win-arm64\native\Microsoft.WindowsAppRuntime.Bootstrap.dll" />
+			<_UnoRequiredWin32AppNotificationPackageAsset Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\metadata\Microsoft.Windows.AppNotifications.winmd" />
+			<_UnoRequiredWin32AppNotificationPackageAsset Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.Windows.AppNotifications.Projection.dll" />
+			<_UnoRequiredWin32AppNotificationPackageAsset Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.WindowsAppRuntime.Bootstrap.Net.dll" />
+			<_UnoRequiredWin32AppNotificationPackageAsset Include="$(PkgMicrosoft_Windows_SDK_NET_Ref)\lib\net8.0\Microsoft.Windows.SDK.NET.dll" />
+			<_UnoRequiredWin32AppNotificationPackageAsset Include="$(PkgMicrosoft_Windows_SDK_NET_Ref)\lib\net8.0\WinRT.Runtime.dll" />
+		</ItemGroup>
+		<Error
+			Condition="!Exists('%(_UnoRequiredWin32AppNotificationPackageAsset.Identity)')"
+			Text="Required Win32 app-notification package asset '%(_UnoRequiredWin32AppNotificationPackageAsset.Identity)' was not found." />
 	</Target>
 
 </Project>
