@@ -43,7 +43,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				ItemWidth = 30
 			};
 
-			var itemTemplate = new ItemsPanelTemplate(() => itemWrap);
+			var itemTemplate = new ItemsPanelTemplate(null, (_, _) => itemWrap);
 
 			gridView.SetValue(ItemsControl.ItemsPanelProperty, itemTemplate);
 
@@ -77,7 +77,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				ItemWidth = 30
 			};
 
-			var itemTemplate = new ItemsPanelTemplate(() => itemWrap);
+			var itemTemplate = new ItemsPanelTemplate(null, (_, _) => itemWrap);
 
 			gridView.SetValue(GridViewVariableSizeBehavior.ShouldResizeProperty, true);
 			gridView.SetValue(ItemsControl.ItemsPanelProperty, itemTemplate);

@@ -105,7 +105,7 @@ namespace Uno.UI
 		/// True if the template was updated successfully.
 		/// </returns>
 		public static bool UpdateDataTemplate(DataTemplate currentTemplate,
-			Func<NewFrameworkTemplateBuilder?, NewFrameworkTemplateBuilder?> factoryUpdater)
+			Func<FrameworkTemplateBuilder?, FrameworkTemplateBuilder?> factoryUpdater)
 		{
 			if (IsDataTemplateDynamicUpdateEnabled)
 			{
@@ -119,24 +119,5 @@ namespace Uno.UI
 			return false;
 		}
 
-		/// <summary>
-		/// Updates the factory of the provided <see cref="Microsoft.UI.Xaml.DataTemplate"/> and raises an update notification.
-		/// </summary>
-		/// <returns>
-		/// True if the template was updated successfully.
-		/// </returns>
-		public static bool UpdateDataTemplate(DataTemplate currentTemplate, Func<View?> newViewFactory)
-		{
-			if (IsDataTemplateDynamicUpdateEnabled)
-			{
-				ArgumentNullException.ThrowIfNull(currentTemplate);
-				ArgumentNullException.ThrowIfNull(newViewFactory);
-
-				// Update and notify
-				return currentTemplate.UpdateFactory(newViewFactory);
-			}
-
-			return false;
-		}
 	}
 }

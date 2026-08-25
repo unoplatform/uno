@@ -2371,6 +2371,10 @@
 		  <Member fullName="Uno.UI.Runtime.Skia.Android.AndroidHost" reason="AndroidHost reduced to internal; use UseAndroid() on the host builder (breaking changes for 7.0)" />
 		  <!-- Legacy WinRTFeatureConfiguration holder removed with its sole flag (accessors paired in <Properties>/<Methods> below). -->
 		  <Member fullName="Uno.WinRTFeatureConfiguration/ApplicationLanguages" reason="Removed empty WinRTFeatureConfiguration.ApplicationLanguages holder after deleting UseLegacyPrimaryLanguageOverride (BC50, breaking changes for 7.0)" />
+		  <!-- BC01: legacy templated-parent mechanism removed; the template factory is now a plain System.Func (uno#18672, breaking changes for 7.0). -->
+		  <Member fullName="Microsoft.UI.Xaml.FrameworkTemplateBuilder" reason="BC01: legacy template builder delegate removed with the ambient TemplatedParentScope (uno#18672, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.NewFrameworkTemplateBuilder" reason="BC01: replaced by Uno.UI.FrameworkTemplateBuilder, declared next to TemplateManager instead of in the WinUI namespace (uno#18672, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.TemplateMaterializationSettings" reason="BC01: moved to the Uno.UI namespace, alongside FrameworkTemplateBuilder and TemplateManager -- it is Uno plumbing with no WinUI counterpart (uno#18672, breaking changes for 7.0)" />
 	  </Types>
 	  <Fields>
 		  <!-- Members of the removed ControlsResourcesVersion enum (see the <Types> entry above), listed in case the diff reports them independently of their declaring type (BC71, breaking changes for 7.0). -->
@@ -2746,6 +2750,12 @@
 		  <!-- FadeIn/FadeOutThemeAnimation reparented from DoubleAnimation to Timeline (WinUI parity); the DoubleAnimation-only From/To/By/EasingFunction/EnableDependentAnimation properties (and their DP fields) read as removed. Accessor methods paired in <Methods> below. -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Media\.Animation\.(FadeIn|FadeOut)ThemeAnimation(::|\.)(From|To|By|EasingFunction|EnableDependentAnimation|FromProperty|ToProperty|ByProperty|EasingFunctionProperty|EnableDependentAnimationProperty)\(\)" reason="Reparented *ThemeAnimation from DoubleAnimation to Timeline for WinUI parity; DoubleAnimation-only members removed (breaking changes for 7.0, uno#8339)" isRegex="true" />
 
+		  <!-- BC01: vestigial DependencyObject.TemplatedParent storage removed; it was never written and every reader saw null (accessors paired in <Methods> below). -->
+		  <Member fullName="Microsoft.UI.Xaml.DependencyObject Microsoft.UI.Xaml.DependencyObject::TemplatedParent()" reason="BC01: vestigial TemplatedParent DP removed, disjoint from the storage the framework uses (uno#18672, breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.DependencyObject::TemplatedParentProperty()" reason="BC01: vestigial TemplatedParentProperty removed (uno#18672, breaking changes for 7.0)" />
+
+		  <!-- BC01: TemplateMaterializationSettings moved to the Uno.UI namespace, and its per-member callback gave way to the OnMemberCreated instance method so the templated parent cannot be captured strongly (accessors paired in <Methods> below). -->
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.TemplateMaterializationSettings::(TemplatedParent|TemplateMemberCreatedCallback)\(\)" reason="BC01: type moved to Uno.UI; TemplateMemberCreatedCallback replaced by OnMemberCreated (uno#18672, breaking changes for 7.0)" isRegex="true" />
 	  </Properties>
 	  <Methods>
 		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
@@ -3422,6 +3432,15 @@
 
 		  <!-- UriExtensions.IsLocalResource renamed: the name said "local resource" but the check is ms-appx, three lines from the ms-resource helpers it was confused with. -->
 		  <Member fullName="System.Boolean Uno.Extensions.UriExtensions.IsLocalResource(System.Uri uri)" reason="Renamed to IsMsAppx (BC51, breaking changes for 7.0)" />
+		  <!-- BC01: all template builder ctors removed from the public surface. WinUI exposes only the parameterless ctor; the builder overload is now internal and re-exposed via Uno.UI.Helpers.MarkupHelper.Create*. Regex covers FrameworkTemplate/DataTemplate/ControlTemplate/ItemsPanelTemplate across the legacy FrameworkTemplateBuilder, the NewFrameworkTemplateBuilder and the Func<View> shapes. -->
+		  <Member fullName="System\.Void Microsoft\.UI\.Xaml\.(Controls\.)?(FrameworkTemplate|DataTemplate|ControlTemplate|ItemsPanelTemplate)\.\.ctor\(.*(FrameworkTemplateBuilder|System\.Func).*\)" reason="BC01: template builder ctors removed/internalized; use Uno.UI.Helpers.MarkupHelper.Create* (uno#18672, breaking changes for 7.0)" isRegex="true" />
+		  <!-- BC01: TemplateManager dynamic-update overloads retyped/removed with the delegate change. -->
+		  <Member fullName="System\.Boolean Uno\.UI\.TemplateManager\.UpdateDataTemplate\(.*\)" reason="BC01: UpdateDataTemplate overloads retyped to Uno.UI.FrameworkTemplateBuilder; the Func&lt;View&gt; overload is removed (uno#18672, breaking changes for 7.0)" isRegex="true" />
+		  <!-- BC01: vestigial TemplatedParent DP accessors (paired with the <Properties> entries above). The removed no-op SetTemplatedParent and the ignored-argument ctor sat on DependencyObjectStore, already covered by the BC26 DependencyObjectStore regexes. -->
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.DependencyObject(::|\.)(get_TemplatedParent|set_TemplatedParent|get_TemplatedParentProperty|OnTemplatedParentChanged)\(.*\)" reason="BC01: vestigial TemplatedParent DP and its accessors removed (uno#18672, breaking changes for 7.0)" isRegex="true" />
+		  <!-- BC01: only the framework materializes a template, so the settings ctor is internal. TemplatedParent stays public — an app-authored builder still reads the settings handed to it — but the member callback became an instance method (paired with the <Properties> entry above). -->
+		  <!-- BC01: nothing survives under the old name — the type moved to Uno.UI, its ctor is internal, and TemplateMemberCreatedCallback gave way to the OnMemberCreated instance method. -->
+		  <Member fullName=".+ Microsoft\.UI\.Xaml\.TemplateMaterializationSettings(::|\.|/).+" reason="BC01: TemplateMaterializationSettings moved to Uno.UI and is framework-constructed (uno#18672, breaking changes for 7.0)" isRegex="true" />
 	  </Methods>
 	  <Events>
 		  <!-- ====================================================================== -->

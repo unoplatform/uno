@@ -721,7 +721,7 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						// If no ItemTemplate was provided, use a default
 						//var factory  = XamlReader.Load("<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><TextBlock Text='{Binding}'/></DataTemplate>") as DataTemplate;
-						var factory = new DataTemplate(() =>
+						var factory = new DataTemplate(null, (_, _) =>
 						{
 							var tb = new TextBlock();
 							tb.SetBinding(TextBlock.TextProperty, new Binding());

@@ -32,9 +32,9 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			var SUT = new ListViewBase()
 			{
 				Style = null,
-				Template = new ControlTemplate(() => new ItemsPresenter()),
+				Template = new ControlTemplate(null, (_, _) => new ItemsPresenter()),
 				ItemContainerStyle = BuildBasicContainerStyle(),
-				ItemsPanel = new ItemsPanelTemplate(() => panel),
+				ItemsPanel = new ItemsPanelTemplate(null, (_, _) => panel),
 				Items = {
 					new Border { Name = "b1" },
 					new Border { Name = "b2" }
@@ -68,8 +68,8 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			var SUT = new ListViewBase()
 			{
 				Style = null,
-				Template = new ControlTemplate(() => new ItemsPresenter()),
-				ItemsPanel = new ItemsPanelTemplate(() => panel),
+				Template = new ControlTemplate(null, (_, _) => new ItemsPresenter()),
+				ItemsPanel = new ItemsPanelTemplate(null, (_, _) => panel),
 				ItemContainerStyle = BuildBasicContainerStyle(),
 				Items = {
 					item
@@ -124,9 +124,9 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			var SUT = new ListView()
 			{
 				Style = null,
-				Template = new ControlTemplate(() => new ItemsPresenter()),
+				Template = new ControlTemplate(null, (_, _) => new ItemsPresenter()),
 				ItemContainerStyle = BuildBasicContainerStyle(),
-				ItemsPanel = new ItemsPanelTemplate(() => panel),
+				ItemsPanel = new ItemsPanelTemplate(null, (_, _) => panel),
 				SelectionMode = ListViewSelectionMode.Single,
 			};
 
@@ -250,9 +250,9 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		{
 			var SUT = new ListView()
 			{
-				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemsPanel = new ItemsPanelTemplate(null, (_, _) => new StackPanel()),
 				ItemContainerStyle = BuildBasicContainerStyle(),
-				Template = new ControlTemplate(() => new ItemsPresenter()),
+				Template = new ControlTemplate(null, (_, _) => new ItemsPresenter()),
 				SelectionMode = ListViewSelectionMode.Single,
 			};
 
@@ -288,9 +288,9 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			var SUT = new ListView()
 			{
 				Style = null,
-				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemsPanel = new ItemsPanelTemplate(null, (_, _) => new StackPanel()),
 				ItemContainerStyle = BuildBasicContainerStyle(),
-				Template = new ControlTemplate(() => new ItemsPresenter()),
+				Template = new ControlTemplate(null, (_, _) => new ItemsPresenter()),
 				SelectionMode = ListViewSelectionMode.Single,
 			};
 			SUT.ForceLoaded();
@@ -359,9 +359,9 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			var SUT = new ListView()
 			{
 				Style = null,
-				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemsPanel = new ItemsPanelTemplate(null, (_, _) => new StackPanel()),
 				ItemContainerStyle = BuildBasicContainerStyle(),
-				Template = new ControlTemplate(() => new ItemsPresenter()),
+				Template = new ControlTemplate(null, (_, _) => new ItemsPresenter()),
 				SelectionMode = ListViewSelectionMode.Multiple,
 			};
 
@@ -431,9 +431,9 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			var SUT = new ListView()
 			{
 				Style = null,
-				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemsPanel = new ItemsPanelTemplate(null, (_, _) => new StackPanel()),
 				ItemContainerStyle = BuildBasicContainerStyle(),
-				Template = new ControlTemplate(() => new ItemsPresenter()),
+				Template = new ControlTemplate(null, (_, _) => new ItemsPresenter()),
 				SelectionMode = ListViewSelectionMode.Single,
 			};
 
@@ -474,9 +474,9 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		{
 			var SUT = new ListView()
 			{
-				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemsPanel = new ItemsPanelTemplate(null, (_, _) => new StackPanel()),
 				ItemContainerStyle = BuildBasicContainerStyle(),
-				Template = new ControlTemplate(() => new ItemsPresenter()),
+				Template = new ControlTemplate(null, (_, _) => new ItemsPresenter()),
 				SelectionMode = ListViewSelectionMode.Multiple,
 			};
 
@@ -541,9 +541,9 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		{
 			var SUT = new ListView()
 			{
-				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemsPanel = new ItemsPanelTemplate(null, (_, _) => new StackPanel()),
 				ItemContainerStyle = BuildBasicContainerStyle(),
-				Template = new ControlTemplate(() => new ItemsPresenter()),
+				Template = new ControlTemplate(null, (_, _) => new ItemsPresenter()),
 				SelectionMode = ListViewSelectionMode.Multiple,
 			};
 
@@ -584,9 +584,9 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		{
 			var SUT = new ListView()
 			{
-				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemsPanel = new ItemsPanelTemplate(null, (_, _) => new StackPanel()),
 				ItemContainerStyle = BuildBasicContainerStyle(),
-				Template = new ControlTemplate(() => new ItemsPresenter()),
+				Template = new ControlTemplate(null, (_, _) => new ItemsPresenter()),
 				SelectionMode = ListViewSelectionMode.Single,
 			};
 
@@ -629,15 +629,15 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		{
 			var SUT = new ListView()
 			{
-				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemsPanel = new ItemsPanelTemplate(null, (_, _) => new StackPanel()),
 				ItemContainerStyle = BuildBasicContainerStyle(),
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
 					return tb;
 				}),
-				Template = new ControlTemplate(() => new ItemsPresenter()),
+				Template = new ControlTemplate(null, (_, _) => new ItemsPresenter()),
 			};
 
 			SUT.ForceLoaded();
@@ -664,9 +664,9 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			var SUT = new ListView()
 			{
 				Style = null,
-				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemsPanel = new ItemsPanelTemplate(null, (_, _) => new StackPanel()),
 				ItemContainerStyle = BuildBasicContainerStyle(),
-				Template = new ControlTemplate(() => new ItemsPresenter()),
+				Template = new ControlTemplate(null, (_, _) => new ItemsPresenter()),
 				SelectionMode = ListViewSelectionMode.Single,
 			};
 
@@ -719,15 +719,15 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			var SUT = new ListView()
 			{
 				Style = null,
-				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemsPanel = new ItemsPanelTemplate(null, (_, _) => new StackPanel()),
 				ItemContainerStyle = BuildBasicContainerStyle(),
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
 					return tb;
 				}),
-				Template = new ControlTemplate(() => new ItemsPresenter()),
+				Template = new ControlTemplate(null, (_, _) => new ItemsPresenter()),
 				SelectionMode = ListViewSelectionMode.Single,
 			};
 

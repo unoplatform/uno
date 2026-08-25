@@ -18,7 +18,7 @@ namespace UITests.Windows_UI_Xaml_Controls.Repeater
 		private void SetSource(object sender, RoutedEventArgs e)
 		{
 #if !WINAPPSDK
-			var dt = new DataTemplate(() => new Border
+			var dt = new DataTemplate(null, (_, _) => new Border
 			{
 				Child = new MyItem()
 			});

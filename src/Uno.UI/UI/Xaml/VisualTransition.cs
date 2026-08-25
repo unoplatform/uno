@@ -18,9 +18,7 @@ namespace Microsoft.UI.Xaml
 		/// optionally fill <see cref="Storyboard"/>.
 		/// </summary>
 		internal Action LazyBuilder { get; set; }
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-		internal bool? FromLegacyTemplate { get; set; }
-#endif
+
 		public VisualTransition()
 		{
 			IsAutoPropertyInheritanceEnabled = false;
@@ -50,19 +48,7 @@ namespace Microsoft.UI.Xaml
 			{
 				var builder = LazyBuilder;
 				LazyBuilder = null;
-				try
-				{
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-					TemplatedParentScope.PushScope(this.GetTemplatedParent(), FromLegacyTemplate == true);
-#endif
-					builder.Invoke();
-				}
-				finally
-				{
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-					TemplatedParentScope.PopScope();
-#endif
-				}
+				builder.Invoke();
 
 				if (Storyboard is DependencyObject storyboardProvider)
 				{

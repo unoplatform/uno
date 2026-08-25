@@ -256,7 +256,7 @@ public class Given_AnimatedVisualPlayer
 		{
 			AutoPlay = false,
 			Source = source,
-			FallbackContent = new DataTemplate(() => new Border
+			FallbackContent = new DataTemplate(null, (_, _) => new Border
 			{
 				Name = "FallbackBorder",
 				Width = 12,
@@ -417,7 +417,7 @@ public class Given_AnimatedVisualPlayer
 			Height = 48,
 			AutoPlay = false,
 			Source = source,
-			FallbackContent = new DataTemplate(() => new Border
+			FallbackContent = new DataTemplate(null, (_, _) => new Border
 			{
 				Name = "LottieFallbackBorder",
 				Width = 12,

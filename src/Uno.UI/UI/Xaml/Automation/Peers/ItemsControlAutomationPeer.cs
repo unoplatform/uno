@@ -1218,7 +1218,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 				{
 					var spScrollViewerAsUie = spScrollViewerAP.Owner;
 					var spScrollViewerAsFE = spScrollViewerAsUie as FrameworkElement;
-					var spTemplatedParent = spScrollViewerAsFE?.TemplatedParent;
+					var spTemplatedParent = spScrollViewerAsFE?.GetTemplatedParent();
 					var spTemplatedParentAsIC = spTemplatedParent as ItemsControl;
 
 					if (spTemplatedParentAsIC != null)
