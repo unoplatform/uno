@@ -199,43 +199,63 @@ package together, so all of them were defined at once in a `netX.0-desktop` head
 `OperatingSystem.IsWindows()` / `IsLinux()` / `IsMacOS()`, which is the only check that can be correct for a
 target framework that runs on all three. `HAS_UNO_SKIA` and `__UNO_SKIA__` are unaffected.
 
-### MRT Core moves to the `Uno.WinRT` package
+### Types relocated to the `Uno.WinRT` package
 
-The MRT Core surface — the `Microsoft.Windows.ApplicationModel.Resources` namespace — now lives in
-the assembly matching its Windows App SDK home:
+A set of WinUI-parity types used to be generated into a UI assembly that did not match their Windows
+App SDK home. In 7.0 they move to the assembly that does — `Uno`, shipped in the `Uno.WinRT`
+package — out of `Uno.UI` or `Uno.UI.Composition`, which ship in `Uno.WinUI`. **Only the types listed
+below moved**, not necessarily their whole namespace:
 
-| | 6.x | 7.0 |
+| Namespace | Types that moved | Were in |
 |---|---|---|
-| Assembly | `Uno.UI` | `Uno` |
-| Package | `Uno.WinUI` | `Uno.WinRT` |
+| `Microsoft.UI.Input` (**partial** — see below) | `PointerPoint`, `PointerPointProperties`, `PointerUpdateKind`, `PointerDeviceType`, `IPointerPointTransform` | `Uno.UI` |
+| `Microsoft.UI.System` | `ThemeSettings` | `Uno.UI` |
+| `Microsoft.UI` (**partial** — see below) | `IClosableNotifier`, `ClosableNotifierHandler` | `Uno.UI.Composition` |
+| `Microsoft.Graphics.DirectX` | `DirectXAlphaMode`, `DirectXColorSpace`, `DirectXPixelFormat`, `DirectXPrimitiveTopology` | `Uno.UI.Composition` |
+| `Microsoft.Graphics.Display` | `DisplayInformation`, `DisplayAdvancedColorInfo`, `DisplayAdvancedColorKind`, `DisplayHdrMetadataFormat` | `Uno.UI.Composition` |
+| `Microsoft.Windows.ApplicationModel.Resources` (MRT Core) | `ResourceLoader`, `ResourceManager`, `ResourceContext`, `ResourceMap`, `ResourceCandidate`, `ResourceCandidateKind`, `ResourceNotFoundEventArgs`, `KnownResourceQualifierName`, `MrtCoreContract`, `IResourceManager`, `IResourceContext` | `Uno.UI` |
 
-**Source code needs no change.** The namespace is unchanged, so
-`using Microsoft.Windows.ApplicationModel.Resources;` still resolves, and `Uno.WinUI` depends on
-`Uno.WinRT`, so both assemblies are already referenced. The types that moved are
-`ResourceLoader`, `ResourceManager`, `ResourceContext`, `ResourceMap`, `ResourceCandidate`,
-`ResourceCandidateKind`, `ResourceNotFoundEventArgs`, `KnownResourceQualifierName`,
-`MrtCoreContract`, `IResourceManager`, and `IResourceContext`.
+> [!IMPORTANT]
+> Two of those namespaces are now **split across two assemblies** — do not assume either resolves
+> wholesale from `Uno`:
+>
+> - `Microsoft.UI.Input`: only the five pointer types above moved. The rest — `InputCursor`,
+>   `InputSystemCursor`, `PointerEventArgs`, `VirtualKeyStates`, the gesture and move/size event
+>   args, and everything else — stays in `Uno.UI`.
+> - `Microsoft.UI`: only `IClosableNotifier` and `ClosableNotifierHandler` moved. `Colors` and
+>   `ColorHelper` stay in `Uno.UI`.
+>
+> The other groups moved completely: nothing is left in `Uno.UI`/`Uno.UI.Composition` for
+> `Microsoft.UI.System`, `Microsoft.Graphics.DirectX`, `Microsoft.Graphics.Display`, or MRT Core.
+
+**Source code needs no change.** Every namespace is unchanged, so existing `using` directives still
+resolve, and `Uno.WinUI` depends on `Uno.WinRT` — both assemblies are already referenced. The one
+exception is code that names the assembly in source, such as an `extern alias`.
 
 **Compiled binaries must be rebuilt.** Moving a type between assemblies is a binary break, and
-there is no forwarding shim: a library built against 6.x resolves these types from `Uno.UI` and
-fails at run time with
+there is no forwarding shim: a library built against 6.x resolves these types from the old assembly
+and fails at run time with
 
 ```text
-Could not load type 'Microsoft.Windows.ApplicationModel.Resources.ResourceLoader'
+Could not load type 'Microsoft.UI.Input.PointerPoint'
 from assembly 'Uno.UI, Version=…'.
 ```
 
-Rebuild every library that uses MRT Core against 7.0, and update anything that names the
-assembly explicitly — assembly-qualified type names, `TypeForwardedTo`, or an IL merge/repack
+Rebuild every library that touches the types above against 7.0, and update anything that names
+the assembly explicitly — assembly-qualified type names, `TypeForwardedTo`, or an IL merge/repack
 configuration:
 
 ```diff
-- Type.GetType("Microsoft.Windows.ApplicationModel.Resources.ResourceLoader, Uno.UI")
-+ Type.GetType("Microsoft.Windows.ApplicationModel.Resources.ResourceLoader, Uno")
+- Type.GetType("Microsoft.UI.Input.PointerPoint, Uno.UI")
++ Type.GetType("Microsoft.UI.Input.PointerPoint, Uno")
 ```
 
-The older WinRT loader — `Windows.ApplicationModel.Resources.ResourceLoader`, without the
-`Microsoft.` prefix — is **not** affected. It already lived in `Uno`; only the
+That rewrite applies to the Uno-rendered heads. On a **Windows** head these types come from the
+Windows App SDK rather than from Uno Platform, so an assembly-qualified string there names
+`Microsoft.WinUI` and is unaffected either way.
+
+The older WinRT resource loader — `Windows.ApplicationModel.Resources.ResourceLoader`, without the
+`Microsoft.` prefix — is **not** affected. It already lived in `Uno`; of the resource APIs, only the
 `Microsoft.Windows.*` MRT Core surface moved.
 
 ### Public API removed
@@ -343,6 +363,26 @@ The older WinRT loader — `Windows.ApplicationModel.Resources.ResourceLoader`, 
   The `Uno.UI.FluentTheme.v1` assembly is removed along with these types, and
   `Uno.UI.FluentTheme.v2` is merged into `Uno.UI.FluentTheme` — see **Packages** above.
 
+- **`IEnumerable` on `FrameworkElement`/`ContentControl`, and the `Add(UIElement)` helpers on
+  `Border`, `Panel`, and `ScrollViewer`.** WinUI has neither; the pair existed only to enable C#
+  collection-initializer syntax in code-behind markup, so **`new StackPanel { child1, child2 }` no
+  longer compiles**. Assign the real property instead — `Children` for a panel, `Child` for a
+  `Border`, `Content` for a `ScrollViewer`:
+
+  ```diff
+  - var panel = new StackPanel { new TextBlock(), new Button() };
+  + var panel = new StackPanel { Children = { new TextBlock(), new Button() } };
+  ```
+
+  A `Children = { … }` initializer works because `UIElementCollection` has its own `Add`; only the
+  element-level shortcut is gone.
+
+  Dropping `IEnumerable` also removes the **read** side, which is easy to miss: an element can no
+  longer be enumerated or passed where an `IEnumerable` is expected. `foreach (var child in panel)`,
+  LINQ over an element (`panel.OfType<Button>()`, `panel.Any()`), `new List<object>(panel)`, and
+  `string.Join(",", panel)` all stop compiling. Enumerate the real collection instead —
+  `panel.Children`, or `VisualTreeHelper` for a general walk.
+
 ### `FeatureConfiguration` flags removed
 
 The native-only flags below no longer exist; delete the calls — behavior is the unified
@@ -404,6 +444,55 @@ CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICult
 ```
 
 If a single codebase must target both pre-7.0 and 7.0, guard the calls with `#if`.
+
+### Visibility and signature changes (WinUI parity)
+
+These members are no longer reachable, no longer have the same signature, or — where they were never
+part of the public surface — are gone entirely. Each change moves Uno to the WinUI shape, so code
+written against WinUI is unaffected.
+
+- **`XamlCompositionBrushBase.CompositionBrush` is `protected`** (it was `public`). A derived brush
+  reads and sets it exactly as before; external code that read the composition brush off a
+  `XamlCompositionBrushBase` instance no longer compiles. WinUI never exposed it publicly.
+- **`ContentPresenter.ContentTemplateRoot` is `internal`** (it was `public`), and so is
+  `UpdateContentTemplateRoot()`. To reach the materialized root from outside, walk the tree — but only
+  once the template has been applied, because the presenter has no children before that:
+
+  ```diff
+  - var root = presenter.ContentTemplateRoot;
+  + var root = VisualTreeHelper.GetChildrenCount(presenter) > 0
+  +     ? VisualTreeHelper.GetChild(presenter, 0)
+  +     : null;
+  ```
+
+- **`FlyoutBase.Close()` is removed.** It was `protected internal virtual`, so this affects flyouts
+  that derive from `FlyoutBase`. Call **`Hide()`** to close one — but note `Hide()` is *not* virtual
+  and `OnClosing`/`OnClosed` are `private protected`, so a derived flyout that overrode `Close()` has
+  no override point: move that logic into a handler for the public `Closing` (cancellable) or
+  `Closed` event.
+
+  ```diff
+  - protected internal override void Close()
+  - {
+  -     SaveState();
+  -     base.Close();
+  - }
+  + public MyFlyout() => Closed += (_, _) => SaveState();
+  ```
+
+- **`ContentPresenter.OnVerticalContentAlignmentChanged` and
+  `OnHorizontalContentAlignmentChanged` are removed**, along with the `TextBox` override of the
+  vertical one. All were no-ops — the alignment properties drive layout through `AffectsArrange` — so
+  delete the overrides; nothing replaces them.
+- **`WindowActivatedEventArgs.WindowActivationState` is retyped** from
+  `Windows.UI.Core.CoreWindowActivationState` to WinUI's `Microsoft.UI.Xaml.WindowActivationState`.
+  The values keep their names (`CodeActivated`, `Deactivated`, `PointerActivated`), so only code that
+  spells out the old enum type needs an edit:
+
+  ```diff
+  - if (args.WindowActivationState == CoreWindowActivationState.Deactivated)
+  + if (args.WindowActivationState == WindowActivationState.Deactivated)
+  ```
 
 ### Behavioral changes (same API, different result)
 
@@ -476,6 +565,36 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
   `MaxLength` and validate after the fact in `PasswordChanged`. Dropping the inherited
   `IsSpellCheckEnabled` also stops a password box spell-checking its own masked text, which
   removes the squiggly underline it used to draw.
+- **`RadioMenuFlyoutItem`** now derives from **`MenuFlyoutItem`** (matching WinUI) instead of
+  `ToggleMenuFlyoutItem`, so `is ToggleMenuFlyoutItem` is no longer `true` for a radio item, and a
+  `Style` whose `TargetType` is `ToggleMenuFlyoutItem` no longer applies to one. `IsChecked` and
+  `GroupName` are declared on `RadioMenuFlyoutItem` itself, so instance use and XAML written against
+  the radio item are unaffected — but `IsCheckedProperty` is now a **different dependency property**.
+  Reaching the value through `ToggleMenuFlyoutItem.IsCheckedProperty` still compiles and is the trap:
+  it throws `InvalidOperationException` in a Debug build or under a debugger, and in Release without a
+  debugger it silently reads the wrong property. Use `RadioMenuFlyoutItem.IsCheckedProperty`.
+- **`TimePickerFlyoutPresenter`** now derives from **`Control`** (matching WinUI) instead of
+  `FlyoutPresenter`. The `ContentControl` surface it used to inherit — `Content`, `ContentTemplate`,
+  `ContentTemplateSelector`, `ContentTransitions` — is gone, as is the inherited (now `internal`)
+  `ContentTemplateRoot`, and `is FlyoutPresenter` / `is ContentControl` are no longer `true` for it.
+  `IsDefaultShadowEnabled` is unaffected: the presenter declares its own, though as above that makes
+  it a different dependency property from `FlyoutPresenter.IsDefaultShadowEnabledProperty`. Style the
+  presenter through its `Style`/template, as WinUI does.
+- **`DoubleCollection`** no longer derives from `List<double>`; it holds its items by composition and
+  implements `IList<double>` / `IEnumerable<double>`, as WinUI does (`PointCollection` already worked
+  this way). Indexing, `Add`, `Remove`, `Count` and `foreach` are unchanged, but the `List<T>`-only
+  surface is gone — `AddRange`, `Sort`, `ForEach`, `BinarySearch`, `GetRange`, and any assignment or
+  cast to `List<double>`. The interfaces `List<T>` brought with it are gone too, so passing a
+  `StrokeDashArray` to a parameter typed `IReadOnlyList<double>`, `IReadOnlyCollection<double>`, or
+  the non-generic `IList`/`ICollection` no longer compiles — copy into a list at the call site:
+
+  ```diff
+  - dashArray.AddRange(new[] { 2d, 4d });
+  + foreach (var value in new[] { 2d, 4d }) { dashArray.Add(value); }
+
+  - Plot(shape.StrokeDashArray);            // void Plot(IReadOnlyList<double> values)
+  + Plot(shape.StrokeDashArray.ToList());
+  ```
 
 ### XAML changes
 
@@ -629,8 +748,10 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 10. Convert the Android `Application` class to override `CreateHost()` instead of passing an
    `AppBuilder` delegate to the base constructor.
 11. Rename `Uno.UI.Toolkit` usings and `xmlns` declarations to their new `Uno.UI.*` namespaces.
-12. Update assembly-qualified type names that reach MRT Core (`Microsoft.Windows.ApplicationModel.Resources.*`) — the assembly is now `Uno`, not `Uno.UI`.
-13. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+12. Update assembly-qualified type names for the types relocated to `Uno.WinRT` — the assembly is now `Uno`.
+13. Replace C# collection-initializer markup (`new StackPanel { child }`) with the explicit property — `Children` on a panel, `Child` on a `Border`, `Content` on a `ScrollViewer` — and enumerate `Children` rather than the element itself.
+14. Fix the compile breaks from reduced visibility, retyped members, and rebased type hierarchies (see the two *WinUI parity* sections above).
+15. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)
