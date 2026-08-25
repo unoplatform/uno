@@ -28,6 +28,7 @@ using Uno.UI.Extras.DevTools.Input;
 
 using static Private.Infrastructure.TestServices;
 using Disposable = Uno.Disposables.Disposable;
+using GestureRecognizer = Microsoft.UI.Input.GestureRecognizer;
 using ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
 using ScrollViewer = Microsoft.UI.Xaml.Controls.ScrollViewer;
 
@@ -1752,13 +1753,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
 			using var finger = input.GetFinger();
 			var bounds = SUT.GetAbsoluteBounds();
+			const double drag = 50;
+			var threshold = GestureRecognizer.Manipulation.StartTouch.TranslateY;
+
 			finger.Press(bounds.GetCenter());
-			// 5 moves of exactly StartTouch.TranslateY: the manipulation is recognized on the first one,
-			// and that distance is absorbed rather than replayed as a delta (#20473), leaving 40px.
-			finger.MoveTo(bounds.GetCenter().Offset(0, -50), steps: 4);
+			// Moves of exactly one threshold: the manipulation is recognized on the first one, and that
+			// distance is absorbed rather than replayed as a delta (#20473).
+			finger.MoveTo(bounds.GetCenter().Offset(0, -drag), steps: (uint)(drag / threshold) - 1);
 			finger.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(40, SUT.VerticalOffset);
+			Assert.AreEqual(drag - threshold, SUT.VerticalOffset);
 		}
 
 		[TestMethod]

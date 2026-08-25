@@ -369,6 +369,27 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20473")]
+		public void Manipulation_Begin_AbsorbsWholeCrossingMove()
+		{
+			// A single coalesced move that overshoots the threshold is absorbed in full: the whole distance
+			// is reported through Started.Cumulative and no ManipulationUpdated fires. Pins the behaviour
+			// against a return to clamping the absorbed amount to the dead-zone.
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
+			var result = new ManipulationRecorder(sut);
+			var threshold = GestureRecognizer.Manipulation.StartTouch.TranslateX;
+			var overshoot = 15; // deliberately larger than the threshold
+
+			sut.ProcessDownEvent(25, 25);
+			sut.ProcessMoveEvent(25 + threshold + overshoot, 25);
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().At(25, 25).WithCumulative(threshold + overshoot, 0)
+			);
+		}
+
+		[TestMethod]
 		public void Manipulation_Begin_MultiPointer()
 		{
 			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
