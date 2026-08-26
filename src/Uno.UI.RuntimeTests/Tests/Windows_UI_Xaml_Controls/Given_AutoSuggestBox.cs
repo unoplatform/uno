@@ -491,13 +491,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			AutoSuggestBox SUT = new AutoSuggestBox();
 			string[] suggestions = { "a1", "a2", "b1", "b2" };
-			bool eventRaised = false;
+			string userInputText = null;
 			SUT.TextChanged += (s, e) =>
 			{
-				eventRaised = true;
 				if (e.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
 				{
 					s.ItemsSource = suggestions.Where(i => i.StartsWith(s.Text));
+					userInputText = s.Text;
 				}
 			};
 			WindowHelper.WindowContent = SUT;
@@ -507,31 +507,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 
 			// Type "a" to trigger TextChanged which filters suggestions and opens popup.
-			eventRaised = false;
-			await KeyboardHelper.InputText("a");
-			await WindowHelper.WaitFor(() => eventRaised);
+			userInputText = null;
+			await KeyboardHelper.InputText("a", textBox);
+			await WindowHelper.WaitFor(() => userInputText == "a");
 			await WindowHelper.WaitForIdle();
 
 			// Navigate down through filtered suggestions (a1, a2).
-			await KeyboardHelper.Down();
+			await KeyboardHelper.Down(textBox);
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("a1", SUT.Text);
-			await KeyboardHelper.Down();
+			await KeyboardHelper.Down(textBox);
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("a2", SUT.Text);
 
 			// Type "b" to get new filtered suggestions (b1, b2).
-			eventRaised = false;
+			userInputText = null;
 			textBox.SelectAll();
-			await KeyboardHelper.InputText("b");
-			await WindowHelper.WaitFor(() => eventRaised);
+			await KeyboardHelper.InputText("b", textBox);
+			await WindowHelper.WaitFor(() => userInputText == "b");
 			await WindowHelper.WaitForIdle();
 
 			// Navigate down through new filtered suggestions.
-			await KeyboardHelper.Down();
+			await KeyboardHelper.Down(textBox);
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("b1", SUT.Text);
-			await KeyboardHelper.Down();
+			await KeyboardHelper.Down(textBox);
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("b2", SUT.Text);
 		}
