@@ -40,7 +40,7 @@
             <StackPanel Spacing="4">
                 <TextBlock
                     FontWeight="SemiBold"
-                    Text="XamlRoot.Size (Uno window size):"
+                    Text="XamlRoot.Size (Uno Platform window size):"
                     TextWrapping="Wrap" />
                 <TextBlock x:Name="UnoBoundsText" Text="-" />
             </StackPanel>
