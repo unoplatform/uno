@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Uno.Disposables;
 using Uno.UI.Samples.Controls;
@@ -39,6 +40,18 @@ namespace UITests.Windows_ApplicationModel
 		private void ClipboardTests_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
 			Model = (ClipboardTestsViewModel)args.NewValue;
+		}
+
+		private void OnPasteAccelerator(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+		{
+			// Let focused text controls handle the paste natively.
+			if (XamlRoot is null || FocusManager.GetFocusedElement(XamlRoot) is TextBox or PasswordBox)
+			{
+				return;
+			}
+
+			args.Handled = true;
+			Model?.PasteFromAccelerator();
 		}
 	}
 
@@ -293,6 +306,79 @@ namespace UITests.Windows_ApplicationModel
 		{
 			var package = Clipboard.GetContent();
 			UpdateStatusAndClearOldContents(package);
+		}
+
+		// Reads the clipboard directly from the Ctrl+V accelerator, validating that pasted
+		// content is fully available at key-event time (the paste event may arrive after
+		// the key event and is bridged internally). Formats are attempted individually:
+		// when the key event precedes the paste event, Contains() advertises formats
+		// optimistically and the ones the paste did not carry fail on retrieval.
+		internal async void PasteFromAccelerator()
+		{
+			try
+			{
+				var package = Clipboard.GetContent();
+				UpdateStatusAndClearOldContents(package);
+
+				var parts = new List<string>();
+
+				if (await TryGetAsync(package, StandardDataFormats.Text, p => p.GetTextAsync().AsTask()) is { } text)
+				{
+					parts.Add($"Text: {text}");
+				}
+
+				if (await TryGetAsync(package, StandardDataFormats.Html, p => p.GetHtmlFormatAsync().AsTask()) is { } html)
+				{
+					parts.Add($"HTML: {(html.Length > 100 ? html[..100] + "..." : html)}");
+				}
+
+				if (await TryGetAsync(package, StandardDataFormats.StorageItems, p => p.GetStorageItemsAsync().AsTask()) is { Count: > 0 } items)
+				{
+					parts.Add($"Files ({items.Count}): {string.Join(", ", items.Select(item => item.Name))}");
+				}
+
+				if (await TryGetAsync(package, StandardDataFormats.Bitmap, p => p.GetBitmapAsync().AsTask()) is { } bitmapReference)
+				{
+					using var bitmapStream = await bitmapReference.OpenReadAsync();
+
+					var buffer = new MemoryStream();
+					await bitmapStream.AsStreamForRead().CopyToAsync(buffer);
+					buffer.Position = 0;
+
+					var bitmapImage = new BitmapImage();
+					bitmapImage.SetSource(buffer.AsRandomAccessStream());
+					Bitmap = bitmapImage;
+
+					parts.Add("Bitmap: shown below");
+				}
+
+				PastedContent = parts.Count > 0
+					? "Ctrl+V accelerator paste:\n" + string.Join("\n", parts)
+					: "Ctrl+V accelerator paste: nothing available at key-event time";
+			}
+			catch (Exception e)
+			{
+				PastedContent = $"Ctrl+V accelerator paste failed: {e.Message}";
+			}
+		}
+
+		private static async Task<T> TryGetAsync<T>(DataPackageView package, string formatId, Func<DataPackageView, Task<T>> getter)
+			where T : class
+		{
+			if (!package.Contains(formatId))
+			{
+				return null;
+			}
+
+			try
+			{
+				return await getter(package);
+			}
+			catch (InvalidOperationException)
+			{
+				// Advertised optimistically but not present in the arrived paste.
+				return null;
+			}
 		}
 
 		private void Clear() => Clipboard.Clear();

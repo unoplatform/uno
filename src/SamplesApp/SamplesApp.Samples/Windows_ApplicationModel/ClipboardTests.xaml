@@ -6,11 +6,21 @@
     xmlns:local="using:UITests.Windows_ApplicationModel"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    KeyboardAcceleratorPlacementMode="Hidden"
     mc:Ignorable="d">
+
+    <Page.KeyboardAccelerators>
+        <KeyboardAccelerator
+            Key="V"
+            Invoked="OnPasteAccelerator"
+            Modifiers="Control" />
+    </Page.KeyboardAccelerators>
 
     <ScrollView HorizontalScrollMode="Disabled" VerticalScrollMode="Auto">
         <StackPanel Padding="12" Spacing="20">
             <TextBox AcceptsReturn="True" Text="{x:Bind Model.Text, Mode=TwoWay}" />
+
+            <TextBlock Text="Ctrl+V anywhere outside the text box reads the clipboard from the accelerator, showing what is available at key-event time." TextWrapping="Wrap" />
 
             <!--  Copying  -->
             <StackPanel Orientation="Horizontal" Spacing="8">

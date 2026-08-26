@@ -266,6 +266,43 @@ partial class Given_Clipboard
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(Include, Wasm)]
+	public async Task When_Paste_Shortcut_Precedes_Paste_Event()
+	{
+#if HAS_UNO
+		// A paste shortcut can reach managed code before the browser delivers the paste
+		// event; the clipboard must bridge the gap and serve the incoming content.
+		Windows_UI_Xaml_Automation.WasmSemanticDomHelper.InvokeBrowserJs(
+			"""
+			(function() {
+				document.dispatchEvent(new KeyboardEvent('keydown', { key: 'v', ctrlKey: true, bubbles: true }));
+				return 'ok';
+			})()
+			""");
+
+		var view = Clipboard.GetContent();
+
+		Assert.IsTrue(view.Contains(StandardDataFormats.StorageItems));
+
+		var itemsTask = view.GetStorageItemsAsync().AsTask();
+
+		DispatchSyntheticPaste(
+			"""
+			const dt = new DataTransfer();
+			dt.items.add(new File(['bridged-content'], 'bridged.txt', { type: 'text/plain' }));
+			""");
+
+		var items = await itemsTask;
+
+		Assert.AreEqual(1, items.Count);
+		Assert.AreEqual("bridged.txt", items[0].Name);
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
 	public async Task When_Paste_Event_With_Files()
 	{
 #if HAS_UNO
