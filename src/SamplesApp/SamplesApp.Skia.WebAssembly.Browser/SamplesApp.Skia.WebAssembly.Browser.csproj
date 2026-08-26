@@ -13,6 +13,9 @@
 	<PropertyGroup Condition="'$(UnoWasmAot)'=='true'">
 		<RunAOTCompilation>true</RunAOTCompilation>
 		<PublishTrimmed>true</PublishTrimmed>
+		<!-- Trim only opt-in (BCL) assemblies: full trimming strips the reflection-resolved drawing seams
+		     (SkiaBackend factories, ApiExtensibility impls) and the app fails at Build() with no backend. -->
+		<TrimMode>partial</TrimMode>
 	</PropertyGroup>
 	<ItemGroup Condition="'$(UnoWasmAot)'=='true'">
 		<!-- The Mono AOT cross-compiler runs out of memory on these giant assemblies. None are on the
@@ -20,6 +23,31 @@
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Graph.dll" />
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\SamplesApp.Skia.dll" />
 		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Uno.UI.RuntimeTests.dll" />
+		<!-- FullAOT loader error: references compile-time-only JetBrains.Annotations not in the publish set. -->
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\AwesomeAssertions.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.CodeAnalysis.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.CodeAnalysis.CSharp.dll" />
+		<!-- Windows-compat shims: reference assemblies absent from the publish set (System.Private.Windows.Core
+		     hard-crashes the cross-compiler); all dead code on WASM. -->
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Private.Windows.Core.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Drawing.Common.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Management.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Speech.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Data.SqlClient.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Win32.Registry.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Win32.SystemEvents.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Diagnostics.EventLog.dll" />
+		<!-- Off the render path (auth/test/SVG/GL sample infra) — interpreted to cut AOT time and wasm size. -->
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\BenchmarkDotNet.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Graph.Core.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Identity.Client.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Azure.Core.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\MSTest.TestFramework.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Private.ServiceModel.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Skia.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Model.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Custom.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Silk.NET.OpenGL.dll" />
 	</ItemGroup>
 
 	<PropertyGroup>
