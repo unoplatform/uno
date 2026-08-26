@@ -5,6 +5,7 @@
 #nullable enable
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Uno.Disposables;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
@@ -18,6 +19,23 @@ public partial class AutoSuggestBoxHelper
 	private const string c_popupBorderName = "SuggestionsContainer";
 	private const string c_textBoxName = "TextBox";
 	private const string c_overlayCornerRadiusKey = "OverlayCornerRadius";
+
+	public static DependencyProperty KeepInteriorCornersSquareProperty
+	{
+		[DynamicDependency(nameof(GetKeepInteriorCornersSquare))]
+		[DynamicDependency(nameof(SetKeepInteriorCornersSquare))]
+		get;
+	} = DependencyProperty.RegisterAttached(
+		"KeepInteriorCornersSquare",
+		typeof(bool),
+		typeof(AutoSuggestBoxHelper),
+		new FrameworkPropertyMetadata(default(bool)));
+
+	public static void SetKeepInteriorCornersSquare(AutoSuggestBox autoSuggestBox, bool value)
+		=> autoSuggestBox.SetValue(KeepInteriorCornersSquareProperty, value);
+
+	public static bool GetKeepInteriorCornersSquare(AutoSuggestBox autoSuggestBox)
+		=> (bool)autoSuggestBox.GetValue(KeepInteriorCornersSquareProperty);
 
 	#region AutoSuggestEventRevokers Attached Property (Internal)
 
