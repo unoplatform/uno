@@ -4603,6 +4603,8 @@ public class Given_ElementTheme
 		inputBox.Focus(FocusState.Programmatic);
 		await WindowHelper.WaitForIdle();
 
+		AssertFocusedStateResolvedDark(inputBox);
+
 		var displayBlock = inputBox.FindFirstDescendant<TextBlock>(tb => tb.Text == "888");
 		Assert.IsNotNull(displayBlock, "The text display block should exist in the TextBox visual tree");
 
@@ -4635,6 +4637,8 @@ public class Given_ElementTheme
 
 		editableText.Text = "888";
 		await WindowHelper.WaitForIdle();
+
+		AssertFocusedStateResolvedDark(editableText);
 
 		var displayBlock = editableText.FindFirstDescendant<TextBlock>(tb => tb.Text == "888");
 		Assert.IsNotNull(displayBlock, "The text display block should exist in the TextBox visual tree");
@@ -4673,6 +4677,8 @@ public class Given_ElementTheme
 		editableText.Text = "888";
 		await WindowHelper.WaitForIdle();
 
+		AssertFocusedStateResolvedDark(editableText);
+
 		var displayBlock = editableText.FindFirstDescendant<TextBlock>(tb => tb.Text == "888");
 		Assert.IsNotNull(displayBlock, "The text display block should exist in the TextBox visual tree");
 
@@ -4680,6 +4686,53 @@ public class Given_ElementTheme
 		Assert.IsNotNull(foreground, "The display block Foreground should be a SolidColorBrush");
 		Assert.IsTrue((foreground.Color.R + foreground.Color.G + foreground.Color.B) / 3 > 200,
 			$"Focused editable ComboBox text should be light in a dark app that never switched theme, but was {foreground.Color}");
+	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.NativeWasm)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24021")]
+	public async Task When_Editable_ComboBox_Focused_In_Dark_Theme_ContentElement_Foreground_Is_Light()
+	{
+		// Platform-agnostic variant: asserts the Focused setter's direct target
+		// (ContentElement.Foreground) instead of Skia's text display block, so it also runs
+		// on native WASM, where ResourceResolver.ApplyVisualStateSetter is not guarded.
+		using var _ = ThemeHelper.UseApplicationDarkTheme();
+
+		var comboBox = new ComboBox { Width = 150, IsEditable = true };
+		WindowHelper.WindowContent = comboBox;
+		await WindowHelper.WaitForLoaded(comboBox);
+		await WindowHelper.WaitForIdle();
+
+		var editableText = comboBox.FindFirstDescendant<TextBox>("EditableText");
+		Assert.IsNotNull(editableText, "EditableText should exist in the ComboBox template");
+
+		editableText.Focus(FocusState.Programmatic);
+		await WindowHelper.WaitForIdle();
+
+		AssertFocusedStateResolvedDark(editableText);
+
+		var contentElement = editableText.FindFirstDescendant<ScrollViewer>("ContentElement");
+		Assert.IsNotNull(contentElement, "ContentElement should exist in the TextBox template");
+
+		var foreground = contentElement.Foreground as SolidColorBrush;
+		Assert.IsNotNull(foreground, "ContentElement.Foreground should be a SolidColorBrush");
+		Assert.IsTrue((foreground.Color.R + foreground.Color.G + foreground.Color.B) / 3 > 200,
+			$"Focused ContentElement foreground should be light in dark theme, but was {foreground.Color}");
+	}
+
+	// Positive control: the Focused state's BorderElement background proves the state actually
+	// ran and resolved Dark — all Dark-theme text-control foregrounds alias the same light
+	// brush, so a foreground assert alone can't tell "resolved correctly" from "never applied".
+	private static void AssertFocusedStateResolvedDark(TextBox textBox)
+	{
+		var borderElement = textBox.FindFirstDescendant<Border>("BorderElement");
+		Assert.IsNotNull(borderElement, "BorderElement should exist in the TextBox template");
+
+		var background = borderElement.Background as SolidColorBrush;
+		Assert.IsNotNull(background, "BorderElement.Background should be a SolidColorBrush");
+		Assert.AreEqual(Windows.UI.Color.FromArgb(0xB3, 0x1E, 0x1E, 0x1E), background.Color,
+			"BorderElement should carry the dark TextControlBackgroundFocused value (#B31E1E1E)");
 	}
 
 	private static void ResetPersistedThemes(UIElement element)
