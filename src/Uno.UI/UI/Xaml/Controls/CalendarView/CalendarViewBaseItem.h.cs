@@ -29,9 +29,6 @@ namespace Microsoft.UI.Xaml.Controls
 #if !UNO_HAS_BORDER_VISUAL
 				_borderRenderer ??= new(this);
 #endif
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-				EnterImpl();
-#endif
 			};
 		}
 
