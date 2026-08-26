@@ -204,7 +204,21 @@ namespace UITests.Windows_ApplicationModel
 			Clipboard.SetContent(dataPackage);
 		}
 
-		private async void PasteCustomFormat()
+		// Paste reads can fail by design (permission denial, or a format advertised
+		// optimistically but absent), so failures are shown instead of reaching the dispatcher.
+		private async void RunPaste(Func<Task> paste)
+		{
+			try
+			{
+				await paste();
+			}
+			catch (Exception e)
+			{
+				PastedContent = $"Paste failed: {e.Message}";
+			}
+		}
+
+		private void PasteCustomFormat() => RunPaste(async () =>
 		{
 			var package = Clipboard.GetContent();
 			UpdateStatusAndClearOldContents(package);
@@ -212,17 +226,17 @@ namespace UITests.Windows_ApplicationModel
 			PastedContent = package.Contains(CustomFormatId)
 				? $"{CustomFormatId}: {await package.GetDataAsync(CustomFormatId)}"
 				: $"No {CustomFormatId} content in clipboard";
-		}
+		});
 
-		private async void PasteText()
+		private void PasteText() => RunPaste(async () =>
 		{
 			var package = Clipboard.GetContent();
 			UpdateStatusAndClearOldContents(package);
 
 			PastedContent = await package.GetTextAsync();
-		}
+		});
 
-		private async void PasteHtml()
+		private void PasteHtml() => RunPaste(async () =>
 		{
 			var package = Clipboard.GetContent();
 			UpdateStatusAndClearOldContents(package);
@@ -239,9 +253,9 @@ namespace UITests.Windows_ApplicationModel
 			{
 				PastedContent = "No HTML content in clipboard";
 			}
-		}
+		});
 
-		private async void PasteStorageItems()
+		private void PasteStorageItems() => RunPaste(async () =>
 		{
 			var package = Clipboard.GetContent();
 			UpdateStatusAndClearOldContents(package);
@@ -254,9 +268,9 @@ namespace UITests.Windows_ApplicationModel
 			{
 				PastedContent = "No StorageItems content in clipboard";
 			}
-		}
+		});
 
-		private async void PasteImage()
+		private void PasteImage() => RunPaste(async () =>
 		{
 			var package = Clipboard.GetContent();
 			UpdateStatusAndClearOldContents(package);
@@ -300,7 +314,7 @@ namespace UITests.Windows_ApplicationModel
 			{
 				PastedContent = "No image content in clipboard";
 			}
-		}
+		});
 
 		private void ListAvailableFormats()
 		{
