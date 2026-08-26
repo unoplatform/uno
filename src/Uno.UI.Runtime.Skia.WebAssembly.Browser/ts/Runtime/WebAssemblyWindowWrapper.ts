@@ -85,6 +85,7 @@ namespace Uno.UI.Runtime.Skia {
 		// its settled dimensions (ResizeObserver fires post-layout, so no polling is needed).
 		private observeViewportSize() {
 			if (typeof ResizeObserver === "undefined") {
+				console.debug("ResizeObserver is not available; the viewport settle correction is disabled.");
 				return;
 			}
 
@@ -101,6 +102,9 @@ namespace Uno.UI.Runtime.Skia {
 
 				this.lastObservedViewportSize = { width: rect.width, height: rect.height };
 
+				// Dispatch globally rather than calling this.resize(): other listeners size from
+				// this event too (BrowserRenderer sizes the canvas), and app code is owed the
+				// corrective resize the browser never fired.
 				window.dispatchEvent(new Event("resize"));
 			});
 			this.viewportResizeObserver.observe(rootElement);
@@ -168,6 +172,7 @@ namespace Uno.UI.Runtime.Skia {
 		}
 
 		private resize() {
+			// Measures the same element observeViewportSize() watches — keep the two in sync.
 			var rect = document.documentElement.getBoundingClientRect();
 			this.lastObservedViewportSize = { width: rect.width, height: rect.height };
 			this.onResize(this.owner, rect.width, rect.height, globalThis.devicePixelRatio);
