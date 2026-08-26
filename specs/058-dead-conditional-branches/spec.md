@@ -144,10 +144,18 @@ the overload that dead call needed, so removing the call left the arm both unrea
 The always-**true** `#if UNO_HAS_ENHANCED_LIFECYCLE` sites (`Application.cs`, `ResourceDictionary.cs`,
 `UIElement.cs`, `ThemingHelper.cs`) stay parked, along with every other flag in this section.
 
-> The flag's sites in `Uno.UI.RuntimeTests` and `SamplesApp.Shared` are **live, not dead**, and were not touched:
-> `Uno.UI.RuntimeTests.Windows.csproj` and the WinAppSDK sample head compile without the symbol, so there
-> `!UNO_HAS_ENHANCED_LIFECYCLE` means “native WinUI”. §1 input 2 was checked too — none of the four files
-> above is `Compile Include`d by another project.
+> The flag's 15 sites in `Uno.UI.RuntimeTests` and 1 in `SamplesApp.Shared` are **live, not dead**, and were not
+> touched: `Uno.UI.RuntimeTests.Windows.csproj` and the WinAppSDK sample head compile without the symbol.
+>
+> Being live is not the same as being right. Ten of those sites pair the symbol with `WINAPPSDK` or `!HAS_UNO`,
+> so native WinUI takes the enhanced path. **Six do not, and are wrong**: WinUI *has* enhanced lifecycle, so a
+> bare `!UNO_HAS_ENHANCED_LIFECYCLE` puts it on the legacy Uno path — four `[Ignore]`s skip on WinUI and two
+> assertion blocks compare WinUI against Uno's documented divergence. `Given_FrameworkElement_Layouting.cs`
+> pairs correctly at lines 54 and 76 and omits it at 95, which marks this as oversight rather than convention.
+> Correcting them changes what the WinUI test leg runs, so it is tracked in unoplatform/uno#24201 rather than
+> folded into a dead-code sweep.
+>
+> §1 input 2 was checked too — none of the four files above is `Compile Include`d by another project.
 
 ## 5. Suggested sequencing
 
