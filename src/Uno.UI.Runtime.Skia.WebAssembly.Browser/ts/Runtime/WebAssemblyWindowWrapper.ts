@@ -7,6 +7,8 @@ namespace Uno.UI.Runtime.Skia {
 		private onViewportOcclusionChanged: any;
 		private owner: any;
 		private lastReportedOcclusion: number = -1;
+		private viewportResizeObserver: ResizeObserver | undefined;
+		private lastObservedViewportSize: { width: number, height: number } | undefined;
 		private static readonly unoPersistentLoaderClassName = "uno-persistent-loader";
 		private static readonly loadingElementId = "uno-loading";
 		private static readonly unoKeepLoaderClassName = "uno-keep-loader";
@@ -60,6 +62,7 @@ namespace Uno.UI.Runtime.Skia {
 			Accessibility.setup();
 
 			window.addEventListener("resize", x => this.resize());
+			this.observeViewportSize();
 
 			window.addEventListener("contextmenu", x => {
 				x.preventDefault();
@@ -73,6 +76,34 @@ namespace Uno.UI.Runtime.Skia {
 			}
 
 			this.resize();
+		}
+
+		// Some mobile browsers (Chrome on iPad) can raise window "resize" before the layout
+		// viewport has reflowed to the new orientation size, without raising a corrective
+		// event afterward — leaving the Skia surface sized from a stale documentElement rect.
+		// Observe the element resize() measures from and re-dispatch "resize" once it reports
+		// its settled dimensions (ResizeObserver fires post-layout, so no polling is needed).
+		private observeViewportSize() {
+			if (typeof ResizeObserver === "undefined") {
+				return;
+			}
+
+			const rootElement = document.documentElement;
+			const initialRect = rootElement.getBoundingClientRect();
+			this.lastObservedViewportSize = { width: initialRect.width, height: initialRect.height };
+			this.viewportResizeObserver = new ResizeObserver(() => {
+				const rect = rootElement.getBoundingClientRect();
+				const lastSize = this.lastObservedViewportSize;
+
+				if (lastSize && rect.width === lastSize.width && rect.height === lastSize.height) {
+					return;
+				}
+
+				this.lastObservedViewportSize = { width: rect.width, height: rect.height };
+
+				window.dispatchEvent(new Event("resize"));
+			});
+			this.viewportResizeObserver.observe(rootElement);
 		}
 
 		// Reports how much of the viewport the on-screen keyboard occludes, in the same CSS pixels
@@ -138,6 +169,7 @@ namespace Uno.UI.Runtime.Skia {
 
 		private resize() {
 			var rect = document.documentElement.getBoundingClientRect();
+			this.lastObservedViewportSize = { width: rect.width, height: rect.height };
 			this.onResize(this.owner, rect.width, rect.height, globalThis.devicePixelRatio);
 		}
 
