@@ -1,0 +1,65 @@
+﻿<Page
+    x:Class="UITests.Shared.Wasm.Wasm_ViewportOrientationTelemetry"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel
+            MaxWidth="480"
+            Padding="16"
+            HorizontalAlignment="Center"
+            Spacing="12">
+            <TextBlock
+                FontSize="18"
+                FontWeight="Bold"
+                Text="Viewport orientation telemetry"
+                TextWrapping="Wrap" />
+            <TextBlock
+                Opacity="0.7"
+                Text="Rotate the device between portrait and landscape while watching the values below. Some mobile browsers fire resize before the layout viewport has reflowed, which can leave the app rendered at stale dimensions."
+                TextWrapping="Wrap" />
+
+            <Border
+                x:Name="StatusBorder"
+                Padding="10"
+                Background="MediumSeaGreen"
+                CornerRadius="6">
+                <TextBlock
+                    x:Name="StatusText"
+                    HorizontalAlignment="Center"
+                    FontSize="16"
+                    FontWeight="Bold"
+                    Foreground="White"
+                    Text="OK" />
+            </Border>
+
+            <StackPanel Spacing="4">
+                <TextBlock
+                    FontWeight="SemiBold"
+                    Text="XamlRoot.Size (Uno window size):"
+                    TextWrapping="Wrap" />
+                <TextBlock x:Name="UnoBoundsText" Text="-" />
+            </StackPanel>
+
+            <StackPanel Spacing="4">
+                <TextBlock
+                    FontWeight="SemiBold"
+                    Text="documentElement.getBoundingClientRect():"
+                    TextWrapping="Wrap" />
+                <TextBlock x:Name="DocRectText" Text="-" />
+            </StackPanel>
+
+            <StackPanel Spacing="4">
+                <TextBlock
+                    FontWeight="SemiBold"
+                    Text="Raw browser event counts (resize / orientationchange):"
+                    TextWrapping="Wrap" />
+                <TextBlock x:Name="EventCountsText" Text="-" />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
