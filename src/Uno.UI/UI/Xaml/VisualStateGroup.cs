@@ -183,9 +183,14 @@ namespace Microsoft.UI.Xaml
 			for (var stateIndex = 0; stateIndex < States.Count; stateIndex++)
 			{
 				var state = States[stateIndex];
-				for (var triggerIndex = 0; triggerIndex < state.StateTriggers.Count; triggerIndex++)
+				if (state.StateTriggersOrDefault is not { } triggers)
 				{
-					var trigger = state.StateTriggers[triggerIndex];
+					continue;
+				}
+
+				for (var triggerIndex = 0; triggerIndex < triggers.Count; triggerIndex++)
+				{
+					var trigger = triggers[triggerIndex];
 
 					action(trigger);
 				}
@@ -566,7 +571,7 @@ namespace Microsoft.UI.Xaml
 			for (var stateIndex = 0; stateIndex < States.Count; stateIndex++)
 			{
 				var state = States[stateIndex];
-				if (state.StateTriggers.Count > 0)
+				if (state.StateTriggersOrDefault is { Count: > 0 })
 				{
 					return true;
 				}
@@ -598,9 +603,14 @@ namespace Microsoft.UI.Xaml
 			for (var stateIndex = 0; stateIndex < States.Count; stateIndex++)
 			{
 				var state = States[stateIndex];
-				for (var triggerIndex = 0; triggerIndex < state.StateTriggers.Count; triggerIndex++)
+				if (state.StateTriggersOrDefault is not { } triggers)
 				{
-					var trigger = state.StateTriggers[triggerIndex];
+					continue;
+				}
+
+				for (var triggerIndex = 0; triggerIndex < triggers.Count; triggerIndex++)
+				{
+					var trigger = triggers[triggerIndex];
 
 					// the first active CustomTrigger is an automatic winner.
 					if (trigger.CurrentPrecedence == StateTriggerPrecedence.CustomTrigger)
