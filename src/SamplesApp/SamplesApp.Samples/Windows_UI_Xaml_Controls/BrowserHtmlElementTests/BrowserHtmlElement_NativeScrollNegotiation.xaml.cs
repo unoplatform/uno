@@ -3,7 +3,9 @@
 using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+#if HAS_UNO
 using Uno.UI.NativeElementHosting;
+#endif
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.BrowserHtmlElementTests;
