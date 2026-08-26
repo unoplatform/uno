@@ -157,6 +157,30 @@ The always-**true** `#if UNO_HAS_ENHANCED_LIFECYCLE` sites (`Application.cs`, `R
 >
 > §1 input 2 was checked too — none of the four files above is `Compile Include`d by another project.
 
+**`UNO_HAS_BORDER_VISUAL` is retired outright.** It was small enough to finish rather than park — three sites in
+`src/Uno.UI`, all in files no other project compiles:
+
+| Site | Was | Disposition |
+|---|---|---|
+| `Border.cs:36` | `#if UNO_HAS_BORDER_VISUAL` around `this.UpdateBackground()` | Unwrapped. `UpdateBackground` is a real `IBorderInfoProvider` extension in `BorderHelper.cs` |
+| `ContentPresenter.cs:880` | `#if !UNO_HAS_BORDER_VISUAL` calling `UpdateBorder()` | Deleted — `UpdateBorder` is declared nowhere in the tree |
+| `CalendarViewBaseItem.h.cs:29` | `#if !UNO_HAS_BORDER_VISUAL` assigning `_borderRenderer` | Deleted — `_borderRenderer` is likewise undeclared, and it was the last statement in the `Loaded` handler, so the empty subscription went too |
+
+With no reference left anywhere, the define and its documentation line go from `Uno.CrossTargetting.targets` —
+the same end state `HAS_NATIVE_IMPLICIT_POINTER_CAPTURE` reached. §1's define set lists the symbol as it stood
+before this removal.
+
+> Two of the three sites called members that do not exist. That is the tell that separates a *parked* flag from a
+> *finished* one: a migration switch whose dead side still compiles may be worth keeping for readability, but one
+> that has rotted past compiling is only pretending to be a switch.
+
+> Unlike `UNO_HAS_ENHANCED_LIFECYCLE`, this flag was **Skia-only** — `Uno.CrossTargetting.targets` never defined
+> it for WebAssembly. Harmless here, because `Uno.UI` builds `UnoRuntimeIdentifier=Skia` only, but it means the
+> two flags were not interchangeable even though both read as "the modern path".
+
+> Noted in passing, not fixed: `Border.cs:249` has a third call to the non-existent `UpdateBorder()`, inside a
+> `#if !__SKIA__` arm. It is parked with the rest of §3 and is a hazard for whoever unparks `__SKIA__`.
+
 ## 5. Suggested sequencing
 
 1. ✅ **`IS_UNIT_TESTS` (89) and `__NETSTD_REFERENCE__` (26)** in `src/Uno.UI` — the largest genuinely-dead
@@ -166,8 +190,9 @@ The always-**true** `#if UNO_HAS_ENHANCED_LIFECYCLE` sites (`Application.cs`, `R
 3. ✅ **The legacy platform symbols in §2.4** — done with spec 057, except the vendored ones, which stay by
    decision because those sources are still resynced from upstream.
 4. **`#if false`** — triage individually; do not sweep. Untouched.
-5. **The feature flags in §4** — per flag, per owner. Untouched, apart from the four always-false
-   `UNO_HAS_ENHANCED_LIFECYCLE` sites noted in §4.
+5. **The feature flags in §4** — per flag, per owner. `UNO_HAS_BORDER_VISUAL` is ✅ **done**: all three sites
+   swept and the symbol itself retired. `UNO_HAS_ENHANCED_LIFECYCLE` lost its four always-false sites and stays
+   parked otherwise. The remaining flags are untouched.
 6. **`__SKIA__` / `HAS_UNO`** — defer until the drawing-backend work has landed, and decide the MUX-annotation
    question explicitly rather than by sweep. Untouched.
 
