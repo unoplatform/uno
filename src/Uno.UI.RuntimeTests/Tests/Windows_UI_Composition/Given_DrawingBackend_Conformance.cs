@@ -123,6 +123,41 @@ public class Given_DrawingBackend_Conformance
 	}
 
 	[TestMethod]
+	public async Task When_Shadow_Layer()
+	{
+		// A gradient-filled rounded card with a ThemeShadow → an offscreen shadow LayerCmd on WebGPU. Exercises the
+		// size-to-content layer offscreen (WebGPU) end to end: card body renders correctly and a shadow falls below
+		// it. Renderer-agnostic (Skia + WebGPU, sub-rect on or off) — a mispositioned/clipped sub-rect layer fails it.
+		var gradient = new LinearGradientBrush { StartPoint = new Point(0, 0), EndPoint = new Point(1, 1) };
+		gradient.GradientStops.Add(new GradientStop { Offset = 0, Color = Colors.SteelBlue });
+		gradient.GradientStops.Add(new GradientStop { Offset = 1, Color = Colors.MediumPurple });
+		var shadow = new ThemeShadow();
+		var receiver = new Border { Background = new SolidColorBrush(Colors.Transparent) };
+		var card = new Border
+		{
+			Width = 70,
+			Height = 44,
+			CornerRadius = new CornerRadius(10),
+			Background = gradient,
+			Shadow = shadow,
+			Translation = new System.Numerics.Vector3(0, 0, 24),
+			HorizontalAlignment = HorizontalAlignment.Center,
+			VerticalAlignment = VerticalAlignment.Center,
+		};
+		shadow.Receivers.Add(receiver);
+		var root = new Grid();
+		root.Children.Add(receiver);
+		root.Children.Add(card);
+
+		var bmp = await Render(root, 160, 140);
+		// Card body (centre) shows the gradient, not the white background.
+		var mid = bmp.GetPixel(80, 70);
+		Assert.IsTrue(mid.B > mid.R && mid.B > 120, $"Card centre should show the blue-ish gradient, was {mid}.");
+		// The card's centre must be within its rounded body (not shifted off) — its left/right edges are ~±35 of centre.
+		ImageAssert.HasColorAt(bmp, 118, 70, Colors.White, 40);   // well to the right of the 70-wide card → background
+	}
+
+	[TestMethod]
 	public async Task When_Clip_Restricts_Drawing()
 	{
 		var rect = new Rectangle

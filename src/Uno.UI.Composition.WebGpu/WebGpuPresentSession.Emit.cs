@@ -465,6 +465,27 @@ public sealed unsafe partial class WebGpuPresentSession
 		{
 			return;
 		}
+
+		// Under a size-to-content layer surface every replay cache below (table-frame / frame-solid / arena /
+		// compiled) is unusable: they bake window-space geometry keyed on the recording, and this pass's NDC basis
+		// is shifted into the layer's sub-rect. Rebuild fresh and UNCACHED through the basis-aware immediate build
+		// (BuildCoalesced goes via Ndc, and the transient path slot's WriteXform folds the basis). The main-window
+		// path is untouched, so the caches keep working where they pay.
+		if (_basisOx != 0f || _basisOy != 0f || _basisW != _s.Width || _basisH != _s.Height)
+		{
+			var subOwned = new OwnedResources();
+			var subList = new List<WebGpuCommand>();
+			foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { subList.Add(tc); }
+			bool subHasPath = false; foreach (var c in subList) { if (c is PathFill) { subHasPath = true; break; } }
+			var subSlot = -1;
+			if (subHasPath) { subSlot = _d.AllocXformSlot(); _xformTransient.Add(subSlot); WriteXform(subSlot, Matrix4x4.Identity); }
+			var subOps = new List<DrawOp>();
+			BuildCoalesced(subList, subOps, subOwned, subSlot);
+			for (int _ri = 0; _ri < subOps.Count; _ri++) { subOps[_ri] = ResidentizeFan(subOps[_ri], subOwned); }
+			ops.AddRange(subOps);
+			_d.DeferRelease(subOwned);
+			return;
+		}
 	// A recording containing rects re-emits its solids into the shared per-pass buffer every frame so siblings
 	// sharing a clip collapse to one draw; its non-solids stay cached and are spliced back in draw order.
 		if (HasReappendable(rr))
@@ -553,10 +574,11 @@ public sealed unsafe partial class WebGpuPresentSession
 		// still pays a full offscreen render + blur every frame. Mask (DstIn) and colour-matrix layers keep
 		// full-surface semantics (an empty mask must still erase; a matrix offset can produce coverage).
 		var contentBounds = ClampToClip(CmdListBounds(lyr.Commands), lyr.Clip);
-		if (lyr.CompositeMode == 0 && lyr.ColorMatrix is null)
+		var haveVis = lyr.CompositeMode == 0 && lyr.ColorMatrix is null && contentBounds.X <= contentBounds.Z && contentBounds.Y <= contentBounds.W;
+		if (haveVis)
 		{
 			var vis = contentBounds;
-			if (lyr.ShadowEffect is { } sfx && contentBounds.X <= contentBounds.Z)
+			if (lyr.ShadowEffect is { } sfx)
 			{
 				var spad = MathF.Ceiling(3f * MathF.Max(sfx.SigmaX, sfx.SigmaY)) + 2f;
 				var sb = ClampToClip(Inflate(new Vector4(contentBounds.X + sfx.Dx, contentBounds.Y + sfx.Dy, contentBounds.Z + sfx.Dx, contentBounds.W + sfx.Dy), spad), lyr.Clip);
@@ -568,11 +590,46 @@ public sealed unsafe partial class WebGpuPresentSession
 			}
 		}
 
-		var layerSurface = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
-		var _savedPw = _passW; var _savedPh = _passH;
-		_passW = layerSurface.Width; _passH = layerSurface.Height;
-		RenderInto(lyr.Commands, layerSurface, null);
-		_passW = _savedPw; _passH = _savedPh;
+		// Size-to-content: a mode-0 layer (SrcOver, incl. a drop shadow) with no colour-matrix, no backdrop and no
+		// nested layer only needs an offscreen as big as what it draws — not the whole window. Absolute coords map
+		// into it through the NDC basis. Mask/matrix/backdrop/nested-layer keep the full-size surface, whose
+		// coordinates and framebuffer sampling assume window space.
+		bool subRect = false;
+		float subOx = 0f, subOy = 0f;
+		int subW = 0, subH = 0;
+		if (haveVis && _subLayerSizing && !HasLayerOrBackdrop(lyr.Commands))
+		{
+			// Size to what the layer draws AND, for a shadow, the region the blur READS — Inflate(content, pad), not
+			// the OFFSET shadow bounds: the shadow is composited in parent space from that read region, so using the
+			// offset bounds would clamp the blur on the side opposite the offset.
+			var lb = contentBounds;
+			if (lyr.ShadowEffect is { } se3)
+			{
+				var lp = MathF.Ceiling(3f * MathF.Max(se3.SigmaX, se3.SigmaY)) + 2f;
+				lb = Inflate(contentBounds, lp);
+			}
+			float ax0 = MathF.Max(_basisOx, MathF.Floor(lb.X));
+			float ay0 = MathF.Max(_basisOy, MathF.Floor(lb.Y));
+			float ax1 = MathF.Min(_basisOx + BasisW, MathF.Ceiling(lb.Z));
+			float ay1 = MathF.Min(_basisOy + BasisH, MathF.Ceiling(lb.W));
+			int rw = (int)(ax1 - ax0), rh = (int)(ay1 - ay0);
+			if (rw >= 1 && rh >= 1 && ((float)rw < BasisW || (float)rh < BasisH))
+			{
+				subRect = true; subOx = ax0; subOy = ay0; subW = rw; subH = rh;
+			}
+		}
+
+		WebGpuRenderSurface layerSurface;
+		if (subRect)
+		{
+			layerSurface = new WebGpuRenderSurface(_d, subW, subH, _d.Pool);
+			RenderInto(lyr.Commands, layerSurface, null, false, subOx, subOy, subW, subH);
+		}
+		else
+		{
+			layerSurface = new WebGpuRenderSurface(_d, (int)_s.Width, (int)_s.Height, _d.Pool);
+			RenderInto(lyr.Commands, layerSurface, null);
+		}
 
 		// The layer's depth/stencil is write-only inside its own (now ended) pass: cleared on entry,
 		// discarded on exit, never sampled. Hand it straight back so every layer in the frame reuses
@@ -588,11 +645,16 @@ public sealed unsafe partial class WebGpuPresentSession
 		{
 			var pad = MathF.Ceiling(3f * MathF.Max(fx.SigmaX, fx.SigmaY)) + 2f;
 			var rg = Inflate(contentBounds, pad);
-			float rx = MathF.Max(0f, MathF.Floor(rg.X)), ry = MathF.Max(0f, MathF.Floor(rg.Y));
-			float rw = MathF.Min(_s.Width, MathF.Ceiling(rg.Z)) - rx, rh = MathF.Min(_s.Height, MathF.Ceiling(rg.W)) - ry;
+			// Clamp to the layer surface: a sub-surface spans [subO, subO+subW/H] in absolute device space. The blur
+			// reads sub-LOCAL (rx-loX), while the shadow quad below stays absolute (parent NDC via TexturedQuad).
+			float loX = subRect ? subOx : 0f, loY = subRect ? subOy : 0f;
+			float hiX = subRect ? subOx + subW : _s.Width, hiY = subRect ? subOy + subH : _s.Height;
+			int surfW = subRect ? subW : (int)_s.Width, surfH = subRect ? subH : (int)_s.Height;
+			float rx = MathF.Max(loX, MathF.Floor(rg.X)), ry = MathF.Max(loY, MathF.Floor(rg.Y));
+			float rw = MathF.Min(hiX, MathF.Ceiling(rg.Z)) - rx, rh = MathF.Min(hiY, MathF.Ceiling(rg.W)) - ry;
 			if (rw >= 1f && rh >= 1f)
 			{
-				var blur = BlurPyramidRegion(layerSurface.View, _s.Width, _s.Height, rx, ry, rw, rh, fx.SigmaX, fx.SigmaY);
+				var blur = BlurPyramidRegion(layerSurface.View, surfW, surfH, rx - loX, ry - loY, rw, rh, fx.SigmaX, fx.SigmaY);
 				var sfbg = TintedImageBg(blur, fx.Color);
 				var fq = TexturedQuad(new Vector2(fx.Dx + rx, fx.Dy + ry), new Vector2(rw, rh));
 				ops.Add(new DrawOp(DrawKind.Image, (nint)sfbg, 0, (nint)MakeBuffer(fq), false, lyr.Clip, (nint)MakeClipBg(_d.ImageClipBgl, lyr.Clip)));
@@ -601,6 +663,14 @@ public sealed unsafe partial class WebGpuPresentSession
 
 		var cu = new float[24];
 		cu[0] = lyr.ColorMatrix is { Length: >= 20 } ? 1f : 0f; cu[1] = 1f;
+		if (subRect)
+		{
+			// params.z = sub-rect flag; m0 = (offset in THIS target's framebuffer pixels, sub size). The composite
+			// fragment samples the smaller layer texture by its own framebuffer position. A colour-matrix layer never
+			// takes the sub-rect path, so m0 is free here.
+			cu[2] = 1f;
+			cu[4] = subOx - _basisOx; cu[5] = subOy - _basisOy; cu[6] = subW; cu[7] = subH;
+		}
 		if (lyr.ColorMatrix is { Length: >= 20 } mm)
 		{
 			cu[4] = mm[0]; cu[5] = mm[1]; cu[6] = mm[2]; cu[7] = mm[3];        // m0

@@ -184,10 +184,17 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
   var o: VO; o.p = vec4<f32>(p, 0.0, 1.0); o.uv = vec2<f32>((p.x + 1.0) * 0.5, (1.0 - p.y) * 0.5); return o;
 }
 @fragment fn fs(i: VO) -> @location(0) vec4<f32> {
-  // Exact texel fetch, not a filtered sample: the layer target is the same size as the surface it
-  // composites into and the quad is a pixel-aligned fullscreen triangle, so a bilinear sample would
-  // fetch and blend 4 texels to reproduce 1. (`smp` stays bound — the layout is shared.)
-  var c = textureLoad(src, vec2<i32>(i.p.xy), 0);   // premultiplied layer content
+  // Exact texel fetch, not a filtered sample: the quad is a pixel-aligned fullscreen triangle over a
+  // target-sized layer texture, so a bilinear sample would fetch and blend 4 texels to reproduce 1.
+  // (`smp` stays bound — the layout is shared.)
+  // params.z = size-to-content layer: src covers only the layer's sub-rect, at m0.xy in this target with
+  // size m0.zw, so shift into it; outside it the layer contributes nothing (transparent SrcOver = no change).
+  var lp = vec2<i32>(i.p.xy);
+  if (u.params.z > 0.5) {
+    lp = vec2<i32>(i.p.xy - u.m0.xy);
+    if (lp.x < 0 || lp.y < 0 || lp.x >= i32(u.m0.z) || lp.y >= i32(u.m0.w)) { return vec4<f32>(0.0, 0.0, 0.0, 0.0); }
+  }
+  var c = textureLoad(src, lp, 0);   // premultiplied layer content
   if (u.params.x > 0.5) {
     var s = c;
     if (c.a > 0.0) { s = vec4<f32>(c.rgb / c.a, c.a); }

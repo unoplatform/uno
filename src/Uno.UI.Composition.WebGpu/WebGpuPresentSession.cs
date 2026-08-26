@@ -112,22 +112,47 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 
 	private readonly List<WebGpuRenderSurface> _frameLayerSurfaces = new();
 
-	// Dimensions of the surface the open pass renders into. Zero = the window surface. A scissor must be contained
-	// in its attachment, and a layer renders into its own surface, so clamp to that rather than to the window.
-	private int _passW, _passH;
+	// NDC basis for the surface the open pass renders into: device-space (_basisOx,_basisOy) is its top-left and
+	// (_basisW,_basisH) its size. The window and a full-size layer get (0,0,W,H) — the target itself; a
+	// size-to-content layer gets its device sub-rect, so absolute device coords map into the smaller offscreen.
+	// A scissor must also be contained in its attachment, which the same size gives us. Saved/restored per RenderInto.
+	private float _basisOx, _basisOy, _basisW, _basisH;
+
+	// Size-to-content layer offscreens (on by default). UNO_WEBGPU_NO_SUBLAYER=1 forces the full-window offscreen
+	// for every layer — an escape hatch and the A/B baseline for validating the optimization is behaviour-neutral.
+	private static readonly bool _subLayerSizing = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_SUBLAYER") is not ("1" or "true");
 
 	private bool TryScissor(Vector4 clip, out int x, out int y, out int w, out int h)
 	{
-		var limW = _passW > 0 ? _passW : _s.Width;
-		var limH = _passH > 0 ? _passH : _s.Height;
-		x = (int)MathF.Max(0, MathF.Floor(clip.X)); y = (int)MathF.Max(0, MathF.Floor(clip.Y));
-		int r = (int)MathF.Min(limW, MathF.Ceiling(clip.Z)); int b = (int)MathF.Min(limH, MathF.Ceiling(clip.W));
-		x = Math.Min(x, limW); y = Math.Min(y, limH);
+		// Scissor is in the CURRENT target's pixels; clip AABBs are absolute device coords, so rebase by the basis
+		// origin and clamp to its size (identity for the window / a full-size layer, a real shift for a sub-rect).
+		var limW = _basisW > 0f ? _basisW : _s.Width;
+		var limH = _basisH > 0f ? _basisH : _s.Height;
+		x = (int)MathF.Max(0, MathF.Floor(clip.X - _basisOx)); y = (int)MathF.Max(0, MathF.Floor(clip.Y - _basisOy));
+		int r = (int)MathF.Min(limW, MathF.Ceiling(clip.Z - _basisOx)); int b = (int)MathF.Min(limH, MathF.Ceiling(clip.W - _basisOy));
+		x = (int)MathF.Min(x, limW); y = (int)MathF.Min(y, limH);
 		w = r - x; h = b - y; return w > 0 && h > 0;
 	}
-	private Vector2 Ndc(Vector2 dev) => new(2f * dev.X / _s.Width - 1f, 1f - 2f * dev.Y / _s.Height);
+	private Vector2 Ndc(Vector2 dev) => new(2f * (dev.X - _basisOx) / BasisW - 1f, 1f - 2f * (dev.Y - _basisOy) / BasisH);
+
+	private float BasisW => _basisW > 0f ? _basisW : _s.Width;
+	private float BasisH => _basisH > 0f ? _basisH : _s.Height;
 
 	private static readonly Vector4 _emptyBounds = new(float.MaxValue, float.MaxValue, float.MinValue, float.MinValue);
+
+	// True if the list directly contains a nested layer or a backdrop — either makes size-to-content unsafe: a nested
+	// layer composites in window space, and a backdrop must sample the real framebuffer, which a sub-surface lacks.
+	private static bool HasLayerOrBackdrop(List<WebGpuCommand> cmds)
+	{
+		for (int i = 0; i < cmds.Count; i++)
+		{
+			if (cmds[i] is LayerCmd or BackdropCmd)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 
 	private static Vector4 CmdListBounds(List<WebGpuCommand> cmds)
 	{
@@ -218,10 +243,11 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	{
 		int need = (slot + 1) * 8;
 		while (_xforms.Count < need) { _xforms.Add(0f); }
-		float w = _s.Width, h = _s.Height;
+		// device->NDC for the CURRENT target via the basis, matching Ndc().
+		float w = BasisW, h = BasisH;
 		int o = slot * 8;
-		_xforms[o + 0] = 2f * r.M11 / w; _xforms[o + 1] = 2f * r.M21 / w; _xforms[o + 2] = 2f * r.M41 / w - 1f; _xforms[o + 3] = -2f * r.M12 / h;
-		_xforms[o + 4] = -2f * r.M22 / h; _xforms[o + 5] = 1f - 2f * r.M42 / h; _xforms[o + 6] = 0f; _xforms[o + 7] = 0f;
+		_xforms[o + 0] = 2f * r.M11 / w; _xforms[o + 1] = 2f * r.M21 / w; _xforms[o + 2] = 2f * (r.M41 - _basisOx) / w - 1f; _xforms[o + 3] = -2f * r.M12 / h;
+		_xforms[o + 4] = -2f * r.M22 / h; _xforms[o + 5] = 1f - 2f * (r.M42 - _basisOy) / h; _xforms[o + 6] = 0f; _xforms[o + 7] = 0f;
 	}
 
 	private int AllocTransientPathSlot()
@@ -419,7 +445,11 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 												  // finv maps the device fragment position back to the recording's own space (inverse device affine) so a clip
 												  // baked at identity is correct after the move. Identity => clipCov sees fc unchanged. finv 2x2 in `finv`,
 												  // finv translation in xoff.zw (px = fM11*x + fM21*y + fM31, py = fM12*x + fM22*y + fM32).
-		cu[50] = finv.M31; cu[51] = finv.M32;
+		// Under a size-to-content layer the fragment position is sub-LOCAL while the baked clip/gradient geometry is
+		// ABSOLUTE device, so finvMap must shift sub-local->absolute first; composing with finv folds that into its
+		// translation. A zero basis (window / full-size layer) leaves this unchanged.
+		cu[50] = finv.M31 + finv.M11 * _basisOx + finv.M21 * _basisOy;
+		cu[51] = finv.M32 + finv.M12 * _basisOx + finv.M22 * _basisOy;
 		cu[52] = finv.M11; cu[53] = finv.M12; cu[54] = finv.M21; cu[55] = finv.M22;
 		return foldedAabb;
 	}
@@ -468,9 +498,18 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	/// Renders a command list into a target surface's MSAA pass, resolving into its single-sample view. Layers
 	/// recurse into a surface of their own and composite here; shadows and layers pre-render before the pass opens.
 	/// </summary>
-	private void RenderInto(List<WebGpuCommand> cmds, WebGpuRenderSurface target, WColor? clear, bool load = false)
+	// basisW/basisH default (0) to the target's own size at origin (basisOx,basisOy) — the whole-target mapping the
+	// window and full-size layers use. A size-to-content layer passes its device sub-rect.
+	private void RenderInto(List<WebGpuCommand> cmds, WebGpuRenderSurface target, WColor? clear, bool load = false,
+		float basisOx = 0f, float basisOy = 0f, float basisW = 0f, float basisH = 0f)
 	{
 		_renderIntoStart = System.Diagnostics.Stopwatch.GetTimestamp();
+
+		var savedBasis = (_basisOx, _basisOy, _basisW, _basisH);
+		_basisOx = basisOx;
+		_basisOy = basisOy;
+		_basisW = basisW > 0f ? basisW : target.Width;
+		_basisH = basisH > 0f ? basisH : target.Height;
 
 		var ops = RentOps();
 		var solid = RentSolid();
@@ -649,6 +688,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		_quadVerts = savedQuadVerts;
 		_pathVerts = savedPathVerts;
 		_xforms = savedXforms; _xformTransient = savedTransient;
+		(_basisOx, _basisOy, _basisW, _basisH) = savedBasis;
 	}
 
 	public Matrix4x4 TotalMatrix => _overlay.TotalMatrix;
