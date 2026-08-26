@@ -28,7 +28,8 @@ public class Given_InputInjector_Keyboard
 	{
 		if (TestServices.WindowHelper.IsXamlIsland)
 		{
-			// Input injection is not supported in XamlIslands.
+			// Inconclusive rather than [PlatformCondition]: XamlIsland hosting is a runtime
+			// condition, so it cannot be expressed as an attribute.
 			Assert.Inconclusive("Input injection is not supported in XamlIslands.");
 		}
 
@@ -318,6 +319,8 @@ public class Given_InputInjector_Keyboard
 		{
 			Unicode(Emoji[0]),
 			Unicode(Emoji[1]),
+			Unicode(Emoji[1], InjectedInputKeyOptions.KeyUp),
+			Unicode(Emoji[0], InjectedInputKeyOptions.KeyUp),
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
