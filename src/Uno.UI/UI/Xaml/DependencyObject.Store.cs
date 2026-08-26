@@ -1581,39 +1581,147 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Returns all ResourceDictionaries in scope using the visual tree, from nearest to furthest.
 		/// </summary>
-		internal IEnumerable<ResourceDictionary> GetResourceDictionaries(
+		/// <remarks>
+		/// Returns a struct enumerable rather than a <c>yield return</c> iterator: this is walked once per
+		/// theme reference per element entering the tree, so the state-machine allocation showed up as the
+		/// single largest allocator while a virtualised list materialises containers during a scroll. The
+		/// walk itself is unchanged — still lazy and still short-circuiting at the first match, so callers
+		/// see exactly the sequence the iterator produced. WinUI's equivalent
+		/// (ScopedResources::TraverseVisualTreeResources) is likewise a plain loop that allocates nothing.
+		/// </remarks>
+		internal ResourceDictionaryScope GetResourceDictionaries(
 			bool includeAppResources,
 			FrameworkElement? resourceContextProvider = null,
 			ResourceDictionary? containingDictionary = null)
+			=> new(this, includeAppResources, resourceContextProvider, containingDictionary);
+
+		/// <summary>
+		/// The lazily-walked sequence of <see cref="ResourceDictionary"/> in scope for a
+		/// <see cref="DependencyObject"/>, nearest first. Implements <see cref="IEnumerable{T}"/> so LINQ
+		/// still works on the cold paths, but <c>foreach</c> binds to the struct enumerator and allocates
+		/// nothing.
+		/// </summary>
+		internal readonly struct ResourceDictionaryScope : IEnumerable<ResourceDictionary>
 		{
-			if (containingDictionary is not null)
+			private readonly DependencyObject _owner;
+			private readonly FrameworkElement? _resourceContextProvider;
+			private readonly ResourceDictionary? _containingDictionary;
+			private readonly bool _includeAppResources;
+
+			internal ResourceDictionaryScope(
+				DependencyObject owner,
+				bool includeAppResources,
+				FrameworkElement? resourceContextProvider,
+				ResourceDictionary? containingDictionary)
 			{
-				yield return containingDictionary;
+				_owner = owner;
+				_includeAppResources = includeAppResources;
+				_resourceContextProvider = resourceContextProvider;
+				_containingDictionary = containingDictionary;
 			}
 
-			// for non-FE, favor context provider over actual-instance
-			var candidate = ActualInstance as FrameworkElement ?? resourceContextProvider ?? ActualInstance;
-			while (candidate is not null)
+			public Enumerator GetEnumerator() => new(_owner, _includeAppResources, _resourceContextProvider, _containingDictionary);
+
+			IEnumerator<ResourceDictionary> IEnumerable<ResourceDictionary>.GetEnumerator() => GetEnumerator();
+
+			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+			public struct Enumerator : IEnumerator<ResourceDictionary>
 			{
-				if (candidate is FrameworkElement fe)
+				private const int StateContainingDictionary = 0;
+				private const int StateAncestors = 1;
+				private const int StateAppResources = 2;
+				private const int StateDone = 3;
+
+				private readonly DependencyObject _owner;
+				private readonly FrameworkElement? _resourceContextProvider;
+				private readonly ResourceDictionary? _containingDictionary;
+				private readonly bool _includeAppResources;
+
+				private int _state;
+				private object? _candidate;
+				private ResourceDictionary? _current;
+
+				internal Enumerator(
+					DependencyObject owner,
+					bool includeAppResources,
+					FrameworkElement? resourceContextProvider,
+					ResourceDictionary? containingDictionary)
 				{
-					if (fe.TryGetResources() is { IsEmpty: false }) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
+					_owner = owner;
+					_includeAppResources = includeAppResources;
+					_resourceContextProvider = resourceContextProvider;
+					_containingDictionary = containingDictionary;
+					_state = StateContainingDictionary;
+					_candidate = null;
+					_current = null;
+				}
+
+				public readonly ResourceDictionary Current => _current!;
+
+				readonly object IEnumerator.Current => _current!;
+
+				public bool MoveNext()
+				{
+					if (_state == StateContainingDictionary)
 					{
-						yield return fe.Resources;
+						_state = StateAncestors;
+
+						// for non-FE, favor context provider over actual-instance
+						_candidate = _owner.ActualInstance as FrameworkElement ?? (object?)_resourceContextProvider ?? _owner.ActualInstance;
+
+						if (_containingDictionary is not null)
+						{
+							_current = _containingDictionary;
+							return true;
+						}
 					}
 
-					candidate = fe.Parent;
-				}
-				else
-				{
-					candidate = VisualTreeHelper.GetParent(candidate);
-				}
-			}
+					if (_state == StateAncestors)
+					{
+						while (_candidate is not null)
+						{
+							if (_candidate is FrameworkElement fe)
+							{
+								_candidate = fe.Parent;
 
-			if (includeAppResources && Application.Current != null)
-			{
-				// In the case of StaticResource resolution we skip Application.Resources because we assume these were already checked at initialize-time.
-				yield return Application.Current.Resources;
+								// It's legal (if pointless) on UWP to set Resources to null from user code, so check
+								if (fe.TryGetResources() is { IsEmpty: false })
+								{
+									_current = fe.Resources;
+									return true;
+								}
+							}
+							else
+							{
+								_candidate = VisualTreeHelper.GetParent((DependencyObject)_candidate);
+							}
+						}
+
+						_state = StateAppResources;
+					}
+
+					if (_state == StateAppResources)
+					{
+						_state = StateDone;
+
+						if (_includeAppResources && Application.Current is { } application)
+						{
+							// In the case of StaticResource resolution we skip Application.Resources because we assume these were already checked at initialize-time.
+							_current = application.Resources;
+							return true;
+						}
+					}
+
+					_current = null;
+					return false;
+				}
+
+				public void Reset() => throw new NotSupportedException();
+
+				public readonly void Dispose()
+				{
+				}
 			}
 		}
 

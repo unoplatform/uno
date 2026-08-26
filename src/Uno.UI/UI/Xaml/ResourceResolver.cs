@@ -493,18 +493,14 @@ namespace Uno.UI
 		{
 			var scope = CurrentScope.Sources.FirstOrDefault();
 
-			if (scope != null)
+			if (scope?.Target is DependencyObject scopeOwner)
 			{
-				var dictionaries = (scope.Target as DependencyObject)?.GetResourceDictionaries(true);
-
-				if (dictionaries != null)
+				// Enumerated directly off the struct enumerable so the walk stays allocation-free.
+				foreach (var dict in scopeOwner.GetResourceDictionaries(true))
 				{
-					foreach (var dict in dictionaries)
+					if (dict.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false))
 					{
-						if (dict.TryGetValue(resourceKey, out value, out providingDictionary, shouldCheckSystem: false))
-						{
-							return true;
-						}
+						return true;
 					}
 				}
 			}
