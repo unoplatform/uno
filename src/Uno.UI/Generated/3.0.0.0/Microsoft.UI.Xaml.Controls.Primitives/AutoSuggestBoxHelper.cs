@@ -7,24 +7,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives;
 #endif
 public partial class AutoSuggestBoxHelper
 {
-#if __SKIA__
-	public static global::Microsoft.UI.Xaml.DependencyProperty KeepInteriorCornersSquareProperty { get; } =
-	Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-		"KeepInteriorCornersSquare", typeof(bool),
-		typeof(global::Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper),
-		new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
-#endif
-#if __SKIA__
-	public static void SetKeepInteriorCornersSquare(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox autoSuggestBox, bool value)
-	{
-		autoSuggestBox.SetValue(KeepInteriorCornersSquareProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
-	}
-#endif
-#if __SKIA__
-	public static bool GetKeepInteriorCornersSquare(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox autoSuggestBox)
-	{
-		return (bool)autoSuggestBox.GetValue(KeepInteriorCornersSquareProperty);
-	}
-#endif
+	// Skipping already declared property KeepInteriorCornersSquareProperty
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper.SetKeepInteriorCornersSquare(Microsoft.UI.Xaml.Controls.AutoSuggestBox, bool)
+	// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper.GetKeepInteriorCornersSquare(Microsoft.UI.Xaml.Controls.AutoSuggestBox)
 	// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper.KeepInteriorCornersSquareProperty.get
 }
