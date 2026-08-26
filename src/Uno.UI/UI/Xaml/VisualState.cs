@@ -119,6 +119,18 @@ namespace Microsoft.UI.Xaml
 			internal set => SetValue(StateTriggersProperty, value);
 		}
 
+		/// <summary>
+		/// The trigger collection if one has already been created, without materialising an empty one.
+		/// </summary>
+		/// <remarks>
+		/// Reading <see cref="StateTriggers"/> lazily creates the collection, subscribes to it and writes it
+		/// back through <c>SetValue</c>. That is pure overhead for the common case of a state with no
+		/// triggers at all, and it is paid for every state of every templated control as it is loaded.
+		/// Callers that only read should use this instead.
+		/// </remarks>
+		internal IList<StateTriggerBase> StateTriggersOrDefault
+			=> GetValue(StateTriggersProperty) as IList<StateTriggerBase>;
+
 		internal static DependencyProperty StateTriggersProperty { get; } =
 			DependencyProperty.Register(
 				name: "StateTriggers",
