@@ -28,6 +28,9 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 	private CompositionSpriteShape? _borderShape; // Never null after _borderBrush is set
 	private CompositionClip? _backgroundClip;
 	private SKRoundRect? _borderPathOuterRect;
+	// The pre-painting round-rect path, keyed on the SKRoundRect instance it was built from.
+	// CreateBorderPath always assigns a brand new SKRoundRect, so reference identity is an exact key.
+	private (SKRoundRect rect, SKPath path)? _prePaintingRoundRect;
 	// state set here but affects children
 	private RectangleClip? _childClipCausedByCornerRadius;
 
@@ -150,7 +153,9 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 
 		if (_cornerRadius != CornerRadius.None && _borderPathOuterRect is { } rect)
 		{
-			using var roundRectPath = BuildRoundRectPath(rect);
+			// Not rebuilt per frame: this runs for every rounded border on every frame and Detach()
+			// hands out a new native path each time.
+			var roundRectPath = GetOrBuildPrePaintingRoundRectPath(rect);
 			if (base.GetPrePaintingClipping(dst))
 			{
 				dst.Op(roundRectPath, SKPathOp.Intersect, dst);
@@ -341,6 +346,20 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		builder.Close();
 
 		return builder.Detach();
+	}
+
+	private SKPath GetOrBuildPrePaintingRoundRectPath(SKRoundRect rect)
+	{
+		if (_prePaintingRoundRect is { } cached && ReferenceEquals(cached.rect, rect))
+		{
+			return cached.path;
+		}
+
+		var path = BuildRoundRectPath(rect);
+		_prePaintingRoundRect?.path.Dispose();
+		_prePaintingRoundRect = (rect, path);
+
+		return path;
 	}
 
 	private static SKPath BuildRoundRectPath(SKRoundRect roundRect)
