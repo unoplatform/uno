@@ -1472,6 +1472,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_InputPane_Showing_Is_Deferred_Only_Once()
+		{
+#if HAS_UNO
+			Assert.IsTrue(AutoSuggestBox.TryDeferSipShowing(scrollableHeight: 0));
+			Assert.IsFalse(AutoSuggestBox.TryDeferSipShowing(scrollableHeight: 0));
+			Assert.IsTrue(AutoSuggestBox.TryDeferSipShowing(scrollableHeight: 0));
+			Assert.IsFalse(AutoSuggestBox.TryDeferSipShowing(scrollableHeight: 0));
+#endif
+		}
+
+		[TestMethod]
 		[RequiresFullWindow]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_KeepInteriorCornersSquare_Changes_After_Load()
