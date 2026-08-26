@@ -281,9 +281,10 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 					async ct => await RetrieveFiles(ct, ids));
 
 				// There is no kind for image, but when we drag and drop an image from a browser to another one, we sometimes get it as a file.
-				var image = files.FirstOrDefault(file => file.type.StartsWith("image/", StringComparison.OrdinalIgnoreCase));
-				if (image.type != null)
+				// Only a single dragged image maps to Bitmap; multi-file drags are file transfers and expose storage items alone.
+				if (files.Count == 1 && files[0].type.StartsWith("image/", StringComparison.OrdinalIgnoreCase))
 				{
+					var image = files[0];
 					package.SetDataProvider(
 						StandardDataFormats.Bitmap,
 						async ct => RandomAccessStreamReference.CreateFromFile((IStorageFile)(await RetrieveFiles(ct, image.id)).Single()));

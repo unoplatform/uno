@@ -75,6 +75,7 @@ declare namespace Uno.Utils {
         private static onPasteCaptured;
         private static capturePaste;
         private static getFreshPasteSnapshot;
+        private static getPasteImageFile;
         private static emptyContent;
         private static toManagedType;
         private static isPasteImminent;

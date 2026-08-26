@@ -183,6 +183,15 @@ namespace Uno.Utils {
 			return null;
 		}
 
+		// Copied image data (e.g. a screenshot) surfaces as a single synthesized image file,
+		// so only that shape maps to the Bitmap format; multi-file pastes are file transfers
+		// and surface as storage items alone, as they would on Windows.
+		private static getPasteImageFile(snapshot: PasteSnapshot): File {
+			return snapshot.files.length === 1 && snapshot.files[0].type && snapshot.files[0].type.startsWith("image/")
+				? snapshot.files[0]
+				: null;
+		}
+
 		private static emptyContent(status: string) {
 			return { status: status, texts: <ClipboardTextEntry[]>[], files: <any[]>[], image: <any>null };
 		}
@@ -217,7 +226,7 @@ namespace Uno.Utils {
 				ownFormats: Clipboard.getOwnFormats(),
 				pasteFormats: snapshot ? snapshot.texts.map(t => t.type) : null,
 				pasteHasFiles: snapshot ? snapshot.files.length > 0 : false,
-				pasteHasImage: snapshot ? snapshot.files.some(f => f.type && f.type.startsWith("image/")) : false,
+				pasteHasImage: snapshot ? !!Clipboard.getPasteImageFile(snapshot) : false,
 				pasteImminent: !snapshot && Clipboard.isPasteImminent(),
 			});
 		}
@@ -272,7 +281,7 @@ namespace Uno.Utils {
 				? Uno.Storage.NativeStorageItem.getInfos(...snapshot.files)
 				: [];
 
-			const imageFile = snapshot.files.find(f => f.type && f.type.startsWith("image/"));
+			const imageFile = Clipboard.getPasteImageFile(snapshot);
 			const image = imageFile ? Uno.Storage.NativeStorageItem.getInfos(imageFile)[0] : null;
 
 			return { status: "paste", texts: snapshot.texts, files: files, image: image };

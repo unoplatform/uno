@@ -307,11 +307,13 @@ partial class Given_Clipboard
 	{
 #if HAS_UNO
 		DispatchSyntheticPaste(
-			"""
+			$$"""
+			const bytes = Uint8Array.from(atob('{{TestPngBase64}}'), c => c.charCodeAt(0));
 			const dt = new DataTransfer();
 			dt.items.add('paste-text-payload', 'text/plain');
 			dt.items.add(new File(['file-content-1'], 'first.txt', { type: 'text/plain' }));
 			dt.items.add(new File(['file-content-2'], 'second.txt', { type: 'text/plain' }));
+			dt.items.add(new File([bytes], 'third.png', { type: 'image/png' }));
 			""");
 
 		var view = Clipboard.GetContent();
@@ -319,12 +321,16 @@ partial class Given_Clipboard
 		Assert.IsTrue(view.Contains(StandardDataFormats.Text));
 		Assert.IsTrue(view.Contains(StandardDataFormats.StorageItems));
 
+		// A multi-file paste is a file transfer; no Bitmap is synthesized from the image file.
+		Assert.IsFalse(view.Contains(StandardDataFormats.Bitmap));
+
 		Assert.AreEqual("paste-text-payload", await view.GetTextAsync());
 
 		var items = await view.GetStorageItemsAsync();
-		Assert.AreEqual(2, items.Count);
+		Assert.AreEqual(3, items.Count);
 		Assert.AreEqual("first.txt", items[0].Name);
 		Assert.AreEqual("second.txt", items[1].Name);
+		Assert.AreEqual("third.png", items[2].Name);
 
 		var file = (Windows.Storage.StorageFile)items[0];
 		using var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
