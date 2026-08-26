@@ -127,10 +127,27 @@ They are dead in the same technical sense as the rest, but each represents a com
 one is a small readability win with a small regression risk. They are best handled one flag at a time by whoever
 owns the feature, not in a bulk sweep.
 
-One exception was taken during review: the `#if !UNO_HAS_ENHANCED_LIFECYCLE` fallback in
-`MenuFlyoutSubItem.mux.cs` guarded an `OnProcessKeyboardAccelerators` override for the native targets, which no
-longer exist. Uno.UI defines the flag unconditionally, so the block could not compile; it was deleted here. The
-remaining flag sites stay parked.
+One exception was taken during review, for `UNO_HAS_ENHANCED_LIFECYCLE`, and only on its **always-false** side.
+Uno.UI defines the flag unconditionally, so a `#if !UNO_HAS_ENHANCED_LIFECYCLE` block is not a parked migration
+switch — it is code no compilation can take. All four such sites in `src/Uno.UI` were deleted:
+
+| Site | What it guarded |
+|---|---|
+| `MenuFlyoutSubItem.mux.cs` | An `OnProcessKeyboardAccelerators` override for the native targets, which no longer exist |
+| `SplitMenuFlyoutItem.mux.cs` | The identical override on the split variant |
+| `Repeater/ViewManager.cs` | A call to `OnUnoBeforeElementPrepared` — a method not declared anywhere in the tree |
+| `CalendarView/CalendarViewBaseItem.h.cs` + `.cs` | A parameterless `EnterImpl()` overload and its only call site, in a `Loaded` handler |
+
+The last one folded the `#if`/`#else` around the `EnterImpl` signature: the `#else` arm existed only to declare
+the overload that dead call needed, so removing the call left the arm both unreachable and unreferenced.
+
+The always-**true** `#if UNO_HAS_ENHANCED_LIFECYCLE` sites (`Application.cs`, `ResourceDictionary.cs`,
+`UIElement.cs`, `ThemingHelper.cs`) stay parked, along with every other flag in this section.
+
+> The flag's sites in `Uno.UI.RuntimeTests` and `SamplesApp.Shared` are **live, not dead**, and were not touched:
+> `Uno.UI.RuntimeTests.Windows.csproj` and the WinAppSDK sample head compile without the symbol, so there
+> `!UNO_HAS_ENHANCED_LIFECYCLE` means “native WinUI”. §1 input 2 was checked too — none of the four files
+> above is `Compile Include`d by another project.
 
 ## 5. Suggested sequencing
 
@@ -141,8 +158,8 @@ remaining flag sites stay parked.
 3. ✅ **The legacy platform symbols in §2.4** — done with spec 057, except the vendored ones, which stay by
    decision because those sources are still resynced from upstream.
 4. **`#if false`** — triage individually; do not sweep. Untouched.
-5. **The feature flags in §4** — per flag, per owner. Untouched, apart from the single
-   `UNO_HAS_ENHANCED_LIFECYCLE` site noted in §4.
+5. **The feature flags in §4** — per flag, per owner. Untouched, apart from the four always-false
+   `UNO_HAS_ENHANCED_LIFECYCLE` sites noted in §4.
 6. **`__SKIA__` / `HAS_UNO`** — defer until the drawing-backend work has landed, and decide the MUX-annotation
    question explicitly rather than by sweep. Untouched.
 
