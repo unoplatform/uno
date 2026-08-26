@@ -36,7 +36,7 @@ Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_o
 - A `// MUX Reference …` attribution line (above) is not a history comment — keep it.
 
 ## Conditional symbols
-`#if IS_UNIT_TESTS` is defined for `Uno.UI.UnitTests` and its view-library helpers but is **absent from `Uno.UI`'s define set** — do not use it in `Uno.UI` source. Platform symbols are covered in `platform-targeting.md`. Global usings (`GlobalUsings.cs`) only define **Android** aliases (e.g. `AView`) and only under `__ANDROID__` — don't assume other platforms have global aliases. `UNO_REFERENCE_API` is a legacy synonym of **`HAS_UNO`** ("drawn by Uno, not WinUI") — prefer `HAS_UNO` in new code.
+`#if IS_UNIT_TESTS` is defined by three projects only — `Uno.UI.UnitTests`, `Uno.UI.Tests.ViewLibrary` and `Uno.UI.Tests.ViewLibraryProps` — and is **absent from `Uno.UI`'s define set**: those projects consume `Uno.UI` through a `ProjectReference`, so the symbol only reaches files they *Compile-link* (chiefly from `Uno.UI.RuntimeTests`). Never use it in `Uno.UI` source. Platform symbols are covered in `platform-targeting.md`. Global usings (`GlobalUsings.cs`) only define **Android** aliases (e.g. `AView`) and only under `__ANDROID__` — don't assume other platforms have global aliases. `UNO_REFERENCE_API` is a legacy synonym of **`HAS_UNO`** ("drawn by Uno, not WinUI") — prefer `HAS_UNO` in new code.
 
 **A symbol being undefined does not make it deletable.** Before removing any `#if`, place it in one of these categories — the first four are deliberate and must be left alone:
 

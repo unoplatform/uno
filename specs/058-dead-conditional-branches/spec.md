@@ -44,7 +44,7 @@ The symbols making conditionals **always false** — i.e. code that is never com
 | 26 | `__NETSTD_REFERENCE__` | **Delete.** Uno.UI no longer builds a Reference flavor |
 | 13 | `NETFX_CORE` | **Delete.** UWP era |
 | 8 | `IS_UNO_COMPOSITION` | Keep — these sit in the files shared with `Uno.UI.Composition` |
-| 7 | `UNO_HAS_UIELEMENT_IMPLICIT_PINNING` | **Delete.** Not defined for Uno.UI |
+| 7 | `UNO_HAS_UIELEMENT_IMPLICIT_PINNING` | **Delete the Uno.UI sites.** Undefined for Uno.UI — but the symbol stays, see below |
 | 5 | `WASM_SKIA` | ~~Delete~~ — **keep, all sites are in shared files** |
 | 4 | `NETSTANDARD` | ~~Delete~~ — **keep, all sites are in shared files** |
 | 3 | `__ANDROID__`, 3 `WINUI` | ~~Delete~~ — **keep, all sites are in shared files** |
@@ -57,6 +57,12 @@ The symbols making conditionals **always false** — i.e. code that is never com
 > were computed for the `Uno.UI.csproj` compilation only, so they are correct *for that project* and wrong as a
 > deletion list — §1 input 2 is not an optional refinement, it decides the answer.
 | 26 + 15 + 11 + … | `ApplicableRangeType`, `MUX_PRERELEASE`, `MUX_DEBUG`, `TRACE_HIT_TESTING`, `PROFILE`, `MFSI_DEBUG`, `TICKBAR_DBG`, `CHECK_LAYOUTED`, `DBG`, `IsMouseWheelZoomDisabled`, … | **Keep** — ported-code parking, MUX conventions and developer diagnostics, per spec 057 |
+
+> **`UNO_HAS_UIELEMENT_IMPLICIT_PINNING` is dead in Uno.UI, not retired.** `Uno.CrossTargetting.targets` still
+> defines it for `IsIOS` and `IsTvOS`, and `XamlFileGenerator` still emits `#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING`
+> into generated `x:Bind` code, where it makes `Bindings.Owner` a `WeakReference` to avoid the native pinning leak.
+> Uno.UI targets only `$(NetSkiaPreviousAndCurrent)`, so its 7 sites could never compile — while the define itself
+> must stay for the iOS/tvOS app heads that compile the generated code.
 
 The symbols making conditionals **always true**:
 
@@ -121,6 +127,11 @@ They are dead in the same technical sense as the rest, but each represents a com
 one is a small readability win with a small regression risk. They are best handled one flag at a time by whoever
 owns the feature, not in a bulk sweep.
 
+One exception was taken during review: the `#if !UNO_HAS_ENHANCED_LIFECYCLE` fallback in
+`MenuFlyoutSubItem.mux.cs` guarded an `OnProcessKeyboardAccelerators` override for the native targets, which no
+longer exist. Uno.UI defines the flag unconditionally, so the block could not compile; it was deleted here. The
+remaining flag sites stay parked.
+
 ## 5. Suggested sequencing
 
 1. ✅ **`IS_UNIT_TESTS` (89) and `__NETSTD_REFERENCE__` (26)** in `src/Uno.UI` — the largest genuinely-dead
@@ -130,7 +141,8 @@ owns the feature, not in a bulk sweep.
 3. ✅ **The legacy platform symbols in §2.4** — done with spec 057, except the vendored ones, which stay by
    decision because those sources are still resynced from upstream.
 4. **`#if false`** — triage individually; do not sweep. Untouched.
-5. **The feature flags in §4** — per flag, per owner. Untouched.
+5. **The feature flags in §4** — per flag, per owner. Untouched, apart from the single
+   `UNO_HAS_ENHANCED_LIFECYCLE` site noted in §4.
 6. **`__SKIA__` / `HAS_UNO`** — defer until the drawing-backend work has landed, and decide the MUX-annotation
    question explicitly rather than by sweep. Untouched.
 
