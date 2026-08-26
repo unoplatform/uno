@@ -49,14 +49,17 @@ internal partial class BrowserNativeElementHostingExtension : ContentPresenter.I
 		Debug.Assert(content is BrowserHtmlElement);
 		var element = (BrowserHtmlElement)content;
 
-		// Only drop the registration if it is still ours: when an element is recycled, the new host can
-		// attach before the old one detaches, and unregistering then would silently kill its chaining.
+		// Detach only if the element is still ours: when an element is recycled, the new host can attach
+		// before the old one detaches, and unregistering then would silently kill its chaining while the
+		// JS-side detach would hide the element the new host is actively presenting.
 		if (_hosts.TryGetValue(element.UnoElementId, out var registered)
-			&& (!registered.TryGetTarget(out var host) || ReferenceEquals(host, this)))
+			&& registered.TryGetTarget(out var host)
+			&& !ReferenceEquals(host, this))
 		{
-			_hosts.Remove(element.UnoElementId);
+			return;
 		}
 
+		_hosts.Remove(element.UnoElementId);
 		NativeMethods.DetachNativeElement(element.ElementId);
 	}
 
