@@ -86,14 +86,22 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 	[JSExport]
 	private static void OnResize([JSMarshalAs<JSType.Any>] object instance, double width, double height, float scale)
 	{
-		if (instance is WebAssemblyWindowWrapper windowWrapper)
+		try
 		{
-			windowWrapper.RasterizationScale = scale;
-			windowWrapper.RaiseNativeSizeChanged(new(width, height));
+			if (instance is WebAssemblyWindowWrapper windowWrapper)
+			{
+				windowWrapper.RasterizationScale = scale;
+				windowWrapper.RaiseNativeSizeChanged(new(width, height));
+			}
+			else
+			{
+				Console.WriteLine($"RaiseNativeSizeChanged target for {instance} does not exist");
+			}
 		}
-		else
+		catch (Exception e)
 		{
-			Console.WriteLine($"RaiseNativeSizeChanged target for {instance} does not exist");
+			// A managed exception must not cross back into the JS DOM-event callback.
+			Application.Current.RaiseRecoverableUnhandledException(e);
 		}
 	}
 
