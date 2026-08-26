@@ -331,8 +331,18 @@ public partial class InputInjector
 	private void InjectKeyboardInputCore(InjectedInputKeyboardInfo info)
 	{
 		var target = ResolveKeyboardTarget();
+		var key = info.EffectiveVirtualKey;
+
+		// Real input reads the OS key state after the transition has been applied, so pressing Shift
+		// already reports Shift. The tracker is only updated once the routed event reaches UIElement,
+		// so fold the current transition in by hand to keep injected args identical to real ones.
 		var modifiers = GetTrackedModifiers();
-		var wasKeyDown = KeyboardStateTracker.GetKeyState((VirtualKey)info.VirtualKey).HasFlag(CoreVirtualKeyStates.Down);
+		if (GetModifierFlag(key) is { } flag)
+		{
+			modifiers = info.IsKeyUp ? modifiers & ~flag : modifiers | flag;
+		}
+
+		var wasKeyDown = KeyboardStateTracker.GetKeyState(key).HasFlag(CoreVirtualKeyStates.Down);
 		var args = info.ToEventArgs(modifiers, _capsLock, wasKeyDown);
 
 		if (info.IsKeyUp)
@@ -412,6 +422,18 @@ public partial class InputInjector
 
 		return _target;
 	}
+
+	/// <summary>
+	/// The modifier flag a key contributes while held, or <c>null</c> when the key is not a modifier.
+	/// </summary>
+	private static VirtualKeyModifiers? GetModifierFlag(VirtualKey key) => key switch
+	{
+		VirtualKey.Shift or VirtualKey.LeftShift or VirtualKey.RightShift => VirtualKeyModifiers.Shift,
+		VirtualKey.Control or VirtualKey.LeftControl or VirtualKey.RightControl => VirtualKeyModifiers.Control,
+		VirtualKey.Menu or VirtualKey.LeftMenu or VirtualKey.RightMenu => VirtualKeyModifiers.Menu,
+		VirtualKey.LeftWindows or VirtualKey.RightWindows => VirtualKeyModifiers.Windows,
+		_ => null,
+	};
 
 	private static VirtualKeyModifiers GetTrackedModifiers()
 	{
