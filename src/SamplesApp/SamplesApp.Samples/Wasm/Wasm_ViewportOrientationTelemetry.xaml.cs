@@ -14,7 +14,7 @@ namespace UITests.Shared.Wasm;
 
 [Sample("Wasm",
 	Name = nameof(Wasm_ViewportOrientationTelemetry),
-	Description = "Compares the Uno window size against the browser's documentElement size after device rotation. The banner turns STALE if the Uno-measured size lags the settled viewport size.",
+	Description = "Compares the Uno Platform window size against the browser's documentElement size after device rotation. The banner turns STALE if the app-measured size lags the settled viewport size.",
 	IsManualTest = true,
 	IgnoreInSnapshotTests = true)]
 public sealed partial class Wasm_ViewportOrientationTelemetry : Page
@@ -42,6 +42,7 @@ public sealed partial class Wasm_ViewportOrientationTelemetry : Page
 
 #if __CROSSRUNTIME__
 	private BrowserHtmlElement? _jsGateway;
+	private string? _telemetryError;
 #endif
 
 	public Wasm_ViewportOrientationTelemetry()
@@ -62,8 +63,15 @@ public sealed partial class Wasm_ViewportOrientationTelemetry : Page
 #if __CROSSRUNTIME__
 		if (OperatingSystem.IsBrowser())
 		{
-			_jsGateway = BrowserHtmlElement.CreateHtmlElement("div");
-			_jsGateway.ExecuteJavascript(InstallCountersScript);
+			try
+			{
+				_jsGateway = BrowserHtmlElement.CreateHtmlElement("div");
+				_jsGateway.ExecuteJavascript(InstallCountersScript);
+			}
+			catch (Exception ex)
+			{
+				DropGateway(ex.Message);
+			}
 		}
 #endif
 
@@ -89,16 +97,36 @@ public sealed partial class Wasm_ViewportOrientationTelemetry : Page
 #if __CROSSRUNTIME__
 		if (_jsGateway is not null)
 		{
-			var parts = _jsGateway.ExecuteJavascript(PollScript).Split(',');
-			var docWidth = double.Parse(parts[0], CultureInfo.InvariantCulture);
-			var docHeight = double.Parse(parts[1], CultureInfo.InvariantCulture);
+			try
+			{
+				var parts = _jsGateway.ExecuteJavascript(PollScript).Split(',');
+				if (parts.Length >= 4
+					&& double.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var docWidth)
+					&& double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var docHeight))
+				{
+					DocRectText.Text = $"{docWidth:0} x {docHeight:0}";
+					EventCountsText.Text = $"{parts[2]} resize / {parts[3]} orientationchange";
 
-			DocRectText.Text = $"{docWidth:0} x {docHeight:0}";
-			EventCountsText.Text = $"{parts[2]} resize / {parts[3]} orientationchange";
+					var stale = Math.Abs(unoSize.Width - docWidth) > 2 || Math.Abs(unoSize.Height - docHeight) > 2;
+					StatusText.Text = stale ? "STALE" : "OK";
+					StatusBorder.Background = new SolidColorBrush(stale ? Microsoft.UI.Colors.IndianRed : Microsoft.UI.Colors.MediumSeaGreen);
+					return;
+				}
 
-			var stale = Math.Abs(unoSize.Width - docWidth) > 2 || Math.Abs(unoSize.Height - docHeight) > 2;
-			StatusText.Text = stale ? "STALE" : "OK";
-			StatusBorder.Background = new SolidColorBrush(stale ? Microsoft.UI.Colors.IndianRed : Microsoft.UI.Colors.MediumSeaGreen);
+				DropGateway("unexpected telemetry format");
+			}
+			catch (Exception ex)
+			{
+				DropGateway(ex.Message);
+			}
+		}
+
+		if (_telemetryError is not null)
+		{
+			DocRectText.Text = $"Telemetry failed: {_telemetryError}";
+			EventCountsText.Text = "-";
+			StatusText.Text = "ERROR";
+			StatusBorder.Background = new SolidColorBrush(Microsoft.UI.Colors.IndianRed);
 			return;
 		}
 #endif
@@ -107,4 +135,15 @@ public sealed partial class Wasm_ViewportOrientationTelemetry : Page
 		EventCountsText.Text = "-";
 		StatusText.Text = "N/A";
 	}
+
+#if __CROSSRUNTIME__
+	// Surface the failure on the page instead of throwing every timer tick — the
+	// diagnostic must diagnose itself.
+	private void DropGateway(string error)
+	{
+		_telemetryError = error;
+		_jsGateway?.Dispose();
+		_jsGateway = null;
+	}
+#endif
 }
