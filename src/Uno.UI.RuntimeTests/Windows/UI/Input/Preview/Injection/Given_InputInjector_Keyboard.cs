@@ -48,6 +48,19 @@ public class Given_InputInjector_Keyboard
 	private static void Tap(InputInjector injector, VirtualKey key)
 		=> injector.InjectKeyboardInput(new[] { Key(key), KeyUp(key) });
 
+	/// <summary>
+	/// The key carrying standard editing commands: Command on Apple keyboards, Control elsewhere.
+	/// </summary>
+	private static VirtualKey CommandKey
+		=> Uno.UI.Helpers.DeviceTargetHelper.UsesAppleKeyboardLayout ? VirtualKey.LeftWindows : VirtualKey.Control;
+
+	/// <summary>
+	/// Renders surrogates as U+XXXX. Assertion messages travel through the test-results XML, which
+	/// cannot carry an unpaired surrogate, so never compare raw text that may contain one.
+	/// </summary>
+	private static string Escape(string text)
+		=> string.Concat(text.Select(c => char.IsSurrogate(c) ? $"U+{(int)c:X4}" : c.ToString()));
+
 	[TestMethod]
 	public async Task When_InjectKey_Types_Into_Focused_TextBox()
 	{
@@ -123,7 +136,7 @@ public class Given_InputInjector_Keyboard
 	}
 
 	[TestMethod]
-	public async Task When_InjectCtrlA_Selects_All_Without_Character()
+	public async Task When_InjectCommandA_Selects_All_Without_Character()
 	{
 		var injector = GetInjector();
 		var textBox = new TextBox { Text = "hello world" };
@@ -141,20 +154,20 @@ public class Given_InputInjector_Keyboard
 		{
 			injector.InjectKeyboardInput(new[]
 			{
-				Key(VirtualKey.Control),
+				Key(CommandKey),
 				Key(VirtualKey.A),
 				KeyUp(VirtualKey.A),
-				KeyUp(VirtualKey.Control),
+				KeyUp(CommandKey),
 			});
 			await TestServices.WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("hello world", textBox.Text, "Ctrl+A must not type a character.");
+			Assert.AreEqual("hello world", textBox.Text, "Select-all must not type a character.");
 			Assert.AreEqual(11, textBox.SelectionLength);
 			CollectionAssert.AreEqual(Array.Empty<char>(), characters);
 		}
 		finally
 		{
-			injector.InjectKeyboardInput(new[] { KeyUp(VirtualKey.Control) });
+			injector.InjectKeyboardInput(new[] { KeyUp(CommandKey) });
 		}
 	}
 
@@ -324,7 +337,7 @@ public class Given_InputInjector_Keyboard
 		});
 		await TestServices.WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(Emoji, textBox.Text);
+		Assert.AreEqual(Escape(Emoji), Escape(textBox.Text));
 	}
 
 	[TestMethod]
