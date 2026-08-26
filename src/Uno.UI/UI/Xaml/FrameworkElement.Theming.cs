@@ -500,9 +500,11 @@ public partial class FrameworkElement
 				if (precedence != DependencyPropertyValuePrecedences.DefaultValue
 					&& precedence != DependencyPropertyValuePrecedences.Inheritance)
 				{
-					// Clear a freeze from an earlier walk (when Foreground was still default)
-					// so the explicit value isn't blocked from cascading to children.
-					_isForegroundFrozen = false;
+					// Clear only the brush an earlier walk (when Foreground was still default) may
+					// have stored, so children don't re-pull it — Uno keeps it in a separate field
+					// while WinUI shares the local Foreground slot. The freeze flag stays, as
+					// WinUI's bail writes no freeze state and the boundary keeps blocking
+					// cross-boundary Foreground inheritance.
 					_themeForeground = null;
 					return;
 				}
