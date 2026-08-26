@@ -269,23 +269,19 @@ namespace UITests.Windows_ApplicationModel
 
 			foreach (var format in formats)
 			{
-				if (package.Contains(format))
+				if (await TryGetAsync(package, format, p => p.GetDataAsync(format).AsTask()) is byte[] bytes)
 				{
-					if (await package.GetDataAsync(format) is byte[] bytes)
-					{
-						var fileName = Path.GetTempPath() + Guid.NewGuid() + "." + format.Split("/")[1];
-						await File.WriteAllBytesAsync(fileName, bytes);
-						var bitmapImage = new BitmapImage(new Uri(fileName));
-						Bitmap = bitmapImage;
+					var fileName = Path.GetTempPath() + Guid.NewGuid() + "." + format.Split("/")[1];
+					await File.WriteAllBytesAsync(fileName, bytes);
+					var bitmapImage = new BitmapImage(new Uri(fileName));
+					Bitmap = bitmapImage;
 
-						return;
-					}
+					return;
 				}
 			}
 
-			if (Bitmap is null && package.Contains(StandardDataFormats.Bitmap))
+			if (await TryGetAsync(package, StandardDataFormats.Bitmap, p => p.GetBitmapAsync().AsTask()) is { } bitmapReference)
 			{
-				var bitmapReference = await package.GetBitmapAsync();
 				using var bitmapStream = await bitmapReference.OpenReadAsync();
 
 				// Clipboard bitmap streams are asynchronous-only on wasm; buffer into a
@@ -299,6 +295,10 @@ namespace UITests.Windows_ApplicationModel
 				bitmapImage.SetSource(buffer.AsRandomAccessStream());
 
 				Bitmap = bitmapImage;
+			}
+			else
+			{
+				PastedContent = "No image content in clipboard";
 			}
 		}
 

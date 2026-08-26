@@ -11,7 +11,6 @@ using Windows.Storage;
 using Windows.Storage.Streams;
 using Uno;
 using Uno.Extensions;
-using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 
 namespace Windows.ApplicationModel.DataTransfer
@@ -74,7 +73,8 @@ namespace Windows.ApplicationModel.DataTransfer
 				}
 				catch (Exception e)
 				{
-					this.Log().Error($"Failed to asynchronously retrieve the data for id '{formatId}'", e);
+					// The failure is propagated to the reader awaiting the data; it decides
+					// whether the failure is exceptional.
 					request.Fail(e);
 				}
 				finally
