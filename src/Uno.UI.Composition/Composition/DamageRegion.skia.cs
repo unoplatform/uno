@@ -9,54 +9,69 @@ namespace Uno.UI.Composition;
 /// Accumulates the region that must be repainted this frame.
 /// </summary>
 /// <remarks>
-/// Rect contributions — every visual that only moved, which during a scroll is the whole subtree —
-/// are appended to a builder under the nonzero fill rule, where overlapping same-direction contours
-/// already clip to their union. Running a path boolean per contribution instead would be
-/// O(visuals) boolean ops against a monotonically growing path.
+/// Rect contributions — every visual that only moved, which during a scroll is the whole subtree — are
+/// appended to one builder under the nonzero fill rule, where overlapping same-direction contours already read
+/// as their union. Running a path boolean per contribution would be O(visuals) booleans against a
+/// monotonically growing path.
 /// </remarks>
 internal sealed class DamageRegion : IDisposable
 {
-	// The accumulated region is handed to SKCanvas.ClipPath, and a many-contour clip can cost a
-	// GPU-side mask allocation per frame — on a tiled mobile GPU that is enough to exhaust the
-	// driver's mappable memory. Keep the contour count low and collapse to the bounding rect beyond
-	// it. During a scroll that costs nothing: every moved visual is inside the scroll port, so the
-	// union is the scroll port either way.
-	private const int MaxPoints = 32;
-	private const int PointsPerRect = 4;
+	// The region ends up in SKCanvas.ClipPath, where a many-contour clip costs a mask the GPU has to allocate
+	// every frame. Past this many contours, fuse everything regardless of what that over-damages.
+	private const int MaxRects = 32;
 
-	private readonly SKPathBuilder _rects = NewRectBuilder();
+	// Finished rect contours. The one still being grown is _open, which only joins them on snapshot.
+	private readonly SKPathBuilder _rects = new() { FillType = SKPathFillType.Winding };
 	private readonly SKPath _exact = new();
 
-	private SKRect _rectBounds;
-	private int _rectPoints;
-	private bool _hasRects;
+	private SKRect _open;
+	private SKRect _allBounds;
+	private int _rectCount;
 
-	private static SKPathBuilder NewRectBuilder() => new() { FillType = SKPathFillType.Winding };
-
-	internal bool IsEmpty => !_hasRects && _exact.IsEmpty;
+	internal bool IsEmpty => _rectCount == 0 && _exact.IsEmpty;
 
 	internal void UnionRect(SKRect rect)
 	{
-		if (rect.IsEmpty)
+		// Not SKRect.IsEmpty: that is only true for an all-zero rect, so a zero-area or inverted one would reach
+		// the bookkeeping below, where SKRect.Union drops it while SKPathBuilder.AddRect would normalize and
+		// keep it — leaving the bounds no longer covering the contours.
+		rect = rect.Standardized;
+		if (rect.Width <= 0 || rect.Height <= 0)
 		{
 			return;
 		}
 
-		if (_hasRects && _rectPoints >= MaxPoints)
+		if (_rectCount == 0)
 		{
-			var collapsed = SKRect.Union(_rectBounds, rect);
+			_open = _allBounds = rect;
+			_rectCount = 1;
+			return;
+		}
+
+		_allBounds = SKRect.Union(_allBounds, rect);
+
+		// Growing the open rect keeps the clip closer to a single analytic rect, but it also damages everything
+		// between that rect and this contribution. Only worth it while it costs no more than this contribution
+		// already does — true of a scroll, where visuals arrive in tree order and land in the same port, and
+		// false for damage elsewhere, which opens its own rect rather than fusing the two.
+		var grown = SKRect.Union(_open, rect);
+		if (Area(grown) <= Area(_open) + Area(rect))
+		{
+			_open = grown;
+			return;
+		}
+
+		if (_rectCount >= MaxRects)
+		{
 			_rects.Reset();
-			_rects.FillType = SKPathFillType.Winding;
-			_rects.AddRect(collapsed);
-			_rectBounds = collapsed;
-			_rectPoints = PointsPerRect;
+			_open = _allBounds;
+			_rectCount = 1;
 			return;
 		}
 
-		_rects.AddRect(rect);
-		_rectBounds = _hasRects ? SKRect.Union(_rectBounds, rect) : rect;
-		_rectPoints += PointsPerRect;
-		_hasRects = true;
+		_rects.AddRect(_open);
+		_open = rect;
+		_rectCount++;
 	}
 
 	/// <summary>Adds a contribution whose exact geometry matters (a repainted visual, not a moved one).</summary>
@@ -67,8 +82,8 @@ internal sealed class DamageRegion : IDisposable
 			return;
 		}
 
-		// A real boolean here: an arbitrary path's contour directions are unknown, so appending it to
-		// the nonzero builder could cancel against an overlapping contour and under-damage.
+		// A real boolean here: an arbitrary path's contour directions are unknown, so appending it to the
+		// nonzero builder could cancel against an overlapping contour and under-damage.
 		if (_exact.IsEmpty)
 		{
 			addition.Transform(SKMatrix.Identity, _exact);
@@ -81,30 +96,30 @@ internal sealed class DamageRegion : IDisposable
 
 	internal void Reset()
 	{
-		// Reset, never dispose-and-recreate: the builder is reusable, and churning a native object per
-		// frame is exactly the pressure this type exists to avoid.
+		// Reset, never dispose-and-recreate: the builder is reusable, and churning a native object per frame is
+		// exactly the pressure this type exists to avoid. Reset() restores the Winding fill type.
 		_rects.Reset();
-		_rects.FillType = SKPathFillType.Winding;
 		_exact.Reset();
-		_rectBounds = default;
-		_rectPoints = 0;
-		_hasRects = false;
+		_open = default;
+		_allBounds = default;
+		_rectCount = 0;
 	}
 
 	/// <summary>
-	/// Writes the accumulated region into <paramref name="destination"/>, clamped to
-	/// <paramref name="clampTo"/>, and resets this region for the next frame.
+	/// Writes the accumulated region into <paramref name="destination"/>, clamped to <paramref name="clampTo"/>,
+	/// and resets this region for the next frame.
 	/// </summary>
 	internal void SnapshotAndReset(SKPath destination, SKRect clampTo)
 	{
 		destination.Reset();
 
-		// Detach() already emptied the builder, so a throw between here and Reset() would leave the
-		// region claiming rects it no longer holds. Reset unconditionally to keep the next frame sane.
+		// Detach() already emptied the builder, so a throw between here and Reset() would leave the region
+		// claiming rects it no longer holds. Reset unconditionally to keep the next frame sane.
 		try
 		{
-			if (_hasRects)
+			if (_rectCount > 0)
 			{
+				_rects.AddRect(_open);
 				using var rects = _rects.Detach();
 				rects.Transform(SKMatrix.Identity, destination);
 
@@ -129,6 +144,9 @@ internal sealed class DamageRegion : IDisposable
 			Reset();
 		}
 	}
+
+	// Frame-sized rects square to more than float can hold precisely.
+	private static double Area(SKRect rect) => (double)rect.Width * rect.Height;
 
 	public void Dispose()
 	{
