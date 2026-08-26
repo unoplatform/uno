@@ -56,7 +56,7 @@ public partial class InjectedInputKeyboardInfo
 		{
 			throw new ArgumentException(
 				$"{nameof(VirtualKey)} must be 0 when {nameof(InjectedInputKeyOptions)}.{nameof(InjectedInputKeyOptions.Unicode)} is set (entry {index}).",
-				nameof(InputInjector.InjectKeyboardInput));
+				"input");
 		}
 	}
 

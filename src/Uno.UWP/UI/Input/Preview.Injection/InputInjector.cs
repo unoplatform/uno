@@ -98,6 +98,8 @@ public partial class InputInjector
 	// KeyboardStateTracker once per ancestor while bubbling, toggling the Locked bit each time.
 	private static bool _capsLock;
 
+	private static void ToggleCapsLock() => _capsLock = !_capsLock;
+
 	/// <summary>
 	/// Gets the current state of the mouse pointer
 	/// </summary>
@@ -341,7 +343,7 @@ public partial class InputInjector
 		{
 			if (info.VirtualKey == (ushort)VirtualKey.CapitalLock)
 			{
-				_capsLock = !_capsLock;
+				ToggleCapsLock();
 			}
 
 			target.InjectKeyDown(args);
@@ -363,9 +365,20 @@ public partial class InputInjector
 	// TODO: Move as extension method
 	internal async ValueTask InjectKeyboardInputAsync(IEnumerable<InjectedInputKeyboardInfo> input, CancellationToken ct)
 	{
-		foreach (var info in input)
+		ArgumentNullException.ThrowIfNull(input);
+		EnsureUIThread();
+
+		// Validate up front, like the synchronous overload: dispatching per key would otherwise
+		// deliver part of the batch before a later invalid entry throws.
+		var infos = input as IReadOnlyList<InjectedInputKeyboardInfo> ?? input.ToList();
+		for (var i = 0; i < infos.Count; i++)
 		{
-			InjectKeyboardInput(new[] { info });
+			infos[i].Validate(i);
+		}
+
+		foreach (var info in infos)
+		{
+			InjectKeyboardInputCore(info);
 			await WaitForIdle(ct);
 		}
 	}
