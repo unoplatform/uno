@@ -184,7 +184,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			if (!TryScissor(clip.Aabb, out var sx, out var sy, out var sw, out var sh)) { continue; }
 			// A widenable op's tight AABB is cull-only (checked above); the applied scissor is the full
 			// surface, so consecutive such ops dedup to a single SetScissorRect.
-			if (ScissorWidenable(clip)) { sx = 0; sy = 0; sw = (int)_s.Width; sh = (int)_s.Height; }
+			if (ScissorWidenable(clip)) { sx = 0; sy = 0; sw = (int)BasisW; sh = (int)BasisH; }
 			pst.Enc.Scissor(sx, sy, sw, sh);
 			pst.Scissors++;
 			switch (kind)
