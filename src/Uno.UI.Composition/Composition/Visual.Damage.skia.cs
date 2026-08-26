@@ -53,13 +53,8 @@ public partial class Visual
 			return;
 		}
 
-		// A visual that only moved is damaged at both its old and its new location, and the old one is
-		// only ever a rect. Computing exact geometry for the new one therefore buys nothing while costing
-		// the most expensive part of this method (a stroke-to-fill outset plus two path booleans, per
-		// visual per frame). Scrolling makes this the common case for the whole subtree, so take bounds.
-		// shadowSilhouetteChanged is deliberately not excluded: it implies ShadowState is not null, and the
-		// exact-path branch preferBounds steers away from is itself gated on ShadowState being null, so the
-		// flag is inert for every visual that can set it.
+		// A visual that only moved is damaged at its old location too, and that one is only ever a rect, so
+		// exact geometry for the new location buys nothing. See TryGetPaintDamageRegion for what it costs.
 		var preferBounds = moved && !contentChanged;
 
 		if (TryGetPaintDamageRegion(clip, preferBounds, out var bounds, out var regionPath))
@@ -109,12 +104,12 @@ public partial class Visual
 			var clipIsRect = clipPath.IsRect;
 			var clipRect = clipPath.Bounds;
 
-			// preferBounds only downgrades to the (much cheaper) bounds branch when that branch can
-			// actually answer for this visual — otherwise it would fall through to the clip, which is a
-			// far larger region than the exact path it replaced.
-			var canUseBounds = ShadowState is null ? CanPaint() && PaintsWithinOwnSize : true;
+			var hasLocalBounds = TryGetLocalContentBounds(out var local);
 
-			if (!(preferBounds && canUseBounds)
+			// The exact branch is the expensive part of this method: a stroke-to-fill outset plus two path
+			// booleans, per visual per frame. Skip it for a visual that only moved — but only if bounds can
+			// answer for it, since falling through to the clip would report far more than the exact path did.
+			if ((!preferBounds || !hasLocalBounds)
 				&& ShadowState is null && DamageRegionSamplingMargin == 0 && _ownContentPath is { IsEmpty: false } ownContent)
 			{
 				ownContent.Transform(SKMatrix.Identity, contentPath);
@@ -131,7 +126,7 @@ public partial class Visual
 				return true;
 			}
 
-			if (TryGetLocalContentBounds(out var local))
+			if (hasLocalBounds)
 			{
 				if (local.IsEmpty)
 				{
