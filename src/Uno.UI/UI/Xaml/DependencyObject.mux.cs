@@ -277,7 +277,14 @@ public partial class DependencyObject
 		else
 		{
 			// Update theme references to account for new ancestor theme dictionaries.
-			UpdateAllThemeReferences(owner, cache: null, ThemeResolution.ResolveOwnerTheme(owner));
+			// The theme-walk cache is threaded in so the pinned-dictionary refresh can reuse lookups made by
+			// the other elements entering the tree in the same layout pass — WinUI reads the same cache off
+			// the core from CThemeResource::RefreshValue (ThemeResource.cpp:81, 96). It only caches while a
+			// session is open (CoreServices.OnTick), so this is inert outside one.
+			UpdateAllThemeReferences(
+				owner,
+				Uno.UI.Xaml.Core.CoreServices.Instance.ThemeWalkResourceCache,
+				ThemeResolution.ResolveOwnerTheme(owner));
 		}
 	}
 
