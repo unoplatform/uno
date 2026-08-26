@@ -1487,15 +1487,14 @@ partial class AutoSuggestBox
 				if (!m_isSipVisible && m_hasFocus)
 				{
 					var scrollableHeight = rootScrollViewer.ScrollableHeight;
-					if (scrollableHeight == 0 && !s_fDeferredShowing)
+					if (TryDeferSipShowing(scrollableHeight))
 					{
-						s_fDeferredShowing = true;
 						_ = Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
 						{
-							s_fDeferredShowing = false;
 							if (m_tpSipArgs is not null)
 							{
 								OnSipShowingInternal(m_tpSipArgs);
+								m_tpSipArgs = null;
 							}
 						});
 						return;
@@ -1516,6 +1515,18 @@ partial class AutoSuggestBox
 		}
 
 		ReevaluateIsOverlayVisible();
+	}
+
+	internal static bool TryDeferSipShowing(double scrollableHeight)
+	{
+		if (scrollableHeight == 0 && !s_fDeferredShowing)
+		{
+			s_fDeferredShowing = true;
+			return true;
+		}
+
+		s_fDeferredShowing = false;
+		return false;
 	}
 
 	/// <summary>
