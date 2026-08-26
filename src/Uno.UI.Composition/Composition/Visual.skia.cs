@@ -55,6 +55,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	// this visual's own painted content; _childrenContent is a collapsed subtree cache.
 	private IRenderRecord? _content;
 	private IRenderRecord? _childrenContent;
+	// Placement bookkeeping for _childrenContent: the recording is local-space and survives ancestor moves,
+	// but a replay under a changed matrix must still damage the screen area the subtree left and now covers
+	// (the children aren't visited on the replay path, so they can't contribute their per-visual move damage).
+	private Matrix4x4 _childrenContentMatrix;
+	private Rect _childrenContentDamageRect;
+	private bool _hasChildrenContentDamageRect;
 	// Cached subtree recording for the non-analytic drop-shadow fallback (recorded in this visual's local space,
 	// so ancestor moves — e.g. scrolling — keep it valid; invalidated like _childrenContent plus own PaintDirty).
 	private IRenderRecord? _shadowFallbackContent;
@@ -153,19 +159,22 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <returns>true if wasn't dirty</returns>
 	internal bool SetMatrixDirty()
 	{
-		// A change on THIS visual moves it relative to its parent: ancestor shadow silhouettes contain that
-		// placement and go stale. Descendants reached by the cascade below keep their (local-space) caches.
+		// A change on THIS visual moves it relative to its parent: ancestor shadow silhouettes and ancestor
+		// children-picture caches contain that placement and go stale. Descendants reached by the cascade
+		// below keep their (local-space) caches — a pure ancestor move (scrolling) re-applies the current
+		// matrices on replay, so invalidating them here would discard still-valid recordings every frame.
 		InvalidateParentShadowCaches(includeSelf: false);
+		InvalidateParentChildrenPicture(false);
 		return SetMatrixDirtyFromAncestor();
 	}
 
-	/// <summary>Marks the matrix dirty without invalidating shadow caches — the variant the ancestor-move
-	/// cascade uses, since a pure ancestor move keeps every descendant's local-space shadow cache valid.</summary>
+	/// <summary>Marks the matrix dirty without invalidating shadow or children-picture caches — the variant
+	/// the ancestor-move cascade uses, since a pure ancestor move keeps every descendant's local-space cache
+	/// valid (see <see cref="SetMatrixDirty"/>).</summary>
 	internal virtual bool SetMatrixDirtyFromAncestor()
 	{
 		var matrixDirty = (_flags & VisualFlags.MatrixDirty) != 0;
 		_flags |= VisualFlags.MatrixDirty;
-		InvalidateParentChildrenPicture(false);
 		return !matrixDirty;
 	}
 
@@ -555,6 +564,28 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			if (visual._childrenContent is { } childrenContent)
 			{
+				// Replaying under a changed matrix (an ancestor moved, e.g. scrolling): the skipped children
+				// can't contribute their move damage, so damage the subtree's effective clip at its previous
+				// and current placements instead (both already clipped to the ancestors' viewports).
+				if (session.Damage is { } damage && visual.TotalMatrix != visual._childrenContentMatrix)
+				{
+					if (visual._hasChildrenContentDamageRect)
+					{
+						damage.UnionRect(visual._childrenContentDamageRect);
+					}
+
+					using var clip = visual.GetTotalClipPath(skipPostPaintingClipping: false);
+					var bounds = clip.IsEmpty ? default : clip.Bounds;
+					visual._hasChildrenContentDamageRect = !IsRectEmpty(bounds);
+					if (visual._hasChildrenContentDamageRect)
+					{
+						damage.UnionRect(bounds);
+						visual._childrenContentDamageRect = bounds;
+					}
+
+					visual._childrenContentMatrix = visual.TotalMatrix;
+				}
+
 				childrenContent.Replay(session.Session);
 			}
 			else if (!visual._enablePictureCollapsingOptimization
@@ -592,6 +623,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				{
 					visual._childrenContent?.Dispose();
 					visual._childrenContent = content;
+					// The record walk just let every child contribute damage at the current placement; seed the
+					// replay-move bookkeeping from it so the first moved replay damages this area as "previous".
+					visual._childrenContentMatrix = visual.TotalMatrix;
+					using var clip = visual.GetTotalClipPath(skipPostPaintingClipping: false);
+					var bounds = clip.IsEmpty ? default : clip.Bounds;
+					visual._hasChildrenContentDamageRect = !IsRectEmpty(bounds);
+					if (visual._hasChildrenContentDamageRect)
+					{
+						visual._childrenContentDamageRect = bounds;
+					}
 				}
 				else
 				{
