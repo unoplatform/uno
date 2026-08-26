@@ -383,12 +383,14 @@ partial class Given_Clipboard
 	// for the expected state instead of asserting immediately or waiting a fixed delay.
 	private static async Task WaitForClipboardAsync(Func<bool> condition)
 	{
-		for (var i = 0; i < 60 && !condition(); i++)
+		var success = condition();
+		for (var i = 0; i < 60 && !success; i++)
 		{
 			await Task.Delay(50);
+			success = condition();
 		}
 
-		Assert.IsTrue(condition(), "The expected clipboard state was not reached.");
+		Assert.IsTrue(success, "The expected clipboard state was not reached.");
 	}
 
 	// for winui at least: use ToRASTream for SetData, use ToRAReferenceAsync for SetBitmap
