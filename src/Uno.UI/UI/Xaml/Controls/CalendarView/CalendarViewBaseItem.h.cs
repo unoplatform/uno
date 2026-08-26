@@ -24,12 +24,6 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 			// Uno only
 			Initialize_CalendarViewBaseItemChrome();
-			this.Loaded += (_, _) =>
-			{
-#if !UNO_HAS_BORDER_VISUAL
-				_borderRenderer ??= new(this);
-#endif
-			};
 		}
 
 

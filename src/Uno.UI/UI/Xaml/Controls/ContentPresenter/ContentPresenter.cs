@@ -877,10 +877,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			SetUpdateTemplate();
 		}
 
-#if !UNO_HAS_BORDER_VISUAL
-		UpdateBorder();
-#endif
-
 		// We do this in Enter not Loaded since Loaded is a lot more tricky
 		// (e.g. you can have Unloaded without Loaded, you can have multiple loaded events without unloaded in between, etc.)
 		if (IsNativeHost)

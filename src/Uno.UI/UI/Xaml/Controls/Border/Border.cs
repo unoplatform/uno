@@ -33,9 +33,7 @@ public partial class Border : FrameworkElement
 	internal void SetUseBackgroundOverride(bool useBackgroundOverride)
 	{
 		_useBackgroundOverride = useBackgroundOverride;
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();
-#endif
 	}
 
 	public BrushTransition BackgroundTransition { get; set; }
