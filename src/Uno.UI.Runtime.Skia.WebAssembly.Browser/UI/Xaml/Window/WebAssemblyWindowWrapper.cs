@@ -15,6 +15,7 @@ using FontFamilyHelper = Microsoft.UI.Xaml.FontFamilyHelper;
 using Windows.Graphics;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
+using Uno.Extensions;
 using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.WebAssembly.Browser;
@@ -101,7 +102,8 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		catch (Exception e)
 		{
 			// A managed exception must not cross back into the JS DOM-event callback.
-			Application.Current.RaiseRecoverableUnhandledException(e);
+			// Null-safe: the initial resize runs before Application.Start.
+			Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, typeof(WebAssemblyWindowWrapper));
 		}
 	}
 
@@ -130,7 +132,8 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		catch (Exception e)
 		{
 			// A managed exception must not cross back into the JS DOM-event callback.
-			Application.Current.RaiseRecoverableUnhandledException(e);
+			// Null-safe: visualViewport events can fire before Application.Start.
+			Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, typeof(WebAssemblyWindowWrapper));
 		}
 	}
 
