@@ -191,8 +191,11 @@ namespace Microsoft.UI.Xaml.Controls
 			DefinitionCollectionBase definitions,
 			bool treatStarAsAuto)
 		{
-			foreach (var def in definitions.GetItems())
+			// By index: GetItems() hands back the DependencyObjectCollection as an IEnumerable<T>, whose
+			// GetEnumerator boxes. This runs twice per Grid measure, once for rows and once for columns.
+			for (var defIndex = 0; defIndex < definitions.Count; defIndex++)
 			{
+				var def = definitions.GetItem(defIndex);
 
 				bool useLayoutRounding = GetUseLayoutRounding();
 				var userSize = double.PositiveInfinity;
