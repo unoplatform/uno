@@ -48,6 +48,13 @@ public partial class InjectedInputKeyboardInfo
 
 	internal bool IsKeyUp => KeyOptions.HasFlag(InjectedInputKeyOptions.KeyUp);
 
+	/// <summary>
+	/// The key this entry actually raises: Unicode entries carry <see cref="VirtualKey"/> 0 but are
+	/// reported as key 255, matching Windows.
+	/// </summary>
+	internal Windows.System.VirtualKey EffectiveVirtualKey
+		=> IsUnicode ? (Windows.System.VirtualKey)UnicodeVirtualKey : (Windows.System.VirtualKey)VirtualKey;
+
 	private bool IsUnicode => KeyOptions.HasFlag(InjectedInputKeyOptions.Unicode);
 
 	internal void Validate(int index)
@@ -63,7 +70,7 @@ public partial class InjectedInputKeyboardInfo
 	internal KeyEventArgs ToEventArgs(VirtualKeyModifiers modifiers, bool capsLock, bool wasKeyDown)
 	{
 		var isUp = IsKeyUp;
-		var key = IsUnicode ? (VirtualKey)UnicodeVirtualKey : (VirtualKey)VirtualKey;
+		var key = EffectiveVirtualKey;
 
 		// A key-up never carries a character: Windows pairs WM_CHAR with the key press, and
 		// InputManager only raises CharacterReceived on the down pass.
@@ -81,6 +88,8 @@ public partial class InjectedInputKeyboardInfo
 			RepeatCount = 1,
 			IsExtendedKey = KeyOptions.HasFlag(InjectedInputKeyOptions.ExtendedKey),
 			IsKeyReleased = isUp,
+			// Win32 defines the previous-key-state bit as always 1 for WM_KEYUP, so a key-up
+			// reports WasKeyDown even when no key-down preceded it.
 			WasKeyDown = isUp || wasKeyDown,
 			IsMenuKeyDown = modifiers.HasFlag(VirtualKeyModifiers.Menu),
 		};
