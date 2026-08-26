@@ -7,7 +7,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// A border layouter, to apply Padding to the border.
 /// </summary>
 partial class Border
-#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+#if !__CROSSRUNTIME__
 	: ICustomClippingElement
 #endif
 {

@@ -40,7 +40,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 
 		#endregion
 
-#if __CROSSRUNTIME__ || IS_UNIT_TESTS
+#if __CROSSRUNTIME__
 		protected IRandomAccessStream _stream;
 #endif
 
@@ -91,7 +91,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			// The source has to be cloned before leaving the "SetSource[Async]".
 			var clonedStreamSource = streamSource.CloneStream();
 
-#if __CROSSRUNTIME__ || IS_UNIT_TESTS
+#if __CROSSRUNTIME__
 			_stream = clonedStreamSource;
 			UpdatePixelWidthAndHeightPartial(_stream.CloneStream().AsStream());
 #else
@@ -140,7 +140,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 				return $"{GetType().Name}/{uri}";
 			}
 
-#if __CROSSRUNTIME__ || IS_UNIT_TESTS
+#if __CROSSRUNTIME__
 			if (_stream is { } stream)
 			{
 				return $"{GetType().Name}/{stream.GetType()}";

@@ -8,11 +8,11 @@ using Windows.Foundation;
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ContentControl
-#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+#if !__CROSSRUNTIME__
 		: ICustomClippingElement
 #endif
 	{
-#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+#if !__CROSSRUNTIME__
 		bool ICustomClippingElement.AllowClippingToLayoutSlot
 		{
 			get

@@ -152,7 +152,5 @@ partial class PasswordBox : ITextBoxHost
 	void ITextBoxHost.RaiseTextCompositionEnded(TextCompositionEndedEventArgs args) { }
 #endif
 
-#if !IS_UNIT_TESTS
 	void ITextBoxHost.RaisePaste(TextControlPasteEventArgs args) => RaisePaste(args);
-#endif
 }

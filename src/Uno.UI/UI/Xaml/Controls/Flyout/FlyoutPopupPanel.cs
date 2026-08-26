@@ -1,5 +1,4 @@
-﻿#if !__UWP__
-using System;
+﻿using System;
 using System.Linq;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
@@ -83,4 +82,3 @@ internal partial class FlyoutBasePopupPanel : PopupPanel
 		XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.ReRoute(args, from: this, to: elementHitUnderOverlay);
 	}
 }
-#endif

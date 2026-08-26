@@ -80,10 +80,8 @@ internal sealed partial class TextBoxCore
 
 	internal bool IsTextAlignmentExplicitlySet => _host.IsTextAlignmentExplicitlySet;
 
-#if !IS_UNIT_TESTS
 	// The native overlay raises this on the control's behalf, so it needs a way through the engine.
 	internal void RaisePaste(TextControlPasteEventArgs args) => _host.RaisePaste(args);
-#endif
 
 	internal CharacterCasing CharacterCasing => _host.CharacterCasing;
 
@@ -1018,9 +1016,7 @@ internal sealed partial class TextBoxCore
 		}
 #endif
 
-#if !IS_UNIT_TESTS
 		_host.RaisePaste(new TextControlPasteEventArgs());
-#endif
 	}
 
 	private bool ShouldFocusOnPointerPressed(PointerRoutedEventArgs args) =>
