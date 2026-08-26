@@ -104,6 +104,15 @@
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.SpellChecking\Uno.WinUI.SpellChecking.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
+
+	</ItemGroup>
+
+	<!--
+	  Unit tests are inherently Reflection-oriented, e.g. finding tests is via Reflection, not static tables.
+	  Ensure that the `[TestClass]` and related types stick around after trimming by marking the entire assemblies as roots.
+	  -->
+	<ItemGroup Condition=" '$(PublishAot)' == 'true' ">
+		<TrimmerRootAssembly Include="Uno.UI.RuntimeTests" RootMode="All" />
 	</ItemGroup>
 
 	<!-- Desktop framework variants + runtimes + AddIns (Win32/X11/FrameBuffer/macOS) -->
