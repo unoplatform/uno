@@ -108,8 +108,7 @@ public sealed partial class Wasm_ViewportOrientationTelemetry : Page
 					EventCountsText.Text = $"{parts[2]} resize / {parts[3]} orientationchange";
 
 					var stale = Math.Abs(unoSize.Width - docWidth) > 2 || Math.Abs(unoSize.Height - docHeight) > 2;
-					StatusText.Text = stale ? "STALE" : "OK";
-					StatusBorder.Background = new SolidColorBrush(stale ? Microsoft.UI.Colors.IndianRed : Microsoft.UI.Colors.MediumSeaGreen);
+					SetStatus(stale ? "STALE" : "OK", stale ? Microsoft.UI.Colors.IndianRed : Microsoft.UI.Colors.MediumSeaGreen);
 					return;
 				}
 
@@ -125,8 +124,7 @@ public sealed partial class Wasm_ViewportOrientationTelemetry : Page
 		{
 			DocRectText.Text = $"Telemetry failed: {_telemetryError}";
 			EventCountsText.Text = "-";
-			StatusText.Text = "ERROR";
-			StatusBorder.Background = new SolidColorBrush(Microsoft.UI.Colors.IndianRed);
+			SetStatus("ERROR", Microsoft.UI.Colors.IndianRed);
 			return;
 		}
 #endif
@@ -144,6 +142,16 @@ public sealed partial class Wasm_ViewportOrientationTelemetry : Page
 		_telemetryError = error;
 		_jsGateway?.Dispose();
 		_jsGateway = null;
+	}
+
+	// Allocate a brush only when the status actually transitions (the timer ticks at 10 Hz).
+	private void SetStatus(string status, Windows.UI.Color color)
+	{
+		if (StatusText.Text != status)
+		{
+			StatusText.Text = status;
+			StatusBorder.Background = new SolidColorBrush(color);
+		}
 	}
 #endif
 }
