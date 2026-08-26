@@ -53,7 +53,7 @@ partial class InputManager
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
 					this.Log().Error(
-						"Failed to initialize the PointerManager: cannot resolve the IUnoKeyboardInputSource.");
+						"Failed to initialize the KeyboardManager: cannot resolve the IUnoKeyboardInputSource.");
 				}
 				return;
 			}
@@ -169,7 +169,7 @@ partial class InputManager
 				// automation API, so a diagnosable no-op beats throwing out of a startup race.
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
-					this.Log().LogWarning("Ignoring injected key: the content root is not attached to a window yet.");
+					this.Log().Warn("Ignoring injected key: the content root is not attached to a window yet.");
 				}
 
 				return;
