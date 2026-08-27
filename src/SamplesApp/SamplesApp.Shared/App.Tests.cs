@@ -276,8 +276,9 @@ partial class App
 			args = args.Substring(samplePrefix.Length);
 
 			// The deep link is the first token only — further space-separated launch args (e.g.
-			// --FeatureConfiguration overrides) are not part of the sample path.
-			args = args.Split(' ', 2)[0];
+			// --FeatureConfiguration overrides) and additional URL query parameters (&key=value on WASM)
+			// are not part of the sample path.
+			args = args.Split(new[] { ' ', '&' }, 2)[0];
 
 			var pathParts = args.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 			var category = pathParts[0];
