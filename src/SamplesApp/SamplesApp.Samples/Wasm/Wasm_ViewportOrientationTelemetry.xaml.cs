@@ -102,12 +102,12 @@ public sealed partial class Wasm_ViewportOrientationTelemetry : Page
 			try
 			{
 				var parts = _jsGateway.ExecuteJavascript(PollScript).Split(',');
-				if (parts.Length >= 4
-					&& double.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var docWidth)
-					&& double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var docHeight))
+				if (parts is [var width, var height, var resize, var orientation]
+					&& double.TryParse(width, NumberStyles.Float, CultureInfo.InvariantCulture, out var docWidth)
+					&& double.TryParse(height, NumberStyles.Float, CultureInfo.InvariantCulture, out var docHeight))
 				{
 					DocRectText.Text = $"{docWidth:0} x {docHeight:0}";
-					EventCountsText.Text = $"{parts[2]} resize / {parts[3]} orientationchange";
+					EventCountsText.Text = $"{resize} resize / {orientation} orientationchange";
 
 					var stale = Math.Abs(unoSize.Width - docWidth) > 2 || Math.Abs(unoSize.Height - docHeight) > 2;
 					SetStatus(stale ? "STALE" : "OK", stale ? Microsoft.UI.Colors.IndianRed : Microsoft.UI.Colors.MediumSeaGreen);
