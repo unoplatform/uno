@@ -113,6 +113,8 @@
 	  -->
 	<ItemGroup Condition=" '$(PublishAot)' == 'true' ">
 		<TrimmerRootAssembly Include="Uno.UI.RuntimeTests" RootMode="All" />
+		<!-- dynamic/runtime dependency for `Given_FromJson.cs` and other `{using:Uno.UI.Markup}FromJson`-using code -->
+		<TrimmerRootAssembly Include="Uno.UI.Extras" />
 	</ItemGroup>
 
 	<!-- Desktop framework variants + runtimes + AddIns (Win32/X11/FrameBuffer/macOS) -->
