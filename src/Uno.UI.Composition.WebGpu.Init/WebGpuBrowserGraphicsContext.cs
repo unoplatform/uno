@@ -125,6 +125,8 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 		var cb = wgpuCommandEncoderFinish(enc, null);
 		wgpuQueueSubmit(_device.Q, 1, (IntPtr)(&cb));
 
+		wgpuCommandBufferRelease(cb);
+		wgpuCommandEncoderRelease(enc);
 		wgpuBindGroupRelease(bg);
 		wgpuTextureViewRelease(canvasView);
 		wgpuTextureRelease(_canvasTexture);

@@ -100,6 +100,8 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 	// the SkiaSharp backend is lit up by reflection if its assembly is present; a SkiaSharp-free build registers each
 	// seam explicitly. Resolved by assembly-qualified name so no assembly reference is required.
 	private const string SkiaBackendTypeName = "Uno.UI.Composition.Skia.SkiaBackend, Uno.UI.Composition.Skia";
+	private const string WebGpuGraphicsProviderTypeName = "Uno.UI.Composition.WebGpu.WebGpuGraphicsProvider, Uno.UI.Composition.WebGpu";
+	private const string ManagedGeometryFactoryTypeName = "Uno.UI.Composition.Drawing.ManagedGeometryFactory, Uno.UI.Composition.Managed";
 
 	// SVG has no core Skia impl: the Svg.Skia renderer ships as the optional Uno.UI.Svg add-in, with the managed
 	// engine as the built-in fallback.
@@ -165,6 +167,21 @@ public class UnoPlatformHostBuilder : IUnoPlatformHostBuilder
 		// so the implicit Skia renderer/factory must never fill the pre-init window and clobber the declared choice.
 		if (Drawing.GraphicsRegistry.HasRegisteredBackends)
 		{
+			return;
+		}
+
+		// UNO_WEBGPU opts an app into the WebGPU renderer (over the managed geometry engine, which WebGPU
+		// flattens) without any head code: the backend is probed reflectively, so a head that doesn't ship the
+		// WebGPU assemblies — or a probe failure — falls through to the Skia default below.
+		if (Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "neutral" or "swapchain"
+			&& CreateInstanceOf<Drawing.IGraphicsProvider>(WebGpuGraphicsProviderTypeName) is { } webGpuProvider)
+		{
+			Drawing.GraphicsRegistry.RegisterDefault(new[] { webGpuProvider });
+			if (!Drawing.GeometryFactory.IsRegistered
+				&& CreateInstanceOf<Drawing.IGeometryFactory>(ManagedGeometryFactoryTypeName) is { } managedGeometry)
+			{
+				Drawing.GeometryFactory.RegisterDefault(managedGeometry);
+			}
 			return;
 		}
 

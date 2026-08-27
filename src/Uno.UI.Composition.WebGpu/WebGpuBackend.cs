@@ -1197,6 +1197,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
 				var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 				wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+				// wgpu holds its own reference until the submission completes, so both handles are dropped
+				// here — otherwise every frame leaks an encoder + a command buffer into the handle table.
+				wgpuCommandBufferRelease(cb);
+				wgpuCommandEncoderRelease(_frameEncoder);
 				if (_emitStats && (_frameStatsCounter++ % 60) == 0)
 				{
 					long t2 = System.Diagnostics.Stopwatch.GetTimestamp();
@@ -1708,6 +1712,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
 					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+					// wgpu holds its own reference until the submission completes, so both handles are dropped
+					// here — otherwise every frame leaks an encoder + a command buffer into the handle table.
+					wgpuCommandBufferRelease(cb);
+					wgpuCommandEncoderRelease(_frameEncoder);
 					_ = wgpuDevicePoll(_d.Dev, 0u, null);
 					_frameEncoder = IntPtr.Zero;
 				}
@@ -1752,6 +1760,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
 					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+					// wgpu holds its own reference until the submission completes, so both handles are dropped
+					// here — otherwise every frame leaks an encoder + a command buffer into the handle table.
+					wgpuCommandBufferRelease(cb);
+					wgpuCommandEncoderRelease(_frameEncoder);
 					_ = wgpuDevicePoll(_d.Dev, 0u, null);
 					_frameEncoder = IntPtr.Zero;
 				}
@@ -1795,6 +1807,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
 					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+					// wgpu holds its own reference until the submission completes, so both handles are dropped
+					// here — otherwise every frame leaks an encoder + a command buffer into the handle table.
+					wgpuCommandBufferRelease(cb);
+					wgpuCommandEncoderRelease(_frameEncoder);
 					_ = wgpuDevicePoll(_d.Dev, 0u, null);
 					_frameEncoder = IntPtr.Zero;
 				}
@@ -1836,6 +1852,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
 					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+					// wgpu holds its own reference until the submission completes, so both handles are dropped
+					// here — otherwise every frame leaks an encoder + a command buffer into the handle table.
+					wgpuCommandBufferRelease(cb);
+					wgpuCommandEncoderRelease(_frameEncoder);
 					_ = wgpuDevicePoll(_d.Dev, 0u, null);
 					_frameEncoder = IntPtr.Zero;
 				}
@@ -1876,6 +1896,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
 					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+					// wgpu holds its own reference until the submission completes, so both handles are dropped
+					// here — otherwise every frame leaks an encoder + a command buffer into the handle table.
+					wgpuCommandBufferRelease(cb);
+					wgpuCommandEncoderRelease(_frameEncoder);
 					_ = wgpuDevicePoll(_d.Dev, 0u, null);
 					_frameEncoder = IntPtr.Zero;
 				}
