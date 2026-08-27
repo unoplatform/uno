@@ -23,6 +23,9 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 		private const string ScriptNamedResources = "Uno.UI.UnitTests/ZhScriptFolders";
 		private const string RegionNamedResources = "Uno.UI.UnitTests/ZhRegionFolders";
 
+		// A bare zh folder (Simplified) alongside two Traditional ones, zh-HK and zh-Hant-TW.
+		private const string MixedResources = "Uno.UI.UnitTests/ZhMixedFolders";
+
 		[TestInitialize]
 		public void Init()
 		{
@@ -152,6 +155,24 @@ namespace Uno.UI.Tests.ResourceLoaderTests
 
 			ApplicationLanguages.PrimaryLanguageOverride = language;
 			Assert.AreEqual("Traditional", SUT.GetString("Given_ResourceLoader/When_ChineseScript"));
+		}
+
+		[TestMethod]
+		[DataRow("zh-CN", "Simplified")]
+		[DataRow("zh-Hans", "Simplified")]
+		[DataRow("zh", "Simplified")]
+		[DataRow("zh-TW", "Taiwan")] // zh is a nearer ancestor, but it is Simplified
+		[DataRow("zh-Hant", "Taiwan")] // both siblings are Traditional, ordinal order picks TW
+		[DataRow("zh-MO", "Taiwan")]
+		[DataRow("zh-Hant-HK", "Hong Kong")] // same script, and HK is the matching region
+		[DataRow("zh-HK", "Hong Kong")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24024")]
+		public void When_Chinese_And_MixedFolders(string language, string expected)
+		{
+			var SUT = _ResourceLoader.GetForCurrentView(MixedResources);
+
+			ApplicationLanguages.PrimaryLanguageOverride = language;
+			Assert.AreEqual(expected, SUT.GetString("Given_ResourceLoader/When_ChineseMixedFolders"));
 		}
 
 		[TestMethod]
