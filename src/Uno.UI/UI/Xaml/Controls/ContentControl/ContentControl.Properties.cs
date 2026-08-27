@@ -88,8 +88,9 @@ partial class ContentControl
 	/// </summary>
 	/// <remarks>
 	/// Not used by ContentControl itself; it exists for the templated ContentPresenter to bind to.
+	/// Internal in WinUI too - it is not part of the public API surface.
 	/// </remarks>
-	public DataTemplate SelectedContentTemplate
+	internal DataTemplate SelectedContentTemplate
 	{
 		get => (DataTemplate)GetValue(SelectedContentTemplateProperty);
 		set => SetValue(SelectedContentTemplateProperty, value);
@@ -98,7 +99,7 @@ partial class ContentControl
 	/// <summary>
 	/// Identifies the <see cref="SelectedContentTemplate"/> dependency property.
 	/// </summary>
-	public static DependencyProperty SelectedContentTemplateProperty { get; } =
+	internal static DependencyProperty SelectedContentTemplateProperty { get; } =
 		DependencyProperty.Register(
 			nameof(SelectedContentTemplate),
 			typeof(DataTemplate),

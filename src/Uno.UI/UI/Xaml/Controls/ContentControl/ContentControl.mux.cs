@@ -9,6 +9,10 @@ using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls;
 
+// TODO Uno: NOT PORTED from ContentControl.cpp — EnterImpl / LeaveImpl (Content name registration,
+// which Uno handles through its own namescope), CompareForCircularReference (no Uno equivalent),
+// DeferredContentRemovalLogic, GetTextBlockChildOfDefaultTemplate / GetTextBlockNoRef, and the
+// ListViewBaseItem chrome accessors (SetGridViewItemChrome / GetGridViewItemChromeNoRef).
 partial class ContentControl
 {
 	private protected override void OnTemplateChanged(DependencyPropertyChangedEventArgs e)
@@ -50,9 +54,11 @@ partial class ContentControl
 		}
 	}
 
+	// Remove all the visual children and mark the node as layout dirty.
+	// During the next pass all the visual children will be recreated.
 	private void Invalidate(bool clearChildren)
 	{
-		if (clearChildren && GetChildren() is { Count: > 0 })
+		if (clearChildren && GetChildren() is not null)
 		{
 			ClearChildren();
 			// only clear the suggested cp if we actually removed all children!
@@ -85,7 +91,9 @@ partial class ContentControl
 	// contentpresenter our templateroot.
 	internal void ConsiderContentPresenterForContentTemplateRoot(ContentPresenter candidate, object value)
 	{
-		if (Content == value)
+		// CValue equality in WinUI: strings compare by value, objects by identity - which is what
+		// Equals gives us here.
+		if (Equals(Content, value))
 		{
 			m_pTemplatePresenter = new WeakReference<ContentPresenter>(candidate);
 		}
@@ -102,9 +110,9 @@ partial class ContentControl
 
 			if (m_pTemplatePresenter?.TryGetTarget(out var pTemplatePresenter) == true)
 			{
-				// The template child, not the first child: starting with the Cobalt release, when the inner
-				// content presenter is a ListViewBaseItemChrome the template root may be the second child,
-				// because of the potential backplate positioned in the first slot.
+				// WinUI reads the presenter's template child rather than its first child: for a
+				// ListViewBaseItemChrome the template root can sit in the second slot, behind the backplate.
+				// Uno folds that into GetFirstChild, which the chrome types override for exactly this case.
 				templateRoot = pTemplatePresenter.GetFirstChildNoAddRef();
 			}
 

@@ -48,11 +48,6 @@ public partial class ContentPresenter : FrameworkElement
 
 	private View _contentTemplateRoot;
 
-	/// <summary>
-	/// Will be set to either the result of ContentTemplateSelector or to ContentTemplate, depending on which is used
-	/// </summary>
-	private FrameworkTemplate _dataTemplateUsedLastUpdate;
-
 	public ContentPresenter()
 	{
 		UpdateLastUsedTheme();
@@ -639,6 +634,17 @@ public partial class ContentPresenter : FrameworkElement
 
 	private void TrySetDataContextFromContent(object value)
 	{
+		// Uno specific: WinUI's SetDataContext pushes Content onto the local DataContext unconditionally.
+		// Here Content may itself be the result of a binding with no explicit source (no TemplatedParent,
+		// no ElementName), which resolves against the inherited DataContext - overwriting that DataContext
+		// re-evaluates the binding against the new value and yields garbage.
+		if (GetBindingExpression(ContentProperty) is { } expression &&
+			!expression.IsExplicitlySourced &&
+			!expression.ParentBinding.IsTemplateBinding)
+		{
+			return;
+		}
+
 		if (value == null || value is View)
 		{
 			this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);

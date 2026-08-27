@@ -1,30 +1,35 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+// MUX Reference ContentPresenter.cpp, tag winui3/release/1.8.2, commit bac7a9c33
+// BindDefaultTextBlock comes from ContentPresenter_Partial.cpp; it is kept next to its only caller.
+
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI;
 using Uno.UI.Xaml;
 
 using View = Microsoft.UI.Xaml.UIElement;
-// In case other platforms supported enhanced lifecycle, add the corresponding 'using View = ...' for them.
 
 namespace Microsoft.UI.Xaml.Controls;
 
 partial class ContentPresenter
 {
-	private bool _inOnApplyTemplate;
-	private bool _dataContextInvalid = true;
-	private object _cachedContent;
-	private const FrameworkPropertyMetadataOptions ContentPropertyOptions = FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure;
-
-	public FrameworkTemplate SelectedContentTemplate
+	/// <remarks>
+	/// Internal in WinUI too - it is not part of the public API surface. It exists so the presenter can
+	/// template-bind the template its templated ContentControl resolved.
+	/// </remarks>
+	internal DataTemplate SelectedContentTemplate
 	{
-		get => (FrameworkTemplate)GetValue(SelectedContentTemplateProperty);
+		get => (DataTemplate)GetValue(SelectedContentTemplateProperty);
 		set => SetValue(SelectedContentTemplateProperty, value);
 	}
 
-	public static DependencyProperty SelectedContentTemplateProperty { get; } = DependencyProperty.Register(
+	internal static DependencyProperty SelectedContentTemplateProperty { get; } = DependencyProperty.Register(
 		nameof(SelectedContentTemplate),
-		typeof(FrameworkTemplate),
+		typeof(DataTemplate),
 		typeof(ContentPresenter),
 		new FrameworkPropertyMetadata(null, OnSelectedContentTemplateChanged));
 
@@ -108,7 +113,7 @@ partial class ContentPresenter
 					if (oldValue is not null && (oldValue is not DependencyObject /*|| ((DependencyObject)oldValue).GetTypeIndex() == ExternalObjectReference*/))
 					{
 						// Cache reference to old content value.
-						_cachedContent = oldValue;
+						m_cachedContent = oldValue;
 						child.Visibility = Visibility.Collapsed;
 						fInvalidationNeeded = false;
 					}
@@ -118,16 +123,16 @@ partial class ContentPresenter
 					fInvalidationNeeded = false;
 				}
 			}
-			else if (oldValue is null && newValue is not null && _cachedContent is not null)
+			else if (oldValue is null && newValue is not null && m_cachedContent is not null)
 			{
 				var child = GetFirstChild();
 				child.Visibility = Visibility.Visible;
-				if (newValue.GetType() == _cachedContent.GetType())
+				if (newValue.GetType() == m_cachedContent.GetType())
 				{
 					fInvalidationNeeded = false;
 				}
 
-				_cachedContent = null;
+				m_cachedContent = null;
 			}
 			else
 			{
@@ -167,10 +172,10 @@ partial class ContentPresenter
 	{
 		addedVisuals = false;
 
-		if (_inOnApplyTemplate)
+		if (m_bInOnApplyTemplate)
 		{
 			base.ApplyTemplate(out addedVisuals);
-			_dataTemplateUsedLastUpdate = GetTemplate();
+			SubscribeToTemplateUpdates();
 
 			goto Cleanup;
 		}
@@ -215,7 +220,7 @@ partial class ContentPresenter
 				}
 			}
 
-			_inOnApplyTemplate = true;
+			m_bInOnApplyTemplate = true;
 			TrySetDataContextFromContent(Content);
 
 			if (ContentTemplate is not null || SelectedContentTemplate is not null)
@@ -306,10 +311,9 @@ partial class ContentPresenter
 			}
 
 			addedVisuals = GetFirstChildNoAddRef() is not null;
-			// Uno specific
-			_dataTemplateUsedLastUpdate = GetTemplate();
+			SubscribeToTemplateUpdates();
 		}
-		else if (_dataContextInvalid)
+		else if (m_bDataContextInvalid)
 		{
 			TrySetDataContextFromContent(Content);
 		}
@@ -317,9 +321,20 @@ partial class ContentPresenter
 	Cleanup:
 		// Uno-specific
 		ContentTemplateRoot = VisualTreeHelper.GetChild(this, 0) as View;
-		_dataContextInvalid = false;
-		_inOnApplyTemplate = false;
+		m_bDataContextInvalid = false;
+		m_bInOnApplyTemplate = false;
 	}
+
+	// Uno specific: keeps the materialized content in sync when a DataTemplate is hot-reloaded.
+	private void SubscribeToTemplateUpdates()
+	{
+		if (TemplateManager.IsDataTemplateDynamicUpdateEnabled)
+		{
+			TemplateUpdateSubscription.Attach(this, GetTemplate() as DataTemplate, OnCurrentTemplateUpdated);
+		}
+	}
+
+	private void OnCurrentTemplateUpdated() => Invalidate(clearChildren: true);
 
 	// Fetches the child TextBlock of the default template if we are using the default template; null otherwise.
 	private TextBlock GetTextBlockChildOfDefaultTemplate(bool allowNullContent)
@@ -367,13 +382,13 @@ partial class ContentPresenter
 			ClearChildren();
 
 			// Clear cached reference to the old content value.
-			_cachedContent = null;
+			m_cachedContent = null;
 
 			IsUsingDefaultTemplate = false;
 		}
 		else
 		{
-			_dataContextInvalid = true;
+			m_bDataContextInvalid = true;
 		}
 
 		InvalidateMeasure();
@@ -401,13 +416,11 @@ partial class ContentPresenter
 		}
 	}
 
-	public void UpdateContentTemplateRoot()
-	{
-	}
-
 	internal TextBlock CreateDefaultContent()
 	{
-		var textBlock = new TextBlock();
+		// Uno specific: ImplicitTextBlock rather than TextBlock, so the generated text neither picks up
+		// an implicit TextBlock style nor shows up as a tab stop or a separate UIA element.
+		var textBlock = new ImplicitTextBlock(this);
 		// Act as if the TextBlock was the result of a template expansion
 		textBlock.SetTemplatedParent(this);
 		textBlock.HorizontalAlignment = HorizontalAlignment.Left;
@@ -424,9 +437,52 @@ partial class ContentPresenter
 
 	private void BindDefaultTextBlock(TextBlock textBlock)
 	{
-		var binding = new Binding();
-		binding.Mode = BindingMode.OneWay;
+		// WinUI binds Text to the DataContext, which SetDataContext has just filled with Content:
+		//   var binding = new Binding() { Mode = BindingMode.OneWay };
+		// Uno skips that push when Content itself comes from a source-less binding (see
+		// TrySetDataContextFromContent), so bind to the presenter's Content directly - the same value
+		// whenever the push does happen, and the right one when it does not.
+		var binding = new Binding(nameof(Content))
+		{
+			Mode = BindingMode.OneWay,
+			RelativeSource = RelativeSource.TemplatedParent,
+		};
 		textBlock.SetBinding(TextBlock.TextProperty, binding);
+	}
+
+	// MUX Reference: CContentPresenter::OnPropertyChanged forwards these to the TextBlock of the default
+	// template, so a change after the template was expanded still reaches it.
+	partial void OnTextWrappingChangedPartial()
+	{
+		if (GetTextBlockChildOfDefaultTemplate(allowNullContent: false) is { } textBlock)
+		{
+			textBlock.TextWrapping = TextWrapping;
+		}
+	}
+
+	partial void OnMaxLinesChangedPartial()
+	{
+		if (GetTextBlockChildOfDefaultTemplate(allowNullContent: false) is { } textBlock)
+		{
+			textBlock.MaxLines = MaxLines;
+		}
+	}
+
+	// Uno specific: WinUI's ContentPresenter has no TextTrimming or TextAlignment.
+	partial void OnTextTrimmingChangedPartial()
+	{
+		if (GetTextBlockChildOfDefaultTemplate(allowNullContent: false) is { } textBlock)
+		{
+			textBlock.TextTrimming = TextTrimming;
+		}
+	}
+
+	partial void OnTextAlignmentChangedPartial()
+	{
+		if (GetTextBlockChildOfDefaultTemplate(allowNullContent: false) is { } textBlock)
+		{
+			textBlock.TextAlignment = TextAlignment;
+		}
 	}
 
 	private bool ParticipatesInUnloadingContentTransition()
