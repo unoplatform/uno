@@ -19,24 +19,26 @@ namespace UITests.Shared.Wasm;
 	IgnoreInSnapshotTests = true)]
 public sealed partial class Wasm_ViewportOrientationTelemetry : Page
 {
-	private const string InstallCountersScript = @"
-(function() {
-	let t = globalThis.__unoViewportTelemetry;
-	if (!t) {
-		t = { resize: 0, orientation: 0 };
-		globalThis.__unoViewportTelemetry = t;
-		window.addEventListener(""resize"", function() { t.resize++; });
-		window.addEventListener(""orientationchange"", function() { t.orientation++; });
-	}
-	return ""ok"";
-})();";
+	private const string InstallCountersScript = """
+		(function() {
+			let t = globalThis.__unoViewportTelemetry;
+			if (!t) {
+				t = { resize: 0, orientation: 0 };
+				globalThis.__unoViewportTelemetry = t;
+				window.addEventListener("resize", function() { t.resize++; });
+				window.addEventListener("orientationchange", function() { t.orientation++; });
+			}
+			return "ok";
+		})();
+		""";
 
-	private const string PollScript = @"
-(function() {
-	const r = document.documentElement.getBoundingClientRect();
-	const t = globalThis.__unoViewportTelemetry || { resize: 0, orientation: 0 };
-	return Math.round(r.width) + "","" + Math.round(r.height) + "","" + t.resize + "","" + t.orientation;
-})();";
+	private const string PollScript = """
+		(function() {
+			const r = document.documentElement.getBoundingClientRect();
+			const t = globalThis.__unoViewportTelemetry || { resize: 0, orientation: 0 };
+			return Math.round(r.width) + "," + Math.round(r.height) + "," + t.resize + "," + t.orientation;
+		})();
+		""";
 
 	private readonly DispatcherTimer _pollTimer;
 
