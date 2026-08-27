@@ -101,8 +101,8 @@ public sealed partial class Wasm_ViewportOrientationTelemetry : Page
 		{
 			try
 			{
-				var parts = _jsGateway.ExecuteJavascript(PollScript).Split(',');
-				if (parts is [var width, var height, var resize, var orientation]
+				var result = _jsGateway.ExecuteJavascript(PollScript);
+				if (result.Split(',') is [var width, var height, var resize, var orientation]
 					&& double.TryParse(width, NumberStyles.Float, CultureInfo.InvariantCulture, out var docWidth)
 					&& double.TryParse(height, NumberStyles.Float, CultureInfo.InvariantCulture, out var docHeight))
 				{
@@ -114,7 +114,7 @@ public sealed partial class Wasm_ViewportOrientationTelemetry : Page
 					return;
 				}
 
-				DropGateway("unexpected telemetry format");
+				DropGateway($"unexpected telemetry format: {result}");
 			}
 			catch (Exception ex)
 			{
