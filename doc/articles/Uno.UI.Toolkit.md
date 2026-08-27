@@ -168,3 +168,15 @@ xmlns:toolkit="using:Uno.UI.Toolkit"
 ```
 
 While enabled, the press which aborts the inertia raises no `Tapped`, `DoubleTapped`, `RightTapped` or `Holding` on the element, its ancestors or its descendants, so a second tap is needed to act on the pointed item. A tap while the content is at rest is unaffected. The property has no effect on Windows.
+
+Panning elements which are template parts of a third-party control cannot be addressed directly. Reach them with an implicit `Style` in your application resources instead — for the CommunityToolkit `DataGrid`, whose rows are panned by its `DataGridRowsPresenter`:
+
+```xml
+xmlns:primitives="using:CommunityToolkit.WinUI.UI.Controls.Primitives"
+```
+
+```xml
+<Style TargetType="primitives:DataGridRowsPresenter">
+    <Setter Property="toolkit:ManipulationExtensions.IsTapToStopInertiaEnabled" Value="True" />
+</Style>
+```
