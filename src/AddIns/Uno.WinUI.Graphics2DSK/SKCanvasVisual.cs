@@ -16,10 +16,10 @@ internal sealed class SKCanvasVisual(SKCanvasElement owner, Compositor composito
 {
 	internal override bool CanPaint() => true;
 
-	internal override IGeometry? Paint(in PaintingSession session)
+	internal override void Paint(in PaintingSession session)
 	{
 		// Background, children (including the GL island fallback once created) and border first...
-		var ownPath = base.Paint(in session);
+		base.Paint(in session);
 
 		// ...then the element's own SkiaSharp drawing on top. Save/restore around the callback so the inheritor's
 		// RenderOverride can't leak canvas state into the frame, and clip so drawing stays inside the element's area.
@@ -36,8 +36,6 @@ internal sealed class SKCanvasVisual(SKCanvasElement owner, Compositor composito
 			// and painted by base.Paint on the next frame (EnsureIslandFallback re-invalidates once it's created).
 			owner.EnsureIslandFallback();
 		}
-
-		return ownPath;
 	}
 
 	public void Invalidate() => Compositor.InvalidateRender(this);

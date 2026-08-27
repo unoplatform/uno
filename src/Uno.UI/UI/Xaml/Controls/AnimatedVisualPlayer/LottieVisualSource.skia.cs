@@ -165,11 +165,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 				internal override bool CanPaint() => true;
 
-				internal override IGeometry? Paint(in PaintingSession session)
-				{
-					_owner.Render(session);
-					return null;
-				}
+				internal override void Paint(in PaintingSession session)
+					=> _owner.Render(session);
 
 				public void Invalidate() => Compositor.InvalidateRender(this);
 			}

@@ -541,8 +541,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			{
 				// Repaint-every-frame content (e.g. an effect brush over already-drawn area): paint directly, uncached.
 				visual.ContributeDamageOnPaint(contentChanged: true, session.Damage);
-				visual._ownContentPath?.Dispose();
-				visual._ownContentPath = visual.Paint(session);
+				visual.Paint(session);
 			}
 			else
 			{
@@ -554,8 +553,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					var recording = CreateRecording();
 					_factory.CreateInstance(visual, recording, ref session.RootTransform, session.Opacity, session.Damage, out var recorderSession);
 					// To debug what exactly gets repainted, replace the following line with `Paint(in session);`
-					visual._ownContentPath?.Dispose();
-					visual._ownContentPath = visual.Paint(in recorderSession);
+					visual.Paint(in recorderSession);
 
 					visual._content?.Dispose();
 					visual._content = recording.Finish();
@@ -735,7 +733,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Draws the content of this visual.
 	/// </summary>
 	/// <param name="session">The drawing session to use.</param>
-	internal virtual IGeometry? Paint(in PaintingSession session) => null;
+	internal virtual void Paint(in PaintingSession session)
+	{
+	}
 
 	private protected virtual bool TryAddShadowPaths(List<(IGeometry path, float alpha)> output) => !CanPaint();
 
