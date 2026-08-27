@@ -233,11 +233,14 @@ namespace Microsoft.UI.Xaml.Controls
 					para is not null &&
 					paragraphNode.GetParsedText() is { } parsed)
 				{
-					var margin = para.Margin;
-					var boxSize = paragraphNode.GetDesiredSize(); // content + margins
-					var contentSize = new Size(
-						Math.Max(0, boxSize.Width - margin.Left - margin.Right),
-						Math.Max(0, boxSize.Height - margin.Top - margin.Bottom));
+					// Position and clip against the geometry the layout pass produced, never against
+					// the element's own Margin: block margins collapse (the node's bottom margin is
+					// always folded into the next sibling's top), and the arranged content box is
+					// what the lines were aligned to, which is wider than the measured width
+					// whenever the paragraph is right-aligned, centred or justified.
+					var margin = paragraphNode.GetCollapsedMargin();
+					var boxSize = paragraphNode.GetDesiredSize(); // content + collapsed margins
+					var contentSize = paragraphNode.GetContentRenderSize();
 
 					_paragraphLayouts.Add(new ParagraphLayout(
 						ParsedText: parsed,
