@@ -152,14 +152,12 @@ Create a [new Uno Platform App project](xref:Uno.GetStarted) using one of the ge
 
    ```xml
    <ItemGroup>
-     <EmbeddedResource Include="WasmCSS\Fonts.css" />
-     <EmbeddedResource Include="WasmCSS\prism.css" /> <!-- This is new -->
-     <EmbeddedResource Include="WasmScripts\AppManifest.js" />
-     <EmbeddedResource Include="WasmScripts\prism.js" /> <!-- This one too -->
+     <EmbeddedResource Include="WasmCSS\prism.css" />
+     <EmbeddedResource Include="WasmScripts\prism.js" />
    </ItemGroup>
    ```
 
-   > For the Uno Wasm Bootstrapper to take those files automatically and load them with the application, they have to be put as embedded resources. A future version of Uno may remove this requirement.
+   > `AppManifest.js` and `Fonts.css` are included automatically by `Uno.Sdk`. Other JavaScript and CSS files must be embedded resources for the Uno Wasm Bootstrapper to load them with the application.
 7. Compile & run
 8. Once loaded, press F12 and go into the `Sources` tab. Both `prism.js` & `prism.css` files should be loaded this time.
 
