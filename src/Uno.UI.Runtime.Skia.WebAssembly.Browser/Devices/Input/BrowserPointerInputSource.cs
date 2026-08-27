@@ -1,4 +1,19 @@
+<<<<<<< HEAD
 ﻿using System;
+=======
+using System;
+using Windows.Devices.Input;
+using Windows.Foundation;
+using Windows.UI.Core;
+using Windows.UI.Input;
+using Microsoft.UI.Xaml.Controls;
+using static Windows.UI.Input.PointerUpdateKind;
+using Uno.Foundation.Logging;
+using System.Runtime.InteropServices.JavaScript;
+
+using _PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
+using _PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
+>>>>>>> origin/master
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
@@ -172,6 +187,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 	}
 
 	[JSExport]
+<<<<<<< HEAD
 	private static Task OnNativeEventAsync(
 		[JSMarshalAs<JSType.Any>] object inputSource,
 		byte @event,
@@ -194,6 +210,53 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 			wheelDeltaX, wheelDeltaY, hasRelatedTarget);
 
 		return Task.CompletedTask;
+=======
+	[return: JSMarshalAs<JSType.Number>]
+	private static int OnNativeScrollDelta(
+		[JSMarshalAs<JSType.Number>] nint unoElementId,
+		double horizontalDelta,
+		double verticalDelta,
+		[JSMarshalAs<JSType.Boolean>] bool isIntermediate,
+		[JSMarshalAs<JSType.Boolean>] bool isInertial)
+	{
+		try
+		{
+			// Ensure that the async context is set properly, since we're scrolling (and therefore raising
+			// ViewChanged and running layout) from outside the dispatcher.
+			using var syncContextScope = NativeDispatcher.Main.SynchronizationContext.Apply();
+
+			return BrowserNativeElementHostingExtension.ApplyNegotiatedScroll(unoElementId, horizontalDelta, verticalDelta, isIntermediate, isInertial)
+				? 1
+				: 0;
+		}
+		catch (Exception error)
+		{
+			if (_log.IsEnabled(LogLevel.Error))
+			{
+				_log.Error($"Failed to apply negotiated native scroll: {error}");
+			}
+
+			return 0;
+		}
+	}
+
+	[JSExport]
+	private static void OnNativeScrollCompleted([JSMarshalAs<JSType.Number>] nint unoElementId)
+	{
+		try
+		{
+			using var syncContextScope = NativeDispatcher.Main.SynchronizationContext.Apply();
+
+			BrowserNativeElementHostingExtension.CompleteNegotiatedScroll(unoElementId);
+		}
+		catch (Exception error)
+		{
+			if (_log.IsEnabled(LogLevel.Error))
+			{
+				_log.Error($"Failed to complete negotiated native scroll: {error}");
+			}
+		}
+>>>>>>> origin/master
 	}
 
 	[NotImplemented] public bool HasCapture => false;
