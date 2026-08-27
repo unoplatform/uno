@@ -143,6 +143,8 @@ internal readonly partial struct UnicodeText : IParsedText
 		var lineOpportunityBreaks = new List<int>();
 		var allAscii = true;
 		var allRunsLtr = true;
+		string? singleInlineText = null;
+		var nonEmptyInlines = 0;
 
 		foreach (var inline in inlines)
 		{
@@ -152,10 +154,21 @@ internal readonly partial struct UnicodeText : IParsedText
 				continue;
 			}
 
+			singleInlineText = ++nonEmptyInlines == 1 ? inlineText : null;
 			var inlineStart = stringBuilder.Length;
 			stringBuilder.Append(inlineText);
 
-			AppendBoundaries( /* Line */ 2, inlineText, inlineStart, lineOpportunityBreaks);
+			// NoWrap ASCII text without mandatory breaks never consults intermediate line-break opportunities
+			// (no wrapping decisions, single line) — skip the ICU break-iterator pass and emit the sole
+			// end-of-text boundary.
+			if (textWrapping is TextWrapping.NoWrap && IsAsciiWithoutLineBreaks(inlineText))
+			{
+				lineOpportunityBreaks.Add(inlineStart + inlineText.Length);
+			}
+			else
+			{
+				AppendBoundaries( /* Line */ 2, inlineText, inlineStart, lineOpportunityBreaks);
+			}
 
 			var currentFontDetails = inline.FontInfo;
 			int currentScript = 0;
@@ -218,7 +231,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		_text = stringBuilder.ToString();
+		_text = singleInlineText ?? stringBuilder.ToString();
 		if (_text.Length == 0)
 		{
 			_lines = [];
@@ -763,6 +776,20 @@ internal readonly partial struct UnicodeText : IParsedText
 		_corrections = isSpellCheckEnabled ? _spellCheckingService.Value?.SpellCheck(WordBoundaries, _text) : null;
 		calculatedSize = new Size(maxLineWidth, totalHeight);
 		_availableSize = availableSize;
+	}
+
+	// Printable ASCII (plus tab) has no mandatory line breaks and needs no ICU break analysis for NoWrap text.
+	private static bool IsAsciiWithoutLineBreaks(string text)
+	{
+		foreach (var c in text)
+		{
+			if ((c >= 0x7F || c < 0x20) && c != '\t')
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private static IEnumerable<LinkedListNode<Cluster>> EnumeratePossibleCharacterTrimmingBreaks(Line line)

@@ -58,7 +58,35 @@ internal sealed class SkiaFont : IFont
 
 	public ushort GetGlyphIndex(int codepoint) => _font.GetGlyph(codepoint);
 
-	public bool ContainsGlyph(int codepoint) => _font.ContainsGlyph(codepoint);
+	// ASCII coverage bitmap: text layout probes ContainsGlyph per character (a SkiaSharp P/Invoke), which
+	// dominates short-label re-layout; this instance is provider-cached so the one-time probe amortizes.
+	private ulong _asciiCoverageLo, _asciiCoverageHi;
+	private bool _asciiCoverageInitialized;
+
+	public bool ContainsGlyph(int codepoint)
+	{
+		if ((uint)codepoint < 128)
+		{
+			if (!_asciiCoverageInitialized)
+			{
+				for (var c = 0; c < 128; c++)
+				{
+					if (_font.ContainsGlyph(c))
+					{
+						if (c < 64) { _asciiCoverageLo |= 1UL << c; }
+						else { _asciiCoverageHi |= 1UL << (c - 64); }
+					}
+				}
+				_asciiCoverageInitialized = true;
+			}
+
+			return codepoint < 64
+				? (_asciiCoverageLo & (1UL << codepoint)) != 0
+				: (_asciiCoverageHi & (1UL << (codepoint - 64))) != 0;
+		}
+
+		return _font.ContainsGlyph(codepoint);
+	}
 
 	public float GetGlyphAdvance(ushort glyph)
 	{
@@ -68,9 +96,15 @@ internal sealed class SkiaFont : IFont
 
 	public string FamilyName => _font.Typeface?.FamilyName ?? string.Empty;
 
+	// One reusable shaping buffer per thread: creating/destroying a native buffer per Shape call is a real
+	// cost when short labels re-shape every frame.
+	[ThreadStatic]
+	private static HbBuffer? _shapeBuffer;
+
 	public GlyphRun Shape(ReadOnlySpan<char> text, TextDirection direction, bool enableLigatures = true)
 	{
-		using var buffer = new HbBuffer();
+		var buffer = _shapeBuffer ??= new HbBuffer();
+		buffer.ClearContents();
 		buffer.AddUtf16(text);
 		buffer.GuessSegmentProperties(); // sets the run's script/language for the shaper; direction is set explicitly below
 		buffer.Direction = direction == TextDirection.RightToLeft ? HarfBuzzSharp.Direction.RightToLeft : HarfBuzzSharp.Direction.LeftToRight;
