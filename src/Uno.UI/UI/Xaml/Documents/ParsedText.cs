@@ -411,7 +411,7 @@ internal readonly struct ParsedText : IParsedText
 		}
 
 		var canvas = session.Canvas;
-		var alignment = _textAlignment;
+		var alignment = ResolvedTextAlignment;
 		if (_flowDirection == FlowDirection.RightToLeft)
 		{
 			alignment = alignment switch
@@ -694,7 +694,7 @@ internal readonly struct ParsedText : IParsedText
 
 		foreach (var line in _renderLines)
 		{
-			(x, var justifySpaceOffset) = line.GetOffsets((float)_availableSize.Width, _textAlignment);
+			(x, var justifySpaceOffset) = line.GetOffsets((float)_availableSize.Width, ResolvedTextAlignment);
 
 			var spans = line.RenderOrderedSegmentSpans;
 			foreach (var span in spans)
@@ -913,7 +913,15 @@ internal readonly struct ParsedText : IParsedText
 
 	internal Size AvailableSize => _availableSize;
 
-	internal TextAlignment TextAlignment => _textAlignment;
+	internal TextAlignment TextAlignment => ResolvedTextAlignment;
+
+	// WinUI resolves DetectFromContent to a concrete edge in one place, against the paragraph's
+	// detected reading order (ParagraphNode::CalculateLineOffset), and nothing downstream ever
+	// sees the enum value. Resolving it here keeps every consumer on that contract.
+	private TextAlignment ResolvedTextAlignment
+		=> _textAlignment == TextAlignment.DetectFromContent
+			? (IsBaseDirectionRightToLeft ? TextAlignment.Right : TextAlignment.Left)
+			: _textAlignment;
 
 	internal FlowDirection FlowDirection => _flowDirection;
 
@@ -1228,7 +1236,7 @@ internal readonly struct ParsedText : IParsedText
 		}
 
 		RenderSegmentSpan span;
-		(float spanX, float justifySpaceOffset) = line.GetOffsets((float)_availableSize.Width, _textAlignment);
+		(float spanX, float justifySpaceOffset) = line.GetOffsets((float)_availableSize.Width, ResolvedTextAlignment);
 		int i = 0;
 
 		do
