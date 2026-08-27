@@ -559,6 +559,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				Safely(() => BuildProperties(writer, topLevelControl, isInline: false));
 			}
 
+			if (_isHotReloadEnabled && FindResourcesDictionaryDeclaration(topLevelControl) is { } resourcesDictionary)
+			{
+				// The Application doesn't go through BuildExtendedProperties, where the location of the
+				// dictionary declared in the Resources property is stamped for the other objects.
+				TrySetOriginalSourceLocation(writer, "Resources", resourcesDictionary);
+			}
+
 			if (_enableAlcAppSupport)
 			{
 				using (writer.BlockInvariant($"if (__isDefaultAlc)"))
@@ -1568,6 +1575,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											{
 												writer.AppendLineInvariantIndented("{0}.IsSystemDictionary = true;", dictVarId);
 											}
+											TrySetOriginalSourceLocation(writer, dictVarId, topLevelControl);
 											BuildMergedDictionaries(writer, mergedDictionariesMember, isInInitializer: false, dictIdentifier: dictVarId);
 											BuildThemeDictionaries(writer, themeDictionariesMember, isInInitializer: false, dictIdentifier: dictVarId);
 											BuildResourceDictionary(writer, implicitContentMember, isInInitializer: false, dictIdentifier: dictVarId, initializers: initializers);
@@ -1857,6 +1865,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					BuildMergedDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"), isInInitializer: true);
 					BuildThemeDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"), isInInitializer: true);
 					BuildResourceDictionary(writer, FindImplicitContentMember(topLevelControl), isInInitializer: true, initializers: initializers);
+				}
+
+				if (_isHotReloadEnabled)
+				{
+					// The dictionary is created in an expression context, so the location is stamped
+					// through an apply block, as for Style and the templates.
+					using var applyWriter = CreateApplyBlock(writer, topLevelControl);
+					TrySetOriginalSourceLocation(applyWriter, applyWriter.AppliedParameterName, topLevelControl);
 				}
 			}
 		}
@@ -3686,6 +3702,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						TrySetOriginalSourceLocation(writer, $"{writer.AppliedParameterName}", objectDefinition);
 					}
 
+					if (_isHotReloadEnabled && FindResourcesDictionaryDeclaration(objectDefinition) is { } resourcesDictionary)
+					{
+						// The dictionary of the Resources property is created by the owner itself, so its
+						// location is stamped here rather than where dictionary instances are built.
+						TrySetOriginalSourceLocation(writer, $"{writer.AppliedParameterName}.Resources", resourcesDictionary);
+					}
+
 					if (_isUiAutomationMappingEnabled)
 					{
 						// Prefer using the Uid or the Name if their value has been explicitly assigned
@@ -3730,6 +3753,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private static bool IsNotFrameworkElementButNeedsSourceLocation(XamlObjectDefinition objectDefinition)
 			=> objectDefinition.Type.Name is "VisualState" or "AdaptiveTrigger" or "StateTrigger";
+
+		/// <summary>
+		/// Gets the explicit &lt;ResourceDictionary&gt; declared in the "Resources" property of the provided
+		/// object, which the dictionary created by that object is populated from, or null when there is none.
+		/// </summary>
+		/// <remarks>
+		/// A dictionary with a "Source" is excluded: the instance is the one of the referenced file, which is
+		/// where its location is stamped.
+		/// </remarks>
+		private static XamlObjectDefinition? FindResourcesDictionaryDeclaration(XamlObjectDefinition objectDefinition)
+			=> objectDefinition
+				.Members
+				.FirstOrDefault(m => m.Member.Name == "Resources")
+				?.Objects
+				.FirstOrDefault(o => o.Type.Name == "ResourceDictionary" && !o.Members.Any(m => m.Member.Name == "Source"));
 
 		private void ValidateName(string? value, IXamlLocation location)
 		{

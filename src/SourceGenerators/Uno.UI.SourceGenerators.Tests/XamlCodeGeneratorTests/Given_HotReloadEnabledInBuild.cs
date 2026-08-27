@@ -382,4 +382,104 @@ public class Given_HotReloadEnabledInBuild
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task SetOriginalSourceLocationInOutputForResourceDictionaryFile()
+	{
+		var dictionary = new XamlFile("MyDictionary.xaml", """
+			<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+			  <ResourceDictionary.MergedDictionaries>
+			    <ResourceDictionary>
+			      <x:Double x:Key="MergedNumber">1</x:Double>
+			    </ResourceDictionary>
+			    <ResourceDictionary Source="ms-appx:///TestProject/0/OtherDictionary.xaml" />
+			  </ResourceDictionary.MergedDictionaries>
+			  <ResourceDictionary.ThemeDictionaries>
+			    <ResourceDictionary x:Key="Light">
+			      <x:Double x:Key="ThemedNumber">2</x:Double>
+			    </ResourceDictionary>
+			  </ResourceDictionary.ThemeDictionaries>
+			  <x:Double x:Key="ImportantNumber">12</x:Double>
+			</ResourceDictionary>
+			""");
+
+		var otherDictionary = new XamlFile("OtherDictionary.xaml", """
+			<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+			  <x:Double x:Key="OtherNumber">3</x:Double>
+			</ResourceDictionary>
+			""");
+
+		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
+
+		var test = new Verify.Test([dictionary, otherDictionary])
+		{
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
+			GlobalConfigOverride = configOverride,
+			TestState = { Sources = { "" } }
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task SetOriginalSourceLocationInOutputForExplicitResourceDictionaries()
+	{
+		var xamlFile = new XamlFile("MainPage.xaml", """
+			<Page x:Class="TestRepro.MainPage"
+			      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			      xmlns:local="using:TestRepro">
+			  <Page.Resources>
+			    <ResourceDictionary>
+			      <ResourceDictionary.ThemeDictionaries>
+			        <ResourceDictionary x:Key="Default">
+			          <SolidColorBrush x:Key="MyBrush" Color="Red" />
+			        </ResourceDictionary>
+			      </ResourceDictionary.ThemeDictionaries>
+			      <x:Double x:Key="PageNumber">1</x:Double>
+			    </ResourceDictionary>
+			  </Page.Resources>
+			  <Grid>
+			    <Grid.Resources>
+			      <ResourceDictionary>
+			        <x:Double x:Key="GridNumber">2</x:Double>
+			      </ResourceDictionary>
+			    </Grid.Resources>
+			  </Grid>
+			</Page>
+			""");
+
+		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+					}
+					"""
+				}
+			},
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
+			GlobalConfigOverride = configOverride,
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }
