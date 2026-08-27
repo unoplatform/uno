@@ -104,7 +104,12 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly float? _endingNewLineLineHeight;
 	private readonly bool _rtl;
 	private readonly List<(int start, int end, Hyperlink hyperlink)> _hyperlinkRanges;
-	private readonly List<int> _wordBoundaries;
+	// Lazy: word boundaries feed selection/word-navigation/spell-check, never measure — computing them (an ICU
+	// break-iterator pass) on every Text change is pure waste for labels that are only ever rendered.
+	// (Boxed because this is a readonly struct.)
+	private readonly global::System.Runtime.CompilerServices.StrongBox<List<int>?> _wordBoundaries = new();
+
+	private List<int> WordBoundaries => _wordBoundaries.Value ??= _text.Length == 0 ? [] : GetWords(_text);
 	private readonly List<LinkedListNode<Cluster>> _clustersInLogicalOrder;
 	private readonly LinkedList<Glyph> _glyphs;
 	private readonly List<(int end, FlowDirection direction)> _bidiBreaks;
@@ -136,6 +141,8 @@ internal readonly partial struct UnicodeText : IParsedText
 		var scriptBreaks = new List<int>();
 		var fontBreaks = new List<(int end, FontDetails fontDetails)>();
 		var lineOpportunityBreaks = new List<int>();
+		var allAscii = true;
+		var allRunsLtr = true;
 
 		foreach (var inline in inlines)
 		{
@@ -157,8 +164,19 @@ internal readonly partial struct UnicodeText : IParsedText
 				FontDetails newFontDetails;
 				var codepoint = char.ConvertToUtf32(inlineText, i);
 
-				var newScript = ICU.GetMethod<ICU.uscript_getScript>()(char.ConvertToUtf32(inlineText, i), out var errorCode);
-				ICU.CheckErrorCode<ICU.uscript_getScript>(errorCode);
+				// ASCII shortcut: the whole ASCII range is Latin letters (USCRIPT_LATIN=25) or Script=Common (0),
+				// so the per-character ICU P/Invoke — a dominant cost of re-laying-out short labels — is skippable.
+				int newScript;
+				if (codepoint < 0x80)
+				{
+					newScript = char.IsAsciiLetter((char)codepoint) ? 25 : 0;
+				}
+				else
+				{
+					allAscii = false;
+					newScript = ICU.GetMethod<ICU.uscript_getScript>()(codepoint, out var errorCode);
+					ICU.CheckErrorCode<ICU.uscript_getScript>(errorCode);
+				}
 
 				if (newScript != currentScript)
 				{
@@ -189,7 +207,9 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 
 			scriptBreaks.Add(inlineStart + inlineText.Length);
-			_runBreaks.Add((inlineStart + inlineText.Length, inline.Foreground, (inline as Run)?.FlowDirection ?? flowDirection));
+			var runDirection = (inline as Run)?.FlowDirection ?? flowDirection;
+			allRunsLtr &= runDirection is FlowDirection.LeftToRight;
+			_runBreaks.Add((inlineStart + inlineText.Length, inline.Foreground, runDirection));
 			fontBreaks.Add((inlineStart + inlineText.Length, currentFontDetails));
 
 			if (TryGetHyperLink(inline) is { } hyperLink)
@@ -206,7 +226,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			_defaultFontDetails = defaultFontDetails;
 			_rtl = flowDirection is FlowDirection.RightToLeft;
 			_textAlignment = textAlignment ?? (flowDirection is FlowDirection.RightToLeft ? TextAlignment.Right : TextAlignment.Left);
-			_wordBoundaries = [];
+
 			var emptyHeight = GetLineHeightAndBaselineOffset(lineStackingStrategy, lineHeight, defaultFontDetails, false, true).lineHeight;
 			calculatedSize = new Size(0, emptyHeight);
 			_availableSize = availableSize;
@@ -219,31 +239,51 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		_bidiBreaks = new List<(int end, FlowDirection direction)>();
-		var embeddingLevels = ArrayPool<byte>.Shared.Rent(_text.Length);
-		using var embeddingLevelsDisposable = new DisposableStruct<byte[]>(static embeddingLevels => ArrayPool<byte>.Shared.Return(embeddingLevels), embeddingLevels);
-		for (int i = 0; i < _runBreaks.Count; i++)
+		var trivialLtr = allAscii && allRunsLtr && flowDirection is FlowDirection.LeftToRight;
+		// The paragraph BiDi handle must outlive the per-line reordering below; boxed so the deferred close
+		// sees the handle assigned in the non-trivial branch (it stays default — no close — on the trivial path).
+		var bidiBox = new global::System.Runtime.CompilerServices.StrongBox<IntPtr>();
+		using var bidiDisposable = new DisposableStruct<global::System.Runtime.CompilerServices.StrongBox<IntPtr>>(
+			static box => { if (box.Value != default) { ICU.GetMethod<ICU.ubidi_close>()(box.Value); } },
+			bidiBox);
+		IntPtr bidi = default;
+		if (trivialLtr)
 		{
-			var (start, count) = i == 0 ? (0, _runBreaks[0].end) : (_runBreaks[i - 1].end, _runBreaks[i].end - _runBreaks[i - 1].end);
-			var direction = _runBreaks[i].direction;
-			var level = flowDirection is FlowDirection.LeftToRight
-				? (direction is FlowDirection.LeftToRight ? 0 : 1)
-				: (direction is FlowDirection.RightToLeft ? 1 : 2); // 2 and not 0 because embedding must increase nesting level when switching direction inside RTL paragraph
-			Array.Fill(embeddingLevels, (byte)level, start, count);
+			// ASCII has no RTL characters, so with an LTR paragraph and LTR runs the BiDi outcome is a single
+			// LTR run — skip the ICU BiDi pass entirely (a real cost when short labels re-layout every frame).
+			_rtl = false;
+			_bidiBreaks.Add((_text.Length, FlowDirection.LeftToRight));
+			textAlignment ??= TextAlignment.Left;
 		}
-
-		using var _ = ICU.CreateBiDiAndSetPara(_text, 0, _text.Length, flowDirection is FlowDirection.RightToLeft ? UBIDI_DEFAULT_RTL : UBIDI_DEFAULT_LTR, out var bidi, embeddingLevels);
-		var runCount = ICU.GetMethod<ICU.ubidi_countRuns>()(bidi, out var countRunsErrorCode);
-		ICU.CheckErrorCode<ICU.ubidi_countRuns>(countRunsErrorCode);
-		_rtl = ICU.GetMethod<ICU.ubidi_getParaLevel>()(bidi) is UBIDI_RTL;
-		for (var bidiRunIndex = 0; bidiRunIndex < runCount; bidiRunIndex++)
+		else
 		{
-			var level = ICU.GetMethod<ICU.ubidi_getVisualRun>()(bidi, bidiRunIndex, out var logicalStart, out var length);
-			CI.Assert(level is UBIDI_LTR or UBIDI_RTL);
-			_bidiBreaks.Add((logicalStart + length, level is UBIDI_RTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight));
-
-			if (textAlignment is null && logicalStart == 0)
+			var embeddingLevels = ArrayPool<byte>.Shared.Rent(_text.Length);
+			using var embeddingLevelsDisposable = new DisposableStruct<byte[]>(static embeddingLevels => ArrayPool<byte>.Shared.Return(embeddingLevels), embeddingLevels);
+			for (int i = 0; i < _runBreaks.Count; i++)
 			{
-				textAlignment = level is UBIDI_RTL ? TextAlignment.Right : TextAlignment.Left;
+				var (start, count) = i == 0 ? (0, _runBreaks[0].end) : (_runBreaks[i - 1].end, _runBreaks[i].end - _runBreaks[i - 1].end);
+				var direction = _runBreaks[i].direction;
+				var level = flowDirection is FlowDirection.LeftToRight
+					? (direction is FlowDirection.LeftToRight ? 0 : 1)
+					: (direction is FlowDirection.RightToLeft ? 1 : 2); // 2 and not 0 because embedding must increase nesting level when switching direction inside RTL paragraph
+				Array.Fill(embeddingLevels, (byte)level, start, count);
+			}
+
+			ICU.CreateBiDiAndSetPara(_text, 0, _text.Length, flowDirection is FlowDirection.RightToLeft ? UBIDI_DEFAULT_RTL : UBIDI_DEFAULT_LTR, out bidi, embeddingLevels);
+			bidiBox.Value = bidi;
+			var runCount = ICU.GetMethod<ICU.ubidi_countRuns>()(bidi, out var countRunsErrorCode);
+			ICU.CheckErrorCode<ICU.ubidi_countRuns>(countRunsErrorCode);
+			_rtl = ICU.GetMethod<ICU.ubidi_getParaLevel>()(bidi) is UBIDI_RTL;
+			for (var bidiRunIndex = 0; bidiRunIndex < runCount; bidiRunIndex++)
+			{
+				var level = ICU.GetMethod<ICU.ubidi_getVisualRun>()(bidi, bidiRunIndex, out var logicalStart, out var length);
+				CI.Assert(level is UBIDI_LTR or UBIDI_RTL);
+				_bidiBreaks.Add((logicalStart + length, level is UBIDI_RTL ? FlowDirection.RightToLeft : FlowDirection.LeftToRight));
+
+				if (textAlignment is null && logicalStart == 0)
+				{
+					textAlignment = level is UBIDI_RTL ? TextAlignment.Right : TextAlignment.Left;
+				}
 			}
 		}
 
@@ -613,6 +653,19 @@ internal readonly partial struct UnicodeText : IParsedText
 		for (var lineIndex = 0; lineIndex < lines.Count; lineIndex++)
 		{
 			var line = lines[lineIndex];
+
+			if (trivialLtr)
+			{
+				// Pure-LTR line: visual order == logical order, so the ICU line-BiDi reordering is an identity
+				// relink — only the per-cluster line metadata needs assigning.
+				var trivialIndex = 0;
+				for (var (clusterNode, end) = (line.clusterStart, line.clusterLast.Next); clusterNode != end; clusterNode = clusterNode.Next!)
+				{
+					clusterNode!.Value = clusterNode.Value with { rtl = false, indexInLine = trivialIndex++ };
+				}
+				continue;
+			}
+
 			var ellipsisCluster = line.hasEllipsis ? line.clusterLast : null;
 			var limit = line.hasEllipsis ? line.clusterLast.Value.start : line.clusterLast.Value.end;
 			var lineBidi = ICU.GetMethod<ICU.ubidi_open>()();
@@ -706,8 +759,8 @@ internal readonly partial struct UnicodeText : IParsedText
 		_lines = lines;
 		_defaultFontDetails = defaultFontDetails;
 		_textAlignment = textAlignment!.Value;
-		_wordBoundaries = GetWords(_text);
-		_corrections = isSpellCheckEnabled ? _spellCheckingService.Value?.SpellCheck(_wordBoundaries, _text) : null;
+
+		_corrections = isSpellCheckEnabled ? _spellCheckingService.Value?.SpellCheck(WordBoundaries, _text) : null;
 		calculatedSize = new Size(maxLineWidth, totalHeight);
 		_availableSize = availableSize;
 	}
@@ -844,7 +897,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				runBreakIndex++;
 			}
 
-			while (_wordBoundaries[wordBoundariesIndex] <= cluster.Value.start)
+			while (WordBoundaries[wordBoundariesIndex] <= cluster.Value.start)
 			{
 				wordBoundariesIndex++;
 			}
@@ -895,7 +948,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 			if (_corrections?[wordBoundariesIndex] is { } correction)
 			{
-				var correctionIndexBase = wordBoundariesIndex == 0 ? 0 : _wordBoundaries[wordBoundariesIndex - 1];
+				var correctionIndexBase = wordBoundariesIndex == 0 ? 0 : WordBoundaries[wordBoundariesIndex - 1];
 				if (correctionIndexBase + correction.correctionStart <= cluster.Value.start && correctionIndexBase + correction.correctionEnd >= cluster.Value.end)
 				{
 					var fontSize = fontDetails.FontSize;
@@ -1003,7 +1056,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	{
 		if (_spellCheckingService.Value is { } spellCheckingService)
 		{
-			return spellCheckingService.GetSpellCheckSuggestions(_text, _wordBoundaries, correctionStart, correctionEnd);
+			return spellCheckingService.GetSpellCheckSuggestions(_text, WordBoundaries, correctionStart, correctionEnd);
 		}
 		else
 		{
@@ -1223,30 +1276,30 @@ internal readonly partial struct UnicodeText : IParsedText
 	{
 		if (index == 0)
 		{
-			if (_wordBoundaries.Count == 0)
+			if (WordBoundaries.Count == 0)
 			{
 				return (0, 0);
 			}
 			else
 			{
-				return (0, _wordBoundaries[0]);
+				return (0, WordBoundaries[0]);
 			}
 		}
 		else if (index == _text.Length)
 		{
-			if (_wordBoundaries.Count == 1)
+			if (WordBoundaries.Count == 1)
 			{
 				return (0, _text.Length);
 			}
 			else
 			{
-				return (_wordBoundaries[^2], _text.Length - _wordBoundaries[^2]);
+				return (WordBoundaries[^2], _text.Length - WordBoundaries[^2]);
 			}
 		}
 		else
 		{
 			var prevBoundary = 0;
-			foreach (var boundary in _wordBoundaries)
+			foreach (var boundary in WordBoundaries)
 			{
 				if (index < boundary || boundary == index && !right)
 				{
@@ -1508,15 +1561,15 @@ internal readonly partial struct UnicodeText : IParsedText
 	/// </summary>
 	public (int correctionStart, int correctionEnd)? GetCorrectionAtIndex(int textIndex)
 	{
-		if (_corrections is null || _wordBoundaries.Count == 0 || textIndex < 0 || textIndex > _text.Length)
+		if (_corrections is null || WordBoundaries.Count == 0 || textIndex < 0 || textIndex > _text.Length)
 		{
 			return null;
 		}
 
 		var wordStart = 0;
-		for (var i = 0; i < _wordBoundaries.Count; i++)
+		for (var i = 0; i < WordBoundaries.Count; i++)
 		{
-			var wordEnd = _wordBoundaries[i];
+			var wordEnd = WordBoundaries[i];
 			if (textIndex >= wordStart && textIndex < wordEnd)
 			{
 				if (i < _corrections.Count && _corrections[i] is { } correction)

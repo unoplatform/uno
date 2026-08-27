@@ -19,6 +19,11 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		internal bool ShouldInterceptInvalidate { get; set; }
 
+		// Exact MeasureCore/ArrangeCore execution counts for the UNO_LOG_FRAME_PHASES itemization; read and
+		// reset by CompositionTarget's per-window print (UI-thread only, so plain increments).
+		internal static int LayoutMeasureCoreCount;
+		internal static int LayoutArrangeCoreCount;
+
 		// In WinUI, this is in LayoutManager. For Uno, we make it static in FE for now.
 		private protected static bool IsInNonClippingTree { get; set; }
 
@@ -265,6 +270,7 @@ namespace Microsoft.UI.Xaml
 							return;
 						}
 
+						LayoutMeasureCoreCount++;
 						SetLayoutFlags(LayoutFlag.MeasuringSelf);
 						MeasureCoreClearingMeasuringSelf(availableSize);
 						InvalidateArrange();
@@ -440,6 +446,7 @@ namespace Microsoft.UI.Xaml
 					// We must reset the flag **BEFORE** doing the actual arrange, so the elements are able to re-invalidate themselves
 					ClearLayoutFlags(LayoutFlag.ArrangeDirty | LayoutFlag.ArrangeDirtyPath);
 
+					LayoutArrangeCoreCount++;
 					ArrangeCore(finalRect);
 
 					SetLayoutFlags(LayoutFlag.FirstArrangeDone);
