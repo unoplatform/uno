@@ -33,7 +33,10 @@ internal class VulkanDisplay : IDisposable
 		_swapchainExtent = swapchainExtent;
 		_platformSurface = platformSurface;
 		_semaphorePair = new VulkanSemaphorePair(_context);
-		CommandBufferPool = new VulkanCommandBufferPool(_context);
+		// autoFree: the present path allocates a command buffer + fence per frame and enqueues them via
+		// AddSubmittedCommandBuffer; without it FreeFinishedCommandBuffers never runs and every presented
+		// frame leaks one, ending in VK_ERROR_OUT_OF_HOST_MEMORY on a long-running window.
+		CommandBufferPool = new VulkanCommandBufferPool(_context, autoFree: true);
 		CreateSwapchainImages();
 	}
 

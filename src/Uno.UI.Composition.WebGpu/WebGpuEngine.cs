@@ -394,6 +394,8 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		wgpuCommandEncoderCopyTextureToBuffer(enc, &src, &dst, &ext);
 		var cb = wgpuCommandEncoderFinish(enc, null);
 		wgpuQueueSubmit(Q, 1, (IntPtr)(&cb));
+		wgpuCommandBufferRelease(cb);
+		wgpuCommandEncoderRelease(enc);
 		total = (int)tot;
 		padded = (int)pad;
 	}

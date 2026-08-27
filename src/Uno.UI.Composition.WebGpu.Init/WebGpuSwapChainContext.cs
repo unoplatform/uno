@@ -136,6 +136,7 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 
 		wgpuSurfacePresent(_surface);
 
+		wgpuCommandBufferRelease(cb);
 		wgpuCommandEncoderRelease(enc);
 		wgpuTextureViewRelease(view);
 		wgpuTextureRelease(st.Texture);
