@@ -63,12 +63,13 @@ public partial class Visual
 			return;
 		}
 
-		// The clip in effect for this visual's own content, in root coordinates (its ancestors' clips intersected
-		// with its own pre-painting clip). Computed here per damaged visual rather than threaded through the whole
-		// render walk; only changed/moved visuals reach this point, so the re-walk stays cheap in practice.
-		using var clip = GetTotalClipPath(skipPostPaintingClipping: true);
+		// The clip in effect for this visual's own content, in root coordinates. Rect-only: damage only ever
+		// consumes clip BOUNDS, and during a scroll every visible visual reaches this point every frame — a
+		// geometry-based total-clip walk (allocations + polygon booleans) per moved visual is pure overhead.
+		// Non-rect clips contribute their bounds (or nothing when unbounded), which only widens damage — safe.
+		var clipRect = GetTotalClipBoundsRect();
 
-		if (TryGetPaintDamageRegion(clip, out var bounds))
+		if (TryGetPaintDamageRegion(clipRect, out var bounds))
 		{
 			damage.UnionRect(bounds);
 
@@ -88,11 +89,32 @@ public partial class Visual
 		}
 	}
 
-	private bool TryGetPaintDamageRegion(IGeometry clip, out Rect bounds)
+	/// <summary>Root-space rect bounds of the clips in effect for this visual's own content: its own and its
+	/// ancestors' rect-shaped clips intersected (see <see cref="GetLocalCullClipBounds"/>); non-rect clips
+	/// contribute nothing, which only widens the result.</summary>
+	private Rect GetTotalClipBoundsRect()
+	{
+		var rect = InfiniteClipRect;
+		for (var visual = this; visual is not null; visual = visual.Parent as Visual)
+		{
+			if (visual.GetLocalCullClipBounds() is { } localClip)
+			{
+				rect = Intersect(rect, localClip.Transform(visual.TotalMatrix.ToMatrix3x2()));
+				if (IsRectEmpty(rect))
+				{
+					return default;
+				}
+			}
+		}
+
+		return rect;
+	}
+
+	private bool TryGetPaintDamageRegion(Rect clipRect, out Rect bounds)
 	{
 		bounds = default;
 
-		if (clip.IsEmpty)
+		if (IsRectEmpty(clipRect))
 		{
 			return false;
 		}
@@ -100,7 +122,6 @@ public partial class Visual
 		// Rect-only, deliberately: DamageRegion accumulates rects (a geometry contribution is reduced to its
 		// bounds anyway), so a geometry-shaped region here would pay polygon booleans — pathological on the
 		// managed geometry engine when every visual moves (scrolling) — for no tighter final damage.
-		var clipRect = clip.Bounds;
 
 		if (TryGetLocalContentBounds(out var local))
 		{
