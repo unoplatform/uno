@@ -43,6 +43,12 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 
 	internal PageNode? GetPageNode() => _pPageNode;
 
+	// Mirrors CRichTextBlockOverflow::GetActualWidth/GetActualHeight: the size reported is the
+	// one the block layout engine measured for the slice this element hosts, not the arrange slot.
+	private protected override double GetActualWidth() => (_pPageNode?.GetDesiredSize() ?? DesiredSize).Width;
+
+	private protected override double GetActualHeight() => (_pPageNode?.GetDesiredSize() ?? DesiredSize).Height;
+
 	// Returns the per-element TextView for just this element (no knowledge of linked layout).
 	internal RichTextBlockView? GetSingleElementTextView() => _pTextView;
 

@@ -182,12 +182,24 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (block is Paragraph paragraph)
 				{
-					parts.Add(string.Concat(paragraph.Inlines.Select(InlineExtensions.GetText)));
+					parts.Add(string.Concat(paragraph.Inlines.Select(GetPlainTextOf)));
 				}
 			}
 
-			return string.Join("\r\n", parts);
+			// Every paragraph is terminated, the last one included: each Paragraph's reserved
+			// close position expands to a CRLF in the container's run model.
+			return parts.Count == 0 ? string.Empty : string.Join("\r\n", parts) + "\r\n";
 		}
+
+		// InlineExtensions.GetText yields a bare LF for a LineBreak because the layout path uses it
+		// as a flat character index space; the text a container reports uses CRLF.
+		private static string GetPlainTextOf(Inline inline) => inline switch
+		{
+			Run run => run.Text ?? string.Empty,
+			LineBreak => "\r\n",
+			Span span => string.Concat(span.Inlines.Select(GetPlainTextOf)),
+			_ => string.Empty,
+		};
 
 		#region Pointer events
 
@@ -549,8 +561,23 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public override string GetAccessibilityInnerText() => GetPlainText();
 
-		private protected override double GetActualWidth() => DesiredSize.Width;
-		private protected override double GetActualHeight() => DesiredSize.Height;
+		private protected override double GetActualWidth() => GetContentSize().Width;
+		private protected override double GetActualHeight() => GetContentSize().Height;
+
+		// CRichTextBlock::GetActualWidth/GetActualHeight report what the block layout engine
+		// measured rather than the framework's DesiredSize, so neither an explicit size on the
+		// control nor a constraining arrange slot changes the size the text reports.
+		private Size GetContentSize()
+		{
+#if __SKIA__
+			if (_pageNode is not null)
+			{
+				return _pageNode.GetDesiredSize();
+			}
+#endif
+
+			return DesiredSize;
+		}
 
 		internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 		{
