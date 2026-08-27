@@ -26,11 +26,17 @@ partial class ResourceLoader
 {
 	private readonly Dictionary<string, Dictionary<string, string>> _resources = new(StringComparer.OrdinalIgnoreCase); // _resources[CULTURE][RES_KEY] => RES_VALUE
 
-	// Keyed only by resource cultures, which are fixed at build time — never by the requested
-	// culture, which comes from PrimaryLanguageOverride and is caller-controlled. Concurrent
-	// because, unlike the per-loader state, this is shared process-wide and GetString carries no
-	// thread affinity.
-	private static readonly ConcurrentDictionary<string, string?> _resourceScripts = new(StringComparer.OrdinalIgnoreCase); // _resourceScripts[CULTURE] => ISO 15924 script
+	// Keyed only by resource cultures, which are fixed at build time. Concurrent because, unlike the
+	// per-loader state, this is shared process-wide and GetString carries no thread affinity.
+	private static readonly ConcurrentDictionary<string, (string? Script, string? Region)> _resourceSubtags = new(StringComparer.OrdinalIgnoreCase);
+
+	// The requested culture comes from PrimaryLanguageOverride and is caller-controlled, so it gets a
+	// separate memo that is dropped wholesale instead of growing. Entries can never go stale: a name's
+	// script and region are pure functions of the name.
+	private static readonly ConcurrentDictionary<string, (string? Script, string? Region)> _requestedSubtags = new(StringComparer.OrdinalIgnoreCase);
+
+	// Comfortably above the handful of language preferences a lookup cycles through.
+	private const int MaxRequestedSubtags = 32;
 
 	internal string LoaderName { get; }
 
@@ -132,28 +138,79 @@ partial class ResourceLoader
 	/// the closest match down. Script comes first, so that zh-Hant never answers a Simplified Chinese
 	/// request, whether it is reached as a sibling or as a bare zh folder holding Traditional content.
 	/// </summary>
-	private IEnumerable<string> GetFallbackCultures(string culture)
+	private List<string> GetFallbackCultures(string culture)
 	{
 		var baseCulture = culture.Split('-', 2)[0];
+		var ancestors = GetAncestors(culture).ToArray();
+		var (script, region) = GetRequestedSubtags(culture);
 
-		var ancestors = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-		foreach (var ancestor in GetAncestors(culture))
+		var candidates = new List<string>();
+		foreach (var resourceCulture in _resources.Keys)
 		{
-			ancestors.TryAdd(ancestor, ancestors.Count);
+			if (AncestorDepth(resourceCulture) >= 0 ||
+				(baseCulture.Length > 0 && resourceCulture.StartsWith(baseCulture, StringComparison.OrdinalIgnoreCase)))
+			{
+				candidates.Add(resourceCulture);
+			}
 		}
 
-		// Resolved rather than cached: the requested culture is caller-controlled, so caching it
-		// would let a process-wide dictionary grow without bound.
-		var script = ResolveScript(culture);
-		var region = GetRegionSubtag(culture);
+		candidates.Sort(CompareCandidates);
 
-		return _resources.Keys
-			.Where(x => ancestors.ContainsKey(x) || (baseCulture.Length > 0 && x.StartsWith(baseCulture, StringComparison.OrdinalIgnoreCase)))
-			.OrderByDescending(x => script is not null && string.Equals(GetResourceScript(x), script, StringComparison.OrdinalIgnoreCase)) // same script first
-			.ThenByDescending(x => region is not null && string.Equals(GetRegionSubtag(x), region, StringComparison.OrdinalIgnoreCase)) // then same region (Windows matches language+region ahead of language+script)
-			.ThenBy(x => ancestors.TryGetValue(x, out var depth) ? depth : int.MaxValue) // then the closest ancestor
-			.ThenByDescending(x => string.Equals(x, baseCulture, StringComparison.OrdinalIgnoreCase)) // then the base culture, the only ancestor an unresolvable culture still reaches
-			.ThenByDescending(x => x, StringComparer.Ordinal); // and finally the remaining siblings, from ex-ZZ to ex-AA
+		return candidates;
+
+		int CompareCandidates(string left, string right)
+		{
+			var byScript = SameScript(right).CompareTo(SameScript(left)); // same script first
+			if (byScript != 0)
+			{
+				return byScript;
+			}
+
+			var byRegion = SameRegion(right).CompareTo(SameRegion(left)); // then same region
+			if (byRegion != 0)
+			{
+				return byRegion;
+			}
+
+			var byAncestor = Proximity(left).CompareTo(Proximity(right)); // then the closest ancestor
+			if (byAncestor != 0)
+			{
+				return byAncestor;
+			}
+
+			var byBaseCulture = IsBaseCulture(right).CompareTo(IsBaseCulture(left)); // then the base culture
+			if (byBaseCulture != 0)
+			{
+				return byBaseCulture;
+			}
+
+			return StringComparer.Ordinal.Compare(right, left); // and finally from ex-ZZ to ex-AA
+		}
+
+		bool SameScript(string candidate)
+			=> script is not null && string.Equals(GetResourceSubtags(candidate).Script, script, StringComparison.OrdinalIgnoreCase);
+
+		bool SameRegion(string candidate)
+			=> region is not null && string.Equals(GetResourceSubtags(candidate).Region, region, StringComparison.OrdinalIgnoreCase);
+
+		int Proximity(string candidate)
+			=> AncestorDepth(candidate) is var depth && depth >= 0 ? depth : int.MaxValue;
+
+		int AncestorDepth(string candidate)
+		{
+			for (var i = 0; i < ancestors.Length; i++)
+			{
+				if (string.Equals(ancestors[i], candidate, StringComparison.OrdinalIgnoreCase))
+				{
+					return i;
+				}
+			}
+
+			return -1;
+		}
+
+		bool IsBaseCulture(string candidate)
+			=> string.Equals(candidate, baseCulture, StringComparison.OrdinalIgnoreCase);
 	}
 
 	private bool TryGetForCulture(string culture, string resource, out string? resourceValue)
@@ -194,12 +251,35 @@ partial class ResourceLoader
 	}
 
 	/// <summary>
-	/// Gets the ISO 15924 script of a culture holding resources (Hans, Hant, Latn, Cyrl, ...), or
-	/// null when the platform doesn't associate one with it. Cached: the resource cultures are
+	/// Gets the ISO 15924 script (Hans, Hant, Latn, Cyrl, ...) and the region of a culture holding
+	/// resources, either being null when the culture carries none. Cached: the resource cultures are
 	/// fixed at build time, and each is scored repeatedly while ordering the fallback candidates.
 	/// </summary>
-	private static string? GetResourceScript(string culture)
-		=> _resourceScripts.GetOrAdd(culture, static x => ResolveScript(x));
+	private static (string? Script, string? Region) GetResourceSubtags(string culture)
+		=> _resourceSubtags.GetOrAdd(culture, static x => (ResolveScript(x), GetRegionSubtag(x)));
+
+	/// <summary>
+	/// Same for the requested culture, memoized under <see cref="MaxRequestedSubtags"/> entries
+	/// because its name is caller-controlled.
+	/// </summary>
+	private static (string? Script, string? Region) GetRequestedSubtags(string culture)
+	{
+		if (_requestedSubtags.TryGetValue(culture, out var subtags))
+		{
+			return subtags;
+		}
+
+		subtags = (ResolveScript(culture), GetRegionSubtag(culture));
+
+		if (_requestedSubtags.Count >= MaxRequestedSubtags)
+		{
+			_requestedSubtags.Clear();
+		}
+
+		_requestedSubtags[culture] = subtags;
+
+		return subtags;
+	}
 
 	private static string? ResolveScript(string culture)
 	{
