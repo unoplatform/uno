@@ -335,6 +335,15 @@ internal abstract class BlockNode
 		m_renderSize.Width + (m_margin.Left + m_margin.Right),
 		m_renderSize.Height + (m_margin.Top + m_margin.Bottom));
 
+	// The margin this node was laid out with: collapsed against the previous sibling, and
+	// always zero at the bottom because collapsing carries it into the next sibling's top.
+	// A renderer positioning blocks must use this, not the element's own Margin.
+	internal Thickness GetCollapsedMargin() => m_margin;
+
+	// Arranged content box, without the margin GetRenderSize adds back. Its width is the
+	// arrange slot, which is what the lines were aligned against.
+	internal Size GetContentRenderSize() => m_renderSize;
+
 	public uint GetContentLength() => m_length;
 
 	public BlockNodeBreak? GetBreak() => m_pBreak;
