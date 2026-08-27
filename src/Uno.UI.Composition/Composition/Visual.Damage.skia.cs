@@ -240,7 +240,7 @@ public partial class Visual
 
 	// --- Rect helpers (Windows.Foundation.Rect, kept in LTRB-safe form) ---
 
-	private static bool IsRectEmpty(Rect r) => r.Width <= 0 || r.Height <= 0;
+	private protected static bool IsRectEmpty(Rect r) => r.Width <= 0 || r.Height <= 0;
 
 	private static bool RectEquals(Rect a, Rect b)
 		=> a.X == b.X && a.Y == b.Y && a.Width == b.Width && a.Height == b.Height;
@@ -270,7 +270,7 @@ public partial class Visual
 		return new Rect(left, top, right - left, bottom - top);
 	}
 
-	private static Rect Intersect(Rect a, Rect b)
+	private protected static Rect Intersect(Rect a, Rect b)
 	{
 		var left = Math.Max(a.Left, b.Left);
 		var top = Math.Max(a.Top, b.Top);

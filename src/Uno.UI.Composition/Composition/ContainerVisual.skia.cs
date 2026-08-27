@@ -147,6 +147,17 @@ public partial class ContainerVisual : Visual
 		}
 	}
 
+	private protected override Rect? GetLocalCullClipBounds()
+	{
+		var baseBounds = base.GetLocalCullClipBounds();
+		if (GetArrangeClipPathInElementCoordinateSpace() is not { } arrangeRect)
+		{
+			return baseBounds;
+		}
+
+		return baseBounds is { } b ? Intersect(b, arrangeRect) : arrangeRect;
+	}
+
 	internal override IGeometry? GetPrePaintingClipping()
 	{
 		var baseClip = base.GetPrePaintingClipping();

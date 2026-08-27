@@ -400,7 +400,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			// we set the matrix here similarly to CreateLocalMatrix in case the SetMatrix call there is
 			// omitted.
 			drawingSession.SetMatrix(initialTransform.IsIdentity ? TotalMatrix : TotalMatrix * initialTransform);
-			Render(session);
+			// Live (non-recorded) walk: leaf culling is armed and narrows at each rect-shaped clip below.
+			Render(session, applyChildOptimization: true, cullRect: InfiniteClipRect);
 		}
 	}
 
@@ -408,7 +409,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// Position a sub visual on the canvas and draw its content.
 	/// </summary>
 	/// <param name="parentSession">The drawing session of the <see cref="Parent"/> visual.</param>
-	private void Render(in PaintingSession parentSession, bool applyChildOptimization = true)
+	/// <param name="cullRect">Root-space AABB of the ancestors' rect-shaped clips; a leaf provably outside it is
+	/// skipped. <c>default</c> (empty) disables culling — recordings must contain the full subtree, since they are
+	/// replayed under other transforms later (e.g. after a scroll).</param>
+	private void Render(in PaintingSession parentSession, bool applyChildOptimization = true, Rect cullRect = default)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -421,6 +425,19 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		{
 			// Became non-rendering (hidden or fully transparent) while it painted last frame: damage the area it
 			// used to occupy so the partial-repaint path clears it instead of leaving a stale ghost.
+			if (_hasLastRenderBounds)
+			{
+				parentSession.Damage?.UnionRect(_lastRenderBounds);
+				_hasLastRenderBounds = false;
+			}
+			return;
+		}
+
+		// Leaf culling: a childless, size-bounded visual entirely outside the ancestors' clips renders nothing —
+		// skip its session/damage/replay work (dominant in long flat lists where most items sit outside the
+		// scroll viewport). Same transition handling as the hidden path above.
+		if (!IsRectEmpty(cullRect) && IsCulledBy(cullRect))
+		{
 			if (_hasLastRenderBounds)
 			{
 				parentSession.Damage?.UnionRect(_lastRenderBounds);
@@ -461,7 +478,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				}
 				PaintStep(this, session);
 				PostPaintingClipStep(this, in session);
-				RenderChildrenStep(this, session, applyChildOptimization);
+				RenderChildrenStep(this, session, applyChildOptimization, cullRect);
 			}
 			else
 			{
@@ -483,7 +500,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					{
 						PaintStep(this, childSession);
 						PostPaintingClipStep(this, in childSession);
-						RenderChildrenStep(this, childSession, applyChildOptimization);
+						// No culling inside the recording — it survives ancestor moves, so it must be complete.
+						RenderChildrenStep(this, childSession, applyChildOptimization, cullRect: default);
 						renderData = recording.Finish();
 					}
 
@@ -560,7 +578,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		static void PostPaintingClipStep(Visual visual, in PaintingSession session)
 			=> visual.ApplyPostPaintingClipping(session.Session);
 
-		static void RenderChildrenStep(Visual visual, PaintingSession session, bool applyChildOptimization)
+		static void RenderChildrenStep(Visual visual, PaintingSession session, bool applyChildOptimization, Rect cullRect)
 		{
 			if (visual._childrenContent is { } childrenContent)
 			{
@@ -593,9 +611,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					 || !applyChildOptimization
 					 || visual.GetSubTreeVisualCount() < visual._pictureCollapsingOptimizationVisualCountThreshold)
 			{
+				var childCullRect = visual.NarrowCullRect(cullRect);
 				foreach (var child in visual.GetChildrenInRenderOrder())
 				{
-					child.Render(in session, applyChildOptimization);
+					child.Render(in session, applyChildOptimization, childCullRect);
 				}
 			}
 			else
@@ -608,6 +627,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				{
 					foreach (var child in visual.GetChildrenInRenderOrder())
 					{
+						// No culling inside the recording — it survives ancestor moves, so it must be complete.
 						child.Render(in childSession, applyChildOptimization: false);
 					}
 				}
@@ -985,6 +1005,57 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 	/// <summary>Applies this visual's pre-painting clipping (its <see cref="Clip"/> and any layout/corner clip) to the drawing session.</summary>
 	internal virtual void ApplyPrePaintingClipping(IDrawingSession session) => Clip?.ApplyClip(this, session);
+
+	/// <summary>
+	/// True when this visual renders nothing inside <paramref name="cullRect"/> (root-space AABB of the
+	/// ancestors' rect-shaped clips) and its whole render step can be skipped. Only childless, size-bounded
+	/// visuals qualify: shadows bleed beyond bounds, repaint-every-frame content samples the surface, and
+	/// native-host visuals participate in the native-view clip walk.
+	/// </summary>
+	private bool IsCulledBy(in Rect cullRect)
+	{
+		if (ShadowState is not null || RequiresRepaintOnEveryFrame || IsNativeHostVisual
+			|| GetChildrenInRenderOrder().Count != 0)
+		{
+			return false;
+		}
+
+		if (!CanPaint())
+		{
+			return true; // childless and paints nothing — nothing to render at all
+		}
+
+		if (!PaintsWithinOwnSize)
+		{
+			return false;
+		}
+
+		var bounds = new Rect(0, 0, Math.Max(0f, Size.X), Math.Max(0f, Size.Y)).Transform(TotalMatrix.ToMatrix3x2());
+		return IsRectEmpty(Intersect(bounds, cullRect));
+	}
+
+	/// <summary>
+	/// Intersects <paramref name="cullRect"/> with this visual's rect-shaped clips (in root space) for its
+	/// children's culling. Non-rect clips contribute nothing (conservative — the rect only ever narrows).
+	/// An empty input means culling is disabled and stays disabled.
+	/// </summary>
+	private Rect NarrowCullRect(in Rect cullRect)
+	{
+		if (IsRectEmpty(cullRect) || GetLocalCullClipBounds() is not { } localClip)
+		{
+			return cullRect;
+		}
+
+		var clipInRoot = localClip.Transform(TotalMatrix.ToMatrix3x2());
+		var narrowed = Intersect(cullRect, clipInRoot);
+		// Fully clipped-out subtree: an empty rect would read as "culling disabled", so keep a degenerate
+		// non-empty rect instead — every size-bounded leaf then tests as outside (still conservative).
+		return IsRectEmpty(narrowed) ? new Rect(clipInRoot.X, clipInRoot.Y, 0.001, 0.001) : narrowed;
+	}
+
+	/// <summary>The local-space rect bounds of this visual's pre-painting clips when they are rect-shaped
+	/// (used only to narrow the culling rect), or <c>null</c> when unknown.</summary>
+	private protected virtual Rect? GetLocalCullClipBounds() => Clip?.GetBounds(this);
 
 	/// <summary>This clipping won't affect the visual itself, but its children.</summary>
 	private protected virtual IGeometry? GetPostPaintingClipping() => null;
