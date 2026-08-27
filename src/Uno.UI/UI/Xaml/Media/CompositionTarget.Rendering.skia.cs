@@ -320,8 +320,13 @@ public partial class CompositionTarget
 					_phaseGcPause = total;
 				}
 				catch (Exception) { /* not available on every runtime */ }
+				var measures = UIElement.LayoutMeasureCoreCount;
+				var arranges = UIElement.LayoutArrangeCoreCount;
+				UIElement.LayoutMeasureCoreCount = 0;
+				UIElement.LayoutArrangeCoreCount = 0;
 				Console.WriteLine(
 					$"[frame-phases] record={Ms(_phaseRecordTicks, _phaseRenderFrames):F1}ms finish={Ms(_phaseFinishTicks, _phaseRenderFrames):F1}ms draw={Ms(_phaseDrawTicks, Math.Max(_phaseDrawFrames, 1)):F1}ms tick={Ms(_phaseTickTicks, _phaseRenderFrames):F1}ms layout={Ms(_phaseLayoutTicks, Math.Max(_phaseLayoutRuns, 1)):F1}ms({_phaseLayoutRuns}) gap={Ms(_phaseGapTicks, _phaseRenderFrames):F1}ms"
+					+ $" | measures={measures} arranges={arranges}"
 					+ $" | >20ms={_phaseOver20} >33ms={_phaseOver33} max={_phaseMaxIntervalTicks * 1000.0 / Stopwatch.Frequency:F1}ms"
 					+ $" | gc0=+{gc0 - _phaseGc0} gc1=+{gc1 - _phaseGc1} gc2=+{gc2 - _phaseGc2} pause={pause.TotalMilliseconds:F1}ms"
 					+ $" (avg/frame, {_phaseRenderFrames} renders, {_phaseDrawFrames} draws)");
