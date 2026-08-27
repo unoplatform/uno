@@ -133,7 +133,7 @@ public sealed partial class Wasm_ViewportOrientationTelemetry : Page
 
 		DocRectText.Text = "DOM telemetry is available only when running in a browser";
 		EventCountsText.Text = "-";
-		StatusText.Text = "N/A";
+		SetStatus("N/A");
 	}
 
 #if __CROSSRUNTIME__
