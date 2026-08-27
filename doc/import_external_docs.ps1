@@ -17,12 +17,12 @@ $external_docs = @{
     "uno.xamlmerge.task" = @{ ref="377ce2d9fdeab0d4f0b94a61e008731a40b10220" }  #latest main commit
     "figma-docs"         = @{ ref="842a2792282b88586a337381b2b3786e779973b4" }  #latest main commit
     "uno.resizetizer"    = @{ ref="f64905ae69aaa2e476e986c0810d03fae47ed6a9" }  #latest main commit
-    "uno.uitest"         = @{ ref="d071dad64e0a19897b8ea32a0abf6fc7c08988ad" }  #latest master commit
+    "uno.uitest"         = @{ ref="94d027295b779e28064aebf99aeaee2b393ad558" }  #latest master commit
     "uno.extensions"     = @{ ref="c12a3c95060137ee51118d2f171775aae0fa2a3b" }  #latest main commit
     "workshops"          = @{ ref="3515c29e03dea36cf2206d797d1bf9f8620370e3" }  #latest master commit
     "uno.samples"        = @{ ref="2283eab9e108dee79a8424c7761ef4d7f64983f3" }  #latest master commit
     "uno.chefs"          = @{ ref="a3241a14b04fc86a407fbcade997ba9e83b32c1d" }  #latest main commit
-    "hd-docs"            = @{ ref="8f2dfd6024352ae69a99d3064d161ea39eeaf8fc"; dest="studio/Hot Design" } #latest main commit
+    "hd-docs"            = @{ ref="d43b3e9009dd5e8fe0c203128ac4ef55f822a2e1"; dest="studio/Hot Design" } #latest main commit
     "studio-docs"        = @{ ref="e8d8785439b015fb5e9f9665f77c233c957b4507" }  #latest main commit
 }
 
