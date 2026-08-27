@@ -20,10 +20,5 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			return new GridViewItem() { IsGeneratedContainer = true };
 		}
-
-		internal override ContentControl GetGroupHeaderContainer(object groupHeader)
-		{
-			return new GridViewHeaderItem() { IsGeneratedContainer = true };
-		}
 	}
 }

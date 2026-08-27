@@ -25,7 +25,7 @@ public partial class Visual
 
 	internal virtual float DamageRegionSamplingMargin => 0;
 
-	private void ContributeDamageOnPaint(bool contentChanged, DamageRegion? damage, SKPath clip, bool clipChanged)
+	private void ContributeDamageOnPaint(bool contentChanged, SKPath? damage, SKPath clip, bool clipChanged)
 	{
 		if (damage is null)
 		{
@@ -53,11 +53,7 @@ public partial class Visual
 			return;
 		}
 
-		// A visual that only moved is damaged at its old location too, and that one is only ever a rect, so
-		// exact geometry for the new location buys nothing. See TryGetPaintDamageRegion for what it costs.
-		var preferBounds = moved && !contentChanged;
-
-		if (TryGetPaintDamageRegion(clip, preferBounds, out var bounds, out var regionPath))
+		if (TryGetPaintDamageRegion(clip, out var bounds, out var regionPath))
 		{
 			if (regionPath is not null)
 			{
@@ -84,7 +80,7 @@ public partial class Visual
 		}
 	}
 
-	private bool TryGetPaintDamageRegion(SKPath clip, bool preferBounds, out SKRect bounds, out SKPath? regionPath)
+	private bool TryGetPaintDamageRegion(SKPath clip, out SKRect bounds, out SKPath? regionPath)
 	{
 		bounds = default;
 		regionPath = null;
@@ -104,13 +100,7 @@ public partial class Visual
 			var clipIsRect = clipPath.IsRect;
 			var clipRect = clipPath.Bounds;
 
-			var hasLocalBounds = TryGetLocalContentBounds(out var local);
-
-			// The exact branch is the expensive part of this method: a stroke-to-fill outset plus two path
-			// booleans, per visual per frame. Skip it for a visual that only moved — but only if bounds can
-			// answer for it, since falling through to the clip would report far more than the exact path did.
-			if ((!preferBounds || !hasLocalBounds)
-				&& ShadowState is null && DamageRegionSamplingMargin == 0 && _ownContentPath is { IsEmpty: false } ownContent)
+			if (ShadowState is null && DamageRegionSamplingMargin == 0 && _ownContentPath is { IsEmpty: false } ownContent)
 			{
 				ownContent.Transform(SKMatrix.Identity, contentPath);
 				contentPath.Transform(TotalMatrix.ToSKMatrix());
@@ -126,7 +116,7 @@ public partial class Visual
 				return true;
 			}
 
-			if (hasLocalBounds)
+			if (TryGetLocalContentBounds(out var local))
 			{
 				if (local.IsEmpty)
 				{

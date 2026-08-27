@@ -1,10 +1,12 @@
 {
   "profiles": {
     "SamplesApp.Windows (Package)": {
-      "commandName": "MsixPackage"
+      "commandName": "MsixPackage",
+      "nativeDebugging": true
     },
     "SamplesApp.Windows (Unpackaged)": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "nativeDebugging": true
     }
   }
 }

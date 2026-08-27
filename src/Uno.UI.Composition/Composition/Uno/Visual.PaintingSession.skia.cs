@@ -11,7 +11,7 @@ public partial class Visual
 {
 	private interface IPrivateSessionFactory
 	{
-		void CreateInstance(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, DamageRegion? damage, out PaintingSession session);
+		void CreateInstance(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, SKPath? damage, out PaintingSession session);
 	}
 
 	/// <summary>
@@ -22,13 +22,13 @@ public partial class Visual
 		// This dance is done to make it so that only Visual can create a PaintingSession
 		public readonly struct SessionFactory : IPrivateSessionFactory
 		{
-			void IPrivateSessionFactory.CreateInstance(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, DamageRegion? damage, out PaintingSession session)
+			void IPrivateSessionFactory.CreateInstance(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, SKPath? damage, out PaintingSession session)
 			{
 				session = new PaintingSession(visual, canvas, ref rootTransform, opacity, damage);
 			}
 		}
 
-		private PaintingSession(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, DamageRegion? damage)
+		private PaintingSession(Visual visual, SKCanvas canvas, ref Matrix4x4 rootTransform, float opacity, SKPath? damage)
 		{
 			Canvas = canvas;
 			RootTransform = ref rootTransform;
@@ -47,7 +47,7 @@ public partial class Visual
 
 		public readonly float Opacity;
 
-		public readonly DamageRegion? Damage;
+		public readonly SKPath? Damage;
 
 		private readonly int _saveCount;
 	}

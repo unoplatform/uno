@@ -6,6 +6,7 @@ using Microsoft.UI.Xaml.Markup;
 using MUXControlsTestApp.Utilities;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Toolkit.Extensions;
 using static Private.Infrastructure.TestServices;
 using NavigationView = Microsoft.UI.Xaml.Controls.NavigationView;
 using NavigationViewItem = Microsoft.UI.Xaml.Controls.NavigationViewItem;

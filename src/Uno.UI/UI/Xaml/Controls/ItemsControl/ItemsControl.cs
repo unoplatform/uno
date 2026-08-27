@@ -1553,14 +1553,6 @@ namespace Microsoft.UI.Xaml.Controls
 			return IsItemItsOwnContainer(ItemFromIndex(index));
 		}
 
-		/// <summary>
-		/// Return control which acts as container for group header for this ItemsControl subtype.
-		/// </summary>
-		internal virtual ContentControl GetGroupHeaderContainer(object groupHeader)
-		{
-			return ContentControl.CreateItemContainer();
-		}
-
 		public static ItemsControl ItemsControlFromItemContainer(DependencyObject container)
 		{
 			return (container.GetValue(ItemsControlForItemContainerProperty) as WeakReference<ItemsControl>)?.GetTarget();

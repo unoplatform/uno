@@ -30,7 +30,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Shapes;
 
-#if !HAS_UNO_WINUI
+#if !HAS_UNO_WINUI && !WINAPPSDK
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 #endif
@@ -38,7 +38,10 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Private.Infrastructure;
 using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Helpers;
+
+#if !WINAPPSDK
 using Microsoft.UI.Private.Controls;
+#endif
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
 
@@ -93,6 +96,7 @@ public class TeachingTipTests
 			teachingTip.Background = blueBrush;
 			Verify.AreSame(blueBrush, teachingTip.Background);
 
+#if !WINAPPSDK
 			{
 				var popup = TeachingTipTestHooks.GetPopup(teachingTip);
 				var child = popup.Child;
@@ -137,12 +141,14 @@ public class TeachingTipTests
 					}
 				}
 			}
+#endif
 
 			teachingTip.IsLightDismissEnabled = true;
 		});
 
 		await TestServices.WindowHelper.WaitForIdle();
 
+#if !WINAPPSDK
 		RunOnUIThread.Execute(() =>
 		{
 			Verify.AreEqual(blueBrush.Color, ((SolidColorBrush)teachingTip.Background).Color);
@@ -174,6 +180,7 @@ public class TeachingTipTests
 				}
 			}
 		});
+#endif
 	}
 
 	[TestMethod]

@@ -12,9 +12,13 @@ using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 {
+#if !HAS_UNO
+	// For Uno, there is another partial that has the attribute
+	// The attribute has AllowMultiple = false so only one partial should have it.
+	[TestClass]
+#endif
 	public partial class TabViewTests
 	{
-#if HAS_UNO
 		[TestMethod]
 #if __APPLE_UIKIT__
 		[Ignore("Currently fails on iOS")]
@@ -53,7 +57,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				Assert.AreEqual(1, containerContentChangingCounter);
 			});
 		}
-#endif
 
 		[TestMethod]
 		[RunsOnUIThread]

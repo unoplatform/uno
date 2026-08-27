@@ -42,7 +42,6 @@
                                 VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                 Content="{TemplateBinding Content}"
                                 ContentTemplate="{TemplateBinding ContentTemplate}"
-                                ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
                                 ContentTransitions="{TemplateBinding ContentTransitions}" />
 
                             <VisualStateManager.VisualStateGroups>

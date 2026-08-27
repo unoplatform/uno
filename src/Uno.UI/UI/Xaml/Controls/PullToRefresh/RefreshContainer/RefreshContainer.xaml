@@ -15,11 +15,9 @@
 			<Setter.Value>
 			<ControlTemplate TargetType="local:RefreshContainer">
 				<Grid x:Name="Root" Background="{TemplateBinding Background}">
-					<!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl #6452 -->
 					<ContentPresenter x:Name="ContentPresenter"
 								Content="{TemplateBinding Content}"
 								ContentTemplate="{TemplateBinding ContentTemplate}"
-								ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 								Background="Transparent"/>
 					<Grid x:Name="RefreshVisualizerPresenter"/>
 				</Grid>
