@@ -114,39 +114,46 @@ partial class ResourceLoader
 			return true;
 		}
 
-		// Then the culture's ancestors (zh-CN -> zh-Hans -> zh). The script tag only ever appears
-		// there, so a region-named culture can reach its script-named resources and vice versa.
-		foreach (var ancestor in GetAncestors(culture))
+		foreach (var candidate in GetFallbackCultures(culture))
 		{
-			if (TryGetForCulture(ancestor, resource, out resourceValue))
+			if (TryGetForCulture(candidate, resource, out resourceValue))
 			{
 				return true;
 			}
 		}
 
-		// Finally sibling cultures, same-script ones first: zh-Hant must never answer a request
-		// for a Simplified Chinese culture just because both are written "zh-".
-		if (culture.Split('-', 2)[0] is { Length: > 0 } baseCulture)
-		{
-			// Resolved rather than cached: the requested culture is caller-controlled, so caching it
-			// would let a process-wide dictionary grow without bound.
-			var script = ResolveScript(culture);
-			var relatedCultures = _resources.Keys
-				.Where(x => x.StartsWith(baseCulture, StringComparison.OrdinalIgnoreCase))
-				.OrderByDescending(x => script is not null && GetResourceScript(x) == script) // same script first
-				.ThenByDescending(x => string.Equals(x, baseCulture, StringComparison.OrdinalIgnoreCase)) // then base culture
-				.ThenByDescending(x => x, StringComparer.Ordinal); // and then, sibling cultures in reverse order (from ex-ZZ to ex-AA)
-			foreach (var related in relatedCultures)
-			{
-				if (TryGetForCulture(related, resource, out resourceValue))
-				{
-					return true;
-				}
-			}
-		}
-
 		resourceValue = null;
 		return false;
+	}
+
+	/// <summary>
+	/// Orders the resource cultures that may stand in for <paramref name="culture"/> — its ancestors
+	/// (zh-CN -> zh-Hans -> zh) and the siblings sharing its language (zh-Hant-TW for zh-TW) — from
+	/// the closest match down. Script comes first, so that zh-Hant never answers a Simplified Chinese
+	/// request, whether it is reached as a sibling or as a bare zh folder holding Traditional content.
+	/// </summary>
+	private IEnumerable<string> GetFallbackCultures(string culture)
+	{
+		var baseCulture = culture.Split('-', 2)[0];
+
+		var ancestors = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
+		foreach (var ancestor in GetAncestors(culture))
+		{
+			ancestors.TryAdd(ancestor, ancestors.Count);
+		}
+
+		// Resolved rather than cached: the requested culture is caller-controlled, so caching it
+		// would let a process-wide dictionary grow without bound.
+		var script = ResolveScript(culture);
+		var region = GetRegionSubtag(culture);
+
+		return _resources.Keys
+			.Where(x => ancestors.ContainsKey(x) || (baseCulture.Length > 0 && x.StartsWith(baseCulture, StringComparison.OrdinalIgnoreCase)))
+			.OrderByDescending(x => script is not null && string.Equals(GetResourceScript(x), script, StringComparison.OrdinalIgnoreCase)) // same script first
+			.ThenByDescending(x => region is not null && string.Equals(GetRegionSubtag(x), region, StringComparison.OrdinalIgnoreCase)) // then same region (Windows matches language+region ahead of language+script)
+			.ThenBy(x => ancestors.TryGetValue(x, out var depth) ? depth : int.MaxValue) // then the closest ancestor
+			.ThenByDescending(x => string.Equals(x, baseCulture, StringComparison.OrdinalIgnoreCase)) // then the base culture, the only ancestor an unresolvable culture still reaches
+			.ThenByDescending(x => x, StringComparer.Ordinal); // and finally the remaining siblings, from ex-ZZ to ex-AA
 	}
 
 	private bool TryGetForCulture(string culture, string resource, out string? resourceValue)
@@ -166,17 +173,19 @@ partial class ResourceLoader
 	/// and the invariant culture.
 	/// </summary>
 	private static IEnumerable<string> GetAncestors(string culture)
-	{
-		if (TryGetCulture(culture) is not { } info)
-		{
-			yield break;
-		}
+		=> TryGetCulture(culture) is { } info ? GetSelfAndAncestors(info).Skip(1) : [];
 
-		for (var parent = info.Parent; parent.Name is { Length: > 0 } name; parent = parent.Parent)
+	/// <summary>
+	/// Enumerates <paramref name="culture"/> and its parents, closest first, excluding the invariant
+	/// culture.
+	/// </summary>
+	private static IEnumerable<string> GetSelfAndAncestors(CultureInfo culture)
+	{
+		for (var current = culture; current.Name is { Length: > 0 } name; current = current.Parent)
 		{
 			yield return name;
 
-			if (string.Equals(parent.Parent.Name, name, StringComparison.Ordinal))
+			if (string.Equals(current.Parent.Name, name, StringComparison.Ordinal))
 			{
 				// A culture whose parent is itself would loop forever.
 				yield break;
@@ -206,16 +215,11 @@ partial class ResourceLoader
 			info = TryGetSpecificCulture(info.Name) ?? info;
 		}
 
-		for (var current = info; current.Name is { Length: > 0 } name; current = current.Parent)
+		foreach (var name in GetSelfAndAncestors(info))
 		{
 			if (GetScriptSubtag(name) is { } script)
 			{
 				return script;
-			}
-
-			if (string.Equals(current.Parent.Name, name, StringComparison.Ordinal))
-			{
-				break;
 			}
 		}
 
@@ -227,51 +231,20 @@ partial class ResourceLoader
 	/// language itself (zh-Hant-TW -> Hant, ca-ES-VALENCIA -> null).
 	/// </summary>
 	private static string? GetScriptSubtag(string cultureName)
-	{
-		var remaining = cultureName.AsSpan();
+		=> cultureName.Split('-')
+			.Skip(1) // index 0 is never a script: a four-letter subtag there is a (reserved) language
+			.FirstOrDefault(subtag => subtag.Length is 4 && subtag.All(char.IsLetter));
 
-		// Skip the language subtag, a script can never be in first position.
-		var separator = remaining.IndexOf('-');
-		if (separator < 0)
-		{
-			return null;
-		}
-
-		remaining = remaining.Slice(separator + 1);
-
-		while (!remaining.IsEmpty)
-		{
-			separator = remaining.IndexOf('-');
-			var subtag = separator < 0 ? remaining : remaining.Slice(0, separator);
-
-			if (subtag.Length == 4 && IsAllLetters(subtag))
-			{
-				return subtag.ToString();
-			}
-
-			if (separator < 0)
-			{
-				break;
-			}
-
-			remaining = remaining.Slice(separator + 1);
-		}
-
-		return null;
-
-		static bool IsAllLetters(ReadOnlySpan<char> value)
-		{
-			foreach (var c in value)
-			{
-				if (!char.IsLetter(c))
-				{
-					return false;
-				}
-			}
-
-			return true;
-		}
-	}
+	/// <summary>
+	/// Extracts the region subtag of a culture name, i.e. the two-letter or three-digit subtag that
+	/// follows the language and the optional script (zh-Hant-HK -> HK, es-419 -> 419, zh-Hant -> null).
+	/// </summary>
+	private static string? GetRegionSubtag(string cultureName)
+		=> cultureName.Split('-')
+			.Skip(1) // index 0 is the language
+			.FirstOrDefault(subtag =>
+				(subtag.Length is 2 && subtag.All(char.IsLetter)) ||
+				(subtag.Length is 3 && subtag.All(char.IsDigit)));
 
 	private static CultureInfo? TryGetCulture(string name)
 	{
