@@ -185,6 +185,11 @@ namespace SamplesApp
 #if WINAPPSDK && DEBUG
 			// this.DebugSettings.EnableFrameRateCounter = true;
 #endif
+			// UNO_SHOW_FPS=1 turns on the on-surface frame counter (benchmarking; on WASM logs live in the browser console).
+			if (Environment.GetEnvironmentVariable("UNO_SHOW_FPS") is "1" or "true")
+			{
+				DebugSettings.EnableFrameRateCounter = true;
+			}
 			AssertInitialWindowSize();
 
 
