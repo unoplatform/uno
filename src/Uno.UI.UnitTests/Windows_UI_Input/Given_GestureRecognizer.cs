@@ -1164,6 +1164,53 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		}
 
 		[TestMethod]
+#if RUNTIME_NATIVE_AOT
+		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
+#endif  // RUNTIME_NATIVE_AOT
+		public void Manipulation_Inertia_Aborted_By_Press_Then_Tap_Is_Still_Raised()
+		{
+			using var _ = Touch();
+			var sut = new GestureRecognizer
+			{
+				GestureSettings = GestureSettings.Tap
+					| GestureSettings.ManipulationTranslateY | GestureSettings.ManipulationTranslateInertia
+			};
+			var taps = new List<TappedEventArgs>();
+			sut.Tapped += (snd, e) => taps.Add(e);
+
+			// Flick at 2 px/ms so the manipulation goes to inertia on the up.
+			sut.ProcessDownEvent(10, 10, ts: 0);
+			sut.ProcessMoveEvent(10, 100, ts: 100 * MicrosecondsPerMillisecond);
+			sut.ProcessUpEvent(10, 104, ts: 102 * MicrosecondsPerMillisecond);
+			sut.PendingManipulation!.IsCoasting.Should().BeTrue();
+
+			// The press aborts the coasting manipulation and the recognizer reports it, but the gestures of that
+			// press are still recognized: this is the WinUI behavior, muting them is opt-in
+			// (cf. Uno.UI.Toolkit ManipulationExtensions.IsTapToStopInertiaEnabled).
+			sut.ProcessDownEvent(50, 50, ts: 110 * MicrosecondsPerMillisecond);
+			sut.LastDownStoppedInertia.Should().BeTrue();
+			sut.PendingManipulation!.IsCoasting.Should().BeFalse();
+
+			sut.ProcessUpEvent(51, 51, ts: 112 * MicrosecondsPerMillisecond);
+			taps.Should().BeEquivalentTo([Tap(50, 50)]);
+		}
+
+		[TestMethod]
+		public void Manipulation_Press_Without_Inertia_Then_No_Inertia_Reported_As_Stopped()
+		{
+			using var _ = Touch();
+			var sut = new GestureRecognizer
+			{
+				GestureSettings = GestureSettings.Tap
+					| GestureSettings.ManipulationTranslateY | GestureSettings.ManipulationTranslateInertia
+			};
+
+			sut.ProcessDownEvent(50, 50, ts: 0);
+
+			sut.LastDownStoppedInertia.Should().BeFalse();
+		}
+
+		[TestMethod]
 		public void Manipulation_Inertia_Translate_Negative()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
