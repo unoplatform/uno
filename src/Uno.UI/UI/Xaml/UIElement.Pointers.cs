@@ -794,6 +794,25 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		/// <summary>
+		/// Indicates that the last pointer down processed by this element's gesture recognizer is what aborted a
+		/// coasting manipulation of this element (cf. GestureRecognizer.LastDownStoppedInertia).
+		/// </summary>
+		internal bool LastPointerDownStoppedInertia
+			=> IsGestureRecognizerCreated && GestureRecognizer.LastDownStoppedInertia;
+
+		/// <summary>
+		/// Prevents this element from recognizing the given gestures for the given pointer.
+		/// Does nothing if this element has no gesture recognizer, or none for that pointer.
+		/// </summary>
+		internal void PreventGestures(global::Windows.Devices.Input.PointerIdentifier pointer, GestureSettings gestures)
+		{
+			if (IsGestureRecognizerCreated)
+			{
+				GestureRecognizer.PreventEvents(pointer, gestures);
+			}
+		}
+
 		private void UpdateRaisedGestureEventsFlag(PointerRoutedEventArgs args)
 		{
 			if (!IsGestureRecognizerCreated)
