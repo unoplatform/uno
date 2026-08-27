@@ -66,6 +66,20 @@ internal sealed class SkiaTextLine : TextLine
 			};
 		}
 
+		// WinUI justifies inside line formatting, so a justified wrapped line's own width is
+		// already the column width (LsTextLine.cpp:1197-1201). ParsedText justifies at draw time
+		// by spreading the spaces, so the width has to be restated here or the paragraph reports
+		// - and is arranged at - the unjustified width.
+		if (alignment == TextAlignment.Justify && renderLine.Wraps)
+		{
+			var columnWidth = (float)parsedText.AvailableSize.Width;
+			if (columnWidth > m_width)
+			{
+				m_width = columnWidth;
+				m_widthIncludingTrailingWhitespace = Math.Max(m_widthIncludingTrailingWhitespace, columnWidth);
+			}
+		}
+
 		var (lineOffset, _) = renderLine.GetOffsets((float)parsedText.AvailableSize.Width, alignment);
 		m_start = lineOffset;
 
