@@ -733,6 +733,47 @@ established as pre-existing in the F8 and L1 baselines.
 | alloc / scroll step | 154,522 B | 121,814 B | **−21.2 %** |
 | alloc / realised container | 6,718 B | 5,296 B | **−21.2 %** |
 
+### F10 — every `bool` DependencyProperty set boxes, despite a cached-box helper existing
+
+**Commit**: `perf(uno-ui): Use the cached bool boxes in generated DP setters`
+**Files**: `src/SourceGenerators/Uno.UI.SourceGenerators.Internal/DependencyObject/DependencyPropertyGenerator.cs`,
+`.../Mixins/DependencyPropertyMixinGenerator.cs`
+
+**Root cause.** `DependencyObject.SetValue` takes an `object`, so a `bool` is boxed at the call site —
+24 bytes on **every set**. Uno.UI already keeps the two boxed instances (`Uno.UI.Helpers.Boxes`,
+used by hand in a handful of places), but both DependencyProperty generators emitted the plain
+`SetValue(XProperty, value)`, so every generated `bool` setter allocated.
+
+**Fix.** Both generators now emit `SetValue(XProperty, Uno.UI.Helpers.Boxes.Box(value))` when the
+property type is `bool`, and pass `value` through unchanged for every other type. This is automatic
+for any `bool` DP added later.
+
+**Why it cannot change behaviour.** `DependencyObject.AreDifferent` (`DependencyObject.Store.cs:2313`)
+takes the `newValue is ValueType` branch for a boxed `bool` and compares with `object.Equals` — a
+*value* comparison. Change detection therefore never depended on box identity, so sharing the boxed
+instances is invisible to it.
+
+**Measurement** — `UnoPerfInt` `dp.bool-genDP`: 1,000 × toggling `Control.IsEnabled` (a
+`[GeneratedDependencyProperty]` bool) on a `Button`, 3 runs, median.
+
+| Metric | Before | After | Δ |
+|---|---:|---:|---:|
+| alloc / set | 72.0 B | 48.0 B | **−33.3 %** |
+
+Byte-identical across all runs in each configuration: exactly **24 B per set**, one box. The
+remaining 48 B is the change-notification path, unrelated to this fix.
+
+**Correctness.** `DependencyPropertyGenerator` golden tests: **6 run, 6 passed.** Runtime tests,
+Skia Desktop — `Given_Control`, `Given_Button`, `Given_CheckBox`, `Given_ToggleSwitch`,
+`Given_RadioButton`, `Given_VisualStateManager`, `Given_UIElement`, `Given_FrameworkElement`:
+**684 run, 658 passed, 2 skipped, 26 failed**, set-compared against a baseline build —
+**0 new failures, 0 newly passing.**
+
+> ⚠️ The wider `Uno.UI.SourceGenerators.Tests` suite is **not** a usable signal in this environment:
+> it fails 340/482 on the **unmodified** tree and its pass count varies run to run (110, 128, 129 on
+> identical inputs), because those tests load `src/*/bin/**` directly rather than through project
+> references. The 6 DependencyProperty golden tests above were checked individually instead.
+
 ---
 
 ## 5. Investigated and deliberately *not* done
@@ -959,3 +1000,75 @@ height, so every step straddles items and forces recycling). It requires `XamlCo
 merged into `Application.Resources` — without the Fluent dictionaries a templated control has no
 default style and the list never virtualises — and it must be driven through the dispatcher tick,
 because that is where the framework's per-frame work happens.
+
+### 5.7 New angles opened, and what they did *not* yield
+
+Two subsystems were profiled for the first time. Both are characterised below rather than fixed —
+recording them so the next person starts from the numbers rather than from scratch.
+
+**Pointer input** (`input.pointer-move`: mouse moves injected across a 3,109-element tree)
+
+| Metric | Value |
+|---|---:|
+| time / pointer move | 0.203 ms |
+| alloc / pointer move | 974 B |
+
+A CPU profile puts roughly half the cost in hit-testing: `SearchDownForTopMostElementAt` 20.4 % of
+samples, `Matrix3x2Extensions.Transform` 14.1 %, `CompositionSpriteShape.HitTest` 8.1 %,
+`UIElement.GetTransform` 7.0 %. The descent *does* prune — a child outside the clipped bounds returns
+before recursing — but each element visited still pays a transform and a bounds intersection first,
+and every `Border` reaches a native `sk_path_contains`. No single fixable hot spot: the cost is spread
+across matrix math and native path containment.
+
+Two false leads worth recording. `Monitor.Enter_Slowpath` showed at 4.2 % and looked like lock
+contention on a per-event path; attributing it by caller chain showed it is entirely workload
+*setup* (theme bindings, `TextBlock.ParseText`), not pointer routing. And a large share of the 974 B
+is `InjectedInputMouseInfo.ToEventArgs`, i.e. the *injector*, not the routing a real app performs —
+so that figure overstates real-app cost.
+
+**Template materialisation** (`template.build-page`: 25 `Button`s + 25 `CheckBox`es created,
+templated, laid out and torn down — 301 elements)
+
+| Metric | Value |
+|---|---:|
+| time / page | 63.3 ms |
+| alloc / page | 16,785,906 B |
+| alloc / element | 55,767 B |
+
+This is navigation and startup cost, and it is large — but the profile is **flat**: nothing above
+2.1 %, and the top entries (`ContainerVisual`, `DependencyPropertyDetailsCollection`, `Binding`,
+`Dictionary<DependencyProperty, ManagedWeakReference>`, the `short[]` details pool) are the intrinsic
+per-element cost of the property system. Reducing it is an architectural question, not a hot-spot fix.
+
+### 5.8 `Enum.HasFlag` — measured, and *not* worth changing
+
+An allocation profile appeared to attribute allocations to `InjectedInputMouseOptions` inside a method
+full of `HasFlag` calls, which suggested the classic "HasFlag boxes" sweep across the 172 call sites in
+`Uno.UI`, `Uno.UI.Composition` and `Uno.WinRT`.
+
+A BenchmarkDotNet micro-benchmark settled it — eight flag tests per operation:
+
+| Method | Mean | Allocated |
+|---|---:|---:|
+| `HasFlag` | 1.014 ns | **0 B** |
+| bitwise `&` | 0.266 ns | 0 B |
+
+`Enum.HasFlag` is intrinsified by the JIT on .NET 10 and **allocates nothing**. The absolute
+difference is ~0.09 ns per test. The sweep would have touched 172 sites for no allocation win and an
+unmeasurable time win, so it was not done. The profiler's type attribution was misleading here.
+
+### 5.9 Hand-written `bool` DP setters still box — follow-up to F10
+
+F10 fixed the two *generators*. **151 hand-written `bool` dependency-property setters** in `Uno.UI`
+still call `SetValue(XProperty, value)` directly and box on every set, including hot ones on the base
+types: `UIElement.IsHitTestVisible` and `UIElement.IsTabStop` are both hand-written.
+
+Measured directly against a pre-boxed `SetValue` call, the cost is the same **24 B per set** F10
+removes. It was left out because 151 mechanical edits is a large diff for a per-set win that is not
+paid per frame — worth doing as its own sweep, with `Boxes.Box(value)`, if someone wants it.
+
+| Property | Kind | alloc / set |
+|---|---|---:|
+| `Control.IsEnabled` | generated (fixed by F10) | 48 B |
+| `UIElement.IsTabStop` | hand-written | 24 B |
+| `UIElement.IsHitTestVisible` | hand-written | 72 B |
