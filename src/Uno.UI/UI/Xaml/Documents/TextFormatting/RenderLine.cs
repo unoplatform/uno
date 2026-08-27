@@ -85,24 +85,17 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 			switch (lineStackingStrategy)
 			{
 				case LineStackingStrategy.MaxHeight:
-					if (lineHeight == 0)
 					{
-						Height = maxStackHeight;
-						BaselineOffsetY = -maxBelowBaselineHeight;
-					}
-					else
-					{
-						if (lineHeight < maxStackHeight)
-						{
-							Height = maxStackHeight;
-							BaselineOffsetY = -maxBelowBaselineHeight;
+						// The natural line is MAX(tallest run, ascent + descent): a baseline-aligned run
+						// such as an embedded object can have an ascent taller than any single run's
+						// height (LsTextLine.cpp:1315-1324).
+						var naturalHeight = Math.Max(maxStackHeight, maxAboveBaselineHeight + maxBelowBaselineHeight);
 
-						}
-						else
-						{
-							Height = lineHeight;
-							BaselineOffsetY = GetBaselineOffsetY(lineHeight, maxStackHeight, maxBelowBaselineHeight);
-						}
+						// MaxHeight grows the line but leaves the baseline where the font puts it, so the
+						// extra leading falls below it — ApplyLineStackingStrategy's default arm uses
+						// lineOffset = 0. Sliding the baseline down instead is BlockLineHeight's rule.
+						Height = Math.Max(lineHeight, naturalHeight);
+						BaselineOffsetY = maxAboveBaselineHeight - Height;
 					}
 
 					break;
@@ -144,7 +137,7 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 					float charSpacingOffset = (GetLeftCharacterSpacingOffset() + GetRightCharacterSpacingOffset());
 					return ((charSpacingOffset + availableWidth - WidthWithoutTrailingSpaces) / 2, 0);
 
-				default: // TextAlignment.Justify
+				case TextAlignment.Justify:
 					float justifySpaceOffset = 0;
 
 					if (Wraps && availableWidth > WidthWithoutTrailingSpaces)
@@ -153,6 +146,11 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 					}
 
 					return (GetLeftCharacterSpacingOffset(), justifySpaceOffset);
+
+				// DetectFromContent is resolved to a concrete edge before it reaches here, the way
+				// ParagraphNode::CalculateLineOffset does it; the leading edge is the fallback.
+				default:
+					return (GetLeftCharacterSpacingOffset(), 0);
 			}
 
 			int CountJustifySpaces()
