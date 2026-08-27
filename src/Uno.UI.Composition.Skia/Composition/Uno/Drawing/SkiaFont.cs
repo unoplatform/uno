@@ -101,8 +101,15 @@ internal sealed class SkiaFont : IFont
 	[ThreadStatic]
 	private static HbBuffer? _shapeBuffer;
 
+	private readonly GlyphRunCache _shapeCache = new();
+
 	public GlyphRun Shape(ReadOnlySpan<char> text, TextDirection direction, bool enableLigatures = true)
 	{
+		if (_shapeCache.TryGet(text, direction, enableLigatures, out var cached))
+		{
+			return cached;
+		}
+
 		var buffer = _shapeBuffer ??= new HbBuffer();
 		buffer.ClearContents();
 		buffer.AddUtf16(text);
@@ -135,7 +142,9 @@ internal sealed class SkiaFont : IFont
 			advances[i] = pos[i].XAdvance * scale;
 		}
 
-		return new GlyphRun(glyphs, offsets, advances, clusters);
+		var run = new GlyphRun(glyphs, offsets, advances, clusters);
+		_shapeCache.Add(text, direction, enableLigatures, run);
+		return run;
 	}
 
 	private HbFont GetHarfBuzzFont()

@@ -145,9 +145,22 @@ internal sealed class ManagedFont : IFont
 	/// <summary>The font's family name from the <c>name</c> table (empty if unavailable).</summary>
 	public string FamilyName => _familyName ??= ParseFamilyName(_data, _name);
 
+	// One reusable shaping buffer per thread: creating/destroying a native buffer per Shape call is a real
+	// cost when short labels re-shape every frame.
+	[ThreadStatic]
+	private static HbBuffer? _shapeBuffer;
+
+	private readonly GlyphRunCache _shapeCache = new();
+
 	public GlyphRun Shape(ReadOnlySpan<char> text, TextDirection direction, bool enableLigatures = true)
 	{
-		using var buffer = new HbBuffer();
+		if (_shapeCache.TryGet(text, direction, enableLigatures, out var cached))
+		{
+			return cached;
+		}
+
+		var buffer = _shapeBuffer ??= new HbBuffer();
+		buffer.ClearContents();
 		buffer.AddUtf16(text);
 		buffer.GuessSegmentProperties(); // sets the run's script/language for the shaper; direction is set explicitly below
 		buffer.Direction = direction == TextDirection.RightToLeft ? HarfBuzzSharp.Direction.RightToLeft : HarfBuzzSharp.Direction.LeftToRight;
@@ -178,7 +191,9 @@ internal sealed class ManagedFont : IFont
 			advances[i] = pos[i].XAdvance * scale;
 		}
 
-		return new GlyphRun(glyphs, offsets, advances, clusters);
+		var run = new GlyphRun(glyphs, offsets, advances, clusters);
+		_shapeCache.Add(text, direction, enableLigatures, run);
+		return run;
 	}
 
 	private HbFont GetHarfBuzzFont()
