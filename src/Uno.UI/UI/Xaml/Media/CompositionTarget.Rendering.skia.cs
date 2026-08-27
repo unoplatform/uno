@@ -128,8 +128,27 @@ public partial class CompositionTarget
 	// UNO_LOG_FRAME_PHASES=1 prints per-phase frame timing averages every 60 frames (benchmarking).
 	private static readonly bool _logFramePhases =
 		Environment.GetEnvironmentVariable("UNO_LOG_FRAME_PHASES") is "1" or "true";
+
+	// UNO_FORCE_CONTINUOUS_RENDER=1 re-requests a frame after every render (benchmarking: saturates the pipeline).
+	private static readonly bool _forceContinuousRender =
+		Environment.GetEnvironmentVariable("UNO_FORCE_CONTINUOUS_RENDER") is "1" or "true";
 	private static long _phaseRecordTicks, _phaseFinishTicks, _phaseDrawTicks, _phaseGapTicks, _phaseLastRenderEnd;
 	private static int _phaseRenderFrames, _phaseDrawFrames;
+	// Itemization of the between-render "gap": Rendering-event handlers (the app's per-frame tick), the layout
+	// pass (CoreServices.OnTick's UpdateLayout), GC activity, and a frame-interval histogram for vsync misses.
+	private static long _phaseTickTicks, _phaseLayoutTicks, _phaseLastRenderStart, _phaseMaxIntervalTicks;
+	private static int _phaseLayoutRuns, _phaseOver20, _phaseOver33;
+	private static int _phaseGc0, _phaseGc1, _phaseGc2;
+	private static TimeSpan _phaseGcPause;
+
+	internal static bool IsFramePhaseLoggingEnabled => _logFramePhases;
+
+	/// <summary>Accumulates the duration of one layout pass (see CoreServices.OnTick) into the frame-phase log.</summary>
+	internal static void PhaseAddLayout(long ticks)
+	{
+		_phaseLayoutTicks += ticks;
+		_phaseLayoutRuns++;
+	}
 
 	private (IRenderRecord frame, IGeometry nativeElementClipPath, IGeometry? damage)? _lastRenderedFrame;
 	// Damage (dirty region) accumulated between frames from AddDamage + carried-forward unpresented damage;
@@ -203,6 +222,18 @@ public partial class CompositionTarget
 		{
 			_phaseGapTicks += phaseT0 - _phaseLastRenderEnd;
 		}
+		if (_logFramePhases)
+		{
+			if (_phaseLastRenderStart != 0)
+			{
+				var interval = phaseT0 - _phaseLastRenderStart;
+				if (interval > _phaseMaxIntervalTicks) { _phaseMaxIntervalTicks = interval; }
+				var intervalMs = interval * 1000.0 / Stopwatch.Frequency;
+				if (intervalMs > 20) { _phaseOver20++; }
+				if (intervalMs > 33.4) { _phaseOver33++; }
+			}
+			_phaseLastRenderStart = phaseT0;
+		}
 		var recording = Renderer.CreateRecording();
 		var (path, nativeVisualsInZOrder) = SkiaRenderHelper.RecordFrame(
 			recording,
@@ -241,7 +272,7 @@ public partial class CompositionTarget
 		previousFrame?.frame.Dispose();
 		previousFrame?.damage?.Dispose();
 
-		if (_isRenderingActive)
+		if (_isRenderingActive || _forceContinuousRender)
 		{
 			((ICompositionTarget)this).RequestNewFrame();
 		}
@@ -278,9 +309,27 @@ public partial class CompositionTarget
 			if (++_phaseRenderFrames >= 60)
 			{
 				double Ms(long t, int c) => c == 0 ? 0 : t * 1000.0 / Stopwatch.Frequency / c;
-				Console.WriteLine($"[frame-phases] record={Ms(_phaseRecordTicks, _phaseRenderFrames):F1}ms finish={Ms(_phaseFinishTicks, _phaseRenderFrames):F1}ms draw={Ms(_phaseDrawTicks, Math.Max(_phaseDrawFrames, 1)):F1}ms gap={Ms(_phaseGapTicks, _phaseRenderFrames):F1}ms (avg/frame, {_phaseRenderFrames} renders, {_phaseDrawFrames} draws)");
-				_phaseRecordTicks = _phaseFinishTicks = _phaseDrawTicks = _phaseGapTicks = 0;
-				_phaseRenderFrames = _phaseDrawFrames = 0;
+				var gc0 = GC.CollectionCount(0);
+				var gc1 = GC.CollectionCount(1);
+				var gc2 = GC.CollectionCount(2);
+				var pause = TimeSpan.Zero;
+				try
+				{
+					var total = GC.GetTotalPauseDuration();
+					pause = _phaseGcPause == TimeSpan.Zero ? TimeSpan.Zero : total - _phaseGcPause;
+					_phaseGcPause = total;
+				}
+				catch (Exception) { /* not available on every runtime */ }
+				Console.WriteLine(
+					$"[frame-phases] record={Ms(_phaseRecordTicks, _phaseRenderFrames):F1}ms finish={Ms(_phaseFinishTicks, _phaseRenderFrames):F1}ms draw={Ms(_phaseDrawTicks, Math.Max(_phaseDrawFrames, 1)):F1}ms tick={Ms(_phaseTickTicks, _phaseRenderFrames):F1}ms layout={Ms(_phaseLayoutTicks, Math.Max(_phaseLayoutRuns, 1)):F1}ms({_phaseLayoutRuns}) gap={Ms(_phaseGapTicks, _phaseRenderFrames):F1}ms"
+					+ $" | >20ms={_phaseOver20} >33ms={_phaseOver33} max={_phaseMaxIntervalTicks * 1000.0 / Stopwatch.Frequency:F1}ms"
+					+ $" | gc0=+{gc0 - _phaseGc0} gc1=+{gc1 - _phaseGc1} gc2=+{gc2 - _phaseGc2} pause={pause.TotalMilliseconds:F1}ms"
+					+ $" (avg/frame, {_phaseRenderFrames} renders, {_phaseDrawFrames} draws)");
+				_phaseGc0 = gc0;
+				_phaseGc1 = gc1;
+				_phaseGc2 = gc2;
+				_phaseRecordTicks = _phaseFinishTicks = _phaseDrawTicks = _phaseGapTicks = _phaseTickTicks = _phaseLayoutTicks = _phaseMaxIntervalTicks = 0;
+				_phaseRenderFrames = _phaseDrawFrames = _phaseLayoutRuns = _phaseOver20 = _phaseOver33 = 0;
 			}
 		}
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Render)} ends");
@@ -464,14 +513,21 @@ public partial class CompositionTarget
 	{
 		if (NativeDispatcher.Main.HasThreadAccess)
 		{
-			_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
+			InvokeRenderingCore();
 		}
 		else
 		{
-			NativeDispatcher.Main.Enqueue(() =>
+			NativeDispatcher.Main.Enqueue(InvokeRenderingCore, NativeDispatcherPriority.High);
+		}
+
+		static void InvokeRenderingCore()
+		{
+			var t0 = _logFramePhases ? Stopwatch.GetTimestamp() : 0;
+			_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
+			if (_logFramePhases)
 			{
-				_rendering?.Invoke(null, new RenderingEventArgs(Stopwatch.GetElapsedTime(_start)));
-			}, NativeDispatcherPriority.High);
+				_phaseTickTicks += Stopwatch.GetTimestamp() - t0;
+			}
 		}
 	}
 }
