@@ -19,12 +19,6 @@ public partial class Visual
 	// drop-shadow's silhouette (which depends on descendants) when a descendant moved/changed.
 	internal bool _subtreeChangedThisFrame;
 
-	// The local-space geometry this visual paints, returned by Paint when the picture is (re)recorded and
-	// reused for the per-frame damage region instead of being rebuilt every frame. A moved-but-unchanged
-	// visual keeps it (its picture isn't re-recorded, so neither is this). Null means the visual paints
-	// nothing analytically describable, and damage falls back to its bounds.
-	private protected IGeometry? _ownContentPath;
-
 	internal virtual float DamageRegionSamplingMargin => 0;
 
 	/// <summary>

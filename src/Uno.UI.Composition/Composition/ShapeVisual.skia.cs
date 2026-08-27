@@ -15,11 +15,11 @@ public partial class ShapeVisual
 	private bool _needsContinuousUpdates;
 
 	/// <inheritdoc />
-	internal override IGeometry? Paint(in PaintingSession session)
+	internal override void Paint(in PaintingSession session)
 	{
 		if (Size.X == 0 || Size.Y == 0)
 		{
-			return null;
+			return;
 		}
 
 		// TODO: ShapeVisuals should be clipping to the size rect. However, this breaks shapes for us because
@@ -47,61 +47,6 @@ public partial class ShapeVisual
 		}
 
 		base.Paint(in session);
-
-		return BuildOwnContentPath();
-	}
-
-	// The geometry this ShapeVisual's shapes cover, in local space, for a precise per-visual damage region.
-	// Null when any child isn't an analytically-describable sprite shape, so damage falls back to bounds.
-	private IGeometry? BuildOwnContentPath()
-	{
-		if (_shapes is not { Count: > 0 } shapes)
-		{
-			return null;
-		}
-
-		IGeometry? dst = null;
-		for (var i = 0; i < shapes.Count; i++)
-		{
-			if (shapes[i] is not CompositionSpriteShape sprite)
-			{
-				dst?.Dispose();
-				return null;
-			}
-
-			if (sprite.BuildRenderGeometry() is { } g)
-			{
-				if (dst is null)
-				{
-					dst = g;
-				}
-				else
-				{
-					var previous = dst;
-					dst = dst.Combine(g, GeometryCombineMode.Union);
-					previous.Dispose();
-					g.Dispose();
-				}
-			}
-		}
-
-		if (dst is null)
-		{
-			return null;
-		}
-
-		if (ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
-		{
-			var sx = Size.X / viewBox.Size.X;
-			var sy = Size.Y / viewBox.Size.Y;
-			// Match Paint's canvas transform (Scale then Translate): a local point is translated by -Offset then scaled.
-			var m = Matrix3x2.CreateTranslation(-viewBox.Offset.X, -viewBox.Offset.Y) * Matrix3x2.CreateScale(sx, sy);
-			var previous = dst;
-			dst = dst.Transform(m);
-			previous.Dispose();
-		}
-
-		return dst;
 	}
 
 	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
