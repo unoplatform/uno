@@ -74,7 +74,9 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 
 			// Bar chart card.
 			var barCount = Math.Max(4, count);
-			var barHost = new Grid { ColumnSpacing = 3, VerticalAlignment = VerticalAlignment.Bottom };
+			// Stretch (not Bottom): a Bottom-aligned Grid sizes to content, and the Stretch bars have no
+			// intrinsic height — they'd measure 0px tall and the chart would render empty on every backend.
+			var barHost = new Grid { ColumnSpacing = 3 };
 			for (var i = 0; i < barCount; i++)
 			{
 				barHost.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
