@@ -1042,7 +1042,26 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			StatDecomposedReplays++;
 			return;
 		}
-		if (data is WebGpuRenderRecord inl) { StatInlineReplays++; StatInlineCmds += inl.Commands.Count; }
+		if (data is WebGpuRenderRecord inl)
+		{
+			StatInlineReplays++; StatInlineCmds += inl.Commands.Count;
+			// Which command type actually forces the inline path? Counted so the fix targets the real
+			// disqualifier instead of an assumed one.
+			foreach (var c in inl.Commands)
+			{
+				if (c is RectCommand or RoundedRectCmd or PathFill or ImageCmd or GradientCmd) { continue; }
+				switch (c)
+				{
+					case ReplayRefCmd: StatBlockReplayRef++; break;
+					case LayerCmd: StatBlockLayer++; break;
+					case ShadowCmd: StatBlockShadow++; break;
+					case BackdropCmd: StatBlockBackdrop++; break;
+					default: StatBlockOther++; break;
+				}
+				break;
+			}
+			if (inl.Commands.Count == 0) { StatBlockEmpty++; }
+		}
 		ReplayInline(data);
 	}
 
@@ -1050,6 +1069,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	// one nested replay/layer/shadow anywhere forces the whole list to be re-transformed inline — reallocating a
 	// fan array per path fill (i.e. per glyph) every frame. Reset and reported by the backend's stats line.
 	internal static int StatCacheableReplays, StatInlineReplays, StatInlineCmds, StatDecomposedReplays;
+	internal static int StatBlockReplayRef, StatBlockLayer, StatBlockShadow, StatBlockBackdrop, StatBlockOther, StatBlockEmpty;
 
 	// Take a ref to every texture the nested recording references, so an outer frame keeps them alive as long as it can
 	// be replayed. Balanced by this recording's Dispose (which Releases every entry in its Textures list).
@@ -3520,8 +3540,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
 		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
 		{
-			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} cachedRebuilds={_statCachedRebuilds} replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays}+d{WebGpuCommandRecorder.StatDecomposedReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds}");
+			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} cachedRebuilds={_statCachedRebuilds} replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays}+d{WebGpuCommandRecorder.StatDecomposedReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds} blocked=ref{WebGpuCommandRecorder.StatBlockReplayRef}/lyr{WebGpuCommandRecorder.StatBlockLayer}/sh{WebGpuCommandRecorder.StatBlockShadow}/bd{WebGpuCommandRecorder.StatBlockBackdrop}/oth{WebGpuCommandRecorder.StatBlockOther}/empty{WebGpuCommandRecorder.StatBlockEmpty}");
 			WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = WebGpuCommandRecorder.StatDecomposedReplays = 0;
+			WebGpuCommandRecorder.StatBlockReplayRef = WebGpuCommandRecorder.StatBlockLayer = WebGpuCommandRecorder.StatBlockShadow = WebGpuCommandRecorder.StatBlockBackdrop = WebGpuCommandRecorder.StatBlockOther = WebGpuCommandRecorder.StatBlockEmpty = 0;
 			_statTableRebuilds = 0; _statStamps = 0; _statArenaRebuilds = 0; _statCachedRebuilds = 0;
 		}
 
