@@ -1,7 +1,9 @@
 #nullable enable
 
 using System;
+using System.IO;
 using System.Threading.Tasks;
+using Uno.Foundation.Logging;
 
 namespace Windows.ApplicationModel.Background;
 
@@ -33,13 +35,26 @@ internal sealed class BackgroundTaskInstance : IBackgroundTaskInstance
 		set
 		{
 			_progress = value;
-			BackgroundTaskRegistrationStore.WriteEvent(
-				new BackgroundTaskEvent(
-					BackgroundTaskEventKind.Progress,
-					Task.TaskId,
-					InstanceId,
-					value,
-					ErrorMessage: null));
+			try
+			{
+				BackgroundTaskRegistrationStore.WriteEvent(
+					new BackgroundTaskEvent(
+						BackgroundTaskEventKind.Progress,
+						Task.TaskId,
+						InstanceId,
+						value,
+						ErrorMessage: null));
+			}
+			catch (Exception error) when (
+				error is IOException or UnauthorizedAccessException)
+			{
+				// Progress notification is best effort: a foreground subscriber may not even
+				// exist, so a failed write must never take down the running task.
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug($"Background task progress could not be published: {error}");
+				}
+			}
 		}
 	}
 

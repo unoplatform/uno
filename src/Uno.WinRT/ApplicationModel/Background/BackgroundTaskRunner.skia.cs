@@ -225,13 +225,26 @@ internal static class BackgroundTaskRunner
 		BackgroundTaskRegistrationRecord record,
 		Guid instanceId,
 		string? errorMessage)
-		=> BackgroundTaskRegistrationStore.WriteEvent(
-			new BackgroundTaskEvent(
-				BackgroundTaskEventKind.Completed,
-				record.TaskId,
-				instanceId,
-				Progress: 0,
-				errorMessage));
+	{
+		try
+		{
+			BackgroundTaskRegistrationStore.WriteEvent(
+				new BackgroundTaskEvent(
+					BackgroundTaskEventKind.Completed,
+					record.TaskId,
+					instanceId,
+					Progress: 0,
+					errorMessage));
+		}
+		catch (Exception error) when (
+			error is IOException or UnauthorizedAccessException)
+		{
+			// Completion notification is best effort and is only observed by a subscribed
+			// foreground process; a failed write must not change the task's own outcome.
+			Console.Error.WriteLine(
+				$"The background task completion could not be published: {error}");
+		}
+	}
 
 	private static string JoinErrors(string? first, string second)
 		=> string.IsNullOrWhiteSpace(first)
