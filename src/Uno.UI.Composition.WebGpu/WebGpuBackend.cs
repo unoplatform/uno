@@ -1993,18 +1993,24 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// across visuals whose only difference is the layout-clip rectangle.
 		if (a.ScissorInert != b.ScissorInert) { return false; }
 		if (!a.ScissorInert && a.Aabb != b.Aabb) { return false; }
-		int an = a.Rounds?.Length ?? 0, bn = b.Rounds?.Length ?? 0;
-		if (an != bn) { return false; }
-		for (int i = 0; i < an; i++)
+		// Both arrays are copy-on-write and a recording's clip is immutable, so across frames these are almost
+		// always the SAME instance — compare by reference before walking them. This runs per replayed recording
+		// per frame in every stamp guard, and the fan walk is O(fan length).
+		if (!ReferenceEquals(a.Rounds, b.Rounds))
 		{
-			var x = a.Rounds[i]; var y = b.Rounds[i];
-			if (x.Rect != y.Rect || x.Radii != y.Radii || x.RadiiY != y.RadiiY || x.Exclude != y.Exclude) { return false; }
+			int an = a.Rounds?.Length ?? 0, bn = b.Rounds?.Length ?? 0;
+			if (an != bn) { return false; }
+			for (int i = 0; i < an; i++)
+			{
+				var x = a.Rounds[i]; var y = b.Rounds[i];
+				if (x.Rect != y.Rect || x.Radii != y.Radii || x.RadiiY != y.RadiiY || x.Exclude != y.Exclude) { return false; }
+			}
 		}
 		if ((a.PathFan is null) != (b.PathFan is null)) { return false; }
 		if (a.PathFan is { } fa && b.PathFan is { } fb)
 		{
 			if (a.PathEvenOdd != b.PathEvenOdd || a.PathExclude != b.PathExclude) { return false; }
-			if (!((ReadOnlySpan<float>)fa).SequenceEqual(fb)) { return false; }
+			if (!ReferenceEquals(fa, fb) && !((ReadOnlySpan<float>)fa).SequenceEqual(fb)) { return false; }
 		}
 		return true;
 	}
