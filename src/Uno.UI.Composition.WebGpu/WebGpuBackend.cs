@@ -983,10 +983,17 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			// its textures to keep the views alive for the whole time this recording can be replayed.
 			TrackNestedTextures(cacheable);
 			_target.Add(new ReplayRefCmd { Data = cacheable, Commands = cacheable.Commands, Transform = _m, Clip = _clip });
+			StatCacheableReplays++;
 			return;
 		}
+		if (data is WebGpuRenderRecord inl) { StatInlineReplays++; StatInlineCmds += inl.Commands.Count; }
 		ReplayInline(data);
 	}
+
+	// Per-frame record-phase counters: a recording is only cacheable when EVERY command is a simple primitive, so
+	// one nested replay/layer/shadow anywhere forces the whole list to be re-transformed inline — reallocating a
+	// fan array per path fill (i.e. per glyph) every frame. Reset and reported by the backend's stats line.
+	internal static int StatCacheableReplays, StatInlineReplays, StatInlineCmds;
 
 	// Take a ref to every texture the nested recording references, so an outer frame keeps them alive as long as it can
 	// be replayed. Balanced by this recording's Dispose (which Releases every entry in its Textures list).
@@ -3457,7 +3464,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
 		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
 		{
-			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} cachedRebuilds={_statCachedRebuilds}");
+			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} cachedRebuilds={_statCachedRebuilds} replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds}");
+			WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = 0;
 			_statTableRebuilds = 0; _statStamps = 0; _statArenaRebuilds = 0; _statCachedRebuilds = 0;
 		}
 
