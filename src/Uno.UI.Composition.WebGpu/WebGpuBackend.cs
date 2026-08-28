@@ -209,10 +209,6 @@ internal sealed unsafe class WebGpuGeometryCache
 	// (window resize) makes the cached NDC stale — rebuild when the current surface differs. Without this, cached
 	// recordings replay old-size NDC into the resized surface and look stretched.
 	public int BuiltW, BuiltH;
-	// Arena entry whose ClipU carries nothing transform-dependent that is actually SAMPLED: pure path fills
-	// (so positions ride the transform-table slot, not ClipU.xform) with no rounded child clip (so clipCov
-	// never maps a fragment back through finv). A move then only needs new device scissors.
-	public bool ClipUTransformFree;
 	// Stable transform-table slot for this recording's path-fill (kind 1) geometry: its fan/cover verts are stored in
 	// recorded-device space and bake this slot as a per-vertex index; the slot's local->NDC affine is rewritten each
 	// frame (folding the replay transform + current device->NDC projection), so resize/move never re-bakes the verts.
@@ -2783,9 +2779,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								if (aHasPath && aSlot < 0) { aSlot = _d.AllocXformSlot(); }
 								BuildCoalesced(aList, aOps, aOwned, aSlot);
 								for (int _ri = 0; _ri < aOps.Count; _ri++) { aOps[_ri] = ResidentizeFan(aOps[_ri], aOwned); }
-								bool aNoRounds = aSlot >= 0 && aPure;
-								if (aNoRounds) { foreach (var ao in aOps) { if (ao.clip.Rounds is { Length: > 0 }) { aNoRounds = false; break; } } }
-								entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, PurePath = aPure, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = aSlot, ClipUTransformFree = aNoRounds };
+								entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, PurePath = aPure, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = aSlot };
 								StoreCompiled(rr.Data, entry);
 							}
 							// Per frame (even on a cache/stamp hit): the identity-space verts map to the current replay
@@ -2806,8 +2800,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								var t2 = new Matrix3x2(rr.Transform.M11, rr.Transform.M12, rr.Transform.M21, rr.Transform.M22, rr.Transform.M41, rr.Transform.M42);
 								Matrix3x2 finv = Matrix3x2.Invert(t2, out var inv) ? inv : Matrix3x2.Identity;
 								Vector2 MoveP(float x, float y) => new(x * t2.M11 + y * t2.M21 + t2.M31, x * t2.M12 + y * t2.M22 + t2.M32);
-								// A session clip with rounds still has to reach clipCov, so it forces the full rewrite.
-								var skipClipU = entry.ClipUTransformFree && rr.Clip.Rounds is not { Length: > 0 };
 								for (int i = 0; i < entry.Ops.Count; i++)
 								{
 									var op = entry.Ops[i];
@@ -2828,28 +2820,15 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 									scissorClip.Aabb = new Vector4(MathF.Max(scissorClip.Aabb.X, sa.X), MathF.Max(scissorClip.Aabb.Y, sa.Y), MathF.Min(scissorClip.Aabb.Z, sa.Z), MathF.Min(scissorClip.Aabb.W, sa.W));
 									scissorClip.ScissorInert = op.clip.ScissorInert && rr.Clip.ScissorInert;
 									var uClip = op.clip;
-									bool uCanWiden = false;
-									if (!skipClipU)
+									FoldSessionRounds(ref uClip, rr.Clip.Rounds, finv);
+									var uSessionFinite = IsFiniteAabb(rr.Clip.Aabb);
+									var uAxisAligned = finv.M12 == 0 && finv.M21 == 0;
+									var uCanWiden = !uSessionFinite || uAxisAligned;
+									if (uSessionFinite && uAxisAligned)
 									{
-										FoldSessionRounds(ref uClip, rr.Clip.Rounds, finv);
-										var uSessionFinite = IsFiniteAabb(rr.Clip.Aabb);
-										var uAxisAligned = finv.M12 == 0 && finv.M21 == 0;
-										uCanWiden = !uSessionFinite || uAxisAligned;
-										if (uSessionFinite && uAxisAligned)
-										{
-											FoldSessionAabb(ref uClip, rr.Clip.Aabb, finv);
-										}
+										FoldSessionAabb(ref uClip, rr.Clip.Aabb, finv);
 									}
-									if (reuse && skipClipU)
-									{
-										// Nothing sampled from this ClipU depends on the transform, so a move only needs
-										// the new device scissor. The rewrite this replaces was ~8ms/frame on a scrolling
-										// grid: ~209 recordings x every op x a 72-float uniform.
-										scissorClip.AabbInClipU = false;
-										scissorClip.ScissorLoadBearing = true;
-										stamped[i] = new DrawOp(op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, stamped[i].clipBg);
-									}
-									else if (reuse)
+									if (reuse)
 									{
 										scissorClip.AabbInClipU = RewriteClipU(bufs[i], uClip, xf, finv) && uCanWiden;
 										scissorClip.ScissorLoadBearing = !scissorClip.AabbInClipU;
