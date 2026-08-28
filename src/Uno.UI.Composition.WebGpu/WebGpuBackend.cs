@@ -2418,6 +2418,37 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				{
 					// Path fills (glyphs/icons): local device fan/cover + the shared slot, residentized so the fan/cover
 					// buffers upload once. The move repositions them via the slot; clipCov uses the per-frame finv stamp.
+					//
+					// A run of consecutive NON-ZERO paths sharing colour + clip (a text run's glyphs) collapses to ONE
+					// stencil + ONE cover, the same coalescing BuildCoalesced does for arena recordings. Without it every
+					// recording that also contains rects — i.e. every real list row, grid cell or card, since they all
+					// have a background — paid 2 draws and 2 pipeline switches per GLYPH.
+					if (tc is PathFill pf0 && !pf0.EvenOdd)
+					{
+						_scratch.Clear();
+						var gMin = new Vector2(float.MaxValue); var gMax = new Vector2(float.MinValue);
+						int gj = ti;
+						while (gj < tcmds.Count && tcmds[gj] is PathFill pfj && !pfj.EvenOdd
+							&& pfj.Color.R == pf0.Color.R && pfj.Color.G == pf0.Color.G && pfj.Color.B == pf0.Color.B && pfj.Color.A == pf0.Color.A
+							&& ClipDataEquals(pfj.Clip, pf0.Clip))
+						{
+							for (int gi = 0; gi < pfj.FanDevice.Length; gi += 2) { _scratch.Add(pfj.FanDevice[gi]); _scratch.Add(pfj.FanDevice[gi + 1]); _scratch.Add(slotBits); }
+							gMin = Vector2.Min(gMin, pfj.BbMin); gMax = Vector2.Max(gMax, pfj.BbMax);
+							gj++;
+						}
+						var gFan = Vbuf(_scratch, fOwned);
+						uint gCount = (uint)(_scratch.Count / 3);
+						float gr = pf0.Color.R / 255f, gg = pf0.Color.G / 255f, gb = pf0.Color.B / 255f, ga = pf0.Color.A / 255f;
+						_scratch.Clear();
+						var gTl = gMin; var gBr = gMax; var gTr = new Vector2(gBr.X, gTl.Y); var gBl = new Vector2(gTl.X, gBr.Y);
+						PushVertT(gTl, gr, gg, gb, ga, slotBits); PushVertT(gTr, gr, gg, gb, ga, slotBits); PushVertT(gBr, gr, gg, gb, ga, slotBits);
+						PushVertT(gTl, gr, gg, gb, ga, slotBits); PushVertT(gBr, gr, gg, gb, ga, slotBits); PushVertT(gBl, gr, gg, gb, ga, slotBits);
+						var gCov = Vbuf(_scratch, fOwned);
+						var gOp = new DrawOp(1, (nint)gFan, gCount, (nint)gCov, false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, fOwned));
+						order.Add(new FrameOp { Kind = -1, NonSolid = ResidentizeFan(gOp, fOwned) });
+						ti = gj - 1;
+						continue;
+					}
 					tmp.Clear();
 					BuildSimpleOp(tc, tmp, fOwned, slot);
 					foreach (var o in tmp) { order.Add(new FrameOp { Kind = -1, NonSolid = ResidentizeFan(o, fOwned) }); }
@@ -2623,6 +2654,35 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 									}
 									else
 									{
+										// Same glyph-run collapse as the table path: one stencil + one cover for a run of
+										// consecutive non-zero paths sharing colour + clip, instead of 2 draws per glyph.
+										if (tc is PathFill pf0 && !pf0.EvenOdd)
+										{
+											float fSlotBits = System.BitConverter.Int32BitsToSingle(fSlot);
+											_scratch.Clear();
+											var gMin = new Vector2(float.MaxValue); var gMax = new Vector2(float.MinValue);
+											int gj = ti;
+											while (gj < tcmds.Count && tcmds[gj] is PathFill pfj && !pfj.EvenOdd
+												&& pfj.Color.R == pf0.Color.R && pfj.Color.G == pf0.Color.G && pfj.Color.B == pf0.Color.B && pfj.Color.A == pf0.Color.A
+												&& ClipDataEquals(pfj.Clip, pf0.Clip))
+											{
+												for (int gi = 0; gi < pfj.FanDevice.Length; gi += 2) { _scratch.Add(pfj.FanDevice[gi]); _scratch.Add(pfj.FanDevice[gi + 1]); _scratch.Add(fSlotBits); }
+												gMin = Vector2.Min(gMin, pfj.BbMin); gMax = Vector2.Max(gMax, pfj.BbMax);
+												gj++;
+											}
+											var gFan = Vbuf(_scratch, fOwned);
+											uint gCount = (uint)(_scratch.Count / 3);
+											float gr = pf0.Color.R / 255f, gg = pf0.Color.G / 255f, gb = pf0.Color.B / 255f, ga = pf0.Color.A / 255f;
+											_scratch.Clear();
+											var gTl = gMin; var gBr = gMax; var gTr = new Vector2(gBr.X, gTl.Y); var gBl = new Vector2(gTl.X, gBr.Y);
+											PushVertT(gTl, gr, gg, gb, ga, fSlotBits); PushVertT(gTr, gr, gg, gb, ga, fSlotBits); PushVertT(gBr, gr, gg, gb, ga, fSlotBits);
+											PushVertT(gTl, gr, gg, gb, ga, fSlotBits); PushVertT(gBr, gr, gg, gb, ga, fSlotBits); PushVertT(gBl, gr, gg, gb, ga, fSlotBits);
+											var gCov = Vbuf(_scratch, fOwned);
+											var gOp = new DrawOp(1, (nint)gFan, gCount, (nint)gCov, false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, fOwned));
+											order.Add(new FrameOp { Kind = -1, NonSolid = ResidentizeFan(gOp, fOwned) });
+											ti = gj - 1;
+											continue;
+										}
 										tmp.Clear();
 										BuildSimpleOp(tc, tmp, fOwned, fSlot);
 										foreach (var o in tmp) { order.Add(new FrameOp { Kind = -1, NonSolid = ResidentizeFan(o, fOwned) }); }
