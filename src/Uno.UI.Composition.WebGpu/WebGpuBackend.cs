@@ -1185,6 +1185,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private int _statSolidFloats;
 	private int _statStampOps;
 	private int _statReplayOps, _statCulled;
+	private static readonly bool _bisectSkipReplays = Environment.GetEnvironmentVariable("UNO_WEBGPU_BISECT") is "1";
 	private static readonly bool _emitStats = Environment.GetEnvironmentVariable("UNO_WEBGPU_STATS") is "1" or "true";
 	private static readonly bool _statsInit = WebGpuCommandRecorder.StatsEnabled = _emitStats;
 	private static int _emitStatsFrame;
@@ -2642,6 +2643,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							break;
 						}
 						long _tPath = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
+						// Diagnostic bisect: emit nothing for this replay. Timers kept shrinking the accounted share
+						// without explaining opsBuild, so remove the work instead of trying to measure it — if
+						// opsBuild collapses the cost is downstream of here, if it holds it is the loop itself.
+						if (_bisectSkipReplays) { break; }
 						// FRAME-SOLID path (ramez arena baseline): any recording that contains rects — a Border background,
 						// a Button (background + border + glyphs) — re-emits its SOLIDS into the SHARED per-pass buffer
 						// every frame so sibling visuals sharing a clip collapse to ONE draw (the cross-visual draw-count
