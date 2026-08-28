@@ -2862,6 +2862,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						}
 						var transformChanged = !miss && entry.Transform != rr.Transform;
 						int cSlot = (miss || entry is null) ? -1 : entry.XformSlot;
+						// Bisect level 4: reuse the previous bake on a pure move (visually stale, but it prices the
+						// cached path's rebuild-on-move, which counters show is 100% of its rebuilds).
+						if (_bisect == 4 && !miss && transformChanged && !entry.Arena) { transformChanged = false; }
 						if (miss || transformChanged || entry.Arena || entry.BuiltW != (int)_s.Width || entry.BuiltH != (int)_s.Height || !ClipDataEquals(entry.Clip, rr.Clip))
 						{
 							// Why did this rebuild? The cached path is the only replay path that re-bakes geometry on a
