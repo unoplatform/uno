@@ -15,6 +15,7 @@ using FontFamilyHelper = Microsoft.UI.Xaml.FontFamilyHelper;
 using Windows.Graphics;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
+using Uno.UI.Composition;
 using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.WebAssembly.Browser;
@@ -146,7 +147,12 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 							var compositionTarget = (CompositionTarget)XamlRoot?.Content?.Visual.CompositionTarget!;
 							var host = (WebAssemblyBrowserHost)XamlRootMap.GetHostForRoot(XamlRoot!)!;
 							compositionTarget.FrameRendered += CompositionTargetOnFrameRendered;
-							((IXamlRootHost)host).InvalidateRender();
+
+							// FrameRendered comes from the record pass, but InvalidateRender only asks for a present,
+							// which a tick can satisfy without recording — and when the target has already painted
+							// ahead of time it records nothing, leaving the splash up forever (#23586).
+							// RequestNewFrame is what marks the target as needing a record.
+							((ICompositionTarget)compositionTarget).RequestNewFrame();
 							void CompositionTargetOnFrameRendered()
 							{
 								compositionTarget.FrameRendered -= CompositionTargetOnFrameRendered;
