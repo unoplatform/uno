@@ -12,11 +12,15 @@ using Uno.UI.NativeElementHosting;
 
 namespace UITests.Shared.Wasm;
 
+// Not __WASM__: the Skia browser head compiles with __SKIA__/__CROSSRUNTIME__ only,
+// and browser-vs-desktop is a runtime distinction there (OperatingSystem.IsBrowser()).
+#if __CROSSRUNTIME__
 [Sample("Wasm",
 	Name = nameof(Wasm_ViewportOrientationTelemetry),
 	Description = "Compares the Uno Platform window size against the browser's documentElement size after device rotation. The banner turns STALE if the app-measured size lags the settled viewport size.",
 	IsManualTest = true,
 	IgnoreInSnapshotTests = true)]
+#endif
 public sealed partial class Wasm_ViewportOrientationTelemetry : Page
 {
 	private const string InstallCountersScript = """
