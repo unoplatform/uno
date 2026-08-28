@@ -77,6 +77,9 @@ public sealed partial class BrowserHtmlElement : IDisposable
 	private void UnregisterHtmlEventHandlerNative(string eventName, EventHandler<JSObject> handler)
 		=> throw new PlatformNotSupportedException();
 
+	partial void OnInputPolicyChanged(BrowserHtmlElementInputPolicy value)
+		=> throw new PlatformNotSupportedException();
+
 	partial void DisposeNative()
 		=> throw new PlatformNotSupportedException();
 
