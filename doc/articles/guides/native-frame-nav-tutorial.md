@@ -137,5 +137,6 @@ The complete sample code can be found in [NativeFrameNav on Uno.Samples GitHub r
 
 ## Additional Resources
 
-- [Uno-specific documentation](../controls/CommandBar.md) on `CommandBar` and `AppBarButton`
+- [Uno-specific `CommandBar` documentation](../controls/CommandBar.md)
+- [Uno-specific `AppBarButton` documentation](../controls/AppBarButton.md)
 - [Native Frame navigation](../features/native-frame-nav.md)
