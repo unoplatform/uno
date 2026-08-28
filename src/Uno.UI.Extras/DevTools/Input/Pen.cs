@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
 
-namespace Uno.UI.Extras.DevTools.Input;
+namespace Uno.UI.DevTools.Input;
 
 #if HAS_UNO
 internal class Pen : IInjectedPointer, IDisposable

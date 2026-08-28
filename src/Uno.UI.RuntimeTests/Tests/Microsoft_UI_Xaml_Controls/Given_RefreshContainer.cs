@@ -14,7 +14,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Extras.DevTools.Input;
+using Uno.UI.DevTools.Input;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
@@ -151,12 +151,14 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			// Make sure to abort any pending direct manip
 			finger.Tap(rect.Location.Offset(-1, -1));
 
-			// Slowly swipe up (scroll down - no inertia)
+			// Slowly swipe up (scroll down - no inertia).
+			// Swipe past one 50px item: the distance travelled before the manipulation is recognized is
+			// absorbed and never applied to the scroll (#20473), so a 50px swipe would fall short.
 			finger.Drag(
 				from: rect.GetCenter(),
-				to: new(rect.GetCenter().X, rect.GetCenter().Y - 50),
-				steps: 5,
-				stepOffsetInMilliseconds: 100);
+				to: new(rect.GetCenter().X, rect.GetCenter().Y - 80),
+				steps: 30,
+				stepOffsetInMilliseconds: 16);
 
 			await UITestHelper.WaitForIdle();
 
@@ -165,9 +167,9 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			// Slowly swipe down (scroll up - no inertia)
 			finger.Drag(
 				from: rect.GetCenter(),
-				to: new(rect.GetCenter().X, rect.GetCenter().Y + 50),
-				steps: 5,
-				stepOffsetInMilliseconds: 100);
+				to: new(rect.GetCenter().X, rect.GetCenter().Y + 80),
+				steps: 30,
+				stepOffsetInMilliseconds: 16);
 
 			await UITestHelper.WaitForIdle();
 
@@ -203,12 +205,15 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			// Make sure to abort any pending direct manip
 			finger.Tap(rect.Location.Offset(-1, -1));
 
-			// Slowly swipe down (scroll up - no inertia)
+			// Slowly swipe down (scroll up - no inertia).
+			// Sampled at a realistic ~60Hz: RefreshInfoProviderImpl throttles InteractionRatioChanged to
+			// one event in six, so a coarser drag does not produce enough samples for the visualizer to
+			// observe the ratio crossing its execution ratio.
 			finger.Drag(
 				from: rect.GetCenter(),
 				to: new(rect.GetCenter().X, rect.GetCenter().Y + 100),
-				steps: 5,
-				stepOffsetInMilliseconds: 100);
+				steps: 30,
+				stepOffsetInMilliseconds: 16);
 
 			await UITestHelper.WaitForIdle();
 

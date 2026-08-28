@@ -55,7 +55,9 @@ public class Given_RuntimeAssetsSelectorTask
 		task.Execute().Should().BeTrue();
 
 		task.ResolvedCompileFileDefinitionsToRemove.Should().BeEmpty();
+		task.ResolvedCompileFileDefinitionsToAdd.Should().BeEmpty();
 		task.RuntimeCopyLocalItemsToRemove.Should().BeEmpty();
+		task.RuntimeCopyLocalItemsToAdd.Should().BeEmpty();
 	}
 
 	[TestMethod]
@@ -71,6 +73,8 @@ public class Given_RuntimeAssetsSelectorTask
 		task.Execute().Should().BeTrue();
 
 		task.ResolvedCompileFileDefinitionsToRemove.Should().BeEmpty();
+		task.ResolvedCompileFileDefinitionsToAdd.Should().BeEmpty();
 		task.RuntimeCopyLocalItemsToRemove.Should().BeEmpty();
+		task.RuntimeCopyLocalItemsToAdd.Should().BeEmpty();
 	}
 }

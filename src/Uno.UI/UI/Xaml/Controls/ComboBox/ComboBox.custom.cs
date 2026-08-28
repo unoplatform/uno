@@ -499,12 +499,10 @@ public partial class ComboBox : Selector
 			// This means we're in a non-virtualizing panel or in a virtualizing panel where the container we want is materialized for some reason (e.g. partially in view)
 			ScrollIntoViewFastPath(element, alignment);
 		}
-#if !IS_UNIT_TESTS
 		else if (VirtualizingPanel?.GetLayouter() is { } layouter)
 		{
 			layouter.ScrollIntoView(item, alignment);
 		}
-#endif
 	}
 
 	private void ScrollIntoViewFastPath(UIElement element, ScrollIntoViewAlignment alignment)

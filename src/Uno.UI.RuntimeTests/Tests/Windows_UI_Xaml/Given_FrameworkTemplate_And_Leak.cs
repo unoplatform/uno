@@ -12,6 +12,7 @@ using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 
 #if HAS_UNO
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
@@ -78,8 +79,9 @@ public class Given_FrameworkTemplate_And_Leak
 		TestServices.WindowHelper.WindowContent = presenter;
 		await TestServices.WindowHelper.WaitForLoaded(presenter);
 
-		var root = presenter.ContentTemplateRoot;
-		Assert.IsNotNull(root, "The template did not materialize.");
+		// The presenter does not surface its own template root (#2163); the materialized root is its single child.
+		Assert.AreEqual(1, VisualTreeHelper.GetChildrenCount(presenter), "The template did not materialize.");
+		var root = VisualTreeHelper.GetChild(presenter, 0);
 
 		// Detaching the template returns its root to the pool while the templated parent is still alive.
 		presenter.ContentTemplate = null;

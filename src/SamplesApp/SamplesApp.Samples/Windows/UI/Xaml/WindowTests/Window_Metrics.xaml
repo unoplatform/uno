@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:UITests.Windows_UI_Xaml.WindowTests"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:ui="using:Uno.UI.Extras"
+    xmlns:uub="using:Uno.UI.Behaviors"
     d:DesignHeight="300"
     d:DesignWidth="400"
     mc:Ignorable="d">
@@ -47,6 +47,6 @@
             <Run x:Name="VisibleBoundsPaddingValue" />
         </TextBlock>
 
-        <Grid x:Name="PaddedGrid" ui:VisibleBoundsPadding.PaddingMask="All" />
+        <Grid x:Name="PaddedGrid" uub:VisibleBoundsPadding.PaddingMask="All" />
     </StackPanel>
 </UserControl>

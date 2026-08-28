@@ -22,9 +22,9 @@ using Windows.UI.ViewManagement;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Extras.Extensions;
+using Uno.UI.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.UI.Extras.DevTools.Input;
+using Uno.UI.DevTools.Input;
 
 using static Private.Infrastructure.TestServices;
 using Disposable = Uno.Disposables.Disposable;
@@ -1752,11 +1752,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
 			using var finger = input.GetFinger();
 			var bounds = SUT.GetAbsoluteBounds();
+			const double drag = 50;
+#if HAS_UNO
+			var threshold = Microsoft.UI.Input.GestureRecognizer.Manipulation.StartTouch.TranslateY;
+#else
+			// Not reachable: the test is [Ignore]d on WinAppSDK, where the threshold type is internal to Uno.
+			const double threshold = 10;
+#endif
+
 			finger.Press(bounds.GetCenter());
-			finger.MoveTo(bounds.GetCenter().Offset(0, -50));
+			// Moves of exactly one threshold: the manipulation is recognized on the first one, and that
+			// distance is absorbed rather than replayed as a delta (#20473).
+			finger.MoveTo(bounds.GetCenter().Offset(0, -drag), steps: (uint)(drag / threshold) - 1);
 			finger.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(50, SUT.VerticalOffset);
+			Assert.AreEqual(drag - threshold, SUT.VerticalOffset);
 		}
 
 		[TestMethod]

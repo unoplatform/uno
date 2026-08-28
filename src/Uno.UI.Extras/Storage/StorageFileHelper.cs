@@ -7,9 +7,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Uno;
 
-namespace Uno.UI.Extras;
+namespace Uno.Storage;
 
-public partial class StorageFileHelper
+public static partial class StorageFileHelper
 {
 	/// <summary>
 	/// Determines if an asset or resource exists within application package

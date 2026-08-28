@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-#if !NETFX_CORE
 using Uno.UI.DataBinding;
 using Uno.Extensions;
 using System;
@@ -547,4 +546,3 @@ namespace Uno.UI.DataBinding
 		#endregion
 	}
 }
-#endif

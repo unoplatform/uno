@@ -3,8 +3,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:extras="using:Uno.UI.Extras"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uuxc="using:Uno.UI.Xaml.Controls"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
     <Page.Resources>
@@ -23,67 +23,67 @@
             RowSpacing="8">
             <StackPanel Spacing="0">
                 <Grid Padding="20">
-                    <extras:ElevatedView Background="{StaticResource SurfaceBrush}" Elevation="1">
+                    <uuxc:ElevatedView Background="{StaticResource SurfaceBrush}" Elevation="1">
                         <Grid Height="50">
                             <TextBlock Style="{StaticResource DescriptionTextStyle}" Text="01 dp" />
                         </Grid>
-                    </extras:ElevatedView>
+                    </uuxc:ElevatedView>
                 </Grid>
                 <Grid Padding="20">
-                    <extras:ElevatedView Background="{StaticResource SurfaceBrush}" Elevation="2">
+                    <uuxc:ElevatedView Background="{StaticResource SurfaceBrush}" Elevation="2">
                         <Grid Height="50">
                             <TextBlock Style="{StaticResource DescriptionTextStyle}" Text="02 dp" />
                         </Grid>
-                    </extras:ElevatedView>
+                    </uuxc:ElevatedView>
                 </Grid>
                 <Grid Padding="20">
-                    <extras:ElevatedView Background="{StaticResource SurfaceBrush}" Elevation="3">
+                    <uuxc:ElevatedView Background="{StaticResource SurfaceBrush}" Elevation="3">
                         <Grid Height="50">
                             <TextBlock Style="{StaticResource DescriptionTextStyle}" Text="03 dp" />
                         </Grid>
-                    </extras:ElevatedView>
+                    </uuxc:ElevatedView>
                 </Grid>
                 <Grid Padding="20">
-                    <extras:ElevatedView Background="{StaticResource SurfaceBrush}" Elevation="4">
+                    <uuxc:ElevatedView Background="{StaticResource SurfaceBrush}" Elevation="4">
                         <Grid Height="50">
                             <TextBlock Style="{StaticResource DescriptionTextStyle}" Text="04 dp" />
                         </Grid>
-                    </extras:ElevatedView>
+                    </uuxc:ElevatedView>
                 </Grid>
                 <Grid Padding="20">
-                    <extras:ElevatedView Background="{StaticResource SurfaceBrush}" Elevation="6">
+                    <uuxc:ElevatedView Background="{StaticResource SurfaceBrush}" Elevation="6">
                         <Grid Height="50">
                             <TextBlock Style="{StaticResource DescriptionTextStyle}" Text="06 dp" />
                         </Grid>
-                    </extras:ElevatedView>
+                    </uuxc:ElevatedView>
                 </Grid>
                 <Grid Padding="20">
-                    <extras:ElevatedView Background="{StaticResource SurfaceBrush}" Elevation="8">
+                    <uuxc:ElevatedView Background="{StaticResource SurfaceBrush}" Elevation="8">
                         <Grid Height="50">
                             <TextBlock Style="{StaticResource DescriptionTextStyle}" Text="08 dp" />
                         </Grid>
-                    </extras:ElevatedView>
+                    </uuxc:ElevatedView>
                 </Grid>
                 <Grid Padding="20">
-                    <extras:ElevatedView Background="{StaticResource SurfaceBrush}" Elevation="9">
+                    <uuxc:ElevatedView Background="{StaticResource SurfaceBrush}" Elevation="9">
                         <Grid Height="50">
                             <TextBlock Style="{StaticResource DescriptionTextStyle}" Text="09 dp" />
                         </Grid>
-                    </extras:ElevatedView>
+                    </uuxc:ElevatedView>
                 </Grid>
                 <Grid Padding="20">
-                    <extras:ElevatedView Background="{StaticResource SurfaceBrush}" Elevation="12">
+                    <uuxc:ElevatedView Background="{StaticResource SurfaceBrush}" Elevation="12">
                         <Grid Height="50">
                             <TextBlock Style="{StaticResource DescriptionTextStyle}" Text="12 dp" />
                         </Grid>
-                    </extras:ElevatedView>
+                    </uuxc:ElevatedView>
                 </Grid>
                 <Grid Padding="20">
-                    <extras:ElevatedView Background="{StaticResource SurfaceBrush}" Elevation="16">
+                    <uuxc:ElevatedView Background="{StaticResource SurfaceBrush}" Elevation="16">
                         <Grid Height="50">
                             <TextBlock Style="{StaticResource DescriptionTextStyle}" Text="16 dp" />
                         </Grid>
-                    </extras:ElevatedView>
+                    </uuxc:ElevatedView>
                 </Grid>
             </StackPanel>
         </Grid>

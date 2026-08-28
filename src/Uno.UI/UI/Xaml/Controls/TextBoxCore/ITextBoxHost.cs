@@ -214,7 +214,5 @@ internal interface ITextBoxHost
 	void RaiseTextCompositionEnded(TextCompositionEndedEventArgs args);
 #endif
 
-#if !IS_UNIT_TESTS
 	void RaisePaste(TextControlPasteEventArgs args);
-#endif
 }

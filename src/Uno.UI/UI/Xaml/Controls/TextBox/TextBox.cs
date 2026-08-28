@@ -1,4 +1,4 @@
-﻿#if IS_UNIT_TESTS || UNO_REFERENCE_API
+﻿#if UNO_REFERENCE_API
 #pragma warning disable CS0067, CS649
 #endif
 
@@ -61,7 +61,6 @@ namespace Microsoft.UI.Xaml.Controls
 		public event ContextMenuOpeningEventHandler ContextMenuOpening;
 #endif
 
-#if !IS_UNIT_TESTS
 		/// <summary>
 		/// Occurs when text is pasted into the control.
 		/// </summary>
@@ -69,7 +68,6 @@ namespace Microsoft.UI.Xaml.Controls
 			event TextControlPasteEventHandler Paste;
 
 		internal void RaisePaste(TextControlPasteEventArgs args) => Paste?.Invoke(this, args);
-#endif
 
 
 		public TextBox()
@@ -394,7 +392,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 #endif
 
-#if IS_UNIT_TESTS || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		[Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 #endif
 		public CharacterCasing CharacterCasing
@@ -403,7 +401,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => this.SetValue(CharacterCasingProperty, value);
 		}
 
-#if IS_UNIT_TESTS || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		[Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty CharacterCasingProperty { get; } =

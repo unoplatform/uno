@@ -152,9 +152,7 @@ namespace Microsoft.UI.Xaml
 
 		private FrameworkTemplatePool()
 		{
-#if !IS_UNIT_TESTS
 			_platformProvider.Schedule(Scavenger);
-#endif
 		}
 
 		private async void Scavenger()

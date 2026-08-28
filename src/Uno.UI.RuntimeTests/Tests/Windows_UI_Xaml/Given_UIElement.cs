@@ -33,10 +33,10 @@ using Windows.UI;
 using Windows.ApplicationModel.Appointments;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml.Hosting;
-using Uno.UI.Extras.Extensions;
+using Uno.UI.Extensions;
 using KeyEventArgs = Windows.UI.Core.KeyEventArgs;
 using Combinatorial.MSTest;
-using Uno.UI.Extras.DevTools.Input;
+using Uno.UI.DevTools.Input;
 
 #if !HAS_UNO_WINUI
 using Windows.UI.Input;

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
-using Uno.UI.Extras;
+using Uno.UI.Behaviors;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;

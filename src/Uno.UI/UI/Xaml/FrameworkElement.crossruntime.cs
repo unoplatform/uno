@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Uno.Disposables;
@@ -235,9 +234,6 @@ namespace Microsoft.UI.Xaml
 
 		private protected virtual void OnUnloaded() { }
 
-#if DEBUG && __NETSTD_REFERENCE__
-		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args) { }
-#endif
 
 		public override string ToString()
 		{

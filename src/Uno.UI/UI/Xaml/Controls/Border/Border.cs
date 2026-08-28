@@ -33,14 +33,9 @@ public partial class Border : FrameworkElement
 	internal void SetUseBackgroundOverride(bool useBackgroundOverride)
 	{
 		_useBackgroundOverride = useBackgroundOverride;
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackground();
-#endif
 	}
 
-#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-#endif
 	public BrushTransition BackgroundTransition { get; set; }
 
 

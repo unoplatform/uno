@@ -94,7 +94,7 @@ public class Given_FrameworkTemplatePool
 		using (FeatureConfigurationHelper.UseTemplatePooling())
 		{
 			var scrollViewer = new ScrollViewer();
-			var elevatedViewChild = new Uno.UI.Extras.ElevatedView();
+			var elevatedViewChild = new Uno.UI.Xaml.Controls.ElevatedView();
 			scrollViewer.Content = elevatedViewChild;
 
 			var c = new CheckBox();
