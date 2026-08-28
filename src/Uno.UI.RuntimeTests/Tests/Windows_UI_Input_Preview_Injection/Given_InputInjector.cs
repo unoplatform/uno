@@ -201,6 +201,131 @@ public class Given_InputInjector
 		Assert.AreNotEqual(0, movedCount, "PointerMoved should have been raised");
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
+	public async Task When_MouseMoveAbsolute_PointerLandsAtExpectedPosition()
+	{
+		if (TestServices.WindowHelper.IsXamlIsland)
+		{
+			return;
+		}
+
+		var border = new Border
+		{
+			Background = new SolidColorBrush(Colors.DeepPink),
+			Width = 200,
+			Height = 200,
+		};
+
+		Point? capturedPosition = null;
+		border.PointerMoved += (s, e) => capturedPosition = e.GetCurrentPoint(border).Position;
+
+		WindowContent = border;
+		await WaitForLoaded(border);
+		await WaitForIdle();
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+
+		var root = TestServices.WindowHelper.XamlRoot;
+		var target = new Point(border.ActualWidth / 2, border.ActualHeight / 2);
+		var rootTarget = border.TransformToVisual(root.Content).TransformPoint(target);
+
+#if HAS_UNO
+		// Exercise InjectedInputMouseOptions.Absolute directly: DeltaX/DeltaY are normalized
+		// 0-65535 coordinates (mirroring Win32 SendInput's MOUSEEVENTF_ABSOLUTE), mapped by Uno
+		// onto the current root visual's bounds.
+		var bounds = root.Size;
+		injector.InjectMouseInput(new[]
+		{
+			new InjectedInputMouseInfo
+			{
+				MouseOptions = InjectedInputMouseOptions.Move | InjectedInputMouseOptions.Absolute,
+				DeltaX = (int)Math.Round(rootTarget.X / bounds.Width * 65535.0),
+				DeltaY = (int)Math.Round(rootTarget.Y / bounds.Height * 65535.0),
+			}
+		});
+#else
+		// On WinAppSDK, Mouse.MoveTo already injects using real, screen-normalized absolute
+		// coordinates - this is the real OS behavior InjectedInputMouseOptions.Absolute mirrors.
+		var mouse = injector.GetMouse();
+		mouse.MoveTo(rootTarget);
+#endif
+
+		await WaitForIdle();
+
+		Assert.IsNotNull(capturedPosition, "PointerMoved should have been raised");
+		Assert.AreEqual(target.X, capturedPosition!.Value.X, 2.0, "Unexpected X");
+		Assert.AreEqual(target.Y, capturedPosition!.Value.Y, 2.0, "Unexpected Y");
+	}
+
+#if HAS_UNO
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
+	public async Task When_MouseMoveAbsolute_NormalizedCoordinatesMapLinearlyToRootBounds()
+	{
+		if (TestServices.WindowHelper.IsXamlIsland)
+		{
+			return;
+		}
+
+		var border = new Border
+		{
+			Background = new SolidColorBrush(Colors.DeepPink),
+			Width = 200,
+			Height = 200,
+		};
+
+		Point? capturedPosition = null;
+		border.PointerMoved += (s, e) => capturedPosition = e.GetCurrentPoint(border).Position;
+
+		WindowContent = border;
+		await WaitForLoaded(border);
+		await WaitForIdle();
+
+		var injector = InputInjector.TryCreate();
+		Assert.IsNotNull(injector);
+
+		var root = TestServices.WindowHelper.XamlRoot;
+		var bounds = root.Size;
+		var borderOrigin = border.TransformToVisual(root.Content).TransformPoint(default);
+
+		foreach (var (normalized, useVirtualDesk) in new[] { (0.25, false), (0.75, true) })
+		{
+			capturedPosition = null;
+
+			var localTarget = new Point(border.ActualWidth * normalized, border.ActualHeight * normalized);
+			var rootTarget = new Point(borderOrigin.X + localTarget.X, borderOrigin.Y + localTarget.Y);
+
+			var options = InjectedInputMouseOptions.Move | InjectedInputMouseOptions.Absolute;
+			if (useVirtualDesk)
+			{
+				// Uno has no cross-platform notion of a multi-monitor virtual desktop, so VirtualDesk
+				// is expected to be a no-op: the normalized space always maps onto the root's bounds.
+				options |= InjectedInputMouseOptions.VirtualDesk;
+			}
+
+			injector.InjectMouseInput(new[]
+			{
+				new InjectedInputMouseInfo
+				{
+					MouseOptions = options,
+					DeltaX = (int)Math.Round(rootTarget.X / bounds.Width * 65535.0),
+					DeltaY = (int)Math.Round(rootTarget.Y / bounds.Height * 65535.0),
+				}
+			});
+
+			await WaitForIdle();
+
+			Assert.IsNotNull(capturedPosition, $"PointerMoved should have been raised for normalized={normalized}");
+			Assert.AreEqual(localTarget.X, capturedPosition!.Value.X, 2.0);
+			Assert.AreEqual(localTarget.Y, capturedPosition!.Value.Y, 2.0);
+		}
+	}
+#endif
+
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
