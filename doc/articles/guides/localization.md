@@ -116,6 +116,24 @@ This guide will walk you through the necessary steps to localize an Uno Platform
     </Resources>
     ```
 
+## Localize the application name
+
+For Windows and Skia Desktop targets, the application name in `Package.appxmanifest` can reference a localized string with `ms-resource:`:
+
+```xml
+<Properties>
+    <DisplayName>ms-resource:ApplicationName</DisplayName>
+</Properties>
+```
+
+Add an `ApplicationName` entry to each language's `Strings/[language]/Resources.resw` file:
+
+|Name|Value in `en/Resources.resw`|Value in `fr/Resources.resw`|
+|-|-|-|
+|ApplicationName|`My application`|`Mon application`|
+
+On Skia Desktop, the manifest is embedded in the app and `Package.Current.DisplayName` resolves the resource using the current UI language. Android, iOS, Mac Catalyst, and WebAssembly use platform-specific application metadata instead.
+
 ## Get the complete code
 
 See the completed sample on GitHub: [LocalizationSamples/Localization](https://github.com/unoplatform/Uno.Samples/tree/master/UI/LocalizationSamples/Localization)
