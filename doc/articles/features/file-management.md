@@ -70,6 +70,9 @@ Ensure that a declaration exists in your project file like the following:
 </ItemGroup>
 ```
 
+> [!NOTE]
+> `UnoAsset` is an available Uno.Sdk build action, but it is not a storage-assets feature. It does not by itself process or package a file. In WinAppSDK projects, items marked `UnoAsset` are excluded from the default content glob for the Windows platform folder. Use `Content` to include a file in the application package, as shown above.
+
 A URI with the `ms-appx:///` scheme can then be used to read a file's content:
 
 ```csharp

@@ -357,6 +357,9 @@
 		}
 	],
 	"items": {
+		"UnoAsset": {
+			"description": "An available item name for an Uno asset. This item type does not by itself process or package a file; use Content to include a file in the application package. In WinAppSDK projects, UnoAsset items are excluded from the default content glob for the Windows platform folder."
+		},
 		"UnoDspImportColors": {
 			"description": "Imports a theme file with color definitions.",
 			"metadata": {
