@@ -12,10 +12,13 @@ uid: Uno.Features.PasswordVault
 
 ## Supported features
 
-| Feature              | Windows | Android | iOS | macOS (Skia) | Linux (Skia) | WebAssembly | Other Skia |
-|----------------------|---------|---------|-----|--------------|--------------|-------------|------------|
-| `PasswordVault`      | ✔       | ✔       | ✔   | ✔            | ✔            | ✖           | ✖          |
-| `PasswordCredential` | ✔       | Partial | Partial | Partial | Partial      | Type only   | Type only  |
+| Feature              | Windows (WinAppSDK) | Windows (Skia) | Android | iOS | macOS (Skia) | Linux (Skia) | WebAssembly | Other Skia |
+|----------------------|---------------------|----------------|---------|-----|--------------|--------------|-------------|------------|
+| `PasswordVault`      | ✔                   | ✔              | ✔       | ✔   | ✔            | ✔            | ✖           | ✖          |
+| `PasswordCredential` | ✔                   | Partial        | Partial | Partial | Partial  | Partial      | Type only   | Type only  |
+
+"Other Skia" covers Skia hosts without a registered secure-storage extension, such as
+the WPF/XAML Islands host.
 
 ## `PasswordVault`
 
@@ -40,11 +43,29 @@ It's backed by hardware components that ensure that the data is almost impossibl
 
 For more information, see [Storing Keys in the Keychain](https://developer.apple.com/documentation/security/certificate_key_and_trust_services/keys/storing_keys_in_the_keychain).
 
+### [**Windows (Skia)**](#tab/windows-skia)
+
+The Windows Skia implementation protects the serialized vault with DPAPI
+(`CryptProtectData` in the current-user scope, with `CRYPTPROTECT_UI_FORBIDDEN`)
+and stores the ciphertext in the application's local folder. The protection key
+belongs to the Windows user profile and is never available to the application,
+so another Windows user cannot read the vault.
+
+Entropy derived from the application identity is mixed into the protection, which
+means changing that identity makes an existing vault unreadable.
+
+> [!NOTE]
+> Windows Credential Manager is not used as the backing store: its
+> `CRED_MAX_CREDENTIAL_BLOB_SIZE` limit of 2560 bytes cannot hold a serialized
+> vault, while the Windows `PasswordVault` accepts individual passwords well past
+> that size.
+
 ### [**macOS (Skia)**](#tab/macOS)
 
 The macOS Skia implementation stores the serialized vault in the current
-user's Keychain by using the Security framework. The item is scoped to the
-application package name.
+user's Keychain by using the Security framework. The item is a generic password
+whose service is `uno_passwordvault` and whose account is the application
+package name.
 
 ### [**Linux (Skia)**](#tab/Linux)
 
@@ -71,9 +92,37 @@ This means that the [`RetrievePassword` method](https://learn.microsoft.com/uwp/
 
 The [`Properties` property](https://learn.microsoft.com/uwp/api/windows.security.credentials.passwordcredential.properties#Windows_Security_Credentials_PasswordCredential_Properties) is not implemented.
 
+## Behavior parity
+
+The following behaviors match the Windows implementation on every platform Uno
+implements:
+
+| Behavior | Result |
+|----------|--------|
+| `Retrieve(resource, userName)` | Case **insensitive** on both arguments, and returns the password |
+| `FindAllByResource` / `FindAllByUserName` | Case **sensitive** |
+| `Add` for an existing resource/user pair | Replaces the entry, including the stored casing of the user name |
+| `Remove` | Matches on resource and user name only; the password is ignored |
+| `Remove` of an absent credential | Throws |
+| Missing item | Throws with `HResult` `0x80070490` (`HRESULT_FROM_WIN32(ERROR_NOT_FOUND)`) |
+| `RetrieveAll` on an empty vault | Returns an empty list |
+| `null` or empty arguments | Throw `ArgumentException` |
+| Reads | Always observe writes made by other vault instances and processes |
+
+Known differences:
+
+* `RetrieveAll`, `FindAllByResource` and `FindAllByUserName` return credentials
+  whose `Password` is already populated. Windows leaves it empty until
+  `RetrievePassword` is called. Call `RetrievePassword` anyway so the code stays
+  portable.
+* Enumeration order is unspecified on Windows and is insertion order in Uno. Do
+  not depend on it in either case.
+* `PasswordCredential` accepts empty strings for `Resource`, `UserName` and
+  `Password`; Windows rejects them in the constructor.
+
 ## Limitations
 
-* macOS and Linux store the serialized vault as one native credential item.
+* Windows Skia, macOS and Linux store the serialized vault as one native item.
   Uno serializes `Add` and `Remove` operations across processes that share the
   same application-data identity. Modifying the native item outside
   `PasswordVault` is unsupported.
