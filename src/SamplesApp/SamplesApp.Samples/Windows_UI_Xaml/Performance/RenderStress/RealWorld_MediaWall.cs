@@ -22,8 +22,8 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// <item>a scaled <see cref="Image"/> (UniformToFill) → resampling over the card area</item>
 	/// <item>a gradient caption scrim + rounded-corner clip → per-pixel shader work and a non-trivial clip</item>
 	/// </list>
-	/// The per-frame tick only animates veil opacity and elevation, so measure/arrange stay at zero and the
-	/// entire frame cost lands in draw.
+	/// The per-frame tick only scrolls, so nothing re-measures and no shadow silhouette is invalidated:
+	/// the moving viewport re-composites the whole visible wall, so the frame cost lands in draw.
 	/// </summary>
 	[Sample("Performance", Name = "RealWorld_MediaWall", Description = "Real-UI perf: an un-virtualized wall of elevated photo cards (shadow blur + opacity layer + scaled image + gradient scrim each). Deliberately fill-rate bound — the draw-phase worst case. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
 	public sealed class RealWorld_MediaWall : PerfBenchBase
@@ -39,6 +39,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 			"ms-appx:///Assets/ingredient4.png", "ms-appx:///Assets/ingredient5.png", "ms-appx:///Assets/ingredient6.png",
 		};
 
+		// Kept for reference by the stage builder; the tick deliberately does not mutate them (see Tick).
 		private readonly List<Border> _veils = new();
 		private readonly List<Border> _cards = new();
 		private ScrollViewer _sv = null!;
@@ -172,16 +173,14 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 
 		protected override void Tick(long frame)
 		{
-			AdvanceScroll(_sv, ref _offset, ref _dir, 5.0);
-
-			// Breathe every card's veil opacity and elevation: no measure/arrange, but every card's isolation
-			// layer and shadow must be re-rendered, so the whole wall is redrawn every frame.
-			var t = frame * 0.06;
-			for (var i = 0; i < _veils.Count; i++)
-			{
-				_veils[i].Opacity = 0.18 + 0.30 * (0.5 + 0.5 * Math.Sin(t + i * 0.17));
-				_cards[i].Translation = new Vector3(0, 0, (float)(24 + 18 * (0.5 + 0.5 * Math.Sin(t * 0.7 + i * 0.11))));
-			}
+			// Scroll only. The wall is structurally static: every card keeps its elevation and its veil, so the
+			// shadow silhouettes stay cached and nothing re-measures — the moving viewport just forces the whole
+			// visible wall (every blur pass and every isolation layer) to be re-composited each frame.
+			//
+			// Do NOT animate Translation or Opacity here: changing a caster's Translation invalidates its cached
+			// analytic-shadow silhouette, and that per-visual walk then dominates the RECORD phase (measured at
+			// ~200ms/frame for 240 cards) which is exactly the CPU cost this sample exists to avoid.
+			AdvanceScroll(_sv, ref _offset, ref _dir, 6.0);
 		}
 	}
 }
