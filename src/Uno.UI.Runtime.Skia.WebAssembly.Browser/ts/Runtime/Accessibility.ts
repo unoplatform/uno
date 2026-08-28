@@ -62,7 +62,7 @@ namespace Uno.UI.Runtime.Skia {
 
 			// Wire up managed callbacks from WebAssemblyAccessibility.cs
 			const accessibilityExports = browserExports.Uno.UI.Runtime.Skia.WebAssemblyAccessibility;
-			this.managedEnableAccessibility = accessibilityExports.EnableAccessibility;
+			this.managedEnableAccessibility = accessibilityExports.EnableAccessibilityAsync;
 
 			this.managedOnScroll = accessibilityExports.OnScroll;
 			this.managedOnInvoke = accessibilityExports.OnInvoke;
@@ -131,8 +131,9 @@ namespace Uno.UI.Runtime.Skia {
 				// The C# EnableAccessibility() has retry logic for when
 				// Window/RootElement aren't ready yet.
 				Accessibility.debugLog('[A11y] Auto-enabling accessibility (FeatureConfiguration.AutomationPeer.AutoEnableAccessibility = true)');
-				this.managedEnableAccessibility();
-				LiveRegion.initialize();
+				this.managedEnableAccessibility()
+					.then(() => LiveRegion.initialize())
+					.catch(() => Accessibility.debugWarn("[A11y] Couldn't auto-enable accessibility"));
 			}
 		}
 
@@ -270,12 +271,14 @@ namespace Uno.UI.Runtime.Skia {
 
 		private static onEnableAccessibilityButtonClicked(evt: MouseEvent) {
 			this.containerElement.removeChild(this.enableAccessibilityButton);
-			this.managedEnableAccessibility();
+			this.managedEnableAccessibility()
+				.then(() => {
+					// Initialize subsystem TypeScript modules
+					LiveRegion.initialize();
 
-			// Initialize subsystem TypeScript modules
-			LiveRegion.initialize();
-
-			this.announceAssertive("Accessibility enabled successfully.");
+					this.announceAssertive("Accessibility enabled successfully.");
+				})
+				.catch(() => Accessibility.debugWarn("[A11y] Couldn't enable accessibility"));
 		}
 
 		/**
