@@ -1,9 +1,6 @@
-﻿using System;
+using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
-#if HAS_UNO
-using Microsoft.UI.Xaml.Media;
-#endif
 
 namespace Uno.UI.Toolkit
 {
@@ -37,102 +34,14 @@ namespace Uno.UI.Toolkit
 		private static void OnIsTouchThumbDragEnabledChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
 #if HAS_UNO
-			if (sender is not ScrollBar scrollBar)
-			{
-				return;
-			}
-
-			if (args.NewValue is true)
-			{
-				scrollBar.Loaded += OnScrollBarLoaded;
-				if (scrollBar.IsLoaded)
-				{
-					Enable(scrollBar);
-				}
-			}
-			else
-			{
-				scrollBar.Loaded -= OnScrollBarLoaded;
-				Disable(scrollBar);
-			}
-#endif
-		}
-
-#if HAS_UNO
-		private static void OnScrollBarLoaded(object sender, RoutedEventArgs args)
-		{
+			// The ScrollBar honours this while attaching its template parts, so it also holds for a bar which
+			// is deferred (x:Load) by the ScrollViewer template and only realized once an axis overflows.
 			if (sender is ScrollBar scrollBar)
 			{
-				Enable(scrollBar);
+				scrollBar.IsTouchThumbDragEnabled = args.NewValue is true;
 			}
-		}
-
-		private static void Enable(ScrollBar scrollBar)
-		{
-			SetThumbsIgnoreTouchInput(scrollBar, ignoreTouchInput: false);
-
-			// The interactive template parts are only hit-testable in the MouseIndicator state, and touch
-			// has no hover to raise it with, so hold the bar in that state for as long as this is enabled.
-			EnsureMouseIndicator(scrollBar);
-
-			if (GetIndicatorModeToken(scrollBar) is null)
-			{
-				var token = scrollBar.RegisterPropertyChangedCallback(
-					ScrollBar.IndicatorModeProperty,
-					(snd, _) => EnsureMouseIndicator((ScrollBar)snd));
-
-				SetIndicatorModeToken(scrollBar, token);
-			}
-		}
-
-		private static void Disable(ScrollBar scrollBar)
-		{
-			SetThumbsIgnoreTouchInput(scrollBar, ignoreTouchInput: true);
-
-			if (GetIndicatorModeToken(scrollBar) is { } token)
-			{
-				scrollBar.UnregisterPropertyChangedCallback(ScrollBar.IndicatorModeProperty, token);
-				SetIndicatorModeToken(scrollBar, null);
-			}
-		}
-
-		private static void EnsureMouseIndicator(ScrollBar scrollBar)
-		{
-			if (scrollBar.IndicatorMode != ScrollingIndicatorMode.MouseIndicator)
-			{
-				scrollBar.IndicatorMode = ScrollingIndicatorMode.MouseIndicator;
-			}
-		}
-
-		private static void SetThumbsIgnoreTouchInput(DependencyObject root, bool ignoreTouchInput)
-		{
-			var count = VisualTreeHelper.GetChildrenCount(root);
-			for (var i = 0; i < count; i++)
-			{
-				var child = VisualTreeHelper.GetChild(root, i);
-				if (child is Thumb thumb)
-				{
-					thumb.IgnoreTouchInput = ignoreTouchInput;
-				}
-
-				SetThumbsIgnoreTouchInput(child, ignoreTouchInput);
-			}
-		}
-
-		private static DependencyProperty IndicatorModeTokenProperty { get; } =
-			DependencyProperty.RegisterAttached(
-				"IndicatorModeToken",
-				typeof(long?),
-				typeof(ScrollBarExtensions),
-				new PropertyMetadata(null)
-			);
-
-		private static long? GetIndicatorModeToken(ScrollBar scrollBar)
-			=> (long?)scrollBar.GetValue(IndicatorModeTokenProperty);
-
-		private static void SetIndicatorModeToken(ScrollBar scrollBar, long? token)
-			=> scrollBar.SetValue(IndicatorModeTokenProperty, token);
 #endif
+		}
 
 		#endregion
 	}
