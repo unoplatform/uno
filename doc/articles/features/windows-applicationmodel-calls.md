@@ -13,13 +13,13 @@ uid: Uno.Features.WAMCalls
 
 ## Supported features
 
-| Feature                   | Windows | Android | iOS | Web (WASM) | macOS | Linux (Skia) | Win 7 (Skia) |
-|---------------------------|---------|---------|-----|------------|-------|--------------|--------------|
-| `ShowPhoneCallUI`         | ✔       | ✔       | ✔   | ✔          | ✖     | ✖            | ✖            |
-| `ShowPhoneCallSettingsUI` | ✔       | ✔       | ✖   | ✖          | ✖     | ✖            | ✖            |
-| `CallStateChanged`        | ✔       | ✔       | ✔   | ✖          | ✖     | ✖            | ✖            |
-| `IsCallActive`            | ✔       | ✔       | ✔   | ✖          | ✖     | ✖            | ✖            |
-| `IsCallActive`            | ✔       | ✔       | ✔   | ✖          | ✖     | ✖            | ✖            |
+| Feature                   | Windows App SDK | Android (Native/Skia) | iOS (Native/Skia) | WebAssembly (Native/Skia) | Desktop (macOS, Skia) | Desktop (X11, Skia) | Desktop (Linux Framebuffer, Skia) | Desktop (Windows, Skia) |
+|---------------------------|-----------------|-----------------------|-------------------|----------------------------|-----------------------|---------------------|------------------------------------|-------------------------|
+| `ShowPhoneCallUI`         | ✔               | ✔                     | ✔                 | ✔                          | ✖                     | ✖                   | ✖                                  | ✖                       |
+| `ShowPhoneCallSettingsUI` | ✔               | ✔                     | ✖                 | ✖                          | ✖                     | ✖                   | ✖                                  | ✖                       |
+| `CallStateChanged`        | ✔               | ✔                     | ✔                 | ✖                          | ✖                     | ✖                   | ✖                                  | ✖                       |
+| `IsCallActive`            | ✔               | ✔                     | ✔                 | ✖                          | ✖                     | ✖                   | ✖                                  | ✖                       |
+| `IsCallActive`            | ✔               | ✔                     | ✔                 | ✖                          | ✖                     | ✖                   | ✖                                  | ✖                       |
 
 ## Examples
 

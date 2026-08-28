@@ -12,10 +12,10 @@ uid: Uno.Features.PasswordVault
 
 ## Supported features
 
-| Feature              | Windows | Android | iOS     | Web (WASM)  Linux (Skia) | Win 7 (Skia) | Tizen |
-|----------------------|---------|---------|---------|--------------------------|--------------|-------|
-| `PasswordVault`      | ✔       | ✔       | ✔       | ✖           | ✖            | ✖            | ✖     |
-| `PasswordCredential` | ✔       | Partial | Partial | Partial   | ✖            | ✖            | ✖     |
+| Feature              | Windows App SDK | Android (Native/Skia) | iOS (Native/Skia) | WebAssembly (Native/Skia) | Desktop (macOS, Skia) | Desktop (X11, Skia) | Desktop (Linux Framebuffer, Skia) | Desktop (Windows, Skia) |
+|----------------------|-----------------|-----------------------|-------------------|----------------------------|-----------------------|---------------------|------------------------------------|-------------------------|
+| `PasswordVault`      | ✔               | ✔                     | ✔                 | ✖                          | ✖                     | ✖                   | ✖                                  | ✖                       |
+| `PasswordCredential` | ✔               | Partial               | Partial           | Partial                    | ✖                     | ✖                   | ✖                                  | ✖                       |
 
 ## `PasswordVault`
 
