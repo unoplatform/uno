@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 
@@ -50,9 +51,25 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 	}
 
 	[JSExport]
+	private static Task OnCompositionStartedAsync()
+	{
+		OnCompositionStarted();
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
 	private static void OnCompositionUpdated(string text, int cursorPosition)
 	{
 		Instance.CompositionUpdated?.Invoke(Instance, new ImeCompositionEventArgs(text, cursorPosition));
+	}
+
+	[JSExport]
+	private static Task OnCompositionUpdatedAsync(string text, int cursorPosition)
+	{
+		OnCompositionUpdated(text, cursorPosition);
+
+		return Task.CompletedTask;
 	}
 
 	[JSExport]
@@ -61,6 +78,14 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 		Instance._isComposing = false;
 		Instance.CompositionCompleted?.Invoke(Instance, new ImeCompositionEventArgs(text));
 		Instance.CompositionEnded?.Invoke(Instance, EventArgs.Empty);
+	}
+
+	[JSExport]
+	private static Task OnCompositionCompletedAsync(string text)
+	{
+		OnCompositionCompleted(text);
+
+		return Task.CompletedTask;
 	}
 
 	[JSExport]
@@ -73,5 +98,13 @@ internal sealed partial class WasmImeTextBoxExtension : IImeTextBoxExtension
 
 		Instance._isComposing = false;
 		Instance.CompositionEnded?.Invoke(Instance, EventArgs.Empty);
+	}
+
+	[JSExport]
+	private static Task OnCompositionEndedAsync()
+	{
+		OnCompositionEnded();
+
+		return Task.CompletedTask;
 	}
 }

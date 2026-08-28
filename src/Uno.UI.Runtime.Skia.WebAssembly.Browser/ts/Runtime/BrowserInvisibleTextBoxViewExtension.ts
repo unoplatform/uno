@@ -197,32 +197,61 @@
 
 			BrowserInvisibleTextBoxViewExtension.attachTextInputKeyHandlers(input, acceptsReturn);
 
-			input.addEventListener("compositionstart", () => {
-				BrowserInvisibleTextBoxViewExtension.isComposing = true;
-				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionStarted();
-			});
+			if (WebAssemblyThreading.isThreadingEnabled()) {
+				input.addEventListener("compositionstart", () => {
+					BrowserInvisibleTextBoxViewExtension.isComposing = true;
+					BrowserInvisibleTextBoxViewExtension.enqueue(() => BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionStartedAsync());
+				});
 
-			input.addEventListener("compositionupdate", (ev: CompositionEvent) => {
-				// Use input.selectionStart for cursor position when available,
-				// as the IME may place the caret within the preedit string.
-				const selectionStart = input.selectionStart;
-				const cursorPosition = selectionStart === null
-					? ev.data.length
-					: Math.max(0, Math.min(selectionStart, ev.data.length));
-				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionUpdated(ev.data, cursorPosition);
-			});
+				input.addEventListener("compositionupdate", (ev: CompositionEvent) => {
+					// See below.
+					const selectionStart = input.selectionStart;
+					const cursorPosition = selectionStart === null
+						? ev.data.length
+						: Math.max(0, Math.min(selectionStart, ev.data.length));
+					const data = ev.data;
 
-			input.addEventListener("compositionend", (ev: CompositionEvent) => {
-				BrowserInvisibleTextBoxViewExtension.isComposing = false;
-				// The browser fires an input event after compositionend with the committed text.
-				// Suppress it to avoid double-inserting — the commit is handled by OnCompositionCompleted.
-				BrowserInvisibleTextBoxViewExtension.suppressNextInput = true;
-				if (ev.data.length > 0) {
-					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompleted(ev.data);
-				} else {
-					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEnded();
-				}
-			});
+					BrowserInvisibleTextBoxViewExtension.enqueue(() => BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionUpdatedAsync(ev.data, cursorPosition));
+				});
+
+				input.addEventListener("compositionend", (ev: CompositionEvent) => {
+					BrowserInvisibleTextBoxViewExtension.isComposing = false;
+					// See below.
+					BrowserInvisibleTextBoxViewExtension.suppressNextInput = true;
+					const data = ev.data;
+
+					BrowserInvisibleTextBoxViewExtension.enqueue(() => data.length > 0
+						? BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompletedAsync(data)
+							: BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEndedAsync());
+				});
+			} else {
+				input.addEventListener("compositionstart", () => {
+					BrowserInvisibleTextBoxViewExtension.isComposing = true;
+					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionStarted();
+				});
+
+				input.addEventListener("compositionupdate", (ev: CompositionEvent) => {
+					// Use input.selectionStart for cursor position when available,
+					// as the IME may place the caret within the preedit string.
+					const selectionStart = input.selectionStart;
+					const cursorPosition = selectionStart === null
+						? ev.data.length
+						: Math.max(0, Math.min(selectionStart, ev.data.length));
+					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionUpdated(ev.data, cursorPosition);
+				});
+
+				input.addEventListener("compositionend", (ev: CompositionEvent) => {
+					BrowserInvisibleTextBoxViewExtension.isComposing = false;
+					// The browser fires an input event after compositionend with the committed text.
+					// Suppress it to avoid double-inserting — the commit is handled by OnCompositionCompleted.
+					BrowserInvisibleTextBoxViewExtension.suppressNextInput = true;
+					if (ev.data.length > 0) {
+						BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompleted(ev.data);
+					} else {
+						BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEnded();
+					}
+				});
+			}
 
 			document.body.appendChild(input);
 			BrowserInvisibleTextBoxViewExtension.inputElement = input;
