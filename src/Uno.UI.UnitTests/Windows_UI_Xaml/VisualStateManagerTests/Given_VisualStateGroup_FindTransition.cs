@@ -27,7 +27,7 @@ public class Given_VisualStateGroup_FindTransition
 	{
 		var control = new TransitionsTestControl
 		{
-			Template = new ControlTemplate(() => new Border { Name = "root" }
+			Template = new ControlTemplate(null, (_, _) => new Border { Name = "root" }
 				.Apply(root => VisualStateManager.SetVisualStateGroups(root, new List<VisualStateGroup> { group })))
 		};
 
