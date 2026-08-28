@@ -1096,11 +1096,27 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// The "OriginalSourceLocation" can be used like DebugParseContext (set via SetBaseUri) but for elements that aren't FrameworkElements
 		/// </summary>
-		private void TrySetOriginalSourceLocation(IIndentedStringBuilder writer, string element, IXamlLocation location)
+		/// <param name="preserveExisting">
+		/// Keeps a location already carried by the instance, for the types that may stamp their own
+		/// declaration site while being constructed.
+		/// </param>
+		private void TrySetOriginalSourceLocation(IIndentedStringBuilder writer, string element, IXamlLocation location, bool preserveExisting = false)
 		{
 			if (_isHotReloadEnabled)
 			{
-				writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({element}, \"OriginalSourceLocation\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{location.LineNumber}:{location.LinePosition}\");");
+				var setLocation = $"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({element}, \"OriginalSourceLocation\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{location.LineNumber}:{location.LinePosition}\");";
+
+				if (preserveExisting)
+				{
+					using (writer.BlockInvariant($"if (global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<string>({element}, \"OriginalSourceLocation\") is null)"))
+					{
+						writer.AppendLineIndented(setLocation);
+					}
+				}
+				else
+				{
+					writer.AppendLineIndented(setLocation);
+				}
 			}
 		}
 
@@ -1884,6 +1900,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			using (writer.BlockInvariant("new /* typed resource dictionary */ {0}()", type.GetFullyQualifiedTypeIncludingGlobal()))
 			{
 				BuildLiteralProperties(writer, topLevelControl);
+			}
+
+			if (_isHotReloadEnabled)
+			{
+				// A dictionary generated from an x:Class file stamps its own declaration site in the
+				// InitializeComponent its constructor just ran, and that one wins. A dictionary defined in
+				// code (a theme dictionary of a library, for instance) has none, and this declaration is
+				// the only source location it can be given.
+				using var applyWriter = CreateApplyBlock(writer, topLevelControl);
+				TrySetOriginalSourceLocation(applyWriter, applyWriter.AppliedParameterName, topLevelControl, preserveExisting: true);
 			}
 		}
 

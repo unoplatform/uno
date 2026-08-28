@@ -482,4 +482,65 @@ public class Given_HotReloadEnabledInBuild
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task SetOriginalSourceLocationInOutputForTypedResourceDictionaries()
+	{
+		var xamlFile = new XamlFile("MainPage.xaml", """
+			<Page x:Class="TestRepro.MainPage"
+			      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			      xmlns:local="using:TestRepro">
+			  <Page.Resources>
+			    <ResourceDictionary>
+			      <ResourceDictionary.MergedDictionaries>
+			        <local:MyCodeDictionary />
+			      </ResourceDictionary.MergedDictionaries>
+			    </ResourceDictionary>
+			  </Page.Resources>
+			  <Grid>
+			    <Grid.Resources>
+			      <local:MyCodeDictionary />
+			    </Grid.Resources>
+			  </Grid>
+			</Page>
+			""");
+
+		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						// A dictionary defined in code, as the themes of a library are: it has no
+						// InitializeComponent to stamp its own location.
+						public class MyCodeDictionary : ResourceDictionary
+						{
+						}
+
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+					}
+					"""
+				}
+			},
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
+			GlobalConfigOverride = configOverride,
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }

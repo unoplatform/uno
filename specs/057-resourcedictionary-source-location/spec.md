@@ -86,6 +86,27 @@ markup to point at, and the owning element already carries its own location.
 Every emission of R1–R3 is inside the existing `_isHotReloadEnabled` guard (`TrySetOriginalSourceLocation`
 is itself a no-op otherwise). Release/non-debug output is byte-identical.
 
+### R5 — typed dictionary subclasses, without overwriting their own location
+
+A `<local:MyDictionary/>` (`IsResourceDictionarySubclass`) is stamped at its **use site** too, through
+the apply block appended by `BuildTypedResourceDictionary` — which covers both a subclass merged into
+another dictionary and one used as a whole `Resources` value.
+
+The stamp is emitted **set-if-absent** — `if (MarkupHelper.GetElementProperty<string>(d,
+"OriginalSourceLocation") is null)` — rather than the use site being skipped by type:
+
+- a subclass generated from an `x:Class` dictionary file stamps its own declaration site in the
+  `InitializeComponent` its constructor runs, which happens before the apply block, so the guard
+  preserves it — the declaration site keeps winning over the reference site;
+- a subclass **defined in code** (a library theme dictionary such as Uno.Themes' `BaseTheme` family,
+  whose constructor points `Source` at the library's style bundle) has no `InitializeComponent` and
+  therefore no location of its own; the declaring markup is the only source location it can be given,
+  and excluding it by type would leave it stamped by nobody.
+
+The type test is deliberately avoided: whether a subclass has a generated backing class is not
+reliably knowable from the generator for a dictionary of the *same* compilation, whose generated
+`InitializeComponent` does not exist yet in the symbol table.
+
 ## Non-goals
 
 - **Dictionaries with a `Source`** (`<ResourceDictionary Source="ms-appx:///…"/>`, as a merged
@@ -93,9 +114,9 @@ is itself a no-op otherwise). Release/non-debug output is byte-identical.
   the *referenced* file and is shared; the referenced file's own generated code is what stamps it.
   Stamping it here would attribute another file's dictionary to the referencing one, and would
   overwrite a correct value on a shared instance.
-- **Typed dictionary subclasses** (`<local:MyDictionary/>`, `IsResourceDictionarySubclass`). Their
-  `InitializeComponent` already stamps `this` (`BuildResourceDictionaryBackingClass`); stamping at
-  the use site would overwrite the declaration site with the reference site.
+- **Overwriting a location a dictionary already carries.** A typed subclass is stamped at its use
+  site (R5), but only when it has none of its own — the declaration site always wins over the
+  reference site.
 - Exposing the value as a public API, or promoting it to a typed record like
   `FrameworkElement.DebugParseContext`. Consumers read it with
   `MarkupHelper.GetElementProperty<string>(dictionary, "OriginalSourceLocation")`, as they do for
@@ -128,7 +149,10 @@ that turns `UnoForceHotReloadCodeGen` on), with committed generated output under
    `<Page.Resources><ResourceDictionary>` holding a theme dictionary, and a `Grid` with its own
    explicit dictionary: R3 on both the top-level control (`useGenericApply`) and a child built in an
    object initializer, plus R1 for the theme dictionary.
-3. `ResourceDictionaryCodeBehind` (pre-existing) — regenerated snapshot shows the second (file-level)
+3. `SetOriginalSourceLocationInOutputForTypedResourceDictionaries` — a page merging a **code-defined**
+   `ResourceDictionary` subclass and using one as a whole `Grid.Resources`: both use sites emit the
+   set-if-absent stamp (R5).
+4. `ResourceDictionaryCodeBehind` (pre-existing) — regenerated snapshot shows the second (file-level)
    instance of an `x:Class`'d dictionary is now stamped, with the `x:Class` stamp unchanged.
 
 **Application (R3) is not covered by a snapshot test**: the XAML-generator test harness cannot
@@ -155,6 +179,17 @@ snapshot in a non-Hot-Reload test would be an R4 violation.
   (which materializes the app dictionaries, merged and themed, through the new emissions):
   3949 passed / 137 failed / 23 skipped, and the 137 failures are **byte-identical** to the
   baseline captured with this change stashed (Linux-only path/UNC/case-sensitivity expectations).
+- **Runtime, R5 in particular** — a throwaway page in `Uno.UI.UnitTests` merging a code-defined
+  subclass and the project's `x:Class` `Subclassed_Dictionary`, dumping
+  `MarkupHelper.GetElementProperty<string>(d, "OriginalSourceLocation")` for each dictionary:
+
+  | Dictionary | Location read back |
+  |---|---|
+  | the page's `<Page.Resources><ResourceDictionary>` | `Temp_SourceLocation.xaml#L6:4` (R3) |
+  | merged **code-defined** subclass | `Temp_SourceLocation.xaml#L8:6` — the declaring line (R5) |
+  | merged **`x:Class`** subclass | `Subclassed_Dictionary.xaml#L1:2` — **its own** file, not the use site (R5 guard) |
+  | `Test_Page_Other`'s `Resources = new Subclassed_Dictionary()` | `Subclassed_Dictionary.xaml#L1:2` |
+  | `Application.Current.Resources` | `App/App.xaml#L12:4` (R3) |
 
 ## Implementation
 
@@ -167,3 +202,5 @@ snapshot in a non-Hot-Reload test would be an R4 violation.
 | `BuildExtendedProperties`: stamp `<applied>.Resources` from `FindResourcesDictionaryDeclaration` | R3 |
 | `BuildApplicationInitializerBody`: same, on `Resources` | R3 |
 | new `FindResourcesDictionaryDeclaration` helper (explicit `<ResourceDictionary>`, no `Source`) | R3 |
+| `BuildTypedResourceDictionary`: apply block + set-if-absent stamp | R5 |
+| `TrySetOriginalSourceLocation`: `preserveExisting` option, emitting the `GetElementProperty … is null` guard | R5 |
