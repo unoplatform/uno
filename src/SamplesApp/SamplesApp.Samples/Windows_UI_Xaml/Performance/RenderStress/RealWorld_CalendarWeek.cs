@@ -34,8 +34,9 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 
 		protected override string ScenarioName => "CalendarWeek";
 
-		/// <summary>Slots per day column (a full day at 15-minute granularity is ~96).</summary>
-		protected override int DefaultCount => 96;
+		/// <summary>Slots per day column. 96 is a full day at 15-minute granularity; the default doubles that
+		/// (a two-day column, or 24h at 7.5-minute slots) so the sample is draw-bound out of the box.</summary>
+		protected override int DefaultCount => 192;
 
 		protected override UIElement BuildStage(int count)
 		{

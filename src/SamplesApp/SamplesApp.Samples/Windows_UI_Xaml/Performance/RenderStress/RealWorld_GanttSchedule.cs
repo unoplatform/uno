@@ -33,7 +33,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 
 		protected override string ScenarioName => "GanttSchedule";
 
-		protected override int DefaultCount => 260;
+		protected override int DefaultCount => 520;
 
 		protected override UIElement BuildStage(int count)
 		{
