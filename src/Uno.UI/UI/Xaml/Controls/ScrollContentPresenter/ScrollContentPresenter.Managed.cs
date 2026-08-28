@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 ﻿using System;
-=======
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
-using System;
->>>>>>> origin/master
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;

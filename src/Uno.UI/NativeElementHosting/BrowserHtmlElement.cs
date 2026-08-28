@@ -410,6 +410,9 @@ public sealed partial class BrowserHtmlElement : IDisposable
 		}
 	}
 
+	partial void OnInputPolicyChanged(BrowserHtmlElementInputPolicy value)
+		=> NativeMethods.SetInputPolicy(ElementId, UnoElementId, (int)value);
+
 	partial void DisposeNative()
 	{
 		NativeMethods.DisposeHtmlElement(ElementId);
@@ -452,6 +455,9 @@ public sealed partial class BrowserHtmlElement : IDisposable
 
 		[JSImport($"globalThis.Uno.UI.NativeElementHosting.BrowserHtmlElement.setContentHtml")]
 		internal static partial void SetContentHtml(string elementId, string html);
+
+		[JSImport($"globalThis.Uno.UI.NativeElementHosting.BrowserHtmlElement.setInputPolicy")]
+		internal static partial void SetInputPolicy(string elementId, nint unoElementId, int value);
 
 		[JSImport($"globalThis.Uno.UI.NativeElementHosting.BrowserHtmlElement.registerNativeHtmlEvent")]
 		internal static partial void RegisterNativeHtmlEvent(
