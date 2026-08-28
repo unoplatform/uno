@@ -73,6 +73,7 @@ When code needs to continue only after a file change has reached the running app
 ```csharp
 using System;
 using System.Linq;
+using System.Threading;
 using Uno.UI.RemoteControl;
 using Uno.UI.RemoteControl.HotReload;
 
@@ -87,9 +88,9 @@ var request = new ClientHotReloadProcessor.UpdateRequest(
     "New text",
     WaitForHotReload: true);
 
-await hotReload.UpdateFileAsync(request, cancellationToken);
+await hotReload.UpdateFileAsync(request, CancellationToken.None);
 ```
 
 `FilePath` is relative to the solution root. The Hot Reload processor must have published its initial status before the request is sent.
 
-Hot Reload normally triggers the UI update automatically. When the updated types are already available and the UI must be reapplied explicitly, call `UIUpdate.ForceRefresh(updatedTypes, cancellationToken)`. It returns after the UI-thread update pass completes and bypasses active `UIUpdate.Pause` handles.
+Hot Reload normally triggers the UI update automatically. When the updated types are already available and the UI must be reapplied explicitly, call `UIUpdate.ForceRefresh(updatedTypes, CancellationToken.None)`. It returns after the UI-thread update pass completes and bypasses active `UIUpdate.Pause` handles.
