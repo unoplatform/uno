@@ -3,9 +3,9 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:extras="using:Uno.UI.Extras"
     xmlns:local="using:UITests.Toolkit"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:uuxc="using:Uno.UI.Xaml.Controls"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
@@ -15,7 +15,7 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ContentControl">
-                        <extras:ElevatedView
+                        <uuxc:ElevatedView
                             Background="{TemplateBinding Background}"
                             Elevation="15"
                             ShadowColor="Chartreuse">
@@ -26,7 +26,7 @@
                                 VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
                                 Content="{TemplateBinding Content}"
                                 ContentTemplate="{TemplateBinding ContentTemplate}" />
-                        </extras:ElevatedView>
+                        </uuxc:ElevatedView>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -37,7 +37,7 @@
         <TextBlock>The following rectangles should have the same drop shadow...</TextBlock>
 
         <StackPanel Orientation="Horizontal" Spacing="15">
-            <extras:ElevatedView
+            <uuxc:ElevatedView
                 Background="Blue"
                 Elevation="15"
                 ShadowColor="Chartreuse">
@@ -45,24 +45,24 @@
                     Width="40"
                     Height="40"
                     Background="Red" />
-            </extras:ElevatedView>
+            </uuxc:ElevatedView>
 
             <ContentControl>
-                <extras:ElevatedView Elevation="15" ShadowColor="Chartreuse">
+                <uuxc:ElevatedView Elevation="15" ShadowColor="Chartreuse">
                     <Border
                         Width="40"
                         Height="40"
                         Background="Red" />
-                </extras:ElevatedView>
+                </uuxc:ElevatedView>
             </ContentControl>
 
             <Border>
-                <extras:ElevatedView Elevation="15" ShadowColor="Chartreuse">
+                <uuxc:ElevatedView Elevation="15" ShadowColor="Chartreuse">
                     <Border
                         Width="40"
                         Height="40"
                         Background="Red" />
-                </extras:ElevatedView>
+                </uuxc:ElevatedView>
             </Border>
 
             <ContentControl Style="{StaticResource style1}">

@@ -1,7 +1,3 @@
-#if IS_UNIT_TESTS
-#pragma warning disable CS0067
-#endif
-
 #nullable enable
 
 using System;
@@ -1204,8 +1200,7 @@ namespace Microsoft.UI.Xaml.Controls
 					)
 				{
 					if (HorizontalSnapPointsType != SnapPointsType.None
-						|| VerticalSnapPointsType != SnapPointsType.None
-						|| ShouldSnapToTouchTextBox())
+						|| VerticalSnapPointsType != SnapPointsType.None)
 					{
 						_horizontalOffsetForSnapPoints = horizontalOffset;
 						_verticalOffsetForSnapPoints = verticalOffset;
@@ -1884,45 +1879,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 #nullable disable
-		private (double? horizontal, double? vertical) ClampOffsetsToFocusedTextBox(double? horizontalOffset, double? verticalOffset)
-		{
-			if (Presenter is not null && ShouldSnapToTouchTextBox())
-			{
-				var textBox = ((ITextBoxHost)FocusManager.GetFocusedElement(XamlRoot!)!).Owner;
-				var textBoxToPresenter = textBox.TransformToVisual(Presenter.FindFirstChild()).TransformBounds(new Rect(0, 0, textBox.ActualWidth, textBox.ActualHeight));
-				if (verticalOffset.HasValue)
-				{
-					if (verticalOffset + ViewportHeight < textBoxToPresenter.Top)
-					{
-						verticalOffset = textBoxToPresenter.Top - ViewportHeight + textBoxToPresenter.Height;
-					}
-					else if (verticalOffset > textBoxToPresenter.Bottom)
-					{
-						verticalOffset = textBoxToPresenter.Top;
-					}
-				}
-
-				if (horizontalOffset.HasValue)
-				{
-					if (horizontalOffset + ViewportWidth < textBoxToPresenter.Left)
-					{
-						horizontalOffset = textBoxToPresenter.Left - ViewportWidth + textBoxToPresenter.Width;
-					}
-					else if (horizontalOffset > textBoxToPresenter.Right)
-					{
-						horizontalOffset = textBoxToPresenter.Left;
-					}
-				}
-			}
-
-			return (horizontalOffset, verticalOffset);
-		}
-
-		internal partial bool ShouldSnapToTouchTextBox()
-		{
-			return XamlRoot is not null && FocusManager.GetFocusedElement(XamlRoot) is ITextBoxHost { Core.CaretMode: TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing or TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing } host && host.Owner.FindFirstParent<ScrollViewer>() == this;
-		}
-
 		partial void OnZoomModeChangedPartial(ZoomMode zoomMode)
 		{
 			if (_presenter is ScrollContentPresenter scp)

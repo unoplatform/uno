@@ -1,8 +1,4 @@
-﻿#if IS_UNIT_TESTS
-#pragma warning disable CS0067
-#endif
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;

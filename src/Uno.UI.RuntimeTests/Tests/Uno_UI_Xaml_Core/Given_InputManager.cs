@@ -21,7 +21,7 @@ using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Extras.DevTools.Input;
+using Uno.UI.DevTools.Input;
 using MUXControlsTestApp.Utilities;
 
 #if HAS_UNO_WINUI
@@ -809,9 +809,11 @@ public class Given_InputManager
 
 		// Scroll a bit more
 		var secondScrollDelta = 100;
-		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(y: -secondScrollDelta), steps: 1, stepOffsetInMilliseconds: 3000);
+		// Drag in moves of exactly StartTouch.TranslateY: the manipulation is recognized on the first
+		// move, and that distance is absorbed rather than replayed as a delta (#20473).
+		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(y: -secondScrollDelta), steps: 9, stepOffsetInMilliseconds: 300);
 
-		sv.VerticalOffset.Should().BeApproximately(currentOffset + secondScrollDelta, precision: 2, because: "second press should have stop inertia and then the slow scroll have been applied");
+		sv.VerticalOffset.Should().BeApproximately(currentOffset + secondScrollDelta - GestureRecognizer.Manipulation.StartTouch.TranslateY, precision: 2, because: "second press should have stop inertia and then the slow scroll have been applied");
 	}
 
 	[TestMethod]
@@ -946,20 +948,21 @@ public class Given_InputManager
 		using var finger2 = injector.GetFinger(id: 83);
 		finger2.Press(sv2.GetAbsoluteBounds().GetCenter());
 
-		// Start scrolling on both fingers
-		finger1.MoveBy(y: -200);
-		finger2.MoveBy(y: -100);
+		// Drag in moves of exactly StartTouch.TranslateY: the manipulation is recognized on the first
+		// move, and that distance is absorbed rather than replayed as a delta (#20473).
+		finger1.MoveBy(y: -200, steps: 19);
+		finger2.MoveBy(y: -100, steps: 9);
 
-		sv1.VerticalOffset.Should().BeApproximately(200, precision: 2, because: "first finger should have scrolled the first ScrollViewer");
-		sv2.VerticalOffset.Should().BeApproximately(100, precision: 2, because: "second finger should have scrolled the second ScrollViewer");
+		sv1.VerticalOffset.Should().BeApproximately(200 - GestureRecognizer.Manipulation.StartTouch.TranslateY, precision: 2, because: "first finger should have scrolled the first ScrollViewer");
+		sv2.VerticalOffset.Should().BeApproximately(100 - GestureRecognizer.Manipulation.StartTouch.TranslateY, precision: 2, because: "second finger should have scrolled the second ScrollViewer");
 
 		// Release first finger and validate that first finger is still scrolling
 		finger1.Release();
 		finger2.MoveBy(y: -100);
 		finger2.Release();
 
-		sv1.VerticalOffset.Should().BeApproximately(200, precision: 2, because: "first ScrollViewer should not have been affected by second finger");
-		sv2.VerticalOffset.Should().BeApproximately(200, precision: 2, because: "second finger should still be scrolling the second ScrollViewer after first finger release");
+		sv1.VerticalOffset.Should().BeApproximately(200 - GestureRecognizer.Manipulation.StartTouch.TranslateY, precision: 2, because: "first ScrollViewer should not have been affected by second finger");
+		sv2.VerticalOffset.Should().BeApproximately(200 - GestureRecognizer.Manipulation.StartTouch.TranslateY, precision: 2, because: "second finger should still be scrolling the second ScrollViewer after first finger release");
 	}
 
 	[TestMethod]
@@ -1015,20 +1018,21 @@ public class Given_InputManager
 		using var finger2 = injector.GetFinger(id: 83);
 		finger2.Press(sv2.GetAbsoluteBounds().GetCenter());
 
-		// Start scrolling on both fingers
-		finger1.MoveBy(y: -100);
-		finger2.MoveBy(y: -200);
+		// Drag in moves of exactly StartTouch.TranslateY: the manipulation is recognized on the first
+		// move, and that distance is absorbed rather than replayed as a delta (#20473).
+		finger1.MoveBy(y: -100, steps: 9);
+		finger2.MoveBy(y: -200, steps: 19);
 
-		sv1.VerticalOffset.Should().BeApproximately(100, precision: 2, because: "first finger should have scrolled the first ScrollViewer");
-		sv2.VerticalOffset.Should().BeApproximately(200, precision: 2, because: "second finger should have scrolled the second ScrollViewer");
+		sv1.VerticalOffset.Should().BeApproximately(100 - GestureRecognizer.Manipulation.StartTouch.TranslateY, precision: 2, because: "first finger should have scrolled the first ScrollViewer");
+		sv2.VerticalOffset.Should().BeApproximately(200 - GestureRecognizer.Manipulation.StartTouch.TranslateY, precision: 2, because: "second finger should have scrolled the second ScrollViewer");
 
 		// Release second finger and validate that first finger is still scrolling
 		finger2.Release();
 		finger1.MoveBy(y: -100);
 		finger1.Release();
 
-		sv1.VerticalOffset.Should().BeApproximately(200, precision: 2, because: "first finger should still be scrolling the first ScrollViewer after second finger release");
-		sv2.VerticalOffset.Should().BeApproximately(200, precision: 2, because: "second ScrollViewer should not have been affected by first finger");
+		sv1.VerticalOffset.Should().BeApproximately(200 - GestureRecognizer.Manipulation.StartTouch.TranslateY, precision: 2, because: "first finger should still be scrolling the first ScrollViewer after second finger release");
+		sv2.VerticalOffset.Should().BeApproximately(200 - GestureRecognizer.Manipulation.StartTouch.TranslateY, precision: 2, because: "second ScrollViewer should not have been affected by first finger");
 	}
 
 	[TestMethod]
@@ -1247,11 +1251,13 @@ public class Given_InputManager
 		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 		using var finger = injector.GetFinger();
 
-		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(y: -100));
+		// Drag in moves of exactly StartTouch.TranslateY: the manipulation is recognized on the first
+		// move, and that distance is absorbed rather than replayed as a delta (#20473).
+		finger.Drag(from: bounds.GetCenter(), to: bounds.GetCenter().Offset(y: -100), steps: 9);
 
 		await UITestHelper.WaitForIdle();
 
-		sv2.VerticalOffset.Should().BeApproximately(100, precision: 2);
+		sv2.VerticalOffset.Should().BeApproximately(100 - GestureRecognizer.Manipulation.StartTouch.TranslateY, precision: 2);
 		starting.Should().Be(1, because: "pointer should have reached the element, giving it the opportunity to init the manipulation");
 		started.Should().Be(0, because: "pointer should have been grabbed by the direct manipulation before the manipulation started on the element");
 		delta.Should().Be(0);

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Extensions;
@@ -121,8 +122,12 @@ public partial class TemplatedParentTests // recycling helper methods
 		Height = 50,
 	};
 
+	// The presenter does not surface its own template root (#2163); the materialized root is its single child.
+	private static DependencyObject GetTemplateRootOrNull(ContentPresenter host) =>
+		VisualTreeHelper.GetChildrenCount(host) > 0 ? VisualTreeHelper.GetChild(host, 0) : null;
+
 	private static Grid GetTemplateRoot(ContentPresenter host) =>
-		host.ContentTemplateRoot as Grid ?? throw new Exception("The template did not materialize.");
+		GetTemplateRootOrNull(host) as Grid ?? throw new Exception("The template did not materialize.");
 
 	private static async Task<ContentPresenter> RecycleInto(DataTemplate template, ContentPresenter from, UIElement root, string content)
 	{
@@ -135,7 +140,7 @@ public partial class TemplatedParentTests // recycling helper methods
 		var to = CreateHost(template, content);
 		await UITestHelper.Load(to);
 
-		Assert.AreSame(root, to.ContentTemplateRoot, "The pooled template root was not reused.");
+		Assert.AreSame(root, GetTemplateRootOrNull(to), "The pooled template root was not reused.");
 
 		return to;
 	}

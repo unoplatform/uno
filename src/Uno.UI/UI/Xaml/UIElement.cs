@@ -1,7 +1,3 @@
-#if IS_UNIT_TESTS
-#pragma warning disable CS0067
-#endif
-
 using Windows.Foundation;
 using System.Linq;
 using Microsoft.UI.Xaml.Input;
@@ -1220,14 +1216,8 @@ namespace Microsoft.UI.Xaml
 			}
 
 			((ILayouterElement)fwe).Layouter.Measure(availableSize);
-#if IS_UNIT_TESTS
-			OnMeasurePartial(availableSize);
-#endif
 		}
 
-#if IS_UNIT_TESTS
-		partial void OnMeasurePartial(Size slotSize);
-#endif
 
 		/// <summary>
 		/// Positions child objects and determines a size for a UIElement. Parent objects that implement custom layout

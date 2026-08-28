@@ -11,7 +11,7 @@
     xmlns:android="http://uno.ui/android"
 	xmlns:not_win="http://uno.ui/not_win"
 	xmlns:test="http://uno.ui/test"
-	xmlns:toolkit="using:Uno.UI.Extras"
+	xmlns:uux="using:Uno.UI.Xaml"
     mc:Ignorable="d not_win android test ios"
     d:DesignHeight="300"
     d:DesignWidth="400">
@@ -54,10 +54,10 @@
 		<Grid not_win:Background="Green" />
 
 		<!-- UWP Control with external project property -->
-		<Border toolkit:UIElementExtensions.Elevation="5" />
+		<Border uux:UIElementExtensions.Elevation="5" />
 		
 		<!-- Control with external project property -->
-		<u:ControlWithContent toolkit:UIElementExtensions.Elevation="10" />
+		<u:ControlWithContent uux:UIElementExtensions.Elevation="10" />
 		
 		<!-- Control with phase -->
 		<not_win:Border x:Phase="3" Background="{x:Bind}" />

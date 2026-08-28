@@ -19,6 +19,7 @@ using CommunityToolkit.Mvvm.SourceGenerators;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Testing;
+using Microsoft.CodeAnalysis.Text;
 using Uno.UI.SourceGenerators.XamlGenerator;
 
 namespace Uno.UI.SourceGenerators.Tests.Verifiers
@@ -144,10 +145,22 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 					excludeXamlNamespaces = "android,ios,not_tvos,desktop,wasm,winappsdk,win";
 				}
 
+				// The synthetic paths below start with TWO separators on purpose: that is the only shape
+				// Roslyn accepts as an absolute analyzer-config section name on both platforms -- on Unix
+				// the name must start with '/', on Windows it must be drive-rooted or UNC, and '//x/y' is
+				// the intersection (AnalyzerConfig.IsAbsoluteEditorConfigPath). A section name that is not
+				// absolute is silently dropped, taking SourceItemGroup with it, so the generator would see
+				// no Page item at all.
+				//
+				// Windows then reads '//Project/...' as the UNC path '\\Project\...', whose ROOT is
+				// '\\server\share' -- so the project file needs at least two segments above it. With
+				// '//Project/Project.csproj', 'Project.csproj' IS the share: the path is its own root,
+				// Path.GetDirectoryName returns null, and XamlCodeGeneration throws for an invalid
+				// MSBuildProjectFullPath -- generating nothing at all, on every test.
 				var defaultConfig = new Dictionary<string, string>
 				{
 					{ "is_global", "true" },
-					{ "build_property.MSBuildProjectFullPath", "C:\\Project\\Project.csproj" },
+					{ "build_property.MSBuildProjectFullPath", "//Project/0/Project.csproj" },
 					{ "build_property.RootNamespace", "MyProject" },
 					{ "build_property.UnoForceHotReloadCodeGen", "false" },
 					{ "build_property.UnoEnableXamlFuzzyMatching", "false" },
@@ -186,25 +199,60 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 
 				globalConfigBuilder.AppendLine();
 
+				// The item paths are frozen: a generated file is named after a hash of the item path it
+				// came from (XamlFileDefinition.UniqueID), and that name is also emitted INTO the
+				// generated code, so moving the items renames and rewrites every snapshot. That is why
+				// the project file above sits next to them rather than one folder up, and why Link --
+				// which an item is free to declare independently of where it physically lives -- carries
+				// the `0/` folder instead.
+				//
+				// Link is declared so the generated content is identical on every host. Without it the
+				// generator derives the "source link" (the BaseUri target path and the ms-appx:/// URIs)
+				// from the item path MINUS _projectDirectory, using Path.GetDirectoryName and
+				// Path.DirectorySeparatorChar — both host-dependent, so the same XAML yields
+				// `0\MainPage.xaml` on Windows and `0/MainPage.xaml` on Unix and no single set of
+				// committed snapshots can match both. Link short-circuits that math in GetSourceLink and
+				// XamlFileParser.GetTargetFilePath alike. The `// Source …` comments come from a THIRD
+				// computation that Link does not reach (XamlFileGenerator._relativePath, relative to the
+				// project directory), which is why the items sit directly in it: the result then holds no
+				// separator at all, and cannot differ between hosts.
 				foreach (var xamlFile in _xamlFiles)
 				{
-					globalConfigBuilder.Append($@"[C:/Project/0/{xamlFile.FileName}]
+					globalConfigBuilder.Append($@"[//Project/0/{xamlFile.FileName}]
 build_metadata.AdditionalFiles.SourceItemGroup = Page
+build_metadata.AdditionalFiles.Link = 0/{xamlFile.FileName}
 ");
-					TestState.AdditionalFiles.Add(($"C:/Project/0/{xamlFile.FileName}", xamlFile.Contents));
+					TestState.AdditionalFiles.Add(($"//Project/0/{xamlFile.FileName}", NormalizeNewLines(xamlFile.Contents)));
 				}
 
 				foreach (var resourceFile in _resourceFiles)
 				{
-					globalConfigBuilder.Append($@"[C:/Project/0/Strings/{resourceFile.Locale}/{resourceFile.FileName}]
+					globalConfigBuilder.Append($@"[//Project/0/Strings/{resourceFile.Locale}/{resourceFile.FileName}]
 build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
+build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceFile.FileName}
 ");
-					TestState.AdditionalFiles.Add(($"C:/Project/0/Strings/{resourceFile.Locale}/{resourceFile.FileName}", resourceFile.Contents));
+					TestState.AdditionalFiles.Add(($"//Project/0/Strings/{resourceFile.Locale}/{resourceFile.FileName}", NormalizeNewLines(resourceFile.Contents)));
 				}
 
 				TestState.AnalyzerConfigFiles.Add(("/.globalconfig", globalConfigBuilder.ToString()));
 				await base.RunImplAsync(cancellationToken);
 			}
+
+			/// <summary>
+			/// Pins the newlines of a test input, so that what the generator derives from its BYTES is the
+			/// same on every host.
+			/// </summary>
+			/// <remarks>
+			/// The inputs arrive either as raw string literals in the test file or read from a checked-in
+			/// file, so under the repository's <c>* text=auto</c> they carry CRLF on Windows and LF on Unix.
+			/// The generated code mostly reflects the parsed XAML, which does not care — except for the
+			/// embedded-sources provider, which emits a SHA-1 of the source text (XamlFileDefinition.Checksum)
+			/// as a hex string. Unlike a newline, a hash cannot be converted back on checkout: unpinned, it
+			/// makes the Given_GenerateEmbeddedXamlSources and Given_HotReloadEnabledInBuild snapshots match
+			/// on exactly one platform.
+			/// </remarks>
+			private static string NormalizeNewLines(string content)
+				=> content.Replace("\r\n", "\n");
 
 			public IEnumerable<string> PreprocessorSymbols { get; set; } = ImmutableArray<string>.Empty;
 
@@ -217,7 +265,7 @@ build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
 			protected override Project ApplyCompilationOptions(Project project)
 			{
 				// Tests using WithUnoPackage() pull a pre-7.0 Uno.WinUI package, which still ships
-				// Uno.UI.Toolkit.dll. Its types were renamed to Uno.UI.Extras, so the package copy no
+				// Uno.UI.Toolkit.dll. Its types moved to the Uno.UI.* namespaces, so the package copy no
 				// longer matches the local build and would resolve the old namespace instead. The local
 				// build is authoritative.
 				var supersededByLocalBuild = project.MetadataReferences
@@ -308,7 +356,29 @@ build_metadata.AdditionalFiles.SourceItemGroup = PRIResource
 						"ObservablePropertyGenerator" => typeof(ObservablePropertyGenerator),
 						_ => throw new Exception("Unexpected generator name"),
 					};
-					TestState.GeneratedSources.Add((type, name, reader.ReadToEnd()));
+					// Build the SourceText explicitly with Sha256 instead of handing over a string: the
+					// implicit string conversion uses SourceText.From's Sha1 default, while Roslyn 5.x
+					// creates the project — and hence the actual generated documents — with
+					// SourceHashAlgorithms.Default = Sha256. The harness matches expected to actual
+					// documents by a weighted distance over content, encoding AND checksum algorithm,
+					// so a Sha1 baseline makes every pair inexact: no exact alignment exists, the
+					// matcher falls back to an arbitrary one, and the failure surfaces as a confusing
+					// "Expected source file list to match" rather than a checksum mismatch.
+					// The checksum algorithm has to match the ACTUAL generated document per file, because the
+					// harness matches expected to actual by a weighted distance over content, encoding AND
+					// checksum algorithm: a single mismatched document leaves no exact alignment, the matcher
+					// falls back to an arbitrary one, and the failure surfaces as a misleading "Expected
+					// source file list to match". Roslyn derives the algorithm from HOW the generator adds
+					// the source: AddSource(name, string) uses the compilation's algorithm (Sha256 on the
+					// 5.x line), while AddSource(name, SourceText) keeps whatever the SourceText carries --
+					// and every Uno/CommunityToolkit generator here builds it with SourceText.From, whose
+					// API default is Sha1. LocalizationResources is the single string-overload call
+					// (XamlCodeGeneration.TryGenerateUnoResourcesKeyAttribute), hence the odd one out.
+					var checksumAlgorithm = name == "LocalizationResources.cs"
+						? SourceHashAlgorithm.Sha256
+						: SourceHashAlgorithm.Sha1;
+
+					TestState.GeneratedSources.Add((type, name, SourceText.From(reader.ReadToEnd(), Encoding.UTF8, checksumAlgorithm)));
 				}
 
 				return this;

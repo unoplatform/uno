@@ -1,4 +1,4 @@
-# Uno Platform — Breaking-Changes Rollout (Epic [#8339](https://github.com/unoplatform/uno/issues/8339))
+﻿# Uno Platform — Breaking-Changes Rollout (Epic [#8339](https://github.com/unoplatform/uno/issues/8339))
 
 > Ordered, danger-ranked checklist for the next major. Items are sequenced **least dangerous first** (native-only & dead code) to **most dangerous last** (pervasive type-system changes). Each unchecked item is meant to be picked up by a single subagent in its own worktree.
 
@@ -219,16 +219,28 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
   - Files: `src/Uno.UI/UI/Xaml/Controls/TextBox/TextBox.cs`, `src/Uno.UI/UI/Xaml/Controls/ContentPresenter/ContentPresenter.cs`
 - [x] **BC36** — `ContentPresenter.ContentTemplateRoot` -> internal  `d3·S` · #16148
   - Make `internal` (not `private` — in-assembly callers read it cross-type).
+  - **Superseded by #2163:** it is now `private`. The cross-type callers were only reading it because
+    `ContentControl.ContentTemplateRoot` (the real WinUI accessor) was always null; the presenter now
+    reports its root there instead.
   - Files: `src/Uno.UI/UI/Xaml/Controls/ContentPresenter/ContentPresenter.cs`, `src/Uno.UI/UI/Xaml/Controls/Button/HyperlinkButton.mux.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.cs`
 - [x] **BC52** — Reparent `RadioMenuFlyoutItem` -> `MenuFlyoutItem`  `d3·M`
   - Reparent to `MenuFlyoutItem`; re-implement the toggle behavior currently inherited from `ToggleMenuFlyoutItem`.
   - Files: `src/Uno.UI/UI/Xaml/Controls/RadioMenuFlyoutItem/RadioMenuFlyoutItem.cs`, `src/Uno.UI/UI/Xaml/Controls/RadioMenuFlyoutItem/RadioMenuFlyoutItem.Properties.cs`, `src/Uno.WinAppSDKSyncGenerator/Generator.cs`
-- [ ] **#2138** — `PasswordBox` no longer inherits `TextBox`  `d3·L` · **[impact spec](bc2138-passwordbox-to-control.md)** · PR #24038
+- [x] **Reparent `PasswordBox` -> `Control`** — no longer inherits `TextBox`  `d3·L` · **[impact spec](bc2138-passwordbox-to-control.md)** · PR #24038
   - Both `TextBox` and `PasswordBox` derive from `Control` and share the editing implementation by composition — an `internal sealed TextBoxCore` reached through an `internal ITextBoxHost`. Stops the password being mirrored into the inherited `Text` and removes the leaked text-input API. An *internal shared base* is impossible (CS0060) and a public one would add Uno-only surface, so composition is used instead; WinUI's own `CTextBoxBase` accessor design carries over as the interface.
   - Files: `src/Uno.UI/UI/Xaml/Controls/TextBoxCore/*.cs` (new), `src/Uno.UI/UI/Xaml/Controls/PasswordBox/PasswordBox.cs`, `src/Uno.UI/UI/Xaml/Controls/TextBox/TextBox*.cs`, `src/Uno.UI/UI/Xaml/Controls/CommandBarFlyout/TextCommandBarFlyout.mux.cs`, `src/Uno.UI/UI/Xaml/Internal/TextControlFlyoutHelper.cs`
+- [x] **Reparent `MediaPlayerPresenter` -> `FrameworkElement`**  `d3·M` · PR #23807
+  - Reparent to match WinUI, dropping the extra `Border` level; the video surface is hosted through an `internal UIElement Child` instead of the inherited `Border.Child`.
+  - Files: `src/Uno.UI/UI/Xaml/Controls/MediaPlayerElement/MediaPlayerPresenter.cs`
+- [x] **Reparent `ImageBrush` -> `TileBrush`**  `d3·M` · PR #23806
+  - Materialize the missing `TileBrush` base and move `AlignmentX`/`AlignmentY`/`Stretch` onto it, so the DPs are declared where WinUI declares them.
+  - Files: `src/Uno.UI/UI/Xaml/Media/TileBrush.cs` (new), `src/Uno.UI/UI/Xaml/Media/ImageBrush.cs`
+- [x] **Reparent `FadeIn`/`FadeOutThemeAnimation` -> `Timeline`**  `d3·M` · PR #23805
+  - Reparent off Uno's `DoubleAnimation`, which leaked `From`/`To`/`By`/`EasingFunction`/`EnableDependentAnimation`; each animation drives its fixed `Opacity` target. `RepositionThemeAnimation` already derived `Timeline`.
+  - Files: `src/Uno.UI/UI/Xaml/Media/Animation/FadeInThemeAnimation.cs`, `src/Uno.UI/UI/Xaml/Media/Animation/FadeOutThemeAnimation.cs`
 - [ ] **BC74** — Android drawable extension in retarget keys  `d3·S` · PR #15891
-  - Adjust signature to match WinUI.
-  - Files: `src/Uno/Helpers/AndroidResourceNameEncoder.cs`, `src/Uno/Helpers/DrawableHelper.Android.cs`, `src/SourceGenerators/Uno.UI.Tasks/ResourceConverters/AndroidResourceConverter.cs`
+  - Adjust signature to match WinUI. **Deferred out of Phase 5:** draft PR #15891 still targets `master` and is blocked on the nine-patch (`.9.png`) regression it exposes. Not moot under Skia-only — Skia-on-Android still resolves drawables through this path.
+  - Files: `src/Uno.UWP/Helpers/AndroidResourceNameEncoder.cs`, `src/Uno.UWP/Helpers/DrawableHelper.Android.cs`, `src/SourceGenerators/Uno.UI.Tasks/ResourceConverters/AndroidResourceConverter.cs`
 - [x] **BC50** — Remove `UseLegacyPrimaryLanguageOverride`  `d3·S` · #13704
   - Hard-remove the flag and the legacy path; `PrimaryLanguageOverride` is always restart-to-apply (WinUI). **Behavior change** — the flag defaulted to `true`, so runtime language-switch apps must set the culture themselves; migration note added.
   - Files: `src/Uno.UWP/FeatureConfiguration/WinRTFeatureConfiguration.cs`, `src/Uno.UWP/Globalization/ApplicationLanguages.cs`, `src/Uno.UI/UI/Xaml/Application.cs`
@@ -243,12 +255,14 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
   - Expected values measured on native WinUI (WinAppSDK 1.7), application **and** library XAML. Known remaining divergence, pre-existing and out of scope: Uno resolves the `ms-appx` form against the assembly root, WinUI against the XAML file's folder.
   - **Public API rename shipped with it:** `Uno.Extensions.UriExtensions.IsLocalResource` → `IsMsAppx`. The old name said "local resource" but the predicate tests for `ms-appx`, three lines from the `ms-resource:///Files/` helpers this work introduced — the two are opposite ends of the mapping. No forwarding shim; registered in `build/PackageDiffIgnore.xml`.
   - Files: `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs`, `src/Uno.UI/UI/Xaml/XamlFilePathHelper.shared.cs`, `src/Uno.UI/UI/Xaml/Media/ImageSource.cs`, `src/Uno.Foundation/Extensions/UriExtensions.cs`
-- [ ] **BC21** — Delete legacy `AutomationProperties` member ⚠️  `d3·S`
-  - **INVESTIGATE / likely drop.** The member at ~L44 (`AnnotationsProperty`) is valid WinUI and must NOT be deleted — the line ref drifted. Real target is probably the native `OnAutomationIdChanged` branches in `AutomationProperties.uno.cs`.
-  - Files: `src/Uno.UI/UI/Xaml/Automation/AutomationProperties.cs`, `src/Uno.UI/UI/Xaml/Automation/AutomationProperties.uno.cs`
-- [ ] **BC75** — Move MRT Core (`ApplicationModel.Resources`) -> `Uno.WinRT`  `d3·M`
-  - Move the MRT-Core types to the WinRT library at `src/Uno` (lower risk than a new assembly).
-  - Files: `src/Uno.UI/Windows/ApplicationModel/Resources/ResourceLoader.cs`, `src/Uno.UI/Windows/ApplicationModel/Resources/IResourceContext.cs`, `src/Uno.UI/Windows/ApplicationModel/Resources/IResourceManager.cs`
+- [x] **BC21** — Delete legacy `AutomationProperties` member ⚠️  `d3·S` · PR #19700
+  - **Resolved as a drifted line reference, not a deletion.** The member at ~L44 is `AnnotationsProperty`, which is valid WinUI and was correctly left in place. The real defect was the misspelled `AccessibilityView` registration, already fixed on `master`; nothing remains to remove.
+  - Files: `src/Uno.UI/UI/Xaml/Automation/AutomationProperties.cs`
+- [x] **BC75** — Move MRT Core (`Microsoft.Windows.ApplicationModel.Resources`) -> `Uno.WinRT`  `d3·M` · PR #23669
+  - Landed inside the four-namespace sync-generator relocation, not as its own PR: the back-compat redirect that forced this namespace into `Uno.UI` was removed, so it now generates into `src/Uno.WinRT` — assembly `Uno.WinRT`, package `Uno.WinRT` — matching its WinAppSDK metadata home. Relocating types across assemblies is binary-breaking, so the 11 types are registered in `build/PackageDiffIgnore.xml`. No `[assembly: TypeForwardedTo]` shim was added, though `Uno.UI` does reference the target assembly and could carry one — per ground rule 1 the break is taken now rather than shimmed.
+  - Follow-ups shipped separately from the relocation: the migration note in `doc/articles/migrating-to-uno-7.md`, and `Given_MrtCoreAssemblyIdentity`, which asserts each type resolves from assembly `Uno.WinRT` and that `Uno.UI` declares none of the namespace. The test is a **regression guard**, not fails-before/passes-after — the move had already landed.
+  - **Unowned follow-up — needs its own tracking item.** The same relocation moved three further namespace groups (`Microsoft.UI.System`, `Microsoft.Graphics.DirectX`/`.Display`, `Microsoft.UI.IClosableNotifier`) out of `Uno.UI`/`Uno.UI.Composition`, and BC41 moved `Microsoft.UI.Input.*` (`PointerPoint`, `PointerDeviceType`, …) the same way. All four are undocumented and unguarded, and `Microsoft.UI.Input.*` is far more widely consumed than any MRT Core type. Do not park this on BC41 — that item is closed.
+  - Files: `src/Uno.WinRT/Microsoft/Windows/ApplicationModel/Resources/*`, `src/Uno.WinAppSDKSyncGenerator/Generator.cs`, `build/PackageDiffIgnore.xml`
 
 ---
 
@@ -256,6 +270,20 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
 
 _Danger 3-4. Heavier multi-file changes: remove the legacy templated-parent mechanism, repurpose the precedence enum, tear down Fluent V1 scaffolding, rename the Toolkit assembly, and remove the legacy `Windows.UI.Input.*` surface. Each is its own PR._
 
+- [x] **#2163** — Remove the `ContentPresenter` bypass  `d2·M` · **[impact spec](bc2163-remove-contentpresenter-bypass.md)**
+  - `ContentControl` skipped the `ContentPresenter` and parented `Content` directly when it had no
+    `Template` and its default style declared none — an Android 4.4 stack-depth workaround. **Already
+    inert before the change:** `Uno.UI` is Skia-only, so the conditionally-gated default `ControlTemplate`
+    (`netstdref:` at the time, `not_winappsdk:` after the prefix cleanup) was always applied. Mostly
+    dead-code removal; also drops the `Type`-keyed `HasDefaultTemplate` memo and the ALC-teardown sweep
+    that only existed to unpin it.
+  - Behaviour delta: a `ContentControl` subclass with its own `DefaultStyleKey` and no `Template` no longer
+    renders `Content` (WinUI parity). `ContentControl.ContentTemplateRoot` goes from always-null to
+    populated by the templated `ContentPresenter`, which supersedes BC36 (Phase 5).
+  - Files: `src/Uno.UI/UI/Xaml/Controls/ContentControl/ContentControl.cs`, `…/ContentPresenter/ContentPresenter.cs`,
+    `…/Primitives/ButtonBase/ButtonBase.cs`, `…/Button/HyperlinkButton.mux.cs`, `…/UI/Xaml/FrameworkElement.Layout.cs`,
+    `…/UI/Xaml/Application.Alc.cs`,
+    `src/Uno.WinAppSDKSyncGenerator/Helpers/SymbolMatchingHelpers.cs`, `build/PackageDiffIgnore.xml`
 - [x] **BC01** — Remove legacy templated-parent mechanism  `d3·L` · #18672
   - Hard-removed the ambient `TemplatedParentScope` (including its `DependencyObjectStore` ctor hook), both `ENABLE_LEGACY_*` symbols, both `Microsoft.UI.Xaml` builder delegates (`FrameworkTemplateBuilder` **and** `NewFrameworkTemplateBuilder`), every builder ctor (now internal behind `MarkupHelper.Create*`), the TP-less `Func<View?>` factories, and the vestigial `DependencyObject.TemplatedParent` DP.
   - The surviving factory shape is `Uno.UI.FrameworkTemplateBuilder` — `(object? owner, TemplateMaterializationSettings settings) => UIElement?`. Both it and `Uno.UI.TemplateMaterializationSettings` sit next to `TemplateManager` rather than in the WinUI namespace: neither has a WinUI counterpart, so neither belongs under `Microsoft.UI.Xaml`. The settings are framework-constructed only (internal ctor); a builder still reads the properties.
@@ -319,8 +347,11 @@ _Danger 4-5. Ship last, never batched — each lands as its own separately-stabi
 - **Setter pipeline (Phase 3):** `BC37` (remove CLR-property Setter codegen) → `BC44` (remove `Setter<T>`) → `BC63` (remove `SetterBase.set_Property`). Land adjacently, in order.
 - **DataContext / DependencyObject (Phase 7):** do `BC58` (generator-wide DataContext->FE-only) **first**; it gates `BC54` (FlyoutBase symptom) and de-risks `BC26` (DependencyObject->class). All touch the same generated DO mixin.
 - **Background / UserControl (Phase 7):** `BC38` (Background -> Control) precedes `BC14` (UserControl -> Control) so the property relocation is not redone.
+- **Templated parent (Phase 6):** `#2163` makes the `ContentPresenter` report its materialized root to
+  `GetTemplatedParent()`. `BC01` removes the *legacy* templated-parent mechanism (the DP), not that
+  accessor — but land `#2163` first, or re-verify the report site after `BC01`.
 - **Behaviour-drift items (validate at runtime):** `BC50` (culture no longer changes on setter), `BC45` (Center/Center default — source-breaking only; the flag defaulted to `false`, so default users are unaffected), `BC74` (drawable key collision), `BC42` (drop `clr-namespace:`), `BC51` (`ms-resource:///` rewrite) — most change runtime behaviour even for default users.
-- **Verify-first / open-decision items:** `BC16` (struct design maybe obsolete), `BC21` (line ref drifted; may drop), `BC53` (needs a new name), `BC55` (must preserve the prefs backing file).
+- **Verify-first / open-decision items:** `BC16` (struct design maybe obsolete), `BC53` (needs a new name), `BC55` (must preserve the prefs backing file).
 
 ---
 

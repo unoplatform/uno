@@ -12,7 +12,7 @@
 					xmlns:android="http://uno.ui/android#using:Uno.UI.Controls"
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
-					xmlns:toolkit="using:Uno.UI.Extras"
+					xmlns:uuxc="using:Uno.UI.Xaml.Controls"
 					mc:Ignorable="d android">
 
     <!-- Default native Button styles -->
@@ -381,7 +381,7 @@
 										  LeftPane="{TemplateBinding Pane}"
 										  LeftPaneBackground="{TemplateBinding PaneBackground}"
 										  IsLeftPaneOpen="{TemplateBinding IsPaneOpen, Mode=TwoWay}"
-										  IsLeftPaneEnabled="{Binding (toolkit:SplitViewExtensions.IsPaneEnabled), RelativeSource={RelativeSource TemplatedParent}}"
+										  IsLeftPaneEnabled="{Binding (uuxc:SplitViewExtensions.IsPaneEnabled), RelativeSource={RelativeSource TemplatedParent}}"
 										  Content="{TemplateBinding Content}" />
 				</ControlTemplate>
 			</Setter.Value>
@@ -401,7 +401,7 @@
 										  RightPane="{TemplateBinding Pane}"
 										  RightPaneBackground="{TemplateBinding PaneBackground}"
 										  IsRightPaneOpen="{TemplateBinding IsPaneOpen, Mode=TwoWay}"
-										  IsRightPaneEnabled="{Binding (toolkit:SplitViewExtensions.IsPaneEnabled), RelativeSource={RelativeSource TemplatedParent}}"
+										  IsRightPaneEnabled="{Binding (uuxc:SplitViewExtensions.IsPaneEnabled), RelativeSource={RelativeSource TemplatedParent}}"
 										  Content="{TemplateBinding Content}" />
 				</ControlTemplate>
 			</Setter.Value>

@@ -17,10 +17,10 @@ public class Given_NoFuzzyMatching
 					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-					xmlns:toolkit="using:Uno.UI.Extras"
+					xmlns:uub="using:Uno.UI.Behaviors"
 					mc:Ignorable="android ios">
 
-				<Grid toolkit:VisibleBoundsPadding.PaddingMask="Top">
+				<Grid uub:VisibleBoundsPadding.PaddingMask="Top">
 					<TextBlock Text="Hello, world!"
 							   Margin="20"
 							   FontSize="30" />
@@ -67,7 +67,7 @@ public class Given_NoFuzzyMatching
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 					xmlns:local="using:TestRepro"
-					xmlns:toolkit="using:Uno.UI.Extras"
+					xmlns:uub="using:Uno.UI.Behaviors"
 					mc:Ignorable="android ios">
 
 				<local:MyButton MyProperty="x:String" />

@@ -1,4 +1,4 @@
-#nullable disable
+﻿#nullable disable
 
 using System;
 using System.Collections.Generic;
@@ -525,10 +525,6 @@ partial class Application
 		// clears that association on unload, so host-lifetime resources pin the collectible ALC.
 		// Sweep every dictionary reachable from the host application and the master theme set.
 		RunCleanupStep(nameof(ClearCollectibleResourceAssociations), ClearCollectibleResourceAssociations);
-
-		// ContentControl memoizes "does this DefaultStyleKey type have a default template" per
-		// Type; keys from the unloaded app's controls pin the ALC.
-		RunCleanupStep(nameof(Controls.ContentControl.ClearHasDefaultTemplateCache), Controls.ContentControl.ClearHasDefaultTemplateCache);
 
 		// PagePool pools Page instances keyed by their (previewed-app) page Type; a pooled page from
 		// an unloaded app pins its ALC. Sweeps every live per-Frame pool via the weak registry.

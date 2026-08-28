@@ -192,7 +192,7 @@ namespace Microsoft.UI.Xaml.Controls
 					SizeAndPositionContentInPopup();
 				}
 
-				// Uno TODO (for now this would have to be applied in-app using ElevatedView from Uno.UI.Extras)
+				// Uno TODO (for now this would have to be applied in-app using Uno.UI.Xaml.Controls.ElevatedView)
 				//// Cast a shadow
 				//(ApplyElevationEffect(m_tpBackgroundElementPart.AsOrNull<UIElement>()));
 

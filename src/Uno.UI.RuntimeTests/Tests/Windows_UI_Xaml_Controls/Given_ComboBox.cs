@@ -26,7 +26,7 @@ using static Private.Infrastructure.TestServices;
 using ComboBoxHelper = Microsoft.UI.Xaml.Tests.Common.ComboBoxHelper;
 using Uno.UI.Extensions;
 using Combinatorial.MSTest;
-using Uno.UI.Extras.DevTools.Input;
+using Uno.UI.DevTools.Input;
 
 #if __APPLE_UIKIT__
 using _UIViewController = UIKit.UIViewController;

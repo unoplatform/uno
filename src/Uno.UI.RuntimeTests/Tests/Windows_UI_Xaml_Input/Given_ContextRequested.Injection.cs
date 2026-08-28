@@ -13,8 +13,8 @@ using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.Input.Preview.Injection;
 using SamplesApp.UITests;
 using Uno.Extensions;
-using Uno.UI.Extras.DevTools.Input;
-using Uno.UI.Extras.Extensions;
+using Uno.UI.DevTools.Input;
+using Uno.UI.Extensions;
 using Windows.ApplicationModel.Background;
 using MUXControlsTestApp.Utilities;
 
