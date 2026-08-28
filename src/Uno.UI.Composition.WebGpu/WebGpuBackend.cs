@@ -1154,6 +1154,10 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 public sealed unsafe class WebGpuPresentSession : IPresentSession
 {
 	// UNO_WEBGPU_STATS=1: per-pass emit-shape diagnostics (see RenderInto).
+	// Diagnostic bisect (UNO_WEBGPU_BISECT): 1 = skip a replay entirely, 2 = keep the previous stamp (no
+	// restamp on move), 3 = restamp but emit no ops. Removing work is the only measurement that has not
+	// misled this investigation.
+	private static readonly int _bisect = int.TryParse(Environment.GetEnvironmentVariable("UNO_WEBGPU_BISECT"), out var __b) ? __b : 0;
 	private static readonly bool _emitStats = Environment.GetEnvironmentVariable("UNO_WEBGPU_STATS") is "1" or "true";
 	private static int _emitStatsFrame;
 	// Build-shape counters (per stats interval): geometry-cache rebuilds / clip re-stamps observed while replaying.
@@ -2602,6 +2606,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						{
 							break;
 						}
+						if (_bisect == 1) { break; }
 						// FRAME-SOLID path (ramez arena baseline): any recording that contains rects — a Border background,
 						// a Button (background + border + glyphs) — re-emits its SOLIDS into the SHARED per-pass buffer
 						// every frame so sibling visuals sharing a clip collapse to ONE draw (the cross-visual draw-count
@@ -2785,7 +2790,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							// Per frame (even on a cache/stamp hit): the identity-space verts map to the current replay
 							// transform + surface projection via this one table entry — the whole arena move/resize path.
 							if (entry.XformSlot >= 0) { WriteXform(entry.XformSlot, rr.Transform); }
-							if (!entry.HasStamp || entry.StampXform != rr.Transform || !ClipDataEquals(entry.StampClip, rr.Clip))
+							if (!(_bisect == 2 && entry.HasStamp) && (!entry.HasStamp || entry.StampXform != rr.Transform || !ClipDataEquals(entry.StampClip, rr.Clip)))
 							{
 								if (_emitStats) { _statStamps++; }
 								// In-place restamp (same guard as the table stamp): rewrite ClipU buffers, keep bind groups.
@@ -2845,7 +2850,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								}
 								entry.StampOwned = stampOwned; entry.StampedOps = stamped; entry.StampBufs = bufs; entry.StampFrame = _d.FrameSeq; entry.StampXform = rr.Transform; entry.StampClip = rr.Clip; entry.HasStamp = true;
 							}
-							ops.AddRange(entry.StampedOps);
+							if (_bisect != 3) { ops.AddRange(entry.StampedOps); }
 							break;
 						}
 						var transformChanged = !miss && entry.Transform != rr.Transform;
