@@ -2905,7 +2905,20 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						lentries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = lubuf, Offset = 0, Size = 96 };
 						var lbgd = new WGPUBindGroupDescriptor { Layout = lyr.CompositeMode == 1 ? _d.CompositeDstInBgl : _d.CompositeBgl, EntryCount = 3, Entries = lentries };
 						var lbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &lbgd));
-						ops.Add(new DrawOp(4, (nint)lbg, (uint)lyr.CompositeMode, 0, false, lyr.Clip, 0));
+						// Scissor the composite to the layer's content. The composite shader draws a FULLSCREEN triangle,
+						// so without this every layer blends the whole window no matter how small it is — a tooltip's
+						// opacity group costs the same as a full-page scrim. Only plain SrcOver layers can be tightened:
+						// a DstIn mask must still erase outside its content, and a colour matrix with an offset can turn
+						// transparent pixels opaque, so both keep full-surface semantics (same condition as the cull above).
+						var compClip = lyr.Clip;
+						if (lyr.CompositeMode == 0 && lyr.ColorMatrix is null && IsFiniteAabb(contentBounds))
+						{
+							compClip.Aabb = contentBounds;
+							compClip.ScissorInert = false;
+							compClip.AabbInClipU = false;
+							compClip.ScissorLoadBearing = true;
+						}
+						ops.Add(new DrawOp(4, (nint)lbg, (uint)lyr.CompositeMode, 0, false, compClip, 0));
 						break;
 					}
 				case BackdropCmd bk:
