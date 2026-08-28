@@ -133,10 +133,10 @@ Per-file metadata always takes precedence over the project-level property.
 
 This feature works on all platforms supported by Uno Platform:
 
-| Feature | Windows | Android | iOS | Web (WASM) | macOS | Linux (Skia) |
-|---|---|---|---|---|---|---|
-| Auto code-behind generation | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
-| Per-file configuration | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
-| Project-level configuration | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
+| Feature | Windows App SDK | Android (Native/Skia) | iOS (Native/Skia) | WebAssembly (Native/Skia) | Desktop (macOS, Skia) | Desktop (X11, Skia) | Desktop (Linux Framebuffer, Skia) | Desktop (Windows, Skia) |
+|---|---|---|---|---|---|---|---|---|
+| Auto code-behind generation | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
+| Per-file configuration | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
+| Project-level configuration | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
 
 On Uno Platform targets, code-behind generation is handled by the integrated XAML source generation pipeline. On WinUI (Windows) targets, a standalone incremental source generator provides the same functionality.
