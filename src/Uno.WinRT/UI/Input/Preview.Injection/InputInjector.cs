@@ -255,7 +255,7 @@ public partial class InputInjector
 				_mouse.StartNewSequence();
 			}
 
-			var args = info.ToEventArgs(_mouse!, VirtualKeyModifiers.None);
+			var args = info.ToEventArgs(_mouse!, VirtualKeyModifiers.None, _target.GetInjectionBounds());
 			_mouse!.Update(args);
 
 			DispatchPointerUpdated(args);
@@ -272,7 +272,7 @@ public partial class InputInjector
 				_mouse.StartNewSequence();
 			}
 
-			var args = info.ToEventArgs(_mouse!, VirtualKeyModifiers.None);
+			var args = info.ToEventArgs(_mouse!, VirtualKeyModifiers.None, _target.GetInjectionBounds());
 			_mouse!.Update(args);
 
 			DispatchPointerUpdated(args);
@@ -285,7 +285,7 @@ public partial class InputInjector
 	{
 		foreach (var (info, modifiers) in input)
 		{
-			var args = info.ToEventArgs(_mouse!, modifiers);
+			var args = info.ToEventArgs(_mouse!, modifiers, _target.GetInjectionBounds());
 			_mouse!.Update(args);
 
 			DispatchPointerUpdated(args);
@@ -302,7 +302,7 @@ public partial class InputInjector
 				_mouse.StartNewSequence();
 			}
 
-			var args = info.ToEventArgs(_mouse!, modifiers);
+			var args = info.ToEventArgs(_mouse!, modifiers, _target.GetInjectionBounds());
 			_mouse!.Update(args);
 
 			DispatchPointerUpdated(args);
