@@ -1,4 +1,4 @@
-// Minimal-but-real WebGPU backend implementing the NEUTRAL drawing seam (public SPI from Uno.UI.Composition).
+﻿// Minimal-but-real WebGPU backend implementing the NEUTRAL drawing seam (public SPI from Uno.UI.Composition).
 // Solid rects + even-odd path fill (stencil-then-cover) consuming IGeometry.StreamFlattened (Skia-less).
 #nullable disable
 using System;
@@ -324,6 +324,10 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 	internal List<WebGpuCommand> Commands = new();
 	internal WColor? ClearColor;
 	internal bool? Cacheable;   // memoized: all commands are simple primitives with no path clip
+	// Memoized split of a mixed (primitives + nested replays) list into cacheable pieces — see TryDecompose.
+	// null once Decomposed is computed and found not worthwhile.
+	internal List<WebGpuCommand> Decomposed;
+	internal bool DecomposeChecked;
 	internal Vector4? IdentityBounds;   // memoized union AABB of Commands (recorded/identity space), for layer bounding
 								// The compiled GPU draw-list for this recording (the persistent retained state IRenderRecord is contracted to hold):
 								// built once on the render thread at first replay, reused every frame, freed (deferred to the render thread) when
@@ -960,6 +964,46 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		return ok;
 	}
 
+	/// <summary>
+	/// Splits a recording that mixes primitives with nested replays into pieces that are each cacheable on their
+	/// own: every maximal run of primitives becomes its own sub-recording, and nested replays pass through as
+	/// references. Memoized — a finished recording is immutable, so the split is computed once.
+	/// </summary>
+	/// <remarks>
+	/// Such a parent is otherwise not cacheable at all, so it took the inline path and had EVERY command
+	/// re-transformed on the CPU each frame (reallocating a fan array per path fill, i.e. per glyph). Replaying
+	/// the split costs O(pieces) instead of O(commands). Note this deliberately does NOT flatten children into
+	/// the parent: flattening is O(subtree) per ancestor, so a top-level recording ends up duplicating the whole
+	/// scene. Here each primitive lives in exactly one piece and each child keeps its own cache.
+	/// </remarks>
+	private static List<WebGpuCommand> TryDecompose(WebGpuRenderRecord d)
+	{
+		if (d.DecomposeChecked) { return d.Decomposed; }
+		d.DecomposeChecked = true;
+		var cmds = d.Commands;
+		bool hasChild = false;
+		foreach (var c in cmds)
+		{
+			if (c is ReplayRefCmd) { hasChild = true; continue; }
+			// Layers/shadows/backdrops need their own passes; leave those recordings on the inline path.
+			if (c is not (RectCommand or RoundedRectCmd or PathFill or ImageCmd or GradientCmd)) { return null; }
+		}
+		if (!hasChild) { return null; }
+
+		var parts = new List<WebGpuCommand>();
+		for (int i = 0; i < cmds.Count;)
+		{
+			if (cmds[i] is ReplayRefCmd) { parts.Add(cmds[i]); i++; continue; }
+			int j = i;
+			while (j < cmds.Count && cmds[j] is not ReplayRefCmd) { j++; }
+			var run = cmds.GetRange(i, j - i);
+			parts.Add(new ReplayRefCmd { Data = new WebGpuRenderRecord { Commands = run }, Commands = run, Transform = Matrix4x4.Identity, Clip = ClipData.None });
+			i = j;
+		}
+		// Only worth it when replaying the pieces is materially cheaper than re-transforming every command.
+		return d.Decomposed = parts.Count * 2 <= cmds.Count ? parts : null;
+	}
+
 	// Transforms a recording's (simple) commands to device space under a transform+clip, for building its GPU
 	// cache. Uses the inline (always-transform) path so it never emits a nested ReplayRef.
 	internal static List<WebGpuCommand> TransformFor(List<WebGpuCommand> commands, Matrix4x4 transform, ClipData clip)
@@ -986,6 +1030,18 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			StatCacheableReplays++;
 			return;
 		}
+		if (data is WebGpuRenderRecord mixed && TryDecompose(mixed) is { } parts)
+		{
+			TrackNestedTextures(mixed);
+			Vector2 T(Vector2 p) => new(p.X * _m.M11 + p.Y * _m.M21 + _m.M41, p.X * _m.M12 + p.Y * _m.M22 + _m.M42);
+			foreach (var part in parts)
+			{
+				var rr = (ReplayRefCmd)part;
+				_target.Add(new ReplayRefCmd { Data = rr.Data, Commands = rr.Commands, Transform = rr.Transform * _m, Clip = ClipCompose(rr.Clip, T) });
+			}
+			StatDecomposedReplays++;
+			return;
+		}
 		if (data is WebGpuRenderRecord inl) { StatInlineReplays++; StatInlineCmds += inl.Commands.Count; }
 		ReplayInline(data);
 	}
@@ -993,7 +1049,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	// Per-frame record-phase counters: a recording is only cacheable when EVERY command is a simple primitive, so
 	// one nested replay/layer/shadow anywhere forces the whole list to be re-transformed inline — reallocating a
 	// fan array per path fill (i.e. per glyph) every frame. Reset and reported by the backend's stats line.
-	internal static int StatCacheableReplays, StatInlineReplays, StatInlineCmds;
+	internal static int StatCacheableReplays, StatInlineReplays, StatInlineCmds, StatDecomposedReplays;
 
 	// Take a ref to every texture the nested recording references, so an outer frame keeps them alive as long as it can
 	// be replayed. Balanced by this recording's Dispose (which Releases every entry in its Textures list).
@@ -3464,8 +3520,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
 		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
 		{
-			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} cachedRebuilds={_statCachedRebuilds} replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds}");
-			WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = 0;
+			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} cachedRebuilds={_statCachedRebuilds} replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays}+d{WebGpuCommandRecorder.StatDecomposedReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds}");
+			WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = WebGpuCommandRecorder.StatDecomposedReplays = 0;
 			_statTableRebuilds = 0; _statStamps = 0; _statArenaRebuilds = 0; _statCachedRebuilds = 0;
 		}
 
