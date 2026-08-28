@@ -58,22 +58,38 @@ namespace Uno.UI.Runtime.Skia {
 
 		public static async setup() {
 			Accessibility.debugLog('[A11y] Accessibility.setup() — initializing accessibility subsystem');
+
+			const isMultithreaded = WebAssemblyThreading.isThreadingEnabled();
+
 			const browserExports = WebAssemblyWindowWrapper.getAssemblyExports();
 
 			// Wire up managed callbacks from WebAssemblyAccessibility.cs
 			const accessibilityExports = browserExports.Uno.UI.Runtime.Skia.WebAssemblyAccessibility;
 			this.managedEnableAccessibility = accessibilityExports.EnableAccessibilityAsync;
 
-			this.managedOnScroll = accessibilityExports.OnScroll;
-			this.managedOnInvoke = accessibilityExports.OnInvoke;
-			this.managedOnToggle = accessibilityExports.OnToggle;
-			this.managedOnRangeValueChange = accessibilityExports.OnRangeValueChange;
-			this.managedOnTextInput = accessibilityExports.OnTextInput;
-			this.managedOnExpandCollapse = accessibilityExports.OnExpandCollapse;
-			this.managedOnSelection = accessibilityExports.OnSelection;
-			this.managedOnFocus = accessibilityExports.OnFocus;
-			this.managedOnBlur = accessibilityExports.OnBlur;
-			this.managedOnSentinelFocus = accessibilityExports.OnFocusSentinel;
+			if (isMultithreaded) {
+				this.managedOnScroll = accessibilityExports.OnScrollAsync;
+				this.managedOnInvoke = accessibilityExports.OnInvokeAsync;
+				this.managedOnToggle = accessibilityExports.OnToggleAsync;
+				this.managedOnRangeValueChange = accessibilityExports.OnRangeValueChangeAsync;
+				this.managedOnTextInput = accessibilityExports.OnTextInputAsync;
+				this.managedOnExpandCollapse = accessibilityExports.OnExpandCollapseAsync;
+				this.managedOnSelection = accessibilityExports.OnSelectionAsync;
+				this.managedOnFocus = accessibilityExports.OnFocusAsync;
+				this.managedOnBlur = accessibilityExports.OnBlurAsync;
+				this.managedOnSentinelFocus = accessibilityExports.OnFocusSentinelAsync;
+			} else {
+				this.managedOnScroll = accessibilityExports.OnScroll;
+				this.managedOnInvoke = accessibilityExports.OnInvoke;
+				this.managedOnToggle = accessibilityExports.OnToggle;
+				this.managedOnRangeValueChange = accessibilityExports.OnRangeValueChange;
+				this.managedOnTextInput = accessibilityExports.OnTextInput;
+				this.managedOnExpandCollapse = accessibilityExports.OnExpandCollapse;
+				this.managedOnSelection = accessibilityExports.OnSelection;
+				this.managedOnFocus = accessibilityExports.OnFocus;
+				this.managedOnBlur = accessibilityExports.OnBlur;
+				this.managedOnSentinelFocus = accessibilityExports.OnFocusSentinel;
+			}
 
 			this.containerElement = document.getElementById("uno-body");
 

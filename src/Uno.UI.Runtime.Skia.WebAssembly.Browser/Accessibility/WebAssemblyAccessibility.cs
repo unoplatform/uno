@@ -950,6 +950,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	[JSExport]
+	public static Task OnScrollAsync(IntPtr handle, double horizontalOffset, double verticalOffset)
+	{
+		OnScroll(handle, horizontalOffset, verticalOffset);
+
+		return Task.CompletedTask;
+	}
+
 	/// <summary>
 	/// Called when a button element is invoked (clicked, Enter pressed, or Space pressed).
 	/// Routes to the IInvokeProvider.Invoke() method on the automation peer.
@@ -971,6 +979,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				invokeProvider.Invoke();
 			}
 		}
+	}
+
+	[JSExport]
+	public static Task OnInvokeAsync(IntPtr handle)
+	{
+		OnInvoke(handle);
+
+		return Task.CompletedTask;
 	}
 
 	/// <summary>
@@ -996,6 +1012,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	[JSExport]
+	public static Task OnToggleAsync(IntPtr handle)
+	{
+		OnToggle(handle);
+
+		return Task.CompletedTask;
+	}
+
 	/// <summary>
 	/// Called when a slider's value changes.
 	/// Routes to the IRangeValueProvider.SetValue() method on the automation peer.
@@ -1017,6 +1041,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				rangeValueProvider.SetValue(value);
 			}
 		}
+	}
+
+	[JSExport]
+	public static Task OnRangeValueChangeAsync(IntPtr handle, double value)
+	{
+		OnRangeValueChange(handle, value);
+
+		return Task.CompletedTask;
 	}
 
 	/// <summary>
@@ -1050,6 +1082,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	[JSExport]
+	public static Task OnTextInputAsync(IntPtr handle, string value, int selectionStart, int selectionEnd)
+	{
+		OnTextInput(handle, value, selectionStart, selectionEnd);
+
+		return Task.CompletedTask;
+	}
+
 	/// <summary>
 	/// Called when a combobox or expander is expanded/collapsed.
 	/// Routes to the IExpandCollapseProvider.Expand() or Collapse() method on the automation peer.
@@ -1081,6 +1121,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	[JSExport]
+	public static Task OnExpandCollapseAsync(IntPtr handle)
+	{
+		OnExpandCollapse(handle);
+
+		return Task.CompletedTask;
+	}
+
 	/// <summary>
 	/// Called when a list item is selected.
 	/// Routes to the ISelectionItemProvider.Select() method on the automation peer.
@@ -1102,6 +1150,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				selectionItemProvider.Select();
 			}
 		}
+	}
+
+	[JSExport]
+	public static Task OnSelectionAsync(IntPtr handle)
+	{
+		OnSelection(handle);
+
+		return Task.CompletedTask;
 	}
 
 	/// <summary>
@@ -1136,6 +1192,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	[JSExport]
+	public static Task OnFocusAsync(IntPtr handle)
+	{
+		OnFocus(handle);
+
+		return Task.CompletedTask;
+	}
+
 	/// <summary>
 	/// Called when a semantic element loses focus in the browser.
 	/// Used to synchronize focus between the semantic DOM and the Uno visual tree.
@@ -1151,6 +1215,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		// Focus leaving the semantic element is handled by the browser focus system.
 		// No explicit action needed here - the Uno FocusManager handles focus transitions.
+	}
+
+	[JSExport]
+	public static Task OnBlurAsync(IntPtr handle)
+	{
+		OnBlur(handle);
+
+		return Task.CompletedTask;
 	}
 
 	[JSExport]
@@ -1193,6 +1265,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			@this._suppressDeparture = false;
 		}
+	}
+
+	[JSExport]
+	public static Task OnFocusSentinelAsync(bool isStart)
+	{
+		OnFocusSentinel(isStart);
+
+		return Task.CompletedTask;
 	}
 
 	// First/last descendant-or-self owning a focusable semantic element, skipping
