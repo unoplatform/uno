@@ -118,7 +118,7 @@ This guide will walk you through the necessary steps to localize an Uno Platform
 
 ## Localize the application name
 
-For Windows and Skia Desktop targets, the application name in `Package.appxmanifest` can reference a localized string with `ms-resource:`:
+For Windows packaged apps and Skia Desktop targets, the application name in `Package.appxmanifest` can reference a localized string with `ms-resource:`:
 
 ```xml
 <Properties>
