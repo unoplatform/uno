@@ -1,4 +1,4 @@
-﻿#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -320,6 +320,7 @@ namespace Microsoft.UI.Xaml.Controls
 			float? zoomFactor = null,
 			bool disableAnimation = false,
 			bool isIntermediate = false,
+			bool isTouch = false,
 			DMConfigurations configuration = DMConfigurations.None,
 			[CallerMemberName] string callerName = "",
 			[CallerLineNumber] int callerLine = -1)
@@ -327,7 +328,7 @@ namespace Microsoft.UI.Xaml.Controls
 				horizontalOffset,
 				verticalOffset,
 				zoomFactor,
-				options: new(disableAnimation, IsIntermediate: isIntermediate, Configuration: configuration),
+				options: new(disableAnimation, IsTouch: isTouch, IsIntermediate: isIntermediate, Configuration: configuration),
 				callerName,
 				callerLine);
 
