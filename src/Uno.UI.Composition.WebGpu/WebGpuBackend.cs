@@ -324,6 +324,9 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 	internal List<WebGpuCommand> Commands = new();
 	internal WColor? ClearColor;
 	internal bool? Cacheable;   // memoized: all commands are simple primitives with no path clip
+	// Memoized command-list scans. These are pure functions of an immutable list but ran per replay per
+	// FRAME: ~450 replays/frame over lists of up to ~600 commands is hundreds of thousands of type checks.
+	internal bool? ReappendableMemo, ArenaSafeMemo, TableEligibleMemo;
 	internal Vector4? IdentityBounds;   // memoized union AABB of Commands (recorded/identity space), for layer bounding
 								// The compiled GPU draw-list for this recording (the persistent retained state IRenderRecord is contracted to hold):
 								// built once on the render thread at first replay, reused every frame, freed (deferred to the render thread) when
@@ -2040,6 +2043,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// buffer (ramez arena baseline) so they coalesce across visuals; any non-solids stay cached (NonSolidOps).
 	// Re-appendable = rect or rounded-rect: cheap to re-emit each frame into a shared per-pass buffer (solids /
 	// rrects) so they coalesce across visuals. Glyphs/images/gradients stay cached and are spliced in draw order.
+	private static bool HasReappendable(ReplayRefCmd rr)
+		=> rr.Data is { } d ? d.ReappendableMemo ??= HasReappendable(rr.Commands) : HasReappendable(rr.Commands);
+
+	private static bool IsArenaSafe(ReplayRefCmd rr)
+		=> rr.Data is { } d ? d.ArenaSafeMemo ??= IsArenaSafe(rr.Commands) : IsArenaSafe(rr.Commands);
+
 	private static bool HasReappendable(List<WebGpuCommand> cmds)
 	{
 		for (int i = 0; i < cmds.Count; i++) { if (cmds[i] is RectCommand or RoundedRectCmd) { return true; } }
@@ -2297,8 +2306,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// items scrolling inside a rounded container would otherwise full-rebuild every frame.
 	private static bool TableFrameEligible(ReplayRefCmd rr)
 	{
+		// The session clip is per-replay; the command scan is not, so only the latter is memoized.
 		if (rr.Clip.PathFan is not null) { return false; }
-		var cmds = rr.Commands;
+		if (rr.Data is { } d) { return d.TableEligibleMemo ??= TableEligibleScan(rr.Commands); }
+		return TableEligibleScan(rr.Commands);
+	}
+
+	private static bool TableEligibleScan(List<WebGpuCommand> cmds)
+	{
 		for (int i = 0; i < cmds.Count; i++)
 		{
 			var c = cmds[i];
@@ -2632,7 +2647,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// win the profiler showed). NON-solids (glyphs/images/gradients) stay cached (device space,
 						// rebuilt only on a transform/clip change) and are consumed in draw order as the recording is
 						// re-walked. Pure non-solid recordings fall through to the arena path below (moving-visual reuse).
-						if (HasReappendable(rr.Commands))
+						if (HasReappendable(rr))
 						{
 							// A recording replayed MORE THAN ONCE in a single frame (same command list, different
 							// transforms) can't reuse one resident slab slice — the second build's Put would overwrite
@@ -2781,7 +2796,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// own identity NDC space; a moved replay re-stamps the vertex xform on the per-op clip bind groups
 						// and REUSES the vertex buffers instead of rebuilding. Moving-visual trace: moved frame => reuse.
 						// Session clips without a fan are stamped in below (Aabb intersect + rounds folded via finv).
-						if (rr.Clip.PathFan is null && IsArenaSafe(rr.Commands))
+						if (rr.Clip.PathFan is null && IsArenaSafe(rr))
 						{
 							// Stable path-fill transform slot: arena verts are in the recording's OWN (identity) space, so
 							// the slot's entry folds the replay transform + projection — written per frame below, so a
