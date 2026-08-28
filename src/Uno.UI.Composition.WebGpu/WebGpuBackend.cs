@@ -1158,6 +1158,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// restamp on move), 3 = restamp but emit no ops. Removing work is the only measurement that has not
 	// misled this investigation.
 	private int _statCrMiss, _statCrMove, _statCrPathFlip, _statCrSize, _statCrClip;
+	// A/B gates so the session's landed optimisations can be priced against the ground-truth frame time.
+	private static readonly bool _noCompositeScissor = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_SCISSOR") is "1";
+	private static readonly bool _noGlyphCoalesce = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_GLYPHCOALESCE") is "1";
 	private static readonly int _bisect = int.TryParse(Environment.GetEnvironmentVariable("UNO_WEBGPU_BISECT"), out var __b) ? __b : 0;
 	private static readonly bool _emitStats = Environment.GetEnvironmentVariable("UNO_WEBGPU_STATS") is "1" or "true";
 	private static int _emitStatsFrame;
@@ -2460,7 +2463,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// stencil + ONE cover, the same coalescing BuildCoalesced does for arena recordings. Without it every
 					// recording that also contains rects — i.e. every real list row, grid cell or card, since they all
 					// have a background — paid 2 draws and 2 pipeline switches per GLYPH.
-					if (tc is PathFill pf0 && !pf0.EvenOdd)
+					if (!_noGlyphCoalesce && tc is PathFill pf0 && !pf0.EvenOdd)
 					{
 						_scratch.Clear();
 						var gMin = new Vector2(float.MaxValue); var gMax = new Vector2(float.MinValue);
@@ -2694,7 +2697,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 									{
 										// Same glyph-run collapse as the table path: one stencil + one cover for a run of
 										// consecutive non-zero paths sharing colour + clip, instead of 2 draws per glyph.
-										if (tc is PathFill pf0 && !pf0.EvenOdd)
+										if (!_noGlyphCoalesce && tc is PathFill pf0 && !pf0.EvenOdd)
 										{
 											float fSlotBits = System.BitConverter.Int32BitsToSingle(fSlot);
 											_scratch.Clear();
@@ -3023,7 +3026,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// a DstIn mask must still erase outside its content, and a colour matrix with an offset can turn
 						// transparent pixels opaque, so both keep full-surface semantics (same condition as the cull above).
 						var compClip = lyr.Clip;
-						if (lyr.CompositeMode == 0 && lyr.ColorMatrix is null && IsFiniteAabb(contentBounds))
+						if (!_noCompositeScissor && lyr.CompositeMode == 0 && lyr.ColorMatrix is null && IsFiniteAabb(contentBounds))
 						{
 							compClip.Aabb = contentBounds;
 							compClip.ScissorInert = false;
