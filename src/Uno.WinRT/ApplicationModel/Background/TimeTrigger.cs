@@ -4,6 +4,11 @@ namespace Windows.ApplicationModel.Background;
 
 public partial class TimeTrigger : IBackgroundTrigger
 {
+	/// <summary>
+	/// The shortest interval WinRT accepts when a time-triggered task is registered.
+	/// </summary>
+	internal const uint MinimumFreshnessTime = 15;
+
 	public uint FreshnessTime { get; }
 
 	public bool OneShot { get; }

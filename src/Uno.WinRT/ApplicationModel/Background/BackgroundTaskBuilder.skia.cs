@@ -66,11 +66,11 @@ public partial class BackgroundTaskBuilder
 				"Skia desktop currently supports TimeTrigger background tasks.");
 		}
 
-		if (timeTrigger.FreshnessTime < 15)
+		if (timeTrigger.FreshnessTime < TimeTrigger.MinimumFreshnessTime)
 		{
 			throw new ArgumentOutOfRangeException(
 				nameof(TimeTrigger.FreshnessTime),
-				"TimeTrigger.FreshnessTime must be at least 15 minutes.");
+				$"TimeTrigger.FreshnessTime must be at least {TimeTrigger.MinimumFreshnessTime} minutes.");
 		}
 
 		if (_conditions.Count != 0)

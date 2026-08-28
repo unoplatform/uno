@@ -294,6 +294,12 @@ internal static class BackgroundTaskRegistrationStore
 			var name = reader.ReadString();
 			var taskEntryPoint = reader.ReadString();
 			var freshnessTime = reader.ReadUInt32();
+			if (freshnessTime < TimeTrigger.MinimumFreshnessTime)
+			{
+				throw new InvalidDataException(
+					"The background task registration store has an invalid trigger interval.");
+			}
+
 			var oneShot = reader.ReadBoolean();
 			var cancelOnConditionLoss = reader.ReadBoolean();
 			var isNetworkRequested = reader.ReadBoolean();
