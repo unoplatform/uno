@@ -71,15 +71,34 @@ That path is a **statement** context, so the stamp is emitted directly on the fi
 one the owner creates on first access to `Resources`. The location of the `<ResourceDictionary>`
 declaration is stamped on that dictionary:
 
-- for every object that goes through `BuildExtendedProperties` (the top-level control and every
-  child element), inside the apply block that already carries `SetBaseUri`, on
-  `<applied>.Resources`;
+- for every `FrameworkElement` that goes through `BuildExtendedProperties` (the top-level control
+  and every child element), inside the apply block that already carries `SetBaseUri`, on
+  `<applied>.Resources`. The `FrameworkElement` test matters: `Resources` is declared by
+  `FrameworkElement` and `Application` only, so without it a member merely *named* `Resources` on an
+  unrelated type would be dereferenced, and a null getter would throw inside `InitializeComponent`;
 - for `Application` (App.xaml), which never goes through `BuildExtendedProperties`, in
   `BuildApplicationInitializerBody` right after the resources are built.
 
-A `Resources` member with **no** explicit `<ResourceDictionary>` element
-(`<Page.Resources><Style/></Page.Resources>`) is not stamped: there is no dictionary element in the
-markup to point at, and the owning element already carries its own location.
+**Which dictionary to stamp is decided once**, by `FindResourcesMember` — the same reading of the
+`Resources` member that `RegisterAndBuildResources` emits from. The stamp uses its
+`OwnDictionaryDeclaration`, which is non-null exactly when the owner keeps the dictionary it creates
+itself and the generator populates it in place. Two independent derivations of that rule would drift,
+and the drift is not benign: for
+`<Page.Resources><ResourceDictionary Source="…"/><ResourceDictionary>…</ResourceDictionary></Page.Resources>`
+the owner's `Resources` is *replaced* by the referenced file's shared dictionary, and a predicate that
+merely looked for a `Source`-less dictionary element would stamp that shared instance with this
+file's location.
+
+Not stamped, as a consequence of using that one decision:
+
+- a `Resources` member with no explicit `<ResourceDictionary>` element
+  (`<Page.Resources><Style/></Page.Resources>`) — there is no dictionary element to point at, and the
+  owning element already carries its own location;
+- a dictionary assigned from a `Source` or from a typed subclass — it is not the owner's own (the
+  subclass is stamped by R5 instead);
+- an entirely empty `<ResourceDictionary/>` — the generator emits nothing into it, so it has no
+  location to describe, and nothing forces the owner to materialize a dictionary it would otherwise
+  never create.
 
 ### R4 — no behavioural change when Hot Reload codegen is off
 
@@ -126,10 +145,13 @@ reliably knowable from the generator for a dictionary of the *same* compilation,
 
 ## Edge cases
 
-- **Empty explicit dictionary** — `<Grid.Resources><ResourceDictionary/></Grid.Resources>` emits no
-  resource population at all, so the R3 stamp is the first access to `Resources` and thus creates an
-  empty dictionary that would otherwise not exist. Accepted: it only happens in Hot-Reload-enabled
-  (development) builds, and the dictionary genuinely exists in the markup.
+- **File paths are emitted as C# literals**, through `SymbolDisplay.FormatLiteral`, not interpolated
+  into one: a file name may contain a quote or a newline on unix-like systems, which would otherwise
+  close the literal and inject the rest of the name into the generated code. `SetBaseUri`'s own URI
+  argument goes through the same helper.
+- **A `#` in a project path** still makes the `#L<line>:<pos>` fragment ambiguous for a consumer
+  parsing the value. Left as-is: escaping it would change the format every existing consumer of
+  `OriginalSourceLocation` already reads.
 - **`x:Class`'d dictionary file** — two instances exist (the `x:Class` type, and the file-level
   dictionary held by `GlobalStaticResources`). Both are stamped with the same root-element location:
   the first by the pre-existing code, the second by R1.
@@ -138,69 +160,73 @@ reliably knowable from the generator for a dictionary of the *same* compilation,
 
 ## Test plan
 
-Snapshot tests in `Uno.UI.SourceGenerators.Tests` (`Given_HotReloadEnabledInBuild`, the only suite
-that turns `UnoForceHotReloadCodeGen` on), with committed generated output under
-`XamlCodeGeneratorTests/Out/Given_HotReloadEnabledInBuild/`:
+### Snapshot tests — `Given_HotReloadEnabledInBuild` (the only suite that turns `UnoForceHotReloadCodeGen` on)
 
 1. `SetOriginalSourceLocationInOutputForResourceDictionaryFile` — a dictionary file declaring a
    resource (R2 fast path), an inline merged dictionary and a themed dictionary (R1), and a merged
-   dictionary with a `Source` (non-goal: not stamped, and the referenced file gets its own R2 stamp).
+   dictionary with a `Source` (not stamped; the referenced file gets its own R2 stamp).
 2. `SetOriginalSourceLocationInOutputForExplicitResourceDictionaries` — a page with an explicit
    `<Page.Resources><ResourceDictionary>` holding a theme dictionary, and a `Grid` with its own
-   explicit dictionary: R3 on both the top-level control (`useGenericApply`) and a child built in an
+   explicit dictionary: R3 on the top-level control (`useGenericApply`) and on a child built in an
    object initializer, plus R1 for the theme dictionary.
 3. `SetOriginalSourceLocationInOutputForTypedResourceDictionaries` — a page merging a **code-defined**
    `ResourceDictionary` subclass and using one as a whole `Grid.Resources`: both use sites emit the
    set-if-absent stamp (R5).
-4. `ResourceDictionaryCodeBehind` (pre-existing) — regenerated snapshot shows the second (file-level)
-   instance of an `x:Class`'d dictionary is now stamped, with the `x:Class` stamp unchanged.
+4. `SetOriginalSourceLocationNotSetForResourcesFromSource` — `<Page.Resources>` whose first
+   declaration carries a `Source`, followed by a second, inline one. The page's `Resources` is the
+   referenced file's shared dictionary, so the generated file must contain **no**
+   `OriginalSourceLocation` at all.
+5. `ResourceDictionaryCodeBehind` (pre-existing) — regenerated: the file-level instance of an
+   `x:Class`'d dictionary is now stamped, with the `x:Class` stamp unchanged.
 
-**Application (R3) is not covered by a snapshot test**: the XAML-generator test harness cannot
-process an `Application` root at all — a test with an App.xaml root fails on master with
-`UXAML0001 Unsupported resource type for …/Uno.dll` + `Processing failed for an unknown reason
-(BuildApplicationInitializerBody@466)`, with or without this change. It is instead validated by
-compiling `Uno.UI.UnitTests`, whose `App/App.xaml` declares an explicit
-`<Application.Resources><ResourceDictionary>` with nested merged dictionaries (see Validation).
+### Runtime test — `Uno.UI.UnitTests`
+
+`Given_ResourceDictionarySourceLocation`, over the fixture
+`App/Xaml/ResourceDictionarySourceLocation.xaml`. The project sets `UnoForceHotReloadCodeGen`, so the
+locations are always generated there; the test reads them back with
+`MarkupHelper.GetElementProperty<string>(d, "OriginalSourceLocation")` and asserts the **semantics** a
+consumer depends on, which golden text cannot:
+
+| Case | Assertion |
+|---|---|
+| the page's `<Page.Resources><ResourceDictionary>` | its declaration, `…#L6:4` (R3) |
+| the `Grid`'s own explicit dictionary | its declaration, `…#L18:5` (R3, initializer path) |
+| merged **code-defined** subclass | the declaring markup, `…#L8:6` (R5 fallback) |
+| merged **`x:Class`** subclass | `Subclassed_Dictionary.xaml`, *not* this file (R5 precedence) |
+| merged dictionary from a `Source` | not attributed to this file (non-goal) |
+| `Application.Current.Resources` | `App.xaml` (R3 for `Application`) |
+
+The exact line:column expectations are deliberate: they are what catches a stamp landing on the
+wrong element, which the snapshot tests cannot distinguish from a correct one.
 
 Regression guard: the whole `Uno.UI.SourceGenerators.Tests` suite must stay green — a changed
 snapshot in a non-Hot-Reload test would be an R4 violation.
 
 ## Validation performed
 
-- **Compile** — `dotnet build src/Uno.UI.UnitTests/Uno.UI.UnitTests.csproj -c Debug
-  -p:UnoForceHotReloadCodeGen=true -p:EmitCompilerGeneratedFiles=true`: succeeded, 0 warnings /
-  0 errors. The emitted `App_*.cs` contains
-  `MarkupHelper.SetElementProperty(Resources, "OriginalSourceLocation", "…/App/App.xaml#L12:4")`,
-  proving R3 for `Application` generates valid code.
-- **Generator tests** — `dotnet test --project src/SourceGenerators/Uno.UI.SourceGenerators.Tests/…`:
-  484 total, 470 passed, 14 skipped (pre-existing `Assert.Inconclusive` cases tracked by
-  [#24085](https://github.com/unoplatform/uno/pull/24085)), 0 failed.
-- **Runtime** — `dotnet test --project src/Uno.UI.UnitTests/… -p:UnoForceHotReloadCodeGen=true`
-  (which materializes the app dictionaries, merged and themed, through the new emissions):
-  3949 passed / 137 failed / 23 skipped, and the 137 failures are **byte-identical** to the
-  baseline captured with this change stashed (Linux-only path/UNC/case-sensitivity expectations).
-- **Runtime, R5 in particular** — a throwaway page in `Uno.UI.UnitTests` merging a code-defined
-  subclass and the project's `x:Class` `Subclassed_Dictionary`, dumping
-  `MarkupHelper.GetElementProperty<string>(d, "OriginalSourceLocation")` for each dictionary:
-
-  | Dictionary | Location read back |
-  |---|---|
-  | the page's `<Page.Resources><ResourceDictionary>` | `Temp_SourceLocation.xaml#L6:4` (R3) |
-  | merged **code-defined** subclass | `Temp_SourceLocation.xaml#L8:6` — the declaring line (R5) |
-  | merged **`x:Class`** subclass | `Subclassed_Dictionary.xaml#L1:2` — **its own** file, not the use site (R5 guard) |
-  | `Test_Page_Other`'s `Resources = new Subclassed_Dictionary()` | `Subclassed_Dictionary.xaml#L1:2` |
-  | `Application.Current.Resources` | `App/App.xaml#L12:4` (R3) |
+- **Generator tests** — 486 total, 472 passed, 14 skipped (pre-existing `Assert.Inconclusive` cases
+  tracked by [#24085](https://github.com/unoplatform/uno/pull/24085)), 0 failed. Regenerating the
+  snapshots after the R1–R5 fixes changed **no** pre-existing golden other than
+  `ResourceDictionaryCodeBehind`.
+- **Runtime** — `dotnet test --project src/Uno.UI.UnitTests/…`: 4114 total, 3954 passed, 23 skipped,
+  including the six new assertions above. The 137 failures are **byte-identical** to the baseline
+  captured with this change stashed (Linux-only path/UNC/case-sensitivity expectations).
+- **Compile** — the same project also compiles `App/App.xaml`, whose
+  `<Application.Resources><ResourceDictionary>` exercises R3 for `Application` and whose merged
+  `x:Class` dictionaries exercise R5: 0 warnings / 0 errors.
 
 ## Implementation
 
-`src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs` only:
+All of the production change is in
+`src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs`:
 
 | Change | Requirement |
 |---|---|
 | `InitializeAndBuildResourceDictionary`: apply block + `TrySetOriginalSourceLocation` after the initializer | R1 |
 | `BuildTopLevelResourceDictionary`: `TrySetOriginalSourceLocation` on the `CreateWithCapacity` field | R2 |
-| `BuildExtendedProperties`: stamp `<applied>.Resources` from `FindResourcesDictionaryDeclaration` | R3 |
+| `BuildExtendedProperties`: stamp `<applied>.Resources`, gated on `isFrameworkElement`, from `FindResourcesMember` | R3 |
 | `BuildApplicationInitializerBody`: same, on `Resources` | R3 |
-| new `FindResourcesDictionaryDeclaration` helper (explicit `<ResourceDictionary>`, no `Source`) | R3 |
 | `BuildTypedResourceDictionary`: apply block + set-if-absent stamp | R5 |
 | `TrySetOriginalSourceLocation`: `preserveExisting` option, emitting the `GetElementProperty … is null` guard | R5 |
+| new `ResourcesMember` record + `FindResourcesMember`, which `RegisterAndBuildResources` now emits from and the R3 stamps read | R3 |
+| `FileUri` / `FileUriLiteral` / `GetSourceLocationLiteral`: the emitted URIs go through `SymbolDisplay.FormatLiteral` | R1–R5, `SetBaseUri` |

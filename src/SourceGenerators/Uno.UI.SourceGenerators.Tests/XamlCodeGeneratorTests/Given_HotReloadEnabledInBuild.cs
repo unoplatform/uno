@@ -543,4 +543,56 @@ public class Given_HotReloadEnabledInBuild
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task SetOriginalSourceLocationNotSetForResourcesFromSource()
+	{
+		// The dictionary the page ends up with is the one of the referenced file, so nothing of this file
+		// may be stamped on it: the second declaration below must not be mistaken for the page's own.
+		var xamlFile = new XamlFile("MainPage.xaml", """
+			<Page x:Class="TestRepro.MainPage"
+			      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			      xmlns:local="using:TestRepro">
+			  <Page.Resources>
+			    <ResourceDictionary Source="ms-appx:///TestProject/0/OtherDictionary.xaml" />
+			    <ResourceDictionary>
+			      <x:Double x:Key="NotThePageDictionary">1</x:Double>
+			    </ResourceDictionary>
+			  </Page.Resources>
+			  <Grid />
+			</Page>
+			""");
+
+		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Microsoft.UI.Xaml;
+					using Microsoft.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+					}
+					"""
+				}
+			},
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
+			GlobalConfigOverride = configOverride,
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }
