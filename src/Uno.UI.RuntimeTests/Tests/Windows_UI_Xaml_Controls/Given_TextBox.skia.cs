@@ -5526,6 +5526,377 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsFalse((SUT.SelectionFlyout as TextCommandBarFlyout)?.IsOpen == true, "a single tap must not open the selection flyout");
 		}
 
+		#region A touch-selected TextBox must not lock its enclosing ScrollViewer
+
+		// A TextBox parked in the middle of a tall scrollable form. There is filler above it (so it can be scrolled
+		// down to the viewport's bottom edge) and much more below (so it can be scrolled entirely out of view), plus
+		// room below the box to start a drag without the finger ever touching the box itself.
+		private static (ScrollViewer scrollViewer, TextBox textBox) CreateScrollableForm(
+			string text,
+			TextBox.TouchTextSelectionConvention convention,
+			double fillerAbove = 120)
+		{
+			var textBox = new TextBox
+			{
+				Width = 280,
+				Height = 40,
+				Text = text,
+				TouchSelectionConvention = convention,
+			};
+
+			var scrollViewer = new ScrollViewer
+			{
+				Width = 320,
+				Height = 300,
+				Content = new StackPanel
+				{
+					Children =
+					{
+						// Transparent (not null) so the filler hit-tests: the scroll drags start on it.
+						new Border { Height = fillerAbove, Background = new SolidColorBrush(Colors.Transparent) },
+						textBox,
+						new Border { Height = 1200, Background = new SolidColorBrush(Colors.Transparent) },
+					}
+				}
+			};
+
+			return (scrollViewer, textBox);
+		}
+
+		private static bool IsGripperShowing(TextBox textBox)
+			=> textBox.VisibleGrippersForTesting is { } grippers && grippers.end.IsShowing;
+
+		// With a touch caret live in a TextBox (the Android insertion handle, or a full selection), an enclosing
+		// ScrollViewer used to refuse to scroll away from it: ScrollViewer.ClampOffsetsToFocusedTextBox rewrote the
+		// offset back onto the TextBox after every scroll and discarded touch inertia outright. The defect that
+		// clamp was working around - grippers still painting after the TextBox scrolled out of view - is now
+		// handled where it belongs, by culling them against the ancestor-clipped bounds
+		// (TextSelectionGripperPresenter.Update), so the scroll lock is gone.
+		private static async Task AssertTouchCaretDoesNotLockScrollViewer(
+			string text,
+			TextBox.TouchTextSelectionConvention convention,
+			TextBox.CaretDisplayMode expectedCaret,
+			bool doubleTap,
+			bool flick)
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			var (scrollViewer, SUT) = CreateScrollableForm(text, convention);
+			await UITestHelper.Load(scrollViewer);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			var tapPoint = SUT.GetAbsoluteBoundsRect().GetCenter();
+			finger.Press(tapPoint);
+			finger.Release();
+			if (doubleTap)
+			{
+				finger.Press(tapPoint);
+				finger.Release();
+			}
+
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == expectedCaret,
+				message: $"the {convention} touch gesture should leave the caret in {expectedCaret} - the mode that used to arm the scroll lock");
+
+			// Past the multi-tap window, so the drag that follows is not folded into the tap gesture.
+			await Task.Delay(600);
+
+			// A double-tap also pops the selection toolbar, and its light-dismiss overlay would swallow the drag
+			// below instead of letting it reach the ScrollViewer. On a device the first drag simply dismisses it;
+			// dismiss it here (after its dispatched open has run) so a single drag can be asserted on.
+			SUT.SelectionFlyout?.Hide();
+			await WindowHelper.WaitForIdle();
+
+			// Drag upwards on the filler below the box: the form scrolls down and the TextBox leaves the viewport.
+			var svBounds = scrollViewer.GetAbsoluteBoundsRect();
+			var from = new Point(svBounds.GetCenter().X, svBounds.Bottom - 30);
+			var to = new Point(svBounds.GetCenter().X, svBounds.Bottom - 230);
+			if (flick)
+			{
+				// A fast flick goes down the inertia path in ScrollContentPresenter, which the lock used to hijack
+				// (CompleteGesture + a clamped projected end offset) instead of letting inertia run.
+				finger.Drag(from, to, steps: 4, stepOffsetInMilliseconds: 1);
+			}
+			else
+			{
+				finger.Drag(from, to);
+			}
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsGreaterThan(100d, scrollViewer.VerticalOffset, "the drag should have scrolled the form down");
+
+			// The lock fired from a timer armed on scroll-end (FeatureConfiguration.ScrollViewer.SnapDelay, 250ms by
+			// default), so give it more than that to yank the offset back before asserting it stayed put.
+			await Task.Delay(FeatureConfiguration.ScrollViewer.SnapDelay + TimeSpan.FromMilliseconds(750));
+			await WindowHelper.WaitForIdle();
+
+			// Asserting on where the box ended up rather than on an offset threshold: the clamp's target was the
+			// TextBox's own offset inside the content (CreateScrollableForm's fillerAbove), which clears any threshold
+			// low enough to be safe. What the lock did was put the box back against the viewport edge, so requiring it
+			// to be fully outside the viewport is what discriminates.
+			var boxBounds = SUT.GetAbsoluteBoundsRect();
+			var viewport = scrollViewer.GetAbsoluteBoundsRect();
+			Assert.IsTrue(
+				boxBounds.Bottom <= viewport.Top || boxBounds.Top >= viewport.Bottom,
+				$"the ScrollViewer must not scroll back to the focused TextBox (box {boxBounds}, viewport {viewport})");
+			Assert.AreEqual(expectedCaret, SUT.CaretMode, "scrolling away must not disturb the touch caret");
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // mobile conventions: run on Desktop (dev) + real Android only
+		public Task When_Touch_Tap_Does_Not_Lock_ScrollViewer_Android()
+			=> AssertTouchCaretDoesNotLockScrollViewer(
+				"Some Text",
+				TextBox.TouchTextSelectionConvention.Android,
+				TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				doubleTap: false,
+				flick: false);
+
+		// The empty-field variant only started reaching the lock once an empty box stopped swallowing the tap: it
+		// now places the Android insertion handle like a filled one, which is what used to arm the clamp.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public Task When_Touch_Tap_Empty_Does_Not_Lock_ScrollViewer_Android()
+			=> AssertTouchCaretDoesNotLockScrollViewer(
+				"",
+				TextBox.TouchTextSelectionConvention.Android,
+				TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				doubleTap: false,
+				flick: false);
+
+		// Both conventions reach the two-thumb mode through double-tap-to-select-word, so this is the iOS repro too.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public Task When_Touch_Selection_Does_Not_Lock_ScrollViewer_Android()
+			=> AssertTouchCaretDoesNotLockScrollViewer(
+				"Some Text",
+				TextBox.TouchTextSelectionConvention.Android,
+				TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				doubleTap: true,
+				flick: false);
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public Task When_Touch_Selection_Does_Not_Lock_ScrollViewer_iOS()
+			=> AssertTouchCaretDoesNotLockScrollViewer(
+				"Some Text",
+				TextBox.TouchTextSelectionConvention.iOS,
+				TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				doubleTap: true,
+				flick: false);
+
+		// Guards the ScrollContentPresenter half of the lock: the timer test alone would still pass if inertia
+		// stayed hijacked.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public Task When_Touch_Selection_Flick_Does_Not_Lock_ScrollViewer_Android()
+			=> AssertTouchCaretDoesNotLockScrollViewer(
+				"Some Text",
+				TextBox.TouchTextSelectionConvention.Android,
+				TextBox.CaretDisplayMode.CaretWithThumbsBothEndsShowing,
+				doubleTap: true,
+				flick: true);
+
+		// The grippers live in a popup that no ScrollViewer clips, so they used to keep painting at their old screen
+		// position (over the app's status/nav bar) once the TextBox scrolled out of the viewport. They are now culled
+		// against the TextBox's ancestor-clipped bounds. This is what made removing the scroll lock safe, so it has
+		// to stay covered.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public async Task When_Scrolled_Out_Of_View_Grippers_Are_Hidden()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			var (scrollViewer, SUT) = CreateScrollableForm("Some Text", TextBox.TouchTextSelectionConvention.Android);
+			await UITestHelper.Load(scrollViewer);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitFor(() => IsGripperShowing(SUT), message: "the tap should show the insertion handle");
+
+			// Scroll the TextBox entirely above the viewport.
+			scrollViewer.ChangeView(null, 400, null, disableAnimation: true);
+			await WindowHelper.WaitFor(() => scrollViewer.VerticalOffset > 300, message: "the form should have scrolled");
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => !IsGripperShowing(SUT), timeoutMS: 5000, message: "the handle must be hidden once the TextBox is scrolled out of view");
+
+			scrollViewer.ChangeView(null, 0, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => IsGripperShowing(SUT), timeoutMS: 5000, message: "the handle must come back when the TextBox is scrolled back into view");
+		}
+
+		// The edge case that made handles paint over the system bars, and the reason culling tests the point the
+		// thumb hangs from rather than the caret line as a whole: a caret line straddling the viewport's edge is
+		// still (fractionally) visible, but its thumb - a full thumb-height below the line - paints entirely outside.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public async Task When_Caret_Line_Straddles_Viewport_Edge_Grippers_Are_Hidden()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			// Enough filler above the box that it can be parked anywhere in the viewport, bottom edge included.
+			var (scrollViewer, SUT) = CreateScrollableForm("Some Text", TextBox.TouchTextSelectionConvention.Android, fillerAbove: 400);
+			await UITestHelper.Load(scrollViewer);
+
+			scrollViewer.ChangeView(null, 200, null, disableAnimation: true);
+			await WindowHelper.WaitFor(() => scrollViewer.VerticalOffset > 190, message: "the form should have scrolled the box into view");
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
+			finger.Release();
+			await WindowHelper.WaitFor(() => IsGripperShowing(SUT), message: "the tap should show the insertion handle");
+			await WindowHelper.WaitForIdle();
+
+			// The gripper spans the caret line plus the thumb below it, so it hangs from
+			// (gripper bottom - ThumbSize) - that is the point that has to stay inside the viewport.
+			var gripper = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect();
+			var thumbAnchorY = gripper.Bottom - CaretWithStemAndThumb.ThumbSize;
+			var viewportBottom = scrollViewer.GetAbsoluteBoundsRect().Bottom;
+
+			// Scrolling up by this much would put the anchor exactly on the viewport's bottom edge.
+			var offsetAtEdge = scrollViewer.VerticalOffset - (viewportBottom - thumbAnchorY);
+
+			// A few px short of the edge: the anchor is still inside, so the handle stays up. Waiting on the gripper's
+			// own reported position, not just on idle: WaitForIdle pumps the dispatcher without necessarily producing a
+			// rendered frame, and both the reposition and the culling only happen in the per-frame Update.
+			var gripperTopBefore = SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect().Top;
+			scrollViewer.ChangeView(null, offsetAtEdge + 6, null, disableAnimation: true);
+			await WindowHelper.WaitFor(
+				() => SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect().Top != gripperTopBefore,
+				timeoutMS: 5000,
+				message: "the scroll should have repositioned the handle");
+			Assert.IsTrue(IsGripperShowing(SUT), "the handle should still show while the point it hangs from is inside the viewport");
+
+			// The band just below the viewport is where a thumb hanging from an anchor on the edge lands - the
+			// accepted sub-thumb-height overhang. Asserting on that ink is what makes the cull below meaningful:
+			// IsShowing alone is the very flag Cull sets, so it cannot tell us the thumb stopped painting.
+			var root = (FrameworkElement)WindowHelper.XamlRoot.VisualTree.RootElement;
+			var svBounds = scrollViewer.GetAbsoluteBoundsRect();
+			var bandBelowViewport = new Rectangle(
+				(int)svBounds.Left,
+				(int)svBounds.Bottom + 1,
+				(int)svBounds.Width,
+				(int)CaretWithStemAndThumb.ThumbSize);
+			ImageAssert.HasColorInRectangle(
+				await UITestHelper.ScreenShot(root),
+				bandBelowViewport,
+				CaretWithStemAndThumb.ThumbFillColor,
+				tolerance: 20);
+
+			// A few px past it and the thumb would hang entirely below the viewport, over whatever is painted there.
+			scrollViewer.ChangeView(null, offsetAtEdge - 6, null, disableAnimation: true);
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => !IsGripperShowing(SUT), timeoutMS: 5000, message: "the handle must be hidden once the point it hangs from leaves the viewport");
+
+			ImageAssert.DoesNotHaveColorInRectangle(
+				await UITestHelper.ScreenShot(root),
+				bandBelowViewport,
+				CaretWithStemAndThumb.ThumbFillColor,
+				tolerance: 20);
+		}
+
+		// The other half of the culling contract: a gripper the finger is holding must NOT be culled when its
+		// anchor crosses the clip edge. Cull() collapses the gripper, and collapsing an element releases its
+		// pointer captures, so culling mid-drag used to abort the gesture - the caret froze on the last line that
+		// was still inside the viewport and the remaining finger movement went nowhere.
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
+		public async Task When_Gripper_Dragged_Past_Viewport_Edge_Drag_Keeps_Tracking()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			using var __ = new DisposableAction(() =>
+				(VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot)).ForEach((_, p) => p.IsOpen = false));
+
+			// A multi-line box taller than its own text - so its inner ScrollViewer never scrolls and nothing
+			// chases the caret - inside a ScrollViewer far too short to show all of it: the lower lines are
+			// clipped away, and dragging the handle onto one of them crosses the clip edge.
+			var SUT = new TextBox
+			{
+				Width = 280,
+				Height = 400,
+				AcceptsReturn = true,
+				Text = string.Join("\r", Enumerable.Range(1, 10).Select(i => $"Line {i}")),
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android,
+			};
+
+			var scrollViewer = new ScrollViewer
+			{
+				Width = 320,
+				Height = 150,
+				Content = new StackPanel { Children = { SUT } }
+			};
+			await UITestHelper.Load(scrollViewer);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			// Tap the first line to place the Android insertion handle on it.
+			var boxBounds = SUT.GetAbsoluteBoundsRect();
+			finger.Press(new Point(boxBounds.Left + 20, boxBounds.Top + 8));
+			finger.Release();
+			await WindowHelper.WaitFor(() => IsGripperShowing(SUT), message: "the tap should show the insertion handle");
+
+			// The handle's popup is placed on a later frame, so wait until it is actually over the box before
+			// pressing it - otherwise the press misses and the drag is a no-op.
+			await WindowHelper.WaitFor(
+				() => SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect() is { Width: > 0 } g
+					&& g.Top < scrollViewer.GetAbsoluteBoundsRect().Bottom,
+				timeoutMS: 3000,
+				message: "the insertion handle should be positioned before dragging it");
+
+			// Past the multi-tap window, so the drag that follows is its own gesture.
+			await Task.Delay(600);
+
+			// Small steps on purpose: one of them lands the caret on the first line below the viewport, which is the
+			// step that used to cull the gripper and drop its capture. A single big move would sample the last line
+			// in one go (sampleY is clamped to the text's span) and pass either way.
+			// The real delay matters as much as the step size - culling only happens in the per-frame Update, and
+			// WaitForIdle pumps the dispatcher without necessarily producing a rendered frame, so back-to-back
+			// injected moves never give culling a chance to run at all.
+			finger.Press(SUT.VisibleGrippersForTesting!.Value.end.GetAbsoluteBoundsRect().GetCenter());
+			for (var i = 0; i < 8; i++)
+			{
+				finger.MoveBy(0, 30, stepOffsetInMilliseconds: 10);
+				await Task.Delay(60);
+				await WindowHelper.WaitForIdle();
+			}
+
+			Assert.IsTrue(IsGripperShowing(SUT), "the handle must stay up while the finger is still holding it");
+
+			var caretAtEndOfDrag = SUT.SelectionStart;
+			finger.Release();
+			await WindowHelper.WaitForIdle();
+
+			// The finger ended below every line, so the caret must have tracked all the way to the last one.
+			var lastLineStart = SUT.Text.LastIndexOf('\r') + 1;
+			Assert.IsGreaterThan(1, lastLineStart, "premise: the TextBox must hold several lines");
+			Assert.IsTrue(
+				caretAtEndOfDrag >= lastLineStart,
+				$"the drag must keep tracking the finger after the handle's anchor leaves the viewport (the caret ended at {caretAtEndOfDrag}, the last line starts at {lastLineStart})");
+
+			// The premise: nothing scrolled the form to follow the caret, so the anchor really did cross the clip.
+			Assert.AreEqual(0d, scrollViewer.VerticalOffset, "the form must not have scrolled to chase the caret");
+
+			// And once the finger is off, the handle is culled again - it now points below the viewport.
+			await WindowHelper.WaitFor(() => !IsGripperShowing(SUT), timeoutMS: 5000, message: "the handle must be culled again once the drag ends below the viewport");
+		}
+
+		#endregion
+
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // mobile conventions: run on Desktop (dev) + real Android only
 		public Task When_Touch_DoubleTap_Empty_Opens_Flyout_Android()
@@ -6531,14 +6902,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.PointerCaptures?.Count ?? 0, "the caret-drag pointer capture must be released on release");
 		}
 
+		// Was When_Touch_Focused_Then_Scrolled_Away, which asserted that a touch-focused TextBox stayed pinned
+		// inside its ScrollViewer. That lock is gone - it left forms the user could not scroll away from - so the
+		// same scenario now asserts the opposite. What the lock was really working around, grippers left painting
+		// over whatever the TextBox scrolled onto, is handled by culling them instead; see
+		// When_Scrolled_Out_Of_View_Grippers_Are_Hidden.
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/753")]
-		public async Task When_Touch_Focused_Then_Scrolled_Away()
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // mobile conventions: run on Desktop (dev) + real Android only
+		public async Task When_Touch_Focused_Then_Scrolled_Away_The_Scroll_Sticks()
 		{
 			var SUT = new TextBox
 			{
 				Width = 400,
-				Text = "Some Text"
+				Text = "Some Text",
+				// Pinned instead of left to the platform default, so every target reaches the same state: on the
+				// Android convention a single tap leaves the insertion handle up, where iOS leaves a thumbless caret
+				// and Desktop selects the tapped word. The handle is the state the removed scroll lock keyed on.
+				TouchSelectionConvention = TextBox.TouchTextSelectionConvention.Android
 			};
 
 			var sv = new ScrollViewer()
@@ -6570,28 +6951,63 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var finger = injector.GetFinger();
 
-			SUT.StartBringIntoView();
+			// Park the box in the viewport with an explicit offset instead of a bring-into-view, and bound it on both
+			// sides: past 500 the box would be pushed off the top of the viewport and the geometry below stops holding.
+			sv.ChangeView(null, 470, null, disableAnimation: true);
+			await WindowHelper.WaitFor(
+				() => sv.VerticalOffset is > 400 and < 490,
+				message: "the TextBox should be parked inside the viewport before it is tapped");
 			await UITestHelper.WaitForIdle(true);
 
-			// make the textbox touch knob appear
+			// One tap, not two. A second tap selects the word and pops the selection flyout, and then the scroll
+			// gesture below has nowhere to land: the flyout's light-dismiss overlay fills the window, so a press on
+			// it is consumed dismissing the flyout instead of scrolling, and the toolbar itself is placed above the
+			// selection, overlapping the viewport - a press there goes to its buttons. Both are correct behaviour;
+			// they just cost the gesture this test needs.
 			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
 			finger.Release();
-			await UITestHelper.WaitForIdle(true);
-			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
-			finger.Release();
+			await WindowHelper.WaitFor(
+				() => SUT.CaretMode == TextBox.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
+				message: "the tap should leave the insertion handle up");
 			await UITestHelper.WaitForIdle(true);
 
-			// scroll
-			finger.Press(sv.GetAbsoluteBoundsRect().GetCenter());
+			// Premises spelled out rather than left to a mute "the offset did not move": the touch conventions can
+			// only be observed on CI, so each half of the scenario has to say when it is the one that broke.
+			Assert.AreNotEqual(FocusState.Unfocused, SUT.FocusState, "the tap should have focused the TextBox");
+			Assert.AreEqual(0, SUT.SelectionLength, "the tap should leave a caret, not a selection");
+			Assert.IsFalse(
+				SUT.SelectionFlyout?.IsOpen is true,
+				"the selection flyout must not be up - the scroll gesture would go to it instead of the ScrollViewer");
+
+			// Drag the filler above the box rather than the box itself, so the gesture is unambiguously a scroll
+			// and not a text gesture on any target.
+			var viewport = sv.GetAbsoluteBoundsRect();
+			var dragStart = new Point(viewport.GetCenter().X, (viewport.Top + SUT.GetAbsoluteBoundsRect().Top) / 2);
+
+			var offsetBeforeScroll = sv.VerticalOffset;
+			finger.Press(dragStart);
 			await UITestHelper.WaitForIdle(true);
 			finger.MoveBy(0, 300, stepOffsetInMilliseconds: 20);
 			await UITestHelper.WaitForIdle(true);
 			finger.Release();
 			await UITestHelper.WaitForIdle(true);
 
+			// Long enough to cover the scroll-end snap timer the old lock used to yank the offset back with.
 			await Task.Delay(TimeSpan.FromSeconds(2));
 
-			SUT.GetAbsoluteBoundsRect().Bottom.Should().BeApproximately(sv.GetAbsoluteBoundsRect().Bottom, 5);
+			Assert.IsGreaterThan(
+				200d,
+				offsetBeforeScroll - sv.VerticalOffset,
+				$"the scroll the user performed must stick (offset {offsetBeforeScroll} -> {sv.VerticalOffset}, "
+				+ $"caret {SUT.CaretMode}, selection {SUT.SelectionStart}/{SUT.SelectionLength}, "
+				+ $"flyout {SUT.SelectionFlyout?.IsOpen}, dragged from {dragStart} in {viewport})");
+
+			// Spelled out rather than an IsGreaterThan whose argument order reads backwards: the box must have left
+			// the viewport entirely, which is exactly what the old pin prevented.
+			var boxBounds = SUT.GetAbsoluteBoundsRect();
+			Assert.IsTrue(
+				boxBounds.Top >= viewport.Bottom,
+				$"the focused TextBox must be allowed to leave the viewport (box {boxBounds}, viewport {viewport})");
 		}
 
 		[TestMethod]
