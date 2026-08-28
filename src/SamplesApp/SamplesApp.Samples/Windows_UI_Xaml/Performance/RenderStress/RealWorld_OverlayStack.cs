@@ -1,6 +1,5 @@
 #nullable enable
 
-using System;
 using System.Collections.Generic;
 using Windows.UI;
 using Microsoft.UI.Xaml;
@@ -140,20 +139,15 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 
 		protected override void Tick(long frame)
 		{
-			// Scroll the base list so the viewport is dirty every frame (all panes must therefore be
-			// re-composited), and sweep each pane's gradient so the per-pixel shader work is genuinely redone
-			// rather than served from a cached layer. Neither touches layout or invalidates a shadow silhouette.
+			// Scroll only, so the panes are re-RASTERIZED without being re-RECORDED.
+			//
+			// An earlier version swept each pane's gradient endpoints per frame. That is redundant — the sample
+			// is meant to be run with damage disabled, which already repaints the full viewport every frame —
+			// and it was actively harmful: mutating a brush invalidates that pane's recorded geometry, which
+			// measured as 28 arena rebuilds per frame (one per pane) and ~5ms/frame of ops rebuilding in the
+			// WebGPU backend, i.e. CPU cost masquerading as fill rate. Keep the scene structurally frozen so the
+			// only per-frame work is pixels.
 			AdvanceScroll(_sv, ref _offset, ref _dir, 6.0);
-
-			var t = frame * 0.01;
-			for (var i = 0; i < _paneBrushes.Count; i++)
-			{
-				var phase = t + i * 0.09;
-				var dx = 0.5 + 0.5 * Math.Sin(phase);
-				var dy = 0.5 + 0.5 * Math.Cos(phase * 0.8);
-				_paneBrushes[i].StartPoint = new Windows.Foundation.Point(dx * 0.25, dy * 0.25);
-				_paneBrushes[i].EndPoint = new Windows.Foundation.Point(1 - dx * 0.25, 1 - dy * 0.25);
-			}
 		}
 	}
 }
