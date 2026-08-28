@@ -31,8 +31,12 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 
 		protected override string ScenarioName => "CardVeil";
 
-		/// <summary>Number of translucent cards. Each visible one is its own isolation layer.</summary>
-		protected override int DefaultCount => 240;
+		/// <summary>
+		/// Number of translucent cards. Each visible one is its own isolation layer. Kept modest on purpose:
+		/// the panel is not virtualized, so a large count turns this into a layout benchmark (at 240 it measured
+		/// ~28ms record and ~28ms layout, swamping the per-layer draw cost it exists to isolate).
+		/// </summary>
+		protected override int DefaultCount => 90;
 
 		protected override UIElement BuildStage(int count)
 		{
