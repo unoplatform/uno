@@ -89,6 +89,24 @@ the owner's `Resources` is *replaced* by the referenced file's shared dictionary
 merely looked for a `Source`-less dictionary element would stamp that shared instance with this
 file's location.
 
+**Exactly one generated file ever writes a dictionary's location** — R3 is therefore an
+unconditional write, unlike R5. The dictionary reached as `<applied>.Resources` is created by the
+owner (`FrameworkElement.Resources`' getter, or `Application`'s) and populated only by the file that
+declares it, and the two `Resources`-targeting emissions are mutually exclusive by construction:
+`BuildApplicationInitializerBody` runs only for an `Application` root, while the
+`BuildExtendedProperties` one is gated on `isFrameworkElement`, and `Application` is not one. Two
+distinct objects are never the same instance, and the stamp runs during the owner's construction —
+before any code could alias one element's dictionary onto another. The framework agrees that a
+dictionary has a single owner: `FrameworkElement.Resources`' setter calls `SetResourceOwner(this)`,
+re-owning whatever it is handed. The runtime XAML reader's `Resources` assignment
+(`XamlObjectBuilder`) hands over a dictionary it just loaded, and stamps nothing.
+
+The one case where the same instance is written twice is the **same** file re-stamping after a Hot
+Reload update, with the declaration's current line — which is why the write must stay unconditional:
+a set-if-absent guard there would pin the first location and leave it stale once an edit moves the
+declaration. A shared instance can never be reached: a dictionary from a `Source` or a typed subclass
+is excluded below, and those instances are stamped by the file that declares them.
+
 Not stamped, as a consequence of using that one decision:
 
 - a `Resources` member with no explicit `<ResourceDictionary>` element
