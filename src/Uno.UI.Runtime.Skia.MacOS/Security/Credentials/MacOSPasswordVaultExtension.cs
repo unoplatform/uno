@@ -11,9 +11,12 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 internal sealed class MacOSPasswordVaultExtension : IPasswordVaultExtension
 {
 	private const int Success = 0;
+	private const int UserCanceled = -128;
+	private const int NotAvailable = -25291;
+	private const int AuthFailed = -25293;
 	private const int ItemNotFound = -25300;
 	private const int InteractionNotAllowed = -25308;
-	private const int AuthFailed = -25293;
+	private const int InteractionRequired = -25315;
 	private const int MissingEntitlement = -34018;
 
 	private readonly string _scope = Package.Current.Id.Name;
@@ -75,7 +78,10 @@ internal sealed class MacOSPasswordVaultExtension : IPasswordVaultExtension
 		var reason = status switch
 		{
 			MissingEntitlement => "The app is not entitled to access the macOS Keychain.",
+			NotAvailable => "No macOS Keychain is available to the current session.",
 			InteractionNotAllowed => "The macOS Keychain is locked or cannot display an authentication prompt.",
+			InteractionRequired => "The macOS Keychain requires user interaction that the app cannot show.",
+			UserCanceled => "The macOS Keychain prompt was cancelled.",
 			AuthFailed => "The macOS Keychain rejected authentication.",
 			_ => $"The macOS Keychain returned OSStatus {status}."
 		};

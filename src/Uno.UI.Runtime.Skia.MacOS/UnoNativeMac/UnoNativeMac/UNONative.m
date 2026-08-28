@@ -202,6 +202,11 @@ int32_t uno_password_vault_read(const char* scope, uint8_t* _Nullable * _Nonnull
     *length = 0;
 
     NSString* account = [NSString stringWithUTF8String:scope];
+    if (account == nil)
+    {
+        return errSecParam;
+    }
+
     NSData* value = nil;
     OSStatus status = uno_password_vault_copy_data(uno_password_vault_query(account), &value);
 
@@ -238,8 +243,13 @@ int32_t uno_password_vault_write(const char* scope, const uint8_t* data, int32_t
     }
 
     NSString* account = [NSString stringWithUTF8String:scope];
+    if (account == nil)
+    {
+        return errSecParam;
+    }
+
     NSDictionary* query = uno_password_vault_query(account);
-    NSData* value = [NSData dataWithBytes:data length:(NSUInteger)length];
+    NSMutableData* value = [NSMutableData dataWithBytes:data length:(NSUInteger)length];
     NSDictionary* update = @{
         (__bridge id)kSecValueData: value
     };
@@ -252,6 +262,12 @@ int32_t uno_password_vault_write(const char* scope, const uint8_t* data, int32_t
         NSMutableDictionary* item = [query mutableCopy];
         item[(__bridge id)kSecValueData] = value;
         status = SecItemAdd((__bridge CFDictionaryRef)item, NULL);
+    }
+
+    // The Keychain has its own copy now, so this staging buffer must not outlive the call.
+    if (value.length > 0)
+    {
+        memset_s(value.mutableBytes, value.length, 0, value.length);
     }
 
     return status;

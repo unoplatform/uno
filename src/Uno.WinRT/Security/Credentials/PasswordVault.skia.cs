@@ -36,6 +36,9 @@ partial class PasswordVault
 
 	private sealed class SkiaPersister : IPersister, ISynchronizedPersister
 	{
+		private const int LockAttempts = 100;
+		private const int LockRetryDelayMs = 50;
+
 		private readonly IPasswordVaultExtension _extension;
 
 		public SkiaPersister(IPasswordVaultExtension extension)
@@ -48,11 +51,7 @@ partial class PasswordVault
 			{
 				data = _extension.Read();
 			}
-			catch (Exception error) when (
-				error is InvalidOperationException
-					or PlatformNotSupportedException
-					or DllNotFoundException
-					or EntryPointNotFoundException)
+			catch (Exception error) when (IsStoreFailure(error))
 			{
 				throw new PasswordVaultUnavailableException(
 					"The platform credential store could not be read.",
@@ -73,7 +72,7 @@ partial class PasswordVault
 		{
 			var stream = new MemoryStream();
 			outputStream = stream;
-			return new WriteTransaction(onCommit: Commit);
+			return new WriteTransaction(onCommit: Commit, onComplete: _ => Scrub());
 
 			void Commit()
 			{
@@ -82,11 +81,7 @@ partial class PasswordVault
 				{
 					_extension.Write(data);
 				}
-				catch (Exception error) when (
-					error is InvalidOperationException
-						or PlatformNotSupportedException
-						or DllNotFoundException
-						or EntryPointNotFoundException)
+				catch (Exception error) when (IsStoreFailure(error))
 				{
 					throw new PasswordVaultUnavailableException(
 						"The platform credential store could not be written.",
@@ -95,9 +90,11 @@ partial class PasswordVault
 				finally
 				{
 					CryptographicOperations.ZeroMemory(data);
-					CryptographicOperations.ZeroMemory(stream.GetBuffer());
+					Scrub();
 				}
 			}
+
+			void Scrub() => CryptographicOperations.ZeroMemory(stream.GetBuffer());
 		}
 
 		public IDisposable AcquireLock()
@@ -105,7 +102,8 @@ partial class PasswordVault
 			var lockPath = Path.Combine(
 				ApplicationData.Current.LocalFolder.Path,
 				".password-vault.lock");
-			for (var attempt = 0; ; attempt++)
+			IOException? lastError = null;
+			for (var attempt = 0; attempt < LockAttempts; attempt++)
 			{
 				try
 				{
@@ -115,12 +113,26 @@ partial class PasswordVault
 						FileAccess.ReadWrite,
 						FileShare.None);
 				}
-				catch (IOException) when (attempt < 100)
+				catch (IOException error)
 				{
-					Thread.Sleep(50);
+					lastError = error;
+					Thread.Sleep(LockRetryDelayMs);
 				}
 			}
+
+			throw new PasswordVaultUnavailableException(
+				"Another process kept the PasswordVault write lock for too long.",
+				lastError!);
 		}
+
+		// The vault fails closed when the native store misbehaves, but an already-wrapped
+		// failure must keep its original context instead of being nested again.
+		private static bool IsStoreFailure(Exception error)
+			=> error is not PasswordVaultUnavailableException
+				&& error is InvalidOperationException
+					or PlatformNotSupportedException
+					or DllNotFoundException
+					or EntryPointNotFoundException;
 	}
 
 	private sealed class ZeroingMemoryStream : MemoryStream

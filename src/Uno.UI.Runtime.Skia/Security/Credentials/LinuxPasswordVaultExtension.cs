@@ -50,7 +50,6 @@ internal sealed unsafe class LinuxPasswordVaultExtension : IPasswordVaultExtensi
 				0,
 				out error);
 			ThrowIfError(error, "search the Secret Service");
-			error = null;
 
 			if (results is null || results->Data == 0)
 			{
@@ -58,9 +57,11 @@ internal sealed unsafe class LinuxPasswordVaultExtension : IPasswordVaultExtensi
 			}
 
 			var item = (Native.SecretItem*)results->Data;
-			Native.secret_item_load_secret_sync(item, 0, out error);
-			ThrowIfError(error, "load the Secret Service item");
-			error = null;
+			if (!Native.secret_item_load_secret_sync(item, 0, out error))
+			{
+				ThrowIfError(error, "load the Secret Service item");
+				throw new InvalidOperationException("The Secret Service could not load the credential item.");
+			}
 
 			value = Native.secret_item_get_secret(item);
 			if (value is null)
@@ -144,7 +145,6 @@ internal sealed unsafe class LinuxPasswordVaultExtension : IPasswordVaultExtensi
 				0,
 				out error);
 			ThrowIfError(error, "write to the Secret Service");
-			error = null;
 			if (!stored)
 			{
 				throw new InvalidOperationException("PasswordVault could not write to the Secret Service.");
@@ -401,7 +401,8 @@ internal sealed unsafe class LinuxPasswordVaultExtension : IPasswordVaultExtensi
 			out GError* error);
 
 		[DllImport(LibSecret, CallingConvention = CallingConvention.Cdecl)]
-		internal static extern void secret_item_load_secret_sync(
+		[return: MarshalAs(UnmanagedType.Bool)]
+		internal static extern bool secret_item_load_secret_sync(
 			SecretItem* item,
 			nint cancellable,
 			out GError* error);
