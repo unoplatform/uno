@@ -437,6 +437,89 @@ public class Given_BackgroundTask
 		return $"taskId={taskId:N} directory={directory} files=[{files}]";
 	}
 
+	[TestMethod]
+	public void When_StoreIntervalIsBelowMinimum_Then_ReadThrows()
+	{
+		var path = CreateScratchStorePath();
+		try
+		{
+			BackgroundTaskRegistrationStore.WriteStore(
+				path,
+				[CreateRecord(new TimeTrigger(30, oneShot: false))]);
+			var bytes = File.ReadAllBytes(path);
+			var marker = BitConverter.GetBytes(30u);
+			var offset = FindSequence(bytes, marker);
+			Assert.IsTrue(offset >= 0, "Freshness time was not found in the store.");
+			BitConverter.GetBytes(1u).CopyTo(bytes, offset);
+			File.WriteAllBytes(path, bytes);
+
+			Assert.ThrowsExactly<InvalidDataException>(
+				() => BackgroundTaskRegistrationStore.ReadStore(path));
+		}
+		finally
+		{
+			DeleteScratchStore(path);
+		}
+	}
+
+	[TestMethod]
+	public void When_ProgressCannotBeWritten_Then_TaskStillSucceeds()
+	{
+		var registration = RegisterTask(oneShot: false, typeof(ProgressReportingTask));
+		var eventsDirectory = BackgroundTaskRegistrationStore.EventsDirectory;
+		if (Directory.Exists(eventsDirectory))
+		{
+			Directory.Delete(eventsDirectory, recursive: true);
+		}
+
+		// A file where the events directory belongs makes every event write fail.
+		File.WriteAllText(eventsDirectory, string.Empty);
+		try
+		{
+			Assert.AreEqual(0, BackgroundTaskRunner.Run(registration.TaskId));
+		}
+		finally
+		{
+			File.Delete(eventsDirectory);
+			registration.Unregister(cancelTask: true);
+		}
+	}
+
+	private static int FindSequence(byte[] source, byte[] value)
+	{
+		for (var index = 0; index <= source.Length - value.Length; index++)
+		{
+			var found = true;
+			for (var offset = 0; offset < value.Length; offset++)
+			{
+				if (source[index + offset] != value[offset])
+				{
+					found = false;
+					break;
+				}
+			}
+
+			if (found)
+			{
+				return index;
+			}
+		}
+
+		return -1;
+	}
+
+	private static BackgroundTaskRegistrationRecord CreateRecord(TimeTrigger trigger)
+		=> new()
+		{
+			TaskId = Guid.NewGuid(),
+			Name = "Interval",
+			TaskEntryPoint = typeof(DeferredTask).FullName!,
+			Trigger = trigger,
+			ExecutablePath = "/app",
+			ExecutableArguments = [],
+			WorkingDirectory = "/"
+		};
+
 	private static string CreateScratchStorePath()
 	{
 		var directory = Path.Combine(
@@ -461,11 +544,14 @@ public class Given_BackgroundTask
 	}
 
 	private static BackgroundTaskRegistration RegisterTask(bool oneShot)
+		=> RegisterTask(oneShot, typeof(DeferredTask));
+
+	private static BackgroundTaskRegistration RegisterTask(bool oneShot, Type entryPoint)
 	{
 		var builder = new BackgroundTaskBuilder
 		{
 			Name = "Unit test task",
-			TaskEntryPoint = typeof(DeferredTask).FullName!
+			TaskEntryPoint = entryPoint.FullName!
 		};
 		builder.SetTrigger(new TimeTrigger(15, oneShot));
 		return builder.Register();
