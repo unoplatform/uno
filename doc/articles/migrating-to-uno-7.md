@@ -567,6 +567,17 @@ recompile against 7.0 rather than swapping assemblies in place.
   + new GridLength(1.0, type: GridUnitType.Star)
   ```
 
+- **`Duration.TimeSpan` is a read-only property.** WinUI exposes it as get-only, so a
+  `Duration` carrying a time span comes from the constructor. Assigning the old field left
+  `Type` at its `Automatic` default, so `HasTimeSpan` stayed `false`; the constructor sets
+  both:
+
+  ```diff
+  - Duration d = default;
+  - d.TimeSpan = TimeSpan.FromSeconds(2);
+  + Duration d = new(TimeSpan.FromSeconds(2));
+  ```
+
 - **`DataTemplate.LoadContent()` returns `DependencyObject`.** WinUI's return type is
   `DependencyObject`, not `UIElement`. Pattern-matching call sites (`is FrameworkElement fe`,
   `as UIElement`) are unaffected; an explicitly typed local needs a cast:
