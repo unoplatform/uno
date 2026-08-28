@@ -324,6 +324,17 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 	internal List<WebGpuCommand> Commands = new();
 	internal WColor? ClearColor;
 	internal bool? Cacheable;   // memoized: all commands are simple primitives with no path clip
+	private bool? _hasNestedReplay;
+
+	/// <summary>True when this recording references another recording — used to bound container flattening to one level.</summary>
+	internal bool HasNestedReplay()
+	{
+		if (_hasNestedReplay is { } memo) { return memo; }
+		bool nested = false;
+		foreach (var c in Commands) { if (c is ReplayRefCmd) { nested = true; break; } }
+		_hasNestedReplay = nested;
+		return nested;
+	}
 	// Memoized command-list scans. These are pure functions of an immutable list but ran per replay per
 	// FRAME: ~450 replays/frame over lists of up to ~600 commands is hundreds of thousands of type checks.
 	internal bool? ReappendableMemo, ArenaSafeMemo, TableEligibleMemo;
@@ -957,7 +968,17 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		bool ok = d.Commands.Count > 0;
 		foreach (var c in d.Commands)
 		{
-			if (c is not (RectCommand or RoundedRectCmd or PathFill or ImageCmd or GradientCmd)) { ok = false; break; }
+			if (c is RectCommand or RoundedRectCmd or PathFill or ImageCmd or GradientCmd) { continue; }
+			// A container of LEAF children stays cacheable: the builders flatten it once (TransformFor with
+			// flatten) and it then replays as ONE unit that moves via its transform slot, instead of re-emitting
+			// a ReplayRefCmd per child every frame in the record phase (~1200/frame, ~5-10ms).
+			//
+			// Depth is bounded to ONE level on purpose. Allowing nested containers made every ancestor flatten
+			// its whole subtree — O(subtree) per ancestor — which regressed ChatList 5x and is why the previous
+			// attempt was reverted. A child that itself holds children is therefore disqualifying.
+			if (_flattenContainers && c is ReplayRefCmd child && child.Data is { } cd && !cd.HasNestedReplay()) { continue; }
+			ok = false;
+			break;
 		}
 		d.Cacheable = ok;
 		return ok;
@@ -966,14 +987,21 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 
 	// Transforms a recording's (simple) commands to device space under a transform+clip, for building its GPU
 	// cache. Uses the inline (always-transform) path so it never emits a nested ReplayRef.
-	internal static List<WebGpuCommand> TransformFor(List<WebGpuCommand> commands, Matrix4x4 transform, ClipData clip)
+	/// <param name="flatten">
+	/// Recurse into nested replays so the result is a flat primitive list. Cache builders pass true — they need
+	/// geometry, not references. The present-time frame transform passes false so top-level replays stay deferred.
+	/// </param>
+	internal static List<WebGpuCommand> TransformFor(List<WebGpuCommand> commands, Matrix4x4 transform, ClipData clip, bool flatten = false)
 	{
 		var rec = new WebGpuCommandRecorder();
 		rec._m = transform;
 		rec._clip = clip;
+		rec._flatten = flatten;
 		rec.ReplayInline(new WebGpuRenderRecord { Commands = commands });
 		return rec._data.Commands;
 	}
+
+	private bool _flatten;
 
 	// Retained sub-recordings (SKPicture equivalent) are recorded at identity; replaying one bakes in the target
 	// session's current matrix + clip. A cacheable recording is deferred as a ReplayRef capturing its immutable
@@ -1000,6 +1028,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	// Per-frame record-phase counters: a recording is only cacheable when EVERY command is a simple primitive, so
 	// one nested replay/layer/shadow anywhere forces the whole list to be re-transformed inline — reallocating a
 	// fan array per path fill (i.e. per glyph) every frame. Reset and reported by the backend's stats line.
+	internal static readonly bool _flattenContainers = Environment.GetEnvironmentVariable("UNO_WEBGPU_FLATTEN1") is "1";
 	internal static int StatCacheableReplays, StatInlineReplays, StatInlineCmds;
 
 	// Take a ref to every texture the nested recording references, so an outer frame keeps them alive as long as it can
@@ -1095,6 +1124,17 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					_target.Add(new BackdropCmd { Effect = bk.Effect, Opacity = bk.Opacity, Clip = ClipCompose(bk.Clip, T) });
 					break;
 				case ReplayRefCmd rr:
+					if (_flatten)
+					{
+						// Building a container's cache: inline the child under the composed transform/clip so the
+						// parent's geometry is a flat primitive list the builders can consume.
+						var savedM = _m; var savedClip = _clip;
+						_m = rr.Transform * _m;
+						_clip = ClipCompose(rr.Clip, T);
+						ReplayInline(new WebGpuRenderRecord { Commands = rr.Commands });
+						_m = savedM; _clip = savedClip;
+						break;
+					}
 					// Compose this replay's transform/clip onto the ref so the present still caches it.
 					_target.Add(new ReplayRefCmd { Data = rr.Data, Commands = rr.Commands, Transform = rr.Transform * _m, Clip = ClipCompose(rr.Clip, T) });
 					break;
@@ -2423,7 +2463,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			var fOwned = new OwnedResources();
 			var sv = new List<float>(); var rv = new List<float>(); var order = new List<FrameOp>();
 			var tmp = new List<DrawOp>();
-			var tcmds = WebGpuCommandRecorder.TransformFor(rr.Commands, Matrix4x4.Identity, ClipData.None);
+			var tcmds = WebGpuCommandRecorder.TransformFor(rr.Commands, Matrix4x4.Identity, ClipData.None, flatten: true);
 			// One stable slot shared by ALL of this recording's geometry (solids/rrects/path-fills): its local->NDC
 			// affine folds the replay transform + projection, rewritten per frame, so a move repositions everything.
 			int slot = (fe is not null && fe.XformSlot >= 0) ? fe.XformSlot : _d.AllocXformSlot();
@@ -2660,7 +2700,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								var sv = new List<float>(); var rv = new List<float>(); var order = new List<FrameOp>();
 								var tmp = new List<DrawOp>();
 								var tcmds = new List<WebGpuCommand>();
-								foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { tcmds.Add(tc); }
+								foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip, flatten: true)) { tcmds.Add(tc); }
 								// One stable transform-table slot for this recording's device-space path fills (reused on
 								// rebuild; transient for a repeat emission). Verts are final-device here, so the slot's entry
 								// is the pure device->NDC projection, rewritten per frame at emit.
@@ -2789,7 +2829,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								var aOwned = new OwnedResources();
 								var aOps = new List<DrawOp>();
 								var aList = new List<WebGpuCommand>();
-								foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, Matrix4x4.Identity, ClipData.None)) { aList.Add(tc); }
+								foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, Matrix4x4.Identity, ClipData.None, flatten: true)) { aList.Add(tc); }
 								bool aHasPath = false, aPure = aList.Count > 0; foreach (var c in aList) { if (c is PathFill) { aHasPath = true; } else { aPure = false; } }
 								if (aHasPath && aSlot < 0) { aSlot = _d.AllocXformSlot(); }
 								BuildCoalesced(aList, aOps, aOwned, aSlot);
@@ -2886,7 +2926,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							var owned = new OwnedResources();
 							var cachedOps = new List<DrawOp>();
 							var cList = new List<WebGpuCommand>();
-							foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { cList.Add(tc); }
+							foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip, flatten: true)) { cList.Add(tc); }
 							bool cHasPath = false; foreach (var c in cList) { if (c is PathFill) { cHasPath = true; break; } }
 							if (cHasPath && cSlot < 0) { cSlot = _d.AllocXformSlot(); }
 							BuildCoalesced(cList, cachedOps, owned, cSlot);
