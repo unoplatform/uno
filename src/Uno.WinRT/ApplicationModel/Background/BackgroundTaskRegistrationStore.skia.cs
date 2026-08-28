@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using Uno.Foundation.Logging;
 using Windows.Storage;
 
 namespace Windows.ApplicationModel.Background;
@@ -221,7 +222,16 @@ internal static class BackgroundTaskRegistrationStore
 
 	internal static BackgroundTaskEvent ReadEvent(string path)
 	{
-		using var stream = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+		// Retention trimming deletes events while a subscriber may still be reading them, so
+		// the reader must not block deletion.
+		using var stream = File.Open(
+			path,
+			new FileStreamOptions
+			{
+				Mode = FileMode.Open,
+				Access = FileAccess.Read,
+				Share = FileShare.Read | FileShare.Delete
+			});
 		using var reader = new BinaryReader(stream, Encoding.UTF8);
 		var kind = (BackgroundTaskEventKind)reader.ReadByte();
 		if (!Enum.IsDefined(kind))
@@ -451,7 +461,21 @@ internal static class BackgroundTaskRegistrationStore
 			.Skip(100);
 		foreach (var staleEvent in staleEvents)
 		{
-			File.Delete(staleEvent);
+			try
+			{
+				File.Delete(staleEvent);
+			}
+			catch (Exception error) when (
+				error is IOException or UnauthorizedAccessException)
+			{
+				// Retention is best effort: a stale event that cannot be removed right now must
+				// not fail the task that reported progress. A later write retries the trim.
+				if (typeof(BackgroundTaskRegistrationStore).Log().IsEnabled(LogLevel.Debug))
+				{
+					typeof(BackgroundTaskRegistrationStore).Log().Debug(
+						$"Stale background task event '{staleEvent}' could not be removed: {error}");
+				}
+			}
 		}
 	}
 }
