@@ -627,6 +627,8 @@
           href: features/fluent-styles.md
         - name: Focus management
           href: features/focus-management.md
+        - name: Foldable devices and TwoPaneView
+          href: xref:Uno.Features.Foldable
         - name: Fonts
           href: features/custom-fonts.md
         - name: Markup Extensions
