@@ -2922,6 +2922,13 @@
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.Controls\.AnimatedVisuals\.Animated.+VisualSource\.(Load|Unload|Pause|Resume|Stop|Play|SetProgress|Update|Measure)\(.*\)" reason="AnimatedIcon rework: Uno-specific legacy IAnimatedVisualSource no-op hooks moved to explicit interface implementations (not in WinUI; still callable via the interface)" isRegex="true" />
 	  </Methods>
 	</IgnoreSet>
+
+	<IgnoreSet baseVersion="6.7">
+	  <Methods>
+		  <!-- Breaking change: this Uno compatibility shim was public, but WinUI declares it as an implementation-only GroupItem helper and omits it from MIDL. -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ItemsControl Microsoft.UI.Xaml.Controls.GroupItem.GetTemplatedItemsControl()" reason="Breaking change: align GroupItem.GetTemplatedItemsControl with WinUI's internal implementation surface" />
+	  </Methods>
+	</IgnoreSet>
 	<![CDATA[
 		The 'baseVersion' should be the current latest stable version published on nuget, 
 		NOT what will be published by the PR in progress.
