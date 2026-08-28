@@ -2847,6 +2847,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						var layerSurface = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
 						RenderInto(lyr.Commands, layerSurface, null);
 
+						// The layer's depth/stencil is write-only inside its own (now ended) pass: cleared on entry,
+						// discarded on exit, never sampled. Hand it straight back so every layer in the frame reuses
+						// ONE depth texture instead of renting its own — a stack of N layers otherwise keeps N
+						// full-window depth targets resident for the whole frame. The colour view can NOT be returned
+						// here: the composite op below samples it, and that is encoded later in the parent's pass.
+						_d.Pool.Return(layerSurface.DepthView);
+
 						// SaveLayer(IEffectFilter) drop shadow: blur the content, draw it tinted+offset behind, then
 						// the content on top. Reuses the image path (SrcIn tint) for the shadow — same as DrawShadow.
 						// The pyramid runs only over the content's region (padded by the blur reach), not the full
