@@ -1157,6 +1157,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// Diagnostic bisect (UNO_WEBGPU_BISECT): 1 = skip a replay entirely, 2 = keep the previous stamp (no
 	// restamp on move), 3 = restamp but emit no ops. Removing work is the only measurement that has not
 	// misled this investigation.
+	private int _statCrMiss, _statCrMove, _statCrPathFlip, _statCrSize, _statCrClip;
 	private static readonly int _bisect = int.TryParse(Environment.GetEnvironmentVariable("UNO_WEBGPU_BISECT"), out var __b) ? __b : 0;
 	private static readonly bool _emitStats = Environment.GetEnvironmentVariable("UNO_WEBGPU_STATS") is "1" or "true";
 	private static int _emitStatsFrame;
@@ -2857,7 +2858,18 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						int cSlot = (miss || entry is null) ? -1 : entry.XformSlot;
 						if (miss || transformChanged || entry.Arena || entry.BuiltW != (int)_s.Width || entry.BuiltH != (int)_s.Height || !ClipDataEquals(entry.Clip, rr.Clip))
 						{
-							if (_emitStats) { _statCachedRebuilds++; }
+							// Why did this rebuild? The cached path is the only replay path that re-bakes geometry on a
+							// MOVE (table and arena both re-stamp), so a scrolling recording that lands here pays a full
+							// re-tessellate + re-upload every frame.
+							if (_emitStats)
+							{
+								_statCachedRebuilds++;
+								if (miss) { _statCrMiss++; }
+								else if (transformChanged) { _statCrMove++; }
+								else if (entry.Arena) { _statCrPathFlip++; }
+								else if (entry.BuiltW != (int)_s.Width || entry.BuiltH != (int)_s.Height) { _statCrSize++; }
+								else { _statCrClip++; }
+							}
 							if (entry is not null) { _d.DeferRelease(entry.Owned); }
 							var owned = new OwnedResources();
 							var cachedOps = new List<DrawOp>();
@@ -3488,9 +3500,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
 		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
 		{
-			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} cachedRebuilds={_statCachedRebuilds} replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds}");
+			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip}) replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds}");
 			WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = 0;
-			_statTableRebuilds = 0; _statStamps = 0; _statArenaRebuilds = 0; _statCachedRebuilds = 0;
+			_statTableRebuilds = 0; _statStamps = 0; _statArenaRebuilds = 0; _statCachedRebuilds = 0; _statCrMiss = _statCrMove = _statCrPathFlip = _statCrSize = _statCrClip = 0;
 		}
 
 		wgpuRenderPassEncoderEnd(pass);
