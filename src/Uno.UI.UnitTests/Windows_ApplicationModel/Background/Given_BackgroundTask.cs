@@ -53,7 +53,15 @@ public class Given_BackgroundTask
 				BackgroundTaskRegistrationStore.EventsDirectory,
 				"*.event"))
 			{
-				File.Delete(path);
+				try
+				{
+					File.Delete(path);
+				}
+				catch (IOException)
+				{
+					// Another process (such as a file scanner) can briefly hold a just-written
+					// event. Assertions are scoped per task id, so a leftover is harmless.
+				}
 			}
 		}
 	}
