@@ -84,6 +84,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		ApiExtensibility.Register<ConnectionProfile>(typeof(IConnectionProfileExtension), _ => Win32ConnectionProfileExtension.Instance);
 		ApiExtensibility.Register(typeof(IAnalyticsInfoExtension), _ => Win32AnalyticsInfoExtension.Instance);
 		ApiExtensibility.Register(typeof(IClipboardExtension), _ => Win32ClipboardExtension.Instance);
+		Win32PasswordVaultExtension.Register();
 		ApiExtensibility.Register<FileOpenPicker>(typeof(IFileOpenPickerExtension), o => new Win32FileFolderPickerExtension(o));
 		ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new Win32FileFolderPickerExtension(o));
 		ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), o => new Win32FileSaverExtension(o));
