@@ -1178,7 +1178,8 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 public sealed unsafe class WebGpuPresentSession : IPresentSession
 {
 	// UNO_WEBGPU_STATS=1: per-pass emit-shape diagnostics (see RenderInto).
-	private long _statCullTicks, _statReplayTicks;
+	private long _statCullTicks, _statReplayTicks, _statStampTicks, _statEmitTicks;
+	private int _statStampOps;
 	private int _statReplayOps, _statCulled;
 	private static readonly bool _emitStats = Environment.GetEnvironmentVariable("UNO_WEBGPU_STATS") is "1" or "true";
 	private static readonly bool _statsInit = WebGpuCommandRecorder.StatsEnabled = _emitStats;
@@ -2509,6 +2510,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		WriteXform(fe.XformSlot, rr.Transform);
 		// Re-stamp per-op device scissors + clip bind groups only when transform / session clip / surface size changed
 		// (memoized like the arena stamp); a STATIC table recording reuses them verbatim. The slab base is applied below.
+		long _tStamp = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 		if (!fe.HasStamp || fe.StampXform != rr.Transform || !ClipDataEquals(fe.StampClip, rr.Clip) || fe.StampW != (int)_s.Width || fe.StampH != (int)_s.Height)
 		{
 			if (_emitStats) { _statStamps++; }
@@ -2532,6 +2534,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			}
 			fe.StampOwned = stampOwned; fe.StampClips = stamps; fe.StampBufs = bufs; fe.StampFrame = _d.FrameSeq; fe.StampXform = rr.Transform; fe.StampClip = rr.Clip; fe.StampW = (int)_s.Width; fe.StampH = (int)_s.Height; fe.HasStamp = true;
 		}
+		if (_emitStats) { _statStampTicks += System.Diagnostics.Stopwatch.GetTimestamp() - _tStamp; _statStampOps += fe.FrameOrder.Count; }
+		long _tEmit = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 		// Emit from the resident slabs (b0=2 => table slab) with the per-frame base + the memoized stamped clip.
 		for (int i = 0; i < fe.FrameOrder.Count; i++)
 		{
@@ -2540,6 +2544,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			else if (fo.Kind == 5) { ops.Add(new DrawOp(5, 2, fo.Count, (nint)(rBase + fo.ByteOff), false, sc, bg)); }
 			else { var op = fo.NonSolid; ops.Add(new DrawOp(op.kind, op.b0, op.u0, op.b1, op.flag, sc, bg)); }
 		}
+		if (_emitStats) { _statEmitTicks += System.Diagnostics.Stopwatch.GetTimestamp() - _tEmit; }
 	}
 
 	// Renders a command list into a target surface's MSAA pass (resolving to its single-sample view). Layers
@@ -3503,11 +3508,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
 		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
 		{
-			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} cachedRebuilds={_statCachedRebuilds} replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds} blocked=ref{WebGpuCommandRecorder.StatBlockReplayRef}/lyr{WebGpuCommandRecorder.StatBlockLayer}/sh{WebGpuCommandRecorder.StatBlockShadow}/bd{WebGpuCommandRecorder.StatBlockBackdrop}/oth{WebGpuCommandRecorder.StatBlockOther}/empty{WebGpuCommandRecorder.StatBlockEmpty} obCull={_statCullTicks * 1000.0 / System.Diagnostics.Stopwatch.Frequency:F1}ms obPaths={_statReplayTicks * 1000.0 / System.Diagnostics.Stopwatch.Frequency:F1}ms replayOps={_statReplayOps} culled={_statCulled} inlineKinds=rect{WebGpuCommandRecorder.StatKindRect}/rr{WebGpuCommandRecorder.StatKindRrect}/path{WebGpuCommandRecorder.StatKindPath}/img{WebGpuCommandRecorder.StatKindImage}/grad{WebGpuCommandRecorder.StatKindGradient}/ref{WebGpuCommandRecorder.StatKindRef}/lyr{WebGpuCommandRecorder.StatKindLayer}");
+			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} cachedRebuilds={_statCachedRebuilds} replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds} blocked=ref{WebGpuCommandRecorder.StatBlockReplayRef}/lyr{WebGpuCommandRecorder.StatBlockLayer}/sh{WebGpuCommandRecorder.StatBlockShadow}/bd{WebGpuCommandRecorder.StatBlockBackdrop}/oth{WebGpuCommandRecorder.StatBlockOther}/empty{WebGpuCommandRecorder.StatBlockEmpty} obCull={_statCullTicks * 1000.0 / System.Diagnostics.Stopwatch.Frequency:F1}ms obStamp={_statStampTicks * 1000.0 / System.Diagnostics.Stopwatch.Frequency:F1}ms obEmit={_statEmitTicks * 1000.0 / System.Diagnostics.Stopwatch.Frequency:F1}ms stampOps={_statStampOps} obPaths={_statReplayTicks * 1000.0 / System.Diagnostics.Stopwatch.Frequency:F1}ms replayOps={_statReplayOps} culled={_statCulled} inlineKinds=rect{WebGpuCommandRecorder.StatKindRect}/rr{WebGpuCommandRecorder.StatKindRrect}/path{WebGpuCommandRecorder.StatKindPath}/img{WebGpuCommandRecorder.StatKindImage}/grad{WebGpuCommandRecorder.StatKindGradient}/ref{WebGpuCommandRecorder.StatKindRef}/lyr{WebGpuCommandRecorder.StatKindLayer}");
 			WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = 0;
 			WebGpuCommandRecorder.StatBlockReplayRef = WebGpuCommandRecorder.StatBlockLayer = WebGpuCommandRecorder.StatBlockShadow = WebGpuCommandRecorder.StatBlockBackdrop = WebGpuCommandRecorder.StatBlockOther = WebGpuCommandRecorder.StatBlockEmpty = 0;
 			WebGpuCommandRecorder.StatKindRect = WebGpuCommandRecorder.StatKindRrect = WebGpuCommandRecorder.StatKindPath = WebGpuCommandRecorder.StatKindImage = WebGpuCommandRecorder.StatKindGradient = WebGpuCommandRecorder.StatKindRef = WebGpuCommandRecorder.StatKindLayer = 0;
-			_statCullTicks = _statReplayTicks = 0; _statReplayOps = _statCulled = 0;
+			_statCullTicks = _statReplayTicks = _statStampTicks = _statEmitTicks = 0; _statReplayOps = _statCulled = _statStampOps = 0;
 			_statTableRebuilds = 0; _statStamps = 0; _statArenaRebuilds = 0; _statCachedRebuilds = 0;
 		}
 
