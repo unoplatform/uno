@@ -324,6 +324,8 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 	internal List<WebGpuCommand> Commands = new();
 	internal WColor? ClearColor;
 	internal bool? Cacheable;   // memoized: all commands are simple primitives with no path clip
+	internal bool NestedCacheable;   // memoized: cacheable except for nested replays, which the builders flatten
+	internal int Replays;            // replay count, gating when a nested-replay parent starts being cached
 	internal Vector4? IdentityBounds;   // memoized union AABB of Commands (recorded/identity space), for layer bounding
 								// The compiled GPU draw-list for this recording (the persistent retained state IRenderRecord is contracted to hold):
 								// built once on the render thread at first replay, reused every frame, freed (deferred to the render thread) when
@@ -950,20 +952,27 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	// value-compare fix + resident fan made it a win (see RUNNING-CONTEXT §17/§21). Memoized.
 	internal static bool IsCacheable(WebGpuRenderRecord d)
 	{
-		if (d.Cacheable is { } memo) { return memo; }
-		bool ok = d.Commands.Count > 0;
-		foreach (var c in d.Commands)
+		if (d.Cacheable is null)
 		{
-			// A nested replay does NOT disqualify its parent: the cache builders flatten it (TransformFor with
-			// flatten) into the parent's geometry, and a finished recording's command list is immutable, so the
-			// flattened copy stays valid. Excluding it meant one retained child anywhere forced the WHOLE parent
-			// down the inline path every frame — re-transforming every command and reallocating a fan array per
-			// path fill (i.e. per glyph). On ChatList/ScrollingFeed that was ~51% of replays and ~70k commands
-			// re-transformed per stats window to emit ~280 draw ops.
-			if (c is not (RectCommand or RoundedRectCmd or PathFill or ImageCmd or GradientCmd or ReplayRefCmd)) { ok = false; break; }
+			bool simple = d.Commands.Count > 0, nested = d.Commands.Count > 0;
+			foreach (var c in d.Commands)
+			{
+				if (c is RectCommand or RoundedRectCmd or PathFill or ImageCmd or GradientCmd) { continue; }
+				simple = false;
+				// A nested replay does not inherently disqualify its parent — the cache builders flatten it
+				// (TransformFor with flatten) and a finished recording's command list is immutable, so the
+				// flattened copy stays valid. Layers/shadows/backdrops still do: they need their own passes.
+				if (c is not ReplayRefCmd) { nested = false; break; }
+			}
+			d.Cacheable = simple;
+			d.NestedCacheable = nested && !simple;
 		}
-		d.Cacheable = ok;
-		return ok;
+		if (d.Cacheable == true) { return true; }
+		// A nested-replay parent is cached only once it has proved it survives a frame. Caching one that the
+		// app rebuilds every frame costs a flatten plus a GPU upload per frame and is strictly worse than
+		// inlining it — measured as a 5x regression on ChatList (gap 12.8ms -> 66.7ms, arenaRebuilds 3 -> 272)
+		// when every such parent was cached eagerly.
+		return d.NestedCacheable == true && ++d.Replays >= 2;
 	}
 
 	// Transforms a recording's (simple) commands to device space under a transform+clip, for building its GPU
