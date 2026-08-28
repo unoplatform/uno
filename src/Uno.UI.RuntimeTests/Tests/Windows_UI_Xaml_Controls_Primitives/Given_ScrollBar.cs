@@ -181,12 +181,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		}
 
 		[TestMethod]
+		// Auto is not just a variation: the template defers the bars (x:Load="False") and only realizes them
+		// once an axis overflows, so the opt-in has to hold for a bar which appears after everything else.
+		[DataRow(ScrollBarVisibility.Visible)]
+		[DataRow(ScrollBarVisibility.Auto)]
 #if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_SCROLL_PRESENTER
 		[Ignore("This test only applies to the managed scroll presenter and requires the input injector.")]
 #endif
-		public async Task When_Touch_Drags_ScrollViewer_Thumb_Then_Scrolls()
+		public async Task When_Touch_Drags_ScrollViewer_Thumb_Then_Scrolls(ScrollBarVisibility verticalScrollBarVisibility)
 		{
-			var SUT = CreateScrollViewer();
+			var SUT = CreateScrollViewer(verticalScrollBarVisibility);
 
 			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
 			using var finger = injector.GetFinger();
@@ -261,12 +265,136 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			}
 		}
 
-		private static ScrollViewer CreateScrollViewer()
+		[TestMethod]
+		// Auto is not just a variation: the template defers the bars (x:Load="False") and only realizes them
+		// once an axis overflows, so the opt-in has to hold for a bar which appears after everything else.
+		[DataRow(ScrollBarVisibility.Visible)]
+		[DataRow(ScrollBarVisibility.Auto)]
+#if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_SCROLL_PRESENTER
+		[Ignore("This test only applies to the managed scroll presenter and requires the input injector.")]
+#endif
+		public async Task When_Touch_Panned_Then_Thumb_Is_Still_Draggable(ScrollBarVisibility verticalScrollBarVisibility)
+		{
+			// A finger pan drives the ScrollViewer to its TouchIndicator state, where the template collapses
+			// the interactive root the thumb lives in. That is the state a tablet is always in, so the opt-in
+			// is worthless unless it survives it.
+			var SUT = CreateScrollViewer(verticalScrollBarVisibility);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			try
+			{
+				await UITestHelper.Load(SUT);
+
+				var scrollBar = FindTemplateChild<ScrollBar>(SUT, "VerticalScrollBar");
+				Assert.IsNotNull(scrollBar, "The ScrollViewer template should contain a VerticalScrollBar.");
+
+				scrollBar.SetIsTouchThumbDragEnabled(true);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var contentBounds = SUT.GetAbsoluteBounds();
+				finger.Press(new Point(contentBounds.Left + 40, contentBounds.Top + 200));
+				finger.MoveBy(0, -60, steps: 30);
+				finger.Release();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				if (scrollBar.IndicatorMode != ScrollingIndicatorMode.TouchIndicator)
+				{
+					// The pan is the way a device gets there; drive it explicitly if the injected one did not,
+					// so the test cannot pass by never reaching the state it is about.
+					VisualStateManager.GoToState(SUT, "TouchIndicator", true);
+					await TestServices.WindowHelper.WaitForIdle();
+				}
+
+				Assert.AreEqual(
+					ScrollingIndicatorMode.TouchIndicator,
+					scrollBar.IndicatorMode,
+					"Test premise: the ScrollViewer should be showing its touch indicator.");
+
+				var offsetAfterPan = SUT.VerticalOffset;
+
+				var thumb = FindTemplateChild<Thumb>(scrollBar, "VerticalThumb");
+				Assert.IsNotNull(thumb, "The vertical thumb should be part of the ScrollBar template.");
+
+				var bounds = thumb.GetAbsoluteBounds();
+				Assert.IsTrue(
+					bounds is { Width: > 0, Height: > 0 },
+					$"The thumb should stay laid out and hit-testable while the touch indicator is shown, but its bounds were {bounds}.");
+
+				finger.Press(Center(bounds));
+				finger.MoveBy(0, 60, steps: 50);
+				finger.Release();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(
+					SUT.VerticalOffset > offsetAfterPan,
+					$"A finger drag on the thumb should scroll even after a pan, but VerticalOffset stayed at {SUT.VerticalOffset} "
+					+ $"(offset after the pan={offsetAfterPan}, IndicatorMode={scrollBar.IndicatorMode}, thumb bounds={bounds}).");
+			}
+			finally
+			{
+				finger.Release();
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR || !UNO_HAS_MANAGED_SCROLL_PRESENTER
+		[Ignore("This test only applies to the managed scroll presenter and requires the input injector.")]
+#endif
+		public async Task When_Reloaded_Then_Touch_Thumb_Drag_Survives()
+		{
+			// The bar (re)applies IgnoreTouchInput to its parts every time it attaches them, so an opt-in which
+			// is applied from the outside once would be undone by the next reload.
+			var SUT = CreateScrollViewer();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var finger = injector.GetFinger();
+
+			try
+			{
+				await UITestHelper.Load(SUT);
+
+				var scrollBar = FindTemplateChild<ScrollBar>(SUT, "VerticalScrollBar");
+				Assert.IsNotNull(scrollBar, "The ScrollViewer template should contain a VerticalScrollBar.");
+				scrollBar.SetIsTouchThumbDragEnabled(true);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				TestServices.WindowHelper.WindowContent = null;
+				await TestServices.WindowHelper.WaitForIdle();
+				await UITestHelper.Load(SUT);
+
+				scrollBar = FindTemplateChild<ScrollBar>(SUT, "VerticalScrollBar");
+				Assert.IsNotNull(scrollBar, "The VerticalScrollBar should be back after the reload.");
+
+				var thumb = FindTemplateChild<Thumb>(scrollBar, "VerticalThumb");
+				Assert.IsNotNull(thumb, "The vertical thumb should be part of the ScrollBar template.");
+
+				var bounds = thumb.GetAbsoluteBounds();
+				finger.Press(Center(bounds));
+				finger.MoveBy(0, 60, steps: 50);
+				finger.Release();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(
+					SUT.VerticalOffset > 0,
+					$"A finger drag on the thumb should still scroll after a reload, but VerticalOffset stayed at {SUT.VerticalOffset} "
+					+ $"(IndicatorMode={scrollBar.IndicatorMode}, thumb bounds={bounds}).");
+			}
+			finally
+			{
+				finger.Release();
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		private static ScrollViewer CreateScrollViewer(ScrollBarVisibility verticalScrollBarVisibility = ScrollBarVisibility.Visible)
 			=> new ScrollViewer
 			{
 				Width = 200,
 				Height = 300,
-				VerticalScrollBarVisibility = ScrollBarVisibility.Visible,
+				VerticalScrollBarVisibility = verticalScrollBarVisibility,
 				IsScrollInertiaEnabled = false,
 				UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
 				Content = new Border
