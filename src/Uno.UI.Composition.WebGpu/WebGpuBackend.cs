@@ -761,22 +761,97 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		if (!_fanFromCentroid) { return; }
 		var n = _contourPts.Count;
 		if (n < 3) { _contourPts.Clear(); return; }
-		var c = Vector2.Zero;
-		for (int i = 0; i < n; i++) { c += _contourPts[i]; }
-		c /= n;
-		// Every edge gets a triangle, the closing one included — with a centroid pivot it is no longer degenerate.
-		for (int i = 0; i < n; i++)
+		// Ear-clip first: it triangulates ANY simple polygon without overlap, so the fill tiles and can skip
+		// stencil-then-cover. A centroid fan only tiles when the centroid sees every edge, which a wobbly concave
+		// blob does not — those were falling back and paying a bbox-sized cover quad.
+		if (!TryEarClip(_contourPts))
 		{
-			var a0 = _contourPts[i];
-			var b0 = _contourPts[(i + 1) % n];
-			_fan.Add(c.X); _fan.Add(c.Y); _fan.Add(a0.X); _fan.Add(a0.Y); _fan.Add(b0.X); _fan.Add(b0.Y);
-			double ar = ((double)a0.X - c.X) * ((double)b0.Y - c.Y) - ((double)b0.X - c.X) * ((double)a0.Y - c.Y);
-			_fanAreaAbs += Math.Abs(ar);
-			_fanAreaSigned += ar;
+			var c = Vector2.Zero;
+			for (int i = 0; i < n; i++) { c += _contourPts[i]; }
+			c /= n;
+			// Every edge gets a triangle, the closing one included — with a centroid pivot it is not degenerate.
+			for (int i = 0; i < n; i++)
+			{
+				var a0 = _contourPts[i];
+				var b0 = _contourPts[(i + 1) % n];
+				_fan.Add(c.X); _fan.Add(c.Y); _fan.Add(a0.X); _fan.Add(a0.Y); _fan.Add(b0.X); _fan.Add(b0.Y);
+				double ar = ((double)a0.X - c.X) * ((double)b0.Y - c.Y) - ((double)b0.X - c.X) * ((double)a0.Y - c.Y);
+				_fanAreaAbs += Math.Abs(ar);
+				_fanAreaSigned += ar;
+			}
 		}
 		_contourPts.Clear();
 	}
 	private void Include(Vector2 p) { _bbMin = Vector2.Min(_bbMin, p); _bbMax = Vector2.Max(_bbMax, p); }
+
+
+	// Ear clipping: emits a non-overlapping triangulation of a SIMPLE polygon into _fan, accumulating the same
+	// areas the tiling test reads. Returns false for anything it cannot triangulate (self-intersecting, degenerate),
+	// leaving _fan untouched so the caller can fall back. O(n^2), and n is a flattened contour — tens of points.
+	private bool TryEarClip(List<Vector2> pts)
+	{
+		var n = pts.Count;
+		if (n < 3 || n > 512) { return false; }
+		double area2 = 0;
+		for (int i = 0; i < n; i++)
+		{
+			var a = pts[i]; var b = pts[(i + 1) % n];
+			area2 += (double)a.X * b.Y - (double)b.X * a.Y;
+		}
+		if (Math.Abs(area2) < 1e-9) { return false; }
+		var ccw = area2 > 0;
+
+		var idx = new int[n];
+		for (int i = 0; i < n; i++) { idx[i] = ccw ? i : n - 1 - i; }   // walk in CCW order either way
+		var live = new List<int>(idx);
+		var start = _fan.Count;
+		var guard = 0;
+		while (live.Count > 3)
+		{
+			if (++guard > n * n + 16) { _fan.RemoveRange(start, _fan.Count - start); return false; }
+			var clipped = false;
+			for (int i = 0; i < live.Count; i++)
+			{
+				var ia = live[(i - 1 + live.Count) % live.Count];
+				var ib = live[i];
+				var ic = live[(i + 1) % live.Count];
+				var a = pts[ia]; var b = pts[ib]; var c = pts[ic];
+				if (Cross(a, b, c) <= 0) { continue; }   // reflex (or collinear) in CCW order: not an ear
+				var contains = false;
+				for (int k = 0; k < live.Count && !contains; k++)
+				{
+					var ik = live[k];
+					if (ik == ia || ik == ib || ik == ic) { continue; }
+					contains = InTriangle(pts[ik], a, b, c);
+				}
+				if (contains) { continue; }
+				EmitTri(a, b, c);
+				live.RemoveAt(i);
+				clipped = true;
+				break;
+			}
+			if (!clipped) { _fan.RemoveRange(start, _fan.Count - start); return false; }
+		}
+		EmitTri(pts[live[0]], pts[live[1]], pts[live[2]]);
+		return true;
+
+		void EmitTri(Vector2 a, Vector2 b, Vector2 c)
+		{
+			_fan.Add(a.X); _fan.Add(a.Y); _fan.Add(b.X); _fan.Add(b.Y); _fan.Add(c.X); _fan.Add(c.Y);
+			var ar = Cross(a, b, c);
+			_fanAreaAbs += Math.Abs(ar);
+			_fanAreaSigned += ar;
+		}
+
+		static double Cross(Vector2 a, Vector2 b, Vector2 c)
+			=> ((double)b.X - a.X) * ((double)c.Y - a.Y) - ((double)c.X - a.X) * ((double)b.Y - a.Y);
+
+		static bool InTriangle(Vector2 p, Vector2 a, Vector2 b, Vector2 c)
+		{
+			var d1 = Cross(a, b, p); var d2 = Cross(b, c, p); var d3 = Cross(c, a, p);
+			return d1 >= 0 && d2 >= 0 && d3 >= 0;
+		}
+	}
 
 	public void DrawRect(in Rect rect, IShader shader, bool antialias = false)
 	{
@@ -1668,6 +1743,28 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		_scratch.Add(dev.X); _scratch.Add(dev.Y); _scratch.Add(r); _scratch.Add(g); _scratch.Add(b); _scratch.Add(a); _scratch.Add(slotBits);
 	}
 
+	/// <summary>
+	/// Rewrites the stride-3 stencil fan currently in <paramref name="fan"/> as stride-7 coloured COVER vertices,
+	/// so the cover draws the fan's own triangles rather than a bbox quad. Same triangle count, so the op's
+	/// existing vertex count covers both draws.
+	/// </summary>
+	private void CopyFanAsCover(List<float> fan, float r, float g, float b, float a, float slotBits)
+	{
+		var count = fan.Count / 3;
+		_coverScratch ??= new List<float>(4096);
+		_coverScratch.Clear();
+		for (int i = 0; i < count; i++)
+		{
+			_coverScratch.Add(fan[i * 3]); _coverScratch.Add(fan[i * 3 + 1]);
+			_coverScratch.Add(r); _coverScratch.Add(g); _coverScratch.Add(b); _coverScratch.Add(a);
+			_coverScratch.Add(slotBits);
+		}
+		fan.Clear();
+		fan.AddRange(_coverScratch);
+	}
+
+	private List<float> _coverScratch;
+
 	private IntPtr MakeUniform(int byteSize)
 		=> _d.BufferPool.Rent(byteSize, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
 
@@ -2405,10 +2502,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				var fanShared = owned is null ? AppendPathBlock(_scratch) : -1;
 				var fanBuf = owned is null ? IntPtr.Zero : Vbuf(_scratch, owned);
 				float pr = pf0.Color.R / 255f, pg = pf0.Color.G / 255f, pb = pf0.Color.B / 255f, pa = pf0.Color.A / 255f;
-				_scratch.Clear();
-				var tl = bbMin; var br = bbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
-				PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(tr, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits);
-				PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits); PushVertT(bl, pr, pg, pb, pa, slotBits);
+				// Cover with the FAN's own triangles, not the bbox quad: they cover exactly the stencilled region,
+				// and the cover pipeline zeroes the stencil on pass so overlapping fan triangles cannot blend twice.
+				// A bbox cover rasterises the whole bounding box even for a thin or concave shape.
+				CopyFanAsCover(_scratch, pr, pg, pb, pa, slotBits);
 				// kind 7: b0/b1 are BYTE offsets into the shared per-pass path buffer instead of private buffers.
 				ops.Add(owned is null
 					? new DrawOp(7, fanShared, fanCount, AppendPathBlock(_scratch), false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, owned))
@@ -2472,10 +2569,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					var fanShared = owned is null ? AppendPathBlock(_scratch) : -1;
 					var fanBuf = owned is null ? IntPtr.Zero : Vbuf(_scratch, owned);
 					float pr = pf.Color.R / 255f, pg = pf.Color.G / 255f, pb = pf.Color.B / 255f, pa = pf.Color.A / 255f;
-					_scratch.Clear();
-					var tl = pf.BbMin; var br = pf.BbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
-					PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(tr, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits);
-					PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits); PushVertT(bl, pr, pg, pb, pa, slotBits);
+					CopyFanAsCover(_scratch, pr, pg, pb, pa, slotBits);
 					var pClip = StripRedundantFan(pf.Clip, new Vector4(pf.BbMin.X, pf.BbMin.Y, pf.BbMax.X, pf.BbMax.Y));
 					var clipBg = MakeClipBg(_d.CoverClipBgl, pClip, owned);
 					ops.Add(owned is null
@@ -2808,10 +2902,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						var gFan = Vbuf(_scratch, fOwned);
 						uint gCount = (uint)(_scratch.Count / 3);
 						float gr = pf0.Color.R / 255f, gg = pf0.Color.G / 255f, gb = pf0.Color.B / 255f, ga = pf0.Color.A / 255f;
-						_scratch.Clear();
-						var gTl = gMin; var gBr = gMax; var gTr = new Vector2(gBr.X, gTl.Y); var gBl = new Vector2(gTl.X, gBr.Y);
-						PushVertT(gTl, gr, gg, gb, ga, slotBits); PushVertT(gTr, gr, gg, gb, ga, slotBits); PushVertT(gBr, gr, gg, gb, ga, slotBits);
-						PushVertT(gTl, gr, gg, gb, ga, slotBits); PushVertT(gBr, gr, gg, gb, ga, slotBits); PushVertT(gBl, gr, gg, gb, ga, slotBits);
+						CopyFanAsCover(_scratch, gr, gg, gb, ga, slotBits);
 						var gCov = Vbuf(_scratch, fOwned);
 						var gOp = new DrawOp(1, (nint)gFan, gCount, (nint)gCov, false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, fOwned));
 						order.Add(new FrameOp { Kind = -1, NonSolid = ResidentizeFan(gOp, fOwned) });
@@ -3747,8 +3838,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							EncPipe(_d.CoverTablePipe);
 							EncBg(0, (IntPtr)xformBg);
 							EncBg(1, (IntPtr)clipBg);
-							EncVb((IntPtr)b1, 0, (nuint)(42 * sizeof(float)));
-							EncDraw(6);
+							EncVb((IntPtr)b1, 0, (nuint)(u0 * 7 * sizeof(float)));
+							EncDraw(u0);
 						}
 						break;
 					case 8:
@@ -3781,7 +3872,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							EncBg(0, (IntPtr)xformBg);
 							EncBg(1, (IntPtr)clipBg);
 							EncVb((IntPtr)pathBuf, 0, pathBufBytes);
-							EncDraw(6, (uint)(b1 / (7 * sizeof(float))));
+							EncDraw(u0, (uint)(b1 / (7 * sizeof(float))));
 						}
 						break;
 					case 2:
