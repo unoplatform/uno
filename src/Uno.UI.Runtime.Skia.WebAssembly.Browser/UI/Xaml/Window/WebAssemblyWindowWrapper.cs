@@ -15,6 +15,7 @@ using FontFamilyHelper = Microsoft.UI.Xaml.FontFamilyHelper;
 using Windows.Graphics;
 using Microsoft.UI.Xaml;
 using Uno.Disposables;
+using Uno.Extensions;
 using Uno.UI.Dispatching;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.WebAssembly.Browser;
@@ -86,14 +87,23 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 	[JSExport]
 	private static void OnResize([JSMarshalAs<JSType.Any>] object instance, double width, double height, float scale)
 	{
-		if (instance is WebAssemblyWindowWrapper windowWrapper)
+		try
 		{
-			windowWrapper.RasterizationScale = scale;
-			windowWrapper.RaiseNativeSizeChanged(new(width, height));
+			if (instance is WebAssemblyWindowWrapper windowWrapper)
+			{
+				windowWrapper.RasterizationScale = scale;
+				windowWrapper.RaiseNativeSizeChanged(new(width, height));
+			}
+			else
+			{
+				Console.WriteLine($"RaiseNativeSizeChanged target for {instance} does not exist");
+			}
 		}
-		else
+		catch (Exception e)
 		{
-			Console.WriteLine($"RaiseNativeSizeChanged target for {instance} does not exist");
+			// A managed exception must not cross back into the JS DOM-event callback.
+			// Null-safe: the initial resize runs before Application.Start.
+			Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, typeof(WebAssemblyWindowWrapper));
 		}
 	}
 
@@ -130,7 +140,8 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		catch (Exception e)
 		{
 			// A managed exception must not cross back into the JS DOM-event callback.
-			Application.Current.RaiseRecoverableUnhandledException(e);
+			// Null-safe: visualViewport events can fire before Application.Start.
+			Application.Current.RaiseRecoverableUnhandledExceptionOrLog(e, typeof(WebAssemblyWindowWrapper));
 		}
 	}
 
