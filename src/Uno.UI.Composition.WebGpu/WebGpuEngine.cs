@@ -134,6 +134,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	public IntPtr TsQuerySet, TsResolve, TsStage;
 	public double LastGpuMs;
 	private bool _tsMapPending;
+	public int TsMapTried, TsMapOk, TsMapFail;
 
 	public void InitGpuTiming()
 	{
@@ -158,6 +159,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	{
 		if (!GpuTiming || _tsMapPending) { return; }
 		_tsMapPending = true;
+		TsMapTried++;
 		var self = GCHandle.Alloc(this);
 		wgpuBufferMapAsync(TsStage, WGPUMapMode.Read, 0, 16, new WGPUBufferMapCallbackInfo
 		{
@@ -177,9 +179,16 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		{
 			if (status == WGPUMapAsyncStatus.Success)
 			{
+				d.TsMapOk++;
 				var p = (ulong*)(void*)wgpuBufferGetMappedRange(d.TsStage, 0, 16);
 				if (p is not null && p[1] > p[0]) { d.LastGpuMs = (p[1] - p[0]) / 1_000_000.0; }
+				else if (d.TsMapOk == 1) { System.Console.WriteLine($"[webgpu] ts map ok but raw t0={(p is null ? 0 : p[0])} t1={(p is null ? 0 : p[1])}"); }
 				wgpuBufferUnmap(d.TsStage);
+			}
+			else
+			{
+				d.TsMapFail++;
+				if (d.TsMapFail == 1) { System.Console.WriteLine($"[webgpu] ts map failed status={status}"); }
 			}
 			d._tsMapPending = false;
 		}
