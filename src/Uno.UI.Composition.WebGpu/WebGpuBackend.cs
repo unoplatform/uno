@@ -1222,6 +1222,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			{
 				long t1 = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 				_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
+				_d.GradSlab.Flush();
 				var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 				wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 				// wgpu holds its own reference until the submission completes, so both handles are dropped
@@ -1738,6 +1739,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				if (owns)
 				{
 					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
+					_d.GradSlab.Flush();
 					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 					// wgpu holds its own reference until the submission completes, so both handles are dropped
@@ -1786,6 +1788,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				if (owns)
 				{
 					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
+					_d.GradSlab.Flush();
 					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 					// wgpu holds its own reference until the submission completes, so both handles are dropped
@@ -1833,6 +1836,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				if (owns)
 				{
 					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
+					_d.GradSlab.Flush();
 					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 					// wgpu holds its own reference until the submission completes, so both handles are dropped
@@ -1878,6 +1882,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				if (owns)
 				{
 					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
+					_d.GradSlab.Flush();
 					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 					// wgpu holds its own reference until the submission completes, so both handles are dropped
@@ -1922,6 +1927,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				if (owns)
 				{
 					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
+					_d.GradSlab.Flush();
 					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 					// wgpu holds its own reference until the submission completes, so both handles are dropped
@@ -2314,9 +2320,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// per-frame pool instead: recycled next frame, nothing accumulates.
 						if (owned is null)
 						{
-							// Reuse a ring pair instead of creating a buffer + bind group per gradient per frame.
-							gbg = _d.RentRingUniform(bytes, _d.GradBgl, out var rbuf);
-							fixed (float* p = gc.Uniform) { wgpuQueueWriteBuffer(_d.Q, rbuf, 0, (IntPtr)p, bytes); }
+							// One slab slot instead of a buffer + queue write per gradient per frame: the whole
+							// frame's gradient uniforms upload in one write per chunk before the submit.
+							gbg = _d.GradSlab.Rent(_d.GradBgl, gc.Uniform);
 						}
 						else
 						{

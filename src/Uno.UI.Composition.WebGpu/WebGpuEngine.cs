@@ -80,6 +80,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	public WebGpuTexturePool Pool;                // transient offscreen pool (reused across frames)
 	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
 	public WebGpuClipSlab ClipSlab;               // chunked uniform slab backing every owned/restamped ClipU
+	public WebGpuUniformSlab GradSlab;            // per-frame gradient uniforms, one queue write per chunk
 	public WebGpuSlab SolidSlab;                  // persistent shared slab: all recordings' solid verts (6 floats/v)
 	public WebGpuSlab RrectSlab;                  // persistent shared slab: all recordings' rrect verts (22 floats/v)
 												  // Transform-TABLE shared slabs: local (identity-baked) verts + a trailing per-vertex slot index (solid = 7
@@ -212,6 +213,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		// before submit targets a buffer still pending in an unsubmitted command buffer and never completes.
 		PollGpuTiming();
 		ResetUniformRing();
+		GradSlab?.Reset();
 		FrameSeq++;
 		Pool.BeginFrame();
 		BufferPool.BeginFrame();
@@ -486,6 +488,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		Pool = new WebGpuTexturePool(this);
 		BufferPool = new WebGpuBufferPool(this);
 		ClipSlab = new WebGpuClipSlab(this);
+		GradSlab = new WebGpuUniformSlab(this, GradientUniformBytes);
 		SolidSlab = new WebGpuSlab(this, 6);
 		RrectSlab = new WebGpuSlab(this, 22);
 		SolidTableSlab = new WebGpuSlab(this, 7);
@@ -1853,6 +1856,84 @@ internal sealed unsafe class WebGpuSlab
 // shadow; a frame's restamps flush as ONE queue write per dirty chunk range instead of one wgpuQueueWriteBuffer
 // per op (a scrolling table restamps thousands of ClipUs per frame; the per-call/per-copy overhead dominated
 // opsBuild and submit). Slot handles are 1-based nints so 0 keeps meaning "none" at the call sites.
+// Per-frame uniform slab: 256-aligned slots in a shared buffer, each with a bind group created once and reused
+// for the life of the slab. A frame's gradient uniforms then upload in ONE queue write per chunk instead of one
+// per gradient — a native call costs far more than the bytes it carries. Slots are handed out sequentially and
+// recycled every frame (Reset), so the used range is always a contiguous prefix.
+internal sealed unsafe class WebGpuUniformSlab : IDisposable
+{
+	private const int ChunkSlots = 256;
+
+	private sealed class Chunk
+	{
+		public IntPtr Buf;
+		public float[] Shadow;
+		public IntPtr[] Bgs;
+	}
+
+	private readonly WebGpuDevice _d;
+	private readonly List<Chunk> _chunks = new();
+	private readonly int _uniformBytes, _slotBytes, _slotFloats, _uniformFloats;
+	private int _next;
+
+	public WebGpuUniformSlab(WebGpuDevice d, int uniformBytes)
+	{
+		_d = d;
+		_uniformBytes = uniformBytes;
+		_uniformFloats = uniformBytes / sizeof(float);
+		_slotBytes = (uniformBytes + 255) / 256 * 256;   // uniform bind offsets must be 256-aligned
+		_slotFloats = _slotBytes / sizeof(float);
+	}
+
+	public void Reset() => _next = 0;
+
+	/// <summary>Copies `data` into the next slot and returns that slot's (persistent) bind group.</summary>
+	public IntPtr Rent(IntPtr layout, float[] data)
+	{
+		var idx = _next++;
+		var ci = idx / ChunkSlots;
+		while (_chunks.Count <= ci)
+		{
+			var bd = new WGPUBufferDescriptor { Size = (nuint)(ChunkSlots * _slotBytes), Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
+			_chunks.Add(new Chunk { Buf = wgpuDeviceCreateBuffer(_d.Dev, &bd), Shadow = new float[ChunkSlots * _slotFloats], Bgs = new IntPtr[ChunkSlots] });
+		}
+		var c = _chunks[ci];
+		var slot = idx % ChunkSlots;
+		Array.Copy(data, 0, c.Shadow, slot * _slotFloats, Math.Min(data.Length, _uniformFloats));
+		if (c.Bgs[slot] == IntPtr.Zero)
+		{
+			var e = new WGPUBindGroupEntry { Binding = 0, Buffer = c.Buf, Offset = (nuint)(slot * _slotBytes), Size = (nuint)_uniformBytes };
+			var bgd = new WGPUBindGroupDescriptor { Layout = layout, EntryCount = 1, Entries = &e };
+			c.Bgs[slot] = wgpuDeviceCreateBindGroup(_d.Dev, &bgd);
+		}
+		return c.Bgs[slot];
+	}
+
+	/// <summary>Uploads the used prefix — call before any submit whose commands read these uniforms. Re-uploading
+	/// a range an earlier submit already consumed is harmless: queue writes are ordered against submits.</summary>
+	public void Flush()
+	{
+		var used = _next;
+		for (int ci = 0; ci < _chunks.Count && used > 0; ci++)
+		{
+			var n = Math.Min(used, ChunkSlots);
+			var c = _chunks[ci];
+			fixed (float* p = c.Shadow) { wgpuQueueWriteBuffer(_d.Q, c.Buf, 0, (IntPtr)p, (nuint)(n * _slotBytes)); }
+			used -= n;
+		}
+	}
+
+	public void Dispose()
+	{
+		foreach (var c in _chunks)
+		{
+			foreach (var bg in c.Bgs) { if (bg != IntPtr.Zero) { wgpuBindGroupRelease(bg); } }
+			if (c.Buf != IntPtr.Zero) { wgpuBufferRelease(c.Buf); }
+		}
+		_chunks.Clear();
+	}
+}
+
 internal sealed unsafe class WebGpuClipSlab : IDisposable
 {
 	// ClipU is 288 bytes; uniform bind offsets must align to minUniformBufferOffsetAlignment (256 under the
