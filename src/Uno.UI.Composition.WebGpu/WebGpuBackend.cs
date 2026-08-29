@@ -43,6 +43,10 @@ internal struct ClipData
 							   // 0 = not resident. FanW/FanH = surface size it was baked for (invalidated on resize).
 	public nint FanBuf;
 	public int FanW, FanH;
+	// ClipU bind group supplying the vertex transform for the FAN draw. The stencil pipelines already run the fan
+	// through xformPos, so a moved recording can keep its identity-space fan resident and be transformed in the
+	// shader instead of re-uploading the fan every frame. 0 = identity (fan already in device NDC).
+	public nint FanXformBg;
 	public static ClipData None => new() { Aabb = new Vector4(-1e9f, -1e9f, 1e9f, 1e9f), ScissorInert = true };
 
 	// The op's geometry is provably inside Aabb (containment proven at record time), so the scissor is not
@@ -2276,7 +2280,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (next.FanBuf != 0 && next.FanW == (int)_s.Width && next.FanH == (int)_s.Height) { fanBuf = (IntPtr)next.FanBuf; fanVerts = fan.Length / 2; }
 		else { _scratch.Clear(); for (int i = 0; i < fan.Length; i += 2) { var n = Ndc(new Vector2(fan[i], fan[i + 1])); _scratch.Add(n.X); _scratch.Add(n.Y); } fanBuf = MakeBuffer(_scratch); fanVerts = _scratch.Count / 2; }
 		wgpuRenderPassEncoderSetPipeline(pass, next.PathEvenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
-		wgpuRenderPassEncoderSetBindGroup(pass, 0, MakeClipBg(_d.ClipBgl, default), 0, (uint*)null);   // identity xform (clip fan already NDC)
+		wgpuRenderPassEncoderSetBindGroup(pass, 0, next.FanXformBg != 0 ? (IntPtr)next.FanXformBg : MakeClipBg(_d.ClipBgl, default), 0, (uint*)null);   // arena xform, else identity (fan already device NDC)
 		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(fanVerts * 2 * sizeof(float)));
 		wgpuRenderPassEncoderDraw(pass, (uint)fanVerts, 1, 0, 0);
 		// 3) cover: write the "kept" depth (intersect: 0 inside the shape; exclude: 1) where the stencil is set,
@@ -2825,6 +2829,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								var t2 = new Matrix3x2(rr.Transform.M11, rr.Transform.M12, rr.Transform.M21, rr.Transform.M22, rr.Transform.M41, rr.Transform.M42);
 								Matrix3x2 finv = Matrix3x2.Invert(t2, out var inv) ? inv : Matrix3x2.Identity;
 								Vector2 MoveP(float x, float y) => new(x * t2.M11 + y * t2.M21 + t2.M31, x * t2.M12 + y * t2.M22 + t2.M32);
+								// One ClipU for every fan in this recording: same arena transform, so it is built once.
+								nint arenaFanBg = (nint)MakeClipBg(_d.ClipBgl, default, null, xf, finv);
 								for (int i = 0; i < entry.Ops.Count; i++)
 								{
 									var op = entry.Ops[i];
@@ -2837,14 +2843,17 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 									// identity and is stale once moved.
 									if (op.clip.PathFan is { } localFan)
 									{
-										var moved = new float[localFan.Length];
+										// Keep the identity-space fan and its resident NDC buffer; hand the stencil draw
+										// the arena transform instead. Transforming on the CPU here would mean a fresh
+										// fan upload per op per frame (392/frame on RenderStress_Gradients).
+										scissorClip.FanXformBg = arenaFanBg;
+										var fa = new Vector4(float.MaxValue, float.MaxValue, float.MinValue, float.MinValue);
 										for (int fi = 0; fi < localFan.Length; fi += 2)
 										{
 											var mp = MoveP(localFan[fi], localFan[fi + 1]);
-											moved[fi] = mp.X; moved[fi + 1] = mp.Y;
+											fa = new Vector4(MathF.Min(fa.X, mp.X), MathF.Min(fa.Y, mp.Y), MathF.Max(fa.Z, mp.X), MathF.Max(fa.W, mp.Y));
 										}
-										scissorClip.PathFan = moved;
-										scissorClip.FanBuf = 0;
+										scissorClip.Aabb = new Vector4(MathF.Max(scissorClip.Aabb.X, fa.X), MathF.Max(scissorClip.Aabb.Y, fa.Y), MathF.Min(scissorClip.Aabb.Z, fa.Z), MathF.Min(scissorClip.Aabb.W, fa.W));
 									}
 									// Carry the session fan onto the stamped op so the depth mask still clips it.
 									// IsArenaSafe guarantees the op's own clip has no fan, so nothing is overwritten.
