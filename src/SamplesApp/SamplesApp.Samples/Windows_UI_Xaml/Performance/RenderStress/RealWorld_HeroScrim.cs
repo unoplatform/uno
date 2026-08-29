@@ -34,7 +34,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 		protected override string ScenarioName => "HeroScrim";
 
 		/// <summary>Number of stacked full-viewport image layers. Each is a full-surface sample + blend.</summary>
-		protected override int DefaultCount => 10;
+		protected override int DefaultCount => 20;   // 20 layers = 28.8ms (35fps), but ~half the frame is record
 
 		protected override UIElement BuildStage(int count)
 		{

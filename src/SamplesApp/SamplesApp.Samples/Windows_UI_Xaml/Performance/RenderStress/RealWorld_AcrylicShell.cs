@@ -31,7 +31,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 		protected override string ScenarioName => "AcrylicShell";
 
 		/// <summary>Number of overlapping acrylic panels. Each is a backdrop blur over its own area.</summary>
-		protected override int DefaultCount => 6;
+		protected override int DefaultCount => 12;   // 12 panes = 32.8ms (31fps) on Skia, draw 54% of frame
 
 		protected override UIElement BuildStage(int count)
 		{

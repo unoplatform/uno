@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using Windows.Foundation;
 using Windows.UI;
@@ -34,7 +34,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 		protected override string ScenarioName => "MapOverlay";
 
 		/// <summary>Number of large translucent overlay polygons.</summary>
-		protected override int DefaultCount => 18;
+		protected override int DefaultCount => 36;   // 36 zones = 25.6ms (39fps) on Skia, draw 61% with record 1.4ms
 
 		protected override UIElement BuildStage(int count)
 		{
