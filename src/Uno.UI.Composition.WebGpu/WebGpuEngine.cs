@@ -1,4 +1,4 @@
-// Minimal-but-real WebGPU backend implementing the NEUTRAL drawing seam (public SPI from Uno.UI.Composition).
+﻿// Minimal-but-real WebGPU backend implementing the NEUTRAL drawing seam (public SPI from Uno.UI.Composition).
 // Solid rects + even-odd path fill (stencil-then-cover) consuming IGeometry.StreamFlattened (Skia-less).
 #nullable disable
 using System;
@@ -999,6 +999,20 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
   else { let f = fract(t * 0.5) * 2.0; if (f > 1.0) { t = 2.0 - f; } else { t = f; } }
   let n = i32(g.header.y);
   var col = g.colors[0];
+  // Fast path for <=4 stops (the overwhelmingly common case). The general path below indexes the 64-entry
+  // colour array and the packed stop array with a LOOP VARIABLE; dynamic indexing into a uniform array spills
+  // on Intel-class GPUs, and this shader is fragment-bound over large areas. Constant indices avoid that.
+  if (n <= 4) {
+    let s0 = g.stops[0][0]; let s1 = g.stops[0][1]; let s2 = g.stops[0][2]; let s3 = g.stops[0][3];
+    if (n < 2 || t <= s0) { col = g.colors[0]; }
+    else if (t <= s1) { col = mix(g.colors[0], g.colors[1], select(0.0, (t - s0) / (s1 - s0), s1 > s0)); }
+    else if (n < 3) { col = g.colors[1]; }
+    else if (t <= s2) { col = mix(g.colors[1], g.colors[2], select(0.0, (t - s1) / (s2 - s1), s2 > s1)); }
+    else if (n < 4) { col = g.colors[2]; }
+    else if (t <= s3) { col = mix(g.colors[2], g.colors[3], select(0.0, (t - s2) / (s3 - s2), s3 > s2)); }
+    else { col = g.colors[3]; }
+    return vec4<f32>(col.rgb, col.a * clipCov(fc.xy, clip));
+  }
   if (t <= stopAt(0)) { col = g.colors[0]; }
   else if (t >= stopAt(n - 1)) { col = g.colors[n - 1]; }
   else {
