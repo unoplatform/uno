@@ -1391,6 +1391,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// recording). Uploaded once per pass; recycled next pass. A solid op with b0==0 references (b1=startVert, u0=count)
 	// into this buffer; b0!=0 is a legacy private-buffer solid (mixed/arena recording) that draws on its own.
 	private readonly Stack<List<float>> _solidPool = new();
+	private List<float> _gradVerts;
 	private List<float> RentSolid() => _solidPool.Count > 0 ? _solidPool.Pop() : new(4096);
 	private void ReturnSolid(List<float> s) { s.Clear(); _solidPool.Push(s); }
 	// Appends one device-space quad (two tris) to the shared solid buffer; returns the start vertex index. 6 verts.
@@ -2326,11 +2327,22 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							gbg = Bg(ref gbgd, owned);
 						}
 					}
-					var gq = new float[12];
-					void GV(int idx, Vector2 pos) { var n = Ndc(pos); gq[idx] = n.X; gq[idx + 1] = n.Y; }
-					GV(0, gc.P0); GV(2, gc.P1); GV(4, gc.P2); GV(6, gc.P0); GV(8, gc.P2); GV(10, gc.P3);
 					var gClip = StripRedundantFan(gc.Clip, gc.P0, gc.P1, gc.P2, gc.P3);
-					ops.Add(new DrawOp(3, (nint)gbg, 0, (nint)Vbuf(gq, owned), false, gClip, (nint)MakeClipBg(_d.GradClipBgl, gClip, owned)));
+					if (owned is null)
+					{
+						// flag == true: b1 is a BYTE offset into the shared per-pass gradient buffer.
+						var goff = _gradVerts.Count * sizeof(float);
+						void GS(Vector2 pos) { var n = Ndc(pos); _gradVerts.Add(n.X); _gradVerts.Add(n.Y); }
+						GS(gc.P0); GS(gc.P1); GS(gc.P2); GS(gc.P0); GS(gc.P2); GS(gc.P3);
+						ops.Add(new DrawOp(3, (nint)gbg, 0, goff, true, gClip, (nint)MakeClipBg(_d.GradClipBgl, gClip, owned)));
+					}
+					else
+					{
+						var gq = new float[12];
+						void GV(int idx, Vector2 pos) { var n = Ndc(pos); gq[idx] = n.X; gq[idx + 1] = n.Y; }
+						GV(0, gc.P0); GV(2, gc.P1); GV(4, gc.P2); GV(6, gc.P0); GV(8, gc.P2); GV(10, gc.P3);
+						ops.Add(new DrawOp(3, (nint)gbg, 0, (nint)Vbuf(gq, owned), false, gClip, (nint)MakeClipBg(_d.GradClipBgl, gClip, owned)));
+					}
 					break;
 				}
 			case RoundedRectCmd rrc:
@@ -2660,6 +2672,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// Per-pass transform table (path fills). Saved/restored around the recursive nested-layer RenderInto so each
 		// pass builds and uploads its own. Transient (immediate-draw) slots are collected here and freed at pass end.
 		var savedXforms = _xforms; var savedTransient = _xformTransient;
+		// Immediate gradient quads share ONE per-pass buffer like solids do. Each used to get its own pooled
+		// buffer + queue write — 500 native calls/frame on RenderStress_Gradients for 48 bytes apiece, and a
+		// native call costs far more than the bytes. A field (not a local) because BuildSimpleOp appends to it;
+		// saved/restored around the nested-layer RenderInto so each pass builds and uploads its own.
+		var savedGradVerts = _gradVerts;
+		_gradVerts = RentSolid(); _gradVerts.Clear();
 		var mainPass = ReferenceEquals(target, _s);
 		_xforms = RentXforms(); _xforms.Clear();
 		_xformTransient = RentTransient(); _xformTransient.Clear();
@@ -3200,6 +3218,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// Upload the whole pass's coalesceable solid + rrect geometry in ONE buffer each; b0==0 ops index them.
 		nint solidBuf = solid.Count > 0 ? (nint)MakeBuffer(solid) : IntPtr.Zero;
 		nint rrectBuf = rrect.Count > 0 ? (nint)MakeBuffer(rrect) : IntPtr.Zero;
+		nint gradBuf = _gradVerts.Count > 0 ? (nint)MakeBuffer(_gradVerts) : IntPtr.Zero;
+		var gradBufBytes = (nuint)(_gradVerts.Count * sizeof(float));
+		var solidBufBytes = (nuint)(solid.Count * sizeof(float));
 
 		// Upload this pass's transform table + one read-only storage bind group (group 0 of the path-fill pipelines).
 		// Every drawn path recording wrote its slot's local->NDC affine above; a pass with no path fills skips this.
@@ -3371,7 +3392,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			lastVb = buf; lastVbOff = off; lastVbSize = size;
 			if (bundleRec) { wgpuRenderBundleEncoderSetVertexBuffer(bundleEnc, 0, buf, off, size); } else { wgpuRenderPassEncoderSetVertexBuffer(pass, 0, buf, off, size); }
 		}
-		void EncDraw(uint count) { if (bundleRec) { wgpuRenderBundleEncoderDraw(bundleEnc, count, 1, 0, 0); } else { wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0); } }
+		void EncDraw(uint count, uint firstVertex = 0) { if (bundleRec) { wgpuRenderBundleEncoderDraw(bundleEnc, count, 1, firstVertex, 0); } else { wgpuRenderPassEncoderDraw(pass, count, 1, firstVertex, 0); } }
 		void EncodeRange(int start, int end)
 		{
 			for (int oi = start; oi < end; oi++)
@@ -3462,8 +3483,17 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// b0 = vertex buffer (private/immediate or a resident frame-solid buffer); b1 = byte offset into it.
 						EncPipe(_d.SolidPipe);
 						EncBg(0, (IntPtr)clipBg);
-						EncVb((IntPtr)b0, (nuint)b1, (nuint)(u0 * 6 * sizeof(float)));
-						EncDraw(u0);   // u0 = 6 * (coalesced) rect count
+						if (b0 == solidBuf)
+						{
+							// Whole shared buffer bound once (dedups across the run); the op's slice is a vertex offset.
+							EncVb((IntPtr)b0, 0, solidBufBytes);
+							EncDraw(u0, (uint)(b1 / (6 * sizeof(float))));
+						}
+						else
+						{
+							EncVb((IntPtr)b0, (nuint)b1, (nuint)(u0 * 6 * sizeof(float)));
+							EncDraw(u0);   // u0 = 6 * (coalesced) rect count
+						}
 						break;
 					case 1:
 						// Path fill via the transform table: fan verts = device pos + slot index (stride 3); cover verts =
@@ -3490,8 +3520,16 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						EncPipe(_d.GradientPipe);
 						EncBg(0, (IntPtr)b0);
 						EncBg(1, (IntPtr)clipBg);
-						EncVb((IntPtr)b1, 0, (nuint)(12 * sizeof(float)));
-						EncDraw(6);
+						if (flag)
+						{
+							EncVb((IntPtr)gradBuf, 0, gradBufBytes);
+							EncDraw(6, (uint)(b1 / (2 * sizeof(float))));
+						}
+						else
+						{
+							EncVb((IntPtr)b1, 0, (nuint)(12 * sizeof(float)));
+							EncDraw(6);
+						}
 						break;
 					case 4:
 						wgpuRenderPassEncoderSetPipeline(pass, u0 == 1 ? _d.CompositeDstIn : _d.CompositeSrcOver);
@@ -3728,6 +3766,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		foreach (var s in _xformTransient) { _d.FreeXformSlot(s); }
 		_xforms.Clear(); _xformsPool.Push(_xforms);
 		_xformTransient.Clear(); _xformTransientPool.Push(_xformTransient);
+		ReturnSolid(_gradVerts);
+		_gradVerts = savedGradVerts;
 		_xforms = savedXforms; _xformTransient = savedTransient;
 	}
 
