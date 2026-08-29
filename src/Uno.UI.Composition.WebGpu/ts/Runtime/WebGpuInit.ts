@@ -18,7 +18,16 @@ namespace Uno.UI.Runtime.Skia {
 					console.error("WebGpuInit: navigator.gpu.requestAdapter returned null");
 					return 0;
 				}
-				const device = await adapter.requestDevice();
+				// Request timestamp-query when the adapter offers it: it is the only way to read REAL GPU pass
+				// durations in the browser (the frame-phase log is CPU-only, so a GPU-bound frame merely shows up
+				// as time blocked in submit/present). Requesting it costs nothing; the queries themselves are
+				// written only when UNO_WEBGPU_GPUTIME=1. Chrome also gates this behind
+				// --enable-dawn-features=allow_unsafe_apis.
+				const requiredFeatures: GPUFeatureName[] = [];
+				if ((adapter as any).features?.has?.("timestamp-query")) {
+					requiredFeatures.push("timestamp-query" as GPUFeatureName);
+				}
+				const device = await adapter.requestDevice({ requiredFeatures });
 				if (!device) {
 					console.error("WebGpuInit: adapter.requestDevice returned null");
 					return 0;
