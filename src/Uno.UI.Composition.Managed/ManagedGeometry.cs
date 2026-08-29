@@ -185,10 +185,12 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 
 	public IGeometry GetFilledGeometry(float trimStart, float trimEnd)
 	{
-		// The fill path of a fill (non-stroke) is the path itself; a (0,0) trim means "no trimming".
+		// The fill path of a fill (non-stroke) is the path itself; a (0,0) trim means "no trimming". Return THIS
+		// rather than a re-wrap: an identical copy still has a new identity every frame, which makes every cache
+		// keyed on the geometry miss and rebuild. Safe — the type is immutable.
 		if (trimStart == 0f && trimEnd == 0f)
 		{
-			return new ManagedGeometry(Contours, FillRule, SourceRoundRect);
+			return this;
 		}
 
 		return Trim(trimStart, trimEnd);
