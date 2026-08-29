@@ -1165,6 +1165,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// A/B gates so the session's landed optimisations can be priced against the ground-truth frame time.
 	private static readonly bool _noCompositeScissor = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_SCISSOR") is "1";
 	private static readonly bool _noGlyphCoalesce = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_GLYPHCOALESCE") is "1";
+	private static readonly bool _noPathClip = Environment.GetEnvironmentVariable("UNO_WEBGPU_NOCLIP") is "1";
 	private static readonly int _bisect = int.TryParse(Environment.GetEnvironmentVariable("UNO_WEBGPU_BISECT"), out var __b) ? __b : 0;
 	private static readonly bool _emitStats = Environment.GetEnvironmentVariable("UNO_WEBGPU_STATS") is "1" or "true";
 	private static int _emitStatsFrame;
@@ -3339,6 +3340,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				var (kind, b0, u0, b1, flag, clip, clipBg) = ops[oi];
 				statIters++;
 				if (_emitStats && clip.PathFan is not null) { statFanOps++; }
+				// UNO_WEBGPU_NOCLIP: skip path-clip application entirely (VISUALLY WRONG) to bound what any
+				// clip optimisation could ever be worth on this scene.
+				if (_noPathClip) { clip.PathFan = null; }
 				if (!ReferenceEquals(clip.PathFan, curFan))
 				{
 					ApplyDepthClip(pass, curFan, curAabb, clip);
