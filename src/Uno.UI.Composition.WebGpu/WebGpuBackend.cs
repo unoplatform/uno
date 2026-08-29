@@ -2051,7 +2051,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			// Solid/image/gradient/path all route device fc through finv; the path stencil fan carries the xform via
 			// the shared ClipU layout (ClipBgl binds to both stencil + cover). A rect/rounded clip is fine (clipCov
 			// maps fc back via finv); a PATH clip uses the depth mask (no finv) so it's still excluded.
-			if (c is not (RectCommand or ImageCmd or GradientCmd or PathFill) || c.Clip.PathFan is not null) { return false; }
+			// A per-command path fan no longer disqualifies: the arena bakes geometry at IDENTITY, so the fan is
+			// in identity space too and the re-stamp maps it to device per frame (a handful of points) instead of
+			// re-baking the whole recording. Rejecting it sent these to the rebuild-on-move path — 399 recordings
+			// per frame on RenderStress_Gradients.
+			if (c is not (RectCommand or ImageCmd or GradientCmd or PathFill)) { return false; }
 		}
 		return cmds.Count > 0;
 	}
@@ -2828,6 +2832,20 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 									// clipCov reads the LOCAL rounded shape (finv maps fc back to it); the SCISSOR is device-space
 									// so its Aabb must follow the move — transform the (finite) clip Aabb by the replay transform.
 									var scissorClip = op.clip;
+									// The op's own fan is identity-space (arena bakes at identity): map it to device for
+									// this replay. FanBuf is cleared because the residentized NDC buffer was baked for
+									// identity and is stale once moved.
+									if (op.clip.PathFan is { } localFan)
+									{
+										var moved = new float[localFan.Length];
+										for (int fi = 0; fi < localFan.Length; fi += 2)
+										{
+											var mp = MoveP(localFan[fi], localFan[fi + 1]);
+											moved[fi] = mp.X; moved[fi + 1] = mp.Y;
+										}
+										scissorClip.PathFan = moved;
+										scissorClip.FanBuf = 0;
+									}
 									// Carry the session fan onto the stamped op so the depth mask still clips it.
 									// IsArenaSafe guarantees the op's own clip has no fan, so nothing is overwritten.
 									if (rr.Clip.PathFan is { } sessionFan)
