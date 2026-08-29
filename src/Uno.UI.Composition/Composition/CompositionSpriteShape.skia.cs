@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Numerics;
@@ -151,6 +151,17 @@ namespace Microsoft.UI.Composition
 
 				if (StrokeBrush is { } stroke && StrokeThickness > 0)
 				{
+					if (Uno.UI.Composition.Drawing.DrawingCapabilities.NativeStroking
+						&& stroke is CompositionColorBrush nativeStrokeColor && stroke.CanPaint()
+						&& StrokeDashArray is not { Count: > 0 }
+						&& (Geometry?.TrimStart ?? 0f) == 0f && (Geometry?.TrimEnd ?? 0f) == 0f
+						&& StrokeLineJoin == CompositionStrokeLineJoin.Miter
+						&& StrokeStartCap == CompositionStrokeCap.Flat && StrokeEndCap == CompositionStrokeCap.Flat)
+					{
+						session.Session.StrokePath(geometryWithTransformations, WithOpacity(nativeStrokeColor.Color, session.Opacity), StrokeThickness, antialias: true);
+						return;
+					}
+
 					using var strokeGeometry = geometryWithTransformations.GetStrokeFillGeometry(GetStrokeStyle(withTrim: true));
 
 					if (stroke is CompositionColorBrush strokeColor && stroke.CanPaint())

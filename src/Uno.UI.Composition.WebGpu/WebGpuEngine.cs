@@ -36,6 +36,9 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	public IntPtr StencilTableEO;
 	public IntPtr StencilTableNZ;
 	public IntPtr CoverTablePipe;
+	/// <summary>Cover pipeline that does NOT consult the stencil: for geometry that already tiles its own shape,
+	/// so there is no stencil pass to mask against (CoverTablePipe would draw nothing, since the stencil is 0).</summary>
+	public IntPtr CoverTableDirectPipe;
 	// Transform-table SOLID / ROUNDED-RECT variants (device-verts + per-vertex slot). Same table + ClipBgl as the
 	// path-fill cover, but drawn unconditionally under the clip depth (no stencil test) so a moved solid/rrect
 	// recording repositions via its slot with cross-visual coalescing preserved. See EmitTableFrameSolid.
@@ -1309,6 +1312,9 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 		StencilTableEO = MakeTablePipe(stencilMod, vs, fs, colorWrite: false, colorAttrs: false, blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), 0xFF, 0xFF, WGPUCompareFunction.Always, stencilLayout);
 		StencilTableNZ = MakeTablePipe(stencilMod, vs, fs, colorWrite: false, colorAttrs: false, blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.IncrementWrap), Face(WGPUCompareFunction.Always, WGPUStencilOperation.DecrementWrap), 0xFF, 0xFF, WGPUCompareFunction.Always, stencilLayout);
 		CoverTablePipe = MakeTablePipe(coverMod, vs, fs, colorWrite: true, colorAttrs: true, blend, Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), 0xFF, 0xFF, WGPUCompareFunction.GreaterEqual, coverLayout);
+		// Same shader/vertex layout, but stencil Always + no stencil writes: the tiling-fan path has no stencil
+		// pass, so the masked variant would test against 0 and discard every fragment.
+		CoverTableDirectPipe = MakeTablePipe(coverMod, vs, fs, colorWrite: true, colorAttrs: true, blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep), 0x00, 0xFF, WGPUCompareFunction.GreaterEqual, coverLayout);
 		// Solid transform-table pipe: the cover shader (pos+col+slot) drawn unconditionally under the clip depth (no
 		// stencil), so coalesced solids from moving recordings position per-vertex via their own slot.
 		var keep = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);

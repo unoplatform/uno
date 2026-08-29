@@ -3744,8 +3744,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						}
 						break;
 					case 8:
-						// Single-pass fill of a tiling fan (see PathFill.FanTiles).
-						EncPipe(_d.CoverTablePipe);
+						// Single-pass fill of a tiling fan (see PathFill.FanTiles). Uses the stencil-independent
+						// cover pipeline: there is no stencil pass here, so the masked one would discard everything.
+						EncPipe(_d.CoverTableDirectPipe);
 						EncBg(0, (IntPtr)xformBg);
 						EncBg(1, (IntPtr)clipBg);
 						if (flag)
@@ -4130,7 +4131,10 @@ public sealed class WebGpuGraphicsProvider : IGraphicsProvider<IWebGpuDeviceCont
 	// path into the host's internals. Geometry is a separate seam (GeometryFactory): WebGPU flattens everything, so
 	// a SkiaSharp-free app registers a ManagedGeometryFactory there rather than injecting it here.
 	public IDrawingFactory CreateGraphics(IWebGpuDeviceContext context)
-		=> new WebGpuDrawingFactory(new WebGpuDevice(context));
+	{
+		DrawingCapabilities.NativeStroking = true;
+		return new WebGpuDrawingFactory(new WebGpuDevice(context));
+	}
 }
 
 /// <summary>
