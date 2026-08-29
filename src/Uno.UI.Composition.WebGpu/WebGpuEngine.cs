@@ -327,7 +327,45 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 			if (bucket.Count == 0) { _bgCacheEvict.Add(kv.Key); }
 		}
 		foreach (var k in _bgCacheEvict) { _bgCache.Remove(k); }
+
+		// Hard cap. The cache is keyed by uniform CONTENT, so anything whose uniform is transform-dependent misses
+		// every frame and adds a fresh entry: a spinning host with 500 gradients mints 500 buffers + bind groups per
+		// frame, and a 240-frame window lets that reach ~120k live entries (~160MB) — at which point this very scan
+		// is O(120k)/frame and frame times run into seconds. Evict the least recently used down to the cap.
+		int live = 0;
+		foreach (var kv in _bgCache) { live += kv.Value.Count; }
+		if (live <= BgCacheCap) { return; }
+		var all = new List<(long Used, int Key, int Index)>(live);
+		foreach (var kv in _bgCache)
+		{
+			for (int i = 0; i < kv.Value.Count; i++) { all.Add((kv.Value[i].LastUsed, kv.Key, i)); }
+		}
+		all.Sort((a, b) => a.Used.CompareTo(b.Used));
+		int drop = live - BgCacheCap;
+		// Remove back-to-front within each bucket so the recorded indices stay valid.
+		var byBucket = new Dictionary<int, List<int>>();
+		for (int i = 0; i < drop; i++)
+		{
+			if (!byBucket.TryGetValue(all[i].Key, out var idx)) { idx = new List<int>(); byBucket[all[i].Key] = idx; }
+			idx.Add(all[i].Index);
+		}
+		foreach (var kv in byBucket)
+		{
+			var bucket = _bgCache[kv.Key];
+			kv.Value.Sort();
+			for (int i = kv.Value.Count - 1; i >= 0; i--)
+			{
+				var e = bucket[kv.Value[i]];
+				wgpuBindGroupRelease(e.Bg);
+				if (e.Buf != IntPtr.Zero) { wgpuBufferRelease(e.Buf); }
+				bucket.RemoveAt(kv.Value[i]);
+			}
+			if (bucket.Count == 0) { _bgCache.Remove(kv.Key); }
+		}
 	}
+
+	/// <summary>Upper bound on cached bind groups; see EvictStaleBindGroups for why an unbounded cache runs away.</summary>
+	private const int BgCacheCap = 4096;
 
 	// Queues a transient image texture's GPU release for the next frame start. A brush that uploads a one-shot
 	// texture (e.g. CompositionNineGridBrush) disposes it right after recording its draw, but the WebGPU draw is
