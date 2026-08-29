@@ -745,6 +745,39 @@ public class Given_AnimatedVisualPlayer
 		Assert.IsTrue(CountDifferentPixels(firstFrame, secondFrame, (int)host.ActualWidth, (int)host.ActualHeight) > 0, "Two known progress frames should produce different output.");
 	}
 
+	// The Lottie visual draws through an SKCanvasElement, i.e. straight into the frame being recorded, so
+	// anything it does to the whole canvas (such as clearing it) is applied to the pixels already painted
+	// underneath it, turning an opaque background behind the player into a hole.
+	[TestMethod]
+	public async Task When_Production_Lottie_Source_Renders_Then_Content_Behind_It_Is_Preserved()
+	{
+		var player = new AnimatedVisualPlayer
+		{
+			Width = 48,
+			Height = 48,
+			AutoPlay = false,
+			Source = new LottieVisualSource
+			{
+				UriSource = FeatureConfiguration.ProgressRing.DeterminateProgressRingAsset
+			}
+		};
+		var host = CreateHost(player);
+		host.Background = new SolidColorBrush(Microsoft.UI.Colors.Red);
+
+		await UITestHelper.Load(host);
+		await TestServices.WindowHelper.WaitFor(() => player.IsAnimatedVisualLoaded, timeoutMS: 5000, "The production Lottie source should load asynchronously.");
+
+		player.SetProgress(0.15);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var frame = await UITestHelper.ScreenShot(host);
+		await frame.Populate();
+
+		Assert.IsFalse(
+			ContainsTransparentPixel(frame, (int)host.ActualWidth, (int)host.ActualHeight),
+			"The Lottie visual cleared its own box, punching a hole through the opaque background behind it.");
+	}
+
 	private static AnimatedVisualPlayer CreatePlayer(bool autoPlay = false, TimeSpan? duration = null)
 	{
 		return new AnimatedVisualPlayer
@@ -830,6 +863,23 @@ public class Given_AnimatedVisualPlayer
 		}
 
 		return differentPixels;
+	}
+
+	// Inset by a pixel so the host's own antialiased edge isn't mistaken for a hole punched in its middle.
+	private static bool ContainsTransparentPixel(RawBitmap screenshot, int width, int height)
+	{
+		for (var x = 1; x < width - 1; x++)
+		{
+			for (var y = 1; y < height - 1; y++)
+			{
+				if (screenshot.GetPixel(x, y).A < 250)
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	private static bool ContainsNonWhitePixel(RawBitmap screenshot, int startX, int startY, int width, int height)
