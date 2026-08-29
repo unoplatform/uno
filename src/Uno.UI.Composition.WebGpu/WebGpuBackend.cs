@@ -1394,6 +1394,19 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private readonly Stack<List<float>> _solidPool = new();
 	private List<float> _gradVerts;
 	private List<float> _quadVerts;
+	private List<float> _pathVerts;
+
+	// Appends a block of path-fill verts to the shared per-pass buffer and returns its BYTE offset. Fan verts have
+	// stride 12 and cover verts stride 28, and a draw's firstVertex is in units of its own stride, so every block
+	// starts on an 84-byte (lcm) boundary — that lets both live in ONE buffer, which is what makes the vertex-buffer
+	// set dedup across the whole pass instead of alternating fan/cover.
+	private int AppendPathBlock(List<float> src)
+	{
+		while ((_pathVerts.Count * sizeof(float)) % 84 != 0) { _pathVerts.Add(0f); }
+		var off = _pathVerts.Count * sizeof(float);
+		_pathVerts.AddRange(src);
+		return off;
+	}
 	private List<float> RentSolid() => _solidPool.Count > 0 ? _solidPool.Pop() : new(4096);
 	private void ReturnSolid(List<float> s) { s.Clear(); _solidPool.Push(s); }
 	// Appends one device-space quad (two tris) to the shared solid buffer; returns the start vertex index. 6 verts.
@@ -2216,15 +2229,18 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					bbMin = Vector2.Min(bbMin, pfj.BbMin); bbMax = Vector2.Max(bbMax, pfj.BbMax);
 					j++;
 				}
-				var fanBuf = Vbuf(_scratch, owned);
 				uint fanCount = (uint)(_scratch.Count / 3);
+				var fanShared = owned is null ? AppendPathBlock(_scratch) : -1;
+				var fanBuf = owned is null ? IntPtr.Zero : Vbuf(_scratch, owned);
 				float pr = pf0.Color.R / 255f, pg = pf0.Color.G / 255f, pb = pf0.Color.B / 255f, pa = pf0.Color.A / 255f;
 				_scratch.Clear();
 				var tl = bbMin; var br = bbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
 				PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(tr, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits);
 				PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits); PushVertT(bl, pr, pg, pb, pa, slotBits);
-				var covBuf = Vbuf(_scratch, owned);
-				ops.Add(new DrawOp(1, (nint)fanBuf, fanCount, (nint)covBuf, false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, owned)));
+				// kind 7: b0/b1 are BYTE offsets into the shared per-pass path buffer instead of private buffers.
+				ops.Add(owned is null
+					? new DrawOp(7, fanShared, fanCount, AppendPathBlock(_scratch), false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, owned))
+					: new DrawOp(1, (nint)fanBuf, fanCount, (nint)Vbuf(_scratch, owned), false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, owned)));
 				ci = j - 1;
 			}
 			else { BuildSimpleOp(cmds[ci], ops, owned, pathSlot); }
@@ -2264,16 +2280,18 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					float slotBits = System.BitConverter.Int32BitsToSingle(pathSlot);
 					_scratch.Clear();
 					for (int i = 0; i < pf.FanDevice.Length; i += 2) { _scratch.Add(pf.FanDevice[i]); _scratch.Add(pf.FanDevice[i + 1]); _scratch.Add(slotBits); }
-					var fanBuf = Vbuf(_scratch, owned);
+					var fanShared = owned is null ? AppendPathBlock(_scratch) : -1;
+					var fanBuf = owned is null ? IntPtr.Zero : Vbuf(_scratch, owned);
 					float pr = pf.Color.R / 255f, pg = pf.Color.G / 255f, pb = pf.Color.B / 255f, pa = pf.Color.A / 255f;
 					_scratch.Clear();
 					var tl = pf.BbMin; var br = pf.BbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
 					PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(tr, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits);
 					PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits); PushVertT(bl, pr, pg, pb, pa, slotBits);
-					var covBuf = Vbuf(_scratch, owned);
 					var pClip = StripRedundantFan(pf.Clip, new Vector4(pf.BbMin.X, pf.BbMin.Y, pf.BbMax.X, pf.BbMax.Y));
 					var clipBg = MakeClipBg(_d.CoverClipBgl, pClip, owned);
-					ops.Add(new DrawOp(1, (nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)covBuf, pf.EvenOdd, pClip, (nint)clipBg));
+					ops.Add(owned is null
+						? new DrawOp(7, fanShared, (uint)(pf.FanDevice.Length / 2), AppendPathBlock(_scratch), pf.EvenOdd, pClip, (nint)clipBg)
+						: new DrawOp(1, (nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)Vbuf(_scratch, owned), pf.EvenOdd, pClip, (nint)clipBg));
 					break;
 				}
 			case ImageCmd im:
@@ -2689,8 +2707,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// saved/restored around the nested-layer RenderInto so each pass builds and uploads its own.
 		var savedGradVerts = _gradVerts;
 		var savedQuadVerts = _quadVerts;
+		var savedPathVerts = _pathVerts;
 		_gradVerts = RentSolid(); _gradVerts.Clear();
 		_quadVerts = RentSolid(); _quadVerts.Clear();
+		_pathVerts = RentSolid(); _pathVerts.Clear();
 		var mainPass = ReferenceEquals(target, _s);
 		_xforms = RentXforms(); _xforms.Clear();
 		_xformTransient = RentTransient(); _xformTransient.Clear();
@@ -3235,6 +3255,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var gradBufBytes = (nuint)(_gradVerts.Count * sizeof(float));
 		nint quadBuf = _quadVerts.Count > 0 ? (nint)MakeBuffer(_quadVerts) : IntPtr.Zero;
 		var quadBufBytes = (nuint)(_quadVerts.Count * sizeof(float));
+		nint pathBuf = _pathVerts.Count > 0 ? (nint)MakeBuffer(_pathVerts) : IntPtr.Zero;
+		var pathBufBytes = (nuint)(_pathVerts.Count * sizeof(float));
 		var solidBufBytes = (nuint)(solid.Count * sizeof(float));
 
 		// Upload this pass's transform table + one read-only storage bind group (group 0 of the path-fill pipelines).
@@ -3269,6 +3291,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			var o = ops[i];
 			bundleEligible = o.kind is 0 or 1 or 2 or 3 or 5
 				&& !(o.kind is 0 or 5 && o.b0 == 0)   // shared per-frame append buffers: handles churn every frame
+				&& !(o.kind is 2 or 3 && o.flag)      // ditto: flag means b1 indexes this frame's shared quad/gradient buffer
 				&& ScissorWidenable(o.clip);
 		}
 		// Chunked bundle cache: fixed-size op chunks compare independently against the snapshot, so an animated
@@ -3523,6 +3546,19 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						EncBg(1, (IntPtr)clipBg);
 						EncVb((IntPtr)b1, 0, (nuint)(42 * sizeof(float)));
 						EncDraw(6);
+						break;
+					case 7:
+						// Shared-buffer path fill: same as kind 1, but b0/b1 are byte offsets into pathBuf, so the
+						// vertex buffer is bound once for the whole pass instead of twice per fill.
+						EncPipe(flag ? _d.StencilTableEO : _d.StencilTableNZ);
+						EncBg(0, (IntPtr)xformBg);
+						EncVb((IntPtr)pathBuf, 0, pathBufBytes);
+						EncDraw(u0, (uint)(b0 / (3 * sizeof(float))));
+						EncPipe(_d.CoverTablePipe);
+						EncBg(0, (IntPtr)xformBg);
+						EncBg(1, (IntPtr)clipBg);
+						EncVb((IntPtr)pathBuf, 0, pathBufBytes);
+						EncDraw(6, (uint)(b1 / (7 * sizeof(float))));
 						break;
 					case 2:
 						EncPipe(_d.ImagePipe);
@@ -3791,8 +3827,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		_xformTransient.Clear(); _xformTransientPool.Push(_xformTransient);
 		ReturnSolid(_gradVerts);
 		ReturnSolid(_quadVerts);
+		ReturnSolid(_pathVerts);
 		_gradVerts = savedGradVerts;
 		_quadVerts = savedQuadVerts;
+		_pathVerts = savedPathVerts;
 		_xforms = savedXforms; _xformTransient = savedTransient;
 	}
 
