@@ -1222,7 +1222,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			{
 				long t1 = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 				_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
-				_d.GradSlab.Flush();
+				_d.FlushFrameSlabs();
 				var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 				wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 				// wgpu holds its own reference until the submission completes, so both handles are dropped
@@ -1613,19 +1613,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		FillClipU(cd, xform, finv);
 		var cu = _clipU;
 
-		// The ClipU depends only on (layout, these floats) — identical across frames for static chrome — so reuse a
-		// cached bind group. Now that path clips carry no per-frame coverage texture, every clip is cacheable.
-		if (_d.TryGetCachedBg(bgl, cu, out var cachedBg)) { return cachedBg; }
-		{
-			var cbd = new WGPUBufferDescriptor { Size = ClipUBytes, Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
-			var cbuf = wgpuDeviceCreateBuffer(_d.Dev, &cbd);
-			fixed (float* p = cu) { wgpuQueueWriteBuffer(_d.Q, cbuf, 0, (IntPtr)p, ClipUBytes); }
-			var ce = new WGPUBindGroupEntry { Binding = 0, Buffer = cbuf, Offset = 0, Size = ClipUBytes };
-			var cbgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 1, Entries = &ce };
-			var cbg = wgpuDeviceCreateBindGroup(_d.Dev, (WGPUBindGroupDescriptor*)Unsafe.AsPointer(ref cbgd));
-			_d.AddCachedBg(bgl, (float[])cu.Clone(), cbuf, cbg);   // cache stores the key — clone off the reused scratch
-			return cbg;
-		}
+		// Immediate ops take a recycled per-frame slab slot: its bind group is created once and reused, and the
+		// whole frame's clips upload in one queue write per chunk. The content-keyed cache used to mint a buffer +
+		// bind group on every miss, and a clip carrying DEVICE-space geometry misses every frame under any moving
+		// transform — ~960 native calls/frame on RealWorld_MapOverlay, the same runaway the gradients had.
+		return _d.ClipBgSlabFor(bgl, ClipUBytes).Rent(bgl, cu);
 	}
 
 	// Fills the shadow silhouette into an offscreen coverage surface (stencil-then-cover, white), then blurs it
@@ -1753,7 +1745,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				if (owns)
 				{
 					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
-					_d.GradSlab.Flush();
+					_d.FlushFrameSlabs();
 					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 					// wgpu holds its own reference until the submission completes, so both handles are dropped
@@ -1802,7 +1794,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				if (owns)
 				{
 					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
-					_d.GradSlab.Flush();
+					_d.FlushFrameSlabs();
 					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 					// wgpu holds its own reference until the submission completes, so both handles are dropped
@@ -1850,7 +1842,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				if (owns)
 				{
 					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
-					_d.GradSlab.Flush();
+					_d.FlushFrameSlabs();
 					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 					// wgpu holds its own reference until the submission completes, so both handles are dropped
@@ -1896,7 +1888,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				if (owns)
 				{
 					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
-					_d.GradSlab.Flush();
+					_d.FlushFrameSlabs();
 					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 					// wgpu holds its own reference until the submission completes, so both handles are dropped
@@ -1941,7 +1933,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				if (owns)
 				{
 					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
-					_d.GradSlab.Flush();
+					_d.FlushFrameSlabs();
 					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
 					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 					// wgpu holds its own reference until the submission completes, so both handles are dropped
@@ -2339,8 +2331,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					var bytes = (nuint)WebGpuDevice.GradientUniformBytes;
 					IntPtr gbg;
 					{
-						// No content-keyed lookup here: AddCachedBg is only ever called for ClipU, so a gradient
-						// probe could never hit — it just hashed all 332 uniform floats per gradient per frame.
 						if (owned is null)
 						{
 							// One slab slot instead of a buffer + queue write per gradient per frame: the whole
@@ -2991,7 +2981,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 									// identity and is stale once moved.
 									if (op.clip.PathFan is { } localFan)
 									{
-										if (arenaFanBg == 0) { arenaFanBg = (nint)MakeClipBg(_d.ClipBgl, default, null, xf, finv); }
+										// stampOwned, never the per-frame slab: this bind group is memoized into StampedOps and
+									// reused on later frames while the transform holds.
+									if (arenaFanBg == 0) { arenaFanBg = (nint)MakeClipBg(_d.ClipBgl, default, stampOwned, xf, finv); }
 										// Keep the identity-space fan and its resident NDC buffer; hand the stencil draw
 										// the arena transform instead. Transforming on the CPU here would mean a fresh
 										// fan upload per op per frame (392/frame on RenderStress_Gradients).
