@@ -3314,6 +3314,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			StencilClearValue = 0,
 		};
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
+		// Bracket the MAIN pass with timestamps when UNO_WEBGPU_GPUTIME=1: this is the only way to see real GPU
+		// time. The CPU-side phases cannot distinguish "GPU idle" from "CPU blocked waiting on a busy GPU".
+		var tsw = new WGPUPassTimestampWrites { QuerySet = _d.TsQuerySet, BeginningOfPassWriteIndex = 0, EndOfPassWriteIndex = 1 };
+		var gpuTimed = _d.GpuTiming && mainPass;
+		if (gpuTimed) { rp.TimestampWrites = &tsw; }
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
 		var encodeStart = System.Diagnostics.Stopwatch.GetTimestamp();
 
@@ -3655,13 +3660,19 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
 		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
 		{
-			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} fanTry=t{StatFanTried}/ok{StatFanStripped}/big{StatFanTooBig}/concave{StatFanConcave}/nocover{StatFanNotCovering} cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip}) replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds}");
+			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} fanTry=t{StatFanTried}/ok{StatFanStripped}/big{StatFanTooBig}/concave{StatFanConcave}/nocover{StatFanNotCovering} gpu={_d.LastGpuMs:F2}ms cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip}) replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds}");
 			WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = 0;
 			StatFanTried = StatFanStripped = StatFanTooBig = StatFanConcave = StatFanNotCovering = 0;
 			_statTableRebuilds = 0; _statStamps = 0; _statArenaRebuilds = 0; _statCachedRebuilds = 0; _statCrMiss = _statCrMove = _statCrPathFlip = _statCrSize = _statCrClip = 0;
 		}
 
 		wgpuRenderPassEncoderEnd(pass);
+		if (gpuTimed)
+		{
+			wgpuCommandEncoderResolveQuerySet(_frameEncoder, _d.TsQuerySet, 0, 2, _d.TsResolve, 0);
+			wgpuCommandEncoderCopyBufferToBuffer(_frameEncoder, _d.TsResolve, 0, _d.TsStage, 0, 16);
+			_d.PollGpuTiming();
+		}
 		// A pooled offscreen (layer/backdrop) target: its MSAA colour has resolved into View and the depth is spent,
 		// so return both for the next same-size pass to reuse — only View (composited/sampled later) stays live. The
 		// on-window/dedicated target owns its MSAA+depth (persistent across frames) and is left untouched.

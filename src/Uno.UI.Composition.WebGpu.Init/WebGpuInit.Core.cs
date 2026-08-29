@@ -1,4 +1,4 @@
-// Minimal-but-real WebGPU backend implementing the NEUTRAL drawing seam (public SPI from Uno.UI.Composition).
+﻿// Minimal-but-real WebGPU backend implementing the NEUTRAL drawing seam (public SPI from Uno.UI.Composition).
 // Solid rects + even-odd path fill (stencil-then-cover) consuming IGeometry.StreamFlattened (Skia-less).
 #nullable disable
 using System;
@@ -84,6 +84,8 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 	public IntPtr Smp;                       // present-blit sampler (used by the swapchain/browser contexts)
 	public JSObject JsDeviceObject;          // browser only: the live JS GPUDevice (the honest neutral handle)
 	private bool _hasFormatFeatures;
+	/// <summary>Device was created with timestamp-query, so render passes can report real GPU durations.</summary>
+	public bool HasTimestampQuery { get; private set; }
 	private readonly bool _browser;
 
 	public static IntPtr CreateInstancePtr() => CreateInstance();
@@ -146,10 +148,18 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 		var ddesc = new WGPUDeviceDescriptor();
 		// wgpu-native's TextureAdapterSpecificFormatFeatures (when present) is what makes 2× MSAA valid for BGRA8/
 		// RGBA8; without it 2× fails validation. Request it so PickSampleCount's 2× tier is usable.
-		WGPUFeatureName* feats = stackalloc WGPUFeatureName[1];
+		WGPUFeatureName* feats = stackalloc WGPUFeatureName[2];
+		uint featCount = 0;
 		var fmtFeat = (WGPUFeatureName)WGPUNativeFeature.TextureAdapterSpecificFormatFeatures;
 		_hasFormatFeatures = wgpuAdapterHasFeature(Adapter, fmtFeat) != 0;
-		if (_hasFormatFeatures) { feats[0] = fmtFeat; ddesc.RequiredFeatures = feats; ddesc.RequiredFeatureCount = 1; }
+		if (_hasFormatFeatures) { feats[featCount++] = fmtFeat; }
+		// timestamp-query gives REAL GPU pass durations, which the frame-phase log cannot see: it measures CPU
+		// time, so a GPU-bound frame shows up only indirectly as time blocked in submit/present. Requested only
+		// when UNO_WEBGPU_GPUTIME=1 so a normal run carries no query overhead.
+		HasTimestampQuery = Environment.GetEnvironmentVariable("UNO_WEBGPU_GPUTIME") is "1"
+			&& wgpuAdapterHasFeature(Adapter, WGPUFeatureName.TimestampQuery) != 0;
+		if (HasTimestampQuery) { feats[featCount++] = WGPUFeatureName.TimestampQuery; }
+		if (featCount > 0) { ddesc.RequiredFeatures = feats; ddesc.RequiredFeatureCount = featCount; }
 		// Non-fatal uncaptured-error handler (wgpu's default panics the process on any validation/OOM error).
 		ddesc.UncapturedErrorCallbackInfo = new WGPUUncapturedErrorCallbackInfo
 		{
@@ -169,7 +179,7 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 		Q = wgpuDeviceGetQueue(Dev);
 		MsaaSamples = PickSampleCount();
 		CreatePresentSampler();
-		System.Console.WriteLine($"[webgpu] init device — msaa={MsaaSamples}x fmtFeatures={_hasFormatFeatures} colorFormat={ColorFormat}");
+		System.Console.WriteLine($"[webgpu] init device — msaa={MsaaSamples}x fmtFeatures={_hasFormatFeatures} timestampQuery={HasTimestampQuery} colorFormat={ColorFormat}");
 	}
 
 	private WebGpuInitDevice(WGPUTextureFormat colorFormat, IntPtr inst, IntPtr dev)
