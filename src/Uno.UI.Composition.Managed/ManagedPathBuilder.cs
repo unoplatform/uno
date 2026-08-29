@@ -216,6 +216,69 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 
 
 	/// <summary>
+	/// Recognises the 4-cubic closed contour an ellipse flattens to. An ellipse IS a rounded rectangle whose
+	/// radii are its half-extents, so reporting it as one lets clip coverage be computed analytically instead of
+	/// through a depth mask. Returns null for anything that is not exactly axis-aligned, so a mis-detection
+	/// cannot silently change a shape.
+	/// </summary>
+	private static RoundRectangle? TryInferEllipse(ManagedContour contour)
+	{
+		var seg = contour.Segments;
+		for (int i = 0; i < 4; i++)
+		{
+			if (seg[i].Kind != ManagedSegmentKind.Cubic) { return null; }
+		}
+
+		// The four endpoints must be the axis extremes: each sits at the midpoint of one bounding-box edge.
+		Span<Vector2> pts = stackalloc Vector2[4] { contour.Start, seg[0].End, seg[1].End, seg[2].End };
+		if (MathF.Abs(seg[3].End.X - contour.Start.X) > 0.01f || MathF.Abs(seg[3].End.Y - contour.Start.Y) > 0.01f) { return null; }
+
+		float minX = float.MaxValue, minY = float.MaxValue, maxX = float.MinValue, maxY = float.MinValue;
+		for (int i = 0; i < 4; i++)
+		{
+			minX = MathF.Min(minX, pts[i].X); maxX = MathF.Max(maxX, pts[i].X);
+			minY = MathF.Min(minY, pts[i].Y); maxY = MathF.Max(maxY, pts[i].Y);
+		}
+		var w = maxX - minX; var h = maxY - minY;
+		if (w <= 0.02f || h <= 0.02f) { return null; }
+		var cx = minX + w * 0.5f; var cy = minY + h * 0.5f;
+		var tol = 0.01f * MathF.Max(w, h);
+
+		// Each endpoint is either (cx, top/bottom) or (left/right, cy), and all four must be distinct extremes.
+		int onVertical = 0, onHorizontal = 0;
+		for (int i = 0; i < 4; i++)
+		{
+			var p = pts[i];
+			if (MathF.Abs(p.X - cx) <= tol && (MathF.Abs(p.Y - minY) <= tol || MathF.Abs(p.Y - maxY) <= tol)) { onVertical++; }
+			else if (MathF.Abs(p.Y - cy) <= tol && (MathF.Abs(p.X - minX) <= tol || MathF.Abs(p.X - maxX) <= tol)) { onHorizontal++; }
+			else { return null; }
+		}
+		if (onVertical != 2 || onHorizontal != 2) { return null; }
+
+		// Control points must stay inside the bounding box, or the curve bulges beyond the ellipse.
+		for (int i = 0; i < 4; i++)
+		{
+			if (seg[i].C1.X < minX - tol || seg[i].C1.X > maxX + tol
+				|| seg[i].C1.Y < minY - tol || seg[i].C1.Y > maxY + tol
+				|| seg[i].C2.X < minX - tol || seg[i].C2.X > maxX + tol
+				|| seg[i].C2.Y < minY - tol || seg[i].C2.Y > maxY + tol)
+			{
+				return null;
+			}
+		}
+
+		var radii = new Vector2(w * 0.5f, h * 0.5f);
+		return new RoundRectangle
+		{
+			Rect = new Rect(minX, minY, w, h),
+			TopLeft = radii,
+			TopRight = radii,
+			BottomRight = radii,
+			BottomLeft = radii,
+		};
+	}
+
+	/// <summary>
 	/// Recognises a single closed contour that is exactly an axis-aligned rounded rectangle: the canonical
 	/// 8-segment Line/Cubic alternation (top edge, TR corner, right edge, BR corner, ...). Returns null for
 	/// anything else, so a mis-detection cannot silently change a shape.
@@ -224,6 +287,7 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 	{
 		if (_contours.Count != 1) { return null; }
 		var contour = _contours[0];
+		if (contour.Closed && contour.Segments.Length == 4) { return TryInferEllipse(contour); }
 		if (!contour.Closed || contour.Segments.Length != 8) { return null; }
 		var seg = contour.Segments;
 		for (int i = 0; i < 8; i++)
