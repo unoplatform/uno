@@ -1907,13 +1907,18 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 		if (idx > c.DirtyMax) { c.DirtyMax = idx; }
 	}
 
+	/// <summary>Bytes uploaded by the last <see cref="Flush"/>, for UNO_WEBGPU_STATS.</summary>
+	public long LastFlushBytes;
+
 	/// <summary>One queue write per dirty chunk range — call before any submit whose commands read clips.</summary>
 	public void Flush()
 	{
+		LastFlushBytes = 0;
 		foreach (var c in _chunks)
 		{
 			if (c.DirtyMax < 0) { continue; }
 			int lo = c.DirtyMin * SlotFloats, len = (c.DirtyMax + 1 - c.DirtyMin) * SlotFloats;
+			LastFlushBytes += len * sizeof(float);
 			fixed (float* p = &c.Shadow[lo]) { wgpuQueueWriteBuffer(_d.Q, c.Buf, (nuint)(lo * sizeof(float)), (IntPtr)p, (nuint)(len * sizeof(float))); }
 			c.DirtyMin = int.MaxValue;
 			c.DirtyMax = -1;
