@@ -359,7 +359,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 				Height = 300,
 				VerticalScrollBarVisibility = verticalScrollBarVisibility,
 				IsScrollInertiaEnabled = false,
+#if HAS_UNO // ScrollViewerUpdatesMode is Uno-specific
 				UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode.Synchronous,
+#endif
 				Content = new Border
 				{
 					Width = 180,
