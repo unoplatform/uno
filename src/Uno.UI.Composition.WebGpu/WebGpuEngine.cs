@@ -81,6 +81,26 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
 	public WebGpuClipSlab ClipSlab;               // chunked uniform slab backing every owned/restamped ClipU
 	public WebGpuUniformSlab GradSlab;            // per-frame gradient uniforms, one queue write per chunk
+	// Per-frame ClipU slabs for IMMEDIATE ops, one per bind-group layout (a slot's bind group is created once and
+	// reused, so it must always be built with the same layout).
+	private readonly System.Collections.Generic.Dictionary<nint, WebGpuUniformSlab> _clipBgSlabs = new();
+
+	public WebGpuUniformSlab ClipBgSlabFor(IntPtr layout, int clipUBytes)
+	{
+		if (!_clipBgSlabs.TryGetValue(layout, out var slab))
+		{
+			slab = new WebGpuUniformSlab(this, clipUBytes);
+			_clipBgSlabs[layout] = slab;
+		}
+		return slab;
+	}
+
+	/// <summary>Uploads every per-frame uniform slab — call before any submit whose commands read them.</summary>
+	public void FlushFrameSlabs()
+	{
+		GradSlab?.Flush();
+		foreach (var kv in _clipBgSlabs) { kv.Value.Flush(); }
+	}
 	public WebGpuSlab SolidSlab;                  // persistent shared slab: all recordings' solid verts (6 floats/v)
 	public WebGpuSlab RrectSlab;                  // persistent shared slab: all recordings' rrect verts (22 floats/v)
 												  // Transform-TABLE shared slabs: local (identity-baked) verts + a trailing per-vertex slot index (solid = 7
@@ -214,6 +234,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		PollGpuTiming();
 		ResetUniformRing();
 		GradSlab?.Reset();
+		foreach (var kv in _clipBgSlabs) { kv.Value.Reset(); }
 		FrameSeq++;
 		Pool.BeginFrame();
 		BufferPool.BeginFrame();
@@ -230,7 +251,6 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		foreach (var s in _pendingClipSlots) { ClipSlab.Free(s); }
 		_pendingClipSlots.Clear();
 
-		EvictStaleBindGroups();
 
 		// Free compiled draw-lists whose owning recording was disposed (their slab slices are reclaimed separately by
 		// each slab's RetainOnly, since a disposed recording is never replayed → never marked live).
@@ -300,103 +320,6 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		return _xformBg;
 	}
 
-	// Cross-frame cache for content-identical bind groups whose resources are all persistent (the uniform buffer we
-	// own here + device-stable DummyTex/sampler) — i.e. non-path clips and gradients. Static UI chrome rebuilds the
-	// same clip/gradient every frame; caching drops a CreateBuffer + CreateBindGroup per such command per frame.
-	// Keyed by (layout, uniform floats). Evicted after 240 unused frames. Path-clip bind groups are NOT cached (their
-	// coverage texture is per-frame pooled). Touched only under RenderGate (main + nested renders serialize on it).
-	private int _bgFrameNo;
-	private sealed class CachedBg { public nint Bgl; public float[] Sig; public IntPtr Buf; public IntPtr Bg; public int LastUsed; }
-	private readonly System.Collections.Generic.Dictionary<int, System.Collections.Generic.List<CachedBg>> _bgCache = new();
-	private readonly System.Collections.Generic.List<int> _bgCacheEvict = new();
-	private static int SigHash(nint bgl, float[] sig)
-	{
-		unchecked
-		{
-			int h = (int)bgl ^ (int)(bgl >> 32);
-			foreach (var f in sig) { h = (h * 16777619) ^ BitConverter.SingleToInt32Bits(f); }
-			return h;
-		}
-	}
-
-	internal bool TryGetCachedBg(nint bgl, float[] sig, out IntPtr bg)
-	{
-		if (_bgCache.TryGetValue(SigHash(bgl, sig), out var bucket))
-		{
-			foreach (var e in bucket)
-			{
-				if (e.Bgl == bgl && ((ReadOnlySpan<float>)e.Sig).SequenceEqual(sig)) { e.LastUsed = _bgFrameNo; bg = e.Bg; return true; }
-			}
-		}
-		bg = default;
-		return false;
-	}
-
-	internal void AddCachedBg(nint bgl, float[] sig, IntPtr buf, IntPtr bg)
-	{
-		var h = SigHash(bgl, sig);
-		if (!_bgCache.TryGetValue(h, out var bucket)) { bucket = new(); _bgCache[h] = bucket; }
-		bucket.Add(new CachedBg { Bgl = bgl, Sig = sig, Buf = buf, Bg = bg, LastUsed = _bgFrameNo });
-	}
-
-	private void EvictStaleBindGroups()
-	{
-		_bgFrameNo++;
-		_bgCacheEvict.Clear();
-		foreach (var kv in _bgCache)
-		{
-			var bucket = kv.Value;
-			for (int i = bucket.Count - 1; i >= 0; i--)
-			{
-				if (_bgFrameNo - bucket[i].LastUsed > 240)
-				{
-					wgpuBindGroupRelease(bucket[i].Bg);
-					if (bucket[i].Buf != IntPtr.Zero) { wgpuBufferRelease(bucket[i].Buf); }
-					bucket.RemoveAt(i);
-				}
-			}
-			if (bucket.Count == 0) { _bgCacheEvict.Add(kv.Key); }
-		}
-		foreach (var k in _bgCacheEvict) { _bgCache.Remove(k); }
-
-		// Hard cap. The cache is keyed by uniform CONTENT, so anything whose uniform is transform-dependent misses
-		// every frame and adds a fresh entry: a spinning host with 500 gradients mints 500 buffers + bind groups per
-		// frame, and a 240-frame window lets that reach ~120k live entries (~160MB) — at which point this very scan
-		// is O(120k)/frame and frame times run into seconds. Evict the least recently used down to the cap.
-		int live = 0;
-		foreach (var kv in _bgCache) { live += kv.Value.Count; }
-		if (live <= BgCacheCap) { return; }
-		var all = new List<(long Used, int Key, int Index)>(live);
-		foreach (var kv in _bgCache)
-		{
-			for (int i = 0; i < kv.Value.Count; i++) { all.Add((kv.Value[i].LastUsed, kv.Key, i)); }
-		}
-		all.Sort((a, b) => a.Used.CompareTo(b.Used));
-		int drop = live - BgCacheCap;
-		// Remove back-to-front within each bucket so the recorded indices stay valid.
-		var byBucket = new Dictionary<int, List<int>>();
-		for (int i = 0; i < drop; i++)
-		{
-			if (!byBucket.TryGetValue(all[i].Key, out var idx)) { idx = new List<int>(); byBucket[all[i].Key] = idx; }
-			idx.Add(all[i].Index);
-		}
-		foreach (var kv in byBucket)
-		{
-			var bucket = _bgCache[kv.Key];
-			kv.Value.Sort();
-			for (int i = kv.Value.Count - 1; i >= 0; i--)
-			{
-				var e = bucket[kv.Value[i]];
-				wgpuBindGroupRelease(e.Bg);
-				if (e.Buf != IntPtr.Zero) { wgpuBufferRelease(e.Buf); }
-				bucket.RemoveAt(kv.Value[i]);
-			}
-			if (bucket.Count == 0) { _bgCache.Remove(kv.Key); }
-		}
-	}
-
-	/// <summary>Upper bound on cached bind groups; see EvictStaleBindGroups for why an unbounded cache runs away.</summary>
-	private const int BgCacheCap = 4096;
 
 	// Queues a transient image texture's GPU release for the next frame start. A brush that uploads a one-shot
 	// texture (e.g. CompositionNineGridBrush) disposes it right after recording its draw, but the WebGPU draw is
