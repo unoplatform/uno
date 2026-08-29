@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -131,6 +131,14 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 
 	public IGeometry Transform(Matrix3x2 matrix)
 	{
+		// Identity is not a copy. A retained session snapshots every recorded geometry with Transform(identity),
+		// so without this each record deep-copies every contour of every path — and the copy also defeats any
+		// cache keyed on geometry identity. Safe because this type is immutable and Dispose is a no-op.
+		if (matrix.IsIdentity)
+		{
+			return this;
+		}
+
 		var transformed = new ManagedContour[Contours.Count];
 		for (var i = 0; i < Contours.Count; i++)
 		{
