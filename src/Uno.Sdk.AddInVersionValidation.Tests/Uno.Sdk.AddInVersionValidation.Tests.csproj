@@ -26,6 +26,14 @@
 			apphost is not needed.
 		-->
 		<UseAppHost>false</UseAppHost>
+		<!--
+			The add-in packages below transitively bring in Uno.WinUI.DevServer, whose
+			buildTransitive targets raise UNOB0019 on optimized builds (`exclude="Build"` in
+			their nuspec does not cover the buildTransitive asset group). CI runs this project
+			with `-c Release`, and it only reads AssemblyRef tables — no optimized code is ever
+			executed — so opt out of Optimize rather than pinning the DevServer version here.
+		-->
+		<Optimize>false</Optimize>
 	</PropertyGroup>
 
 	<PropertyGroup>
