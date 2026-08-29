@@ -3340,10 +3340,37 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		int statBundleReplay = 0, statBundleRec = 0;
 		IntPtr bundleEnc = IntPtr.Zero;
 		var bundleRec = false;
+		// Redundant-state dedup, same shape as the scissor dedup above. Every op re-set its pipeline, both bind
+		// groups and its vertex buffer, so a run of like ops cost 5 native calls each where 2 suffice; a long
+		// gradient run under one clip is ~3100 calls/frame on RenderStress_Gradients. Encoder state is per-pass
+		// and per-bundle, so EncReset() must run at EVERY boundary: pass open/reopen, bundle begin/end, and after
+		// any site that sets state directly instead of through these helpers.
+		IntPtr lastPipe = -1, lastBg0 = -1, lastBg1 = -1, lastVb = -1;
+		nuint lastVbOff = unchecked((nuint)ulong.MaxValue), lastVbSize = 0;
+		void EncReset()
+		{
+			lastPipe = -1; lastBg0 = -1; lastBg1 = -1; lastVb = -1;
+			lastVbOff = unchecked((nuint)ulong.MaxValue); lastVbSize = 0;
+		}
 		// Encode target: the open pass, or (when recording a cache-eligible chunk) the render bundle encoder.
-		void EncPipe(IntPtr pipe) { if (bundleRec) { wgpuRenderBundleEncoderSetPipeline(bundleEnc, pipe); } else { wgpuRenderPassEncoderSetPipeline(pass, pipe); } }
-		void EncBg(uint group, IntPtr bg) { if (bundleRec) { wgpuRenderBundleEncoderSetBindGroup(bundleEnc, group, bg, 0, (uint*)null); } else { wgpuRenderPassEncoderSetBindGroup(pass, group, bg, 0, (uint*)null); } }
-		void EncVb(IntPtr buf, nuint off, nuint size) { if (bundleRec) { wgpuRenderBundleEncoderSetVertexBuffer(bundleEnc, 0, buf, off, size); } else { wgpuRenderPassEncoderSetVertexBuffer(pass, 0, buf, off, size); } }
+		void EncPipe(IntPtr pipe)
+		{
+			if (pipe == lastPipe) { return; }
+			lastPipe = pipe;
+			if (bundleRec) { wgpuRenderBundleEncoderSetPipeline(bundleEnc, pipe); } else { wgpuRenderPassEncoderSetPipeline(pass, pipe); }
+		}
+		void EncBg(uint group, IntPtr bg)
+		{
+			if (group == 0) { if (bg == lastBg0) { return; } lastBg0 = bg; }
+			else if (group == 1) { if (bg == lastBg1) { return; } lastBg1 = bg; }
+			if (bundleRec) { wgpuRenderBundleEncoderSetBindGroup(bundleEnc, group, bg, 0, (uint*)null); } else { wgpuRenderPassEncoderSetBindGroup(pass, group, bg, 0, (uint*)null); }
+		}
+		void EncVb(IntPtr buf, nuint off, nuint size)
+		{
+			if (buf == lastVb && off == lastVbOff && size == lastVbSize) { return; }
+			lastVb = buf; lastVbOff = off; lastVbSize = size;
+			if (bundleRec) { wgpuRenderBundleEncoderSetVertexBuffer(bundleEnc, 0, buf, off, size); } else { wgpuRenderPassEncoderSetVertexBuffer(pass, 0, buf, off, size); }
+		}
 		void EncDraw(uint count) { if (bundleRec) { wgpuRenderBundleEncoderDraw(bundleEnc, count, 1, 0, 0); } else { wgpuRenderPassEncoderDraw(pass, count, 1, 0, 0); } }
 		void EncodeRange(int start, int end)
 		{
@@ -3358,6 +3385,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				if (!ReferenceEquals(clip.PathFan, curFan))
 				{
 					ApplyDepthClip(pass, curFan, curAabb, clip);
+					EncReset();
 					curFan = clip.PathFan; curAabb = clip.Aabb;
 					lastX = lastY = lastW = lastH = -1;   // the clip setup changed the scissor
 					statClipCh++;
@@ -3467,6 +3495,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						break;
 					case 4:
 						wgpuRenderPassEncoderSetPipeline(pass, u0 == 1 ? _d.CompositeDstIn : _d.CompositeSrcOver);
+						lastPipe = -1;
 						EncBg(0, (IntPtr)b0);
 						wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
 						break;
@@ -3504,6 +3533,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							};
 							var rp6 = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca6, DepthStencilAttachment = &dsa6 };
 							pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp6);
+							EncReset();
 							lastX = lastY = lastW = lastH = -1; curFan = null; curAabb = default;   // fresh pass: reset scissor + clip mask
 							if (TryScissor(bk.Clip.Aabb, out var bsx, out var bsy, out var bsw, out var bsh))
 							{
@@ -3529,6 +3559,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)bdbg, 0, (uint*)null);
 								wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)bclipBg, 0, (uint*)null);
 								wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)bqbuf, 0, (nuint)(24 * sizeof(float)));
+								EncReset();
 								EncDraw(6);
 								// Tint overlay (skip A==0).
 								if (bk.Effect.Color.A != 0)
@@ -3543,6 +3574,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 									EncPipe(_d.SolidPipe);
 									wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)tclipBg, 0, (uint*)null);
 									wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)tvbuf, 0, (nuint)(36 * sizeof(float)));
+									EncReset();
 									EncDraw(6);
 								}
 							}
@@ -3632,6 +3664,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					}
 					c--;
 					wgpuRenderPassEncoderExecuteBundles(pass, (nuint)runLength, (IntPtr)replayRun);
+					// Executing a bundle resets ALL pass state, scissor included.
+					EncReset(); lastX = lastY = lastW = lastH = -1; curFan = null; curAabb = default;
 					statBundleReplay += runLength;
 				}
 				else if (chunkRecord[c])
@@ -3644,14 +3678,17 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						SampleCount = (uint)_d.MsaaSamples,
 					};
 					bundleEnc = wgpuDeviceCreateRenderBundleEncoder(_d.Dev, &bed);
+					EncReset();
 					bundleRec = true;
 					EncodeRange(cs, ce);
 					var bundleDesc = new WGPURenderBundleDescriptor();
 					target.BundleChunks[c] = wgpuRenderBundleEncoderFinish(bundleEnc, &bundleDesc);
 					wgpuRenderBundleEncoderRelease(bundleEnc);
 					bundleEnc = IntPtr.Zero; bundleRec = false;
+					EncReset();
 					bundleList[0] = target.BundleChunks[c];
 					wgpuRenderPassEncoderExecuteBundles(pass, 1, (IntPtr)bundleList);
+					EncReset(); lastX = lastY = lastW = lastH = -1; curFan = null; curAabb = default;
 					statBundleRec++;
 				}
 				else
