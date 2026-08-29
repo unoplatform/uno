@@ -2922,8 +2922,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								var t2 = new Matrix3x2(rr.Transform.M11, rr.Transform.M12, rr.Transform.M21, rr.Transform.M22, rr.Transform.M41, rr.Transform.M42);
 								Matrix3x2 finv = Matrix3x2.Invert(t2, out var inv) ? inv : Matrix3x2.Identity;
 								Vector2 MoveP(float x, float y) => new(x * t2.M11 + y * t2.M21 + t2.M31, x * t2.M12 + y * t2.M22 + t2.M32);
-								// One ClipU for every fan in this recording: same arena transform, so it is built once.
-								nint arenaFanBg = (nint)MakeClipBg(_d.ClipBgl, default, null, xf, finv);
+								// One ClipU for every fan in this recording: same arena transform, so it is built once —
+								// but LAZILY. xf/finv change every frame under a moving transform, so the content-keyed
+								// cache misses each time and this mints a buffer + bind group per recording per frame
+								// (370/frame on RenderStress_Gradients). Most recordings carry no fan at all, and once
+								// rounded rects are recognised analytically none of them do.
+								nint arenaFanBg = 0;
 								for (int i = 0; i < entry.Ops.Count; i++)
 								{
 									var op = entry.Ops[i];
@@ -2936,6 +2940,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 									// identity and is stale once moved.
 									if (op.clip.PathFan is { } localFan)
 									{
+										if (arenaFanBg == 0) { arenaFanBg = (nint)MakeClipBg(_d.ClipBgl, default, null, xf, finv); }
 										// Keep the identity-space fan and its resident NDC buffer; hand the stencil draw
 										// the arena transform instead. Transforming on the CPU here would mean a fresh
 										// fan upload per op per frame (392/frame on RenderStress_Gradients).
