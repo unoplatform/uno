@@ -2058,10 +2058,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		=> new(MathF.Min(MathF.Min(a.X, b.X), MathF.Min(c.X, d.X)), MathF.Min(MathF.Min(a.Y, b.Y), MathF.Min(c.Y, d.Y)),
 			MathF.Max(MathF.Max(a.X, b.X), MathF.Max(c.X, d.X)), MathF.Max(MathF.Max(a.Y, b.Y), MathF.Max(c.Y, d.Y)));
 
+	internal static int StatFanTried, StatFanStripped, StatFanTooBig, StatFanConcave, StatFanNotCovering;
+
 	private static bool FanCoversAabb(float[] fan, Vector4 bounds)
 	{
+		StatFanTried++;
 		int n = fan.Length / 2;
-		if (n < 3 || n > 16) { return false; }
+		if (n < 3 || n > 16) { StatFanTooBig++; return false; }
 		// Convexity: every cross product of consecutive edges must share a sign.
 		int sign = 0;
 		for (int i = 0; i < n; i++)
@@ -2073,9 +2076,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			if (MathF.Abs(cross) < 1e-6f) { continue; }
 			int sc = cross > 0 ? 1 : -1;
 			if (sign == 0) { sign = sc; }
-			else if (sc != sign) { return false; }
+			else if (sc != sign) { StatFanConcave++; return false; }
 		}
-		if (sign == 0) { return false; }
+		if (sign == 0) { StatFanConcave++; return false; }
 		// All four corners strictly inside (same winding side as the polygon).
 		for (int corner = 0; corner < 4; corner++)
 		{
@@ -2087,9 +2090,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				float bx = fan[((i + 1) % n) * 2], by = fan[((i + 1) % n) * 2 + 1];
 				float cross = (bx - ax) * (py - ay) - (by - ay) * (px - ax);
 				if (MathF.Abs(cross) < 1e-4f) { continue; }
-				if ((cross > 0 ? 1 : -1) != sign) { return false; }
+				if ((cross > 0 ? 1 : -1) != sign) { StatFanNotCovering++; return false; }
 			}
 		}
+		StatFanStripped++;
 		return true;
 	}
 
@@ -3622,8 +3626,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
 		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
 		{
-			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip}) replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds}");
+			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} fanTry=t{StatFanTried}/ok{StatFanStripped}/big{StatFanTooBig}/concave{StatFanConcave}/nocover{StatFanNotCovering} cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip}) replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds}");
 			WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = 0;
+			StatFanTried = StatFanStripped = StatFanTooBig = StatFanConcave = StatFanNotCovering = 0;
 			_statTableRebuilds = 0; _statStamps = 0; _statArenaRebuilds = 0; _statCachedRebuilds = 0; _statCrMiss = _statCrMove = _statCrPathFlip = _statCrSize = _statCrClip = 0;
 		}
 
