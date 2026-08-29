@@ -199,6 +199,9 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 
 	public void BeginFrameResources()
 	{
+		// Read LAST frame's timestamps here: the resolve/copy are recorded into the frame encoder, so mapping
+		// before submit targets a buffer still pending in an unsubmitted command buffer and never completes.
+		PollGpuTiming();
 		FrameSeq++;
 		Pool.BeginFrame();
 		BufferPool.BeginFrame();
