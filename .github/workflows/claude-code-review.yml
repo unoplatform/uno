@@ -97,6 +97,7 @@ jobs:
           # token exchange entirely when github_token is provided).
           github_token: ${{ github.token }}
           track_progress: true
+          show_full_output: true
           prompt: ${{ steps.review_prompt.outputs.prompt }}
           claude_args: |
             --model claude-sonnet-4-6
