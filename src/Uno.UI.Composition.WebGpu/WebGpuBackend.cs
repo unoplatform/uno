@@ -3671,7 +3671,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		{
 			wgpuCommandEncoderResolveQuerySet(_frameEncoder, _d.TsQuerySet, 0, 2, _d.TsResolve, 0);
 			wgpuCommandEncoderCopyBufferToBuffer(_frameEncoder, _d.TsResolve, 0, _d.TsStage, 0, 16);
-			_d.PollGpuTiming();
 		}
 		// A pooled offscreen (layer/backdrop) target: its MSAA colour has resolved into View and the depth is spent,
 		// so return both for the next same-size pass to reuse — only View (composited/sampled later) stays live. The
