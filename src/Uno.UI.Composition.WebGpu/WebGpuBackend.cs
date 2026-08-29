@@ -1393,6 +1393,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// into this buffer; b0!=0 is a legacy private-buffer solid (mixed/arena recording) that draws on its own.
 	private readonly Stack<List<float>> _solidPool = new();
 	private List<float> _gradVerts;
+	private List<float> _quadVerts;
 	private List<float> RentSolid() => _solidPool.Count > 0 ? _solidPool.Pop() : new(4096);
 	private void ReturnSolid(List<float> s) { s.Clear(); _solidPool.Push(s); }
 	// Appends one device-space quad (two tris) to the shared solid buffer; returns the start vertex index. 6 verts.
@@ -2298,26 +2299,30 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 112 };
 					var bgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
 					var bg = Bg(ref bgd, owned);
-					var q = new float[24];
-					void QV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); q[idx] = n.X; q[idx + 1] = n.Y; q[idx + 2] = u; q[idx + 3] = vv; }
-					QV(0, im.P0, im.U0, im.V0); QV(4, im.P1, im.U1, im.V0); QV(8, im.P2, im.U1, im.V1); QV(12, im.P0, im.U0, im.V0); QV(16, im.P2, im.U1, im.V1); QV(20, im.P3, im.U0, im.V1);
-					ops.Add(new DrawOp(2, (nint)bg, 0, (nint)Vbuf(q, owned), false, im.Clip, (nint)MakeClipBg(_d.ImageClipBgl, im.Clip, owned)));
+					if (owned is null)
+					{
+						// flag == true: b1 is a BYTE offset into the shared per-pass quad buffer (see gradients).
+						var ioff = _quadVerts.Count * sizeof(float);
+						void QS(Vector2 pos, float u, float vv) { var n = Ndc(pos); _quadVerts.Add(n.X); _quadVerts.Add(n.Y); _quadVerts.Add(u); _quadVerts.Add(vv); }
+						QS(im.P0, im.U0, im.V0); QS(im.P1, im.U1, im.V0); QS(im.P2, im.U1, im.V1); QS(im.P0, im.U0, im.V0); QS(im.P2, im.U1, im.V1); QS(im.P3, im.U0, im.V1);
+						ops.Add(new DrawOp(2, (nint)bg, 0, ioff, true, im.Clip, (nint)MakeClipBg(_d.ImageClipBgl, im.Clip, owned)));
+					}
+					else
+					{
+						var q = new float[24];
+						void QV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); q[idx] = n.X; q[idx + 1] = n.Y; q[idx + 2] = u; q[idx + 3] = vv; }
+						QV(0, im.P0, im.U0, im.V0); QV(4, im.P1, im.U1, im.V0); QV(8, im.P2, im.U1, im.V1); QV(12, im.P0, im.U0, im.V0); QV(16, im.P2, im.U1, im.V1); QV(20, im.P3, im.U0, im.V1);
+						ops.Add(new DrawOp(2, (nint)bg, 0, (nint)Vbuf(q, owned), false, im.Clip, (nint)MakeClipBg(_d.ImageClipBgl, im.Clip, owned)));
+					}
 					break;
 				}
 			case GradientCmd gc:
 				{
 					var bytes = (nuint)WebGpuDevice.GradientUniformBytes;
-					// A per-frame gradient bind group depends only on its uniform (the packed stops/geometry) — cache it
-					// across frames like clips, so a static gradient isn't a CreateBuffer + CreateBindGroup every frame.
 					IntPtr gbg;
-					if (!(owned is null && _d.TryGetCachedBg((nint)_d.GradBgl, gc.Uniform, out gbg)))
 					{
-						// Cached (owned == null) entries need a PERSISTENT uniform buffer — a pooled one would be reused
-						// next frame and corrupt the cached bind group. Cached-recording (owned) buffers persist already.
-						// A gradient whose uniform carries DEVICE-space geometry changes every frame under any moving
-						// transform, so the content-keyed cache misses every frame. Minting a persistent buffer +
-						// bind group per miss is what made a spinning wall of 500 gradients run away. Rent from the
-						// per-frame pool instead: recycled next frame, nothing accumulates.
+						// No content-keyed lookup here: AddCachedBg is only ever called for ClipU, so a gradient
+						// probe could never hit — it just hashed all 332 uniform floats per gradient per frame.
 						if (owned is null)
 						{
 							// One slab slot instead of a buffer + queue write per gradient per frame: the whole
@@ -2683,7 +2688,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// native call costs far more than the bytes. A field (not a local) because BuildSimpleOp appends to it;
 		// saved/restored around the nested-layer RenderInto so each pass builds and uploads its own.
 		var savedGradVerts = _gradVerts;
+		var savedQuadVerts = _quadVerts;
 		_gradVerts = RentSolid(); _gradVerts.Clear();
+		_quadVerts = RentSolid(); _quadVerts.Clear();
 		var mainPass = ReferenceEquals(target, _s);
 		_xforms = RentXforms(); _xforms.Clear();
 		_xformTransient = RentTransient(); _xformTransient.Clear();
@@ -3226,6 +3233,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		nint rrectBuf = rrect.Count > 0 ? (nint)MakeBuffer(rrect) : IntPtr.Zero;
 		nint gradBuf = _gradVerts.Count > 0 ? (nint)MakeBuffer(_gradVerts) : IntPtr.Zero;
 		var gradBufBytes = (nuint)(_gradVerts.Count * sizeof(float));
+		nint quadBuf = _quadVerts.Count > 0 ? (nint)MakeBuffer(_quadVerts) : IntPtr.Zero;
+		var quadBufBytes = (nuint)(_quadVerts.Count * sizeof(float));
 		var solidBufBytes = (nuint)(solid.Count * sizeof(float));
 
 		// Upload this pass's transform table + one read-only storage bind group (group 0 of the path-fill pipelines).
@@ -3519,8 +3528,16 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						EncPipe(_d.ImagePipe);
 						EncBg(0, (IntPtr)b0);
 						EncBg(1, (IntPtr)clipBg);
-						EncVb((IntPtr)b1, 0, (nuint)(24 * sizeof(float)));
-						EncDraw(6);
+						if (flag)
+						{
+							EncVb((IntPtr)quadBuf, 0, quadBufBytes);
+							EncDraw(6, (uint)(b1 / (4 * sizeof(float))));
+						}
+						else
+						{
+							EncVb((IntPtr)b1, 0, (nuint)(24 * sizeof(float)));
+							EncDraw(6);
+						}
 						break;
 					case 3:
 						EncPipe(_d.GradientPipe);
@@ -3773,7 +3790,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		_xforms.Clear(); _xformsPool.Push(_xforms);
 		_xformTransient.Clear(); _xformTransientPool.Push(_xformTransient);
 		ReturnSolid(_gradVerts);
+		ReturnSolid(_quadVerts);
 		_gradVerts = savedGradVerts;
+		_quadVerts = savedQuadVerts;
 		_xforms = savedXforms; _xformTransient = savedTransient;
 	}
 
