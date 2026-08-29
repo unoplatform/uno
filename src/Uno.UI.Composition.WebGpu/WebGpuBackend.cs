@@ -2916,9 +2916,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 										}
 										scissorClip.Aabb = new Vector4(MathF.Max(scissorClip.Aabb.X, fa.X), MathF.Max(scissorClip.Aabb.Y, fa.Y), MathF.Min(scissorClip.Aabb.Z, fa.Z), MathF.Min(scissorClip.Aabb.W, fa.W));
 									}
-									// Carry the session fan onto the stamped op so the depth mask still clips it.
-									// IsArenaSafe guarantees the op's own clip has no fan, so nothing is overwritten.
-									if (rr.Clip.PathFan is { } sessionFan)
+									// Carry the session fan onto the stamped op so the depth mask still clips it — unless it
+									// provably covers this op, in which case attaching it would cost an ApplyDepthClip
+									// setup (4 pipeline switches + 3 draws + a bind group + a vertex buffer) that cannot
+									// change a pixel. The arena builds at identity with ClipData.None, so the build-time
+									// strip never sees the session fan; this is the only place it can be caught.
+									if (rr.Clip.PathFan is { } sessionFan
+										&& !(!rr.Clip.PathExclude && FanCoversAabb(sessionFan, scissorClip.Aabb)))
 									{
 										scissorClip.PathFan = sessionFan;
 										scissorClip.PathEvenOdd = rr.Clip.PathEvenOdd;
