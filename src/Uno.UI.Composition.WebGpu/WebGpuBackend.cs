@@ -1093,7 +1093,10 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 						var q = T(new Vector2(src[i], src[i + 1])); dst[i] = q.X; dst[i + 1] = q.Y;
 						bbMin = Vector2.Min(bbMin, q); bbMax = Vector2.Max(bbMax, q);
 					}
-					_target.Add(new PathFill { FanDevice = dst, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, Clip = ClipCompose(p.Clip, T) });
+					// FanTiles survives the transform: an affine map scales every triangle area by the same
+					// determinant, so sum(|area|) == |sum(area)| still holds. Dropping it here silently disabled the
+					// single-pass fill for every replayed (scrolled/transformed) recording.
+					_target.Add(new PathFill { FanDevice = dst, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, FanTiles = p.FanTiles, Clip = ClipCompose(p.Clip, T) });
 					break;
 				case ShadowCmd sh:
 					var ssrc = sh.FanDevice; var sdst = new float[ssrc.Length];
@@ -2271,6 +2274,22 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					for (int i = 0; i < pfj.FanDevice.Length; i += 2) { _scratch.Add(pfj.FanDevice[i]); _scratch.Add(pfj.FanDevice[i + 1]); _scratch.Add(slotBits); }
 					bbMin = Vector2.Min(bbMin, pfj.BbMin); bbMax = Vector2.Max(bbMax, pfj.BbMax);
 					j++;
+				}
+				// A LONE tiling fill skips stencil-then-cover entirely (see PathFill.FanTiles). A run of >1 stays
+				// coalesced: for a glyph run, 2 draws total beats one draw per glyph, and glyph covers are small.
+				if (j - ci == 1 && pf0.FanTiles)
+				{
+					float sr = pf0.Color.R / 255f, sg = pf0.Color.G / 255f, sb = pf0.Color.B / 255f, sa = pf0.Color.A / 255f;
+					_scratch.Clear();
+					for (int i = 0; i < pf0.FanDevice.Length; i += 2) { PushVertT(new Vector2(pf0.FanDevice[i], pf0.FanDevice[i + 1]), sr, sg, sb, sa, slotBits); }
+					var sClip = StripRedundantFan(pf0.Clip, new Vector4(pf0.BbMin.X, pf0.BbMin.Y, pf0.BbMax.X, pf0.BbMax.Y));
+					var sClipBg = MakeClipBg(_d.CoverClipBgl, sClip, owned);
+					var sCount = (uint)(pf0.FanDevice.Length / 2);
+					ops.Add(owned is null
+						? new DrawOp(8, AppendPathBlock(_scratch), sCount, 0, true, sClip, (nint)sClipBg)
+						: new DrawOp(8, (nint)Vbuf(_scratch, owned), sCount, 0, false, sClip, (nint)sClipBg));
+					ci = j - 1;
+					continue;
 				}
 				uint fanCount = (uint)(_scratch.Count / 3);
 				var fanShared = owned is null ? AppendPathBlock(_scratch) : -1;
@@ -3452,6 +3471,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// under the recursive nested-layer RenderInto (each pass has its own scissor state).
 		int lastX = -1, lastY = -1, lastW = -1, lastH = -1;
 		int statIters = 0, statScissor = 0, statClipCh = 0, statFanOps = 0, statSharedOps = 0, statTiled = 0;
+		double statCoverMpx = 0;
 		// Current in-pass path-clip mask (device depth buffer). Changes only when a run of ops moves to a different
 		// path clip — the composition emits a clip then its subtree consecutively, so this fires ~once per clip.
 		float[] curFan = null; Vector4 curAabb = default;
@@ -3499,6 +3519,15 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				if (_emitStats && clip.PathFan is not null) { statFanOps++; }
 				if (_emitStats && (kind == 7 || (kind is 2 or 3 or 8 && flag))) { statSharedOps++; }
 				if (_emitStats && kind == 8) { statTiled++; }
+				// Fragment area the stencil-then-cover path actually rasterises: the cover quad spans the whole
+				// bbox even when the shape is a 2px stroke outline, so this is where the waste shows up.
+				if (_emitStats && kind is 1 or 7)
+				{
+					var cb = clip.Aabb;
+					var cw = Math.Min(cb.Z, _s.Width) - Math.Max(cb.X, 0);
+					var chh = Math.Min(cb.W, _s.Height) - Math.Max(cb.Y, 0);
+					if (cw > 0 && chh > 0) { statCoverMpx += cw * chh / 1e6; }
+				}
 				// UNO_WEBGPU_NOCLIP: skip path-clip application entirely (VISUALLY WRONG) to bound what any
 				// clip optimisation could ever be worth on this scene.
 				if (_noPathClip) { clip.PathFan = null; }
@@ -3878,7 +3907,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
 		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
 		{
-			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} fanTry=t{StatFanTried}/ok{StatFanStripped}/big{StatFanTooBig}/concave{StatFanConcave}/nocover{StatFanNotCovering} gpu={_d.LastGpuMs:F2}ms/maps{_d.TsMapTried}-{_d.TsMapOk}-{_d.TsMapFail} cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip}) replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB sharedOps={statSharedOps} tiled={statTiled}");
+			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} fanTry=t{StatFanTried}/ok{StatFanStripped}/big{StatFanTooBig}/concave{StatFanConcave}/nocover{StatFanNotCovering} gpu={_d.LastGpuMs:F2}ms/maps{_d.TsMapTried}-{_d.TsMapOk}-{_d.TsMapFail} cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip}) replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB sharedOps={statSharedOps} tiled={statTiled} coverMpx={statCoverMpx:F1}");
 			WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = 0;
 			StatFanTried = StatFanStripped = StatFanTooBig = StatFanConcave = StatFanNotCovering = 0;
 			_statTableRebuilds = 0; _statStamps = 0; _statArenaRebuilds = 0; _statCachedRebuilds = 0; _statCrMiss = _statCrMove = _statCrPathFlip = _statCrSize = _statCrClip = 0;
