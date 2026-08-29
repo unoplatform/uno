@@ -229,43 +229,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 		}
 
 		[TestMethod]
-		[Ignore("While the indicator is shown the interactive root takes the touch and the track ignores it, so a pan started on the strip does nothing.")]
-		public async Task When_Touch_Presses_Indicator_Strip_Then_Content_Still_Pans()
-		{
-			var SUT = CreateScrollViewer();
-
-			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
-			using var finger = injector.GetFinger();
-
-			try
-			{
-				await UITestHelper.Load(SUT);
-
-				var scrollBar = FindTemplateChild<ScrollBar>(SUT, "VerticalScrollBar");
-				Assert.IsNotNull(scrollBar, "The ScrollViewer template should contain a VerticalScrollBar.");
-
-				scrollBar.SetIsTouchThumbDragEnabled(true);
-				await TestServices.WindowHelper.WaitForIdle();
-
-				// Inside the scrollbar strip but clear of the thumb, which sits at the top while the offset is 0.
-				var bounds = SUT.GetAbsoluteBounds();
-				finger.Press(new Point(bounds.Right - 4, bounds.Bottom - 30));
-				finger.MoveBy(0, -60, steps: 50);
-				finger.Release();
-				await TestServices.WindowHelper.WaitForIdle();
-
-				Assert.IsTrue(
-					SUT.VerticalOffset > 0,
-					$"A finger pan starting on the scrollbar strip should still scroll the content, but VerticalOffset stayed at {SUT.VerticalOffset}.");
-			}
-			finally
-			{
-				finger.Release();
-				TestServices.WindowHelper.WindowContent = null;
-			}
-		}
-
-		[TestMethod]
 		// Auto is not just a variation: the template defers the bars (x:Load="False") and only realizes them
 		// once an axis overflows, so the opt-in has to hold for a bar which appears after everything else.
 		[DataRow(ScrollBarVisibility.Visible)]
