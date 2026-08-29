@@ -19,63 +19,60 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// with element count, so it stays in draw rather than record or layout. Distinct from
 	/// <c>RealWorld_OverlayStack</c> too: that scales isolation layers, this scales image sampling and blending.
 	/// </para>
-	/// <c>count</c> is the number of poster cards; the hero and its scrims are fixed, so raising it adds
-	/// large-image draws over an already-expensive background.
+	/// <c>count</c> is the number of FULL-VIEWPORT image layers stacked over each other. They are always on
+	/// screen, so nothing is culled — an earlier version scaled a scrolling poster rail instead and stayed pinned
+	/// at 60fps because the extra posters simply scrolled out of view (record FELL as count rose, which is the
+	/// tell). Each layer is a full-surface bitmap sample plus a blend.
 	/// </summary>
 	[Sample("Performance", Name = "RealWorld_HeroScrim", Description = "Real-UI perf: a full-bleed hero image with stacked gradient scrims plus N large poster cards, each scrimmed and rounded-clipped. Scales image sampling and blending by AREA, so it is draw-bound. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
 	public sealed class RealWorld_HeroScrim : PerfBenchBase
 	{
 		private const string Hero = "ms-appx:///Assets/LargeWisteria.jpg";
 
-		private ScrollViewer _sv = null!;
-		private double _offset;
-		private int _dir = 1;
+		private Image? _layer;
 
 		protected override string ScenarioName => "HeroScrim";
 
-		/// <summary>Number of large poster cards drawn over the scrimmed hero.</summary>
-		protected override int DefaultCount => 24;
+		/// <summary>Number of stacked full-viewport image layers. Each is a full-surface sample + blend.</summary>
+		protected override int DefaultCount => 10;
 
 		protected override UIElement BuildStage(int count)
 		{
 			var rng = new Rng(47);
 			var root = new Grid();
 
-			// --- Hero: one very large image stretched over the whole viewport. UniformToFill means the decoded
-			// bitmap is sampled at a scale factor, which is per-pixel work over the full surface. ---
-			root.Children.Add(new Image
+			// --- N full-viewport image layers. UniformToFill means each is sampled at a scale factor over the
+			// whole surface, and each carries a sub-1 opacity so it also blends. Always visible => never culled. ---
+			for (var i = 0; i < count; i++)
 			{
-				Source = new BitmapImage(new System.Uri(Hero)),
-				Stretch = Stretch.UniformToFill,
-			});
+				var layer = new Image
+				{
+					Source = new BitmapImage(new System.Uri(Hero)),
+					Stretch = i % 2 == 0 ? Stretch.UniformToFill : Stretch.Fill,
+					Opacity = 0.35 + (i % 3) * 0.12,
+				};
+				_layer ??= layer;
+				root.Children.Add(layer);
+			}
 
-			// --- Two full-viewport scrims over it. Each is a separate full-surface blend pass. ---
+			// --- Full-viewport scrims over them: more full-surface blend passes. ---
 			root.Children.Add(NewScrim(0x00, 0xB0, new Point(0.5, 0), new Point(0.5, 1)));
 			root.Children.Add(NewScrim(0x90, 0x00, new Point(0, 0.5), new Point(1, 0.5)));
 
-			// --- Poster rail scrolling over the scrimmed hero. ---
-			var rows = new StackPanel { Padding = new Thickness(24, 120, 24, 24), Spacing = 18 };
-			for (var i = 0; i < count; i += 4)
+			// --- A fixed rail of large posters, sized to stay on screen so it never culls. ---
+			var row = new StackPanel
 			{
-				var row = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 18 };
-				for (var c = 0; c < 4 && i + c < count; c++)
-				{
-					row.Children.Add(BuildPoster(i + c, rng));
-				}
-
-				rows.Children.Add(row);
+				Orientation = Orientation.Horizontal,
+				Spacing = 18,
+				VerticalAlignment = VerticalAlignment.Bottom,
+				Margin = new Thickness(24),
+			};
+			for (var c = 0; c < 4; c++)
+			{
+				row.Children.Add(BuildPoster(c, rng));
 			}
 
-			_sv = new ScrollViewer
-			{
-				Content = rows,
-				VerticalScrollBarVisibility = ScrollBarVisibility.Hidden,
-				HorizontalScrollMode = ScrollMode.Disabled,
-			};
-			root.Children.Add(_sv);
-
-			_offset = 0;
-			_dir = 1;
+			root.Children.Add(row);
 			return root;
 		}
 
@@ -139,9 +136,10 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 
 		protected override void Tick(long frame)
 		{
-			// Scroll only: the posters are re-RASTERIZED (large image samples + scrim blends) without being
-			// re-RECORDED, keeping the measurement in the draw phase.
-			AdvanceScroll(_sv, ref _offset, ref _dir, 6.0);
+			// Nudge one layer's opacity so the frame is not trivially cacheable, without re-recording geometry:
+			// the cost under measurement is re-sampling and re-blending N full-viewport images.
+			if (_layer is { } l) { l.Opacity = 0.30 + ((frame % 20) / 20.0) * 0.35; }
 		}
+
 	}
 }
