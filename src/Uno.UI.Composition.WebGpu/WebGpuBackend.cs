@@ -507,10 +507,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		// rounds / plain scissor) instead of costing a stencil-mask fan draw and defeating coalescing.
 		// Only under an axis-aligned matrix: the rounds are device-space axis-aligned, while the fan is
 		// exact under any transform.
-		// UNO_WEBGPU_ROTCLIP prices what a rotation-capable analytic rounded-rect clip would be worth: it takes
-		// the analytic path even when rotated, which is VISUALLY WRONG (the rect is stored device-axis-aligned)
-		// but shows the ceiling before building the correct local-space + finv version.
-		if ((_rotClipProbe || (_m.M12 == 0 && _m.M21 == 0)) && geometry.TryGetRoundRect() is { } rr)
+		if (_m.M12 == 0 && _m.M21 == 0 && geometry.TryGetRoundRect() is { } rr)
 		{
 			if (operation == ClipOperation.Intersect
 				&& rr.TopLeft == Vector2.Zero && rr.TopRight == Vector2.Zero && rr.BottomRight == Vector2.Zero && rr.BottomLeft == Vector2.Zero)
@@ -1007,7 +1004,6 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	// Per-frame record-phase counters: a recording is only cacheable when EVERY command is a simple primitive, so
 	// one nested replay/layer/shadow anywhere forces the whole list to be re-transformed inline — reallocating a
 	// fan array per path fill (i.e. per glyph) every frame. Reset and reported by the backend's stats line.
-	internal static readonly bool _rotClipProbe = Environment.GetEnvironmentVariable("UNO_WEBGPU_ROTCLIP") is "1";
 	internal static int StatCacheableReplays, StatInlineReplays, StatInlineCmds;
 
 	// Take a ref to every texture the nested recording references, so an outer frame keeps them alive as long as it can
