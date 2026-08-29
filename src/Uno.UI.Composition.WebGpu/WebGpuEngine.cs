@@ -1868,7 +1868,6 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 		public float[] Shadow = new float[ChunkSlots * SlotFloats];
 		public int DirtyMin = int.MaxValue;
 		public int DirtyMax = -1;
-		public bool[] Dirty;
 	}
 
 	private readonly WebGpuDevice _d;
@@ -1903,18 +1902,7 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 		var idx = (int)(slot - 1);
 		var c = _chunks[idx / ChunkSlots];
 		idx %= ChunkSlots;
-		var shadow = c.Shadow;
-		var at = idx * SlotFloats;
-		// Diff against the shadow: a re-stamp that lands on identical floats (a static visual re-walked, or a
-		// move that cancels out) must not dirty the slot at all.
-		var same = true;
-		for (int i = 0; i < ClipUFloats; i++)
-		{
-			if (shadow[at + i] != clipU[i]) { same = false; break; }
-		}
-		if (same) { return; }
-		Array.Copy(clipU, 0, shadow, at, ClipUFloats);
-		(c.Dirty ??= new bool[ChunkSlots])[idx] = true;
+		Array.Copy(clipU, 0, c.Shadow, idx * SlotFloats, ClipUFloats);
 		if (idx < c.DirtyMin) { c.DirtyMin = idx; }
 		if (idx > c.DirtyMax) { c.DirtyMax = idx; }
 	}
@@ -1922,39 +1910,16 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 	/// <summary>Bytes uploaded by the last <see cref="Flush"/>, for UNO_WEBGPU_STATS.</summary>
 	public long LastFlushBytes;
 
-	// Merge two dirty runs separated by at most this many clean slots. A queue write costs a native call, so
-	// uploading a few clean slots in between beats splitting the run; past this the bytes dominate.
-	private const int MergeGapSlots = 8;
-
-	/// <summary>Queue writes covering the dirty slot runs — call before any submit whose commands read clips.</summary>
+	/// <summary>One queue write per dirty chunk range — call before any submit whose commands read clips.</summary>
 	public void Flush()
 	{
 		LastFlushBytes = 0;
 		foreach (var c in _chunks)
 		{
 			if (c.DirtyMax < 0) { continue; }
-			// A single DirtyMin..DirtyMax span uploaded the whole allocated chunk whenever the dirty slots were
-			// spread across it — 923KB/frame on RenderStress_Gradients against ~183KB actually dirty. Walk the
-			// runs instead.
-			var dirty = c.Dirty;
-			int i = c.DirtyMin;
-			while (i <= c.DirtyMax)
-			{
-				if (!dirty[i]) { i++; continue; }
-				int runStart = i, runEnd = i;
-				while (i <= c.DirtyMax)
-				{
-					if (dirty[i]) { runEnd = i; dirty[i] = false; i++; continue; }
-					// Peek past a short clean gap: still cheaper than a second queue write.
-					int gap = i, probe = i;
-					while (probe <= c.DirtyMax && probe - gap < MergeGapSlots && !dirty[probe]) { probe++; }
-					if (probe <= c.DirtyMax && dirty[probe]) { i = probe; continue; }
-					break;
-				}
-				int lo = runStart * SlotFloats, len = (runEnd + 1 - runStart) * SlotFloats;
-				LastFlushBytes += len * sizeof(float);
-				fixed (float* p = &c.Shadow[lo]) { wgpuQueueWriteBuffer(_d.Q, c.Buf, (nuint)(lo * sizeof(float)), (IntPtr)p, (nuint)(len * sizeof(float))); }
-			}
+			int lo = c.DirtyMin * SlotFloats, len = (c.DirtyMax + 1 - c.DirtyMin) * SlotFloats;
+			LastFlushBytes += len * sizeof(float);
+			fixed (float* p = &c.Shadow[lo]) { wgpuQueueWriteBuffer(_d.Q, c.Buf, (nuint)(lo * sizeof(float)), (IntPtr)p, (nuint)(len * sizeof(float))); }
 			c.DirtyMin = int.MaxValue;
 			c.DirtyMax = -1;
 		}
