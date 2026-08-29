@@ -639,6 +639,10 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	// arc), which is most of them — pivoting on the centroid is what lets FanTiles actually fire.
 	private readonly List<Vector2> _contourPts = new();
 	private bool _fanFromCentroid;
+	// Stroke tessellation: contours collected in LOCAL space (offsetting must happen before the transform so a
+	// non-uniform scale strokes correctly, same as DrawLine).
+	private List<(List<Vector2> Pts, bool Closed)> _localContours;
+	private bool _collectLocal;
 
 	public void DrawRoundedRect(in Rect rect, Vector4 radii, WColor color, bool antialias = false)
 	{
@@ -718,11 +722,17 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 
 	void IFlattenedPathSink.BeginContour(Vector2 start)
 	{
+		if (_collectLocal) { _localContours.Add((new List<Vector2> { start }, false)); return; }
 		_pivot = Map(start.X, start.Y); _prev = _pivot; _firstInContour = true; _contourCount++; Include(_pivot);
 		if (_fanFromCentroid) { _contourPts.Clear(); _contourPts.Add(_pivot); }
 	}
 	void IFlattenedPathSink.LineTo(Vector2 point)
 	{
+		if (_collectLocal)
+		{
+			if (_localContours.Count > 0) { _localContours[^1].Pts.Add(point); }
+			return;
+		}
 		var p = Map(point.X, point.Y); Include(p);
 		if (_fanFromCentroid) { _contourPts.Add(p); _prev = p; return; }
 		if (_firstInContour) { _firstInContour = false; }
@@ -737,6 +747,11 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	}
 	void IFlattenedPathSink.EndContour(bool closed)
 	{
+		if (_collectLocal)
+		{
+			if (_localContours.Count > 0) { _localContours[^1] = (_localContours[^1].Pts, closed); }
+			return;
+		}
 		if (!_fanFromCentroid) { return; }
 		var n = _contourPts.Count;
 		if (n < 3) { _contourPts.Clear(); return; }
@@ -854,8 +869,93 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	}
 	public void StrokePath(IGeometry geometry, WColor color, float strokeWidth, bool antialias = false)
 	{
+		if (strokeWidth > 0 && TryStrokeAsStrip(geometry, color, strokeWidth)) { return; }
 		using var sg = geometry.GetStrokeFillGeometry(new StrokeStyle { Thickness = strokeWidth, LineJoin = StrokeJoin.Miter, MiterLimit = 10f });
 		FillGeometry(sg, color, evenOdd: false);
+	}
+
+	/// <summary>
+	/// Strokes by tessellating the polyline into a miter-joined triangle strip, which TILES — so it fills in one
+	/// pass (see PathFill.FanTiles) instead of stencilling the stroke OUTLINE and covering its whole bbox. That
+	/// outline route costs bbox-scale rasterisation twice over: the stencil fan spans the shape and so does the
+	/// cover quad, which is why a 2px outline around a 600x500 blob dominated coverMpx.
+	/// Consecutive quads share their join edge exactly, so a translucent stroke does not double-blend — except
+	/// where the polyline crosses ITSELF, which this does not detect.
+	/// </summary>
+	private bool TryStrokeAsStrip(IGeometry geometry, WColor color, float strokeWidth)
+	{
+		if (_pendingColorMatrix is { Length: >= 20 } pm) { color = ApplyColorMatrix(color, pm); }
+		_localContours ??= new();
+		_localContours.Clear();
+		_collectLocal = true;
+		try { geometry.StreamFlattened(this); }
+		finally { _collectLocal = false; }
+		if (_localContours.Count == 0) { return false; }
+
+		var h = strokeWidth * 0.5f;
+		_fan = new List<float>();
+		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
+		foreach (var (pts, closed) in _localContours)
+		{
+			EmitStrokeStrip(pts, closed, h);
+		}
+		var ok = _fan.Count > 0;
+		if (ok)
+		{
+			_target.Add(new PathFill { FanDevice = _fan.ToArray(), BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = false, FanTiles = true, Clip = RelaxedClip(_bbMin, _bbMax) });
+		}
+		_fan = null;
+		return ok;
+	}
+
+	private void EmitStrokeStrip(List<Vector2> pts, bool closed, float h)
+	{
+		// Drop repeated points: a zero-length segment has no direction to offset along.
+		for (int i = pts.Count - 1; i > 0; i--)
+		{
+			if ((pts[i] - pts[i - 1]).LengthSquared() < 1e-12f) { pts.RemoveAt(i); }
+		}
+		if (closed && pts.Count > 1 && (pts[^1] - pts[0]).LengthSquared() < 1e-12f) { pts.RemoveAt(pts.Count - 1); }
+		var n = pts.Count;
+		if (n < 2) { return; }
+
+		// Per-vertex offset: the miter, so the quads on either side share this edge exactly and the strip tiles.
+		var off = new Vector2[n];
+		for (int i = 0; i < n; i++)
+		{
+			var hasPrev = i > 0 || closed;
+			var hasNext = i < n - 1 || closed;
+			var prev = pts[(i - 1 + n) % n];
+			var next = pts[(i + 1) % n];
+			var n1 = hasPrev ? Norm(pts[i] - prev) : Vector2.Zero;
+			var n2 = hasNext ? Norm(next - pts[i]) : Vector2.Zero;
+			if (!hasPrev) { off[i] = Perp(n2) * h; continue; }
+			if (!hasNext) { off[i] = Perp(n1) * h; continue; }
+			var m = Perp(n1) + Perp(n2);
+			var ml = m.Length();
+			if (ml < 1e-5f) { off[i] = Perp(n1) * h; continue; }   // 180 degree reversal: no finite miter
+			m /= ml;
+			// miterLength = h / cos(theta/2); clamped so a near-degenerate corner cannot shoot off to infinity.
+			var cos = Vector2.Dot(m, Perp(n1));
+			var scale = MathF.Abs(cos) < 0.1f ? h * 10f : h / cos;
+			off[i] = m * MathF.Min(MathF.Abs(scale), h * 10f) * MathF.Sign(scale == 0 ? 1 : scale);
+		}
+
+		var segs = closed ? n : n - 1;
+		for (int i = 0; i < segs; i++)
+		{
+			var j = (i + 1) % n;
+			var a0 = Map(pts[i].X + off[i].X, pts[i].Y + off[i].Y);
+			var a1 = Map(pts[i].X - off[i].X, pts[i].Y - off[i].Y);
+			var b0 = Map(pts[j].X + off[j].X, pts[j].Y + off[j].Y);
+			var b1 = Map(pts[j].X - off[j].X, pts[j].Y - off[j].Y);
+			Include(a0); Include(a1); Include(b0); Include(b1);
+			_fan.Add(a0.X); _fan.Add(a0.Y); _fan.Add(b0.X); _fan.Add(b0.Y); _fan.Add(b1.X); _fan.Add(b1.Y);
+			_fan.Add(a0.X); _fan.Add(a0.Y); _fan.Add(b1.X); _fan.Add(b1.Y); _fan.Add(a1.X); _fan.Add(a1.Y);
+		}
+
+		static Vector2 Norm(Vector2 v) { var l = v.Length(); return l < 1e-6f ? Vector2.Zero : v / l; }
+		static Vector2 Perp(Vector2 v) => new(-v.Y, v.X);
 	}
 	public void DrawLine(Vector2 p0, Vector2 p1, WColor color, float strokeWidth, bool antialias = false)
 	{
@@ -1220,6 +1320,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private static readonly bool _noCompositeScissor = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_SCISSOR") is "1";
 	private static readonly bool _noGlyphCoalesce = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_GLYPHCOALESCE") is "1";
 	private static readonly bool _noPathClip = Environment.GetEnvironmentVariable("UNO_WEBGPU_NOCLIP") is "1";
+	// Diagnostic: skip the COVER draw of stencil-then-cover (VISUALLY WRONG — paths vanish) to bound what tighter
+	// cover geometry could ever be worth. The stencil pass still runs, so the delta is the cover's fill cost.
+	private static readonly bool _noCover = Environment.GetEnvironmentVariable("UNO_WEBGPU_NOCOVER") is "1";
 	private static readonly int _bisect = int.TryParse(Environment.GetEnvironmentVariable("UNO_WEBGPU_BISECT"), out var __b) ? __b : 0;
 	private static readonly bool _emitStats = Environment.GetEnvironmentVariable("UNO_WEBGPU_STATS") is "1" or "true";
 	private static int _emitStatsFrame;
@@ -3631,11 +3734,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						EncBg(0, (IntPtr)xformBg);
 						EncVb((IntPtr)b0, 0, (nuint)(u0 * 3 * sizeof(float)));
 						EncDraw(u0);
-						EncPipe(_d.CoverTablePipe);
-						EncBg(0, (IntPtr)xformBg);
-						EncBg(1, (IntPtr)clipBg);
-						EncVb((IntPtr)b1, 0, (nuint)(42 * sizeof(float)));
-						EncDraw(6);
+						if (!_noCover)
+						{
+							EncPipe(_d.CoverTablePipe);
+							EncBg(0, (IntPtr)xformBg);
+							EncBg(1, (IntPtr)clipBg);
+							EncVb((IntPtr)b1, 0, (nuint)(42 * sizeof(float)));
+							EncDraw(6);
+						}
 						break;
 					case 8:
 						// Single-pass fill of a tiling fan (see PathFill.FanTiles).
@@ -3660,11 +3766,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						EncBg(0, (IntPtr)xformBg);
 						EncVb((IntPtr)pathBuf, 0, pathBufBytes);
 						EncDraw(u0, (uint)(b0 / (3 * sizeof(float))));
-						EncPipe(_d.CoverTablePipe);
-						EncBg(0, (IntPtr)xformBg);
-						EncBg(1, (IntPtr)clipBg);
-						EncVb((IntPtr)pathBuf, 0, pathBufBytes);
-						EncDraw(6, (uint)(b1 / (7 * sizeof(float))));
+						if (!_noCover)
+						{
+							EncPipe(_d.CoverTablePipe);
+							EncBg(0, (IntPtr)xformBg);
+							EncBg(1, (IntPtr)clipBg);
+							EncVb((IntPtr)pathBuf, 0, pathBufBytes);
+							EncDraw(6, (uint)(b1 / (7 * sizeof(float))));
+						}
 						break;
 					case 2:
 						EncPipe(_d.ImagePipe);
