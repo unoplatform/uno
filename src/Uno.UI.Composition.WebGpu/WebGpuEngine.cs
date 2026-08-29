@@ -127,6 +127,63 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	// where an in-place uniform rewrite would clobber data this frame's earlier draws still reference.
 	public long FrameSeq;
 
+	// UNO_WEBGPU_GPUTIME: real GPU pass duration via timestamp-query. The frame-phase log only sees CPU time, so a
+	// GPU-bound frame shows up there merely as time blocked in submit/present. Two queries bracket the main pass;
+	// the resolve is copied to a mappable buffer and read back asynchronously, so the value lags a frame or two.
+	public bool GpuTiming;
+	public IntPtr TsQuerySet, TsResolve, TsStage;
+	public double LastGpuMs;
+	private bool _tsMapPending;
+
+	public void InitGpuTiming()
+	{
+		if (Environment.GetEnvironmentVariable("UNO_WEBGPU_GPUTIME") is not "1") { return; }
+		if (wgpuDeviceHasFeature(Dev, WGPUFeatureName.TimestampQuery) == 0)
+		{
+			System.Console.WriteLine("[webgpu] gpu timing requested but timestamp-query is unavailable");
+			return;
+		}
+		var qd = new WGPUQuerySetDescriptor { Type = WGPUQueryType.Timestamp, Count = 2 };
+		TsQuerySet = wgpuDeviceCreateQuerySet(Dev, &qd);
+		var rd = new WGPUBufferDescriptor { Size = 16, Usage = WGPUBufferUsage.QueryResolve | WGPUBufferUsage.CopySrc };
+		TsResolve = wgpuDeviceCreateBuffer(Dev, &rd);
+		var sd = new WGPUBufferDescriptor { Size = 16, Usage = WGPUBufferUsage.MapRead | WGPUBufferUsage.CopyDst };
+		TsStage = wgpuDeviceCreateBuffer(Dev, &sd);
+		GpuTiming = TsQuerySet != IntPtr.Zero && TsResolve != IntPtr.Zero && TsStage != IntPtr.Zero;
+		System.Console.WriteLine($"[webgpu] gpu timing enabled={GpuTiming}");
+	}
+
+	/// <summary>Reads the previous frame's resolved timestamps if the staging buffer is idle. Non-blocking.</summary>
+	public void PollGpuTiming()
+	{
+		if (!GpuTiming || _tsMapPending) { return; }
+		_tsMapPending = true;
+		var self = GCHandle.Alloc(this);
+		wgpuBufferMapAsync(TsStage, WGPUMapMode.Read, 0, 16, new WGPUBufferMapCallbackInfo
+		{
+			Mode = WGPUCallbackMode.AllowProcessEvents,
+			Callback = (IntPtr)(delegate* unmanaged[Cdecl]<WGPUMapAsyncStatus, WGPUStringView, IntPtr, IntPtr, void>)&OnTsMap,
+			Userdata1 = GCHandle.ToIntPtr(self),
+		});
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
+	private static void OnTsMap(WGPUMapAsyncStatus status, WGPUStringView message, IntPtr u1, IntPtr u2)
+	{
+		var h = GCHandle.FromIntPtr(u1);
+		if (h.Target is WebGpuDevice d)
+		{
+			if (status == WGPUMapAsyncStatus.Success)
+			{
+				var p = (ulong*)(void*)wgpuBufferGetMappedRange(d.TsStage, 0, 16);
+				if (p is not null && p[1] > p[0]) { d.LastGpuMs = (p[1] - p[0]) / 1_000_000.0; }
+				wgpuBufferUnmap(d.TsStage);
+			}
+			d._tsMapPending = false;
+		}
+		h.Free();
+	}
+
 	// Superseded render bundles: like bind groups, released at the next frame start once in-flight GPU work drained.
 	private readonly List<nint> _pendingBundles = new();
 
@@ -343,6 +400,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	private void FinishInit()
 	{
 		CreatePipelines();   // bakes MsaaSamples (already set from the host context) into every pipeline
+		InitGpuTiming();
 		DummyTex = CreateColorTarget(1, 1);
 		Pool = new WebGpuTexturePool(this);
 		BufferPool = new WebGpuBufferPool(this);
