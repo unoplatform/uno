@@ -2916,6 +2916,18 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 										}
 										scissorClip.Aabb = new Vector4(MathF.Max(scissorClip.Aabb.X, fa.X), MathF.Max(scissorClip.Aabb.Y, fa.Y), MathF.Min(scissorClip.Aabb.Z, fa.Z), MathF.Min(scissorClip.Aabb.W, fa.W));
 									}
+									var ab = op.clip.Aabb;
+									if (ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f)
+									{
+										var p0 = MoveP(ab.X, ab.Y); var p1 = MoveP(ab.Z, ab.Y); var p2 = MoveP(ab.Z, ab.W); var p3 = MoveP(ab.X, ab.W);
+										scissorClip.Aabb = new Vector4(
+											MathF.Min(MathF.Min(p0.X, p1.X), MathF.Min(p2.X, p3.X)), MathF.Min(MathF.Min(p0.Y, p1.Y), MathF.Min(p2.Y, p3.Y)),
+											MathF.Max(MathF.Max(p0.X, p1.X), MathF.Max(p2.X, p3.X)), MathF.Max(MathF.Max(p0.Y, p1.Y), MathF.Max(p2.Y, p3.Y)));
+									}
+									// Session clip: tighten the device scissor by its Aabb; fold its rounds into ClipU (local space).
+									var sa = rr.Clip.Aabb;
+									scissorClip.Aabb = new Vector4(MathF.Max(scissorClip.Aabb.X, sa.X), MathF.Max(scissorClip.Aabb.Y, sa.Y), MathF.Min(scissorClip.Aabb.Z, sa.Z), MathF.Min(scissorClip.Aabb.W, sa.W));
+									scissorClip.ScissorInert = op.clip.ScissorInert && rr.Clip.ScissorInert;
 									// Carry the session fan onto the stamped op so the depth mask still clips it — unless it
 									// provably covers this op, in which case attaching it would cost an ApplyDepthClip
 									// setup (4 pipeline switches + 3 draws + a bind group + a vertex buffer) that cannot
@@ -2931,18 +2943,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 										scissorClip.FanW = rr.Clip.FanW;
 										scissorClip.FanH = rr.Clip.FanH;
 									}
-									var ab = op.clip.Aabb;
-									if (ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f)
-									{
-										var p0 = MoveP(ab.X, ab.Y); var p1 = MoveP(ab.Z, ab.Y); var p2 = MoveP(ab.Z, ab.W); var p3 = MoveP(ab.X, ab.W);
-										scissorClip.Aabb = new Vector4(
-											MathF.Min(MathF.Min(p0.X, p1.X), MathF.Min(p2.X, p3.X)), MathF.Min(MathF.Min(p0.Y, p1.Y), MathF.Min(p2.Y, p3.Y)),
-											MathF.Max(MathF.Max(p0.X, p1.X), MathF.Max(p2.X, p3.X)), MathF.Max(MathF.Max(p0.Y, p1.Y), MathF.Max(p2.Y, p3.Y)));
-									}
-									// Session clip: tighten the device scissor by its Aabb; fold its rounds into ClipU (local space).
-									var sa = rr.Clip.Aabb;
-									scissorClip.Aabb = new Vector4(MathF.Max(scissorClip.Aabb.X, sa.X), MathF.Max(scissorClip.Aabb.Y, sa.Y), MathF.Min(scissorClip.Aabb.Z, sa.Z), MathF.Min(scissorClip.Aabb.W, sa.W));
-									scissorClip.ScissorInert = op.clip.ScissorInert && rr.Clip.ScissorInert;
+
 									var uClip = op.clip;
 									FoldSessionRounds(ref uClip, rr.Clip.Rounds, finv);
 									var uSessionFinite = IsFiniteAabb(rr.Clip.Aabb);
