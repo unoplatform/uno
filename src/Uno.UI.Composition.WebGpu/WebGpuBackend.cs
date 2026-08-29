@@ -2311,24 +2311,20 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// transform, so the content-keyed cache misses every frame. Minting a persistent buffer +
 						// bind group per miss is what made a spinning wall of 500 gradients run away. Rent from the
 						// per-frame pool instead: recycled next frame, nothing accumulates.
-						IntPtr ubuf;
-						bool pooled = false;
 						if (owned is null)
 						{
-							ubuf = MakeUniform((int)bytes);
-							pooled = true;
+							// Reuse a ring pair instead of creating a buffer + bind group per gradient per frame.
+							gbg = _d.RentRingUniform(bytes, _d.GradBgl, out var rbuf);
+							fixed (float* p = gc.Uniform) { wgpuQueueWriteBuffer(_d.Q, rbuf, 0, (IntPtr)p, bytes); }
 						}
-						else { ubuf = Ubuf((int)bytes, owned); }
-						fixed (float* p = gc.Uniform) { wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)p, bytes); }
-						var gentry = new WGPUBindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = bytes };
-						var gbgd = new WGPUBindGroupDescriptor { Layout = _d.GradBgl, EntryCount = 1, Entries = &gentry };
-						if (owned is null)
+						else
 						{
-							gbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, (WGPUBindGroupDescriptor*)Unsafe.AsPointer(ref gbgd)));
-							// Only a POOLED buffer is safe to leave uncached; a persistent one would leak.
-							if (!pooled) { _d.AddCachedBg((nint)_d.GradBgl, gc.Uniform, ubuf, gbg); }
+							var ubuf = Ubuf((int)bytes, owned);
+							fixed (float* p = gc.Uniform) { wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)p, bytes); }
+							var gentry = new WGPUBindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = bytes };
+							var gbgd = new WGPUBindGroupDescriptor { Layout = _d.GradBgl, EntryCount = 1, Entries = &gentry };
+							gbg = Bg(ref gbgd, owned);
 						}
-						else { gbg = Bg(ref gbgd, owned); }
 					}
 					var gq = new float[12];
 					void GV(int idx, Vector2 pos) { var n = Ndc(pos); gq[idx] = n.X; gq[idx + 1] = n.Y; }

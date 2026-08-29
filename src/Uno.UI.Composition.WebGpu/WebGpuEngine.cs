@@ -211,6 +211,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		// Read LAST frame's timestamps here: the resolve/copy are recorded into the frame encoder, so mapping
 		// before submit targets a buffer still pending in an unsubmitted command buffer and never completes.
 		PollGpuTiming();
+		ResetUniformRing();
 		FrameSeq++;
 		Pool.BeginFrame();
 		BufferPool.BeginFrame();
@@ -237,6 +238,34 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	}
 
 	public IntPtr TrackBg(IntPtr bg) { _pendingBindGroups.Add((nint)bg); return bg; }
+
+	// Per-frame uniform ring. A gradient's uniform holds DEVICE-space geometry, so under a moving transform its
+	// content differs every frame and a content-keyed cache can never hit — yet each gradient still needs its own
+	// live buffer within the frame. Creating a buffer + bind group per gradient per frame is what made 500
+	// gradients cost ~500 CreateBindGroup calls a frame. Allocate pairs ONCE and reuse them by index: the contents
+	// are rewritten each frame (queue writes are ordered against submits, so overwriting is safe).
+	private readonly List<(IntPtr Buf, IntPtr Bg)> _uniformRing = new();
+	private int _uniformRingNext;
+
+	public void ResetUniformRing() => _uniformRingNext = 0;
+
+	public IntPtr RentRingUniform(nuint bytes, IntPtr layout, out IntPtr buf)
+	{
+		if (_uniformRingNext < _uniformRing.Count)
+		{
+			var e = _uniformRing[_uniformRingNext++];
+			buf = e.Buf;
+			return e.Bg;
+		}
+		var bd = new WGPUBufferDescriptor { Size = bytes, Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
+		buf = wgpuDeviceCreateBuffer(Dev, &bd);
+		var entry = new WGPUBindGroupEntry { Binding = 0, Buffer = buf, Offset = 0, Size = bytes };
+		var bgd = new WGPUBindGroupDescriptor { Layout = layout, EntryCount = 1, Entries = &entry };
+		var bg = wgpuDeviceCreateBindGroup(Dev, &bgd);
+		_uniformRing.Add((buf, bg));
+		_uniformRingNext++;
+		return bg;
+	}
 
 	// Uploads the frame's transform table into the persistent storage buffer (grown 1.5× on demand) and returns a
 	// bind group cached by buffer identity — rebuilt only when the buffer reallocates. Only the main on-window pass
