@@ -113,6 +113,12 @@ internal sealed class RoundedRectCmd : WebGpuCommand
 	public Vector4 InnerRadii;
 }
 
+internal static class WgStrokeStats
+{
+	public static int Strips;
+	public static int TilesCmd;
+}
+
 internal sealed class PathFill : WebGpuCommand
 {
 	public float[] FanDevice;
@@ -900,6 +906,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			EmitStrokeStrip(pts, closed, h);
 		}
 		var ok = _fan.Count > 0;
+		if (ok) { WgStrokeStats.Strips++; }
 		if (ok)
 		{
 			_target.Add(new PathFill { FanDevice = _fan.ToArray(), BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = false, FanTiles = true, Clip = RelaxedClip(_bbMin, _bbMax) });
@@ -2428,6 +2435,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 	private void BuildSimpleOp(WebGpuCommand cmd, List<DrawOp> ops, OwnedResources owned, int pathSlot)
 	{
+		if (cmd is PathFill { FanTiles: true }) { WgStrokeStats.TilesCmd++; }
 		switch (cmd)
 		{
 			case RectCommand rc:
@@ -2784,7 +2792,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// stencil + ONE cover, the same coalescing BuildCoalesced does for arena recordings. Without it every
 					// recording that also contains rects — i.e. every real list row, grid cell or card, since they all
 					// have a background — paid 2 draws and 2 pipeline switches per GLYPH.
-					if (!_noGlyphCoalesce && tc is PathFill pf0 && !pf0.EvenOdd)
+					if (!_noGlyphCoalesce && tc is PathFill pf0 && !pf0.EvenOdd && !pf0.FanTiles)
 					{
 						_scratch.Clear();
 						var gMin = new Vector2(float.MaxValue); var gMax = new Vector2(float.MinValue);
@@ -3028,7 +3036,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 									{
 										// Same glyph-run collapse as the table path: one stencil + one cover for a run of
 										// consecutive non-zero paths sharing colour + clip, instead of 2 draws per glyph.
-										if (!_noGlyphCoalesce && tc is PathFill pf0 && !pf0.EvenOdd)
+										if (!_noGlyphCoalesce && tc is PathFill pf0 && !pf0.EvenOdd && !pf0.FanTiles)
 										{
 											float fSlotBits = System.BitConverter.Int32BitsToSingle(fSlot);
 											_scratch.Clear();
@@ -4017,7 +4025,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
 		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
 		{
-			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} fanTry=t{StatFanTried}/ok{StatFanStripped}/big{StatFanTooBig}/concave{StatFanConcave}/nocover{StatFanNotCovering} gpu={_d.LastGpuMs:F2}ms/maps{_d.TsMapTried}-{_d.TsMapOk}-{_d.TsMapFail} cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip}) replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB sharedOps={statSharedOps} tiled={statTiled} coverMpx={statCoverMpx:F1}");
+			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} fanTry=t{StatFanTried}/ok{StatFanStripped}/big{StatFanTooBig}/concave{StatFanConcave}/nocover{StatFanNotCovering} gpu={_d.LastGpuMs:F2}ms/maps{_d.TsMapTried}-{_d.TsMapOk}-{_d.TsMapFail} cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip}) replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB sharedOps={statSharedOps} tiled={statTiled} coverMpx={statCoverMpx:F1} strips={WgStrokeStats.Strips} tilesCmd={WgStrokeStats.TilesCmd}");
 			WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = 0;
 			StatFanTried = StatFanStripped = StatFanTooBig = StatFanConcave = StatFanNotCovering = 0;
 			_statTableRebuilds = 0; _statStamps = 0; _statArenaRebuilds = 0; _statCachedRebuilds = 0; _statCrMiss = _statCrMove = _statCrPathFlip = _statCrSize = _statCrClip = 0;
