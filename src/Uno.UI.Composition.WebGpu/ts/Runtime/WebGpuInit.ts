@@ -23,11 +23,11 @@ namespace Uno.UI.Runtime.Skia {
 				// as time blocked in submit/present). Requesting it costs nothing; the queries themselves are
 				// written only when UNO_WEBGPU_GPUTIME=1. Chrome also gates this behind
 				// --enable-dawn-features=allow_unsafe_apis.
-				const requiredFeatures: GPUFeatureName[] = [];
+				const requiredFeatures: string[] = [];
 				if ((adapter as any).features?.has?.("timestamp-query")) {
-					requiredFeatures.push("timestamp-query" as GPUFeatureName);
+					requiredFeatures.push("timestamp-query");
 				}
-				const device = await adapter.requestDevice({ requiredFeatures });
+				const device = await adapter.requestDevice({ requiredFeatures } as any);
 				if (!device) {
 					console.error("WebGpuInit: adapter.requestDevice returned null");
 					return 0;
