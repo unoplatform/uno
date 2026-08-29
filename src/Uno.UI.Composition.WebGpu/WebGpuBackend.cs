@@ -119,6 +119,8 @@ internal sealed class PathFill : WebGpuCommand
 	public Vector2 BbMin, BbMax;
 	public WColor Color;
 	public bool EvenOdd;
+	/// <summary>The fan tiles the shape without overlap, so it can be filled directly — no stencil-then-cover.</summary>
+	public bool FanTiles;
 }
 
 internal sealed unsafe class ImageCmd : WebGpuCommand
@@ -628,6 +630,10 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	private List<float> _fan;
 	private Vector2 _pivot, _prev, _bbMin, _bbMax;
 	private bool _firstInContour;
+	// Does the triangle fan tile the shape without overlap? True iff every triangle winds the same way, which is
+	// exactly sum(|area|) == |sum(area)|. Accumulated incrementally so the test is free.
+	private int _contourCount;
+	private double _fanAreaAbs, _fanAreaSigned;
 
 	public void DrawRoundedRect(in Rect rect, Vector4 radii, WColor color, bool antialias = false)
 	{
@@ -687,20 +693,31 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		if (_pendingColorMatrix is { Length: >= 20 } pm) { color = ApplyColorMatrix(color, pm); }
 		_fan = new List<float>();
 		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
+		_contourCount = 0; _fanAreaAbs = 0; _fanAreaSigned = 0;
 		geometry.StreamFlattened(this);
 		if (_fan.Count > 0)
 		{
-			_target.Add(new PathFill { FanDevice = _fan.ToArray(), BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, Clip = RelaxedClip(_bbMin, _bbMax) });
+			// A single contour whose fan tiles without overlap fills correctly in ONE pass, even when translucent:
+			// adjacent fan triangles share an edge exactly, so no sample is covered twice.
+			var tiles = !evenOdd && _contourCount == 1 && _fanAreaAbs > 0
+				&& Math.Abs(_fanAreaAbs - Math.Abs(_fanAreaSigned)) <= 1e-4 * _fanAreaAbs;
+			_target.Add(new PathFill { FanDevice = _fan.ToArray(), BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, FanTiles = tiles, Clip = RelaxedClip(_bbMin, _bbMax) });
 		}
 		_fan = null;
 	}
 
-	void IFlattenedPathSink.BeginContour(Vector2 start) { _pivot = Map(start.X, start.Y); _prev = _pivot; _firstInContour = true; Include(_pivot); }
+	void IFlattenedPathSink.BeginContour(Vector2 start) { _pivot = Map(start.X, start.Y); _prev = _pivot; _firstInContour = true; _contourCount++; Include(_pivot); }
 	void IFlattenedPathSink.LineTo(Vector2 point)
 	{
 		var p = Map(point.X, point.Y); Include(p);
 		if (_firstInContour) { _firstInContour = false; }
-		else { _fan.Add(_pivot.X); _fan.Add(_pivot.Y); _fan.Add(_prev.X); _fan.Add(_prev.Y); _fan.Add(p.X); _fan.Add(p.Y); }
+		else
+		{
+			_fan.Add(_pivot.X); _fan.Add(_pivot.Y); _fan.Add(_prev.X); _fan.Add(_prev.Y); _fan.Add(p.X); _fan.Add(p.Y);
+			double a = ((double)_prev.X - _pivot.X) * ((double)p.Y - _pivot.Y) - ((double)p.X - _pivot.X) * ((double)_prev.Y - _pivot.Y);
+			_fanAreaAbs += Math.Abs(a);
+			_fanAreaSigned += a;
+		}
 		_prev = p;
 	}
 	void IFlattenedPathSink.EndContour(bool closed) { }
@@ -2270,6 +2287,22 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			case PathFill pf:
 				{
 					float slotBits = System.BitConverter.Int32BitsToSingle(pathSlot);
+					if (pf.FanTiles)
+					{
+						// The fan tiles the shape, so fill it in ONE pass: no stencil fan writing a multisampled
+						// depth-stencil, and no cover quad over the whole bbox. Same pipeline as the cover, fed the
+						// fan triangles directly. kind 8, flag => b0 is a byte offset into the shared path buffer.
+						float fr = pf.Color.R / 255f, fg = pf.Color.G / 255f, fb = pf.Color.B / 255f, fa = pf.Color.A / 255f;
+						_scratch.Clear();
+						for (int i = 0; i < pf.FanDevice.Length; i += 2) { PushVertT(new Vector2(pf.FanDevice[i], pf.FanDevice[i + 1]), fr, fg, fb, fa, slotBits); }
+						var tClip = StripRedundantFan(pf.Clip, new Vector4(pf.BbMin.X, pf.BbMin.Y, pf.BbMax.X, pf.BbMax.Y));
+						var tClipBg = MakeClipBg(_d.CoverClipBgl, tClip, owned);
+						var tCount = (uint)(pf.FanDevice.Length / 2);
+						ops.Add(owned is null
+							? new DrawOp(8, AppendPathBlock(_scratch), tCount, 0, true, tClip, (nint)tClipBg)
+							: new DrawOp(8, (nint)Vbuf(_scratch, owned), tCount, 0, false, tClip, (nint)tClipBg));
+						break;
+					}
 					_scratch.Clear();
 					for (int i = 0; i < pf.FanDevice.Length; i += 2) { _scratch.Add(pf.FanDevice[i]); _scratch.Add(pf.FanDevice[i + 1]); _scratch.Add(slotBits); }
 					var fanShared = owned is null ? AppendPathBlock(_scratch) : -1;
@@ -3281,9 +3314,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		for (int i = 0; bundleEligible && i < ops.Count; i++)
 		{
 			var o = ops[i];
-			bundleEligible = o.kind is 0 or 1 or 2 or 3 or 5
+			bundleEligible = o.kind is 0 or 1 or 2 or 3 or 5 or 8
 				&& !(o.kind is 0 or 5 && o.b0 == 0)   // shared per-frame append buffers: handles churn every frame
-				&& !(o.kind is 2 or 3 && o.flag)      // ditto: flag means b1 indexes this frame's shared quad/gradient buffer
+				&& !(o.kind is 2 or 3 or 8 && o.flag) // ditto: flag means this op indexes a shared per-frame buffer
 				&& ScissorWidenable(o.clip);
 		}
 		// Chunked bundle cache: fixed-size op chunks compare independently against the snapshot, so an animated
@@ -3384,7 +3417,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// one clip, so this collapses a per-op call to one per distinct clip. Locals (not a field) keep it correct
 		// under the recursive nested-layer RenderInto (each pass has its own scissor state).
 		int lastX = -1, lastY = -1, lastW = -1, lastH = -1;
-		int statIters = 0, statScissor = 0, statClipCh = 0, statFanOps = 0, statSharedOps = 0;
+		int statIters = 0, statScissor = 0, statClipCh = 0, statFanOps = 0, statSharedOps = 0, statTiled = 0;
 		// Current in-pass path-clip mask (device depth buffer). Changes only when a run of ops moves to a different
 		// path clip — the composition emits a clip then its subtree consecutively, so this fires ~once per clip.
 		float[] curFan = null; Vector4 curAabb = default;
@@ -3430,7 +3463,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				var (kind, b0, u0, b1, flag, clip, clipBg) = ops[oi];
 				statIters++;
 				if (_emitStats && clip.PathFan is not null) { statFanOps++; }
-				if (_emitStats && (kind == 7 || (kind is 2 or 3 && flag))) { statSharedOps++; }
+				if (_emitStats && (kind == 7 || (kind is 2 or 3 or 8 && flag))) { statSharedOps++; }
+				if (_emitStats && kind == 8) { statTiled++; }
 				// UNO_WEBGPU_NOCLIP: skip path-clip application entirely (VISUALLY WRONG) to bound what any
 				// clip optimisation could ever be worth on this scene.
 				if (_noPathClip) { clip.PathFan = null; }
@@ -3539,6 +3573,22 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						EncBg(1, (IntPtr)clipBg);
 						EncVb((IntPtr)b1, 0, (nuint)(42 * sizeof(float)));
 						EncDraw(6);
+						break;
+					case 8:
+						// Single-pass fill of a tiling fan (see PathFill.FanTiles).
+						EncPipe(_d.CoverTablePipe);
+						EncBg(0, (IntPtr)xformBg);
+						EncBg(1, (IntPtr)clipBg);
+						if (flag)
+						{
+							EncVb((IntPtr)pathBuf, 0, pathBufBytes);
+							EncDraw(u0, (uint)(b0 / (7 * sizeof(float))));
+						}
+						else
+						{
+							EncVb((IntPtr)b0, 0, (nuint)(u0 * 7 * sizeof(float)));
+							EncDraw(u0);
+						}
 						break;
 					case 7:
 						// Shared-buffer path fill: same as kind 1, but b0/b1 are byte offsets into pathBuf, so the
@@ -3794,7 +3844,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
 		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
 		{
-			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} fanTry=t{StatFanTried}/ok{StatFanStripped}/big{StatFanTooBig}/concave{StatFanConcave}/nocover{StatFanNotCovering} gpu={_d.LastGpuMs:F2}ms/maps{_d.TsMapTried}-{_d.TsMapOk}-{_d.TsMapFail} cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip}) replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB sharedOps={statSharedOps}");
+			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} fanTry=t{StatFanTried}/ok{StatFanStripped}/big{StatFanTooBig}/concave{StatFanConcave}/nocover{StatFanNotCovering} gpu={_d.LastGpuMs:F2}ms/maps{_d.TsMapTried}-{_d.TsMapOk}-{_d.TsMapFail} cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip}) replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB sharedOps={statSharedOps} tiled={statTiled}");
 			WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = 0;
 			StatFanTried = StatFanStripped = StatFanTooBig = StatFanConcave = StatFanNotCovering = 0;
 			_statTableRebuilds = 0; _statStamps = 0; _statArenaRebuilds = 0; _statCachedRebuilds = 0; _statCrMiss = _statCrMove = _statCrPathFlip = _statCrSize = _statCrClip = 0;
