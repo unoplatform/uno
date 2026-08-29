@@ -634,6 +634,11 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	// exactly sum(|area|) == |sum(area)|. Accumulated incrementally so the test is free.
 	private int _contourCount;
 	private double _fanAreaAbs, _fanAreaSigned;
+	// Contour points, buffered so the fan can pivot on the CENTROID. Fanning from the first vertex self-overlaps
+	// for any shape that is star-shaped about its middle rather than about that vertex (a blob, a star, a gauge
+	// arc), which is most of them — pivoting on the centroid is what lets FanTiles actually fire.
+	private readonly List<Vector2> _contourPts = new();
+	private bool _fanFromCentroid;
 
 	public void DrawRoundedRect(in Rect rect, Vector4 radii, WColor color, bool antialias = false)
 	{
@@ -694,7 +699,12 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		_fan = new List<float>();
 		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
 		_contourCount = 0; _fanAreaAbs = 0; _fanAreaSigned = 0;
+		// Even-odd fills stencil by parity, and parity depends on the fan decomposition, so only the non-zero
+		// path may move its pivot.
+		_fanFromCentroid = !evenOdd;
+		_contourPts.Clear();
 		geometry.StreamFlattened(this);
+		_fanFromCentroid = false;
 		if (_fan.Count > 0)
 		{
 			// A single contour whose fan tiles without overlap fills correctly in ONE pass, even when translucent:
@@ -706,10 +716,15 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		_fan = null;
 	}
 
-	void IFlattenedPathSink.BeginContour(Vector2 start) { _pivot = Map(start.X, start.Y); _prev = _pivot; _firstInContour = true; _contourCount++; Include(_pivot); }
+	void IFlattenedPathSink.BeginContour(Vector2 start)
+	{
+		_pivot = Map(start.X, start.Y); _prev = _pivot; _firstInContour = true; _contourCount++; Include(_pivot);
+		if (_fanFromCentroid) { _contourPts.Clear(); _contourPts.Add(_pivot); }
+	}
 	void IFlattenedPathSink.LineTo(Vector2 point)
 	{
 		var p = Map(point.X, point.Y); Include(p);
+		if (_fanFromCentroid) { _contourPts.Add(p); _prev = p; return; }
 		if (_firstInContour) { _firstInContour = false; }
 		else
 		{
@@ -720,7 +735,26 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		}
 		_prev = p;
 	}
-	void IFlattenedPathSink.EndContour(bool closed) { }
+	void IFlattenedPathSink.EndContour(bool closed)
+	{
+		if (!_fanFromCentroid) { return; }
+		var n = _contourPts.Count;
+		if (n < 3) { _contourPts.Clear(); return; }
+		var c = Vector2.Zero;
+		for (int i = 0; i < n; i++) { c += _contourPts[i]; }
+		c /= n;
+		// Every edge gets a triangle, the closing one included — with a centroid pivot it is no longer degenerate.
+		for (int i = 0; i < n; i++)
+		{
+			var a0 = _contourPts[i];
+			var b0 = _contourPts[(i + 1) % n];
+			_fan.Add(c.X); _fan.Add(c.Y); _fan.Add(a0.X); _fan.Add(a0.Y); _fan.Add(b0.X); _fan.Add(b0.Y);
+			double ar = ((double)a0.X - c.X) * ((double)b0.Y - c.Y) - ((double)b0.X - c.X) * ((double)a0.Y - c.Y);
+			_fanAreaAbs += Math.Abs(ar);
+			_fanAreaSigned += ar;
+		}
+		_contourPts.Clear();
+	}
 	private void Include(Vector2 p) { _bbMin = Vector2.Min(_bbMin, p); _bbMax = Vector2.Max(_bbMax, p); }
 
 	public void DrawRect(in Rect rect, IShader shader, bool antialias = false)
