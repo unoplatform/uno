@@ -13,7 +13,7 @@ partial class ScrollBar
 	/// Keeps the bar in its interactive state, so that its thumb can be dragged with a finger.
 	/// </summary>
 	/// <remarks>
-	/// Opted into through <see cref="Uno.UI.Toolkit.ScrollBarExtensions.IsTouchThumbDragEnabledProperty"/>.
+	/// Opted into through <c>Uno.UI.Toolkit.ScrollBarExtensions.IsTouchThumbDragEnabled</c>.
 	/// WinUI has the bar parts ignore touch and shows the non-interactive touch indicator instead, which
 	/// stays the default here. A bar which opted in is treated as not conscious, which is the same path a
 	/// system with auto-hiding scroll bars turned off takes.
