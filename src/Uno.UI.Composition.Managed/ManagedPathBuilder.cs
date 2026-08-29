@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -201,11 +201,87 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 	public IGeometry Build()
 	{
 		FlushContour(closed: false);
+		// A rounded rect drawn with explicit verbs (CompositionGeometry.BuildRoundedRectangleGeometry emits
+		// MoveTo/LineTo/CubicTo, never AddRoundedRectangle) loses its analytic identity, so TryGetRoundRect
+		// returns null and consumers fall back to a flattened path. In the WebGPU backend that means every
+		// rounded shape's CLIP becomes a depth-mask path fan — one ApplyDepthClip setup per shape, and a state
+		// change between every draw, which also prevents batching. Recover the shape from its geometry.
+		_pureRoundRect ??= TryInferRoundRect();
 		var geometry = new ManagedGeometry(_contours.ToArray(), FillRule, _pureRoundRect);
 		_contours.Clear();
 		FillRule = GeometryFillRule.NonZero;
 		_pureRoundRect = null;
 		return geometry;
+	}
+
+
+	/// <summary>
+	/// Recognises a single closed contour that is exactly an axis-aligned rounded rectangle: the canonical
+	/// 8-segment Line/Cubic alternation (top edge, TR corner, right edge, BR corner, ...). Returns null for
+	/// anything else, so a mis-detection cannot silently change a shape.
+	/// </summary>
+	private RoundRectangle? TryInferRoundRect()
+	{
+		if (_contours.Count != 1) { return null; }
+		var contour = _contours[0];
+		if (!contour.Closed || contour.Segments.Length != 8) { return null; }
+		var seg = contour.Segments;
+		for (int i = 0; i < 8; i++)
+		{
+			var expected = (i % 2 == 0) ? ManagedSegmentKind.Line : ManagedSegmentKind.Cubic;
+			if (seg[i].Kind != expected) { return null; }
+		}
+
+		const float Tol = 0.01f;
+		var start = contour.Start;
+		float t = start.Y;
+		float r = seg[1].End.X;
+		float b = seg[3].End.Y;
+		float l = seg[5].End.X;
+		if (!(r > l + Tol && b > t + Tol)) { return null; }
+
+		// Edges must be axis-aligned and sit on the rectangle's sides.
+		if (MathF.Abs(seg[0].End.Y - t) > Tol) { return null; }          // top edge horizontal
+		if (MathF.Abs(seg[2].End.X - r) > Tol) { return null; }          // right edge vertical
+		if (MathF.Abs(seg[4].End.Y - b) > Tol) { return null; }          // bottom edge horizontal
+		if (MathF.Abs(seg[6].End.X - l) > Tol) { return null; }          // left edge vertical
+		if (MathF.Abs(seg[7].End.X - start.X) > Tol || MathF.Abs(seg[7].End.Y - start.Y) > Tol) { return null; }
+
+		var topRight = new Vector2(r - seg[0].End.X, seg[1].End.Y - t);
+		var bottomRight = new Vector2(r - seg[3].End.X, b - seg[2].End.Y);
+		var bottomLeft = new Vector2(seg[4].End.X - l, b - seg[5].End.Y);
+		var topLeft = new Vector2(start.X - l, seg[6].End.Y - t);
+		if (topLeft.X < -Tol || topLeft.Y < -Tol || topRight.X < -Tol || topRight.Y < -Tol
+			|| bottomRight.X < -Tol || bottomRight.Y < -Tol || bottomLeft.X < -Tol || bottomLeft.Y < -Tol)
+		{
+			return null;
+		}
+
+		// Every corner's control points must stay inside that corner's box, or it is not an arc.
+		if (!CornerInBox(seg[1], seg[0].End, new Vector2(r, t)) || !CornerInBox(seg[3], seg[2].End, new Vector2(r, b))
+			|| !CornerInBox(seg[5], seg[4].End, new Vector2(l, b)) || !CornerInBox(seg[7], seg[6].End, new Vector2(l, t)))
+		{
+			return null;
+		}
+
+		return new RoundRectangle
+		{
+			Rect = new Rect(l, t, r - l, b - t),
+			TopLeft = topLeft,
+			TopRight = topRight,
+			BottomRight = bottomRight,
+			BottomLeft = bottomLeft,
+		};
+
+		static bool CornerInBox(in ManagedPathSegment cubic, Vector2 from, Vector2 corner)
+		{
+			float minX = MathF.Min(MathF.Min(from.X, cubic.End.X), corner.X) - 0.01f;
+			float maxX = MathF.Max(MathF.Max(from.X, cubic.End.X), corner.X) + 0.01f;
+			float minY = MathF.Min(MathF.Min(from.Y, cubic.End.Y), corner.Y) - 0.01f;
+			float maxY = MathF.Max(MathF.Max(from.Y, cubic.End.Y), corner.Y) + 0.01f;
+			return cubic.C1.X >= minX && cubic.C1.X <= maxX && cubic.C1.Y >= minY && cubic.C1.Y <= maxY
+				&& cubic.C2.X >= minX && cubic.C2.X <= maxX && cubic.C2.Y >= minY && cubic.C2.Y <= maxY;
+		}
 	}
 
 	private void EnsureContour()
