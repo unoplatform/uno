@@ -161,7 +161,9 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		var self = GCHandle.Alloc(this);
 		wgpuBufferMapAsync(TsStage, WGPUMapMode.Read, 0, 16, new WGPUBufferMapCallbackInfo
 		{
-			Mode = WGPUCallbackMode.AllowProcessEvents,
+			// Spontaneous: nothing pumps wgpuInstanceProcessEvents on the render path, so an
+			// AllowProcessEvents callback would never fire and gpu= stayed 0.00ms.
+			Mode = WGPUCallbackMode.AllowSpontaneous,
 			Callback = (IntPtr)(delegate* unmanaged[Cdecl]<WGPUMapAsyncStatus, WGPUStringView, IntPtr, IntPtr, void>)&OnTsMap,
 			Userdata1 = GCHandle.ToIntPtr(self),
 		});
