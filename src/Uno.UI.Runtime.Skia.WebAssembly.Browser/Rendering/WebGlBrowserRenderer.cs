@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices.JavaScript;
 using Uno.Foundation.Logging;
@@ -34,6 +34,10 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 				Depth: jsObject.GetPropertyAsInt32("depth")
 			);
 			renderer = new WebGlBrowserRenderer(jsInfo);
+			// Diagnostic only — NOT fed to Skia. The context is requested with antialias:1, but the sample count
+			// handed to Ganesh is hardcoded to 0 (see the TODO in WebGlBrowserRenderer.ts), so Skia anti-aliases
+			// analytically and never asks for MSAA. This reports what the default framebuffer actually has.
+			System.Console.WriteLine($"[skia-gl] reported samples={jsInfo.Samples} actualSamples={jsObject.GetPropertyAsInt32("actualSamples")} stencil={jsInfo.Stencil} depth={jsInfo.Depth}");
 			typeof(WebGlBrowserRenderer).LogInfo()?.Info($"WebGL context created successfully: {jsInfo}");
 			return true;
 		}
