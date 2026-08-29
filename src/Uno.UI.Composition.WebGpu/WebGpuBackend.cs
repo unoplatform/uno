@@ -2772,7 +2772,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// own identity NDC space; a moved replay re-stamps the vertex xform on the per-op clip bind groups
 						// and REUSES the vertex buffers instead of rebuilding. Moving-visual trace: moved frame => reuse.
 						// Session clips without a fan are stamped in below (Aabb intersect + rounds folded via finv).
-						if (rr.Clip.PathFan is null && IsArenaSafe(rr))
+						// A session PATH clip does not force the device-bake path. The fan is applied separately by
+						// the in-pass depth mask (ApplyDepthClip reads clip.PathFan in device space), so only the
+						// ROUNDS/AABB parts of a session clip need folding through finv — and a fan cannot be folded,
+						// which is the only reason it was excluded. Admitting it lets these recordings RE-STAMP on a
+						// move instead of re-baking: measured 49.5ms -> 20.7ms on RenderStress_Gradients, where 327
+						// recordings per frame were rebuilding purely because their transform changed.
+						if (IsArenaSafe(rr))
 						{
 							// Stable path-fill transform slot: arena verts are in the recording's OWN (identity) space, so
 							// the slot's entry folds the replay transform + projection — written per frame below, so a
@@ -2822,6 +2828,17 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 									// clipCov reads the LOCAL rounded shape (finv maps fc back to it); the SCISSOR is device-space
 									// so its Aabb must follow the move — transform the (finite) clip Aabb by the replay transform.
 									var scissorClip = op.clip;
+									// Carry the session fan onto the stamped op so the depth mask still clips it.
+									// IsArenaSafe guarantees the op's own clip has no fan, so nothing is overwritten.
+									if (rr.Clip.PathFan is { } sessionFan)
+									{
+										scissorClip.PathFan = sessionFan;
+										scissorClip.PathEvenOdd = rr.Clip.PathEvenOdd;
+										scissorClip.PathExclude = rr.Clip.PathExclude;
+										scissorClip.FanBuf = rr.Clip.FanBuf;
+										scissorClip.FanW = rr.Clip.FanW;
+										scissorClip.FanH = rr.Clip.FanH;
+									}
 									var ab = op.clip.Aabb;
 									if (ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f)
 									{
