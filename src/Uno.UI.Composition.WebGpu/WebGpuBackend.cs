@@ -2064,7 +2064,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	{
 		StatFanTried++;
 		int n = fan.Length / 2;
-		if (n < 3 || n > 16) { StatFanTooBig++; return false; }
+		// The cap only guards the O(n) convexity walk; a flattened rounded-rect or ellipse clip runs to dozens or
+		// hundreds of points, and a 16-point limit rejected every fan in RenderStress_Gradients (1214 of 1214).
+		if (n < 3 || n > 512) { StatFanTooBig++; return false; }
 		// Convexity: every cross product of consecutive edges must share a sign.
 		int sign = 0;
 		for (int i = 0; i < n; i++)
