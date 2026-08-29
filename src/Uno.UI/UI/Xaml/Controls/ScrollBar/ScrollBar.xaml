@@ -1037,4 +1037,6 @@
 		</Setter>
 	</Style>
 
+	<not_winappsdk:Style TargetType="ScrollBar" BasedOn="{StaticResource XamlNoAnimationScrollBar}" />
+
 </ResourceDictionary>

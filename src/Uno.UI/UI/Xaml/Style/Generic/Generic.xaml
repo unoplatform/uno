@@ -8,7 +8,7 @@
     Uno platform adaptations and compatibility aliases are intentionally retained.
 -->
 
-<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:not_win="http://uno.ui/not_win" xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:netstdref="http://uno.ui/netstdref" xmlns:ios="http://uno.ui/ios" xmlns:android="http://uno.ui/android" xmlns:itemswrapgridpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Microsoft.UI.Xaml.Controls.ItemsWrapGrid)" xmlns:itemswrapgridnotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Microsoft.UI.Xaml.Controls.ItemsWrapGrid)" mc:Ignorable="not_win netstdref ios android">
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:not_win="http://uno.ui/not_win" xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:not_winappsdk="http://uno.ui/not_winappsdk" xmlns:ios="http://uno.ui/ios" xmlns:android="http://uno.ui/android" xmlns:itemswrapgridpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypePresent(Microsoft.UI.Xaml.Controls.ItemsWrapGrid)" xmlns:itemswrapgridnotpresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Microsoft.UI.Xaml.Controls.ItemsWrapGrid)" mc:Ignorable="not_win not_winappsdk ios android">
 
     <ResourceDictionary.ThemeDictionaries>
 
@@ -24642,16 +24642,16 @@
 								<VisualState x:Name="Closed">
 									<!-- Workaround because values aren't properly reset on Wasm.-->
 									<Storyboard>
-										<netstdref:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility"
-																			Storyboard.TargetName="PaneRoot">
+										<not_winappsdk:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility"
+																					 Storyboard.TargetName="PaneRoot">
 											<DiscreteObjectKeyFrame KeyTime="0:0:0"
 																	Value="Collapsed" />
-										</netstdref:ObjectAnimationUsingKeyFrames>
-										<netstdref:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)"
-																			Storyboard.TargetName="ContentRoot">
+										</not_winappsdk:ObjectAnimationUsingKeyFrames>
+										<not_winappsdk:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(Grid.Column)"
+																					 Storyboard.TargetName="ContentRoot">
 											<DiscreteObjectKeyFrame KeyTime="0:0:0"
 																	Value="0" />
-										</netstdref:ObjectAnimationUsingKeyFrames>
+										</not_winappsdk:ObjectAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
 								<VisualState x:Name="ClosedCompactLeft">
