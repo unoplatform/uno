@@ -120,6 +120,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	private readonly System.Collections.Generic.List<nint> _pendingBindGroups = new();
 	private readonly System.Collections.Generic.List<nint> _pendingBuffers = new();
 	private readonly System.Collections.Generic.List<nint> _pendingClipSlots = new();
+	private readonly System.Collections.Generic.List<WebGpuPathAtlas.Slot> _pendingAtlasSlots = new();
 	// Transient image textures whose owning IRenderRecord was disposed; drained (GPU-released) at the next frame start.
 	// Concurrent because a frame is disposed on the UI thread while BeginFrameResources runs on the render thread.
 	private readonly System.Collections.Concurrent.ConcurrentQueue<(nint view, nint tex)> _pendingTextures = new();
@@ -253,6 +254,9 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		// Clip-slab slots ride the same deferred pipeline as the buffers/bind groups that referenced them.
 		foreach (var s in _pendingClipSlots) { ClipSlab.Free(s); }
 		_pendingClipSlots.Clear();
+		foreach (var a in _pendingAtlasSlots) { PathAtlas.Free(a); }
+		_pendingAtlasSlots.Clear();
+		ReleaseRetiredAtlasPages();
 
 
 		// Free compiled draw-lists whose owning recording was disposed (their slab slices are reclaimed separately by
@@ -340,6 +344,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		_pendingBuffers.AddRange(owned.Buffers);
 		_pendingBindGroups.AddRange(owned.BindGroups);
 		if (owned.ClipSlots is { } slots) { _pendingClipSlots.AddRange(slots); }
+		if (owned.AtlasSlots is { } aslots) { _pendingAtlasSlots.AddRange(aslots); }
 		return true;
 	}
 	// Defers a single GPU buffer (e.g. an outgrown slab buffer) for release at the next frame start.
@@ -614,9 +619,9 @@ fn clipCovMapped(fc: vec2<f32>, clip: ClipU) -> f32 {
 	/// </summary>
 	public WebGpuPathAtlas PathAtlas { get; } = new();
 
-	public void EnsurePathAtlas()
+	/// <summary>Opens another atlas page. Pages are added when the existing ones are exhausted.</summary>
+	public void AddPathAtlasPage()
 	{
-		if (PathAtlas.Texture != IntPtr.Zero) { return; }
 		var td = new WGPUTextureDescriptor
 		{
 			Size = new WGPUExtent3D { Width = WebGpuPathAtlas.Size, Height = WebGpuPathAtlas.Size, DepthOrArrayLayers = 1 },
@@ -629,7 +634,19 @@ fn clipCovMapped(fc: vec2<f32>, clip: ClipU) -> f32 {
 			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopyDst,
 		};
 		var tex = wgpuDeviceCreateTexture(Dev, &td);
-		PathAtlas.SetTexture(tex, wgpuTextureCreateView(tex, null));
+		PathAtlas.AddPage(tex, wgpuTextureCreateView(tex, null));
+	}
+
+	/// <summary>Destroys the textures of pages whose last slot was freed. Called at the frame boundary.</summary>
+	public void ReleaseRetiredAtlasPages()
+	{
+		if (PathAtlas.Retired.Count == 0) { return; }
+		foreach (var page in PathAtlas.Retired)
+		{
+			if (page.View != IntPtr.Zero) { wgpuTextureViewRelease(page.View); }
+			if (page.Texture != IntPtr.Zero) { wgpuTextureRelease(page.Texture); }
+		}
+		PathAtlas.Retired.Clear();
 	}
 
 	// Averages each 4x4 block of the supersampled mask into one coverage value. Reads with textureLoad so no
@@ -1835,6 +1852,9 @@ internal sealed class OwnedResources
 	public System.Collections.Generic.List<nint> BindGroups = new();
 	// Clip-slab slot handles this bag's bind groups reference; freed with the bag (see WebGpuClipSlab).
 	public System.Collections.Generic.List<nint> ClipSlots;
+	// Coverage-atlas slots this bag's draw ops sample; freed with the bag, because those ops bake the slot's UVs
+	// and would sample another shape's mask if the region were reclaimed while they still existed.
+	public System.Collections.Generic.List<WebGpuPathAtlas.Slot> AtlasSlots;
 	// Release-once claim: a rebuild (render thread) and the recording's Dispose (UI thread) can both hand the
 	// same bag to DeferRelease — the rebuild reads the compiled entry before it stores the replacement, so a
 	// Dispose in that window re-defers the old bag. Double-releasing recycles wgpu ids under in-flight uses
