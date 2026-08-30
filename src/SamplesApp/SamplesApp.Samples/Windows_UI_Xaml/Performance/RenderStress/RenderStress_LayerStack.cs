@@ -27,8 +27,11 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	{
 		protected override string ScenarioName => "Layer stack (per-layer cost)";
 
-		/// <summary>Number of opacity groups, i.e. isolation layers per frame.</summary>
-		protected override int DefaultCount => 96;
+		/// <summary>
+		/// Number of opacity groups, i.e. isolation layers per frame. At 96 both backends sit at the vsync cap on
+		/// real hardware and measure nothing; this is the count where they separate.
+		/// </summary>
+		protected override int DefaultCount => 384;
 
 		protected override void Populate(Canvas host, int count, double width, double height)
 		{
