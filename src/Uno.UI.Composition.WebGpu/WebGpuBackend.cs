@@ -134,6 +134,10 @@ internal sealed class PathFill : WebGpuCommand
 	/// </summary>
 	public float[] FanCoverage;
 
+	/// <summary>Source geometry + transform, so an atlas entry can be keyed by shape and scale.</summary>
+	public object Geometry;
+	public Matrix4x4 GeomMatrix;
+
 	// The stencil fan the GPU consumes: FanDevice with the transform-table slot interleaved as a third float.
 	// Recordings are cached, so FanDevice never changes — rebuilding this element by element every frame is pure
 	// waste, and a giant glyph flattens to thousands of points. Keyed by the slot it was built for.
@@ -790,7 +794,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			// over the ink alone and antialiases itself instead of leaning on the multisampled attachment.
 			var aa = TryTessellate(geometry);
 			if (aa) { tiles = true; }
-			_target.Add(new PathFill { FanDevice = _fan.ToArray(), FanCoverage = _fanCoverage, BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, FanTiles = tiles, Clip = RelaxedClip(_bbMin, _bbMax) });
+			_target.Add(new PathFill { FanDevice = _fan.ToArray(), FanCoverage = _fanCoverage, Geometry = geometry, GeomMatrix = _m, BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, FanTiles = tiles, Clip = RelaxedClip(_bbMin, _bbMax) });
 		}
 		_fan = null;
 	}
@@ -1376,7 +1380,10 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					// FanTiles survives the transform: an affine map scales every triangle area by the same
 					// determinant, so sum(|area|) == |sum(area)| still holds. Dropping it here silently disabled the
 					// single-pass fill for every replayed (scrolled/transformed) recording.
-					var replayed = new PathFill { FanDevice = dst, FanCoverage = p.FanCoverage, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, FanTiles = p.FanTiles, Clip = ClipCompose(p.Clip) };
+					// Carry the atlas key through the replay: the effective transform is the recorded one composed
+					// with this replay's, so a scrolled or scaled instance keys to its own entry rather than
+					// reusing a mask baked at a different scale.
+					var replayed = new PathFill { FanDevice = dst, FanCoverage = p.FanCoverage, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, FanTiles = p.FanTiles, Geometry = p.Geometry, GeomMatrix = p.GeomMatrix * _m, Clip = ClipCompose(p.Clip) };
 					p.StoreReplayed(_m, replayed);
 					_target.Add(replayed);
 					break;
@@ -1978,6 +1985,163 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// bind group on every miss, and a clip carrying DEVICE-space geometry misses every frame under any moving
 		// transform — ~960 native calls/frame on RealWorld_MapOverlay, the same runaway the gradients had.
 		return _d.ClipBgSlabFor(bgl, ClipUBytes).Rent(bgl, cu);
+	}
+
+	private static readonly bool _pathAtlas = Environment.GetEnvironmentVariable("UNO_WEBGPU_GLYPH_ATLAS") is "1";
+
+	/// <summary>
+	/// Rasterizes one fill's coverage into its atlas slot: stencil-then-cover in white into a scratch surface
+	/// (multisampled, so the baked coverage is antialiased however the frame is later sampled), then a texture
+	/// copy into the page. Runs during op BUILD, before the frame's render pass opens — a copy cannot be
+	/// recorded inside a render pass.
+	/// </summary>
+	private void RasterizeAtlasEntry(PathFill pf, WebGpuPathAtlas.Slot slot)
+	{
+		const int SS = WebGpuDevice.MaskSuperSample;
+		int sw = slot.W * SS, sh = slot.H * SS;
+
+		// 1) Rasterize the coverage SUPERSAMPLED and single-sampled. Supersampling rather than MSAA keeps the bake
+		// independent of the frame's sample count and gives 17 coverage levels instead of 5.
+		// Use the SAME surface + pipeline pairing RenderShadow uses. A hand-rolled single-sample attachment set
+		// rasterized geometry fine but never wrote STENCIL (verified: cover with Always and with Equal-0 both
+		// filled the whole slot), so stencil-then-cover only works here against the device's own configuration.
+		var surf = new WebGpuRenderSurface(_d, sw, sh, _d.Pool);
+
+		var fan = new float[pf.FanDevice.Length];
+		for (int i = 0; i < pf.FanDevice.Length; i += 2)
+		{
+			fan[i] = (pf.FanDevice[i] - slot.OriginX + 1f) / slot.W * 2f - 1f;
+			fan[i + 1] = 1f - (pf.FanDevice[i + 1] - slot.OriginY + 1f) / slot.H * 2f;
+		}
+		var fanBuf = MakeBuffer(fan);
+		var cq = new List<float>();
+		void CQ(float x, float y) { cq.Add(x); cq.Add(y); cq.Add(1f); cq.Add(1f); cq.Add(1f); cq.Add(1f); }
+		CQ(-1, -1); CQ(1, -1); CQ(1, 1); CQ(-1, -1); CQ(1, 1); CQ(-1, 1);
+		var coverBuf = MakeBuffer(cq.ToArray());
+
+		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = surf.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? surf.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = _d.MsaaSamples > 1 ? WGPUStoreOp.Discard : WGPUStoreOp.Store, ClearValue = default };
+		var dsa = new WGPURenderPassDepthStencilAttachment { View = surf.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
+		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
+		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
+		if (pf.FanTiles)
+		{
+			// Already a non-overlapping triangulation: fill it directly, carrying any AA-ring coverage in alpha.
+			var cov = pf.FanCoverage;
+			var tf = new List<float>(pf.FanDevice.Length * 3);
+			for (int i = 0, v = 0; i < fan.Length; i += 2, v++)
+			{
+				var a = cov is null ? 1f : cov[v];
+				tf.Add(fan[i]); tf.Add(fan[i + 1]); tf.Add(1f); tf.Add(1f); tf.Add(1f); tf.Add(a);
+			}
+			var tfBuf = MakeBuffer(tf.ToArray());
+			wgpuRenderPassEncoderSetPipeline(pass, _d.MaskCoverPipe);
+			wgpuRenderPassEncoderSetBindGroup(pass, 0, MakeClipBg(_d.CoverClipBgl, ClipData.None), 0, (uint*)null);
+			wgpuRenderPassEncoderSetStencilReference(pass, 0);
+			wgpuRenderPassEncoderSetVertexBuffer(pass, 0, tfBuf, 0, (nuint)(tf.Count * sizeof(float)));
+			wgpuRenderPassEncoderDraw(pass, (uint)(fan.Length / 2), 1, 0, 0);
+		}
+		else
+		{
+			// A centroid fan self-overlaps and its union is a FATTER shape with the counters filled in, so the
+			// mask needs real winding: stencil the fan, then cover through it.
+			wgpuRenderPassEncoderSetPipeline(pass, pf.EvenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
+			wgpuRenderPassEncoderSetBindGroup(pass, 0, MakeClipBg(_d.ClipBgl, ClipData.None), 0, (uint*)null);
+			wgpuRenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(fan.Length * sizeof(float)));
+			wgpuRenderPassEncoderDraw(pass, (uint)(fan.Length / 2), 1, 0, 0);
+			wgpuRenderPassEncoderSetPipeline(pass, _d.CoverPipe);
+			wgpuRenderPassEncoderSetBindGroup(pass, 0, MakeClipBg(_d.CoverClipBgl, ClipData.None), 0, (uint*)null);
+			wgpuRenderPassEncoderSetStencilReference(pass, 0);
+			wgpuRenderPassEncoderSetVertexBuffer(pass, 0, coverBuf, 0, (nuint)(cq.Count * sizeof(float)));
+			wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
+		}
+		wgpuRenderPassEncoderEnd(pass);
+
+		// 2) Box-filter it straight into the slot. Rendering INTO the atlas (viewport = slot) avoids both an MSAA
+		// resolve and a texture copy, which is two fewer things to get wrong.
+		var dq = new float[]
+		{
+			-1f, -1f, 0f, 1f,
+			 1f, -1f, 1f, 1f,
+			 1f,  1f, 1f, 0f,
+			-1f, -1f, 0f, 1f,
+			 1f,  1f, 1f, 0f,
+			-1f,  1f, 0f, 0f,
+		};
+		var dqBuf = MakeBuffer(dq);
+		var de = new WGPUBindGroupEntry { Binding = 0, TextureView = surf.View };
+		var dbgd = new WGPUBindGroupDescriptor { Layout = _d.MaskDownsampleBgl, EntryCount = 1, Entries = &de };
+		var dbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &dbgd));
+
+		var aca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _d.PathAtlas.View, ResolveTarget = IntPtr.Zero, LoadOp = WGPULoadOp.Load, StoreOp = WGPUStoreOp.Store, ClearValue = default };
+		var arp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &aca };
+		var apass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &arp);
+		wgpuRenderPassEncoderSetViewport(apass, slot.X, slot.Y, slot.W, slot.H, 0f, 1f);
+		wgpuRenderPassEncoderSetPipeline(apass, _d.MaskDownsamplePipe);
+		wgpuRenderPassEncoderSetBindGroup(apass, 0, (IntPtr)dbg, 0, (uint*)null);
+		wgpuRenderPassEncoderSetVertexBuffer(apass, 0, dqBuf, 0, (nuint)(dq.Length * sizeof(float)));
+		wgpuRenderPassEncoderDraw(apass, 6, 1, 0, 0);
+		wgpuRenderPassEncoderEnd(apass);
+
+		if (_d.MsaaSamples > 1) { _d.Pool.Return(surf.MsaaColorView); }
+		_d.Pool.Return(surf.DepthView);
+	}
+
+	/// <summary>
+	/// Emits an atlased fill as a tinted quad, or returns false to leave it on the geometry path.
+	/// </summary>
+	private bool TryAtlasFill(PathFill pf, List<DrawOp> ops, OwnedResources owned)
+	{
+		if (!TryAtlasOp(pf, owned, out var op)) { return false; }
+		ops.Add(op);
+		return true;
+	}
+
+	internal static int AtlasTried, AtlasNoKey, AtlasHit, AtlasBaked, AtlasNoRoom;
+
+	private bool TryAtlasOp(PathFill pf, OwnedResources owned, out DrawOp result)
+	{
+		result = default;
+		if (!_pathAtlas || _d.PathAtlas.IsFull) { return false; }
+		AtlasTried++;
+		if (!WebGpuPathAtlas.TryKey(pf.Geometry, pf.GeomMatrix, pf.BbMin, pf.BbMax, out var key, out var w, out var h, out var ox, out var oy)) { AtlasNoKey++; return false; }
+
+		_d.EnsurePathAtlas();
+		if (_d.PathAtlas.TryGet(key, out var slot)) { AtlasHit++; }
+		else
+		{
+			slot = _d.PathAtlas.Allocate(key, w, h, ox, oy);
+			if (slot is null) { AtlasNoRoom++; return false; }
+			RasterizeAtlasEntry(pf, slot);
+			AtlasBaked++;
+		}
+
+		// SrcIn tint: the atlas carries coverage in alpha, the colour comes from the fill (see ImageWgsl op.y).
+		// PERSISTENT when this op belongs to a cached recording: MakeUniform rents from the per-frame pool, so a
+		// replayed op would read whatever recycled that buffer later and the glyph renders in another element's
+		// colour.
+		var ubuf = Ubuf(112, owned);
+		var u = stackalloc float[8];
+		u[0] = 1f; u[1] = 1f; u[2] = 0; u[3] = 0;
+		u[4] = pf.Color.R / 255f; u[5] = pf.Color.G / 255f; u[6] = pf.Color.B / 255f; u[7] = pf.Color.A / 255f;
+		wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)u, 32);
+		var entries = stackalloc WGPUBindGroupEntry[3];
+		entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = _d.PathAtlas.View };
+		entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+		entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 112 };
+		var bgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
+		var bg = Bg(ref bgd, owned);
+
+		// Place the quad where the entry was rasterized from, and sample exactly its slot.
+		float x0 = slot.OriginX - 1f, y0 = slot.OriginY - 1f;
+		float x1 = x0 + slot.W, y1 = y0 + slot.H;
+		float u0 = (float)slot.X / WebGpuPathAtlas.Size, v0 = (float)slot.Y / WebGpuPathAtlas.Size;
+		float u1 = (float)(slot.X + slot.W) / WebGpuPathAtlas.Size, v1 = (float)(slot.Y + slot.H) / WebGpuPathAtlas.Size;
+		var q = new float[24];
+		void QV(int i, float x, float y, float uu, float vv) { var n = Ndc(new Vector2(x, y)); q[i] = n.X; q[i + 1] = n.Y; q[i + 2] = uu; q[i + 3] = vv; }
+		QV(0, x0, y0, u0, v0); QV(4, x1, y0, u1, v0); QV(8, x1, y1, u1, v1);
+		QV(12, x0, y0, u0, v0); QV(16, x1, y1, u1, v1); QV(20, x0, y1, u0, v1);
+		result = new DrawOp(2, (nint)bg, 0, (nint)Vbuf(q, owned), false, pf.Clip, (nint)MakeClipBg(_d.ImageClipBgl, pf.Clip, owned));
+		return true;
 	}
 
 	// Fills the shadow silhouette into an offscreen coverage surface (stencil-then-cover, white), then blurs it
@@ -2618,6 +2782,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				ops.Add(new DrawOp(0, (nint)rvb, (uint)((j - ci) * 6), 0, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip, owned)));
 				ci = j - 1;
 			}
+			else if (_pathAtlas && cmds[ci] is PathFill apf0 && TryAtlasOp(apf0, owned, out var aop0))
+			{
+				// Cached recordings are where STATIC text lives: its ops are built once here and replayed forever
+				// after, so an atlas hook that only covers the live paths never sees a glyph.
+				ops.Add(aop0);
+			}
 			else if (cmds[ci] is PathFill pf0 && !pf0.EvenOdd)
 			{
 				// Coalesce a run of consecutive NON-ZERO paths sharing colour + clip (a text run's glyphs) into one
@@ -2716,6 +2886,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				}
 			case PathFill pf:
 				{
+					// A small axis-aligned shape (a glyph) draws from the coverage atlas: one tinted quad, with
+					// antialiasing baked in, instead of stencil-then-cover leaning on the multisampled attachment.
+					if (TryAtlasFill(pf, ops, owned)) { break; }
 					float slotBits = System.BitConverter.Int32BitsToSingle(pathSlot);
 					if (pf.FanTiles)
 					{
@@ -3080,6 +3253,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// stencil + ONE cover, the same coalescing BuildCoalesced does for arena recordings. Without it every
 					// recording that also contains rects — i.e. every real list row, grid cell or card, since they all
 					// have a background — paid 2 draws and 2 pipeline switches per GLYPH.
+					if (_pathAtlas && tc is PathFill apf && TryAtlasOp(apf, fOwned, out var aop))
+					{
+						order.Add(new FrameOp { Kind = -1, NonSolid = aop });
+						continue;
+					}
 					if (!_noGlyphCoalesce && tc is PathFill pf0 && !pf0.EvenOdd && !pf0.FanTiles)
 					{
 						_scratch.Clear();
@@ -3324,6 +3502,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 									{
 										// Same glyph-run collapse as the table path: one stencil + one cover for a run of
 										// consecutive non-zero paths sharing colour + clip, instead of 2 draws per glyph.
+										if (_pathAtlas && tc is PathFill apf2 && TryAtlasOp(apf2, fOwned, out var aop2))
+										{
+											order.Add(new FrameOp { Kind = -1, NonSolid = aop2 });
+											continue;
+										}
 										if (!_noGlyphCoalesce && tc is PathFill pf0 && !pf0.EvenOdd && !pf0.FanTiles)
 										{
 											float fSlotBits = System.BitConverter.Int32BitsToSingle(fSlot);
@@ -4316,7 +4499,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
 		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
 		{
-			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} fanTry=t{StatFanTried}/ok{StatFanStripped}/big{StatFanTooBig}/concave{StatFanConcave}/nocover{StatFanNotCovering} gpu={_d.LastGpuMs:F2}ms/maps{_d.TsMapTried}-{_d.TsMapOk}-{_d.TsMapFail} cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip}) replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds} block=ref{WebGpuCommandRecorder.StatBlockRef}/layer{WebGpuCommandRecorder.StatBlockLayer}/shadow{WebGpuCommandRecorder.StatBlockShadow}/other{WebGpuCommandRecorder.StatBlockOther}/empty{WebGpuCommandRecorder.StatBlockEmpty} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB sharedOps={statSharedOps} tiled={statTiled} coverMpx={statCoverMpx:F1} strips={WgStrokeStats.Strips} tilesCmd={WgStrokeStats.TilesCmd}");
+			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} fanTry=t{StatFanTried}/ok{StatFanStripped}/big{StatFanTooBig}/concave{StatFanConcave}/nocover{StatFanNotCovering} gpu={_d.LastGpuMs:F2}ms/maps{_d.TsMapTried}-{_d.TsMapOk}-{_d.TsMapFail} cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip}) replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds} block=ref{WebGpuCommandRecorder.StatBlockRef}/layer{WebGpuCommandRecorder.StatBlockLayer}/shadow{WebGpuCommandRecorder.StatBlockShadow}/other{WebGpuCommandRecorder.StatBlockOther}/empty{WebGpuCommandRecorder.StatBlockEmpty} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB sharedOps={statSharedOps} tiled={statTiled} coverMpx={statCoverMpx:F1} strips={WgStrokeStats.Strips} tilesCmd={WgStrokeStats.TilesCmd} atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked}/full{AtlasNoRoom}");
 			WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = 0;
 			StatFanTried = StatFanStripped = StatFanTooBig = StatFanConcave = StatFanNotCovering = 0;
 			_statTableRebuilds = 0; _statStamps = 0; _statArenaRebuilds = 0; _statCachedRebuilds = 0; _statCrMiss = _statCrMove = _statCrPathFlip = _statCrSize = _statCrClip = 0;
