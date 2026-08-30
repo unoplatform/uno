@@ -114,8 +114,11 @@ internal sealed unsafe class WebGpuPathAtlas
 		w = (int)MathF.Ceiling(bbMax.X - originX) + 2;
 		h = (int)MathF.Ceiling(bbMax.Y - originY) + 2;
 
+		// Subpixel phase HORIZONTALLY only. Vertical phase would multiply the entry count for no visible gain on
+		// horizontal text, and it is what makes a scrolling list miss the cache on every frame: with Y quantised,
+		// a list scrolled by whole pixels reuses its glyphs instead of re-rasterising them.
 		var phaseX = (int)MathF.Floor((bbMin.X - MathF.Floor(bbMin.X)) * SubPixel);
-		var phaseY = (int)MathF.Floor((bbMin.Y - MathF.Floor(bbMin.Y)) * SubPixel);
+		var phaseY = 0;
 		key = new Key(
 			geometry,
 			(int)MathF.Round(matrix.M11 * 64f),
