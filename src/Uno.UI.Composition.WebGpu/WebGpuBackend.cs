@@ -2330,7 +2330,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// only to be multiplied by zero coverage. Discarding them in the shader does not help — the fragments still
 	// launch — but not emitting them does. The corner-cut octagon (cut at 1 - 1/sqrt(2) along each edge) is
 	// tangent to the inscribed ellipse, so it covers everything visible while rasterising ~17% less than the quad.
-	private const float OctCut = 0.29289322f;
+	// Circumscribed n-gon around the clip's ellipse. Area is n*tan(pi/n)/4 of the bounding box: 0.828 at n=8,
+	// 0.796 at n=16, against 0.785 for the ellipse itself. 16 rasterises less in theory but measured no better on
+	// a UHD 620, so keep the cheaper 8.
+	private const int OctSides = 8;
 
 	/// <summary>True when the clip is a single inclusive ellipse inscribed in the shape, so the quad's corners
 	/// are guaranteed to be clipped away. An affine map preserves "ellipse inscribed in parallelogram", so this
@@ -2350,23 +2353,30 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			&& MathF.Abs(rc.RadiiY.Z - hh) <= ty && MathF.Abs(rc.RadiiY.W - hh) <= ty;
 	}
 
-	/// <summary>Writes the octagon as 8 triangles fanned from the quad's centre. 24 vertices instead of 6.</summary>
+	/// <summary>
+	/// Writes the circumscribed n-gon as n triangles fanned from the quad's centre. The ellipse inscribed in the
+	/// parallelogram p0..p3 is c + u*cos(t) + v*sin(t) with u, v the half-edge vectors; pushing each sample out by
+	/// 1/cos(pi/n) puts the polygon's edges tangent to it, so it covers everything the ellipse does.
+	/// </summary>
 	private static void OctagonTris(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, Span<Vector2> tris)
 	{
-		static Vector2 L(Vector2 a, Vector2 b, float t) => new(a.X + (b.X - a.X) * t, a.Y + (b.Y - a.Y) * t);
-		Span<Vector2> o = stackalloc Vector2[8]
-		{
-			L(p0, p1, OctCut), L(p0, p1, 1 - OctCut),
-			L(p1, p2, OctCut), L(p1, p2, 1 - OctCut),
-			L(p2, p3, OctCut), L(p2, p3, 1 - OctCut),
-			L(p3, p0, OctCut), L(p3, p0, 1 - OctCut),
-		};
 		var c = new Vector2((p0.X + p1.X + p2.X + p3.X) * 0.25f, (p0.Y + p1.Y + p2.Y + p3.Y) * 0.25f);
-		for (var i = 0; i < 8; i++)
+		var u = new Vector2((p1.X - p0.X) * 0.5f, (p1.Y - p0.Y) * 0.5f);
+		var v = new Vector2((p3.X - p0.X) * 0.5f, (p3.Y - p0.Y) * 0.5f);
+		var push = 1f / MathF.Cos(MathF.PI / OctSides);
+		Span<Vector2> o = stackalloc Vector2[OctSides];
+		for (var i = 0; i < OctSides; i++)
+		{
+			var a = (2f * MathF.PI * i + MathF.PI) / OctSides;
+			var cs = MathF.Cos(a) * push; var sn = MathF.Sin(a) * push;
+			o[i] = new Vector2(c.X + u.X * cs + v.X * sn, c.Y + u.Y * cs + v.Y * sn);
+		}
+
+		for (var i = 0; i < OctSides; i++)
 		{
 			tris[i * 3] = c;
 			tris[i * 3 + 1] = o[i];
-			tris[i * 3 + 2] = o[(i + 1) % 8];
+			tris[i * 3 + 2] = o[(i + 1) % OctSides];
 		}
 	}
 
@@ -2647,10 +2657,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						uint gCount;
 						if (ClipIsInscribedEllipse(gClip))
 						{
-							Span<Vector2> tris = stackalloc Vector2[24];
+							Span<Vector2> tris = stackalloc Vector2[OctSides * 3];
 							OctagonTris(gc.P0, gc.P1, gc.P2, gc.P3, tris);
-							for (var ti = 0; ti < 24; ti++) { GS(tris[ti]); }
-							gCount = 24;
+							for (var ti = 0; ti < OctSides * 3; ti++) { GS(tris[ti]); }
+							gCount = (uint)(OctSides * 3);
 						}
 						else
 						{
@@ -2662,19 +2672,19 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					else
 					{
 						var oct = ClipIsInscribedEllipse(gClip);
-						var gq = new float[oct ? 48 : 12];
+						var gq = new float[oct ? OctSides * 6 : 12];
 						void GV(int idx, Vector2 pos) { var n = Ndc(pos); gq[idx] = n.X; gq[idx + 1] = n.Y; }
 						if (oct)
 						{
-							Span<Vector2> tris = stackalloc Vector2[24];
+							Span<Vector2> tris = stackalloc Vector2[OctSides * 3];
 							OctagonTris(gc.P0, gc.P1, gc.P2, gc.P3, tris);
-							for (var ti = 0; ti < 24; ti++) { GV(ti * 2, tris[ti]); }
+							for (var ti = 0; ti < OctSides * 3; ti++) { GV(ti * 2, tris[ti]); }
 						}
 						else
 						{
 							GV(0, gc.P0); GV(2, gc.P1); GV(4, gc.P2); GV(6, gc.P0); GV(8, gc.P2); GV(10, gc.P3);
 						}
-						ops.Add(new DrawOp(3, (nint)gbg, oct ? 24u : 6u, (nint)Vbuf(gq, owned), false, gClip, (nint)MakeClipBg(_d.GradClipBgl, gClip, owned)));
+						ops.Add(new DrawOp(3, (nint)gbg, oct ? (uint)(OctSides * 3) : 6u, (nint)Vbuf(gq, owned), false, gClip, (nint)MakeClipBg(_d.GradClipBgl, gClip, owned)));
 					}
 					break;
 				}
@@ -3918,7 +3928,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						break;
 					case 3:
 						{
-							var gn = u0 == 0 ? 6u : u0;   // 6 = quad, 24 = clip-tightened octagon
+							var gn = u0 == 0 ? 6u : u0;   // 6 = quad, else the clip-tightened n-gon
 							EncPipe(_d.GradientPipe);
 							EncBg(0, (IntPtr)b0);
 							EncBg(1, (IntPtr)clipBg);

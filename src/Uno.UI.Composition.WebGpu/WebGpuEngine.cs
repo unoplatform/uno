@@ -534,7 +534,12 @@ fn clipCov(fcRaw: vec2<f32>, clip: ClipU) -> f32 {
   // Fast path: no clip => full coverage, and NO finvMap (unclipped fragments must cost what they did pre-arena).
   let n = i32(clip.ctrl.x);
   if (n == 0 && clip.ctrl.y < 0.5) { return 1.0; }
-  let fc = finvMap(clip, fcRaw);
+  return clipCovMapped(finvMap(clip, fcRaw), clip);
+}
+// Same, for a caller that already mapped the fragment into the clip's space — the gradient shader needs that
+// point anyway, and mapping it twice per fragment is a matrix multiply wasted on every pixel it covers.
+fn clipCovMapped(fc: vec2<f32>, clip: ClipU) -> f32 {
+  let n = i32(clip.ctrl.x);
   // Dedicated plain-rect clip (ctrl.y flag; min in ctrl.zw, max in size.zw): carries the clip's AABB analytically
   // so the per-op device SCISSOR is cull-only and the emit collapses SetScissorRect calls (see AabbInClipU).
   var cov = 1.0;
@@ -1079,7 +1084,7 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
     else if (n < 4) { col = g.colors[2]; }
     else if (t <= s3) { col = mix(g.colors[2], g.colors[3], select(0.0, (t - s2) / (s3 - s2), s3 > s2)); }
     else { col = g.colors[3]; }
-    return vec4<f32>(col.rgb, col.a * clipCov(fc.xy, clip));
+    return vec4<f32>(col.rgb, col.a * clipCovMapped(gfc, clip));
   }
   if (t <= stopAt(0)) { col = g.colors[0]; }
   else if (t >= stopAt(n - 1)) { col = g.colors[n - 1]; }
@@ -1094,7 +1099,7 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
       }
     }
   }
-  return vec4<f32>(col.rgb, col.a * clipCov(fc.xy, clip));
+  return vec4<f32>(col.rgb, col.a * clipCovMapped(gfc, clip));
 }";
 
 	// Analytic rounded-rect / border-ring fill (ported from ramez's RoundedWgsl). The SDF is evaluated in LOCAL
