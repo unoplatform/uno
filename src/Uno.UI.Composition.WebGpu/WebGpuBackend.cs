@@ -706,6 +706,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	private void FillGeometry(IGeometry geometry, WColor color, bool evenOdd)
 	{
 		if (_pendingColorMatrix is { Length: >= 20 } pm) { color = ApplyColorMatrix(color, pm); }
+
 		_fan = new List<float>();
 		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
 		_contourCount = 0; _fanAreaAbs = 0; _fanAreaSigned = 0;
@@ -777,6 +778,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		_contourPts.Clear();
 	}
 	private void Include(Vector2 p) { _bbMin = Vector2.Min(_bbMin, p); _bbMax = Vector2.Max(_bbMax, p); }
+
 
 	public void DrawRect(in Rect rect, IShader shader, bool antialias = false)
 	{

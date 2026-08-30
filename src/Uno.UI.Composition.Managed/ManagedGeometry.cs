@@ -200,23 +200,51 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 
 	public void StreamFlattened(IFlattenedPathSink sink)
 	{
-		foreach (var contour in Contours)
+		// Flattening is transform-independent — the sink receives LOCAL points and maps them itself — and this
+		// type is immutable, so subdividing the curves once and keeping the result is always valid. A render
+		// backend that needs triangles re-streams the same geometry every frame, so without this every glyph,
+		// border and icon on screen is re-subdivided (and re-allocates a list per contour) each frame.
+		var flat = _flattened ??= BuildFlattened();
+		for (var i = 0; i < Contours.Count; i++)
 		{
+			var contour = Contours[i];
 			if (contour.Segments.Length == 0)
 			{
 				continue;
 			}
 
 			sink.BeginContour(contour.Start);
-			var pts = new List<Vector2>();
-			FlattenInto(contour, includeImplicitClose: false, pts);
-			foreach (var p in pts)
+			var pts = flat[i];
+			for (var j = 0; j < pts.Length; j++)
 			{
-				sink.LineTo(p);
+				sink.LineTo(pts[j]);
 			}
 
 			sink.EndContour(contour.Closed);
 		}
+	}
+
+	private Vector2[][]? _flattened;
+
+	private Vector2[][] BuildFlattened()
+	{
+		var result = new Vector2[Contours.Count][];
+		var pts = new List<Vector2>();
+		for (var i = 0; i < Contours.Count; i++)
+		{
+			var contour = Contours[i];
+			if (contour.Segments.Length == 0)
+			{
+				result[i] = Array.Empty<Vector2>();
+				continue;
+			}
+
+			pts.Clear();
+			FlattenInto(contour, includeImplicitClose: false, pts);
+			result[i] = pts.ToArray();
+		}
+
+		return result;
 	}
 
 	public void StreamSegments(IGeometrySink sink)
