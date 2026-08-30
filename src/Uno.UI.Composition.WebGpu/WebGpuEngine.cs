@@ -403,6 +403,9 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		}
 		Q = (!ownImport && ctx.Queue != IntPtr.Zero) ? ctx.Queue : wgpuDeviceGetQueue(Dev);
 		MsaaSamples = ctx.SampleCount == 0 ? 4u : ctx.SampleCount;
+		// The analytic AA ring REPLACES multisampling; running both antialiases each edge twice and spreads ink
+		// half a pixel too far. It is emitted only when the attachment is single-sampled.
+		WebGpuCommandRecorder.AnalyticAa = MsaaSamples == 1;
 		FinishInit();
 	}
 

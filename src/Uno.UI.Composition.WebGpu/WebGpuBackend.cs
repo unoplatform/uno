@@ -128,6 +128,12 @@ internal sealed class PathFill : WebGpuCommand
 	/// <summary>The fan tiles the shape without overlap, so it can be filled directly — no stencil-then-cover.</summary>
 	public bool FanTiles;
 
+	/// <summary>
+	/// Per-vertex AA coverage (one per FanDevice point), multiplied into alpha so the shape antialiases itself
+	/// instead of relying on a multisampled attachment. Null when the fill has no ring.
+	/// </summary>
+	public float[] FanCoverage;
+
 	// The stencil fan the GPU consumes: FanDevice with the transform-table slot interleaved as a third float.
 	// Recordings are cached, so FanDevice never changes — rebuilding this element by element every frame is pure
 	// waste, and a giant glyph flattens to thousands of points. Keyed by the slot it was built for.
@@ -695,9 +701,12 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	// arc), which is most of them — pivoting on the centroid is what lets FanTiles actually fire.
 	private readonly List<Vector2> _contourPts = new();
 	private bool _fanFromCentroid;
-	// The single contour's points, kept so a concave shape whose centroid fan self-overlaps can be re-tessellated
-	// into a NON-overlapping triangulation (which then fills in one pass instead of stencil-then-cover).
-	private readonly List<Vector2> _soloContour = new();
+	// Every contour of the current fill, kept so the path can be re-tessellated into a NON-overlapping
+	// triangulation with an analytic AA ring (PathTessellator) instead of going through stencil-then-cover.
+	private readonly List<List<Vector2>> _allContours = new();
+	private readonly List<float> _aaVerts = new(), _aaCov = new();
+	// Per-vertex AA coverage for the fill being recorded (null = no ring, edges rely on the attachment).
+	private float[] _fanCoverage;
 	// Stroke tessellation: contours collected in LOCAL space (offsetting must happen before the transform so a
 	// non-uniform scale strokes correctly, same as DrawLine).
 	private List<(List<Vector2> Pts, bool Closed)> _localContours;
@@ -763,6 +772,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		_fan = new List<float>();
 		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
 		_contourCount = 0; _fanAreaAbs = 0; _fanAreaSigned = 0;
+		_allContours.Clear(); _fanCoverage = null;
 		// Even-odd fills stencil by parity, and parity depends on the fan decomposition, so only the non-zero
 		// path may move its pivot.
 		_fanFromCentroid = !evenOdd;
@@ -775,13 +785,11 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			// adjacent fan triangles share an edge exactly, so no sample is covered twice.
 			var tiles = !evenOdd && _contourCount == 1 && _fanAreaAbs > 0
 				&& Math.Abs(_fanAreaAbs - Math.Abs(_fanAreaSigned)) <= 1e-4 * _fanAreaAbs;
-			// The centroid fan self-overlaps (a concave shape), so it would need stencil-then-cover. A real
-			// triangulation of the same contour tiles, which fills it in one pass over the ink alone.
-			if (!tiles && !evenOdd && _contourCount == 1 && TryTriangulateSolo(geometry))
-			{
-				tiles = true;
-			}
-			_target.Add(new PathFill { FanDevice = _fan.ToArray(), BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, FanTiles = tiles, Clip = RelaxedClip(_bbMin, _bbMax) });
+			// Tessellate into non-overlapping triangles plus an analytic AA ring, so the fill runs in ONE pass
+			// over the ink alone and antialiases itself instead of leaning on the multisampled attachment.
+			var aa = TryTessellate(geometry);
+			if (aa) { tiles = true; }
+			_target.Add(new PathFill { FanDevice = _fan.ToArray(), FanCoverage = _fanCoverage, BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, FanTiles = tiles, Clip = RelaxedClip(_bbMin, _bbMax) });
 		}
 		_fan = null;
 	}
@@ -821,7 +829,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		if (!_fanFromCentroid) { return; }
 		var n = _contourPts.Count;
 		if (n < 3) { _contourPts.Clear(); return; }
-		if (_contourCount == 1) { _soloContour.Clear(); _soloContour.AddRange(_contourPts); }
+		if (_allContours.Count < 32) { _allContours.Add(new List<Vector2>(_contourPts)); }
 		var c = Vector2.Zero;
 		for (int i = 0; i < n; i++) { c += _contourPts[i]; }
 		c /= n;
@@ -839,120 +847,77 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	}
 	private void Include(Vector2 p) { _bbMin = Vector2.Min(_bbMin, p); _bbMax = Vector2.Max(_bbMax, p); }
 
-	// Ear-clip triangulation, cached per geometry. A concave shape's centroid fan self-overlaps, so it must go
-	// through stencil-then-cover: the fan is rasterized, then a full BBOX quad is blended over it — roughly 2x the
-	// bounding box, where the ink itself is a fraction of it. A non-overlapping triangulation fills the ink once
-	// and skips both the stencil pass and the cover quad.
-	//
-	// Ear clipping is O(n^2) and these recordings re-record every frame, so doing it per frame is a large LOSS
-	// (measured, previously). What makes it pay is that the triangle INDICES are affine-invariant: the same
-	// geometry re-flattened under a different transform yields the same indices, so the cache survives the
-	// per-frame transform changes that defeat every device-space cache. The cached entry stores the point count
-	// it was built for and is rejected unless that matches exactly — flattening density is resolution-dependent,
-	// and reusing indices against a different point count would silently tessellate the wrong shape.
-	private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<object, int[]> _earCache = new();
-
-	private const int MaxEarPoints = 256;   // bounds the O(n^2) worst case for the (rare) re-tessellation
-
-	private static int[] EarClip(List<Vector2> pts)
-	{
-		var n = pts.Count;
-		if (n < 3 || n > MaxEarPoints) { return null; }
-
-		double area2 = 0;
-		for (int i = 0; i < n; i++)
-		{
-			var a = pts[i]; var b = pts[(i + 1) % n];
-			area2 += (double)a.X * b.Y - (double)b.X * a.Y;
-		}
-		if (Math.Abs(area2) < 1e-6) { return null; }
-
-		// Walk in CCW order so an ear is a convex (positive-cross) corner. CullMode is None on every pipeline,
-		// so the emitted winding does not matter.
-		var live = new List<int>(n);
-		if (area2 > 0) { for (int i = 0; i < n; i++) { live.Add(i); } }
-		else { for (int i = n - 1; i >= 0; i--) { live.Add(i); } }
-
-		// tris[0] is the point count this triangulation was built for; indices follow.
-		var tris = new List<int>((n - 2) * 3 + 1) { n };
-		var guard = n * n;
-		while (live.Count > 3)
-		{
-			var clipped = false;
-			for (int i = 0; i < live.Count; i++)
-			{
-				int i0 = live[(i + live.Count - 1) % live.Count], i1 = live[i], i2 = live[(i + 1) % live.Count];
-				var a = pts[i0]; var b = pts[i1]; var c = pts[i2];
-				if ((double)(b.X - a.X) * (c.Y - a.Y) - (double)(c.X - a.X) * (b.Y - a.Y) <= 0) { continue; }
-
-				var empty = true;
-				for (int j = 0; j < live.Count && empty; j++)
-				{
-					var k = live[j];
-					if (k == i0 || k == i1 || k == i2) { continue; }
-					empty = !PointInTri(pts[k], a, b, c);
-				}
-				if (!empty) { continue; }
-
-				tris.Add(i0); tris.Add(i1); tris.Add(i2);
-				live.RemoveAt(i);
-				clipped = true;
-				break;
-			}
-			// No ear found (self-intersecting or degenerate contour) or runaway: give up and keep the fan path.
-			if (!clipped || --guard < 0) { return null; }
-		}
-		tris.Add(live[0]); tris.Add(live[1]); tris.Add(live[2]);
-		return tris.ToArray();
-	}
-
-	private static bool PointInTri(Vector2 p, Vector2 a, Vector2 b, Vector2 c)
-	{
-		var d1 = (double)(p.X - a.X) * (b.Y - a.Y) - (double)(b.X - a.X) * (p.Y - a.Y);
-		var d2 = (double)(p.X - b.X) * (c.Y - b.Y) - (double)(c.X - b.X) * (p.Y - b.Y);
-		var d3 = (double)(p.X - c.X) * (a.Y - c.Y) - (double)(a.X - c.X) * (p.Y - c.Y);
-		var neg = d1 < 0 || d2 < 0 || d3 < 0;
-		var pos = d1 > 0 || d2 > 0 || d3 > 0;
-		return !(neg && pos);
-	}
+	// Triangulation topology, cached per geometry. Ear clipping is O(n^2) and these recordings re-record every
+	// frame, so tessellating per frame is a large LOSS (measured, previously). What makes it pay is that the
+	// triangle INDICES are affine-invariant: the same geometry re-flattened under a different transform yields
+	// the same indices, so the cache survives the per-frame transform changes that defeat device-space caches.
+	// The entry records the point count it was built for and is rejected unless it matches exactly, because
+	// flattening density is resolution-dependent and stale indices would tessellate the wrong shape.
+	private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<object, int[]> _triCache = new();
 
 	/// <summary>
-	/// Replaces the self-overlapping centroid fan with a non-overlapping triangulation so the fill can take the
-	/// single-pass path. Returns false (leaving the fan untouched) whenever the result is not trustworthy.
+	/// Emit the analytic AA ring? Set from the device's sample count: the ring REPLACES multisampling, so running
+	/// both would antialias every edge twice and spread ink half a pixel too far.
 	/// </summary>
-	private bool TryTriangulateSolo(IGeometry geometry)
-	{
-		var pts = _soloContour;
-		if (pts.Count < 4 || pts.Count > MaxEarPoints) { return false; }
+	public static bool AnalyticAa;
 
-		if (!_earCache.TryGetValue(geometry, out var tris) || tris is null || tris.Length < 4 || tris[0] != pts.Count)
+	/// <summary>
+	/// Replaces the fan with a non-overlapping triangulation plus a one-pixel analytic AA ring, so the fill can
+	/// take the single-pass path and antialias itself. Leaves the fan untouched (returning false) whenever the
+	/// result cannot be trusted.
+	/// </summary>
+	private bool TryTessellate(IGeometry geometry)
+	{
+		var total = 0;
+		for (var i = 0; i < _allContours.Count; i++) { total += _allContours[i].Count; }
+		if (_allContours.Count == 0 || total < 3 || total > PathTessellator.MaxPoints) { return false; }
+
+		if (!_triCache.TryGetValue(geometry, out var tris) || tris is null || tris.Length < 4 || tris[0] != total)
 		{
-			tris = EarClip(pts);
-			if (tris is null) { return false; }
-			_earCache.Remove(geometry);
-			_earCache.Add(geometry, tris);
+			var built = PathTessellator.TryTriangulate(_allContours);
+			if (built is null) { return false; }
+			tris = new int[built.Length + 1];
+			tris[0] = total;
+			Array.Copy(built, 0, tris, 1, built.Length);
+			_triCache.Remove(geometry);
+			_triCache.Add(geometry, tris);
 		}
 
-		// The triangulation must cover the same area as the contour; if it does not, something about this contour
-		// (self-intersection, duplicate points) broke the clip and the fan is the safe answer. Both areas are
-		// twice the true area (raw cross products), so they compare directly.
+		var idx = new int[tris.Length - 1];
+		Array.Copy(tris, 1, idx, 0, idx.Length);
+
+		// The triangulation must cover the same area the winding rule fills; if it does not, the two rules
+		// disagree on this path (self-intersection, same-wound overlap) and the fan is the safe answer. Both
+		// quantities are twice the true area, so they compare directly.
 		double triArea = 0;
-		for (int t = 1; t + 2 < tris.Length; t += 3)
+		for (var t = 0; t + 2 < idx.Length; t += 3)
 		{
-			var a = pts[tris[t]]; var b = pts[tris[t + 1]]; var c = pts[tris[t + 2]];
+			var a = ContourPoint(idx[t]); var b = ContourPoint(idx[t + 1]); var c = ContourPoint(idx[t + 2]);
 			triArea += Math.Abs((double)(b.X - a.X) * (c.Y - a.Y) - (double)(c.X - a.X) * (b.Y - a.Y));
 		}
-		if (Math.Abs(triArea - Math.Abs(_fanAreaSigned)) > 1e-3 * Math.Max(triArea, 1)) { return false; }
+		double windArea = 0;
+		for (var i = 0; i < _allContours.Count; i++) { windArea += PathTessellator.SignedArea2(_allContours[i]); }
+		if (Math.Abs(triArea - Math.Abs(windArea)) > 1e-2 * Math.Max(triArea, 1)) { return false; }
+
+		// Half the ramp, in device pixels (the points are already device-space). Zero when the attachment is
+		// multisampled: the triangulation still pays for itself by filling only the ink, and MSAA keeps the edges.
+		if (!PathTessellator.BuildGeometry(_allContours, idx, AnalyticAa ? 0.5f : 0f, _aaVerts, _aaCov)) { return false; }
 
 		_fan.Clear();
-		for (int t = 1; t + 2 < tris.Length; t += 3)
-		{
-			var a = pts[tris[t]]; var b = pts[tris[t + 1]]; var c = pts[tris[t + 2]];
-			_fan.Add(a.X); _fan.Add(a.Y); _fan.Add(b.X); _fan.Add(b.Y); _fan.Add(c.X); _fan.Add(c.Y);
-		}
+		_fan.AddRange(_aaVerts);
+		_fanCoverage = _aaCov.ToArray();
 		return true;
 	}
 
+	private Vector2 ContourPoint(int global)
+	{
+		for (var c = 0; c < _allContours.Count; c++)
+		{
+			if (global < _allContours[c].Count) { return _allContours[c][global]; }
+			global -= _allContours[c].Count;
+		}
+		return default;
+	}
 
 	public void DrawRect(in Rect rect, IShader shader, bool antialias = false)
 	{
@@ -1404,7 +1369,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					// FanTiles survives the transform: an affine map scales every triangle area by the same
 					// determinant, so sum(|area|) == |sum(area)| still holds. Dropping it here silently disabled the
 					// single-pass fill for every replayed (scrolled/transformed) recording.
-					var replayed = new PathFill { FanDevice = dst, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, FanTiles = p.FanTiles, Clip = ClipCompose(p.Clip) };
+					var replayed = new PathFill { FanDevice = dst, FanCoverage = p.FanCoverage, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, FanTiles = p.FanTiles, Clip = ClipCompose(p.Clip) };
 					p.StoreReplayed(_m, replayed);
 					_target.Add(replayed);
 					break;
@@ -2680,7 +2645,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				{
 					float sr = pf0.Color.R / 255f, sg = pf0.Color.G / 255f, sb = pf0.Color.B / 255f, sa = pf0.Color.A / 255f;
 					_scratch.Clear();
-					for (int i = 0; i < pf0.FanDevice.Length; i += 2) { PushVertT(new Vector2(pf0.FanDevice[i], pf0.FanDevice[i + 1]), sr, sg, sb, sa, slotBits); }
+					var sCov = pf0.FanCoverage;
+					for (int i = 0; i < pf0.FanDevice.Length; i += 2) { PushVertT(new Vector2(pf0.FanDevice[i], pf0.FanDevice[i + 1]), sr, sg, sb, sa * (sCov is null ? 1f : sCov[i >> 1]), slotBits); }
 					var sClip = StripRedundantFan(pf0.Clip, new Vector4(pf0.BbMin.X, pf0.BbMin.Y, pf0.BbMax.X, pf0.BbMax.Y));
 					var sClipBg = MakeClipBg(_d.CoverClipBgl, sClip, owned);
 					var sCount = (uint)(pf0.FanDevice.Length / 2);
@@ -2751,7 +2717,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// fan triangles directly. kind 8, flag => b0 is a byte offset into the shared path buffer.
 						float fr = pf.Color.R / 255f, fg = pf.Color.G / 255f, fb = pf.Color.B / 255f, fa = pf.Color.A / 255f;
 						_scratch.Clear();
-						for (int i = 0; i < pf.FanDevice.Length; i += 2) { PushVertT(new Vector2(pf.FanDevice[i], pf.FanDevice[i + 1]), fr, fg, fb, fa, slotBits); }
+						var tCov = pf.FanCoverage;
+						for (int i = 0; i < pf.FanDevice.Length; i += 2) { PushVertT(new Vector2(pf.FanDevice[i], pf.FanDevice[i + 1]), fr, fg, fb, fa * (tCov is null ? 1f : tCov[i >> 1]), slotBits); }
 						var tClip = StripRedundantFan(pf.Clip, new Vector4(pf.BbMin.X, pf.BbMin.Y, pf.BbMax.X, pf.BbMax.Y));
 						var tClipBg = MakeClipBg(_d.CoverClipBgl, tClip, owned);
 						var tCount = (uint)(pf.FanDevice.Length / 2);
