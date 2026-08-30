@@ -2243,6 +2243,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Determine if the type is a custom markup extension
 			GetMarkupExtensionType(xamlType, allowExtensionSuffix) != null;
 
+		/// <summary>
+		/// Determines if an object is a markup extension usage (e.g. <c>{local:ResourceString Name=Foo}</c>)
+		/// rather than an element.
+		/// </summary>
+		/// <remarks>
+		/// The "Extension" suffix is only considered when the name does not resolve to an element type, so a
+		/// control with a companion "&lt;Name&gt;Extension" markup extension is not misdetected (#21992).
+		/// </remarks>
+		private bool IsMarkupExtensionObject(XamlObjectDefinition objectDefinition)
+			=> FindType(objectDefinition.Type) is { } type
+				? type.Is(Generation.MarkupExtensionSymbol.Value)
+				: IsCustomMarkupExtensionType(objectDefinition.Type);
+
 		private bool IsXamlTypeConverter(INamedTypeSymbol? symbol)
 		{
 			return symbol?.GetAttributes().Any(a => a.AttributeClass?.Equals(Generation.CreateFromStringAttributeSymbol.Value, SymbolEqualityComparer.Default) == true) == true;
@@ -6710,7 +6723,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			foreach (var member in xamlObject.Members)
 			{
-				foreach (var element in EnumerateSubElements(member.Objects, stoppingCondition))
+				// A markup extension's members are values handed to the extension, not members of an
+				// element, so its subtree is not part of the element tree. Walking it would mistake
+				// e.g. `{local:ResourceString Name=Foo}` for an element named "Foo".
+				foreach (var element in EnumerateSubElements(member.Objects, stoppingCondition, skipMarkupExtensions: true))
 				{
 					yield return element;
 				}
@@ -6724,11 +6740,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private IEnumerable<XamlObjectDefinition> EnumerateSubElements(IEnumerable<XamlObjectDefinition> objects, Func<XamlObjectDefinition, bool>? stoppingCondition)
+		private IEnumerable<XamlObjectDefinition> EnumerateSubElements(IEnumerable<XamlObjectDefinition> objects, Func<XamlObjectDefinition, bool>? stoppingCondition, bool skipMarkupExtensions = false)
 		{
 			foreach (var child in objects.Safe())
 			{
 				if (stoppingCondition != null && stoppingCondition(child))
+				{
+					continue;
+				}
+
+				if (skipMarkupExtensions && IsMarkupExtensionObject(child))
 				{
 					continue;
 				}
