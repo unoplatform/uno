@@ -127,6 +127,33 @@ internal sealed class PathFill : WebGpuCommand
 	public bool EvenOdd;
 	/// <summary>The fan tiles the shape without overlap, so it can be filled directly — no stencil-then-cover.</summary>
 	public bool FanTiles;
+
+	// The stencil fan the GPU consumes: FanDevice with the transform-table slot interleaved as a third float.
+	// Recordings are cached, so FanDevice never changes — rebuilding this element by element every frame is pure
+	// waste, and a giant glyph flattens to thousands of points. Keyed by the slot it was built for.
+	private float[] _fanSlotted;
+	private float _fanSlotBits = float.NaN;
+
+	public float[] SlottedFan(float slotBits)
+	{
+		if (_fanSlotted is { } cached && _fanSlotBits.Equals(slotBits))
+		{
+			return cached;
+		}
+
+		var verts = FanDevice.Length / 2;
+		var arr = new float[verts * 3];
+		for (var i = 0; i < verts; i++)
+		{
+			arr[i * 3] = FanDevice[i * 2];
+			arr[i * 3 + 1] = FanDevice[i * 2 + 1];
+			arr[i * 3 + 2] = slotBits;
+		}
+
+		_fanSlotted = arr;
+		_fanSlotBits = slotBits;
+		return arr;
+	}
 }
 
 internal sealed unsafe class ImageCmd : WebGpuCommand
@@ -1566,6 +1593,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// stride 12 and cover verts stride 28, and a draw's firstVertex is in units of its own stride, so every block
 	// starts on an 84-byte (lcm) boundary — that lets both live in ONE buffer, which is what makes the vertex-buffer
 	// set dedup across the whole pass instead of alternating fan/cover.
+	private int AppendPathBlock(float[] src)
+	{
+		while ((_pathVerts.Count * sizeof(float)) % 84 != 0) { _pathVerts.Add(0f); }
+		var off = _pathVerts.Count * sizeof(float);
+		_pathVerts.AddRange(src);
+		return off;
+	}
+
 	private int AppendPathBlock(List<float> src)
 	{
 		while ((_pathVerts.Count * sizeof(float)) % 84 != 0) { _pathVerts.Add(0f); }
@@ -2422,14 +2457,25 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				// would XOR to a hole), and per-path clips (PathFan) never enter cached recordings (not arena-safe).
 				_scratch.Clear();
 				var bbMin = new Vector2(float.MaxValue); var bbMax = new Vector2(float.MinValue);
+				// Measure the run BEFORE building anything: a run of one (the common case, since shapes rarely
+				// share a colour) reuses the fan already cached on the command instead of re-interleaving it.
 				int j = ci;
 				while (j < cmds.Count && cmds[j] is PathFill pfj && !pfj.EvenOdd
 					&& pfj.Color.R == pf0.Color.R && pfj.Color.G == pf0.Color.G && pfj.Color.B == pf0.Color.B && pfj.Color.A == pf0.Color.A
 					&& ClipDataEquals(pfj.Clip, pf0.Clip))
 				{
-					for (int i = 0; i < pfj.FanDevice.Length; i += 2) { _scratch.Add(pfj.FanDevice[i]); _scratch.Add(pfj.FanDevice[i + 1]); _scratch.Add(slotBits); }
 					bbMin = Vector2.Min(bbMin, pfj.BbMin); bbMax = Vector2.Max(bbMax, pfj.BbMax);
 					j++;
+				}
+
+				var singleFan = j - ci == 1 ? pf0.SlottedFan(slotBits) : null;
+				if (singleFan is null)
+				{
+					for (int k = ci; k < j; k++)
+					{
+						var pfk = (PathFill)cmds[k];
+						for (int i = 0; i < pfk.FanDevice.Length; i += 2) { _scratch.Add(pfk.FanDevice[i]); _scratch.Add(pfk.FanDevice[i + 1]); _scratch.Add(slotBits); }
+					}
 				}
 				// A LONE tiling fill skips stencil-then-cover entirely (see PathFill.FanTiles). A run of >1 stays
 				// coalesced: for a glyph run, 2 draws total beats one draw per glyph, and glyph covers are small.
@@ -2447,9 +2493,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					ci = j - 1;
 					continue;
 				}
-				uint fanCount = (uint)(_scratch.Count / 3);
-				var fanShared = owned is null ? AppendPathBlock(_scratch) : -1;
-				var fanBuf = owned is null ? IntPtr.Zero : Vbuf(_scratch, owned);
+				uint fanCount = (uint)((singleFan?.Length ?? _scratch.Count) / 3);
+				var fanShared = owned is null
+					? (singleFan is not null ? AppendPathBlock(singleFan) : AppendPathBlock(_scratch))
+					: -1;
+				var fanBuf = owned is null
+					? IntPtr.Zero
+					: (singleFan is not null ? Vbuf(singleFan, owned) : Vbuf(_scratch, owned));
 				float pr = pf0.Color.R / 255f, pg = pf0.Color.G / 255f, pb = pf0.Color.B / 255f, pa = pf0.Color.A / 255f;
 				_scratch.Clear();
 				var tl = bbMin; var br = bbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
@@ -2513,10 +2563,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							: new DrawOp(8, (nint)Vbuf(_scratch, owned), tCount, 0, false, tClip, (nint)tClipBg));
 						break;
 					}
-					_scratch.Clear();
-					for (int i = 0; i < pf.FanDevice.Length; i += 2) { _scratch.Add(pf.FanDevice[i]); _scratch.Add(pf.FanDevice[i + 1]); _scratch.Add(slotBits); }
-					var fanShared = owned is null ? AppendPathBlock(_scratch) : -1;
-					var fanBuf = owned is null ? IntPtr.Zero : Vbuf(_scratch, owned);
+					var slotted = pf.SlottedFan(slotBits);
+					var fanShared = owned is null ? AppendPathBlock(slotted) : -1;
+					var fanBuf = owned is null ? IntPtr.Zero : Vbuf(slotted, owned);
 					float pr = pf.Color.R / 255f, pg = pf.Color.G / 255f, pb = pf.Color.B / 255f, pa = pf.Color.A / 255f;
 					_scratch.Clear();
 					var tl = pf.BbMin; var br = pf.BbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
