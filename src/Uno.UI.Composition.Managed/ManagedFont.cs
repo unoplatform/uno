@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -475,8 +475,21 @@ internal sealed class ManagedFont : IFont
 
 	public void BuildGlyphRun(IGeometryFactory geometry, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<GlyphRunElement> elements)
 	{
+		// Returning the SAME geometry instance for an unchanged run is what makes downstream caches keyed on
+		// geometry identity work at all — notably the render backend's flattening memo, which otherwise misses
+		// every frame because each call minted a new object. Rebuilding the outline from the font tables on every
+		// draw was wasted work in its own right.
+		// Safe to share: ManagedGeometry is immutable and its Dispose is a no-op, so the caller's post-draw
+		// disposal cannot invalidate a cached entry.
+		if (TryGetCachedRun(glyphs, positions, baselineY) is { } cachedRun)
+		{
+			elements.Add(new GlyphOutline(cachedRun));
+			return;
+		}
+
 		var scale = _pixelSize / _unitsPerEm;
 		var builder = geometry.CreatePathBuilder();
+		var colourFree = true;
 		for (var i = 0; i < glyphs.Length; i++)
 		{
 			if (HasColorGlyphs && _colr!.HasBaseGlyph(glyphs[i]))
@@ -487,6 +500,7 @@ internal sealed class ManagedFont : IFont
 					elements.Add(new GlyphColorLayers(layers));
 				}
 
+				colourFree = false;
 				continue;
 			}
 
@@ -494,7 +508,68 @@ internal sealed class ManagedFont : IFont
 			EmitOutline(builder, glyphs[i], positions[i].X, positions[i].Y + baselineY, scale);
 		}
 
-		elements.Add(new GlyphOutline(builder.Build()));
+		var outline = builder.Build();
+		// Only a pure monochrome run is cacheable: a colour run also emits per-layer geometry this cache does not own.
+		if (colourFree)
+		{
+			CacheRun(glyphs, positions, baselineY, outline);
+		}
+
+		elements.Add(new GlyphOutline(outline));
+	}
+
+	// Built glyph-run outlines keyed by the run. The font instance carries the pixel size, so size is already part
+	// of the key. Bounded; on overflow the map is dropped wholesale rather than tracking recency — entries are
+	// cheap to rebuild and the working set is the text actually on screen.
+	private const int GlyphRunCacheCap = 512;
+	private Dictionary<GlyphRunKey, IGeometry>? _runCache;
+
+	private IGeometry? TryGetCachedRun(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY)
+		=> _runCache is { } c && c.TryGetValue(new GlyphRunKey(glyphs, positions, baselineY), out var g) ? g : null;
+
+	private void CacheRun(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IGeometry outline)
+	{
+		_runCache ??= new Dictionary<GlyphRunKey, IGeometry>();
+		if (_runCache.Count >= GlyphRunCacheCap) { _runCache.Clear(); }
+		_runCache[new GlyphRunKey(glyphs, positions, baselineY)] = outline;
+	}
+
+	private readonly struct GlyphRunKey : IEquatable<GlyphRunKey>
+	{
+		private readonly ushort[] _glyphs;
+		private readonly Vector2[] _positions;
+		private readonly float _baselineY;
+		private readonly int _hash;
+
+		public GlyphRunKey(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY)
+		{
+			_glyphs = glyphs.ToArray();
+			_positions = positions.ToArray();
+			_baselineY = baselineY;
+			var h = new HashCode();
+			h.Add(glyphs.Length);
+			h.Add(baselineY);
+			for (var i = 0; i < glyphs.Length; i++) { h.Add(glyphs[i]); }
+			// The same text at a different place is a different run, so positions are part of the key; hashing the
+			// first and last separates them cheaply and Equals does the rest.
+			if (positions.Length > 0) { h.Add(positions[0]); h.Add(positions[^1]); }
+			_hash = h.ToHashCode();
+		}
+
+		public bool Equals(GlyphRunKey other)
+		{
+			if (_hash != other._hash || _baselineY != other._baselineY
+				|| _glyphs.Length != other._glyphs.Length || _positions.Length != other._positions.Length)
+			{
+				return false;
+			}
+
+			return ((ReadOnlySpan<ushort>)_glyphs).SequenceEqual(other._glyphs)
+				&& ((ReadOnlySpan<Vector2>)_positions).SequenceEqual(other._positions);
+		}
+
+		public override bool Equals(object? obj) => obj is GlyphRunKey k && Equals(k);
+		public override int GetHashCode() => _hash;
 	}
 
 	// COLR colour glyph → positioned (IGeometry, Color) layers built straight at the glyph origin. No rasterization
