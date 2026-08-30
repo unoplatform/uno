@@ -707,6 +707,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	private readonly List<float> _aaVerts = new(), _aaCov = new();
 	// Per-vertex AA coverage for the fill being recorded (null = no ring, edges rely on the attachment).
 	private float[] _fanCoverage;
+	private bool _contoursTruncated;
 	// Stroke tessellation: contours collected in LOCAL space (offsetting must happen before the transform so a
 	// non-uniform scale strokes correctly, same as DrawLine).
 	private List<(List<Vector2> Pts, bool Closed)> _localContours;
@@ -772,7 +773,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		_fan = new List<float>();
 		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
 		_contourCount = 0; _fanAreaAbs = 0; _fanAreaSigned = 0;
-		_allContours.Clear(); _fanCoverage = null;
+		_allContours.Clear(); _fanCoverage = null; _contoursTruncated = false;
 		// Even-odd fills stencil by parity, and parity depends on the fan decomposition, so only the non-zero
 		// path may move its pivot.
 		_fanFromCentroid = !evenOdd;
@@ -829,7 +830,10 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		if (!_fanFromCentroid) { return; }
 		var n = _contourPts.Count;
 		if (n < 3) { _contourPts.Clear(); return; }
-		if (_allContours.Count < 32) { _allContours.Add(new List<Vector2>(_contourPts)); }
+		// One contour per glyph for a text run, so this bound has to clear a whole string, not a single shape.
+		// Truncating silently would hand the tessellator a partial path.
+		if (_allContours.Count < 512) { _allContours.Add(new List<Vector2>(_contourPts)); }
+		else { _contoursTruncated = true; }
 		var c = Vector2.Zero;
 		for (int i = 0; i < n; i++) { c += _contourPts[i]; }
 		c /= n;
@@ -861,6 +865,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	/// </summary>
 	public static bool AnalyticAa;
 
+
 	/// <summary>
 	/// Replaces the fan with a non-overlapping triangulation plus a one-pixel analytic AA ring, so the fill can
 	/// take the single-pass path and antialias itself. Leaves the fan untouched (returning false) whenever the
@@ -868,6 +873,8 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	/// </summary>
 	private bool TryTessellate(IGeometry geometry)
 	{
+		if (_contoursTruncated || _allContours.Count != _contourCount) { return false; }
+		PathTessellator.Simplify(_allContours);
 		var total = 0;
 		for (var i = 0; i < _allContours.Count; i++) { total += _allContours[i].Count; }
 		if (_allContours.Count == 0 || total < 3 || total > PathTessellator.MaxPoints) { return false; }
