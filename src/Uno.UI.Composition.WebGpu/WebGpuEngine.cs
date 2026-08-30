@@ -376,6 +376,35 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	// The host (WebGpuInitDevice) picks the MSAA sample count and bakes it here via the adopt ctor.
 	public uint MsaaSamples { get; private set; } = 4;
 
+	/// <summary>
+	/// Masks rasterize at <see cref="MaskSuperSample"/>x linear resolution and are box-filtered down. 4x4
+	/// supersampling yields 17 coverage levels where 4x MSAA yields 5, and Skia's mask rasterizer computes exact
+	/// area — five levels is visibly chunky on small text. Supersampling also makes the baked coverage
+	/// independent of how the frame itself is sampled, which is the point of caching it.
+	/// </summary>
+	public const int MaskSuperSample = 4;
+
+	public IntPtr MaskStencilEvenOdd, MaskStencilNonZero, MaskCoverPipe, MaskDirectPipe;
+
+	/// <summary>Box-filters the supersampled mask down into an atlas slot. No depth, no sampler (textureLoad).</summary>
+	public IntPtr MaskDownsamplePipe, MaskDownsampleBgl;
+
+	/// <summary>A single-sample render target in the DEVICE colour format, usable as a shader input.</summary>
+	public IntPtr CreateMaskTarget(int w, int h)
+	{
+		var td = new WGPUTextureDescriptor
+		{
+			Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 },
+			Format = ColorFormat,
+			MipLevelCount = 1,
+			SampleCount = 1,
+			Dimension = WGPUTextureDimension._2D,
+			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding,
+		};
+		var tex = wgpuDeviceCreateTexture(Dev, &td);
+		return wgpuTextureCreateView(tex, null);
+	}
+
 	// The color-attachment format the pipelines + offscreen targets use. Rgba8Unorm by default (the
 	// offscreen/readback path assumes it); a swapchain renderer passes the surface's supported format.
 	public readonly WGPUTextureFormat ColorFormat;
@@ -579,6 +608,85 @@ fn clipCovMapped(fc: vec2<f32>, clip: ClipU) -> f32 {
 		return wgpuTextureCreateView(tex, null);
 	}
 
+	/// <summary>
+	/// Shared coverage atlas for small paths (glyphs). Created on first use; CopyDst because entries are
+	/// rasterized into a scratch surface and copied in, TextureBinding because the draw samples it.
+	/// </summary>
+	public WebGpuPathAtlas PathAtlas { get; } = new();
+
+	public void EnsurePathAtlas()
+	{
+		if (PathAtlas.Texture != IntPtr.Zero) { return; }
+		var td = new WGPUTextureDescriptor
+		{
+			Size = new WGPUExtent3D { Width = WebGpuPathAtlas.Size, Height = WebGpuPathAtlas.Size, DepthOrArrayLayers = 1 },
+			// The device's own format: entries are copied in from a scratch surface, and a texture copy requires
+			// matching formats (Bgra8 vs Rgba8 is not copy-compatible).
+			Format = ColorFormat,
+			MipLevelCount = 1,
+			SampleCount = 1,
+			Dimension = WGPUTextureDimension._2D,
+			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopyDst,
+		};
+		var tex = wgpuDeviceCreateTexture(Dev, &td);
+		PathAtlas.SetTexture(tex, wgpuTextureCreateView(tex, null));
+	}
+
+	// Averages each 4x4 block of the supersampled mask into one coverage value. Reads with textureLoad so no
+	// sampler or filtering is involved — the average must be exact, not bilinear.
+	private const string MaskDownsampleWgsl = @"
+struct VOut { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
+@group(0) @binding(0) var src: texture_2d<f32>;
+@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) uv: vec2<f32>) -> VOut {
+  var o: VOut; o.p = vec4<f32>(pos, 0.0, 1.0); o.uv = uv; return o;
+}
+@fragment fn fs(i: VOut) -> @location(0) vec4<f32> {
+  let dims = vec2<f32>(textureDimensions(src));
+  let base = vec2<i32>(floor(i.uv * dims / 4.0)) * 4;
+  var a = 0.0;
+  for (var y = 0; y < 4; y = y + 1) {
+    for (var x = 0; x < 4; x = x + 1) {
+      a = a + textureLoad(src, base + vec2<i32>(x, y), 0).a;
+    }
+  }
+  a = a / 16.0;
+  return vec4<f32>(a, a, a, a);
+}";
+
+	private void CreateMaskDownsamplePipeline()
+	{
+		var module = Module(MaskDownsampleWgsl);
+		var e = new WGPUBindGroupLayoutEntry
+		{
+			Binding = 0,
+			Visibility = WGPUShaderStage.Fragment,
+			Texture = new WGPUTextureBindingLayout { SampleType = WGPUTextureSampleType.Float, ViewDimension = WGPUTextureViewDimension._2D },
+		};
+		var bgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 1, Entries = &e };
+		MaskDownsampleBgl = wgpuDeviceCreateBindGroupLayout(Dev, &bgld);
+		var bgl = MaskDownsampleBgl;
+		var pld = new WGPUPipelineLayoutDescriptor { BindGroupLayoutCount = 1, BindGroupLayouts = (IntPtr)(&bgl) };
+		var layout = wgpuDeviceCreatePipelineLayout(Dev, &pld);
+
+		var attrs = stackalloc WGPUVertexAttribute[2];
+		attrs[0] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
+		attrs[1] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 8, ShaderLocation = 1 };
+		var vb = new WGPUVertexBufferLayout { ArrayStride = 16, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 2, Attributes = attrs };
+		var vs = SV("vs"); var fs = SV("fs");
+		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vb };
+		var ct = new WGPUColorTargetState { Format = ColorFormat, WriteMask = WGPUColorWriteMask.All };
+		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &ct };
+		var pd = new WGPURenderPipelineDescriptor
+		{
+			Vertex = vsState,
+			Fragment = &fsState,
+			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
+			Multisample = new WGPUMultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
+			Layout = layout,
+		};
+		MaskDownsamplePipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
+	}
+
 	private const string ColoredWgsl = @"
 @group(0) @binding(0) var<uniform> clip: ClipU;
 struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
@@ -668,12 +776,30 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 		StencilEvenOdd = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), 0xFF, 0xFF, layout: clipLayout);
 		StencilNonZero = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.IncrementWrap), Face(WGPUCompareFunction.Always, WGPUStencilOperation.DecrementWrap), 0xFF, 0xFF, layout: clipLayout);
 		CoverPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), 0xFF, 0xFF, WGPUCompareFunction.GreaterEqual, layout: clipLayout);
+		// Coverage-mask baking runs at a FIXED sample rate, whatever the frame uses. The mask is rasterized once
+		// and sampled forever after, so it must not inherit a single-sampled frame's aliasing -- that is the whole
+		// reason the atlas exists. Skia does the same thing with a scanline rasterizer; multisampling is our
+		// equivalent, and it is paid once per entry.
+		MaskStencilEvenOdd = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), 0xFF, 0xFF, layout: clipLayout);
+		MaskStencilNonZero = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.IncrementWrap), Face(WGPUCompareFunction.Always, WGPUStencilOperation.DecrementWrap), 0xFF, 0xFF, layout: clipLayout);
+		MaskCoverPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep), 0x00, 0xFF, WGPUCompareFunction.Always, layout: clipLayout);
+		// Mask baking needs COVERAGE, not winding, so it does not use the stencil at all: overlapping fan triangles
+		// are combined with a MAX blend, which saturates to 1 inside the shape however they overlap. That sidesteps
+		// stencil-then-cover entirely -- which cancels to zero for a tiling triangulation whose interior and AA ring
+		// wind oppositely, and which never wrote stencil at all in this offscreen configuration.
+		var maxBlend = new WGPUBlendState
+		{
+			Color = new WGPUBlendComponent { Operation = WGPUBlendOperation.Max, SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.One },
+			Alpha = new WGPUBlendComponent { Operation = WGPUBlendOperation.Max, SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.One },
+		};
+		MaskDirectPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &maxBlend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep), 0x00, 0xFF, WGPUCompareFunction.Always, layout: clipLayout);
 		// All three now share the one explicit ClipU layout — a ClipU bind group made with ClipBgl binds to any of them.
 		SolidClipBgl = ClipBgl;
 		CoverClipBgl = ClipBgl;
 		CreatePathTablePipelines(&blend);
 		CreateClipDepthPipelines();
 		CreateImagePipeline();
+		CreateMaskDownsamplePipeline();
 		CreateGradientPipeline(&blend);
 		CreateRoundedRectPipeline(&blend);
 		CreateBlurPipeline();
@@ -1260,7 +1386,7 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 		Smp = wgpuDeviceCreateSampler(Dev, &sd);
 	}
 
-	private IntPtr MakePipe(IntPtr module, WGPUStringView vs, WGPUStringView fs, bool colorWrite, bool colorAttrs, WGPUBlendState* blend, WGPUStencilFaceState front, WGPUStencilFaceState back, uint stencilWrite, uint stencilRead, WGPUCompareFunction depthCompare = WGPUCompareFunction.Always, bool depthWrite = false, IntPtr layout = default)
+	private IntPtr MakePipe(IntPtr module, WGPUStringView vs, WGPUStringView fs, bool colorWrite, bool colorAttrs, WGPUBlendState* blend, WGPUStencilFaceState front, WGPUStencilFaceState back, uint stencilWrite, uint stencilRead, WGPUCompareFunction depthCompare = WGPUCompareFunction.Always, bool depthWrite = false, IntPtr layout = default, uint samples = 0)
 	{
 		var attrs = stackalloc WGPUVertexAttribute[2];
 		attrs[0] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
@@ -1291,7 +1417,7 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 			Fragment = &fsState,
 			DepthStencil = &ds,
 			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
-			Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
+			Multisample = new WGPUMultisampleState { Count = samples == 0 ? MsaaSamples : samples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
 			Layout = layout,
 		};
 		return wgpuDeviceCreateRenderPipeline(Dev, &pd);
