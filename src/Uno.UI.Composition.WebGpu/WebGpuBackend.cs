@@ -695,6 +695,9 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	// arc), which is most of them — pivoting on the centroid is what lets FanTiles actually fire.
 	private readonly List<Vector2> _contourPts = new();
 	private bool _fanFromCentroid;
+	// The single contour's points, kept so a concave shape whose centroid fan self-overlaps can be re-tessellated
+	// into a NON-overlapping triangulation (which then fills in one pass instead of stencil-then-cover).
+	private readonly List<Vector2> _soloContour = new();
 	// Stroke tessellation: contours collected in LOCAL space (offsetting must happen before the transform so a
 	// non-uniform scale strokes correctly, same as DrawLine).
 	private List<(List<Vector2> Pts, bool Closed)> _localContours;
@@ -772,6 +775,12 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			// adjacent fan triangles share an edge exactly, so no sample is covered twice.
 			var tiles = !evenOdd && _contourCount == 1 && _fanAreaAbs > 0
 				&& Math.Abs(_fanAreaAbs - Math.Abs(_fanAreaSigned)) <= 1e-4 * _fanAreaAbs;
+			// The centroid fan self-overlaps (a concave shape), so it would need stencil-then-cover. A real
+			// triangulation of the same contour tiles, which fills it in one pass over the ink alone.
+			if (!tiles && !evenOdd && _contourCount == 1 && TryTriangulateSolo(geometry))
+			{
+				tiles = true;
+			}
 			_target.Add(new PathFill { FanDevice = _fan.ToArray(), BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, FanTiles = tiles, Clip = RelaxedClip(_bbMin, _bbMax) });
 		}
 		_fan = null;
@@ -812,6 +821,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		if (!_fanFromCentroid) { return; }
 		var n = _contourPts.Count;
 		if (n < 3) { _contourPts.Clear(); return; }
+		if (_contourCount == 1) { _soloContour.Clear(); _soloContour.AddRange(_contourPts); }
 		var c = Vector2.Zero;
 		for (int i = 0; i < n; i++) { c += _contourPts[i]; }
 		c /= n;
@@ -828,6 +838,120 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		_contourPts.Clear();
 	}
 	private void Include(Vector2 p) { _bbMin = Vector2.Min(_bbMin, p); _bbMax = Vector2.Max(_bbMax, p); }
+
+	// Ear-clip triangulation, cached per geometry. A concave shape's centroid fan self-overlaps, so it must go
+	// through stencil-then-cover: the fan is rasterized, then a full BBOX quad is blended over it — roughly 2x the
+	// bounding box, where the ink itself is a fraction of it. A non-overlapping triangulation fills the ink once
+	// and skips both the stencil pass and the cover quad.
+	//
+	// Ear clipping is O(n^2) and these recordings re-record every frame, so doing it per frame is a large LOSS
+	// (measured, previously). What makes it pay is that the triangle INDICES are affine-invariant: the same
+	// geometry re-flattened under a different transform yields the same indices, so the cache survives the
+	// per-frame transform changes that defeat every device-space cache. The cached entry stores the point count
+	// it was built for and is rejected unless that matches exactly — flattening density is resolution-dependent,
+	// and reusing indices against a different point count would silently tessellate the wrong shape.
+	private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<object, int[]> _earCache = new();
+
+	private const int MaxEarPoints = 256;   // bounds the O(n^2) worst case for the (rare) re-tessellation
+
+	private static int[] EarClip(List<Vector2> pts)
+	{
+		var n = pts.Count;
+		if (n < 3 || n > MaxEarPoints) { return null; }
+
+		double area2 = 0;
+		for (int i = 0; i < n; i++)
+		{
+			var a = pts[i]; var b = pts[(i + 1) % n];
+			area2 += (double)a.X * b.Y - (double)b.X * a.Y;
+		}
+		if (Math.Abs(area2) < 1e-6) { return null; }
+
+		// Walk in CCW order so an ear is a convex (positive-cross) corner. CullMode is None on every pipeline,
+		// so the emitted winding does not matter.
+		var live = new List<int>(n);
+		if (area2 > 0) { for (int i = 0; i < n; i++) { live.Add(i); } }
+		else { for (int i = n - 1; i >= 0; i--) { live.Add(i); } }
+
+		// tris[0] is the point count this triangulation was built for; indices follow.
+		var tris = new List<int>((n - 2) * 3 + 1) { n };
+		var guard = n * n;
+		while (live.Count > 3)
+		{
+			var clipped = false;
+			for (int i = 0; i < live.Count; i++)
+			{
+				int i0 = live[(i + live.Count - 1) % live.Count], i1 = live[i], i2 = live[(i + 1) % live.Count];
+				var a = pts[i0]; var b = pts[i1]; var c = pts[i2];
+				if ((double)(b.X - a.X) * (c.Y - a.Y) - (double)(c.X - a.X) * (b.Y - a.Y) <= 0) { continue; }
+
+				var empty = true;
+				for (int j = 0; j < live.Count && empty; j++)
+				{
+					var k = live[j];
+					if (k == i0 || k == i1 || k == i2) { continue; }
+					empty = !PointInTri(pts[k], a, b, c);
+				}
+				if (!empty) { continue; }
+
+				tris.Add(i0); tris.Add(i1); tris.Add(i2);
+				live.RemoveAt(i);
+				clipped = true;
+				break;
+			}
+			// No ear found (self-intersecting or degenerate contour) or runaway: give up and keep the fan path.
+			if (!clipped || --guard < 0) { return null; }
+		}
+		tris.Add(live[0]); tris.Add(live[1]); tris.Add(live[2]);
+		return tris.ToArray();
+	}
+
+	private static bool PointInTri(Vector2 p, Vector2 a, Vector2 b, Vector2 c)
+	{
+		var d1 = (double)(p.X - a.X) * (b.Y - a.Y) - (double)(b.X - a.X) * (p.Y - a.Y);
+		var d2 = (double)(p.X - b.X) * (c.Y - b.Y) - (double)(c.X - b.X) * (p.Y - b.Y);
+		var d3 = (double)(p.X - c.X) * (a.Y - c.Y) - (double)(a.X - c.X) * (p.Y - c.Y);
+		var neg = d1 < 0 || d2 < 0 || d3 < 0;
+		var pos = d1 > 0 || d2 > 0 || d3 > 0;
+		return !(neg && pos);
+	}
+
+	/// <summary>
+	/// Replaces the self-overlapping centroid fan with a non-overlapping triangulation so the fill can take the
+	/// single-pass path. Returns false (leaving the fan untouched) whenever the result is not trustworthy.
+	/// </summary>
+	private bool TryTriangulateSolo(IGeometry geometry)
+	{
+		var pts = _soloContour;
+		if (pts.Count < 4 || pts.Count > MaxEarPoints) { return false; }
+
+		if (!_earCache.TryGetValue(geometry, out var tris) || tris is null || tris.Length < 4 || tris[0] != pts.Count)
+		{
+			tris = EarClip(pts);
+			if (tris is null) { return false; }
+			_earCache.Remove(geometry);
+			_earCache.Add(geometry, tris);
+		}
+
+		// The triangulation must cover the same area as the contour; if it does not, something about this contour
+		// (self-intersection, duplicate points) broke the clip and the fan is the safe answer. Both areas are
+		// twice the true area (raw cross products), so they compare directly.
+		double triArea = 0;
+		for (int t = 1; t + 2 < tris.Length; t += 3)
+		{
+			var a = pts[tris[t]]; var b = pts[tris[t + 1]]; var c = pts[tris[t + 2]];
+			triArea += Math.Abs((double)(b.X - a.X) * (c.Y - a.Y) - (double)(c.X - a.X) * (b.Y - a.Y));
+		}
+		if (Math.Abs(triArea - Math.Abs(_fanAreaSigned)) > 1e-3 * Math.Max(triArea, 1)) { return false; }
+
+		_fan.Clear();
+		for (int t = 1; t + 2 < tris.Length; t += 3)
+		{
+			var a = pts[tris[t]]; var b = pts[tris[t + 1]]; var c = pts[tris[t + 2]];
+			_fan.Add(a.X); _fan.Add(a.Y); _fan.Add(b.X); _fan.Add(b.Y); _fan.Add(c.X); _fan.Add(c.Y);
+		}
+		return true;
+	}
 
 
 	public void DrawRect(in Rect rect, IShader shader, bool antialias = false)
@@ -1417,6 +1541,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// Diagnostic: skip the COVER draw of stencil-then-cover (VISUALLY WRONG — paths vanish) to bound what tighter
 	// cover geometry could ever be worth. The stencil pass still runs, so the delta is the cover's fill cost.
 	private static readonly bool _noCover = Environment.GetEnvironmentVariable("UNO_WEBGPU_NOCOVER") is "1";
+	// Diagnostic: run the whole CPU path (record, op build, encode) but never submit, so the GPU idles and a
+	// profile shows the CPU distribution instead of being swamped by time blocked in the driver. VISUALLY WRONG —
+	// nothing reaches the screen. Exists because the desktop box is GPU-bound in software, which otherwise leaves
+	// managed code at ~1% of the trace and unattributable.
+	private static readonly bool _noSubmit = Environment.GetEnvironmentVariable("UNO_WEBGPU_NOSUBMIT") is "1";
 	private static readonly int _bisect = int.TryParse(Environment.GetEnvironmentVariable("UNO_WEBGPU_BISECT"), out var __b) ? __b : 0;
 	private static readonly bool _emitStats = Environment.GetEnvironmentVariable("UNO_WEBGPU_STATS") is "1" or "true";
 	private static int _emitStatsFrame;
@@ -1475,7 +1604,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
 				_d.FlushFrameSlabs();
 				var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
-				wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+				if (!_noSubmit) { wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb)); }
 				// wgpu holds its own reference until the submission completes, so both handles are dropped
 				// here — otherwise every frame leaks an encoder + a command buffer into the handle table.
 				wgpuCommandBufferRelease(cb);
