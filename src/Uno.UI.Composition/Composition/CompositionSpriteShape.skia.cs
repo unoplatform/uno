@@ -125,7 +125,11 @@ namespace Microsoft.UI.Composition
 						else if (rrHint is { } h) { session.Session.DrawRoundedRect(h.Rect, h.Radii, oc, antialias: true); }
 						else { session.Session.DrawPath(fillGeometry, oc, antialias: true); }
 					}
-					else
+					// A brush that cannot paint (a fully transparent colour) must not reach the clip-and-fill path
+					// below: it would build a tessellated stencil/depth mask per shape per frame only for TryPaint
+					// to draw nothing. Transparent fills are common (any Shape given Fill="Transparent"), and on the
+					// WebGPU backend that mask is expensive enough to have hung an Intel GPU.
+					else if (fill.CanPaint())
 					{
 						// A non-solid brush (gradient/image/effect) paints by clipping to the shape then filling its
 						// bounds. When the shape is a rounded rect (the hint), clip ANALYTICALLY (ClipRoundRect, 0
@@ -169,7 +173,7 @@ namespace Microsoft.UI.Composition
 						// Solid stroke: fill the stroke geometry directly (same reasoning as the solid fill above).
 						session.Session.DrawPath(strokeGeometry, WithOpacity(strokeColor.Color, session.Opacity), antialias: true);
 					}
-					else
+					else if (stroke.CanPaint())
 					{
 						session.Session.Save();
 						session.Session.ClipPath(strokeGeometry, antialias: true);
