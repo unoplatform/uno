@@ -149,22 +149,32 @@ internal sealed class PathFill : WebGpuCommand
 
 	public float[] SlottedFan(float slotBits)
 	{
-		if (_fanSlotted is { } cached && _fanSlotBits.Equals(slotBits))
-		{
-			return cached;
-		}
-
 		var verts = FanDevice.Length / 2;
-		var arr = new float[verts * 3];
-		for (var i = 0; i < verts; i++)
+		var arr = _fanSlotted;
+		if (arr is null || arr.Length != verts * 3)
 		{
-			arr[i * 3] = FanDevice[i * 2];
-			arr[i * 3 + 1] = FanDevice[i * 2 + 1];
-			arr[i * 3 + 2] = slotBits;
+			arr = new float[verts * 3];
+			for (var i = 0; i < verts; i++)
+			{
+				arr[i * 3] = FanDevice[i * 2];
+				arr[i * 3 + 1] = FanDevice[i * 2 + 1];
+				arr[i * 3 + 2] = slotBits;
+			}
+
+			_fanSlotted = arr;
+			_fanSlotBits = slotBits;
+			return arr;
 		}
 
-		_fanSlotted = arr;
-		_fanSlotBits = slotBits;
+		// The transform-table slot can be reassigned between frames while the geometry is unchanged. Rewriting
+		// just the slot column keeps the positions (two thirds of the data) and, more importantly, does not
+		// allocate — a fresh array per fill per frame is straight GC pressure, which the profile shows dominating.
+		if (!_fanSlotBits.Equals(slotBits))
+		{
+			for (var i = 0; i < verts; i++) { arr[i * 3 + 2] = slotBits; }
+			_fanSlotBits = slotBits;
+		}
+
 		return arr;
 	}
 }
