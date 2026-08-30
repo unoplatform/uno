@@ -1155,13 +1155,27 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	// and only the (cheap, bbox-scissored) in-pass depth-mask draw repeats. This was a regression under the old
 	// reference-equality ClipDataEquals (cached path-clip recordings always looked stale → rebuilt every frame); the
 	// value-compare fix + resident fan made it a win (see RUNNING-CONTEXT §17/§21). Memoized.
+	internal static int StatBlockRef, StatBlockLayer, StatBlockShadow, StatBlockOther, StatBlockEmpty;
+
 	internal static bool IsCacheable(WebGpuRenderRecord d)
 	{
 		if (d.Cacheable is { } memo) { return memo; }
 		bool ok = d.Commands.Count > 0;
+		if (!ok) { StatBlockEmpty++; }
 		foreach (var c in d.Commands)
 		{
-			if (c is not (RectCommand or RoundedRectCmd or PathFill or ImageCmd or GradientCmd)) { ok = false; break; }
+			if (c is not (RectCommand or RoundedRectCmd or PathFill or ImageCmd or GradientCmd))
+			{
+				ok = false;
+				switch (c)
+				{
+					case ReplayRefCmd: StatBlockRef++; break;
+					case LayerCmd: StatBlockLayer++; break;
+					case ShadowCmd: StatBlockShadow++; break;
+					default: StatBlockOther++; break;
+				}
+				break;
+			}
 		}
 		d.Cacheable = ok;
 		return ok;
@@ -1228,11 +1242,11 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			switch (cmd)
 			{
 				case RectCommand r:
-					_target.Add(new RectCommand { Color = r.Color, Clip = ClipCompose(r.Clip, T), P0 = T(r.P0), P1 = T(r.P1), P2 = T(r.P2), P3 = T(r.P3) });
+					_target.Add(new RectCommand { Color = r.Color, Clip = ClipCompose(r.Clip), P0 = T(r.P0), P1 = T(r.P1), P2 = T(r.P2), P3 = T(r.P3) });
 					break;
 				case RoundedRectCmd rrc:
 					// Local Half/Radii/Inner are intrinsic (transform-independent); only the device corners move.
-					_target.Add(new RoundedRectCmd { P0 = T(rrc.P0), P1 = T(rrc.P1), P2 = T(rrc.P2), P3 = T(rrc.P3), Half = rrc.Half, Radii = rrc.Radii, Color = rrc.Color, Opacity = rrc.Opacity, InnerHalf = rrc.InnerHalf, InnerCenter = rrc.InnerCenter, InnerRadii = rrc.InnerRadii, Clip = ClipCompose(rrc.Clip, T) });
+					_target.Add(new RoundedRectCmd { P0 = T(rrc.P0), P1 = T(rrc.P1), P2 = T(rrc.P2), P3 = T(rrc.P3), Half = rrc.Half, Radii = rrc.Radii, Color = rrc.Color, Opacity = rrc.Opacity, InnerHalf = rrc.InnerHalf, InnerCenter = rrc.InnerCenter, InnerRadii = rrc.InnerRadii, Clip = ClipCompose(rrc.Clip) });
 					break;
 				case PathFill p:
 					// A non-cacheable recording is replayed EVERY frame, and a path's fan is transformed point by
@@ -1256,7 +1270,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					// FanTiles survives the transform: an affine map scales every triangle area by the same
 					// determinant, so sum(|area|) == |sum(area)| still holds. Dropping it here silently disabled the
 					// single-pass fill for every replayed (scrolled/transformed) recording.
-					var replayed = new PathFill { FanDevice = dst, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, FanTiles = p.FanTiles, Clip = ClipCompose(p.Clip, T) };
+					var replayed = new PathFill { FanDevice = dst, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, FanTiles = p.FanTiles, Clip = ClipCompose(p.Clip) };
 					p.StoreReplayed(_m, replayed);
 					_target.Add(replayed);
 					break;
@@ -1269,10 +1283,10 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 						sbbMin = Vector2.Min(sbbMin, q); sbbMax = Vector2.Max(sbbMax, q);
 					}
 					var ss = new Vector2(_m.M11, _m.M12).Length();
-					_target.Add(new ShadowCmd { FanDevice = sdst, BbMin = sbbMin, BbMax = sbbMax, EvenOdd = sh.EvenOdd, Color = sh.Color, SigmaX = sh.SigmaX * ss, SigmaY = sh.SigmaY * ss, Additive = sh.Additive, Clip = ClipCompose(sh.Clip, T) });
+					_target.Add(new ShadowCmd { FanDevice = sdst, BbMin = sbbMin, BbMax = sbbMax, EvenOdd = sh.EvenOdd, Color = sh.Color, SigmaX = sh.SigmaX * ss, SigmaY = sh.SigmaY * ss, Additive = sh.Additive, Clip = ClipCompose(sh.Clip) });
 					break;
 				case ImageCmd im:
-					_target.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), View = im.View, W = im.W, H = im.H, Opacity = im.Opacity, U0 = im.U0, V0 = im.V0, U1 = im.U1, V1 = im.V1, TintMode = im.TintMode, Tint = im.Tint, ColorMatrix = im.ColorMatrix, Clip = ClipCompose(im.Clip, T) });
+					_target.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), View = im.View, W = im.W, H = im.H, Opacity = im.Opacity, U0 = im.U0, V0 = im.V0, U1 = im.U1, V1 = im.V1, TintMode = im.TintMode, Tint = im.Tint, ColorMatrix = im.ColorMatrix, Clip = ClipCompose(im.Clip) });
 					break;
 				case GradientCmd gc:
 					// Transform the device-space geometry baked into the uniform by the replay matrix too, so the
@@ -1301,7 +1315,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 						float n10 = m10 * i00 + m11 * i10, n11 = m10 * i01 + m11 * i11;
 						uu[6] = n00; uu[7] = n10; uu[ob + 2] = n01; uu[ob + 3] = n11;
 					}
-					_target.Add(new GradientCmd { P0 = T(gc.P0), P1 = T(gc.P1), P2 = T(gc.P2), P3 = T(gc.P3), Uniform = uu, Clip = ClipCompose(gc.Clip, T) });
+					_target.Add(new GradientCmd { P0 = T(gc.P0), P1 = T(gc.P1), P2 = T(gc.P2), P3 = T(gc.P3), Uniform = uu, Clip = ClipCompose(gc.Clip) });
 					break;
 				case LayerCmd lyr:
 					var saved = _target;
@@ -1309,30 +1323,33 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					_target = layerList;
 					Replay(new WebGpuRenderRecord { Commands = lyr.Commands });   // recursively transform sub-commands
 					_target = saved;
-					_target.Add(new LayerCmd { Commands = layerList, CompositeMode = lyr.CompositeMode, ColorMatrix = lyr.ColorMatrix, ShadowEffect = lyr.ShadowEffect, Clip = ClipCompose(lyr.Clip, T) });
+					_target.Add(new LayerCmd { Commands = layerList, CompositeMode = lyr.CompositeMode, ColorMatrix = lyr.ColorMatrix, ShadowEffect = lyr.ShadowEffect, Clip = ClipCompose(lyr.Clip) });
 					break;
 				case BackdropCmd bk:
-					_target.Add(new BackdropCmd { Effect = bk.Effect, Opacity = bk.Opacity, Clip = ClipCompose(bk.Clip, T) });
+					_target.Add(new BackdropCmd { Effect = bk.Effect, Opacity = bk.Opacity, Clip = ClipCompose(bk.Clip) });
 					break;
 				case ReplayRefCmd rr:
 					// Compose this replay's transform/clip onto the ref so the present still caches it.
-					_target.Add(new ReplayRefCmd { Data = rr.Data, Commands = rr.Commands, Transform = rr.Transform * _m, Clip = ClipCompose(rr.Clip, T) });
+					_target.Add(new ReplayRefCmd { Data = rr.Data, Commands = rr.Commands, Transform = rr.Transform * _m, Clip = ClipCompose(rr.Clip) });
 					break;
 			}
 		}
 	}
 
 	// AABB of a child rect (its 4 corners) under the replay transform t.
-	private static Vector4 TransformedAabb(Vector4 rect, Func<Vector2, Vector2> t)
+	// Takes the matrix, not a Func: this runs for every command and every replay, and an indirect call per corner
+	// (plus the closure the delegate conversion forces on the caller) is real cost under wasm.
+	private static Vector4 TransformedAabb(Vector4 rect, in Matrix4x4 m)
 	{
-		var a = t(new Vector2(rect.X, rect.Y)); var b = t(new Vector2(rect.Z, rect.Y)); var e = t(new Vector2(rect.Z, rect.W)); var f = t(new Vector2(rect.X, rect.W));
+		static Vector2 Mp(float x, float y, in Matrix4x4 m) => new(x * m.M11 + y * m.M21 + m.M41, x * m.M12 + y * m.M22 + m.M42);
+		var a = Mp(rect.X, rect.Y, m); var b = Mp(rect.Z, rect.Y, m); var e = Mp(rect.Z, rect.W, m); var f = Mp(rect.X, rect.W, m);
 		var l = MathF.Min(MathF.Min(a.X, b.X), MathF.Min(e.X, f.X)); var top = MathF.Min(MathF.Min(a.Y, b.Y), MathF.Min(e.Y, f.Y));
 		var r = MathF.Max(MathF.Max(a.X, b.X), MathF.Max(e.X, f.X)); var bo = MathF.Max(MathF.Max(a.Y, b.Y), MathF.Max(e.Y, f.Y));
 		return new Vector4(l, top, r, bo);
 	}
 
 	// Intersect a child (sub-recording) clip into the current session clip, transforming it by the replay matrix.
-	private ClipData ClipCompose(ClipData c, Func<Vector2, Vector2> t)
+	private ClipData ClipCompose(ClipData c)
 	{
 		var result = _clip;
 		// The op's containment proof only covers its own recorded clip; the replay-site clip can still cut it,
@@ -1340,7 +1357,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		result.ScissorInert = c.ScissorInert && _clip.ScissorInert;
 		if (!(c.Aabb.X <= -1e8f && c.Aabb.Y <= -1e8f && c.Aabb.Z >= 1e8f && c.Aabb.W >= 1e8f))
 		{
-			var a = TransformedAabb(c.Aabb, t);
+			var a = TransformedAabb(c.Aabb, _m);
 			result.Aabb = new Vector4(MathF.Max(result.Aabb.X, a.X), MathF.Max(result.Aabb.Y, a.Y), MathF.Min(result.Aabb.Z, a.Z), MathF.Min(result.Aabb.W, a.W));
 		}
 		// Child rounded clips AND with the parent's; transform each rect and scale radii by the replay matrix.
@@ -1352,7 +1369,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			{
 				result.Rounds = ClipData.Push(result.Rounds, new RoundClip
 				{
-					Rect = TransformedAabb(src.Rect, t),
+					Rect = TransformedAabb(src.Rect, _m),
 					Radii = src.Radii * sx,
 					RadiiY = src.RadiiY * sy,
 					Exclude = src.Exclude,
@@ -1362,7 +1379,12 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		if (c.PathFan != null)
 		{
 			var pf = new float[c.PathFan.Length];
-			for (int i = 0; i < c.PathFan.Length; i += 2) { var p = t(new Vector2(c.PathFan[i], c.PathFan[i + 1])); pf[i] = p.X; pf[i + 1] = p.Y; }
+			for (int i = 0; i < c.PathFan.Length; i += 2)
+			{
+				float x = c.PathFan[i], y = c.PathFan[i + 1];
+				pf[i] = x * _m.M11 + y * _m.M21 + _m.M41;
+				pf[i + 1] = x * _m.M12 + y * _m.M22 + _m.M42;
+			}
 			result.PathFan = pf;
 			result.PathEvenOdd = c.PathEvenOdd;
 			result.PathExclude = c.PathExclude;
@@ -4181,7 +4203,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
 		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
 		{
-			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} fanTry=t{StatFanTried}/ok{StatFanStripped}/big{StatFanTooBig}/concave{StatFanConcave}/nocover{StatFanNotCovering} gpu={_d.LastGpuMs:F2}ms/maps{_d.TsMapTried}-{_d.TsMapOk}-{_d.TsMapFail} cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip}) replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB sharedOps={statSharedOps} tiled={statTiled} coverMpx={statCoverMpx:F1} strips={WgStrokeStats.Strips} tilesCmd={WgStrokeStats.TilesCmd}");
+			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} fanTry=t{StatFanTried}/ok{StatFanStripped}/big{StatFanTooBig}/concave{StatFanConcave}/nocover{StatFanNotCovering} gpu={_d.LastGpuMs:F2}ms/maps{_d.TsMapTried}-{_d.TsMapOk}-{_d.TsMapFail} cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip}) replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds} block=ref{WebGpuCommandRecorder.StatBlockRef}/layer{WebGpuCommandRecorder.StatBlockLayer}/shadow{WebGpuCommandRecorder.StatBlockShadow}/other{WebGpuCommandRecorder.StatBlockOther}/empty{WebGpuCommandRecorder.StatBlockEmpty} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB sharedOps={statSharedOps} tiled={statTiled} coverMpx={statCoverMpx:F1} strips={WgStrokeStats.Strips} tilesCmd={WgStrokeStats.TilesCmd}");
 			WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = 0;
 			StatFanTried = StatFanStripped = StatFanTooBig = StatFanConcave = StatFanNotCovering = 0;
 			_statTableRebuilds = 0; _statStamps = 0; _statArenaRebuilds = 0; _statCachedRebuilds = 0; _statCrMiss = _statCrMove = _statCrPathFlip = _statCrSize = _statCrClip = 0;
