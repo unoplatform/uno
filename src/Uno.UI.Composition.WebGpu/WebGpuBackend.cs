@@ -2072,7 +2072,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var dbgd = new WGPUBindGroupDescriptor { Layout = _d.MaskDownsampleBgl, EntryCount = 1, Entries = &de };
 		var dbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &dbgd));
 
-		var aca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _d.PathAtlas.View, ResolveTarget = IntPtr.Zero, LoadOp = WGPULoadOp.Load, StoreOp = WGPUStoreOp.Store, ClearValue = default };
+		var aca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = slot.Owner.View, ResolveTarget = IntPtr.Zero, LoadOp = WGPULoadOp.Load, StoreOp = WGPUStoreOp.Store, ClearValue = default };
 		var arp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &aca };
 		var apass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &arp);
 		wgpuRenderPassEncoderSetViewport(apass, slot.X, slot.Y, slot.W, slot.H, 0f, 1f);
@@ -2101,16 +2101,26 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private bool TryAtlasOp(PathFill pf, OwnedResources owned, out DrawOp result)
 	{
 		result = default;
-		if (!_pathAtlas || _d.PathAtlas.IsFull) { return false; }
+		// Only CACHED recordings may hold atlas entries: their slots are freed when the recording is released,
+		// which is what bounds the page. A per-frame op would allocate every frame with nothing to free it.
+		if (!_pathAtlas || owned is null) { return false; }
 		AtlasTried++;
 		if (!WebGpuPathAtlas.TryKey(pf.Geometry, pf.GeomMatrix, pf.BbMin, pf.BbMax, out var key, out var w, out var h, out var ox, out var oy)) { AtlasNoKey++; return false; }
 
-		_d.EnsurePathAtlas();
+		if (_d.PathAtlas.Pages.Count == 0) { _d.AddPathAtlasPage(); }
 		if (_d.PathAtlas.TryGet(key, out var slot)) { AtlasHit++; }
 		else
 		{
 			slot = _d.PathAtlas.Allocate(key, w, h, ox, oy);
+			if (slot is null)
+			{
+				// Every page is exhausted: open another rather than falling back, which would leave this shape
+				// aliased at one sample while its neighbours stayed crisp.
+				_d.AddPathAtlasPage();
+				slot = _d.PathAtlas.Allocate(key, w, h, ox, oy);
+			}
 			if (slot is null) { AtlasNoRoom++; return false; }
+			(owned.AtlasSlots ??= new()).Add(slot);
 			RasterizeAtlasEntry(pf, slot);
 			AtlasBaked++;
 		}
@@ -2125,14 +2135,17 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		u[4] = pf.Color.R / 255f; u[5] = pf.Color.G / 255f; u[6] = pf.Color.B / 255f; u[7] = pf.Color.A / 255f;
 		wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)u, 32);
 		var entries = stackalloc WGPUBindGroupEntry[3];
-		entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = _d.PathAtlas.View };
+		entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = slot.Owner.View };
 		entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
 		entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 112 };
 		var bgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
 		var bg = Bg(ref bgd, owned);
 
 		// Place the quad where the entry was rasterized from, and sample exactly its slot.
-		float x0 = slot.OriginX - 1f, y0 = slot.OriginY - 1f;
+		// Place at THIS fill's origin, not the slot's. The slot's origin is where the mask was first baked; on a
+		// cache hit the same shape elsewhere must draw at its own position, and the subpixel phase is part of the
+		// key, so the mask is already correct for it.
+		float x0 = ox - 1f, y0 = oy - 1f;
 		float x1 = x0 + slot.W, y1 = y0 + slot.H;
 		float u0 = (float)slot.X / WebGpuPathAtlas.Size, v0 = (float)slot.Y / WebGpuPathAtlas.Size;
 		float u1 = (float)(slot.X + slot.W) / WebGpuPathAtlas.Size, v1 = (float)(slot.Y + slot.H) / WebGpuPathAtlas.Size;

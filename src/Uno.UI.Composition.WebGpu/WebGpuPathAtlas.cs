@@ -36,28 +36,61 @@ internal sealed unsafe class WebGpuPathAtlas
 	/// <summary>Subpixel phases per axis. 4 is the usual quality/footprint compromise.</summary>
 	public const int SubPixel = 4;
 
-	internal readonly record struct Key(object Geometry, int ScaleX, int ScaleY, int PhaseX, int PhaseY);
+	/// <summary>
+	/// W/H are part of the key, not just the scale: the scale is quantised, so two nearby scales can share a key
+	/// while needing different pixel footprints — the cached mask would then be the wrong SIZE for the draw.
+	/// </summary>
+	internal readonly record struct Key(object Geometry, int ScaleX, int ScaleY, int PhaseX, int PhaseY, int W, int H);
 
 	/// <summary>
 	/// A reserved region. Origin is the shape's device-space bbox corner the entry was rasterized against, which
 	/// the draw needs to place the quad back.
 	/// </summary>
-	internal sealed record Slot(int X, int Y, int W, int H, float OriginX, float OriginY);
+	internal sealed record Slot(int X, int Y, int W, int H, float OriginX, float OriginY)
+	{
+		/// <summary>The entry this slot backs, so freeing it can drop the cache entry too.</summary>
+		public Key Key { get; init; }
+
+		/// <summary>The page this slot lives on; the draw samples this page's view.</summary>
+		public Page? Owner { get; init; }
+	}
+
+	/// <summary>
+	/// One atlas page. Pages exist because a cached recording bakes its slot's UVs into its draw ops: a live slot
+	/// can never be moved or reassigned, so when a page runs out the only safe response is to open another. A page
+	/// is destroyed once its last slot is freed.
+	/// </summary>
+	internal sealed class Page
+	{
+		public IntPtr Texture, View;
+		public int ShelfY, ShelfH, CursorX;
+		public int Live;
+		public readonly Dictionary<(int W, int H), Stack<Slot>> Free = new();
+	}
 
 	private readonly Dictionary<Key, Slot> _slots = new();
-	private int _shelfY, _shelfH, _cursorX;
-	private bool _full;
+	private readonly List<Page> _pages = new();
 
-	public IntPtr Texture { get; private set; }
+	/// <summary>Pages whose texture should be destroyed (their last slot was freed).</summary>
+	public readonly List<Page> Retired = new();
 
-	public IntPtr View { get; private set; }
+	public IReadOnlyList<Page> Pages => _pages;
 
-	public bool IsFull => _full;
-
-	public void SetTexture(IntPtr texture, IntPtr view)
+	public Page AddPage(IntPtr texture, IntPtr view)
 	{
-		Texture = texture;
-		View = view;
+		var page = new Page { Texture = texture, View = view };
+		_pages.Add(page);
+		return page;
+	}
+
+	/// <summary>True when every page is exhausted and a new one is required.</summary>
+	public bool NeedsPage
+	{
+		get
+		{
+			for (var i = 0; i < _pages.Count; i++) { if (_pages[i].ShelfY + _pages[i].ShelfH < Size) { return false; } }
+			return true;
+		}
 	}
 
 	public bool TryGet(in Key key, out Slot slot) => _slots.TryGetValue(key, out slot!);
@@ -65,27 +98,64 @@ internal sealed unsafe class WebGpuPathAtlas
 	/// <summary>Reserves a w x h region, or returns null when the page cannot fit it.</summary>
 	public Slot? Allocate(in Key key, int w, int h, float originX, float originY)
 	{
-		if (_full || w <= 0 || h <= 0 || w > Size || h > Size) { return null; }
+		if (w <= 0 || h <= 0 || w > Size || h > Size) { return null; }
+
+		// Reuse a freed region of the same size before consuming new space. This is what lets a long scroll run
+		// indefinitely: rows that scroll away release their slots, and rows scrolling in take them.
+		for (var i = 0; i < _pages.Count; i++)
+		{
+			if (_pages[i].Free.TryGetValue((w, h), out var bucket) && bucket.Count > 0)
+			{
+				var reused = bucket.Pop() with { OriginX = originX, OriginY = originY, Key = key };
+				_pages[i].Live++;
+				_slots[key] = reused;
+				return reused;
+			}
+		}
 
 		// Shelf packing: fill a row left to right, then start a new row below it. Cheap, and glyphs from one
 		// font arrive at similar heights, so the waste stays small.
-		if (_cursorX + w > Size)
+		for (var i = 0; i < _pages.Count; i++)
 		{
-			_shelfY += _shelfH;
-			_shelfH = 0;
-			_cursorX = 0;
-		}
-		if (_shelfY + h > Size)
-		{
-			_full = true;
-			return null;
+			var page = _pages[i];
+			if (page.CursorX + w > Size)
+			{
+				page.ShelfY += page.ShelfH;
+				page.ShelfH = 0;
+				page.CursorX = 0;
+			}
+			if (page.ShelfY + h > Size) { continue; }
+
+			var slot = new Slot(page.CursorX, page.ShelfY, w, h, originX, originY) { Key = key, Owner = page };
+			page.CursorX += w;
+			if (h > page.ShelfH) { page.ShelfH = h; }
+			page.Live++;
+			_slots[key] = slot;
+			return slot;
 		}
 
-		var slot = new Slot(_cursorX, _shelfY, w, h, originX, originY);
-		_cursorX += w;
-		if (h > _shelfH) { _shelfH = h; }
-		_slots[key] = slot;
-		return slot;
+		return null;   // every page is exhausted; the caller opens another and retries
+	}
+
+	/// <summary>
+	/// Returns a slot to the free pool. Called when the cached recording that owns it is released, which is the
+	/// only safe moment: a recording bakes its slot's UVs into its draw ops, so reclaiming a slot while any
+	/// recording still referenced it would make that recording sample another shape's mask.
+	/// </summary>
+	public void Free(Slot slot)
+	{
+		if (slot?.Owner is not { } page) { return; }
+		if (_slots.TryGetValue(slot.Key, out var cur) && ReferenceEquals(cur, slot)) { _slots.Remove(slot.Key); }
+		if (!page.Free.TryGetValue((slot.W, slot.H), out var bucket)) { page.Free[(slot.W, slot.H)] = bucket = new Stack<Slot>(); }
+		bucket.Push(slot);
+
+		// A page with no live slots is pure memory: retire it (unless it is the only one, which would just be
+		// reallocated immediately).
+		if (--page.Live <= 0 && _pages.Count > 1)
+		{
+			_pages.Remove(page);
+			Retired.Add(page);
+		}
 	}
 
 	/// <summary>
@@ -124,7 +194,9 @@ internal sealed unsafe class WebGpuPathAtlas
 			(int)MathF.Round(matrix.M11 * 64f),
 			(int)MathF.Round(matrix.M22 * 64f),
 			Math.Clamp(phaseX, 0, SubPixel - 1),
-			Math.Clamp(phaseY, 0, SubPixel - 1));
+			Math.Clamp(phaseY, 0, SubPixel - 1),
+			w,
+			h);
 		return true;
 	}
 }
