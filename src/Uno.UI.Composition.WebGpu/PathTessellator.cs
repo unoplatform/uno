@@ -27,8 +27,63 @@ namespace Uno.UI.Composition.WebGpu;
 /// </remarks>
 internal static class PathTessellator
 {
-	/// <summary>Total points across all contours we are willing to tessellate (ear clipping is O(n^2)).</summary>
-	public const int MaxPoints = 512;
+	/// <summary>
+	/// Total points we are willing to tessellate. Generous because a whole text RUN arrives as ONE geometry with
+	/// a contour per glyph: a global cap sized for one shape rejects every string, which is how text ended up
+	/// with no analytic AA at all.
+	/// </summary>
+	public const int MaxPoints = 8192;
+
+	/// <summary>
+	/// Points in a single outer contour plus its holes. This is the bound that matters: ear clipping is O(n^2)
+	/// and runs once per group, so a 60-glyph run costs sum(per-glyph^2), not (total)^2.
+	/// </summary>
+	private const int MaxGroupPoints = 320;
+
+
+	/// <summary>
+	/// Drops points that lie (within a small tolerance) on the segment between their neighbours. Curve
+	/// flattening emits many near-collinear points; they add nothing to the shape but produce sliver triangles
+	/// that make the ear test numerically fragile, and they inflate the point count against the group cap.
+	/// Done in place so the triangulation indices and the AA ring both refer to the same simplified contours.
+	/// </summary>
+	public static void Simplify(IList<List<Vector2>> contours, float tolerance = 0.03f)
+	{
+		var tol2 = tolerance * tolerance;
+		for (var c = 0; c < contours.Count; c++)
+		{
+			var pts = contours[c];
+			var changed = true;
+			while (changed && pts.Count > 3)
+			{
+				changed = false;
+				for (var i = 0; i < pts.Count && pts.Count > 3; i++)
+				{
+					var a = pts[(i + pts.Count - 1) % pts.Count];
+					var b = pts[i];
+					var d = pts[(i + 1) % pts.Count];
+					var ab = d - a;
+					var len2 = ab.LengthSquared();
+					double dist2;
+					if (len2 < 1e-12f)
+					{
+						dist2 = (b - a).LengthSquared();
+					}
+					else
+					{
+						var t = Math.Clamp(Vector2.Dot(b - a, ab) / len2, 0f, 1f);
+						dist2 = (b - (a + ab * t)).LengthSquared();
+					}
+					if (dist2 <= tol2)
+					{
+						pts.RemoveAt(i);
+						changed = true;
+						i--;
+					}
+				}
+			}
+		}
+	}
 
 	/// <summary>
 	/// Triangulates the contours, treating a contour nested an odd number of deep as a hole. Returns indices
@@ -43,6 +98,15 @@ internal static class PathTessellator
 			total += contours[i].Count;
 		}
 		if (total < 3 || total > MaxPoints) { return null; }
+
+		// Flatten once: the ear clipper indexes points in its inner loops, and walking the contour list there
+		// would make a long text run quadratic in contour COUNT on top of the ear clipping itself.
+		var flat = new Vector2[total];
+		var w = 0;
+		for (var i = 0; i < contours.Count; i++)
+		{
+			for (var k = 0; k < contours[i].Count; k++) { flat[w++] = contours[i][k]; }
+		}
 
 		// Contour i is a hole iff it sits inside an odd number of the others. This is the even-odd rule; for
 		// glyph outlines (non-zero with opposite-wound holes) it gives the same answer, and BuildGeometry's
@@ -74,9 +138,13 @@ internal static class PathTessellator
 				if (Contains(contours[o], contours[h][0])) { holes.Add(h); }
 			}
 
-			var poly = BridgeHoles(contours, o, holes, offsets);
+			var groupPts = contours[o].Count;
+			for (var hi = 0; hi < holes.Count; hi++) { groupPts += contours[holes[hi]].Count; }
+			if (groupPts > MaxGroupPoints) { return null; }
+
+			var poly = BridgeHoles(contours, flat, o, holes, offsets);
 			if (poly is null) { return null; }
-			if (!EarClip(contours, offsets, poly, tris)) { return null; }
+			if (!EarClip(flat, poly, tris)) { return null; }
 		}
 
 		return tris.Count >= 3 ? tris.ToArray() : null;
@@ -100,6 +168,15 @@ internal static class PathTessellator
 		var total = 0;
 		for (var i = 0; i < contours.Count; i++) { total += contours[i].Count; }
 
+		// Flat copy for O(1) indexing: this method runs EVERY frame, and resolving a global index by walking the
+		// contour list would be O(contours) per vertex -- ruinous for a text run, which is one contour per glyph.
+		var flat = new Vector2[total];
+		var w = 0;
+		for (var i = 0; i < contours.Count; i++)
+		{
+			for (var k = 0; k < contours[i].Count; k++) { flat[w++] = contours[i][k]; }
+		}
+
 		// Inward bisector offset per point. "Inward" means toward the filled region, which for a hole is out of
 		// the hole -- the winding of each contour already encodes that, so the same formula serves both.
 		var inset = new Vector2[total];
@@ -111,7 +188,7 @@ internal static class PathTessellator
 			{
 				for (var k = 0; k < 3; k++)
 				{
-					var p2 = PointAt(contours, indices[t + k]);
+					var p2 = flat[indices[t + k]];
 					verts.Add(p2.X); verts.Add(p2.Y);
 					coverage.Add(1f);
 				}
@@ -179,7 +256,7 @@ internal static class PathTessellator
 			for (var k = 0; k < 3; k++)
 			{
 				var gi = indices[t + k];
-				var p = PointAt(contours, gi) + inset[gi];
+				var p = flat[gi] + inset[gi];
 				verts.Add(p.X); verts.Add(p.Y);
 				coverage.Add(1f);
 			}
@@ -263,7 +340,7 @@ internal static class PathTessellator
 	/// Splices each hole into the outer contour with a pair of coincident bridge edges, producing one simple
 	/// polygon (the classic earcut approach). Returns global point indices in traversal order.
 	/// </summary>
-	private static List<int>? BridgeHoles(IReadOnlyList<List<Vector2>> contours, int outer, List<int> holes, int[] offsets)
+	private static List<int>? BridgeHoles(IReadOnlyList<List<Vector2>> contours, Vector2[] flat, int outer, List<int> holes, int[] offsets)
 	{
 		var poly = new List<int>(contours[outer].Count + 8);
 		for (var i = 0; i < contours[outer].Count; i++) { poly.Add(offsets[outer] + i); }
@@ -285,7 +362,7 @@ internal static class PathTessellator
 			var bestD = double.MaxValue;
 			for (var k = 0; k < poly.Count; k++)
 			{
-				var p = PointAt(contours, poly[k]);
+				var p = flat[poly[k]];
 				if (p.X < hpt.X) { continue; }
 				var d = (double)(p.X - hpt.X) * (p.X - hpt.X) + (double)(p.Y - hpt.Y) * (p.Y - hpt.Y);
 				if (d < bestD) { bestD = d; best = k; }
@@ -294,7 +371,7 @@ internal static class PathTessellator
 			{
 				for (var k = 0; k < poly.Count; k++)
 				{
-					var p = PointAt(contours, poly[k]);
+					var p = flat[poly[k]];
 					var d = (double)(p.X - hpt.X) * (p.X - hpt.X) + (double)(p.Y - hpt.Y) * (p.Y - hpt.Y);
 					if (d < bestD) { bestD = d; best = k; }
 				}
@@ -328,7 +405,7 @@ internal static class PathTessellator
 		return bi;
 	}
 
-	private static bool EarClip(IReadOnlyList<List<Vector2>> contours, int[] offsets, List<int> poly, List<int> outTris)
+	private static bool EarClip(Vector2[] flat, List<int> poly, List<int> outTris)
 	{
 		var n = poly.Count;
 		if (n < 3) { return false; }
@@ -336,8 +413,8 @@ internal static class PathTessellator
 		double area2 = 0;
 		for (var i = 0; i < n; i++)
 		{
-			var p = PointAt(contours, poly[i]);
-			var q = PointAt(contours, poly[(i + 1) % n]);
+			var p = flat[poly[i]];
+			var q = flat[poly[(i + 1) % n]];
 			area2 += (double)p.X * q.Y - (double)q.X * p.Y;
 		}
 		if (Math.Abs(area2) < 1e-9) { return false; }
@@ -353,7 +430,7 @@ internal static class PathTessellator
 			for (var i = 0; i < live.Count; i++)
 			{
 				int g0 = live[(i + live.Count - 1) % live.Count], g1 = live[i], g2 = live[(i + 1) % live.Count];
-				var a = PointAt(contours, g0); var b = PointAt(contours, g1); var c = PointAt(contours, g2);
+				var a = flat[g0]; var b = flat[g1]; var c = flat[g2];
 				if ((double)(b.X - a.X) * (c.Y - a.Y) - (double)(c.X - a.X) * (b.Y - a.Y) <= 0) { continue; }
 
 				var empty = true;
@@ -361,7 +438,7 @@ internal static class PathTessellator
 				{
 					var g = live[j];
 					if (g == g0 || g == g1 || g == g2) { continue; }
-					empty = !PointInTri(PointAt(contours, g), a, b, c);
+					empty = !PointInTri(flat[g], a, b, c);
 				}
 				if (!empty) { continue; }
 
@@ -377,13 +454,14 @@ internal static class PathTessellator
 		return true;
 	}
 
+	// STRICTLY inside: a point exactly on the boundary does not block an ear. Bridging a hole splices in a pair
+	// of duplicate vertices, and a duplicate lies on the boundary of every candidate ear touching it -- with a
+	// non-strict test no ear is ever found and every glyph with a counter falls back to stencil-then-cover.
 	private static bool PointInTri(Vector2 p, Vector2 a, Vector2 b, Vector2 c)
 	{
 		var d1 = (double)(p.X - a.X) * (b.Y - a.Y) - (double)(b.X - a.X) * (p.Y - a.Y);
 		var d2 = (double)(p.X - b.X) * (c.Y - b.Y) - (double)(c.X - b.X) * (p.Y - b.Y);
 		var d3 = (double)(p.X - c.X) * (a.Y - c.Y) - (double)(a.X - c.X) * (p.Y - c.Y);
-		var neg = d1 < 0 || d2 < 0 || d3 < 0;
-		var pos = d1 > 0 || d2 > 0 || d3 > 0;
-		return !(neg && pos);
+		return (d1 > 0 && d2 > 0 && d3 > 0) || (d1 < 0 && d2 < 0 && d3 < 0);
 	}
 }
