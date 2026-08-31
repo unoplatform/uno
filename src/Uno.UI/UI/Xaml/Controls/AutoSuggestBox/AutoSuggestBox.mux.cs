@@ -78,16 +78,7 @@ partial class AutoSuggestBox
 	}
 
 	private void ResolveInputPane()
-	{
-		try
-		{
-			m_tpInputPane = InputPane.GetForCurrentView();
-		}
-		catch (Exception)
-		{
-			// InputPane might not be available on all platforms
-		}
-	}
+		=> m_tpInputPane = InputPane.GetForCurrentView();
 
 	/// <summary>
 	/// Subscribes to the SIP events. Safe to call repeatedly: the SerialDisposable revokers
@@ -563,15 +554,12 @@ partial class AutoSuggestBox
 			var automationName = AutomationProperties.GetName(m_tpTextBoxQueryButtonPart);
 			if (string.IsNullOrEmpty(automationName))
 			{
-				string searchName;
-				try
-				{
-					searchName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutoSuggestBoxQueryButton);
-				}
-				catch (Exception)
+				var searchName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutoSuggestBoxQueryButton);
+				if (string.IsNullOrEmpty(searchName))
 				{
 					searchName = "Search";
 				}
+
 				AutomationProperties.SetName(m_tpTextBoxQueryButtonPart, searchName);
 			}
 		}
@@ -1734,18 +1722,14 @@ partial class AutoSuggestBox
 				m_suggestionListPosition = SuggestionListPosition.Above;
 				m_availableSuggestionHeight = deltaTop;
 			}
-
+		}
+		finally
+		{
 			// Set availableHeight to zero if there is no space left on the screen
 			if (m_availableSuggestionHeight < 0)
 			{
 				m_availableSuggestionHeight = 0;
 			}
-		}
-		catch (Exception)
-		{
-			// Fallback to reasonable defaults
-			m_suggestionListPosition = SuggestionListPosition.Below;
-			m_availableSuggestionHeight = 300;
 		}
 	}
 

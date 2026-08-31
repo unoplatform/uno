@@ -251,16 +251,9 @@ public partial class AutoSuggestBoxHelper
 
 		if (popupBorder is not null && textBox is not null)
 		{
-			try
-			{
-				var transform = popupBorder.TransformToVisual(textBox);
-				var popupTop = transform.TransformPoint(new global::Windows.Foundation.Point(0, 0));
-				verticalOffset = popupTop.Y;
-			}
-			catch (Exception)
-			{
-				// Transform may fail if elements are not in the same visual tree
-			}
+			var transform = popupBorder.TransformToVisual(textBox);
+			var popupTop = transform.TransformPoint(new global::Windows.Foundation.Point(0, 0));
+			verticalOffset = popupTop.Y;
 		}
 
 		return verticalOffset >= 0;
