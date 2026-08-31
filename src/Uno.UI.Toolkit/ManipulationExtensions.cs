@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
+using Uno.UI.Extensions;
 using Windows.Devices.Input;
 
 #if HAS_UNO_WINUI
@@ -31,7 +32,10 @@ namespace Uno.UI.Toolkit
 		/// This is not the WinUI behavior: there, gesture recognition is per-element and independent of the inertia
 		/// of an ancestor, so the pointed item is activated by the very press which stops the momentum. It matches
 		/// what the OS does for its own scrollable surfaces though, which is what touch users expect on a
-		/// touch-only target - hence an opt-in. No-op on WinAppSDK.
+		/// touch-only target - hence an opt-in.
+		/// Honored on the targets which use the managed pointer pipeline (every Skia target and WebAssembly).
+		/// Inert on WinAppSDK, and unsupported on the native Android and iOS backends where pointer events bubble
+		/// natively. See the Uno.UI.Toolkit documentation for the full platform reach.
 		/// </remarks>
 		public static DependencyProperty IsTapToStopInertiaEnabledProperty { get; } =
 			DependencyProperty.RegisterAttached(
@@ -137,20 +141,24 @@ namespace Uno.UI.Toolkit
 
 			private static void MutePath(PointerRoutedEventArgs args, PointerIdentifier pointer, UIElement upTo)
 			{
-				DependencyObject current = args.OriginalSource as UIElement;
-				while (current is not null)
+				if (args.OriginalSource is not UIElement originalSource || Mute(originalSource))
 				{
-					if (current is UIElement element)
+					return;
+				}
+
+				foreach (var ancestor in originalSource.EnumerateAncestors())
+				{
+					if (ancestor is UIElement element && Mute(element))
 					{
-						element.PreventGestures(pointer, Taps);
-
-						if (element == upTo)
-						{
-							return;
-						}
+						return;
 					}
+				}
 
-					current = (current as FrameworkElement)?.Parent ?? Microsoft.UI.Xaml.Media.VisualTreeHelper.GetParent(current);
+				bool Mute(UIElement element)
+				{
+					element.PreventGestures(pointer, Taps);
+
+					return element == upTo;
 				}
 			}
 
