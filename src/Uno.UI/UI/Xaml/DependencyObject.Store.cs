@@ -422,7 +422,7 @@ namespace Microsoft.UI.Xaml
 			Debug.Assert(property.Metadata is FrameworkPropertyMetadata);
 			var propMethodCall = Unsafe.As<FrameworkPropertyMetadata>(property.Metadata).PropMethodCall;
 			Debug.Assert(propMethodCall is not null);
-			return propMethodCall(ActualInstance!, isGet: true, valueToSet: null);
+			return propMethodCall(ActualInstance, isGet: true, valueToSet: null);
 		}
 
 		private void SetValueViaMethodCall(DependencyProperty property, object? value)
@@ -431,7 +431,7 @@ namespace Microsoft.UI.Xaml
 			Debug.Assert(property.Metadata is FrameworkPropertyMetadata);
 			var propMethodCall = Unsafe.As<FrameworkPropertyMetadata>(property.Metadata).PropMethodCall;
 			Debug.Assert(propMethodCall is not null);
-			_ = propMethodCall(ActualInstance!, isGet: false, valueToSet: value);
+			_ = propMethodCall(ActualInstance, isGet: false, valueToSet: value);
 		}
 
 		/// <summary>
@@ -587,106 +587,98 @@ namespace Microsoft.UI.Xaml
 
 			var actualInstanceAlias = ActualInstance;
 
-			if (actualInstanceAlias != null)
+			var overrideDisposable = ApplyPrecedenceOverride(ref precedence);
+
+			try
 			{
-				var overrideDisposable = ApplyPrecedenceOverride(ref precedence);
-
-				try
+				if ((value == DependencyProperty.UnsetValue) && precedence == DependencyPropertyValuePrecedences.DefaultValue)
 				{
-					if ((value == DependencyProperty.UnsetValue) && precedence == DependencyPropertyValuePrecedences.DefaultValue)
-					{
-						throw new InvalidOperationException("The default value must be a valid value");
-					}
-
-					ValidatePropertyOwner(property);
-
-					// Resolve the stack once for the instance, for performance.
-					propertyDetails ??= _properties.GetPropertyDetails(property);
-
-					if (precedence <= DependencyPropertyValuePrecedences.Local)
-					{
-						TryClearBinding(value, propertyDetails);
-					}
-
-					if (!_inheritanceContextEnabled && precedence == DependencyPropertyValuePrecedences.Inheritance)
-					{
-						value = DependencyProperty.UnsetValue;
-					}
-
-					var previousValue = GetValue(propertyDetails);
-					var previousPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
-
-					// Coercion must be applied before we set the new value
-					// see https://github.com/unoplatform/uno/pull/12884
-					ApplyCoercion(actualInstanceAlias, propertyDetails, previousValue, value, precedence);
-
-					SetValueInternal(value, precedence, propertyDetails);
-
-					if (!isPersistentResourceBinding && !_isSettingPersistentResourceBinding)
-					{
-						// If a non-theme value is being set, clear any theme binding so it's not overwritten if the theme changes.
-						_resourceBindings?.ClearBinding(property, precedence);
-						_themeResources?.Clear(property, precedence);
-					}
-
-					// Value may or may not have changed based on the precedence
-					var newValue = GetValue(propertyDetails);
-					var newPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
-
-					if (property == _dataContextProperty)
-					{
-						OnDataContextChanged(value, newValue, precedence);
-					}
-
-					TryApplyDataContextOnPrecedenceChange(property, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
-
-					TryUpdateInheritedAttachedProperty(property, propertyDetails);
-
-					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-					{
-						var name = (this as IFrameworkElement)?.Name ?? GetType().Name;
-						var hashCode = GetHashCode();
-
-						this.Log().Debug(
-							$"SetValue on [{name}/{hashCode:X8}] for [{property.Name}] to [{newValue}] (req:{value} reqp:{precedence} p:{previousValue} pp:{previousPrecedence} np:{newPrecedence})"
-						);
-					}
-
-					RaiseCallbacks(actualInstanceAlias, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
-
-					// MUX Reference: CDependencyObject::UpdateEffectiveValue — PropertySystem.cpp:1893-1898,
-					// commit fc2f82117: after a direct SetValue is applied (and its theme reference cleared
-					// above), notify the new value of the theme that was applied to the property owner, so a
-					// DO value set on an already-themed owner carries the owner's theme.
-					//   // If this DP had an associated theme reference, clear it because a new value has been set.
-					//   ClearThemeResource(args.m_pDP);
-					//   if (m_theme != Theming::Theme::None)
-					//   {
-					//       IFC_RETURN(NotifyPropertyValueOfThemeChange(args.m_pDP, pEffectiveValue));
-					//   }
-					// The persistent-resource-binding flags are the ValueOperationFromSetValue analog (theme
-					// reference re-application is excluded, like WinUI's modified-value branch). The set-time
-					// Enter (UpdateAutoParent → EnterObjectProperty) covers logical-child properties; this
-					// covers the DO-valued properties WinUI notifies that carry no logical-child metadata
-					// (e.g. brushes). DataContext is excluded — Uno's core inherits user data through it,
-					// which WinUI's core property system never carries.
-					if (_theme != Theme.None
-						&& !isPersistentResourceBinding
-						&& !_isSettingPersistentResourceBinding
-						&& property != _dataContextProperty)
-					{
-						NotifyPropertyValueOfThemeChange(property, newValue);
-					}
+					throw new InvalidOperationException("The default value must be a valid value");
 				}
-				finally
+
+				ValidatePropertyOwner(property);
+
+				// Resolve the stack once for the instance, for performance.
+				propertyDetails ??= _properties.GetPropertyDetails(property);
+
+				if (precedence <= DependencyPropertyValuePrecedences.Local)
 				{
-					overrideDisposable?.Dispose();
+					TryClearBinding(value, propertyDetails);
+				}
+
+				if (!_inheritanceContextEnabled && precedence == DependencyPropertyValuePrecedences.Inheritance)
+				{
+					value = DependencyProperty.UnsetValue;
+				}
+
+				var previousValue = GetValue(propertyDetails);
+				var previousPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
+
+				// Coercion must be applied before we set the new value
+				// see https://github.com/unoplatform/uno/pull/12884
+				ApplyCoercion(actualInstanceAlias, propertyDetails, previousValue, value, precedence);
+
+				SetValueInternal(value, precedence, propertyDetails);
+
+				if (!isPersistentResourceBinding && !_isSettingPersistentResourceBinding)
+				{
+					// If a non-theme value is being set, clear any theme binding so it's not overwritten if the theme changes.
+					_resourceBindings?.ClearBinding(property, precedence);
+					_themeResources?.Clear(property, precedence);
+				}
+
+				// Value may or may not have changed based on the precedence
+				var newValue = GetValue(propertyDetails);
+				var newPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
+
+				if (property == _dataContextProperty)
+				{
+					OnDataContextChanged(value, newValue, precedence);
+				}
+
+				TryApplyDataContextOnPrecedenceChange(property, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
+
+				TryUpdateInheritedAttachedProperty(property, propertyDetails);
+
+				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+				{
+					var name = (this as IFrameworkElement)?.Name ?? GetType().Name;
+					var hashCode = GetHashCode();
+
+					this.Log().Debug(
+						$"SetValue on [{name}/{hashCode:X8}] for [{property.Name}] to [{newValue}] (req:{value} reqp:{precedence} p:{previousValue} pp:{previousPrecedence} np:{newPrecedence})"
+					);
+				}
+
+				RaiseCallbacks(actualInstanceAlias, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
+
+				// MUX Reference: CDependencyObject::UpdateEffectiveValue — PropertySystem.cpp:1893-1898,
+				// commit fc2f82117: after a direct SetValue is applied (and its theme reference cleared
+				// above), notify the new value of the theme that was applied to the property owner, so a
+				// DO value set on an already-themed owner carries the owner's theme.
+				//   // If this DP had an associated theme reference, clear it because a new value has been set.
+				//   ClearThemeResource(args.m_pDP);
+				//   if (m_theme != Theming::Theme::None)
+				//   {
+				//       IFC_RETURN(NotifyPropertyValueOfThemeChange(args.m_pDP, pEffectiveValue));
+				//   }
+				// The persistent-resource-binding flags are the ValueOperationFromSetValue analog (theme
+				// reference re-application is excluded, like WinUI's modified-value branch). The set-time
+				// Enter (UpdateAutoParent → EnterObjectProperty) covers logical-child properties; this
+				// covers the DO-valued properties WinUI notifies that carry no logical-child metadata
+				// (e.g. brushes). DataContext is excluded — Uno's core inherits user data through it,
+				// which WinUI's core property system never carries.
+				if (_theme != Theme.None
+					&& !isPersistentResourceBinding
+					&& !_isSettingPersistentResourceBinding
+					&& property != _dataContextProperty)
+				{
+					NotifyPropertyValueOfThemeChange(property, newValue);
 				}
 			}
-			else
+			finally
 			{
-				// The store has lost its current instance, renove it from its parent.
-				Parent = null;
+				overrideDisposable?.Dispose();
 			}
 		}
 
@@ -1320,7 +1312,7 @@ namespace Microsoft.UI.Xaml
 		internal object GetDefaultValue(DependencyProperty dp)
 		{
 			var actualInstance = ActualInstance;
-			var defaultValue = dp.GetDefaultValue(actualInstance, actualInstance?.GetType());
+			var defaultValue = dp.GetDefaultValue(actualInstance, actualInstance.GetType());
 			if (GetCurrentHighestValuePrecedence(dp) == DependencyPropertyValuePrecedences.DefaultValue &&
 				// This should be for OnDemand DPs in general which we don't yet support
 				dp == UIElement.KeyboardAcceleratorsProperty)
@@ -1499,21 +1491,17 @@ namespace Microsoft.UI.Xaml
 
 				_inheritedForwardedProperties.Clear();
 
-				if (ActualInstance != null)
+				if (_updatedProperties is not null)
 				{
-					if (_updatedProperties is not null)
+					foreach (var dp in _updatedProperties)
 					{
-						foreach (var dp in _updatedProperties)
-						{
-							SetValue(dp, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
-						}
+						SetValue(dp, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
 					}
+				}
 
-
-					if (_dataContextProperty is { } dataContextProperty)
-					{
-						SetValue(dataContextProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
-					}
+				if (_dataContextProperty is { } dataContextProperty)
+				{
+					SetValue(dataContextProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
 				}
 			}
 			finally
@@ -1807,7 +1795,7 @@ namespace Microsoft.UI.Xaml
 			return isAncestor;
 		}
 
-		internal DependencyObject? ActualInstance => this;
+		internal DependencyObject ActualInstance => this;
 
 		/// <summary>
 		/// Creates a weak delegate for the specified PropertyChangedCallback callback.
@@ -2231,17 +2219,13 @@ namespace Microsoft.UI.Xaml
 			if (_parentChangedCallbacks.Data.Length != 0)
 			{
 				var actualInstanceAlias = ActualInstance;
+				var args = new DependencyObjectParentChangedEventArgs(previousParent, value);
 
-				if (actualInstanceAlias != null)
+				var currentCallbacks = _parentChangedCallbacks.Data;
+				for (var parentCallbackIndex = 0; parentCallbackIndex < currentCallbacks.Length; parentCallbackIndex++)
 				{
-					var args = new DependencyObjectParentChangedEventArgs(previousParent, value);
-
-					var currentCallbacks = _parentChangedCallbacks.Data;
-					for (var parentCallbackIndex = 0; parentCallbackIndex < currentCallbacks.Length; parentCallbackIndex++)
-					{
-						var handler = currentCallbacks[parentCallbackIndex];
-						handler.Invoke(actualInstanceAlias, null, args);
-					}
+					var handler = currentCallbacks[parentCallbackIndex];
+					handler.Invoke(actualInstanceAlias, null, args);
 				}
 			}
 
