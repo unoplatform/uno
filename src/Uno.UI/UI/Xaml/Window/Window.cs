@@ -449,7 +449,12 @@ public partial class Window
 	{
 		if (RootElement is Uno.UI.Xaml.Islands.XamlIslandRoot islandRoot)
 		{
-			islandRoot.SetHasTransparentBackground(IsBackdropSupported(backdrop));
+			islandRoot.SetBackdropBackground(
+				backdrop is null
+					? Uno.UI.Xaml.Islands.BackdropBackgroundMode.None
+					: IsBackdropSupported(backdrop)
+						? Uno.UI.Xaml.Islands.BackdropBackgroundMode.Transparent
+						: Uno.UI.Xaml.Islands.BackdropBackgroundMode.Fallback);
 		}
 	}
 
