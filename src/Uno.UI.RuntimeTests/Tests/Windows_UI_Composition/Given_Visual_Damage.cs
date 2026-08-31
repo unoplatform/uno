@@ -23,9 +23,7 @@ public class Given_Visual_Damage
 	// height) hit this whenever the clip grows.
 	[TestMethod]
 	[RunsOnUIThread]
-#if !__SKIA__
-	[Ignore("Damage-region rendering is specific to the Skia compositor.")]
-#endif
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_Ancestor_Clip_Grows_Then_Revealed_Region_Is_Damaged()
 	{
 #if __SKIA__
@@ -77,9 +75,7 @@ public class Given_Visual_Damage
 	// nothing would get the chance to report the damage.
 	[TestMethod]
 	[RunsOnUIThread]
-#if !__SKIA__
-	[Ignore("Damage-region rendering is specific to the Skia compositor.")]
-#endif
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_Clip_Shape_Changes_Within_Same_Bounds_Then_It_Is_Damaged()
 	{
 #if __SKIA__
@@ -141,9 +137,7 @@ public class Given_Visual_Damage
 	// vacated pixels stale.
 	[TestMethod]
 	[RunsOnUIThread]
-#if !__SKIA__
-	[Ignore("Damage-region rendering is specific to the Skia compositor.")]
-#endif
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_Visual_Stops_Moving_Then_Damage_Falls_Silent()
 	{
 #if __SKIA__
@@ -207,9 +201,7 @@ public class Given_Visual_Damage
 	// only on a full repaint (a window resize) and never follows the source afterwards.
 	[TestMethod]
 	[RunsOnUIThread]
-#if !__SKIA__
-	[Ignore("Damage-region rendering is specific to the Skia compositor.")]
-#endif
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_RedirectVisual_Repaints_Then_Its_Own_Region_Is_Damaged()
 	{
 #if __SKIA__
@@ -265,9 +257,7 @@ public class Given_Visual_Damage
 	// cheap branch is allowed to answer for it). Moving it must still damage both positions in full.
 	[TestMethod]
 	[RunsOnUIThread]
-#if !__SKIA__
-	[Ignore("Damage-region rendering is specific to the Skia compositor.")]
-#endif
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_Visual_With_Content_Path_Moves_Then_Both_Positions_Are_Damaged()
 	{
 #if __SKIA__
@@ -318,9 +308,7 @@ public class Given_Visual_Damage
 	// progress ring, a caret — must not have the two merged, or everything between them repaints as well.
 	[TestMethod]
 	[RunsOnUIThread]
-#if !__SKIA__
-	[Ignore("Damage-region rendering is specific to the Skia compositor.")]
-#endif
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_Damage_Is_Far_Apart_Then_It_Is_Not_Merged()
 	{
 #if __SKIA__
@@ -352,9 +340,7 @@ public class Given_Visual_Damage
 	// reported region has to cover what is painted without being widened to the whole visual or to the clip.
 	[TestMethod]
 	[RunsOnUIThread]
-#if !__SKIA__
-	[Ignore("Damage-region rendering is specific to the Skia compositor.")]
-#endif
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_Shape_Visual_Moves_Then_Damage_Covers_Its_Shapes()
 	{
 #if __SKIA__
@@ -407,9 +393,7 @@ public class Given_Visual_Damage
 	// survive it.
 	[TestMethod]
 	[RunsOnUIThread]
-#if !__SKIA__
-	[Ignore("Damage-region rendering is specific to the Skia compositor.")]
-#endif
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_Many_Visuals_Move_Then_Collapsed_Damage_Is_A_Superset()
 	{
 #if __SKIA__
