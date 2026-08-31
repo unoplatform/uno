@@ -247,13 +247,13 @@ public class Given_Visual_Damage
 			"A RedirectVisual reported no damage, so the region it mirrors into would keep the previous frame's pixels.");
 
 		Assert.IsTrue(
-			reported.Bounds.Left >= 90 && reported.Bounds.Right >= 148,
+			reported.Bounds.Left <= 102 && reported.Bounds.Right >= 148,
 			$"Damage does not cover the redirect's own region at x=100..150 (damage bounds: {reported.Bounds}).");
 
 		// Falling back to the whole surface would satisfy the assertion above while defeating partial
 		// repaint, so bound the reported region to the mirrored content plus antialiasing slack.
 		Assert.IsTrue(
-			reported.Bounds.Right <= 160,
+			reported.Bounds.Left >= 90 && reported.Bounds.Right <= 160,
 			$"Damage is far wider than the mirrored content, partial repaint is being defeated (damage bounds: {reported.Bounds}).");
 #else
 		await Task.CompletedTask;
