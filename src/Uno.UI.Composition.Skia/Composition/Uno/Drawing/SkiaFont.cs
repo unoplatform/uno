@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -32,11 +32,6 @@ internal sealed class SkiaFont : IFont
 	// reuse the neutral outline / rasterized pixels instead of re-extracting them. Coords are glyph-local; the pen
 	// offset is applied at replay.
 	private readonly Dictionary<ushort, PenOp[]> _glyphOutlines = new();
-	// One IGeometry per glyph, in glyph-local coordinates, so every occurrence of a character hands back the SAME
-	// instance for identity-keyed caches downstream. Keyed with the factory that built them: a different geometry
-	// backend would make the cached instances the wrong type.
-	private readonly Dictionary<ushort, IGeometry?> _glyphGeometries = new();
-	private IGeometryFactory? _geometryFactory;
 	private readonly Dictionary<ushort, RasterGlyph?> _colorGlyphs = new();
 
 	public SkiaFont(SKFont font)
@@ -201,11 +196,16 @@ internal sealed class SkiaFont : IFont
 
 	public void BuildGlyphRun(IGeometryFactory geometry, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<GlyphRunElement> elements)
 	{
+		// Build the outline through the registered geometry factory — the font emits neutral pen verbs and never
+		// names a concrete IGeometry type, so it works with whatever geometry backend is registered.
+		var builder = geometry.CreatePathBuilder();
+
 		for (var i = 0; i < glyphs.Length; i++)
 		{
-			if (GetGlyphGeometry(geometry, glyphs[i]) is { } outline)
+			var ops = GetGlyphOutline(glyphs[i]);
+			if (ops.Length > 0)
 			{
-				elements.Add(new GlyphOutlineRef(outline, new Vector2(positions[i].X, positions[i].Y + baselineY)));
+				ReplayTranslated(builder, ops, positions[i].X, positions[i].Y + baselineY);
 			}
 			else if (HasColorGlyphs && GetColorGlyph(glyphs[i]) is { } raster)
 			{
@@ -215,34 +215,8 @@ internal sealed class SkiaFont : IFont
 					positions[i].X + raster.InkLeft, positions[i].Y + baselineY + raster.InkTop));
 			}
 		}
-	}
 
-	// Glyph-local geometry for one glyph, or null when the glyph has no outline (blank or colour glyph). Built
-	// through the registered factory — the font emits neutral pen verbs and never names a concrete IGeometry type.
-	private IGeometry? GetGlyphGeometry(IGeometryFactory factory, ushort glyph)
-	{
-		if (!ReferenceEquals(_geometryFactory, factory))
-		{
-			// A different geometry backend is registered: the cached instances belong to the old one.
-			_glyphGeometries.Clear();
-			_geometryFactory = factory;
-		}
-		else if (_glyphGeometries.TryGetValue(glyph, out var cached))
-		{
-			return cached;
-		}
-
-		var ops = GetGlyphOutline(glyph);
-		IGeometry? built = null;
-		if (ops.Length > 0)
-		{
-			var builder = factory.CreatePathBuilder();
-			ReplayTranslated(builder, ops, 0f, 0f);
-			built = builder.Build();
-		}
-
-		_glyphGeometries[glyph] = built;
-		return built;
+		elements.Add(new GlyphOutline(builder.Build()));
 	}
 
 	// Cached neutral pen ops for a glyph in glyph-local coords (empty = no outline / colour glyph).

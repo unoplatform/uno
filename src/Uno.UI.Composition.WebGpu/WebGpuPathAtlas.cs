@@ -88,14 +88,6 @@ internal sealed unsafe class WebGpuPathAtlas
 
 		/// <summary>The page this slot lives on; the draw samples this page's view.</summary>
 		public Page? Owner { get; init; }
-
-		/// <summary>
-		/// How many recordings hold this entry. Sharing makes this necessary: with per-glyph geometry ONE slot backs
-		/// every occurrence of a character across many recordings, so releasing it when the recording that happened
-		/// to bake it goes away would hand the region to another glyph while the rest still sample those UVs — which
-		/// renders as other characters ("Stop" drawn as "3tod").
-		/// </summary>
-		public int RefCount;
 	}
 
 	/// <summary>
@@ -149,7 +141,7 @@ internal sealed unsafe class WebGpuPathAtlas
 		{
 			if (_pages[i].Free.TryGetValue((w, h), out var bucket) && bucket.Count > 0)
 			{
-				var reused = bucket.Pop() with { OriginX = originX, OriginY = originY, Key = key, RefCount = 1 };
+				var reused = bucket.Pop() with { OriginX = originX, OriginY = originY, Key = key };
 				_pages[i].Live++;
 				_slots[key] = reused;
 				return reused;
@@ -169,7 +161,7 @@ internal sealed unsafe class WebGpuPathAtlas
 			}
 			if (page.ShelfY + h > Size) { continue; }
 
-			var slot = new Slot(page.CursorX, page.ShelfY, w, h, originX, originY) { Key = key, Owner = page, RefCount = 1 };
+			var slot = new Slot(page.CursorX, page.ShelfY, w, h, originX, originY) { Key = key, Owner = page };
 			page.CursorX += w;
 			if (h > page.ShelfH) { page.ShelfH = h; }
 			page.Live++;
@@ -185,17 +177,9 @@ internal sealed unsafe class WebGpuPathAtlas
 	/// only safe moment: a recording bakes its slot's UVs into its draw ops, so reclaiming a slot while any
 	/// recording still referenced it would make that recording sample another shape's mask.
 	/// </summary>
-	/// <summary>Takes an additional reference for a recording that reuses an entry it did not bake.</summary>
-	public void Retain(Slot slot)
-	{
-		if (slot is not null) { slot.RefCount++; }
-	}
-
 	public void Free(Slot slot)
 	{
 		if (slot?.Owner is not { } page) { return; }
-		// Only the LAST holder may reclaim the region — see Slot.RefCount.
-		if (--slot.RefCount > 0) { return; }
 		if (_slots.TryGetValue(slot.Key, out var cur) && ReferenceEquals(cur, slot)) { _slots.Remove(slot.Key); }
 		if (!page.Free.TryGetValue((slot.W, slot.H), out var bucket)) { page.Free[(slot.W, slot.H)] = bucket = new Stack<Slot>(); }
 		bucket.Push(slot);
