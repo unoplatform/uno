@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -88,6 +88,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isInsideMainAssembly;
 		private readonly bool _isDesignTimeBuild;
 		private readonly string _relativePath;
+		private string? _fileUri;
 
 		/// <summary>
 		/// x:Name cache for the lookups performed in the document.
@@ -557,6 +558,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
 				Safely(() => BuildProperties(writer, topLevelControl, isInline: false));
+			}
+
+			if (_isHotReloadEnabled && FindResourcesMember(topLevelControl)?.OwnDictionaryDeclaration is { } resourcesDeclaration)
+			{
+				// The Application doesn't go through BuildExtendedProperties, where the location of the
+				// dictionary declared in the Resources property is stamped for the other objects.
+				TrySetOriginalSourceLocation(writer, "Resources", resourcesDeclaration);
 			}
 
 			if (_enableAlcAppSupport)
@@ -1089,13 +1097,49 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// The "OriginalSourceLocation" can be used like DebugParseContext (set via SetBaseUri) but for elements that aren't FrameworkElements
 		/// </summary>
-		private void TrySetOriginalSourceLocation(IIndentedStringBuilder writer, string element, IXamlLocation location)
+		/// <param name="preserveExisting">
+		/// Keeps a location already carried by the instance, for the types that may stamp their own
+		/// declaration site while being constructed.
+		/// </param>
+		private void TrySetOriginalSourceLocation(IIndentedStringBuilder writer, string element, IXamlLocation location, bool preserveExisting = false)
 		{
 			if (_isHotReloadEnabled)
 			{
-				writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({element}, \"OriginalSourceLocation\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{location.LineNumber}:{location.LinePosition}\");");
+				var setLocation = $"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({element}, \"{XamlFilePathHelper.OriginalSourceLocationPropertyName}\", {GetSourceLocationLiteral(location)});";
+
+				if (preserveExisting)
+				{
+					using (writer.BlockInvariant($"if (global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<string>({element}, \"{XamlFilePathHelper.OriginalSourceLocationPropertyName}\") is null)"))
+					{
+						writer.AppendLineIndented(setLocation);
+					}
+				}
+				else
+				{
+					writer.AppendLineIndented(setLocation);
+				}
 			}
 		}
+
+		/// <summary>
+		/// The "file:///" URI of the current file.
+		/// </summary>
+		private string FileUri => _fileUri ??= $"file:///{_fileDefinition.FilePath.Replace("\\", "/")}";
+
+		/// <summary>
+		/// The URI of the current file, as a C# string literal.
+		/// </summary>
+		/// <remarks>
+		/// Formatted as a literal rather than interpolated into one: a file name is free to contain characters
+		/// that would otherwise close it (a quote is a legal file name character on unix-like systems).
+		/// </remarks>
+		private string FileUriLiteral => SymbolDisplay.FormatLiteral(FileUri, quote: true);
+
+		/// <summary>
+		/// The URI of a location in the current file, as a C# string literal.
+		/// </summary>
+		private string GetSourceLocationLiteral(IXamlLocation location)
+			=> SymbolDisplay.FormatLiteral($"{FileUri}#L{location.LineNumber}:{location.LinePosition}", quote: true);
 
 		/// <summary>
 		/// Builds the element stub holder variables, use for platform having implicit pinning
@@ -1568,6 +1612,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											{
 												writer.AppendLineInvariantIndented("{0}.IsSystemDictionary = true;", dictVarId);
 											}
+											TrySetOriginalSourceLocation(writer, dictVarId, topLevelControl);
 											BuildMergedDictionaries(writer, mergedDictionariesMember, isInInitializer: false, dictIdentifier: dictVarId);
 											BuildThemeDictionaries(writer, themeDictionariesMember, isInInitializer: false, dictIdentifier: dictVarId);
 											BuildResourceDictionary(writer, implicitContentMember, isInInitializer: false, dictIdentifier: dictVarId, initializers: initializers);
@@ -1858,6 +1903,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					BuildThemeDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"), isInInitializer: true);
 					BuildResourceDictionary(writer, FindImplicitContentMember(topLevelControl), isInInitializer: true, initializers: initializers);
 				}
+
+				if (_isHotReloadEnabled)
+				{
+					// The dictionary is created in an expression context, so the location is stamped
+					// through an apply block, as for Style and the templates.
+					using var applyWriter = CreateApplyBlock(writer, topLevelControl);
+					TrySetOriginalSourceLocation(applyWriter, applyWriter.AppliedParameterName, topLevelControl);
+				}
 			}
 		}
 
@@ -1868,6 +1921,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			using (writer.BlockInvariant("new /* typed resource dictionary */ {0}()", type.GetFullyQualifiedTypeIncludingGlobal()))
 			{
 				BuildLiteralProperties(writer, topLevelControl);
+			}
+
+			if (_isHotReloadEnabled)
+			{
+				// A dictionary generated from an x:Class file stamps its own declaration site in the
+				// InitializeComponent its constructor just ran, and that one wins. A dictionary defined in
+				// code (a theme dictionary of a library, for instance) has none, and this declaration is
+				// the only source location it can be given.
+				using var applyWriter = CreateApplyBlock(writer, topLevelControl);
+				TrySetOriginalSourceLocation(applyWriter, applyWriter.AppliedParameterName, topLevelControl, preserveExisting: true);
 			}
 		}
 
@@ -2715,45 +2778,79 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
+		/// How the "Resources" property of an object is built, as decided from its Resources member.
+		/// </summary>
+		/// <remarks>
+		/// <see cref="RegisterAndBuildResources"/> emits from this, and the source location of
+		/// <see cref="OwnDictionaryDeclaration"/> is stamped from it, so the two cannot disagree on which
+		/// dictionary the object ends up with.
+		/// </remarks>
+		private readonly record struct ResourcesMember(
+			XamlObjectDefinition? ExplicitDictionary,
+			XamlMemberDefinition? Root,
+			XamlMemberDefinition? MergedDictionaries,
+			XamlMemberDefinition? ThemeDictionaries,
+			XamlMemberDefinition? Source,
+			XamlObjectDefinition? Subclass)
+		{
+			/// <summary>
+			/// True when the object keeps the dictionary it creates itself and the resources are built into it.
+			/// </summary>
+			public bool PopulatesOwnDictionary
+				=> Subclass is null && (Root != null || MergedDictionaries != null || ThemeDictionaries != null);
+
+			/// <summary>
+			/// The &lt;ResourceDictionary&gt; declaration the object's own dictionary is built from, or null when
+			/// the dictionary is not the object's own (assigned from a Source or a subclass) or when the
+			/// resources are declared without a dictionary element.
+			/// </summary>
+			public XamlObjectDefinition? OwnDictionaryDeclaration
+				=> PopulatesOwnDictionary ? ExplicitDictionary : null;
+		}
+
+		/// <summary>
+		/// Reads the Resources member of an object, or null when it has none.
+		/// </summary>
+		private ResourcesMember? FindResourcesMember(XamlObjectDefinition objectDefinition)
+		{
+			var resourcesMember = objectDefinition.Members.FirstOrDefault(m => m.Member.Name == "Resources");
+
+			if (resourcesMember is null)
+			{
+				return null;
+			}
+
+			// To be able to have MergedDictionaries, the first node of the Resource node
+			// must be an explicit resource dictionary — so the members below are read from that first
+			// node, as they always have been.
+			// Note: matching the type by name, rather than resolving it, is what makes an aliased or
+			// same-named foreign type behave identically here and in the emission below.
+			var dictionary = resourcesMember.Objects.FirstOrDefault(o => o.Type.Name == "ResourceDictionary");
+			var firstNode = dictionary is null ? null : resourcesMember.Objects.First();
+
+			return new ResourcesMember(
+				// The stamped declaration is the dictionary itself, never merely the first node: markup
+				// may put another object first (`<Page.Resources><Style/><ResourceDictionary>…`), and
+				// attributing the dictionary to that object's line would name an element that is not one.
+				ExplicitDictionary: dictionary,
+				Root: firstNode is null ? resourcesMember : FindImplicitContentMember(firstNode),
+				MergedDictionaries: firstNode?.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"),
+				ThemeDictionaries: firstNode?.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"),
+				Source: dictionary?.Members.FirstOrDefault(m => m.Member.Name == "Source"),
+				Subclass: resourcesMember.Objects.FirstOrDefault(o => IsResourceDictionarySubclass(o.Type)));
+		}
+
+		/// <summary>
 		/// Processes a Resources node, creating a ResourceDictionary if needed, and saving static resources for later registration.
 		/// </summary>
 		/// <param name="isInInitializer">True if inside an object initialization</param>
 		private void RegisterAndBuildResources(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool isInInitializer)
 		{
 			TryAnnotateWithGeneratorSource(writer);
-			var resourcesMember = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "Resources");
 
-			if (resourcesMember != null)
+			if (FindResourcesMember(topLevelControl) is { } resources)
 			{
-				// To be able to have MergedDictionaries, the first node of the Resource node
-				// must be an explicit resource dictionary.
-				var isExplicitResDictionary = resourcesMember.Objects.Any(o => o.Type.Name == "ResourceDictionary");
-				var resourcesRoot = isExplicitResDictionary
-					? FindImplicitContentMember(resourcesMember.Objects.First())
-					: resourcesMember;
-				var mergedDictionaries = isExplicitResDictionary ?
-					resourcesMember.Objects
-						.First().Members
-							.Where(m => m.Member.Name == "MergedDictionaries")
-							.FirstOrDefault()
-					: null;
-				var themeDictionaries = isExplicitResDictionary ?
-					resourcesMember.Objects
-						.First().Members
-							.Where(m => m.Member.Name == "ThemeDictionaries")
-							.FirstOrDefault()
-					: null;
-
-				var source = resourcesMember
-					.Objects
-					.FirstOrDefault(o => o.Type.Name == "ResourceDictionary")?
-					.Members
-					.FirstOrDefault(m => m.Member.Name == "Source");
-
-				var rdSubclass = resourcesMember.Objects
-					.FirstOrDefault(o => IsResourceDictionarySubclass(o.Type));
-
-				if (rdSubclass != null)
+				if (resources.Subclass is { } rdSubclass)
 				{
 					writer.AppendLineIndented("Resources = ");
 
@@ -2761,23 +2858,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					writer.AppendLineIndented(isInInitializer ? "," : ";");
 				}
-				else if (resourcesRoot != null || mergedDictionaries != null || themeDictionaries != null)
+				else if (resources.PopulatesOwnDictionary)
 				{
 					if (isInInitializer)
 					{
 						writer.AppendLineIndented("Resources = {");
 					}
 
-					BuildMergedDictionaries(writer, mergedDictionaries, isInInitializer, dictIdentifier: "Resources");
-					BuildThemeDictionaries(writer, themeDictionaries, isInInitializer, dictIdentifier: "Resources");
-					BuildResourceDictionary(writer, resourcesRoot, isInInitializer, dictIdentifier: "Resources");
+					BuildMergedDictionaries(writer, resources.MergedDictionaries, isInInitializer, dictIdentifier: "Resources");
+					BuildThemeDictionaries(writer, resources.ThemeDictionaries, isInInitializer, dictIdentifier: "Resources");
+					BuildResourceDictionary(writer, resources.Root, isInInitializer, dictIdentifier: "Resources");
 
 					if (isInInitializer)
 					{
 						writer.AppendLineIndented("},");
 					}
 				}
-				else if (source != null)
+				else if (resources.Source is { } source)
 				{
 					writer.AppendLineIndented("Resources = ");
 					BuildDictionaryFromSource(writer, source, dictObject: null);
@@ -3670,7 +3767,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								$"global::Uno.UI.FrameworkElementHelper.SetBaseUri(" +
 								$"{writer.AppliedParameterName}, " +
 								$"__baseUri_{_fileUniqueId}, " +
-								$"\"file:///{_fileDefinition.FilePath.Replace("\\", "/")}\", " +
+								$"{FileUriLiteral}, " +
 								$"{objectDefinition.LineNumber}, " +
 								$"{objectDefinition.LinePosition}" +
 								$");");
@@ -3684,6 +3781,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (IsNotFrameworkElementButNeedsSourceLocation(objectDefinition) && _isHotReloadEnabled)
 					{
 						TrySetOriginalSourceLocation(writer, $"{writer.AppliedParameterName}", objectDefinition);
+					}
+
+					// The dictionary of the Resources property is created by the owner itself, so its location
+					// is stamped here rather than where dictionary instances are built. Only a FrameworkElement
+					// has that property; the Application is stamped in BuildApplicationInitializerBody.
+					if (_isHotReloadEnabled
+						&& isFrameworkElement
+						&& FindResourcesMember(objectDefinition)?.OwnDictionaryDeclaration is { } resourcesDeclaration)
+					{
+						TrySetOriginalSourceLocation(writer, $"{writer.AppliedParameterName}.Resources", resourcesDeclaration);
 					}
 
 					if (_isUiAutomationMappingEnabled)
