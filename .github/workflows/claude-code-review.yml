@@ -55,6 +55,10 @@ jobs:
       contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association)
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    # The review is advisory, so a failed or flaky agent run must never turn the
+    # PR red. Failures stay visible in the job log and as a warning annotation,
+    # but the check itself reports green.
+    continue-on-error: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -101,3 +105,8 @@ jobs:
           claude_args: |
             --model claude-sonnet-4-6
             --allowedTools "mcp__github_inline_comment__create_inline_comment,mcp__github_comment__update_claude_comment,Bash(gh pr diff:*),Bash(gh pr view:*)"
+
+      - name: Report failure as a warning
+        if: failure()
+        run: |
+          echo "::warning title=Claude Code Review did not complete::The review job failed - see the job log. This check is advisory and does not block the PR."
