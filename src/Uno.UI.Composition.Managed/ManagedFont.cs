@@ -475,21 +475,13 @@ internal sealed class ManagedFont : IFont
 
 	public void BuildGlyphRun(IGeometryFactory geometry, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<GlyphRunElement> elements)
 	{
-		// Returning the SAME geometry instance for an unchanged run is what makes downstream caches keyed on
-		// geometry identity work at all — notably the render backend's flattening memo, which otherwise misses
-		// every frame because each call minted a new object. Rebuilding the outline from the font tables on every
-		// draw was wasted work in its own right.
-		// Safe to share: ManagedGeometry is immutable and its Dispose is a no-op, so the caller's post-draw
-		// disposal cannot invalidate a cached entry.
-		if (TryGetCachedRun(glyphs, positions, baselineY) is { } cachedRun)
-		{
-			elements.Add(new GlyphOutline(cachedRun));
-			return;
-		}
-
+		// One geometry instance PER GLYPH, shared by every occurrence of that character, which is what makes
+		// downstream caches keyed on geometry identity work — the render backend's flattening memo and the WebGPU
+		// coverage atlas both hold one entry per character instead of one per string. (A per-RUN cache did the same
+		// job only for a repeat of the identical string at the identical position.)
+		// Safe to share: ManagedGeometry is immutable and its Dispose is a no-op, and GlyphOutlineRef is documented
+		// as cache-owned, so the caller never disposes these.
 		var scale = _pixelSize / _unitsPerEm;
-		var builder = geometry.CreatePathBuilder();
-		var colourFree = true;
 		for (var i = 0; i < glyphs.Length; i++)
 		{
 			if (HasColorGlyphs && _colr!.HasBaseGlyph(glyphs[i]))
@@ -500,77 +492,47 @@ internal sealed class ManagedFont : IFont
 					elements.Add(new GlyphColorLayers(layers));
 				}
 
-				colourFree = false;
 				continue;
 			}
 
-			// Font units are Y-up with the origin at the baseline; screen space is Y-down.
-			EmitOutline(builder, glyphs[i], positions[i].X, positions[i].Y + baselineY, scale);
-		}
-
-		var outline = builder.Build();
-		// Only a pure monochrome run is cacheable: a colour run also emits per-layer geometry this cache does not own.
-		if (colourFree)
-		{
-			CacheRun(glyphs, positions, baselineY, outline);
-		}
-
-		elements.Add(new GlyphOutline(outline));
-	}
-
-	// Built glyph-run outlines keyed by the run. The font instance carries the pixel size, so size is already part
-	// of the key. Bounded; on overflow the map is dropped wholesale rather than tracking recency — entries are
-	// cheap to rebuild and the working set is the text actually on screen.
-	private const int GlyphRunCacheCap = 512;
-	private Dictionary<GlyphRunKey, IGeometry>? _runCache;
-
-	private IGeometry? TryGetCachedRun(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY)
-		=> _runCache is { } c && c.TryGetValue(new GlyphRunKey(glyphs, positions, baselineY), out var g) ? g : null;
-
-	private void CacheRun(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IGeometry outline)
-	{
-		_runCache ??= new Dictionary<GlyphRunKey, IGeometry>();
-		if (_runCache.Count >= GlyphRunCacheCap) { _runCache.Clear(); }
-		_runCache[new GlyphRunKey(glyphs, positions, baselineY)] = outline;
-	}
-
-	private readonly struct GlyphRunKey : IEquatable<GlyphRunKey>
-	{
-		private readonly ushort[] _glyphs;
-		private readonly Vector2[] _positions;
-		private readonly float _baselineY;
-		private readonly int _hash;
-
-		public GlyphRunKey(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY)
-		{
-			_glyphs = glyphs.ToArray();
-			_positions = positions.ToArray();
-			_baselineY = baselineY;
-			var h = new HashCode();
-			h.Add(glyphs.Length);
-			h.Add(baselineY);
-			for (var i = 0; i < glyphs.Length; i++) { h.Add(glyphs[i]); }
-			// The same text at a different place is a different run, so positions are part of the key; hashing the
-			// first and last separates them cheaply and Equals does the rest.
-			if (positions.Length > 0) { h.Add(positions[0]); h.Add(positions[^1]); }
-			_hash = h.ToHashCode();
-		}
-
-		public bool Equals(GlyphRunKey other)
-		{
-			if (_hash != other._hash || _baselineY != other._baselineY
-				|| _glyphs.Length != other._glyphs.Length || _positions.Length != other._positions.Length)
+			if (GetGlyphGeometry(geometry, glyphs[i], scale) is { } outline)
 			{
-				return false;
+				elements.Add(new GlyphOutlineRef(outline, new Vector2(positions[i].X, positions[i].Y + baselineY)));
 			}
+		}
+	}
 
-			return ((ReadOnlySpan<ushort>)_glyphs).SequenceEqual(other._glyphs)
-				&& ((ReadOnlySpan<Vector2>)_positions).SequenceEqual(other._positions);
+	// Glyph-local geometry for one glyph, or null when it has no outline. One instance per glyph, shared by every
+	// occurrence of that character, so identity-keyed caches downstream (the backend's flattening memo, the WebGPU
+	// coverage atlas) hold one entry per character instead of one per string. Emitting at the origin is what makes
+	// the result position-independent and therefore shareable.
+	private IGeometry? GetGlyphGeometry(IGeometryFactory factory, ushort glyph, float scale)
+	{
+		if (!ReferenceEquals(_glyphGeometryFactory, factory))
+		{
+			// A different geometry backend is registered: the cached instances belong to the old one.
+			_glyphGeometries.Clear();
+			_glyphGeometryFactory = factory;
+		}
+		else if (_glyphGeometries.TryGetValue(glyph, out var cached))
+		{
+			return cached;
 		}
 
-		public override bool Equals(object? obj) => obj is GlyphRunKey k && Equals(k);
-		public override int GetHashCode() => _hash;
+		var builder = factory.CreatePathBuilder();
+		EmitOutline(builder, glyph, 0f, 0f, scale);
+		var built = builder.Build();
+		if (built.IsEmpty)
+		{
+			built = null;
+		}
+
+		_glyphGeometries[glyph] = built;
+		return built;
 	}
+
+	private readonly Dictionary<ushort, IGeometry?> _glyphGeometries = new();
+	private IGeometryFactory? _glyphGeometryFactory;
 
 	// COLR colour glyph → positioned (IGeometry, Color) layers built straight at the glyph origin. No rasterization
 	// and no render backend — the caller fills each layer with its colour.

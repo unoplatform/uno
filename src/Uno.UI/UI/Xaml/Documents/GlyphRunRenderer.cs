@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -21,10 +21,15 @@ internal static class GlyphRunRenderer
 	[ThreadStatic]
 	private static List<GlyphRunElement>? _elements;
 
+	// Placements for the run being drawn, reused per render thread (Draw runs to completion before returning).
+	[ThreadStatic]
+	private static List<PathInstance>? _pending;
+
 	public static void Draw(IDrawingSession session, IFont font, ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, Color color)
 	{
 		var elements = _elements ??= new List<GlyphRunElement>();
 		elements.Clear();
+		List<PathInstance>? pending = null;
 		font.BuildGlyphRun(GeometryFactory.Current, glyphs, positions, baselineY, elements);
 
 		try
@@ -33,6 +38,12 @@ internal static class GlyphRunRenderer
 			{
 				switch (element)
 				{
+					case GlyphOutlineRef glyph:
+						// Collected, not drawn here: the run goes to the backend in ONE DrawPaths call below, which
+						// is what lets Skia merge it into a single canvas draw and WebGPU batch its atlas quads.
+						(pending ??= _pending ??= new List<PathInstance>()).Add(new PathInstance(glyph.Outline, glyph.Offset));
+						break;
+
 					case GlyphOutline outline:
 						session.DrawPath(outline.Outline, color, antialias: true);
 						break;
@@ -52,9 +63,15 @@ internal static class GlyphRunRenderer
 						break;
 				}
 			}
+
+			if (pending is { Count: > 0 })
+			{
+				session.DrawPaths(global::System.Runtime.InteropServices.CollectionsMarshal.AsSpan(pending), color, antialias: true);
+			}
 		}
 		finally
 		{
+			pending?.Clear();
 			// Dispose the geometries the font handed us (a mid-loop throw must not leak them).
 			foreach (var element in elements)
 			{
