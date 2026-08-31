@@ -134,16 +134,18 @@
 			DependsOnTargets="_UnoValidateRuntimeAssets" />
 
 	<Target Name="_UnoWarnObsoleteRuntimeIdentifiers" BeforeTargets="BeforeBuild">
-		<!--
-		Gated on UnoHasRuntimeHost rather than IsUnoHead, which only the Uno.Sdk sets: a hand-rolled head is
-		exactly the shape likely to still carry these.
-		-->
+		<!-- Ungated: these two only ever selected assets for a head, so they are dead in every project shape. -->
 		<Warning
 			Code="UNOB0024"
 			HelpLink="https://aka.platform.uno/UNOB0024"
 			Text="UnoUIRuntimeIdentifier and UnoWinRTRuntimeIdentifier no longer have any effect and can be removed. Runtime assets are selected from the target framework. See https://aka.platform.uno/UNOB0024"
 			Condition="('$(UnoUIRuntimeIdentifier)'!='' OR '$(UnoWinRTRuntimeIdentifier)'!='') AND '$(UnoDisableUNOB0024Validation)'!='true'" />
 
+		<!--
+		This one is gated: UnoRuntimeIdentifier still names the uno-runtime folder a cross-runtime library
+		packs into, so only a head may be warned. Gated on UnoHasRuntimeHost rather than IsUnoHead, which
+		only the Uno.Sdk sets: a hand-rolled head is exactly the shape likely to still carry it.
+		-->
 		<Warning
 			Code="UNOB0024"
 			HelpLink="https://aka.platform.uno/UNOB0024"
