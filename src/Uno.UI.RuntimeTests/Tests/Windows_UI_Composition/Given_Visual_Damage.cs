@@ -202,6 +202,7 @@ public class Given_Visual_Damage
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24193")]
 	public async Task When_RedirectVisual_Repaints_Then_Its_Own_Region_Is_Damaged()
 	{
 #if __SKIA__

@@ -749,6 +749,7 @@ public class Given_AnimatedVisualPlayer
 	// anything it does to the whole canvas (such as clearing it) is applied to the pixels already painted
 	// underneath it, turning an opaque background behind the player into a hole.
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24193")]
 	public async Task When_Production_Lottie_Source_Renders_Then_Content_Behind_It_Is_Preserved()
 	{
 		var player = new AnimatedVisualPlayer
