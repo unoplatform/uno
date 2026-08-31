@@ -756,26 +756,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				if (_semanticParentMap.TryGetValue(handle, out var semanticParentHandle)
 					&& containerVisual.Owner?.Target is UIElement element)
 				{
-					// Use the full element-to-semantic-parent transform so that
-					// RenderTransform, Scale, etc. are reflected in the position.
-					var semanticParentElement = FindUIElementByHandle(element, semanticParentHandle);
-					var localRect = new Windows.Foundation.Rect(0, 0, visual.Size.X, visual.Size.Y);
-					if (semanticParentElement is not null)
-					{
-						var transform = UIElement.GetTransform(from: element, to: semanticParentElement);
-						var transformedRect = transform.Transform(localRect);
-						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
-					}
-					else
-					{
-						var transform = UIElement.GetTransform(from: element, to: null);
-						var transformedRect = transform.Transform(localRect);
-						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
-					}
+					UpdateSemanticElementGeometry(handle, element, semanticParentHandle);
 				}
-				else
+				else if (HasSemanticElement(handle))
 				{
-					// Root element or element not in semantic map — use full transform to root
+					// Root element (or a realized virtualized item) — no parent map entry, so position
+					// it against the visual tree root using the full transform.
 					if (containerVisual.Owner?.Target is UIElement rootElement)
 					{
 						var transform = UIElement.GetTransform(from: rootElement, to: null);
@@ -789,6 +775,49 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 						NativeMethods.UpdateSemanticElementPositioning(handle, visual.Size.X, visual.Size.Y, totalOffset.X, totalOffset.Y);
 					}
 				}
+				else if (!_isCreatingAOM && containerVisual.Owner?.Target is UIElement prunedElement)
+				{
+					// The element is pruned from the AOM (Grid, Border, ContentPresenter, …) so it owns
+					// no DOM node. Its offset/transform only ever materializes inside the positions its
+					// semantic descendants hold relative to the semantic ancestor they are DOM-parented
+					// under, and nothing else re-emits those — without this they keep the geometry
+					// computed before layout ran, which collapses every descendant onto the same point.
+					UpdateNearestSemanticDescendantsGeometry(prunedElement);
+				}
+			}
+		}
+	}
+
+	/// <summary>
+	/// Writes the DOM geometry of a semantic node. Positions are relative to the semantic parent the
+	/// node is DOM-nested under, using the full element-to-parent transform so RenderTransform, Scale
+	/// and the offsets of any pruned element in between are all reflected.
+	/// </summary>
+	private static void UpdateSemanticElementGeometry(IntPtr handle, UIElement element, IntPtr semanticParentHandle)
+	{
+		var semanticParentElement = FindUIElementByHandle(element, semanticParentHandle);
+		var localRect = new Windows.Foundation.Rect(0, 0, element.Visual.Size.X, element.Visual.Size.Y);
+		var transform = UIElement.GetTransform(from: element, to: semanticParentElement);
+		var transformedRect = transform.Transform(localRect);
+		NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
+	}
+
+	/// <summary>
+	/// Re-emits the geometry of the nearest semantic descendants of <paramref name="element"/>. The walk
+	/// stops at the first semantic node on each branch: that node owns a DOM element, so its own subtree
+	/// is nested underneath it and follows it automatically.
+	/// </summary>
+	private void UpdateNearestSemanticDescendantsGeometry(UIElement element)
+	{
+		foreach (var child in element.GetChildren())
+		{
+			if (_semanticParentMap.TryGetValue(child.Visual.Handle, out var childSemanticParentHandle))
+			{
+				UpdateSemanticElementGeometry(child.Visual.Handle, child, childSemanticParentHandle);
+			}
+			else
+			{
+				UpdateNearestSemanticDescendantsGeometry(child);
 			}
 		}
 	}
