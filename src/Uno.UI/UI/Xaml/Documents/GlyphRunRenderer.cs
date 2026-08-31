@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -33,6 +33,16 @@ internal static class GlyphRunRenderer
 			{
 				switch (element)
 				{
+					case GlyphOutlineRef glyph:
+						// Glyph-local geometry drawn under a translation, so every occurrence of the character shares
+						// one instance (see GlyphOutlineRef). Save/Restore per glyph rather than an accumulated
+						// translate: the offsets are absolute, so a running delta would drift.
+						session.Save();
+						session.Translate(glyph.Offset.X, glyph.Offset.Y);
+						session.DrawPath(glyph.Outline, color, antialias: true);
+						session.Restore();
+						break;
+
 					case GlyphOutline outline:
 						session.DrawPath(outline.Outline, color, antialias: true);
 						break;
@@ -60,6 +70,7 @@ internal static class GlyphRunRenderer
 			{
 				switch (element)
 				{
+					// GlyphOutlineRef is deliberately absent: its geometry belongs to the font's per-glyph cache.
 					case GlyphOutline outline:
 						outline.Outline.Dispose();
 						break;
