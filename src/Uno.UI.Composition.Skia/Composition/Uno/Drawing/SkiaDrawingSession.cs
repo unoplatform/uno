@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -187,6 +187,36 @@ internal class SkiaDrawingSession : IDrawingSession
 	{
 		using var lease = SkiaGeometryInterop.Lease(geometry);
 		_canvas.DrawPath(lease.Path, FillPaint(color, antialias));
+	}
+
+	public void DrawPaths(ReadOnlySpan<PathInstance> instances, Color color, bool antialias)
+	{
+		if (instances.Length == 0)
+		{
+			return;
+		}
+
+		if (instances.Length == 1)
+		{
+			var only = instances[0];
+			_canvas.Save();
+			_canvas.Translate(only.Offset.X, only.Offset.Y);
+			DrawPath(only.Geometry, color, antialias);
+			_canvas.Restore();
+			return;
+		}
+
+		// One canvas draw for the whole run. The cost here is per DrawPath — paint setup, clip test, coverage
+		// walk — so N placed instances as N draws is far worse than merging them into a single path first.
+		var builder = new SKPathBuilder();
+		foreach (var instance in instances)
+		{
+			using var lease = SkiaGeometryInterop.Lease(instance.Geometry);
+			builder.AddPath(lease.Path, SKMatrix.CreateTranslation(instance.Offset.X, instance.Offset.Y), SKPathAddMode.Append);
+		}
+
+		using var merged = builder.Detach();
+		_canvas.DrawPath(merged, FillPaint(color, antialias));
 	}
 
 	public void DrawShadow(IGeometry silhouette, Color color, float sigmaX, float sigmaY, bool additive, bool antialias)

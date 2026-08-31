@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -244,6 +244,21 @@ internal sealed class CommandListRecorder : ICommandRecorder
 	{
 		var g = Own(geometry);
 		_commands.Add(ctx => ctx.Target.DrawPath(g, color, antialias));
+	}
+
+	public void DrawPaths(ReadOnlySpan<PathInstance> instances, Color color, bool antialias = false)
+	{
+		// The span cannot outlive this call, so copy the placements; the geometries themselves stay referenced
+		// (cache-owned, per this overload's contract).
+		var placed = instances.ToArray();
+		_commands.Add(ctx => ctx.Target.DrawPaths(placed, color, antialias));
+	}
+
+	public void DrawPath(IGeometry geometry, Color color, Vector2 offset, bool antialias = false)
+	{
+		// Referenced, not snapshotted: this overload's contract is that the geometry is cache-owned and outlives
+		// the recording. Copying it per instance would undo the sharing the overload exists to enable.
+		_commands.Add(ctx => ctx.Target.DrawPath(geometry, color, offset, antialias));
 	}
 
 	public void DrawShadow(IGeometry silhouette, Color color, float sigmaX, float sigmaY, bool additive, bool antialias = false)
