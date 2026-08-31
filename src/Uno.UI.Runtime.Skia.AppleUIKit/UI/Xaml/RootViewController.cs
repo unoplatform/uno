@@ -31,8 +31,13 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	private SkiaCanvas? _skCanvasView;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
+<<<<<<< HEAD:src/Uno.UI.Runtime.Skia.AppleUIKit/UI/Xaml/RootViewController.cs
+=======
+	private TopViewLayer? _topViewLayer;
+>>>>>>> e6e3c017 (fix(ios): Scope pointer/keyboard input sources per window):src/Uno.UI.Runtime.Skia.AppleUIKit/UI/Xaml/Window/RootViewController.cs
 	private UIView? _nativeOverlayLayer;
 	private string? _lastSvgClipPath;
+	private readonly UnoKeyboardInputSource _keyboardInputSource = new();
 
 	public RootViewController()
 	{
@@ -302,6 +307,16 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	public UIElement? RootElement => _xamlRoot?.VisualTree.RootElement;
 
 	public UIView TextInputLayer => _textInputLayer!;
+
+	/// <summary>
+	/// This window's own pointer input source, backed by its <see cref="TopViewLayer"/>.
+	/// </summary>
+	internal AppleUIKitCorePointerInputSource PointerInputSource => _topViewLayer!.PointerInputSource;
+
+	/// <summary>
+	/// This window's own keyboard input source.
+	/// </summary>
+	internal UnoKeyboardInputSource KeyboardInputSource => _keyboardInputSource;
 
 	// This will handle when the status bar is showed / hidden by the system on iPhones
 	public override void ViewSafeAreaInsetsDidChange()
