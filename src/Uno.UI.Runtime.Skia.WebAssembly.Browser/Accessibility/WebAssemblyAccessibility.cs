@@ -849,6 +849,19 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	private void UpdateAllSemanticDescendantsGeometry(UIElement element)
+	{
+		foreach (var child in element.GetChildren())
+		{
+			if (TryGetSemanticParentHandle(child.Visual.Handle, out var childSemanticParentHandle))
+			{
+				UpdateSemanticElementGeometry(child.Visual.Handle, child, childSemanticParentHandle);
+			}
+
+			UpdateAllSemanticDescendantsGeometry(child);
+		}
+	}
+
 	/// <summary>
 	/// Re-evaluates the <c>role=region</c> gate (FR-013/FR-014) for the <see cref="ScrollViewer"/> that
 	/// owns or is the nearest semantic ancestor of <paramref name="changedElement"/>, after a layout
@@ -991,7 +1004,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				rootFrameworkElement.LayoutUpdated -= OnInitialLayoutUpdated;
 				if (@this.IsAccessibilityEnabled && @this._rootElementHandle == rootElement.Visual.Handle)
 				{
-					@this.UpdateNearestSemanticDescendantsGeometry(rootElement);
+					@this.UpdateAllSemanticDescendantsGeometry(rootElement);
 				}
 			}
 		}
@@ -1000,7 +1013,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			if (@this.IsAccessibilityEnabled && @this._rootElementHandle == rootElement.Visual.Handle)
 			{
-				@this.UpdateNearestSemanticDescendantsGeometry(rootElement);
+				@this.UpdateAllSemanticDescendantsGeometry(rootElement);
 			}
 		});
 		Control.OnIsFocusableChangedCallback = @this.UpdateIsFocusable;
