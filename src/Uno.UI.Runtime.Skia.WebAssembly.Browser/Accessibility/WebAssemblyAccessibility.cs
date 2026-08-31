@@ -753,15 +753,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					return;
 				}
 
-				if (_semanticParentMap.TryGetValue(handle, out var semanticParentHandle)
+				if (TryGetSemanticParentHandle(handle, out var semanticParentHandle)
 					&& containerVisual.Owner?.Target is UIElement element)
 				{
 					UpdateSemanticElementGeometry(handle, element, semanticParentHandle);
 				}
 				else if (HasSemanticElement(handle))
 				{
-					// Root element (or a realized virtualized item) — no parent map entry, so position
-					// it against the visual tree root using the full transform.
+					// The root element — it owns a node but has no semantic parent, so it is
+					// positioned against the visual tree root using the full transform.
 					if (containerVisual.Owner?.Target is UIElement rootElement)
 					{
 						var transform = UIElement.GetTransform(from: rootElement, to: null);
@@ -803,6 +803,32 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	}
 
 	/// <summary>
+	/// Resolves the handle of the semantic node a given node is DOM-nested under. A node is either
+	/// tracked in <see cref="_semanticParentMap"/> or realized inside a virtualized region, in which
+	/// case its DOM parent is that region's container. Returns false for the root node, which has no
+	/// semantic parent, and for elements pruned from the accessibility tree.
+	/// </summary>
+	private bool TryGetSemanticParentHandle(IntPtr handle, out IntPtr semanticParentHandle)
+	{
+		if (_semanticParentMap.TryGetValue(handle, out semanticParentHandle))
+		{
+			return true;
+		}
+
+		foreach (var region in _virtualizedRegions)
+		{
+			if (region.ContainsRealizedHandle(handle))
+			{
+				semanticParentHandle = region.ContainerHandle;
+				return true;
+			}
+		}
+
+		semanticParentHandle = IntPtr.Zero;
+		return false;
+	}
+
+	/// <summary>
 	/// Re-emits the geometry of the nearest semantic descendants of <paramref name="element"/>. The walk
 	/// stops at the first semantic node on each branch: that node owns a DOM element, so its own subtree
 	/// is nested underneath it and follows it automatically.
@@ -811,7 +837,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	{
 		foreach (var child in element.GetChildren())
 		{
-			if (_semanticParentMap.TryGetValue(child.Visual.Handle, out var childSemanticParentHandle))
+			if (TryGetSemanticParentHandle(child.Visual.Handle, out var childSemanticParentHandle))
 			{
 				UpdateSemanticElementGeometry(child.Visual.Handle, child, childSemanticParentHandle);
 			}
