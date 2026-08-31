@@ -69,19 +69,11 @@ internal sealed class TextInputPlugin
 	{
 		int[] offset = new int[2];
 		_view.GetLocationOnScreen(offset);
-		var geometryElement = GetGeometryElement(textBox);
-		var transform = UIElement.GetTransform(from: geometryElement, to: null);
-		var logicalRect = transform.Transform(new Windows.Foundation.Rect(
-			default,
-			new Windows.Foundation.Size(geometryElement.Visual.Size.X, geometryElement.Visual.Size.Y)));
+		var transform = UIElement.GetTransform(from: textBox, to: null);
+		var logicalRect = transform.Transform(new Windows.Foundation.Rect(default, new Windows.Foundation.Size(textBox.Visual.Size.X, textBox.Visual.Size.Y)));
 		var physicalRect = logicalRect.LogicalToPhysicalPixels();
 		return physicalRect.OffsetRect(offset[0], offset[1]);
 	}
-
-	private static UIElement GetGeometryElement(TextBox textBox) =>
-		textBox.TemplatedParent is AutoSuggestBox autoSuggestBox
-			? autoSuggestBox
-			: textBox;
 
 	internal void NotifyViewExited(int virtualId)
 	{
