@@ -31,16 +31,25 @@ internal sealed unsafe class WebGpuPathAtlas
 	public const int Size = 1024;
 
 	/// <summary>
-	/// Largest shape (device px) worth atlasing. Not a capability limit — a bigger shape bakes and draws fine, and
-	/// a slot may be up to a page. It is a measured cost/benefit line. Raising it to 512 does change how bigger
-	/// shapes render (21 of 95 Ellipse parity configurations shifted, up to 61/255 on edge pixels) but is a WASH in
-	/// quality: mean absolute difference from the WinUI goldens over those configurations went 1.741 -> 1.737, two
-	/// better, one worse. The analytic AA ring already antialiases shapes that size, so the mask buys nothing there.
-	/// It costs, though: no draw reduction on GaugeBoard, emitted draws on LogView UP from 320 to 420 (atlas quads
-	/// displace glyph runs from their coalesced stencil-then-cover batches), and 3-4x the atlas pages. The atlas
-	/// earns its keep on small geometry, which is exactly where the ring cannot help.
+	/// Per-axis bound: a slot cannot span pages, so nothing wider or taller than a page can ever be placed.
 	/// </summary>
-	public const int MaxShape = 96;
+	public const int MaxDim = Size - 2;
+
+	/// <summary>
+	/// Footprint bound, in device pixels of MASK AREA rather than of the longest side. Area is what the texture
+	/// and the bake actually cost, and the two are wildly different for the shapes that matter: TEXT reaches the
+	/// backend as one fill per RUN — a whole string, one contour per glyph — so a line of text is very wide and
+	/// only ~20px tall. A longest-side cap of 96 rejected every run past a few characters and left it on the
+	/// geometry path, which at one sample has no antialiasing; that is what made sample titles, descriptions and
+	/// longer list items render aliased while short ones stayed crisp.
+	/// <para>
+	/// 256x256 worth of area takes an 800x20 text run (16k px) while still refusing the large near-square fills
+	/// that measurably do not benefit: a 300x225 shape is 67k px, and raising the old longest-side cap to 512 to
+	/// admit those changed the WinUI parity mismatch not at all, cut no draws, and pushed LogView's emitted draws
+	/// from 320 to 420 by displacing glyph runs from their coalesced batches.
+	/// </para>
+	/// </summary>
+	public const int MaxArea = 256 * 256;
 
 	/// <summary>
 	/// Pages this atlas may hold before it stops taking new entries and shapes fall back to the geometry path.
@@ -48,6 +57,9 @@ internal sealed unsafe class WebGpuPathAtlas
 	/// animates mints a fresh key every frame and grows the atlas without bound.
 	/// </summary>
 	public const int MaxPages = 8;
+
+	/// <summary>Fills refused for footprint — the counter to watch if content renders aliased.</summary>
+	internal static int RejBig;
 
 	/// <summary>Subpixel phases per axis. 4 is the usual quality/footprint compromise.</summary>
 	public const int SubPixel = 4;
@@ -185,38 +197,50 @@ internal sealed unsafe class WebGpuPathAtlas
 	/// Builds the cache key for a fill, or returns false when it is not atlasable: rotated/skewed transforms
 	/// (the entry is rasterized axis-aligned), and shapes too large to be worth a texture.
 	/// </summary>
-	public static bool TryKey(object? geometry, in Matrix4x4 matrix, Vector2 bbMin, Vector2 bbMax, out Key key, out int w, out int h, out float originX, out float originY)
+	/// <param name="scale">
+	/// Extra scale applied to this op AFTER its own coordinates, i.e. the GPU-side replay scale of an arena
+	/// recording (1,1 for geometry already in device space). The mask has to be rasterized at the size the shape
+	/// actually covers on screen, so every pixel quantity here — footprint, origin snap, subpixel phase — is
+	/// computed in DEVICE space, while the origin is returned in the op's own space for placing the quad.
+	/// </param>
+	public static bool TryKey(object? geometry, in Matrix4x4 matrix, Vector2 bbMin, Vector2 bbMax, Vector2 scale, out Key key, out int w, out int h, out float originX, out float originY)
 	{
 		key = default;
 		w = h = 0;
 		originX = originY = 0;
-		if (geometry is null) { return false; }
+		if (geometry is null || scale.X <= 0 || scale.Y <= 0) { return false; }
 
-		var dw = bbMax.X - bbMin.X;
-		var dh = bbMax.Y - bbMin.Y;
-		if (dw <= 0 || dh <= 0 || dw > MaxShape || dh > MaxShape) { return false; }
+		var dw = (bbMax.X - bbMin.X) * scale.X;
+		var dh = (bbMax.Y - bbMin.Y) * scale.Y;
+		if (dw <= 0 || dh <= 0) { return false; }
+		if (dw > MaxDim || dh > MaxDim || dw * dh > MaxArea)
+		{ RejBig++; return false; }
 
-		// Snap the slot origin to whole PIXELS and let the mask absorb the fractional offset. Placing the quad at
-		// a fractional position instead makes the sampler resample a 1:1 mask, which visibly blurs and fattens
-		// glyphs — the phase belongs in the baked mask (that is what the phase key is for), not in the placement.
-		originX = MathF.Floor(bbMin.X);
-		originY = MathF.Floor(bbMin.Y);
+		// Snap the slot origin to whole DEVICE pixels and let the mask absorb the fractional offset. Placing the
+		// quad at a fractional position instead makes the sampler resample a 1:1 mask, which visibly blurs and
+		// fattens glyphs — the phase belongs in the baked mask (that is what the phase key is for).
+		var devMinX = bbMin.X * scale.X;
+		var devMinY = bbMin.Y * scale.Y;
+		var oxDev = MathF.Floor(devMinX);
+		var oyDev = MathF.Floor(devMinY);
+		originX = oxDev / scale.X;
+		originY = oyDev / scale.Y;
 
 		// A one-texel skirt keeps bilinear sampling from bleeding a neighbouring slot into the edge.
-		w = (int)MathF.Ceiling(bbMax.X - originX) + 2;
-		h = (int)MathF.Ceiling(bbMax.Y - originY) + 2;
+		w = (int)MathF.Ceiling(bbMax.X * scale.X - oxDev) + 2;
+		h = (int)MathF.Ceiling(bbMax.Y * scale.Y - oyDev) + 2;
 
 		// Subpixel phase HORIZONTALLY only. Vertical phase would multiply the entry count for no visible gain on
 		// horizontal text, and it is what makes a scrolling list miss the cache on every frame: with Y quantised,
 		// a list scrolled by whole pixels reuses its glyphs instead of re-rasterising them.
-		var phaseX = (int)MathF.Floor((bbMin.X - MathF.Floor(bbMin.X)) * SubPixel);
+		var phaseX = (int)MathF.Floor((devMinX - oxDev) * SubPixel);
 		var phaseY = 0;
 		key = new Key(
 			geometry,
-			(int)MathF.Round(matrix.M11 * 64f),
-			(int)MathF.Round(matrix.M12 * 64f),
-			(int)MathF.Round(matrix.M21 * 64f),
-			(int)MathF.Round(matrix.M22 * 64f),
+			(int)MathF.Round(matrix.M11 * scale.X * 64f),
+			(int)MathF.Round(matrix.M12 * scale.X * 64f),
+			(int)MathF.Round(matrix.M21 * scale.Y * 64f),
+			(int)MathF.Round(matrix.M22 * scale.Y * 64f),
 			Math.Clamp(phaseX, 0, SubPixel - 1),
 			Math.Clamp(phaseY, 0, SubPixel - 1),
 			w,
