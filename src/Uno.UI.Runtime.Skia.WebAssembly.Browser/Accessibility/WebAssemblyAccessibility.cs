@@ -22,6 +22,7 @@ using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -981,6 +982,13 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			@this._isCreatingAOM = false;
 		}
+		NativeDispatcher.Main.Enqueue(() =>
+		{
+			if (@this.IsAccessibilityEnabled && @this._rootElementHandle == rootElement.Visual.Handle)
+			{
+				@this.UpdateNearestSemanticDescendantsGeometry(rootElement);
+			}
+		});
 		Control.OnIsFocusableChangedCallback = @this.UpdateIsFocusable;
 
 		// Initialize subsystems
