@@ -1600,7 +1600,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForIdle();
 
 				await PressKey(VirtualKey.S, withShift: true);
-				await Task.Delay(500);
+				await WindowHelper.WaitFor(() => autoSuggestBox.Text == "S");
 				Assert.AreEqual("S", autoSuggestBox.Text);
 				await WindowHelper.WaitFor(() => autoSuggestBox.IsSuggestionListOpen);
 
