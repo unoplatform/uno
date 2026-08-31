@@ -22,16 +22,32 @@ namespace Uno.UI.Composition.WebGpu;
 /// per glyph; an atlased glyph is one quad, and consecutive quads sharing colour and texture merge.
 ///
 /// The cache key includes a subpixel phase so glyph positions stay sub-pixel accurate (rounding them to whole
-/// pixels visibly damages spacing). It deliberately does NOT cover rotated or skewed transforms: the entry is
-/// rasterized axis-aligned, so anything else falls back to the geometry path.
+/// pixels visibly damages spacing), and the full 2x2 of the transform, so a rotated or skewed shape gets its own
+/// entry instead of colliding with the upright one.
 /// </remarks>
 internal sealed unsafe class WebGpuPathAtlas
 {
 	/// <summary>Atlas edge in texels. One page; when it fills, later shapes fall back to the geometry path.</summary>
 	public const int Size = 1024;
 
-	/// <summary>Largest shape (device px) worth atlasing — beyond this the texture cost outweighs the redraw.</summary>
+	/// <summary>
+	/// Largest shape (device px) worth atlasing. Not a capability limit — a bigger shape bakes and draws fine, and
+	/// a slot may be up to a page. It is a measured cost/benefit line. Raising it to 512 does change how bigger
+	/// shapes render (21 of 95 Ellipse parity configurations shifted, up to 61/255 on edge pixels) but is a WASH in
+	/// quality: mean absolute difference from the WinUI goldens over those configurations went 1.741 -> 1.737, two
+	/// better, one worse. The analytic AA ring already antialiases shapes that size, so the mask buys nothing there.
+	/// It costs, though: no draw reduction on GaugeBoard, emitted draws on LogView UP from 320 to 420 (atlas quads
+	/// displace glyph runs from their coalesced stencil-then-cover batches), and 3-4x the atlas pages. The atlas
+	/// earns its keep on small geometry, which is exactly where the ring cannot help.
+	/// </summary>
 	public const int MaxShape = 96;
+
+	/// <summary>
+	/// Pages this atlas may hold before it stops taking new entries and shapes fall back to the geometry path.
+	/// A page is Size*Size*4 bytes, so this is the cache's memory ceiling — without it, content whose transform
+	/// animates mints a fresh key every frame and grows the atlas without bound.
+	/// </summary>
+	public const int MaxPages = 8;
 
 	/// <summary>Subpixel phases per axis. 4 is the usual quality/footprint compromise.</summary>
 	public const int SubPixel = 4;
@@ -40,7 +56,14 @@ internal sealed unsafe class WebGpuPathAtlas
 	/// W/H are part of the key, not just the scale: the scale is quantised, so two nearby scales can share a key
 	/// while needing different pixel footprints — the cached mask would then be the wrong SIZE for the draw.
 	/// </summary>
-	internal readonly record struct Key(object Geometry, int ScaleX, int ScaleY, int PhaseX, int PhaseY, int W, int H);
+	/// <remarks>
+	/// The transform enters as all FOUR 2x2 terms, not just the scale: the mask is rasterized from the fan in its
+	/// final device orientation, so a rotated shape bakes correctly on its own — but two different angles of one
+	/// geometry would otherwise collide on a single key and share the wrong mask. Keying the rotation is what
+	/// makes rotated content atlasable; no resampling of an upright mask is involved (that would blur the
+	/// coverage ramp and carry AA computed for the wrong orientation).
+	/// </remarks>
+	internal readonly record struct Key(object Geometry, int M11, int M12, int M21, int M22, int PhaseX, int PhaseY, int W, int H);
 
 	/// <summary>
 	/// A reserved region. Origin is the shape's device-space bbox corner the entry was rasterized against, which
@@ -168,7 +191,6 @@ internal sealed unsafe class WebGpuPathAtlas
 		w = h = 0;
 		originX = originY = 0;
 		if (geometry is null) { return false; }
-		if (MathF.Abs(matrix.M12) > 1e-4f || MathF.Abs(matrix.M21) > 1e-4f) { return false; }
 
 		var dw = bbMax.X - bbMin.X;
 		var dh = bbMax.Y - bbMin.Y;
@@ -192,6 +214,8 @@ internal sealed unsafe class WebGpuPathAtlas
 		key = new Key(
 			geometry,
 			(int)MathF.Round(matrix.M11 * 64f),
+			(int)MathF.Round(matrix.M12 * 64f),
+			(int)MathF.Round(matrix.M21 * 64f),
 			(int)MathF.Round(matrix.M22 * 64f),
 			Math.Clamp(phaseX, 0, SubPixel - 1),
 			Math.Clamp(phaseY, 0, SubPixel - 1),
