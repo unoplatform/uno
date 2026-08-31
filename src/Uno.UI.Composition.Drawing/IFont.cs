@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -25,8 +25,8 @@ public interface IFont
 
 	/// <summary>
 	/// Turns a shaped run into a sequence of drawable elements, appended to <paramref name="elements"/> in draw order.
-	/// Each is a merged monochrome <see cref="GlyphOutline"/>, a <see cref="GlyphColorLayers"/> vector colour glyph, or
-	/// a rasterized <see cref="GlyphImage"/> colour glyph. Each glyph is shifted by <paramref name="baselineY"/>. The
+	/// Each is a per-glyph <see cref="GlyphOutlineRef"/> (or a merged monochrome <see cref="GlyphOutline"/>), a
+	/// <see cref="GlyphColorLayers"/> vector colour glyph, or a rasterized <see cref="GlyphImage"/> colour glyph. Each glyph is shifted by <paramref name="baselineY"/>. The
 	/// caller owns and disposes any <see cref="IGeometry"/> carried by the elements.
 	/// </summary>
 	/// <param name="geometry">Registered geometry factory the font builds its glyph outlines with, so it never names a concrete <see cref="IGeometry"/> type.</param>
@@ -112,6 +112,18 @@ public abstract record GlyphRunElement;
 /// <summary>The run's monochrome outline glyphs merged into one positioned geometry; fill with the run's text colour.
 /// The caller disposes <see cref="Outline"/>.</summary>
 public sealed record GlyphOutline(IGeometry Outline) : GlyphRunElement;
+
+/// <summary>
+/// ONE monochrome glyph, its outline in GLYPH-LOCAL coordinates plus the offset to draw it at; fill with the run's
+/// text colour. The geometry belongs to the font's per-glyph cache, so the caller must NOT dispose it.
+/// <para>
+/// Preferred over merging a run into a single <see cref="GlyphOutline"/>, because every occurrence of a character
+/// hands back the SAME geometry instance. Caches keyed on geometry identity — the backend's flattening memo, the
+/// WebGPU coverage atlas — then hold one entry per character instead of one per string, and a merged run is also
+/// as wide as its text, which pushes it past footprint limits those caches impose.
+/// </para>
+/// </summary>
+public sealed record GlyphOutlineRef(IGeometry Outline, Vector2 Offset) : GlyphRunElement;
 
 /// <summary>A colour glyph as positioned vector layers (D2D COLR); fill each layer's geometry with its own colour, in
 /// order. The caller disposes each layer's geometry.</summary>

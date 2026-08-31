@@ -269,7 +269,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			var font = new Uno.UI.Composition.Drawing.SkiaFont(skFont);
 			var elements = new System.Collections.Generic.List<Uno.UI.Composition.Drawing.GlyphRunElement>();
 			font.BuildGlyphRun(new global::Uno.UI.Composition.Drawing.ManagedGeometryFactory(), glyphs, positions, 0f, elements);
-			using var geometry = ((Uno.UI.Composition.Drawing.GlyphOutline)elements[^1]).Outline;
+			// Per-glyph elements, and the geometry is the font's cache-owned outline: take the last glyph and do
+			// NOT dispose it (see GlyphOutlineRef).
+			var geometry = ((Uno.UI.Composition.Drawing.GlyphOutlineRef)elements[^1]).Outline;
 			var bounds = geometry.Bounds;
 			Assert.IsTrue(bounds.Width > 0 && bounds.Height > 0, $"expected non-empty glyph geometry, got {bounds}");
 		}
