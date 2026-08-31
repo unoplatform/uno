@@ -864,9 +864,6 @@ namespace Microsoft.UI.Xaml.Controls
 		public event ContextMenuOpeningEventHandler ContextMenuOpening;
 #endif
 
-#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
-		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-#endif
 		public event TypedEventHandler<TextBlock, IsTextTrimmedChangedEventArgs> IsTextTrimmedChanged
 		{
 			add
@@ -879,18 +876,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
-		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-#endif
 		public static DependencyProperty IsTextTrimmedProperty { get; } = DependencyProperty.Register(
 			nameof(IsTextTrimmed),
 			typeof(bool),
 			typeof(TextBlock),
 			new FrameworkPropertyMetadata(false, propertyChangedCallback: (s, e) => ((TextBlock)s).OnIsTextTrimmedChanged()));
 
-#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__
-		[NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-#endif
 		public bool IsTextTrimmed
 		{
 			get

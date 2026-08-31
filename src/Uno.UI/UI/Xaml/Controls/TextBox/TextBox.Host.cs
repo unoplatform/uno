@@ -154,9 +154,7 @@ partial class TextBox : ITextBoxHost
 		}
 	}
 
-#if !IS_UNIT_TESTS
 	// Resolves to the internal RaisePaste(TextControlPasteEventArgs) — explicit interface members are not
 	// reachable by simple name, so this does not recurse.
 	void ITextBoxHost.RaisePaste(TextControlPasteEventArgs args) => RaisePaste(args);
-#endif
 }

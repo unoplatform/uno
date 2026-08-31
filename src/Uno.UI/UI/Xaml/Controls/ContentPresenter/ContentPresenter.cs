@@ -22,7 +22,7 @@ using Uno.UI.Xaml.Controls;
 using Point = Windows.Foundation.Point;
 using Rect = Windows.Foundation.Rect;
 
-#if UNO_REFERENCE_API || IS_UNIT_TESTS
+#if UNO_REFERENCE_API
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
 using System.Buffers;
@@ -59,9 +59,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		InitializePlatform();
 	}
 
-#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-#endif
 	public BrushTransition BackgroundTransition { get; set; }
 
 	private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
@@ -879,10 +876,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		{
 			SetUpdateTemplate();
 		}
-
-#if !UNO_HAS_BORDER_VISUAL
-		UpdateBorder();
-#endif
 
 		// We do this in Enter not Loaded since Loaded is a lot more tricky
 		// (e.g. you can have Unloaded without Loaded, you can have multiple loaded events without unloaded in between, etc.)

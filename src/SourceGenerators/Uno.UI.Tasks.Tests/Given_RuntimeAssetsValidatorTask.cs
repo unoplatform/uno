@@ -41,12 +41,15 @@ public class Given_RuntimeAssetsValidatorTask
 		=> engine.Warnings.FirstOrDefault(warning => warning.Code == "UNOB0020");
 
 	[TestMethod]
-	public void When_PlatformAsset_References_A_Removed_Type_Then_UNOB0020()
+	[DataRow("android", "net10.0-android35.0")]
+	[DataRow("ios", "net10.0-ios26.0")]
+	[DataRow("tvos", "net10.0-tvos26.0")]
+	public void When_PlatformAsset_References_A_Removed_Type_Then_UNOB0020(string targetPlatformIdentifier, string platformTargetFramework)
 	{
 		using var fixture = new PackageCacheFixture(nameof(When_PlatformAsset_References_A_Removed_Type_Then_UNOB0020));
-		var asset = fixture.AddPackage("Sample.Lib", "1.0.0", "net10.0-android35.0", "net10.0", [RemovedType, PresentType]);
+		var asset = fixture.AddPackage("Sample.Lib", "1.0.0", platformTargetFramework, "net10.0", [RemovedType, PresentType]);
 
-		var (task, engine) = CreateTask(fixture, asset);
+		var (task, engine) = CreateTask(fixture, asset, targetPlatformIdentifier);
 		task.Execute().Should().BeTrue();
 
 		var warning = Unob0020(engine);
@@ -82,12 +85,15 @@ public class Given_RuntimeAssetsValidatorTask
 	}
 
 	[TestMethod]
-	public void When_Head_Is_Not_Mobile_Then_No_Warning()
+	[DataRow("browserwasm")]
+	[DataRow("desktop")]
+	[DataRow("")]
+	public void When_Head_Is_Not_Mobile_Then_No_Warning(string targetPlatformIdentifier)
 	{
 		using var fixture = new PackageCacheFixture(nameof(When_Head_Is_Not_Mobile_Then_No_Warning));
 		var asset = fixture.AddPackage("Sample.Lib", "1.0.0", "net10.0-android35.0", "net10.0", [RemovedType]);
 
-		var (task, engine) = CreateTask(fixture, asset, targetPlatformIdentifier: "browserwasm");
+		var (task, engine) = CreateTask(fixture, asset, targetPlatformIdentifier);
 		task.Execute().Should().BeTrue();
 
 		Unob0020(engine).Should().BeNull();

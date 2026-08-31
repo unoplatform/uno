@@ -1,5 +1,4 @@
-﻿#if !IS_UNIT_TESTS
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections;
@@ -1523,4 +1522,3 @@ namespace Microsoft.UI.Xaml.Controls
 	}
 }
 
-#endif

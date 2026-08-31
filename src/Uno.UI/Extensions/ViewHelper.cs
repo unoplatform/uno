@@ -1,4 +1,4 @@
-﻿#if IS_UNIT_TESTS || UNO_REFERENCE_API
+﻿#if UNO_REFERENCE_API
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;

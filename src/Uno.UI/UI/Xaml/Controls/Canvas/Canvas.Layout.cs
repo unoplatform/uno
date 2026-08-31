@@ -7,14 +7,14 @@ using Uno.Extensions;
 
 using Uno.Foundation.Logging;
 
-#if UNO_REFERENCE_API || IS_UNIT_TESTS
+#if UNO_REFERENCE_API
 using _View = Microsoft.UI.Xaml.UIElement;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class Canvas
-#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+#if !__CROSSRUNTIME__
 		: ICustomClippingElement
 #endif
 	{
@@ -61,7 +61,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 #if __SKIA__
 		private protected override Rect? GetClipRect(bool needsClipToSlot, Point visualOffset, Rect finalRect, Size maxSize, Thickness margin) => null;
-#elif !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
+#else
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 #endif

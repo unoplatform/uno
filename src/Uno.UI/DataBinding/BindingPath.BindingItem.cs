@@ -1,6 +1,5 @@
 #nullable enable
 
-#if !NETFX_CORE
 using System;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
@@ -525,4 +524,3 @@ namespace Uno.UI.DataBinding
 		}
 	}
 }
-#endif

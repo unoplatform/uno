@@ -374,12 +374,10 @@ namespace Microsoft.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-#if !HAS_NATIVE_IMPLICIT_POINTER_CAPTURE
 			foreach (var pointer in args.Pointers)
 			{
 				that.ReleasePointerCapture(pointer, muteEvent: true, PointerCaptureKind.Implicit);
 			}
-#endif
 
 			that.SafeRaiseEvent(ManipulationCompletedEvent, new ManipulationCompletedRoutedEventArgs(src, that, args));
 
@@ -1155,12 +1153,10 @@ namespace Microsoft.UI.Xaml
 
 				recognizer.ProcessDownEvent(point);
 
-#if !HAS_NATIVE_IMPLICIT_POINTER_CAPTURE
 				if (recognizer.PendingManipulation?.IsActive(point.Pointer) ?? false)
 				{
 					Capture(args.Pointer, PointerCaptureKind.Implicit, default, args);
 				}
-#endif
 			}
 
 			// A non-System ManipulationMode means this element claims the gesture; cancel any ancestor DMs

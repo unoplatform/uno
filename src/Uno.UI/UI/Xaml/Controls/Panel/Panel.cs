@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml.Controls;
 public partial class Panel : FrameworkElement, IPanel
 {
 
-#if IS_UNIT_TESTS || UNO_REFERENCE_API
+#if UNO_REFERENCE_API
 	private new UIElementCollection _children;
 #else
 	private UIElementCollection _children;
@@ -34,9 +34,6 @@ public partial class Panel : FrameworkElement, IPanel
 		_children = new UIElementCollection(this);
 	}
 
-#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-#endif
 	public BrushTransition BackgroundTransition { get; set; }
 
 	private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();

@@ -13,7 +13,7 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using System.Diagnostics.CodeAnalysis;
 
-#if UNO_REFERENCE_API || IS_UNIT_TESTS
+#if UNO_REFERENCE_API
 using View = Microsoft.UI.Xaml.UIElement;
 #endif
 
@@ -264,18 +264,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-#if IS_UNIT_TESTS
-		private protected override void OnPostLoading()
-		{
-			base.OnPostLoading();
-
-			TryCallOnApplyTemplate();
-
-			// Update bindings to ensure resources defined
-			// in visual parents get applied.
-			this.UpdateResourceBindings();
-		}
-#endif
 
 		private void SubscribeToPostKeyDown()
 		{

@@ -205,7 +205,7 @@ internal sealed class PackageCacheFixture : IDisposable
 		{
 			Directory.Delete(Root, recursive: true);
 		}
-		catch (IOException)
+		catch (Exception e) when (e is IOException or UnauthorizedAccessException)
 		{
 			// Leaving a temp folder behind must never fail a test run.
 		}

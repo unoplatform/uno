@@ -819,10 +819,6 @@ namespace Microsoft.UI.Xaml.Controls
 			// The view generator is the only provider that prepares the element.
 			var repeater = m_owner;
 
-#if IS_UNO && !UNO_HAS_ENHANCED_LIFECYCLE // Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle).
-			repeater.OnUnoBeforeElementPrepared(element, index);
-#endif
-
 			// Add the element to the children collection here before raising OnElementPrepared so 
 			// that handlers can walk up the tree in case they want to find their IndexPath in the 
 			// nested case.

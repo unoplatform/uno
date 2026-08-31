@@ -301,7 +301,7 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 
 			foreach (var c in name.Length > MaxReportedTypeNameLength ? name.Substring(0, MaxReportedTypeNameLength) : name)
 			{
-				builder.Append(c < ' ' || c == '' ? '?' : c);
+				builder.Append(c < ' ' || c == '\x7F' ? '?' : c);
 			}
 
 			return builder.ToString();

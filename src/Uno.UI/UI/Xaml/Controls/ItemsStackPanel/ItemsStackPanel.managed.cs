@@ -1,5 +1,4 @@
-﻿#if !IS_UNIT_TESTS
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI.DataBinding;
@@ -15,4 +14,3 @@ namespace Microsoft.UI.Xaml.Controls
 	}
 }
 
-#endif

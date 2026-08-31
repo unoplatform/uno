@@ -164,15 +164,12 @@ namespace Microsoft.UI.Xaml
 		#endregion
 		internal void RaiseSizeChanged(SizeChangedEventArgs args)
 		{
-#if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 			SizeChanged?.Invoke(this, args);
-#endif
 		}
 
 		internal void UpdateRenderTransformSize(Size newSize)
 			=> _renderTransform?.UpdateSize(newSize);
 
-#if !IS_UNIT_TESTS
 		private protected override double GetActualHeight()
 		{
 			var height = Height;
@@ -226,7 +223,6 @@ namespace Microsoft.UI.Xaml
 
 		private double ComputeHeightInMinMaxRange(double height)
 			=> Math.Max(Math.Min(height, MaxHeight), MinHeight);
-#endif
 
 		partial void Initialize()
 		{
@@ -864,7 +860,7 @@ namespace Microsoft.UI.Xaml
 
 		internal virtual UIElement/*?*/ GetFirstChild()
 		{
-#if __CROSSRUNTIME__ && !__NETSTD_REFERENCE__
+#if __CROSSRUNTIME__
 			if (GetChildren() is { Count: > 0 } children)
 			{
 				return children[0] as UIElement;
