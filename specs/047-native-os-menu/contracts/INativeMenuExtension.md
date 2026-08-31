@@ -101,7 +101,7 @@ internal interface INativeMenuExtension
 	/// reads to decide in-app render (false) vs. collapse (true) — it lives in a different
 	/// assembly and cannot see this interface.
 	/// </summary>
-	bool IsExported { get; }
+	bool IsExported(NativeMenuScope scope);
 
 	/// <summary>
 	/// True when assigning a menu on this host right now would actually project it — i.e. the
@@ -121,11 +121,12 @@ internal interface INativeMenuExtension
 	bool IsRoleSupported(NativeMenuItemRole role);
 
 	/// <summary>
-	/// Raised when <see cref="IsExported"/> transitions (e.g. a Linux global-menu registrar
-	/// appears/disappears, or a key window with/without a menu becomes focused). Raised on the
-	/// UI thread. The Toolkit AppMenuBar subscribes to re-evaluate its in-app vs. collapsed state.
+	/// Raised when <see cref="IsExported"/> transitions for some scope (e.g. a Linux global-menu
+	/// registrar appears/disappears, or a key window with/without a menu becomes focused). Raised
+	/// on the UI thread; the args name the affected scope. The Toolkit AppMenuBar subscribes to
+	/// re-evaluate its in-app vs. collapsed state.
 	/// </summary>
-	event EventHandler? IsExportedChanged;
+	event EventHandler<NativeMenuExportedChangedEventArgs>? IsExportedChanged;
 }
 ```
 
@@ -137,7 +138,15 @@ internal interface INativeMenuExtension
 - `NativeMenuScope` is a value type so the application scope needs no sentinel object. `Window`
   is the WinUI/Uno `Microsoft.UI.Xaml.Window` (not a `DependencyObject`, hence the side-table in
   the core — see §5 lifecycle).
-- The event uses `EventHandler` (never `event Action`), per repo convention.
+- The event uses `EventHandler<T>` (never `event Action`), per repo convention.
+- **`IsExported` takes a scope rather than being a process-global flag.** Export genuinely differs
+  per window: DBusMenu registration is keyed by X11 window XID (§4.3) and the macOS bar reflects
+  the key window (§4.1), and macOS multi-window is in v1 scope. A single global answer would be
+  wrong the moment two windows differ, and widening it to take a `Window` afterwards would
+  respecify public surface.
+- **`IsSupported` is also runtime-varying** (a Linux registrar can appear or disappear), so
+  `IsExportedChanged` is specified to fire for both transitions rather than adding a second event;
+  callers re-read whichever probe they use.
 - The seam intentionally exposes **no** per-item / incremental methods. Updates are a coalesced
   **full rebuild** (§5.3); native-side diffing is the host's private concern and is not modeled
   here (iPadOS and DBusMenu are rebuild-only).
@@ -290,6 +299,13 @@ translation, accelerator mapping, and the `Opening`/`Closed` event bridge. Share
   unavailable ones, so users can discover capabilities. The host therefore keeps disabled
   commands **visible but disabled** (does not remove them), matching our push-based enablement —
   prefer toggling `IsEnabled` over `IsVisible = false` / removal for menu commands.
+- **tvOS registers through this same host.**
+  [`ExtensionsRegistrar.cs`](../../../src/Uno.UI.Runtime.Skia.AppleUIKit/Hosting/ExtensionsRegistrar.cs)
+  is shared across iOS/iPadOS/tvOS (only the WebView registration is `#if !__TVOS__`), so the menu
+  extension will be registered on tvOS unless it opts out. tvOS has no menu bar: it MUST report
+  `IsSupported == false` and `IsExported(...) == false`, like Win32. The same applies to iPhone
+  for `IsExported` (see above) — the "Apple means a menu bar" assumption holds only for macOS and
+  iPadOS 26.
 - **App-wide only in v1.** Uno AppleUIKit is single-window/single-scene
   ([`NativeWindowFactoryExtension.cs:16`](../../../src/Uno.UI.Runtime.Skia.AppleUIKit/UI/Xaml/Window/NativeWindowFactoryExtension.cs)),
   so `SetMenu(ForWindow(w), …)` is treated as the application menu. Per-scene override is deferred
@@ -331,6 +347,21 @@ translation, accelerator mapping, and the `Opening`/`Closed` event bridge. Share
   appears or disappears at runtime.
 - Toggle/radio map to DBusMenu `toggle-type`; icons are partial (`icon-name` / `icon-data`);
   shortcuts are panel-dependent. Updates re-export the menu (rebuild).
+- **Trust boundary — the exported object is reachable by every peer on the session bus.** This is
+  the one place in the design where an outside party can call into the app, and the spec must say
+  who is allowed to:
+  - **Activation:** a peer calling `Event(id, "clicked", …)` invokes the item's `Command`. On a
+    `Role=Quit` item that terminates the application; on any other item it runs app code with no
+    user gesture. The host MUST accept `Event` only from the registrar it registered with — the
+    `NameOwnerChanged` subscription above already tracks that unique bus name — and MUST validate
+    that the item id belongs to the currently exported tree.
+  - **Disclosure:** `GetLayout` / `GetGroupProperties` return every label, and labels commonly
+    contain document titles and file paths. Same caller restriction applies.
+  - **Reentrancy + DoS:** `AboutToShow` now runs application code (`NeedsUpdate`) synchronously on
+    the UI thread, so an unrestricted peer can drive app code at will. Rate-limit it in addition
+    to restricting the caller.
+  These are requirements on the post-v1 Linux host, but they are recorded here because they
+  constrain the seam's shape, not just its implementation.
 
 ### 4.4 Win32 — no-op
 

@@ -327,7 +327,7 @@ their commands. Verify `IsSupported` reports `true` on iPadOS.
   and `Closed` events (typed `EventHandler` / `EventHandler<T>`, never `Action`).
 - **FR-003**: `NativeMenuItem` MUST expose `Text` (string), `Icon` (`IconSource`),
   `Command` (`ICommand`), `CommandParameter` (object), a `KeyboardAccelerators` collection,
-  `IsEnabled` (bool), `IsChecked` (bool), `ToggleType` (`ToggleType { None, CheckBox, Radio }`),
+  `IsEnabled` (bool), `IsChecked` (bool), `ToggleType` (`NativeMenuItemToggleType { None, CheckBox, Radio }` — qualified, because an unqualified `ToggleType` would squat a very generic identifier in a shared public namespace and breaks symmetry with `NativeMenuItemRole`),
   `GroupName` (string), `IsVisible` (bool), `Role` (`NativeMenuItemRole`), `SubMenu`
   (`NativeMenu`), and a `Click` event.
 - **FR-004**: The system MUST reuse the existing Uno command/icon/shortcut vocabulary —
@@ -391,9 +391,19 @@ their commands. Verify `IsSupported` reports `true` on iPadOS.
 
 - **FR-014**: The model MUST be observable end-to-end: `DependencyProperty` change callbacks
   plus `INotifyCollectionChanged` on `Items`. Any change MUST mark the affected menu dirty.
-- **FR-015**: Dirty menus MUST be coalesced on the dispatcher and re-projected via a **full
-  rebuild** of that menu (reset strategy). The system MUST NOT attempt incremental native
-  diffing (iPadOS and Linux are rebuild-only).
+- **FR-015**: **Structural** dirt (item added/removed/moved, `SubMenu` assigned, `Text`, `Icon`,
+  `Role`, `IsVisible`, accelerators) MUST be coalesced on the dispatcher and re-projected via a
+  **full rebuild** of the affected menu. The system MUST NOT attempt incremental native diffing
+  for structure (iPadOS and Linux are rebuild-only).
+- **FR-015a**: **State** dirt — `IsEnabled`, `IsChecked`, and every `Command.CanExecuteChanged` —
+  MUST be pushed in place to the existing native items and MUST NOT trigger a rebuild. A
+  `RelayCommand` re-raising `CanExecuteChanged` per keystroke is ordinary, and routing that into
+  the structural path means a whole-tree walk plus a full native reconstruction every frame,
+  indefinitely, on the UI thread. Hosts map state dirt to `NSMenuItem.enabled`/`.state`,
+  `setNeedsRevalidate()` on iPadOS, and a DBusMenu property update.
+- **FR-015b**: A change whose effective value is unchanged MUST short-circuit before marking
+  anything dirty, and dirt MUST be scoped to the affected menu rather than always escalating to
+  the projected root.
 - **FR-016**: `NativeMenu` MUST raise `NeedsUpdate` before a (sub)menu is shown, enabling
   just-in-time population — mapped to `NSMenuDelegate.menuNeedsUpdate` on macOS, DBus
   `AboutToShow` on Linux, and the iPadOS rebuild. Mutations made from a `NeedsUpdate` handler
@@ -407,7 +417,7 @@ their commands. Verify `IsSupported` reports `true` on iPadOS.
   `IsEnabled && (Command?.CanExecute(CommandParameter) ?? true)`, observing
   `CanExecuteChanged`. macOS MUST set `NSMenu.autoenablesItems = NO` so the pushed state is
   authoritative.
-- **FR-018**: Toggle/radio state MUST mirror `RadioMenuFlyoutItem` semantics: `ToggleType`
+- **FR-018**: Toggle/radio state MUST mirror `RadioMenuFlyoutItem` semantics: `NativeMenuItemToggleType`
   + `IsChecked` + `GroupName`. macOS MUST coordinate radio exclusivity itself (no native
   radio group) and set the check state; Linux MUST use native `toggle-type=radio`; iPadOS MUST
   use on/off/mixed with inline single-selection.
@@ -419,13 +429,20 @@ their commands. Verify `IsSupported` reports `true` on iPadOS.
   developer declares a top-level `NativeMenuItem` with `Role=ApplicationMenu` whose children
   (About, Settings, …) merge into the app menu. Services/HideOthers MUST NOT be auto-injected
   unless requested (consistent with thin roles). This replaces/extends the existing bootstrap
-  `NSMenu` (Quit ⌘Q / Close Window ⌘W).
+  `NSMenu` ([`UNOApplication.m:156-185`](../../src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/UnoNativeMac/UNOApplication.m)).
+- **FR-019a**: The guaranteed menu MUST also preserve **Close Window (⌘W)**. The bootstrap
+  `NSMenu` being replaced ships a File menu containing `performClose:` bound to ⌘W (verified at
+  `UNOApplication.m:175-181`), so a guarantee of only Quit + Hide would **silently remove ⌘W from
+  every existing macOS app that sets no menu** — a regression SC-011 forbids. Either the
+  framework-guaranteed menu retains the File ▸ Close Window item, or a `CloseWindow` role is added
+  and auto-wired to `performClose:`; a developer-declared File menu then merges with it the way
+  `Role=ApplicationMenu` children merge into the app menu.
 
 **Projection seam (P1)**
 
 - **FR-020**: The system MUST define `INativeMenuExtension` in `Uno.UI` exposing
-  `SetMenu(scope, NativeMenu?)`, a `bool IsExported` probe (is a native menu actually shown?),
-  an `IsExportedChanged` event, and capability probes `IsSupported` /
+  `SetMenu(scope, NativeMenu?)`, a scope-taking `IsExported(scope)` probe (is a native menu
+  actually visible for that scope?), an `IsExportedChanged` event carrying the affected scope, and capability probes `IsSupported` /
   `IsRoleSupported(NativeMenuItemRole)`. It MUST be `internal` (matching the other extension
   seams), registered per Skia host, and resolved via
   `ApiExtensibility.CreateInstance<INativeMenuExtension>()`, with a **cached** resolution that
@@ -482,8 +499,11 @@ their commands. Verify `IsSupported` reports `true` on iPadOS.
 **Capability probe & fallback (P2)**
 
 - **FR-026**: The system MUST expose, as **public statics on `NativeMenu`**,
-  `IsSupported`, `IsRoleSupported(NativeMenuItemRole)`, `IsExported` and an
-  `IsExportedChanged` event, each forwarding to the resolved extension and degrading to
+  `IsSupported`, `IsRoleSupported(NativeMenuItemRole)`, `IsExported`, a window-scoped
+  `IsExported(Window)` overload, and an `IsExportedChanged` event (declared with explicit
+  `add`/`remove` accessors that attach to the resolved extension and hold subscribers weakly — a
+  field-like declaration would compile while forwarding to nothing and would root every subscriber
+  for the process lifetime), each forwarding to the resolved extension and degrading to
   `false` when none is registered. `IsExported`/`IsExportedChanged` MUST be public because the
   Toolkit `AppMenuBar` decides collapse-vs-render on them from a **different assembly**, which
   cannot see the `internal` `INativeMenuExtension`.
@@ -502,6 +522,21 @@ their commands. Verify `IsSupported` reports `true` on iPadOS.
   `IconSource` → PNG bytes → native image; symbol/font `IconSource` → rendered glyph image
   best-effort; with an optional SF-Symbol-name passthrough hatch for Apple. An icon that cannot
   be translated MUST be dropped (text-only item), never surfaced as an error.
+- **FR-028a**: Translation results MUST be **cached** on (`IconSource`, scale) and recomputed only
+  when `Icon` changes — never once per projection. Re-encoding every icon in the tree on each
+  coalesced rebuild would make an `IsEnabled` toggle cost the whole icon set.
+- **FR-028b**: Icon translation MUST bound its inputs: a maximum decoded dimension and byte size,
+  enforced before decode, with oversized sources dropped per FR-028 rather than decoded. Decoding
+  MUST NOT block the projection call, and an `IconSource` that would require **fetching a remote
+  URI MUST NOT be resolved during a rebuild** — rebuilds can be triggered externally (DBusMenu
+  `AboutToShow`, a UIKit rebuild pass), so remote fetch there is both a stall and an
+  externally-triggerable network request.
+- **FR-028c**: `NativeMenuItem.Text` MUST be treated as a **literal label**, not markup: no
+  mnemonic interpretation beyond the documented per-platform convention, control characters and
+  bidirectional-override characters stripped, and a bounded maximum length. Menu labels routinely
+  carry untrusted content (file names, document titles, user-supplied strings); without this a
+  crafted name can reorder rendered text to impersonate a framework-guaranteed item such as
+  Quit.
 
 **Threading (P1)**
 
@@ -561,7 +596,7 @@ See [data-model.md](./data-model.md) for full property tables and relationships.
 - **`NativeMenuItem`** — a single command/checkable/submenu item (the entity carrying `Text`,
   `Command`, `Role`, accelerators, toggle state, `SubMenu`).
 - **`NativeMenuItemSeparator`** — a visual divider.
-- **`NativeMenuItemRole` / `ToggleType`** — the thin slot-marker and toggle enums.
+- **`NativeMenuItemRole` / `NativeMenuItemToggleType`** — the thin slot-marker and toggle enums.
 - **`INativeMenuExtension`** — the projection seam (see
   [contracts/INativeMenuExtension.md](./contracts/INativeMenuExtension.md)).
 - **Attachment side-table** — the `ConditionalWeakTable<Window, NativeMenu>` plus the

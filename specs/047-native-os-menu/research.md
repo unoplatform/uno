@@ -222,6 +222,26 @@ ask "does this platform provide this item?" and adapt its tree. Uno borrows this
 Linux with no registrar, per FR-026a) and **`IsRoleSupported(NativeMenuItemRole)`** (is *this*
 OS slot available?), so apps can branch their menu construction (spec "capability probe").
 
+### 3.4 Considered and rejected: project `MenuFlyout*` directly
+
+The obvious alternative to a parallel model is to project WinUI's existing
+`MenuFlyout`/`MenuFlyoutItem`/`MenuFlyoutSubItem`/`MenuFlyoutSeparator` tree straight to the native
+menu, with no new types at all. It was rejected, and the reason is a hard blocker rather than a
+preference: those are **templated `Control`s** — `MenuFlyoutItemBase : Control` — so they carry a
+visual tree, a template, and measure/arrange, and they only exist meaningfully once realized in a
+`Popup`. A macOS application menu has no Uno window behind it and may be projected before any
+content is loaded, so there is nothing to realize them into. Reusing them would mean instantiating
+a full control tree purely to read `Text`/`Command` off it.
+
+The cost of the parallel model is real and worth stating plainly: two menu object models in one
+framework, two spellings of a role, and a translation layer (FR-025) that must be kept in sync.
+The mitigation is that the translation is mechanical and lives in exactly one place — the Toolkit
+`AppMenuBar` — so app authors who prefer the familiar markup never see the second model.
+
+Worth noting for shape: WinUI itself puts the container **outside** the item hierarchy
+(`MenuFlyout : FlyoutBase`, not `MenuFlyoutItemBase`), which is the same split adopted in §2.1
+above. The new hierarchy is therefore closer to WinUI's own than the original draft was.
+
 **What Uno borrows from Flutter:** the portable role-enum concept (`PlatformProvidedMenuItem`
 → `NativeMenuItemRole`) and the capability-probe API. Uno explicitly *rejects* Flutter's
 "silent degrade, no fallback" choice in favor of Avalonia's in-app fallback.

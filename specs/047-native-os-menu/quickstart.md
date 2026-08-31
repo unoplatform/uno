@@ -124,8 +124,13 @@ public sealed partial class App : Application
 ## 2. App-wide menu, declared in XAML as a resource, assigned in code
 
 The tree itself **can** be declared in XAML (its content property is `Items`), then
-assigned via the code-first setter. This keeps the menu shape readable and `x:Bind`-able.
-Declare it as a resource so it is not added to the visual tree.
+assigned via the code-first setter. This keeps the menu shape readable. Declare it as a
+resource so it is not added to the visual tree.
+
+> **Neither `{x:Bind}` nor `x:Name` works inside a resource dictionary.** `x:Bind` compiles
+> against a root element's code-behind, and a `ResourceDictionary` has none; `x:Name` emits no
+> field there either. Declare the commands as resources and reference them with
+> `{StaticResource}`, as below. (`{Binding}` also works once the menu has a `DataContext`.)
 
 ```xml
 <!-- App.xaml -->
@@ -133,15 +138,22 @@ Declare it as a resource so it is not added to the visual tree.
 	x:Class="MyApp.App"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:menu="using:Uno.UI.Xaml.Controls">
+	xmlns:menu="using:Uno.UI.Xaml.Controls"
+	xmlns:vm="using:MyApp.Commands">
 	<Application.Resources>
+		<!-- Commands as resources, so the menu can reference them with {StaticResource}. -->
+		<vm:AppCommands x:Key="Commands" />
+
 		<menu:NativeMenu x:Key="AppMenu">
 			<menu:NativeMenuItem Role="ApplicationMenu">
 				<menu:NativeMenuItem.SubMenu>
 					<menu:NativeMenu>
 						<menu:NativeMenuItem Text="About MyApp" Role="About" />
 						<menu:NativeMenuItemSeparator />
-						<menu:NativeMenuItem Text="Settings..." Role="Settings" Command="{x:Bind ShowSettingsCommand}" />
+						<menu:NativeMenuItem
+							Text="Settings..."
+							Role="Settings"
+							Command="{Binding ShowSettings, Source={StaticResource Commands}}" />
 					</menu:NativeMenu>
 				</menu:NativeMenuItem.SubMenu>
 			</menu:NativeMenuItem>
@@ -149,10 +161,10 @@ Declare it as a resource so it is not added to the visual tree.
 			<menu:NativeMenuItem Text="File">
 				<menu:NativeMenuItem.SubMenu>
 					<menu:NativeMenu>
-						<menu:NativeMenuItem Text="New" Command="{x:Bind NewCommand}" />
-						<menu:NativeMenuItem Text="Open..." Command="{x:Bind OpenCommand}" />
+						<menu:NativeMenuItem Text="New" Command="{Binding New, Source={StaticResource Commands}}" />
+						<menu:NativeMenuItem Text="Open..." Command="{Binding Open, Source={StaticResource Commands}}" />
 						<menu:NativeMenuItemSeparator />
-						<menu:NativeMenuItem Text="Close" Command="{x:Bind CloseCommand}" />
+						<menu:NativeMenuItem Text="Close" Command="{Binding Close, Source={StaticResource Commands}}" />
 					</menu:NativeMenu>
 				</menu:NativeMenuItem.SubMenu>
 			</menu:NativeMenuItem>
@@ -175,6 +187,10 @@ protected override void OnLaunched(LaunchActivatedEventArgs args)
 > The menu tree is data, so declaring it in `Application.Resources` (or a page's resources)
 > never renders it into the visual tree — it is only realized when projected to the native
 > menu by the setter.
+>
+> **A resource menu is a shared instance.** `{StaticResource}` returns the same object on every
+> lookup, and an item belongs to exactly one menu, so attaching the same resource menu to two
+> scopes throws. Attach it once, or mark it `x:Shared="False"` for a fresh instance per lookup.
 
 ---
 

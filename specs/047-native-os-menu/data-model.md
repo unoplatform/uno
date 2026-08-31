@@ -55,7 +55,7 @@ arrives as an explicit `NativeMenuItemGroup : NativeMenuItemBase` with its own p
 table — never as an inferred meaning for a bare container. Adding a new sealed item subtype is
 additive and non-breaking, so deferring it costs nothing.
 
-### One parent per item
+### One parent per item — and no cycles
 
 An item belongs to exactly one menu. Adding an item that already has a `Parent` to a second
 `NativeMenu` (or assigning one `NativeMenu` as the `SubMenu` of two different items) throws
@@ -63,6 +63,35 @@ An item belongs to exactly one menu. Adding an item that already has a `Parent` 
 that dirty propagation walks. Re-parent by removing from the first owner first. Avalonia enforces
 the same invariant through a collection validator, having found that silent aliasing produces
 menus that update in one place and not the other.
+
+**Single-parent is not sufficient on its own — cycles must be rejected separately.** This
+compiles, gives every node exactly one parent, and so passes the aliasing check:
+
+```csharp
+menuA.Items.Add(itemA);
+itemA.SubMenu = menuA;      // ✗ must throw: menuA is now its own descendant
+```
+
+Nothing is aliased, yet the upward walk described above — "until it reaches a menu with no
+`Parent`" — never terminates, and projection recurses until the UI thread dies. The same
+mutation point that enforces single-parent MUST therefore also walk `Parent` from the prospective
+new owner and throw `InvalidOperationException` if the item being attached is already an ancestor
+of it. The walk is bounded by the existing depth, so the check is cheap.
+
+### `Items` is a `DependencyObjectCollection`
+
+`NativeMenu.Items` MUST be backed by
+[`DependencyObjectCollection<NativeMenuItemBase>`](../../src/Uno.UI/UI/Xaml/DependencyObjectCollection.cs),
+not a hand-rolled observable list. That type already calls `SetParent` on every element it holds
+([`DependencyObjectCollection.cs:105-116`](../../src/Uno.UI/UI/Xaml/DependencyObjectCollection.cs))
+precisely to keep **inheritance context** flowing.
+
+This is load-bearing, not a convenience: without a real parent chain a `DependencyObject` receives
+no inherited `DataContext`, so `{Binding}` on a `NativeMenuItem.Command` silently never resolves —
+which would quietly break the MVVM story this model is sold on, and the XAML sample below with it.
+The `Parent` back-references described above are the *menu-tree* relationships used for dirty
+propagation; they are additional to, and not a replacement for, the framework parent that
+`DependencyObjectCollection` maintains.
 
 ## Core types — `Uno.UI.Xaml.Controls`
 
@@ -77,9 +106,20 @@ namespace Uno.UI.Xaml.Controls;
 
 public abstract partial class NativeMenuItemBase : DependencyObject
 {
+	// Internal ctor: the hierarchy is closed. A third-party subtype would reach every host as
+	// an unknown node — exactly the divergence the NativeMenu/NativeMenuItemBase split removes —
+	// and would void the "adding a sealed subtype later is additive" guarantee above.
+	internal NativeMenuItemBase() { }
+
 	internal NativeMenu? Parent { get; set; }
 }
 ```
+
+> **Every `[GeneratedDependencyProperty]` below is shown with its
+> `public static DependencyProperty XProperty { get; } = CreateXProperty();` assignment.** Per
+> `.claude/rules/dependency-properties.md` that assignment is mandatory — omitting it mis-generates
+> silently — and defaults are written as `default(T)` rather than bare literals. Implementers copy
+> these blocks, so they are written in the form that compiles.
 
 The upward walk therefore alternates between the two branches — item → owning `NativeMenu`
 (`NativeMenuItemBase.Parent`) → owning `NativeMenuItem` (`NativeMenu.Parent`) → … — until it
@@ -110,6 +150,7 @@ public partial class NativeMenu : DependencyObject
 
 	[GeneratedDependencyProperty(DefaultValue = null)]
 	public string? Title { get; set; }
+	public static DependencyProperty TitleProperty { get; } = CreateTitleProperty();
 
 	public event EventHandler<NativeMenuNeedsUpdateEventArgs>? NeedsUpdate; // mutate here
 	public event EventHandler<NativeMenuOpeningEventArgs>? Opening;         // notify only
@@ -142,13 +183,13 @@ A single command, a checkable item, or a submenu owner.
 | Member | Type | Default | Meaning | macOS | iPadOS | Linux | Windows |
 |---|---|---|---|---|---|---|---|
 | `Text` | `string` | `""` | Display label. Mnemonics per platform convention. | `NSMenuItem.title` | `UICommand`/`UIAction.title` | DBus `label` | item text |
-| `Icon` | `IconSource?` | `null` | Best-effort icon. Bitmap/Image → PNG bytes; Symbol/Font → rendered glyph; optional SF-Symbol name passthrough on Apple. | `NSMenuItem.image` (`NSImage`) | `UIImage` (SF Symbol preferred) | icon-name / icon-data (partial) | in-app `IconElement` |
+| `Icon` | `IconSource?` | `null` | Best-effort icon. Bitmap/Image → PNG bytes; Symbol/Font → rendered glyph; optional SF-Symbol name passthrough on Apple. **Translation result is cached on (`IconSource`, scale) and computed when `Icon` changes, never per rebuild** — re-encoding every icon in the tree on each coalesced tick would make an `IsEnabled` toggle arbitrarily expensive. | `NSMenuItem.image` (`NSImage`) | `UIImage` (SF Symbol preferred) | icon-name / icon-data (partial) | in-app `IconElement` |
 | `Command` | `ICommand?` | `null` | Invoked on activation. `XamlUICommand`/`StandardUICommand` auto-populate `Text`/`Icon`/`KeyboardAccelerators` via `CommandingHelpers`. | target/action invokes callback | `UIAction` handler | DBus `clicked` | `Click`/command |
 | `CommandParameter` | `object?` | `null` | Passed to `Command.Execute` / `CanExecute`. | — | — | — | — |
 | `KeyboardAccelerators` | `IList<KeyboardAccelerator>` | empty | Literal accelerators (modifiers reused as-is — no Ctrl→Cmd remap; see [Shortcuts](#shortcut-modifier-mapping)). | `keyEquivalent` + `keyEquivalentModifierMask` | `UIKeyCommand` | accelerator (partial) | in-app accelerator |
 | `IsEnabled` | `bool` | `true` | Author-set enabled flag. Effective-enabled = `IsEnabled && (Command?.CanExecute(CommandParameter) ?? true)` — **pushed**, authoritative. | `NSMenuItem.enabled` (`autoenablesItems=NO`) | `UIAction` `.disabled` attribute | DBus `enabled` | in-app `IsEnabled` |
 | `IsChecked` | `bool` | `false` | Check/toggle state (with `ToggleType`). | `NSMenuItem.state` on/off | `.on`/`.off`/`.mixed` | toggle-state | in-app check |
-| `ToggleType` | `ToggleType` | `None` | None / CheckBox / Radio (mirrors `RadioMenuFlyoutItem`). | framework-coordinated radio | inline single-selection | `toggle-type` checkmark/radio | in-app toggle |
+| `ToggleType` | `NativeMenuItemToggleType` | `None` | None / CheckBox / Radio (mirrors `RadioMenuFlyoutItem`). | framework-coordinated radio | inline single-selection | `toggle-type` checkmark/radio | in-app toggle |
 | `GroupName` | `string?` | `null` | Radio exclusivity group (only meaningful when `ToggleType == Radio`). | framework coordinates exclusivity | inline group section | radio group | in-app group |
 | `IsVisible` | `bool` | `true` | When false the item is omitted from the projected menu. | item removed on rebuild | `.hidden` attribute / omitted | omitted | collapsed |
 | `Role` | `NativeMenuItemRole` | `None` | OS standard-slot marker (placement + standard label; some OS-owned, see [enum table](#nativemenuitemrole)). | maps to selector / slot | maps to system command id | placement only | label only / no-op |
@@ -180,8 +221,9 @@ public partial class NativeMenuItem : NativeMenuItemBase
 	[GeneratedDependencyProperty(DefaultValue = false)]
 	public bool IsChecked { get; set; }
 
-	[GeneratedDependencyProperty(DefaultValue = ToggleType.None)]
-	public ToggleType ToggleType { get; set; }
+	[GeneratedDependencyProperty(DefaultValue = NativeMenuItemToggleType.None)]
+	public NativeMenuItemToggleType ToggleType { get; set; }
+	public static DependencyProperty ToggleTypeProperty { get; } = CreateToggleTypeProperty();
 
 	[GeneratedDependencyProperty(DefaultValue = null)]
 	public string? GroupName { get; set; }
@@ -269,7 +311,7 @@ public enum NativeMenuItemRole
 }
 ```
 
-### `ToggleType`
+### `NativeMenuItemToggleType`
 
 | Value | Meaning | macOS | iPadOS | Linux | Windows |
 |---|---|---|---|---|---|
@@ -280,7 +322,7 @@ public enum NativeMenuItemRole
 ```csharp
 namespace Uno.UI.Xaml.Controls;
 
-public enum ToggleType
+public enum NativeMenuItemToggleType
 {
 	None,
 	CheckBox,
@@ -314,8 +356,9 @@ forward to the resolved extension and degrade to `false` when no host is registe
 |---|---|---|
 | `NativeMenu.IsSupported` | `bool` | Will a menu assigned right now actually be projected on this platform? See [capability semantics](./contracts/INativeMenuExtension.md#6-capability-semantics). |
 | `NativeMenu.IsRoleSupported(NativeMenuItemRole role)` | `bool` | Does this role map to a real OS slot here? |
-| `NativeMenu.IsExported` | `bool` | Is a native menu currently on screen for this app? |
-| `NativeMenu.IsExportedChanged` | `EventHandler?` | Raised when `IsExported` flips. Raised on the UI thread. |
+| `NativeMenu.IsExported` | `bool` | Is a native menu currently on screen for the app-wide scope? |
+| `NativeMenu.IsExported(Window)` | `bool` | Same question for one window. Required because export is genuinely per-window: on Linux the DBusMenu registrar is keyed by X11 window XID, and on macOS the bar reflects the key window. A process-global answer is wrong as soon as two windows differ — and v1 supports macOS multi-window. |
+| `NativeMenu.IsExportedChanged` | `EventHandler<NativeMenuExportedChangedEventArgs>?` | Raised when export state flips; the args carry the affected `Window` (`null` = app scope). |
 
 ```csharp
 namespace Uno.UI.Xaml.Controls;
@@ -332,7 +375,19 @@ public partial class NativeMenu
 	public static bool IsRoleSupported(NativeMenuItemRole role);
 
 	public static bool IsExported { get; }
-	public static event EventHandler? IsExportedChanged;
+	public static bool IsExported(Window window);
+
+	// Explicit add/remove, NOT a field-like event: a field-like declaration would compile while
+	// forwarding to nothing (never raised), and would root every subscriber for the process
+	// lifetime. The accessors attach to / detach from the resolved extension and hold subscribers
+	// weakly, so an unloaded AppMenuBar is collectable.
+	public static event EventHandler<NativeMenuExportedChangedEventArgs>? IsExportedChanged;
+}
+
+public sealed partial class NativeMenuExportedChangedEventArgs : EventArgs
+{
+	/// <summary>The affected window, or null when the application-wide scope changed.</summary>
+	public Window? Window { get; }
 }
 ```
 
@@ -351,7 +406,7 @@ property), then assigned in code:
 	<NativeMenuItem Text="File">
 		<NativeMenuItem.SubMenu>
 			<NativeMenu>
-				<NativeMenuItem Text="New" Command="{x:Bind NewCommand}" />
+				<NativeMenuItem Text="New" Command="{Binding New, Source={StaticResource Commands}}" />
 				<NativeMenuItemSeparator />
 				<NativeMenuItem Role="Quit" />
 			</NativeMenu>
@@ -359,6 +414,16 @@ property), then assigned in code:
 	</NativeMenuItem>
 </NativeMenu>
 ```
+
+> **No `{x:Bind}` and no `x:Name` in a resource dictionary.** `x:Bind` compiles against a root
+> element's code-behind, which a `ResourceDictionary` does not have, and `x:Name` emits no field
+> there. Reference commands through `{StaticResource}`/`{Binding Source=...}` as above, or attach
+> them in code after pulling the resource. Plain `{Binding}` against an inherited `DataContext`
+> works once `Items` is a `DependencyObjectCollection`.
+>
+> **A menu declared this way is a shared instance.** `{StaticResource}` hands back the same object
+> every time, and the one-parent invariant means the second attach throws. Assign a resource menu
+> to exactly one scope, or declare it `x:Shared="False"` to get a fresh instance per lookup.
 
 ```csharp
 var menu = (NativeMenu)Resources["MainMenu"];
@@ -455,8 +520,29 @@ Command.CanExecuteChanged ─┘            (propagate via Parent to the project
 
 - **Threading:** native menu APIs are main-thread; all mutations marshal to the UI thread and
   the coalesced rebuild posts to the dispatcher.
-- **Reset strategy:** any collection change (including `Reset`) triggers a full re-projection of
-  the affected menu (Avalonia-style), keeping all four backends on one simple code path.
+- **Reset strategy:** any *structural* change (including `Reset`) triggers a full re-projection of
+  the affected menu, keeping all four backends on one simple code path.
+
+#### Structure-dirty vs state-dirty
+
+Not every change deserves a rebuild, and treating them alike is the difference between a menu that
+costs nothing and one that pegs the UI thread:
+
+| Dirt | Trigger | Projection |
+|---|---|---|
+| **Structure** | `Items` add/remove/move/reset, `SubMenu` assigned, `IsVisible`, `Text`, `Icon`, `Role`, accelerators | full coalesced rebuild of the affected menu |
+| **State** | `IsEnabled`, `IsChecked`, and every `Command.CanExecuteChanged` | in-place push to the existing native items — **never** a rebuild |
+
+`CanExecuteChanged` is the reason this split is mandatory rather than an optimisation. A
+`RelayCommand` that re-raises it on every keystroke or selection change is entirely ordinary, and
+routing that into the structural path means a whole-tree walk plus a full native reconstruction
+**every frame, indefinitely, on the UI thread** — for a menu the user is not even looking at.
+State-only dirt maps to `NSMenuItem.enabled`/`.state` on macOS, `setNeedsRevalidate()` on iPadOS
+and a property update on DBusMenu, all of which exist precisely for this.
+
+Two further requirements on the pipeline: a change that does not alter the effective value MUST
+short-circuit before marking anything dirty, and dirt MUST be scoped to the affected menu rather
+than always escalating to the projected root.
 
 ### `NeedsUpdate` — lazy / just-in-time population
 
