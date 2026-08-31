@@ -58,7 +58,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	// The negotiated backend's drawing factory, so native-element hosting composes clip geometry through the
 	// same factory the renderer uses (rather than the global DrawingFactory.Current).
 	internal IDrawingFactory GraphicsFactory { get; private set; } = null!;
-	private bool _vulkanSuppressedForBackdrop;
 	private FrameworkElement? _frameThemeSource;
 
 	private Win32Accessibility? _accessibility;
@@ -109,7 +108,16 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Win32Host.RegisterWindow(_hwnd);
 
-		InitializeGraphics();
+		// Register the per-kind window+context factory and negotiate; the app-registered backend owns the kind order.
+		GraphicsRegistry.ContextFactory = kind => Task.FromResult(CreateWindowAndContext(kind));
+
+		var init = GraphicsRegistry.Initialize();
+		_context = init.Context;
+		GraphicsFactory = init.DrawingFactory;
+		_renderer = init.Renderer;
+
+		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = init.Context.Kind == GraphicsContextKind.Software;
+
 		InitializeRenderThread();
 
 
@@ -933,71 +941,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;
 
-	/// <summary>
-	/// Negotiates the graphics context and backend for this window.
-	/// </summary>
-	private void InitializeGraphics()
-	{
-		_vulkanSuppressedForBackdrop = false;
-
-		// Register the per-kind window+context factory and negotiate; the app-registered backend owns the kind order.
-		// Set on every negotiation, as the factory is process-wide and the last created window owns it.
-		GraphicsRegistry.ContextFactory = kind => Task.FromResult(CreateWindowAndContext(kind));
-
-		var init = GraphicsRegistry.Initialize();
-		_context = init.Context;
-		GraphicsFactory = init.DrawingFactory;
-		_renderer = init.Renderer;
-
-		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = init.Context.Kind == GraphicsContextKind.Software;
-	}
-
-	/// <summary>
-	/// Whether negotiation should skip Vulkan for this window.
-	/// </summary>
-	/// <remarks>
-	/// Vulkan presents through a swapchain bound straight to the HWND, bypassing the window's
-	/// redirection surface - which is the surface DWM composites against the extended frame. A window
-	/// with a system backdrop would therefore show a flat opaque rectangle instead of the material, so
-	/// those windows use OpenGL (or software), both of which composite their per-pixel alpha correctly.
-	/// Vulkan is kept when the app forced it by disabling both of those.
-	/// </remarks>
-	private bool ShouldSuppressVulkanForBackdrop()
-	{
-		var disabled = GraphicsRegistry.DisabledContextKinds;
-		return HasActiveSystemBackdrop()
-			&& !(disabled.Contains(GraphicsContextKind.OpenGL) && disabled.Contains(GraphicsContextKind.Software));
-	}
-
-	/// <summary>
-	/// Renegotiates the graphics context when a backdrop is attached to, or removed from, an already-shown window.
-	/// </summary>
-	private void RecreateRendererForBackdropChange()
-	{
-		if (_rendererDisposed)
-		{
-			return;
-		}
-
-		var needsRenegotiation = ShouldSuppressVulkanForBackdrop()
-			? _context.Kind == GraphicsContextKind.Vulkan
-			: _vulkanSuppressedForBackdrop;
-		if (!needsRenegotiation)
-		{
-			return;
-		}
-
-		// Same ordering as Dispose: joining the render thread first makes the backend and context
-		// unreachable from any in-flight present before they are freed.
-		StopRenderThread();
-		(_renderer as IDisposable)?.Dispose();
-		_context.Dispose();
-
-		InitializeGraphics();
-		InitializeRenderThread();
-		_renderThread?.SignalNewFrame();
-	}
-
 	Windows.UI.Color? IXamlRootHost.BackgroundColor
 	{
 		get
@@ -1100,6 +1043,5 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// this in the presenter avoids fighting it over the frame margins and corner preference.
 		UpdateFrameTheme();
 		UpdateClientAreaExtension();
-		RecreateRendererForBackdropChange();
 	}
 }
