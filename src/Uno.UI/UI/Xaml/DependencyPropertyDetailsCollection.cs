@@ -152,8 +152,9 @@ namespace Microsoft.UI.Xaml
 				// Offsets have not been initialized or need to be resized
 				if (entryOffsets == null || bucketIndex >= entryOffsets.Length)
 				{
-					// Rent the next multiple of BucketSize available : 0 -> 16, 16 -> 32, 32 -> 64 ...
-					var newOffsets = _offsetsPool.Rent((bucketIndex * BucketSize) + 1);
+					// Indexed by bucketIndex alone, so bucketIndex + 1 slots are enough. The pool rounds the
+					// request up to a power-of-two bucket, which already provides amortized growth.
+					var newOffsets = _offsetsPool.Rent(bucketIndex + 1);
 
 					// Since newOffsets is an Int16 array we can memset it with 0xFFs, 0xFFFF is -1, regardless of endianness
 					// This avoids the slow path in Span<T>.Fill()
