@@ -152,19 +152,6 @@ internal sealed class PathFill : WebGpuCommand
 	private float[] _fanSlotted;
 	private float _fanSlotBits = float.NaN;
 
-	// The transformed copy this command produced for a given replay transform. Inline replay runs every frame and
-	// is otherwise a full transform + allocation of the whole fan each time.
-	private PathFill _replayed;
-	private Matrix4x4 _replayedM;
-
-	public PathFill ReplayedAt(in Matrix4x4 m) => _replayed is not null && _replayedM == m ? _replayed : null;
-
-	public void StoreReplayed(in Matrix4x4 m, PathFill value)
-	{
-		_replayed = value;
-		_replayedM = m;
-	}
-
 	public float[] SlottedFan(float slotBits)
 	{
 		var verts = FanDevice.Length / 2;
@@ -1387,16 +1374,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					break;
 				case PathFill p:
 					// A non-cacheable recording is replayed EVERY frame, and a path's fan is transformed point by
-					// point into a fresh array each time — thousands of points per glyph. The result depends only
-					// on (this command, this transform), so remember it: a static or merely re-replayed visual then
-					// costs nothing here, and the reused instance keeps the caches hanging off it (its
-					// slot-interleaved fan) alive too.
-					if (p.ReplayedAt(_m) is { } cachedFill)
-					{
-						_target.Add(cachedFill);
-						break;
-					}
-
+					// point into a fresh array each time — thousands of points per glyph.
 					var src = p.FanDevice; var dst = new float[src.Length];
 					var bbMin = new Vector2(float.MaxValue); var bbMax = new Vector2(float.MinValue);
 					for (int i = 0; i < src.Length; i += 2)
@@ -1422,7 +1400,6 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 						}
 					}
 					var replayed = new PathFill { FanDevice = dst, FanCoverage = p.FanCoverage, FanHard = dstHard, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, FanTiles = p.FanTiles, Geometry = p.Geometry, GeomMatrix = p.GeomMatrix * _m, Clip = ClipCompose(p.Clip) };
-					p.StoreReplayed(_m, replayed);
 					_target.Add(replayed);
 					break;
 				case ShadowCmd sh:
