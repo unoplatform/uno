@@ -425,7 +425,6 @@ declare namespace Uno.Storage {
 }
 declare namespace Uno.Storage {
     class NativeStorageItem {
-        private static generateGuidBinding;
         private static _guidToItemMap;
         private static _itemToGuidMap;
         static addItem(guid: string, item: FileSystemHandle | File): void;
