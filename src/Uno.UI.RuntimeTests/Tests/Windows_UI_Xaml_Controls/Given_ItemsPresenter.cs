@@ -1213,15 +1213,12 @@ public class Given_ItemsPresenter
 
 		await UITestHelper.Load(lv);
 
-		var sv = (ScrollViewer)((Border)VisualTreeHelper.GetChild(lv, 0)).Child;
-		var ip = (ItemsPresenter)sv.Content;
+		var ip = lv.FindVisualChildByType<ItemsPresenter>();
 		var headerCC = ip.HeaderContentControl;
 		var footerCC = ip.FooterContentControl;
 
 		Assert.IsNotNull(headerCC, "HeaderContentControl should exist");
 		Assert.IsNotNull(footerCC, "FooterContentControl should exist");
-		Assert.AreEqual(Visibility.Visible, headerCC.Visibility);
-		Assert.AreEqual(Visibility.Visible, footerCC.Visibility);
 
 		Assert.IsTrue(headerCC.ActualHeight > 0, "Header should have non-zero height");
 		Assert.IsTrue(footerCC.ActualHeight > 0, "Footer should have non-zero height");

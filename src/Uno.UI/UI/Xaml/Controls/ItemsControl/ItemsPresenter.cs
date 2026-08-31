@@ -415,35 +415,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			// Most of this is inspired by StackPanel's MeasureOverride
 
-			// Collapse header/footer when they have no content and no template (matching WinUI).
-			// In WinUI, ContentControl templates are applied when entering the visual tree,
-			// but in Uno, template application is deferred to the first measure. Since
-			// collapsed elements skip measure, we must ensure templates are applied first.
-			if (HeaderFooterEnabled && HeaderContentControl is { } headerCC)
-			{
-				// Guarded: on the non-enhanced lifecycle, ApplyTemplate always invalidates measure.
-				if (headerCC.TemplatedRoot is null)
-				{
-					headerCC.ApplyTemplate();
-				}
-
-				headerCC.Visibility = (Header is null && HeaderTemplate is null)
-					? Visibility.Collapsed
-					: Visibility.Visible;
-			}
-
-			if (HeaderFooterEnabled && FooterContentControl is { } footerCC)
-			{
-				if (footerCC.TemplatedRoot is null)
-				{
-					footerCC.ApplyTemplate();
-				}
-
-				footerCC.Visibility = (Footer is null && FooterTemplate is null)
-					? Visibility.Collapsed
-					: Visibility.Visible;
-			}
-
 			var padding = AppliedPadding;
 
 			var unpaddedSize = new Size(
