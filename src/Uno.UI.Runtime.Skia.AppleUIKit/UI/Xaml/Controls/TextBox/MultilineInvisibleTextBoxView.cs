@@ -153,10 +153,27 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 
 	private readonly InvisibleTextBoxFloatingCursor _floatingCursor = new();
 
+	// UIKit clamps the floating cursor point to these, so the control-sized bounds would stop the
+	// gesture short of the text — dragging up through the earlier lines is the first casualty.
+	// Reverted as soon as the drag ends. Note this also reads back as a negative ContentOffset for
+	// the duration of the drag, which the off-screen proxy has no use for either way.
+	public override CGRect Bounds
+	{
+		get => _floatingCursor.IsActive ? InvisibleTextBoxFloatingCursor.DragBounds : base.Bounds;
+		set => base.Bounds = value;
+	}
+
+	// Pinned to the centre of the drag bounds so the reachable range stays symmetric no matter how
+	// this view happens to lay its own copy of the text out.
+	public override CGRect GetCaretRectForPosition(UITextPosition? position)
+		=> _floatingCursor.IsActive
+			? InvisibleTextBoxFloatingCursor.DragCaretRect
+			: base.GetCaretRectForPosition(position);
+
 	// No base call on purpose: UIKit would map the point against this view's system-font layout,
 	// which has no relation to the Skia-rendered text.
 	public override void BeginFloatingCursor(CGPoint point)
-		=> _floatingCursor.Begin(TextBoxViewExtension, point);
+		=> _floatingCursor.Begin(TextBoxViewExtension);
 
 	public override void UpdateFloatingCursor(CGPoint point)
 		=> _floatingCursor.Update(TextBoxViewExtension, point);

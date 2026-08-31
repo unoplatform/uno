@@ -85,7 +85,14 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 	public bool IsCompatible(Microsoft.UI.Xaml.Controls.TextBox textBox) => !textBox.AcceptsReturn;
 
 	public override CGRect GetCaretRectForPosition(UITextPosition? position)
-		=> InvisibleTextBoxViewExtension.IsFloatingNumericKeypad(KeyboardType) ? Bounds : base.GetCaretRectForPosition(position);
+	{
+		if (_floatingCursor.IsActive)
+		{
+			return InvisibleTextBoxFloatingCursor.DragCaretRect;
+		}
+
+		return InvisibleTextBoxViewExtension.IsFloatingNumericKeypad(KeyboardType) ? base.Bounds : base.GetCaretRectForPosition(position);
+	}
 
 	public override void Paste(NSObject? sender) => HandlePaste(() => base.Paste(sender));
 
@@ -234,10 +241,18 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 
 	private readonly InvisibleTextBoxFloatingCursor _floatingCursor = new();
 
+	// UIKit clamps the floating cursor point to these, so the control-sized bounds would stop the
+	// gesture short of the text. Reverted as soon as the drag ends.
+	public override CGRect Bounds
+	{
+		get => _floatingCursor.IsActive ? InvisibleTextBoxFloatingCursor.DragBounds : base.Bounds;
+		set => base.Bounds = value;
+	}
+
 	// No base call on purpose: UIKit would map the point against this field's system-font layout,
 	// which has no relation to the Skia-rendered text.
 	public override void BeginFloatingCursor(CGPoint point)
-		=> _floatingCursor.Begin(TextBoxViewExtension, point);
+		=> _floatingCursor.Begin(TextBoxViewExtension);
 
 	public override void UpdateFloatingCursor(CGPoint point)
 		=> _floatingCursor.Update(TextBoxViewExtension, point);
@@ -287,7 +302,7 @@ internal partial class SinglelineInvisibleTextBoxView : UITextField, IInvisibleT
 	{
 		if (InvisibleTextBoxViewExtension.IsFloatingNumericKeypad(KeyboardType))
 		{
-			return Bounds;
+			return base.Bounds;
 		}
 
 		var caretRect = AppleUIKitImeTextBoxExtension.Instance.GetCaretRect();
