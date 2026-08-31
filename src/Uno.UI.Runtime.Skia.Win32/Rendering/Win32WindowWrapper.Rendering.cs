@@ -49,13 +49,6 @@ internal partial class Win32WindowWrapper
 	/// </summary>
 	private ISwapChain? TryCreateVulkan()
 	{
-		if (ShouldSuppressVulkanForBackdrop())
-		{
-			_vulkanSuppressedForBackdrop = true;
-			this.LogInfo()?.Info("Skipping Vulkan: a system backdrop is active, and Vulkan cannot present a translucent window on Win32.");
-			return null;
-		}
-
 		try
 		{
 			return new Win32VulkanGraphicsContext(_hwnd);
