@@ -1000,6 +1000,13 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			@this._isCreatingAOM = false;
 		}
+		NativeDispatcher.Main.Enqueue(() =>
+		{
+			if (@this.IsAccessibilityEnabled && @this._rootElementHandle == rootElement.Visual.Handle)
+			{
+				@this.UpdateNearestSemanticDescendantsGeometry(rootElement);
+			}
+		});
 		Control.OnIsFocusableChangedCallback = @this.UpdateIsFocusable;
 
 		// Initialize subsystems
