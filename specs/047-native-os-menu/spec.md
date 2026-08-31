@@ -195,7 +195,7 @@ behaves as a normal labeled item (no-op unless a command is supplied).
 A developer mutates the menu at runtime — adds or removes items, toggles `IsEnabled`,
 flips `IsChecked`, changes `Text` — and the native menu reflects the change. For
 expensive or context-dependent submenus (e.g. a Recent Files list), the developer fills the
-submenu just-in-time in response to an `Opening` event.
+submenu just-in-time in response to a `NeedsUpdate` event.
 
 **Why this priority**: Live menus and just-in-time population matter for real apps but are an
 enhancement over a correct static menu; they ride on the observable model that the earlier
@@ -203,7 +203,7 @@ stories already establish.
 
 **Independent Test**: Bind a `NativeMenuItem.IsChecked` to a view-model property, toggle it,
 and assert the native item's check state updates after one coalesced rebuild. Separately,
-subscribe to `Opening`, populate `SubMenu.Items` in the handler, open the submenu, and assert
+subscribe to `NeedsUpdate`, populate `SubMenu.Items` in the handler, open the submenu, and assert
 the freshly added items appear.
 
 **Acceptance Scenarios**:
@@ -211,7 +211,7 @@ the freshly added items appear.
 1. **Given** a projected menu, **When** any model property changes or an item is added/removed
    from `Items`, **Then** the affected menu is marked dirty, coalesced on the dispatcher, and
    re-projected via a full rebuild of that menu.
-2. **Given** a submenu with an `Opening` handler, **When** the user opens it, **Then**
+2. **Given** a submenu with a `NeedsUpdate` handler, **When** the user opens it, **Then**
    `Opening` fires (mapped to `menuNeedsUpdate` / iPadOS rebuild) before the submenu is shown,
    and items added in the handler appear.
 3. **Given** several rapid mutations within one dispatcher tick, **When** they are processed,
@@ -275,7 +275,7 @@ their commands. Verify `IsSupported` reports `true` on iPadOS.
   full rebuild of the affected menu; no incremental native diffing is attempted.
 - **Radio group with none checked** → all items in the group render unchecked; checking one
   unchecks the rest.
-- **`Opening` handler throws / is slow** → submenu population is best-effort; a failed handler
+- **`NeedsUpdate` handler throws / is slow** → submenu population is best-effort; a failed handler
   leaves the previously-projected submenu content rather than crashing the menu.
 - **iPadOS in full-screen / no hardware keyboard** → on iPadOS 26 the always-available menu
   bar is still reachable by swiping down from the top of the screen even with no hardware
@@ -289,12 +289,21 @@ their commands. Verify `IsSupported` reports `true` on iPadOS.
 **Core model (P1)**
 
 - **FR-001**: The system MUST provide a lightweight menu model in namespace
-  `Uno.UI.Xaml.Controls`, rooted at `NativeMenuItemBase : DependencyObject` with a `Parent`
-  reference, comprising `NativeMenu`, `NativeMenuItem`, and `NativeMenuItemSeparator`. These
-  are `DependencyObject`s, **not** `FrameworkElement`s.
+  `Uno.UI.Xaml.Controls`, comprising `NativeMenu` (the container) plus the item hierarchy
+  `NativeMenuItemBase` → {`NativeMenuItem`, `NativeMenuItemSeparator`}. All are
+  `DependencyObject`s, **not** `FrameworkElement`s. `NativeMenu` MUST NOT derive from
+  `NativeMenuItemBase`, so that adding a bare menu to another menu's `Items` is a
+  **compile-time** error rather than undefined behavior; nesting goes through
+  `NativeMenuItem.SubMenu`. Both branches carry an internal `Parent` back-reference
+  (`NativeMenuItemBase.Parent` → owning `NativeMenu`; `NativeMenu.Parent` → owning
+  `NativeMenuItem`) for upward dirty propagation.
+- **FR-001a**: An item MUST belong to at most one menu. Adding an item that already has a
+  `Parent` to a second `NativeMenu`, or assigning one `NativeMenu` as the `SubMenu` of two
+  items, MUST throw `InvalidOperationException` at mutation time rather than silently
+  aliasing the back-references that dirty propagation walks.
 - **FR-002**: `NativeMenu` MUST expose an observable `Items` collection (`IList<NativeMenuItemBase>`,
-  the XAML content property) raising `INotifyCollectionChanged`, plus `Opening` and `Closed`
-  events (typed `EventHandler` / `EventHandler<T>`, never `Action`).
+  the XAML content property) raising `INotifyCollectionChanged`, plus `NeedsUpdate`, `Opening`
+  and `Closed` events (typed `EventHandler` / `EventHandler<T>`, never `Action`).
 - **FR-003**: `NativeMenuItem` MUST expose `Text` (string), `Icon` (`IconSource`),
   `Command` (`ICommand`), `CommandParameter` (object), a `KeyboardAccelerators` collection,
   `IsEnabled` (bool), `IsChecked` (bool), `ToggleType` (`ToggleType { None, CheckBox, Radio }`),
@@ -332,7 +341,7 @@ their commands. Verify `IsSupported` reports `true` on iPadOS.
   the `Command` and enabled logic** on every platform — the system MUST NOT bridge to the
   native responder chain (Uno draws its own controls and is not a native first responder).
   `Settings` is placement-only for the same reason: it reserves the macOS Preferences slot,
-  its standard label and Cmd+, , but AppKit ships no default `orderFrontPreferencesPanel:`
+  its standard label and Cmd+, but AppKit ships no default `orderFrontPreferencesPanel:`
   implementation, so the developer MUST supply the `Command`.
 - **FR-011**: On in-app targets (Windows, Linux fallback), role items MUST render as normal
   labeled items; OS-only roles MUST no-op unless a `Command` is supplied.
@@ -364,9 +373,15 @@ their commands. Verify `IsSupported` reports `true` on iPadOS.
 - **FR-015**: Dirty menus MUST be coalesced on the dispatcher and re-projected via a **full
   rebuild** of that menu (reset strategy). The system MUST NOT attempt incremental native
   diffing (iPadOS and Linux are rebuild-only).
-- **FR-016**: `NativeMenu` MUST raise `Opening` before a (sub)menu is shown, enabling
+- **FR-016**: `NativeMenu` MUST raise `NeedsUpdate` before a (sub)menu is shown, enabling
   just-in-time population — mapped to `NSMenuDelegate.menuNeedsUpdate` on macOS, DBus
-  `AboutToShow` on Linux, and the iPadOS rebuild — and `Closed` when it dismisses.
+  `AboutToShow` on Linux, and the iPadOS rebuild. Mutations made from a `NeedsUpdate` handler
+  MUST be picked up by the build already in flight rather than scheduling a second rebuild.
+- **FR-016a**: `NativeMenu` MUST additionally raise `Opening` once content is settled and the
+  menu is about to appear (`NSMenuDelegate.menuWillOpen`), and `Closed` when it dismisses.
+  These two are notifications: mutations from them are ordinary model changes that take effect
+  on the next coalesced rebuild. The separation MUST be documented, because a single event
+  doing both jobs invites repopulation from inside the platform's menu-tracking run loop.
 - **FR-017**: Effective-enabled state MUST be pushed (not pulled): effective-enabled =
   `IsEnabled && (Command?.CanExecute(CommandParameter) ?? true)`, observing
   `CanExecuteChanged`. macOS MUST set `NSMenu.autoenablesItems = NO` so the pushed state is
@@ -389,9 +404,11 @@ their commands. Verify `IsSupported` reports `true` on iPadOS.
 
 - **FR-020**: The system MUST define `INativeMenuExtension` in `Uno.UI` exposing
   `SetMenu(scope, NativeMenu?)`, a `bool IsExported` probe (is a native menu actually shown?),
-  and capability probes `IsSupported` / `IsRoleSupported(NativeMenuItemRole)`. It MUST be
-  registered per Skia host and resolved via
-  `ApiExtensibility.CreateInstance<INativeMenuExtension>()`.
+  an `IsExportedChanged` event, and capability probes `IsSupported` /
+  `IsRoleSupported(NativeMenuItemRole)`. It MUST be `internal` (matching the other extension
+  seams), registered per Skia host, and resolved via
+  `ApiExtensibility.CreateInstance<INativeMenuExtension>()`, with a **cached** resolution that
+  also caches the "no host" outcome. Public access goes through `NativeMenu` (FR-026).
 - **FR-021**: The Skia.MacOS implementation MUST project to `NSMenu` through the UnoNativeMac
   ObjC layer via new native exports (e.g. `uno_window_set_main_menu` / `uno_app_set_main_menu`
   plus menu build/update entry points), and MUST swap the menu on window-key changes for
@@ -431,8 +448,17 @@ their commands. Verify `IsSupported` reports `true` on iPadOS.
 
 **Capability probe & fallback (P2)**
 
-- **FR-026**: The system MUST expose `NativeMenu.IsSupported` (is any native menu available
-  here?) and `IsRoleSupported(NativeMenuItemRole)` so apps can adapt their UI per platform.
+- **FR-026**: The system MUST expose, as **public statics on `NativeMenu`**,
+  `IsSupported`, `IsRoleSupported(NativeMenuItemRole)`, `IsExported` and an
+  `IsExportedChanged` event, each forwarding to the resolved extension and degrading to
+  `false` when none is registered. `IsExported`/`IsExportedChanged` MUST be public because the
+  Toolkit `AppMenuBar` decides collapse-vs-render on them from a **different assembly**, which
+  cannot see the `internal` `INativeMenuExtension`.
+- **FR-026a**: `IsSupported` MUST mean "a menu assigned right now would actually be
+  projected", not "this platform has a menu architecture". On Linux with no DBusMenu registrar
+  it MUST therefore report `false`, so that a `if (IsSupported) … else …` fallback branch is
+  correct as written. `IsSupported` MAY change at runtime where a registrar can appear or
+  disappear.
 - **FR-027**: On a target with no native menu, the core setters MUST no-op and report
   `IsExported = false`; no exception is thrown and the model is retained so a later
   Toolkit/in-app consumer can still render it.
@@ -458,8 +484,11 @@ their commands. Verify `IsSupported` reports `true` on iPadOS.
 
 See [data-model.md](./data-model.md) for full property tables and relationships.
 
-- **`NativeMenuItemBase`** — abstract base (`DependencyObject`) with a `Parent` back-reference.
-- **`NativeMenu`** — a menu/submenu: observable `Items`, `Opening`/`Closed` events.
+- **`NativeMenu`** — a menu/submenu container (`DependencyObject`, **not** an item): observable
+  `Items`, a `Parent` back-reference to the owning `NativeMenuItem`, and the
+  `NeedsUpdate`/`Opening`/`Closed` events.
+- **`NativeMenuItemBase`** — abstract base for things that can sit *in* a menu
+  (`DependencyObject`) with a `Parent` back-reference to the owning `NativeMenu`.
 - **`NativeMenuItem`** — a single command/checkable/submenu item (the entity carrying `Text`,
   `Command`, `Role`, accelerators, toggle state, `SubMenu`).
 - **`NativeMenuItemSeparator`** — a visual divider.
@@ -518,7 +547,7 @@ shipped core seam. The dependency is strictly one-way (Toolkit → core).
 - **SC-005**: A model change (add/remove item, toggle check, change text/enabled) is reflected
   in the native menu after a single coalesced rebuild, and N rapid changes within one
   dispatcher tick produce exactly one native rebuild.
-- **SC-006**: An `Opening` handler that populates a submenu results in the new items appearing
+- **SC-006**: A `NeedsUpdate` handler that populates a submenu results in the new items appearing
   the first time the submenu is opened.
 - **SC-007**: On a target with no native menu (Windows), the core setters no-op,
   `IsSupported`/`IsExported` report `false`, and the declarative `AppMenuBar` renders a real

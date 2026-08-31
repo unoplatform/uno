@@ -91,17 +91,22 @@ internal interface INativeMenuExtension
 
 	/// <summary>
 	/// True when a native menu is currently shown by the OS on this platform (macOS menu bar,
-	/// iPadOS hardware-keyboard menu bar, Linux global menu when a registrar accepted us).
-	/// The Toolkit AppMenuBar reads this to decide in-app render (false) vs. collapse (true).
+	/// iPadOS menu bar, Linux global menu when a registrar accepted us).
 	/// On Win32 this is always false. May change at runtime (Linux registrar appears/disappears);
 	/// see <see cref="IsExportedChanged"/>.
+	/// Surfaced publicly as <c>NativeMenu.IsExported</c>, which is what the Toolkit AppMenuBar
+	/// reads to decide in-app render (false) vs. collapse (true) — it lives in a different
+	/// assembly and cannot see this interface.
 	/// </summary>
 	bool IsExported { get; }
 
 	/// <summary>
-	/// True when this host can project native menus at all (capability gate). Distinct from
-	/// <see cref="IsExported"/>: a platform may support menus yet not currently show one (no menu
-	/// set, registrar absent). Win32 returns false; macOS/iPadOS return true.
+	/// True when assigning a menu on this host right now would actually project it — i.e. the
+	/// platform has a native menu system AND whatever it needs to accept a menu is in place.
+	/// On Linux this means a DBusMenu registrar is present: no registrar, no support. Win32
+	/// returns false; macOS/iPadOS return true.
+	/// Distinct from <see cref="IsExported"/> only in that a supported host may have no menu
+	/// assigned yet — support is about capability, export is about a menu being on screen.
 	/// </summary>
 	bool IsSupported { get; }
 
@@ -192,8 +197,19 @@ private static INativeMenuExtension? TryGetExtension()
 }
 ```
 
-`NativeMenu.IsSupported` (public capability probe) returns `TryGetExtension()?.IsSupported ?? false`.
-`NativeMenu.IsRoleSupported(role)` forwards to the extension, defaulting to `false` when none.
+The four public probes on `NativeMenu` all forward through `TryGetExtension()` and degrade to
+`false` when no host is registered, so callers outside `Uno.UI` never touch this `internal`
+interface:
+
+```csharp
+public static bool IsSupported => TryGetExtension()?.IsSupported ?? false;
+public static bool IsRoleSupported(NativeMenuItemRole role) =>
+	TryGetExtension()?.IsRoleSupported(role) ?? false;
+public static bool IsExported => TryGetExtension()?.IsExported ?? false;
+
+// Forwarded from the extension; no-ops (and never leaks a subscription) when none resolved.
+public static event EventHandler? IsExportedChanged;
+```
 
 ---
 
@@ -208,8 +224,8 @@ translation, accelerator mapping, and the `Opening`/`Closed` event bridge. Share
   pushed state is authoritative (macOS `autoenablesItems = NO`).
 - Activation: host invokes the item's `Click` event **and** `Command.Execute(CommandParameter)`
   on the UI thread when the native item fires.
-- `NativeMenu.Opening` fires before a submenu is shown (just-in-time population); `Closed` after
-  dismissal.
+- `NativeMenu.NeedsUpdate` fires before a submenu is shown (just-in-time population), then
+  `Opening` as a content-settled notification, then `Closed` after dismissal.
 
 ### 4.1 Skia.MacOS — `NSMenu` (v1, primary)
 
@@ -276,8 +292,10 @@ translation, accelerator mapping, and the `Opening`/`Closed` event bridge. Share
 - Exports a `com.canonical.dbusmenu` server and registers it with
   `com.canonical.AppMenu.Registrar` **keyed by the X11 window XID**. Per-window is the native model.
 - **Fail-silent:** if no registrar is present (Wayland, GNOME without the extension), registration
-  fails quietly, `IsExported` stays `false`, and the Toolkit `AppMenuBar` renders the real in-app
-  `MenuBar`. `IsExportedChanged` fires if a registrar appears/disappears at runtime.
+  fails quietly, **both `IsSupported` and `IsExported` stay `false`** (§6), and the Toolkit
+  `AppMenuBar` renders the real in-app `MenuBar`. The host tracks the registrar's bus name via a
+  `NameOwnerChanged` subscription — **never a poll** — and raises `IsExportedChanged` when it
+  appears or disappears at runtime.
 - Toggle/radio map to DBusMenu `toggle-type`; icons are partial (`icon-name` / `icon-data`);
   shortcuts are panel-dependent. Updates re-export the menu (rebuild).
 
@@ -322,10 +340,14 @@ translation, accelerator mapping, and the `Opening`/`Closed` event bridge. Share
 - `SetMenu` performs a **full rebuild** of that scope's native menu (Avalonia-style reset). Hosts
   must make this **idempotent** and safe to call repeatedly; they may diff internally but must not
   require the core to send deltas.
-- **Just-in-time population:** `NativeMenu.Opening` is raised by the host immediately before a
+- **Just-in-time population:** `NativeMenu.NeedsUpdate` is raised by the host immediately before a
   submenu is displayed (maps to `NSMenuDelegate.menuNeedsUpdate`, DBusMenu `AboutToShow`, iPadOS
-  rebuild), letting handlers populate/refresh children right before they're shown. `Closed` fires
-  after dismissal.
+  rebuild), letting handlers populate/refresh children right before they're shown. The host must
+  raise it **synchronously, inside the native update callback**, and read `Items` *after* it
+  returns, so handler mutations land in the build already in flight rather than scheduling a
+  second one. `Opening` is raised afterwards as a notification only (maps to
+  `NSMenuDelegate.menuWillOpen`) and `Closed` after dismissal; mutations from those two are
+  ordinary model changes that go through the normal coalesced path.
 
 ---
 
@@ -333,15 +355,25 @@ translation, accelerator mapping, and the `Opening`/`Closed` event bridge. Share
 
 Three probes let both apps and the Toolkit adapt to the host:
 
-| Probe | Question | Win32 | macOS | iPadOS | Linux (registrar) |
-|-------|----------|:-----:|:-----:|:------:|:-----------------:|
-| `IsSupported` | Can this host project native menus at all? | ✗ | ✓ | ✓ | ✓ |
-| `IsExported` | Is a native menu **shown right now**? | ✗ | ✓ (menu installed) | ✓ (content provided) | ✓ only if registrar accepted |
-| `IsRoleSupported(role)` | Does this OS slot project natively? | ✗ all | per role (§4.1) | per role | per role |
+| Probe | Question | Win32 | macOS | iPadOS | Linux, registrar present | Linux, no registrar |
+|-------|----------|:-----:|:-----:|:------:|:-----------------:|:---:|
+| `IsSupported` | Would a menu assigned **right now** be projected? | ✗ | ✓ | ✓ | ✓ | ✗ |
+| `IsExported` | Is a native menu **shown right now**? | ✗ | ✓ (menu installed) | ✓ (content provided) | ✓ only if registrar accepted | ✗ |
+| `IsRoleSupported(role)` | Does this OS slot project natively? | ✗ all | per role (§4.1) | per role | per role | ✗ all |
 
-`IsSupported` vs `IsExported`: a platform can *support* menus yet not currently *show* one — no
-menu set, or (Linux) no registrar. The Toolkit decision hinges on **`IsExported`**, not
-`IsSupported`, because the in-app `MenuBar` must appear exactly when nothing native is on screen.
+**`IsSupported` is a "would it work right now" probe, not a "was this platform built with menus
+in mind" probe.** Linux without a DBusMenu registrar reports `IsSupported == false`, exactly like
+Win32. This is the semantics developer-facing guidance depends on: `quickstart.md §8` branches
+straight on `IsSupported` to decide between assigning a native menu and showing an in-app menu
+bar, so if Linux-without-registrar reported `true` that `else` branch would never run, the
+`SetApplicationMenu` call would no-op against an absent registrar, and the app would end up with
+**no menu at all** — a silent failure. Because a registrar can appear or disappear mid-session,
+`IsSupported` can change at runtime on Linux and flips alongside `IsExportedChanged`.
+
+`IsSupported` vs `IsExported`: the difference is only whether a menu has actually been assigned
+and accepted. A supported host with no menu set reports `IsSupported == true`,
+`IsExported == false`. The Toolkit decision hinges on **`IsExported`**, not `IsSupported`,
+because the in-app `MenuBar` must appear exactly when nothing native is on screen.
 
 ### Toolkit `AppMenuBar` flow (Uno.Toolkit.UI)
 
@@ -350,13 +382,14 @@ menu set, or (Linux) no registrar. The Toolkit decision hinges on **`IsExported`
 1. On load, translate its `MenuBarItem` / `MenuFlyoutItem` content (+ `AppMenu.Role` attached
    property → `NativeMenuItem.Role`) into a `NativeMenu`, and call
    `NativeMenu.SetMenu(window, translatedMenu)`.
-2. Read `NativeMenu.IsSupported` / the resolved extension's `IsExported`:
+2. Read the public `NativeMenu.IsExported` bridge (the Toolkit is a separate assembly and cannot
+   see `INativeMenuExtension`):
    - **`IsExported == true`** (macOS, iPadOS, Linux-with-registrar): the native bar shows the menu —
      **collapse to zero in-app footprint** (don't render the `MenuBar` chrome).
    - **`IsExported == false`** (Win32, Wayland/GNOME-no-registrar): **render normally** as a real
      in-app `MenuBar`.
-3. Subscribe to `IsExportedChanged` and re-evaluate step 2 (e.g. a Linux registrar appears, or a
-   key window's menu changes) so the in-app bar appears/disappears without a reload.
+3. Subscribe to `NativeMenu.IsExportedChanged` and re-evaluate step 2 (e.g. a Linux registrar
+   appears, or a key window's menu changes) so the in-app bar appears/disappears without a reload.
 
 This keeps the **core** free of any Toolkit dependency: the Toolkit consumes the seam; the seam
 never knows the Toolkit exists.

@@ -14,12 +14,13 @@ not incremental diffing.
 
 ```
 DependencyObject
+├── NativeMenu                              (a menu / submenu container — NOT an item)
+│     ├── Items : IList<NativeMenuItemBase> (XAML content property, observable)
+│     └── Parent : NativeMenuItem?          (the item that owns this as its SubMenu)
 └── NativeMenuItemBase                      (abstract; Parent back-reference)
-    ├── NativeMenu                          (a menu / submenu container)
-    │     └── Items : IList<NativeMenuItemBase>   (XAML content property, observable)
-    ├── NativeMenuItem                      (a leaf or submenu-owning command)
-    │     └── SubMenu : NativeMenu?               (nesting → submenu)
-    └── NativeMenuItemSeparator             (a divider)
+      ├── NativeMenuItem                    (a leaf or submenu-owning command)
+      │     └── SubMenu : NativeMenu?       (nesting → submenu)
+      └── NativeMenuItemSeparator           (a divider)
 ```
 
 - `NativeMenu` and `NativeMenuItem` are **not** `FrameworkElement`s — no visual tree, no
@@ -30,22 +31,59 @@ DependencyObject
   submenu parent by setting `SubMenu` to a child `NativeMenu`. `Parent` is maintained by the
   owning collection/property setter for upward dirty propagation.
 
+### `NativeMenu` is deliberately **not** a `NativeMenuItemBase`
+
+A menu is a *container*, not a thing that can sit in a list of items. Keeping the two branches
+separate is a load-bearing decision, not an accident of layout:
+
+```csharp
+parentMenu.Items.Add(new NativeMenu());   // ✗ does not compile — NativeMenu is not a
+                                          //   NativeMenuItemBase. Nest via NativeMenuItem.SubMenu.
+```
+
+Were `NativeMenu` an item, that line would compile and produce an item with no label, no
+command and no defined projection — each host would then invent its own answer (drop it? splice
+its children inline? render an empty row?) and the four backends would diverge. The type system
+removes the question instead of documenting an answer to it. This mirrors Avalonia, whose
+`NativeMenu` likewise derives from `AvaloniaObject` rather than `NativeMenuItemBase`
+([`NativeMenu.cs`](https://github.com/AvaloniaUI/Avalonia/blob/master/src/Avalonia.Controls/NativeMenu.cs)).
+
+**Grouping is a separate feature, not an emergent one.** If a future version wants
+inline/sectioned groups (a run of items fenced by separators, as in AppKit inline sections,
+`UIMenu.Options.displayInline` on Apple, or Flutter's dedicated `PlatformMenuItemGroup`), that
+arrives as an explicit `NativeMenuItemGroup : NativeMenuItemBase` with its own platform-support
+table — never as an inferred meaning for a bare container. Adding a new sealed item subtype is
+additive and non-breaking, so deferring it costs nothing.
+
+### One parent per item
+
+An item belongs to exactly one menu. Adding an item that already has a `Parent` to a second
+`NativeMenu` (or assigning one `NativeMenu` as the `SubMenu` of two different items) throws
+`InvalidOperationException` at mutation time rather than silently corrupting the back-references
+that dirty propagation walks. Re-parent by removing from the first owner first. Avalonia enforces
+the same invariant through a collection validator, having found that silent aliasing produces
+menus that update in one place and not the other.
+
 ## Core types — `Uno.UI.Xaml.Controls`
 
 ### `NativeMenuItemBase`
 
 | Member | Type | Default | Meaning |
 |---|---|---|---|
-| `Parent` | `NativeMenuItemBase?` | `null` | Back-reference to the owning `NativeMenu` (set by collection) or owning `NativeMenuItem` (for a `SubMenu`); used to propagate "dirty" up to the root menu being projected. |
+| `Parent` | `NativeMenu?` | `null` | Back-reference to the owning `NativeMenu`, set by that menu's `Items` collection; used to propagate "dirty" up to the root menu being projected. Non-`null` exactly while the item is in a menu — see [One parent per item](#one-parent-per-item). |
 
 ```csharp
 namespace Uno.UI.Xaml.Controls;
 
 public abstract partial class NativeMenuItemBase : DependencyObject
 {
-	internal NativeMenuItemBase? Parent { get; set; }
+	internal NativeMenu? Parent { get; set; }
 }
 ```
+
+The upward walk therefore alternates between the two branches — item → owning `NativeMenu`
+(`NativeMenuItemBase.Parent`) → owning `NativeMenuItem` (`NativeMenu.Parent`) → … — until it
+reaches a menu with no `Parent`, which is the root that was handed to a scope.
 
 ### `NativeMenu`
 
@@ -54,28 +92,44 @@ A container of items; also serves as a submenu and as the root assigned to a sco
 | Member | Type | Default | Meaning | macOS | iPadOS | Linux | Windows |
 |---|---|---|---|---|---|---|---|
 | `Items` | `IList<NativeMenuItemBase>` | empty observable list | Ordered child items. **XAML content property.** Implements `INotifyCollectionChanged`; add/remove/move/reset marks the menu dirty. | `NSMenu` item array | menu children for `UIMenu` | DBusMenu child layout | in-app `MenuBarItem` children |
+| `Parent` | `NativeMenuItem?` | `null` | Back-reference to the `NativeMenuItem` whose `SubMenu` this is; `null` for a root menu handed to a scope. |
 | `Title` | `string?` | `null` | Optional title for the menu when used as a submenu/top-level header (the owning `NativeMenuItem.Text` usually supplies this; `Title` is the standalone form). | `NSMenu.title` | `UIMenu.title` | submenu label | header text |
-| `Opening` | `EventHandler<NativeMenuOpeningEventArgs>` | — | Raised just before the menu is shown — the just-in-time population hook. | `NSMenuDelegate.menuNeedsUpdate:` | `buildMenu(with:)` pass | DBus `AboutToShow` | flyout `Opening` |
+| `NeedsUpdate` | `EventHandler<NativeMenuNeedsUpdateEventArgs>` | — | **The just-in-time population hook.** Raised before the menu is shown, at the point where mutating `Items` is still safe and will be picked up by the in-flight build. | `NSMenuDelegate.menuNeedsUpdate:` | `buildMenu(with:)` pass | DBus `AboutToShow` | before flyout opens |
+| `Opening` | `EventHandler<NativeMenuOpeningEventArgs>` | — | Notification that the menu is about to appear, after its content is settled. **Do not mutate the menu here** — use `NeedsUpdate`. | `NSMenuDelegate.menuWillOpen:` | (best-effort) | DBus opened | flyout `Opening` |
 | `Closed` | `EventHandler<NativeMenuClosedEventArgs>` | — | Raised after the menu is dismissed. | `NSMenuDelegate.menuDidClose:` | (best-effort) | DBus closed | flyout `Closed` |
 
 ```csharp
 namespace Uno.UI.Xaml.Controls;
 
 [ContentProperty(Name = nameof(Items))]
-public partial class NativeMenu : NativeMenuItemBase
+public partial class NativeMenu : DependencyObject
 {
 	public IList<NativeMenuItemBase> Items { get; } // observable; INotifyCollectionChanged
+
+	internal NativeMenuItem? Parent { get; set; }
 
 	[GeneratedDependencyProperty(DefaultValue = null)]
 	public string? Title { get; set; }
 
-	public event EventHandler<NativeMenuOpeningEventArgs>? Opening;
+	public event EventHandler<NativeMenuNeedsUpdateEventArgs>? NeedsUpdate; // mutate here
+	public event EventHandler<NativeMenuOpeningEventArgs>? Opening;         // notify only
 	public event EventHandler<NativeMenuClosedEventArgs>? Closed;
 }
 
+public sealed partial class NativeMenuNeedsUpdateEventArgs : EventArgs;
 public sealed partial class NativeMenuOpeningEventArgs : EventArgs;
 public sealed partial class NativeMenuClosedEventArgs : EventArgs;
 ```
+
+**Why `NeedsUpdate` and `Opening` are separate events.** They fire at different points in the
+native open sequence and only the first one can safely change the menu. AppKit draws the
+distinction directly (`menuNeedsUpdate:` is the documented place to add or remove items;
+`menuWillOpen:` runs once layout is committed), and DBusMenu's `AboutToShow` is a request for
+content that expects a "did anything change?" answer. Collapsing both into one event invites
+authors to repopulate `Items` from the notification-only phase, which re-enters the
+dirty→coalesce→rebuild pipeline (see [State & lifecycle](#state--lifecycle)) from inside the
+platform's menu-tracking run loop. Avalonia ships the same three-event split — `NeedsUpdate`,
+`Opening`, `Closed` — with the same "do not update the menu in `Opening`" guidance.
 
 **Observability:** `Items` raises `INotifyCollectionChanged`; every `DependencyProperty` on
 items raises its change callback. Both feed the same dirty/coalesce/rebuild pipeline (see
@@ -199,7 +253,7 @@ responder-chain bridging for edit roles).
 edit roles `Undo`, `Redo`, `Cut`, `Copy`, `Paste`, `Delete`, `SelectAll`, plus `Settings` and
 `None`. `Settings` is placement-only because AppKit ships no default implementation of
 `orderFrontPreferencesPanel:` — the role reserves the Preferences slot, its standard label and
-Cmd+, , but the app must supply the `Command`. **Slot containers:** `ApplicationMenu`, `Window`,
+Cmd+, but the app must supply the `Command`. **Slot containers:** `ApplicationMenu`, `Window`,
 `Help` (define a menu section/slot; children supply the actual items). On Windows/Linux in-app, OS-only roles **no-op unless a `Command` is supplied**;
 others render as normal labeled items. Apps probe support via `IsRoleSupported` (see seam).
 
@@ -250,6 +304,19 @@ setters**, with associations stored in a `ConditionalWeakTable` side-table (weak
 | `NativeMenu.SetApplicationMenu(NativeMenu? menu)` | app | static field | Assign (or clear) the app-wide fallback menu. |
 | `NativeMenu.GetApplicationMenu()` → `NativeMenu?` | app | static field | Read the app-wide menu. |
 
+### Public capability surface
+
+`INativeMenuExtension` is `internal`, matching the other extension seams. Everything a caller
+outside `Uno.UI` needs is therefore re-exposed as **public statics on `NativeMenu`**, which
+forward to the resolved extension and degrade to `false` when no host is registered:
+
+| API | Type | Meaning |
+|---|---|---|
+| `NativeMenu.IsSupported` | `bool` | Will a menu assigned right now actually be projected on this platform? See [capability semantics](./contracts/INativeMenuExtension.md#6-capability-semantics). |
+| `NativeMenu.IsRoleSupported(NativeMenuItemRole role)` | `bool` | Does this role map to a real OS slot here? |
+| `NativeMenu.IsExported` | `bool` | Is a native menu currently on screen for this app? |
+| `NativeMenu.IsExportedChanged` | `EventHandler?` | Raised when `IsExported` flips. Raised on the UI thread. |
+
 ```csharp
 namespace Uno.UI.Xaml.Controls;
 
@@ -260,8 +327,21 @@ public partial class NativeMenu
 
 	public static void SetApplicationMenu(NativeMenu? menu);
 	public static NativeMenu? GetApplicationMenu();
+
+	public static bool IsSupported { get; }
+	public static bool IsRoleSupported(NativeMenuItemRole role);
+
+	public static bool IsExported { get; }
+	public static event EventHandler? IsExportedChanged;
 }
 ```
+
+`IsExported` and `IsExportedChanged` are **required public surface, not conveniences.** The
+Toolkit `AppMenuBar` decides between rendering in-app and collapsing to zero footprint purely on
+`IsExported`, and it ships from `Uno.Toolkit.UI` — a different assembly in a different
+repository, which cannot see an `internal` interface. The alternatives are an
+`[InternalsVisibleTo]` coupling (which the `ApiExtensibility` design exists specifically to
+avoid) or polling on a timer. Both are worse, so the bridge is part of the v1 contract.
 
 The **tree itself can be declared in XAML** as a resource/object (via the `Items` content
 property), then assigned in code:
@@ -376,12 +456,19 @@ Command.CanExecuteChanged ─┘            (propagate via Parent to the project
 - **Reset strategy:** any collection change (including `Reset`) triggers a full re-projection of
   the affected menu (Avalonia-style), keeping all four backends on one simple code path.
 
-### `Opening` — lazy / just-in-time population
+### `NeedsUpdate` — lazy / just-in-time population
 
-`NativeMenu.Opening` fires immediately before the menu/submenu is shown, letting authors build
-or refresh children on demand. Maps to `NSMenuDelegate.menuNeedsUpdate:` (macOS), DBus
-`AboutToShow` (Linux), and a `buildMenu(with:)` rebuild pass (iPadOS). `Closed` fires on
-dismissal. x:Bind / MVVM flows naturally through the observable model.
+`NativeMenu.NeedsUpdate` fires immediately before the menu/submenu is shown, letting authors
+build or refresh children on demand. Maps to `NSMenuDelegate.menuNeedsUpdate:` (macOS), DBus
+`AboutToShow` (Linux), and a `buildMenu(with:)` rebuild pass (iPadOS). `Opening` then fires as a
+notification once the content is settled, and `Closed` on dismissal. x:Bind / MVVM flows
+naturally through the observable model.
+
+Mutations made from a `NeedsUpdate` handler are applied **synchronously to the build already in
+flight** — they do not schedule a second coalesced rebuild, so populating a submenu here costs
+one projection, not two. Mutations from `Opening` or `Closed` are ordinary model changes: they
+go through the normal dirty→coalesce path and therefore land on the *next* rebuild, which is
+why they must not be used for population.
 
 ### Enablement (pushed, authoritative)
 

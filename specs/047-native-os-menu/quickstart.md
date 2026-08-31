@@ -4,9 +4,13 @@ Practical, copy-pasteable recipes for defining application- and window-scoped me
 project to each platform's native menu system (macOS `NSMenu`, iPadOS `UIMenuBuilder`),
 with an in-app fallback where there is none (Windows, Linux-no-registrar).
 
-The core model lives in namespace **`Uno.UI.Xaml.Controls`** ([NativeMenu](../../src/Uno.UI),
-[NativeMenuItem](../../src/Uno.UI), etc.). The declarative `AppMenuBar` control lives in the
-separate **`Uno.Toolkit.UI`** package (see [section 7](#7-the-toolkit-appmenubar-control)).
+The core model lives in namespace **`Uno.UI.Xaml.Controls`** — `NativeMenu`, `NativeMenuItem`,
+`NativeMenuItemSeparator` and friends; see [data-model.md](./data-model.md) for the full type
+reference. The declarative `AppMenuBar` control lives in the separate **`Uno.Toolkit.UI`**
+package (see [section 7](#7-the-toolkit-appmenubar-control)).
+
+> **These types do not exist yet.** This document describes a proposed API; the spec is the
+> source of truth until the implementation lands.
 
 > **Skia targets only.** v1 ships macOS + iPadOS. Linux (DBusMenu) and Windows are
 > designed-for extension points. Where there is no native menu, the model is inert
@@ -181,6 +185,7 @@ Items execute via **`Command` (ICommand) + `CommandParameter`** *and* a **`Click
 `XamlUICommand` / `StandardUICommand` auto-populates `Text`, `Icon`, and the accelerator.
 
 ```csharp
+using System.Diagnostics;
 using Microsoft.UI.Xaml.Input;
 using Windows.System;
 using Uno.UI.Xaml.Controls;
@@ -229,6 +234,10 @@ So a cross-platform "primary" shortcut (Cmd on Mac, Ctrl on Win) needs **per-pla
 markup** today:
 
 ```csharp
+using System;
+using Microsoft.UI.Xaml.Input;
+using Windows.System;
+
 var primary = OperatingSystem.IsMacOS()
 	? VirtualKeyModifiers.Windows   // ⌘
 	: VirtualKeyModifiers.Control;  // Ctrl
@@ -358,12 +367,13 @@ recentMenu.Items.Clear();
 ```
 
 For **just-in-time** population (e.g. a Recent Files list you do not want to rebuild on every
-change), handle the **`Opening`** event on the submenu's `NativeMenu`. It maps to
+change), handle the **`NeedsUpdate`** event on the submenu's `NativeMenu`. It maps to
 `NSMenuDelegate.menuNeedsUpdate` on macOS, DBus `AboutToShow` on Linux, and the rebuild pass
 on iPadOS.
 
 ```csharp
 using System;
+using System.IO;
 using Uno.UI.Xaml.Controls;
 
 NativeMenuItem recent = new() { Text = "Open Recent" };
@@ -371,9 +381,9 @@ NativeMenu recentMenu = new();
 recent.SubMenu = recentMenu;
 
 // Populate fresh each time the submenu is about to open.
-recentMenu.Opening += OnRecentOpening;
+recentMenu.NeedsUpdate += OnRecentNeedsUpdate;
 
-void OnRecentOpening(object? sender, NativeMenuOpeningEventArgs e)
+void OnRecentNeedsUpdate(object? sender, NativeMenuNeedsUpdateEventArgs e)
 {
 	recentMenu.Items.Clear();
 
@@ -394,9 +404,13 @@ void OnRecentOpening(object? sender, NativeMenuOpeningEventArgs e)
 }
 ```
 
-> There is also a `Closed` event on `NativeMenu` if you need teardown. Native menu APIs are
-> main-thread; the coalesced rebuild posts to the UI dispatcher for you, so you can mutate
-> the model from the UI thread freely.
+> **Populate from `NeedsUpdate`, not `Opening`.** `NativeMenu` also raises `Opening` (the menu
+> is about to appear, content already settled) and `Closed` (dismissed) — use those for
+> notification and teardown only. Mutations made from `NeedsUpdate` land in the build already
+> in flight; the same mutations from `Opening` go through the normal coalesced rebuild and so
+> show up only the *next* time the menu opens. Native menu APIs are main-thread; the coalesced
+> rebuild posts to the UI dispatcher for you, so you can mutate the model from the UI thread
+> freely.
 
 ---
 
@@ -455,9 +469,10 @@ Map OS standard slots with the attached property **`AppMenu.Role`** (Toolkit), w
 
 ## 8. Capability probe
 
-Adapt your UI to what the current platform actually supports. `NativeMenu.IsSupported` tells
-you whether a native menu exists here at all; `IsRoleSupported(role)` probes a specific OS
-slot (Flutter-borrowed).
+Adapt your UI to what the current platform actually supports. `NativeMenu.IsSupported` answers
+**"would a menu I assign right now actually be projected?"** — so it is `false` not only on
+Windows but also on a Linux desktop with no DBusMenu registrar, which is exactly the branch you
+need. `IsRoleSupported(role)` probes a specific OS slot (Flutter-borrowed).
 
 ```csharp
 using Uno.UI.Xaml.Controls;
@@ -477,9 +492,26 @@ else
 bool osHasQuit = NativeMenu.IsRoleSupported(NativeMenuItemRole.Quit);
 ```
 
-> On Win32 the native extension is a no-op (`IsExported == false`); the in-app `AppMenuBar`
+> On Win32 the native extension is a no-op (`IsSupported == false`); the in-app `AppMenuBar`
 > renders the real `MenuBar`. On Linux, native projection is available only when a DBusMenu
 > registrar is present (else fall back in-app).
+
+**`IsSupported` vs `IsExported`.** `IsSupported` is about the *host*: can it project at all?
+`IsExported` is about *right now*: is a native menu on screen? Assign a menu on macOS and both
+are `true`; assign nothing and `IsSupported` is still `true` while `IsExported` is `false`.
+Most apps only need `IsSupported`, as above. Reach for `IsExported` when your own UI has to
+appear exactly when the native menu does not — which is what the Toolkit `AppMenuBar` does:
+
+```csharp
+void SyncInAppMenuVisibility() =>
+	InAppMenuBar.Visibility = NativeMenu.IsExported ? Visibility.Collapsed : Visibility.Visible;
+
+NativeMenu.IsExportedChanged += (_, _) => SyncInAppMenuVisibility();
+SyncInAppMenuVisibility();
+```
+
+A Linux registrar can appear or disappear mid-session, so both flags can change at runtime —
+subscribe rather than probing once at startup.
 
 ---
 

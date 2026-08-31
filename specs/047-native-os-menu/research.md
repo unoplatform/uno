@@ -2,7 +2,7 @@
 
 **Date**: 2026-06-30
 **Branch**: `047-native-os-menu`
-**Issue**: unoplatform/uno#22172 (core model + projection seam)
+**Issue**: [unoplatform/uno#22172](https://github.com/unoplatform/uno/issues/22172) (core model + projection seam)
 **Scope**: Apple-first, design-for-all. v1 = macOS (NSMenu) + iPadOS (UIMenuBuilder); Linux (DBusMenu) + Windows are post-v1 extension points. Skia targets only.
 
 > **Evidence level.** Native-platform sections (macOS / iPadOS / Linux / Windows) are
@@ -49,7 +49,7 @@ The design's responses, one-to-one:
 - **A3 → observable model + coalesced full rebuild.** The model is observable (DP change
   callbacks + `INotifyCollectionChanged` on `Items`); any change marks the menu dirty,
   coalesces on the dispatcher, and re-projects via a **full rebuild** (the lowest common
-  denominator: iPadOS and Linux are rebuild-only). A `NativeMenu.Opening` event covers
+  denominator: iPadOS and Linux are rebuild-only). A `NativeMenu.NeedsUpdate` event covers
   JIT submenu population where the platform supports it.
 - **A4 → thin slot-marker `Role` enum.** Only Apple platforms have OS-owned items, so
   `Role` is a *placement marker*, not a behavior bridge. On macOS the framework wires the
@@ -76,6 +76,19 @@ Uno's type system (Window/Application not being DependencyObjects) forces it.
   `AvaloniaObject` (Avalonia's DependencyObject equivalent) — **not** `Control`/visual
   elements. They are a pure data model, exactly the "lightweight DO, not FrameworkElement"
   choice in Uno spec decision 1.
+- **The container is not an item.** `NativeMenu : AvaloniaObject` sits *beside* the item
+  hierarchy, not inside it: only `NativeMenuItem` and `NativeMenuItemSeparator` derive from
+  `NativeMenuItemBase`, and nesting goes through `NativeMenuItem.Menu`. Consequently
+  `parentMenu.Items.Add(new NativeMenu())` does not compile. Each type carries the back-reference
+  it actually needs — `NativeMenuItemBase.Parent` is a `NativeMenu`, `NativeMenu.Parent` is a
+  `NativeMenuItem` — so splitting the branches costs nothing in the dirty-propagation model.
+  Uno adopts this verbatim (spec decision 1, FR-001); an inline/section group, if ever wanted,
+  is a separate explicit type rather than an inferred meaning for a bare container.
+- **One parent per item, enforced.** Avalonia's items collection runs an
+  `IAvaloniaListItemValidator` that throws `InvalidOperationException` when an item that already
+  has a `Parent` is added elsewhere. Uno mirrors this (FR-001a): silent aliasing yields menus
+  that update in one place and not the other, because the back-reference chain the dirty walk
+  follows has only one slot.
 - `NativeMenuItem` carries `Header`, `Icon`, `Command`, `CommandParameter`, `Gesture`
   (the accelerator), `IsEnabled`, `IsChecked`, `ToggleType` (`{None, CheckBox, Radio}`),
   and a nested `Menu` (submenu). This is a near-exact superset match to Uno's
@@ -84,6 +97,14 @@ Uno's type system (Window/Application not being DependencyObjects) forces it.
 - Items are an **observable collection** (`NativeMenuItemsCollection : AvaloniaList`),
   which is what makes the live-update strategy possible. Uno mirrors this with
   `INotifyCollectionChanged` on `NativeMenu.Items`.
+- **Three menu events, not two.** Avalonia separates `NeedsUpdate` (the documented place to add,
+  remove or modify items before the menu is shown) from `Opening` (explicitly annotated *"Do not
+  update the menu in this event; use NeedsUpdate"*) and `Closed`. The split tracks the native
+  sequence — AppKit's `menuNeedsUpdate:` runs while content is still mutable, `menuWillOpen:`
+  after layout is committed, and DBusMenu's `AboutToShow` is a content request that expects a
+  "did anything change?" answer. Uno adopts the same three-event split (FR-016 / FR-016a);
+  collapsing them invites authors to repopulate from inside the platform's menu-tracking run
+  loop, which re-enters the dirty→coalesce→rebuild pipeline at its worst possible moment.
 
 ### 2.2 Both-scope attachment
 
@@ -142,9 +163,10 @@ Avalonia's exporters do **not** incrementally diff; a model change triggers a
 coalesced-full-rebuild strategy (spec decision 7), because the rebuild-only platforms
 (iPadOS, Linux) make incremental native diffing pointless as a common path.
 
-**What Uno borrows from Avalonia:** the model + in-app-control pairing; both-scope
-attachment semantics (mechanism changed to setters); the single exporter seam with a
-scope/target argument; `ICommand` + `CanExecute` execution; tray-ready model shaping;
+**What Uno borrows from Avalonia:** the model + in-app-control pairing; the container-is-not-an-item
+type split and its one-parent-per-item invariant; the `NeedsUpdate`/`Opening`/`Closed` event
+separation; both-scope attachment semantics (mechanism changed to setters); the single exporter
+seam with a scope/target argument; `ICommand` + `CanExecute` execution; tray-ready model shaping;
 fail-silent registrar on Linux; framework-guaranteed minimal macOS app menu; and the
 coalesced full-rebuild update model.
 
@@ -152,8 +174,8 @@ coalesced full-rebuild update model.
 
 ## 3. Flutter analysis (secondary prior art)
 
-Flutter solved a narrower version of the same problem and contributes two specific ideas:
-the **portable role enum** and the **capability probe**.
+Flutter solved a narrower version of the same problem and contributes three specific ideas:
+the **portable role enum**, the **capability probe**, and **grouping as an explicit type**.
 
 ### 3.1 The model
 
@@ -164,6 +186,13 @@ Flutter's `PlatformMenuBar` widget takes a tree of:
   `shortcut` (a `MenuSerializableShortcut`).
 - **`PlatformMenuItemGroup`** — a group rendered with separators around it (the
   separator concept, expressed as grouping rather than an explicit separator item).
+  Note the shape: Flutter *does* let a menu be an item (`PlatformMenu extends
+  PlatformMenuItem`), but grouping is still a **dedicated type** that serializes to
+  divider → members → divider, never an inferred meaning for a bare `PlatformMenu`. So both
+  prior-art frameworks refuse to let "container appearing where an item is expected" mean
+  something implicitly — Avalonia forbids it in the type system, Flutter names it. Uno follows
+  Avalonia's stricter option and reserves a future explicit `NativeMenuItemGroup` for the
+  feature Flutter spells out here (see §2.1 and FR-001).
 - **`PlatformProvidedMenuItem`** — an **OS-provided** item selected from a fixed enum
   (`PlatformProvidedMenuItemType`: `about`, `quit`, `servicesSubmenu`, `hide`,
   `hideOtherApplications`, `showAllApplications`, `startSpeaking`, `toggleFullScreen`,
@@ -256,7 +285,7 @@ present (no developer Command needed). The existing bootstrap menu
 macOS supports both **live mutation** (change `title`/`state`/`isEnabled` on an existing
 `NSMenuItem` and it reflects immediately) and **JIT population** via `NSMenuDelegate`:
 `menuNeedsUpdate:` (called before a menu is displayed) and `numberOfItems` /
-`menu:updateItem:atIndex:shouldCancel:`. Uno maps `NativeMenu.Opening` to
+`menu:updateItem:atIndex:shouldCancel:`. Uno maps `NativeMenu.NeedsUpdate` to
 `menuNeedsUpdate:` for just-in-time submenu population. Despite macOS supporting live
 mutation, Uno still uses the coalesced full-rebuild as the *common* path (A3) and reserves
 live-mutate as a possible macOS optimization.
@@ -380,7 +409,7 @@ Submenu / separator / checkable / **radio (native `toggle-type=radio`)** are all
 supported; icons are **partial** (icon-name or icon-data, no rich rendering); shortcuts are
 **panel-dependent** (the shell may or may not render the accelerator). Updates are
 **re-export** (push the whole layout; `AboutToShow` provides JIT population — the Linux
-analog of `NativeMenu.Opening`). Enable/disable + visibility are **push** (A2: Linux pushes).
+analog of `NativeMenu.NeedsUpdate`). Enable/disable + visibility are **push** (A2: Linux pushes).
 **No OS-standard items** (A4: Linux has no About/Quit/Services slots).
 
 ### 6.4 Recommended strategy
@@ -546,7 +575,7 @@ Rows are capabilities; cells are the native behavior. "in-app" = handled by the 
 | A1: app-scope (macOS/iPadOS) vs window-scope (Linux/macOS-multiwindow) | **Both-scope API + focused-window-wins fallback** (decision 6); macOS swaps `NSApp.mainMenu` on key; iPadOS app-wide v1 (§5.6, §8.7) |
 | A2: pull-validation assumes native first responder, which Uno never is (§4.3, §5.3) | **Push effective-enabled** (`IsEnabled && CanExecute`), `autoenablesItems=NO`; `Role` does **not** bridge edit commands to the responder chain (decision 4, BANKED enablement) |
 | A4: only Apple has OS-owned items (§4.4, §5.1); Flutter's `PlatformProvidedMenuItem` enum | **Thin slot-marker `NativeMenuItemRole` enum** (decision 4); macOS auto-wires AppKit selectors, others render role as a labeled item + dev `Command` |
-| A3: iPadOS & Linux are rebuild-only (§5.2, §6.3); Avalonia uses `QueueReset` | **Observable model + coalesced full rebuild** + `NativeMenu.Opening` JIT (decision 7) |
+| A3: iPadOS & Linux are rebuild-only (§5.2, §6.3); Avalonia uses `QueueReset` | **Observable model + coalesced full rebuild** + `NativeMenu.NeedsUpdate` JIT (decision 7) |
 | macOS bootstrap menu already guarantees Quit/Close (§8.3); Avalonia `PopulateStandardOSXMenuItems` | **Framework-guaranteed minimal app menu** (Quit+Hide); customize via `Role=ApplicationMenu` child merge (decision 8) |
 | Modifier mapping is already `Command→Windows` for live keys (§8.4) | **Reuse `KeyboardAccelerator` modifiers literally**, no Ctrl→Cmd remap (decision 5) |
 | Seam must serve macOS/iPadOS now, Linux/Windows later; Avalonia's single exporter + `MenuTarget` | **`INativeMenuExtension`** over `ApiExtensibility` with a `scope` arg + `IsSupported`/`IsRoleSupported` probe (§8.8); Win32 no-op `IsExported=false`, Linux fail-silent post-v1 |
