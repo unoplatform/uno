@@ -1020,6 +1020,20 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 	}
 
+	/// <remarks>
+	/// Mirrors what <see cref="SetSystemBackdrop"/> actually honours: only Mica and Acrylic are mapped
+	/// onto <c>DWMWA_SYSTEMBACKDROP_TYPE</c>, and that attribute needs Windows 11 build 22621.
+	/// </remarks>
+	public override bool IsSystemBackdropSupported(Microsoft.UI.Xaml.Media.SystemBackdrop backdrop)
+		=> backdrop switch
+		{
+			Microsoft.UI.Xaml.Media.MicaBackdrop
+				=> Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported(),
+			Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop
+				=> Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.IsSupported(),
+			_ => false,
+		};
+
 	public override unsafe void SetSystemBackdrop(Microsoft.UI.Xaml.Media.SystemBackdrop? backdrop)
 	{
 		if (!OperatingSystem.IsWindowsVersionAtLeast(10, 0, 22621))
