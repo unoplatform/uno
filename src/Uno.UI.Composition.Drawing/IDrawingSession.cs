@@ -1,6 +1,7 @@
-#nullable enable
+﻿#nullable enable
 
 using System.ComponentModel;
+using System;
 using System.Numerics;
 using Windows.Foundation;
 using Windows.UI;
@@ -12,6 +13,9 @@ namespace Uno.UI.Composition.Drawing;
 /// Each verb takes exactly the paint inputs it honors, and geometry is passed as an <see cref="IGeometry"/> handle.
 /// Retained-mode concerns (display-list recording/replay) are intentionally a backend implementation detail, not on this interface.
 /// </summary>
+/// <summary>One placed instance of a shared geometry: the outline plus where to draw it.</summary>
+public readonly record struct PathInstance(IGeometry Geometry, Vector2 Offset);
+
 public interface IDrawingSession
 {
 	/// <summary>The current total transform, from the drawing origin to the current coordinate space.</summary>
@@ -92,6 +96,42 @@ public interface IDrawingSession
 
 	/// <summary>Fills <paramref name="geometry"/> with a solid <paramref name="color"/> (bake any opacity into its alpha).</summary>
 	void DrawPath(IGeometry geometry, Color color, bool antialias = false);
+
+	/// <summary>
+	/// Fills <paramref name="geometry"/> translated by <paramref name="offset"/>, without disturbing the transform
+	/// stack. Lets a caller place MANY instances of one geometry — a glyph reused across a run, a repeated icon —
+	/// so the instances can share a single cached geometry, and so a backend is free to coalesce a consecutive run
+	/// of them into one draw. The default routes through Save/Translate/Restore, which is correct but costs four
+	/// session calls per instance; override it where that matters.
+	/// <para>
+	/// CONTRACT: <paramref name="geometry"/> must outlive the session and any recording made from it — it is
+	/// referenced, not copied. That is the point: a snapshot per instance would reintroduce exactly the
+	/// duplication instancing removes. Pass geometry owned by a cache (immutable, not disposed by the caller),
+	/// never a transient built for one draw.
+	/// </para>
+	/// </summary>
+	void DrawPath(IGeometry geometry, Color color, Vector2 offset, bool antialias = false)
+	{
+		Save();
+		Translate(offset.X, offset.Y);
+		DrawPath(geometry, color, antialias);
+		Restore();
+	}
+
+	/// <summary>
+	/// Fills a whole run of placed geometries in ONE call, all in <paramref name="color"/>. Handing the backend the
+	/// entire run — rather than one call per instance — is what lets it merge them into a single draw; a lazy
+	/// per-call batch would need an end-of-run signal this interface has no place to put (the session is not
+	/// disposable). Same sharing contract as the single-instance overload: the geometries are referenced, not
+	/// copied, so they must outlive the session and any recording made from it.
+	/// </summary>
+	void DrawPaths(ReadOnlySpan<PathInstance> instances, Color color, bool antialias = false)
+	{
+		foreach (var i in instances)
+		{
+			DrawPath(i.Geometry, color, i.Offset, antialias);
+		}
+	}
 
 	/// <summary>
 	/// Draws <paramref name="silhouette"/> as a soft shadow: coverage blurred by (<paramref name="sigmaX"/>,
