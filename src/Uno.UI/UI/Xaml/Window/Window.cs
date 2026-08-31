@@ -413,27 +413,43 @@ public partial class Window
 		get => _systemBackdrop;
 		set
 		{
-			if (value is not null && !IsBackdropImplemented(value))
+			_systemBackdrop = value;
+
+			if (value is not null)
 			{
-				this.LogWarn()?.Warn($"{nameof(SystemBackdrop)} currently supports only {nameof(Media.MicaBackdrop)} and {nameof(Media.DesktopAcrylicBackdrop)} on Skia. '{value.GetType().Name}' will not be applied natively.");
+				if (!IsBackdropImplemented(value))
+				{
+					this.LogWarn()?.Warn($"{nameof(SystemBackdrop)} currently supports only {nameof(Media.MicaBackdrop)} and {nameof(Media.DesktopAcrylicBackdrop)} on Skia. '{value.GetType().Name}' will not be applied natively.");
+				}
+				else if (!IsBackdropSupported(value))
+				{
+					this.LogInfo()?.Info($"'{value.GetType().Name}' is not supported on this platform. As documented for WinUI, a solid themed color is used instead of the material.");
+				}
 			}
 
-			_systemBackdrop = value;
 			NativeWrapper?.SetSystemBackdrop(value);
 			UpdateRootVisualBackgroundForBackdrop(value);
 		}
 	}
 
 	/// <summary>
-	/// Mirrors MUX DesktopWindowImpl::SetXamlIslandRootBackground: a window with a backdrop drops the
+	/// Follows MUX DesktopWindowImpl::SetXamlIslandRootBackground: a window with a backdrop drops the
 	/// island root's solid background so the material shows through. App content is left alone, so an
 	/// opaque page still hides the material - as it does in WinUI.
 	/// </summary>
+	/// <remarks>
+	/// Uno diverges from MUX by gating on <see cref="IsBackdropSupported"/>. MUX transparentizes on the
+	/// mere presence of a SystemBackdrop, because its MicaController always hands the target a brush -
+	/// painting FallbackColor when the material can't be rendered. Uno has no such controller: the
+	/// material comes from the native window (DWM on Win32, NSVisualEffectView on macOS), and every
+	/// other head has no implementation at all. Transparentizing there would leave nothing behind the
+	/// root, so keeping the themed background is Uno's equivalent of MUX's FallbackColor.
+	/// </remarks>
 	private void UpdateRootVisualBackgroundForBackdrop(Media.SystemBackdrop? backdrop)
 	{
 		if (RootElement is Uno.UI.Xaml.Islands.XamlIslandRoot islandRoot)
 		{
-			islandRoot.SetHasTransparentBackground(backdrop is not null && IsBackdropSupported(backdrop));
+			islandRoot.SetHasTransparentBackground(IsBackdropSupported(backdrop));
 		}
 	}
 
@@ -445,12 +461,17 @@ public partial class Window
 		_ => false,
 	};
 
-	private static bool IsBackdropSupported(Media.SystemBackdrop? backdrop) => backdrop switch
-	{
-		Media.MicaBackdrop => Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported(),
-		Media.DesktopAcrylicBackdrop => Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.IsSupported(),
-		_ => false,
-	};
+	/// <summary>
+	/// Asks the native window whether it can actually render <paramref name="backdrop"/>.
+	/// </summary>
+	/// <remarks>
+	/// The OS-level <c>MicaController.IsSupported()</c> is not enough on its own: it answers for the
+	/// operating system, not for this head. Headless, X11, FrameBuffer, Android, iOS and WASM all
+	/// inherit a no-op SetSystemBackdrop, so on Windows 11 they would pass an OS-version check and then
+	/// render no material at all.
+	/// </remarks>
+	private bool IsBackdropSupported(Media.SystemBackdrop? backdrop)
+		=> backdrop is not null && NativeWrapper?.IsSystemBackdropSupported(backdrop) is true;
 #endif
 
 	internal Brush? Background

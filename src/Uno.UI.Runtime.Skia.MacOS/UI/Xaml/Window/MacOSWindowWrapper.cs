@@ -105,6 +105,9 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		return Disposable.Create(() => presenter.SetNative(null));
 	}
 
+	public override bool IsSystemBackdropSupported(Microsoft.UI.Xaml.Media.SystemBackdrop backdrop)
+		=> backdrop is Microsoft.UI.Xaml.Media.MicaBackdrop or Microsoft.UI.Xaml.Media.DesktopAcrylicBackdrop;
+
 	public override void SetSystemBackdrop(Microsoft.UI.Xaml.Media.SystemBackdrop? backdrop)
 	{
 		int material = 0; // None
