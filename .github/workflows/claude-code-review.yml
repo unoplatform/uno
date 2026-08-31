@@ -55,10 +55,8 @@ jobs:
       contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association)
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    # Keeps the workflow run itself green. This alone does NOT green the PR's
-    # `review` check — a job's own check run still reports its real conclusion,
-    # so the per-step continue-on-error flags below are what keep the PR out of
-    # the red.
+    # Advisory check: a flaky agent run must not turn the PR red. This flag
+    # greens the run, the step flags below green the PR check.
     continue-on-error: true
     steps:
       - name: Checkout repository
@@ -87,11 +85,7 @@ jobs:
 
       - name: Claude Code Review
         id: review
-        # Don't review against a truncated prompt if the fetch above failed.
         if: steps.review_prompt.outcome == 'success'
-        # The review is advisory: a failed or flaky agent run — transient API
-        # errors, rate limits, timeouts — must not turn the PR red. The failure
-        # stays in the job log and in the warning step below.
         continue-on-error: true
         # SECURITY: pinned to a full commit SHA (not the mutable `@v1` tag) so a
         # repointed/compromised tag can't pull unexpected action code — the
