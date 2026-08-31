@@ -59,10 +59,13 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	// The negotiated backend's drawing factory, so native-element hosting composes clip geometry through the
 	// same factory the renderer uses (rather than the global DrawingFactory.Current).
 	internal IDrawingFactory GraphicsFactory { get; private set; } = null!;
+<<<<<<< HEAD
 	private bool _vulkanSuppressedForBackdrop;
 <<<<<<< HEAD
 >>>>>>> 6808899 (fix(win32): Show system backdrops on the default renderer)
 =======
+=======
+>>>>>>> db651cb (fix(win32): Keep Vulkan under a system backdrop)
 	private FrameworkElement? _frameThemeSource;
 >>>>>>> 1afaa7a (fix(win32): Tint backdrops from the app theme)
 
@@ -117,6 +120,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		Win32Host.RegisterWindow(_hwnd);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		_renderer = FeatureConfiguration.Rendering.UseVulkanOnWin32
 			? (IRenderer?)VulkanRenderer.TryCreateVulkanRenderer(_hwnd)
 				?? (FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
@@ -131,6 +135,18 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 =======
 		InitializeGraphics();
 >>>>>>> 6808899 (fix(win32): Show system backdrops on the default renderer)
+=======
+		// Register the per-kind window+context factory and negotiate; the app-registered backend owns the kind order.
+		GraphicsRegistry.ContextFactory = kind => Task.FromResult(CreateWindowAndContext(kind));
+
+		var init = GraphicsRegistry.Initialize();
+		_context = init.Context;
+		GraphicsFactory = init.DrawingFactory;
+		_renderer = init.Renderer;
+
+		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = init.Context.Kind == GraphicsContextKind.Software;
+
+>>>>>>> db651cb (fix(win32): Keep Vulkan under a system backdrop)
 		InitializeRenderThread();
 
 		RegisterForBackgroundColor();
@@ -949,6 +965,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	private void RegisterForBackgroundColor()
 =======
 	/// <summary>
@@ -1016,6 +1033,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		_renderThread?.SignalNewFrame();
 	}
 
+=======
+>>>>>>> db651cb (fix(win32): Keep Vulkan under a system backdrop)
 	Windows.UI.Color? IXamlRootHost.BackgroundColor
 >>>>>>> 6808899 (fix(win32): Show system backdrops on the default renderer)
 	{
@@ -1124,6 +1143,5 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// this in the presenter avoids fighting it over the frame margins and corner preference.
 		UpdateFrameTheme();
 		UpdateClientAreaExtension();
-		RecreateRendererForBackdropChange();
 	}
 }
