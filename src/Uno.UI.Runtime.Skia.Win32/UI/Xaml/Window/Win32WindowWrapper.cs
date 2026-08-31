@@ -53,8 +53,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	private static readonly Dictionary<HWND, Win32WindowWrapper> _hwndToWrapper = new();
 
 	private readonly HWND _hwnd;
-	private IRenderer _renderer;
-	private bool _vulkanSuppressedForBackdrop;
+	private readonly IRenderer _renderer;
 	private FrameworkElement? _frameThemeSource;
 
 	private Win32Accessibility? _accessibility;
@@ -107,7 +106,14 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 		Win32Host.RegisterWindow(_hwnd);
 
-		_renderer = CreateRenderer();
+		_renderer = FeatureConfiguration.Rendering.UseVulkanOnWin32
+			? (IRenderer?)VulkanRenderer.TryCreateVulkanRenderer(_hwnd)
+				?? (FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
+					? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
+					: new SoftwareRenderer(_hwnd))
+			: FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
+				? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
+				: new SoftwareRenderer(_hwnd);
 
 		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = _renderer.IsSoftware();
 
@@ -925,59 +931,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;
 
-	/// <summary>
-	/// Picks the renderer for this window.
-	/// </summary>
-	/// <remarks>
-	/// Vulkan presents through a swapchain bound straight to the HWND, bypassing the window's
-	/// redirection surface - which is the surface DWM composites against the extended frame. A window
-	/// with a system backdrop would therefore show a flat opaque rectangle instead of the material, so
-	/// those windows use OpenGL (or software), both of which composite their per-pixel alpha correctly.
-	/// </remarks>
-	private IRenderer CreateRenderer()
-	{
-		_vulkanSuppressedForBackdrop = FeatureConfiguration.Rendering.UseVulkanOnWin32 && HasActiveSystemBackdrop();
-
-		if (_vulkanSuppressedForBackdrop)
-		{
-			this.LogInfo()?.Info("Using OpenGL rather than Vulkan: a system backdrop is active, and Vulkan cannot present a translucent window on Win32.");
-		}
-		else if (FeatureConfiguration.Rendering.UseVulkanOnWin32
-			&& VulkanRenderer.TryCreateVulkanRenderer(_hwnd) is { } vulkanRenderer)
-		{
-			return vulkanRenderer;
-		}
-
-		return FeatureConfiguration.Rendering.UseOpenGLOnWin32 ?? true
-			? (IRenderer?)GlRenderer.TryCreateGlRenderer(_hwnd) ?? new SoftwareRenderer(_hwnd)
-			: new SoftwareRenderer(_hwnd);
-	}
-
-	/// <summary>
-	/// Swaps the renderer when a backdrop is attached to, or removed from, an already-shown window.
-	/// </summary>
-	private void RecreateRendererForBackdropChange()
-	{
-		if (_rendererDisposed
-			|| _vulkanSuppressedForBackdrop == (FeatureConfiguration.Rendering.UseVulkanOnWin32 && HasActiveSystemBackdrop()))
-		{
-			return;
-		}
-
-		// Same ordering as Dispose: joining the render thread first makes the renderer and surface
-		// unreachable from any in-flight present before they are freed.
-		_renderThread?.Dispose();
-		_renderThread = null;
-		_surface?.Dispose();
-		_surface = null;
-		_renderer.Dispose();
-
-		_renderer = CreateRenderer();
-		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = _renderer.IsSoftware();
-		InitializeRenderThread();
-		_renderThread?.SignalNewFrame();
-	}
-
 	private void RegisterForBackgroundColor()
 	{
 		UpdateRendererBackground();
@@ -1085,6 +1038,5 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// this in the presenter avoids fighting it over the frame margins and corner preference.
 		UpdateFrameTheme();
 		UpdateClientAreaExtension();
-		RecreateRendererForBackdropChange();
 	}
 }
