@@ -168,6 +168,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// "parent handle not found in DOM" errors.
 	/// </summary>
 	private readonly Dictionary<IntPtr, IntPtr> _semanticParentMap = new();
+	private readonly Dictionary<IntPtr, HashSet<IntPtr>> _semanticGeometryDependents = new();
+	private readonly Dictionary<IntPtr, IntPtr> _semanticGeometryOwners = new();
 	/// <summary>
 	/// Handles of elements pruned from the AOM because they were Visibility=Collapsed at build/add
 	/// time (T058). When such an element later becomes visible, OnSizeOrOffsetChanged re-emits it —
@@ -380,7 +382,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			TryRealizeComboBoxItem(child);
 
 			// Find the nearest semantic ancestor for this child
-			var semanticParent = FindSemanticParent(parent);
+			var semanticParent = ResolveSemanticParent(child, FindSemanticParent(parent));
 
 			if (isChildSemantic)
 			{
@@ -395,7 +397,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				{
 					if (AddSemanticElement(semanticParent, child, index))
 					{
-						_semanticParentMap[childHandle] = semanticParent;
+						_semanticParentMap[childHandle] = ResolveSemanticParent(child, semanticParent);
 
 						// FR-019/FR-022: defer aria-labelledby resolution on the dynamic path too. The
 						// inline resolution inside AddSemanticElement is order-dependent — a following-
@@ -491,6 +493,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				}
 				RemoveSemanticElement(semanticParent, childHandle);
 				_semanticParentMap.Remove(childHandle);
+				if (_semanticGeometryOwners.Remove(childHandle, out var geometryOwnerHandle)
+					&& _semanticGeometryDependents.TryGetValue(geometryOwnerHandle, out var dependents))
+				{
+					dependents.Remove(childHandle);
+					if (dependents.Count == 0)
+					{
+						_semanticGeometryDependents.Remove(geometryOwnerHandle);
+					}
+				}
+				_semanticGeometryDependents.Remove(childHandle);
 				_prunedHandles.Remove(childHandle);
 			}
 		}
@@ -756,21 +768,18 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				if (_semanticParentMap.TryGetValue(handle, out var semanticParentHandle)
 					&& containerVisual.Owner?.Target is UIElement element)
 				{
-					// Use the full element-to-semantic-parent transform so that
-					// RenderTransform, Scale, etc. are reflected in the position.
-					var semanticParentElement = FindUIElementByHandle(element, semanticParentHandle);
-					var localRect = new Windows.Foundation.Rect(0, 0, visual.Size.X, visual.Size.Y);
-					if (semanticParentElement is not null)
+					var geometryElement = GetSemanticGeometryElement(element);
+					UpdateSemanticElementGeometry(handle, geometryElement, semanticParentHandle);
+
+					if (_semanticGeometryDependents.TryGetValue(handle, out var dependents))
 					{
-						var transform = UIElement.GetTransform(from: element, to: semanticParentElement);
-						var transformedRect = transform.Transform(localRect);
-						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
-					}
-					else
-					{
-						var transform = UIElement.GetTransform(from: element, to: null);
-						var transformedRect = transform.Transform(localRect);
-						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
+						foreach (var dependentHandle in dependents)
+						{
+							if (_semanticParentMap.TryGetValue(dependentHandle, out var dependentParentHandle))
+							{
+								UpdateSemanticElementGeometry(dependentHandle, element, dependentParentHandle);
+							}
+						}
 					}
 				}
 				else
@@ -1639,10 +1648,11 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		if (isSemantic && !_semanticParentMap.ContainsKey(handle))
 		{
-			var added = AddSemanticElement(parentHandle, child, null);
+			var semanticParentHandle = ResolveSemanticParent(child, parentHandle);
+			var added = AddSemanticElement(semanticParentHandle, child, null);
 			if (added)
 			{
-				_semanticParentMap[handle] = parentHandle;
+				_semanticParentMap[handle] = ResolveSemanticParent(child, semanticParentHandle);
 				effectiveParent = handle; // children go under this element
 			}
 			else if (this.Log().IsEnabled(LogLevel.Warning))
@@ -1689,6 +1699,42 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
+	private static UIElement GetSemanticGeometryElement(UIElement element) =>
+		element is TextBox { TemplatedParent: AutoSuggestBox autoSuggestBox }
+			? autoSuggestBox
+			: element;
+
+	private IntPtr ResolveSemanticParent(UIElement element, IntPtr fallbackParentHandle)
+	{
+		var geometryElement = GetSemanticGeometryElement(element);
+		return geometryElement != element && HasSemanticElement(geometryElement.Visual.Handle)
+			? geometryElement.Visual.Handle
+			: fallbackParentHandle;
+	}
+
+	private static void UpdateSemanticElementGeometry(IntPtr handle, UIElement geometryElement, IntPtr semanticParentHandle)
+	{
+		var localRect = new Windows.Foundation.Rect(0, 0, geometryElement.Visual.Size.X, geometryElement.Visual.Size.Y);
+		if (geometryElement.Visual.Handle == semanticParentHandle)
+		{
+			NativeMethods.UpdateSemanticElementPositioning(handle, geometryElement.Visual.Size.X, geometryElement.Visual.Size.Y, 0, 0);
+			return;
+		}
+
+		var semanticParentElement = FindUIElementByHandle(geometryElement, semanticParentHandle);
+		if (semanticParentElement is not null)
+		{
+			var transform = UIElement.GetTransform(from: geometryElement, to: semanticParentElement);
+			var transformedRect = transform.Transform(localRect);
+			NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
+		}
+		else
+		{
+			var totalOffset = GetOffsetRelativeToSemanticParent(geometryElement, semanticParentHandle);
+			NativeMethods.UpdateSemanticElementPositioning(handle, geometryElement.Visual.Size.X, geometryElement.Visual.Size.Y, totalOffset.X, totalOffset.Y);
+		}
+	}
+
 	private bool AddSemanticElement(IntPtr parentHandle, UIElement child, int? index)
 	{
 		// Use UIElement.GetTransform for position calculation — this accounts for
@@ -1696,11 +1742,24 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// Falling back to manual offset accumulation only when the semantic parent element
 		// is not found (e.g., root element).
 		float x, y, width, height;
-		var localRect = new Windows.Foundation.Rect(0, 0, child.Visual.Size.X, child.Visual.Size.Y);
-		var semanticParentElement = FindUIElementByHandle(child, parentHandle);
-		if (semanticParentElement is not null)
+		var geometryElement = GetSemanticGeometryElement(child);
+		if (geometryElement != child && HasSemanticElement(geometryElement.Visual.Handle))
 		{
-			var transform = UIElement.GetTransform(from: child, to: semanticParentElement);
+			parentHandle = geometryElement.Visual.Handle;
+		}
+
+		var localRect = new Windows.Foundation.Rect(0, 0, geometryElement.Visual.Size.X, geometryElement.Visual.Size.Y);
+		var semanticParentElement = FindUIElementByHandle(geometryElement, parentHandle);
+		if (geometryElement.Visual.Handle == parentHandle)
+		{
+			x = 0;
+			y = 0;
+			width = geometryElement.Visual.Size.X;
+			height = geometryElement.Visual.Size.Y;
+		}
+		else if (semanticParentElement is not null)
+		{
+			var transform = UIElement.GetTransform(from: geometryElement, to: semanticParentElement);
 			var transformedRect = transform.Transform(localRect);
 			x = (float)transformedRect.X;
 			y = (float)transformedRect.Y;
@@ -1709,15 +1768,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 		else
 		{
-			var totalOffset = GetOffsetRelativeToSemanticParent(child, parentHandle);
+			var totalOffset = GetOffsetRelativeToSemanticParent(geometryElement, parentHandle);
 			x = totalOffset.X;
 			y = totalOffset.Y;
-			width = child.Visual.Size.X;
-			height = child.Visual.Size.Y;
+			width = geometryElement.Visual.Size.X;
+			height = geometryElement.Visual.Size.Y;
 		}
 
 		var automationPeer = child.GetOrCreateAutomationPeer();
-
 		// Try to create type-specific semantic elements (button, slider, checkbox, etc.)
 		// This provides better keyboard support and screen reader compatibility
 		if (automationPeer is not null)
@@ -1742,6 +1800,19 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 			if (created)
 			{
+				if (geometryElement != child)
+				{
+					var geometryOwnerHandle = geometryElement.Visual.Handle;
+					if (!_semanticGeometryDependents.TryGetValue(geometryOwnerHandle, out var dependents))
+					{
+						dependents = new HashSet<IntPtr>();
+						_semanticGeometryDependents.Add(geometryOwnerHandle, dependents);
+					}
+
+					dependents.Add(child.Visual.Handle);
+					_semanticGeometryOwners[child.Visual.Handle] = geometryOwnerHandle;
+				}
+
 				return true;
 			}
 
