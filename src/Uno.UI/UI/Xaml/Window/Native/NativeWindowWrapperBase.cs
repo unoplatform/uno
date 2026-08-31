@@ -307,7 +307,13 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	{
 	}
 
+<<<<<<< HEAD
 #if __APPLE_UIKIT__
 	public abstract Size GetWindowSize();
 #endif
+=======
+	// Heads that don't override SetSystemBackdrop render no material, so they must not report support:
+	// the window would go transparent over nothing.
+	public virtual bool IsSystemBackdropSupported(Microsoft.UI.Xaml.Media.SystemBackdrop backdrop) => false;
+>>>>>>> ad1af83 (fix(skia): Gate backdrop transparency on platform support)
 }
