@@ -129,8 +129,8 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 						break;
 
 					default:
-						// Returning silently here leaves every runtime-enabled package on its reference facade
-						// in an otherwise green build, which only fails once the application runs.
+						// Without this error an unknown platform would silently leave every runtime-enabled
+						// package on its reference facade, in a green build that only fails once it runs.
 						this.Log.LogError($"The target platform '{TargetPlatformIdentifier}' has no Uno Platform runtime assets");
 						return false;
 				}
