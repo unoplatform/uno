@@ -107,6 +107,8 @@ namespace Uno.UI.Helpers
 		/// The value is emitted by the XAML generator when Hot Reload code generation is enabled, in the
 		/// form <c>file:///&lt;path&gt;#L&lt;line&gt;:&lt;position&gt;</c> — an absolute build-machine path
 		/// with '\' replaced by '/', then a fragment naming the 1-based line and position of the element.
+		/// An already-rooted path yields four slashes (<c>file:////home/…</c>), as the scheme's three are
+		/// followed by the path's own leading separator.
 		/// <para>
 		/// Read the fragment from the END of the value: a path is free to contain '#' — including the
 		/// sequence "#L" (a "C#Lib" folder, say) — so a parser that splits on the first occurrence
@@ -114,11 +116,18 @@ namespace Uno.UI.Helpers
 		/// </para>
 		/// <para>
 		/// The value is not URI-escaped beyond the separator replacement: spaces and non-ASCII
-		/// characters appear verbatim, so it must not be handed to a URI parser as-is.
+		/// characters appear verbatim, so it must not be handed to a URI parser as-is. Stripping the
+		/// <c>file:///</c> prefix and the trailing fragment yields the key of the embedded XAML sources
+		/// provider (compared with <see cref="StringComparison.OrdinalIgnoreCase"/>).
+		/// </para>
+		/// <para>
+		/// Not a <c>const</c> deliberately: a consumer compiled against one Uno.UI would otherwise bake
+		/// the literal in, and keep it if the name ever changed — the drift this single declaration
+		/// exists to prevent. The name itself lives in <c>XamlFilePathHelper</c>, which is linked into
+		/// the generator that emits it.
 		/// </para>
 		/// </remarks>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public const string OriginalSourceLocationPropertyName = "OriginalSourceLocation";
+		internal static readonly string OriginalSourceLocationPropertyName = Uno.UI.Xaml.XamlFilePathHelper.OriginalSourceLocationPropertyName;
 
 		/// <summary>
 		/// Attaches a property to an object, using a weak reference.

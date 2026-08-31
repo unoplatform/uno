@@ -1,3 +1,5 @@
+#nullable enable
+
 using Microsoft.UI.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Helpers;
@@ -18,7 +20,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		private const string DeclaringFile = "ResourceDictionarySourceLocation.xaml";
 
 		private static string GetSourceLocation(ResourceDictionary dictionary)
-			=> MarkupHelper.GetElementProperty<string>(dictionary, "OriginalSourceLocation") ?? "";
+			=> MarkupHelper.GetElementProperty<string>(dictionary, MarkupHelper.OriginalSourceLocationPropertyName) ?? "";
 
 		[TestMethod]
 		public void When_Element_Resources_Then_Location_Is_The_Dictionary_Declaration()
@@ -56,8 +58,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var sut = new ResourceDictionarySourceLocation();
 			var location = GetSourceLocation(sut.Resources.MergedDictionaries[2]);
 
-			// The instance belongs to the referenced file and is shared, so this file must not claim it.
+			// The instance belongs to the referenced file and is shared, so this file must not claim it —
+			// and it must carry that file's own declaration, otherwise the assertion above would also
+			// pass with nothing stamped at all.
 			Assert.IsFalse(location.Contains(DeclaringFile), $"Expected no location of this file, got '{location}'");
+			StringAssert.Contains(location, "Test_Dictionary.xaml#L");
 		}
 
 		[TestMethod]
@@ -65,7 +70,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
 
-			StringAssert.Contains(GetSourceLocation(app.Resources), "App.xaml#L");
+			// Exact on purpose: the generator harness cannot host an App.xaml root, so this is the only
+			// guard on the Application emission. A loose "App.xaml#L" would also pass if the stamp named
+			// the <Application> root (#L1:2) rather than its <ResourceDictionary> declaration.
+			// Pins line 12, column 4 of App/App.xaml — the two-tab <ResourceDictionary> under
+			// <Application.Resources>; that line must not move.
+			StringAssert.EndsWith(GetSourceLocation(app.Resources), "App.xaml#L12:4");
 		}
 	}
 }

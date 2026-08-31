@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -1105,11 +1105,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (_isHotReloadEnabled)
 			{
-				var setLocation = $"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({element}, \"{OriginalSourceLocationPropertyName}\", {GetSourceLocationLiteral(location)});";
+				var setLocation = $"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({element}, \"{XamlFilePathHelper.OriginalSourceLocationPropertyName}\", {GetSourceLocationLiteral(location)});";
 
 				if (preserveExisting)
 				{
-					using (writer.BlockInvariant($"if (global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<string>({element}, \"{OriginalSourceLocationPropertyName}\") is null)"))
+					using (writer.BlockInvariant($"if (global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<string>({element}, \"{XamlFilePathHelper.OriginalSourceLocationPropertyName}\") is null)"))
 					{
 						writer.AppendLineIndented(setLocation);
 					}
@@ -1120,13 +1120,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 		}
-
-		/// <summary>
-		/// Name of the weak property carrying an object's XAML declaration site. Must match
-		/// <c>MarkupHelper.OriginalSourceLocationPropertyName</c>, which documents the value's format
-		/// for its consumers — the generator cannot reference it, as it does not reference Uno.UI.
-		/// </summary>
-		private const string OriginalSourceLocationPropertyName = "OriginalSourceLocation";
 
 		/// <summary>
 		/// The "file:///" URI of the current file.
@@ -2828,20 +2821,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			// To be able to have MergedDictionaries, the first node of the Resource node
-			// must be an explicit resource dictionary.
+			// must be an explicit resource dictionary — so the members below are read from that first
+			// node, as they always have been.
 			// Note: matching the type by name, rather than resolving it, is what makes an aliased or
 			// same-named foreign type behave identically here and in the emission below.
-			var explicitDictionary = resourcesMember.Objects.Any(o => o.Type.Name == "ResourceDictionary")
-				? resourcesMember.Objects.First()
-				: null;
+			var dictionary = resourcesMember.Objects.FirstOrDefault(o => o.Type.Name == "ResourceDictionary");
+			var firstNode = dictionary is null ? null : resourcesMember.Objects.First();
 
 			return new ResourcesMember(
-				explicitDictionary,
-				explicitDictionary is null ? resourcesMember : FindImplicitContentMember(explicitDictionary),
-				explicitDictionary?.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"),
-				explicitDictionary?.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"),
-				resourcesMember.Objects.FirstOrDefault(o => o.Type.Name == "ResourceDictionary")?.Members.FirstOrDefault(m => m.Member.Name == "Source"),
-				resourcesMember.Objects.FirstOrDefault(o => IsResourceDictionarySubclass(o.Type)));
+				// The stamped declaration is the dictionary itself, never merely the first node: markup
+				// may put another object first (`<Page.Resources><Style/><ResourceDictionary>…`), and
+				// attributing the dictionary to that object's line would name an element that is not one.
+				ExplicitDictionary: dictionary,
+				Root: firstNode is null ? resourcesMember : FindImplicitContentMember(firstNode),
+				MergedDictionaries: firstNode?.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"),
+				ThemeDictionaries: firstNode?.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"),
+				Source: dictionary?.Members.FirstOrDefault(m => m.Member.Name == "Source"),
+				Subclass: resourcesMember.Objects.FirstOrDefault(o => IsResourceDictionarySubclass(o.Type)));
 		}
 
 		/// <summary>

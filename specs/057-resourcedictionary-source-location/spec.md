@@ -2,7 +2,7 @@
 
 **Repo**: `uno` (Uno.UI.SourceGenerators — XAML generator)
 **Created**: 2026-08-27
-**Status**: Implemented (working tree, not committed)
+**Status**: Implemented
 **Related**: `specs/041-hot-design-xaml-sources/spec.md` (the sibling source-mapping channel:
 embedded XAML sources)
 
@@ -189,8 +189,13 @@ The key and the shape of the value are declared once, as
   URI parser. Only the C# literal is escaped, through `SymbolDisplay.FormatLiteral`, so a quote in a
   path cannot close it.
 
-The generator cannot reference that constant — it does not reference `Uno.UI` — so it carries its own
-private copy of the name with a pointer to the runtime one.
+The name itself lives in `XamlFilePathHelper.shared.cs`, which the generator project already links
+(`Uno.UI.SourceGenerators.csproj`) and consumes for `LocalResourcePrefix` — so the name that is emitted
+and the name that is read are one declaration, and `MarkupHelper.OriginalSourceLocationPropertyName`
+forwards to it for the runtime's consumers. It is `internal static readonly`, not `public const`: the
+out-of-repo consumer reaches it through the existing `InternalsVisibleTo`, and a `const` would be baked
+into each consumer at its own compile time — keeping a stale literal if the name ever changed, which is
+the drift the single declaration exists to prevent.
 
 ## Test plan
 
@@ -243,16 +248,18 @@ snapshot in a non-Hot-Reload test would be an R4 violation.
 
 ## Validation performed
 
-- **Generator tests** — 486 total, 472 passed, 14 skipped (pre-existing `Assert.Inconclusive` cases
-  tracked by [#24085](https://github.com/unoplatform/uno/pull/24085)), 0 failed. Regenerating the
-  snapshots after the R1–R5 fixes changed **no** pre-existing golden other than
-  `ResourceDictionaryCodeBehind`.
-- **Runtime** — `dotnet test --project src/Uno.UI.UnitTests/…`: 4114 total, 3954 passed, 23 skipped,
-  including the six new assertions above. The 137 failures are **byte-identical** to the baseline
-  captured with this change stashed (Linux-only path/UNC/case-sensitivity expectations).
-- **Compile** — the same project also compiles `App/App.xaml`, whose
-  `<Application.Resources><ResourceDictionary>` exercises R3 for `Application` and whose merged
-  `x:Class` dictionaries exercise R5: 0 warnings / 0 errors.
+The suites above are the durable record; a run log would rot, so it is not reproduced here. The two
+things they cannot cover, and how they were checked once by hand:
+
+- **The `Application` emission** has no snapshot (the generator harness cannot host an `Application`
+  root), so `Given_ResourceDictionarySourceLocation` asserts it exactly, against `App/App.xaml`'s own
+  `<ResourceDictionary>` line.
+- **The consumer side** was confirmed manually against Hot Design: this branch's generator was applied
+  over the `uno.winui` analyzer of a real app whose App.xaml merges `<utum:MaterialToolkitTheme …/>`
+  (a code-defined `Uno.Themes.BaseTheme` subclass, which carries no location without R5). The theme
+  reported `…/App.xaml#L14:6`, its identifier resolved as valid and editable, and the design system's
+  property grid went from uniformly read-only to editable. A manual observation, not a repeatable
+  artefact.
 
 ## Implementation
 
