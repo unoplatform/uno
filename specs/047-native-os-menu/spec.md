@@ -212,8 +212,11 @@ the freshly added items appear.
    from `Items`, **Then** the affected menu is marked dirty, coalesced on the dispatcher, and
    re-projected via a full rebuild of that menu.
 2. **Given** a submenu with a `NeedsUpdate` handler, **When** the user opens it, **Then**
-   `Opening` fires (mapped to `menuNeedsUpdate` / iPadOS rebuild) before the submenu is shown,
-   and items added in the handler appear.
+   `NeedsUpdate` fires (mapped to `menuNeedsUpdate` / iPadOS rebuild) before the submenu is
+   shown, and items added in the handler appear in **that** opening.
+2a. **Given** a submenu with an `Opening` handler that mutates `Items`, **When** the user opens
+   it, **Then** those mutations do **not** appear in the current opening — `Opening` is
+   notification-only and the change lands on the next coalesced rebuild (FR-016a).
 3. **Given** several rapid mutations within one dispatcher tick, **When** they are processed,
    **Then** they coalesce into a single native rebuild (no per-change native churn).
 4. **Given** a radio group (`ToggleType=Radio` + `GroupName`), **When** one item is checked,
@@ -251,7 +254,8 @@ their commands. Verify `IsSupported` reports `true` on iPadOS.
    rebuild on `UIMainMenuSystem` where available (falling back to `UIMenuSystem.main`) via
    `setNeedsRebuild`, and the next `BuildMenu` reflects the change.
 4. **Given** no menu has been set, **When** the app runs, **Then** no developer items appear
-   and `IsSupported` still reports `true` (a native menu system is present).
+   and `IsSupported` still reports `true` (a menu assigned now would be projected — support
+   is about capability, not about a menu being on screen; see FR-026a).
 
 ---
 
@@ -276,7 +280,24 @@ their commands. Verify `IsSupported` reports `true` on iPadOS.
 - **Radio group with none checked** → all items in the group render unchecked; checking one
   unchecks the rest.
 - **`NeedsUpdate` handler throws / is slow** → submenu population is best-effort; a failed handler
-  leaves the previously-projected submenu content rather than crashing the menu.
+  is caught at the native boundary and logged (FR-031), leaving the previously-projected submenu
+  content rather than crashing the menu. A slow handler blocks the native menu-tracking loop — do
+  I/O before the menu opens, not inside the handler.
+- **A `NeedsUpdate` handler mutates a *different* menu** → out-of-scope mutations do not join the
+  in-flight build (FR-016 covers only the menu being built). They are deferred and applied after
+  menu tracking ends, since a dispatcher post made during macOS `NSEventTrackingRunLoopMode`
+  would otherwise be delayed or dropped unpredictably.
+- **⌘C with a focused `TextBox` and a `Role=Copy` menu item** → **open behavioral question, must
+  be settled before the macOS implementation lands.** AppKit dispatches `keyEquivalent` matching
+  *before* the app's normal key path, so a menu item carrying ⌘C can intercept the keystroke that
+  today reaches Uno's own text handling. The three possible outcomes are: the menu item's
+  `Command` runs *instead* of the built-in copy (silently breaking a `TextBox`), both run
+  (double-fire), or the accelerator never reaches the item. FR-010 says the developer supplies
+  the `Command`, which means an Edit menu built the obvious way could regress copy/paste in every
+  text control in the app. Resolution requires running it on macOS; the answer then belongs in
+  FR-010 as either a documented limitation or a framework-supplied default for the edit roles.
+- **Tree mutated from a background thread** → throws (FR-029). The model has `DependencyObject`
+  thread affinity; silently marshalling would hide a real bug in the caller.
 - **iPadOS in full-screen / no hardware keyboard** → on iPadOS 26 the always-available menu
   bar is still reachable by swiping down from the top of the screen even with no hardware
   keyboard attached; its visibility remains OS-controlled (the app exposes content only and
@@ -414,9 +435,16 @@ their commands. Verify `IsSupported` reports `true` on iPadOS.
   plus menu build/update entry points), and MUST swap the menu on window-key changes for
   multi-window support.
 - **FR-022**: The Skia.AppleUIKit implementation MUST project to `UIMenuBuilder` by overriding
-  `UnoUIApplicationDelegate.BuildMenu(IUIMenuBuilder)` (the delegate is a `UIResponder` and is
-  overridable by developers via `UseUIApplicationDelegate<T>`), populating the always-available
-  macOS-like iPadOS 26 menu bar, app-wide in v1. Rebuilds MUST be driven on `UIMainMenuSystem`
+  `BuildMenu(IUIMenuBuilder)` on a **`UIResponder`** in the chain, populating the
+  always-available macOS-like iPadOS 26 menu bar, app-wide in v1. **`UnoUIApplicationDelegate`
+  is not a valid host for this override:** it derives from `UIApplicationDelegate`, which in
+  .NET for iOS is an `NSObject`-derived class and *not* a `UIResponder`, so `BuildMenu` cannot
+  be overridden on it (Apple's ObjC templates make the delegate a `UIResponder` conforming to
+  the `UIApplicationDelegate` protocol; the .NET binding does not). The implementation MUST
+  instead host the override on a `UIApplication` subclass supplied as the principal class to
+  `UIApplication.Main` — the argument currently passed as `null` — or on `RootViewController`.
+  Which responder UIKit consults for the main menu MUST be confirmed on device before the
+  implementation is finalised; see research.md §8.5. Rebuilds MUST be driven on `UIMainMenuSystem`
   (the iOS/iPadOS 26 `UIMenuSystem` subclass for the iPad menu bar) where available, falling
   back to `UIMenuSystem.main` on earlier OS. Per the single-scene caveat above, iPadOS v1 is
   app-wide only.
@@ -435,6 +463,11 @@ their commands. Verify `IsSupported` reports `true` on iPadOS.
   (`com.canonical.dbusmenu`) registered with `com.canonical.AppMenu.Registrar` keyed by X11
   window XID, failing silently with the in-app fallback when no registrar is present, is a
   **post-v1** designed-for extension point and is **out of scope for v1**.
+- **FR-024a**: DBusMenu is a **per-window** protocol — there is no Linux app-wide menu surface.
+  When Linux lands, `SetApplicationMenu(menu)` MUST therefore be projected by exporting that
+  menu for **every** window that has no window-scoped menu of its own, and for each new window as
+  it opens. It MUST NOT no-op: the app-wide setter is the headline v1 API, and silently ignoring
+  it on one platform is the failure mode FR-026a exists to prevent.
 
 **Toolkit `AppMenuBar` control (P2)**
 
@@ -472,8 +505,44 @@ their commands. Verify `IsSupported` reports `true` on iPadOS.
 
 **Threading (P1)**
 
-- **FR-029**: Native menu APIs are main-thread-only; all model mutations and projection work
-  MUST marshal to the UI thread, and the coalesced rebuild MUST be posted to the dispatcher.
+- **FR-029**: Native menu APIs are main-thread-only. The model is `DependencyObject`-based and
+  therefore has UI-thread affinity: **mutating the tree off the UI thread MUST throw** with a
+  message naming the offending member, rather than being silently marshalled. Projection work
+  and the coalesced rebuild MUST be posted to the UI dispatcher. (Earlier drafts described the
+  core as marshalling arbitrary off-thread mutations; that is not implementable against
+  `DependencyObject` affinity and would hide a real threading bug.)
+
+**Failure handling & diagnosability (P1)**
+
+- **FR-031**: No managed exception may unwind into a native frame. The host MUST wrap in
+  `try`/`catch`: item activation (`Click` **and** `Command.Execute`), every model-raised event
+  (`NeedsUpdate`, `Opening`, `Closed`), and the projection call itself — all of which run inside
+  an AppKit/UIKit/D-Bus callback where an escaping exception terminates the process. A caught
+  exception MUST be logged at `Error` and swallowed at the boundary. This applies with force to
+  `NeedsUpdate`, which is raised synchronously inside the native update callback (FR-016) and
+  where the one-parent invariant (FR-001a) can itself throw.
+- **FR-032**: Every path that silently does nothing MUST log, guarded by
+  `this.Log().IsEnabled(...)` per the repo logging conventions, so that "I set a menu and nothing
+  appeared" is diagnosable without a debugger:
+  | Path | Level |
+  |---|---|
+  | Extension resolution found no host for this platform | `Debug` (once) |
+  | `SetMenu` called while `IsSupported == false` | `Warning` |
+  | Linux registrar absent, or lost at runtime | `Information` |
+  | A role unsupported on this host (FR-011) | `Debug` |
+  | An icon that could not be translated (FR-028) | `Debug` |
+  | A `NeedsUpdate` / `Opening` / `Closed` handler threw (FR-031) | `Error` |
+  | Activation handler or `Command.Execute` threw (FR-031) | `Error` |
+- **FR-033**: Teardown MUST be deterministic. Closing a window MUST cancel any pending coalesced
+  rebuild for that scope, clear its native menu, and drop its side-table entry. Detaching an item
+  or menu from the tree MUST unsubscribe its `CanExecuteChanged` handler, so a removed item can
+  no longer dirty a menu it has left. `SetApplicationMenu(null)` MUST release the previously
+  retained tree — the static application-menu field otherwise roots the whole model, its
+  commands, and anything they capture, for the life of the process.
+- **FR-034**: `NativeMenu.IsExportedChanged` is a **static** event; the Toolkit `AppMenuBar`
+  subscribes per control instance. The implementation MUST NOT strongly root subscribers for the
+  process lifetime — either a weak subscription or a documented detach-on-unload contract is
+  required, otherwise every `AppMenuBar` ever created leaks.
 
 **Forward-shaping (P3)**
 
@@ -532,11 +601,31 @@ shipped core seam. The dependency is strictly one-way (Toolkit → core).
 
 ## Success Criteria *(mandatory)*
 
+### Validation plan
+
+The spec previously named no home for any of this. Concretely:
+
+| What | Where | Target |
+|---|---|---|
+| Model invariants — one-parent-per-item throw (FR-001a), `Parent` wiring, dirty propagation, coalescing (one rebuild per N changes), `NeedsUpdate`-in-flight vs `Opening`-next-rebuild ordering (FR-016/016a) | `Uno.UI.UnitTests` — no visual tree needed, the model is not a `FrameworkElement` | all |
+| Capability probes degrading with no host registered (FR-026/026a) | `Uno.UI.UnitTests` with no extension registered | all |
+| Command execution, `CanExecute` → effective-enabled, accelerator invocation (FR-017, SC-003) | `Uno.UI.RuntimeTests` | Skia Desktop |
+| Native menu actually installed and correct (SC-001, SC-002, SC-004) | `Uno.UI.RuntimeTests` **plus** the test-only `UnoNativeMac` read-back export named in SC-001 | macOS only |
+| A `SamplesApp` sample exercising roles, toggles, radio groups, submenus, lazy population and the capability probes | `src/SamplesApp/SamplesApp.Samples` | all; visual on Skia |
+| iPadOS 26 bar behaviour (SC-009), Linux registrar appear/disappear, ⌘C precedence | **manual, on device** — no automated mechanism is proposed | iPadOS / Linux / macOS |
+
+The last row is the honest limit: the iPadOS bar and the DBusMenu registrar cannot be exercised
+in CI today, so those criteria are signed off by manual verification, not by a green build.
+
 ### Measurable Outcomes
 
 - **SC-001**: A macOS Skia app that sets an application menu shows that menu in the OS menu
   bar at the top of the screen, with the framework-guaranteed app-name menu (Quit ⌘Q, Hide)
-  leading — verified by an inspection-level test.
+  leading. **Verification mechanism:** managed tests cannot read `NSApp.mainMenu`, so this
+  requires a test-only `UnoNativeMac` export that serialises the installed menu tree (titles,
+  key equivalents, enabled/checked state) back to managed code. That export is part of the
+  deliverable, not an afterthought — without it SC-001, SC-002 and SC-004 have no automated
+  mechanism at all.
 - **SC-002**: With no menu set, a freshly launched macOS app still has a working Quit (⌘Q)
   and Hide in the app menu.
 - **SC-003**: A menu item with a `Command` runs that command on click and on its
@@ -549,11 +638,19 @@ shipped core seam. The dependency is strictly one-way (Toolkit → core).
   dispatcher tick produce exactly one native rebuild.
 - **SC-006**: A `NeedsUpdate` handler that populates a submenu results in the new items appearing
   the first time the submenu is opened.
-- **SC-007**: On a target with no native menu (Windows), the core setters no-op,
-  `IsSupported`/`IsExported` report `false`, and the declarative `AppMenuBar` renders a real
-  in-app `MenuBar` with the same items.
-- **SC-008**: The same `AppMenuBar` markup yields a native menu (zero in-app footprint) on
-  macOS/iPadOS and an in-app `MenuBar` on Windows, with no per-platform markup change.
+- **SC-007** *(Toolkit deliverable — `unoplatform/uno.toolkit.ui`)*: On a target with no native
+  menu (Windows), the core setters no-op, `IsSupported`/`IsExported` report `false`, and the
+  declarative `AppMenuBar` renders a real in-app `MenuBar` with the same items.
+- **SC-008** *(Toolkit deliverable — `unoplatform/uno.toolkit.ui`)*: The same `AppMenuBar` markup
+  yields a native menu (zero in-app footprint) on macOS/iPadOS 26 and an in-app `MenuBar` on
+  Windows, with no per-platform markup change.
+
+> **What ships from *this* repo.** SC-001…SC-006 and SC-009…SC-011 are satisfied by the core
+> alone. SC-007 and SC-008 depend on `AppMenuBar`, which is a **separate deliverable in a
+> separate repository**. A developer who installs only Uno Platform therefore gets the code-first
+> `NativeMenu` tree — a real native menu on macOS and iPadOS 26, and *no* menu at all on Windows,
+> since the in-app fallback is the Toolkit control. That is an accepted v1 outcome, not an
+> oversight, but it means "the feature is done" is only true across both repositories.
 - **SC-009**: On the always-available iPadOS 26 menu bar (revealed by swiping from the top of
   the screen, no hardware keyboard required), the app's items and shortcuts appear in the OS
   menu bar and invoke their commands, and `IsSupported` reports `true`.

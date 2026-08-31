@@ -408,13 +408,15 @@ control. It **depends on** the core seam; the core never depends on it.
 
 ## Projection seam
 
-`INativeMenuExtension` is the per-host projection contract (core in `Uno.UI`, resolved via
-`ApiExtensibility.CreateInstance<INativeMenuExtension>()`, registered by each Skia host). It
-exposes `SetMenu(scope, NativeMenu?)`, an `IsExported` indicator (is a native menu actually
-shown?), and the capability probes `IsSupported` / `IsRoleSupported`. Full contract, host
-implementations (Skia.MacOS / Skia.AppleUIKit / Skia.X11-post-v1 / Win32-noop), and the
-`NativeMenu.IsSupported` / `IsRoleSupported` public probe surface are in
-[contracts/INativeMenuExtension.md](./contracts/INativeMenuExtension.md).
+`INativeMenuExtension` is the `internal` per-host projection contract (core in `Uno.UI`, resolved
+via `ApiExtensibility.CreateInstance<INativeMenuExtension>()`, registered by each Skia host).
+The public face of it is the four statics in
+[Public capability surface](#public-capability-surface) above.
+
+The seam's own members, its host implementations (Skia.MacOS / Skia.AppleUIKit / Skia.X11-post-v1
+/ Win32-noop) and the capability semantics are specified once, in
+[contracts/INativeMenuExtension.md](./contracts/INativeMenuExtension.md) — deliberately not
+restated here, because the previous restatement of the member list drifted out of date.
 
 ## Shortcut modifier mapping
 
@@ -497,7 +499,7 @@ effective menu for the system  =  GetMenu(focused/key window)  ??  GetApplicatio
 
 The framework **always** ensures the bold app-name menu exists with at least **Quit (Cmd+Q)** and
 **Hide**; developer top-level menus (File/Edit/…) follow it. This replaces/extends the existing
-bootstrap `NSMenu` ([UNOApplication.m:95-124](../../src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/UnoNativeMac/UNOApplication.m),
+bootstrap `NSMenu` ([UNOApplication.m:156-185](../../src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/UnoNativeMac/UNOApplication.m),
 Quit Cmd+Q / Close Window Cmd+W).
 
 To customize, the developer declares a top-level `NativeMenuItem` with `Role=ApplicationMenu`;

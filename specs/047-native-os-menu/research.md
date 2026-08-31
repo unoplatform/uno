@@ -78,7 +78,8 @@ Uno's type system (Window/Application not being DependencyObjects) forces it.
   choice in Uno spec decision 1.
 - **The container is not an item.** `NativeMenu : AvaloniaObject` sits *beside* the item
   hierarchy, not inside it: only `NativeMenuItem` and `NativeMenuItemSeparator` derive from
-  `NativeMenuItemBase`, and nesting goes through `NativeMenuItem.Menu`. Consequently
+  `NativeMenuItemBase`, and nesting goes through Avalonia's `NativeMenuItem.Menu` (Uno spells the
+  same relationship `NativeMenuItem.SubMenu`). Consequently
   `parentMenu.Items.Add(new NativeMenu())` does not compile. Each type carries the back-reference
   it actually needs — `NativeMenuItemBase.Parent` is a `NativeMenu`, `NativeMenu.Parent` is a
   `NativeMenuItem` — so splitting the branches costs nothing in the dirty-propagation model.
@@ -217,9 +218,9 @@ platforms), but the enum membership is essentially the Flutter set plus the edit
 
 Flutter exposes `PlatformProvidedMenuItem.hasMenu` and per-item availability so an app can
 ask "does this platform provide this item?" and adapt its tree. Uno borrows this as
-**`NativeMenu.IsSupported`** (is there *any* native menu here?) and
-**`IsRoleSupported(NativeMenuItemRole)`** (is *this* OS slot available?), so apps can
-branch their menu construction (spec "capability probe").
+**`NativeMenu.IsSupported`** (would a menu assigned *right now* be projected? — so `false` on
+Linux with no registrar, per FR-026a) and **`IsRoleSupported(NativeMenuItemRole)`** (is *this*
+OS slot available?), so apps can branch their menu construction (spec "capability probe").
 
 **What Uno borrows from Flutter:** the portable role-enum concept (`PlatformProvidedMenuItem`
 → `NativeMenuItemRole`) and the capability-probe API. Uno explicitly *rejects* Flutter's
@@ -277,7 +278,7 @@ A handful of standard items are wired to AppKit selectors on `NSApp` / first res
 (Show All), `orderFrontStandardAboutPanel:` (About), and the Services submenu
 (`NSApp.servicesMenu`). For these, Uno's framework auto-wires the selector when a role is
 present (no developer Command needed). The existing bootstrap menu
-(`UNOApplication.m:95-124`) already does this for Quit (`terminate:`) and Close
+(`UNOApplication.m:156-185`) already does this for Quit (`terminate:`) and Close
 (`performClose:`); the seam **replaces/extends** that menu rather than coexisting with it.
 
 ### 4.5 Dynamic updates
@@ -305,8 +306,8 @@ live-mutate as a possible macOS optimization.
 
 ### 5.1 App-global build model
 
-UIKit's menu system is **app-global and declarative-by-rebuild**. The app delegate (a
-`UIResponder`) overrides **`buildMenu(with: UIMenuBuilder)`**; UIKit calls it to construct
+UIKit's menu system is **app-global and declarative-by-rebuild**. A `UIResponder` in the
+chain overrides **`buildMenu(with: UIMenuBuilder)`**; UIKit calls it to construct
 the entire menu tree. The builder lets you **insert / replace / remove** `UIMenu`s and
 `UICommand`s relative to **system identifiers** (`UIMenu.Identifier`,
 `UICommand`/`UIKeyCommand`), e.g. insert a child menu `before:`/`after:` `.file`, or remove
@@ -364,10 +365,8 @@ is the enabled-only fast path.
 ### 5.5 Catalyst unification & Uno reach
 
 Mac Catalyst uses the same `UIMenuBuilder` API but renders into a real macOS `NSMenu`,
-unifying the iPad and Mac-Catalyst code path. For Uno, the seam lives in
-**`UnoUIApplicationDelegate.BuildMenu(IUIMenuBuilder)`** — the delegate is already a
-`UIResponder` that can override `BuildMenu`, and devs already override the delegate via
-`UseUIApplicationDelegate<T>` (§8.4–8.5).
+unifying the iPad and Mac-Catalyst code path. Where the Uno seam lives is **not** settled by
+this research — see §8.5, which corrects an earlier assumption in this document.
 
 ### 5.6 Limitations
 
@@ -476,7 +475,7 @@ is `NativeMenu.SetApplicationMenu(…)` into a static side-table, not an attache
 
 ### 8.3 Existing bootstrap NSMenu (macOS)
 
-[`UNOApplication.m:95-124`](../../src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/UnoNativeMac/UNOApplication.m) —
+[`UNOApplication.m:156-185`](../../src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/UnoNativeMac/UNOApplication.m) —
 on launch, if `app.mainMenu == nil`, Uno builds a minimal menu: an app menu with **Quit
 (`terminate:`, Cmd+Q)** and a File menu with **Close Window (`performClose:`, Cmd+W)**. The
 projection seam **replaces/extends** `app.mainMenu`; this confirms the "framework-guaranteed
@@ -484,7 +483,7 @@ minimal app menu" baseline already exists and just needs to be driven by the mod
 
 ### 8.4 macOS modifier mapping (shortcut direction)
 
-[`UNOWindow.m:874-890`](../../src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/UnoNativeMac/UNOWindow.m) —
+[`UNOWindow.m:875-891`](../../src/Uno.UI.Runtime.Skia.MacOS/UnoNativeMac/UnoNativeMac/UNOWindow.m) —
 `get_modifiers` maps live `NSEventModifierFlags` to `VirtualKeyModifiers`:
 `Command → Windows`, `Control → Control`, `Option → Menu` (Alt), `Shift → Shift`. This is the
 **same direction** the menu accelerator translation must use; a menu-only remap would be
@@ -493,11 +492,31 @@ KeyboardAccelerator modifiers literally; `VirtualKeyModifiers.Windows` = Cmd).
 
 ### 8.5 iPadOS `BuildMenu` seam
 
+> ⚠️ **Corrects an earlier draft of this spec.** Earlier revisions asserted that
+> `UnoUIApplicationDelegate` is a `UIResponder` and could therefore host `BuildMenu`. Verified
+> against the source, that is **false**, and the iPadOS seam has to move.
+
 [`UnoUIApplicationDelegate.cs:11-12`](../../src/Uno.UI.Runtime.Skia.AppleUIKit/UnoUIApplicationDelegate.cs) —
-`UnoUIApplicationDelegate : UIApplicationDelegate` is a `UIResponder`, so it can override
-**`BuildMenu(IUIMenuBuilder)`**. It already observes `UIScene` activation notifications
-(lines 27-43), which the per-scene-focus path would hook when multi-scene lands. This is the
-iPadOS projection seam.
+`UnoUIApplicationDelegate : UIApplicationDelegate`. In .NET for iOS, `UIApplicationDelegate` is
+an `NSObject`-derived **class**, not a `UIResponder` (Apple's ObjC templates make the delegate a
+`UIResponder` conforming to the `UIApplicationDelegate` *protocol*; the .NET binding does not).
+`buildMenu(with:)` is a `UIResponder` method, so it **cannot** be overridden on the delegate.
+
+Two candidate hosts exist in the current code, both real `UIResponder`s:
+
+1. **A `UIApplication` subclass** passed as the principal class to `UIApplication.Main` —
+   [`AppleUIKitHost.cs:44`](../../src/Uno.UI.Runtime.Skia.AppleUIKit/Hosting/AppleUIKitHost.cs)
+   currently passes `null` there, so this slot is free. `UIApplication : UIResponder` and sits at
+   the top of the chain, which matches an **app-global** menu.
+2. **`RootViewController`**
+   ([`RootViewController.cs:24`](../../src/Uno.UI.Runtime.Skia.AppleUIKit/UI/Xaml/Window/RootViewController.cs),
+   a `UINavigationController` and therefore a `UIResponder`), which is already the window's root.
+
+Option 1 is the better architectural fit for an app-wide menu. **Which responder UIKit actually
+consults for the main menu must be confirmed on a device or simulator before implementation** —
+nothing in this repo settles it, and no `BuildMenu` override exists in the tree today. The
+delegate still matters for the scene-focus path: it observes `UIScene` activation notifications
+(lines 27-43), which per-scene focus would hook when multi-scene lands.
 
 ### 8.6 `UseUIApplicationDelegate<T>` override hook
 
