@@ -31,9 +31,17 @@ public class Given_Window_SystemBackdrop
 
 			var root = (XamlIslandRoot)window.Content!.XamlRoot!.VisualTree.RootElement!;
 			Assert.IsFalse(root.HasTransparentBackground);
+			Assert.AreEqual(BackdropBackgroundMode.Fallback, root.BackdropBackground);
 
 			var background = (SolidColorBrush)root.Background;
 			Assert.AreEqual(255, background.Color.A, "The fallback background must stay opaque.");
+
+			// The rendered fallback is the window background, not the root visual's flat black/white:
+			// SolidBackgroundFillColorBase under the Fluent styles, matching what MUX's MicaController
+			// paints as FallbackColor.
+            var expected = (SolidColorBrush)Uno.UI.ResourceResolver.ResolveTopLevelResource(
+                "ApplicationPageBackgroundThemeBrush", null)!;
+            Assert.IsNotNull(expected);
 		}
 		finally
 		{
