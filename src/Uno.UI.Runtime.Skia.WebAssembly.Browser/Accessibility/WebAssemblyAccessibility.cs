@@ -982,6 +982,20 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			@this._isCreatingAOM = false;
 		}
+
+		if (rootElement is FrameworkElement rootFrameworkElement)
+		{
+			rootFrameworkElement.LayoutUpdated += OnInitialLayoutUpdated;
+			void OnInitialLayoutUpdated(object? sender, object args)
+			{
+				rootFrameworkElement.LayoutUpdated -= OnInitialLayoutUpdated;
+				if (@this.IsAccessibilityEnabled && @this._rootElementHandle == rootElement.Visual.Handle)
+				{
+					@this.UpdateNearestSemanticDescendantsGeometry(rootElement);
+				}
+			}
+		}
+
 		NativeDispatcher.Main.Enqueue(() =>
 		{
 			if (@this.IsAccessibilityEnabled && @this._rootElementHandle == rootElement.Visual.Handle)
