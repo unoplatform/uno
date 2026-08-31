@@ -98,6 +98,17 @@ jobs:
           github_token: ${{ github.token }}
           track_progress: true
           prompt: ${{ steps.review_prompt.outputs.prompt }}
+          # The model is not a security control — the allowlist above is. Two
+          # separate failure modes drove this choice, both visible in the run logs:
+          #   - `claude-sonnet-4-6` stopped being served. Every run since
+          #     2026-08-26 ends with `is_error: true`, `num_turns: 1`,
+          #     `total_cost_usd: 0` and `modelUsage: {}` — the first request is
+          #     rejected before a token is billed, so no review happens.
+          #   - Before that, PRs over ~4k added lines died at `num_turns: 2` with
+          #     ~$0.8 billed: the review does not fit in a 200K context window.
+          # Sonnet 5 is current and has a native 1M context window, which covers
+          # both. The action logs the resolved `contextWindow` under `modelUsage`,
+          # so a regression here is visible without `show_full_output`.
           claude_args: |
-            --model claude-sonnet-4-6
+            --model claude-sonnet-5
             --allowedTools "mcp__github_inline_comment__create_inline_comment,mcp__github_comment__update_claude_comment,Bash(gh pr diff:*),Bash(gh pr view:*)"
