@@ -226,6 +226,21 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 
 	private Vector2[][]? _flattened;
 
+	/// <summary>
+	/// Maximum allowed distance (in the geometry's own units) between the flattened polyline and the true curve.
+	/// Glyphs and shapes reach the render backends in pixels, so this is effectively a sub-pixel budget.
+	/// </summary>
+	private const float FlattenTolerance = 0.2f;
+
+	/// <summary>Perpendicular distance from <paramref name="p"/> to the chord starting at <paramref name="start"/>.</summary>
+	private static float DeviationFromChord(Vector2 start, Vector2 chord, Vector2 p)
+	{
+		var len = chord.Length();
+		var v = p - start;
+		// A degenerate chord (closed loop back to the start) has no perpendicular: fall back to the offset itself.
+		return len < 1e-6f ? v.Length() : MathF.Abs(v.X * chord.Y - v.Y * chord.X) / len;
+	}
+
 	private Vector2[][] BuildFlattened()
 	{
 		var result = new Vector2[Contours.Count][];
@@ -469,9 +484,17 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 			}
 			else
 			{
-				// Adaptive: ~2px chords, scaled by the control-polygon length, so large curves stay smooth.
-				var controlLength = Vector2.Distance(current, seg.C1) + Vector2.Distance(seg.C1, seg.C2) + Vector2.Distance(seg.C2, seg.End);
-				var steps = Math.Clamp((int)MathF.Ceiling(controlLength / 2f), 8, 256);
+				// Step count from how far the curve actually bows away from its chord, not from the control
+				// polygon's LENGTH: a short curve can be long-ish in control length yet almost straight, and the
+				// old rule also imposed a floor of 8 steps. Glyph outlines arrive in pixels, so that floor put
+				// ~8 segments on every few-pixel curve of every glyph — hundreds of points per character, which
+				// is the bulk of the WebGPU backend's retained geometry (it keeps flattened fans per fill).
+				// For a cubic, chord deviation d needs about sqrt(d / tol) uniform steps to stay within tol.
+				var chord = seg.End - current;
+				var d1 = DeviationFromChord(current, chord, seg.C1);
+				var d2 = DeviationFromChord(current, chord, seg.C2);
+				var deviation = MathF.Max(d1, d2);
+				var steps = Math.Clamp((int)MathF.Ceiling(MathF.Sqrt(deviation / FlattenTolerance)), 1, 256);
 				for (var i = 1; i <= steps; i++)
 				{
 					output.Add(EvaluateCubic(current, seg.C1, seg.C2, seg.End, i / (float)steps));
