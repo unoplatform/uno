@@ -13,13 +13,18 @@ paths:
 
 Preprocessor symbols and file-suffix exclusion are injected by `src/Uno.CrossTargetting.targets` from `UnoRuntimeFlavor` / `TargetPlatformIdentifier` — **never** set platform `DefineConstants` or `Compile Remove` for suffixes in a `.csproj`. Symbols are **mutually exclusive per build**: a single compilation never has both `__SKIA__` and `__WASM__`.
 
-`UnoRuntimeFlavor` names **which build of a multi-flavour project this is**, and takes exactly three values. It is not a drawing backend and not a runtime identifier — `Uno.UI` picks its backend (Skia, WebGPU, …) at run time, so no build-time value can name one.
+`UnoRuntimeFlavor` names **which build of a multi-flavour project this is**, and takes three values — or none at all. It is not a drawing backend and not a runtime identifier — `Uno.UI` picks its backend (Skia, WebGPU, …) at run time, so no build-time value can name one.
 
 | `UnoRuntimeFlavor` | Which projects | Selects | Ships in |
 |---|---|---|---|
 | `Generic` | `*.Skia.csproj` and every single-flavour project | `*.skia.cs`, `__SKIA__` | `uno-runtime/<tfm>/skia` |
 | `Wasm` | `*.Wasm.csproj` | `*.wasm.cs`, `__WASM__` | `uno-runtime/<tfm>/webassembly` |
 | `Reference` | `*.Reference.csproj` | `*.reference.cs`, `__NETSTD_REFERENCE__` | `lib/<tfm>` |
+| *(empty)* | `*.netcoremobile.csproj` on an android/ios/tvos TFM, and the WinAppSDK builds | nothing — `TargetPlatformIdentifier` and the `.Android.cs` / `.UIKit.cs` suffixes take over | `lib/<tfm>-<platform>` |
+
+Empty is a **valid state, not a missing value**, which is why `Uno.CrossTargetting.targets` has neither a fallback nor an error for it: defaulting it would hand `__SKIA__` to the native builds, and failing on it would break every project that is not multi-flavoured.
+
+So **`__SKIA__` is not on everywhere**. `Uno.UI` and everything above it ship a single `Generic` build, so it is always defined there; the WinRT layer below (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) still builds the `Wasm`, `Reference` and native-mobile flavours, which do not get it.
 
 The `uno-runtime` folder names in the last column are a **frozen packaging convention** set by the nuspecs, deliberately not derived from the value — renaming the value must never move the published layout.
 
