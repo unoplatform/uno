@@ -3,6 +3,8 @@ using Android.Widget;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Android.App;
+using System;
+using System.Numerics;
 using Uno.Foundation.Logging;
 using Rect = Windows.Foundation.Rect;
 using Size = Windows.Foundation.Size;
@@ -22,7 +24,10 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 	{
 		if (content is View view)
 		{
-			var physicalRect = arrangeRect.LogicalToPhysicalPixels();
+			var logicalRect = TransformToBounds(
+				UIElement.GetTransform(from: _owner, to: null),
+				arrangeRect);
+			var physicalRect = logicalRect.LogicalToPhysicalPixels();
 			var lp = new RelativeLayout.LayoutParams((int)physicalRect.Width, (int)physicalRect.Height)
 			{
 				LeftMargin = (int)physicalRect.Left,
@@ -31,6 +36,19 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 			};
 			view.LayoutParameters = lp;
 		}
+	}
+
+	private static Rect TransformToBounds(Matrix3x2 transform, Rect rect)
+	{
+		var topLeft = Vector2.Transform(new Vector2((float)rect.Left, (float)rect.Top), transform);
+		var topRight = Vector2.Transform(new Vector2((float)rect.Right, (float)rect.Top), transform);
+		var bottomLeft = Vector2.Transform(new Vector2((float)rect.Left, (float)rect.Bottom), transform);
+		var bottomRight = Vector2.Transform(new Vector2((float)rect.Right, (float)rect.Bottom), transform);
+		var left = Math.Min(Math.Min(topLeft.X, topRight.X), Math.Min(bottomLeft.X, bottomRight.X));
+		var top = Math.Min(Math.Min(topLeft.Y, topRight.Y), Math.Min(bottomLeft.Y, bottomRight.Y));
+		var right = Math.Max(Math.Max(topLeft.X, topRight.X), Math.Max(bottomLeft.X, bottomRight.X));
+		var bottom = Math.Max(Math.Max(topLeft.Y, topRight.Y), Math.Max(bottomLeft.Y, bottomRight.Y));
+		return new Rect(left, top, right - left, bottom - top);
 	}
 
 	public void AttachNativeElement(object content)
