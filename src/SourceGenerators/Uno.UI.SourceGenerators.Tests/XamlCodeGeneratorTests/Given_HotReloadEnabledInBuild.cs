@@ -595,4 +595,31 @@ public class Given_HotReloadEnabledInBuild
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task SetOriginalSourceLocationKeepsThePathVerbatimInTheEmittedLiteral()
+	{
+		// The location is not URI-escaped: a space and a non-ASCII character survive verbatim into the
+		// emitted literal, so a consumer must not hand the value to a URI parser.
+		// A character that would close the literal (a quote, legal in a unix file name) cannot be covered
+		// here: it would reach Roslyn's hintName, which rejects it before the generator emits anything.
+		// Only a directory could carry one, and the harness freezes the directory part of the item path.
+		var xamlFile = new XamlFile("Ma in Pägé.xaml", """
+			<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+			  <x:Double x:Key="ImportantNumber">12</x:Double>
+			</ResourceDictionary>
+			""");
+
+		var configOverride = new Dictionary<string, string> { { "build_property.UnoForceHotReloadCodeGen", "true" } };
+
+		var test = new Verify.Test(xamlFile)
+		{
+			ReferenceAssemblies = _Dotnet.Current.WithUnoPackage(),
+			GlobalConfigOverride = configOverride,
+			TestState = { Sources = { "" } }
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }

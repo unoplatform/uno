@@ -154,10 +154,9 @@ reliably knowable from the generator for a dictionary of the *same* compilation,
 - **Overwriting a location a dictionary already carries.** A typed subclass is stamped at its use
   site (R5), but only when it has none of its own — the declaration site always wins over the
   reference site.
-- Exposing the value as a public API, or promoting it to a typed record like
-  `FrameworkElement.DebugParseContext`. Consumers read it with
-  `MarkupHelper.GetElementProperty<string>(dictionary, "OriginalSourceLocation")`, as they do for
-  `Style` and the templates today.
+- Promoting the value to a typed record like `FrameworkElement.DebugParseContext`. Consumers read it
+  with `MarkupHelper.GetElementProperty<string>(dictionary, MarkupHelper.OriginalSourceLocationPropertyName)`,
+  as they do for `Style` and the templates today.
 - Locations for individual resources by key (a `RESOURCE::<key>` scheme existed in 2023 and was
   removed); each resource object is stamped as its own object where its type opts in.
 
@@ -176,6 +175,23 @@ reliably knowable from the generator for a dictionary of the *same* compilation,
 - **Theme dictionaries** are wrapped in `WeakResourceInitializer`, so their stamp runs lazily on
   first materialization — the same laziness as their content.
 
+### The value's format is owned by the producer
+
+The key and the shape of the value are declared once, as
+`MarkupHelper.OriginalSourceLocationPropertyName`, whose remarks document the grammar
+(`file:///<path>#L<line>:<position>`) and the two things a consumer must know:
+
+- **Read the fragment from the end.** A path may contain `#`, including the sequence `#L` — a
+  `C#Lib` folder is enough. A consumer splitting on the first `#L` mis-reads such a path; one
+  splitting on every occurrence fails outright.
+- **The value is not URI-escaped.** Spaces and non-ASCII characters appear verbatim (pinned by
+  `SetOriginalSourceLocationKeepsThePathVerbatimInTheEmittedLiteral`), so it must not be handed to a
+  URI parser. Only the C# literal is escaped, through `SymbolDisplay.FormatLiteral`, so a quote in a
+  path cannot close it.
+
+The generator cannot reference that constant — it does not reference `Uno.UI` — so it carries its own
+private copy of the name with a pointer to the runtime one.
+
 ## Test plan
 
 ### Snapshot tests — `Given_HotReloadEnabledInBuild` (the only suite that turns `UnoForceHotReloadCodeGen` on)
@@ -190,11 +206,16 @@ reliably knowable from the generator for a dictionary of the *same* compilation,
 3. `SetOriginalSourceLocationInOutputForTypedResourceDictionaries` — a page merging a **code-defined**
    `ResourceDictionary` subclass and using one as a whole `Grid.Resources`: both use sites emit the
    set-if-absent stamp (R5).
-4. `SetOriginalSourceLocationNotSetForResourcesFromSource` — `<Page.Resources>` whose first
+4. `SetOriginalSourceLocationKeepsThePathVerbatimInTheEmittedLiteral` — a file whose name carries a
+   space and a non-ASCII character, pinning that the path reaches the literal unescaped. A quote (legal
+   in a unix file name, and what `SymbolDisplay.FormatLiteral` guards against) cannot be covered here:
+   it would reach Roslyn's `hintName`, which rejects it before the generator emits anything, and only a
+   directory could carry one — the harness freezes the directory part of the item path.
+5. `SetOriginalSourceLocationNotSetForResourcesFromSource` — `<Page.Resources>` whose first
    declaration carries a `Source`, followed by a second, inline one. The page's `Resources` is the
    referenced file's shared dictionary, so the generated file must contain **no**
    `OriginalSourceLocation` at all.
-5. `ResourceDictionaryCodeBehind` (pre-existing) — regenerated: the file-level instance of an
+6. `ResourceDictionaryCodeBehind` (pre-existing) — regenerated: the file-level instance of an
    `x:Class`'d dictionary is now stamped, with the `x:Class` stamp unchanged.
 
 ### Runtime test — `Uno.UI.UnitTests`
@@ -246,5 +267,6 @@ All of the production change is in
 | `BuildApplicationInitializerBody`: same, on `Resources` | R3 |
 | `BuildTypedResourceDictionary`: apply block + set-if-absent stamp | R5 |
 | `TrySetOriginalSourceLocation`: `preserveExisting` option, emitting the `GetElementProperty … is null` guard | R5 |
+| `MarkupHelper.OriginalSourceLocationPropertyName`: the key and the documented grammar, plus the generator's private copy of the name | R1–R5 |
 | new `ResourcesMember` record + `FindResourcesMember`, which `RegisterAndBuildResources` now emits from and the R3 stamps read | R3 |
 | `FileUri` / `FileUriLiteral` / `GetSourceLocationLiteral`: the emitted URIs go through `SymbolDisplay.FormatLiteral` | R1–R5, `SetBaseUri` |

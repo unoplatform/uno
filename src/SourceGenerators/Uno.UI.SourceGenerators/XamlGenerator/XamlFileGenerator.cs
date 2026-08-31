@@ -1105,11 +1105,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (_isHotReloadEnabled)
 			{
-				var setLocation = $"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({element}, \"OriginalSourceLocation\", {GetSourceLocationLiteral(location)});";
+				var setLocation = $"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({element}, \"{OriginalSourceLocationPropertyName}\", {GetSourceLocationLiteral(location)});";
 
 				if (preserveExisting)
 				{
-					using (writer.BlockInvariant($"if (global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<string>({element}, \"OriginalSourceLocation\") is null)"))
+					using (writer.BlockInvariant($"if (global::Uno.UI.Helpers.MarkupHelper.GetElementProperty<string>({element}, \"{OriginalSourceLocationPropertyName}\") is null)"))
 					{
 						writer.AppendLineIndented(setLocation);
 					}
@@ -1120,6 +1120,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 		}
+
+		/// <summary>
+		/// Name of the weak property carrying an object's XAML declaration site. Must match
+		/// <c>MarkupHelper.OriginalSourceLocationPropertyName</c>, which documents the value's format
+		/// for its consumers — the generator cannot reference it, as it does not reference Uno.UI.
+		/// </summary>
+		private const string OriginalSourceLocationPropertyName = "OriginalSourceLocation";
 
 		/// <summary>
 		/// The "file:///" URI of the current file.

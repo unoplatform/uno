@@ -98,6 +98,29 @@ namespace Uno.UI.Helpers
 			};
 
 		/// <summary>
+		/// Name of the weak property carrying the XAML declaration site of an object that is not a
+		/// <see cref="FrameworkElement"/> — a Style, a template, a VisualState, a ResourceDictionary.
+		/// A <see cref="FrameworkElement"/> carries the same information as its DebugParseContext
+		/// (set through <c>FrameworkElementHelper.SetBaseUri</c>) instead.
+		/// </summary>
+		/// <remarks>
+		/// The value is emitted by the XAML generator when Hot Reload code generation is enabled, in the
+		/// form <c>file:///&lt;path&gt;#L&lt;line&gt;:&lt;position&gt;</c> — an absolute build-machine path
+		/// with '\' replaced by '/', then a fragment naming the 1-based line and position of the element.
+		/// <para>
+		/// Read the fragment from the END of the value: a path is free to contain '#' — including the
+		/// sequence "#L" (a "C#Lib" folder, say) — so a parser that splits on the first occurrence
+		/// mis-reads such a path, and one that splits on every occurrence fails outright.
+		/// </para>
+		/// <para>
+		/// The value is not URI-escaped beyond the separator replacement: spaces and non-ASCII
+		/// characters appear verbatim, so it must not be handed to a URI parser as-is.
+		/// </para>
+		/// </remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public const string OriginalSourceLocationPropertyName = "OriginalSourceLocation";
+
+		/// <summary>
 		/// Attaches a property to an object, using a weak reference.
 		/// </summary>
 		/// <remarks>This helper is mainly used for XAML Hot Reload</remarks>
