@@ -1,6 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WebAssembly">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetCurrent)</TargetFrameworks>
+		<!-- Emscripten defaults MAXIMUM_MEMORY to 2GB, which caps the app's TOTAL linear memory: managed heap,
+		     Mono runtime, native Skia/wgpu and JS glue together. The perf samples deliberately build very large
+		     scenes (RealWorld_LogView at a few thousand rows) and hit that ceiling, which surfaces as a .NET heap
+		     OOM abort mid-render rather than as an obvious limit. 4GB is the wasm32 maximum. -->
+		<EmccMaximumHeapSize>4294967296</EmccMaximumHeapSize>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override-noplatform.props" />
