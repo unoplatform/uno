@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Media;
+using Uno.UI.Extensions;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Toolkit;
 
@@ -45,13 +45,13 @@ namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 
 		private void TryResolveScrollBars()
 		{
-			_verticalScrollBar ??= FindTemplateChild<ScrollBarControl>(Viewport, "VerticalScrollBar");
-			_horizontalScrollBar ??= FindTemplateChild<ScrollBarControl>(Viewport, "HorizontalScrollBar");
+			_verticalScrollBar ??= Viewport.FindFirstDescendant<ScrollBarControl>("VerticalScrollBar");
+			_horizontalScrollBar ??= Viewport.FindFirstDescendant<ScrollBarControl>("HorizontalScrollBar");
 
 			if (_verticalScrollBar is { } verticalScrollBar)
 			{
-				_verticalInteractiveRoot ??= FindTemplateChild<FrameworkElement>(verticalScrollBar, "VerticalRoot");
-				_verticalThumb ??= FindTemplateChild<FrameworkElement>(verticalScrollBar, "VerticalThumb");
+				_verticalInteractiveRoot ??= verticalScrollBar.FindFirstDescendant<FrameworkElement>("VerticalRoot");
+				_verticalThumb ??= verticalScrollBar.FindFirstDescendant<FrameworkElement>("VerticalThumb");
 			}
 
 			foreach (var scrollBar in GetScrollBars())
@@ -116,27 +116,6 @@ namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 				+ $" — bars shown: h={Viewport.ComputedHorizontalScrollBarVisibility} v={Viewport.ComputedVerticalScrollBarVisibility}"
 				+ $" — {bars} — last scroll event: {_lastScroll}";
 			StandaloneValue.Text = $"{StandaloneScrollBar.Value:F0}";
-		}
-
-		private static T FindTemplateChild<T>(DependencyObject root, string name)
-			where T : FrameworkElement
-		{
-			var count = VisualTreeHelper.GetChildrenCount(root);
-			for (var i = 0; i < count; i++)
-			{
-				var child = VisualTreeHelper.GetChild(root, i);
-				if (child is T match && match.Name == name)
-				{
-					return match;
-				}
-
-				if (FindTemplateChild<T>(child, name) is { } descendant)
-				{
-					return descendant;
-				}
-			}
-
-			return null;
 		}
 	}
 }
