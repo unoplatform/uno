@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Numerics;
@@ -51,9 +51,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 					var glyph = new ushort[] { shaped[0] };
 					var position = new Vector2[] { Vector2.Zero };
 
-					// Not disposed: these are the fonts' cache-owned per-glyph outlines (see GlyphOutlineRef).
-					var alternativeOutline = BuildOutline(managed, glyph, position);
-					var skiaOutline = BuildOutline(skiaFont, glyph, position);
+					using var alternativeOutline = BuildOutline(managed, glyph, position);
+					using var skiaOutline = BuildOutline(skiaFont, glyph, position);
 
 					var a = alternativeOutline.Bounds;
 					var s = skiaOutline.Bounds;
@@ -86,8 +85,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 		// Extracts the monochrome outline from a run of (here, non-colour) glyphs; disposes any colour-layer geometry.
-		// The outline comes back GLYPH-LOCAL and cache-owned (GlyphOutlineRef), which is what these bounds
-		// comparisons want: every glyph here is positioned at the origin, so local and placed bounds coincide.
 		private static IGeometry BuildOutline(IFont font, ushort[] glyphs, Vector2[] positions)
 		{
 			var elements = new System.Collections.Generic.List<GlyphRunElement>();
@@ -95,11 +92,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			IGeometry outline = null!;
 			foreach (var element in elements)
 			{
-				if (element is GlyphOutlineRef r)
-				{
-					outline = r.Outline;
-				}
-				else if (element is GlyphOutline o)
+				if (element is GlyphOutline o)
 				{
 					outline = o.Outline;
 				}

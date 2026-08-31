@@ -2159,53 +2159,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private bool TryAtlasOp(PathFill pf, OwnedResources owned, Vector2 scale, out DrawOp result)
 	{
 		result = default;
-		if (!TryAtlasSlot(pf, owned, scale, out var slot1, out var ox1, out var oy1)) { return false; }
-		_atlasQuads.Clear();
-		AppendAtlasQuad(_atlasQuads, slot1, ox1, oy1, scale);
-		result = MakeAtlasOp(pf, slot1.Owner, _atlasQuads, owned);
-		return true;
-	}
-
-	private readonly List<float> _atlasQuads = new();
-
-	/// <summary>
-	/// Emits a RUN of consecutive fills that share a page, a colour and a clip as ONE atlas draw, advancing
-	/// <paramref name="ci"/> past them. Text is one fill per glyph, so without this a string costs a draw per
-	/// character — worse than the single stencil-then-cover it replaced.
-	/// </summary>
-	private bool TryAtlasBatch(List<WebGpuCommand> cmds, ref int ci, OwnedResources owned, Vector2 scale, List<DrawOp> ops)
-	{
-		if (cmds[ci] is not PathFill first) { return false; }
-		if (!TryAtlasSlot(first, owned, scale, out var slot0, out var ox0, out var oy0)) { return false; }
-
-		_atlasQuads.Clear();
-		AppendAtlasQuad(_atlasQuads, slot0, ox0, oy0, scale);
-		var j = ci + 1;
-		while (j < cmds.Count && cmds[j] is PathFill nx
-			&& nx.Color.R == first.Color.R && nx.Color.G == first.Color.G && nx.Color.B == first.Color.B && nx.Color.A == first.Color.A
-			&& ClipDataEquals(nx.Clip, first.Clip))
-		{
-			// A fill that resolves onto ANOTHER page cannot share this draw's bind group. It stays baked, so the
-			// outer loop picks it up next and starts a fresh batch on a cache hit.
-			if (!TryAtlasSlot(nx, owned, scale, out var slotN, out var oxN, out var oyN)) { break; }
-			if (!ReferenceEquals(slotN.Owner, slot0.Owner)) { break; }
-			AppendAtlasQuad(_atlasQuads, slotN, oxN, oyN, scale);
-			j++;
-		}
-
-		ops.Add(MakeAtlasOp(first, slot0.Owner, _atlasQuads, owned));
-		ci = j - 1;
-		return true;
-	}
-
-	/// <summary>
-	/// Resolves (and bakes on a miss) the atlas entry for one fill. Split out from <see cref="TryAtlasOp"/> so a run
-	/// of glyphs can be resolved first and then emitted as ONE draw — per-glyph geometry means a text run arrives as
-	/// N fills, and a draw apiece is far worse than the merged run it replaced.
-	/// </summary>
-	private bool TryAtlasSlot(PathFill pf, OwnedResources owned, Vector2 scale, out WebGpuPathAtlas.Slot slot, out float ox, out float oy)
-	{
-		slot = null; ox = oy = 0;
 		if (!_pathAtlas) { return false; }
 		AtlasTried++;
 		// Only a CACHED recording may OWN an entry: its slots are freed when the recording is released, which is
@@ -2218,21 +2171,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// boundary pixel that should be empty comes out at 50% (it is what broke the dashed-line endpoint test).
 		// Stroke fans always ring; fills only when the tessellator built no ring-free twin.
 		if (pf.FanHard is null && HasAaRing(pf.FanCoverage)) { AtlasNoRing++; return false; }
-		if (!WebGpuPathAtlas.TryKey(pf.Geometry, pf.GeomMatrix, pf.BbMin, pf.BbMax, scale, out var key, out var w, out var h, out ox, out oy)) { AtlasNoKey++; return false; }
+		if (!WebGpuPathAtlas.TryKey(pf.Geometry, pf.GeomMatrix, pf.BbMin, pf.BbMax, scale, out var key, out var w, out var h, out var ox, out var oy)) { AtlasNoKey++; return false; }
 
 		if (_d.PathAtlas.Pages.Count == 0) { if (hitOnly) { AtlasNoRoom++; return false; } _d.AddPathAtlasPage(); }
-		if (_d.PathAtlas.TryGet(key, out slot))
-		{
-			AtlasHit++;
-			// A REUSED entry needs its own reference for this recording. Per-glyph geometry means one slot backs a
-			// character everywhere it appears, so without this the recording that baked it releases the region out
-			// from under every other holder and they start sampling whatever glyph took its place.
-			if (!hitOnly)
-			{
-				_d.PathAtlas.Retain(slot);
-				(owned.AtlasSlots ??= new()).Add(slot);
-			}
-		}
+		if (_d.PathAtlas.TryGet(key, out var slot)) { AtlasHit++; }
 		else if (hitOnly) { AtlasTransientMiss++; return false; }
 		else
 		{
@@ -2250,26 +2192,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			AtlasBaked++;
 		}
 
-		return true;
-	}
-
-	/// <summary>Appends one atlas entry as 6 vertices (pos.xy, uv.xy) placed at this fill's own origin.</summary>
-	private void AppendAtlasQuad(List<float> dst, WebGpuPathAtlas.Slot slot, float ox, float oy, Vector2 scale)
-	{
-		// The quad lives in the op's own space; one device pixel is 1/scale there, so a slot.W-wide mask needs a
-		// slot.W/scale-wide quad to land 1:1 after the replay scale is applied on the GPU.
-		float x0 = ox - 1f / scale.X, y0 = oy - 1f / scale.Y;
-		float x1 = x0 + slot.W / scale.X, y1 = y0 + slot.H / scale.Y;
-		float u0 = (float)slot.X / WebGpuPathAtlas.Size, v0 = (float)slot.Y / WebGpuPathAtlas.Size;
-		float u1 = (float)(slot.X + slot.W) / WebGpuPathAtlas.Size, v1 = (float)(slot.Y + slot.H) / WebGpuPathAtlas.Size;
-		void QV(float x, float y, float uu, float vv) { var n = Ndc(new Vector2(x, y)); dst.Add(n.X); dst.Add(n.Y); dst.Add(uu); dst.Add(vv); }
-		QV(x0, y0, u0, v0); QV(x1, y0, u1, v0); QV(x1, y1, u1, v1);
-		QV(x0, y0, u0, v0); QV(x1, y1, u1, v1); QV(x0, y1, u0, v1);
-	}
-
-	/// <summary>One draw for a batch of atlas quads sharing a page, a colour and a clip.</summary>
-	private DrawOp MakeAtlasOp(PathFill pf, WebGpuPathAtlas.Page page, List<float> quads, OwnedResources owned)
-	{
 		// SrcIn tint: the atlas carries coverage in alpha, the colour comes from the fill (see ImageWgsl op.y).
 		// PERSISTENT when this op belongs to a cached recording: MakeUniform rents from the per-frame pool, so a
 		// replayed op would read whatever recycled that buffer later and the glyph renders in another element's
@@ -2280,12 +2202,28 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		u[4] = pf.Color.R / 255f; u[5] = pf.Color.G / 255f; u[6] = pf.Color.B / 255f; u[7] = pf.Color.A / 255f;
 		wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)u, 32);
 		var entries = stackalloc WGPUBindGroupEntry[3];
-		entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = page.View };
+		entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = slot.Owner.View };
 		entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
 		entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 112 };
 		var bgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
 		var bg = Bg(ref bgd, owned);
-		return new DrawOp(2, (nint)bg, (uint)(quads.Count / 4), (nint)Vbuf(quads, owned), false, pf.Clip, (nint)MakeClipBg(_d.ImageClipBgl, pf.Clip, owned));
+
+		// Place the quad where the entry was rasterized from, and sample exactly its slot.
+		// Place at THIS fill's origin, not the slot's. The slot's origin is where the mask was first baked; on a
+		// cache hit the same shape elsewhere must draw at its own position, and the subpixel phase is part of the
+		// key, so the mask is already correct for it.
+		// The quad lives in the op's own space; one device pixel is 1/scale there, so a slot.W-wide mask needs a
+		// slot.W/scale-wide quad to land 1:1 after the replay scale is applied on the GPU.
+		float x0 = ox - 1f / scale.X, y0 = oy - 1f / scale.Y;
+		float x1 = x0 + slot.W / scale.X, y1 = y0 + slot.H / scale.Y;
+		float u0 = (float)slot.X / WebGpuPathAtlas.Size, v0 = (float)slot.Y / WebGpuPathAtlas.Size;
+		float u1 = (float)(slot.X + slot.W) / WebGpuPathAtlas.Size, v1 = (float)(slot.Y + slot.H) / WebGpuPathAtlas.Size;
+		var q = new float[24];
+		void QV(int i, float x, float y, float uu, float vv) { var n = Ndc(new Vector2(x, y)); q[i] = n.X; q[i + 1] = n.Y; q[i + 2] = uu; q[i + 3] = vv; }
+		QV(0, x0, y0, u0, v0); QV(4, x1, y0, u1, v0); QV(8, x1, y1, u1, v1);
+		QV(12, x0, y0, u0, v0); QV(16, x1, y1, u1, v1); QV(20, x0, y1, u0, v1);
+		result = new DrawOp(2, (nint)bg, 0, (nint)Vbuf(q, owned), false, pf.Clip, (nint)MakeClipBg(_d.ImageClipBgl, pf.Clip, owned));
+		return true;
 	}
 
 	// Fills the shadow silhouette into an offscreen coverage surface (stencil-then-cover, white), then blurs it
@@ -2946,10 +2884,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				ops.Add(new DrawOp(0, (nint)rvb, (uint)((j - ci) * 6), 0, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip, owned)));
 				ci = j - 1;
 			}
-			else if (_pathAtlas && atlasScale is { } asc0 && TryAtlasBatch(cmds, ref ci, owned, asc0, ops))
+			else if (_pathAtlas && atlasScale is { } asc0 && cmds[ci] is PathFill apf0 && TryAtlasOp(apf0, owned, asc0, out var aop0))
 			{
 				// Cached recordings are where STATIC text lives: its ops are built once here and replayed forever
 				// after, so an atlas hook that only covers the live paths never sees a glyph.
+				ops.Add(aop0);
 			}
 			else if (cmds[ci] is PathFill pf0 && !pf0.EvenOdd)
 			{
@@ -4456,9 +4395,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						}
 						else
 						{
-							var atlasVerts = u0 == 0 ? 6u : u0;
-							EncVb((IntPtr)b1, 0, (nuint)(atlasVerts * 4 * sizeof(float)));
-							EncDraw(atlasVerts);
+							EncVb((IntPtr)b1, 0, (nuint)(24 * sizeof(float)));
+							EncDraw(6);
 						}
 						break;
 					case 3:
