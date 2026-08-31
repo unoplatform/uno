@@ -174,6 +174,46 @@ namespace Uno.UI.Runtime.Skia
 			}
 		}
 
+		// Keep in sync with ToNativeOperation()
+		private static readonly Task<string> _copyTask = Task.FromResult("copy");
+		private static readonly Task<string> _linkTask = Task.FromResult("link");
+		private static readonly Task<string> _moveTask = Task.FromResult("move");
+		private static readonly Task<string> _noneTask = Task.FromResult("none");
+
+		[JSExport]
+		public static Task<string> OnNativeDropEventAsync(
+			string eventName,
+			string allowedOperations,
+			string acceptedOperation,
+			string dataItems,
+			double timestamp,
+			double x,
+			double y,
+			int id,
+			int buttons,
+			bool shift,
+			bool ctrl,
+			bool alt) =>
+				OnNativeDropEvent(
+						eventName,
+						allowedOperations,
+						acceptedOperation,
+						dataItems,
+						timestamp,
+						x,
+						y,
+						id,
+						buttons,
+						shift,
+						ctrl,
+						alt) switch
+				{
+					"copy" => _copyTask,
+					"link" => _linkTask,
+					"move" => _moveTask,
+					_ => _noneTask
+				};
+
 		private static DataPackage CreateDataPackage(int id, string dataItems)
 		{
 			if (dataItems is null)
