@@ -185,27 +185,31 @@ public class Given_Window
 
 		var root = (XamlIslandRoot)content.XamlRoot.VisualTree.RootElement;
 		var background = root.Background;
-		var wasTransparent = root.HasTransparentBackground;
+		var previousMode = root.BackdropBackground;
 
 		Assert.IsInstanceOfType(background, typeof(SolidColorBrush));
 
 		try
 		{
-			root.SetHasTransparentBackground(true);
+			root.SetBackdropBackground(BackdropBackgroundMode.Transparent);
 
-			// Only the rendered primitive is suppressed - the property keeps its theme brush, so a
-			// later theme change still resolves against it.
+			// Only the rendered primitive changes - the property keeps its theme brush, so a later
+			// theme change still resolves against it.
 			Assert.IsTrue(root.HasTransparentBackground);
 			Assert.AreSame(background, root.Background);
 
-			root.SetHasTransparentBackground(false);
+			root.SetBackdropBackground(BackdropBackgroundMode.Fallback);
 
 			Assert.IsFalse(root.HasTransparentBackground);
+			Assert.AreSame(background, root.Background);
+
+			root.SetBackdropBackground(BackdropBackgroundMode.None);
+
 			Assert.AreSame(background, root.Background);
 		}
 		finally
 		{
-			root.SetHasTransparentBackground(wasTransparent);
+			root.SetBackdropBackground(previousMode);
 		}
 	}
 
