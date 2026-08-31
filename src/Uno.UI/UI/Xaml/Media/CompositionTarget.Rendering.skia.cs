@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -328,7 +328,7 @@ public partial class CompositionTarget
 					$"[frame-phases] record={Ms(_phaseRecordTicks, _phaseRenderFrames):F1}ms finish={Ms(_phaseFinishTicks, _phaseRenderFrames):F1}ms draw={Ms(_phaseDrawTicks, Math.Max(_phaseDrawFrames, 1)):F1}ms tick={Ms(_phaseTickTicks, _phaseRenderFrames):F1}ms layout={Ms(_phaseLayoutTicks, Math.Max(_phaseLayoutRuns, 1)):F1}ms({_phaseLayoutRuns}) gap={Ms(_phaseGapTicks, _phaseRenderFrames):F1}ms"
 					+ $" | measures={measures} arranges={arranges}"
 					+ $" | >20ms={_phaseOver20} >33ms={_phaseOver33} max={_phaseMaxIntervalTicks * 1000.0 / Stopwatch.Frequency:F1}ms"
-					+ $" | gc0=+{gc0 - _phaseGc0} gc1=+{gc1 - _phaseGc1} gc2=+{gc2 - _phaseGc2} pause={pause.TotalMilliseconds:F1}ms"
+					+ $" | gc0=+{gc0 - _phaseGc0} gc1=+{gc1 - _phaseGc1} gc2=+{gc2 - _phaseGc2} pause={pause.TotalMilliseconds:F1}ms heap={GC.GetTotalMemory(false) / (1024 * 1024)}MB"
 					+ $" (avg/frame, {_phaseRenderFrames} renders, {_phaseDrawFrames} draws)");
 				_phaseGc0 = gc0;
 				_phaseGc1 = gc1;
