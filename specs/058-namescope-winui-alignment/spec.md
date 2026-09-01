@@ -710,3 +710,8 @@ one asserting the subject itself. Every compiled-XAML ElementName scenario (temp
 resources, nested templates, ItemsControl) resolved through the namescope unchanged. The runtime
 reader needed one addition: re-applying its ElementName bindings once the tree is complete, since
 a name declared later has nothing to resolve against while the tree is still being built.
+
+The compiled path needed the same idea one level down: a binding attached during parse resolves
+when its element goes live, so the Enter walk re-applies ElementName bindings instead of leaving
+them to the measure-gated pass on load. Without that, a test asserting synchronously after setting
+window content saw an unresolved binding.
