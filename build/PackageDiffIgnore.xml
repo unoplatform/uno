@@ -2461,6 +2461,8 @@
 
 		  <!-- Duration.TimeSpan public field removed; WinUI exposes TimeSpan as a get-only property (paired accessor is emitted by the property, not a field). -->
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Duration::TimeSpan" reason="Made Duration.TimeSpan read-only to match WinUI (breaking changes for 7.0, uno#8339)" />
+		  <!-- Duration.Type had no counterpart at all in WinUI's projected Duration, which reaches the state through HasTimeSpan and comparison with Automatic/Forever; it is internal now. -->
+		  <Member fullName="Microsoft.UI.Xaml.DurationType Microsoft.UI.Xaml.Duration::Type" reason="Hid Duration.Type; WinUI exposes no Type member on Duration (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
 
 		  <!-- WinRT struct members are properties in WinUI, not fields: Thickness/CornerRadius expose get+set over -->
 		  <!-- private backing fields, GridLength exposes get-only. Uno projected them as public fields (#2082).    -->
@@ -3887,6 +3889,8 @@
 
 		  <!-- Duration.TimeSpan public field removed; WinUI exposes TimeSpan as a get-only property (paired accessor is emitted by the property, not a field). -->
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Duration::TimeSpan" reason="Made Duration.TimeSpan read-only to match WinUI (breaking changes for 7.0, uno#8339)" />
+		  <!-- Duration.Type had no counterpart at all in WinUI's projected Duration, which reaches the state through HasTimeSpan and comparison with Automatic/Forever; it is internal now. -->
+		  <Member fullName="Microsoft.UI.Xaml.DurationType Microsoft.UI.Xaml.Duration::Type" reason="Hid Duration.Type; WinUI exposes no Type member on Duration (sync-gen alignment, breaking changes for 7.0, uno#8339)" />
 
 		  <!-- WinRT struct members are properties in WinUI, not fields: Thickness/CornerRadius expose get+set over -->
 		  <!-- private backing fields, GridLength exposes get-only. Uno projected them as public fields (#2082).    -->
