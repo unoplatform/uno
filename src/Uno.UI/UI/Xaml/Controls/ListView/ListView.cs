@@ -22,11 +22,6 @@ namespace Microsoft.UI.Xaml.Controls
 			return new ListViewItem() { IsGeneratedContainer = true };
 		}
 
-		internal override ContentControl GetGroupHeaderContainer(object groupHeader)
-		{
-			return new ListViewHeaderItem() { IsGeneratedContainer = true };
-		}
-
 		protected override AutomationPeer OnCreateAutomationPeer()
 			=> new ListViewAutomationPeer(this);
 	}
