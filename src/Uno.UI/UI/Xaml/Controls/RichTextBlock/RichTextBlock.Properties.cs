@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference RichTextBlock_Partial.cpp, tag winui3/release/2.4.0, commit e8442d07a
 #pragma warning disable CS0109
@@ -253,8 +253,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			try
 			{
+				// case RichTextBlock_Foreground: InvalidateRender() - the brush changes ink only, so
+				// the shaped content, measure and arrange all stay valid.
 				OnForegroundChangedPartial();
-				InvalidateRichTextBlock();
 			}
 			catch (Exception e)
 			{
