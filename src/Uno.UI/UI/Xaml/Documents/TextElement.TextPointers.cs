@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 // MUX Reference TextElement_Partial.cpp (get_ContentStartImpl/get_ContentEndImpl/
-// get_ElementStartImpl/get_ElementEndImpl), tag winui3/release/1.8.2, commit 4a1c6184c
+// get_ElementStartImpl/get_ElementEndImpl), tag winui3/release/2.4.0, commit e8442d07a
 
 #nullable enable
 

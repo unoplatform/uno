@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-// MUX Reference TextSelectionSettings.h, TextSelectionSettings.cpp, tag winui3/release/1.8.2, commit 4a1c6184c
+// MUX Reference TextSelectionSettings.h, TextSelectionSettings.cpp, tag winui3/release/2.4.0, commit e8442d07a
 
 #nullable enable
 

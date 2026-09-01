@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TextBoxHelpers.cpp, tag winui3/release/1.8.2, commit 4a1c6184c
+// MUX Reference TextBoxHelpers.cpp, tag winui3/release/2.4.0, commit e8442d07a
 
 #nullable enable
 
@@ -14,7 +14,7 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls.Text.Core;
 
-// MUX Reference EnumDefs.h (TagConversion). Controls whether GetCharacter substitutes a
+// MUX Reference TextBoxHelpers.h (TagConversion). Controls whether GetCharacter substitutes a
 // placeholder character for the (reserved) open/close edges of TextElements.
 internal enum TagConversion
 {
