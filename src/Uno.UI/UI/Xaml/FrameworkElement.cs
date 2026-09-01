@@ -1,4 +1,4 @@
-#pragma warning disable CS0105 // Ignore duplicate namespaces, to remove when moving to WinUI source tree.
+﻿#pragma warning disable CS0105 // Ignore duplicate namespaces, to remove when moving to WinUI source tree.
 
 using Uno.Diagnostics.Eventing;
 using Microsoft.UI.Xaml.Controls;
@@ -317,6 +317,8 @@ namespace Microsoft.UI.Xaml
 				_isParsing = value;
 				if (_isParsing)
 				{
+					// Generated InitializeComponent is the parser: while it runs, it owns our parent relationship.
+					SetParserParentLock();
 					ResourceResolver.PushSourceToScope(this);
 				}
 			}
@@ -449,6 +451,7 @@ namespace Microsoft.UI.Xaml
 			finally
 			{
 				_isParsing = false;
+				ResetParserParentLock();
 				ResourceResolver.PopSourceFromScope();
 			}
 		}
