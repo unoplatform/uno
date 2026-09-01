@@ -453,6 +453,13 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			if (--_onChildAddedDepth == 0)
 			{
 				DrainPendingLabelledBy();
+				NativeDispatcher.Main.Enqueue(() =>
+				{
+					if (IsAccessibilityEnabled)
+					{
+						UpdateSemanticSubtreeGeometry(child);
+					}
+				});
 			}
 		}
 	}
@@ -849,16 +856,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		}
 	}
 
-	private void UpdateAllSemanticDescendantsGeometry(UIElement element)
+	private void UpdateSemanticSubtreeGeometry(UIElement element)
 	{
+		if (TryGetSemanticParentHandle(element.Visual.Handle, out var semanticParentHandle))
+		{
+			UpdateSemanticElementGeometry(element.Visual.Handle, element, semanticParentHandle);
+		}
+
 		foreach (var child in element.GetChildren())
 		{
-			if (TryGetSemanticParentHandle(child.Visual.Handle, out var childSemanticParentHandle))
-			{
-				UpdateSemanticElementGeometry(child.Visual.Handle, child, childSemanticParentHandle);
-			}
-
-			UpdateAllSemanticDescendantsGeometry(child);
+			UpdateSemanticSubtreeGeometry(child);
 		}
 	}
 
@@ -1004,7 +1011,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				rootFrameworkElement.LayoutUpdated -= OnInitialLayoutUpdated;
 				if (@this.IsAccessibilityEnabled && @this._rootElementHandle == rootElement.Visual.Handle)
 				{
-					@this.UpdateAllSemanticDescendantsGeometry(rootElement);
+					@this.UpdateSemanticSubtreeGeometry(rootElement);
 				}
 			}
 		}
@@ -1013,7 +1020,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			if (@this.IsAccessibilityEnabled && @this._rootElementHandle == rootElement.Visual.Handle)
 			{
-				@this.UpdateAllSemanticDescendantsGeometry(rootElement);
+				@this.UpdateSemanticSubtreeGeometry(rootElement);
 			}
 		});
 		Control.OnIsFocusableChangedCallback = @this.UpdateIsFocusable;
