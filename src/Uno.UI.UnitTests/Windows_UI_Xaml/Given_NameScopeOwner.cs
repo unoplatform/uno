@@ -109,6 +109,34 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.IsNull(Root.GetNamedObjectIfExists("child", owner, NameScopeType.StandardNameScope));
 		}
 
+		/// <summary>
+		/// The duplicate warning is advisory only: resolution is last-writer-wins in both modes.
+		/// </summary>
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public void When_Duplicate_Warning_Toggled_Resolution_Is_Unchanged(bool warnOnDuplicate)
+		{
+			NameScope scope = new();
+			var owner = new Border();
+			var first = new Border();
+			var second = new Border();
+			scope.Owner = owner;
+
+			Uno.UI.FeatureConfiguration.NameScope.WarnOnDuplicateName = warnOnDuplicate;
+			try
+			{
+				scope.RegisterName("dupe", first);
+				scope.RegisterName("dupe", second);
+
+				Assert.AreEqual(second, scope.FindName("dupe"));
+			}
+			finally
+			{
+				Uno.UI.FeatureConfiguration.NameScope.WarnOnDuplicateName = true;
+			}
+		}
+
 		[TestMethod]
 		public void When_Same_Name_Registered_Twice_Last_Wins()
 		{
