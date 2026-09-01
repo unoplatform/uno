@@ -57,6 +57,84 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		// Horizontal extent of a colour across the whole bitmap, as (minX, maxX); (-1, -1) when absent.
+		private static (int Min, int Max) HorizontalExtent(RawBitmap bitmap, Windows.UI.Color color)
+		{
+			var min = int.MaxValue;
+			var max = -1;
+			for (var y = 0; y < bitmap.Height; y++)
+			{
+				for (var x = 0; x < bitmap.Width; x++)
+				{
+					var p = bitmap.GetPixel(x, y);
+					if (System.Math.Abs(p.R - color.R) <= 5 && System.Math.Abs(p.G - color.G) <= 5 && System.Math.Abs(p.B - color.B) <= 5 && p.A > 200)
+					{
+						min = System.Math.Min(min, x);
+						max = System.Math.Max(max, x);
+					}
+				}
+			}
+
+			return max < 0 ? (-1, -1) : (min, max);
+		}
+
+		[TestMethod]
+		[RequiresScaling(1f)]
+		public async Task When_Multiple_Highlighters_All_Paint()
+		{
+			// The renderer used to take highlighters.FirstOrDefault().Ranges.FirstOrDefault(), so only one
+			// range of one highlighter ever painted - and an app highlighter hid the selection entirely.
+			var SUT = new RichTextBlock
+			{
+				Width = 400,
+				FontSize = 24,
+				TextWrapping = TextWrapping.NoWrap,
+				Foreground = new SolidColorBrush(Colors.Black),
+			};
+			var paragraph = new Paragraph();
+			// Four equal-length words, highlighted by two separate highlighters with two ranges each.
+			paragraph.Inlines.Add(new Run { Text = "AAAA BBBB CCCC DDDD" });
+			SUT.Blocks.Add(paragraph);
+
+			var first = new TextHighlighter { Background = new SolidColorBrush(Colors.Red) };
+			first.Ranges.Add(new TextRange { StartIndex = 0, Length = 4 });
+			first.Ranges.Add(new TextRange { StartIndex = 10, Length = 4 });
+			SUT.TextHighlighters.Add(first);
+
+			var second = new TextHighlighter { Background = new SolidColorBrush(Colors.Blue) };
+			second.Ranges.Add(new TextRange { StartIndex = 5, Length = 4 });
+			second.Ranges.Add(new TextRange { StartIndex = 15, Length = 4 });
+			SUT.TextHighlighters.Add(second);
+
+			try
+			{
+				await UITestHelper.Load(SUT);
+				var screenshot = await UITestHelper.ScreenShot(SUT);
+
+				var full = new System.Drawing.Rectangle(0, 0, screenshot.Width, screenshot.Height);
+
+				// The second highlighter must paint at all - it was dropped entirely before.
+				ImageAssert.HasColorInRectangle(screenshot, full, Colors.Blue, tolerance: 5);
+				// ...and so must the first highlighter.
+				ImageAssert.HasColorInRectangle(screenshot, full, Colors.Red, tolerance: 5);
+
+				// The words alternate red, blue, red, blue, so the two colours must interleave along the
+				// line. Red reaching past where blue starts proves its second range painted, and blue
+				// reaching past where red ends proves the same for its own.
+				await screenshot.Populate();
+				var red = HorizontalExtent(screenshot, Colors.Red);
+				var blue = HorizontalExtent(screenshot, Colors.Blue);
+
+				Assert.IsTrue(red.Min < blue.Min, $"The first word should be red (red {red}, blue {blue})");
+				Assert.IsTrue(red.Max > blue.Min, $"The first highlighter's second range should paint (red {red}, blue {blue})");
+				Assert.IsTrue(blue.Max > red.Max, $"The second highlighter's second range should paint (red {red}, blue {blue})");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
 		[TestMethod]
 		public async Task When_Highlight_Spans_Second_Paragraph_Across_Separator()
 		{
