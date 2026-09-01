@@ -44,6 +44,7 @@
             x:Name="Viewport"
             Grid.Row="4"
             Background="{ThemeResource SystemControlBackgroundAltMediumLowBrush}"
+            ManipulationCompleted="Viewport_ManipulationCompleted"
             ManipulationDelta="Viewport_ManipulationDelta"
             ManipulationInertiaStarting="Viewport_ManipulationInertiaStarting"
             ManipulationMode="TranslateY,TranslateInertia">
