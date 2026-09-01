@@ -29,8 +29,10 @@ internal class ExtensionsRegistrar
 		}
 
 		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new NativeWindowFactoryExtension());
-		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource), o => AppleUIKitCorePointerInputSource.Instance);
-		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoKeyboardInputSource), o => UnoKeyboardInputSource.Instance);
+		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoCorePointerInputSource),
+			o => (o as RootViewController)?.PointerInputSource ?? throw new ArgumentException($"{nameof(o)} must be a {nameof(RootViewController)} instance"));
+		ApiExtensibility.Register<IXamlRootHost>(typeof(IUnoKeyboardInputSource),
+			o => (o as RootViewController)?.KeyboardInputSource ?? throw new ArgumentException($"{nameof(o)} must be a {nameof(RootViewController)} instance"));
 		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new UIKitNativeElementHostingExtension(o));
 		ApiExtensibility.Register<TextBoxView>(typeof(IOverlayTextBoxViewExtension), o => new InvisibleTextBoxViewExtension(o));
 		ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => AppleUIKitImeTextBoxExtension.Instance);
