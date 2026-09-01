@@ -63,7 +63,7 @@ public sealed unsafe partial class WebGpuPresentSession
 						AppendSolidRectLocalT(sv, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f, slotBits);
 						tj++;
 					}
-					order.Add(new FrameOp { Kind = DrawKind.Solid, ByteOff = rel * 7 * sizeof(float), Count = (uint)((tj - ti) * 6), Clip = rc0.Clip });
+					order.Add(new FrameOp { Kind = DrawKind.Solid, ByteOff = rel * VertexStride.Table * sizeof(float), Count = (uint)((tj - ti) * 6), Clip = rc0.Clip });
 					ti = tj - 1;
 				}
 				else if (tc is RoundedRectCmd rr0)
@@ -246,7 +246,7 @@ public sealed unsafe partial class WebGpuPresentSession
 						AppendSolidRect(sv, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
 						tj++;
 					}
-					order.Add(new FrameOp { Kind = DrawKind.Solid, ByteOff = rel * 6 * sizeof(float), Count = (uint)((tj - ti) * 6), Clip = rc0.Clip, ClipBg = (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip, fOwned) });
+					order.Add(new FrameOp { Kind = DrawKind.Solid, ByteOff = rel * VertexStride.Solid * sizeof(float), Count = (uint)((tj - ti) * 6), Clip = rc0.Clip, ClipBg = (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip, fOwned) });
 					ti = tj - 1;
 				}
 				else if (tc is RoundedRectCmd rr0)
@@ -671,12 +671,12 @@ public sealed unsafe partial class WebGpuPresentSession
 			cu[16] = mm[15]; cu[17] = mm[16]; cu[18] = mm[17]; cu[19] = mm[18]; // m3
 			cu[20] = mm[4]; cu[21] = mm[9]; cu[22] = mm[14]; cu[23] = mm[19];   // off (5th column)
 		}
-		var lubuf = MakeUniform((int)96);
-		fixed (float* p = cu) { wgpuQueueWriteBuffer(_d.Q, lubuf, 0, (IntPtr)p, 96); }
+		var lubuf = MakeUniform(WebGpuDevice.CompositeUniformBytes);
+		fixed (float* p = cu) { wgpuQueueWriteBuffer(_d.Q, lubuf, 0, (IntPtr)p, WebGpuDevice.CompositeUniformBytes); }
 		// Two entries, not three: the composite shader uses textureLoad, so its layout has no sampler.
 		var lentries = stackalloc WGPUBindGroupEntry[2];
 		lentries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = layerSurface.View };
-		lentries[1] = new WGPUBindGroupEntry { Binding = 2, Buffer = lubuf, Offset = 0, Size = 96 };
+		lentries[1] = new WGPUBindGroupEntry { Binding = 2, Buffer = lubuf, Offset = 0, Size = WebGpuDevice.CompositeUniformBytes };
 		var lbgd = new WGPUBindGroupDescriptor { Layout = lyr.CompositeMode == 1 ? _d.CompositeDstInBgl : _d.CompositeBgl, EntryCount = 2, Entries = lentries };
 		var lbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &lbgd));
 		// Scissor the composite to the layer's content. The composite shader draws a FULLSCREEN triangle,

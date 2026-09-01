@@ -809,7 +809,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		{
 			Binding = 2,
 			Visibility = WGPUShaderStage.Fragment,
-			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.Uniform, MinBindingSize = 112 },
+			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.Uniform, MinBindingSize = ImageUniformBytes },
 		};
 		var bgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 3, Entries = e };
 		ImgBgl = wgpuDeviceCreateBindGroupLayout(Dev, &bgld);

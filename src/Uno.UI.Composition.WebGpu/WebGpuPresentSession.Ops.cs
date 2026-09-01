@@ -484,7 +484,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					var entries = stackalloc WGPUBindGroupEntry[3];
 					entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = view };
 					entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-					entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 112 };
+					entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = WebGpuDevice.ImageUniformBytes };
 					var bgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
 					var bg = Bg(ref bgd, owned);
 					if (owned is null)
