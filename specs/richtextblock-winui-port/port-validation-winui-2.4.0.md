@@ -28,7 +28,10 @@ Updated as items are addressed. Verdicts below are unchanged; this section only 
 | V2 | Overflow slice built from raw `Margin` | ✅ fixed | `63235e9a264` (fix) · `b3c1c9ed2f8` (test) | Runtime: reverted → slice starts row 32 (not 8) and ends row 87 of a 131 px box (not 129); 1000 painted px vs 1887 |
 | V3 | `TransformPositionToPage` container↔flat space | ✅ fixed | `b5445cfc970` (fix) · `a84ca17dc15` (test) | Runtime: reverted → the last four container positions of a two-run paragraph all resolve to an empty rect; a point→pointer→rect round trip returns `X 0` for a probe at `x=120` |
 | V4 | `TextHighlightMerge` pipeline unreachable | ✅ fixed | `4db6af52a12` (fix) · `9796bd3f10a` (test) | Runtime: reverted → the second highlighter's colour is **absent from the render entirely** |
-| V5–V8 | Minor findings | ⬜ open | — | See §3 |
+| V5 | Hyperlink `GetClickablePointCore` returns the origin | ✅ fixed | `0a5dc17af49` · `cb459ae584d` | Runtime: reverted → the point is `0`. `GetBoundingRectangleCore` stays stubbed — `GetBoundsCollectionForElement` still throws |
+| V6 | `TextSchema` validation never invoked | ✅ fixed | `378833a45c9` · `cc6354b1aa9` | Runtime: reverted → no exception when nesting a Hyperlink/LineBreak/InlineUIContainer in a Hyperlink |
+| V7 | Overflow `ContentStart`/`ContentEnd` stay `NotImplemented` | ⬜ deferred | — | Two `internal`-but-complete properties matching the repo's "expose a port as internal until validated" gating; the third member (`GetPositionFromPoint`) is genuinely unported. A public-surface decision, not a defect |
+| V8 | Property callbacks collapse WinUI's invalidation tiers | ◐ partial | `bc41526efd7` | Foreground is off the re-shape path. **The other three tiers do not transfer** — see below |
 | P1–P3 | Feature backlog (18 items) | ⬜ open | — | See §7 |
 
 ### Notes recorded while remediating
@@ -36,6 +39,17 @@ Updated as items are addressed. Verdicts below are unchanged; this section only 
 **`TextBlockAutomationPeer.cs` keeps its `1.8.4` tag deliberately.** §6.2 proposed repinning it; the audit grades
 it 40 % / structural ("deliberately keeps the pre-existing minimal `DirectUI.TextAdapter`; out of Stage 10 scope").
 Repinning would assert a provenance the file does not have, so it was left alone.
+
+**Correction to §3 (V8): the tier map is not transferable, and the finding's "rendered result is identical"
+is wrong.** WinUI's `InvalidateContentMeasure` re-runs line breaking; Uno caches shaping in `ParsedText` and
+rebuilds it on content invalidation only. Retiering the nine measure-tier properties WinUI lists therefore
+leaves stale wrapped lines — `Given_RichTextBlock.When_TextWrapping_Changed_Dynamically` fails. They stay on
+the content path until `PageNode.InvalidateMeasure` re-runs line breaking; only the Foreground tier was safe.
+
+**Also observed while testing V8:** changing an inherited DP re-measures the control even when no callback
+asks for it. `TextBlock`'s `Foreground` DP is registered identically (`Inherits`, no `AffectsMeasure`) and
+behaves the same, so this is framework-wide rather than a RichTextBlock port defect — but it masks the
+difference V8's fix makes, so the fix is code- and regression-verified rather than runtime-proven.
 
 **Correction to §3 (V4): `TextBlock` is _not_ unaffected.** The finding stated that `TextBlock` renders through
 `UnicodeText.Draw` and so escapes the highlighter collapse. On this branch `TextBlock.cs:1655` calls
