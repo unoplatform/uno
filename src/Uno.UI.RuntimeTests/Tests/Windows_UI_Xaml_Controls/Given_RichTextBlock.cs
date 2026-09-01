@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI;
@@ -1578,5 +1578,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		#endregion
+
+		[TestMethod]
+		public void When_Hyperlink_Content_Is_Restricted()
+		{
+			// CInlineCollection::ValidateTextElement runs every add through CTextSchema, and
+			// HyperlinkSupportsElement accepts only Runs and non-Hyperlink Spans.
+			var hyperlink = new Hyperlink();
+
+			hyperlink.Inlines.Add(new Run { Text = "ok" });
+			hyperlink.Inlines.Add(new Bold { Inlines = { new Run { Text = "also ok" } } });
+			Assert.AreEqual(2, hyperlink.Inlines.Count, "Runs and non-Hyperlink Spans are supported content");
+
+			Assert.ThrowsExactly<ArgumentException>(
+				() => hyperlink.Inlines.Add(new Hyperlink()),
+				"A Hyperlink cannot nest another Hyperlink");
+
+			Assert.ThrowsExactly<ArgumentException>(
+				() => hyperlink.Inlines.Add(new LineBreak()),
+				"A Hyperlink cannot contain a LineBreak");
+
+			Assert.ThrowsExactly<ArgumentException>(
+				() => hyperlink.Inlines.Add(new InlineUIContainer()),
+				"A Hyperlink cannot contain an InlineUIContainer");
+
+			// A Span is walked recursively, so an unsupported element nested inside one is caught too.
+			var spanWithHyperlink = new Bold();
+			spanWithHyperlink.Inlines.Add(new Hyperlink());
+			Assert.ThrowsExactly<ArgumentException>(
+				() => hyperlink.Inlines.Add(spanWithHyperlink),
+				"A Span carrying an unsupported element is rejected too");
+
+			Assert.AreEqual(2, hyperlink.Inlines.Count, "No rejected element should have been added");
+		}
 	}
 }
