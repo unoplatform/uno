@@ -11,14 +11,12 @@ namespace Uno.UI.Composition.WebGpu;
 /// can be drawn in one pass at ONE sample per pixel instead of relying on MSAA.
 /// </summary>
 /// <remarks>
-/// The renderer's other option is stencil-then-cover: rasterize a triangle fan into the stencil, then blend a
-/// full bounding-box quad through it. That is ~2x the bounding box of a shape whose ink may be a third of it,
-/// and its edges are anti-aliased only by the multisampled attachment — which costs 4x the fill everywhere,
-/// including the interior where nothing needs it. Skia instead computes coverage per fragment and never asks
-/// for MSAA (Uno hands Ganesh sampleCount 0), which is what lets it antialias every shape differently inside
-/// one single-sampled pass. This produces the same thing geometrically: the interior is inset by half a pixel
-/// and filled at coverage 1, and a one-pixel ring straddling the true edge ramps coverage 1 -> 0. Coverage
-/// travels in the existing per-vertex alpha, so no vertex layout or shader change is needed.
+/// The alternative is stencil-then-cover: rasterize a fan into the stencil, then blend a full bounding-box quad
+/// through it — ~2x the bounding box of a shape whose ink may be a third of it, with edges antialiased only by
+/// the multisampled attachment, which costs 4x the fill everywhere including the interior that needs none. Skia
+/// computes coverage per fragment and never asks for MSAA (Uno hands Ganesh sampleCount 0). This reproduces that
+/// geometrically: the interior is inset half a pixel and filled at coverage 1, and a one-pixel ring straddling
+/// the true edge ramps 1 -> 0. Coverage rides the existing per-vertex alpha, so no shader change is needed.
 ///
 /// Split of work: <see cref="TryTriangulate"/> produces TOPOLOGY (triangle indices over the concatenated
 /// contour points), which is AFFINE-INVARIANT and therefore cacheable across frames even while a spin or

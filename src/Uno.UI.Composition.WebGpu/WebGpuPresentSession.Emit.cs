@@ -182,16 +182,9 @@ public sealed unsafe partial class WebGpuPresentSession
 		}
 	}
 
-	// Renders a command list into a target surface's MSAA pass (resolving to its single-sample view). Layers
-	// recurse into their own full-size surface then composite here; shadows/layers pre-render before the pass.
+	/// <summary>Timestamp the current RenderInto started, for the op-build half of the stats line.</summary>
 	private long _renderIntoStart;
 
-	/// <summary>
-	/// Emits one nested recording's draw ops. Three strategies, picked by what the recording holds and whether its
-	/// transform moved: a TABLE FRAME (solids re-emitted into the shared per-pass buffers, every vertex placed by
-	/// the xform table), an ARENA entry (geometry baked once in identity space and re-stamped on a move), or a
-	/// plain CACHED entry (rebuilt whenever its transform changes).
-	/// </summary>
 	/// <summary>
 	/// Replays a recording whose solids can be re-appended to the shared per-pass buffers, so a Border's
 	/// background and edges coalesce with its siblings' instead of costing a draw each. Falls through to the
@@ -495,6 +488,12 @@ public sealed unsafe partial class WebGpuPresentSession
 		return;
 	}
 
+	/// <summary>
+	/// Emits one nested recording's draw ops. Three strategies, picked by what the recording holds and whether its
+	/// transform moved: a TABLE FRAME (solids re-emitted into the shared per-pass buffers, every vertex placed by
+	/// the xform table), an ARENA entry (geometry baked once in identity space and re-stamped on a move), or a
+	/// plain CACHED entry (rebuilt whenever its transform changes).
+	/// </summary>
 	private void EmitReplayRef(ReplayRefCmd rr, List<DrawOp> ops, HashSet<List<WebGpuCommand>> frameEmitted)
 	{
 		// Cull a recording whose (transformed) content is entirely clipped out or off-surface: the

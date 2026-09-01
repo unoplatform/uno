@@ -21,11 +21,6 @@ namespace Uno.UI.Composition.WebGpu;
 public sealed unsafe partial class WebGpuPresentSession
 {
 	/// <summary>
-	/// Encodes ops [<paramref name="start"/>, <paramref name="end"/>) into the pass, applying each op's scissor and
-	/// path-clip mask as it goes. Split out of RenderInto so the command walk and the encode loop can each be read
-	/// on their own.
-	/// </summary>
-	/// <summary>
 	/// Encodes one backdrop (the acrylic path): ends the open pass so its MSAA resolves into the target view - the
 	/// content BEHIND the backdrop - blurs the affected region, then opens a fresh pass that loads that content back
 	/// and composites the blurred backdrop and its tint over the effect region. Ops after this one draw on top in the
@@ -144,6 +139,11 @@ public sealed unsafe partial class WebGpuPresentSession
 		pst.Enc.Draw(6);
 	}
 
+	/// <summary>
+	/// Encodes ops [<paramref name="start"/>, <paramref name="end"/>) into the pass, applying each op's scissor and
+	/// path-clip mask as it goes. Split out of RenderInto so the command walk and the encode loop can each be read
+	/// on their own.
+	/// </summary>
 	private void EncodeOps(int start, int end, ref PassOps pst)
 	{
 		var pass = pst.Pass;

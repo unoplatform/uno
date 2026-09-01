@@ -235,7 +235,6 @@ public sealed unsafe class WebGpuTexture : ITexture
 		lock (_lifetimeGate) { DisposeRequested = true; TryFree(); }
 	}
 
-	// Balances one AddRef: called by WebGpuRenderRecord.Dispose for each reference it took.
 	internal void Release()
 	{
 		lock (_lifetimeGate) { _refCount--; TryFree(); }
@@ -404,7 +403,6 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 		BlendMode.Hue => 23, BlendMode.Saturation => 24, BlendMode.Color => 25, BlendMode.Luminosity => 26, _ => 0,
 	};
 
-	// Composites the foreground over the background with `shaderMode` into a fresh offscreen texture.
 	private ITexture RunBlend(WebGpuTexture bg, WebGpuTexture fg, int shaderMode)
 	{
 		int w = Math.Max(bg.PixelWidth, fg.PixelWidth), h = Math.Max(bg.PixelHeight, fg.PixelHeight);
@@ -428,7 +426,6 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 		return new WebGpuTexture(_device, tex, view, w, h);
 	}
 
-	// Procedural WhiteNoise into a fresh offscreen texture.
 	private ITexture RunNoise(int w, int h, System.Numerics.Vector2 freq, System.Numerics.Vector2 offset)
 	{
 		var surface = new WebGpuRenderSurface(_device, w, h);
@@ -439,7 +436,7 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 		return new WebGpuTexture(_device, tex, view, w, h);
 	}
 
-	// Single-input per-channel colour function (Contrast / GammaTransfer) into a fresh offscreen texture.
+	// Contrast / GammaTransfer: a per-channel function of one input.
 	private ITexture RunColorFunc(WebGpuTexture src, float[] u20)
 	{
 		int w = src.PixelWidth, h = src.PixelHeight;
