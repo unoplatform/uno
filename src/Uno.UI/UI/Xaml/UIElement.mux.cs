@@ -925,7 +925,7 @@ namespace Microsoft.UI.Xaml
 
 		// NOTE: This should actually be on DependencyObject, not UIElement.
 		// We'll be able to do it once DependencyObject is a class instead of an interface.
-		internal void Enter(EnterParams @params, int depth)
+		internal void Enter(EnterParams @params)
 		{
 			// If IsProcessingEnterLeave is true, then this element is already part of the
 			// Enter/Leave walk. This can happen, for instance, if a custom DP's value has
@@ -952,7 +952,7 @@ namespace Microsoft.UI.Xaml
 					this.SetVisualTree(@params.VisualTree);
 				}
 
-				EnterImpl(@params, depth);
+				EnterImpl(@params);
 
 				//DependencyObject pAdjustedNamescopeOwner = pNamescopeOwner;
 
@@ -1139,9 +1139,9 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal virtual void EnterImpl(EnterParams @params, int depth)
+		internal virtual void EnterImpl(EnterParams @params)
 		{
-			Depth = depth;
+			Depth = @params.Depth;
 
 			// Ensure VisualTree is propagated through the Enter walk.
 			// ChildEnter may call EnterImpl directly (bypassing UIElement.Enter),

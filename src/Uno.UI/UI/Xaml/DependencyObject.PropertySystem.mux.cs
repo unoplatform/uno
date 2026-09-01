@@ -246,7 +246,8 @@ public partial class DependencyObject
 				if (resource is FrameworkElement resourceAsUIElement)
 				{
 					resourceAsUIElement.XamlRoot = fe.XamlRoot;
-					resourceAsUIElement.EnterImpl(@params, int.MinValue);
+					@params.Depth = int.MinValue;
+					resourceAsUIElement.EnterImpl(@params);
 				}
 			}
 		}

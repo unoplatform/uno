@@ -1,19 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Uno.Disposables;
-using Uno.UI.Helpers.WinUI;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Windows.System;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
-
+using Uno.Disposables;
+using Uno.UI.Helpers.WinUI;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+using Windows.System;
 using AutomationPeer = Microsoft.UI.Xaml.Automation.Peers.AutomationPeer;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -56,9 +55,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Enter to all DP values including the Items collection. In Uno, we need to do this explicitly.
 		// MenuBarItem.Items is an ObservableVector (not a DependencyObject), so the generic
 		// DP parent/Enter mechanism doesn't apply. We explicitly propagate to the items' KA collections.
-		internal override void EnterImpl(Uno.UI.Xaml.EnterParams @params, int depth)
+		internal override void EnterImpl(Uno.UI.Xaml.EnterParams @params)
 		{
-			base.EnterImpl(@params, depth);
+			base.EnterImpl(@params);
 
 			var items = Items;
 			if (items is not null)
@@ -66,10 +65,10 @@ namespace Microsoft.UI.Xaml.Controls
 				// Resolve the VisualTree from this element (which IS in the live tree)
 				// and propagate it so that KA collections inside items can find the ContentRoot.
 				var visualTree = @params.VisualTree ?? Uno.UI.Xaml.Core.VisualTree.GetForElement(this, Uno.UI.Xaml.Core.VisualTree.LookupOptions.NoFallback);
-				var kaParams = new Uno.UI.Xaml.EnterParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree };
+				var kaParams = new Uno.UI.Xaml.EnterParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree, Depth = 0 };
 				foreach (var item in items)
 				{
-					item.Enter(kaParams, 0);
+					item.Enter(kaParams);
 				}
 			}
 		}
