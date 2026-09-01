@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -16,6 +17,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			"Line one of the content. Line two of the content. Line three of the content. " +
 			"Line four of the content. Line five of the content. Line six of the content. " +
 			"Line seven of the content. Line eight of the content. Line nine of the content.";
+
+		[TestMethod]
+		public void When_OverflowContentTarget_Closes_A_Cycle()
+		{
+			// The chain walks follow OverflowContentTarget until it is null, so a cycle never terminates.
+			// WinUI rejects the assignment outright rather than letting one form.
+			var self = new RichTextBlockOverflow();
+
+			Assert.ThrowsExactly<ArgumentException>(
+				() => self.OverflowContentTarget = self,
+				"A self-referencing OverflowContentTarget should be rejected");
+			Assert.IsNull(self.OverflowContentTarget, "The rejected value must not be committed");
+
+			var first = new RichTextBlockOverflow();
+			var second = new RichTextBlockOverflow();
+			first.OverflowContentTarget = second;
+
+			Assert.ThrowsExactly<ArgumentException>(
+				() => second.OverflowContentTarget = first,
+				"Linking back onto an earlier link in the chain should be rejected");
+			Assert.IsNull(second.OverflowContentTarget, "The rejected value must not be committed");
+			Assert.AreEqual(second, first.OverflowContentTarget, "The valid forward link should survive the rejection");
+		}
 
 		[TestMethod]
 		public async Task When_Content_Overflows_To_Target()
