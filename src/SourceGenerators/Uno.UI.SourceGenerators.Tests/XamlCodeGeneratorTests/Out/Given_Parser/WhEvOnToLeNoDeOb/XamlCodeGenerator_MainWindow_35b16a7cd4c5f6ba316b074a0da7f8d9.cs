@@ -68,6 +68,7 @@ namespace TestRepro
 			if (__that.Content != null)
 			{
 				NameScope.SetNameScope(__that.Content, __nameScope);
+				__nameScope.Owner = __that.Content;
 			}
 			OnInitializeCompleted();
 

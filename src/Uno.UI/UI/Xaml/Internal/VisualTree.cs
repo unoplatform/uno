@@ -208,13 +208,13 @@ namespace Uno.UI.Xaml.Core
 			//	EnsureRenderTargetBitmapRoot());
 			//}
 
-			//if (publicRootVisual != null)
-			//{
-			//	// A visual set as the root of the tree implicitly becomes a permanent
-			//	// namescope owner, and will always have a name store.
-			//	publicRootVisual.IsStandardNameScopeOwner = true;
-			//	publicRootVisual.IsStandardNameScopeMember = false;
-			//}
+			if (publicRootVisual != null)
+			{
+				// A visual set as the root of the tree implicitly becomes a permanent
+				// namescope owner, and will always have a name store.
+				publicRootVisual.IsStandardNameScopeOwner = true;
+				publicRootVisual.IsStandardNameScopeMember = false;
+			}
 
 			//TODO Uno specific - we need to add the public content first, until
 			//https://github.com/unoplatform/uno/issues/325 is properly supported.
