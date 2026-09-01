@@ -231,6 +231,16 @@ namespace Uno.UI
 			public static bool UseLegacyFindNameTreeWalk { get; set; } = true;
 		}
 
+		public static class NameScope
+		{
+			/// <summary>
+			/// When true (default), registering a name that is already taken in the same namescope logs
+			/// a warning. Resolution is last-writer-wins either way; set this to false to silence the
+			/// warning for XAML that knowingly reuses names.
+			/// </summary>
+			public static bool WarnOnDuplicateName { get; set; } = true;
+		}
+
 		public static class FrameworkTemplate
 		{
 			/// <summary>
