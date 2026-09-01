@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Extensions;
+using Uno.UI;
 using WinUIColor = Windows.UI.Color;
 
 // Aliased rather than imported: the RichTextServices namespace also declares a TextFormatting type,
@@ -398,6 +399,15 @@ internal readonly struct ParsedText : IParsedText
 				? owner.GetHighContrastTextColors()
 				: default;
 
+		// Resolved once for the whole draw: the merged regions and their line spans depend only on the
+		// highlighters, not on the segment being painted.
+		var highlightRegions = new List<(HighlightRegion Region, SelectionDetails Details)>();
+		foreach (var region in MergeHighlighters(highlighters))
+		{
+			// HighlightRegion is inclusive, CalculateSelection takes an exclusive end.
+			highlightRegions.Add((region, CalculateSelection(region.StartIndex, region.EndIndex + 1)));
+		}
+
 		if (_renderLines.Count == 0)
 		{
 			// empty, so caret is at the beginning
@@ -565,30 +575,32 @@ internal readonly struct ParsedText : IParsedText
 					DrawBackplate(canvas, xBeforeGlyphOffsets, y, line.Height, backplateWidth, highContrastBackground, effectiveOpacity);
 				}
 
-				// limited support for highlighters
-				var highlighter = highlighters.FirstOrDefault();
-				var selection = highlighter?.Ranges?.FirstOrDefault();
-				if (selection is not null)
+				if (highlightRegions.Count > 0)
 				{
-					var selectionDetails = CalculateSelection(selection.Value.StartIndex, selection.Value.StartIndex + selection.Value.Length);
-					HandleSelection(
-						selectionDetails,
-						lineIndex,
-						characterCountSoFar,
-						positionsSpan,
-						x,
-						justifySpaceOffset,
-						segmentSpan,
-						segment,
-						fontInfo,
-						y,
-						line,
-						canvas,
-						highlighter!.Background.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()),
-						effectiveOpacity,
-						useHighContrastAdjustment ? ToSkColor(highContrastSelectionBackground, effectiveOpacity) : null);
-					RenderText(
-						selectionDetails,
+					// Backgrounds first: merged regions never overlap, so they compose without repainting
+					// one another, and the text is then drawn once across the whole segment.
+					foreach (var (region, details) in highlightRegions)
+					{
+						HandleSelection(
+							details,
+							lineIndex,
+							characterCountSoFar,
+							positionsSpan,
+							x,
+							justifySpaceOffset,
+							segmentSpan,
+							segment,
+							fontInfo,
+							y,
+							line,
+							canvas,
+							(region.BackgroundBrush ?? DefaultHighlighterBackground).GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()),
+							effectiveOpacity,
+							useHighContrastAdjustment ? ToSkColor(highContrastSelectionBackground, effectiveOpacity) : null);
+					}
+
+					RenderHighlightedText(
+						highlightRegions,
 						lineIndex,
 						characterCountSoFar,
 						segmentSpan,
@@ -1089,16 +1101,102 @@ internal readonly struct ParsedText : IParsedText
 			}
 		}
 
-		static void DrawText(FontDetails fontInfo, Span<SKPoint> positions, Span<ushort> glyphs,
-			SKCanvas canvas, float y, SKPaint paint)
+	}
+
+	private static void DrawText(FontDetails fontInfo, Span<SKPoint> positions, Span<ushort> glyphs,
+		SKCanvas canvas, float y, SKPaint paint)
+	{
+		_textBlobBuilder.AddPositionedRun(glyphs, fontInfo.SKFont, positions);
+		// Roughly equivalent to:
+		//   using var textBlob = _textBlobBuilder.Build();
+		//   canvas.DrawText(textBlob, 0f, y, paint);
+		var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
+		UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
+		UnoSkiaApi.sk_textblob_unref(textBlobHandle);
+	}
+
+	// TextHighlightRenderer::GetDefaultHighlighterBrushes — the fallback when a highlighter's brush is
+	// unset or not a SolidColorBrush.
+	private static SolidColorBrush DefaultHighlighterBackground =>
+		ResourceResolver.ResolveResourceStatic<SolidColorBrush>("TextControlHighlighterBackground")
+		?? new SolidColorBrush(Microsoft.UI.Colors.Yellow);
+
+	// TextHighlightRenderer::IterateMergedHighlighters — collapse every highlighter's ranges into
+	// non-overlapping regions where a later entry wins. The caller appends the selection last, so it
+	// takes precedence wherever it overlaps an app highlighter.
+	private static List<HighlightRegion> MergeHighlighters(IEnumerable<TextHighlighter> highlighters)
+	{
+		TextHighlightMerge merge = new();
+
+		foreach (var highlighter in highlighters)
 		{
-			_textBlobBuilder.AddPositionedRun(glyphs, fontInfo.SKFont, positions);
-			// Roughly equivalent to:
-			//   using var textBlob = _textBlobBuilder.Build();
-			//   canvas.DrawText(textBlob, 0f, y, paint);
-			var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
-			UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
-			UnoSkiaApi.sk_textblob_unref(textBlobHandle);
+			if (highlighter?.Ranges is not { Count: > 0 } ranges)
+			{
+				continue;
+			}
+
+			// WinUI resolves highlighter brushes to SolidColorBrush and falls back to the theme default.
+			var foreground = highlighter.Foreground as SolidColorBrush;
+			var background = highlighter.Background as SolidColorBrush;
+
+			foreach (var range in ranges)
+			{
+				if (range.Length <= 0)
+				{
+					continue;
+				}
+
+				// HighlightRegion ranges are inclusive; TextRange carries a length.
+				merge.AddRegion(new HighlightRegion(range.StartIndex, range.StartIndex + range.Length - 1, foreground, background));
+			}
+		}
+
+		return new List<HighlightRegion>(merge.Regions);
+	}
+
+	// Renders one segment split across the merged highlight regions: unhighlighted runs keep the base
+	// colour, each highlighted run takes its region's foreground. Regions are disjoint and ordered, so a
+	// single left-to-right pass covers the segment without overdrawing it.
+	private void RenderHighlightedText(List<(HighlightRegion Region, SelectionDetails Details)> regions,
+		int lineIndex, int characterCountSoFar, RenderSegmentSpan segmentSpan, FontDetails fontInfo,
+		Span<SKPoint> positions, Span<ushort> glyphs, SKCanvas canvas, float y, SKPaint paint,
+		SKColor? highContrastSelectionColor)
+	{
+		var glyphsLength = segmentSpan.GlyphsLength;
+		var baseColor = paint.Color;
+		var cursor = 0;
+
+		foreach (var (region, details) in regions)
+		{
+			if (details.StartLine > lineIndex || lineIndex > details.EndLine)
+			{
+				continue;
+			}
+
+			var start = Math.Clamp(details.StartIndex - characterCountSoFar, 0, glyphsLength);
+			var end = Math.Clamp(details.EndIndex - characterCountSoFar, 0, glyphsLength);
+
+			if (end <= start)
+			{
+				continue;
+			}
+
+			if (start > cursor)
+			{
+				DrawText(fontInfo, positions.Slice(cursor, start - cursor), glyphs.Slice(cursor, start - cursor), canvas, y, paint);
+			}
+
+			paint.Color = highContrastSelectionColor
+				?? (region.ForegroundBrush is { } fg ? ToSkColor(fg.Color, baseColor.Alpha / 255f) : new SKColor(255, 255, 255, 255));
+			DrawText(fontInfo, positions.Slice(start, end - start), glyphs.Slice(start, end - start), canvas, y, paint);
+			paint.Color = baseColor;
+
+			cursor = end;
+		}
+
+		if (cursor < glyphsLength)
+		{
+			DrawText(fontInfo, positions.Slice(cursor, glyphsLength - cursor), glyphs.Slice(cursor, glyphsLength - cursor), canvas, y, paint);
 		}
 	}
 
