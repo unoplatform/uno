@@ -798,10 +798,10 @@ namespace Microsoft.UI.Xaml
 				}
 
 				// WinUI nulls out the VisualTree pointer for shared FlyoutBase (Bug 19548424).
-				oldValue?.Leave(null, new LeaveParams { IsForKeyboardAccelerator = true, VisualTree = null });
+				oldValue?.PropagateKeyboardAcceleratorLeave(null, new LeaveParams { IsForKeyboardAccelerator = true, VisualTree = null });
 
 				newValue?.SetParent(this);
-				newValue?.Enter(null, new EnterParams { IsForKeyboardAccelerator = true, VisualTree = null });
+				newValue?.PropagateKeyboardAcceleratorEnter(null, new EnterParams { IsForKeyboardAccelerator = true, VisualTree = null });
 			}
 #endif
 

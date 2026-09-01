@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var flyout = Flyout;
 			if (flyout is not null)
 			{
-				flyout.Enter(null, @params);
+				flyout.PropagateKeyboardAcceleratorEnter(null, @params);
 			}
 		}
 
@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var flyout = Flyout;
 			if (flyout is not null)
 			{
-				flyout.Leave(null, @params);
+				flyout.PropagateKeyboardAcceleratorLeave(null, @params);
 			}
 		}
 		// TODO Uno: Uncomment this code and all commented out code related to this field once we know where

@@ -64,15 +64,15 @@ partial class MenuFlyout
 		}
 	}
 
-	internal override void Enter(DependencyObject namescopeOwner, EnterParams parameters)
+	internal override void PropagateKeyboardAcceleratorEnter(DependencyObject namescopeOwner, EnterParams parameters)
 	{
-		base.Enter(namescopeOwner, parameters);
+		base.PropagateKeyboardAcceleratorEnter(namescopeOwner, parameters);
 		KeyboardAcceleratorFlyoutItemEnter(this, namescopeOwner, MenuFlyout.ItemsProperty, parameters);
 	}
 
-	internal override void Leave(DependencyObject namescopeOwner, LeaveParams parameters)
+	internal override void PropagateKeyboardAcceleratorLeave(DependencyObject namescopeOwner, LeaveParams parameters)
 	{
-		base.Leave(namescopeOwner, parameters);
+		base.PropagateKeyboardAcceleratorLeave(namescopeOwner, parameters);
 		KeyboardAcceleratorFlyoutItemLeave(this, namescopeOwner, MenuFlyout.ItemsProperty, parameters);
 	}
 }
