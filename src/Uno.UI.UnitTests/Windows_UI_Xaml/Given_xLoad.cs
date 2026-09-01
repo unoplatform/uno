@@ -50,6 +50,30 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual(SUT.border1, border1);
 		}
 
+		/// <summary>
+		/// An x:Load element is a deferred namescope entry: looking its name up materializes it. Strict
+		/// mode takes the tree walk out of the picture so only the namescope path can answer.
+		/// </summary>
+		[TestMethod]
+		public void When_xLoad_Strict_FindName_Materializes()
+		{
+			var SUT = new When_xLoad_LoadSingle();
+			Assert.IsNull(SUT.border1);
+
+			Uno.UI.FeatureConfiguration.FrameworkElement.UseLegacyFindNameTreeWalk = false;
+			try
+			{
+				var border1 = SUT.FindName("border1");
+
+				Assert.IsNotNull(border1, "the deferred name did not materialize");
+				Assert.AreEqual(SUT.border1, border1);
+			}
+			finally
+			{
+				Uno.UI.FeatureConfiguration.FrameworkElement.UseLegacyFindNameTreeWalk = true;
+			}
+		}
+
 		[TestMethod]
 		public void When_xLoad_Deferred_StaticCollapsed()
 		{
