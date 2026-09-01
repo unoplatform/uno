@@ -11,9 +11,9 @@ namespace Microsoft.UI.Xaml.Controls
 	public partial class Button : ButtonBase
 	{
 		// MUX Reference: CButton::EnterImpl in Button.cpp
-		internal override void EnterImpl(EnterParams @params, int depth)
+		internal override void EnterImpl(EnterParams @params)
 		{
-			base.EnterImpl(@params, depth);
+			base.EnterImpl(@params);
 
 			var flyout = Flyout;
 			if (flyout is not null)

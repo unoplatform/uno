@@ -16,9 +16,9 @@ public partial class Control
 
 	internal virtual bool IsDelegatingFocusToTemplateChild() => false;
 
-	internal override void EnterImpl(EnterParams @params, int depth)
+	internal override void EnterImpl(EnterParams @params)
 	{
-		base.EnterImpl(@params, depth);
+		base.EnterImpl(@params);
 
 		if (@params.IsLive)
 		{
