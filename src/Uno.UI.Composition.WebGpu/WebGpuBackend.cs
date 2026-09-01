@@ -1637,15 +1637,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				// reuse is queue-ordered (wgpuQueueWriteBuffer runs after the prior frame's reads) and transient textures
 				// are refcount-released, so it is safe; the swapchain's max-frames-in-flight provides backpressure.
 				_ = wgpuDevicePoll(_d.Dev, 0u, null);
-
-				// The frame is submitted, so every layer's colour texture is free to be reused by the next frame.
-				foreach (var ls in _frameLayerSurfaces)
-				{
-					if (_d.MsaaSamples > 1) { _d.Pool.Return(ls.MsaaColorView); }   // at 1x MsaaColorView aliases View
-					_d.Pool.Return(ls.View);
-				}
-
-				_frameLayerSurfaces.Clear();
 				_frameEncoder = IntPtr.Zero;
 			}
 		}
@@ -1666,23 +1657,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 	// Computes the device-space scissor for a clip AABB (clamped to the surface). Returns false when degenerate
 	// (the op is fully clipped out and should be skipped).
-	// Layer colour surfaces used by this frame. They cannot go back to the pool at the point they are rendered -
-	// the composite that samples them is encoded later, into the parent's pass - so they are held until the frame
-	// is submitted and reclaimed here. Without this every layer rents a full-window colour texture that is never
-	// returned, so a scene with N layers per frame allocates N full-window textures per frame, for ever.
-	private readonly List<WebGpuRenderSurface> _frameLayerSurfaces = new();
-
-	// Dimensions of the surface the open pass renders into. Zero = the window surface. A scissor must be contained
-	// in its attachment, and a layer renders into its own surface, so clamp to that rather than to the window.
-	private int _passW, _passH;
-
 	private bool TryScissor(Vector4 clip, out int x, out int y, out int w, out int h)
 	{
-		var limW = _passW > 0 ? _passW : _s.Width;
-		var limH = _passH > 0 ? _passH : _s.Height;
 		x = (int)MathF.Max(0, MathF.Floor(clip.X)); y = (int)MathF.Max(0, MathF.Floor(clip.Y));
-		int r = (int)MathF.Min(limW, MathF.Ceiling(clip.Z)); int b = (int)MathF.Min(limH, MathF.Ceiling(clip.W));
-		x = Math.Min(x, limW); y = Math.Min(y, limH);
+		int r = (int)MathF.Min(_s.Width, MathF.Ceiling(clip.Z)); int b = (int)MathF.Min(_s.Height, MathF.Ceiling(clip.W));
 		w = r - x; h = b - y; return w > 0 && h > 0;
 	}
 	private Vector2 Ndc(Vector2 dev) => new(2f * dev.X / _s.Width - 1f, 1f - 2f * dev.Y / _s.Height);
@@ -2169,7 +2147,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		}
 		return false;
 	}
-
 
 	internal static int AtlasTried, AtlasNoKey, AtlasHit, AtlasBaked, AtlasNoRoom, AtlasNoRing, AtlasTransientMiss, ScaleBlocked;
 
@@ -4032,10 +4009,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// offscreen render and this composite record into the frame's single encoder, so wgpu barriers the
 						// offscreen resolve before the composite samples it — no explicit flush needed.
 						var layerSurface = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
-						var _savedPw = _passW; var _savedPh = _passH;
-						_passW = layerSurface.Width; _passH = layerSurface.Height;
 						RenderInto(lyr.Commands, layerSurface, null);
-						_passW = _savedPw; _passH = _savedPh;
 
 						// The layer's depth/stencil is write-only inside its own (now ended) pass: cleared on entry,
 						// discarded on exit, never sampled. Hand it straight back so every layer in the frame reuses
@@ -4043,8 +4017,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// full-window depth targets resident for the whole frame. The colour view can NOT be returned
 						// here: the composite op below samples it, and that is encoded later in the parent's pass.
 						_d.Pool.Return(layerSurface.DepthView);
-						// Reclaimed after submit (see _frameLayerSurfaces): the composite below still samples it.
-						if (layerSurface.Pooled) { _frameLayerSurfaces.Add(layerSurface); }
 
 						// SaveLayer(IEffectFilter) drop shadow: blur the content, draw it tinted+offset behind, then
 						// the content on top. Reuses the image path (SrcIn tint) for the shadow — same as DrawShadow.
