@@ -627,7 +627,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var descriptionPresenter = this.FindName("DescriptionPresenter") as ContentPresenter;
+			var descriptionPresenter = GetTemplateChild("DescriptionPresenter") as ContentPresenter;
 			if (descriptionPresenter != null)
 			{
 				descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;
