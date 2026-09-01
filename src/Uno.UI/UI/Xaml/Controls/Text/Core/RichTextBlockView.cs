@@ -185,7 +185,7 @@ internal sealed class RichTextBlockView : ITextView
 		// If the page has no break and the position is the last position on the page, it corresponds to the end of
 		// the text container. In this case the view is considered to contain it. For pixel position, treat it as though it
 		// has backward gravity, i.e. is the trailing edge of the last position on the page.
-		if (iTextPosition == (m_pPageNode.GetStartPosition() + m_pPageNode.GetContentLength()) &&
+		if (iTextPosition == (m_pPageNode.GetStartPosition() + GetContentLength()) &&
 			m_pPageNode.GetBreak() == null &&
 			!gravity.HasFlag(TextGravity.CharacterBackward))
 		{
@@ -242,7 +242,7 @@ internal sealed class RichTextBlockView : ITextView
 		// If the page has no break and the position is the last position on the page, it corresponds to the end of
 		// the text container. In this case the view is considered to contain it. For GetUIScope, treat it as though it
 		// has backward gravity, i.e. is the trailing edge of the last position on the page.
-		if (iTextPosition == (m_pPageNode.GetStartPosition() + m_pPageNode.GetContentLength()) &&
+		if (iTextPosition == (m_pPageNode.GetStartPosition() + GetContentLength()) &&
 			m_pPageNode.GetBreak() == null &&
 			!gravity.HasFlag(TextGravity.CharacterBackward))
 		{
@@ -287,7 +287,7 @@ internal sealed class RichTextBlockView : ITextView
 		// If the page has no break and the position is the last position on the page, it corresponds to the end of
 		// the text container. In this case the view is considered to contain it. For Contains, treat it as though it
 		// has backward gravity, i.e. is the trailing edge of the last position on the page.
-		if (iTextPosition == (m_pPageNode.GetStartPosition() + m_pPageNode.GetContentLength()) &&
+		if (iTextPosition == (m_pPageNode.GetStartPosition() + GetContentLength()) &&
 			m_pPageNode.GetBreak() == null &&
 			!gravity.HasFlag(TextGravity.CharacterBackward))
 		{
@@ -466,14 +466,18 @@ internal sealed class RichTextBlockView : ITextView
 	// with an arbitrary offset.
 	// TransformToPage returns bool because the position may be on the page at all. TransformFromPage
 	// is only called for a position on the page, so it will always succeed.
+	// Uno bridge (R3): WinUI's CPageNode measures in container space, so it offsets the incoming
+	// position directly. Uno's node measures flat (ParsedText) char space, so convert first - the
+	// same adjustment IsAtInsertionPosition makes before calling into the node.
 	private bool TransformPositionToPage(uint position, out uint pPosition)
 	{
 		uint pageLocalPosition;
+		uint flatPosition = (uint)GetCharacterIndex((int)position);
 		uint pageStart = m_pPageNode.GetStartPosition();
 
-		if (position >= pageStart)
+		if (flatPosition >= pageStart)
 		{
-			pageLocalPosition = position - pageStart;
+			pageLocalPosition = flatPosition - pageStart;
 			if (pageLocalPosition < m_pPageNode.GetContentLength())
 			{
 				pPosition = pageLocalPosition;
