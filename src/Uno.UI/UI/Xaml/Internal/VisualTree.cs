@@ -445,7 +445,7 @@ namespace Uno.UI.Xaml.Core
 
 				// In WinUI, this is called only under IsMainVisualTree condition.
 				// This might be needed for now in Uno because RootVisual does not *yet* have XamlIslandRootCollection
-				root.Enter(enterParams);
+				root.EnterTree(null, enterParams);
 			}
 		}
 

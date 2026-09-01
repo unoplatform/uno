@@ -114,16 +114,16 @@ namespace Microsoft.UI.Xaml.Controls
 			m_itemsAreSized = false;
 		}
 
-		internal override void EnterImpl(EnterParams @params)
+		internal override void EnterImpl(DependencyObject namescopeOwner, EnterParams @params)
 		{
-			base.EnterImpl(@params);
+			base.EnterImpl(namescopeOwner, @params);
 
 			HookTemplate();
 		}
 
-		internal override void LeaveImpl(LeaveParams @params)
+		internal override void LeaveImpl(DependencyObject namescopeOwner, LeaveParams @params)
 		{
-			base.LeaveImpl(@params);
+			base.LeaveImpl(namescopeOwner, @params);
 
 			UnhookTemplate();
 		}

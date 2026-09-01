@@ -925,7 +925,7 @@ namespace Microsoft.UI.Xaml
 
 		// NOTE: This should actually be on DependencyObject, not UIElement.
 		// We'll be able to do it once DependencyObject is a class instead of an interface.
-		internal void Enter(EnterParams @params)
+		internal void EnterTree(DependencyObject? namescopeOwner, EnterParams @params)
 		{
 			// If IsProcessingEnterLeave is true, then this element is already part of the
 			// Enter/Leave walk. This can happen, for instance, if a custom DP's value has
@@ -952,7 +952,7 @@ namespace Microsoft.UI.Xaml
 					this.SetVisualTree(@params.VisualTree);
 				}
 
-				EnterImpl(@params);
+				EnterImpl(namescopeOwner, @params);
 
 				//DependencyObject pAdjustedNamescopeOwner = pNamescopeOwner;
 
@@ -1139,7 +1139,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal virtual void EnterImpl(EnterParams @params)
+		internal override void EnterImpl(DependencyObject? namescopeOwner, EnterParams @params)
 		{
 			Depth = @params.Depth;
 
@@ -1239,7 +1239,7 @@ namespace Microsoft.UI.Xaml
 			// Pass updated params to children.
 			// MUX Reference: uielement.cpp:1356 — CUIElement::EnterImpl calls CDependencyObject::EnterImpl
 			// here. The CDependencyObject layer lives on DependencyObject (DependencyObject.mux.cs).
-			((DependencyObject)this).EnterImpl(null, @params);
+			base.EnterImpl(namescopeOwner, @params);
 
 #if __SKIA__
 			if (@params.IsLive)
@@ -1296,7 +1296,7 @@ namespace Microsoft.UI.Xaml
 					continue;
 				}
 
-				this.ChildEnter(child, @params);
+				this.ChildEnter(child, namescopeOwner, @params);
 			}
 
 			//{
@@ -1429,7 +1429,7 @@ namespace Microsoft.UI.Xaml
 		// then the object is leaving the "Live" tree, and the object can no
 		// longer respond to OM requests related to being Live.   Actions
 		// like downloads and animation will be halted.
-		internal void Leave(LeaveParams @params)
+		internal void LeaveTree(DependencyObject? namescopeOwner, LeaveParams @params)
 		{
 			// If IsProcessingEnterLeave is true, then this element is already part of the
 			// Enter/Leave walk.  This can happen, for instance, if a custom DP's value has
@@ -1446,7 +1446,7 @@ namespace Microsoft.UI.Xaml
 			try
 			{
 				// UNO TODO: We naively call LeaveImpl right away.
-				LeaveImpl(@params);
+				LeaveImpl(namescopeOwner, @params);
 
 				//DependencyObject pAdjustedNamescopeOwner = pNamescopeOwner;
 
@@ -1619,7 +1619,7 @@ namespace Microsoft.UI.Xaml
 		// would do similar cleanup on their final leave. This enables appropriate sharing.
 		// Hence an element should not cleanup resources for its
 		// child/property in its leave.
-		internal virtual void LeaveImpl(LeaveParams @params)
+		internal override void LeaveImpl(DependencyObject? namescopeOwner, LeaveParams @params)
 		{
 			// Ensure VisualTree is propagated through the Leave walk.
 			if (@params.VisualTree is null)
@@ -1830,7 +1830,7 @@ namespace Microsoft.UI.Xaml
 
 			// MUX Reference: CUIElement::LeaveImpl calls CDependencyObject::LeaveImpl here. The
 			// CDependencyObject layer lives on DependencyObject (DependencyObject.mux.cs).
-			((DependencyObject)this).LeaveImpl(null, @params);
+			base.LeaveImpl(namescopeOwner, @params);
 
 			// Extends LeaveImpl to the ContextFlyout.
 			// In WinUI, LeaveSparseProperties calls LeaveEffectiveValue for IsVisualTreeProperty values,
@@ -1877,7 +1877,7 @@ namespace Microsoft.UI.Xaml
 			// UNO specific: We don't have UIElementCollection field, so we do it this way
 			foreach (var child in _children)
 			{
-				child.Leave(@params);
+				child.LeaveTree(namescopeOwner, @params);
 			}
 
 			// If this object has a managed peer, it needs to process Leave as well.

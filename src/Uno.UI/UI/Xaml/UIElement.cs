@@ -1666,7 +1666,9 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var enterParams = new EnterParams(IsActiveInVisualTree);
-			ChildEnter(child, enterParams);
+			// Owner stays null here: seeding a real namescope owner is a behaviour change and
+			// belongs to the registration step, not this plumbing one.
+			ChildEnter(child, null, enterParams);
 
 			OnChildAdded(child);
 			UIElementAccessibilityHelper.ExternalOnChildAdded?.Invoke(this, child, index);

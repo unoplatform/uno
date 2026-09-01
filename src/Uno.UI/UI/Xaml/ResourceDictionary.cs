@@ -253,7 +253,7 @@ namespace Microsoft.UI.Xaml
 				_values.Remove(keyToRemove);
 				if (value is FrameworkElement fe)
 				{
-					fe.LeaveImpl(new LeaveParams());
+					fe.LeaveImpl(null, new LeaveParams());
 				}
 
 				ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
