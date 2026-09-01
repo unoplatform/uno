@@ -70,6 +70,42 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			TypeResolver = new XamlTypeResolver(_fileDefinition);
 		}
 
+		/// <summary>
+		/// The namescope names being read register into - one per root, exactly as generated code
+		/// creates one per InitializeComponent and one per template instantiation.
+		/// </summary>
+		private NameScope? _currentNameScope;
+
+		/// <summary>
+		/// Reads <paramref name="load"/>'s tree under a fresh namescope and hands the scope to the
+		/// root it produced. The root is only known once the body has run, which is what the
+		/// NameScope pending-name buffer exists for.
+		/// </summary>
+		private object? LoadWithNameScope(Func<object?> load)
+		{
+			var scope = new NameScope();
+			var previousScope = _currentNameScope;
+			_currentNameScope = scope;
+
+			object? instance;
+			try
+			{
+				instance = load();
+			}
+			finally
+			{
+				_currentNameScope = previousScope;
+			}
+
+			if (instance is DependencyObject dependencyObject && NameScope.GetNameScope(dependencyObject) is null)
+			{
+				NameScope.SetNameScope(dependencyObject, scope);
+				scope.Owner = dependencyObject;
+			}
+
+			return instance;
+		}
+
 		internal object? Build(object? component = null, bool createInstanceFromXClass = false)
 		{
 			bool topLevelExceptionSet = false;
@@ -77,7 +113,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			{
 				var topLevelControl = _fileDefinition.Objects.First();
 
-				var instance = LoadObject(topLevelControl, rootInstance: null, component: component, createInstanceFromXClass: createInstanceFromXClass);
+				var instance = LoadWithNameScope(() => LoadObject(topLevelControl, rootInstance: null, component: component, createInstanceFromXClass: createInstanceFromXClass));
 
 				if (_parseExceptions?.Count > 0)
 				{
@@ -217,7 +253,9 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				{
 					var contentOwner = unknownContent;
 
-					return LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance, settings: s) as _View;
+					// Every instantiation gets its own namescope, so the same x:Name in two copies of
+					// a template resolves to the copy that owns it.
+					return LoadWithNameScope(() => LoadObject(contentOwner?.Objects.FirstOrDefault(), rootInstance: rootInstance, settings: s)) as _View;
 				};
 
 				// We're validating the content here to ensure that any parse exception is
@@ -582,6 +620,11 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				if (TypeResolver.GetPropertyByName(control.Type, "Name") is PropertyInfo nameInfo)
 				{
 					GetPropertySetter(nameInfo).Invoke(instance, new[] { member.Value });
+				}
+
+				if (member.Value is string xName)
+				{
+					_currentNameScope?.RegisterName(xName, instance);
 				}
 
 				// Update x:Name generated fields, if any

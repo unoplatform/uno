@@ -790,7 +790,7 @@ internal sealed partial class TextBoxCore
 			return;
 		}
 
-		var descriptionPresenter = _host.Owner.FindName("DescriptionPresenter") as ContentPresenter;
+		var descriptionPresenter = _host.Owner.GetTemplateChild("DescriptionPresenter") as ContentPresenter;
 		if (descriptionPresenter != null)
 		{
 			descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;

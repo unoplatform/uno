@@ -221,6 +221,14 @@ namespace Uno.UI
 			/// disabled to improve application performance on WebAssembly. See See #7005 for additional details.
 			/// </summary>
 			public static bool HandleLoadUnloadExceptions { get; set; } = true;
+
+			/// <summary>
+			/// When true (default), <see cref="Microsoft.UI.Xaml.FrameworkElement.FindName(string)"/> falls back
+			/// to a visual-tree walk when the name is not in the element's namescope. WinUI resolves names from
+			/// the namescope only - a name declared inside a template does not resolve from outside it - so
+			/// setting this to false gives WinUI behaviour.
+			/// </summary>
+			public static bool UseLegacyFindNameTreeWalk { get; set; } = true;
 		}
 
 		public static class FrameworkTemplate

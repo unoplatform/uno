@@ -68,6 +68,15 @@ internal partial class CoreServices
 	}
 
 	/// <summary>
+	/// Resolves a name from the namescope <paramref name="referenceObject"/> belongs to.
+	/// MUX Reference: CCoreServices::TryGetElementByName (xcpcore_namescope.cpp:28-36).
+	/// WinUI redirects a template member to its templated parent's template scope; Uno's template
+	/// roots are standard owners, so the standard walk already lands on the template's own scope.
+	/// </summary>
+	internal DependencyObject? TryGetElementByName(string name, DependencyObject referenceObject)
+		=> GetNamedObject(name, referenceObject.GetStandardNameScopeOwner(), NameScopeType.StandardNameScope);
+
+	/// <summary>
 	/// Removes a name registration, but only if it still refers to <paramref name="originalEntry"/>.
 	/// MUX Reference: CCoreServices::ClearNamedObject (xcpcore_namescope.cpp:109-142).
 	/// </summary>
