@@ -230,7 +230,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	// While a caret drag is running, UIKit's own selection updates are computed against the proxy's
 	// system-font layout, which bears no relation to the Skia-rendered text. The managed side owns
 	// the caret for the duration of the gesture.
-	internal bool IsCaretDragActive => _owner?.TextBox?.IsCaretDragActive == true;
+	internal bool IsCaretDragActive => _owner?.TextBox?.IsCaretDragActive ?? false;
 
 	internal bool ProcessCaretDragGesture(TextBox.CaretDragPhase phase, Windows.Foundation.Point cumulativeOffset)
 	{
