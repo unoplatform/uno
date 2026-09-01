@@ -4,6 +4,7 @@
 
 #pragma warning disable CS0109
 
+using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 
@@ -65,7 +66,23 @@ namespace Microsoft.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					null,
 					(s, e) => ((RichTextBlockOverflow)s).OnOverflowContentTargetChangedPartial(
-						(RichTextBlockOverflow)e.OldValue, (RichTextBlockOverflow)e.NewValue)));
+						(RichTextBlockOverflow)e.OldValue, (RichTextBlockOverflow)e.NewValue),
+					CoerceOverflowContentTarget));
+
+		// CRichTextBlockOverflow::SetValue validates the new target with ValidateNextLink and fails the set
+		// with E_INVALIDARG when it would close a cycle, so the field is never written. Coercion is the
+		// equivalent pre-commit hook here: the chain walks assume a finite chain and would spin forever.
+		private static object CoerceOverflowContentTarget(DependencyObject sender, object baseValue, DependencyPropertyValuePrecedences _)
+		{
+			if (baseValue is RichTextBlockOverflow newTarget && !((RichTextBlockOverflow)sender).ValidateNextLink(newTarget))
+			{
+				throw new ArgumentException(
+					"The value would form a cycle in the linked RichTextBlockOverflow chain.",
+					nameof(OverflowContentTarget));
+			}
+
+			return baseValue;
+		}
 
 		partial void OnOverflowContentTargetChangedPartial(RichTextBlockOverflow oldTarget, RichTextBlockOverflow newTarget);
 

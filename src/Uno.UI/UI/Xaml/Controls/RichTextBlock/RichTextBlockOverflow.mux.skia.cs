@@ -35,6 +35,32 @@ partial class RichTextBlockOverflow
 
 	//------------------------------------------------------------------------
 	//
+	//  RichTextBlockOverflow::ValidateNextLink
+	//
+	//  Checks for cycles in linked overflow elements.
+	//
+	//------------------------------------------------------------------------
+	private bool ValidateNextLink(ILinkedTextContainer pNewNext)
+	{
+		var cycleDetected = false;
+
+		ILinkedTextContainer? pPrevious = this;
+		while (pPrevious is not null)
+		{
+			if (ReferenceEquals(pPrevious, pNewNext))
+			{
+				cycleDetected = true;
+				break;
+			}
+
+			pPrevious = pPrevious.GetPrevious();
+		}
+
+		return !cycleDetected;
+	}
+
+	//------------------------------------------------------------------------
+	//
 	//  RichTextBlockOverflow::InvalidateContent
 	//
 	//------------------------------------------------------------------------
