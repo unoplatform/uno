@@ -286,6 +286,7 @@ Three measurements settle the ranking empirically, in order:
 | A5 — touch inertia ticks before the frame it affects | **done** | `perf(scroll): Tick touch inertia before the frame it affects` |
 | Android — Choreographer pacer for the Vulkan render thread | **done** | `perf(android): Pace the Vulkan render thread with Choreographer` |
 | Scroll diagnostics (opt-in, per-frame telemetry) | **done** | `chore(scroll): Add opt-in per-frame scroll diagnostics` |
+| A3 (fix) — frame drivers tick once per native frame, not once per dispatcher pump (F5) | **done** | `fix(skia): Tick frame drivers once per frame` |
 | A2 — preserve `_childrenPicture` across a pure transform change | **not started** | — |
 | A3 (rest) — thread the frame timestamp through *all* animation evaluation and `RenderingEventArgs` | **not started** | — |
 | A5 — pre-record inertia tick | **not started** | — |
@@ -326,8 +327,8 @@ device where the cost is decisive (a phone or a mobile browser), which this Win3
 
 ## 9. Field findings (from on-device testing)
 
-Observed by the product owner on real hardware, not derived from the code. Each needs its own
-investigation; none is addressed by what has landed so far.
+F1–F4 were observed by the product owner on real hardware, not derived from the code, and each still
+needs its own investigation. F5 was measured afterwards on the desktop and WASM heads and is fixed.
 
 ### F1 — WASM in a mobile browser is still the worst case
 
@@ -431,6 +432,45 @@ The panel and the input are both at ~120 Hz; frame production alternates between
 | not yet filed | `Visual._picture` / `_childrenPicture` are raw `IntPtr` never released on dispose — libc heap, not GPU memory, so it cannot produce the crash above. | Skia, all targets |
 | not yet filed | `VulkanContext.Dispose()` leaves resources behind on surface teardown; `VulkanDisplay.EnsureSwapchainAvailable`'s `while (true)` cannot terminate under a persistent `VK_SUBOPTIMAL_KHR`. | All Vulkan hosts |
 | not yet filed | Incremental Android builds of the SamplesApp head drop the `kotlinx-coroutines-android` AAR, so `androidx.window` throws in `onStart`. A clean build always fixes it. Reproduced ~4 times. | Android build |
+
+### F5 — The frame-driver tick free-ran between vsyncs (fixed)
+
+Measured with a temporary counter on the UI thread (driver ticks, records, presents, layout passes
+per second, and the `FrameClock` interval), driving the wheel decay synthetically so no real pointer
+was involved. Win32 host at 120 Hz (Debug), WASM host in Chromium at 120 Hz (Release):
+
+| Head | Before | After |
+|---|---|---|
+| Win32 | ticks 15 000–19 000/s, layouts 15 000–19 000/s, presents 120/s, clock interval **0.04 ms** | ticks 120/s, records 120/s, presents 120/s, layouts 120/s, clock interval **8.4 ms** |
+| WASM | ticks 520–796/s, layouts 519–796/s, presents 114–119/s, clock interval **0.4–0.5 ms** | ticks 100–110/s, records 101–113/s, presents 101–115/s, layouts 100–110/s, clock interval **8.3 ms** |
+
+**Cause.** `CoreServices` ticks on demand and `RaiseFrameStarting` re-requested the tick
+unconditionally while any driver was subscribed. No Skia dispatcher pump is vsync-throttled
+(`setImmediate`/`postMessage` on WASM, `PostMessage` on Win32), so with a driver subscribed the
+tick ran back to back: every pass stepped the decay by a wall-clock delta of microseconds, ran a
+full `UpdateLayout`, and fed the `FrameClock` an interval so small that its phase-locked grid never
+engaged — the first fling step was effectively zero and the rest sampled dispatcher jitter into the
+motion. On WASM this was 4–7 layout passes per presented frame on the single thread that also
+rasterises, which is the budget F1 complains about.
+
+**Fix.** The driver tick is armed once per native frame, from the frame's UI-thread render callback
+(`EnqueueRenderCallback` → `ArmFrameDriverTick`), and `RaiseFrameStarting` runs only when armed;
+after raising it requests the *frame* (not the tick), so a driver that wrote nothing still gets its
+next tick from the frame chain. Extra input-driven ticks between two frames now only do layout. Covered
+by `Given_CompositionTarget.When_Frame_Driver_Writes_Then_Ticked_Once_Per_Frame` (206 129 ticks for
+120 frames before the fix) and `When_Frame_Driver_Writes_Nothing_Then_Still_Ticked_Every_Frame`
+(1 frame before the fix — the chain used to depend on the driver writing something).
+
+**Measurement caveats.** The benchmark sample subscribes `CompositionTarget.Rendering` for its own
+telemetry, which keeps the render loop presenting at the refresh rate even while nothing moves — so
+"presents/s" is the refresh rate whether or not a driver is running, and only the *ratios* above are
+meaningful. The counter reports on driver ticks, so its first line after an idle gap covers the whole
+gap; those lines were discarded.
+
+**Follow-ups this unblocks.** With the drivers on the presented cadence, the levers worth measuring
+next are: feeding the rAF `DOMHighResTimeStamp` (currently discarded by `BrowserRenderer.ts`) into the
+WASM `FrameClock` as the frame's timestamp, pointer `getCoalescedEvents` for touch on WASM (F1), and
+the record-time allocations in the damage path (§3.1). None of them was measured here.
 
 ## 10. Known-open questions
 
