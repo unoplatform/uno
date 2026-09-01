@@ -969,7 +969,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
-		internal override void EnterImpl(EnterParams @params)
+		internal override void EnterImpl(DependencyObject? namescopeOwner, EnterParams @params)
 		{
 			var core = this.GetContext();
 
@@ -988,7 +988,7 @@ namespace Microsoft.UI.Xaml
 			//    }
 			//}
 
-			base.EnterImpl(@params);
+			base.EnterImpl(namescopeOwner, @params);
 
 			////Check for focus chrome property.
 			//if (@params.IsLive)
@@ -1046,7 +1046,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		// UNO TODO: Not yet ported
-		internal override void LeaveImpl(LeaveParams @params)
+		internal override void LeaveImpl(DependencyObject? namescopeOwner, LeaveParams @params)
 		{
 			// The way this works on WinUI is that when an element enters the visual tree, all values
 			// of properties that are marked with MetaDataPropertyInfoFlags::IsSparse and MetaDataPropertyInfoFlags::IsVisualTreeProperty
@@ -1059,12 +1059,12 @@ namespace Microsoft.UI.Xaml
 				{
 					if (resource is FrameworkElement resourceAsUIElement)
 					{
-						resourceAsUIElement.LeaveImpl(@params);
+						resourceAsUIElement.LeaveImpl(namescopeOwner, @params);
 					}
 				}
 			}
 
-			base.LeaveImpl(@params);
+			base.LeaveImpl(namescopeOwner, @params);
 
 			ReconfigureViewportPropagation(isLeavingTree: true);
 		}
