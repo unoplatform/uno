@@ -93,6 +93,28 @@ public partial class CompositionTarget
 		CoreServices.RequestAdditionalFrame();
 	}
 
+	/// <summary>
+	/// Drops the frame drivers of a target whose host is gone.
+	/// </summary>
+	/// <remarks>
+	/// Defensive: drivers unsubscribe on their own once their motion settles. But an unregistered target
+	/// never presents again, so the frame that would bring the next tick never comes — a driver still
+	/// attached at that point would hang there forever, and with it the compositor's frame-driver count,
+	/// which <see cref="Compositor.IsAnimating"/> reports for the whole process.
+	/// </remarks>
+	internal void ClearFrameDrivers()
+	{
+		if (_frameStarting is null)
+		{
+			return;
+		}
+
+		_frameStarting = null;
+		_frameDriverTickArmed = false;
+		Compositor.RemoveFrameDriver();
+		_frameClock.Reset();
+	}
+
 	/// <summary>Ticks every frame driver for this target. Called from the tick, before layout.</summary>
 	internal void RaiseFrameStarting()
 	{

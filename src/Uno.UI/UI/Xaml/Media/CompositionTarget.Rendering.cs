@@ -518,6 +518,7 @@ public partial class CompositionTarget
 
 	private static void OnTargetUnregistered(CompositionTarget target)
 	{
+		target.ClearFrameDrivers();
 		_targets.Remove(target);
 		if (_latestFrames.Remove(target, out var picture))
 		{
