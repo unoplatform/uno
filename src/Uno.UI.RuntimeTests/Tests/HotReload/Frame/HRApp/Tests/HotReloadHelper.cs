@@ -24,9 +24,25 @@ internal static class HotReloadHelper
 
 		request = request.WithExtendedTimeouts(); // Required for CI
 
-		if (await hr.TryUpdateFilesAsync(request, ct) is { Error: { } error })
+		// Timed only when a scenario is active (HotReloadTiming.BeginScenario); otherwise this is inert.
+		var watch = System.Diagnostics.Stopwatch.StartNew();
+		var result = await hr.TryUpdateFilesAsync(request, ct);
+		watch.Stop();
+
+		if (result is { Error: { } error })
 		{
 			throw error;
+		}
+
+		// A no-op pass returns WITHOUT an error: the server reports NoChanges and the client
+		// returns early (ClientHotReloadProcessor.ClientApi.cs:303 and :354). Recording
+		// unconditionally would therefore let a benchmark report a green baseline while
+		// measuring nothing but a round trip. Only a pass that actually reached the application
+		// is a sample -- a missing one then trips the completeness assertion in
+		// Given_HotReloadPerformance, which is exactly what that assertion is for.
+		if (result.ApplicationUpdated is true)
+		{
+			HotReloadTiming.Record(watch.Elapsed);
 		}
 
 		return new(hr, request);
@@ -252,6 +268,9 @@ internal static class HotReloadHelper
 				"The edit would have silently done nothing.");
 		}
 	}
+
+	/// <summary>Absolute path of the HRApp project directory.</summary>
+	internal static string ProjectPath => GetProjectPath();
 
 	/// <summary>
 	/// Gets the project path from the remotecontrol attributes
