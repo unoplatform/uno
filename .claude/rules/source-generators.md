@@ -23,3 +23,15 @@ Generators run inside the compiler — performance and cancellation discipline a
 - **Diagnostics**: static `DiagnosticDescriptor` with stable IDs (`Uno0003`, `UXAML0001`), reported via `context.ReportDiagnostic`. Add `#pragma warning disable RS2008` or CI fails on analyzer-release tracking.
 - **Tests** use `CSharpSourceGeneratorVerifier<T>` (legacy) or `CSharpIncrementalSourceGeneratorVerifier<T>` (incremental) with expected `GeneratedSources`. Update goldens when output changes.
 - Debug with `Debugger.Launch()` gated by the `UnoUISourceGeneratorDebuggerBreak` MSBuild flag — never commit a bare `Debugger.Break()`. Dump generator state with `XamlSourceGeneratorTracingFolder`.
+
+## Validating a generator change
+
+`dotnet test Uno.UI.UnitTests/Uno.UI.UnitTests.csproj` - the quick check in AGENTS.md - does
+**not** run `Uno.UI.SourceGenerators.Tests`. CI's real gate is the whole
+`Uno.UI-UnitTests-only.slnf` (33 projects), which also covers `Uno.Xaml.Tests`,
+`Uno.Analyzers.Tests` and `Uno.HotReload.Tests`. After touching this project, run:
+
+    dotnet test Uno.UI-UnitTests-only.slnf --no-build
+
+Also build `Uno.UI.RuntimeTests.Skia.csproj` once - a broken generator can fail that compile
+while a narrower local run stays green.
