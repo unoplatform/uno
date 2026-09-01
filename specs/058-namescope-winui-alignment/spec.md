@@ -649,6 +649,8 @@ SDK), each chunk on its own branch so it can ship as its own PR. Nothing is push
 | `dev/mazi/namescope-findname` | 3 — lookup | `FindName` resolves from the namescope; runtime XAML reader gets per-root and per-template-instantiation scopes |
 | `dev/mazi/namescope-deferred` | 5 — deferred entries | `x:Load` stubs registered as deferred entries; lookup materializes |
 | `dev/mazi/named-resource-fields` | 0b | backing field for `x:Name`d resources (#24293) |
+| `dev/mazi/elementname-pull` | 4 — ElementName | the binding carries the name and resolves it from the namescope; the routing subject stays as fallback |
+| `dev/mazi/elementname-subject-drop` | 6 — retype | `Binding.ElementNameSubject` removed, `ElementNameSubject` moved to `Uno.UI.DataBinding`, both recorded in `PackageDiffIgnore` |
 
 Validation each step: `Uno.UI.UnitTests` (4096 passing, 12 pre-existing timezone-dependent
 `When_Calendar` failures), `Uno.UI.SourceGenerators.Tests` (232/232), and Skia Desktop runtime
@@ -691,9 +693,20 @@ slices (namescope suites 57/57; a ~1400-test lifecycle slice with only pre-exist
 
 ### Still open
 
-- **Workstream 4** — ElementName push to pull at attach, retiring `ApplyElementNameBindings`.
-- **Workstream 6** — remove the Uno-only `Binding.ElementNameSubject` seam (`Binding.ElementName`
-  is already `string`), move `ElementNameSubject` to `Uno.UI.DataBinding`, drop
-  `Storyboard.SetTarget(Timeline, ElementNameSubject)` and the `Setter` stub-materialization
-  special case (which deferred entries now make redundant).
+- **`Storyboard.SetTarget(Timeline, ElementNameSubject)`** — the last public seam. Generated XAML
+  still routes a storyboard target through a subject, so deleting the overload needs
+  `Timeline.GetTargetFromName` to resolve from the namescope first. That is the same fix the
+  `Storyboard.TargetName`-in-`Resources` gap above needs, so the two belong together in one
+  follow-up. `Setter`'s stub-materialization special case goes with it (deferred entries make it
+  redundant).
 - Filing the WinUI `SetName` rename bug upstream, and the `Storyboard.TargetName` issue above.
+- Dropping the `FindName` tree-walk fallback: its own breaking change, once the ecosystem has had
+  a release to notice the flag.
+
+### What workstream 4 turned out to prove
+
+Removing the generator's `ElementNameSubject` push left **one** unit test failing out of 4133 — the
+one asserting the subject itself. Every compiled-XAML ElementName scenario (templates, x:Bind,
+resources, nested templates, ItemsControl) resolved through the namescope unchanged. The runtime
+reader needed one addition: re-applying its ElementName bindings once the tree is complete, since
+a name declared later has nothing to resolve against while the tree is still being built.
