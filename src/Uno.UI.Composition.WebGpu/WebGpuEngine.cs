@@ -152,74 +152,6 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	// where an in-place uniform rewrite would clobber data this frame's earlier draws still reference.
 	public long FrameSeq;
 
-	// UNO_WEBGPU_GPUTIME: real GPU pass duration via timestamp-query. The frame-phase log only sees CPU time, so a
-	// GPU-bound frame shows up there merely as time blocked in submit/present. Two queries bracket the main pass;
-	// the resolve is copied to a mappable buffer and read back asynchronously, so the value lags a frame or two.
-	public bool GpuTiming;
-	public IntPtr TsQuerySet, TsResolve, TsStage;
-	public double LastGpuMs;
-	private bool _tsMapPending;
-	public int TsMapTried, TsMapOk, TsMapFail;
-
-	public void InitGpuTiming()
-	{
-		if (Environment.GetEnvironmentVariable("UNO_WEBGPU_GPUTIME") is not "1") { return; }
-		if (wgpuDeviceHasFeature(Dev, WGPUFeatureName.TimestampQuery) == 0)
-		{
-			System.Console.WriteLine("[webgpu] gpu timing requested but timestamp-query is unavailable");
-			return;
-		}
-		var qd = new WGPUQuerySetDescriptor { Type = WGPUQueryType.Timestamp, Count = 2 };
-		TsQuerySet = wgpuDeviceCreateQuerySet(Dev, &qd);
-		var rd = new WGPUBufferDescriptor { Size = 16, Usage = WGPUBufferUsage.QueryResolve | WGPUBufferUsage.CopySrc };
-		TsResolve = wgpuDeviceCreateBuffer(Dev, &rd);
-		var sd = new WGPUBufferDescriptor { Size = 16, Usage = WGPUBufferUsage.MapRead | WGPUBufferUsage.CopyDst };
-		TsStage = wgpuDeviceCreateBuffer(Dev, &sd);
-		GpuTiming = TsQuerySet != IntPtr.Zero && TsResolve != IntPtr.Zero && TsStage != IntPtr.Zero;
-		System.Console.WriteLine($"[webgpu] gpu timing enabled={GpuTiming}");
-	}
-
-	/// <summary>Reads the previous frame's resolved timestamps if the staging buffer is idle. Non-blocking.</summary>
-	public void PollGpuTiming()
-	{
-		if (!GpuTiming || _tsMapPending) { return; }
-		_tsMapPending = true;
-		TsMapTried++;
-		var self = GCHandle.Alloc(this);
-		wgpuBufferMapAsync(TsStage, WGPUMapMode.Read, 0, 16, new WGPUBufferMapCallbackInfo
-		{
-			// Spontaneous: nothing pumps wgpuInstanceProcessEvents on the render path, so an
-			// AllowProcessEvents callback would never fire and gpu= stayed 0.00ms.
-			Mode = WGPUCallbackMode.AllowSpontaneous,
-			Callback = (IntPtr)(delegate* unmanaged[Cdecl]<WGPUMapAsyncStatus, WGPUStringView, IntPtr, IntPtr, void>)&OnTsMap,
-			Userdata1 = GCHandle.ToIntPtr(self),
-		});
-	}
-
-	[UnmanagedCallersOnly(CallConvs = new[] { typeof(System.Runtime.CompilerServices.CallConvCdecl) })]
-	private static void OnTsMap(WGPUMapAsyncStatus status, WGPUStringView message, IntPtr u1, IntPtr u2)
-	{
-		var h = GCHandle.FromIntPtr(u1);
-		if (h.Target is WebGpuDevice d)
-		{
-			if (status == WGPUMapAsyncStatus.Success)
-			{
-				d.TsMapOk++;
-				var p = (ulong*)(void*)wgpuBufferGetMappedRange(d.TsStage, 0, 16);
-				if (p is not null && p[1] > p[0]) { d.LastGpuMs = (p[1] - p[0]) / 1_000_000.0; }
-				else if (d.TsMapOk == 1) { System.Console.WriteLine($"[webgpu] ts map ok but raw t0={(p is null ? 0 : p[0])} t1={(p is null ? 0 : p[1])}"); }
-				wgpuBufferUnmap(d.TsStage);
-			}
-			else
-			{
-				d.TsMapFail++;
-				if (d.TsMapFail == 1) { System.Console.WriteLine($"[webgpu] ts map failed status={status}"); }
-			}
-			d._tsMapPending = false;
-		}
-		h.Free();
-	}
-
 	// Superseded render bundles: like bind groups, released at the next frame start once in-flight GPU work drained.
 	private readonly List<nint> _pendingBundles = new();
 
@@ -235,7 +167,6 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	{
 		// Read LAST frame's timestamps here: the resolve/copy are recorded into the frame encoder, so mapping
 		// before submit targets a buffer still pending in an unsubmitted command buffer and never completes.
-		PollGpuTiming();
 		ResetUniformRing();
 		GradSlab?.Reset();
 		foreach (var kv in _clipBgSlabs) { kv.Value.Reset(); }
@@ -447,7 +378,6 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 	private void FinishInit()
 	{
 		CreatePipelines();   // bakes MsaaSamples (already set from the host context) into every pipeline
-		InitGpuTiming();
 		DummyTex = CreateColorTarget(1, 1);
 		Pool = new WebGpuTexturePool(this);
 		BufferPool = new WebGpuBufferPool(this);
@@ -588,7 +518,7 @@ fn clipCovMapped(fc: vec2<f32>, clip: ClipU) -> f32 {
   }
   if (n == 0) { return cov; }
   // Unrolled with STATIC array indices (n is 1..4). A dynamic uniform-array index (clip.rects[i]) is a GPU perf
-  // cliff on some drivers; the common single-clip case (n==1) must cost what the old single-rect clipCov did.
+  // cliff on some drivers; the common single-clip case (n==1) must not cost more than one rect test.
   cov = cov * roundCov(fc, clip.rects[0], clip.radii[0], clip.radiiY[0], clip.ex.x);
   if (n > 1) { cov = cov * roundCov(fc, clip.rects[1], clip.radii[1], clip.radiiY[1], clip.ex.y); }
   if (n > 2) { cov = cov * roundCov(fc, clip.rects[2], clip.radii[2], clip.radiiY[2], clip.ex.z); }
@@ -1251,7 +1181,7 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
   return vec4<f32>(col.rgb, col.a * clipCovMapped(gfc, clip));
 }";
 
-	// Analytic rounded-rect / border-ring fill (ported from ramez's RoundedWgsl). The SDF is evaluated in LOCAL
+	// Analytic rounded-rect / border-ring fill. The SDF is evaluated in LOCAL
 	// centred space (`p`/`hf`/`radii` interpolated per-vertex) so it's exact under any affine transform; the four
 	// device corners only position the quad. `ihalf.x >= 0` = BORDER RING (subtract an inner rounded rect). clipCov
 	// applies neutral's analytic rounded/rect clips using the device-pixel builtin position.
@@ -1897,7 +1827,7 @@ internal sealed class OwnedResources
 }
 
 
-// One draw op in a pass's ordered list. Was a 7-tuple; promoted to a struct so glyph coalescing can carry the extra
+// One draw op in a pass's ordered list. A struct so glyph coalescing can carry the extra
 // fields (a shared glyph-fan-buffer start + the fill colour) without threading a wider tuple through ~30 sites. The
 // lowercase field names + Deconstruct keep the existing `var (kind, b0, ...) = op` destructuring and `.kind`/`.b0`
 // access working unchanged. kind: 0=rect 1=path 2=image 3=gradient 5=rrect. For a coalesced-glyph path op (kind 1),
@@ -1922,7 +1852,7 @@ internal sealed unsafe class WebGpuSlab
 	public int ByteOffset(long id) => (_alloc.TryGet(id, out var s) ? s.Off : 0) * _stride * sizeof(float);
 
 	// A recording whose LOCAL verts don't change on a move re-derives its slice's CURRENT byte offset each frame
-	// (never a cached one — a stale offset into a culled-then-reclaimed slice was the crash the redo avoids). Returns
+	// (never a cached one — a stale offset into a culled-then-reclaimed slice reads another visual's verts). Returns
 	// false if the slice was reclaimed (culled last frame) so the caller re-Puts it; marks it live on a hit so it survives.
 	public bool TryByteOffset(long id, out int byteOff)
 	{
@@ -2138,7 +2068,7 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 
 /// <summary>A wgpu texture uploaded once from a neutral <see cref="IImage"/>'s pixels. Owned/disposed by the framework.</summary>
 
-// Per-visual STABLE slice allocator over a persistent per-kind vertex buffer (ported from ramez's
+// Per-visual STABLE slice allocator over a persistent per-kind vertex buffer (
 // WebGpuVertexSlab). Each visual (keyed by its recording's command-list identity) gets a fixed offset+capacity in
 // a shared GPU buffer, so a content change rewrites its slice IN PLACE (stable offset → dirty only that byte
 // range) and geometry is RESIDENT across frames (no re-upload for a static visual). Holds CPU metadata only.

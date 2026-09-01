@@ -93,7 +93,7 @@ internal sealed unsafe class WebGpuPathAtlas
 		/// How many recordings hold this entry. Sharing makes this necessary: with per-glyph geometry ONE slot backs
 		/// every occurrence of a character across many recordings, so releasing it when the recording that happened
 		/// to bake it goes away would hand the region to another glyph while the rest still sample those UVs — which
-		/// renders as other characters ("Stop" drawn as "3tod").
+		/// draws one character in place of another.
 		/// </summary>
 		public int RefCount;
 
