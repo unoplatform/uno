@@ -12,5 +12,5 @@ partial class Paragraph
 	internal InlineCollection GetInlineCollection() => Inlines;
 
 	// GetPositionCount / GetRun / GetContainingElement / GetElementEdgeOffset live in
-	// Paragraph.TextContainer.skia.cs (the run-model partial).
+	// Paragraph.TextContainer.cs (the run-model partial).
 }

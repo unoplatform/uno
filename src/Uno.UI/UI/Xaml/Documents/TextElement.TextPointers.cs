@@ -9,7 +9,7 @@
 namespace Microsoft.UI.Xaml.Documents;
 
 // The public TextPointer surface of TextElement over the already-ported internal getters
-// (GetContentStart/End, GetElementStart/End in TextElement.TextPointers.skia.cs). The underlying
+// (GetContentStart/End, GetElementStart/End in TextElement.TextPointers.mux.cs). The underlying
 // position model is Skia-only, so on non-Skia targets these return null, matching TextPointer's
 // own null returns and WinUI's pre-layout behavior.
 partial class TextElement

@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Documents;
 
 // The run-model members (GetPositionCount/GetRun/GetContainingElement/
 // GetElementEdgeOffset/CacheLengths) are defined as `internal` instance methods in
-// BlockCollection.TextContainer.skia.cs (Stage 4a). They're surfaced on ITextContainer
+// BlockCollection.TextContainer.cs (Stage 4a). They're surfaced on ITextContainer
 // here via explicit interface implementations that forward to them (an `internal` method
 // cannot implicitly satisfy a public interface member). This partial also defines the
 // GetText overloads (absent from 4a) and the three remaining ITextContainer members.

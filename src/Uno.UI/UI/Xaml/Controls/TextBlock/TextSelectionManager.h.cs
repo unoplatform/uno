@@ -36,7 +36,7 @@ namespace Microsoft.UI.Xaml.Controls;
 //   * Pointer/keyboard events arrive as Uno *RoutedEventArgs and are consumed faithfully where
 //     the C++ consumed the equivalent CEventArgs subclasses.
 //   * The touch grippers are not a ported CTextSelectionGripper class — the manager drives the
-//     existing TextSelectionGripperPresenter (see TextSelectionManager.Gripper.skia.cs).
+//     existing TextSelectionGripperPresenter (see TextSelectionManager.Gripper.cs).
 //
 internal sealed partial class TextSelectionManager : ITextSelectionNotify
 {
