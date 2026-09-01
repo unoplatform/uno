@@ -22,11 +22,12 @@ Updated as items are addressed. Verdicts below are unchanged; this section only 
 
 | # | Item | Status | Commit | Evidence |
 |---|---|:--:|---|---|
+| — | `.skia` suffix removal on this port's files | ✅ done | `fe4fb8dd15c` | 91 files; `Uno.UI` is Skia-only so the suffix selects nothing. Test files keep theirs — the WinAppSDK head compiles zero `.skia.cs` |
 | — | MUX header repin (§6.1–6.3) | ✅ done | `0dd5d8b6528` | 112 files now pin `tag winui3/release/2.4.0, commit e8442d07a`; 102 branch-wide + 4 per-file exceptions + 6 previously header-less ports |
 | V1 | `RichTextBlockOverflow` cycle check | ✅ fixed | `f4c3c7afb2d` (fix) · `9a23ac9ae15` (test) | Runtime: with the fix reverted the test run **never terminates** (killed at 120 s, no results file). With it, 8/8 green |
 | V2 | Overflow slice built from raw `Margin` | ✅ fixed | `63235e9a264` (fix) · `b3c1c9ed2f8` (test) | Runtime: reverted → slice starts row 32 (not 8) and ends row 87 of a 131 px box (not 129); 1000 painted px vs 1887 |
-| V3 | `TransformPositionToPage` container↔flat space | ⬜ open | — | Corroborated independently by the 2026-08-27 runtime parity harness |
-| V4 | `TextHighlightMerge` pipeline unreachable | ⬜ open | — | Confirmed by inspection: zero callers repo-wide |
+| V3 | `TransformPositionToPage` container↔flat space | ✅ fixed | `b5445cfc970` (fix) · `a84ca17dc15` (test) | Runtime: reverted → the last four container positions of a two-run paragraph all resolve to an empty rect; a point→pointer→rect round trip returns `X 0` for a probe at `x=120` |
+| V4 | `TextHighlightMerge` pipeline unreachable | ✅ fixed | `4db6af52a12` (fix) · `9796bd3f10a` (test) | Runtime: reverted → the second highlighter's colour is **absent from the render entirely** |
 | V5–V8 | Minor findings | ⬜ open | — | See §3 |
 | P1–P3 | Feature backlog (18 items) | ⬜ open | — | See §7 |
 
@@ -35,6 +36,13 @@ Updated as items are addressed. Verdicts below are unchanged; this section only 
 **`TextBlockAutomationPeer.cs` keeps its `1.8.4` tag deliberately.** §6.2 proposed repinning it; the audit grades
 it 40 % / structural ("deliberately keeps the pre-existing minimal `DirectUI.TextAdapter`; out of Stage 10 scope").
 Repinning would assert a provenance the file does not have, so it was left alone.
+
+**Correction to §3 (V4): `TextBlock` is _not_ unaffected.** The finding stated that `TextBlock` renders through
+`UnicodeText.Draw` and so escapes the highlighter collapse. On this branch `TextBlock.cs:1655` calls
+`ParsedText.Draw`, the same path, so it was subject to the same one-highlighter-one-range limit and is fixed
+by the same change. Four `Given_TextBlock` tests fail around this area; three (`When_Inlines_Transitively_Change`
+and two clipboard copy tests) were confirmed failing at the pre-fix baseline, and the fourth
+(`When_IsTextSelectionEnabled_SurrogatePair_Copy`) passed 3/3 on re-run — clipboard contention, not a regression.
 
 **`.skia.cs` suffixes are now no-ops inside `Uno.UI`** (found while fixing V1). `Uno.UI` has a single csproj whose
 `UnoRuntimeIdentifier` is unconditionally `Skia`, so `__SKIA__` is always defined there — verified with
