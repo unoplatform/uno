@@ -152,9 +152,9 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateTextBlockForeground();
 		}
 
-		private protected override void EnterImpl(bool live)
+		private protected override void EnterManagedPeerImpl(bool live)
 		{
-			base.EnterImpl(live);
+			base.EnterManagedPeerImpl(live);
 			// In case any of the TextBlock properties have been updated while
 			// we were out of the visual tree, we should update them in order to ensure
 			// that we always have the most up-to-date values.
