@@ -15,6 +15,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 /// Border.Child) would otherwise be entered twice. These tests pin the visit counts so a
 /// refactor of the walk cannot silently change them.
 /// </summary>
+/// <remarks>
+/// Joining a live tree is two passes, as in WinUI (CDOCollection::ChildEnter): a dead pass that
+/// registers names, then the live one that does the work. The counts are tracked separately.
+/// </remarks>
 [TestClass]
 [RunsOnUIThread]
 public class Given_EnterLeaveWalk
@@ -28,9 +32,13 @@ public class Given_EnterLeaveWalk
 
 		await UITestHelper.Load(root, x => x.IsLoaded);
 
-		Assert.AreEqual(1, root.EnterCount, "root entered more than once");
-		Assert.AreEqual(1, middle.EnterCount, "middle entered more than once");
-		Assert.AreEqual(1, leaf.EnterCount, "leaf entered more than once");
+		Assert.AreEqual(1, root.LiveEnterCount, "root entered more than once");
+		Assert.AreEqual(1, middle.LiveEnterCount, "middle entered more than once");
+		Assert.AreEqual(1, leaf.LiveEnterCount, "leaf entered more than once");
+
+		Assert.AreEqual(1, root.DeadEnterCount, "root registered its names more than once");
+		Assert.AreEqual(1, middle.DeadEnterCount, "middle registered its names more than once");
+		Assert.AreEqual(1, leaf.DeadEnterCount, "leaf registered its names more than once");
 
 		TestServices.WindowHelper.WindowContent = null;
 		await TestServices.WindowHelper.WaitForIdle();
@@ -72,8 +80,10 @@ public class Given_EnterLeaveWalk
 		host.Children.Add(added);
 		await TestServices.WindowHelper.WaitForIdle();
 
-		Assert.AreEqual(1, added.EnterCount, "incrementally attached element entered more than once");
-		Assert.AreEqual(1, ((CountingBorder)added.Child).EnterCount, "its child entered more than once");
+		Assert.AreEqual(1, added.LiveEnterCount, "incrementally attached element entered more than once");
+		Assert.AreEqual(1, ((CountingBorder)added.Child).LiveEnterCount, "its child entered more than once");
+
+		Assert.AreEqual(1, added.DeadEnterCount, "incrementally attached element registered its names more than once");
 	}
 
 	/// <summary>
@@ -94,7 +104,8 @@ public class Given_EnterLeaveWalk
 
 		await UITestHelper.Load(owner, x => x.IsLoaded);
 
-		Assert.AreEqual(1, flyoutContent.EnterCount, "context flyout content did not receive exactly one dead enter");
+		Assert.AreEqual(1, flyoutContent.DeadEnterCount, "context flyout content did not receive exactly one dead enter");
+		Assert.AreEqual(0, flyoutContent.LiveEnterCount, "flyout content is not in the visual tree");
 	}
 
 	[TestMethod]
@@ -109,18 +120,29 @@ public class Given_EnterLeaveWalk
 
 		await UITestHelper.Load(owner, x => x.IsLoaded);
 
-		Assert.AreEqual(1, flyoutContent.EnterCount, "button flyout content did not receive exactly one dead enter");
+		Assert.AreEqual(1, flyoutContent.DeadEnterCount, "button flyout content did not receive exactly one dead enter");
+		Assert.AreEqual(0, flyoutContent.LiveEnterCount, "flyout content is not in the visual tree");
 	}
 
 	private partial class CountingBorder : Border
 	{
-		public int EnterCount { get; private set; }
+		public int LiveEnterCount { get; private set; }
+
+		public int DeadEnterCount { get; private set; }
 
 		public int LeaveCount { get; private set; }
 
 		internal override void EnterImpl(DependencyObject namescopeOwner, Uno.UI.Xaml.EnterParams @params)
 		{
-			EnterCount++;
+			if (@params.IsLive)
+			{
+				LiveEnterCount++;
+			}
+			else
+			{
+				DeadEnterCount++;
+			}
+
 			base.EnterImpl(namescopeOwner, @params);
 		}
 
