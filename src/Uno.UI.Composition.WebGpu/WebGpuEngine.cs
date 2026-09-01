@@ -1381,6 +1381,37 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
   return c * u.op.x * clipCov(i.p.xy, clip);
 }";
 
+	// group 0 = image resources (texture + sampler + op uniform), group 1 = the SHARED ClipU layout.
+	private IntPtr MakeImagePipeLayout()
+	{
+		var e = stackalloc WGPUBindGroupLayoutEntry[3];
+		e[0] = new WGPUBindGroupLayoutEntry
+		{
+			Binding = 0,
+			Visibility = WGPUShaderStage.Fragment,
+			Texture = new WGPUTextureBindingLayout { SampleType = WGPUTextureSampleType.Float, ViewDimension = WGPUTextureViewDimension._2D },
+		};
+		e[1] = new WGPUBindGroupLayoutEntry
+		{
+			Binding = 1,
+			Visibility = WGPUShaderStage.Fragment,
+			Sampler = new WGPUSamplerBindingLayout { Type = WGPUSamplerBindingType.Filtering },
+		};
+		e[2] = new WGPUBindGroupLayoutEntry
+		{
+			Binding = 2,
+			Visibility = WGPUShaderStage.Fragment,
+			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.Uniform, MinBindingSize = 112 },
+		};
+		var bgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 3, Entries = e };
+		ImgBgl = wgpuDeviceCreateBindGroupLayout(Dev, &bgld);
+		var groups = stackalloc IntPtr[2];
+		groups[0] = ImgBgl;
+		groups[1] = ClipBgl;
+		var pld = new WGPUPipelineLayoutDescriptor { BindGroupLayoutCount = 2, BindGroupLayouts = (IntPtr)groups };
+		return wgpuDeviceCreatePipelineLayout(Dev, &pld);
+	}
+
 	private void CreateImagePipeline()
 	{
 		var module = Module(ClipStructFn + ImageWgsl);
@@ -1397,10 +1428,9 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
 		var keepFace = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);
 		var ds = new WGPUDepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.False, DepthCompare = WGPUCompareFunction.GreaterEqual, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
-		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = IntPtr.Zero };
+		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = MakeImagePipeLayout() };
 		ImagePipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
-		ImgBgl = wgpuRenderPipelineGetBindGroupLayout(ImagePipe, 0);
-		ImageClipBgl = wgpuRenderPipelineGetBindGroupLayout(ImagePipe, 1);
+		ImageClipBgl = ClipBgl;   // shared, so a stamped clip group binds here too
 		var sd = new WGPUSamplerDescriptor { AddressModeU = WGPUAddressMode.ClampToEdge, AddressModeV = WGPUAddressMode.ClampToEdge, MagFilter = WGPUFilterMode.Linear, MinFilter = WGPUFilterMode.Linear, MipmapFilter = WGPUMipmapFilterMode.Nearest, MaxAnisotropy = 1 };
 		Smp = wgpuDeviceCreateSampler(Dev, &sd);
 	}

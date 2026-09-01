@@ -2047,9 +2047,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		return _d.ClipBgSlabFor(bgl, ClipUBytes).Rent(bgl, cu);
 	}
 
-	// Coverage atlas: on by default, since it is what makes arbitrary path edges and glyphs crisp without MSAA.
-	// UNO_WEBGPU_PATH_ATLAS=0 opts out (falls back to tessellated AA, which aliases on curved outlines).
-	private static readonly bool _pathAtlas = Environment.GetEnvironmentVariable("UNO_WEBGPU_PATH_ATLAS") is not "0";
+	// Coverage atlas: OPT-IN (UNO_WEBGPU_PATH_ATLAS=1) until the defect below is fixed. It makes arbitrary path
+	// edges and glyphs crisp without MSAA, but text drawn inside a CACHED recording can come out missing or as
+	// other characters - reproducible by typing in the SamplesApp sample search box. Isolated to the owned/cached
+	// path (disabling the atlas only for per-frame ops does not help; disabling it for cached ops does), and it is
+	// neither the quad batching nor a stale build-time NDC on a move - both were tested and ruled out.
+	private static readonly bool _pathAtlas = Environment.GetEnvironmentVariable("UNO_WEBGPU_PATH_ATLAS") is "1";
 
 	/// <summary>
 	/// Rasterizes one fill's coverage into its atlas slot: stencil-then-cover in white into a scratch surface
@@ -3342,7 +3345,19 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		}
 	}
 
-	private (ClipData Scissor, nint ClipBg, nint Buf) StampTableClip(ClipData local, OwnedResources stampOwned, Matrix3x2 finv, Matrix3x2 t2, Vector4 sessionAabb, bool sessionInert, RoundClip[] sessionRounds, nint reuseBuf, nint reuseBg)
+	/// <summary>
+	/// ClipU layout for the pipeline that draws <paramref name="kind"/>. The image/gradient/rrect pipelines are
+	/// created with AUTO layouts, so their group is exclusive to them and cannot take a ClipBgl-based bind group.
+	/// </summary>
+	private IntPtr ClipBglForKind(int kind) => kind switch
+	{
+		// Image now shares ClipBgl (explicit pipeline layout). Gradient and rrect are still AUTO-layout
+		// pipelines, so their ClipU group stays exclusive to them.
+		3 => _d.GradClipBgl,
+		_ => _d.ClipBgl,
+	};
+
+	private (ClipData Scissor, nint ClipBg, nint Buf) StampTableClip(ClipData local, OwnedResources stampOwned, Matrix3x2 finv, Matrix3x2 t2, Vector4 sessionAabb, bool sessionInert, RoundClip[] sessionRounds, nint reuseBuf, nint reuseBg, IntPtr clipBgl)
 	{
 		var scissor = local;
 		scissor.PathFan = null;
@@ -3376,7 +3391,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			scissor.ScissorLoadBearing = !scissor.AabbInClipU;
 			return (scissor, reuseBg, reuseBuf);
 		}
-		var bg = (nint)MakeClipBgOwned(_d.ClipBgl, local, stampOwned, Matrix3x2.Identity, finv, out var buf, out var folded);
+		var bg = (nint)MakeClipBgOwned(clipBgl, local, stampOwned, Matrix3x2.Identity, finv, out var buf, out var folded);
 		scissor.AabbInClipU = folded && canWiden;
 		scissor.ScissorLoadBearing = !scissor.AabbInClipU;
 		return (scissor, bg, buf);
@@ -3522,7 +3537,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			{
 				var fo = fe.FrameOrder[i];
 				var local = fo.Kind == -1 ? fo.NonSolid.clip : fo.Clip;
-				var st = StampTableClip(local, stampOwned, finv, t2, sessionAabb, rr.Clip.ScissorInert, rr.Clip.Rounds, reuse ? bufs[i] : 0, reuse ? stamps[i].ClipBg : 0);
+				// An atlas quad in a stamped recording is a kind-2 IMAGE draw: it needs the image pipeline's own
+				// ClipU layout, not the shared one, or the draw is rejected and the process aborts.
+				var stampBgl = ClipBglForKind(fo.Kind == -1 ? fo.NonSolid.kind : fo.Kind);
+				var st = StampTableClip(local, stampOwned, finv, t2, sessionAabb, rr.Clip.ScissorInert, rr.Clip.Rounds, reuse ? bufs[i] : 0, reuse ? stamps[i].ClipBg : 0, stampBgl);
 				if (reuse) { stamps[i] = (st.Scissor, st.ClipBg); } else { stamps.Add((st.Scissor, st.ClipBg)); bufs.Add(st.Buf); }
 			}
 			fe.StampOwned = stampOwned; fe.StampClips = stamps; fe.StampBufs = bufs; fe.StampFrame = _d.FrameSeq; fe.StampXform = rr.Transform; fe.StampClip = rr.Clip; fe.StampW = (int)_s.Width; fe.StampH = (int)_s.Height; fe.HasStamp = true;
