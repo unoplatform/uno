@@ -180,15 +180,6 @@ internal struct FrameOp
 }
 
 /// <summary>
-/// Where a pass encodes its draws - the render pass itself, or a render bundle while a cache-eligible chunk is
-/// being recorded - skipping redundant pipeline / bind-group / vertex-buffer sets. A run of like ops otherwise
-/// costs five native calls each where two suffice.
-/// <para>
-/// Encoder state is per-pass AND per-bundle, so <see cref="Reset"/> must run at EVERY boundary: pass open or
-/// reopen, bundle begin and end, and after any site that sets state directly instead of through these methods.
-/// </para>
-/// </summary>
-/// <summary>
 /// The state one pass-encode works over: handles fixed once the pass is set up, and the parts that evolve as ops
 /// are encoded - the encoder, the path clip whose depth mask is currently applied, and the counters the stats line
 /// reports.
@@ -210,6 +201,15 @@ internal ref struct PassOps
 	public double CoverMpx;
 }
 
+/// <summary>
+/// Where a pass encodes its draws - the render pass itself, or a render bundle while a cache-eligible chunk is
+/// being recorded - skipping redundant pipeline / bind-group / vertex-buffer sets. A run of like ops otherwise
+/// costs five native calls each where two suffice.
+/// <para>
+/// Encoder state is per-pass AND per-bundle, so <see cref="Reset"/> must run at EVERY boundary: pass open or
+/// reopen, bundle begin and end, and after any site that sets state directly instead of through these methods.
+/// </para>
+/// </summary>
 internal unsafe struct PassEncoder
 {
 	private IntPtr _pass;

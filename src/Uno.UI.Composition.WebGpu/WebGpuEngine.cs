@@ -279,7 +279,6 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		if (owned.AtlasSlots is { } aslots) { _pendingAtlasSlots.AddRange(aslots); }
 		return true;
 	}
-	// Defers a single GPU buffer (e.g. an outgrown slab buffer) for release at the next frame start.
 	internal void DeferReleaseBuffer(nint buf) { if (buf != IntPtr.Zero) { _pendingBuffers.Add(buf); } }
 
 	public IntPtr ImgBgl;
@@ -742,7 +741,7 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 			Alpha = new WGPUBlendComponent { Operation = WGPUBlendOperation.Max, SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.One },
 		};
 		MaskDirectPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &maxBlend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep), 0x00, 0xFF, WGPUCompareFunction.Always, layout: clipLayout);
-		// All three now share the one explicit ClipU layout — a ClipU bind group made with ClipBgl binds to any of them.
+		// All three share the one explicit ClipU layout, so a bind group made with ClipBgl binds to any of them.
 		SolidClipBgl = ClipBgl;
 		CoverClipBgl = ClipBgl;
 		CreatePathTablePipelines(&blend);
@@ -1354,8 +1353,7 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 		attrs[1] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 8, ShaderLocation = 1 };
 		var vbl = new WGPUVertexBufferLayout { ArrayStride = 16, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 2, Attributes = attrs };
 		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
-		// premultiplied image pixels -> One/OneMinusSrcAlpha
-		var blend = new WGPUBlendState { Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.OneMinusSrcAlpha, Operation = WGPUBlendOperation.Add }, Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.OneMinusSrcAlpha, Operation = WGPUBlendOperation.Add } };
+			var blend = new WGPUBlendState { Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.OneMinusSrcAlpha, Operation = WGPUBlendOperation.Add }, Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.OneMinusSrcAlpha, Operation = WGPUBlendOperation.Add } };
 		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = &blend, WriteMask = WGPUColorWriteMask.All };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
 		var keepFace = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);
@@ -2064,7 +2062,7 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 }
 
 
-// --- Device-bound factory (ITexture + eventual shaders) ---
+// --- Device-bound factory ---
 
 /// <summary>A wgpu texture uploaded once from a neutral <see cref="IImage"/>'s pixels. Owned/disposed by the framework.</summary>
 

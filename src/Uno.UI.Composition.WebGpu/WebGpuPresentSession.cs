@@ -596,6 +596,10 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		return bundleEligible;
 	}
 
+	/// <summary>
+	/// Renders a command list into a target surface's MSAA pass, resolving into its single-sample view. Layers
+	/// recurse into a surface of their own and composite here; shadows and layers pre-render before the pass opens.
+	/// </summary>
 	private void RenderInto(List<WebGpuCommand> cmds, WebGpuRenderSurface target, WColor? clear, bool load = false)
 	{
 		_renderIntoStart = System.Diagnostics.Stopwatch.GetTimestamp();

@@ -12,18 +12,12 @@ namespace Uno.UI.Composition.WebGpu;
 /// colour.
 /// </summary>
 /// <remarks>
-/// Why this exists: geometric coverage (<see cref="PathTessellator"/>) cannot antialias text. A glyph stem at
-/// normal sizes is about one pixel wide, so insetting it by half a pixel folds it inside out, and text fills
-/// NON-ZERO while hole detection by nesting parity misreads overlapping kerned glyphs. Both cases are refused
-/// rather than drawn wrong, which left text depending on MSAA. Baking coverage into a texture sidesteps the
-/// problem entirely: the rasterizer resolves it once, at 4x, and every later frame just samples it.
-///
-/// It also removes the per-glyph draw explosion. Stencil-then-cover costs two pipeline switches and two draws
-/// per glyph; an atlased glyph is one quad, and consecutive quads sharing colour and texture merge.
-///
-/// The cache key includes a subpixel phase so glyph positions stay sub-pixel accurate (rounding them to whole
-/// pixels visibly damages spacing), and the full 2x2 of the transform, so a rotated or skewed shape gets its own
-/// entry instead of colliding with the upright one.
+/// Geometric coverage (<see cref="PathTessellator"/>) cannot antialias text: a glyph stem is about one pixel
+/// wide, so insetting it by half a pixel folds it inside out, and nesting-parity hole detection misreads
+/// overlapping kerned glyphs. Both are refused rather than drawn wrong, which leaves text depending on MSAA. A
+/// baked mask sidesteps that — resolved once at 4x, sampled every frame after — and collapses the per-glyph draw
+/// explosion: stencil-then-cover costs two pipeline switches and two draws per glyph, while an atlased glyph is
+/// one quad and consecutive quads sharing colour and texture merge.
 /// </remarks>
 internal sealed unsafe class WebGpuPathAtlas
 {
@@ -36,17 +30,14 @@ internal sealed unsafe class WebGpuPathAtlas
 	public const int MaxDim = Size - 2;
 
 	/// <summary>
-	/// Footprint bound, in device pixels of MASK AREA rather than of the longest side. Area is what the texture
-	/// and the bake actually cost, and the two are wildly different for the shapes that matter: TEXT reaches the
-	/// backend as one fill per RUN — a whole string, one contour per glyph — so a line of text is very wide and
-	/// only ~20px tall. A longest-side cap of 96 rejected every run past a few characters and left it on the
-	/// geometry path, which at one sample has no antialiasing; that is what made sample titles, descriptions and
-	/// longer list items render aliased while short ones stayed crisp.
+	/// Footprint bound in MASK AREA, not longest side. Area is what the texture and the bake cost, and for the
+	/// shapes that matter the two diverge sharply: text reaches the backend as one fill per RUN — a whole string,
+	/// one contour per glyph — so a run is very wide and only ~20px tall. A longest-side cap of 96 rejected every
+	/// run past a few characters, leaving it on the geometry path with no antialiasing at one sample.
 	/// <para>
-	/// 256x256 worth of area takes an 800x20 text run (16k px) while still refusing the large near-square fills
-	/// that measurably do not benefit: a 300x225 shape is 67k px, and raising the longest-side cap to 512 to
-	/// admit those changed the WinUI parity mismatch not at all, cut no draws, and pushed LogView's emitted draws
-	/// from 320 to 420 by displacing glyph runs from their coalesced batches.
+	/// 256x256 of area admits an 800x20 run (16k px) while still refusing large near-square fills, which measurably
+	/// do not benefit: raising the cap to admit a 300x225 shape (67k px) changed the parity mismatch not at all, cut
+	/// no draws, and pushed LogView's emitted draws from 320 to 420 by displacing glyph runs from their batches.
 	/// </para>
 	/// </summary>
 	public const int MaxArea = 256 * 256;
@@ -186,11 +177,6 @@ internal sealed unsafe class WebGpuPathAtlas
 		return null;   // every page is exhausted; the caller opens another and retries
 	}
 
-	/// <summary>
-	/// Returns a slot to the free pool. Called when the cached recording that owns it is released, which is the
-	/// only safe moment: a recording bakes its slot's UVs into its draw ops, so reclaiming a slot while any
-	/// recording still referenced it would make that recording sample another shape's mask.
-	/// </summary>
 	/// <summary>Frames an entry may go unused before the cache drops its reference.</summary>
 	public const int CacheIdleFrames = 180;
 
@@ -236,6 +222,11 @@ internal sealed unsafe class WebGpuPathAtlas
 		if (slot is not null) { slot.RefCount++; }
 	}
 
+	/// <summary>
+	/// Returns a slot to the free pool. Called when the cached recording that owns it is released, which is the
+	/// only safe moment: a recording bakes its slot's UVs into its draw ops, so reclaiming a slot while any
+	/// recording still referenced it would make that recording sample another shape's mask.
+	/// </summary>
 	public void Free(Slot slot)
 	{
 		if (slot?.Owner is not { } page) { return; }
