@@ -68,6 +68,9 @@ These load **automatically** when you touch matching files — you don't invoke 
 | `.reference.cs` | Reference implementation |
 | `.crossruntime.cs` | Skia + WebAssembly + Reference (shared) |
 
+These now live almost entirely in `Uno.WinRT`, `Uno.Foundation` and the `Uno.UI.Runtime.Skia.*` heads.
+`Uno.UI` is Skia-only, so don't create a `MyControl.Android.cs` there.
+
 ### Key Source Directories
 
 - `src/Uno.UI/` - Core UI framework (WinUI controls, layout, XAML runtime)
@@ -147,31 +150,21 @@ Single C#/XAML codebase → WinUI 3 API → Platform-specific runtimes (Skia, We
 
 ### Rendering Engines
 
-- **Skia**: Cross-platform (Desktop Win32, macOS, Linux, Skia Android/iOS)
-- **Native**: Platform controls (UIKit, Android Views, DOM elements)
+- **Skia** renders every target: Desktop (Win32, macOS, Linux), Android, iOS/tvOS, WebAssembly.
+- The UI layer is Skia-only - `Uno.UI` targets `$(NetSkiaPreviousAndCurrent)` and has no native-view TFMs.
 
-### Development scope: Skia-first (IMPORTANT)
+### Development scope
 
-**Unless a task explicitly states otherwise, new features and enhancements target the Skia targets only** (Desktop Win32/macOS/Linux and Skia-on-Android/iOS/WASM). The **native targets** — native Android Views, native iOS/UIKit, WASM DOM — are **maintenance-only**: don't build new features for them, but **don't break them either** (keep them compiling and behaving as-is).
+`Uno.UI` and everything above it is **Skia-only** - one build serving every target. The native-view
+UI layer (Android Views, UIKit, WASM DOM) has been removed; don't add or restore code for it.
 
-This applies to the **UI rendering layer** (`Uno.UI` native views), *not* to platform APIs. **Platform-specific non-UI WinRT APIs (in `Uno.WinRT`/`Uno.Foundation`) are still actively enhanced**, because the Skia targets compile and consume those same per-platform implementations (e.g. Skia-on-Android uses the Android implementation of a file picker, sensor, contacts, etc.).
-
-### Platform Base Classes
-
-| Platform | Inheritance |
-|----------|-------------|
-| Android native | `ViewGroup` → `UnoViewGroup` (Java) → `BindableView` → `UIElement` |
-| iOS native | `UIView` → `BindableUIView` → `UIElement` |
-| WebAssembly native | UIElements map to DOM elements (default: "div") |
-| Skia | `IRenderer` interface for rendering pipeline |
+**Platform-specific non-UI WinRT APIs are the exception** - `Uno.WinRT` and `Uno.Foundation` still ship
+per-platform implementations and are actively developed, because Skia-on-Android consumes the Android
+file picker, sensors, contacts and so on.
 
 ### XAML Compilation
 
 XAML files are parsed to C# via source generators (`XamlFileGenerator` in `Uno.UI.SourceGenerators`), not .xbf like WinUI. Generates `InitializeComponent()`, named fields, and x:Bind expressions.
-
-### DependencyObject on Mobile
-
-On Android/iOS, `DependencyObject` is an **interface** (not base class) since `UIElement` must inherit from native view classes. Source generators provide the implementation via `DependencyObjectGenerator`.
 
 ### Project Organization
 
@@ -346,12 +339,10 @@ A GitHub Actions workflow enforces formatting on PRs that touch SamplesApp XAML 
 
 ## Common Pitfalls
 
-1. **DependencyObject is an interface** on Android/iOS - don't inherit, implement
-2. **Generated files are regenerated** - never edit `Generated/` folders
-3. **Visual tree differs by platform** - Android/iOS use native hierarchy; WebAssembly uses DOM; Skia uses rendering tree
-4. **Partial methods** used for extensibility: `OnLoaded()`, `OnUnloaded()`
-5. **NuGet cache corruption** - delete `%USERPROFILE%\.nuget\packages\uno.ui` if debugging fails
-6. **Long paths on Windows** - enable via registry if needed
+1. **Generated files are regenerated** - never edit `Generated/` folders
+2. **Partial methods** used for extensibility: `OnLoaded()`, `OnUnloaded()`
+3. **NuGet cache corruption** - delete `%USERPROFILE%\.nuget\packages\uno.ui` if debugging fails
+4. **Long paths on Windows** - enable via registry if needed
 
 ---
 
