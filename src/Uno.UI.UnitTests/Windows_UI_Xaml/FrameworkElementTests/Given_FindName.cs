@@ -17,6 +17,54 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 #endif
 	public class Given_FindName
 	{
+		/// <summary>
+		/// WinUI resolves a name only from the namescope it was registered in, so a name declared inside
+		/// a template does not resolve from outside it. Uno keeps its historical tree walk as a fallback.
+		/// </summary>
+		[TestMethod]
+		public void When_Strict_Mode_Name_Resolves_From_The_Namescope_Only()
+		{
+			var SUT = new Grid();
+			var named = new Border { Name = "strict" };
+			SUT.Children.Add(named);
+
+			Uno.UI.FeatureConfiguration.FrameworkElement.UseLegacyFindNameTreeWalk = false;
+			try
+			{
+				Assert.IsNull(SUT.FindName("strict"), "a detached tree has no namescope to resolve from");
+
+				NameScope scope = new() { Owner = SUT };
+				scope.RegisterName("strict", named);
+
+				Assert.AreEqual(named, SUT.FindName("strict"));
+			}
+			finally
+			{
+				Uno.UI.FeatureConfiguration.FrameworkElement.UseLegacyFindNameTreeWalk = true;
+			}
+		}
+
+		[TestMethod]
+		public void When_Loaded_From_Xaml_Reader_Root_Finds_Its_Names()
+		{
+			var SUT = (Grid)Microsoft.UI.Xaml.Markup.XamlReader.Load(
+				"""
+				<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+					<Border x:Name="readerBorder" />
+				</Grid>
+				""");
+
+			Uno.UI.FeatureConfiguration.FrameworkElement.UseLegacyFindNameTreeWalk = false;
+			try
+			{
+				Assert.AreEqual(SUT.Children.Single(), SUT.FindName("readerBorder"));
+			}
+			finally
+			{
+				Uno.UI.FeatureConfiguration.FrameworkElement.UseLegacyFindNameTreeWalk = true;
+			}
+		}
+
 		[TestMethod]
 		public void When_SimpleElement()
 		{
