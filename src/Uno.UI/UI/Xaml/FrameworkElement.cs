@@ -918,6 +918,8 @@ namespace Microsoft.UI.Xaml
 
 		private void OnNameChanged(string oldValue, string newValue)
 		{
+			SetName(newValue);
+
 			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
 			{
 				Microsoft.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);

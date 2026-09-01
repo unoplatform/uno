@@ -12,6 +12,7 @@ using System;
 using System.Diagnostics;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Core.NameScoping;
 
 namespace Microsoft.UI.Xaml;
 
@@ -144,6 +145,103 @@ public partial class DependencyObject
 		}
 
 		return namescopeOwner;
+	}
+
+	// MUX Reference: CDependencyObject.h — m_strName. FrameworkElement.Name pushes here; other
+	// DependencyObjects carry no name of their own, so the parser registers them directly.
+	private string? _name;
+
+	internal string? XamlName => _name;
+
+	/// <summary>
+	/// Sets this element's name in the current namescope, and un-registers the old one.
+	/// MUX Reference: CDependencyObject::SetName (depends.cpp:570-660).
+	/// </summary>
+	internal void SetName(string? name)
+	{
+		if (string.Equals(name, _name, StringComparison.Ordinal))
+		{
+			return;
+		}
+
+		DependencyObject? namescopeOwner = null;
+
+		// Named objects in a template never support dynamic name table updates.
+		// When a tree is being parsed, the parser puts the name/value pairs into the name scope table.
+		// Named objects outside of a template and outside of parsing need to update the name scope table.
+		if (!IsTemplateNamescopeMember && !ParserOwnsParent)
+		{
+			var namescopeStartingPoint = this;
+
+			if (IsStandardNameScopeOwner && ShouldRegisterInParentNamescope)
+			{
+				// Elements that were initialized from xaml will have their own namescope, but after
+				// initialization their names belong in the containing namescope - so start one step up.
+				namescopeStartingPoint = GetStandardNameScopeParent();
+			}
+
+			namescopeOwner = namescopeStartingPoint?.GetStandardNameScopeOwner();
+		}
+
+		if (namescopeOwner is not null)
+		{
+			// TODO Uno: WinUI clears m_strName before unregistering (depends.cpp:624-628), so a rename
+			// leaves the old name in the table. Uno unregisters the old name for real; the upstream
+			// behaviour is being reported.
+			UnregisterName(namescopeOwner);
+			_name = name;
+			RegisterName(namescopeOwner);
+		}
+		else
+		{
+			_name = name;
+		}
+
+		// Any name set after initial definition is a usage name.
+		if (ShouldRegisterInParentNamescope)
+		{
+			HasUsageName = true;
+		}
+	}
+
+	// Registers this element's name with the namescope of the passed NamescopeOwner.
+	// MUX Reference: CDependencyObject::RegisterName (depends.cpp:665-706).
+	internal void RegisterName(DependencyObject? namescopeOwner)
+	{
+		if (namescopeOwner == this && ShouldRegisterInParentNamescope)
+		{
+			return;
+		}
+
+		if (!string.IsNullOrEmpty(_name) &&
+			namescopeOwner is not null &&
+
+			// During parse, the parser handles name registration.
+			!ParserOwnsParent &&
+
+			// Elements which should register in the parent namescope, should register only the usage
+			// name, not the definition name, because the definition name should be in the element's
+			// own namescope.
+			(!ShouldRegisterInParentNamescope || HasUsageName))
+		{
+			this.GetContext().SetNamedObject(_name!, namescopeOwner, NameScopeType.StandardNameScope, this);
+		}
+	}
+
+	// MUX Reference: CDependencyObject::UnregisterName (depends.cpp:708-728).
+	internal void UnregisterName(DependencyObject? namescopeOwner)
+	{
+		// Reached from LeaveImpl once the adjusted namescope owner is ourselves: we registered in our
+		// own table at definition time and that registration can never change, so there is nothing to do.
+		if (namescopeOwner == this && ShouldRegisterInParentNamescope)
+		{
+			return;
+		}
+
+		if (!string.IsNullOrEmpty(_name) && namescopeOwner is not null && ShouldParticipateInParentNameScope)
+		{
+			this.GetContext().ClearNamedObject(_name!, namescopeOwner, this);
+		}
 	}
 
 	internal DependencyObject? GetPublicRootVisual()

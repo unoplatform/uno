@@ -59,8 +59,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.EnterImpl(namescopeOwner, @params);
 
+			// Not on the name-registration pass: it would register the accelerators a second time.
 			var items = Items;
-			if (items is not null)
+			if (items is not null && (@params.IsLive || @params.IsForKeyboardAccelerator))
 			{
 				// Resolve the VisualTree from this element (which IS in the live tree)
 				// and propagate it so that KA collections inside items can find the ContentRoot.

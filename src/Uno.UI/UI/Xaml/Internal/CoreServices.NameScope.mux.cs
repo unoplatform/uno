@@ -37,12 +37,17 @@ internal partial class CoreServices
 
 			NameScopeRoot.EnsureNameScope(namescopeOwner, NameScopeType.StandardNameScope);
 
+			var table = NameScopeRoot.GetTable(namescopeOwner, NameScopeType.StandardNameScope)!;
+
 			// SetNamedObject on ourselves should only register a weakref to avoid a circular reference.
-			// TODO Uno: WinUI holds every other entry strongly. Until names are unregistered on Leave,
-			// a strong entry would keep a removed child alive for as long as its owner, so descendants
-			// stay weak too (spec 058, D7).
-			NameScopeRoot.GetTable(namescopeOwner, NameScopeType.StandardNameScope)!
-				.RegisterName(name, WeakReferencePool.RentWeakReference(this, obj));
+			if (ReferenceEquals(namescopeOwner, obj))
+			{
+				table.RegisterName(name, WeakReferencePool.RentWeakReference(this, obj));
+			}
+			else
+			{
+				table.RegisterName(name, obj);
+			}
 		}
 	}
 
@@ -60,6 +65,20 @@ internal partial class CoreServices
 
 		// Deferred (x:Load) entries realize inside the table lookup, so no DeferredElement branch is needed here.
 		return NameScopeRoot.GetNamedObjectIfExists(name, namescopeOwner, nameScopeType);
+	}
+
+	/// <summary>
+	/// Removes a name registration, but only if it still refers to <paramref name="originalEntry"/>.
+	/// MUX Reference: CCoreServices::ClearNamedObject (xcpcore_namescope.cpp:109-142).
+	/// </summary>
+	internal void ClearNamedObject(string name, DependencyObject? namescopeOwner, DependencyObject originalEntry)
+	{
+		if (namescopeOwner is null || !NameScopeRoot.HasStandardNameScopeTable(namescopeOwner))
+		{
+			return;
+		}
+
+		NameScopeRoot.ClearNamedObjectIfExists(name, namescopeOwner, NameScopeType.StandardNameScope, originalEntry);
 	}
 
 	internal bool HasRegisteredNames(DependencyObject namescopeOwner)

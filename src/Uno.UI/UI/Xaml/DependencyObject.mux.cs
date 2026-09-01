@@ -134,9 +134,8 @@ public partial class DependencyObject
 						namescopeOwner != this &&
 						!IsTemplateNamescopeMember)
 					{
-						// TODO Uno: registration on Enter arrives with spec 058 step 9; WinUI registers this
-						// owner's own name in the parent namescope here (not the "adjusted" one):
-						//RegisterName(namescopeOwner);
+						// not using the "adjusted" namescope owner
+						RegisterName(namescopeOwner);
 					}
 
 					// regarding condition below: The only element that is a Permanent
@@ -241,20 +240,16 @@ public partial class DependencyObject
 			//m_checkForResourceOverrides = !!params.fCheckForResourceOverrides;
 		}
 
-		// TODO Uno: NOT PORTED — name registration (depends.cpp:986-1001):
-		//if (!params.fSkipNameRegistration)
-		//{
-		//	if (!IsTemplateNamescopeMember())
-		//	{
-		//		RegisterName(pNamescopeOwner);
-		//		RegisterDeferredStandardNameScopeEntries(pNamescopeOwner);
-		//	}
-		//}
-		//
-		//if (HasDeferred())
-		//{
-		//	CDeferredMapping::NotifyEnter(pNamescopeOwner, this, params.fSkipNameRegistration);
-		//}
+		if (!@params.SkipNameRegistration)
+		{
+			if (!IsTemplateNamescopeMember)
+			{
+				RegisterName(namescopeOwner);
+
+				// TODO Uno: NOT PORTED — RegisterDeferredStandardNameScopeEntries (x:Load entries,
+				// spec 058 step 11), and CDeferredMapping::NotifyEnter for deferred subtrees.
+			}
+		}
 
 		// Nothing else to do for value types and control/data templates.
 		// (Value types cannot be DependencyObjects in Uno; the template check is ported as-is.)
@@ -276,7 +271,12 @@ public partial class DependencyObject
 			EnterProperties(namescopeOwner, @params);
 		}
 
-		EnterSparseProperties(pAdjustedNamescopeOwner: namescopeOwner, @params);
+		// The dead pass exists to register names (CDOCollection::ChildEnter); entering resource
+		// elements there would materialize a non-live subtree's resources ahead of time.
+		if (@params.IsLive || @params.IsForKeyboardAccelerator)
+		{
+			EnterSparseProperties(pAdjustedNamescopeOwner: namescopeOwner, @params);
+		}
 
 		// MUX Reference: depends.cpp:1044-1069 — establish this object's theme from its (logical)
 		// inheritance parent now that it is live, before any {ThemeResource} resolves. Runs after the
@@ -408,8 +408,8 @@ public partial class DependencyObject
 					namescopeOwner != this &&
 					!IsTemplateNamescopeMember)
 				{
-					// TODO Uno: unregistration on Leave arrives with spec 058 step 9:
-					//UnregisterName(namescopeOwner);
+					// not using the "adjusted" namescope owner
+					UnregisterName(namescopeOwner);
 				}
 
 				// TODO Uno: WinUI returns here without walking when a non-live owner has no registered
@@ -519,12 +519,12 @@ public partial class DependencyObject
 
 		// Enumerate all the properties in its class
 
-		// TODO Uno: NOT PORTED — name unregistration (depends.cpp:1275-1280):
-		//if (!params.fSkipNameRegistration && !IsTemplateNamescopeMember())
-		//{
-		//	UnregisterName(pNamescopeOwner);
-		//	UnregisterDeferredStandardNameScopeEntries(pNamescopeOwner);
-		//}
+		if (!@params.SkipNameRegistration && !IsTemplateNamescopeMember)
+		{
+			UnregisterName(namescopeOwner);
+
+			// TODO Uno: NOT PORTED — UnregisterDeferredStandardNameScopeEntries (spec 058 step 11).
+		}
 
 		// Nothing else to do for value types and control/data templates.
 		if (ActualInstance is Controls.ControlTemplate or DataTemplate)

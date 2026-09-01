@@ -139,16 +139,23 @@ namespace Microsoft.UI.Xaml
 		// MUX Reference: CDOCollection::ChildEnter (DOCollection.cpp:313).
 		private void ChildEnter(UIElement child, DependencyObject namescopeOwner, EnterParams @params)
 		{
-			// TODO Uno: WinUI precedes the live pass with a dead pass that registers names
-			// (skipped when params.fSkipNameRegistration). It arrives with registration on Enter,
-			// spec 058 step 9 - until then the walk would have nothing to do.
+			// First pass is name registration
+			if (!@params.SkipNameRegistration)
+			{
+				var registrationParams = @params;
+				registrationParams.IsLive = false;
+				registrationParams.Depth = int.MinValue;
+				child.Enter(namescopeOwner, registrationParams);
+			}
+
 			if (@params.IsLive)
 			{
 				// Compute from the parent's persisted Depth, never from @params.Depth - @params is
 				// threaded through property, resource and flyout walks where its Depth may be stale.
 				@params.Depth = this.Depth + 1;
 
-				// The names were registered by the dead pass, so the live one never re-registers.
+				// Second pass is the actual invocation - only for live trees. The names were
+				// registered by the first pass, so this one never re-registers.
 				@params.SkipNameRegistration = true;
 				child.Enter(namescopeOwner, @params);
 			}

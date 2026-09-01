@@ -1073,32 +1073,37 @@ namespace Microsoft.UI.Xaml
 			}
 #endif
 
-			// Extends EnterImpl to the ContextFlyout.
-			// In WinUI, EnterSparseProperties calls EnterEffectiveValue for IsVisualTreeProperty values,
-			// which calls AddParent(this) + Enter(). We mirror that here.
-			// Remove this workaround when https://github.com/unoplatform/uno/issues/22949 is implemented.
-			// WinUI nulls out the VisualTree pointer before this call because a FlyoutBase can
-			// be shared between ContentRoots (Bug 19548424). We do the same to avoid associating
-			// the shared flyout with a specific visual tree, which would prevent GC of the owning
-			// element's subtree once it leaves the tree.
-			FlyoutBase pFlyoutBase = this.ContextFlyout;
-			if (pFlyoutBase is not null)
+			// The dead pass only registers names (CDOCollection::ChildEnter); propagating to flyouts
+			// and accelerators there would double every registration the live pass makes.
+			if (@params.IsLive || @params.IsForKeyboardAccelerator)
 			{
-				pFlyoutBase.SetParent(this);
-				var flyoutParams = @params;
-				flyoutParams.VisualTree = null;
-				pFlyoutBase.PropagateKeyboardAcceleratorEnter(null, flyoutParams);
-			}
-
-			// TODO: Uno specific - In WinUI, CDependencyObject::EnterImpl calls EnterSparseProperties
-			// which generically walks all sparse IsVisualTreeProperty values. Remove this explicit
-			// KA propagation when Uno implements EnterSparseProperties/LeaveSparseProperties.
-			// Use IsDependencyPropertySet to avoid creating default empty collections.
-			if (this.IsDependencyPropertySet(KeyboardAcceleratorsProperty))
-			{
-				if (GetValue(KeyboardAcceleratorsProperty) is KeyboardAcceleratorCollection kac)
+				// Extends EnterImpl to the ContextFlyout.
+				// In WinUI, EnterSparseProperties calls EnterEffectiveValue for IsVisualTreeProperty values,
+				// which calls AddParent(this) + Enter(). We mirror that here.
+				// Remove this workaround when https://github.com/unoplatform/uno/issues/22949 is implemented.
+				// WinUI nulls out the VisualTree pointer before this call because a FlyoutBase can
+				// be shared between ContentRoots (Bug 19548424). We do the same to avoid associating
+				// the shared flyout with a specific visual tree, which would prevent GC of the owning
+				// element's subtree once it leaves the tree.
+				FlyoutBase pFlyoutBase = this.ContextFlyout;
+				if (pFlyoutBase is not null)
 				{
-					kac.RegisterLiveAccelerators(null, @params);
+					pFlyoutBase.SetParent(this);
+					var flyoutParams = @params;
+					flyoutParams.VisualTree = null;
+					pFlyoutBase.PropagateKeyboardAcceleratorEnter(null, flyoutParams);
+				}
+
+				// TODO: Uno specific - In WinUI, CDependencyObject::EnterImpl calls EnterSparseProperties
+				// which generically walks all sparse IsVisualTreeProperty values. Remove this explicit
+				// KA propagation when Uno implements EnterSparseProperties/LeaveSparseProperties.
+				// Use IsDependencyPropertySet to avoid creating default empty collections.
+				if (this.IsDependencyPropertySet(KeyboardAcceleratorsProperty))
+				{
+					if (GetValue(KeyboardAcceleratorsProperty) is KeyboardAcceleratorCollection kac)
+					{
+						kac.RegisterLiveAccelerators(null, @params);
+					}
 				}
 			}
 

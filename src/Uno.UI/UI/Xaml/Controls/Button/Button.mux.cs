@@ -15,8 +15,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			base.EnterImpl(namescopeOwner, @params);
 
+			// Not on the name-registration pass: it would register the accelerators a second time.
 			var flyout = Flyout;
-			if (flyout is not null)
+			if (flyout is not null && (@params.IsLive || @params.IsForKeyboardAccelerator))
 			{
 				flyout.PropagateKeyboardAcceleratorEnter(null, @params);
 			}
