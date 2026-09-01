@@ -62,11 +62,6 @@ internal struct ClipData
 	// that could not fold the full rect constraint) — blocks the emit's derived-widening fallback.
 	public bool ScissorLoadBearing;
 
-	// No clip at all: infinite scissor, no rounded shapes, no path mask. (Arena re-stamp is only correct when the
-	// fragment shader doesn't depend on device position — i.e. no clip; see the ReplayRefCmd arena path.)
-	public bool IsNone => (Rounds is null || Rounds.Length == 0) && PathFan is null
-		&& Aabb.X <= -1e8f && Aabb.Y <= -1e8f && Aabb.Z >= 1e8f && Aabb.W >= 1e8f;
-
 	// Append a rounded clip, copy-on-write, capped at MaxRounds (drops the oldest/outermost on overflow).
 	public static RoundClip[] Push(RoundClip[] existing, in RoundClip rc)
 	{
@@ -1723,13 +1718,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 {
 	// UNO_WEBGPU_STATS=1: per-pass emit-shape diagnostics (see RenderInto).
 	private int _statCrMiss, _statCrMove, _statCrPathFlip, _statCrSize, _statCrClip;
-	// A/B gates so the session's landed optimisations can be priced against the ground-truth frame time.
-	// Diagnostic: skip the COVER draw of stencil-then-cover (VISUALLY WRONG — paths vanish) to bound what tighter
-	// cover geometry could ever be worth. The stencil pass still runs, so the delta is the cover's fill cost.
-	// Diagnostic: run the whole CPU path (record, op build, encode) but never submit, so the GPU idles and a
-	// profile shows the CPU distribution instead of being swamped by time blocked in the driver. VISUALLY WRONG —
-	// nothing reaches the screen. Exists because the desktop box is GPU-bound in software, which otherwise leaves
-	// managed code at ~1% of the trace and unattributable.
 	private static readonly bool _emitStats = Environment.GetEnvironmentVariable("UNO_WEBGPU_STATS") is "1" or "true";
 	private static int _emitStatsFrame;
 	// Build-shape counters (per stats interval): geometry-cache rebuilds / clip re-stamps observed while replaying.
@@ -4273,6 +4261,125 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	/// path-clip mask as it goes. Split out of RenderInto so the command walk and the encode loop can each be read
 	/// on their own.
 	/// </summary>
+	/// <summary>
+	/// Encodes one backdrop (the acrylic path): ends the open pass so its MSAA resolves into the target view - the
+	/// content BEHIND the backdrop - blurs the affected region, then opens a fresh pass that loads that content back
+	/// and composites the blurred backdrop and its tint over the effect region. Ops after this one draw on top in the
+	/// new pass, so each command is still encoded exactly once with no prefix re-render.
+	/// </summary>
+	/// <returns>The newly opened pass, which the caller is responsible for ending.</returns>
+	private IntPtr EncodeBackdropSegment(BackdropCmd backdrop, ref PassOps pst)
+	{
+		var target = pst.Target;
+		wgpuRenderPassEncoderEnd(pst.Pass);
+
+		// Blur only the element AABB padded by the blur's reach, not the whole framebuffer.
+		var effect = backdrop.Effect;
+		float pad = MathF.Max(effect.SigmaX, effect.SigmaY) + 8f;
+		var aabb = backdrop.Clip.Aabb;
+		float regionX = MathF.Max(0f, aabb.X - pad), regionY = MathF.Max(0f, aabb.Y - pad);
+		float regionW = MathF.Max(1f, MathF.Min(_s.Width, aabb.Z + pad) - regionX);
+		float regionH = MathF.Max(1f, MathF.Min(_s.Height, aabb.W + pad) - regionY);
+		var blurred = BlurPyramidRegion(target.View, _s.Width, _s.Height, regionX, regionY, regionW, regionH, effect.SigmaX, effect.SigmaY);
+
+		var color = new WGPURenderPassColorAttachment
+		{
+			DepthSlice = uint.MaxValue,
+			View = target.MsaaColorView,
+			ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero,
+			LoadOp = WGPULoadOp.Load,
+			StoreOp = WGPUStoreOp.Store,   // a following segment, or another backdrop, reloads it
+		};
+		var depthStencil = new WGPURenderPassDepthStencilAttachment
+		{
+			View = target.DepthView,
+			DepthLoadOp = WGPULoadOp.Clear,
+			DepthStoreOp = WGPUStoreOp.Discard,
+			DepthClearValue = 0f,
+			StencilLoadOp = WGPULoadOp.Clear,
+			StencilStoreOp = WGPUStoreOp.Discard,
+			StencilClearValue = 0,
+		};
+		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color, DepthStencilAttachment = &depthStencil };
+		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &desc);
+
+		pst.Pass = pass;
+		pst.Enc.Rebind(pass);
+		pst.ClipFan = null; pst.ClipAabb = default;   // fresh pass: the depth mask went with the old one
+
+		if (TryScissor(aabb, out var sx, out var sy, out var sw, out var sh))
+		{
+			pst.Enc.Scissor(sx, sy, sw, sh);
+			DrawBlurredBackdrop(ref pst, backdrop, blurred, new Vector2(regionX, regionY), new Vector2(regionW, regionH));
+
+			if (effect.Color.A != 0)
+			{
+				DrawBackdropTint(ref pst, backdrop);
+			}
+		}
+
+		return pass;
+	}
+
+	/// <summary>
+	/// Draws the blurred backdrop over its region. Luminosity, noise and opacity ride in the 112-byte image uniform,
+	/// so the acrylic recipe costs one textured quad.
+	/// </summary>
+	private void DrawBlurredBackdrop(ref PassOps pst, BackdropCmd backdrop, IntPtr blurred, Vector2 origin, Vector2 size)
+	{
+		var uniform = MakeUniform(112);
+		var fields = stackalloc float[28];
+		var lum = backdrop.Effect.LumColor;
+		fields[0] = backdrop.Opacity;
+		fields[3] = 1f;
+		fields[4] = lum.R / 255f; fields[5] = lum.G / 255f; fields[6] = lum.B / 255f; fields[7] = lum.A / 255f;
+		fields[24] = backdrop.Effect.Noise;
+		wgpuQueueWriteBuffer(_d.Q, uniform, 0, (IntPtr)fields, 112);
+
+		var entries = stackalloc WGPUBindGroupEntry[3];
+		entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = blurred };
+		entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+		entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = uniform, Offset = 0, Size = 112 };
+		var bgDesc = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
+		var imageBg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgDesc));
+
+		var verts = MakeBuffer(TexturedQuad(origin, size));
+		var clipBg = MakeClipBg(_d.ImageClipBgl, backdrop.Clip);
+
+		pst.Enc.Pipe(_d.ImagePipe);
+		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 0, (IntPtr)imageBg, 0, (uint*)null);
+		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 1, (IntPtr)clipBg, 0, (uint*)null);
+		wgpuRenderPassEncoderSetVertexBuffer(pst.Pass, 0, (IntPtr)verts, 0, (nuint)(24 * sizeof(float)));
+		pst.Enc.Reset();
+		pst.Enc.Draw(6);
+	}
+
+	/// <summary>Draws the backdrop's tint colour over the effect region.</summary>
+	private void DrawBackdropTint(ref PassOps pst, BackdropCmd backdrop)
+	{
+		var c = backdrop.Effect.Color;
+		float r = c.R / 255f, g = c.G / 255f, b = c.B / 255f, a = c.A / 255f;
+		var verts = new System.Collections.Generic.List<float>(36);
+		void Vert(float x, float y)
+		{
+			var n = Ndc(new Vector2(x, y));
+			verts.Add(n.X); verts.Add(n.Y); verts.Add(r); verts.Add(g); verts.Add(b); verts.Add(a);
+		}
+
+		var aabb = backdrop.Clip.Aabb;
+		Vert(aabb.X, aabb.Y); Vert(aabb.Z, aabb.Y); Vert(aabb.Z, aabb.W);
+		Vert(aabb.X, aabb.Y); Vert(aabb.Z, aabb.W); Vert(aabb.X, aabb.W);
+
+		var buf = MakeBuffer(verts);
+		var clipBg = MakeClipBg(_d.SolidClipBgl, backdrop.Clip);
+
+		pst.Enc.Pipe(_d.SolidPipe);
+		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 0, (IntPtr)clipBg, 0, (uint*)null);
+		wgpuRenderPassEncoderSetVertexBuffer(pst.Pass, 0, (IntPtr)buf, 0, (nuint)(36 * sizeof(float)));
+		pst.Enc.Reset();
+		pst.Enc.Draw(6);
+	}
+
 	private void EncodeOps(int start, int end, ref PassOps pst)
 	{
 		var pass = pst.Pass;
@@ -4477,83 +4584,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
 					break;
 				case DrawKind.BackdropSegment:
-					{
-						// Backdrop pass-segment (acrylic O(n) path): END this segment so its MSAA resolves into target.View
-						// (the content BEHIND the backdrop), blur that, REOPEN the pass loading the content back, and
-						// composite the blurred backdrop + tint over the effect region. Subsequent ops draw on top in the
-						// reopened pass. No prefix re-render — each command is encoded once.
-						var bk = backdrops[(int)b1];
-						wgpuRenderPassEncoderEnd(pass);
-						// Region-limit: blur only the element AABB padded by the blur reach, not the whole framebuffer.
-						float sPad = MathF.Max(bk.Effect.SigmaX, bk.Effect.SigmaY) + 8f;
-						var sAabb = bk.Clip.Aabb;
-						float srx = MathF.Max(0f, sAabb.X - sPad), sry = MathF.Max(0f, sAabb.Y - sPad);
-						float srw = MathF.Max(1f, MathF.Min(_s.Width, sAabb.Z + sPad) - srx), srh = MathF.Max(1f, MathF.Min(_s.Height, sAabb.W + sPad) - sry);
-						var bblur = BlurPyramidRegion(target.View, _s.Width, _s.Height, srx, sry, srw, srh, bk.Effect.SigmaX, bk.Effect.SigmaY);
-						var ca6 = new WGPURenderPassColorAttachment
-						{
-							DepthSlice = uint.MaxValue,
-							View = target.MsaaColorView,
-							ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero,
-							LoadOp = WGPULoadOp.Load,
-							StoreOp = WGPUStoreOp.Store,   // store: a following segment (next backdrop) reloads it; pooled layer targets segment too now
-						};
-						var dsa6 = new WGPURenderPassDepthStencilAttachment
-						{
-							View = target.DepthView,
-							DepthLoadOp = WGPULoadOp.Clear,
-							DepthStoreOp = WGPUStoreOp.Discard,
-							DepthClearValue = 0f,
-							StencilLoadOp = WGPULoadOp.Clear,
-							StencilStoreOp = WGPUStoreOp.Discard,
-							StencilClearValue = 0,
-						};
-						var rp6 = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca6, DepthStencilAttachment = &dsa6 };
-						pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp6);
-						pst.Pass = pass;                 // the caller ends the pass that is open when we return
-						pst.Enc.Rebind(pass);
-						pst.ClipFan = null; pst.ClipAabb = default;   // fresh pass: the depth mask went with it
-						if (TryScissor(bk.Clip.Aabb, out var bsx, out var bsy, out var bsw, out var bsh))
-						{
-							pst.Enc.Scissor(bsx, bsy, bsw, bsh);
-							// Acrylic composite: blurred backdrop image (lum/noise/opacity baked via the 112B uniform).
-							var bubuf = MakeUniform(112);
-							var bop = stackalloc float[28]; bop[0] = bk.Opacity; bop[3] = 1f; var lum = bk.Effect.LumColor; bop[4] = lum.R / 255f; bop[5] = lum.G / 255f; bop[6] = lum.B / 255f; bop[7] = lum.A / 255f; bop[24] = bk.Effect.Noise;
-							wgpuQueueWriteBuffer(_d.Q, bubuf, 0, (IntPtr)bop, 112);
-							var bde = stackalloc WGPUBindGroupEntry[3];
-							bde[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = bblur };
-							bde[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-							bde[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = bubuf, Offset = 0, Size = 112 };
-							var bdbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = bde };
-							var bdbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bdbgd));
-							var bq = TexturedQuad(new Vector2(srx, sry), new Vector2(srw, srh));
-							var bqbuf = MakeBuffer(bq);
-							var bclipBg = MakeClipBg(_d.ImageClipBgl, bk.Clip);
-							pst.Enc.Pipe(_d.ImagePipe);
-							wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)bdbg, 0, (uint*)null);
-							wgpuRenderPassEncoderSetBindGroup(pass, 1, (IntPtr)bclipBg, 0, (uint*)null);
-							wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)bqbuf, 0, (nuint)(24 * sizeof(float)));
-							pst.Enc.Reset();
-							pst.Enc.Draw(6);
-							// Tint overlay (skip A==0).
-							if (bk.Effect.Color.A != 0)
-							{
-								var col = bk.Effect.Color; var tcx = col.R / 255f; var tcy = col.G / 255f; var tcz = col.B / 255f; var tcw = col.A / 255f;
-								var tv = new System.Collections.Generic.List<float>();
-								void TV(float x, float y) { var n = Ndc(new Vector2(x, y)); tv.Add(n.X); tv.Add(n.Y); tv.Add(tcx); tv.Add(tcy); tv.Add(tcz); tv.Add(tcw); }
-								var a = bk.Clip.Aabb;
-								TV(a.X, a.Y); TV(a.Z, a.Y); TV(a.Z, a.W); TV(a.X, a.Y); TV(a.Z, a.W); TV(a.X, a.W);
-								var tvbuf = MakeBuffer(tv);
-								var tclipBg = MakeClipBg(_d.SolidClipBgl, bk.Clip);
-								pst.Enc.Pipe(_d.SolidPipe);
-								wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)tclipBg, 0, (uint*)null);
-								wgpuRenderPassEncoderSetVertexBuffer(pass, 0, (IntPtr)tvbuf, 0, (nuint)(36 * sizeof(float)));
-								pst.Enc.Reset();
-								pst.Enc.Draw(6);
-							}
-						}
-						break;
-					}
+					pass = EncodeBackdropSegment(backdrops[(int)b1], ref pst);
+					break;
 				case DrawKind.RoundedRect when b0 == VertexSource.PassBuffer:
 					{
 						// Shared rrect buffer (b1=start vert, u0=6). COALESCE the run of following rrect ops sharing this
@@ -4617,6 +4649,51 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					break;
 			}
 		}
+	}
+
+	/// <summary>
+	/// Dumps the frame's encode counters (<c>UNO_WEBGPU_STATS=1</c>, every 60th frame) and clears them, grouped by
+	/// the question each set answers: how much got drawn, what the encoder had to change between draws, how much of
+	/// the scene came from reused recordings, and why the reuse and admission paths turned work away.
+	/// </summary>
+	private void WriteFrameStats(int opCount, ref PassOps pst, int bundleReplay, int bundleWrite)
+	{
+		var line = new System.Text.StringBuilder(512);
+		line.Append($"[webgpu-stats] {_s.Width}x{_s.Height}:");
+
+		// Drawn
+		line.Append($" ops={opCount} emitted={pst.Iters} sharedOps={pst.SharedOps} tiled={pst.Tiled}");
+		line.Append($" coverMpx={pst.CoverMpx:F1} strips={WgStrokeStats.Strips} tilesCmd={WgStrokeStats.TilesCmd}");
+
+		// Changed between draws
+		line.Append($" scissorChanges={pst.Scissors} clipChanges={pst.ClipChanges} fanOps={pst.FanOps}");
+		line.Append($" bundle=r{bundleReplay}+w{bundleWrite} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB");
+
+		// Reused
+		line.Append($" replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays}");
+		line.Append($" inlineCmds={WebGpuCommandRecorder.StatInlineCmds}");
+		line.Append($" block=ref{WebGpuCommandRecorder.StatBlockRef}/layer{WebGpuCommandRecorder.StatBlockLayer}");
+		line.Append($"/shadow{WebGpuCommandRecorder.StatBlockShadow}/other{WebGpuCommandRecorder.StatBlockOther}");
+		line.Append($"/empty{WebGpuCommandRecorder.StatBlockEmpty}");
+
+		// Rebuilt anyway, and why
+		line.Append($" tableRebuilds={_statTableRebuilds} arenaRebuilds={_statArenaRebuilds} stamps={_statStamps}");
+		line.Append($" cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}");
+		line.Append($"/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip})");
+
+		// Turned away, and why
+		line.Append($" fanTry=t{StatFanTried}/ok{StatFanStripped}/big{StatFanTooBig}");
+		line.Append($"/concave{StatFanConcave}/nocover{StatFanNotCovering}");
+		line.Append($" atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked}");
+		line.Append($"/full{AtlasNoRoom}/ring{AtlasNoRing}/scaleblk{ScaleBlocked}/big{WebGpuPathAtlas.RejBig}");
+		line.Append($"/pages{_d.PathAtlas.Pages.Count}");
+
+		System.Console.WriteLine(line.ToString());
+
+		WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = 0;
+		StatFanTried = StatFanStripped = StatFanTooBig = StatFanConcave = StatFanNotCovering = 0;
+		_statTableRebuilds = _statStamps = _statArenaRebuilds = _statCachedRebuilds = 0;
+		_statCrMiss = _statCrMove = _statCrPathFlip = _statCrSize = _statCrClip = 0;
 	}
 
 	private void RenderInto(List<WebGpuCommand> cmds, WebGpuRenderSurface target, WColor? clear, bool load = false)
@@ -4923,10 +5000,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
 		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
 		{
-			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={pst.Iters} scissorChanges={pst.Scissors} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={pst.ClipChanges} fanOps={pst.FanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} fanTry=t{StatFanTried}/ok{StatFanStripped}/big{StatFanTooBig}/concave{StatFanConcave}/nocover{StatFanNotCovering} cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip}) replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds} block=ref{WebGpuCommandRecorder.StatBlockRef}/layer{WebGpuCommandRecorder.StatBlockLayer}/shadow{WebGpuCommandRecorder.StatBlockShadow}/other{WebGpuCommandRecorder.StatBlockOther}/empty{WebGpuCommandRecorder.StatBlockEmpty} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB sharedOps={pst.SharedOps} tiled={pst.Tiled} coverMpx={pst.CoverMpx:F1} strips={WgStrokeStats.Strips} tilesCmd={WgStrokeStats.TilesCmd} atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked}/full{AtlasNoRoom}/ring{AtlasNoRing}/scaleblk{ScaleBlocked}/big{WebGpuPathAtlas.RejBig}/pages{_d.PathAtlas.Pages.Count}");
-			WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = 0;
-			StatFanTried = StatFanStripped = StatFanTooBig = StatFanConcave = StatFanNotCovering = 0;
-			_statTableRebuilds = 0; _statStamps = 0; _statArenaRebuilds = 0; _statCachedRebuilds = 0; _statCrMiss = _statCrMove = _statCrPathFlip = _statCrSize = _statCrClip = 0;
+			WriteFrameStats(ops.Count, ref pst, statBundleReplay, statBundleRec);
 		}
 
 		wgpuRenderPassEncoderEnd(pst.Pass);

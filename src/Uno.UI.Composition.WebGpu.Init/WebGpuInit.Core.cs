@@ -85,7 +85,6 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 	public JSObject JsDeviceObject;          // browser only: the live JS GPUDevice (the honest neutral handle)
 	private bool _hasFormatFeatures;
 	/// <summary>Device was created with timestamp-query, so render passes can report real GPU durations.</summary>
-	public bool HasTimestampQuery { get; private set; }
 	private readonly bool _browser;
 
 	public static IntPtr CreateInstancePtr() => CreateInstance();
@@ -153,12 +152,6 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 		var fmtFeat = (WGPUFeatureName)WGPUNativeFeature.TextureAdapterSpecificFormatFeatures;
 		_hasFormatFeatures = wgpuAdapterHasFeature(Adapter, fmtFeat) != 0;
 		if (_hasFormatFeatures) { feats[featCount++] = fmtFeat; }
-		// timestamp-query gives REAL GPU pass durations, which the frame-phase log cannot see: it measures CPU
-		// time, so a GPU-bound frame shows up only indirectly as time blocked in submit/present. Requested only
-		// when UNO_WEBGPU_GPUTIME=1 so a normal run carries no query overhead.
-		HasTimestampQuery = Environment.GetEnvironmentVariable("UNO_WEBGPU_GPUTIME") is "1"
-			&& wgpuAdapterHasFeature(Adapter, WGPUFeatureName.TimestampQuery) != 0;
-		if (HasTimestampQuery) { feats[featCount++] = WGPUFeatureName.TimestampQuery; }
 		if (featCount > 0) { ddesc.RequiredFeatures = feats; ddesc.RequiredFeatureCount = featCount; }
 		// Non-fatal uncaptured-error handler (wgpu's default panics the process on any validation/OOM error).
 		ddesc.UncapturedErrorCallbackInfo = new WGPUUncapturedErrorCallbackInfo
@@ -179,7 +172,7 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 		Q = wgpuDeviceGetQueue(Dev);
 		MsaaSamples = PickSampleCount();
 		CreatePresentSampler();
-		System.Console.WriteLine($"[webgpu] init device — msaa={MsaaSamples}x fmtFeatures={_hasFormatFeatures} timestampQuery={HasTimestampQuery} colorFormat={ColorFormat}");
+		System.Console.WriteLine($"[webgpu] init device — msaa={MsaaSamples}x fmtFeatures={_hasFormatFeatures} colorFormat={ColorFormat}");
 	}
 
 	private WebGpuInitDevice(WGPUTextureFormat colorFormat, IntPtr inst, IntPtr dev)
