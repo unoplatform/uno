@@ -31,6 +31,10 @@ public class NameScope : INameScope
 	// only learns its root after the body has run, so names registered until then wait here.
 	private Dictionary<string, ManagedWeakReference>? _pendingNames;
 
+	// The core namescope tables hold DependencyObjects, but INameScope takes any object and XAML can
+	// put an x:Name on one. Those stay here so FindName keeps resolving them.
+	private Dictionary<string, ManagedWeakReference>? _foreignNames;
+
 	public NameScope()
 	{
 	}
@@ -40,8 +44,10 @@ public class NameScope : INameScope
 		get => _ownerRef?.Target as DependencyObject;
 		set
 		{
-			ArgumentNullException.ThrowIfNull(value);
-			EnsureNamescopeOwner(value);
+			if (value is not null)
+			{
+				EnsureNamescopeOwner(value);
+			}
 		}
 	}
 
@@ -92,13 +98,19 @@ public class NameScope : INameScope
 
 	public object? FindName(string name)
 	{
-		if (Owner is { } owner)
+		if (Owner is { } owner &&
+			owner.GetContext().GetNamedObject(name, owner, NameScopeType.StandardNameScope) is { } named)
 		{
-			return owner.GetContext().GetNamedObject(name, owner, NameScopeType.StandardNameScope);
+			return named;
 		}
 
-		return _pendingNames is not null && _pendingNames.TryGetValue(name, out var reference)
-			? reference.Target
+		if (_pendingNames is not null && _pendingNames.TryGetValue(name, out var pending))
+		{
+			return pending.Target;
+		}
+
+		return _foreignNames is not null && _foreignNames.TryGetValue(name, out var foreign)
+			? foreign.Target
 			: null;
 	}
 
@@ -106,18 +118,18 @@ public class NameScope : INameScope
 	{
 		if (scopedElement is not DependencyObject element)
 		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().Warn($"Cannot register the name [{name}]: {scopedElement?.GetType()} is not a DependencyObject.");
-			}
-
+			RegisterForeignName(name, scopedElement);
 			return;
 		}
 
 		if (Owner is { } owner)
 		{
 			var context = owner.GetContext();
-			WarnIfDuplicate(name, element, context.NameScopeRoot.PeekNamedObjectIfExists(name, owner, NameScopeType.StandardNameScope));
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				WarnIfDuplicate(name, element, context.NameScopeRoot.PeekNamedObjectIfExists(name, owner, NameScopeType.StandardNameScope));
+			}
+
 			context.SetNamedObject(name, owner, NameScopeType.StandardNameScope, element);
 			return;
 		}
@@ -126,17 +138,38 @@ public class NameScope : INameScope
 
 		if (_pendingNames.TryGetValue(name, out var existing))
 		{
-			WarnIfDuplicate(name, element, existing.Target as DependencyObject);
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				WarnIfDuplicate(name, element, existing.Target as DependencyObject);
+			}
+
 			WeakReferencePool.ReturnWeakReference(this, existing);
 		}
 
 		_pendingNames[name] = WeakReferencePool.RentWeakReference(this, element);
 	}
 
+	private void RegisterForeignName(string name, object? scopedElement)
+	{
+		if (scopedElement is null)
+		{
+			return;
+		}
+
+		_foreignNames ??= new Dictionary<string, ManagedWeakReference>(StringComparer.Ordinal);
+
+		if (_foreignNames.TryGetValue(name, out var existing))
+		{
+			WeakReferencePool.ReturnWeakReference(this, existing);
+		}
+
+		_foreignNames[name] = WeakReferencePool.RentWeakReference(this, scopedElement);
+	}
+
 	private void WarnIfDuplicate(string name, DependencyObject element, DependencyObject? existing)
 	{
 		// Re-registering the same element under the same name is idempotent, not a duplicate.
-		if (existing is not null && !ReferenceEquals(existing, element) && this.Log().IsEnabled(LogLevel.Warning))
+		if (existing is not null && !ReferenceEquals(existing, element))
 		{
 			this.Log().Warn($"The name [{name}] already exists in the current XAML scope");
 		}
@@ -147,12 +180,16 @@ public class NameScope : INameScope
 		if (Owner is { } owner)
 		{
 			owner.GetContext().NameScopeRoot.GetTable(owner, NameScopeType.StandardNameScope)?.TryRemove(name);
-			return;
 		}
 
 		if (_pendingNames is not null && _pendingNames.Remove(name, out var reference))
 		{
 			WeakReferencePool.ReturnWeakReference(this, reference);
+		}
+
+		if (_foreignNames is not null && _foreignNames.Remove(name, out var foreign))
+		{
+			WeakReferencePool.ReturnWeakReference(this, foreign);
 		}
 	}
 
@@ -227,7 +264,7 @@ public class NameScope : INameScope
 				// (DataTemplate inside a DataTemplate) we need to find a known ancestor
 				// through the NameScope owner.
 
-				if (scope?.Owner is DependencyObject owner)
+				if (scope?.Owner is DependencyObject owner && owner != parent)
 				{
 					return FindInNamescopes(owner, name);
 				}
