@@ -124,15 +124,62 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual(second, scope.FindName("dupe"));
 		}
 
+		/// <summary>
+		/// INameScope takes any object and XAML can put an x:Name on a non-DependencyObject, so those
+		/// stay resolvable even though the core namescope tables only hold DependencyObjects.
+		/// </summary>
 		[TestMethod]
-		public void When_Non_DependencyObject_Registered_It_Is_Ignored()
+		public void When_Non_DependencyObject_Registered_It_Is_Still_Found()
 		{
 			NameScope scope = new();
 			scope.Owner = new Border();
+			var plain = new object();
 
-			scope.RegisterName("plain", new object());
+			scope.RegisterName("plain", plain);
 
+			Assert.AreEqual(plain, scope.FindName("plain"));
+
+			scope.UnregisterName("plain");
 			Assert.IsNull(scope.FindName("plain"));
+		}
+
+		[TestMethod]
+		public void When_Owner_Set_To_Null_It_Is_Ignored()
+		{
+			NameScope scope = new();
+			var owner = new Border();
+			scope.Owner = owner;
+
+			scope.Owner = null;
+
+			Assert.AreEqual(owner, scope.Owner);
+		}
+
+		/// <summary>
+		/// A scope whose owner is the object carrying it would send the ancestor lookup back to where
+		/// it started.
+		/// </summary>
+		[TestMethod]
+		public void When_Scope_Owner_Is_Its_Own_Carrier_Lookup_Terminates()
+		{
+			var carrier = new CyclicObject();
+			NameScope scope = new() { Owner = carrier };
+			NameScope.SetNameScope(carrier, scope);
+
+			Assert.IsNull(NameScope.FindInNamescopes(carrier, "missing"));
+		}
+
+		[TestMethod]
+		public void When_ResourceDictionary_IsParsing_Parser_Owns_Parent()
+		{
+			var dictionary = new ResourceDictionary();
+			Assert.IsFalse(dictionary.ParserOwnsParent);
+
+			dictionary.IsParsing = true;
+			Assert.IsTrue(dictionary.ParserOwnsParent);
+
+			dictionary.CreationComplete();
+			Assert.IsFalse(dictionary.ParserOwnsParent);
 		}
 
 		[TestMethod]
