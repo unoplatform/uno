@@ -260,16 +260,66 @@ internal sealed class ReplayRefCmd : WebGpuCommand
 
 // Persistent (non-pooled) GPU resources for a cached recording, released on eviction. Separate from the per-frame
 // pool so cached draws survive across frames.
+/// <summary>
+/// Sentinel <see cref="DrawOp.b0"/> values for solid and rounded-rect ops whose verts live in a buffer shared with
+/// other ops instead of one of their own. Any other <c>b0</c> is the op's own vertex buffer handle.
+/// </summary>
+internal static class VertexSource
+{
+	/// <summary>Per-pass buffer, rebuilt each frame. <c>b1</c> = first vertex; stride 6 floats.</summary>
+	public const int PassBuffer = 0;
+
+	/// <summary>Resident slab that survives across frames. <c>b1</c> = byte offset; stride 6 floats.</summary>
+	public const int Slab = 1;
+
+	/// <summary>
+	/// Resident slab whose verts each carry an xform-table slot, so a move rewrites the slot rather than the
+	/// geometry. <c>b1</c> = byte offset; stride 7 floats (pos + colour + slot).
+	/// </summary>
+	public const int TableSlab = 2;
+}
+
+/// <summary>What a <see cref="DrawOp"/> draws, and so which pipeline and vertex layout it is encoded with.</summary>
+internal enum DrawKind
+{
+	/// <summary>Axis-aligned rect. b0 = verts, or 0 to take the shared per-pass solid buffer at b1/u0.</summary>
+	Solid = 0,
+
+	/// <summary>Arbitrary path, stencil-then-cover. b0 = fan, u0 = fan vertex count, b1 = cover, flag = even-odd.</summary>
+	Path = 1,
+
+	/// <summary>Textured quad. b0 = bind group, b1 = quad verts.</summary>
+	Image = 2,
+
+	/// <summary>Gradient-filled geometry.</summary>
+	Gradient = 3,
+
+	/// <summary>Composites a layer's offscreen surface onto its parent.</summary>
+	CompositeLayer = 4,
+
+	/// <summary>Analytic rounded rect / border ring (one SDF quad, no tessellation).</summary>
+	RoundedRect = 5,
+
+	/// <summary>Ends the pass segment so a backdrop can sample what is already drawn, then reopens it.</summary>
+	BackdropSegment = 6,
+
+	/// <summary>Path whose verts carry an xform-table slot, so a move rewrites the slot and not the geometry.</summary>
+	TablePath = 7,
+
+	/// <summary>Fan that tiles without overlap, so it fills in ONE pass with no stencil (see PathFill.FanTiles).</summary>
+	TilingFan = 8,
+}
+
 internal struct DrawOp
 {
-	public int kind; public nint b0; public uint u0; public nint b1; public bool flag; public ClipData clip; public nint clipBg;
+	public DrawKind kind; public nint b0; public uint u0; public nint b1; public bool flag; public ClipData clip; public nint clipBg;
 	public uint Color; public int GlyphFanStart;
-	public DrawOp(int kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)
+	public DrawOp(DrawKind kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)
 	{
 		this.kind = kind; this.b0 = b0; this.u0 = u0; this.b1 = b1; this.flag = flag; this.clip = clip; this.clipBg = clipBg;
 		Color = 0; GlyphFanStart = -1;
 	}
-	public readonly void Deconstruct(out int kind, out nint b0, out uint u0, out nint b1, out bool flag, out ClipData clip, out nint clipBg)
+	public readonly void Deconstruct(out DrawKind kind, out nint b0, out uint u0, out nint b1, out bool flag, out ClipData clip, out nint clipBg)
 	{
 		kind = this.kind; b0 = this.b0; u0 = this.u0; b1 = this.b1; flag = this.flag; clip = this.clip; clipBg = this.clipBg;
 	}
@@ -360,7 +410,8 @@ internal sealed unsafe class WebGpuGeometryCache
 // recording buffers). `Put`/`Offset` return BYTE offsets. Grow reallocs the buffer once and re-uploads the shadow.
 internal struct FrameOp
 {
-	public int Kind;          // 0 = solid, 5 = rrect, -1 = non-solid
+	/// <summary>Solid or RoundedRect for a run in the shared slabs; null when this op is <see cref="NonSolid"/>.</summary>
+	public DrawKind? Kind;
 	public int ByteOff;       // byte offset of this run within its shared slab (solid/rrect)
 	public uint Count;        // vertex count (solid/rrect)
 	public ClipData Clip;
@@ -2449,7 +2500,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private DrawOp MakeAtlasOp(PathFill pf, WebGpuPathAtlas.Page page, List<float> quads, OwnedResources owned)
 	{
 		var bg = TintedImageBg(page.View, pf.Color, owned);
-		return new DrawOp(2, (nint)bg, (uint)(quads.Count / 4), (nint)Vbuf(quads, owned), false, pf.Clip, (nint)MakeClipBg(_d.ImageClipBgl, pf.Clip, owned));
+		return new DrawOp(DrawKind.Image, (nint)bg, (uint)(quads.Count / 4), (nint)Vbuf(quads, owned), false, pf.Clip, (nint)MakeClipBg(_d.ImageClipBgl, pf.Clip, owned));
 	}
 
 	// Fills the shadow silhouette into an offscreen coverage surface (stencil-then-cover, white), then blurs it
@@ -3104,7 +3155,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					j++;
 				}
 				var rvb = Vbuf(_scratch, owned);
-				ops.Add(new DrawOp(0, (nint)rvb, (uint)((j - ci) * 6), 0, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip, owned)));
+				ops.Add(new DrawOp(DrawKind.Solid, (nint)rvb, (uint)((j - ci) * 6), 0, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip, owned)));
 				ci = j - 1;
 			}
 			else if (_pathAtlas && atlasScale is { } asc0 && TryAtlasBatch(cmds, ref ci, owned, asc0, out var aop0))
@@ -3153,8 +3204,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					var sClipBg = MakeClipBg(_d.CoverClipBgl, sClip, owned);
 					var sCount = (uint)(pf0.FanDevice.Length / 2);
 					ops.Add(owned is null
-						? new DrawOp(8, AppendPathBlock(_scratch), sCount, 0, true, sClip, (nint)sClipBg)
-						: new DrawOp(8, (nint)Vbuf(_scratch, owned), sCount, 0, false, sClip, (nint)sClipBg));
+						? new DrawOp(DrawKind.TilingFan, AppendPathBlock(_scratch), sCount, 0, true, sClip, (nint)sClipBg)
+						: new DrawOp(DrawKind.TilingFan, (nint)Vbuf(_scratch, owned), sCount, 0, false, sClip, (nint)sClipBg));
 					ci = j - 1;
 					continue;
 				}
@@ -3172,8 +3223,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits); PushVertT(bl, pr, pg, pb, pa, slotBits);
 				// kind 7: b0/b1 are BYTE offsets into the shared per-pass path buffer instead of private buffers.
 				ops.Add(owned is null
-					? new DrawOp(7, fanShared, fanCount, AppendPathBlock(_scratch), false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, owned))
-					: new DrawOp(1, (nint)fanBuf, fanCount, (nint)Vbuf(_scratch, owned), false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, owned)));
+					? new DrawOp(DrawKind.TablePath, fanShared, fanCount, AppendPathBlock(_scratch), false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, owned))
+					: new DrawOp(DrawKind.Path, (nint)fanBuf, fanCount, (nint)Vbuf(_scratch, owned), false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, owned)));
 				ci = j - 1;
 			}
 			else { BuildSimpleOp(cmds[ci], ops, owned, pathSlot, atlasScale); }
@@ -3206,7 +3257,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					void V(Vector2 p) { var n = Ndc(p); v.Add(n.X); v.Add(n.Y); v.Add(c.X); v.Add(c.Y); v.Add(c.Z); v.Add(c.W); }
 					V(rc.P0); V(rc.P1); V(rc.P2); V(rc.P0); V(rc.P2); V(rc.P3);
 					var rClip = StripRedundantFan(rc.Clip, rc.P0, rc.P1, rc.P2, rc.P3);
-					ops.Add(new DrawOp(0, (nint)Vbuf(v.ToArray(), owned), 6, 0, false, rClip, (nint)MakeClipBg(_d.SolidClipBgl, rClip, owned)));
+					ops.Add(new DrawOp(DrawKind.Solid, (nint)Vbuf(v.ToArray(), owned), 6, 0, false, rClip, (nint)MakeClipBg(_d.SolidClipBgl, rClip, owned)));
 					break;
 				}
 			case PathFill pf:
@@ -3228,8 +3279,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						var tClipBg = MakeClipBg(_d.CoverClipBgl, tClip, owned);
 						var tCount = (uint)(pf.FanDevice.Length / 2);
 						ops.Add(owned is null
-							? new DrawOp(8, AppendPathBlock(_scratch), tCount, 0, true, tClip, (nint)tClipBg)
-							: new DrawOp(8, (nint)Vbuf(_scratch, owned), tCount, 0, false, tClip, (nint)tClipBg));
+							? new DrawOp(DrawKind.TilingFan, AppendPathBlock(_scratch), tCount, 0, true, tClip, (nint)tClipBg)
+							: new DrawOp(DrawKind.TilingFan, (nint)Vbuf(_scratch, owned), tCount, 0, false, tClip, (nint)tClipBg));
 						break;
 					}
 					var slotted = pf.SlottedFan(slotBits);
@@ -3243,8 +3294,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					var pClip = StripRedundantFan(pf.Clip, new Vector4(pf.BbMin.X, pf.BbMin.Y, pf.BbMax.X, pf.BbMax.Y));
 					var clipBg = MakeClipBg(_d.CoverClipBgl, pClip, owned);
 					ops.Add(owned is null
-						? new DrawOp(7, fanShared, (uint)(pf.FanDevice.Length / 2), AppendPathBlock(_scratch), pf.EvenOdd, pClip, (nint)clipBg)
-						: new DrawOp(1, (nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)Vbuf(_scratch, owned), pf.EvenOdd, pClip, (nint)clipBg));
+						? new DrawOp(DrawKind.TablePath, fanShared, (uint)(pf.FanDevice.Length / 2), AppendPathBlock(_scratch), pf.EvenOdd, pClip, (nint)clipBg)
+						: new DrawOp(DrawKind.Path, (nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)Vbuf(_scratch, owned), pf.EvenOdd, pClip, (nint)clipBg));
 					break;
 				}
 			case ImageCmd im:
@@ -3276,14 +3327,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						var ioff = _quadVerts.Count * sizeof(float);
 						void QS(Vector2 pos, float u, float vv) { var n = Ndc(pos); _quadVerts.Add(n.X); _quadVerts.Add(n.Y); _quadVerts.Add(u); _quadVerts.Add(vv); }
 						QS(im.P0, im.U0, im.V0); QS(im.P1, im.U1, im.V0); QS(im.P2, im.U1, im.V1); QS(im.P0, im.U0, im.V0); QS(im.P2, im.U1, im.V1); QS(im.P3, im.U0, im.V1);
-						ops.Add(new DrawOp(2, (nint)bg, 0, ioff, true, im.Clip, (nint)MakeClipBg(_d.ImageClipBgl, im.Clip, owned)));
+						ops.Add(new DrawOp(DrawKind.Image, (nint)bg, 0, ioff, true, im.Clip, (nint)MakeClipBg(_d.ImageClipBgl, im.Clip, owned)));
 					}
 					else
 					{
 						var q = new float[24];
 						void QV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); q[idx] = n.X; q[idx + 1] = n.Y; q[idx + 2] = u; q[idx + 3] = vv; }
 						QV(0, im.P0, im.U0, im.V0); QV(4, im.P1, im.U1, im.V0); QV(8, im.P2, im.U1, im.V1); QV(12, im.P0, im.U0, im.V0); QV(16, im.P2, im.U1, im.V1); QV(20, im.P3, im.U0, im.V1);
-						ops.Add(new DrawOp(2, (nint)bg, 0, (nint)Vbuf(q, owned), false, im.Clip, (nint)MakeClipBg(_d.ImageClipBgl, im.Clip, owned)));
+						ops.Add(new DrawOp(DrawKind.Image, (nint)bg, 0, (nint)Vbuf(q, owned), false, im.Clip, (nint)MakeClipBg(_d.ImageClipBgl, im.Clip, owned)));
 					}
 					break;
 				}
@@ -3326,7 +3377,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							GS(gc.P0); GS(gc.P1); GS(gc.P2); GS(gc.P0); GS(gc.P2); GS(gc.P3);
 							gCount = 6;
 						}
-						ops.Add(new DrawOp(3, (nint)gbg, gCount, goff, true, gClip, (nint)MakeClipBg(_d.GradClipBgl, gClip, owned)));
+						ops.Add(new DrawOp(DrawKind.Gradient, (nint)gbg, gCount, goff, true, gClip, (nint)MakeClipBg(_d.GradClipBgl, gClip, owned)));
 					}
 					else
 					{
@@ -3343,7 +3394,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						{
 							GV(0, gc.P0); GV(2, gc.P1); GV(4, gc.P2); GV(6, gc.P0); GV(8, gc.P2); GV(10, gc.P3);
 						}
-						ops.Add(new DrawOp(3, (nint)gbg, oct ? (uint)(OctSides * 3) : 6u, (nint)Vbuf(gq, owned), false, gClip, (nint)MakeClipBg(_d.GradClipBgl, gClip, owned)));
+						ops.Add(new DrawOp(DrawKind.Gradient, (nint)gbg, oct ? (uint)(OctSides * 3) : 6u, (nint)Vbuf(gq, owned), false, gClip, (nint)MakeClipBg(_d.GradClipBgl, gClip, owned)));
 					}
 					break;
 				}
@@ -3355,7 +3406,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					AppendRrect(tmp, rrc);
 					var buf = Vbuf(tmp, owned);
 					ReturnRrect(tmp);
-					ops.Add(new DrawOp(5, (nint)buf, 6, 0, false, rrc.Clip, (nint)MakeClipBg(_d.RrClipBgl, rrc.Clip, owned)));
+					ops.Add(new DrawOp(DrawKind.RoundedRect, (nint)buf, 6, 0, false, rrc.Clip, (nint)MakeClipBg(_d.RrClipBgl, rrc.Clip, owned)));
 					break;
 				}
 		}
@@ -3486,11 +3537,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	/// ClipU layout for the pipeline that draws <paramref name="kind"/>. The image/gradient/rrect pipelines are
 	/// created with AUTO layouts, so their group is exclusive to them and cannot take a ClipBgl-based bind group.
 	/// </summary>
-	private IntPtr ClipBglForKind(int kind) => kind switch
+	private IntPtr ClipBglForKind(DrawKind kind) => kind switch
 	{
 		// Image now shares ClipBgl (explicit pipeline layout). Gradient and rrect are still AUTO-layout
 		// pipelines, so their ClipU group stays exclusive to them.
-		3 => _d.GradClipBgl,
+		DrawKind.Gradient => _d.GradClipBgl,
 		_ => _d.ClipBgl,
 	};
 
@@ -3499,7 +3550,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	/// NOT also carry the replay transform. Everything else in a table recording is identity-baked with no slot,
 	/// and the clip's xform is the only thing that can move it.
 	/// </summary>
-	private static bool PlacedByXformTable(int kind) => kind is 0 or 5 or 7;
+	private static bool PlacedByXformTable(DrawKind kind) => kind is DrawKind.Solid or DrawKind.RoundedRect or DrawKind.TablePath;
 
 	private (ClipData Scissor, nint ClipBg, nint Buf) StampTableClip(ClipData local, OwnedResources stampOwned, Matrix3x2 finv, Matrix3x2 t2, Vector4 sessionAabb, bool sessionInert, RoundClip[] sessionRounds, nint reuseBuf, nint reuseBg, IntPtr clipBgl, Matrix3x2 opXform)
 	{
@@ -3584,7 +3635,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						AppendSolidRectLocalT(sv, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f, slotBits);
 						tj++;
 					}
-					order.Add(new FrameOp { Kind = 0, ByteOff = rel * 7 * sizeof(float), Count = (uint)((tj - ti) * 6), Clip = rc0.Clip });
+					order.Add(new FrameOp { Kind = DrawKind.Solid, ByteOff = rel * 7 * sizeof(float), Count = (uint)((tj - ti) * 6), Clip = rc0.Clip });
 					ti = tj - 1;
 				}
 				else if (tc is RoundedRectCmd rr0)
@@ -3595,7 +3646,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						AppendRrectLocalT(rv, rrj, slotBits);
 						tj++;
 					}
-					order.Add(new FrameOp { Kind = 5, ByteOff = rel * 23 * sizeof(float), Count = (uint)((tj - ti) * 6), Clip = rr0.Clip });
+					order.Add(new FrameOp { Kind = DrawKind.RoundedRect, ByteOff = rel * 23 * sizeof(float), Count = (uint)((tj - ti) * 6), Clip = rr0.Clip });
 					ti = tj - 1;
 				}
 				else
@@ -3609,7 +3660,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// so per-glyph geometry cost a draw per character (ops 420 -> 4530 on a 1800-row log view).
 					if (_pathAtlas && tableAtlasSafe && TryAtlasBatch(tcmds, ref ti, fOwned, tableScale, out var aop))
 					{
-						order.Add(new FrameOp { Kind = -1, NonSolid = aop });
+						order.Add(new FrameOp { Kind = null, NonSolid = aop });
 						continue;
 					}
 					// A run of consecutive NON-ZERO paths sharing colour + clip (a text run's glyphs) collapses to ONE
@@ -3637,14 +3688,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						PushVertT(gTl, gr, gg, gb, ga, slotBits); PushVertT(gTr, gr, gg, gb, ga, slotBits); PushVertT(gBr, gr, gg, gb, ga, slotBits);
 						PushVertT(gTl, gr, gg, gb, ga, slotBits); PushVertT(gBr, gr, gg, gb, ga, slotBits); PushVertT(gBl, gr, gg, gb, ga, slotBits);
 						var gCov = Vbuf(_scratch, fOwned);
-						var gOp = new DrawOp(1, (nint)gFan, gCount, (nint)gCov, false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, fOwned));
-						order.Add(new FrameOp { Kind = -1, NonSolid = ResidentizeFan(gOp, fOwned) });
+						var gOp = new DrawOp(DrawKind.Path, (nint)gFan, gCount, (nint)gCov, false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, fOwned));
+						order.Add(new FrameOp { Kind = null, NonSolid = ResidentizeFan(gOp, fOwned) });
 						ti = gj - 1;
 						continue;
 					}
 					tmp.Clear();
 					BuildSimpleOp(tc, tmp, fOwned, slot);
-					foreach (var o in tmp) { order.Add(new FrameOp { Kind = -1, NonSolid = ResidentizeFan(o, fOwned) }); }
+					foreach (var o in tmp) { order.Add(new FrameOp { Kind = null, NonSolid = ResidentizeFan(o, fOwned) }); }
 				}
 			}
 			long id = (fe is not null && fe.SlabId != 0) ? fe.SlabId : _d.NextSlabId();
@@ -3680,10 +3731,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			for (int i = 0; i < fe.FrameOrder.Count; i++)
 			{
 				var fo = fe.FrameOrder[i];
-				var local = fo.Kind == -1 ? fo.NonSolid.clip : fo.Clip;
+				var local = fo.Kind is null ? fo.NonSolid.clip : fo.Clip;
 				// An atlas quad in a stamped recording is a kind-2 IMAGE draw: it needs the image pipeline's own
 				// ClipU layout, not the shared one, or the draw is rejected and the process aborts.
-				var opKind = fo.Kind == -1 ? fo.NonSolid.kind : fo.Kind;
+				var opKind = fo.Kind ?? fo.NonSolid.kind;
 				var stampBgl = ClipBglForKind(opKind);
 				// An op with no xform-table slot (an atlas quad, an image, a gradient) is still identity-baked, so
 				// its clip has to carry the replay transform or it draws at the recording's local origin.
@@ -3697,8 +3748,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		for (int i = 0; i < fe.FrameOrder.Count; i++)
 		{
 			var fo = fe.FrameOrder[i]; var (sc, bg) = fe.StampClips[i];
-			if (fo.Kind == 0) { ops.Add(new DrawOp(0, 2, fo.Count, (nint)(sBase + fo.ByteOff), false, sc, bg)); }
-			else if (fo.Kind == 5) { ops.Add(new DrawOp(5, 2, fo.Count, (nint)(rBase + fo.ByteOff), false, sc, bg)); }
+			if (fo.Kind == DrawKind.Solid) { ops.Add(new DrawOp(DrawKind.Solid, VertexSource.TableSlab, fo.Count, (nint)(sBase + fo.ByteOff), false, sc, bg)); }
+			else if (fo.Kind == DrawKind.RoundedRect) { ops.Add(new DrawOp(DrawKind.RoundedRect, VertexSource.TableSlab, fo.Count, (nint)(rBase + fo.ByteOff), false, sc, bg)); }
 			else { var op = fo.NonSolid; ops.Add(new DrawOp(op.kind, op.b0, op.u0, op.b1, op.flag, sc, bg)); }
 		}
 	}
@@ -3713,12 +3764,310 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	/// the xform table), an ARENA entry (geometry baked once in identity space and re-stamped on a move), or a
 	/// plain CACHED entry (rebuilt whenever its transform changes).
 	/// </summary>
-	private void EmitReplayRef(
-		ReplayRefCmd rr,
-		List<DrawOp> ops,
-		List<float> solid,
-		List<float> rrect,
-		HashSet<List<WebGpuCommand>> frameEmitted)
+	/// <summary>
+	/// Replays a recording whose solids can be re-appended to the shared per-pass buffers, so a Border's
+	/// background and edges coalesce with its siblings' instead of costing a draw each. Falls through to the
+	/// device path when the same list is emitted twice in one frame, since one resident slice cannot serve both.
+	/// </summary>
+	private void EmitReappendableReplay(ReplayRefCmd rr, List<DrawOp> ops, HashSet<List<WebGpuCommand>> frameEmitted)
+	{
+		// A recording replayed MORE THAN ONCE in a single frame (same command list, different
+		// transforms) can't reuse one resident slab slice — the second build's Put would overwrite
+		// the first. Repeat emissions get a fresh transient slice (freed next frame); the first
+		// emission keeps the recording's stable, resident slice.
+		bool repeat = !frameEmitted.Add(rr.Commands);
+		// Gap-4 solid-scroll: an eligible recording (plain-AABB/None session clip, only solids/rrects/
+		// path-fills, no path child-clip, no images/gradients) restamps via the transform table on a MOVE
+		// — identity verts resident in the shared table slabs + a per-vertex slot, so a scroll rewrites
+		// the slot, not the verts, while siblings still coalesce. A repeat emission (same list twice this
+		// frame) can't share one resident slice, so it takes the device path below.
+		if (!repeat && TableFrameEligible(rr))
+		{
+			EmitTableFrameSolid(rr, rr.Data.Compiled, ops);
+			return;
+		}
+		WebGpuGeometryCache fe = null;
+		// Re-derived every frame (build => Put, reuse => TryByteOffset-else-Put); FrameOrder is relative.
+		int sBase = 0, rBase = 0;
+		bool fMiss, fStale;
+		if (repeat) { fMiss = true; fStale = false; }
+		else
+		{
+			fe = rr.Data.Compiled;
+			fMiss = fe is null;
+			fStale = !fMiss && (!fe.FrameSolid || fe.TableFrame || fe.FrameOrder is null || fe.Transform != rr.Transform || fe.BuiltW != (int)_s.Width || fe.BuiltH != (int)_s.Height || !ClipDataEquals(fe.Clip, rr.Clip));
+		}
+		if (fMiss || fStale)
+		{
+			// Build once: extract device-space solid/rrect verts + an ordered emit list; owned (persistent) clip
+			// bind groups so nothing is re-created per frame.
+			if (fe is not null) { _d.DeferRelease(fe.Owned); }
+			var fOwned = new OwnedResources();
+			var sv = new List<float>(); var rv = new List<float>(); var order = new List<FrameOp>();
+			var tmp = new List<DrawOp>();
+			var tcmds = new List<WebGpuCommand>();
+			foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { tcmds.Add(tc); }
+			// One stable transform-table slot for this recording's device-space path fills (reused on
+			// rebuild; transient for a repeat emission). Verts are final-device here, so the slot's entry
+			// is the pure device->NDC projection, rewritten per frame at emit.
+			bool fHasPath = false; foreach (var c in tcmds) { if (c is PathFill) { fHasPath = true; break; } }
+			int fSlot = fHasPath ? ((!repeat && fe is not null && fe.XformSlot >= 0) ? fe.XformSlot : _d.AllocXformSlot()) : -1;
+			if (fHasPath && repeat) { _xformTransient.Add(fSlot); }
+			for (int ti = 0; ti < tcmds.Count; ti++)
+			{
+				var tc = tcmds[ti];
+				if (tc is RectCommand rc0)
+				{
+					// Coalesce a run of consecutive same-clip rects into one contiguous range + one draw.
+					int rel = sv.Count / 6; int tj = ti;
+					while (tj < tcmds.Count && tcmds[tj] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
+					{
+						AppendSolidRect(sv, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
+						tj++;
+					}
+					order.Add(new FrameOp { Kind = DrawKind.Solid, ByteOff = rel * 6 * sizeof(float), Count = (uint)((tj - ti) * 6), Clip = rc0.Clip, ClipBg = (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip, fOwned) });
+					ti = tj - 1;
+				}
+				else if (tc is RoundedRectCmd rr0)
+				{
+					int rel = rv.Count / 22; int tj = ti;
+					while (tj < tcmds.Count && tcmds[tj] is RoundedRectCmd rrj && ClipDataEquals(rrj.Clip, rr0.Clip))
+					{
+						AppendRrect(rv, rrj);
+						tj++;
+					}
+					order.Add(new FrameOp { Kind = DrawKind.RoundedRect, ByteOff = rel * 22 * sizeof(float), Count = (uint)((tj - ti) * 6), Clip = rr0.Clip, ClipBg = (nint)MakeClipBg(_d.RrClipBgl, rr0.Clip, fOwned) });
+					ti = tj - 1;
+				}
+				else
+				{
+					// Atlas first, for the same reason as the table path: the collapse below antialiases
+					// nothing at one sample. Safe unconditionally here — these commands are already in
+					// final device space, and fStale rebuilds this entry on any transform or resize.
+					if (_pathAtlas && TryAtlasBatch(tcmds, ref ti, fOwned, Vector2.One, out var aop2))
+					{
+						order.Add(new FrameOp { Kind = null, NonSolid = aop2 });
+						continue;
+					}
+					// Same glyph-run collapse as the table path: one stencil + one cover for a run of
+					// consecutive non-zero paths sharing colour + clip, instead of 2 draws per glyph.
+					if (tc is PathFill pf0 && !pf0.EvenOdd && !pf0.FanTiles)
+					{
+						float fSlotBits = System.BitConverter.Int32BitsToSingle(fSlot);
+						_scratch.Clear();
+						var gMin = new Vector2(float.MaxValue); var gMax = new Vector2(float.MinValue);
+						int gj = ti;
+						while (gj < tcmds.Count && tcmds[gj] is PathFill pfj && !pfj.EvenOdd
+							&& pfj.Color.R == pf0.Color.R && pfj.Color.G == pf0.Color.G && pfj.Color.B == pf0.Color.B && pfj.Color.A == pf0.Color.A
+							&& ClipDataEquals(pfj.Clip, pf0.Clip))
+						{
+							for (int gi = 0; gi < pfj.FanDevice.Length; gi += 2) { _scratch.Add(pfj.FanDevice[gi]); _scratch.Add(pfj.FanDevice[gi + 1]); _scratch.Add(fSlotBits); }
+							gMin = Vector2.Min(gMin, pfj.BbMin); gMax = Vector2.Max(gMax, pfj.BbMax);
+							gj++;
+						}
+						var gFan = Vbuf(_scratch, fOwned);
+						uint gCount = (uint)(_scratch.Count / 3);
+						float gr = pf0.Color.R / 255f, gg = pf0.Color.G / 255f, gb = pf0.Color.B / 255f, ga = pf0.Color.A / 255f;
+						_scratch.Clear();
+						var gTl = gMin; var gBr = gMax; var gTr = new Vector2(gBr.X, gTl.Y); var gBl = new Vector2(gTl.X, gBr.Y);
+						PushVertT(gTl, gr, gg, gb, ga, fSlotBits); PushVertT(gTr, gr, gg, gb, ga, fSlotBits); PushVertT(gBr, gr, gg, gb, ga, fSlotBits);
+						PushVertT(gTl, gr, gg, gb, ga, fSlotBits); PushVertT(gBr, gr, gg, gb, ga, fSlotBits); PushVertT(gBl, gr, gg, gb, ga, fSlotBits);
+						var gCov = Vbuf(_scratch, fOwned);
+						var gOp = new DrawOp(DrawKind.Path, (nint)gFan, gCount, (nint)gCov, false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, fOwned));
+						order.Add(new FrameOp { Kind = null, NonSolid = ResidentizeFan(gOp, fOwned) });
+						ti = gj - 1;
+						continue;
+					}
+					tmp.Clear();
+					BuildSimpleOp(tc, tmp, fOwned, fSlot);
+					foreach (var o in tmp) { order.Add(new FrameOp { Kind = null, NonSolid = ResidentizeFan(o, fOwned) }); }
+				}
+			}
+			// `id` is stable across frames so a static recording's slice stays resident (no re-upload) and
+			// coalesces with neighbours across recordings; a repeat emission gets a fresh transient id.
+			long id = repeat ? _d.NextSlabId()
+				: ((fMiss || fe is null || fe.SlabId == 0) ? _d.NextSlabId() : fe.SlabId);
+			// Upload the (transform-baked) verts under this recording's stable id and keep them resident on
+			// the cache. FrameOrder offsets stay RELATIVE — the absolute base (returned here, re-derived on a
+			// later pure reuse) is applied at emit — never a cached absolute into a possibly-reclaimed slice.
+			sBase = sv.Count > 0 ? _d.SolidSlab.Put(id, sv) : 0;
+			rBase = rv.Count > 0 ? _d.RrectSlab.Put(id, rv) : 0;
+			fe = new WebGpuGeometryCache { FrameSolid = true, SlabId = id, FrameOrder = order, FrameSolidVerts = sv, FrameRrectVerts = rv, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = fSlot };
+			// A repeat emission is not cached (its slice is transient); free its bind groups next frame.
+			if (repeat) { _d.DeferRelease(fOwned); }
+			else { StoreCompiled(rr.Data, fe); }
+		}
+		else
+		{
+			// Pure reuse (no rebuild): re-derive the CURRENT slab base. TryByteOffset marks the slice live
+			// on a hit; if it was culled last frame its offset was reclaimed, so re-Put the resident verts.
+			if (fe.FrameSolidVerts is { Count: > 0 } && !_d.SolidSlab.TryByteOffset(fe.SlabId, out sBase)) { sBase = _d.SolidSlab.Put(fe.SlabId, fe.FrameSolidVerts); }
+			if (fe.FrameRrectVerts is { Count: > 0 } && !_d.RrectSlab.TryByteOffset(fe.SlabId, out rBase)) { rBase = _d.RrectSlab.Put(fe.SlabId, fe.FrameRrectVerts); }
+		}
+		// Rewrite this recording's path-fill transform entry every frame (device verts => pure current
+		// projection), so a window resize repositions its glyphs via the table with no re-tessellation.
+		if (fe.XformSlot >= 0) { WriteXform(fe.XformSlot, Matrix4x4.Identity); }
+		// Per frame: re-emit ops drawing from the RESIDENT shared slabs (b0=1 => solid slab / rrect slab;
+		// b1 = absolute slab byte offset). No append, no upload, no re-tessellation on a cache hit.
+		foreach (var fo in fe.FrameOrder)
+		{
+			if (fo.Kind == DrawKind.Solid) { ops.Add(new DrawOp(DrawKind.Solid, VertexSource.Slab, fo.Count, (nint)(sBase + fo.ByteOff), false, fo.Clip, fo.ClipBg)); }
+			else if (fo.Kind == DrawKind.RoundedRect) { ops.Add(new DrawOp(DrawKind.RoundedRect, VertexSource.Slab, fo.Count, (nint)(rBase + fo.ByteOff), false, fo.Clip, fo.ClipBg)); }
+			else { ops.Add(fo.NonSolid); }
+		}
+		return;
+	}
+
+	/// <summary>
+	/// Replays an ARENA recording: geometry baked once in its own identity space, with the replay transform
+	/// applied on the GPU. A move re-stamps the per-op clip bind groups and reuses the vertex buffers; only a
+	/// resize, a scale/rotation change, or an atlas entry that can no longer be reused forces a rebuild.
+	/// </summary>
+	private void EmitArenaReplay(ReplayRefCmd rr, List<DrawOp> ops, WebGpuGeometryCache entry, bool miss)
+	{
+		// Stable path-fill transform slot: arena verts are in the recording's OWN (identity) space, so
+		// the slot's entry folds the replay transform + projection — written per frame below, so a
+		// move OR resize repositions the fan/cover via the table with no re-stamp and no re-bake.
+		int aSlot = (miss || entry is null) ? -1 : entry.XformSlot;
+		// A pure-path arena entry is surface-size-independent (device verts + table), so a resize is
+		// handled by the per-frame table write below with NO rebuild; a mixed entry's NDC-baked solids
+		// still force a size rebuild.
+		bool aSizeChanged = entry is not null && (entry.BuiltW != (int)_s.Width || entry.BuiltH != (int)_s.Height);
+		// An atlas quad is an image op: its NDC is baked at build time and it carries no xform-table
+		// slot, so unlike the rest of a pure-path entry it is NOT re-projected when the surface
+		// size changes. Replaying one on a differently-sized target drew it scaled (the offscreen
+		// RenderTargetBitmap path, which is how the shape parity tests capture).
+		if (miss || !entry.Arena || (aSizeChanged && (!entry.PurePath || entry.HasAtlas))
+			|| (entry.HasAtlas && !(TryAtlasScale(rr.Transform, out var curScale) && SameAtlasScale(curScale, entry.AtlasScale)))
+			|| (entry.AtlasBlockedByScale && TryAtlasScale(rr.Transform, out _)))
+		{
+			if (_emitStats) { _statArenaRebuilds++; }
+			if (entry is not null) { _d.DeferRelease(entry.Owned); _d.DeferRelease(entry.StampOwned); }
+			var aOwned = new OwnedResources();
+			var aOps = new List<DrawOp>();
+			var aList = new List<WebGpuCommand>();
+			foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, Matrix4x4.Identity, ClipData.None)) { aList.Add(tc); }
+			bool aHasPath = false, aPure = aList.Count > 0; foreach (var c in aList) { if (c is PathFill) { aHasPath = true; } else { aPure = false; } }
+			if (aHasPath && aSlot < 0) { aSlot = _d.AllocXformSlot(); }
+			int atlasBefore = AtlasHit + AtlasBaked;
+			bool aAtlasSafe = TryAtlasScale(rr.Transform, out var aScale);
+			BuildCoalesced(aList, aOps, aOwned, aSlot, atlasScale: aAtlasSafe ? aScale : null);
+			bool aHasAtlas = (AtlasHit + AtlasBaked) != atlasBefore;
+			bool aBlocked = !aAtlasSafe && aHasPath && _pathAtlas;
+			for (int _ri = 0; _ri < aOps.Count; _ri++) { aOps[_ri] = ResidentizeFan(aOps[_ri], aOwned); }
+			entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, HasAtlas = aHasAtlas, AtlasBlockedByScale = aBlocked, AtlasScale = aScale, PurePath = aPure, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = aSlot };
+			StoreCompiled(rr.Data, entry);
+		}
+		// Per frame (even on a cache/stamp hit): the identity-space verts map to the current replay
+		// transform + surface projection via this one table entry — the whole arena move/resize path.
+		if (entry.XformSlot >= 0) { WriteXform(entry.XformSlot, rr.Transform); }
+		if ((!entry.HasStamp || entry.StampXform != rr.Transform || !ClipDataEquals(entry.StampClip, rr.Clip)))
+		{
+			if (_emitStats) { _statStamps++; }
+			// In-place restamp (same guard as the table stamp): rewrite ClipU buffers, keep bind groups.
+			var reuse = entry.HasStamp && entry.StampBufs is not null && entry.StampBufs.Count == entry.Ops.Count && entry.StampFrame != _d.FrameSeq;
+			if (!reuse && entry.StampOwned is not null) { _d.DeferRelease(entry.StampOwned); }
+			var stampOwned = reuse ? entry.StampOwned : new OwnedResources();
+			var stamped = reuse ? entry.StampedOps : new List<DrawOp>(entry.Ops.Count);
+			var bufs = reuse ? entry.StampBufs : new List<nint>(entry.Ops.Count);
+			var xf = ArenaXform(rr.Transform);
+			// finv = inverse device affine, so clipCov maps the moved fragment back to the recording's
+			// own space where the (identity-baked) clip lives.
+			var t2 = new Matrix3x2(rr.Transform.M11, rr.Transform.M12, rr.Transform.M21, rr.Transform.M22, rr.Transform.M41, rr.Transform.M42);
+			Matrix3x2 finv = Matrix3x2.Invert(t2, out var inv) ? inv : Matrix3x2.Identity;
+			Vector2 MoveP(float x, float y) => new(x * t2.M11 + y * t2.M21 + t2.M31, x * t2.M12 + y * t2.M22 + t2.M32);
+			// One ClipU for every fan in this recording: same arena transform, so it is built once —
+			// but LAZILY. xf/finv change every frame under a moving transform, so the content-keyed
+			// cache misses each time and this mints a buffer + bind group per recording per frame
+			// (370/frame on RenderStress_Gradients). Most recordings carry no fan at all, and once
+			// rounded rects are recognised analytically none of them do.
+			nint arenaFanBg = 0;
+			for (int i = 0; i < entry.Ops.Count; i++)
+			{
+				var op = entry.Ops[i];
+				var abgl = op.kind switch { DrawKind.Gradient => _d.GradClipBgl, DrawKind.Image => _d.ImageClipBgl, _ => _d.SolidClipBgl };
+				// clipCov reads the LOCAL rounded shape (finv maps fc back to it); the SCISSOR is device-space
+				// so its Aabb must follow the move — transform the (finite) clip Aabb by the replay transform.
+				var scissorClip = op.clip;
+				// The op's own fan is identity-space (arena bakes at identity): map it to device for
+				// this replay. FanBuf is cleared because the residentized NDC buffer was baked for
+				// identity and is stale once moved.
+				if (op.clip.PathFan is { } localFan)
+				{
+					// stampOwned, never the per-frame slab: this bind group is memoized into StampedOps and
+				// reused on later frames while the transform holds.
+				if (arenaFanBg == 0) { arenaFanBg = (nint)MakeClipBg(_d.ClipBgl, default, stampOwned, xf, finv); }
+					// Keep the identity-space fan and its resident NDC buffer; hand the stencil draw
+					// the arena transform instead. Transforming on the CPU here would mean a fresh
+					// fan upload per op per frame (392/frame on RenderStress_Gradients).
+					scissorClip.FanXformBg = arenaFanBg;
+					var fa = new Vector4(float.MaxValue, float.MaxValue, float.MinValue, float.MinValue);
+					for (int fi = 0; fi < localFan.Length; fi += 2)
+					{
+						var mp = MoveP(localFan[fi], localFan[fi + 1]);
+						fa = new Vector4(MathF.Min(fa.X, mp.X), MathF.Min(fa.Y, mp.Y), MathF.Max(fa.Z, mp.X), MathF.Max(fa.W, mp.Y));
+					}
+					scissorClip.Aabb = new Vector4(MathF.Max(scissorClip.Aabb.X, fa.X), MathF.Max(scissorClip.Aabb.Y, fa.Y), MathF.Min(scissorClip.Aabb.Z, fa.Z), MathF.Min(scissorClip.Aabb.W, fa.W));
+				}
+				var ab = op.clip.Aabb;
+				if (ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f)
+				{
+					var p0 = MoveP(ab.X, ab.Y); var p1 = MoveP(ab.Z, ab.Y); var p2 = MoveP(ab.Z, ab.W); var p3 = MoveP(ab.X, ab.W);
+					scissorClip.Aabb = new Vector4(
+						MathF.Min(MathF.Min(p0.X, p1.X), MathF.Min(p2.X, p3.X)), MathF.Min(MathF.Min(p0.Y, p1.Y), MathF.Min(p2.Y, p3.Y)),
+						MathF.Max(MathF.Max(p0.X, p1.X), MathF.Max(p2.X, p3.X)), MathF.Max(MathF.Max(p0.Y, p1.Y), MathF.Max(p2.Y, p3.Y)));
+				}
+				// Session clip: tighten the device scissor by its Aabb; fold its rounds into ClipU (local space).
+				var sa = rr.Clip.Aabb;
+				scissorClip.Aabb = new Vector4(MathF.Max(scissorClip.Aabb.X, sa.X), MathF.Max(scissorClip.Aabb.Y, sa.Y), MathF.Min(scissorClip.Aabb.Z, sa.Z), MathF.Min(scissorClip.Aabb.W, sa.W));
+				scissorClip.ScissorInert = op.clip.ScissorInert && rr.Clip.ScissorInert;
+				// Carry the session fan onto the stamped op so the depth mask still clips it — unless it
+				// provably covers this op, in which case attaching it would cost an ApplyDepthClip
+				// setup (4 pipeline switches + 3 draws + a bind group + a vertex buffer) that cannot
+				// change a pixel. The arena builds at identity with ClipData.None, so the build-time
+				// strip never sees the session fan; this is the only place it can be caught.
+				if (rr.Clip.PathFan is { } sessionFan
+					&& !(!rr.Clip.PathExclude && FanCoversAabb(sessionFan, scissorClip.Aabb)))
+				{
+					scissorClip.PathFan = sessionFan;
+					scissorClip.PathEvenOdd = rr.Clip.PathEvenOdd;
+					scissorClip.PathExclude = rr.Clip.PathExclude;
+					scissorClip.FanBuf = rr.Clip.FanBuf;
+					scissorClip.FanW = rr.Clip.FanW;
+					scissorClip.FanH = rr.Clip.FanH;
+				}
+
+				var uClip = op.clip;
+				FoldSessionRounds(ref uClip, rr.Clip.Rounds, finv);
+				var uSessionFinite = IsFiniteAabb(rr.Clip.Aabb);
+				var uAxisAligned = finv.M12 == 0 && finv.M21 == 0;
+				var uCanWiden = !uSessionFinite || uAxisAligned;
+				if (uSessionFinite && uAxisAligned)
+				{
+					FoldSessionAabb(ref uClip, rr.Clip.Aabb, finv);
+				}
+				if (reuse)
+				{
+					scissorClip.AabbInClipU = RewriteClipU(bufs[i], uClip, xf, finv) && uCanWiden;
+					scissorClip.ScissorLoadBearing = !scissorClip.AabbInClipU;
+					stamped[i] = new DrawOp(op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, stamped[i].clipBg);
+				}
+				else
+				{
+					var aClipBg = MakeClipBgOwned(abgl, uClip, stampOwned, xf, finv, out var buf, out var aFolded);
+					scissorClip.AabbInClipU = aFolded && uCanWiden;
+					scissorClip.ScissorLoadBearing = !scissorClip.AabbInClipU;
+					bufs.Add(buf);
+					stamped.Add(new DrawOp(op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, (nint)aClipBg));
+				}
+			}
+			entry.StampOwned = stampOwned; entry.StampedOps = stamped; entry.StampBufs = bufs; entry.StampFrame = _d.FrameSeq; entry.StampXform = rr.Transform; entry.StampClip = rr.Clip; entry.HasStamp = true;
+		}
+		ops.AddRange(entry.StampedOps);
+		return;
+	}
+
+	private void EmitReplayRef(ReplayRefCmd rr, List<DrawOp> ops, HashSet<List<WebGpuCommand>> frameEmitted)
 	{
 		// Cull a recording whose (transformed) content is entirely clipped out or off-surface: the
 		// widened cull-only scissor no longer rejects it, so a scrolled-out row/card would otherwise
@@ -3739,152 +4088,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// re-walked. Pure non-solid recordings fall through to the arena path below (moving-visual reuse).
 		if (HasReappendable(rr))
 		{
-			// A recording replayed MORE THAN ONCE in a single frame (same command list, different
-			// transforms) can't reuse one resident slab slice — the second build's Put would overwrite
-			// the first. Repeat emissions get a fresh transient slice (freed next frame); the first
-			// emission keeps the recording's stable, resident slice.
-			bool repeat = !frameEmitted.Add(rr.Commands);
-			// Gap-4 solid-scroll: an eligible recording (plain-AABB/None session clip, only solids/rrects/
-			// path-fills, no path child-clip, no images/gradients) restamps via the transform table on a MOVE
-			// — identity verts resident in the shared table slabs + a per-vertex slot, so a scroll rewrites
-			// the slot, not the verts, while siblings still coalesce. A repeat emission (same list twice this
-			// frame) can't share one resident slice, so it takes the device path below.
-			if (!repeat && TableFrameEligible(rr))
-			{
-				EmitTableFrameSolid(rr, rr.Data.Compiled, ops);
-				return;
-			}
-			WebGpuGeometryCache fe = null;
-			// Re-derived every frame (build => Put, reuse => TryByteOffset-else-Put); FrameOrder is relative.
-			int sBase = 0, rBase = 0;
-			bool fMiss, fStale;
-			if (repeat) { fMiss = true; fStale = false; }
-			else
-			{
-				fe = rr.Data.Compiled;
-				fMiss = fe is null;
-				fStale = !fMiss && (!fe.FrameSolid || fe.TableFrame || fe.FrameOrder is null || fe.Transform != rr.Transform || fe.BuiltW != (int)_s.Width || fe.BuiltH != (int)_s.Height || !ClipDataEquals(fe.Clip, rr.Clip));
-			}
-			if (fMiss || fStale)
-			{
-				// Build once: extract device-space solid/rrect verts + an ordered emit list; owned (persistent) clip
-				// bind groups so nothing is re-created per frame.
-				if (fe is not null) { _d.DeferRelease(fe.Owned); }
-				var fOwned = new OwnedResources();
-				var sv = new List<float>(); var rv = new List<float>(); var order = new List<FrameOp>();
-				var tmp = new List<DrawOp>();
-				var tcmds = new List<WebGpuCommand>();
-				foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { tcmds.Add(tc); }
-				// One stable transform-table slot for this recording's device-space path fills (reused on
-				// rebuild; transient for a repeat emission). Verts are final-device here, so the slot's entry
-				// is the pure device->NDC projection, rewritten per frame at emit.
-				bool fHasPath = false; foreach (var c in tcmds) { if (c is PathFill) { fHasPath = true; break; } }
-				int fSlot = fHasPath ? ((!repeat && fe is not null && fe.XformSlot >= 0) ? fe.XformSlot : _d.AllocXformSlot()) : -1;
-				if (fHasPath && repeat) { _xformTransient.Add(fSlot); }
-				for (int ti = 0; ti < tcmds.Count; ti++)
-				{
-					var tc = tcmds[ti];
-					if (tc is RectCommand rc0)
-					{
-						// Coalesce a run of consecutive same-clip rects into one contiguous range + one draw.
-						int rel = sv.Count / 6; int tj = ti;
-						while (tj < tcmds.Count && tcmds[tj] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
-						{
-							AppendSolidRect(sv, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
-							tj++;
-						}
-						order.Add(new FrameOp { Kind = 0, ByteOff = rel * 6 * sizeof(float), Count = (uint)((tj - ti) * 6), Clip = rc0.Clip, ClipBg = (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip, fOwned) });
-						ti = tj - 1;
-					}
-					else if (tc is RoundedRectCmd rr0)
-					{
-						int rel = rv.Count / 22; int tj = ti;
-						while (tj < tcmds.Count && tcmds[tj] is RoundedRectCmd rrj && ClipDataEquals(rrj.Clip, rr0.Clip))
-						{
-							AppendRrect(rv, rrj);
-							tj++;
-						}
-						order.Add(new FrameOp { Kind = 5, ByteOff = rel * 22 * sizeof(float), Count = (uint)((tj - ti) * 6), Clip = rr0.Clip, ClipBg = (nint)MakeClipBg(_d.RrClipBgl, rr0.Clip, fOwned) });
-						ti = tj - 1;
-					}
-					else
-					{
-						// Atlas first, for the same reason as the table path: the collapse below antialiases
-						// nothing at one sample. Safe unconditionally here — these commands are already in
-						// final device space, and fStale rebuilds this entry on any transform or resize.
-						if (_pathAtlas && TryAtlasBatch(tcmds, ref ti, fOwned, Vector2.One, out var aop2))
-						{
-							order.Add(new FrameOp { Kind = -1, NonSolid = aop2 });
-							continue;
-						}
-						// Same glyph-run collapse as the table path: one stencil + one cover for a run of
-						// consecutive non-zero paths sharing colour + clip, instead of 2 draws per glyph.
-						if (tc is PathFill pf0 && !pf0.EvenOdd && !pf0.FanTiles)
-						{
-							float fSlotBits = System.BitConverter.Int32BitsToSingle(fSlot);
-							_scratch.Clear();
-							var gMin = new Vector2(float.MaxValue); var gMax = new Vector2(float.MinValue);
-							int gj = ti;
-							while (gj < tcmds.Count && tcmds[gj] is PathFill pfj && !pfj.EvenOdd
-								&& pfj.Color.R == pf0.Color.R && pfj.Color.G == pf0.Color.G && pfj.Color.B == pf0.Color.B && pfj.Color.A == pf0.Color.A
-								&& ClipDataEquals(pfj.Clip, pf0.Clip))
-							{
-								for (int gi = 0; gi < pfj.FanDevice.Length; gi += 2) { _scratch.Add(pfj.FanDevice[gi]); _scratch.Add(pfj.FanDevice[gi + 1]); _scratch.Add(fSlotBits); }
-								gMin = Vector2.Min(gMin, pfj.BbMin); gMax = Vector2.Max(gMax, pfj.BbMax);
-								gj++;
-							}
-							var gFan = Vbuf(_scratch, fOwned);
-							uint gCount = (uint)(_scratch.Count / 3);
-							float gr = pf0.Color.R / 255f, gg = pf0.Color.G / 255f, gb = pf0.Color.B / 255f, ga = pf0.Color.A / 255f;
-							_scratch.Clear();
-							var gTl = gMin; var gBr = gMax; var gTr = new Vector2(gBr.X, gTl.Y); var gBl = new Vector2(gTl.X, gBr.Y);
-							PushVertT(gTl, gr, gg, gb, ga, fSlotBits); PushVertT(gTr, gr, gg, gb, ga, fSlotBits); PushVertT(gBr, gr, gg, gb, ga, fSlotBits);
-							PushVertT(gTl, gr, gg, gb, ga, fSlotBits); PushVertT(gBr, gr, gg, gb, ga, fSlotBits); PushVertT(gBl, gr, gg, gb, ga, fSlotBits);
-							var gCov = Vbuf(_scratch, fOwned);
-							var gOp = new DrawOp(1, (nint)gFan, gCount, (nint)gCov, false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, fOwned));
-							order.Add(new FrameOp { Kind = -1, NonSolid = ResidentizeFan(gOp, fOwned) });
-							ti = gj - 1;
-							continue;
-						}
-						tmp.Clear();
-						BuildSimpleOp(tc, tmp, fOwned, fSlot);
-						foreach (var o in tmp) { order.Add(new FrameOp { Kind = -1, NonSolid = ResidentizeFan(o, fOwned) }); }
-					}
-				}
-				// `id` is stable across frames so a static recording's slice stays resident (no re-upload) and
-				// coalesces with neighbours across recordings; a repeat emission gets a fresh transient id.
-				long id = repeat ? _d.NextSlabId()
-					: ((fMiss || fe is null || fe.SlabId == 0) ? _d.NextSlabId() : fe.SlabId);
-				// Upload the (transform-baked) verts under this recording's stable id and keep them resident on
-				// the cache. FrameOrder offsets stay RELATIVE — the absolute base (returned here, re-derived on a
-				// later pure reuse) is applied at emit — never a cached absolute into a possibly-reclaimed slice.
-				sBase = sv.Count > 0 ? _d.SolidSlab.Put(id, sv) : 0;
-				rBase = rv.Count > 0 ? _d.RrectSlab.Put(id, rv) : 0;
-				fe = new WebGpuGeometryCache { FrameSolid = true, SlabId = id, FrameOrder = order, FrameSolidVerts = sv, FrameRrectVerts = rv, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = fSlot };
-				// A repeat emission is not cached (its slice is transient); free its bind groups next frame.
-				if (repeat) { _d.DeferRelease(fOwned); }
-				else { StoreCompiled(rr.Data, fe); }
-			}
-			else
-			{
-				// Pure reuse (no rebuild): re-derive the CURRENT slab base. TryByteOffset marks the slice live
-				// on a hit; if it was culled last frame its offset was reclaimed, so re-Put the resident verts.
-				if (fe.FrameSolidVerts is { Count: > 0 } && !_d.SolidSlab.TryByteOffset(fe.SlabId, out sBase)) { sBase = _d.SolidSlab.Put(fe.SlabId, fe.FrameSolidVerts); }
-				if (fe.FrameRrectVerts is { Count: > 0 } && !_d.RrectSlab.TryByteOffset(fe.SlabId, out rBase)) { rBase = _d.RrectSlab.Put(fe.SlabId, fe.FrameRrectVerts); }
-			}
-			// Rewrite this recording's path-fill transform entry every frame (device verts => pure current
-			// projection), so a window resize repositions its glyphs via the table with no re-tessellation.
-			if (fe.XformSlot >= 0) { WriteXform(fe.XformSlot, Matrix4x4.Identity); }
-			// Per frame: re-emit ops drawing from the RESIDENT shared slabs (b0=1 => solid slab / rrect slab;
-			// b1 = absolute slab byte offset). No append, no upload, no re-tessellation on a cache hit.
-			foreach (var fo in fe.FrameOrder)
-			{
-				if (fo.Kind == 0) { ops.Add(new DrawOp(0, 1, fo.Count, (nint)(sBase + fo.ByteOff), false, fo.Clip, fo.ClipBg)); }
-				else if (fo.Kind == 5) { ops.Add(new DrawOp(5, 1, fo.Count, (nint)(rBase + fo.ByteOff), false, fo.Clip, fo.ClipBg)); }
-				else { ops.Add(fo.NonSolid); }
-			}
+			EmitReappendableReplay(rr, ops, frameEmitted);
 			return;
 		}
+
 		// The per-visual GPU-geometry cache (slab/scroll), keyed by the recording's immutable command
 		// list. Build once; reuse while it's replayed at the same transform/clip. A stale entry (moved
 		// visual) is deferred-released and rebuilt. Entries not referenced any frame are evicted.
@@ -3898,147 +4105,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// clip's rounds/AABB need folding through finv.
 		if (IsArenaSafe(rr))
 		{
-			// Stable path-fill transform slot: arena verts are in the recording's OWN (identity) space, so
-			// the slot's entry folds the replay transform + projection — written per frame below, so a
-			// move OR resize repositions the fan/cover via the table with no re-stamp and no re-bake.
-			int aSlot = (miss || entry is null) ? -1 : entry.XformSlot;
-			// A pure-path arena entry is surface-size-independent (device verts + table), so a resize is
-			// handled by the per-frame table write below with NO rebuild; a mixed entry's NDC-baked solids
-			// still force a size rebuild.
-			bool aSizeChanged = entry is not null && (entry.BuiltW != (int)_s.Width || entry.BuiltH != (int)_s.Height);
-			// An atlas quad is an image op: its NDC is baked at build time and it carries no xform-table
-			// slot, so unlike the rest of a pure-path entry it is NOT re-projected when the surface
-			// size changes. Replaying one on a differently-sized target drew it scaled (the offscreen
-			// RenderTargetBitmap path, which is how the shape parity tests capture).
-			if (miss || !entry.Arena || (aSizeChanged && (!entry.PurePath || entry.HasAtlas))
-				|| (entry.HasAtlas && !(TryAtlasScale(rr.Transform, out var curScale) && SameAtlasScale(curScale, entry.AtlasScale)))
-				|| (entry.AtlasBlockedByScale && TryAtlasScale(rr.Transform, out _)))
-			{
-				if (_emitStats) { _statArenaRebuilds++; }
-				if (entry is not null) { _d.DeferRelease(entry.Owned); _d.DeferRelease(entry.StampOwned); }
-				var aOwned = new OwnedResources();
-				var aOps = new List<DrawOp>();
-				var aList = new List<WebGpuCommand>();
-				foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, Matrix4x4.Identity, ClipData.None)) { aList.Add(tc); }
-				bool aHasPath = false, aPure = aList.Count > 0; foreach (var c in aList) { if (c is PathFill) { aHasPath = true; } else { aPure = false; } }
-				if (aHasPath && aSlot < 0) { aSlot = _d.AllocXformSlot(); }
-				int atlasBefore = AtlasHit + AtlasBaked;
-				bool aAtlasSafe = TryAtlasScale(rr.Transform, out var aScale);
-				BuildCoalesced(aList, aOps, aOwned, aSlot, atlasScale: aAtlasSafe ? aScale : null);
-				bool aHasAtlas = (AtlasHit + AtlasBaked) != atlasBefore;
-				bool aBlocked = !aAtlasSafe && aHasPath && _pathAtlas;
-				for (int _ri = 0; _ri < aOps.Count; _ri++) { aOps[_ri] = ResidentizeFan(aOps[_ri], aOwned); }
-				entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, HasAtlas = aHasAtlas, AtlasBlockedByScale = aBlocked, AtlasScale = aScale, PurePath = aPure, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = aSlot };
-				StoreCompiled(rr.Data, entry);
-			}
-			// Per frame (even on a cache/stamp hit): the identity-space verts map to the current replay
-			// transform + surface projection via this one table entry — the whole arena move/resize path.
-			if (entry.XformSlot >= 0) { WriteXform(entry.XformSlot, rr.Transform); }
-			if ((!entry.HasStamp || entry.StampXform != rr.Transform || !ClipDataEquals(entry.StampClip, rr.Clip)))
-			{
-				if (_emitStats) { _statStamps++; }
-				// In-place restamp (same guard as the table stamp): rewrite ClipU buffers, keep bind groups.
-				var reuse = entry.HasStamp && entry.StampBufs is not null && entry.StampBufs.Count == entry.Ops.Count && entry.StampFrame != _d.FrameSeq;
-				if (!reuse && entry.StampOwned is not null) { _d.DeferRelease(entry.StampOwned); }
-				var stampOwned = reuse ? entry.StampOwned : new OwnedResources();
-				var stamped = reuse ? entry.StampedOps : new List<DrawOp>(entry.Ops.Count);
-				var bufs = reuse ? entry.StampBufs : new List<nint>(entry.Ops.Count);
-				var xf = ArenaXform(rr.Transform);
-				// finv = inverse device affine, so clipCov maps the moved fragment back to the recording's
-				// own space where the (identity-baked) clip lives.
-				var t2 = new Matrix3x2(rr.Transform.M11, rr.Transform.M12, rr.Transform.M21, rr.Transform.M22, rr.Transform.M41, rr.Transform.M42);
-				Matrix3x2 finv = Matrix3x2.Invert(t2, out var inv) ? inv : Matrix3x2.Identity;
-				Vector2 MoveP(float x, float y) => new(x * t2.M11 + y * t2.M21 + t2.M31, x * t2.M12 + y * t2.M22 + t2.M32);
-				// One ClipU for every fan in this recording: same arena transform, so it is built once —
-				// but LAZILY. xf/finv change every frame under a moving transform, so the content-keyed
-				// cache misses each time and this mints a buffer + bind group per recording per frame
-				// (370/frame on RenderStress_Gradients). Most recordings carry no fan at all, and once
-				// rounded rects are recognised analytically none of them do.
-				nint arenaFanBg = 0;
-				for (int i = 0; i < entry.Ops.Count; i++)
-				{
-					var op = entry.Ops[i];
-					var abgl = op.kind switch { 3 => _d.GradClipBgl, 2 => _d.ImageClipBgl, _ => _d.SolidClipBgl };
-					// clipCov reads the LOCAL rounded shape (finv maps fc back to it); the SCISSOR is device-space
-					// so its Aabb must follow the move — transform the (finite) clip Aabb by the replay transform.
-					var scissorClip = op.clip;
-					// The op's own fan is identity-space (arena bakes at identity): map it to device for
-					// this replay. FanBuf is cleared because the residentized NDC buffer was baked for
-					// identity and is stale once moved.
-					if (op.clip.PathFan is { } localFan)
-					{
-						// stampOwned, never the per-frame slab: this bind group is memoized into StampedOps and
-					// reused on later frames while the transform holds.
-					if (arenaFanBg == 0) { arenaFanBg = (nint)MakeClipBg(_d.ClipBgl, default, stampOwned, xf, finv); }
-						// Keep the identity-space fan and its resident NDC buffer; hand the stencil draw
-						// the arena transform instead. Transforming on the CPU here would mean a fresh
-						// fan upload per op per frame (392/frame on RenderStress_Gradients).
-						scissorClip.FanXformBg = arenaFanBg;
-						var fa = new Vector4(float.MaxValue, float.MaxValue, float.MinValue, float.MinValue);
-						for (int fi = 0; fi < localFan.Length; fi += 2)
-						{
-							var mp = MoveP(localFan[fi], localFan[fi + 1]);
-							fa = new Vector4(MathF.Min(fa.X, mp.X), MathF.Min(fa.Y, mp.Y), MathF.Max(fa.Z, mp.X), MathF.Max(fa.W, mp.Y));
-						}
-						scissorClip.Aabb = new Vector4(MathF.Max(scissorClip.Aabb.X, fa.X), MathF.Max(scissorClip.Aabb.Y, fa.Y), MathF.Min(scissorClip.Aabb.Z, fa.Z), MathF.Min(scissorClip.Aabb.W, fa.W));
-					}
-					var ab = op.clip.Aabb;
-					if (ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f)
-					{
-						var p0 = MoveP(ab.X, ab.Y); var p1 = MoveP(ab.Z, ab.Y); var p2 = MoveP(ab.Z, ab.W); var p3 = MoveP(ab.X, ab.W);
-						scissorClip.Aabb = new Vector4(
-							MathF.Min(MathF.Min(p0.X, p1.X), MathF.Min(p2.X, p3.X)), MathF.Min(MathF.Min(p0.Y, p1.Y), MathF.Min(p2.Y, p3.Y)),
-							MathF.Max(MathF.Max(p0.X, p1.X), MathF.Max(p2.X, p3.X)), MathF.Max(MathF.Max(p0.Y, p1.Y), MathF.Max(p2.Y, p3.Y)));
-					}
-					// Session clip: tighten the device scissor by its Aabb; fold its rounds into ClipU (local space).
-					var sa = rr.Clip.Aabb;
-					scissorClip.Aabb = new Vector4(MathF.Max(scissorClip.Aabb.X, sa.X), MathF.Max(scissorClip.Aabb.Y, sa.Y), MathF.Min(scissorClip.Aabb.Z, sa.Z), MathF.Min(scissorClip.Aabb.W, sa.W));
-					scissorClip.ScissorInert = op.clip.ScissorInert && rr.Clip.ScissorInert;
-					// Carry the session fan onto the stamped op so the depth mask still clips it — unless it
-					// provably covers this op, in which case attaching it would cost an ApplyDepthClip
-					// setup (4 pipeline switches + 3 draws + a bind group + a vertex buffer) that cannot
-					// change a pixel. The arena builds at identity with ClipData.None, so the build-time
-					// strip never sees the session fan; this is the only place it can be caught.
-					if (rr.Clip.PathFan is { } sessionFan
-						&& !(!rr.Clip.PathExclude && FanCoversAabb(sessionFan, scissorClip.Aabb)))
-					{
-						scissorClip.PathFan = sessionFan;
-						scissorClip.PathEvenOdd = rr.Clip.PathEvenOdd;
-						scissorClip.PathExclude = rr.Clip.PathExclude;
-						scissorClip.FanBuf = rr.Clip.FanBuf;
-						scissorClip.FanW = rr.Clip.FanW;
-						scissorClip.FanH = rr.Clip.FanH;
-					}
-
-					var uClip = op.clip;
-					FoldSessionRounds(ref uClip, rr.Clip.Rounds, finv);
-					var uSessionFinite = IsFiniteAabb(rr.Clip.Aabb);
-					var uAxisAligned = finv.M12 == 0 && finv.M21 == 0;
-					var uCanWiden = !uSessionFinite || uAxisAligned;
-					if (uSessionFinite && uAxisAligned)
-					{
-						FoldSessionAabb(ref uClip, rr.Clip.Aabb, finv);
-					}
-					if (reuse)
-					{
-						scissorClip.AabbInClipU = RewriteClipU(bufs[i], uClip, xf, finv) && uCanWiden;
-						scissorClip.ScissorLoadBearing = !scissorClip.AabbInClipU;
-						stamped[i] = new DrawOp(op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, stamped[i].clipBg);
-					}
-					else
-					{
-						var aClipBg = MakeClipBgOwned(abgl, uClip, stampOwned, xf, finv, out var buf, out var aFolded);
-						scissorClip.AabbInClipU = aFolded && uCanWiden;
-						scissorClip.ScissorLoadBearing = !scissorClip.AabbInClipU;
-						bufs.Add(buf);
-						stamped.Add(new DrawOp(op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, (nint)aClipBg));
-					}
-				}
-				entry.StampOwned = stampOwned; entry.StampedOps = stamped; entry.StampBufs = bufs; entry.StampFrame = _d.FrameSeq; entry.StampXform = rr.Transform; entry.StampClip = rr.Clip; entry.HasStamp = true;
-			}
-			ops.AddRange(entry.StampedOps);
+			EmitArenaReplay(rr, ops, entry, miss);
 			return;
 		}
+
 		var transformChanged = !miss && entry.Transform != rr.Transform;
 		int cSlot = (miss || entry is null) ? -1 : entry.XformSlot;
 		// Bisect level 4: reuse the previous bake on a pure move (visually stale, but it prices the
@@ -4097,7 +4167,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var blurView = RenderShadow(sh, out var origin, out var size);
 		var sbg = TintedImageBg(blurView, sh.Color);
 		var sq = TexturedQuad(origin, size);
-		ops.Add(new DrawOp(2, (nint)sbg, 0, (nint)MakeBuffer(sq), false, sh.Clip, (nint)MakeClipBg(_d.ImageClipBgl, sh.Clip)));
+		ops.Add(new DrawOp(DrawKind.Image, (nint)sbg, 0, (nint)MakeBuffer(sq), false, sh.Clip, (nint)MakeClipBg(_d.ImageClipBgl, sh.Clip)));
 	}
 
 	/// <summary>
@@ -4160,7 +4230,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				var blur = BlurPyramidRegion(layerSurface.View, _s.Width, _s.Height, rx, ry, rw, rh, fx.SigmaX, fx.SigmaY);
 				var sfbg = TintedImageBg(blur, fx.Color);
 				var fq = TexturedQuad(new Vector2(fx.Dx + rx, fx.Dy + ry), new Vector2(rw, rh));
-				ops.Add(new DrawOp(2, (nint)sfbg, 0, (nint)MakeBuffer(fq), false, lyr.Clip, (nint)MakeClipBg(_d.ImageClipBgl, lyr.Clip)));
+				ops.Add(new DrawOp(DrawKind.Image, (nint)sfbg, 0, (nint)MakeBuffer(fq), false, lyr.Clip, (nint)MakeClipBg(_d.ImageClipBgl, lyr.Clip)));
 			}
 		}
 
@@ -4195,7 +4265,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			compClip.AabbInClipU = false;
 			compClip.ScissorLoadBearing = true;
 		}
-		ops.Add(new DrawOp(4, (nint)lbg, (uint)lyr.CompositeMode, 0, false, compClip, 0));
+		ops.Add(new DrawOp(DrawKind.CompositeLayer, (nint)lbg, (uint)lyr.CompositeMode, 0, false, compClip, 0));
 	}
 
 	/// <summary>
@@ -4221,11 +4291,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			var (kind, b0, u0, b1, flag, clip, clipBg) = ops[oi];
 			pst.Iters++;
 			if (_emitStats && clip.PathFan is not null) { pst.FanOps++; }
-			if (_emitStats && (kind == 7 || (kind is 2 or 3 or 8 && flag))) { pst.SharedOps++; }
-			if (_emitStats && kind == 8) { pst.Tiled++; }
+			if (_emitStats && (kind == DrawKind.TablePath || (kind is DrawKind.Image or DrawKind.Gradient or DrawKind.TilingFan && flag))) { pst.SharedOps++; }
+			if (_emitStats && kind == DrawKind.TilingFan) { pst.Tiled++; }
 			// Fragment area the stencil-then-cover path actually rasterises: the cover quad spans the whole
 			// bbox even when the shape is a 2px stroke outline, so this is where the waste shows up.
-			if (_emitStats && kind is 1 or 7)
+			if (_emitStats && kind is DrawKind.Path or DrawKind.TablePath)
 			{
 				var cb = clip.Aabb;
 				var cw = Math.Min(cb.Z, _s.Width) - Math.Max(cb.X, 0);
@@ -4251,16 +4321,15 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			}
 			switch (kind)
 			{
-				case 0 when b0 == 0:
+				case DrawKind.Solid when b0 == VertexSource.PassBuffer:
 					{
-						// Shared-buffer solid (b1=start vertex, u0=vertex count). COALESCE the maximal run of following
-						// solid ops sharing this clip bind group + clip (same scissor + depth-clip): their verts are
+						// Coalesce the maximal following run that shares this clip and bind group: their verts are
 						// contiguous in the shared buffer by construction, so the whole run draws in ONE call.
 						int startVert = (int)b1; uint count = u0;
 						while (oi + 1 < end)
 						{
 							var nx = ops[oi + 1];
-							if (nx.kind != 0 || nx.b0 != 0 || nx.clipBg != clipBg
+							if (nx.kind != DrawKind.Solid || nx.b0 != VertexSource.PassBuffer || nx.clipBg != clipBg
 								|| !ReferenceEquals(nx.clip.PathFan, clip.PathFan) || nx.clip.Aabb != clip.Aabb) { break; }
 							count += nx.u0; oi++;
 						}
@@ -4270,14 +4339,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						pst.Enc.Draw(count);
 						break;
 					}
-				case 0 when b0 == 1:
+				case DrawKind.Solid when b0 == VertexSource.Slab:
 					{
-						// Resident SOLID SLAB (b1 = absolute byte offset). Coalesce a byte-contiguous run sharing clip+bindgroup.
+						// Coalesce a byte-contiguous run sharing this clip and bind group.
 						int byteOff = (int)b1; uint count = u0;
 						while (oi + 1 < end)
 						{
 							var nx = ops[oi + 1];
-							if (nx.kind != 0 || nx.b0 != 1 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
+							if (nx.kind != DrawKind.Solid || nx.b0 != VertexSource.Slab || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
 								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 6 * sizeof(float))) { break; }
 							count += nx.u0; oi++;
 						}
@@ -4287,7 +4356,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						pst.Enc.Draw(count);
 						break;
 					}
-				case 0 when b0 == 2:
+				case DrawKind.Solid when b0 == VertexSource.TableSlab:
 					{
 						// Resident SOLID TABLE SLAB (b1 = absolute byte offset, stride 7 = pos+col+slot). Group 0 = the
 						// transform table (each vertex's slot positions it), group 1 = ClipU. Coalesce byte-contiguous
@@ -4296,7 +4365,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						while (oi + 1 < end)
 						{
 							var nx = ops[oi + 1];
-							if (nx.kind != 0 || nx.b0 != 2 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
+							if (nx.kind != DrawKind.Solid || nx.b0 != VertexSource.TableSlab || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
 								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 7 * sizeof(float))) { break; }
 							count += nx.u0; oi++;
 						}
@@ -4307,7 +4376,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						pst.Enc.Draw(count);
 						break;
 					}
-				case 0:
+				case DrawKind.Solid:
 					// b0 = vertex buffer (private/immediate or a resident frame-solid buffer); b1 = byte offset into it.
 					pst.Enc.Pipe(_d.SolidPipe);
 					pst.Enc.Bg(0, (IntPtr)clipBg);
@@ -4323,7 +4392,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						pst.Enc.Draw(u0);   // u0 = 6 * (coalesced) rect count
 					}
 					break;
-				case 1:
+				case DrawKind.Path:
 					// Path fill via the transform table: fan verts = device pos + slot index (stride 3); cover verts =
 					// device pos + colour + slot index (stride 7). Group 0 = storage table (positions the verts);
 					// group 1 (cover) = ClipU (analytic clip coverage). Table entries were written during op-build.
@@ -4337,7 +4406,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					pst.Enc.Vb((IntPtr)b1, 0, (nuint)(42 * sizeof(float)));
 					pst.Enc.Draw(6);
 					break;
-				case 8:
+				case DrawKind.TilingFan:
 					// Single-pass fill of a tiling fan (see PathFill.FanTiles). Uses the stencil-independent
 					// cover pipeline: there is no stencil pass here, so the masked one would discard everything.
 					pst.Enc.Pipe(_d.CoverTableDirectPipe);
@@ -4354,7 +4423,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						pst.Enc.Draw(u0);
 					}
 					break;
-				case 7:
+				case DrawKind.TablePath:
 					// Shared-buffer path fill: same as kind 1, but b0/b1 are byte offsets into pathBuf, so the
 					// vertex buffer is bound once for the whole pass instead of twice per fill.
 					pst.Enc.Pipe(flag ? _d.StencilTableEO : _d.StencilTableNZ);
@@ -4367,7 +4436,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					pst.Enc.Vb((IntPtr)pathBuf, 0, pathBufBytes);
 					pst.Enc.Draw(6, (uint)(b1 / (7 * sizeof(float))));
 					break;
-				case 2:
+				case DrawKind.Image:
 					pst.Enc.Pipe(_d.ImagePipe);
 					pst.Enc.Bg(0, (IntPtr)b0);
 					pst.Enc.Bg(1, (IntPtr)clipBg);
@@ -4383,7 +4452,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						pst.Enc.Draw(atlasVerts);
 					}
 					break;
-				case 3:
+				case DrawKind.Gradient:
 					{
 						var gn = u0 == 0 ? 6u : u0;   // 6 = quad, else the clip-tightened n-gon
 						pst.Enc.Pipe(_d.GradientPipe);
@@ -4401,13 +4470,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						}
 						break;
 					}
-				case 4:
+				case DrawKind.CompositeLayer:
 					wgpuRenderPassEncoderSetPipeline(pass, u0 == 1 ? _d.CompositeDstIn : _d.CompositeSrcOver);
 					pst.Enc.Reset();   // set directly, so the dedup cache no longer reflects the encoder
 					pst.Enc.Bg(0, (IntPtr)b0);
 					wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
 					break;
-				case 6:
+				case DrawKind.BackdropSegment:
 					{
 						// Backdrop pass-segment (acrylic O(n) path): END this segment so its MSAA resolves into target.View
 						// (the content BEHIND the backdrop), blur that, REOPEN the pass loading the content back, and
@@ -4485,7 +4554,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						}
 						break;
 					}
-				case 5 when b0 == 0:
+				case DrawKind.RoundedRect when b0 == VertexSource.PassBuffer:
 					{
 						// Shared rrect buffer (b1=start vert, u0=6). COALESCE the run of following rrect ops sharing this
 						// clip bind group + clip: their 22-float verts are contiguous, so the run draws in ONE call.
@@ -4493,7 +4562,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						while (oi + 1 < end)
 						{
 							var nx = ops[oi + 1];
-							if (nx.kind != 5 || nx.b0 != 0 || nx.clipBg != clipBg
+							if (nx.kind != DrawKind.RoundedRect || nx.b0 != VertexSource.PassBuffer || nx.clipBg != clipBg
 								|| !ReferenceEquals(nx.clip.PathFan, clip.PathFan) || nx.clip.Aabb != clip.Aabb) { break; }
 							count += nx.u0; oi++;
 						}
@@ -4503,14 +4572,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						pst.Enc.Draw(count);
 						break;
 					}
-				case 5 when b0 == 1:
+				case DrawKind.RoundedRect when b0 == VertexSource.Slab:
 					{
 						// Resident RRECT SLAB (b1 = absolute byte offset). Coalesce byte-contiguous same-clip runs.
 						int byteOff = (int)b1; uint count = u0;
 						while (oi + 1 < end)
 						{
 							var nx = ops[oi + 1];
-							if (nx.kind != 5 || nx.b0 != 1 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
+							if (nx.kind != DrawKind.RoundedRect || nx.b0 != VertexSource.Slab || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
 								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 22 * sizeof(float))) { break; }
 							count += nx.u0; oi++;
 						}
@@ -4520,7 +4589,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						pst.Enc.Draw(count);
 						break;
 					}
-				case 5 when b0 == 2:
+				case DrawKind.RoundedRect when b0 == VertexSource.TableSlab:
 					{
 						// Resident RRECT TABLE SLAB (b1 = absolute byte offset, stride 23). Group 0 = the transform table
 						// (per-vertex slot positions the local corners), group 1 = ClipU. Coalesce byte-contiguous same-clip runs.
@@ -4528,7 +4597,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						while (oi + 1 < end)
 						{
 							var nx = ops[oi + 1];
-							if (nx.kind != 5 || nx.b0 != 2 || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
+							if (nx.kind != DrawKind.RoundedRect || nx.b0 != VertexSource.TableSlab || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
 								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 23 * sizeof(float))) { break; }
 							count += nx.u0; oi++;
 						}
@@ -4539,7 +4608,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						pst.Enc.Draw(count);
 						break;
 					}
-				case 5:
+				case DrawKind.RoundedRect:
 					// b0 = vertex buffer (resident frame-solid or legacy per-op); b1 = byte offset; u0 = vertex count.
 					pst.Enc.Pipe(_d.RrPipe);
 					pst.Enc.Bg(0, (IntPtr)clipBg);
@@ -4556,7 +4625,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 		// Build GPU resources for every command up front (buffers/textures must be created outside the
 		// render pass), preserving draw order in a single op list so cross-type z-order is honoured.
-		// kind: 0=rect (b0=verts OR b0=0 => shared solid buffer at b1=startVert/u0=count), 1=path (b0=fan, u0=fanCount,
 		// b1=cover, flag=evenOdd), 2=image (b0=bindGroup, b1=quad), 3=gradient, 4=composite layer.
 		var ops = RentOps();
 		var solid = RentSolid();
@@ -4599,7 +4667,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							AppendSolidRect(solid, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
 							j++;
 						}
-						ops.Add(new DrawOp(0, 0, (uint)((j - ci) * 6), (nint)start, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip)));
+						ops.Add(new DrawOp(DrawKind.Solid, VertexSource.PassBuffer, (uint)((j - ci) * 6), (nint)start, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip)));
 						ci = j - 1;   // the for-loop's ci++ advances past the run
 						break;
 					}
@@ -4615,11 +4683,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// Shared rrect buffer (b0==0, b1=start vert): adjacent same-clip rrects coalesce in the emit loop.
 						int st = rrect.Count / 22;
 						AppendRrect(rrect, rri);
-						ops.Add(new DrawOp(5, 0, 6, (nint)st, false, rri.Clip, (nint)MakeClipBg(_d.RrClipBgl, rri.Clip)));
+						ops.Add(new DrawOp(DrawKind.RoundedRect, VertexSource.PassBuffer, 6, (nint)st, false, rri.Clip, (nint)MakeClipBg(_d.RrClipBgl, rri.Clip)));
 						break;
 					}
 				case ReplayRefCmd rr:
-					EmitReplayRef(rr, ops, solid, rrect, frameEmitted);
+					EmitReplayRef(rr, ops, frameEmitted);
 					break;
 				case ShadowCmd sh:
 					EmitShadow(sh, ops);
@@ -4635,7 +4703,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// main-pass + kind-6 StoreOp), so an acrylic inside a layer/flyout skips the full-window offscreen the old
 						// pooled fallback re-rendered per backdrop, and an empty prefix costs nothing (no separate blurred offscreen).
 						int bi = backdrops.Count; backdrops.Add(bk);
-						ops.Add(new DrawOp(6, 0, 0, (nint)bi, false, bk.Clip, 0));
+						ops.Add(new DrawOp(DrawKind.BackdropSegment, 0, 0, (nint)bi, false, bk.Clip, 0));
 						break;
 					}
 			}
@@ -4682,9 +4750,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		for (int i = 0; bundleEligible && i < ops.Count; i++)
 		{
 			var o = ops[i];
-			bundleEligible = o.kind is 0 or 1 or 2 or 3 or 5 or 8
-				&& !(o.kind is 0 or 5 && o.b0 == 0)   // shared per-frame append buffers: handles churn every frame
-				&& !(o.kind is 2 or 3 or 8 && o.flag) // ditto: flag means this op indexes a shared per-frame buffer
+			bundleEligible = o.kind is DrawKind.Solid or DrawKind.Path or DrawKind.Image or DrawKind.Gradient or DrawKind.RoundedRect or DrawKind.TilingFan
+				&& !(o.kind is DrawKind.Solid or DrawKind.RoundedRect && o.b0 == VertexSource.PassBuffer)   // shared per-frame append buffers: handles churn every frame
+				&& !(o.kind is DrawKind.Image or DrawKind.Gradient or DrawKind.TilingFan && o.flag) // ditto: flag means this op indexes a shared per-frame buffer
 				&& ScissorWidenable(o.clip);
 		}
 		// Chunked bundle cache: fixed-size op chunks compare independently against the snapshot, so an animated
