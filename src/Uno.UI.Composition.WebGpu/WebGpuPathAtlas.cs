@@ -96,6 +96,12 @@ internal sealed unsafe class WebGpuPathAtlas
 		/// renders as other characters ("Stop" drawn as "3tod").
 		/// </summary>
 		public int RefCount;
+
+		/// <summary>Frame this entry was last used, for the cache's own reference (see <see cref="HoldForCache"/>).</summary>
+		public long LastUsed;
+
+		/// <summary>True while the CACHE holds one of this slot's references (a per-frame bake, owned by nobody else).</summary>
+		public bool CacheHeld;
 	}
 
 	/// <summary>
@@ -185,6 +191,45 @@ internal sealed unsafe class WebGpuPathAtlas
 	/// only safe moment: a recording bakes its slot's UVs into its draw ops, so reclaiming a slot while any
 	/// recording still referenced it would make that recording sample another shape's mask.
 	/// </summary>
+	/// <summary>Frames an entry may go unused before the cache drops its reference.</summary>
+	public const int CacheIdleFrames = 180;
+
+	private readonly List<Slot> _cacheHeld = new();
+
+	/// <summary>Records that an entry was used this frame, so the idle sweep keeps it.</summary>
+	public void NoteUse(Slot slot, long frame)
+	{
+		if (slot is not null) { slot.LastUsed = frame; }
+	}
+
+	/// <summary>
+	/// Gives the CACHE a reference to an entry baked for a per-frame op. Nothing else will free it, so the sweep
+	/// below does, once it has gone unused long enough that re-baking is cheaper than holding the region.
+	/// </summary>
+	public void HoldForCache(Slot slot, long frame)
+	{
+		if (slot is null || slot.CacheHeld) { return; }
+		slot.CacheHeld = true;
+		slot.LastUsed = frame;
+		_cacheHeld.Add(slot);
+	}
+
+	/// <summary>Drops the cache's reference to entries unused for <see cref="CacheIdleFrames"/> frames.</summary>
+	public void SweepCache(long frame)
+	{
+		for (var i = _cacheHeld.Count - 1; i >= 0; i--)
+		{
+			var slot = _cacheHeld[i];
+			if (!slot.CacheHeld) { _cacheHeld.RemoveAt(i); continue; }
+			if (frame - slot.LastUsed <= CacheIdleFrames) { continue; }
+			slot.CacheHeld = false;
+			_cacheHeld.RemoveAt(i);
+			// A recording that also uses this entry holds its own reference, so this only reclaims the region
+			// when the cache was the last holder.
+			Free(slot);
+		}
+	}
+
 	/// <summary>Takes an additional reference for a recording that reuses an entry it did not bake.</summary>
 	public void Retain(Slot slot)
 	{
