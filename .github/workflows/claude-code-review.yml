@@ -98,14 +98,6 @@ jobs:
           github_token: ${{ github.token }}
           track_progress: true
           prompt: ${{ steps.review_prompt.outputs.prompt }}
-          # The model is not a security control — the allowlist above is.
-          # `claude-sonnet-4-6` runs a 200K context window, and PRs past roughly
-          # 4k added lines died on it: `num_turns: 2`, ~$0.8 billed, no review
-          # posted, while smaller PRs on the same day passed with `num_turns: 9`.
-          # Sonnet 5 supports a 1M window, and the `[1m]` selector is what
-          # actually resolves it — a run using `claude-opus-5[1m]` reports
-          # `contextWindow: 1000000` under `modelUsage`, which is how this is
-          # verified from the run log without turning on `show_full_output`.
           claude_args: |
-            --model "claude-sonnet-5[1m]"
+            --model "claude-sonnet-5"
             --allowedTools "mcp__github_inline_comment__create_inline_comment,mcp__github_comment__update_claude_comment,Bash(gh pr diff:*),Bash(gh pr view:*)"
