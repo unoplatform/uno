@@ -1079,7 +1079,7 @@ namespace Microsoft.UI.Xaml
 
 		// This method should be on DependencyObject instead of UIElement.
 		// We can only do that once DependencyObject becomes a class instead of interface.
-		private protected virtual void EnterImpl(
+		private protected virtual void EnterManagedPeerImpl(
 			bool live
 			//bool skipNameRegistration,
 			//bool coercedIsEnabled,
@@ -1302,7 +1302,7 @@ namespace Microsoft.UI.Xaml
 			//If this object has a managed peer, it needs to process Enter as well.
 			//if (HasManagedPeer())
 			{
-				this.EnterImpl(@params.IsLive
+				this.EnterManagedPeerImpl(@params.IsLive
 					//@params.SkipNameRegistration,
 					//@params.CoercedIsEnabled,
 					//@params.UseLayoutRounding
@@ -1584,7 +1584,7 @@ namespace Microsoft.UI.Xaml
 
 		// This method should be on DependencyObject instead of UIElement.
 		// We can only do that once DependencyObject becomes a class instead of interface.
-		private protected virtual void LeaveImpl(
+		private protected virtual void LeaveManagedPeerImpl(
 			bool live
 			//bool skipNameRegistration,
 			//bool coercedIsEnabled,
@@ -1874,7 +1874,7 @@ namespace Microsoft.UI.Xaml
 			// If this object has a managed peer, it needs to process Leave as well.
 			//if (HasManagedPeer())
 			{
-				this.LeaveImpl(@params.IsLive
+				this.LeaveManagedPeerImpl(@params.IsLive
 					//@params.fSkipNameRegistration,
 					//@params.fCoercedIsEnabled,
 					//@params.fVisualTreeBeingReset
