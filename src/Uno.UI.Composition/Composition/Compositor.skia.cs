@@ -205,9 +205,6 @@ public partial class Compositor
 		return false;
 	}
 
-	/// <summary>Kicks the render loop so a newly-subscribed frame driver gets its first tick.</summary>
-	internal static void RequestFrame(Visual visual) => visual.CompositionTarget?.RequestNewFrame();
-
 	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual, DamageRegion? damage = null)
 	{
 		if (rootVisual is null)
