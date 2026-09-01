@@ -633,3 +633,67 @@ issue tracker, and the three prior-art branches. Behavioural claims about WinUI 
 (a) read from C++, or (b) **measured** on WinAppSDK by the prior-art tests, and are labelled as
 such in section 1 vs section 2. Nothing here was validated by running Uno at runtime; that is the
 next phase.
+
+---
+
+## 13. Implementation Log (2026-09-01/02)
+
+Everything below is landed, built and tested locally on `feature/breakingchanges` (net11 preview
+SDK), each chunk on its own branch so it can ship as its own PR. Nothing is pushed yet.
+
+| Branch | Workstream | Commits |
+|---|---|---|
+| `dev/mazi/namescope-owners` | 1 — owner data model | owner-keyed tables, `NameScope` as `NameScopeHelper`, parser lock, generator seeds the owner; review fixes |
+| `dev/mazi/namescope-enter-owner` | 1 — Enter/Leave | ports the namescope block of `CDependencyObject::Enter`/`Leave`, unifies the two Enter/Leave wrappers, threads owners through the seed sites |
+| `dev/mazi/namescope-registration` | 2 — registration | `SetName`/`RegisterName`/`UnregisterName`, register on Enter and unregister on Leave, two-pass `ChildEnter`, strong entries |
+| `dev/mazi/namescope-findname` | 3 — lookup | `FindName` resolves from the namescope; runtime XAML reader gets per-root and per-template-instantiation scopes |
+| `dev/mazi/namescope-deferred` | 5 — deferred entries | `x:Load` stubs registered as deferred entries; lookup materializes |
+| `dev/mazi/named-resource-fields` | 0b | backing field for `x:Name`d resources (#24293) |
+
+Validation each step: `Uno.UI.UnitTests` (4096 passing, 12 pre-existing timezone-dependent
+`When_Calendar` failures), `Uno.UI.SourceGenerators.Tests` (232/232), and Skia Desktop runtime
+slices (namescope suites 57/57; a ~1400-test lifecycle slice with only pre-existing failures —
+150% display-scale sub-pixel assertions, clipboard-dependent TextBox tests, and
+`CommandBarFlyout_Leak`, all verified to fail identically at the preceding commit).
+
+### Deliberate divergences from WinUI
+
+1. **D1 rename** — WinUI clears the name before unregistering it (`depends.cpp:624-628`), so a
+   rename strands the old entry. Uno unregisters the old name for real. Tests name the divergence.
+2. **Enter/Leave gates stay wider.** WinUI runs `EnterImpl`/`LeaveImpl` only with a namescope owner
+   (or a live multi-parent-shareable DO). Uno also runs them for any live walk, and always for a
+   leaving owner: activation, theming and Loaded/Unloaded ride on those walks, and Uno still has
+   live subtrees that reach no owner (roots attached before a public root visual exists).
+3. **`FindName` keeps the tree walk as a fallback**, behind
+   `FeatureConfiguration.FrameworkElement.UseLegacyFindNameTreeWalk` (default on). WinUI resolves
+   from the namescope only; 173 call sites in this repo alone depend on the walk, so dropping it is
+   its own breaking change.
+4. **Template roots are standard namescope owners** (D6) — Uno has no template namescope, so the
+   standard owner walk lands on the template root, and `TryGetElementByName` skips WinUI's
+   template-parent redirection.
+5. **Non-DependencyObject `x:Name`s stay resolvable.** `INameScope` takes `object`; the core tables
+   hold `DependencyObject`, so the facade keeps a side table for the rest.
+6. **The registration pass does not propagate to flyouts or keyboard accelerators.** Uno's
+   accelerator registration is not idempotent, and the live pass follows immediately.
+7. **The duplicate-name warning is opt-out** (D2) via `FeatureConfiguration.NameScope.WarnOnDuplicateName`;
+   resolution is last-writer-wins in both modes.
+
+### Gaps found while implementing (not regressions)
+
+- **`Storyboard.TargetName` never resolves for a storyboard declared in `Resources`.**
+  `Timeline.GetTargetFromName` climbs `GetParent()` to find an anchor FrameworkElement, and a
+  resource has no parent, so the climb ends at null before any name lookup happens. Verified to
+  fail identically before this epic. WinUI resolves the target name from the timeline's own
+  namescope; that is the fix, and it belongs with workstream 4. Worth its own issue.
+- `NameScope.UnregisterName` (the parser-facing facade) bypasses the identity guard, because
+  `INameScope` gives it a name but no element. Harmless today - the parser only unregisters what it
+  registered - but it must not grow a Leave-side caller.
+
+### Still open
+
+- **Workstream 4** — ElementName push to pull at attach, retiring `ApplyElementNameBindings`.
+- **Workstream 6** — remove the Uno-only `Binding.ElementNameSubject` seam (`Binding.ElementName`
+  is already `string`), move `ElementNameSubject` to `Uno.UI.DataBinding`, drop
+  `Storyboard.SetTarget(Timeline, ElementNameSubject)` and the `Setter` stub-materialization
+  special case (which deferred entries now make redundant).
+- Filing the WinUI `SetName` rename bug upstream, and the `Storyboard.TargetName` issue above.
