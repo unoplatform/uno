@@ -411,11 +411,12 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 				para is not null &&
 				paragraphNode.GetParsedText() is { } parsed)
 			{
-				var margin = para.Margin;
-				var boxSize = paragraphNode.GetDesiredSize(); // content + margins
-				var contentSize = new Size(
-					Math.Max(0, boxSize.Width - margin.Left - margin.Right),
-					Math.Max(0, boxSize.Height - margin.Top - margin.Bottom));
+				// Same geometry the master renders from: block margins collapse, so the node's own
+				// collapsed margin and arranged content box are the only sizes the lines were laid
+				// out against. Deriving them from the raw Margin misplaces and mis-clips the slice.
+				var margin = paragraphNode.GetCollapsedMargin();
+				var boxSize = paragraphNode.GetDesiredSize(); // content + collapsed margins
+				var contentSize = paragraphNode.GetContentRenderSize();
 
 				_paragraphLayouts.Add(new RichTextBlock.ParagraphLayout(
 					ParsedText: parsed,
