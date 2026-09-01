@@ -218,7 +218,10 @@ The full protocol (root-cause steps, diagnosis-bias checks, evidence rules) auto
 Run these after making changes:
 
 1. **Build**: `dotnet build Uno.UI-UnitTests-only.slnf --no-restore`
-2. **Unit tests**: `dotnet test Uno.UI.UnitTests/Uno.UI.UnitTests.csproj --no-build`
+2. **Unit tests**: `dotnet test Uno.UI.UnitTests/Uno.UI.UnitTests.csproj --no-build` for a quick
+   loop. Before pushing, run the full `dotnet test Uno.UI-UnitTests-only.slnf --no-build` - that
+   is CI's actual gate, and it also covers the analyzer, source-generator, Hot Reload and
+   DevServer test projects that the narrower command silently skips.
 3. **Runtime tests** (UI changes): Use `/runtime-tests` skill (Skia Desktop default, pass test class/method name as argument)
 4. **WinUI parity** (validate against native WinUI): Use `/winui-runtime-tests` skill
 5. **Sample app** (visual changes): `dotnet run --project src/SamplesApp/SamplesApp -f net11.0-desktop`
