@@ -2368,11 +2368,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				var idu = MakeUniform(96);
 				var idc = stackalloc float[24]; idc[1] = 1f;   // params.x=0 (no colour matrix), params.y=1 (opacity)
 				wgpuQueueWriteBuffer(_d.Q, idu, 0, (IntPtr)idc, 96);
-				var e = stackalloc WGPUBindGroupEntry[3];
+				// Two entries, not three: the composite shader uses textureLoad, so its layout has no sampler.
+				var e = stackalloc WGPUBindGroupEntry[2];
 				e[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = blurView };
-				e[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-				e[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = idu, Offset = 0, Size = 96 };
-				var bgd = new WGPUBindGroupDescriptor { Layout = _d.CompositeBgl, EntryCount = 3, Entries = e };
+				e[1] = new WGPUBindGroupEntry { Binding = 2, Buffer = idu, Offset = 0, Size = 96 };
+				var bgd = new WGPUBindGroupDescriptor { Layout = _d.CompositeBgl, EntryCount = 2, Entries = e };
 				var bg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
 				var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _s.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? _s.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
 				var dsa = new WGPURenderPassDepthStencilAttachment { View = _s.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
@@ -4040,11 +4040,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						}
 						var lubuf = MakeUniform((int)96);
 						fixed (float* p = cu) { wgpuQueueWriteBuffer(_d.Q, lubuf, 0, (IntPtr)p, 96); }
-						var lentries = stackalloc WGPUBindGroupEntry[3];
+						// Two entries, not three: the composite shader uses textureLoad, so its layout has no sampler.
+						var lentries = stackalloc WGPUBindGroupEntry[2];
 						lentries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = layerSurface.View };
-						lentries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-						lentries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = lubuf, Offset = 0, Size = 96 };
-						var lbgd = new WGPUBindGroupDescriptor { Layout = lyr.CompositeMode == 1 ? _d.CompositeDstInBgl : _d.CompositeBgl, EntryCount = 3, Entries = lentries };
+						lentries[1] = new WGPUBindGroupEntry { Binding = 2, Buffer = lubuf, Offset = 0, Size = 96 };
+						var lbgd = new WGPUBindGroupDescriptor { Layout = lyr.CompositeMode == 1 ? _d.CompositeDstInBgl : _d.CompositeBgl, EntryCount = 2, Entries = lentries };
 						var lbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &lbgd));
 						// Scissor the composite to the layer's content. The composite shader draws a FULLSCREEN triangle,
 						// so without this every layer blends the whole window no matter how small it is — a tooltip's

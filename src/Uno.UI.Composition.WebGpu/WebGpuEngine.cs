@@ -881,7 +881,8 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 	private const string CompositeWgsl = @"
 struct CU { params: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec4<f32>, m3: vec4<f32>, off: vec4<f32> };
 @group(0) @binding(0) var src: texture_2d<f32>;
-@group(0) @binding(1) var smp: sampler;
+// No sampler: the fragment shader fetches exact texels (textureLoad). Declaring one anyway would be dropped
+// from the derived bind group layout as unused, and the C# side would then bind against a layout without it.
 @group(0) @binding(2) var<uniform> u: CU;
 struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 @vertex fn vs(@builtin(vertex_index) vi: u32) -> VO {
