@@ -34,6 +34,7 @@ Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_o
 - **Don't narrate code removal or change history** — no "removed X", "used to do Y", "no longer needed". A comment states the present reason a line exists; git carries the history. (Rare exception: a genuinely useful note about why something is intentionally *absent*.)
 - **Longer comments are allowed only when:** the user explicitly asks for them; you're **porting from WinUI/MUX** and the upstream source carries explanatory comments (keep those verbatim — fidelity to the original is the point, see the `/winui-port` skill); or a genuinely subtle invariant/algorithm can't be conveyed in a line or two. When in doubt, shorter.
 - A `// MUX Reference …` attribution line (above) is not a history comment — keep it.
+- A `// TODO Uno:` marker (and a `#if HAS_UNO` gate) records a deliberate, un-ported divergence from WinUI — it is **not** a history comment, so the rule above never justifies deleting one. If you're touching the surrounding code, check upstream first: if it's now genuinely 1:1 with WinUI, drop the marker and match verbatim; if the gap is real, leave the marker alone.
 
 ## Conditional symbols
 `#if IS_UNIT_TESTS` is defined by three projects only — `Uno.UI.UnitTests`, `Uno.UI.Tests.ViewLibrary` and `Uno.UI.Tests.ViewLibraryProps` — and is **absent from `Uno.UI`'s define set**: those projects consume `Uno.UI` through a `ProjectReference`, so the symbol only reaches files they *Compile-link* (chiefly from `Uno.UI.RuntimeTests`). Never use it in `Uno.UI` source. Platform symbols are covered in `platform-targeting.md`. Global usings (`GlobalUsings.cs`) only define **Android** aliases (e.g. `AView`) and only under `__ANDROID__` — don't assume other platforms have global aliases. `UNO_REFERENCE_API` is a legacy synonym of **`HAS_UNO`** ("drawn by Uno, not WinUI") — prefer `HAS_UNO` in new code.
@@ -49,3 +50,12 @@ Indentation is **tabs** (see `.editorconfig`), braces always, `new_line_before_o
 | **Genuinely dead** | a platform Uno no longer targets, or a renderer removed in 7.0 | Safe to remove *only* after checking the code behind it isn't reachable by another route |
 
 The last row is the trap: `SUPPORTS_NATIVE_DATEPICKER` looked dead but guarded a live Skia-Android path, so the undefined symbol was the bug, not the code. Symbols emitted by generators (`UNO_MIXIN_GENERATION`) or consumed via `[Conditional("X")]` (`IS_CI_OR_DEBUG`) are invisible to a plain `#if` search — grep for the string, not just the directive.
+
+## Public API surface changes
+
+Renaming, moving, or narrowing the visibility (`public` → `internal`, removing a member) of
+anything shipped in a NuGet package must update `build/PackageDiffIgnore.xml` in the *same*
+commit as the code change - add the entry to the current version's ignore set. Don't leave it
+as a CI-triggered follow-up; a red `PackageDiff` check on someone else's PR is how this usually
+gets discovered. If the release currently has a migration guide under `doc/articles/`, add the
+change there too.
