@@ -117,13 +117,13 @@ namespace Microsoft.UI.Xaml
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeFirstChild(finalSize);
 
-		internal override void EnterImpl(EnterParams @params)
+		internal override void EnterImpl(DependencyObject namescopeOwner, EnterParams @params)
 		{
 			// the base impl would cause immediately materialization by loading this stub
 			// which is not something we want here.
 		}
 
-		internal override void LeaveImpl(LeaveParams @params)
+		internal override void LeaveImpl(DependencyObject namescopeOwner, LeaveParams @params)
 		{
 			// do nothing
 		}

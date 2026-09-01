@@ -247,7 +247,7 @@ public partial class DependencyObject
 				{
 					resourceAsUIElement.XamlRoot = fe.XamlRoot;
 					@params.Depth = int.MinValue;
-					resourceAsUIElement.EnterImpl(@params);
+					resourceAsUIElement.EnterImpl(pAdjustedNamescopeOwner, @params);
 				}
 			}
 		}
