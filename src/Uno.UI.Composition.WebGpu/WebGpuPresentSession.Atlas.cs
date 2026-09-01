@@ -51,10 +51,10 @@ public sealed unsafe partial class WebGpuPresentSession
 		CQ(-1, -1); CQ(1, -1); CQ(1, 1); CQ(-1, -1); CQ(1, 1); CQ(-1, 1);
 		var coverBuf = MakeBuffer(cq.ToArray());
 
-		var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = surf.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? surf.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = _d.MsaaSamples > 1 ? WGPUStoreOp.Discard : WGPUStoreOp.Store, ClearValue = default };
-		var dsa = new WGPURenderPassDepthStencilAttachment { View = surf.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
-		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
-		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
+		var color = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = surf.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? surf.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = _d.MsaaSamples > 1 ? WGPUStoreOp.Discard : WGPUStoreOp.Store, ClearValue = default };
+		var depthStencil = new WGPURenderPassDepthStencilAttachment { View = surf.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
+		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color, DepthStencilAttachment = &depthStencil };
+		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &desc);
 		if (pf.FanTiles)
 		{
 			// Already a non-overlapping triangulation: fill it directly. The ring-free twin carries no coverage.

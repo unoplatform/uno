@@ -311,7 +311,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	{
 		int start = rr.Count / 22;
 		var hf = rrc.Half; var rad = rrc.Radii; var ih = rrc.InnerHalf; var ic = rrc.InnerCenter; var ir = rrc.InnerRadii;
-		float cr = rrc.Color.R / 255f, cg = rrc.Color.G / 255f, cb = rrc.Color.B / 255f, ca = rrc.Color.A / 255f * rrc.Opacity;
+		float cr = rrc.Color.R / 255f, cg = rrc.Color.G / 255f, cb = rrc.Color.B / 255f, color = rrc.Color.A / 255f * rrc.Opacity;
 		Span<Vector2> dev = stackalloc Vector2[4] { rrc.P0, rrc.P1, rrc.P3, rrc.P2 };
 		Span<Vector2> ctr = stackalloc Vector2[4] { new(-hf.X, -hf.Y), new(hf.X, -hf.Y), new(-hf.X, hf.Y), new(hf.X, hf.Y) };
 		ReadOnlySpan<int> tri = stackalloc int[6] { 0, 1, 2, 2, 1, 3 };
@@ -319,7 +319,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		{
 			var n = Ndc(dev[idx]);
 			rr.Add(n.X); rr.Add(n.Y); rr.Add(ctr[idx].X); rr.Add(ctr[idx].Y); rr.Add(hf.X); rr.Add(hf.Y);
-			rr.Add(rad.X); rr.Add(rad.Y); rr.Add(rad.Z); rr.Add(rad.W); rr.Add(cr); rr.Add(cg); rr.Add(cb); rr.Add(ca);
+			rr.Add(rad.X); rr.Add(rad.Y); rr.Add(rad.Z); rr.Add(rad.W); rr.Add(cr); rr.Add(cg); rr.Add(cb); rr.Add(color);
 			rr.Add(ih.X); rr.Add(ih.Y); rr.Add(ic.X); rr.Add(ic.Y); rr.Add(ir.X); rr.Add(ir.Y); rr.Add(ir.Z); rr.Add(ir.W);
 		}
 		return start;
@@ -338,7 +338,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	private void AppendRrectLocalT(List<float> rr, RoundedRectCmd rrc, float slotBits)
 	{
 		var hf = rrc.Half; var rad = rrc.Radii; var ih = rrc.InnerHalf; var ic = rrc.InnerCenter; var ir = rrc.InnerRadii;
-		float cr = rrc.Color.R / 255f, cg = rrc.Color.G / 255f, cb = rrc.Color.B / 255f, ca = rrc.Color.A / 255f * rrc.Opacity;
+		float cr = rrc.Color.R / 255f, cg = rrc.Color.G / 255f, cb = rrc.Color.B / 255f, color = rrc.Color.A / 255f * rrc.Opacity;
 		Span<Vector2> dev = stackalloc Vector2[4] { rrc.P0, rrc.P1, rrc.P3, rrc.P2 };
 		Span<Vector2> ctr = stackalloc Vector2[4] { new(-hf.X, -hf.Y), new(hf.X, -hf.Y), new(-hf.X, hf.Y), new(hf.X, hf.Y) };
 		ReadOnlySpan<int> tri = stackalloc int[6] { 0, 1, 2, 2, 1, 3 };
@@ -346,7 +346,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		{
 			var d = dev[idx];
 			rr.Add(d.X); rr.Add(d.Y); rr.Add(ctr[idx].X); rr.Add(ctr[idx].Y); rr.Add(hf.X); rr.Add(hf.Y);
-			rr.Add(rad.X); rr.Add(rad.Y); rr.Add(rad.Z); rr.Add(rad.W); rr.Add(cr); rr.Add(cg); rr.Add(cb); rr.Add(ca);
+			rr.Add(rad.X); rr.Add(rad.Y); rr.Add(rad.Z); rr.Add(rad.W); rr.Add(cr); rr.Add(cg); rr.Add(cb); rr.Add(color);
 			rr.Add(ih.X); rr.Add(ih.Y); rr.Add(ic.X); rr.Add(ic.Y); rr.Add(ir.X); rr.Add(ir.Y); rr.Add(ir.Z); rr.Add(ir.W); rr.Add(slotBits);
 		}
 	}
@@ -728,7 +728,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		// ---- render-bundle fast path (main surface only) ----
 		var bundleEligible = PlanBundleChunks(target, ops, mainPass, backdrops.Count, xformBg, out var chunkReplay, out var chunkRecord);
 
-		var ca = new WGPURenderPassColorAttachment
+		var color = new WGPURenderPassColorAttachment
 		{
 			// Render into the multisampled color and resolve into the single-sample target texture.
 			// A fresh MSAA buffer can't LoadOp.Load, so we always clear (transparent when no clear was given);
@@ -747,7 +747,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 			StoreOp = (_d.MsaaSamples > 1 && backdrops.Count == 0) ? WGPUStoreOp.Discard : WGPUStoreOp.Store,
 			ClearValue = clear.HasValue ? new WGPUColor { R = clear.Value.R / 255.0, G = clear.Value.G / 255.0, B = clear.Value.B / 255.0, A = clear.Value.A / 255.0 } : default,
 		};
-		var dsa = new WGPURenderPassDepthStencilAttachment
+		var depthStencil = new WGPURenderPassDepthStencilAttachment
 		{
 			View = target.DepthView,
 			DepthLoadOp = WGPULoadOp.Clear,
@@ -757,8 +757,8 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 			StencilStoreOp = WGPUStoreOp.Discard,
 			StencilClearValue = 0,
 		};
-		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
-		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
+		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color, DepthStencilAttachment = &depthStencil };
+		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &desc);
 		var encodeStart = System.Diagnostics.Stopwatch.GetTimestamp();
 
 		// Track the last-applied scissor and skip redundant SetScissorRect calls: static chrome draws many ops under
