@@ -129,10 +129,27 @@ public sealed class WebGpuGraphicsProvider : IGraphicsProvider<IWebGpuDeviceCont
 	// host's colour format + MSAA count) — the exact seam a third-party WebGPU backend consumes. No privileged
 	// path into the host's internals. Geometry is a separate seam (GeometryFactory): WebGPU flattens everything, so
 	// a SkiaSharp-free app registers a ManagedGeometryFactory there rather than injecting it here.
+	private static WebGpuDrawingFactory _shared;
+	private static nint _sharedDevice;
+
+	/// <summary>
+	/// One factory per device, reused across windows. Negotiation runs per window, but the factory it produces is
+	/// installed as the process-wide <c>DrawingFactory.Current</c> and every window's visuals record through it, so
+	/// there can only be one: a second engine on the same device builds its own pipelines, and a bind group made
+	/// against the first engine's layouts is rejected when a draw from a cached recording meets the second engine's
+	/// pipeline ("Exclusive pipelines don't match"). The surface is rebound per present, so one engine serves any
+	/// number of windows.
+	/// </summary>
 	public IDrawingFactory CreateGraphics(IWebGpuDeviceContext context)
 	{
 		DrawingCapabilities.NativeStroking = true;
-		return new WebGpuDrawingFactory(new WebGpuDevice(context));
+		if (_shared is not null && _sharedDevice == context.Device)
+		{
+			return _shared;
+		}
+
+		_sharedDevice = context.Device;
+		return _shared = new WebGpuDrawingFactory(new WebGpuDevice(context));
 	}
 }
 
@@ -281,43 +298,96 @@ internal sealed class WebGpuReadbackImage : IImage
 public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 {
 	private readonly WebGpuDevice _device;
-	// The main-pass surface the backend OWNS: the host hands only a single-sample resolve colour (the neutral
-	// IWebGpuRenderTarget); the backend allocates its own MSAA colour + depth (recreated on resize) and resolves
-	// into the host's colour — the same "backend brings its own depth/stencil" contract every other target follows.
-	private WebGpuRenderSurface _mainSurface;
-	private int _mainW, _mainH;
-	private IntPtr _mainColorView;   // the resolve view the backend renders into (imported from JsColorView on WASM)
+
+	/// <summary>
+	/// The main-pass surface the backend OWNS for one render target: the host hands only a single-sample resolve
+	/// colour (the neutral <see cref="IWebGpuRenderTarget"/>), and the backend allocates its own MSAA colour + depth
+	/// and resolves into the host's colour — the same "backend brings its own depth/stencil" contract every other
+	/// target follows.
+	/// </summary>
+	private sealed class MainSurface
+	{
+		public WebGpuRenderSurface Surface;
+		public int Width, Height;
+		public IntPtr ColorView;        // the resolve view the backend renders into (imported from JsColorView on WASM)
+	}
+
+	/// <summary>
+	/// One main surface PER TARGET. A single factory serves every window - it is installed as the process-wide
+	/// <c>DrawingFactory.Current</c> - so a single surface would be disposed and rebuilt on every present as two
+	/// windows took turns, and two windows of equal size would render into whichever presented first. Keyed on the
+	/// target instance, whose lifetime is that window's swapchain context (a resize replaces it).
+	/// </summary>
+	private readonly System.Collections.Generic.Dictionary<IWebGpuRenderTarget, MainSurface> _mainSurfaces = new();
+
+	/// <summary>Targets in least-recently-presented order, so surfaces for windows that are gone cannot pile up.</summary>
+	private readonly System.Collections.Generic.List<IWebGpuRenderTarget> _mainSurfaceLru = new();
+
+	/// <summary>Distinct targets whose surfaces are kept. A handful of windows plus their in-flight resizes.</summary>
+	private const int MaxMainSurfaces = 8;
 
 	internal WebGpuDrawingFactory(WebGpuDevice device) { _device = device; }
 
 	public ICommandRecorder CreateRecording() => new WebGpuCommandRecorder(this);
 
 
+	/// <summary>
+	/// Drops the least-recently-presented main surfaces once more than <see cref="MaxMainSurfaces"/> targets are
+	/// tracked. A closed window's target is simply never presented again, so nothing else would ever release it.
+	/// </summary>
+	private void EvictMainSurfaces()
+	{
+		while (_mainSurfaceLru.Count >= MaxMainSurfaces)
+		{
+			var oldest = _mainSurfaceLru[0];
+			_mainSurfaceLru.RemoveAt(0);
+			if (_mainSurfaces.Remove(oldest, out var stale))
+			{
+				stale.Surface?.Dispose();
+			}
+		}
+	}
+
 	public IPresentSession BeginPresent(IWebGpuRenderTarget target)
 	{
-		if (_mainSurface is null || _mainW != target.Width || _mainH != target.Height)
+		// A minimized window can report an empty client area; the surface's textures must still be at least 1x1.
+		var width = Math.Max(1, target.Width);
+		var height = Math.Max(1, target.Height);
+
+		if (!_mainSurfaces.TryGetValue(target, out var main))
 		{
-			_mainSurface?.Dispose();
-			_mainSurface = new WebGpuRenderSurface(_device, target.Width, target.Height, externalColor: true);
-			_mainW = target.Width;
-			_mainH = target.Height;
+			EvictMainSurfaces();
+			_mainSurfaces[target] = main = new MainSurface();
+		}
+
+		_mainSurfaceLru.Remove(target);
+		_mainSurfaceLru.Add(target);
+
+		if (main.Surface is null || main.Width != width || main.Height != height)
+		{
+			main.Surface?.Dispose();
+			main.Surface = new WebGpuRenderSurface(_device, width, height, externalColor: true);
+			main.Width = width;
+			main.Height = height;
 			// Browser: the host hands the resolve target as a live JS GPUTextureView; convert it to a wgpu view HERE
 			// (the backend's own emdawn import) — symmetric with the device import — rather than consuming a raw
 			// pointer from the contract. Imported once per size. Native targets have JsColorView == null → use the
 			// pointer directly. The imported handle wraps the same JS view the host presents from (shared underlying).
 			if (OperatingSystem.IsBrowser() && target.JsColorView is { } jsView)
 			{
-				_mainColorView = (IntPtr)WebGpuJsInterop.ImportTextureView(jsView, 0);
-				System.Console.WriteLine($"[webgpu] backend imported JS color view ptr={_mainColorView}");
+				main.ColorView = (IntPtr)WebGpuJsInterop.ImportTextureView(jsView, 0);
+				System.Console.WriteLine($"[webgpu] backend imported JS color view ptr={main.ColorView}");
 			}
 			else
 			{
-				_mainColorView = target.ColorView;
+				main.ColorView = target.ColorView;
 			}
 		}
+
+		var _mainSurface = main.Surface;
 		// Point the backend surface at the resolve colour view (host owns its lifetime; the render pass only needs the view).
-		_mainSurface.View = _mainColorView;
-		if (_device.MsaaSamples == 1) { _mainSurface.MsaaColorView = _mainColorView; }   // 1x: render straight into it
+		_mainSurface.View = main.ColorView;
+		if (_device.MsaaSamples == 1) { _mainSurface.MsaaColorView = main.ColorView; }   // 1x: render straight into it
 		return new WebGpuPresentSession(_device, _mainSurface, this);
 	}
 
