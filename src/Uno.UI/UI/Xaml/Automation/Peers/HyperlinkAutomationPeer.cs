@@ -180,10 +180,31 @@ internal partial class HyperlinkAutomationPeer : AutomationPeer, IInvokeProvider
 
 	protected override Point GetClickablePointCore()
 	{
-		// TODO Uno: Computing clickable point for inline text elements requires
-		// text view infrastructure (ITextView, content start/end offsets,
-		// TextRangeToTextBounds) which is not yet available.
-		return default;
+		var owner = GetOwner();
+		var element = owner.GetContainingFrameworkElement();
+
+		if (Text.TextAdapter.GetTextView(element) is not { } textView ||
+			owner.ContentStart is not { } contentStart ||
+			owner.ContentEnd is not { } contentEnd)
+		{
+			return default;
+		}
+
+		// The view's bounds APIs take flat character indexes while a TextPointer carries a container
+		// offset, so convert before asking for the range's rects.
+		var bounds = textView.TextRangeToTextBounds(
+			(uint)textView.GetCharacterIndex(contentStart.Offset),
+			(uint)textView.GetCharacterIndex(contentEnd.Offset));
+
+		if (bounds.Length == 0)
+		{
+			return default;
+		}
+
+		// We're looking for the point at the start of the link, so we only care about the first
+		// rectangle, and return its top-left because the length is determined from there.
+		var first = bounds[0];
+		return element.TransformToVisual(null).TransformPoint(new Point(first.Left, first.Top));
 	}
 
 	protected override bool IsOffscreenCore()
