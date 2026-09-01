@@ -44,7 +44,7 @@ internal sealed unsafe class WebGpuPathAtlas
 	/// longer list items render aliased while short ones stayed crisp.
 	/// <para>
 	/// 256x256 worth of area takes an 800x20 text run (16k px) while still refusing the large near-square fills
-	/// that measurably do not benefit: a 300x225 shape is 67k px, and raising the old longest-side cap to 512 to
+	/// that measurably do not benefit: a 300x225 shape is 67k px, and raising the longest-side cap to 512 to
 	/// admit those changed the WinUI parity mismatch not at all, cut no draws, and pushed LogView's emitted draws
 	/// from 320 to 420 by displacing glyph runs from their coalesced batches.
 	/// </para>

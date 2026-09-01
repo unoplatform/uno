@@ -84,7 +84,6 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 	public IntPtr Smp;                       // present-blit sampler (used by the swapchain/browser contexts)
 	public JSObject JsDeviceObject;          // browser only: the live JS GPUDevice (the honest neutral handle)
 	private bool _hasFormatFeatures;
-	/// <summary>Device was created with timestamp-query, so render passes can report real GPU durations.</summary>
 	private readonly bool _browser;
 
 	public static IntPtr CreateInstancePtr() => CreateInstance();
