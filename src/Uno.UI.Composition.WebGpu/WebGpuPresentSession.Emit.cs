@@ -89,6 +89,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	// (its slice culled + reclaimed) then back in never draws from a stale offset.
 	private void EmitTableFrameSolid(ReplayRefCmd rr, WebGpuGeometryCache feCur, List<DrawOp> ops)
 	{
+		if (_emitStats) { StatStratTableFrame++; }
 		var fe = feCur;
 		bool hit = fe is { TableFrame: true, FrameOrder: not null }
 			// An atlas quad carries build-time NDC and no table slot, so unlike the rest of this entry it is not
@@ -501,6 +502,13 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// the xform table), an ARENA entry (geometry baked once in identity space and re-stamped on a move), or a
 	/// plain CACHED entry (rebuilt whenever its transform changes).
 	/// </summary>
+	/// <summary>
+	/// Which replay strategy each nested recording took. Three strategies of ~150 lines each compete here, and
+	/// nothing else reports which one is actually carrying a scene: the plain cached path, for one, is a cold
+	/// fallback that no perf sample reaches.
+	/// </summary>
+	internal static int StatStratReappend, StatStratArena, StatStratCached, StatStratTableFrame;
+
 	private void EmitReplayRef(ReplayRefCmd rr, List<DrawOp> ops, HashSet<List<WebGpuCommand>> frameEmitted)
 	{
 		// Cull a recording whose (transformed) content is entirely clipped out or off-surface: the
@@ -522,6 +530,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		// re-walked. Pure non-solid recordings fall through to the arena path below (moving-visual reuse).
 		if (HasReappendable(rr))
 		{
+			if (_emitStats) { StatStratReappend++; }
 			EmitReappendableReplay(rr, ops, frameEmitted);
 			return;
 		}
@@ -539,13 +548,14 @@ public sealed unsafe partial class WebGpuPresentSession
 		// clip's rounds/AABB need folding through finv.
 		if (IsArenaSafe(rr))
 		{
+			if (_emitStats) { StatStratArena++; }
 			EmitArenaReplay(rr, ops, entry, miss);
 			return;
 		}
 
+		if (_emitStats) { StatStratCached++; }
 		var transformChanged = !miss && entry.Transform != rr.Transform;
 		int cSlot = (miss || entry is null) ? -1 : entry.XformSlot;
-		// Bisect level 4: reuse the previous bake on a pure move (visually stale, but it prices the
 		if (miss || transformChanged || entry.Arena || entry.BuiltW != (int)_s.Width || entry.BuiltH != (int)_s.Height || !ClipDataEquals(entry.Clip, rr.Clip))
 		{
 			// Why did this rebuild? The cached path is the only replay path that re-bakes geometry on a

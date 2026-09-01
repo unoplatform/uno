@@ -428,7 +428,8 @@ public sealed unsafe partial class WebGpuPresentSession
 
 		// Changed between draws
 		line.Append($" scissorChanges={pst.Scissors} clipChanges={pst.ClipChanges} fanOps={pst.FanOps}");
-		line.Append($" clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB");
+		line.Append($" clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB strat=re{StatStratReappend}/ar{StatStratArena}/ca{StatStratCached}/tf{StatStratTableFrame}");
+		StatStratReappend = StatStratArena = StatStratCached = StatStratTableFrame = 0;
 
 		// Reused
 		line.Append($" replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays}");
