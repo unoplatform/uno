@@ -2,22 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Runtime.InteropServices;
-using Windows.Foundation;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Uno.Collections;
+using Uno.Core.Comparison;
 using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+using Windows.Foundation;
 using Windows.System;
-using System.Reflection;
-
-using Uno.Core.Comparison;
 
 namespace Microsoft.UI.Xaml
 {
@@ -143,12 +142,16 @@ namespace Microsoft.UI.Xaml
 					child.SetVisualTree(@params.VisualTree);
 				}
 
-				child.EnterImpl(@params, this.Depth + 1);
+				// Compute from the parent's persisted Depth, never from @params.Depth - @params is
+				// threaded through property, resource and flyout walks where its Depth may be stale.
+				@params.Depth = this.Depth + 1;
+				child.EnterImpl(@params);
 			}
 			else if (@params.IsForKeyboardAccelerator)
 			{
 				// Dead enter to propagate keyboard accelerator registration through the subtree.
-				child.Enter(@params, int.MinValue);
+				@params.Depth = int.MinValue;
+				child.Enter(@params);
 			}
 		}
 

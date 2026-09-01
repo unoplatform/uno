@@ -109,9 +109,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// CRichTextBlock::EnterImpl
-		internal override void EnterImpl(EnterParams @params, int depth)
+		internal override void EnterImpl(EnterParams @params)
 		{
-			base.EnterImpl(@params, depth);
+			base.EnterImpl(@params);
 
 			if (@params.IsLive)
 			{

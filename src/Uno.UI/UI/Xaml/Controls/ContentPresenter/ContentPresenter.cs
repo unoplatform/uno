@@ -868,9 +868,9 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		}
 	}
 
-	internal override void EnterImpl(EnterParams @params, int depth)
+	internal override void EnterImpl(EnterParams @params)
 	{
-		base.EnterImpl(@params, depth);
+		base.EnterImpl(@params);
 
 		if (ResetDataContextOnFirstLoad() || ContentTemplateRoot == null)
 		{

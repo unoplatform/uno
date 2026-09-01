@@ -438,11 +438,14 @@ namespace Uno.UI.Xaml.Core
 
 				EnterParams enterParams = new(
 					isLive: true
-				);
+				)
+				{
+					Depth = 0,
+				};
 
 				// In WinUI, this is called only under IsMainVisualTree condition.
 				// This might be needed for now in Uno because RootVisual does not *yet* have XamlIslandRootCollection
-				root.Enter(enterParams, 0);
+				root.Enter(enterParams);
 			}
 		}
 
