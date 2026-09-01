@@ -523,8 +523,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		// Stop and join the render thread before touching its resources: once Dispose returns, the
 		// thread — the sole user of the graphics context — has exited, so freeing it here cannot
 		// race an in-flight present.
-		_renderThread?.Dispose();
-		_renderThread = null;
+		StopRenderThread();
 		_context.Dispose();
 		_rendererDisposed = true;
 		DestroyIcons();
@@ -555,6 +554,8 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 		// Closing should continue, perform suspension.
 		Application.Current.RaiseSuspending();
+		// DefWindowProc destroys the window from here.
+		StopRenderThread();
 		return false;
 	}
 
@@ -680,9 +681,24 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		}
 	}
 
+	/// <summary>
+	/// Stops the render thread. Called at every point where the window is known to be going away, BEFORE its HWND
+	/// is destroyed: between DestroyWindow and the WM_DESTROY it raises, the render thread would otherwise still be
+	/// presenting to a window that no longer exists. Skia fails those calls quietly, but wgpu answers a surface call
+	/// on a destroyed window by aborting the process from inside the native library, where no error callback can
+	/// intercept it.
+	/// </summary>
+	private void StopRenderThread()
+	{
+		_renderThread?.Dispose();
+		_renderThread = null;
+	}
+
 	protected override void CloseCore()
 	{
 		this.LogInfo()?.Info($"Forcibly closing window {_hwnd.Value.ToString("X", CultureInfo.InvariantCulture)}");
+
+		StopRenderThread();
 
 		var success = PInvoke.DestroyWindow(_hwnd);
 		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.DestroyWindow)} failed: {Win32Helper.GetErrorMessage()}"); }

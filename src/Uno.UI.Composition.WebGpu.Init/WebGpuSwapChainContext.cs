@@ -1,4 +1,4 @@
-// Shared on-window WebGPU context for NATIVE hosts (X11, Win32, macOS, …). The WebGPU swapchain semantics are
+﻿// Shared on-window WebGPU context for NATIVE hosts (X11, Win32, macOS, …). The WebGPU swapchain semantics are
 // identical across them — only the platform surface source differs — so hosts create a device + a surface (via
 // the CreateXxxSurface factories) and this type owns acquire/configure/present. The browser is separate: it
 // presents implicitly and blits (no wgpuSurfacePresent), so it has its own context.
@@ -74,7 +74,7 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 	/// (use one of the CreateXxxSurface factories).</param>
 	public WebGpuSwapChainContext(WGPUTextureFormat colorFormat, Func<IntPtr, IntPtr> createSurface)
 	{
-		_device = new WebGpuInitDevice(colorFormat);
+		_device = WebGpuInitDevice.GetShared(colorFormat);
 		_surface = createSurface(_device.Inst);
 		if (_surface == IntPtr.Zero)
 		{
@@ -93,6 +93,7 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
+		if (_disposed) { return _target!; }
 		width = Math.Max(1, width);
 		height = Math.Max(1, height);
 		Configure(width, height);
@@ -103,7 +104,7 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 
 	public void Present()
 	{
-		if (!_frameAcquired || _target is null)
+		if (_disposed || !_frameAcquired || _target is null)
 		{
 			return;
 		}
@@ -269,13 +270,21 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 	private static WGPUStringView Utf8(string s)
 		=> new() { Data = System.Runtime.InteropServices.Marshal.StringToCoTaskMemUTF8(s), Length = (nuint)System.Text.Encoding.UTF8.GetByteCount(s) };
 
+	/// <summary>
+	/// Set by <see cref="Dispose"/>. wgpu aborts the process on a surface call it considers invalid, from inside
+	/// the native library where no error callback can intercept it, so a disposed context must stop touching its
+	/// surface rather than rely on the error being reported.
+	/// </summary>
+	private bool _disposed;
+
 	public void Dispose()
 	{
+		_disposed = true;
 		if (_blitBg != IntPtr.Zero) { wgpuBindGroupRelease(_blitBg); _blitBg = IntPtr.Zero; }
 		if (_presentView != IntPtr.Zero) { wgpuTextureViewRelease(_presentView); _presentView = IntPtr.Zero; }
 		if (_presentTex != IntPtr.Zero) { wgpuTextureDestroy(_presentTex); _presentTex = IntPtr.Zero; }
 		if (_surface != IntPtr.Zero) { wgpuSurfaceRelease(_surface); _surface = IntPtr.Zero; }
-		_device.Dispose();
+		// The device is shared process-wide and deliberately NOT released here - see WebGpuInitDevice.GetShared.
 	}
 
 	// ---- Platform surface factories (build the chained surface source + create the wgpu surface) ----

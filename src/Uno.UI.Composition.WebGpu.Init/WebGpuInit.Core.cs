@@ -18,11 +18,6 @@ using WColor = Windows.UI.Color;
 namespace Uno.UI.Composition.WebGpu;
 
 
-// One entry in a frame-solid recording's ordered emit list: a solid/rrect run (relative vert start into the
-// recording's cached SolidVerts/RrectVerts) or a spliced non-solid op (glyph/image/gradient).
-
-
-
 /// <summary>The host-facing WebGPU context factories. Each builds the device bring-up (WebGpuInitDevice) + a
 /// swapchain/browser context and returns it as a neutral ISwapChain — naming no renderer type. The
 /// rasterizationScale argument is retained for the host-facing signature but no longer influences init (MSAA is
@@ -120,6 +115,23 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 		};
 		var descriptor = new WGPUInstanceDescriptor { NextInChain = &extras.Chain };
 		return wgpuCreateInstance(&descriptor);
+	}
+
+	private static readonly object _sharedGate = new();
+	private static WebGpuInitDevice _shared;
+
+	/// <summary>
+	/// The process-wide device, created on first use. One device serves every window on purpose: the drawing
+	/// factory built from it is installed as the process-wide <c>DrawingFactory.Current</c>, so a device owned by
+	/// one window would die with that window and leave every other window recording against a released device -
+	/// which wgpu answers by aborting the process. Windows own their SURFACES; this outlives all of them.
+	/// </summary>
+	internal static WebGpuInitDevice GetShared(WGPUTextureFormat colorFormat)
+	{
+		lock (_sharedGate)
+		{
+			return _shared ??= new WebGpuInitDevice(colorFormat);
+		}
 	}
 
 	public WebGpuInitDevice(WGPUTextureFormat colorFormat)
