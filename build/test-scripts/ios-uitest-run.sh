@@ -47,6 +47,10 @@ UNO_IOS_TESTS_STARTED=false
 report_harness_crash() {
 	local status=$?
 
+	if [ -n "${APP_LOG_PID:-}" ]; then
+		kill -TERM "$APP_LOG_PID" 2>/dev/null || true
+	fi
+
 	if [ "$status" -ne 0 ] && [ "$UNO_IOS_TESTS_STARTED" != "true" ]; then
 		echo "##vso[task.setvariable variable=UNO_IOS_HARNESS_CRASHED]true"
 	fi
@@ -291,7 +295,21 @@ wait_for_boot() {
 
 echo "Waiting for the simulator to finish booting (started $(date))"
 if ! wait_for_boot "$UITEST_IOSDEVICE_ID" 180; then
-	echo "##vso[task.logissue type=warning]UNOBLD006: The simulator did not report a completed boot within 180s. Continuing anyway; the app install below will surface a hard failure if it is genuinely unusable."
+	# Continuing past an incomplete boot was the assumption that cost the job: the install does
+	# succeed and the app does report a PID, but SpringBoard is still down, so not a single test
+	# ever runs and the results wait below burns the whole budget. Recycle the device once -- that
+	# clears a boot wedged on Data Migration or System App -- and otherwise give up here, while the
+	# harness-crashed sentinel can still hand the re-run step a fresh agent.
+	echo "##vso[task.logissue type=warning]UNOBLD006: The simulator did not report a completed boot within 180s. Recycling the device and retrying once."
+
+	xcrun simctl shutdown "$UITEST_IOSDEVICE_ID" || true
+	xcrun simctl erase "$UITEST_IOSDEVICE_ID" || true
+	xcrun simctl boot "$UITEST_IOSDEVICE_ID" || true
+
+	if ! wait_for_boot "$UITEST_IOSDEVICE_ID" 300; then
+		echo "##vso[task.logissue type=error]UNOBLD009: The simulator failed to boot twice (180s, then 300s after an erase). Failing now rather than launching the app into a half-booted simulator."
+		exit 1
+	fi
 fi
 echo "Simulator boot wait finished ($(date))"
 
@@ -361,25 +379,93 @@ then
 		fi
 	fi
 
-	UNO_IOS_TESTS_STARTED=true
+	# Stream the app's own console to a file. The device log is only collected during teardown, which
+	# a killed job never reaches, so a stalled run otherwise leaves no record at all of what the app
+	# was doing. This file lands in the logs artifact and feeds the heartbeat below.
+	export APP_LOG_FILEPATH=$LOG_FILEPATH/AppLog-$LOG_PREFIX.txt
+	xcrun simctl spawn "$UITEST_IOSDEVICE_ID" log stream --style compact --level info \
+		--predicate "processImagePath CONTAINS \"SamplesApp\"" > "$APP_LOG_FILEPATH" 2>&1 &
+	APP_LOG_PID=$!
+
 	xcrun simctl launch "$UITEST_IOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID"
 
 	# get the process id for the app
 	export APP_PID=`xcrun simctl spawn "$UITEST_IOSDEVICE_ID" launchctl list | grep "$SAMPLESAPP_BUNDLE_ID" | awk '{print $1}'`
 	echo "App PID: $APP_PID"
 
-	# Set the timeout in seconds 
+	# The app writes `<results>.canary` before the first test, exactly as the WASM runner relies on.
+	# A launch that reports a PID but never reaches the canary is a wedged simulator, not a slow
+	# suite, and waiting the full budget for a results file that can never appear is what turns it
+	# into an opaque job timeout. Fail while UNO_IOS_TESTS_STARTED is still false so the sentinel
+	# routes this to the re-run step.
+	CANARY_FILE="$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE.canary"
+	CANARY_TIMEOUT=$((5 * 60))
+	CANARY_WAITED=0
+	while [ ! -f "$CANARY_FILE" ] && [ $CANARY_WAITED -lt $CANARY_TIMEOUT ]; do
+		sleep 10
+		CANARY_WAITED=$((CANARY_WAITED + 10))
+	done
+
+	if [ ! -f "$CANARY_FILE" ]; then
+		echo "##vso[task.logissue type=error]UNOBLD008: The app did not write $CANARY_FILE within $((CANARY_TIMEOUT / 60))m. It launched (PID ${APP_PID:-unknown}) but never reached the first test."
+		echo "--- last 50 lines of the app log ---"
+		tail -n 50 "$APP_LOG_FILEPATH" 2>/dev/null || true
+		exit 1
+	fi
+
+	echo "Canary file seen after ${CANARY_WAITED}s, the app has started running tests."
+	UNO_IOS_TESTS_STARTED=true
+
+	# Set the timeout in seconds
 	UITEST_TEST_TIMEOUT_AS_MINUTES=${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1}
 	TIMEOUT=$(($UITEST_TEST_TIMEOUT_AS_MINUTES * 60))
+
+	# UITEST_TEST_TIMEOUT has always been set to the job timeout exactly, but this wait only starts
+	# 10-15 minutes into the job (artifact download, toolchain, boot, install, transform-tool build),
+	# so its deadline landed *after* the agent had already killed the job. The timeout branch below
+	# was unreachable, and with it the teardown that captures the device log, screenshot and crash
+	# reports. Clamp the wait to what is actually left, keeping a reserve for that teardown, so the
+	# run always ends on our terms with diagnostics attached.
+	TEARDOWN_RESERVE_SECONDS=$((12 * 60))
+	if [ -n "${UITEST_JOB_TIMEOUT_MINUTES:-}" ] && [ -n "${UNO_IOS_JOB_START_EPOCH:-}" ]; then
+		JOB_ELAPSED=$(( `date +%s` - UNO_IOS_JOB_START_EPOCH ))
+		JOB_REMAINING=$(( UITEST_JOB_TIMEOUT_MINUTES * 60 - JOB_ELAPSED - TEARDOWN_RESERVE_SECONDS ))
+
+		if [ "$JOB_REMAINING" -lt "$TIMEOUT" ]; then
+			echo "Clamping the results wait to $((JOB_REMAINING / 60))m (from $((TIMEOUT / 60))m): $((JOB_ELAPSED / 60))m of the ${UITEST_JOB_TIMEOUT_MINUTES}m job budget is already spent, reserving $((TEARDOWN_RESERVE_SECONDS / 60))m for teardown."
+			TIMEOUT=$JOB_REMAINING
+		fi
+	fi
+
+	if [ "$TIMEOUT" -lt 60 ]; then
+		echo "##vso[task.logissue type=error]UNOBLD010: No job budget is left to wait for test results. The steps before this point consumed the whole ${UITEST_JOB_TIMEOUT_MINUTES:-?}m job timeout."
+		exit 1
+	fi
+
 	INTERVAL=15
 	END_TIME=$((SECONDS+TIMEOUT))
 
 	echo "Waiting for $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE to be available..."
 
 	# Loop until the file exists or the timeout is reached
+	HEARTBEAT_EVERY=$((60 / INTERVAL))
+	TICK=0
+	APP_LOG_LINES_SEEN=0
+	LOOP_START=$SECONDS
 	while [[ ! -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" && $SECONDS -lt $END_TIME ]]; do
-		# echo "Waiting $INTERVAL seconds for test results to be written to $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE";
 		sleep $INTERVAL
+		TICK=$((TICK + 1))
+
+		# Without this the CI log is silent for the whole wait, which is indistinguishable from a
+		# hung agent: the stalls that prompted this went 80 minutes without printing a line. Report
+		# progress every minute, including what the app logged since the last beat, so a stall names
+		# the test it stalled on.
+		if [ $((TICK % HEARTBEAT_EVERY)) -eq 0 ]; then
+			APP_LOG_LINES_NOW=`wc -l < "$APP_LOG_FILEPATH" 2>/dev/null || echo 0`
+			echo "[heartbeat] waited $(( (SECONDS - LOOP_START) / 60 ))m, $(( (END_TIME - SECONDS) / 60 ))m of budget left, app log +$((APP_LOG_LINES_NOW - APP_LOG_LINES_SEEN)) lines"
+			tail -n 5 "$APP_LOG_FILEPATH" 2>/dev/null || true
+			APP_LOG_LINES_SEEN=$APP_LOG_LINES_NOW
+		fi
 
 		# exit loop if the APP_PID is not running anymore
 		if ! ps -p $APP_PID > /dev/null; then
@@ -400,7 +486,9 @@ then
 		# Copy the results to the build directory
 		cp -f "$SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE" "$UNO_ORIGINAL_TEST_RESULTS"
 	else
-		echo "The file $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE is not available, the test run has timed out."
+		echo "##vso[task.logissue type=error]UNOBLD011: The test run timed out after $((TIMEOUT / 60))m without writing $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE. The app started (the canary exists), so the run stalled part-way through; the device log and the app log below cover the stall."
+		echo "--- last 50 lines of the app log ---"
+		tail -n 50 "$APP_LOG_FILEPATH" 2>/dev/null || true
 	fi
 
 else
@@ -412,6 +500,13 @@ else
 	## Run tests
 	UNO_IOS_TESTS_STARTED=true
 	dotnet run -c Release -- --results-directory $UNO_ORIGINAL_TEST_RESULTS_DIRECTORY --hangdump --hangdump-timeout 45m --hangdump-filename hang.dump --settings .runsettings --filter "$UNO_TESTS_FILTER" || true
+fi
+
+# Stop the app log stream so the file is complete before the artifacts task picks it up.
+if [ -n "${APP_LOG_PID:-}" ]; then
+	kill -TERM "$APP_LOG_PID" 2>/dev/null || true
+	wait "$APP_LOG_PID" 2>/dev/null || true
+	APP_LOG_PID=""
 fi
 
 # export the simulator logs
