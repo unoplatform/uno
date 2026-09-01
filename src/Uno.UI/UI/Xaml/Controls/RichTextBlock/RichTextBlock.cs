@@ -1,4 +1,7 @@
-﻿#nullable enable
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference RichTextBlock_Partial.cpp, tag winui3/release/2.4.0, commit e8442d07a
+#nullable enable
 
 #pragma warning disable CS0109
 
@@ -32,8 +35,6 @@ using Uno.UI.Xaml.Input;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	// MUX Reference RichTextBlock_Partial.cpp, tag winui3/release/1.4.2
-
 	[ContentProperty(Name = nameof(Blocks))]
 	public partial class RichTextBlock : FrameworkElement, IThemeChangeAware
 	{

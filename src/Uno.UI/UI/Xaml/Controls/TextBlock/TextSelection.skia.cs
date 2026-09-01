@@ -1,7 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-// MUX Reference TextSelection.h, TextSelection.cpp, tag winui3/release/1.8.2, commit 4a1c6184c
+// MUX Reference TextSelection.h, TextSelection.cpp, tag winui3/release/2.4.0, commit e8442d07a
 
 #nullable enable
 
@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls;
 //  See also:
 //      <ITextSelection>.
 
-// MUX Reference TextSelectionNotify.h, tag winui3/release/1.8.2, commit 4a1c6184c
+// MUX Reference TextSelectionNotify.h, tag winui3/release/2.4.0, commit e8442d07a
 internal interface ITextSelectionNotify
 {
 	void OnSelectionChanged();

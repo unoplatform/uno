@@ -3,7 +3,7 @@
 
 // MUX Reference RichTextBlock.cpp (GetContentStart/End, GetSelectionStart/End, GetTextPositionFromPoint),
 // RichTextBlock_Partial.cpp (ContentStart/End, SelectionStart/End, Select, GetPositionFromPoint),
-// tag winui3/release/1.8.2, commit 4a1c6184c
+// tag winui3/release/2.4.0, commit e8442d07a
 
 #nullable enable
 
