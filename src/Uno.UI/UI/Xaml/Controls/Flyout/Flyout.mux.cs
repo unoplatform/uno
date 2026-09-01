@@ -5,9 +5,9 @@ namespace Microsoft.UI.Xaml.Controls;
 
 partial class Flyout
 {
-	internal override void Enter(DependencyObject pNamescopeOwner, EnterParams @params)
+	internal override void PropagateKeyboardAcceleratorEnter(DependencyObject pNamescopeOwner, EnterParams @params)
 	{
-		base.Enter(pNamescopeOwner, @params);
+		base.PropagateKeyboardAcceleratorEnter(pNamescopeOwner, @params);
 
 		var content = Content;
 		if (content is not null)
@@ -29,9 +29,9 @@ partial class Flyout
 		}
 	}
 
-	internal override void Leave(DependencyObject pNamescopeOwner, LeaveParams @params)
+	internal override void PropagateKeyboardAcceleratorLeave(DependencyObject pNamescopeOwner, LeaveParams @params)
 	{
-		base.Leave(pNamescopeOwner, @params);
+		base.PropagateKeyboardAcceleratorLeave(pNamescopeOwner, @params);
 
 		var content = Content;
 		if (content is not null)
