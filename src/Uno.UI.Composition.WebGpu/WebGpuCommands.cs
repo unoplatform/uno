@@ -110,7 +110,6 @@ internal sealed class RoundedRectCmd : WebGpuCommand
 internal static class WgStrokeStats
 {
 	public static int Strips;
-	public static int TilesCmd;
 }
 
 internal sealed class PathFill : WebGpuCommand

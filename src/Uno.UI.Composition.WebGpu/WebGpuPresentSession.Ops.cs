@@ -328,7 +328,6 @@ public sealed unsafe partial class WebGpuPresentSession
 
 	private void BuildSimpleOp(WebGpuCommand cmd, List<DrawOp> ops, OwnedResources owned, int pathSlot, Vector2? atlasScale = null)
 	{
-		if (cmd is PathFill { FanTiles: true }) { WgStrokeStats.TilesCmd++; }
 		switch (cmd)
 		{
 			case RectCommand rc:

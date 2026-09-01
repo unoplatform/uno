@@ -424,7 +424,7 @@ public sealed unsafe partial class WebGpuPresentSession
 
 		// Drawn
 		line.Append($" ops={opCount} emitted={pst.Iters} sharedOps={pst.SharedOps} tiled={pst.Tiled}");
-		line.Append($" coverMpx={pst.CoverMpx:F1} strips={WgStrokeStats.Strips} tilesCmd={WgStrokeStats.TilesCmd}");
+		line.Append($" coverMpx={pst.CoverMpx:F1} strips={WgStrokeStats.Strips}");
 
 		// Changed between draws
 		line.Append($" scissorChanges={pst.Scissors} clipChanges={pst.ClipChanges} fanOps={pst.FanOps}");
