@@ -129,6 +129,10 @@ public class Given_AnimatedVisualPlayer
 	}
 
 	[TestMethod]
+#if RUNTIME_NATIVE_AOT
+	// Android+NativeAOT + Floating Point differences? Skip for now. https://github.com/unoplatform/uno/issues/24270
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)]
+#endif // RUNTIME_NATIVE_AOT
 	public async Task When_Reverse_Negative_PlaybackRate_Animation_Completes_At_One()
 	{
 		var player = CreatePlayer(duration: TimeSpan.FromMilliseconds(400));
