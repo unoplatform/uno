@@ -326,6 +326,25 @@ public sealed unsafe partial class WebGpuPresentSession
 		return op;
 	}
 
+	/// <summary>
+	/// The device-space triangles a gradient covers: the corner-cut octagon when the clip is the inscribed
+	/// ellipse, else the quad's two triangles. Decided once here because the two sinks below - the shared per-pass
+	/// buffer and a recording's own array - would otherwise each repeat the choice.
+	/// </summary>
+	/// <returns>The number of points written to <paramref name="pts"/>.</returns>
+	private static int GradientCover(GradientCmd gc, in ClipData clip, Span<Vector2> pts)
+	{
+		if (ClipIsInscribedEllipse(clip))
+		{
+			OctagonTris(gc.P0, gc.P1, gc.P2, gc.P3, pts);
+			return OctSides * 3;
+		}
+
+		pts[0] = gc.P0; pts[1] = gc.P1; pts[2] = gc.P2;
+		pts[3] = gc.P0; pts[4] = gc.P2; pts[5] = gc.P3;
+		return 6;
+	}
+
 	private void BuildSimpleOp(WebGpuCommand cmd, List<DrawOp> ops, OwnedResources owned, int pathSlot, Vector2? atlasScale = null)
 	{
 		switch (cmd)
@@ -439,42 +458,21 @@ public sealed unsafe partial class WebGpuPresentSession
 						}
 					}
 					var gClip = gc.Clip;
+					Span<Vector2> cover = stackalloc Vector2[OctSides * 3];
+					var gCount = (uint)GradientCover(gc, gClip, cover);
+					var gClipBg = (nint)MakeClipBg(_d.GradClipBgl, gClip, owned);
 					if (owned is null)
 					{
 						// flag == true: b1 is a BYTE offset into the shared per-pass gradient buffer.
 						var goff = _gradVerts.Count * sizeof(float);
-						void GS(Vector2 pos) { var n = Ndc(pos); _gradVerts.Add(n.X); _gradVerts.Add(n.Y); }
-						uint gCount;
-						if (ClipIsInscribedEllipse(gClip))
-						{
-							Span<Vector2> tris = stackalloc Vector2[OctSides * 3];
-							OctagonTris(gc.P0, gc.P1, gc.P2, gc.P3, tris);
-							for (var ti = 0; ti < OctSides * 3; ti++) { GS(tris[ti]); }
-							gCount = (uint)(OctSides * 3);
-						}
-						else
-						{
-							GS(gc.P0); GS(gc.P1); GS(gc.P2); GS(gc.P0); GS(gc.P2); GS(gc.P3);
-							gCount = 6;
-						}
-						ops.Add(new DrawOp(DrawKind.Gradient, (nint)gbg, gCount, goff, true, gClip, (nint)MakeClipBg(_d.GradClipBgl, gClip, owned)));
+						for (var t = 0; t < gCount; t++) { var n = Ndc(cover[t]); _gradVerts.Add(n.X); _gradVerts.Add(n.Y); }
+						ops.Add(new DrawOp(DrawKind.Gradient, (nint)gbg, gCount, goff, true, gClip, gClipBg));
 					}
 					else
 					{
-						var oct = ClipIsInscribedEllipse(gClip);
-						var gq = new float[oct ? OctSides * 6 : 12];
-						void GV(int idx, Vector2 pos) { var n = Ndc(pos); gq[idx] = n.X; gq[idx + 1] = n.Y; }
-						if (oct)
-						{
-							Span<Vector2> tris = stackalloc Vector2[OctSides * 3];
-							OctagonTris(gc.P0, gc.P1, gc.P2, gc.P3, tris);
-							for (var ti = 0; ti < OctSides * 3; ti++) { GV(ti * 2, tris[ti]); }
-						}
-						else
-						{
-							GV(0, gc.P0); GV(2, gc.P1); GV(4, gc.P2); GV(6, gc.P0); GV(8, gc.P2); GV(10, gc.P3);
-						}
-						ops.Add(new DrawOp(DrawKind.Gradient, (nint)gbg, oct ? (uint)(OctSides * 3) : 6u, (nint)Vbuf(gq, owned), false, gClip, (nint)MakeClipBg(_d.GradClipBgl, gClip, owned)));
+						var gq = new float[gCount * 2];
+						for (var t = 0; t < gCount; t++) { var n = Ndc(cover[t]); gq[t * 2] = n.X; gq[t * 2 + 1] = n.Y; }
+						ops.Add(new DrawOp(DrawKind.Gradient, (nint)gbg, gCount, (nint)Vbuf(gq, owned), false, gClip, gClipBg));
 					}
 					break;
 				}
@@ -553,8 +551,8 @@ public sealed unsafe partial class WebGpuPresentSession
 
 	// A widened (full-surface) scissor is sound when the op's rect constraint is enforced analytically:
 	// proven non-clipping (ScissorInert), riding the ClipU rect slot (AabbInClipU), or derivable — every
-	// non-stamp op's ClipU is built from its own ClipData, whose fan-free AABB always folds in. Widened
-	// scissors dedupe to one SetScissorRect per pass and are what makes ops render-bundle-legal.
+	// non-stamp op's ClipU is built from its own ClipData, whose fan-free AABB always folds in. Widening
+	// lets consecutive ops dedupe to a single SetScissorRect.
 	private static bool ScissorWidenable(in ClipData clip)
 		=> clip.ScissorInert || clip.AabbInClipU || (!clip.ScissorLoadBearing && clip.PathFan is null);
 
