@@ -185,11 +185,8 @@ public sealed unsafe partial class WebGpuPresentSession
 			// A widenable op's tight AABB is cull-only (checked above); the applied scissor is the full
 			// surface, so consecutive such ops dedup to a single SetScissorRect.
 			if (ScissorWidenable(clip)) { sx = 0; sy = 0; sw = (int)_s.Width; sh = (int)_s.Height; }
-			if (!pst.Enc.Recording)
-			{
-				pst.Enc.Scissor(sx, sy, sw, sh);
-				pst.Scissors++;
-			}
+			pst.Enc.Scissor(sx, sy, sw, sh);
+			pst.Scissors++;
 			switch (kind)
 			{
 				case DrawKind.Solid when b0 == VertexSource.PassBuffer:
@@ -420,7 +417,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// the question each set answers: how much got drawn, what the encoder had to change between draws, how much of
 	/// the scene came from reused recordings, and why the reuse and admission paths turned work away.
 	/// </summary>
-	private void WriteFrameStats(int opCount, ref PassOps pst, int bundleReplay, int bundleWrite)
+	private void WriteFrameStats(int opCount, ref PassOps pst)
 	{
 		var line = new System.Text.StringBuilder(512);
 		line.Append($"[webgpu-stats] {_s.Width}x{_s.Height}:");
@@ -431,7 +428,7 @@ public sealed unsafe partial class WebGpuPresentSession
 
 		// Changed between draws
 		line.Append($" scissorChanges={pst.Scissors} clipChanges={pst.ClipChanges} fanOps={pst.FanOps}");
-		line.Append($" bundle=r{bundleReplay}+w{bundleWrite} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB");
+		line.Append($" clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB");
 
 		// Reused
 		line.Append($" replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays}");

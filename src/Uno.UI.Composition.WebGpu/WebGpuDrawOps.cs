@@ -223,7 +223,6 @@ internal ref struct PassOps
 internal unsafe struct PassEncoder
 {
 	private IntPtr _pass;
-	private IntPtr _bundle;
 	private IntPtr _pipe, _bg0, _bg1, _vb;
 	private nuint _vbOffset, _vbSize;
 	private int _sx, _sy, _sw, _sh;
@@ -231,24 +230,6 @@ internal unsafe struct PassEncoder
 	public PassEncoder(IntPtr pass)
 	{
 		_pass = pass;
-		_bundle = IntPtr.Zero;
-		Reset();
-	}
-
-	/// <summary>True while draws go to a render bundle rather than straight to the pass.</summary>
-	public bool Recording => _bundle != IntPtr.Zero;
-
-	/// <summary>Directs subsequent draws into <paramref name="bundle"/>.</summary>
-	public void BeginBundle(IntPtr bundle)
-	{
-		_bundle = bundle;
-		Reset();
-	}
-
-	/// <summary>Directs subsequent draws back to the pass.</summary>
-	public void EndBundle()
-	{
-		_bundle = IntPtr.Zero;
 		Reset();
 	}
 
@@ -259,7 +240,6 @@ internal unsafe struct PassEncoder
 	public void Rebind(IntPtr pass)
 	{
 		_pass = pass;
-		_bundle = IntPtr.Zero;
 		Reset();
 	}
 
@@ -271,13 +251,10 @@ internal unsafe struct PassEncoder
 		_sx = _sy = _sw = _sh = -1;
 	}
 
-	/// <summary>
-	/// Applies a scissor unless it is already current. A bundle inherits the pass's scissor and cannot set one,
-	/// so this does nothing while recording.
-	/// </summary>
+	/// <summary>Applies a scissor unless it is already current.</summary>
 	public void Scissor(int x, int y, int w, int h)
 	{
-		if (Recording || (x == _sx && y == _sy && w == _sw && h == _sh)) { return; }
+		if (x == _sx && y == _sy && w == _sw && h == _sh) { return; }
 		_sx = x; _sy = y; _sw = w; _sh = h;
 		wgpuRenderPassEncoderSetScissorRect(_pass, (uint)x, (uint)y, (uint)w, (uint)h);
 	}
@@ -286,29 +263,25 @@ internal unsafe struct PassEncoder
 	{
 		if (pipe == _pipe) { return; }
 		_pipe = pipe;
-		if (Recording) { wgpuRenderBundleEncoderSetPipeline(_bundle, pipe); }
-		else { wgpuRenderPassEncoderSetPipeline(_pass, pipe); }
+		wgpuRenderPassEncoderSetPipeline(_pass, pipe);
 	}
 
 	public void Bg(uint group, IntPtr bg)
 	{
 		if (group == 0) { if (bg == _bg0) { return; } _bg0 = bg; }
 		else if (group == 1) { if (bg == _bg1) { return; } _bg1 = bg; }
-		if (Recording) { wgpuRenderBundleEncoderSetBindGroup(_bundle, group, bg, 0, (uint*)null); }
-		else { wgpuRenderPassEncoderSetBindGroup(_pass, group, bg, 0, (uint*)null); }
+		wgpuRenderPassEncoderSetBindGroup(_pass, group, bg, 0, (uint*)null);
 	}
 
 	public void Vb(IntPtr buf, nuint offset, nuint size)
 	{
 		if (buf == _vb && offset == _vbOffset && size == _vbSize) { return; }
 		_vb = buf; _vbOffset = offset; _vbSize = size;
-		if (Recording) { wgpuRenderBundleEncoderSetVertexBuffer(_bundle, 0, buf, offset, size); }
-		else { wgpuRenderPassEncoderSetVertexBuffer(_pass, 0, buf, offset, size); }
+		wgpuRenderPassEncoderSetVertexBuffer(_pass, 0, buf, offset, size);
 	}
 
 	public void Draw(uint count, uint firstVertex = 0)
 	{
-		if (Recording) { wgpuRenderBundleEncoderDraw(_bundle, count, 1, firstVertex, 0); }
-		else { wgpuRenderPassEncoderDraw(_pass, count, 1, firstVertex, 0); }
+		wgpuRenderPassEncoderDraw(_pass, count, 1, firstVertex, 0);
 	}
 }

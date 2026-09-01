@@ -104,12 +104,6 @@ public sealed unsafe partial class WebGpuPresentSession
 		for (int i = 0; i < cmds.Count; i++) { if (cmds[i] is RectCommand or RoundedRectCmd) { return true; } }
 		return false;
 	}
-	private static bool HasNonRect(List<WebGpuCommand> cmds)
-	{
-		for (int i = 0; i < cmds.Count; i++) { if (cmds[i] is not (RectCommand or RoundedRectCmd)) { return true; } }
-		return false;
-	}
-
 	/// <summary>
 	/// True when the convex polygon <paramref name="fan"/> fully contains <paramref name="bounds"/>, so using it as
 	/// a clip cannot cut anything. A redundant path clip is expensive here: every distinct fan costs an
@@ -635,22 +629,6 @@ public sealed unsafe partial class WebGpuPresentSession
 			if (c is not (RectCommand or RoundedRectCmd or PathFill) || c.Clip.PathFan is not null) { return false; }
 		}
 		return true;
-	}
-
-	// Maps a table-frame-solid op's LOCAL clip to the current replay transform: clipCov gets finv (device fragment ->
-	// local space) so a rounded child-clip stays correct after the move; the device SCISSOR follows the move (the local
-	// AABB transformed by t2) with the plain-AABB session clip folded in. Table verts carry their own slot for position,
-	// so ClipU.xform is unused here — only finv matters. Mirrors the arena stamp.
-	private void ReleaseBundleChunks(WebGpuRenderSurface target)
-	{
-		for (int i = 0; i < target.BundleChunks.Length; i++)
-		{
-			if (target.BundleChunks[i] != IntPtr.Zero)
-			{
-				_d.DeferBundleRelease(target.BundleChunks[i]);
-				target.BundleChunks[i] = IntPtr.Zero;
-			}
-		}
 	}
 
 	// A widened (full-surface) scissor is sound when the op's rect constraint is enforced analytically:

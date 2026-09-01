@@ -507,95 +507,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	// UNO_WEBGPU_PATH_ATLAS=0 opts out (falls back to tessellated AA, which aliases on curved outlines).
 	private static readonly bool _pathAtlas = Environment.GetEnvironmentVariable("UNO_WEBGPU_PATH_ATLAS") is not "0";
 
-	/// <summary>Ops per render-bundle chunk. Chunks are compared against the target's snapshot independently.</summary>
-	private const int BundleChunkSize = 32;
-
-	/// <summary>
-	/// Decides which parts of this pass can be replayed from pre-recorded render bundles. Ops are compared against
-	/// the target's snapshot in fixed-size chunks, so one animated recording - or the FPS overlay - invalidates only
-	/// its own chunk while the rest of the frame replays; consecutive replays coalesce into one ExecuteBundles call.
-	/// <para>
-	/// Chunk boundaries are op indices, so they hold only while the op COUNT holds: a count change, or a change to
-	/// any shared buffer the ops index into, re-snapshots the whole pass.
-	/// </para>
-	/// </summary>
-	/// <returns>True when this pass can use bundles at all; the two arrays are null unless a snapshot matched.</returns>
-	private bool PlanBundleChunks(
-		WebGpuRenderSurface target,
-		List<DrawOp> ops,
-		bool mainPass,
-		int backdropCount,
-		IntPtr xformBg,
-		out bool[] chunkReplay,
-		out bool[] chunkRecord)
-	{
-		chunkReplay = null;
-		chunkRecord = null;
-		var bundleEligible = mainPass && backdropCount == 0;
-		for (int i = 0; bundleEligible && i < ops.Count; i++)
-		{
-			var o = ops[i];
-			bundleEligible = o.kind is DrawKind.Solid or DrawKind.Path or DrawKind.Image or DrawKind.Gradient or DrawKind.RoundedRect or DrawKind.TilingFan
-				&& !(o.kind is DrawKind.Solid or DrawKind.RoundedRect && o.b0 == VertexSource.PassBuffer)   // shared per-frame append buffers: handles churn every frame
-				&& !(o.kind is DrawKind.Image or DrawKind.Gradient or DrawKind.TilingFan && o.flag) // ditto: flag means this op indexes a shared per-frame buffer
-				&& ScissorWidenable(o.clip);
-		}
-		// Chunked bundle cache: fixed-size op chunks compare independently against the snapshot, so an animated
-		// recording (or the FPS overlay) invalidates only its own chunk while the rest of the frame replays
-		// pre-recorded bundles (consecutive replays coalesce into one ExecuteBundles call). Index-based
-		// boundaries stay stable while the op COUNT is stable; a count or shared-buffer change re-snapshots.
-		if (bundleEligible)
-		{
-			var chunkCount = (ops.Count + BundleChunkSize - 1) / BundleChunkSize;
-			var headerOk = target.BundleOpsN == ops.Count
-				&& target.BundleSolidTableBuf == (nint)_d.SolidTableSlab.Buf && target.BundleRrectTableBuf == (nint)_d.RrectTableSlab.Buf
-				&& target.BundleSolidSlabBuf == (nint)_d.SolidSlab.Buf && target.BundleXformBg == xformBg
-				&& target.BundleChunks.Length == chunkCount;
-			if (!headerOk)
-			{
-				ReleaseBundleChunks(target);
-				if (target.BundleOps.Length < ops.Count) { target.BundleOps = new DrawOp[Math.Max(ops.Count, target.BundleOps.Length * 2)]; }
-				target.BundleChunks = new IntPtr[chunkCount];
-				for (int i = 0; i < ops.Count; i++) { target.BundleOps[i] = ops[i]; }
-				target.BundleOpsN = ops.Count;
-				target.BundleSolidTableBuf = (nint)_d.SolidTableSlab.Buf; target.BundleRrectTableBuf = (nint)_d.RrectTableSlab.Buf;
-				target.BundleSolidSlabBuf = (nint)_d.SolidSlab.Buf; target.BundleXformBg = xformBg;
-			}
-			else
-			{
-				chunkReplay = new bool[chunkCount];
-				chunkRecord = new bool[chunkCount];
-				for (int c = 0; c < chunkCount; c++)
-				{
-					int cs = c * BundleChunkSize, ce = Math.Min(cs + BundleChunkSize, ops.Count);
-					var same = true;
-					for (int i = cs; same && i < ce; i++)
-					{
-						var a = ops[i]; var b = target.BundleOps[i];
-						same = a.kind == b.kind && a.b0 == b.b0 && a.u0 == b.u0 && a.b1 == b.b1
-							&& a.flag == b.flag && a.clipBg == b.clipBg && a.clip.Aabb == b.clip.Aabb;
-					}
-					if (same)
-					{
-						if (target.BundleChunks[c] != IntPtr.Zero) { chunkReplay[c] = true; }
-						else { chunkRecord[c] = true; }
-					}
-					else
-					{
-						if (target.BundleChunks[c] != IntPtr.Zero) { _d.DeferBundleRelease(target.BundleChunks[c]); target.BundleChunks[c] = IntPtr.Zero; }
-						for (int i = cs; i < ce; i++) { target.BundleOps[i] = ops[i]; }
-					}
-				}
-			}
-		}
-		else if (mainPass && target.BundleOpsN >= 0)
-		{
-			ReleaseBundleChunks(target);
-			target.BundleOpsN = -1;
-		}
-		return bundleEligible;
-	}
-
 	/// <summary>
 	/// Renders a command list into a target surface's MSAA pass, resolving into its single-sample view. Layers
 	/// recurse into a surface of their own and composite here; shadows and layers pre-render before the pass opens.
@@ -725,8 +636,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		}
 
 		if (_emitStats) { OpsBuildTicks += System.Diagnostics.Stopwatch.GetTimestamp() - _renderIntoStart; }
-		// ---- render-bundle fast path (main surface only) ----
-		var bundleEligible = PlanBundleChunks(target, ops, mainPass, backdrops.Count, xformBg, out var chunkReplay, out var chunkRecord);
 
 		var color = new WGPURenderPassColorAttachment
 		{
@@ -766,8 +675,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		// under the recursive nested-layer RenderInto (each pass has its own scissor state).
 		// Current in-pass path-clip mask (device depth buffer). Changes only when a run of ops moves to a different
 		// path clip — the composition emits a clip then its subtree consecutively, so this fires ~once per clip.
-		int statBundleReplay = 0, statBundleRec = 0;
-		IntPtr bundleEnc = IntPtr.Zero;
 		var pst = new PassOps
 		{
 			Pass = pass, Target = target, Ops = ops, Backdrops = backdrops,
@@ -779,68 +686,11 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 			XformBg = xformBg,
 			Enc = new PassEncoder(pass),
 		};
-		var bundleList = stackalloc IntPtr[1];
-		var bundleFormats = stackalloc WGPUTextureFormat[1];
-		bundleFormats[0] = _d.ColorFormat;
-		if (chunkReplay is not null)
-		{
-			var replayRun = stackalloc IntPtr[chunkReplay.Length];
-			for (int c = 0; c < chunkReplay.Length; c++)
-			{
-				int cs = c * BundleChunkSize, ce = Math.Min(cs + BundleChunkSize, ops.Count);
-				if (chunkReplay[c])
-				{
-					// A run of consecutive unchanged chunks replays in ONE ExecuteBundles call.
-					var runLength = 0;
-					while (c < chunkReplay.Length && chunkReplay[c])
-					{
-						replayRun[runLength++] = target.BundleChunks[c];
-						c++;
-					}
-					c--;
-					wgpuRenderPassEncoderExecuteBundles(pass, (nuint)runLength, (IntPtr)replayRun);
-					// Executing a bundle resets ALL pass state, scissor included.
-					pst.Enc.Reset(); pst.ClipFan = null; pst.ClipAabb = default;
-					statBundleReplay += runLength;
-				}
-				else if (chunkRecord[c])
-				{
-					var bed = new WGPURenderBundleEncoderDescriptor
-					{
-						ColorFormatCount = 1,
-						ColorFormats = bundleFormats,
-						DepthStencilFormat = WebGpuDevice.DepthStencilFormat,
-						SampleCount = (uint)_d.MsaaSamples,
-					};
-					bundleEnc = wgpuDeviceCreateRenderBundleEncoder(_d.Dev, &bed);
-					pst.Enc.Reset();
-					pst.Enc.BeginBundle(bundleEnc);
-					EncodeOps(cs, ce, ref pst);
-					var bundleDesc = new WGPURenderBundleDescriptor();
-					target.BundleChunks[c] = wgpuRenderBundleEncoderFinish(bundleEnc, &bundleDesc);
-					wgpuRenderBundleEncoderRelease(bundleEnc);
-					bundleEnc = IntPtr.Zero;
-					pst.Enc.EndBundle();
-					pst.Enc.Reset();
-					bundleList[0] = target.BundleChunks[c];
-					wgpuRenderPassEncoderExecuteBundles(pst.Pass, 1, (IntPtr)bundleList);
-					pst.Enc.Reset(); pst.ClipFan = null; pst.ClipAabb = default;
-					statBundleRec++;
-				}
-				else
-				{
-					EncodeOps(cs, ce, ref pst);
-				}
-			}
-		}
-		else
-		{
-			EncodeOps(0, ops.Count, ref pst);
-		}
+		EncodeOps(0, ops.Count, ref pst);
 		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
 		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
 		{
-			WriteFrameStats(ops.Count, ref pst, statBundleReplay, statBundleRec);
+			WriteFrameStats(ops.Count, ref pst);
 		}
 
 		wgpuRenderPassEncoderEnd(pst.Pass);
