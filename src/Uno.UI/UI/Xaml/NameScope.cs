@@ -125,7 +125,7 @@ public class NameScope : INameScope
 		if (Owner is { } owner)
 		{
 			var context = owner.GetContext();
-			if (this.Log().IsEnabled(LogLevel.Warning))
+			if (Uno.UI.FeatureConfiguration.NameScope.WarnOnDuplicateName && this.Log().IsEnabled(LogLevel.Warning))
 			{
 				WarnIfDuplicate(name, element, context.NameScopeRoot.PeekNamedObjectIfExists(name, owner, NameScopeType.StandardNameScope));
 			}
@@ -138,7 +138,7 @@ public class NameScope : INameScope
 
 		if (_pendingNames.TryGetValue(name, out var existing))
 		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
+			if (Uno.UI.FeatureConfiguration.NameScope.WarnOnDuplicateName && this.Log().IsEnabled(LogLevel.Warning))
 			{
 				WarnIfDuplicate(name, element, existing.Target as DependencyObject);
 			}
