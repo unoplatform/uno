@@ -110,6 +110,55 @@ public sealed unsafe partial class WebGpuPresentSession
 	private IntPtr BlurPyramid(IntPtr src, int w, int h, float sigmaX, float sigmaY)
 		=> BlurPyramidRegion(src, w, h, 0f, 0f, w, h, sigmaX, sigmaY);
 
+	/// <summary>
+	/// Opens the frame's command encoder unless an outer render already owns one. The effect entry points below run
+	/// during effect setup, which can happen inside a frame or on its own, so each must submit only what it opened.
+	/// </summary>
+	/// <returns>True when this caller opened the encoder and so must end it.</returns>
+	private bool BeginOwnedFrameEncoder()
+	{
+		var owns = _frameEncoder == IntPtr.Zero;
+		if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); }
+		return owns;
+	}
+
+	/// <summary>Submits and releases the frame encoder, if this caller was the one that opened it.</summary>
+	private void EndOwnedFrameEncoder(bool owns)
+	{
+		if (!owns)
+		{
+			return;
+		}
+
+		_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
+		_d.FlushFrameSlabs();
+		var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
+		wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
+		// wgpu holds its own reference until the submission completes, so both handles are dropped here —
+		// otherwise every frame leaks an encoder + a command buffer into the handle table.
+		wgpuCommandBufferRelease(cb);
+		wgpuCommandEncoderRelease(_frameEncoder);
+		_ = wgpuDevicePoll(_d.Dev, 0u, null);
+		_frameEncoder = IntPtr.Zero;
+	}
+
+	/// <summary>
+	/// Draws one fullscreen effect pass into this session's target surface: opens a pass, draws the three-vertex
+	/// covering triangle with the given pipeline and bind group, and ends the pass. The effect shaders emit the
+	/// finished pixel, so the pass clears rather than loads.
+	/// </summary>
+	private void DrawEffectPass(IntPtr pipeline, IntPtr bindGroup)
+	{
+		var color = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _s.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? _s.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
+		var depthStencil = new WGPURenderPassDepthStencilAttachment { View = _s.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
+		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color, DepthStencilAttachment = &depthStencil };
+		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &desc);
+		wgpuRenderPassEncoderSetPipeline(pass, pipeline);
+		wgpuRenderPassEncoderSetBindGroup(pass, 0, bindGroup, 0, (uint*)null);
+		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
+		wgpuRenderPassEncoderEnd(pass);
+	}
+
 	// Standalone blur for the effect-graph evaluator's BlurEffectNode: blur `src` and draw it (upscaled from the
 	// pyramid) into this session's target surface _s. Mirrors RenderOffscreen's flow — own encoder + submit — so it
 	// runs during effect setup (RenderGate is reentrant); the pooled offscreen surface is detached by the factory.
@@ -117,8 +166,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	{
 		lock (_d.RenderGate)
 		{
-			var owns = _frameEncoder == IntPtr.Zero;
-			if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); }
+			var owns = BeginOwnedFrameEncoder();
 			try
 			{
 				var blurView = BlurPyramid(src.View, src.PixelWidth, src.PixelHeight, sigmaX, sigmaY);
@@ -131,30 +179,11 @@ public sealed unsafe partial class WebGpuPresentSession
 				e[1] = new WGPUBindGroupEntry { Binding = 2, Buffer = idu, Offset = 0, Size = WebGpuDevice.CompositeUniformBytes };
 				var bgd = new WGPUBindGroupDescriptor { Layout = _d.CompositeBgl, EntryCount = 2, Entries = e };
 				var bg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
-				var color = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _s.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? _s.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
-				var depthStencil = new WGPURenderPassDepthStencilAttachment { View = _s.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
-				var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color, DepthStencilAttachment = &depthStencil };
-				var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &desc);
-				wgpuRenderPassEncoderSetPipeline(pass, _d.CompositeSrcOver);
-				wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)bg, 0, (uint*)null);
-				wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
-				wgpuRenderPassEncoderEnd(pass);
+				DrawEffectPass(_d.CompositeSrcOver, (IntPtr)bg);
 			}
 			finally
 			{
-				if (owns)
-				{
-					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
-					_d.FlushFrameSlabs();
-					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
-					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
-					// wgpu holds its own reference until the submission completes, so both handles are dropped
-					// here — otherwise every frame leaks an encoder + a command buffer into the handle table.
-					wgpuCommandBufferRelease(cb);
-					wgpuCommandEncoderRelease(_frameEncoder);
-					_ = wgpuDevicePoll(_d.Dev, 0u, null);
-					_frameEncoder = IntPtr.Zero;
-				}
+				EndOwnedFrameEncoder(owns);
 			}
 		}
 	}
@@ -166,8 +195,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	{
 		lock (_d.RenderGate)
 		{
-			var owns = _frameEncoder == IntPtr.Zero;
-			if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); }
+			var owns = BeginOwnedFrameEncoder();
 			try
 			{
 				var ubuf = MakeUniform(WebGpuDevice.CompositeUniformBytes);
@@ -180,30 +208,11 @@ public sealed unsafe partial class WebGpuPresentSession
 				e[3] = new WGPUBindGroupEntry { Binding = 3, TextureView = bg.View };   // dst = background
 				var bgd = new WGPUBindGroupDescriptor { Layout = _d.CompositeBlendBgl, EntryCount = 4, Entries = e };
 				var bgh = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
-				var color = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _s.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? _s.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
-				var depthStencil = new WGPURenderPassDepthStencilAttachment { View = _s.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
-				var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color, DepthStencilAttachment = &depthStencil };
-				var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &desc);
-				wgpuRenderPassEncoderSetPipeline(pass, _d.CompositeBlend);
-				wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)bgh, 0, (uint*)null);
-				wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
-				wgpuRenderPassEncoderEnd(pass);
+				DrawEffectPass(_d.CompositeBlend, (IntPtr)bgh);
 			}
 			finally
 			{
-				if (owns)
-				{
-					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
-					_d.FlushFrameSlabs();
-					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
-					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
-					// wgpu holds its own reference until the submission completes, so both handles are dropped
-					// here — otherwise every frame leaks an encoder + a command buffer into the handle table.
-					wgpuCommandBufferRelease(cb);
-					wgpuCommandEncoderRelease(_frameEncoder);
-					_ = wgpuDevicePoll(_d.Dev, 0u, null);
-					_frameEncoder = IntPtr.Zero;
-				}
+				EndOwnedFrameEncoder(owns);
 			}
 		}
 	}
@@ -214,8 +223,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	{
 		lock (_d.RenderGate)
 		{
-			var owns = _frameEncoder == IntPtr.Zero;
-			if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); }
+			var owns = BeginOwnedFrameEncoder();
 			try
 			{
 				var ubuf = MakeUniform(32);
@@ -228,30 +236,11 @@ public sealed unsafe partial class WebGpuPresentSession
 				e[3] = new WGPUBindGroupEntry { Binding = 3, TextureView = b.View };
 				var bgd = new WGPUBindGroupDescriptor { Layout = _d.EffectCombineBgl, EntryCount = 4, Entries = e };
 				var bgh = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
-				var color = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _s.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? _s.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
-				var depthStencil = new WGPURenderPassDepthStencilAttachment { View = _s.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
-				var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color, DepthStencilAttachment = &depthStencil };
-				var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &desc);
-				wgpuRenderPassEncoderSetPipeline(pass, _d.EffectCombine);
-				wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)bgh, 0, (uint*)null);
-				wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
-				wgpuRenderPassEncoderEnd(pass);
+				DrawEffectPass(_d.EffectCombine, (IntPtr)bgh);
 			}
 			finally
 			{
-				if (owns)
-				{
-					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
-					_d.FlushFrameSlabs();
-					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
-					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
-					// wgpu holds its own reference until the submission completes, so both handles are dropped
-					// here — otherwise every frame leaks an encoder + a command buffer into the handle table.
-					wgpuCommandBufferRelease(cb);
-					wgpuCommandEncoderRelease(_frameEncoder);
-					_ = wgpuDevicePoll(_d.Dev, 0u, null);
-					_frameEncoder = IntPtr.Zero;
-				}
+				EndOwnedFrameEncoder(owns);
 			}
 		}
 	}
@@ -262,8 +251,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	{
 		lock (_d.RenderGate)
 		{
-			var owns = _frameEncoder == IntPtr.Zero;
-			if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); }
+			var owns = BeginOwnedFrameEncoder();
 			try
 			{
 				var ubuf = MakeUniform(80);
@@ -274,30 +262,11 @@ public sealed unsafe partial class WebGpuPresentSession
 				e[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 80 };
 				var bgd = new WGPUBindGroupDescriptor { Layout = _d.ColorFuncBgl, EntryCount = 3, Entries = e };
 				var bgh = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
-				var color = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _s.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? _s.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
-				var depthStencil = new WGPURenderPassDepthStencilAttachment { View = _s.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
-				var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color, DepthStencilAttachment = &depthStencil };
-				var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &desc);
-				wgpuRenderPassEncoderSetPipeline(pass, _d.ColorFunc);
-				wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)bgh, 0, (uint*)null);
-				wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
-				wgpuRenderPassEncoderEnd(pass);
+				DrawEffectPass(_d.ColorFunc, (IntPtr)bgh);
 			}
 			finally
 			{
-				if (owns)
-				{
-					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
-					_d.FlushFrameSlabs();
-					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
-					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
-					// wgpu holds its own reference until the submission completes, so both handles are dropped
-					// here — otherwise every frame leaks an encoder + a command buffer into the handle table.
-					wgpuCommandBufferRelease(cb);
-					wgpuCommandEncoderRelease(_frameEncoder);
-					_ = wgpuDevicePoll(_d.Dev, 0u, null);
-					_frameEncoder = IntPtr.Zero;
-				}
+				EndOwnedFrameEncoder(owns);
 			}
 		}
 	}
@@ -308,8 +277,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	{
 		lock (_d.RenderGate)
 		{
-			var owns = _frameEncoder == IntPtr.Zero;
-			if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); }
+			var owns = BeginOwnedFrameEncoder();
 			try
 			{
 				var ubuf = MakeUniform(32);
@@ -319,30 +287,11 @@ public sealed unsafe partial class WebGpuPresentSession
 				e[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = 32 };
 				var bgd = new WGPUBindGroupDescriptor { Layout = _d.EffectNoiseBgl, EntryCount = 1, Entries = e };
 				var bgh = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
-				var color = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _s.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? _s.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
-				var depthStencil = new WGPURenderPassDepthStencilAttachment { View = _s.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
-				var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color, DepthStencilAttachment = &depthStencil };
-				var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &desc);
-				wgpuRenderPassEncoderSetPipeline(pass, _d.EffectNoise);
-				wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)bgh, 0, (uint*)null);
-				wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
-				wgpuRenderPassEncoderEnd(pass);
+				DrawEffectPass(_d.EffectNoise, (IntPtr)bgh);
 			}
 			finally
 			{
-				if (owns)
-				{
-					_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
-					_d.FlushFrameSlabs();
-					var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
-					wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
-					// wgpu holds its own reference until the submission completes, so both handles are dropped
-					// here — otherwise every frame leaks an encoder + a command buffer into the handle table.
-					wgpuCommandBufferRelease(cb);
-					wgpuCommandEncoderRelease(_frameEncoder);
-					_ = wgpuDevicePoll(_d.Dev, 0u, null);
-					_frameEncoder = IntPtr.Zero;
-				}
+				EndOwnedFrameEncoder(owns);
 			}
 		}
 	}
