@@ -40,7 +40,7 @@ Treat the loaded rule as your checklist, and use a `/skill` for the actual build
 
 | Technology | Purpose |
 |------------|---------|
-| .NET 10.0/9.0 | Multi-target framework |
+| .NET (`NetCurrent`/`NetPrevious`) | Multi-target; the exact TFMs are branch-specific - read them from `Directory.Build.props` rather than assuming |
 | C# & XAML | Primary languages |
 | TypeScript | WebAssembly/Web APIs only |
 | Skia | Cross-platform rendering |
@@ -82,6 +82,7 @@ gitignored, **never commit it**.
 **2.** Set these in it (or pass them as `-p:` flags per build):
 
 ```xml
+<!-- Use this branch's NetCurrent (or NetPrevious) from Directory.Build.props -->
 <UnoTargetFrameworkOverride>net10.0</UnoTargetFrameworkOverride>
 <UnoFastDevBuild>true</UnoFastDevBuild>
 ```
@@ -153,21 +154,11 @@ Auto-generated stubs marked with `[Uno.NotImplemented]` allow compilation but wa
 
 ### Public Documentation and Spec References (MANDATORY)
 
-When editing specifications, documentation, or other repo-tracked design artifacts intended to be shareable:
-
-1. **Do not reference private artifacts** from the document.
-   - Do not link to private issues, private pull requests, private boards, private docs, or private repositories.
-   - If related work is tracked privately, mention it only in generic terms.
-
-2. **Public specs are source-of-truth documents**.
-   - Public or repo-local specs may be referenced by private trackers.
-   - Private trackers must not be required to understand the public spec.
-
-3. **Keep the dependency direction one-way**.
-   - Allowed: private issues/PRs referencing a public spec in this repo.
-   - Not allowed: a public spec in this repo referencing a private issue/PR/doc as normative context.
-
-4. **If implementation follow-up exists in private repos**, describe it as alignment or downstream tracking work without identifiers or URLs.
+Repo-tracked specs and docs are shareable source-of-truth documents, so keep the dependency
+direction one-way: **a public spec must never require a private artifact to be understood.**
+Don't link to private issues, PRs, boards, docs or repositories from one - refer to related
+private work only in generic terms, without identifiers or URLs. Private trackers referencing a
+public spec is fine; the reverse is not.
 
 ### Debugging & Validation (MANDATORY — summary)
 
@@ -277,18 +268,19 @@ Tabs, Allman braces (always), expression-bodied members for one-liners, `interna
 | `feat!` | Breaking change | MAJOR |
 
 ### Examples
+
 ```bash
-git commit -m "chore: Initial work"
 git commit -m "fix: Resolve null reference in TextBox"
 git commit -m "feat(ios): Implement native picker control"
 git commit -m "feat!: Remove deprecated API methods"
+git commit -m "fix: Resolve layout issue (fixes #12345)"
 ```
 
-Guidelines:
-- Keep description under 50 characters
-- Use imperative mood ("Add" not "Added")
-- Reference issues: `fix: Resolve layout issue (fixes #12345)`
-- **Commit cadence**: when the user asks, or when working autonomously on a larger feature, commit in **logical groups** — one focused, Conventional-Commit-formatted commit per coherent chunk that builds clean, rather than one batch at the end. On complex work, these incremental commits also let reviewers follow the progression of the change rather than facing one giant diff. For small one-off edits in an interactive session, leave changes uncommitted unless asked.
+Keep the description under 50 characters and in the imperative ("Add", not "Added").
+
+**Commit cadence**: commit in **logical groups** - one focused commit per coherent chunk that
+builds clean - rather than one batch at the end, so reviewers can follow the progression. For
+small one-off edits in an interactive session, leave changes uncommitted unless asked.
 
 ### Pull Requests & Issues
 
