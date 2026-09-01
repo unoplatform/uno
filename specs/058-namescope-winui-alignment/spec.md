@@ -385,6 +385,20 @@ Prior art adds ~12 more, several WinUI-measured — see section 2.
 15. Popup/Flyout **dual-namescope** entry (a Popup child entered from both logical and visual
     parent namescopes — `depends.cpp:910-928`, unported). Directly under #16743.
 16. A WinUI parity pass for the whole matrix.
+17. **D1 — the replicated rename quirk.** Rename a live element and assert **both** the old and
+    new names still resolve to it; then remove it and assert only the *current* name is
+    unregistered while the stale one still resolves. These assert deliberately counter-intuitive
+    behaviour — each needs a comment pointing at the `CDependencyObject::SetName` swap so a future
+    reader does not "fix" it. Prior art's `When_Child_With_Same_Name_As_Modified_Is_Added` already
+    encodes the correct expectation and is currently red; it becomes a gate.
+18. **D2 — the duplicate-name flag.** With `FeatureConfiguration.NameScope.WarnOnDuplicateName`
+    true (default) a duplicate registration warns; with it false it is silent. In **both** modes
+    resolution must be last-writer-wins. Plus: plain `Name=` registration must not reintroduce a
+    warning storm — assert on a page mixing `x:Name` and `Name=` with no collisions.
+19. **D3 — force-realize on lookup.** `FindName` / `GetTemplateChild` / ElementName resolution
+    each materialise an `x:Load="False"` element on hit (#19558), and the un-realize path restores
+    the deferred entry rather than leaving a dead strong reference. Also assert `Setter`'s former
+    special-case `stub.Materialize()` is now redundant, not merely unused.
 
 ---
 
@@ -405,6 +419,9 @@ Prior art adds ~12 more, several WinUI-measured — see section 2.
 4. **Do not copy #16976's `nameScope.FindName(name) is null` dedup guard** — its own comment admits
    it is a hack and it makes registration order-dependent. `EnterParams.SkipNameRegistration` is
    the WinUI answer; decide the parse-time-vs-Enter-time split up front.
+4b. **Do not "fix" the rename quirk.** Per D1 we replicate it. #16177's `OnNameChanged`
+   unregisters the old name — that is the divergence, and it is what leaves
+   `When_Child_With_Same_Name_As_Modified_Is_Added` red. The test is right; the code was wrong.
 5. **Deleting the `FindName` walker is bigger than the 2024 diff implies — it has grown.**
    `IFrameworkElement.cs:136-219` now carries a `hasAnyChildren` gate, a `UserControl.Content` case,
    and a `TextCommandBarFlyout` infinite-recursion guard added after a real bug. Verify the
@@ -423,19 +440,69 @@ Prior art adds ~12 more, several WinUI-measured — see section 2.
 
 ---
 
-## 10. Decisions Required
+## 10. Decisions
 
-1. **The rename quirk (2.3).** WinUI leaves a stale entry alive forever after a rename, arguably
-   due to a `std::swap`-before-`UnregisterName` bug. Replicate exactly, or diverge and document?
-2. **The duplicate-name warning.** Uno logs *"The name [X] already exists in the current XAML
-   scope"*; WinUI silently lets the last writer win. PR #14942 exists purely to suppress that
-   warning. Keep the warning (and the `x:Name`-only gate), or align to WinUI's silence?
-3. **Strong vs weak entries.** WinUI stores standard-namescope entries strongly, template entries
-   weakly. Uno is unconditionally weak. Going owner-keyed with strong standard entries has lifetime
-   implications.
-4. **`x:Load` force-realize.** WinUI realizes a deferred element *on name lookup*; Uno waits for
-   materialisation. Adopting WinUI's behaviour inverts today's semantics.
-5. **Ownership of #16177 / #16976** — close as prior art, or hand back? See section 11.
+### Settled (2026-09-01)
+
+**D1 — The rename quirk (2.3): REPLICATE.**
+WinUI leaves a stale entry alive forever after a rename, because `CDependencyObject::SetName`
+does `std::swap(strOldName, m_strName)` *before* an `UnregisterName` that is guarded on the field
+it just overwrote. We replicate it exactly rather than "fixing" it: WinUI parity is the goal, and
+divergence here would make Uno and WinUI disagree on which of two names resolves.
+
+Consequences the implementation must honour:
+- `OnNameChanged` must **not** unregister the old name. Prior-art PR #16177's `OnNameChanged`
+  does unregister, which is why `When_Child_With_Same_Name_As_Modified_Is_Added` is red on Uno —
+  that test is correct and the implementation was wrong.
+- `Leave` unregisters only the element's **current** name (2.4). Stale entries leak by design.
+- Both tests must be authored against the replicated behaviour, not the intuitive one, and
+  carry a comment pointing at the `SetName` swap so a future reader does not "fix" it.
+
+**D2 — The duplicate-name warning: KEEP, but make it switchable.**
+Default stays Uno's current behaviour (log *"The name [X] already exists in the current XAML
+scope"*), because it catches real authoring mistakes. But WinUI silently lets the last writer win,
+so both behaviours must be reachable via a feature flag:
+
+```csharp
+// src/Uno.UI/FeatureConfiguration.cs
+public static class NameScope
+{
+    /// <summary>
+    /// When true (default), registering a name that already exists in the same scope logs a
+    /// warning. WinUI has no such diagnostic and silently lets the last registration win;
+    /// set to false to match that behaviour exactly.
+    /// </summary>
+    public static bool WarnOnDuplicateName { get; set; } = true;
+}
+```
+
+The flag governs the **diagnostic only** — the resolution semantics are last-writer-wins in both
+modes, matching WinUI. This also settles the generator gate: the `x:Name`-only restriction from
+PR #14942 exists purely to suppress this warning, so with the warning made switchable the gate
+can be widened to plain `Name=` (root cause 1) without reintroducing the warning storm.
+
+**D3 — `x:Load` force-realize: MATCH WINUI.**
+A name lookup force-materialises a deferred element, per `CCoreServices::GetNamedObject`
+realizing the proxy inline. This inverts today's Uno semantics (which wait for materialisation),
+so:
+- `ElementStub` content must be registered under its real name as a **deferred** entry
+  (`RegisterDeferredStandardNameScopeEntries` / `NameScopeTableEntry.DeferredElementCreator`),
+  not merely findable after the fact.
+- `FindName`, `GetTemplateChild` and ElementName resolution all realize on hit. Closes #19558.
+- `Setter.cs:242` currently forces `stub.Materialize()` as a special case — that becomes the
+  general rule and the special case should be removed.
+- Explicitly test the un-realize path: `x:Load` flipping back to `False` must restore the
+  deferred entry, not leave a dead strong reference.
+
+### Still open
+
+**D4 — Strong vs weak entries.** WinUI stores standard-namescope entries strongly and template
+entries weakly; Uno is unconditionally weak (`NameScope.cs:50`). Going owner-keyed with strong
+standard entries has real lifetime implications in Uno, whose object graph and collection
+semantics differ — and it interacts with collectible ALCs used by Hot Reload. Decide with the
+design round's lifetime analysis in hand.
+
+**D5 — Ownership of #16177 / #16976** — close as prior art, or hand back? See section 11.
 
 ---
 
