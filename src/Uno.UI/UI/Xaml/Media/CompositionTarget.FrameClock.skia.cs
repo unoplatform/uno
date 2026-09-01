@@ -14,10 +14,11 @@ public partial class CompositionTarget
 	private readonly FrameClock _frameClock = new();
 
 	private EventHandler<long>? _frameStarting;
+	private bool _frameDriverTickArmed;
 
 	/// <summary>
-	/// Raised once per tick, before layout and before the record, with the timestamp every driver in
-	/// that frame must evaluate against.
+	/// Raised once per frame, from the tick that precedes it (before layout and before the record), with
+	/// the timestamp every driver in that frame must evaluate against.
 	/// </summary>
 	/// <remarks>
 	/// Deliberately not raised from inside the record. A driver writing there produces a frame request
@@ -38,7 +39,7 @@ public partial class CompositionTarget
 
 				// A tick, not a frame: the driver is raised from the tick, and requesting only a render
 				// would leave a newly subscribed driver waiting for one that may never come.
-				CoreServices.RequestAdditionalFrame();
+				ArmFrameDriverTick();
 			}
 		}
 		remove
@@ -71,13 +72,36 @@ public partial class CompositionTarget
 	/// <summary>Estimated interval between presented frames, for drivers that need a nominal step.</summary>
 	internal long FrameIntervalInTicks => _frameClock.IntervalInTicks;
 
-	/// <summary>Ticks every frame driver for this target. Called from the tick, before layout.</summary>
-	internal void RaiseFrameStarting()
+	/// <summary>
+	/// Arms the next tick to evaluate the frame drivers. Called once per native frame, from the frame's
+	/// UI-thread callback, so drivers step on the presented cadence rather than on every dispatcher pump.
+	/// </summary>
+	/// <remarks>
+	/// The tick is otherwise on demand and re-requests itself while there is layout to do, so ticking the
+	/// drivers from every tick would free-run them between two vsyncs: each pass samples wall-clock jitter
+	/// into the motion, runs a layout pass of its own, and collapses the frame clock's interval so its grid
+	/// never engages.
+	/// </remarks>
+	internal void ArmFrameDriverTick()
 	{
-		if (_frameStarting is not { } frameStarting)
+		if (_frameStarting is null)
 		{
 			return;
 		}
+
+		_frameDriverTickArmed = true;
+		CoreServices.RequestAdditionalFrame();
+	}
+
+	/// <summary>Ticks every frame driver for this target. Called from the tick, before layout.</summary>
+	internal void RaiseFrameStarting()
+	{
+		if (!_frameDriverTickArmed || _frameStarting is not { } frameStarting)
+		{
+			return;
+		}
+
+		_frameDriverTickArmed = false;
 
 		var timestamp = _frameClock.NextTimestamp(Compositor.GetSharedCompositor().TimestampInTicks);
 		CurrentFrameTimestampInTicks = timestamp;
@@ -94,11 +118,11 @@ public partial class CompositionTarget
 			}
 		}
 
-		// Keeps the tick coming while anything is animating. OnTick clears the flag before its body, so
-		// re-requesting from within is honoured.
+		// The chain that brings the next tick is the frame itself: a driver that wrote nothing this frame
+		// (or is about to stop) must still get its next tick, so request the frame on its behalf.
 		if (_frameStarting is not null)
 		{
-			CoreServices.RequestAdditionalFrame();
+			((ICompositionTarget)this).RequestNewFrame();
 		}
 	}
 }
