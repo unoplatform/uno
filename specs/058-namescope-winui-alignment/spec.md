@@ -436,12 +436,12 @@ Prior art adds ~12 more, several WinUI-measured — see section 2.
 15. Popup/Flyout **dual-namescope** entry (a Popup child entered from both logical and visual
     parent namescopes — `depends.cpp:902-920`, unported). Directly under #16743.
 16. A WinUI parity pass for the whole matrix.
-17. **D1 — the replicated rename quirk.** Rename a live element and assert **both** the old and
-    new names still resolve to it; then remove it and assert only the *current* name is
-    unregistered while the stale one still resolves. These assert deliberately counter-intuitive
-    behaviour — each needs a comment pointing at the `CDependencyObject::SetName` swap so a future
-    reader does not "fix" it. Prior art's `When_Child_With_Same_Name_As_Modified_Is_Added` already
-    encodes the correct expectation and is currently red; it becomes a gate.
+17. **D1 — the rename divergence.** Rename a live element and assert the **old name no longer
+    resolves** while the new one does; then remove it and assert nothing stale is left behind.
+    Name the tests for the divergence and comment them with the `depends.cpp:625` reference, so it
+    reads as deliberate rather than as a parity miss. Prior art's WinUI-measured rename assertions
+    (spec 2.3 / 2.4) must be re-homed with inverted expectations plus that comment — never silently
+    deleted. `When_Child_With_Same_Name_As_Modified_Is_Added` is already correct and becomes a gate.
 18. **D2 — the duplicate-name flag.** With `FeatureConfiguration.NameScope.WarnOnDuplicateName`
     true (default) a duplicate registration warns; with it false it is silent. In **both** modes
     resolution must be last-writer-wins. Plus: plain `Name=` registration must not reintroduce a
@@ -470,9 +470,9 @@ Prior art adds ~12 more, several WinUI-measured — see section 2.
 4. **Do not copy #16976's `nameScope.FindName(name) is null` dedup guard** — its own comment admits
    it is a hack and it makes registration order-dependent. `EnterParams.SkipNameRegistration` is
    the WinUI answer; decide the parse-time-vs-Enter-time split up front.
-4b. **Do not "fix" the rename quirk.** Per D1 we replicate it. #16177's `OnNameChanged`
-   unregisters the old name — that is the divergence, and it is what leaves
-   `When_Child_With_Same_Name_As_Modified_Is_Added` red. The test is right; the code was wrong.
+4b. **The rename divergence is deliberate (D1).** Uno unregisters the old name on rename; WinUI
+   leaks it forever due to the `depends.cpp:625` swap-before-unregister bug. Anyone "restoring
+   parity" here is reintroducing a bug — the comment at each site says so.
 5. **Deleting the `FindName` walker is bigger than the 2024 diff implies — it has grown.**
    `IFrameworkElement.cs:136-219` now carries a `hasAnyChildren` gate, a `UserControl.Content` case,
    and a `TextCommandBarFlyout` infinite-recursion guard added after a real bug. Verify the
@@ -495,19 +495,36 @@ Prior art adds ~12 more, several WinUI-measured — see section 2.
 
 ### Settled (2026-09-01)
 
-**D1 — The rename quirk (2.3): REPLICATE.**
-WinUI leaves a stale entry alive forever after a rename, because `CDependencyObject::SetName`
-does `std::swap(strOldName, m_strName)` *before* an `UnregisterName` that is guarded on the field
-it just overwrote. We replicate it exactly rather than "fixing" it: WinUI parity is the goal, and
-divergence here would make Uno and WinUI disagree on which of two names resolves.
+**D1 — The rename quirk (2.3): DIVERGE, and report it upstream.**
+
+*(Revised after the design round produced harder evidence; this section previously said replicate.)*
+
+The stale-entry leak is a **verified WinUI bug**, not a design choice:
+`CDependencyObject::SetName` does `std::swap(strOldName, m_strName)` at `depends.cpp:625-627`,
+*then* calls `UnregisterName` at `:631`, whose guard `if (!m_strName.IsNull() && …)` (`:718`) is
+by then false — a guaranteed no-op. The comment immediately above the swap says *"it is necessary
+to unregister the old name prior to setting the new value"*, directly contradicting the code, and
+the error-recovery path at `:638` swaps back **and re-registers**, proving the author expected
+`strOldName` still populated there. The swap was hoisted one statement too early.
+
+Decisive practical point: the registration receipt (see the design's `unregistrationSafety`)
+makes the **correct** behaviour free and the buggy behaviour *actively harder* — replicating it
+would mean deliberately not unregistering what we recorded. And no application can depend on the
+quirk without a test asserting that a stale name still resolves.
 
 Consequences the implementation must honour:
-- `OnNameChanged` must **not** unregister the old name. Prior-art PR #16177's `OnNameChanged`
-  does unregister, which is why `When_Child_With_Same_Name_As_Modified_Is_Added` is red on Uno —
-  that test is correct and the implementation was wrong.
-- `Leave` unregisters only the element's **current** name (2.4). Stale entries leak by design.
-- Both tests must be authored against the replicated behaviour, not the intuitive one, and
-  carry a comment pointing at the `SetName` swap so a future reader does not "fix" it.
+- `FrameworkElement.OnNameChanged` identity-clears the receipt's old name, then registers the new
+  one. Prior-art PR #16177 already does this — it is **correct**, and its currently-red
+  `When_Child_With_Same_Name_As_Modified_Is_Added` should be re-homed rather than inherited.
+- Every divergent site carries
+  `// Uno diverges here (WinUI depends.cpp:625 SetName bug) — spec 058 D1`.
+- The tests are named for the divergence, so a future reader sees it is deliberate.
+- The WinUI-measured assertions from prior art that encode the quirk (spec 2.3 / 2.4) must be
+  **re-homed with their expectations inverted and a comment explaining why**, never silently
+  deleted (see Trap 6).
+
+**Follow-up:** file an issue upstream on `microsoft/microsoft-ui-xaml` describing the `SetName`
+swap-before-unregister ordering. If it is ever fixed, this divergence becomes parity for free.
 
 **D2 — The duplicate-name warning: KEEP, but make it switchable.**
 Default stays Uno's current behaviour (log *"The name [X] already exists in the current XAML
