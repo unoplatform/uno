@@ -2047,12 +2047,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		return _d.ClipBgSlabFor(bgl, ClipUBytes).Rent(bgl, cu);
 	}
 
-	// Coverage atlas: OPT-IN (UNO_WEBGPU_PATH_ATLAS=1) until the defect below is fixed. It makes arbitrary path
-	// edges and glyphs crisp without MSAA, but text drawn inside a CACHED recording can come out missing or as
-	// other characters - reproducible by typing in the SamplesApp sample search box. Isolated to the owned/cached
-	// path (disabling the atlas only for per-frame ops does not help; disabling it for cached ops does), and it is
-	// neither the quad batching nor a stale build-time NDC on a move - both were tested and ruled out.
-	private static readonly bool _pathAtlas = Environment.GetEnvironmentVariable("UNO_WEBGPU_PATH_ATLAS") is "1";
+	// Coverage atlas: ON by default - it is what makes arbitrary path edges and glyphs crisp without MSAA.
+	// UNO_WEBGPU_PATH_ATLAS=0 opts out (falls back to tessellated AA, which aliases on curved outlines).
+	private static readonly bool _pathAtlas = Environment.GetEnvironmentVariable("UNO_WEBGPU_PATH_ATLAS") is not "0";
 
 	/// <summary>
 	/// Rasterizes one fill's coverage into its atlas slot: stencil-then-cover in white into a scratch surface
@@ -2174,7 +2171,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	}
 
 
-	internal static int AtlasTried, AtlasNoKey, AtlasHit, AtlasBaked, AtlasNoRoom, AtlasNoRing, AtlasTransientMiss, ScaleBlocked;
+	internal static int AtlasTried, AtlasNoKey, AtlasHit, AtlasBaked, AtlasNoRoom, AtlasNoRing, ScaleBlocked;
 
 	/// <summary>
 	/// Keys and places on the op's own coordinate space, with <paramref name="scale"/> giving the extra scale the
@@ -2222,6 +2219,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		}
 
 		result = MakeAtlasOp(first, slot0.Owner, _atlasQuads, owned);
+
 		i = j - 1;
 		return true;
 	}
@@ -2232,10 +2230,10 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		slot = null; ox = oy = 0;
 		if (!_pathAtlas) { return false; }
 		AtlasTried++;
-		// Only a CACHED recording may OWN an entry: its slots are freed when the recording is released, which is
-		// what bounds the pages. A per-frame op has nothing to free it, so it may only ride an entry some cached
-		// recording already baked - a hit costs nothing and keeps per-frame text crisp instead of leaving it on
-		// the aliased geometry path.
+		// A cached recording OWNS the entries it bakes and frees them when released. A per-frame op has no such
+		// owner, so the ATLAS holds the reference and drops it after the entry goes idle (HoldForCache/SweepCache).
+		// Per-frame ops used to be hit-only, which meant identical content rendered crisp through the retained
+		// path and tessellated through the command-list fallback - the parity tests caught exactly that.
 		bool hitOnly = owned is null;
 		// The bake derives coverage from a 4x supersample, so its input must be a HARD silhouette. Geometry that
 		// already carries an analytic AA ring would be antialiased twice - the edge spreads half a pixel and a
@@ -2243,10 +2241,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (pf.FanHard is null && HasAaRing(pf.FanCoverage)) { AtlasNoRing++; return false; }
 		if (!WebGpuPathAtlas.TryKey(pf.Geometry, pf.GeomMatrix, pf.BbMin, pf.BbMax, scale, out var key, out var w, out var h, out ox, out oy)) { AtlasNoKey++; return false; }
 
-		if (_d.PathAtlas.Pages.Count == 0) { if (hitOnly) { AtlasNoRoom++; return false; } _d.AddPathAtlasPage(); }
+		if (_d.PathAtlas.Pages.Count == 0) { _d.AddPathAtlasPage(); }
 		if (_d.PathAtlas.TryGet(key, out slot))
 		{
 			AtlasHit++;
+			_d.PathAtlas.NoteUse(slot, _d.FrameSeq);
 			// A REUSED entry needs its own reference for this recording. One slot backs a glyph everywhere it
 			// appears, so without this the recording that baked it releases the region out from under every other
 			// holder and they start sampling whatever took its place.
@@ -2256,7 +2255,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				(owned.AtlasSlots ??= new()).Add(slot);
 			}
 		}
-		else if (hitOnly) { AtlasTransientMiss++; return false; }
 		else
 		{
 			slot = _d.PathAtlas.Allocate(key, w, h, ox, oy);
@@ -2268,7 +2266,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				slot = _d.PathAtlas.Allocate(key, w, h, ox, oy);
 			}
 			if (slot is null) { AtlasNoRoom++; return false; }
-			(owned.AtlasSlots ??= new()).Add(slot);
+			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
+			else { _d.PathAtlas.HoldForCache(slot, _d.FrameSeq); }
 			RasterizeAtlasEntry(pf, slot, scale);
 			AtlasBaked++;
 		}
@@ -3357,7 +3356,14 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		_ => _d.ClipBgl,
 	};
 
-	private (ClipData Scissor, nint ClipBg, nint Buf) StampTableClip(ClipData local, OwnedResources stampOwned, Matrix3x2 finv, Matrix3x2 t2, Vector4 sessionAabb, bool sessionInert, RoundClip[] sessionRounds, nint reuseBuf, nint reuseBg, IntPtr clipBgl)
+	/// <summary>
+	/// True when an op of this kind is placed by the xform TABLE (its verts carry a slot index), so its clip must
+	/// NOT also carry the replay transform. Everything else in a table recording is identity-baked with no slot,
+	/// and the clip's xform is the only thing that can move it.
+	/// </summary>
+	private static bool PlacedByXformTable(int kind) => kind is 0 or 5 or 7;
+
+	private (ClipData Scissor, nint ClipBg, nint Buf) StampTableClip(ClipData local, OwnedResources stampOwned, Matrix3x2 finv, Matrix3x2 t2, Vector4 sessionAabb, bool sessionInert, RoundClip[] sessionRounds, nint reuseBuf, nint reuseBg, IntPtr clipBgl, Matrix3x2 opXform)
 	{
 		var scissor = local;
 		scissor.PathFan = null;
@@ -3387,11 +3393,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		}
 		if (reuseBuf != 0)
 		{
-			scissor.AabbInClipU = RewriteClipU(reuseBuf, local, Matrix3x2.Identity, finv) && canWiden;
+			scissor.AabbInClipU = RewriteClipU(reuseBuf, local, opXform, finv) && canWiden;
 			scissor.ScissorLoadBearing = !scissor.AabbInClipU;
 			return (scissor, reuseBg, reuseBuf);
 		}
-		var bg = (nint)MakeClipBgOwned(clipBgl, local, stampOwned, Matrix3x2.Identity, finv, out var buf, out var folded);
+		var bg = (nint)MakeClipBgOwned(clipBgl, local, stampOwned, opXform, finv, out var buf, out var folded);
 		scissor.AabbInClipU = folded && canWiden;
 		scissor.ScissorLoadBearing = !scissor.AabbInClipU;
 		return (scissor, bg, buf);
@@ -3539,8 +3545,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				var local = fo.Kind == -1 ? fo.NonSolid.clip : fo.Clip;
 				// An atlas quad in a stamped recording is a kind-2 IMAGE draw: it needs the image pipeline's own
 				// ClipU layout, not the shared one, or the draw is rejected and the process aborts.
-				var stampBgl = ClipBglForKind(fo.Kind == -1 ? fo.NonSolid.kind : fo.Kind);
-				var st = StampTableClip(local, stampOwned, finv, t2, sessionAabb, rr.Clip.ScissorInert, rr.Clip.Rounds, reuse ? bufs[i] : 0, reuse ? stamps[i].ClipBg : 0, stampBgl);
+				var opKind = fo.Kind == -1 ? fo.NonSolid.kind : fo.Kind;
+				var stampBgl = ClipBglForKind(opKind);
+				// An op with no xform-table slot (an atlas quad, an image, a gradient) is still identity-baked, so
+				// its clip has to carry the replay transform or it draws at the recording's local origin.
+				var stampXform = PlacedByXformTable(opKind) ? Matrix3x2.Identity : ArenaXform(rr.Transform);
+				var st = StampTableClip(local, stampOwned, finv, t2, sessionAabb, rr.Clip.ScissorInert, rr.Clip.Rounds, reuse ? bufs[i] : 0, reuse ? stamps[i].ClipBg : 0, stampBgl, stampXform);
 				if (reuse) { stamps[i] = (st.Scissor, st.ClipBg); } else { stamps.Add((st.Scissor, st.ClipBg)); bufs.Add(st.Buf); }
 			}
 			fe.StampOwned = stampOwned; fe.StampClips = stamps; fe.StampBufs = bufs; fe.StampFrame = _d.FrameSeq; fe.StampXform = rr.Transform; fe.StampClip = rr.Clip; fe.StampW = (int)_s.Width; fe.StampH = (int)_s.Height; fe.HasStamp = true;
@@ -4737,7 +4747,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
 		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
 		{
-			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} fanTry=t{StatFanTried}/ok{StatFanStripped}/big{StatFanTooBig}/concave{StatFanConcave}/nocover{StatFanNotCovering} gpu={_d.LastGpuMs:F2}ms/maps{_d.TsMapTried}-{_d.TsMapOk}-{_d.TsMapFail} cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip}) replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds} block=ref{WebGpuCommandRecorder.StatBlockRef}/layer{WebGpuCommandRecorder.StatBlockLayer}/shadow{WebGpuCommandRecorder.StatBlockShadow}/other{WebGpuCommandRecorder.StatBlockOther}/empty{WebGpuCommandRecorder.StatBlockEmpty} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB sharedOps={statSharedOps} tiled={statTiled} coverMpx={statCoverMpx:F1} strips={WgStrokeStats.Strips} tilesCmd={WgStrokeStats.TilesCmd} atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked}/full{AtlasNoRoom}/ring{AtlasNoRing}/tmiss{AtlasTransientMiss}/scaleblk{ScaleBlocked}/big{WebGpuPathAtlas.RejBig}/pages{_d.PathAtlas.Pages.Count}");
+			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} fanTry=t{StatFanTried}/ok{StatFanStripped}/big{StatFanTooBig}/concave{StatFanConcave}/nocover{StatFanNotCovering} gpu={_d.LastGpuMs:F2}ms/maps{_d.TsMapTried}-{_d.TsMapOk}-{_d.TsMapFail} cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip}) replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds} block=ref{WebGpuCommandRecorder.StatBlockRef}/layer{WebGpuCommandRecorder.StatBlockLayer}/shadow{WebGpuCommandRecorder.StatBlockShadow}/other{WebGpuCommandRecorder.StatBlockOther}/empty{WebGpuCommandRecorder.StatBlockEmpty} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB sharedOps={statSharedOps} tiled={statTiled} coverMpx={statCoverMpx:F1} strips={WgStrokeStats.Strips} tilesCmd={WgStrokeStats.TilesCmd} atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked}/full{AtlasNoRoom}/ring{AtlasNoRing}/scaleblk{ScaleBlocked}/big{WebGpuPathAtlas.RejBig}/pages{_d.PathAtlas.Pages.Count}");
 			WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = 0;
 			StatFanTried = StatFanStripped = StatFanTooBig = StatFanConcave = StatFanNotCovering = 0;
 			_statTableRebuilds = 0; _statStamps = 0; _statArenaRebuilds = 0; _statCachedRebuilds = 0; _statCrMiss = _statCrMove = _statCrPathFlip = _statCrSize = _statCrClip = 0;

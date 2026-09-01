@@ -256,6 +256,7 @@ internal sealed unsafe class WebGpuDevice : IDisposable
 		_pendingClipSlots.Clear();
 		foreach (var a in _pendingAtlasSlots) { PathAtlas.Free(a); }
 		_pendingAtlasSlots.Clear();
+		PathAtlas.SweepCache(FrameSeq);
 		ReleaseRetiredAtlasPages();
 
 
@@ -1370,6 +1371,7 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
     // SrcIn blend-mode tint: premultiplied(filterColor) * dst.a.
     let fp = vec4<f32>(u.tint.rgb * u.tint.a, u.tint.a);
     c = fp * c.a;
+
   } else if (u.op.w > 0.5) {
     // Acrylic backdrop composite: blurred backdrop -> luminosity blend (tint = lum rgb/a) -> procedural grain
     // (off.x = noise opacity), opaque within the region. One draw replaces the blurred-image + luminosity overlay.
