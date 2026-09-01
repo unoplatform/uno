@@ -105,68 +105,10 @@ public sealed unsafe partial class WebGpuPresentSession
 		return false;
 	}
 	/// <summary>
-	/// True when the convex polygon <paramref name="fan"/> fully contains <paramref name="bounds"/>, so using it as
-	/// a clip cannot cut anything. A redundant path clip is expensive here: every distinct fan costs an
-	/// ApplyDepthClip setup (4 pipeline switches, 3 draws, a bind group and a vertex buffer), and a scene that
-	/// clips each shape to its own bounds pays that per shape — 392 per frame on RenderStress_Gradients.
-	/// Convexity is required: for a concave polygon, four corners being inside does not imply the rect is.
-	/// </summary>
 	private static Vector4 QuadBounds(Vector2 a, Vector2 b, Vector2 c, Vector2 d)
 		=> new(MathF.Min(MathF.Min(a.X, b.X), MathF.Min(c.X, d.X)), MathF.Min(MathF.Min(a.Y, b.Y), MathF.Min(c.Y, d.Y)),
 			MathF.Max(MathF.Max(a.X, b.X), MathF.Max(c.X, d.X)), MathF.Max(MathF.Max(a.Y, b.Y), MathF.Max(c.Y, d.Y)));
 
-	internal static int StatFanTried, StatFanStripped, StatFanTooBig, StatFanConcave, StatFanNotCovering;
-
-	private static bool FanCoversAabb(float[] fan, Vector4 bounds)
-		=> FanCoversPoints(fan, stackalloc Vector2[4]
-		{
-			new(bounds.X, bounds.Y), new(bounds.Z, bounds.Y), new(bounds.Z, bounds.W), new(bounds.X, bounds.W),
-		});
-
-	/// <summary>
-	/// True when the convex polygon <paramref name="fan"/> contains every point in <paramref name="pts"/>.
-	/// Callers pass the op's ACTUAL corners where they have them: a rotated rect's axis-aligned bounds stick out
-	/// past a rotated clip that in fact contains the shape, which rejected all 1213 candidate fans in
-	/// RenderStress_Gradients (nocover1213).
-	/// </summary>
-	private static bool FanCoversPoints(float[] fan, ReadOnlySpan<Vector2> pts)
-	{
-		StatFanTried++;
-		int n = fan.Length / 2;
-		// The cap only guards the O(n) convexity walk; a flattened rounded-rect or ellipse clip runs to dozens or
-		// hundreds of points, and a 16-point limit rejected every fan in RenderStress_Gradients (1214 of 1214).
-		if (n < 3 || n > 512) { StatFanTooBig++; return false; }
-		// Convexity: every cross product of consecutive edges must share a sign.
-		int sign = 0;
-		for (int i = 0; i < n; i++)
-		{
-			float ax = fan[i * 2], ay = fan[i * 2 + 1];
-			float bx = fan[((i + 1) % n) * 2], by = fan[((i + 1) % n) * 2 + 1];
-			float cx = fan[((i + 2) % n) * 2], cy = fan[((i + 2) % n) * 2 + 1];
-			float cross = (bx - ax) * (cy - by) - (by - ay) * (cx - bx);
-			if (MathF.Abs(cross) < 1e-6f) { continue; }
-			int sc = cross > 0 ? 1 : -1;
-			if (sign == 0) { sign = sc; }
-			else if (sc != sign) { StatFanConcave++; return false; }
-		}
-		if (sign == 0) { StatFanConcave++; return false; }
-		// Every supplied point strictly inside (same winding side as the polygon).
-		for (int corner = 0; corner < pts.Length; corner++)
-		{
-			float px = pts[corner].X;
-			float py = pts[corner].Y;
-			for (int i = 0; i < n; i++)
-			{
-				float ax = fan[i * 2], ay = fan[i * 2 + 1];
-				float bx = fan[((i + 1) % n) * 2], by = fan[((i + 1) % n) * 2 + 1];
-				float cross = (bx - ax) * (py - ay) - (by - ay) * (px - ax);
-				if (MathF.Abs(cross) < 1e-4f) { continue; }
-				if ((cross > 0 ? 1 : -1) != sign) { StatFanNotCovering++; return false; }
-			}
-		}
-		StatFanStripped++;
-		return true;
-	}
 
 	// A fill clipped to an ellipse still rasterises its whole bounding quad; the corners run the fragment shader
 	// only to be multiplied by zero coverage. Discarding them in the shader does not help — the fragments still
@@ -222,28 +164,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		}
 	}
 
-	private static ClipData StripRedundantFan(ClipData clip, Vector2 a, Vector2 b, Vector2 c, Vector2 d)
-	{
-		if (clip.PathFan is { } fan && !clip.PathExclude && FanCoversPoints(fan, stackalloc Vector2[4] { a, b, c, d }))
-		{
-			clip.PathFan = null;
-			clip.FanBuf = 0;
-			clip.FanXformBg = 0;
-		}
-		return clip;
-	}
 
-	/// <summary>Drops a path clip that cannot cut the given bounds, so it never reaches the depth-mask path.</summary>
-	private static ClipData StripRedundantFan(ClipData clip, Vector4 bounds)
-	{
-		if (clip.PathFan is { } fan && !clip.PathExclude && FanCoversAabb(fan, bounds))
-		{
-			clip.PathFan = null;
-			clip.FanBuf = 0;
-			clip.FanXformBg = 0;
-		}
-		return clip;
-	}
 
 	/// <summary>
 	/// The replay scale to bake an arena recording's masks at, or null when the transform cannot be expressed as
@@ -360,7 +281,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					_scratch.Clear();
 					var sCov = pf0.FanCoverage;
 					for (int i = 0; i < pf0.FanDevice.Length; i += 2) { PushVertT(new Vector2(pf0.FanDevice[i], pf0.FanDevice[i + 1]), sr, sg, sb, sa * (sCov is null ? 1f : sCov[i >> 1]), slotBits); }
-					var sClip = StripRedundantFan(pf0.Clip, new Vector4(pf0.BbMin.X, pf0.BbMin.Y, pf0.BbMax.X, pf0.BbMax.Y));
+					var sClip = pf0.Clip;
 					var sClipBg = MakeClipBg(_d.CoverClipBgl, sClip, owned);
 					var sCount = (uint)(pf0.FanDevice.Length / 2);
 					ops.Add(owned is null
@@ -416,7 +337,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					var v = new List<float>();
 					void V(Vector2 p) { var n = Ndc(p); v.Add(n.X); v.Add(n.Y); v.Add(c.X); v.Add(c.Y); v.Add(c.Z); v.Add(c.W); }
 					V(rc.P0); V(rc.P1); V(rc.P2); V(rc.P0); V(rc.P2); V(rc.P3);
-					var rClip = StripRedundantFan(rc.Clip, rc.P0, rc.P1, rc.P2, rc.P3);
+					var rClip = rc.Clip;
 					ops.Add(new DrawOp(DrawKind.Solid, (nint)Vbuf(v.ToArray(), owned), 6, 0, false, rClip, (nint)MakeClipBg(_d.SolidClipBgl, rClip, owned)));
 					break;
 				}
@@ -435,7 +356,7 @@ public sealed unsafe partial class WebGpuPresentSession
 						_scratch.Clear();
 						var tCov = pf.FanCoverage;
 						for (int i = 0; i < pf.FanDevice.Length; i += 2) { PushVertT(new Vector2(pf.FanDevice[i], pf.FanDevice[i + 1]), fr, fg, fb, fa * (tCov is null ? 1f : tCov[i >> 1]), slotBits); }
-						var tClip = StripRedundantFan(pf.Clip, new Vector4(pf.BbMin.X, pf.BbMin.Y, pf.BbMax.X, pf.BbMax.Y));
+						var tClip = pf.Clip;
 						var tClipBg = MakeClipBg(_d.CoverClipBgl, tClip, owned);
 						var tCount = (uint)(pf.FanDevice.Length / 2);
 						ops.Add(owned is null
@@ -451,7 +372,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					var tl = pf.BbMin; var br = pf.BbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
 					PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(tr, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits);
 					PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits); PushVertT(bl, pr, pg, pb, pa, slotBits);
-					var pClip = StripRedundantFan(pf.Clip, new Vector4(pf.BbMin.X, pf.BbMin.Y, pf.BbMax.X, pf.BbMax.Y));
+					var pClip = pf.Clip;
 					var clipBg = MakeClipBg(_d.CoverClipBgl, pClip, owned);
 					ops.Add(owned is null
 						? new DrawOp(DrawKind.TablePath, fanShared, (uint)(pf.FanDevice.Length / 2), AppendPathBlock(_scratch), pf.EvenOdd, pClip, (nint)clipBg)
@@ -518,7 +439,7 @@ public sealed unsafe partial class WebGpuPresentSession
 							gbg = Bg(ref gbgd, owned);
 						}
 					}
-					var gClip = StripRedundantFan(gc.Clip, gc.P0, gc.P1, gc.P2, gc.P3);
+					var gClip = gc.Clip;
 					if (owned is null)
 					{
 						// flag == true: b1 is a BYTE offset into the shared per-pass gradient buffer.

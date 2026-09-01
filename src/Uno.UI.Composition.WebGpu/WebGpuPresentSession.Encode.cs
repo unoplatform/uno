@@ -443,8 +443,6 @@ public sealed unsafe partial class WebGpuPresentSession
 		line.Append($"/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip})");
 
 		// Turned away, and why
-		line.Append($" fanTry=t{StatFanTried}/ok{StatFanStripped}/big{StatFanTooBig}");
-		line.Append($"/concave{StatFanConcave}/nocover{StatFanNotCovering}");
 		line.Append($" atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked}");
 		line.Append($"/full{AtlasNoRoom}/ring{AtlasNoRing}/scaleblk{ScaleBlocked}/big{WebGpuPathAtlas.RejBig}");
 		line.Append($"/pages{_d.PathAtlas.Pages.Count}");
@@ -452,7 +450,6 @@ public sealed unsafe partial class WebGpuPresentSession
 		System.Console.WriteLine(line.ToString());
 
 		WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = 0;
-		StatFanTried = StatFanStripped = StatFanTooBig = StatFanConcave = StatFanNotCovering = 0;
 		_statTableRebuilds = _statStamps = _statArenaRebuilds = _statCachedRebuilds = 0;
 		_statCrMiss = _statCrMove = _statCrPathFlip = _statCrSize = _statCrClip = 0;
 	}
