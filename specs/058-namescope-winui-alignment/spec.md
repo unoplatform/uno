@@ -211,15 +211,36 @@ every named element still cannot carry one.**
 >   `Flyout.SynchronizeNamescope` (`Flyout.cs:86-92`), which pushes a scope onto `Content` via
 >   `SetNameScope`.
 > - **`FlyoutBase` HIDES `DependencyObject`'s non-virtual `Enter`/`Leave`**, so `base.Enter(...)` in
->   `Flyout.mux.cs:10` and `MenuFlyout.mux.cs:69` reaches an **empty stub** — the DependencyObject
->   walk has never run for any flyout, ever. This is a live defect discovered while designing, not a
->   consequence of the epic.
-> - **There are NINE ownerless seed sites**, not two: `UIElement.mux.cs:1242/1265/1276/1833/1846/1861`,
+>   `Flyout.mux.cs:10` and `MenuFlyout.mux.cs:69` reaches an **empty stub**.
+>   **CORRECTION (refactor-mapping round): this is a naming defect, not a missing walk.** An earlier
+>   revision claimed "the DependencyObject walk has never run for any flyout". That is **false**.
+>   `DependencyObject.PropertySystem.mux.cs:292` calls `provider.Enter(pAdjustedNamescopeOwner, @params)`
+>   where `provider` is *statically typed* `DependencyObject`, so it binds to the real
+>   `DependencyObject.Enter` — not to FlyoutBase's hiding member. `ContextFlyoutProperty` and
+>   `Button.FlyoutProperty` are reference-typed DPs that pass `ShouldEnterLeaveProperty`, so **every
+>   entering `UIElement` with a flyout set already runs the full DO walk on it**, from
+>   `UIElement.mux.cs:1242`, *before* the explicit `pFlyoutBase.Enter(...)` at `:1265`.
+>   Consequence: simply dropping `new` would add a **second** DO walk in the same `EnterImpl`
+>   (the `_isProcessingEnterLeave` guard has already cleared by `:1265`). The correct fix is a pure
+>   **rename** that removes the hiding without changing a single dispatch.
+> - **There are ELEVEN ownerless seed sites**, not nine and not two: `UIElement.mux.cs:1242/1265/1276/1833/1846/1861`,
 >   `Button.mux.cs:21/33`, `UIElement.cs:803/806`, and `ResourceDictionary.cs:256`
->   (`fe.LeaveImpl(new LeaveParams())` — no owner at all). Most importantly the original text omitted
+>   (`fe.LeaveImpl(new LeaveParams())` — a different case: that overload has **no owner parameter at
+>   all**, so there is nothing to pass). A further ~11 sites are ownerless only because their overload
+>   never had an owner slot: `VisualTree.cs:445`, `UIElement.crossruntime.cs:126/146/151`,
+>   `DependencyObject.PropertySystem.mux.cs:249`, `Flyout.mux.cs:28/44`, `MenuFlyout.mux.cs:35/62`,
+>   `MenuBarItem.cs:72/88`. Most importantly the original text omitted
 >   **`UIElement.cs:1674-1675`**, the **incremental attach** path behind every runtime `Children.Add`,
 >   ListView container realisation and Frame graft — and therefore the actual mechanism of
 >   #19420 / #22987.
+> - **The owner is `null` on every runtime path today**, verified by exhaustive call-graph trace. That
+>   is what makes the signature-convergence refactor provably inert. The only sites passing a non-null
+>   owner (`UIElement.Properties.cs:134/138`, passing `this`) target `KeyboardAcceleratorCollection`'s
+>   *hiding* members, which consume and discard it.
+> - **The two walks recurse over different edge sets** and are already composed, not parallel:
+>   `EnterProperties` recurses over DP values, `UIElement.EnterImpl` over `_children`. They must stay
+>   distinct — merging the bodies would double-visit every element that is both a DP value and a visual
+>   child (`ContentControl.Content`, `Border.Child`: the common case).
 > - "Always null" is not literally true: `UIElement.Properties.cs:134/138` already passes `this`.
 > - **C++ line citations in this document have drifted ~4 lines** against the current checkout.
 >   Enter-side registration is `depends.cpp:978-993` (not `:986-1001`); Leave-side is `:1267-1272`
