@@ -149,7 +149,13 @@ public partial class TextBox
 			CaretMode = mode;
 		}
 
-		if (CaretMode is CaretDisplayMode.ThumblessCaretShowing)
+		// Mirrors SelectPartial: a pre-drag ThumblessCaretHidden is only a blink phase, and restoring
+		// it neither shows the caret nor restarts the timer, which would strand it hidden for good.
+		if (CaretMode is CaretDisplayMode.ThumblessCaretHidden)
+		{
+			CaretMode = CaretDisplayMode.ThumblessCaretShowing; // the setter restarts the timer
+		}
+		else if (CaretMode is CaretDisplayMode.ThumblessCaretShowing)
 		{
 			_timer.Start(); // resume blinking
 		}
