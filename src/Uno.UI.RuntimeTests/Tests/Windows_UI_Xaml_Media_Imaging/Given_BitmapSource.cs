@@ -87,12 +87,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 #if __SKIA__ // Not yet supported on the other platforms (https://github.com/unoplatform/uno/issues/8909)
 		[TestMethod]
 		// The ms-appdata load never completes on Skia Linux, and the awaited TCS has no timeout, so the job hangs to its limit (#23967).
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaFrameBuffer | RuntimeTestPlatforms.SkiaX11
-#if RUNTIME_NATIVE_AOT
-			// TODO: figure out why it's hanging on Android+NativeAOT: https://github.com/unoplatform/uno/issues/24271
-			| RuntimeTestPlatforms.SkiaAndroid
-#endif // RUNTIME_NATIVE_AOT
-		)]
+		// Android goes silent the same way: first seen under NativeAOT (#24271), then on plain Android Skia
+		// once #24003 fixed the shard partition and the test actually started running there.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaFrameBuffer | RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaAndroid)]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23967")]
 		// Backstop for the storage calls below, which the inner WaitAsync does not cover.
 		[Timeout(60000)]
