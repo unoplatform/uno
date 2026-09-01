@@ -55,4 +55,3 @@ opaquePixels=786432 (of 786432)   (x3)
 Fully painted, wide luminance range (real UI, not a flat clear), varying per frame — identical
 quality to the earlier Skia-backed run, now with WebGPU as the sole renderer and Skia-free geometry.
 Visible on-canvas compositing remains unprovable under headless SwiftShader (needs a real-GPU browser).
-Full console: `wasm-webgpu-skia-free-renderer-console.txt`.

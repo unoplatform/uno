@@ -1,6 +1,6 @@
 # Scoping: a SkiaSharp-free *build* of Uno (Skia targets) — WebGPU + managed engines
 
-Status: scoping/analysis (no implementation yet). Companion to `RUNNING-CONTEXT.md` §42 (which proved the
+Status: scoping/analysis (no implementation yet). Follows the finding that proved the
 SkiaSharp-free **run**). This doc scopes removing the SkiaSharp managed **assembly reference** from a build.
 
 ## 1. Goal & definition of done

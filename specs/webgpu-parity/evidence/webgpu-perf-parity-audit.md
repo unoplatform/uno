@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-13. **Method:** 5 parallel subagents, each diffing *work done* (not pixels) across a
 subsystem. **Baseline:** reference runs its best-perf combo `ARENA=1 SLAB=1 CACHE=1 DIRTY=1 COALESCE=1 MSAA=2
-GLYPHATLAS=1 NOTEXT=0` (RUNNING-CONTEXT §3). Env-config knobs themselves (present mode, MSAA count, pipeline poll)
+GLYPHATLAS=1 NOTEXT=0`. Env-config knobs themselves (present mode, MSAA count, pipeline poll)
 excluded as the *answer*, but the capabilities the combo enables are in scope. Rule: neutral may have MORE, not LESS.
 
 **Why the earlier pixel-diff parity harness (tasks #10, #23) missed all of this:** it verified *correctness* parity
