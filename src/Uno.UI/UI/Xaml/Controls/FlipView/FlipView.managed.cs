@@ -2,29 +2,28 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
+using DirectUI;
+using Microsoft.UI.Input;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
+using Uno;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Extensions.Specialized;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Uno;
-using Microsoft.UI.Xaml.Controls;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
-using Windows.Foundation.Collections;
-using Windows.System;
-using Microsoft.UI.Xaml.Automation.Peers;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Microsoft.UI.Xaml.Automation;
 using Uno.UI.Xaml;
-using Uno.Disposables;
-using DirectUI;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
-
-using Microsoft.UI.Input;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+using Windows.Foundation.Metadata;
+using Windows.System;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -115,9 +114,9 @@ namespace Microsoft.UI.Xaml.Controls
 			m_itemsAreSized = false;
 		}
 
-		internal override void EnterImpl(EnterParams @params, int depth)
+		internal override void EnterImpl(EnterParams @params)
 		{
-			base.EnterImpl(@params, depth);
+			base.EnterImpl(@params);
 
 			HookTemplate();
 		}

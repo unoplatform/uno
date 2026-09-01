@@ -25,14 +25,14 @@ partial class MenuFlyout
 #if HAS_UNO // Uno specific: recover VisualTree from parent (see Flyout.mux.cs Enter for rationale).
 			visualTree ??= (element.GetParent() as DependencyObject)?.GetVisualTree();
 #endif
-			parameters = new EnterParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree };
+			parameters = new EnterParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree, Depth = 0 };
 			//params.fSkipNameRegistration = true;
 			//params.fUseLayoutRounding = false;
 			//params.fCoercedIsEnabled = false;
 
 			foreach (MenuFlyoutItemBase item in items)
 			{
-				item.Enter(parameters, 0);
+				item.Enter(parameters);
 			}
 		}
 	}

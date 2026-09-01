@@ -2,20 +2,19 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls.Primitives;
-
 using Uno.UI;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml;
-using static System.Math;
-using static Uno.UI.LayoutHelper;
-using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Core.Scaling;
-using Uno.UI.Extensions;
+using Windows.Foundation;
+using static System.Math;
+using static Uno.UI.LayoutHelper;
 
 namespace Microsoft.UI.Xaml
 {
@@ -970,7 +969,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
-		internal override void EnterImpl(EnterParams @params, int depth)
+		internal override void EnterImpl(EnterParams @params)
 		{
 			var core = this.GetContext();
 
@@ -989,7 +988,7 @@ namespace Microsoft.UI.Xaml
 			//    }
 			//}
 
-			base.EnterImpl(@params, depth);
+			base.EnterImpl(@params);
 
 			////Check for focus chrome property.
 			//if (@params.IsLive)

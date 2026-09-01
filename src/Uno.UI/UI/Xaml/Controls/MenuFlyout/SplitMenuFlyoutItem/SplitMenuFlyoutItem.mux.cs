@@ -9,9 +9,9 @@ namespace Microsoft.UI.Xaml.Controls;
 partial class SplitMenuFlyoutItem
 {
 	// MUX Reference: CSplitMenuFlyoutItem::EnterImpl in SplitMenuFlyoutItem.cpp
-	internal override void EnterImpl(EnterParams @params, int depth)
+	internal override void EnterImpl(EnterParams @params)
 	{
-		base.EnterImpl(@params, depth);
+		base.EnterImpl(@params);
 		MenuFlyout.KeyboardAcceleratorFlyoutItemEnter(this, this, SplitMenuFlyoutItem.ItemsProperty, @params);
 	}
 
