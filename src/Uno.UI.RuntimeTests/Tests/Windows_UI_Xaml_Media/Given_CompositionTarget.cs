@@ -2,6 +2,7 @@
 using System;
 using System.Threading.Tasks;
 using Microsoft.UI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Private.Infrastructure;
@@ -85,6 +86,46 @@ public class Given_CompositionTarget
 
 		Assert.IsTrue(frames >= 5, $"a silent driver must keep the frame chain alive, got {frames} frames");
 		Assert.IsTrue(ticks >= frames - 2 && ticks <= frames + 2, $"a driver must tick once per frame, got {ticks} ticks for {frames} frames");
+	}
+
+	/// <summary>
+	/// A driver on a target whose host is gone can never tick again — the frame that would bring its next
+	/// tick will not come. It has to be dropped, or the compositor keeps counting an animation in flight
+	/// for the rest of the process.
+	/// </summary>
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaX11)]
+	public async Task When_Window_Closed_Then_Frame_Drivers_Dropped()
+	{
+		var secondary = new Window();
+		var content = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Colors.Red) };
+		secondary.Content = content;
+
+		var activated = false;
+		secondary.Activated += (_, _) => activated = true;
+		secondary.Activate();
+		await TestServices.WindowHelper.WaitFor(() => activated, message: "the secondary window should activate");
+		await TestServices.WindowHelper.WaitForLoaded(content);
+
+		var target = (CompositionTarget)content.Visual.CompositionTarget!;
+		var compositor = content.Visual.Compositor;
+		EventHandler<long> driver = (_, _) => { };
+
+		target.FrameStarting += driver;
+		try
+		{
+			Assert.IsTrue(compositor.IsAnimating, "a subscribed frame driver must count as an animation in flight");
+
+			secondary.Close();
+
+			await TestServices.WindowHelper.WaitFor(() => !compositor.IsAnimating, message: "closing a window must drop the frame drivers of its target");
+		}
+		finally
+		{
+			// A no-op once the target has dropped them, and keeps the count balanced if it hasn't.
+			target.FrameStarting -= driver;
+		}
 	}
 
 	private static async Task<(int Ticks, int Frames)> CountDriverTicks(CompositionTarget target, EventHandler<long> driver)
