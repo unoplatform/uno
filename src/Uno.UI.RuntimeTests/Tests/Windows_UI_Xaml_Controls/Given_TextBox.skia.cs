@@ -6576,6 +6576,47 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
+		public async Task When_CaretDrag_Starts_On_Hidden_Caret_Then_Blinking_Resumes()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			FeatureConfiguration.TextBox.HideCaret = false;
+
+			var SUT = await SetUpCaretDragTextBox("The quick brown fox jumps");
+			SUT.Select(25, 0);
+			await WindowHelper.WaitForIdle();
+
+			// Catch the caret in the hidden half of its blink, so the mode restored at the end of the
+			// gesture is the one that never restarts the timer on its own.
+			var caretHidden = false;
+			for (var i = 0; i < 40 && !caretHidden; i++)
+			{
+				await Task.Delay(100);
+				await WindowHelper.WaitForIdle();
+				caretHidden = SUT.CaretMode == TextBox.CaretDisplayMode.ThumblessCaretHidden;
+			}
+
+			Assert.IsTrue(caretHidden, "The caret never blinked off, so the test could not set itself up.");
+
+			// End without an Update: nothing is committed, so SelectPartial never runs to rescue the mode.
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.Begin, default);
+			SUT.ProcessCaretDragGesture(TextBox.CaretDragPhase.End, default);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(TextBox.CaretDisplayMode.ThumblessCaretShowing, SUT.CaretMode, "The caret must be showing again once the gesture ends.");
+
+			var blinkedOff = false;
+			for (var i = 0; i < 40 && !blinkedOff; i++)
+			{
+				await Task.Delay(100);
+				await WindowHelper.WaitForIdle();
+				blinkedOff = SUT.CaretMode == TextBox.CaretDisplayMode.ThumblessCaretHidden;
+			}
+
+			Assert.IsTrue(blinkedOff, "Blinking did not resume after a gesture that began on a hidden caret.");
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23871")]
 		public async Task When_CaretDrag_Previews_Caret_Without_Moving_Selection()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
