@@ -20,11 +20,73 @@ namespace Uno.UI.Composition.WebGpu;
 
 public sealed unsafe partial class WebGpuPresentSession
 {
+	/// <summary>
+	/// Collapses the maximal run of NON-ZERO path fills starting at <paramref name="index"/> that share colour and
+	/// clip — a text run's glyphs — into ONE stencil and ONE cover over their union bbox, and appends a single op.
+	/// This is the coalescing BuildCoalesced does for arena recordings, applied to the two replay strategies that
+	/// build their ops themselves. Without it every recording that ALSO contains a rect — which is every real list
+	/// row, grid cell or card, since they all have a background — paid two draws and two pipeline switches per glyph.
+	/// </summary>
+	/// <param name="slotBits">The recording's xform-table slot, bit-cast to float, carried by every vertex.</param>
+	/// <returns>
+	/// False when the command at <paramref name="index"/> is not an eligible fill, leaving it for the caller.
+	/// Otherwise the run has been emitted and <paramref name="index"/> is left on its last command.
+	/// </returns>
+	private bool TryEmitGlyphRun(
+		List<WebGpuCommand> cmds,
+		ref int index,
+		float slotBits,
+		OwnedResources owned,
+		List<FrameOp> order)
+	{
+		if (cmds[index] is not PathFill first || first.EvenOdd || first.FanTiles)
+		{
+			return false;
+		}
+
+		_scratch.Clear();
+		var bbMin = new Vector2(float.MaxValue);
+		var bbMax = new Vector2(float.MinValue);
+		int end = index;
+		while (end < cmds.Count && cmds[end] is PathFill fill && !fill.EvenOdd
+			&& fill.Color.R == first.Color.R && fill.Color.G == first.Color.G
+			&& fill.Color.B == first.Color.B && fill.Color.A == first.Color.A
+			&& ClipDataEquals(fill.Clip, first.Clip))
+		{
+			for (int i = 0; i < fill.FanDevice.Length; i += 2)
+			{
+				_scratch.Add(fill.FanDevice[i]);
+				_scratch.Add(fill.FanDevice[i + 1]);
+				_scratch.Add(slotBits);
+			}
+
+			bbMin = Vector2.Min(bbMin, fill.BbMin);
+			bbMax = Vector2.Max(bbMax, fill.BbMax);
+			end++;
+		}
+
+		var fan = Vbuf(_scratch, owned);
+		uint fanCount = (uint)(_scratch.Count / 3);
+
+		float r = first.Color.R / 255f, g = first.Color.G / 255f, b = first.Color.B / 255f, a = first.Color.A / 255f;
+		_scratch.Clear();
+		var topRight = new Vector2(bbMax.X, bbMin.Y);
+		var bottomLeft = new Vector2(bbMin.X, bbMax.Y);
+		PushVertT(bbMin, r, g, b, a, slotBits); PushVertT(topRight, r, g, b, a, slotBits); PushVertT(bbMax, r, g, b, a, slotBits);
+		PushVertT(bbMin, r, g, b, a, slotBits); PushVertT(bbMax, r, g, b, a, slotBits); PushVertT(bottomLeft, r, g, b, a, slotBits);
+		var cover = Vbuf(_scratch, owned);
+
+		var op = new DrawOp(DrawKind.Path, (nint)fan, fanCount, (nint)cover, false, first.Clip, (nint)MakeClipBg(_d.CoverClipBgl, first.Clip, owned));
+		order.Add(new FrameOp { Kind = null, NonSolid = ResidentizeFan(op, owned) });
+		index = end - 1;
+		return true;
+	}
+
 	// Transform-table frame-solid emit (gap-4 solid-scroll redo). Builds the recording's solids/rrects/path-fills ONCE
 	// in identity (local) device space + one shared per-vertex slot, resident in the shared TABLE slabs; each frame a
 	// MOVE rewrites only that slot (WriteXform) and re-stamps the per-op clips — no re-tessellation, no vertex re-Put.
 	// The absolute slab offset is re-derived every frame (TryByteOffset, else re-Put) so a recording that scrolled out
-	// (its slice culled + reclaimed) then back in never draws from a stale offset — the reverted attempt's crash.
+	// (its slice culled + reclaimed) then back in never draws from a stale offset.
 	private void EmitTableFrameSolid(ReplayRefCmd rr, WebGpuGeometryCache feCur, List<DrawOp> ops)
 	{
 		var fe = feCur;
@@ -91,34 +153,8 @@ public sealed unsafe partial class WebGpuPresentSession
 						order.Add(new FrameOp { Kind = null, NonSolid = aop });
 						continue;
 					}
-					// A run of consecutive NON-ZERO paths sharing colour + clip (a text run's glyphs) collapses to ONE
-					// stencil + ONE cover, the same coalescing BuildCoalesced does for arena recordings. Without it every
-					// recording that also contains rects — i.e. every real list row, grid cell or card, since they all
-					// have a background — paid 2 draws and 2 pipeline switches per GLYPH.
-					if (tc is PathFill pf0 && !pf0.EvenOdd && !pf0.FanTiles)
+					if (TryEmitGlyphRun(tcmds, ref ti, slotBits, fOwned, order))
 					{
-						_scratch.Clear();
-						var gMin = new Vector2(float.MaxValue); var gMax = new Vector2(float.MinValue);
-						int gj = ti;
-						while (gj < tcmds.Count && tcmds[gj] is PathFill pfj && !pfj.EvenOdd
-							&& pfj.Color.R == pf0.Color.R && pfj.Color.G == pf0.Color.G && pfj.Color.B == pf0.Color.B && pfj.Color.A == pf0.Color.A
-							&& ClipDataEquals(pfj.Clip, pf0.Clip))
-						{
-							for (int gi = 0; gi < pfj.FanDevice.Length; gi += 2) { _scratch.Add(pfj.FanDevice[gi]); _scratch.Add(pfj.FanDevice[gi + 1]); _scratch.Add(slotBits); }
-							gMin = Vector2.Min(gMin, pfj.BbMin); gMax = Vector2.Max(gMax, pfj.BbMax);
-							gj++;
-						}
-						var gFan = Vbuf(_scratch, fOwned);
-						uint gCount = (uint)(_scratch.Count / 3);
-						float gr = pf0.Color.R / 255f, gg = pf0.Color.G / 255f, gb = pf0.Color.B / 255f, ga = pf0.Color.A / 255f;
-						_scratch.Clear();
-						var gTl = gMin; var gBr = gMax; var gTr = new Vector2(gBr.X, gTl.Y); var gBl = new Vector2(gTl.X, gBr.Y);
-						PushVertT(gTl, gr, gg, gb, ga, slotBits); PushVertT(gTr, gr, gg, gb, ga, slotBits); PushVertT(gBr, gr, gg, gb, ga, slotBits);
-						PushVertT(gTl, gr, gg, gb, ga, slotBits); PushVertT(gBr, gr, gg, gb, ga, slotBits); PushVertT(gBl, gr, gg, gb, ga, slotBits);
-						var gCov = Vbuf(_scratch, fOwned);
-						var gOp = new DrawOp(DrawKind.Path, (nint)gFan, gCount, (nint)gCov, false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, fOwned));
-						order.Add(new FrameOp { Kind = null, NonSolid = ResidentizeFan(gOp, fOwned) });
-						ti = gj - 1;
 						continue;
 					}
 					tmp.Clear();
@@ -270,33 +306,8 @@ public sealed unsafe partial class WebGpuPresentSession
 						order.Add(new FrameOp { Kind = null, NonSolid = aop2 });
 						continue;
 					}
-					// Same glyph-run collapse as the table path: one stencil + one cover for a run of
-					// consecutive non-zero paths sharing colour + clip, instead of 2 draws per glyph.
-					if (tc is PathFill pf0 && !pf0.EvenOdd && !pf0.FanTiles)
+					if (TryEmitGlyphRun(tcmds, ref ti, System.BitConverter.Int32BitsToSingle(fSlot), fOwned, order))
 					{
-						float fSlotBits = System.BitConverter.Int32BitsToSingle(fSlot);
-						_scratch.Clear();
-						var gMin = new Vector2(float.MaxValue); var gMax = new Vector2(float.MinValue);
-						int gj = ti;
-						while (gj < tcmds.Count && tcmds[gj] is PathFill pfj && !pfj.EvenOdd
-							&& pfj.Color.R == pf0.Color.R && pfj.Color.G == pf0.Color.G && pfj.Color.B == pf0.Color.B && pfj.Color.A == pf0.Color.A
-							&& ClipDataEquals(pfj.Clip, pf0.Clip))
-						{
-							for (int gi = 0; gi < pfj.FanDevice.Length; gi += 2) { _scratch.Add(pfj.FanDevice[gi]); _scratch.Add(pfj.FanDevice[gi + 1]); _scratch.Add(fSlotBits); }
-							gMin = Vector2.Min(gMin, pfj.BbMin); gMax = Vector2.Max(gMax, pfj.BbMax);
-							gj++;
-						}
-						var gFan = Vbuf(_scratch, fOwned);
-						uint gCount = (uint)(_scratch.Count / 3);
-						float gr = pf0.Color.R / 255f, gg = pf0.Color.G / 255f, gb = pf0.Color.B / 255f, ga = pf0.Color.A / 255f;
-						_scratch.Clear();
-						var gTl = gMin; var gBr = gMax; var gTr = new Vector2(gBr.X, gTl.Y); var gBl = new Vector2(gTl.X, gBr.Y);
-						PushVertT(gTl, gr, gg, gb, ga, fSlotBits); PushVertT(gTr, gr, gg, gb, ga, fSlotBits); PushVertT(gBr, gr, gg, gb, ga, fSlotBits);
-						PushVertT(gTl, gr, gg, gb, ga, fSlotBits); PushVertT(gBr, gr, gg, gb, ga, fSlotBits); PushVertT(gBl, gr, gg, gb, ga, fSlotBits);
-						var gCov = Vbuf(_scratch, fOwned);
-						var gOp = new DrawOp(DrawKind.Path, (nint)gFan, gCount, (nint)gCov, false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, fOwned));
-						order.Add(new FrameOp { Kind = null, NonSolid = ResidentizeFan(gOp, fOwned) });
-						ti = gj - 1;
 						continue;
 					}
 					tmp.Clear();
