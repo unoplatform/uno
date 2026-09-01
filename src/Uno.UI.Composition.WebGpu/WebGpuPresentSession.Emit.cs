@@ -585,9 +585,10 @@ public sealed unsafe partial class WebGpuPresentSession
 		// Device-space verts => the slot's entry is the pure current projection (rewritten per frame so a
 		// resize repositions the path fills via the table without re-baking).
 		if (entry.XformSlot >= 0) { WriteXform(entry.XformSlot, Matrix4x4.Identity); }
-		// Splice the cached draw-ops straight into this frame's op list — replayed by direct encoding in
-		// the main pass, NOT a render bundle (ExecuteBundles measured ~6x slower on wgpu-native, and forces
-		// a scissor reset; direct replay keeps each op's scissor). Buffers/bind groups persist in `owned`.
+		// Splice the cached draw-ops straight into this frame's op list; buffers and bind groups persist in
+		// `owned`. Replaying them through a render bundle instead looks like the obvious win and is not:
+		// ExecuteBundles measured ~6x slower on wgpu-native, and it resets the pass scissor, which direct
+		// encoding preserves per op.
 		ops.AddRange(entry.Ops);
 	}
 

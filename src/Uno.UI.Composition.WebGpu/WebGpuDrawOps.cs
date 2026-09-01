@@ -212,12 +212,11 @@ internal ref struct PassOps
 }
 
 /// <summary>
-/// Where a pass encodes its draws - the render pass itself, or a render bundle while a cache-eligible chunk is
-/// being recorded - skipping redundant pipeline / bind-group / vertex-buffer sets. A run of like ops otherwise
-/// costs five native calls each where two suffice.
+/// Encodes a pass's draws, skipping redundant pipeline / bind-group / vertex-buffer sets: a run of like ops
+/// otherwise costs five native calls each where two suffice.
 /// <para>
-/// Encoder state is per-pass AND per-bundle, so <see cref="Reset"/> must run at EVERY boundary: pass open or
-/// reopen, bundle begin and end, and after any site that sets state directly instead of through these methods.
+/// The tracked state belongs to one pass, so <see cref="Reset"/> must run at every boundary - a pass opening or
+/// reopening, and any site that sets state directly rather than through these methods.
 /// </para>
 /// </summary>
 internal unsafe struct PassEncoder
