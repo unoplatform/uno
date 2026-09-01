@@ -55,9 +55,9 @@ namespace Microsoft.UI.Xaml.Controls
 		// Enter to all DP values including the Items collection. In Uno, we need to do this explicitly.
 		// MenuBarItem.Items is an ObservableVector (not a DependencyObject), so the generic
 		// DP parent/Enter mechanism doesn't apply. We explicitly propagate to the items' KA collections.
-		internal override void EnterImpl(Uno.UI.Xaml.EnterParams @params)
+		internal override void EnterImpl(DependencyObject namescopeOwner, Uno.UI.Xaml.EnterParams @params)
 		{
-			base.EnterImpl(@params);
+			base.EnterImpl(namescopeOwner, @params);
 
 			var items = Items;
 			if (items is not null)
@@ -68,14 +68,14 @@ namespace Microsoft.UI.Xaml.Controls
 				var kaParams = new Uno.UI.Xaml.EnterParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree, Depth = 0 };
 				foreach (var item in items)
 				{
-					item.Enter(kaParams);
+					item.EnterTree(null, kaParams);
 				}
 			}
 		}
 
-		internal override void LeaveImpl(Uno.UI.Xaml.LeaveParams @params)
+		internal override void LeaveImpl(DependencyObject namescopeOwner, Uno.UI.Xaml.LeaveParams @params)
 		{
-			base.LeaveImpl(@params);
+			base.LeaveImpl(namescopeOwner, @params);
 
 			var items = Items;
 			if (items is not null)
@@ -84,7 +84,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var kaParams = new Uno.UI.Xaml.LeaveParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree };
 				foreach (var item in items)
 				{
-					item.Leave(kaParams);
+					item.LeaveTree(null, kaParams);
 				}
 			}
 		}

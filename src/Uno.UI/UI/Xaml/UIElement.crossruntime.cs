@@ -122,14 +122,14 @@ namespace Microsoft.UI.Xaml
 			(child as DependencyObject)?.ClearInheritedDataContext();
 
 			var leaveParams = new LeaveParams(IsActiveInVisualTree);
-			child.Leave(leaveParams);
+			child.LeaveTree(null, leaveParams);
 		}
 #endif
 
 		internal Point GetPosition(Point position, UIElement relativeTo)
 			=> TransformToVisual(relativeTo).TransformPoint(position);
 
-		private void ChildEnter(UIElement child, EnterParams @params)
+		private void ChildEnter(UIElement child, DependencyObject namescopeOwner, EnterParams @params)
 		{
 			// Uno TODO: WinUI has much more complex logic than this.
 			// WinUI's CDOCollection::ChildEnter always calls child->Enter() (the outer Enter),
@@ -145,13 +145,13 @@ namespace Microsoft.UI.Xaml
 				// Compute from the parent's persisted Depth, never from @params.Depth - @params is
 				// threaded through property, resource and flyout walks where its Depth may be stale.
 				@params.Depth = this.Depth + 1;
-				child.EnterImpl(@params);
+				child.EnterImpl(namescopeOwner, @params);
 			}
 			else if (@params.IsForKeyboardAccelerator)
 			{
 				// Dead enter to propagate keyboard accelerator registration through the subtree.
 				@params.Depth = int.MinValue;
-				child.Enter(@params);
+				child.EnterTree(namescopeOwner, @params);
 			}
 		}
 
