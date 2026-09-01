@@ -547,9 +547,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(SUT);
 
 #if HAS_UNO
-			// GetPlainText joins paragraphs with \r\n. GetAccessibilityInnerText is Uno-only.
+			// Every Paragraph, the last one included, contributes its closing CRLF: WinUI's
+			// CTextBoxHelpers::GetText replaces each Paragraph close position with "\r\n".
+			// GetAccessibilityInnerText is Uno-only.
 			var plainText = SUT.GetAccessibilityInnerText();
-			Assert.AreEqual("Hello\r\nWorld", plainText);
+			Assert.AreEqual("Hello\r\nWorld\r\n", plainText);
 #endif
 		}
 
@@ -1289,9 +1291,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsTrue(SUT.ActualHeight > 0);
 #if HAS_UNO
-			// GetPlainText should join both paragraphs. GetAccessibilityInnerText is Uno-only.
+			// GetPlainText should join both paragraphs and terminate the last. GetAccessibilityInnerText is Uno-only.
 			var text = SUT.GetAccessibilityInnerText();
-			Assert.AreEqual("Small text\r\nLarge text", text);
+			Assert.AreEqual("Small text\r\nLarge text\r\n", text);
 #endif
 		}
 
@@ -1313,7 +1315,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(3, SUT.Blocks.Count);
 #if HAS_UNO
-			Assert.AreEqual("Paragraph 1\r\nParagraph 2\r\nParagraph 3", SUT.GetAccessibilityInnerText());
+			Assert.AreEqual("Paragraph 1\r\nParagraph 2\r\nParagraph 3\r\n", SUT.GetAccessibilityInnerText());
 #endif
 		}
 
@@ -1341,7 +1343,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(1, SUT.Blocks.Count);
 #if HAS_UNO
-			Assert.AreEqual("Keep", SUT.GetAccessibilityInnerText());
+			Assert.AreEqual("Keep\r\n", SUT.GetAccessibilityInnerText());
 #endif
 		}
 
@@ -1413,7 +1415,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 #if HAS_UNO
-			Assert.AreEqual(string.Empty, SUT.GetAccessibilityInnerText());
+			// The Paragraph survives the clear, so its closing CRLF is still reported.
+			Assert.AreEqual("\r\n", SUT.GetAccessibilityInnerText());
 #endif
 		}
 
@@ -1477,7 +1480,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new RichTextBlock { Width = 200, Height = 50 };
 
 			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
+			// ActualWidth/ActualHeight report the measured page node, which is empty here, so the
+			// default WaitForLoaded predicate (a non-zero size) would never be satisfied.
+			await WindowHelper.WaitForLoaded(SUT, x => x.IsLoaded);
 
 			Assert.AreEqual(string.Empty, SUT.GetAccessibilityInnerText());
 		}
@@ -1497,7 +1502,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(SUT);
 
 			// Accessibility text should be plain text without formatting
-			Assert.AreEqual("Normal bold italic", SUT.GetAccessibilityInnerText());
+			Assert.AreEqual("Normal bold italic\r\n", SUT.GetAccessibilityInnerText());
 		}
 #endif
 
@@ -1518,7 +1523,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 #if HAS_UNO
-			Assert.AreEqual(string.Empty, SUT.GetAccessibilityInnerText());
+			// An empty Run adds no characters, but the Paragraph still closes with a CRLF.
+			Assert.AreEqual("\r\n", SUT.GetAccessibilityInnerText());
 #endif
 		}
 
@@ -1567,7 +1573,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 #if HAS_UNO
-			Assert.AreEqual("   ", SUT.GetAccessibilityInnerText());
+			Assert.AreEqual("   \r\n", SUT.GetAccessibilityInnerText());
 #endif
 		}
 
