@@ -287,6 +287,7 @@ Three measurements settle the ranking empirically, in order:
 | Android — Choreographer pacer for the Vulkan render thread | **done** | `perf(android): Pace the Vulkan render thread with Choreographer` |
 | Scroll diagnostics (opt-in, per-frame telemetry) | **done** | `chore(scroll): Add opt-in per-frame scroll diagnostics` |
 | A3 (fix) — frame drivers tick once per native frame, not once per dispatcher pump (F5) | **done** | `fix(skia): Tick frame drivers once per frame` |
+| A3 (guard) — drop a target's frame drivers when its host unregisters (F6) | **done** | `fix(skia): Drop frame drivers when the target unregisters` |
 | A2 — preserve `_childrenPicture` across a pure transform change | **not started** | — |
 | A3 (rest) — thread the frame timestamp through *all* animation evaluation and `RenderingEventArgs` | **not started** | — |
 | A5 — pre-record inertia tick | **not started** | — |
@@ -471,6 +472,24 @@ gap; those lines were discarded.
 next are: feeding the rAF `DOMHighResTimeStamp` (currently discarded by `BrowserRenderer.ts`) into the
 WASM `FrameClock` as the frame's timestamp, pointer `getCoalescedEvents` for touch on WASM (F1), and
 the record-time allocations in the damage path (§3.1). None of them was measured here.
+
+### F6 — A frame driver only ticks on a target a window owns
+
+`CoreServices.OnTick` raises `FrameStarting` — like the ahead-of-time record opportunity, which predates
+this work — only for the roots in `ApplicationHelper.WindowsInternal`. A `XamlIslandRoot` content root
+(the `DesktopWindowXamlSource` hosting path) takes the branch above that loop, which does layout only, so
+a driver subscribed to such a target would never tick and wheel/fling motion would not advance there.
+Not exercised: island hosting on Skia has no sample or test that scrolls, and that branch already skipped
+`OnRenderFrameOpportunity` before this work — recorded here rather than fixed blind.
+
+A neighbouring hole *was* closed. A target whose host unregisters — a closed window — never presents
+again, so a driver still attached to it can never receive the frame that would bring its next tick, and
+the compositor's frame-driver count (what `Compositor.IsAnimating` reports, process-wide) would stay
+raised for the rest of the session, hanging every later
+`UITestHelper.WaitForIdle(waitForCompositionAnimations: true)`. `OnTargetUnregistered` now drops the
+target's drivers via `CompositionTarget.ClearFrameDrivers`, covered by
+`Given_CompositionTarget.When_Window_Closed_Then_Frame_Drivers_Dropped`. Both scroll drivers already
+unsubscribe from `OnUnloaded`, so this is defensive hardening rather than the fix for an observed hang.
 
 ## 10. Known-open questions
 
