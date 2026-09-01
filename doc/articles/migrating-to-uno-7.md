@@ -569,13 +569,25 @@ recompile against 7.0 rather than swapping assemblies in place.
 
 - **`Duration.TimeSpan` is a read-only property.** WinUI exposes it as get-only, so a
   `Duration` carrying a time span comes from the constructor. Assigning the old field left
-  `Type` at its `Automatic` default, so `HasTimeSpan` stayed `false`; the constructor sets
-  both:
+  the duration in its `Automatic` default state, so `HasTimeSpan` stayed `false`; the
+  constructor sets both:
 
   ```diff
   - Duration d = default;
   - d.TimeSpan = TimeSpan.FromSeconds(2);
   + Duration d = new(TimeSpan.FromSeconds(2));
+  ```
+
+- **`Duration.Type` is no longer public.** WinUI's `Duration` exposes no `Type` member at
+  all; the state is reached through `HasTimeSpan` and comparison against `Duration.Automatic`
+  and `Duration.Forever`. The `DurationType` enum itself stays public, as it is in WinUI:
+
+  ```diff
+  - if (d.Type == DurationType.TimeSpan) { }
+  + if (d.HasTimeSpan) { }
+
+  - if (d.Type == DurationType.Forever) { }
+  + if (d == Duration.Forever) { }
   ```
 
 - **`DataTemplate.LoadContent()` returns `DependencyObject`.** WinUI's return type is
