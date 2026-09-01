@@ -1164,9 +1164,6 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		}
 
 		[TestMethod]
-#if RUNTIME_NATIVE_AOT
-		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
-#endif  // RUNTIME_NATIVE_AOT
 		public void Manipulation_Inertia_Aborted_By_Press_Then_Tap_Is_Still_Raised()
 		{
 			using var _ = Touch();
@@ -1192,7 +1189,10 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.PendingManipulation!.IsCoasting.Should().BeFalse();
 
 			sut.ProcessUpEvent(51, 51, ts: 112 * MicrosecondsPerMillisecond);
-			taps.Should().BeEquivalentTo([Tap(50, 50)]);
+			taps.Should().HaveCount(1);
+			taps[0].Position.Should().Be(new Point(50, 50));
+			taps[0].TapCount.Should().Be(1u);
+			taps[0].PointerDeviceType.Should().Be(PointerDeviceType.Touch);
 		}
 
 		[TestMethod]
