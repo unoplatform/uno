@@ -86,19 +86,19 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// </summary>
 	private void DrawBlurredBackdrop(ref PassOps pst, BackdropCmd backdrop, IntPtr blurred, Vector2 origin, Vector2 size)
 	{
-		var uniform = MakeUniform(112);
+		var uniform = MakeUniform(WebGpuDevice.ImageUniformBytes);
 		var fields = stackalloc float[28];
 		var lum = backdrop.Effect.LumColor;
 		fields[0] = backdrop.Opacity;
 		fields[3] = 1f;
 		fields[4] = lum.R / 255f; fields[5] = lum.G / 255f; fields[6] = lum.B / 255f; fields[7] = lum.A / 255f;
 		fields[24] = backdrop.Effect.Noise;
-		wgpuQueueWriteBuffer(_d.Q, uniform, 0, (IntPtr)fields, 112);
+		wgpuQueueWriteBuffer(_d.Q, uniform, 0, (IntPtr)fields, WebGpuDevice.ImageUniformBytes);
 
 		var entries = stackalloc WGPUBindGroupEntry[3];
 		entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = blurred };
 		entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-		entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = uniform, Offset = 0, Size = 112 };
+		entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = uniform, Offset = 0, Size = WebGpuDevice.ImageUniformBytes };
 		var bgDesc = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
 		var imageBg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgDesc));
 
@@ -134,7 +134,7 @@ public sealed unsafe partial class WebGpuPresentSession
 
 		pst.Enc.Pipe(_d.SolidPipe);
 		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 0, (IntPtr)clipBg, 0, (uint*)null);
-		wgpuRenderPassEncoderSetVertexBuffer(pst.Pass, 0, (IntPtr)buf, 0, (nuint)(36 * sizeof(float)));
+		wgpuRenderPassEncoderSetVertexBuffer(pst.Pass, 0, (IntPtr)buf, 0, (nuint)(6 * VertexStride.Solid * sizeof(float)));
 		pst.Enc.Reset();
 		pst.Enc.Draw(6);
 	}
@@ -206,7 +206,7 @@ public sealed unsafe partial class WebGpuPresentSession
 						}
 						pst.Enc.Pipe(_d.SolidPipe);
 						pst.Enc.Bg(0, (IntPtr)clipBg);
-						pst.Enc.Vb(solidBuf, (nuint)(startVert * 6 * sizeof(float)), (nuint)(count * 6 * sizeof(float)));
+						pst.Enc.Vb(solidBuf, (nuint)(startVert * VertexStride.Solid * sizeof(float)), (nuint)(count * VertexStride.Solid * sizeof(float)));
 						pst.Enc.Draw(count);
 						break;
 					}
@@ -218,12 +218,12 @@ public sealed unsafe partial class WebGpuPresentSession
 						{
 							var nx = ops[oi + 1];
 							if (nx.kind != DrawKind.Solid || nx.b0 != VertexSource.Slab || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
-								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 6 * sizeof(float))) { break; }
+								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * VertexStride.Solid * sizeof(float))) { break; }
 							count += nx.u0; oi++;
 						}
 						pst.Enc.Pipe(_d.SolidPipe);
 						pst.Enc.Bg(0, (IntPtr)clipBg);
-						pst.Enc.Vb(_d.SolidSlab.Buf, (nuint)byteOff, (nuint)(count * 6 * sizeof(float)));
+						pst.Enc.Vb(_d.SolidSlab.Buf, (nuint)byteOff, (nuint)(count * VertexStride.Solid * sizeof(float)));
 						pst.Enc.Draw(count);
 						break;
 					}
@@ -237,13 +237,13 @@ public sealed unsafe partial class WebGpuPresentSession
 						{
 							var nx = ops[oi + 1];
 							if (nx.kind != DrawKind.Solid || nx.b0 != VertexSource.TableSlab || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
-								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 7 * sizeof(float))) { break; }
+								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * VertexStride.Table * sizeof(float))) { break; }
 							count += nx.u0; oi++;
 						}
 						pst.Enc.Pipe(_d.SolidTablePipe);
 						pst.Enc.Bg(0, (IntPtr)xformBg);
 						pst.Enc.Bg(1, (IntPtr)clipBg);
-						pst.Enc.Vb(_d.SolidTableSlab.Buf, (nuint)byteOff, (nuint)(count * 7 * sizeof(float)));
+						pst.Enc.Vb(_d.SolidTableSlab.Buf, (nuint)byteOff, (nuint)(count * VertexStride.Table * sizeof(float)));
 						pst.Enc.Draw(count);
 						break;
 					}
@@ -255,11 +255,11 @@ public sealed unsafe partial class WebGpuPresentSession
 					{
 						// Whole shared buffer bound once (dedups across the run); the op's slice is a vertex offset.
 						pst.Enc.Vb((IntPtr)b0, 0, solidBufBytes);
-						pst.Enc.Draw(u0, (uint)(b1 / (6 * sizeof(float))));
+						pst.Enc.Draw(u0, (uint)(b1 / (VertexStride.Solid * sizeof(float))));
 					}
 					else
 					{
-						pst.Enc.Vb((IntPtr)b0, (nuint)b1, (nuint)(u0 * 6 * sizeof(float)));
+						pst.Enc.Vb((IntPtr)b0, (nuint)b1, (nuint)(u0 * VertexStride.Solid * sizeof(float)));
 						pst.Enc.Draw(u0);   // u0 = 6 * (coalesced) rect count
 					}
 					break;
@@ -286,11 +286,11 @@ public sealed unsafe partial class WebGpuPresentSession
 					if (flag)
 					{
 						pst.Enc.Vb((IntPtr)pathBuf, 0, pathBufBytes);
-						pst.Enc.Draw(u0, (uint)(b0 / (7 * sizeof(float))));
+						pst.Enc.Draw(u0, (uint)(b0 / (VertexStride.Table * sizeof(float))));
 					}
 					else
 					{
-						pst.Enc.Vb((IntPtr)b0, 0, (nuint)(u0 * 7 * sizeof(float)));
+						pst.Enc.Vb((IntPtr)b0, 0, (nuint)(u0 * VertexStride.Table * sizeof(float)));
 						pst.Enc.Draw(u0);
 					}
 					break;
@@ -305,7 +305,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					pst.Enc.Bg(0, (IntPtr)xformBg);
 					pst.Enc.Bg(1, (IntPtr)clipBg);
 					pst.Enc.Vb((IntPtr)pathBuf, 0, pathBufBytes);
-					pst.Enc.Draw(6, (uint)(b1 / (7 * sizeof(float))));
+					pst.Enc.Draw(6, (uint)(b1 / (VertexStride.Table * sizeof(float))));
 					break;
 				case DrawKind.Image:
 					pst.Enc.Pipe(_d.ImagePipe);

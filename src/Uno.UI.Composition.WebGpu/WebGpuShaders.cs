@@ -22,6 +22,19 @@ internal sealed unsafe partial class WebGpuDevice
 	// parameter (each shader declares the binding at its own contiguous group index — colored uses group 0,
 	// image/gradient group 1 — avoiding a group hole wgpu's auto-layout rejects). Device-space, axis-aligned
 	// rounded-rect mask (radii 0 → plain rect, full coverage); ~1px analytic AA on the corner edge.
+	/// <summary>
+	/// Bytes in the image/op uniform block (28 floats), as declared by <see cref="ImageWgsl"/>. The pipeline
+	/// layout's MinBindingSize, every bind group's entry size and the writer all have to agree: a bind group that
+	/// disagrees with the layout is rejected at draw time, and one that disagrees with the struct reads garbage.
+	/// </summary>
+	public const int ImageUniformBytes = 112;
+
+	/// <summary>
+	/// Bytes in the composite uniform block (24 floats: opacity plus a 4x5 colour matrix), as declared by
+	/// <see cref="CompositeWgsl"/> and <see cref="CompositeBlendWgsl"/>. Same agreement requirement as above.
+	/// </summary>
+	public const int CompositeUniformBytes = 96;
+
 	private const string ClipStructFn = @"
 // rects[i]/radii[i] are the nested rounded-rect clips (device space), ANDed together; ex[i]>0.5 = Difference
 // (keep outside). meta.x = active count. Arbitrary path clips are applied via the shared depth buffer as an in-pass

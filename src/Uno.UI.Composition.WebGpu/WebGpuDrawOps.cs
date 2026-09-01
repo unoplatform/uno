@@ -20,6 +20,16 @@ namespace Uno.UI.Composition.WebGpu;
 
 // Persistent (non-pooled) GPU resources for a cached recording, released on eviction. Separate from the per-frame
 // pool so cached draws survive across frames.
+/// <summary>Floats per vertex in the two shared vertex layouts. See <see cref="VertexSource"/> for where each lives.</summary>
+internal static class VertexStride
+{
+	/// <summary>Position + premultiplied colour: every solid and rounded rect not placed by the xform table.</summary>
+	public const int Solid = 6;
+
+	/// <summary>Position + colour + xform-table slot, so a move rewrites the slot instead of the geometry.</summary>
+	public const int Table = 7;
+}
+
 /// <summary>
 /// Sentinel <see cref="DrawOp.b0"/> values for solid and rounded-rect ops whose verts live in a buffer shared with
 /// other ops instead of one of their own. Any other <c>b0</c> is the op's own vertex buffer handle.

@@ -122,13 +122,13 @@ public sealed unsafe partial class WebGpuPresentSession
 			try
 			{
 				var blurView = BlurPyramid(src.View, src.PixelWidth, src.PixelHeight, sigmaX, sigmaY);
-				var idu = MakeUniform(96);
+				var idu = MakeUniform(WebGpuDevice.CompositeUniformBytes);
 				var idc = stackalloc float[24]; idc[1] = 1f;   // params.x=0 (no colour matrix), params.y=1 (opacity)
 				wgpuQueueWriteBuffer(_d.Q, idu, 0, (IntPtr)idc, 96);
 				// Two entries, not three: the composite shader uses textureLoad, so its layout has no sampler.
 				var e = stackalloc WGPUBindGroupEntry[2];
 				e[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = blurView };
-				e[1] = new WGPUBindGroupEntry { Binding = 2, Buffer = idu, Offset = 0, Size = 96 };
+				e[1] = new WGPUBindGroupEntry { Binding = 2, Buffer = idu, Offset = 0, Size = WebGpuDevice.CompositeUniformBytes };
 				var bgd = new WGPUBindGroupDescriptor { Layout = _d.CompositeBgl, EntryCount = 2, Entries = e };
 				var bg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
 				var ca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _s.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? _s.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
@@ -170,13 +170,13 @@ public sealed unsafe partial class WebGpuPresentSession
 			if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); }
 			try
 			{
-				var ubuf = MakeUniform(96);
+				var ubuf = MakeUniform(WebGpuDevice.CompositeUniformBytes);
 				var uc = stackalloc float[24]; uc[1] = 1f; uc[2] = shaderMode;   // params.x=0 (no matrix), y=1 (opacity), z=mode
 				wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)uc, 96);
 				var e = stackalloc WGPUBindGroupEntry[4];
 				e[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = fg.View };   // src = foreground
 				e[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-				e[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 96 };
+				e[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = WebGpuDevice.CompositeUniformBytes };
 				e[3] = new WGPUBindGroupEntry { Binding = 3, TextureView = bg.View };   // dst = background
 				var bgd = new WGPUBindGroupDescriptor { Layout = _d.CompositeBlendBgl, EntryCount = 4, Entries = e };
 				var bgh = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
