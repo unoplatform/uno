@@ -32,7 +32,7 @@ the solids exactly where the solid runs break.
 
 Ramez's **current** trace-harness build emits **no** path draw calls for the glyphs (the paths are still present
 in the stream — they break the solid coalescing identically — but their draw calls don't fire/trace). This
-reproduces even for the standalone `path` scene in the current build, while the **stored** `ramez-trace.txt`
+reproduces even for the standalone `path` scene in the current build, while the **stored** earlier trace
 (captured earlier) shows the standalone path as `path-stencil-eo v=9` + `path-cover v=6`. So it's a ramez-side
 harness/build artifact, not a neutral gap — and in the real app ramez renders text (the user sees it).
 
