@@ -94,6 +94,10 @@ namespace TestRepro
 			object _ = null;
 			// Source MainPage.xaml (Line 5:4)
 			Resources.TryGetValue("MyName", out _);
+			if (_ is global::Microsoft.UI.Xaml.Controls.Border __namedResource_MyName)
+			{
+				MyName = __namedResource_MyName;
+			}
 			Loading += __UpdateNamedResources;
 		}
 		partial void OnInitializeCompleted();

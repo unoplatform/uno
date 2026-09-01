@@ -2023,7 +2023,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				BuildSourceLineInfo(writer, namedResource.Value);
 
+				// The backing field is what makes an x:Name'd resource reachable from code-behind, as
+				// it is in WinUI, and what the generated __UpdateNamedResources below relies on (#24293).
 				writer.AppendLineInvariantIndented("Resources.TryGetValue(\"{0}\", out _);", namedResource.Key);
+
+				if (FindType(namedResource.Value.Type)?.GetFullyQualifiedTypeIncludingGlobal() is { } resourceType)
+				{
+					// Only when the name is also the key: an entry keyed by x:Key is assigned to its
+					// field where it is built, and must not be overwritten with a failed lookup.
+					using (writer.BlockInvariant("if (_ is {0} __namedResource_{1})", resourceType, namedResource.Key))
+					{
+						writer.AppendLineIndented($"{namedResource.Key} = __namedResource_{namedResource.Key};");
+					}
+
+					RegisterBackingField(resourceType, namedResource.Key, FindObjectFieldAccessibility(namedResource.Value));
+				}
 			}
 
 			bool IsGenerateUpdateResourceBindings(KeyValuePair<string, XamlObjectDefinition> nr)
@@ -3578,10 +3592,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							var isMemberInsideResourceDictionary = IsMemberInsideResourceDictionary(objectDefinition);
 							var value = member.Value?.ToString();
 
+							// x:Name on a resource entry produces a backing field in WinUI, and the
+							// entry is materialized eagerly for exactly that reason
+							// (ShouldLazyInitializeResource). A standalone dictionary has no x:Class
+							// root to hold the field, so it keeps the old behaviour.
+							var skipNamedMemberHandling = isMemberInsideResourceDictionary.isInside && _isTopLevelDictionary;
+
 							if (
 								member.Member.Name == "Name"
 								&& member.Member.PreferredXamlNamespace == XamlConstants.XamlXmlNamespace
-								&& !isMemberInsideResourceDictionary.isInside
+								&& !skipNamedMemberHandling
 							)
 							{
 								ValidateName(value, member);
@@ -3592,7 +3612,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (
 								member.Member.Name == "Name"
 								&& !IsAttachedProperty(member)
-								&& !isMemberInsideResourceDictionary.isInside
+								&& !skipNamedMemberHandling
 							)
 							{
 								nameMember = member;
