@@ -1253,7 +1253,7 @@ namespace Microsoft.UI.Xaml
 				pFlyoutBase.SetParent(this);
 				var flyoutParams = @params;
 				flyoutParams.VisualTree = null;
-				pFlyoutBase.Enter(null, flyoutParams);
+				pFlyoutBase.PropagateKeyboardAcceleratorEnter(null, flyoutParams);
 			}
 
 			// TODO: Uno specific - In WinUI, CDependencyObject::EnterImpl calls EnterSparseProperties
@@ -1264,7 +1264,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (GetValue(KeyboardAcceleratorsProperty) is KeyboardAcceleratorCollection kac)
 				{
-					kac.Enter(null, @params);
+					kac.RegisterLiveAccelerators(null, @params);
 				}
 			}
 
@@ -1834,7 +1834,7 @@ namespace Microsoft.UI.Xaml
 			{
 				var flyoutParams = @params;
 				flyoutParams.VisualTree = null;
-				pFlyoutBase.Leave(null, flyoutParams);
+				pFlyoutBase.PropagateKeyboardAcceleratorLeave(null, flyoutParams);
 
 				if (ReferenceEquals(pFlyoutBase.GetParent(), this))
 				{
@@ -1849,7 +1849,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (GetValue(KeyboardAcceleratorsProperty) is KeyboardAcceleratorCollection kac)
 				{
-					kac.Leave(null, @params);
+					kac.UnregisterLiveAccelerators(null, @params);
 				}
 			}
 
