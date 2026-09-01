@@ -1830,7 +1830,7 @@ internal sealed class OwnedResources
 // One draw op in a pass's ordered list. A struct so glyph coalescing can carry the extra
 // fields (a shared glyph-fan-buffer start + the fill colour) without threading a wider tuple through ~30 sites. The
 // lowercase field names + Deconstruct keep the existing `var (kind, b0, ...) = op` destructuring and `.kind`/`.b0`
-// access working unchanged. kind: 0=rect 1=path 2=image 3=gradient 5=rrect. For a coalesced-glyph path op (kind 1),
+// access working unchanged. For a coalesced-glyph path op (DrawKind.Path),
 // GlyphFanStart>=0 marks the fan as living in the pass's shared glyph buffer at that start vertex (b0 unused),
 // and Color is the run colour (coalescing merges same-Color+same-clip stencils).
 

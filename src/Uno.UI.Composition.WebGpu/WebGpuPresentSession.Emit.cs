@@ -160,7 +160,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			{
 				var fo = fe.FrameOrder[i];
 				var local = fo.Kind is null ? fo.NonSolid.clip : fo.Clip;
-				// An atlas quad in a stamped recording is a kind-2 IMAGE draw: it needs the image pipeline's own
+				// An atlas quad in a stamped recording is a DrawKind.Image draw: it needs the image pipeline's own
 				// ClipU layout, not the shared one, or the draw is rejected and the process aborts.
 				var opKind = fo.Kind ?? fo.NonSolid.kind;
 				var stampBgl = ClipBglForKind(opKind);
@@ -591,7 +591,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			return;
 		}
 		// Render the blurred coverage offscreen, then composite it as a SrcIn-tinted image (tint =
-		// shadow color) at its device placement — reusing the image draw path (kind 2), incl. clip.
+		// shadow color) at its device placement — reusing the image draw path, incl. clip.
 		var blurView = RenderShadow(sh, out var origin, out var size);
 		var sbg = TintedImageBg(blurView, sh.Color);
 		var sq = TexturedQuad(origin, size);
@@ -625,7 +625,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			}
 		}
 
-		// Render the layer's commands into a full-size offscreen surface, then composite (kind 4). Both the
+		// Render the layer's commands into a full-size offscreen surface, then composite. Both the
 		// offscreen render and this composite record into the frame's single encoder, so wgpu barriers the
 		// offscreen resolve before the composite samples it — no explicit flush needed.
 		var layerSurface = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);

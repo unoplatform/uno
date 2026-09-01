@@ -264,7 +264,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	// Per-pass shared SOLID vertex buffer: every device-space solid run — immediate draws AND
 	// solid-only cached recordings — appends its 6-float verts here in op order, so adjacent solid ops sharing a clip
 	// occupy a CONTIGUOUS range and the emit loop coalesces them into ONE draw (cross-visual, not just within one
-	// recording). Uploaded once per pass; recycled next pass. A solid op with b0==0 references (b1=startVert, u0=count)
+	// recording). Uploaded once per pass; recycled next pass. A PassBuffer solid op references (b1=startVert, u0=count)
 	// into this buffer; b0!=0 is a legacy private-buffer solid (mixed/arena recording) that draws on its own.
 	private readonly Stack<List<float>> _solidPool = new();
 	private List<float> _gradVerts;
@@ -507,134 +507,31 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	// UNO_WEBGPU_PATH_ATLAS=0 opts out (falls back to tessellated AA, which aliases on curved outlines).
 	private static readonly bool _pathAtlas = Environment.GetEnvironmentVariable("UNO_WEBGPU_PATH_ATLAS") is not "0";
 
-	private void RenderInto(List<WebGpuCommand> cmds, WebGpuRenderSurface target, WColor? clear, bool load = false)
+	/// <summary>Ops per render-bundle chunk. Chunks are compared against the target's snapshot independently.</summary>
+	private const int BundleChunkSize = 32;
+
+	/// <summary>
+	/// Decides which parts of this pass can be replayed from pre-recorded render bundles. Ops are compared against
+	/// the target's snapshot in fixed-size chunks, so one animated recording - or the FPS overlay - invalidates only
+	/// its own chunk while the rest of the frame replays; consecutive replays coalesce into one ExecuteBundles call.
+	/// <para>
+	/// Chunk boundaries are op indices, so they hold only while the op COUNT holds: a count change, or a change to
+	/// any shared buffer the ops index into, re-snapshots the whole pass.
+	/// </para>
+	/// </summary>
+	/// <returns>True when this pass can use bundles at all; the two arrays are null unless a snapshot matched.</returns>
+	private bool PlanBundleChunks(
+		WebGpuRenderSurface target,
+		List<DrawOp> ops,
+		bool mainPass,
+		int backdropCount,
+		IntPtr xformBg,
+		out bool[] chunkReplay,
+		out bool[] chunkRecord)
 	{
-		_renderIntoStart = System.Diagnostics.Stopwatch.GetTimestamp();
-
-		// Build GPU resources for every command up front (buffers/textures must be created outside the
-		// render pass), preserving draw order in a single op list so cross-type z-order is honoured.
-		// b1=cover, flag=evenOdd), 2=image (b0=bindGroup, b1=quad), 3=gradient, 4=composite layer.
-		var ops = RentOps();
-		var solid = RentSolid();
-		var rrect = RentRrect();
-		// Per-pass transform table (path fills). Saved/restored around the recursive nested-layer RenderInto so each
-		// pass builds and uploads its own. Transient (immediate-draw) slots are collected here and freed at pass end.
-		var savedXforms = _xforms; var savedTransient = _xformTransient;
-		// Immediate gradient quads share ONE per-pass buffer, like solids. Giving each quad its own pooled buffer
-		// reads cleaner but costs a queue write apiece: 500 native calls per frame on RenderStress_Gradients to
-		// carry 48 bytes each, and a native call costs far more than the bytes it carries. Fields rather than
-		// locals because BuildSimpleOp appends to them; saved/restored so each nested pass uploads its own.
-		var savedGradVerts = _gradVerts;
-		var savedQuadVerts = _quadVerts;
-		var savedPathVerts = _pathVerts;
-		_gradVerts = RentSolid(); _gradVerts.Clear();
-		_quadVerts = RentSolid(); _quadVerts.Clear();
-		_pathVerts = RentSolid(); _pathVerts.Clear();
-		var mainPass = ReferenceEquals(target, _s);
-		_xforms = RentXforms(); _xforms.Clear();
-		_xformTransient = RentTransient(); _xformTransient.Clear();
-		// Recordings emitted so far in THIS pass. A recording replayed more than once in one frame (same command
-		// list at different transforms) can't share its single resident slab slice — see the frame-solid branch.
-		var frameEmitted = new HashSet<List<WebGpuCommand>>(System.Collections.Generic.ReferenceEqualityComparer.Instance);
-		// Backdrops deferred to encode-time pass-segmenting (kind-6 op): each samples the framebuffer resolved SO FAR
-		// (content behind it) rather than re-rendering the whole command prefix, which would be O(n^2).
-		var backdrops = new List<BackdropCmd>();
-		for (int ci = 0; ci < cmds.Count; ci++)
-		{
-			var cmd = cmds[ci];
-			switch (cmd)
-			{
-				case RectCommand rc0:
-					{
-						// Coalesce a run of consecutive rects sharing the same clip into the shared solid buffer + one op.
-						// b0==0 marks a shared-buffer solid (b1=start vertex, u0=vertex count) so adjacent solid ops that
-						// share a clip bind group coalesce further ACROSS recordings in the emit loop.
-						int j = ci; int start = solid.Count / 6;
-						while (j < cmds.Count && cmds[j] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
-						{
-							AppendSolidRect(solid, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
-							j++;
-						}
-						ops.Add(new DrawOp(DrawKind.Solid, VertexSource.PassBuffer, (uint)((j - ci) * 6), (nint)start, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip)));
-						ci = j - 1;   // the for-loop's ci++ advances past the run
-						break;
-					}
-				case PathFill:
-					BuildSimpleOp(cmd, ops, null, AllocTransientPathSlot(), atlasScale: Vector2.One);   // pooled (per-frame); transient table slot
-					break;
-				case ImageCmd:
-				case GradientCmd:
-					BuildSimpleOp(cmd, ops, null, -1, atlasScale: Vector2.One);   // pooled (per-frame)
-					break;
-				case RoundedRectCmd rri:
-					{
-						// Shared rrect buffer (b0==0, b1=start vert): adjacent same-clip rrects coalesce in the emit loop.
-						int st = rrect.Count / 22;
-						AppendRrect(rrect, rri);
-						ops.Add(new DrawOp(DrawKind.RoundedRect, VertexSource.PassBuffer, 6, (nint)st, false, rri.Clip, (nint)MakeClipBg(_d.RrClipBgl, rri.Clip)));
-						break;
-					}
-				case ReplayRefCmd rr:
-					EmitReplayRef(rr, ops, frameEmitted);
-					break;
-				case ShadowCmd sh:
-					EmitShadow(sh, ops);
-					break;
-				case LayerCmd lyr:
-					EmitLayer(lyr, ops);
-					break;
-				case BackdropCmd bk:
-					{
-						// Defer to encode-time pass-segmenting: a kind-6 marker splits THIS pass here so the backdrop samples the
-						// framebuffer RESOLVED SO FAR (the content behind it) in place — no offscreen, no prefix re-render. Works for
-						// the on-window target AND pooled layer targets: both store+reload their MSAA across the segment (see the
-						// main-pass + kind-6 StoreOp), so an acrylic inside a layer/flyout skips the full-window offscreen the old
-						// pooled fallback re-rendered per backdrop, and an empty prefix costs nothing (no separate blurred offscreen).
-						int bi = backdrops.Count; backdrops.Add(bk);
-						ops.Add(new DrawOp(DrawKind.BackdropSegment, 0, 0, (nint)bi, false, bk.Clip, 0));
-						break;
-					}
-			}
-		}
-
-		// Upload the whole pass's coalesceable solid + rrect geometry in ONE buffer each; b0==0 ops index them.
-		nint solidBuf = solid.Count > 0 ? (nint)MakeBuffer(solid) : IntPtr.Zero;
-		nint rrectBuf = rrect.Count > 0 ? (nint)MakeBuffer(rrect) : IntPtr.Zero;
-		nint gradBuf = _gradVerts.Count > 0 ? (nint)MakeBuffer(_gradVerts) : IntPtr.Zero;
-		var gradBufBytes = (nuint)(_gradVerts.Count * sizeof(float));
-		nint quadBuf = _quadVerts.Count > 0 ? (nint)MakeBuffer(_quadVerts) : IntPtr.Zero;
-		var quadBufBytes = (nuint)(_quadVerts.Count * sizeof(float));
-		nint pathBuf = _pathVerts.Count > 0 ? (nint)MakeBuffer(_pathVerts) : IntPtr.Zero;
-		var pathBufBytes = (nuint)(_pathVerts.Count * sizeof(float));
-		var solidBufBytes = (nuint)(solid.Count * sizeof(float));
-
-		// Upload this pass's transform table + one read-only storage bind group (group 0 of the path-fill pipelines).
-		// Every drawn path recording wrote its slot's local->NDC affine above; a pass with no path fills skips this.
-		nint xformBg = IntPtr.Zero;
-		if (_xforms.Count > 0)
-		{
-			// Main on-window pass: persistent buffer + bind group cached across frames (rebuilt only on growth).
-			// Nested/pooled passes rent a transient buffer instead so their distinct tables never alias the main one
-			// within a single frame's submit (queue ordering only protects the persistent buffer across frames).
-			if (target == _s)
-			{
-				xformBg = _d.EnsureXformBindGroup(_xforms);
-			}
-			else
-			{
-				int xbytes = _xforms.Count * sizeof(float);
-				var xbuf = _d.BufferPool.Rent(xbytes, WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst);
-				var xspan = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_xforms);
-				fixed (float* xp = xspan) { wgpuQueueWriteBuffer(_d.Q, xbuf, 0, (IntPtr)xp, (nuint)xbytes); }
-				var xe = new WGPUBindGroupEntry { Binding = 0, Buffer = xbuf, Offset = 0, Size = (nuint)xbytes };
-				var xbgd = new WGPUBindGroupDescriptor { Layout = _d.XformBgl, EntryCount = 1, Entries = &xe };
-				xformBg = (nint)_d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &xbgd));
-			}
-		}
-
-		if (_emitStats) { OpsBuildTicks += System.Diagnostics.Stopwatch.GetTimestamp() - _renderIntoStart; }
-		// ---- render-bundle fast path (main surface only) ----
-		var bundleEligible = mainPass && backdrops.Count == 0;
+		chunkReplay = null;
+		chunkRecord = null;
+		var bundleEligible = mainPass && backdropCount == 0;
 		for (int i = 0; bundleEligible && i < ops.Count; i++)
 		{
 			var o = ops[i];
@@ -647,8 +544,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		// recording (or the FPS overlay) invalidates only its own chunk while the rest of the frame replays
 		// pre-recorded bundles (consecutive replays coalesce into one ExecuteBundles call). Index-based
 		// boundaries stay stable while the op COUNT is stable; a count or shared-buffer change re-snapshots.
-		const int BundleChunkSize = 32;
-		bool[] chunkReplay = null, chunkRecord = null;
 		if (bundleEligible)
 		{
 			var chunkCount = (ops.Count + BundleChunkSize - 1) / BundleChunkSize;
@@ -698,6 +593,136 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 			ReleaseBundleChunks(target);
 			target.BundleOpsN = -1;
 		}
+		return bundleEligible;
+	}
+
+	private void RenderInto(List<WebGpuCommand> cmds, WebGpuRenderSurface target, WColor? clear, bool load = false)
+	{
+		_renderIntoStart = System.Diagnostics.Stopwatch.GetTimestamp();
+
+		// Build GPU resources for every command up front (buffers/textures must be created outside the
+		// render pass), preserving draw order in a single op list so cross-type z-order is honoured.
+		var ops = RentOps();
+		var solid = RentSolid();
+		var rrect = RentRrect();
+		// Per-pass transform table (path fills). Saved/restored around the recursive nested-layer RenderInto so each
+		// pass builds and uploads its own. Transient (immediate-draw) slots are collected here and freed at pass end.
+		var savedXforms = _xforms; var savedTransient = _xformTransient;
+		// Immediate gradient quads share ONE per-pass buffer, like solids. Giving each quad its own pooled buffer
+		// reads cleaner but costs a queue write apiece: 500 native calls per frame on RenderStress_Gradients to
+		// carry 48 bytes each, and a native call costs far more than the bytes it carries. Fields rather than
+		// locals because BuildSimpleOp appends to them; saved/restored so each nested pass uploads its own.
+		var savedGradVerts = _gradVerts;
+		var savedQuadVerts = _quadVerts;
+		var savedPathVerts = _pathVerts;
+		_gradVerts = RentSolid(); _gradVerts.Clear();
+		_quadVerts = RentSolid(); _quadVerts.Clear();
+		_pathVerts = RentSolid(); _pathVerts.Clear();
+		var mainPass = ReferenceEquals(target, _s);
+		_xforms = RentXforms(); _xforms.Clear();
+		_xformTransient = RentTransient(); _xformTransient.Clear();
+		// Recordings emitted so far in THIS pass. A recording replayed more than once in one frame (same command
+		// list at different transforms) can't share its single resident slab slice — see the frame-solid branch.
+		var frameEmitted = new HashSet<List<WebGpuCommand>>(System.Collections.Generic.ReferenceEqualityComparer.Instance);
+		// Backdrops deferred to encode-time pass-segmenting (a BackdropSegment op): each samples the framebuffer SO FAR
+		// (content behind it) rather than re-rendering the whole command prefix, which would be O(n^2).
+		var backdrops = new List<BackdropCmd>();
+		for (int ci = 0; ci < cmds.Count; ci++)
+		{
+			var cmd = cmds[ci];
+			switch (cmd)
+			{
+				case RectCommand rc0:
+					{
+						// Coalesce a run of consecutive rects sharing the same clip into the shared solid buffer + one op.
+						// VertexSource.PassBuffer marks a shared-buffer solid (b1=start vertex, u0=count) so adjacent solid ops that
+						// share a clip bind group coalesce further ACROSS recordings in the emit loop.
+						int j = ci; int start = solid.Count / 6;
+						while (j < cmds.Count && cmds[j] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
+						{
+							AppendSolidRect(solid, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
+							j++;
+						}
+						ops.Add(new DrawOp(DrawKind.Solid, VertexSource.PassBuffer, (uint)((j - ci) * 6), (nint)start, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip)));
+						ci = j - 1;   // the for-loop's ci++ advances past the run
+						break;
+					}
+				case PathFill:
+					BuildSimpleOp(cmd, ops, null, AllocTransientPathSlot(), atlasScale: Vector2.One);   // pooled (per-frame); transient table slot
+					break;
+				case ImageCmd:
+				case GradientCmd:
+					BuildSimpleOp(cmd, ops, null, -1, atlasScale: Vector2.One);   // pooled (per-frame)
+					break;
+				case RoundedRectCmd rri:
+					{
+						// Shared rrect buffer (VertexSource.PassBuffer, b1=start vert): adjacent same-clip rrects coalesce on emit.
+						int st = rrect.Count / 22;
+						AppendRrect(rrect, rri);
+						ops.Add(new DrawOp(DrawKind.RoundedRect, VertexSource.PassBuffer, 6, (nint)st, false, rri.Clip, (nint)MakeClipBg(_d.RrClipBgl, rri.Clip)));
+						break;
+					}
+				case ReplayRefCmd rr:
+					EmitReplayRef(rr, ops, frameEmitted);
+					break;
+				case ShadowCmd sh:
+					EmitShadow(sh, ops);
+					break;
+				case LayerCmd lyr:
+					EmitLayer(lyr, ops);
+					break;
+				case BackdropCmd bk:
+					{
+						// Defer to encode-time pass-segmenting: a BackdropSegment op splits THIS pass here so the backdrop samples the
+						// framebuffer RESOLVED SO FAR (the content behind it) in place — no offscreen, no prefix re-render. Works for
+						// the on-window target AND pooled layer targets: both store+reload their MSAA across the segment (see the
+						// main-pass + segment StoreOp), so an acrylic inside a layer/flyout skips the full-window offscreen the old
+						// pooled fallback re-rendered per backdrop, and an empty prefix costs nothing (no separate blurred offscreen).
+						int bi = backdrops.Count; backdrops.Add(bk);
+						ops.Add(new DrawOp(DrawKind.BackdropSegment, 0, 0, (nint)bi, false, bk.Clip, 0));
+						break;
+					}
+			}
+		}
+
+		// Upload the whole pass's coalesceable solid + rrect geometry in ONE buffer each; PassBuffer ops index them.
+		nint solidBuf = solid.Count > 0 ? (nint)MakeBuffer(solid) : IntPtr.Zero;
+		nint rrectBuf = rrect.Count > 0 ? (nint)MakeBuffer(rrect) : IntPtr.Zero;
+		nint gradBuf = _gradVerts.Count > 0 ? (nint)MakeBuffer(_gradVerts) : IntPtr.Zero;
+		var gradBufBytes = (nuint)(_gradVerts.Count * sizeof(float));
+		nint quadBuf = _quadVerts.Count > 0 ? (nint)MakeBuffer(_quadVerts) : IntPtr.Zero;
+		var quadBufBytes = (nuint)(_quadVerts.Count * sizeof(float));
+		nint pathBuf = _pathVerts.Count > 0 ? (nint)MakeBuffer(_pathVerts) : IntPtr.Zero;
+		var pathBufBytes = (nuint)(_pathVerts.Count * sizeof(float));
+		var solidBufBytes = (nuint)(solid.Count * sizeof(float));
+
+		// Upload this pass's transform table + one read-only storage bind group (group 0 of the path-fill pipelines).
+		// Every drawn path recording wrote its slot's local->NDC affine above; a pass with no path fills skips this.
+		nint xformBg = IntPtr.Zero;
+		if (_xforms.Count > 0)
+		{
+			// Main on-window pass: persistent buffer + bind group cached across frames (rebuilt only on growth).
+			// Nested/pooled passes rent a transient buffer instead so their distinct tables never alias the main one
+			// within a single frame's submit (queue ordering only protects the persistent buffer across frames).
+			if (target == _s)
+			{
+				xformBg = _d.EnsureXformBindGroup(_xforms);
+			}
+			else
+			{
+				int xbytes = _xforms.Count * sizeof(float);
+				var xbuf = _d.BufferPool.Rent(xbytes, WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst);
+				var xspan = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_xforms);
+				fixed (float* xp = xspan) { wgpuQueueWriteBuffer(_d.Q, xbuf, 0, (IntPtr)xp, (nuint)xbytes); }
+				var xe = new WGPUBindGroupEntry { Binding = 0, Buffer = xbuf, Offset = 0, Size = (nuint)xbytes };
+				var xbgd = new WGPUBindGroupDescriptor { Layout = _d.XformBgl, EntryCount = 1, Entries = &xe };
+				xformBg = (nint)_d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &xbgd));
+			}
+		}
+
+		if (_emitStats) { OpsBuildTicks += System.Diagnostics.Stopwatch.GetTimestamp() - _renderIntoStart; }
+		// ---- render-bundle fast path (main surface only) ----
+		var bundleEligible = PlanBundleChunks(target, ops, mainPass, backdrops.Count, xformBg, out var chunkReplay, out var chunkRecord);
 
 		var ca = new WGPURenderPassColorAttachment
 		{
