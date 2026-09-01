@@ -18,7 +18,9 @@
 
 
 using System;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Documents;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml;
@@ -117,21 +119,100 @@ public partial class DependencyObject
 			//	else { DisconnectInheritedProperties(); }
 			//}
 
-			// TODO Uno: NOT PORTED — standard-namescope-owner adjustment (depends.cpp:857-908):
-			// when this object is a namescope owner entering some other scope, WinUI registers its
-			// name in the parent namescope, and for permanent owners with already-registered names
-			// re-enters with fSkipNameRegistration=TRUE (live) or terminates the non-live walk.
+			if (IsStandardNameScopeOwner)
+			{
+				pAdjustedNamescopeOwner = this;
 
-			// TODO Uno: NOT PORTED — popup dual-namescope adjustment (depends.cpp:910-928):
-			// a Popup's child receives Enter from both its logical and visual parents' namescopes;
-			// the visual-parent Enter resolves the owner via GetStandardNameScopeOwner and caches it
-			// on the popup (SetCachedStandardNamescopeOwner).
+				// If we are entering some other scope
+				if (pAdjustedNamescopeOwner != namescopeOwner)
+				{
+					// If this is a permanent namescopeOwner, but its names are not registered
+					// in its own namescope, then the optimization further down about skipping name registration
+					// wouldn't apply.
+					if (!@params.SkipNameRegistration &&
+						ShouldRegisterInParentNamescope &&
+						namescopeOwner != this &&
+						!IsTemplateNamescopeMember)
+					{
+						// TODO Uno: registration on Enter arrives with spec 058 step 9; WinUI registers this
+						// owner's own name in the parent namescope here (not the "adjusted" one):
+						//RegisterName(namescopeOwner);
+					}
 
-			// TODO Uno: NOT PORTED — the EnterImpl gate (depends.cpp:930-960). WinUI only runs EnterImpl
-			// when there is an adjusted namescope owner or a live enter on a multi-parent-shareable DO
-			// (skipping App.xaml parse-time children), and downgrades keyboard-accelerator enters to a
-			// dead walk. Uno has no namescope tracking yet, so EnterImpl runs unconditionally.
-			EnterImpl(pAdjustedNamescopeOwner, enterParams);
+					// regarding condition below: The only element that is a Permanent
+					// Namescope owner, but not a Namescope member is the Root Visual;
+					// and it isn't necessary to try to defer name registration for the root visual.
+					if (IsStandardNameScopeMember && this.GetContext().HasRegisteredNames(this))
+					{
+						if (@params.IsLive)
+						{
+							// pass TRUE for bSkipRegistration:  The names have already been
+							// registered, and being a Permanent Namescope Owner, we aren't
+							// expected to have to merge Namescopes with a parent Namescope.
+							enterParams.SkipNameRegistration = true;
+							EnterImpl(pAdjustedNamescopeOwner, enterParams);
+							return;
+						}
+						else
+						{
+							// Skipping the non-live Enter walk here, as it should only be propagating
+							// name information, which we already have. This is kind of an odd part of
+							// the non-live enter. You can never rely on anything except your direct parent
+							// remaining unchanged because this optimization will terminate non-live Enters
+							// at NameScope boundaries when manipulating XAML fragments.
+							return;
+						}
+					}
+				}
+			}
+
+			if (@params.SkipNameRegistration && GetStandardNameScopeParent() is PopupRoot)
+			{
+				// Popup's child receives Enter from two different namescopes - namescope of its logical
+				// parent and that of its visual parent. This Enter is from the visual parent of popup's child.
+				// It should have a valid namescope owner by now since name registration is done
+				// before the popup is opened. Use the namescope in which name registration is done
+				// to ensure the correct IsNamescopeMember flag.
+				pAdjustedNamescopeOwner = GetStandardNameScopeOwner();
+
+				if (ActualInstance is FrameworkElement { LogicalParentOverride: Popup popup })
+				{
+					// See comment in DependencyObject.Leave
+					popup.CachedStandardNamescopeOwner = pAdjustedNamescopeOwner;
+				}
+			}
+
+			// [Blue Compat]: WinUI skips entering the Application object's tree children while App.xaml
+			// parses. Uno's Application is not a DependencyObject, so it can never be a namescope owner
+			// and the case cannot arise (depends.cpp:929).
+
+			// MultiParentShareableDependencyObjects may not have a namescope owner (e.g. when it has multiple parents). But we
+			// still need to make sure we do a live enter, so that types such as BitmapImage can still do work upon entering/
+			// leaving the tree.
+			var liveEnterOnMultiParentShareableDO = @params.IsLive && ActualInstance is IMultiParentShareableDependencyObject;
+
+			// TODO Uno: WinUI gates the whole walk on having a namescope owner. Uno still has live subtrees that
+			// never reach one - a root visual set before any owner exists, or elements added under a parent that
+			// sits in no namescope - and dropping their Enter would take activation, theming and Loaded with it,
+			// so a live enter always walks here.
+			if (pAdjustedNamescopeOwner is not null || @params.IsLive || liveEnterOnMultiParentShareableDO)
+			{
+				if (pAdjustedNamescopeOwner is not null)
+				{
+					IsStandardNameScopeMember = pAdjustedNamescopeOwner.IsStandardNameScopeMember;
+				}
+
+				EnterImpl(pAdjustedNamescopeOwner, @params);
+			}
+			else if (@params.IsForKeyboardAccelerator)
+			{
+				// This is dead enter to register any keyboard accelerators collection to the list of live accelerators
+				@params.IsLive = false;
+				@params.SkipNameRegistration = true;
+				@params.UseLayoutRounding = false;
+				@params.CoercedIsEnabled = false;
+				EnterImpl(pAdjustedNamescopeOwner, @params);
+			}
 		}
 		finally
 		{
@@ -313,14 +394,89 @@ public partial class DependencyObject
 			// tree has only partially entered the live tree.
 			bool bAdjustedLive = @params.IsLive && IsActive;
 
-			// TODO Uno: NOT PORTED — inherited-properties invalidation (depends.cpp:1110-1125),
-			// standard-namescope-owner handling (depends.cpp:1127-1171), popup dual-namescope
-			// owner resolution incl. the cached-owner fallback (depends.cpp:1173-1203), and the
-			// LeaveImpl gate on namescope owner / multi-parent-shareable DOs (depends.cpp:1205-1227).
-			// Uno has no namescope tracking yet, so LeaveImpl runs unconditionally with the
-			// adjusted live flag.
-			leaveParams.IsLive = bAdjustedLive;
-			LeaveImpl(pAdjustedNamescopeOwner, leaveParams);
+			// TODO Uno: NOT PORTED — inherited-properties invalidation (depends.cpp:1110-1125).
+
+			if (IsStandardNameScopeOwner)
+			{
+				pAdjustedNamescopeOwner = this;
+
+				// If this is a permanent namescopeOwner, but its names are not registered
+				// in its own namescope, then the optimization further down about skipping name registration
+				// wouldn't apply.
+				if (!@params.SkipNameRegistration &&
+					ShouldRegisterInParentNamescope &&
+					namescopeOwner != this &&
+					!IsTemplateNamescopeMember)
+				{
+					// TODO Uno: unregistration on Leave arrives with spec 058 step 9:
+					//UnregisterName(namescopeOwner);
+				}
+
+				// TODO Uno: WinUI returns here without walking when a non-live owner has no registered
+				// names ("nothing to clean up"). Uno's Leave walk also carries Unloaded and the
+				// deactivation bookkeeping, and the public root visual leaves exactly that way, so the
+				// walk always runs.
+
+				// ensure that the fNamescopeMember is set, (as this may not be
+				// the case if this is the rootVisual leaving the tree)
+				IsStandardNameScopeMember = true;
+
+				// If this is a permanent NamescopeOwner, then he will be taking his
+				// names with him en masse, so pass TRUE for bSkipRegistration
+				leaveParams.IsLive = bAdjustedLive;
+				leaveParams.SkipNameRegistration = true;
+
+				LeaveImpl(pAdjustedNamescopeOwner, leaveParams);
+				return;
+			}
+
+			if (@params.SkipNameRegistration && GetStandardNameScopeParent() is PopupRoot)
+			{
+				// Popup's child receives Leave from two different namescopes - namescope of its logical
+				// parent and that of its visual parent. This Leave is from the visual parent of popup's child.
+				// Use the namescope in which name registration is done to ensure the correct
+				// IsNamescopeMember flag.
+				pAdjustedNamescopeOwner = GetStandardNameScopeOwner();
+
+				if (pAdjustedNamescopeOwner is null && IsActive &&
+					ActualInstance is FrameworkElement { LogicalParentOverride: Popup popup })
+				{
+					// A popup child can leave after its namescope owner has already gone non-live, in which
+					// case the owner walk skips it and comes back null (a CommandBarFlyout closing its
+					// parented "OverflowPopup" does exactly this). Fall back to what the Enter walk cached.
+					pAdjustedNamescopeOwner = popup.CachedStandardNamescopeOwner;
+					popup.CachedStandardNamescopeOwner = null;
+				}
+			}
+
+			// MultiParentShareableDependencyObjects may not have a namescope owner (e.g. when it has multiple parents). But we
+			// still need to make sure we do a live leave, so that types such as BitmapImage can still do work upon entering/
+			// leaving the tree.
+			var liveLeaveOnMultiParentShareableDO = bAdjustedLive && ActualInstance is IMultiParentShareableDependencyObject;
+
+			// TODO Uno: the same divergence as the Enter gate - a walk is never dropped for want of a
+			// namescope owner while the object is still live, because Uno's Unloaded and deactivation
+			// bookkeeping rides on it (and a stale-active object leaving a dead parent needs it too).
+			if (pAdjustedNamescopeOwner is not null || IsActive || liveLeaveOnMultiParentShareableDO)
+			{
+				if (pAdjustedNamescopeOwner is not null)
+				{
+					IsStandardNameScopeMember = pAdjustedNamescopeOwner.IsStandardNameScopeMember;
+				}
+
+				leaveParams.IsLive = bAdjustedLive;
+				leaveParams.SkipNameRegistration = @params.SkipNameRegistration;
+				LeaveImpl(pAdjustedNamescopeOwner, leaveParams);
+			}
+			else if (leaveParams.IsForKeyboardAccelerator)
+			{
+				// This is dead leave to unregister any keyboard accelerators collection from the list of live accelerators
+				leaveParams.IsLive = false;
+				leaveParams.SkipNameRegistration = true;
+				leaveParams.UseLayoutRounding = false;
+				leaveParams.CoercedIsEnabled = false;
+				LeaveImpl(pAdjustedNamescopeOwner, leaveParams);
+			}
 		}
 		finally
 		{

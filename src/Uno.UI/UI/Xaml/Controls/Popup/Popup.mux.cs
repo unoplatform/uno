@@ -3,6 +3,7 @@
 // Popup.h, Popup.cpp
 
 using DirectUI;
+using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
 using static Uno.UI.FeatureConfiguration;
 
@@ -79,4 +80,25 @@ public partial class Popup
 
 		return handled;
 	}
+
+	// MUX Reference: CPopup::SetCachedStandardNamescopeOwner / GetCachedStandardNamescopeOwnerNoRef
+	// (Popup.cpp:3966-3981). The Enter walk of a popup child caches the namescope it registered in,
+	// so the matching Leave can still find it once the owner has gone non-live. Weak, like WinUI's.
+#nullable enable
+	private ManagedWeakReference? _cachedNamescopeOwner;
+
+	internal DependencyObject? CachedStandardNamescopeOwner
+	{
+		get => _cachedNamescopeOwner?.Target as DependencyObject;
+		set
+		{
+			if (_cachedNamescopeOwner is { } previous)
+			{
+				WeakReferencePool.ReturnWeakReference(this, previous);
+			}
+
+			_cachedNamescopeOwner = value is null ? null : WeakReferencePool.RentWeakReference(this, value);
+		}
+	}
+#nullable restore
 }

@@ -406,6 +406,12 @@ namespace Uno.UI.Xaml.Core
 		}
 
 		/// <summary>
+		/// MUX Reference: VisualTree::GetNamescopeOwnerForRoot — every root registers its names in the
+		/// public root visual's namescope (WinUI's print root owns its own; Uno has no print root).
+		/// </summary>
+		private DependencyObject? GetNamescopeOwnerForRoot(UIElement root) => PublicRootVisual;
+
+		/// <summary>
 		/// Adds the given root to the implicit root visual, and potentially 'Enter' it into
 		/// the tree.
 		/// </summary>
@@ -420,8 +426,7 @@ namespace Uno.UI.Xaml.Core
 		{
 			if (root != null)
 			{
-				//TODO Uno: The logic here is more complex in WinUI,
-				//setting the namescope owner. Not needed currently.
+				var namescopeOwner = GetNamescopeOwnerForRoot(root);
 
 				if (IsMainVisualTree())
 				{
@@ -440,12 +445,17 @@ namespace Uno.UI.Xaml.Core
 					isLive: true
 				)
 				{
+					// A root brings its names with it: whatever registered them did so against the
+					// namescope owner this walk carries, not against the root being attached.
+					SkipNameRegistration = true,
 					Depth = 0,
 				};
 
-				// In WinUI, this is called only under IsMainVisualTree condition.
-				// This might be needed for now in Uno because RootVisual does not *yet* have XamlIslandRootCollection
-				root.EnterTree(null, enterParams);
+				// In WinUI, this is called only under IsMainVisualTree condition, and only when a
+				// namescope owner exists. Uno enters unconditionally for now because RootVisual does
+				// not *yet* have XamlIslandRootCollection, and the roots (popup, media, focus visual)
+				// are attached before any public root visual is set.
+				root.Enter(namescopeOwner, enterParams);
 			}
 		}
 
