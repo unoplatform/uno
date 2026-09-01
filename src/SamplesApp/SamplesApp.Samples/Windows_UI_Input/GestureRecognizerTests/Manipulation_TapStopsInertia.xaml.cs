@@ -52,6 +52,9 @@ namespace UITests.Windows_UI_Input.GestureRecognizerTests
 		private void Viewport_ManipulationInertiaStarting(object sender, ManipulationInertiaStartingRoutedEventArgs e)
 			=> UpdateStatus("coasting");
 
+		private void Viewport_ManipulationCompleted(object sender, ManipulationCompletedRoutedEventArgs e)
+			=> UpdateStatus("completed");
+
 		private void Viewport_ManipulationDelta(object sender, ManipulationDeltaRoutedEventArgs e)
 		{
 			var minOffset = Math.Min(0, Viewport.ActualHeight - RowCount * RowHeight);
