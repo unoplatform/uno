@@ -59,6 +59,22 @@ internal readonly struct NameScopeTableEntry
 	};
 
 	/// <summary>
+	/// Whether this entry stands for <paramref name="candidate"/> - including a deferred stub, which
+	/// <see cref="Peek"/> deliberately does not reveal.
+	/// </summary>
+	internal bool Holds(DependencyObject candidate) => Kind switch
+	{
+		EntryKind.StrongRef or EntryKind.DeferredStub => ReferenceEquals(_payload, candidate),
+		EntryKind.WeakRef => ReferenceEquals(((ManagedWeakReference?)_payload)?.Target, candidate),
+		_ => false,
+	};
+
+	/// <summary>
+	/// A weak entry whose target is gone - nothing is lost by dropping it.
+	/// </summary>
+	internal bool IsDead => Kind == EntryKind.WeakRef && ((ManagedWeakReference?)_payload)?.Target is null;
+
+	/// <summary>
 	/// Returns the referent, materializing a deferred stub if needed. When materialization happened,
 	/// <paramref name="shouldRetry"/> is set so the caller re-reads the table — realizing the element
 	/// replaces this entry.
@@ -69,9 +85,13 @@ internal readonly struct NameScopeTableEntry
 
 		if (Kind == EntryKind.DeferredStub)
 		{
-			((ElementStub)_payload!).Materialize();
+			var stub = (ElementStub)_payload!;
+			stub.Materialize();
 			shouldRetry = true;
-			return null;
+
+			// Materializing normally re-registers the real element (it enters the tree carrying the
+			// same name), but a stub outside a live tree has no Enter to do that - hand it over directly.
+			return stub.MaterializedContent as DependencyObject;
 		}
 
 		return Peek();

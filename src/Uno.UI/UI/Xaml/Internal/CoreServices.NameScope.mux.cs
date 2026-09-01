@@ -7,6 +7,7 @@
 using System;
 using System.Diagnostics;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Core.NameScoping;
 
@@ -39,8 +40,14 @@ internal partial class CoreServices
 
 			var table = NameScopeRoot.GetTable(namescopeOwner, NameScopeType.StandardNameScope)!;
 
+			// An x:Load element registers its stub, so the name materializes the real element on lookup
+			// (WinUI's DeferredElement entries, NameScopeTableEntry.h).
+			if (obj is ElementStub stub)
+			{
+				table.RegisterName(name, stub);
+			}
 			// SetNamedObject on ourselves should only register a weakref to avoid a circular reference.
-			if (ReferenceEquals(namescopeOwner, obj))
+			else if (ReferenceEquals(namescopeOwner, obj))
 			{
 				table.RegisterName(name, WeakReferencePool.RentWeakReference(this, obj));
 			}

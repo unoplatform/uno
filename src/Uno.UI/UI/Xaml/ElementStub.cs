@@ -80,6 +80,12 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public bool IsMaterialized => _content != null;
 
+		/// <summary>
+		/// The element this stub stands in for, once materialized. Used by the namescope table, which
+		/// resolves a deferred name by materializing the stub.
+		/// </summary>
+		internal object MaterializedContent => _content;
+
 		public ElementStub()
 		{
 			// Capture the resource scope at construction time (during XAML parsing) so that

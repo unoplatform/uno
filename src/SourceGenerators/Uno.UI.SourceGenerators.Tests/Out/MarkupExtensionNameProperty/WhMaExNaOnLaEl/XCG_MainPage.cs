@@ -76,6 +76,7 @@ namespace TestRepro
 							)							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 							{
 							__p1.Name = "ExitButton";
+							__nameScope.RegisterName("ExitButton", __p1);
 							_ExitButtonSubject.ElementInstance = __p1;
 							__that._component_1 = __p1;
 							var _component_1_update_That = (this as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;

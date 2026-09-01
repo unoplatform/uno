@@ -88,18 +88,5 @@ internal sealed class NameScopeRoot
 	/// let the loser's Leave delete the winner's entry.
 	/// </summary>
 	internal bool ClearNamedObjectIfExists(string name, DependencyObject? owner, NameScopeType type, DependencyObject expected)
-	{
-		if (GetTable(owner, type) is not { } table)
-		{
-			return false;
-		}
-
-		if (table.PeekElement(name) is { } current && !ReferenceEquals(current, expected))
-		{
-			// Not ours — someone else holds the name now. Silently leave it, matching WinUI's IGNOREHR.
-			return false;
-		}
-
-		return table.TryRemove(name);
-	}
+		=> GetTable(owner, type)?.TryRemoveIfHeldBy(name, expected) ?? false;
 }
