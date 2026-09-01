@@ -292,16 +292,6 @@ internal static class PathTessellator
 		v.Add(c.X); v.Add(c.Y); cov.Add(cc);
 	}
 
-	private static Vector2 PointAt(IReadOnlyList<List<Vector2>> contours, int global)
-	{
-		for (var c = 0; c < contours.Count; c++)
-		{
-			if (global < contours[c].Count) { return contours[c][global]; }
-			global -= contours[c].Count;
-		}
-		return default;
-	}
-
 	private static Vector2 Norm(Vector2 v)
 	{
 		var l = v.Length();
