@@ -29,5 +29,5 @@ partial class BlockCollection
 	internal Block GetItemWithAddRef(uint index) => this[(int)index];
 
 	// GetPositionCount / GetRun / GetContainingElement / GetElementEdgeOffset / CacheLengths
-	// live in BlockCollection.TextContainer.skia.cs (the run-model partial).
+	// live in BlockCollection.TextContainer.cs (the run-model partial).
 }

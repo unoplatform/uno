@@ -9,5 +9,5 @@ namespace Microsoft.UI.Xaml.Documents;
 partial class InlineCollection
 {
 	// GetPositionCount / GetRun and the rest of the run model live in
-	// InlineCollection.TextContainer.skia.cs.
+	// InlineCollection.TextContainer.cs.
 }

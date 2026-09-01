@@ -113,7 +113,7 @@ partial class RichTextBlock : ITextSelectionManagerOwner, ITextViewHost
 
 	// ---- Touch-selection grippers -------------------------------------------------------------
 	// RichTextBlock has no TextSelectionGripperPresenter host yet. WinUI's manager forwards these to
-	// the presenter via TextSelectionManager.Gripper.skia.cs; on Uno the presenter is driven by an
+	// the presenter via TextSelectionManager.Gripper.cs; on Uno the presenter is driven by an
 	// ITextSelectionGripperHost the control would implement. Until that host is added these are safe
 	// no-ops so the manager's touch path does not crash.
 	// TODO Uno (Stage 9b/grippers): implement ITextSelectionGripperHost and drive

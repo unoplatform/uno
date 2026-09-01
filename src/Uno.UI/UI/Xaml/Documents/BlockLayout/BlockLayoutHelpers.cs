@@ -680,7 +680,7 @@ internal static class BlockLayoutHelpers
 	//---------------------------------------------------------------------------
 	// TODO Uno (integrate): GetInheritedAttachedProperties — WinUI returned the resolved InheritedProperties
 	// (TextOptions / Typography). Not yet ported; the Uno TextRunProperties ctor omits the InheritedProperties
-	// argument. Restore once InheritedProperties is brought over (see TextRunProperties.skia.cs note).
+	// argument. Restore once InheritedProperties is brought over (see TextRunProperties.cs note).
 	private static InheritedProperties GetInheritedAttachedProperties(
 		DependencyObject pParagraph)
 	{

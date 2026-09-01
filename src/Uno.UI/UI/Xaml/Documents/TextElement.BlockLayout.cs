@@ -14,4 +14,4 @@ internal enum KnownPropertyIndex
 }
 
 // TextElement.EnsureTextFormattingForRead, IsPropertyDefaultByIndex, GetTextFormatting and
-// GetInheritedProperties live in TextElement.TextContainer.skia.cs (the run-model partial).
+// GetInheritedProperties live in TextElement.TextContainer.cs (the run-model partial).
