@@ -59,3 +59,14 @@ commit as the code change - add the entry to the current version's ignore set. D
 as a CI-triggered follow-up; a red `PackageDiff` check on someone else's PR is how this usually
 gets discovered. If the release currently has a migration guide under `doc/articles/`, add the
 change there too.
+
+## Events
+
+**Never declare `event Action` or `event Action<T>`.** Always use `EventHandler` or
+`EventHandler<TEventArgs>`. Raw `Action`/`Func` delegates as event fields bypass the standard
+`add`/`remove` contract and cannot be reliably subscribed across assembly boundaries.
+
+```csharp
+public event EventHandler<MyEventArgs>? SomethingHappened;   // correct
+public event Action<MyData>? SomethingHappened;              // NEVER
+```

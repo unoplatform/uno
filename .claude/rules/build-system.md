@@ -19,3 +19,21 @@ Day-to-day build setup (slnf filters, `UnoTargetFrameworkOverride`, `UnoFastDevB
 - **`RuntimeAssetsSelectorTask`** selects the `uno-runtime/<tfm>/<rid>` assets for `Uno.WinRT`/`Uno.Foundation` and redirects the WinRT trio (`Uno`, `Uno.Foundation`, `Uno.UI.Dispatching`) to the implementation matching the head's platform — don't override it manually. It no longer rewrites third-party packages: a multi-targeted library keeps its `lib/<tfm>-android|ios|tvos` asset.
 - `ProjectReference Private=false` is set globally (`Directory.Build.targets`); override only with `DisablePrivateProjectReference=true` where copying is genuinely needed.
 - Analyzer/code-style config is centralized (`Directory.Build.props`, `AnalysisLevel=9`); don't add StyleCop or per-project analyzer packages.
+
+## Local build flags
+
+`src/crosstargeting_override.props` (copied from the `.sample`, gitignored, never commit it) carries
+two properties worth setting while iterating:
+
+- **`UnoTargetFrameworkOverride`** restricts cross-targeted projects to a single TFM, skipping the
+  redundant second-TFM outputs. Pick one of `net10.0` (Skia/WASM), `net10.0-android`, `net10.0-ios`,
+  or `net10.0-windows10.0.19041.0` - and note `NetCurrent` is branch-specific, so use the value that
+  matches the branch you are on. Close Visual Studio before changing it.
+- **`UnoFastDevBuild`** disables `RunAnalyzersDuringBuild`, `EnforceCodeStyleInBuild` and the
+  `Microsoft.CodeAnalysis.NetAnalyzers` package locally. It is guarded by `ContinuousIntegrationBuild`,
+  so **CI is never affected** - analyzer-strict checks still run on every PR. Set it persistently with
+  the `UNO_FAST_DEV_BUILD=true` environment variable instead of editing the file.
+
+Both can be passed per build as `-p:` flags. Combined on `SamplesApp.Skia.Generic` (Windows, 32-core,
+warm NuGet cache): clean build ~3:23 to ~1:59, incremental rebuild after a `Uno.UI` edit ~2:23 to ~0:58.
+The `/runtime-tests` skill passes both by default (`strict` opts out for CI-equivalent coverage).
