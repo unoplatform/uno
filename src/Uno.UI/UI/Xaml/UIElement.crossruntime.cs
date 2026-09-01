@@ -121,37 +121,42 @@ namespace Microsoft.UI.Xaml
 			child.Shutdown();
 			(child as DependencyObject)?.ClearInheritedDataContext();
 
-			var leaveParams = new LeaveParams(IsActiveInVisualTree);
-			child.LeaveTree(null, leaveParams);
+			var leaveParams = new LeaveParams(IsActiveInVisualTree)
+			{
+				SkipNameRegistration = SkipNameRegistrationForChildren,
+			};
+
+			// The owner is resolved from this parent, which is still in the tree - the child's own
+			// parent pointer is already cleared by the time we get here (WinUI's CDOCollection::RemoveAt
+			// captures GetStandardNameScopeOwner() before it unparents too).
+			child.Leave(GetStandardNameScopeOwner(), leaveParams);
 		}
 #endif
 
 		internal Point GetPosition(Point position, UIElement relativeTo)
 			=> TransformToVisual(relativeTo).TransformPoint(position);
 
+		// MUX Reference: CDOCollection::ChildEnter (DOCollection.cpp:313).
 		private void ChildEnter(UIElement child, DependencyObject namescopeOwner, EnterParams @params)
 		{
-			// Uno TODO: WinUI has much more complex logic than this.
-			// WinUI's CDOCollection::ChildEnter always calls child->Enter() (the outer Enter),
-			// which calls SetVisualTree. We call EnterImpl directly for live children here,
-			// so we must call SetVisualTree explicitly to match WinUI behavior.
+			// TODO Uno: WinUI precedes the live pass with a dead pass that registers names
+			// (skipped when params.fSkipNameRegistration). It arrives with registration on Enter,
+			// spec 058 step 9 - until then the walk would have nothing to do.
 			if (@params.IsLive)
 			{
-				if (@params.VisualTree is not null)
-				{
-					child.SetVisualTree(@params.VisualTree);
-				}
-
 				// Compute from the parent's persisted Depth, never from @params.Depth - @params is
 				// threaded through property, resource and flyout walks where its Depth may be stale.
 				@params.Depth = this.Depth + 1;
-				child.EnterImpl(namescopeOwner, @params);
+
+				// The names were registered by the dead pass, so the live one never re-registers.
+				@params.SkipNameRegistration = true;
+				child.Enter(namescopeOwner, @params);
 			}
 			else if (@params.IsForKeyboardAccelerator)
 			{
 				// Dead enter to propagate keyboard accelerator registration through the subtree.
 				@params.Depth = int.MinValue;
-				child.EnterTree(namescopeOwner, @params);
+				child.Enter(namescopeOwner, @params);
 			}
 		}
 

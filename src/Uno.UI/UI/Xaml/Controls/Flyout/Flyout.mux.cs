@@ -25,7 +25,7 @@ partial class Flyout
 #endif
 			//This is a dead enter to register any keyboard accelerators that may be present in the Flyout Content
 			var newParams = new EnterParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree, Depth = 0 };
-			content.EnterTree(pNamescopeOwner, newParams);
+			content.Enter(pNamescopeOwner, newParams);
 		}
 	}
 
@@ -41,7 +41,7 @@ partial class Flyout
 			visualTree ??= (this.GetParent() as DependencyObject)?.GetVisualTree();
 #endif
 			var newParams = new LeaveParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree };
-			content.LeaveTree(pNamescopeOwner, newParams);
+			content.Leave(pNamescopeOwner, newParams);
 		}
 	}
 }

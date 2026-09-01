@@ -68,7 +68,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var kaParams = new Uno.UI.Xaml.EnterParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree, Depth = 0 };
 				foreach (var item in items)
 				{
-					item.EnterTree(null, kaParams);
+					item.Enter(null, kaParams);
 				}
 			}
 		}
@@ -84,7 +84,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var kaParams = new Uno.UI.Xaml.LeaveParams { IsForKeyboardAccelerator = true, IsLive = false, VisualTree = visualTree };
 				foreach (var item in items)
 				{
-					item.LeaveTree(null, kaParams);
+					item.Leave(null, kaParams);
 				}
 			}
 		}

@@ -61,4 +61,7 @@ internal partial class CoreServices
 		// Deferred (x:Load) entries realize inside the table lookup, so no DeferredElement branch is needed here.
 		return NameScopeRoot.GetNamedObjectIfExists(name, namescopeOwner, nameScopeType);
 	}
+
+	internal bool HasRegisteredNames(DependencyObject namescopeOwner)
+		=> NameScopeRoot.HasStandardNameScopeTable(namescopeOwner);
 }

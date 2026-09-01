@@ -1665,10 +1665,14 @@ namespace Microsoft.UI.Xaml
 				Visual.Children.InsertAtTop(child.Visual);
 			}
 
-			var enterParams = new EnterParams(IsActiveInVisualTree);
-			// Owner stays null here: seeding a real namescope owner is a behaviour change and
-			// belongs to the registration step, not this plumbing one.
-			ChildEnter(child, null, enterParams);
+			// MUX Reference: CDOCollection::Append (DOCollection.cpp:486-517) - the owner's
+			// SkipNameRegistrationForChildren decides whether the parser registers the names instead.
+			var enterParams = new EnterParams(IsActiveInVisualTree)
+			{
+				SkipNameRegistration = SkipNameRegistrationForChildren,
+			};
+
+			ChildEnter(child, GetStandardNameScopeOwner(), enterParams);
 
 			OnChildAdded(child);
 			UIElementAccessibilityHelper.ExternalOnChildAdded?.Invoke(this, child, index);

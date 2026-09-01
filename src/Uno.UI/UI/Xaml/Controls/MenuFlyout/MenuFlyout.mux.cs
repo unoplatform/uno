@@ -32,7 +32,7 @@ partial class MenuFlyout
 
 			foreach (MenuFlyoutItemBase item in items)
 			{
-				item.EnterTree(null, parameters);
+				item.Enter(null, parameters);
 			}
 		}
 	}
@@ -59,7 +59,7 @@ partial class MenuFlyout
 
 			foreach (MenuFlyoutItemBase item in items)
 			{
-				item.LeaveTree(null, parameters);
+				item.Leave(null, parameters);
 			}
 		}
 	}
