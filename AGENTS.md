@@ -258,6 +258,17 @@ Add tests to `Uno.UI.RuntimeTests`. Key helpers:
 | Persistent issues | Close VS, delete `src/.vs`, rebuild |
 | Last resort | `git clean -fdx` (close VS first) |
 
+### CI Investigation (Azure DevOps)
+
+Prefer the `mcp__azure-devops-uno__*` tools (`pipelines_build`, `pipelines_build_log`,
+`testplan_show_test_results_from_build_id`) over hand-rolled `curl` against `dev.azure.com`.
+Anonymous REST needs the project **GUID**, not the name `uno`.
+
+If `curl` is unavoidable, always pipe through `jq` to extract only what you need
+(`jq '.records[] | select(.result=="failed")'`) - never print a full timeline or log JSON into
+the transcript; these responses routinely exceed 500 KB. Note that post-merge builds don't run
+the WASM test stage.
+
 ### Key Build Properties
 
 | Property | Purpose |
