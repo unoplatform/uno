@@ -97,7 +97,7 @@ internal sealed class RectCommand : WebGpuCommand
 	public Vector2 P0, P1, P2, P3;
 }
 
-// An analytic rounded rectangle / border ring (ported from ramez): one SDF quad instead of a tessellated path.
+// An analytic rounded rectangle / border ring: one SDF quad instead of a tessellated path.
 // The SDF is evaluated in LOCAL centred space (Half/Radii are local, transform-independent), so it's correct under
 // ANY affine transform (rotation/scale/skew) — the four device corners P0..P3 only position the quad. A positive
 // InnerHalf makes it a BORDER RING (outer minus an inner rounded rect at InnerCenter); InnerHalf<0 = solid fill.
@@ -323,7 +323,7 @@ internal sealed unsafe class WebGpuGeometryCache
 	public List<FrameOp> FrameOrder;
 	// Resident device-space verts for a (non-table) frame-solid recording, kept so a pure reuse can re-derive its
 	// CURRENT slab byte offset every frame (TryByteOffset, else re-Put) instead of trusting a cached absolute — a
-	// stale offset into a culled-then-reclaimed slice was the cross-visual corruption the redo removes. FrameOrder
+	// stale offset into a culled-then-reclaimed slice draws one visual's geometry under another's. FrameOrder
 	// offsets are RELATIVE to these lists; the absolute base is applied at emit. Solid = 6 floats/v, rrect = 22.
 	public List<float> FrameSolidVerts;
 	public List<float> FrameRrectVerts;
@@ -876,7 +876,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	private void Include(Vector2 p) { _bbMin = Vector2.Min(_bbMin, p); _bbMax = Vector2.Max(_bbMax, p); }
 
 	// Triangulation topology, cached per geometry. Ear clipping is O(n^2) and these recordings re-record every
-	// frame, so tessellating per frame is a large LOSS (measured, previously). What makes it pay is that the
+	// frame, so tessellating per frame is a large LOSS. What makes it pay is that the
 	// triangle INDICES are affine-invariant: the same geometry re-flattened under a different transform yields
 	// the same indices, so the cache survives the per-frame transform changes that defeat device-space caches.
 	// The entry records the point count it was built for and is rejected unless it matches exactly, because
@@ -1547,23 +1547,14 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 public sealed unsafe class WebGpuPresentSession : IPresentSession
 {
 	// UNO_WEBGPU_STATS=1: per-pass emit-shape diagnostics (see RenderInto).
-	// Diagnostic bisect (UNO_WEBGPU_BISECT): 1 = skip a replay entirely, 2 = keep the previous stamp (no
-	// restamp on move), 3 = restamp but emit no ops. Removing work is the only measurement that has not
-	// misled this investigation.
 	private int _statCrMiss, _statCrMove, _statCrPathFlip, _statCrSize, _statCrClip;
 	// A/B gates so the session's landed optimisations can be priced against the ground-truth frame time.
-	private static readonly bool _noCompositeScissor = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_SCISSOR") is "1";
-	private static readonly bool _noGlyphCoalesce = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_GLYPHCOALESCE") is "1";
-	private static readonly bool _noPathClip = Environment.GetEnvironmentVariable("UNO_WEBGPU_NOCLIP") is "1";
 	// Diagnostic: skip the COVER draw of stencil-then-cover (VISUALLY WRONG — paths vanish) to bound what tighter
 	// cover geometry could ever be worth. The stencil pass still runs, so the delta is the cover's fill cost.
-	private static readonly bool _noCover = Environment.GetEnvironmentVariable("UNO_WEBGPU_NOCOVER") is "1";
 	// Diagnostic: run the whole CPU path (record, op build, encode) but never submit, so the GPU idles and a
 	// profile shows the CPU distribution instead of being swamped by time blocked in the driver. VISUALLY WRONG —
 	// nothing reaches the screen. Exists because the desktop box is GPU-bound in software, which otherwise leaves
 	// managed code at ~1% of the trace and unattributable.
-	private static readonly bool _noSubmit = Environment.GetEnvironmentVariable("UNO_WEBGPU_NOSUBMIT") is "1";
-	private static readonly int _bisect = int.TryParse(Environment.GetEnvironmentVariable("UNO_WEBGPU_BISECT"), out var __b) ? __b : 0;
 	private static readonly bool _emitStats = Environment.GetEnvironmentVariable("UNO_WEBGPU_STATS") is "1" or "true";
 	private static int _emitStatsFrame;
 	// Build-shape counters (per stats interval): geometry-cache rebuilds / clip re-stamps observed while replaying.
@@ -1579,7 +1570,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	private readonly System.Collections.Generic.Stack<Vector2> _presentScaleStack = new();
 	// The single command encoder for the whole frame. Every pass (offscreen coverage/blur/layer + the main pass)
 	// records into it and it's submitted once — so wgpu barriers offscreen resolve->sample automatically, without
-	// the cross-submission resolve hazard (which previously needed a full-texture readback flush to work around).
+	// the cross-submission resolve hazard.
 	private IntPtr _frameEncoder;
 	// Immediate-mode drawing on the present session (e.g. the FPS/diagnostics overlay drawn after Replay) records
 	// here and is composited onto the replayed frame at Dispose — the present session IS a real drawing session,
@@ -1621,7 +1612,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
 				_d.FlushFrameSlabs();
 				var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
-				if (!_noSubmit) { wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb)); }
+				wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
 				// wgpu holds its own reference until the submission completes, so both handles are dropped
 				// here — otherwise every frame leaks an encoder + a command buffer into the handle table.
 				wgpuCommandBufferRelease(cb);
@@ -1805,7 +1796,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		return slot;
 	}
 
-	// Per-pass shared SOLID vertex buffer (ramez arena baseline): every device-space solid run — immediate draws AND
+	// Per-pass shared SOLID vertex buffer: every device-space solid run — immediate draws AND
 	// solid-only cached recordings — appends its 6-float verts here in op order, so adjacent solid ops sharing a clip
 	// occupy a CONTIGUOUS range and the emit loop coalesces them into ONE draw (cross-visual, not just within one
 	// recording). Uploaded once per pass; recycled next pass. A solid op with b0==0 references (b1=startVert, u0=count)
@@ -1845,9 +1836,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		return start;
 	}
 
-	// Per-pass shared ROUNDED-RECT buffer (22 floats/vert; ramez per-vertex SDF layout). Every rrect — immediate and
+	// Per-pass shared ROUNDED-RECT buffer (22 floats/vert, per-vertex SDF params). Every rrect — immediate and
 	// re-appended cached — lands here in op order so adjacent rrect ops sharing a clip coalesce into ONE draw across
-	// visuals (ramez emits rrect v=6*N; neutral used to emit N separate v=6). Returns the start vertex index.
+	// visuals as one draw of 6*N verts rather than N draws of 6. Returns the start vertex index.
 	private readonly Stack<List<float>> _rrectPool = new();
 	private List<float> RentRrect() => _rrectPool.Count > 0 ? _rrectPool.Pop() : new(4096);
 	private void ReturnRrect(List<float> s) { s.Clear(); _rrectPool.Push(s); }
@@ -2041,9 +2032,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		var cu = _clipU;
 
 		// Immediate ops take a recycled per-frame slab slot: its bind group is created once and reused, and the
-		// whole frame's clips upload in one queue write per chunk. The content-keyed cache used to mint a buffer +
-		// bind group on every miss, and a clip carrying DEVICE-space geometry misses every frame under any moving
-		// transform — ~960 native calls/frame on RealWorld_MapOverlay, the same runaway the gradients had.
+		// whole frame's clips upload in one queue write per chunk. Do NOT content-key this: a clip carries
+		// DEVICE-space geometry, so under any moving transform every lookup misses and mints a buffer + bind
+		// group per draw.
 		return _d.ClipBgSlabFor(bgl, ClipUBytes).Rent(bgl, cu);
 	}
 
@@ -2232,8 +2223,9 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		AtlasTried++;
 		// A cached recording OWNS the entries it bakes and frees them when released. A per-frame op has no such
 		// owner, so the ATLAS holds the reference and drops it after the entry goes idle (HoldForCache/SweepCache).
-		// Per-frame ops used to be hit-only, which meant identical content rendered crisp through the retained
-		// path and tessellated through the command-list fallback - the parity tests caught exactly that.
+		// Per-frame ops must be able to BAKE, not only hit: restricting them to hits looks safer (nothing owns
+		// the entry) but renders identical content crisp through the retained path and tessellated through the
+		// command-list fallback.
 		bool hitOnly = owned is null;
 		// The bake derives coverage from a 4x supersample, so its input must be a HARD silhouette. Geometry that
 		// already carries an analytic AA ring would be antialiased twice - the edge spreads half a pixel and a
@@ -2291,23 +2283,51 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		QV(x0, y0, u0, v0); QV(x1, y1, u1, v1); QV(x0, y1, u0, v1);
 	}
 
+	/// <summary>
+	/// Six vertices (pos.xy in NDC, uv.xy) for an axis-aligned textured quad covering the device rect at
+	/// <paramref name="origin"/>, sampling the whole texture.
+	/// </summary>
+	private float[] TexturedQuad(Vector2 origin, Vector2 size)
+	{
+		var q = new float[24];
+		void V(int i, Vector2 pos, float u, float v)
+		{
+			var n = Ndc(pos);
+			q[i] = n.X; q[i + 1] = n.Y; q[i + 2] = u; q[i + 3] = v;
+		}
+
+		var tr = origin + new Vector2(size.X, 0);
+		var br = origin + size;
+		var bl = origin + new Vector2(0, size.Y);
+		V(0, origin, 0, 0); V(4, tr, 1, 0); V(8, br, 1, 1);
+		V(12, origin, 0, 0); V(16, br, 1, 1); V(20, bl, 0, 1);
+		return q;
+	}
+
+	/// <summary>
+	/// Bind group for a SrcIn-tinted image draw: the texture carries coverage in its alpha and the colour comes
+	/// from <paramref name="tint"/> (see ImageWgsl op.y). Pass <paramref name="owned"/> for a cached recording so
+	/// the uniform is persistent - a per-frame one would be recycled and replay in another element's colour.
+	/// </summary>
+	private IntPtr TintedImageBg(IntPtr view, WColor tint, OwnedResources owned = null)
+	{
+		var ubuf = Ubuf(112, owned);
+		var u = stackalloc float[8];
+		u[0] = 1f; u[1] = 1f;
+		u[4] = tint.R / 255f; u[5] = tint.G / 255f; u[6] = tint.B / 255f; u[7] = tint.A / 255f;
+		wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)u, 32);
+		var e = stackalloc WGPUBindGroupEntry[3];
+		e[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = view };
+		e[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+		e[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 112 };
+		var bgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = e };
+		return Bg(ref bgd, owned);
+	}
+
 	/// <summary>One draw for a batch of quads sharing a page, a colour and a clip.</summary>
 	private DrawOp MakeAtlasOp(PathFill pf, WebGpuPathAtlas.Page page, List<float> quads, OwnedResources owned)
 	{
-		// SrcIn tint: the atlas carries coverage in alpha, the colour comes from the fill (see ImageWgsl op.y).
-		// PERSISTENT when this op belongs to a cached recording: MakeUniform rents from the per-frame pool, so a
-		// replayed op would read whatever recycled that buffer later and the glyph renders in another colour.
-		var ubuf = Ubuf(112, owned);
-		var u = stackalloc float[8];
-		u[0] = 1f; u[1] = 1f; u[2] = 0; u[3] = 0;
-		u[4] = pf.Color.R / 255f; u[5] = pf.Color.G / 255f; u[6] = pf.Color.B / 255f; u[7] = pf.Color.A / 255f;
-		wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)u, 32);
-		var entries = stackalloc WGPUBindGroupEntry[3];
-		entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = page.View };
-		entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-		entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 112 };
-		var bgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
-		var bg = Bg(ref bgd, owned);
+		var bg = TintedImageBg(page.View, pf.Color, owned);
 		return new DrawOp(2, (nint)bg, (uint)(quads.Count / 4), (nint)Vbuf(quads, owned), false, pf.Clip, (nint)MakeClipBg(_d.ImageClipBgl, pf.Clip, owned));
 	}
 
@@ -2696,7 +2716,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 
 	// VALUE equality: the rounded/path clip arrays are re-allocated every frame (copy-on-write Push / ClipCompose),
 	// so a reference compare reports a stable clip as "changed" every frame -> a needless per-frame geometry rebuild
-	// for every clipped cached recording (was the button scene's dominant CPU cost, ~100 rebuilds/frame). Compare by
+	// for every clipped cached recording. Compare by
 	// content instead - far cheaper than the rebuild it prevents (Rounds is <=4 elements; the fan only when both have one).
 	private static bool ClipDataEquals(in ClipData a, in ClipData b)
 	{
@@ -2732,7 +2752,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 	// re-stamping the vertex xform (clipCov is a constant 1). Paths (stencil pass has no xform), gradients (device-
 	// space geometry in the fragment) and any clip need a device-space re-stamp and are NOT arena-safe yet.
 	// A recording contains at least one rect — its solids are cheap to re-emit each frame into the shared solid
-	// buffer (ramez arena baseline) so they coalesce across visuals; any non-solids stay cached (NonSolidOps).
+	// buffer so they coalesce across visuals; any non-solids stay cached (NonSolidOps).
 	// Re-appendable = rect or rounded-rect: cheap to re-emit each frame into a shared per-pass buffer (solids /
 	// rrects) so they coalesce across visuals. Glyphs/images/gradients stay cached and are spliced in draw order.
 	private static bool HasReappendable(ReplayRefCmd rr)
@@ -2893,9 +2913,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		return clip;
 	}
 
-	// An arena recording bakes at identity and applies the replay transform on the GPU. A baked coverage mask is
-	// only the right size on screen when that transform neither scales nor rotates, so atlasing there is gated on
-	// this — and re-checked at replay, since an arena entry deliberately survives a move without rebuilding.
 	/// <summary>
 	/// The replay scale to bake an arena recording's masks at, or null when the transform cannot be expressed as
 	/// one. Rotation and skew are refused HERE and only here: an arena mask is baked from identity-space geometry
@@ -2921,7 +2938,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			// Solid/image/gradient/path all route device fc through finv; the path stencil fan carries the xform via
 			// the shared ClipU layout (ClipBgl binds to both stencil + cover). A rect/rounded clip is fine (clipCov
 			// maps fc back via finv); a PATH clip uses the depth mask (no finv) so it's still excluded.
-			// A per-command path fan no longer disqualifies: the arena bakes geometry at IDENTITY, so the fan is
+			// A per-command path fan does not disqualify: the arena bakes geometry at IDENTITY, so the fan is
 			// in identity space too and the re-stamp maps it to device per frame (a handful of points) instead of
 			// re-baking the whole recording. Rejecting it sent these to the rebuild-on-move path — 399 recordings
 			// per frame on RenderStress_Gradients.
@@ -3478,7 +3495,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 					// stencil + ONE cover, the same coalescing BuildCoalesced does for arena recordings. Without it every
 					// recording that also contains rects — i.e. every real list row, grid cell or card, since they all
 					// have a background — paid 2 draws and 2 pipeline switches per GLYPH.
-					if (!_noGlyphCoalesce && tc is PathFill pf0 && !pf0.EvenOdd && !pf0.FanTiles)
+					if (tc is PathFill pf0 && !pf0.EvenOdd && !pf0.FanTiles)
 					{
 						_scratch.Clear();
 						var gMin = new Vector2(float.MaxValue); var gMax = new Vector2(float.MinValue);
@@ -3517,7 +3534,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		}
 		// Re-derive the CURRENT slab byte offset of this recording's slices every frame: reuse the resident slice when it
 		// survived last frame (no upload), else re-Put its UNCHANGED local verts (the slice was culled + its offset
-		// reclaimed). NEVER a cached absolute offset — that stale-offset-into-a-reclaimed-slice was the crash the redo fixes.
+		// reclaimed). NEVER a cached absolute offset: a stale offset into a reclaimed slice reads another visual's verts.
 		int sBase = 0, rBase = 0;
 		if (fe.TableSolids.Count > 0 && !_d.SolidTableSlab.TryByteOffset(fe.SlabId, out sBase)) { sBase = _d.SolidTableSlab.Put(fe.SlabId, fe.TableSolids); }
 		if (fe.TableRrects.Count > 0 && !_d.RrectTableSlab.TryByteOffset(fe.SlabId, out rBase)) { rBase = _d.RrectTableSlab.Put(fe.SlabId, fe.TableRrects); }
@@ -3600,7 +3617,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		// list at different transforms) can't share its single resident slab slice — see the frame-solid branch.
 		var frameEmitted = new HashSet<List<WebGpuCommand>>(System.Collections.Generic.ReferenceEqualityComparer.Instance);
 		// Backdrops deferred to encode-time pass-segmenting (kind-6 op): each samples the framebuffer resolved SO FAR
-		// (content behind it) instead of re-rendering the whole command prefix here — O(n) vs the old O(n^2).
+		// (content behind it) rather than re-rendering the whole command prefix, which would be O(n^2).
 		var backdrops = new List<BackdropCmd>();
 		for (int ci = 0; ci < cmds.Count; ci++)
 		{
@@ -3650,8 +3667,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						{
 							break;
 						}
-						if (_bisect == 1) { break; }
-						// FRAME-SOLID path (ramez arena baseline): any recording that contains rects — a Border background,
+						// FRAME-SOLID path: any recording that contains rects — a Border background,
 						// a Button (background + border + glyphs) — re-emits its SOLIDS into the SHARED per-pass buffer
 						// every frame so sibling visuals sharing a clip collapse to ONE draw (the cross-visual draw-count
 						// win the profiler showed). NON-solids (glyphs/images/gradients) stay cached (device space,
@@ -3739,7 +3755,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 										}
 										// Same glyph-run collapse as the table path: one stencil + one cover for a run of
 										// consecutive non-zero paths sharing colour + clip, instead of 2 draws per glyph.
-										if (!_noGlyphCoalesce && tc is PathFill pf0 && !pf0.EvenOdd && !pf0.FanTiles)
+										if (tc is PathFill pf0 && !pf0.EvenOdd && !pf0.FanTiles)
 										{
 											float fSlotBits = System.BitConverter.Int32BitsToSingle(fSlot);
 											_scratch.Clear();
@@ -3810,16 +3826,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// visual) is deferred-released and rebuilt. Entries not referenced any frame are evicted.
 						var entry = rr.Data.Compiled;
 						var miss = entry is null;
-						// ARENA (#22): a transform-safe recording (solid/image, no clip) bakes its geometry ONCE in its
-						// own identity NDC space; a moved replay re-stamps the vertex xform on the per-op clip bind groups
-						// and REUSES the vertex buffers instead of rebuilding. Moving-visual trace: moved frame => reuse.
-						// Session clips without a fan are stamped in below (Aabb intersect + rounds folded via finv).
-						// A session PATH clip does not force the device-bake path. The fan is applied separately by
-						// the in-pass depth mask (ApplyDepthClip reads clip.PathFan in device space), so only the
-						// ROUNDS/AABB parts of a session clip need folding through finv — and a fan cannot be folded,
-						// which is the only reason it was excluded. Admitting it lets these recordings RE-STAMP on a
-						// move instead of re-baking: measured 49.5ms -> 20.7ms on RenderStress_Gradients, where 327
-						// recordings per frame were rebuilding purely because their transform changed.
+						// ARENA: a transform-safe recording (solid/image, no clip) bakes its geometry ONCE in its own
+						// identity NDC space. A moved replay re-stamps the vertex xform on the per-op clip bind groups
+						// and reuses the vertex buffers rather than rebuilding them.
+						// A session PATH clip does not force the device-bake path: the fan is applied separately by the
+						// in-pass depth mask (ApplyDepthClip reads clip.PathFan in device space), so only a session
+						// clip's rounds/AABB need folding through finv.
 						if (IsArenaSafe(rr))
 						{
 							// Stable path-fill transform slot: arena verts are in the recording's OWN (identity) space, so
@@ -3858,7 +3870,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							// Per frame (even on a cache/stamp hit): the identity-space verts map to the current replay
 							// transform + surface projection via this one table entry — the whole arena move/resize path.
 							if (entry.XformSlot >= 0) { WriteXform(entry.XformSlot, rr.Transform); }
-							if (!(_bisect == 2 && entry.HasStamp) && (!entry.HasStamp || entry.StampXform != rr.Transform || !ClipDataEquals(entry.StampClip, rr.Clip)))
+							if ((!entry.HasStamp || entry.StampXform != rr.Transform || !ClipDataEquals(entry.StampClip, rr.Clip)))
 							{
 								if (_emitStats) { _statStamps++; }
 								// In-place restamp (same guard as the table stamp): rewrite ClipU buffers, keep bind groups.
@@ -3960,14 +3972,12 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								}
 								entry.StampOwned = stampOwned; entry.StampedOps = stamped; entry.StampBufs = bufs; entry.StampFrame = _d.FrameSeq; entry.StampXform = rr.Transform; entry.StampClip = rr.Clip; entry.HasStamp = true;
 							}
-							if (_bisect != 3) { ops.AddRange(entry.StampedOps); }
+							ops.AddRange(entry.StampedOps);
 							break;
 						}
 						var transformChanged = !miss && entry.Transform != rr.Transform;
 						int cSlot = (miss || entry is null) ? -1 : entry.XformSlot;
 						// Bisect level 4: reuse the previous bake on a pure move (visually stale, but it prices the
-						// cached path's rebuild-on-move, which counters show is 100% of its rebuilds).
-						if (_bisect == 4 && !miss && transformChanged && !entry.Arena) { transformChanged = false; }
 						if (miss || transformChanged || entry.Arena || entry.BuiltW != (int)_s.Width || entry.BuiltH != (int)_s.Height || !ClipDataEquals(entry.Clip, rr.Clip))
 						{
 							// Why did this rebuild? The cached path is the only replay path that re-bakes geometry on a
@@ -4016,21 +4026,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// Render the blurred coverage offscreen, then composite it as a SrcIn-tinted image (tint =
 						// shadow color) at its device placement — reusing the image draw path (kind 2), incl. clip.
 						var blurView = RenderShadow(sh, out var origin, out var size);
-						var ubuf = MakeUniform((int)112);
-						var op = stackalloc float[8];
-						op[0] = 1f; op[1] = 1f; op[2] = 0; op[3] = 0;
-						op[4] = sh.Color.R / 255f; op[5] = sh.Color.G / 255f; op[6] = sh.Color.B / 255f; op[7] = sh.Color.A / 255f;
-						wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)op, 32);
-						var sentries = stackalloc WGPUBindGroupEntry[3];
-						sentries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = blurView };
-						sentries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-						sentries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = 112 };
-						var sbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = sentries };
-						var sbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &sbgd));
-						var sq = new float[24];
-						void SQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); sq[idx] = n.X; sq[idx + 1] = n.Y; sq[idx + 2] = u; sq[idx + 3] = vv; }
-						var o0 = origin; var o1 = origin + new Vector2(size.X, 0); var o2 = origin + size; var o3 = origin + new Vector2(0, size.Y);
-						SQV(0, o0, 0, 0); SQV(4, o1, 1, 0); SQV(8, o2, 1, 1); SQV(12, o0, 0, 0); SQV(16, o2, 1, 1); SQV(20, o3, 0, 1);
+						var sbg = TintedImageBg(blurView, sh.Color);
+						var sq = TexturedQuad(origin, size);
 						ops.Add(new DrawOp(2, (nint)sbg, 0, (nint)MakeBuffer(sq), false, sh.Clip, (nint)MakeClipBg(_d.ImageClipBgl, sh.Clip)));
 						break;
 					}
@@ -4087,22 +4084,8 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 							if (rw >= 1f && rh >= 1f)
 							{
 								var blur = BlurPyramidRegion(layerSurface.View, _s.Width, _s.Height, rx, ry, rw, rh, fx.SigmaX, fx.SigmaY);
-								var subuf = MakeUniform((int)112);
-								var sop = stackalloc float[8];
-								sop[0] = 1f; sop[1] = 1f; sop[2] = 0; sop[3] = 0;
-								sop[4] = fx.Color.R / 255f; sop[5] = fx.Color.G / 255f; sop[6] = fx.Color.B / 255f; sop[7] = fx.Color.A / 255f;
-								wgpuQueueWriteBuffer(_d.Q, subuf, 0, (IntPtr)sop, 32);
-								var sfe = stackalloc WGPUBindGroupEntry[3];
-								sfe[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = blur };
-								sfe[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-								sfe[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = subuf, Offset = 0, Size = 112 };
-								var sfbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = sfe };
-								var sfbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &sfbgd));
-								var fq = new float[24];
-								void FQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); fq[idx] = n.X; fq[idx + 1] = n.Y; fq[idx + 2] = u; fq[idx + 3] = vv; }
-								var off = new Vector2(fx.Dx + rx, fx.Dy + ry);
-								FQV(0, off, 0, 0); FQV(4, new Vector2(rw, 0) + off, 1, 0); FQV(8, new Vector2(rw, rh) + off, 1, 1);
-								FQV(12, off, 0, 0); FQV(16, new Vector2(rw, rh) + off, 1, 1); FQV(20, new Vector2(0, rh) + off, 0, 1);
+								var sfbg = TintedImageBg(blur, fx.Color);
+								var fq = TexturedQuad(new Vector2(fx.Dx + rx, fx.Dy + ry), new Vector2(rw, rh));
 								ops.Add(new DrawOp(2, (nint)sfbg, 0, (nint)MakeBuffer(fq), false, lyr.Clip, (nint)MakeClipBg(_d.ImageClipBgl, lyr.Clip)));
 							}
 						}
@@ -4131,7 +4114,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						// a DstIn mask must still erase outside its content, and a colour matrix with an offset can turn
 						// transparent pixels opaque, so both keep full-surface semantics (same condition as the cull above).
 						var compClip = lyr.Clip;
-						if (!_noCompositeScissor && lyr.CompositeMode == 0 && lyr.ColorMatrix is null && IsFiniteAabb(contentBounds))
+						if (lyr.CompositeMode == 0 && lyr.ColorMatrix is null && IsFiniteAabb(contentBounds))
 						{
 							compClip.Aabb = contentBounds;
 							compClip.ScissorInert = false;
@@ -4287,11 +4270,6 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 			StencilClearValue = 0,
 		};
 		var rp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &ca, DepthStencilAttachment = &dsa };
-		// Bracket the MAIN pass with timestamps when UNO_WEBGPU_GPUTIME=1: this is the only way to see real GPU
-		// time. The CPU-side phases cannot distinguish "GPU idle" from "CPU blocked waiting on a busy GPU".
-		var tsw = new WGPUPassTimestampWrites { QuerySet = _d.TsQuerySet, BeginningOfPassWriteIndex = 0, EndOfPassWriteIndex = 1 };
-		var gpuTimed = _d.GpuTiming && mainPass;
-		if (gpuTimed) { rp.TimestampWrites = &tsw; }
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rp);
 		var encodeStart = System.Diagnostics.Stopwatch.GetTimestamp();
 
@@ -4359,8 +4337,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 				}
 				// UNO_WEBGPU_NOCLIP: skip path-clip application entirely (VISUALLY WRONG) to bound what any
 				// clip optimisation could ever be worth on this scene.
-				if (_noPathClip) { clip.PathFan = null; }
-				if (!ReferenceEquals(clip.PathFan, curFan))
+						if (!ReferenceEquals(clip.PathFan, curFan))
 				{
 					ApplyDepthClip(pass, curFan, curAabb, clip);
 					EncReset();
@@ -4460,14 +4437,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						EncBg(0, (IntPtr)xformBg);
 						EncVb((IntPtr)b0, 0, (nuint)(u0 * 3 * sizeof(float)));
 						EncDraw(u0);
-						if (!_noCover)
-						{
-							EncPipe(_d.CoverTablePipe);
-							EncBg(0, (IntPtr)xformBg);
-							EncBg(1, (IntPtr)clipBg);
-							EncVb((IntPtr)b1, 0, (nuint)(42 * sizeof(float)));
-							EncDraw(6);
-						}
+						EncPipe(_d.CoverTablePipe);
+						EncBg(0, (IntPtr)xformBg);
+						EncBg(1, (IntPtr)clipBg);
+						EncVb((IntPtr)b1, 0, (nuint)(42 * sizeof(float)));
+						EncDraw(6);
 						break;
 					case 8:
 						// Single-pass fill of a tiling fan (see PathFill.FanTiles). Uses the stencil-independent
@@ -4493,14 +4467,11 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 						EncBg(0, (IntPtr)xformBg);
 						EncVb((IntPtr)pathBuf, 0, pathBufBytes);
 						EncDraw(u0, (uint)(b0 / (3 * sizeof(float))));
-						if (!_noCover)
-						{
-							EncPipe(_d.CoverTablePipe);
-							EncBg(0, (IntPtr)xformBg);
-							EncBg(1, (IntPtr)clipBg);
-							EncVb((IntPtr)pathBuf, 0, pathBufBytes);
-							EncDraw(6, (uint)(b1 / (7 * sizeof(float))));
-						}
+						EncPipe(_d.CoverTablePipe);
+						EncBg(0, (IntPtr)xformBg);
+						EncBg(1, (IntPtr)clipBg);
+						EncVb((IntPtr)pathBuf, 0, pathBufBytes);
+						EncDraw(6, (uint)(b1 / (7 * sizeof(float))));
 						break;
 					case 2:
 						EncPipe(_d.ImagePipe);
@@ -4592,10 +4563,7 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 								bde[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = bubuf, Offset = 0, Size = 112 };
 								var bdbgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = bde };
 								var bdbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bdbgd));
-								var bq = new float[24];
-								void BQV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); bq[idx] = n.X; bq[idx + 1] = n.Y; bq[idx + 2] = u; bq[idx + 3] = vv; }
-								BQV(0, new Vector2(srx, sry), 0, 0); BQV(4, new Vector2(srx + srw, sry), 1, 0); BQV(8, new Vector2(srx + srw, sry + srh), 1, 1);
-								BQV(12, new Vector2(srx, sry), 0, 0); BQV(16, new Vector2(srx + srw, sry + srh), 1, 1); BQV(20, new Vector2(srx, sry + srh), 0, 1);
+								var bq = TexturedQuad(new Vector2(srx, sry), new Vector2(srw, srh));
 								var bqbuf = MakeBuffer(bq);
 								var bclipBg = MakeClipBg(_d.ImageClipBgl, bk.Clip);
 								EncPipe(_d.ImagePipe);
@@ -4747,18 +4715,13 @@ public sealed unsafe class WebGpuPresentSession : IPresentSession
 		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
 		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
 		{
-			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} fanTry=t{StatFanTried}/ok{StatFanStripped}/big{StatFanTooBig}/concave{StatFanConcave}/nocover{StatFanNotCovering} gpu={_d.LastGpuMs:F2}ms/maps{_d.TsMapTried}-{_d.TsMapOk}-{_d.TsMapFail} cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip}) replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds} block=ref{WebGpuCommandRecorder.StatBlockRef}/layer{WebGpuCommandRecorder.StatBlockLayer}/shadow{WebGpuCommandRecorder.StatBlockShadow}/other{WebGpuCommandRecorder.StatBlockOther}/empty{WebGpuCommandRecorder.StatBlockEmpty} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB sharedOps={statSharedOps} tiled={statTiled} coverMpx={statCoverMpx:F1} strips={WgStrokeStats.Strips} tilesCmd={WgStrokeStats.TilesCmd} atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked}/full{AtlasNoRoom}/ring{AtlasNoRing}/scaleblk{ScaleBlocked}/big{WebGpuPathAtlas.RejBig}/pages{_d.PathAtlas.Pages.Count}");
+			System.Console.WriteLine($"[webgpu-stats] {_s.Width}x{_s.Height}: ops={ops.Count} emitted={statIters} scissorChanges={statScissor} bundle=r{statBundleReplay}+w{statBundleRec} clipChanges={statClipCh} fanOps={statFanOps} tableRebuilds={_statTableRebuilds} stamps={_statStamps} arenaRebuilds={_statArenaRebuilds} fanTry=t{StatFanTried}/ok{StatFanStripped}/big{StatFanTooBig}/concave{StatFanConcave}/nocover{StatFanNotCovering} cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip}) replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays} inlineCmds={WebGpuCommandRecorder.StatInlineCmds} block=ref{WebGpuCommandRecorder.StatBlockRef}/layer{WebGpuCommandRecorder.StatBlockLayer}/shadow{WebGpuCommandRecorder.StatBlockShadow}/other{WebGpuCommandRecorder.StatBlockOther}/empty{WebGpuCommandRecorder.StatBlockEmpty} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB sharedOps={statSharedOps} tiled={statTiled} coverMpx={statCoverMpx:F1} strips={WgStrokeStats.Strips} tilesCmd={WgStrokeStats.TilesCmd} atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked}/full{AtlasNoRoom}/ring{AtlasNoRing}/scaleblk{ScaleBlocked}/big{WebGpuPathAtlas.RejBig}/pages{_d.PathAtlas.Pages.Count}");
 			WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = 0;
 			StatFanTried = StatFanStripped = StatFanTooBig = StatFanConcave = StatFanNotCovering = 0;
 			_statTableRebuilds = 0; _statStamps = 0; _statArenaRebuilds = 0; _statCachedRebuilds = 0; _statCrMiss = _statCrMove = _statCrPathFlip = _statCrSize = _statCrClip = 0;
 		}
 
 		wgpuRenderPassEncoderEnd(pass);
-		if (gpuTimed)
-		{
-			wgpuCommandEncoderResolveQuerySet(_frameEncoder, _d.TsQuerySet, 0, 2, _d.TsResolve, 0);
-			wgpuCommandEncoderCopyBufferToBuffer(_frameEncoder, _d.TsResolve, 0, _d.TsStage, 0, 16);
-		}
 		// A pooled offscreen (layer/backdrop) target: its MSAA colour has resolved into View and the depth is spent,
 		// so return both for the next same-size pass to reuse — only View (composited/sampled later) stays live. The
 		// on-window/dedicated target owns its MSAA+depth (persistent across frames) and is left untouched.
