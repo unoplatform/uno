@@ -74,6 +74,80 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresScaling(1f)]
+		public async Task When_Overflow_Slice_Has_Paragraph_Margins()
+		{
+			// The overflow used to position and clip its slice from the raw Margin dependency property and a
+			// content size derived by subtracting that margin from the measured box. Block margins collapse, so
+			// neither value is the geometry the lines were laid out against: the slice was offset by the wrong
+			// amount and clipped to the wrong box, cutting off the continuation.
+			var master = new RichTextBlock
+			{
+				Width = 160,
+				MaxLines = 2,
+				FontSize = 24,
+				TextWrapping = TextWrapping.Wrap,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			};
+
+			var paragraph = new Paragraph { Margin = new Thickness(0, 24, 0, 40) };
+			paragraph.Inlines.Add(new Run { Text = WrappingText });
+			master.Blocks.Add(paragraph);
+
+			var overflow = new RichTextBlockOverflow
+			{
+				Width = 160,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+			master.OverflowContentTarget = overflow;
+
+			var masterHost = new Border { Width = 200, Height = 300, Background = new SolidColorBrush(Microsoft.UI.Colors.White), Child = master };
+			var overflowHost = new Border { Width = 200, Height = 300, Background = new SolidColorBrush(Microsoft.UI.Colors.White), Child = overflow };
+
+			var root = new StackPanel { Orientation = Orientation.Horizontal };
+			root.Children.Add(masterHost);
+			root.Children.Add(overflowHost);
+
+			try
+			{
+				WindowHelper.WindowContent = root;
+				await WindowHelper.WaitForLoaded(root);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(master.HasOverflowContent, "Master should overflow (MaxLines=2 with long text)");
+
+				var overflowSlice = (int)Math.Ceiling(overflow.ActualHeight);
+				Assert.IsTrue(overflowSlice > 0, $"Overflow should measure a content slice (height {overflow.ActualHeight})");
+
+				var overflowShot = await UITestHelper.ScreenShot(overflowHost);
+
+				var width = (int)Math.Ceiling(overflow.ActualWidth);
+
+				// The continuation starts at the top of the overflow: a page break does not re-apply the
+				// paragraph's top margin. Positioning from the raw Margin pushed the slice down by it.
+				ImageAssert.HasColorInRectangle(
+					overflowShot, new Rectangle(0, 0, width, 20), Microsoft.UI.Colors.Red, tolerance: 16);
+
+				// ...and it reaches the bottom of the box the overflow measured. Clipping to a content size
+				// derived from the raw Margin cut the last lines of the continuation off.
+				ImageAssert.HasColorInRectangle(
+					overflowShot, new Rectangle(0, overflowSlice - 20, width, 20), Microsoft.UI.Colors.Red, tolerance: 16);
+
+				// Nothing paints past the measured slice.
+				ImageAssert.DoesNotHaveColorInRectangle(
+					overflowShot, new Rectangle(0, overflowSlice + 3, 200, 300 - overflowSlice - 3),
+					Microsoft.UI.Colors.Red, tolerance: 16);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_Linked_Overflow_Paints_Only_Its_Slice()
 		{
 			// A master page-broken into an overflow paints only the lines it measured; the overflow paints the
