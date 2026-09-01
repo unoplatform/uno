@@ -35,17 +35,20 @@ internal abstract class NameScopeTable
 	/// </summary>
 	internal DependencyObject? TryGetElement(string name)
 	{
+		DependencyObject? materialized = null;
+
 		for (var attempt = 0; attempt < MaxResolutionAttempts; attempt++)
 		{
 			var element = TryGetElementImpl(name, out var shouldRetry);
 			if (!shouldRetry)
 			{
-				return element;
+				return element ?? materialized;
 			}
+
+			materialized ??= element;
 		}
 
-		global::System.Diagnostics.Debug.Fail($"Name '{name}' did not resolve within {MaxResolutionAttempts} attempts.");
-		return null;
+		return materialized;
 	}
 
 	/// <summary>
@@ -54,6 +57,13 @@ internal abstract class NameScopeTable
 	internal abstract DependencyObject? PeekElement(string name);
 
 	internal abstract bool TryRemove(string name);
+
+	/// <summary>
+	/// Removes <paramref name="name"/> only when the entry still stands for <paramref name="expected"/>
+	/// (or is a dead weak reference). Deferred entries are compared by their stub, which is why this
+	/// cannot be expressed with <see cref="PeekElement"/>.
+	/// </summary>
+	internal abstract bool TryRemoveIfHeldBy(string name, DependencyObject expected);
 
 	protected abstract DependencyObject? TryGetElementImpl(string name, out bool shouldRetry);
 
@@ -69,6 +79,22 @@ internal sealed class StandardNameScopeTable : NameScopeTable
 		=> _entries.TryGetValue(name, out var entry) ? entry.Peek() : null;
 
 	internal override bool TryRemove(string name) => _entries.Remove(name);
+
+	internal override bool TryRemoveIfHeldBy(string name, DependencyObject expected)
+	{
+		if (!_entries.TryGetValue(name, out var entry))
+		{
+			return false;
+		}
+
+		if (!entry.Holds(expected) && !entry.IsDead)
+		{
+			// Someone else holds the name now - silently leave it, matching WinUI's IGNOREHR.
+			return false;
+		}
+
+		return _entries.Remove(name);
+	}
 
 	protected override DependencyObject? TryGetElementImpl(string name, out bool shouldRetry)
 	{

@@ -6964,6 +6964,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								$"{innerWriter.AppliedParameterName}.Name = \"{nameMember.Value}\";"
 							);
 
+							// Register the stub under the deferred element's name: looking the name up
+							// materializes it (WinUI's RegisterDeferredStandardNameScopeEntries). The
+							// materialized element re-registers itself over this entry when it enters.
+							innerWriter.AppendLineIndented(
+								$"__nameScope.RegisterName(\"{nameMember.Value}\", {innerWriter.AppliedParameterName});"
+							);
+
 							// Set the element name to the stub, then when the stub will be replaced
 							// the actual target control will override it.
 							innerWriter.AppendLineIndented(

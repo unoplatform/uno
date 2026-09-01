@@ -91,6 +91,7 @@ namespace TestRepro
 							)							.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 							{
 							__p1.Name = "LoadElement";
+							__nameScope.RegisterName("LoadElement", __p1);
 							_LoadElementSubject.ElementInstance = __p1;
 							__p1.SetBinding(
 								global::Microsoft.UI.Xaml.ElementStub.LoadProperty,
