@@ -104,7 +104,15 @@ WinUI does **not** unify these. Any single shared abstraction is an Uno choice, 
 | `{Binding ElementName}` | `FindNameInPage` | attach + 1 `Loaded` retry | weak | silent |
 | `Timeline.TargetName` | `GetNamedObject` | at `Begin` | weak | `AG_E_RUNTIME_SB_BEGIN_INVALID_TARGET` |
 | `Setter.Target` | `TryGetElementByName` | on `GetProperty` | **strong** | silent |
-| `RelativePanel` | **no namescope** — string-matches direct children's `Name` | every `MeasureOverride` | raw ptr | `AG_E_RELATIVEPANEL_NAME_NOT_FOUND` |
+| `RelativePanel` | child-`Name` scan **fast path**, namescope **fallback** for deferred elements | every `MeasureOverride` | raw ptr | `AG_E_RELATIVEPANEL_NAME_NOT_FOUND` |
+
+> **Correction (design round).** An earlier revision of this table claimed `RelativePanel` uses no
+> namescope at all. That is wrong: `CRelativePanel::ResolveConstraints` calls
+> `GetAdjustedReferenceObjectAndNamescopeType(this)` (`RelativePanel.cpp:100`) and
+> `RPGraph::GetNodeByValue` uses that owner/type for `GetDeferredElementIfExists` on a miss
+> (`RPGraph.cpp:279-293`) before raising the error. The child scan is only the fast path.
+> **Consequence: workstream 0 is NOT namescope-independent** and cannot be used as a warm-up
+> that ships ahead of the namescope model.
 
 `x:Bind` is a fifth, unrelated path: the compiler emits direct field access, and `x:Bind` has no
 `ElementName` property at all.
@@ -192,8 +200,36 @@ anything derived by reading C++, and several are counter-intuitive.
 **Uno has never had a namescope *owner* to register a name into, and the one walk that visits
 every named element still cannot carry one.**
 
-There are **two parallel, unmerged Enter/Leave implementations**, and only the wrong one has the
-namescope parameter:
+> **Corrections (design round).** This section originally said "two parallel Enter/Leave
+> implementations" and named two ownerless call sites. Both undercount:
+>
+> - **There are SIX Enter/Leave families**, not two. Beyond `DependencyObject`'s and `UIElement`'s:
+>   (3) `UIElement.EnterImpl(bool live)` / `LeaveImpl(bool live)` (`UIElement.mux.cs:1091`, `:1596`) —
+>   a same-named *third arity* and an overload-resolution trap; (4) `FlyoutBase.Enter/Leave`
+>   (`FlyoutBase.cs:83`, `:91`, `internal new virtual`); (5) `KeyboardAcceleratorCollection.Enter/Leave`;
+>   (6) `KeyboardAccelerator.EnterImpl`. Plus a seventh namescope mechanism entirely,
+>   `Flyout.SynchronizeNamescope` (`Flyout.cs:86-92`), which pushes a scope onto `Content` via
+>   `SetNameScope`.
+> - **`FlyoutBase` HIDES `DependencyObject`'s non-virtual `Enter`/`Leave`**, so `base.Enter(...)` in
+>   `Flyout.mux.cs:10` and `MenuFlyout.mux.cs:69` reaches an **empty stub** — the DependencyObject
+>   walk has never run for any flyout, ever. This is a live defect discovered while designing, not a
+>   consequence of the epic.
+> - **There are NINE ownerless seed sites**, not two: `UIElement.mux.cs:1242/1265/1276/1833/1846/1861`,
+>   `Button.mux.cs:21/33`, `UIElement.cs:803/806`, and `ResourceDictionary.cs:256`
+>   (`fe.LeaveImpl(new LeaveParams())` — no owner at all). Most importantly the original text omitted
+>   **`UIElement.cs:1674-1675`**, the **incremental attach** path behind every runtime `Children.Add`,
+>   ListView container realisation and Frame graft — and therefore the actual mechanism of
+>   #19420 / #22987.
+> - "Always null" is not literally true: `UIElement.Properties.cs:134/138` already passes `this`.
+> - **C++ line citations in this document have drifted ~4 lines** against the current checkout.
+>   Enter-side registration is `depends.cpp:978-993` (not `:986-1001`); Leave-side is `:1267-1272`
+>   (not `:1275-1280`); the Popup dual-namescope block is `:902-920` (not `:910-928`). The
+>   `TODO Uno: NOT PORTED` comments in `DependencyObject.mux.cs` quote the stale numbers and should
+>   be corrected as the holes are filled. Also `NameScopeTableEntry.h` is under
+>   `components/namescope/lib/`, not `inc/`.
+
+There are **two parallel, unmerged Enter/Leave implementations** at the core of it, and only the
+wrong one has the namescope parameter:
 
 - **WinUI-faithful, on `DependencyObject`** —
   `internal void Enter(DependencyObject? namescopeOwner, EnterParams @params)`
@@ -241,12 +277,24 @@ exactly where each branch stopped.
 | #21129 — Align `FindName` with WinUI *(umbrella; absorbs #14663, #7043, #17020)* | 5, 6 |
 | #16743 — Can't use element name for Binding inside a Flyout | 3, 4 |
 | #8532 — `Binding.ElementName.Name` returns null instead of name | 7 |
-| #19558 — `GetTemplateChild` can't find element with `x:Load="true"` | 5, 8 |
+| #19558 — `GetTemplateChild` can't find element with `x:Load="true"` — **needs a repro** (see below) | 5, 8 |
 | #11750 — `RelativePanel` attached properties should fail gracefully | 9 |
 | #6602 — ElementName not working in `CommandBar` inside `NavigationView` | 1 |
 | #3362 — Referencing parent by name does not work | 2 |
 | #5489 — `x:Load` resolving DPs on non-UWP platforms | 4 |
 | #18509 — Two-way `x:Bind` on `x:Load` doesn't always unload the bound control | 3 |
+
+> **#19558 downgraded (design round).** Literal `x:Load="true"` produces **no `ElementStub` in Uno
+> at all** — `XamlFileGenerator.cs:6750-6752` defers only on `x:DeferLoadStrategy="Lazy"`,
+> `x:Load="false"`, or a markup-extension `x:Load`. The `Control.cs:502-506` ElementStub rejection is
+> a verified gap of the same *shape*, but is not provably the reported symptom, and the issue carries
+> no repro. Do not claim it closed without one.
+
+> **Root cause 1 needs NO generator change (design round).** Verified in the golden output
+> (`Out/Given_LazyLoading/WhLoChHaBi/…cs:58,64`) that **both** `Name=` and `x:Name=` set the `Name`
+> DP in the object initializer. So Enter-time registration keyed on `FrameworkElement.Name` closes
+> root cause 1 by itself, and PR #14942's `x:Name`-only gate never has to be touched — it simply
+> becomes behaviourally inert. This removes the risk the evidence note above warns about.
 
 ### Action required outside the epic
 
@@ -378,12 +426,15 @@ Prior art adds ~12 more, several WinUI-measured — see section 2.
     it currently does *not* resolve.
 13. `RelativePanel` referencing a non-existent name (diagnostic, not a `CS`-level build failure) and
     a deferred `x:Load` sibling.
-14. **`Storyboard`/`Timeline.TargetName` parity.** Flagged: `Timeline.GetTargetFromName` may
-    already use a *separate pull-based* `FindName` path. If so it is the one by-name feature that
-    is **not** broken — and replacing `FindName`'s implementation changes its behaviour as a side
-    effect, with no test guarding it. **Confirm before workstream 3.**
+14. **`Storyboard`/`Timeline.TargetName` — SETTLED, in the uncomfortable direction.**
+    `Timeline.TargetName` *is* pull-based (re-evaluated on every `PropertyInfo` access,
+    `Timeline.cs:183` — not a one-shot push), but it is **not** insulated from a `FindName` rewrite:
+    `Timeline.GetTargetFromName` (`Timeline.cs:236-250`) calls `fe.FindName(...)` **directly** — the
+    very walker workstream 3 replaces — reaching its anchor by climbing `GetParent()`. Only a
+    Debug-level log on miss, and **no test guards it**. So it is safe *through* this epic and stops
+    being safe the moment workstream 3 lands. A guarding test is mandatory before workstream 3.
 15. Popup/Flyout **dual-namescope** entry (a Popup child entered from both logical and visual
-    parent namescopes — `depends.cpp:910-928`, unported). Directly under #16743.
+    parent namescopes — `depends.cpp:902-920`, unported). Directly under #16743.
 16. A WinUI parity pass for the whole matrix.
 17. **D1 — the replicated rename quirk.** Rename a live element and assert **both** the old and
     new names still resolve to it; then remove it and assert only the *current* name is
