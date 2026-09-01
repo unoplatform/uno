@@ -428,10 +428,10 @@ public sealed unsafe partial class WebGpuPresentSession
 
 		// Changed between draws
 		line.Append($" scissorChanges={pst.Scissors} clipChanges={pst.ClipChanges} fanOps={pst.FanOps}");
-		line.Append($" clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB strat=re{StatStratReappend}/ar{StatStratArena}/ca{StatStratCached}/tf{StatStratTableFrame}");
-		StatStratReappend = StatStratArena = StatStratCached = StatStratTableFrame = 0;
+		line.Append($" clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB");
 
 		// Reused
+		line.Append($" strat=re{StatStratReappend}/ar{StatStratArena}/ca{StatStratCached}/tf{StatStratTableFrame}");
 		line.Append($" replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays}");
 		line.Append($" inlineCmds={WebGpuCommandRecorder.StatInlineCmds}");
 		line.Append($" block=ref{WebGpuCommandRecorder.StatBlockRef}/layer{WebGpuCommandRecorder.StatBlockLayer}");
@@ -453,5 +453,6 @@ public sealed unsafe partial class WebGpuPresentSession
 		WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = 0;
 		_statTableRebuilds = _statStamps = _statArenaRebuilds = _statCachedRebuilds = 0;
 		_statCrMiss = _statCrMove = _statCrPathFlip = _statCrSize = _statCrClip = 0;
+		StatStratReappend = StatStratArena = StatStratCached = StatStratTableFrame = 0;
 	}
 }

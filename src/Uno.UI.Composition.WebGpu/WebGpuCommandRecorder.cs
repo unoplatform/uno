@@ -954,12 +954,6 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 						var q = T(new Vector2(src[i], src[i + 1])); dst[i] = q.X; dst[i + 1] = q.Y;
 						bbMin = Vector2.Min(bbMin, q); bbMax = Vector2.Max(bbMax, q);
 					}
-					// FanTiles survives the transform: an affine map scales every triangle area by the same
-					// determinant, so sum(|area|) == |sum(area)| still holds. Dropping it here silently disabled the
-					// single-pass fill for every replayed (scrolled/transformed) recording.
-					// Carry the atlas key through the replay: the effective transform is the recorded one composed
-					// with this replay's, so a scrolled or scaled instance keys to its own entry rather than
-					// reusing a mask baked at a different scale.
 					// The ring-free twin has to be transformed too, or the atlas bake falls back to the ringed fan and
 					// antialiases the mask twice.
 					float[] dstHard = null;
@@ -971,6 +965,11 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 							var qh = T(new Vector2(srcHard[i], srcHard[i + 1])); dstHard[i] = qh.X; dstHard[i + 1] = qh.Y;
 						}
 					}
+					// FanTiles carries over: an affine map scales every triangle area by the same determinant, so
+					// sum(|area|) == |sum(area)| still holds. Dropping it silently disabled the single-pass fill for
+					// every replayed (scrolled or transformed) recording. GeomMatrix carries the atlas key the same
+					// way — composed with this replay's transform, so a scaled instance keys to its own entry rather
+					// than reusing a mask baked at a different scale.
 					var replayed = new PathFill { FanDevice = dst, FanCoverage = p.FanCoverage, FanHard = dstHard, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, FanTiles = p.FanTiles, Geometry = p.Geometry, GeomMatrix = p.GeomMatrix * _m, Clip = ClipCompose(p.Clip) };
 					p.StoreReplayed(_m, replayed);
 					_target.Add(replayed);
