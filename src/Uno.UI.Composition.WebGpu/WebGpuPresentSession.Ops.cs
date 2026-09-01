@@ -387,7 +387,7 @@ public sealed unsafe partial class WebGpuPresentSession
 				var tl = bbMin; var br = bbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
 				PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(tr, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits);
 				PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits); PushVertT(bl, pr, pg, pb, pa, slotBits);
-				// kind 7: b0/b1 are BYTE offsets into the shared per-pass path buffer instead of private buffers.
+				// TablePath: b0/b1 are BYTE offsets into the shared per-pass path buffer instead of private buffers.
 				ops.Add(owned is null
 					? new DrawOp(DrawKind.TablePath, fanShared, fanCount, AppendPathBlock(_scratch), false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, owned))
 					: new DrawOp(DrawKind.Path, (nint)fanBuf, fanCount, (nint)Vbuf(_scratch, owned), false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, owned)));
@@ -436,7 +436,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					{
 						// The fan tiles the shape, so fill it in ONE pass: no stencil fan writing a multisampled
 						// depth-stencil, and no cover quad over the whole bbox. Same pipeline as the cover, fed the
-						// fan triangles directly. kind 8, flag => b0 is a byte offset into the shared path buffer.
+						// fan triangles directly. TilingFan + flag => b0 is a byte offset into the shared path buffer.
 						float fr = pf.Color.R / 255f, fg = pf.Color.G / 255f, fb = pf.Color.B / 255f, fa = pf.Color.A / 255f;
 						_scratch.Clear();
 						var tCov = pf.FanCoverage;
@@ -567,7 +567,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			case RoundedRectCmd rrc:
 				{
 					// Legacy per-op fallback (b0=1). The common path routes rrects through the shared per-pass buffer
-					// (b0==0) for cross-visual coalescing; this stays for any non-frame-solid cached recording.
+					// (PassBuffer) for cross-visual coalescing; this stays for any non-frame-solid cached recording.
 					var tmp = RentRrect();
 					AppendRrect(tmp, rrc);
 					var buf = Vbuf(tmp, owned);

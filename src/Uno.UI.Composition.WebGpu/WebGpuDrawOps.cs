@@ -99,7 +99,7 @@ internal sealed unsafe class WebGpuGeometryCache
 	// (window resize) makes the cached NDC stale — rebuild when the current surface differs. Without this, cached
 	// recordings replay old-size NDC into the resized surface and look stretched.
 	public int BuiltW, BuiltH;
-	// Stable transform-table slot for this recording's path-fill (kind 1) geometry: its fan/cover verts are stored in
+	// Stable transform-table slot for this recording's path-fill geometry: its fan/cover verts are stored in
 	// recorded-device space and bake this slot as a per-vertex index; the slot's local->NDC affine is rewritten each
 	// frame (folding the replay transform + current device->NDC projection), so resize/move never re-bakes the verts.
 	// -1 until the recording first builds a path fill. Returned to the device free-list when this cache is released.
@@ -117,7 +117,7 @@ internal sealed unsafe class WebGpuGeometryCache
 	// The replay scale this entry's masks were baked at. A different scale needs different masks, so it forces a
 	// rebuild rather than sampling one sized for the old scale.
 	public Vector2 AtlasScale;
-	// All ops are path fills (kind 1) — their verts are device-space + the transform table, so the recording is fully
+	// All ops are path fills — their verts are device-space + the transform table, so the recording is fully
 	// surface-size-independent: a resize repositions them via the per-frame table entry and needs NO rebuild (unlike
 	// a mixed entry whose solid/rrect verts are NDC-baked). Lets the arena resize-staleness skip pure-path entries.
 	public bool PurePath;

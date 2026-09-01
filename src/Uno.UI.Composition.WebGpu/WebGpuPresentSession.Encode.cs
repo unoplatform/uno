@@ -295,7 +295,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					}
 					break;
 				case DrawKind.TablePath:
-					// Shared-buffer path fill: same as kind 1, but b0/b1 are byte offsets into pathBuf, so the
+					// Shared-buffer path fill: same as DrawKind.Path, but b0/b1 are byte offsets into pathBuf, so the
 					// vertex buffer is bound once for the whole pass instead of twice per fill.
 					pst.Enc.Pipe(flag ? _d.StencilTableEO : _d.StencilTableNZ);
 					pst.Enc.Bg(0, (IntPtr)xformBg);
