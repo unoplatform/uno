@@ -176,7 +176,10 @@ partial class ResourceLoader
 	/// path through <see cref="EnsureLoadersCultures"/> — and
 	/// <see cref="RebuildLoaderResourcesFromSurvivors"/>) goes through this, so a malformed .upri
 	/// (e.g. a stream truncated in the middle of a key/value pair) throws without leaving a partially
-	/// parsed value or marker observable.
+	/// parsed value or marker observable. A caller that must reject ONE contributor without rolling
+	/// the others back (<see cref="RebuildLoaderResourcesFromSurvivors"/>) parses each contributor
+	/// into its own <see cref="CreateScratch"/> and <see cref="AbsorbScratch"/>es only those that
+	/// parsed completely.
 	/// </summary>
 	private sealed class TransactionalParse
 	{
@@ -209,29 +212,41 @@ partial class ResourceLoader
 		/// </summary>
 		public void MergeIntoLiveLoaders()
 		{
-			foreach (var parsed in _loaderResources)
-			{
-				var liveResources = GetOrCreateNamedLoaderResources(parsed.Key);
-				foreach (var culture in parsed.Value)
-				{
-					if (liveResources.TryGetValue(culture.Key, out var resources))
-					{
-						foreach (var pair in culture.Value)
-						{
-							resources[pair.Key] = pair.Value;
-						}
-					}
-					else
-					{
-						// Nothing live to merge with: hand the temporary over instead of copying it.
-						liveResources[culture.Key] = culture.Value;
-					}
-				}
-			}
+			MergeInto(GetOrCreateNamedLoaderResources);
 
 			foreach (var marker in _markers)
 			{
 				_parsedResources.Add(marker);
+			}
+		}
+
+		/// <summary>
+		/// Creates an EMPTY parse seeded with the markers accumulated here so far, so a .upri an
+		/// earlier contributor already parsed is skipped exactly as a parse sharing this instance
+		/// would skip it. The result is independent: parsing into it and then DISCARDING it (rather
+		/// than handing it to <see cref="AbsorbScratch"/>) leaves this instance — and therefore the
+		/// live state — untouched, which is what lets one contributor be rejected without rolling
+		/// the others back.
+		/// </summary>
+		public TransactionalParse CreateScratch() => new(_markers);
+
+		/// <summary>
+		/// Folds a scratch parse's values AND markers into this instance, with the same
+		/// last-writer-wins-per-key semantics <see cref="MergeIntoLiveLoaders"/> uses, so
+		/// contributor ordering behaves exactly as it does in a single shared parse.
+		/// Temporary-to-temporary only: no live state is touched. Call it ONLY once
+		/// <paramref name="scratch"/> has returned from <see cref="Parse"/> — a scratch that threw
+		/// must be discarded whole, because a leaked marker is as wrong as a leaked value (it makes
+		/// a later parse skip a file it should have read).
+		/// </summary>
+		public void AbsorbScratch(TransactionalParse scratch)
+		{
+			// The method group binds to THIS instance's temporaries, not to the scratch's.
+			scratch.MergeInto(ResolveLoaderResources);
+
+			foreach (var marker in scratch._markers)
+			{
+				_markers.Add(marker);
 			}
 		}
 
@@ -268,6 +283,37 @@ partial class ResourceLoader
 			foreach (var marker in _markers)
 			{
 				_parsedResources.Add(marker);
+			}
+		}
+
+		/// <summary>
+		/// Copies the parsed state into the dictionaries <paramref name="resolveTargetResources"/>
+		/// hands out, overwriting per key (last writer wins) — the semantics
+		/// <see cref="ProcessResourceFile"/> has when writing to a target directly. The target is
+		/// either the live loaders (<see cref="MergeIntoLiveLoaders"/>) or another
+		/// <see cref="TransactionalParse"/>'s temporaries (<see cref="AbsorbScratch"/>).
+		/// </summary>
+		private void MergeInto(Func<string, Dictionary<string, Dictionary<string, string>>> resolveTargetResources)
+		{
+			foreach (var parsed in _loaderResources)
+			{
+				var targetResources = resolveTargetResources(parsed.Key);
+				foreach (var culture in parsed.Value)
+				{
+					if (targetResources.TryGetValue(culture.Key, out var resources))
+					{
+						foreach (var pair in culture.Value)
+						{
+							resources[pair.Key] = pair.Value;
+						}
+					}
+					else
+					{
+						// Nothing in the target to merge with: hand the temporary over instead of
+						// copying it.
+						targetResources[culture.Key] = culture.Value;
+					}
+				}
 			}
 		}
 
@@ -350,8 +396,11 @@ partial class ResourceLoader
 	/// <summary>
 	/// Re-derives every named loader's merged culture/key/value entries from the surviving
 	/// <see cref="_lookupAssemblies"/> (called after a dying ALC's assemblies have been removed),
-	/// through the <see cref="TransactionalParse"/> temp-then-apply pattern with a per-assembly guard
-	/// so a single malformed .upri is logged and skipped instead of leaving a live loader empty.
+	/// through the <see cref="TransactionalParse"/> temp-then-apply pattern, with each survivor
+	/// parsing into its own scratch that is folded into the aggregate only after it parsed
+	/// completely. A single malformed .upri is therefore logged and skipped — contributing nothing,
+	/// not even a pair or marker read before the failure — instead of aborting the rebuild and
+	/// leaving a live loader empty.
 	/// </summary>
 	/// <remarks>
 	/// The re-derivation only covers the last established context's language preferences, so with
@@ -374,29 +423,40 @@ partial class ResourceLoader
 		}
 
 		// Started from an empty marker set: the rebuilt state replaces the live one wholesale.
-		var parse = new TransactionalParse();
+		var aggregate = new TransactionalParse();
 		foreach (var assembly in _lookupAssemblies)
 		{
+			// Each survivor parses into its OWN scratch, seeded with the markers the aggregate has
+			// accumulated so far so a .upri an earlier survivor already parsed is still skipped.
+			// Only a scratch whose Parse RETURNED is folded in, so a survivor that throws part-way
+			// through — after a marker and some pairs already landed in its scratch, and possibly
+			// after earlier .upri files of the SAME assembly parsed fine — contributes neither
+			// values nor markers.
+			var scratch = aggregate.CreateScratch();
 			try
 			{
-				parse.Parse(assembly, languagePreferences);
+				scratch.Parse(assembly, languagePreferences);
 			}
 			catch (Exception error) when (error is global::System.IO.InvalidDataException or global::System.IO.IOException or NotSupportedException or BadImageFormatException or global::System.IO.FileLoadException or ArgumentException or FormatException)
 			{
-				// Recoverable per-assembly parse/reflection failure: skip this survivor and keep
-				// rebuilding. ProcessResourceFile surfaces malformed .upri content (bad magic,
-				// unsupported version, truncated/unreadable stream) as InvalidDataException, so every
-				// parser failure is covered here. Fatal exceptions are intentionally not caught: the
-				// live loaders are untouched until the apply phase, so an escaping exception here
-				// cannot leave a loader empty.
+				// Recoverable per-assembly parse/reflection failure: discard this survivor's scratch
+				// whole and keep rebuilding. ProcessResourceFile surfaces malformed .upri content
+				// (bad magic, unsupported version, truncated/unreadable stream) as
+				// InvalidDataException, so every parser failure is covered here. Fatal exceptions are
+				// intentionally not caught: the live loaders are untouched until the apply phase, so
+				// an escaping exception here cannot leave a loader empty.
 				if (_log.IsEnabled(LogLevel.Error))
 				{
 					_log.LogError($"[ALC-CLEANUP] ResourceLoader: skipping lookup assembly '{assembly.FullName}' while rebuilding merged resources after ALC unload.", error);
 				}
+
+				continue;
 			}
+
+			aggregate.AbsorbScratch(scratch);
 		}
 
-		parse.ReplaceLiveLoaders();
+		aggregate.ReplaceLiveLoaders();
 	}
 
 	private static bool IsFromNonDefaultAlc(Assembly assembly)
