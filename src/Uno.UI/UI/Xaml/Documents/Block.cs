@@ -1,6 +1,7 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference BlockTextElement.h (CBlock), tag winui3/release/2.4.0, commit e8442d07a
+using System;
 using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Documents;
@@ -116,7 +117,14 @@ public partial class Block : TextElement
 			typeof(Block),
 			new FrameworkPropertyMetadata(
 				Thickness.Empty,
-				propertyChangedCallback: (s, e) => ((Block)s).OnBlockPropertyChanged()));
+				propertyChangedCallback: (s, e) => ((Block)s).OnBlockPropertyChanged(),
+				coerceValueCallback: CoerceMargin));
+
+	// CBlock::ValidateMargin — negative margins are not allowed.
+	private static object CoerceMargin(DependencyObject sender, object baseValue, DependencyPropertyValuePrecedences _)
+		=> baseValue is Thickness { Left: < 0 } or Thickness { Top: < 0 } or Thickness { Right: < 0 } or Thickness { Bottom: < 0 }
+			? throw new ArgumentException("Block.Margin cannot be negative.", nameof(Margin))
+			: baseValue;
 
 	#endregion
 
