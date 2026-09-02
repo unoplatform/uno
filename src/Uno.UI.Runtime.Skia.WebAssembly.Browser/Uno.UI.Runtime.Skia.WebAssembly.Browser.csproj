@@ -67,11 +67,8 @@
 		<EmbeddedResource Include="WasmCSS\**\*.css" />
 		<TypeScriptCompile Include="ts\**\*.ts;ts\**\*.tsx" />
 
-		<TypeScriptCompile Include="..\Uno.UI\ts\types\**\*.ts" />
-
-		<TypeScriptCompile Include="..\Uno.UI\ts\Windows\UI\Xaml\Controls\WebView.ts">
-			<Link>ts\Runtime\WebView.ts</Link>
-		</TypeScriptCompile>
+		<!-- Ambient .d.ts for the browser APIs; owned by Uno.WinRT, which compiles them too. -->
+		<TypeScriptCompile Include="..\Uno.WinRT\ts\types\**\*.ts" />
 
 		<UpToDateCheckInput Include="ts\**\*" />
 		<UpToDateCheckInput Include="WasmCSS\**\*" />
