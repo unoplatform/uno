@@ -169,7 +169,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			// In-place restamp: rewrite the previous stamp's ClipU buffers and keep its bind groups. Unsafe only when
 			// this entry was already stamped under the current submit (same device frame) - the rewrite would clobber
 			// uniforms this frame's earlier draws still read - so that case (and the first stamp) allocates fresh.
-			var reuse = fe.HasStamp && fe.StampBufs is not null && fe.StampBufs.Count == fe.FrameOrder.Count && fe.StampFrame != _d.FrameSeq;
+			var reuse = !_noRestamp && fe.HasStamp && fe.StampBufs is not null && fe.StampBufs.Count == fe.FrameOrder.Count && fe.StampFrame != _d.FrameSeq;
 			if (!reuse && fe.StampOwned is not null) { _d.DeferRelease(fe.StampOwned); }
 			var stampOwned = reuse ? fe.StampOwned : new OwnedResources();
 			var t2 = new Matrix3x2(rr.Transform.M11, rr.Transform.M12, rr.Transform.M21, rr.Transform.M22, rr.Transform.M41, rr.Transform.M42);
@@ -318,6 +318,15 @@ public sealed unsafe partial class WebGpuPresentSession
 	}
 
 	/// <summary>
+	/// True when an atlas-bearing entry can no longer reuse its baked masks — the replay scale moved away from the
+	/// one they were baked at — or when a transform that previously refused a scale now allows one, so content
+	/// first built mid-animation stops being aliased.
+	/// </summary>
+	private static bool AtlasNeedsRebuild(WebGpuGeometryCache entry, Matrix4x4 transform)
+		=> (entry.HasAtlas && !(TryAtlasScale(transform, out var scale) && SameAtlasScale(scale, entry.AtlasScale)))
+			|| (entry.AtlasBlockedByScale && TryAtlasScale(transform, out _));
+
+	/// <summary>
 	/// Replays an ARENA recording: geometry baked once in its own identity space, with the replay transform
 	/// applied on the GPU. A move re-stamps the per-op clip bind groups and reuses the vertex buffers; only a
 	/// resize, a scale/rotation change, or an atlas entry that can no longer be reused forces a rebuild.
@@ -326,13 +335,11 @@ public sealed unsafe partial class WebGpuPresentSession
 	{
 		int aSlot = (miss || entry is null) ? -1 : entry.XformSlot;
 		bool aSizeChanged = entry is not null && (entry.BuiltW != (int)_s.Width || entry.BuiltH != (int)_s.Height);
-		// An atlas quad is an image op: its NDC is baked at build time and it carries no xform-table
-		// slot, so unlike the rest of a pure-path entry it is NOT re-projected when the surface
-		// size changes. Replaying one on a differently-sized target drew it scaled (the offscreen
-		// RenderTargetBitmap path, which is how the shape parity tests capture).
-		if (miss || !entry.Arena || (aSizeChanged && (!entry.PurePath || entry.HasAtlas))
-			|| (entry.HasAtlas && !(TryAtlasScale(rr.Transform, out var curScale) && SameAtlasScale(curScale, entry.AtlasScale)))
-			|| (entry.AtlasBlockedByScale && TryAtlasScale(rr.Transform, out _)))
+		// A pure-path entry survives a resize through its xform table, but an atlas quad in it does not: that is an
+		// image op with build-time NDC and no table slot, so a resize leaves it scaled (visible through the
+		// offscreen RenderTargetBitmap path the shape parity tests capture through).
+		var survivesResize = entry is not null && entry.PurePath && !entry.HasAtlas;
+		if (miss || !entry.Arena || (aSizeChanged && !survivesResize) || AtlasNeedsRebuild(entry, rr.Transform))
 		{
 			if (_emitStats) { _statArenaRebuilds++; }
 			if (entry is not null) { _d.DeferRelease(entry.Owned); _d.DeferRelease(entry.StampOwned); }
@@ -356,7 +363,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		{
 			if (_emitStats) { _statStamps++; }
 			// In-place restamp (same guard as the table stamp): rewrite ClipU buffers, keep bind groups.
-			var reuse = entry.HasStamp && entry.StampBufs is not null && entry.StampBufs.Count == entry.Ops.Count && entry.StampFrame != _d.FrameSeq;
+			var reuse = !_noRestamp && entry.HasStamp && entry.StampBufs is not null && entry.StampBufs.Count == entry.Ops.Count && entry.StampFrame != _d.FrameSeq;
 			if (!reuse && entry.StampOwned is not null) { _d.DeferRelease(entry.StampOwned); }
 			var stampOwned = reuse ? entry.StampOwned : new OwnedResources();
 			var stamped = reuse ? entry.StampedOps : new List<DrawOp>(entry.Ops.Count);
@@ -445,6 +452,8 @@ public sealed unsafe partial class WebGpuPresentSession
 	}
 
 	/// <summary>Which replay strategy each nested recording took (UNO_WEBGPU_STATS).</summary>
+	private static readonly bool _noRestamp = Environment.GetEnvironmentVariable("UNO_WEBGPU_NO_RESTAMP") is "1";   // A/B gate
+
 	internal static int StatStratReappend, StatStratArena, StatStratCached, StatStratTableFrame;
 
 	private void EmitReplayRef(ReplayRefCmd rr, List<DrawOp> ops, HashSet<List<WebGpuCommand>> frameEmitted)
