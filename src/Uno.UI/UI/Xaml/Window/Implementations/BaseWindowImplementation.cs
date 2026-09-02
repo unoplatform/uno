@@ -65,6 +65,9 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 
 	public bool Visible => NativeWindowWrapper?.IsVisible ?? false;
 
+	private bool IsClosingCancellable =>
+		NativeWindowWrapper?.IsClosingCancellable ?? NativeWindowFactory.SupportsClosingCancellation;
+
 	public abstract UIElement? Content { get; set; }
 
 	public abstract XamlRoot? XamlRoot { get; }
@@ -148,12 +151,12 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 
 			Window.AppWindow.RaiseClosing(e);
 
-			if (e.Cancel && NativeWindowFactory.SupportsClosingCancellation)
+			if (e.Cancel && IsClosingCancellable)
 			{
 				return;
 			}
 
-			if (e.Cancel && !NativeWindowFactory.SupportsClosingCancellation)
+			if (e.Cancel && !IsClosingCancellable)
 			{
 				if (this.Log().IsWarningEnabled())
 				{
@@ -290,7 +293,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 				// don't proceed to close if closing event has been handled
 				// _isClosing will get reset to false
 
-				if (!NativeWindowFactory.SupportsClosingCancellation)
+				if (!IsClosingCancellable)
 				{
 					if (this.Log().IsWarningEnabled())
 					{

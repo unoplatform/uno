@@ -101,6 +101,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	public override AppleUIKitWindow? NativeWindow => _nativeWindow;
 
+	// A Close() the app asked for is cancellable: CloseCore is what turns it into a scene
+	// destruction request, so a handled Window.Closed never reaches UIKit. A disconnect is not -
+	// UIKit reports it once the scene is already gone, and only for this window.
+	public override bool IsClosingCancellable => base.IsClosingCancellable && !_isSceneDisconnected;
+
 	internal RootViewController MainController => _mainController;
 
 	[MemberNotNull(nameof(_nativeWindow))]
@@ -227,6 +232,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		MarkHidden();
 		OnNativeVisibilityChanged(false);
+
+		// _isSceneDisconnected above already makes this window's close uncancellable.
 		OnNativeClosed();
 
 		Close();

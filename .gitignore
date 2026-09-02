@@ -260,7 +260,6 @@ msbuild.binlog
 *.diagsession
 
 /src/SourceGenerators/System.Xaml/obj-net_4_x-win32
-/src/SamplesApp/SamplesApp.Wasm.UITests/out
 /src/Uno.UI.TestComparer/Properties/launchSettings.json
 
 src/AddIns/Uno.UI.MSAL/WasmScripts/*.d.ts

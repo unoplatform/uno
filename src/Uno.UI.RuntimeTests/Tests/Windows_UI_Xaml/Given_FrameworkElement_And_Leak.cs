@@ -42,13 +42,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[RunsOnUIThread]
 	public class Given_FrameworkElement_And_Leak
 	{
-#if __SKIA__
-		private const string SamplesAppAssembly = "SamplesApp.Skia";
-#elif __WASM__
-		private const string SamplesAppAssembly = "SamplesApp.Wasm";
-#else   // !(__SKIA__ || __WASM__)
 		private const string SamplesAppAssembly = "SamplesApp";
-#endif  // !(__SKIA__ || __WASM__)
 
 		private const DynamicallyAccessedMemberTypes TypeRequirements = ActivatableDataRowAttribute.TypeRequirements;
 
