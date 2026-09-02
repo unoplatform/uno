@@ -1646,6 +1646,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif __WASM__
 		[Ignore("Flaky in CI.")]
 #endif
+		// The scrolls below are animated and are only awaited with fixed delays. Skia macOS steps through more
+		// animation frames than Win32, so those delays can elapse while the viewport is still moving and the
+		// layout-slot assertions observe an intermediate offset.
+		// See https://github.com/unoplatform/uno/issues/9080.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS)]
 		public async Task When_Large_List_Scroll_To_End_Then_Back_Up_And_First_Item()
 		{
 			var materialized = 0;
