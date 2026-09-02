@@ -20,6 +20,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Text;
+using Uno.UI.SourceGenerators.Helpers;
 using Uno.UI.SourceGenerators.XamlGenerator;
 
 namespace Uno.UI.SourceGenerators.Tests.Verifiers
@@ -93,7 +94,24 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 		{
 			private readonly string _testFilePath;
 			private readonly string _testMethodName;
+
+			// The snapshot store sits at the root of the test project rather than under
+			// XamlCodeGeneratorTests, and the snapshot folder drops the test file's `Given_` prefix: both
+			// are pure path length on the deepest paths in the repository. Given_SnapshotLayout keeps the
+			// result within the budget MAX_PATH leaves for the folder the repository is cloned into.
 			private const string TestOutputFolderName = "Out";
+			private const string TestFileNamePrefix = "Given_";
+
+			// The folder every XAML input of a test is pinned to; see the item-path notes in RunImplAsync.
+			private const string ProjectItemFolder = "//Project/0/";
+
+			// The generators whose output is snapshotted, each keyed by the short code its snapshots are
+			// named after. The code, not the type name, is what lands on disk -- again, path length.
+			private static readonly Dictionary<string, Type> _generatorsByCode = new()
+			{
+				["XCG"] = typeof(XamlCodeGenerator),
+				["OPG"] = typeof(ObservablePropertyGenerator),
+			};
 
 			private readonly XamlFile[] _xamlFiles;
 			private readonly ResourceFile[] _resourceFiles;
@@ -218,11 +236,11 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 				// separator at all, and cannot differ between hosts.
 				foreach (var xamlFile in _xamlFiles)
 				{
-					globalConfigBuilder.Append($@"[//Project/0/{xamlFile.FileName}]
+					globalConfigBuilder.Append($@"[{ProjectItemFolder}{xamlFile.FileName}]
 build_metadata.AdditionalFiles.SourceItemGroup = Page
 build_metadata.AdditionalFiles.Link = 0/{xamlFile.FileName}
 ");
-					TestState.AdditionalFiles.Add(($"//Project/0/{xamlFile.FileName}", NormalizeNewLines(xamlFile.Contents)));
+					TestState.AdditionalFiles.Add(($"{ProjectItemFolder}{xamlFile.FileName}", NormalizeNewLines(xamlFile.Contents)));
 				}
 
 				foreach (var resourceFile in _resourceFiles)
@@ -294,17 +312,17 @@ build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceF
 
 			protected override async Task<(Compilation compilation, ImmutableArray<Diagnostic> generatorDiagnostics)> GetProjectCompilationAsync(Project project, IVerifier verifier, CancellationToken cancellationToken)
 			{
-				var resourceDirectory = Path.Combine(Path.GetDirectoryName(_testFilePath)!, TestOutputFolderName, Path.GetFileNameWithoutExtension(_testFilePath), _testMethodName);
+				var resourceDirectory = Path.Combine(Path.GetDirectoryName(_testFilePath)!, "..", TestOutputFolderName, SnapshotFolder, _testMethodName);
 
 				var (compilation, generatorDiagnostics) = await base.GetProjectCompilationAsync(project, verifier, cancellationToken);
 				var expectedNames = new HashSet<string>();
 				foreach (var tree in compilation.SyntaxTrees.Skip(project.DocumentIds.Count))
 				{
 					WriteTreeToDiskIfNecessary(tree, resourceDirectory);
-					expectedNames.Add(GetFileNameFromTree(tree));
+					expectedNames.Add(GetSnapshotName(tree));
 				}
 
-				var currentTestPrefix = $"Uno.UI.SourceGenerators.Tests.XamlCodeGeneratorTests.{TestOutputFolderName}.{Path.GetFileNameWithoutExtension(_testFilePath)}.{_testMethodName}.";
+				var currentTestPrefix = SnapshotResourcePrefix;
 				foreach (var name in GetType().Assembly.GetManifestResourceNames())
 				{
 					if (!name.StartsWith(currentTestPrefix))
@@ -330,7 +348,7 @@ build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceF
 
 			public TestBase AddGeneratedSources()
 			{
-				var expectedPrefix = $"Uno.UI.SourceGenerators.Tests.XamlCodeGeneratorTests.{TestOutputFolderName}.{Path.GetFileNameWithoutExtension(_testFilePath)}.{_testMethodName}.";
+				var expectedPrefix = SnapshotResourcePrefix;
 				foreach (var resourceName in typeof(Test).Assembly.GetManifestResourceNames())
 				{
 					if (!resourceName.StartsWith(expectedPrefix))
@@ -347,15 +365,14 @@ build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceF
 					using var reader = new StreamReader(resourceStream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, bufferSize: 4096, leaveOpen: true);
 					var name = resourceName.Substring(expectedPrefix.Length);
 					var underscoreIndex = name.IndexOf('_');
-					var generatorName = name.Substring(0, underscoreIndex);
-					name = name.Substring(underscoreIndex + 1);
+					var generatorCode = name.Substring(0, underscoreIndex);
+					name = ExpandUniqueId(name.Substring(underscoreIndex + 1));
 
-					var type = generatorName switch
+					if (!_generatorsByCode.TryGetValue(generatorCode, out var type))
 					{
-						"XamlCodeGenerator" => typeof(XamlCodeGenerator),
-						"ObservablePropertyGenerator" => typeof(ObservablePropertyGenerator),
-						_ => throw new Exception("Unexpected generator name"),
-					};
+						throw new InvalidOperationException($"Unexpected generator code '{generatorCode}'");
+					}
+
 					// Build the SourceText explicitly with Sha256 instead of handing over a string: the
 					// implicit string conversion uses SourceText.From's Sha1 default, while Roslyn 5.x
 					// creates the project — and hence the actual generated documents — with
@@ -384,22 +401,88 @@ build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceF
 				return this;
 			}
 
-			private static string GetFileNameFromTree(SyntaxTree tree)
+			private string SnapshotFolder
+			{
+				get
+				{
+					var name = Path.GetFileNameWithoutExtension(_testFilePath);
+					return name.StartsWith(TestFileNamePrefix, StringComparison.Ordinal)
+						? name.Substring(TestFileNamePrefix.Length)
+						: name;
+				}
+			}
+
+			private string SnapshotResourcePrefix
+				=> $"Uno.UI.SourceGenerators.Tests.{TestOutputFolderName}.{SnapshotFolder}.{_testMethodName}.";
+
+			private string GetSnapshotName(SyntaxTree tree)
 			{
 				var generatorName = new DirectoryInfo(tree.FilePath).Parent!.Name;
 				generatorName = generatorName.Substring(generatorName.LastIndexOf('.') + 1);
-				return $"{generatorName}_{Path.GetFileName(tree.FilePath)}";
+
+				foreach (var (code, type) in _generatorsByCode)
+				{
+					if (type.Name == generatorName)
+					{
+						return $"{code}_{CollapseUniqueId(Path.GetFileName(tree.FilePath))}";
+					}
+				}
+
+				throw new InvalidOperationException($"Unexpected generator name '{generatorName}'");
 			}
 
+			/// <summary>
+			/// Drops the hash a XAML file's generated source carries, so that the snapshot is named after the
+			/// XAML file alone.
+			/// </summary>
+			/// <remarks>
+			/// The generated source is named after XamlFileDefinition.UniqueID -- the sanitized file name plus
+			/// a 32-character hash of the item path -- and the harness pins that item path, so the hash adds
+			/// 32 characters that identify nothing the snapshot doesn't already say. It is put back by
+			/// <see cref="ExpandUniqueId"/>, which recomputes it the same way. Only names that round-trip
+			/// against one of the test's own XAML files are collapsed; anything else keeps the name it has.
+			/// </remarks>
+			private string CollapseUniqueId(string fileName)
+			{
+				foreach (var xamlFile in _xamlFiles)
+				{
+					var sanitized = SanitizeFileName(xamlFile.FileName);
+					if (fileName == $"{sanitized}_{HashBuilder.Build(ProjectItemFolder + xamlFile.FileName)}.cs")
+					{
+						return $"{sanitized}.cs";
+					}
+				}
+
+				return fileName;
+			}
+
+			private string ExpandUniqueId(string snapshotName)
+			{
+				foreach (var xamlFile in _xamlFiles)
+				{
+					var sanitized = SanitizeFileName(xamlFile.FileName);
+					if (snapshotName == $"{sanitized}.cs")
+					{
+						return $"{sanitized}_{HashBuilder.Build(ProjectItemFolder + xamlFile.FileName)}.cs";
+					}
+				}
+
+				return snapshotName;
+			}
+
+			// Mirrors XamlFileDefinition.SanitizedFileName.
+			private static string SanitizeFileName(string xamlFileName)
+				=> Path.GetFileNameWithoutExtension(xamlFileName).Replace(" ", "_").Replace(".", "_");
+
 			[Conditional("WRITE_EXPECTED")]
-			private static void WriteTreeToDiskIfNecessary(SyntaxTree tree, string resourceDirectory)
+			private void WriteTreeToDiskIfNecessary(SyntaxTree tree, string resourceDirectory)
 			{
 				if (tree.Encoding is null)
 				{
 					throw new ArgumentException("Syntax tree encoding was not specified");
 				}
 
-				var name = GetFileNameFromTree(tree);
+				var name = GetSnapshotName(tree);
 
 				var filePath = Path.Combine(resourceDirectory, name);
 				Directory.CreateDirectory(resourceDirectory);
