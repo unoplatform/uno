@@ -3,71 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2CookieManager
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		internal CoreWebView2CookieManager()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Microsoft.Web.WebView2.Core.CoreWebView2Cookie>> GetCookiesAsync(string uri)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2CookieManager", "GetCookiesAsync(string uri)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2Cookie CreateCookie(string name, string value, string Domain, string Path)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2CookieManager", "CreateCookie(string name, string value, string Domain, string Path)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2Cookie CopyCookie(global::Microsoft.Web.WebView2.Core.CoreWebView2Cookie cookieParam)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2CookieManager", "CopyCookie(CoreWebView2Cookie cookieParam)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void AddOrUpdateCookie(global::Microsoft.Web.WebView2.Core.CoreWebView2Cookie cookie)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2CookieManager", "AddOrUpdateCookie(CoreWebView2Cookie cookie)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void DeleteCookie(global::Microsoft.Web.WebView2.Core.CoreWebView2Cookie cookie)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2CookieManager", "DeleteCookie(CoreWebView2Cookie cookie)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void DeleteCookies(string name, string uri)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2CookieManager", "DeleteCookies(string name, string uri)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void DeleteCookiesWithDomainAndPath(string name, string Domain, string Path)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2CookieManager", "DeleteCookiesWithDomainAndPath(string name, string Domain, string Path)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void DeleteAllCookies()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2CookieManager", "DeleteAllCookies()");
-		}
-#endif
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.GetCookiesAsync(string)
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.CreateCookie(string, string, string, string)
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.CopyCookie(Microsoft.Web.WebView2.Core.CoreWebView2Cookie)
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.AddOrUpdateCookie(Microsoft.Web.WebView2.Core.CoreWebView2Cookie)
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.DeleteCookie(Microsoft.Web.WebView2.Core.CoreWebView2Cookie)
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.DeleteCookies(string, string)
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.DeleteCookiesWithDomainAndPath(string, string, string)
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2CookieManager.DeleteAllCookies()
 	}
 }

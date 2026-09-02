@@ -32,6 +32,11 @@ uno_webview_webview_notification_fn_ptr uno_get_webview_notification_callback(vo
 
 void uno_set_webview_navigation_callbacks(uno_webview_navigation_starting_fn_ptr starting, uno_webview_navigation_finishing_fn_ptr finishing, uno_webview_webview_notification_fn_ptr notification, uno_webview_navigation_finishing_fn_ptr web_message, uno_webview_navigation_failing_fn_ptr failing);
 
+typedef void (*uno_webview_lifecycle_fn_ptr)(WKWebView* /* handle */);
+uno_webview_lifecycle_fn_ptr uno_get_webview_content_loading_callback(void);
+uno_webview_lifecycle_fn_ptr uno_get_webview_dom_content_loaded_callback(void);
+void uno_set_webview_lifecycle_callbacks(uno_webview_lifecycle_fn_ptr content_loading, uno_webview_lifecycle_fn_ptr dom_content_loaded);
+
 typedef bool (*uno_webview_unsupported_scheme_identified_fn_ptr)(WKWebView* /* handle */, const char* /* url */);
 uno_webview_unsupported_scheme_identified_fn_ptr uno_get_webview_unsupported_scheme_identified_callback(void);
 void uno_set_webview_unsupported_scheme_identified_callback(uno_webview_unsupported_scheme_identified_fn_ptr fn_ptr);
@@ -41,7 +46,7 @@ typedef const char* _Nullable (*uno_webview_resource_requested_fn_ptr)(WKWebView
 uno_webview_resource_requested_fn_ptr uno_get_webview_resource_requested_callback(void);
 void uno_set_webview_resource_requested_callback(uno_webview_resource_requested_fn_ptr fn_ptr);
 
-NSView* uno_webview_create(NSWindow *window, const char *ok, const char *cancel);
+NSView* uno_webview_create(NSWindow *window, const char *ok, const char *cancel, bool is_private);
 
 typedef int (*uno_webview_new_window_requested_fn_ptr)(WKWebView* /* handle */, const char* /* targetUrl */, const char* /* refererUrl */);
 uno_webview_new_window_requested_fn_ptr uno_get_webview_new_window_requested_callback(void);
@@ -50,6 +55,7 @@ void uno_set_webview_new_window_requested_callback(uno_webview_new_window_reques
 const char* uno_webview_get_title(WKWebView *webview);
 
 void uno_webview_register_message_handler(WKWebView *webview);
+void uno_webview_unregister_message_handlers(WKWebView *webview);
 
 bool uno_webview_can_go_back(WKWebView *webview);
 bool uno_webview_can_go_forward(WKWebView *webview);
@@ -67,6 +73,40 @@ void uno_webview_execute_script(WKWebView *webview, NSInteger handle, const char
 void uno_webview_invoke_script(WKWebView *webview, NSInteger handle, const char *javascript);
 
 void uno_webview_set_inspectable(WKWebView *webview, bool inspectable);
+// Settings.UserAgent
+const char* _Nullable uno_webview_get_user_agent(WKWebView *webview);
+void uno_webview_set_user_agent(WKWebView *webview, const char* _Nullable user_agent);
+
+// Settings.IsScriptEnabled
+bool uno_webview_get_javascript_enabled(WKWebView *webview);
+void uno_webview_set_javascript_enabled(WKWebView *webview, bool enabled);
+
+// PostWebMessageAsString / PostWebMessageAsJson
+void uno_webview_post_web_message(WKWebView *webview, const char* payload, bool is_json);
+
+// AddScriptToExecuteOnDocumentCreatedAsync / RemoveScriptToExecuteOnDocumentCreated
+// Returns a heap-allocated id string (caller frees via free()).
+const char* uno_webview_add_user_script(WKWebView *webview, const char* script);
+void uno_webview_remove_user_script(WKWebView *webview, const char* id);
+
+// ShowPrintUI → returns 0 (succeeded), 1 (user-cancelled), 2 (other error)
+int uno_webview_show_print_ui(WKWebView *webview);
+
+// PrintToPdfStreamAsync (returns NSData bytes via out params; caller frees buffer with free())
+typedef void (*uno_webview_pdf_fn_ptr)(NSInteger /* handle */, const uint8_t* _Nullable /* bytes */, NSInteger /* length */, const char* _Nullable /* error */);
+void uno_set_webview_pdf_callback(uno_webview_pdf_fn_ptr fn_ptr);
+void uno_webview_print_to_pdf(WKWebView *webview, NSInteger handle);
+
+// Cookies — JSON-encoded payload exchange to keep marshalling simple.
+typedef void (*uno_webview_cookies_fn_ptr)(NSInteger /* handle */, const char* _Nullable /* json */, const char* _Nullable /* error */);
+void uno_set_webview_cookies_callback(uno_webview_cookies_fn_ptr fn_ptr);
+typedef void (*uno_webview_cookie_operation_fn_ptr)(NSInteger /* handle */, const char* _Nullable /* error */);
+void uno_set_webview_cookie_operation_callback(uno_webview_cookie_operation_fn_ptr fn_ptr);
+void uno_webview_get_cookies(WKWebView *webview, NSInteger handle, const char* _Nullable uri);
+// cookie_json: { name, value, domain, path, isSecure, isHttpOnly, sameSite, expires } where expires is unix seconds (-1 for session)
+void uno_webview_set_cookie(WKWebView *webview, NSInteger handle, const char* cookie_json);
+void uno_webview_delete_cookies(WKWebView *webview, NSInteger handle, const char* name, const char* _Nullable domain, const char* _Nullable path);
+void uno_webview_delete_all_cookies(WKWebView *webview, NSInteger handle);
 
 // https://learn.microsoft.com/en-us/dotnet/api/microsoft.web.webview2.core.corewebview2weberrorstatus
 typedef NS_ENUM(uint32, CoreWebView2WebErrorStatus) {
@@ -100,6 +140,9 @@ typedef NS_ENUM(uint32, CoreWebView2WebErrorStatus) {
 
 @property (nonatomic) bool scrollingEnabled;
 
+@property (nonatomic, retain) NSArray<WKUserScript *> *unoInternalScripts;
+@property (nonatomic, retain) NSMutableArray<NSDictionary *> *unoUserScripts;
+
 - (nullable instancetype)initWithCoder:(NSCoder *)coder NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)initWithFrame:(CGRect)frame configuration:(WKWebViewConfiguration *)configuration NS_DESIGNATED_INITIALIZER;
@@ -121,6 +164,7 @@ typedef NS_ENUM(uint32, CoreWebView2WebErrorStatus) {
 // WKNavigationDelegate
 
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(null_unspecified WKNavigation *)navigation;
+- (void)webView:(WKWebView *)webView didCommitNavigation:(null_unspecified WKNavigation *)navigation;
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(null_unspecified WKNavigation *)navigation withError:(NSError *)error;
 - (void)webView:(WKWebView *)webView didFinishNavigation:(null_unspecified WKNavigation *)navigation;
 

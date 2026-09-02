@@ -41,6 +41,8 @@ public partial class WebView : Control, IWebView
 
 	bool IWebView.IsLoaded => IsLoaded;
 
+	bool IWebView.RequiresExplicitInitialization => false;
+
 	bool IWebView.SwitchSourceBeforeNavigating => true;
 
 	CoreDispatcher IWebView.Dispatcher => Dispatcher;
