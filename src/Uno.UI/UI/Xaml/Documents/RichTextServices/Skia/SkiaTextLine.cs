@@ -224,13 +224,157 @@ internal sealed class SkiaTextLine : TextLine
 		=> throw new NotSupportedException(
 			"TODO Uno (Stage 6): per-line drawing. Paragraph rendering currently goes through ParsedText.Draw.");
 
+	// TextLine::Collapse — trims the line's glyphs to fit collapsingWidth once the symbol is accounted
+	// for, then hangs the symbol off the RenderLine so the paragraph paints it after the kept glyphs.
 	public override TextLine Collapse(double collapsingWidth, TextTrimming collapsingStyle, TextCollapsingSymbol? collapsingSymbol)
-		// TODO Uno (R2): real ellipsis truncation is net-new on the Skia engine. For now return the
-		// uncollapsed line (HasCollapsed stays false); the paragraph still reports trimming via the
-		// control's MaxLines/width detection and ParsedText renders the text clipped to bounds.
-		=> this;
+	{
+		if (_collapsed ||
+			collapsingSymbol is not TextCollapsingCharacters symbol ||
+			collapsingStyle is not (TextTrimming.CharacterEllipsis or TextTrimming.WordEllipsis))
+		{
+			return this;
+		}
 
-	public override bool HasCollapsed => false;
+		var available = (float)(collapsingWidth - symbol.Width);
+		if (available <= 0)
+		{
+			return this;
+		}
+
+		var kept = TrimSpansToWidth(_renderLine.RenderOrderedSegmentSpans, available, collapsingStyle);
+		if (kept is null)
+		{
+			// Everything fits; nothing to collapse.
+			return this;
+		}
+
+		var collapsed = _renderLine.CollapseTo(kept, ShapeSymbol(symbol));
+
+		_parsedText.ReplaceRenderLine(_lineIndex, collapsed);
+
+		return new SkiaTextLine(_parsedText, collapsed, _lineIndex, null, _paragraphProperties) { _collapsed = true };
+	}
+
+	// Returns the spans to keep, or null when the line already fits. CharacterEllipsis cuts at the last
+	// glyph that fits; WordEllipsis then backs up to the end of the previous word.
+	private static List<RenderSegmentSpan>? TrimSpansToWidth(
+		IReadOnlyList<RenderSegmentSpan> spans,
+		float available,
+		TextTrimming collapsingStyle)
+	{
+		var kept = new List<RenderSegmentSpan>();
+		var width = 0f;
+
+		foreach (var span in spans)
+		{
+			if (width + span.Width <= available)
+			{
+				width += span.Width;
+				kept.Add(span);
+				continue;
+			}
+
+			// This span is where the line runs out of room. Keep as many of its glyphs as fit.
+			if (span.Segment.IsInlineObject)
+			{
+				break;
+			}
+
+			var glyphs = span.Segment.Glyphs;
+			var keptGlyphs = 0;
+			var keptWidth = 0f;
+
+			for (var i = 0; i < span.GlyphsLength; i++)
+			{
+				var advance = GetGlyphAdvance(glyphs[span.GlyphsStart + i], span.CharacterSpacing);
+				if (width + keptWidth + advance > available)
+				{
+					break;
+				}
+
+				keptWidth += advance;
+				keptGlyphs++;
+			}
+
+			if (collapsingStyle == TextTrimming.WordEllipsis)
+			{
+				// Back up to the end of the previous word so the ellipsis does not cut mid-word.
+				var wordEnd = keptGlyphs;
+				while (wordEnd > 0 && !IsBreakOpportunity(span, glyphs, wordEnd - 1))
+				{
+					wordEnd--;
+				}
+
+				if (wordEnd > 0)
+				{
+					keptWidth = 0f;
+					for (var i = 0; i < wordEnd; i++)
+					{
+						keptWidth += GetGlyphAdvance(glyphs[span.GlyphsStart + i], span.CharacterSpacing);
+					}
+
+					keptGlyphs = wordEnd;
+				}
+			}
+
+			if (keptGlyphs > 0)
+			{
+				kept.Add(span with
+				{
+					GlyphsLength = keptGlyphs,
+					FullGlyphsLength = keptGlyphs,
+					TrailingSpaces = 0,
+					Width = keptWidth,
+					WidthWithoutTrailingSpaces = keptWidth,
+				});
+			}
+
+			// The line did not fit, so it is collapsed even when no glyph of this span survives.
+			return kept.Count > 0 ? kept : null;
+		}
+
+		return null;
+	}
+
+	private static float GetGlyphAdvance(GlyphInfo glyph, float characterSpacing)
+		=> glyph.AdvanceX > 0 ? glyph.AdvanceX + characterSpacing : glyph.AdvanceX;
+
+	private static bool IsBreakOpportunity(RenderSegmentSpan span, IReadOnlyList<GlyphInfo> glyphs, int index)
+	{
+		var text = span.Segment.Text;
+		var cluster = glyphs[span.GlyphsStart + index].Cluster;
+		return cluster >= 0 && cluster < text.Length && char.IsWhiteSpace(text[cluster]);
+	}
+
+	private static CollapsedLineSymbol ShapeSymbol(TextCollapsingCharacters symbol)
+	{
+		using var buffer = new HarfBuzzSharp.Buffer();
+		buffer.AddUtf16(symbol.CollapsingChar.ToString());
+		buffer.GuessSegmentProperties();
+
+		var font = symbol.FontDetails;
+		font.Font.Shape(buffer);
+
+		var infos = buffer.GetGlyphInfoSpan();
+		var positions = buffer.GetGlyphPositionSpan();
+
+		var glyphs = new ushort[infos.Length];
+		var advances = new float[infos.Length];
+		var width = 0f;
+
+		for (var i = 0; i < infos.Length; i++)
+		{
+			glyphs[i] = (ushort)infos[i].Codepoint;
+			advances[i] = positions[i].XAdvance * font.TextScale.textScaleX;
+			width += advances[i];
+		}
+
+		return new CollapsedLineSymbol(font, glyphs, advances, width);
+	}
+
+	private bool _collapsed;
+
+	public override bool HasCollapsed => _collapsed;
 
 	// Conservative: assume clusters may span multiple characters (surrogate pairs,
 	// combining marks). Caret navigation re-derives clusters from the segment data.
