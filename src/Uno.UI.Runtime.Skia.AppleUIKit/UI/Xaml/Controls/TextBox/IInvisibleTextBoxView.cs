@@ -21,6 +21,8 @@ internal interface IInvisibleTextBoxView
 
 	void Select(int start, int length);
 
+	UIFont? Font { get; set; }
+
 	UITextAutocapitalizationType AutocapitalizationType { get; set; }
 
 	UIKeyboardType KeyboardType { get; set; }
@@ -44,4 +46,8 @@ internal interface IInvisibleTextBoxView
 	TextBoxView? Owner { get; }
 
 	bool IsComposing { get; }
+
+	bool IsSettingTextFromManaged { get; }
+
+	bool IsSettingSelectionFromManaged { get; }
 }

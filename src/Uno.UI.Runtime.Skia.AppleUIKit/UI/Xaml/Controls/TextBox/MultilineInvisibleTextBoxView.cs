@@ -67,6 +67,10 @@ internal partial class MultilineInvisibleTextBoxView : UITextView, IInvisibleTex
 
 	public bool IsComposing => AppleUIKitImeTextBoxExtension.Instance.IsComposing;
 
+	public bool IsSettingTextFromManaged => _settingTextFromManaged;
+
+	public bool IsSettingSelectionFromManaged => _settingSelectionFromManaged;
+
 	internal InvisibleTextBoxViewExtension TextBoxViewExtension => _textBoxViewExtension.GetTarget();
 
 	public override string? Text
