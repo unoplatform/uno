@@ -293,6 +293,101 @@ public class Given_ResourceLoader_Alc
 	}
 
 	[TestMethod]
+	[Description(
+		"A SURVIVOR whose .upri truncates mid key/value pair must contribute NOTHING to the rebuild: " +
+		"the marker and the pairs it had already read must roll back with it, so the rebuild never " +
+		"publishes a value from a survivor it decided to skip.")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23959")]
+	public void When_ClearAlcAssemblies_With_Truncated_Survivor_Then_Partial_Value_Not_Published()
+	{
+		// Reviewer scenario: the rebuild's per-assembly guard used to share ONE TransactionalParse
+		// across the whole survivor loop, so a survivor whose .upri declares two pairs, carries one,
+		// then truncates had already added its marker and its first pair to that shared temporary
+		// when it threw. The guard caught, the loop continued, and ReplaceLiveLoaders published the
+		// REJECTED survivor's partial state. The bad-magic survivor test above cannot catch this:
+		// bad magic throws before anything enters the temporaries. Each survivor must therefore
+		// parse into its OWN scratch, folded into the aggregate only once it parsed completely.
+		const string defaultLanguage = "en";
+		const string uiTestResources = "Uno.UI.UnitTests/Resources";
+		const string truncatedLoaderName = "Uno.UI.Tests.TruncatedUpriSurvivor/Resources";
+		const string overrideValue = "Collectible-Override-TruncatedSurvivor";
+		const string hostValue = "App70-en";
+
+		var previousCulture = CultureInfo.CurrentUICulture;
+		var previousPlo = ApplicationLanguages.PrimaryLanguageOverride;
+		var previousDefault = _ResourceLoader.DefaultLanguage;
+
+		var defaultAlcAssembly = typeof(Given_ResourceLoader_Alc).Assembly;
+		var survivorAlc = new AssemblyLoadContext("Given_ResourceLoader_Alc.truncatedSurvivor", isCollectible: true);
+		var dyingAlc = new AssemblyLoadContext("Given_ResourceLoader_Alc.dyingWithTruncatedSurvivor", isCollectible: true);
+		try
+		{
+			CultureInfo.CurrentUICulture = new CultureInfo("en-US");
+			ApplicationLanguages.PrimaryLanguageOverride = defaultLanguage;
+			_ResourceLoader.DefaultLanguage = defaultLanguage;
+
+			_ResourceLoader.AddLookupAssembly(defaultAlcAssembly);
+			Assert.AreEqual(
+				hostValue,
+				_ResourceLoader.GetForCurrentView(uiTestResources).GetString("ApplicationName"),
+				"Pre-condition: the host resource resolves before the collectible override.");
+
+			// A dying collectible app that overrides a host key (same seam as the tests above).
+			var dyingAssembly = dyingAlc.LoadFromAssemblyPath(defaultAlcAssembly.Location);
+			_ResourceLoader.AddLookupAssembly(dyingAssembly);
+			OverrideMergedResource(uiTestResources, defaultLanguage, "ApplicationName", overrideValue);
+			Assert.AreEqual(
+				overrideValue,
+				_ResourceLoader.GetForCurrentView(uiTestResources).GetString("ApplicationName"),
+				"Pre-condition: the collectible override must win while its assembly is registered.");
+
+			// A surviving lookup assembly whose .upri parses one complete pair and THEN truncates.
+			// The AddLookupAssembly rollback keeps a malformed assembly from lingering through the
+			// public path, so inject it at the private list seam — the rebuild guard is what covers
+			// survivors whose .upri only fails at rebuild time.
+			var truncatedSurvivor = LoadAssemblyWithUpri(
+				survivorAlc,
+				"Uno.UI.Tests.TruncatedUpriSurvivor",
+				BuildTruncatedUpriPayload(truncatedLoaderName, defaultLanguage));
+			InjectLookupAssembly(truncatedSurvivor);
+
+			// Tear the dying app down: this drives RebuildLoaderResourcesFromSurvivors across the
+			// truncated survivor. It must not throw...
+			_ResourceLoader.ClearAlcAssemblies(dyingAlc);
+
+			// ...and it must publish nothing of that survivor's. Read at the merged-dictionary seam
+			// before any GetString, which could reload and mask a leaked value.
+			Assert.IsFalse(
+				_ResourceLoader.TryGetMergedResourceForTests(truncatedLoaderName, defaultLanguage, "TruncatedKey", out var leaked),
+				$"The pair read before the truncation must roll back with the rest of the skipped survivor's scratch, not reach the live loaders (found '{leaked}').");
+			Assert.IsFalse(
+				_ResourceLoader.ContainsNamedLoader(truncatedLoaderName),
+				"The skipped survivor must not even materialize its loader: an instance proves its partial state reached the aggregate and was applied.");
+
+			// The counterpart guard: discarding the skipped survivor must not cost the GOOD survivors
+			// their contributions, so the rebuild must still have reached its apply phase and
+			// republished the host value in place of the dying app's override.
+			Assert.IsTrue(
+				_ResourceLoader.TryGetMergedResourceForTests(uiTestResources, defaultLanguage, "ApplicationName", out var republished),
+				"A good survivor's values MUST be published by the rebuild — a fix that discarded too much would otherwise pass.");
+			Assert.AreEqual(
+				hostValue,
+				republished,
+				"After the dying ALC is swept the key must hold the host value again: its override must not outlive its ALC.");
+		}
+		finally
+		{
+			// Drop the injected truncated survivor and any leftover non-default registrations.
+			_ResourceLoader.ClearNonDefaultAlcAssemblies();
+			survivorAlc.Unload();
+			dyingAlc.Unload();
+			CultureInfo.CurrentUICulture = previousCulture;
+			ApplicationLanguages.PrimaryLanguageOverride = previousPlo;
+			_ResourceLoader.DefaultLanguage = previousDefault;
+		}
+	}
+
+	[TestMethod]
 	public void When_AddLookupAssembly_Malformed_Then_Throws_And_Registration_Rolled_Back()
 	{
 		// AddLookupAssembly registers the assembly BEFORE parsing; without a rollback a malformed
