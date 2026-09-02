@@ -31,6 +31,7 @@ internal static partial class XamlHelper
 		["uub"] = "using:Uno.UI.Behaviors",
 		["uux"] = "using:Uno.UI.Xaml",
 		["uuxc"] = "using:Uno.UI.Xaml.Controls",
+		["uuxcp"] = "using:Uno.UI.Xaml.Controls.Primitives",
 	};
 
 	/// <summary>
