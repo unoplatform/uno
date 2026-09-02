@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<IsAppleUIKit>true</IsAppleUIKit>
 		<IsTvOS>true</IsTvOS>
-		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">16.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">14.2</SupportedOSPlatformVersion>
 
 		<EnableDefaulttvOSItems Condition="$(EnableDefaulttvOSItems) == ''">false</EnableDefaulttvOSItems>
 
