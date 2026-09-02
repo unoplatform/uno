@@ -559,6 +559,30 @@ member through a base type that never had it in WinUI.
   `Panel.BackgroundProperty`, …). The protected `OnBackgroundChanged` override moved with
   it and is no longer part of the public surface.
 
+- **`DataContext` is on `FrameworkElement` only.** Uno's source generator emitted
+  `DataContext`, `DataContextProperty`, `DataContextChanged` and `OnDataContextChanged` onto
+  *every* `DependencyObject`. WinUI has them on `FrameworkElement` alone, and 7.0 now matches:
+  they are declared once, on `FrameworkElement`. Every element in the visual tree still has
+  `DataContext`, and inheritance down the tree is unchanged.
+
+  Non-`FrameworkElement` `DependencyObject`s lose the member entirely — `Brush` and its
+  subclasses, `Transform`, `GradientStop`, `Setter`, `Style`, `DependencyObjectCollection`,
+  `ElementFactory`, `FlyoutBase`, and so on. Reading or setting `.DataContext` on one, or
+  subscribing to its `DataContextChanged`, is now a compile error, as is referencing
+  `Brush.DataContextProperty` and friends.
+
+  **This one can break silently.** Uno let a non-`FrameworkElement` inherit the ambient
+  `DataContext`, so `{Binding}` on a `Brush`, `Transform` or `Setter` resolved against the
+  surrounding view model — a pattern WinUI never supported. Those bindings no longer resolve,
+  and nothing fails to compile: the binding simply never fires. Bind on the element that
+  *uses* the brush or transform instead (bind `Rectangle.Fill` rather than
+  `SolidColorBrush.Color`), or set the value from code.
+
+  Flyouts are the most commonly hit case, and they keep working: `FlyoutBase` no longer
+  carries a `DataContext`, but the placement target's `DataContext` is forwarded onto the
+  flyout presenter when the flyout opens and cleared when it closes, so `{Binding}` inside
+  flyout content still resolves against the target's view model — as it does in WinUI.
+
 ### WinRT projection alignment (WinUI parity)
 
 A few WinRT members were projected differently by Uno than by WinUI's own C# projection. 7.0
@@ -795,7 +819,9 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 14. Move `Background` reads/writes off `FrameworkElement`-typed references and off
    `TextBlock`/`Image`/`Shape`, and re-point `FrameworkElement.BackgroundProperty` at the
    declaring type.
-15. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+15. Re-check every `{Binding}` on a `Brush`, `Transform` or `Setter` — those no longer
+   inherit the ambient `DataContext` and fail silently.
+16. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)
