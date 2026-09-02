@@ -65,6 +65,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// backs the render/selection path (replaced by the view layer in a later step).
 		private BlockLayoutEngine? _blockLayout;
 		private PageNode? _pageNode;
+
+		internal PageNode? GetPageNode() => _pageNode;
 		private RichTextBlockBreak? _break;
 
 		private protected override ContainerVisual CreateElementVisual() => new RichTextVisual(Compositor.GetSharedCompositor(), this);

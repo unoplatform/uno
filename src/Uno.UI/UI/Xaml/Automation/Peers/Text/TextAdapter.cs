@@ -363,7 +363,6 @@ internal sealed partial class TextAdapter : ITextProvider
 		var container = GetTextContainer(_pTextOwner);
 		if (pPageNode is null || container is null)
 		{
-			// TODO Uno (UIA): PageNode.FindInlineUIContainerOffset not yet exposed for the master RichTextBlock.
 			return null;
 		}
 
@@ -487,7 +486,7 @@ internal sealed partial class TextAdapter : ITextProvider
 
 	internal static PageNode? GetPageNode(FrameworkElement? pObject) => pObject switch
 	{
-		// TODO Uno (UIA): RichTextBlock.GetPageNode() not exposed on the master yet.
+		RichTextBlock pRTbl => pRTbl.GetPageNode(),
 		RichTextBlockOverflow pRTblo => pRTblo.GetPageNode(),
 		_ => null,
 	};
