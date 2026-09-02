@@ -1,18 +1,18 @@
 # BC26 — Make `DependencyObject` a class (not an interface)
 
-**Epic:** [#8339](https://github.com/unoplatform/uno/issues/8339) · **Issue:** [#17099](https://github.com/unoplatform/uno/issues/17099) (OPEN, stale, originally scoped Skia/Wasm) · **Danger:** 4/5 · **Effort:** L · **Phase:** 7 (ship last, own PR)
+**Epic:** [#8339](https://github.com/unoplatform/uno/issues/8339) · **Issue:** [#17099](https://github.com/unoplatform/uno/issues/17099) (OPEN, stale, originally scoped Skia/Wasm) · **Danger:** 4/5 · **Effort:** L · **Phase:** 7 (ship last, own PR) · **Status:** ✅ implemented
 
 ## TL;DR
 
-Today `Microsoft.UI.Xaml.DependencyObject` is a **`public partial interface`** on every Uno target. The `DependencyObjectGenerator` injects the store + `GetValue`/`SetValue`/`IDependencyObjectStoreProvider`/`IDependencyObjectInternal`/`IWeakReferenceProvider` mixin into each implementing class. WinUI's `DependencyObject` is a **class**. This item re-roots Uno's type hierarchy so `DependencyObject` becomes a real base class and `UIElement` (et al.) inherit it directly.
+`Microsoft.UI.Xaml.DependencyObject` used to be a **`public partial interface`** on every Uno target, with the `DependencyObjectGenerator` injecting the store + `GetValue`/`SetValue`/`IDependencyObjectStoreProvider`/`IDependencyObjectInternal`/`IWeakReferenceProvider` mixin into each implementing class. WinUI's `DependencyObject` is a **class**. This item re-rooted Uno's type hierarchy so `DependencyObject` is a real base class that `UIElement` (et al.) inherit directly.
 
-The interface only ever existed because **native mobile `UIElement` must inherit a native view** (`UIElement.Android.cs : BindableView`, `UIElement.UIKit.cs : BindableUIView`). With the **native targets being dropped**, that constraint disappears — the Skia/Wasm/reference `UIElement` partials already do `: DependencyObject` directly. So this change is *more natural and lower-risk than the 2024 issue framing implies*.
+The interface only ever existed because **native mobile `UIElement` had to inherit a native view** (`UIElement.Android.cs : BindableView`, `UIElement.UIKit.cs : BindableUIView`). With the **native targets being dropped**, that constraint disappears — the Skia/Wasm/reference `UIElement` partials already do `: DependencyObject` directly. So this change is *more natural and lower-risk than the 2024 issue framing implies*.
 
-## Current state (verified)
+## Original state (before the change)
 
-- `src/Uno.UI/UI/Xaml/DependencyObject.cs` declares `public partial interface DependencyObject` with **no platform `#if` guard** → it is an interface on all targets today. Change still applies; nothing done.
-- `UIElement.skia.cs` / `.wasm.cs` / `.reference.cs` already declare `: DependencyObject`. Only the native partials inherit native views.
-- `DependencyObjectGenerator` emits the store mixin into every DO-derived class.
+- `src/Uno.UI/UI/Xaml/DependencyObject.cs` declared `public partial interface DependencyObject` with **no platform `#if` guard** — it was an interface on all targets.
+- `UIElement.skia.cs` / `.wasm.cs` / `.reference.cs` already declared `: DependencyObject`. Only the native partials inherited native views.
+- `DependencyObjectGenerator` emitted the store mixin into every DO-derived class.
 
 ## What changes
 
@@ -35,14 +35,20 @@ The interface only ever existed because **native mobile `UIElement` must inherit
 
 > Realistic source breakage for a *typical app* is narrow: using `DependencyObject` as a base/parameter/return type behaves identically whether class or interface.
 
-## Open decision (needs maintainer confirmation)
+## Decision (resolved)
 
-- **End-state design:** class on **all** remaining targets (recommended, since native is gone) vs. Skia/Wasm-only as the old issue scoped it.
-- **How much of the generated mixin folds into the base class** vs. stays emitted per-type. Settle this *before* coding — it defines the whole diff.
+- **End-state: a class on every remaining target**, not the Skia/Wasm-only scoping of the original 2024 issue. `src/Uno.UI/UI/Xaml/DependencyObject.cs` is now `public partial class DependencyObject : IDependencyObjectInternal, IWeakReferenceProvider`.
+- **The whole mixin folded into the base class.** Rather than trimming what `DependencyObjectGenerator` emitted, the generator was removed outright (deleted in `c371084bb52`); DO detection is now by base type. Nothing DO-related is emitted per-type any more.
+- Phase 2 went further than this spec anticipated: `DependencyObjectStore` was **dropped entirely** (uno-private#2210) and its storage folded onto `DependencyObject` itself — see `DependencyObject.Store.cs` / `.Binder.cs`.
 
-## Affected files (starting set)
+## As implemented
 
-`src/Uno.UI/UI/Xaml/DependencyObject.cs`, `…/UIElement.skia.cs` `.wasm.cs` `.reference.cs`, `…/DependencyObjectStore.cs`, `…/IDependencyObjectInternal.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs` (+ the native `UIElement.Android.cs`/`.UIKit.cs` partials, which are removed with the native targets).
+- `src/Uno.UI/UI/Xaml/DependencyObject.cs` — interface → class.
+- `src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs` — **deleted**; DO-derived types are detected by base type instead.
+- `DependencyObjectStore` — removed; storage now lives on `DependencyObject` (`DependencyObject.Store.cs`, `DependencyObject.Binder.cs`).
+- Removals covered in `build/PackageDiffIgnore.xml` (regex entries keyed on `Microsoft.UI.Xaml.DependencyObjectStore`).
+- Landed via unoplatform/uno#23537 and #23702; the `DependencyObjectStore` drop via uno-private#2210.
+- Consumer- and contributor-facing docs updated: `doc/articles/api-differences.md`, `doc/articles/uno-development/uno-internals-overview.md`, `AGENTS.md`, `.claude/rules/dependency-properties.md`, `.claude/agents/architect.md`.
 
 ## Validation strategy
 
