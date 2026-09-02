@@ -1,3 +1,5 @@
+#nullable enable
+
 using Microsoft.UI.Xaml;
 
 #if HAS_UNO
@@ -139,7 +141,7 @@ namespace Uno.UI.Toolkit
 				}
 			}
 
-			private static void MutePath(PointerRoutedEventArgs args, PointerIdentifier pointer, UIElement upTo)
+			private static void MutePath(PointerRoutedEventArgs args, PointerIdentifier pointer, UIElement? upTo)
 			{
 				if (args.OriginalSource is not UIElement originalSource || Mute(originalSource))
 				{
