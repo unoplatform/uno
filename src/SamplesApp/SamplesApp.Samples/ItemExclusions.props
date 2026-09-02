@@ -31,10 +31,12 @@
 		carries six tests against it (Given_CustomEvents, WasmTests), and retiring the sample and those
 		together is a separate call.
 		-->
-		<Page Remove="$(MSBuildThisFileDirectory)Wasm\**" />
-		<Compile Remove="$(MSBuildThisFileDirectory)Wasm\**" />
-		<None Include="$(MSBuildThisFileDirectory)Wasm\**"
-		      Link="Wasm\%(RecursiveDir)%(Filename)%(Extension)" />
+		<Page Remove="$(MSBuildThisFileDirectory)Wasm\Wasm_CustomEvent.xaml" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Wasm\Wasm_CustomEvent.xaml.cs" />
+		<None Include="$(MSBuildThisFileDirectory)Wasm\Wasm_CustomEvent.xaml"
+		      Link="Wasm\Wasm_CustomEvent.xaml" />
+		<None Include="$(MSBuildThisFileDirectory)Wasm\Wasm_CustomEvent.xaml.cs"
+		      Link="Wasm\Wasm_CustomEvent.xaml.cs" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(UseWinUI)'=='true'">
