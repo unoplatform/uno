@@ -128,5 +128,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(moved, "Focus should move to the next focusable element.");
 			Assert.AreSame(link, focused, "Tab from the preceding button should focus the hyperlink inside the RichTextBlock.");
 		}
+
+		[TestMethod]
+		public async Task When_Focused_Hyperlink_Activated_By_Keyboard()
+		{
+			// CHyperlink listens for KeyDown/KeyUp itself and navigates on Enter or Space. Nothing forwarded
+			// keys to a focused link, so hyperlinked rich text was keyboard-inaccessible.
+			var SUT = new RichTextBlock { Width = 300, FontSize = 20 };
+			var paragraph = new Paragraph();
+			var hyperlink = new Hyperlink();
+			hyperlink.Inlines.Add(new Run { Text = "activate me" });
+			paragraph.Inlines.Add(hyperlink);
+			SUT.Blocks.Add(paragraph);
+
+			var clicks = 0;
+			hyperlink.Click += (_, _) => clicks++;
+
+			try
+			{
+				await UITestHelper.Load(SUT);
+
+				Assert.IsTrue(hyperlink.Focus(FocusState.Keyboard), "The Hyperlink should take focus");
+				await WindowHelper.WaitForIdle();
+
+				await KeyboardHelper.PressKeySequence("$d$_enter#$u$_enter#", SUT);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(1, clicks, "Enter should activate the focused Hyperlink");
+
+				await KeyboardHelper.PressKeySequence("$d$_space#$u$_space#", SUT);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(2, clicks, "Space should activate the focused Hyperlink");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
 	}
 }
