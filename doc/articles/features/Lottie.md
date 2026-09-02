@@ -54,6 +54,8 @@ Additionally, on Skia Desktop targets, you'll need the following packages:
 * `SkiaSharp.Views.Uno.WinUI` version 4.148.0 or later
 * `SkiaSharp.Skottie` version 4.148.0 or later
 
+Both are supplied at the version the Uno.Sdk manages (`4.151.1` in Uno Platform 7.0), so an Uno.Sdk project needs no explicit reference.
+
 On Windows/WinAppSDK, use the [`CommunityToolkit.WinUI.Lottie` NuGet package](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie).
 
 For more information, see [AnimatedVisualPlayer Class](https://learn.microsoft.com/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer).
