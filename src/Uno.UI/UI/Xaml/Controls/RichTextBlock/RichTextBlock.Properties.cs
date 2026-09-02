@@ -193,9 +193,16 @@ namespace Microsoft.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					defaultValue: 0,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
-					propertyChangedCallback: (s, e) => ((RichTextBlock)s).InvalidateRichTextBlock()
+					propertyChangedCallback: (s, e) => ((RichTextBlock)s).InvalidateRichTextBlock(),
+					coerceValueCallback: CoerceMaxLines
 				)
 			);
+
+		// CRichTextBlock::SetValue rejects a negative MaxLines with E_INVALIDARG.
+		private static object CoerceMaxLines(DependencyObject sender, object baseValue, DependencyPropertyValuePrecedences _)
+			=> baseValue is int value && value < 0
+				? throw new ArgumentException("MaxLines cannot be negative.", nameof(MaxLines))
+				: baseValue;
 
 		#endregion
 
@@ -381,7 +388,14 @@ namespace Microsoft.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					0d,
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
-					propertyChangedCallback: (s, e) => ((RichTextBlock)s).InvalidateRichTextBlock()));
+					propertyChangedCallback: (s, e) => ((RichTextBlock)s).InvalidateRichTextBlock(),
+					coerceValueCallback: CoerceLineHeight));
+
+		// CRichTextBlock::SetValue rejects a negative LineHeight with E_INVALIDARG.
+		private static object CoerceLineHeight(DependencyObject sender, object baseValue, DependencyPropertyValuePrecedences _)
+			=> baseValue is double value && value < 0
+				? throw new ArgumentException("LineHeight cannot be negative.", nameof(LineHeight))
+				: baseValue;
 
 		#endregion
 
