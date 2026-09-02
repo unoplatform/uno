@@ -32,8 +32,16 @@ Updated as items are addressed. Verdicts below are unchanged; this section only 
 | V6 | `TextSchema` validation never invoked | ⚠️ reverted | `66030fb0ff0` | Enforcing it broke `Given_XamlReader.When_TextBlock_NestedSpan`. `InlineCollectionSupportsElement` checks the TextBlock branch first and `TextBlockSupportsElement` allows a `LineBreak`; XAML builds children before parents, so at add time the Hyperlink's TextBlock ancestor is unreachable and the walk wrongly falls through to the Hyperlink branch. Settling it needs a WinAppSDK-head runtime test |
 | V7 | Overflow `ContentStart`/`ContentEnd` stay `NotImplemented` | ⬜ deferred | — | Two `internal`-but-complete properties matching the repo's "expose a port as internal until validated" gating; the third member (`GetPositionFromPoint`) is genuinely unported. A public-surface decision, not a defect |
 | V8 | Property callbacks collapse WinUI's invalidation tiers | ◐ partial | `bc41526efd7` | Foreground is off the re-shape path. **The other three tiers do not transfer** — see below |
-| P1 | Text trimming (no ellipsis) | ✅ fixed | `12655fdd7a3` · `ecea4e34198` | `ParagraphNode` had the whole pipeline ported; the three leaves it lands on were stubs. Runtime: reverted → text overflows a 120px control to x=130 |
-| P1–P3 | Remaining feature backlog (17 items) | ⬜ open | — | See §7. Note the "shared primitive" framing was off: trimming lives at `TextLine.Collapse`, not in paint, and does not share code with the overflow slice |
+| P1 | Text trimming (no ellipsis) | ✅ fixed | `12655fdd7a3` · `ecea4e34198` | `ParagraphNode` had the whole pipeline ported; the three leaves it lands on were stubs. Reverted → text overflows a 120px control to x=130 |
+| P1 | Mid-paragraph overflow renders the wrong lines | ✅ fixed | `58a45682a09` | `ParsedText.Draw` now takes a line range. Reverted → master and overflow first lines are pixel-identical |
+| P1 | Overflow `ContentStart`/`ContentEnd`/`GetPositionFromPoint` throw | ✅ fixed | `97eb1e684c8` | Two needed only public forwarders; the third is a port of `GetTextPositionFromPoint` |
+| P1 | Hyperlink not keyboard-activatable | ✅ fixed | `af42b181d30` | Ported both key listeners. Reverted → Enter produced 0 clicks |
+| P1 | Overflow has no input handling | ✅ fixed | `7e53b366418` | Pointer half of `CRichTextBlockOverflow` plus `IsViewHit` — a column with no Background was not hit-testable at all |
+| P1 | Overflow paints no selection or highlighters | ✅ fixed | `6b7ce80ddca` | The column asks the master to translate its ranges. Reverted → no highlight pixel in the column |
+| P2 | UIA cannot reach embedded controls in the master | ✅ fixed | `977b3ee3343` | `GetPageNode` had no master arm. Reverted → the document range enumerates no children |
+| U17 | Negative `MaxLines`/`LineHeight` accepted | ✅ fixed | `c5fe621244d` | WinUI fails both with `E_INVALIDARG` |
+| P2–P3 | Remaining backlog (10 items) | ⬜ open | — | See §7 — grippers, bidi/`TextReadingOrder`, Typography, caret browsing, optical margins and the context menu are all genuine feature work, not port defects |
+| U1–U16 | Unverified findings | ◐ partly closed | — | U2 (trimming), U7 (UIA master arm) and U11 (headers) are fixed above; U9 is V6, reverted with reason. The rest stand as filed |
 
 ### Notes recorded while remediating
 
