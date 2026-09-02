@@ -530,6 +530,35 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
   `IsSpellCheckEnabled` also stops a password box spell-checking its own masked text, which
   removes the squiggly underline it used to draw.
 
+### Members restricted to their WinUI declaring types
+
+Two members that Uno declared far too broadly are now declared exactly where WinUI declares
+them. Neither changes behavior where the member survives — they break code that reached the
+member through a base type that never had it in WinUI.
+
+- **`Background` is no longer on `FrameworkElement`.** WinUI declares `Brush Background` on
+  exactly eight types, and 7.0 now matches: `Control`, `Panel`, `Border`, `ContentPresenter`,
+  `ItemsRepeater` and `ScrollPresenter` (all `FrameworkElement` subclasses), plus `SwipeItem`
+  and `TextHighlighter` (both `DependencyObject`). Anything deriving from one of those still
+  has `Background` by inheritance — `Grid`, `StackPanel`, `Page`, `CalendarViewBaseItem`,
+  every templated control — so ordinary XAML and ordinary control code are unaffected.
+
+  What breaks is the surface that Uno added on top: `TextBlock`, `RichTextBlock`, `Image`,
+  `Glyphs`, `AnimatedVisualPlayer`, `Shape` (and `Rectangle`/`Ellipse`/`Line`/`Path`/
+  `Polygon`/`Polyline`), and every other bare `FrameworkElement` subclass no longer expose
+  `Background` at all — WinUI never gave them one. Reading or setting it through a
+  `FrameworkElement`-typed reference is now a compile error, and
+  `<Setter Property="Background" />` in a style whose `TargetType` is one of those types no
+  longer resolves.
+
+  To migrate: retype the reference to the declaring type (`Control`, `Panel`, `Border`, …)
+  where the object really is one; paint text and shapes with `Foreground` and `Fill`
+  instead; and where you genuinely need a filled rectangle behind an element that no longer
+  has `Background`, wrap it in a `Border` or `Grid`. `FrameworkElement.BackgroundProperty`
+  likewise moves — reference the DP on its declaring type (`Control.BackgroundProperty`,
+  `Panel.BackgroundProperty`, …). The protected `OnBackgroundChanged` override moved with
+  it and is no longer part of the public surface.
+
 ### WinRT projection alignment (WinUI parity)
 
 A few WinRT members were projected differently by Uno than by WinUI's own C# projection. 7.0
@@ -763,7 +792,10 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 12. Update assembly-qualified type names that reach MRT Core (`Microsoft.Windows.ApplicationModel.Resources.*`) — the assembly is now `Uno.WinRT`, not `Uno.UI`.
 13. Retype `Window.VisibilityChanged` handlers to `WindowVisibilityChangedEventArgs`, and drop
    any explicit `Window*EventHandler` delegate construction.
-14. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+14. Move `Background` reads/writes off `FrameworkElement`-typed references and off
+   `TextBlock`/`Image`/`Shape`, and re-point `FrameworkElement.BackgroundProperty` at the
+   declaring type.
+15. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)
