@@ -381,8 +381,8 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			if (this is Hyperlink hl)
 			{
-				// Hyperlink doesn't appear to inherit foreground from the parent.
-				// So, we set this with ImplicitStyle precedence which is a higher precedence than Inheritance.
+				// Hyperlink doesn't appear to inherit foreground from the parent, so it resolves its own
+				// state brush and applies it at Animations precedence, above Inheritance.
 				hl.SetCurrentForeground();
 			}
 
