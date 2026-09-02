@@ -595,14 +595,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					w.AppendLineIndented($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
 				}
-
-				if (_isWasm
-					// Only applicable when building for Wasm DOM support
-					&& _metadataHelper.FindTypeByFullName("Uno.UI.Runtime.WebAssembly.HtmlElementAttribute") is not null)
-				{
-					w.AppendLineIndented($"// Workaround for https://github.com/dotnet/runtime/issues/44269");
-					w.AppendLineIndented($"typeof(global::Uno.UI.Runtime.WebAssembly.HtmlElementAttribute).GetHashCode();");
-				}
 			}
 
 			void GenerateDefaultAlcPostInitialization(IIndentedStringBuilder w)

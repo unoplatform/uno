@@ -247,11 +247,17 @@ assembly it has always lived in is itself renamed `Uno` → `Uno.WinRT` in 7.0.
   `View`/`UIView`/DOM element. Remove casts to `Android.Views.View` / `UIKit.UIView`;
   use `UIElement.Visual` (Composition) and reach platform APIs via the
   `Uno.UI.Runtime.Skia.*` hosts and `Uno.Foundation`.
-- **Native element hosting:** `Uno.UI.NativeElementHosting.BrowserHtmlElement`,
-  `Uno.UI.Runtime.WebAssembly.HtmlElementAttribute`, and `ContentPresenter` hosting of a
-  native `View`/`UIView`/DOM element as `Content`. Use `WebView2` for HTML content, or
-  redesign with Uno controls. On iOS, opt-in native embedding remains via
-  `UIKitNativeElementHostingExtension` (overlay-composited, reduced performance).
+- **Native element hosting:** `Uno.UI.Runtime.WebAssembly.HtmlElementAttribute`,
+  `Uno.Extensions.HtmlCustomEventArgs`, and `ContentPresenter` hosting of a native
+  `View`/`UIView`/DOM element as `Content`. The DOM-interop surface that went with the
+  WebAssembly DOM renderer — `UIElement.HtmlId`, `RegisterHtmlEventHandler`, `SetHtmlAttribute`
+  and friends — is gone with it.
+
+  **To host HTML on WebAssembly, use `Uno.UI.NativeElementHosting.BrowserHtmlElement`**, which
+  is kept and is the supported replacement: it creates a DOM element you place in the visual
+  tree through `ContentPresenter`. Use `WebView2` for full documents, or redesign with Uno
+  controls. On iOS, opt-in native embedding remains via `UIKitNativeElementHostingExtension`
+  (overlay-composited, reduced performance).
 - **Native control / host types:** `NativeListViewBase`, `NativePagedView`,
   `NativeScrollContentPresenter`, `NativeFramePresenter`, `NativePopup`,
   `RootViewController`, `Window : UIWindow` identity, `NativeRenderTransformAdapter`,
