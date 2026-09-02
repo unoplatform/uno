@@ -482,5 +482,58 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		#endregion
+
+		[TestMethod]
+		public async Task When_Hyperlink_In_Overflow_Is_Clicked()
+		{
+			// An overflow column hosts the master's content, so it has to answer for the links inside its
+			// own slice. Nothing handled input there, leaving every column after the first inert.
+			// The link gets its own paragraph, so MaxLines=1 puts it at the overflow's top-left.
+			var master = new RichTextBlock { Width = 200, MaxLines = 1, FontSize = 20 };
+			var first = new Paragraph();
+			first.Inlines.Add(new Run { Text = "First" });
+			master.Blocks.Add(first);
+
+			var second = new Paragraph();
+			var hyperlink = new Hyperlink();
+			hyperlink.Inlines.Add(new Run { Text = "CLICKMECLICKME" });
+			second.Inlines.Add(hyperlink);
+			master.Blocks.Add(second);
+
+			var overflow = new RichTextBlockOverflow { Width = 200, Height = 120 };
+			master.OverflowContentTarget = overflow;
+
+			var clicks = 0;
+			hyperlink.Click += (_, _) => clicks++;
+
+			var root = new StackPanel();
+			root.Children.Add(master);
+			root.Children.Add(overflow);
+
+			try
+			{
+				await UITestHelper.Load(root);
+				Assert.IsTrue(master.HasOverflowContent, "The link must land in the overflow, not the master");
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var mouse = injector.GetMouse();
+
+				var bounds = overflow.GetAbsoluteBounds();
+				var target = new Point(bounds.X + 12, bounds.Y + 10);
+
+				mouse.MoveTo(target);
+				await WindowHelper.WaitForIdle();
+				mouse.Press();
+				await WindowHelper.WaitForIdle();
+				mouse.Release();
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(1, clicks, "Clicking the link inside the overflow should activate it");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
 	}
 }
