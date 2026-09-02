@@ -134,6 +134,27 @@ Here's how to use this feature:
   }
   ```
 
+## Writing a custom animated visual source
+
+`LottieVisualSource` is one implementation of `IAnimatedVisualSource`; you can write your own to
+feed `AnimatedVisualPlayer` from another format or from generated code.
+
+Since Uno Platform 7.0 that interface matches WinUI exactly — a single method:
+
+```csharp
+IAnimatedVisual TryCreateAnimatedVisual(Compositor compositor, out object diagnostics);
+```
+
+Return an `IAnimatedVisual` carrying the composition `RootVisual`, its natural `Size` and its
+`Duration`; `AnimatedVisualPlayer` drives playback, progress and measurement from there. Because
+this is the WinUI contract, C# emitted by [LottieGen](https://aka.ms/lottiegen) with
+`-Language CSharp -Public -WinUIVersion 3.0` compiles and runs unchanged.
+
+Before 7.0, Uno's `IAnimatedVisualSource` was a nine-method Uno-only contract in which the source
+drove playback itself. See the
+[Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7) for the old-to-new
+mapping.
+
 ## Limitations
 
 On Android, the `Stretch` mode of `Fill` is not currently supported.
