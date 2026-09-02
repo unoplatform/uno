@@ -14,11 +14,6 @@ namespace Uno.UI.RuntimeTests.Tests;
 
 partial class Given_Clipboard // Win32 contention
 {
-	private const uint CF_UNICODETEXT = 13;
-	private const uint GMEM_MOVEABLE = 0x0002;
-	private const int HWND_MESSAGE = -3;
-	private const int ERROR_ACCESS_DENIED = 5;
-
 	private const string ContendedText = "test-string-while-contended";
 
 	/// <summary>
@@ -47,18 +42,18 @@ partial class Given_Clipboard // Win32 contention
 
 		var holder = new Thread(() =>
 		{
-			var hwnd = CreateMessageOnlyWindow();
+			var hwnd = Win32.CreateMessageOnlyWindow();
 			try
 			{
 				// A NULL owner does NOT exclude other threads; a real window handle does.
-				holderTookClipboard = hwnd != IntPtr.Zero && OpenClipboard(hwnd);
+				holderTookClipboard = hwnd != IntPtr.Zero && Win32.OpenClipboard(hwnd);
 				if (!holderTookClipboard)
 				{
 					return;
 				}
 
-				EmptyClipboard();
-				SetClipboardData(CF_UNICODETEXT, AllocUnicodeText(ContendedText));
+				Win32.EmptyClipboard();
+				Win32.SetClipboardData(Win32.CF_UNICODETEXT, Win32.AllocUnicodeText(ContendedText));
 			}
 			finally
 			{
@@ -66,7 +61,7 @@ partial class Given_Clipboard // Win32 contention
 				if (holderTookClipboard)
 				{
 					release.Wait(TimeSpan.FromSeconds(30));
-					CloseClipboard();
+					Win32.CloseClipboard();
 				}
 			}
 		})
@@ -84,14 +79,14 @@ partial class Given_Clipboard // Win32 contention
 
 			// Confirm the contention is real rather than assuming it, so this cannot quietly become a
 			// test that passes because nothing was ever holding the clipboard.
-			if (OpenClipboard(IntPtr.Zero))
+			if (Win32.OpenClipboard(IntPtr.Zero))
 			{
-				CloseClipboard();
+				Win32.CloseClipboard();
 				Assert.Fail("expected the clipboard to be contended, but it could be opened");
 			}
 			else
 			{
-				Assert.AreEqual(ERROR_ACCESS_DENIED, Marshal.GetLastWin32Error(), "expected the clipboard to be denied while another thread holds it");
+				Assert.AreEqual(Win32.ERROR_ACCESS_DENIED, Marshal.GetLastWin32Error(), "expected the clipboard to be denied while another thread holds it");
 			}
 
 			var view = Clipboard.GetContent();
@@ -111,8 +106,23 @@ partial class Given_Clipboard // Win32 contention
 		await DelayForClipboard();
 		Assert.AreEqual(ContendedText, await Clipboard.GetContent()!.GetTextAsync());
 	}
+}
 
-	private static IntPtr AllocUnicodeText(string value)
+/// <summary>
+/// The interop is file-local: these entry points only exist on Windows, and the rest of
+/// <c>Given_Clipboard</c> is compiled for every Skia head (X11, macOS, wasm, mobile), where
+/// calling them would throw <see cref="DllNotFoundException"/>. Keeping them out of the
+/// partial class means they cannot be reached from a sibling file by accident.
+/// </summary>
+file static class Win32
+{
+	public const uint CF_UNICODETEXT = 13;
+	public const int ERROR_ACCESS_DENIED = 5;
+
+	private const uint GMEM_MOVEABLE = 0x0002;
+	private const int HWND_MESSAGE = -3;
+
+	public static IntPtr AllocUnicodeText(string value)
 	{
 		// SetClipboardData requires GMEM_MOVEABLE, and takes ownership on success.
 		var handle = GlobalAlloc(GMEM_MOVEABLE, (UIntPtr)((value.Length + 1) * sizeof(char)));
@@ -124,7 +134,7 @@ partial class Given_Clipboard // Win32 contention
 		return handle;
 	}
 
-	private static IntPtr CreateMessageOnlyWindow()
+	public static IntPtr CreateMessageOnlyWindow()
 	{
 		var className = $"UnoClipboardContentionTest{Environment.CurrentManagedThreadId}";
 		WndProcDelegate wndProc = DefWindowProc;
@@ -170,16 +180,16 @@ partial class Given_Clipboard // Win32 contention
 	}
 
 	[DllImport("user32.dll", SetLastError = true)]
-	private static extern bool OpenClipboard(IntPtr hWndNewOwner);
+	public static extern bool OpenClipboard(IntPtr hWndNewOwner);
 
 	[DllImport("user32.dll", SetLastError = true)]
-	private static extern bool CloseClipboard();
+	public static extern bool CloseClipboard();
 
 	[DllImport("user32.dll", SetLastError = true)]
-	private static extern bool EmptyClipboard();
+	public static extern bool EmptyClipboard();
 
 	[DllImport("user32.dll", SetLastError = true)]
-	private static extern IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
+	public static extern IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
 
 	[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
 	private static extern ushort RegisterClassEx(ref WNDCLASSEX windowClass);
