@@ -103,6 +103,10 @@ namespace Uno.UI.Xaml.Core
 					CoreServices.Instance.EventManager.RaiseLoadedEvent();
 					xamlIsland.UpdateLayout();
 				}
+
+#if __SKIA__
+				(xamlIsland.XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
+#endif
 			}
 
 			foreach (var window in ApplicationHelper.WindowsInternal)

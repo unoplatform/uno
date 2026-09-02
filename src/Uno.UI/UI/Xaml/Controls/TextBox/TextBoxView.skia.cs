@@ -21,22 +21,24 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private readonly IOverlayTextBoxViewExtension? _overlayTextBoxViewExtension;
 
-		private readonly ManagedWeakReference _textBox;
+		private readonly ManagedWeakReference _host;
 		private bool _isPasswordRevealed;
-		private readonly bool _isSkiaTextBox = !FeatureConfiguration.TextBox.UseOverlayOnSkia;
+		private readonly bool _usesManagedTextRendering;
 		private static readonly bool _useInvisibleNativeTextView = OperatingSystem.IsBrowser() || DeviceTargetHelper.IsUIKit();
 
-		public TextBoxView(TextBox textBox)
+		public TextBoxView(ITextBoxViewHost host)
 		{
-			_textBox = WeakReferencePool.RentWeakReference(this, textBox);
-			IsPasswordBox = textBox is PasswordBox;
+			_host = WeakReferencePool.RentWeakReference(this, host);
+			IsPasswordBox = host is PasswordBox;
+			_usesManagedTextRendering = host is not global::Microsoft.UI.Xaml.Controls.TextBox
+				|| !FeatureConfiguration.TextBox.UseOverlayOnSkia;
 
 			DisplayBlock = new TextBlock
 			{
 				MinWidth = TextBlock.CaretThickness,
 				Style = null, // Prevent inheriting TextBlock styles
-				OwningTextBox = textBox,
-				IsSpellCheckEnabled = textBox.IsSpellCheckEnabled
+				OwningTextBox = host,
+				IsSpellCheckEnabled = host.IsSpellCheckEnabled
 			};
 
 			// The DisplayBlock is an internal rendering detail; its text content
@@ -46,8 +48,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			SetFlowDirection();
 			SetTextAlignment();
+			SetReadingOrder();
+			SetColorFontEnabled();
 
-			if ((!_isSkiaTextBox || _useInvisibleNativeTextView) && !ApiExtensibility.CreateInstance(this, out _overlayTextBoxViewExtension))
+			if ((!_usesManagedTextRendering || _useInvisibleNativeTextView) && !ApiExtensibility.CreateInstance(this, out _overlayTextBoxViewExtension))
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
@@ -65,7 +69,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal IOverlayTextBoxViewExtension? Extension => _overlayTextBoxViewExtension;
 
-		public TextBox? TextBox => _textBox.TryGetTarget<TextBox>(out var textBox) ? textBox : null;
+		internal ITextBoxViewHost? Host => _host.TryGetTarget<ITextBoxViewHost>(out var host) ? host : null;
+
+		public TextBox? TextBox => Host as TextBox;
 
 		internal int GetSelectionStart() => _overlayTextBoxViewExtension?.GetSelectionStart() ?? 0;
 
@@ -87,18 +93,34 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void SetFlowDirection()
 		{
-			if (TextBox is not { } textBox)
+			if (Host is not { } host)
 			{
 				return;
 			}
-			DisplayBlock.FlowDirection = textBox.FlowDirection;
+			DisplayBlock.FlowDirection = host.FlowDirection;
 		}
 
 		internal void SetWrapping()
 		{
-			if (TextBox is { } textBox)
+			if (Host is { } host)
 			{
-				DisplayBlock.TextWrapping = textBox.TextWrapping;
+				DisplayBlock.TextWrapping = host.TextWrapping;
+			}
+		}
+
+		internal void SetReadingOrder()
+		{
+			if (Host is { } host)
+			{
+				DisplayBlock.TextReadingOrder = host.TextReadingOrder;
+			}
+		}
+
+		internal void SetColorFontEnabled()
+		{
+			if (Host is { } host)
+			{
+				DisplayBlock.IsColorFontEnabled = host.IsColorFontEnabled;
 			}
 		}
 
@@ -114,22 +136,22 @@ namespace Microsoft.UI.Xaml.Controls
 			_overlayTextBoxViewExtension?.UpdateProperties();
 		}
 
-		internal void OnFocusStateChanged(FocusState focusState)
+		internal void OnFocusStateChanged(FocusState focusState, bool suppressSoftwareKeyboard = false)
 		{
-			if (_isSkiaTextBox && _useInvisibleNativeTextView)
+			if (_usesManagedTextRendering && _useInvisibleNativeTextView)
 			{
 				// We don't care about actual entry here, just making
 				// the password manager autocompletion button appear.
 				if (focusState != FocusState.Unfocused)
 				{
-					_overlayTextBoxViewExtension?.StartEntry();
+					_overlayTextBoxViewExtension?.StartEntry(suppressSoftwareKeyboard);
 				}
 				else
 				{
 					_overlayTextBoxViewExtension?.EndEntry();
 				}
 			}
-			else if (!_isSkiaTextBox)
+			else if (!_usesManagedTextRendering)
 			{
 				if (focusState != FocusState.Unfocused)
 				{
@@ -157,13 +179,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void UpdateFont()
 		{
-			if (TextBox is { } textBox)
+			if (Host is { } host)
 			{
-				DisplayBlock.FontFamily = textBox.FontFamily;
-				DisplayBlock.FontSize = textBox.FontSize;
-				DisplayBlock.FontStyle = textBox.FontStyle;
-				DisplayBlock.FontStretch = textBox.FontStretch;
-				DisplayBlock.FontWeight = textBox.FontWeight;
+				DisplayBlock.FontFamily = host.FontFamily;
+				DisplayBlock.FontSize = host.FontSize;
+				DisplayBlock.FontStyle = host.FontStyle;
+				DisplayBlock.FontStretch = host.FontStretch;
+				DisplayBlock.FontWeight = host.FontWeight;
 			}
 			// TODO: Propagate font family to the native InputWidget via _textBoxExtension.
 		}
@@ -172,19 +194,21 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			_isPasswordRevealed = revealState == PasswordRevealState.Revealed;
 			_overlayTextBoxViewExtension?.SetPasswordRevealState(revealState);
-			if (TextBox is { } textBox)
+			if (Host is { } host)
 			{
-				UpdateDisplayBlockText(textBox.Text);
+				UpdateDisplayBlockText(host.Text);
 			}
 		}
 
 		internal void UpdateTextFromNative(string newText)
 		{
-			if (TextBox is { } textBox)
+			if (Host is { } host)
 			{
-				var oldText = textBox.Text; // preexisting text
+				var oldText = host.Text; // preexisting text
 				var oldSelection = SelectionBeforeKeyDown; // On Gtk, SelectionBeforeKeyDown just points to Selection, which is updated by SetTextNative, so we need to read it before SetTextNative.
-				var modifiedText = textBox.ProcessTextInput(newText); // new text after BeforeTextChanging, TextChanging, DP callback, etc
+				var selectionStart = _overlayTextBoxViewExtension?.GetSelectionStart() ?? oldSelection.start;
+				var selectionLength = _overlayTextBoxViewExtension?.GetSelectionLength() ?? oldSelection.length;
+				var modifiedText = host.ProcessTextInput(newText, selectionStart, selectionLength); // new text after BeforeTextChanging, TextChanging, DP callback, etc
 				UpdateDisplayBlockText(modifiedText);
 				if (modifiedText != newText)
 				{
@@ -222,10 +246,10 @@ namespace Microsoft.UI.Xaml.Controls
 				DisplayBlock.Text = text;
 			}
 
-			if (_isSkiaTextBox)
+			if (_usesManagedTextRendering)
 			{
-				TextBox?.ContentElement?.InvalidateMeasure();
-				TextBox?.UpdateLayout();
+				Host?.ContentElement?.InvalidateMeasure();
+				Host?.UpdateLayout();
 			}
 		}
 
@@ -246,17 +270,17 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void UpdatePasswordMasking()
 		{
 			// For Skia, we can update the display block text directly
-			if (TextBox is { } textBox)
+			if (Host is { } host)
 			{
-				UpdateDisplayBlockText(textBox.Text);
+				UpdateDisplayBlockText(host.Text);
 			}
 		}
 
 		internal void SetTextAlignment()
 		{
-			if (TextBox is { } textBox)
+			if (Host is { } host)
 			{
-				DisplayBlock.TextAlignment = textBox.TextAlignment;
+				DisplayBlock.TextAlignment = host.TextAlignment;
 			}
 		}
 	}

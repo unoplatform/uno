@@ -61,6 +61,15 @@ internal sealed partial class FocusSynchronizer
 		SyncInitialFocus();
 	}
 
+	internal void Uninitialize()
+	{
+		FocusManager.GotFocus -= OnXamlGotFocus;
+		FocusManager.LostFocus -= OnXamlLostFocus;
+		_currentFocusedHandle = IntPtr.Zero;
+		_previousFocusedHandle = IntPtr.Zero;
+		_isSyncing = false;
+	}
+
 	/// <summary>
 	/// Syncs the currently-focused XAML element to the semantic DOM on first initialization.
 	/// This handles the case where a control (e.g. TextBox) was focused before accessibility

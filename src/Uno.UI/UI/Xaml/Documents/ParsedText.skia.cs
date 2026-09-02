@@ -616,6 +616,86 @@ internal readonly struct ParsedText : IParsedText
 		return new Rect(x, y, 0, _renderLines.Count > 0 ? _renderLines[^1].Height : 0);
 	}
 
+	public TextGeometryPositionInfo GetGeometryPosition(int adjustedIndex)
+	{
+		var index = Math.Clamp(adjustedIndex, 0, _text.Length);
+		var characterRect = GetRectForIndex(index);
+		var kind = TextGeometryPositionKind.Caret;
+		if (index == _text.Length)
+		{
+			kind |= TextGeometryPositionKind.FinalEndOfParagraph | TextGeometryPositionKind.TrailingEdge;
+		}
+		else
+		{
+			kind |= TextGeometryPositionKind.Text | TextGeometryPositionKind.LeadingEdge;
+		}
+		if (_flowDirection == FlowDirection.RightToLeft)
+		{
+			kind |= TextGeometryPositionKind.RightToLeft;
+		}
+
+		return new TextGeometryPositionInfo(
+			characterRect,
+			characterRect with { Width = 0 },
+			kind);
+	}
+
+	public double GetBaselineForIndex(int adjustedIndex)
+	{
+		if (_renderLines.Count == 0)
+		{
+			return _defaultLineHeight;
+		}
+
+		var lineIndex = GetLineAt(Math.Clamp(adjustedIndex, 0, _text.Length)).lineIndex;
+		var lineBottom = 0f;
+		for (var i = 0; i <= lineIndex; i++)
+		{
+			lineBottom += _renderLines[i].Height;
+		}
+
+		return lineBottom + _renderLines[lineIndex].BaselineOffsetY;
+	}
+
+	public int VisualLineCount => Math.Max(1, _renderLines.Count);
+
+	public TextVisualLineInfo GetVisualLine(int lineIndex)
+	{
+		if ((uint)lineIndex >= (uint)VisualLineCount)
+		{
+			throw new ArgumentOutOfRangeException(nameof(lineIndex));
+		}
+
+		if (_renderLines.Count == 0)
+		{
+			return new TextVisualLineInfo(
+				0,
+				0,
+				0,
+				new Rect(0, 0, 0, _defaultLineHeight),
+				_defaultLineHeight,
+				true,
+				true);
+		}
+
+		var intervals = GetLineIntervals();
+		var line = _renderLines[lineIndex];
+		var top = 0f;
+		for (var i = 0; i < lineIndex; i++)
+		{
+			top += _renderLines[i].Height;
+		}
+		var (x, _) = line.GetOffsets((float)_availableSize.Width, _textAlignment);
+		return new TextVisualLineInfo(
+			intervals[lineIndex].start,
+			intervals[lineIndex].length,
+			lineIndex,
+			new Rect(x, top, line.Width, line.Height),
+			top + line.Height + line.BaselineOffsetY,
+			lineIndex == 0,
+			lineIndex == _renderLines.Count - 1);
+	}
+
 	/// <remarks>Adjusted for surrogate pairs</remarks>
 	public int GetIndexAt(Point p, bool ignoreEndingNewLine, bool extendedSelection) => AdjustIndexForSurrogatePairs(GetIndexAtUnadjusted(p, ignoreEndingNewLine, extendedSelection));
 

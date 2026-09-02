@@ -246,6 +246,8 @@ internal static class Win32UIAutomationInterop
 	internal const int UIA_Window_WindowOpenedEventId = 20016;
 	internal const int UIA_Window_WindowClosedEventId = 20017;
 	internal const int UIA_LiveRegionChangedEventId = 20024;
+	internal const int UIA_TextEdit_TextChangedEventId = 20032;
+	internal const int UIA_TextEdit_ConversionTargetChangedEventId = 20033;
 
 	// UIA Property Changed Event IDs (for UiaRaiseAutomationPropertyChangedEvent)
 	internal const int UIA_ExpandCollapseExpandCollapseStatePropertyId = 30070;
@@ -343,6 +345,12 @@ internal static class Win32UIAutomationInterop
 		int eventId);
 
 	[DllImport("uiautomationcore.dll")]
+	internal static extern int UiaRaiseTextEditTextChangedEvent(
+		[MarshalAs(UnmanagedType.Interface)] IRawElementProviderSimple provider,
+		int textEditChangeType,
+		[MarshalAs(UnmanagedType.SafeArray, SafeArraySubType = VarEnum.VT_BSTR)] string[] changedData);
+
+	[DllImport("uiautomationcore.dll")]
 	internal static extern int UiaRaiseStructureChangedEvent(
 		[MarshalAs(UnmanagedType.Interface)] IRawElementProviderSimple provider,
 		StructureChangeType structureChangeType,
@@ -389,6 +397,35 @@ internal static class Win32UIAutomationInterop
 	[DllImport("uiautomationcore.dll")]
 	private static extern int UiaDisconnectProvider(
 		[MarshalAs(UnmanagedType.Interface)] IRawElementProviderSimple provider);
+
+	[DllImport("uiautomationcore.dll")]
+	private static extern int UiaGetReservedMixedAttributeValue(
+		[MarshalAs(UnmanagedType.IUnknown)] out object? value);
+
+	[DllImport("uiautomationcore.dll")]
+	private static extern int UiaGetReservedNotSupportedValue(
+		[MarshalAs(UnmanagedType.IUnknown)] out object? value);
+
+	private static readonly Lazy<object> _reservedMixedAttributeValue = new(CreateReservedMixedAttributeValue);
+	private static readonly Lazy<object> _reservedNotSupportedValue = new(CreateReservedNotSupportedValue);
+
+	internal static object ReservedMixedAttributeValue => _reservedMixedAttributeValue.Value;
+
+	internal static object ReservedNotSupportedValue => _reservedNotSupportedValue.Value;
+
+	private static object CreateReservedMixedAttributeValue()
+	{
+		var result = UiaGetReservedMixedAttributeValue(out var value);
+		Marshal.ThrowExceptionForHR(result);
+		return value ?? throw new InvalidOperationException("UI Automation returned no reserved mixed attribute value.");
+	}
+
+	private static object CreateReservedNotSupportedValue()
+	{
+		var result = UiaGetReservedNotSupportedValue(out var value);
+		Marshal.ThrowExceptionForHR(result);
+		return value ?? throw new InvalidOperationException("UI Automation returned no reserved unsupported attribute value.");
+	}
 
 	/// <summary>
 	/// Handles WM_GETOBJECT by returning the root UIA provider to the automation framework.

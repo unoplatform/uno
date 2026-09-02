@@ -33,9 +33,9 @@ class TextInputConnection : BaseInputConnection
 	private readonly DynamicLayout _layout;
 	private readonly EditorInfo _editorInfo;
 
-	private TextBox? _activeTextBox;
+	private IImeSessionHost? _activeHost;
 	private bool _endingBatch;
-	private bool _duringTextBoxSelectionChanged;
+	private bool _duringHostStateUpdate;
 	private CursorAnchorInfo.Builder? _cursorAnchorInfoBuilder;
 	private bool _monitorCursorUpdate;
 	private ExtractedText _extractedText = new ExtractedText();
@@ -79,25 +79,21 @@ class TextInputConnection : BaseInputConnection
 	public override IEditable? Editable
 		=> _editable;
 
-	public TextBox? ActiveTextBox
+	internal IImeSessionHost? ActiveHost
 	{
-		get => _activeTextBox;
-		internal set
+		get => _activeHost;
+		set
 		{
-			if (_activeTextBox is not null)
-			{
-				_activeTextBox.SelectionChanged -= OnActiveTextBoxSelectionChanged;
-			}
-
-			_activeTextBox = value;
+			_activeHost = value;
 			_editable?.Clear();
 
-			if (_activeTextBox is not null)
+			if (_activeHost is not null)
 			{
-				_editable?.Append(_activeTextBox.Text);
-				Selection.SetSelection(_editable, _activeTextBox.SelectionStart, _activeTextBox.SelectionStart + _activeTextBox.SelectionLength);
-
-				_activeTextBox.SelectionChanged += OnActiveTextBoxSelectionChanged;
+				_editable?.Append(_activeHost.Text.Replace('\r', '\n'));
+				Selection.SetSelection(
+					_editable,
+					_activeHost.SelectionStart,
+					_activeHost.SelectionStart + _activeHost.SelectionLength);
 
 				// Proactively send cursor position so the IME candidate window
 				// is correctly positioned on the very first composition.
@@ -106,19 +102,36 @@ class TextInputConnection : BaseInputConnection
 		}
 	}
 
-	internal void OnTextBoxTextChanged()
+	internal void OnTextInputHostChanged()
 	{
-		if (_activeTextBox is not null && _editable is not null)
+		if (_activeHost is not null && _editable is not null && !_endingBatch)
 		{
-			this.LogDebug()?.Debug($"OnActiveTextBoxTextChanged: {_activeTextBox.Text}");
+			this.LogDebug()?.Debug($"OnActiveTextInputHostChanged: {_activeHost.Text}");
 
-			UpdateEditableSelectionAndText();
+			UpdateEditableStateFromHost();
+		}
+	}
+
+	internal (int Start, int End)? GetComposingRange()
+		=> _editable.ComposingStart >= 0 && _editable.ComposingEnd > _editable.ComposingStart
+			? (_editable.ComposingStart, _editable.ComposingEnd)
+			: null;
+
+	internal void RestoreComposingRange(int start, int end)
+	{
+		var textLength = _editable.Length();
+		start = Math.Clamp(start, 0, textLength);
+		end = Math.Clamp(end, start, textLength);
+		if (end > start)
+		{
+			base.SetComposingRegion(start, end);
+			SendCursorAnchorInfo();
 		}
 	}
 
 	/// <summary>
 	/// Sends the current cursor anchor info to the IME immediately.
-	/// Called when ActiveTextBox is set to ensure the candidate window
+	/// Called when ActiveHost is set to ensure the candidate window
 	/// is positioned correctly before any editing occurs.
 	/// </summary>
 	internal void SendCursorAnchorInfo()
@@ -130,21 +143,9 @@ class TextInputConnection : BaseInputConnection
 		}
 	}
 
-	private void OnActiveTextBoxSelectionChanged(object sender, RoutedEventArgs e)
+	private void UpdateEditableStateFromHost()
 	{
-		if (_activeTextBox is not null
-			&& _editable is not null
-			&& !_endingBatch)
-		{
-			this.LogDebug()?.Debug($"OnActiveTextBoxSelectionChanged: {_activeTextBox.SelectionStart}->{_activeTextBox.SelectionStart + _activeTextBox.SelectionLength}");
-
-			UpdateEditableSelectionAndText();
-		}
-	}
-
-	private void UpdateEditableSelectionAndText()
-	{
-		if (_activeTextBox is null)
+		if (_activeHost is null)
 		{
 			return;
 		}
@@ -156,22 +157,27 @@ class TextInputConnection : BaseInputConnection
 		// managed, the second was just typed
 		// before conversion) which looks like a single newline.
 		// cf. https://github.com/unoplatform/uno-private/issues/965
-		var text = _activeTextBox.Text.Replace('\r', '\n');
+		var text = _activeHost.Text.Replace('\r', '\n');
 
-		_duringTextBoxSelectionChanged = true;
-		if (!string.Equals(text, _editable.ToString(), StringComparison.Ordinal))
+		_duringHostStateUpdate = true;
+		try
 		{
-			_editable.Clear();
-			_editable.Append(text);
+			if (!string.Equals(text, _editable.ToString(), StringComparison.Ordinal))
+			{
+				_editable.Clear();
+				_editable.Append(text);
+			}
+
+			var length = _editable.Length() + 1;
+
+			SetSelection(
+				Math.Min(length, _activeHost.SelectionStart),
+				Math.Min(length, _activeHost.SelectionStart + _activeHost.SelectionLength));
 		}
-
-		var length = _editable.Length() + 1;
-
-		SetSelection(
-			Math.Min(length, _activeTextBox.SelectionStart),
-			Math.Min(length, _activeTextBox.SelectionStart + _activeTextBox.SelectionLength));
-
-		_duringTextBoxSelectionChanged = false;
+		finally
+		{
+			_duringHostStateUpdate = false;
+		}
 	}
 
 	public override bool EndBatchEdit()
@@ -188,10 +194,12 @@ class TextInputConnection : BaseInputConnection
 
 			this.LogDebug()?.Debug($"EndBatchEdit: {_editable?.ToString()} ({selectionStart}->{selectionEnd})");
 
-			if (ActiveTextBox is not null)
+			if (ActiveHost is not null && !_duringHostStateUpdate)
 			{
-				ActiveTextBox.ProcessTextInput(_editable?.ToString() ?? string.Empty);
-				ActiveTextBox.Select(selectionStart, selectionEnd - selectionStart);
+				ActiveHost.UpdateTextFromNative(
+					_editable?.ToString() ?? string.Empty,
+					selectionStart,
+					selectionEnd - selectionStart);
 			}
 
 			_endingBatch = false;
@@ -208,15 +216,15 @@ class TextInputConnection : BaseInputConnection
 			bool ret = base.SetSelection(start, end);
 			EndBatchEdit();
 
-			if (ActiveTextBox is not null
-				&& !_duringTextBoxSelectionChanged)
+			if (ActiveHost is not null
+				&& !_duringHostStateUpdate)
 			{
 				this.LogDebug()?.Debug($"SetSelection: {_editable?.ToString()} ({start}->{end})");
 
 				var selectionStart = Selection.GetSelectionStart(_editable);
 				var selectionEnd = Selection.GetSelectionEnd(_editable);
 
-				ActiveTextBox.Select(selectionStart, selectionEnd - selectionStart);
+				ActiveHost.SelectFromNative(selectionStart, selectionEnd - selectionStart);
 			}
 			return ret;
 		}
@@ -490,11 +498,11 @@ class TextInputConnection : BaseInputConnection
 
 		// Set insertion marker location so the IME candidate window
 		// appears near the caret rather than at a default position.
-		if (_activeTextBox is { TextBoxView.DisplayBlock.ParsedText: { } parsedText, XamlRoot: { } xamlRoot })
+		if (_activeHost is { TextBoxView.DisplayBlock.ParsedText: { } parsedText, XamlRoot: { } xamlRoot })
 		{
-			var selEnd = _activeTextBox.SelectionStart + _activeTextBox.SelectionLength;
+			var selEnd = _activeHost.SelectionStart + _activeHost.SelectionLength;
 			var caretRect = parsedText.GetRectForIndex(selEnd);
-			var transform = _activeTextBox.TextBoxView.DisplayBlock.TransformToVisual(null);
+			var transform = _activeHost.TextBoxView.DisplayBlock.TransformToVisual(null);
 			var caretPoint = transform.TransformPoint(
 				new Windows.Foundation.Point(caretRect.Left, caretRect.Top));
 			var caretBottom = transform.TransformPoint(
@@ -637,9 +645,9 @@ class TextInputConnection : BaseInputConnection
 
 		this.LogDebug()?.Debug($"GetSelectedTextFormatted {flags} = {selectionStart}->{selectionEnd}");
 
-		if (ActiveTextBox is not null)
+		if (ActiveHost is not null)
 		{
-			ActiveTextBox.Select(selectionStart, selectionEnd - selectionStart);
+			ActiveHost.SelectFromNative(selectionStart, selectionEnd - selectionStart);
 		}
 
 		_endingBatch = false;

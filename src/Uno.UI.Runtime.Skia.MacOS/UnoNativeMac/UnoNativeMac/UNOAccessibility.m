@@ -37,6 +37,9 @@ static BOOL uno_a11y_verbose(void) {
 static NSString* const kAccessibilityLiveRegionCreatedNotification = @"AXLiveRegionCreated";
 static NSString* const kAccessibilityLiveRegionChangedNotification = @"AXLiveRegionChanged";
 static NSString* const kAccessibilityExpandedChanged = @"AXExpandedChanged";
+// AppKit has no public standard attribute for selection anchor direction.
+// Expose the TOM direction as a query-only extension for AX inspection clients.
+static NSString* const kUNOAccessibilitySelectedTextDirectionAttribute = @"AXUnoSelectedTextDirection";
 
 // Associated-object key used to attach a UNOAccessibilityContext to an NSWindow.
 // Address is used as a unique identifier; the byte value itself is never read.
@@ -48,7 +51,8 @@ static accessibility_focus_fn_ptr g_focusCallback = NULL;
 static accessibility_increment_fn_ptr g_incrementCallback = NULL;
 static accessibility_decrement_fn_ptr g_decrementCallback = NULL;
 static accessibility_expand_collapse_fn_ptr g_expandCollapseCallback = NULL;
-static accessibility_set_value_fn_ptr g_setValueCallback = NULL;
+static accessibility_set_text_fn_ptr g_setTextCallback = NULL;
+static accessibility_set_selection_fn_ptr g_setSelectionCallback = NULL;
 
 #pragma mark - UNOAccessibilityContext
 
@@ -101,11 +105,41 @@ UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window
 		_unoRangeMax = 100;
 		_unoIsSelected = NO;
 		_unoIsReadOnly = NO;
+		_unoSelectionIsBackward = NO;
 		_unoIsModal = NO;
 		_unoPositionInSet = 0;
 		_unoSizeOfSet = 0;
 	}
 	return self;
+}
+
+- (BOOL)uno_isAttached {
+	UNOAccessibilityContext *context = _unoContext;
+	return _unoHandle != 0
+		&& context
+		&& context.window
+		&& context.elements[@(_unoHandle)] == self;
+}
+
+- (void)uno_dispatchManagedAction:(void (^)(intptr_t handle))action {
+	if (!action) {
+		return;
+	}
+
+	if ([NSThread isMainThread]) {
+		if ([self uno_isAttached]) {
+			action(_unoHandle);
+		}
+		return;
+	}
+
+	__weak UNOAccessibilityElement *weakSelf = self;
+	dispatch_async(dispatch_get_main_queue(), ^{
+		UNOAccessibilityElement *strongSelf = weakSelf;
+		if (strongSelf && [strongSelf uno_isAttached]) {
+			action(strongSelf.unoHandle);
+		}
+	});
 }
 
 #pragma mark - NSAccessibility protocol - Role
@@ -295,7 +329,7 @@ UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window
 
 	// Only allow value setting for editable text fields
 	if ((role == NSAccessibilityTextFieldRole || role == NSAccessibilityTextAreaRole) &&
-		!_unoIsReadOnly && !_unoIsPassword && g_setValueCallback) {
+		!_unoIsReadOnly && !_unoIsPassword && g_setTextCallback) {
 		NSString *stringValue = nil;
 		if ([value isKindOfClass:[NSString class]]) {
 			stringValue = (NSString *)value;
@@ -303,7 +337,13 @@ UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window
 			stringValue = [value description];
 		}
 		if (stringValue) {
-			g_setValueCallback(_unoHandle, [stringValue UTF8String]);
+			NSInteger caret = (NSInteger)stringValue.length;
+			NSString *text = [stringValue copy];
+			[self uno_dispatchManagedAction:^(intptr_t handle) {
+				if (g_setTextCallback) {
+					g_setTextCallback(handle, [text UTF8String], (int32_t)caret, (int32_t)caret, 0);
+				}
+			}];
 		}
 	}
 }
@@ -378,6 +418,10 @@ UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window
 		[names addObject:@"AXARIAPosInSet"];
 		[names addObject:@"AXARIASetSize"];
 	}
+	NSAccessibilityRole role = [self accessibilityRole];
+	if (role == NSAccessibilityTextFieldRole || role == NSAccessibilityTextAreaRole) {
+		[names addObject:kUNOAccessibilitySelectedTextDirectionAttribute];
+	}
 	// Remove expand/collapse attributes for elements that don't support them.
 	// Without this, VoiceOver announces "collapsed" on buttons, textboxes, etc.
 	if (!_unoHasExpandCollapse) {
@@ -398,6 +442,9 @@ UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window
 	}
 	if ([attribute isEqualToString:@"AXARIASetSize"] && _unoSizeOfSet > 0) {
 		return @(_unoSizeOfSet);
+	}
+	if ([attribute isEqualToString:kUNOAccessibilitySelectedTextDirectionAttribute]) {
+		return _unoSelectionIsBackward ? @"backward" : @"forward";
 	}
 	return [super accessibilityAttributeValue:attribute];
 }
@@ -486,7 +533,11 @@ UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window
 
 - (void)setAccessibilityFocused:(BOOL)focused {
 	if (focused && _unoFocusable && g_focusCallback) {
-		g_focusCallback(_unoHandle);
+		[self uno_dispatchManagedAction:^(intptr_t handle) {
+			if (g_focusCallback) {
+				g_focusCallback(handle);
+			}
+		}];
 	}
 }
 
@@ -527,7 +578,11 @@ UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window
 
 - (void)setAccessibilityDisclosed:(BOOL)disclosed {
 	if (_unoHasExpandCollapse && g_expandCollapseCallback) {
-		g_expandCollapseCallback(_unoHandle);
+		[self uno_dispatchManagedAction:^(intptr_t handle) {
+			if (g_expandCollapseCallback) {
+				g_expandCollapseCallback(handle);
+			}
+		}];
 	}
 }
 
@@ -546,6 +601,19 @@ UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window
 			return NO;
 		}
 	}
+
+	if (selector == @selector(setAccessibilityValue:) ||
+		selector == @selector(setAccessibilitySelectedText:) ||
+		selector == @selector(setAccessibilitySelectedTextRange:)) {
+		NSAccessibilityRole role = [self accessibilityRole];
+		BOOL isTextControl = role == NSAccessibilityTextFieldRole || role == NSAccessibilityTextAreaRole;
+		BOOL callbackAvailable = selector == @selector(setAccessibilitySelectedTextRange:)
+			? g_setSelectionCallback != NULL
+			: g_setTextCallback != NULL;
+		if (!isTextControl || _unoIsReadOnly || _unoIsPassword || !callbackAvailable) {
+			return NO;
+		}
+	}
 	return [super respondsToSelector:selector];
 }
 
@@ -553,7 +621,11 @@ UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window
 
 - (BOOL)accessibilityPerformPress {
 	if (g_invokeCallback) {
-		g_invokeCallback(_unoHandle);
+		[self uno_dispatchManagedAction:^(intptr_t handle) {
+			if (g_invokeCallback) {
+				g_invokeCallback(handle);
+			}
+		}];
 		return YES;
 	}
 	return NO;
@@ -561,7 +633,11 @@ UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window
 
 - (BOOL)accessibilityPerformIncrement {
 	if (_unoHasRangeValue && g_incrementCallback) {
-		g_incrementCallback(_unoHandle);
+		[self uno_dispatchManagedAction:^(intptr_t handle) {
+			if (g_incrementCallback) {
+				g_incrementCallback(handle);
+			}
+		}];
 		return YES;
 	}
 	return NO;
@@ -569,7 +645,11 @@ UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window
 
 - (BOOL)accessibilityPerformDecrement {
 	if (_unoHasRangeValue && g_decrementCallback) {
-		g_decrementCallback(_unoHandle);
+		[self uno_dispatchManagedAction:^(intptr_t handle) {
+			if (g_decrementCallback) {
+				g_decrementCallback(handle);
+			}
+		}];
 		return YES;
 	}
 	return NO;
@@ -819,6 +899,41 @@ UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window
 	return NSMakeRange((NSUInteger)start, (NSUInteger)length);
 }
 
+- (void)setAccessibilitySelectedTextRange:(NSRange)range {
+	if (_unoIsReadOnly || !g_setSelectionCallback) {
+		return;
+	}
+
+	NSString *text = [self uno_textContent];
+	NSUInteger start = MIN(range.location, text.length);
+	NSUInteger length = MIN(range.length, text.length - start);
+	NSUInteger end = start + length;
+	[self uno_dispatchManagedAction:^(intptr_t handle) {
+		if (g_setSelectionCallback) {
+			g_setSelectionCallback(handle, (int32_t)start, (int32_t)end, 0);
+		}
+	}];
+}
+
+- (void)setAccessibilitySelectedText:(NSString *)selectedText {
+	if (_unoIsReadOnly || !g_setTextCallback || !selectedText) {
+		return;
+	}
+
+	NSString *text = [self uno_textContent];
+	NSUInteger start = MIN((NSUInteger)MAX(_unoSelectionStart, 0), text.length);
+	NSUInteger selectionLength = MIN((NSUInteger)MAX(_unoSelectionLength, 0), text.length - start);
+	NSUInteger end = start + selectionLength;
+	NSString *replacement = [text stringByReplacingCharactersInRange:NSMakeRange(start, end - start)
+		withString:selectedText];
+	NSUInteger caret = start + selectedText.length;
+	[self uno_dispatchManagedAction:^(intptr_t handle) {
+		if (g_setTextCallback) {
+			g_setTextCallback(handle, [replacement UTF8String], (int32_t)caret, (int32_t)caret, 0);
+		}
+	}];
+}
+
 - (NSInteger)accessibilityInsertionPointLineNumber {
 	return [self uno_lineIndexForCharacterIndex:_unoSelectionStart];
 }
@@ -930,6 +1045,10 @@ void uno_accessibility_init_context(NSWindow* window) {
 	// remain valid.
 	UNOAccessibilityContext *existing = uno_a11y_context_for_window(window);
 	if (existing) {
+		for (UNOAccessibilityElement *element in existing.elements.allValues) {
+			element.unoContext = nil;
+			element.unoHandle = 0;
+		}
 		[existing.elements removeAllObjects];
 		existing.rootElement = nil;
 		existing.focusedElement = nil;
@@ -956,6 +1075,7 @@ void uno_accessibility_destroy_context(NSWindow* window) {
 	// see a detached element rather than following a dangling context.
 	for (UNOAccessibilityElement *element in context.elements.allValues) {
 		element.unoContext = nil;
+		element.unoHandle = 0;
 	}
 	[context.elements removeAllObjects];
 	context.rootElement = nil;
@@ -980,8 +1100,11 @@ void uno_accessibility_set_expand_collapse_callback(accessibility_expand_collaps
 	g_expandCollapseCallback = expandCollapse;
 }
 
-void uno_accessibility_set_value_callback(accessibility_set_value_fn_ptr setValue) {
-	g_setValueCallback = setValue;
+void uno_accessibility_set_text_callbacks(
+	accessibility_set_text_fn_ptr setText,
+	accessibility_set_selection_fn_ptr setSelection) {
+	g_setTextCallback = setText;
+	g_setSelectionCallback = setSelection;
 }
 
 static UNOAccessibilityElement* _Nullable findElement(UNOAccessibilityContext *context, intptr_t handle) {
@@ -1101,6 +1224,7 @@ void uno_accessibility_remove_element(NSWindow* window, intptr_t parentHandle, i
 				context.rootElement = nil;
 			}
 			elem.unoContext = nil;
+			elem.unoHandle = 0;
 		}
 		[context.elements removeObjectForKey:key];
 	}
@@ -1143,8 +1267,11 @@ void uno_accessibility_update_focusable(intptr_t handle, bool focusable) {
 void uno_accessibility_update_value(intptr_t handle, const char* value) {
 	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
-		element.unoValue = value ? [NSString stringWithUTF8String:value] : nil;
-		NSAccessibilityPostNotification(element, NSAccessibilityValueChangedNotification);
+		NSString *newValue = value ? [NSString stringWithUTF8String:value] : nil;
+		if ((element.unoValue || newValue) && ![element.unoValue isEqualToString:newValue]) {
+			element.unoValue = newValue;
+			NSAccessibilityPostNotification(element, NSAccessibilityValueChangedNotification);
+		}
 	}
 }
 
@@ -1264,16 +1391,25 @@ void uno_accessibility_update_required(intptr_t handle, bool required) {
 
 void uno_accessibility_update_read_only(intptr_t handle, bool readOnly) {
 	UNOAccessibilityElement *element = findElementGlobal(handle);
-	if (element) {
+	if (element && element.unoIsReadOnly != readOnly) {
 		element.unoIsReadOnly = readOnly;
+		NSAccessibilityPostNotification(element, NSAccessibilityLayoutChangedNotification);
 	}
 }
 
-void uno_accessibility_update_selection(intptr_t handle, int32_t selectionStart, int32_t selectionLength) {
+void uno_accessibility_update_selection(
+	intptr_t handle,
+	int32_t selectionStart,
+	int32_t selectionLength,
+	bool selectionIsBackward) {
 	UNOAccessibilityElement *element = findElementGlobal(handle);
-	if (element) {
+	if (element
+		&& (element.unoSelectionStart != selectionStart
+			|| element.unoSelectionLength != selectionLength
+			|| element.unoSelectionIsBackward != selectionIsBackward)) {
 		element.unoSelectionStart = selectionStart;
 		element.unoSelectionLength = selectionLength;
+		element.unoSelectionIsBackward = selectionIsBackward;
 		NSAccessibilityPostNotification(element, NSAccessibilitySelectedTextChangedNotification);
 	}
 }

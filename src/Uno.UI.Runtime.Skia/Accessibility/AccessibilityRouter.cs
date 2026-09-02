@@ -55,6 +55,7 @@ internal static class AccessibilityRouter
 			AccessibilityAnnouncer.AccessibilityImpl = new RouterAnnouncerShim();
 			UIElementAccessibilityHelper.ExternalOnChildAdded = OnChildAdded;
 			UIElementAccessibilityHelper.ExternalOnChildRemoved = OnChildRemoved;
+			UIElementAccessibilityHelper.ExternalOnTextControlStateChanged = OnTextControlStateChanged;
 			VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged = OnVisualOffsetOrSizeChanged;
 			AutomationPeer.AutomationPeerListener = new RouterAutomationPeerListener();
 
@@ -158,6 +159,9 @@ internal static class AccessibilityRouter
 	private static void OnChildRemoved(UIElement parent, UIElement child)
 		=> Resolve(parent)?.RouteChildRemoved(parent, child);
 
+	private static void OnTextControlStateChanged(UIElement element)
+		=> Resolve(element)?.RouteTextControlStateChanged(element);
+
 	private static void OnVisualOffsetOrSizeChanged(Visual visual)
 	{
 		if (visual is ContainerVisual { Owner.Target: UIElement owner })
@@ -170,13 +174,19 @@ internal static class AccessibilityRouter
 	//  Fan-out shims — automation peer listener / announcer
 	// ────────────────────────────────────────────────────────────────
 
-	private sealed class RouterAutomationPeerListener : IAutomationPeerListener
+	private sealed class RouterAutomationPeerListener : IAutomationPeerListener, ITextEditAutomationPeerListener
 	{
 		public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty property, object oldValue, object newValue)
 			=> Resolve(peer)?.NotifyPropertyChangedEvent(peer, property, oldValue, newValue);
 
 		public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
 			=> Resolve(peer)?.NotifyAutomationEvent(peer, eventId);
+
+		public void NotifyTextEditTextChangedEvent(
+			AutomationPeer peer,
+			AutomationTextEditChangeType changeType,
+			System.Collections.Generic.IReadOnlyList<string> changedData)
+			=> Resolve(peer)?.NotifyTextEditTextChangedEvent(peer, changeType, changedData);
 
 		public void NotifyInvalidatePeer(AutomationPeer peer)
 			=> Resolve(peer)?.NotifyInvalidatePeer(peer);

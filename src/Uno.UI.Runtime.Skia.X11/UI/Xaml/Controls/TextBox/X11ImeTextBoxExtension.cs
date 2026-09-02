@@ -1,6 +1,9 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
@@ -22,6 +25,7 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 	private IntPtr _currentWindow;
 	private bool _isComposing;
 	private IX11InputMethod? _dbusIme;
+	private (int X, int Y, int Height)? _lastSpotLocation;
 
 	private X11ImeTextBoxExtension()
 	{
@@ -32,40 +36,67 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 	public event EventHandler? CompositionStarted;
 	public event EventHandler<ImeCompositionEventArgs>? CompositionUpdated;
 	public event EventHandler<ImeCompositionEventArgs>? CompositionCompleted;
+	public event EventHandler<ImePartialCompositionEventArgs>? CompositionPartiallyCommitted
+	{
+		add { }
+		remove { }
+	}
+	public event EventHandler<ImeCompositionEventArgs>? CompositionCanceled;
 	public event EventHandler? CompositionEnded;
 
-	public void StartImeSession(TextBox textBox)
+	public void StartImeSession(IImeSessionHost host, ImeSessionActivation activation)
 	{
 		_currentDisplay = IntPtr.Zero;
 		_currentWindow = IntPtr.Zero;
 		_dbusIme = null;
+		_lastSpotLocation = null;
 
-		if (textBox.XamlRoot is not { } xamlRoot)
+		if (host.XamlRoot is not { } xamlRoot)
 		{
 			return;
 		}
 
-		if (XamlRootMap.GetHostForRoot(xamlRoot) is not X11XamlRootHost host)
+		if (XamlRootMap.GetHostForRoot(xamlRoot) is not X11XamlRootHost host2)
 		{
 			return;
 		}
 
-		var rootWindow = host.RootX11Window;
+		var rootWindow = host2.RootX11Window;
 		_currentDisplay = rootWindow.Display;
 		_currentWindow = rootWindow.Window;
 
-		_dbusIme = host.GetKeyboardSource()?.GetDBusIme();
+		_dbusIme = host2.GetKeyboardSource()?.GetDBusIme();
 
 		if (_dbusIme?.IsEnabled == true)
 		{
 			_dbusIme.SetFocus(true);
-			UpdateSpotLocationFromTextBox(textBox);
+			UpdateSpotLocationFromTextBox(host);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().Debug("IME session started with D-Bus IME backend.");
 			}
 		}
+	}
+
+	public void UpdateImeSession(IImeSessionHost host, ImeSessionUpdate update)
+	{
+		if ((update & (ImeSessionUpdate.CandidateWindowAlignment | ImeSessionUpdate.TextAndSelection)) != 0)
+		{
+			UpdateSpotLocationFromTextBox(host);
+		}
+	}
+
+	public Task<IReadOnlyList<string>> GetLinguisticAlternativesAsync(string compositionText, CancellationToken cancellationToken)
+	{
+		cancellationToken.ThrowIfCancellationRequested();
+		return Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
+	}
+
+	public event EventHandler<ImeCandidateWindowBoundsChangedEventArgs>? CandidateWindowBoundsChanged
+	{
+		add { }
+		remove { }
 	}
 
 	public void EndImeSession()
@@ -87,6 +118,7 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 		_currentDisplay = IntPtr.Zero;
 		_currentWindow = IntPtr.Zero;
 		_dbusIme = null;
+		_lastSpotLocation = null;
 	}
 
 	/// <summary>
@@ -125,9 +157,8 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 		else if (_isComposing)
 		{
 			// Preedit cleared without an explicit CommitText signal (e.g., IBus cancelled
-			// the composition via Escape or backspace). Fire CompositionCompleted with empty
-			// text so the TextBox removes the preedit region, then end the composition.
-			CompositionCompleted?.Invoke(this, new ImeCompositionEventArgs(string.Empty));
+			// the composition via Escape or backspace).
+			CompositionCanceled?.Invoke(this, new ImeCompositionEventArgs(string.Empty));
 			_isComposing = false;
 			CompositionEnded?.Invoke(this, EventArgs.Empty);
 		}
@@ -137,28 +168,24 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 	/// Computes and sends the caret location to the active D-Bus IME so its candidate
 	/// window tracks the caret.
 	/// </summary>
-	internal void UpdateSpotLocationFromTextBox(TextBox textBox)
+	internal void UpdateSpotLocationFromTextBox(IImeSessionHost host)
 	{
 		if (_dbusIme?.IsEnabled != true)
 		{
 			return;
 		}
 
-		var textBoxView = textBox.TextBoxView;
-		if (textBoxView?.DisplayBlock?.ParsedText is null || textBox.XamlRoot is null)
+		if (!host.TryGetCandidateWindowRect(out var candidateRect)
+			|| host.XamlRoot is not { } xamlRoot)
 		{
 			return;
 		}
 
-		var index = textBox.IsBackwardSelection ? textBox.SelectionStart : textBox.SelectionStart + textBox.SelectionLength;
-		var rect = textBoxView.DisplayBlock.ParsedText.GetRectForIndex(index);
-		var transform = textBoxView.DisplayBlock.TransformToVisual(null);
-		var topLeft = transform.TransformPoint(new Windows.Foundation.Point(rect.Left, rect.Top));
-		var scale = textBox.XamlRoot.RasterizationScale;
+		var scale = xamlRoot.RasterizationScale;
 
-		var x = (int)(topLeft.X * scale);
-		var y = (int)(topLeft.Y * scale);
-		var height = (int)(rect.Height * scale);
+		var x = (int)(candidateRect.X * scale);
+		var y = (int)(candidateRect.Y * scale);
+		var height = (int)(candidateRect.Height * scale);
 
 		// IBus/Fcitx SetCursorLocation expects coordinates in absolute root-window
 		// (screen) pixels, while the values above are window-local. Translate through
@@ -182,6 +209,11 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 		// IBus/Fcitx treat (x, y, w, h) as the caret rect and place the candidate
 		// popup at (x, y + h). Passing the caret top + line height anchors the popup
 		// at the line's bottom — flush below the text the user is composing.
-		_dbusIme.SetCursorLocation(screenX, screenY, 1, Math.Max(1, height));
+		var spotLocation = (X: screenX, Y: screenY, Height: Math.Max(1, height));
+		if (_lastSpotLocation != spotLocation)
+		{
+			_dbusIme.SetCursorLocation(spotLocation.X, spotLocation.Y, 1, spotLocation.Height);
+			_lastSpotLocation = spotLocation;
+		}
 	}
 }

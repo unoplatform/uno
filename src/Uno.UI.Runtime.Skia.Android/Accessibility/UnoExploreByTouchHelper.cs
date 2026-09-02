@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using Android.OS;
@@ -10,6 +12,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -20,10 +23,14 @@ namespace Uno.UI.Runtime.Skia.Android;
 
 internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 {
+	private const string ActionArgumentSetText = "ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE";
+	private const string ActionArgumentSelectionStart = "ACTION_ARGUMENT_SELECTION_START_INT";
+	private const string ActionArgumentSelectionEnd = "ACTION_ARGUMENT_SELECTION_END_INT";
+
 	private readonly View _host;
 	private UIElement? _rootElement;
 	private ConditionalWeakTable<DependencyObject, object> _cwtElementToId = new();
-	private Dictionary<int, DependencyObject?> _idToElement = new(); // TODO: This will leak.
+	private Dictionary<int, WeakReference<DependencyObject>> _idToElement = new();
 	private int _currentId;
 	private readonly HashSet<DependencyObject> _rememberAllVisited = [];
 
@@ -76,12 +83,41 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 				}
 			}
 
+			if (element is RichEditBox richEditBox
+				&& TryGetTextObjectAt(richEditBox, x, y, out var textObjectPeer))
+			{
+				return GetOrCreateVirtualId(textObjectPeer);
+			}
+
 			return GetOrCreateVirtualId(element);
 		}
 		finally
 		{
 			FocusProperties.UnoForceGetTextBlockForAccessibility = false;
 		}
+	}
+
+	private static bool TryGetTextObjectAt(
+		RichEditBox richEditBox,
+		float physicalX,
+		float physicalY,
+		[NotNullWhen(true)] out AutomationPeer? textObjectPeer)
+	{
+		if (richEditBox.GetOrCreateAutomationPeer() is { } peer)
+		{
+			foreach (var child in peer.GetChildren() ?? Array.Empty<AutomationPeer>())
+			{
+				if (TryGetVirtualTextObjectBounds(child, out var bounds)
+					&& bounds.Contains(new Windows.Foundation.Point(physicalX, physicalY)))
+				{
+					textObjectPeer = child;
+					return true;
+				}
+			}
+		}
+
+		textObjectPeer = null;
+		return false;
 	}
 
 	private int GetOrCreateVirtualId(DependencyObject element)
@@ -93,8 +129,21 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 		var id = Interlocked.Increment(ref _currentId);
 		_cwtElementToId.Add(element, id);
-		_idToElement.Add(id, element);
+		_idToElement.Add(id, new WeakReference<DependencyObject>(element));
 		return id;
+	}
+
+	private bool TryGetVirtualElement(int virtualViewId, [NotNullWhen(true)] out DependencyObject? element)
+	{
+		if (_idToElement.TryGetValue(virtualViewId, out var weakReference)
+			&& weakReference.TryGetTarget(out element))
+		{
+			return true;
+		}
+
+		_idToElement.Remove(virtualViewId);
+		element = null;
+		return false;
 	}
 
 	protected override void GetVisibleVirtualViews(IList<Integer>? virtualViewIds)
@@ -136,6 +185,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 				if (!ShouldSkipElement(current))
 				{
 					virtualViewIds.Add(Integer.ValueOf(GetOrCreateVirtualId(current)));
+					AddTextObjectVirtualViews(current, virtualViewIds);
 				}
 
 				_rememberAllVisited.Add(current);
@@ -154,16 +204,52 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		}
 	}
 
+	private void AddTextObjectVirtualViews(DependencyObject element, IList<Integer> virtualViewIds)
+	{
+		if (element is not RichEditBox richEditBox
+			|| richEditBox.GetOrCreateAutomationPeer() is not { } peer)
+		{
+			return;
+		}
+
+		foreach (var child in peer.GetChildren() ?? Array.Empty<AutomationPeer>())
+		{
+			if (TryGetVirtualTextObjectBounds(child, out _))
+			{
+				virtualViewIds.Add(Integer.ValueOf(GetOrCreateVirtualId(child)));
+			}
+		}
+	}
+
 	protected override bool OnPerformActionForVirtualView(int virtualViewId, int action, Bundle? arguments)
 	{
-		// TODO: What about non-UIElements? e.g, Hyperlinks?
-		// In WinUI, `TextElement`s can have automation peers. We need to support that in Uno.
-		if (_idToElement.TryGetValue(virtualViewId, out var element) &&
-			element is UIElement uiElement &&
-			uiElement.GetOrCreateAutomationPeer() is { } peer)
+		if (!TryGetVirtualElement(virtualViewId, out var element))
+		{
+			return false;
+		}
+
+		var peer = element switch
+		{
+			AutomationPeer automationPeer => automationPeer,
+			UIElement ownerElement => ownerElement.GetOrCreateAutomationPeer(),
+			_ => null,
+		};
+
+		if (peer is RichEditBoxAutomationPeer
+			&& peer.TryGetProviderOwner(out var owner)
+			&& owner is RichEditBox richEditBox
+			&& TryPerformRichEditAction(richEditBox, action, arguments))
+		{
+			InvalidateVirtualView(virtualViewId);
+			return true;
+		}
+
+		if (peer is not null
+			&& peer.IsEnabled())
 		{
 			if (peer.InvokeAutomationPeer())
 			{
+				InvalidateVirtualView(virtualViewId);
 				return true;
 			}
 		}
@@ -171,12 +257,67 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		return false;
 	}
 
+	private static bool TryPerformRichEditAction(
+		RichEditBox richEditBox,
+		int action,
+		Bundle? arguments)
+	{
+		if (action == AccessibilityNodeInfoCompat.ActionSetText
+			&& Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
+		{
+			if (arguments is null || !arguments.ContainsKey(ActionArgumentSetText))
+			{
+				return false;
+			}
+
+			var text = arguments.GetCharSequence(ActionArgumentSetText)?.ToString() ?? string.Empty;
+			return richEditBox.ApplyAccessibilityTextInput(text, text.Length, text.Length);
+		}
+
+		if (action == AccessibilityNodeInfoCompat.ActionSetSelection
+			&& Build.VERSION.SdkInt >= BuildVersionCodes.JellyBeanMr2
+			&& arguments is not null
+			&& arguments.ContainsKey(ActionArgumentSelectionStart)
+			&& arguments.ContainsKey(ActionArgumentSelectionEnd))
+		{
+			return richEditBox.ApplyAccessibilitySelection(
+				arguments.GetInt(ActionArgumentSelectionStart),
+				arguments.GetInt(ActionArgumentSelectionEnd));
+		}
+
+		return false;
+	}
+
 	protected override void OnPopulateNodeForVirtualView(int virtualViewId, AccessibilityNodeInfoCompat node)
 	{
-		// TODO: What about non-UIElements? e.g, Hyperlinks?
-		// In WinUI, `TextElement`s can have automation peers. We need to support that in Uno.
-		if (_idToElement.TryGetValue(virtualViewId, out var element) &&
-			element is UIElement uiElement)
+		if (!TryGetVirtualElement(virtualViewId, out var element))
+		{
+			return;
+		}
+
+		var peer = element switch
+		{
+			AutomationPeer automationPeer => automationPeer,
+			UIElement ownerElement => ownerElement.GetOrCreateAutomationPeer(),
+			_ => null,
+		};
+
+		if (peer is null)
+		{
+			node.ContentDescription = "N/A";
+			node.Enabled = false;
+			node.Editable = false;
+			node.ClassName = "android.view.View";
+			return;
+		}
+
+		if (element is AutomationPeer)
+		{
+			PopulateVirtualTextObjectNode(peer, node);
+			return;
+		}
+
+		if (element is UIElement uiElement)
 		{
 			var transform = UIElement.GetTransform(from: uiElement, to: null);
 			var logicalRect = transform.Transform(new Windows.Foundation.Rect(default, new Windows.Foundation.Size(uiElement.Visual.Size.X, uiElement.Visual.Size.Y)));
@@ -184,22 +325,6 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 #pragma warning disable CS0618 // Type or member is obsolete
 			node.SetBoundsInParent(new global::Android.Graphics.Rect((int)physicalRect.Left, (int)physicalRect.Top, (int)physicalRect.Right, (int)physicalRect.Bottom));
 #pragma warning restore CS0618 // Type or member is obsolete
-
-			var peer = uiElement.GetOrCreateAutomationPeer();
-
-			if (peer is null)
-			{
-				// No automation peer available for this element
-				// anymore due to visibility changes.
-				// The next frame will rebuild the accessiblity tree,
-				// so we can temporarily mark this as unspecified.
-				node.ContentDescription = "N/A";
-				node.Enabled = false;
-				node.Editable = false;
-				node.ClassName = "android.view.View";
-			}
-			else
-			{
 
 				// TODO: Scrolling?
 
@@ -224,6 +349,10 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 				node.Checkable = peer is IToggleProvider;
 				node.Clickable = isClickable;
 				node.Editable = automationControlType == AutomationControlType.Edit;
+				if (peer is RichEditBoxAutomationPeer && uiElement is RichEditBox richEditBox)
+				{
+					PopulateRichEditBoxNode(richEditBox, peer, node);
+				}
 
 				if (peer.GetLabeledBy() is FrameworkElementAutomationPeer labeledByPeer &&
 					_cwtElementToId.TryGetValue(labeledByPeer.Owner, out var labeledByVirtualId))
@@ -283,7 +412,109 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 				};
 
 				node.ClassName = androidClassName;
+		}
+	}
+
+	private void PopulateRichEditBoxNode(
+		RichEditBox richEditBox,
+		AutomationPeer peer,
+		AccessibilityNodeInfoCompat node)
+	{
+		var text = richEditBox.GetAccessibilityText();
+		richEditBox.GetAccessibilitySelection(
+			out var selectionStart,
+			out var selectionEnd,
+			out _);
+		node.Text = text;
+		node.SetTextSelection(selectionStart, selectionEnd);
+		node.MultiLine = true;
+		var canEdit = richEditBox.IsEnabled && !richEditBox.IsReadOnly;
+		node.Editable = canEdit;
+		if (richEditBox.IsEnabled
+			&& Build.VERSION.SdkInt >= BuildVersionCodes.JellyBeanMr2)
+		{
+			node.AddAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionSetSelection);
+		}
+		if (canEdit
+			&& Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
+		{
+			node.AddAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionSetText);
+		}
+
+		foreach (var child in peer.GetChildren() ?? Array.Empty<AutomationPeer>())
+		{
+			if (TryGetVirtualTextObjectBounds(child, out _))
+			{
+				node.AddChild(_host, GetOrCreateVirtualId(child));
 			}
 		}
+	}
+
+	private void PopulateVirtualTextObjectNode(
+		AutomationPeer peer,
+		AccessibilityNodeInfoCompat node)
+	{
+		if (!TryGetVirtualTextObjectBounds(peer, out var bounds))
+		{
+			node.ContentDescription = "N/A";
+			node.Enabled = false;
+			node.Editable = false;
+			node.ClassName = "android.view.View";
+			return;
+		}
+
+#pragma warning disable CS0618 // Type or member is obsolete
+		node.SetBoundsInParent(new global::Android.Graphics.Rect(
+			(int)bounds.Left,
+			(int)bounds.Top,
+			(int)bounds.Right,
+			(int)bounds.Bottom));
+#pragma warning restore CS0618 // Type or member is obsolete
+		node.ContentDescription = peer.GetName() ?? string.Empty;
+		node.Enabled = peer.IsEnabled();
+		node.Editable = false;
+		node.Clickable = peer is IInvokeProvider && peer.IsEnabled();
+		node.Focusable = peer.IsKeyboardFocusable();
+		node.ClassName = peer.GetAutomationControlType() == AutomationControlType.Image
+			? "android.widget.ImageView"
+			: "android.widget.TextView";
+
+		if (peer.GetParent() is { } parent
+			&& parent.TryGetProviderOwner(out var parentOwner))
+		{
+			node.SetParent(_host, GetOrCreateVirtualId(parentOwner));
+		}
+
+		if (node.Clickable)
+		{
+			node.AddAction(AccessibilityNodeInfoCompat.AccessibilityActionCompat.ActionClick);
+		}
+	}
+
+	private static bool TryGetVirtualTextObjectBounds(
+		AutomationPeer peer,
+		out Windows.Foundation.Rect physicalBounds)
+	{
+		physicalBounds = default;
+		if (peer.GetAutomationControlType() is not (AutomationControlType.Hyperlink or AutomationControlType.Image)
+			|| peer.IsOffscreen()
+			|| string.IsNullOrEmpty(peer.GetName()))
+		{
+			return false;
+		}
+
+		var logicalBounds = peer.GetBoundingRectangle();
+		if (logicalBounds.Width <= 0
+			|| logicalBounds.Height <= 0
+			|| !double.IsFinite(logicalBounds.X)
+			|| !double.IsFinite(logicalBounds.Y)
+			|| !double.IsFinite(logicalBounds.Width)
+			|| !double.IsFinite(logicalBounds.Height))
+		{
+			return false;
+		}
+
+		physicalBounds = logicalBounds.LogicalToPhysicalPixels();
+		return physicalBounds.Width > 0 && physicalBounds.Height > 0;
 	}
 }

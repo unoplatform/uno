@@ -46,7 +46,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 		NativeUno.uno_accessibility_set_callbacks(&OnNativeInvoke, &OnNativeFocus);
 		NativeUno.uno_accessibility_set_range_callbacks(&OnNativeIncrement, &OnNativeDecrement);
 		NativeUno.uno_accessibility_set_expand_collapse_callback(&OnNativeExpandCollapse);
-		NativeUno.uno_accessibility_set_value_callback(&OnNativeSetValue);
+		NativeUno.uno_accessibility_set_text_callbacks(&OnNativeSetText, &OnNativeSetSelection);
 	}
 
 	internal MacOSAccessibility(nint windowHandle)
@@ -225,7 +225,12 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-	private static void OnNativeSetValue(nint handle, nint valuePtr)
+	private static void OnNativeSetText(
+		nint handle,
+		nint valuePtr,
+		int selectionStart,
+		int selectionEnd,
+		int selectionIsBackward)
 	{
 		if (handle == nint.Zero || valuePtr == nint.Zero)
 		{
@@ -238,11 +243,65 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 			if (value != null &&
 				GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 			{
-				var peer = owner.GetOrCreateAutomationPeer();
-				if (peer?.GetPattern(PatternInterface.Value) is IValueProvider valueProvider &&
-					!valueProvider.IsReadOnly)
+				if (owner is RichEditBox richEditBox)
 				{
-					valueProvider.SetValue(value);
+					richEditBox.ApplyAccessibilityTextInput(
+						value,
+						selectionStart,
+						selectionEnd,
+						selectionIsBackward != 0);
+				}
+				else
+				{
+					var peer = owner.GetOrCreateAutomationPeer();
+					if (peer?.GetPattern(PatternInterface.Value) is IValueProvider valueProvider &&
+						!valueProvider.IsReadOnly)
+					{
+						valueProvider.SetValue(value);
+						if (owner is TextBox textBox)
+						{
+							var start = Math.Clamp(selectionStart, 0, textBox.Text.Length);
+							var end = Math.Clamp(selectionEnd, start, textBox.Text.Length);
+							textBox.Select(start, end - start);
+						}
+					}
+				}
+			}
+		}
+		catch (Exception e)
+		{
+			ApplicationExtensions.RaiseRecoverableUnhandledExceptionOrLog(Application.Current, e, typeof(MacOSAccessibility));
+		}
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	private static void OnNativeSetSelection(
+		nint handle,
+		int selectionStart,
+		int selectionEnd,
+		int selectionIsBackward)
+	{
+		if (handle == nint.Zero)
+		{
+			return;
+		}
+
+		try
+		{
+			if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
+			{
+				if (owner is RichEditBox richEditBox)
+				{
+					richEditBox.ApplyAccessibilitySelection(
+						selectionStart,
+						selectionEnd,
+						selectionIsBackward != 0);
+				}
+				else if (owner is TextBox { IsReadOnly: false } textBox)
+				{
+					var start = Math.Clamp(selectionStart, 0, textBox.Text.Length);
+					var end = Math.Clamp(selectionEnd, start, textBox.Text.Length);
+					textBox.Select(start, end - start);
 				}
 			}
 		}
@@ -567,6 +626,21 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 			NativeUno.uno_accessibility_update_is_password(handle, true);
 		}
 
+		if (owner is RichEditBox richEditBox)
+		{
+			NativeUno.uno_accessibility_update_value(handle, richEditBox.GetAccessibilityText());
+			NativeUno.uno_accessibility_update_read_only(handle, richEditBox.IsReadOnly);
+			richEditBox.GetAccessibilitySelection(
+				out var selectionStart,
+				out var selectionEnd,
+				out var selectionIsBackward);
+			NativeUno.uno_accessibility_update_selection(
+				handle,
+				selectionStart,
+				selectionEnd - selectionStart,
+				selectionIsBackward);
+		}
+
 		if (owner is ComboBox comboBox && peer.GetPattern(PatternInterface.Value) is not IValueProvider)
 		{
 			var selectedValue = FrameworkElement.GetStringFromObject(comboBox.SelectionBoxItem);
@@ -666,6 +740,11 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 		if (controlType == AutomationControlType.Text)
 		{
 			return "text";
+		}
+
+		if (controlType == AutomationControlType.Edit && owner is RichEditBox)
+		{
+			return "textarea";
 		}
 
 		if (controlType == AutomationControlType.Edit && owner is TextBox textBox && textBox.AcceptsReturn)
@@ -797,7 +876,20 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 					NativeUno.uno_accessibility_update_selection(
 						textElement.Visual.Handle,
 						textBox.SelectionStart,
-						textBox.SelectionLength);
+						textBox.SelectionLength,
+						false);
+				}
+				else if (textElement is RichEditBox richEditBox)
+				{
+					richEditBox.GetAccessibilitySelection(
+						out var selectionStart,
+						out var selectionEnd,
+						out var selectionIsBackward);
+					NativeUno.uno_accessibility_update_selection(
+						textElement.Visual.Handle,
+						selectionStart,
+						selectionEnd - selectionStart,
+						selectionIsBackward);
 				}
 				break;
 
@@ -824,6 +916,26 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 				}
 				break;
 		}
+	}
+
+	protected override void OnTextControlStateChanged(UIElement element)
+	{
+		if (element is not RichEditBox richEditBox || !_accessibilityTreeInitialized)
+		{
+			return;
+		}
+
+		NativeUno.uno_accessibility_update_value(element.Visual.Handle, richEditBox.GetAccessibilityText());
+		NativeUno.uno_accessibility_update_read_only(element.Visual.Handle, richEditBox.IsReadOnly);
+		richEditBox.GetAccessibilitySelection(
+			out var selectionStart,
+			out var selectionEnd,
+			out var selectionIsBackward);
+		NativeUno.uno_accessibility_update_selection(
+			element.Visual.Handle,
+			selectionStart,
+			selectionEnd - selectionStart,
+			selectionIsBackward);
 	}
 
 	protected override void SetNativeFocus(nint handle)

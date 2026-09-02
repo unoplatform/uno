@@ -4,9 +4,8 @@
 //
 // Minimal ITextProvider implementation that exposes the owning element's plain
 // text as a single document range. Sufficient for Narrator read-out and Inspect
-// pattern discovery. ITextProvider2 / ITextEditProvider are not implemented —
-// WinUI 3 sources those from a windowless RichEdit which Uno's Skia stack
-// doesn't host.
+// pattern discovery. Win32 projects this adapter through Text, Text2, and the
+// platform-only TextEdit resolver, matching WinUI's windowless RichEdit split.
 
 #nullable enable
 
@@ -17,6 +16,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Foundation.Logging;
 
 namespace DirectUI;
 
@@ -56,31 +56,66 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 
 	private static string TryGetRichEditPlainText(RichEditBox richEditBox)
 	{
-		// RichEditTextDocument.GetText is NotImplemented on some Uno platforms — fall
-		// back to GetPlainText (Header / PlaceholderText) so Narrator gets a usable
-		// announcement instead of silence.
 		string text = string.Empty;
 		try
 		{
 			richEditBox.Document?.GetText(Microsoft.UI.Text.TextGetOptions.None, out text);
+			return text is { Length: > 0 } && text[^1] == '\r'
+				? text[..^1]
+				: text ?? string.Empty;
 		}
-		catch
+		catch (Exception error) when (!IsFatalException(error))
 		{
+			if (typeof(TextAdapter).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(TextAdapter).Log().Warn("Failed to read RichEditBox text for UI Automation.", error);
+			}
+			return string.Empty;
 		}
+	}
 
-		if (!string.IsNullOrEmpty(text))
+	private static bool IsFatalException(Exception error)
+	{
+		if (error is OutOfMemoryException
+			or StackOverflowException
+			or AccessViolationException
+			or AppDomainUnloadedException
+			or BadImageFormatException
+			or CannotUnloadAppDomainException)
 		{
-			return text;
+			return true;
 		}
+		if (error is AggregateException aggregate)
+		{
+			foreach (var inner in aggregate.InnerExceptions)
+			{
+				if (IsFatalException(inner))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		return error.InnerException is { } innerException && IsFatalException(innerException);
+	}
 
-		return richEditBox.GetPlainText() ?? string.Empty;
+	internal static int GetEffectiveTextLength(FrameworkElement owner)
+	{
+#if __SKIA__
+		if (owner is RichEditBox richEditBox)
+		{
+			return richEditBox.Document.TextLength;
+		}
+#endif
+
+		return GetEffectiveText(owner).Length;
 	}
 
 	public ITextRangeProvider DocumentRange
-		=> new TextRangeAdapter(_ownerPeer, _owner, 0, GetEffectiveText(_owner).Length);
+		=> new TextRangeAdapter(_ownerPeer, _owner, 0, GetEffectiveTextLength(_owner));
 
 	public SupportedTextSelection SupportedTextSelection
-		=> _owner is TextBox ? SupportedTextSelection.Single : SupportedTextSelection.None;
+		=> _owner is TextBox or RichEditBox ? SupportedTextSelection.Single : SupportedTextSelection.None;
 
 	public ITextRangeProvider[] GetSelection()
 	{
@@ -94,29 +129,88 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 			};
 		}
 
+		if (_owner is RichEditBox richEditBox)
+		{
+			var selection = richEditBox.Document.Selection;
+			return new ITextRangeProvider[]
+			{
+				new TextRangeAdapter(_ownerPeer, _owner, selection.StartPosition, selection.EndPosition),
+			};
+		}
+
 		return Array.Empty<ITextRangeProvider>();
 	}
 
 	public ITextRangeProvider[] GetVisibleRanges()
-		=> new ITextRangeProvider[] { DocumentRange };
+	{
+#if __SKIA__
+		if (_owner is RichEditBox richEditBox
+			&& richEditBox.Document.TryGetVisibleRange(out var start, out var end))
+		{
+			return new ITextRangeProvider[]
+			{
+				new TextRangeAdapter(_ownerPeer, _owner, start, end),
+			};
+		}
+#endif
+
+		return new ITextRangeProvider[] { DocumentRange };
+	}
 
 	public ITextRangeProvider RangeFromChild(IRawElementProviderSimple childElement)
-		=> DocumentRange;
+	{
+#if __SKIA__
+		if (_ownerPeer is RichEditBoxAutomationPeer peer
+			&& childElement.AutomationPeer is { } childPeer
+			&& peer.TryGetTextObjectRange(childPeer, out var start, out var end))
+		{
+			if (childPeer is RichEditBoxTextObjectAutomationPeer textObjectPeer
+				&& textObjectPeer.CreateTextRangeProvider() is { } childRange)
+			{
+				return childRange;
+			}
+
+			return new TextRangeAdapter(
+				_ownerPeer,
+				_owner,
+				start,
+				end,
+				useObjectText: childPeer is RichEditBoxImageAutomationPeer);
+		}
+#endif
+
+		return null!;
+	}
 
 	public ITextRangeProvider RangeFromPoint(Point screenLocation)
-		=> DocumentRange;
+	{
+		if (_owner is RichEditBox richEditBox)
+		{
+			var range = richEditBox.Document.GetRangeFromPoint(screenLocation, Microsoft.UI.Text.PointOptions.None);
+			return new TextRangeAdapter(_ownerPeer, _owner, range.StartPosition, range.EndPosition);
+		}
 
-	// ITextProvider2 — minimal stubs so Inspect lists the pattern. Annotations and
-	// caret-range queries return a document-wide range; clients that need precise
-	// caret tracking will need a richer implementation (see WinUI's windowless
-	// RichEdit, which Uno's Skia stack doesn't host).
+		return DocumentRange;
+	}
 
 	public ITextRangeProvider RangeFromAnnotation(IRawElementProviderSimple annotationElement)
-		=> DocumentRange;
+	{
+#if __SKIA__
+		if (_ownerPeer is RichEditBoxAutomationPeer peer
+			&& annotationElement.AutomationPeer is RichEditBoxSpellingErrorAutomationPeer spellingErrorPeer
+			&& peer.TryGetSpellingAnnotationRange(spellingErrorPeer, out var start, out var end))
+		{
+			return spellingErrorPeer.CreateTextRangeProvider()
+				?? new TextRangeAdapter(_ownerPeer, _owner, start, end);
+		}
+#endif
+
+		return null!;
+	}
 
 	public ITextRangeProvider GetCaretRange(out bool isActive)
 	{
-		isActive = _owner is Microsoft.UI.Xaml.Controls.TextBox;
+		isActive = _owner.FocusState != FocusState.Unfocused;
 
 		if (_owner is Microsoft.UI.Xaml.Controls.TextBox textBox)
 		{
@@ -124,15 +218,41 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 			return new TextRangeAdapter(_ownerPeer, _owner, caret, caret);
 		}
 
+		if (_owner is RichEditBox richEditBox)
+		{
+			var selection = richEditBox.Document.Selection;
+			var caret = selection.Options.HasFlag(Microsoft.UI.Text.SelectionOptions.StartActive)
+				? selection.StartPosition
+				: selection.EndPosition;
+			return new TextRangeAdapter(_ownerPeer, _owner, caret, caret);
+		}
+
 		return new TextRangeAdapter(_ownerPeer, _owner, 0, 0);
 	}
 
-	// ITextEditProvider — minimal stubs. Active composition and conversion target are
-	// IME-driven state Uno doesn't currently track end-to-end on Skia.
-
 	public ITextRangeProvider GetActiveComposition()
-		=> new TextRangeAdapter(_ownerPeer, _owner, 0, 0);
+	{
+#if __SKIA__
+		if (_owner is RichEditBox richEditBox
+			&& richEditBox.TryGetAccessibilityCompositionRange(conversionTarget: false, out var start, out var end))
+		{
+			return new TextRangeAdapter(_ownerPeer, _owner, start, end);
+		}
+#endif
+
+		return null!;
+	}
 
 	public ITextRangeProvider GetConversionTarget()
-		=> new TextRangeAdapter(_ownerPeer, _owner, 0, 0);
+	{
+#if __SKIA__
+		if (_owner is RichEditBox richEditBox
+			&& richEditBox.TryGetAccessibilityCompositionRange(conversionTarget: true, out var start, out var end))
+		{
+			return new TextRangeAdapter(_ownerPeer, _owner, start, end);
+		}
+#endif
+
+		return null!;
+	}
 }

@@ -42,6 +42,8 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _renderSelection;
 		private (int index, CompositionBrush brush)? _caretPaint;
 		private bool _forceFocusedForContextFlyout;
+		private long _textLayoutVersion;
+		private double _textLayoutWidth = double.NaN;
 
 		// Touch-selection grippers (knobs), driven by the shared TextSelectionGripperPresenter. Unlike
 		// TextBox there is no caret/insertion point in a TextBlock, so the grippers only ever appear in
@@ -53,7 +55,67 @@ namespace Microsoft.UI.Xaml.Controls
 		private (Size availableSize, Size outSize, TextAlignment? alignment) _lastParsedTextCreationValues = (Size.Empty, Size.Empty, TextAlignment.Left);
 		internal IParsedText ParsedText { get; private set; } = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
 
+		private ParagraphLayoutInfo? _endingParagraphLayout;
+		internal ParagraphLayoutInfo? EndingParagraphLayout
+		{
+			get => _endingParagraphLayout;
+			set
+			{
+				if (!ReferenceEquals(_endingParagraphLayout, value))
+				{
+					_endingParagraphLayout = value;
+					InvalidateMeasure();
+				}
+			}
+		}
+
+		private TextAlignment? _endingParagraphAlignment;
+		internal TextAlignment? EndingParagraphAlignment
+		{
+			get => _endingParagraphAlignment;
+			set
+			{
+				if (_endingParagraphAlignment != value)
+				{
+					_endingParagraphAlignment = value;
+					InvalidateMeasure();
+				}
+			}
+		}
+
+		private bool _alignmentIncludesTrailingWhitespace;
+		internal bool AlignmentIncludesTrailingWhitespace
+		{
+			get => _alignmentIncludesTrailingWhitespace;
+			set
+			{
+				if (_alignmentIncludesTrailingWhitespace != value)
+				{
+					_alignmentIncludesTrailingWhitespace = value;
+					InvalidateMeasure();
+				}
+			}
+		}
+
+		private bool _ignoreTrailingCharacterSpacing;
+		internal bool IgnoreTrailingCharacterSpacing
+		{
+			get => _ignoreTrailingCharacterSpacing;
+			set
+			{
+				if (_ignoreTrailingCharacterSpacing != value)
+				{
+					_ignoreTrailingCharacterSpacing = value;
+					InvalidateMeasure();
+				}
+			}
+		}
+
 		internal event Action? DrawingFinished;
+
+		internal long TextLayoutVersion => _textLayoutVersion;
+
+		internal double TextLayoutWidth => _textLayoutWidth;
 
 		public TextBlock()
 		{
@@ -94,9 +156,24 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(SelectionFlyoutProperty, value);
 		}
 
-		internal TextBox? OwningTextBox { get; init; }
+		internal ITextBoxViewHost? OwningTextBox { get; init; }
 
 		internal bool IsSpellCheckEnabled { get; set; }
+
+		private float _defaultTabStop = 48;
+
+		internal float DefaultTabStop
+		{
+			get => _defaultTabStop;
+			set
+			{
+				if (!_defaultTabStop.Equals(value))
+				{
+					_defaultTabStop = value;
+					InvalidateMeasure();
+				}
+			}
+		}
 
 		private protected override void OnLoaded()
 		{
@@ -118,7 +195,14 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var padding = Padding;
 			var availableSizeWithoutPadding = availableSize.Subtract(padding).AtLeastZero();
-			ParsedText = ParseText(availableSizeWithoutPadding, out var desiredSize);
+			if (ParsedText is MathParsedText)
+			{
+				ParsedText = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
+			}
+			var parsedText = ParseText(availableSizeWithoutPadding, out var desiredSize);
+			ParsedText = parsedText;
+			_textLayoutWidth = availableSizeWithoutPadding.Width;
+			_textLayoutVersion++;
 
 			desiredSize = desiredSize.Add(padding);
 
@@ -141,25 +225,42 @@ namespace Microsoft.UI.Xaml.Controls
 			return desiredSize;
 		}
 
-		private UnicodeText ParseText(Size availableSizeWithoutPadding, out Size size)
+		private IParsedText ParseText(Size availableSizeWithoutPadding, out Size size)
 		{
 			var isTextBoxOwned = OwningTextBox is not null;
 			var adjustedTextAlignment = GetAdjustedTextAlignment();
-			var ret = new UnicodeText(
-				availableSizeWithoutPadding,
-				Inlines.TraversedTree.leafTree,
-				GetDefaultFontDetails(),
-				MaxLines,
-				(float)LineHeight,
-				LineStackingStrategy,
-				FlowDirection,
-				adjustedTextAlignment,
-				TextWrapping,
-				TextTrimming,
-				IsSpellCheckEnabled,
-				this,
-				isTextBoxOwned,
-				out size);
+			var inlines = Inlines.TraversedTree.leafTree;
+			var defaultFontDetails = GetDefaultFontDetails();
+			IParsedText ret = CustomTextLayout is { } customLayout
+				? customLayout.Create(
+					availableSizeWithoutPadding,
+					inlines,
+					defaultFontDetails,
+					this,
+					Foreground,
+					adjustedTextAlignment,
+					out size)
+				: new UnicodeText(
+					availableSizeWithoutPadding,
+					inlines,
+					defaultFontDetails,
+					MaxLines,
+					(float)LineHeight,
+					LineStackingStrategy,
+					FlowDirection,
+					adjustedTextAlignment,
+					TextWrapping,
+					TextTrimming,
+					IsSpellCheckEnabled,
+					this,
+					isTextBoxOwned,
+					DefaultTabStop,
+					EndingParagraphLayout,
+					EndingParagraphAlignment,
+					Foreground,
+					AlignmentIncludesTrailingWhitespace,
+					IgnoreTrailingCharacterSpacing,
+					out size);
 
 			if (isTextBoxOwned)
 			{
@@ -171,10 +272,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private TextAlignment? GetAdjustedTextAlignment() =>
-			(OwningTextBox as IDependencyObjectStoreProvider)?.Store
-			.GetCurrentHighestValuePrecedence(TextBox.TextAlignmentProperty) is DependencyPropertyValuePrecedences
-				.DefaultValue
-				? null
+			OwningTextBox is { } owner
+				? (owner.IsTextAlignmentSetToDefault ? null : TextAlignment)
 				: TextAlignment;
 
 		// the entire body of the text block is considered hit-testable
@@ -281,19 +380,21 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			session.Canvas.Save();
 			session.Canvas.Translate((float)Padding.Left, (float)Padding.Top);
-			var highligherters = _renderSelection ? TextHighlighters.Append(new TextHighlighter
-			{
-				Background = SelectionHighlightColor,
-				Foreground = DefaultBrushes.SelectedTextForegroundColor,
-				Ranges =
+			var highligherters = _renderSelection && SelectionHighlightColor.Color.A != 0
+				? TextHighlighters.Append(new TextHighlighter
 				{
-					new TextRange
+					Background = SelectionHighlightColor,
+					Foreground = DefaultBrushes.SelectedTextForegroundColor,
+					Ranges =
 					{
-						StartIndex = Math.Min(Selection.start, Selection.end),
-						Length = Math.Abs(Selection.start - Selection.end)
+						new TextRange
+						{
+							StartIndex = Math.Min(Selection.start, Selection.end),
+							Length = Math.Abs(Selection.start - Selection.end)
+						}
 					}
-				}
-			}) : TextHighlighters;
+				})
+				: TextHighlighters;
 			(int startIndex, int length)? compositionRange = null;
 			if (OwningTextBox is { IsComposing: true, CompositionUnderlineLength: > 0 } owningTextBox)
 			{

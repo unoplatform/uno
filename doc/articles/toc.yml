@@ -577,6 +577,8 @@
               href: features/progressring.md
             - name: RefreshContainer (Pull to Refresh)
               href: controls/RefreshContainer.md
+            - name: RichEditBox
+              href: controls/RichEditBox.md
             - name: ScrollViewer
               href: controls/ScrollViewer.md
             - name: SKCanvasElement

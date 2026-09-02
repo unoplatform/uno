@@ -22,7 +22,7 @@ namespace Uno.UI.Runtime.Skia;
 /// focus recovery, modal dialog lifecycle, and announcement debouncing.
 /// Platform-specific subclasses override abstract methods for native interop.
 /// </summary>
-internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPeerListener
+internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPeerListener, ITextEditAutomationPeerListener
 {
 	// Announcement debounce/throttle constants
 	private const int AnnouncementDebounceMs = 100;
@@ -132,6 +132,20 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		}
 
 		OnChildRemoved(parent, child);
+	}
+
+	internal void RouteTextControlStateChanged(UIElement element)
+	{
+		if (_isDisposed || !IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		OnTextControlStateChanged(element);
+	}
+
+	protected virtual void OnTextControlStateChanged(UIElement element)
+	{
 	}
 
 	// Hooks ScrollViewer / ScrollPresenter scroll events. Without this, scrolling a
@@ -385,16 +399,38 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 			case AutomationEvents.TextEditTextChanged:
 			case AutomationEvents.TextPatternOnTextChanged:
-				if (TryGetPeerOwner(peer, out var textElement) &&
-					peer.GetPattern(PatternInterface.Value) is IValueProvider textValueProvider)
+				if (TryGetPeerOwner(peer, out var textElement))
 				{
-					UpdateTextValue(textElement.Visual.Handle, textValueProvider.Value);
+					UpdateTextValueFromProvider(peer, textElement);
 				}
 				break;
 
 			case AutomationEvents.StructureChanged:
 				OnNativeStructureChanged();
 				break;
+		}
+	}
+
+	public virtual void NotifyTextEditTextChangedEvent(
+		AutomationPeer peer,
+		AutomationTextEditChangeType changeType,
+		System.Collections.Generic.IReadOnlyList<string> changedData)
+	{
+		if (!_isDisposed && IsAccessibilityEnabled && TryGetPeerOwner(peer, out var textElement))
+		{
+			UpdateTextValueFromProvider(peer, textElement);
+		}
+	}
+
+	private void UpdateTextValueFromProvider(AutomationPeer peer, UIElement element)
+	{
+		if (peer.GetPattern(PatternInterface.Value) is IValueProvider valueProvider)
+		{
+			UpdateTextValue(element.Visual.Handle, valueProvider.Value);
+		}
+		else if (peer.GetPattern(PatternInterface.Text) is ITextProvider textProvider)
+		{
+			UpdateTextValue(element.Visual.Handle, textProvider.DocumentRange.GetText(-1));
 		}
 	}
 
@@ -474,6 +510,11 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 				owner = parentElement;
 				return true;
 			}
+		}
+
+		if (peer.TryGetProviderOwner(out owner))
+		{
+			return true;
 		}
 
 		owner = null;
