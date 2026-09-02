@@ -413,6 +413,13 @@
 	<PropertyGroup Condition="'$(_Platform)' == 'tvos'">
 		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">tvossimulator-x64</RuntimeIdentifier>
 
+		<CodesignProvision>Uno Dev Samples</CodesignProvision>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(_Platform)' == 'tvos' AND '$(BuildForTestFlight)' == 'true'">
+		<CodesignKey>iPhone Distribution</CodesignKey>
+		<RuntimeIdentifier>tvos-arm64</RuntimeIdentifier>
+		<DefineConstants>$(DefineConstants);TESTFLIGHT</DefineConstants>
 	</PropertyGroup>
 
 	<!--
