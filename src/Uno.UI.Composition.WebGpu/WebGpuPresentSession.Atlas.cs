@@ -31,11 +31,10 @@ public sealed unsafe partial class WebGpuPresentSession
 		const int SS = WebGpuDevice.MaskSuperSample;
 		int sw = slot.W * SS, sh = slot.H * SS;
 
-		// 1) Rasterize the coverage SUPERSAMPLED and single-sampled. Supersampling rather than MSAA keeps the bake
-		// independent of the frame's sample count and gives 17 coverage levels instead of 5.
-		// Use the SAME surface + pipeline pairing RenderShadow uses. A hand-rolled single-sample attachment set
-		// rasterized geometry fine but never wrote STENCIL (verified: cover with Always and with Equal-0 both
-		// filled the whole slot), so stencil-then-cover only works here against the device's own configuration.
+		// Supersampled rather than MSAA: the bake stays independent of the frame's sample count and gets 17
+		// coverage levels instead of 5. It has to use the same surface + pipeline pairing as RenderShadow — a
+		// hand-rolled single-sample attachment rasterizes geometry but never writes stencil, so stencil-then-cover
+		// silently fills the whole slot.
 		var surf = new WebGpuRenderSurface(_d, sw, sh, _d.Pool);
 
 		var src = pf.FanHard ?? pf.FanDevice;
@@ -88,8 +87,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		}
 		wgpuRenderPassEncoderEnd(pass);
 
-		// 2) Box-filter it straight into the slot. Rendering INTO the atlas (viewport = slot) avoids both an MSAA
-		// resolve and a texture copy, which is two fewer things to get wrong.
+		// Filtering straight into the atlas (viewport = slot) avoids an MSAA resolve and a texture copy.
 		var dq = new float[]
 		{
 			-1f, -1f, 0f, 1f,

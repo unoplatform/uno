@@ -21,17 +21,12 @@ namespace Uno.UI.Composition.WebGpu;
 public sealed unsafe partial class WebGpuPresentSession
 {
 	/// <summary>
-	/// Collapses the maximal run of NON-ZERO path fills starting at <paramref name="index"/> that share colour and
-	/// clip — a text run's glyphs — into ONE stencil and ONE cover over their union bbox, and appends a single op.
-	/// This is the coalescing BuildCoalesced does for arena recordings, applied to the two replay strategies that
-	/// build their ops themselves. Without it every recording that ALSO contains a rect — which is every real list
-	/// row, grid cell or card, since they all have a background — paid two draws and two pipeline switches per glyph.
+	/// Collapses the maximal run of non-zero path fills sharing colour and clip — a text run's glyphs — into one
+	/// stencil and one cover over their union bbox. Without it, any recording that also contains a rect (every list
+	/// row, grid cell and card, since they all have a background) paid two draws per glyph.
 	/// </summary>
-	/// <param name="slotBits">The recording's xform-table slot, bit-cast to float, carried by every vertex.</param>
-	/// <returns>
-	/// False when the command at <paramref name="index"/> is not an eligible fill, leaving it for the caller.
-	/// Otherwise the run has been emitted and <paramref name="index"/> is left on its last command.
-	/// </returns>
+	/// <returns>False when the command at <paramref name="index"/> is not an eligible fill; otherwise the run is
+	/// emitted and <paramref name="index"/> is left on its last command.</returns>
 	private bool TryEmitGlyphRun(
 		List<WebGpuCommand> cmds,
 		ref int index,
@@ -496,17 +491,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		return;
 	}
 
-	/// <summary>
-	/// Emits one nested recording's draw ops. Three strategies, picked by what the recording holds and whether its
-	/// transform moved: a TABLE FRAME (solids re-emitted into the shared per-pass buffers, every vertex placed by
-	/// the xform table), an ARENA entry (geometry baked once in identity space and re-stamped on a move), or a
-	/// plain CACHED entry (rebuilt whenever its transform changes).
-	/// </summary>
-	/// <summary>
-	/// Which replay strategy each nested recording took. Three strategies of ~150 lines each compete here, and
-	/// nothing else reports which one is actually carrying a scene: the plain cached path, for one, is a cold
-	/// fallback that no perf sample reaches.
-	/// </summary>
+	/// <summary>Which replay strategy each nested recording took (UNO_WEBGPU_STATS).</summary>
 	internal static int StatStratReappend, StatStratArena, StatStratCached, StatStratTableFrame;
 
 	private void EmitReplayRef(ReplayRefCmd rr, List<DrawOp> ops, HashSet<List<WebGpuCommand>> frameEmitted)

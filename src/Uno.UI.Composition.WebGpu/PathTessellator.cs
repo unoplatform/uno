@@ -7,22 +7,18 @@ using System.Numerics;
 namespace Uno.UI.Composition.WebGpu;
 
 /// <summary>
-/// Turns a flattened path into a NON-OVERLAPPING triangulation plus an analytic anti-aliasing ring, so a fill
-/// can be drawn in one pass at ONE sample per pixel instead of relying on MSAA.
+/// Turns a flattened path into a non-overlapping triangulation plus an analytic anti-aliasing ring, so a fill draws
+/// in one pass at ONE sample per pixel instead of relying on MSAA.
+/// <para>
+/// The alternative, stencil-then-cover with a multisampled attachment, costs 4x the fill everywhere including the
+/// interior that needs none. Here the interior is inset half a pixel and filled at coverage 1, and a one-pixel ring
+/// straddling the true edge ramps 1 -> 0, riding the existing per-vertex alpha.
+/// </para>
+/// <para>
+/// <see cref="TryTriangulate"/>'s topology is affine-invariant and so cacheable across frames;
+/// <see cref="BuildGeometry"/> re-runs per frame and is O(n).
+/// </para>
 /// </summary>
-/// <remarks>
-/// The alternative is stencil-then-cover: rasterize a fan into the stencil, then blend a full bounding-box quad
-/// through it — ~2x the bounding box of a shape whose ink may be a third of it, with edges antialiased only by
-/// the multisampled attachment, which costs 4x the fill everywhere including the interior that needs none. Skia
-/// computes coverage per fragment and never asks for MSAA (Uno hands Ganesh sampleCount 0). This reproduces that
-/// geometrically: the interior is inset half a pixel and filled at coverage 1, and a one-pixel ring straddling
-/// the true edge ramps 1 -> 0. Coverage rides the existing per-vertex alpha, so no shader change is needed.
-///
-/// Split of work: <see cref="TryTriangulate"/> produces TOPOLOGY (triangle indices over the concatenated
-/// contour points), which is AFFINE-INVARIANT and therefore cacheable across frames even while a spin or
-/// scroll changes every device coordinate. <see cref="BuildGeometry"/> then runs per frame and is O(n): it
-/// offsets the current device-space points along their bisectors and emits the triangles.
-/// </remarks>
 internal static class PathTessellator
 {
 	/// <summary>
@@ -248,7 +244,6 @@ internal static class PathTessellator
 			at += n;
 		}
 
-		// 1) Interior at full coverage, using the cached topology over the INSET positions.
 		for (var t = 0; t + 2 < indices.Length; t += 3)
 		{
 			for (var k = 0; k < 3; k++)
@@ -260,8 +255,7 @@ internal static class PathTessellator
 			}
 		}
 
-		// 2) One-pixel ring per true edge: inset side fully covered, outset side empty. Skipped entirely when the
-		// attachment is multisampled — the ring would be zero-width there, i.e. pure waste.
+		// The ring is zero-width on a multisampled attachment, so it would be pure waste there.
 		if (aaHalf <= 0) { return verts.Count > 0; }
 		at = 0;
 		for (var c = 0; c < contours.Count; c++)
