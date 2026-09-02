@@ -14,7 +14,6 @@ using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.System.Ole;
 using Windows.Win32.UI.Shell;
-using Buffer = System.Buffer;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -73,36 +72,7 @@ internal partial class Win32ClipboardExtension
 				return Task.FromException<object>(new InvalidOperationException($"{nameof(PInvoke.GlobalSize)} returned {memSize}: {Win32Helper.GetErrorMessage()}"));
 			}
 
-			var srcBitmapInfo = (BITMAPINFO*)dib;
-
-			// https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader#color-tables
-			int colorTableSize = srcBitmapInfo->bmiHeader.biCompression switch
-			{
-				// BI_RGB
-				0 when srcBitmapInfo->bmiHeader.biBitCount <= 8 => Marshal.SizeOf<RGBQUAD>() * (srcBitmapInfo->bmiHeader.biClrUsed == 0 ? 1 << srcBitmapInfo->bmiHeader.biBitCount : (int)srcBitmapInfo->bmiHeader.biClrUsed),
-				0 => 0,
-				// BI_BITFIELDS
-				3 => 3 * Marshal.SizeOf<uint>(),
-				// FOURCC
-				_ => Marshal.SizeOf<RGBQUAD>() * (int)srcBitmapInfo->bmiHeader.biClrUsed
-			};
-
-			BITMAPFILEHEADER bitmapfileheader = new BITMAPFILEHEADER
-			{
-				bfType = /* BM */ 0x4d42,
-				bfSize = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + memSize),
-				bfOffBits = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + Marshal.SizeOf<BITMAPINFOHEADER>() + colorTableSize)
-			};
-
-			var bmpSize = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + memSize);
-			var arr = new byte[bmpSize];
-			fixed (byte* bmp = arr)
-			{
-				Buffer.MemoryCopy(&bitmapfileheader, bmp, bmpSize, Marshal.SizeOf<BITMAPFILEHEADER>());
-				Buffer.MemoryCopy(dib, bmp + Marshal.SizeOf<BITMAPFILEHEADER>(), bmpSize - Marshal.SizeOf<BITMAPFILEHEADER>(), bmpSize - Marshal.SizeOf<BITMAPFILEHEADER>());
-			}
-
-			return Task.FromResult<object>(RandomAccessStreamReference.CreateFromStream(new MemoryStream(arr).AsRandomAccessStream()));
+			return Task.FromResult<object>(RandomAccessStreamReference.CreateFromStream(new MemoryStream(ConvertDibToBmp(dib, memSize)).AsRandomAccessStream()));
 		});
 	}
 	internal static unsafe List<IStorageItem>? GetFileDropList(HGLOBAL handle)
