@@ -526,6 +526,19 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
     alongside it. That only ever worked because it was an interface, and WinUI never allowed
     it. Such a type has to be reworked to derive from `DependencyObject` (or a type that does).
 
+- **`UserControl` derives from `Control`, not `ContentControl`.** WinUI's hierarchy is
+  `Control → UserControl → Page`; Uno inserted an extra `ContentControl` level. That level is
+  gone, so `is ContentControl` is no longer `true` for a `UserControl` or a `Page`, and the
+  `ContentControl`-only surface they used to inherit — `ContentTemplate`,
+  `ContentTemplateSelector`, `ContentTransitions` — is no longer available on them. WinUI's
+  `UserControl` never had it.
+
+  `Content` survives but is **retyped from `object` to `UIElement`**, as in WinUI. Assigning a
+  non-`UIElement` (a view model, a string) used to work through the `ContentControl` template
+  machinery and is now a compile error; put the value on a child element's property, or bind a
+  `ContentControl` you place inside the `UserControl` yourself. XAML that nests a single element
+  inside a `UserControl` — the overwhelmingly common case — is unaffected.
+
 - **`MediaPlayerPresenter`** now derives directly from **`FrameworkElement`** (matching
   WinUI) instead of `Border`, removing the extra `Border` level. The `Border`-only surface
   it used to expose — `Child`, `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`,
