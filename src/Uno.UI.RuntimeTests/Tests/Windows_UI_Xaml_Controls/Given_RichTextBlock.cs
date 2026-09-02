@@ -1597,5 +1597,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(3, SUT.MaxLines);
 			Assert.AreEqual(24d, SUT.LineHeight);
 		}
+
+		[TestMethod]
+		public void When_Negative_Block_Margin()
+		{
+			// CBlock::ValidateMargin rejects a negative margin with E_INVALIDARG.
+			var paragraph = new Paragraph();
+
+			Assert.ThrowsExactly<ArgumentException>(
+				() => paragraph.Margin = new Thickness(-1, 0, 0, 0),
+				"A negative Block.Margin should be rejected");
+
+			paragraph.Margin = new Thickness(4, 8, 4, 8);
+			Assert.AreEqual(new Thickness(4, 8, 4, 8), paragraph.Margin, "A non-negative margin stays valid");
+		}
 	}
 }
