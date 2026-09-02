@@ -344,6 +344,36 @@ assembly it has always lived in is itself renamed `Uno` → `Uno.WinRT` in 7.0.
   The `Uno.UI.FluentTheme.v1` assembly is removed along with these types, and
   `Uno.UI.FluentTheme.v2` is merged into `Uno.UI.FluentTheme` — see **Packages** above.
 
+- **`Window` event handler delegates:** `Microsoft.UI.Xaml.WindowActivatedEventHandler`,
+  `WindowSizeChangedEventHandler`, `WindowVisibilityChangedEventHandler`, and
+  `WindowClosedEventHandler`. None of them exists in WinUI, which declares every `Window` event
+  as `TypedEventHandler<object, TArgs>` — `Activated`, `SizeChanged`, and `VisibilityChanged`
+  now do the same, and `Closed` already did, which left `WindowClosedEventHandler`
+  unreferenced. The handler shape is unchanged for `Activated` and `SizeChanged`, so lambdas,
+  method groups, and `+=`/`-=` keep compiling; only code that named the delegate type
+  explicitly breaks:
+
+  ```diff
+  - window.SizeChanged += new WindowSizeChangedEventHandler(OnSizeChanged);
+  + window.SizeChanged += OnSizeChanged;
+  ```
+
+- **`Window.VisibilityChanged` now carries `Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs`**
+  instead of `Windows.UI.Core.VisibilityChangedEventArgs`, matching WinUI. A handler declared
+  with the old argument type no longer binds, so update its signature. Both members carry the
+  same meaning on the new type — `Visible` is get-only and `Handled` is get/set:
+
+  ```diff
+  - private void OnVisibilityChanged(object sender, VisibilityChangedEventArgs e)
+  + private void OnVisibilityChanged(object sender, WindowVisibilityChangedEventArgs e)
+    {
+        VisibilityLabel.Text = e.Visible ? "Visible" : "Hidden";
+    }
+  ```
+
+  `Windows.UI.Core.VisibilityChangedEventArgs` itself is **not** removed — it is still the
+  argument type of the legacy `CoreWindow.VisibilityChanged` event.
+
 ### `FeatureConfiguration` flags removed
 
 The native-only flags below no longer exist; delete the calls — behavior is the unified
@@ -499,6 +529,84 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
   `IsSpellCheckEnabled` also stops a password box spell-checking its own masked text, which
   removes the squiggly underline it used to draw.
 
+### WinRT projection alignment (WinUI parity)
+
+A few WinRT members were projected differently by Uno than by WinUI's own C# projection. 7.0
+aligns them. Most call sites stay source-compatible, but the underlying signatures change, so
+recompile against 7.0 rather than swapping assemblies in place.
+
+- **`Thickness` and `CornerRadius` members are properties, not fields.** `Thickness.Left`,
+  `Top`, `Right`, `Bottom` and `CornerRadius.TopLeft`, `TopRight`, `BottomRight`, `BottomLeft`
+  are `{ get; set; }` properties, as they are in WinUI. Reading and assigning them is
+  unchanged; what no longer compiles is passing one by reference:
+
+  ```diff
+  - Normalize(ref thickness.Left);
+  + thickness.Left = Normalize(thickness.Left);
+  ```
+
+  The same applies to `Uno.UI.Composition.Thickness` and `Uno.UI.Composition.CornerRadius`.
+
+- **`GridLength.Value` and `GridLength.GridUnitType` are read-only properties.** WinUI exposes
+  both as get-only, so a `GridLength` is built entirely through its constructor. Code that
+  mutated a `default` instance has to construct one instead:
+
+  ```diff
+  - GridLength star = default;
+  - star.GridUnitType = GridUnitType.Star;
+  - star.Value = 1.0;
+  + GridLength star = new(1.0, GridUnitType.Star);
+  ```
+
+- **`GridLength`'s second constructor parameter is renamed to `type`.** WinUI's signature is
+  `GridLength(double value, GridUnitType type)`; Uno called it `gridUnitType`. Only named
+  arguments are affected:
+
+  ```diff
+  - new GridLength(1.0, gridUnitType: GridUnitType.Star)
+  + new GridLength(1.0, type: GridUnitType.Star)
+  ```
+
+- **`Duration.TimeSpan` is a read-only property.** WinUI exposes it as get-only, so a
+  `Duration` carrying a time span comes from the constructor. Assigning the old field left
+  the duration in its `Automatic` default state, so `HasTimeSpan` stayed `false`; the
+  constructor sets both:
+
+  ```diff
+  - Duration d = default;
+  - d.TimeSpan = TimeSpan.FromSeconds(2);
+  + Duration d = new(TimeSpan.FromSeconds(2));
+  ```
+
+- **`Duration.Type` is no longer public.** WinUI's `Duration` exposes no `Type` member at
+  all; the state is reached through `HasTimeSpan` and comparison against `Duration.Automatic`
+  and `Duration.Forever`. The `DurationType` enum itself stays public, as it is in WinUI:
+
+  ```diff
+  - if (d.Type == DurationType.TimeSpan) { }
+  + if (d.HasTimeSpan) { }
+
+  - if (d.Type == DurationType.Forever) { }
+  + if (d == Duration.Forever) { }
+  ```
+
+- **`DataTemplate.LoadContent()` returns `DependencyObject`.** WinUI's return type is
+  `DependencyObject`, not `UIElement`. Pattern-matching call sites (`is FrameworkElement fe`,
+  `as UIElement`) are unaffected; an explicitly typed local needs a cast:
+
+  ```diff
+  - UIElement root = template.LoadContent();
+  + UIElement root = (UIElement)template.LoadContent();
+  ```
+
+- **`Windows.Foundation.GuidHelper.Equals` takes `in Guid` instead of `ref Guid`.** `in`
+  arguments are passed without a keyword, so drop `ref` at the call site:
+
+  ```diff
+  - GuidHelper.Equals(ref first, ref second);
+  + GuidHelper.Equals(first, second);
+  ```
+
 ### XAML changes
 
 - **The WPF-style `clr-namespace:` xmlns form is no longer accepted.** WinUI only supports
@@ -652,7 +760,9 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
    `AppBuilder` delegate to the base constructor.
 11. Rename `Uno.UI.Toolkit` usings and `xmlns` declarations to their new `Uno.UI.*` namespaces.
 12. Update assembly-qualified type names that reach MRT Core (`Microsoft.Windows.ApplicationModel.Resources.*`) — the assembly is now `Uno.WinRT`, not `Uno.UI`.
-13. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+13. Retype `Window.VisibilityChanged` handlers to `WindowVisibilityChangedEventArgs`, and drop
+   any explicit `Window*EventHandler` delegate construction.
+14. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)
