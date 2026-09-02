@@ -8,10 +8,6 @@ namespace XamlGenerationTests.Shared
 	{
 		public PropertiesTest()
 		{
-#elif __APPLE_UIKIT__
-			iOSUILabel.ToString();
-#endif
-
 #if __ANDROID__
 			AndroidTextView.ToString();
 #endif

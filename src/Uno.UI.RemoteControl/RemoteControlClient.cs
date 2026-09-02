@@ -1296,11 +1296,8 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	{
 #if __WASM__
 		return ["127.0.0.1", "[::1]"];
-#elif __MACCATALYST__
-		// Mac Catalyst runs natively on macOS — loopback always reaches the host machine.
-		return ["127.0.0.1", "[::1]"];
 #elif __IOS__ || __TVOS__
-		// Canonical source: Uno.DeviceHelper.IsSimulator in Uno.UWP (internal, not accessible from here).
+		// Canonical source: Uno.DeviceHelper.IsSimulator in Uno.dll (internal, not accessible from here).
 		if (ObjCRuntime.Runtime.Arch == ObjCRuntime.Arch.SIMULATOR)
 		{
 			return ["127.0.0.1", "[::1]"];
@@ -1330,7 +1327,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 
 		return isEmulator ? ["10.0.2.2", "127.0.0.1"] : Array.Empty<string>();
 #else
-		// Skia desktop (Windows, Linux, macOS) and Reference build.
+		// Skia desktop (Windows, Linux, macOS).
 		return ["127.0.0.1", "[::1]"];
 #endif
 	}

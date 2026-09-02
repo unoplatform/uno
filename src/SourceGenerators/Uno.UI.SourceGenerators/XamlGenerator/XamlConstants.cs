@@ -20,8 +20,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public const string BaseXamlNamespace = "Microsoft.UI.Xaml";
 		public const string UnoXamlNamespace = "Microsoft.UI.Xaml";
 
-		public const int MaxFluentResourcesVersion = 2;
-
 		public const string UnknownContent = "_UnknownContent";
 		public const string PositionalParameters = "_PositionalParameters";
 

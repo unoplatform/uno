@@ -98,9 +98,9 @@ partial class UIElement
 			if (!gotPoint)
 			{
 #if __SKIA__
-				if (sender is TextBox textBox)
+				if (sender is ITextBoxHost { Core: { } core })
 				{
-					var textPosition = textBox.GetContextMenuShowPosition();
+					var textPosition = core.GetContextMenuShowPosition();
 					if (textPosition.HasValue)
 					{
 						point = textPosition.Value;

@@ -189,14 +189,13 @@ public partial class ClientHotReloadProcessor : IClientProcessor, IDisposable
 		// The platform MUST be probed at runtime, not from compile-time symbols: the skia flavor
 		// of this assembly is compiled for the plain `netX.0` TFM yet serves every skia-rendering
 		// head — the uno-runtime asset selection swaps it in for `netX.0-android`, `netX.0-ios`,
-		// etc. heads too, where `__ANDROID__`-style symbols were never defined. Mac Catalyst is
-		// tested before iOS as it also reports IsIOS(). On desktop no check matches, and the
-		// flavor cannot tell a `netX.0-desktop` head from a plain `netX.0` one, so it reports the
-		// `skia` pseudo-platform which the server treats as matching either spelling.
+		// etc. heads too, where `__ANDROID__`-style symbols were never defined. On desktop no
+		// check matches, and the flavor cannot tell a `netX.0-desktop` head from a plain
+		// `netX.0` one, so it reports the `skia` pseudo-platform which the server treats as
+		// matching either spelling.
 		var platform =
 			OperatingSystem.IsAndroid() ? "android"
 			: OperatingSystem.IsTvOS() ? "tvos"
-			: OperatingSystem.IsMacCatalyst() ? "maccatalyst"
 			: OperatingSystem.IsIOS() ? "ios"
 			: OperatingSystem.IsBrowser() ? "browserwasm"
 			: "skia";

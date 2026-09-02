@@ -26,9 +26,14 @@ namespace Windows.UI.Input
 		// Note: this is also responsible to handle "Drag manipulations"
 		internal partial class Manipulation
 		{
-			internal static readonly Thresholds StartTouch = new() { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
-			internal static readonly Thresholds StartPen = new() { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
-			internal static readonly Thresholds StartMouse = new() { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
+			// Start thresholds ("dead-zone"): movement required to promote a press to a manipulation.
+			// MUX configures none of these — it delegates recognition to the Win32 InteractionContext
+			// (see GestureConfigurationBuilder.cpp), so these are Uno values, not ported ones.
+			// Mouse uses the Win32 drag threshold (SM_CXDRAG, default 4px); touch/pen use a slop close to
+			// the ~2.7mm at typical DPI that Windows, iOS and Android all land near.
+			internal static readonly Thresholds StartTouch = new() { TranslateX = 10, TranslateY = 10, Rotate = 5, Expansion = 10 };
+			internal static readonly Thresholds StartPen = new() { TranslateX = 10, TranslateY = 10, Rotate = 5, Expansion = 10 };
+			internal static readonly Thresholds StartMouse = new() { TranslateX = 4, TranslateY = 4, Rotate = 1, Expansion = 4 };
 
 			internal static readonly Thresholds DeltaTouch = new() { TranslateX = 2, TranslateY = 2, Rotate = .1, Expansion = 1 };
 			internal static readonly Thresholds DeltaPen = new() { TranslateX = 2, TranslateY = 2, Rotate = .1, Expansion = 1 };
@@ -105,7 +110,7 @@ namespace Windows.UI.Input
 			/// </summary>
 			public bool IsCoasting => _status is ManipulationStatus.Inertia;
 
-			internal static void AddPointer(GestureRecognizer recognizer, PointerPoint pointer)
+			internal static void AddPointer(GestureRecognizer recognizer, global::Microsoft.UI.Input.PointerPoint pointer)
 			{
 				var current = recognizer._manipulation;
 				if (current != null)
@@ -133,7 +138,7 @@ namespace Windows.UI.Input
 				}
 			}
 
-			private Manipulation(GestureRecognizer recognizer, PointerPoint pointer1)
+			private Manipulation(GestureRecognizer recognizer, global::Microsoft.UI.Input.PointerPoint pointer1)
 			{
 				_recognizer = recognizer;
 				_deviceType = (PointerDeviceType)pointer1.PointerDevice.PointerDeviceType;
@@ -199,7 +204,7 @@ namespace Windows.UI.Input
 					&& _deviceType == (PointerDeviceType)pointer.Type
 					&& _origins.ContainsPointer(pointer.Id);
 
-			private bool TryAdd(PointerPoint point)
+			private bool TryAdd(global::Microsoft.UI.Input.PointerPoint point)
 			{
 				if (point.Pointer == _origins.Pointer1.Pointer)
 				{
@@ -234,7 +239,7 @@ namespace Windows.UI.Input
 				return true;
 			}
 
-			public void Update(IList<PointerPoint> updated)
+			public void Update(IList<global::Microsoft.UI.Input.PointerPoint> updated)
 			{
 				if (_status >= ManipulationStatus.Inertia)
 				{
@@ -257,7 +262,7 @@ namespace Windows.UI.Input
 				}
 			}
 
-			public void Remove(PointerPoint removed)
+			public void Remove(global::Microsoft.UI.Input.PointerPoint removed)
 			{
 				if (_status >= ManipulationStatus.Inertia)
 				{
@@ -377,22 +382,18 @@ namespace Windows.UI.Input
 						_status = ManipulationStatus.Started;
 						_contacts.onStart = _contacts.current;
 
-						// Note: We first start with an empty delta, then invoke Update.
-						//		 This is required to patch a common issue in applications that are using only the
-						//		 ManipulationUpdated.Delta property to track the pointer (like the WCT GridSplitter).
-						//		 UWP seems to do that only for Touch and Pen (i.e. the Delta is not empty on start with a mouse),
-						//		 but there is no side effect to use the same behavior for all pointer types.
-						_recognizer.ManipulationStarted?.Invoke(
-							_recognizer,
-							new ManipulationStartedEventArgs(_currents.Identifiers, _origins.State.Center, ManipulationDelta.Empty, _contacts.onStart));
-
+						// Railing must be applied before the Cumulative is reported below.
 						ApplyRailing(ref changeSet);
 
-						CommitChanges(changeSet);
-						Debug.Assert(changeSet.Delta == changeSet.Cumulative);
-						_recognizer.ManipulationUpdated?.Invoke(
+						// The distance travelled to reach the recognition point is reported only through the
+						// Cumulative of ManipulationStarted, then committed without raising ManipulationUpdated:
+						// it must not be recovered as a delta (#20473). Matches MUX GestureOutputMapper::
+						// OnManipulationStarted, which fills m_cumulative and never m_delta.
+						_recognizer.ManipulationStarted?.Invoke(
 							_recognizer,
-							new ManipulationUpdatedEventArgs(this, _currents.Identifiers, changeSet.Position, changeSet.Delta, changeSet.Cumulative, ManipulationVelocities.Empty, isInertial: false, _contacts.onStart, _contacts.current));
+							new ManipulationStartedEventArgs(_currents.Identifiers, _origins.State.Center, changeSet.Cumulative, _contacts.onStart));
+
+						CommitChanges(changeSet);
 						break;
 
 					case ManipulationStatus.Started when pointerRemoved && InertiaProcessor.TryStart(this, ref _inertia, changeSet):
@@ -686,7 +687,7 @@ namespace Windows.UI.Input
 				}
 
 				// Note: We use the TapRange and not the manipulation's start threshold as, for mouse and pen,
-				//		 those thresholds are lower than a Tap (and actually only 1px), which does not math the UWP behavior.
+				//		 those thresholds are lower than a Tap, which does not match the UWP behavior.
 				var down = _origins.Pointer1;
 				var current = _currents.Pointer1;
 				var isOutOfRange = IsOutOfTapRange(down.Position, current.Position);
@@ -734,11 +735,11 @@ namespace Windows.UI.Input
 			}
 
 			#region Patch pointer events
-			private void PatchSuspiciousRemovedPointer(ref PointerPoint removed)
+			private void PatchSuspiciousRemovedPointer(ref global::Microsoft.UI.Input.PointerPoint removed)
 			{
 				if (OperatingSystem.IsAndroid() && _recognizer.PatchCases.HasFlag(Uno.UI.Input.GestureRecognizerSuspiciousCases.AndroidMotionUpAtInvalidLocation))
 				{
-					PointerPoint previous;
+					global::Microsoft.UI.Input.PointerPoint previous;
 					if (_currents.Pointer1.Pointer == removed.Pointer)
 					{
 						previous = _currents.Pointer1;
@@ -930,11 +931,11 @@ namespace Windows.UI.Input
 			);
 
 			// WARNING: This struct is ** MUTABLE **
-			private struct Points(PointerPoint pointer1)
+			private struct Points(global::Microsoft.UI.Input.PointerPoint pointer1)
 			{
-				public PointerPoint Pointer1 = pointer1;
+				public global::Microsoft.UI.Input.PointerPoint Pointer1 = pointer1;
 
-				public PointerPoint? Pointer2 = default;
+				public global::Microsoft.UI.Input.PointerPoint? Pointer2 = default;
 
 				public PointsState State { get; private set; } = new(
 					pointer1.Timestamp,
@@ -953,14 +954,14 @@ namespace Windows.UI.Input
 					=> Pointer1.PointerId == pointerId
 					|| (Pointer2 is not null && Pointer2.PointerId == pointerId);
 
-				public void SetPointer2(PointerPoint point)
+				public void SetPointer2(global::Microsoft.UI.Input.PointerPoint point)
 				{
 					Pointer2 = point;
 					Identifiers = [Pointer1.Pointer, Pointer2.Pointer];
 					State = ComputeState(point.Timestamp);
 				}
 
-				public bool TryUpdate(PointerPoint point)
+				public bool TryUpdate(global::Microsoft.UI.Input.PointerPoint point)
 				{
 					if (_stateHistory.IsDefault)
 					{
@@ -1019,7 +1020,7 @@ namespace Windows.UI.Input
 					}
 				}
 
-				public static implicit operator Points(PointerPoint pointer1)
+				public static implicit operator Points(global::Microsoft.UI.Input.PointerPoint pointer1)
 					=> new(pointer1);
 			}
 		}

@@ -7,13 +7,13 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
+using Uno.UI.DevTools.Input;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Toolkit;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.Xaml;
 using Windows.UI;
 using Windows.UI.Input.Preview.Injection;
 
-namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Toolkit;
+namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Extras;
 
 [TestClass]
 [RunsOnUIThread]

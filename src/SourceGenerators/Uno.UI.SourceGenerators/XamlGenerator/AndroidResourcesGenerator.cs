@@ -45,7 +45,7 @@ public partial class AndroidResourcesGenerator : ISourceGenerator
 							.GetTypeMembers("Drawable")
 							.SingleOrDefault();
 
-						// Support for net9.0+ resource constants
+						// Support for net10.0+ resource constants
 						drawables ??= context.Compilation?
 							.GetTypeByMetadataName("_Microsoft.Android.Resource.Designer.ResourceConstant")
 							?.GetTypeMembers("Drawable")

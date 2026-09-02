@@ -612,12 +612,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (_isUiAutomationMappingEnabled)
 				{
 					w.AppendLineIndented("global::Uno.UI.FrameworkElementHelper.IsUiAutomationMappingEnabled = true;");
-
-					if (_isWasm)
-					{
-						// When automation mapping is enabled, remove the element ID from the ToString so test screenshots stay the same.
-						w.AppendLineIndented("global::Uno.UI.FeatureConfiguration.UIElement.RenderToStringWithId = false;");
-					}
 				}
 
 				AttachUnhandledExceptionHandler();
@@ -1039,7 +1033,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									writer.AppendLineIndented($"global::System.Object {CurrentResourceOwner};");
 									writer.AppendLineIndented($"{kvp.Value.ReturnType} __rootInstance = null;");
 
-									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner}, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)"))
+									using (writer.BlockInvariant($"public {kvp.Value.ReturnType} Build(object {CurrentResourceOwner}, global::Uno.UI.TemplateMaterializationSettings __settings)"))
 									{
 										writer.AppendLineIndented($"var __that = this;");
 										writer.AppendLineIndented($"this.{CurrentResourceOwner} = {CurrentResourceOwner};");
@@ -1624,7 +1618,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 											writer.AppendLineIndented(";");
 										}
 
-										writer.AppendLineInvariantIndented("{0}.Source = new global::System.Uri(\"{1}{2}\");", dictVarId, XamlFilePathHelper.LocalResourcePrefix, url);
+										writer.AppendLineInvariantIndented("{0}.Source = new global::System.Uri(\"{1}{2}\");", dictVarId, XamlFilePathHelper.MsResourceFilesPrefix, url);
 										writer.AppendLineInvariantIndented("{0}.CreationComplete();", dictVarId);
 									}
 
@@ -1673,7 +1667,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var key = GetDictionaryResourceKey(resource);
 
-				if (key == null || IsNativeStyle(resource))
+				if (key == null)
 				{
 					continue;
 				}
@@ -1697,7 +1691,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var key = GetDictionaryResourceKey(resource);
 
-				if (key == null || IsNativeStyle(resource))
+				if (key == null)
 				{
 					continue;
 				}
@@ -1848,14 +1842,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var implicitKey = GetImplicitDictionaryResourceKey(style);
 					if (SymbolEqualityComparer.Default.Equals(targetType.ContainingAssembly, _metadataHelper.Compilation.Assembly))
 					{
-						var isNativeStyle = IsNativeStyle(style);
-
 						using (TrySingleLineIfForLinkerHint(writer, style))
 						{
-							writer.AppendLineInvariantIndented("global::Microsoft.UI.Xaml.Style.RegisterDefaultStyleForType({0}, {1}, /*isNativeStyle:*/{2});",
+							writer.AppendLineInvariantIndented("global::Microsoft.UI.Xaml.Style.RegisterDefaultStyleForType({0}, {1});",
 										implicitKey,
-										SingletonInstanceAccess,
-										isNativeStyle.ToString().ToLowerInvariant()
+										SingletonInstanceAccess
 									);
 						}
 					}
@@ -1868,13 +1859,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			return true;
 		}
-
-		/// <summary>
-		/// Determines if the provided object is setting the "IsNativeStyle" property, used in
-		/// conjuction with "FeatureConfiguration.Style.UseUWPDefaultStyles"
-		/// </summary>
-		private bool IsNativeStyle(XamlObjectDefinition style)
-			=> string.Equals(style.Members.FirstOrDefault(m => m.Member.Name == "IsNativeStyle")?.Value as string, "True", StringComparison.OrdinalIgnoreCase);
 
 		/// <summary>
 		/// Initialize a new ResourceDictionary instance and populate its items and properties.
@@ -2045,7 +2029,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return false;
 				}
 
-				if (type.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value)))
+				if (IsType(type, Generation.DependencyObjectSymbol.Value))
 				{
 					return true;
 				}
@@ -3012,7 +2996,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var symbol = GetType(styleTargetType);
 
-					if (symbol.AllInterfaces.Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value)))
+					if (IsType(symbol, Generation.DependencyObjectSymbol.Value))
 					{
 						var safeTypeName = LinkerHintsHelpers.GetPropertyAvailableName(symbol.GetFullMetadataName());
 						var linkerHintClass = LinkerHintsHelpers.GetLinkerHintsClassName(_defaultNamespace);
@@ -3351,7 +3335,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					throw new XamlGenerationException($"The type '{objectDefinition.Type}' could not be found", objectDefinition);
 				}
 
-				using (var writer = CreateApplyBlock(outerwriter, objectDefinition))
+				var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(objectDefinition).isInside;
+				// Template members get their templated parent from the materializing template's settings, so the
+				// apply block needs access to it. Computed before the block so it can shape the callback signature.
+				var needsTemplatedParent = isInsideFrameworkTemplate
+					&& IsType(objectDefinitionType, Generation.DependencyObjectSymbol.Value);
+
+				using (var writer = CreateApplyBlock(outerwriter, objectDefinition, passTemplateSettings: needsTemplatedParent))
 				{
 					XamlMemberDefinition? uidMember = null;
 					XamlMemberDefinition? nameMember = null;
@@ -3373,15 +3363,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						writer.AppendIndented(GenerateRootPhases(objectDefinition, writer.AppliedParameterName) ?? "");
 					}
 
-					var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(objectDefinition).isInside;
-#if USE_NEW_TP_CODEGEN
-					var isDependencyObject = IsType(objectDefinitionType, Generation.DependencyObjectSymbol.Value);
-					if (isInsideFrameworkTemplate && isDependencyObject)
+					if (needsTemplatedParent)
 					{
-						writer.AppendLineIndented($"{closureName}.SetTemplatedParent(__settings?.TemplatedParent);");
-						writer.AppendLineIndented($"__settings?.TemplateMemberCreatedCallback?.Invoke({closureName});");
+						writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated({writer.AppliedParameterName}, __settings);");
 					}
-#endif
 
 					componentDefinition = CurrentScope.Components.FirstOrDefault(x => x.XamlObject == objectDefinition);
 					if (componentDefinition is { } || // element can also be register for component by a descendant DO as its resource provider
@@ -4197,10 +4182,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			);
 		}
 
-		private XamlLazyApplyBlockIIndentedStringBuilder CreateApplyBlock(IIndentedStringBuilder writer, XamlObjectDefinition appliedObject)
-			=> CreateApplyBlock(writer, appliedObject, FindType(appliedObject.Type));
+		private XamlLazyApplyBlockIIndentedStringBuilder CreateApplyBlock(IIndentedStringBuilder writer, XamlObjectDefinition appliedObject, bool passTemplateSettings = false)
+			=> CreateApplyBlock(writer, appliedObject, FindType(appliedObject.Type), passTemplateSettings);
 
-		private XamlLazyApplyBlockIIndentedStringBuilder CreateApplyBlock(IIndentedStringBuilder writer, XamlObjectDefinition declaringObject, INamedTypeSymbol? appliedType)
+		private XamlLazyApplyBlockIIndentedStringBuilder CreateApplyBlock(IIndentedStringBuilder writer, XamlObjectDefinition declaringObject, INamedTypeSymbol? appliedType, bool passTemplateSettings = false)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 
@@ -4241,7 +4226,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				appliedType,
 				xamlApplyPrefix: appliedType != null && !_isHotReloadEnabled ? _fileUniqueId : null,
 				delegateType,
-				!_isTopLevelDictionary);
+				!_isTopLevelDictionary,
+				passTemplateSettings);
 		}
 
 		private void RegisterPartial(string format, params object[] values)
@@ -4335,8 +4321,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var isBindingType = SymbolEqualityComparer.Default.Equals(_metadataHelper.FindPropertyTypeByOwnerSymbol(declaringType, member.Member.Name), Generation.DataBindingSymbol.Value);
 					var isOwnerDependencyObject = member.Owner != null && GetType(member.Owner.Type) is { } ownerType &&
 						(
-							(_xamlTypeToXamlTypeBaseMap.TryGetValue(ownerType, out var baseTypeSymbol) && FindType(baseTypeSymbol)?.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value)) == true) ||
-							ownerType.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, Generation.DependencyObjectSymbol.Value))
+							(_xamlTypeToXamlTypeBaseMap.TryGetValue(ownerType, out var baseTypeSymbol) && IsType(FindType(baseTypeSymbol), Generation.DependencyObjectSymbol.Value)) ||
+							IsType(ownerType, Generation.DependencyObjectSymbol.Value)
 						);
 
 					if (isDependencyProperty)
@@ -5257,7 +5243,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					case "System.Uri":
 						var uriValue = GetMemberValue();
-						return $"new System.Uri({RewriteUri(uriValue)}, global::System.UriKind.RelativeOrAbsolute)";
+						return $"new System.Uri({RewriteUri(uriValue, isImageSourceProperty: false)}, global::System.UriKind.RelativeOrAbsolute)";
 
 					case "System.Type":
 						return $"typeof({GetType(GetMemberValue(), owner?.Owner).GetFullyQualifiedTypeIncludingGlobal()})";
@@ -5319,7 +5305,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return "Windows.Media.Core.MediaSource.CreateFromUri(new Uri(\"" + memberValue + "\"))";
 
 					case "Microsoft.UI.Xaml.Media.ImageSource":
-						return RewriteUri(memberValue);
+						return RewriteUri(memberValue, isImageSourceProperty: true);
 
 					case "Microsoft.UI.Xaml.TargetPropertyPath":
 						return BuildTargetPropertyPath(GetMemberValue(), owner);
@@ -5421,32 +5407,40 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return splitRegex.Replace(value, ", ");
 				}
 
-				string RewriteUri(string? rawValue)
+				string RewriteUri(string? rawValue, bool isImageSourceProperty)
 				{
-					if (rawValue is not null
-						&& Uri.TryCreate(rawValue, UriKind.RelativeOrAbsolute, out var parsedUri)
-						&& !parsedUri.IsAbsoluteUri)
+					if (rawValue is not { Length: > 0 }
+						|| !Uri.TryCreate(rawValue, UriKind.RelativeOrAbsolute, out var parsedUri)
+						|| parsedUri.IsAbsoluteUri)
 					{
-						var declaringType = FindFirstConcreteAncestorType(owner?.Owner);
-
-						if (
-							declaringType.Is(Generation.ImageSourceSymbol.Value)
-							|| declaringType.Is(Generation.ImageSymbol.Value)
-						)
-						{
-							var uriBase = rawValue.StartsWith("/", StringComparison.Ordinal)
-								? "\"ms-appx:///\""
-								: $"__baseUri_prefix_{_fileUniqueId}";
-
-							return $"{uriBase} + \"{rawValue.TrimStart('/')}\"";
-						}
-						else
-						{
-							// Breaking change, support for ms-resource:// for non framework owners (https://github.com/unoplatform/uno/issues/8339)
-						}
+						return ToVerbatimLiteral(rawValue ?? "");
 					}
 
-					return $"@\"{rawValue}\"";
+					// Measured on WinAppSDK 1.7: WinUI resolves a relative URI against the XAML file's
+					// folder only where it lands in a BitmapImage, and rewrites every other one - including
+					// an SvgImageSource reached through an ImageSource-typed property - to the MRT
+					// local-resource form, a raw prefix concat rather than a base-URI resolution.
+					//
+					// Uno keeps every ImageSource-typed property, SvgImageSource.UriSource included, on the
+					// ms-appx form. The two forms differ in how the sink resolves them, not in what they can
+					// express: ms-appx is resolved as an asset path, so it carries the assembly prefix a
+					// library's own assets need, while ms-resource is only understood by the mapping in
+					// XamlFilePathHelper, which maps to the app root. Following WinUI here would leave a
+					// library's svg assets unreachable, with no MRT to fall back on.
+					if (isImageSourceProperty
+						|| FindFirstConcreteAncestorType(owner?.Owner).Is(Generation.ImageSourceSymbol.Value))
+					{
+						var uriBase = rawValue.StartsWith("/", StringComparison.Ordinal)
+							? "\"ms-appx:///\""
+							: $"__baseUri_prefix_{_fileUniqueId}";
+
+						return $"{uriBase} + {ToVerbatimLiteral(rawValue.TrimStart('/'))}";
+					}
+
+					return ToVerbatimLiteral(XamlFilePathHelper.MsResourceFilesPrefix + rawValue.TrimStart('/'));
+
+					// A path is free to contain a backslash, which a regular literal would read as an escape.
+					static string ToVerbatimLiteral(string value) => $"@\"{value.Replace("\"", "\"\"")}\"";
 				}
 			}
 		}
@@ -6204,7 +6198,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								else
 								{
 									if (IsRelevantNamespace(member?.Member?.PreferredXamlNamespace)
-										&& IsRelevantProperty(member?.Member, objectDefinition))
+										&& IsRelevantProperty(member?.Member))
 									{
 										GenerateError(
 											writer,
@@ -6521,14 +6515,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							var buildMethod = CurrentScope.RegisterMethod(
 								$"Build_{subclassName.TrimStart('_')}",
 								(name, sb) => TryAnnotateWithGeneratorSource(sb).AppendMultiLineIndented($$"""
-								private {{modifier}}{{contentType}} {{name}}(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+								private {{modifier}}{{contentType}} {{name}}(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 								{
 									{{GetCacheBrokerForHotReload()}}
 									return new {{namespacePrefix}}{{CurrentScope.SubClassesRoot}}.{{subclassName}}().Build(__owner, __settings);
 								}
 								"""));
 
-							writer.AppendIndented($"new {GetGlobalizedTypeName(fullTypeName)}({CurrentResourceOwnerName}, {buildMethod})");
+							// The builder ctors are internal, so generated code (which lives in the app assembly)
+							// goes through MarkupHelper. Unknown template types keep the ctor form.
+							var templateFactory = xamlObjectDefinition.Type.Name switch
+							{
+								"DataTemplate" or "ControlTemplate" or "ItemsPanelTemplate"
+									=> $"global::Uno.UI.Helpers.MarkupHelper.Create{xamlObjectDefinition.Type.Name}",
+								_ => $"new {GetGlobalizedTypeName(fullTypeName)}",
+							};
+
+							writer.AppendIndented($"{templateFactory}({CurrentResourceOwnerName}, {buildMethod})");
 						}
 
 						writer.AppendLine();
@@ -6564,19 +6567,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						BuildInitializer(writer, xamlObjectDefinition, owner);
 						Safely(() => BuildLiteralProperties(writer, xamlObjectDefinition));
-					}
-					// TODO: Remove this else if in Uno 6 as a breaking change.
-					else if (fullTypeName == XamlConstants.Types.Setter && CurrentStyleTargetType is { } currentStyleTargetType && IsLegacySetter(xamlObjectDefinition, out var propertyName))
-					{
-						var propertyType = GetDependencyPropertyTypeForSetter(propertyName);
-						var valueNode = FindMember(xamlObjectDefinition, "Value");
-						writer.AppendLineInvariantIndented(
-							"new global::Microsoft.UI.Xaml.Setter<{0}>(\"{1}\", o => o.{1} = {2})",
-							currentStyleTargetType.GetFullyQualifiedTypeIncludingGlobal(),
-							propertyName,
-							BuildLiteralValue(valueNode!, propertyType)
-						);
-
 					}
 					else if (fullTypeName == XamlConstants.Types.ResourceDictionary)
 					{
@@ -6667,18 +6657,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineIndented($"default! /* {xamlGenError.Message} (line: {xamlGenError.LineNumber} | pos: {xamlGenError.LinePosition}) */");
 				}
 			}
-		}
-
-		private bool IsLegacySetter(XamlObjectDefinition xamlObjectDefinition, out string propertyName)
-		{
-			var propertyNode = FindMember(xamlObjectDefinition, "Property");
-			propertyName = propertyNode?.Value?.ToString()!;
-			if (propertyName is not null && !propertyName.Contains('.'))
-			{
-				return !IsDependencyProperty(CurrentStyleTargetType, propertyName);
-			}
-
-			return false;
 		}
 
 		/// <summary>

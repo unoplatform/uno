@@ -26,5 +26,6 @@ internal abstract class InteractionTrackerState : IDisposable
 	internal abstract void ReceivePointerWheel(int delta, bool isHorizontal);
 	internal abstract void TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond, int requestId);
 	internal abstract void TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option, int requestId);
+	internal abstract void TryUpdateScale(float value, Vector3 centerPoint, int requestId);
 	public virtual void Dispose() => _disposed = true;
 }

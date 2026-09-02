@@ -10,6 +10,7 @@ using Android.Views;
 using Android.Widget;
 using Com.Nostra13.Universalimageloader.Core;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Hosting;
 
 namespace UnoAppWinUI.Droid
 {
@@ -23,10 +24,16 @@ namespace UnoAppWinUI.Droid
 	public class Application : Microsoft.UI.Xaml.NativeApplication
 	{
 		public Application(IntPtr javaReference, JniHandleOwnership transfer)
-			: base(() => new AppHead(), javaReference, transfer)
+			: base(javaReference, transfer)
 		{
 			ConfigureUniversalImageLoader();
 		}
+
+		protected override UnoPlatformHost CreateHost() =>
+			UnoPlatformHostBuilder.Create()
+				.App(() => new AppHead())
+				.UseAndroid()
+				.Build();
 
 		private static void ConfigureUniversalImageLoader()
 		{

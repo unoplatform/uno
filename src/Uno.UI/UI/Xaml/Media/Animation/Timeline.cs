@@ -20,6 +20,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		private BindingPath _propertyInfo;
 		private List<ITimelineListener> _timelineListeners = new();
 		private List<EventHandler<object>> _completedHandlers;
+		private bool _disposed;
 
 		public event EventHandler<object> Completed
 		{
@@ -417,16 +418,22 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		internal void Dispose()
 		{
 			Dispose(true);
-			GC.SuppressFinalize(this);
+			_disposed = true;
 		}
 
 		void IThemeChangeAware.OnThemeChanged() => OnThemeChanged();
 
 		private protected virtual void OnThemeChanged() { }
 
+		// Finalization must not be suppressed here: it would also skip the inherited ~DependencyObject,
+		// leaving the binder state and its pooled references unreleased. The flag skips only the
+		// dispatcher round-trip, which is what an explicit Dispose() makes redundant.
 		~Timeline()
 		{
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Dispose(false));
+			if (!_disposed)
+			{
+				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Dispose(false));
+			}
 		}
 	}
 }

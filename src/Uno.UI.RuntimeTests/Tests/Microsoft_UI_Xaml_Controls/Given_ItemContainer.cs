@@ -11,7 +11,7 @@ using Uno.UI;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.DevTools.Input;
 using ItemContainer = Microsoft.UI.Xaml.Controls.ItemContainer;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
@@ -142,7 +142,7 @@ public class Given_ItemContainer
 		{
 			SelectionMode = ListViewSelectionMode.Single,
 			ItemsSource = Enumerable.Range(1, itemsCount).Select(i => $"Item{i}").ToArray(),
-			ItemTemplate = new DataTemplate(() =>
+			ItemTemplate = new DataTemplate(null, (_, _) =>
 			{
 				var textBlock = new TextBlock();
 				textBlock.SetBinding(TextBlock.TextProperty, new Binding());

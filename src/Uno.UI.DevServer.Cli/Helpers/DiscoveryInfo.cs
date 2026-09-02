@@ -105,7 +105,7 @@ public sealed class DiscoveryInfo
 	public string? DotNetVersion { get; init; }
 
 	/// <summary>
-	/// Gets the computed target framework moniker (e.g. net9.0).
+	/// Gets the computed target framework moniker (e.g. net10.0).
 	/// </summary>
 	public string? DotNetTfm { get; init; }
 

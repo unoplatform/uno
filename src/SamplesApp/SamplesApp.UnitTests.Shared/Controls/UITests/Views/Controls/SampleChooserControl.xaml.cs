@@ -21,7 +21,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-#elif XAMARIN || UNO_REFERENCE_API
+#elif __ANDROID__ || __APPLE_UIKIT__ || UNO_REFERENCE_API
 using Microsoft.UI.Xaml.Controls;
 using System.Globalization;
 #endif

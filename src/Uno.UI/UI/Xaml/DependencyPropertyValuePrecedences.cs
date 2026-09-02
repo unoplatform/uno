@@ -22,30 +22,24 @@ namespace Microsoft.UI.Xaml
 		Local,
 
 		/// <summary>
-		/// Values inherited from the templated parent
+		/// Defined by an applied style, either explicitly assigned through the Style property or resolved as an implicit style.
 		/// </summary>
-		TemplatedParent,
+		/// <remarks>Corresponds to WinUI's <c>BaseValueSourceStyle</c>.</remarks>
+		Style,
 
 		/// <summary>
-		/// Defined when setting a style from the style property
+		/// Defined by the built-in (default) style from Generic.xaml.
 		/// </summary>
-		ExplicitStyle,
-
-		/// <summary>
-		/// Values defined by an implicitly defined style
-		/// </summary>
-		/// <remarks>On Uno, this is actually used for values set by the default style, to allow for them to correctly take precedence over inherited values.</remarks>
-		ImplicitStyle,
+		/// <remarks>
+		/// Corresponds to WinUI's <c>BaseValueSourceBuiltInStyle</c>. This takes precedence over inherited property
+		/// values so that setters not covered by an applied style are still honored.
+		/// </remarks>
+		BuiltInStyle,
 
 		/// <summary>
 		/// Defined by the inheritance of a FrameworkElement property of the same name
 		/// </summary>
 		Inheritance,
-
-		/// <summary>
-		/// Defined by the default style from Generic.xaml
-		/// </summary>
-		DefaultStyle,
 
 		/// <summary>
 		/// Defined on the dependency property metadata

@@ -9,10 +9,6 @@ using Windows.System;
 using Windows.UI;
 
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace Microsoft.UI.Xaml.Controls;
 
 /// <summary>
