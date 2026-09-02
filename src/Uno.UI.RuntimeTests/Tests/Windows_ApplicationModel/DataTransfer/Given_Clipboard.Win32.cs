@@ -39,6 +39,7 @@ partial class Given_Clipboard // Win32 contention
 		using var held = new ManualResetEventSlim();
 		using var release = new ManualResetEventSlim();
 		var holderTookClipboard = false;
+		var holderExited = false;
 
 		var holder = new Thread(() =>
 		{
@@ -99,8 +100,11 @@ partial class Given_Clipboard // Win32 contention
 		finally
 		{
 			release.Set();
-			holder.Join(TimeSpan.FromSeconds(30));
+			holderExited = holder.Join(TimeSpan.FromSeconds(30));
 		}
+
+		// A holder that never exits is still owning the clipboard, which would poison every test after this one.
+		Assert.IsTrue(holderExited, "the holder thread did not exit, so it may still be holding the clipboard");
 
 		// And the payload, which does need the lock, must be readable once the contention is over.
 		await DelayForClipboard();
