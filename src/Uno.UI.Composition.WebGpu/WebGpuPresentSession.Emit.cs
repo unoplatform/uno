@@ -77,11 +77,9 @@ public sealed unsafe partial class WebGpuPresentSession
 		return true;
 	}
 
-	// Transform-table frame-solid emit (gap-4 solid-scroll redo). Builds the recording's solids/rrects/path-fills ONCE
-	// in identity (local) device space + one shared per-vertex slot, resident in the shared TABLE slabs; each frame a
-	// MOVE rewrites only that slot (WriteXform) and re-stamps the per-op clips — no re-tessellation, no vertex re-Put.
-	// The absolute slab offset is re-derived every frame (TryByteOffset, else re-Put) so a recording that scrolled out
-	// (its slice culled + reclaimed) then back in never draws from a stale offset.
+	// Geometry is built once in identity space with a shared per-vertex slot; a move rewrites the slot and
+	// re-stamps the clips. The slab offset is re-derived every frame, never cached: a recording that scrolled
+	// out had its slice reclaimed, and a stale offset reads another visual's verts.
 	private void EmitTableFrameSolid(ReplayRefCmd rr, WebGpuGeometryCache feCur, List<DrawOp> ops)
 	{
 		if (_emitStats) { StatStratTableFrame++; }
@@ -105,8 +103,6 @@ public sealed unsafe partial class WebGpuPresentSession
 			int tableAtlasBefore = AtlasHit + AtlasBaked;
 			bool tableAtlasSafe = TryAtlasScale(rr.Transform, out var tableScale);
 			bool tableHasPath = false; for (int _i = 0; _i < tcmds.Count; _i++) { if (tcmds[_i] is PathFill) { tableHasPath = true; break; } }
-			// One stable slot shared by ALL of this recording's geometry (solids/rrects/path-fills): its local->NDC
-			// affine folds the replay transform + projection, rewritten per frame, so a move repositions everything.
 			int slot = (fe is not null && fe.XformSlot >= 0) ? fe.XformSlot : _d.AllocXformSlot();
 			float slotBits = System.BitConverter.Int32BitsToSingle(slot);
 			for (int ti = 0; ti < tcmds.Count; ti++)
@@ -114,7 +110,6 @@ public sealed unsafe partial class WebGpuPresentSession
 				var tc = tcmds[ti];
 				if (tc is RectCommand rc0)
 				{
-					// Coalesce a run of consecutive same-clip rects into one contiguous LOCAL-vert range + one draw.
 					int rel = sv.Count / 7; int tj = ti;
 					while (tj < tcmds.Count && tcmds[tj] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
 					{
@@ -164,16 +159,10 @@ public sealed unsafe partial class WebGpuPresentSession
 			fe = new WebGpuGeometryCache { TableFrame = true, FrameSolid = true, SlabId = id, FrameOrder = order, TableSolids = sv, TableRrects = rv, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = slot, HasAtlas = tableHasAtlas, AtlasBlockedByScale = tableBlocked, AtlasScale = tableScale };
 			StoreCompiled(rr.Data, fe);
 		}
-		// Re-derive the CURRENT slab byte offset of this recording's slices every frame: reuse the resident slice when it
-		// survived last frame (no upload), else re-Put its UNCHANGED local verts (the slice was culled + its offset
-		// reclaimed). NEVER a cached absolute offset: a stale offset into a reclaimed slice reads another visual's verts.
 		int sBase = 0, rBase = 0;
 		if (fe.TableSolids.Count > 0 && !_d.SolidTableSlab.TryByteOffset(fe.SlabId, out sBase)) { sBase = _d.SolidTableSlab.Put(fe.SlabId, fe.TableSolids); }
 		if (fe.TableRrects.Count > 0 && !_d.RrectTableSlab.TryByteOffset(fe.SlabId, out rBase)) { rBase = _d.RrectTableSlab.Put(fe.SlabId, fe.TableRrects); }
-		// The single slot's affine = replay transform folded with the current projection: a move/resize is this one write.
 		WriteXform(fe.XformSlot, rr.Transform);
-		// Re-stamp per-op device scissors + clip bind groups only when transform / session clip / surface size changed
-		// (memoized like the arena stamp); a STATIC table recording reuses them verbatim. The slab base is applied below.
 		if (!fe.HasStamp || fe.StampXform != rr.Transform || !ClipDataEquals(fe.StampClip, rr.Clip) || fe.StampW != (int)_s.Width || fe.StampH != (int)_s.Height)
 		{
 			if (_emitStats) { _statStamps++; }
@@ -204,7 +193,6 @@ public sealed unsafe partial class WebGpuPresentSession
 			}
 			fe.StampOwned = stampOwned; fe.StampClips = stamps; fe.StampBufs = bufs; fe.StampFrame = _d.FrameSeq; fe.StampXform = rr.Transform; fe.StampClip = rr.Clip; fe.StampW = (int)_s.Width; fe.StampH = (int)_s.Height; fe.HasStamp = true;
 		}
-		// Emit from the resident slabs (b0=2 => table slab) with the per-frame base + the memoized stamped clip.
 		for (int i = 0; i < fe.FrameOrder.Count; i++)
 		{
 			var fo = fe.FrameOrder[i]; var (sc, bg) = fe.StampClips[i];
@@ -240,7 +228,6 @@ public sealed unsafe partial class WebGpuPresentSession
 			return;
 		}
 		WebGpuGeometryCache fe = null;
-		// Re-derived every frame (build => Put, reuse => TryByteOffset-else-Put); FrameOrder is relative.
 		int sBase = 0, rBase = 0;
 		bool fMiss, fStale;
 		if (repeat) { fMiss = true; fStale = false; }
@@ -252,17 +239,12 @@ public sealed unsafe partial class WebGpuPresentSession
 		}
 		if (fMiss || fStale)
 		{
-			// Build once: extract device-space solid/rrect verts + an ordered emit list; owned (persistent) clip
-			// bind groups so nothing is re-created per frame.
 			if (fe is not null) { _d.DeferRelease(fe.Owned); }
 			var fOwned = new OwnedResources();
 			var sv = new List<float>(); var rv = new List<float>(); var order = new List<FrameOp>();
 			var tmp = new List<DrawOp>();
 			var tcmds = new List<WebGpuCommand>();
 			foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { tcmds.Add(tc); }
-			// One stable transform-table slot for this recording's device-space path fills (reused on
-			// rebuild; transient for a repeat emission). Verts are final-device here, so the slot's entry
-			// is the pure device->NDC projection, rewritten per frame at emit.
 			bool fHasPath = false; foreach (var c in tcmds) { if (c is PathFill) { fHasPath = true; break; } }
 			int fSlot = fHasPath ? ((!repeat && fe is not null && fe.XformSlot >= 0) ? fe.XformSlot : _d.AllocXformSlot()) : -1;
 			if (fHasPath && repeat) { _xformTransient.Add(fSlot); }
@@ -271,7 +253,6 @@ public sealed unsafe partial class WebGpuPresentSession
 				var tc = tcmds[ti];
 				if (tc is RectCommand rc0)
 				{
-					// Coalesce a run of consecutive same-clip rects into one contiguous range + one draw.
 					int rel = sv.Count / 6; int tj = ti;
 					while (tj < tcmds.Count && tcmds[tj] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
 					{
@@ -311,32 +292,22 @@ public sealed unsafe partial class WebGpuPresentSession
 					foreach (var o in tmp) { order.Add(new FrameOp { Kind = null, NonSolid = ResidentizeFan(o, fOwned) }); }
 				}
 			}
-			// `id` is stable across frames so a static recording's slice stays resident (no re-upload) and
-			// coalesces with neighbours across recordings; a repeat emission gets a fresh transient id.
 			long id = repeat ? _d.NextSlabId()
 				: ((fMiss || fe is null || fe.SlabId == 0) ? _d.NextSlabId() : fe.SlabId);
-			// Upload the (transform-baked) verts under this recording's stable id and keep them resident on
-			// the cache. FrameOrder offsets stay RELATIVE — the absolute base (returned here, re-derived on a
-			// later pure reuse) is applied at emit — never a cached absolute into a possibly-reclaimed slice.
+	// FrameOrder offsets stay RELATIVE; the absolute base is applied at emit. A cached absolute offset would
+	// point into a slice that may since have been reclaimed.
 			sBase = sv.Count > 0 ? _d.SolidSlab.Put(id, sv) : 0;
 			rBase = rv.Count > 0 ? _d.RrectSlab.Put(id, rv) : 0;
 			fe = new WebGpuGeometryCache { FrameSolid = true, SlabId = id, FrameOrder = order, FrameSolidVerts = sv, FrameRrectVerts = rv, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = fSlot };
-			// A repeat emission is not cached (its slice is transient); free its bind groups next frame.
 			if (repeat) { _d.DeferRelease(fOwned); }
 			else { StoreCompiled(rr.Data, fe); }
 		}
 		else
 		{
-			// Pure reuse (no rebuild): re-derive the CURRENT slab base. TryByteOffset marks the slice live
-			// on a hit; if it was culled last frame its offset was reclaimed, so re-Put the resident verts.
 			if (fe.FrameSolidVerts is { Count: > 0 } && !_d.SolidSlab.TryByteOffset(fe.SlabId, out sBase)) { sBase = _d.SolidSlab.Put(fe.SlabId, fe.FrameSolidVerts); }
 			if (fe.FrameRrectVerts is { Count: > 0 } && !_d.RrectSlab.TryByteOffset(fe.SlabId, out rBase)) { rBase = _d.RrectSlab.Put(fe.SlabId, fe.FrameRrectVerts); }
 		}
-		// Rewrite this recording's path-fill transform entry every frame (device verts => pure current
-		// projection), so a window resize repositions its glyphs via the table with no re-tessellation.
 		if (fe.XformSlot >= 0) { WriteXform(fe.XformSlot, Matrix4x4.Identity); }
-		// Per frame: re-emit ops drawing from the RESIDENT shared slabs (b0=1 => solid slab / rrect slab;
-		// b1 = absolute slab byte offset). No append, no upload, no re-tessellation on a cache hit.
 		foreach (var fo in fe.FrameOrder)
 		{
 			if (fo.Kind == DrawKind.Solid) { ops.Add(new DrawOp(DrawKind.Solid, VertexSource.Slab, fo.Count, (nint)(sBase + fo.ByteOff), false, fo.Clip, fo.ClipBg)); }
@@ -353,13 +324,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// </summary>
 	private void EmitArenaReplay(ReplayRefCmd rr, List<DrawOp> ops, WebGpuGeometryCache entry, bool miss)
 	{
-		// Stable path-fill transform slot: arena verts are in the recording's OWN (identity) space, so
-		// the slot's entry folds the replay transform + projection — written per frame below, so a
-		// move OR resize repositions the fan/cover via the table with no re-stamp and no re-bake.
 		int aSlot = (miss || entry is null) ? -1 : entry.XformSlot;
-		// A pure-path arena entry is surface-size-independent (device verts + table), so a resize is
-		// handled by the per-frame table write below with NO rebuild; a mixed entry's NDC-baked solids
-		// still force a size rebuild.
 		bool aSizeChanged = entry is not null && (entry.BuiltW != (int)_s.Width || entry.BuiltH != (int)_s.Height);
 		// An atlas quad is an image op: its NDC is baked at build time and it carries no xform-table
 		// slot, so unlike the rest of a pure-path entry it is NOT re-projected when the surface
@@ -386,8 +351,6 @@ public sealed unsafe partial class WebGpuPresentSession
 			entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, HasAtlas = aHasAtlas, AtlasBlockedByScale = aBlocked, AtlasScale = aScale, PurePath = aPure, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = aSlot };
 			StoreCompiled(rr.Data, entry);
 		}
-		// Per frame (even on a cache/stamp hit): the identity-space verts map to the current replay
-		// transform + surface projection via this one table entry — the whole arena move/resize path.
 		if (entry.XformSlot >= 0) { WriteXform(entry.XformSlot, rr.Transform); }
 		if ((!entry.HasStamp || entry.StampXform != rr.Transform || !ClipDataEquals(entry.StampClip, rr.Clip)))
 		{
@@ -399,8 +362,6 @@ public sealed unsafe partial class WebGpuPresentSession
 			var stamped = reuse ? entry.StampedOps : new List<DrawOp>(entry.Ops.Count);
 			var bufs = reuse ? entry.StampBufs : new List<nint>(entry.Ops.Count);
 			var xf = ArenaXform(rr.Transform);
-			// finv = inverse device affine, so clipCov maps the moved fragment back to the recording's
-			// own space where the (identity-baked) clip lives.
 			var t2 = new Matrix3x2(rr.Transform.M11, rr.Transform.M12, rr.Transform.M21, rr.Transform.M22, rr.Transform.M41, rr.Transform.M42);
 			Matrix3x2 finv = Matrix3x2.Invert(t2, out var inv) ? inv : Matrix3x2.Identity;
 			Vector2 MoveP(float x, float y) => new(x * t2.M11 + y * t2.M21 + t2.M31, x * t2.M12 + y * t2.M22 + t2.M32);
@@ -414,16 +375,9 @@ public sealed unsafe partial class WebGpuPresentSession
 			{
 				var op = entry.Ops[i];
 				var abgl = op.kind switch { DrawKind.Gradient => _d.GradClipBgl, DrawKind.Image => _d.ImageClipBgl, _ => _d.SolidClipBgl };
-				// clipCov reads the LOCAL rounded shape (finv maps fc back to it); the SCISSOR is device-space
-				// so its Aabb must follow the move — transform the (finite) clip Aabb by the replay transform.
 				var scissorClip = op.clip;
-				// The op's own fan is identity-space (arena bakes at identity): map it to device for
-				// this replay. FanBuf is cleared because the residentized NDC buffer was baked for
-				// identity and is stale once moved.
 				if (op.clip.PathFan is { } localFan)
 				{
-					// stampOwned, never the per-frame slab: this bind group is memoized into StampedOps and
-				// reused on later frames while the transform holds.
 				if (arenaFanBg == 0) { arenaFanBg = (nint)MakeClipBg(_d.ClipBgl, default, stampOwned, xf, finv); }
 					// Keep the identity-space fan and its resident NDC buffer; hand the stencil draw
 					// the arena transform instead. Transforming on the CPU here would mean a fresh
@@ -445,7 +399,6 @@ public sealed unsafe partial class WebGpuPresentSession
 						MathF.Min(MathF.Min(p0.X, p1.X), MathF.Min(p2.X, p3.X)), MathF.Min(MathF.Min(p0.Y, p1.Y), MathF.Min(p2.Y, p3.Y)),
 						MathF.Max(MathF.Max(p0.X, p1.X), MathF.Max(p2.X, p3.X)), MathF.Max(MathF.Max(p0.Y, p1.Y), MathF.Max(p2.Y, p3.Y)));
 				}
-				// Session clip: tighten the device scissor by its Aabb; fold its rounds into ClipU (local space).
 				var sa = rr.Clip.Aabb;
 				scissorClip.Aabb = new Vector4(MathF.Max(scissorClip.Aabb.X, sa.X), MathF.Max(scissorClip.Aabb.Y, sa.Y), MathF.Min(scissorClip.Aabb.Z, sa.Z), MathF.Min(scissorClip.Aabb.W, sa.W));
 				scissorClip.ScissorInert = op.clip.ScissorInert && rr.Clip.ScissorInert;
@@ -496,23 +449,16 @@ public sealed unsafe partial class WebGpuPresentSession
 
 	private void EmitReplayRef(ReplayRefCmd rr, List<DrawOp> ops, HashSet<List<WebGpuCommand>> frameEmitted)
 	{
-		// Cull a recording whose (transformed) content is entirely clipped out or off-surface: the
-		// widened cull-only scissor no longer rejects it, so a scrolled-out row/card would otherwise
-		// still pay its per-frame stamps/rebuilds and its draws every frame. A culled recording's
-		// slab slices are reclaimed by RetainOnly and re-Put when it scrolls back in (TryByteOffset
-		// handles the reclaimed-slice case).
+	// Cull a recording whose transformed content is entirely clipped out or off-surface: the widened cull-only
+	// scissor no longer rejects it, so a scrolled-out row would still pay its stamps and draws every frame.
 		var rrBounds = ClampToClip(TransformBounds(rr.Data.IdentityBounds ??= CmdListBounds(rr.Commands), rr.Transform), rr.Clip);
 		if (rrBounds.X >= rrBounds.Z || rrBounds.Y >= rrBounds.W
 			|| rrBounds.Z <= 0 || rrBounds.W <= 0 || rrBounds.X >= _s.Width || rrBounds.Y >= _s.Height)
 		{
 			return;
 		}
-		// FRAME-SOLID path: any recording that contains rects — a Border background,
-		// a Button (background + border + glyphs) — re-emits its SOLIDS into the SHARED per-pass buffer
-		// every frame so sibling visuals sharing a clip collapse to ONE draw (the cross-visual draw-count
-		// win the profiler showed). NON-solids (glyphs/images/gradients) stay cached (device space,
-		// rebuilt only on a transform/clip change) and are consumed in draw order as the recording is
-		// re-walked. Pure non-solid recordings fall through to the arena path below (moving-visual reuse).
+	// A recording containing rects re-emits its solids into the shared per-pass buffer every frame so siblings
+	// sharing a clip collapse to one draw; its non-solids stay cached and are spliced back in draw order.
 		if (HasReappendable(rr))
 		{
 			if (_emitStats) { StatStratReappend++; }
@@ -520,17 +466,10 @@ public sealed unsafe partial class WebGpuPresentSession
 			return;
 		}
 
-		// The per-visual GPU-geometry cache (slab/scroll), keyed by the recording's immutable command
-		// list. Build once; reuse while it's replayed at the same transform/clip. A stale entry (moved
-		// visual) is deferred-released and rebuilt. Entries not referenced any frame are evicted.
 		var entry = rr.Data.Compiled;
 		var miss = entry is null;
-		// ARENA: a transform-safe recording (solid/image, no clip) bakes its geometry ONCE in its own
-		// identity NDC space. A moved replay re-stamps the vertex xform on the per-op clip bind groups
-		// and reuses the vertex buffers rather than rebuilding them.
-		// A session PATH clip does not force the device-bake path: the fan is applied separately by the
-		// in-pass depth mask (ApplyDepthClip reads clip.PathFan in device space), so only a session
-		// clip's rounds/AABB need folding through finv.
+	// A session PATH clip does not force the device-bake path: the fan is applied separately by the in-pass
+	// depth mask, so only a session clip's rounds and AABB need folding through finv.
 		if (IsArenaSafe(rr))
 		{
 			if (_emitStats) { StatStratArena++; }
@@ -567,8 +506,6 @@ public sealed unsafe partial class WebGpuPresentSession
 			entry = new WebGpuGeometryCache { Ops = cachedOps, Owned = owned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = cSlot };
 			StoreCompiled(rr.Data, entry);
 		}
-		// Device-space verts => the slot's entry is the pure current projection (rewritten per frame so a
-		// resize repositions the path fills via the table without re-baking).
 		if (entry.XformSlot >= 0) { WriteXform(entry.XformSlot, Matrix4x4.Identity); }
 		// Splice the cached draw-ops straight into this frame's op list; buffers and bind groups persist in
 		// `owned`. Replaying them through a render bundle instead looks like the obvious win and is not:
@@ -584,16 +521,12 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// </summary>
 	private void EmitShadow(ShadowCmd sh, List<DrawOp> ops)
 	{
-		// Cull a shadow whose blurred extent is entirely clipped out or off-surface (e.g. a
-		// scrolled-out card) — otherwise it still pays a coverage render + blur every frame.
 		var shPad = MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f;
 		var shExt = ClampToClip(Inflate(new Vector4(sh.BbMin.X, sh.BbMin.Y, sh.BbMax.X, sh.BbMax.Y), shPad), sh.Clip);
 		if (shExt.X >= shExt.Z || shExt.Y >= shExt.W || shExt.Z <= 0 || shExt.W <= 0 || shExt.X >= _s.Width || shExt.Y >= _s.Height)
 		{
 			return;
 		}
-		// Render the blurred coverage offscreen, then composite it as a SrcIn-tinted image (tint =
-		// shadow color) at its device placement — reusing the image draw path, incl. clip.
 		var blurView = RenderShadow(sh, out var origin, out var size);
 		var sbg = TintedImageBg(blurView, sh.Color);
 		var sq = TexturedQuad(origin, size);
@@ -627,9 +560,6 @@ public sealed unsafe partial class WebGpuPresentSession
 			}
 		}
 
-		// Render the layer's commands into a full-size offscreen surface, then composite. Both the
-		// offscreen render and this composite record into the frame's single encoder, so wgpu barriers the
-		// offscreen resolve before the composite samples it — no explicit flush needed.
 		var layerSurface = new WebGpuRenderSurface(_d, _s.Width, _s.Height, _d.Pool);
 		var _savedPw = _passW; var _savedPh = _passH;
 		_passW = layerSurface.Width; _passH = layerSurface.Height;
@@ -642,13 +572,10 @@ public sealed unsafe partial class WebGpuPresentSession
 		// full-window depth targets resident for the whole frame. The colour view can NOT be returned
 		// here: the composite op below samples it, and that is encoded later in the parent's pass.
 		_d.Pool.Return(layerSurface.DepthView);
-		// Reclaimed after submit (see _frameLayerSurfaces): the composite below still samples it.
 		if (layerSurface.Pooled) { _frameLayerSurfaces.Add(layerSurface); }
 
-		// SaveLayer(IEffectFilter) drop shadow: blur the content, draw it tinted+offset behind, then
-		// the content on top. Reuses the image path (SrcIn tint) for the shadow — same as DrawShadow.
-		// The pyramid runs only over the content's region (padded by the blur reach), not the full
-		// window — a card-sized caster costs card-sized blur passes.
+	// The pyramid runs only over the content's region padded by the blur reach, so a card-sized caster costs
+	// card-sized blur passes rather than full-window ones.
 		if (lyr.ShadowEffect is { } fx)
 		{
 			var pad = MathF.Ceiling(3f * MathF.Max(fx.SigmaX, fx.SigmaY)) + 2f;

@@ -31,14 +31,10 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	private readonly WebGpuDevice _d;
 	private readonly WebGpuRenderSurface _s;
 	private WColor? _presentClear;
-	// Root scale (DPI) applied to the whole replayed frame. The composition records in LOGICAL coords and applies the
-	// RasterizationScale through the neutral session (Save→Scale→Replay→Restore); this session must honour it or
-	// content renders at logical size on a physical-size surface (the 1.5x-DPI bug). Bracketed by Save/Restore.
+	// The composition records in LOGICAL coordinates; without this the frame renders at logical size on a
+	// physical-size surface.
 	private Vector2 _presentScale = Vector2.One;
 	private readonly System.Collections.Generic.Stack<Vector2> _presentScaleStack = new();
-	// The single command encoder for the whole frame. Every pass (offscreen coverage/blur/layer + the main pass)
-	// records into it and it's submitted once — so wgpu barriers offscreen resolve->sample automatically, without
-	// the cross-submission resolve hazard.
 	private IntPtr _frameEncoder;
 	// Immediate-mode drawing on the present session (e.g. the FPS/diagnostics overlay drawn after Replay) records
 	// here and is composited onto the replayed frame at Dispose — the present session IS a real drawing session,
@@ -46,18 +42,12 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	// honours the transform; Scale/Save/Restore additionally drive the frame's root DPI scale (_presentScale).
 	private readonly WebGpuCommandRecorder _overlay;
 	private readonly IDrawingFactory _factory;
-	// The replayed frame's (DPI-scaled) commands + clear, captured at Replay and rendered ONCE at Dispose with the
-	// immediate-mode overlay appended as final top-most commands. Deferring lets the whole present be a single pass
-	// (no follow-up LoadOp.Load overlay pass), so the fast path's MSAA target resolves on-tile (StoreOp.Discard).
 	private List<WebGpuCommand> _pendingCmds;
 	private WColor? _pendingClear;
 	internal WebGpuPresentSession(WebGpuDevice d, WebGpuRenderSurface s, IDrawingFactory factory) { _d = d; _s = s; _factory = factory; _overlay = new WebGpuCommandRecorder(factory); }
 
-	// Runs a frame: opens the shared encoder (if not already inside one), renders, then finishes+submits once.
-	// load=true preserves the target's existing colour (LoadOp.Load) so an overlay composites over the frame.
 	private static int _frameStatsCounter;
-	// RenderInto split: ops-list building (cmds walk, slab derives, stamps) vs pass encoding — accumulated
-	// per frame, reported in [webgpu-frame].
+	// Op-build vs pass-encode, accumulated across the frame's passes (UNO_WEBGPU_STATS).
 	internal static long OpsBuildTicks, EncodeTicks;
 
 	private void RunFrame(List<WebGpuCommand> cmds, WColor? clear, bool load = false)
@@ -120,12 +110,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		}
 	}
 
-	// Computes the device-space scissor for a clip AABB (clamped to the surface). Returns false when degenerate
-	// (the op is fully clipped out and should be skipped).
-	// Layer colour surfaces used by this frame. They cannot go back to the pool at the point they are rendered -
-	// the composite that samples them is encoded later, into the parent's pass - so they are held until the frame
-	// is submitted and reclaimed here. Without this every layer rents a full-window colour texture that is never
-	// returned, so a scene with N layers per frame allocates N full-window textures per frame, for ever.
 	private readonly List<WebGpuRenderSurface> _frameLayerSurfaces = new();
 
 	// Dimensions of the surface the open pass renders into. Zero = the window surface. A scissor must be contained
@@ -143,9 +127,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	}
 	private Vector2 Ndc(Vector2 dev) => new(2f * dev.X / _s.Width - 1f, 1f - 2f * dev.Y / _s.Height);
 
-	// Device-space union AABB (L,T,R,B) of a command list — bounds a layer's blur region and culls layers whose
-	// content is entirely clipped/off-surface (e.g. a scrolled-out card casting a shadow). Conservative: each
-	// command's bounds intersect its clip AABB; a backdrop is unbounded (falls back to its clip or the surface).
 	private static readonly Vector4 _emptyBounds = new(float.MaxValue, float.MaxValue, float.MinValue, float.MinValue);
 
 	private static Vector4 CmdListBounds(List<WebGpuCommand> cmds)
@@ -208,16 +189,10 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		return new Vector4(min.X, min.Y, max.X, max.Y);
 	}
 
-	// Reused scratch so the per-frame op rebuild doesn't allocate a List + array per primitive (the whole frame is
-	// rebuilt every present). Safe: each primitive fills the scratch, uploads it (copied to GPU immediately), and is
-	// done before the next — no builder holds the scratch across a nested RenderInto. _clipU backs MakeClipBg's
-	// lookup; a bind-group cache MISS clones it before storing.
+	// Reused so the per-frame op rebuild does not allocate a list and an array per primitive.
 	private readonly List<float> _scratch = new();
 	private readonly float[] _clipU = new float[72];   // ClipU: rects[4]+radii[4] + ex+ctrl+size+xform+xoff+finv + radiiY[4] = 288B
 
-	// Pool of per-RenderInto op lists so a static frame's rebuild doesn't allocate the (large ClipData) op array
-	// every present. A stack (not one field) keeps it correct under the recursive nested-layer RenderInto — each
-	// level rents its own list and returns it when done.
 	private readonly Stack<List<DrawOp>> _opsPool = new();
 	private List<DrawOp> RentOps()
 		=> _opsPool.Count > 0 ? _opsPool.Pop() : new(256);
@@ -239,8 +214,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	private List<float> RentXforms() => _xformsPool.Count > 0 ? _xformsPool.Pop() : new(64);
 	private List<int> RentTransient() => _xformTransientPool.Count > 0 ? _xformTransientPool.Pop() : new(16);
 
-	// Writes `slot`'s local->NDC affine into `_xforms` (growing it), composing R (Identity for recorded-device verts;
-	// the replay transform for arena local-space verts) with the current surface's device->NDC map.
 	private void WriteXform(int slot, Matrix4x4 r)
 	{
 		int need = (slot + 1) * 8;
@@ -251,8 +224,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		_xforms[o + 4] = -2f * r.M22 / h; _xforms[o + 5] = 1f - 2f * r.M42 / h; _xforms[o + 6] = 0f; _xforms[o + 7] = 0f;
 	}
 
-	// A per-frame transform slot for an immediate (non-cached) path fill: allocated from the shared allocator, its
-	// projection entry written now (immediate build == draw), and returned to the free-list when the pass ends.
 	private int AllocTransientPathSlot()
 	{
 		int slot = _d.AllocXformSlot();
@@ -271,10 +242,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	private List<float> _quadVerts;
 	private List<float> _pathVerts;
 
-	// Appends a block of path-fill verts to the shared per-pass buffer and returns its BYTE offset. Fan verts have
-	// stride 12 and cover verts stride 28, and a draw's firstVertex is in units of its own stride, so every block
-	// starts on an 84-byte (lcm) boundary — that lets both live in ONE buffer, which is what makes the vertex-buffer
-	// set dedup across the whole pass instead of alternating fan/cover.
 	private int AppendPathBlock(float[] src)
 	{
 		while ((_pathVerts.Count * sizeof(float)) % 84 != 0) { _pathVerts.Add(0f); }
@@ -372,16 +339,12 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	private IntPtr Vbuf(List<float> data, OwnedResources owned)
 		=> owned is null ? MakeBuffer(data) : Vbuf(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(data).ToArray(), owned);
 
-	// Append a coloured vertex (pos in device space -> NDC) to the scratch. A class method, not a per-primitive
-	// local function, so building a run of rects/a path cover allocates no capturing closure.
 	private void PushVert(Vector2 dev, float r, float g, float b, float a)
 	{
 		var n = Ndc(dev);
 		_scratch.Add(n.X); _scratch.Add(n.Y); _scratch.Add(r); _scratch.Add(g); _scratch.Add(b); _scratch.Add(a);
 	}
 
-	// Table-path cover vertex: recorded-DEVICE pos + colour + the transform SLOT (raw u32 bits in a float slot). No
-	// Ndc — the vertex shader applies xf[slot] (device->NDC, folding the replay transform + current projection).
 	private void PushVertT(Vector2 dev, float r, float g, float b, float a, float slotBits)
 	{
 		_scratch.Add(dev.X); _scratch.Add(dev.Y); _scratch.Add(r); _scratch.Add(g); _scratch.Add(b); _scratch.Add(a); _scratch.Add(slotBits);
@@ -390,8 +353,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	private IntPtr MakeUniform(int byteSize)
 		=> _d.BufferPool.Rent(byteSize, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
 
-	// Resource allocation that is pooled (owned == null) for per-frame commands, or persistent (added to `owned`
-	// for later release) for a cached recording's geometry that must survive across frames.
 	private IntPtr Vbuf(float[] data, OwnedResources owned)
 	{
 		if (owned is null) { return MakeBuffer(data); }
@@ -419,12 +380,8 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		return bg;
 	}
 
-	// The clip bind group for a command: just the ClipU uniform (rounded-rect + surface size). Arbitrary path clips
-	// are applied via the shared depth mask in the main pass, not sampled here, so there is no coverage texture.
 	private const int ClipUBytes = 288;   // rects[4]+radii[4] (128) + ex+ctrl+size+xform+xoff+finv (96) + radiiY[4] (64); match the WGSL struct
 
-	// Fills the shared _clipU scratch with the WGSL ClipU image for (cd, xform, finv).
-	// Returns true when the clip's AABB was folded in as a radius-0 round (see AabbInClipU).
 	private bool FillClipU(ClipData cd, Matrix3x2 xform, Matrix3x2 finv)
 	{
 		if (xform == default) { xform = Matrix3x2.Identity; }   // default(Matrix3x2) is all-zero; treat as identity
@@ -515,13 +472,9 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	{
 		_renderIntoStart = System.Diagnostics.Stopwatch.GetTimestamp();
 
-		// Build GPU resources for every command up front (buffers/textures must be created outside the
-		// render pass), preserving draw order in a single op list so cross-type z-order is honoured.
 		var ops = RentOps();
 		var solid = RentSolid();
 		var rrect = RentRrect();
-		// Per-pass transform table (path fills). Saved/restored around the recursive nested-layer RenderInto so each
-		// pass builds and uploads its own. Transient (immediate-draw) slots are collected here and freed at pass end.
 		var savedXforms = _xforms; var savedTransient = _xformTransient;
 		// Immediate gradient quads share ONE per-pass buffer, like solids. Giving each quad its own pooled buffer
 		// reads cleaner but costs a queue write apiece: 500 native calls per frame on RenderStress_Gradients to
@@ -539,8 +492,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		// Recordings emitted so far in THIS pass. A recording replayed more than once in one frame (same command
 		// list at different transforms) can't share its single resident slab slice — see the frame-solid branch.
 		var frameEmitted = new HashSet<List<WebGpuCommand>>(System.Collections.Generic.ReferenceEqualityComparer.Instance);
-		// Backdrops deferred to encode-time pass-segmenting (a BackdropSegment op): each samples the framebuffer SO FAR
-		// (content behind it) rather than re-rendering the whole command prefix, which would be O(n^2).
 		var backdrops = new List<BackdropCmd>();
 		for (int ci = 0; ci < cmds.Count; ci++)
 		{
@@ -549,9 +500,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 			{
 				case RectCommand rc0:
 					{
-						// Coalesce a run of consecutive rects sharing the same clip into the shared solid buffer + one op.
-						// VertexSource.PassBuffer marks a shared-buffer solid (b1=start vertex, u0=count) so adjacent solid ops that
-						// share a clip bind group coalesce further ACROSS recordings in the emit loop.
 						int j = ci; int start = solid.Count / 6;
 						while (j < cmds.Count && cmds[j] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
 						{
@@ -611,14 +559,9 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		var pathBufBytes = (nuint)(_pathVerts.Count * sizeof(float));
 		var solidBufBytes = (nuint)(solid.Count * sizeof(float));
 
-		// Upload this pass's transform table + one read-only storage bind group (group 0 of the path-fill pipelines).
-		// Every drawn path recording wrote its slot's local->NDC affine above; a pass with no path fills skips this.
 		nint xformBg = IntPtr.Zero;
 		if (_xforms.Count > 0)
 		{
-			// Main on-window pass: persistent buffer + bind group cached across frames (rebuilt only on growth).
-			// Nested/pooled passes rent a transient buffer instead so their distinct tables never alias the main one
-			// within a single frame's submit (queue ordering only protects the persistent buffer across frames).
 			if (target == _s)
 			{
 				xformBg = _d.EnsureXformBindGroup(_xforms);
@@ -670,11 +613,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &desc);
 		var encodeStart = System.Diagnostics.Stopwatch.GetTimestamp();
 
-		// Track the last-applied scissor and skip redundant SetScissorRect calls: static chrome draws many ops under
-		// one clip, so this collapses a per-op call to one per distinct clip. Locals (not a field) keep it correct
-		// under the recursive nested-layer RenderInto (each pass has its own scissor state).
-		// Current in-pass path-clip mask (device depth buffer). Changes only when a run of ops moves to a different
-		// path clip — the composition emits a clip then its subtree consecutively, so this fires ~once per clip.
 		var pst = new PassOps
 		{
 			Pass = pass, Target = target, Ops = ops, Backdrops = backdrops,
@@ -701,8 +639,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		ReturnOps(ops);   // ops are fully encoded into the pass now — recycle the list
 		ReturnSolid(solid);
 		ReturnRrect(rrect);
-		// Return this pass's transient (immediate-draw) transform slots to the free-list and recycle the table lists,
-		// then restore the enclosing pass's table (nested-layer render).
 		foreach (var s in _xformTransient) { _d.FreeXformSlot(s); }
 		_xforms.Clear(); _xformsPool.Push(_xforms);
 		_xformTransient.Clear(); _xformTransientPool.Push(_xformTransient);
@@ -715,8 +651,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		_xforms = savedXforms; _xformTransient = savedTransient;
 	}
 
-	// Immediate-mode drawing forwards to the overlay recorder; Scale/Save/Restore additionally drive the frame's
-	// root DPI scale (_presentScale) applied to the replayed frame.
 	public Matrix4x4 TotalMatrix => _overlay.TotalMatrix;
 	public void SetMatrix(in Matrix4x4 matrix) => _overlay.SetMatrix(matrix);
 	public void Concat(in Matrix4x4 matrix) => _overlay.Concat(matrix);
