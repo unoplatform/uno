@@ -111,6 +111,9 @@
 		<Compile Include="..\Uno.UI.RemoteControl.VS\AbsolutePathComparer.cs">
 		  <Link>Helpers\AbsolutePathComparer.cs</Link>
 		</Compile>
+		<Compile Include="..\Uno.UWP\UI\Notifications\Internal\AndroidToastNotificationBootReceiverLifecycle.Android.cs">
+			<Link>Microsoft_Windows_AppNotifications\AndroidToastNotificationBootReceiverLifecycle.Android.cs</Link>
+		</Compile>
 		<Compile Include="..\Uno.UI.RuntimeTests\Helpers\SizeAssertion.cs" Link="Extensions\SizeAssertion.cs" />
 		<Compile Include="..\Uno.UI.RuntimeTests\Tests\Windows_UI_Xaml_Controls\Given_ListViewBase_Items.cs" Link="Windows_UI_XAML_Controls\ListViewBaseTests\Given_ListViewBase_Items.cs" />
 		<Compile Include="..\Uno.UI.RuntimeTests\Tests\Windows_UI_Xaml_Controls\GroupingObservableCollection.cs" Link="Windows_UI_XAML_Controls\ListViewBaseTests\GroupingObservableCollection.cs" />

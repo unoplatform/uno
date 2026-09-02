@@ -28,7 +28,9 @@
 		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/SamplesApp*.dll"/>
 		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/Uno.UI.RuntimeTests*.dll"/>
 		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/System*.dll"/>
-		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/Microsoft*.dll"/>
+		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/Microsoft*.dll" />
+		<!-- The Windows App SDK projection ships WinRT.Runtime, whose Windows.Foundation primitives collide with Uno.Foundation. -->
+		<UnoReferenceExclusion Include="$(_UnoBaseReferenceBinPath)/WinRT.Runtime.dll" />
 
 		<Reference Include="$(_UnoBaseReferenceBinPath)/*.dll" 
 				   Exclude="@(UnoReferenceExclusion)" />

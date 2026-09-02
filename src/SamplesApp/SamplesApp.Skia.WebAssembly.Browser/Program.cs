@@ -1,4 +1,7 @@
-﻿using Uno.UI.Hosting;
+﻿using Uno;
+using Uno.UI.Hosting;
+
+WinRTFeatureConfiguration.AppNotifications.UseServiceWorkerOnWebAssembly = true;
 
 var host = UnoPlatformHostBuilder.Create()
 	.App(() => new SamplesApp.App())

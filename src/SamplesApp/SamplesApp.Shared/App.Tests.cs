@@ -259,16 +259,16 @@ partial class App
 		const string samplePrefix = "sample=";
 		try
 		{
-			args = Uri.UnescapeDataString(args);
-
-			if (string.IsNullOrEmpty(args) || !args.StartsWith(samplePrefix))
+			var sampleArgument = args
+				.Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries)
+				.FirstOrDefault(argument => argument.StartsWith(samplePrefix, StringComparison.Ordinal));
+			if (sampleArgument is null)
 			{
 				return false;
 			}
 
-			args = args.Substring(samplePrefix.Length);
-
-			var pathParts = args.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
+			var samplePath = Uri.UnescapeDataString(sampleArgument.Substring(samplePrefix.Length));
+			var pathParts = samplePath.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 			var category = pathParts[0];
 			var sampleName = pathParts[1];
 

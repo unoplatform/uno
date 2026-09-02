@@ -48,6 +48,9 @@ namespace Microsoft.UI.Xaml
 		/// <returns>Value indicating whether launch can be handled.</returns>
 		public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
 		{
+#if !__TVOS__
+			Microsoft.Windows.AppNotifications.Internal.AppleAppNotificationRuntime.InitializeEarly();
+#endif
 			InitializationCompleted();
 			var handled = false;
 			if (launchOptions != null)

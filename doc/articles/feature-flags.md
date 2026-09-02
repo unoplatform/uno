@@ -110,6 +110,20 @@ When `ContentDialog` version is used, it uses the default `ContentDialog` style.
 WinRTFeatureConfiguration.MessageDialog.StyleOverride = "CustomMessageDialogStyle";
 ```
 
+## App notifications
+
+On WebAssembly, app notifications use the document-scoped browser `Notification` API by default. Developers can opt into persistent notifications backed by `ServiceWorkerRegistration.showNotification()` during application startup:
+
+```csharp
+WinRTFeatureConfiguration.AppNotifications.UseServiceWorkerOnWebAssembly = true;
+```
+
+Set the flag before accessing `AppNotificationManager.Default`. Service-worker mode allows notifications to remain active after the page is closed, restores active notification history after a reload, and can reopen or focus the application when the notification is selected. The default document mode retains the existing page-scoped behavior.
+
+Both modes require a secure browser context and notification permission from the user. The service-worker mode does not register a Web Push subscription or add scheduled notification delivery.
+
+Call `AppNotificationManager.Register()` from a user-initiated action. Registration starts the browser's asynchronous permission request; wait until `AppNotificationManager.Default.Setting` is `AppNotificationSetting.Enabled` before showing the first notification.
+
 ## TextBox
 
 ### Disable the iPadOS 26 floating number pad popover (iOS)

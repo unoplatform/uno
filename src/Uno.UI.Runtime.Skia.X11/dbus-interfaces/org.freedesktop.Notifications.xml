@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<node name="/org/freedesktop/Notifications">
+  <interface name="org.freedesktop.Notifications">
+    <method name="GetCapabilities">
+      <arg direction="out" type="as" name="capabilities" />
+    </method>
+    <method name="Notify">
+      <arg direction="in" type="s" name="app_name" />
+      <arg direction="in" type="u" name="replaces_id" />
+      <arg direction="in" type="s" name="app_icon" />
+      <arg direction="in" type="s" name="summary" />
+      <arg direction="in" type="s" name="body" />
+      <arg direction="in" type="as" name="actions" />
+      <arg direction="in" type="a{sv}" name="hints" />
+      <arg direction="in" type="i" name="expire_timeout" />
+      <arg direction="out" type="u" name="id" />
+    </method>
+    <method name="CloseNotification">
+      <arg direction="in" type="u" name="id" />
+    </method>
+    <method name="GetServerInformation">
+      <arg direction="out" type="s" name="name" />
+      <arg direction="out" type="s" name="vendor" />
+      <arg direction="out" type="s" name="version" />
+      <arg direction="out" type="s" name="spec_version" />
+    </method>
+    <signal name="NotificationClosed">
+      <arg type="u" name="id" />
+      <arg type="u" name="reason" />
+    </signal>
+    <signal name="ActionInvoked">
+      <arg type="u" name="id" />
+      <arg type="s" name="action_key" />
+    </signal>
+    <signal name="ActivationToken">
+      <arg type="u" name="id" />
+      <arg type="s" name="activation_token" />
+    </signal>
+  </interface>
+</node>
