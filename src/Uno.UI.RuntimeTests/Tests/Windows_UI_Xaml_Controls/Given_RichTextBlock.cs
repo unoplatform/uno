@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI;
@@ -1578,5 +1578,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		#endregion
+
+		[TestMethod]
+		public void When_Negative_MaxLines_Or_LineHeight()
+		{
+			// CRichTextBlock::SetValue rejects both with E_INVALIDARG; the port accepted them silently.
+			var SUT = new RichTextBlock();
+
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.MaxLines = -1, "A negative MaxLines should be rejected");
+			Assert.AreEqual(0, SUT.MaxLines, "The rejected value must not be committed");
+
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.LineHeight = -1d, "A negative LineHeight should be rejected");
+			Assert.AreEqual(0d, SUT.LineHeight, "The rejected value must not be committed");
+
+			// Zero and positive values stay valid.
+			SUT.MaxLines = 3;
+			SUT.LineHeight = 24d;
+			Assert.AreEqual(3, SUT.MaxLines);
+			Assert.AreEqual(24d, SUT.LineHeight);
+		}
 	}
 }
