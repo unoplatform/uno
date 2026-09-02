@@ -54,7 +54,8 @@ namespace Microsoft.UI.Xaml.Controls
 			Size Size,
 			Thickness Margin,
 			int FirstLine,
-			int LineCount);
+			int LineCount,
+			int BlockIndex);
 
 		private List<ParagraphLayout> _paragraphLayouts = new();
 		private Size _lastMeasuredContentSize;
@@ -255,7 +256,8 @@ namespace Microsoft.UI.Xaml.Controls
 						Size: contentSize,
 						Margin: margin,
 						FirstLine: paragraphNode.FirstLineIndex,
-						LineCount: paragraphNode.LineCount));
+						LineCount: paragraphNode.LineCount,
+						BlockIndex: blockIndex));
 
 					accumHeight += (float)boxSize.Height;
 					maxWidth = Math.Max(maxWidth, (float)boxSize.Width);
@@ -318,7 +320,7 @@ namespace Microsoft.UI.Xaml.Controls
 				canvas.ClipRect(new SKRect(0, 0, (float)layout.Size.Width, (float)layout.Size.Height));
 
 				// Build highlighters for this paragraph (including selection)
-				var paragraphHighlighters = GetParagraphHighlighters(layout, p);
+				var paragraphHighlighters = GetParagraphHighlighters(layout, layout.BlockIndex);
 
 				layout.ParsedText.Draw(this, session, null, paragraphHighlighters, compositionRange: null, layout.FirstLine, layout.LineCount);
 
@@ -328,7 +330,7 @@ namespace Microsoft.UI.Xaml.Controls
 			canvas.Restore();
 		}
 
-		private IEnumerable<TextHighlighter> GetParagraphHighlighters(ParagraphLayout layout, int paragraphIndex)
+		internal IEnumerable<TextHighlighter> GetParagraphHighlighters(ParagraphLayout layout, int paragraphIndex)
 		{
 			// Called once per paragraph on every paint: collect into a list instead of chaining
 			// Enumerable.Append iterators, which allocates one wrapper per highlighter per frame.

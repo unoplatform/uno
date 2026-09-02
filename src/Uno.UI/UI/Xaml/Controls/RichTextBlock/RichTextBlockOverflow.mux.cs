@@ -425,7 +425,8 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 					Size: contentSize,
 					Margin: margin,
 					FirstLine: paragraphNode.FirstLineIndex,
-					LineCount: paragraphNode.LineCount));
+					LineCount: paragraphNode.LineCount,
+					BlockIndex: blockIndex));
 
 				accumHeight += (float)boxSize.Height;
 			}
@@ -460,7 +461,13 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 
 			// TODO Uno (Stage 9 overflow selection): apply selection/text-highlighters to the overflow's
 			// content slice (the master's TextSelectionManager owns selection across the whole chain).
-			layout.ParsedText.Draw(this, session, null, Enumerable.Empty<TextHighlighter>(), compositionRange: null, layout.FirstLine, layout.LineCount);
+			// The column shows the master's content, so it paints the master's highlighters and
+			// selection over its own slice.
+			var highlighters = _pMaster is { } master
+				? master.GetParagraphHighlighters(layout, layout.BlockIndex)
+				: Enumerable.Empty<TextHighlighter>();
+
+			layout.ParsedText.Draw(this, session, null, highlighters, compositionRange: null, layout.FirstLine, layout.LineCount);
 
 			canvas.Restore();
 		}
