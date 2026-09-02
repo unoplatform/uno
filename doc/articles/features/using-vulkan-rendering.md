@@ -4,12 +4,12 @@ uid: Uno.Skia.Vulkan
 
 # Vulkan Rendering Backend
 
-Uno Platform supports Vulkan as an optional hardware-accelerated rendering backend for the Skia renderer on **Android**, **Linux (X11)**, and **Windows (Win32)**.
+Uno Platform uses Vulkan as the hardware-accelerated rendering backend for the Skia renderer on **Android**, **Linux (X11)**, and **Windows (Win32)**.
 
-Vulkan provides lower driver overhead and more efficient GPU utilization compared to OpenGL on supported hardware. When enabled, the Skia drawing operations are backed by a Vulkan graphics pipeline instead of OpenGL.
+Vulkan provides lower driver overhead and more efficient GPU utilization compared to OpenGL on supported hardware. The Skia drawing operations are backed by a Vulkan graphics pipeline instead of OpenGL.
 
 > [!NOTE]
-> Vulkan rendering is **opt-in**. The default rendering backend remains OpenGL (or software) on all platforms. Enabling Vulkan when it is not available on the target device will automatically fall back to the default backend.
+> Since Uno Platform 7.0, Vulkan is the **default** backend on those three platforms — it was opt-in before. Devices without a usable Vulkan driver fall back to OpenGL (or software rendering) automatically, so no configuration is required either way. To force the previous behavior, see [Disabling Vulkan](#disabling-vulkan).
 
 ## Platform Support
 
@@ -103,9 +103,31 @@ To force software rendering on both paths, disable each one:
 .UseAndroid(b => b.UseVulkan(false).UseOpenGL(false))
 ```
 
+## Disabling Vulkan
+
+Vulkan is the default on Android, Linux (X11) and Windows (Win32) since Uno Platform 7.0. To go
+back to the pre-7.0 behavior of rendering with OpenGL, select the OpenGL backend explicitly:
+
+```csharp
+var host = UnoPlatformHostBuilder.Create()
+    .App(() => new App())
+    .UseX11(b => b.RenderingBackend(X11RenderingBackend.OpenGL))
+    .UseWin32(b => b.RenderingBackend(Win32RenderingBackend.OpenGL))
+    .Build();
+```
+
+Or clear the feature flag before the host is built — the only option on Android, which has no
+host-builder backend enum:
+
+```csharp
+FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid = false;
+FeatureConfiguration.Rendering.UseVulkanOnX11 = false;
+FeatureConfiguration.Rendering.UseVulkanOnWin32 = false;
+```
+
 ## Fallback Behavior
 
-When Vulkan is requested but unavailable, the application automatically falls back to the next available backend:
+When Vulkan is unavailable, the application automatically falls back to the next available backend:
 
 1. **Vulkan** (if requested)
 2. **OpenGL / OpenGL ES** (platform default)
