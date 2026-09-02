@@ -413,7 +413,8 @@
 	<PropertyGroup Condition="'$(_Platform)' == 'tvos'">
 		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">tvossimulator-x64</RuntimeIdentifier>
 
-		<CodesignProvision>Uno Dev Samples</CodesignProvision>
+		<!-- Only a default: a contributor or CI without that profile installed can override it. -->
+		<CodesignProvision Condition="'$(CodesignProvision)' == ''">Uno Dev Samples</CodesignProvision>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(_Platform)' == 'tvos' AND '$(BuildForTestFlight)' == 'true'">
