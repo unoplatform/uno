@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -865,11 +865,17 @@ internal readonly partial struct UnicodeText : IParsedText
 		return path.Detach();
 	}
 
+	// firstLine/lineCount exist for paragraphs broken across a page break. TextBlock never pages, so
+	// they are always the full range here.
 	public void Draw(UIElement owner, in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret, // null to skip drawing a caret
 		IEnumerable<TextHighlighter> highlighters,
-		(int startIndex, int length)? compositionRange)
+		(int startIndex, int length)? compositionRange,
+		int firstLine = 0,
+		int lineCount = int.MaxValue)
 	{
+		global::System.Diagnostics.Debug.Assert(firstLine == 0 && lineCount == int.MaxValue, "TextBlock does not page its content.");
+
 		var useHighContrastAdjustment = owner.UseHighContrastAdjustment();
 		var effectiveOpacity = useHighContrastAdjustment && session.Opacity > 0
 			? 1f

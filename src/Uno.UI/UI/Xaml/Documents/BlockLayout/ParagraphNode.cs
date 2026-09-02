@@ -88,6 +88,10 @@ internal sealed partial class ParagraphNode : BlockNode, IEmbeddedElementHost
 	// to detect MaxLines clipping for IsTextTrimmed.
 	internal int LineCount => m_lines.Count;
 
+	// Index of this page's first line within the paragraph's ParsedText. A paragraph broken across a
+	// page starts partway in, so the renderer needs it to paint the continuation rather than line 0.
+	internal int FirstLineIndex => m_lines.Count > 0 && m_lines[0].Line is SkiaTextLine line ? line.LineIndex : 0;
+
 	// Whether this paragraph has a trimmed (ellipsized) line. Mirrors ParagraphNode::GetHasTrimmedLine;
 	// the overflow's UpdateIsTextTrimmed walks the page's ParagraphNodes looking for one.
 	internal bool GetHasTrimmedLine() => m_hasTrimmedLine;
