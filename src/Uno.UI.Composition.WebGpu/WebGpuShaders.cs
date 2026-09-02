@@ -441,7 +441,13 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
   // on Intel-class GPUs, and this shader is fragment-bound over large areas. Constant indices avoid that.
   if (n <= 4) {
     let s0 = g.stops[0][0]; let s1 = g.stops[0][1]; let s2 = g.stops[0][2]; let s3 = g.stops[0][3];
-    if (n < 2 || t <= s0) { col = g.colors[0]; }
+    // Past the LAST stop is tested before before-the-first, because coincident stops satisfy both. Two stops at
+    // the same offset are a hard switch (the focused TextBox border puts both at 1.0 to get an accent underline
+    // under a grey ring); testing t <= s0 first makes every fragment take colors[0] and floods the shape with it.
+    let sLast = select(select(select(s0, s1, n >= 2), s2, n >= 3), s3, n >= 4);
+    let cLast = select(select(select(g.colors[0], g.colors[1], n >= 2), g.colors[2], n >= 3), g.colors[3], n >= 4);
+    if (n >= 2 && t >= sLast) { col = cLast; }
+    else if (n < 2 || t <= s0) { col = g.colors[0]; }
     else if (t <= s1) { col = mix(g.colors[0], g.colors[1], select(0.0, (t - s0) / (s1 - s0), s1 > s0)); }
     else if (n < 3) { col = g.colors[1]; }
     else if (t <= s2) { col = mix(g.colors[1], g.colors[2], select(0.0, (t - s1) / (s2 - s1), s2 > s1)); }
@@ -450,8 +456,8 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
     else { col = g.colors[3]; }
     return vec4<f32>(col.rgb, col.a * clipCovMapped(gfc, clip));
   }
-  if (t <= stopAt(0)) { col = g.colors[0]; }
-  else if (t >= stopAt(n - 1)) { col = g.colors[n - 1]; }
+  if (t >= stopAt(n - 1)) { col = g.colors[n - 1]; }
+  else if (t <= stopAt(0)) { col = g.colors[0]; }
   else {
     for (var i = 0; i < n - 1; i = i + 1) {
       let s0 = stopAt(i); let s1 = stopAt(i + 1);
