@@ -505,6 +505,18 @@ Independently of rendering, manipulation recognition was realigned with WinUI:
 7.0 realigns several types to their WinUI base classes. Most code is unaffected — the
 change only breaks code that used the Uno-only members leaked by the wrong base.
 
+- **`DependencyObject` is a class, not an interface.** Uno declared it as an interface so that
+  `UIElement` could inherit the platform's native view type on Android and iOS. With Skia
+  rendering everywhere that constraint is gone, and `DependencyObject` is now an ordinary base
+  class as it is in WinUI. Two consequences:
+
+  - A type that inherits `DependencyObject` **no longer needs the `partial` keyword** — the
+    source generator that used to supply the interface implementation is gone. Existing
+    `partial` declarations keep compiling, so nothing forces you to change them.
+  - A type can no longer inherit some *other* base class and pick up `DependencyObject`
+    alongside it. That only ever worked because it was an interface, and WinUI never allowed
+    it. Such a type has to be reworked to derive from `DependencyObject` (or a type that does).
+
 - **`MediaPlayerPresenter`** now derives directly from **`FrameworkElement`** (matching
   WinUI) instead of `Border`, removing the extra `Border` level. The `Border`-only surface
   it used to expose — `Child`, `Background`, `BorderBrush`, `BorderThickness`, `CornerRadius`,
