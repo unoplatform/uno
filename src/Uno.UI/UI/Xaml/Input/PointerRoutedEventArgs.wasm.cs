@@ -11,7 +11,14 @@ partial class PointerRoutedEventArgs : IHtmlHandleableRoutedEventArgs
 	HtmlEventDispatchResult IHtmlHandleableRoutedEventArgs.HandledResult { get; set; } = HtmlEventDispatchResult.StopPropagation;
 
 	internal static Point ToRelativePosition(Point absolutePosition, UIElement relativeTo)
-		=> relativeTo == null
-			? absolutePosition
-			: relativeTo.TransformToVisual(null).Inverse.TransformPoint(absolutePosition);
+	{
+		if (relativeTo is null)
+		{
+			return absolutePosition;
+		}
+
+		return relativeTo.TransformToVisual(null).TryTransformInverse(absolutePosition, out var relativePosition)
+			? relativePosition
+			: absolutePosition;
+	}
 }

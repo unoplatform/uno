@@ -135,11 +135,38 @@ namespace Uno.UI.DataBinding
 		public (object DataContext, string PropertyName) GetTargetContextAndPropertyName()
 		{
 			var info = GetPathItems().Last();
-			var propertyName = info.PropertyName
-				.Split('.').Last()
-				.Replace("(", "").Replace(")", "");
 
-			return (info.DataContext, propertyName);
+			return (info.DataContext, GetLeafPropertyName(info.PropertyName));
+		}
+
+		/// <summary>
+		/// Extracts the property name of the last path segment, without its enclosing parenthesis.
+		/// </summary>
+		private static string GetLeafPropertyName(string propertyName)
+		{
+			var name = propertyName.AsSpan();
+			var lastDot = name.LastIndexOf('.');
+			if (lastDot >= 0)
+			{
+				name = name[(lastDot + 1)..];
+			}
+
+			if (name.IndexOfAny('(', ')') < 0)
+			{
+				return lastDot < 0 ? propertyName : new string(name);
+			}
+
+			Span<char> buffer = name.Length <= 128 ? stackalloc char[name.Length] : new char[name.Length];
+			var length = 0;
+			foreach (var c in name)
+			{
+				if (c is not ('(' or ')'))
+				{
+					buffer[length++] = c;
+				}
+			}
+
+			return new string(buffer[..length]);
 		}
 
 		/// <summary>
@@ -441,7 +468,8 @@ namespace Uno.UI.DataBinding
 				return;
 			}
 
-			var itemPath = path.Substring(start, length);
+			// Reuse the source instance when the item spans the whole path, which is the common single-property case.
+			var itemPath = start == 0 && length == path.Length ? path : path.Substring(start, length);
 			var item = new BindingItem(head, itemPath, forAnimations, allowPrivateMembers);
 
 			head = item;

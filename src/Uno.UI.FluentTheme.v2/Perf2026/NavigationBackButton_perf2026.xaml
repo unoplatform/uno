@@ -1,0 +1,60 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<!-- Optimized (perf2026) variant of Resources\Version2\PriorityDefault\NavigationBackButton.xaml -->
+<!-- Visual states applying a single zero-length DiscreteObjectKeyFrame are expressed as VisualState setters. -->
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+  <Style x:Key="NavigationBackButtonNormalStyle" TargetType="Button">
+    <Setter Property="Background" Value="{ThemeResource NavigationViewBackButtonBackground}" />
+    <Setter Property="Foreground" Value="{ThemeResource NavigationViewItemForeground}" />
+    <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
+    <Setter Property="FontSize" Value="16" />
+    <Setter Property="Height" Value="{ThemeResource NavigationBackButtonHeight}" />
+    <Setter Property="Width" Value="{ThemeResource NavigationBackButtonWidth}" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+    <Setter Property="Content" Value="&#xE72B;" />
+    <Setter Property="Margin" Value="4,2" />
+    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="Button">
+          <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}">
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal" />
+                <VisualState x:Name="PointerOver">
+                  <VisualState.Setters>
+                    <Setter Target="RootGrid.Background" Value="{ThemeResource NavigationViewButtonBackgroundPointerOver}" />
+                    <Setter Target="Content.Foreground" Value="{ThemeResource NavigationViewButtonForegroundPointerOver}" />
+                    <Setter Target="Content.(controls:AnimatedIcon.State)" Value="PointerOver" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Pressed">
+                  <VisualState.Setters>
+                    <Setter Target="RootGrid.Background" Value="{ThemeResource NavigationViewButtonBackgroundPressed}" />
+                    <Setter Target="Content.Foreground" Value="{ThemeResource NavigationViewButtonForegroundPressed}" />
+                    <Setter Target="Content.(controls:AnimatedIcon.State)" Value="Pressed" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Disabled">
+                  <VisualState.Setters>
+                    <Setter Target="Content.Foreground" Value="{ThemeResource NavigationViewButtonForegroundDisabled}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+            <controls:AnimatedIcon x:Name="Content" Height="16" Width="16" local:AnimatedIcon.State="Normal" MirroredWhenRightToLeft="True" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" xmlns:local="using:Microsoft.UI.Xaml.Controls">
+              <animatedvisuals:AnimatedBackVisualSource />
+              <controls:AnimatedIcon.FallbackIconSource>
+                <controls:FontIconSource FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}" FontFamily="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontFamily}" Glyph="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" MirroredWhenRightToLeft="True" />
+              </controls:AnimatedIcon.FallbackIconSource>
+            </controls:AnimatedIcon>
+          </Grid>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style x:Key="NavigationBackButtonSmallStyle" TargetType="Button" BasedOn="{StaticResource NavigationBackButtonNormalStyle}">
+    <Setter Property="Margin" Value="4,2,0,2" />
+  </Style>
+</ResourceDictionary>

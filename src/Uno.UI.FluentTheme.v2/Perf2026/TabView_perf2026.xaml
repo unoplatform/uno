@@ -1,0 +1,141 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<!-- Optimized (perf2026) variant of Resources\Version2\PriorityDefault\TabView.xaml -->
+<!-- Visual states applying a single zero-length DiscreteObjectKeyFrame are expressed as VisualState setters. -->
+<ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:not_skia="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:ios="http://uno.ui/ios" xmlns:android="http://uno.ui/android" xmlns:not_android="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="ios android">
+  <Style x:Key="TabViewCloseButtonStyle" TargetType="Button">
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
+    <Setter Property="FontSize" Value="{ThemeResource TabViewItemHeaderCloseFontSize}" />
+    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+    <Setter Property="Width" Value="{ThemeResource TabViewItemHeaderCloseButtonWidth}" />
+    <Setter Property="Height" Value="{ThemeResource TabViewItemHeaderCloseButtonHeight}" />
+    <Setter Property="Background" Value="{ThemeResource TabViewItemHeaderCloseButtonBackground}" />
+    <Setter Property="Foreground" Value="{ThemeResource TabViewItemHeaderCloseButtonForeground}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource TabViewItemHeaderCloseButtonBorderBrush}" />
+    <Setter Property="BorderThickness" Value="{ThemeResource TabViewItemHeaderCloseButtonBorderThickness}" />
+    <Setter Property="FocusVisualMargin" Value="-3" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="Button">
+          <ContentPresenter x:Name="ContentPresenter" AutomationProperties.AccessibilityView="Raw" BackgroundSizing="{TemplateBinding BackgroundSizing}" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" CornerRadius="{TemplateBinding CornerRadius}" ContentTransitions="{TemplateBinding ContentTransitions}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}">
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal" />
+                <VisualState x:Name="PointerOver">
+                  <VisualState.Setters>
+                    <Setter Target="ContentPresenter.Background" Value="{ThemeResource TabViewItemHeaderCloseButtonBackgroundPointerOver}" />
+                    <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TabViewItemHeaderCloseButtonForegroundPointerOver}" />
+                    <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource TabViewItemHeaderCloseButtonBorderBrushPointerOver}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Pressed">
+                  <VisualState.Setters>
+                    <Setter Target="ContentPresenter.Background" Value="{ThemeResource TabViewItemHeaderCloseButtonBackgroundPressed}" />
+                    <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TabViewItemHeaderCloseButtonForegroundPressed}" />
+                    <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource TabViewItemHeaderCloseButtonBorderBrushPressed}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+          </ContentPresenter>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style x:Name="TabViewButtonStyle" TargetType="Button">
+    <Setter Property="Background" Value="{ThemeResource TabViewButtonBackground}" />
+    <Setter Property="Foreground" Value="{ThemeResource TabViewButtonForeground}" />
+    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="FontSize" Value="{ThemeResource TabViewItemAddButtonFontSize}" />
+    <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
+    <Setter Property="Width" Value="{ThemeResource TabViewItemAddButtonWidth}" />
+    <Setter Property="Height" Value="{ThemeResource TabViewItemAddButtonHeight}" />
+    <Setter Property="BorderThickness" Value="{ThemeResource TabViewButtonBorderThickness}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource TabViewButtonBorderBrush}" />
+    <Setter Property="FocusVisualMargin" Value="-3" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="Button">
+          <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" BackgroundSizing="{TemplateBinding BackgroundSizing}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" CornerRadius="{TemplateBinding CornerRadius}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" FontWeight="{TemplateBinding FontWeight}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw">
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal" />
+                <VisualState x:Name="PointerOver">
+                  <VisualState.Setters>
+                    <Setter Target="ContentPresenter.Background" Value="{ThemeResource TabViewButtonBackgroundPointerOver}" />
+                    <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TabViewButtonForegroundPointerOver}" />
+                    <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource TabViewButtonBorderBrushPointerOver}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Pressed">
+                  <VisualState.Setters>
+                    <Setter Target="ContentPresenter.Background" Value="{ThemeResource TabViewButtonBackgroundPressed}" />
+                    <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TabViewButtonForegroundPressed}" />
+                    <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource TabViewButtonBorderBrushPressed}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Disabled">
+                  <VisualState.Setters>
+                    <Setter Target="ContentPresenter.Background" Value="{ThemeResource TabViewButtonBackgroundDisabled}" />
+                    <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TabViewButtonForegroundDisabled}" />
+                    <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource TabViewButtonBorderBrushDisabled}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+          </ContentPresenter>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+  <Style x:Name="TabViewScrollButtonStyle" TargetType="RepeatButton">
+    <Setter Property="Background" Value="{ThemeResource TabViewScrollButtonBackground}" />
+    <Setter Property="Foreground" Value="{ThemeResource TabViewScrollButtonForeground}" />
+    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="FontSize" Value="{ThemeResource TabViewItemScrollButonFontSize}" />
+    <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
+    <Setter Property="Width" Value="{ThemeResource TabViewItemScrollButtonWidth}" />
+    <Setter Property="Height" Value="{ThemeResource TabViewItemScrollButtonHeight}" />
+    <Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
+    <Setter Property="BorderThickness" Value="{ThemeResource TabViewButtonBorderThickness}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource TabViewScrollButtonBorderBrush}" />
+    <Setter Property="FocusVisualMargin" Value="-3" />
+    <Setter Property="ManipulationMode" Value="None" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="RepeatButton">
+          <ContentPresenter x:Name="ContentPresenter" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" BackgroundSizing="{TemplateBinding BackgroundSizing}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" CornerRadius="{TemplateBinding CornerRadius}" FontSize="{TemplateBinding FontSize}" FontFamily="{TemplateBinding FontFamily}" FontWeight="{TemplateBinding FontWeight}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw">
+            <VisualStateManager.VisualStateGroups>
+              <VisualStateGroup x:Name="CommonStates">
+                <VisualState x:Name="Normal" />
+                <VisualState x:Name="PointerOver">
+                  <VisualState.Setters>
+                    <Setter Target="ContentPresenter.Background" Value="{ThemeResource TabViewScrollButtonBackgroundPointerOver}" />
+                    <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TabViewScrollButtonForegroundPointerOver}" />
+                    <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource TabViewScrollButtonBorderBrushPointerOver}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Pressed">
+                  <VisualState.Setters>
+                    <Setter Target="ContentPresenter.Background" Value="{ThemeResource TabViewScrollButtonBackgroundPressed}" />
+                    <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TabViewScrollButtonForegroundPressed}" />
+                    <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource TabViewScrollButtonBorderBrushPressed}" />
+                  </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Disabled">
+                  <VisualState.Setters>
+                    <Setter Target="ContentPresenter.Background" Value="{ThemeResource TabViewScrollButtonBackgroundDisabled}" />
+                    <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource TabViewScrollButtonForegroundDisabled}" />
+                    <Setter Target="ContentPresenter.BorderBrush" Value="{ThemeResource TabViewScrollButtonBorderBrushDisabled}" />
+                  </VisualState.Setters>
+                </VisualState>
+              </VisualStateGroup>
+            </VisualStateManager.VisualStateGroups>
+          </ContentPresenter>
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+  </Style>
+</ResourceDictionary>

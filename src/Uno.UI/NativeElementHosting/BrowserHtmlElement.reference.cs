@@ -24,7 +24,7 @@ public sealed partial class BrowserHtmlElement : IDisposable
 	private void SetCssStyleNative(string name, string value)
 		=> throw new PlatformNotSupportedException();
 
-	private void SetCssStyleNative(params (string name, string value)[] styles)
+	private void SetCssStyleNative(ReadOnlySpan<(string name, string value)> styles)
 		=> throw new PlatformNotSupportedException();
 
 	private void ClearCssStyleNative(params string[] names)
@@ -42,7 +42,7 @@ public sealed partial class BrowserHtmlElement : IDisposable
 	private void SetHtmlAttributeNative(string name, string value)
 		=> throw new PlatformNotSupportedException();
 
-	private void SetHtmlAttributeNative(params (string name, string value)[] attributes)
+	private void SetHtmlAttributeNative(ReadOnlySpan<(string name, string value)> attributes)
 		=> throw new PlatformNotSupportedException();
 
 	private string GetHtmlAttributeNative(string name)

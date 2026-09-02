@@ -31,15 +31,7 @@ internal static class TemplatedParentScope
 	{
 		if (@do is IDependencyObjectStoreProvider provider)
 		{
-			(store ?? provider.Store).SetTemplatedParent2(tp);
-
-			// note: This can be safely removed, once moving away from legacy impl.
-			// In the new impl, the templated-parent would be immediately available
-			// before any binding is applied, so there is no need to force update.
-			if (reapplyTemplateBindings)
-			{
-				(store ?? provider.Store).ApplyTemplateBindings();
-			}
+			(store ?? provider.Store).SetTemplatedParent2(tp, reapplyTemplateBindings);
 		}
 	}
 

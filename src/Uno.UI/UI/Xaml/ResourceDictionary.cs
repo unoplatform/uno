@@ -932,6 +932,96 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		/// <summary>
+		/// Overlays another dictionary's content on top of the current one, replacing the entries
+		/// sharing the same key and leaving the others untouched.
+		/// </summary>
+		/// <remarks>
+		/// Contrary to <see cref="CopyFrom(ResourceDictionary)"/>, the current content is not cleared.
+		/// Lazily-initialized entries are transferred without being materialized, and the merged
+		/// dictionaries of <paramref name="source"/> are flattened into the current dictionary so that
+		/// the overlaid values keep their precedence over the existing ones.
+		/// </remarks>
+		internal void OverlayFrom(ResourceDictionary source)
+		{
+			if (source is null || ReferenceEquals(source, this))
+			{
+				return;
+			}
+
+			// Merged dictionaries are overlaid first, in order, as the values defined by the source
+			// dictionary itself take precedence over the ones of its merged dictionaries.
+			var mergedDictionaries = source._mergedDictionaries;
+			for (var i = 0; i < mergedDictionaries.Count; i++)
+			{
+				OverlayFrom(mergedDictionaries[i]);
+			}
+
+			foreach (var pair in source._values)
+			{
+				var (key, value) = pair;
+
+				// Lazy resource initialization needs the current XamlScope to resolve values, and the
+				// scope of the source dictionary may not be valid here. Rewrite the initializer so that
+				// name resolution keeps working, without materializing the value (see CopyFrom).
+				if (value is LazyInitializer lazy)
+				{
+					value = new LazyInitializer(ResourceResolver.CurrentScope, lazy.Initializer);
+					_hasUnmaterializedItems = true;
+				}
+
+				Uno.UI.Xaml.Core.CoreServices.Instance.ThemeWalkResourceCache.RemoveCacheEntry(key);
+
+				_values[key] = value;
+			}
+
+			if (source._themeDictionaries is { } sourceThemeDictionaries)
+			{
+				var themeDictionaries = GetOrCreateThemeDictionaries();
+				var sourceEntries = new List<KeyValuePair<ResourceKey, object>>(sourceThemeDictionaries._values.Count);
+				foreach (var pair in sourceThemeDictionaries._values)
+				{
+					sourceEntries.Add(pair);
+				}
+
+				foreach (var pair in sourceEntries)
+				{
+					var (key, value) = pair;
+
+					// Theme dictionaries must be merged individually, as replacing a whole theme
+					// dictionary would drop the entries it does not redefine. Materialize the
+					// dictionary entries first because generated theme dictionaries are lazy.
+					if (value is LazyInitializer)
+					{
+						sourceThemeDictionaries.TryGetValue(key, out value, shouldCheckSystem: false);
+					}
+
+					if (value is ResourceDictionary sourceThemeDictionary)
+					{
+						var overlaidThemeDictionary = new ResourceDictionary();
+						if (themeDictionaries.TryGetValue(key, out var existing, shouldCheckSystem: false)
+							&& existing is ResourceDictionary existingThemeDictionary)
+						{
+							// Copy before overlaying: the existing theme dictionary can originate from
+							// the cached global Fluent resources and must not be mutated process-wide.
+							overlaidThemeDictionary.CopyFrom(existingThemeDictionary);
+						}
+
+						overlaidThemeDictionary.OverlayFrom(sourceThemeDictionary);
+						themeDictionaries.Set(key, overlaidThemeDictionary, throwIfPresent: false);
+					}
+					else
+					{
+						themeDictionaries.Set(key, value, throwIfPresent: false);
+					}
+				}
+
+				themeDictionaries.InvalidateNotFoundCache(true);
+			}
+
+			InvalidateNotFoundCache(true);
+		}
+
 		public global::System.Collections.Generic.ICollection<object> Keys
 			=> _values.Keys.Select(k => ConvertKey(k)).ToList();
 

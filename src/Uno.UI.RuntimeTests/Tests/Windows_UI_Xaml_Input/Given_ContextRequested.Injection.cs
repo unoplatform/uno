@@ -375,5 +375,45 @@ public partial class Given_ContextRequested_Injection
 		Assert.IsTrue(innerButton.Equals(capturedOriginalSource) || VisualTreeUtils.FindVisualParentByType<Button>(capturedOriginalSource as DependencyObject) == innerButton,
 			"OriginalSource should be the inner button where right-click occurred");
 	}
+
+	[TestMethod]
+	public async Task When_RightClick_On_Transformed_Target_Position_Is_In_Local_Coordinates()
+	{
+		// Exercises the inverse transform path of ContextRequestedEventArgs.TryGetPosition: the global
+		// pointer position has to be mapped back through a non-identity render transform.
+		var target = new Border
+		{
+			Background = new SolidColorBrush(Microsoft.UI.Colors.Orange),
+			Width = 100,
+			Height = 100,
+			RenderTransform = new CompositeTransform { ScaleX = 2, ScaleY = 2, TranslateX = 30, TranslateY = 20 },
+			HorizontalAlignment = HorizontalAlignment.Left,
+			VerticalAlignment = VerticalAlignment.Top,
+		};
+		var container = new Grid { Width = 400, Height = 400, Children = { target } };
+
+		Point? receivedPosition = null;
+
+		target.ContextRequested += (sender, args) =>
+		{
+			args.TryGetPosition(target, out var pos);
+			receivedPosition = pos;
+			args.Handled = true;
+		};
+
+		await UITestHelper.Load(container);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init InputInjector");
+		using var mouse = injector.GetMouse();
+
+		// The scaled bounds center maps back to the (50, 50) center in the element's own coordinates.
+		mouse.PressRight(target.GetAbsoluteBounds().GetCenter());
+		mouse.ReleaseRight();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsNotNull(receivedPosition);
+		Assert.AreEqual(50, receivedPosition.Value.X, 2, $"X should be in local coordinates, was {receivedPosition.Value.X}");
+		Assert.AreEqual(50, receivedPosition.Value.Y, 2, $"Y should be in local coordinates, was {receivedPosition.Value.Y}");
+	}
 }
 #endif

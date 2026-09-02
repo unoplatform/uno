@@ -1,6 +1,7 @@
 #nullable enable
 
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
@@ -19,7 +20,10 @@ public static class AriaMapper
 	/// <summary>
 	/// Maps AutomationControlType to ARIA role.
 	/// </summary>
-	private static readonly Dictionary<AutomationControlType, string> ControlTypeToRoleMap = new()
+	/// <remarks>
+	/// Built once and read once per element of every accessibility-tree sync, so it is frozen.
+	/// </remarks>
+	private static readonly FrozenDictionary<AutomationControlType, string> ControlTypeToRoleMap = new Dictionary<AutomationControlType, string>()
 	{
 		{ AutomationControlType.Button, "button" },
 		{ AutomationControlType.CheckBox, "checkbox" },
@@ -55,7 +59,7 @@ public static class AriaMapper
 		{ AutomationControlType.Thumb, "slider" },
 		{ AutomationControlType.ToolBar, "toolbar" },
 		{ AutomationControlType.Custom, "generic" },
-	};
+	}.ToFrozenDictionary();
 
 	/// <summary>
 	/// Gets the ARIA role for an automation control type.

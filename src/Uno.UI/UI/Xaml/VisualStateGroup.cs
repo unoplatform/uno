@@ -434,7 +434,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			var propertiesNotToClear = ArrayPool<BindingPath>.Shared.Rent((nextSetters?.Count ?? 0) + (nextAnimation?.Children.Items.Count ?? 0));
+			var propertiesNotToClear = ArrayPool<BindingPath>.Shared.Rent((nextSetters?.Count ?? 0) + (nextAnimation?.Children.Count ?? 0));
 			var propsLength = 0;
 
 			if (nextSetters is { })
@@ -450,9 +450,11 @@ namespace Microsoft.UI.Xaml
 
 			if (nextAnimation is { })
 			{
-				foreach (var item in nextAnimation.Children.Items)
+				var children = nextAnimation.Children.GetEnumeratorFast();
+
+				while (children.MoveNext())
 				{
-					propertiesNotToClear[propsLength++] = item.PropertyInfo;
+					propertiesNotToClear[propsLength++] = children.Current.PropertyInfo;
 				}
 			}
 
@@ -471,8 +473,12 @@ namespace Microsoft.UI.Xaml
 
 			if (prevAnimation is { })
 			{
-				foreach (var item in prevAnimation.Children.Items)
+				var children = prevAnimation.Children.GetEnumeratorFast();
+
+				while (children.MoveNext())
 				{
+					var item = children.Current;
+
 					// Animations with a null path are always cleared.
 					if (item.PropertyInfo is not { } prevPath || !propertiesNotToClear.Any(path => prevPath.PrefixOfOrEqualTo(path)))
 					{

@@ -154,7 +154,7 @@ namespace Microsoft.UI.Xaml
 				details.SetBinding(bindingExpression);
 				_bindings = _bindings.Add(bindingExpression);
 
-				if (!Equals(binding.RelativeSource, RelativeSource.TemplatedParent))
+				if (!bindingExpression.IsTemplateBinding)
 				{
 					if (bindingExpression.TargetPropertyDetails.Property.UniqueId == DataContextPropertyDetails.Property.UniqueId)
 					{
@@ -176,8 +176,30 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		internal void SetTemplateBinding(DependencyProperty targetProperty, DependencyProperty sourceProperty, string sourcePath, ManagedWeakReference target)
+		{
+			if (GetPropertyDetails(targetProperty) is DependencyPropertyDetails details)
+			{
+				details.ClearBinding();
+
+				var bindingExpression = new BindingExpression(
+					viewReference: target,
+					targetPropertyDetails: details,
+					templateBindingSourceProperty: sourceProperty,
+					templateBindingPath: sourcePath);
+
+				details.SetBinding(bindingExpression);
+				_bindings = _bindings.Add(bindingExpression);
+			}
+		}
+
 		private void ApplyBinding(BindingExpression binding, object dataContext)
 		{
+			if (binding.IsTemplateBinding)
+			{
+				return;
+			}
+
 			if (Equals(binding.ParentBinding.RelativeSource, RelativeSource.Self))
 			{
 				binding.DataContext = Owner;
@@ -238,7 +260,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (binding.TargetPropertyDetails.Property == dependencyProperty)
 				{
-					return binding.ParentBinding.IsTemplateBinding;
+					return binding.IsTemplateBinding;
 				}
 			}
 
@@ -257,6 +279,11 @@ namespace Microsoft.UI.Xaml
 				var bindings = _bindings.Data;
 				for (int i = 0; i < bindings.Length; i++)
 				{
+					if (bindings[i].TemplateBindingSourceProperty is not null)
+					{
+						continue;
+					}
+
 					var parent = bindings[i].ParentBinding;
 					if (parent.TargetNullValueThemeResource is not null || parent.FallbackValueThemeResource is not null)
 					{
@@ -272,6 +299,11 @@ namespace Microsoft.UI.Xaml
 		{
 			foreach (var binding in _bindings)
 			{
+				if (binding.TemplateBindingSourceProperty is not null)
+				{
+					continue;
+				}
+
 				if (UpdateBindingPropertiesFromThemeResources(binding.ParentBinding))
 				{
 					// The binding's theme-resolved TargetNullValue / FallbackValue changed. Re-apply the

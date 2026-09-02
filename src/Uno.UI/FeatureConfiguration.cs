@@ -15,7 +15,7 @@ using Microsoft.UI.Composition;
 
 namespace Uno.UI
 {
-	public static class FeatureConfiguration
+	public static partial class FeatureConfiguration
 	{
 		/// <summary>
 		/// Configuration for collectible AssemblyLoadContext (secondary-app) teardown.
@@ -523,6 +523,9 @@ namespace Uno.UI
 
 		public static class Style
 		{
+			private static bool? _useDefaultStyleOptimizations;
+			private static bool? _deferOverriddenSetterValues;
+
 			/// <summary>
 			/// Determines if Uno.UI should be using native styles for controls that have
 			/// a native counterpart. (e.g. Button, Slider, ComboBox, ...)
@@ -530,6 +533,31 @@ namespace Uno.UI
 			/// By default this is true.
 			/// </summary>
 			public static bool UseUWPDefaultStyles { get; set; } = true;
+
+			/// <summary>
+			/// Enables the optimized variants of the built-in control styles, when available.
+			/// </summary>
+			/// <remarks>
+			/// <para>
+			/// The optimized styles are functionally equivalent to the default ones, but are tuned for
+			/// startup and first-frame performance (e.g. visual states using <c>Setter</c> instead of
+			/// <c>ObjectAnimationUsingKeyFrames</c>, or reduced resource lookups). They are a port of the
+			/// WinUI "perf2026" default style variants.
+			/// </para>
+			/// <para>
+			/// Because the visual tree of a template may differ slightly from the non-optimized variant,
+			/// this is opt-in. When left disabled (the default), the original styles are used, unmodified.
+			/// </para>
+			/// <para>
+			/// This must be set before the first control of a given type is created (typically before
+			/// <c>Application.Start</c>), as default styles are cached on first use.
+			/// </para>
+			/// </remarks>
+			public static bool UseDefaultStyleOptimizations
+			{
+				get => _useDefaultStyleOptimizations ?? Perf2026.EnableAll;
+				set => _useDefaultStyleOptimizations = value;
+			}
 
 			/// <summary>
 			/// Override the native styles usage per control type.
@@ -540,6 +568,23 @@ namespace Uno.UI
 			/// appearance/comportment for a few particular controls, or vice versa.
 			/// </remarks>
 			public static IDictionary<Type, bool> UseUWPDefaultStylesOverride { get; } = new Dictionary<Type, bool>();
+
+			/// <summary>
+			/// Determines whether a style setter whose value is overridden by a higher precedence (a local value,
+			/// a template binding, or an explicit style over a built-in style) skips building its value until that
+			/// value actually becomes the effective one.
+			/// </summary>
+			/// <remarks>
+			/// <para>Matches WinUI's deferred <c>OptimizedStyle</c> setter values. Setters backed by a
+			/// <c>StaticResource</c>/<c>ThemeResource</c> are always applied so their resource bindings stay registered.</para>
+			/// <para>Defaults to <see cref="Perf2026.EnableAll"/> unless configured explicitly.</para>
+			/// <para>Configure this during application startup so all controls use the same style-evaluation mode.</para>
+			/// </remarks>
+			public static bool DeferOverriddenSetterValues
+			{
+				get => _deferOverriddenSetterValues ?? Perf2026.EnableAll;
+				set => _deferOverriddenSetterValues = value;
+			}
 
 			/// <summary>
 			/// This enables native frame navigation on Android and iOS by setting related classes (<see cref="Frame"/>, <see cref="CommandBar"/>

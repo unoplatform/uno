@@ -41,6 +41,15 @@
 	  output file - this avoids a variant that disables the Page glob writing an empty file over it.
 	-->
 	<XamlMergeInput Include="$(MSBuildThisFileDirectory)Resources\Version2\**\*.xaml" Exclude="@(_ExcludedTemplatesV2)" />
+
+	<!--
+	  The perf2026 dictionaries are opt-in (FeatureConfiguration.Style.UseDefaultStyleOptimizations)
+	  and are overlaid at runtime by Perf2026Resources, so they must stay out of the merged theme
+	  resources - Directory.Build.targets otherwise feeds every @(Page) to @(XamlMergeInput), which
+	  would both apply them by default and remove them from @(Page) (the source generator would then
+	  never emit Perf2026Resources.InitializeComponent()).
+	-->
+	<_NonMergedXamlResources Include="$(MSBuildThisFileDirectory)Perf2026\**\*.xaml" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Reference'">

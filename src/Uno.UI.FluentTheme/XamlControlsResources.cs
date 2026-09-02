@@ -54,11 +54,27 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_isUsingResourcesVersion2 = requestedVersion == ControlsResourcesVersion.Version2;
 
+			ApplyStyleOptimizations();
+
 			// WinUI sets TintLuminosityOpacity programmatically on acrylic brushes
 			// because nullable doubles couldn't be set in XAML on older Windows versions.
 			// Without these values, the luminosity layer uses a computed alpha that is
 			// far too low, causing acrylic to appear nearly opaque/dark.
 			UpdateAcrylicBrushes();
+		}
+
+		/// <summary>
+		/// Overlays the optimized (perf2026) control styles when the app opted in through
+		/// <see cref="Uno.UI.FeatureConfiguration.Style.UseDefaultStyleOptimizations"/>.
+		/// </summary>
+		private void ApplyStyleOptimizations()
+		{
+#if !__NETSTD_REFERENCE__
+			if (_isUsingResourcesVersion2 && Uno.UI.FeatureConfiguration.Style.UseDefaultStyleOptimizations)
+			{
+				OverlayFrom(new Uno.UI.FluentTheme.v2.Perf2026Resources());
+			}
+#endif
 		}
 
 		private void UpdateAcrylicBrushes()

@@ -72,7 +72,15 @@ namespace Microsoft.UI.Xaml
 
 #if ENABLE_LEGACY_DO_TP_SUPPORT
 		internal DependencyObject? GetTemplatedParent2() => _templatedParentWeakRef?.Target as DependencyObject;
-		internal void SetTemplatedParent2(DependencyObject parent) => _templatedParentWeakRef = (parent as IWeakReferenceProvider)?.WeakReference;
+		internal void SetTemplatedParent2(DependencyObject parent, bool reapplyTemplateBindings = true)
+		{
+			_templatedParentWeakRef = (parent as IWeakReferenceProvider)?.WeakReference;
+
+			if (reapplyTemplateBindings)
+			{
+				ApplyTemplateBindings();
+			}
+		}
 #endif
 
 		private bool IsCandidateChild([NotNullWhen(true)] object? child)
@@ -443,15 +451,12 @@ namespace Microsoft.UI.Xaml
 		}
 
 		internal void SetTemplateBinding(DependencyProperty targetProperty, DependencyProperty sourceProperty)
+			=> SetTemplateBinding(targetProperty, sourceProperty, BindingExpression.GetTemplateBindingPath(sourceProperty));
+
+		internal void SetTemplateBinding(DependencyProperty targetProperty, DependencyProperty sourceProperty, string sourcePath)
 		{
-			SetBinding(
-				targetProperty,
-				new Binding
-				{
-					Path = sourceProperty.Name,
-					RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
-				}
-			);
+			TryRegisterInheritedProperties(force: true);
+			_properties.SetTemplateBinding(targetProperty, sourceProperty, sourcePath, _originalObjectRef);
 		}
 
 		/// <summary>
@@ -913,4 +918,3 @@ namespace Microsoft.UI.Xaml
 		}
 	}
 }
-
