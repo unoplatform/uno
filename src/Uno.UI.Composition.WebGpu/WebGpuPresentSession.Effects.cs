@@ -31,7 +31,6 @@ public sealed unsafe partial class WebGpuPresentSession
 		int sh2 = Math.Clamp((int)MathF.Ceiling(sh.BbMax.Y - sh.BbMin.Y + 2 * pad), 1, 4096);
 		size = new Vector2(sw, sh2);
 
-		// 1) coverage: fill the fan (stencil-then-cover, white) into an MSAA surface resolved to single-sample.
 		var cov = new WebGpuRenderSurface(_d, sw, sh2, _d.Pool);
 		var fanNdc = new float[sh.FanDevice.Length];
 		for (int i = 0; i < sh.FanDevice.Length; i += 2)
@@ -63,7 +62,6 @@ public sealed unsafe partial class WebGpuPresentSession
 		if (_d.MsaaSamples > 1) { _d.Pool.Return(cov.MsaaColorView); }   // at 1x MsaaColorView aliases cov.View (blurred next) — don't reclaim
 		_d.Pool.Return(cov.DepthView);
 
-		// 2) blur pyramid (2x downsample + separable gaussian), matching the original's 3-pass shadow blur.
 		var blurred = BlurPyramid(cov.View, sw, sh2, sh.SigmaX, sh.SigmaY);
 		// The coverage resolve was consumed by the pyramid's first downsample pass — re-rentable this frame.
 		_d.Pool.Return(cov.View);

@@ -85,14 +85,8 @@ public sealed unsafe partial class WebGpuPresentSession
 		return true;
 	}
 
-	// A recording is arena-safe when every draw is a solid rect or image with no clip: then the fragment shader
-	// doesn't depend on device position, so its geometry can be baked once in the recording's own space and moved by
-	// re-stamping the vertex xform (clipCov is a constant 1). Paths (stencil pass has no xform), gradients (device-
-	// space geometry in the fragment) and any clip need a device-space re-stamp and are NOT arena-safe yet.
-	// A recording contains at least one rect — its solids are cheap to re-emit each frame into the shared solid
-	// buffer so they coalesce across visuals; any non-solids stay cached (NonSolidOps).
-	// Re-appendable = rect or rounded-rect: cheap to re-emit each frame into a shared per-pass buffer (solids /
-	// rrects) so they coalesce across visuals. Glyphs/images/gradients stay cached and are spliced in draw order.
+	// Re-appendable = rect or rounded-rect: cheap to re-emit each frame into a shared per-pass buffer so they
+	// coalesce across visuals. Glyphs, images and gradients stay cached and are spliced back in draw order.
 	private static bool HasReappendable(ReplayRefCmd rr)
 		=> rr.Data is { } d ? d.ReappendableMemo ??= HasReappendable(rr.Commands) : HasReappendable(rr.Commands);
 
@@ -508,10 +502,9 @@ public sealed unsafe partial class WebGpuPresentSession
 		}
 		wgpuRenderPassEncoderSetScissorRect(pass, (uint)nx, (uint)ny, (uint)nw, (uint)nh);
 		var excl = next.PathExclude;
-		// 1) fill the bbox with the "clipped" depth (intersect: 1 = clipped outside the shape; exclude: 0).
+		// An exclude clip inverts every polarity below: "clipped" is 1 for intersect and 0 for exclude.
 		wgpuRenderPassEncoderSetPipeline(pass, excl ? _d.ClipDepthSet0 : _d.ClipDepthSet1);
 		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
-		// 2) stencil the clip fan (winding) in full-window NDC.
 		IntPtr fanBuf; int fanVerts;
 		if (next.FanBuf != 0 && next.FanW == (int)_s.Width && next.FanH == (int)_s.Height) { fanBuf = (IntPtr)next.FanBuf; fanVerts = fan.Length / 2; }
 		else { _scratch.Clear(); for (int i = 0; i < fan.Length; i += 2) { var n = Ndc(new Vector2(fan[i], fan[i + 1])); _scratch.Add(n.X); _scratch.Add(n.Y); } fanBuf = MakeBuffer(_scratch); fanVerts = _scratch.Count / 2; }
@@ -519,8 +512,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		wgpuRenderPassEncoderSetBindGroup(pass, 0, next.FanXformBg != 0 ? (IntPtr)next.FanXformBg : MakeClipBg(_d.ClipBgl, default), 0, (uint*)null);   // arena xform, else identity (fan already device NDC)
 		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(fanVerts * 2 * sizeof(float)));
 		wgpuRenderPassEncoderDraw(pass, (uint)fanVerts, 1, 0, 0);
-		// 3) cover: write the "kept" depth (intersect: 0 inside the shape; exclude: 1) where the stencil is set,
-		// and reset the stencil to 0 (PassOp=Zero) so the next fill/clip starts clean.
+		// Cover also resets the stencil (PassOp=Zero) so the next clip starts clean.
 		wgpuRenderPassEncoderSetPipeline(pass, excl ? _d.ClipDepthCover1 : _d.ClipDepthCover0);
 		wgpuRenderPassEncoderSetStencilReference(pass, 0);
 		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);

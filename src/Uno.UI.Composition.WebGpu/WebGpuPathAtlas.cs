@@ -7,18 +7,14 @@ using System.Numerics;
 namespace Uno.UI.Composition.WebGpu;
 
 /// <summary>
-/// A coverage atlas for small paths — glyphs above all. Each distinct (geometry, scale, subpixel phase) is
-/// rasterized ONCE into a shared alpha texture; afterwards the shape draws as a textured quad tinted by its
-/// colour.
+/// A coverage atlas for small paths, glyphs above all: each distinct (geometry, scale, subpixel phase) is rasterized
+/// once into a shared alpha texture and afterwards drawn as a tinted quad.
+/// <para>
+/// Geometric coverage (<see cref="PathTessellator"/>) cannot antialias text — a glyph stem is about a pixel wide, so
+/// insetting it folds it inside out — and those shapes are refused rather than drawn wrong, which leaves text on
+/// MSAA. A baked mask sidesteps that and collapses two draws per glyph into one quad.
+/// </para>
 /// </summary>
-/// <remarks>
-/// Geometric coverage (<see cref="PathTessellator"/>) cannot antialias text: a glyph stem is about one pixel
-/// wide, so insetting it by half a pixel folds it inside out, and nesting-parity hole detection misreads
-/// overlapping kerned glyphs. Both are refused rather than drawn wrong, which leaves text depending on MSAA. A
-/// baked mask sidesteps that — resolved once at 4x, sampled every frame after — and collapses the per-glyph draw
-/// explosion: stencil-then-cover costs two pipeline switches and two draws per glyph, while an atlased glyph is
-/// one quad and consecutive quads sharing colour and texture merge.
-/// </remarks>
 internal sealed unsafe class WebGpuPathAtlas
 {
 	/// <summary>Atlas edge in texels. One page; when it fills, later shapes fall back to the geometry path.</summary>
@@ -30,15 +26,11 @@ internal sealed unsafe class WebGpuPathAtlas
 	public const int MaxDim = Size - 2;
 
 	/// <summary>
-	/// Footprint bound in MASK AREA, not longest side. Area is what the texture and the bake cost, and for the
-	/// shapes that matter the two diverge sharply: text reaches the backend as one fill per RUN — a whole string,
-	/// one contour per glyph — so a run is very wide and only ~20px tall. A longest-side cap of 96 rejected every
-	/// run past a few characters, leaving it on the geometry path with no antialiasing at one sample.
-	/// <para>
-	/// 256x256 of area admits an 800x20 run (16k px) while still refusing large near-square fills, which measurably
-	/// do not benefit: raising the cap to admit a 300x225 shape (67k px) changed the parity mismatch not at all, cut
-	/// no draws, and pushed LogView's emitted draws from 320 to 420 by displacing glyph runs from their batches.
-	/// </para>
+	/// Footprint bound in mask AREA, not longest side: text arrives as one fill per RUN, so a run is very wide and
+	/// only ~20px tall, and a longest-side cap of 96 rejected every run past a few characters — leaving it on the
+	/// geometry path with no antialiasing. Raising the cap to admit large near-square fills instead measured no
+	/// parity gain, cut no draws, and pushed LogView from 320 to 420 draws by displacing glyph runs from their
+	/// batches.
 	/// </summary>
 	public const int MaxArea = 256 * 256;
 
@@ -56,16 +48,10 @@ internal sealed unsafe class WebGpuPathAtlas
 	public const int SubPixel = 4;
 
 	/// <summary>
-	/// W/H are part of the key, not just the scale: the scale is quantised, so two nearby scales can share a key
-	/// while needing different pixel footprints — the cached mask would then be the wrong SIZE for the draw.
+	/// W/H are part of the key because the scale is quantised: two nearby scales can share a key while needing
+	/// different pixel footprints. All four 2x2 terms are in it too — the mask is rasterized in its final device
+	/// orientation, so two angles of one geometry would otherwise collide and share the wrong mask.
 	/// </summary>
-	/// <remarks>
-	/// The transform enters as all FOUR 2x2 terms, not just the scale: the mask is rasterized from the fan in its
-	/// final device orientation, so a rotated shape bakes correctly on its own — but two different angles of one
-	/// geometry would otherwise collide on a single key and share the wrong mask. Keying the rotation is what
-	/// makes rotated content atlasable; no resampling of an upright mask is involved (that would blur the
-	/// coverage ramp and carry AA computed for the wrong orientation).
-	/// </remarks>
 	internal readonly record struct Key(object Geometry, int M11, int M12, int M21, int M22, int PhaseX, int PhaseY, int W, int H);
 
 	/// <summary>

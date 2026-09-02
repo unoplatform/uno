@@ -1,5 +1,5 @@
-﻿// Minimal-but-real WebGPU backend implementing the NEUTRAL drawing seam (public SPI from Uno.UI.Composition).
-// Solid rects + even-odd path fill (stencil-then-cover) consuming IGeometry.StreamFlattened (Skia-less).
+﻿// WebGPU device bring-up: the host-facing context factories and the instance/adapter/device/queue they create.
+// Names no renderer type — the render backend adopts the device through IWebGpuDeviceContext.
 #nullable disable
 using System;
 using System.Collections.Generic;

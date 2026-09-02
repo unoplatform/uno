@@ -18,10 +18,6 @@ namespace Uno.UI.Composition.WebGpu;
 
 internal sealed unsafe partial class WebGpuDevice
 {
-	// Shared clip type + coverage fn prepended to every color-writing shader. The uniform is passed as a
-	// parameter (each shader declares the binding at its own contiguous group index — colored uses group 0,
-	// image/gradient group 1 — avoiding a group hole wgpu's auto-layout rejects). Device-space, axis-aligned
-	// rounded-rect mask (radii 0 → plain rect, full coverage); ~1px analytic AA on the corner edge.
 	/// <summary>
 	/// Bytes in the image/op uniform block (28 floats), as declared by <see cref="ImageWgsl"/>. The pipeline
 	/// layout's MinBindingSize, every bind group's entry size and the writer all have to agree: a bind group that
@@ -35,6 +31,9 @@ internal sealed unsafe partial class WebGpuDevice
 	/// </summary>
 	public const int CompositeUniformBytes = 96;
 
+	// Prepended to every colour-writing shader. The uniform is a parameter because each shader declares the binding
+	// at its own contiguous group index (colored group 0, image/gradient group 1); a group hole is rejected by
+	// wgpu's auto-layout.
 	private const string ClipStructFn = @"
 // rects[i]/radii[i] are the nested rounded-rect clips (device space), ANDed together; ex[i]>0.5 = Difference
 // (keep outside). meta.x = active count. Arbitrary path clips are applied via the shared depth buffer as an in-pass
