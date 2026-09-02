@@ -235,20 +235,55 @@ namespace Microsoft.UI.Xaml.Documents
 		/// WinUI only supports <see cref="InlineUIContainer"/> within a <see cref="RichTextBlock"/>; adding one to a
 		/// <see cref="TextBlock"/> throws. We match that contract instead of silently dropping the element. See uno#23510.
 		/// </summary>
-		// CInlineCollection::ValidateTextElement - the schema decides what the owning element accepts:
-		// no InlineUIContainer under a TextBlock, and only Runs and non-Hyperlink Spans under a Hyperlink.
 		private void ValidateInline(Inline item, string paramName)
 		{
-			if (TextSchema.InlineCollectionSupportsElement(this, item))
+			// Only an InlineUIContainer (or a Span that may nest one) can ever be invalid; a plain Run/LineBreak
+			// is always fine, so it skips both the owner walk and the Span recursion.
+			if (item is not (InlineUIContainer or Span))
 			{
 				return;
 			}
 
-			throw new ArgumentException(
-				TextSchema.IsInlineCollectionInElement(this, typeof(Microsoft.UI.Xaml.Controls.TextBlock))
-					? "InlineUIContainer is not supported in a TextBlock. It can only be used within a RichTextBlock."
-					: "A Hyperlink can only contain Run and non-Hyperlink Span inlines.",
-				paramName);
+			// Resolve ownership before recursing: a Paragraph/RichTextBlock-owned collection always allows the
+			// container, so there is no need to scan Span content in rich-text scenarios.
+			if (IsOwnedByTextBlock() && ContainsInlineUIContainer(item))
+			{
+				throw new ArgumentException(
+					"InlineUIContainer is not supported in a TextBlock. It can only be used within a RichTextBlock.",
+					paramName);
+			}
+		}
+
+		private static bool ContainsInlineUIContainer(Inline item)
+		{
+			if (item is InlineUIContainer)
+			{
+				return true;
+			}
+
+			if (item is Span span)
+			{
+				foreach (var child in span.Inlines)
+				{
+					if (ContainsInlineUIContainer(child))
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+
+		private bool IsOwnedByTextBlock()
+		{
+			var current = _collection.GetParent();
+
+			// Walk up through Span/Hyperlink/etc. to find the owning control.
+			while (current is Inline inline)
+				current = inline.GetParent();
+
+			return current is TextBlock;
 		}
 	}
 }
