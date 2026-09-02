@@ -1,0 +1,43 @@
+<Project>
+
+	<!--
+	Linker trim/AOT analysis warnings intentionally ignored for the SamplesApp heads.
+
+	These heads are the trim/AOT root of a test/sample application (not a shipped library), so the
+	"a trimmed library must be warning-free for its consumers" concern does not propagate downstream.
+	Most warnings originate in framework reflection consumed by the app, in intentional test reflection
+	guarded by RuntimeFeature.IsDynamicCodeSupported, or in generated code that cannot be annotated.
+
+	Defined ONCE here and imported by every trimming/AOT-capable head so the list cannot drift between
+	heads — divergence between the two iOS heads previously broke the net10.0-ios TestFlight build.
+	Prefer scoped [DynamicallyAccessedMembers]/[UnconditionalSuppressMessage] at the source for code we
+	own; this blanket list is the last-resort lever for the sample surface and un-editable generated code.
+	-->
+	<PropertyGroup>
+		<NoWarn>
+			$(NoWarn)
+			;IL2026 <!-- Use of a member annotated [RequiresUnreferencedCode] (reflection/serialization). -->
+			;IL2057 <!-- Unrecognized string value passed to Type.GetType(string). -->
+			;IL2062 <!-- Value with DynamicallyAccessedMembers requirements can't be statically determined. -->
+			;IL2065 <!-- Value flowed to a method's implicit 'this' with DynamicallyAccessedMembers requirements. -->
+			;IL2067 <!-- DynamicallyAccessedMembers mismatch: source is a method parameter. -->
+			;IL2068 <!-- DynamicallyAccessedMembers mismatch: source is a method return value. -->
+			;IL2070 <!-- DynamicallyAccessedMembers mismatch on 'this' of a Type.Get* reflection call. -->
+			;IL2072 <!-- DynamicallyAccessedMembers mismatch: method return value flowed to an annotated parameter. -->
+			;IL2075 <!-- DynamicallyAccessedMembers mismatch on 'this' from GetType() into a Type.Get* call. -->
+			;IL2077 <!-- DynamicallyAccessedMembers mismatch: source is a field. -->
+			;IL2080 <!-- DynamicallyAccessedMembers mismatch: source is a field flowed to 'this'/target. -->
+			;IL2104 <!-- Aggregate: a referenced assembly produced trim analysis warnings. -->
+			;IL2111 <!-- A method with DynamicallyAccessedMembers on parameters/return is accessed via reflection. -->
+			;IL2121 <!-- Unused UnconditionalSuppressMessage emitted into generated BindableMetadata.g.cs by the
+			             BindableTypeProviders source generator — generated code cannot be annotated, so this is
+			             only suppressible at the consuming head (see Uno.UI.RuntimeTests.netcoremobile.csproj). -->
+			;IL2122 <!-- DynamicallyAccessedMembers-annotated member surfaced through reflection. -->
+			;IL3000 <!-- Assembly.Location returns empty for assemblies embedded in a single-file app. -->
+			;IL3002 <!-- Use of a member annotated [RequiresAssemblyFiles] (single-file). -->
+			;IL3050 <!-- Use of a member annotated [RequiresDynamicCode] under native AOT (e.g. Reflection.Emit). -->
+			;IL3053 <!-- Aggregate: a referenced assembly produced native-AOT analysis warnings. -->
+		</NoWarn>
+	</PropertyGroup>
+
+</Project>
