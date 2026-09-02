@@ -108,12 +108,12 @@ WinUI has the `ScrollBar` parts ignore touch on purpose: touch scrolling goes th
 On a touch-only target - a browser on a tablet most notably - there is no pointer to reveal that bar with, so the user has nothing to drag. Opt into an interactive bar with `ScrollBarExtensions.IsTouchThumbDragEnabled`:
 
 ```xml
-xmlns:toolkit="using:Uno.UI.Toolkit"
+xmlns:uuxcp="using:Uno.UI.Xaml.Controls.Primitives"
 ```
 
 ```xml
 <ScrollBar Orientation="Vertical"
-           toolkit:ScrollBarExtensions.IsTouchThumbDragEnabled="True" />
+           uuxcp:ScrollBarExtensions.IsTouchThumbDragEnabled="True" />
 ```
 
 While enabled, the bar keeps its interactive (mouse) indicator instead of the thin touch indicator, which both keeps it visible and lets a finger drag the thumb. This also shows on a device with both a mouse and a touch screen: after a finger pan the bar stays expanded instead of switching to the thin indicator. Panning the content with a finger is unaffected.
@@ -124,7 +124,7 @@ The bar of a `ScrollViewer` is a template part, so it cannot be addressed direct
 
 ```xml
 <Style TargetType="ScrollBar">
-    <Setter Property="toolkit:ScrollBarExtensions.IsTouchThumbDragEnabled" Value="True" />
+    <Setter Property="uuxcp:ScrollBarExtensions.IsTouchThumbDragEnabled" Value="True" />
 </Style>
 ```
 

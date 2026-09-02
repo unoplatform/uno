@@ -2,7 +2,7 @@ using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
-namespace Uno.UI.Toolkit
+namespace Uno.UI.Xaml.Controls.Primitives
 {
 	public static class ScrollBarExtensions
 	{

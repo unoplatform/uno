@@ -5,7 +5,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.UI.Extensions;
 using Uno.UI.Samples.Controls;
-using Uno.UI.Toolkit;
+using Uno.UI.Xaml.Controls.Primitives;
 
 // UITests.Windows_UI_Xaml_Controls.ScrollBar is a sibling namespace, which shadows the type name here.
 using ScrollBarControl = Microsoft.UI.Xaml.Controls.Primitives.ScrollBar;
@@ -79,7 +79,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 		{
 			var isEnabled = OptIn.IsChecked is true;
 
-			// In XAML this reads as toolkit:ScrollBarExtensions.IsTouchThumbDragEnabled="True" on the ScrollBar
+			// In XAML this reads as uuxcp:ScrollBarExtensions.IsTouchThumbDragEnabled="True" on the ScrollBar
 			// itself, or as a Setter in an implicit ScrollBar Style to reach the bars inside another control's
 			// template. Here it is set from code so the same page can be validated both ways without a rebuild.
 			foreach (var scrollBar in GetScrollBars())

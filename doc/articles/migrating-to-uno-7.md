@@ -116,6 +116,7 @@ are unchanged, and there is **no** forwarding shim: the old namespaces stop reso
 | `ElevatedView`, `CommandBarExtensions`, `SplitViewExtensions` | `Uno.UI.Toolkit` | `Uno.UI.Xaml.Controls` |
 | `UIElementExtensions` | `Uno.UI.Toolkit` | `Uno.UI.Xaml` |
 | `AutomationPropertiesExtensions` | `Uno.UI.Toolkit` | `Uno.UI.Xaml.Automation` |
+| `ScrollBarExtensions` | `Uno.UI.Toolkit` | `Uno.UI.Xaml.Controls.Primitives` |
 | `VisibleBoundsPadding` | `Uno.UI.Toolkit` | `Uno.UI.Behaviors` |
 | `StorageFileHelper` | `Uno.UI.Toolkit` | `Uno.Storage` |
 | input injection dev helpers | `Uno.UI.Toolkit.DevTools.Input` (and `.DevTools.Xaml`) | `Uno.UI.DevTools.Input` (and `.DevTools.Xaml`) |
