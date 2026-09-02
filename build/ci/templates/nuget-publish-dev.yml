@@ -1,4 +1,6 @@
 steps:
+  # A servicing/* branch continues a previous version line after master has moved on
+  # to a newer one, so its packages reach the dev feed the same way master's do.
   - task: NuGetCommand@2
     displayName: 'Publish to Uno Dev Feed'
     condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/servicing/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/stable/')), not(eq(variables['build.reason'], 'PullRequest')))
