@@ -2459,6 +2459,10 @@
 		  <!-- DependencyObject as class (BC26): fields of the removed DependencyObjectStore (incl. its nested TraceProvider). -->
 		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.DependencyObjectStore(::|\.|/).+$" reason="DependencyObject as class: DependencyObjectStore removed" isRegex="true" />
 
+		  <!-- BC62: Application.TraceProvider's misspelled LauchedStart/LauchedStop consts were corrected to LaunchedStart/LaunchedStop; the old spellings read as removed fields. -->
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Application/TraceProvider::LauchedStart" reason="Corrected the LauchedStart typo to LaunchedStart (BC62, breaking changes for 7.0)" />
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Application/TraceProvider::LauchedStop" reason="Corrected the LauchedStop typo to LaunchedStop (BC62, breaking changes for 7.0)" />
+
 		  <!-- Duration.TimeSpan public field removed; WinUI exposes TimeSpan as a get-only property (paired accessor is emitted by the property, not a field). -->
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Duration::TimeSpan" reason="Made Duration.TimeSpan read-only to match WinUI (breaking changes for 7.0, uno#8339)" />
 		  <!-- Duration.Type had no counterpart at all in WinUI's projected Duration, which reaches the state through HasTimeSpan and comparison with Automatic/Forever; it is internal now. -->
@@ -3886,6 +3890,10 @@
 
 		  <!-- DependencyObject as class (BC26): fields of the removed DependencyObjectStore (incl. its nested TraceProvider). -->
 		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.DependencyObjectStore(::|\.|/).+$" reason="DependencyObject as class: DependencyObjectStore removed" isRegex="true" />
+
+		  <!-- BC62: Application.TraceProvider's misspelled LauchedStart/LauchedStop consts were corrected to LaunchedStart/LaunchedStop; the old spellings read as removed fields. -->
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Application/TraceProvider::LauchedStart" reason="Corrected the LauchedStart typo to LaunchedStart (BC62, breaking changes for 7.0)" />
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Application/TraceProvider::LauchedStop" reason="Corrected the LauchedStop typo to LaunchedStop (BC62, breaking changes for 7.0)" />
 
 		  <!-- Duration.TimeSpan public field removed; WinUI exposes TimeSpan as a get-only property (paired accessor is emitted by the property, not a field). -->
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Duration::TimeSpan" reason="Made Duration.TimeSpan read-only to match WinUI (breaking changes for 7.0, uno#8339)" />
