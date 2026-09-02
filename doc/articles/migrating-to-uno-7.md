@@ -375,6 +375,18 @@ assembly it has always lived in is itself renamed `Uno` → `Uno.WinRT` in 7.0.
   `Windows.UI.Core.VisibilityChangedEventArgs` itself is **not** removed — it is still the
   argument type of the legacy `CoreWindow.VisibilityChanged` event.
 
+- **`DependencyPropertyValuePrecedences` members changed.** This Uno-only enum, reachable
+  through the `DependencyObjectExtensions.GetValue`/`SetValue` overloads that take a
+  precedence, was cleaned up to mirror WinUI's `BaseValueSource`:
+
+  | Removed member | Replacement |
+  | --- | --- |
+  | `ExplicitStyle`, `ImplicitStyle` | `Style` — one level for both, as in WinUI |
+  | `DefaultStyle` | `BuiltInStyle` |
+  | `TemplatedParent` | none — it was never written and every read saw the default |
+
+  `Coercion`, `Animations`, `Local`, `Inheritance` and `DefaultValue` are unchanged.
+
 ### `FeatureConfiguration` flags removed
 
 The native-only flags below no longer exist; delete the calls — behavior is the unified
