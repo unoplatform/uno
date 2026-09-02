@@ -385,10 +385,15 @@ internal readonly struct ParsedText : IParsedText
 	// composition underline rendering is implemented by UnicodeText (the actual
 	// renderer used by TextBlock/TextBox). ParsedText is only the initial empty
 	// fallback and never has an active composition to render.
+	/// <param name="firstLine">Index of the first line to paint. Lines before it still advance the
+	/// character index so highlight and selection ranges stay in the paragraph's own space.</param>
+	/// <param name="lineCount">Number of lines to paint, for a paragraph split across a page break.</param>
 	public void Draw(UIElement owner, in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret,
 		IEnumerable<TextHighlighter> highlighters,
-		(int startIndex, int length)? compositionRange)
+		(int startIndex, int length)? compositionRange,
+		int firstLine = 0,
+		int lineCount = int.MaxValue)
 	{
 		var useHighContrastAdjustment = owner.UseHighContrastAdjustment();
 		var effectiveOpacity = useHighContrastAdjustment && session.Opacity > 0
@@ -436,10 +441,23 @@ internal readonly struct ParsedText : IParsedText
 
 		float y = 0;
 
-		for (var lineIndex = 0; lineIndex < _renderLines.Count; lineIndex++)
+		var lastLine = lineCount == int.MaxValue ? int.MaxValue : firstLine + lineCount;
+
+		for (var lineIndex = 0; lineIndex < _renderLines.Count && lineIndex < lastLine; lineIndex++)
 		{
 			var line = _renderLines[lineIndex];
 			// TODO: (Performance) Stop rendering when the lines exceed the available height
+
+			if (lineIndex < firstLine)
+			{
+				// Not on this page, but its characters still count towards the index space.
+				foreach (var skipped in line.SegmentSpans)
+				{
+					characterCountSoFar += skipped.FullGlyphsLength + (SpanEndsInNewLine(skipped) ? skipped.Segment.LineBreakLength : 0);
+				}
+
+				continue;
+			}
 
 			(float x, float justifySpaceOffset) = line.GetOffsets((float)_availableSize.Width, alignment);
 

@@ -52,7 +52,9 @@ namespace Microsoft.UI.Xaml.Controls
 			float YOffset,
 			int GlobalCharOffset,
 			Size Size,
-			Thickness Margin);
+			Thickness Margin,
+			int FirstLine,
+			int LineCount);
 
 		private List<ParagraphLayout> _paragraphLayouts = new();
 		private Size _lastMeasuredContentSize;
@@ -250,7 +252,9 @@ namespace Microsoft.UI.Xaml.Controls
 						YOffset: accumHeight + (float)margin.Top,
 						GlobalCharOffset: globalCharOffset,
 						Size: contentSize,
-						Margin: margin));
+						Margin: margin,
+						FirstLine: paragraphNode.FirstLineIndex,
+						LineCount: paragraphNode.LineCount));
 
 					accumHeight += (float)boxSize.Height;
 					maxWidth = Math.Max(maxWidth, (float)boxSize.Width);
@@ -315,7 +319,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// Build highlighters for this paragraph (including selection)
 				var paragraphHighlighters = GetParagraphHighlighters(layout, p);
 
-				layout.ParsedText.Draw(this, session, null, paragraphHighlighters, compositionRange: null);
+				layout.ParsedText.Draw(this, session, null, paragraphHighlighters, compositionRange: null, layout.FirstLine, layout.LineCount);
 
 				canvas.Restore();
 			}
