@@ -320,5 +320,79 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = null;
 			}
 		}
+
+		[TestMethod]
+		[RequiresScaling(1f)]
+		public async Task When_Overflow_Continues_Mid_Paragraph()
+		{
+			// A paragraph split across a page break: the overflow hosts the continuation, so its first
+			// line must not be the master's first line repainted.
+			var master = new RichTextBlock
+			{
+				Width = 90,
+				MaxLines = 2,
+				FontSize = 24,
+				TextWrapping = TextWrapping.Wrap,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			};
+			var paragraph = new Paragraph();
+			// Every line must look different, or identical pixels would prove nothing.
+			paragraph.Inlines.Add(new Run { Text = "AA BB CC DD EE FF GG HH" });
+			master.Blocks.Add(paragraph);
+
+			var overflow = new RichTextBlockOverflow
+			{
+				Width = 90,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+			master.OverflowContentTarget = overflow;
+
+			var masterHost = new Border { Width = 120, Height = 200, Background = new SolidColorBrush(Microsoft.UI.Colors.White), Child = master };
+			var overflowHost = new Border { Width = 120, Height = 200, Background = new SolidColorBrush(Microsoft.UI.Colors.White), Child = overflow };
+
+			var root = new StackPanel { Orientation = Orientation.Horizontal };
+			root.Children.Add(masterHost);
+			root.Children.Add(overflowHost);
+
+			try
+			{
+				WindowHelper.WindowContent = root;
+				await WindowHelper.WaitForLoaded(root);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(master.HasOverflowContent, "Master should overflow");
+
+				var masterShot = await UITestHelper.ScreenShot(masterHost);
+				var overflowShot = await UITestHelper.ScreenShot(overflowHost);
+				await masterShot.Populate();
+				await overflowShot.Populate();
+
+				// Compare the first text line of each. Repainting from line 0 makes them identical.
+				var identical = 0;
+				var compared = 0;
+				for (var y = 0; y < 30; y++)
+				{
+					for (var x = 0; x < 90; x++)
+					{
+						compared++;
+						if (masterShot.GetPixel(x, y) == overflowShot.GetPixel(x, y))
+						{
+							identical++;
+						}
+					}
+				}
+
+				Assert.IsTrue(
+					identical < compared,
+					$"The overflow's first line should be the continuation, not the master's first line repainted ({identical}/{compared} pixels identical)");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
 	}
 }
