@@ -4,6 +4,30 @@ uid: uno.publishing.desktop.linux
 
 # Publishing Your App for Linux
 
+## Runtime Dependencies
+
+Uno Platform apps use the system [ICU](https://icu.unicode.org/) libraries on Linux for text rendering (BiDi and line breaking). Most desktop distributions include ICU, but minimal, server, or embedded images often don't — the app then fails at startup with `Failed to load ICU on Linux`.
+
+Either install the distribution's ICU package on the target machine:
+
+```bash
+sudo apt install libicu74 # Debian/Ubuntu; the package name is versioned (libicu66 on Ubuntu 20.04, libicu70 on 22.04, libicu74 on 24.04)
+sudo dnf install libicu   # Fedora/RHEL
+sudo pacman -S icu        # Arch
+```
+
+Or ship ICU with your app ([app-local ICU](https://learn.microsoft.com/dotnet/core/extensions/globalization-icu#app-local-icu)), which requires nothing on the target machine:
+
+```xml
+<ItemGroup>
+  <PackageReference Include="Microsoft.ICU.ICU4C.Runtime" Version="72.1.0.3" />
+  <RuntimeHostConfigurationOption Include="System.Globalization.AppLocalIcu" Value="72.1.0.3" />
+</ItemGroup>
+```
+
+> [!IMPORTANT]
+> Setting `InvariantGlobalization` to `true` does not remove this requirement — ICU is still needed for text rendering. Also note that the `Microsoft.ICU.ICU4C.Runtime` package only ships `linux-x64` and `linux-arm64` binaries (no musl/Alpine support).
+
 ## Snap Packages
 
 We support creating .snap packages on **Ubuntu 20.04** or later.
