@@ -43,6 +43,26 @@ Updated as items are addressed. Verdicts below are unchanged; this section only 
 | P2–P3 | Remaining backlog (10 items) | ⬜ open | — | See §7 — grippers, bidi/`TextReadingOrder`, Typography, caret browsing, optical margins and the context menu are all genuine feature work, not port defects |
 | U1–U16 | Unverified findings | ◐ partly closed | — | U2 (trimming), U7 (UIA master arm) and U11 (headers) are fixed above; U9 is V6, reverted with reason. The rest stand as filed |
 
+### Follow-up issues
+
+Every remaining gap is tracked publicly:
+
+| Issue | Gap | Effort |
+|---|---|:--:|
+| #24336 | Touch-selection grippers not implemented | large |
+| #24337 | Selection drag does not cross into a linked overflow | medium |
+| #24338 | No built-in Copy / Select all context menu (shared with `TextBlock`) | medium |
+| #24339 | `TextReadingOrder` and content-driven bidi inert | large |
+| #24340 | `Typography` attached properties inert (shared with `TextBlock`) | large |
+| #24341 | Caret browsing (F7) not implemented | large |
+| #24342 | `OpticalMarginAlignment` ignored | medium |
+| #24343 | `IsColorFontEnabled` cannot be turned off | small |
+| #24344 | Selection brushes do not switch to high-contrast colours | small |
+| #24345 | Paragraph default line height ignores the OS text scale | small |
+| #24346 | `TextSchema` validation ported but never invoked (V6/U9 — reverted, needs a WinAppSDK-head test) | small |
+| #24347 | Verify the remaining §5 findings (U1, U3–U6, U8, U10, U12, U14–U16) | — |
+| #24348 | Two `Given_TextBox` coordinate tests fail off 100% scaling (test robustness, not this control) | small |
+
 ### Notes recorded while remediating
 
 **`TextBlockAutomationPeer.cs` keeps its `1.8.4` tag deliberately.** §6.2 proposed repinning it; the audit grades
