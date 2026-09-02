@@ -408,7 +408,7 @@
 		  FullAOT cannot continue if there are loader errors.
 		Referencing it explicitly makes the custom attributes resolvable.
 		-->
-		<PackageReference Include="JetBrains.Annotations" Version="2024.3.0" />
+		<PackageReference Include="JetBrains.Annotations" />
 	</ItemGroup>
 	<PropertyGroup Condition="'$(_Platform)' == 'tvos'">
 		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">tvossimulator-x64</RuntimeIdentifier>
