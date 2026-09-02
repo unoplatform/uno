@@ -25,7 +25,7 @@
 
 	Set UnoDisableMSALTvOSSystemFrameworkWorkaround=true to opt out.
 	-->
-	<Target Name="_UnoRemoveMissingSystemFrameworkOnTvOS"
+	<Target Name="_UnoMSALRemoveMissingSystemFrameworkOnTvOS"
 			AfterTargets="_ComputeLinkNativeExecutableInputs"
 			Condition=" '$(IsUnoHead)' == 'true'
 				and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos'

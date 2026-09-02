@@ -749,7 +749,7 @@
 	found". The code path is unreachable on tvOS, so drop the framework from the native link. This
 	mirrors how the Apple SDK itself removes BrowserEngineKit (_ComputeLinkNativeExecutableInputs).
 	-->
-	<Target Name="_UnoRemoveMissingSystemFrameworkOnTvOS"
+	<Target Name="_UnoSamplesAppRemoveMissingSystemFrameworkOnTvOS"
 			AfterTargets="_ComputeLinkNativeExecutableInputs"
 			Condition="'$(_Platform)' == 'tvos'">
 		<ItemGroup>
