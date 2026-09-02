@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Uno.Disposables;
 using Uno.UI.Samples.Controls;
@@ -40,10 +41,24 @@ namespace UITests.Windows_ApplicationModel
 		{
 			Model = (ClipboardTestsViewModel)args.NewValue;
 		}
+
+		private void OnPasteAccelerator(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
+		{
+			// Let focused text controls handle the paste natively.
+			if (XamlRoot is null || FocusManager.GetFocusedElement(XamlRoot) is TextBox or PasswordBox)
+			{
+				return;
+			}
+
+			args.Handled = true;
+			Model?.PasteFromAccelerator();
+		}
 	}
 
 	internal class ClipboardTestsViewModel : ViewModelBase
 	{
+		private const string CustomFormatId = "application/x-uno-sample";
+
 		private bool _isObservingContentChanged = false;
 		private string _lastContentChangedDate = "";
 		private string _text = "";
@@ -129,6 +144,8 @@ namespace UITests.Windows_ApplicationModel
 
 		public ICommand CopyImageCommand => GetOrCreateCommand(CopyImage);
 
+		public ICommand CopyCustomFormatCommand => GetOrCreateCommand(CopyCustomFormat);
+
 		public ICommand PasteTextCommand => GetOrCreateCommand(PasteText);
 
 		public ICommand PasteHtmlCommand => GetOrCreateCommand(PasteHtml);
@@ -136,6 +153,8 @@ namespace UITests.Windows_ApplicationModel
 		public ICommand PasteStorageItemsCommand => GetOrCreateCommand(PasteStorageItems);
 
 		public ICommand PasteImageCommand => GetOrCreateCommand(PasteImage);
+
+		public ICommand PasteCustomFormatCommand => GetOrCreateCommand(PasteCustomFormat);
 
 		public ICommand ListAvailableFormatsCommand => GetOrCreateCommand(ListAvailableFormats);
 
@@ -177,15 +196,47 @@ namespace UITests.Windows_ApplicationModel
 			Clipboard.SetContent(dataPackage);
 		}
 
-		private async void PasteText()
+		private void CopyCustomFormat()
+		{
+			var dataPackage = new DataPackage();
+			dataPackage.SetText(Text);
+			dataPackage.SetData(CustomFormatId, $"custom payload: {Text} ({Timestamp})");
+			Clipboard.SetContent(dataPackage);
+		}
+
+		// Paste reads can fail by design (permission denial, or a format advertised
+		// optimistically but absent), so failures are shown instead of reaching the dispatcher.
+		private async void RunPaste(Func<Task> paste)
+		{
+			try
+			{
+				await paste();
+			}
+			catch (Exception e)
+			{
+				PastedContent = $"Paste failed: {e.Message}";
+			}
+		}
+
+		private void PasteCustomFormat() => RunPaste(async () =>
+		{
+			var package = Clipboard.GetContent();
+			UpdateStatusAndClearOldContents(package);
+
+			PastedContent = package.Contains(CustomFormatId)
+				? $"{CustomFormatId}: {await package.GetDataAsync(CustomFormatId)}"
+				: $"No {CustomFormatId} content in clipboard";
+		});
+
+		private void PasteText() => RunPaste(async () =>
 		{
 			var package = Clipboard.GetContent();
 			UpdateStatusAndClearOldContents(package);
 
 			PastedContent = await package.GetTextAsync();
-		}
+		});
 
-		private async void PasteHtml()
+		private void PasteHtml() => RunPaste(async () =>
 		{
 			var package = Clipboard.GetContent();
 			UpdateStatusAndClearOldContents(package);
@@ -202,9 +253,9 @@ namespace UITests.Windows_ApplicationModel
 			{
 				PastedContent = "No HTML content in clipboard";
 			}
-		}
+		});
 
-		private async void PasteStorageItems()
+		private void PasteStorageItems() => RunPaste(async () =>
 		{
 			var package = Clipboard.GetContent();
 			UpdateStatusAndClearOldContents(package);
@@ -217,9 +268,9 @@ namespace UITests.Windows_ApplicationModel
 			{
 				PastedContent = "No StorageItems content in clipboard";
 			}
-		}
+		});
 
-		private async void PasteImage()
+		private void PasteImage() => RunPaste(async () =>
 		{
 			var package = Clipboard.GetContent();
 			UpdateStatusAndClearOldContents(package);
@@ -232,36 +283,116 @@ namespace UITests.Windows_ApplicationModel
 
 			foreach (var format in formats)
 			{
-				if (package.Contains(format))
+				if (await TryGetAsync(package, format, p => p.GetDataAsync(format).AsTask()) is byte[] bytes)
 				{
-					if (await package.GetDataAsync(format) is byte[] bytes)
-					{
-						var fileName = Path.GetTempPath() + Guid.NewGuid() + "." + format.Split("/")[1];
-						await File.WriteAllBytesAsync(fileName, bytes);
-						var bitmapImage = new BitmapImage(new Uri(fileName));
-						Bitmap = bitmapImage;
+					var fileName = Path.GetTempPath() + Guid.NewGuid() + "." + format.Split("/")[1];
+					await File.WriteAllBytesAsync(fileName, bytes);
+					var bitmapImage = new BitmapImage(new Uri(fileName));
+					Bitmap = bitmapImage;
 
-						return;
-					}
+					return;
 				}
 			}
 
-			if (Bitmap is null && package.Contains(StandardDataFormats.Bitmap))
+			if (await TryGetAsync(package, StandardDataFormats.Bitmap, p => p.GetBitmapAsync().AsTask()) is { } bitmapReference)
 			{
-				var bitmapReference = await package.GetBitmapAsync();
-				var bitmapStream = await bitmapReference.OpenReadAsync();
+				using var bitmapStream = await bitmapReference.OpenReadAsync();
+
+				// Clipboard bitmap streams are asynchronous-only on wasm; buffer into a
+				// synchronously readable stream before handing them to SetSource.
+				// See https://github.com/unoplatform/uno/issues/24188
+				var buffer = new MemoryStream();
+				await bitmapStream.AsStreamForRead().CopyToAsync(buffer);
+				buffer.Position = 0;
 
 				var bitmapImage = new BitmapImage();
-				bitmapImage.SetSource(bitmapStream);
+				bitmapImage.SetSource(buffer.AsRandomAccessStream());
 
 				Bitmap = bitmapImage;
 			}
-		}
+			else
+			{
+				PastedContent = "No image content in clipboard";
+			}
+		});
 
 		private void ListAvailableFormats()
 		{
 			var package = Clipboard.GetContent();
 			UpdateStatusAndClearOldContents(package);
+		}
+
+		// Reads the clipboard directly from the Ctrl+V accelerator, validating that pasted
+		// content is fully available at key-event time (the paste event may arrive after
+		// the key event and is bridged internally). Formats are attempted individually:
+		// when the key event precedes the paste event, Contains() advertises formats
+		// optimistically and the ones the paste did not carry fail on retrieval.
+		internal async void PasteFromAccelerator()
+		{
+			try
+			{
+				var package = Clipboard.GetContent();
+				UpdateStatusAndClearOldContents(package);
+
+				var parts = new List<string>();
+
+				if (await TryGetAsync(package, StandardDataFormats.Text, p => p.GetTextAsync().AsTask()) is { } text)
+				{
+					parts.Add($"Text: {text}");
+				}
+
+				if (await TryGetAsync(package, StandardDataFormats.Html, p => p.GetHtmlFormatAsync().AsTask()) is { } html)
+				{
+					parts.Add($"HTML: {(html.Length > 100 ? html[..100] + "..." : html)}");
+				}
+
+				if (await TryGetAsync(package, StandardDataFormats.StorageItems, p => p.GetStorageItemsAsync().AsTask()) is { Count: > 0 } items)
+				{
+					parts.Add($"Files ({items.Count}): {string.Join(", ", items.Select(item => item.Name))}");
+				}
+
+				if (await TryGetAsync(package, StandardDataFormats.Bitmap, p => p.GetBitmapAsync().AsTask()) is { } bitmapReference)
+				{
+					using var bitmapStream = await bitmapReference.OpenReadAsync();
+
+					var buffer = new MemoryStream();
+					await bitmapStream.AsStreamForRead().CopyToAsync(buffer);
+					buffer.Position = 0;
+
+					var bitmapImage = new BitmapImage();
+					bitmapImage.SetSource(buffer.AsRandomAccessStream());
+					Bitmap = bitmapImage;
+
+					parts.Add("Bitmap: shown below");
+				}
+
+				PastedContent = parts.Count > 0
+					? "Ctrl+V accelerator paste:\n" + string.Join("\n", parts)
+					: "Ctrl+V accelerator paste: nothing available at key-event time";
+			}
+			catch (Exception e)
+			{
+				PastedContent = $"Ctrl+V accelerator paste failed: {e.Message}";
+			}
+		}
+
+		private static async Task<T> TryGetAsync<T>(DataPackageView package, string formatId, Func<DataPackageView, Task<T>> getter)
+			where T : class
+		{
+			if (!package.Contains(formatId))
+			{
+				return null;
+			}
+
+			try
+			{
+				return await getter(package);
+			}
+			catch (InvalidOperationException)
+			{
+				// Advertised optimistically but not present in the arrived paste.
+				return null;
+			}
 		}
 
 		private void Clear() => Clipboard.Clear();
