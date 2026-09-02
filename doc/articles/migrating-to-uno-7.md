@@ -477,6 +477,16 @@ Independently of rendering, manipulation recognition was realigned with WinUI:
   starts sooner. Mouse goes from 1px to 4px, matching the Win32 system drag threshold
   (`SM_CXDRAG`), so a small wiggle during a click is no longer reported as a drag. Code that
   relied on a near-zero mouse threshold to start a drag should re-test.
+- **Vulkan is the default rendering backend** on Android, Linux (X11) and Windows (Win32).
+  `UseVulkanOnSkiaAndroid`, `UseVulkanOnX11` and `UseVulkanOnWin32` all default to `true`;
+  before 7.0 Vulkan was opt-in and these defaulted to `false`. Devices without a usable Vulkan
+  driver fall back to OpenGL and then to software rendering on their own, so no configuration
+  is needed — but the GPU path most apps actually run on has changed, so re-test rendering on
+  your target devices, especially custom `SKCanvas` drawing and native-element interop. To
+  keep the pre-7.0 behavior, select the OpenGL backend on the host builder
+  (`.UseX11(b => b.RenderingBackend(X11RenderingBackend.OpenGL))`) or set the matching
+  `FeatureConfiguration.Rendering.UseVulkanOn*` flag to `false` before building the host. See
+  [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
 
 ### Type-hierarchy changes (WinUI parity)
 
