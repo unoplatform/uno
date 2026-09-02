@@ -175,5 +175,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = null;
 			}
 		}
+
+		[TestMethod]
+		[RequiresScaling(1f)]
+		public async Task When_Highlight_Reaches_The_Overflow()
+		{
+			// The column drew with an empty highlighter list, so highlighting stopped at the column
+			// boundary and SelectAll only ever tinted the master.
+			var master = new RichTextBlock { Width = 200, MaxLines = 1, FontSize = 20, Foreground = new SolidColorBrush(Colors.Black) };
+			var first = new Paragraph();
+			first.Inlines.Add(new Run { Text = "First" });
+			master.Blocks.Add(first);
+			var second = new Paragraph();
+			second.Inlines.Add(new Run { Text = "SecondParagraph" });
+			master.Blocks.Add(second);
+
+			var overflow = new RichTextBlockOverflow { Width = 200, Height = 120 };
+			master.OverflowContentTarget = overflow;
+
+			// "First" is 5 chars plus the 2-char paragraph separator, so the second paragraph is global 7.
+			var highlighter = new TextHighlighter { Background = new SolidColorBrush(Colors.Red) };
+			highlighter.Ranges.Add(new TextRange { StartIndex = 7, Length = 15 });
+			master.TextHighlighters.Add(highlighter);
+
+			var host = new Border { Width = 220, Height = 260, Background = new SolidColorBrush(Colors.White) };
+			var root = new StackPanel();
+			root.Children.Add(master);
+			root.Children.Add(overflow);
+			host.Child = root;
+
+			try
+			{
+				await UITestHelper.Load(host);
+				Assert.IsTrue(master.HasOverflowContent, "The highlighted paragraph must land in the overflow");
+
+				var shot = await UITestHelper.ScreenShot(overflow);
+				ImageAssert.HasColorInRectangle(
+					shot,
+					new System.Drawing.Rectangle(0, 0, shot.Width, shot.Height),
+					Colors.Red,
+					tolerance: 5);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
 	}
 }
