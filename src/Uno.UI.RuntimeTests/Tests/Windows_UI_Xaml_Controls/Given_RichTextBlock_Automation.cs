@@ -226,5 +226,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+
+		[TestMethod]
+		public async Task When_InlineUIContainer_Is_Reachable_From_Automation()
+		{
+			// CTextAdapter::GetPageNode had no arm for the master, so an embedded control inside rich text
+			// was invisible to assistive tech unless it happened to sit in an overflow column.
+			var SUT = new RichTextBlock { Width = 300, FontSize = 20 };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = "Before " });
+			var container = new InlineUIContainer { Child = new Button { Content = "Embedded" } };
+			paragraph.Inlines.Add(container);
+			paragraph.Inlines.Add(new Run { Text = " after" });
+			SUT.Blocks.Add(paragraph);
+
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				await WindowHelper.WaitForIdle();
+
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(SUT);
+				var provider = peer.GetPattern(PatternInterface.Text) as ITextProvider;
+				Assert.IsNotNull(provider, "RichTextBlock should expose the Text pattern");
+
+				var children = provider!.DocumentRange.GetChildren();
+
+				Assert.IsNotNull(children, "The document range should enumerate its embedded children");
+				Assert.IsTrue(children!.Length > 0, "An embedded control in the master should be reachable from automation");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
 	}
 }
