@@ -77,6 +77,10 @@
 		<SkiaSharpVersion>4.151.1</SkiaSharpVersion>
 		<HarfbuzzSharpVersion>14.2.1.1</HarfbuzzSharpVersion>
 		<UnoICUVersion>77.3.0-dev.4</UnoICUVersion>
+		<!-- Uno.icu-tvos was introduced after that line and only ships 77.4.0-dev.1, which in turn
+		     is not published for -wasm/-win. Same ICU major, so the _77 symbol suffix still matches.
+		     Fold this back into UnoICUVersion once one version exists for every platform. -->
+		<UnoICUTvOSVersion>77.4.0-dev.1</UnoICUTvOSVersion>
 	</PropertyGroup>
 
 	<!-- Dev-server host projects import Uno.DevServer.Roslyn.props and pin their own Roslyn/MSBuild
@@ -217,6 +221,7 @@
 		<PackageReference Update="Uno.icu-macos" Version="$(UnoICUVersion)" />
 		<PackageReference Update="Uno.icu-wasm" Version="$(UnoICUVersion)" />
 		<PackageReference Update="Uno.icu-ios" Version="$(UnoICUVersion)" />
+		<PackageReference Update="Uno.icu-tvos" Version="$(UnoICUTvOSVersion)" />
 		<PackageReference Update="Uno.icu-win" Version="$(UnoICUVersion)" />
 	</ItemGroup>
 
