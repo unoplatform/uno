@@ -10,7 +10,7 @@ using Uno.UI.Helpers;
 
 namespace UITests.Windows_Media;
 
-[Sample("CameraCapture", IsManualTest = true, Description = "Only available on iOS and Android.")]
+[Sample("CameraCapture", IsManualTest = true, Description = "Available on iOS, Android, and macOS (Skia Desktop).")]
 public sealed partial class CameraCaptureUISample : Page
 {
 	public CameraCaptureUISample()
@@ -20,7 +20,7 @@ public sealed partial class CameraCaptureUISample : Page
 
 	private bool IsTargetSupported() =>
 #if HAS_UNO
-		DeviceTargetHelper.IsMobile();
+		DeviceTargetHelper.IsMobile() || OperatingSystem.IsMacOS();
 #else
 		true;
 #endif

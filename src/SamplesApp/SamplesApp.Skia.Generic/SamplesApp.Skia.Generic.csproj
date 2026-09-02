@@ -130,9 +130,10 @@
 
 	<!--
 	On macOS, create a minimal .app bundle alongside the regular build output so that
-	TCC-gated APIs (microphone, speech recognition) can present their authorization
-	prompt. The .app contains an Info.plist with NSMicrophoneUsageDescription and
-	NSSpeechRecognitionUsageDescription, plus the build output under Contents/MacOS.
+	TCC-gated APIs (camera, microphone, speech recognition) can present their authorization
+	prompt. The .app contains an Info.plist with NSCameraUsageDescription,
+	NSMicrophoneUsageDescription and NSSpeechRecognitionUsageDescription, plus the build
+	output under Contents/MacOS.
 	Launch the bundle via `open bin/Debug/$(TargetFramework)/SamplesApp.Skia.Generic.app`.
 	Set SkipMacOSAppBundle=true to skip.
 	-->
