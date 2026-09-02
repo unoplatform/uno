@@ -1,24 +1,4 @@
-﻿// Copyright (C) 1997-2024 Sam Lantinga <slouken@libsdl.org>
-//
-// This software is provided 'as-is', without any express or implied
-// warranty.  In no event will the authors be held liable for any damages
-// arising from the use of this software.
-//
-// 	Permission is granted to anyone to use this software for any purpose,
-// 	including commercial applications, and to alter it and redistribute it
-// 	freely, subject to the following restrictions:
-//
-// 1. The origin of this software must not be misrepresented; you must not
-// 	claim that you wrote the original software. If you use this software
-// 	in a product, an acknowledgment in the product documentation would be
-// 	appreciated but is not required.
-// 2. Altered source versions must be plainly marked as such, and must not be
-// misrepresented as being the original software.
-// 3. This notice may not be removed or altered from any source distribution.
-
-// https://github.com/libsdl-org/SDL/blob/9f8157f42cc0351833c030febe8a559719c875bd/src/video/windows/SDL_windowsclipboard.c
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -691,7 +671,35 @@ partial class Win32ClipboardExtension // from clipboard
 			return null;
 		}
 
-		var srcBitmapInfo = (BITMAPINFO*)ptr;
+		return RandomAccessStreamReference.CreateFromStream(new MemoryStream(ConvertDibToBmp(ptr, memSize)).AsRandomAccessStream());
+	}
+
+	// Derived from SDL's WIN_ConvertDIBtoBMP, translated to C# and modified:
+	// https://github.com/libsdl-org/SDL/blob/9f8157f42cc0351833c030febe8a559719c875bd/src/video/windows/SDL_windowsclipboard.c
+	//
+	// Copyright (C) 1997-2024 Sam Lantinga <slouken@libsdl.org>
+	//
+	// This software is provided 'as-is', without any express or implied
+	// warranty.  In no event will the authors be held liable for any damages
+	// arising from the use of this software.
+	//
+	// Permission is granted to anyone to use this software for any purpose,
+	// including commercial applications, and to alter it and redistribute it
+	// freely, subject to the following restrictions:
+	//
+	// 1. The origin of this software must not be misrepresented; you must not
+	//    claim that you wrote the original software. If you use this software
+	//    in a product, an acknowledgment in the product documentation would be
+	//    appreciated but is not required.
+	// 2. Altered source versions must be plainly marked as such, and must not be
+	//    misrepresented as being the original software.
+	// 3. This notice may not be removed or altered from any source distribution.
+	/// <summary>
+	/// Wraps a raw CF_DIB payload in a <see cref="BITMAPFILEHEADER"/>, yielding a self-contained BMP file.
+	/// </summary>
+	private static unsafe byte[] ConvertDibToBmp(void* dib, uint dibSize)
+	{
+		var srcBitmapInfo = (BITMAPINFO*)dib;
 
 		// https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader#color-tables
 		int colorTableSize = srcBitmapInfo->bmiHeader.biCompression switch
@@ -705,22 +713,22 @@ partial class Win32ClipboardExtension // from clipboard
 			_ => Marshal.SizeOf<RGBQUAD>() * (int)srcBitmapInfo->bmiHeader.biClrUsed
 		};
 
-		BITMAPFILEHEADER bitmapfileheader = new BITMAPFILEHEADER
+		var fileHeaderSize = Marshal.SizeOf<BITMAPFILEHEADER>();
+		var bitmapfileheader = new BITMAPFILEHEADER
 		{
 			bfType = /* BM */ 0x4d42,
-			bfSize = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + memSize),
-			bfOffBits = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + Marshal.SizeOf<BITMAPINFOHEADER>() + colorTableSize)
+			bfSize = (uint)(fileHeaderSize + dibSize),
+			bfOffBits = (uint)(fileHeaderSize + Marshal.SizeOf<BITMAPINFOHEADER>() + colorTableSize)
 		};
 
-		var bmpSize = Marshal.SizeOf<BITMAPFILEHEADER>() + (int)memSize;
-		var arr = new byte[bmpSize];
+		var arr = new byte[fileHeaderSize + dibSize];
 		fixed (byte* bmp = arr)
 		{
-			Buffer.MemoryCopy(&bitmapfileheader, bmp, bmpSize, Marshal.SizeOf<BITMAPFILEHEADER>());
-			Buffer.MemoryCopy(ptr, bmp + Marshal.SizeOf<BITMAPFILEHEADER>(), memSize, memSize);
+			Buffer.MemoryCopy(&bitmapfileheader, bmp, arr.Length, fileHeaderSize);
+			Buffer.MemoryCopy(dib, bmp + fileHeaderSize, dibSize, dibSize);
 		}
 
-		return RandomAccessStreamReference.CreateFromStream(new MemoryStream(arr).AsRandomAccessStream());
+		return arr;
 	}
 	private static unsafe object? DecodeUnknownData(CLIPBOARD_FORMAT format, string name, HGLOBAL handle)
 	{
