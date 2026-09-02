@@ -1762,7 +1762,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			sut.Style = style;
 
-			// Here the call back of PropA should not be called, so PropB should be on the ExplicitStyle value
+			// Here the call back of PropA should not be called, so PropB should be on the Style value
 			sut.PropA.Should().Be("LocalValue");
 			sut.PropB.Should().Be("StyleValueForB");
 
