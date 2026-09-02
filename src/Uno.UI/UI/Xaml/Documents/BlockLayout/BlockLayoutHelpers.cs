@@ -829,21 +829,35 @@ internal static class BlockLayoutHelpers
 		float eAdvance = 0.0f;
 		uint character = pCollapsingChar;
 
-		// TODO Uno (integrate): IFssFontFace glyph metrics — WinUI determined the nominal advance width of the
-		// collapsing character via GetGlyphIndices + GetDesignGlyphMetrics, then converted from design units to
-		// 96ths of an inch at the run's font size:
-		//   eAdvance = glyphMetrics.AdvanceWidth * runFontSize / fontMetrics.DesignUnitsPerEm.
-		// On Uno read the advance from pFontFace (FontDetails/SKFont) for the codepoint. Placeholder leaves 0.
 		if (pFontFace != null)
 		{
-			// Determine the nominal advance width of the collapsing character
-			// Convert the advance width from size independent font units to
-			// 96ths of an inch at the specified font size.
-			eAdvance = 0.0f;
+			// Determine the nominal advance width of the collapsing character. WinUI read the design-unit
+			// advance off the font face and scaled it by the run's font size; the Skia engine shapes instead,
+			// so measure the shaped advance the same way the text engine does.
+			eAdvance = MeasureShapedAdvance(pFontFace, pCollapsingChar);
 		}
 
 		// All done. Return the advance width of the collapsing character.
 		pCollapsingCharWidth = eAdvance;
+	}
+
+	// Shapes a single character with the run's font and returns its advance in pixels. Mirrors how
+	// UnicodeText measures its own ellipsis, including the fallback when the font has no glyph for it.
+	internal static float MeasureShapedAdvance(FontDetails fontDetails, char character)
+	{
+		using var buffer = new HarfBuzzSharp.Buffer();
+		buffer.AddUtf16(character.ToString());
+		buffer.GuessSegmentProperties();
+
+		fontDetails.Font.Shape(buffer);
+
+		var advance = 0f;
+		foreach (var position in buffer.GetGlyphPositionSpan())
+		{
+			advance += position.XAdvance * fontDetails.TextScale.textScaleX;
+		}
+
+		return advance;
 	}
 
 	//---------------------------------------------------------------------------

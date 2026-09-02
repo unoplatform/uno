@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference TextCollapsingCharacters.h, TextCollapsingCharacters.cpp, tag winui3/release/2.4.0, commit e8442d07a
 
@@ -6,20 +6,53 @@
 
 using System;
 using Windows.Foundation;
+using Microsoft.UI.Xaml.Documents.TextFormatting;
 
 namespace Microsoft.UI.Xaml.Documents.RichTextServices;
 
-// The collapsing symbol (ellipsis) shown when a TextLine is collapsed by text
-// trimming. TODO Uno (Stage 6 / risk R2): the ellipsis glyph run is net-new on Uno
-// (no equivalent in the Skia engine yet); stubbed until line collapsing is ported.
+/// <summary>
+/// The collapsing symbol (ellipsis) shown when a TextLine is collapsed by text trimming.
+/// </summary>
 internal sealed class TextCollapsingCharacters : TextCollapsingSymbol
 {
-	// TODO Uno (Stage 6): the C++ ctor takes the collapsing symbol metrics; stubbed for now.
-	public TextCollapsingCharacters(object? a = null, object? b = null, object? c = null, object? d = null, object? e = null, object? f = null, object? g = null) { }
+	private readonly float[] _characterWidths;
 
-	public override double Width
-		=> throw new NotSupportedException("TODO Uno (Stage 6): line collapsing / ellipsis is not yet ported.");
+	public TextCollapsingCharacters(
+		char collapsingChar,
+		int characterCount,
+		float[] characterWidths,
+		float width,
+		FlowDirection flowDirection,
+		TextRunProperties textRunProperties,
+		FontDetails fontDetails)
+	{
+		CollapsingChar = collapsingChar;
+		CharacterCount = characterCount;
+		_characterWidths = characterWidths;
+		Width = width;
+		FlowDirection = flowDirection;
+		TextRunProperties = textRunProperties;
+		FontDetails = fontDetails;
+	}
 
+	public char CollapsingChar { get; }
+
+	public int CharacterCount { get; }
+
+	public override double Width { get; }
+
+	public FlowDirection FlowDirection { get; }
+
+	public TextRunProperties TextRunProperties { get; }
+
+	// The resolved font the symbol is shaped and drawn with.
+	public FontDetails FontDetails { get; }
+
+	public float GetCharacterWidth(int index) => _characterWidths[index];
+
+	// The symbol is emitted onto the collapsed RenderLine and painted by ParsedText.Draw along with
+	// the rest of the paragraph, so there is no separate drawing-context recording pass.
 	public override void Draw(TextDrawingContext drawingContext, Point origin, double viewportWidth, FlowDirection flowDirection)
-		=> throw new NotSupportedException("TODO Uno (Stage 6): line collapsing / ellipsis is not yet ported.");
+		=> throw new NotSupportedException(
+			"The collapsing symbol is drawn as part of the collapsed line by ParsedText.Draw.");
 }

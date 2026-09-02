@@ -35,6 +35,37 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 
 		public bool Wraps { get; }
 
+		/// <summary>
+		/// Set when text trimming collapsed this line. The shaped ellipsis is painted after the line's
+		/// spans; it is decoration, so it takes no part in the character index space.
+		/// </summary>
+		public CollapsedLineSymbol? CollapsingSymbol { get; set; }
+
+		/// <summary>
+		/// Produces a copy of this line trimmed to <paramref name="spans"/> with a collapsing symbol at its
+		/// end. Collapsing only drops glyphs from the tail, so the line's stacking metrics are unchanged.
+		/// </summary>
+		internal RenderLine CollapseTo(List<RenderSegmentSpan> spans, CollapsedLineSymbol symbol)
+			=> new(this, spans, symbol);
+
+		private RenderLine(RenderLine source, List<RenderSegmentSpan> spans, CollapsedLineSymbol symbol)
+		{
+			_segmentSpans = new(spans);
+
+			var width = symbol.Width;
+			foreach (var span in _segmentSpans)
+			{
+				width += span.Width;
+			}
+
+			Width = width;
+			WidthWithoutTrailingSpaces = width;
+			Height = source.Height;
+			BaselineOffsetY = source.BaselineOffsetY;
+			Wraps = false;
+			CollapsingSymbol = symbol;
+		}
+
 		public RenderLine(List<RenderSegmentSpan> spans, LineStackingStrategy lineStackingStrategy, float lineHeight, bool firstLine, bool wraps, TextLineBounds textLineBounds)
 		{
 			_segmentSpans = new(spans);

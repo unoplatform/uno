@@ -656,6 +656,12 @@ internal readonly struct ParsedText : IParsedText
 				ArrayPool<SKPoint>.Shared.Return(positions);
 				ArrayPool<ushort>.Shared.Return(glyphs);
 			}
+
+			// A line collapsed by text trimming paints its ellipsis after the glyphs that were kept.
+			if (line.CollapsingSymbol is { } collapsingSymbol)
+			{
+				DrawCollapsingSymbol(collapsingSymbol, canvas, x, y + baselineOffsetY);
+			}
 		}
 
 		static void DrawDecoration(SKCanvas canvas, float x, float y, float width, float thickness, SKPaint paint)
@@ -921,6 +927,10 @@ internal readonly struct ParsedText : IParsedText
 	// SkiaTextFormatter) to vend per-line metrics over the parsed layout.
 	internal IReadOnlyList<RenderLine> RenderLines => _renderLines;
 
+	// Text trimming collapses a line in place: the formatter hands the same ParsedText back for every
+	// line of the paragraph, so the collapsed line has to replace the original for Draw to pick it up.
+	internal void ReplaceRenderLine(int index, RenderLine line) => _renderLines[index] = line;
+
 	public float FirstLineBaseline => _renderLines.Count > 0 ? _renderLines[0].Height + _renderLines[0].BaselineOffsetY : _defaultLineHeight;
 
 	internal Size AvailableSize => _availableSize;
@@ -1101,6 +1111,20 @@ internal readonly struct ParsedText : IParsedText
 			}
 		}
 
+	}
+
+	private static void DrawCollapsingSymbol(CollapsedLineSymbol symbol, SKCanvas canvas, float x, float y)
+	{
+		var positions = new SKPoint[symbol.Glyphs.Length];
+		var pen = x;
+
+		for (var i = 0; i < symbol.Glyphs.Length; i++)
+		{
+			positions[i] = new SKPoint(pen, 0);
+			pen += symbol.Advances[i];
+		}
+
+		DrawText(symbol.Font, positions, symbol.Glyphs, canvas, y, _spareDrawPaint);
 	}
 
 	private static void DrawText(FontDetails fontInfo, Span<SKPoint> positions, Span<ushort> glyphs,
