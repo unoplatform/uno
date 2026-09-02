@@ -32,7 +32,8 @@ Updated as items are addressed. Verdicts below are unchanged; this section only 
 | V6 | `TextSchema` validation never invoked | ⚠️ reverted | `66030fb0ff0` | Enforcing it broke `Given_XamlReader.When_TextBlock_NestedSpan`. `InlineCollectionSupportsElement` checks the TextBlock branch first and `TextBlockSupportsElement` allows a `LineBreak`; XAML builds children before parents, so at add time the Hyperlink's TextBlock ancestor is unreachable and the walk wrongly falls through to the Hyperlink branch. Settling it needs a WinAppSDK-head runtime test |
 | V7 | Overflow `ContentStart`/`ContentEnd` stay `NotImplemented` | ⬜ deferred | — | Two `internal`-but-complete properties matching the repo's "expose a port as internal until validated" gating; the third member (`GetPositionFromPoint`) is genuinely unported. A public-surface decision, not a defect |
 | V8 | Property callbacks collapse WinUI's invalidation tiers | ◐ partial | `bc41526efd7` | Foreground is off the re-shape path. **The other three tiers do not transfer** — see below |
-| P1–P3 | Feature backlog (18 items) | ⬜ open | — | See §7 |
+| P1 | Text trimming (no ellipsis) | ✅ fixed | `12655fdd7a3` · `ecea4e34198` | `ParagraphNode` had the whole pipeline ported; the three leaves it lands on were stubs. Runtime: reverted → text overflows a 120px control to x=130 |
+| P1–P3 | Remaining feature backlog (17 items) | ⬜ open | — | See §7. Note the "shared primitive" framing was off: trimming lives at `TextLine.Collapse`, not in paint, and does not share code with the overflow slice |
 
 ### Notes recorded while remediating
 
