@@ -49,6 +49,14 @@ Updated as items are addressed. Verdicts below are unchanged; this section only 
 it 40 % / structural ("deliberately keeps the pre-existing minimal `DirectUI.TextAdapter`; out of Stage 10 scope").
 Repinning would assert a provenance the file does not have, so it was left alone.
 
+**Local test-failure taxonomy (for anyone re-running this branch).** Three classes of failure show up locally
+that are not regressions of this work: (1) `Given_TextBlock.When_Inlines_Transitively_Change` fails at the
+pre-fix baseline and at 100% scale - genuinely pre-existing; (2) the `TextBox`/`RichTextBlock` clipboard copy
+tests fail intermittently under clipboard contention - re-run before judging; (3) `Given_TextBox`'s
+`When_Multiline_Pointer_TripleTap_With_Wrapping` and `When_Caret_Line_Straddles_Viewport_Edge_Grippers_Are_Hidden`
+fail on a non-100% desktop and **pass when pinned to `[RequiresScaling(1f)]`**, which they do not declare. That
+last pair is a pre-existing test-robustness gap worth fixing separately; it is out of scope here.
+
 **Correction to §3 (V8): the tier map is not transferable, and the finding's "rendered result is identical"
 is wrong.** WinUI's `InvalidateContentMeasure` re-runs line breaking; Uno caches shaping in `ParsedText` and
 rebuilds it on content invalidation only. Retiering the nine measure-tier properties WinUI lists therefore
