@@ -75,6 +75,7 @@ namespace Microsoft.UI.Xaml.Controls
 			Tapped += static (s, e) => ((RichTextBlock)s).OnTapped(e);
 			DoubleTapped += static (s, e) => ((RichTextBlock)s).OnDoubleTapped(e);
 			KeyDown += static (s, e) => ((RichTextBlock)s).OnKeyDown(e);
+			KeyUp += static (s, e) => ((RichTextBlock)s).OnKeyUp(e);
 
 			GotFocus += (_, _) =>
 			{
@@ -577,8 +578,29 @@ namespace Microsoft.UI.Xaml.Controls
 			return null;
 		}
 
+		// CHyperlink registers its own KeyDown/KeyUp listeners; a TextElement cannot take part in the
+		// routed event tree here, so the containing control forwards to the focused link.
+		private Hyperlink? GetFocusedHyperlink()
+			=> XamlRoot is { } root && FocusManager.GetFocusedElement(root) is Hyperlink link && ReferenceEquals(link.GetContainingFrameworkElement(), this)
+				? link
+				: null;
+
+		private void OnKeyUp(KeyRoutedEventArgs args)
+		{
+			if (GetFocusedHyperlink() is { } link && link.OnKeyUp(args.Key))
+			{
+				args.Handled = true;
+			}
+		}
+
 		private void OnKeyDown(KeyRoutedEventArgs args)
 		{
+			if (GetFocusedHyperlink() is { } link && link.OnKeyDown(args.Key))
+			{
+				args.Handled = true;
+				return;
+			}
+
 			if (IsTextSelectionEnabled && _pSelectionManager is { } manager && _pTextView is { } view)
 			{
 				manager.OnKeyDown(this, args, view);
