@@ -99,6 +99,12 @@ namespace Windows.UI.Input
 			public bool IsScaleEnabled => _isScaleEnabled;
 			public bool IsDraggingEnabled => _isDraggingEnable;
 
+			/// <summary>
+			/// Indicates that this manipulation is coasting, i.e. it no longer has any active pointer and is only
+			/// running its inertia. Any new pointer press will abort it (cf. <see cref="TryAdd"/>).
+			/// </summary>
+			public bool IsCoasting => _status is ManipulationStatus.Inertia;
+
 			internal static void AddPointer(GestureRecognizer recognizer, PointerPoint pointer)
 			{
 				var current = recognizer._manipulation;
