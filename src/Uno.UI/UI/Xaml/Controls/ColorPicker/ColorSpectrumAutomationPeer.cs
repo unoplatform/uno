@@ -67,7 +67,11 @@ public partial class ColorSpectrumAutomationPeer : FrameworkElementAutomationPee
 	protected override Rect GetBoundingRectangleCore()
 	{
 		var boundingRectangle = ColorSpectrumOwner.GetBoundingRectangle();
+#if __SKIA__
+		return SharedHelpers.ConvertPhysicalToDips(ColorSpectrumOwner, boundingRectangle);
+#else
 		return boundingRectangle;
+#endif
 	}
 
 	protected override Point GetClickablePointCore()

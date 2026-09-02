@@ -165,8 +165,10 @@ internal class CliManager
 
 			var startInfo = BuildHostArgs(hostPath, originalArgs, workingDirectory, redirectOutput: true, addins: null, enableMajorRollForward: hostLaunchPlan.RequiresMajorRollForward);
 
-			var (ExitCode, StdOut, StdErr) = await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger, forwardOutputToConsole: requiresHostOutputPassthrough);
-			return ExitCode;
+			// Passthrough commands (list/cleanup) print output the user asked for → surface it at
+			// Information (verbatim); everything else relays host output at Debug for diagnostics.
+			var stdLevel = requiresHostOutputPassthrough ? LogLevel.Information : LogLevel.Debug;
+			return await DevServerProcessHelper.RunConsoleProcessAsync(startInfo, _logger, stdLevel);
 		}
 		catch (Exception ex)
 		{
@@ -351,6 +353,22 @@ internal class CliManager
 		if (studioExecutable is null)
 		{
 			return 1; // errors already logged
+		}
+
+		// `login --headless` runs the settings app as a CLI rather than opening its window. It prints the
+		// loopback redirect URI the sign-in has to complete on, and exits with a meaningful code. Both are
+		// lost on the windowed path below, which buffers the child's streams and treats "still running after
+		// the grace period" as success — so let the child own the console and wait for it to finish,
+		// forwarding its exit code without adding parent output that would interleave with the prompt.
+		if (originalArgs.Any(a => string.Equals(a, "--headless", StringComparison.OrdinalIgnoreCase)))
+		{
+			var headlessStartInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(
+				studioExecutable,
+				originalArgs,
+				workingDirectory,
+				redirectOutput: false);
+
+			return await DevServerProcessHelper.RunInteractiveProcessAsync(headlessStartInfo, _logger);
 		}
 
 		var startInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(studioExecutable, originalArgs, workingDirectory, redirectOutput: true);

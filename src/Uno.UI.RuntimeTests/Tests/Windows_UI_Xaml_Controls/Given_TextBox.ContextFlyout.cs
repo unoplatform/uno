@@ -348,6 +348,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Clipboard.Clear();
 		}
 
+		// Waits on the OS clipboard itself rather than on a control's CanPasteClipboardContent: macOS writes the
+		// pasteboard on a later dispatcher turn (SetContent is fire-and-forget) and only refreshes that property from a
+		// ContentChanged raised by a 1s NSPasteboard poll, which races any wait shorter than the poll. Focusing the
+		// control after this returns reads the clipboard live, so the property lands without waiting for a tick.
+		private async Task SetClipboardText(string text)
+		{
+			Clipboard.Clear();
+			await WindowHelper.WaitFor(() => !ClipboardHasText(), timeoutMS: 5000, message: "the clipboard should start out empty");
+
+			var dataPackage = new DataPackage();
+			dataPackage.SetText(text);
+			Clipboard.SetContent(dataPackage);
+			await WindowHelper.WaitFor(ClipboardHasText, timeoutMS: 5000, message: "the clipboard should carry the seeded text");
+		}
+
+		private bool ClipboardHasText()
+		{
+			try
+			{
+				return Clipboard.GetContent()?.Contains(StandardDataFormats.Text) == true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+
 		private (bool hasSelectAll, bool hasCut, bool hasCopy, bool hasPaste) GetAvailableCommands(TextCommandBarFlyout flyout)
 		{
 			var allCommands = flyout.PrimaryCommands.Concat(flyout.SecondaryCommands).ToList();

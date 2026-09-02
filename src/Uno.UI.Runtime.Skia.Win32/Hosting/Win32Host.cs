@@ -91,6 +91,12 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		ApiExtensibility.Register<DragDropManager>(typeof(IDragDropExtension), manager => new Win32DragDropExtension(manager));
 		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new Win32NativeElementHostingExtension(o));
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new Win32NativeWebViewProvider(o));
+#if NET10_0_OR_GREATER
+		// The statics are backed by WebView2Loader.dll through the WebView2Aot package, which is only referenced
+		// from net10.0. On net9.0 the WebView runs on the Microsoft.Web.WebView2 backend instead, and these stay
+		// NotImplemented.
+		ApiExtensibility.Register(typeof(ICoreWebView2EnvironmentStaticsExtension), _ => Win32CoreWebView2EnvironmentStaticsExtension.Instance);
+#endif
 		// We used to do this ApiExtensibility with ApiExtensionAttribute and a condition that makes it only run
 		// on Windows, but this causes problem on Wpf because we're registering Win32's MPE implementation even on WPF.
 		// This way, the Win32 MPE implementation is only registered when we're using

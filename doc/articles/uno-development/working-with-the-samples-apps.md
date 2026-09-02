@@ -23,9 +23,13 @@ To run the SamplesApp locally:
 
 1. Ensure [your environment is configured](xref:Uno.GetStarted.vs2022) for the platform you want to run on.
 2. Open Uno.UI with the [correct target override and solution filter](building-uno-ui.md) for the platform you want to run on.
-3. Select `SamplesApp.[Platform]` as the startup app. (Eg, `SamplesApp.iOS` if you're running on iOS.)
-4. If you're testing on a mobile platform, use a tablet if possible, as the app is optimized for a tablet layout.
-5. Run SamplesApp.
+3. Select `SamplesApp` as the startup app. This is a single multi-targeted head that covers every platform.
+4. Pick the platform from the target framework dropdown next to the run button — `net10.0-desktop`, `net10.0-browserwasm`, `net10.0-android`, `net10.0-ios`, `net10.0-tvos`, or the `windows10.0` (WinUI) target. Select the target explicitly the first time: `net10.0-browserwasm` comes first in the list, so it is what a fresh checkout defaults to.
+5. If you're testing on a mobile platform, use a tablet if possible, as the app is optimized for a tablet layout.
+6. Run SamplesApp.
+
+> [!NOTE]
+> `SamplesApp` needs no bootstrap step. It imports the in-repo Uno.Sdk directly from `src/Uno.Sdk` by path, so the project loads and builds straight from a fresh clone without packing anything into a local NuGet feed first.
 
 If everything builds successfully, the app will run. The app is a collection of samples, grouped into categories. You can navigate to a sample using the menu on the left.
 
@@ -69,7 +73,7 @@ namespace UITests.Windows_Devices.Haptics
 
 To add a new sample to the SamplesApp:
 
-1. Locate the folder corresponding to the control or class you want to create a sample for in `src/SamplesApp/SamplesApp.Samples/`. The folder structure is typically `Namespace_In_Snake_Case/ControlNameTests`.
+1. Locate the folder corresponding to the control or class you want to create a sample for in `src/SamplesApp/SamplesApp.Samples/`. Folders form a nested hierarchy mirroring the API namespace — the same layout as `src/Uno.UI` — so a `Button` sample lives under `Windows/UI/Xaml/Controls/Button/`. Note that the C# namespaces still use the older underscore form (`UITests.Shared.Windows_UI_Xaml_Controls.Button`), so copy the namespace from a neighboring sample rather than deriving it from the folder path.
 2. Create a new `UserControl` from the Visual Studio templates, with a meaningful name.
 3. Add your sample UI to the `UserControl`.
 4. Add the `[Uno.UI.Samples.Controls.Sample]` attribute to the class in the code-behind partial file. The XAML and code-behind are picked up automatically — no project registration required.

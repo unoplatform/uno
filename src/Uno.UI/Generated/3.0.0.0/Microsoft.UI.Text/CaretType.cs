@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Text
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum CaretType
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Normal = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Null = 1,
 #endif
 	}

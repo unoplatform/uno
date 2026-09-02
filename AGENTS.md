@@ -71,7 +71,7 @@ These load **automatically** when you touch matching files — you don't invoke 
 ### Key Source Directories
 
 - `src/Uno.UI/` - Core UI framework (WinUI controls, layout, XAML runtime)
-- `src/Uno.UWP/` - Non-UI WinRT APIs (platform-specific assemblies)
+- `src/Uno.WinRT/` - Non-UI WinRT APIs (platform-specific assemblies)
 - `src/Uno.Foundation/` - Foundation APIs (platform-specific assemblies)
 - `src/Uno.UI.Runtime.Skia.*/` - Skia platform runtimes
 - `src/SourceGenerators/` - XAML parser, DependencyProperty generator
@@ -122,10 +122,9 @@ Combined impact on `SamplesApp.Skia.Generic` (Windows, 32-core, warm NuGet cache
 
 | Platform | Solution Filter |
 |----------|-----------------|
-| WebAssembly | `Uno.UI-Wasm-only.slnf` |
-| Skia (Desktop) | `Uno.UI-Skia-only.slnf` |
-| Mobile (Android/iOS) | `Uno.UI-netcore-mobile-only.slnf` |
+| Skia (Desktop, WebAssembly, Android, iOS) | `Uno.UI-Skia-only.slnf` |
 | Windows | `Uno.UI-Windows-only.slnf` |
+| Reference API | `Uno.UI-Reference-Only.slnf` |
 | Unit Tests | `Uno.UI-UnitTests-only.slnf` |
 
 **4. Build commands:**
@@ -155,7 +154,7 @@ Single C#/XAML codebase → WinUI 3 API → Platform-specific runtimes (Skia, We
 
 **Unless a task explicitly states otherwise, new features and enhancements target the Skia targets only** (Desktop Win32/macOS/Linux and Skia-on-Android/iOS/WASM). The **native targets** — native Android Views, native iOS/UIKit, WASM DOM — are **maintenance-only**: don't build new features for them, but **don't break them either** (keep them compiling and behaving as-is).
 
-This applies to the **UI rendering layer** (`Uno.UI` native views), *not* to platform APIs. **Platform-specific non-UI WinRT APIs (in `Uno.UWP`/`Uno.Foundation`) are still actively enhanced**, because the Skia targets compile and consume those same per-platform implementations (e.g. Skia-on-Android uses the Android implementation of a file picker, sensor, contacts, etc.).
+This applies to the **UI rendering layer** (`Uno.UI` native views), *not* to platform APIs. **Platform-specific non-UI WinRT APIs (in `Uno.WinRT`/`Uno.Foundation`) are still actively enhanced**, because the Skia targets compile and consume those same per-platform implementations (e.g. Skia-on-Android uses the Android implementation of a file picker, sensor, contacts, etc.).
 
 ### Platform Base Classes
 
@@ -176,11 +175,11 @@ On Android/iOS, `DependencyObject` is an **interface** (not base class) since `U
 
 ### Project Organization
 
-Most libraries have 5 variants: Reference, Skia, WebAssembly, NetCoreMobile, Tests.
+The WinRT layer (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) keeps per-platform variants: Reference, Skia, WebAssembly, NetCoreMobile. From `Uno.UI` upwards the UI layer ships a single Skia build, which also serves as the compile reference — there is no `.Reference` variant of those projects.
 
 ### Runtime Target Selection
 
-For Skia, `RuntimeAssetsSelectorTask` ensures `Uno.UI` uses `netX` (generic) target for all Skia platforms. `Uno.UWP` and `Uno.Foundation` use platform-specific assemblies. Use runtime checks like `OperatingSystem.IsAndroid()` for platform-specific behavior on Skia for libraries above and including `Uno.UI`, or use `ApiExtensibility` with platform-specific implementations in `Runtime.Skia` projects.
+For Skia, `RuntimeAssetsSelectorTask` ensures `Uno.UI` uses `netX` (generic) target for all Skia platforms. `Uno.WinRT` and `Uno.Foundation` use platform-specific assemblies. Use runtime checks like `OperatingSystem.IsAndroid()` for platform-specific behavior on Skia for libraries above and including `Uno.UI`, or use `ApiExtensibility` with platform-specific implementations in `Runtime.Skia` projects.
 
 ### NotImplemented Stubs
 
@@ -222,7 +221,7 @@ Run these after making changes:
 2. **Unit tests**: `dotnet test Uno.UI.UnitTests/Uno.UI.UnitTests.csproj --no-build`
 3. **Runtime tests** (UI changes): Use `/runtime-tests` skill (Skia Desktop default, pass test class/method name as argument)
 4. **WinUI parity** (validate against native WinUI): Use `/winui-runtime-tests` skill
-5. **Sample app** (visual changes): `cd src/SamplesApp/SamplesApp.Wasm && dotnet run`
+5. **Sample app** (visual changes): `cd src/SamplesApp/SamplesApp.Skia.Generic && dotnet run`
 6. **XAML formatting** (SamplesApp changes): `dotnet xstyler -d src/SamplesApp -r`
 
 ### SamplesApp: Add XAML files
@@ -324,7 +323,7 @@ A GitHub Actions workflow enforces formatting on PRs that touch SamplesApp XAML 
 
 ### Implementing New WinUI Features
 
-1. Find generated stub: `src/Uno.UWP/Generated/3.0.0.0/Windows.*/ClassName.cs`
+1. Find generated stub: `src/Uno.WinRT/Generated/3.0.0.0/Windows.*/ClassName.cs`
 2. Copy to non-generated location
 3. Remove implemented platforms from `[NotImplemented]` attribute
 4. Use platform suffix for platform-specific files

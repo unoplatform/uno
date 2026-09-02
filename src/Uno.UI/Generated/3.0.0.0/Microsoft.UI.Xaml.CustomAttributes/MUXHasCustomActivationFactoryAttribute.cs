@@ -4,13 +4,13 @@
 namespace Microsoft.UI.Xaml.CustomAttributes
 {
 	[global::System.AttributeUsageAttribute(global::System.AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class MUXHasCustomActivationFactoryAttribute : global::System.Attribute
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public MUXHasCustomActivationFactoryAttribute() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.CustomAttributes.MUXHasCustomActivationFactoryAttribute", "MUXHasCustomActivationFactoryAttribute()");

@@ -26,11 +26,11 @@ You are executing the **Add Sample Skill**. This skill creates a SamplesApp samp
    - **Control name**: The control being demonstrated (e.g., `Button`, `TreeView`, `NavigationView`)
    - **Scenario**: What the sample demonstrates (e.g., `BasicUsage`, `CustomStyle`, `DataBinding`)
 
-2. Find existing folder under `src/SamplesApp/SamplesApp.Samples/` matching the control's namespace:
-   - WinUI controls: `Microsoft_UI_Xaml_Controls/` (e.g., `Microsoft_UI_Xaml_Controls/NavigationViewTests/`)
-   - XAML framework: `Windows_UI_Xaml_Controls/` (e.g., `Windows_UI_Xaml_Controls/Button/`)
-   - Shapes: `Windows_UI_Xaml_Shapes/`
-   - Media: `Windows_UI_Xaml_Media/`
+2. Find existing folder under `src/SamplesApp/SamplesApp.Samples/` matching the control's namespace. Folders are a nested hierarchy mirroring the API namespace, same as `src/Uno.UI`:
+   - WinUI controls: `Microsoft/UI/Xaml/Controls/` (e.g., `Microsoft/UI/Xaml/Controls/NavigationViewTests/`)
+   - XAML framework: `Windows/UI/Xaml/Controls/` (e.g., `Windows/UI/Xaml/Controls/Button/`)
+   - Shapes: `Windows/UI/Xaml/Shapes/`
+   - Media: `Windows/UI/Xaml/Media/`
    - Search for existing samples of the same control to find the right folder
 
 3. Generate file names: `ControlName_Scenario.xaml` and `ControlName_Scenario.xaml.cs`
@@ -65,7 +65,7 @@ Create the XAML file with:
 ### Phase 2: Create Code-Behind
 
 Create the code-behind file with:
-- Namespace matching the folder structure: `UITests.<FolderNamespace>`
+- Namespace copied from neighbouring samples in the same folder, e.g. `UITests.Shared.Windows_UI_Xaml_Controls.Button` for `Windows/UI/Xaml/Controls/Button/`. Namespaces keep the legacy underscore form — don't derive them from the nested folder path.
 - `[Sample("CategoryName")]` attribute from `Uno.UI.Samples.Controls`
 - `sealed partial class` inheriting from `Page`
 - `this.InitializeComponent()` in constructor
@@ -119,11 +119,11 @@ dotnet xstyler -f src/SamplesApp/SamplesApp.Samples/FolderName/SampleName.xaml
 
 - **Sample attribute source:** `src/SamplesApp/SamplesApp.UnitTests.Shared/Controls/UITests/Views/Controls/SampleAttribute.cs`
 - **Sample folder:** `src/SamplesApp/SamplesApp.Samples/` (XAML and `.cs` are picked up by glob)
-- **Example samples:** Browse `src/SamplesApp/SamplesApp.Samples/Windows_UI_Xaml_Controls/` for patterns
+- **Example samples:** Browse `src/SamplesApp/SamplesApp.Samples/Windows/UI/Xaml/Controls/` for patterns
 
 ## Common Mistakes to Avoid
 
 1. **Hardcoding Background colors** — use `{ThemeResource ApplicationPageBackgroundThemeBrush}` instead
-2. **Wrong namespace in code-behind** — must match the folder structure under `UITests.`
+2. **Wrong namespace in code-behind** — copy it from neighbouring samples in the same folder; it won't match the nested folder path verbatim
 3. **Missing `InitializeComponent()` call** — XAML won't be loaded
 4. **Wrong `x:Class` in XAML** — must match the fully qualified class name in code-behind

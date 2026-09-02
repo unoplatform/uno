@@ -32,6 +32,7 @@ namespace Uno.UI.Runtime.Skia
 		private readonly int _stencil;
 
 		private GRBackendRenderTarget? _renderTarget;
+		private SKSurface? _glFbSurface;
 		private readonly IntPtr _gbmTargetSurface;
 		private readonly int _card;
 		private IntPtr _currentBo;
@@ -393,14 +394,26 @@ namespace Uno.UI.Runtime.Skia
 
 		protected override SKSurface UpdateSize(int width, int height)
 		{
+			_glFbSurface?.Dispose();
 			_renderTarget?.Dispose();
 
 			var grSurfaceOrigin = GRSurfaceOrigin.BottomLeft; // to match OpenGL's origin
-
 			var glInfo = new GRGlFramebufferInfo(DefaultFramebuffer, SKColorType.Rgb888x.ToGlSizedFormat());
-
 			_renderTarget = new GRBackendRenderTarget(width, height, _samples, _stencil, glInfo);
-			return SKSurface.Create(_grContext, _renderTarget, grSurfaceOrigin, SKColorType.Rgb888x);
+			_glFbSurface = SKSurface.Create(_grContext, _renderTarget, grSurfaceOrigin, SKColorType.Rgb888x);
+
+			return SKSurface.Create(_grContext, budgeted: true, new SKImageInfo(width, height, SKColorType.Rgba8888, SKAlphaType.Premul))
+				?? throw new InvalidOperationException("Failed to create the DRM retained composition surface.");
+		}
+
+		protected override void PresentToOutput(int degrees, int transX, int transY)
+		{
+			if (_surface is { } composition && _glFbSurface is { } glFb)
+			{
+				composition.Draw(glFb.Canvas, 0, 0, null);
+				DrawCursor(glFb.Canvas, degrees, transX, transY);
+				glFb.Canvas.Flush();
+			}
 		}
 
 		private uint CreateFbForBo(IntPtr bo)

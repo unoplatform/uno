@@ -92,6 +92,14 @@
     "writeTarget": "{workspace}/.kiro/settings/mcp.json",
     "jsonRootKey": "mcpServers"
   },
+  "kimi-code": {
+    "configPaths": [
+      "{workspace}/.kimi-code/mcp.json",
+      "{home}/.kimi-code/mcp.json"
+    ],
+    "writeTarget": "{workspace}/.kimi-code/mcp.json",
+    "jsonRootKey": "mcpServers"
+  },
   "jetbrains-air": {
     "configPaths": [
       "{workspace}/.air/mcp.json",

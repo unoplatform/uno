@@ -3,48 +3,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class AnimationController : global::Microsoft.UI.Composition.CompositionObject
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static float MaxPlaybackRate
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.AnimationController", "MaxPlaybackRate");
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public static float MinPlaybackRate
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.AnimationController", "MinPlaybackRate");
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public float PlaybackRate
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.AnimationController", "PlaybackRate");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.AnimationController", "PlaybackRate");
-			}
-		}
-#endif
+		// Skipping already declared property MaxPlaybackRate
+		// Skipping already declared property MinPlaybackRate
+		// Skipping already declared property PlaybackRate
 		// Skipping already declared property Progress
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Composition.AnimationControllerProgressBehavior ProgressBehavior
 		{
 			get

@@ -126,7 +126,7 @@ If it's set to anything else (e.g., `net10.0` for Skia development), **change it
 **Symptoms of a wrong/missing override:**
 - `CS0535: does not implement interface member 'DependencyObject.XXX'` — Uno.UI.Skia is being built as a transitive dependency
 - `MSB4062: ResourcesGenerationTask_v0 could not be loaded` — Uno.UI.Tasks hasn't been built for the expected configuration
-- Hundreds of errors from `Uno.UI.Skia.csproj::TargetFramework=net9.0` — dead giveaway
+- Hundreds of errors from `Uno.UI.csproj::TargetFramework=net9.0` — dead giveaway
 
 #### 1d. Setup signing certificate (first time)
 
@@ -188,7 +188,7 @@ The default build below passes `-p:UnoFastDevBuild=true`, which disables analyze
 
 | Error | Cause | Fix |
 |-------|-------|-----|
-| `CS0535: does not implement 'DependencyObject.XXX'` from `Uno.UI.Skia.csproj` | **`crosstargeting_override.props` missing or set to wrong TFM.** MSBuild resolves all TFMs and pulls in Skia which needs source generators. | **Set override to `net9.0-windows10.0.19041.0`** (Phase 1c). This is the #1 most common build failure. |
+| `CS0535: does not implement 'DependencyObject.XXX'` from `Uno.UI.csproj` | **`crosstargeting_override.props` missing or set to wrong TFM.** MSBuild resolves all TFMs and pulls in Skia which needs source generators. | **Set override to `net9.0-windows10.0.19041.0`** (Phase 1c). This is the #1 most common build failure. |
 | `MSB4062: ResourcesGenerationTask_v0 could not be loaded` | Uno.UI.Tasks.v0.dll not built; cascading from wrong TFM pulling in unexpected dependencies | Set override to `net9.0-windows10.0.19041.0` (Phase 1c) |
 | `NU1201: not compatible with net9.0-...` | `crosstargeting_override.props` TFM mismatch | Set to `net9.0-windows10.0.19041.0` |
 | `PRI175` / `PRI252: .xbf not found` | MAX_PATH >= 260 chars | Shorten repo path or `subst` drive |

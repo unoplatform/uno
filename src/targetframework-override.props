@@ -1,23 +1,26 @@
 <Project>
 	<PropertyGroup>
+		<!-- The suffix tests below are a proxy for "platform-agnostic project". A project whose file name
+		     carries no such suffix must set UnoShouldUseNoPlatformOverride itself, before importing this
+		     file, or it will pull platform TFMs and fail to satisfy no-platform consumers.
+		     Note this selects which override applies, it does not suppress overriding: the no-platform
+		     props below still maps UnoTargetFrameworkOverride onto the matching platform-less TFM. -->
 		<_ShouldUseNoPlatformOverride>false</_ShouldUseNoPlatformOverride>
 		<_ShouldUseNoPlatformOverride Condition="
 			$(MSBuildProjectFile.EndsWith('.Skia.csproj')) 
 			OR $(MSBuildProjectFile.EndsWith('.Wasm.csproj')) 
 			OR $(MSBuildProjectFile.EndsWith('.Reference.csproj'))
-			OR '$(UnoDisableTargetFrameworkPlatformOverride)' == 'true'
+			OR '$(UnoShouldUseNoPlatformOverride)' == 'true'
 		">true</_ShouldUseNoPlatformOverride>
 	</PropertyGroup>
 
 	<Import Condition="'$(_ShouldUseNoPlatformOverride)'=='true'" Project="targetframework-override-noplatform.props" />
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!='' AND '$(_ShouldUseNoPlatformOverride)' == 'false'">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net9.0-ios' and '$(OutputType)'!='Exe'">net9.0-ios18.0</TargetFrameworks>
-		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net10.0-ios' and '$(OutputType)'!='Exe'">net10.0-ios26.0</TargetFrameworks>
-		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net9.0-maccatalyst' and '$(OutputType)'!='Exe'">net9.0-maccatalyst18.0</TargetFrameworks>
-		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net10.0-maccatalyst' and '$(OutputType)'!='Exe'">net10.0-maccatalyst26.0</TargetFrameworks>
-		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net9.0-tvos' and '$(OutputType)'!='Exe'">net9.0-tvos18.0</TargetFrameworks>
-		<TargetFrameworks Condition="'$(TargetFrameworks)'=='net10.0-tvos' and '$(OutputType)'!='Exe'">net10.0-tvos26.0</TargetFrameworks>
+		<TargetFrameworks Condition="'$(TargetFrameworks)'=='$(NetPrevious)-ios' and '$(OutputType)'!='Exe'">$(NetPrevious)-ios$(NetPreviousAppleOSVersion)</TargetFrameworks>
+		<TargetFrameworks Condition="'$(TargetFrameworks)'=='$(NetCurrent)-ios' and '$(OutputType)'!='Exe'">$(NetCurrent)-ios$(NetCurrentAppleOSVersion)</TargetFrameworks>
+		<TargetFrameworks Condition="'$(TargetFrameworks)'=='$(NetPrevious)-tvos' and '$(OutputType)'!='Exe'">$(NetPrevious)-tvos$(NetPreviousAppleOSVersion)</TargetFrameworks>
+		<TargetFrameworks Condition="'$(TargetFrameworks)'=='$(NetCurrent)-tvos' and '$(OutputType)'!='Exe'">$(NetCurrent)-tvos$(NetCurrentAppleOSVersion)</TargetFrameworks>
 	</PropertyGroup>
 
 </Project>

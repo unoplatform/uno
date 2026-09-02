@@ -43,24 +43,24 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			return;
 		}
 
-		var textBox = _owner.TextBox;
-		if (textBox is null || textBox.XamlRoot is null)
+		var core = _owner.Core;
+		if (core is null || core.Owner.XamlRoot is null)
 		{
 			return;
 		}
 
-		EnsureTextBoxView(textBox);
+		EnsureTextBoxView(core);
 		SetSoftKeyboardTheme();
 
-		AddViewToTextInputLayer(textBox.XamlRoot);
+		AddViewToTextInputLayer(core.Owner.XamlRoot);
 
 		// change FirstResponder's View before removing the previous view to avoid flickering
 		_textBoxView.BecomeFirstResponder();
 
 		RemovePreviousViewFromTextInputLayer();
 
-		var start = textBox?.SelectionStart ?? 0;
-		var length = textBox?.SelectionLength ?? 0;
+		var start = core.SelectionStart;
+		var length = core.SelectionLength;
 		_textBoxView.Select(start, length);
 	}
 
@@ -139,13 +139,13 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	public void UpdateProperties()
 	{
-		if (_textBoxView is null || _owner.TextBox is not { } textBox)
+		if (_textBoxView is null || _owner.Core is not { } core)
 		{
 			return;
 		}
 
-		_textBoxView.AutocapitalizationType = InputScopeHelper.ConvertInputScopeToCapitalization(textBox.InputScope);
-		_textBoxView.KeyboardType = InputScopeHelper.ConvertInputScopeToKeyboardType(textBox.InputScope);
+		_textBoxView.AutocapitalizationType = InputScopeHelper.ConvertInputScopeToCapitalization(core.InputScope);
+		_textBoxView.KeyboardType = InputScopeHelper.ConvertInputScopeToKeyboardType(core.InputScope);
 
 		// Apply the iOS 26 number-pad-popover opt-out after KeyboardType is set so the iPad +
 		// numeric-keyboard gate is evaluated against the final value. Single-line only; the
@@ -155,18 +155,18 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			singleline.TryDisableNumberPadPopover();
 		}
 
-		_textBoxView.SpellCheckingType = textBox.IsSpellCheckEnabled ? UITextSpellCheckingType.Yes : UITextSpellCheckingType.No;
-		_textBoxView.AutocorrectionType = textBox.IsSpellCheckEnabled ? UITextAutocorrectionType.Yes : UITextAutocorrectionType.No;
+		_textBoxView.SpellCheckingType = core.IsSpellCheckEnabled ? UITextSpellCheckingType.Yes : UITextSpellCheckingType.No;
+		_textBoxView.AutocorrectionType = core.IsSpellCheckEnabled ? UITextAutocorrectionType.Yes : UITextAutocorrectionType.No;
 
-		var inputReturnType = TextBoxExtensions.GetInputReturnType(textBox);
+		var inputReturnType = TextBoxExtensions.GetInputReturnType(core.Owner);
 		_textBoxView.ReturnKeyType = inputReturnType.ToUIReturnKeyType();
 
-		if (textBox.IsSpellCheckEnabled)
+		if (core.IsSpellCheckEnabled)
 		{
 			_textBoxView.AutocapitalizationType = UITextAutocapitalizationType.Sentences;
 		}
 
-		_textBoxView.SecureTextEntry = textBox is PasswordBox;
+		_textBoxView.SecureTextEntry = core.IsPassword;
 		SetSoftKeyboardTheme();
 
 		// KeyboardType may have changed — re-evaluate the native view
@@ -179,35 +179,35 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	private void SetSoftKeyboardTheme()
 	{
-		if (_owner.TextBox is not { } textBox || _textBoxView is null)
+		if (_owner.Core is not { } core || _textBoxView is null)
 		{
 			return;
 		}
 
-		if (textBox.ActualTheme == ElementTheme.Default)
+		if (core.Owner.ActualTheme == ElementTheme.Default)
 		{
 			_textBoxView.KeyboardAppearance = UIKeyboardAppearance.Default;
 		}
-		else if (textBox.ActualTheme == ElementTheme.Light)
+		else if (core.Owner.ActualTheme == ElementTheme.Light)
 		{
 			_textBoxView.KeyboardAppearance = UIKeyboardAppearance.Light;
 		}
-		else if (textBox.ActualTheme == ElementTheme.Dark)
+		else if (core.Owner.ActualTheme == ElementTheme.Dark)
 		{
 			_textBoxView.KeyboardAppearance = UIKeyboardAppearance.Dark;
 		}
 	}
 
 	[MemberNotNull(nameof(_textBoxView))]
-	private void EnsureTextBoxView(TextBox textBox)
+	private void EnsureTextBoxView(TextBoxCore core)
 	{
 		if (_textBoxView is null ||
-			!_textBoxView.IsCompatible(textBox))
+			!_textBoxView.IsCompatible(core))
 		{
-			// The current TextBoxView is not compatible with the given TextBox state.
-			// We need to create a new TextBoxView.
-			var inputText = GetNativeText() ?? textBox.Text;
-			_textBoxView = CreateNativeView(textBox);
+			// The current view is not compatible with the given engine state.
+			// We need to create a new one.
+			var inputText = GetNativeText() ?? core.Text;
+			_textBoxView = CreateNativeView(core);
 			if (_textBoxView is UIView nativeView)
 			{
 				nativeView.Alpha = 0.01f;
@@ -219,11 +219,11 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	internal void SyncSelectionToTextBox()
 	{
-		if (_owner?.TextBox is { } textBox)
+		if (_owner?.Core is { } core)
 		{
 			var start = GetSelectionStart();
 			var length = GetSelectionLength();
-			textBox.SelectInternal(start, length);
+			core.SelectInternal(start, length);
 		}
 	}
 
@@ -237,14 +237,11 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			return;
 		}
 
-		if (_owner?.TextBox is { } textBox)
+		if (_owner?.Core is { } core)
 		{
-			var selectionStart = textBox.SelectionStart;
-			var selectionLength = textBox.SelectionLength;
-
 			var newSelectionStart = GetSelectionStart();
-			textBox.SetPendingSelection(newSelectionStart, 0);
-			var updatedText = textBox.ProcessTextInput(text);
+			core.SetPendingSelection(newSelectionStart, 0);
+			var updatedText = core.ProcessTextInput(text ?? string.Empty);
 			if (text != updatedText)
 			{
 				SetText(updatedText);
@@ -254,7 +251,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	private string? GetNativeText() => _textBoxView?.Text;
 
-	private IInvisibleTextBoxView CreateNativeView(TextBox textBox) => _owner?.TextBox?.AcceptsReturn != true ?
+	private IInvisibleTextBoxView CreateNativeView(TextBoxCore core) => core.AcceptsReturn != true ?
 		new SinglelineInvisibleTextBoxView(this) : new MultilineInvisibleTextBoxView(this);
 
 	public void AddViewToTextInputLayer(XamlRoot xamlRoot)
@@ -269,7 +266,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			var view = layer.Subviews.LastOrDefault();
 
 			// prevents adding the same native view multiple times. This should not happen very often.
-			if ((view as IInvisibleTextBoxView)?.Owner?.TextBox != _textBoxView?.Owner?.TextBox)
+			if ((view as IInvisibleTextBoxView)?.Owner?.Core != _textBoxView?.Owner?.Core)
 			{
 				_latestNativeView = view;
 				layer.AddSubview(nativeView);
@@ -281,7 +278,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	public void RemoveViewFromTextInputLayer()
 	{
-		var xamlRoot = _owner.TextBox?.XamlRoot;
+		var xamlRoot = _owner.Core?.Owner.XamlRoot;
 		if (xamlRoot is null)
 		{
 			return;
@@ -320,8 +317,8 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	private void UpdateNativeViewFrame(UIView nativeView)
 	{
-		var textBox = _textBoxView?.Owner?.TextBox;
-		var rect = textBox?.GetAbsoluteBoundsRect();
+		var core = _textBoxView?.Owner?.Core;
+		var rect = core?.Owner.GetAbsoluteBoundsRect();
 		// GetAbsoluteBoundsRect returns WinUI DIPs which map 1:1 to iOS
 		// points.  Do NOT convert to physical pixels — UIView.Frame is in
 		// points, not physical pixels.
@@ -385,7 +382,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	private static bool CouldBecomeFirstResponder(FrameworkElement? element)
 	{
-		return element is TextBox ||
+		return element is ITextBoxHost ||
 		element is AutoSuggestBox ||
 		element is NumberBox;
 	}

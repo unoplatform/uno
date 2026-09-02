@@ -122,7 +122,14 @@ public partial class Window
 		}
 
 		// We set up the DisplayInformation instance after Initialize so that we have an actual window to bind to.
-		global::Windows.Graphics.Display.DisplayInformation.GetOrCreateForWindowId(AppWindow.Id);
+		// A macOS hosted-ALC window has no native window (Initialize skips it), so skip this too: the macOS
+		// DisplayInformation extension subscribes to MacOSWindowNative.NativeWindowReady and only unsubscribes
+		// when a native window is created — which never happens here — leaking the extension (pinning the ALC)
+		// and letting it bind to the next unrelated native window.
+		if (!IsMacOSHostedAlcWindow)
+		{
+			global::Windows.Graphics.Display.DisplayInformation.GetOrCreateForWindowId(AppWindow.Id);
+		}
 	}
 
 	internal INativeWindowWrapper? NativeWrapper => _windowImplementation.NativeWindowWrapper;

@@ -3,50 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
+#if false
+	[global::Uno.NotImplemented]
 #endif
 	public partial class ContextMenuEventArgs : global::Microsoft.UI.Xaml.RoutedEventArgs
 	{
-#if false || __NETSTD_REFERENCE__
-		internal ContextMenuEventArgs()
-		{
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public double CursorLeft
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ContextMenuEventArgs", "CursorLeft");
-			}
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public double CursorTop
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ContextMenuEventArgs", "CursorTop");
-			}
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public bool Handled
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ContextMenuEventArgs", "Handled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ContextMenuEventArgs", "Handled");
-			}
-		}
-#endif
+		// Skipping already declared property CursorLeft
+		// Skipping already declared property CursorTop
+		// Skipping already declared property Handled
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.CursorLeft.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.CursorTop.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ContextMenuEventArgs.Handled.get

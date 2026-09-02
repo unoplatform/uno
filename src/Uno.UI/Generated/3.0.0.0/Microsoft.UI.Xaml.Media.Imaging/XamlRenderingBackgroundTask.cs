@@ -3,21 +3,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media.Imaging
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class XamlRenderingBackgroundTask
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		protected XamlRenderingBackgroundTask()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Imaging.XamlRenderingBackgroundTask", "XamlRenderingBackgroundTask()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Media.Imaging.XamlRenderingBackgroundTask.XamlRenderingBackgroundTask()
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		protected virtual void OnRun(global::Windows.ApplicationModel.Background.IBackgroundTaskInstance taskInstance)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.Imaging.XamlRenderingBackgroundTask", "OnRun(IBackgroundTaskInstance taskInstance)");

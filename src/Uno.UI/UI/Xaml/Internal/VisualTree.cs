@@ -240,9 +240,7 @@ namespace Uno.UI.Xaml.Core
 					AddRoot(PublicRootVisual);
 				}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				_coreServices.RaisePendingLoadedRequests();
-#endif
 			}
 
 			// Re-enter the roots with the new public root's namescope.
@@ -425,7 +423,6 @@ namespace Uno.UI.Xaml.Core
 				//TODO Uno: The logic here is more complex in WinUI,
 				//setting the namescope owner. Not needed currently.
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				if (IsMainVisualTree())
 				{
 					UIElement rootVisual = RootVisual!;
@@ -435,12 +432,10 @@ namespace Uno.UI.Xaml.Core
 				{
 					xamlIsland.IsLoaded = true;
 				}
-#endif
 
 				MUX_ASSERT(RootElement != null);
 				RootElement!.AddChild(root);
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				EnterParams enterParams = new(
 					isLive: true
 				);
@@ -448,7 +443,6 @@ namespace Uno.UI.Xaml.Core
 				// In WinUI, this is called only under IsMainVisualTree condition.
 				// This might be needed for now in Uno because RootVisual does not *yet* have XamlIslandRootCollection
 				root.Enter(enterParams, 0);
-#endif
 			}
 		}
 
@@ -992,9 +986,7 @@ namespace Uno.UI.Xaml.Core
 			element.SetVisualTree(this);
 		}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		private bool IsMainVisualTree()
 			=> RootVisual != null;
-#endif
 	}
 }

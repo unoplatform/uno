@@ -1,18 +1,86 @@
-﻿using System;
+using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using Uno.HotReload;
+using Uno.HotReload.Roslyn;
 using Uno.HotReload.Tracking;
+using Uno.HotReload.Utils;
 
 namespace Uno.Roslyn.MSBuild;
 
 public static class CompilationWorkspaceProvider
 {
-	public static async Task<Workspace> CreateWorkspaceAsync(
+	/// <summary>
+	/// The only application-provided MSBuild properties re-applied as global properties on the
+	/// hot-reload workspace. Everything else captured at build time is deliberately dropped so
+	/// the workspace evaluates the projects the same way a plain command-line build would:
+	/// <list type="bullet">
+	/// <item><c>Configuration</c> — the one capture that shapes the compiled output (DEBUG
+	/// constants, Optimize, hot-reload code-gen gates in the source generators).</item>
+	/// <item><c>Platform</c> — companion of <c>Configuration</c>; near-inert with its AnyCPU
+	/// default but kept aligned with the application build.</item>
+	/// <item><c>Solution*</c> — restore the solution context for projects whose evaluation
+	/// references $(SolutionDir)-style anchors (the workspace opens a project, not a solution).</item>
+	/// </list>
+	/// The target framework is intentionally NOT part of this list: the workspace loads every
+	/// flavor of a multi-targeted head, and the caller then restricts the resulting solution to
+	/// the flavor matching the target framework the running application reported (the provider
+	/// has no knowledge of the runtime target framework). The runtime identifier is not forwarded
+	/// either — an application built with RID-suffixed output paths falls back to baseline
+	/// re-emission at init (known limitation, relies on deterministic builds).
+	/// </summary>
+	private static readonly string[] _globalPropertiesAllowList =
+	[
+		"Configuration",
+		"Platform",
+		"SolutionFileName",
+		"SolutionDir",
+		"SolutionExt",
+		"SolutionPath",
+		"SolutionName",
+	];
+
+	/// <summary>
+	/// The workspace-only MSBuild property that flags a hot-reload host build. It shapes how the
+	/// workspace evaluates the projects, but is deliberately NOT forwarded to the recovery restore
+	/// (which must reproduce the application's own restore, not the hot-reload variant).
+	/// </summary>
+	private const string UnoIsHotReloadHostProperty = "UnoIsHotReloadHost";
+
+	/// <summary>
+	/// The MSBuild property pinning the analyzer-flavor selection to the embedded Roslyn (spec
+	/// 053 R1). Workspace-only for the same reason as <see cref="UnoIsHotReloadHostProperty"/>:
+	/// the application's own restore ran with the SDK's value, so the recovery restore must not
+	/// see ours.
+	/// </summary>
+	private const string CompilerApiVersionProperty = "CompilerApiVersion";
+
+	/// <summary>
+	/// Opens the hot-reload <see cref="MSBuildWorkspace"/> for <paramref name="projectPath"/>: the
+	/// projects are evaluated with the whitelisted global properties only (see
+	/// <see cref="_globalPropertiesAllowList"/>). The workspace owns the MSBuild services and is
+	/// disposed by the caller's pipeline. Restricting a multi-targeted head to the running
+	/// application's flavor is left to the caller — this provider deliberately exposes the raw,
+	/// unfiltered <see cref="MSBuildWorkspace"/>.
+	/// </summary>
+	/// <remarks>
+	/// When a head flavor loads with package references but no .NET framework references — the
+	/// missing-targeting-pack signature (spec 049): a workload-manifest-pinned targeting pack
+	/// absent from the SDK, satisfied only by a restore-time <c>PackageDownload</c> that the
+	/// design-time build never runs — the provider recovers by running <c>dotnet restore</c> on
+	/// the head project once and reloading the workspace.
+	/// </remarks>
+	/// <param name="projectPath">Full path of the head project the application runs.</param>
+	/// <param name="reporter">Reporter used to surface workspace diagnostics.</param>
+	/// <param name="properties">The MSBuild properties captured by the application build (only whitelisted entries are re-applied globally).</param>
+	/// <param name="ct">Cancellation token.</param>
+	public static async Task<MSBuildWorkspace> CreateWorkspaceAsync(
 		string projectPath,
 		IReporter reporter,
 		Dictionary<string, string> properties,
@@ -23,66 +91,179 @@ public static class CompilationWorkspaceProvider
 			HotReloadEnvironment.EnableLogging(logPath);
 		}
 
-		static bool IsValidProperty(string property)
+		var globalProperties = new Dictionary<string, string>
 		{
-			if (property.Equals("RuntimeIdentifier", StringComparison.OrdinalIgnoreCase))
+			// Flag the current build as created for hot reload, which allows for running targets
+			// or setting props/items in the context of the hot reload workspace.
+			[UnoIsHotReloadHostProperty] = "True",
+
+			// The workspace compiles with the embedded Microsoft.CodeAnalysis, not with the SDK's
+			// csc: force the analyzer multi-targeting (analyzers/dotnet/roslyn{X.Y} folders) to
+			// select flavors loadable by the embedded Roslyn. Without this, an SDK newer than the
+			// embedded Roslyn selects flavors that fail to type-load, and
+			// AnalyzerFileReference.GetGenerators() silently returns zero generators (missing
+			// generated code in every compile of the affected projects). As a GLOBAL property this
+			// is immutable for the evaluation, so the SDK's own unconditional assignment is ignored.
+			[CompilerApiVersionProperty] = EmbeddedRoslyn.CompilerApiVersion,
+		};
+
+		foreach (var property in _globalPropertiesAllowList)
+		{
+			// An empty value would surface to MSBuild as a defined-but-empty global property,
+			// which is not the same as an undefined one — skip those (typical for the Solution*
+			// group when the application was built from a project instead of a solution).
+			if (properties.TryGetValue(property, out var value) && value is { Length: > 0 })
 			{
-				// Don't set the runtime identifier since it propagates to libraries as well
-				// which do not build using the RuntimeIdentifier being set. For instance, a head
-				// building for `iossimulator` will fail if the RuntimeIdentifier is set globally its
-				// dependent projects, causing the HR engine to search for pdb/dlls in
-				// the bin/Debug/net9.0/iossimulator/*.dll path instead of its original path.
-
-				return false;
+				globalProperties[property] = value;
 			}
-
-			if (property.Equals("TargetFrameworks", StringComparison.OrdinalIgnoreCase))
-			{
-				// Don't set TargetFrameworks globally since it propagates to all referenced projects.
-				// Library projects may target different TFMs (e.g. net9.0) than the head project
-				// (e.g. net10.0-desktop). The head project's TFM is already passed via
-				// UnoHotReloadTargetFramework which is promoted back to TargetFramework only on
-				// the head project via the DevServer targets.
-				return false;
-			}
-
-			if (property.StartsWith("MSBuild", StringComparison.OrdinalIgnoreCase))
-			{
-				// Noticeably, don't set the "MSBuildVersion" (Forbidden, will fail workspace).
-				return false;
-			}
-
-			return true;
 		}
-
-		var globalProperties = properties.Where(property => IsValidProperty(property.Key)).ToDictionary();
 
 		MSBuildWorkspace workspace = null!;
-		for (var i = 3; i > 0; i--)
+		ConcurrentQueue<WorkspaceDiagnostic> workspaceDiagnostics = null!;
+		var openRetries = 3;
+		var restoreAttempted = false;
+
+		while (true)
 		{
+			workspace = MSBuildWorkspace.Create(globalProperties);
+
+			// Fresh per workspace instance and thread-safe: MSBuildWorkspace raises WorkspaceFailed
+			// from background threads (potentially concurrently), so the buffer is never shared or
+			// cleared across retries while a previous instance's handler might still be firing.
+			var diagnostics = new ConcurrentQueue<WorkspaceDiagnostic>();
+			workspaceDiagnostics = diagnostics;
+
+			// In some cases, load failures may be incorrectly reported such as this one:
+			// https://github.com/dotnet/roslyn/blob/fd45aeb5fbc97d09d4043cef9c9c5142f7638e5c/src/Workspaces/Core/MSBuild/MSBuild/MSBuildProjectLoader.Worker.cs#L245-L259
+			// Since the text may be localized we cannot rely on it, so we never fail the project loading for now.
+			// The diagnostics are buffered: when the load leaves a head flavor unresolved they
+			// are the only trace of the root cause and get re-emitted as warnings (below).
+			void OnWorkspaceFailed(WorkspaceDiagnostic diagnostic)
+			{
+				diagnostics.Enqueue(diagnostic);
+				reporter.Verbose($"MSBuildWorkspace {diagnostic}");
+			}
+
+#if NET10_0_OR_GREATER
+			// Roslyn 5.x obsoleted the WorkspaceFailed event (handlers are no longer marshaled
+			// to a UI thread — a non-event for this server); the returned registration lives as
+			// long as the workspace, nothing to dispose separately.
+			_ = workspace.RegisterWorkspaceFailedHandler(args => OnWorkspaceFailed(args.Diagnostic));
+#else
+			workspace.WorkspaceFailed += (_sender, diag) => OnWorkspaceFailed(diag.Diagnostic);
+#endif
+
 			try
 			{
-				workspace = MSBuildWorkspace.Create(globalProperties);
-
-				workspace.WorkspaceFailed += (_sender, diag) =>
-				{
-					// In some cases, load failures may be incorrectly reported such as this one:
-					// https://github.com/dotnet/roslyn/blob/fd45aeb5fbc97d09d4043cef9c9c5142f7638e5c/src/Workspaces/Core/MSBuild/MSBuild/MSBuildProjectLoader.Worker.cs#L245-L259
-					// Since the text may be localized we cannot rely on it, so we never fail the project loading for now.
-					reporter.Verbose($"MSBuildWorkspace {diag.Diagnostic}");
-				};
-
 				await workspace.OpenProjectAsync(projectPath, cancellationToken: ct);
-				break;
 			}
-			catch (InvalidOperationException) when (i > 1)
+			catch (InvalidOperationException) when (openRetries > 1)
 			{
 				// When we load the workspace right after the app was started, it happens that it "app build" is not yet completed, preventing us to open the project.
-				// We retry a few times to let the build complete.
+				// We retry a few times to let the build complete. Dispose the failed workspace first:
+				// MSBuildWorkspace hosts MSBuild evaluation nodes (real OS resources), so a workspace
+				// left behind on a failed attempt would linger for the server's lifetime.
+				openRetries--;
+				workspace.Dispose();
 				await Task.Delay(5_000, ct);
+				continue;
 			}
+			catch
+			{
+				// Non-retried failure (the final attempt, or any other exception type): dispose the
+				// partially-created workspace before surfacing the exception — same lingering MSBuild
+				// evaluation-node concern as the retry path above.
+				workspace.Dispose();
+				throw;
+			}
+
+			if (!restoreAttempted
+				&& workspace.CurrentSolution.GetHeadFlavorsMissingFrameworkReferences(projectPath) is { Count: > 0 } brokenFlavors)
+			{
+				// Missing-targeting-pack recovery (spec 049), attempted at most once: restore
+				// materializes the PackageDownload-satisfied packs into the NuGet cache, from
+				// which the next design-time build resolves them. The workspace is reloaded even
+				// when the restore reports a failure — a partial restore may still have
+				// materialized what this project needs.
+				restoreAttempted = true;
+				reporter.Warn(
+					$"The hot-reload workspace loaded {Describe(brokenFlavors)} without any .NET framework references " +
+					"(missing targeting pack at design time); attempting to recover with 'dotnet restore'.");
+				workspace.Dispose();
+
+				// Restore under the same allow-listed evaluation context the workspace used (minus
+				// the workspace-only properties — the hot-reload marker and the CompilerApiVersion
+				// pin — which must not make the recovery restore diverge from the application's
+				// own), so a property-conditioned targeting pack is restored for the graph that
+				// was actually opened.
+				var restoreProperties = globalProperties
+					.Where(entry => entry.Key is not (UnoIsHotReloadHostProperty or CompilerApiVersionProperty))
+					.ToDictionary(entry => entry.Key, entry => entry.Value);
+				await DotnetRestoreRunner.TryRestoreAsync(projectPath, restoreProperties, reporter, ct);
+				continue;
+			}
+
+			break;
 		}
+
+		ReportUnresolvedHeadFlavors(workspace.CurrentSolution, projectPath, workspaceDiagnostics, reporter);
+
+		// NOTE: analyzer load-failure detection (EmbeddedRoslyn.WarnOnAnalyzerLoadFailures) runs on
+		// the consumer's solution snapshot, after WithCollectibleAnalyzerReferences rewired the
+		// analyzer loaders — running it here would force-load through the workspace's default
+		// loaders, which cannot load anything under Roslyn 5.x in this host (see
+		// CollectibleAnalyzerAssemblyLoader).
 
 		return workspace;
 	}
+
+	/// <summary>
+	/// Surfaces the degraded-load states the pipeline would otherwise hide: the
+	/// missing-targeting-pack signature with its remediation (spec 049 D3), and the buffered
+	/// <see cref="MSBuildWorkspace.Diagnostics"/> failures — verbose-only on nominal loads —
+	/// re-emitted as warnings when a head flavor could not be resolved (spec 049 D4).
+	/// </summary>
+	private static void ReportUnresolvedHeadFlavors(
+		Solution solution,
+		string projectPath,
+		IReadOnlyCollection<WorkspaceDiagnostic> workspaceDiagnostics,
+		IReporter reporter)
+	{
+		var headFlavors = solution.Projects
+			.Where(p => PathComparer.PathEquals(p.FilePath, projectPath))
+			.ToList();
+
+		var brokenFlavors = headFlavors.Where(RoslynExtensions.IsMissingFrameworkReferences).ToList();
+
+		if (brokenFlavors.Count > 0)
+		{
+			// The SDK root is recoverable from the flavors that did resolve their ref packs
+			// from an SDK-installed targeting pack; broken and NuGet-cache-resolved flavors
+			// contribute nothing (the remediation stays generic then).
+			var sdkRoot = headFlavors
+				.Select(p => p.TryGetDotnetRootFromFrameworkReferences(out var root) ? root : null)
+				.FirstOrDefault(root => root is not null);
+
+			var remediation = sdkRoot is null
+				? "Run 'dotnet workload update' with the SDK the dev-server uses (uno-check can locate and fix it), or restore the project with that SDK, then restart the application."
+				: $"Run '\"{Path.Join(sdkRoot, OperatingSystem.IsWindows() ? "dotnet.exe" : "dotnet")}\" workload update' (or a restore with that SDK), then restart the application.";
+
+			reporter.Warn(
+				$"The hot-reload workspace loaded {Describe(brokenFlavors)} without any .NET framework references even after a restore attempt: " +
+				"the design-time build could not resolve a targeting pack (typically pinned by a workload manifest but not installed). " +
+				$"Hot reload will most likely be blocked by compilation errors for this target framework. {remediation} " +
+				"See https://github.com/unoplatform/uno/issues/23780.");
+		}
+
+		if (headFlavors.Any(p => !p.TryGetTargetFramework(out _)))
+		{
+			foreach (var diagnostic in workspaceDiagnostics.Where(d => d.Kind == WorkspaceDiagnosticKind.Failure).Take(10))
+			{
+				reporter.Warn($"MSBuildWorkspace {diagnostic}");
+			}
+		}
+	}
+
+	private static string Describe(IReadOnlyList<Project> projects)
+		=> string.Join(", ", projects.Select(p => $"'{p.Name}'"));
 }

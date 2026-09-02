@@ -13,7 +13,7 @@ public class Given_HotReloadService
 	[DynamicData(nameof(GetScenarios))]
 	public async Task HR(string name, Scenario? scenario, Project[]? projects)
 	{
-		// Generated C# files can be found in the bin\Debug\net10.0\work sub dir.
+		// Generated C# files can be found in the bin\Debug\net11.0\work sub dir.
 
 		if (scenario != null)
 		{
@@ -24,6 +24,12 @@ public class Given_HotReloadService
 				return;
 			}
 #endif
+
+			if (scenario.Ignore is { Length: > 0 } ignoreReason)
+			{
+				Assert.Inconclusive(ignoreReason);
+				return;
+			}
 
 			if (scenario.IsCrashingRoslyn)
 			{
@@ -60,6 +66,16 @@ public class Given_HotReloadService
 	public record ProjectReference(string Name);
 	public record Scenario(bool IsDebug, bool IsMono, bool IsCrashingRoslyn, bool UseXamlReaderReload, params PassResult[] PassResults)
 	{
+		/// <summary>
+		/// When set, the case is reported inconclusive with this text instead of being run.
+		/// </summary>
+		/// <remarks>
+		/// Say what is wrong AND where it is being addressed: an ignored case reports as a pass to
+		/// everything that reads the run, so this text is the only thing standing between it and being
+		/// forgotten.
+		/// </remarks>
+		public string? Ignore { get; init; }
+
 		public override string ToString()
 			=> $"{(IsDebug ? "Debug" : "Release")},{(IsMono ? "MonoVM" : "NetCore")},XR:{UseXamlReaderReload}";
 	}
@@ -140,7 +156,7 @@ public class Given_HotReloadService
 		var scenarioFolder = Path.Combine(ScenariosFolder, name);
 		var scenarioFile = Path.Combine(scenarioFolder, "Scenario.json");
 
-		HotReloadWorkspace SUT = new(isDebugCompilation, isMono, useXamlReaderReload);
+		using HotReloadWorkspace SUT = new(isDebugCompilation, isMono, useXamlReaderReload);
 		List<HotReloadWorkspace.UpdateResult> results = new();
 
 		if (projects is not null)

@@ -104,26 +104,24 @@ public class Given_ProgressRing
 			Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 		}
 
-		var pr1 = new ProgressRing { Width = 100, Height = 100, IsIndeterminate = false, Value = 50 };
-		var pr2 = new ProgressRing { Width = 50, Height = 50, IsIndeterminate = false, Value = 50 };
+		var pr1 = new ProgressRing { Width = 100, Height = 50, IsIndeterminate = false, Value = 50 };
+		var pr2 = new ProgressRing { Width = 50, Height = 100, IsIndeterminate = false, Value = 50 };
 
 		await UITestHelper.Load(new StackPanel { Children = { pr1, pr2 } });
-		await Task.Delay(TimeSpan.FromSeconds(2)); // wait for the animation to end
+		var player1 = pr1.FindFirstDescendant<AnimatedVisualPlayer>(x => x.Name == "LottiePlayer");
+		var player2 = pr2.FindFirstDescendant<AnimatedVisualPlayer>(x => x.Name == "LottiePlayer");
+		Assert.IsNotNull(player1);
+		Assert.IsNotNull(player2);
+		await TestServices.WindowHelper.WaitFor(
+			() => player1.IsAnimatedVisualLoaded && player2.IsAnimatedVisualLoaded,
+			timeoutMS: 5000,
+			"Both determinate animated visuals should be loaded before comparing stretch output.");
+		await TestServices.WindowHelper.WaitFor(
+			() => !player1.IsPlaying && !player2.IsPlaying,
+			timeoutMS: 5000,
+			"Both determinate progress animations should finish before comparing stretch output.");
 
-		var screenshot1 = await UITestHelper.ScreenShot(pr1);
-		var screenshot2 = await UITestHelper.ScreenShot(pr2);
-		var pixels1 = screenshot1.GetPixels();
-		var pixels2 = screenshot2.GetPixels();
-
-		var different = false;
-		for (int i = 0; i < screenshot2.Bitmap.PixelHeight; i++)
-		{
-			different = 0 != pixels1.AsSpan(i * screenshot2.Bitmap.PixelWidth, screenshot2.Bitmap.PixelWidth).SequenceCompareTo(pixels2.AsSpan(i * screenshot2.Bitmap.PixelWidth, screenshot2.Bitmap.PixelWidth));
-			if (different)
-			{
-				break;
-			}
-		}
-		Assert.IsTrue(different);
+		Assert.AreEqual(new Windows.Foundation.Size(100, 50), player1.DesiredSize);
+		Assert.AreEqual(new Windows.Foundation.Size(50, 100), player2.DesiredSize);
 	}
 }

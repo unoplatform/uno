@@ -381,7 +381,11 @@ public class ManifestAddInResolverTests
 		result!.AddIns.Should().HaveCount(1);
 		// Path should use OS-native separators
 		result.AddIns[0].EntryPointDll.Should().Be(dllPath);
-		result.AddIns[0].EntryPointDll.Should().NotContain("/");
+		if (Path.DirectorySeparatorChar == '\\')
+		{
+			// On Unix the native separator IS '/', so this assertion only holds on Windows.
+			result.AddIns[0].EntryPointDll.Should().NotContain("/");
+		}
 	}
 
 	#region Helpers

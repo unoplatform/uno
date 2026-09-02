@@ -3,40 +3,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class TextBox
 	{
 		// Skipping already declared property AcceptsReturnProperty
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty CanPasteClipboardContentProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(CanPasteClipboardContent), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.TextBox),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty CanRedoProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(CanRedo), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.TextBox),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty CanUndoProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(CanUndo), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.TextBox),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
+		// Skipping already declared property CanPasteClipboardContentProperty
+		// Skipping already declared property CanRedoProperty
+		// Skipping already declared property CanUndoProperty
 		// Skipping already declared property CharacterCasingProperty
 		// Skipping already declared property DescriptionProperty
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty DesiredCandidateWindowAlignmentProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(DesiredCandidateWindowAlignment), typeof(global::Microsoft.UI.Xaml.Controls.CandidateWindowAlignment),
@@ -45,8 +24,8 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property HeaderProperty
 		// Skipping already declared property HeaderTemplateProperty
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty HorizontalTextAlignmentProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(HorizontalTextAlignment), typeof(global::Microsoft.UI.Xaml.TextAlignment),
@@ -54,8 +33,8 @@ namespace Microsoft.UI.Xaml.Controls
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.TextAlignment)));
 #endif
 		// Skipping already declared property InputScopeProperty
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsColorFontEnabledProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsColorFontEnabled), typeof(bool),
@@ -68,33 +47,19 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property MaxLengthProperty
 		// Skipping already declared property PlaceholderForegroundProperty
 		// Skipping already declared property PlaceholderTextProperty
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(PreventKeyboardDisplayOnProgrammaticFocus), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.TextBox),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ProofingMenuFlyoutProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ProofingMenuFlyout), typeof(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase),
-			typeof(global::Microsoft.UI.Xaml.Controls.TextBox),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)));
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty SelectionFlyoutProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionFlyout), typeof(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase),
-			typeof(global::Microsoft.UI.Xaml.Controls.TextBox),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)));
-#endif
+		// Skipping already declared property ProofingMenuFlyoutProperty
+		// Skipping already declared property SelectionFlyoutProperty
 		// Skipping already declared property SelectionHighlightColorProperty
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty SelectionHighlightColorWhenNotFocusedProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(SelectionHighlightColorWhenNotFocused), typeof(global::Microsoft.UI.Xaml.Media.SolidColorBrush),
@@ -103,8 +68,8 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property TextAlignmentProperty
 		// Skipping already declared property TextProperty
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty TextReadingOrderProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(TextReadingOrder), typeof(global::Microsoft.UI.Xaml.TextReadingOrder),
@@ -113,40 +78,13 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property TextWrappingProperty
 		// Skipping already declared property AcceptsReturn
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public bool CanPasteClipboardContent
-		{
-			get
-			{
-				return (bool)this.GetValue(CanPasteClipboardContentProperty);
-			}
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public bool CanRedo
-		{
-			get
-			{
-				return (bool)this.GetValue(CanRedoProperty);
-			}
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public bool CanUndo
-		{
-			get
-			{
-				return (bool)this.GetValue(CanUndoProperty);
-			}
-		}
-#endif
+		// Skipping already declared property CanPasteClipboardContent
+		// Skipping already declared property CanRedo
+		// Skipping already declared property CanUndo
 		// Skipping already declared property CharacterCasing
 		// Skipping already declared property Description
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Controls.CandidateWindowAlignment DesiredCandidateWindowAlignment
 		{
 			get
@@ -161,8 +99,8 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property Header
 		// Skipping already declared property HeaderTemplate
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.TextAlignment HorizontalTextAlignment
 		{
 			get
@@ -176,8 +114,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Skipping already declared property InputScope
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public bool IsColorFontEnabled
 		{
 			get
@@ -196,8 +134,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property MaxLength
 		// Skipping already declared property PlaceholderForeground
 		// Skipping already declared property PlaceholderText
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public bool PreventKeyboardDisplayOnProgrammaticFocus
 		{
 			get
@@ -210,34 +148,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase ProofingMenuFlyout
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)this.GetValue(ProofingMenuFlyoutProperty);
-			}
-		}
-#endif
+		// Skipping already declared property ProofingMenuFlyout
 		// Skipping already declared property SelectedText
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase SelectionFlyout
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase)this.GetValue(SelectionFlyoutProperty);
-			}
-			set
-			{
-				this.SetValue(SelectionFlyoutProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property SelectionFlyout
 		// Skipping already declared property SelectionHighlightColor
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Media.SolidColorBrush SelectionHighlightColorWhenNotFocused
 		{
 			get
@@ -254,8 +170,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property SelectionStart
 		// Skipping already declared property Text
 		// Skipping already declared property TextAlignment
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.TextReadingOrder TextReadingOrder
 		{
 			get
@@ -300,44 +216,26 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextWrappingProperty.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TextBox.Select(int, int)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TextBox.SelectAll()
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Windows.Foundation.Rect GetRectFromCharacterIndex(int charIndex, bool trailingEdge)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.TextBox", "GetRectFromCharacterIndex(int charIndex, bool trailingEdge)");
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<string>> GetLinguisticAlternativesAsync()
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.TextBox", "GetLinguisticAlternativesAsync()");
 		}
 #endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public void Undo()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBox", "Undo()");
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public void Redo()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBox", "Redo()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.TextBox.Undo()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.TextBox.Redo()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TextBox.PasteFromClipboard()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TextBox.CopySelectionToClipboard()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TextBox.CutSelectionToClipboard()
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public void ClearUndoRedoHistory()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBox", "ClearUndoRedoHistory()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.TextBox.ClearUndoRedoHistory()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.BeforeTextChanging.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.BeforeTextChanging.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.CandidateWindowBoundsChanged.add
@@ -421,64 +319,49 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextWrapping.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TextBox.TextWrapping.set
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TextBox.BeforeTextChanging
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.TextBox, global::Microsoft.UI.Xaml.Controls.CandidateWindowBoundsChangedEventArgs> CandidateWindowBoundsChanged
 		{
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBox", "event CandidateWindowBoundsChanged");
 			}
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBox", "event CandidateWindowBoundsChanged");
 			}
 		}
 #endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public event global::Microsoft.UI.Xaml.Controls.ContextMenuOpeningEventHandler ContextMenuOpening
-		{
-			[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBox", "event ContextMenuOpening");
-			}
-			[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBox", "event ContextMenuOpening");
-			}
-		}
-#endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.TextBox.ContextMenuOpening
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.TextBox, global::Microsoft.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs> CopyingToClipboard
 		{
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBox", "event CopyingToClipboard");
 			}
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBox", "event CopyingToClipboard");
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.TextBox, global::Microsoft.UI.Xaml.Controls.TextControlCuttingToClipboardEventArgs> CuttingToClipboard
 		{
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBox", "event CuttingToClipboard");
 			}
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBox", "event CuttingToClipboard");
@@ -490,53 +373,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TextBox.SelectionChanging
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TextBox.TextChanged
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.TextBox.TextChanging
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.TextBox, global::Microsoft.UI.Xaml.Controls.TextCompositionChangedEventArgs> TextCompositionChanged
-		{
-			[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBox", "event TextCompositionChanged");
-			}
-			[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBox", "event TextCompositionChanged");
-			}
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.TextBox, global::Microsoft.UI.Xaml.Controls.TextCompositionEndedEventArgs> TextCompositionEnded
-		{
-			[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBox", "event TextCompositionEnded");
-			}
-			[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBox", "event TextCompositionEnded");
-			}
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Xaml.Controls.TextBox, global::Microsoft.UI.Xaml.Controls.TextCompositionStartedEventArgs> TextCompositionStarted
-		{
-			[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBox", "event TextCompositionStarted");
-			}
-			[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.TextBox", "event TextCompositionStarted");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.TextBox.TextCompositionChanged
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.TextBox.TextCompositionEnded
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.TextBox.TextCompositionStarted
 	}
 }

@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class PivotItemDataAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.ItemAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.IScrollItemProvider, global::Microsoft.UI.Xaml.Automation.Provider.ISelectionItemProvider, global::Microsoft.UI.Xaml.Automation.Provider.IVirtualizedItemProvider

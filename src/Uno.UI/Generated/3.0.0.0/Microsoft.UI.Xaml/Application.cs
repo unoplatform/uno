@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class Application
@@ -12,28 +12,15 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property DebugSettings
 		// Skipping already declared property DispatcherShutdownMode
 		// Skipping already declared property FocusVisualKind
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.ApplicationHighContrastAdjustment HighContrastAdjustment
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Application", "HighContrastAdjustment");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Application", "HighContrastAdjustment");
-			}
-		}
-#endif
+		// Skipping already declared property HighContrastAdjustment
 		// Skipping already declared property RequestedTheme
 		// Skipping already declared property Resources
 		// Skipping already declared method Microsoft.UI.Xaml.Application.Application()
 		// Forced skipping of method Microsoft.UI.Xaml.Application.Application()
 		// Skipping already declared method Microsoft.UI.Xaml.Application.Start(Microsoft.UI.Xaml.ApplicationInitializationCallback)
 		// Skipping already declared method Microsoft.UI.Xaml.Application.LoadComponent(object, System.Uri)
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static void LoadComponent(object component, global::System.Uri resourceLocator, global::Microsoft.UI.Xaml.Controls.Primitives.ComponentResourceLocation componentResourceLocation)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Application", "LoadComponent(object component, Uri resourceLocator, ComponentResourceLocation componentResourceLocation)");
@@ -58,16 +45,16 @@ namespace Microsoft.UI.Xaml
 		// Forced skipping of method Microsoft.UI.Xaml.Application.Resources.get
 		// Forced skipping of method Microsoft.UI.Xaml.Application.Resources.set
 		// Skipping already declared event Microsoft.UI.Xaml.Application.UnhandledException
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public event global::Windows.Foundation.TypedEventHandler<object, global::Microsoft.UI.Xaml.ResourceManagerRequestedEventArgs> ResourceManagerRequested
 		{
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Application", "event ResourceManagerRequested");
 			}
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Application", "event ResourceManagerRequested");

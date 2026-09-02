@@ -29,22 +29,18 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (_scroller is { } oldScroller)
 				{
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 					if (oldScroller.Target is ScrollViewer oldScrollerTarget)
 					{
 						UnhookScrollEvents(oldScrollerTarget);
 					}
-#endif
 					WeakReferencePool.ReturnWeakReference(this, oldScroller);
 				}
 
 				_scroller = WeakReferencePool.RentWeakReference(this, value);
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 				if (IsInLiveTree && value is ScrollViewer newTarget)
 				{
 					HookScrollEvents(newTarget);
 				}
-#endif
 			}
 		}
 		#endregion
@@ -57,7 +53,6 @@ namespace Microsoft.UI.Xaml.Controls
 		internal double TargetVerticalOffset =>
 			VerticalOffset;
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 		public static DependencyProperty SizesContentToTemplatedParentProperty { get; } = DependencyProperty.Register(
 			nameof(SizesContentToTemplatedParent),
 			typeof(bool),
@@ -69,7 +64,6 @@ namespace Microsoft.UI.Xaml.Controls
 			get => (bool)GetValue(SizesContentToTemplatedParentProperty);
 			set => SetValue(SizesContentToTemplatedParentProperty, value);
 		}
-#endif
 
 		public Rect MakeVisible(UIElement visual, Rect rectangle)
 		{
@@ -134,7 +128,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public double ViewportWidth => DesiredSize.Width - Margin.Left - Margin.Right;
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			if (Content is UIElement child)
@@ -264,10 +257,41 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (e.KeyModifiers == VirtualKeyModifiers.Control)
 				{
-					// TODO: Handle zoom https://github.com/unoplatform/uno/issues/4309
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
+					if (Scroller?.ZoomMode == ZoomMode.Enabled)
+					{
+						// Calculate zoom change (positive delta = zoom in, negative = zoom out)
+						// WinUI zooms toward viewport center for Ctrl+Wheel (not cursor position)
+						var zoomDelta = delta > 0 ? 1.1f : 0.9f; // 10% zoom per wheel tick
+						var newZoom = Math.Clamp(_zoomFactor * zoomDelta, _minZoomFactor, _maxZoomFactor);
+
+						if (Math.Abs(newZoom - _zoomFactor) > 0.001f)
+						{
+							// Zoom toward viewport center - adjust offsets to keep center point fixed
+							var zoomRatio = newZoom / _zoomFactor;
+							var viewportCenterX = ViewportWidth / 2;
+							var viewportCenterY = ViewportHeight / 2;
+
+							// Offsets are expressed in scaled (screen) pixels, so the content point under the
+							// viewport center scales with the zoom ratio: newOffset = (oldOffset + center) * zoomRatio - center
+							var newHOffset = (HorizontalOffset + viewportCenterX) * zoomRatio - viewportCenterX;
+							var newVOffset = (VerticalOffset + viewportCenterY) * zoomRatio - viewportCenterY;
+
+							success = Set(
+								horizontalOffset: newHOffset,
+								verticalOffset: newVOffset,
+								zoomFactor: newZoom,
+								disableAnimation: false);
+						}
+					}
+#endif
 				}
 				else if (canScrollHorizontally && (properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
 				{
+					// IsHorizontalMouseWheel already carries the correct sign (positive = right). A Shift-redirected
+					// vertical wheel uses the vertical convention (positive = up), so negate to get positive = right.
+					var horizontalDelta = properties.IsHorizontalMouseWheel ? delta : -delta;
+
 					// Trackpad/touchpad-style scroll events can arrive at display-refresh rate (~60/s) with precise
 					// pixel-level deltas. The 1-second composition animation is NOT suitable because:
 					// 1. When many events have accumulated the target far ahead of the visual, the animation's
@@ -285,9 +309,9 @@ namespace Microsoft.UI.Xaml.Controls
 						// (inline pickers) nearly unresponsive. Use delta directly as pixel offset
 						// for 1:1 trackpad-to-scroll mapping. Discrete mouse wheel (|delta| >= 120)
 						// still uses the standard formula for correct per-notch distance.
-						var hScrollAmount = Math.Abs(delta) < ScrollViewerDefaultMouseWheelDelta
-							? (double)delta
-							: GetHorizontalScrollWheelDelta(DesiredSize, delta);
+						var hScrollAmount = Math.Abs(horizontalDelta) < ScrollViewerDefaultMouseWheelDelta
+							? (double)horizontalDelta
+							: GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta);
 						success = Set(
 							horizontalOffset: HorizontalOffset + hScrollAmount,
 							options: new(DisableAnimation: true, IsIntermediate: false));
@@ -295,7 +319,7 @@ namespace Microsoft.UI.Xaml.Controls
 					else
 					{
 						success = Set(
-							horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
+							horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta),
 							disableAnimation: false);
 					}
 				}
@@ -352,10 +376,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return Math.Max(minOffset, Math.Min(offset, maxOffset));
 		}
-#endif
 
-#if __NETSTD_REFERENCE__
-		protected override void OnContentChanged(object oldValue, object newValue) => base.OnContentChanged(oldValue, newValue);
-#endif
 	}
 }

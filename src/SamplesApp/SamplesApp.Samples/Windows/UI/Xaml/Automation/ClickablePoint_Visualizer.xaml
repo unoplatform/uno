@@ -1,0 +1,87 @@
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Automation.ClickablePoint_Visualizer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid Padding="24" RowSpacing="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Spacing="8">
+            <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="UI Automation clickable-point visualizer" />
+            <TextBlock
+                MaxWidth="760"
+                Text="The outlined marker is the expected button center. The solid marker is the point returned by AutomationPeer.GetClickablePoint. On Skia Win32, the readout also shows the raw provider point in physical screen pixels."
+                TextWrapping="Wrap" />
+            <Button
+                x:Name="RefreshButton"
+                HorizontalAlignment="Left"
+                AutomationProperties.AutomationId="ClickablePointVisualizerRefresh"
+                Click="OnRefreshClick"
+                Content="Refresh measurement" />
+        </StackPanel>
+
+        <Border
+            Grid.Row="1"
+            Padding="16"
+            Background="{ThemeResource SystemControlBackgroundBaseLowBrush}"
+            BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+            BorderThickness="1"
+            CornerRadius="{ThemeResource ControlCornerRadius}">
+            <Grid
+                x:Name="VisualizationRoot"
+                MinWidth="620"
+                MinHeight="300"
+                SizeChanged="OnVisualizationSizeChanged">
+                <Button
+                    x:Name="TargetButton"
+                    Width="240"
+                    Height="80"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    AutomationProperties.AutomationId="ClickablePointVisualizerTarget"
+                    Content="UIA target button" />
+
+                <Canvas x:Name="MarkerCanvas" IsHitTestVisible="False">
+                    <Ellipse
+                        x:Name="ExpectedMarker"
+                        Width="32"
+                        Height="32"
+                        Stroke="{ThemeResource SystemControlForegroundBaseHighBrush}"
+                        StrokeDashArray="2,2"
+                        StrokeThickness="3" />
+                    <Ellipse
+                        x:Name="ActualMarker"
+                        Width="18"
+                        Height="18"
+                        Fill="{ThemeResource SystemControlHighlightAccentBrush}"
+                        Visibility="Collapsed" />
+                    <Border
+                        x:Name="MissingPointBadge"
+                        Canvas.Left="12"
+                        Canvas.Top="12"
+                        Padding="10,6"
+                        Background="{ThemeResource SystemControlErrorTextForegroundBrush}"
+                        CornerRadius="{ThemeResource ControlCornerRadius}"
+                        Visibility="Collapsed">
+                        <TextBlock Foreground="{ThemeResource SystemControlForegroundAltHighBrush}" Text="Actual point is (0,0) - outside this page" />
+                    </Border>
+                </Canvas>
+            </Grid>
+        </Border>
+
+        <StackPanel Grid.Row="2" Spacing="4">
+            <TextBlock x:Name="ResultText" Style="{StaticResource SubtitleTextBlockStyle}" />
+            <TextBlock x:Name="BoundsText" FontFamily="Consolas" />
+            <TextBlock x:Name="PeerPointText" FontFamily="Consolas" />
+            <TextBlock x:Name="ProviderPointText" FontFamily="Consolas" />
+        </StackPanel>
+    </Grid>
+</UserControl>

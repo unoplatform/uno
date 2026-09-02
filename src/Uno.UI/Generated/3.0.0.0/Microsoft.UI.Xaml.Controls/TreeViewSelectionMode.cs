@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false
+#if false
 	public enum TreeViewSelectionMode
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.TreeViewSelectionMode.None

@@ -121,7 +121,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		}
 	}
 
-	internal override void Paint(in PaintingSession session)
+	internal override SKPath? Paint(in PaintingSession session)
 	{
 		UpdatePathsAndCornerClip();
 
@@ -138,6 +138,8 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		base.Paint(in session);
 
 		_borderShape?.Render(in session);
+
+		return BuildOwnContentPath();
 	}
 
 	internal override bool GetPrePaintingClipping(SKPath dst)
@@ -381,6 +383,29 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 	internal override bool PaintsWithinOwnSize => true;
 
 	internal override bool RequiresRepaintOnEveryFrame => (_backgroundBrush?.RequiresRepaintOnEveryFrame ?? false) || (_borderBrush?.RequiresRepaintOnEveryFrame ?? false);
+
+	internal override float DamageRegionSamplingMargin => global::System.Math.Max(_backgroundBrush?.DamageRegionSamplingMargin ?? 0, _borderBrush?.DamageRegionSamplingMargin ?? 0);
+
+	// Reused across repaints (one per visual): the builder is reset and rebuilt each repaint; Detach() produces
+	// the SKPath the damage consumer copies.
+	private SKPathBuilder? _ownContentPathBuilder;
+
+	private SKPath? BuildOwnContentPath()
+	{
+		UpdatePathsAndCornerClip();
+		var builder = _ownContentPathBuilder ??= new SKPathBuilder();
+		builder.Reset();
+		var any = false;
+		if (_backgroundShape is { } bg && (BackgroundBrush?.CanPaint() ?? false))
+		{
+			any |= bg.GetRenderPath(builder);
+		}
+		if (_borderShape is { } border && (BorderBrush?.CanPaint() ?? false))
+		{
+			any |= border.GetRenderPath(builder);
+		}
+		return any ? builder.Detach() : null;
+	}
 
 	internal override bool HitTest(Point point)
 	{

@@ -3,17 +3,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class StyleTypedPropertyAttribute : global::System.Attribute
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.StyleTypedPropertyAttribute.StyleTypedPropertyAttribute()
 		// Forced skipping of method Microsoft.UI.Xaml.StyleTypedPropertyAttribute.StyleTypedPropertyAttribute()
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public string Property;
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public global::System.Type StyleTargetType;
 #endif
 	}

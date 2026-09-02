@@ -244,7 +244,7 @@ internal abstract partial class BaseWindowImplementation : IWindowImplementation
 		}
 
 		_lastActivationState = state;
-		var activatedEventArgs = new WindowActivatedEventArgs(state);
+		var activatedEventArgs = new WindowActivatedEventArgs((WindowActivationState)state);
 		// There are two "versions" of WindowActivatedEventArgs in Uno currently
 		// when using WinUI, we need to use "legacy" version to work with CoreWindow
 		// (which will eventually be removed as a legacy API as well.

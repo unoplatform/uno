@@ -231,7 +231,7 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						CoreWindowActivationState state =
 							CoreWindowActivationState.CodeActivated;
-						state = (args.WindowActivationState);
+						state = (CoreWindowActivationState)args.WindowActivationState;
 
 						if (state == CoreWindowActivationState.CodeActivated
 							|| state == CoreWindowActivationState.PointerActivated)
@@ -861,13 +861,11 @@ namespace Microsoft.UI.Xaml.Controls
 			_flyout.MaxYear = MaxYear;
 			_flyout.Date = SelectedDate ?? Date;
 
-#if SUPPORTS_NATIVE_DATEPICKER
 			// UnoOnly
-			if (_flyout is NativeDatePickerFlyout nativeFlyout)
+			if (_flyout is INativeDatePickerFlyout nativeFlyout)
 			{
 				nativeFlyout.UseNativeMinMaxDates = UseNativeMinMaxDates;
 			}
-#endif
 
 			ShowPickerFlyout();
 		}

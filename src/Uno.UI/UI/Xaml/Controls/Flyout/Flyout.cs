@@ -96,18 +96,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 		}
 
-		protected internal override void Close()
-		{
-			// This overload is required for binary compatibility
-			base.Close();
-		}
-
-		protected internal override void Open()
-		{
-			// This overload is required for binary compatibility
-			base.Open();
-		}
-
 		protected override Control CreatePresenter()
 		{
 			_presenter = new FlyoutPresenter();

@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public delegate global::Windows.Foundation.IAsyncOperation<object> ListViewKeyToItemHandler(string key);
 #endif
 }

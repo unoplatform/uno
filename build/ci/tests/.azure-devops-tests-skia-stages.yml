@@ -52,21 +52,6 @@ stages:
       vmLinuxPool: '${{ parameters.vmLinuxPool }}'
       XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
 
-- stage: runtime_tests_skia_android_coreclr
-  displayName: Tests - Android+CoreCLR Skia
-  dependsOn:
-    - Setup
-
-  jobs:
-  - template: .azure-devops-tests-android-coreclr-skia-build.yml
-    parameters:
-      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
-  - template: .azure-devops-tests-android-coreclr-skia.yml
-    parameters:
-      vmLinuxPool: '${{ parameters.vmLinuxPool }}'
-      XAML_FLAVOR_BUILD: '${{ parameters.XAML_FLAVOR_BUILD }}'
-
 - stage: runtime_tests_skia_android_nativeaot
   displayName: Tests - Android+NativeAOT Skia
   dependsOn:

@@ -143,22 +143,18 @@ namespace Microsoft.UI.Xaml
 			if (this.GetParent() is IFrameworkElement fe)
 			{
 				OnOwnerElementChanged();
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				// On Skia, we match WinUI and initialize the visual triggers of a Control in
 				// EmterImpl and/or InvokeApplyTemplate. Somehow the state triggers are also
 				// applied when the VisualStates are being set on a non-Control. We fallback
 				// to listening to Loaded to evaluate the triggers in that case.
 				if (fe is not Control)
-#endif
 				{
 					fe.Loaded += OnOwnerElementLoaded;
 				}
 				fe.Unloaded += OnOwnerElementUnloaded;
 				_parentLoadedDisposable.Disposable = Disposable.Create(() =>
 				{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 					if (fe is not Control)
-#endif
 					{
 						fe.Loaded -= OnOwnerElementLoaded;
 					}
@@ -253,8 +249,8 @@ namespace Microsoft.UI.Xaml
 				// storyboard at Enter). Skipped during a theme walk — the core slot already carries the new
 				// theme while the owner's per-object theme is still stale, so a re-entrant GoToState (a
 				// StateTrigger flipping mid-walk) keeps the walk theme.
-				var ownerIsProcessingThemeWalk = (element as DependencyObject) is IDependencyObjectStoreProvider provider
-					&& provider.Store.IsProcessingThemeWalk;
+				var ownerIsProcessingThemeWalk = (element as DependencyObject) is DependencyObject provider
+					&& provider.IsProcessingThemeWalk;
 				using var themeScope = ownerIsProcessingThemeWalk
 					? default
 					: Uno.UI.Xaml.Core.CoreServices.Instance

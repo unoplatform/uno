@@ -114,15 +114,9 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// TODO: Revisit if this can use SizeChanged += (_, _) => OnControlsBoundsChanged(); on all platforms.
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		internal override void AfterArrange()
 		{
 			base.AfterArrange();
-#else
-		internal override void OnLayoutUpdated()
-		{
-			base.OnLayoutUpdated();
-#endif
 			OnControlsBoundsChanged();
 		}
 
@@ -273,10 +267,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// Interactive parts of MTC, but outside of MediaControlsCommandBar:
 			Bind(m_tpMediaPositionSlider, x => x.ValueChanged += OnPositionSliderValueChanged, x => x.ValueChanged -= OnPositionSliderValueChanged);
-#if WIP || true
 			BindHandler(m_tpMediaPositionSlider, UIElement.PointerPressedEvent, (PointerEventHandler)OnPositionSliderPressed, handledEventsToo: true);
 			BindHandler(m_tpMediaPositionSlider, UIElement.PointerReleasedEvent, (PointerEventHandler)OnPositionSliderReleased, handledEventsToo: true);
-#endif
 			BindButtonClick(m_tpTHLeftSidePlayPauseButton, PlayPause);
 
 			// MediaControlsCommandBar\PrimaryCommands:

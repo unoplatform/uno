@@ -11,7 +11,6 @@ using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.FlyoutPages;
 using Uno.UI.RuntimeTests.FramePages;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Toolkit.Extensions;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Core;
@@ -755,7 +754,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finally
 			{
 #if HAS_UNO
-				SUT.contextFlyout.Close();
+				SUT.contextFlyout.Hide();
 #endif
 			}
 		}

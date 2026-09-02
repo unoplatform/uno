@@ -26,8 +26,8 @@
 	</PropertyGroup>
 
 	<!-- This condition isn't always true. -->
-	<!-- Docs generation build uses UnoTargetFrameworkOverride=net9.0, so this project will build with net9.0 instead of net9.0-android -->
-	<!-- If we attempted to always build with net9.0-android, we will go through the annoyance of installing android workload in docs generation CI job -->
+	<!-- Docs generation build uses UnoTargetFrameworkOverride=net10.0, so this project will build with net10.0 instead of net10.0-android -->
+	<!-- If we attempted to always build with net10.0-android, we will go through the annoyance of installing android workload in docs generation CI job -->
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'android'">
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
@@ -87,9 +87,11 @@
 			<_AndroidJar Include="$(IntermediateOutputPath)\__library_projects__\Xamarin.Android.Support.Annotations\library_project_imports\support-annotations.jar" />
 			<_AndroidJar Include="$(IntermediateOutputPath)\__library_projects__\**\classes.jar" />
 			<_AndroidJar Include="$(IntermediateOutputPath)\lp\**\classes.jar" />
+			<_AndroidPlatformJar Include="$(_AndroidSdkDirectory)platforms\android-$(_AndroidApiLevel)*\android.jar" />
 		</ItemGroup>
 		<PropertyGroup>
 			<_JavaVersion>1.8</_JavaVersion>
+			<_AndroidPlatformJar>%(_AndroidPlatformJar.Identity)</_AndroidPlatformJar>
 
 			<_JavaCBinPath>javac</_JavaCBinPath>
 			<_JavaCBinPath Condition="Exists('$(_JavaSdkDirectory)bin\javac.exe')">$(_JavaSdkDirectory)bin\javac.exe</_JavaCBinPath>
@@ -100,11 +102,11 @@
 			<_flattenAndroidJar Condition="!$(_isWindows)">@(_AndroidJar, ':')</_flattenAndroidJar>
 			<_flattenAndroidJar Condition="$(_isWindows)">@(_AndroidJar)</_flattenAndroidJar>
 
-			<_CompileCommand>"$(_JavaCBinPath)" -g -source $(_javaVersion) -d .\$(IntermediateOutputPath)\unoclasses -target $(_javaVersion) -J-Dfile.encoding=UTF8 -classpath "$(_flattenAndroidJar)" -bootclasspath "$(_AndroidSdkDirectory)platforms\android-$(_AndroidApiLevel)\android.jar" -encoding UTF-8 .\Uno\UI\*.java</_CompileCommand>
+			<_CompileCommand>"$(_JavaCBinPath)" -g -source $(_javaVersion) -d .\$(IntermediateOutputPath)\unoclasses -target $(_javaVersion) -J-Dfile.encoding=UTF8 -classpath "$(_flattenAndroidJar)" -bootclasspath "$(_AndroidPlatformJar)" -encoding UTF-8 .\Uno\UI\*.java</_CompileCommand>
 			<_CompileCommand Condition="$([MSBuild]::IsOSUnixLike())">$(_CompileCommand.Replace('\','/'))</_CompileCommand>
 		</PropertyGroup>
 
-		<Error Text="The Android SDK for API level $(_AndroidApiLevel) is not installed. Install it through the Android SDK manager." Condition="!Exists('$(_AndroidSdkDirectory)platforms\android-$(_AndroidApiLevel)\android.jar')" />
+		<Error Text="The Android SDK for API level $(_AndroidApiLevel) is not installed. Install it through the Android SDK manager." Condition="!Exists('$(_AndroidPlatformJar)')" />
 
 		<Message Text="Compiling java ($(_CurrentSupportV4) for $(TargetFramework)): $(_CompileCommand)" Importance="high" />
 

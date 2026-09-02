@@ -307,7 +307,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var timePickerFlyout = (TimePickerFlyout)associatedFlyout;
 			bool flyoutClosed = false;
 			timePickerFlyout.Closed += (s, e) => flyoutClosed = true;
-			timePickerFlyout.Close();
+			timePickerFlyout.Hide();
 
 			await TestServices.WindowHelper.WaitFor(() => flyoutClosed, message: "Flyout did not close");
 

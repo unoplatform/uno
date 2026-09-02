@@ -49,6 +49,7 @@ internal static class AccessibilityNodeInfoCompatJni
 		}
 		// else: neither signature exists on the loaded binding — skip silently rather than
 		// crash. This shouldn't happen in practice but keeps the helper safe by construction.
+		GC.KeepAlive(node);
 	}
 
 	private static void EnsureInitialized()

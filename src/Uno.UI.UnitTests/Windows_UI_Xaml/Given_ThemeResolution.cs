@@ -13,13 +13,13 @@ public class Given_ThemeResolution
 	public void Init() => UnitTestsApp.App.EnsureApplication();
 
 	// Sets the per-object theme on the store (the field moved off UIElement onto
-	// DependencyObjectStore in Phase 1 / D1).
+	// DependencyObject in Phase 1 / D1).
 	private static void SetStoreTheme(DependencyObject o, Theme theme)
-		=> ((IDependencyObjectStoreProvider)o).Store.SetTheme(theme);
+		=> ((DependencyObject)o).SetTheme(theme);
 
 	// Links the DP-inheritance parent (what ResolveOwnerTheme walks) without a visual-tree attach.
 	private static void SetInheritanceParent(DependencyObject child, DependencyObject parent)
-		=> ((IDependencyObjectStoreProvider)child).Store.Parent = parent;
+		=> ((DependencyObject)child).Parent = parent;
 
 	// The application/OS base-theme fallback (last link of the chain).
 	private static Theme AppFallback()
