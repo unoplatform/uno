@@ -276,5 +276,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = null;
 			}
 		}
+
+		[TestMethod]
+		[RequiresScaling(1f)]
+		public async Task When_CharacterEllipsis_Trims_And_Reports()
+		{
+			// TextLine.Collapse was a no-op, so trimming never produced an ellipsis and IsTextTrimmed
+			// stayed false however narrow the control got.
+			var SUT = new RichTextBlock
+			{
+				Width = 120,
+				FontSize = 24,
+				TextWrapping = TextWrapping.NoWrap,
+				TextTrimming = TextTrimming.CharacterEllipsis,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			};
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" });
+			SUT.Blocks.Add(paragraph);
+
+			var host = new Border { Width = 300, Height = 120, Background = new SolidColorBrush(Microsoft.UI.Colors.White), Child = SUT };
+
+			try
+			{
+				WindowHelper.WindowContent = host;
+				await WindowHelper.WaitForLoaded(host);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(SUT.IsTextTrimmed, "A line too long for the control should report as trimmed");
+
+				var shot = await UITestHelper.ScreenShot(host);
+
+				// Text paints inside the control...
+				ImageAssert.HasColorInRectangle(shot, new Rectangle(0, 0, 120, 60), Microsoft.UI.Colors.Red, tolerance: 16);
+
+				// ...and stops there: the collapsed line drops the glyphs that did not fit.
+				ImageAssert.DoesNotHaveColorInRectangle(shot, new Rectangle(130, 0, 170, 120), Microsoft.UI.Colors.Red, tolerance: 16);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
 	}
 }
