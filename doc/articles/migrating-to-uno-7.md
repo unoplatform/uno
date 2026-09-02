@@ -489,6 +489,15 @@ Independently of rendering, manipulation recognition was realigned with WinUI:
   starts sooner. Mouse goes from 1px to 4px, matching the Win32 system drag threshold
   (`SM_CXDRAG`), so a small wiggle during a click is no longer reported as a drag. Code that
   relied on a near-zero mouse threshold to start a drag should re-test.
+- **SkiaSharp 4 is the default.** The Uno.Sdk now resolves the whole SkiaSharp package group —
+  `SkiaSharp`, `SkiaSharp.Skottie`, the `SkiaSharp.Views.*` packages and every
+  `SkiaSharp.NativeAssets.*` — at a `4.x` version; on 6.x it was `3.x` with 4 available opt-in
+  through `SkiaSharpVersion`. Apps that never touch SkiaSharp directly need no change. Apps
+  with their own `SKCanvas`/`SKPaint` drawing code may not compile: SkiaSharp 4 turns several
+  long-deprecated APIs into errors, most visibly the text APIs that moved from `SKPaint` to
+  `SKFont`. If you pin SkiaSharp packages yourself, move **all** of them — managed and
+  native-asset alike — to the same 4.x version, since a managed/native mismatch fails at
+  runtime rather than at build time.
 - **Vulkan is the default rendering backend** on Android, Linux (X11) and Windows (Win32).
   `UseVulkanOnSkiaAndroid`, `UseVulkanOnX11` and `UseVulkanOnWin32` all default to `true`;
   before 7.0 Vulkan was opt-in and these defaulted to `false`. Devices without a usable Vulkan
