@@ -70,6 +70,7 @@ Method|Return Type|Description
 
 ## Additional Resources
 
-- [`CommandBar` and `AppBarButton` Uno documentation](../controls/CommandBar.md)
+- [`CommandBar` Uno documentation](../controls/CommandBar.md)
+- [`AppBarButton` Uno documentation](../controls/AppBarButton.md)
 - [How to use native Frame navigation](../guides/native-frame-nav-tutorial.md)
 - [Native frame navigation sample](https://github.com/unoplatform/Uno.Samples/tree/master/UI/NativeFrameNav)
