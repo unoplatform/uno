@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
 // MUX Reference RichTextBlockOverflow.cpp (GetTextPositionFromPoint),
@@ -9,44 +9,30 @@
 
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Documents;
-#if __SKIA__
 using Microsoft.UI.Xaml.Controls.Text.Core;
 using Microsoft.UI.Xaml.Documents.BlockLayout;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls;
 
 // The overflow's position model lives on the master's TextContainer, queried through this element's
-// own standalone view. On non-Skia targets there is no view, so these return null - the same as
-// WinUI before layout has run.
+// own standalone view. Before layout has run there is no view, so these return null, as WinUI does.
 partial class RichTextBlockOverflow
 {
 	/// <summary>
 	/// Gets a TextPointer that represents the start of the content overflowed into this element.
 	/// </summary>
-	public TextPointer? ContentStart =>
-#if __SKIA__
-		GetContentStart();
-#else
-		null;
-#endif
+	public TextPointer? ContentStart => GetContentStart();
 
 	/// <summary>
 	/// Gets a TextPointer that represents the end of the content overflowed into this element.
 	/// </summary>
-	public TextPointer? ContentEnd =>
-#if __SKIA__
-		GetContentEnd();
-#else
-		null;
-#endif
+	public TextPointer? ContentEnd => GetContentEnd();
 
 	/// <summary>
 	/// Returns a TextPointer that corresponds to a Point in the coordinate space of this element.
 	/// </summary>
 	public TextPointer? GetPositionFromPoint(Point point) => GetTextPositionFromPoint(point);
 
-#if __SKIA__
 	// CRichTextBlockOverflow::GetTextPositionFromPoint
 	private TextPointer? GetTextPositionFromPoint(Point point)
 	{
@@ -66,7 +52,4 @@ partial class RichTextBlockOverflow
 
 		return null;
 	}
-#else
-	private TextPointer? GetTextPositionFromPoint(Point point) => null;
-#endif
 }
