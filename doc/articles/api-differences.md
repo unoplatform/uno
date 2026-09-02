@@ -12,19 +12,13 @@ For a practical guide to addressing differences between Uno Platform and WinUI, 
 
 ## API differences
 
-### `FrameworkElement` inherits from native base view types (Android, iOS, macOS)
+### The type hierarchy matches WinUI on every platform
 
-As for WinUI, all visual elements in Uno.UI inherit from `FrameworkElement`, which inherits from `UIElement`. (At least, those that are publicly available.) On Windows, `UIElement` inherits from the `DependencyObject` class, which inherits from `System.Object`.
+As in WinUI, all visual elements inherit from `FrameworkElement`, which inherits from `UIElement`, which inherits from the `DependencyObject` **class**. That is true on every target as of Uno Platform 7.0.
 
-On Android, iOS, and macOS, `UIElement` instead inherits from the native base view type for each platform, as exposed to .NET by Xamarin Native. So, `ViewGroup` for Android, `UIView` for iOS, and `NSView` for macOS.
+Before 7.0, the Android, iOS and macOS renderers made `UIElement` inherit the native base view type for each platform (`ViewGroup`, `UIView`, `NSView`), which in turn forced `DependencyObject` to be an *interface* rather than a class — so a type inheriting directly from `DependencyObject` had to be declared `partial` for the generator to supply the implementation. Both differences are gone: 7.0 renders with Skia on every target, `DependencyObject` is an ordinary class, and no `partial` keyword is required.
 
-This allows native views (not defined by Uno.UI or inheriting from `FrameworkElement`) to be directly integrated into the visual tree, [in XAML markup or C# code](native-views.md).
-
-### `DependencyObject` type is an interface (all non-Windows platforms)
-
-This API difference follows directly from the previous one. In order to support native view inheritance, Uno.UI defines `DependencyObject` as an interface, rather than a class.
-
-This is as transparent as possible to the application developer. For example, if a developer defines a class that inherits directly from `DependencyObject`, Uno.UI will automatically generate code that implements the `DependencyObject` interface methods. The only developer action required is to add the `partial` keyword to the class definition.
+See the [migration guide](xref:Uno.Development.MigratingToUno7) if you are upgrading code written against the older model.
 
 ## Runtime differences
 
