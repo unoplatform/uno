@@ -945,6 +945,19 @@ internal readonly struct ParsedText : IParsedText
 	// SkiaTextFormatter) to vend per-line metrics over the parsed layout.
 	internal IReadOnlyList<RenderLine> RenderLines => _renderLines;
 
+	// Top of a line within the paragraph. A page that starts partway in draws its first line at the
+	// top, so hit-testing has to add back the height of the lines it skipped.
+	internal float GetLineTop(int lineIndex)
+	{
+		var top = 0f;
+		for (var i = 0; i < lineIndex && i < _renderLines.Count; i++)
+		{
+			top += _renderLines[i].Height;
+		}
+
+		return top;
+	}
+
 	// Text trimming collapses a line in place: the formatter hands the same ParsedText back for every
 	// line of the paragraph, so the collapsed line has to replace the original for Draw to pick it up.
 	internal void ReplaceRenderLine(int index, RenderLine line) => _renderLines[index] = line;

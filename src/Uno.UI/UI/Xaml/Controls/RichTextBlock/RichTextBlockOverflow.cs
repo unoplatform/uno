@@ -5,6 +5,11 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class RichTextBlockOverflow
 	{
+		public RichTextBlockOverflow()
+		{
+			SubscribeToInput();
+		}
+
 		internal override bool CanHaveChildren() => true;
 
 		protected override Automation.Peers.AutomationPeer OnCreateAutomationPeer()

@@ -431,6 +431,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private readonly ObservableCollection<Hyperlink> _hyperlinks = new();
 
+		// The linked overflow columns host this element's links, so they need the same list to clear a
+		// press that ended outside the link it started on.
+		internal IReadOnlyList<Hyperlink> GetHyperlinks() => _hyperlinks;
+
 		// CRichTextBlock::m_focusableChildrenCollection - lazily built, dropped on any content change.
 		private List<DependencyObject>? _focusableChildrenCollection;
 
