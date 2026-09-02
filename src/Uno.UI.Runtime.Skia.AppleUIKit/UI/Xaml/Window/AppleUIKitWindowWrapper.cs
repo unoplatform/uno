@@ -40,6 +40,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	private bool _isCountedVisible;
 	private bool _isSceneDisconnected;
 
+	/// <summary>
+	/// Gets a value indicating whether UIKit is tearing a scene down right now, in which case the
+	/// window is already gone and Window.Closed must not be able to veto the close.
+	/// </summary>
+	internal static bool IsSceneDisconnecting { get; private set; }
+
 	public NativeWindowWrapper(Window window, XamlRoot xamlRoot) : base(window, xamlRoot)
 	{
 		_xamlRoot = xamlRoot;
@@ -227,9 +233,20 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		MarkHidden();
 		OnNativeVisibilityChanged(false);
-		OnNativeClosed();
 
-		Close();
+		// UIKit disconnects a scene after the fact, so unlike a Close() the app asked for, this one
+		// cannot be cancelled - the native window is gone either way.
+		IsSceneDisconnecting = true;
+		try
+		{
+			OnNativeClosed();
+
+			Close();
+		}
+		finally
+		{
+			IsSceneDisconnecting = false;
+		}
 
 		XamlRootMap.Unregister(_xamlRoot);
 		_nativeWindow = null;

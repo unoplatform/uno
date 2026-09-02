@@ -12,7 +12,11 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 
 internal class NativeWindowFactoryExtension : INativeWindowFactoryExtension
 {
-	public bool SupportsClosingCancellation => false;
+	// Closing a window is entirely app-driven here: CloseCore is what asks UIKit to destroy the
+	// scene, so a handled Window.Closed simply never gets that far. Without the scene lifecycle
+	// there is no window to close in the first place.
+	public bool SupportsClosingCancellation =>
+		SupportsMultipleWindows && !NativeWindowWrapper.IsSceneDisconnecting;
 
 	// Secondary windows are backed by scenes, so the app must both declare a scene manifest and
 	// opt into multiple scenes for them to be creatable.
