@@ -11,10 +11,10 @@ uid: Uno.Features.OrientationSensor
 
 ## Supported features
 
-| Feature              | Windows | Android | iOS | Web (WASM) | macOS | Linux (Skia) | Win 7 (Skia) |
-|----------------------|---------|---------|-----|------------|-------|--------------|--------------|
-| `GetDefault`         | ✔       | ✔       | ✔   | ✔          | ✔     | ✔            | ✔            |
-| `OrientationChanged` | ✔       | ✔       | ✔   | ✔          | ✖     | ✖            | ✖            |
+| Feature              | Windows App SDK | Android (Native/Skia) | iOS (Native/Skia) | WebAssembly (Native/Skia) | Desktop (macOS, Skia) | Desktop (X11, Skia) | Desktop (Linux Framebuffer, Skia) | Desktop (Windows, Skia) |
+|----------------------|-----------------|-----------------------|-------------------|----------------------------|-----------------------|---------------------|------------------------------------|-------------------------|
+| `GetDefault`         | ✔               | ✔                     | ✔                 | ✔                          | ✔                     | ✔                   | ✔                                  | ✔                       |
+| `OrientationChanged` | ✔               | ✔                     | ✔                 | ✔                          | ✖                     | ✖                   | ✖                                  | ✖                       |
 
 > [!IMPORTANT]
 > The `OrientationChanged` event is not supported by iOS simulators.

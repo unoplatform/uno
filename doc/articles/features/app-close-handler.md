@@ -11,9 +11,9 @@ The `AppWindow.Closing` API lets you respond to or prevent standard app window c
 
 ## Platform Support
 
-| Feature              | Windows App SDK | Android | iOS | Web (WASM) | Desktop (Windows) | Desktop (macOS) | Desktop (Linux) |
-|----------------------|------------------|---------|-----|------------|-------------------|------------------|------------------|
-| `AppWindow.Closing`  | ✔️               | ❌      | ❌  | ❌         | ✔️                | ✔️               | ✔️               |
+| Feature             | Windows App SDK | Android (Native/Skia) | iOS (Native/Skia) | WebAssembly (Native/Skia) | Desktop (macOS, Skia) | Desktop (X11, Skia) | Desktop (Linux Framebuffer, Skia) | Desktop (Windows, Skia) |
+|---------------------|-----------------|-----------------------|-------------------|----------------------------|-----------------------|---------------------|------------------------------------|-------------------------|
+| `AppWindow.Closing` | ✔️              | ❌                    | ❌                | ❌                         | ✔️                    | ✔️                  | ✔️                                 | ✔️                      |
 
 > [!NOTE]
 > On platforms where this feature is not supported, the `Closing` event will still be raised, but setting `args.Cancel = true` has no effect.

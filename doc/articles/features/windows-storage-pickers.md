@@ -19,23 +19,23 @@ Legend
 * 💬 Partially supported (see below for more details)
 * ✖ Not supported
 
-| Picker         | Windows App SDK   | WebAssembly | Android | iOS    | Desktop |
-|----------------|-------|-------------|---------|--------|-------|
-| FileOpenPicker | ✔    | ✔ (1)       | ✔      | ✔      | ✔    |
-| FileSavePicker | ✔    | ✔ (1)       | ✔      | 💬 (2) | ✔    |
-| FolderPicker   | ✔    | ✔           | ✔      | ✔      | ✔    |
+| Picker         | Windows App SDK | Android (Native/Skia) | iOS (Native/Skia) | WebAssembly (Native/Skia) | Desktop (macOS, Skia) | Desktop (X11, Skia) | Desktop (Linux Framebuffer, Skia) | Desktop (Windows, Skia) |
+|----------------|-----------------|-----------------------|-------------------|----------------------------|-----------------------|---------------------|------------------------------------|-------------------------|
+| FileOpenPicker | ✔               | ✔                     | ✔                 | ✔ (1)                      | ✔                     | ✔                   | ✔                                  | ✔                       |
+| FileSavePicker | ✔               | ✔                     | 💬 (2)            | ✔ (1)                      | ✔                     | ✔                   | ✔                                  | ✔                       |
+| FolderPicker   | ✔               | ✔                     | ✔                 | ✔                          | ✔                     | ✔                   | ✔                                  | ✔                       |
 
 *(1) - Multiple implementations supported - see WebAssembly section below*\
 *(2) - See iOS section below*
 
 On some platforms, you can further customize the file-picking experience by utilizing additional properties:
 
-| Feature                 | Windows App SDK  | WebAssembly | Android | iOS   | Desktop |
-|-------------------------|------|-------------|---------|-------|-----|
-| SuggestedFileName       | ✔   | ✔           | ✖      | ✖     | ✔ |
-| SuggestedStartLocation  | ✔   | ✔ (1)       | 💬 (4) | ✔ (3) | ✔ |
-| SettingsIdentifier      | ✔   | ✔ (1)       | ✔      | ✖     | ✔ |
-| SetMultipleFilesLimit   | ✖   | ✖           | ✖      | ✔     | ✖ |
+| Feature                | Windows App SDK | Android (Native/Skia) | iOS (Native/Skia) | WebAssembly (Native/Skia) | Desktop (macOS, Skia) | Desktop (X11, Skia) | Desktop (Linux Framebuffer, Skia) | Desktop (Windows, Skia) |
+|------------------------|-----------------|-----------------------|-------------------|----------------------------|-----------------------|---------------------|------------------------------------|-------------------------|
+| SuggestedFileName      | ✔               | ✖                     | ✖                 | ✔                          | ✔                     | ✔                   | ✔                                  | ✔                       |
+| SuggestedStartLocation | ✔               | 💬 (4)                | ✔ (3)             | ✔ (1)                      | ✔                     | ✔                   | ✔                                  | ✔                       |
+| SettingsIdentifier     | ✔               | ✔                     | ✖                 | ✔ (1)                      | ✔                     | ✔                   | ✔                                  | ✔                       |
+| SetMultipleFilesLimit  | ✖               | ✖                     | ✔                 | ✖                          | ✖                     | ✖                   | ✖                                  | ✖                       |
 
 *(1) - Only for the native file pickers - see WebAssembly section below*\
 *(2) - For FileOpenPicker, VideosLibrary and PicturesLibrary are used to apply `image/*` and `video/*` filters*\
