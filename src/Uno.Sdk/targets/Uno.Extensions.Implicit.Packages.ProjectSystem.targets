@@ -61,7 +61,14 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Maui.WinUI" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Uno.Extensions.Maui.WinUI.Markup" ProjectSystem="true" Condition="$(UnoFeatures.Contains(';csharpmarkup;'))" />
 		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Controls" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Controls.Compatibility" ProjectSystem="true" />
+		<!-- Microsoft.Maui.Controls.Compatibility is no longer built or shipped as of .NET 11
+		     Preview 6 (https://github.com/dotnet/core/blob/main/release-notes/11.0/preview/preview6/dotnetmaui.md).
+		     The compatibility-named handler and layout base types it exposed are compiled into
+		     Microsoft.Maui.Controls.Core, so net11+ needs no reference. -->
+		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Controls.Compatibility" ProjectSystem="true"
+			Condition=" '$(TargetFramework)' != ''
+				AND $([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) != ''
+				AND $([MSBuild]::VersionLessThan($([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')), '11.0')) " />
 		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Graphics" ProjectSystem="true" />
 		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Controls.Build.Tasks" ProjectSystem="true" Condition="$(SingleProject) == 'true'"/>
 

@@ -338,12 +338,18 @@
 		"version": "10.0.90",
 		"packages": [
 			"Microsoft.Maui.Controls",
-			"Microsoft.Maui.Controls.Compatibility",
 			"Microsoft.Maui.Graphics"
 		],
 		"versionOverride": {
 			"net11.0": "11.0.0-preview.7.26406.9"
 		}
+	},
+	{
+		"group": "MauiCompatibility",
+		"version": "10.0.90",
+		"packages": [
+			"Microsoft.Maui.Controls.Compatibility"
+		]
 	},
 	{
 		"group": "CSharpMarkup",
