@@ -62,8 +62,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Remove="XamlCodeGeneratorTests\Out\**\*.cs" />
-		<EmbeddedResource Include="XamlCodeGeneratorTests\Out\**\*.cs" />
+		<Compile Remove="Out\**\*.cs" />
+		<EmbeddedResource Include="Out\**\*.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
