@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -126,6 +127,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				// The overflow's first-line baseline ≈ the font ascent of the flowed 24pt content.
 				Assert.IsTrue(overflow.BaselineOffset > master.FontSize * 0.5 && overflow.BaselineOffset < master.FontSize * 1.5,
 					$"Overflow BaselineOffset {overflow.BaselineOffset} should be a plausible first-line ascent for font size {master.FontSize}");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Overflow_Exposes_Content_Pointers()
+		{
+			// ContentStart, ContentEnd and GetPositionFromPoint used to throw, so pagination readers and
+			// column hit-testing crashed on every column after the first.
+			var master = new RichTextBlock { Width = 180, MaxLines = 2, FontSize = 24 };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = LongText });
+			master.Blocks.Add(paragraph);
+
+			var overflow = new RichTextBlockOverflow { Width = 180, Height = 200 };
+			master.OverflowContentTarget = overflow;
+
+			var panel = new StackPanel();
+			panel.Children.Add(master);
+			panel.Children.Add(overflow);
+
+			try
+			{
+				WindowHelper.WindowContent = panel;
+				await WindowHelper.WaitForLoaded(panel);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(master.HasOverflowContent, "Master should overflow into the target");
+
+				var start = overflow.ContentStart;
+				var end = overflow.ContentEnd;
+
+				Assert.IsNotNull(start, "The overflow should expose the start of its content slice");
+				Assert.IsNotNull(end, "The overflow should expose the end of its content slice");
+
+				// The slice is the continuation, so it does not start at the container's beginning.
+				Assert.IsTrue(start!.Offset > 0, $"The slice should start after the master's content (offset {start.Offset})");
+				Assert.IsTrue(end!.Offset >= start.Offset, $"End {end.Offset} should not precede start {start.Offset}");
+
+				var hit = overflow.GetPositionFromPoint(new Point(20, 10));
+				Assert.IsNotNull(hit, "Hit-testing inside the overflow should yield a position");
 			}
 			finally
 			{
