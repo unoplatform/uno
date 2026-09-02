@@ -219,5 +219,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents
 				WindowHelper.WindowContent = null;
 			}
 		}
+
 	}
 }
