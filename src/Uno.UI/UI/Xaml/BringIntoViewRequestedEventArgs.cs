@@ -12,6 +12,10 @@ public partial class BringIntoViewRequestedEventArgs : RoutedEventArgs, IHandlea
 	{
 	}
 
+	internal bool ForceIntoView { get; set; }
+
+	internal bool InterruptDuringManipulation { get; set; } = true;
+
 	/// <summary>
 	/// Gets or sets a value that specifies whether the scrolling should be animated.
 	/// </summary>

@@ -540,7 +540,25 @@ namespace Microsoft.UI.Xaml.Controls
 			float? zoomFactor,
 			bool disableAnimation,
 			bool isIntermediate)
-			=> throw new NotImplementedException();
+		{
+			if (zoomFactor is { } zoom)
+			{
+				SetZoomScale(zoom, animated: !disableAnimation);
+			}
+
+			var contentOffset = ContentOffset;
+			if (horizontalOffset is { } horizontal)
+			{
+				contentOffset.X = (nfloat)horizontal;
+			}
+			if (verticalOffset is { } vertical)
+			{
+				contentOffset.Y = (nfloat)vertical;
+			}
+
+			SetContentOffset(contentOffset, animated: !disableAnimation);
+			return true;
+		}
 
 		#region Touches
 

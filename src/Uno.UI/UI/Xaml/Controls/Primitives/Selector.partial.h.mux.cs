@@ -8,6 +8,7 @@ partial class Selector
 	private bool m_customValuesAllowed;
 
 	protected bool m_skipFocusSuggestion;
+	private bool m_inCollectionChange;
 
 	// Can be negative. (-1) means nothing focused.
 	private int m_focusedIndex = -1;
@@ -19,6 +20,27 @@ partial class Selector
 	// m_focusedIndex to make it easier to track when this field is read & written.
 	private protected int GetFocusedIndex() => m_focusedIndex;
 
+	private protected int GetLastFocusedIndex() => m_lastFocusedIndex;
+
+	// Called to detect whether we can scroll to the View or not.
+	private protected bool CanScrollIntoView()
+	{
+		var itemsHost = ItemsPanelRoot;
+		var isItemsHostInvalid = false;
+		var isInLiveTree = false;
+
+		if (itemsHost is not null)
+		{
+			isItemsHostInvalid = IsItemsHostInvalid;
+			if (!isItemsHostInvalid)
+			{
+				isInLiveTree = IsInLiveTree;
+			}
+		}
+
+		return !isItemsHostInvalid && isInLiveTree && !m_skipScrollIntoView && !m_inCollectionChange;
+	}
+
 	internal void SetFocusedIndex(int focusedIndex)
 	{
 		if (m_focusedIndex != focusedIndex)
@@ -27,7 +49,7 @@ partial class Selector
 		}
 	}
 
-	private void SetLastFocusedIndex(int lastFocusedIndex)
+	private protected void SetLastFocusedIndex(int lastFocusedIndex)
 	{
 		if (m_lastFocusedIndex != lastFocusedIndex)
 		{

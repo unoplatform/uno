@@ -171,7 +171,12 @@ namespace Microsoft.UI.Composition
 						subPropertyName = default;
 					}
 
-					this.SetAnimatableProperty(firstPropertyName, subPropertyName, animation.Evaluate());
+					var animationValue = animation.Evaluate();
+					this.SetAnimatableProperty(firstPropertyName, subPropertyName, animationValue);
+					if (animation is KeyFrameAnimation keyFrameAnimation)
+					{
+						keyFrameAnimation.CompletePendingStop();
+					}
 				}
 			}
 			finally

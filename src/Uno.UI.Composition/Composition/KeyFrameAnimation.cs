@@ -41,12 +41,15 @@ namespace Microsoft.UI.Composition
 
 		internal event EventHandler? Stopped;
 
+		private bool _isStopPending;
+
 		internal override object Evaluate()
 		{
 			var (value, shouldStop) = _keyframeEvaluator!.Evaluate();
 			if (shouldStop)
 			{
-				Stop();
+				base.Stop();
+				_isStopPending = true;
 			}
 
 			return value;
@@ -59,8 +62,18 @@ namespace Microsoft.UI.Composition
 
 		internal override void Stop()
 		{
+			_isStopPending = false;
 			base.Stop();
 			Stopped?.Invoke(this, EventArgs.Empty);
+		}
+
+		internal void CompletePendingStop()
+		{
+			if (_isStopPending)
+			{
+				_isStopPending = false;
+				Stopped?.Invoke(this, EventArgs.Empty);
+			}
 		}
 
 		internal void Pause()

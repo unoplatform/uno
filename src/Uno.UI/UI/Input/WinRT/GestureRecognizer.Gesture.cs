@@ -123,6 +123,37 @@ namespace Windows.UI.Input
 				TryRecognize();
 			}
 
+#if IS_UNO_UI_PROJECT
+			internal Microsoft.UI.Xaml.Input.GestureModes GetGestureFollowing(PointerPoint up)
+			{
+				if (IsCompleted)
+				{
+					return Microsoft.UI.Xaml.Input.GestureModes.None;
+				}
+
+				var previousUp = Up;
+				Up = up;
+				try
+				{
+					if (Settings.HasFlag(GestureSettings.RightTap) && IsRightTapGesture(this, out _))
+					{
+						return Microsoft.UI.Xaml.Input.GestureModes.RightTapped;
+					}
+
+					if (Settings.HasFlag(GestureSettings.Tap) && IsTapGesture(LeftButton, this))
+					{
+						return Microsoft.UI.Xaml.Input.GestureModes.Tapped;
+					}
+
+					return Microsoft.UI.Xaml.Input.GestureModes.None;
+				}
+				finally
+				{
+					Up = previousUp;
+				}
+			}
+#endif
+
 			public void PreventGestures(GestureSettings gestures)
 			{
 				if ((gestures & GestureSettings.Hold) != 0)

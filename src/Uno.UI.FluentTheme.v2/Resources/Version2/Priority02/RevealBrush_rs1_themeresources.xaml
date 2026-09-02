@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:skia="http://uno.ui/skia"
     >
 
     <ResourceDictionary.ThemeDictionaries>
@@ -647,6 +648,7 @@
     <!-- <Style TargetType="GridViewItem" x:Key="GridViewItemRevealStyle" /> -->
     <Style TargetType="ComboBoxItem" x:Key="ComboBoxItemRevealStyle" />
     <Style TargetType="SemanticZoom" x:Key="SemanticZoomRevealStyle"/>
+    <skia:Style TargetType="SemanticZoom" BasedOn="{StaticResource SemanticZoomRevealStyle}" />
     <Style TargetType="controls:DropDownButton" x:Key="DropDownButtonRevealStyle"/>
     <Style TargetType="controls:SplitButton" x:Key="SplitButtonRevealStyle" />
     <Style TargetType="ListViewItem" x:Key="ListViewItemRevealBackgroundShowsAboveContentStyle" />

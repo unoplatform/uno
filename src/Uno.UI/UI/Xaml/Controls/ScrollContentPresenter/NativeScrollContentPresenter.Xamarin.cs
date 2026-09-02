@@ -34,13 +34,29 @@ namespace Microsoft.UI.Xaml.Controls
 		public bool CanHorizontallyScroll
 		{
 			get => HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled;
-			set { }
+			set
+			{
+				if (value != CanHorizontallyScroll)
+				{
+					HorizontalScrollBarVisibility = value
+						? ScrollBarVisibility.Auto
+						: ScrollBarVisibility.Disabled;
+				}
+			}
 		}
 
 		public bool CanVerticallyScroll
 		{
 			get => VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
-			set { }
+			set
+			{
+				if (value != CanVerticallyScroll)
+				{
+					VerticalScrollBarVisibility = value
+						? ScrollBarVisibility.Auto
+						: ScrollBarVisibility.Disabled;
+				}
+			}
 		}
 
 		private double _extentWidth;

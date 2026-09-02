@@ -1,4 +1,4 @@
-﻿#if !IS_UNIT_TESTS && !UNO_REFERENCE_API
+﻿#if !IS_UNIT_TESTS && !UNO_REFERENCE_API && !__SKIA__
 using System;
 using System.Collections.Generic;
 using System.Text;

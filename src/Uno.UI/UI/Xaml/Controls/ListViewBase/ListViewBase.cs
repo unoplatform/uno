@@ -103,6 +103,18 @@ namespace Microsoft.UI.Xaml.Controls
 				// Invoke focused
 				if (focusedContainer != null)
 				{
+					var handled = false;
+					TryHandleSemanticZoomItemClick(
+						IndexFromContainer(focusedContainer),
+						focusedContainer,
+						ItemFromContainer(focusedContainer),
+						FocusState.Keyboard,
+						ref handled);
+					if (handled)
+					{
+						return true;
+					}
+
 					OnItemClicked(focusedContainer, args.KeyboardModifiers);
 				}
 
@@ -582,6 +594,18 @@ namespace Microsoft.UI.Xaml.Controls
 			var (focusedIndex, focusedContainer, focusedItem) = FocusedIndexContainerItem;
 			FocusedIndexContainerItem = (clickedIndex, clickedContainer, clickedItem);
 
+			var handled = false;
+			TryHandleSemanticZoomItemClick(
+				clickedIndex,
+				clickedContainer,
+				clickedItem,
+				FocusState.Pointer,
+				ref handled);
+			if (handled)
+			{
+				return;
+			}
+
 			if (IsItemClickEnabled)
 			{
 				// This is required for the NavigationView which references a non-public issue (#17546992 in NavigationViewList)
@@ -711,6 +735,13 @@ namespace Microsoft.UI.Xaml.Controls
 				SelectInMultipleSelection(clickedItem, clickedContainer);
 			}
 		}
+
+		partial void TryHandleSemanticZoomItemClick(
+			int clickedIndex,
+			SelectorItem clickedContainer,
+			object clickedItem,
+			FocusState focusState,
+			ref bool handled);
 
 		private void FlipSelectionInMultipleSelection(object item, SelectorItem container)
 		{

@@ -25,21 +25,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-#if false
-		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-		{
-			// Clear the native content, in case this instance is being explicitly removed from its templated parent.
-			// Note that in case the template is being recycled, the parent is not explicitly removed, but rather
-			// relies on weak references, and this method is not called.
-			if (e.NewValue is null)
-			{
-				Native.Content = null;
-			}
-
-			base.OnTemplatedParentChanged(e);
-		}
-#endif
-
 		#region SCP to Native SCP
 #pragma warning disable CA1044 // Properties should not be write only
 		public ScrollBarVisibility NativeHorizontalScrollBarVisibility
