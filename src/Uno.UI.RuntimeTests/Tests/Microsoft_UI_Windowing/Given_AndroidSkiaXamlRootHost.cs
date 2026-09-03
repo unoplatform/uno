@@ -1,4 +1,4 @@
-#if __SKIA__
+﻿#if __SKIA__
 #nullable enable
 using System;
 using System.Reflection;
@@ -69,6 +69,33 @@ public class Given_AndroidSkiaXamlRootHost
 		Assert.AreSame(keyboard, GetMember(host, "KeyboardSource"));
 	}
 
+	[TestMethod]
+	public void When_Window_Is_Shown_Then_First_Frame_Gate_Is_Open()
+	{
+		var host = GetHostForCurrentWindow();
+		Assert.IsNotNull(host);
+
+		var activity = GetMember(host, "Activity");
+		Assert.IsNotNull(activity);
+
+		// The activity can attach its content view before the wrapper subscribes to
+		// ContentViewAttachedToWindow, so the wrapper seeds its gate from this state instead.
+		// If it is false while a window is shown, ActivationPreDrawListener cancels every draw
+		// pass and the window renders nothing at all -- including never z-ordering its
+		// SurfaceView behind itself, which shows up as a permanently black app.
+		Assert.AreEqual(
+			true,
+			GetMember(activity, "IsContentViewAttachedToWindow"),
+			"A shown window must have its content view attached, or the pre-draw gate never opens.");
+
+		var wrapper = GetMember(activity, "Wrapper");
+		Assert.IsNotNull(wrapper);
+		Assert.AreEqual(
+			false,
+			GetField(wrapper, "_awaitingFirstFrame"),
+			"The first-frame gate must be released once the window has presented a frame.");
+	}
+
 	private static object? GetHostForCurrentWindow()
 	{
 		var xamlRoot = TestServices.WindowHelper.CurrentTestWindow.Content?.XamlRoot;
@@ -90,6 +117,11 @@ public class Given_AndroidSkiaXamlRootHost
 	private static object? GetMember(object instance, string name)
 		=> instance.GetType()
 			.GetProperty(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+			?.GetValue(instance);
+
+	private static object? GetField(object instance, string name)
+		=> instance.GetType()
+			.GetField(name, BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
 			?.GetValue(instance);
 
 	private static Type? FindType(string fullName)
