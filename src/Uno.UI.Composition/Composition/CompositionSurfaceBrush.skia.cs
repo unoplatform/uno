@@ -136,11 +136,11 @@ namespace Microsoft.UI.Composition
 				// Recolor the image to a single tint (its coverage kept), with opacity folded into the tint alpha.
 				var faded = global::Windows.UI.Color.FromArgb((byte)(color.A * opacity), color.R, color.G, color.B);
 				var colorFilter = session.Factory.CreateTintColorFilter(faded);
-				session.DrawImage(texture, 0, 0, ImageSampling.Linear, colorFilter, antialias: true);
+				session.DrawImage(texture, 0, 0, colorFilter, antialias: true);
 			}
 			else
 			{
-				session.DrawImage(texture, 0, 0, ImageSampling.Linear, opacity: opacity, antialias: true);
+				session.DrawImage(texture, 0, 0, opacity: opacity, antialias: true);
 			}
 			session.Restore();
 			return true;

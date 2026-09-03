@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using Windows.Foundation;
 using Windows.UI;
@@ -82,13 +82,15 @@ internal class SkiaAcrylicBrush : CompositionBrush
 
 		// Tile the noise texture across the bounds (bc used a Repeat shader; the neutral seam has no image shader,
 		// so tile explicitly). Clip so the last row/column doesn't spill past the bounds.
+		// Keep the step exactly one texture per tile: at 1:1 the grain lands on texel centres, so it stays crisp
+		// under any sampling the backend picks. Drawing this SCALED would filter the noise into mush.
 		session.Save();
 		session.ClipRect(bounds);
 		for (var y = bounds.Top; y < bounds.Bottom; y += texture.PixelHeight)
 		{
 			for (var x = bounds.Left; x < bounds.Right; x += texture.PixelWidth)
 			{
-				session.DrawImage(texture, (float)x, (float)y, ImageSampling.NearestNeighbor, effectiveOpacity, antialias: false);
+				session.DrawImage(texture, (float)x, (float)y, effectiveOpacity, antialias: false);
 			}
 		}
 		session.Restore();

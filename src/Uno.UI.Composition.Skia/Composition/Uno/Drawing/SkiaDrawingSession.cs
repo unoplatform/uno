@@ -266,11 +266,11 @@ internal class SkiaDrawingSession : IDrawingSession
 			? s.Image
 			: throw new NotSupportedException($"The Skia backend cannot draw a {texture.GetType().Name}: a texture created by another backend cannot be drawn directly.");
 
-	public void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, float opacity, bool antialias)
-		=> _canvas.DrawImage(ResolveImage(texture), x, y, ToSK(sampling), ImagePaint(antialias, opacity, colorFilter: null));
+	public void DrawImage(ITexture texture, float x, float y, float opacity, bool antialias)
+		=> _canvas.DrawImage(ResolveImage(texture), x, y, _linearSampling, ImagePaint(antialias, opacity, colorFilter: null));
 
-	public void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias)
-		=> _canvas.DrawImage(ResolveImage(texture), x, y, ToSK(sampling), ImagePaint(antialias, opacity: 1f, colorFilter));
+	public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter, bool antialias)
+		=> _canvas.DrawImage(ResolveImage(texture), x, y, _linearSampling, ImagePaint(antialias, opacity: 1f, colorFilter));
 
 	public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias)
 	{
@@ -413,6 +413,5 @@ internal class SkiaDrawingSession : IDrawingSession
 		_ => SKBlendMode.SrcOver,
 	};
 
-	private static SKSamplingOptions ToSK(ImageSampling sampling)
-		=> new(sampling == ImageSampling.Linear ? SKFilterMode.Linear : SKFilterMode.Nearest);
+	private static readonly SKSamplingOptions _linearSampling = new(SKFilterMode.Linear);
 }

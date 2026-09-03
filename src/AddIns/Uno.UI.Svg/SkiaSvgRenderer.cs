@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.IO;
@@ -93,7 +93,7 @@ internal sealed class SkiaSvgDocument : ISvgDocument
 
 		if (_fallbackTexture is { } texture)
 		{
-			session.DrawImage(texture, 0, 0, ImageSampling.Linear, antialias: true);
+			session.DrawImage(texture, 0, 0, antialias: true);
 		}
 	}
 

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 namespace Uno.UI.Composition.Drawing;
 
@@ -60,13 +60,6 @@ public enum BlendMode
 	Saturation,
 	Color,
 	Luminosity,
-}
-
-/// <summary>Image sampling quality for <see cref="IDrawingSession.DrawImage"/>.</summary>
-public enum ImageSampling
-{
-	NearestNeighbor,
-	Linear,
 }
 
 /// <summary>How a clip combines with the current clip region.</summary>

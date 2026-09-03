@@ -305,8 +305,8 @@ public class Given_SvgImageSource_ManagedEngine
 		public void DrawRoundedRectBorder(in Rect outer, Vector4 outerRadii, in Rect inner, Vector4 innerRadii, Color color, bool antialias = false) { }
 		public void DrawShadow(IGeometry silhouette, Color color, float sigmaX, float sigmaY, bool additive, bool antialias = false) { }
 		public void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth, bool antialias = false) { }
-		public void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false) { }
-		public void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false) { }
+		public void DrawImage(ITexture texture, float x, float y, float opacity = 1f, bool antialias = false) { }
+		public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter, bool antialias = false) { }
 		public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false) { }
 		public void DrawEffectBackdrop(IEffectFilter filter, float opacity) { }
 	}
