@@ -64,6 +64,13 @@ partial class Given_Clipboard // Win32 contention
 					release.Wait(TimeSpan.FromSeconds(30));
 					Win32.CloseClipboard();
 				}
+
+				// Destroying the owner keeps the content: it was set eagerly, not delay-rendered.
+				// This has to run on the thread that created the window, which is this one.
+				if (hwnd != IntPtr.Zero)
+				{
+					Win32.DestroyWindow(hwnd);
+				}
 			}
 		})
 		{
@@ -138,50 +145,16 @@ file static class Win32
 		return handle;
 	}
 
+	/// <summary>
+	/// A thread-owned window handle, which is what makes <c>OpenClipboard</c> exclusive.
+	/// </summary>
+	/// <remarks>
+	/// A built-in class already has a native window procedure, so nothing here has to outlive the
+	/// window: registering a class would mean handing user32 a pointer into a managed delegate that
+	/// the GC is free to collect the moment this returns, and a class that can never be unregistered.
+	/// </remarks>
 	public static IntPtr CreateMessageOnlyWindow()
-	{
-		var className = $"UnoClipboardContentionTest{Environment.CurrentManagedThreadId}";
-		WndProcDelegate wndProc = DefWindowProc;
-		var windowClass = new WNDCLASSEX
-		{
-			cbSize = (uint)Marshal.SizeOf<WNDCLASSEX>(),
-			lpfnWndProc = Marshal.GetFunctionPointerForDelegate(wndProc),
-			hInstance = GetModuleHandle(null!),
-			lpszClassName = className,
-		};
-
-		try
-		{
-			return RegisterClassEx(ref windowClass) is 0
-				? IntPtr.Zero
-				: CreateWindowEx(0, className, className, 0, 0, 0, 0, 0, (IntPtr)HWND_MESSAGE, IntPtr.Zero, GetModuleHandle(null!), IntPtr.Zero);
-		}
-		finally
-		{
-			// The window only has to outlive the clipboard hold, but the delegate must not be collected
-			// while the class is registered.
-			GC.KeepAlive(wndProc);
-		}
-	}
-
-	private delegate IntPtr WndProcDelegate(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam);
-
-	[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-	private struct WNDCLASSEX
-	{
-		public uint cbSize;
-		public uint style;
-		public IntPtr lpfnWndProc;
-		public int cbClsExtra;
-		public int cbWndExtra;
-		public IntPtr hInstance;
-		public IntPtr hIcon;
-		public IntPtr hCursor;
-		public IntPtr hbrBackground;
-		[MarshalAs(UnmanagedType.LPWStr)] public string? lpszMenuName;
-		[MarshalAs(UnmanagedType.LPWStr)] public string? lpszClassName;
-		public IntPtr hIconSm;
-	}
+		=> CreateWindowEx(0, "STATIC", null, 0, 0, 0, 0, 0, (IntPtr)HWND_MESSAGE, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 
 	[DllImport("user32.dll", SetLastError = true)]
 	public static extern bool OpenClipboard(IntPtr hWndNewOwner);
@@ -195,17 +168,11 @@ file static class Win32
 	[DllImport("user32.dll", SetLastError = true)]
 	public static extern IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
 
-	[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-	private static extern ushort RegisterClassEx(ref WNDCLASSEX windowClass);
+	[DllImport("user32.dll", SetLastError = true)]
+	public static extern bool DestroyWindow(IntPtr hwnd);
 
 	[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
-	private static extern IntPtr CreateWindowEx(uint exStyle, string className, string windowName, uint style, int x, int y, int width, int height, IntPtr parent, IntPtr menu, IntPtr instance, IntPtr param);
-
-	[DllImport("user32.dll", CharSet = CharSet.Unicode)]
-	private static extern IntPtr DefWindowProc(IntPtr hwnd, uint msg, IntPtr wParam, IntPtr lParam);
-
-	[DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
-	private static extern IntPtr GetModuleHandle(string moduleName);
+	private static extern IntPtr CreateWindowEx(uint exStyle, string className, string? windowName, uint style, int x, int y, int width, int height, IntPtr parent, IntPtr menu, IntPtr instance, IntPtr param);
 
 	[DllImport("kernel32.dll")]
 	private static extern IntPtr GlobalAlloc(uint flags, UIntPtr bytes);
