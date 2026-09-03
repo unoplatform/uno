@@ -11,6 +11,6 @@
 	</Target>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.Fonts.OpenSans" Version="2.4.5" Condition="'$(IsUnoHead)'=='true'" />
+		<PackageReference Include="Uno.Fonts.OpenSans" Version="2.9.4" Condition="'$(IsUnoHead)'=='true'" />
 	</ItemGroup>
 </Project>
