@@ -376,11 +376,14 @@ namespace Microsoft.UI.Xaml
 
 		public override void SetContentView(View? view)
 		{
+			IsContentViewAttachedToWindow = false;
+
 			if (view != null)
 			{
 				if (view.IsAttachedToWindow)
 				{
 					LayoutProvider.Start(view);
+					RaiseContentViewAttachedToWindow();
 				}
 				else
 				{
@@ -388,7 +391,7 @@ namespace Microsoft.UI.Xaml
 					handler = (s, e) =>
 					{
 						LayoutProvider.Start(view);
-						ContentViewAttachedToWindow?.Invoke(this, EventArgs.Empty);
+						RaiseContentViewAttachedToWindow();
 						view.ViewAttachedToWindow -= handler;
 					};
 					view.ViewAttachedToWindow += handler;
@@ -397,6 +400,19 @@ namespace Microsoft.UI.Xaml
 
 			base.SetContentView(view);
 		}
+
+		private void RaiseContentViewAttachedToWindow()
+		{
+			IsContentViewAttachedToWindow = true;
+			ContentViewAttachedToWindow?.Invoke(this, EventArgs.Empty);
+		}
+
+		/// <summary>
+		/// Whether this activity's content view is attached to the native window. The wrapper's
+		/// pre-draw gate needs the state and not just <see cref="ContentViewAttachedToWindow"/>,
+		/// because the attach can happen before the wrapper subscribes.
+		/// </summary>
+		internal bool IsContentViewAttachedToWindow { get; private set; }
 
 		internal event EventHandler? ContentViewAttachedToWindow;
 
