@@ -285,6 +285,15 @@ namespace Uno.UI
 
 		partial void InnerTopResumedActivityChanged(bool isTopResumedActivity)
 		{
+			// Becoming top-resumed is the only foreground handover between live activities: with
+			// several windows open the others stay started and resumed, so they never run the
+			// create/start/resume path that otherwise claims Current. Without this, closing the
+			// foreground window leaves Current null even though other windows are still alive.
+			if (isTopResumedActivity)
+			{
+				SetAsCurrent();
+			}
+
 			OnNativeActivationChanged(
 				isTopResumedActivity ?
 					CoreWindowActivationState.CodeActivated :
