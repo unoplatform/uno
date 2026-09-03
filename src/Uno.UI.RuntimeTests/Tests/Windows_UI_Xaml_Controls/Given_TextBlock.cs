@@ -499,6 +499,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __APPLE_UIKIT__
 		[Ignore("Fails")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task When_Multiline_Wrapping_Text_Ends_In_Too_Many_Spaces()
 		{
 			var SUT = new TextBlock
@@ -742,6 +743,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task When_Inlines_Transitively_Change()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
