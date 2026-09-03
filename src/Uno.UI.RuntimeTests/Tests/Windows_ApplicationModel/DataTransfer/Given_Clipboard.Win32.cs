@@ -38,28 +38,43 @@ partial class Given_Clipboard // Win32 contention
 	{
 		using var held = new ManualResetEventSlim();
 		using var release = new ManualResetEventSlim();
-		var holderTookClipboard = false;
+		string? holderSetupFailure = null;
 		var holderExited = false;
 
 		var holder = new Thread(() =>
 		{
 			var hwnd = Win32.CreateMessageOnlyWindow();
+			var tookClipboard = false;
 			try
 			{
 				// A NULL owner does NOT exclude other threads; a real window handle does.
-				holderTookClipboard = hwnd != IntPtr.Zero && Win32.OpenClipboard(hwnd);
-				if (!holderTookClipboard)
+				tookClipboard = hwnd != IntPtr.Zero && Win32.OpenClipboard(hwnd);
+				if (!tookClipboard)
 				{
+					holderSetupFailure = hwnd == IntPtr.Zero
+						? "the owner window could not be created"
+						: $"OpenClipboard failed with error {Marshal.GetLastWin32Error()}";
 					return;
 				}
 
-				Win32.EmptyClipboard();
-				Win32.SetClipboardData(Win32.CF_UNICODETEXT, Win32.AllocUnicodeText(ContendedText));
+				if (!Win32.EmptyClipboard())
+				{
+					holderSetupFailure = $"EmptyClipboard failed with error {Marshal.GetLastWin32Error()}";
+					return;
+				}
+
+				if (!Win32.TrySetUnicodeText(ContendedText, out var error))
+				{
+					holderSetupFailure = $"SetClipboardData failed with error {error}";
+				}
 			}
 			finally
 			{
 				held.Set();
-				if (holderTookClipboard)
+
+				// Keyed on owning the lock, never on the setup having succeeded: a holder that took the
+				// clipboard and then failed still has to release it, or it poisons every later test.
+				if (tookClipboard)
 				{
 					release.Wait(TimeSpan.FromSeconds(30));
 					Win32.CloseClipboard();
@@ -83,7 +98,10 @@ partial class Given_Clipboard // Win32 contention
 		try
 		{
 			Assert.IsTrue(held.Wait(TimeSpan.FromSeconds(30)), "the holder thread never reported back");
-			Assert.IsTrue(holderTookClipboard, "the holder thread could not take the clipboard, so there is nothing to test");
+
+			// The contention is this test's premise, so a holder that never established it has to say so:
+			// letting it fall through would fail the assertions below and read as a product regression.
+			Assert.IsNull(holderSetupFailure, $"the holder thread never held the clipboard with text on it, so there is nothing to test: {holderSetupFailure}");
 
 			// Confirm the contention is real rather than assuming it, so this cannot quietly become a
 			// test that passes because nothing was ever holding the clipboard.
@@ -127,22 +145,39 @@ partial class Given_Clipboard // Win32 contention
 /// </summary>
 file static class Win32
 {
-	public const uint CF_UNICODETEXT = 13;
 	public const int ERROR_ACCESS_DENIED = 5;
 
+	private const uint CF_UNICODETEXT = 13;
 	private const uint GMEM_MOVEABLE = 0x0002;
 	private const int HWND_MESSAGE = -3;
 
-	public static IntPtr AllocUnicodeText(string value)
+	/// <summary>
+	/// Puts <paramref name="value"/> on the clipboard, which must already be open on this thread.
+	/// </summary>
+	/// <remarks>
+	/// The allocation is freed when the call fails, because <c>SetClipboardData</c> only takes
+	/// ownership of the handle on success. Keeping both halves here is the point: a caller that
+	/// allocated separately would have to know that rule to avoid leaking on the failure path.
+	/// </remarks>
+	public static bool TrySetUnicodeText(string value, out int error)
 	{
-		// SetClipboardData requires GMEM_MOVEABLE, and takes ownership on success.
+		// SetClipboardData requires GMEM_MOVEABLE.
 		var handle = GlobalAlloc(GMEM_MOVEABLE, (UIntPtr)((value.Length + 1) * sizeof(char)));
 		var pointer = GlobalLock(handle);
 		Marshal.Copy(value.ToCharArray(), 0, pointer, value.Length);
 		Marshal.WriteInt16(pointer, value.Length * sizeof(char), 0);
 		GlobalUnlock(handle);
 
-		return handle;
+		if (SetClipboardData(CF_UNICODETEXT, handle) != IntPtr.Zero)
+		{
+			error = 0;
+			return true;
+		}
+
+		error = Marshal.GetLastWin32Error();
+		GlobalFree(handle);
+
+		return false;
 	}
 
 	/// <summary>
@@ -166,7 +201,7 @@ file static class Win32
 	public static extern bool EmptyClipboard();
 
 	[DllImport("user32.dll", SetLastError = true)]
-	public static extern IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
+	private static extern IntPtr SetClipboardData(uint uFormat, IntPtr hMem);
 
 	[DllImport("user32.dll", SetLastError = true)]
 	public static extern bool DestroyWindow(IntPtr hwnd);
@@ -176,6 +211,9 @@ file static class Win32
 
 	[DllImport("kernel32.dll")]
 	private static extern IntPtr GlobalAlloc(uint flags, UIntPtr bytes);
+
+	[DllImport("kernel32.dll")]
+	private static extern IntPtr GlobalFree(IntPtr handle);
 
 	[DllImport("kernel32.dll")]
 	private static extern IntPtr GlobalLock(IntPtr handle);
