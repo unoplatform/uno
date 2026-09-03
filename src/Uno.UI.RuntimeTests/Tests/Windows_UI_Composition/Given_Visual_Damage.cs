@@ -463,7 +463,7 @@ public class Given_Visual_Damage
 	private static IGeometry SnapshotDamage(DamageRegion damage, float frameSize = 200)
 	{
 		damage.ClampTo(new Rect(0, 0, frameSize, frameSize));
-		return damage.Detach() ?? GeometryFactory.Current.CreateRectangleGeometry(default);
+		return damage.Detach(1f) ?? GeometryFactory.Current.CreateRectangleGeometry(default);
 	}
 #endif
 }

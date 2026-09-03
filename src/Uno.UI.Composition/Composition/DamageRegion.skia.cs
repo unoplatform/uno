@@ -132,7 +132,18 @@ internal sealed class DamageRegion : IDisposable
 	}
 
 	/// <summary>Materializes and detaches the accumulated region, leaving this accumulator empty. The caller owns the result.</summary>
-	internal IGeometry? Detach()
+	/// <summary>
+	/// Materializes the accumulated rects as one geometry, snapped outward so every edge lands on a whole DEVICE
+	/// pixel at <paramref name="rasterizationScale"/>.
+	/// </summary>
+	/// <remarks>
+	/// The present path clips the clear+replay to this region INSIDE the DPI scale, so a region snapped only to
+	/// whole root pixels still lands mid-pixel at a fractional scale (at 1.5x, root x=11 is device 16.5). A clip
+	/// edge that splits a device pixel makes that pixel partially cleared and partially redrawn, which no amount of
+	/// widening fixes — the clear leaks through at partial coverage even where the content is unchanged. Snapping
+	/// here makes coverage exactly 0 or 1, so the clip needs no particular antialiasing behaviour to be correct.
+	/// </remarks>
+	internal IGeometry? Detach(float rasterizationScale)
 	{
 		if (IsEmpty)
 		{
@@ -144,6 +155,14 @@ internal sealed class DamageRegion : IDisposable
 		if (_hasOpen)
 		{
 			all.Add(_open);
+		}
+
+		if (rasterizationScale > 0f && rasterizationScale != 1f)
+		{
+			for (var i = 0; i < all.Count; i++)
+			{
+				all[i] = SnapToDevicePixels(all[i], rasterizationScale);
+			}
 		}
 
 		var region = GeometryFactory.Current.CreateRectangleGeometry(all[0]);
@@ -170,4 +189,15 @@ internal sealed class DamageRegion : IDisposable
 	public void Dispose() => Reset();
 
 	private static double Area(Rect r) => r.Width * r.Height;
+
+	// Grow to the enclosing whole-device-pixel rect: quantize to multiples of 1/scale so the edge is integral once
+	// the present path applies the DPI scale. Outward only — damage may never shrink.
+	private static Rect SnapToDevicePixels(Rect r, float scale)
+	{
+		var left = Math.Floor(r.X * scale) / scale;
+		var top = Math.Floor(r.Y * scale) / scale;
+		var right = Math.Ceiling(r.Right * scale) / scale;
+		var bottom = Math.Ceiling(r.Bottom * scale) / scale;
+		return new Rect(left, top, right - left, bottom - top);
+	}
 }
