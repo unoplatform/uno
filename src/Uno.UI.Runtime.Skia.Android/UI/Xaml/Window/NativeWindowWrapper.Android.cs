@@ -261,15 +261,18 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private WindowInsetsCompat GetWindowInsets(Activity activity)
 	{
+		// Prefer the attached window's own insets. CurrentWindowMetrics reports them as if the window
+		// filled the display, so in multi-window and freeform it misses the caption bar the system
+		// draws over the window -- and the app then lays out underneath it.
+		if (activity.Window?.DecorView is { IsAttachedToWindow: true } decorView
+			&& ViewCompat.GetRootWindowInsets(decorView) is { } rootInsets)
+		{
+			return rootInsets;
+		}
+
 		if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.R)
 		{
 			return WindowInsetsCompat.ToWindowInsetsCompat(activity.WindowManager?.CurrentWindowMetrics.WindowInsets);
-		}
-
-		var decorView = activity.Window.DecorView;
-		if (decorView.IsAttachedToWindow)
-		{
-			return ViewCompat.GetRootWindowInsets(decorView);
 		}
 
 		return null;
