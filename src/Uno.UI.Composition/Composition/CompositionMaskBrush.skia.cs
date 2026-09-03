@@ -21,11 +21,11 @@ namespace Microsoft.UI.Composition
 			// The first SaveLayer + Clear creates a clean offscreen surface for the source, without having to
 			// manage an SKSurface ourselves. The second layer with DstIn keeps only the source pixels covered
 			// by the mask's alpha, producing the masking effect. Layer paints are opaque (alpha only modulates).
-			session.SaveLayer(antialias: true);
-			session.ClipRect(bounds, antialias: true);
+			session.SaveLayer();
+			session.ClipRect(bounds);
 			session.Clear(global::Windows.UI.Colors.Transparent);
 			Source.TryPaint(session, opacity, bounds);
-			session.SaveLayerMask(antialias: true);
+			session.SaveLayerMask();
 			Mask.TryPaint(session, opacity, bounds);
 			session.Restore();
 			session.Restore();

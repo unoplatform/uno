@@ -30,7 +30,7 @@ namespace Microsoft.UI.Composition
 				return false;
 			}
 
-			session.DrawRect(bounds, shader, antialias: true);
+			session.DrawRect(bounds, shader);
 			return true;
 		}
 

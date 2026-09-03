@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -104,7 +104,7 @@ internal sealed partial class ManagedLottie
 			{
 				if (it is FillShape fill)
 				{
-					session.DrawPath(combined, WithOpacity(fill.Color.Evaluate(frame), localOpacity * fill.Opacity.Evaluate(frame) / 100f), antialias: true);
+					session.DrawPath(combined, WithOpacity(fill.Color.Evaluate(frame), localOpacity * fill.Opacity.Evaluate(frame) / 100f));
 				}
 			}
 			foreach (var it in items)
@@ -114,7 +114,7 @@ internal sealed partial class ManagedLottie
 					var w = stroke.Width.Evaluate(frame);
 					if (w > 0)
 					{
-						session.StrokePath(combined, WithOpacity(stroke.Color.Evaluate(frame), localOpacity * stroke.Opacity.Evaluate(frame) / 100f), w, antialias: true);
+						session.StrokePath(combined, WithOpacity(stroke.Color.Evaluate(frame), localOpacity * stroke.Opacity.Evaluate(frame) / 100f), w);
 					}
 				}
 			}

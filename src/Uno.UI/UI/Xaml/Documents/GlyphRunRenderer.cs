@@ -45,13 +45,13 @@ internal static class GlyphRunRenderer
 						break;
 
 					case GlyphOutline outline:
-						session.DrawPath(outline.Outline, color, antialias: true);
+						session.DrawPath(outline.Outline, color);
 						break;
 
 					case GlyphColorLayers colorLayers:
 						foreach (var layer in colorLayers.Layers)
 						{
-							session.DrawPath(layer.Geometry, layer.Color, antialias: true);
+							session.DrawPath(layer.Geometry, layer.Color);
 						}
 						break;
 
@@ -59,14 +59,14 @@ internal static class GlyphRunRenderer
 						// The colour-glyph texture is cached per (font, glyph) — the font hands back a stable pixel
 						// buffer per glyph, so its reference identity keys the texture — sparing a decode + GPU upload
 						// on every repaint. Cache-owned (not disposed here).
-						session.DrawImage(GlyphTextureCache.Get(session.Factory, image.Pixels, image.PixelWidth, image.PixelHeight), image.X, image.Y, antialias: true);
+						session.DrawImage(GlyphTextureCache.Get(session.Factory, image.Pixels, image.PixelWidth, image.PixelHeight), image.X, image.Y);
 						break;
 				}
 			}
 
 			if (pending is { Count: > 0 })
 			{
-				session.DrawPaths(global::System.Runtime.InteropServices.CollectionsMarshal.AsSpan(pending), color, antialias: true);
+				session.DrawPaths(global::System.Runtime.InteropServices.CollectionsMarshal.AsSpan(pending), color);
 			}
 		}
 		finally

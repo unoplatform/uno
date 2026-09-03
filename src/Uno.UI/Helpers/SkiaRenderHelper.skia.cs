@@ -309,7 +309,7 @@ internal static class SkiaRenderHelper
 
 			using (var panel = RoundedRectangle(new Rect(0, 0, panelWidth, panelHeight), BackgroundCornerRadius))
 			{
-				session.DrawPath(panel, isIdle ? _idleBackgroundColor : _backgroundColor, antialias: true);
+				session.DrawPath(panel, isIdle ? _idleBackgroundColor : _backgroundColor);
 			}
 
 			var col1IconX = Padding;
@@ -394,30 +394,30 @@ internal static class SkiaRenderHelper
 			var r = IconSize / 2 - 1;
 			using (var circle = Ellipse(cx, cy, r))
 			{
-				session.StrokePath(circle, _fpsIconColor, IconStrokeWidth, antialias: true);
+				session.StrokePath(circle, _fpsIconColor, IconStrokeWidth);
 			}
 			// Needle pointing up-right (~45°)
 			var needleLen = r * 0.85f;
-			session.DrawLine(new Vector2(cx, cy), new Vector2(cx + needleLen * 0.707f, cy - needleLen * 0.707f), _fpsIconColor, IconStrokeWidth, antialias: true);
+			session.DrawLine(new Vector2(cx, cy), new Vector2(cx + needleLen * 0.707f, cy - needleLen * 0.707f), _fpsIconColor, IconStrokeWidth);
 			using (var dot = Ellipse(cx, cy, 1.2f))
 			{
-				session.DrawPath(dot, _fpsIconColor, antialias: true);
+				session.DrawPath(dot, _fpsIconColor);
 			}
 		}
 
 		private static void DrawDownArrowIcon(IDrawingSession session, float x, float y)
 		{
 			var cx = x + IconSize / 2;
-			session.DrawLine(new Vector2(cx, y + 1), new Vector2(cx, y + IconSize - 2), _droppedIconColor, IconStrokeWidth, antialias: true);
-			session.DrawLine(new Vector2(cx - 3.5f, y + IconSize - 5), new Vector2(cx, y + IconSize - 1), _droppedIconColor, IconStrokeWidth, antialias: true);
-			session.DrawLine(new Vector2(cx, y + IconSize - 1), new Vector2(cx + 3.5f, y + IconSize - 5), _droppedIconColor, IconStrokeWidth, antialias: true);
+			session.DrawLine(new Vector2(cx, y + 1), new Vector2(cx, y + IconSize - 2), _droppedIconColor, IconStrokeWidth);
+			session.DrawLine(new Vector2(cx - 3.5f, y + IconSize - 5), new Vector2(cx, y + IconSize - 1), _droppedIconColor, IconStrokeWidth);
+			session.DrawLine(new Vector2(cx, y + IconSize - 1), new Vector2(cx + 3.5f, y + IconSize - 5), _droppedIconColor, IconStrokeWidth);
 		}
 
 		private static void DrawDashedFrameIcon(IDrawingSession session, float x, float y)
 		{
 			// "Frame that didn't make it to screen". The neutral layer has no dashed stroke, so this is a solid outline.
 			using var frame = Rectangle(new Rect(x + 1, y + 1, IconSize - 2, IconSize - 2));
-			session.StrokePath(frame, _unpresentedIconColor, IconStrokeWidth, antialias: true);
+			session.StrokePath(frame, _unpresentedIconColor, IconStrokeWidth);
 		}
 
 		private static void DrawFrameTimeIcon(IDrawingSession session, float x, float y)
@@ -425,10 +425,10 @@ internal static class SkiaRenderHelper
 			var rect = new Rect(x + 1, y + 4, IconSize - 2, IconSize - 8);
 			using (var outline = Rectangle(rect))
 			{
-				session.StrokePath(outline, _frameTimeIconColor, IconStrokeWidth, antialias: true);
+				session.StrokePath(outline, _frameTimeIconColor, IconStrokeWidth);
 			}
 			var inner = new Rect(rect.X + 1.5, rect.Y + 1.5, rect.Width * 0.65 - 1.5, rect.Height - 3);
-			session.DrawRect(inner, _frameTimeIconColor, antialias: true);
+			session.DrawRect(inner, _frameTimeIconColor);
 		}
 
 		private static void DrawClockIcon(IDrawingSession session, float x, float y)
@@ -438,10 +438,10 @@ internal static class SkiaRenderHelper
 			var r = IconSize / 2 - 1;
 			using (var circle = Ellipse(cx, cy, r))
 			{
-				session.StrokePath(circle, _clockIconColor, IconStrokeWidth, antialias: true);
+				session.StrokePath(circle, _clockIconColor, IconStrokeWidth);
 			}
-			session.DrawLine(new Vector2(cx, cy), new Vector2(cx, cy - r * 0.55f), _clockIconColor, IconStrokeWidth, antialias: true);
-			session.DrawLine(new Vector2(cx, cy), new Vector2(cx + r * 0.75f, cy), _clockIconColor, IconStrokeWidth, antialias: true);
+			session.DrawLine(new Vector2(cx, cy), new Vector2(cx, cy - r * 0.55f), _clockIconColor, IconStrokeWidth);
+			session.DrawLine(new Vector2(cx, cy), new Vector2(cx + r * 0.75f, cy), _clockIconColor, IconStrokeWidth);
 		}
 
 		private static IGeometry Ellipse(float cx, float cy, float r)

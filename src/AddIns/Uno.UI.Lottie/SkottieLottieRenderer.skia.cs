@@ -91,7 +91,7 @@ internal sealed class SkottieLottieRenderer : ILottieRenderer
 				}
 
 				using var texture = session.Factory.CreateTexture(width, height, pixmap.GetPixelSpan());
-				session.DrawImage(texture, (float)area.X, (float)area.Y, antialias: true);
+				session.DrawImage(texture, (float)area.X, (float)area.Y);
 			}
 		}
 

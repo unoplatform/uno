@@ -702,25 +702,25 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	public IDrawingFactory Factory => _factory;
 	public void Restore() { if (_presentScaleStack.Count > 0) { _presentScale = _presentScaleStack.Pop(); } _overlay.Restore(); }
 	public void RestoreToCount(int count) { while (_presentScaleStack.Count > count) { Restore(); } }
-	public void SaveLayer(bool antialias = false) => _overlay.SaveLayer(antialias);
-	public void SaveLayer(IColorFilter colorFilter, bool antialias = false) => _overlay.SaveLayer(colorFilter, antialias);
-	public void SaveLayerMask(bool antialias = false) => _overlay.SaveLayerMask(antialias);
+	public void SaveLayer() => _overlay.SaveLayer();
+	public void SaveLayer(IColorFilter colorFilter) => _overlay.SaveLayer(colorFilter);
+	public void SaveLayerMask() => _overlay.SaveLayerMask();
 	public void SaveLayer(IEffectFilter filter) => _overlay.SaveLayer(filter);
-	public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) => _overlay.ClipRect(rect, operation, antialias);
-	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) => _overlay.ClipRoundRect(roundRect, operation, antialias);
-	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) => _overlay.ClipPath(geometry, operation, antialias);
+	public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect) => _overlay.ClipRect(rect, operation);
+	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect) => _overlay.ClipRoundRect(roundRect, operation);
+	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect) => _overlay.ClipPath(geometry, operation);
 	public void Clear(WColor color) => _presentClear = color;
-	public void DrawRect(in Rect rect, WColor color, bool antialias = false) => _overlay.DrawRect(rect, color, antialias);
-	public void DrawRect(in Rect rect, IShader shader, bool antialias = false) => _overlay.DrawRect(rect, shader, antialias);
-	public void DrawRoundedRect(in Rect rect, Vector4 radii, WColor color, bool antialias = false) => _overlay.DrawRoundedRect(rect, radii, color, antialias);
-	public void DrawRoundedRectBorder(in Rect outer, Vector4 outerRadii, in Rect inner, Vector4 innerRadii, WColor color, bool antialias = false) => _overlay.DrawRoundedRectBorder(outer, outerRadii, inner, innerRadii, color, antialias);
-	public void DrawPath(IGeometry geometry, WColor color, bool antialias = false) => _overlay.DrawPath(geometry, color, antialias);
-	public void DrawShadow(IGeometry silhouette, WColor color, float sigmaX, float sigmaY, bool additive, bool antialias = false) => _overlay.DrawShadow(silhouette, color, sigmaX, sigmaY, additive, antialias);
-	public void StrokePath(IGeometry geometry, WColor color, float strokeWidth, bool antialias = false) => _overlay.StrokePath(geometry, color, strokeWidth, antialias);
-	public void DrawLine(Vector2 p0, Vector2 p1, WColor color, float strokeWidth, bool antialias = false) => _overlay.DrawLine(p0, p1, color, strokeWidth, antialias);
-	public void DrawImage(ITexture texture, float x, float y, float opacity = 1f, bool antialias = false) => _overlay.DrawImage(texture, x, y, opacity, antialias);
-	public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter, bool antialias = false) => _overlay.DrawImage(texture, x, y, colorFilter, antialias);
-	public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false) => _overlay.DrawImageNineSlice(texture, centerSlice, destination, centerHollow, antialias);
+	public void DrawRect(in Rect rect, WColor color) => _overlay.DrawRect(rect, color);
+	public void DrawRect(in Rect rect, IShader shader) => _overlay.DrawRect(rect, shader);
+	public void DrawRoundedRect(in Rect rect, Vector4 radii, WColor color) => _overlay.DrawRoundedRect(rect, radii, color);
+	public void DrawRoundedRectBorder(in Rect outer, Vector4 outerRadii, in Rect inner, Vector4 innerRadii, WColor color) => _overlay.DrawRoundedRectBorder(outer, outerRadii, inner, innerRadii, color);
+	public void DrawPath(IGeometry geometry, WColor color) => _overlay.DrawPath(geometry, color);
+	public void DrawShadow(IGeometry silhouette, WColor color, float sigmaX, float sigmaY, bool additive) => _overlay.DrawShadow(silhouette, color, sigmaX, sigmaY, additive);
+	public void StrokePath(IGeometry geometry, WColor color, float strokeWidth) => _overlay.StrokePath(geometry, color, strokeWidth);
+	public void DrawLine(Vector2 p0, Vector2 p1, WColor color, float strokeWidth) => _overlay.DrawLine(p0, p1, color, strokeWidth);
+	public void DrawImage(ITexture texture, float x, float y, float opacity = 1f) => _overlay.DrawImage(texture, x, y, opacity);
+	public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter) => _overlay.DrawImage(texture, x, y, colorFilter);
+	public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow) => _overlay.DrawImageNineSlice(texture, centerSlice, destination, centerHollow);
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity) => _overlay.DrawEffectBackdrop(filter, opacity);
 
 	// Renders the deferred frame with the immediate-mode overlay (e.g. the diagnostics FPS counter drawn after Replay)

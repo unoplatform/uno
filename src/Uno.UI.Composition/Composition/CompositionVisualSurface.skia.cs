@@ -16,7 +16,7 @@ namespace Microsoft.UI.Composition
 				int save = session.Save();
 				// Note that this is applied before the SourceOffset translates the canvas' matrix, so
 				var size = (this as IPaintableSurface).Size;
-				session.ClipRect(new global::Windows.Foundation.Rect(0, 0, size.X, size.Y), antialias: true);
+				session.ClipRect(new global::Windows.Foundation.Rect(0, 0, size.X, size.Y));
 
 				SourceVisual.RenderRootVisual(session, SourceOffset);
 				session.RestoreToCount(save);

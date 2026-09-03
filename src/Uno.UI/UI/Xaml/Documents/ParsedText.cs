@@ -589,7 +589,7 @@ internal readonly struct ParsedText : IParsedText
 			drawingSession.DrawLine(
 				new Vector2(x, y),
 				new Vector2(x + width, y),
-				color, thickness, antialias: true);
+				color, thickness);
 		}
 
 		static void DrawBackplate(
@@ -610,8 +610,7 @@ internal readonly struct ParsedText : IParsedText
 				new Rect(
 					new Point(MathF.Round(x, MidpointRounding.AwayFromZero), y - lineHeight),
 					new Point(MathF.Round(x + width, MidpointRounding.AwayFromZero), y)),
-				WithOpacity(background, opacity),
-				antialias: true);
+				WithOpacity(background, opacity));
 		}
 	}
 
@@ -859,7 +858,7 @@ internal readonly struct ParsedText : IParsedText
 				var rect = new Rect(new Point(left, y - line.Height), new Point(right, y));
 				if (colorOverride is { } color)
 				{
-					drawingSession.DrawRect(rect, color, antialias: true);
+					drawingSession.DrawRect(rect, color);
 				}
 				else
 				{

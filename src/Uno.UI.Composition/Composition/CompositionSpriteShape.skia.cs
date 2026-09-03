@@ -121,9 +121,9 @@ namespace Microsoft.UI.Composition
 					if (solidFill is { } sc)
 					{
 						var oc = WithOpacity(sc, session.Opacity);
-						if (brHint is { } b) { session.Session.DrawRoundedRectBorder(b.Outer, b.OuterRadii, b.Inner, b.InnerRadii, oc, antialias: true); }
-						else if (rrHint is { } h) { session.Session.DrawRoundedRect(h.Rect, h.Radii, oc, antialias: true); }
-						else { session.Session.DrawPath(fillGeometry, oc, antialias: true); }
+						if (brHint is { } b) { session.Session.DrawRoundedRectBorder(b.Outer, b.OuterRadii, b.Inner, b.InnerRadii, oc); }
+						else if (rrHint is { } h) { session.Session.DrawRoundedRect(h.Rect, h.Radii, oc); }
+						else { session.Session.DrawPath(fillGeometry, oc); }
 					}
 					// A brush that cannot paint (a fully transparent colour) must not reach the clip-and-fill path
 					// below: it would build a tessellated stencil/depth mask per shape per frame only for TryPaint
@@ -135,19 +135,19 @@ namespace Microsoft.UI.Composition
 						// bounds. When the shape is a rounded rect (the hint), clip ANALYTICALLY (ClipRoundRect, 0
 						// draws) instead of a tessellated path clip (stencil + depth draws per visual).
 						session.Session.Save();
-						if (rrHint is { } hc) { session.Session.ClipRoundRect(ToRoundRect(hc.Rect, hc.Radii), antialias: true); }
+						if (rrHint is { } hc) { session.Session.ClipRoundRect(ToRoundRect(hc.Rect, hc.Radii)); }
 						else if (brHint is { } bc)
 						{
 							// A rounded border ring also clips analytically: intersect the outer round rect, exclude the
 							// inner one. Matters for gradient borders (Fluent's ControlElevationBorderBrush puts one on
 							// every Button): a tessellated ring clip costs a stencil mask per visual and defeats coalescing.
-							session.Session.ClipRoundRect(ToRoundRect(bc.Outer, bc.OuterRadii), antialias: true);
+							session.Session.ClipRoundRect(ToRoundRect(bc.Outer, bc.OuterRadii));
 							if (bc.Inner.Width > 0 && bc.Inner.Height > 0)
 							{
-								session.Session.ClipRoundRect(ToRoundRect(bc.Inner, bc.InnerRadii), ClipOperation.Difference, antialias: true);
+								session.Session.ClipRoundRect(ToRoundRect(bc.Inner, bc.InnerRadii), ClipOperation.Difference);
 							}
 						}
-						else { session.Session.ClipPath(fillGeometry, antialias: true); }
+						else { session.Session.ClipPath(fillGeometry); }
 						fill.TryPaint(session.Session, session.Opacity, finalFillGeometryWithTransformations.Bounds);
 						session.Session.Restore();
 					}
@@ -162,7 +162,7 @@ namespace Microsoft.UI.Composition
 						&& StrokeLineJoin == CompositionStrokeLineJoin.Miter
 						&& StrokeStartCap == CompositionStrokeCap.Flat && StrokeEndCap == CompositionStrokeCap.Flat)
 					{
-						session.Session.StrokePath(geometryWithTransformations, WithOpacity(nativeStrokeColor.Color, session.Opacity), StrokeThickness, antialias: true);
+						session.Session.StrokePath(geometryWithTransformations, WithOpacity(nativeStrokeColor.Color, session.Opacity), StrokeThickness);
 						return;
 					}
 
@@ -171,12 +171,12 @@ namespace Microsoft.UI.Composition
 					if (stroke is CompositionColorBrush strokeColor && stroke.CanPaint())
 					{
 						// Solid stroke: fill the stroke geometry directly (same reasoning as the solid fill above).
-						session.Session.DrawPath(strokeGeometry, WithOpacity(strokeColor.Color, session.Opacity), antialias: true);
+						session.Session.DrawPath(strokeGeometry, WithOpacity(strokeColor.Color, session.Opacity));
 					}
 					else if (stroke.CanPaint())
 					{
 						session.Session.Save();
-						session.Session.ClipPath(strokeGeometry, antialias: true);
+						session.Session.ClipPath(strokeGeometry);
 						stroke.TryPaint(session.Session, session.Opacity, strokeGeometry.Bounds);
 						session.Session.Restore();
 					}

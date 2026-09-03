@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Numerics;
@@ -46,7 +46,7 @@ internal class AlphaMaskSurface : CompositionObject, ICompositionSurface, IPaint
 		_alphaMaskColorFilter ??= session.Factory.CreateColorMatrixColorFilter(AlphaMaskColorMatrix);
 
 		// Apply the alpha mask color filter to convert all colors to white while preserving the alpha channel.
-		session.SaveLayer(_alphaMaskColorFilter!, antialias: true);
+		session.SaveLayer(_alphaMaskColorFilter!);
 
 		// Render the visual at its natural position
 		visual.RenderRootVisual(session, Vector2.Zero);
