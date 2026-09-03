@@ -156,8 +156,9 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 
 		try
 		{
-			var content = Clipboard.GetContent();
-			CanPasteClipboardContent = content?.Contains(StandardDataFormats.Text) ?? false;
+			// Deliberately not GetContent(): this runs on every focus change, and reading the
+			// clipboard is user-visible on Android.
+			CanPasteClipboardContent = Clipboard.ContainsText();
 		}
 		catch
 		{
