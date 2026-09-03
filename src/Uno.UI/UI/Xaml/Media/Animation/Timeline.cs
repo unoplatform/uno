@@ -95,7 +95,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 
 		public static DependencyProperty RepeatBehaviorProperty { get; } =
-			DependencyProperty.Register("RepeatBehavior", typeof(RepeatBehavior), typeof(Timeline), new FrameworkPropertyMetadata(new RepeatBehavior()));
+			DependencyProperty.Register("RepeatBehavior", typeof(RepeatBehavior), typeof(Timeline), new FrameworkPropertyMetadata(new RepeatBehavior(1)));
 
 
 		void ITimeline.RegisterListener(ITimelineListener listener)
@@ -424,6 +424,44 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		void IThemeChangeAware.OnThemeChanged() => OnThemeChanged();
 
 		private protected virtual void OnThemeChanged() { }
+
+		#region TimeManager integration (WinUI CTimeline)
+
+		/// <summary>
+		/// Whether this timeline is in an active state (Active, Filling or Paused).
+		/// Used by TimeManager to determine when to remove a timeline from the active list.
+		/// MUX: CTimeline::IsInActiveState()
+		/// </summary>
+		internal virtual bool IsInActiveState =>
+			State == TimelineState.Active || State == TimelineState.Filling || State == TimelineState.Paused;
+
+		/// <summary>
+		/// Called by TimeManager.Tick() or parent Storyboard to advance state.
+		/// Animation types override to call ComputeStateBase() (timing) + UpdateAnimation() (values).
+		/// Storyboard overrides for timing delta management and child propagation.
+		/// MUX: CTimeline::ComputeState(parentParams, hasNoExternalReferences)
+		/// </summary>
+		internal virtual void ComputeState(ComputeStateParams parentParams)
+		{
+		}
+
+		/// <summary>
+		/// Called when this timeline is added to the TimeManager's active list.
+		/// MUX: CTimeline::OnAddToTimeManager()
+		/// </summary>
+		internal virtual void OnAddToTimeManager()
+		{
+		}
+
+		/// <summary>
+		/// Called when this timeline is removed from the TimeManager's active list.
+		/// MUX: CTimeline::OnRemoveFromTimeManager()
+		/// </summary>
+		internal virtual void OnRemoveFromTimeManager()
+		{
+		}
+
+		#endregion
 
 		// Finalization must not be suppressed here: it would also skip the inherited ~DependencyObject,
 		// leaving the binder state and its pooled references unreleased. The flag skips only the

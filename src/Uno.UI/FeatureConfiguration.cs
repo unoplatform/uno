@@ -491,6 +491,20 @@ namespace Uno.UI
 			public static bool FailOnUnknownProperties { get; set; }
 		}
 
+		public static class Timeline
+		{
+			/// <summary>
+			/// When true (the default), XAML animations on Skia targets are driven by the central
+			/// TimeManager (ported from WinUI's CTimeManager), which ticks all animations before
+			/// layout. When false, animations use the legacy per-animation timer mechanism.
+			/// </summary>
+			/// <remarks>
+			/// This flag only affects Skia targets; other targets always use the legacy path.
+			/// Default: true.
+			/// </remarks>
+			public static bool UseTimeManager { get; set; } = true;
+		}
+
 		public static class Rendering
 		{
 			/// <summary>

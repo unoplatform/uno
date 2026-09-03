@@ -1,0 +1,153 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Media_Animation.Showcase.PointAnimationShowcase"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <Style x:Key="ShowcaseSectionHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,16,0,4" />
+        </Style>
+        <Style x:Key="ShowcaseDescription" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Opacity" Value="0.75" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+        </Style>
+
+        <!--  Auto-running keyframe animation in XAML  -->
+        <Storyboard x:Name="GeometryCenterStoryboard" RepeatBehavior="Forever">
+            <PointAnimationUsingKeyFrames
+                EnableDependentAnimation="True"
+                Storyboard.TargetName="OrbitEllipseGeometry"
+                Storyboard.TargetProperty="Center">
+                <LinearPointKeyFrame KeyTime="0:0:0" Value="100,100" />
+                <EasingPointKeyFrame KeyTime="0:0:1" Value="220,100">
+                    <EasingPointKeyFrame.EasingFunction>
+                        <SineEase EasingMode="EaseInOut" />
+                    </EasingPointKeyFrame.EasingFunction>
+                </EasingPointKeyFrame>
+                <EasingPointKeyFrame KeyTime="0:0:2" Value="220,180">
+                    <EasingPointKeyFrame.EasingFunction>
+                        <SineEase EasingMode="EaseInOut" />
+                    </EasingPointKeyFrame.EasingFunction>
+                </EasingPointKeyFrame>
+                <EasingPointKeyFrame KeyTime="0:0:3" Value="100,180">
+                    <EasingPointKeyFrame.EasingFunction>
+                        <SineEase EasingMode="EaseInOut" />
+                    </EasingPointKeyFrame.EasingFunction>
+                </EasingPointKeyFrame>
+                <EasingPointKeyFrame KeyTime="0:0:4" Value="100,100">
+                    <EasingPointKeyFrame.EasingFunction>
+                        <SineEase EasingMode="EaseInOut" />
+                    </EasingPointKeyFrame.EasingFunction>
+                </EasingPointKeyFrame>
+            </PointAnimationUsingKeyFrames>
+        </Storyboard>
+    </Page.Resources>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="12">
+            <TextBlock
+                FontSize="28"
+                FontWeight="Bold"
+                Text="PointAnimation Showcase" />
+            <TextBlock
+                MaxWidth="700"
+                HorizontalAlignment="Left"
+                Style="{StaticResource ShowcaseDescription}"
+                Text="PointAnimation interpolates a System.Foundation.Point. Frequently used to animate the Center of an EllipseGeometry or a control point of a path." />
+
+            <!--  PointAnimation From → To  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="1. PointAnimation From → To" />
+            <TextBlock Style="{StaticResource ShowcaseDescription}" Text="Linearly animates the Center of an EllipseGeometry." />
+            <Border
+                Width="320"
+                Height="200"
+                HorizontalAlignment="Left"
+                Background="{ThemeResource SystemListLowColor}"
+                CornerRadius="8">
+                <Path Fill="{ThemeResource SystemAccentColor}" Stroke="{ThemeResource SystemBaseHighColor}">
+                    <Path.Data>
+                        <EllipseGeometry
+                            x:Name="LinearEllipseGeometry"
+                            Center="60,100"
+                            RadiusX="20"
+                            RadiusY="20" />
+                    </Path.Data>
+                </Path>
+            </Border>
+            <Button Click="RunLinearPoint" Content="Run From/To" />
+
+            <!--  PointAnimationUsingKeyFrames (square loop)  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="2. PointAnimationUsingKeyFrames (orbit loop)" />
+            <TextBlock Style="{StaticResource ShowcaseDescription}" Text="Continuously animates the Center of an EllipseGeometry around a square path using LinearPointKeyFrame and EasingPointKeyFrame (SineEase EaseInOut)." />
+            <Border
+                Width="320"
+                Height="280"
+                HorizontalAlignment="Left"
+                Background="{ThemeResource SystemListLowColor}"
+                CornerRadius="8">
+                <Path Fill="MediumSeaGreen">
+                    <Path.Data>
+                        <EllipseGeometry
+                            x:Name="OrbitEllipseGeometry"
+                            Center="100,100"
+                            RadiusX="14"
+                            RadiusY="14" />
+                    </Path.Data>
+                </Path>
+            </Border>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Click="StartGeometryLoop" Content="Start orbit" />
+                <Button Click="StopGeometryLoop" Content="Stop orbit" />
+            </StackPanel>
+
+            <!--  Discrete vs Linear vs Spline  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="3. Discrete / Linear / Spline keyframes" />
+            <TextBlock Style="{StaticResource ShowcaseDescription}" Text="Three points travel the same start and end. Discrete jumps; Linear interpolates; Spline curves with KeySpline=&quot;0.8,0,0.2,1&quot; (snappy ease)." />
+            <Border
+                Width="320"
+                Height="120"
+                HorizontalAlignment="Left"
+                Background="{ThemeResource SystemListLowColor}"
+                CornerRadius="8">
+                <Canvas>
+                    <Path Fill="OrangeRed">
+                        <Path.Data>
+                            <EllipseGeometry
+                                x:Name="DiscreteGeo"
+                                Center="20,30"
+                                RadiusX="10"
+                                RadiusY="10" />
+                        </Path.Data>
+                    </Path>
+                    <Path Fill="DodgerBlue">
+                        <Path.Data>
+                            <EllipseGeometry
+                                x:Name="LinearGeo"
+                                Center="20,60"
+                                RadiusX="10"
+                                RadiusY="10" />
+                        </Path.Data>
+                    </Path>
+                    <Path Fill="MediumPurple">
+                        <Path.Data>
+                            <EllipseGeometry
+                                x:Name="SplineGeo"
+                                Center="20,90"
+                                RadiusX="10"
+                                RadiusY="10" />
+                        </Path.Data>
+                    </Path>
+                </Canvas>
+            </Border>
+            <Button Click="RunKeyFrameComparison" Content="Run all three" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>

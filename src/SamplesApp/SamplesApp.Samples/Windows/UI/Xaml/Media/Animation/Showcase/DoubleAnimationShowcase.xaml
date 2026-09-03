@@ -1,0 +1,242 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Media_Animation.Showcase.DoubleAnimationShowcase"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <Style x:Key="ShowcaseSectionHeader" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,16,0,4" />
+        </Style>
+        <Style x:Key="ShowcaseDescription" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Opacity" Value="0.75" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+        </Style>
+    </Page.Resources>
+
+    <ScrollViewer>
+        <StackPanel Margin="20" Spacing="12">
+            <TextBlock
+                FontSize="28"
+                FontWeight="Bold"
+                Text="DoubleAnimation Showcase" />
+            <TextBlock
+                MaxWidth="700"
+                HorizontalAlignment="Left"
+                Style="{StaticResource ShowcaseDescription}"
+                Text="Demonstrates the full range of DoubleAnimation features: From/To/By, BeginTime, AutoReverse, RepeatBehavior, FillBehavior, and SpeedRatio. Each section is independently triggerable." />
+
+            <!--  From/To  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="1. From → To" />
+            <TextBlock Style="{StaticResource ShowcaseDescription}" Text="The Width animates linearly from 50 → 300 over 1.5 seconds." />
+            <Grid Height="60">
+                <Border
+                    x:Name="FromToBar"
+                    Width="50"
+                    Height="32"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="{ThemeResource SystemAccentColor}"
+                    CornerRadius="4" />
+            </Grid>
+            <Button Click="RunFromTo" Content="Run From/To" />
+
+            <!--  By  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="2. By (relative)" />
+            <TextBlock Style="{StaticResource ShowcaseDescription}" Text="Each click adds 50px to the current Width, so animations stack relative to the live value." />
+            <Grid Height="60">
+                <Border
+                    x:Name="ByBar"
+                    Width="50"
+                    Height="32"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="MediumSeaGreen"
+                    CornerRadius="4" />
+            </Grid>
+            <Button Click="RunBy" Content="Run By (+50)" />
+
+            <!--  BeginTime  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="3. BeginTime" />
+            <TextBlock Style="{StaticResource ShowcaseDescription}" Text="Three boxes start the same animation but with staggered BeginTime values (0, 0.4s, 0.8s)." />
+            <Grid Height="80">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Spacing="6">
+                    <Border
+                        x:Name="StaggerA"
+                        Width="40"
+                        Height="20"
+                        HorizontalAlignment="Left"
+                        Background="Coral"
+                        CornerRadius="4" />
+                    <Border
+                        x:Name="StaggerB"
+                        Width="40"
+                        Height="20"
+                        HorizontalAlignment="Left"
+                        Background="DarkOrange"
+                        CornerRadius="4" />
+                    <Border
+                        x:Name="StaggerC"
+                        Width="40"
+                        Height="20"
+                        HorizontalAlignment="Left"
+                        Background="OrangeRed"
+                        CornerRadius="4" />
+                </StackPanel>
+            </Grid>
+            <Button Click="RunBeginTime" Content="Run staggered" />
+
+            <!--  AutoReverse  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="4. AutoReverse" />
+            <TextBlock Style="{StaticResource ShowcaseDescription}" Text="Animation goes 0 → 200 → 0 in a single iteration." />
+            <Grid Height="60">
+                <Border
+                    x:Name="AutoReverseBar"
+                    Width="40"
+                    Height="32"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Background="MediumPurple"
+                    CornerRadius="4">
+                    <Border.RenderTransform>
+                        <TranslateTransform x:Name="AutoReverseTransform" />
+                    </Border.RenderTransform>
+                </Border>
+            </Grid>
+            <Button Click="RunAutoReverse" Content="Run AutoReverse" />
+
+            <!--  RepeatBehavior  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="5. RepeatBehavior" />
+            <TextBlock Style="{StaticResource ShowcaseDescription}" Text="Three modes: Count(3), Duration(2s), and Forever (use Stop to halt)." />
+            <Grid Height="120">
+                <StackPanel Spacing="6">
+                    <Border
+                        x:Name="RepeatCountBar"
+                        Width="40"
+                        Height="20"
+                        HorizontalAlignment="Left"
+                        Background="DodgerBlue"
+                        CornerRadius="4">
+                        <Border.RenderTransform>
+                            <TranslateTransform x:Name="RepeatCountTransform" />
+                        </Border.RenderTransform>
+                    </Border>
+                    <Border
+                        x:Name="RepeatDurationBar"
+                        Width="40"
+                        Height="20"
+                        HorizontalAlignment="Left"
+                        Background="SteelBlue"
+                        CornerRadius="4">
+                        <Border.RenderTransform>
+                            <TranslateTransform x:Name="RepeatDurationTransform" />
+                        </Border.RenderTransform>
+                    </Border>
+                    <Border
+                        x:Name="RepeatForeverBar"
+                        Width="40"
+                        Height="20"
+                        HorizontalAlignment="Left"
+                        Background="MidnightBlue"
+                        CornerRadius="4">
+                        <Border.RenderTransform>
+                            <TranslateTransform x:Name="RepeatForeverTransform" />
+                        </Border.RenderTransform>
+                    </Border>
+                </StackPanel>
+            </Grid>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Click="RunRepeatBehavior" Content="Run all three" />
+                <Button Click="StopRepeatForever" Content="Stop Forever" />
+            </StackPanel>
+
+            <!--  FillBehavior  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="6. FillBehavior" />
+            <TextBlock Style="{StaticResource ShowcaseDescription}" Text="HoldEnd freezes at the final value; Stop returns to the original value when the animation completes." />
+            <Grid Height="80">
+                <StackPanel Spacing="6">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock VerticalAlignment="Center" Text="HoldEnd:" />
+                        <Border
+                            x:Name="HoldEndBar"
+                            Width="40"
+                            Height="20"
+                            Background="Teal"
+                            CornerRadius="4">
+                            <Border.RenderTransform>
+                                <TranslateTransform x:Name="HoldEndTransform" />
+                            </Border.RenderTransform>
+                        </Border>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock VerticalAlignment="Center" Text="Stop:" />
+                        <Border
+                            x:Name="StopBar"
+                            Width="40"
+                            Height="20"
+                            Background="DarkCyan"
+                            CornerRadius="4">
+                            <Border.RenderTransform>
+                                <TranslateTransform x:Name="StopTransform" />
+                            </Border.RenderTransform>
+                        </Border>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+            <Button Click="RunFillBehavior" Content="Run both" />
+
+            <!--  SpeedRatio  -->
+            <TextBlock Style="{StaticResource ShowcaseSectionHeader}" Text="7. SpeedRatio" />
+            <TextBlock Style="{StaticResource ShowcaseDescription}" Text="Same animation duration but different SpeedRatio (0.25x, 1x, 4x). Slower bar finishes last." />
+            <Grid Height="80">
+                <StackPanel Spacing="6">
+                    <Border
+                        x:Name="SpeedSlowBar"
+                        Width="40"
+                        Height="20"
+                        HorizontalAlignment="Left"
+                        Background="LightSlateGray"
+                        CornerRadius="4">
+                        <Border.RenderTransform>
+                            <TranslateTransform x:Name="SpeedSlowTransform" />
+                        </Border.RenderTransform>
+                    </Border>
+                    <Border
+                        x:Name="SpeedNormalBar"
+                        Width="40"
+                        Height="20"
+                        HorizontalAlignment="Left"
+                        Background="SlateGray"
+                        CornerRadius="4">
+                        <Border.RenderTransform>
+                            <TranslateTransform x:Name="SpeedNormalTransform" />
+                        </Border.RenderTransform>
+                    </Border>
+                    <Border
+                        x:Name="SpeedFastBar"
+                        Width="40"
+                        Height="20"
+                        HorizontalAlignment="Left"
+                        Background="DarkSlateGray"
+                        CornerRadius="4">
+                        <Border.RenderTransform>
+                            <TranslateTransform x:Name="SpeedFastTransform" />
+                        </Border.RenderTransform>
+                    </Border>
+                </StackPanel>
+            </Grid>
+            <Button Click="RunSpeedRatio" Content="Run SpeedRatio" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>
