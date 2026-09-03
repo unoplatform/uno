@@ -67,7 +67,11 @@ internal sealed class AtspiServer
 				RoleName = AtspiDbus.ApplicationRoleName
 			});
 			connection.AddMethodHandler(new NodeHandler(server));
-			server._rootParent = await server.EmbedAsync();
+
+			// The app root's parent is the AT-SPI registry desktop; the Embed reply
+			// echoes it back but we do not depend on it.
+			server._rootParent = new AtspiReference(AtspiDbus.RegistryService, AtspiDbus.RootPath);
+			await server.EmbedAsync();
 
 			if (server.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -82,7 +86,7 @@ internal sealed class AtspiServer
 
 			if (typeof(AtspiServer).Log().IsEnabled(LogLevel.Debug))
 			{
-				typeof(AtspiServer).Log().Debug($"Unable to start AT-SPI bridge: {ex.Message}");
+				typeof(AtspiServer).Log().Debug($"Unable to start AT-SPI bridge: {ex}");
 			}
 
 			return null;
@@ -112,18 +116,10 @@ internal sealed class AtspiServer
 		using var sessionConnection = new DBusConnection(sessionBusAddress);
 		await sessionConnection.ConnectAsync();
 
-		MessageBuffer request;
-		using (var writer = sessionConnection.GetMessageWriter())
-		{
-			writer.WriteMethodCallHeader(
-				AtspiDbus.BusService,
-				AtspiDbus.BusPath,
-				AtspiDbus.BusInterface,
-				AtspiDbus.GetAddressMethod,
-				AtspiDbus.EmptySignature,
-				MessageFlags.None);
-			request = writer.CreateMessage();
-		}
+		// MessageWriter is a ref struct in Tmds.DBus.Protocol 0.92 and must not be
+		// disposed before the call is sent, or the message's pooled buffer is
+		// reclaimed while still in flight.
+		var request = BuildGetAddressMessage(sessionConnection);
 
 		return await sessionConnection.CallMethodAsync<string>(
 			request,
@@ -131,31 +127,37 @@ internal sealed class AtspiServer
 			null);
 	}
 
-	private async Task<AtspiReference> EmbedAsync()
+	private static MessageBuffer BuildGetAddressMessage(DBusConnection sessionConnection)
 	{
-		MessageBuffer request;
-		using (var writer = _connection.GetMessageWriter())
-		{
-			writer.WriteMethodCallHeader(
-				AtspiDbus.RegistryService,
-				AtspiDbus.RootPath,
-				AtspiDbus.SocketInterface,
-				AtspiDbus.EmbedMethod,
-				AtspiDbus.ReferenceSignature,
-				MessageFlags.None);
-			WriteReference(writer, new AtspiReference(_uniqueName, AtspiDbus.RootPath));
-			request = writer.CreateMessage();
-		}
+		var writer = sessionConnection.GetMessageWriter();
+		writer.WriteMethodCallHeader(
+			AtspiDbus.BusService,
+			AtspiDbus.BusPath,
+			AtspiDbus.BusInterface,
+			AtspiDbus.GetAddressMethod,
+			AtspiDbus.EmptySignature,
+			MessageFlags.None);
+		return writer.CreateMessage();
+	}
 
-		return await _connection.CallMethodAsync<AtspiReference>(
-			request,
-			static (message, _) =>
-			{
-				var reader = message.GetBodyReader();
-				reader.AlignStruct();
-				return new AtspiReference(reader.ReadString(), reader.ReadObjectPathAsString());
-			},
-			null);
+	private async Task EmbedAsync()
+	{
+		var request = BuildEmbedMessage();
+		await _connection.CallMethodAsync(request);
+	}
+
+	private MessageBuffer BuildEmbedMessage()
+	{
+		var writer = _connection.GetMessageWriter();
+		writer.WriteMethodCallHeader(
+			AtspiDbus.RegistryService,
+			AtspiDbus.RootPath,
+			AtspiDbus.SocketInterface,
+			AtspiDbus.EmbedMethod,
+			AtspiDbus.ReferenceSignature,
+			MessageFlags.None);
+		WriteReference(ref writer, new AtspiReference(_uniqueName, AtspiDbus.RootPath));
+		return writer.CreateMessage();
 	}
 
 	private AtspiNode? FindNode(string path)
@@ -204,7 +206,7 @@ internal sealed class AtspiServer
 		return Contains(node, x, y) ? node : null;
 	}
 
-	private static void WriteReference(MessageWriter writer, AtspiReference reference)
+	private static void WriteReference(ref MessageWriter writer, AtspiReference reference)
 	{
 		writer.WriteStructureStart();
 		writer.WriteString(reference.Service);
@@ -228,21 +230,55 @@ internal sealed class AtspiServer
 			_server = server;
 		}
 
-		public string Path => AtspiDbus.AccessibleBasePath;
+		// Registered at the AT-SPI root so every incoming call under /org/a11y/atspi
+		// (accessible nodes, but also cache/registry callbacks the daemon makes after
+		// Embed) reaches this handler and gets a well-formed reply. Tmds.DBus.Protocol
+		// 0.92 tears down the whole connection if an incoming call hits no handler, so
+		// leaving sibling paths (e.g. .../cache) uncovered drops the a11y connection.
+		public string Path => AtspiDbus.RootObjectPath;
 
 		public bool HandlesChildPaths => true;
 
 		public ValueTask HandleMethodAsync(MethodContext context)
 		{
+			// A handler exception would tear down the whole AT-SPI connection with it,
+			// so a malformed or unexpected client request must never propagate.
+			try
+			{
+				HandleMethodCore(context);
+			}
+			catch (Exception ex)
+			{
+				if (_server.Log().IsEnabled(LogLevel.Debug))
+				{
+					_server.Log().Debug($"AT-SPI request {context.Request.InterfaceAsString}.{context.Request.MemberAsString} on '{context.Request.PathAsString}' failed: {ex}");
+				}
+
+				if (!context.ReplySent && !context.NoReplyExpected)
+				{
+					context.ReplyUnknownMethodError();
+				}
+			}
+
+			return default;
+		}
+
+		private void HandleMethodCore(MethodContext context)
+		{
+			var iface = context.Request.InterfaceAsString ?? AtspiDbus.EmptyString;
+			var member = context.Request.MemberAsString ?? AtspiDbus.EmptyString;
+
+			if (_server.Log().IsEnabled(LogLevel.Trace))
+			{
+				_server.Log().Trace($"AT-SPI request: {iface}.{member} on '{context.Request.PathAsString}'");
+			}
+
 			var node = context.Request.PathAsString is { } requestPath ? _server.FindNode(requestPath) : null;
 			if (node is null)
 			{
 				context.ReplyUnknownMethodError();
-				return default;
+				return;
 			}
-
-			var iface = context.Request.InterfaceAsString ?? AtspiDbus.EmptyString;
-			var member = context.Request.MemberAsString ?? AtspiDbus.EmptyString;
 
 			switch (iface)
 			{
@@ -265,8 +301,6 @@ internal sealed class AtspiServer
 					context.ReplyUnknownMethodError();
 					break;
 			}
-
-			return default;
 		}
 
 		private void Accessible(MethodContext context, AtspiNode node, string member)
@@ -399,7 +433,10 @@ internal sealed class AtspiServer
 					break;
 				case (AtspiDbus.AccessibleInterface, AtspiDbus.ParentProperty):
 					writer.WriteSignature(AtspiDbus.ReferenceSignature);
-					WriteReference(writer, _server.GetParentReference(node));
+					var parentRef = _server.GetParentReference(node);
+					writer.WriteStructureStart();
+					writer.WriteString(parentRef.Service);
+					writer.WriteObjectPath(parentRef.Path);
 					break;
 				case (AtspiDbus.ApplicationInterface, AtspiDbus.LocaleProperty):
 					writer.WriteVariantString(AtspiDbus.DefaultLocale);
@@ -434,7 +471,10 @@ internal sealed class AtspiServer
 			var array = writer.WriteArrayStart(DBusType.Struct);
 			foreach (var child in node.Children)
 			{
-				WriteReference(writer, _server.GetReference(child));
+				var childRef = _server.GetReference(child);
+				writer.WriteStructureStart();
+				writer.WriteString(childRef.Service);
+				writer.WriteObjectPath(childRef.Path);
 			}
 			writer.WriteArrayEnd(array);
 			context.Reply(writer.CreateMessage());
@@ -565,7 +605,9 @@ internal sealed class AtspiServer
 		private static void ReplyReference(MethodContext context, AtspiReference reference)
 		{
 			using var writer = context.CreateReplyWriter(AtspiDbus.ReferenceSignature);
-			WriteReference(writer, reference);
+			writer.WriteStructureStart();
+			writer.WriteString(reference.Service);
+			writer.WriteObjectPath(reference.Path);
 			context.Reply(writer.CreateMessage());
 		}
 
@@ -599,6 +641,7 @@ internal sealed class AtspiServer
 	/// </summary>
 	private static class AtspiDbus
 	{
+		public const string RootObjectPath = "/org/a11y/atspi";
 		public const string AccessibleBasePath = "/org/a11y/atspi/accessible";
 		public const string RootPath = "/org/a11y/atspi/accessible/root";
 		public const string NullPath = "/org/a11y/atspi/null";
