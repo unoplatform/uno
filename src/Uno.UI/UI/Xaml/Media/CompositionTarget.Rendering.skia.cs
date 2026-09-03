@@ -251,7 +251,14 @@ public partial class CompositionTarget
 			_phaseFinishTicks += phaseT2 - phaseT1;
 		}
 		frameDamage.ClampTo(frameRect);
-		var renderedFrame = (frame, path, frameDamage.Detach());
+		// Snapped with the scale the present path will apply. If the scale changes before the frame is presented,
+		// that present sees `resized` and skips the damage clip entirely, so a stale value here cannot be used.
+		float damageScale;
+		lock (_xamlRootBoundsGate)
+		{
+			damageScale = _xamlRootRasterizationScale;
+		}
+		var renderedFrame = (frame, path, frameDamage.Detach(damageScale));
 		var previousFrame = default((IRenderRecord frame, IGeometry nativeElementClipPath, IGeometry? damage)?);
 		lock (_frameGate)
 		{
