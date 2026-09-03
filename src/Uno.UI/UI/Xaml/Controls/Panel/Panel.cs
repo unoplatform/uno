@@ -20,11 +20,8 @@ namespace Microsoft.UI.Xaml.Controls;
 [Markup.ContentProperty(Name = "Children")]
 public partial class Panel : FrameworkElement, IPanel
 {
-#if !UNO_HAS_BORDER_VISUAL
-	private readonly BorderLayerRenderer _borderRenderer;
-#endif
 
-#if IS_UNIT_TESTS || UNO_REFERENCE_API
+#if UNO_REFERENCE_API
 	private new UIElementCollection _children;
 #else
 	private UIElementCollection _children;
@@ -34,20 +31,12 @@ public partial class Panel : FrameworkElement, IPanel
 
 	public Panel()
 	{
-#if !UNO_HAS_BORDER_VISUAL
-		_borderRenderer = new BorderLayerRenderer(this);
-#endif
 		_children = new UIElementCollection(this);
 	}
 
-#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-#endif
 	public BrushTransition BackgroundTransition { get; set; }
 
-#if UNO_HAS_BORDER_VISUAL
 	private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
-#endif
 
 	private protected override void OnLoaded()
 	{
@@ -179,57 +168,50 @@ public partial class Panel : FrameworkElement, IPanel
 
 	protected virtual void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateCornerRadius();
-#else
-		UpdateBorder();
-#endif
 	}
 
 	protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		// TODO: https://github.com/unoplatform/uno/issues/16705
-#else
-		UpdateBorder();
-#endif
 	}
 
 	protected virtual void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBorderThickness();
-#else
-		UpdateBorder();
-#endif
 	}
 
 	protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 	{
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBorderBrush();
-#else
-		UpdateBorder();
-#endif
 	}
 
 	private protected override Thickness GetBorderThickness() => BorderThicknessInternal;
 
 	internal override bool CanHaveChildren() => true;
 
-	protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+	public Brush Background
 	{
-#if UNO_HAS_BORDER_VISUAL
+		get => (Brush)GetValue(BackgroundProperty);
+		set => SetValue(BackgroundProperty, value);
+	}
+
+	public static DependencyProperty BackgroundProperty { get; } =
+		DependencyProperty.Register(
+			nameof(Background),
+			typeof(Brush),
+			typeof(Panel),
+			new FrameworkPropertyMetadata(null, propertyChangedCallback: (s, e) => ((Panel)s)?.OnBackgroundChanged(e)));
+
+	private protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+	{
 		this.UpdateBackground();
 		BorderHelper.SetUpBrushTransitionIfAllowed(
 			(BorderVisual)this.Visual,
 			e.OldValue as Brush,
 			e.NewValue as Brush,
 			this.BackgroundTransition,
-			((IDependencyObjectStoreProvider)this).Store.GetCurrentHighestValuePrecedence(BackgroundProperty) == DependencyPropertyValuePrecedences.Animations);
-#else
-		UpdateBorder();
-#endif
+			((DependencyObject)this).GetCurrentHighestValuePrecedence(BackgroundProperty) == DependencyPropertyValuePrecedences.Animations);
 		OnBackgroundChangedPartial();
 	}
 
@@ -239,30 +221,10 @@ public partial class Panel : FrameworkElement, IPanel
 	{
 		base.OnBackgroundSizingChangedInner(e);
 
-#if UNO_HAS_BORDER_VISUAL
 		this.UpdateBackgroundSizing();
-#else
-		UpdateBorder();
-#endif
 	}
 
 	internal override bool IsViewHit() => Border.IsViewHitImpl(this);
 
-#if !UNO_HAS_BORDER_VISUAL
-	private void UpdateBorder() => _borderRenderer.Update();
-#endif
 
-	/// <summary>        
-	/// Support for the C# collection initializer style.
-	/// Allows items to be added like this 
-	/// new Panel 
-	/// {
-	///    new Border()
-	/// }
-	/// </summary>
-	/// <param name="view"></param>
-	public
-	void Add(
-		UIElement view
-		) => Children.Add(view);
 }

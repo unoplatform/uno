@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
@@ -6,6 +6,7 @@ using Uno.UI.Xaml;
 using Windows.UI;
 
 using Color = Windows.UI.Color;
+using Microsoft.UI.Composition;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -107,5 +108,25 @@ namespace Microsoft.UI.Xaml.Media
 		public static bool operator ==(SolidColorBrush left, SolidColorBrush right) => Equals(left, right);
 
 		public static bool operator !=(SolidColorBrush left, SolidColorBrush right) => !Equals(left, right);
+
+		internal override CompositionBrush GetOrCreateCompositionBrush(Compositor compositor)
+		{
+			if (_compositionBrush is null)
+			{
+				_compositionBrush = compositor.CreateColorBrush();
+				SynchronizeCompositionBrush();
+			}
+
+			return _compositionBrush;
+		}
+
+		internal override void SynchronizeCompositionBrush()
+		{
+			base.SynchronizeCompositionBrush();
+			if (_compositionBrush is CompositionColorBrush compositionBrush)
+			{
+				compositionBrush.Color = ColorWithOpacity;
+			}
+		}
 	}
 }

@@ -3,12 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IAnimationObject
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		void PopulatePropertyInfo(string propertyName, global::Microsoft.UI.Composition.AnimationPropertyInfo propertyInfo);
 #endif
 	}

@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition.Core
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CompositorController : global::System.IDisposable
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Composition.Compositor Compositor
 		{
 			get
@@ -18,23 +18,23 @@ namespace Microsoft.UI.Composition.Core
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public CompositorController()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Core.CompositorController", "CompositorController()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.CompositorController()
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public void Commit()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Core.CompositorController", "Commit()");
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Windows.Foundation.IAsyncAction EnsurePreviousCommitCompletedAsync()
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Core.CompositorController", "EnsurePreviousCommitCompletedAsync()");
@@ -42,24 +42,24 @@ namespace Microsoft.UI.Composition.Core
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.CommitNeeded.add
 		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.CommitNeeded.remove
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Core.CompositorController", "Dispose()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.Core.CompositorController.Compositor.get
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Composition.Core.CompositorController, object> CommitNeeded
 		{
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Core.CompositorController", "event CommitNeeded");
 			}
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Core.CompositorController", "event CommitNeeded");

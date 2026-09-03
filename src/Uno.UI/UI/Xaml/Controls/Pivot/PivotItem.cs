@@ -5,9 +5,6 @@ using System.Text;
 using Uno.UI;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
-#if __ANDROID__
-using Android.Views;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {

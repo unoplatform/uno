@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CompositionVirtualDrawingSurface : global::Microsoft.UI.Composition.CompositionDrawingSurface
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public void Trim(global::Windows.Graphics.RectInt32[] rects)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionVirtualDrawingSurface", "Trim(RectInt32[] rects)");

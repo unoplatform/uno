@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CacheMode : global::Microsoft.UI.Xaml.DependencyObject
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		protected CacheMode() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.CacheMode", "CacheMode()");

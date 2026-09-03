@@ -3,18 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class AmbientLight : global::Microsoft.UI.Composition.CompositionLight
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		internal AmbientLight()
 		{
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Windows.UI.Color Color
 		{
 			get
@@ -27,8 +27,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public float Intensity
 		{
 			get

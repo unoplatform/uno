@@ -231,28 +231,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 
 		// [Test] -- Broken Test
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)]
-		public void DatePickerFlyout_Native_Unloaded()
-		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePickerFlyout_Unloaded", skipInitialScreenshot: true);
-
-			var TestDatePickerFlyoutButton = _app.Marked("TestNativeDatePickerFlyoutButton");
-			var datePickerFlyout = _app.CreateQuery(q => q.WithClass("Windows_UI_Xaml_Controls_DatePickerSelector"));
-
-			_app.WaitForElement(TestDatePickerFlyoutButton);
-
-			TestDatePickerFlyoutButton.FastTap();
-
-			_app.WaitForElement(datePickerFlyout);
-
-			// Load another sample to dismiss the popup
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent", waitForSampleControl: false);
-
-			_app.WaitForNoElement(datePickerFlyout);
-		}
-
-		// [Test] -- Broken Test
-		[AutoRetry]
 		[ActivePlatforms(Platform.iOS)] // iOS Specific selection
 		public void DatePickerFlyout_Date_Binding()
 		{

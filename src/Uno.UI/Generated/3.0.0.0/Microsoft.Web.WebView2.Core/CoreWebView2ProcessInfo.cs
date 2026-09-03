@@ -3,7 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
+<<<<<<< HEAD
 #if false || false || false || false || false || false
+=======
+#if false
+>>>>>>> origin/master
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2ProcessInfo

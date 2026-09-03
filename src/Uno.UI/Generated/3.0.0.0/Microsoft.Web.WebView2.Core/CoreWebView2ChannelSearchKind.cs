@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum CoreWebView2ChannelSearchKind
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		MostStable = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		LeastStable = 1,
 #endif
 	}

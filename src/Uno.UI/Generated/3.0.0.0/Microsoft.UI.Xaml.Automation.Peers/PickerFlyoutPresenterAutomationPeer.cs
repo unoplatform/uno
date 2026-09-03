@@ -3,12 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class PickerFlyoutPresenterAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		internal PickerFlyoutPresenterAutomationPeer()
 		{
 		}

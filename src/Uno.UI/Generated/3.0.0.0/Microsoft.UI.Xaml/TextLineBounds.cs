@@ -3,19 +3,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum TextLineBounds
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Full = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		TrimToCapHeight = 1,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		TrimToBaseline = 2,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Tight = 3,
 #endif
 	}

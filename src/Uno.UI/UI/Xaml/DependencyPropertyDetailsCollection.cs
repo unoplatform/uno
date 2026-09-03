@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml
 			_entries = _empty;
 		}
 
-		internal void CloneToForHotReload(DependencyPropertyDetailsCollection other, DependencyObjectStore store, DependencyObjectStore otherStore)
+		internal void CloneToForHotReload(DependencyPropertyDetailsCollection other, DependencyObject store, DependencyObject otherStore)
 		{
 			for (int i = 0; i < _entries.Length; i++)
 			{
@@ -66,7 +66,7 @@ namespace Microsoft.UI.Xaml
 						{
 							var newBinding = new Binding(binding.Path, binding.Converter, binding.ConverterParameter);
 							var newSource = binding.Source;
-							if (newSource is IDependencyObjectStoreProvider { Store: { } oldStore } && oldStore == store)
+							if (newSource is DependencyObject oldStore && oldStore == store)
 							{
 								newSource = otherStore.ActualInstance;
 							}

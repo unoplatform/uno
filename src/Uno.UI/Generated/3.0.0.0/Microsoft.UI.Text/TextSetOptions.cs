@@ -4,28 +4,28 @@
 namespace Microsoft.UI.Text
 {
 	[global::System.FlagsAttribute]
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum TextSetOptions : uint
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		None = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		UnicodeBidi = 1,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Unlink = 8,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Unhide = 16,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		CheckTextLimit = 32,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		FormatRtf = 8192,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		ApplyRtfDocumentDefaults = 16384,
 #endif
 	}

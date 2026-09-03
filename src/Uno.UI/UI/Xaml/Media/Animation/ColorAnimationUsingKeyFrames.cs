@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -98,9 +98,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 				_wasBeginScheduled = true;
 
-#if !IS_UNIT_TESTS
 				_ = Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
-#endif
 				{
 					_wasBeginScheduled = false;
 
@@ -119,9 +117,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 					//Start the animation
 					Play();
 				}
-#if !IS_UNIT_TESTS
 				);
-#endif
 			}
 		}
 
@@ -421,10 +417,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		partial void UseHardware();
 		partial void HoldValue();
 
-#if IS_UNIT_TESTS
-		private bool ReportEachFrame() => true;
-#endif
 
 		IEnumerable IKeyFramesProvider.GetKeyFrames() => KeyFrames;
+
+		private bool ReportEachFrame() => true;
+
+		partial void OnFrame(IValueAnimator currentAnimator)
+		{
+			SetValue(currentAnimator.AnimatedValue);
+		}
 	}
 }

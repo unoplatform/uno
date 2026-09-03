@@ -3,18 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2ScreenCaptureStartingEventArgs
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		internal CoreWebView2ScreenCaptureStartingEventArgs()
 		{
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public bool Cancel
 		{
 			get
@@ -27,8 +27,8 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public bool Handled
 		{
 			get
@@ -41,8 +41,8 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2FrameInfo OriginalSourceFrameInfo
 		{
 			get
@@ -51,8 +51,8 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Windows.Foundation.Deferral GetDeferral()
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs", "GetDeferral()");

@@ -67,17 +67,17 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
-		<ProjectReference Include="..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Skia.csproj" />
-		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
-		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj" />
-		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.Skia.csproj" />
-		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.Skia.csproj" />
-		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Reference.csproj" />
+		<ProjectReference Include="..\Uno.UI.Extras\Uno.UI.Extras.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj" />
+		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
-		<ProjectReference Include="..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Skia.csproj" />
+		<ProjectReference Include="..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup>

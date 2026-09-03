@@ -3,18 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IDataTemplateExtension
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		void ResetTemplate();
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		bool ProcessBinding(uint phase);
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		int ProcessBindings(global::Microsoft.UI.Xaml.Controls.ContainerContentChangingEventArgs arg);
 #endif
 	}

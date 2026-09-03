@@ -374,12 +374,10 @@ namespace Microsoft.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
-#if !HAS_NATIVE_IMPLICIT_POINTER_CAPTURE
 			foreach (var pointer in args.Pointers)
 			{
 				that.ReleasePointerCapture(pointer, muteEvent: true, PointerCaptureKind.Implicit);
 			}
-#endif
 
 			that.SafeRaiseEvent(ManipulationCompletedEvent, new ManipulationCompletedRoutedEventArgs(src, that, args));
 
@@ -776,6 +774,25 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+		/// <summary>
+		/// Indicates that the last pointer down processed by this element's gesture recognizer is what aborted a
+		/// coasting manipulation of this element (cf. GestureRecognizer.LastDownStoppedInertia).
+		/// </summary>
+		internal bool LastPointerDownStoppedInertia
+			=> IsGestureRecognizerCreated && GestureRecognizer.LastDownStoppedInertia;
+
+		/// <summary>
+		/// Prevents this element from recognizing the given gestures for the given pointer.
+		/// Does nothing if this element has no gesture recognizer, or none for that pointer.
+		/// </summary>
+		internal void PreventGestures(global::Windows.Devices.Input.PointerIdentifier pointer, GestureSettings gestures)
+		{
+			if (IsGestureRecognizerCreated)
+			{
+				GestureRecognizer.PreventEvents(pointer, gestures);
+			}
+		}
+
 		private void UpdateRaisedGestureEventsFlag(PointerRoutedEventArgs args)
 		{
 			if (!IsGestureRecognizerCreated)
@@ -895,7 +912,7 @@ namespace Microsoft.UI.Xaml
 		private async Task<DataPackageOperation> StartDragAsyncCore(PointerPoint pointer, PointerRoutedEventArgs ptArgs, CancellationToken ct)
 		{
 			ptArgs ??= PointerRoutedEventArgs.LastPointerEvent;
-			if (ptArgs is null || ptArgs.Pointer.PointerDeviceType != pointer.PointerDeviceType)
+			if (ptArgs is null || ptArgs.Pointer.PointerDeviceType != (global::Microsoft.UI.Input.PointerDeviceType)pointer.PointerDeviceType)
 			{
 				// Fairly impossible case ...
 				return DataPackageOperation.None;
@@ -1155,12 +1172,10 @@ namespace Microsoft.UI.Xaml
 
 				recognizer.ProcessDownEvent(point);
 
-#if !HAS_NATIVE_IMPLICIT_POINTER_CAPTURE
 				if (recognizer.PendingManipulation?.IsActive(point.Pointer) ?? false)
 				{
 					Capture(args.Pointer, PointerCaptureKind.Implicit, default, args);
 				}
-#endif
 			}
 
 			// A non-System ManipulationMode means this element claims the gesture; cancel any ancestor DMs

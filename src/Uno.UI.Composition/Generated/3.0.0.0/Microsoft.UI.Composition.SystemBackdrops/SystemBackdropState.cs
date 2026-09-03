@@ -3,16 +3,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition.SystemBackdrops
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum SystemBackdropState
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Active = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Fallback = 1,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		HighContrast = 2,
 #endif
 	}

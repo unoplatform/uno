@@ -3,19 +3,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum CoreWebView2KeyEventKind
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		KeyDown = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		KeyUp = 1,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		SystemKeyDown = 2,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		SystemKeyUp = 3,
 #endif
 	}

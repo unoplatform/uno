@@ -3,7 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
+<<<<<<< HEAD
 #if false || false || false || false || false || false
+=======
+#if false
+>>>>>>> origin/master
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2
@@ -11,8 +15,13 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared property BrowserProcessId
 		// Skipping already declared property CanGoBack
 		// Skipping already declared property CanGoForward
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public bool ContainsFullScreenElement
 		{
 			get
@@ -21,8 +30,13 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2CookieManager CookieManager
 		{
 			get
@@ -31,8 +45,13 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2DefaultDownloadDialogCornerAlignment DefaultDownloadDialogCornerAlignment
 		{
 			get
@@ -45,8 +64,13 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Windows.Foundation.Point DefaultDownloadDialogMargin
 		{
 			get
@@ -61,8 +85,13 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 		// Skipping already declared property DocumentTitle
 		// Skipping already declared property Environment
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public string FaviconUri
 		{
 			get
@@ -71,8 +100,13 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2Find Find
 		{
 			get
@@ -81,8 +115,13 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public uint FrameId
 		{
 			get
@@ -91,8 +130,13 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public bool IsDefaultDownloadDialogOpen
 		{
 			get
@@ -101,8 +145,13 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public bool IsDocumentPlayingAudio
 		{
 			get
@@ -111,8 +160,13 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public bool IsMuted
 		{
 			get
@@ -125,8 +179,13 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public bool IsSuspended
 		{
 			get
@@ -135,8 +194,13 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2MemoryUsageTargetLevel MemoryUsageTargetLevel
 		{
 			get
@@ -152,8 +216,13 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared property Profile
 		// Skipping already declared property Settings
 		// Skipping already declared property Source
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public string StatusBarText
 		{
 			get
@@ -164,8 +233,13 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.BasicAuthenticationRequested.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.BasicAuthenticationRequested.remove
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Windows.Foundation.IAsyncOperation<string> CallDevToolsProtocolMethodForSessionAsync(string sessionId, string methodName, string parametersAsJson)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "CallDevToolsProtocolMethodForSessionAsync(string sessionId, string methodName, string parametersAsJson)");
@@ -175,8 +249,13 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.ContextMenuRequested.remove
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.StatusBarTextChanged.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.StatusBarTextChanged.remove
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Windows.Foundation.IAsyncAction ClearServerCertificateErrorActionsAsync()
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "ClearServerCertificateErrorActionsAsync()");
@@ -184,8 +263,13 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.ServerCertificateErrorDetected.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.ServerCertificateErrorDetected.remove
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetFaviconAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2FaviconImageFormat format)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "GetFaviconAsync(CoreWebView2FaviconImageFormat format)");
@@ -193,29 +277,49 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.FaviconChanged.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.FaviconChanged.remove
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2PrintStatus> PrintAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings printSettings)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "PrintAsync(CoreWebView2PrintSettings printSettings)");
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public void ShowPrintUI(global::Microsoft.Web.WebView2.Core.CoreWebView2PrintDialogKind printDialogKind)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "ShowPrintUI(CoreWebView2PrintDialogKind printDialogKind)");
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> PrintToPdfStreamAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings printSettings)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "PrintToPdfStreamAsync(CoreWebView2PrintSettings printSettings)");
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public void PostSharedBufferToScript(global::Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer sharedBuffer, global::Microsoft.Web.WebView2.Core.CoreWebView2SharedBufferAccess access, string additionalDataAsJson)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "PostSharedBufferToScript(CoreWebView2SharedBuffer sharedBuffer, CoreWebView2SharedBufferAccess access, string additionalDataAsJson)");
@@ -223,8 +327,13 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.LaunchingExternalUriScheme.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.LaunchingExternalUriScheme.remove
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public void NavigateWithWebResourceRequest(global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest Request)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "NavigateWithWebResourceRequest(CoreWebView2WebResourceRequest Request)");
@@ -234,8 +343,13 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.DOMContentLoaded.remove
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.WebResourceResponseReceived.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.WebResourceResponseReceived.remove
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2ExecuteScriptResult> ExecuteScriptWithResultAsync(string javaScript)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "ExecuteScriptWithResultAsync(string javaScript)");
@@ -243,8 +357,13 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.NotificationReceived.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.NotificationReceived.remove
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIResult> ShowSaveAsUIAsync()
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "ShowSaveAsUIAsync()");
@@ -256,15 +375,25 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.SaveFileSecurityCheckStarting.remove
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.ScreenCaptureStarting.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.ScreenCaptureStarting.remove
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Windows.Foundation.IAsyncOperation<bool> TrySuspendAsync()
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "TrySuspendAsync()");
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public void Resume()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "Resume()");
@@ -278,15 +407,25 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.FrameCreated.remove
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.ClientCertificateRequested.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.ClientCertificateRequested.remove
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public void OpenTaskManagerWindow()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "OpenTaskManagerWindow()");
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Windows.Foundation.IAsyncOperation<bool> PrintToPdfAsync(string ResultFilePath, global::Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings printSettings)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "PrintToPdfAsync(string ResultFilePath, CoreWebView2PrintSettings printSettings)");
@@ -296,15 +435,25 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.IsDocumentPlayingAudioChanged.remove
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.IsMutedChanged.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.IsMutedChanged.remove
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public void OpenDefaultDownloadDialog()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "OpenDefaultDownloadDialog()");
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public void CloseDefaultDownloadDialog()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "CloseDefaultDownloadDialog()");
@@ -314,8 +463,13 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.IsDefaultDownloadDialogOpenChanged.remove
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.AddWebResourceRequestedFilter(string, Microsoft.Web.WebView2.Core.CoreWebView2WebResourceContext, Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestSourceKinds)
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.RemoveWebResourceRequestedFilter(string, Microsoft.Web.WebView2.Core.CoreWebView2WebResourceContext, Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequestSourceKinds)
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public void PostWebMessageAsJson(string webMessageAsJson, global::System.Collections.Generic.IReadOnlyList<object> additionalObjects)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "PostWebMessageAsJson(string webMessageAsJson, IReadOnlyList<object> additionalObjects)");
@@ -323,45 +477,75 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.Navigate(string)
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.NavigateToString(string)
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Windows.Foundation.IAsyncOperation<string> AddScriptToExecuteOnDocumentCreatedAsync(string javaScript)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "AddScriptToExecuteOnDocumentCreatedAsync(string javaScript)");
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public void RemoveScriptToExecuteOnDocumentCreated(string id)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "RemoveScriptToExecuteOnDocumentCreated(string id)");
 		}
 #endif
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.ExecuteScriptAsync(string)
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Windows.Foundation.IAsyncAction CapturePreviewAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2CapturePreviewImageFormat imageFormat, global::Windows.Storage.Streams.IRandomAccessStream imageStream)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "CapturePreviewAsync(CoreWebView2CapturePreviewImageFormat imageFormat, IRandomAccessStream imageStream)");
 		}
 #endif
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.Reload()
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public void PostWebMessageAsJson(string webMessageAsJson)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "PostWebMessageAsJson(string webMessageAsJson)");
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public void PostWebMessageAsString(string webMessageAsString)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "PostWebMessageAsString(string webMessageAsString)");
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Windows.Foundation.IAsyncOperation<string> CallDevToolsProtocolMethodAsync(string methodName, string parametersAsJson)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "CallDevToolsProtocolMethodAsync(string methodName, string parametersAsJson)");
@@ -369,30 +553,50 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.GoBack()
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.GoForward()
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceiver GetDevToolsProtocolEventReceiver(string eventName)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "GetDevToolsProtocolEventReceiver(string eventName)");
 		}
 #endif
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.Stop()
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public void AddHostObjectToScript(string name, object rawObject)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "AddHostObjectToScript(string name, object rawObject)");
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public void RemoveHostObjectFromScript(string name)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "RemoveHostObjectFromScript(string name)");
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public void OpenDevToolsWindow()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "OpenDevToolsWindow()");
@@ -457,320 +661,560 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.Settings.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.Source.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.StatusBarText.get
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs> BasicAuthenticationRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2BasicAuthenticationRequestedEventArgs> BasicAuthenticationRequested
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event BasicAuthenticationRequested");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event BasicAuthenticationRequested");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs> ContextMenuRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuRequestedEventArgs> ContextMenuRequested
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ContextMenuRequested");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ContextMenuRequested");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, object> StatusBarTextChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, object> StatusBarTextChanged
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event StatusBarTextChanged");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event StatusBarTextChanged");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2ServerCertificateErrorDetectedEventArgs> ServerCertificateErrorDetected
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2ServerCertificateErrorDetectedEventArgs> ServerCertificateErrorDetected
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ServerCertificateErrorDetected");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ServerCertificateErrorDetected");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, object> FaviconChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, object> FaviconChanged
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event FaviconChanged");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event FaviconChanged");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2LaunchingExternalUriSchemeEventArgs> LaunchingExternalUriScheme
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2LaunchingExternalUriSchemeEventArgs> LaunchingExternalUriScheme
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event LaunchingExternalUriScheme");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event LaunchingExternalUriScheme");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2DOMContentLoadedEventArgs> DOMContentLoaded
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2DOMContentLoadedEventArgs> DOMContentLoaded
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event DOMContentLoaded");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event DOMContentLoaded");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseReceivedEventArgs> WebResourceResponseReceived
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseReceivedEventArgs> WebResourceResponseReceived
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event WebResourceResponseReceived");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event WebResourceResponseReceived");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2NotificationReceivedEventArgs> NotificationReceived
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2NotificationReceivedEventArgs> NotificationReceived
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event NotificationReceived");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event NotificationReceived");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs> SaveAsUIShowing
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2SaveAsUIShowingEventArgs> SaveAsUIShowing
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event SaveAsUIShowing");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event SaveAsUIShowing");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2SaveFileSecurityCheckStartingEventArgs> SaveFileSecurityCheckStarting
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2SaveFileSecurityCheckStartingEventArgs> SaveFileSecurityCheckStarting
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event SaveFileSecurityCheckStarting");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event SaveFileSecurityCheckStarting");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs> ScreenCaptureStarting
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2ScreenCaptureStartingEventArgs> ScreenCaptureStarting
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ScreenCaptureStarting");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ScreenCaptureStarting");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs> DownloadStarting
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2DownloadStartingEventArgs> DownloadStarting
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event DownloadStarting");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event DownloadStarting");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2FrameCreatedEventArgs> FrameCreated
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2FrameCreatedEventArgs> FrameCreated
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event FrameCreated");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event FrameCreated");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs> ClientCertificateRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2ClientCertificateRequestedEventArgs> ClientCertificateRequested
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ClientCertificateRequested");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ClientCertificateRequested");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, object> IsDocumentPlayingAudioChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, object> IsDocumentPlayingAudioChanged
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event IsDocumentPlayingAudioChanged");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event IsDocumentPlayingAudioChanged");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, object> IsMutedChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, object> IsMutedChanged
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event IsMutedChanged");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event IsMutedChanged");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, object> IsDefaultDownloadDialogOpenChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, object> IsDefaultDownloadDialogOpenChanged
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event IsDefaultDownloadDialogOpenChanged");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event IsDefaultDownloadDialogOpenChanged");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, object> ContainsFullScreenElementChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, object> ContainsFullScreenElementChanged
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ContainsFullScreenElementChanged");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ContainsFullScreenElementChanged");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2ContentLoadingEventArgs> ContentLoading
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2ContentLoadingEventArgs> ContentLoading
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ContentLoading");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ContentLoading");
@@ -778,32 +1222,56 @@ namespace Microsoft.Web.WebView2.Core
 		}
 #endif
 		// Skipping already declared event Microsoft.Web.WebView2.Core.CoreWebView2.DocumentTitleChanged
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs> FrameNavigationCompleted
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs> FrameNavigationCompleted
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event FrameNavigationCompleted");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event FrameNavigationCompleted");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs> FrameNavigationStarting
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2NavigationStartingEventArgs> FrameNavigationStarting
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event FrameNavigationStarting");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event FrameNavigationStarting");
@@ -814,48 +1282,84 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared event Microsoft.Web.WebView2.Core.CoreWebView2.NavigationCompleted
 		// Skipping already declared event Microsoft.Web.WebView2.Core.CoreWebView2.NavigationStarting
 		// Skipping already declared event Microsoft.Web.WebView2.Core.CoreWebView2.NewWindowRequested
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs> PermissionRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2PermissionRequestedEventArgs> PermissionRequested
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event PermissionRequested");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event PermissionRequested");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs> ProcessFailed
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs> ProcessFailed
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ProcessFailed");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ProcessFailed");
 			}
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs> ScriptDialogOpening
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs> ScriptDialogOpening
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ScriptDialogOpening");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ScriptDialogOpening");
@@ -865,16 +1369,28 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared event Microsoft.Web.WebView2.Core.CoreWebView2.SourceChanged
 		// Skipping already declared event Microsoft.Web.WebView2.Core.CoreWebView2.WebMessageReceived
 		// Skipping already declared event Microsoft.Web.WebView2.Core.CoreWebView2.WebResourceRequested
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, object> WindowCloseRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, object> WindowCloseRequested
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event WindowCloseRequested");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event WindowCloseRequested");

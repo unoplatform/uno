@@ -3,43 +3,43 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Text
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface ITextSelection : global::Microsoft.UI.Text.ITextRange
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		global::Microsoft.UI.Text.SelectionOptions Options
 		{
 			get;
 			set;
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		global::Microsoft.UI.Text.SelectionType Type
 		{
 			get;
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		int EndKey(global::Microsoft.UI.Text.TextRangeUnit unit, bool extend);
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		int HomeKey(global::Microsoft.UI.Text.TextRangeUnit unit, bool extend);
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		int MoveDown(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool extend);
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		int MoveLeft(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool extend);
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		int MoveRight(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool extend);
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		int MoveUp(global::Microsoft.UI.Text.TextRangeUnit unit, int count, bool extend);
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		void TypeText(string value);
 #endif
 		// Forced skipping of method Microsoft.UI.Text.ITextSelection.Options.get

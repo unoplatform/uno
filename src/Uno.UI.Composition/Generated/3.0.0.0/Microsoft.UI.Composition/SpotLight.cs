@@ -3,18 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class SpotLight : global::Microsoft.UI.Composition.CompositionLight
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		internal SpotLight()
 		{
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public float ConstantAttenuation
 		{
 			get
@@ -27,8 +27,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Composition.Visual CoordinateSpace
 		{
 			get
@@ -41,8 +41,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::System.Numerics.Vector3 Direction
 		{
 			get
@@ -55,8 +55,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public float InnerConeAngle
 		{
 			get
@@ -69,8 +69,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public float InnerConeAngleInDegrees
 		{
 			get
@@ -83,8 +83,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Windows.UI.Color InnerConeColor
 		{
 			get
@@ -97,8 +97,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public float InnerConeIntensity
 		{
 			get
@@ -111,8 +111,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public float LinearAttenuation
 		{
 			get
@@ -125,8 +125,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public float MaxAttenuationCutoff
 		{
 			get
@@ -139,8 +139,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public float MinAttenuationCutoff
 		{
 			get
@@ -153,8 +153,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::System.Numerics.Vector3 Offset
 		{
 			get
@@ -167,8 +167,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public float OuterConeAngle
 		{
 			get
@@ -181,8 +181,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public float OuterConeAngleInDegrees
 		{
 			get
@@ -195,8 +195,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Windows.UI.Color OuterConeColor
 		{
 			get
@@ -209,8 +209,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public float OuterConeIntensity
 		{
 			get
@@ -223,8 +223,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public float QuadraticAttenuation
 		{
 			get

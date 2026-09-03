@@ -27,13 +27,13 @@ namespace Microsoft.UI.Xaml.Data;
 ///   constructs this type directly. <see cref="CloneForTarget"/> covers the copy-from-existing
 ///   shape that constructor serves.
 /// - GetValue(CValue*) (ThemeResource.cpp:53-61) — callers refresh and read
-///   <see cref="LastResolvedValue"/> directly (DependencyObjectStore.UpdateThemeReference).
+///   <see cref="LastResolvedValue"/> directly (DependencyObject.UpdateThemeReference).
 /// - SetInitialValueAndTargetDictionary (ThemeResource.cpp:39-51) — folded into the constructor
 ///   (target dictionary + initial value are supplied at construction).
 /// - SetThemeResourceBinding (ThemeResource.cpp:171-200) — the PreserveThemeResourceExtension /
 ///   Style-Setter dispatch lives in Uno's Setter/Style application
 ///   (ResourceResolver.ApplyThemeResource); the plain branch is
-///   DependencyObjectStore.SetThemeResourceBinding (Theming.cpp:349-400 port).
+///   DependencyObject.SetThemeResourceBinding (Theming.cpp:349-400 port).
 /// - static LookupResource (ThemeResource.cpp:202-256) — the parse-time resolve-and-pin lives in
 ///   ResourceResolver.ApplyResource/TryStaticRetrieval.
 /// - m_themeWalkResourceCache — Uno passes the walk cache as a parameter to

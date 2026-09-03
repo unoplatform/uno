@@ -305,6 +305,15 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		InvalidateParentChildrenPicture(false);
 	}
 
+	internal void InvalidateSubtreePaint()
+	{
+		InvalidatePaint();
+		foreach (var child in GetChildrenInRenderOrder())
+		{
+			child.InvalidateSubtreePaint();
+		}
+	}
+
 	internal void InvalidateParentChildrenPicture(bool includeSelf)
 	{
 		var parent = includeSelf ? this : Parent;
@@ -387,7 +396,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="canvas">The canvas on which this visual should be rendered.</param>
 	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
-	internal void RenderRootVisual(SKCanvas canvas, Vector2? offsetOverride, SKPath? damage = null)
+	internal void RenderRootVisual(SKCanvas canvas, Vector2? offsetOverride, DamageRegion? damage = null)
 	{
 		if (IsRenderSuppressed)
 		{
@@ -426,10 +435,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			// omitted.
 			canvas.SetMatrix(initialTransform.IsIdentity ? TotalMatrix : TotalMatrix * initialTransform);
 
-			var rootClip = _pathPool.Allocate();
-			using var rootClipDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), rootClip);
-			rootClip.Rewind();
-			rootClip.AddRect(InfiniteClipRect);
+			using var rootClip = SkiaExtensions.CreateRectPath(InfiniteClipRect);
 			Render(session, rootClip);
 		}
 	}
@@ -488,10 +494,13 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			var toRoot = TotalMatrix.ToSKMatrix();
 
 			var preClip = _spareRenderPath;
+<<<<<<< HEAD
 			preClip.Rewind();
+=======
+			preClip.Reset();
+>>>>>>> origin/master
 
-			ownClip.Rewind();
-			ownClip.AddPath(clipInRoot);
+			clipInRoot.Transform(SKMatrix.Identity, ownClip);
 			if (GetPrePaintingClipping(preClip))
 			{
 				canvas.ClipPath(preClip, antialias: true);
@@ -499,13 +508,11 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				ownClip.Op(preClip, SKPathOp.Intersect, ownClip);
 			}
 
-			childClip.Rewind();
-			childClip.AddPath(ownClip);
+			ownClip.Transform(SKMatrix.Identity, childClip);
 			if (GetPostPaintingClipping() is { } postClip)
 			{
 				var postClipInRoot = _pathPool.Allocate();
-				postClipInRoot.Rewind();
-				postClipInRoot.AddPath(postClip);
+				postClip.Transform(SKMatrix.Identity, postClipInRoot);
 				postClipInRoot.Transform(toRoot);
 				childClip.Op(postClipInRoot, SKPathOp.Intersect, childClip);
 				_pathPool.Free(postClipInRoot);
@@ -744,6 +751,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	}
 
 	/// <summary>
+<<<<<<< HEAD
 	/// Returns the bounds, in root visual coordinates, of the effective clip applied to this visual's
 	/// own content by its ancestors (e.g. a ScrollViewer's viewport clip) and its own <see cref="Clip"/>.
 	/// Intersecting an element's bounds with this rect yields what's actually visible, which automation
@@ -763,6 +771,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	}
 
 	/// <summary>
+=======
+>>>>>>> origin/master
 	/// Draws the content of this visual.
 	/// </summary>
 	/// <param name="session">The drawing session to use.</param>
@@ -1089,6 +1099,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		ref var rootTransform = ref parentSession.RootTransform;
 
 		var opacity = Opacity == 1.0f ? parentSession.Opacity : parentSession.Opacity * Opacity;
+
+		// MUX Reference hwwalk.cpp, ShouldOverrideRenderOpacity.
+		if (IsHighContrastOpacityOverrideActive && opacity > 0 && opacity < 1.0f)
+		{
+			opacity = 1.0f;
+		}
 
 		_factory.CreateInstance(this, canvas, ref rootTransform, opacity, parentSession.Damage, out session);
 

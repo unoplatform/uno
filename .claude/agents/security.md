@@ -42,7 +42,7 @@ Audit for injection, path traversal, unsafe deserialization, data/secret exposur
 
 - **DevServer / RemoteControl host (`/devserver` skill, `specs/040-remotecontrol-stj-migration`):** network-facing — authenticate/validate messages before side effects; deserialize into typed `[JsonSerializable]` contracts, never arbitrary types; bound message sizes; don't trust paths in messages.
 - **Source generators (`.claude/rules/source-generators.md`):** project/additional-file inputs are developer-controlled but still untrusted text — don't let a crafted input cause the generator to write outside its output, execute, or fetch anything.
-- **Platform APIs (`Uno.UWP`/`Uno.Foundation`):** file pickers, clipboard, `Launcher`, share — validate paths and URIs; don't launch arbitrary schemes from untrusted input.
+- **Platform APIs (`Uno.WinRT`/`Uno.Foundation`):** file pickers, clipboard, `Launcher`, share — validate paths and URIs; don't launch arbitrary schemes from untrusted input.
 - **WASM JS interop:** values crossing into/out of JS are a boundary; nothing managed-trusted should assume a JS-side check held.
 - **Secrets:** never log or serialize tokens/keys; never hardcode a fallback credential, even in tooling or tests.
 

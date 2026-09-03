@@ -1,6 +1,4 @@
-﻿#if !__SKIA__
-using System;
-using System.Linq;
+﻿using System;
 using Microsoft.UI.Dispatching;
 using Windows.UI.Core;
 
@@ -10,24 +8,14 @@ namespace Microsoft.UI.Xaml.Media.Animation
 	{
 		public const int DefaultFrameRate = 60;
 
-		private readonly int _frameRate;
-		private readonly DispatcherTimer _timer;
-
-		public DispatcherAnimator(T from, T to, int frameRate = DefaultFrameRate)
+		public DispatcherAnimator(T from, T to, int frameRate = 0)
 			: base(from, to)
 		{
-			_frameRate = frameRate;
-			_timer = new DispatcherTimer();
-			_timer.Tick += OnFrame;
 		}
 
-		protected override void EnableFrameReporting() => _timer.Start();
-		protected override void DisableFrameReporting() => _timer.Stop();
-
-		protected override void SetStartFrameDelay(long delayMs) => _timer.Interval = TimeSpan.FromMilliseconds(delayMs);
-		protected override void SetAnimationFramesInterval() => _timer.Interval = TimeSpan.FromSeconds(1d / _frameRate);
+		protected override void EnableFrameReporting() => CompositionTarget.Rendering += base.OnFrame;
+		protected override void DisableFrameReporting() => CompositionTarget.Rendering -= base.OnFrame;
 
 		protected abstract override T GetUpdatedValue(long frame, T from, T to);
 	}
 }
-#endif

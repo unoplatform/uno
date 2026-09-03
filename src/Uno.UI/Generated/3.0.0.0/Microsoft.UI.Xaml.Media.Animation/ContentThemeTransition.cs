@@ -3,29 +3,29 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media.Animation
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ContentThemeTransition : global::Microsoft.UI.Xaml.Media.Animation.Transition
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty HorizontalOffsetProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(HorizontalOffset), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Animation.ContentThemeTransition),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty VerticalOffsetProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(VerticalOffset), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Animation.ContentThemeTransition),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public double HorizontalOffset
 		{
 			get
@@ -38,8 +38,8 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public double VerticalOffset
 		{
 			get

@@ -3,16 +3,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition.Scenes
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum SceneAlphaMode
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Opaque = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		AlphaTest = 1,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Blend = 2,
 #endif
 	}

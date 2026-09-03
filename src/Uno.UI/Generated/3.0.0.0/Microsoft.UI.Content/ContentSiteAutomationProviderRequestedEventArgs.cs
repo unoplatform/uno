@@ -3,18 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Content
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ContentSiteAutomationProviderRequestedEventArgs
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		internal ContentSiteAutomationProviderRequestedEventArgs()
 		{
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public object AutomationProvider
 		{
 			get
@@ -27,8 +27,8 @@ namespace Microsoft.UI.Content
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public bool Handled
 		{
 			get

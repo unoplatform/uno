@@ -39,22 +39,18 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (_scroller is { } oldScroller)
 				{
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 					if (oldScroller.Target is ScrollViewer oldScrollerTarget)
 					{
 						UnhookScrollEvents(oldScrollerTarget);
 					}
-#endif
 					WeakReferencePool.ReturnWeakReference(this, oldScroller);
 				}
 
 				_scroller = WeakReferencePool.RentWeakReference(this, value);
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 				if (IsInLiveTree && value is ScrollViewer newTarget)
 				{
 					HookScrollEvents(newTarget);
 				}
-#endif
 			}
 		}
 		#endregion
@@ -75,7 +71,10 @@ namespace Microsoft.UI.Xaml.Controls
 			VerticalOffset;
 #endif
 
+<<<<<<< HEAD
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER || __WASM__
+=======
+>>>>>>> origin/master
 		public static DependencyProperty SizesContentToTemplatedParentProperty { get; } = DependencyProperty.Register(
 			nameof(SizesContentToTemplatedParent),
 			typeof(bool),
@@ -87,7 +86,6 @@ namespace Microsoft.UI.Xaml.Controls
 			get => (bool)GetValue(SizesContentToTemplatedParentProperty);
 			set => SetValue(SizesContentToTemplatedParentProperty, value);
 		}
-#endif
 
 		public Rect MakeVisible(UIElement visual, Rect rectangle)
 		{
@@ -160,7 +158,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public double ViewportWidth => DesiredSize.Width - Margin.Left - Margin.Right;
 
+<<<<<<< HEAD
 #if UNO_HAS_MANAGED_SCROLL_PRESENTER || __WASM__
+=======
+>>>>>>> origin/master
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			if (Content is UIElement child)
@@ -324,11 +325,15 @@ namespace Microsoft.UI.Xaml.Controls
 					// IsHorizontalMouseWheel already carries the correct sign (positive = right). A Shift-redirected
 					// vertical wheel uses the vertical convention (positive = up), so negate to get positive = right.
 					var horizontalDelta = properties.IsHorizontalMouseWheel ? delta : -delta;
+<<<<<<< HEAD
 #if __WASM__
 					success = Set(
 						horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta),
 						disableAnimation: false);
 #else
+=======
+
+>>>>>>> origin/master
 					// Trackpad/touchpad-style scroll events can arrive at display-refresh rate (~60/s) with precise
 					// pixel-level deltas. The 1-second composition animation is NOT suitable because:
 					// 1. When many events have accumulated the target far ahead of the visual, the animation's
@@ -420,6 +425,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return Math.Max(minOffset, Math.Min(offset, maxOffset));
 		}
+<<<<<<< HEAD
 
 #elif __APPLE_UIKIT__ // Note: No __ANDROID__, the ICustomScrollInfo support is made directly in the NativeScrollContentPresenter
 		protected override Size MeasureOverride(Size size)
@@ -445,5 +451,8 @@ namespace Microsoft.UI.Xaml.Controls
 #if __WASM__ || __NETSTD_REFERENCE__
 		protected override void OnContentChanged(object oldValue, object newValue) => base.OnContentChanged(oldValue, newValue);
 #endif
+=======
+
+>>>>>>> origin/master
 	}
 }

@@ -3,28 +3,28 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Text
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum MarkerStyle
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Undefined = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Parenthesis = 1,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Parentheses = 2,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Period = 3,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Plain = 4,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Minus = 5,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		NoNumber = 6,
 #endif
 	}

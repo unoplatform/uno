@@ -3,18 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition.Scenes
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class SceneSurfaceMaterialInput : global::Microsoft.UI.Composition.Scenes.SceneMaterialInput
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		internal SceneSurfaceMaterialInput()
 		{
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Composition.CompositionBitmapInterpolationMode BitmapInterpolationMode
 		{
 			get
@@ -27,8 +27,8 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Composition.ICompositionSurface Surface
 		{
 			get
@@ -41,8 +41,8 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Composition.Scenes.SceneWrappingMode WrappingUMode
 		{
 			get
@@ -55,8 +55,8 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Composition.Scenes.SceneWrappingMode WrappingVMode
 		{
 			get
@@ -69,8 +69,8 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput Create(global::Microsoft.UI.Composition.Compositor compositor)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneSurfaceMaterialInput", "Create(Compositor compositor)");

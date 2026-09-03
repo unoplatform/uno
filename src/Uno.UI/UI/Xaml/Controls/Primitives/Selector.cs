@@ -189,12 +189,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				TryUpdateSelectorItemIsSelected(selectedItem, true);
 			}
 
-#if !IS_UNIT_TESTS
 			if (SelectedIndex != -1 && IsInLiveTree)
 			{
 				ScrollSelectionIntoView();
 			}
-#endif
 
 			_isUpdatingSelection = false;
 

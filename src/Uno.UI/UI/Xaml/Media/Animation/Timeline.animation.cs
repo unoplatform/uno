@@ -1,4 +1,4 @@
-﻿using Uno.Extensions;
+using Uno.Extensions;
 using System;
 using System.Collections.Generic;
 using Uno.Disposables;
@@ -454,6 +454,15 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			partial void OnFrame();
 			partial void UseHardware();
+		}
+
+		partial class AnimationImplementation<T>
+		{
+			private bool ReportEachFrame() => true;
+			partial void OnFrame()
+			{
+				SetValue(_animator.AnimatedValue);
+			}
 		}
 	}
 }

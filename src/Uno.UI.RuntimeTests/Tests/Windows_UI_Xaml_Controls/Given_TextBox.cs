@@ -13,7 +13,7 @@ using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.UI;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.DevTools.Input;
 using Color = Windows.UI.Color;
 using static Private.Infrastructure.TestServices;
 using SamplesApp.UITests;
@@ -56,7 +56,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public partial class Given_TextBox
 	{
 #if __SKIA__
-		// Apple platforms (macOS, iOS, Mac Catalyst, tvOS) use Command key for standard shortcuts
+		// Apple platforms (macOS, iOS, tvOS) use Command key for standard shortcuts
 		private readonly VirtualKeyModifiers _platformCtrlKey = DeviceTargetHelper.PlatformCommandModifier;
 #elif WINAPPSDK
 		private readonly VirtualKeyModifiers _platformCtrlKey = VirtualKeyModifiers.Control;
@@ -227,7 +227,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForLoaded(textBox);
 
 				FocusManager.GettingFocus += OnGettingFocus;
-				textBox.OnTemplateRecycled();
+				((Microsoft.UI.Xaml.IFrameworkTemplatePoolAware)textBox).OnTemplateRecycled();
 			}
 			finally
 			{

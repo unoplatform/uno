@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum CandidateWindowAlignment
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Default = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		BottomEdge = 1,
 #endif
 	}

@@ -3,21 +3,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media.Animation
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class SlideNavigationTransitionInfo : global::Microsoft.UI.Xaml.Media.Animation.NavigationTransitionInfo
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty EffectProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(Effect), typeof(global::Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionEffect),
 			typeof(global::Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionInfo),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionEffect)));
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Media.Animation.SlideNavigationTransitionEffect Effect
 		{
 			get

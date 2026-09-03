@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -9,15 +10,15 @@ namespace Microsoft.UI.Xaml.Controls
 		private static void OnPropertyChanged(DependencyObject snd, DependencyPropertyChangedEventArgs args)
 			=> ((ItemsRepeater)snd).OnPropertyChanged(args);
 
-		#region Background (DP) => Commented out as FwElt already has it ...
-		//public static DependencyProperty BackgroundProperty { get; } = DependencyProperty.Register(
-		//	"Background", typeof(Brush), typeof(ItemsRepeater), new FrameworkPropertyMetadata(default(Brush)));
+		#region Background (DP)
+		public static DependencyProperty BackgroundProperty { get; } = DependencyProperty.Register(
+			nameof(Background), typeof(Brush), typeof(ItemsRepeater), new FrameworkPropertyMetadata(default(Brush)));
 
-		//public Brush Background
-		//{
-		//	get => (Brush)GetValue(BackgroundProperty);
-		//	set => SetValue(BackgroundProperty, value);
-		//}
+		public Brush Background
+		{
+			get => (Brush)GetValue(BackgroundProperty);
+			set => SetValue(BackgroundProperty, value);
+		}
 		#endregion
 
 		#region ItemsSource (DP - With default callback)

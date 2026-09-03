@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using Windows.Foundation;
@@ -114,8 +114,8 @@ namespace Microsoft.UI.Composition
 		}
 
 		private static readonly SKPaint _spareRenderPathStrokePaint = new SKPaint { Style = SKPaintStyle.Stroke, StrokeJoin = SKStrokeJoin.Round, StrokeCap = SKStrokeCap.Round };
-		private static readonly SKPath _spareRenderPathStroke = new SKPath();
-		private static readonly SKPath _spareRenderPathShape = new SKPath();
+		private static readonly SKPathBuilder _spareRenderPathStrokeBuilder = new();
+		private static readonly SKPathBuilder _spareRenderPathShapeBuilder = new();
 
 		// The transform CompositionShape.Render applies to the canvas before painting the geometry: the shape's
 		// Offset followed by its CombinedTransformMatrix (Scale/Rotation/TransformMatrix around CenterPoint).
@@ -132,24 +132,25 @@ namespace Microsoft.UI.Composition
 		}
 
 		// Appends the exact geometry this shape draws to <paramref name="dst"/>; returns false when it draws nothing.
-		internal bool GetRenderPath(SKPath dst)
+		internal bool GetRenderPath(SKPathBuilder dst)
 		{
-			var shapePath = _spareRenderPathShape;
-			shapePath.Rewind();
+			var shapeBuilder = _spareRenderPathShapeBuilder;
+			shapeBuilder.Reset();
 			var any = false;
 
 			if ((FillBrush?.CanPaint() ?? false) && _fillGeometryWithTransformations is { } fillGeometry)
 			{
-				shapePath.AddPath(fillGeometry.Geometry);
+				shapeBuilder.AddPath(fillGeometry.Geometry, SKPathAddMode.Append);
 				any = true;
 			}
 
 			if ((StrokeBrush?.CanPaint() ?? false) && StrokeThickness > 0 && _geometryWithTransformations is { } strokeGeometry)
 			{
 				_spareRenderPathStrokePaint.StrokeWidth = StrokeThickness;
-				_spareRenderPathStroke.Rewind();
-				_spareRenderPathStrokePaint.GetFillPath(strokeGeometry.Geometry, _spareRenderPathStroke);
-				shapePath.AddPath(_spareRenderPathStroke);
+				_spareRenderPathStrokeBuilder.Reset();
+				_spareRenderPathStrokePaint.GetFillPath(strokeGeometry.Geometry, _spareRenderPathStrokeBuilder);
+				using var strokePath = _spareRenderPathStrokeBuilder.Detach();
+				shapeBuilder.AddPath(strokePath, SKPathAddMode.Append);
 				any = true;
 			}
 
@@ -159,12 +160,13 @@ namespace Microsoft.UI.Composition
 			}
 
 			var m = GetRenderTransform();
+			using var shapePath = shapeBuilder.Detach();
 			if (!m.IsIdentity)
 			{
 				shapePath.Transform(m);
 			}
 
-			dst.AddPath(shapePath);
+			dst.AddPath(shapePath, SKPathAddMode.Append);
 			return true;
 		}
 
@@ -180,9 +182,9 @@ namespace Microsoft.UI.Composition
 					var fillPaint = _sparePaint;
 					PrepareTempPaint(fillPaint, isStroke: false);
 
-					if (Geometry is not null && (Geometry.TrimStart != default || Geometry.TrimEnd != default))
+					if (Geometry is not null && TryCreateTrimPathEffect(Geometry) is { } fillTrim)
 					{
-						fillPaint.PathEffect = SKPathEffect.CreateTrim(Geometry.TrimStart, Geometry.TrimEnd);
+						fillPaint.PathEffect = fillTrim;
 					}
 
 					var fillPathBuilder = _sparePathBuilder;
@@ -221,7 +223,7 @@ namespace Microsoft.UI.Composition
 						|| StrokeStartCap == CompositionStrokeCap.Triangle;
 
 					float[]? dashValues = null;
-					if (StrokeDashArray is { Count: > 0 } strokeDashArray)
+					if (_strokeDashArray is { Count: > 0 } strokeDashArray)
 					{
 						strokePaint.StrokeCap = ToSKStrokeCap(StrokeDashCap);
 						// WinUI dash values are in multiples of StrokeThickness; Skia expects pixels
@@ -248,15 +250,14 @@ namespace Microsoft.UI.Composition
 					// else: needsCustomCaps without dashes - keep Butt cap (default after Reset),
 					// custom caps are added as geometry below.
 
-					if (Geometry is not null && (Geometry.TrimStart != default || Geometry.TrimEnd != default))
+					if (Geometry is not null && TryCreateTrimPathEffect(Geometry) is { } trimEffect)
 					{
-						var pathEffect = SKPathEffect.CreateTrim(Geometry.TrimStart, Geometry.TrimEnd);
 						if (strokePaint.PathEffect is SKPathEffect effect)
 						{
-							pathEffect = SKPathEffect.CreateSum(effect, pathEffect);
+							trimEffect = SKPathEffect.CreateSum(effect, trimEffect);
 						}
 
-						strokePaint.PathEffect = pathEffect;
+						strokePaint.PathEffect = trimEffect;
 					}
 
 					// Generate stroke geometry for bounds that will be passed to a brush.
@@ -276,7 +277,7 @@ namespace Microsoft.UI.Composition
 					geometryWithTransformations.GetFillPath(strokePaint, strokeFillBuilder);
 
 					// Add custom cap geometry for Triangle caps or different start/end caps
-					if (needsCustomCaps && StrokeDashArray is not { Count: > 0 })
+					if (needsCustomCaps && _strokeDashArray is not { Count: > 0 })
 					{
 						AddCustomCaps(strokeFillBuilder, geometryWithTransformations.Geometry, StrokeThickness, StrokeStartCap, StrokeEndCap);
 					}
@@ -327,6 +328,65 @@ namespace Microsoft.UI.Composition
 			paint.Color = SKColors.White;   // Transparent color wouldn't draw anything
 		}
 
+		/// <summary>
+		/// Builds the path effect that trims the geometry to the window
+		/// [TrimStart + TrimOffset, TrimEnd + TrimOffset] taken modulo 1, or null when
+		/// no trimming is active (the full path is drawn).
+		/// When TrimOffset shifts the window past 1.0 (start > end after the modulo),
+		/// WinUI renders the union of [start, 1] and [0, end]. SkiaSharp's CreateTrim draws
+		/// the complement for start > end, so the two halves are summed to form the union.
+		/// </summary>
+		private static SKPathEffect? TryCreateTrimPathEffect(CompositionGeometry geometry)
+		{
+			var trimStart = geometry.TrimStart;
+			var trimEnd = geometry.TrimEnd;
+			var trimOffset = geometry.TrimOffset;
+
+			if (trimStart == default && trimEnd == default && trimOffset == default)
+			{
+				return null;
+			}
+
+			if (trimOffset == default)
+			{
+				// No offset: identical to the historical trim behavior.
+				return SKPathEffect.CreateTrim(trimStart, trimEnd);
+			}
+
+			// A full (or wider) window stays full regardless of offset — shifting it would
+			// otherwise collapse to an empty window once the endpoints are wrapped into [0,1).
+			if (trimEnd - trimStart >= 1f)
+			{
+				return SKPathEffect.CreateTrim(0f, 1f);
+			}
+
+			var start = Wrap01(trimStart + trimOffset);
+			var end = Wrap01(trimEnd + trimOffset);
+
+			if (start <= end)
+			{
+				// Shifted window still fits within [0,1] — a single trim covers it.
+				return SKPathEffect.CreateTrim(start, end);
+			}
+
+			// Wrapped window: draw the union of [start, 1] and [0, end] instead of the
+			// complement that a single CreateTrim(start, end) with start > end would produce.
+			return SKPathEffect.CreateSum(
+				SKPathEffect.CreateTrim(start, 1f),
+				SKPathEffect.CreateTrim(0f, end));
+		}
+
+		private static float Wrap01(float value)
+		{
+			value %= 1f;
+			if (value < 0f)
+			{
+				value += 1f;
+			}
+
+			return value;
+		}
+
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
 		{
 			base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
@@ -363,7 +423,7 @@ namespace Microsoft.UI.Composition
 						|| StrokeStartCap == CompositionStrokeCap.Triangle;
 
 					float[]? dashValues = null;
-					if (StrokeDashArray is { Count: > 0 } strokeDashArray)
+					if (_strokeDashArray is { Count: > 0 } strokeDashArray)
 					{
 						strokePaint.StrokeCap = ToSKStrokeCap(StrokeDashCap);
 						// WinUI dash values are in multiples of StrokeThickness; Skia expects pixels
@@ -393,7 +453,7 @@ namespace Microsoft.UI.Composition
 
 					geometryWithTransformations.GetFillPath(strokePaint, hitTestStrokeFillBuilder);
 
-					if (needsCustomCaps && StrokeDashArray is not { Count: > 0 })
+					if (needsCustomCaps && _strokeDashArray is not { Count: > 0 })
 					{
 						AddCustomCaps(hitTestStrokeFillBuilder, geometryWithTransformations.Geometry, StrokeThickness, StrokeStartCap, StrokeEndCap);
 					}

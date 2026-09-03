@@ -64,8 +64,6 @@ namespace Microsoft.UI.Xaml
 
 		Style Style { get; set; }
 
-		Microsoft.UI.Xaml.Media.Brush Background { get; set; }
-
 		Transform RenderTransform { get; set; }
 
 		TransitionCollection Transitions { get; set; }
@@ -75,8 +73,6 @@ namespace Microsoft.UI.Xaml
 		VerticalAlignment VerticalAlignment { get; set; }
 
 		Uri BaseUri { get; }
-
-		_Size AdjustArrange(_Size finalSize);
 
 		int? RenderPhase { get; set; }
 

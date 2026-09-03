@@ -27,7 +27,7 @@ public partial class Visual
 
 	internal virtual float DamageRegionSamplingMargin => 0;
 
-	private void ContributeDamageOnPaint(bool contentChanged, SKPath? damage, SKPath clip, bool clipChanged)
+	private void ContributeDamageOnPaint(bool contentChanged, DamageRegion? damage, SKPath clip, bool clipChanged)
 	{
 		if (damage is null)
 		{
@@ -55,7 +55,11 @@ public partial class Visual
 			return;
 		}
 
-		if (TryGetPaintDamageRegion(clip, out var bounds, out var regionPath))
+		// A visual that only moved is damaged at its old location too, and that one is only ever a rect, so
+		// exact geometry for the new location buys nothing. See TryGetPaintDamageRegion for what it costs.
+		var preferBounds = moved && !contentChanged;
+
+		if (TryGetPaintDamageRegion(clip, preferBounds, out var bounds, out var regionPath))
 		{
 			if (regionPath is not null)
 			{
@@ -82,7 +86,7 @@ public partial class Visual
 		}
 	}
 
-	private bool TryGetPaintDamageRegion(SKPath clip, out SKRect bounds, out SKPath? regionPath)
+	private bool TryGetPaintDamageRegion(SKPath clip, bool preferBounds, out SKRect bounds, out SKPath? regionPath)
 	{
 		bounds = default;
 		regionPath = null;
@@ -93,8 +97,7 @@ public partial class Visual
 		var keepContentPath = false;
 		try
 		{
-			clipPath.Rewind();
-			clipPath.AddPath(clip);
+			clip.Transform(SKMatrix.Identity, clipPath);
 			if (clipPath.IsEmpty)
 			{
 				return false;
@@ -103,10 +106,15 @@ public partial class Visual
 			var clipIsRect = clipPath.IsRect;
 			var clipRect = clipPath.Bounds;
 
-			if (ShadowState is null && DamageRegionSamplingMargin == 0 && _ownContentPath is { IsEmpty: false } ownContent)
+			var hasLocalBounds = TryGetLocalContentBounds(out var local);
+
+			// The exact branch is the expensive part of this method: a stroke-to-fill outset plus two path
+			// booleans, per visual per frame. Skip it for a visual that only moved — but only if bounds can
+			// answer for it, since falling through to the clip would report far more than the exact path did.
+			if ((!preferBounds || !hasLocalBounds)
+				&& ShadowState is null && DamageRegionSamplingMargin == 0 && _ownContentPath is { IsEmpty: false } ownContent)
 			{
-				contentPath.Rewind();
-				contentPath.AddPath(ownContent);
+				ownContent.Transform(SKMatrix.Identity, contentPath);
 				contentPath.Transform(TotalMatrix.ToSKMatrix());
 				OutsetForAntialiasing(contentPath);
 				contentPath.Op(clipPath, SKPathOp.Intersect, contentPath);
@@ -120,7 +128,7 @@ public partial class Visual
 				return true;
 			}
 
-			if (TryGetLocalContentBounds(out var local))
+			if (hasLocalBounds)
 			{
 				if (local.IsEmpty)
 				{
@@ -152,10 +160,7 @@ public partial class Visual
 					return true;
 				}
 
-				var rectPath = _pathPool.Allocate();
-				using var rectPathDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), rectPath);
-				rectPath.Rewind();
-				rectPath.AddRect(root);
+				using var rectPath = SkiaExtensions.CreateRectPath(root);
 				clipPath.Op(rectPath, SKPathOp.Intersect, clipPath);
 
 				if (clipPath.IsEmpty)
@@ -192,20 +197,19 @@ public partial class Visual
 	}
 
 	private static readonly SKPaint _outsetPaint = new() { Style = SKPaintStyle.Stroke, StrokeWidth = 4f, StrokeJoin = SKStrokeJoin.Round, StrokeCap = SKStrokeCap.Round };
+	private static readonly SKPathBuilder _outsetBuilder = new();
 
 	private static void OutsetForAntialiasing(SKPath path)
 	{
-		var band = _pathPool.Allocate();
-		using var bandDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), band);
 		var result = _pathPool.Allocate();
 		using var resultDisposable = new DisposableStruct<SKPath>(static p => _pathPool.Free(p), result);
 
-		band.Rewind();
-		result.Rewind();
-		_outsetPaint.GetFillPath(path, band);
+		_outsetBuilder.Reset();
+		_outsetPaint.GetFillPath(path, _outsetBuilder);
+		using var band = _outsetBuilder.Detach();
+		result.Reset();
 		path.Op(band, SKPathOp.Union, result);
-		path.Rewind();
-		path.AddPath(result);
+		result.Transform(SKMatrix.Identity, path);
 	}
 
 	internal virtual bool TryGetLocalContentBounds(out SKRect localBounds)
@@ -264,6 +268,28 @@ public partial class Visual
 			: ownLocalBounds;
 		localBounds = ExpandForShadow(silhouetteLocal);
 		return true;
+	}
+
+	/// <summary>
+	/// The bounds of everything this visual and its subtree paint, in root coordinates. False when some
+	/// part of it can't be bounded analytically, in which case the caller has to fall back to its clip.
+	/// </summary>
+	internal bool TryGetSubtreeContentBoundsInRoot(out SKRect boundsInRoot)
+	{
+		boundsInRoot = SKRect.Empty;
+
+		if (!TryGetLocalContentBounds(out var own))
+		{
+			return false;
+		}
+
+		if (!own.IsEmpty)
+		{
+			boundsInRoot = TotalMatrix.ToSKMatrix().MapRect(own);
+		}
+
+		// A shadow's silhouette already covers the descendants, see TryGetShadowSilhouetteBounds.
+		return ShadowState is not null || TryAccumulateDescendantContentBoundsInRoot(ref boundsInRoot);
 	}
 
 	private bool TryAccumulateDescendantContentBoundsInRoot(ref SKRect acc)

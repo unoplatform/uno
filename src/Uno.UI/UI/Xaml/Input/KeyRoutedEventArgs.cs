@@ -25,9 +25,6 @@ namespace Microsoft.UI.Xaml.Input
 
 		public VirtualKey Key { get; }
 
-#if IS_UNIT_TESTS || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-#endif
 		public CorePhysicalKeyStatus KeyStatus
 		{
 			get

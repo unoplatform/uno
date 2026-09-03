@@ -68,15 +68,15 @@ public void When_Test_Not_Supported_On_Mobile()
 
 The `RuntimeTestPlatforms` enum includes the following platforms:
 
-- **Native platforms**: `NativeWinUI`, `NativeWasm`, `NativeAndroid`, `NativeIOS`, `NativeMacCatalyst`, `NativeTvOS`
-- **Skia platforms**: `SkiaWin32`, `SkiaX11`, `SkiaMacOS`, `SkiaIslands`, `SkiaWasm`, `SkiaAndroid`, `SkiaIOS`, `SkiaMacCatalyst`, `SkiaTvOS`, `SkiaFrameBuffer`
+- **Native platforms**: `NativeWinUI`, `NativeWasm`, `NativeAndroid`, `NativeIOS`, `NativeTvOS`
+- **Skia platforms**: `SkiaWin32`, `SkiaX11`, `SkiaMacOS`, `SkiaIslands`, `SkiaWasm`, `SkiaAndroid`, `SkiaIOS`, `SkiaTvOS`, `SkiaFrameBuffer`
 - **Combined platforms**:
-  - `NativeUIKit` (NativeIOS | NativeTvOS | NativeMacCatalyst)
-  - `SkiaUIKit` (SkiaIOS | SkiaTvOS | SkiaMacCatalyst)
+  - `NativeUIKit` (NativeIOS | NativeTvOS)
+  - `SkiaUIKit` (SkiaIOS | SkiaTvOS)
   - `SkiaMobile` (SkiaAndroid | SkiaUIKit)
   - `SkiaDesktop` (SkiaWin32 | SkiaX11 | SkiaMacOS | SkiaIslands | SkiaFrameBuffer)
   - `Skia` (SkiaDesktop | SkiaWasm | SkiaMobile)
-  - `Native` (NativeWasm | NativeAndroid | NativeIOS | NativeMacCatalyst | NativeTvOS | NativeWinUI)
+  - `Native` (NativeWasm | NativeAndroid | NativeIOS | NativeTvOS | NativeWinUI)
   - `Wasm` (NativeWasm | SkiaWasm)
   - `Android` (NativeAndroid | SkiaAndroid)
   - `IOS` (NativeIOS | SkiaIOS)
@@ -95,11 +95,6 @@ The `Private.Infrastructure.TestServices.WindowHelper` class exposes several sta
 - `Task WindowHelper.WaitForLoaded(FrameworkElement element)`: returns a task that will complete once `element` is fully loaded into the visual tree. You'd typically await it after assigning `WindowContent = element`, to ensure that `element` has been loaded, measured, and arranged, before further manipulations or assertions.
 - `Task WindowHelper.WaitForIdle()`: returns a task that will complete when the idle dispatcher is raised, roughly indicating that the UI thread 'isn't doing anything'. Await this to wait for the UI thread to 'settle' without a specific condition.
 - `Task WindowHelper.WaitFor(Func<bool> condition)`: returns a task that will complete once `condition` is met, or throw an exception if it times out. Await this to wait for the UI to reach a specific expected state.
-
-#### StyleHelper
-
-- `IDisposable UseNativeStyle<T>() where T : Control`: This allows you to override the style settings to use a native default style for the duration of a test. Eg, `using (UseNativeStyle<Slider>()) { }` will cause all `Slider` elements to use the native style by default.
-- `IDisposable UseNativeFrameNavigation()`: This is a helper which sets native styles as default for the control types implicated in frame navigation (`Frame`, `CommandBar` and `AppBarButton`). This is useful for testing native frame navigation.
 
 #### Useful methods coming from `Uno.UI` itself
 

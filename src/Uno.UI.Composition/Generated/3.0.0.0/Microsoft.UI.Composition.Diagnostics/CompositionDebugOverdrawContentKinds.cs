@@ -4,34 +4,34 @@
 namespace Microsoft.UI.Composition.Diagnostics
 {
 	[global::System.FlagsAttribute]
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum CompositionDebugOverdrawContentKinds : uint
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		None = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		OffscreenRendered = 1,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Colors = 2,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Effects = 4,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Shadows = 8,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Lights = 16,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Surfaces = 32,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		SwapChains = 64,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		All = 4294967295,
 #endif
 	}

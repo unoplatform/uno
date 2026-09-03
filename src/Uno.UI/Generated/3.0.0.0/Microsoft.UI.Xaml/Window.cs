@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class Window
@@ -17,20 +17,7 @@ namespace Microsoft.UI.Xaml
 		// Skipping already declared property Dispatcher
 		// Skipping already declared property DispatcherQueue
 		// Skipping already declared property ExtendsContentIntoTitleBar
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.SystemBackdrop SystemBackdrop
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Window", "SystemBackdrop");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Window", "SystemBackdrop");
-			}
-		}
-#endif
+		// Skipping already declared property SystemBackdrop
 		// Skipping already declared property Title
 		// Skipping already declared property Visible
 		// Skipping already declared method Microsoft.UI.Xaml.Window.Window()

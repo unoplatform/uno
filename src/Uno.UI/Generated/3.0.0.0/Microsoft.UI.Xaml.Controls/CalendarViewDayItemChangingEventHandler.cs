@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public delegate void CalendarViewDayItemChangingEventHandler(global::Microsoft.UI.Xaml.Controls.CalendarView sender, global::Microsoft.UI.Xaml.Controls.CalendarViewDayItemChangingEventArgs e);
 #endif
 }

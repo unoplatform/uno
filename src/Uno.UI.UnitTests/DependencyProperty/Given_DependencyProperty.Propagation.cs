@@ -358,7 +358,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 				// However, now that Set/GetTemplatedParent has side effect, unless specially overridden.
 
 				sub1WR = new WeakReference(sub1);
-				sub1Store = new WeakReference(((IDependencyObjectStoreProvider)sub1).Store);
+				sub1Store = new WeakReference(((DependencyObject)sub1));
 
 				SUT.SubObject = null;
 			}
@@ -383,7 +383,7 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 			var SUT = new ContentControl() { Tag = 42 };
 			DoubleAnimation anim = null;
 
-			var template = new ControlTemplate(() =>
+			var template = new ControlTemplate(null, (_, _) =>
 			{
 				var g = new Grid();
 

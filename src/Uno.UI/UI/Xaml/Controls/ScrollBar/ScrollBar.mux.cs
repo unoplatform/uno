@@ -34,9 +34,6 @@ public partial class ScrollBar
 		DefaultStyleKey = typeof(ScrollBar);
 
 		SizeChanged += OnSizeChanged;
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		LayoutUpdated += OnLayoutUpdated;
-#endif
 		Loaded += ReAttachEvents;
 		Unloaded += DetachEvents;
 	}

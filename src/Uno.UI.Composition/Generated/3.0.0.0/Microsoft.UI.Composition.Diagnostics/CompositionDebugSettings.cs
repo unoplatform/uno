@@ -3,18 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition.Diagnostics
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CompositionDebugSettings
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		internal CompositionDebugSettings()
 		{
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Composition.Diagnostics.CompositionDebugHeatMaps HeatMaps
 		{
 			get
@@ -23,8 +23,8 @@ namespace Microsoft.UI.Composition.Diagnostics
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Composition.Diagnostics.CompositionDebugSettings TryGetSettings(global::Microsoft.UI.Composition.Compositor compositor)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Diagnostics.CompositionDebugSettings", "TryGetSettings(Compositor compositor)");

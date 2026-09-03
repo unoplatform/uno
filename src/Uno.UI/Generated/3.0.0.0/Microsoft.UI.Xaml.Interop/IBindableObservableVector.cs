@@ -3,14 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Interop
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IBindableObservableVector : global::System.Collections.IList, global::System.Collections.ICollection, global::System.Collections.IEnumerable
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Interop.IBindableObservableVector.VectorChanged.add
 		// Forced skipping of method Microsoft.UI.Xaml.Interop.IBindableObservableVector.VectorChanged.remove
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		event global::Microsoft.UI.Xaml.Interop.BindableVectorChangedEventHandler VectorChanged;
 #endif
 	}

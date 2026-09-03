@@ -49,7 +49,7 @@ jobs:
 
     - script: |
           cd $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
-          xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.Generic.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-linux-screenshots'
+          xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-linux-screenshots'
 
       displayName: Run Snapshot Tests
 

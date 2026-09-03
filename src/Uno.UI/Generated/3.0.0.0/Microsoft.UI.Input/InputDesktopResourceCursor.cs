@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class InputDesktopResourceCursor : global::Microsoft.UI.Input.InputCursor

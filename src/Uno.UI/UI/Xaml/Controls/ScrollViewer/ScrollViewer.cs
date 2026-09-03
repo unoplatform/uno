@@ -1,7 +1,3 @@
-﻿#if IS_UNIT_TESTS
-#pragma warning disable CS0067
-#endif
-
 #nullable enable
 
 using System;
@@ -29,11 +25,7 @@ using Uno.UI.Xaml.Core;
 
 using View = Microsoft.UI.Xaml.UIElement;
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
-#else
-using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.IScrollContentPresenter;
-#endif
 
 using Microsoft.UI.Input;
 
@@ -668,15 +660,9 @@ namespace Microsoft.UI.Xaml.Controls
 		partial void TrimOverscroll(Orientation orientation);
 
 		// TODO: Revisit if this can use SizeChanged += (_, _) => OnControlsBoundsChanged(); on all platforms.
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		internal override void AfterArrange()
 		{
 			base.AfterArrange();
-#else
-		internal override void OnLayoutUpdated()
-		{
-			base.OnLayoutUpdated();
-#endif
 			if (m_dimensionsUpdatedInArrange)
 			{
 				m_dimensionsUpdatedInArrange = false;
@@ -759,13 +745,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				static double GetEffectiveMargin(double leadingMargin, double trailingMargin)
 				{
-#if !__WASM__
 					return leadingMargin + trailingMargin;
-#else
-					// Issue needs to be fixed first for WASM for missing trailing Margin
-					// Details here: https://github.com/unoplatform/uno/issues/7000
-					return leadingMargin;
-#endif
 				}
 			}
 			else
@@ -855,14 +835,6 @@ namespace Microsoft.UI.Xaml.Controls
 			ComputedVerticalScrollBarVisibility = computedVisibility;
 			ComputedIsVerticalScrollEnabled = computedEnabled;
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-			// Support for the native scroll bars (delegated to the native _presenter).
-			_presenter.NativeVerticalScrollBarVisibility = ComputeNativeScrollBarVisibility(scrollable, visibility, mode, _verticalScrollbar);
-			if (invalidate && _verticalScrollbar is null)
-			{
-				InvalidateMeasure(); // Useless for managed ScrollBar, it will invalidate itself if needed.
-			}
-#endif
 		}
 
 		private void UpdateComputedHorizontalScrollability(bool invalidate)
@@ -888,14 +860,6 @@ namespace Microsoft.UI.Xaml.Controls
 			ComputedHorizontalScrollBarVisibility = computedVisibility;
 			ComputedIsHorizontalScrollEnabled = computedEnabled;
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-			// Support for the native scroll bars (delegated to the native _presenter).
-			_presenter.NativeHorizontalScrollBarVisibility = ComputeNativeScrollBarVisibility(scrollable, visibility, mode, _horizontalScrollbar);
-			if (invalidate && _horizontalScrollbar is null)
-			{
-				InvalidateMeasure(); // Useless for managed ScrollBar, it will invalidate itself if needed.
-			}
-#endif
 		}
 
 		/// <summary>
@@ -927,31 +891,6 @@ namespace Microsoft.UI.Xaml.Controls
 				&& visibility != ScrollBarVisibility.Disabled
 				&& mode != ScrollMode.Disabled;
 
-#if !UNO_HAS_MANAGED_SCROLL_PRESENTER
-		private ScrollBarVisibility ComputeNativeScrollBarVisibility(double scrollable, ScrollBarVisibility visibility, ScrollMode mode, ScrollBar? managedScrollbar)
-			=> (scrollable, visibility, mode, managedScrollbar) switch
-			{
-				(_, _, ScrollMode.Disabled, _) => ScrollBarVisibility.Disabled,
-				(0, ScrollBarVisibility.Auto, _, null) => ScrollBarVisibility.Hidden, // If scrollable is 0, the managed scrollbar won't be realized, we prefer to hide the native one until we are sure!
-				(_, _, _, null) when Uno.UI.Xaml.Controls.ScrollViewer.GetShouldFallBackToNativeScrollBars(this) => visibility,
-				(_, ScrollBarVisibility.Disabled, _, _) => ScrollBarVisibility.Disabled,
-				_ => ScrollBarVisibility.Hidden // If a managed scroll bar was set in the template, native scroll bar has to stay Hidden
-			};
-#endif
-
-		/// <summary>
-		/// Sets the content of the ScrollViewer
-		/// </summary>
-		/// <param name="view"></param>
-		/// <remarks>Used in the context of member initialization</remarks>
-		public
-#if !UNO_REFERENCE_API && !IS_UNIT_TESTS
-			new
-#endif
-			void Add(View view)
-		{
-			Content = view;
-		}
 
 		protected override void OnApplyTemplate()
 		{
@@ -1575,12 +1514,10 @@ namespace Microsoft.UI.Xaml.Controls
 			// and stop intermediate effects (e.g. ListViewBase IncrementalLoading triggered by the
 			// progressive viewport move). Once the animation completes the next layout pass runs
 			// the recompute and seats the offset at clamp(intent, SH).
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 			if ((_presenter as ScrollContentPresenter)?.IsScrollAnimationInProgress == true)
 			{
 				return false;
 			}
-#endif
 
 			var changed = false;
 
@@ -1754,15 +1691,10 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 		#endregion
 
-#if !__ANDROID__ && !__APPLE_UIKIT__ // ScrollContentPresenter.[Horizontal|Vertical]Offset not implemented on Android and iOS
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
 			base.OnKeyDown(args);
 
-			// On WASM, we could choose to scroll in the managed layer and suppress the native scrolling
-			// but it can lead to some chaotic scenarios where it's really difficult to reconcile the
-			// numbers between ScrollViewer and ScrollContentPresenter, so we choose to keep the scrolling native
-#if !__WASM__
 			var key = args.Key;
 
 			// WinUI stops keyboard scrolling if TemplatedParentHandlesScrolling
@@ -1773,7 +1705,6 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 			// Handle Ctrl+Plus/Minus for zoom
 			if (ZoomMode == ZoomMode.Enabled)
 			{
@@ -1812,7 +1743,6 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 			}
-#endif
 
 			var oldHorizontalOffset = Presenter.TargetHorizontalOffset;
 			var oldVerticalOffset = Presenter.TargetVerticalOffset;
@@ -1894,9 +1824,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				return result;
 			}
-#endif
 		}
-#endif
 
 #if __CROSSRUNTIME__
 		private static bool _warnedAboutZoomedContentAlignment;
@@ -1949,5 +1877,27 @@ namespace Microsoft.UI.Xaml.Controls
 					HorizontalScrollMode == ScrollMode.Disabled)
 			);
 		}
+
+#nullable disable
+		partial void OnZoomModeChangedPartial(ZoomMode zoomMode)
+		{
+			if (_presenter is ScrollContentPresenter scp)
+			{
+				switch (zoomMode)
+				{
+					case ZoomMode.Disabled:
+						// When zoom is disabled, set min/max to 1 to prevent any zooming
+						scp.OnMinZoomFactorChanged(1f);
+						scp.OnMaxZoomFactorChanged(1f);
+						break;
+					case ZoomMode.Enabled:
+						// When zoom is enabled, use the actual min/max values
+						scp.OnMinZoomFactorChanged(MinZoomFactor);
+						scp.OnMaxZoomFactorChanged(MaxZoomFactor);
+						break;
+				}
+			}
+		}
+#nullable enable
 	}
 }

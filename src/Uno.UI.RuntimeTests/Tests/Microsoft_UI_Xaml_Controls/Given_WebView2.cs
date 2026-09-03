@@ -311,7 +311,12 @@ public class Given_WebView2
 	[Ignore("Crashes")]
 #endif
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaUIKit)] // Flaky on UIKit - #9080
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaUIKit // Flaky on UIKit - #9080
+#if RUNTIME_NATIVE_AOT
+		// TODO: figure out why it's hanging on Android+NativeAOT: 
+		| RuntimeTestPlatforms.SkiaAndroid
+#endif // RUNTIME_NATIVE_AOT
+	)]
 	public async Task When_LocalFolder_File()
 	{
 		async Task Do()
@@ -416,7 +421,12 @@ public class Given_WebView2
 #endif
 	[TestMethod]
 	// Fails on iOS https://github.com/unoplatform/uno/issues/9080
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS
+#if RUNTIME_NATIVE_AOT
+		// Fails on Android+NativeAOT: https://github.com/dotnet/android/issues/12542
+		| RuntimeTestPlatforms.SkiaAndroid
+#endif // RUNTIME_NATIVE_AOT
+	)]
 	public async Task When_WebMessageReceived()
 	{
 		var border = new Border();
@@ -486,7 +496,12 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS
+#if RUNTIME_NATIVE_AOT
+		// Hangs on Android+NativeAOT: https://github.com/dotnet/android/issues/12542
+		| RuntimeTestPlatforms.SkiaAndroid
+#endif // RUNTIME_NATIVE_AOT
+	)]
 	public async Task When_WebMessageReceived_After_RemoveAdd()
 	{
 		var border = new Border();

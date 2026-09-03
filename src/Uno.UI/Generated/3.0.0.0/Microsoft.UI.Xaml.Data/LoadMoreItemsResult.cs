@@ -3,14 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Data
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial struct LoadMoreItemsResult
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.Data.LoadMoreItemsResult.LoadMoreItemsResult()
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public LoadMoreItemsResult(uint _Count)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Data.LoadMoreItemsResult", "LoadMoreItemsResult(uint _Count)");

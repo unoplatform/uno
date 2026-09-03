@@ -3,7 +3,7 @@ using global::System.Runtime.CompilerServices;
 using global::System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("Uno.UI")]
-[assembly: InternalsVisibleTo("Uno")]
+[assembly: InternalsVisibleTo("Uno.WinRT")]
 [assembly: InternalsVisibleTo("Uno.UI.Wasm")]
 [assembly: InternalsVisibleTo("Uno.Wasm")]
 [assembly: InternalsVisibleTo("Uno.UI.UnitTests")]

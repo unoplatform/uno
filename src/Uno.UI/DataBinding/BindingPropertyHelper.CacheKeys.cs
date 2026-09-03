@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-#if !NETFX_CORE
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -164,4 +163,3 @@ internal static partial class BindingPropertyHelper
 		}
 	}
 }
-#endif

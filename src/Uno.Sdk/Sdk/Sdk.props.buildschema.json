@@ -59,15 +59,7 @@
 		},
 		"tvOSProjectFolder": {
 			"type": "folder-with-slash",
-			"description": "The folder containing the Mac Catalyst-specific files for this project."
-		},
-		"MacCatalystProjectFolder": {
-			"type": "folder-with-slash",
-			"description": "The folder containing the Mac Catalyst-specific files for this project."
-		},
-		"MacOSProjectFolder": {
-			"type": "folder-with-slash",
-			"description": "The folder containing the macOS-specific files for this project."
+			"description": "The folder containing the tvOS-specific files for this project."
 		},
 		"DesktopProjectFolder": {
 			"type": "folder-with-slash",
@@ -132,7 +124,7 @@
 			"type": "bool"
 		},
 		"UnoDisable_RemoveTransitiveWPFDependency": {
-			"description": "Disables removing the transitive dependency to WPF which has a requirement to have net9.0-windows and not net9.0.",
+			"description": "Disables removing the transitive dependency to WPF which has a requirement to have net10.0-windows and not net10.0.",
 			"type": "bool"
 		},
 		"UnoDisable_RemoveRuntimeFrameworkInRuntimeConfigurationFiles": {
@@ -556,7 +548,7 @@
 					"helpUrl": "https://aka.platform.uno/feature-serialization"
 				},
 				"SkiaRenderer": {
-					"description": "Adds support for using Skia as a UI renderer on all targets.",
+					"description": "No-op, kept for backwards compatibility. Skia is always used as the UI renderer on Uno Platform targets. The WinAppSDK target always renders natively with WinUI.",
 					"helpUrl": "https://aka.platform.uno/skia-rendering"
 				},
 				"Storage": {

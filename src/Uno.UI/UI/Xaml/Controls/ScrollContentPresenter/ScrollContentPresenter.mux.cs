@@ -98,6 +98,7 @@ public partial class ScrollContentPresenter
 		var viewportHeight = ViewportHeight;
 		var zoomFactor = Scroller.ZoomFactor;
 
+<<<<<<< HEAD
 		// Adjust for region blocked by keyboard. Only needed where the occlusion padding is
 		// applied to the native view: on Skia it goes through Scroller.Padding -> Margin, which
 		// ViewportHeight already accounts for (subtracting it again would double-count).
@@ -105,6 +106,8 @@ public partial class ScrollContentPresenter
 		viewportHeight -= _occludedRectPadding.Bottom;
 #endif
 
+=======
+>>>>>>> origin/master
 		// Compute the target offsets based on the provided BringIntoViewRequestedEventArgs.
 		ComputeBringIntoViewTargetOffsets(
 			content,
@@ -194,12 +197,15 @@ public partial class ScrollContentPresenter
 		var viewportHeight = ViewportHeight;
 		var zoomFactor = Scroller.ZoomFactor;
 
+<<<<<<< HEAD
 		// Adjust for region blocked by keyboard. Android-only: on Skia the occlusion padding
 		// flows into Margin, which ViewportHeight already subtracts (see OnBringIntoViewRequested).
 #if __ANDROID__
 		viewportHeight -= _occludedRectPadding.Bottom;
 #endif
 
+=======
+>>>>>>> origin/master
 		if (!double.IsNaN(requestEventArgs.HorizontalAlignmentRatio))
 		{
 			// Account for the horizontal alignment ratio

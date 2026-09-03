@@ -310,7 +310,7 @@ namespace Microsoft.UI.Xaml
 
 			var defaultValueForType = GetDefaultValue(null, forType);
 
-			if (!DependencyObjectStore.AreDifferent(_ownerTypeMetadata.DefaultValue, defaultValueForType))
+			if (!DependencyObject.AreDifferent(_ownerTypeMetadata.DefaultValue, defaultValueForType))
 			{
 				return _ownerTypeMetadata;
 			}
@@ -607,18 +607,6 @@ namespace Microsoft.UI.Xaml
 				if (referenceObject is FadeInThemeAnimation or FadeOutThemeAnimation)
 				{
 					return "Opacity";
-				}
-			}
-
-			if (this == DoubleAnimation.ToProperty)
-			{
-				if (referenceObject is FadeInThemeAnimation)
-				{
-					return Uno.UI.Helpers.Boxes.NullableDoubleBoxes.One;
-				}
-				else if (referenceObject is FadeOutThemeAnimation)
-				{
-					return Uno.UI.Helpers.Boxes.NullableDoubleBoxes.Zero;
 				}
 			}
 

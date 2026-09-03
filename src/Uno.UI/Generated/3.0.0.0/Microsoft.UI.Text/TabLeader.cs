@@ -3,25 +3,25 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Text
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum TabLeader
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Spaces = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Dots = 1,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Dashes = 2,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Lines = 3,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		ThickLines = 4,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Equals = 5,
 #endif
 	}

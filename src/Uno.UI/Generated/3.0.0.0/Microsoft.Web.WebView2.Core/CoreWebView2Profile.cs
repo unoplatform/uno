@@ -3,13 +3,22 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
+<<<<<<< HEAD
 #if false || false || false || false || false || false
+=======
+#if false
+>>>>>>> origin/master
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2Profile
 	{
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2CookieManager CookieManager
 		{
 			get
@@ -19,8 +28,13 @@ namespace Microsoft.Web.WebView2.Core
 		}
 #endif
 		// Skipping already declared property DefaultDownloadFolderPath
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public bool IsGeneralAutofillEnabled
 		{
 			get
@@ -34,8 +48,13 @@ namespace Microsoft.Web.WebView2.Core
 		}
 #endif
 		// Skipping already declared property IsInPrivateModeEnabled
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public bool IsPasswordAutosaveEnabled
 		{
 			get
@@ -49,8 +68,13 @@ namespace Microsoft.Web.WebView2.Core
 		}
 #endif
 		// Skipping already declared property PreferredColorScheme
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2TrackingPreventionLevel PreferredTrackingPreventionLevel
 		{
 			get
@@ -67,37 +91,62 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared property ProfilePath
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Profile.ClearBrowsingDataAsync(Microsoft.Web.WebView2.Core.CoreWebView2BrowsingDataKinds, System.DateTimeOffset, System.DateTimeOffset)
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Profile.ClearBrowsingDataAsync()
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Microsoft.Web.WebView2.Core.CoreWebView2PermissionSetting>> GetNonDefaultPermissionSettingsAsync()
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "GetNonDefaultPermissionSettingsAsync()");
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension>> GetBrowserExtensionsAsync()
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "GetBrowserExtensionsAsync()");
 		}
 #endif
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Profile.ClearBrowsingDataAsync(Microsoft.Web.WebView2.Core.CoreWebView2BrowsingDataKinds)
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Windows.Foundation.IAsyncAction SetPermissionStateAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2PermissionKind PermissionKind, string origin, global::Microsoft.Web.WebView2.Core.CoreWebView2PermissionState State)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "SetPermissionStateAsync(CoreWebView2PermissionKind PermissionKind, string origin, CoreWebView2PermissionState State)");
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2BrowserExtension> AddBrowserExtensionAsync(string extensionFolderPath)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "AddBrowserExtensionAsync(string extensionFolderPath)");
 		}
 #endif
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 		public void Delete()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "Delete()");
@@ -119,16 +168,28 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.PreferredTrackingPreventionLevel.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.ProfileName.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Profile.ProfilePath.get
+<<<<<<< HEAD
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2Profile, object> Deleted
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2Profile, object> Deleted
+		{
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "event Deleted");
 			}
+<<<<<<< HEAD
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+=======
+			[global::Uno.NotImplemented("__SKIA__")]
+>>>>>>> origin/master
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "event Deleted");

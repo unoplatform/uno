@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Documents
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class Inline : global::Microsoft.UI.Xaml.Documents.TextElement
