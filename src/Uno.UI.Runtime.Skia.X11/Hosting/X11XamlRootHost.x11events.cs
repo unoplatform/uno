@@ -7,6 +7,7 @@ using Windows.UI.Core;
 using Microsoft.UI.Windowing;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
@@ -200,7 +201,14 @@ internal partial class X11XamlRootHost
 							RaiseConfigureCallback();
 							break;
 						case XEventName.FocusIn:
-							QueueAction(this, () => _focusCallback(true));
+							QueueAction(this, () =>
+							{
+								_focusCallback(true);
+								if (_accessibility is not null)
+								{
+									AccessibilityRouter.SetActive(this);
+								}
+							});
 							break;
 						case XEventName.FocusOut:
 							QueueAction(this, () => _focusCallback(false));
