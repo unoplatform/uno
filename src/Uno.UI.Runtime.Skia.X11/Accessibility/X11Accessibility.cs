@@ -29,6 +29,10 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 	private readonly X11XamlRootHost _host;
 	private readonly Window _window;
 
+	// Guards _server assignment (on the D-Bus connect continuation thread) against
+	// DisposeCore (on the UI thread), so a server that starts as the window closes is
+	// never left running.
+	private readonly object _serverGate = new();
 	private AtspiServer? _server;
 	private AtspiNode? _root;
 	private readonly Dictionary<nint, AtspiNode> _nodesByHandle = new();
@@ -82,15 +86,18 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 				return;
 			}
 
-			if (IsDisposed)
+			lock (_serverGate)
 			{
-				// The window closed while the connection was being established;
-				// stop the server so the D-Bus connection is not leaked.
-				StopServerSafely(server);
-				return;
-			}
+				if (IsDisposed)
+				{
+					// The window closed while the connection was being established;
+					// stop the server so the D-Bus connection is not leaked.
+					StopServerSafely(server);
+					return;
+				}
 
-			_server = server;
+				_server = server;
+			}
 
 			X11XamlRootHost.QueueAction(_host, () =>
 			{
@@ -409,6 +416,20 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 	private void PopulateComboBoxItems(AtspiNode comboNode, ComboBox comboBox)
 	{
 		comboNode.Expandable = true;
+		comboNode.Expanded = comboBox.IsDropDownOpen;
+
+		// The combo's selected value is always exposed as text (like the macOS head),
+		// but the items themselves are only enumerated while the dropdown is open — an
+		// eager walk of comboBox.Items would materialize a large/virtualized ItemsSource
+		// on every rebuild. A rebuild is coalesced-triggered when the dropdown opens.
+		comboNode.Text = FrameworkElement.GetStringFromObject(comboBox.SelectionBoxItem) ?? "";
+		comboNode.HasText = true;
+
+		if (!comboBox.IsDropDownOpen)
+		{
+			return;
+		}
+
 		for (var index = 0; index < comboBox.Items.Count; index++)
 		{
 			var item = comboBox.Items[index];
@@ -437,10 +458,6 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			}
 			comboNode.Children.Add(itemNode);
 		}
-
-		// The combo also exposes its current selection as text.
-		comboNode.Text = comboNode.Children.Find(c => c.Selected)?.Name ?? "";
-		comboNode.HasText = true;
 	}
 
 	private static string ResolveName(AutomationPeer? peer)
@@ -812,11 +829,16 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 
 		_window.Activated -= OnWindowActivated;
 
-		var server = _server;
-		_server = null;
+		AtspiServer? server;
+		lock (_serverGate)
+		{
+			server = _server;
+			_server = null;
+		}
 		_root = null;
 		_nodesByHandle.Clear();
 		_elementsByHandle.Clear();
+		_elementsSnapshot = new Dictionary<nint, UIElement>();
 		_focusedNode = null;
 		_treeInitialized = false;
 
