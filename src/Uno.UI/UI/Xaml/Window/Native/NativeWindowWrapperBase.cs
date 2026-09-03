@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Threading;
 using Microsoft.UI.Content;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
@@ -32,6 +33,8 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	private protected Window? _window;
 	private float _rasterizationScale;
 	private readonly SerialDisposable _presenterSubscription = new SerialDisposable();
+	private static ulong _generatedWindowIdIterator;
+	private ulong _generatedWindowId;
 
 	protected NativeWindowWrapperBase(Window window, XamlRoot xamlRoot) : this()
 	{
@@ -40,6 +43,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	protected NativeWindowWrapperBase()
 	{
+		_generatedWindowId = Interlocked.Increment(ref _generatedWindowIdIterator);
 	}
 
 	public ContentSiteView ContentSiteView => _contentSite.View;
@@ -59,6 +63,8 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	}
 
 	public abstract object? NativeWindow { get; }
+
+	public virtual ulong NativeWindowId => _generatedWindowId;
 
 	public Rect Bounds
 	{

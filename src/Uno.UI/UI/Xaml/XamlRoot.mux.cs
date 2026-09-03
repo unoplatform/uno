@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System.Runtime.CompilerServices;
+using Microsoft.UI.Content;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 
@@ -24,6 +25,8 @@ public sealed partial class XamlRoot
 	/// Gets a value that indicates whether the XamlRoot is visible.
 	/// </summary>
 	public bool IsHostVisible => VisualTree.IsVisible;
+
+	public ContentIslandEnvironment? ContentIslandEnvironment => VisualTree.ContentRoot?.ContentIslandEnvironment;
 
 	internal void RaiseChangedEvent() => Changed?.Invoke(this, new());
 

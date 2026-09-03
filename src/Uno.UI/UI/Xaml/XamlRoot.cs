@@ -12,6 +12,7 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Content;
 
 namespace Microsoft.UI.Xaml;
 
