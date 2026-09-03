@@ -74,42 +74,60 @@ partial class ResourceLoader
 	{
 		_lookupAssemblies.Add(assembly);
 
+		// Diagnostics only, never drives the rollback: the reload branch re-parses EVERY registered
+		// assembly, so a failure there can come from a pre-existing registration's .upri.
+		var reloadedEverything = false;
+
 		try
 		{
 			if (HasContextChangedSignificantly(out var context))
 			{
-				// The cache is still valid, we only have to load resources from the given assembly
-				ProcessAssembly(assembly, context.LanguagePreferences);
+				// The context moved on since the cache was established: parse only this assembly for
+				// the new preferences, the first later resolve reloads the rest.
+				ProcessAssemblyTransactionally(assembly, context.LanguagePreferences);
 			}
 			else
 			{
-				// The current culture was altered, rebuild the whole/missing cache
+				// The cache matches the current context, so rebuilding it as a whole is what merges
+				// the new assembly in.
+				reloadedEverything = true;
 				ReloadResources(context);
 			}
 		}
-		catch (Exception)
+		catch (Exception error)
 		{
 			// A failed registration must not linger: the list is re-enumerated by every later
 			// rebuild (culture change, ALC sweep), so a malformed assembly left registered would
-			// re-hit the same parse failure forever. Roll back the just-added entry (and any
-			// parsed markers it contributed) before rethrowing to the caller.
+			// re-hit the same parse failure forever. Both branches parse into temporaries and apply
+			// only on success, so dropping the list entry is the whole rollback.
 			var lastIndex = _lookupAssemblies.LastIndexOf(assembly);
 			if (lastIndex >= 0)
 			{
 				_lookupAssemblies.RemoveAt(lastIndex);
 			}
 
-			if (!_lookupAssemblies.Contains(assembly))
+			if (_log.IsEnabled(LogLevel.Error))
 			{
-				_parsedResources.RemoveWhere(marker => marker.Assembly == assembly);
+				_log.LogError($"AddLookupAssembly failed for '{assembly.FullName}' (whole cache reloaded: {reloadedEverything}); registration rolled back, live resources unchanged.", error);
 			}
 
 			throw;
 		}
 	}
 
-	private static void ProcessAssembly(Assembly assembly, string[] languagePreferences)
-		=> ProcessAssembly(assembly, languagePreferences, GetOrCreateNamedLoaderResources, _parsedResources);
+	/// <summary>
+	/// Parses <paramref name="assembly"/>'s .upri resources and merges them into the live loaders
+	/// only once every file parsed successfully.
+	/// </summary>
+	private static void ProcessAssemblyTransactionally(Assembly assembly, string[] languagePreferences)
+	{
+		// Seeded with this assembly's already-parsed files so they are skipped exactly as a parse
+		// against the live markers would skip them.
+		var parse = new TransactionalParse(_parsedResources.Where(marker => marker.Assembly == assembly));
+
+		parse.Parse(assembly, languagePreferences);
+		parse.MergeIntoLiveLoaders();
+	}
 
 	private static void ProcessAssembly(
 		Assembly assembly,
@@ -129,27 +147,184 @@ partial class ResourceLoader
 
 	private static void ReloadResources(LoaderContext context)
 	{
-		if (!WinRTFeatureConfiguration.ResourceLoader.PreserveParsedResources)
-		{
-			ClearResources();
-			_parsedResources.Clear();
-		}
+		var preserveParsedResources = WinRTFeatureConfiguration.ResourceLoader.PreserveParsedResources;
 
+		// Preserving keeps what earlier language preferences already contributed, so the live markers
+		// are carried over and the newly parsed values are merged on top rather than replacing them.
+		var parse = preserveParsedResources ? new TransactionalParse(_parsedResources) : new TransactionalParse();
 		foreach (var assembly in _lookupAssemblies)
 		{
-			ProcessAssembly(assembly, context.LanguagePreferences);
+			parse.Parse(assembly, context.LanguagePreferences);
+		}
+
+		if (preserveParsedResources)
+		{
+			parse.MergeIntoLiveLoaders();
+		}
+		else
+		{
+			parse.ReplaceLiveLoaders();
 		}
 
 		_loaderContext = context;
 	}
 
-	private static void ClearResources()
+	/// <summary>
+	/// Accumulates .upri parse results into TEMPORARY structures so the live loaders are mutated only
+	/// once every file has parsed successfully. Every path that mutates the live state
+	/// (<see cref="AddLookupAssembly"/>, <see cref="ReloadResources"/> — hence the culture-change
+	/// path through <see cref="EnsureLoadersCultures"/> — and
+	/// <see cref="RebuildLoaderResourcesFromSurvivors"/>) goes through this, so a malformed .upri
+	/// (e.g. a stream truncated in the middle of a key/value pair) throws without leaving a partially
+	/// parsed value or marker observable. A caller that must reject ONE contributor without rolling
+	/// the others back (<see cref="RebuildLoaderResourcesFromSurvivors"/>) parses each contributor
+	/// into its own <see cref="CreateScratch"/> and <see cref="AbsorbScratch"/>es only those that
+	/// parsed completely.
+	/// </summary>
+	private sealed class TransactionalParse
 	{
-		// We clear each loader independently instead of clearing the '_loaders'
-		// so if a loader instance has been captured, it will be updated
-		foreach (var loader in _loaders.Values)
+		private readonly Dictionary<string, Dictionary<string, Dictionary<string, string>>> _loaderResources = new(StringComparer.OrdinalIgnoreCase);
+		private readonly HashSet<(Assembly Assembly, string ResourceName)> _markers;
+
+		public TransactionalParse()
+			: this(Array.Empty<(Assembly Assembly, string ResourceName)>())
 		{
-			loader._resources.Clear();
+		}
+
+		/// <param name="alreadyParsed">
+		/// Files to seed the marker set with, so they are skipped exactly as a parse against the live
+		/// <see cref="_parsedResources"/> would skip them.
+		/// </param>
+		public TransactionalParse(IEnumerable<(Assembly Assembly, string ResourceName)> alreadyParsed)
+			=> _markers = new HashSet<(Assembly Assembly, string ResourceName)>(alreadyParsed);
+
+		/// <summary>
+		/// Parses <paramref name="assembly"/>'s .upri files into the temporaries; throws (leaving the
+		/// live state untouched) when one of them is malformed.
+		/// </summary>
+		public void Parse(Assembly assembly, string[] languagePreferences)
+			=> ProcessAssembly(assembly, languagePreferences, ResolveLoaderResources, _markers);
+
+		/// <summary>
+		/// Merges the parsed state into the live loaders with the same last-writer-wins semantics
+		/// <see cref="ProcessResourceFile"/> uses when writing to them directly, and records the
+		/// parsed markers.
+		/// </summary>
+		public void MergeIntoLiveLoaders()
+		{
+			MergeInto(GetOrCreateNamedLoaderResources);
+
+			foreach (var marker in _markers)
+			{
+				_parsedResources.Add(marker);
+			}
+		}
+
+		/// <summary>
+		/// Creates an EMPTY parse seeded with the markers accumulated here so far, so a .upri an
+		/// earlier contributor already parsed is skipped exactly as a parse sharing this instance
+		/// would skip it. The result is independent: parsing into it and then DISCARDING it (rather
+		/// than handing it to <see cref="AbsorbScratch"/>) leaves this instance — and therefore the
+		/// live state — untouched, which is what lets one contributor be rejected without rolling
+		/// the others back.
+		/// </summary>
+		public TransactionalParse CreateScratch() => new(_markers);
+
+		/// <summary>
+		/// Folds a scratch parse's values AND markers into this instance, with the same
+		/// last-writer-wins-per-key semantics <see cref="MergeIntoLiveLoaders"/> uses, so
+		/// contributor ordering behaves exactly as it does in a single shared parse.
+		/// Temporary-to-temporary only: no live state is touched. Call it ONLY once
+		/// <paramref name="scratch"/> has returned from <see cref="Parse"/> — a scratch that threw
+		/// must be discarded whole, because a leaked marker is as wrong as a leaked value (it makes
+		/// a later parse skip a file it should have read).
+		/// </summary>
+		public void AbsorbScratch(TransactionalParse scratch)
+		{
+			// The method group binds to THIS instance's temporaries, not to the scratch's.
+			scratch.MergeInto(ResolveLoaderResources);
+
+			foreach (var marker in scratch._markers)
+			{
+				_markers.Add(marker);
+			}
+		}
+
+		/// <summary>
+		/// Makes the parsed state the loaders' entire content and replaces the live markers with the
+		/// parsed ones. Each live loader is cleared in place (instead of clearing
+		/// <see cref="_loaders"/>) so already-captured <see cref="ResourceLoader"/> instances see the
+		/// update; loader names with no live instance yet are materialized.
+		/// </summary>
+		public void ReplaceLiveLoaders()
+		{
+			foreach (var loader in _loaders.Values)
+			{
+				loader._resources.Clear();
+				if (_loaderResources.TryGetValue(loader.LoaderName, out var cultures))
+				{
+					foreach (var culture in cultures)
+					{
+						loader._resources[culture.Key] = culture.Value;
+					}
+				}
+			}
+
+			foreach (var parsed in _loaderResources.Where(parsed => !_loaders.ContainsKey(parsed.Key)))
+			{
+				var liveResources = GetOrCreateNamedLoaderResources(parsed.Key);
+				foreach (var culture in parsed.Value)
+				{
+					liveResources[culture.Key] = culture.Value;
+				}
+			}
+
+			_parsedResources.Clear();
+			foreach (var marker in _markers)
+			{
+				_parsedResources.Add(marker);
+			}
+		}
+
+		/// <summary>
+		/// Copies the parsed state into the dictionaries <paramref name="resolveTargetResources"/>
+		/// hands out, overwriting per key (last writer wins) — the semantics
+		/// <see cref="ProcessResourceFile"/> has when writing to a target directly. The target is
+		/// either the live loaders (<see cref="MergeIntoLiveLoaders"/>) or another
+		/// <see cref="TransactionalParse"/>'s temporaries (<see cref="AbsorbScratch"/>).
+		/// </summary>
+		private void MergeInto(Func<string, Dictionary<string, Dictionary<string, string>>> resolveTargetResources)
+		{
+			foreach (var parsed in _loaderResources)
+			{
+				var targetResources = resolveTargetResources(parsed.Key);
+				foreach (var culture in parsed.Value)
+				{
+					if (targetResources.TryGetValue(culture.Key, out var resources))
+					{
+						foreach (var pair in culture.Value)
+						{
+							resources[pair.Key] = pair.Value;
+						}
+					}
+					else
+					{
+						// Nothing in the target to merge with: hand the temporary over instead of
+						// copying it.
+						targetResources[culture.Key] = culture.Value;
+					}
+				}
+			}
+		}
+
+		private Dictionary<string, Dictionary<string, string>> ResolveLoaderResources(string name)
+		{
+			if (!_loaderResources.TryGetValue(name, out var cultures))
+			{
+				_loaderResources[name] = cultures = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
+			}
+
+			return cultures;
 		}
 	}
 
@@ -220,11 +395,21 @@ partial class ResourceLoader
 
 	/// <summary>
 	/// Re-derives every named loader's merged culture/key/value entries from the surviving
-	/// <see cref="_lookupAssemblies"/> (called after a dying ALC's assemblies have been removed).
-	/// Parses into TEMPORARY dictionaries first and only copies the result into the live loaders
-	/// once every survivor has been processed, wrapping each assembly in try/catch, so a single
-	/// malformed .upri (logged and skipped) can never leave a live loader empty.
+	/// <see cref="_lookupAssemblies"/> (called after a dying ALC's assemblies have been removed),
+	/// through the <see cref="TransactionalParse"/> temp-then-apply pattern, with each survivor
+	/// parsing into its own scratch that is folded into the aggregate only after it parsed
+	/// completely. A single malformed .upri is therefore logged and skipped — contributing nothing,
+	/// not even a pair or marker read before the failure — instead of aborting the rebuild and
+	/// leaving a live loader empty.
 	/// </summary>
+	/// <remarks>
+	/// The re-derivation only covers the last established context's language preferences, so with
+	/// <see cref="WinRTFeatureConfiguration.ResourceLoader.PreserveParsedResources"/> enabled, values
+	/// preserved for OTHER cultures by earlier language changes are dropped here; they are re-parsed
+	/// the next time those languages become active. Attributing a merged value back to a single
+	/// assembly is impossible (see <see cref="ClearAlcAssembliesCore"/>), so re-deriving from the
+	/// survivors is the only way to stop a dying ALC's override outliving it.
+	/// </remarks>
 	private static void RebuildLoaderResourcesFromSurvivors()
 	{
 		// The loaders were merged for the last established context's language preferences. Reuse
@@ -237,75 +422,41 @@ partial class ResourceLoader
 			languagePreferences = context.LanguagePreferences;
 		}
 
-		var rebuiltResources = new Dictionary<string, Dictionary<string, Dictionary<string, string>>>(StringComparer.OrdinalIgnoreCase);
-		var rebuiltMarkers = new HashSet<(Assembly Assembly, string ResourceName)>();
-
-		Dictionary<string, Dictionary<string, string>> ResolveRebuiltLoader(string name)
-		{
-			if (!rebuiltResources.TryGetValue(name, out var cultures))
-			{
-				rebuiltResources[name] = cultures = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
-			}
-
-			return cultures;
-		}
-
-		// Parse only into the temporaries here — the phase that can throw (malformed .upri) must not
-		// touch the live loaders. A per-assembly guard keeps one bad file from aborting the rebuild.
+		// Started from an empty marker set: the rebuilt state replaces the live one wholesale.
+		var aggregate = new TransactionalParse();
 		foreach (var assembly in _lookupAssemblies)
 		{
+			// Each survivor parses into its OWN scratch, seeded with the markers the aggregate has
+			// accumulated so far so a .upri an earlier survivor already parsed is still skipped.
+			// Only a scratch whose Parse RETURNED is folded in, so a survivor that throws part-way
+			// through — after a marker and some pairs already landed in its scratch, and possibly
+			// after earlier .upri files of the SAME assembly parsed fine — contributes neither
+			// values nor markers.
+			var scratch = aggregate.CreateScratch();
 			try
 			{
-				ProcessAssembly(assembly, languagePreferences, ResolveRebuiltLoader, rebuiltMarkers);
+				scratch.Parse(assembly, languagePreferences);
 			}
 			catch (Exception error) when (error is global::System.IO.InvalidDataException or global::System.IO.IOException or NotSupportedException or BadImageFormatException or global::System.IO.FileLoadException or ArgumentException or FormatException)
 			{
-				// Recoverable per-assembly parse/reflection failure: skip this survivor and keep
-				// rebuilding. ProcessResourceFile surfaces malformed .upri content (bad magic,
-				// unsupported version, unreadable stream) as InvalidDataException, so every parser
-				// failure is covered here. Fatal exceptions are intentionally not caught; the live
-				// loaders are untouched until the apply phase
-				// below, so an escaping exception here cannot leave a loader empty.
+				// Recoverable per-assembly parse/reflection failure: discard this survivor's scratch
+				// whole and keep rebuilding. ProcessResourceFile surfaces malformed .upri content
+				// (bad magic, unsupported version, truncated/unreadable stream) as
+				// InvalidDataException, so every parser failure is covered here. Fatal exceptions are
+				// intentionally not caught: the live loaders are untouched until the apply phase, so
+				// an escaping exception here cannot leave a loader empty.
 				if (_log.IsEnabled(LogLevel.Error))
 				{
 					_log.LogError($"[ALC-CLEANUP] ResourceLoader: skipping lookup assembly '{assembly.FullName}' while rebuilding merged resources after ALC unload.", error);
 				}
+
+				continue;
 			}
+
+			aggregate.AbsorbScratch(scratch);
 		}
 
-		// Apply the rebuilt state to the live loaders in place. Copying into the existing _resources
-		// dictionaries (rather than swapping the readonly field) preserves the shared references that
-		// captured ResourceLoader instances rely on. Parsing already succeeded into the temporaries,
-		// so this phase only mutates dictionaries and cannot throw partway and leave a loader empty.
-		foreach (var loader in _loaders.Values)
-		{
-			loader._resources.Clear();
-			if (rebuiltResources.TryGetValue(loader.LoaderName, out var cultures))
-			{
-				foreach (var culture in cultures)
-				{
-					loader._resources[culture.Key] = culture.Value;
-				}
-			}
-		}
-
-		// A survivor may contribute a loader name with no live instance yet; materialize it.
-		foreach (var rebuilt in rebuiltResources.Where(rebuilt => !_loaders.ContainsKey(rebuilt.Key)))
-		{
-			var loaderResources = GetOrCreateNamedResourceLoader(rebuilt.Key)._resources;
-			foreach (var culture in rebuilt.Value)
-			{
-				loaderResources[culture.Key] = culture.Value;
-			}
-		}
-
-		// Replace the parsed markers with the survivor-derived set so a later AddLookupAssembly of
-		// the same logical app re-parses correctly.
-		_parsedResources.Clear();
-		foreach (var marker in rebuiltMarkers)
-		{
-			_parsedResources.Add(marker);
-		}
+		aggregate.ReplaceLiveLoaders();
 	}
 
 	private static bool IsFromNonDefaultAlc(Assembly assembly)
@@ -320,6 +471,27 @@ partial class ResourceLoader
 	/// <see cref="_lookupAssemblies"/> field.
 	/// </summary>
 	internal static bool ContainsLookupAssembly(Assembly assembly) => _lookupAssemblies.Contains(assembly);
+
+	/// <summary>
+	/// Test seam: whether a loader instance exists for <paramref name="loaderName"/>, so a test can
+	/// tell "no loader was ever created" from "a loader exists but holds no value" — the difference
+	/// between a parse that never touched the live state and one that did and was cleaned up after.
+	/// </summary>
+	internal static bool ContainsNamedLoader(string loaderName) => _loaders.ContainsKey(loaderName);
+
+	/// <summary>
+	/// Test seam: reads a merged value straight from the per-loader dictionaries, without going
+	/// through <c>GetString</c> — which re-establishes the loader context and therefore reloads (and
+	/// wipes) the loaders when the culture changed, masking a value leaked by a failed parse.
+	/// </summary>
+	internal static bool TryGetMergedResourceForTests(string loaderName, string culture, string key, out string? value)
+	{
+		value = null;
+
+		return _loaders.TryGetValue(loaderName, out var loader)
+			&& loader._resources.TryGetValue(culture, out var resources)
+			&& resources.TryGetValue(key, out value);
+	}
 
 	private static bool HasContextChangedSignificantly(out LoaderContext context)
 	{
@@ -421,36 +593,54 @@ partial class ResourceLoader
 				loaderResources[culture] = resources = new Dictionary<string, string>();
 			}
 
-			var resourceCount = reader.ReadInt32();
 			StringBuilder sb = new();
-			for (var i = 0; i < resourceCount; i++)
+			int? declaredCount = null;
+			try
 			{
-				var key = reader.ReadString();
-				var value = reader.ReadString();
+				var resourceCount = reader.ReadInt32();
+				declaredCount = resourceCount;
 
-				if (version == 2)
+				for (var i = 0; i < resourceCount; i++)
 				{
-					// Restore the original format
-					key = key.Replace("/", ".");
+					var key = reader.ReadString();
+					var value = reader.ReadString();
 
-					var firstDotIndex = key.IndexOf('.');
-					if (firstDotIndex != -1)
+					if (version == 2)
 					{
-						sb.Clear();
-						sb.Append(key);
+						// Restore the original format
+						key = key.Replace("/", ".");
 
-						sb[firstDotIndex] = '/';
+						var firstDotIndex = key.IndexOf('.');
+						if (firstDotIndex != -1)
+						{
+							sb.Clear();
+							sb.Append(key);
 
-						key = sb.ToString();
+							sb[firstDotIndex] = '/';
+
+							key = sb.ToString();
+						}
 					}
-				}
 
-				if (_log.IsEnabled(LogLevel.Debug))
-				{
-					_log.LogDebug($"[{name}, {culture}, {fileName}] Adding resource: {key}={value}");
-				}
+					if (_log.IsEnabled(LogLevel.Debug))
+					{
+						_log.LogDebug($"[{name}, {culture}, {fileName}] Adding resource: {key}={value}");
+					}
 
-				resources[key] = value;
+					resources[key] = value;
+				}
+			}
+			catch (EndOfStreamException error)
+			{
+				// A stream that ends anywhere in the entry list — mid pair, or inside the declared
+				// count itself — surfaces as BinaryReader's context-free EndOfStreamException;
+				// restate it as the documented InvalidDataException naming the file, like every
+				// other malformed-.upri case.
+				throw new InvalidDataException(
+					declaredCount is { } count
+						? $"Truncated resource file {fileName}: it declares {count} resource(s) but the stream ended early."
+						: $"Truncated resource file {fileName}: the stream ended before its resource count could be read.",
+					error);
 			}
 		}
 	}
