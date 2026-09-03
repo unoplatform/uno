@@ -8,14 +8,13 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
-using MuxTextBox = Microsoft.UI.Xaml.Controls.TextBox;
 
 namespace Uno.UI.Xaml.Controls.Extensions;
 
 internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtension
 {
 	private readonly TextBoxView _owner;
-	private readonly Func<MuxTextBox, IOverlayTextBoxView> _textBoxViewFactory;
+	private readonly Func<TextBoxCore, IOverlayTextBoxView> _textBoxViewFactory;
 	private readonly SerialDisposable _textChangedDisposable = new SerialDisposable();
 	private readonly SerialDisposable _pasteDisposable = new SerialDisposable();
 
@@ -28,7 +27,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 	private int? _selectionStartCache;
 	private int? _selectionLengthCache;
 
-	protected OverlayTextBoxViewExtension(TextBoxView owner, Func<MuxTextBox, IOverlayTextBoxView> textBoxViewFactory)
+	protected OverlayTextBoxViewExtension(TextBoxView owner, Func<TextBoxCore, IOverlayTextBoxView> textBoxViewFactory)
 	{
 		_owner = owner ?? throw new ArgumentNullException(nameof(owner));
 		_textBoxViewFactory = textBoxViewFactory ?? throw new ArgumentNullException(nameof(textBoxViewFactory));
@@ -38,21 +37,21 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 	public void StartEntry()
 	{
-		if (_owner.TextBox is not { XamlRoot: { } xamlRoot } textBox)
+		if (_owner.Core is not { Owner.XamlRoot: { } xamlRoot } core)
 		{
-			// The parent TextBox must exist as source of properties.
+			// The hosting control must exist as source of properties.
 			return;
 		}
 
-		_contentElement = textBox.ContentElement;
+		_contentElement = core.ContentElement;
 
-		EnsureTextBoxView(textBox);
+		EnsureTextBoxView(core);
 		ObserveNativeTextChanges();
 		ObserveNativePaste();
 		_lastSize = new Size(-1, -1);
 		_lastPosition = new Point(-1, -1);
 		UpdateNativeView();
-		SetNativeText(textBox.Text);
+		SetNativeText(core.Text);
 
 		_textBoxView!.AddToTextInputLayer(xamlRoot);
 		InvalidateLayout();
@@ -69,7 +68,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 		else
 		{
 			// Select end of the text
-			var endIndex = textBox.Text.Length;
+			var endIndex = core.Text.Length;
 			Select(endIndex, 0);
 		}
 		_selectionStartCache = null;
@@ -106,14 +105,14 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 	public void UpdateNativeView()
 	{
-		if (_textBoxView is null || _owner.TextBox is not { } textBox)
+		if (_textBoxView is null || _owner.Core is not { } core)
 		{
 			// If the input widget does not exist, we don't need to update it.
-			// The parent TextBox must exist as source of properties.
+			// The hosting control must exist as source of properties.
 			return;
 		}
 
-		EnsureTextBoxView(textBox);
+		EnsureTextBoxView(core);
 	}
 
 	public void InvalidateLayout()
@@ -124,9 +123,9 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 	public void UpdateProperties()
 	{
-		if (_owner?.TextBox is { } textBox)
+		if (_owner?.Core is { } core)
 		{
-			_textBoxView?.UpdateProperties(textBox);
+			_textBoxView?.UpdateProperties(core);
 		}
 	}
 
@@ -158,7 +157,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 		var transformToRoot = _contentElement.TransformToVisual(_contentElement.XamlRoot.VisualTree.RootElement);
 		var point = transformToRoot.TransformPoint(new Point(_contentElement.Padding.Left, _contentElement.Padding.Top));
-		var pointX = _owner?.TextBox?.FlowDirection is FlowDirection.RightToLeft
+		var pointX = _owner?.Core?.FlowDirection is FlowDirection.RightToLeft
 			? (int)(point.X - _contentElement.RenderSize.Width)
 			: (int)point.X;
 		var pointY = (int)point.Y;
@@ -172,7 +171,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 	public void SetPasswordRevealState(PasswordRevealState revealState)
 	{
-		if (_owner.TextBox is PasswordBox)
+		if (_owner.IsPasswordBox)
 		{
 			_textBoxView?.SetPasswordRevealState(revealState);
 			_currentPasswordRevealState = revealState;
@@ -181,18 +180,18 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 	public void Select(int start, int length)
 	{
-		if (_owner.TextBox is not { } textBox)
+		if (_owner.Core is not { } core)
 		{
 			return;
 		}
 
-		EnsureTextBoxView(textBox);
-		if (textBox.FocusState == FocusState.Unfocused)
+		EnsureTextBoxView(core);
+		if (core.Owner.FocusState == FocusState.Unfocused)
 		{
 			// Native control can't handle selection until it is part of visual tree.
 			// Use managed selection until then.
-			_selectionStartCache = textBox.Text.Length >= start ? start : textBox.Text.Length;
-			_selectionLengthCache = textBox.Text.Length >= start + length ? length : textBox.Text.Length - start;
+			_selectionStartCache = core.Text.Length >= start ? start : core.Text.Length;
+			_selectionLengthCache = core.Text.Length >= start + length ? length : core.Text.Length - start;
 		}
 		else
 		{
@@ -202,24 +201,24 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 	public int GetSelectionStart()
 	{
-		if (_owner.TextBox is not { } textBox)
+		if (_owner.Core is not { } core)
 		{
 			return 0;
 		}
 
-		return textBox.FocusState == FocusState.Unfocused ?
+		return core.Owner.FocusState == FocusState.Unfocused ?
 			_selectionStartCache ?? 0 :
 			_textBoxView?.Selection.start ?? 0;
 	}
 
 	public int GetSelectionLength()
 	{
-		if (_owner.TextBox is not { } textBox)
+		if (_owner.Core is not { } core)
 		{
 			return 0;
 		}
 
-		return textBox.FocusState == FocusState.Unfocused ?
+		return core.Owner.FocusState == FocusState.Unfocused ?
 			_selectionLengthCache ?? 0 :
 			_textBoxView?.Selection.length ?? 0;
 	}
@@ -228,19 +227,19 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 	public int GetSelectionLengthBeforeKeyDown() => _textBoxView!.SelectionBeforeKeyDown.length;
 
-	private void EnsureTextBoxView(MuxTextBox textBox)
+	private void EnsureTextBoxView(TextBoxCore core)
 	{
 		if (_textBoxView is null ||
-			!_textBoxView.IsCompatible(textBox))
+			!_textBoxView.IsCompatible(core))
 		{
-			// The current TextBoxView is not compatible with the given TextBox state.
-			// We need to create a new TextBoxView.
-			var inputText = GetNativeText() ?? textBox.Text;
-			_textBoxView = _textBoxViewFactory(textBox);
+			// The current view is not compatible with the given engine state.
+			// We need to create a new one.
+			var inputText = GetNativeText() ?? core.Text;
+			_textBoxView = _textBoxViewFactory(core);
 			SetNativeText(inputText ?? string.Empty);
 		}
 
-		_textBoxView.UpdateProperties(textBox);
+		_textBoxView.UpdateProperties(core);
 	}
 
 	private void ObserveNativeTextChanges()
@@ -262,7 +261,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 		}
 	}
 
-	private void NativePaste(object sender, TextControlPasteEventArgs e) => _owner.TextBox?.RaisePaste(e);
+	private void NativePaste(object sender, TextControlPasteEventArgs e) => _owner.Core?.RaisePaste(e);
 
 	private void NativeTextChanged(object? sender, EventArgs e)
 	{

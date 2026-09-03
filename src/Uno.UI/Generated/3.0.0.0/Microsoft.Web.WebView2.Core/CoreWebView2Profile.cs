@@ -3,16 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2Profile
 	{
-#if __SKIA__
-		internal CoreWebView2Profile()
-		{
-		}
-#endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2CookieManager CookieManager
@@ -23,20 +18,7 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public string DefaultDownloadFolderPath
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "DefaultDownloadFolderPath");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "DefaultDownloadFolderPath");
-			}
-		}
-#endif
+		// Skipping already declared property DefaultDownloadFolderPath
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool IsGeneralAutofillEnabled
@@ -51,16 +33,7 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool IsInPrivateModeEnabled
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "IsInPrivateModeEnabled");
-			}
-		}
-#endif
+		// Skipping already declared property IsInPrivateModeEnabled
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool IsPasswordAutosaveEnabled
@@ -75,20 +48,7 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2PreferredColorScheme PreferredColorScheme
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "PreferredColorScheme");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "PreferredColorScheme");
-			}
-		}
-#endif
+		// Skipping already declared property PreferredColorScheme
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2TrackingPreventionLevel PreferredTrackingPreventionLevel
@@ -103,40 +63,10 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public string ProfileName
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "ProfileName");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public string ProfilePath
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "ProfilePath");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Windows.Foundation.IAsyncAction ClearBrowsingDataAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2BrowsingDataKinds dataKinds, global::System.DateTimeOffset startTime, global::System.DateTimeOffset endTime)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "ClearBrowsingDataAsync(CoreWebView2BrowsingDataKinds dataKinds, DateTimeOffset startTime, DateTimeOffset endTime)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Windows.Foundation.IAsyncAction ClearBrowsingDataAsync()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "ClearBrowsingDataAsync()");
-		}
-#endif
+		// Skipping already declared property ProfileName
+		// Skipping already declared property ProfilePath
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Profile.ClearBrowsingDataAsync(Microsoft.Web.WebView2.Core.CoreWebView2BrowsingDataKinds, System.DateTimeOffset, System.DateTimeOffset)
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Profile.ClearBrowsingDataAsync()
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Microsoft.Web.WebView2.Core.CoreWebView2PermissionSetting>> GetNonDefaultPermissionSettingsAsync()
@@ -151,13 +81,7 @@ namespace Microsoft.Web.WebView2.Core
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "GetBrowserExtensionsAsync()");
 		}
 #endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Windows.Foundation.IAsyncAction ClearBrowsingDataAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2BrowsingDataKinds dataKinds)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2Profile", "ClearBrowsingDataAsync(CoreWebView2BrowsingDataKinds dataKinds)");
-		}
-#endif
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2Profile.ClearBrowsingDataAsync(Microsoft.Web.WebView2.Core.CoreWebView2BrowsingDataKinds)
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Windows.Foundation.IAsyncAction SetPermissionStateAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2PermissionKind PermissionKind, string origin, global::Microsoft.Web.WebView2.Core.CoreWebView2PermissionState State)

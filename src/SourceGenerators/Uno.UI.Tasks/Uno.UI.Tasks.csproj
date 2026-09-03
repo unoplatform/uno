@@ -17,20 +17,20 @@
 		<PackageReference Include="Microsoft.Build.Framework" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Tasks.Core" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Utilities.Core" ExcludeAssets="runtime" />
-		<PackageReference Include="Mono.Cecil" Version="0.11.4" />
+		<PackageReference Include="Mono.Cecil" Version="0.11.6" />
 		
 		<!-- https://github.com/NuGet/Home/issues/7344 -->
 		<PackageReference Include="System.Private.Uri" Version="4.3.2" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="..\..\Uno.UWP\ApplicationModel\Resources\Core\ResourceCandidate.cs">
+		<Compile Include="..\..\Uno.WinRT\ApplicationModel\Resources\Core\ResourceCandidate.cs">
 			<Link>Resources\ResourceCandidate.cs</Link>
 		</Compile>
-		<Compile Include="..\..\Uno.UWP\ApplicationModel\Resources\Core\ResourceQualifier.cs">
+		<Compile Include="..\..\Uno.WinRT\ApplicationModel\Resources\Core\ResourceQualifier.cs">
 			<Link>Resources\ResourceQualifier.cs</Link>
 		</Compile>
-		<Compile Include="..\..\Uno.UWP\Helpers\AndroidResourceNameEncoder.cs">
+		<Compile Include="..\..\Uno.WinRT\Helpers\AndroidResourceNameEncoder.cs">
 			<Link>Resources\AndroidResourceNameEncoder.cs</Link>
 		</Compile>
 		<Compile Include="..\Uno.UI.SourceGenerators\BindableTypeProviders\LinkerHintsHelpers.cs" Link="Helpers\LinkerHintsHelpers.cs" />

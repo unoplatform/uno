@@ -381,7 +381,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 	private const int _connectionRetryInterval = 5_000;
 
 	private readonly StatusSink _status;
-	private static readonly TimeSpan _keepAliveInterval = TimeSpan.FromSeconds(30);
+	private static readonly TimeSpan _keepAliveInterval = KeepAliveMessage.Interval;
 	private static RemoteControlClient? _instance;
 	private readonly (string endpoint, int port)[]? _serverAddresses;
 	private readonly Dictionary<string, IClientProcessor> _processors = new();
@@ -1297,7 +1297,7 @@ public partial class RemoteControlClient : IRemoteControlClient, IAsyncDisposabl
 #if __WASM__
 		return ["127.0.0.1", "[::1]"];
 #elif __IOS__ || __TVOS__
-		// Canonical source: Uno.DeviceHelper.IsSimulator in Uno.UWP (internal, not accessible from here).
+		// Canonical source: Uno.DeviceHelper.IsSimulator in Uno.dll (internal, not accessible from here).
 		if (ObjCRuntime.Runtime.Arch == ObjCRuntime.Arch.SIMULATOR)
 		{
 			return ["127.0.0.1", "[::1]"];

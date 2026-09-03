@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading;
 using Android.Content;
 using Android.Graphics;
@@ -247,7 +247,7 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 			if (AndroidSkiaTextBoxNotificationsProviderSingleton.Instance.LiveTextBoxesMap.TryGetValue(virtualId, out var textBox))
 			{
 				var autofillValue = (AutofillValue)values.ValueAt(i)!;
-				textBox.Text = autofillValue.TextValue;
+				textBox.Text = autofillValue.TextValue ?? string.Empty;
 			}
 		}
 	}

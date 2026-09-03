@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
 	<!--
 		Include all required PackageReference to be available before any target is executed
 		in order for VS and C# Dev Kit to show nuget references in their respective solution explorers.

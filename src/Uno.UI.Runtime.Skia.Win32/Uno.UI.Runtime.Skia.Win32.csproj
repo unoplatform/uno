@@ -43,7 +43,7 @@
 		     GraphicsContextKind.WebGpu kind. The host uses only the renderer-agnostic init API, not the renderer. -->
 		<ProjectReference Include="..\Uno.UI.Composition.WebGpu.Init\Uno.UI.Composition.WebGpu.Init.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
-		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>

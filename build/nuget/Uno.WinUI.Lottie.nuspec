@@ -33,7 +33,6 @@
 
 			<group targetFramework="net10.0-android">
 				<dependency id="SkiaSharp.Skottie" version="4.151.1" />
-				<dependency id="SkiaSharp.Views.Uno.WinUI" version="4.151.1" />
 				<dependency id="SkiaSharp.NativeAssets.android" version="4.151.1" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
@@ -41,7 +40,6 @@
 			</group>
 			<group targetFramework="net10.0-ios26.0">
 				<dependency id="SkiaSharp.Skottie" version="4.151.1" />
-				<dependency id="SkiaSharp.Views.Uno.WinUI" version="4.151.1" />
 				<dependency id="SkiaSharp.NativeAssets.ios" version="4.151.1" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
@@ -49,7 +47,6 @@
 			</group>
 			<group targetFramework="net10.0-tvos26.0">
 				<dependency id="SkiaSharp.Skottie" version="4.151.1" />
-				<dependency id="SkiaSharp.Views.Uno.WinUI" version="4.151.1" />
 				<dependency id="SkiaSharp.NativeAssets.tvos" version="4.151.1" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
@@ -58,7 +55,6 @@
 
 			<group targetFramework="net11.0-android">
 				<dependency id="SkiaSharp.Skottie" version="4.151.1" />
-				<dependency id="SkiaSharp.Views.Uno.WinUI" version="4.151.1" />
 				<dependency id="SkiaSharp.NativeAssets.android" version="4.151.1" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
@@ -66,7 +62,6 @@
 			</group>
 			<group targetFramework="net11.0-ios26.5">
 				<dependency id="SkiaSharp.Skottie" version="4.151.1" />
-				<dependency id="SkiaSharp.Views.Uno.WinUI" version="4.151.1" />
 				<dependency id="SkiaSharp.NativeAssets.ios" version="4.151.1" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
@@ -74,7 +69,6 @@
 			</group>
 			<group targetFramework="net11.0-tvos26.5">
 				<dependency id="SkiaSharp.Skottie" version="4.151.1" />
-				<dependency id="SkiaSharp.Views.Uno.WinUI" version="4.151.1" />
 				<dependency id="SkiaSharp.NativeAssets.tvos" version="4.151.1" />
 
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Numerics;
@@ -113,12 +113,22 @@ namespace Microsoft.UI.Composition
 			// IMPORTANT:
 			// - The order of following operations is important for dashed strokes.
 			// - Stroke might get merged in the end.
-			// - WPF starts with bottom right ellipse arc.
-			// - TODO: Verify UWP behavior
+			// - The path starts at the top (12 o'clock) and winds clockwise, matching
+			//   Windows.UI.Composition (and the After Effects/Lottie convention). This is
+			//   what a trim window [0..t] measures against, so trimmed ellipses — e.g. the
+			//   determinate ProgressRing fill and LottieGen-generated progress arcs — grow
+			//   from the top exactly as they do on WinUI. (WPF, by contrast, starts at the
+			//   bottom-right; do not "restore" that here.)
 
 			var builder = GeometryFactory.Current.CreatePathBuilder();
 
-			builder.MoveTo(new Vector2(right, top + radius.Y));
+			builder.MoveTo(new Vector2(left + radius.X, top));
+			// Top-right Arc
+			builder.CubicTo(
+				new Vector2(right - bezierX, top),       // 1st control point
+				new Vector2(right, top + bezierY),       // 2nd control point
+				new Vector2(right, top + radius.Y));      // End point
+
 			// Bottom-right Arc
 			builder.CubicTo(
 				new Vector2(right, bottom - bezierY),  // 1st control point
@@ -136,12 +146,6 @@ namespace Microsoft.UI.Composition
 				new Vector2(left, top + bezierY),           // 1st control point
 				new Vector2(left + bezierX, top),           // 2nd control point
 				new Vector2(left + radius.X, top));          // End point
-
-			// Top-right Arc
-			builder.CubicTo(
-				new Vector2(right - bezierX, top),       // 1st control point
-				new Vector2(right, top + bezierY),       // 2nd control point
-				new Vector2(right, top + radius.Y));      // End point
 
 			builder.Close();
 

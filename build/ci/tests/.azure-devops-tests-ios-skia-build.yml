@@ -13,7 +13,11 @@ jobs:
 
 - job: Skia_Tests_Build_iOS
   displayName: 'Build Samples App'
-  timeoutInMinutes: 60
+  # 60 dates from when this stage built net10.0-ios, where the step runs a steady ~15 minutes.
+  # On net11.0-ios it has been measured at 38 minutes median / 50 at p90 / 76 at worst, and has
+  # both timed out and lost agents outright. Deliberately generous while we gather post-fix
+  # numbers now that the 2 GB R2R image is gone; expect to tighten this in a follow-up.
+  timeoutInMinutes: 150
   cancelTimeoutInMinutes: 0
 
   pool:

@@ -10,7 +10,6 @@ namespace Microsoft.UI.Xaml.Documents
 	{
 		internal void InvalidateInlines(bool updateText)
 		{
-#if !IS_UNIT_TESTS
 			switch (this.GetParent())
 			{
 				case Span span:
@@ -22,7 +21,6 @@ namespace Microsoft.UI.Xaml.Documents
 				default:
 					break;
 			}
-#endif
 		}
 
 #if __NETSTD_REFERENCE__

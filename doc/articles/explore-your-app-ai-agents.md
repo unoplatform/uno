@@ -45,6 +45,12 @@ It allows tools and agents to:
 
 In other words: while traditional Uno tests are written and maintained by developers, Uno App MCP opens the door for AI agents or other automation systems to drive and reason about the app autonomously, with deeper context and less manual scripting, across all Uno-supported platforms.
 
+## Using the Uno Platform Skills
+
+Alongside the MCPs, Uno Platform ships a catalog of agent skills — covering areas such as MVUX, navigation, Uno Toolkit controls, theming, and UI testing — installed through the `uno-platform-studio` plugin, or as standalone skill folders. Once installed, your agent selects the relevant skills automatically as it works on your prompts; no special command is required.
+
+See [Skills & Plugins](xref:Uno.PlatformStudio.Skills) for the full catalog and the installation steps for each agent.
+
 ## Sample prompts for MCP tools
 
 In your agent, there are some phrases that can be used to nudge the agent to use the tools.

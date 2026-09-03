@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 // Based on the Avalonia project (MIT License, Copyright (c) AvaloniaUI OÜ).
 // Original source: https://github.com/AvaloniaUI/Avalonia/tree/master/src/Avalonia.Vulkan
 using System;
@@ -14,6 +14,11 @@ namespace Uno.UI.Runtime.Skia.Vulkan.Interop;
 
 internal class VulkanInstance : IVulkanInstance
 {
+	// Skia m140+ requires Vulkan 1.1 as a hard minimum. The GRVkBackendContext the rendering
+	// backend builds must declare the same MaxAPIVersion, otherwise Skia resolves the version
+	// from the loader and requests entry points the instance doesn't have.
+	internal static readonly uint ApiVersion = VulkanHelpers.MakeVersion(1, 1, 0);
+
 	private readonly VkGetInstanceProcAddressDelegate _getProcAddress;
 	private readonly VulkanInstanceApi _api;
 	private readonly string[] _enabledExtensions;
@@ -40,7 +45,7 @@ internal class VulkanInstance : IVulkanInstance
 		var appInfo = new VkApplicationInfo()
 		{
 			sType = VkStructureType.VK_STRUCTURE_TYPE_APPLICATION_INFO,
-			apiVersion = VulkanHelpers.MakeVersion(1, 1, 0),
+			apiVersion = ApiVersion,
 			applicationVersion = VulkanHelpers.MakeVersion(1, 0, 0),
 			engineVersion = VulkanHelpers.MakeVersion(1, 0, 0),
 			pApplicationName = name,

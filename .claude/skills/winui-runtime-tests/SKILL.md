@@ -44,19 +44,19 @@ These are real issues encountered in practice — not theoretical:
 
 7. **Existing package conflict**: If a SamplesApp is already installed with the same version, `Add-AppxPackage` fails with `0x80073CFB`. **Always remove existing packages first** — `install-msix.ps1` handles this.
 
-8. **crosstargeting_override.props MUST be set**: The SamplesApp.Windows project targets `$(NetPreviousWinAppSDK)` = `net9.0-windows10.0.19041.0`. **You MUST create/set `src/crosstargeting_override.props`** with `<UnoTargetFrameworkOverride>net9.0-windows10.0.19041.0</UnoTargetFrameworkOverride>`. If the file is missing or set to a different value (e.g., `net10.0`), the build will pull in Skia/Wasm projects as transitive dependencies — those projects require source generators to have already run and will fail with hundreds of `CS0535: does not implement interface member 'DependencyObject.XXX'` errors. **"File not found" is NOT acceptable** — always create it.
+8. **crosstargeting_override.props MUST be set**: The SamplesApp head builds its WinUI target as `$(NetCurrentWinAppSDK)` = `net11.0-windows10.0.19041.0`. **You MUST create/set `src/crosstargeting_override.props`** with `<UnoTargetFrameworkOverride>net11.0-windows10.0.19041.0</UnoTargetFrameworkOverride>`. If the file is missing or set to a different value (e.g., `net10.0`), the build will pull in Skia/Wasm projects as transitive dependencies — those projects require source generators to have already run and will fail with hundreds of `CS0535: does not implement interface member 'DependencyObject.XXX'` errors. **"File not found" is NOT acceptable** — always create it.
 
 9. **MAX_PATH (260 chars)**: The PRI resource generator uses Win32 APIs with the 260-char path limit. If you see `PRI175`/`PRI252` errors, shorten the repo path or use `subst` drive mapping.
 
 10. **Results file is UTF-16 encoded XML**: The NUnit XML results file is written in UTF-16 encoding. The `Read` tool will often fail with token limits on this file, and `head`/`cat` will show garbled double-spaced output. **Always use the python parsing snippet** from Phase 6 instead of the Read tool.
 
-11. **Graphics3DGL Windows TFM**: `Uno.WinUI.Graphics3DGL.csproj` only builds Skia TFMs by default. SamplesApp.Windows references it but MSBuild picks the Skia `net9.0` build, causing `CS0012: The type 'Grid' is defined in an assembly that is not referenced` errors. **Fix**: Before building SamplesApp.Windows, restore Graphics3DGL with the Windows TFM enabled:
+11. **Graphics3DGL Windows TFM**: `Uno.WinUI.Graphics3DGL.csproj` only builds Skia TFMs by default. The SamplesApp head references it but MSBuild picks the Skia build, causing `CS0012: The type 'Grid' is defined in an assembly that is not referenced` errors. **Fix**: Before building the head, restore Graphics3DGL with the Windows TFM enabled:
     ```bash
     "$MSBUILD" "src/AddIns/Uno.WinUI.Graphics3DGL/Uno.WinUI.Graphics3DGL.csproj" \
         -restore -v:m -p:BuildGraphics3DGLForWindows=true \
         -p:Platform=x64 -p:Configuration=Release
     ```
-    Also ensure `SamplesApp.Windows.csproj` has `AdditionalProperties="BuildGraphics3DGLForWindows=true"` on that ProjectReference.
+    Also ensure `SamplesApp.csproj` has `AdditionalProperties="BuildGraphics3DGLForWindows=true"` on that ProjectReference.
 
 12. **ParseArgs base64 truncation**: `App.Tests.cs:ParseArgs` uses `Split('=')` to parse CLI args, which breaks base64 filter values containing `=` padding. The filter is silently dropped and **all tests run instead of filtered tests**. If you see all tests running when a filter was provided, verify that `ParseArgs` uses `Split('=', 2)` to split only on the first `=`.
 
@@ -74,7 +74,7 @@ Determine what to run from the user's input:
 
 If the user provides partial names, search `src/Uno.UI.RuntimeTests/Tests/` to resolve fully qualified test names (namespace + class + method).
 
-**Strict mode**: If the user input contains the keyword `strict`, omit the `-p:UnoFastDevBuild=true` flag from the MSBuild command in Phase 2 so the build runs with full CI-equivalent analyzer coverage. Use this only when verifying CI strictness — for normal iteration the fast-dev flag should be left on. (Note: `UnoTargetFrameworkOverride` does not apply here — the WinAppSDK head is already single-TFM `net9.0-windows10.0.19041.0`, configured in Phase 1c.)
+**Strict mode**: If the user input contains the keyword `strict`, omit the `-p:UnoFastDevBuild=true` flag from the MSBuild command in Phase 2 so the build runs with full CI-equivalent analyzer coverage. Use this only when verifying CI strictness — for normal iteration the fast-dev flag should be left on. (Note: `UnoTargetFrameworkOverride` does not apply here — the head collapses to a single TFM for the windows override, configured in Phase 1c.)
 
 ### Phase 1: Prerequisites
 
@@ -106,7 +106,7 @@ If `vswhere` returns nothing even with `-prerelease -all`, verify Visual Studio 
 
 #### 1c. Set crosstargeting_override.props (MANDATORY)
 
-The file `src/crosstargeting_override.props` **MUST exist** and contain `net9.0-windows10.0.19041.0`. Without it, MSBuild resolves all target frameworks and pulls in Skia/Wasm projects that fail to build.
+The file `src/crosstargeting_override.props` **MUST exist** and contain `net11.0-windows10.0.19041.0`. Without it, MSBuild resolves all target frameworks and pulls in Skia/Wasm projects that fail to build.
 
 **Check and fix:**
 ```bash
@@ -118,15 +118,15 @@ fi
 
 Then ensure it contains:
 ```xml
-<UnoTargetFrameworkOverride>net9.0-windows10.0.19041.0</UnoTargetFrameworkOverride>
+<UnoTargetFrameworkOverride>net11.0-windows10.0.19041.0</UnoTargetFrameworkOverride>
 ```
 
-If it's set to anything else (e.g., `net10.0` for Skia development), **change it** to `net9.0-windows10.0.19041.0` before building. Remember to **restore the previous value** after WinUI testing is complete if the user was working with a different target.
+If it's set to anything else (e.g., `net10.0` for Skia development), **change it** to `net11.0-windows10.0.19041.0` before building. Remember to **restore the previous value** after WinUI testing is complete if the user was working with a different target.
 
 **Symptoms of a wrong/missing override:**
 - `CS0535: does not implement interface member 'DependencyObject.XXX'` — Uno.UI.Skia is being built as a transitive dependency
 - `MSB4062: ResourcesGenerationTask_v0 could not be loaded` — Uno.UI.Tasks hasn't been built for the expected configuration
-- Hundreds of errors from `Uno.UI.csproj::TargetFramework=net9.0` — dead giveaway
+- Hundreds of errors from `Uno.UI.csproj::TargetFramework=net11.0` — dead giveaway
 
 #### 1d. Setup signing certificate (first time)
 
@@ -152,7 +152,7 @@ THUMBPRINT=$(cat ~/.uno-dev-cert-thumbprint)
 
 #### 1f. Restore Graphics3DGL with Windows TFM
 
-The `Uno.WinUI.Graphics3DGL` project only builds Skia targets by default. SamplesApp.Windows references it, so it must also have a Windows TFM available:
+The `Uno.WinUI.Graphics3DGL` project only builds Skia targets by default. The SamplesApp head references it, so it must also have a Windows TFM available:
 ```bash
 "$MSBUILD" "src/AddIns/Uno.WinUI.Graphics3DGL/Uno.WinUI.Graphics3DGL.csproj" \
     -restore -v:m -p:BuildGraphics3DGLForWindows=true \
@@ -168,7 +168,7 @@ This is idempotent — safe to run every time. Skip only if you know Graphics3DG
 The default build below passes `-p:UnoFastDevBuild=true`, which disables analyzers and code-style enforcement for local iteration. Uno.UI compile on Windows has the same analyzer dominance as on Skia (~30s per compile), so this is a meaningful win. The flag is no-op on CI (guarded by `ContinuousIntegrationBuild`). Omit it if the user requested `strict` mode (see Phase 0).
 
 ```bash
-"$MSBUILD" "src/SamplesApp/SamplesApp.Windows/SamplesApp.Windows.csproj" \
+"$MSBUILD" "src/SamplesApp/SamplesApp/SamplesApp.csproj" \
     -restore -t:Publish -m -v:m \
     -p:Configuration=Release \
     -p:Platform=x64 \
@@ -188,9 +188,9 @@ The default build below passes `-p:UnoFastDevBuild=true`, which disables analyze
 
 | Error | Cause | Fix |
 |-------|-------|-----|
-| `CS0535: does not implement 'DependencyObject.XXX'` from `Uno.UI.csproj` | **`crosstargeting_override.props` missing or set to wrong TFM.** MSBuild resolves all TFMs and pulls in Skia which needs source generators. | **Set override to `net9.0-windows10.0.19041.0`** (Phase 1c). This is the #1 most common build failure. |
-| `MSB4062: ResourcesGenerationTask_v0 could not be loaded` | Uno.UI.Tasks.v0.dll not built; cascading from wrong TFM pulling in unexpected dependencies | Set override to `net9.0-windows10.0.19041.0` (Phase 1c) |
-| `NU1201: not compatible with net9.0-...` | `crosstargeting_override.props` TFM mismatch | Set to `net9.0-windows10.0.19041.0` |
+| `CS0535: does not implement 'DependencyObject.XXX'` from `Uno.UI.csproj` | **`crosstargeting_override.props` missing or set to wrong TFM.** MSBuild resolves all TFMs and pulls in Skia which needs source generators. | **Set override to `net11.0-windows10.0.19041.0`** (Phase 1c). This is the #1 most common build failure. |
+| `MSB4062: ResourcesGenerationTask_v0 could not be loaded` | Uno.UI.Tasks.v0.dll not built; cascading from wrong TFM pulling in unexpected dependencies | Set override to `net11.0-windows10.0.19041.0` (Phase 1c) |
+| `NU1201: not compatible with net11.0-...` | `crosstargeting_override.props` TFM mismatch | Set to `net11.0-windows10.0.19041.0` |
 | `PRI175` / `PRI252: .xbf not found` | MAX_PATH >= 260 chars | Shorten repo path or `subst` drive |
 | `APPX0101: signing key required` | No cert in store | Run `setup-cert.ps1` (Phase 1d) |
 | `APPX0105: Cannot import key file` | Used `PackageCertificateKeyFile` instead of thumbprint | Switch to `PackageCertificateThumbprint` |
@@ -296,7 +296,7 @@ for m in re.finditer(r'<test-case\s+name=\"([^\"]+)\"[^>]*result=\"Failed\".*?<m
 ```
 
 **Cleanup steps:**
-1. **Restore `crosstargeting_override.props`**: If you changed it in Phase 1c (e.g., from `net10.0` to `net9.0-windows10.0.19041.0`), **restore it to the user's previous value** so their Skia/Wasm development workflow isn't broken.
+1. **Restore `crosstargeting_override.props`**: If you changed it in Phase 1c (e.g., from `net10.0` to `net11.0-windows10.0.19041.0`), **restore it to the user's previous value** so their Skia/Wasm development workflow isn't broken.
 
 **Interpreting WinUI failures**: Tests that fail on WinUI represent the native WinUI behavior. If a test passes on Uno but fails on WinUI (or vice versa), this reveals a parity gap. Use the `[PlatformCondition]` attribute to exclude tests from WinUI:
 ```csharp
@@ -328,7 +328,7 @@ fi
 if [ ! -f "$OVERRIDE_FILE" ]; then
     cp src/crosstargeting_override.props.sample "$OVERRIDE_FILE"
 fi
-# Ensure it contains net9.0-windows10.0.19041.0
+# Ensure it contains net11.0-windows10.0.19041.0
 # (use Edit tool to set UnoTargetFrameworkOverride)
 
 # --- Phase 1b: Setup cert (idempotent, first time prompts UAC) ---
@@ -343,7 +343,7 @@ THUMBPRINT=$(cat ~/.uno-dev-cert-thumbprint)
 # --- Phase 2: Build MSIX (timeout: 600000ms) ---
 # Default: pass -p:UnoFastDevBuild=true for fast local iteration.
 # Drop the flag if the user requested `strict` mode.
-"$MSBUILD" "src/SamplesApp/SamplesApp.Windows/SamplesApp.Windows.csproj" \
+"$MSBUILD" "src/SamplesApp/SamplesApp/SamplesApp.csproj" \
     -restore -t:Publish -m -v:m \
     -p:Configuration=Release -p:Platform=x64 -p:RuntimeIdentifier=win-x64 \
     -p:GenerateAppxPackageOnBuild=true \
@@ -404,8 +404,8 @@ for m in re.finditer(r'<test-case\s+name=\"([^\"]+)\"[^>]*result=\"(\w+)\"', con
 - **Delivery**: Via `--runtime-test-filter` CLI argument OR `UITEST_RUNTIME_TESTS_FILTER` env var
 
 ### Key Files
-- **Project**: `src/SamplesApp/SamplesApp.Windows/SamplesApp.Windows.csproj`
-- **App manifest**: `src/SamplesApp/SamplesApp.Windows/Package.appxmanifest`
+- **Project**: `src/SamplesApp/SamplesApp/SamplesApp.csproj`
+- **App manifest**: `src/SamplesApp/SamplesApp/Package.appxmanifest`
 - **CI YAML**: `build/ci/tests/.azure-devops-tests-winappsdk.yml`
 - **CI test script**: `build/test-scripts/run-winui-runtime-tests.ps1`
 - **Entry point**: `src/SamplesApp/SamplesApp.Shared/App.Tests.cs`
@@ -416,7 +416,7 @@ for m in re.finditer(r'<test-case\s+name=\"([^\"]+)\"[^>]*result=\"(\w+)\"', con
 | Property | Value |
 |----------|-------|
 | **Build tool** | MSBuild via **dash syntax** (not `dotnet build`, not `/slash` switches) |
-| **Target framework** | `net9.0-windows10.0.19041.0` (`$(NetPreviousWinAppSDK)`) |
+| **Target framework** | `net11.0-windows10.0.19041.0` (`$(NetCurrentWinAppSDK)`) |
 | **Platform** | x64 |
 | **Output** | MSIX bundle in `AppPackages/` |
 | **WinAppSDK version** | 2.1.3 (keep in sync with csproj; pin the exact stable version) |

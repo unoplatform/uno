@@ -28,9 +28,10 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	private IDrawingFactory? _renderer;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
-	private UIView? _topViewLayer;
+	private TopViewLayer? _topViewLayer;
 	private UIView? _nativeOverlayLayer;
 	private string? _lastSvgClipPath;
+	private readonly UnoKeyboardInputSource _keyboardInputSource = new();
 
 	public RootViewController()
 	{
@@ -321,6 +322,16 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 	public UIElement? RootElement => _xamlRoot?.VisualTree.RootElement;
 
 	public UIView TextInputLayer => _textInputLayer!;
+
+	/// <summary>
+	/// This window's own pointer input source, backed by its <see cref="TopViewLayer"/>.
+	/// </summary>
+	internal AppleUIKitCorePointerInputSource PointerInputSource => _topViewLayer!.PointerInputSource;
+
+	/// <summary>
+	/// This window's own keyboard input source.
+	/// </summary>
+	internal UnoKeyboardInputSource KeyboardInputSource => _keyboardInputSource;
 
 	// This will handle when the status bar is showed / hidden by the system on iPhones
 	public override void ViewSafeAreaInsetsDidChange()

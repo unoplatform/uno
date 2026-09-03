@@ -1,8 +1,4 @@
-﻿#if IS_UNIT_TESTS
-#pragma warning disable CS0067
-#endif
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
@@ -105,7 +101,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		// ValueDoesNotInheritDataContext prevents standard parent-chain DataContext propagation.
-		// Instead, the mentor mechanism in DependencyObjectStore.Binder propagates DataContext
+		// Instead, the mentor mechanism in DependencyObject.Binder propagates DataContext
 		// via a weak reference, matching WinUI's SetParentForInheritanceContextOnly / GetMentor pattern.
 		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext)]
 		public static DependencyProperty ContextFlyoutProperty { get; } = CreateContextFlyoutProperty();

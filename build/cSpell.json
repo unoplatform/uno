@@ -248,7 +248,8 @@
 	"settingscard",
 	"trackpad",
 	"COEP",
-	"TFMs"
+	"TFMs",
+	"dedup"
   ],
   "patterns": [
 	{

@@ -37,6 +37,12 @@ partial class AnimatedVisualPlayer
 			m_toProgress = toProgress;
 			m_looped = looped;
 
+			// Save the play duration as time.
+			// If toProgress is less than fromProgress the animation will wrap around,
+			// so the time is calculated as fromProgress..end + start..toProgress.
+			var durationAsProgress = fromProgress > toProgress ? ((1 - fromProgress) + toProgress) : (toProgress - fromProgress);
+			// NOTE: this relies on the Duration() being set on the owner.
+			m_playDuration = TimeSpan.FromTicks((long)(owner.Duration.Ticks * durationAsProgress));
 		}
 
 		public float FromProgress()
@@ -53,15 +59,18 @@ partial class AnimatedVisualPlayer
 			MUX_ASSERT(m_controller is null);
 			var owner = m_owner!;
 
-			// Save the play duration as time.
-			// If toProgress is less than fromProgress the animation will wrap around,
-			// so the time is calculated as fromProgress..end + start..toProgress.
-			var durationAsProgress = m_fromProgress > m_toProgress ? ((1 - m_fromProgress) + m_toProgress) : (m_toProgress - m_fromProgress);
-			// NOTE: this relies on the Duration() being set on the owner.
-			var playDuration = TimeSpan.FromTicks((long)(owner.Duration.Ticks * durationAsProgress));
+			// TODO Uno: WinUI computes m_playDuration once in the AnimationPlay ctor (cpp:22-27), relying on
+			// Duration() already being set. Uno's animated-visual sources load asynchronously, so a PlayAsync()
+			// issued before the source resolves carries a zero duration and would self-complete through the
+			// <20ms fast path below. Recompute only in that case; every path WinUI exercises is unchanged.
+			if (m_playDuration == TimeSpan.Zero)
+			{
+				var durationAsProgress = m_fromProgress > m_toProgress ? ((1 - m_fromProgress) + m_toProgress) : (m_toProgress - m_fromProgress);
+				m_playDuration = TimeSpan.FromTicks((long)(owner.Duration.Ticks * durationAsProgress));
+			}
 
 			// If the duration is really short (< 20ms) don't bother trying to animate.
-			if (playDuration < TimeSpan.FromMilliseconds(20))
+			if (m_playDuration < TimeSpan.FromMilliseconds(20))
 			{
 				// Nothing to play. Jump to the from position.
 				// This will have the side effect of completing this play immediately.
@@ -74,7 +83,7 @@ partial class AnimatedVisualPlayer
 				// Create an animation to drive the Progress property.
 				var compositor = owner.m_progressPropertySet.Compositor;
 				var animation = compositor.CreateScalarKeyFrameAnimation();
-				animation.Duration = playDuration;
+				animation.Duration = m_playDuration;
 				var linearEasing = compositor.CreateLinearEasingFunction();
 
 				// Play from fromProgress.
@@ -335,6 +344,9 @@ partial class AnimatedVisualPlayer
 		public Task Task => m_taskCompletionSource.Task;
 	}
 
+	/// <summary>
+	/// Initializes a new instance of the AnimatedVisualPlayer class.
+	/// </summary>
 	public AnimatedVisualPlayer()
 	{
 		// __RP_Marker_ClassById(RuntimeProfiler::ProfId_AnimatedVisualPlayer);
@@ -595,6 +607,9 @@ partial class AnimatedVisualPlayer
 
 	// Public API.
 	// Pauses the currently playing animated visual, or does nothing if no play is underway.
+	/// <summary>
+	/// Pauses the currently playing animated visual, or does nothing if no play is underway.
+	/// </summary>
 	public void Pause()
 	{
 		if (m_nowPlaying is not null)
@@ -604,6 +619,18 @@ partial class AnimatedVisualPlayer
 	}
 
 	// Public API.
+	/// <summary>
+	/// Starts playing the loaded animated visual, or does nothing if no animated visual is loaded.
+	/// </summary>
+	/// <param name="fromProgress">The point from which to start the animation, as a value from 0 to 1.</param>
+	/// <param name="toProgress">The point at which to finish the animation, as a value from 0 to 1.</param>
+	/// <param name="looped">If <c>true</c>, the animation loops continuously between <paramref name="fromProgress"/> and <paramref name="toProgress"/>. If <c>false</c>, the animation plays once then stops.</param>
+	/// <returns>An async action that is completed when the play is stopped or, if <paramref name="looped"/> is not set, when the play reaches <paramref name="toProgress"/>.</returns>
+	/// <remarks>
+	/// If <paramref name="toProgress"/> is less than <paramref name="fromProgress"/>, the animated visual will
+	/// play from <paramref name="fromProgress"/> to the end, then play from the beginning until it reaches
+	/// <paramref name="toProgress"/>. To play an animated visual in reverse, set the playback rate to a negative value.
+	/// </remarks>
 	public IAsyncAction PlayAsync(double fromProgress, double toProgress, bool looped)
 	{
 		return PlayAsyncCore().AsAsyncAction();
@@ -683,6 +710,10 @@ partial class AnimatedVisualPlayer
 	}
 
 	// Public API.
+	/// <summary>
+	/// Resumes the currently paused animated visual, or does nothing if there is no animated visual
+	/// loaded or the animated visual is not paused.
+	/// </summary>
 	public void Resume()
 	{
 		if (m_nowPlaying is not null)
@@ -693,6 +724,12 @@ partial class AnimatedVisualPlayer
 
 	// Public API.
 	// REENTRANCE SIDE EFFECT: IsPlaying DP via m_nowPlaying->Complete() or InsertScalar iff m_nowPlaying.
+	/// <summary>
+	/// Moves the progress of the animated visual to the given value, or does nothing if no animated
+	/// visual is loaded.
+	/// </summary>
+	/// <param name="progress">A value from 0 to 1 that represents the progress of the animated visual.</param>
+	/// <remarks>If the animated visual was playing it will behave as if Stop was called first.</remarks>
 	public void SetProgress(double progress)
 	{
 		// Make sure that animations are created.
@@ -726,6 +763,9 @@ partial class AnimatedVisualPlayer
 
 	// Public API.
 	// REENTRANCE SIDE EFFECT: IsPlaying DP via SetProgress(...) or InsertScalar iff m_nowPlaying.
+	/// <summary>
+	/// Stops the current play, or does nothing if no play is underway.
+	/// </summary>
 	public void Stop()
 	{
 		if (m_nowPlaying is not null)

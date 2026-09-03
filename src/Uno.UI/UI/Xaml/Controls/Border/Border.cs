@@ -22,13 +22,20 @@ namespace Microsoft.UI.Xaml.Controls;
 [ContentProperty(Name = nameof(Child))]
 public partial class Border : FrameworkElement
 {
+	private bool _useBackgroundOverride;
+
 	public Border()
 	{
 	}
 
-#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-#endif
+	internal bool UseBackgroundOverride => _useBackgroundOverride;
+
+	internal void SetUseBackgroundOverride(bool useBackgroundOverride)
+	{
+		_useBackgroundOverride = useBackgroundOverride;
+		this.UpdateBackground();
+	}
+
 	public BrushTransition BackgroundTransition { get; set; }
 
 
@@ -271,7 +278,7 @@ public partial class Border : FrameworkElement
 			e.OldValue as Brush,
 			e.NewValue as Brush,
 			this.BackgroundTransition,
-			((IDependencyObjectStoreProvider)this).Store.GetCurrentHighestValuePrecedence(BackgroundProperty) == DependencyPropertyValuePrecedences.Animations);
+			((DependencyObject)this).GetCurrentHighestValuePrecedence(BackgroundProperty) == DependencyPropertyValuePrecedences.Animations);
 		OnBackgroundChangedPartial();
 	}
 

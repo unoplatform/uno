@@ -47,6 +47,7 @@ partial class InputManager
 
 			_source.KeyDown += (_, e) => OnKey(e, true);
 			_source.KeyUp += (_, e) => OnKey(e, false);
+			_source.CharacterReceived += (_, e) => OnCharacterReceived(e);
 		}
 
 		private void OnKey(KeyEventArgs args, bool down)
@@ -97,6 +98,15 @@ partial class InputManager
 					args.KeyboardModifiers);
 			}
 
+			// On Windows a character produced by a key press is delivered as a separate message
+			// (WM_CHAR follows WM_KEYDOWN), so CharacterReceived is raised after KeyDown completed,
+			// targeting whichever element is focused by then. Note: raised regardless of the KeyDown
+			// Handled state, as WM_CHAR generation is independent of app-side key handling.
+			if (down && args.UnicodeKey is { } character)
+			{
+				RaiseCharacterReceived(character, args.KeyStatus);
+			}
+
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
 				var methodName = down ? "CoreWindow_KeyDown" : "CoreWindow_KeyUp";
@@ -111,6 +121,25 @@ partial class InputManager
 			}
 
 			args.Handled = routedArgs.Handled;
+		}
+
+		/// <summary>
+		/// Handles a composed character that never went through a key press,
+		/// e.g. a Windows Alt+numpad code composed when Alt is released.
+		/// </summary>
+		private void OnCharacterReceived(CharacterReceivedEventArgs args)
+			=> RaiseCharacterReceived((char)args.KeyCode, args.KeyStatus);
+
+		private void RaiseCharacterReceived(char character, CorePhysicalKeyStatus keyStatus)
+		{
+			var originalSource = FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot) as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement;
+
+			var routedArgs = new CharacterReceivedRoutedEventArgs(originalSource, character, keyStatus)
+			{
+				CanBubbleNatively = false,
+			};
+
+			originalSource.RaiseEvent(UIElement.CharacterReceivedEvent, routedArgs);
 		}
 
 		/// <summary>

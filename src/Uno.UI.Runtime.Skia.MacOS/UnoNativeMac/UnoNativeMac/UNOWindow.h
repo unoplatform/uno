@@ -1,4 +1,4 @@
-//
+﻿//
 //  UNOWindowDelegate.h
 //
 
@@ -345,13 +345,21 @@ void uno_set_window_close_callbacks(window_should_close_fn_ptr shouldClose, wind
 
 void uno_window_get_metal_handles(UNOWindow* window, void*_Nonnull* _Nonnull device, void*_Nonnull* _Nonnull queue);
 
-// Returns the rendering MTKView's CAMetalLayer so the managed WebGPU backend can create a wgpu
-// surface on it (CreateMetalSurface). Returns NULL if the window has no Metal rendering view.
-void* _Nullable uno_window_get_metal_layer(UNOWindow* window);
+/// Refresh rate, in frames per second, of the screen currently showing the window.
+/// Returns 0 when it cannot be determined, in which case the caller keeps its configured rate.
+double uno_window_get_refresh_rate(NSWindow* window);
 
-// Toggles context ownership of the view's CAMetalLayer. When enabled, drawInMTKView stops
-// acquiring/presenting its own drawable and only ticks managed code, which drives the context's own swapchain.
-void uno_window_set_external_present(UNOWindow* window, bool enabled);
+/// Acquires the next drawable from the window's CAMetalLayer (texture handle + size).
+/// Called from the managed render thread.
+bool uno_window_acquire_next_frame(NSWindow* window, void* _Nullable * _Nonnull texture, double* width, double* height);
+
+/// Presents the previously acquired drawable via a Metal command buffer.
+/// Called from the managed render thread after drawing is complete.
+void uno_window_present_frame(NSWindow* window);
+/// Releases the drawable acquired by uno_window_acquire_next_frame without presenting it.
+/// Called from the managed render thread when the frame could not be drawn.
+void uno_window_discard_frame(NSWindow* window);
+
 
 typedef void (*window_did_change_screen_fn_ptr)(NSWindow* window, uint32 width, uint32 height, CGFloat backingScaleFactor);
 window_did_change_screen_fn_ptr uno_get_window_did_change_screen_callback(void);

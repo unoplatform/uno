@@ -72,11 +72,12 @@ internal class VulkanCommandBuffer : IDisposable
 	public unsafe void Submit(
 		ReadOnlySpan<VulkanSemaphore> waitSemaphores,
 		ReadOnlySpan<VkPipelineStageFlags> waitDstStageMask,
-		ReadOnlySpan<VulkanSemaphore> signalSemaphores,
-		VulkanFence? fence = null)
+		ReadOnlySpan<VulkanSemaphore> signalSemaphores)
 	{
 		EndRecording();
-		VkFence fenceHandle = (fence ?? _fence).Handle;
+		// The pool reclaims this buffer once _fence signals (IsFinished); submitting with any
+		// other fence would leave _fence signaled and let the drain free a buffer still on the GPU.
+		VkFence fenceHandle = _fence.Handle;
 		_context.DeviceApi.ResetFences(_context.DeviceHandle, 1, &fenceHandle)
 			.ThrowOnError("vkResetFences");
 

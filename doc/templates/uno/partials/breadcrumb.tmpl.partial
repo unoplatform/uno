@@ -1,0 +1,9 @@
+{{!Licensed to the .NET Foundation under one or more agreements. The .NET Foundation licenses this file to you under the MIT license.}}
+
+<div class="subnav navbar navbar-default">
+  <div class="container hide-when-search" id="breadcrumb" data-docsearch-exclude>
+    <ul class="breadcrumb">
+      <li>{{_tocTitle}}</li>
+    </ul>
+  </div>
+</div>

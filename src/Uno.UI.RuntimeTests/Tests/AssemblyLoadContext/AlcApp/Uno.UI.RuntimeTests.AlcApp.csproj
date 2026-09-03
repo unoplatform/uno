@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<!-- Ensure that the app logs to the console -->
 		<OutputType>Exe</OutputType>
@@ -9,7 +9,7 @@
 		<UnoEnableAlcAppSupport>true</UnoEnableAlcAppSupport>
 
 		<!-- in-solution build -->
-		<_UnoBaseReferenceBinPath Condition="exists('$(MSBuildThisFileDirectory)../../../../SamplesApp')">$(MSBuildThisFileDirectory)../../../../SamplesApp/SamplesApp/bin/$(Configuration)/$(TargetFramework)-desktop</_UnoBaseReferenceBinPath>
+		<_UnoBaseReferenceBinPath Condition="exists('$(MSBuildThisFileDirectory)../../../../SamplesApp')">$(MSBuildThisFileDirectory)../../../../SamplesApp/SamplesApp/bin/$(Configuration)/$(NetCurrent)-desktop</_UnoBaseReferenceBinPath>
 
 		<!-- CI runtime test job -->
 		<_UnoBaseReferenceBinPath Condition="exists('$(SamplesAppArtifactPath)')">$(SamplesAppArtifactPath)</_UnoBaseReferenceBinPath>
@@ -33,7 +33,6 @@
 		<Reference Include="$(_UnoBaseReferenceBinPath)/*.dll" 
 				   Exclude="@(UnoReferenceExclusion)" />
 
-		<!-- C:/s/uno.github/uno/src/Uno.UI.RuntimeTests/Tests/HotReload/Frame/HRApp/../../../../SamplesApp/SamplesApp.Skia.Gtk/bin -->
 		
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
 		
@@ -49,7 +48,6 @@
 		<!--
 		<PackageReference Include="Uno.Resizetizer" Version="1.0.4" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
-		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" Version="4.151.1" />
 		<PackageReference Include="SkiaSharp.Skottie" Version="4.151.1" />
 		<PackageReference Include="Uno.WinUI.DevServer" Version="4.8.33" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.8.33" />

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -35,6 +35,14 @@ internal readonly partial struct UnicodeText : IParsedText
 	private const int UBIDI_LTR = 0;
 	private const int UBIDI_RTL = 1;
 	private const string HorizontalEllipsis = "\u2026";
+
+	// Fallbacks for fonts that don't publish underline/strikeout metrics, as a fraction of the em
+	// size so they track the font size. They approximate what real fonts publish (measured on
+	// Segoe UI/Arial/Times New Roman/Consolas: ~0.05 em thickness, ~0.1 em under and ~0.25 em over
+	// the baseline). Positions are the top edge of the line, positive downwards.
+	private const float FallbackDecorationThicknessRatio = 1f / 20f;
+	private const float FallbackUnderlinePositionRatio = 1f / 10f;
+	private const float FallbackStrikethroughPositionRatio = -1f / 4f;
 
 	internal interface IFontCacheUpdateListener
 	{
@@ -113,7 +121,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	private readonly List<LinkedListNode<Cluster>> _clustersInLogicalOrder;
 	private readonly LinkedList<Glyph> _glyphs;
 	private readonly List<(int end, FlowDirection direction)> _bidiBreaks;
-	private readonly List<(int end, Brush? foreground, FlowDirection direction)> _runBreaks;
+	private readonly List<(int end, Brush? foreground, FlowDirection direction, TextDecorations decorations)> _runBreaks;
 	private readonly List<(int correctionStart, int correctionEnd)?>? _corrections;
 	private readonly Size _availableSize;
 
@@ -137,7 +145,7 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		var stringBuilder = new StringBuilder();
 		_hyperlinkRanges = new List<(int start, int end, Hyperlink hyperlink)>();
-		_runBreaks = new List<(int end, Brush? foreground, FlowDirection direction)>();
+		_runBreaks = new List<(int end, Brush? foreground, FlowDirection direction, TextDecorations decorations)>();
 		var scriptBreaks = new List<int>();
 		var fontBreaks = new List<(int end, FontDetails fontDetails)>();
 		var lineOpportunityBreaks = new List<int>();
@@ -222,7 +230,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			scriptBreaks.Add(inlineStart + inlineText.Length);
 			var runDirection = (inline as Run)?.FlowDirection ?? flowDirection;
 			allRunsLtr &= runDirection is FlowDirection.LeftToRight;
-			_runBreaks.Add((inlineStart + inlineText.Length, inline.Foreground, runDirection));
+			_runBreaks.Add((inlineStart + inlineText.Length, inline.Foreground, runDirection, inline.TextDecorations));
 			fontBreaks.Add((inlineStart + inlineText.Length, currentFontDetails));
 
 			if (TryGetHyperLink(inline) is { } hyperLink)
@@ -828,7 +836,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	}
 
 	private static List<(int start, int end, FontDetails fontDetails, FlowDirection direction)> EnumerateShapingRuns(
-		List<(int end, Brush? foreground, FlowDirection direction)> runBreaks,
+		List<(int end, Brush? foreground, FlowDirection direction, TextDecorations decorations)> runBreaks,
 		List<int> scriptBreaks,
 		List<(int end, FlowDirection direction)> bidiBreaks,
 		List<(int end, FontDetails fontDetails)> fontBreaks)
@@ -878,11 +886,60 @@ internal readonly partial struct UnicodeText : IParsedText
 		return shapingRuns;
 	}
 
-	public void Draw(in Visual.PaintingSession session,
+	// Wave metrics in units of fontSize / 12: half-period and half-height of the zigzag.
+	// Sized so the wave band fits within the font's descent for typical fonts.
+	private const float SpellCheckSquigglyStepScale = 3;
+	private const float SpellCheckSquigglyAmplitudeScale = 1;
+
+	/// <summary>
+	/// Builds a single continuous spell-check zigzag from <paramref name="left"/> to <paramref name="right"/>.
+	/// The wave phase is anchored at the left edge and the trailing partial half-wave is truncated by
+	/// interpolation instead of snapping back to the midline, so the wave stays regular no matter where it ends.
+	/// </summary>
+	private static IGeometry BuildSpellCheckSquigglyPath(float midY, float left, float right, float scale)
+	{
+		var step = SpellCheckSquigglyStepScale * scale;
+		var amplitude = SpellCheckSquigglyAmplitudeScale * scale;
+
+		var path = GeometryFactory.Current.CreatePathBuilder();
+		var x = left;
+		var lastY = midY;
+		path.MoveTo(new Vector2(x, lastY));
+		var up = true;
+		while (x + step < right)
+		{
+			x += step;
+			lastY = midY + (up ? -amplitude : amplitude);
+			path.LineTo(new Vector2(x, lastY));
+			up = !up;
+		}
+
+		if (x < right)
+		{
+			var targetY = midY + (up ? -amplitude : amplitude);
+			path.LineTo(new Vector2(right, lastY + (targetY - lastY) * ((right - x) / step)));
+		}
+
+		return path.Build();
+	}
+
+	public void Draw(UIElement owner, in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret, // null to skip drawing a caret
 		IEnumerable<TextHighlighter> highlighters,
 		(int startIndex, int length)? compositionRange)
 	{
+		var useHighContrastAdjustment = owner.UseHighContrastAdjustment();
+		var effectiveOpacity = useHighContrastAdjustment && session.Opacity > 0
+			? 1f
+			: session.Opacity;
+		var (highContrastForeground, highContrastBackground, highContrastSelectionForeground, highContrastSelectionBackground) =
+			useHighContrastAdjustment
+				? owner.GetHighContrastTextColors()
+				: default;
+		var highContrastBackplateColor = useHighContrastAdjustment
+			? WithOpacity(highContrastBackground, effectiveOpacity)
+			: default;
+
 		var highlighterSlicer = new RangeSlicer<(CompositionBrush? background, Brush foreground)>(0, _text.Length);
 		foreach (var highlighter in highlighters)
 		{
@@ -900,8 +957,9 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		Dictionary<Color, Dictionary<IFont, (List<ushort> glyphs, List<Vector2> positions)>> _colorToFontToGlyphs = new();
-		List<(IGeometry path, float strokeThickness)> spellCheckUnderlines = new();
+		Dictionary<(int wordIndex, int lineIndex, float scale), (float left, float right, float y)> spellCheckUnderlines = new();
 		List<(float x1, float x2, float y, Color color)> compositionUnderlines = new();
+		List<(float x1, float x2, float top, float thickness, Color color)> textDecorationLines = new();
 
 		Rect? caretRect = default;
 
@@ -909,6 +967,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		var wordBoundariesIndex = 0;
 		var highlighterSlices = highlighterSlicer.GetSegments();
 		var highlighterIndex = 0;
+		Rect? pendingHighContrastBackplate = null;
 		for (var clusterIndex = 0; clusterIndex < _clustersInLogicalOrder.Count; clusterIndex++)
 		{
 			var cluster = _clustersInLogicalOrder[clusterIndex];
@@ -938,10 +997,20 @@ internal readonly partial struct UnicodeText : IParsedText
 			var alignmentOffset = GetAlignmentOffsetForLine(line);
 			var positionAcc = new Vector2(unalignedX + alignmentOffset, y + line.baselineOffset);
 			var fontDetails = cluster.Value.fontDetails;
+			var shouldRenderCluster = !cluster.Value.containsTab
+				&& (!cluster.Value.containsOnlyWhitespace || FeatureConfiguration.TextBlock.RenderWhiteSpace);
 
-			if (!cluster.Value.containsTab && (!cluster.Value.containsOnlyWhitespace || FeatureConfiguration.TextBlock.RenderWhiteSpace))
+			if (shouldRenderCluster)
 			{
-				var color = BrushToColor(highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground, session.Opacity);
+				var color = useHighContrastAdjustment
+					? WithOpacity(
+						highlighter.Value.background is not null
+							? highContrastSelectionForeground
+							: highContrastForeground,
+						effectiveOpacity)
+					: BrushToColor(
+						highlighter.Value.foreground is { } h ? h : _runBreaks[runBreakIndex].foreground,
+						effectiveOpacity);
 				if (!_colorToFontToGlyphs.TryGetValue(color, out var fontToGlyphs))
 				{
 					_colorToFontToGlyphs[color] = fontToGlyphs = new Dictionary<IFont, (List<ushort> glyphs, List<Vector2> positions)>();
@@ -971,36 +1040,63 @@ internal readonly partial struct UnicodeText : IParsedText
 			var backgroundRect = new Rect(
 				new Point(MathF.Floor(unalignedX + alignmentOffset), MathF.Floor(y)),
 				new Point(MathF.Floor(unalignedX + alignmentOffset + cluster.Value.width) + 1, MathF.Floor(y + line.lineHeight) + 1));
-			highlighter.Value.background?.TryPaint(session.Session, session.Opacity, backgroundRect);
+			if (useHighContrastAdjustment
+				&& shouldRenderCluster
+				&& highlighter.Value.background is null)
+			{
+				if (pendingHighContrastBackplate is { } pending
+					&& CanMergeHighContrastBackplates(pending, backgroundRect))
+				{
+					pendingHighContrastBackplate = new Rect(
+						new Point(Math.Min(pending.Left, backgroundRect.Left), pending.Top),
+						new Point(Math.Max(pending.Right, backgroundRect.Right), pending.Bottom));
+				}
+				else
+				{
+					FlushHighContrastBackplate(session.Session, ref pendingHighContrastBackplate, highContrastBackplateColor);
+					pendingHighContrastBackplate = backgroundRect;
+				}
+			}
+			else if (useHighContrastAdjustment)
+			{
+				FlushHighContrastBackplate(session.Session, ref pendingHighContrastBackplate, highContrastBackplateColor);
+			}
+
+			if (highlighter.Value.background is { } selectionBackground)
+			{
+				if (useHighContrastAdjustment)
+				{
+					session.Session.DrawRect(backgroundRect, WithOpacity(highContrastSelectionBackground, effectiveOpacity), antialias: true);
+				}
+				else
+				{
+					selectionBackground.TryPaint(session.Session, effectiveOpacity, backgroundRect);
+				}
+			}
 
 			if (_corrections?[wordBoundariesIndex] is { } correction)
 			{
 				var correctionIndexBase = wordBoundariesIndex == 0 ? 0 : WordBoundaries[wordBoundariesIndex - 1];
 				if (correctionIndexBase + correction.correctionStart <= cluster.Value.start && correctionIndexBase + correction.correctionEnd >= cluster.Value.end)
 				{
-					var fontSize = fontDetails.FontSize;
-					var scale = fontSize / 12.0f;
-					var step = 4 * scale;
-					var amplitude = 2 * scale;
-					var yOffset = 2 * scale;
-
-					var p = GeometryFactory.Current.CreatePathBuilder();
-					var underlineY = y + line.baselineOffset + yOffset;
+					// Only widen this word's underline span here; one continuous squiggly per word is
+					// built and drawn after the cluster loop. Building a small zigzag per cluster
+					// restarts the wave phase and snaps back to the midline at every cluster boundary,
+					// which renders as an irregular scribble. A word wrapped across lines (or switching
+					// fonts via fallback) gets one wave per (line, font) span.
+					var scale = fontDetails.FontSize / 12.0f;
+					// The text visual clips at y + lineHeight, so the whole wave band (midline ± amplitude
+					// plus the stroke) must fit above the line bottom or its lower vertices get cut off and
+					// the wave renders as disconnected peaks. Place it just below the baseline and clamp.
+					var amplitude = SpellCheckSquigglyAmplitudeScale * scale;
+					var underlineY = y + line.baselineOffset + 2.5f * scale;
+					underlineY = Math.Min(underlineY, y + line.lineHeight - (amplitude + scale));
 					var underlineLeftX = unalignedX + alignmentOffset;
 					var underlineRightX = underlineLeftX + cluster.Value.width;
-					p.MoveTo(new Vector2(underlineLeftX, underlineY));
-					var x = underlineLeftX;
-					var up = true;
-					while (x + step < underlineRightX)
-					{
-						x += step;
-						var yWave = underlineY + (up ? -amplitude : amplitude);
-						p.LineTo(new Vector2(x, yWave));
-						up = !up;
-					}
-					p.LineTo(new Vector2(underlineRightX, underlineY));
-
-					spellCheckUnderlines.Add((p.Build(), scale));
+					spellCheckUnderlines[(wordBoundariesIndex, lineIndex, scale)] =
+						spellCheckUnderlines.TryGetValue((wordBoundariesIndex, lineIndex, scale), out var span)
+							? (Math.Min(span.left, underlineLeftX), Math.Max(span.right, underlineRightX), underlineY)
+							: (underlineLeftX, underlineRightX, underlineY);
 				}
 			}
 
@@ -1013,8 +1109,79 @@ internal readonly partial struct UnicodeText : IParsedText
 					var underlineY = y + line.baselineOffset + fontDetails.FontSize / 6.0f;
 					var underlineLeftX = unalignedX + alignmentOffset;
 					var underlineRightX = underlineLeftX + cluster.Value.width;
-					var foreColor = BrushToColor(_runBreaks[runBreakIndex].foreground, session.Opacity);
+					var foreColor = useHighContrastAdjustment
+						? WithOpacity(
+							highlighter.Value.background is not null
+								? highContrastSelectionForeground
+								: highContrastForeground,
+							effectiveOpacity)
+						: BrushToColor(_runBreaks[runBreakIndex].foreground, effectiveOpacity);
 					compositionUnderlines.Add((underlineLeftX, underlineRightX, underlineY, foreColor));
+				}
+			}
+
+			var runDecorations = _runBreaks[runBreakIndex].decorations;
+			if (runDecorations != TextDecorations.None)
+			{
+				// Underline/strikethrough are filled rects whose top edge sits at baseline + the font's
+				// decoration position and whose height is the font's decoration thickness, matching
+				// DWriteTextRenderer::DrawUnderline/DrawStrikethrough, which offset the baseline by
+				// DWRITE_UNDERLINE.offset and hand D2DTextDrawingContext::DrawLine a { 0, 0, width,
+				// thickness } rect. The font's metrics report the same top-edge offsets (-post.underlinePosition
+				// and -OS/2.yStrikeoutPosition scaled to the em size), so they are used as-is.
+
+				// WinUI/DWrite do not decorate collapsed line-trailing whitespace, so clamp the line to the
+				// visible content extent (widthWithoutTrailingSpaces, the same width the alignment uses).
+				// Trailing whitespace is on the right for LTR and on the left for RTL.
+				float contentLeftX, contentRightX;
+				if (_rtl)
+				{
+					contentRightX = alignmentOffset + line.width;
+					contentLeftX = contentRightX - line.widthWithoutTrailingSpaces;
+				}
+				else
+				{
+					contentLeftX = alignmentOffset;
+					contentRightX = contentLeftX + line.widthWithoutTrailingSpaces;
+				}
+
+				var decorationLeftX = Math.Max(unalignedX + alignmentOffset, contentLeftX);
+				var decorationRightX = Math.Min(unalignedX + alignmentOffset + cluster.Value.width, contentRightX);
+
+				if (decorationRightX > decorationLeftX)
+				{
+					var decorationBaseline = y + line.baselineOffset;
+					// The decoration follows the run's foreground, or the high-contrast foreground when the
+					// backplate is active, matching D2DTextDrawingContext::HWRenderLines which resolves the
+					// line brush through GetAlternativeForegroundBrush. Unlike glyphs, it is not affected by
+					// a TextHighlighter foreground, since WinUI keeps the run brush on the decoration line.
+					var decorationColor = useHighContrastAdjustment
+						? WithOpacity(highContrastForeground, effectiveOpacity)
+						: BrushToColor(_runBreaks[runBreakIndex].foreground, effectiveOpacity);
+					var decorationMetrics = fontDetails.FontHandle;
+					var fallbackThickness = Math.Max(1f, fontDetails.FontSize * FallbackDecorationThicknessRatio);
+
+					if ((runDecorations & TextDecorations.Underline) != 0)
+					{
+						AddDecoration(
+							textDecorationLines,
+							decorationLeftX,
+							decorationRightX,
+							decorationBaseline + (decorationMetrics.UnderlinePosition ?? fontDetails.FontSize * FallbackUnderlinePositionRatio),
+							decorationMetrics.UnderlineThickness ?? fallbackThickness,
+							decorationColor);
+					}
+
+					if ((runDecorations & TextDecorations.Strikethrough) != 0)
+					{
+						AddDecoration(
+							textDecorationLines,
+							decorationLeftX,
+							decorationRightX,
+							decorationBaseline + (decorationMetrics.StrikeoutPosition ?? fontDetails.FontSize * FallbackStrikethroughPositionRatio),
+							decorationMetrics.StrikeoutThickness ?? fallbackThickness,
+							decorationColor);
+					}
 				}
 			}
 
@@ -1037,6 +1204,15 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		var drawingSession = session.Session;
 
+		FlushHighContrastBackplate(drawingSession, ref pendingHighContrastBackplate, highContrastBackplateColor);
+
+		// WinUI renders the decoration lines before the glyphs (D2DTextDrawingContext::HWRender calls
+		// HWRenderLines then HWRenderGlyphTextures), so a decoration never covers the text it belongs to.
+		foreach (var (x1, x2, top, thickness, color) in textDecorationLines)
+		{
+			drawingSession.DrawRect(new Rect(new Point(x1, top), new Point(x2, top + thickness)), color, antialias: true);
+		}
+
 		// Outline glyphs are assembled into a path (drawn neutrally); color glyphs (emoji) become images.
 		foreach (var (color, fontToGlyphs) in _colorToFontToGlyphs)
 		{
@@ -1050,10 +1226,10 @@ internal readonly partial struct UnicodeText : IParsedText
 			}
 		}
 
-		foreach (var (path, strokeThickness) in spellCheckUnderlines)
+		foreach (var ((_, _, scale), (left, right, midY)) in spellCheckUnderlines)
 		{
-			drawingSession.StrokePath(path, Colors.Red, strokeThickness, antialias: true);
-			path.Dispose();
+			using var path = BuildSpellCheckSquigglyPath(midY, left, right, scale);
+			drawingSession.StrokePath(path, WithOpacity(Colors.Red, effectiveOpacity), scale, antialias: true);
 		}
 
 		foreach (var (x1, x2, underlineY, color) in compositionUnderlines)
@@ -1075,8 +1251,40 @@ internal readonly partial struct UnicodeText : IParsedText
 
 		if (caretRect is not null)
 		{
-			caret!.Value.brush.TryPaint(session.Session, session.Opacity, caretRect.Value);
+			caret!.Value.brush.TryPaint(session.Session, effectiveOpacity, caretRect.Value);
 		}
+	}
+
+	// Decorations are collected per cluster, but abutting antialiased rects leave a seam where they
+	// meet, so contiguous segments of the same line are merged. WinUI has the same granularity: LS and
+	// DWrite emit one decoration rect per run per line, not per cluster. Only the last two entries can
+	// match, since a run with both decorations appends them in pairs.
+	private static void AddDecoration(List<(float x1, float x2, float top, float thickness, Color color)> decorations, float x1, float x2, float top, float thickness, Color color)
+	{
+		const float joinTolerance = 0.01f;
+
+		for (var i = decorations.Count - 1; i >= 0 && i >= decorations.Count - 2; i--)
+		{
+			var previous = decorations[i];
+			if (previous.top != top || previous.thickness != thickness || previous.color != color)
+			{
+				continue;
+			}
+
+			if (Math.Abs(previous.x2 - x1) <= joinTolerance)
+			{
+				decorations[i] = (previous.x1, Math.Max(previous.x2, x2), top, thickness, color);
+				return;
+			}
+
+			if (Math.Abs(x2 - previous.x1) <= joinTolerance)
+			{
+				decorations[i] = (Math.Min(x1, previous.x1), previous.x2, top, thickness, color);
+				return;
+			}
+		}
+
+		decorations.Add((x1, x2, top, thickness, color));
 	}
 
 	public (int replaceIndexStart, int replaceIndexEnd, List<string> suggestions)? GetSpellCheckSuggestions(int correctionStart, int correctionEnd)
@@ -1123,6 +1331,24 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 
 		return color;
+	}
+
+	private static Color WithOpacity(Color color, float opacity) =>
+		Color.FromArgb((byte)(color.A * opacity), color.R, color.G, color.B);
+
+	private static bool CanMergeHighContrastBackplates(Rect current, Rect next) =>
+		Math.Abs(current.Top - next.Top) <= 1f
+		&& Math.Abs(current.Bottom - next.Bottom) <= 1f
+		&& next.Left <= current.Right + 1
+		&& next.Right >= current.Left - 1;
+
+	private static void FlushHighContrastBackplate(IDrawingSession drawingSession, ref Rect? pendingBackplate, Color color)
+	{
+		if (pendingBackplate is { } backplate)
+		{
+			drawingSession.DrawRect(backplate, color, antialias: true);
+			pendingBackplate = null;
+		}
 	}
 
 
@@ -1508,7 +1734,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		}
 	}
 
-	// This method assumes that the FontDetails with the biggest LineHeight is also the one with the biggest SKFontMetrics.Top.
+	// This method assumes that the FontDetails with the biggest LineHeight is also the one with the biggest ascent.
 	// If that assumption is wrong, we will need an additional lazy parameter for the latter.
 	private static (float lineHeight, float baselineOffset) GetLineHeightAndBaselineOffset(LineStackingStrategy lineStackingStrategy, float lineHeight, FontDetails fontDetailsWithMaxHeightInLine, bool isFirstLine, bool isLastLine)
 	{

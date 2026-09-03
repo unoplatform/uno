@@ -48,3 +48,8 @@ one diff. No specific file paths from the change that triggered it.
 - **Lens:** all
 - **Lesson:** "Green on the other branch, red here" is not evidence the diff caused it when the branches build on different SDKs or TFMs — long-lived integration branches routinely carry a runtime bump the trunk doesn't. A failure was attributed to a branch's own commits until the two pipelines turned out to run different .NET versions.
 - **Apply:** When citing another branch's CI as a baseline, confirm both ran the same SDK/TFM first; otherwise say the comparison is confounded rather than drawing a causal conclusion.
+
+## 2026-08-14 — Verify an issue's counted file references before planning around them
+- **Lens:** all
+- **Lesson:** A rollup item's issue text overstated a packaging-reference count by 6x, named a subsystem to prune that had zero matching entries, and listed per-platform project variants that had already been collapsed into one. All three claims came from a generated assessment captured against an older worktree, and all three were wrong in the same direction — describing a repo state that no longer existed.
+- **Apply:** Treat counts and file lists in a generated issue or spec as a starting query, not an inventory. Re-grep before sizing the work, and record the corrections in the PR so the next reader doesn't re-derive them.

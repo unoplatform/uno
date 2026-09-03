@@ -5,17 +5,17 @@ namespace Uno.UI.Xaml.Controls.Extensions;
 
 internal interface ITextBoxNotificationsProviderSingleton
 {
-	void OnFocused(TextBox textBox);
+	void OnFocused(TextBoxCore core);
 
-	void OnUnfocused(TextBox textBox);
+	void OnUnfocused(TextBoxCore core);
 
-	void OnEnteredVisualTree(TextBox textBox);
+	void OnEnteredVisualTree(TextBoxCore core);
 
-	void OnLeaveVisualTree(TextBox textBox);
+	void OnLeaveVisualTree(TextBoxCore core);
 
 	void FinishAutofillContext(bool shouldSave);
 
-	void NotifyValueChanged(TextBox textBox);
+	void NotifyValueChanged(TextBoxCore core);
 
-	void NotifySelectionChanged(TextBox textBox);
+	void NotifySelectionChanged(TextBoxCore core);
 }

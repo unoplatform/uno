@@ -1052,12 +1052,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 		{
-			if (owner is TextBox textBox)
+			if (owner is ITextBoxHost { Core: { } core })
 			{
 				var maxLength = value?.Length ?? 0;
 				selectionStart = Math.Max(0, Math.Min(selectionStart, maxLength));
 				selectionEnd = Math.Max(selectionStart, Math.Min(selectionEnd, maxLength));
-				textBox.SetPendingSelection(selectionStart, selectionEnd - selectionStart);
+				core.SetPendingSelection(selectionStart, selectionEnd - selectionStart);
 			}
 
 			var peer = owner.GetOrCreateAutomationPeer();
@@ -1138,7 +1138,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// Route through FocusSynchronizer if available (handles IsSyncing guard)
 		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 		{
-			if (owner is TextBox)
+			if (owner is ITextBoxHost)
 			{
 				BrowserInvisibleTextBoxViewExtension.DetachNativeInputPreservingFocus();
 			}
@@ -2171,7 +2171,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				{
 					this.Log().Trace($"[A11y] PROP CHANGE: Value handle={element.Visual.Handle} element={element.GetType().Name} valueLen={valueProvider.Value?.Length ?? 0}");
 				}
-				UpdateTextBoxValueKeepingSelection(element.Visual.Handle, valueProvider.Value, element as TextBox);
+				UpdateTextBoxValueKeepingSelection(element.Visual.Handle, valueProvider.Value, (element as ITextBoxHost)?.Core);
 			}
 		}
 		else if (automationProperty == ValuePatternIdentifiers.IsReadOnlyProperty &&
@@ -2332,7 +2332,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					{
 						this.Log().Trace($"[A11y] AUTOMATION EVENT: {eventId} handle={textElement.Visual.Handle} valueLen={textValueProvider.Value?.Length ?? 0}");
 					}
-					UpdateTextBoxValueKeepingSelection(textElement.Visual.Handle, textValueProvider.Value, textElement as TextBox);
+					UpdateTextBoxValueKeepingSelection(textElement.Visual.Handle, textValueProvider.Value, (textElement as ITextBoxHost)?.Core);
 				}
 				break;
 
@@ -2451,22 +2451,22 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	}
 	protected override void OnNativeStructureChanged() { }
 
-	internal void SyncTextBoxValueAndSelection(TextBox textBox)
+	internal void SyncTextBoxValueAndSelection(TextBoxCore core)
 	{
-		if (!_isAccessibilityEnabled || !HasSemanticElement(textBox.Visual.Handle))
+		if (!_isAccessibilityEnabled || !HasSemanticElement(core.Owner.Visual.Handle))
 		{
 			return;
 		}
 
-		UpdateTextBoxValueKeepingSelection(textBox.Visual.Handle, textBox.Text, textBox);
+		UpdateTextBoxValueKeepingSelection(core.Owner.Visual.Handle, core.Text, core);
 	}
 
-	private static void UpdateTextBoxValueKeepingSelection(IntPtr handle, string? value, TextBox? textBox = null)
+	private static void UpdateTextBoxValueKeepingSelection(IntPtr handle, string? value, TextBoxCore? core = null)
 	{
-		textBox ??= TryGetTextBoxForHandle(handle, out var resolvedTextBox) ? resolvedTextBox : null;
-		var normalizedValue = value ?? textBox?.Text ?? string.Empty;
+		core ??= TryGetTextBoxForHandle(handle, out var resolvedCore) ? resolvedCore : null;
+		var normalizedValue = value ?? core?.Text ?? string.Empty;
 
-		if (TryGetTextSelection(textBox, normalizedValue.Length, out var selectionStart, out var selectionEnd))
+		if (TryGetTextSelection(core, normalizedValue.Length, out var selectionStart, out var selectionEnd))
 		{
 			NativeMethods.UpdateTextBoxValue(handle, normalizedValue, selectionStart, selectionEnd);
 			return;
@@ -2478,36 +2478,36 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	private static void UpdateTextBoxValuePreservingSelection(IntPtr handle, string value)
 		=> NativeMethods.UpdateTextBoxValue(handle, value ?? string.Empty, PreserveTextSelectionSentinel, PreserveTextSelectionSentinel);
 
-	private static bool TryGetTextBoxForHandle(IntPtr handle, [NotNullWhen(true)] out TextBox? textBox)
+	private static bool TryGetTextBoxForHandle(IntPtr handle, [NotNullWhen(true)] out TextBoxCore? core)
 	{
-		textBox = null;
+		core = null;
 
 		if (handle == IntPtr.Zero)
 		{
 			return false;
 		}
 
-		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: TextBox owner })
+		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: ITextBoxHost owner })
 		{
-			textBox = owner;
+			core = owner.Core;
 			return true;
 		}
 
 		return false;
 	}
 
-	private static bool TryGetTextSelection(TextBox? textBox, int maxLength, out int selectionStart, out int selectionEnd)
+	private static bool TryGetTextSelection(TextBoxCore? core, int maxLength, out int selectionStart, out int selectionEnd)
 	{
 		selectionStart = PreserveTextSelectionSentinel;
 		selectionEnd = PreserveTextSelectionSentinel;
 
-		if (textBox is null)
+		if (core is null)
 		{
 			return false;
 		}
 
-		selectionStart = Math.Max(0, Math.Min(textBox.SelectionStart, maxLength));
-		selectionEnd = Math.Max(selectionStart, Math.Min(textBox.SelectionStart + textBox.SelectionLength, maxLength));
+		selectionStart = Math.Max(0, Math.Min(core.SelectionStart, maxLength));
+		selectionEnd = Math.Max(selectionStart, Math.Min(core.SelectionStart + core.SelectionLength, maxLength));
 		return true;
 	}
 

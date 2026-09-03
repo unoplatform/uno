@@ -50,6 +50,9 @@ namespace Microsoft.UI.Xaml.Markup
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlBindingHelper.SetPropertyFromByte(object, Microsoft.UI.Xaml.DependencyProperty, byte)
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlBindingHelper.SetPropertyFromUri(object, Microsoft.UI.Xaml.DependencyProperty, System.Uri)
 		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlBindingHelper.SetPropertyFromObject(object, Microsoft.UI.Xaml.DependencyProperty, object)
+		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlBindingHelper.SetPropertyFromThickness(object, Microsoft.UI.Xaml.DependencyProperty, Microsoft.UI.Xaml.Thickness)
+		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlBindingHelper.SetPropertyFromCornerRadius(object, Microsoft.UI.Xaml.DependencyProperty, Microsoft.UI.Xaml.CornerRadius)
+		// Skipping already declared method Microsoft.UI.Xaml.Markup.XamlBindingHelper.SetPropertyFromColor(object, Microsoft.UI.Xaml.DependencyProperty, Windows.UI.Color)
 		// Forced skipping of method Microsoft.UI.Xaml.Markup.XamlBindingHelper.DataTemplateComponentProperty.get
 	}
 }

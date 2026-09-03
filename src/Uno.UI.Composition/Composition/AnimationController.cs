@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 namespace Microsoft.UI.Composition;
 
+/// <summary>
+/// Provides playback controls for a KeyFrameAnimation.
+/// </summary>
 public partial class AnimationController : CompositionObject
 {
 	// A single AnimationController can drive MANY property animations at once. LottieGen output
@@ -51,6 +54,9 @@ public partial class AnimationController : CompositionObject
 		_associations.Add((ownerObject, propertyName, animation));
 	}
 
+	/// <summary>
+	/// Starts playback of an animation that was previously paused.
+	/// </summary>
 	public void Resume()
 	{
 		_isPaused = false;
@@ -62,6 +68,9 @@ public partial class AnimationController : CompositionObject
 		}
 	}
 
+	/// <summary>
+	/// Pauses playback of the animation.
+	/// </summary>
 	public void Pause()
 	{
 		_isPaused = true;
@@ -76,13 +85,22 @@ public partial class AnimationController : CompositionObject
 	/// <summary>
 	/// Gets the minimum playback rate supported by the controller.
 	/// </summary>
-	public static float MinPlaybackRate => float.MinValue;
+	public static float MinPlaybackRate => -16f;
 
 	/// <summary>
 	/// Gets the maximum playback rate supported by the controller.
 	/// </summary>
-	public static float MaxPlaybackRate => float.MaxValue;
+	public static float MaxPlaybackRate => 16f;
 
+	/// <summary>
+	/// Gets or sets the rate at which the animation plays.
+	/// </summary>
+	/// <value>The rate at which the animation plays. The default is 1.0.</value>
+	/// <remarks>
+	/// You can modify the playback rate to speed up or reverse the animation. Playback rate can range
+	/// from -16 to 16. A positive value greater than 1 speeds up the animation. A negative value
+	/// reverses the animation.
+	/// </remarks>
 	public float PlaybackRate
 	{
 		get => _playbackRate;
@@ -102,6 +120,9 @@ public partial class AnimationController : CompositionObject
 		}
 	}
 
+	/// <summary>
+	/// Gets or sets a value that indicates the current playback position of the animation.
+	/// </summary>
 	public float Progress
 	{
 		get => _progress ?? (_associations.Count > 0 ? _associations[0].Animation.Progress : 0f);

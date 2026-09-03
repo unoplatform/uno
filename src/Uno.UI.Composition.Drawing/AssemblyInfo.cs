@@ -20,3 +20,6 @@ using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.AppleUIKit")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Android")]
 [assembly: InternalsVisibleTo("Uno.UI.Runtime.Skia.Headless")]
+
+// Runtime tests drive the registration seam directly to record frames outside a host.
+[assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]

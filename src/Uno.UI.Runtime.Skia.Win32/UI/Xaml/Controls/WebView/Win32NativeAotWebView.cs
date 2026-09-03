@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,11 +22,9 @@ using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Controls;
 
-using WebView2Utilities = WebView2.Utilities.WebView2Utilities;
-
 namespace Uno.UI.Runtime.Skia.Win32;
 
-internal sealed class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsVirtualHostMapping, ISupportsWebResourceRequested
+internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsVirtualHostMapping, ISupportsWebResourceRequested
 {
 	private readonly CoreWebView2 _coreWebView;
 	private readonly WebView2.ICoreWebView2_22 _nativeWebView;
@@ -37,17 +33,7 @@ internal sealed class Win32NativeAotWebView : Win32NativeWebViewBase, ISupportsV
 	private Dictionary<ulong, string> _navigationIdToUriMap = new();
 	private string _documentTitle = string.Empty;
 
-	static Win32NativeAotWebView()
-	{
-		// WebView2Utilities.Initialize probes only next to Environment.ProcessPath, which is the
-		// dotnet host's directory when launched as `dotnet app.dll`. In that case, fall back to
-		// resolving through the runtime, which honors deps.json and AppContext.BaseDirectory.
-		if (WebView2Utilities.Initialize(Assembly.GetEntryAssembly(), throwOnError: false).IsError
-			&& !NativeLibrary.TryLoad("WebView2Loader.dll", typeof(WebView2.Functions).Assembly, null, out _))
-		{
-			throw new DllNotFoundException("Cannot load WebView2Loader.dll. Make sure it's deployed next to the application or resolvable through its deps.json.");
-		}
-	}
+	static Win32NativeAotWebView() => Win32WebView2Loader.Ensure();
 
 	public Win32NativeAotWebView(CoreWebView2 owner, ContentPresenter presenter)
 	: base(presenter)

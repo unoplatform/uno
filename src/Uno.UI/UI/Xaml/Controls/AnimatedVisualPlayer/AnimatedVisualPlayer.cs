@@ -13,4 +13,8 @@ namespace Microsoft.UI.Xaml.Controls;
 [ContentProperty(Name = "Source")]
 public partial class AnimatedVisualPlayer : FrameworkElement, IPanel
 {
+	// WinUI sets a transparent Background in OnLoaded so XAML hit-tests the player at all
+	// (AnimatedVisualPlayer.cpp:391-395). Uno has no Background on FrameworkElement, and the root
+	// visual is attached at the same point, so gate hit-testing on that instead.
+	internal override bool IsViewHit() => HasCompositionChildVisual;
 }

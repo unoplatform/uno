@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 		<!-- This is the SkiaSharp-free managed drawing backend used on ALL Skia platforms incl. Skia-on-Android, so it
@@ -31,8 +31,8 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI.Composition.Drawing\Uno.UI.Composition.Drawing.csproj" />
-		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
-		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Skia.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
 	</ItemGroup>

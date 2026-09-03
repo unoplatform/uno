@@ -49,7 +49,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// FrameworkTemplate pooling to function properly when an ItemTemplateSelector has been
 		/// specified.
 		/// </summary>
-		private readonly static DataTemplate InnerContentPresenterTemplate = new DataTemplate(() => new ContentPresenter());
+		private readonly static DataTemplate InnerContentPresenterTemplate = new DataTemplate(null, (_, _) => new ContentPresenter());
 
 		public static ItemsControl GetItemsOwner(DependencyObject element)
 		{
@@ -98,7 +98,7 @@ namespace Microsoft.UI.Xaml.Controls
 			get { return _internalItemsPanelRoot; }
 			set
 			{
-				if (_internalItemsPanelRoot is IDependencyObjectStoreProvider provider)
+				if (_internalItemsPanelRoot is DependencyObject provider)
 				{
 					provider.SetParent(null);
 				}
@@ -113,7 +113,7 @@ namespace Microsoft.UI.Xaml.Controls
 			get { return _itemsPanelRoot; }
 			set
 			{
-				if (_itemsPanelRoot is IDependencyObjectStoreProvider provider)
+				if (_itemsPanelRoot is DependencyObject provider)
 				{
 					provider.SetParent(null);
 				}
@@ -1568,9 +1568,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal IEnumerable<DependencyObject> MaterializedContainers =>
 			GetItemsPanelChildren()
-#if !IS_UNIT_TESTS // TODO
 				.Prepend(_containerBeingPrepared) // we put it first, because it's the most likely to be requested
-#endif
 				.Trim()
 				.Distinct();
 

@@ -19,7 +19,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="Svg.Skia" />
-		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" />
 	</ItemGroup>
 
 	<ItemGroup>

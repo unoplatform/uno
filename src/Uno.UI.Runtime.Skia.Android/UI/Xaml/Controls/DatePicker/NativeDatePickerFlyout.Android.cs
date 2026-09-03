@@ -18,7 +18,7 @@ internal
 #else
 public
 #endif
-	partial class NativeDatePickerFlyout : DatePickerFlyout
+	partial class NativeDatePickerFlyout : DatePickerFlyout, INativeDatePickerFlyout
 {
 	private bool _programmaticallyDismissed;
 	private DatePickerDialog _dialog;

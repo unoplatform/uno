@@ -3,44 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ColorKeyFrameAnimation : global::Microsoft.UI.Composition.KeyFrameAnimation
 	{
-#if __SKIA__
-		internal ColorKeyFrameAnimation()
-		{
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Composition.CompositionColorSpace InterpolationColorSpace
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.ColorKeyFrameAnimation", "InterpolationColorSpace");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.ColorKeyFrameAnimation", "InterpolationColorSpace");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void InsertKeyFrame(float normalizedProgressKey, global::Windows.UI.Color value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.ColorKeyFrameAnimation", "InsertKeyFrame(float normalizedProgressKey, Color value)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void InsertKeyFrame(float normalizedProgressKey, global::Windows.UI.Color value, global::Microsoft.UI.Composition.CompositionEasingFunction easingFunction)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.ColorKeyFrameAnimation", "InsertKeyFrame(float normalizedProgressKey, Color value, CompositionEasingFunction easingFunction)");
-		}
-#endif
+		// Skipping already declared property InterpolationColorSpace
+		// Skipping already declared method Microsoft.UI.Composition.ColorKeyFrameAnimation.InsertKeyFrame(float, Windows.UI.Color)
+		// Skipping already declared method Microsoft.UI.Composition.ColorKeyFrameAnimation.InsertKeyFrame(float, Windows.UI.Color, Microsoft.UI.Composition.CompositionEasingFunction)
 		// Forced skipping of method Microsoft.UI.Composition.ColorKeyFrameAnimation.InterpolationColorSpace.get
 		// Forced skipping of method Microsoft.UI.Composition.ColorKeyFrameAnimation.InterpolationColorSpace.set
 	}

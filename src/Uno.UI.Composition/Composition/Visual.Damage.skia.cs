@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Numerics;
@@ -18,6 +18,9 @@ public partial class Visual
 	// Set during the render walk when this visual's subtree changed this frame; used only to re-damage a
 	// drop-shadow's silhouette (which depends on descendants) when a descendant moved/changed.
 	internal bool _subtreeChangedThisFrame;
+
+	// Bounds of the clip this visual's content was last painted under (see ContributeDamageOnPaint).
+	private Rect _lastClipBounds;
 
 	internal virtual float DamageRegionSamplingMargin => 0;
 
@@ -40,7 +43,7 @@ public partial class Visual
 		}
 	}
 
-	internal void ContributeDamageOnPaint(bool contentChanged, DamageRegion? damage)
+	internal void ContributeDamageOnPaint(bool contentChanged, DamageRegion? damage, bool clipChanged)
 	{
 		if (damage is null)
 		{
@@ -52,16 +55,24 @@ public partial class Visual
 
 		var shadowSilhouetteChanged = ShadowState is not null && _subtreeChangedThisFrame;
 
-		if (!contentChanged && !moved && !shadowSilhouetteChanged)
-		{
-			return;
-		}
-
 		// The clip in effect for this visual's own content, in root coordinates. Rect-only: damage only ever
 		// consumes clip BOUNDS, and during a scroll every visible visual reaches this point every frame — a
 		// geometry-based total-clip walk (allocations + polygon booleans) per moved visual is pure overhead.
 		// Non-rect clips contribute their bounds (or nothing when unbounded), which only widens damage — safe.
 		var clipRect = GetTotalClipBoundsRect();
+
+		// The accumulated clip can grow or shrink while this visual's own content and transform stay identical
+		// (an ancestor re-clipping to a new size), revealing or hiding part of it, and nothing else would report
+		// that as damage. Two independent signals, because neither covers the other: clipChanged is raised where a
+		// Clip/LayoutClip is mutated, so it catches a shape change inside unchanged bounds, while the bounds
+		// fingerprint catches clips this visual never sees mutate, such as the frame's root clip.
+		clipChanged |= !RectEquals(clipRect, _lastClipBounds);
+		_lastClipBounds = clipRect;
+
+		if (!contentChanged && !moved && !clipChanged && !shadowSilhouetteChanged)
+		{
+			return;
+		}
 
 		if (TryGetPaintDamageRegion(clipRect, out var bounds))
 		{
@@ -117,6 +128,10 @@ public partial class Visual
 		// bounds anyway), so a geometry-shaped region here would pay polygon booleans — pathological on the
 		// managed geometry engine when every visual moves (scrolling) — for no tighter final damage.
 
+		// The clip is outset too: intersecting against a tight clip would otherwise claw the outset back off
+		// whichever edge the content reaches, and the unbounded fallback below returns this rect as-is.
+		clipRect = OutsetForAntialiasing(clipRect);
+
 		if (TryGetLocalContentBounds(out var local))
 		{
 			if (IsRectEmpty(local))
@@ -130,15 +145,7 @@ public partial class Visual
 				local = Inflate(local, samplingMargin, samplingMargin);
 			}
 
-			var root = local.Transform(TotalMatrix.ToMatrix3x2());
-			root = Inflate(root, 2, 2);
-			root = new Rect(
-				Math.Floor(root.X),
-				Math.Floor(root.Y),
-				Math.Ceiling(root.Right) - Math.Floor(root.X),
-				Math.Ceiling(root.Bottom) - Math.Floor(root.Y));
-
-			var clipped = Intersect(root, clipRect);
+			var clipped = Intersect(OutsetForAntialiasing(local.Transform(TotalMatrix.ToMatrix3x2())), clipRect);
 			if (IsRectEmpty(clipped))
 			{
 				return false;
@@ -150,6 +157,23 @@ public partial class Visual
 
 		bounds = clipRect;
 		return true;
+	}
+
+	/// <summary>
+	/// Widens a damage contribution to cover the antialiased fringe. Rendering writes device pixels whose
+	/// centers lie outside the geometry, while the non-AA damage clip only replays pixels whose centers lie
+	/// inside; without the slack that fringe is written once and never replayed, and accumulates as a stale
+	/// edge. Two root pixels plus an outward snap is at least the one device pixel the fringe can reach at any
+	/// rasterization scale a display reports, so the present path can clip to the region as it stands.
+	/// </summary>
+	private static Rect OutsetForAntialiasing(Rect rect)
+	{
+		rect = Inflate(rect, 2, 2);
+		return new Rect(
+			Math.Floor(rect.X),
+			Math.Floor(rect.Y),
+			Math.Ceiling(rect.Right) - Math.Floor(rect.X),
+			Math.Ceiling(rect.Bottom) - Math.Floor(rect.Y));
 	}
 
 	internal virtual bool TryGetLocalContentBounds(out Rect localBounds)
@@ -210,6 +234,28 @@ public partial class Visual
 
 		localBounds = ExpandForShadow(silhouetteLocal);
 		return true;
+	}
+
+	/// <summary>
+	/// The bounds of everything this visual and its subtree paint, in root coordinates. False when some
+	/// part of it can't be bounded analytically, in which case the caller has to fall back to its clip.
+	/// </summary>
+	internal bool TryGetSubtreeContentBoundsInRoot(out Rect boundsInRoot)
+	{
+		boundsInRoot = default;
+
+		if (!TryGetLocalContentBounds(out var own))
+		{
+			return false;
+		}
+
+		if (!IsRectEmpty(own))
+		{
+			boundsInRoot = own.Transform(TotalMatrix.ToMatrix3x2());
+		}
+
+		// A shadow's silhouette already covers the descendants, see TryGetShadowSilhouetteBounds.
+		return ShadowState is not null || TryAccumulateDescendantContentBoundsInRoot(ref boundsInRoot);
 	}
 
 	private bool TryAccumulateDescendantContentBoundsInRoot(ref Rect acc)

@@ -2,6 +2,7 @@
 // Original source: https://github.com/AvaloniaUI/Avalonia/tree/master/src/Avalonia.Vulkan
 using System;
 using System.Collections.Generic;
+using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Vulkan;
 using Uno.UI.Runtime.Skia.Vulkan.UnmanagedInterop;
 
@@ -10,15 +11,14 @@ namespace Uno.UI.Runtime.Skia.Vulkan.Interop;
 internal class VulkanCommandBufferPool : IDisposable
 {
 	private readonly IVulkanPlatformGraphicsContext _context;
-	private readonly bool _autoFree;
 	private readonly Queue<VulkanCommandBuffer> _commandBuffers = new();
+	private bool _pendingGrowthWarned;
 	private VkCommandPool _handle;
 	public VkCommandPool Handle => _handle;
 
-	public VulkanCommandBufferPool(IVulkanPlatformGraphicsContext context, bool autoFree = false)
+	public VulkanCommandBufferPool(IVulkanPlatformGraphicsContext context)
 	{
 		_context = context;
-		_autoFree = autoFree;
 		var createInfo = new VkCommandPoolCreateInfo
 		{
 			sType = VkStructureType.VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO,
@@ -58,8 +58,21 @@ internal class VulkanCommandBufferPool : IDisposable
 
 	public unsafe VulkanCommandBuffer CreateCommandBuffer()
 	{
-		if (_autoFree)
-			FreeFinishedCommandBuffers();
+		// Submitted buffers (and their fences) are only reclaimed here; without this drain
+		// every presented frame leaks one VkCommandBuffer and one VkFence. Upstream Avalonia
+		// drains from a render-target layer this port doesn't have — do not re-gate this call.
+		FreeFinishedCommandBuffers();
+
+		// Steady state leaves only frames-in-flight pending; sustained growth means fences
+		// stopped signaling and buffers are no longer reclaimed.
+		if (!_pendingGrowthWarned && _commandBuffers.Count > 8)
+		{
+			_pendingGrowthWarned = true;
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn($"{_commandBuffers.Count} submitted Vulkan command buffers are pending reclamation; fences may not be signaling.");
+			}
+		}
 
 		var commandBufferAllocateInfo = new VkCommandBufferAllocateInfo
 		{

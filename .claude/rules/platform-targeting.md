@@ -6,19 +6,24 @@ paths:
 
 # Platform targeting (Uno)
 
+> **Scope: this rule covers the Uno repository's own projects**, which use `src/Uno.CrossTargetting.targets`. The
+> consumer-facing vocabulary shipped in `Uno.Sdk` / `Uno.WinUI` is target-framework driven and differs — see
+> `doc/articles/platform-specific-csharp.md`, `doc/articles/platform-specific-xaml.md`, and the proposal in
+> `specs/056-platform-targeting-vocabulary/spec.md`.
+
 Preprocessor symbols and file-suffix exclusion are injected by `src/Uno.CrossTargetting.targets` from `UnoRuntimeIdentifier` / `TargetPlatformIdentifier` — **never** set platform `DefineConstants` or `Compile Remove` for suffixes in a `.csproj`. Symbols are **mutually exclusive per build**: a single compilation never has both `__SKIA__` and `__WASM__`.
 
 Current symbols: `__ANDROID__`, `__APPLE_UIKIT__` (iOS/tvOS), `__WASM__`, `__SKIA__`, `__NETSTD_REFERENCE__` / `UNO_REFERENCE_API`, `__CROSSRUNTIME__` (true for Skia, WebAssembly, Reference).
 
 ## Scope: Skia-first
-New UI features target **Skia** (incl. Skia-on-Android/iOS/WASM); the **native** UI targets (native Android Views, iOS/UIKit, WASM DOM) are **maintenance-only** — keep them building and behaving, but don't add features there unless the task says so. This is the *UI* layer only: platform-specific **non-UI WinRT APIs** in `Uno.UWP`/`Uno.Foundation` (rule 5 below) are still actively enhanced, since Skia compiles and uses those per-platform implementations. See AGENTS.md → "Development scope".
+New UI features target **Skia** (incl. Skia-on-Android/iOS/WASM); the **native** UI targets (native Android Views, iOS/UIKit, WASM DOM) are **maintenance-only** — keep them building and behaving, but don't add features there unless the task says so. This is the *UI* layer only: platform-specific **non-UI WinRT APIs** in `Uno.WinRT`/`Uno.Foundation` (rule 5 below) are still actively enhanced, since Skia compiles and uses those per-platform implementations. See AGENTS.md → "Development scope".
 
 ## Decision rule — pick the narrowest that fits
 1. **Entire implementation is platform-specific** → separate partial **file suffix**: `.Android.cs`, `.iOS.cs`, `.UIKit.cs` (iOS+tvOS), `.wasm.cs`, `.skia.cs`, `.reference.cs`. One file = exactly one platform/runtime; the suffix is auto-excluded elsewhere.
 2. **Code shared by all cross-runtime targets** (Skia generic + WASM + Reference, but not native Android/iOS) → **`.crossruntime.cs`**. This is *not* "shared by everything" — native platforms have their own `.Android.cs`/`.UIKit.cs`.
 3. **A cross-platform file needs a small platform branch** (e.g. a `using` alias or one method body) → **`#if`** with the symbols above, `#elif` chains not nested `#if`.
 4. **One assembly runs on many OSes at runtime** (Skia `netX.0` runs on Win32/macOS/Linux/Android-Skia/iOS-Skia) → **`OperatingSystem.IsAndroid()` / `.IsBrowser()` / `.IsMacOS()`** runtime checks. Never use these for compile-time exclusion; never use them in a `.Android.cs`/`.UIKit.cs` file where the platform is already statically known.
-5. **`Uno.UWP`/`Uno.Foundation` generic target needs a platform-specific implementation loaded at runtime** → **`ApiExtensibility.CreateInstance<IXxxExtension>()`** with the concrete impl in a `Uno.UI.Runtime.Skia.*` project. Keeps generic code free of native (JNI/UIKit) references.
+5. **`Uno.WinRT`/`Uno.Foundation` generic target needs a platform-specific implementation loaded at runtime** → **`ApiExtensibility.CreateInstance<IXxxExtension>()`** with the concrete impl in a `Uno.UI.Runtime.Skia.*` project. Keeps generic code free of native (JNI/UIKit) references.
 
 ## Traps
 - `#if __ANDROID__` is **false** in a `.skia.cs` file (Skia-Android uses `.skia.cs`, not `.Android.cs`). Use `#if __SKIA__` there.

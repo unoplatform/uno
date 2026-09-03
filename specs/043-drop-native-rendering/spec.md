@@ -12,6 +12,8 @@
 
 > **Amendment — packaging layout for the UI layer.** §7 below prescribes collapsing to the Reference (`lib/netX.0`) + `uno-runtime/.../skia` layout. That has since been narrowed: with the DOM runtime gone, `skia` was the only remaining replacement for the UI assemblies, so the UI layer now ships the Skia build directly in `lib/` and has no `uno-runtime` folder at all. The bait-and-switch is retained only for `Uno`, `Uno.Foundation` and `Uno.UI.Dispatching`, which still ship both a `skia` and a `webassembly` flavor and act as the union compile surface that keeps `Uno.UI` platform-agnostic. `Uno.UI-Reference-Only.slnf` survives and still builds those three, so the §10 compile gate is unchanged.
 
+> **Amendment — platform-specific NuGet assets on Skia mobile.** §7 and §12 anticipate `RuntimeAssetsSelectorTask`'s native-vs-Skia branch dying while the task stays for two-layer resolution. A second branch also goes away: `HandleSkiaMobileForNonRuntimeEnabledPackages`, which replaced a third-party package's `lib/netX.0-android|ios|tvos` asset with its `lib/netX.0` one. It existed because a library's platform asset was compiled against the native `Uno.UI`; with no platform-specific `lib/` folder left in `Uno.WinUI`, every asset binds the same `Uno.UI` and the substitution has nothing to correct. Multi-targeted libraries now keep their platform asset, and `UNOB0020` reports one built against an Uno.UI that no longer provides the types it uses. The two-layer resolution for `Uno`, `Uno.Foundation` and `Uno.UI.Dispatching` (`HandleForRuntimeEnabled`) is untouched.
+
 ---
 
 ## 1. Summary

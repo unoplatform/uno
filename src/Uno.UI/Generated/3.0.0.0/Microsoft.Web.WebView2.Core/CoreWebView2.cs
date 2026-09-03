@@ -8,16 +8,7 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 	public partial class CoreWebView2
 	{
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public uint BrowserProcessId
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "BrowserProcessId");
-			}
-		}
-#endif
+		// Skipping already declared property BrowserProcessId
 		// Skipping already declared property CanGoBack
 		// Skipping already declared property CanGoForward
 #if __SKIA__
@@ -69,16 +60,7 @@ namespace Microsoft.Web.WebView2.Core
 		}
 #endif
 		// Skipping already declared property DocumentTitle
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2Environment Environment
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "Environment");
-			}
-		}
-#endif
+		// Skipping already declared property Environment
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public string FaviconUri
@@ -167,16 +149,7 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2Profile Profile
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "Profile");
-			}
-		}
-#endif
+		// Skipping already declared property Profile
 		// Skipping already declared property Settings
 		// Skipping already declared property Source
 #if __SKIA__

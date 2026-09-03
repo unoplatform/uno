@@ -12,7 +12,7 @@ internal record class _Dotnet(string Moniker, ReferenceAssemblies ReferenceAssem
 		"net11.0",
 		new PackageIdentity(
 			"Microsoft.NETCore.App.Ref",
-			"11.0.0-preview.6.26359.118"),
+			"11.0.0-preview.7.26381.103"),
 		Path.Combine("ref", "net11.0")
 	);
 
@@ -21,7 +21,7 @@ internal record class _Dotnet(string Moniker, ReferenceAssemblies ReferenceAssem
 	private static ReferenceAssemblies Net110Android = Net110
 		.AddPackages(
 			ImmutableArray.Create(
-				new PackageIdentity("Microsoft.Android.Ref.37", "37.0.0-preview.6.59")));
+				new PackageIdentity("Microsoft.Android.Ref.37", "37.0.0-preview.7.2131")));
 
 	public ReferenceAssemblies WithUnoPackage(string version = "5.0.118")
 		=> ReferenceAssemblies.AddPackages([new PackageIdentity("Uno.WinUI", version)]);

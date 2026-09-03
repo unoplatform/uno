@@ -62,6 +62,65 @@ public partial class ShapeVisual
 
 	internal override bool CanPaint() => base.CanPaint() || (_shapes?.Any(s => s.CanPaint()) ?? false);
 
+	internal override bool TryGetLocalContentBounds(out Rect localBounds)
+	{
+		localBounds = default;
+
+		if (_shapes is not { Count: > 0 } shapes)
+		{
+			return ShadowState is null;
+		}
+
+		var any = false;
+		var acc = default(Rect);
+		for (var i = 0; i < shapes.Count; i++)
+		{
+			// A shape this doesn't know how to bound leaves the whole visual unbounded.
+			if (shapes[i] is not CompositionSpriteShape sprite)
+			{
+				return false;
+			}
+
+			if (sprite.TryGetRenderBounds(out var shapeBounds))
+			{
+				if (any)
+				{
+					acc.Union(shapeBounds);
+				}
+				else
+				{
+					acc = shapeBounds;
+					any = true;
+				}
+			}
+		}
+
+		if (!any)
+		{
+			return true;
+		}
+
+		// Paint applies the ViewBox as a translate-then-scale (see Paint); the bounds follow it.
+		if (ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
+		{
+			var sx = Size.X / viewBox.Size.X;
+			var sy = Size.Y / viewBox.Size.Y;
+			acc = new Rect(
+				sx * (acc.X - viewBox.Offset.X),
+				sy * (acc.Y - viewBox.Offset.Y),
+				sx * acc.Width,
+				sy * acc.Height);
+		}
+
+		if (ShadowState is not null)
+		{
+			return TryGetShadowSilhouetteBounds(acc, out localBounds);
+		}
+
+		localBounds = acc;
+		return true;
+	}
+
 	private protected override bool TryAddShadowPaths(global::System.Collections.Generic.List<(IGeometry path, float alpha)> output)
 	{
 		if (_shapes is not { Count: > 0 } shapes || Size.X == 0 || Size.Y == 0)

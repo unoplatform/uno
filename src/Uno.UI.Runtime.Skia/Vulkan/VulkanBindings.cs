@@ -16,5 +16,7 @@ static class VulkanHelpers
         return (uint)((major << 22) | (minor << 12) | patch);
     }
 
+    public static string FormatVersion(uint version) => $"{version >> 22}.{(version >> 12) & 0x3FF}.{version & 0xFFF}";
+
     public const uint QueueFamilyIgnored = 4294967295;
 }

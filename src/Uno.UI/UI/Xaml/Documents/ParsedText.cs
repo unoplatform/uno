@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -334,18 +334,27 @@ internal readonly struct ParsedText : IParsedText
 	// composition underline rendering is implemented by UnicodeText (the actual
 	// renderer used by TextBlock/TextBox). ParsedText is only the initial empty
 	// fallback and never has an active composition to render.
-	public void Draw(in Visual.PaintingSession session,
+	public void Draw(UIElement owner, in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret,
 		IEnumerable<TextHighlighter> highlighters,
 		(int startIndex, int length)? compositionRange)
 	{
+		var useHighContrastAdjustment = owner.UseHighContrastAdjustment();
+		var effectiveOpacity = useHighContrastAdjustment && session.Opacity > 0
+			? 1f
+			: session.Opacity;
+		var (highContrastForeground, highContrastBackground, highContrastSelectionForeground, highContrastSelectionBackground) =
+			useHighContrastAdjustment
+				? owner.GetHighContrastTextColors()
+				: default;
+
 		if (_renderLines.Count == 0)
 		{
 			// empty, so caret is at the beginning
 			if (caret is not null)
 			{
 				var caretRect = new Rect(new Point(0, 0), new Point(caret.Value.thickness, _defaultLineHeight));
-				caret.Value.brush.TryPaint(session.Session, session.Opacity, caretRect);
+				caret.Value.brush.TryPaint(session.Session, effectiveOpacity, caretRect);
 			}
 
 			return;
@@ -389,11 +398,15 @@ internal readonly struct ParsedText : IParsedText
 				// Opaque black when no foreground brush applies.
 				var foregroundColor = Color.FromArgb(255, 0, 0, 0);
 
-				if (inline.Foreground is SolidColorBrush scb)
+				if (useHighContrastAdjustment)
+				{
+					foregroundColor = WithOpacity(highContrastForeground, effectiveOpacity);
+				}
+				else if (inline.Foreground is SolidColorBrush scb)
 				{
 					var scbColor = scb.Color;
 					foregroundColor = Color.FromArgb(
-						(byte)(scbColor.A * scb.Opacity * session.Opacity),
+						(byte)(scbColor.A * scb.Opacity * effectiveOpacity),
 						scbColor.R,
 						scbColor.G,
 						scbColor.B);
@@ -402,7 +415,7 @@ internal readonly struct ParsedText : IParsedText
 				{
 					var gbColor = gb.FallbackColorWithOpacity;
 					foregroundColor = Color.FromArgb(
-						(byte)(gbColor.A * session.Opacity),
+						(byte)(gbColor.A * effectiveOpacity),
 						gbColor.R,
 						gbColor.G,
 						gbColor.B);
@@ -411,7 +424,7 @@ internal readonly struct ParsedText : IParsedText
 				{
 					var gbColor = xcbb.FallbackColorWithOpacity;
 					foregroundColor = Color.FromArgb(
-						(byte)(gbColor.A * session.Opacity),
+						(byte)(gbColor.A * effectiveOpacity),
 						gbColor.R,
 						gbColor.G,
 						gbColor.B);
@@ -482,14 +495,48 @@ internal readonly struct ParsedText : IParsedText
 				// Note that carets and text decorations never occur at the same time for now (TextBox has a caret but no
 				// decorations, TextBlock doesn't have a caret), but a RichTextBox can have both, so that should be kept in mind
 
+				if (useHighContrastAdjustment)
+				{
+					var backplateWidth = s == line.RenderOrderedSegmentSpans.Count - 1
+						? segmentSpan.WidthWithoutTrailingSpaces
+						: segmentSpan.Width;
+					DrawBackplate(drawingSession, xBeforeGlyphOffsets, y, line.Height, backplateWidth, highContrastBackground, effectiveOpacity);
+				}
+
 				// limited support for highlighters
 				var highlighter = highlighters.FirstOrDefault();
 				var selection = highlighter?.Ranges?.FirstOrDefault();
 				if (selection is not null)
 				{
 					var selectionDetails = CalculateSelection(selection.Value.StartIndex, selection.Value.StartIndex + selection.Value.Length);
-					HandleSelection(selectionDetails, lineIndex, characterCountSoFar, positionsSpan, x, justifySpaceOffset, segmentSpan, segment, fontInfo, y, line, drawingSession, highlighter!.Background.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()), session.Opacity);
-					RenderText(selectionDetails, lineIndex, characterCountSoFar, segmentSpan, fontInfo, positionsSpan, glyphsSpan, drawingSession, y + baselineOffsetY, foregroundColor);
+					HandleSelection(
+						selectionDetails,
+						lineIndex,
+						characterCountSoFar,
+						positionsSpan,
+						x,
+						justifySpaceOffset,
+						segmentSpan,
+						segment,
+						fontInfo,
+						y,
+						line,
+						drawingSession,
+						highlighter!.Background.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()),
+						effectiveOpacity,
+						useHighContrastAdjustment ? WithOpacity(highContrastSelectionBackground, effectiveOpacity) : null);
+					RenderText(
+						selectionDetails,
+						lineIndex,
+						characterCountSoFar,
+						segmentSpan,
+						fontInfo,
+						positionsSpan,
+						glyphsSpan,
+						drawingSession,
+						y + baselineOffsetY,
+						foregroundColor,
+						useHighContrastAdjustment ? WithOpacity(highContrastSelectionForeground, effectiveOpacity) : null);
 				}
 				else
 				{
@@ -526,7 +573,7 @@ internal readonly struct ParsedText : IParsedText
 
 				if (caret is not null)
 				{
-					HandleCaret(caret.Value.index, caret.Value.thickness, drawingSession, caret.Value.brush, session.Opacity, characterCountSoFar, segmentSpan, positionsSpan, x, justifySpaceOffset, y, line);
+					HandleCaret(caret.Value.index, caret.Value.thickness, drawingSession, caret.Value.brush, effectiveOpacity, characterCountSoFar, segmentSpan, positionsSpan, x, justifySpaceOffset, y, line);
 				}
 
 				x += justifySpaceOffset * segmentSpan.TrailingSpaces;
@@ -543,6 +590,28 @@ internal readonly struct ParsedText : IParsedText
 				new Vector2(x, y),
 				new Vector2(x + width, y),
 				color, thickness, antialias: true);
+		}
+
+		static void DrawBackplate(
+			IDrawingSession drawingSession,
+			float x,
+			float y,
+			float lineHeight,
+			float width,
+			Color background,
+			float opacity)
+		{
+			if (width <= 0)
+			{
+				return;
+			}
+
+			drawingSession.DrawRect(
+				new Rect(
+					new Point(MathF.Round(x, MidpointRounding.AwayFromZero), y - lineHeight),
+					new Point(MathF.Round(x + width, MidpointRounding.AwayFromZero), y)),
+				WithOpacity(background, opacity),
+				antialias: true);
 		}
 	}
 
@@ -734,7 +803,7 @@ internal readonly struct ParsedText : IParsedText
 	private void HandleSelection(SelectionDetails selection, int lineIndex,
 		int characterCountSoFar, Span<Vector2> positions, float x, float justifySpaceOffset,
 		RenderSegmentSpan segmentSpan, Segment segment, FontDetails fontInfo, float y, RenderLine line, IDrawingSession drawingSession,
-		CompositionBrush brush, float opacity)
+		CompositionBrush brush, float opacity, Color? colorOverride)
 	{
 		if (selection is { } bg && bg.StartLine <= lineIndex && lineIndex <= bg.EndLine)
 		{
@@ -788,14 +857,21 @@ internal readonly struct ParsedText : IParsedText
 			if (Math.Abs(left - right) > 0.01)
 			{
 				var rect = new Rect(new Point(left, y - line.Height), new Point(right, y));
-				brush.TryPaint(drawingSession, opacity, rect);
+				if (colorOverride is { } color)
+				{
+					drawingSession.DrawRect(rect, color, antialias: true);
+				}
+				else
+				{
+					brush.TryPaint(drawingSession, opacity, rect);
+				}
 			}
 		}
 	}
 
 	private void RenderText(SelectionDetails? selection, int lineIndex, int characterCountSoFar,
 		RenderSegmentSpan segmentSpan, FontDetails fontInfo, Span<Vector2> positions, Span<ushort> glyphs,
-		IDrawingSession drawingSession, float y, Color color)
+		IDrawingSession drawingSession, float y, Color color, Color? selectionColor = null)
 	{
 		if (selection is not { } bg || bg.StartLine > lineIndex || lineIndex > bg.EndLine)
 		{
@@ -867,7 +943,7 @@ internal readonly struct ParsedText : IParsedText
 					glyphs.Slice(startOfSelection, endOfSelection - startOfSelection),
 					drawingSession,
 					y,
-					Color.FromArgb(255, 255, 255, 255)); // selection is always white
+					selectionColor ?? Color.FromArgb(255, 255, 255, 255));
 			}
 
 			if (segmentSpan.GlyphsLength - endOfSelection > 0) // post selection
@@ -888,6 +964,9 @@ internal readonly struct ParsedText : IParsedText
 			GlyphRunRenderer.Draw(drawingSession, fontInfo.FontHandle, glyphs, positions, y, color);
 		}
 	}
+
+	private static Color WithOpacity(Color color, float opacity) =>
+		Color.FromArgb((byte)(color.A * opacity), color.R, color.G, color.B);
 
 	private void HandleCaret(int caretIndex, float caretThickness, IDrawingSession drawingSession,
 		CompositionBrush caretBrush, float opacity, int characterCountSoFar, RenderSegmentSpan segmentSpan,

@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ListViewBase : global::Microsoft.UI.Xaml.Controls.ISemanticZoomInformation
+	public partial class ListViewBase : global::Microsoft.UI.Xaml.Controls.Primitives.Selector, global::Microsoft.UI.Xaml.Controls.ISemanticZoomInformation
 	{
 		// Skipping already declared property CanDragItemsProperty
 		// Skipping already declared property CanReorderItemsProperty

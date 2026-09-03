@@ -73,6 +73,20 @@ This guide walks you through configuring the Uno Platform MCPs for Google Antigr
 
     See [The Uno Platform MCPs](xref:Uno.Features.Uno.MCPs) for additional details about MCP registration and diagnostics.
 
+## Setting up the Uno Platform Skills
+
+Uno Platform ships a catalog of agent skills covering areas such as MVUX, navigation, Uno Toolkit controls, theming, and UI testing. Antigravity doesn't support the plugin format at this time, so copy the skills into an [Antigravity skills directory](https://antigravity.google/docs/skills) instead:
+
+```bash
+git clone https://github.com/unoplatform/studio.git
+mkdir -p ~/.gemini/config/skills
+cp -r studio/skills/uno-* ~/.gemini/config/skills/
+```
+
+To make the skills available in a single project only, copy them to `.agents/skills/` at the workspace root instead.
+
+Once installed, Antigravity automatically selects the relevant skills as it works on your prompts. For the full skill catalog and other installation options, see [Skills & Plugins](xref:Uno.PlatformStudio.Skills).
+
 ## Next Steps
 
 You are now ready to [create your first app with Google Antigravity](xref:Uno.GettingStarted.CreateAnApp.AI.GoogleAntigravity).

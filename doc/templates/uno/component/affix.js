@@ -121,7 +121,24 @@ function renderAffix() {
                     );
                 }
             }
-            
+
+            // Check overlap with the footer (the "back to top" link lives here,
+            // and the fixed box otherwise covers it when scrolled to the bottom).
+            if (!hasOverlap) {
+                const footer = $('footer');
+                if (footer.length > 0) {
+                    const footerRect = footer[0].getBoundingClientRect();
+                    if (footerRect.height > 0) {
+                        hasOverlap = !(
+                            feedbackRect.right < footerRect.left ||
+                            feedbackRect.left > footerRect.right ||
+                            feedbackRect.bottom < footerRect.top ||
+                            feedbackRect.top > footerRect.bottom
+                        );
+                    }
+                }
+            }
+
             if (hasOverlap) {
                 feedbackBox.addClass('hidden-with-overlap');
             } else {
