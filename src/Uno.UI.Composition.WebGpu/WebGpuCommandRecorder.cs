@@ -104,6 +104,16 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 
 	public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect)
 	{
+		// Difference has no AABB representation: keeping the area OUTSIDE the rect leaves a visible region that
+		// extends past it, so tightening the scissor would be wrong. Route it through the rounded-clip path, which
+		// already handles exclusion (and whose coverage degenerates to a sharp box at zero radii) — Intersect keeps
+		// the cheap AABB-only tightening below and consumes no clip slot.
+		if (operation == ClipOperation.Difference)
+		{
+			ClipRoundRect(new RoundRectangle { Rect = rect }, operation);
+			return;
+		}
+
 		// Tighten the scissor AABB; any active rounded shape is preserved (Intersect only).
 		var a = DeviceAabb(rect);
 		_clip.Aabb = new Vector4(MathF.Max(_clip.Aabb.X, a.X), MathF.Max(_clip.Aabb.Y, a.Y), MathF.Min(_clip.Aabb.Z, a.Z), MathF.Min(_clip.Aabb.W, a.W));
