@@ -251,6 +251,9 @@ public class Given_InputInjector
 		// coordinates - this is the real OS behavior InjectedInputMouseOptions.Absolute mirrors.
 		var mouse = injector.GetMouse();
 		mouse.MoveTo(rootTarget);
+		// Real OS input injection propagates through the system input stack asynchronously;
+		// WaitForIdle only flushes the XAML dispatcher, not that hardware-level delivery.
+		await Task.Delay(100);
 #endif
 
 		await WaitForIdle();
