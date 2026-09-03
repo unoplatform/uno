@@ -156,6 +156,7 @@ namespace Uno.UI.Helpers
 		/// content-property assignment path -- for example, an item added by generated code to a collection
 		/// property -- so that it inherits DataContext and other ambient/inherited properties from
 		/// <paramref name="parent"/> as though it had been parsed as part of the declaration.
+		/// Passing <see langword="null"/> detaches the object, clearing the inherited values.
 		/// </summary>
 		/// <remarks>
 		/// <see cref="DependencyObject"/>'s Parent is internal -- WinUI has no equivalent public member, as its
@@ -163,7 +164,7 @@ namespace Uno.UI.Helpers
 		/// the consuming app's assembly, reaches it through this helper.
 		/// </remarks>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void SetParent(DependencyObject target, object parent)
+		public static void SetParent(DependencyObject target, object? parent)
 			=> target.SetParent(parent);
 
 		/// <summary>
