@@ -33,4 +33,17 @@ public class Given_MarkupHelper
 		MarkupHelper.SetParent(child, parent2);
 		Assert.AreEqual(42, child.DataContext);
 	}
+
+	[TestMethod]
+	public void When_SetParent_Null_Then_DataContextIsCleared()
+	{
+		var parent = new Border { DataContext = 42 };
+		var child = new Border();
+
+		MarkupHelper.SetParent(child, parent);
+		Assert.AreEqual(42, child.DataContext);
+
+		MarkupHelper.SetParent(child, null);
+		Assert.IsNull(child.DataContext);
+	}
 }
