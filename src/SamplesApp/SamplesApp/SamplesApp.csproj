@@ -283,7 +283,7 @@
 		<!-- AndroidX versions track $(NetCurrent)'s .NET for Android bindings -->
 		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.10.0.1" />
 		<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.2.0.3" />
-		<PackageReference Include="Xamarin.Google.Android.Material" Version="1.14.0.5" />
+		<PackageReference Include="Xamarin.Google.Android.Material" Version="1.14.0.6" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(_Platform)' == 'android'">
