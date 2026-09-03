@@ -29,7 +29,7 @@ namespace Microsoft.UI.Composition
 
 		public void CanvasDrawPath(SKCanvas canvas, SKPaint paint) => canvas.DrawPath(_geometry, paint);
 
-		public void CanvasClipPath(SKCanvas canvas, SKClipOperation operation = SKClipOperation.Intersect, bool antialias = false) => canvas.ClipPath(_geometry, operation, antialias);
+		public void CanvasClipPath(SKCanvas canvas, SKClipOperation operation = SKClipOperation.Intersect) => canvas.ClipPath(_geometry, operation);
 
 		public bool GetFillPath(SKPaint paint, SKPathBuilder dst) => paint.GetFillPath(_geometry, dst);
 

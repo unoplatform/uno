@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -214,13 +214,13 @@ internal sealed class ManagedSvg : ISvgDocument
 		{
 			var save = session.SaveCount;
 			session.Save();
-			session.ClipPath(clip, ClipOperation.Intersect, antialias: true);
-			session.DrawRect(clip.Bounds, shader, antialias: true);
+			session.ClipPath(clip, ClipOperation.Intersect);
+			session.DrawRect(clip.Bounds, shader);
 			session.RestoreToCount(save);
 		}
 		else
 		{
-			session.DrawPath(clip, solid, antialias: true);
+			session.DrawPath(clip, solid);
 		}
 	}
 
@@ -236,7 +236,7 @@ internal sealed class ManagedSvg : ISvgDocument
 
 		if (!needsStrokeFill)
 		{
-			session.StrokePath(geometry, style.ResolvedStroke, style.StrokeWidth, antialias: true);
+			session.StrokePath(geometry, style.ResolvedStroke, style.StrokeWidth);
 			return;
 		}
 

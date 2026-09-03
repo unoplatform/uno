@@ -67,8 +67,8 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		_stack.Push(new SaveEntry { M = _m, Clip = _clip, IsLayer = true, ParentTarget = _target, CompositeMode = compositeMode, ColorMatrix = colorMatrix, Effect = effect, PendingColorMatrix = _pendingColorMatrix });
 		_target = new List<WebGpuCommand>();
 	}
-	public void SaveLayer(bool antialias = false) => PushLayer(0, null);
-	public void SaveLayer(IColorFilter colorFilter, bool antialias = false)
+	public void SaveLayer() => PushLayer(0, null);
+	public void SaveLayer(IColorFilter colorFilter)
 	{
 		// A 4x5 colour-matrix filter (effect brush): apply it directly in the image shader — matching the original
 		// webgpu branch's AddImage(colorMatrix) — instead of an offscreen layer. Scope it to the matching Restore.
@@ -90,7 +90,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 
 		PushLayer(0, null);
 	}
-	public void SaveLayerMask(bool antialias = false) => PushLayer(1, null);   // 1 = DstIn composite
+	public void SaveLayerMask() => PushLayer(1, null);   // 1 = DstIn composite
 	public void SaveLayer(IEffectFilter filter) => PushLayer(0, null, filter as WebGpuEffectFilter);
 	// Device-space AABB of a mapped rect (its 4 corners), for the scissor / fast reject.
 	private Vector4 DeviceAabb(in Rect rect)
@@ -102,7 +102,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		return new Vector4(l, t, r, bo);
 	}
 
-	public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
+	public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect)
 	{
 		// Tighten the scissor AABB; any active rounded shape is preserved (Intersect only).
 		var a = DeviceAabb(rect);
@@ -110,7 +110,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		_clip.ScissorInert = false;
 	}
 
-	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
+	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect)
 	{
 		var aabb = DeviceAabb(roundRect.Rect);
 		// Device-space, axis-aligned rounded rect (exact under scale/translate). Per-corner radii carry BOTH axes
@@ -137,7 +137,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		}
 	}
 
-	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
+	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect)
 	{
 		// A geometry that advertises itself as a single (rounded) rect clips analytically (shader-evaluated
 		// rounds / plain scissor) instead of costing a stencil-mask fan draw and defeating coalescing.
@@ -148,11 +148,11 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			if (operation == ClipOperation.Intersect
 				&& rr.TopLeft == Vector2.Zero && rr.TopRight == Vector2.Zero && rr.BottomRight == Vector2.Zero && rr.BottomLeft == Vector2.Zero)
 			{
-				ClipRect(rr.Rect, operation, antialias);
+				ClipRect(rr.Rect, operation);
 			}
 			else
 			{
-				ClipRoundRect(rr, operation, antialias);
+				ClipRoundRect(rr, operation);
 			}
 			return;
 		}
@@ -163,7 +163,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		// bounds would wrongly clip everything beyond them — leave the scissor and let PathExclude do the exact cut.
 		if (operation != ClipOperation.Difference)
 		{
-			ClipRect(geometry.Bounds, operation, antialias);
+			ClipRect(geometry.Bounds, operation);
 		}
 		_fan = new List<float>();
 		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
@@ -195,7 +195,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		return WColor.FromArgb((byte)(na * 255f + 0.5f), (byte)(nr * 255f + 0.5f), (byte)(ng * 255f + 0.5f), (byte)(nb * 255f + 0.5f));
 	}
 
-	public void DrawRect(in Rect rect, WColor color, bool antialias = false)
+	public void DrawRect(in Rect rect, WColor color)
 	{
 		var p0 = Map((float)rect.Left, (float)rect.Top);
 		var p1 = Map((float)rect.Right, (float)rect.Top);
@@ -287,7 +287,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	private List<(List<Vector2> Pts, bool Closed)> _localContours;
 	private bool _collectLocal;
 
-	public void DrawRoundedRect(in Rect rect, Vector4 radii, WColor color, bool antialias = false)
+	public void DrawRoundedRect(in Rect rect, Vector4 radii, WColor color)
 	{
 		if (_pendingColorMatrix is { Length: >= 20 } pm) { color = ApplyColorMatrix(color, pm); }
 		float w = (float)rect.Width, h = (float)rect.Height;
@@ -309,7 +309,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		});
 	}
 
-	public void DrawRoundedRectBorder(in Rect outer, Vector4 outerRadii, in Rect inner, Vector4 innerRadii, WColor color, bool antialias = false)
+	public void DrawRoundedRectBorder(in Rect outer, Vector4 outerRadii, in Rect inner, Vector4 innerRadii, WColor color)
 	{
 		if (_pendingColorMatrix is { Length: >= 20 } pm) { color = ApplyColorMatrix(color, pm); }
 		float ow = (float)outer.Width, oh = (float)outer.Height, iw = (float)inner.Width, ih = (float)inner.Height;
@@ -337,7 +337,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		});
 	}
 
-	public void DrawPath(IGeometry geometry, WColor color, bool antialias = false)
+	public void DrawPath(IGeometry geometry, WColor color)
 		=> FillGeometry(geometry, color, geometry.FillRule == GeometryFillRule.EvenOdd);
 
 	private void FillGeometry(IGeometry geometry, WColor color, bool evenOdd)
@@ -507,7 +507,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		return default;
 	}
 
-	public void DrawRect(in Rect rect, IShader shader, bool antialias = false)
+	public void DrawRect(in Rect rect, IShader shader)
 	{
 		if (shader is not WebGpuShader g)
 		{
@@ -580,7 +580,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			P3 = gp3,
 		});
 	}
-	public void DrawShadow(IGeometry silhouette, WColor color, float sigmaX, float sigmaY, bool additive, bool antialias = false)
+	public void DrawShadow(IGeometry silhouette, WColor color, float sigmaX, float sigmaY, bool additive)
 	{
 		_fan = new List<float>();
 		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
@@ -602,7 +602,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		}
 		_fan = null;
 	}
-	public void StrokePath(IGeometry geometry, WColor color, float strokeWidth, bool antialias = false)
+	public void StrokePath(IGeometry geometry, WColor color, float strokeWidth)
 	{
 		if (strokeWidth > 0 && TryStrokeAsStrip(geometry, color, strokeWidth)) { return; }
 		using var sg = geometry.GetStrokeFillGeometry(new StrokeStyle { Thickness = strokeWidth, LineJoin = StrokeJoin.Miter, MiterLimit = 10f });
@@ -693,7 +693,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		static Vector2 Norm(Vector2 v) { var l = v.Length(); return l < 1e-6f ? Vector2.Zero : v / l; }
 		static Vector2 Perp(Vector2 v) => new(-v.Y, v.X);
 	}
-	public void DrawLine(Vector2 p0, Vector2 p1, WColor color, float strokeWidth, bool antialias = false)
+	public void DrawLine(Vector2 p0, Vector2 p1, WColor color, float strokeWidth)
 	{
 		var dir = p1 - p0; var len = dir.Length(); if (len < 1e-4f) { return; }
 		dir /= len;
@@ -717,7 +717,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	// Refcounted: this recording holds a ref until it is disposed (see WebGpuRenderRecord.Dispose / WebGpuTexture).
 	private void TrackTexture(WebGpuTexture t) { t.AddRef(); (_data.Textures ??= new()).Add(t); }
 
-	public void DrawImage(ITexture texture, float x, float y, float opacity = 1f, bool antialias = false)
+	public void DrawImage(ITexture texture, float x, float y, float opacity = 1f)
 	{
 		if (texture is not WebGpuTexture t) { return; }
 		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
@@ -725,7 +725,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		// No per-frame upload — the texture is already resident; record its view for the present pass.
 		{ var ip0 = Map(x, y); var ip1 = Map(x + w, y); var ip2 = Map(x + w, y + h); var ip3 = Map(x, y + h); _target.Add(new ImageCmd { P0 = ip0, P1 = ip1, P2 = ip2, P3 = ip3, View = t.View, W = w, H = h, Opacity = opacity, ColorMatrix = _pendingColorMatrix, Clip = RelaxedClip(ip0, ip1, ip2, ip3) }); }
 	}
-	public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter, bool antialias = false)
+	public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter)
 	{
 		if (texture is not WebGpuTexture t) { return; }
 		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
@@ -757,7 +757,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			? (1, new Vector4(f.Color.R / 255f, f.Color.G / 255f, f.Color.B / 255f, f.Color.A / 255f))
 			: (0, default);
 
-	public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false)
+	public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow)
 	{
 		if (texture is not WebGpuTexture t) { return; }
 		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }

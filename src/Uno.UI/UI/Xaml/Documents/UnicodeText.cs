@@ -1066,7 +1066,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			{
 				if (useHighContrastAdjustment)
 				{
-					session.Session.DrawRect(backgroundRect, WithOpacity(highContrastSelectionBackground, effectiveOpacity), antialias: true);
+					session.Session.DrawRect(backgroundRect, WithOpacity(highContrastSelectionBackground, effectiveOpacity));
 				}
 				else
 				{
@@ -1210,7 +1210,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		// HWRenderLines then HWRenderGlyphTextures), so a decoration never covers the text it belongs to.
 		foreach (var (x1, x2, top, thickness, color) in textDecorationLines)
 		{
-			drawingSession.DrawRect(new Rect(new Point(x1, top), new Point(x2, top + thickness)), color, antialias: true);
+			drawingSession.DrawRect(new Rect(new Point(x1, top), new Point(x2, top + thickness)), color);
 		}
 
 		// Outline glyphs are assembled into a path (drawn neutrally); color glyphs (emoji) become images.
@@ -1229,7 +1229,7 @@ internal readonly partial struct UnicodeText : IParsedText
 		foreach (var ((_, _, scale), (left, right, midY)) in spellCheckUnderlines)
 		{
 			using var path = BuildSpellCheckSquigglyPath(midY, left, right, scale);
-			drawingSession.StrokePath(path, WithOpacity(Colors.Red, effectiveOpacity), scale, antialias: true);
+			drawingSession.StrokePath(path, WithOpacity(Colors.Red, effectiveOpacity), scale);
 		}
 
 		foreach (var (x1, x2, underlineY, color) in compositionUnderlines)
@@ -1237,7 +1237,7 @@ internal readonly partial struct UnicodeText : IParsedText
 			drawingSession.DrawLine(
 				new Vector2(x1, underlineY),
 				new Vector2(x2, underlineY),
-					color, 1, antialias: true);
+					color, 1);
 		}
 
 		if (caretRect is null && caret?.index == _text.Length) // ending new line or empty text
@@ -1346,7 +1346,7 @@ internal readonly partial struct UnicodeText : IParsedText
 	{
 		if (pendingBackplate is { } backplate)
 		{
-			drawingSession.DrawRect(backplate, color, antialias: true);
+			drawingSession.DrawRect(backplate, color);
 			pendingBackplate = null;
 		}
 	}

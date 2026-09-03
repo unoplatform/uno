@@ -940,7 +940,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		static void DrawRegionShadow(IDrawingSession session, IGeometry path, float alpha, global::Windows.UI.Color shadowColor, float sigmaX, float sigmaY, bool additive)
 		{
 			var color = global::Windows.UI.Color.FromArgb((byte)(shadowColor.A * alpha), shadowColor.R, shadowColor.G, shadowColor.B);
-			session.DrawShadow(path, color, sigmaX, sigmaY, additive, antialias: true);
+			session.DrawShadow(path, color, sigmaX, sigmaY, additive);
 		}
 	}
 
@@ -1141,7 +1141,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	{
 		if (GetPostPaintingClipping() is { } postClip)
 		{
-			session.ClipPath(postClip, antialias: true);
+			session.ClipPath(postClip);
 		}
 	}
 

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System.Numerics;
 using Uno.UI.Composition;
@@ -38,7 +38,7 @@ namespace Microsoft.UI.Composition
 				new Point(LeftInset * LeftInsetScale, TopInset * TopInsetScale),
 				new Point(sourceBounds.Width - (RightInset * RightInsetScale), sourceBounds.Height - (BottomInset * BottomInsetScale)));
 
-			session.DrawImageNineSlice(texture, centerSlice, bounds, IsCenterHollow, antialias: true);
+			session.DrawImageNineSlice(texture, centerSlice, bounds, IsCenterHollow);
 			return true;
 		}
 

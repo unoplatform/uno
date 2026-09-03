@@ -428,7 +428,7 @@ public partial class CompositionTarget
 				{
 					// Clipped as-is: contributions are already outset for the antialiased fringe
 					// (Visual.OutsetForAntialiasing), so no widening is needed here.
-					present.ClipPath(lastRenderedFrame.damage!, ClipOperation.Intersect, antialias: false);
+					present.ClipPath(lastRenderedFrame.damage!, ClipOperation.Intersect);
 				}
 				present.Clear(global::Windows.UI.Colors.Transparent);
 				lastRenderedFrame.frame.Replay(present);
@@ -518,9 +518,9 @@ public partial class CompositionTarget
 	// red fill + outline over the fully-repainted frame.
 	private static void DrawDamageRegionOverlay(IPresentSession present, IGeometry damage)
 	{
-		present.DrawPath(damage, global::Windows.UI.Color.FromArgb(0x30, 0xFF, 0x00, 0x00), antialias: false);
+		present.DrawPath(damage, global::Windows.UI.Color.FromArgb(0x30, 0xFF, 0x00, 0x00));
 		using var outline = damage.GetStrokeFillGeometry(new StrokeStyle { Thickness = 1f });
-		present.DrawPath(outline, global::Windows.UI.Color.FromArgb(0xB0, 0xFF, 0x00, 0x00), antialias: false);
+		present.DrawPath(outline, global::Windows.UI.Color.FromArgb(0xB0, 0xFF, 0x00, 0x00));
 	}
 
 	internal static void InvokeRendering()

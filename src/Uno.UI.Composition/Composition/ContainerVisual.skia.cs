@@ -143,7 +143,7 @@ public partial class ContainerVisual : Visual
 		base.ApplyPrePaintingClipping(session);
 		if (GetArrangeClipPathInElementCoordinateSpace() is { } rect)
 		{
-			session.ClipRect(rect, antialias: true);
+			session.ClipRect(rect);
 		}
 	}
 

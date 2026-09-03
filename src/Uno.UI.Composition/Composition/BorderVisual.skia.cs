@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -147,7 +147,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		base.ApplyPrePaintingClipping(session);
 		if (_cornerRadius != CornerRadius.None && _borderPathOuterRect is { } rect)
 		{
-			session.ClipRoundRect(rect, antialias: true);
+			session.ClipRoundRect(rect);
 		}
 	}
 
@@ -189,7 +189,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		}
 		else if (GetPostPaintingClipping() is { } clip)
 		{
-			session.ClipPath(clip, antialias: true);
+			session.ClipPath(clip);
 		}
 	}
 

@@ -113,45 +113,37 @@ internal class SkiaDrawingSession : IDrawingSession
 
 	public void RestoreToCount(int count) => _canvas.RestoreToCount(count);
 
-	public void SaveLayer(bool antialias)
-	{
-		if (antialias)
-		{
-			_canvas.SaveLayer(LayerPaint(antialias, colorFilter: null, BlendMode.SrcOver));
-		}
-		else
-		{
-			_canvas.SaveLayer();
-		}
-	}
+	// No paint: a plain layer composites SrcOver, and IsAntialias on a full-surface layer composite is
+	// meaningless — so the paintless overload is both cheaper and equivalent.
+	public void SaveLayer() => _canvas.SaveLayer();
 
-	public void SaveLayer(IColorFilter colorFilter, bool antialias)
-		=> _canvas.SaveLayer(LayerPaint(antialias, colorFilter, BlendMode.SrcOver));
+	public void SaveLayer(IColorFilter colorFilter)
+		=> _canvas.SaveLayer(LayerPaint(colorFilter, BlendMode.SrcOver));
 
-	public void SaveLayerMask(bool antialias = false)
-		=> _canvas.SaveLayer(LayerPaint(antialias, colorFilter: null, BlendMode.DstIn));
+	public void SaveLayerMask()
+		=> _canvas.SaveLayer(LayerPaint(colorFilter: null, BlendMode.DstIn));
 
-	public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
-		=> _canvas.ClipRect(rect.ToSKRect(), ToSK(operation), antialias);
+	public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect)
+		=> _canvas.ClipRect(rect.ToSKRect(), ToSK(operation), true);
 
-	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
-		=> _canvas.ClipRoundRect(ToSK(roundRect), ToSK(operation), antialias);
+	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect)
+		=> _canvas.ClipRoundRect(ToSK(roundRect), ToSK(operation), true);
 
-	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
+	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect)
 	{
 		using var lease = SkiaGeometryInterop.Lease(geometry);
-		_canvas.ClipPath(lease.Path, ToSK(operation), antialias);
+		_canvas.ClipPath(lease.Path, ToSK(operation), true);
 	}
 
 	public void Clear(Color color) => _canvas.Clear(color.ToSKColor());
 
-	public void DrawRect(in Rect rect, Color color, bool antialias)
-		=> _canvas.DrawRect(rect.ToSKRect(), FillPaint(color, antialias));
+	public void DrawRect(in Rect rect, Color color)
+		=> _canvas.DrawRect(rect.ToSKRect(), FillPaint(color));
 
-	public void DrawRect(in Rect rect, IShader shader, bool antialias)
-		=> _canvas.DrawRect(rect.ToSKRect(), ShaderPaint(shader, antialias));
+	public void DrawRect(in Rect rect, IShader shader)
+		=> _canvas.DrawRect(rect.ToSKRect(), ShaderPaint(shader));
 
-	public void DrawRoundedRect(in Rect rect, Vector4 radii, Color color, bool antialias)
+	public void DrawRoundedRect(in Rect rect, Vector4 radii, Color color)
 	{
 		// radii = (TopLeft, TopRight, BottomRight, BottomLeft); SKRoundRect.SetRectRadii uses the same corner order.
 		var rr = new SKRoundRect();
@@ -160,15 +152,15 @@ internal class SkiaDrawingSession : IDrawingSession
 			new SKPoint(radii.X, radii.X), new SKPoint(radii.Y, radii.Y),
 			new SKPoint(radii.Z, radii.Z), new SKPoint(radii.W, radii.W),
 		});
-		_canvas.DrawRoundRect(rr, FillPaint(color, antialias));
+		_canvas.DrawRoundRect(rr, FillPaint(color));
 	}
 
-	public void DrawRoundedRectBorder(in Rect outer, Vector4 outerRadii, in Rect inner, Vector4 innerRadii, Color color, bool antialias)
+	public void DrawRoundedRectBorder(in Rect outer, Vector4 outerRadii, in Rect inner, Vector4 innerRadii, Color color)
 	{
 		// Annulus = outer round rect with the inner round rect clipped OUT (Difference), then filled.
 		_canvas.Save();
-		_canvas.ClipRoundRect(RoundRect(inner, innerRadii), SKClipOperation.Difference, antialias);
-		_canvas.DrawRoundRect(RoundRect(outer, outerRadii), FillPaint(color, antialias));
+		_canvas.ClipRoundRect(RoundRect(inner, innerRadii), SKClipOperation.Difference, true);
+		_canvas.DrawRoundRect(RoundRect(outer, outerRadii), FillPaint(color));
 		_canvas.Restore();
 	}
 
@@ -183,13 +175,13 @@ internal class SkiaDrawingSession : IDrawingSession
 		return rr;
 	}
 
-	public void DrawPath(IGeometry geometry, Color color, bool antialias)
+	public void DrawPath(IGeometry geometry, Color color)
 	{
 		using var lease = SkiaGeometryInterop.Lease(geometry);
-		_canvas.DrawPath(lease.Path, FillPaint(color, antialias));
+		_canvas.DrawPath(lease.Path, FillPaint(color));
 	}
 
-	public void DrawPaths(ReadOnlySpan<PathInstance> instances, Color color, bool antialias)
+	public void DrawPaths(ReadOnlySpan<PathInstance> instances, Color color)
 	{
 		if (instances.Length == 0)
 		{
@@ -201,7 +193,7 @@ internal class SkiaDrawingSession : IDrawingSession
 			var only = instances[0];
 			_canvas.Save();
 			_canvas.Translate(only.Offset.X, only.Offset.Y);
-			DrawPath(only.Geometry, color, antialias);
+			DrawPath(only.Geometry, color);
 			_canvas.Restore();
 			return;
 		}
@@ -216,17 +208,17 @@ internal class SkiaDrawingSession : IDrawingSession
 		}
 
 		using var merged = builder.Detach();
-		_canvas.DrawPath(merged, FillPaint(color, antialias));
+		_canvas.DrawPath(merged, FillPaint(color));
 	}
 
-	public void DrawShadow(IGeometry silhouette, Color color, float sigmaX, float sigmaY, bool additive, bool antialias)
+	public void DrawShadow(IGeometry silhouette, Color color, float sigmaX, float sigmaY, bool additive)
 	{
 		using var lease = SkiaGeometryInterop.Lease(silhouette);
 		var skPath = lease.Path;
 		var paint = Spare();
 		paint.Style = SKPaintStyle.Fill;
 		paint.Color = color.ToSKColor();
-		paint.IsAntialias = antialias;
+		paint.IsAntialias = true;
 		paint.BlendMode = additive ? SKBlendMode.Plus : SKBlendMode.SrcOver;
 		paint.MaskFilter = sigmaX > 0f ? BlurFilter(sigmaX) : null;
 
@@ -249,14 +241,14 @@ internal class SkiaDrawingSession : IDrawingSession
 		}
 	}
 
-	public void StrokePath(IGeometry geometry, Color color, float strokeWidth, bool antialias)
+	public void StrokePath(IGeometry geometry, Color color, float strokeWidth)
 	{
 		using var lease = SkiaGeometryInterop.Lease(geometry);
-		_canvas.DrawPath(lease.Path, StrokePaint(color, strokeWidth, antialias));
+		_canvas.DrawPath(lease.Path, StrokePaint(color, strokeWidth));
 	}
 
-	public void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth, bool antialias)
-		=> _canvas.DrawLine(p0.X, p0.Y, p1.X, p1.Y, StrokePaint(color, strokeWidth, antialias));
+	public void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth)
+		=> _canvas.DrawLine(p0.X, p0.Y, p1.X, p1.Y, StrokePaint(color, strokeWidth));
 
 	// A Skia session only draws Skia-created textures: every texture reaching a draw comes from the session's own
 	// factory. A foreign (e.g. WebGPU) texture would need a cross-backend GPU readback, which is not supported —
@@ -266,18 +258,18 @@ internal class SkiaDrawingSession : IDrawingSession
 			? s.Image
 			: throw new NotSupportedException($"The Skia backend cannot draw a {texture.GetType().Name}: a texture created by another backend cannot be drawn directly.");
 
-	public void DrawImage(ITexture texture, float x, float y, float opacity, bool antialias)
-		=> _canvas.DrawImage(ResolveImage(texture), x, y, _linearSampling, ImagePaint(antialias, opacity, colorFilter: null));
+	public void DrawImage(ITexture texture, float x, float y, float opacity)
+		=> _canvas.DrawImage(ResolveImage(texture), x, y, _linearSampling, ImagePaint(opacity, colorFilter: null));
 
-	public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter, bool antialias)
-		=> _canvas.DrawImage(ResolveImage(texture), x, y, _linearSampling, ImagePaint(antialias, opacity: 1f, colorFilter));
+	public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter)
+		=> _canvas.DrawImage(ResolveImage(texture), x, y, _linearSampling, ImagePaint(opacity: 1f, colorFilter));
 
-	public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias)
+	public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow)
 	{
 		var skImage = ResolveImage(texture);
 		var center = new SKRectI((int)centerSlice.Left, (int)centerSlice.Top, (int)centerSlice.Right, (int)centerSlice.Bottom);
 		var dst = destination.ToSKRect();
-		var skPaint = ImagePaint(antialias, opacity: 1f, colorFilter: null);
+		var skPaint = ImagePaint(opacity: 1f, colorFilter: null);
 		if (centerHollow)
 		{
 			_canvas.Save();
@@ -298,12 +290,12 @@ internal class SkiaDrawingSession : IDrawingSession
 		return paint;
 	}
 
-	private static SKPaint FillPaint(Color color, bool antialias)
+	private static SKPaint FillPaint(Color color)
 	{
 		var paint = Spare();
 		paint.Style = SKPaintStyle.Fill;
 		paint.Color = color.ToSKColor();
-		paint.IsAntialias = antialias;
+		paint.IsAntialias = true;
 		return paint;
 	}
 
@@ -325,42 +317,42 @@ internal class SkiaDrawingSession : IDrawingSession
 		return _spareBlur;
 	}
 
-	private static SKPaint ShaderPaint(IShader shader, bool antialias)
+	private static SKPaint ShaderPaint(IShader shader)
 	{
 		var paint = Spare();
 		paint.Style = SKPaintStyle.Fill;
 		// The shader is the fill source and already carries its own alpha; keep the paint opaque so it isn't
 		// further modulated (RGB is ignored under a shader).
 		paint.Color = SKColors.White;
-		paint.IsAntialias = antialias;
+		paint.IsAntialias = true;
 		paint.Shader = ((SkiaShader)shader).Shader;
 		return paint;
 	}
 
-	private static SKPaint StrokePaint(Color color, float strokeWidth, bool antialias)
+	private static SKPaint StrokePaint(Color color, float strokeWidth)
 	{
 		var paint = Spare();
 		paint.Style = SKPaintStyle.Stroke;
 		paint.Color = color.ToSKColor();
 		paint.StrokeWidth = strokeWidth;
-		paint.IsAntialias = antialias;
+		paint.IsAntialias = true;
 		return paint;
 	}
 
-	private static SKPaint ImagePaint(bool antialias, float opacity, IColorFilter? colorFilter)
+	private static SKPaint ImagePaint(float opacity, IColorFilter? colorFilter)
 	{
 		var paint = Spare();
 		// The image is the source; RGB is ignored and the paint's alpha modulates it (so opacity rides on alpha).
 		paint.Color = SKColors.White.WithAlpha((byte)(0xFF * opacity));
-		paint.IsAntialias = antialias;
+		paint.IsAntialias = true;
 		paint.ColorFilter = (colorFilter as SkiaColorFilter)?.ColorFilter;
 		return paint;
 	}
 
-	private static SKPaint LayerPaint(bool antialias, IColorFilter? colorFilter, BlendMode blendMode)
+	private static SKPaint LayerPaint(IColorFilter? colorFilter, BlendMode blendMode)
 	{
 		var paint = Spare();
-		paint.IsAntialias = antialias;
+		paint.IsAntialias = true;
 		paint.BlendMode = ToSKBlendMode(blendMode);
 		paint.ColorFilter = (colorFilter as SkiaColorFilter)?.ColorFilter;
 		return paint;

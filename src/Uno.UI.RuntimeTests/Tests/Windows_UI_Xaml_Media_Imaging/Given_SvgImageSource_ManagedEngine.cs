@@ -268,7 +268,7 @@ public class Given_SvgImageSource_ManagedEngine
 			}
 		}
 
-		public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
+		public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect)
 		{
 			if (operation == ClipOperation.Intersect)
 			{
@@ -276,38 +276,38 @@ public class Given_SvgImageSource_ManagedEngine
 			}
 		}
 
-		public void DrawPath(IGeometry geometry, Color color, bool antialias = false) =>
+		public void DrawPath(IGeometry geometry, Color color) =>
 			_ops.Add(new Op(geometry, default, color, null, _ctm, _clips.ToArray()));
 
-		public void StrokePath(IGeometry geometry, Color color, float strokeWidth, bool antialias = false)
+		public void StrokePath(IGeometry geometry, Color color, float strokeWidth)
 		{
 			var stroke = geometry.GetStrokeFillGeometry(new StrokeStyle { Thickness = strokeWidth, MiterLimit = 4f });
 			_ops.Add(new Op(stroke, default, color, null, _ctm, _clips.ToArray()));
 		}
 
-		public void DrawRect(in Rect rect, Color color, bool antialias = false) =>
+		public void DrawRect(in Rect rect, Color color) =>
 			_ops.Add(new Op(null, rect, color, null, _ctm, _clips.ToArray()));
 
-		public void DrawRect(in Rect rect, IShader shader, bool antialias = false) =>
+		public void DrawRect(in Rect rect, IShader shader) =>
 			_ops.Add(new Op(null, rect, default, shader, _ctm, _clips.ToArray()));
 
 		private static Matrix3x2 To2D(in Matrix4x4 m) => new(m.M11, m.M12, m.M21, m.M22, m.M41, m.M42);
 
 		// Unused verbs for these SVGs.
-		public void SaveLayer(bool antialias = false) => Save();
-		public void SaveLayer(IColorFilter colorFilter, bool antialias = false) => Save();
-		public void SaveLayerMask(bool antialias = false) => Save();
+		public void SaveLayer() => Save();
+		public void SaveLayer(IColorFilter colorFilter) => Save();
+		public void SaveLayerMask() => Save();
 		public void SaveLayer(IEffectFilter filter) => Save();
-		public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) { }
-		public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false) { }
+		public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect) { }
+		public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect) { }
 		public void Clear(Color color) { }
-		public void DrawRoundedRect(in Rect rect, Vector4 radii, Color color, bool antialias = false) { }
-		public void DrawRoundedRectBorder(in Rect outer, Vector4 outerRadii, in Rect inner, Vector4 innerRadii, Color color, bool antialias = false) { }
-		public void DrawShadow(IGeometry silhouette, Color color, float sigmaX, float sigmaY, bool additive, bool antialias = false) { }
-		public void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth, bool antialias = false) { }
-		public void DrawImage(ITexture texture, float x, float y, float opacity = 1f, bool antialias = false) { }
-		public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter, bool antialias = false) { }
-		public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false) { }
+		public void DrawRoundedRect(in Rect rect, Vector4 radii, Color color) { }
+		public void DrawRoundedRectBorder(in Rect outer, Vector4 outerRadii, in Rect inner, Vector4 innerRadii, Color color) { }
+		public void DrawShadow(IGeometry silhouette, Color color, float sigmaX, float sigmaY, bool additive) { }
+		public void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth) { }
+		public void DrawImage(ITexture texture, float x, float y, float opacity = 1f) { }
+		public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter) { }
+		public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow) { }
 		public void DrawEffectBackdrop(IEffectFilter filter, float opacity) { }
 	}
 

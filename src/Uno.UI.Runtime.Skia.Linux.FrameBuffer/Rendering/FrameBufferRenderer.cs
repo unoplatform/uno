@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Numerics;
 using Windows.Foundation;
 using Windows.Graphics.Display;
@@ -92,7 +92,7 @@ internal abstract class FrameBufferRenderer
 		var p = FrameBufferPointerInputSource.Instance.MousePosition;
 		var r = _cursorRadius;
 		var rect = new Rect(p.X - r, p.Y - r, 2 * r, 2 * r);
-		session.DrawRoundedRect(rect, new Vector4(r, r, r, r), _cursorColor, antialias: true);
+		session.DrawRoundedRect(rect, new Vector4(r, r, r, r), _cursorColor);
 	}
 
 	// Equivalent to a Skia canvas Translate(transX, transY) followed by RotateDegrees(degrees), packed into the

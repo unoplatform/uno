@@ -44,15 +44,15 @@ partial class CompositionClip
 	{
 		if (GetClipRect(visual) is { } clipRect)
 		{
-			session.ClipRect(clipRect, antialias: true);
+			session.ClipRect(clipRect);
 		}
 		else if (GetClipRoundedRect(visual) is { } roundedRect)
 		{
-			session.ClipRoundRect(roundedRect, antialias: true);
+			session.ClipRoundRect(roundedRect);
 		}
 		else if (GetClipPath(visual) is { } clipPath)
 		{
-			session.ClipPath(clipPath, antialias: true);
+			session.ClipPath(clipPath);
 		}
 	}
 }

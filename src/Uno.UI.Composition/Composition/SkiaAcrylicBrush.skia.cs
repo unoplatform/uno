@@ -52,7 +52,7 @@ internal class SkiaAcrylicBrush : CompositionBrush
 		if (_isOpaque)
 		{
 			// Opaque tint: no backdrop blur or luminosity needed — just solid tint + noise.
-			session.DrawRect(bounds, opacity < 1 ? WithOpacity(_tintColor, opacity) : _tintColor, antialias: false);
+			session.DrawRect(bounds, opacity < 1 ? WithOpacity(_tintColor, opacity) : _tintColor);
 		}
 		else
 		{
@@ -90,7 +90,7 @@ internal class SkiaAcrylicBrush : CompositionBrush
 		{
 			for (var x = bounds.Left; x < bounds.Right; x += texture.PixelWidth)
 			{
-				session.DrawImage(texture, (float)x, (float)y, effectiveOpacity, antialias: false);
+				session.DrawImage(texture, (float)x, (float)y, effectiveOpacity);
 			}
 		}
 		session.Restore();

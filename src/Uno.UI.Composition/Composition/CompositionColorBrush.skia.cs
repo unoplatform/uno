@@ -12,7 +12,7 @@ namespace Microsoft.UI.Composition
 		internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
 		{
 			var color = opacity >= 1f ? Color : Color.FromArgb((byte)(Color.A * opacity), Color.R, Color.G, Color.B);
-			session.DrawRect(bounds, color, antialias: true);
+			session.DrawRect(bounds, color);
 			return true;
 		}
 

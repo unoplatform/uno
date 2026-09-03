@@ -166,23 +166,23 @@ internal sealed class CommandListRecorder : ICommandRecorder
 		_matrix = Matrix4x4.CreateScale(sx, sy, 1) * _matrix;
 	}
 
-	public void SaveLayer(bool antialias = false)
+	public void SaveLayer()
 	{
-		_commands.Add(ctx => ctx.Target.SaveLayer(antialias));
+		_commands.Add(ctx => ctx.Target.SaveLayer());
 		Push();
 		_depth++;
 	}
 
-	public void SaveLayer(IColorFilter colorFilter, bool antialias = false)
+	public void SaveLayer(IColorFilter colorFilter)
 	{
-		_commands.Add(ctx => ctx.Target.SaveLayer(colorFilter, antialias));
+		_commands.Add(ctx => ctx.Target.SaveLayer(colorFilter));
 		Push();
 		_depth++;
 	}
 
-	public void SaveLayerMask(bool antialias = false)
+	public void SaveLayerMask()
 	{
-		_commands.Add(ctx => ctx.Target.SaveLayerMask(antialias));
+		_commands.Add(ctx => ctx.Target.SaveLayerMask());
 		Push();
 		_depth++;
 	}
@@ -194,99 +194,99 @@ internal sealed class CommandListRecorder : ICommandRecorder
 		_depth++;
 	}
 
-	public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
+	public void ClipRect(in Rect rect, ClipOperation operation = ClipOperation.Intersect)
 	{
 		var r = rect;
-		_commands.Add(ctx => ctx.Target.ClipRect(r, operation, antialias));
+		_commands.Add(ctx => ctx.Target.ClipRect(r, operation));
 	}
 
-	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
+	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect)
 	{
 		var rr = roundRect;
-		_commands.Add(ctx => ctx.Target.ClipRoundRect(rr, operation, antialias));
+		_commands.Add(ctx => ctx.Target.ClipRoundRect(rr, operation));
 	}
 
-	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect, bool antialias = false)
+	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect)
 	{
 		var g = Own(geometry);
-		_commands.Add(ctx => ctx.Target.ClipPath(g, operation, antialias));
+		_commands.Add(ctx => ctx.Target.ClipPath(g, operation));
 	}
 
 	public void Clear(Color color)
 		=> _commands.Add(ctx => ctx.Target.Clear(color));
 
-	public void DrawRect(in Rect rect, Color color, bool antialias = false)
+	public void DrawRect(in Rect rect, Color color)
 	{
 		var r = rect;
-		_commands.Add(ctx => ctx.Target.DrawRect(r, color, antialias));
+		_commands.Add(ctx => ctx.Target.DrawRect(r, color));
 	}
 
-	public void DrawRect(in Rect rect, IShader shader, bool antialias = false)
+	public void DrawRect(in Rect rect, IShader shader)
 	{
 		var r = rect;
-		_commands.Add(ctx => ctx.Target.DrawRect(r, shader, antialias));
+		_commands.Add(ctx => ctx.Target.DrawRect(r, shader));
 	}
 
-	public void DrawRoundedRect(in Rect rect, Vector4 radii, Color color, bool antialias = false)
+	public void DrawRoundedRect(in Rect rect, Vector4 radii, Color color)
 	{
 		var r = rect;
-		_commands.Add(ctx => ctx.Target.DrawRoundedRect(r, radii, color, antialias));
+		_commands.Add(ctx => ctx.Target.DrawRoundedRect(r, radii, color));
 	}
 
-	public void DrawRoundedRectBorder(in Rect outer, Vector4 outerRadii, in Rect inner, Vector4 innerRadii, Color color, bool antialias = false)
+	public void DrawRoundedRectBorder(in Rect outer, Vector4 outerRadii, in Rect inner, Vector4 innerRadii, Color color)
 	{
 		var o = outer;
 		var i = inner;
-		_commands.Add(ctx => ctx.Target.DrawRoundedRectBorder(o, outerRadii, i, innerRadii, color, antialias));
+		_commands.Add(ctx => ctx.Target.DrawRoundedRectBorder(o, outerRadii, i, innerRadii, color));
 	}
 
-	public void DrawPath(IGeometry geometry, Color color, bool antialias = false)
+	public void DrawPath(IGeometry geometry, Color color)
 	{
 		var g = Own(geometry);
-		_commands.Add(ctx => ctx.Target.DrawPath(g, color, antialias));
+		_commands.Add(ctx => ctx.Target.DrawPath(g, color));
 	}
 
-	public void DrawPaths(ReadOnlySpan<PathInstance> instances, Color color, bool antialias = false)
+	public void DrawPaths(ReadOnlySpan<PathInstance> instances, Color color)
 	{
 		// The span cannot outlive this call, so copy the placements; the geometries themselves stay referenced
 		// (cache-owned, per this overload's contract).
 		var placed = instances.ToArray();
-		_commands.Add(ctx => ctx.Target.DrawPaths(placed, color, antialias));
+		_commands.Add(ctx => ctx.Target.DrawPaths(placed, color));
 	}
 
-	public void DrawPath(IGeometry geometry, Color color, Vector2 offset, bool antialias = false)
+	public void DrawPath(IGeometry geometry, Color color, Vector2 offset)
 	{
 		// Referenced, not snapshotted: this overload's contract is that the geometry is cache-owned and outlives
 		// the recording. Copying it per instance would undo the sharing the overload exists to enable.
-		_commands.Add(ctx => ctx.Target.DrawPath(geometry, color, offset, antialias));
+		_commands.Add(ctx => ctx.Target.DrawPath(geometry, color, offset));
 	}
 
-	public void DrawShadow(IGeometry silhouette, Color color, float sigmaX, float sigmaY, bool additive, bool antialias = false)
+	public void DrawShadow(IGeometry silhouette, Color color, float sigmaX, float sigmaY, bool additive)
 	{
 		var g = Own(silhouette);
-		_commands.Add(ctx => ctx.Target.DrawShadow(g, color, sigmaX, sigmaY, additive, antialias));
+		_commands.Add(ctx => ctx.Target.DrawShadow(g, color, sigmaX, sigmaY, additive));
 	}
 
-	public void StrokePath(IGeometry geometry, Color color, float strokeWidth, bool antialias = false)
+	public void StrokePath(IGeometry geometry, Color color, float strokeWidth)
 	{
 		var g = Own(geometry);
-		_commands.Add(ctx => ctx.Target.StrokePath(g, color, strokeWidth, antialias));
+		_commands.Add(ctx => ctx.Target.StrokePath(g, color, strokeWidth));
 	}
 
-	public void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth, bool antialias = false)
-		=> _commands.Add(ctx => ctx.Target.DrawLine(p0, p1, color, strokeWidth, antialias));
+	public void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth)
+		=> _commands.Add(ctx => ctx.Target.DrawLine(p0, p1, color, strokeWidth));
 
-	public void DrawImage(ITexture texture, float x, float y, float opacity = 1f, bool antialias = false)
-		=> _commands.Add(ctx => ctx.Target.DrawImage(texture, x, y, opacity, antialias));
+	public void DrawImage(ITexture texture, float x, float y, float opacity = 1f)
+		=> _commands.Add(ctx => ctx.Target.DrawImage(texture, x, y, opacity));
 
-	public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter, bool antialias = false)
-		=> _commands.Add(ctx => ctx.Target.DrawImage(texture, x, y, colorFilter, antialias));
+	public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter)
+		=> _commands.Add(ctx => ctx.Target.DrawImage(texture, x, y, colorFilter));
 
-	public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false)
+	public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow)
 	{
 		var c = centerSlice;
 		var d = destination;
-		_commands.Add(ctx => ctx.Target.DrawImageNineSlice(texture, c, d, centerHollow, antialias));
+		_commands.Add(ctx => ctx.Target.DrawImageNineSlice(texture, c, d, centerHollow));
 	}
 
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity)
