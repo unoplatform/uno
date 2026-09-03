@@ -276,11 +276,11 @@ internal sealed class CommandListRecorder : ICommandRecorder
 	public void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth, bool antialias = false)
 		=> _commands.Add(ctx => ctx.Target.DrawLine(p0, p1, color, strokeWidth, antialias));
 
-	public void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false)
-		=> _commands.Add(ctx => ctx.Target.DrawImage(texture, x, y, sampling, opacity, antialias));
+	public void DrawImage(ITexture texture, float x, float y, float opacity = 1f, bool antialias = false)
+		=> _commands.Add(ctx => ctx.Target.DrawImage(texture, x, y, opacity, antialias));
 
-	public void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false)
-		=> _commands.Add(ctx => ctx.Target.DrawImage(texture, x, y, sampling, colorFilter, antialias));
+	public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter, bool antialias = false)
+		=> _commands.Add(ctx => ctx.Target.DrawImage(texture, x, y, colorFilter, antialias));
 
 	public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow, bool antialias = false)
 	{

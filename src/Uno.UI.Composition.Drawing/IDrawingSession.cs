@@ -146,10 +146,10 @@ public interface IDrawingSession
 	void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth, bool antialias = false);
 
 	/// <summary>Draws <paramref name="texture"/> with its top-left at (<paramref name="x"/>, <paramref name="y"/>), modulated by <paramref name="opacity"/>.</summary>
-	void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false);
+	void DrawImage(ITexture texture, float x, float y, float opacity = 1f, bool antialias = false);
 
 	/// <summary>Draws <paramref name="texture"/> with a <paramref name="colorFilter"/> applied (e.g. a monochrome tint).</summary>
-	void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false);
+	void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter, bool antialias = false);
 
 	/// <summary>
 	/// Draws <paramref name="texture"/> stretched into <paramref name="destination"/> as a nine-slice: the

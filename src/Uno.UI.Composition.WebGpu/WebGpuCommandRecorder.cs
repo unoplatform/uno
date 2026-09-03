@@ -717,7 +717,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	// Refcounted: this recording holds a ref until it is disposed (see WebGpuRenderRecord.Dispose / WebGpuTexture).
 	private void TrackTexture(WebGpuTexture t) { t.AddRef(); (_data.Textures ??= new()).Add(t); }
 
-	public void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, float opacity = 1f, bool antialias = false)
+	public void DrawImage(ITexture texture, float x, float y, float opacity = 1f, bool antialias = false)
 	{
 		if (texture is not WebGpuTexture t) { return; }
 		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
@@ -725,7 +725,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		// No per-frame upload — the texture is already resident; record its view for the present pass.
 		{ var ip0 = Map(x, y); var ip1 = Map(x + w, y); var ip2 = Map(x + w, y + h); var ip3 = Map(x, y + h); _target.Add(new ImageCmd { P0 = ip0, P1 = ip1, P2 = ip2, P3 = ip3, View = t.View, W = w, H = h, Opacity = opacity, ColorMatrix = _pendingColorMatrix, Clip = RelaxedClip(ip0, ip1, ip2, ip3) }); }
 	}
-	public void DrawImage(ITexture texture, float x, float y, ImageSampling sampling, IColorFilter colorFilter, bool antialias = false)
+	public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter, bool antialias = false)
 	{
 		if (texture is not WebGpuTexture t) { return; }
 		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
@@ -810,7 +810,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		// effect bounds (no backdrop capture).
 		if (fx.EvaluatedTexture is { } evaluated)
 		{
-			DrawImage(evaluated, (float)fx.EvaluatedBounds.Left, (float)fx.EvaluatedBounds.Top, ImageSampling.Linear, opacity);
+			DrawImage(evaluated, (float)fx.EvaluatedBounds.Left, (float)fx.EvaluatedBounds.Top, opacity);
 			return;
 		}
 		// Opaque acrylic OR a zero-blur acrylic: a fully-opaque tint completely covers the blurred backdrop, and a

@@ -59,7 +59,7 @@ internal static class GlyphRunRenderer
 						// The colour-glyph texture is cached per (font, glyph) — the font hands back a stable pixel
 						// buffer per glyph, so its reference identity keys the texture — sparing a decode + GPU upload
 						// on every repaint. Cache-owned (not disposed here).
-						session.DrawImage(GlyphTextureCache.Get(session.Factory, image.Pixels, image.PixelWidth, image.PixelHeight), image.X, image.Y, ImageSampling.Linear, antialias: true);
+						session.DrawImage(GlyphTextureCache.Get(session.Factory, image.Pixels, image.PixelWidth, image.PixelHeight), image.X, image.Y, antialias: true);
 						break;
 				}
 			}

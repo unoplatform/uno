@@ -537,7 +537,7 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 				if (TryEvaluateTree(cm.Source, bounds) is not { } src) { return null; }
 				int w = src.PixelWidth, h = src.PixelHeight;
 				var filter = CreateColorMatrixColorFilter(cm.Matrix);
-				return RenderOffscreen(w, h, s => s.DrawImage(src, 0, 0, ImageSampling.Linear, filter));
+				return RenderOffscreen(w, h, s => s.DrawImage(src, 0, 0, filter));
 			}
 			case BlendEffectNode blend:
 			{
