@@ -403,6 +403,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.Throws<ArgumentException>(() => sut.SetBinding(FrameworkElement.WidthProperty, binding));
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_GetBindingExpression_Then_Declared_Public_On_FrameworkElement()
+		{
+			// The test assembly sees Uno's internal DependencyObject member through InternalsVisibleTo,
+			// so the behavioral tests below pass with or without the public FrameworkElement one.
+			var method = typeof(FrameworkElement).GetMethod(
+				nameof(FrameworkElement.GetBindingExpression),
+				System.Reflection.BindingFlags.Public
+					| System.Reflection.BindingFlags.Instance
+					| System.Reflection.BindingFlags.DeclaredOnly,
+				null,
+				new[] { typeof(DependencyProperty) },
+				null);
+
+			Assert.IsNotNull(method);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_GetBindingExpression_Then_Returns_Expression()
+		{
+			FrameworkElement sut = new ContentControl { Tag = 42d };
+
+			sut.SetBinding(
+				FrameworkElement.WidthProperty,
+				new Binding { Source = sut, Path = new PropertyPath("Tag") });
+
+			var expression = sut.GetBindingExpression(FrameworkElement.WidthProperty);
+
+			Assert.IsNotNull(expression);
+			Assert.AreEqual("Tag", expression.ParentBinding.Path.Path);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_GetBindingExpression_On_Unbound_Property_Then_Null()
+		{
+			FrameworkElement sut = new ContentControl();
+
+			Assert.IsNull(sut.GetBindingExpression(FrameworkElement.WidthProperty));
+		}
+
 		private sealed partial class MyPanel : Panel
 		{
 			protected override Size MeasureOverride(Size availableSize)
