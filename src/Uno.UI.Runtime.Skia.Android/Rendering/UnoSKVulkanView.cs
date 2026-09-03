@@ -109,7 +109,13 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 		if (_vulkanContext.IsInitialized)
 		{
 			_vulkanContext.Resize(width, height);
+
+			// Resize builds a fresh render image whose contents are undefined. The composition only
+			// knows to skip its damage clip when it resizes the canvas itself, which it does not here,
+			// so tell it explicitly that the surface no longer holds the last frame.
+			(_activity.RootElement?.Visual.CompositionTarget as CompositionTarget)?.InvalidateSurfaceContents();
 		}
+
 		// Signal a render
 		InvalidateRender();
 	}
