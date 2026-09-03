@@ -8,6 +8,7 @@ using Windows.UI.Core;
 
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno;
 using Windows.Devices.Haptics;
@@ -26,7 +27,40 @@ namespace Windows.UI.Input
 		internal const int TapMaxXDelta = 10;
 		internal const int TapMaxYDelta = 10;
 
+		/// <summary>
+		/// Default maximum delay (in microseconds) between two taps for them to be
+		/// recognized as a multi-tap gesture, used when no platform override is registered.
+		/// Matches WinUI's default <c>GetDoubleClickTime()</c> on Windows.
+		/// </summary>
 		internal const ulong MultiTapMaxDelayMicroseconds = 500000;
+
+		private static Lazy<ulong> s_resolvedMultiTapMaxDelayMicroseconds = CreateMultiTapMaxDelayResolver();
+
+		/// <summary>
+		/// The effective multi-tap window (in microseconds), resolved once per process from
+		/// the registered <see cref="IGestureRecognizerExtension"/> (if any), falling back to
+		/// <see cref="MultiTapMaxDelayMicroseconds"/>.
+		/// </summary>
+		internal static ulong ResolvedMultiTapMaxDelayMicroseconds
+			=> s_resolvedMultiTapMaxDelayMicroseconds.Value;
+
+		private static Lazy<ulong> CreateMultiTapMaxDelayResolver()
+			=> new(ResolveMultiTapMaxDelayMicroseconds, System.Threading.LazyThreadSafetyMode.PublicationOnly);
+
+		// No owner is required by the extension, so null is passed to the builder.
+		private static ulong ResolveMultiTapMaxDelayMicroseconds()
+			=> ApiExtensibility.CreateInstance<IGestureRecognizerExtension>(null, out var ext)
+				? ext.MultiTapMaxDelayMicroseconds ?? MultiTapMaxDelayMicroseconds
+				: MultiTapMaxDelayMicroseconds;
+
+		/// <summary>
+		/// Test-only reset of the resolved multi-tap window.
+		/// </summary>
+		/// <remarks>
+		/// Must be called from a single thread while no gesture is being recognized: the field write is
+		/// not synchronized against concurrent <see cref="ResolvedMultiTapMaxDelayMicroseconds"/> readers.
+		/// </remarks>
+		internal static void ResetCacheForTests() => s_resolvedMultiTapMaxDelayMicroseconds = CreateMultiTapMaxDelayResolver();
 
 		internal const long HoldMinDelayMicroseconds = 800000;
 		internal const float HoldMinPressure = .75f;
