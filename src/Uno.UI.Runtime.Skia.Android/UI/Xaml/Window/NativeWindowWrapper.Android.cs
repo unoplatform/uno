@@ -123,6 +123,14 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 		_activity.ContentViewAttachedToWindow += Instance_ContentViewAttachedToWindow;
 		_activity.EnsureContentView();
+
+		// The activity attaches its own surface in OnStart when it adopts an existing window, so the
+		// attach can already have happened before this subscription and the event fired with nobody
+		// listening. The pre-draw listener holds back every draw pass until this flag is set -- and a
+		// window that never draws also never gets its SurfaceView z-ordered behind it -- so seed the
+		// flag from the activity's current state rather than relying on the event alone.
+		_contentViewAttachedToWindow |= _activity.IsContentViewAttachedToWindow;
+
 		ApplySystemOverlaysTheming();
 	}
 
