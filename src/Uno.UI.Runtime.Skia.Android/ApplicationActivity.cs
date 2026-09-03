@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
@@ -45,6 +47,37 @@ namespace Microsoft.UI.Xaml
 
 		private NativeWindowWrapper? _wrapper;
 
+		private const string WindowIdExtra = "__uno_window_id";
+		private static int _nextWindowId;
+		private static readonly ConcurrentDictionary<int, NativeWindowWrapper> _pendingWindows = new();
+
+		/// <summary>
+		/// Asks Android for a task to host <paramref name="wrapper"/>'s window. The wrapper is parked
+		/// until the activity Android launches picks it up by id in <see cref="Wrapper"/>.
+		/// </summary>
+		/// <remarks>
+		/// NewDocument|MultipleTask is what puts the activity in a task of its own, which is what makes
+		/// it a separate window: the user can then place it side by side from the recents list.
+		/// </remarks>
+		internal static void LaunchForWindow(NativeWindowWrapper wrapper)
+		{
+			if (BaseActivity.Current is not { } launcher)
+			{
+				throw new InvalidOperationException("A secondary window can only be opened while an activity is running.");
+			}
+
+			var id = Interlocked.Increment(ref _nextWindowId);
+			_pendingWindows[id] = wrapper;
+
+			// Same activity class as the one already running: the app declares exactly one, and a
+			// second instance of it is what hosts the second window.
+			var intent = new Intent(launcher, launcher.GetType());
+			intent.AddFlags(ActivityFlags.NewDocument | ActivityFlags.MultipleTask);
+			intent.PutExtra(WindowIdExtra, id);
+
+			launcher.StartActivity(intent);
+		}
+
 		/// <summary>
 		/// The native wrapper for the window this activity drives. Created lazily so the early
 		/// lifecycle callbacks (which run before the managed Window exists) can drive it. On
@@ -57,19 +90,44 @@ namespace Microsoft.UI.Xaml
 			{
 				if (_wrapper is null)
 				{
-					// TODO #13827: adopting the wrapper through the ambient current window makes this
-					// binding per-activity rather than per-window. Replacing it needs an explicit
-					// activity<->window binding, which lands with the live second-activity work.
-					// SupportsMultipleWindows is false, so there is a single window: on re-creation
-					// reuse the wrapper already bound to it rather than orphaning it.
-					_wrapper = Microsoft.UI.Xaml.Window.CurrentSafe?.NativeWrapper as NativeWindowWrapper
-						?? new NativeWindowWrapper(this);
+					_wrapper = ResolveWrapper();
 					_wrapper.CurrentActivity = this;
 				}
 
 				return _wrapper;
 			}
 		}
+
+		private NativeWindowWrapper ResolveWrapper()
+		{
+			// Launched to host a specific window: take the wrapper parked for it. Consumed by id so a
+			// re-created activity keeps the same window rather than claiming a new one.
+			if (Intent?.GetIntExtra(WindowIdExtra, 0) is > 0 and var windowId)
+			{
+				if (_pendingWindows.TryRemove(windowId, out var pending))
+				{
+					_adoptedWindowId = windowId;
+					_adoptedWindows[windowId] = pending;
+					return pending;
+				}
+
+				if (_adoptedWindows.TryGetValue(windowId, out var adopted))
+				{
+					// Re-created (configuration change, process restore): re-point the window's
+					// existing wrapper at this activity instead of building a second one.
+					_adoptedWindowId = windowId;
+					return adopted;
+				}
+			}
+
+			// The activity that started the app: it drives the main window, whose wrapper it created
+			// before any managed Window existed, and re-adopts across re-creation.
+			return Microsoft.UI.Xaml.Window.CurrentSafe?.NativeWrapper as NativeWindowWrapper
+				?? new NativeWindowWrapper(this);
+		}
+
+		private int _adoptedWindowId;
+		private static readonly ConcurrentDictionary<int, NativeWindowWrapper> _adoptedWindows = new();
 
 		/// <summary>
 		/// The root element of the window hosted by this activity, once the window has been created.
@@ -321,6 +379,10 @@ namespace Microsoft.UI.Xaml
 
 			base.OnStart();
 
+			// A secondary window is activated before Android has given it an activity, so its show
+			// was deferred until one existed with a render stack to attach to. That is now.
+			Wrapper.CompleteDeferredShow();
+
 			// On activity re-creation (deep-link, process restore) the managed Window already
 			// exists with its content loaded, but CreateWindow won't run again for this new
 			// activity. Attach this activity's freshly-built surface and reactivate the window.
@@ -468,6 +530,12 @@ namespace Microsoft.UI.Xaml
 			if (!IsChangingConfigurations && _wrapper is { } wrapper && ReferenceEquals(wrapper.CurrentActivity, this))
 			{
 				wrapper.OnNativeClosed();
+
+				// The window is gone with its task, so stop holding its wrapper for re-adoption.
+				if (_adoptedWindowId is > 0 and var windowId)
+				{
+					_adoptedWindows.TryRemove(windowId, out _);
+				}
 			}
 		}
 

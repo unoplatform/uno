@@ -1,4 +1,3 @@
-using System;
 using Microsoft.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 
@@ -6,18 +5,28 @@ namespace Uno.UI.Runtime.Skia.Android;
 
 internal sealed class AndroidSkiaWindowFactory : INativeWindowFactoryExtension
 {
-	public bool SupportsMultipleWindows => false;
+	public bool SupportsMultipleWindows => true;
 
 	public bool SupportsClosingCancellation => false;
 
 	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot)
 	{
-		// TODO #13827: with multiple windows this must resolve the activity that owns the window
-		// being created rather than the current foreground one.
-		var activity = BaseActivity.Current as ApplicationActivity
-			?? throw new InvalidOperationException("No foreground ApplicationActivity is available to host the window.");
+		// The activity that started the app already built a wrapper early in its lifecycle, before
+		// any managed Window existed. The first window to be created is the one it drives, so it
+		// adopts that wrapper rather than orphaning it.
+		if (BaseActivity.Current is ApplicationActivity { Wrapper.Window: null } activity)
+		{
+			return Bind(activity.Wrapper, window, xamlRoot);
+		}
 
-		var wrapper = activity.Wrapper;
+		// Every later window needs a task of its own to live in. The wrapper is created unbound and
+		// only asks Android for that task when the window is actually activated (ShowCore), so
+		// merely constructing a Window does not open one.
+		return Bind(new NativeWindowWrapper(), window, xamlRoot);
+	}
+
+	private static NativeWindowWrapper Bind(NativeWindowWrapper wrapper, Window window, XamlRoot xamlRoot)
+	{
 		wrapper.SetWindow(window, xamlRoot);
 
 		// Registering the host adds it to the XamlRootMap, which is how consumers resolve the
