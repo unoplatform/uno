@@ -33,6 +33,9 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 	private AtspiNode? _root;
 	private readonly Dictionary<nint, AtspiNode> _nodesByHandle = new();
 	private readonly Dictionary<nint, UIElement> _elementsByHandle = new();
+	// Immutable snapshot published for the D-Bus reader thread (write-path lookups).
+	// The mutable _elementsByHandle above is only touched on the UI thread during a build.
+	private volatile IReadOnlyDictionary<nint, UIElement> _elementsSnapshot = new Dictionary<nint, UIElement>();
 	private AtspiNode? _focusedNode;
 	private bool _treeInitialized;
 	private bool _treeBuildQueued;
@@ -172,7 +175,22 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			_nextPath = 1;
 			_root = BuildRootNode(rootElement);
 			_treeInitialized = true;
+			// Publish an immutable element snapshot before the tree so the reader-thread
+			// write path never observes the dictionary mid-rebuild.
+			_elementsSnapshot = new Dictionary<nint, UIElement>(_elementsByHandle);
 			_server!.SetRoot(_root);
+
+			// A rebuild replaces every node instance; re-point focus at the fresh node
+			// for the same handle so the focused state survives structure changes.
+			if (_focusedNode is { } prevFocus && _nodesByHandle.TryGetValue(prevFocus.Handle, out var refocused))
+			{
+				_focusedNode = refocused;
+			}
+			else
+			{
+				_focusedNode = null;
+			}
+			_server.SetFocus(_focusedNode);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -348,6 +366,13 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 				node.Selectable = true;
 				node.Selected = selectionItemProvider.IsSelected;
 			}
+			else if (attributes.Selected is { } ariaSelected)
+			{
+				// ListViewItem/ListBoxItem peers are container peers without the
+				// SelectionItem pattern; AriaMapper still resolves their selected state.
+				node.Selectable = true;
+				node.Selected = ariaSelected;
+			}
 
 			if (!node.HasToggle && attributes.Checked is not null)
 			{
@@ -382,17 +407,21 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 				Selected = index == comboBox.SelectedIndex,
 				ItemIndex = index,
 			};
+			// Data-only items have no ComboBoxItem container (Handle stays 0); they are
+			// reached by path via the combo's children and driven through the parent's
+			// SelectChild(ItemIndex), so only handle-backed items go in the handle maps.
 			if (itemElement is not null)
 			{
 				itemNode.Handle = itemElement.Visual.Handle;
 				_elementsByHandle[itemElement.Visual.Handle] = itemElement;
+				_nodesByHandle[itemNode.Handle] = itemNode;
 			}
 			comboNode.Children.Add(itemNode);
-			_nodesByHandle[itemNode.Handle] = itemNode;
 		}
 
 		// The combo also exposes its current selection as text.
 		comboNode.Text = comboNode.Children.Find(c => c.Selected)?.Name ?? "";
+		comboNode.HasText = true;
 	}
 
 	private static string ResolveName(AutomationPeer? peer)
@@ -417,7 +446,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		QueueRebuildIfNeeded();
 		if (_server is { } server && _nodesByHandle.TryGetValue(parent.Visual.Handle, out var parentNode))
 		{
-			server.EmitChildrenChanged(parentNode, added: true, index ?? -1, child: null);
+			server.EmitChildrenChanged(parentNode, added: true, index ?? -1);
 		}
 	}
 
@@ -427,7 +456,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		{
 			var childNode = _nodesByHandle.TryGetValue(child.Visual.Handle, out var removed) ? removed : null;
 			var index = childNode is not null ? parentNode.Children.IndexOf(childNode) : -1;
-			server.EmitChildrenChanged(parentNode, added: false, index, childNode);
+			server.EmitChildrenChanged(parentNode, added: false, index);
 		}
 		QueueRebuildIfNeeded();
 	}
@@ -646,7 +675,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			return ((AtspiServer.IWriteTarget)this).SelectChild(parentNode, node.ItemIndex);
 		}
 
-		if (!_elementsByHandle.TryGetValue(node.Handle, out var element))
+		if (!_elementsSnapshot.TryGetValue(node.Handle, out var element))
 		{
 			return false;
 		}
@@ -656,7 +685,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 
 	bool AtspiServer.IWriteTarget.SetRangeValue(AtspiNode node, double value)
 	{
-		if (!_elementsByHandle.TryGetValue(node.Handle, out var element))
+		if (!_elementsSnapshot.TryGetValue(node.Handle, out var element))
 		{
 			return false;
 		}
@@ -666,7 +695,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 
 	bool AtspiServer.IWriteTarget.SetText(AtspiNode node, string text)
 	{
-		if (!_elementsByHandle.TryGetValue(node.Handle, out var element))
+		if (!_elementsSnapshot.TryGetValue(node.Handle, out var element))
 		{
 			return false;
 		}
@@ -676,7 +705,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 
 	bool AtspiServer.IWriteTarget.SelectChild(AtspiNode node, int index)
 	{
-		if (!_elementsByHandle.TryGetValue(node.Handle, out var element) || element is not ComboBox comboBox)
+		if (!_elementsSnapshot.TryGetValue(node.Handle, out var element) || element is not ComboBox comboBox)
 		{
 			return false;
 		}

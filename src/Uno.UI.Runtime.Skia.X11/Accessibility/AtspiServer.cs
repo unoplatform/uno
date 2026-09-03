@@ -240,7 +240,7 @@ internal sealed class AtspiServer
 		}
 	}
 
-	public void EmitChildrenChanged(AtspiNode parent, bool added, int index, AtspiNode? child)
+	public void EmitChildrenChanged(AtspiNode parent, bool added, int index)
 	{
 		try
 		{
@@ -779,6 +779,8 @@ internal sealed class AtspiServer
 					writer.WriteVariantString(node.Name);
 					break;
 				case (AtspiDbus.AccessibleInterface, AtspiDbus.DescriptionProperty):
+					writer.WriteVariantString(node.Description ?? AtspiDbus.EmptyString);
+					break;
 				case (AtspiDbus.AccessibleInterface, AtspiDbus.AccessibleIdProperty):
 					writer.WriteVariantString(AtspiDbus.EmptyString);
 					break;
@@ -911,8 +913,11 @@ internal sealed class AtspiServer
 				SetState(AtspiDbus.SensitiveState);
 			}
 
-			SetState(AtspiDbus.ShowingState);
-			SetState(AtspiDbus.VisibleState);
+			if (!node.Offscreen)
+			{
+				SetState(AtspiDbus.ShowingState);
+				SetState(AtspiDbus.VisibleState);
+			}
 
 			if (node.Focusable)
 			{
@@ -952,10 +957,25 @@ internal sealed class AtspiServer
 				SetState(AtspiDbus.FocusedState);
 			}
 
+			// The AT-SPI state set is two 32-bit words; states with index >= 32 live in
+			// the second word.
+			uint state1 = 0;
+			void SetState1(int bit) => state1 |= 1u << (bit - 32);
+
+			if (node.Required)
+			{
+				SetState1(AtspiDbus.RequiredState);
+			}
+
+			if (node.ReadOnly)
+			{
+				SetState1(AtspiDbus.ReadOnlyState);
+			}
+
 			using var writer = context.CreateReplyWriter(AtspiDbus.UInt32ArraySignature);
 			var array = writer.WriteArrayStart(DBusType.UInt32);
 			writer.WriteUInt32(state0);
-			writer.WriteUInt32(0);
+			writer.WriteUInt32(state1);
 			writer.WriteArrayEnd(array);
 			context.Reply(writer.CreateMessage());
 		}
@@ -1062,14 +1082,6 @@ internal sealed class AtspiServer
 				writer.WriteString(key);
 				writer.WriteString(value);
 			}
-			writer.WriteDictionaryEnd(dictionary);
-			context.Reply(writer.CreateMessage());
-		}
-
-		private static void ReplyEmptyDictionary(MethodContext context, string signature)
-		{
-			using var writer = context.CreateReplyWriter(signature);
-			var dictionary = writer.WriteDictionaryStart();
 			writer.WriteDictionaryEnd(dictionary);
 			context.Reply(writer.CreateMessage());
 		}
@@ -1221,5 +1233,7 @@ internal sealed class AtspiServer
 		public const int FocusedState = 12;
 		public const int SelectableState = 22;
 		public const int SelectedState = 23;
+		public const int RequiredState = 33;
+		public const int ReadOnlyState = 43;
 	}
 }
