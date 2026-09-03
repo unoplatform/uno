@@ -69,8 +69,17 @@ public interface IDrawingFactory
 		GradientTileMode tileMode,
 		Matrix3x2 localMatrix);
 
-	/// <summary>Creates a color filter that blends <paramref name="color"/> onto the source using <paramref name="mode"/>.</summary>
-	IColorFilter CreateBlendModeColorFilter(Color color, BlendMode mode);
+	/// <summary>
+	/// Creates a color filter that recolors the source to <paramref name="color"/>, keeping the source's coverage
+	/// (<c>SrcIn</c> semantics) — a monochrome tint, with opacity folded into the tint's alpha.
+	/// <para>
+	/// Deliberately not parameterized by <see cref="BlendMode"/>: this is the only blend a color filter has ever
+	/// needed, and a mode parameter is a divergence trap — a backend is free to implement just this one, so any
+	/// other mode would render on some backends and be silently dropped on others. General blending between two
+	/// images belongs to the effect seam (<see cref="CreateEffectFilter"/>), which does honor the full set.
+	/// </para>
+	/// </summary>
+	IColorFilter CreateTintColorFilter(Color color);
 
 	/// <summary>Creates a color filter from a 4x5 row-major color matrix (as used by grayscale/alpha-mask effects).</summary>
 	IColorFilter CreateColorMatrixColorFilter(float[] matrix);

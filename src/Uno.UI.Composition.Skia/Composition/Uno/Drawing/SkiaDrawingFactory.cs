@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Numerics;
@@ -331,8 +331,8 @@ internal sealed class SkiaDrawingFactory :
 		return skColors;
 	}
 
-	public IColorFilter CreateBlendModeColorFilter(Color color, BlendMode mode)
-		=> new SkiaColorFilter(SKColorFilter.CreateBlendMode(color.ToSKColor(), SkiaDrawingSession.ToSKBlendMode(mode)));
+	public IColorFilter CreateTintColorFilter(Color color)
+		=> new SkiaColorFilter(SKColorFilter.CreateBlendMode(color.ToSKColor(), SKBlendMode.SrcIn));
 
 	public IColorFilter CreateColorMatrixColorFilter(float[] matrix)
 		=> new SkiaColorFilter(SKColorFilter.CreateColorMatrix(matrix));

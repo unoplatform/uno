@@ -21,6 +21,15 @@ public enum StrokeJoin
 }
 
 /// <summary>Porter-Duff / separable blend modes used by the drawing pipeline. <see cref="SrcOver"/> is the default.</summary>
+/// <summary>
+/// Blend modes for the EFFECT seam — <see cref="EffectNode"/> graphs (BlendEffect / CompositeEffect / acrylic),
+/// realized by <see cref="IDrawingFactory.CreateEffectFilter"/>. Every member is reachable from user XAML through
+/// the effect parser, and every backend is expected to honor all of them.
+/// <para>
+/// Not for color filters: a tint is <see cref="IDrawingFactory.CreateTintColorFilter"/>, which fixes SrcIn rather
+/// than taking a mode, so a backend cannot silently drop a mode it does not implement.
+/// </para>
+/// </summary>
 public enum BlendMode
 {
 	SrcOver,
@@ -30,13 +39,13 @@ public enum BlendMode
 	DstIn,
 	DstOut,
 	SrcIn,
-	// Porter-Duff modes used by CompositeEffect.
+	// Remaining Porter-Duff modes.
 	DstOver,
 	SrcOut,
 	SrcATop,
 	DstATop,
 	Xor,
-	// Separable/non-separable blend modes used by effect graphs (BlendEffect / acrylic luminosity+colour).
+	// Separable / non-separable blend modes.
 	Screen,
 	Darken,
 	Lighten,

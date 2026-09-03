@@ -38,9 +38,9 @@ public sealed class WebGpuShader : IShader
 // applies only SrcIn for now.
 public sealed class WebGpuColorFilter : IColorFilter
 {
-	public bool IsBlendMode;
+	/// <summary>A SrcIn tint (<see cref="Color"/>); otherwise this is a colour-matrix filter (<see cref="Matrix"/>).</summary>
+	public bool IsTint;
 	public WColor Color;
-	public BlendMode Mode;
 	public float[] Matrix;
 }
 
@@ -438,7 +438,7 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 		=> new WebGpuShader { Radial = false, P0 = start, P1 = end, Colors = colors, Stops = colorPositions, TileMode = tileMode, LocalMatrix = localMatrix };
 	public IShader CreateRadialGradientShader(Vector2 center, Vector2 gradientOrigin, float radiusX, float radiusY, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix)
 		=> new WebGpuShader { Radial = true, P0 = center, P1 = gradientOrigin, RadiusX = radiusX, RadiusY = radiusY, Colors = colors, Stops = colorPositions, TileMode = tileMode, LocalMatrix = localMatrix };
-	public IColorFilter CreateBlendModeColorFilter(WColor color, BlendMode mode) => new WebGpuColorFilter { IsBlendMode = true, Color = color, Mode = mode };
+	public IColorFilter CreateTintColorFilter(WColor color) => new WebGpuColorFilter { IsTint = true, Color = color };
 	public IColorFilter CreateColorMatrixColorFilter(float[] matrix) => new WebGpuColorFilter { Matrix = matrix };
 	public IEffectFilter CreateDropShadowFilter(float dx, float dy, float sigmaX, float sigmaY, WColor color) => new WebGpuEffectFilter { Dx = dx, Dy = dy, SigmaX = sigmaX, SigmaY = sigmaY, Color = color };
 
