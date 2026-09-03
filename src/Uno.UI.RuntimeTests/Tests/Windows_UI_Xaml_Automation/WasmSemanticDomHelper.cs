@@ -2,8 +2,14 @@
 using System;
 using System.Globalization;
 using System.Reflection;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
+using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 {
@@ -42,6 +48,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// <summary>Returns true when the semantic node has non-zero browser bounds.</summary>
 		public static bool SemanticElementHasNonEmptyBounds(UIElement element)
 			=> InvokeBrowserJs($"(function(){{const e = document.getElementById('{GetSemanticElementId(element)}'); if (!e) {{ return '0'; }} const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 ? '1' : '0'; }})()") == "1";
+
+		/// <summary>
+		/// Returns the semantic node's viewport rect in CSS px, or null when the node is absent. The semantics
+		/// root is position:fixed at the canvas origin, so this is directly comparable to the element's
+		/// root-relative XAML bounds.
+		/// </summary>
+		public static Rect? GetSemanticElementRect(UIElement element)
+		{
+			var raw = InvokeBrowserJs($"(function(){{const e = document.getElementById('{GetSemanticElementId(element)}'); if (!e) {{ return ''; }} const r = e.getBoundingClientRect(); return r.x + ',' + r.y + ',' + r.width + ',' + r.height; }})()");
+			if (string.IsNullOrEmpty(raw))
+			{
+				return null;
+			}
+
+			var parts = raw.Split(',');
+			Assert.AreEqual(4, parts.Length, $"Unexpected semantic rect payload '{raw}' for {GetSemanticElementId(element)}.");
+			return new Rect(Parse(parts[0]), Parse(parts[1]), Parse(parts[2]), Parse(parts[3]));
+
+			static double Parse(string value) => double.Parse(value, CultureInfo.InvariantCulture);
+		}
+
+		/// <summary>Returns the DOM id of the semantic node's parent element, or empty when the node is absent.</summary>
+		public static string GetSemanticParentId(UIElement element)
+			=> InvokeBrowserJs($"(function(){{const e = document.getElementById('{GetSemanticElementId(element)}'); return e && e.parentElement ? e.parentElement.id : ''; }})()");
+
+		/// <summary>
+		/// Makes sure accessibility is on before a test builds its tree, so the tree goes through the dynamic
+		/// OnChildAdded path rather than the one-shot CreateAOM build. A throwaway element is used to wait on
+		/// because the enable button disappears after its first click.
+		/// </summary>
+		public static async Task EnsureAccessibilityEnabledAsync()
+		{
+			var probe = new Button { Content = "probe" };
+			AutomationProperties.SetName(probe, "Accessibility Probe");
+
+			try
+			{
+				await UITestHelper.Load(probe);
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(() => SemanticElementExists(probe), timeoutMS: 5000, message: "Timed out waiting for accessibility to be enabled.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+
+			await UITestHelper.WaitForIdle();
+		}
 
 		/// <summary>
 		/// Returns the value of an attribute on the element's semantic node, or empty string when the
