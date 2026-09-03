@@ -55,58 +55,19 @@ namespace Uno.WinAppSDKSyncGenerator
 			BaseXamlNamespace + ".Media.DoubleCollection",
 		};
 
+		/// <summary>
+		/// Types whose generated partial must not restate the WinUI base class, because Uno's
+		/// hand-written hierarchy diverges and a second, conflicting base clause is a CS0263.
+		/// Most of this list came from the pre-7.0 native view hierarchy and became obsolete with
+		/// the native drop — only genuine divergences belong here.
+		/// </summary>
 		private static readonly string[] _skipBaseTypes = new[]
 		{
-			// skipped because of legacy mismatched hierarchy
-			BaseXamlNamespace + ".FrameworkElement",
-			BaseXamlNamespace + ".UIElement",
-			BaseXamlNamespace + ".Controls.Image",
+			// Uno inserts CalendarViewBaseItem, which WinUI does not project, between the item and Control.
 			BaseXamlNamespace + ".Controls.CalendarViewDayItem",
-			BaseXamlNamespace + ".Controls.ComboBox",
-			BaseXamlNamespace + ".Controls.CheckBox",
-			BaseXamlNamespace + ".Controls.TextBlock",
-			BaseXamlNamespace + ".Controls.TextBox",
-			BaseXamlNamespace + ".Controls.ProgressRing",
-			BaseXamlNamespace + ".Controls.ListViewBase",
-			BaseXamlNamespace + ".Controls.ListView",
-			BaseXamlNamespace + ".Controls.ListViewHeaderItem",
-			BaseXamlNamespace + ".Controls.GridView",
-			BaseXamlNamespace + ".Controls.ComboBox",
-			BaseXamlNamespace + ".Controls.UserControl",
-			BaseXamlNamespace + ".Controls.RadioButton",
-			BaseXamlNamespace + ".Controls.Slider",
-			BaseXamlNamespace + ".Controls.PasswordBox",
-			BaseXamlNamespace + ".Controls.RichEditBox",
-			BaseXamlNamespace + ".Controls.ProgressBar",
-			BaseXamlNamespace + ".Controls.ListViewItem",
-			BaseXamlNamespace + ".Controls.ScrollContentPresenter",
-			BaseXamlNamespace + ".Controls.Pivot",
-			BaseXamlNamespace + ".Controls.CommandBar",
-			BaseXamlNamespace + ".Controls.AppBar",
-			BaseXamlNamespace + ".Controls.TimePickerFlyoutPresenter",
-			BaseXamlNamespace + ".Controls.DatePickerFlyoutPresenter",
-			BaseXamlNamespace + ".Controls.AppBarSeparator",
-			BaseXamlNamespace + ".Controls.DatePickerFlyout",
-			BaseXamlNamespace + ".Controls.TimePickerFlyout",
-			BaseXamlNamespace + ".Controls.AppBarToggleButton",
-			BaseXamlNamespace + ".Controls.FlipView",
-			BaseXamlNamespace + ".Controls.FlipViewItem",
-			BaseXamlNamespace + ".Controls.GridViewItem",
-			BaseXamlNamespace + ".Controls.ComboBoxItem",
-			BaseXamlNamespace + ".Controls.Flyout",
-			BaseXamlNamespace + ".Controls.FontIcon",
-			BaseXamlNamespace + ".Controls.MenuFlyout",
-			BaseXamlNamespace + ".Data.CollectionView",
-			BaseXamlNamespace + ".Controls.WebView",
-			BaseXamlNamespace + ".Controls.UIElementCollection",
-			BaseXamlNamespace + ".Media.Animation.FadeInThemeAnimation",
-			BaseXamlNamespace + ".Media.Animation.FadeOutThemeAnimation",
-			BaseXamlNamespace + ".Media.ImageBrush",
-			BaseXamlNamespace + ".Media.LinearGradientBrush",
+			// Uno's RelativeSource is not a DependencyObject and carries Mode as a plain property.
 			BaseXamlNamespace + ".Data.RelativeSource",
-			BaseXamlNamespace + ".Controls.Primitives.CarouselPanel",
-			BaseXamlNamespace + ".Controls.MediaPlayerPresenter",
-			BaseXamlNamespace + ".Controls.NavigationViewItemBase",
+			// Uno's WebView2 derives from Control to reuse templating; WinUI derives from FrameworkElement.
 			"Microsoft.UI.Xaml.Controls.WebView2",
 			// In Uno DependencyObjectCollection derives from DependencyObjectCollection<DependencyObject>, which
 			// carries the DependencyObject base and the IList implementation; emitting the metadata
@@ -114,9 +75,9 @@ namespace Uno.WinAppSDKSyncGenerator
 			BaseXamlNamespace + ".DependencyObjectCollection",
 		};
 
-		// Native/WASM symbols come from Uno.UWP after the 7.0 native drop: it still ships per-platform
+		// Native/WASM symbols come from Uno.WinRT after the 7.0 native drop: it still ships per-platform
 		// binaries and references Uno.UI.Dispatching and Uno.Foundation, so its compilation transitively
-		// resolves the Uno.UWP / Uno.UI.Dispatching / Uno.Foundation symbols the generator needs.
+		// resolves the Uno.WinRT / Uno.UI.Dispatching / Uno.Foundation symbols the generator needs.
 		private Compilation _iOSCompilation;
 		private Compilation _tvOSCompilation;
 		private Compilation _androidCompilation;
@@ -139,7 +100,7 @@ namespace Uno.WinAppSDKSyncGenerator
 
 		/// <summary>
 		/// Whether the type currently being generated targets a library that still ships more than
-		/// the Skia flavor (Uno.UWP / Uno.Foundation / Uno.UI.Dispatching). For the Skia-only
+		/// the Skia flavor (Uno.WinRT / Uno.Foundation / Uno.UI.Dispatching). For the Skia-only
 		/// libraries (Uno.UI, Uno.UI.Composition) neither the native
 		/// (__ANDROID__/__IOS__/__TVOS__/__WASM__) nor the __NETSTD_REFERENCE__ symbol can be
 		/// defined after 7.0, so the generated stubs must not reference them. Set from
@@ -183,10 +144,10 @@ namespace Uno.WinAppSDKSyncGenerator
 			var topProject = @"..\..\..\Uno.UI\Uno.UI";
 
 			// After the 7.0 native drop, Uno.UI no longer has native/WASM heads. The libraries that
-			// still ship per-platform binaries are Uno.UWP, Uno.Foundation and Uno.UI.Dispatching.
-			// Uno.UWP references the other two, so its native/WASM compilation transitively resolves
+			// still ship per-platform binaries are Uno.WinRT, Uno.Foundation and Uno.UI.Dispatching.
+			// Uno.WinRT references the other two, so its native/WASM compilation transitively resolves
 			// all three sets of symbols.
-			var platformProject = @"..\..\..\Uno.UWP\Uno";
+			var platformProject = @"..\..\..\Uno.WinRT\Uno.WinRT";
 
 			_iOSCompilation = await LoadProject($@"{platformProject}.netcoremobile.csproj", "net10.0-ios26.0");
 			_tvOSCompilation = await LoadProject($@"{platformProject}.netcoremobile.csproj", "net10.0-tvos26.0");
@@ -194,7 +155,7 @@ namespace Uno.WinAppSDKSyncGenerator
 
 			// Skia comes from Uno.UI, which carries the WinRT trio's symbols transitively. The UI
 			// layer has no Reference head anymore (Skia is its compile reference), so the Reference
-			// surface comes from Uno.UWP instead.
+			// surface comes from Uno.WinRT instead.
 			_netstdReferenceCompilation = await LoadProject($@"{platformProject}.Reference.csproj", "net10.0");
 			_wasmCompilation = await LoadProject($@"{platformProject}.Wasm.csproj", "net10.0");
 			_skiaCompilation = await LoadProject($@"{topProject}.csproj", "net10.0");
@@ -402,7 +363,7 @@ namespace Uno.WinAppSDKSyncGenerator
 		{
 			if (type.Name == "CreateFromStringAttribute")
 			{
-				return @"..\..\..\Uno.UWP\Generated\3.0.0.0";
+				return @"..\..\..\Uno.WinRT\Generated\3.0.0.0";
 			}
 
 			var @namespace = type.ContainingNamespace.ToString();
@@ -414,15 +375,15 @@ namespace Uno.WinAppSDKSyncGenerator
 			{
 				return @"..\..\..\Uno.UI.Dispatching\Generated\3.0.0.0";
 			}
-			// The PointerPoint family lives in Uno.UWP (Uno.UI.Composition must reference it),
+			// The PointerPoint family lives in Uno.WinRT (Uno.UI.Composition must reference it),
 			// unlike the rest of Microsoft.UI.Input which stays in Uno.UI.
 			else if (@namespace == "Microsoft.UI.Input"
 				&& type.Name is "PointerPoint" or "PointerPointProperties" or "PointerUpdateKind" or "IPointerPointTransform" or "PointerDeviceType")
 			{
-				return @"..\..\..\Uno.UWP\Generated\3.0.0.0";
+				return @"..\..\..\Uno.WinRT\Generated\3.0.0.0";
 			}
 			// Microsoft.UI.Input: the WinAppSDK assembly is Microsoft.InteractiveExperiences.Projection
-			// (would route to Uno.UWP), but the remaining hand-written impls (GestureRecognizer,
+			// (would route to Uno.WinRT), but the remaining hand-written impls (GestureRecognizer,
 			// InputCursor, InputNonClientPointerSource, ...) depend on Uno.UI.Composition and
 			// Microsoft.UI.Windowing types, so the projection is intentionally hosted in Uno.UI.
 			// Microsoft.UI.Xaml.Automation: assembly is Microsoft.WinUI, which already routes to Uno.UI
@@ -448,9 +409,9 @@ namespace Uno.WinAppSDKSyncGenerator
 			// Tracked by https://github.com/unoplatform/uno/issues/22927
 
 			// Microsoft.UI.Content: WinAppSDK sources these from Microsoft.InteractiveExperiences.Projection
-			// (would route to Uno.UWP), but ContentIsland/ContentSite and their stubs depend on
+			// (would route to Uno.WinRT), but ContentIsland/ContentSite and their stubs depend on
 			// Uno.UI.Composition types (Compositor, Visual, ICompositionSupportsSystemBackdrop, IClosableNotifier),
-			// which Uno.UWP cannot reference. The stubs therefore stay in Uno.UI for now; the eventual
+			// which Uno.WinRT cannot reference. The stubs therefore stay in Uno.UI for now; the eventual
 			// Uno home is Uno.UI.Composition, which requires a layering seam not yet in place.
 			else if (@namespace.StartsWith("Microsoft.UI.Content", StringComparison.Ordinal))
 			{
@@ -499,7 +460,7 @@ namespace Uno.WinAppSDKSyncGenerator
 				case "Microsoft.Windows.System.Power.Projection":
 				case "Microsoft.WindowsAppRuntime.Bootstrap.Net":
 				case "Microsoft.Windows.SDK.NET":
-					return @"..\..\..\Uno.UWP\Generated\3.0.0.0";
+					return @"..\..\..\Uno.WinRT\Generated\3.0.0.0";
 
 				case "WinRT.Runtime":
 					return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
@@ -514,7 +475,7 @@ namespace Uno.WinAppSDKSyncGenerator
 
 		/// <summary>
 		/// Non-Skia symbols are only generated for the libraries that still ship more than the Skia
-		/// flavor — Uno.UWP, Uno.Foundation and Uno.UI.Dispatching, which keep both their native
+		/// flavor — Uno.WinRT, Uno.Foundation and Uno.UI.Dispatching, which keep both their native
 		/// heads and their Reference head. The Skia-only libraries (Uno.UI, Uno.UI.Composition)
 		/// render through Skia on all targets after 7.0 and lost their Reference head with the
 		/// fold, so their generated stubs must reference neither
@@ -522,8 +483,11 @@ namespace Uno.WinAppSDKSyncGenerator
 		/// </summary>
 		private bool ShouldEmitNonSkiaDefines(INamedTypeSymbol type)
 		{
+			// GetNamespaceBasePath returns one of a closed set of compile-time literals, never a
+			// filesystem-derived path, so the backslashes below are matched against this file's own
+			// constants and are unaffected by the host OS separator or the repository location.
 			var basePath = GetNamespaceBasePath(type);
-			return basePath.Contains(@"\Uno.UWP\", StringComparison.Ordinal)
+			return basePath.Contains(@"\Uno.WinRT\", StringComparison.Ordinal)
 				|| basePath.Contains(@"\Uno.Foundation\", StringComparison.Ordinal)
 				|| basePath.Contains(@"\Uno.UI.Dispatching\", StringComparison.Ordinal);
 		}
@@ -596,7 +560,7 @@ namespace Uno.WinAppSDKSyncGenerator
 			/// The (preprocessor define, platform symbol) pairs that participate in the generated
 			/// stub for the current library. Skia-only libraries contribute Skia alone — see
 			/// <see cref="Generator.ShouldEmitNonSkiaDefines"/>. The ordering is preserved to
-			/// minimize diffs for Uno.UWP/Uno.Foundation.
+			/// minimize diffs for Uno.WinRT/Uno.Foundation.
 			/// </summary>
 			private (string define, T symbol)[] GetRelevantPlatforms()
 				=> _emitNonSkiaDefines
@@ -761,50 +725,28 @@ namespace Uno.WinAppSDKSyncGenerator
 					// Skipped to include nullable annotations.
 					return true;
 
-				case "Windows.Foundation.Uri":
-				case BaseXamlNamespace + ".Input.ICommand":
 				case BaseXamlNamespace + ".Controls.UIElementCollection":
-					// Skipped because the reported interfaces are mismatched.
+					// UIElementCollection.GetEnumerator returns List<View>.Enumerator in Uno,
+					// where WinUI returns IEnumerator<UIElement>. Aligning it would allocate on
+					// every visual-tree enumeration, so the type stays skipped.
 					return true;
 
 				case BaseXamlNamespace + ".Media.FontFamily":
 				case BaseXamlNamespace + ".Controls.IconElement":
 				case BaseXamlNamespace + ".Data.ICollectionView":
-				case BaseXamlNamespace + ".Data.CollectionView":
 					// Skipped because the reported interfaces are mismatched.
 					return true;
 
 				case "Windows.UI.ViewManagement.InputPane":
 				case "Windows.UI.ViewManagement.InputPaneVisibilityEventArgs":
 				case "Windows.UI.ViewManagement.InputPaneInterop":
-					// Skipped because a dependency on FocusManager
-					return true;
-
-				case "Windows.ApplicationModel.Store.Preview.WebAuthenticationCoreManagerHelper":
-					// Skipped because a cross layer dependency to Windows.UI.Xaml
+					// Uno hosts InputPane in Uno.UI because it resolves the focused element through
+					// FocusManager, while GetNamespaceBasePath routes Windows.UI.ViewManagement stubs
+					// into Uno.UWP. The event args and interop types follow that placement.
 					return true;
 
 				case "Microsoft.UI.Xaml.Controls.XamlControlsResources":
 					// Skipped because the type is placed in the Uno.UI.FluentTheme assembly
-					return true;
-
-				case "Microsoft.UI.Xaml.Data.INotifyPropertyChanged":
-				case "Microsoft.UI.Xaml.Data.PropertyChangedEventArgs":
-				case "Microsoft.UI.Xaml.Data.PropertyChangedEventHandler":
-					// Skipped because the types are hidden from the projections in WinAppSDK
-					return true;
-
-				case "Windows.UI.Text.FontWeights":
-					// Skipped because the type not present WinAppSDK projection
-					return true;
-
-				case "Windows.UI.Colors":
-					// Skipped because the type not present WinAppSDK projection
-					return true;
-
-				case "Microsoft.Windows.ApplicationModel.DynamicDependency.Bootstrap":
-					// This class has a nested enum. So proper generation for nested types would be needed first.
-					// Also it's not clear if it's useful to generate it or not.
 					return true;
 
 				case "Windows.Devices.ILowLevelDevicesAggregateProvider":
@@ -2159,6 +2101,18 @@ namespace Uno.WinAppSDKSyncGenerator
 				}
 			}
 
+			if (property.ContainingType.Name == "Setter")
+			{
+				switch (property.Name)
+				{
+					// This is ignored until Value becomes an actual DP, tracked by uno-private#2292.
+					// Uno keeps the value in a field, and generating the stub would register
+					// "Value" on Setter a second time, throwing from the type initializer.
+					case "ValueProperty":
+						return true;
+				}
+			}
+
 			if (property.ContainingType.Name == "RelativeSource")
 			{
 				switch (property.Name)
@@ -2330,14 +2284,14 @@ namespace Uno.WinAppSDKSyncGenerator
 			compilation = await InnerLoadProject(projectFile, targetFramework);
 			_projects[key] = compilation;
 			var externalCompilationReferences = compilation.ExternalReferences.OfType<CompilationReference>().Select(r => r.Display).ToArray();
-			// The top Uno.UI heads (Skia/Reference) pull in the full platform-layered graph; the Uno.UWP
+			// The top Uno.UI heads (Skia/Reference) pull in the full platform-layered graph; the Uno.WinRT
 			// head used for native/WASM symbols sits on top of Uno.Foundation and Uno.UI.Dispatching.
 			// Asserting Uno.UI.Dispatching is load-bearing: native/WASM Dispatching symbols are resolved
 			// transitively through this head, so a missing reference would otherwise silently strip the
 			// Microsoft.UI.Dispatching native #if defines instead of failing the restore loudly.
 			var isTopProject = projectFile.Replace('/', '\\').Contains(@"\Uno.UI\Uno.UI.", StringComparison.Ordinal);
 			string[] expectedRefs = isTopProject
-				? ["Uno.Foundation", "Uno", "Uno.UI.Composition", "Uno.UI.Dispatching"]
+				? ["Uno.Foundation", "Uno.WinRT", "Uno.UI.Composition", "Uno.UI.Dispatching"]
 				: ["Uno.Foundation", "Uno.UI.Dispatching"];
 			foreach (var expectedRef in expectedRefs)
 			{

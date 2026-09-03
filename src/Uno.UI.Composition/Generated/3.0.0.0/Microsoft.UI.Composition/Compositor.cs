@@ -70,13 +70,7 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.Compositor.Compositor()
 		// Forced skipping of method Microsoft.UI.Composition.Compositor.MaxGlobalPlaybackRate.get
 		// Forced skipping of method Microsoft.UI.Composition.Compositor.MinGlobalPlaybackRate.get
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Composition.ColorKeyFrameAnimation CreateColorKeyFrameAnimation()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreateColorKeyFrameAnimation()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateColorKeyFrameAnimation()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateColorBrush()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateColorBrush(Windows.UI.Color)
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateContainerVisual()
@@ -222,13 +216,7 @@ namespace Microsoft.UI.Composition
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateLineGeometry()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreatePathGeometry()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreatePathGeometry(Microsoft.UI.Composition.CompositionPath)
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Composition.PathKeyFrameAnimation CreatePathKeyFrameAnimation()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Compositor", "CreatePathKeyFrameAnimation()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreatePathKeyFrameAnimation()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateRectangleGeometry()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateRoundedRectangleGeometry()
 		// Skipping already declared method Microsoft.UI.Composition.Compositor.CreateShapeVisual()

@@ -175,16 +175,12 @@ namespace Microsoft.UI.Xaml.Controls
 					ApplicationView.GetForWindowId(XamlRoot.HostWindow.AppWindow.Id).TryEnterFullScreenMode();
 
 					_mediaPlayerPresenter?.RequestFullScreen();
-#if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 					XamlRoot.VisualTree.FullWindowMediaRoot.DisplayFullscreen(_layoutRoot);
-#endif
 				}
 				else
 				{
 					ApplicationView.GetForWindowId(XamlRoot.HostWindow.AppWindow.Id).ExitFullScreenMode();
-#if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 					XamlRoot.VisualTree.FullWindowMediaRoot.DisplayFullscreen(null);
-#endif
 
 #if __SKIA__
 					this.AddChild(_layoutRoot);

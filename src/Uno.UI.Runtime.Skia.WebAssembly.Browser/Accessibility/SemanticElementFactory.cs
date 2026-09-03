@@ -396,11 +396,11 @@ internal static partial class SemanticElementFactory
 		// Extract placeholder text from the control
 		if (peer is FrameworkElementAutomationPeer feap)
 		{
-			if (feap.Owner is TextBox textBox)
+			if (feap.Owner is ITextBoxHost { Core: { } core })
 			{
-				placeholder = textBox.PlaceholderText;
-				selectionStart = Math.Max(0, Math.Min(textBox.SelectionStart, value.Length));
-				selectionEnd = Math.Max(selectionStart, Math.Min(textBox.SelectionStart + textBox.SelectionLength, value.Length));
+				placeholder = core.PlaceholderText;
+				selectionStart = Math.Max(0, Math.Min(core.SelectionStart, value.Length));
+				selectionEnd = Math.Max(selectionStart, Math.Min(core.SelectionStart + core.SelectionLength, value.Length));
 			}
 		}
 

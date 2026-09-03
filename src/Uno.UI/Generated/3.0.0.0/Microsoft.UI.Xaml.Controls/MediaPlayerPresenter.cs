@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class MediaPlayerPresenter
+	public partial class MediaPlayerPresenter : global::Microsoft.UI.Xaml.FrameworkElement
 	{
 		// Skipping already declared property IsFullWindowProperty
 		// Skipping already declared property MediaPlayerProperty

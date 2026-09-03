@@ -20,6 +20,8 @@ namespace Uno.UI.Xaml
 		private const string MsResourceFilesFolder = "Files/";
 		public const string MsResourceFilesPrefix = MSResourceIdentifier + MsResourceFilesFolder;
 		public const string WinUICompactURL = "Microsoft.UI.Xaml/DensityStyles/Compact.xaml";
+		public const string WinUIThemeResourceFileName = "themeresources.xaml";
+		public const string WinUIThemeResourceURL = "Microsoft.UI.Xaml/Themes/" + WinUIThemeResourceFileName;
 
 #if !NETSTANDARD
 		/// <summary>
@@ -67,6 +69,14 @@ namespace Uno.UI.Xaml
 #endif
 
 		/// <summary>
+		/// Name of the weak property carrying an object's XAML declaration site. Declared here because
+		/// this file is linked into the XAML generator, so the name that is emitted and the name that is
+		/// read come from one place. <c>MarkupHelper.OriginalSourceLocationPropertyName</c> exposes it to
+		/// the runtime's consumers and documents the value's format.
+		/// </summary>
+		public const string OriginalSourceLocationPropertyName = "OriginalSourceLocation";
+
+		/// <summary>
 		/// Convert relative source path to absolute path.
 		/// </summary>
 		internal static string ResolveAbsoluteSource(string origin, string relativeTargetPath)
@@ -101,16 +111,6 @@ namespace Uno.UI.Xaml
 
 		internal static bool IsAbsolutePath(string relativeTargetPath) => relativeTargetPath.StartsWith(AppXIdentifier, StringComparison.Ordinal)
 			|| relativeTargetPath.StartsWith(MSResourceIdentifier, StringComparison.Ordinal);
-
-		internal static string GetWinUIThemeResourceUrl(int version)
-		{
-			return version switch
-			{
-				1 => "Microsoft.UI.Xaml/Themes/themeresources_v1.xaml",
-				2 => "Microsoft.UI.Xaml/Themes/themeresources_v2.xaml",
-				_ => throw new ArgumentOutOfRangeException(nameof(version), $"'version' must be between 1 and 2. Found {version}."),
-			};
-		}
 
 		private static string GetAbsolutePath(string originDirectory, string relativeTargetPath)
 		{

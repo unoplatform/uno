@@ -20,7 +20,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		{
 			CultureInfo.CurrentUICulture = new CultureInfo(DefaultLanguage);
 			ApplicationLanguages.PrimaryLanguageOverride = DefaultLanguage;
-#if __XAMARIN__ || __WASM__
+#if __WASM__
 			ResourceLoader.DefaultLanguage = DefaultLanguage;
 #endif
 		}
@@ -30,7 +30,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		{
 			CultureInfo.CurrentUICulture = new CultureInfo(DefaultLanguage);
 			ApplicationLanguages.PrimaryLanguageOverride = DefaultLanguage;
-#if __XAMARIN__ || __WASM__
+#if __WASM__
 			ResourceLoader.DefaultLanguage = DefaultLanguage;
 #endif
 		}

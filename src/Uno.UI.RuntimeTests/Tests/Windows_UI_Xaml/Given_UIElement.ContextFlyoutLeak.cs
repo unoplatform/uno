@@ -302,7 +302,7 @@ public partial class Given_UIElement
 		var viewModel = new object();
 		var flyout = new MenuFlyout();
 		flyout.Items.Add(new MenuFlyoutItem { Text = "Cut" });
-		var itemsCollectionStore = ((IDependencyObjectStoreProvider)flyout.Items).Store;
+		var itemsCollectionStore = ((DependencyObject)flyout.Items);
 
 		var textBox = new TextBox { Text = "Hello", DataContext = viewModel, ContextFlyout = flyout };
 		var root = new Grid();
@@ -334,7 +334,7 @@ public partial class Given_UIElement
 		var viewModel = new object();
 		var flyout = new MenuFlyout();
 		flyout.Items.Add(new MenuFlyoutItem { Text = "Cut" });
-		var flyoutStore = ((IDependencyObjectStoreProvider)flyout).Store;
+		var flyoutStore = ((DependencyObject)flyout);
 
 		var textBox = new TextBox { Text = "Hello", DataContext = viewModel, ContextFlyout = flyout };
 		var root = new Grid();
@@ -364,7 +364,7 @@ public partial class Given_UIElement
 		var viewModel = new object();
 		var brush = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red);
 		_ = new ResourceDictionary { ["LeakGuardBrush"] = brush };
-		var brushStore = ((IDependencyObjectStoreProvider)brush).Store;
+		var brushStore = ((DependencyObject)brush);
 		Assert.IsTrue(brushStore.IsResourceDictionaryItem, "Precondition: the brush must be flagged as a ResourceDictionary item.");
 
 		var border = new Border { DataContext = viewModel, Background = brush };

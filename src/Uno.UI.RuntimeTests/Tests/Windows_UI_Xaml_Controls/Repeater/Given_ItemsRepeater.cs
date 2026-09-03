@@ -93,7 +93,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 						{
 							ItemsSource = Enumerable.Range(0, 10).Select(i => $"Item #{i}"),
 							Layout = new StackLayout { Orientation = Orientation.Horizontal },
-							ItemTemplate = new DataTemplate(() => new Border
+							ItemTemplate = new DataTemplate(null, (_, _) => new Border
 							{
 								Width = 100,
 								Height = 100,
@@ -138,7 +138,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 					Content = (sut = new ItemsRepeater()
 					{
 						ItemsSource = Enumerable.Range(0, 10).Select(i => $"Group #{i:D2}"),
-						ItemTemplate = new DataTemplate(() => new StackPanel
+						ItemTemplate = new DataTemplate(null, (_, _) => new StackPanel
 						{
 							Children =
 						{
@@ -152,7 +152,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 							new ItemsRepeater
 							{
 								ItemsSource = Enumerable.Range(0, 50).Select(i => $"Item #{i:D2}"),
-								ItemTemplate = new DataTemplate(() => new Border
+								ItemTemplate = new DataTemplate(null, (_, _) => new Border
 								{
 									Width = 150,
 									Height = 100,
@@ -209,7 +209,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 				{
 					ItemsSource = Enumerable.Range(0, 10).Select(i => $"Item #{i}"),
 					Layout = new StackLayout(),
-					ItemTemplate = new DataTemplate(() => new Border
+					ItemTemplate = new DataTemplate(null, (_, _) => new Border
 					{
 						Width = 100,
 						Height = 100,
@@ -252,7 +252,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 				{
 					ItemsSource = source,
 					Layout = new StackLayout(),
-					ItemTemplate = new DataTemplate(() => new Border
+					ItemTemplate = new DataTemplate(null, (_, _) => new Border
 					{
 						Width = 100,
 						Height = 100,
@@ -422,13 +422,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 					new (4, 100, Colors.FromARGB("#0000FF")),
 					new (5, 100, Colors.FromARGB("#A000C0"))
 				},
-				new DataTemplate(() => new Border
+				new DataTemplate(null, (_, _) => new Border
 				{
 					Width = 120,
 					Margin = new Thickness(10),
 					Child = new ItemsControl
 					{
-						ItemTemplate = new DataTemplate(() => new TextBlock().Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding())))
+						ItemTemplate = new DataTemplate(null, (_, _) => new TextBlock().Apply(tb => tb.SetBinding(TextBlock.TextProperty, new Binding())))
 					}.Apply(tb => tb.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Path = nameof(MyItem.Lines) }))
 				}
 				.Apply(b => b.SetBinding(FrameworkElement.HeightProperty, new Binding { Path = nameof(MyItem.Height) }))
@@ -577,7 +577,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 		{
 			public static SUT<T> Create<T>(ObservableCollection<T> source, DataTemplate? itemTemplate = null, Size? viewport = default)
 			{
-				itemTemplate ??= new DataTemplate(() => new Border
+				itemTemplate ??= new DataTemplate(null, (_, _) => new Border
 				{
 					Width = 100,
 					Height = 100,

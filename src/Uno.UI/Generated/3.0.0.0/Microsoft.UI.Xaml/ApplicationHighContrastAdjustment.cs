@@ -3,16 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-	[global::System.FlagsAttribute]
-#if __SKIA__
+#if false
 	public enum ApplicationHighContrastAdjustment : uint
 	{
-#if __SKIA__
-		None = 0,
-#endif
-#if __SKIA__
-		Auto = 4294967295,
-#endif
+		// Skipping already declared field Microsoft.UI.Xaml.ApplicationHighContrastAdjustment.None
+		// Skipping already declared field Microsoft.UI.Xaml.ApplicationHighContrastAdjustment.Auto
 	}
 #endif
 }

@@ -103,8 +103,6 @@ public partial class SvgImageSource : ImageSource
 			{
 				tcs.TrySetResult(_lastStatus ?? SvgImageSourceLoadStatus.Other);
 			}
-#elif IS_UNIT_TESTS
-			return Task.FromResult(SvgImageSourceLoadStatus.Other);
 #else
 			Stream = streamSource.CloneStream().AsStream();
 			StreamLoaded?.Invoke(this, EventArgs.Empty);
@@ -116,7 +114,7 @@ public partial class SvgImageSource : ImageSource
 		return AsyncOperation.FromTask(SetSourceAsync);
 	}
 
-#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+#if !__CROSSRUNTIME__
 	internal event EventHandler? StreamLoaded;
 #endif
 

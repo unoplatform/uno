@@ -101,7 +101,7 @@ namespace Microsoft.UI.Composition
 			{
 				if (FillBrush is { } fill && _fillGeometryWithTransformations is { } finalFillGeometryWithTransformations)
 				{
-					using var fillGeometry = finalFillGeometryWithTransformations.GetFilledGeometry(Geometry?.TrimStart ?? 0f, Geometry?.TrimEnd ?? 0f);
+					using var fillGeometry = GetTrimmedFilledGeometry(finalFillGeometryWithTransformations, Geometry);
 
 					// A solid colour (a theme/transition background, or a plain colour brush) can fill the geometry
 					// directly. Clip-to-shape + fill-rect is equivalent but forces a per-shape clip — a coverage
@@ -157,7 +157,7 @@ namespace Microsoft.UI.Composition
 				{
 					if (Uno.UI.Composition.Drawing.DrawingCapabilities.NativeStroking
 						&& stroke is CompositionColorBrush nativeStrokeColor && stroke.CanPaint()
-						&& StrokeDashArray is not { Count: > 0 }
+						&& _strokeDashArray is not { Count: > 0 }
 						&& (Geometry?.TrimStart ?? 0f) == 0f && (Geometry?.TrimEnd ?? 0f) == 0f
 						&& StrokeLineJoin == CompositionStrokeLineJoin.Miter
 						&& StrokeStartCap == CompositionStrokeCap.Flat && StrokeEndCap == CompositionStrokeCap.Flat)
@@ -166,7 +166,7 @@ namespace Microsoft.UI.Composition
 						return;
 					}
 
-					using var strokeGeometry = geometryWithTransformations.GetStrokeFillGeometry(GetStrokeStyle(withTrim: true));
+					using var strokeGeometry = GetTrimmedStrokeGeometry(geometryWithTransformations);
 
 					if (stroke is CompositionColorBrush strokeColor && stroke.CanPaint())
 					{
@@ -200,12 +200,12 @@ namespace Microsoft.UI.Composition
 
 			if (FillBrush is not null && _fillGeometryWithTransformations is { } fillGeometryWithTransformations)
 			{
-				result = fillGeometryWithTransformations.GetFilledGeometry(Geometry?.TrimStart ?? 0f, Geometry?.TrimEnd ?? 0f);
+				result = GetTrimmedFilledGeometry(fillGeometryWithTransformations, Geometry);
 			}
 
 			if (StrokeBrush is not null && StrokeThickness > 0)
 			{
-				var strokeGeometry = geometryWithTransformations.GetStrokeFillGeometry(GetStrokeStyle(withTrim: true));
+				var strokeGeometry = GetTrimmedStrokeGeometry(geometryWithTransformations);
 				if (result is null)
 				{
 					result = strokeGeometry;
@@ -247,7 +247,7 @@ namespace Microsoft.UI.Composition
 
 				if (StrokeBrush is { } && StrokeThickness > 0)
 				{
-					using var strokeGeometry = geometryWithTransformations.GetStrokeFillGeometry(GetStrokeStyle(withTrim: false));
+					using var strokeGeometry = geometryWithTransformations.GetStrokeFillGeometry(GetStrokeStyle(0f, 0f));
 					if (strokeGeometry.FillContains(new Vector2((float)point.X, (float)point.Y)))
 					{
 						return true;
@@ -257,7 +257,62 @@ namespace Microsoft.UI.Composition
 			return false;
 		}
 
-		private StrokeStyle GetStrokeStyle(bool withTrim) => new()
+		/// <summary>
+		/// Bounds of what this shape actually paints, in its parent visual's coordinates; false when it paints
+		/// nothing. Used to bound the visual's damage to its shapes instead of falling back to its clip.
+		/// </summary>
+		internal bool TryGetRenderBounds(out Rect bounds)
+		{
+			bounds = default;
+			var any = false;
+
+			if ((FillBrush?.CanPaint() ?? false) && _fillGeometryWithTransformations is { } fillGeometry)
+			{
+				bounds = fillGeometry.Bounds;
+				any = true;
+			}
+
+			if ((StrokeBrush?.CanPaint() ?? false) && StrokeThickness > 0 && _geometryWithTransformations is { } strokeGeometry)
+			{
+				// The stroke straddles the geometry, so it reaches half a thickness out; a full thickness also
+				// covers what joins and caps add beyond that.
+				var b = strokeGeometry.Bounds;
+				var strokeBounds = new Rect(
+					b.X - StrokeThickness,
+					b.Y - StrokeThickness,
+					b.Width + 2 * StrokeThickness,
+					b.Height + 2 * StrokeThickness);
+
+				if (any)
+				{
+					bounds.Union(strokeBounds);
+				}
+				else
+				{
+					bounds = strokeBounds;
+					any = true;
+				}
+			}
+
+			if (any && GetRenderTransform() is { IsIdentity: false } m)
+			{
+				bounds = bounds.Transform(m);
+			}
+
+			return any;
+		}
+
+		// What CompositionShape.Render applies to the session before painting: the shape's CombinedTransformMatrix
+		// (Scale/Rotation/TransformMatrix around CenterPoint) and then its Offset, matching the Translate + Concat
+		// order there. TryGetRenderBounds must apply it too so damage matches the painted pixels.
+		private Matrix3x2 GetRenderTransform()
+		{
+			var transform = CombinedTransformMatrix;
+			var offset = Offset;
+			return offset == Vector2.Zero ? transform : transform * Matrix3x2.CreateTranslation(offset);
+		}
+
+		private StrokeStyle GetStrokeStyle(float trimStart, float trimEnd) => new()
 		{
 			Thickness = StrokeThickness,
 			StartCap = ToStrokeCap(StrokeStartCap),
@@ -265,11 +320,102 @@ namespace Microsoft.UI.Composition
 			DashCap = ToStrokeCap(StrokeDashCap),
 			LineJoin = ToStrokeJoin(StrokeLineJoin),
 			MiterLimit = StrokeMiterLimit,
-			DashArray = StrokeDashArray is { Count: > 0 } dashArray ? dashArray.ToEvenArray() : null,
+			DashArray = _strokeDashArray is { Count: > 0 } dashArray ? dashArray.ToEvenArray() : null,
 			DashOffset = StrokeDashOffset,
-			TrimStart = withTrim ? (Geometry?.TrimStart ?? 0f) : 0f,
-			TrimEnd = withTrim ? (Geometry?.TrimEnd ?? 0f) : 0f,
+			TrimStart = trimStart,
+			TrimEnd = trimEnd,
 		};
+
+		/// <summary>Strokes <paramref name="geometry"/> through the resolved trim window (see <see cref="TryResolveTrim"/>).</summary>
+		private IGeometry GetTrimmedStrokeGeometry(IGeometry geometry)
+		{
+			if (!TryResolveTrim(Geometry, out var start, out var end, out var wrapEnd))
+			{
+				return geometry.GetStrokeFillGeometry(GetStrokeStyle(0f, 0f));
+			}
+
+			var trimmed = geometry.GetStrokeFillGeometry(GetStrokeStyle(start, end));
+			if (wrapEnd is not { } wrapped)
+			{
+				return trimmed;
+			}
+
+			using (trimmed)
+			using (var head = geometry.GetStrokeFillGeometry(GetStrokeStyle(0f, wrapped)))
+			{
+				return trimmed.Combine(head, GeometryCombineMode.Union);
+			}
+		}
+
+		/// <summary>
+		/// Resolves the trim window to [TrimStart + TrimOffset, TrimEnd + TrimOffset] taken modulo 1, returning
+		/// false when no trimming is active (the whole path is drawn). A window that the offset pushes past 1.0
+		/// wraps: WinUI draws the union of [start, 1] and [0, <paramref name="wrapEnd"/>], not the complement a
+		/// single reversed window would give.
+		/// </summary>
+		private static bool TryResolveTrim(CompositionGeometry? geometry, out float start, out float end, out float? wrapEnd)
+		{
+			start = 0f;
+			end = 0f;
+			wrapEnd = null;
+
+			if (geometry is not { } g || (g.TrimStart == default && g.TrimEnd == default && g.TrimOffset == default))
+			{
+				return false;
+			}
+
+			if (g.TrimOffset == default)
+			{
+				start = g.TrimStart;
+				end = g.TrimEnd;
+				return true;
+			}
+
+			// A full (or wider) window stays full regardless of offset — wrapping its endpoints into [0,1)
+			// would otherwise collapse it to nothing.
+			if (g.TrimEnd - g.TrimStart >= 1f)
+			{
+				end = 1f;
+				return true;
+			}
+
+			start = Wrap01(g.TrimStart + g.TrimOffset);
+			end = Wrap01(g.TrimEnd + g.TrimOffset);
+
+			if (start > end)
+			{
+				wrapEnd = end;
+				end = 1f;
+			}
+
+			return true;
+		}
+
+		private static float Wrap01(float value)
+		{
+			value %= 1f;
+			return value < 0f ? value + 1f : value;
+		}
+
+		private static IGeometry GetTrimmedFilledGeometry(IGeometry geometry, CompositionGeometry? source)
+		{
+			if (!TryResolveTrim(source, out var start, out var end, out var wrapEnd))
+			{
+				return geometry.GetFilledGeometry(0f, 0f);
+			}
+
+			var trimmed = geometry.GetFilledGeometry(start, end);
+			if (wrapEnd is not { } wrapped)
+			{
+				return trimmed;
+			}
+
+			using (trimmed)
+			using (var head = geometry.GetFilledGeometry(0f, wrapped))
+			{
+				return trimmed.Combine(head, GeometryCombineMode.Union);
+			}
+		}
 
 		private static StrokeCap ToStrokeCap(CompositionStrokeCap cap) => cap switch
 		{

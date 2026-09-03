@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Collections;
@@ -22,7 +22,7 @@ using Uno.UI.Xaml.Controls;
 using Point = Windows.Foundation.Point;
 using Rect = Windows.Foundation.Rect;
 
-#if UNO_REFERENCE_API || IS_UNIT_TESTS
+#if UNO_REFERENCE_API
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
 using System.Buffers;
@@ -59,9 +59,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		InitializePlatform();
 	}
 
-#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-#endif
 	public BrushTransition BackgroundTransition { get; set; }
 
 	private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
@@ -634,7 +631,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 				// UNO Specific: SelectedContentTemplate is not implemented, we hook ContentTemplateSelector instead
 				pdpTarget = ContentPresenter.ContentTemplateSelectorProperty;
 				global::System.Diagnostics.Debug.Assert(pdpTarget is { });
-				var store = ((IDependencyObjectStoreProvider)this).Store;
+				var store = ((DependencyObject)this);
 				if (store.GetCurrentHighestValuePrecedence(pdpTarget) == DependencyPropertyValuePrecedences.DefaultValue &&
 					!store.IsPropertyTemplateBound(pdpTarget))
 				{
@@ -785,14 +782,14 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	partial void UnregisterContentTemplateRoot();
 
-	internal View ContentTemplateRoot
+	private View ContentTemplateRoot
 	{
 		get
 		{
 			return _contentTemplateRoot;
 		}
 
-		private set
+		set
 		{
 			var previousValue = _contentTemplateRoot;
 
@@ -813,6 +810,23 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 				UpdateContentTransitions(null, this.ContentTransitions);
 			}
+
+			ReportContentTemplateRootToTemplatedParent();
+		}
+	}
+
+	/// <summary>
+	/// Surfaces the materialized root through <see cref="ContentControl.ContentTemplateRoot"/>, the WinUI
+	/// accessor for it. A template can host several presenters for the same templated parent (a dialog
+	/// title, a command bar); the one presenting the parent's own Content is identified by comparing the
+	/// Content dependency-property values, since ContentControl.Content's getter falls back to DataContext.
+	/// </summary>
+	private void ReportContentTemplateRootToTemplatedParent()
+	{
+		if (GetTemplatedParent() is ContentControl contentControl
+			&& Equals(contentControl.GetValue(ContentControl.ContentProperty), GetValue(ContentProperty)))
+		{
+			contentControl.ContentTemplateRoot = _contentTemplateRoot;
 		}
 	}
 
@@ -862,10 +876,6 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		{
 			SetUpdateTemplate();
 		}
-
-#if !UNO_HAS_BORDER_VISUAL
-		UpdateBorder();
-#endif
 
 		// We do this in Enter not Loaded since Loaded is a lot more tricky
 		// (e.g. you can have Unloaded without Loaded, you can have multiple loaded events without unloaded in between, etc.)
@@ -939,6 +949,13 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 		// This needs to be cleared on recycle, to prevent
 		// SetUpdateTemplate from being skipped in OnLoaded.
 		_firstLoadResetDone = false;
+
+		// The templated parent must not keep pointing at a root that is going back to the pool.
+		if (GetTemplatedParent() is ContentControl contentControl
+			&& contentControl.ContentTemplateRoot == _contentTemplateRoot)
+		{
+			contentControl.ContentTemplateRoot = null;
+		}
 	}
 
 	protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
@@ -1065,7 +1082,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			e.OldValue as Brush,
 			e.NewValue as Brush,
 			this.BackgroundTransition,
-			((IDependencyObjectStoreProvider)this).Store.GetCurrentHighestValuePrecedence(BackgroundProperty) == DependencyPropertyValuePrecedences.Animations);
+			((DependencyObject)this).GetCurrentHighestValuePrecedence(BackgroundProperty) == DependencyPropertyValuePrecedences.Animations);
 	}
 
 	internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)

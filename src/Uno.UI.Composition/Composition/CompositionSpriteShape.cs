@@ -95,11 +95,20 @@ namespace Microsoft.UI.Composition
 			set => SetProperty(ref _fillBrush, value);
 		}
 
-		public CompositionStrokeDashArray? StrokeDashArray
+		// WinUI returns a live, non-null collection so callers can mutate it directly
+		// (LottieGen-generated code does `StrokeDashArray.Add(...)` without a null check).
+		public CompositionStrokeDashArray StrokeDashArray
 		{
-			get => _strokeDashArray;
+			get => _strokeDashArray ??= new CompositionStrokeDashArray(Compositor);
 			internal set => SetProperty(ref _strokeDashArray, value);
 		}
+
+		// Drops the dash array without going through the getter, which would allocate one just to
+		// clear it. Unlike CompositionStrokeDashArray.Clear() this also notifies, so a shape losing
+		// its dashes repaints.
+		// The property name is passed explicitly: SetProperty would otherwise capture this method's name
+		// through [CallerMemberName], and RemoveContext would fail to match the entry the setter added.
+		internal void ClearStrokeDashArray() => SetProperty(ref _strokeDashArray, null, nameof(StrokeDashArray));
 
 		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
 		{

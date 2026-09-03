@@ -20,7 +20,6 @@ namespace Microsoft.UI.Xaml.Documents
 		private void OnCollectionChanged(
 			)
 		{
-#if !IS_UNIT_TESTS
 			InvalidateTraversedTree();
 
 			switch (_collection.GetParent())
@@ -34,7 +33,6 @@ namespace Microsoft.UI.Xaml.Documents
 				default:
 					break;
 			}
-#endif
 		}
 
 		private (Inline[] preorderTree, Inline[] leafTree)? _traversedTree;

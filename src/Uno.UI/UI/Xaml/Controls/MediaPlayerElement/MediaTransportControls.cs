@@ -267,10 +267,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// Interactive parts of MTC, but outside of MediaControlsCommandBar:
 			Bind(m_tpMediaPositionSlider, x => x.ValueChanged += OnPositionSliderValueChanged, x => x.ValueChanged -= OnPositionSliderValueChanged);
-#if WIP || true
 			BindHandler(m_tpMediaPositionSlider, UIElement.PointerPressedEvent, (PointerEventHandler)OnPositionSliderPressed, handledEventsToo: true);
 			BindHandler(m_tpMediaPositionSlider, UIElement.PointerReleasedEvent, (PointerEventHandler)OnPositionSliderReleased, handledEventsToo: true);
-#endif
 			BindButtonClick(m_tpTHLeftSidePlayPauseButton, PlayPause);
 
 			// MediaControlsCommandBar\PrimaryCommands:

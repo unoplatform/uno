@@ -25,7 +25,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\Uno.UWP\Uno.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\..\Uno.WinRT\Uno.WinRT.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 

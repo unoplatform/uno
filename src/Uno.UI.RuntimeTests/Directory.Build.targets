@@ -23,6 +23,12 @@
 		<None Include="Tests\HotReload\Frame\HRApp\**\*.xaml" Exclude="Tests\HotReload\Frame\HRApp\bin\**;Tests\HotReload\Frame\HRApp\obj\**" />
 	</ItemGroup>
 
+	<!-- HRUnoLib sources are compiled here on purpose, but its own build outputs must not be -->
+	<ItemGroup>
+		<Compile Remove="Tests\HotReload\Frame\HRUnoLib\bin\**\*.cs" />
+		<Compile Remove="Tests\HotReload\Frame\HRUnoLib\obj\**\*.cs" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<Compile Remove="Tests\AssemblyLoadContext\AlcApp\**\*.cs" />
 		<Page Remove="Tests\AssemblyLoadContext\AlcApp\**\*.xaml" />

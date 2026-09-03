@@ -23,7 +23,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 using SplitButton = Microsoft.UI.Xaml.Controls.SplitButton;
 using ToggleSplitButton = Microsoft.UI.Xaml.Controls.ToggleSplitButton;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.DevTools.Input;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 {
@@ -35,6 +35,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS)] // Injected-pointer interaction is flaky on iOS Skia https://github.com/unoplatform/uno/issues/9080
 		public async Task BasicInteractionTest()
 		{
 			var splitButtonPage = new SplitButtonPage();

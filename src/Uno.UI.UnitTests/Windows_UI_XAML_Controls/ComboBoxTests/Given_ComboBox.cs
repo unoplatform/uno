@@ -45,7 +45,7 @@ namespace Uno.UI.Tests.ComboBoxTests
 			var style = new Style(typeof(ComboBox))
 			{
 				Setters =  {
-					new Setter(Control.TemplateProperty, new ControlTemplate(() => grid))
+					new Setter(Control.TemplateProperty, new ControlTemplate(null, (_, _) => grid))
 				}
 			};
 
@@ -133,8 +133,8 @@ namespace Uno.UI.Tests.ComboBoxTests
 		{
 			var itemsControl = new ItemsControl()
 			{
-				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
-				ItemTemplate = new DataTemplate(() =>
+				ItemsPanel = new ItemsPanelTemplate(null, (_, _) => new StackPanel()),
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					var comboBox = new ComboBox();
 					comboBox.Name = "combo";

@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CheckBox
+	public partial class CheckBox : global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.CheckBox.CheckBox()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CheckBox.CheckBox()

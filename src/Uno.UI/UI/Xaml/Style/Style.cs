@@ -25,28 +25,16 @@ namespace Microsoft.UI.Xaml
 
 		/// <summary>
 		/// Removes entries from the style caches whose Type key belongs to a non-default ALC.
+		/// These caches rebuild on demand, so the sweep may safely cover ALL non-default contexts.
 		/// </summary>
 		internal static void ClearCachesForNonDefaultAlc()
 		{
-			RemoveNonDefaultAlcEntries(_lookup);
-			RemoveNonDefaultAlcEntries(_defaultStyleCache);
-		}
+			var removed = Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_lookup)
+				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_defaultStyleCache);
 
-		private static void RemoveNonDefaultAlcEntries<TValue>(Dictionary<Type, TValue> dictionary)
-		{
-			var keysToRemove = new List<Type>();
-			foreach (var key in dictionary.Keys)
+			if (removed > 0 && _logger.IsEnabled(LogLevel.Debug))
 			{
-				var alc = global::System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(key.Assembly);
-				if (alc is not null && alc != global::System.Runtime.Loader.AssemblyLoadContext.Default)
-				{
-					keysToRemove.Add(key);
-				}
-			}
-
-			foreach (var key in keysToRemove)
-			{
-				dictionary.Remove(key);
+				_logger.Debug($"[ALC-CLEANUP] Style caches: removed {removed} non-default-ALC entrie(s).");
 			}
 		}
 
@@ -199,7 +187,7 @@ namespace Microsoft.UI.Xaml
 					localPrecedenceDisposable = null;
 
 					// Check tree for resource binding values, since some Setters may have set ThemeResource-backed values
-					(o as IDependencyObjectStoreProvider)!.Store.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading);
+					(o as DependencyObject)!.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading);
 					return localPrecedenceDisposable;
 				}
 

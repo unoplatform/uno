@@ -2,22 +2,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.Http.Headers;
-using System.Runtime.InteropServices.ComTypes;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading;
-using System.Transactions;
-using System.Xml;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using Mono.Cecil;
 
 namespace Uno.UI.Tasks.RuntimeAssetsSelector
 {
@@ -40,9 +29,6 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 		[Required]
 		public Microsoft.Build.Framework.ITaskItem[]? RuntimeCopyLocalItemsInput { get; set; }
-
-		[Required]
-		public string NuGetPackageRoot { get; set; } = "";
 
 		public string UnoRuntimeIdentifier { get; set; } = "";
 
@@ -100,15 +86,8 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				//         - For Android Skia and iOS Skia, modify compile file definitions such that reference is passed (except for WinRT assemblies, we pass the actual implementation).
 				//
 				//
-				// For non-runtime-enabled packages:
-				//     Single layer mode:
-				//         - We do nothing
-				//     Two layer mode:
-				//         - For Wasm Skia, we do nothing.
-				//         - For Android Skia, iOS, or tvOS Skia:
-				//             - Adjust both RuntimeCopyLocalItems and ResolvedCompileFileDefinitions such that netX.0 binaries are used instead of netX.0-android, -ios, or -tvos
-				//                 - maybe we should prefer netX.0-desktop over netX.0, if exists.
-				//                 - we should only do that for dlls that reference Uno.UI.dll (use Mono.Cecil to detect that)
+				// For non-runtime-enabled packages we do nothing in either mode: NuGet's own target framework
+				// selection stands, so a multi-targeted library keeps its netX.0-[android|ios|tvos] asset.
 
 				var runtimeCopyLocalItemsToAdd = new List<ITaskItem>();
 				var runtimeCopyLocalItemsToRemove = new List<ITaskItem>();
@@ -138,11 +117,6 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				foreach (var package in UnoRuntimeEnabledPackage ?? Array.Empty<ITaskItem>())
 				{
 					HandleForRuntimeEnabled(package, runtimeCopyLocalItemsToAdd, runtimeCopyLocalItemsToRemove, compileFileDefinitionsToAdd, compileFileDefinitionsToRemove, pdbFilesToAdd, isTwoLayer);
-				}
-
-				if (isTwoLayer)
-				{
-					HandleSkiaMobileForNonRuntimeEnabledPackages(runtimeCopyLocalItemsToAdd, runtimeCopyLocalItemsToRemove, compileFileDefinitionsToAdd, compileFileDefinitionsToRemove, pdbFilesToAdd);
 				}
 
 				RuntimeCopyLocalItemsToAdd = runtimeCopyLocalItemsToAdd.ToArray();
@@ -185,7 +159,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			if (isTwoLayer)
 			{
 				// Two layer mode.
-				// We use Skia, except for Uno.dll, Uno.Foundation.dll, and Uno.Dispatching.dll
+				// We use Skia, except for WinRT assemblies (see IsWinRTAssembly).
 				// We will adjust for those dlls later.
 				if (UnoUIRuntimeIdentifier != "skia")
 				{
@@ -258,8 +232,10 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			throw new Exception($"Unable to find reference directory from runtime directory '{runtimeDirectory}'");
 		}
 
+		// Uno.UI.MSAL only depends on the WinRT layer (Uno.UWP), so it must follow the
+		// WinRT layer selection to keep its platform-specific helpers (https://github.com/unoplatform/uno/issues/20601).
 		private bool IsWinRTAssembly(string fileNameWithoutExtension)
-			=> fileNameWithoutExtension.ToLower(CultureInfo.InvariantCulture) is "uno" or "uno.ui.dispatching" or "uno.foundation";
+			=> fileNameWithoutExtension.ToLower(CultureInfo.InvariantCulture) is "uno.winrt" or "uno.ui.dispatching" or "uno.foundation" or "uno.ui.msal";
 
 		private string GetWinRTAssembly(string runtimeDirectory, string assembly, Version targetFrameworkVersion)
 		{
@@ -269,7 +245,13 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 			var unoRuntimeTfmDirectory = Path.GetDirectoryName(Path.GetDirectoryName(assembly));
 			if (UnoWinRTRuntimeIdentifier == "webassembly")
 			{
-				return Path.GetFullPath(Path.Combine(unoRuntimeTfmDirectory, "webassembly", Path.GetFileName(assembly)));
+				var webAssemblyAsset = Path.GetFullPath(Path.Combine(unoRuntimeTfmDirectory, "webassembly", Path.GetFileName(assembly)));
+				if (!File.Exists(webAssemblyAsset))
+				{
+					throw new Exception($"Cannot get WinRT assembly for '{assembly}', the expected asset '{webAssemblyAsset}' does not exist");
+				}
+
+				return webAssemblyAsset;
 			}
 
 			if (!IsSkiaMobileRuntimeIdentifier(UnoWinRTRuntimeIdentifier))
@@ -303,7 +285,13 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				throw new Exception($"Cannot get WinRT assembly for '{assembly}'");
 			}
 
-			return Path.GetFullPath(Path.Combine(lib, bestTfmMatch, Path.GetFileName(assembly)));
+			var winRTAssembly = Path.GetFullPath(Path.Combine(lib, bestTfmMatch, Path.GetFileName(assembly)));
+			if (!File.Exists(winRTAssembly))
+			{
+				throw new Exception($"Cannot get WinRT assembly for '{assembly}', the expected asset '{winRTAssembly}' does not exist");
+			}
+
+			return winRTAssembly;
 		}
 
 		private void HandleForRuntimeEnabled(
@@ -350,6 +338,7 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 				if (isWinRTAssembly)
 				{
 					adjustedAssembly = GetWinRTAssembly(runtimeDirectory, assembly, targetFrameworkVersion);
+					this.Log.LogMessage($"Assembly '{assemblyFileNameWithoutExtension}' follows the WinRT layer: replacing '{assembly}' with '{adjustedAssembly}'");
 				}
 
 				this.Log.LogMessage($"Processing assembly: {adjustedAssembly}");
@@ -427,118 +416,6 @@ namespace Uno.UI.Tasks.RuntimeAssetsSelector
 
 			var pathInPackage = assembly.Substring(packageRoot.Length);
 			return pathInPackage.Replace('\\', '/').TrimStart('/');
-		}
-
-		private void HandleSkiaMobileForNonRuntimeEnabledPackages(
-			List<ITaskItem> runtimeCopyLocalItemsToAdd,
-			List<ITaskItem> runtimeCopyLocalItemsToRemove,
-			List<ITaskItem> compileFileDefinitionsToAdd,
-			List<ITaskItem> compileFileDefinitionsToRemove,
-			List<ITaskItem> pdbFilesToAdd)
-		{
-			// For Android Skia and iOS Skia, we want to resolve netX.0 instead of netX.0-[android|ios] for non-RuntimeEnabled packages.
-			// The idea here is that we loop over ResolvedCompileFileDefinitionsInput, look for dlls from NuGet package cache,
-			// and then try to find the right dll.
-			if (IsSkiaMobileRuntimeIdentifier(UnoWinRTRuntimeIdentifier))
-			{
-				var runtimeEnabledPackages = UnoRuntimeEnabledPackage.Select(p => p.GetMetadata("Identity")).ToImmutableHashSet(StringComparer.OrdinalIgnoreCase);
-				var nugetCacheRoot = NuGetPackageRoot.Replace('\\', '/');
-				if (!nugetCacheRoot.EndsWith("/", StringComparison.Ordinal))
-				{
-					nugetCacheRoot += "/";
-				}
-
-				foreach (var compileFileDefinition in ResolvedCompileFileDefinitionsInput ?? Array.Empty<ITaskItem>())
-				{
-					// identityNormalized is expected to be on the form:
-					// <NuGetPackageRoot>/<PackageName>/<PackageVersion>/lib/<TargetFramework>/<AssemblyName>.dll
-					var identityNormalized = compileFileDefinition.GetMetadata("Identity").Replace('\\', '/');
-
-					if (identityNormalized.StartsWith(nugetCacheRoot, StringComparison.Ordinal))
-					{
-						var relativePath = identityNormalized.Substring(nugetCacheRoot.Length);
-						var split = relativePath.Split('/');
-						if (split.Length == 5 && split[2] == "lib")
-						{
-							var packageName = split[0];
-							if (!runtimeEnabledPackages.Contains(packageName))
-							{
-								var targetFramework = split[3];
-								if (targetFramework.Contains("-android") ||
-									targetFramework.Contains("-ios") ||
-									targetFramework.Contains("-tvos"))
-								{
-									var packageVersion = split[1];
-
-									// TODO: If netX.0-desktop is present, maybe we should prefer it.
-									var adjustedTargetFramework = targetFramework.Substring(0, targetFramework.IndexOf('-'));
-
-									var dllFileName = split[4];
-									var adjustedPath = $"{nugetCacheRoot}{packageName}/{packageVersion}/lib/{adjustedTargetFramework}/{dllFileName}";
-									if (File.Exists(adjustedPath))
-									{
-										using var originalAssembly = AssemblyDefinition.ReadAssembly(identityNormalized);
-										if (!originalAssembly.MainModule.AssemblyReferences.Any(m => m.Name == "Uno.UI"))
-										{
-											// We only need to retarget packages that are explicitly referencing Uno.UI
-											// Other packages that are referencing Uno to access WinRT APIs do not need
-											// to be retargeted.
-											this.Log.LogMessage($"Skipping {originalAssembly} replacement");
-											continue;
-										}
-										this.Log.LogMessage("Replacing " + packageName + " " + adjustedPath);
-										var fullAdjustedPath = Path.GetFullPath(adjustedPath);
-										runtimeCopyLocalItemsToAdd.Add(new TaskItem(
-											fullAdjustedPath,
-											new Dictionary<string, string>
-											{
-												["NuGetPackageId"] = packageName,
-												["PathInPackage"] = $"lib/{adjustedTargetFramework}/{dllFileName}",
-											}));
-
-										var pdbFile = fullAdjustedPath.Substring(0, fullAdjustedPath.Length - 3) + "pdb";
-										if (File.Exists(pdbFile))
-										{
-											pdbFilesToAdd.Add(new TaskItem(
-												pdbFile,
-												new Dictionary<string, string>
-												{
-													["NuGetPackageId"] = packageName,
-												}));
-										}
-
-										compileFileDefinitionsToAdd.Add(new TaskItem(
-											Path.GetFullPath(adjustedPath),
-											new Dictionary<string, string>
-											{
-												["HintPath"] = Path.GetFullPath(adjustedPath),
-												["NuGetPackageVersion"] = packageVersion,
-												["Private"] = compileFileDefinition.GetMetadata("Private"),
-												["ExternallyResolved"] = compileFileDefinition.GetMetadata("ExternallyResolved"),
-												["NuGetPackageId"] = packageName,
-												["PathInPackage"] = $"lib/{adjustedTargetFramework}/{dllFileName}",
-												["NuGetSourceType"] = compileFileDefinition.GetMetadata("NuGetSourceType"),
-											}));
-
-										var toRemove = RuntimeCopyLocalItemsInput
-											.FirstOrDefault(
-												item => packageName.Equals(item.GetMetadata("NuGetPackageId"), StringComparison.OrdinalIgnoreCase) &&
-												Path.GetFileName(item.GetMetadata("Identity")) == dllFileName);
-
-										if (toRemove is not null)
-										{
-											runtimeCopyLocalItemsToRemove.Add(toRemove);
-										}
-
-										compileFileDefinitionsToRemove.Add(compileFileDefinition);
-
-									}
-								}
-							}
-						}
-					}
-				}
-			}
 		}
 
 		private bool IsSkiaMobileRuntimeIdentifier(string runtimeIdentifier)

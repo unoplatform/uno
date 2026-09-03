@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Threading;
 using Android.Content;
 using Android.Graphics;
@@ -15,6 +15,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
+using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
@@ -35,6 +36,7 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 	private volatile bool _renderRequested;
 	private volatile bool _surfaceReady;
 	private volatile bool _disposed;
+	private bool _firstFrameSignaled;
 	private int _width, _height;
 	private readonly ManualResetEventSlim _renderEvent = new(false);
 	private IntPtr _nativeWindow; // Must stay alive while the Vulkan surface references it
@@ -181,6 +183,15 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		var nativeClipPath = compositionTarget.OnNativePlatformFrameRequested(context);
 
 		ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
+
+		if (!_firstFrameSignaled)
+		{
+			_firstFrameSignaled = true;
+			NativeWindowWrapper.Instance.NotifyFirstFrameRendered();
+			// Trigger OnPreDraw re-evaluation so the splash can dismiss once the first frame is on screen
+			ApplicationActivity.RelativeLayout?.Post(() =>
+				ApplicationActivity.RelativeLayout?.Invalidate());
+		}
 	}
 
 	#endregion
@@ -249,7 +260,7 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 			if (AndroidSkiaTextBoxNotificationsProviderSingleton.Instance.LiveTextBoxesMap.TryGetValue(virtualId, out var textBox))
 			{
 				var autofillValue = (AutofillValue)values.ValueAt(i)!;
-				textBox.Text = autofillValue.TextValue;
+				textBox.Text = autofillValue.TextValue ?? string.Empty;
 			}
 		}
 	}

@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -125,15 +125,6 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		}
 
 
-#if ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT
-		// Regardless the setup, XamlReader still uses the new templated-parent impl, including the new framework-template.ctor.
-		// But because they are not referenced anywhere, they could be trimmed and leads to:
-		// > MissingMethodException: MissingConstructor_Name, Microsoft.UI.Xaml.DataTemplate
-		// note: This is only needed while we are still supporting legacy codegen. It can be safely deleted once we moved to the new setup.
-		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(ControlTemplate))]
-		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(DataTemplate))]
-		[DynamicDependency(DynamicallyAccessedMemberTypes.PublicConstructors, typeof(ItemsPanelTemplate))]
-#endif
 		private object? LoadObject(
 			XamlObjectDefinition? control,
 			object? rootInstance,
@@ -161,11 +152,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					{
 						fe.SetBaseUri(fe.BaseUri.OriginalString, _fileUri, control.LineNumber, control.LinePosition);
 					}
-					if (settings?.TemplatedParent is { } tp)
-					{
-						fe.SetTemplatedParent(tp);
-						settings.TemplateMemberCreatedCallback?.Invoke(fe);
-					}
+					settings?.OnMemberCreated(fe);
 				}
 			}
 
@@ -226,7 +213,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 			if (type.Is<FrameworkTemplate>())
 			{
-				NewFrameworkTemplateBuilder builder = (o, s) =>
+				FrameworkTemplateBuilder builder = (o, s) =>
 				{
 					var contentOwner = unknownContent;
 
@@ -237,7 +224,15 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 				// reported even if we're not materializing the content explicitly.
 				ValidateContent(unknownContent?.Objects.FirstOrDefault());
 
-				var created = Activator.CreateInstance(type, /* owner: */null, /* factory: */builder)!;
+				// Constructed directly rather than reflectively: the builder ctors are internal, and a static
+				// reference also keeps them from being trimmed.
+				object created = type switch
+				{
+					_ when type == typeof(DataTemplate) => Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(null, builder),
+					_ when type == typeof(ControlTemplate) => Uno.UI.Helpers.MarkupHelper.CreateControlTemplate(null, builder),
+					_ when type == typeof(ItemsPanelTemplate) => Uno.UI.Helpers.MarkupHelper.CreateItemsPanelTemplate(null, builder),
+					_ => Activator.CreateInstance(type, /* owner: */null, /* factory: */builder)!,
+				};
 				TrySetContextualProperties(created, control);
 
 				foreach (var member in control.Members.Where(m => m != unknownContent && m != initializationMember))
@@ -733,7 +728,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			// note: In order for static resolution to work, the referenced resources must be already parsed & added, which means:
 			// - MergedDictionaries should be processed before this method call.
 			// - Member resources should be all processed prior the resolution can began.
-			var delayedResolutionList = new List<IDependencyObjectStoreProvider>();
+			var delayedResolutionList = new List<DependencyObject>();
 
 			foreach (var child in unknownContent.Objects)
 			{
@@ -748,7 +743,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					rd.Add(key, childInstance);
 				}
 
-				if (HasAnyResourceMarkup(child) && childInstance is IDependencyObjectStoreProvider provider)
+				if (HasAnyResourceMarkup(child) && childInstance is DependencyObject provider)
 				{
 					delayedResolutionList.Add(provider);
 				}
@@ -757,7 +752,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			// Delay resolve static resources
 			foreach (var provider in delayedResolutionList)
 			{
-				provider.Store.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading, containingDictionary: rd);
+				provider.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading, containingDictionary: rd);
 			}
 		}
 
@@ -1130,13 +1125,13 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 		{
 			var binding = BuildBindingExpression(instance, rootInstance, member);
 
-			if (instance is IDependencyObjectStoreProvider provider)
+			if (instance is DependencyObject provider)
 			{
 				var dependencyProperty = TypeResolver.FindDependencyProperty(member);
 
 				if (dependencyProperty != null)
 				{
-					provider.Store.SetBinding(dependencyProperty, binding);
+					provider.SetBinding(dependencyProperty, binding);
 				}
 				else if (TypeResolver.GetPropertyByName(member.Owner.Type, member.Member.Name) is PropertyInfo propertyInfo)
 				{

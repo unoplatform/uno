@@ -419,6 +419,8 @@ public partial class CompositionTarget
 				present.Save();
 				if (useDamage)
 				{
+					// Clipped as-is: contributions are already outset for the antialiased fringe
+					// (Visual.OutsetForAntialiasing), so no widening is needed here.
 					present.ClipPath(lastRenderedFrame.damage!, ClipOperation.Intersect, antialias: false);
 				}
 				present.Clear(global::Windows.UI.Colors.Transparent);

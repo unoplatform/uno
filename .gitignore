@@ -260,7 +260,6 @@ msbuild.binlog
 *.diagsession
 
 /src/SourceGenerators/System.Xaml/obj-net_4_x-win32
-/src/SamplesApp/SamplesApp.Wasm.UITests/out
 /src/Uno.UI.TestComparer/Properties/launchSettings.json
 
 src/AddIns/Uno.UI.MSAL/WasmScripts/*.d.ts
@@ -272,6 +271,9 @@ doc/articles/external
 doc/articles/studio/Hot Design/
 
 mergedstyles.xaml
+
+# Generated at build time by Uno.XamlMerge.Task (Uno.UI.FluentTheme/FluentMerge.targets)
+/src/Uno.UI.FluentTheme/themeresources.xaml
 
 !build/ci/publish
 /doc/articles/llms/llms-full.txt

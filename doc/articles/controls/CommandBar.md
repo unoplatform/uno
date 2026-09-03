@@ -175,7 +175,7 @@ The height is fixed and cannot be changed.
 
 Extensions are attached properties that extend the **WinUI** APIs to provide platform-specific features.
 
-They can be found in the `Uno.UI.Toolkit` namespace.
+They can be found in the `Uno.UI.Xaml.Controls` namespace.
 
 Extensions to extend the functionality of `CommandBar` can be found in the `CommandBarExtensions` class.
 
@@ -431,10 +431,10 @@ Gets or sets a value indicating whether the user can interact with the control.
   You must use `VisibleBoundsPadding.PaddingMask="Top"` on `CommandBar` to properly support the notch or punch-holes on iOS and Android.
 
   ```xml
-  xmlns:toolkit="using:Uno.UI.Toolkit"
+  xmlns:uub="using:Uno.UI.Behaviors"
   ...
   <Style Target="CommandBar">
-      <Setter Property="toolkit:VisibleBoundsPadding.PaddingMask"
+      <Setter Property="uub:VisibleBoundsPadding.PaddingMask"
               Value="Top" />
   </Style>
   ```
@@ -442,10 +442,10 @@ Gets or sets a value indicating whether the user can interact with the control.
 - > How can I remove the back button title from all pages on iOS?
 
   ```xml
-  xmlns:toolkit="using:Uno.UI.Toolkit"
+  xmlns:uuxc="using:Uno.UI.Xaml.Controls"
   ...
   <Style Target="CommandBar">
-      <Setter Property="toolkit:CommandBarExtensions.BackButtonTitle"
+      <Setter Property="uuxc:CommandBarExtensions.BackButtonTitle"
               Value="" />
   </Style>
   ```
@@ -453,10 +453,10 @@ Gets or sets a value indicating whether the user can interact with the control.
 - > How can I change the back button icon/arrow/chevron in my app?
 
   ```xml
-  xmlns:toolkit="using:Uno.UI.Toolkit"
+  xmlns:uuxc="using:Uno.UI.Xaml.Controls"
   ...
   <Style Target="CommandBar">
-      <Setter Property="toolkit:CommandBarExtensions.BackButtonIcon">
+      <Setter Property="uuxc:CommandBarExtensions.BackButtonIcon">
           <Setter.Value>
               <BitmapIcon UriSource="ms-appx://Assets/back.png" />
           </Setter.Value>
@@ -467,9 +467,9 @@ Gets or sets a value indicating whether the user can interact with the control.
 - > How can I change the color of the back button?
 
   ```xml
-  xmlns:toolkit="using:Uno.UI.Toolkit"
+  xmlns:uuxc="using:Uno.UI.Xaml.Controls"
   ...
-  <CommandBar toolkit:CommandBarExtensions.BackButtonForeground="Red" />
+  <CommandBar uuxc:CommandBarExtensions.BackButtonForeground="Red" />
   ```
 
 - > Why does my back button display "Back" on iOS?
@@ -490,9 +490,9 @@ Gets or sets a value indicating whether the user can interact with the control.
   You must use `VisibleBoundsPadding.PaddingMask="Top"` on the parent control of `CommandBar` to properly support the notch or punch-holes on iOS and Android.
 
   ```xml
-  xmlns:toolkit="using:Uno.UI.Toolkit"
+  xmlns:uub="using:Uno.UI.Behaviors"
   ...
-  <Grid toolkit:VisibleBoundsPadding.PaddingMask="Top">
+  <Grid uub:VisibleBoundsPadding.PaddingMask="Top">
       <CommandBar>
         ...
       </CommandBar>
@@ -597,9 +597,9 @@ Gets or sets a value indicating whether the user can interact with the control.
 - > How can I add an elevation shadow to the CommandBar on Android?
 
   ```xml
-  xmlns:toolkit="using:Uno.UI.Toolkit"
+  xmlns:uux="using:Uno.UI.Xaml"
   ...
-  <CommandBar toolkit:UIElementExtensions.Elevation="4" />
+  <CommandBar uux:UIElementExtensions.Elevation="4" />
   ```
 
 - > How can I use a Path for the AppBarButton Icon?
@@ -623,12 +623,12 @@ Gets or sets a value indicating whether the user can interact with the control.
   ```xml
 
   <CommandBar x:Uid="MyCommandBar"
-              toolkit:CommandBarExtensions.BackButtonTitle="My Page Title">
+              uuxc:CommandBarExtensions.BackButtonTitle="My Page Title">
           ...
   </CommandBar>
   ```
 
-  And in the `.resw` file, the name would be: `MyCommandBar.[using:Uno.UI.Toolkit]CommandBarExtensions.BackButtonTitle`
+  And in the `.resw` file, the name would be: `MyCommandBar.[using:Uno.UI.Xaml.Controls]CommandBarExtensions.BackButtonTitle`
 
 - > How can I put a ComboBox in my CommandBar?
 
@@ -654,13 +654,13 @@ Gets or sets a value indicating whether the user can interact with the control.
 
   ```xml
   <CommandBar>
-      <toolkit:CommandBarExtensions.NavigationCommand>
+      <uuxc:CommandBarExtensions.NavigationCommand>
           <AppBarButton Command="{Binding GoBack}">
               <AppBarButton.Icon>
                   <BitmapIcon UriSource="ms-appx:///Assets/Icons/back.png" />
               </AppBarButton.Icon>
           </AppBarButton>
-      </toolkit:CommandBarExtensions.NavigationCommand>
+      </uuxc:CommandBarExtensions.NavigationCommand>
   </CommandBar>
   ```
 
@@ -672,13 +672,13 @@ Gets or sets a value indicating whether the user can interact with the control.
 
   ```xml
   <CommandBar>
-      <toolkit:CommandBarExtensions.NavigationCommand>
+      <uuxc:CommandBarExtensions.NavigationCommand>
           <AppBarButton Command="{Binding ToggleMenu}">
               <AppBarButton.Icon>
                   <BitmapIcon UriSource="ms-appx:///Assets/Icons/menu.png" />
               </AppBarButton.Icon>
           </AppBarButton>
-      </toolkit:CommandBarExtensions.NavigationCommand>
+      </uuxc:CommandBarExtensions.NavigationCommand>
   </CommandBar>
   ```
 
@@ -805,7 +805,7 @@ Gets or sets a value indicating whether the user can interact with the control.
 
   ```xml
   <Style Target="CommandBar">
-      <Setter Property="toolkit:CommandBarExtensions.BackButtonIcon">
+      <Setter Property="uuxc:CommandBarExtensions.BackButtonIcon">
           <Setter.Value>
               <BitmapIcon UriSource="ms-appx:///Assets/Icons/back.png" />
           </Setter.Value>

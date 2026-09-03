@@ -880,8 +880,8 @@ partial class ClientHotReloadProcessor
 				newInstanceFE is not null)
 			{
 #if HAS_UNO
-				var oldStore = ((IDependencyObjectStoreProvider)instanceFE).Store;
-				var newStore = ((IDependencyObjectStoreProvider)newInstanceFE).Store;
+				var oldStore = ((DependencyObject)instanceFE);
+				var newStore = ((DependencyObject)newInstanceFE);
 				oldStore.ClonePropertiesToAnotherStoreForHotReload(newStore);
 
 				if (instanceFE.DebugParseContext is { } debugParseContext)

@@ -3,6 +3,9 @@
 		<IsBrowserWasm>true</IsBrowserWasm>
 		<UsingUnoCommonWasmTargets>true</UsingUnoCommonWasmTargets>
 
+		<!-- Comes from the WebAssembly runtime package as well; this makes it follow the target framework instead. -->
+		<DefineConstants Condition="!$(DefineConstants.Contains('__WASM__'))">$(DefineConstants);__WASM__</DefineConstants>
+
 		<EnableDefaultWasmItems Condition="$(EnableDefaultWasmItems) == ''">false</EnableDefaultWasmItems>
 
 		<!-- Enable the netx.0-browserwasm target -->

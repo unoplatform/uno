@@ -151,6 +151,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (m_animatedVisual is { } visual)
 			{
+				// Uno-specific: IconElement hosts content in a synthetic root Grid that has no WinUI
+				// counterpart, and the animated visual is attached to it as a composition child visual. It
+				// still has to go through layout, or it never gets a slot and nothing renders.
+				base.MeasureOverride(availableSize);
+
 				// Animated Icon scales using the Uniform strategy, meaning that it scales the horizonal and vertical
 				// dimensions equally by the maximum amount that doesn't exceed the available size in either dimension.
 				// If the available size is infinite in both dimensions then we don't scale the visual. Otherwise, we
@@ -194,6 +199,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (m_animatedVisual is { } visual)
 			{
+				// See MeasureOverride: the synthetic root Grid hosting the animated visual needs a layout slot.
+				base.ArrangeOverride(finalSize);
+
 				var visualSize = visual.Size;
 
 				Vector2 GetScale(Size finalSize, Vector2 visualSize)

@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
-		<DefineConstants>$(DefineConstants);ENABLE_LEGACY_TEMPLATED_PARENT_SUPPORT</DefineConstants>
 		<UnoShouldUseNoPlatformOverride>true</UnoShouldUseNoPlatformOverride>
 	</PropertyGroup>
 
@@ -38,8 +37,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
-		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Skia.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
 		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj" />
 		<!-- The framework is backend-agnostic and packaged once: it no longer references the Skia backend assembly.
 		     A head/app references the backend it wants (SkiaBackend and/or WebGpu) and registers it at startup. -->

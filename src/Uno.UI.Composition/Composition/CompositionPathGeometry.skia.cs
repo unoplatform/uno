@@ -21,6 +21,10 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 
 	internal override IGeometrySource2D? BuildGeometry() => _geometrySource2D as IGeometrySource2D;
 
+	// The built geometry for this geometry's current Path, used by PathKeyFrameAnimation to morph between
+	// keyframe geometries.
+	internal IGeometry? GetBuiltGeometry() => _geometrySource2D;
+
 	private void InternalBuildGeometry()
 	{
 		IGeometry? geometrySource = null;

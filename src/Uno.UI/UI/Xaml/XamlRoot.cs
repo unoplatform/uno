@@ -123,9 +123,9 @@ public sealed partial class XamlRoot
 	internal void InvalidateOverlays()
 	{
 		_focusManager ??= VisualTree.GetFocusManagerForElement(Content);
-		if (_focusManager?.FocusedElement is TextBox textBox)
+		if (_focusManager?.FocusedElement is ITextBoxHost { Core: { } core })
 		{
-			textBox.TextBoxView?.Extension?.InvalidateLayout();
+			core.TextBoxView?.Extension?.InvalidateLayout();
 		}
 	}
 }

@@ -155,6 +155,11 @@ namespace Microsoft.UI.Xaml
 
 		public static RoutedEvent KeyUpEvent { get; } = new RoutedEvent(RoutedEventFlag.KeyUp);
 
+		/// <summary>
+		/// Gets the identifier for the CharacterReceived routed event.
+		/// </summary>
+		public static RoutedEvent CharacterReceivedEvent { get; } = new RoutedEvent(RoutedEventFlag.CharacterReceived);
+
 		internal static RoutedEvent GotFocusEvent { get; } = new RoutedEvent(RoutedEventFlag.GotFocus);
 
 		internal static RoutedEvent LostFocusEvent { get; } = new RoutedEvent(RoutedEventFlag.LostFocus);
@@ -412,6 +417,15 @@ namespace Microsoft.UI.Xaml
 		{
 			add => AddHandler(KeyDownEvent, value, false);
 			remove => RemoveHandler(KeyDownEvent, value);
+		}
+
+		/// <summary>
+		/// Occurs when a single, composed character is received by the input queue.
+		/// </summary>
+		public event TypedEventHandler<UIElement, CharacterReceivedRoutedEventArgs> CharacterReceived
+		{
+			add => AddHandler(CharacterReceivedEvent, value, false);
+			remove => RemoveHandler(CharacterReceivedEvent, value);
 		}
 
 		internal event KeyEventHandler PostKeyDown;
@@ -1008,6 +1022,9 @@ namespace Microsoft.UI.Xaml
 					break;
 				case TypedEventHandler<UIElement, ContextRequestedEventArgs> contextRequestedHandler:
 					contextRequestedHandler(this, (ContextRequestedEventArgs)args);
+					break;
+				case TypedEventHandler<UIElement, CharacterReceivedRoutedEventArgs> characterReceivedHandler:
+					characterReceivedHandler(this, (CharacterReceivedRoutedEventArgs)args);
 					break;
 				case TypedEventHandler<UIElement, RoutedEventArgs> typedRoutedEventHandler:
 					typedRoutedEventHandler(this, args);

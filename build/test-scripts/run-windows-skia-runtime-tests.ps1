@@ -14,6 +14,10 @@ function Assert-ExitCodeIsZero()
 $UNO_TESTS_FAILED_LIST="$env:BUILD_SOURCESDIRECTORY\build\uitests-failure-results\failed-tests-windows-runtimetests-windows-$env:UITEST_RUNTIME_TEST_GROUP.txt"
 $TEST_RESULTS_FILE="$env:build_sourcesdirectory\build\skia-windows-runtime-tests-results.xml"
 
+# Create the failed-tests directory up front so a crashed run still has somewhere to write,
+# and PublishBuildArtifacts@1 does not retry a missing PathtoPublish.
+New-Item -ItemType Directory -Force -Path (Split-Path -Parent $UNO_TESTS_FAILED_LIST) | Out-Null
+
 # convert the content of the file UNO_TESTS_FAILED_LIST to base64 and set it to UITEST_RUNTIME_TESTS_FILTER, if the file exists
 if (Test-Path $UNO_TESTS_FAILED_LIST) {
     $base64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes((Get-Content $UNO_TESTS_FAILED_LIST)))
@@ -25,7 +29,6 @@ dotnet SamplesApp.dll --runtime-tests=$TEST_RESULTS_FILE
 
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $env:BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
-mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST}) -Force
 
 echo "Running NUnitTransformTool"
 

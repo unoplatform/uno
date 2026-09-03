@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CommandBar
+	public partial class CommandBar : global::Microsoft.UI.Xaml.Controls.AppBar
 	{
 		// Skipping already declared property CommandBarOverflowPresenterStyleProperty
 		// Skipping already declared property DefaultLabelPositionProperty

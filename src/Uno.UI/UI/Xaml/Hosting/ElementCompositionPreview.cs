@@ -37,7 +37,7 @@ public partial class ElementCompositionPreview
 			// TODO: Switch to CompositionTargetGetter and assign a lambda instead.
 			// This will make the Visual usable even if GetElementVisual is called when
 			// the element is not loaded (note that XamlRoot is null when element isn't yet loaded)
-			CompositionTarget = element.XamlRoot?.VisualTree.ContentRoot.CompositionTarget,
+			CompositionTarget = element.XamlRoot?.VisualTree?.ContentRoot.CompositionTarget,
 		};
 #endif
 	}
@@ -46,7 +46,7 @@ public partial class ElementCompositionPreview
 	/// Sets a custom Microsoft.UI.Composition.Visual as the last child of the element's visual tree.
 	/// </summary>
 	/// <param name="element">The element to add the child Visual to.</param>
-	/// <param name="visual">The Visual to add to the element's visual tree.</param>
+	/// <param name="visual">The Visual to add to the element's visual tree, or <c>null</c> to remove the previously set child visual.</param>
 	public static void SetElementChildVisual(UIElement element, Visual? visual)
 	{
 #if __SKIA__

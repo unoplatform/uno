@@ -70,8 +70,8 @@ variables:
 
   enable_dotnet_cache: true
   enable_emsdk_cache: true
-  GlobalUnoCheckVersion: '1.35.0-dev.33'
-  DotNetSdkVersion: '11.0.100-preview.6.26359.118'
+  GlobalUnoCheckVersion: '1.35.0-dev.65'
+  DotNetSdkVersion: '11.0.100-preview.7.26381.103'
 
   netCurrentTargetFramework: 'net11.0'
   netPreviousTargetFramework: 'net10.0'

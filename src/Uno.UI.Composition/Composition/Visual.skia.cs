@@ -74,6 +74,16 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private bool _shadowSubtreeChangedThisFrame;
 	private int _framesSinceSubtreeNotChanged;
 
+	// Raised when this visual's own Clip/LayoutClip changes, and carried down the render walk so
+	// descendants report damage for the region the clip revealed or hid. Cleared once consumed by Render.
+	private bool _clipChangedSincePaint;
+
+	/// <summary>
+	/// ContainerVisual.LayoutClip is declared in a partial that isn't compiled for every target, so the
+	/// clip-change hook in Visual.OnPropertyChangedCore matches it by name.
+	/// </summary>
+	private const string LayoutClipPropertyName = "LayoutClip";
+
 	private VisualFlags _flags = VisualFlags.MatrixDirty | VisualFlags.PaintDirty | VisualFlags.ChildrenSKPictureInvalid;
 
 	private const int SK_MaxS32FitsInFloat = 2147483520;
@@ -140,6 +150,57 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// only be true when we really have something to paint (and that painting needs to be updated).
 	/// </summary>
 	internal virtual bool CanPaint() => false;
+
+	/// <summary>
+	/// Set while the owning element has no layout slot, i.e. it has never been arranged (or was
+	/// re-parented and not arranged since). <see cref="ArrangeOffset"/>/<see cref="Size"/> are unset then,
+	/// and a visual's content is not bounded by its Size, so painting would draw at the parent's origin,
+	/// unclipped. WinUI never renders an element its parent didn't arrange. Defaults to
+	/// <see langword="false"/> so visuals created directly through the Composition API (which the layout
+	/// system never arranges) keep rendering.
+	/// </summary>
+	internal bool IsArrangePending
+	{
+		get => _isArrangePending;
+		set
+		{
+			if (_isArrangePending != value)
+			{
+				_isArrangePending = value;
+
+				// Mirrors the visibility transitions: the ancestors' cached children pictures must be
+				// rebuilt either way (to drop or to re-collect this subtree). Passing includeSelf would
+				// stop the walk immediately, since a suppressed visual's own ChildrenSKPictureInvalid is
+				// never cleared (Render returns before that).
+				InvalidateParentChildrenPicture(includeSelf: false);
+
+				if (CompositionTarget is { } target)
+				{
+					// Becoming suppressed leaves whatever was painted on screen, so damage it like
+					// OnIsVisibleChanged does. The reverse direction self-heals: the visual is walked again
+					// with no _lastRenderBounds, which reports it as moved.
+					if (value)
+					{
+						ContributeRemovalDamage(target);
+					}
+
+					// This is not a composition property, so nothing requests a frame on our behalf. An
+					// arrange landing on the previous offset and size (a re-parented element re-added to the
+					// same slot) changes no property at all, so without this the damage above, or the newly
+					// unsuppressed subtree, would wait for an unrelated invalidation.
+					target.RequestNewFrame();
+				}
+			}
+		}
+	}
+
+	private bool _isArrangePending;
+
+	/// <summary>
+	/// Nothing this visual or its subtree paints may reach the frame. Kept in one place so the paint
+	/// walks below cannot drift apart on which suppression reasons they honor.
+	/// </summary>
+	private bool IsRenderSuppressed => Opacity == 0f || !IsVisible || IsArrangePending;
 
 	/// <summary>
 	/// When true, this visual guarantees that everything <em>it itself</em> paints stays inside
@@ -289,6 +350,15 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 	}
 
+	internal void InvalidateSubtreePaint()
+	{
+		InvalidatePaint();
+		foreach (var child in GetChildrenInRenderOrder())
+		{
+			child.InvalidateSubtreePaint();
+		}
+	}
+
 	internal void InvalidateParentChildrenPicture(bool includeSelf)
 	{
 		var parent = includeSelf ? this : Parent;
@@ -364,7 +434,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <param name="offsetOverride">The offset (from the origin) to render the Visual at. If null, the offset properties on the Visual like <see cref="Offset"/> and <see cref="AnchorPoint"/> are used.</param>
 	internal void RenderRootVisual(IDrawingSession drawingSession, Vector2? offsetOverride, DamageRegion? damage = null)
 	{
-		if (this is { Opacity: 0 } or { IsVisible: false })
+		if (IsRenderSuppressed)
 		{
 			return;
 		}
@@ -412,7 +482,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// <param name="cullRect">Root-space AABB of the ancestors' rect-shaped clips; a leaf provably outside it is
 	/// skipped. <c>default</c> (empty) disables culling — recordings must contain the full subtree, since they are
 	/// replayed under other transforms later (e.g. after a scroll).</param>
-	private void Render(in PaintingSession parentSession, bool applyChildOptimization = true, Rect cullRect = default)
+	private void Render(in PaintingSession parentSession, bool applyChildOptimization = true, Rect cullRect = default, bool ancestorClipChanged = false)
 	{
 #if TRACE_COMPOSITION
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
@@ -421,7 +491,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		global::System.Diagnostics.Debug.WriteLine($"{indent}{Comment} (Opacity:{parentSession.Opacity:F2}x{Opacity:F2} | IsVisible:{IsVisible})");
 #endif
 
-		if (this is { Opacity: 0 } or { IsVisible: false })
+		if (IsRenderSuppressed)
 		{
 			// Became non-rendering (hidden or fully transparent) while it painted last frame: damage the area it
 			// used to occupy so the partial-repaint path clears it instead of leaving a stale ghost.
@@ -445,6 +515,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 			return;
 		}
+
+		// A clip change alters what this subtree contributes to the frame without touching any descendant's
+		// content or transform, so the signal has to reach them: it is raised where the clip is mutated and
+		// carried down this walk. Consumed here so it is reported exactly once.
+		var clipChanged = ancestorClipChanged || _clipChangedSincePaint;
+		_clipChangedSincePaint = false;
 
 		if ((_flags & VisualFlags.ChildrenSKPictureInvalid) == 0)
 		{
@@ -476,9 +552,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					_shadowFallbackContent.Dispose();
 					_shadowFallbackContent = null;
 				}
-				PaintStep(this, session);
+				PaintStep(this, session, clipChanged);
 				PostPaintingClipStep(this, in session);
-				RenderChildrenStep(this, session, applyChildOptimization, cullRect);
+				RenderChildrenStep(this, session, applyChildOptimization, cullRect, clipChanged);
 			}
 			else
 			{
@@ -498,10 +574,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					_factory.CreateInstance(this, recording, ref rootTransform, session.Opacity, session.Damage, out var childSession);
 					using (childSession)
 					{
-						PaintStep(this, childSession);
+						PaintStep(this, childSession, clipChanged);
 						PostPaintingClipStep(this, in childSession);
 						// No culling inside the recording — it survives ancestor moves, so it must be complete.
-						RenderChildrenStep(this, childSession, applyChildOptimization, cullRect: default);
+						RenderChildrenStep(this, childSession, applyChildOptimization, cullRect: default, clipChanged);
 						renderData = recording.Finish();
 					}
 
@@ -530,7 +606,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			}
 		}
 
-		static void PaintStep(Visual visual, in PaintingSession session)
+		static void PaintStep(Visual visual, in PaintingSession session, bool clipChanged)
 		{
 			// Rendering shouldn't depend on matrix or clip adjustments happening in a visual's Paint. That should
 			// be specific to that visual and should not affect the rendering of any other visual.
@@ -540,7 +616,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			if (visual.RequiresRepaintOnEveryFrame)
 			{
 				// Repaint-every-frame content (e.g. an effect brush over already-drawn area): paint directly, uncached.
-				visual.ContributeDamageOnPaint(contentChanged: true, session.Damage);
+				visual.ContributeDamageOnPaint(contentChanged: true, session.Damage, clipChanged);
 				visual.Paint(session);
 			}
 			else
@@ -561,7 +637,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 				// Contribute damage whether or not the content was re-recorded: a moved-but-unchanged visual keeps its
 				// cached content and own-content path, but its new position still needs to be repainted (and its old one).
-				visual.ContributeDamageOnPaint(contentChanged, session.Damage);
+				visual.ContributeDamageOnPaint(contentChanged, session.Damage, clipChanged);
 
 				if (visual._content is { } content)
 				{
@@ -576,7 +652,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		static void PostPaintingClipStep(Visual visual, in PaintingSession session)
 			=> visual.ApplyPostPaintingClipping(session.Session);
 
-		static void RenderChildrenStep(Visual visual, PaintingSession session, bool applyChildOptimization, Rect cullRect)
+		static void RenderChildrenStep(Visual visual, PaintingSession session, bool applyChildOptimization, Rect cullRect, bool clipChanged)
 		{
 			if (visual._childrenContent is { } childrenContent)
 			{
@@ -612,7 +688,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 				var childCullRect = visual.NarrowCullRect(cullRect);
 				foreach (var child in visual.GetChildrenInRenderOrder())
 				{
-					child.Render(in session, applyChildOptimization, childCullRect);
+					child.Render(in session, applyChildOptimization, childCullRect, clipChanged);
 				}
 			}
 			else
@@ -626,7 +702,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					foreach (var child in visual.GetChildrenInRenderOrder())
 					{
 						// No culling inside the recording — it survives ancestor moves, so it must be complete.
-						child.Render(in childSession, applyChildOptimization: false);
+						child.Render(in childSession, applyChildOptimization: false, ancestorClipChanged: clipChanged);
 					}
 				}
 
@@ -877,7 +953,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		ShadowPathAccumulator accumulator)
 	{
 		var scratch = _spareShadowContributions;
-		if (visual.Opacity == 0f || !visual.IsVisible)
+		if (visual.IsRenderSuppressed)
 		{
 			return true;
 		}
@@ -1089,6 +1165,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		ref var rootTransform = ref parentSession.RootTransform;
 
 		var opacity = Opacity == 1.0f ? parentSession.Opacity : parentSession.Opacity * Opacity;
+
+		// MUX Reference hwwalk.cpp, ShouldOverrideRenderOpacity.
+		if (IsHighContrastOpacityOverrideActive && opacity > 0 && opacity < 1.0f)
+		{
+			opacity = 1.0f;
+		}
 
 		_factory.CreateInstance(this, parentSession.Session, ref rootTransform, opacity, parentSession.Damage, out session);
 

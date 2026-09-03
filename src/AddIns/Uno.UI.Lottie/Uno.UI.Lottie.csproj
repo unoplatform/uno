@@ -22,10 +22,6 @@
 	<ItemGroup>
 
 		<PackageReference Include="SkiaSharp.Skottie" />
-		<PackageReference Include="SkiaSharp.Views.Uno.WinUI" />
-
-		<!-- Explicitly included to remove all assets from Uno dependencies coming from SkiaSharp.Views.* -->
-		<PackageReference Include="Uno.WinUI" Version="4.4.5" ExcludeAssets="all" IncludeAssets="none" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>

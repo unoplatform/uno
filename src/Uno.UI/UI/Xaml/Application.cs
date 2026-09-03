@@ -472,6 +472,9 @@ namespace Microsoft.UI.Xaml
 			}
 
 			SystemThemeHelper.SystemThemeChanged += OnSystemThemeChanged;
+#if __SKIA__
+			SystemThemeHelper.HighContrastChanged += OnHighContrastChanged;
+#endif
 
 			InitializeTextScaling();
 
@@ -526,6 +529,15 @@ namespace Microsoft.UI.Xaml
 		}
 
 #if __SKIA__
+		private void OnHighContrastChanged(object sender, EventArgs e)
+		{
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			WinUICoreServices.Instance.Theming.OnThemeChanged(forceUpdate: true);
+#else
+			OnResourcesChanged(ResourceUpdateReason.ThemeResource);
+#endif
+		}
+
 		private IDisposable WritePhaseEventTrace(int startEventId, int stopEventId)
 		{
 			if (_trace.IsEnabled)

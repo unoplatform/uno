@@ -3,29 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class PathKeyFrameAnimation : global::Microsoft.UI.Composition.KeyFrameAnimation
 	{
-#if __SKIA__
-		internal PathKeyFrameAnimation()
-		{
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void InsertKeyFrame(float normalizedProgressKey, global::Microsoft.UI.Composition.CompositionPath path)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PathKeyFrameAnimation", "InsertKeyFrame(float normalizedProgressKey, CompositionPath path)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void InsertKeyFrame(float normalizedProgressKey, global::Microsoft.UI.Composition.CompositionPath path, global::Microsoft.UI.Composition.CompositionEasingFunction easingFunction)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.PathKeyFrameAnimation", "InsertKeyFrame(float normalizedProgressKey, CompositionPath path, CompositionEasingFunction easingFunction)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Composition.PathKeyFrameAnimation.InsertKeyFrame(float, Microsoft.UI.Composition.CompositionPath)
+		// Skipping already declared method Microsoft.UI.Composition.PathKeyFrameAnimation.InsertKeyFrame(float, Microsoft.UI.Composition.CompositionPath, Microsoft.UI.Composition.CompositionEasingFunction)
 	}
 }

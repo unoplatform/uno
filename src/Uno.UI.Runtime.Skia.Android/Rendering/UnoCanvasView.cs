@@ -18,6 +18,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
+using Uno.UI.Xaml.Controls;
 using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia.Android;
@@ -126,7 +127,7 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 			if (AndroidSkiaTextBoxNotificationsProviderSingleton.Instance.LiveTextBoxesMap.TryGetValue(virtualId, out var textBox))
 			{
 				var autofillValue = (AutofillValue)values.ValueAt(i)!;
-				textBox.Text = autofillValue.TextValue;
+				textBox.Text = autofillValue.TextValue ?? string.Empty;
 			}
 		}
 	}
@@ -138,6 +139,8 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 	// and modified to also add rendering without OpenGL
 	private class InternalRenderer() : Java.Lang.Object, IRenderer
 	{
+		private bool _firstFrameSignaled;
+
 		private ISwapChain? _context;
 		private IDrawingFactory? _renderer;
 
@@ -157,6 +160,15 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 			var nativeClipPath = ct.OnNativePlatformFrameRequested(_context);
 
 			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
+
+			if (!_firstFrameSignaled)
+			{
+				_firstFrameSignaled = true;
+				NativeWindowWrapper.Instance.NotifyFirstFrameRendered();
+				// Trigger OnPreDraw re-evaluation so the splash can dismiss once the first frame is on screen
+				ApplicationActivity.RelativeLayout?.Post(() =>
+					ApplicationActivity.RelativeLayout?.Invalidate());
+			}
 		}
 
 		void IRenderer.OnSurfaceChanged(IGL10? gl, int width, int height)

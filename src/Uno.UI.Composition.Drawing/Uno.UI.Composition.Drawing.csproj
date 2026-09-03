@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 		<!-- The neutral drawing SPI is platform-agnostic (like the Skia/Wasm composition assemblies): keep it a
@@ -28,8 +28,8 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
-		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
-		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Skia.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
 	</ItemGroup>

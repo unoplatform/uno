@@ -1,5 +1,4 @@
-﻿#if !NETFX_CORE
-using System;
+﻿using System;
 
 using Uno.Extensions;
 using System.Globalization;
@@ -1132,4 +1131,3 @@ namespace Uno.UI.DataBinding
 		}
 	}
 }
-#endif

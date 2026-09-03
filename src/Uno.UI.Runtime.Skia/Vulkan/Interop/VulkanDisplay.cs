@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 // Based on the Avalonia project (MIT License, Copyright (c) AvaloniaUI OÜ).
 // Original source: https://github.com/AvaloniaUI/Avalonia/tree/master/src/Avalonia.Vulkan
 using System;
@@ -33,10 +33,7 @@ internal class VulkanDisplay : IDisposable
 		_swapchainExtent = swapchainExtent;
 		_platformSurface = platformSurface;
 		_semaphorePair = new VulkanSemaphorePair(_context);
-		// autoFree: the present path allocates a command buffer + fence per frame and enqueues them via
-		// AddSubmittedCommandBuffer; without it FreeFinishedCommandBuffers never runs and every presented
-		// frame leaks one, ending in VK_ERROR_OUT_OF_HOST_MEMORY on a long-running window.
-		CommandBufferPool = new VulkanCommandBufferPool(_context, autoFree: true);
+		CommandBufferPool = new VulkanCommandBufferPool(_context);
 		CreateSwapchainImages();
 	}
 
