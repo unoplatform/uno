@@ -40,6 +40,10 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 	private bool _treeInitialized;
 	private bool _treeBuildQueued;
 	private int _nextPath = 1;
+	// Window top-left in screen space, captured per build; added to each node's
+	// client-space offset so AT-SPI extents are absolute screen coordinates.
+	private double _originX;
+	private double _originY;
 
 	internal X11Accessibility(X11XamlRootHost host, Window window)
 	{
@@ -173,6 +177,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			_nodesByHandle.Clear();
 			_elementsByHandle.Clear();
 			_nextPath = 1;
+			(_originX, _originY) = GetWindowOrigin();
 			_root = BuildRootNode(rootElement);
 			_treeInitialized = true;
 			// Publish an immutable element snapshot before the tree so the reader-thread
@@ -265,10 +270,9 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			? AtspiRoleMap.GetRole(peer.GetAutomationControlType())
 			: (39u, "panel");
 
-		// Absolute offset in client space (sum of GetTotalOffset up the Visual parent
-		// chain), matching MacOSAccessibility.GetAbsoluteOffset. The X11 window origin
-		// is not wired here, so coordinates remain window-relative; a follow-up adds
-		// the window position offset before publishing.
+		// Client-space offset (sum of GetTotalOffset up the Visual parent chain, like
+		// MacOSAccessibility.GetAbsoluteOffset) plus the window's screen origin, so the
+		// published extents are absolute screen coordinates.
 		var offset = GetAbsoluteOffset(element.Visual);
 		var size = element.Visual.Size;
 
@@ -280,8 +284,8 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			RoleName = roleName,
 			Name = ResolveName(peer),
 			Parent = parent,
-			X = offset.X,
-			Y = offset.Y,
+			X = offset.X + _originX,
+			Y = offset.Y + _originY,
 			W = size.X,
 			H = size.Y,
 			Enabled = peer?.IsEnabled() ?? true,
@@ -318,6 +322,21 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 			current = current.Parent;
 		}
 		return (x, y);
+	}
+
+	private (double X, double Y) GetWindowOrigin()
+	{
+		try
+		{
+			var position = _window.AppWindow.Position;
+			return (position.X, position.Y);
+		}
+		catch (Exception)
+		{
+			// AppWindow position can be unavailable before the window is mapped; fall
+			// back to window-relative coordinates.
+			return (0, 0);
+		}
 	}
 
 	private static void PopulateNodeFromPeer(AtspiNode node, AutomationPeer peer)
@@ -499,8 +518,8 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase, AtspiServer.IWri
 		}
 
 		var offset = GetAbsoluteOffset(containerVisual);
-		node.X = offset.X;
-		node.Y = offset.Y;
+		node.X = offset.X + _originX;
+		node.Y = offset.Y + _originY;
 		node.W = containerVisual.Size.X;
 		node.H = containerVisual.Size.Y;
 	}
