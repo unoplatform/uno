@@ -1,4 +1,4 @@
-#if __SKIA__
+﻿#if __SKIA__
 #nullable enable
 
 using System;
@@ -330,7 +330,7 @@ public class Given_SvgImageSource_ManagedEngine
 		public Task<IImage> SnapshotAsync(ITexture texture) => throw new NotSupportedException();
 		public ITexture CreateTexture(IImage image) => throw new NotSupportedException();
 		public ITexture CreateTexture(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul) => throw new NotSupportedException();
-		public IColorFilter CreateBlendModeColorFilter(Color color, BlendMode mode) => throw new NotSupportedException();
+		public IColorFilter CreateTintColorFilter(Color color) => throw new NotSupportedException();
 		public IColorFilter CreateColorMatrixColorFilter(float[] matrix) => throw new NotSupportedException();
 		public IEffectFilter? CreateEffectFilter(EffectNode tree, Rect bounds) => throw new NotSupportedException();
 		public IEffectFilter CreateDropShadowFilter(float dx, float dy, float sigmaX, float sigmaY, Color color) => throw new NotSupportedException();

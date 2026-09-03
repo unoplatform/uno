@@ -751,10 +751,9 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		{ var ip0 = Map(x, y); var ip1 = Map(x + w, y); var ip2 = Map(x + w, y + h); var ip3 = Map(x, y + h); _target.Add(new ImageCmd { P0 = ip0, P1 = ip1, P2 = ip2, P3 = ip3, View = t.View, W = w, H = h, Opacity = 1f, TintMode = mode, Tint = tint, ColorMatrix = _pendingColorMatrix, Clip = RelaxedClip(ip0, ip1, ip2, ip3) }); }
 	}
 
-	// A SrcIn blend-mode WebGpuColorFilter → a straight-alpha tint (the only image color-filter case today);
-	// anything else (other modes, color matrix, or a foreign filter) → untinted.
+	// A tint WebGpuColorFilter → a straight-alpha tint; a colour matrix or a foreign filter → untinted.
 	private static (int mode, Vector4 tint) ResolveTint(IColorFilter colorFilter)
-		=> colorFilter is WebGpuColorFilter { IsBlendMode: true, Mode: BlendMode.SrcIn } f
+		=> colorFilter is WebGpuColorFilter { IsTint: true } f
 			? (1, new Vector4(f.Color.R / 255f, f.Color.G / 255f, f.Color.B / 255f, f.Color.A / 255f))
 			: (0, default);
 
