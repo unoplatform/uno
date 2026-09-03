@@ -526,6 +526,9 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 		switch (node)
 		{
 			case TextureInput t:
+				// The extend modes are not realized: there is no infinite-extend sampler here, so a BorderEffect's
+				// wrap/mirror/clamp draws as the single finite texture. Returning null instead wouldn't recover them
+				// either — the recipe fallback reduces the graph to a source plus a colour matrix, which cannot tile.
 				return t.Texture;
 			case ColorInput c:
 			{
@@ -601,6 +604,9 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 			}
 			case BlurEffectNode b:
 			{
+				// ClampEdge is always on in effect: the pyramid samples through a ClampToEdge sampler, so the soft
+				// border smears the edge texel instead of fading to transparent. Declining that mode would drop the
+				// blur altogether (the recipe fallback has none), so the clamp stands as the approximation.
 				if (TryEvaluateTree(b.Source, bounds) is not WebGpuTexture src || b.Sigma <= 0f) { return TryEvaluateTree(b.Source, bounds); }
 				int w = src.PixelWidth, h = src.PixelHeight;
 				var surface = new WebGpuRenderSurface(_device, w, h);
