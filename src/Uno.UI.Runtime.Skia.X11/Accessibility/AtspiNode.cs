@@ -22,4 +22,23 @@ internal sealed class AtspiNode
 	public double H { get; set; }
 	public bool Enabled { get; set; } = true;
 	public bool Focusable { get; set; }
+	public bool Checked;
+	public bool HasToggle;
+	public bool Editable;
+	public bool HasText;
+	public string Text = "";
+	public bool ReadOnly;
+	public bool Expandable;
+	public bool Expanded;
+	public bool Selectable;
+	public bool Selected;
+	public bool HasRange;
+	public double Min, Max, Val;
+	public int ItemIndex = -1;
+	public string? Description;
+	public int HeadingLevel;
+	public string? Landmark;
+	public bool Required;
+	public bool Offscreen;
+	public int PositionInSet, SizeOfSet;
 }
