@@ -77,6 +77,12 @@ namespace Uno.UI.Runtime.Android
 		/// </summary>
 		internal UIElement? RootElement => _wrapper?.Window?.RootElement;
 
+		private protected override void OnNativeActivationChanged(global::Windows.UI.Core.CoreWindowActivationState state)
+			=> Wrapper.OnNativeActivated(state);
+
+		private protected override void OnNativeVisibilityChanged(bool isVisible)
+			=> Wrapper.OnNativeVisibilityChanged(isVisible);
+
 		internal RelativeLayout RelativeLayout { get; private set; } = null!;
 
 		private LayoutProvider? _layoutProvider;
