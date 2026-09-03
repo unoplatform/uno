@@ -2,7 +2,6 @@
 
 using System;
 using System.Threading;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Microsoft.UI.Composition;
@@ -23,11 +22,14 @@ internal sealed class HeadlessRenderer : IDisposable
 	private readonly Thread _renderThread;
 	private volatile bool _disposed;
 
-	private SKSurface? _nullSurface;
+	private readonly Uno.UI.Composition.Drawing.ISwapChain _swapChain;
+	private readonly Uno.UI.Composition.Drawing.IDrawingFactory _rendererFactory;
 
-	public HeadlessRenderer(IXamlRootHost host)
+	public HeadlessRenderer(IXamlRootHost host, Uno.UI.Composition.Drawing.ISwapChain swapChain, Uno.UI.Composition.Drawing.IDrawingFactory rendererFactory)
 	{
 		_host = host;
+		_swapChain = swapChain;
+		_rendererFactory = rendererFactory;
 
 		_renderThread = new Thread(_ =>
 		{
@@ -70,19 +72,22 @@ internal sealed class HeadlessRenderer : IDisposable
 
 	private void Render()
 	{
-		// The visual tree may not be available yet on the first invalidation(s).
-		if (_host.RootElement?.Visual.CompositionTarget is not CompositionTarget ct)
+		// The visual tree may not be available yet on the first invalidation(s). Don't drop the request:
+		// the framework latches RequestNewFrame until the next frame runs, so a dropped invalidation is a
+		// lost wakeup that stalls layout forever (this host has no unconditional native frame pump to heal it).
+		CompositionTarget? ct;
+		while ((ct = _host.RootElement?.Visual.CompositionTarget as CompositionTarget) is null)
 		{
-			return;
+			if (_disposed)
+			{
+				return;
+			}
+
+			Thread.Sleep(15);
 		}
 
-		ct.OnNativePlatformFrameRequested(_nullSurface?.Canvas, size =>
-		{
-			_nullSurface?.Dispose();
-			_nullSurface = SKSurface.CreateNull((int)size.Width, (int)size.Height);
-			return _nullSurface.Canvas;
-		});
-		_nullSurface?.Flush();
+		ct.Renderer = _rendererFactory;
+		ct.OnNativePlatformFrameRequested(_swapChain);
 	}
 
 	public void Dispose()
@@ -99,13 +104,13 @@ internal sealed class HeadlessRenderer : IDisposable
 
 		if (stopped)
 		{
-			_nullSurface?.Dispose();
+			_swapChain.Dispose();
 			_renderInvalidationEvent.Dispose();
 		}
 		else
 		{
-			// The thread may still be mid-render; leak its surface/event rather than risk a use-after-dispose race.
-			this.LogWarn()?.Warn("The headless rendering thread did not stop within the timeout; its surface and event are left undisposed to avoid a race.");
+			// The thread may still be mid-render; leak its buffer/event rather than risk a use-after-dispose race.
+			this.LogWarn()?.Warn("The headless rendering thread did not stop within the timeout; its buffer and event are left undisposed to avoid a race.");
 		}
 	}
 }

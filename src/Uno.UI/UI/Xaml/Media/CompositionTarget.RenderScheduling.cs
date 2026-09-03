@@ -3,9 +3,9 @@ using System;
 using System.Diagnostics;
 using System.Threading;
 using Windows.Foundation;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
 using Uno.UI.Hosting;
@@ -163,7 +163,7 @@ public partial class CompositionTarget
 	/// be called once per <see cref="IXamlRootHost.InvalidateRender"/> call, but the contract allows any number
 	/// of repeated calls, even if no new invalidations are requested.
 	/// </summary>
-	internal SKPath OnNativePlatformFrameRequested(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
+	internal IGeometry OnNativePlatformFrameRequested(ISwapChain swapChain, global::System.Numerics.Matrix4x4? rootTransform = null, Action<IDrawingSession>? overlay = null)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnNativePlatformFrameRequested)}");
 
@@ -172,7 +172,9 @@ public partial class CompositionTarget
 			NativeDispatcher.Main.EnqueueRender(this, EnqueueRenderCallback);
 		}
 
-		return Draw(canvas, resizeFunc);
+		var nativeElementClipPath = Draw(swapChain, rootTransform, overlay);
+		swapChain.Present();
+		return nativeElementClipPath;
 	}
 
 	internal void OnRenderFrameOpportunity()

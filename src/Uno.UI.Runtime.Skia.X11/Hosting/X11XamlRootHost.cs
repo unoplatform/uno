@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Uno.UI.Composition.Drawing;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -15,7 +15,6 @@ using Windows.UI.ViewManagement;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Microsoft.UI.Xaml;
-using SkiaSharp;
 using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Xaml.Controls;
@@ -82,7 +81,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	private X11Window? _x11Window;
 	private X11Window? _x11TopWindow;
-	private X11Renderer? _renderer;
+	private IX11Renderer? _renderer;
 
 	private static readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 
@@ -125,19 +124,12 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		_windowToHost[winUIWindow] = this;
 		XamlRootMap.Register(xamlRoot, this);
 
-		// The frame pacer must exist before UpdateWindowPropertiesFromPackage: reading the DPI
-		// creates the DisplayInformation extension, whose UpdateDetails reports the screen
-		// refresh rate through UpdateRenderTimerFps.
-		_framePacer = CreateFramePacer();
-
 		UpdateWindowPropertiesFromPackage();
 
 		// only start listening to events after we're done setting everything up
 		InitializeX11EventsThread();
+		_framePacer = CreateFramePacer();
 		_renderThread = InitRenderThread();
-
-		var windowBackgroundDisposable = _window.RegisterBackgroundChangedEvent((_, _) => UpdateRendererBackground());
-		UpdateRendererBackground();
 
 		Closed.ContinueWith(_ =>
 		{
@@ -147,7 +139,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				_windowToHost.Remove(winUIWindow, out var _);
 				CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
 				winUIWindow.AppWindow.TitleBar.ExtendsContentIntoTitleBarChanged -= ExtendContentIntoTitleBar;
-				windowBackgroundDisposable.Dispose();
 				_framePacer.Dispose();
 				_renderRequested.Dispose();
 				_renderer?.Dispose();
@@ -184,11 +175,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 
 	private void UpdateWindowPropertiesFromPackage()
 	{
-		// Icon path resolution must stay on the UI thread: BitmapImage.GetScaledPath reads
-		// DisplayInformation, and creating it from another thread races the one created for
-		// the window (X11DisplayInformationExtension would then be "set twice"). Only the
-		// decoding and the X11 calls are offloaded, inside SetWindowIcon.
-		SetWindowIcon();
+		Task.Run(SetWindowIcon);
 
 		if (!string.IsNullOrEmpty(Windows.ApplicationModel.Package.Current.DisplayName))
 		{
@@ -220,7 +207,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 					this.Log().Info($"Loading icon file [{iconPath}] from Package.appxmanifest file");
 				}
 
-				BeginSetIconFromFile(iconPath);
+				SetIconFromFile(iconPath);
 			}
 			else if (Microsoft.UI.Xaml.Media.Imaging.BitmapImage.GetScaledPath(basePath) is { } scaledPath && File.Exists(scaledPath))
 			{
@@ -229,7 +216,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 					this.Log().Info($"Loading icon file [{scaledPath}] scaled logo from Package.appxmanifest file");
 				}
 
-				BeginSetIconFromFile(scaledPath);
+				SetIconFromFile(scaledPath);
 			}
 			else
 			{
@@ -240,36 +227,12 @@ internal partial class X11XamlRootHost : IXamlRootHost
 			}
 		}
 
-		void BeginSetIconFromFile(string path) => Task.Run(() =>
-		{
-			try
-			{
-				SetIconFromFile(path);
-			}
-			catch (Exception e)
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"Failed to set the window icon from [{path}].", e);
-				}
-			}
-		});
-
 		unsafe void SetIconFromFile(string iconPath)
 		{
+			// Decode through the neutral image-decoder seam so a WebGPU + managed build stays libSkiaSharp-free.
+			// Pixels come back BGRA premultiplied.
 			using var fileStream = File.OpenRead(iconPath);
-			using var codec = SKCodec.Create(fileStream);
-			if (codec is null)
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().Error($"Unable to create an SKCodec instance for icon file {iconPath}.");
-				}
-				return;
-			}
-			using var bitmap = new SKBitmap(codec.Info.Width, codec.Info.Height, SKColorType.Rgba8888, SKAlphaType.Unpremul);
-			var result = codec.GetPixels(bitmap.Info, bitmap.GetPixels());
-			if (result != SKCodecResult.Success)
+			if (!ImageEncoderDecoder.Current.TryDecode(fileStream, null, null, out var frames) || frames.Frames.Count == 0)
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{
@@ -277,17 +240,32 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				}
 				return;
 			}
+			using var _framesDisposable = frames;
 
-			var pixels = bitmap.Pixels;
-			var data = Marshal.AllocHGlobal((pixels.Length + 2) * sizeof(IntPtr));
+			var image = frames.Frames[0];
+			var width = image.PixelWidth;
+			var height = image.PixelHeight;
+			var count = width * height;
+			var bgra = new byte[count * 4];
+			image.CopyPixels(bgra);
+
+			var data = Marshal.AllocHGlobal((count + 2) * sizeof(IntPtr));
 			using var _freeDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, data);
 
 			var ptr = (IntPtr*)data.ToPointer();
-			*(ptr++) = bitmap.Width;
-			*(ptr++) = bitmap.Height;
-			foreach (var pixel in bitmap.Pixels)
+			*(ptr++) = width;
+			*(ptr++) = height;
+			for (int i = 0; i < count; i++)
 			{
-				*(ptr++) = pixel.Alpha << 24 | pixel.Red << 16 | pixel.Green << 8 | pixel.Blue << 0;
+				// Source is BGRA premultiplied; _NET_WM_ICON wants non-premultiplied ARGB (0xAARRGGBB).
+				byte b = bgra[i * 4 + 0], g = bgra[i * 4 + 1], r = bgra[i * 4 + 2], a = bgra[i * 4 + 3];
+				if (a is not 0 and not 255)
+				{
+					r = (byte)Math.Min(255, r * 255 / a);
+					g = (byte)Math.Min(255, g * 255 / a);
+					b = (byte)Math.Min(255, b * 255 / a);
+				}
+				*(ptr++) = a << 24 | r << 16 | g << 8 | b << 0;
 			}
 
 			var display = RootX11Window.Display;
@@ -303,7 +281,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				32,
 				PropertyMode.Replace,
 				data,
-				pixels.Length + 2);
+				count + 2);
 
 			_ = XLib.XFlush(display);
 			_ = XLib.XSync(display, false); // wait until the pixels are actually copied
@@ -443,86 +421,17 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		IntPtr rootXWindow = XLib.XRootWindow(display, screen);
 		_x11Window = CreateSoftwareRenderWindow(display, screen, size, rootXWindow);
 		var topWindowDisplay = XLib.XOpenDisplay(IntPtr.Zero);
-		if (FeatureConfiguration.Rendering.UseVulkanOnX11)
-		{
-			try
-			{
-				_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-				_renderer = X11VulkanRenderer.Create(this, TopX11Window);
-			}
-			catch (Exception e)
-			{
-				this.Log().Info($"Vulkan rendering not available: {e.Message}. Falling back to OpenGL.");
-				if (_x11TopWindow is not null)
-				{
-					_ = XLib.XDestroyWindow(_x11TopWindow.Value.Display, _x11TopWindow.Value.Window);
-					_x11TopWindow = null;
-				}
-				_renderer = null;
-			}
-		}
 
-		if (_renderer is null && (FeatureConfiguration.Rendering.UseOpenGLOnX11 ?? true))
-		{
-			try
-			{
-				if (FeatureConfiguration.Rendering.PreferGLESOverGLOnX11)
-				{
-					_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-					_renderer = new X11EGLRenderer(this, TopX11Window);
-				}
-				else
-				{
-					_x11TopWindow = CreateGLXWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-					_ = XLib.XSync(display, false);
-					_renderer = new X11OpenGLRenderer(this, TopX11Window);
-				}
-			}
-			catch (Exception e)
-			{
-				if (_x11TopWindow is not null)
-				{
-					_ = XLib.XDestroyWindow(_x11TopWindow.Value.Display, _x11TopWindow.Value.Window);
-					_x11TopWindow = null;
-				}
-				try
-				{
-					if (FeatureConfiguration.Rendering.PreferGLESOverGLOnX11)
-					{
-						_x11TopWindow = CreateGLXWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-						_ = XLib.XSync(display, false);
-						_renderer = new X11OpenGLRenderer(this, TopX11Window);
-					}
-					else
-					{
-						this.Log().Info($"Attempted to create a GLX OpenGL context but failed with '{e.Message}'. Falling back to an EGL OpenGL ES context.");
-						_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-						_ = XLib.XSync(display, false);
-						_renderer = new X11EGLRenderer(this, TopX11Window);
-					}
-				}
-				catch (Exception e2)
-				{
-					this.Log().Info($"Second attempt at creating an OpenGL / OpenGL ES context failed with '{e2.Message}'. Falling back to software rendering.");
-					if (_x11TopWindow is null)
-					{
-						_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-					}
-					_renderer = new X11SoftwareRenderer(this, TopX11Window);
-				}
-			}
-		}
-		if (_renderer is null)
-		{
-			this.Log().Info($"Forcing software rendering.");
-			if (_x11TopWindow is null)
-			{
-				_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
-			}
-			_renderer = new X11SoftwareRenderer(this, TopX11Window);
-		}
+		// Neutral pipeline: the host registers a per-kind window+context factory and lets the backend negotiate; only window+context creation is X11-specific.
+		GraphicsRegistry.ContextFactory = kind => Task.FromResult(CreateWindowAndContext(kind, topWindowDisplay, display, screen, size));
 
-		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = _renderer is X11SoftwareRenderer;
+		var init = GraphicsRegistry.Initialize();
+		// The renderer is installed per-window on the CompositionTarget by the render driver each frame (each X11
+		// window owns a distinct GPU context, so the backend factory is per-window, never a process-wide singleton).
+		_renderer = new X11SoftwareGraphicsRenderer(this, TopX11Window, init.Context, init.Renderer);
+		// Report whether the negotiated context rasterizes on the CPU (effect brushes read this while recording).
+		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer =
+			init.Context.Kind == global::Uno.UI.Composition.Drawing.GraphicsContextKind.Software;
 
 		// Only XI2.2 has touch events, and that's pretty much the only reason we're using XI2,
 		// so to make our assumptions simpler, we assume XI >= 2.2 or no XI at all.
@@ -554,6 +463,98 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 
 		_ = X11Helper.XClearWindow(RootX11Window.Display, RootX11Window.Window); // the root window is never drawn, just always blank
+	}
+
+	/// <summary>
+	/// Creates the top render window appropriate to a negotiated context kind (a GLX-visual window for
+	/// <see cref="GraphicsContextKind.OpenGL"/>, a plain window otherwise) and returns the context, or null to
+	/// decline (cleaning up any window it created).
+	/// </summary>
+	private ISwapChain? CreateWindowAndContext(GraphicsContextKind kind, IntPtr topWindowDisplay, IntPtr display, int screen, Size size)
+	{
+		// Which kinds are enabled is decided by the host builder and applied in negotiation (GraphicsRegistry skips the
+		// excluded kinds); this factory just creates whatever kind it is asked for, declining only on creation failure.
+		switch (kind)
+		{
+			case GraphicsContextKind.OpenGL:
+				try
+				{
+					var glxWindow = CreateGLXWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+					_ = XLib.XSync(display, false);
+					if (glxWindow.glXInfo is null)
+					{
+						_ = XLib.XDestroyWindow(glxWindow.Display, glxWindow.Window);
+						return null;
+					}
+					_x11TopWindow = glxWindow;
+					return new X11OpenGLGraphicsContext(glxWindow);
+				}
+				catch (Exception e)
+				{
+					this.Log().Info($"GLX OpenGL context creation failed ({e.Message}); falling through.");
+					DestroyTopWindow();
+					return null;
+				}
+
+			case GraphicsContextKind.OpenGLES:
+				try
+				{
+					_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+					_ = XLib.XSync(display, false);
+					return new X11EGLGraphicsContext(TopX11Window);
+				}
+				catch (Exception e)
+				{
+					this.Log().Info($"EGL OpenGL ES context creation failed ({e.Message}); falling through.");
+					DestroyTopWindow();
+					return null;
+				}
+
+			case GraphicsContextKind.WebGpu:
+				try
+				{
+					_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+					_ = XLib.XSync(display, false);
+					var scale = (float)(_wrapper.RasterizationScale <= 0 ? 1 : _wrapper.RasterizationScale);
+					return global::Uno.UI.Composition.WebGpu.WebGpuContext.CreateX11(TopX11Window.Display, TopX11Window.Window, scale);
+				}
+				catch (Exception e)
+				{
+					this.Log().Warn($"WebGPU context creation failed ({e.Message}); falling through.");
+					DestroyTopWindow();
+					return null;
+				}
+
+			case GraphicsContextKind.Vulkan:
+				try
+				{
+					_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+					_ = XLib.XSync(display, false);
+					return new X11VulkanGraphicsContext(TopX11Window);
+				}
+				catch (Exception e)
+				{
+					this.Log().Info($"Vulkan context creation failed ({e.Message}); falling through.");
+					DestroyTopWindow();
+					return null;
+				}
+
+			case GraphicsContextKind.Software:
+				_x11TopWindow = CreateSoftwareRenderWindow(topWindowDisplay, screen, size, RootX11Window.Window);
+				return new X11SoftwareGraphicsContext(TopX11Window);
+
+			default:
+				return null;
+		}
+	}
+
+	private void DestroyTopWindow()
+	{
+		if (_x11TopWindow is not null)
+		{
+			_ = XLib.XDestroyWindow(_x11TopWindow.Value.Display, _x11TopWindow.Value.Window);
+			_x11TopWindow = null;
+		}
 	}
 
 	// https://github.com/gamedevtech/X11OpenGLWindow/blob/4a3d55bb7aafd135670947f71bd2a3ee691d3fb3/README.md
@@ -687,26 +688,19 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	public unsafe void AttachSubWindow(IntPtr window)
 	{
 		using var lockDisposable = X11Helper.XLock(RootX11Window.Display);
-		// Setting override-redirect is necessary or else the WM will keep detaching the subwindow.
-		// Note that XSetWindowAttributes is a different struct from XWindowAttributes, and only
-		// the former is valid here.
-		var attributes = new XSetWindowAttributes { override_redirect = /* True */ 1 };
-		_ = X11Helper.XChangeWindowAttributes(RootX11Window.Display, window, (IntPtr)SetWindowValuemask.OverrideRedirect, &attributes);
+		// this seems to be necessary or else the WM will keep detaching the subwindow
+		XWindowAttributes attributes = default;
+		_ = XLib.XGetWindowAttributes(RootX11Window.Display, window, ref attributes);
+		attributes.override_direct = /* True */ 1;
+
+		IntPtr attr = Marshal.AllocHGlobal(Marshal.SizeOf(attributes));
+		Marshal.StructureToPtr(attributes, attr, false);
+		_ = X11Helper.XChangeWindowAttributes(RootX11Window.Display, window, (IntPtr)XCreateWindowFlags.CWOverrideRedirect, (XSetWindowAttributes*)attr.ToPointer());
+		Marshal.FreeHGlobal(attr);
 
 		_ = X11Helper.XReparentWindow(RootX11Window.Display, window, RootX11Window.Window, 0, 0);
 		_ = XLib.XFlush(RootX11Window.Display);
 		XLib.XSync(RootX11Window.Display, false); // XSync is necessary after XReparent for unknown reasons
-
-		// Best-effort diagnostic only: a WM that already manages `window` as a toplevel can also
-		// steal it back asynchronously after this check (observed with Weston's XWM on WSLg).
-		if (XLib.XQueryTree(RootX11Window.Display, window, out _, out var parent, out var children, out _) != 0)
-		{
-			_ = XLib.XFree(children);
-			if (parent != RootX11Window.Window && this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().Warn($"Failed to reparent window 0x{window.ToString("X", CultureInfo.InvariantCulture)} into the application window; it is parented by 0x{parent.ToString("X", CultureInfo.InvariantCulture)} instead, likely a window manager managing it as a toplevel. The native element will likely not be visible.");
-			}
-		}
 	}
 
 	private void SynchronizedShutDown(X11Window x11Window)
@@ -742,24 +736,6 @@ internal partial class X11XamlRootHost : IXamlRootHost
 				_ = XLib.XDestroyWindow(TopX11Window.Display, TopX11Window.Window);
 				_ = XLib.XDestroyWindow(RootX11Window.Display, RootX11Window.Window);
 				_ = XLib.XFlush(RootX11Window.Display);
-			}
-		}
-	}
-
-	private void UpdateRendererBackground()
-	{
-		if (_window.Background is Microsoft.UI.Xaml.Media.SolidColorBrush brush)
-		{
-			if (_renderer is not null)
-			{
-				_renderer.SetBackgroundColor(brush.Color);
-			}
-		}
-		else if (_window.Background is not null)
-		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().Warn($"This platform only supports SolidColorBrush for the Window background");
 			}
 		}
 	}

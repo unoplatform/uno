@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno.UI.Composition.Drawing;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -34,7 +35,7 @@ namespace Uno.WinUI.Graphics3DGL;
 /// </summary>
 /// <remarks>
 /// This is only available on WinUI and on skia-based targets running with hardware acceleration.
-/// This is currently available on the WPF, Win32, X11, macOS, and WebAssembly Skia targets (and WinUI).
+/// This is currently available on the Win32, X11, macOS, and WebAssembly Skia targets (and WinUI).
 /// </remarks>
 public abstract partial class GLCanvasElement : Grid, INativeContext
 {
@@ -264,10 +265,10 @@ public abstract partial class GLCanvasElement : Grid, INativeContext
 
 	private class GLVisual(GLCanvasElement owner, Compositor compositor) : BorderVisual(compositor)
 	{
-		internal override SkiaSharp.SKPath? Paint(in PaintingSession session)
+		internal override void Paint(in PaintingSession session)
 		{
 			NativeDispatcher.Main.Enqueue(owner.Render, NativeDispatcherPriority.High);
-			return base.Paint(session);
+			base.Paint(session);
 		}
 	}
 #endif

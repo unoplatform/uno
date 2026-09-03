@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project>
 	<ItemGroup>
+		<Page Remove="$(MSBuildThisFileDirectory)Msal\**" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Msal\**" />
+
 		<Page Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Media\RevealBrushes\**" />
 		<Compile Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Media\RevealBrushes\**" />
 		<None Include="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Media\RevealBrushes\**"
@@ -63,5 +66,10 @@
 		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\WebView2Tests\**" />
 		<None Include="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\WebView2Tests\**"
 		      Link="Microsoft\UI\Xaml\Controls\WebView2Tests\%(RecursiveDir)%(Filename)%(Extension)" />
+	</ItemGroup>
+	<!-- SkiaSharp-free build: SKCanvasElement exposes raw SKCanvas (Uno.WinUI.Graphics2DSK) and cannot be neutral. -->
+	<ItemGroup Condition="'$(UnoDrawingBackendSkia)'=='false'">
+		<Page Remove="$(MSBuildThisFileDirectory)Windows\UI\Composition\SKCanvasElement_Simple.xaml" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Windows\UI\Composition\SKCanvasElement_Simple.xaml.cs" />
 	</ItemGroup>
 </Project>

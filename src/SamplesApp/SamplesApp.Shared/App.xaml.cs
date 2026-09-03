@@ -185,6 +185,11 @@ namespace SamplesApp
 #if WINAPPSDK && DEBUG
 			// this.DebugSettings.EnableFrameRateCounter = true;
 #endif
+			// UNO_SHOW_FPS=1 turns on the on-surface frame counter (benchmarking; on WASM logs live in the browser console).
+			if (Environment.GetEnvironmentVariable("UNO_SHOW_FPS") is "1" or "true")
+			{
+				DebugSettings.EnableFrameRateCounter = true;
+			}
 			AssertInitialWindowSize();
 
 
@@ -531,6 +536,9 @@ namespace SamplesApp
 
 				// Display Skia related information
 				builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Debug);
+
+				// Surface the graphics-backend negotiation result (which renderer/context kind won)
+				builder.AddFilter("Uno.UI.Composition.Drawing", LogLevel.Information);
 				builder.AddFilter("Uno.WinUI.Runtime.Skia", LogLevel.Debug);
 				builder.AddFilter("Uno.UI.Skia", LogLevel.Debug);
 

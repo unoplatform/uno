@@ -162,8 +162,7 @@ namespace Microsoft.UI.Xaml
 			var bounds = GetGlobalBoundsWithOptions(
 				ignoreClipping: false,
 				ignoreClippingOnScrollContentPresenters: false,
-				useTargetInformation: false,
-				skipPostPaintingClipping: false);
+				useTargetInformation: false);
 
 			return bounds.Width > 0 && bounds.Height > 0
 				? new Point(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2)
@@ -838,25 +837,7 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-#if __SKIA__
-		// Reused per-thread so the automation/IsOffscreen path doesn't allocate a native SKPath per call.
-		// GetTotalClipPath rewinds it at the root, so no explicit reset is needed here.
-		[ThreadStatic]
-		private static SkiaSharp.SKPath? _globalBoundsClipScratch;
-#endif
-
 		internal Rect GetGlobalBoundsWithOptions(bool ignoreClipping, bool ignoreClippingOnScrollContentPresenters, bool useTargetInformation)
-			=> GetGlobalBoundsWithOptions(
-				ignoreClipping,
-				ignoreClippingOnScrollContentPresenters,
-				useTargetInformation,
-				skipPostPaintingClipping: true);
-
-		private Rect GetGlobalBoundsWithOptions(
-			bool ignoreClipping,
-			bool ignoreClippingOnScrollContentPresenters,
-			bool useTargetInformation,
-			bool skipPostPaintingClipping)
 		{
 #if __SKIA__
 			if (!IsInLiveTree)
@@ -881,9 +862,7 @@ namespace Microsoft.UI.Xaml
 				// wrongly considered on-screen (IsOffscreen == false).
 				// TODO: ignoreClippingOnScrollContentPresenters is not yet honored separately. Every caller
 				// currently passes false, so the full ancestor clip (including ScrollContentPresenters) applies.
-				var clipPath = _globalBoundsClipScratch ??= new SkiaSharp.SKPath();
-				Visual.GetTotalClipPath(clipPath, skipPostPaintingClipping);
-				var clip = clipPath.Bounds;
+				var clip = Visual.GetTotalClipRectInRootCoordinates();
 
 				var left = Math.Max(globalBounds.Left, clip.Left);
 				var top = Math.Max(globalBounds.Top, clip.Top);
@@ -911,6 +890,7 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
+#if UNO_HAS_ENHANCED_LIFECYCLE
 		// WinUI stores fIsProcessingEnterLeave (bit 15) in a DependencyObjectBitFields uint on
 		// CDependencyObject (corep.h:224-348; CDependencyObject.h:298). The per-object theme (m_theme) and
 		// the theme-walk bit (fIsProcessingThemeWalk, bit 16) now live on DependencyObject, since WinUI
@@ -1924,6 +1904,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 		}
+#endif
 
 		internal virtual bool WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation horizontal)
 			=> true;

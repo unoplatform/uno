@@ -1,0 +1,95 @@
+﻿#nullable enable
+
+namespace Uno.UI.Composition.Drawing;
+
+/// <summary>Stroke end-cap style.</summary>
+public enum StrokeCap
+{
+	Butt,
+	Round,
+	Square,
+	Triangle,
+}
+
+/// <summary>Stroke line-join style.</summary>
+public enum StrokeJoin
+{
+	Miter,
+	Round,
+	Bevel,
+	MiterOrBevel,
+}
+
+/// <summary>Porter-Duff / separable blend modes used by the drawing pipeline. <see cref="SrcOver"/> is the default.</summary>
+/// <summary>
+/// Blend modes for the EFFECT seam — <see cref="EffectNode"/> graphs (BlendEffect / CompositeEffect / acrylic),
+/// realized by <see cref="IDrawingFactory.CreateEffectFilter"/>. Every member is reachable from user XAML through
+/// the effect parser, and every backend is expected to honor all of them.
+/// <para>
+/// Not for color filters: a tint is <see cref="IDrawingFactory.CreateTintColorFilter"/>, which fixes SrcIn rather
+/// than taking a mode, so a backend cannot silently drop a mode it does not implement.
+/// </para>
+/// </summary>
+public enum BlendMode
+{
+	SrcOver,
+	Src,
+	Plus,
+	Multiply,
+	DstIn,
+	DstOut,
+	SrcIn,
+	// Remaining Porter-Duff modes.
+	DstOver,
+	SrcOut,
+	SrcATop,
+	DstATop,
+	Xor,
+	// Separable / non-separable blend modes.
+	Screen,
+	Darken,
+	Lighten,
+	ColorBurn,
+	ColorDodge,
+	Overlay,
+	SoftLight,
+	HardLight,
+	Difference,
+	Exclusion,
+	Hue,
+	Saturation,
+	Color,
+	Luminosity,
+}
+
+/// <summary>How a clip combines with the current clip region.</summary>
+public enum ClipOperation
+{
+	Intersect,
+	Difference,
+}
+
+/// <summary>How a gradient extends past its defined stops.</summary>
+public enum GradientTileMode
+{
+	Clamp,
+	Repeat,
+	Mirror,
+}
+
+/// <summary>How a <see cref="EffectNode"/> texture input is sampled outside its own rectangle (D2D BorderEffect's
+/// edge behaviour). <see cref="None"/> — the default — is a plain finite image (transparent outside).</summary>
+public enum EdgeExtend
+{
+	None,
+	Clamp,
+	Wrap,
+	Mirror,
+}
+
+/// <summary>Winding rule used to fill a geometry.</summary>
+public enum GeometryFillRule
+{
+	NonZero,
+	EvenOdd,
+}

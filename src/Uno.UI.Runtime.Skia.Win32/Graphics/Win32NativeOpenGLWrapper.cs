@@ -98,14 +98,21 @@ internal class Win32NativeOpenGLWrapper : INativeOpenGLWrapper
 	}
 
 	// https://sharovarskyi.com/blog/posts/csharp-win32-opengl-silknet/
-	public bool TryGetProcAddress(string proc, out nint addr)
+	// Non-throwing loader (returns 0 for a missing entry point): opengl32 exports serve core GL 1.1,
+	// wglGetProcAddress serves everything above it (needs the GL context current, guaranteed by the host).
+	internal static nint GetProcAddressStatic(string proc)
 	{
-		if (_opengl32.Value != IntPtr.Zero && NativeLibrary.TryGetExport(_opengl32.Value, proc, out addr))
+		if (_opengl32.Value != IntPtr.Zero && NativeLibrary.TryGetExport(_opengl32.Value, proc, out var addr))
 		{
-			return true;
+			return addr;
 		}
 
-		addr = PInvoke.wglGetProcAddress(proc);
+		return PInvoke.wglGetProcAddress(proc);
+	}
+
+	public bool TryGetProcAddress(string proc, out nint addr)
+	{
+		addr = GetProcAddressStatic(proc);
 		return addr != IntPtr.Zero;
 	}
 

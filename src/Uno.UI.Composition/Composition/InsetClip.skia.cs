@@ -1,11 +1,13 @@
-using SkiaSharp;
+#nullable enable
+
+using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Composition;
 
 partial class InsetClip
 {
-	private (Rect? bounds, SKPath path)? _clipPath;
+	private (Rect bounds, IGeometry path)? _clipPath;
 
 	private protected override Rect? GetBoundsCore(Visual visual)
 	{
@@ -16,7 +18,7 @@ partial class InsetClip
 			height: visual.Size.Y - TopInset - BottomInset);
 	}
 
-	internal override SKPath GetClipPath(Visual visual)
+	internal override IGeometry? GetClipPath(Visual visual)
 	{
 		if (GetBounds(visual) is not { } bounds)
 		{
@@ -24,16 +26,13 @@ partial class InsetClip
 		}
 		if (_clipPath is null || _clipPath.Value.bounds != bounds)
 		{
-			var builder = new SKPathBuilder();
-			var rect = bounds.ToSKRect();
-			builder.AddRect(rect);
-			_clipPath = (bounds, builder.Detach());
+			_clipPath = (bounds, GeometryFactory.Current.CreateRectangleGeometry(bounds));
 		}
 		return _clipPath.Value.path;
 	}
 
-	private protected override SKRect? GetClipRect(Visual visual)
+	private protected override Rect? GetClipRect(Visual visual)
 	{
-		return GetBounds(visual)?.ToSKRect();
+		return GetBounds(visual);
 	}
 }

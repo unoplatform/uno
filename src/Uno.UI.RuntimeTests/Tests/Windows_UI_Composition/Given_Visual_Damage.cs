@@ -7,7 +7,8 @@ using Windows.UI;
 #if __SKIA__
 using Uno.UI.Composition;
 using Uno.UI.Helpers;
-using SkiaSharp;
+using Uno.UI.Composition.Drawing;
+using Windows.Foundation;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
@@ -178,7 +179,7 @@ public class Given_Visual_Damage
 
 			// The two positions overlap here, and overlapping contributions are appended to one path under the
 			// nonzero fill rule — a wrong contour direction would cancel them into a hole Bounds cannot see.
-			Assert.IsTrue(moving.Contains(50, y), $"The overlap of the two positions is a hole (damage bounds: {moving.Bounds}).");
+			Assert.IsTrue(moving.FillContains(new Vector2(50, y)), $"The overlap of the two positions is a hole (damage bounds: {moving.Bounds}).");
 		}
 
 		// Scrolling stopped. Nothing moves, so no frame from here on may report anything — and the region is
@@ -292,8 +293,8 @@ public class Given_Visual_Damage
 
 		// Interiors, not just the bounding box: contributions are appended to one path under the nonzero fill
 		// rule, so a wrong contour direction would union into a hole that Bounds cannot see.
-		Assert.IsTrue(moved.Contains(50, 25), $"The vacated region has a hole (damage bounds: {moved.Bounds}).");
-		Assert.IsTrue(moved.Contains(50, 125), $"The new region has a hole (damage bounds: {moved.Bounds}).");
+		Assert.IsTrue(moved.FillContains(new Vector2(50, 25)), $"The vacated region has a hole (damage bounds: {moved.Bounds}).");
+		Assert.IsTrue(moved.FillContains(new Vector2(50, 125)), $"The new region has a hole (damage bounds: {moved.Bounds}).");
 
 		// Still a partial repaint, not the whole surface.
 		Assert.IsTrue(
@@ -318,18 +319,18 @@ public class Given_Visual_Damage
 		// A scroll port's worth of overlapping contributions, as a moved subtree produces.
 		for (var y = 0f; y < 200; y += 10)
 		{
-			damage.UnionRect(new SKRect(0, y, 100, y + 20));
+			damage.UnionRect(new Rect(0, y, 100, y + 20));
 		}
 
 		// Something small animating in the opposite corner.
-		damage.UnionRect(new SKRect(900, 900, 920, 920));
+		damage.UnionRect(new Rect(900, 900, 920, 920));
 
 		using var reported = SnapshotDamage(damage, frameSize: 1000);
 
-		Assert.IsTrue(reported.Contains(50, 100), $"The scroll port is not damaged (damage bounds: {reported.Bounds}).");
-		Assert.IsTrue(reported.Contains(910, 910), $"The far region is not damaged (damage bounds: {reported.Bounds}).");
+		Assert.IsTrue(reported.FillContains(new Vector2(50, 100)), $"The scroll port is not damaged (damage bounds: {reported.Bounds}).");
+		Assert.IsTrue(reported.FillContains(new Vector2(910, 910)), $"The far region is not damaged (damage bounds: {reported.Bounds}).");
 		Assert.IsFalse(
-			reported.Contains(500, 500),
+			reported.FillContains(new Vector2(500, 500)),
 			$"The empty space between the two regions was damaged, so they were merged into one box (damage bounds: {reported.Bounds}).");
 #else
 		await Task.CompletedTask;
@@ -376,8 +377,8 @@ public class Given_Visual_Damage
 		using var reported = SnapshotDamage(damage);
 
 		// The shape sits at (20,10)-(80,40) locally, so its centre is (50,25) before the move and (50,125) after.
-		Assert.IsTrue(reported.Contains(50, 25), $"The vacated shape is not covered (damage bounds: {reported.Bounds}).");
-		Assert.IsTrue(reported.Contains(50, 125), $"The moved shape is not covered (damage bounds: {reported.Bounds}).");
+		Assert.IsTrue(reported.FillContains(new Vector2(50, 25)), $"The vacated shape is not covered (damage bounds: {reported.Bounds}).");
+		Assert.IsTrue(reported.FillContains(new Vector2(50, 125)), $"The moved shape is not covered (damage bounds: {reported.Bounds}).");
 
 		// Falling back to the visual's Size, or worse to the clip, would reach well past the shape's 80px right edge.
 		Assert.IsTrue(
@@ -433,10 +434,10 @@ public class Given_Visual_Damage
 		{
 			var centre = i * ItemHeight + ItemHeight / 2;
 			Assert.IsTrue(
-				reported.Contains(50, centre),
+				reported.FillContains(new Vector2(50, centre)),
 				$"Item {i} vacated y={centre}, which is not covered (damage bounds: {reported.Bounds}).");
 			Assert.IsTrue(
-				reported.Contains(50, centre + Delta),
+				reported.FillContains(new Vector2(50, centre + Delta)),
 				$"Item {i} moved to y={centre + Delta}, which is not covered (damage bounds: {reported.Bounds}).");
 		}
 
@@ -452,17 +453,17 @@ public class Given_Visual_Damage
 #if __SKIA__
 	private static void RenderFrame(ContainerVisual root, DamageRegion damage)
 	{
-		var (picture, _, _) = SkiaRenderHelper.RecordPictureAndReturnPath(200, 200, root, invertPath: false, damage: damage);
-		picture.Dispose();
+		var recording = DrawingFactory.Current.CreateRecording();
+		SkiaRenderHelper.RecordFrame(recording, 200, 200, root, invertPath: false, damage: damage);
+		recording.Finish()?.Dispose();
 	}
 
-	// The region keeps rect and exact-path contributions apart; snapshotting materialises them into the
-	// single path the frame is actually clipped to, which is what these assertions inspect.
-	private static SKPath SnapshotDamage(DamageRegion damage, float frameSize = 200)
+	// The region accumulates rects; detaching materialises them into the single geometry the frame is
+	// actually clipped to, which is what these assertions inspect.
+	private static IGeometry SnapshotDamage(DamageRegion damage, float frameSize = 200)
 	{
-		var path = new SKPath();
-		damage.SnapshotAndReset(path, new SKRect(0, 0, frameSize, frameSize));
-		return path;
+		damage.ClampTo(new Rect(0, 0, frameSize, frameSize));
+		return damage.Detach(1f) ?? GeometryFactory.Current.CreateRectangleGeometry(default);
 	}
 #endif
 }

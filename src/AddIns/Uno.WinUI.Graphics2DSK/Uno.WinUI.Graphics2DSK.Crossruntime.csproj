@@ -16,6 +16,10 @@
 
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp" />
+		<!-- Only the opt-in GL-island fallback (SkiaGLCanvasElement) needs Silk, to override GLCanvasElement's
+		     GL-typed methods. PrivateAssets so it isn't flowed to 2DSK-only consumers (matching the Graphics3DGL
+		     reference); when the island is actually used, Graphics3DGL brings Silk along. -->
+		<PackageReference Include="Silk.NET.OpenGL" Version="2.16.0" PrivateAssets="all" />
 	</ItemGroup>
 
 	<PropertyGroup>
@@ -23,6 +27,7 @@
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" PrivateAssets="all" />
 	</ItemGroup>
 	
 

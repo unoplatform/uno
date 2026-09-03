@@ -27,7 +27,7 @@ internal class AndroidSkiaMediaPlayerPresenterExtension : IMediaPlayerPresenterE
 			// _presenter.MediaPlayer.UpdateVideoStretch uses the
 			// layout dimensions of the parent to stretch the video
 			// view within that parent. Without the FrameLayout,
-			// the parent is UnoSKSurfaceView which covers the whole
+			// the parent is the Uno render view which covers the whole
 			// screen. This way, the parent has the correct size that
 			// the video view can stretch within.
 			var layout = new FrameLayout(Application.Context);

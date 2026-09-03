@@ -20,6 +20,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// uno_window_present_frame is called. Only accessed from the render thread.
 @property (nonatomic, strong, nullable) id<CAMetalDrawable> currentFrameDrawable;
 
+// When YES, the negotiated context owns the view's CAMetalLayer (drawable acquire + present). drawInMTKView then
+// skips its own currentDrawable acquire / presentDrawable and just ticks managed code (texture = NULL), which drives
+// the context's own swapchain. See uno_window_set_external_present / uno_window_get_metal_layer.
+@property (assign) BOOL externalPresent;
+
 @end
 
 typedef void (*metal_draw_fn_ptr)(void* /* window */, double /* width */, double /* height */, void* _Nullable /* texture */);

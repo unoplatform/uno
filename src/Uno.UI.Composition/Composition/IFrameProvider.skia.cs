@@ -1,11 +1,11 @@
 #nullable enable
 
 using System;
-using SkiaSharp;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Composition;
 
 internal interface IFrameProvider : IDisposable
 {
-	SKImage? CurrentImage { get; }
+	IImage? CurrentImage { get; }
 }

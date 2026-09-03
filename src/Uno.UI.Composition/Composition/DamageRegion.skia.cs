@@ -1,156 +1,203 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
-using SkiaSharp;
+using System.Collections.Generic;
+using Windows.Foundation;
+using Uno.UI.Composition.Drawing;
 
 namespace Uno.UI.Composition;
 
 /// <summary>
-/// Accumulates the region that must be repainted this frame.
+/// A mutable accumulator for a per-frame damage (dirty) region.
 /// </summary>
 /// <remarks>
-/// Rect contributions — every visual that only moved, which during a scroll is the whole subtree — are
-/// appended to one builder under the nonzero fill rule, where overlapping same-direction contours already read
-/// as their union. Running a path boolean per contribution would be O(visuals) booleans against a
-/// monotonically growing path.
+/// Damage is conservative, so contributions are tracked as bounding rects — never as incremental geometry
+/// booleans: a per-contribution <see cref="IGeometry.Combine"/> over a growing region is O(region²) per frame and
+/// dominates the frame on engines whose Combine is not trivially cheap. One union geometry is materialized per
+/// frame at <see cref="Detach"/>, from at most <see cref="MaxRects"/> rects.
 /// </remarks>
 internal sealed class DamageRegion : IDisposable
 {
-	// The region ends up in SKCanvas.ClipPath, where a many-contour clip costs a mask the GPU has to allocate
-	// every frame. Past this many contours, fuse everything regardless of what that over-damages.
-	private const int MaxRects = 32;
+	// Past this many distinct dirty rects the frame is effectively a full repaint anyway; collapse to bounds.
+	private const int MaxRects = 16;
 
-	// Finished rect contours. The one still being grown is _open, which only joins them on snapshot.
-	private readonly SKPathBuilder _rects = new() { FillType = SKPathFillType.Winding };
-	private readonly SKPath _exact = new();
+	// Finished rects. The one still being grown is _open, which joins them only when the region is materialized.
+	private readonly List<Rect> _rects = new();
+	private Rect _open;
+	private Rect _allBounds;
+	private bool _hasOpen;
 
-	private SKRect _open;
-	private SKRect _allBounds;
-	private int _rectCount;
+	internal bool IsEmpty => !_hasOpen && _rects.Count == 0;
 
-	internal bool IsEmpty => _rectCount == 0 && _exact.IsEmpty;
-
-	internal void UnionRect(SKRect rect)
+	/// <summary>Unions <paramref name="addition"/>'s bounds into the region (damage is conservative).</summary>
+	internal void Union(IGeometry addition)
 	{
-		// Not SKRect.IsEmpty: that is only true for an all-zero rect, so a zero-area or inverted one would reach
-		// the bookkeeping below, where SKRect.Union drops it while SKPathBuilder.AddRect would normalize and
-		// keep it — leaving the bounds no longer covering the contours.
-		rect = rect.Standardized;
+		if (!addition.IsEmpty)
+		{
+			UnionRect(addition.Bounds);
+		}
+	}
+
+	internal void UnionRect(Rect rect)
+	{
+		// A zero-area or inverted rect must not reach the bookkeeping below: Rect.Union would drop it while the
+		// bounds tracking would keep it, leaving _allBounds no longer covering the rects.
 		if (rect.Width <= 0 || rect.Height <= 0)
 		{
 			return;
 		}
 
-		if (_rectCount == 0)
+		if (!_hasOpen)
 		{
 			_open = _allBounds = rect;
-			_rectCount = 1;
+			_hasOpen = true;
 			return;
 		}
 
-		_allBounds = SKRect.Union(_allBounds, rect);
+		_allBounds.Union(rect);
 
-		// Growing the open rect keeps the clip closer to a single analytic rect, but it also damages everything
+		// Growing the open rect keeps the region closer to a single analytic rect, but it also damages everything
 		// between that rect and this contribution. Only worth it while it costs no more than this contribution
-		// already does — true of a scroll, where visuals arrive in tree order and land in the same port, and
-		// false for damage elsewhere, which opens its own rect rather than fusing the two.
-		var grown = SKRect.Union(_open, rect);
+		// already does — true of a scroll, where visuals arrive in tree order and land in the same port, and false
+		// for damage elsewhere, which opens its own rect rather than fusing the two.
+		var grown = _open;
+		grown.Union(rect);
 		if (Area(grown) <= Area(_open) + Area(rect))
 		{
 			_open = grown;
 			return;
 		}
 
-		if (_rectCount >= MaxRects)
+		if (_rects.Count >= MaxRects)
 		{
-			_rects.Reset();
+			_rects.Clear();
 			_open = _allBounds;
-			_rectCount = 1;
 			return;
 		}
 
-		_rects.AddRect(_open);
+		_rects.Add(_open);
 		_open = rect;
-		_rectCount++;
 	}
 
-	/// <summary>Adds a contribution whose exact geometry matters (a repainted visual, not a moved one).</summary>
-	internal void Union(SKPath addition)
+	/// <summary>Intersects the region with <paramref name="frameRect"/> (drops everything outside the frame).</summary>
+	internal void ClampTo(Rect frameRect)
 	{
-		if (addition.IsEmpty)
+		for (var i = _rects.Count - 1; i >= 0; i--)
 		{
-			return;
+			var r = _rects[i];
+			r.Intersect(frameRect);
+			if (r.IsEmpty || r.Width <= 0 || r.Height <= 0)
+			{
+				_rects.RemoveAt(i);
+			}
+			else
+			{
+				_rects[i] = r;
+			}
 		}
 
-		// A real boolean here: an arbitrary path's contour directions are unknown, so appending it to the
-		// nonzero builder could cancel against an overlapping contour and under-damage.
-		if (_exact.IsEmpty)
+		if (_hasOpen)
 		{
-			addition.Transform(SKMatrix.Identity, _exact);
+			var open = _open;
+			open.Intersect(frameRect);
+			if (open.IsEmpty || open.Width <= 0 || open.Height <= 0)
+			{
+				_hasOpen = false;
+				if (_rects.Count > 0)
+				{
+					_open = _rects[^1];
+					_rects.RemoveAt(_rects.Count - 1);
+					_hasOpen = true;
+				}
+			}
+			else
+			{
+				_open = open;
+			}
 		}
-		else
+	}
+
+	/// <summary>Unions another accumulator's region into this one (used to fold carried-over damage forward).</summary>
+	internal void Union(DamageRegion other)
+	{
+		foreach (var r in other._rects)
 		{
-			_exact.Op(addition, SKPathOp.Union, _exact);
+			UnionRect(r);
 		}
+
+		if (other._hasOpen)
+		{
+			UnionRect(other._open);
+		}
+	}
+
+	/// <summary>Materializes and detaches the accumulated region, leaving this accumulator empty. The caller owns the result.</summary>
+	/// <summary>
+	/// Materializes the accumulated rects as one geometry, snapped outward so every edge lands on a whole DEVICE
+	/// pixel at <paramref name="rasterizationScale"/>.
+	/// </summary>
+	/// <remarks>
+	/// The present path clips the clear+replay to this region INSIDE the DPI scale, so a region snapped only to
+	/// whole root pixels still lands mid-pixel at a fractional scale (at 1.5x, root x=11 is device 16.5). A clip
+	/// edge that splits a device pixel makes that pixel partially cleared and partially redrawn, which no amount of
+	/// widening fixes — the clear leaks through at partial coverage even where the content is unchanged. Snapping
+	/// here makes coverage exactly 0 or 1, so the clip needs no particular antialiasing behaviour to be correct.
+	/// </remarks>
+	internal IGeometry? Detach(float rasterizationScale)
+	{
+		if (IsEmpty)
+		{
+			return null;
+		}
+
+		var all = new List<Rect>(_rects.Count + 1);
+		all.AddRange(_rects);
+		if (_hasOpen)
+		{
+			all.Add(_open);
+		}
+
+		if (rasterizationScale > 0f && rasterizationScale != 1f)
+		{
+			for (var i = 0; i < all.Count; i++)
+			{
+				all[i] = SnapToDevicePixels(all[i], rasterizationScale);
+			}
+		}
+
+		var region = GeometryFactory.Current.CreateRectangleGeometry(all[0]);
+		for (var i = 1; i < all.Count; i++)
+		{
+			using var rect = GeometryFactory.Current.CreateRectangleGeometry(all[i]);
+			var previous = region;
+			region = previous.Combine(rect, GeometryCombineMode.Union);
+			previous.Dispose();
+		}
+
+		Reset();
+		return region;
 	}
 
 	internal void Reset()
 	{
-		// Reset, never dispose-and-recreate: the builder is reusable, and churning a native object per frame is
-		// exactly the pressure this type exists to avoid. Reset() restores the Winding fill type.
-		_rects.Reset();
-		_exact.Reset();
+		_rects.Clear();
 		_open = default;
 		_allBounds = default;
-		_rectCount = 0;
+		_hasOpen = false;
 	}
 
-	/// <summary>
-	/// Writes the accumulated region into <paramref name="destination"/>, clamped to <paramref name="clampTo"/>,
-	/// and resets this region for the next frame.
-	/// </summary>
-	internal void SnapshotAndReset(SKPath destination, SKRect clampTo)
+	public void Dispose() => Reset();
+
+	private static double Area(Rect r) => r.Width * r.Height;
+
+	// Grow to the enclosing whole-device-pixel rect: quantize to multiples of 1/scale so the edge is integral once
+	// the present path applies the DPI scale. Outward only — damage may never shrink.
+	private static Rect SnapToDevicePixels(Rect r, float scale)
 	{
-		destination.Reset();
-
-		// Detach() already emptied the builder, so a throw between here and Reset() would leave the region
-		// claiming rects it no longer holds. Reset unconditionally to keep the next frame sane.
-		try
-		{
-			if (_rectCount > 0)
-			{
-				_rects.AddRect(_open);
-				using var rects = _rects.Detach();
-				rects.Transform(SKMatrix.Identity, destination);
-
-				if (!_exact.IsEmpty)
-				{
-					destination.Op(_exact, SKPathOp.Union, destination);
-				}
-			}
-			else if (!_exact.IsEmpty)
-			{
-				_exact.Transform(SKMatrix.Identity, destination);
-			}
-
-			if (!destination.IsEmpty && !clampTo.Contains(destination.Bounds))
-			{
-				using var frame = Microsoft.UI.Composition.SkiaExtensions.CreateRectPath(clampTo);
-				destination.Op(frame, SKPathOp.Intersect, destination);
-			}
-		}
-		finally
-		{
-			Reset();
-		}
-	}
-
-	// Frame-sized rects square to more than float can hold precisely.
-	private static double Area(SKRect rect) => (double)rect.Width * rect.Height;
-
-	public void Dispose()
-	{
-		_rects.Dispose();
-		_exact.Dispose();
+		var left = Math.Floor(r.X * scale) / scale;
+		var top = Math.Floor(r.Y * scale) / scale;
+		var right = Math.Ceiling(r.Right * scale) / scale;
+		var bottom = Math.Ceiling(r.Bottom * scale) / scale;
+		return new Rect(left, top, right - left, bottom - top);
 	}
 }

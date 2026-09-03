@@ -172,7 +172,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 #if __SKIA__
 		[TestMethod]
-		public void StreamGeometry_GetSKPath_CheckFillType()
+		public void StreamGeometry_GetGeometry_CheckFillType()
 		{
 			var streamGeometry = new StreamGeometry();
 			using (var context = streamGeometry.Open())
@@ -181,12 +181,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				context.LineTo(new Point(10, 10), isStroked: true, isSmoothJoin: true);
 			}
 
-			var skPath = streamGeometry.GetSKPath();
-			skPath.FillType.Should().Be(SKPathFillType.EvenOdd);
+			// Backend-neutral: verify the default EvenOdd fill rule regardless of the active geometry backend.
+			var geometry = streamGeometry.GetGeometry()!;
+			if (geometry is Microsoft.UI.Composition.SkiaGeometrySource2D skiaGeometry)
+			{
+				skiaGeometry.Geometry.FillType.Should().Be(SKPathFillType.EvenOdd);
+			}
+			else if (geometry is Uno.UI.Composition.Drawing.ManagedGeometry managedGeometry)
+			{
+				managedGeometry.FillRule.Should().Be(Uno.UI.Composition.Drawing.GeometryFillRule.EvenOdd);
+			}
+			else
+			{
+				Assert.Fail($"Unexpected geometry backend type {geometry.GetType()}");
+			}
 		}
 
 		[TestMethod]
-		public void RectangleGeometry_Transform_Applies_To_SKPath()
+		public void RectangleGeometry_Transform_Applies_To_Geometry()
 		{
 			var geometry = new RectangleGeometry
 			{
@@ -194,40 +206,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				Transform = new TranslateTransform { X = 30, Y = 20 }
 			};
 
-			var untransformed = geometry.GetSKPath();
-			var transformed = geometry.GetTransformedSKPath();
+			var untransformed = geometry.GetGeometry()!.Bounds;
+			var transformed = geometry.GetTransformedGeometry()!.Bounds;
 
-			// Untransformed path should have bounds at origin
-			Assert.AreEqual(0, untransformed.Bounds.Left, 0.1f);
-			Assert.AreEqual(0, untransformed.Bounds.Top, 0.1f);
+			// Untransformed geometry should have bounds at origin
+			Assert.AreEqual(0, untransformed.Left, 0.1f);
+			Assert.AreEqual(0, untransformed.Top, 0.1f);
 
-			// Transformed path should be offset by the translation
-			Assert.AreEqual(30, transformed.Bounds.Left, 0.1f);
-			Assert.AreEqual(20, transformed.Bounds.Top, 0.1f);
-			Assert.AreEqual(130, transformed.Bounds.Right, 0.1f);
-			Assert.AreEqual(70, transformed.Bounds.Bottom, 0.1f);
+			// Transformed geometry should be offset by the translation
+			Assert.AreEqual(30, transformed.Left, 0.1f);
+			Assert.AreEqual(20, transformed.Top, 0.1f);
+			Assert.AreEqual(130, transformed.Right, 0.1f);
+			Assert.AreEqual(70, transformed.Bottom, 0.1f);
 		}
 
 		[TestMethod]
-		public void RectangleGeometry_NoTransform_Returns_Same_Path()
+		public void RectangleGeometry_NoTransform_Returns_Same_Geometry()
 		{
 			var geometry = new RectangleGeometry
 			{
 				Rect = new Rect(10, 20, 100, 50)
 			};
 
-			var untransformed = geometry.GetSKPath();
-			var transformed = geometry.GetTransformedSKPath();
+			var untransformed = geometry.GetGeometry()!.Bounds;
+			var transformed = geometry.GetTransformedGeometry()!.Bounds;
 
 			// Without a transform, both should have the same bounds
-			Assert.AreEqual(untransformed.Bounds.Left, transformed.Bounds.Left, 0.1f);
-			Assert.AreEqual(untransformed.Bounds.Top, transformed.Bounds.Top, 0.1f);
-			Assert.AreEqual(untransformed.Bounds.Right, transformed.Bounds.Right, 0.1f);
-			Assert.AreEqual(untransformed.Bounds.Bottom, transformed.Bounds.Bottom, 0.1f);
+			Assert.AreEqual(untransformed.Left, transformed.Left, 0.1f);
+			Assert.AreEqual(untransformed.Top, transformed.Top, 0.1f);
+			Assert.AreEqual(untransformed.Right, transformed.Right, 0.1f);
+			Assert.AreEqual(untransformed.Bottom, transformed.Bottom, 0.1f);
 		}
 
 		[TestMethod]
-		public void RectangleGeometry_Transform_Updates_GeometrySource2D()
+		public void RectangleGeometry_Transform_Updates_TransformedGeometry()
 		{
 			var geometry = new RectangleGeometry
 			{
@@ -235,12 +247,80 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				Transform = new TranslateTransform { X = 50, Y = 0 }
 			};
 
-			var source = geometry.GetGeometrySource2D();
-			var path = source.Geometry;
+			var bounds = geometry.GetTransformedGeometry()!.Bounds;
 
-			// The path from GetGeometrySource2D should include the transform
-			Assert.AreEqual(50, path.Bounds.Left, 0.1f);
-			Assert.AreEqual(150, path.Bounds.Right, 0.1f);
+			// The transformed geometry should include the transform
+			Assert.AreEqual(50, bounds.Left, 0.1f);
+			Assert.AreEqual(150, bounds.Right, 0.1f);
+		}
+
+		[TestMethod]
+		public void GlyphRun_Shaping_Produces_NonEmpty_Geometry()
+		{
+			// Exercises the font-shaping -> glyph-outline -> IGeometry path text rendering uses
+			// (SkiaFont.BuildGlyphRunOutline).
+			using var skFont = new SkiaSharp.SKFont { Size = 14 };
+			const string text = "120.0";
+			var glyphs = skFont.GetGlyphs(text);
+			Assert.IsTrue(glyphs.Length > 0, "expected the font to produce glyphs");
+
+			var positions = System.Runtime.InteropServices.MemoryMarshal.Cast<SkiaSharp.SKPoint, System.Numerics.Vector2>(
+				skFont.GetGlyphPositions(text, new SkiaSharp.SKPoint(0, 0)));
+			var font = new Uno.UI.Composition.Drawing.SkiaFont(skFont);
+			var elements = new System.Collections.Generic.List<Uno.UI.Composition.Drawing.GlyphRunElement>();
+			font.BuildGlyphRun(new global::Uno.UI.Composition.Drawing.ManagedGeometryFactory(), glyphs, positions, 0f, elements);
+			// Per-glyph elements, and the geometry is the font's cache-owned outline: take the last glyph and do
+			// NOT dispose it (see GlyphOutlineRef).
+			var geometry = ((Uno.UI.Composition.Drawing.GlyphOutlineRef)elements[^1]).Outline;
+			var bounds = geometry.Bounds;
+			Assert.IsTrue(bounds.Width > 0 && bounds.Height > 0, $"expected non-empty glyph geometry, got {bounds}");
+		}
+
+		[TestMethod]
+		public void ColorGlyph_Rasterizes_To_Image()
+		{
+			// Color glyphs (emoji: COLR/CBDT/sbix/SVG) have no outline; SkiaFont must rasterize them to images.
+			using var typeface = SkiaSharp.SKFontManager.Default.MatchCharacter(0x1F600);
+			if (typeface is null)
+			{
+				// No emoji font in this environment — nothing to exercise.
+				return;
+			}
+
+			using var skFont = new SkiaSharp.SKFont(typeface, 32);
+			var glyphs = skFont.GetGlyphs("\U0001F600"); // grinning face
+			if (glyphs.Length == 0 || glyphs[0] == 0)
+			{
+				return; // the matched font doesn't actually carry this emoji glyph
+			}
+
+			var font = new Uno.UI.Composition.Drawing.SkiaFont(skFont);
+			var positions = System.Runtime.InteropServices.MemoryMarshal.Cast<SkiaSharp.SKPoint, System.Numerics.Vector2>(
+				skFont.GetGlyphPositions("\U0001F600", new SkiaSharp.SKPoint(0, 0)));
+
+			if (!font.HasColorGlyphs)
+			{
+				return; // matched a non-color font
+			}
+
+			var elements = new System.Collections.Generic.List<Uno.UI.Composition.Drawing.GlyphRunElement>();
+			font.BuildGlyphRun(new global::Uno.UI.Composition.Drawing.ManagedGeometryFactory(), glyphs, positions, 0f, elements);
+
+			var imageCount = 0;
+			foreach (var element in elements)
+			{
+				if (element is Uno.UI.Composition.Drawing.GlyphImage image)
+				{
+					imageCount++;
+					Assert.IsTrue(image.PixelWidth > 0 && image.PixelHeight > 0, "expected the rasterized glyph image to have a positive size");
+				}
+				else if (element is Uno.UI.Composition.Drawing.GlyphOutline outline)
+				{
+					outline.Outline.Dispose();
+				}
+			}
+
+			Assert.IsTrue(imageCount > 0, "expected the color emoji glyph to rasterize to at least one image");
 		}
 #endif
 	}

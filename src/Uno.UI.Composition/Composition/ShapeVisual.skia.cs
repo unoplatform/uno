@@ -1,10 +1,10 @@
 ﻿#nullable enable
 
+using Uno.UI.Composition.Drawing;
 using System;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using SkiaSharp;
 using Uno.UI.Composition;
 using Windows.Foundation;
 
@@ -12,14 +12,14 @@ namespace Microsoft.UI.Composition;
 
 public partial class ShapeVisual
 {
-	/// <inheritdoc />
-	internal override SKPath? Paint(in PaintingSession session)
-	{
-		var canvas = session.Canvas;
+	private bool _needsContinuousUpdates;
 
+	/// <inheritdoc />
+	internal override void Paint(in PaintingSession session)
+	{
 		if (Size.X == 0 || Size.Y == 0)
 		{
-			return null;
+			return;
 		}
 
 		// TODO: ShapeVisuals should be clipping to the size rect. However, this breaks shapes for us because
@@ -27,15 +27,15 @@ public partial class ShapeVisual
 		// the WinUI implementation doesn't use ShapeVisuals for shapes, but a combination of ContainerVisuals and
 		// SpriteVisuals. When_StrokeThickness_Is_GreaterThan_Or_Equals_Width and
 		// When_Border_CornerRadius_HitTesting fail when you uncomment the following line.
-		// canvas.ClipRect(new SKRect(0, 0, Size.X, Size.Y));
+		// session.Session.ClipRect(new Rect(0, 0, Size.X, Size.Y));
 
 		// TODO: ViewBox.Stretch, ViewBox.HorizontalAlignmentRatio and ViewBox.VerticalAlignmentRatio
 		if (ViewBox is not null)
 		{
-			canvas.Scale(
+			session.Session.Scale(
 				ViewBox.Size.X > 0 ? Size.X / ViewBox.Size.X : 1,
 				ViewBox.Size.Y > 0 ? Size.Y / ViewBox.Size.Y : 1);
-			canvas.Translate(-ViewBox.Offset.X, -ViewBox.Offset.Y); // translate before scaling
+			session.Session.Translate(-ViewBox.Offset.X, -ViewBox.Offset.Y); // translate before scaling
 		}
 
 		if (_shapes is { Count: not 0 } shapes)
@@ -47,70 +47,69 @@ public partial class ShapeVisual
 		}
 
 		base.Paint(in session);
-
-		return BuildOwnContentPath();
 	}
 
-	internal override bool RequiresRepaintOnEveryFrame => _shapes
-		?.OfType<CompositionSpriteShape>()
-		.Any(s => s.FillBrush?.RequiresRepaintOnEveryFrame ?? false)
-		?? false;
+	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
+	{
+		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
+		if (propertyName == nameof(Shapes))
+		{
+			_needsContinuousUpdates = _shapes?.OfType<CompositionSpriteShape>().Any(s => s.FillBrush?.RequiresRepaintOnEveryFrame ?? false) ?? false;
+		}
+	}
 
-	internal override float DamageRegionSamplingMargin => _shapes
-		?.OfType<CompositionSpriteShape>()
-		.Select(s => s.FillBrush?.DamageRegionSamplingMargin ?? 0)
-		.DefaultIfEmpty(0f)
-		.Max() ?? 0;
+	internal override bool RequiresRepaintOnEveryFrame => _needsContinuousUpdates;
 
 	internal override bool CanPaint() => base.CanPaint() || (_shapes?.Any(s => s.CanPaint()) ?? false);
 
-	internal override bool TryGetLocalContentBounds(out SKRect localBounds)
+	internal override bool TryGetLocalContentBounds(out Rect localBounds)
 	{
 		localBounds = default;
 
 		if (_shapes is not { Count: > 0 } shapes)
 		{
-			if (ShadowState is not null)
-			{
-				return false;
-			}
-			localBounds = SKRect.Empty;
-			return true;
+			return ShadowState is null;
 		}
 
 		var any = false;
-		var acc = SKRect.Empty;
+		var acc = default(Rect);
 		for (var i = 0; i < shapes.Count; i++)
 		{
-			if (shapes[i] is CompositionSpriteShape sprite)
-			{
-				if (sprite.TryGetRenderBounds(out var shapeBounds))
-				{
-					acc = any ? SKRect.Union(acc, shapeBounds) : shapeBounds;
-					any = true;
-				}
-			}
-			else
+			// A shape this doesn't know how to bound leaves the whole visual unbounded.
+			if (shapes[i] is not CompositionSpriteShape sprite)
 			{
 				return false;
+			}
+
+			if (sprite.TryGetRenderBounds(out var shapeBounds))
+			{
+				if (any)
+				{
+					acc.Union(shapeBounds);
+				}
+				else
+				{
+					acc = shapeBounds;
+					any = true;
+				}
 			}
 		}
 
 		if (!any)
 		{
-			localBounds = SKRect.Empty;
 			return true;
 		}
 
+		// Paint applies the ViewBox as a translate-then-scale (see Paint); the bounds follow it.
 		if (ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
 		{
 			var sx = Size.X / viewBox.Size.X;
 			var sy = Size.Y / viewBox.Size.Y;
-			acc = new SKRect(
-				sx * (acc.Left - viewBox.Offset.X),
-				sy * (acc.Top - viewBox.Offset.Y),
-				sx * (acc.Right - viewBox.Offset.X),
-				sy * (acc.Bottom - viewBox.Offset.Y));
+			acc = new Rect(
+				sx * (acc.X - viewBox.Offset.X),
+				sy * (acc.Y - viewBox.Offset.Y),
+				sx * acc.Width,
+				sy * acc.Height);
 		}
 
 		if (ShadowState is not null)
@@ -122,49 +121,56 @@ public partial class ShapeVisual
 		return true;
 	}
 
-	// Reused across repaints (one per visual): the builder is reset and rebuilt each repaint; Detach() produces
-	// the SKPath the damage consumer copies.
-	private SKPathBuilder? _ownContentPathBuilder;
-
-	private SKPath? BuildOwnContentPath()
+	private protected override bool TryAddShadowPaths(global::System.Collections.Generic.List<(IGeometry path, float alpha)> output)
 	{
-		if (_shapes is not { Count: > 0 } shapes)
+		if (_shapes is not { Count: > 0 } shapes || Size.X == 0 || Size.Y == 0)
 		{
-			return null;
+			return true;
 		}
 
-		var builder = _ownContentPathBuilder ??= new SKPathBuilder();
-		builder.Reset();
-
-		var any = false;
-		for (var i = 0; i < shapes.Count; i++)
+		foreach (var shape in shapes)
 		{
-			if (shapes[i] is CompositionSpriteShape sprite)
+			if (shape is not CompositionSpriteShape sprite)
 			{
-				any |= sprite.GetRenderPath(builder);
+				return false;
 			}
-			else
+			if (!TryGetShadowBrushAlpha(sprite.FillBrush, out var fillAlpha) || !TryGetShadowBrushAlpha(sprite.StrokeBrush, out var strokeAlpha))
 			{
-				return null;
+				return false;
 			}
+			var hasFill = sprite.FillBrush is not null;
+			var hasStroke = sprite.StrokeBrush is not null && sprite.StrokeThickness > 0;
+			if (!hasFill && !hasStroke)
+			{
+				continue;
+			}
+			// BuildRenderGeometry unions the filled area and the stroke band, so the shape is describable as
+			// one constant-α path only when every painted part carries the same alpha.
+			if (hasFill && hasStroke && fillAlpha != strokeAlpha)
+			{
+				return false;
+			}
+			var alpha = hasFill ? fillAlpha : strokeAlpha;
+			if (alpha <= 0)
+			{
+				continue;
+			}
+			if (sprite.BuildRenderGeometry() is not { } geometry)
+			{
+				continue;
+			}
+			if (ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
+			{
+				var m = Matrix3x2.CreateTranslation(-viewBox.Offset.X, -viewBox.Offset.Y)
+					* Matrix3x2.CreateScale(Size.X / viewBox.Size.X, Size.Y / viewBox.Size.Y);
+				var previous = geometry;
+				geometry = geometry.Transform(m);
+				previous.Dispose();
+			}
+			output.Add((geometry, alpha));
 		}
 
-		if (!any)
-		{
-			return null;
-		}
-
-		var dst = builder.Detach();
-
-		if (ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
-		{
-			var sx = Size.X / viewBox.Size.X;
-			var sy = Size.Y / viewBox.Size.Y;
-			var m = SKMatrix.Concat(SKMatrix.CreateScale(sx, sy), SKMatrix.CreateTranslation(-viewBox.Offset.X, -viewBox.Offset.Y));
-			dst.Transform(m);
-		}
-
-		return dst;
+		return true;
 	}
 
 	/// <remarks>This does NOT take the clipping into account.</remarks>

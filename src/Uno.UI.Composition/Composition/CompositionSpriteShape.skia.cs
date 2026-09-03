@@ -1,27 +1,21 @@
 ﻿#nullable enable
 
 using System;
+using System.Numerics;
 using Windows.Foundation;
-using SkiaSharp;
 using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI.Composition.Drawing;
 
 namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSpriteShape : CompositionShape
 	{
-		private static readonly SKPaint _spareHitTestPaint = new();
-		private static readonly SKPathBuilder _spareHitTestPathBuilder = new();
-		private static readonly SKPoint[] _spareMiterPoints = new SKPoint[4];
-		// We don't call SKPaint.Reset() after usage, so make sure
-		// that only SKPaint.Color is being set
-		private static readonly SKPaint _spareColorPaint = new();
-
 		private CompositionGeometry? _fillGeometry;
 
-		private SkiaGeometrySource2D? _geometryWithTransformations;
-		private SkiaGeometrySource2D? _fillGeometryWithTransformations;
+		private IGeometry? _geometryWithTransformations;
+		private IGeometry? _fillGeometryWithTransformations;
 
 		// A transform that gets baked into the geometry without affecting stroke thickness or
 		// the canvas. Set by Microsoft.UI.Xaml.Shapes.Shape to apply Stretch sizing — WinUI's
@@ -29,7 +23,15 @@ namespace Microsoft.UI.Composition
 		// this channel lets Uno match that while keeping CompositionShape.Scale/RotationAngle/
 		// TransformMatrix as proper Composition API transforms (which DO scale strokes via the
 		// canvas, matching WinUI's CompositionSpriteShape).
-		private SKMatrix _geometryTransform = SKMatrix.CreateIdentity();
+		private Matrix3x2 _geometryTransform = Matrix3x2.Identity;
+
+		// Set by BorderVisual for a rounded-rect background: lets the fill go through the backend's analytic
+		// DrawRoundedRect (one SDF quad) instead of a tessellated path. Null → unchanged path behaviour.
+		internal (Rect Rect, Vector4 Radii)? RoundedRectFillHint { get; set; }
+
+		// Set by BorderVisual for a rounded border stroke: the fill goes through DrawRoundedRectBorder (one analytic
+		// annulus SDF quad, outer minus inner) instead of a tessellated ring path. Null → unchanged path behaviour.
+		internal (Rect Outer, Vector4 OuterRadii, Rect Inner, Vector4 InnerRadii)? RoundedRectBorderHint { get; set; }
 
 		/// <summary>
 		/// This is largely a hack that's needed for MUX.Shapes.Path with Data set to a PathGeometry that has some
@@ -47,7 +49,7 @@ namespace Microsoft.UI.Composition
 			set => SetProperty(ref _fillGeometry, value);
 		}
 
-		internal void SetGeometryTransform(SKMatrix transform)
+		internal void SetGeometryTransform(Matrix3x2 transform)
 		{
 			_geometryTransform = transform;
 			RebuildGeometryWithTransformations();
@@ -55,12 +57,12 @@ namespace Microsoft.UI.Composition
 
 		private void RebuildGeometryWithTransformations()
 		{
-			if (Geometry?.BuildGeometry() is SkiaGeometrySource2D geometry)
+			if (Geometry?.BuildGeometry() is IGeometry geometry)
 			{
 				_geometryWithTransformations = _geometryTransform.IsIdentity
 					? geometry
 					: geometry.Transform(_geometryTransform);
-				if (FillGeometry?.BuildGeometry() is SkiaGeometrySource2D fillGeometry)
+				if (FillGeometry?.BuildGeometry() is IGeometry fillGeometry)
 				{
 					_fillGeometryWithTransformations = _geometryTransform.IsIdentity
 						? fillGeometry
@@ -80,96 +82,18 @@ namespace Microsoft.UI.Composition
 
 		internal override bool CanPaint() => (FillBrush?.CanPaint() ?? false) || (StrokeBrush?.CanPaint() ?? false);
 
-		internal bool TryGetRenderBounds(out SKRect bounds)
+		private static global::Windows.UI.Color WithOpacity(global::Windows.UI.Color c, float opacity)
+			=> opacity >= 1f ? c : global::Windows.UI.Color.FromArgb((byte)(c.A * opacity), c.R, c.G, c.B);
+
+		// radii = (TopLeft, TopRight, BottomRight, BottomLeft) scalars → a RoundRectangle with circular corners.
+		private static RoundRectangle ToRoundRect(Rect rect, Vector4 radii) => new()
 		{
-			bounds = default;
-			var any = false;
-
-			if ((FillBrush?.CanPaint() ?? false) && _fillGeometryWithTransformations is { } fillGeometry)
-			{
-				bounds = fillGeometry.Bounds;
-				any = true;
-			}
-
-			if ((StrokeBrush?.CanPaint() ?? false) && StrokeThickness > 0 && _geometryWithTransformations is { } strokeGeometry)
-			{
-				var strokeBounds = strokeGeometry.Bounds;
-				strokeBounds.Inflate(StrokeThickness, StrokeThickness);
-				bounds = any ? SKRect.Union(bounds, strokeBounds) : strokeBounds;
-				any = true;
-			}
-
-			if (any)
-			{
-				var m = GetRenderTransform();
-				if (!m.IsIdentity)
-				{
-					bounds = m.MapRect(bounds);
-				}
-			}
-
-			return any;
-		}
-
-		private static readonly SKPaint _spareRenderPathStrokePaint = new SKPaint { Style = SKPaintStyle.Stroke, StrokeJoin = SKStrokeJoin.Round, StrokeCap = SKStrokeCap.Round };
-		private static readonly SKPathBuilder _spareRenderPathStrokeBuilder = new();
-		private static readonly SKPathBuilder _spareRenderPathShapeBuilder = new();
-
-		// The transform CompositionShape.Render applies to the canvas before painting the geometry: the shape's
-		// Offset followed by its CombinedTransformMatrix (Scale/Rotation/TransformMatrix around CenterPoint).
-		// GetRenderPath/TryGetRenderBounds must apply it too so the damage geometry matches the painted pixels.
-		private SKMatrix GetRenderTransform()
-		{
-			var m = SKMatrix.CreateTranslation(Offset.X, Offset.Y);
-			var transform = CombinedTransformMatrix;
-			if (!transform.IsIdentity)
-			{
-				m = SKMatrix.Concat(m, transform.ToSKMatrix());
-			}
-			return m;
-		}
-
-		// Appends the exact geometry this shape draws to <paramref name="dst"/>; returns false when it draws nothing.
-		internal bool GetRenderPath(SKPathBuilder dst)
-		{
-			var shapeBuilder = _spareRenderPathShapeBuilder;
-			shapeBuilder.Reset();
-			var any = false;
-
-			if ((FillBrush?.CanPaint() ?? false) && _fillGeometryWithTransformations is { } fillGeometry)
-			{
-				shapeBuilder.AddPath(fillGeometry.Geometry, SKPathAddMode.Append);
-				any = true;
-			}
-
-			if ((StrokeBrush?.CanPaint() ?? false) && StrokeThickness > 0 && _geometryWithTransformations is { } strokeGeometry)
-			{
-				_spareRenderPathStrokePaint.StrokeWidth = StrokeThickness;
-				_spareRenderPathStrokeBuilder.Reset();
-				_spareRenderPathStrokePaint.GetFillPath(strokeGeometry.Geometry, _spareRenderPathStrokeBuilder);
-				using var strokePath = _spareRenderPathStrokeBuilder.Detach();
-				shapeBuilder.AddPath(strokePath, SKPathAddMode.Append);
-				any = true;
-			}
-
-			if (!any)
-			{
-				return false;
-			}
-
-			var m = GetRenderTransform();
-			using var shapePath = shapeBuilder.Detach();
-			if (!m.IsIdentity)
-			{
-				shapePath.Transform(m);
-			}
-
-			dst.AddPath(shapePath, SKPathAddMode.Append);
-			return true;
-		}
-
-		private static readonly SKPaint _sparePaint = new SKPaint();
-		private static readonly SKPathBuilder _sparePathBuilder = new();
+			Rect = rect,
+			TopLeft = new Vector2(radii.X, radii.X),
+			TopRight = new Vector2(radii.Y, radii.Y),
+			BottomRight = new Vector2(radii.Z, radii.Z),
+			BottomLeft = new Vector2(radii.W, radii.W),
+		};
 
 		internal override void Paint(in Visual.PaintingSession session)
 		{
@@ -177,212 +101,125 @@ namespace Microsoft.UI.Composition
 			{
 				if (FillBrush is { } fill && _fillGeometryWithTransformations is { } finalFillGeometryWithTransformations)
 				{
-					var fillPaint = _sparePaint;
-					PrepareTempPaint(fillPaint, isStroke: false);
+					using var fillGeometry = GetTrimmedFilledGeometry(finalFillGeometryWithTransformations, Geometry);
 
-					if (Geometry is not null && TryCreateTrimPathEffect(Geometry) is { } fillTrim)
+					// A solid colour (a theme/transition background, or a plain colour brush) can fill the geometry
+					// directly. Clip-to-shape + fill-rect is equivalent but forces a per-shape clip — a coverage
+					// offscreen on the WebGPU backend, ruinous for shape-heavy UI (list items, icons, charts). Only a
+					// non-solid brush (gradient/image/surface) needs clip-to-shape + paint-bounds.
+					// A rounded-rect background (the RoundedRectFillHint, set by BorderVisual) fills analytically as ONE
+					// SDF quad on backends that support it — instead of a tessellated path (stencil + cover). Only for a
+					// solid colour with an identity geometry transform; anything else keeps the path.
+					var rrHint = _geometryTransform.IsIdentity ? RoundedRectFillHint : null;
+					var brHint = _geometryTransform.IsIdentity ? RoundedRectBorderHint : null;
+					// A solid colour fill draws analytically when the shape is a rounded-rect background (rrHint, one
+					// SDF quad) or a rounded border ring (brHint, one annulus SDF quad); otherwise it fills the path.
+					global::Windows.UI.Color? solidFill =
+						Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition) ? colorFromTransition :
+						fill is CompositionColorBrush fillColor && fill.CanPaint() ? fillColor.Color :
+						null;
+					if (solidFill is { } sc)
 					{
-						fillPaint.PathEffect = fillTrim;
+						var oc = WithOpacity(sc, session.Opacity);
+						if (brHint is { } b) { session.Session.DrawRoundedRectBorder(b.Outer, b.OuterRadii, b.Inner, b.InnerRadii, oc); }
+						else if (rrHint is { } h) { session.Session.DrawRoundedRect(h.Rect, h.Radii, oc); }
+						else { session.Session.DrawPath(fillGeometry, oc); }
 					}
-
-					var fillPathBuilder = _sparePathBuilder;
-					fillPathBuilder.Reset();
-					finalFillGeometryWithTransformations.GetFillPath(fillPaint, fillPathBuilder);
-					using var fillPath = fillPathBuilder.Detach();
-
-					session.Canvas.Save();
-					session.Canvas.ClipPath(fillPath, antialias: true);
-					if (Compositor.TryGetEffectiveBackgroundColor(this, out var colorFromTransition))
+					// A brush that cannot paint (a fully transparent colour) must not reach the clip-and-fill path
+					// below: it would build a tessellated stencil/depth mask per shape per frame only for TryPaint
+					// to draw nothing. Transparent fills are common (any Shape given Fill="Transparent"), and on the
+					// WebGPU backend that mask is expensive enough to have hung an Intel GPU.
+					else if (fill.CanPaint())
 					{
-						_spareColorPaint.Color = colorFromTransition.ToSKColor(session.Opacity);
-						session.Canvas.DrawRect(fillPath.Bounds, _spareColorPaint);
+						// A non-solid brush (gradient/image/effect) paints by clipping to the shape then filling its
+						// bounds. When the shape is a rounded rect (the hint), clip ANALYTICALLY (ClipRoundRect, 0
+						// draws) instead of a tessellated path clip (stencil + depth draws per visual).
+						session.Session.Save();
+						if (rrHint is { } hc) { session.Session.ClipRoundRect(ToRoundRect(hc.Rect, hc.Radii)); }
+						else if (brHint is { } bc)
+						{
+							// A rounded border ring also clips analytically: intersect the outer round rect, exclude the
+							// inner one. Matters for gradient borders (Fluent's ControlElevationBorderBrush puts one on
+							// every Button): a tessellated ring clip costs a stencil mask per visual and defeats coalescing.
+							session.Session.ClipRoundRect(ToRoundRect(bc.Outer, bc.OuterRadii));
+							if (bc.Inner.Width > 0 && bc.Inner.Height > 0)
+							{
+								session.Session.ClipRoundRect(ToRoundRect(bc.Inner, bc.InnerRadii), ClipOperation.Difference);
+							}
+						}
+						else { session.Session.ClipPath(fillGeometry); }
+						fill.TryPaint(session.Session, session.Opacity, finalFillGeometryWithTransformations.Bounds);
+						session.Session.Restore();
 					}
-					else
-					{
-						fill.Paint(session.Canvas, session.Opacity, finalFillGeometryWithTransformations.Bounds);
-					}
-					session.Canvas.Restore();
 				}
 
 				if (StrokeBrush is { } stroke && StrokeThickness > 0)
 				{
-					var strokePaint = _sparePaint;
-					PrepareTempPaint(strokePaint, isStroke: true);
-
-					// Set stroke thickness
-					strokePaint.StrokeWidth = StrokeThickness;
-
-					// Set stroke join and miter limit
-					strokePaint.StrokeJoin = ToSKStrokeJoin(StrokeLineJoin);
-					strokePaint.StrokeMiter = StrokeMiterLimit;
-
-					// Determine if we need custom cap rendering (different start/end caps, or Triangle caps)
-					bool needsCustomCaps = StrokeStartCap != StrokeEndCap
-						|| StrokeStartCap == CompositionStrokeCap.Triangle;
-
-					float[]? dashValues = null;
-					if (_strokeDashArray is { Count: > 0 } strokeDashArray)
+					if (Uno.UI.Composition.Drawing.DrawingCapabilities.NativeStroking
+						&& stroke is CompositionColorBrush nativeStrokeColor && stroke.CanPaint()
+						&& _strokeDashArray is not { Count: > 0 }
+						&& (Geometry?.TrimStart ?? 0f) == 0f && (Geometry?.TrimEnd ?? 0f) == 0f
+						&& StrokeLineJoin == CompositionStrokeLineJoin.Miter
+						&& StrokeStartCap == CompositionStrokeCap.Flat && StrokeEndCap == CompositionStrokeCap.Flat)
 					{
-						strokePaint.StrokeCap = ToSKStrokeCap(StrokeDashCap);
-						// WinUI dash values are in multiples of StrokeThickness; Skia expects pixels
-						dashValues = strokeDashArray.ToEvenArray();
-						for (int i = 0; i < dashValues.Length; i++)
-						{
-							dashValues[i] *= StrokeThickness;
-						}
-						var dashEffect = SKPathEffect.CreateDash(dashValues, StrokeDashOffset * StrokeThickness);
-						if (dashEffect is not null)
-						{
-							strokePaint.PathEffect = dashEffect;
-						}
-						else
-						{
-							dashValues = null;
-						}
-					}
-					else if (!needsCustomCaps)
-					{
-						// Fast path: same start/end cap, not Triangle - use native SKPaint.StrokeCap
-						strokePaint.StrokeCap = ToSKStrokeCap(StrokeEndCap);
-					}
-					// else: needsCustomCaps without dashes - keep Butt cap (default after Reset),
-					// custom caps are added as geometry below.
-
-					if (Geometry is not null && TryCreateTrimPathEffect(Geometry) is { } trimEffect)
-					{
-						if (strokePaint.PathEffect is SKPathEffect effect)
-						{
-							trimEffect = SKPathEffect.CreateSum(effect, trimEffect);
-						}
-
-						strokePaint.PathEffect = trimEffect;
+						session.Session.StrokePath(geometryWithTransformations, WithOpacity(nativeStrokeColor.Color, session.Opacity), StrokeThickness);
+						return;
 					}
 
-					// Generate stroke geometry for bounds that will be passed to a brush.
-					// - [Future]: This generated geometry should also be used for hit testing.
+					using var strokeGeometry = GetTrimmedStrokeGeometry(geometryWithTransformations);
 
-					// Note on stretch vs Composition transforms:
-					// Microsoft.UI.Xaml.Shapes.Shape applies its Stretch via SetGeometryTransform,
-					// which pre-bakes the scale into _geometryWithTransformations and leaves the stroke
-					// at its declared thickness — matching WinUI's Path/Rectangle behavior where
-					// StrokeThickness stays constant regardless of stretch. Composition-API transforms
-					// (Scale/RotationAngle/TransformMatrix) flow through CombinedTransformMatrix and are
-					// applied to the canvas in CompositionShape.Render, so they DO scale the stroke,
-					// matching WinUI's CompositionSpriteShape semantics.
-					var strokeFillBuilder = _sparePathBuilder;
-					strokeFillBuilder.Reset();
-					// Get the stroke geometry, after scaling has been applied.
-					geometryWithTransformations.GetFillPath(strokePaint, strokeFillBuilder);
-
-					// Add custom cap geometry for Triangle caps or different start/end caps
-					if (needsCustomCaps && _strokeDashArray is not { Count: > 0 })
+					if (stroke is CompositionColorBrush strokeColor && stroke.CanPaint())
 					{
-						AddCustomCaps(strokeFillBuilder, geometryWithTransformations.Geometry, StrokeThickness, StrokeStartCap, StrokeEndCap);
+						// Solid stroke: fill the stroke geometry directly (same reasoning as the solid fill above).
+						session.Session.DrawPath(strokeGeometry, WithOpacity(strokeColor.Color, session.Opacity));
 					}
-
-					// Fix endpoint caps for dashed strokes: WinUI uses StartCap/EndCap at path
-					// endpoints but DashCap at internal dash boundaries. Skia applies DashCap uniformly.
-					// Also handles zero-length dashes at endpoints when the endpoint falls in a gap.
-					if (dashValues is not null
-						&& (StrokeDashCap != CompositionStrokeCap.Flat
-							|| StrokeStartCap != CompositionStrokeCap.Flat
-							|| StrokeEndCap != CompositionStrokeCap.Flat))
+					else if (stroke.CanPaint())
 					{
-						FixDashEndpointCaps(strokeFillBuilder, geometryWithTransformations.Geometry,
-							StrokeThickness, StrokeDashCap, StrokeStartCap, StrokeEndCap,
-							dashValues, StrokeDashOffset * StrokeThickness);
+						session.Session.Save();
+						session.Session.ClipPath(strokeGeometry);
+						stroke.TryPaint(session.Session, session.Opacity, strokeGeometry.Bounds);
+						session.Session.Restore();
 					}
-
-					// Add Triangle cap geometry at internal dash boundaries.
-					if (dashValues is not null && StrokeDashCap == CompositionStrokeCap.Triangle)
-					{
-						AddInternalTriangleDashCaps(strokeFillBuilder, geometryWithTransformations.Geometry,
-							StrokeThickness, dashValues, StrokeDashOffset * StrokeThickness);
-					}
-
-					// WinUI's Miter join uses miter-clip (truncates the miter protrusion at
-					// the limit), while Skia's Miter uses miter-or-bevel (full bevel fallback).
-					// Add clipped miter trapezoids for vertices where Skia produced a bevel.
-					if (StrokeLineJoin == CompositionStrokeLineJoin.Miter)
-					{
-						AddClippedMiterJoints(strokeFillBuilder, geometryWithTransformations.Geometry,
-							StrokeThickness, StrokeMiterLimit);
-					}
-
-					using var strokeFillPath = strokeFillBuilder.Detach();
-					session.Canvas.Save();
-					session.Canvas.ClipPath(strokeFillPath, antialias: true);
-					stroke.Paint(session.Canvas, session.Opacity, strokeFillPath.Bounds);
-					session.Canvas.Restore();
 				}
 			}
 		}
 
-		private static void PrepareTempPaint(SKPaint paint, bool isStroke)
-		{
-			paint.Reset();
-			paint.IsAntialias = true;
-			paint.IsStroke = isStroke;
-			paint.Color = SKColors.White;   // Transparent color wouldn't draw anything
-		}
-
 		/// <summary>
-		/// Builds the path effect that trims the geometry to the window
-		/// [TrimStart + TrimOffset, TrimEnd + TrimOffset] taken modulo 1, or null when
-		/// no trimming is active (the full path is drawn).
-		/// When TrimOffset shifts the window past 1.0 (start > end after the modulo),
-		/// WinUI renders the union of [start, 1] and [0, end]. SkiaSharp's CreateTrim draws
-		/// the complement for start > end, so the two halves are summed to form the union.
+		/// The geometry this shape actually covers when painted (filled area ∪ stroke band), in the owning visual's
+		/// local space, or null when it paints nothing. Used to build a precise per-visual damage region. The caller
+		/// owns and disposes the returned geometry.
 		/// </summary>
-		private static SKPathEffect? TryCreateTrimPathEffect(CompositionGeometry geometry)
+		internal IGeometry? BuildRenderGeometry()
 		{
-			var trimStart = geometry.TrimStart;
-			var trimEnd = geometry.TrimEnd;
-			var trimOffset = geometry.TrimOffset;
-
-			if (trimStart == default && trimEnd == default && trimOffset == default)
+			if (_geometryWithTransformations is not { } geometryWithTransformations)
 			{
 				return null;
 			}
 
-			if (trimOffset == default)
+			IGeometry? result = null;
+
+			if (FillBrush is not null && _fillGeometryWithTransformations is { } fillGeometryWithTransformations)
 			{
-				// No offset: identical to the historical trim behavior.
-				return SKPathEffect.CreateTrim(trimStart, trimEnd);
+				result = GetTrimmedFilledGeometry(fillGeometryWithTransformations, Geometry);
 			}
 
-			// A full (or wider) window stays full regardless of offset — shifting it would
-			// otherwise collapse to an empty window once the endpoints are wrapped into [0,1).
-			if (trimEnd - trimStart >= 1f)
+			if (StrokeBrush is not null && StrokeThickness > 0)
 			{
-				return SKPathEffect.CreateTrim(0f, 1f);
+				var strokeGeometry = GetTrimmedStrokeGeometry(geometryWithTransformations);
+				if (result is null)
+				{
+					result = strokeGeometry;
+				}
+				else
+				{
+					var previous = result;
+					result = result.Combine(strokeGeometry, GeometryCombineMode.Union);
+					previous.Dispose();
+					strokeGeometry.Dispose();
+				}
 			}
 
-			var start = Wrap01(trimStart + trimOffset);
-			var end = Wrap01(trimEnd + trimOffset);
-
-			if (start <= end)
-			{
-				// Shifted window still fits within [0,1] — a single trim covers it.
-				return SKPathEffect.CreateTrim(start, end);
-			}
-
-			// Wrapped window: draw the union of [start, 1] and [0, end] instead of the
-			// complement that a single CreateTrim(start, end) with start > end would produce.
-			return SKPathEffect.CreateSum(
-				SKPathEffect.CreateTrim(start, 1f),
-				SKPathEffect.CreateTrim(0f, end));
-		}
-
-		private static float Wrap01(float value)
-		{
-			value %= 1f;
-			if (value < 0f)
-			{
-				value += 1f;
-			}
-
-			return value;
+			return result;
 		}
 
 		private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
@@ -403,86 +240,15 @@ namespace Microsoft.UI.Composition
 			{
 				point = CombinedTransformMatrix.Inverse().Transform(point);
 
-				if (FillBrush is { } && geometryWithTransformations.Contains((float)point.X, (float)point.Y))
+				if (FillBrush is { } && geometryWithTransformations.FillContains(new Vector2((float)point.X, (float)point.Y)))
 				{
 					return true;
 				}
 
 				if (StrokeBrush is { } && StrokeThickness > 0)
 				{
-					var strokePaint = _spareHitTestPaint;
-					PrepareTempPaint(strokePaint, isStroke: true);
-
-					strokePaint.StrokeWidth = StrokeThickness;
-					strokePaint.StrokeJoin = ToSKStrokeJoin(StrokeLineJoin);
-					strokePaint.StrokeMiter = StrokeMiterLimit;
-
-					bool needsCustomCaps = StrokeStartCap != StrokeEndCap
-						|| StrokeStartCap == CompositionStrokeCap.Triangle;
-
-					float[]? dashValues = null;
-					if (_strokeDashArray is { Count: > 0 } strokeDashArray)
-					{
-						strokePaint.StrokeCap = ToSKStrokeCap(StrokeDashCap);
-						// WinUI dash values are in multiples of StrokeThickness; Skia expects pixels
-						dashValues = strokeDashArray.ToEvenArray();
-						for (int i = 0; i < dashValues.Length; i++)
-						{
-							dashValues[i] *= StrokeThickness;
-						}
-						var dashEffect = SKPathEffect.CreateDash(dashValues, StrokeDashOffset * StrokeThickness);
-						if (dashEffect is not null)
-						{
-							strokePaint.PathEffect = dashEffect;
-						}
-						else
-						{
-							dashValues = null;
-						}
-					}
-					else if (!needsCustomCaps)
-					{
-						strokePaint.StrokeCap = ToSKStrokeCap(StrokeEndCap);
-					}
-
-					var hitTestStrokeFillBuilder = _spareHitTestPathBuilder;
-
-					hitTestStrokeFillBuilder.Reset();
-
-					geometryWithTransformations.GetFillPath(strokePaint, hitTestStrokeFillBuilder);
-
-					if (needsCustomCaps && _strokeDashArray is not { Count: > 0 })
-					{
-						AddCustomCaps(hitTestStrokeFillBuilder, geometryWithTransformations.Geometry, StrokeThickness, StrokeStartCap, StrokeEndCap);
-					}
-
-					// Fix endpoint caps for dashed strokes (mirror of Paint logic)
-					if (dashValues is not null
-						&& (StrokeDashCap != CompositionStrokeCap.Flat
-							|| StrokeStartCap != CompositionStrokeCap.Flat
-							|| StrokeEndCap != CompositionStrokeCap.Flat))
-					{
-						FixDashEndpointCaps(hitTestStrokeFillBuilder, geometryWithTransformations.Geometry,
-							StrokeThickness, StrokeDashCap, StrokeStartCap, StrokeEndCap,
-							dashValues, StrokeDashOffset * StrokeThickness);
-					}
-
-					// Add Triangle cap geometry at internal dash boundaries (mirror of Paint logic).
-					if (dashValues is not null && StrokeDashCap == CompositionStrokeCap.Triangle)
-					{
-						AddInternalTriangleDashCaps(hitTestStrokeFillBuilder, geometryWithTransformations.Geometry,
-							StrokeThickness, dashValues, StrokeDashOffset * StrokeThickness);
-					}
-
-					// WinUI's Miter join uses miter-clip (see Paint() comment).
-					if (StrokeLineJoin == CompositionStrokeLineJoin.Miter)
-					{
-						AddClippedMiterJoints(hitTestStrokeFillBuilder, geometryWithTransformations.Geometry,
-							StrokeThickness, StrokeMiterLimit);
-					}
-
-					using var hitTestStrokeFillPath = hitTestStrokeFillBuilder.Detach();
-					if (hitTestStrokeFillPath.Contains((float)point.X, (float)point.Y))
+					using var strokeGeometry = geometryWithTransformations.GetStrokeFillGeometry(GetStrokeStyle(0f, 0f));
+					if (strokeGeometry.FillContains(new Vector2((float)point.X, (float)point.Y)))
 					{
 						return true;
 					}
@@ -491,755 +257,181 @@ namespace Microsoft.UI.Composition
 			return false;
 		}
 
-		private static SKStrokeCap ToSKStrokeCap(CompositionStrokeCap cap) => cap switch
+		/// <summary>
+		/// Bounds of what this shape actually paints, in its parent visual's coordinates; false when it paints
+		/// nothing. Used to bound the visual's damage to its shapes instead of falling back to its clip.
+		/// </summary>
+		internal bool TryGetRenderBounds(out Rect bounds)
 		{
-			CompositionStrokeCap.Flat => SKStrokeCap.Butt,
-			CompositionStrokeCap.Square => SKStrokeCap.Square,
-			CompositionStrokeCap.Round => SKStrokeCap.Round,
-			CompositionStrokeCap.Triangle => SKStrokeCap.Butt, // Simulated via custom geometry
-			_ => SKStrokeCap.Butt,
+			bounds = default;
+			var any = false;
+
+			if ((FillBrush?.CanPaint() ?? false) && _fillGeometryWithTransformations is { } fillGeometry)
+			{
+				bounds = fillGeometry.Bounds;
+				any = true;
+			}
+
+			if ((StrokeBrush?.CanPaint() ?? false) && StrokeThickness > 0 && _geometryWithTransformations is { } strokeGeometry)
+			{
+				// The stroke straddles the geometry, so it reaches half a thickness out; a full thickness also
+				// covers what joins and caps add beyond that.
+				var b = strokeGeometry.Bounds;
+				var strokeBounds = new Rect(
+					b.X - StrokeThickness,
+					b.Y - StrokeThickness,
+					b.Width + 2 * StrokeThickness,
+					b.Height + 2 * StrokeThickness);
+
+				if (any)
+				{
+					bounds.Union(strokeBounds);
+				}
+				else
+				{
+					bounds = strokeBounds;
+					any = true;
+				}
+			}
+
+			if (any && GetRenderTransform() is { IsIdentity: false } m)
+			{
+				bounds = bounds.Transform(m);
+			}
+
+			return any;
+		}
+
+		// What CompositionShape.Render applies to the session before painting: the shape's CombinedTransformMatrix
+		// (Scale/Rotation/TransformMatrix around CenterPoint) and then its Offset, matching the Translate + Concat
+		// order there. TryGetRenderBounds must apply it too so damage matches the painted pixels.
+		private Matrix3x2 GetRenderTransform()
+		{
+			var transform = CombinedTransformMatrix;
+			var offset = Offset;
+			return offset == Vector2.Zero ? transform : transform * Matrix3x2.CreateTranslation(offset);
+		}
+
+		private StrokeStyle GetStrokeStyle(float trimStart, float trimEnd) => new()
+		{
+			Thickness = StrokeThickness,
+			StartCap = ToStrokeCap(StrokeStartCap),
+			EndCap = ToStrokeCap(StrokeEndCap),
+			DashCap = ToStrokeCap(StrokeDashCap),
+			LineJoin = ToStrokeJoin(StrokeLineJoin),
+			MiterLimit = StrokeMiterLimit,
+			DashArray = _strokeDashArray is { Count: > 0 } dashArray ? dashArray.ToEvenArray() : null,
+			DashOffset = StrokeDashOffset,
+			TrimStart = trimStart,
+			TrimEnd = trimEnd,
 		};
 
-		private static SKStrokeJoin ToSKStrokeJoin(CompositionStrokeLineJoin join) => join switch
+		/// <summary>Strokes <paramref name="geometry"/> through the resolved trim window (see <see cref="TryResolveTrim"/>).</summary>
+		private IGeometry GetTrimmedStrokeGeometry(IGeometry geometry)
 		{
-			CompositionStrokeLineJoin.Miter => SKStrokeJoin.Miter,
-			CompositionStrokeLineJoin.Bevel => SKStrokeJoin.Bevel,
-			CompositionStrokeLineJoin.Round => SKStrokeJoin.Round,
-			CompositionStrokeLineJoin.MiterOrBevel => SKStrokeJoin.Miter, // Skia's miter limit provides bevel fallback
-			_ => SKStrokeJoin.Miter,
-		};
-
-		/// <summary>
-		/// Adds custom cap geometry to the stroke fill path for cases where native SKPaint.StrokeCap
-		/// is insufficient (different start/end caps, or Triangle cap type).
-		/// </summary>
-		private static void AddCustomCaps(SKPathBuilder fillPath, SKPath originalGeometry, float strokeWidth, CompositionStrokeCap startCap, CompositionStrokeCap endCap)
-		{
-			using var measure = new SKPathMeasure(originalGeometry, false);
-			do
+			if (!TryResolveTrim(Geometry, out var start, out var end, out var wrapEnd))
 			{
-				if (measure.IsClosed)
-				{
-					continue;
-				}
-
-				var length = measure.Length;
-				if (length <= 0)
-				{
-					continue;
-				}
-
-				// Start cap: tangent direction is negated (cap extends backward from start)
-				if (startCap != CompositionStrokeCap.Flat
-					&& measure.GetPositionAndTangent(0, out var startPos, out var startTan))
-				{
-					using var capPath = BuildCapPath(startPos, new SKPoint(-startTan.X, -startTan.Y), strokeWidth, startCap);
-					if (capPath != null)
-					{
-						fillPath.AddPath(capPath, SKPathAddMode.Append);
-					}
-				}
-
-				// End cap: tangent direction as-is (cap extends forward from end)
-				if (endCap != CompositionStrokeCap.Flat
-					&& measure.GetPositionAndTangent(length, out var endPos, out var endTan))
-				{
-					using var capPath = BuildCapPath(endPos, endTan, strokeWidth, endCap);
-					if (capPath != null)
-					{
-						fillPath.AddPath(capPath, SKPathAddMode.Append);
-					}
-				}
-			} while (measure.NextContour());
-		}
-
-		/// <summary>
-		/// Fixes endpoint caps on dashed strokes. WinUI applies StrokeStartCap at path start and
-		/// StrokeEndCap at path end, but StrokeDashCap at internal dash boundaries. Skia's
-		/// GetFillPath with a dash effect applies DashCap uniformly. This method corrects the
-		/// endpoints by removing the incorrect DashCap protrusion and adding the correct cap.
-		/// </summary>
-		private static void FixDashEndpointCaps(
-			SKPathBuilder fillPath,
-			SKPath originalGeometry,
-			float strokeWidth,
-			CompositionStrokeCap dashCap,
-			CompositionStrokeCap startCap,
-			CompositionStrokeCap endCap,
-			float[] dashValues,
-			float dashOffset)
-		{
-			using var measure = new SKPathMeasure(originalGeometry, false);
-			do
-			{
-				if (measure.IsClosed)
-				{
-					continue;
-				}
-
-				var length = measure.Length;
-				if (length <= 0)
-				{
-					continue;
-				}
-
-				// Fix start cap
-				if (dashCap != startCap
-					&& measure.GetPositionAndTangent(0, out var startPos, out var startTan)
-					&& IsPositionInDash(0, dashValues, dashOffset))
-				{
-					var backDir = new SKPoint(-startTan.X, -startTan.Y);
-
-					// Remove the incorrect DashCap protrusion at start
-					if (dashCap != CompositionStrokeCap.Flat)
-					{
-						using var cutter = BuildHalfPlaneCutter(startPos, backDir, strokeWidth);
-						using var current = fillPath.Snapshot();
-						using var result = new SKPath();
-						if (current.Op(cutter, SKPathOp.Difference, result))
-						{
-							fillPath.Reset();
-							fillPath.AddPath(result, SKPathAddMode.Append);
-						}
-					}
-
-					// Add the correct StartCap
-					if (startCap != CompositionStrokeCap.Flat)
-					{
-						using var capPath = BuildCapPath(startPos, backDir, strokeWidth, startCap);
-						if (capPath != null)
-						{
-							fillPath.AddPath(capPath, SKPathAddMode.Append);
-						}
-					}
-				}
-
-				// Fix end cap
-				if (measure.GetPositionAndTangent(length, out var endPos, out var endTan))
-				{
-					var endState = GetEndpointDashState(length, dashValues, dashOffset);
-
-					if (endState == EndpointDashState.InRenderedDash)
-					{
-						// Rendered dash at endpoint → swap DashCap → EndCap if they differ.
-						if (dashCap != endCap)
-						{
-							if (dashCap != CompositionStrokeCap.Flat)
-							{
-								using var cutter = BuildHalfPlaneCutter(endPos, endTan, strokeWidth);
-								using var current = fillPath.Snapshot();
-								using var result = new SKPath();
-								if (current.Op(cutter, SKPathOp.Difference, result))
-								{
-									fillPath.Reset();
-									fillPath.AddPath(result, SKPathAddMode.Append);
-								}
-							}
-							if (endCap != CompositionStrokeCap.Flat)
-							{
-								using var capPath = BuildCapPath(endPos, endTan, strokeWidth, endCap);
-								if (capPath != null)
-								{
-									fillPath.AddPath(capPath, SKPathAddMode.Append);
-								}
-							}
-						}
-					}
-					else if (endState == EndpointDashState.AtGapBoundary)
-					{
-						// Endpoint at gap/dash boundary → zero-length dash.
-						// DashCap facing backward + EndCap facing forward.
-						var backDir = new SKPoint(-endTan.X, -endTan.Y);
-						if (dashCap != CompositionStrokeCap.Flat)
-						{
-							using var capPath = BuildCapPath(endPos, backDir, strokeWidth, dashCap);
-							if (capPath != null)
-							{
-								fillPath.AddPath(capPath, SKPathAddMode.Append);
-							}
-						}
-						if (endCap != CompositionStrokeCap.Flat)
-						{
-							using var capPath = BuildCapPath(endPos, endTan, strokeWidth, endCap);
-							if (capPath != null)
-							{
-								fillPath.AddPath(capPath, SKPathAddMode.Append);
-							}
-						}
-					}
-					// else: InGap — endpoint in middle of a gap, nothing to render
-				}
-			} while (measure.NextContour());
-		}
-
-		/// <summary>
-		/// Adds Triangle cap geometry at every internal dash boundary. Skia maps Triangle
-		/// to Butt (flat), so internal dash starts/ends need filled polygon caps added manually.
-		/// Path start/end boundaries are excluded for open contours (handled by FixDashEndpointCaps).
-		/// </summary>
-		private static void AddInternalTriangleDashCaps(
-			SKPathBuilder fillPath,
-			SKPath originalGeometry,
-			float strokeWidth,
-			float[] dashValues,
-			float dashOffset)
-		{
-			var totalPattern = 0f;
-			for (int i = 0; i < dashValues.Length; i++)
-			{
-				totalPattern += dashValues[i];
+				return geometry.GetStrokeFillGeometry(GetStrokeStyle(0f, 0f));
 			}
 
-			if (totalPattern <= 0)
+			var trimmed = geometry.GetStrokeFillGeometry(GetStrokeStyle(start, end));
+			if (wrapEnd is not { } wrapped)
 			{
-				return;
+				return trimmed;
 			}
 
-			using var measure = new SKPathMeasure(originalGeometry, false);
-			do
+			using (trimmed)
+			using (var head = geometry.GetStrokeFillGeometry(GetStrokeStyle(0f, wrapped)))
 			{
-				var pathLength = measure.Length;
-				if (pathLength <= 0)
-				{
-					continue;
-				}
-
-				var isClosed = measure.IsClosed;
-
-				var patternStart = -(dashOffset % totalPattern);
-				if (patternStart > 0)
-				{
-					patternStart -= totalPattern;
-				}
-
-				var pos = patternStart;
-				var idx = 0;
-
-				while (pos < pathLength)
-				{
-					var segLen = dashValues[idx % dashValues.Length];
-
-					if (segLen <= 0)
-					{
-						idx++;
-						continue;
-					}
-
-					var segEnd = pos + segLen;
-					var isDash = (idx % 2) == 0;
-
-					if (isDash)
-					{
-						var dashStart = Math.Max(pos, 0f);
-						var dashEnd = Math.Min(segEnd, pathLength);
-
-						if (dashStart < dashEnd)
-						{
-							// Dash start boundary: triangle faces backward (-tangent).
-							// Skip for open path start (StrokeStartLineCap covers it).
-							var isPathStart = !isClosed && dashStart <= 0f;
-							if (!isPathStart
-								&& measure.GetPositionAndTangent(dashStart, out var startPos, out var startTan))
-							{
-								var backDir = new SKPoint(-startTan.X, -startTan.Y);
-								using var capPath = BuildCapPath(startPos, backDir, strokeWidth, CompositionStrokeCap.Triangle);
-								if (capPath != null)
-								{
-									fillPath.AddPath(capPath, SKPathAddMode.Append);
-								}
-							}
-
-							// Dash end boundary: triangle faces forward (+tangent).
-							// Skip for open path end (StrokeEndLineCap covers it).
-							var isPathEnd = !isClosed && dashEnd >= pathLength;
-							if (!isPathEnd
-								&& measure.GetPositionAndTangent(dashEnd, out var endPos, out var endTan))
-							{
-								using var capPath = BuildCapPath(endPos, endTan, strokeWidth, CompositionStrokeCap.Triangle);
-								if (capPath != null)
-								{
-									fillPath.AddPath(capPath, SKPathAddMode.Append);
-								}
-							}
-						}
-					}
-
-					pos = segEnd;
-					idx++;
-				}
-			} while (measure.NextContour());
+				return trimmed.Combine(head, GeometryCombineMode.Union);
+			}
 		}
 
 		/// <summary>
-		/// Builds a half-plane rectangle extending from an endpoint in the cap direction.
-		/// Used to cut away incorrect DashCap protrusions at path endpoints.
+		/// Resolves the trim window to [TrimStart + TrimOffset, TrimEnd + TrimOffset] taken modulo 1, returning
+		/// false when no trimming is active (the whole path is drawn). A window that the offset pushes past 1.0
+		/// wraps: WinUI draws the union of [start, 1] and [0, <paramref name="wrapEnd"/>], not the complement a
+		/// single reversed window would give.
 		/// </summary>
-		private static SKPath BuildHalfPlaneCutter(SKPoint position, SKPoint direction, float strokeWidth)
+		private static bool TryResolveTrim(CompositionGeometry? geometry, out float start, out float end, out float? wrapEnd)
 		{
-			var size = strokeWidth * 2;
-			var normal = new SKPoint(-direction.Y, direction.X);
+			start = 0f;
+			end = 0f;
+			wrapEnd = null;
 
-			var p1 = new SKPoint(position.X + normal.X * size, position.Y + normal.Y * size);
-			var p2 = new SKPoint(p1.X + direction.X * size, p1.Y + direction.Y * size);
-			var p3 = new SKPoint(position.X - normal.X * size + direction.X * size, position.Y - normal.Y * size + direction.Y * size);
-			var p4 = new SKPoint(position.X - normal.X * size, position.Y - normal.Y * size);
-
-			var builder = new SKPathBuilder();
-			builder.AddPoly(new[] { p1, p2, p3, p4 }, true);
-			return builder.Detach();
-		}
-
-		/// <summary>
-		/// Determines whether a given position along a path falls within a dash (true) or a gap (false)
-		/// in the dash pattern.
-		/// </summary>
-		private static bool IsPositionInDash(float position, float[] dashValues, float dashOffset)
-		{
-			// Compute total dash pattern length
-			var totalLength = 0f;
-			for (int i = 0; i < dashValues.Length; i++)
+			if (geometry is not { } g || (g.TrimStart == default && g.TrimEnd == default && g.TrimOffset == default))
 			{
-				totalLength += dashValues[i];
+				return false;
 			}
 
-			if (totalLength <= 0)
+			if (g.TrimOffset == default)
 			{
+				start = g.TrimStart;
+				end = g.TrimEnd;
 				return true;
 			}
 
-			// Normalize position within pattern, accounting for offset
-			var patternPos = (position + dashOffset) % totalLength;
-			if (patternPos < 0)
+			// A full (or wider) window stays full regardless of offset — wrapping its endpoints into [0,1)
+			// would otherwise collapse it to nothing.
+			if (g.TrimEnd - g.TrimStart >= 1f)
 			{
-				patternPos += totalLength;
+				end = 1f;
+				return true;
 			}
 
-			// Walk through dash values to find which segment the position falls in.
-			// Even indices are dashes, odd indices are gaps.
-			var accumulated = 0f;
-			for (int i = 0; i < dashValues.Length; i++)
+			start = Wrap01(g.TrimStart + g.TrimOffset);
+			end = Wrap01(g.TrimEnd + g.TrimOffset);
+
+			if (start > end)
 			{
-				accumulated += dashValues[i];
-				if (patternPos < accumulated)
-				{
-					return i % 2 == 0; // Even = dash, odd = gap
-				}
+				wrapEnd = end;
+				end = 1f;
 			}
 
-			// Edge case: position exactly at pattern boundary - treat as start of dash
 			return true;
 		}
 
-		private enum EndpointDashState
+		private static float Wrap01(float value)
 		{
-			InRenderedDash, // Endpoint within a dash Skia rendered (nonzero length)
-			AtGapBoundary,  // Endpoint at/near end of a gap (within tolerance)
-			InGap           // Endpoint in middle of a gap (no action needed)
+			value %= 1f;
+			return value < 0f ? value + 1f : value;
 		}
 
-		/// <summary>
-		/// Determines the dash state at the path endpoint by walking the pattern cumulatively.
-		/// WinUI only creates a zero-length dash when the endpoint coincides with a gap/dash
-		/// boundary (within MIN_DASH_ARRAY_LENGTH = 0.1px tolerance). When the endpoint is
-		/// in the middle of a gap, nothing is rendered.
-		/// </summary>
-		private static EndpointDashState GetEndpointDashState(
-			float pathLength, float[] dashValues, float dashOffset)
+		private static IGeometry GetTrimmedFilledGeometry(IGeometry geometry, CompositionGeometry? source)
 		{
-			const float tolerance = 0.1f; // MIN_DASH_ARRAY_LENGTH from WinUI
-
-			var totalPattern = 0f;
-			for (int i = 0; i < dashValues.Length; i++)
+			if (!TryResolveTrim(source, out var start, out var end, out var wrapEnd))
 			{
-				totalPattern += dashValues[i];
+				return geometry.GetFilledGeometry(0f, 0f);
 			}
 
-			if (totalPattern <= 0)
+			var trimmed = geometry.GetFilledGeometry(start, end);
+			if (wrapEnd is not { } wrapped)
 			{
-				return EndpointDashState.InRenderedDash;
+				return trimmed;
 			}
 
-			var patternStart = -(dashOffset % totalPattern);
-			if (patternStart > 0)
+			using (trimmed)
+			using (var head = geometry.GetFilledGeometry(0f, wrapped))
 			{
-				patternStart -= totalPattern;
-			}
-
-			var pos = patternStart;
-			var idx = 0;
-
-			while (pos < pathLength)
-			{
-				var segLen = dashValues[idx % dashValues.Length];
-
-				// Guard: skip zero/negative segments so pos always advances.
-				// The totalPattern <= 0 check above handles the all-zeros case.
-				if (segLen <= 0)
-				{
-					idx++;
-					continue;
-				}
-
-				var segEnd = pos + segLen;
-				var isDash = (idx % 2) == 0;
-
-				if (segEnd >= pathLength - tolerance)
-				{
-					if (isDash && pos < pathLength)
-					{
-						return EndpointDashState.InRenderedDash;
-					}
-
-					if (!isDash && MathF.Abs(segEnd - pathLength) < tolerance)
-					{
-						return EndpointDashState.AtGapBoundary;
-					}
-
-					return EndpointDashState.InGap;
-				}
-
-				pos = segEnd;
-				idx++;
-			}
-
-			return EndpointDashState.InGap;
-		}
-
-		/// <summary>
-		/// Builds a cap shape at the given position extending in the given direction.
-		/// </summary>
-		private static SKPath? BuildCapPath(SKPoint position, SKPoint direction, float strokeWidth, CompositionStrokeCap capType)
-		{
-			var halfWidth = strokeWidth / 2;
-			// Normal perpendicular to direction
-			var normal = new SKPoint(-direction.Y, direction.X);
-
-			if (capType == CompositionStrokeCap.Round)
-			{
-				var builder = new SKPathBuilder();
-				// Build a semicircle oriented in the cap direction
-				var startAngle = (float)(Math.Atan2(normal.Y, normal.X) * 180 / Math.PI);
-				var rect = new SKRect(
-					position.X - halfWidth,
-					position.Y - halfWidth,
-					position.X + halfWidth,
-					position.Y + halfWidth);
-				builder.AddArc(rect, startAngle, -180);
-				builder.Close();
-				return builder.Detach();
-			}
-			else if (capType == CompositionStrokeCap.Square)
-			{
-				var builder = new SKPathBuilder();
-				// Rectangle extending halfWidth beyond endpoint in direction
-				var p1 = new SKPoint(position.X + normal.X * halfWidth, position.Y + normal.Y * halfWidth);
-				var p2 = new SKPoint(p1.X + direction.X * halfWidth, p1.Y + direction.Y * halfWidth);
-				var p3 = new SKPoint(p2.X - normal.X * strokeWidth, p2.Y - normal.Y * strokeWidth);
-				var p4 = new SKPoint(position.X - normal.X * halfWidth, position.Y - normal.Y * halfWidth);
-				builder.AddPoly(new[] { p1, p2, p3, p4 }, true);
-				return builder.Detach();
-			}
-			else if (capType == CompositionStrokeCap.Triangle)
-			{
-				var builder = new SKPathBuilder();
-				// Isoceles triangle: base perpendicular to direction at endpoint, apex at halfWidth in direction
-				var base1 = new SKPoint(position.X + normal.X * halfWidth, position.Y + normal.Y * halfWidth);
-				var apex = new SKPoint(position.X + direction.X * halfWidth, position.Y + direction.Y * halfWidth);
-				var base2 = new SKPoint(position.X - normal.X * halfWidth, position.Y - normal.Y * halfWidth);
-				builder.AddPoly(new[] { base1, apex, base2 }, true);
-				return builder.Detach();
-			}
-
-			return null;
-		}
-
-		/// <summary>
-		/// Adds clipped miter trapezoids to the stroke fill path for WinUI miter-clip behavior.
-		/// WinUI truncates the miter protrusion at the miter limit distance, while Skia falls
-		/// back to a full bevel. This method walks the original geometry to find vertices where
-		/// the miter exceeded the limit and adds the clipped miter geometry.
-		/// </summary>
-		private static void AddClippedMiterJoints(
-			SKPathBuilder fillPath,
-			SKPath originalGeometry,
-			float strokeWidth,
-			float miterLimit)
-		{
-			float hw = strokeWidth / 2;
-
-			using var iter = originalGeometry.CreateIterator(false);
-			var points = _spareMiterPoints;
-
-			// Per-contour tracking
-			SKPoint contourStart = default;
-			SKPoint contourFirstOutDir = default;
-			bool hasContourFirstOutDir = false;
-
-			// Previous segment's incoming tangent at its endpoint
-			SKPoint prevIncoming = default;
-			bool hasPrevIncoming = false;
-			SKPoint prevEndPoint = default;
-
-			SKPathVerb verb;
-			while ((verb = iter.Next(points)) != SKPathVerb.Done)
-			{
-				switch (verb)
-				{
-					case SKPathVerb.Move:
-						{
-							contourStart = points[0];
-							prevEndPoint = points[0];
-							hasPrevIncoming = false;
-							hasContourFirstOutDir = false;
-							break;
-						}
-					case SKPathVerb.Line:
-						{
-							var start = points[0];
-							var end = points[1];
-							var dir = NormalizeVector(end.X - start.X, end.Y - start.Y);
-							if (dir == default)
-							{
-								break;
-							}
-
-							if (hasPrevIncoming)
-							{
-								TryAddMiterClipTrapezoid(fillPath, start, prevIncoming, dir, hw, miterLimit);
-							}
-
-							if (!hasContourFirstOutDir)
-							{
-								contourFirstOutDir = dir;
-								hasContourFirstOutDir = true;
-							}
-
-							prevIncoming = dir;
-							hasPrevIncoming = true;
-							prevEndPoint = end;
-							break;
-						}
-					case SKPathVerb.Quad:
-					case SKPathVerb.Conic:
-						{
-							var start = points[0];
-							var control = points[1];
-							var end = points[2];
-
-							var outDir = NormalizeVector(control.X - start.X, control.Y - start.Y);
-							if (outDir == default)
-							{
-								outDir = NormalizeVector(end.X - start.X, end.Y - start.Y);
-							}
-
-							if (outDir == default)
-							{
-								break;
-							}
-
-							if (hasPrevIncoming)
-							{
-								TryAddMiterClipTrapezoid(fillPath, start, prevIncoming, outDir, hw, miterLimit);
-							}
-
-							if (!hasContourFirstOutDir)
-							{
-								contourFirstOutDir = outDir;
-								hasContourFirstOutDir = true;
-							}
-
-							var inDir = NormalizeVector(end.X - control.X, end.Y - control.Y);
-							if (inDir == default)
-							{
-								inDir = NormalizeVector(end.X - start.X, end.Y - start.Y);
-							}
-
-							if (inDir == default)
-							{
-								break;
-							}
-
-							prevIncoming = inDir;
-							hasPrevIncoming = true;
-							prevEndPoint = end;
-							break;
-						}
-					case SKPathVerb.Cubic:
-						{
-							var start = points[0];
-							var c1 = points[1];
-							var c2 = points[2];
-							var end = points[3];
-
-							var outDir = NormalizeVector(c1.X - start.X, c1.Y - start.Y);
-							if (outDir == default)
-							{
-								outDir = NormalizeVector(c2.X - start.X, c2.Y - start.Y);
-							}
-
-							if (outDir == default)
-							{
-								outDir = NormalizeVector(end.X - start.X, end.Y - start.Y);
-							}
-
-							if (outDir == default)
-							{
-								break;
-							}
-
-							if (hasPrevIncoming)
-							{
-								TryAddMiterClipTrapezoid(fillPath, start, prevIncoming, outDir, hw, miterLimit);
-							}
-
-							if (!hasContourFirstOutDir)
-							{
-								contourFirstOutDir = outDir;
-								hasContourFirstOutDir = true;
-							}
-
-							var inDir = NormalizeVector(end.X - c2.X, end.Y - c2.Y);
-							if (inDir == default)
-							{
-								inDir = NormalizeVector(end.X - c1.X, end.Y - c1.Y);
-							}
-
-							if (inDir == default)
-							{
-								inDir = NormalizeVector(end.X - start.X, end.Y - start.Y);
-							}
-
-							if (inDir == default)
-							{
-								break;
-							}
-
-							prevIncoming = inDir;
-							hasPrevIncoming = true;
-							prevEndPoint = end;
-							break;
-						}
-					case SKPathVerb.Close:
-						{
-							if (hasPrevIncoming && hasContourFirstOutDir)
-							{
-								float dx = contourStart.X - prevEndPoint.X;
-								float dy = contourStart.Y - prevEndPoint.Y;
-								float dist = MathF.Sqrt(dx * dx + dy * dy);
-
-								if (dist > 1e-6f)
-								{
-									// Implicit closing line from prevEndPoint to contourStart
-									var closeDir = new SKPoint(dx / dist, dy / dist);
-
-									// Junction at prevEndPoint
-									TryAddMiterClipTrapezoid(fillPath, prevEndPoint, prevIncoming, closeDir, hw, miterLimit);
-
-									// Junction at contourStart
-									TryAddMiterClipTrapezoid(fillPath, contourStart, closeDir, contourFirstOutDir, hw, miterLimit);
-								}
-								else
-								{
-									// Already at contour start, just process the closing junction
-									TryAddMiterClipTrapezoid(fillPath, contourStart, prevIncoming, contourFirstOutDir, hw, miterLimit);
-								}
-							}
-
-							hasPrevIncoming = false;
-							hasContourFirstOutDir = false;
-							break;
-						}
-				}
+				return trimmed.Combine(head, GeometryCombineMode.Union);
 			}
 		}
 
-		/// <summary>
-		/// For a single vertex, checks if the miter exceeds the limit and adds a clipped
-		/// miter trapezoid. Matches WinUI's DoLimitedMiter() algorithm from strokefigure.cpp.
-		/// </summary>
-		private static void TryAddMiterClipTrapezoid(
-			SKPathBuilder fillPath,
-			SKPoint vertex,
-			SKPoint dIn,
-			SKPoint dOut,
-			float halfWidth,
-			float miterLimit)
+		private static StrokeCap ToStrokeCap(CompositionStrokeCap cap) => cap switch
 		{
-			float dot = dIn.X * dOut.X + dIn.Y * dOut.Y;
+			CompositionStrokeCap.Square => StrokeCap.Square,
+			CompositionStrokeCap.Round => StrokeCap.Round,
+			CompositionStrokeCap.Triangle => StrokeCap.Triangle,
+			_ => StrokeCap.Butt, // Flat
+		};
 
-			// sin(alpha/2) where alpha is the vertex angle
-			float sinHalfSq = (1 + dot) / 2;
-			if (sinHalfSq <= 0)
-			{
-				return; // Collinear or reflex
-			}
-
-			float sinHalf = MathF.Sqrt(sinHalfSq);
-
-			// Check if miter exceeds limit: 1/sin(a/2) > miterLimit
-			if (sinHalf >= 1f / miterLimit)
-			{
-				return; // Within limit, Skia's full miter is correct
-			}
-
-			float cosHalfSq = (1 - dot) / 2;
-			if (cosHalfSq <= 1e-12f)
-			{
-				return; // Nearly straight or degenerate
-			}
-
-			float cosHalf = MathF.Sqrt(cosHalfSq);
-
-			// rRatio = (L - sin(a/2)) / cos(a/2) where L is the miter limit
-			float rRatio = (miterLimit - sinHalf) / cosHalf;
-			if (rRatio <= 0)
-			{
-				return;
-			}
-
-			// Determine which side the miter extends to
-			float cross = dIn.X * dOut.Y - dIn.Y * dOut.X;
-			if (MathF.Abs(cross) < 1e-6f)
-			{
-				return; // Nearly collinear
-			}
-
-			// Outward normals toward the miter side
-			SKPoint nIn, nOut;
-			if (cross > 0)
-			{
-				// Miter is on the right side
-				nIn = new SKPoint(dIn.Y, -dIn.X);
-				nOut = new SKPoint(dOut.Y, -dOut.X);
-			}
-			else
-			{
-				// Miter is on the left side
-				nIn = new SKPoint(-dIn.Y, dIn.X);
-				nOut = new SKPoint(-dOut.Y, dOut.X);
-			}
-
-			// Bevel endpoints (outer offset at vertex)
-			var bevelIn = new SKPoint(vertex.X + nIn.X * halfWidth, vertex.Y + nIn.Y * halfWidth);
-			var bevelOut = new SKPoint(vertex.X + nOut.X * halfWidth, vertex.Y + nOut.Y * halfWidth);
-
-			// Clip points (extend along offset edges toward would-be miter tip)
-			float ext = rRatio * halfWidth;
-			var clipIn = new SKPoint(bevelIn.X + dIn.X * ext, bevelIn.Y + dIn.Y * ext);
-			var clipOut = new SKPoint(bevelOut.X - dOut.X * ext, bevelOut.Y - dOut.Y * ext);
-
-			fillPath.AddPoly(new[] { bevelIn, clipIn, clipOut, bevelOut }, true);
-		}
-
-		private static SKPoint NormalizeVector(float x, float y)
+		private static StrokeJoin ToStrokeJoin(CompositionStrokeLineJoin join) => join switch
 		{
-			float len = MathF.Sqrt(x * x + y * y);
-			if (len < 1e-6f)
-			{
-				return default;
-			}
+			CompositionStrokeLineJoin.Bevel => StrokeJoin.Bevel,
+			CompositionStrokeLineJoin.Round => StrokeJoin.Round,
+			CompositionStrokeLineJoin.MiterOrBevel => StrokeJoin.MiterOrBevel,
+			_ => StrokeJoin.Miter,
+		};
 
-			return new SKPoint(x / len, y / len);
-		}
 	}
 }

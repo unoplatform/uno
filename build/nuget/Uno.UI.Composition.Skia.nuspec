@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+	<metadata minClientVersion="5.0">
+		<id>Uno.UI.Composition.Skia</id>
+		<version>0.0.1</version>
+		<authors>Uno Platform</authors>
+		<icon>uno.png</icon>
+		<projectUrl>https://github.com/unoplatform/uno</projectUrl>
+		<license type="expression">Apache-2.0</license>
+		<description>The SkiaSharp drawing backend for Uno Platform. Referenced by the 'Skia' UnoFeature (implied by default); the Uno runtime resolves it reflectively as the default renderer.</description>
+		<copyright>Uno Platform</copyright>
+		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
+		<dependencies>
+			<group targetFramework="net10.0">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+				<dependency id="SkiaSharp" version="4.151.1" />
+			</group>
+			<group targetFramework="net11.0">
+				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
+				<dependency id="SkiaSharp" version="4.151.1" />
+			</group>
+		</dependencies>
+	</metadata>
+
+	<files>
+		<file src="..\..\src\Common\uno.png" target="/" />
+
+		<file src="..\..\src\Uno.UI.Composition.Skia\bin\Uno.UI.Composition.SkiaBackend\Release\net10.0\Uno.UI.Composition.Skia.dll" target="lib\net10.0" />
+		<file src="..\..\src\Uno.UI.Composition.Skia\bin\Uno.UI.Composition.SkiaBackend\Release\net10.0\Uno.UI.Composition.Skia.pdb" target="lib\net10.0" />
+
+		<file src="..\..\src\Uno.UI.Composition.Skia\bin\Uno.UI.Composition.SkiaBackend\Release\net11.0\Uno.UI.Composition.Skia.dll" target="lib\net11.0" />
+		<file src="..\..\src\Uno.UI.Composition.Skia\bin\Uno.UI.Composition.SkiaBackend\Release\net11.0\Uno.UI.Composition.Skia.pdb" target="lib\net11.0" />
+	</files>
+
+</package>

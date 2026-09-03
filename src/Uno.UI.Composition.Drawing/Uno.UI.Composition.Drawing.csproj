@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+		<!-- The neutral drawing SPI is platform-agnostic (like the Skia/Wasm composition assemblies): keep it a
+		     generic netX.0 so mobile Skia hosts (net10.0-android/-ios) consume it via the generic TFM instead of a
+		     platform TFM that mismatches its net10.0 consumers (e.g. Uno.UI.Composition.Skia). Set the flag the
+		     targetframework-override.props reads, so an explicit net10.0-android/-ios override keeps it generic —
+		     matching its sibling composition assemblies (Uno.UI.Composition, Uno.UI). Must precede the import below. -->
+		<UnoShouldUseNoPlatformOverride>true</UnoShouldUseNoPlatformOverride>
+	</PropertyGroup>
+
+	<Import Project="../targetframework-override.props" />
+
+	<PropertyGroup>
+		<AssemblyName>Uno.UI.Composition.Drawing</AssemblyName>
+		<RootNamespace>Uno.UI.Composition.Drawing</RootNamespace>
+		<DefineConstants>$(DefineConstants);XAMARIN;IS_UNO</DefineConstants>
+
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<Deterministic>true</Deterministic>
+
+		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
+
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Foundation.Logging\Uno.Foundation.Logging.csproj" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Skia.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" Condition="'$(SyncGeneratorRunning)'!='true'" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" Condition="'$(SyncGeneratorRunning)'=='true'" />
+	</ItemGroup>
+
+</Project>

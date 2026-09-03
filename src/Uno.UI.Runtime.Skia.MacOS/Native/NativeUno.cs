@@ -361,6 +361,14 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_get_metal_handles(nint window, out nint device, out nint queue);
 
+	// The rendering MTKView's CAMetalLayer (for a Metal-surface backend's CreateMetalSurface); 0 if no Metal view.
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial nint uno_window_get_metal_layer(nint window);
+
+	// Hand CAMetalLayer ownership to the negotiated context (native drawInMTKView stops presenting its own drawable).
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_set_external_present(nint window, [MarshalAs(UnmanagedType.I1)] bool enabled);
+
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial double uno_window_get_refresh_rate(nint window);
 

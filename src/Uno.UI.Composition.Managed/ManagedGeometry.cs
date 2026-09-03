@@ -1,0 +1,565 @@
+﻿#nullable enable
+
+using System;
+using System.Collections.Generic;
+using System.Numerics;
+using Windows.Foundation;
+using Windows.Graphics;
+
+namespace Uno.UI.Composition.Drawing;
+
+/// <summary>
+/// A SkiaSharp-free <see cref="IGeometry"/>. The path is normalized to line and cubic-bézier segments
+/// (quadratics, arcs, ellipses and rounded rects are converted on the way in), so every operation is
+/// plain arithmetic. Backends that can't consume it natively read <see cref="Contours"/> and rebuild
+/// their own representation (the Skia backend turns them into an SKPath for rasterization).
+/// </summary>
+internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
+{
+	private Rect? _bounds;
+	private int _segmentCount = -1;
+
+	public ManagedGeometry(IReadOnlyList<ManagedContour> contours, GeometryFillRule fillRule, RoundRectangle? sourceRoundRect = null)
+	{
+		Contours = contours;
+		FillRule = fillRule;
+		SourceRoundRect = sourceRoundRect;
+	}
+
+	/// <summary>Set when the geometry was built as exactly one (rounded) rectangle primitive; see <see cref="IGeometry.TryGetRoundRect"/>.</summary>
+	internal RoundRectangle? SourceRoundRect { get; }
+
+	public RoundRectangle? TryGetRoundRect() => SourceRoundRect;
+
+	/// <summary>The sub-paths, each a start point plus line/cubic segments and a closed flag.</summary>
+	public IReadOnlyList<ManagedContour> Contours { get; }
+
+	public GeometryFillRule FillRule { get; }
+
+	public Rect Bounds => _bounds ??= ComputeTightBounds();
+
+	public int SegmentCount
+	{
+		get
+		{
+			if (_segmentCount < 0)
+			{
+				var n = 0;
+				foreach (var contour in Contours)
+				{
+					n += contour.Segments.Length;
+				}
+				_segmentCount = n;
+			}
+
+			return _segmentCount;
+		}
+	}
+
+	public bool IsEmpty
+	{
+		get
+		{
+			foreach (var contour in Contours)
+			{
+				if (contour.Segments.Length > 0)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+	}
+
+	// Flattened closed outlines ([0] = contour start, implicit close included), cached: the geometry is
+	// immutable and Combine ray-casts FillContains once per sub-edge, so re-flattening per call turns a
+	// single Combine into O(points²) curve evaluations.
+	private Vector2[][]? _flattenedOutlines;
+
+	internal Vector2[][] FlattenedClosedOutlines
+	{
+		get
+		{
+			if (_flattenedOutlines is null)
+			{
+				var outlines = new List<Vector2[]>(Contours.Count);
+				var pts = new List<Vector2>();
+				foreach (var contour in Contours)
+				{
+					if (contour.Segments.Length == 0)
+					{
+						continue;
+					}
+
+					pts.Clear();
+					pts.Add(contour.Start);
+					FlattenInto(contour, includeImplicitClose: true, pts);
+					outlines.Add(pts.ToArray());
+				}
+
+				_flattenedOutlines = outlines.ToArray();
+			}
+
+			return _flattenedOutlines;
+		}
+	}
+
+	public bool FillContains(Vector2 point)
+	{
+		// Outside the tight bounds a ray-cast can't cross anything.
+		var b = Bounds;
+		if (point.X < b.X || point.X > b.X + b.Width || point.Y < b.Y || point.Y > b.Y + b.Height)
+		{
+			return false;
+		}
+
+		// Ray-cast against the flattened outline. NonZero uses the winding number; EvenOdd uses parity.
+		var winding = 0;
+		var crossings = 0;
+
+		foreach (var outline in FlattenedClosedOutlines)
+		{
+			for (var i = 1; i < outline.Length; i++)
+			{
+				CountRayCrossing(outline[i - 1], outline[i], point, ref winding, ref crossings);
+			}
+		}
+
+		return FillRule == GeometryFillRule.EvenOdd ? (crossings & 1) == 1 : winding != 0;
+	}
+
+	public IGeometry Transform(Matrix3x2 matrix)
+	{
+		// Identity is not a copy. A retained session snapshots every recorded geometry with Transform(identity),
+		// so without this each record deep-copies every contour of every path — and the copy also defeats any
+		// cache keyed on geometry identity. Safe because this type is immutable and Dispose is a no-op.
+		if (matrix.IsIdentity)
+		{
+			return this;
+		}
+
+		var transformed = new ManagedContour[Contours.Count];
+		for (var i = 0; i < Contours.Count; i++)
+		{
+			var contour = Contours[i];
+			var segments = new ManagedPathSegment[contour.Segments.Length];
+			for (var s = 0; s < segments.Length; s++)
+			{
+				var seg = contour.Segments[s];
+				segments[s] = seg.Kind == ManagedSegmentKind.Line
+					? ManagedPathSegment.Line(Vector2.Transform(seg.End, matrix))
+					: ManagedPathSegment.Cubic(
+						Vector2.Transform(seg.C1, matrix),
+						Vector2.Transform(seg.C2, matrix),
+						Vector2.Transform(seg.End, matrix));
+			}
+
+			transformed[i] = new ManagedContour(Vector2.Transform(contour.Start, matrix), segments, contour.Closed);
+		}
+
+		return new ManagedGeometry(transformed, FillRule, TransformRoundRect(SourceRoundRect, matrix));
+	}
+
+	// A round rect stays a round rect under positive axis-aligned scale + translation; anything else drops the tag.
+	private static RoundRectangle? TransformRoundRect(RoundRectangle? source, Matrix3x2 m)
+	{
+		if (source is not { } rr || m.M12 != 0 || m.M21 != 0 || m.M11 <= 0 || m.M22 <= 0)
+		{
+			return null;
+		}
+
+		var scale = new Vector2(m.M11, m.M22);
+		var tl = Vector2.Transform(new Vector2((float)rr.Rect.Left, (float)rr.Rect.Top), m);
+		return new RoundRectangle
+		{
+			Rect = new Rect(tl.X, tl.Y, rr.Rect.Width * m.M11, rr.Rect.Height * m.M22),
+			TopLeft = rr.TopLeft * scale,
+			TopRight = rr.TopRight * scale,
+			BottomRight = rr.BottomRight * scale,
+			BottomLeft = rr.BottomLeft * scale,
+		};
+	}
+
+	// Combine lives in ManagedGeometry.Combine.skia.cs.
+
+	public IGeometry GetFilledGeometry(float trimStart, float trimEnd)
+	{
+		// The fill path of a fill (non-stroke) is the path itself; a (0,0) trim means "no trimming". Return THIS
+		// rather than a re-wrap: an identical copy still has a new identity every frame, which makes every cache
+		// keyed on the geometry miss and rebuild. Safe — the type is immutable.
+		if (trimStart == 0f && trimEnd == 0f)
+		{
+			return this;
+		}
+
+		return Trim(trimStart, trimEnd);
+	}
+
+	// GetStrokeFillGeometry lives in ManagedGeometry.Stroke.skia.cs.
+
+	public void StreamFlattened(IFlattenedPathSink sink)
+	{
+		// Flattening is transform-independent — the sink receives LOCAL points and maps them itself — and this
+		// type is immutable, so subdividing the curves once and keeping the result is always valid. A render
+		// backend that needs triangles re-streams the same geometry every frame, so without this every glyph,
+		// border and icon on screen is re-subdivided (and re-allocates a list per contour) each frame.
+		var flat = _flattened ??= BuildFlattened();
+		for (var i = 0; i < Contours.Count; i++)
+		{
+			var contour = Contours[i];
+			if (contour.Segments.Length == 0)
+			{
+				continue;
+			}
+
+			sink.BeginContour(contour.Start);
+			var pts = flat[i];
+			for (var j = 0; j < pts.Length; j++)
+			{
+				sink.LineTo(pts[j]);
+			}
+
+			sink.EndContour(contour.Closed);
+		}
+	}
+
+	private Vector2[][]? _flattened;
+
+	/// <summary>
+	/// Maximum allowed distance (in the geometry's own units) between the flattened polyline and the true curve.
+	/// Glyphs and shapes reach the render backends in pixels, so this is effectively a sub-pixel budget.
+	/// </summary>
+	private const float FlattenTolerance = 0.2f;
+
+	/// <summary>Perpendicular distance from <paramref name="p"/> to the chord starting at <paramref name="start"/>.</summary>
+	private static float DeviationFromChord(Vector2 start, Vector2 chord, Vector2 p)
+	{
+		var len = chord.Length();
+		var v = p - start;
+		// A degenerate chord (closed loop back to the start) has no perpendicular: fall back to the offset itself.
+		return len < 1e-6f ? v.Length() : MathF.Abs(v.X * chord.Y - v.Y * chord.X) / len;
+	}
+
+	private Vector2[][] BuildFlattened()
+	{
+		var result = new Vector2[Contours.Count][];
+		var pts = new List<Vector2>();
+		for (var i = 0; i < Contours.Count; i++)
+		{
+			var contour = Contours[i];
+			if (contour.Segments.Length == 0)
+			{
+				result[i] = Array.Empty<Vector2>();
+				continue;
+			}
+
+			pts.Clear();
+			FlattenInto(contour, includeImplicitClose: false, pts);
+			result[i] = pts.ToArray();
+		}
+
+		return result;
+	}
+
+	public void StreamSegments(IGeometrySink sink)
+	{
+		foreach (var contour in Contours)
+		{
+			if (contour.Segments.Length == 0)
+			{
+				continue;
+			}
+
+			sink.BeginFigure(contour.Start);
+			foreach (var seg in contour.Segments)
+			{
+				if (seg.Kind == ManagedSegmentKind.Line)
+				{
+					sink.LineTo(seg.End);
+				}
+				else
+				{
+					sink.CubicTo(seg.C1, seg.C2, seg.End);
+				}
+			}
+
+			sink.EndFigure(contour.Closed);
+		}
+	}
+
+	/// <summary>
+	/// Trims the outline to the arc-length fraction [<paramref name="trimStart"/>, <paramref name="trimEnd"/>]
+	/// of the concatenated contour length (Skia's normal <c>CreateTrim</c>). Contours are flattened, so the
+	/// result is a polyline — matching the rendered curve within flattening tolerance.
+	/// </summary>
+	private ManagedGeometry Trim(float trimStart, float trimEnd)
+	{
+		var polylines = new List<(Vector2[] Points, float StartLength)>();
+		var total = 0f;
+		foreach (var contour in Contours)
+		{
+			if (contour.Segments.Length == 0)
+			{
+				continue;
+			}
+
+			var pts = new List<Vector2> { contour.Start };
+			FlattenInto(contour, includeImplicitClose: contour.Closed, pts);
+
+			polylines.Add((pts.ToArray(), total));
+			for (var i = 1; i < pts.Count; i++)
+			{
+				total += Vector2.Distance(pts[i - 1], pts[i]);
+			}
+		}
+
+		var startLen = trimStart * total;
+		var endLen = trimEnd * total;
+		if (total <= 0 || startLen >= endLen)
+		{
+			return new ManagedGeometry(Array.Empty<ManagedContour>(), FillRule);
+		}
+
+		var result = new List<ManagedContour>();
+		foreach (var (points, offset) in polylines)
+		{
+			var kept = new List<Vector2>();
+			var pos = offset;
+			for (var i = 1; i < points.Length; i++)
+			{
+				var a = points[i - 1];
+				var b = points[i];
+				var segLen = Vector2.Distance(a, b);
+				if (segLen <= 0)
+				{
+					continue;
+				}
+
+				var segStart = pos;
+				var segEnd = pos + segLen;
+				// Intersect [segStart, segEnd] with [startLen, endLen].
+				var lo = MathF.Max(segStart, startLen);
+				var hi = MathF.Min(segEnd, endLen);
+				if (lo < hi)
+				{
+					var p0 = Vector2.Lerp(a, b, (lo - segStart) / segLen);
+					var p1 = Vector2.Lerp(a, b, (hi - segStart) / segLen);
+					if (kept.Count == 0)
+					{
+						kept.Add(p0);
+					}
+
+					kept.Add(p1);
+				}
+
+				pos = segEnd;
+			}
+
+			if (kept.Count >= 2)
+			{
+				var segments = new ManagedPathSegment[kept.Count - 1];
+				for (var i = 1; i < kept.Count; i++)
+				{
+					segments[i - 1] = ManagedPathSegment.Line(kept[i]);
+				}
+
+				result.Add(new ManagedContour(kept[0], segments, closed: false));
+			}
+		}
+
+		return new ManagedGeometry(result, FillRule);
+	}
+
+	public void Dispose() { }
+
+	private Rect ComputeTightBounds()
+	{
+		var hasPoint = false;
+		float minX = float.MaxValue, minY = float.MaxValue, maxX = float.MinValue, maxY = float.MinValue;
+
+		void Include(Vector2 p)
+		{
+			hasPoint = true;
+			if (p.X < minX) { minX = p.X; }
+			if (p.Y < minY) { minY = p.Y; }
+			if (p.X > maxX) { maxX = p.X; }
+			if (p.Y > maxY) { maxY = p.Y; }
+		}
+
+		foreach (var contour in Contours)
+		{
+			if (contour.Segments.Length == 0)
+			{
+				continue;
+			}
+
+			var start = contour.Start;
+			Include(start);
+			var current = start;
+			foreach (var seg in contour.Segments)
+			{
+				if (seg.Kind == ManagedSegmentKind.Line)
+				{
+					Include(seg.End);
+				}
+				else
+				{
+					// Tight bounds of a cubic: endpoints plus the axis extrema (roots of the derivative).
+					Include(seg.End);
+					IncludeCubicExtrema(current, seg.C1, seg.C2, seg.End, Include);
+				}
+
+				current = seg.End;
+			}
+		}
+
+		return hasPoint ? new Rect(minX, minY, maxX - minX, maxY - minY) : default;
+	}
+
+	private static void IncludeCubicExtrema(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, Action<Vector2> include)
+	{
+		for (var axis = 0; axis < 2; axis++)
+		{
+			float c0 = axis == 0 ? p0.X : p0.Y;
+			float c1 = axis == 0 ? p1.X : p1.Y;
+			float c2 = axis == 0 ? p2.X : p2.Y;
+			float c3 = axis == 0 ? p3.X : p3.Y;
+
+			// B'(t) = 3[(a)t² + (b)t + c]; solve a t² + b t + c = 0 on (0,1).
+			float a = -c0 + 3 * c1 - 3 * c2 + c3;
+			float b = 2 * (c0 - 2 * c1 + c2);
+			float c = c1 - c0;
+
+			foreach (var t in SolveQuadratic(a, b, c))
+			{
+				if (t > 0 && t < 1)
+				{
+					include(EvaluateCubic(p0, p1, p2, p3, t));
+				}
+			}
+		}
+	}
+
+	private static IEnumerable<float> SolveQuadratic(float a, float b, float c)
+	{
+		if (MathF.Abs(a) < 1e-7f)
+		{
+			if (MathF.Abs(b) > 1e-7f)
+			{
+				yield return -c / b;
+			}
+
+			yield break;
+		}
+
+		var disc = b * b - 4 * a * c;
+		if (disc < 0)
+		{
+			yield break;
+		}
+
+		var sqrt = MathF.Sqrt(disc);
+		yield return (-b + sqrt) / (2 * a);
+		yield return (-b - sqrt) / (2 * a);
+	}
+
+	internal static Vector2 EvaluateCubic(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float t)
+	{
+		var u = 1 - t;
+		return (u * u * u) * p0 + (3 * u * u * t) * p1 + (3 * u * t * t) * p2 + (t * t * t) * p3;
+	}
+
+	/// <summary>Flattens a contour's segments into a polyline of end points (curves subdivided), appended
+	/// to <paramref name="output"/>. A plain loop rather than an iterator: this is the geometry engine's
+	/// hottest path and iterator MoveNext/alloc overhead is measurable there.</summary>
+	internal static void FlattenInto(ManagedContour contour, bool includeImplicitClose, List<Vector2> output)
+	{
+		var current = contour.Start;
+		foreach (var seg in contour.Segments)
+		{
+			if (seg.Kind == ManagedSegmentKind.Line)
+			{
+				output.Add(seg.End);
+			}
+			else
+			{
+				// Step count from how far the curve actually bows away from its chord, not from the control
+				// polygon's LENGTH: a short curve can be long-ish in control length yet almost straight, and the
+				// old rule also imposed a floor of 8 steps. Glyph outlines arrive in pixels, so that floor put
+				// ~8 segments on every few-pixel curve of every glyph — hundreds of points per character, which
+				// is the bulk of the WebGPU backend's retained geometry (it keeps flattened fans per fill).
+				// For a cubic, chord deviation d needs about sqrt(d / tol) uniform steps to stay within tol.
+				var chord = seg.End - current;
+				var d1 = DeviationFromChord(current, chord, seg.C1);
+				var d2 = DeviationFromChord(current, chord, seg.C2);
+				var deviation = MathF.Max(d1, d2);
+				var steps = Math.Clamp((int)MathF.Ceiling(MathF.Sqrt(deviation / FlattenTolerance)), 1, 256);
+				for (var i = 1; i <= steps; i++)
+				{
+					output.Add(EvaluateCubic(current, seg.C1, seg.C2, seg.End, i / (float)steps));
+				}
+			}
+
+			current = seg.End;
+		}
+
+		if (includeImplicitClose && current != contour.Start)
+		{
+			output.Add(contour.Start);
+		}
+	}
+
+	private static void CountRayCrossing(Vector2 a, Vector2 b, Vector2 point, ref int winding, ref int crossings)
+	{
+		// Horizontal ray to +X from `point`; count edges crossing the ray, tracking direction for winding.
+		if ((a.Y <= point.Y && b.Y > point.Y) || (b.Y <= point.Y && a.Y > point.Y))
+		{
+			var t = (point.Y - a.Y) / (b.Y - a.Y);
+			var xCross = a.X + t * (b.X - a.X);
+			if (xCross > point.X)
+			{
+				crossings++;
+				winding += a.Y <= point.Y ? 1 : -1;
+			}
+		}
+	}
+}
+
+internal enum ManagedSegmentKind
+{
+	Line,
+	Cubic,
+}
+
+/// <summary>A single path segment, normalized to either a line or a cubic bézier.</summary>
+internal readonly struct ManagedPathSegment
+{
+	public ManagedSegmentKind Kind { get; private init; }
+	public Vector2 C1 { get; private init; }
+	public Vector2 C2 { get; private init; }
+	public Vector2 End { get; private init; }
+
+	public static ManagedPathSegment Line(Vector2 end) => new() { Kind = ManagedSegmentKind.Line, End = end };
+
+	public static ManagedPathSegment Cubic(Vector2 c1, Vector2 c2, Vector2 end)
+		=> new() { Kind = ManagedSegmentKind.Cubic, C1 = c1, C2 = c2, End = end };
+}
+
+/// <summary>A sub-path: a start point, its line/cubic segments, and whether it is closed.</summary>
+internal sealed class ManagedContour
+{
+	// Segments is a concrete array on purpose: iterating it through IReadOnlyList<T> makes every access an
+	// array-interface wrapper call, which Mono AOT can't precompile on WASM — the whole tessellation path
+	// then runs interpreted (~two orders of magnitude slower).
+	public ManagedContour(Vector2 start, ManagedPathSegment[] segments, bool closed)
+	{
+		Start = start;
+		Segments = segments;
+		Closed = closed;
+	}
+
+	public Vector2 Start { get; }
+	public ManagedPathSegment[] Segments { get; }
+	public bool Closed { get; }
+}

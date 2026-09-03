@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Uno.UI.Composition.Drawing;
+using System;
 using System.Globalization;
 using CoreAnimation;
 using CoreGraphics;
@@ -6,7 +7,6 @@ using Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using ObjCRuntime;
-using SkiaSharp;
 using UIKit;
 using Uno.Helpers.Theming;
 using Uno.UI.Helpers;
@@ -17,13 +17,15 @@ using Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 using Uno.UI.Dispatching;
 using System.Threading;
 using Uno.UI.Xaml.Core;
-using SkiaCanvas = Uno.UI.Runtime.Skia.AppleUIKit.UnoSKMetalView;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 internal class RootViewController : UINavigationController, IAppleUIKitXamlRootHost
 {
-	private SkiaCanvas? _skCanvasView;
+	private IAppleUIKitRenderView? _renderView;
+	// The negotiated graphics context (Skia-on-Metal or WebGPU-on-CAMetalLayer). The host names no backend.
+	private ISwapChain? _context;
+	private IDrawingFactory? _renderer;
 	private XamlRoot? _xamlRoot;
 	private UIView? _textInputLayer;
 	private TopViewLayer? _topViewLayer;
@@ -68,11 +70,16 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		_textInputLayer.UserInteractionEnabled = false;
 		view.AddSubview(_textInputLayer);
 
-		_skCanvasView = new SkiaCanvas();
-		_skCanvasView.SetOwner(this);
-		_skCanvasView.Frame = view.Bounds;
-		_skCanvasView.AutoresizingMask = UIViewAutoresizing.All;
-		view.AddSubview(_skCanvasView);
+		// Neutral graphics pipeline: register a per-kind view+context factory and let the app-registered backend negotiate the kind.
+		GraphicsRegistry.ContextFactory = kind => System.Threading.Tasks.Task.FromResult(CreateRenderViewAndContext(kind));
+		var init = GraphicsRegistry.Initialize();
+		_context = init.Context;
+		_renderer = init.Renderer;
+
+		var renderView = (UIView)_renderView!;
+		renderView.Frame = view.Bounds;
+		renderView.AutoresizingMask = UIViewAutoresizing.All;
+		view.AddSubview(renderView);
 
 		_topViewLayer = new TopViewLayer();
 		_topViewLayer.Frame = view.Bounds;
@@ -112,22 +119,59 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	public void SetXamlRoot(XamlRoot xamlRoot) => _xamlRoot = xamlRoot;
 
-	internal void OnRenderFrameRequested(SKCanvas? canvas, Func<global::Windows.Foundation.Size, SKCanvas> resizeFunc)
+	// Push the Skia-on-Metal view's per-frame drawable texture into the negotiated context, then render.
+	internal void OnMetalFrame(nint texture)
 	{
-		var clipPath = (RootElement?.Visual.CompositionTarget as CompositionTarget)?.OnNativePlatformFrameRequested(canvas, resizeFunc);
+		(_context as IAppleNativeTextureSink)?.SetCurrentTexture(texture);
+		OnFrameRequested();
+	}
 
-		if (clipPath is not null)
+	// Neutral per-frame loop: acquire the negotiated context's target, render, and present.
+	internal void OnFrameRequested()
+	{
+		if (_context is null)
 		{
-			UpdateNativeClipping(clipPath);
+			return;
+		}
+
+		var ct = RootElement?.Visual.CompositionTarget as CompositionTarget;
+		if (ct is not null)
+		{
+			ct.Renderer = _renderer!;
+		}
+		var clipGeometry = ct?.OnNativePlatformFrameRequested(_context);
+
+		if (clipGeometry is not null)
+		{
+			UpdateNativeClipping(clipGeometry);
 		}
 	}
 
-	private void UpdateNativeClipping(SKPath path)
+	private ISwapChain? CreateRenderViewAndContext(GraphicsContextKind kind)
+	{
+		switch (kind)
+		{
+			case GraphicsContextKind.Metal:
+				var metalView = new UnoMetalView();
+				metalView.SetOwner(this);
+				_renderView = metalView;
+				return metalView.CreateGraphicsContext();
+			case GraphicsContextKind.WebGpu:
+				var webgpuView = new UnoWebGpuMetalView();
+				webgpuView.SetOwner(this);
+				_renderView = webgpuView;
+				return webgpuView.CreateGraphicsContext();
+			default:
+				return null;
+		}
+	}
+
+	private void UpdateNativeClipping(IGeometry geometry)
 	{
 		string? svgPath = null;
-		if (!path.IsEmpty)
+		if (!geometry.IsEmpty)
 		{
-			svgPath = path.ToSvgPathData();
+			svgPath = geometry.ToSvgPathData();
 		}
 
 		if (svgPath != _lastSvgClipPath)
@@ -272,7 +316,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	public void InvalidateRender()
 	{
-		_skCanvasView?.QueueRender();
+		_renderView?.QueueRender();
 	}
 
 	public UIElement? RootElement => _xamlRoot?.VisualTree.RootElement;

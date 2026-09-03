@@ -46,7 +46,6 @@ public partial class Window
 	private WindowType _windowType;
 
 	private WeakEventHelper.WeakEventCollection? _sizeChangedHandlers;
-	private WeakEventHelper.WeakEventCollection? _backgroundChangedHandlers;
 
 	internal Window(WindowType windowType, Assembly? callingAssembly = null)
 	{
@@ -611,12 +610,7 @@ public partial class Window
 	internal Brush? Background
 	{
 		get => _background;
-		set
-		{
-			_background = value;
-
-			_backgroundChangedHandlers?.Invoke(this, EventArgs.Empty);
-		}
+		set => _background = value;
 	}
 
 	internal void NotifyContentLoaded()
@@ -631,14 +625,6 @@ public partial class Window
 		}
 #endif
 	}
-
-	internal IDisposable RegisterBackgroundChangedEvent(EventHandler handler)
-		=> WeakEventHelper.RegisterEvent(
-			_backgroundChangedHandlers ??= new(),
-			handler,
-			(h, s, e) =>
-				(h as EventHandler)?.Invoke(s, (EventArgs)e!)
-		);
 
 	/// <summary>
 	/// Provides a memory-friendly registration to the <see cref="SizeChanged" /> event.

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Helpers;
@@ -181,7 +181,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// WinUI draws the underline as a rect whose top edge is at baseline + the font's underline
 			// position and whose height is the font's underline thickness (DWriteTextRenderer::DrawUnderline
 			// offsets the baseline by DWRITE_UNDERLINE.offset, then D2DTextDrawingContext fills a
-			// { 0, 0, width, thickness } rect). SKFontMetrics reports the same top-edge offset, so the
+			// { 0, 0, width, thickness } rect). The font's metrics report the same top-edge offset, so the
 			// painted band must start at the metric offset instead of being centred on it.
 			const int fontSize = 200;
 
@@ -214,12 +214,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// Font assets resolve asynchronously, so wait until the run actually paints with Roboto.
 			await UITestHelper.WaitFor(
-				() => run.FontInfo.SKFont.Typeface?.FamilyName == RobotoFamily,
+				() => run.FontInfo.FontHandle.FamilyName == RobotoFamily,
 				5000,
 				$"Timed out waiting for {RobotoAsset} to be resolved for the run.");
 			await UITestHelper.WaitForIdle();
 
-			var metrics = run.FontInfo.SKFontMetrics;
+			var metrics = run.FontInfo.FontHandle;
 			if (metrics.UnderlinePosition is not { } underlinePosition || metrics.UnderlineThickness is not { } underlineThickness)
 			{
 				Assert.Fail($"{RobotoFamily} publishes underline metrics, so their absence means the run did not resolve to the bundled asset.");

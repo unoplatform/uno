@@ -1,0 +1,126 @@
+<Project>
+	<!-- Links Dawn's emdawnwebgpu (modern webgpu.h ABI) into a Microsoft.NET.Sdk.WebAssembly app so the WebGPU
+	     backend's [DllImport("webgpu")] resolves in the browser. Import from any Skia-on-WASM app head that
+	     renders with the WebGPU backend. The generated binding (Native/WebGpuInterop.cs) is shared with desktop;
+	     the 18 wgpu-native-only functions Dawn lacks are satisfied by Native/wgpu_wasm_stubs.c (never called on
+	     WASM). Requires the SkiaSharp-proven library_webgpu.js patch to load under the .NET-pinned Emscripten. -->
+	<PropertyGroup>
+		<EmdawnTag>v20260624.223603</EmdawnTag>
+		<EmdawnCacheDir>$(MSBuildThisFileDirectory)obj\emdawnwebgpu\$(EmdawnTag)\</EmdawnCacheDir>
+		<EmdawnPkgDir>$(EmdawnCacheDir)emdawnwebgpu_pkg\</EmdawnPkgDir>
+		<!-- A writable emcc cache (a copy of the SDK's) so emcc can build the port + its extra stdlibs; pointing
+		     WasmCachePath off the SDK's default dir makes the SDK pass EM_FROZEN_CACHE=0 (BrowserWasmApp.targets).
+		     On Windows this is relocated next to the SDK cache (see _AnchorWgpuWasmCacheToToolchainDrive below);
+		     this obj\ default is the non-Windows path and the last-resort fallback. -->
+		<WgpuWasmCacheDir>$(MSBuildThisFileDirectory)obj\wgpu-wasm-emcache\</WgpuWasmCacheDir>
+		<WasmCachePath>$(WgpuWasmCacheDir)</WasmCachePath>
+		<!-- Forward slashes: this flag is appended verbatim to emcc's link response file, whose parser treats a
+		     backslash as an escape char and eats it — so a Windows path would arrive with its separators stripped.
+		     emcc accepts forward slashes on Windows, and they pass through the response-file parser untouched. -->
+		<EmdawnPortPath>$(EmdawnPkgDir)emdawnwebgpu.port.py</EmdawnPortPath>
+		<EmdawnPortPath>$(EmdawnPortPath.Replace('\', '/'))</EmdawnPortPath>
+		<EmccExtraLDFlags>$(EmccExtraLDFlags) --use-port=$(EmdawnPortPath) -sDEFAULT_TO_CXX=1</EmccExtraLDFlags>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<!-- Satisfy the static link of the wgpu-native-only imports Dawn doesn't export (ScanForPInvokes=false:
+		     this file is not itself a P/Invoke module). -->
+		<NativeFileReference Include="$(MSBuildThisFileDirectory)Native\wgpu_wasm_stubs.c" ScanForPInvokes="false" />
+		<!-- NOTE: the emdawnwebgpu bridge is small (a browser-API shim, a few hundred KB in the final .wasm) and is
+		     linked UNCONDITIONALLY so the host's direct WebGpuContext reference always resolves — no reflection, no
+		     opt-in-link fragility. Activating the WebGPU render path (the UNO_WEBGPU env) stays opt-in and is set by
+		     the app head, not here. -->
+	</ItemGroup>
+
+	<UsingTask TaskName="PatchEmdawnLibraryJs" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+		<ParameterGroup>
+			<File ParameterType="System.String" Required="true" />
+		</ParameterGroup>
+		<Task>
+			<Code Type="Fragment" Language="cs"><![CDATA[
+				var text = System.IO.File.ReadAllText(File);
+				// emsdk 3.1.56 exposes stackSave/stackRestore only as bare names, not the $-aliases the modern
+				// port's __deps declare; rewrite so a bare --js-library load doesn't fail at compiler.mjs.
+				var patched = text.Replace("'$stackSave'", "'stackSave'").Replace("'$stackRestore'", "'stackRestore'");
+				// Expose emdawn's importJsDevice on Module so the browser device-init (created in JS via navigator.gpu,
+				// SkiaSharp-style) can graft the JS GPUDevice into the C handle table — avoiding the in-WASM
+				// wgpuInstanceProcessEvents pump, which hangs when driven from a managed call stack on the browser.
+				// Two helpers grafted onto Module: importJsDevice (JS-created device -> C handle) and jsObject
+				// (resolve a wgpu handle ptr back to its JS object, so managed code can mapAsync a readback buffer
+				// off the event loop — the in-WASM DevicePoll busy-spin can't yield for the map to complete).
+				// importTexture/importTextureView let the browser context create the offscreen resolve target in JS
+				// (jsDevice.createTexture) — JS-primary, symmetric with the JS-created device — then import both into the
+				// C handle table for present, while the JS GPUTextureView crosses the seam as IWebGpuRenderTarget.JsColorView.
+				if (!patched.Contains("unoWebGpuImportDevice")) {
+					patched = patched.Replace("$WebGPU__deps: [],",
+						"$WebGPU__deps: [],\n  $WebGPU__postset: \"Module['unoWebGpuImportDevice'] = function(d, p) { return WebGPU.importJsDevice(d, p); }; Module['unoWebGpuJsObject'] = function(p) { return WebGPU.Internals.jsObjects[p]; }; Module['unoWebGpuImportTexture'] = function(t, p) { return WebGPU.importJsTexture(t, p); }; Module['unoWebGpuImportTextureView'] = function(v, p) { return WebGPU.importJsTextureView(v, p); };\",");
+				} else {
+					if (!patched.Contains("unoWebGpuJsObject")) {
+						patched = patched.Replace("return WebGPU.importJsDevice(d, p); };",
+							"return WebGPU.importJsDevice(d, p); }; Module['unoWebGpuJsObject'] = function(p) { return WebGPU.Internals.jsObjects[p]; };");
+					}
+					if (!patched.Contains("unoWebGpuImportTexture'")) {
+						patched = patched.Replace("return WebGPU.Internals.jsObjects[p]; };",
+							"return WebGPU.Internals.jsObjects[p]; }; Module['unoWebGpuImportTexture'] = function(t, p) { return WebGPU.importJsTexture(t, p); }; Module['unoWebGpuImportTextureView'] = function(v, p) { return WebGPU.importJsTextureView(v, p); };");
+					}
+				}
+				if (patched != text) { System.IO.File.WriteAllText(File, patched); }
+			]]></Code>
+		</Task>
+	</UsingTask>
+
+	<!-- On Windows the writable emcc cache MUST sit on the same drive as the emscripten toolchain. When emcc
+	     builds a system-lib variant the port needs (e.g. libGL-webgl2-getprocaddr), it computes
+	     os.path.relpath(toolchainSource, cacheBuildDir); on Windows that throws ("path is on mount 'C:', start
+	     on mount 'E:'") when the toolchain and the cache are on different drives. The repo (hence obj\) is often
+	     on a different drive than the toolchain, so relocate the cache onto the toolchain's drive at a reliably
+	     writable location. LocalAppData is the right home: per-user writable and, since the emsdk lives under the
+	     user profile, normally on the toolchain's drive too — unlike the emsdk tree itself (provisioned
+	     read-only) or the frozen SDK Cache pack (read-only Program Files). A drive-root folder on the toolchain
+	     drive is the fallback for the rare case LocalAppData is on another drive. Resolved in a target, not a
+	     top-level property, because the workload sets EmscriptenSdkToolsPath after this file is imported; it runs
+	     before the cache is seeded, provisioned, or baked into the emcc env by _PrepareForBrowserWasmBuildNative.
+	     Non-Windows has a single root, so relpath never crosses a drive and the obj\ default stands. -->
+	<Target Name="_AnchorWgpuWasmCacheToToolchainDrive"
+			BeforeTargets="_PrepareForBrowserWasmBuildNative;_SeedWgpuWasmCache;_ProvisionEmdawnWebGpu"
+			Condition="'$(OS)' == 'Windows_NT' and '$(EmscriptenSdkToolsPath)' != ''">
+		<PropertyGroup>
+			<_WgpuToolchainDrive>$([System.IO.Path]::GetPathRoot($(EmscriptenSdkToolsPath)))</_WgpuToolchainDrive>
+			<!-- Drive-root fallback: always on the toolchain drive; used only when LocalAppData is elsewhere. -->
+			<WgpuWasmCacheDir>$([MSBuild]::NormalizeDirectory($(_WgpuToolchainDrive), 'uno-wgpu-wasm-emcache'))</WgpuWasmCacheDir>
+			<!-- Preferred: per-user writable cache under LocalAppData when it shares the toolchain drive. -->
+			<WgpuWasmCacheDir Condition="'$(LOCALAPPDATA)' != '' and '$([System.IO.Path]::GetPathRoot($(LOCALAPPDATA)))' == '$(_WgpuToolchainDrive)'">$([MSBuild]::NormalizeDirectory($(LOCALAPPDATA), 'Uno', 'wgpu-wasm-emcache'))</WgpuWasmCacheDir>
+			<WasmCachePath>$(WgpuWasmCacheDir)</WasmCachePath>
+		</PropertyGroup>
+	</Target>
+
+	<!-- Fetch + patch the pinned emdawnwebgpu port before the native link. -->
+	<Target Name="_ProvisionEmdawnWebGpu" BeforeTargets="_GenerateManagedToNative;_WasmCompileNativeSources;Build"
+			Inputs="$(MSBuildThisFileFullPath)" Outputs="$(EmdawnPkgDir)webgpu\src\library_webgpu.js">
+		<MakeDir Directories="$(EmdawnCacheDir)" />
+		<DownloadFile Condition="!Exists('$(EmdawnCacheDir)emdawnwebgpu_pkg-$(EmdawnTag).zip')"
+			SourceUrl="https://github.com/google/dawn/releases/download/$(EmdawnTag)/emdawnwebgpu_pkg-$(EmdawnTag).zip"
+			DestinationFolder="$(EmdawnCacheDir)" Retries="3" />
+		<Unzip Condition="!Exists('$(EmdawnPkgDir)emdawnwebgpu.port.py')"
+			SourceFiles="$(EmdawnCacheDir)emdawnwebgpu_pkg-$(EmdawnTag).zip" DestinationFolder="$(EmdawnCacheDir)" />
+		<PatchEmdawnLibraryJs File="$(EmdawnPkgDir)webgpu\src\library_webgpu.js" />
+	</Target>
+
+	<!-- Seed the writable emcc cache from the SDK's once (so only the port + its extra stdlibs get built). -->
+	<Target Name="_SeedWgpuWasmCache" BeforeTargets="_GenerateManagedToNative;_WasmCompileNativeSources;Build"
+			Condition="!Exists('$(WgpuWasmCacheDir)sysroot') and '$(EmscriptenCacheSdkCacheDir)' != '' and Exists('$(EmscriptenCacheSdkCacheDir)')">
+		<ItemGroup>
+			<_WgpuSdkCacheFiles Include="$(EmscriptenCacheSdkCacheDir)\**\*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(_WgpuSdkCacheFiles)"
+			DestinationFiles="@(_WgpuSdkCacheFiles->'$(WgpuWasmCacheDir)%(RecursiveDir)%(Filename)%(Extension)')"
+			SkipUnchangedFiles="true" />
+	</Target>
+
+	<!-- Register "webgpu" as a statically-linked P/Invoke module (else the runtime can't resolve wgpu* imports). -->
+	<Target Name="_AddWebGpuPInvokeModule" BeforeTargets="_GenerateManagedToNative">
+		<ItemGroup>
+			<_WasmPInvokeModules Include="webgpu" />
+		</ItemGroup>
+	</Target>
+</Project>

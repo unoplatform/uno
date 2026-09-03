@@ -2,7 +2,7 @@
 
 using System.Numerics;
 using Uno.UI.Composition;
-using SkiaSharp;
+using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
 using System.Diagnostics.CodeAnalysis;
 using Uno.Extensions;
@@ -11,28 +11,27 @@ namespace Microsoft.UI.Composition
 {
 	public partial class CompositionSurfaceBrush : CompositionBrush, ISizedBrush
 	{
-		private static readonly SKPaint _tempPaint = new();
-		private SKColor? _monochromeColor;
+		private global::Windows.UI.Color? _monochromeColor;
 
-		internal SKColor? MonochromeColor
+		internal global::Windows.UI.Color? MonochromeColor
 		{
 			get => _monochromeColor;
 			set => SetObjectProperty(ref _monochromeColor, value);
 		}
 
-		internal override bool RequiresRepaintOnEveryFrame => Surface is ISkiaSurface;
+		internal override bool RequiresRepaintOnEveryFrame => Surface is IPaintableSurface;
 
 		Vector2? ISizedBrush.Size => Surface switch
 		{
-			SkiaCompositionSurface { Image: SKImage img } => new(img.Width, img.Height),
-			ISkiaSurface skiaSurface => skiaSurface.Size,
-			ISkiaCompositionSurfaceProvider { SkiaCompositionSurface: { Image: SKImage img } } => new(img.Width, img.Height),
+			CompositionImageSurface { Size: { } sz } => sz,
+			IPaintableSurface skiaSurface => skiaSurface.Size,
+			ICompositionImageSurfaceProvider { ImageSurface: { Size: { } sz } } => sz,
 			_ => null
 		};
 
-		private Rect GetArrangedImageRect(Size sourceSize, SKRect targetRect)
+		private Rect GetArrangedImageRect(Size sourceSize, Rect targetRect)
 		{
-			var size = GetArrangedImageSize(sourceSize, targetRect.Size.ToSize());
+			var size = GetArrangedImageSize(sourceSize, new Size(targetRect.Width, targetRect.Height));
 
 			var point = new Point(targetRect.Left, targetRect.Top);
 			point.X += (targetRect.Width - size.Width) * HorizontalAlignmentRatio;
@@ -62,14 +61,14 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-		private static bool TryGetSkiaCompositionSurface(ICompositionSurface? surface, [NotNullWhen(true)] out SkiaCompositionSurface? skiaCompositionSurface)
+		private static bool TryGetCompositionImageSurface(ICompositionSurface? surface, [NotNullWhen(true)] out CompositionImageSurface? skiaCompositionSurface)
 		{
-			if (surface is SkiaCompositionSurface scs)
+			if (surface is CompositionImageSurface scs)
 			{
 				skiaCompositionSurface = scs;
 				return true;
 			}
-			else if (surface is ISkiaCompositionSurfaceProvider scsp && scsp.SkiaCompositionSurface is SkiaCompositionSurface scsps)
+			else if (surface is ICompositionImageSurfaceProvider scsp && scsp.ImageSurface is CompositionImageSurface scsps)
 			{
 				skiaCompositionSurface = scsps;
 				return true;
@@ -79,70 +78,72 @@ namespace Microsoft.UI.Composition
 			return false;
 		}
 
-		internal override bool CanPaint() => TryGetSkiaCompositionSurface(Surface, out _) || Surface is ISkiaSurface;
+		internal override bool CanPaint() => TryGetCompositionImageSurface(Surface, out _) || Surface is IPaintableSurface;
 
-		internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds)
+		internal override bool TryPaint(IDrawingSession session, float opacity, Rect bounds)
 		{
-			if (bounds.IsEmpty)
+			if (bounds.Width <= 0 || bounds.Height <= 0)
 			{
-				return;
+				return true;
 			}
 
-			if (Surface is ISkiaSurface skiaSurface)
+			if (Surface is IPaintableSurface paintableSurface)
 			{
-				canvas.Save();
-				canvas.ClipRect(bounds, antialias: true);
-				skiaSurface.Paint(canvas, opacity);
-				canvas.Restore();
+				session.Save();
+				session.ClipRect(bounds);
+				paintableSurface.Paint(session, opacity, bounds);
+				session.Restore();
+				return true;
 			}
-			else if (TryGetSkiaCompositionSurface(Surface, out var scs))
+
+			if (!TryGetCompositionImageSurface(Surface, out var scs))
 			{
-				var backgroundArea = GetArrangedImageRect(new Size(scs.Image!.Width, scs.Image.Height), bounds);
-
-				if (backgroundArea.Width <= 0 || backgroundArea.Height <= 0)
-				{
-					return;
-				}
-
-				// Relevant doc snippet from WPF: https://learn.microsoft.com/en-us/dotnet/desktop/wpf/graphics-multimedia/brush-transformation-overview#differences-between-the-transform-and-relativetransform-properties
-				// When you apply a transform to a brush's RelativeTransform property, that transform is applied to the brush before its output is mapped to the painted area. The following list describes the order in which a brush’s contents are processed and transformed.
-				//  * Process the brush’s contents. For a GradientBrush, this means determining the gradient area. For a TileBrush, the Viewbox is mapped to the Viewport. This becomes the brush’s output.
-				// 	* Project the brush’s output onto the 1 x 1 transformation rectangle.
-				// 	* Apply the brush’s RelativeTransform, if it has one.
-				// 	* Project the transformed output onto the area to paint.
-				// 	* Apply the brush’s Transform, if it has one.
-				var matrix = Matrix3x2.Identity;
-				matrix *= Matrix3x2.CreateScale((float)(backgroundArea.Width / scs.Image!.Width),
-					(float)(backgroundArea.Height / scs.Image.Height));
-				matrix *= Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
-				matrix *= TransformMatrix;
-				matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height).Inverse();
-				matrix *= RelativeTransform;
-				matrix *= Matrix3x2.CreateScale(bounds.Width, bounds.Height);
-
-				_tempPaint.Reset();
-				_tempPaint.IsAntialias = true;
-				if (MonochromeColor is { } color)
-				{
-					_tempPaint.ColorFilter = SKColorFilter.CreateBlendMode(color.WithAlpha((byte)(color.Alpha * opacity)), SKBlendMode.SrcIn);
-				}
-				else
-				{
-					_tempPaint.ColorFilter = opacity.ToColorFilter();
-				}
-
-				canvas.Save();
-				canvas.Concat(matrix.ToSKMatrix());
-				// Ideally, we would use a CatmullRom sampler when upscaling (i.e. bounds.Size > scs.Image.Size) and
-				// a Lanczos sampler when downscaling. However, profiling shows that CatmullRom chokes when the
-				// drawing are (i.e. bounds) is large and the improvement over linear sampling is almost imperceptible.
-				// For downsampling, Lanczos is slightly better than linear filtering with mipmapping but chokes when
-				// the downscaling ratio is too big. Linear filtering with mipmapping is mostly okay but in the most
-				// extreme cases with tons of images it's quite a bit slower than a linear filter without improving
-				// the output that much.
-				canvas.DrawImage(scs.Image, 0, 0, new SKSamplingOptions(SKFilterMode.Linear), _tempPaint);
-				canvas.Restore();
+				return false;
 			}
+
+			// Size comes from the current frame's IImage or a directly-retained texture (SVG) — never dereference
+			// Image, which is null for a texture-backed surface.
+			if (scs.Size is not { } sourceSize)
+			{
+				return true;
+			}
+
+			var backgroundArea = GetArrangedImageRect(new Size(sourceSize.X, sourceSize.Y), bounds);
+			if (backgroundArea.Width <= 0 || backgroundArea.Height <= 0)
+			{
+				return true;
+			}
+
+			// RelativeTransform is applied to the brush's output before it's mapped to the paint area;
+			// Transform is applied after. (See the WPF brush-transform docs.)
+			var matrix = Matrix3x2.Identity;
+			matrix *= Matrix3x2.CreateScale((float)(backgroundArea.Width / sourceSize.X), (float)(backgroundArea.Height / sourceSize.Y));
+			matrix *= Matrix3x2.CreateTranslation((float)backgroundArea.Left, (float)backgroundArea.Top);
+			matrix *= TransformMatrix;
+			matrix *= Matrix3x2.CreateScale((float)bounds.Width, (float)bounds.Height).Inverse();
+			matrix *= RelativeTransform;
+			matrix *= Matrix3x2.CreateScale((float)bounds.Width, (float)bounds.Height);
+
+			if (scs.GetTexture() is not { } texture)
+			{
+				return true;
+			}
+
+			session.Save();
+			session.Concat(new Matrix4x4(matrix));
+			if (MonochromeColor is { } color)
+			{
+				// Recolor the image to a single tint (its coverage kept), with opacity folded into the tint alpha.
+				var faded = global::Windows.UI.Color.FromArgb((byte)(color.A * opacity), color.R, color.G, color.B);
+				var colorFilter = session.Factory.CreateTintColorFilter(faded);
+				session.DrawImage(texture, 0, 0, colorFilter);
+			}
+			else
+			{
+				session.DrawImage(texture, 0, 0, opacity: opacity);
+			}
+			session.Restore();
+			return true;
 		}
 	}
 }

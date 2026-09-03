@@ -1059,6 +1059,28 @@ void uno_window_get_metal_handles(UNOWindow* window, void** device, void** queue
 #endif
 }
 
+void* uno_window_get_metal_layer(UNOWindow* window)
+{
+    NSView* view = window.renderingView;
+    if ([view isKindOfClass:[MTKView class]])
+    {
+        // MTKView's backing layer is a CAMetalLayer — hand it to the managed Metal-surface backend for CreateMetalSurface.
+        return (__bridge void *)(view.layer);
+    }
+    return NULL;
+}
+
+void uno_window_set_external_present(UNOWindow* window, bool enabled)
+{
+    if (window.metalViewDelegate != nil)
+    {
+        window.metalViewDelegate.externalPresent = enabled;
+    }
+#if DEBUG
+    NSLog(@"uno_window_set_external_present %p -> %s", window, enabled ? "true" : "false");
+#endif
+}
+
 CGFloat readNextCoord(const char *svg, int *position, long length)
 {
     CGFloat result = NAN;

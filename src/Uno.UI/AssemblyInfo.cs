@@ -3,7 +3,6 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using Uno.Foundation.Diagnostics.CodeAnalysis;
 using Uno.Foundation.Extensibility;
-using Uno.UI.Graphics;
 
 [assembly: InternalsVisibleTo("Uno.UI.Foldable")]
 [assembly: InternalsVisibleTo("Uno.UI.UnitTests")]
@@ -13,7 +12,6 @@ using Uno.UI.Graphics;
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests.Skia")]
 [assembly: InternalsVisibleTo("Uno.UI.Lottie")]
-[assembly: InternalsVisibleTo("Uno.UI.Svg")]
 [assembly: InternalsVisibleTo("Uno.UI.XamlHost")]
 [assembly: InternalsVisibleTo("SamplesApp")]
 [assembly: InternalsVisibleTo("UnoIslandsSamplesApp.Skia")]

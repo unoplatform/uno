@@ -1605,8 +1605,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void Draw(in Visual.PaintingSession session)
 		{
-			session.Canvas.Save();
-			session.Canvas.Translate((float)Padding.Left, (float)Padding.Top);
+			session.Session.Save();
+			session.Session.Translate((float)Padding.Left, (float)Padding.Top);
 			var highligherters = _renderSelection ? TextHighlighters.Append(new TextHighlighter
 			{
 				Background = SelectionHighlightColor,
@@ -1631,7 +1631,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_caretPaint is { } c ? (c.index, c.brush, CaretThickness) : null,
 				highligherters,
 				compositionRange);
-			session.Canvas.Restore();
+			session.Session.Restore();
 			DrawingFinished?.Invoke(this, EventArgs.Empty);
 		}
 
