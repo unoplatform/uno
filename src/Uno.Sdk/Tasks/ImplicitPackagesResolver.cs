@@ -284,7 +284,10 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.Extensions, UnoExtensionsVersion)
 			.UpdateManifest(PackageManifest.Group.Toolkit, UnoToolkitVersion)
 			.UpdateManifest(PackageManifest.Group.Themes, UnoThemesVersion)
-			.UpdateManifest(PackageManifest.Group.Maui, MauiVersion);
+			.UpdateManifest(PackageManifest.Group.Maui, MauiVersion)
+			// MauiCompatibility is a separate group only so the net11 override does not apply
+			// to it - MauiVersion must still move all of the MAUI packages together.
+			.UpdateManifest(PackageManifest.Group.MauiCompatibility, MauiVersion);
 	}
 
 	private UnoFeature[] GetFeatures()
