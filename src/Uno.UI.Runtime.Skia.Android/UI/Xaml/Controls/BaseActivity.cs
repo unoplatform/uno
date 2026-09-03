@@ -129,18 +129,26 @@ namespace Uno.UI
 		public BaseActivity(IntPtr handle, JniHandleOwnership transfer)
 			: base(handle, transfer)
 		{
-			ContextHelper.Current = this;
 			Initialize();
 		}
 
 		public BaseActivity()
 		{
-			ContextHelper.Current = this;
 			Initialize();
 		}
 
 		private void Initialize()
 		{
+			// Seed the ambient context only while no activity holds it: add-ins created below
+			// (e.g. Uno.UI.Foldable) resolve their lifecycle events through ContextHelper.Current
+			// and throw when it is null. Claiming it unconditionally would let an activity that is
+			// merely being constructed displace the live foreground one; from OnCreate onwards
+			// SetAsCurrent/ResignCurrent are the sole writers.
+			if (!ContextHelper.TryGetCurrent(out _))
+			{
+				ContextHelper.Current = this;
+			}
+
 			// Eagerly create the ApplicationView instance for IBaseActivityEvents
 			// to be useable (specifically for the Create event)
 			ApplicationView.GetOrCreateForWindowId(AppWindow.MainWindowId);
@@ -237,7 +245,7 @@ namespace Uno.UI
 
 			Microsoft.UI.Xaml.Application.Current?.RaiseLeavingBackground(() =>
 			{
-				(this as ApplicationActivity)?.Wrapper.OnNativeVisibilityChanged(true);
+				OnNativeVisibilityChanged(true);
 			});
 		}
 
@@ -264,7 +272,7 @@ namespace Uno.UI
 			SetAsCurrent();
 
 			Microsoft.UI.Xaml.Application.Current?.RaiseResuming();
-			(this as ApplicationActivity)?.Wrapper.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+			OnNativeActivationChanged(CoreWindowActivationState.CodeActivated);
 		}
 
 		public override void OnTopResumedActivityChanged(bool isTopResumedActivity)
@@ -277,7 +285,7 @@ namespace Uno.UI
 
 		partial void InnerTopResumedActivityChanged(bool isTopResumedActivity)
 		{
-			(this as ApplicationActivity)?.Wrapper.OnNativeActivated(
+			OnNativeActivationChanged(
 				isTopResumedActivity ?
 					CoreWindowActivationState.CodeActivated :
 					CoreWindowActivationState.Deactivated);
@@ -295,7 +303,7 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			(this as ApplicationActivity)?.Wrapper.OnNativeActivated(CoreWindowActivationState.Deactivated);
+			OnNativeActivationChanged(CoreWindowActivationState.Deactivated);
 		}
 
 		protected override void OnStop()
@@ -316,7 +324,7 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			(this as ApplicationActivity)?.Wrapper.OnNativeVisibilityChanged(false);
+			OnNativeVisibilityChanged(false);
 			Microsoft.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Microsoft.UI.Xaml.Application.Current?.RaiseSuspending());
 		}
 
@@ -367,6 +375,20 @@ namespace Uno.UI
 			{
 				CurrentChanged?.Invoke(this, new CurrentActivityChangedEventArgs(null));
 			}
+		}
+
+		/// <summary>
+		/// Notifies a derived activity that the window it drives changed activation state.
+		/// </summary>
+		private protected virtual void OnNativeActivationChanged(CoreWindowActivationState state)
+		{
+		}
+
+		/// <summary>
+		/// Notifies a derived activity that the window it drives changed visibility.
+		/// </summary>
+		private protected virtual void OnNativeVisibilityChanged(bool isVisible)
+		{
 		}
 		#endregion
 
