@@ -155,15 +155,31 @@ file static class Win32
 	/// Puts <paramref name="value"/> on the clipboard, which must already be open on this thread.
 	/// </summary>
 	/// <remarks>
-	/// The allocation is freed when the call fails, because <c>SetClipboardData</c> only takes
+	/// <para>The allocation is freed on every failing path, because <c>SetClipboardData</c> only takes
 	/// ownership of the handle on success. Keeping both halves here is the point: a caller that
-	/// allocated separately would have to know that rule to avoid leaking on the failure path.
+	/// allocated separately would have to know that rule to avoid leaking.</para>
+	/// <para>Each step is checked so that a failure is reported to the test rather than thrown: this
+	/// runs on the holder thread, where an exception would take the whole test runner down with it.</para>
 	/// </remarks>
 	public static bool TrySetUnicodeText(string value, out int error)
 	{
 		// SetClipboardData requires GMEM_MOVEABLE.
 		var handle = GlobalAlloc(GMEM_MOVEABLE, (UIntPtr)((value.Length + 1) * sizeof(char)));
+		if (handle == IntPtr.Zero)
+		{
+			error = Marshal.GetLastWin32Error();
+			return false;
+		}
+
 		var pointer = GlobalLock(handle);
+		if (pointer == IntPtr.Zero)
+		{
+			error = Marshal.GetLastWin32Error();
+			GlobalFree(handle);
+
+			return false;
+		}
+
 		Marshal.Copy(value.ToCharArray(), 0, pointer, value.Length);
 		Marshal.WriteInt16(pointer, value.Length * sizeof(char), 0);
 		GlobalUnlock(handle);
@@ -209,13 +225,13 @@ file static class Win32
 	[DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
 	private static extern IntPtr CreateWindowEx(uint exStyle, string className, string? windowName, uint style, int x, int y, int width, int height, IntPtr parent, IntPtr menu, IntPtr instance, IntPtr param);
 
-	[DllImport("kernel32.dll")]
+	[DllImport("kernel32.dll", SetLastError = true)]
 	private static extern IntPtr GlobalAlloc(uint flags, UIntPtr bytes);
 
 	[DllImport("kernel32.dll")]
 	private static extern IntPtr GlobalFree(IntPtr handle);
 
-	[DllImport("kernel32.dll")]
+	[DllImport("kernel32.dll", SetLastError = true)]
 	private static extern IntPtr GlobalLock(IntPtr handle);
 
 	[DllImport("kernel32.dll")]
