@@ -66,8 +66,16 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase
 		try
 		{
 			var server = await AtspiServer.TryStartAsync(ResolveApplicationName());
-			if (IsDisposed || server is null)
+			if (server is null)
 			{
+				return;
+			}
+
+			if (IsDisposed)
+			{
+				// The window closed while the connection was being established;
+				// stop the server so the D-Bus connection is not leaked.
+				StopServerSafely(server);
 				return;
 			}
 
@@ -105,7 +113,7 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase
 				return displayName;
 			}
 		}
-		catch
+		catch (Exception)
 		{
 			// Package.Current throws outside of a packaged (MSIX) deployment.
 		}
@@ -177,12 +185,13 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase
 
 	private AtspiNode BuildRootNode(UIElement rootElement)
 	{
+		TrySubscribeScrollSource(rootElement);
 		var root = BuildNode(rootElement, null, RootPath);
 
 		// The AT-SPI application root must keep ATSPI_ROLE_APPLICATION regardless of
 		// the root element's own peer role, or clients mislabel the whole app.
-		root.Role = 75; // ATSPI_ROLE_APPLICATION
-		root.RoleName = "application";
+		root.Role = AtspiRoleMap.ApplicationRoleId;
+		root.RoleName = AtspiRoleMap.ApplicationRoleName;
 		if (string.IsNullOrEmpty(root.Name))
 		{
 			root.Name = ResolveApplicationName();
@@ -197,6 +206,8 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase
 
 	private void BuildNodeRecursive(AtspiNode parent, UIElement child)
 	{
+		TrySubscribeScrollSource(child);
+
 		var accessibilityView = AutomationProperties.GetAccessibilityView(child);
 		if (accessibilityView == AccessibilityView.Raw)
 		{
@@ -266,7 +277,10 @@ internal sealed class X11Accessibility : SkiaAccessibilityBase
 	}
 
 	protected override void OnChildAdded(UIElement parent, UIElement child, int? index)
-		=> QueueRebuildIfNeeded();
+	{
+		TrySubscribeScrollSource(child);
+		QueueRebuildIfNeeded();
+	}
 
 	protected override void OnChildRemoved(UIElement parent, UIElement child)
 		=> QueueRebuildIfNeeded();

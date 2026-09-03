@@ -203,11 +203,11 @@ internal partial class X11XamlRootHost
 						case XEventName.FocusIn:
 							QueueAction(this, () =>
 							{
-								_focusCallback(true);
 								if (_accessibility is not null)
 								{
 									AccessibilityRouter.SetActive(this);
 								}
+								_focusCallback(true);
 							});
 							break;
 						case XEventName.FocusOut:

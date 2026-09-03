@@ -13,6 +13,9 @@ namespace Uno.WinUI.Runtime.Skia.X11;
 /// </summary>
 internal static class AtspiRoleMap
 {
+	internal const uint ApplicationRoleId = 75; // ATSPI_ROLE_APPLICATION
+	internal const string ApplicationRoleName = "application";
+
 	/// <summary>
 	/// Resolves the AT-SPI role id and name for a WinUI automation control type.
 	/// </summary>

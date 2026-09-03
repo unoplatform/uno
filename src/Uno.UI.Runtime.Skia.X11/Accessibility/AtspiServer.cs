@@ -166,7 +166,7 @@ internal sealed class AtspiServer
 
 	private AtspiReference GetReference(AtspiNode? node)
 		=> node is null
-			? new AtspiReference(_uniqueName, AtspiDbus.NullPath)
+			? AtspiReference.Null
 			: new AtspiReference(_uniqueName, node.Path);
 
 	private AtspiReference GetParentReference(AtspiNode node)
@@ -327,7 +327,7 @@ internal sealed class AtspiServer
 					ReplySize(context, node);
 					break;
 				case AtspiDbus.GetLayerMethod:
-					ReplyUInt32(context, AtspiDbus.WindowLayer);
+					ReplyUInt32(context, AtspiDbus.WidgetLayer);
 					break;
 				case AtspiDbus.ContainsMethod:
 					ReplyContains(context, node);
@@ -669,7 +669,7 @@ internal sealed class AtspiServer
 		public const string RelationSetSignature = "a(ua(so))";
 		public const string IntrospectionXml = "<node/>";
 		public const string ApplicationRoleName = "application";
-		public const uint WindowLayer = 3;
+		public const uint WidgetLayer = 3; // ATSPI_LAYER_WIDGET
 		public const uint ApplicationRole = 75;
 		public const int EnabledState = 8;
 		public const int FocusableState = 11;
