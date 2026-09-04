@@ -735,6 +735,27 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		// No per-frame upload — the texture is already resident; record its view for the present pass.
 		{ var ip0 = Map(x, y); var ip1 = Map(x + w, y); var ip2 = Map(x + w, y + h); var ip3 = Map(x, y + h); _target.Add(new ImageCmd { P0 = ip0, P1 = ip1, P2 = ip2, P3 = ip3, View = t.View, W = w, H = h, Opacity = opacity, ColorMatrix = _pendingColorMatrix, Clip = RelaxedClip(ip0, ip1, ip2, ip3) }); }
 	}
+	public void DrawImageTiled(ITexture texture, in Rect destination, EdgeExtend extendX, EdgeExtend extendY, float opacity = 1f)
+	{
+		if (texture is not WebGpuTexture t) { return; }
+		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
+		TrackTexture(t);
+		// The sampler's address mode does the extending, so one quad over the whole destination with UVs running
+		// past 1 is the entire fill. None doesn't extend, so that axis is cut back to the texture's own size
+		// rather than sampled past it.
+		float x = (float)destination.Left, y = (float)destination.Top;
+		var dw = extendX == EdgeExtend.None ? MathF.Min((float)destination.Width, w) : (float)destination.Width;
+		var dh = extendY == EdgeExtend.None ? MathF.Min((float)destination.Height, h) : (float)destination.Height;
+		if (dw <= 0 || dh <= 0) { return; }
+		var p0 = Map(x, y); var p1 = Map(x + dw, y); var p2 = Map(x + dw, y + dh); var p3 = Map(x, y + dh);
+		_target.Add(new ImageCmd
+		{
+			P0 = p0, P1 = p1, P2 = p2, P3 = p3, View = t.View, W = w, H = h, Opacity = opacity,
+			U1 = dw / w, V1 = dh / h, ExtendX = extendX, ExtendY = extendY,
+			Clip = RelaxedClip(p0, p1, p2, p3),
+		});
+	}
+
 	public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter)
 	{
 		if (texture is not WebGpuTexture t) { return; }

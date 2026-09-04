@@ -526,10 +526,13 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 		switch (node)
 		{
 			case TextureInput t:
-				// The extend modes are not realized: there is no infinite-extend sampler here, so a BorderEffect's
-				// wrap/mirror/clamp draws as the single finite texture. Returning null instead wouldn't recover them
-				// either — the recipe fallback reduces the graph to a source plus a colour matrix, which cannot tile.
-				return t.Texture;
+			{
+				if (t.ExtendX == EdgeExtend.None && t.ExtendY == EdgeExtend.None) { return t.Texture; }
+				// A BorderEffect extends its source past its own rect, and downstream nodes sample over the whole
+				// bounds, so realize the extended fill as a bounds-sized input here.
+				int tw = Math.Max(1, (int)Math.Round(bounds.Width)), th = Math.Max(1, (int)Math.Round(bounds.Height));
+				return RenderOffscreen(tw, th, s => s.DrawImageTiled(t.Texture, new Rect(0, 0, tw, th), t.ExtendX, t.ExtendY));
+			}
 			case ColorInput c:
 			{
 				int cw = Math.Max(1, (int)Math.Round(bounds.Width)), ch = Math.Max(1, (int)Math.Round(bounds.Height));

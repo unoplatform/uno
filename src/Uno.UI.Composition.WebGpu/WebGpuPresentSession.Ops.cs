@@ -410,7 +410,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)op, 112);
 					var entries = stackalloc WGPUBindGroupEntry[3];
 					entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = view };
-					entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
+					entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.TiledSampler(im.ExtendX, im.ExtendY) };
 					entries[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = WebGpuDevice.ImageUniformBytes };
 					var bgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = entries };
 					var bg = Bg(ref bgd, owned);

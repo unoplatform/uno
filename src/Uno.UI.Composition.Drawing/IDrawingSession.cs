@@ -152,6 +152,13 @@ public interface IDrawingSession
 	void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter);
 
 	/// <summary>
+	/// Fills <paramref name="destination"/> with <paramref name="texture"/>, extending it past its own rectangle by
+	/// the per-axis edge mode. The texture is anchored at the destination's top-left at 1:1 scale, so the repeat unit
+	/// is its pixel size — drawing a tiled texture scaled would filter its detail away.
+	/// </summary>
+	void DrawImageTiled(ITexture texture, in Rect destination, EdgeExtend extendX, EdgeExtend extendY, float opacity = 1f);
+
+	/// <summary>
 	/// Draws <paramref name="texture"/> stretched into <paramref name="destination"/> as a nine-slice: the
 	/// <paramref name="centerSlice"/> rectangle (in image pixels) defines the fixed corners / stretchable
 	/// edges and center. When <paramref name="centerHollow"/> is true the center slice is not drawn.

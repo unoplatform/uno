@@ -720,6 +720,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	public void DrawLine(Vector2 p0, Vector2 p1, WColor color, float strokeWidth) => _overlay.DrawLine(p0, p1, color, strokeWidth);
 	public void DrawImage(ITexture texture, float x, float y, float opacity = 1f) => _overlay.DrawImage(texture, x, y, opacity);
 	public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter) => _overlay.DrawImage(texture, x, y, colorFilter);
+	public void DrawImageTiled(ITexture texture, in Rect destination, EdgeExtend extendX, EdgeExtend extendY, float opacity = 1f) => _overlay.DrawImageTiled(texture, destination, extendX, extendY, opacity);
 	public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow) => _overlay.DrawImageNineSlice(texture, centerSlice, destination, centerHollow);
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity) => _overlay.DrawEffectBackdrop(filter, opacity);
 

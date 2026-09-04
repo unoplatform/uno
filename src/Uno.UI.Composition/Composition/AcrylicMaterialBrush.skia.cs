@@ -7,12 +7,12 @@ using Uno.UI.Composition.Drawing;
 namespace Microsoft.UI.Composition;
 
 /// <summary>
-/// The direct acrylic material brush, reimplemented on the neutral drawing seam (bc's SkiaAcrylicBrush, which used
-/// SKImageFilter directly). The translucent look is a backdrop effect — blur → luminosity blend → tint blend —
+/// The acrylic material brush, built directly on the neutral drawing seam rather than as a WinUI
+/// composition-effect graph. The translucent look is a backdrop effect — blur → luminosity blend → tint blend —
 /// expressed as a neutral <see cref="EffectNode"/> tree and applied with <see cref="IDrawingSession.DrawEffectBackdrop"/>;
 /// a tiled noise texture is drawn on top. The opaque short-circuit skips the backdrop and just draws tint + noise.
 /// </summary>
-internal class SkiaAcrylicBrush : CompositionBrush
+internal class AcrylicMaterialBrush : CompositionBrush
 {
 	// The blur samples well outside the painted bounds, so a translucent acrylic must repaint whenever anything
 	// behind it changes; its damage region is likewise grown by this margin (see DamageRegionSamplingMargin).
@@ -28,7 +28,7 @@ internal class SkiaAcrylicBrush : CompositionBrush
 	private IEffectFilter? _filter;
 	private Rect _cachedBounds;
 
-	public SkiaAcrylicBrush(Compositor compositor) : base(compositor)
+	public AcrylicMaterialBrush(Compositor compositor) : base(compositor)
 	{
 	}
 
@@ -80,20 +80,9 @@ internal class SkiaAcrylicBrush : CompositionBrush
 			return;
 		}
 
-		// Tile the noise texture across the bounds (bc used a Repeat shader; the neutral seam has no image shader,
-		// so tile explicitly). Clip so the last row/column doesn't spill past the bounds.
-		// Keep the step exactly one texture per tile: at 1:1 the grain lands on texel centres, so it stays crisp
-		// under any sampling the backend picks. Drawing this SCALED would filter the noise into mush.
-		session.Save();
-		session.ClipRect(bounds);
-		for (var y = bounds.Top; y < bounds.Bottom; y += texture.PixelHeight)
-		{
-			for (var x = bounds.Left; x < bounds.Right; x += texture.PixelWidth)
-			{
-				session.DrawImage(texture, (float)x, (float)y, effectiveOpacity);
-			}
-		}
-		session.Restore();
+		// The grain repeats at 1:1, so it lands on texel centres and stays crisp; drawing it scaled to the bounds
+		// would filter it into mush.
+		session.DrawImageTiled(texture, bounds, EdgeExtend.Wrap, EdgeExtend.Wrap, effectiveOpacity);
 	}
 
 	private void EnsureFilter(IDrawingFactory factory, Rect bounds)
@@ -106,7 +95,7 @@ internal class SkiaAcrylicBrush : CompositionBrush
 		_filter?.Dispose();
 
 		// Backdrop → Gaussian blur → luminosity blend (with the luminosity colour) → colour blend (with the tint).
-		// Mirrors bc's SKImageFilter chain (CreateBlur → Luminosity blend → Color blend) on the neutral effect tree.
+		// Blur → Luminosity blend → Color blend, as a neutral effect tree.
 		EffectNode tree =
 			new BlendEffectNode(
 				new BlendEffectNode(

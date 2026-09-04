@@ -282,6 +282,12 @@ internal sealed class CommandListRecorder : ICommandRecorder
 	public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter)
 		=> _commands.Add(ctx => ctx.Target.DrawImage(texture, x, y, colorFilter));
 
+	public void DrawImageTiled(ITexture texture, in Rect destination, EdgeExtend extendX, EdgeExtend extendY, float opacity = 1f)
+	{
+		var d = destination;
+		_commands.Add(ctx => ctx.Target.DrawImageTiled(texture, d, extendX, extendY, opacity));
+	}
+
 	public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow)
 	{
 		var c = centerSlice;

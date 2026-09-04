@@ -307,6 +307,7 @@ public class Given_SvgImageSource_ManagedEngine
 		public void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth) { }
 		public void DrawImage(ITexture texture, float x, float y, float opacity = 1f) { }
 		public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter) { }
+		public void DrawImageTiled(ITexture texture, in Rect destination, EdgeExtend extendX, EdgeExtend extendY, float opacity = 1f) { }
 		public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow) { }
 		public void DrawEffectBackdrop(IEffectFilter filter, float opacity) { }
 	}
