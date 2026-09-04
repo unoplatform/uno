@@ -7,19 +7,10 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml
 {
 	public sealed partial class LaunchActivatedEventArgs
 	{
-		internal LaunchActivatedEventArgs() : this(ActivationKind.Launch, null)
-		{
-		}
-
 		internal LaunchActivatedEventArgs(ActivationKind kind, string? arguments)
 		{
 			Arguments = arguments;
 			UWPLaunchActivatedEventArgs = new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(kind, arguments);
-		}
-
-		internal LaunchActivatedEventArgs(global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs uwpLaunchActivatedEventArgs)
-		{
-			UWPLaunchActivatedEventArgs = uwpLaunchActivatedEventArgs;
 		}
 
 		public string? Arguments { get; }
