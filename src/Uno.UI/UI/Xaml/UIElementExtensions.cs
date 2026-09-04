@@ -1,5 +1,4 @@
-﻿#if !__ANDROID__ && !__APPLE_UIKIT__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,4 +12,3 @@ namespace Microsoft.UI.Xaml
 		public static UIElement GetVisualTreeParent(this UIElement uiElement) => (uiElement as FrameworkElement)?.VisualParent;
 	}
 }
-#endif

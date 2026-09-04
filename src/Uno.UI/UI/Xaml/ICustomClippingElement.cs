@@ -1,4 +1,4 @@
-﻿#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+﻿#if !__CROSSRUNTIME__
 namespace Microsoft.UI.Xaml;
 
 internal interface ICustomClippingElement

@@ -1,10 +1,11 @@
-﻿using System;
+using System;
 using Windows.Devices.Input;
+using Microsoft.UI.Input;
+using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
+using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Input;
 using Microsoft.UI.Xaml.Controls;
-using static Windows.UI.Input.PointerUpdateKind;
 using Uno.Foundation.Logging;
 using System.Runtime.InteropServices.JavaScript;
 
@@ -160,6 +161,54 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 			}
 
 			return (int)Uno.UI.Xaml.HtmlEventDispatchResult.Ok; // TODO
+		}
+	}
+
+	[JSExport]
+	[return: JSMarshalAs<JSType.Number>]
+	private static int OnNativeScrollDelta(
+		[JSMarshalAs<JSType.Number>] nint unoElementId,
+		double horizontalDelta,
+		double verticalDelta,
+		[JSMarshalAs<JSType.Boolean>] bool isIntermediate,
+		[JSMarshalAs<JSType.Boolean>] bool isInertial)
+	{
+		try
+		{
+			// Ensure that the async context is set properly, since we're scrolling (and therefore raising
+			// ViewChanged and running layout) from outside the dispatcher.
+			using var syncContextScope = NativeDispatcher.Main.SynchronizationContext.Apply();
+
+			return BrowserNativeElementHostingExtension.ApplyNegotiatedScroll(unoElementId, horizontalDelta, verticalDelta, isIntermediate, isInertial)
+				? 1
+				: 0;
+		}
+		catch (Exception error)
+		{
+			if (_log.IsEnabled(LogLevel.Error))
+			{
+				_log.Error($"Failed to apply negotiated native scroll: {error}");
+			}
+
+			return 0;
+		}
+	}
+
+	[JSExport]
+	private static void OnNativeScrollCompleted([JSMarshalAs<JSType.Number>] nint unoElementId)
+	{
+		try
+		{
+			using var syncContextScope = NativeDispatcher.Main.SynchronizationContext.Apply();
+
+			BrowserNativeElementHostingExtension.CompleteNegotiatedScroll(unoElementId);
+		}
+		catch (Exception error)
+		{
+			if (_log.IsEnabled(LogLevel.Error))
+			{
+				_log.Error($"Failed to complete negotiated native scroll: {error}");
+			}
 		}
 	}
 

@@ -3,6 +3,7 @@
 		{
 			"IsDebug": true,
 			"IsMono": false,
+			"Ignore": "Hot reload commits a rude edit as the EnC baseline on the Roslyn 5.x line, so this case ends up reporting no diagnostic at all instead of the expected ENC0014. Fixed by https://github.com/unoplatform/uno/pull/24085",
 			"PassResults": [
 				{
 					"MetadataUpdates": 0,
@@ -21,6 +22,7 @@
 		{
 			"IsDebug": true,
 			"IsMono": true,
+			"Ignore": "Hot reload commits a rude edit as the EnC baseline on the Roslyn 5.x line, so this case ends up reporting no diagnostic at all instead of the expected ENC0014. Fixed by https://github.com/unoplatform/uno/pull/24085",
 			"PassResults": [
 				{
 					"MetadataUpdates": 0,

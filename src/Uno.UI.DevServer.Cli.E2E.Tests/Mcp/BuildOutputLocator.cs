@@ -29,7 +29,7 @@ internal static class BuildOutputLocator
 
 		foreach (var configuration in new[] { "Debug", "Release" })
 		{
-			foreach (var targetFramework in new[] { "net9.0", "net10.0" })
+			foreach (var targetFramework in new[] { "net10.0", "net11.0" })
 			{
 				var candidate = Path.Combine(cliBinDirectory, configuration, targetFramework, "Uno.UI.DevServer.Cli.dll");
 				if (File.Exists(candidate))

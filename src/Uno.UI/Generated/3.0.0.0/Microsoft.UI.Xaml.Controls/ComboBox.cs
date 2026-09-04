@@ -3,10 +3,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ComboBox
+	public partial class ComboBox : global::Microsoft.UI.Xaml.Controls.Primitives.Selector
 	{
 		// Skipping already declared property DescriptionProperty
 		// Skipping already declared property HeaderProperty

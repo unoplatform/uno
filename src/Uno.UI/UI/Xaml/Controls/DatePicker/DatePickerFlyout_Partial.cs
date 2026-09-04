@@ -62,7 +62,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_datePicked?.Invoke(this, new DatePickedEventArgs(newDateTime, oldDateTime));
 
-			Close();
+			Hide();
 		}
 
 		//// -----

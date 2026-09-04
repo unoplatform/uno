@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Json;
 using Windows.Storage.Streams;
 using Microsoft.UI.Xaml.Data;
@@ -34,7 +35,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			UpdatedAnimation updateCallback)
 		{
 			_updateCallback = updateCallback;
-			LoadAndUpdate(default, sourceCacheKey, sourceJson);
+			LoadAndUpdateAsync(sourceCacheKey, sourceJson, CancellationToken.None).GetAwaiter().GetResult();
 		}
 
 		public string? GetJson()
@@ -50,20 +51,23 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			var cts = new CancellationTokenSource();
 
 			_updateCallback = updateCallback;
+			_sourceCacheKey = sourceCacheKey;
 
-			LoadAndUpdate(cts.Token, sourceCacheKey, sourceJson);
-
-			return Disposable.Create(() =>
-			{
-				cts.Cancel();
-				cts.Dispose();
-			});
+			return new AnimationDataLoadSubscription(
+				LoadAndUpdateAsync(sourceCacheKey, sourceJson, cts.Token),
+				() =>
+				{
+					cts.Cancel();
+					_updateCallback = null;
+					_sourceCacheKey = null;
+					cts.Dispose();
+				});
 		}
 
-		private void LoadAndUpdate(
-			CancellationToken ct,
+		private async Task LoadAndUpdateAsync(
 			string sourceCacheKey,
-			IInputStream sourceJson)
+			IInputStream sourceJson,
+			CancellationToken ct)
 		{
 			_sourceCacheKey = sourceCacheKey;
 
@@ -72,7 +76,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			// parsed document - it's read only.
 
 			// LOAD & PARSE JSON
-			LoadAndParseDocument(sourceJson);
+			var json = await ReadAnimationJsonAsync(sourceJson, ct);
+			ct.ThrowIfCancellationRequested();
+			LoadAndParseDocument(json);
 
 			if (_currentDocument == null)
 			{
@@ -86,13 +92,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			NotifyCallback();
 		}
 
-		private void LoadAndParseDocument(IInputStream sourceJson)
+		private void LoadAndParseDocument(string json)
 		{
 			JsonObject? document;
-			using (var stream = sourceJson.AsStreamForRead(0))
-			{
-				document = JsonValue.Load(stream) as JsonObject;
-			}
+			document = JsonValue.Parse(json) as JsonObject;
 
 			if (document == null)
 			{

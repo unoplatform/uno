@@ -26,6 +26,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _exposeContext;
 		private readonly string? _exposeContextMethod;
 		private readonly string _appliedType;
+		private readonly bool _passTemplateSettings;
 
 		/// <summary>
 		/// Name of the callback method generated in the scope that is being used for this apply, if any.
@@ -47,6 +48,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <param name="xamlApplyPrefix">Enable strongly typed XamlApply with the given method prefix.</param>
 		/// <param name="delegateType"></param>
 		/// <param name="exposeContext">Indicates if the scope should be provided as '__that' parameter in the callback method.</param>
+		/// <param name="passTemplateSettings">Indicates if the materializing template's settings should be provided as '__settings' parameter in the callback method.</param>
 		public XamlLazyApplyBlockIIndentedStringBuilder(
 			IIndentedStringBuilder source,
 			NameScope scope,
@@ -54,13 +56,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			INamedTypeSymbol? appliedType, // Note: Applied type might be different that the declaringObject.Type when declared object is wrapped into a another type, like for the ElementSub (deferred loading).
 			string? xamlApplyPrefix,
 			string? delegateType,
-			bool exposeContext)
+			bool exposeContext,
+			bool passTemplateSettings = false)
 		{
 			_source = source;
 			_scope = scope;
 			_xamlApplyPrefix = xamlApplyPrefix;
 			_delegateType = delegateType;
 			_exposeContext = exposeContext;
+			_passTemplateSettings = passTemplateSettings;
 			_appliedType = appliedType?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) ?? "global::System.Object";
 
 			_exposeContextMethod = _xamlApplyPrefix is null && exposeContext
@@ -88,10 +92,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				else if (_exposeContext)
 				{
 					// This syntax is used to avoid closing on __that and __namescope when running in HotReload.
-					_source.AppendIndented($".GenericApply(__that, __nameScope, {_exposeContextMethod}");
+					// __settings is passed the same way rather than captured, since this shape is a class-level
+					// method and the enclosing template's local is out of reach.
+					var settingsArg = _passTemplateSettings ? "__settings, " : "";
+					// Unannotated: generated files have no #nullable context, so a '?' here raises CS8669.
+					var settingsParameter = _passTemplateSettings
+						? ", global::Uno.UI.TemplateMaterializationSettings __settings"
+						: "";
+
+					_source.AppendIndented($".GenericApply(__that, __nameScope, {settingsArg}{_exposeContextMethod}");
 
 					AnalyzerSuppressionsGenerator.GenerateTrimExclusions(_inner);
-					blockDisposable = _inner.BlockInvariant($"private void {_exposeContextMethod}({_appliedType} {AppliedParameterName}, {_scope.ClassName} __that, global::Microsoft.UI.Xaml.NameScope __nameScope)");
+					blockDisposable = _inner.BlockInvariant($"private void {_exposeContextMethod}({_appliedType} {AppliedParameterName}, {_scope.ClassName} __that, global::Microsoft.UI.Xaml.NameScope __nameScope{settingsParameter})");
 				}
 				else
 				{

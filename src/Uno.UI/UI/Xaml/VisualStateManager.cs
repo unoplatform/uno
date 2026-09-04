@@ -179,10 +179,6 @@ namespace Microsoft.UI.Xaml
 				return false;
 			}
 
-#if __WASM__
-			TryAssignDOMVisualStates(groups, templateRoot);
-#endif
-
 			if (templateRoot is not FrameworkElement fwRoot)
 			{
 				// For backward compatibility!

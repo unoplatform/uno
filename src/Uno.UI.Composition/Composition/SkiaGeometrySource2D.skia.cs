@@ -31,7 +31,7 @@ namespace Microsoft.UI.Composition
 
 		public void CanvasClipPath(SKCanvas canvas, SKClipOperation operation = SKClipOperation.Intersect, bool antialias = false) => canvas.ClipPath(_geometry, operation, antialias);
 
-		public bool GetFillPath(SKPaint paint, SKPath dst) => paint.GetFillPath(_geometry, dst);
+		public bool GetFillPath(SKPaint paint, SKPathBuilder dst) => paint.GetFillPath(_geometry, dst);
 
 		public bool Contains(float x, float y) => _geometry.Contains(x, y);
 

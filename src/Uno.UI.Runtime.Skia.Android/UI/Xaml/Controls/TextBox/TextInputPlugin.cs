@@ -47,30 +47,31 @@ internal sealed class TextInputPlugin
 		}
 	}
 
-	internal void NotifyViewEntered(TextBox textBox, int virtualId)
+	internal void NotifyViewEntered(TextBoxCore core, int virtualId)
 	{
 		if (_afm == null || _inputConnection is null || _imm is null)
 		{
 			return;
 		}
 
-		if (_inputConnection.ActiveTextBox != textBox)
+		if (_inputConnection.ActiveTextBox != core)
 		{
 			_imm.RestartInput(_view);
 		}
 
-		_inputConnection.ActiveTextBox = textBox;
+		_inputConnection.ActiveTextBox = core;
 
-		var physicalRect = GetPhysicalRect(textBox);
+		var physicalRect = GetPhysicalRect(core);
 		_afm.NotifyViewEntered(_view, virtualId, new((int)physicalRect.Left, (int)physicalRect.Top, (int)physicalRect.Right, (int)physicalRect.Bottom));
 	}
 
-	private Windows.Foundation.Rect GetPhysicalRect(TextBox textBox)
+	private Windows.Foundation.Rect GetPhysicalRect(TextBoxCore core)
 	{
 		int[] offset = new int[2];
 		_view.GetLocationOnScreen(offset);
-		var transform = UIElement.GetTransform(from: textBox, to: null);
-		var logicalRect = transform.Transform(new Windows.Foundation.Rect(default, new Windows.Foundation.Size(textBox.Visual.Size.X, textBox.Visual.Size.Y)));
+		var owner = core.Owner;
+		var transform = UIElement.GetTransform(from: owner, to: null);
+		var logicalRect = transform.Transform(new Windows.Foundation.Rect(default, new Windows.Foundation.Size(owner.Visual.Size.X, owner.Visual.Size.Y)));
 		var physicalRect = logicalRect.LogicalToPhysicalPixels();
 		return physicalRect.OffsetRect(offset[0], offset[1]);
 	}
@@ -117,10 +118,10 @@ internal sealed class TextInputPlugin
 		_inputConnection?.OnTextBoxTextChanged();
 	}
 
-	internal void ShowTextInput(TextBox textBox)
+	internal void ShowTextInput(TextBoxCore core)
 	{
-		_inputTypes = ConvertInputScope(textBox);
-		_imeAction = TextBoxExtensions.GetInputReturnType(textBox).ToImeAction();
+		_inputTypes = ConvertInputScope(core);
+		_imeAction = TextBoxExtensions.GetInputReturnType(core.Owner).ToImeAction();
 
 		if (_editorInfo is not null)
 		{
@@ -165,9 +166,9 @@ internal sealed class TextInputPlugin
 #endif
 	}
 
-	internal static InputTypes ConvertInputScope(TextBox textBox)
+	internal static InputTypes ConvertInputScope(TextBoxCore core)
 	{
-		var firstInputScope = textBox.InputScope.GetFirstInputScopeNameValue();
+		var firstInputScope = core.InputScope.GetFirstInputScopeNameValue();
 
 		if (firstInputScope is InputScopeNameValue.DateDayNumber or InputScopeNameValue.DateMonthNumber or InputScopeNameValue.DateYear)
 		{
@@ -193,7 +194,7 @@ internal sealed class TextInputPlugin
 		}
 
 		var textType = InputTypes.ClassText;
-		if (textBox.AcceptsReturn)
+		if (core.AcceptsReturn)
 		{
 			textType |= InputTypes.TextFlagMultiLine;
 		}
@@ -206,7 +207,7 @@ internal sealed class TextInputPlugin
 		{
 			textType |= InputTypes.TextVariationUri;
 		}
-		else if (textBox is PasswordBox { PasswordRevealMode: PasswordRevealMode.Visible })
+		else if (core.IsPassword && core.IsPasswordRevealed)
 		{
 			textType |= InputTypes.TextVariationVisiblePassword;
 		}
@@ -219,7 +220,7 @@ internal sealed class TextInputPlugin
 			textType |= InputTypes.TextVariationPostalAddress;
 		}
 
-		if (textBox is PasswordBox)
+		if (core.IsPassword)
 		{
 			// Note: both required. Some devices ignore TYPE_TEXT_FLAG_NO_SUGGESTIONS.
 			textType |= InputTypes.TextFlagNoSuggestions;
@@ -227,7 +228,7 @@ internal sealed class TextInputPlugin
 		}
 		else
 		{
-			if (textBox.IsSpellCheckEnabled) textType |= InputTypes.TextFlagAutoCorrect;
+			if (core.IsSpellCheckEnabled) textType |= InputTypes.TextFlagAutoCorrect;
 
 			// Not yet supported
 			//if (!enableSuggestions)
@@ -238,7 +239,7 @@ internal sealed class TextInputPlugin
 			//}
 		}
 
-		if (textBox.CharacterCasing == CharacterCasing.Upper)
+		if (core.CharacterCasing == CharacterCasing.Upper)
 		{
 			textType |= InputTypes.TextFlagCapCharacters;
 		}

@@ -1,6 +1,6 @@
 ﻿namespace Microsoft.UI.Xaml.Controls;
 
-public partial interface IMenuPresenter
+internal partial interface IMenuPresenter
 {
 	void CloseSubMenu();
 
