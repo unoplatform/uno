@@ -14,10 +14,12 @@ namespace Uno.UI.Composition.Drawing;
 /// finalization frees them arbitrarily late.
 /// </para>
 /// <para>
-/// Creation yields one reference, held by whoever created it. <see cref="IDisposable.Dispose"/> drops that reference
-/// and is otherwise identical to <see cref="Release"/> — it exists so ownership still reads as <c>using</c> at the
-/// call site. <see cref="IFont"/> is deliberately not one of these: fonts are provider-cached for the life of the
-/// process and never released.
+/// The two verbs have different audiences. Creation yields one reference and whoever created it calls
+/// <see cref="IDisposable.Dispose"/> — once, so ownership still reads as <c>using</c> at the call site. Anyone
+/// holding a resource they did not create took it with <see cref="AddRef"/> and hands it back with
+/// <see cref="Release"/>. Neither frees anything on its own; the resource goes away when the last reference does, so
+/// never dispose a resource you merely borrowed. <see cref="IFont"/> is deliberately not one of these: fonts are
+/// provider-cached for the life of the process and never released.
 /// </para>
 /// </summary>
 public interface IDrawingResource : IDisposable
