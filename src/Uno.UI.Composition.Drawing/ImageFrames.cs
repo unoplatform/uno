@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -8,8 +8,8 @@ namespace Uno.UI.Composition.Drawing;
 /// <summary>
 /// The result of decoding an image (or wrapping raw pixels) through <see cref="IImageEncoderDecoder"/>: one or more
 /// decoded <see cref="IImage"/> frames in display order, plus their per-frame durations (a still image has one
-/// frame; an animated GIF/APNG/WebP has several). Since <see cref="IImage"/> is not itself disposable, this type
-/// owns the frames — disposing it releases any frame that is <see cref="IDisposable"/>.
+/// frame; an animated GIF/APNG/WebP has several). This type owns the frames: disposing it drops its reference to
+/// each of them.
 /// </summary>
 public sealed class ImageFrames : IDisposable
 {
@@ -47,7 +47,7 @@ public sealed class ImageFrames : IDisposable
 		_disposed = true;
 		foreach (var frame in Frames)
 		{
-			(frame as IDisposable)?.Dispose();
+			frame.Dispose();
 		}
 	}
 }

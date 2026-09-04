@@ -127,9 +127,8 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 		GC.SuppressFinalize(this);
 	}
 
-	// The compiled draw-list's GPU buffers and its transform-table slot are reachable only through this object, so a
-	// recording dropped without Dispose would strand them for the life of the device. Both release queues are
-	// concurrent, so the finalizer can hand them over.
+	// The compiled draw-list's buffers and transform-table slot are reachable only through this object. Both release
+	// queues are concurrent, so the finalizer can hand them over.
 	~WebGpuRenderRecord() => Dispose();
 }
 
@@ -257,10 +256,8 @@ public sealed unsafe class WebGpuTexture : DrawingResource, ITexture
 		if (View != IntPtr.Zero || Tex != IntPtr.Zero) { _d.DeferTextureRelease(View, Tex); View = IntPtr.Zero; Tex = IntPtr.Zero; }
 	}
 
-	// View/Tex are bare handles, so a missed Release would strand the GPU allocation for the life of the device —
-	// nothing else can reach them once this object is collected. The release queue is concurrent, so handing them
-	// over from the finalizer is safe. Late instead of lost, and noisy about it: reaching here means a reference
-	// was never released.
+	// Nothing can reach View/Tex once this object is collected, so a missed Release would strand the allocation for
+	// the life of the device. The release queue is concurrent, so the finalizer can hand them over — late, not lost.
 	~WebGpuTexture()
 	{
 		if (View == IntPtr.Zero && Tex == IntPtr.Zero) { return; }
@@ -283,9 +280,8 @@ internal sealed unsafe class WebGpuReadbackImage : DrawingResource, IImage
 	private readonly bool _sourceIsBgra;
 
 	/// <summary>Drops the readback's 256-byte row padding into a tightly-packed buffer this image owns.</summary>
-	// The buffer is unmanaged: a window-sized snapshot runs to several megabytes, which as a managed array would
-	// land on the large-object heap — and on wasm in a heap with little room to spare. This way it is gone the
-	// moment the image is released, rather than at the next gen2 collection.
+	// Unmanaged because a window-sized snapshot runs to several megabytes: as an array it would land on the
+	// large-object heap, and on wasm in a heap with little room to spare.
 	public WebGpuReadbackImage(int width, int height, ReadOnlySpan<byte> paddedRows, int paddedStride, bool sourceIsBgra)
 	{
 		PixelWidth = width;
@@ -570,9 +566,8 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 	// Renders the tree to a texture by offscreen composition, or returns null for any node it does not handle, which
 	// leaves the caller on the acrylic/recipe path.
 	//
-	// The returned texture carries a reference the CALLER owns and must release. That is what lets every arm release
-	// its children uniformly: an arm cannot otherwise tell a tree-owned TextureInput leaf from a texture the
-	// evaluator just rendered, and releasing the wrong one either leaks or frees the tree's input out from under it.
+	// The returned texture carries a reference the caller owns and must release, which is what lets every arm release
+	// its children uniformly — an arm cannot otherwise tell a tree-owned TextureInput leaf from one it just rendered.
 	private ITexture TryEvaluateTree(EffectNode node, Rect bounds)
 	{
 		switch (node)
