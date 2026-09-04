@@ -337,15 +337,24 @@ namespace SamplesApp
 
 		private async void ReportActivation(AppActivationArguments arguments, string title, bool showDialog)
 		{
-			var detail = DescribeActivation(arguments);
-			Console.WriteLine($"{title}: Kind - {arguments.Kind}, {detail}");
-
-			// Only for an activation delivered into the running app. Reporting at launch would pop a
-			// dialog on every run, including the CI runs driven by launch arguments.
-			if (showDialog &&
-				ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog, Uno", nameof(MessageDialog.ShowAsync)))
+			try
 			{
-				await new MessageDialog($"Kind - {arguments.Kind}, {detail}", title).ShowAsync();
+				var detail = DescribeActivation(arguments);
+				Console.WriteLine($"{title}: Kind - {arguments.Kind}, {detail}");
+
+				// Only for an activation delivered into the running app. Reporting at launch would pop a
+				// dialog on every run, including the CI runs driven by launch arguments.
+				if (showDialog &&
+					ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog, Uno", nameof(MessageDialog.ShowAsync)))
+				{
+					await new MessageDialog($"Kind - {arguments.Kind}, {detail}", title).ShowAsync();
+				}
+			}
+			catch (Exception ex)
+			{
+				// async void from an activation callback: a second dialog while one is open throws,
+				// and an unobserved throw here would take the process with it.
+				Console.WriteLine($"Reporting an activation failed: {ex}");
 			}
 		}
 
