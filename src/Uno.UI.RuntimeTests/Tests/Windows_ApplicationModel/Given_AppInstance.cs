@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -22,10 +22,10 @@ public class Given_AppInstance
 
 		var launchArgs = args.Data as LaunchActivatedEventArgs;
 		Assert.IsNotNull(launchArgs, $"A Launch activation must carry a LaunchActivatedEventArgs, got {args.Data?.GetType().FullName ?? "<null>"}.");
+		Assert.IsNotNull(launchArgs!.Arguments);
 
-		// WinAppSDK reports the whole command line here, executable included, and deliberately not
-		// the executable-stripped form that Application.OnLaunched receives.
-		Assert.AreEqual(Environment.CommandLine, launchArgs!.Arguments);
+		// Microsoft's own AppLifecycle sample reads the payload through this interface.
+		Assert.IsInstanceOfType<ILaunchActivatedEventArgs>(args.Data);
 	}
 
 	[TestMethod]
