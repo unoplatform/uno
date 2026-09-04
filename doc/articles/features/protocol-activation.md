@@ -1,4 +1,4 @@
----
+﻿---
 uid: Uno.Features.ProtocolActivation
 ---
 
@@ -192,12 +192,18 @@ public partial class App : Application
     {
         switch (args.Kind)
         {
-            case ExtendedActivationKind.Protocol when args.Data is Activation.ProtocolActivatedEventArgs protocol:
-                _rootFrame.Navigate(typeof(DetailPage), protocol.Uri.AbsoluteUri);
+            // Type-test the interface, not the concrete class: on a Windows App SDK head the payload
+            // is the one the Windows App SDK produced.
+            case ExtendedActivationKind.Protocol when args.Data is Activation.IProtocolActivatedEventArgs protocol:
+                // The URI comes from outside the app, so check it before acting on it.
+                if (protocol.Uri.Scheme is "my-scheme")
+                {
+                    _rootFrame.Navigate(typeof(DetailPage), protocol.Uri.AbsoluteUri);
+                }
                 break;
 
             // A plain launch, and also a jump list item, whose Arguments arrive here.
-            case ExtendedActivationKind.Launch when args.Data is Activation.LaunchActivatedEventArgs launch:
+            case ExtendedActivationKind.Launch when args.Data is Activation.ILaunchActivatedEventArgs launch:
                 _rootFrame.Navigate(typeof(MainPage), launch.Arguments);
                 break;
         }
@@ -205,14 +211,22 @@ public partial class App : Application
 }
 ```
 
+> [!IMPORTANT]
+> An activation payload is untrusted input. A URI arrives from a browser or another app, and on Android
+> a jump list item's arguments can be supplied by any app that starts yours with the same intent extra.
+> Validate the scheme, and treat the rest as data — never pass it somewhere that would execute it, and
+> do not assume a page or resource named by it should be reachable.
+
 Points worth knowing:
 
 - **Android, iOS, tvOS and WebAssembly** deliver protocol activation; **Skia Desktop (Windows, macOS
   and Linux) does not yet**. On desktop the code above still compiles and runs — it simply only ever
   sees a `Launch` activation.
-- **On WebAssembly the activation is always a cold start**, because the browser navigates to handle the
-  URI. `Activated` therefore never fires for a protocol activation on that target, so read it from
-  `GetActivatedEventArgs()`.
+- **On WebAssembly the activation arrives as a cold start**, because `registerProtocolHandler` makes the
+  browser navigate. `Activated` therefore does not fire for a protocol activation on that target today,
+  so read it from `GetActivatedEventArgs()`. An installed progressive web app can ask the browser to
+  reuse a running client instead, through the Launch Handler API; Uno Platform does not yet read that
+  channel, so such an activation is currently missed.
 - **On a Windows App SDK head**, `AppInstance` is the Windows App SDK's own implementation and the
   `Data` payloads are the ones it produces, which are not the concrete WinRT classes. Both
   implementations do expose the matching `Windows.ApplicationModel.Activation` interfaces
@@ -222,3 +236,11 @@ Points worth knowing:
   for what the Windows App SDK delivers.
 - **A jump list item's `Arguments` arrive as a `Launch` activation** through the same two entry points.
   See [Start Screen](xref:Uno.Features.WinUIStartScreen).
+- **Single-instancing is not implemented yet.** `AppInstance.FindOrRegisterForKey` always claims the key
+  for, and returns, the current instance, and `RedirectActivationToAsync` does nothing. The canonical
+  Windows App SDK pattern therefore compiles and behaves as it would on a platform that can only run one
+  instance — which is correct on Android, iOS and WebAssembly, but means a second desktop launch starts a
+  second instance rather than redirecting into the first.
+- **An activation is not attributed to a window.** `AppInstance` holds one activation for the process,
+  matching the Windows App SDK, so an app that opens several windows decides for itself which one should
+  act on it.
