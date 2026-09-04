@@ -22,6 +22,7 @@ public class Given_RatingControl
 #if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 	public async Task When_Loaded_Then_Unloaded_Tap()
 	{
 		// Create RatingControl
