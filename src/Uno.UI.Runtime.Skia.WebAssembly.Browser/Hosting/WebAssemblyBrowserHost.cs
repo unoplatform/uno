@@ -20,6 +20,9 @@ using Windows.Graphics.Display;
 using Windows.Media.Playback;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
+using Uno.Helpers;
+using Microsoft.Windows.AppLifecycle;
+using Windows.ApplicationModel.Activation;
 
 namespace Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
@@ -129,6 +132,13 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 
 		try
 		{
+			if (!wasRunning)
+			{
+				// Once per page: AppInstance is shared, so a secondary ALC host must not re-push
+				// the activation the primary one already consumed.
+				TryReportProtocolActivation();
+			}
+
 			Application.Start(CreateApp);
 
 			if (!wasRunning)
@@ -153,6 +163,33 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 
 	internal void RemoveSplashScreen() => NativeMethods.RemoveLoading();
 
+	/// <summary>
+	/// Reports a protocol activation carried in the page's query string.
+	/// </summary>
+	/// <remarks>
+	/// <c>navigator.registerProtocolHandler</c> always navigates the browser, so a protocol
+	/// activation on WebAssembly is always a cold start. There is no running-app case to report,
+	/// and <see cref="AppInstance.Activated"/> consequently never fires for it on this target.
+	/// </remarks>
+	private static void TryReportProtocolActivation()
+	{
+		var arguments = NativeMethods.GetSearchParams();
+		if (string.IsNullOrEmpty(arguments))
+		{
+			return;
+		}
+
+		if (ProtocolActivation.TryParseActivationUri(arguments, out var activationUri, out var remainingArguments))
+		{
+			// The activation key is Uno's transport, not something the app asked to be launched with.
+			Application.SetArguments(remainingArguments);
+
+			AppInstance.GetCurrent().SetOrRaiseActivation(
+				AppActivationArguments.CreateProtocol(
+					new ProtocolActivatedEventArgs(activationUri, ApplicationExecutionState.NotRunning)));
+		}
+	}
+
 	UIElement? IXamlRootHost.RootElement => Window.CurrentSafe!.RootElement;
 
 	private static partial class NativeMethods
@@ -161,5 +198,8 @@ internal partial class WebAssemblyBrowserHost : SkiaHost, ISkiaApplicationHost, 
 		public static partial void PersistBootstrapperLoader();
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.removeLoading")]
 		public static partial void RemoveLoading();
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.getSearchParams")]
+		public static partial string GetSearchParams();
 	}
 }

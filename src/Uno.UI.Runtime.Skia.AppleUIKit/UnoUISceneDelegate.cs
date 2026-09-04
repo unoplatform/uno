@@ -7,6 +7,7 @@ using UIKit;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.AppleUIKit.UI.Xaml;
 using Uno.UI.Xaml.Controls;
+using Windows.ApplicationModel.Activation;
 using Windows.UI.Core;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
@@ -54,6 +55,10 @@ public class UnoUISceneDelegate : UISceneDelegate
 	{
 		try
 		{
+			// Before the early-returns below: the activation belongs to the app, not to this scene,
+			// and must still be reported even when the session itself is discarded.
+			ReportConnectionActivation(connectionOptions);
+
 			if (scene is not UIWindowScene windowScene)
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
@@ -96,7 +101,6 @@ public class UnoUISceneDelegate : UISceneDelegate
 		}
 		catch (Exception ex)
 		{
-			// A managed exception must never escape into a UIKit callback.
 			Application.Current?.RaiseRecoverableUnhandledException(ex);
 		}
 	}
@@ -123,11 +127,83 @@ public class UnoUISceneDelegate : UISceneDelegate
 	public sealed override void WillResignActive(UIScene scene) =>
 		Forward(() => _wrapper?.OnSceneActivationChanged(CoreWindowActivationState.Deactivated));
 
+	public sealed override void OpenUrlContexts(UIScene scene, NSSet<UIOpenUrlContext> urlContexts) =>
+		Forward(() =>
+		{
+			foreach (var context in urlContexts)
+			{
+				AppleUIKitActivation.TryReportUrl(context.Url, AppleUIKitActivation.CurrentExecutionState);
+			}
+		});
+
+	public sealed override void ContinueUserActivity(UIScene scene, NSUserActivity userActivity) =>
+		Forward(() => AppleUIKitActivation.TryReportUserActivity(userActivity, AppleUIKitActivation.CurrentExecutionState));
+
+#if !__TVOS__
+	[Export("windowScene:performActionForShortcutItem:completionHandler:")]
+	public void PerformActionForShortcutItem(UIWindowScene windowScene, UIApplicationShortcutItem shortcutItem, UIOperationHandler completionHandler)
+	{
+		try
+		{
+			Forward(() => AppleUIKitActivation.ReportShortcut(shortcutItem));
+		}
+		finally
+		{
+			// UIKit waits on this regardless of what the app's handler did.
+			completionHandler?.Invoke(true);
+		}
+	}
+#endif
+
 	/// <summary>
 	/// Called once the scene has been bound to its window.
 	/// </summary>
 	protected virtual void OnSceneConnected(UIScene scene)
 	{
+	}
+
+	/// <summary>
+	/// Reports the activation a scene is connecting with, which is how the scene lifecycle delivers
+	/// what the app-level lifecycle would put in <c>FinishedLaunching</c>'s launch options.
+	/// </summary>
+	private static void ReportConnectionActivation(UISceneConnectionOptions connectionOptions)
+	{
+		var previousExecutionState = AppleUIKitActivation.CurrentExecutionState;
+
+		if (connectionOptions.UrlContexts is { Count: > 0 } urlContexts)
+		{
+			foreach (var context in urlContexts)
+			{
+				AppleUIKitActivation.TryReportUrl(context.Url, previousExecutionState);
+			}
+
+			return;
+		}
+
+#if !__TVOS__
+		if (connectionOptions.ShortcutItem is { } shortcutItem)
+		{
+			AppleUIKitActivation.ReportShortcut(shortcutItem);
+			return;
+		}
+#endif
+
+		if (connectionOptions.UserActivities is { } activities)
+		{
+			foreach (var activity in activities)
+			{
+				// SceneWindowRegistry uses its own activity type to route multi-window requests;
+				// only a browsing-web activity is a universal link.
+				if (AppleUIKitActivation.TryReportUserActivity(activity, previousExecutionState))
+				{
+					return;
+				}
+			}
+		}
+
+		// This scene carried no activation, so the app launched plainly and anything arriving later
+		// is a further activation rather than the startup one.
+		AppleUIKitActivation.MarkStartupActivationSettled();
 	}
 
 	/// <summary>
@@ -156,15 +232,5 @@ public class UnoUISceneDelegate : UISceneDelegate
 		return null;
 	}
 
-	private void Forward(Action action)
-	{
-		try
-		{
-			action();
-		}
-		catch (Exception ex)
-		{
-			Application.Current?.RaiseRecoverableUnhandledException(ex);
-		}
-	}
+	private void Forward(Action action) => NativeCallbackGuard.Run(action);
 }

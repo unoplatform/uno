@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using System.Web;
@@ -11,8 +10,6 @@ namespace Uno.Helpers
 {
 	public static partial class ProtocolActivation
 	{
-		internal const string QueryKey = "unoprotocolactivation";
-
 		private static readonly IEnumerable<string> _predefinedPrefixes = [
 			"bitcoin",
 			"ftp",
@@ -99,38 +96,6 @@ namespace Uno.Helpers
 
 			// register scheme
 			NativeMethods.RegisterProtocolHandler(scheme, uriString, prompt);
-		}
-
-		internal static bool TryParseActivationUri(string queryArguments, out Uri uri)
-		{
-			NameValueCollection queryValues = null;
-			uri = null;
-			try
-			{
-				queryValues = HttpUtility.ParseQueryString(queryArguments);
-			}
-			catch (Exception ex)
-			{
-				typeof(ProtocolActivation).Log().LogError(
-					"Launch arguments could not be parsed as a query string", ex);
-			}
-
-			if (queryValues != null &&
-				queryValues[QueryKey] is string protocolUriString)
-			{
-				protocolUriString = Uri.UnescapeDataString(protocolUriString);
-				if (Uri.TryCreate(protocolUriString, UriKind.Absolute, out uri))
-				{
-					return true;
-				}
-				else
-				{
-					typeof(ProtocolActivation).Log().LogError($"Activation URI {protocolUriString} could not be parsed");
-				}
-			}
-
-			// arguments did not contain activation URI or it could not be parsed
-			return false;
 		}
 
 		internal static partial class NativeMethods

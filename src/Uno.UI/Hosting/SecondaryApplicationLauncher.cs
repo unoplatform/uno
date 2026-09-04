@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using Microsoft.UI.Xaml;
@@ -16,8 +16,8 @@ namespace Uno.UI.Hosting;
 /// <remarks>
 /// <para>
 /// Why <c>internal</c>: this helper relies on otherwise non-public Uno internals
-/// (<see cref="LaunchActivatedEventArgs"/>'s parameterless constructor and the
-/// <c>protected internal</c> <see cref="Application.OnLaunched"/> override hook).
+/// (the <c>internal</c> <c>Application.InvokeOnLaunched</c> entry point that drives the
+/// <see cref="Application.OnLaunched"/> override hook).
 /// Exposing it as <c>public</c> would invite app-developer code to call it directly,
 /// where it would silently bypass the platform's normal activation pipeline and
 /// drop the activation arguments the OS actually delivered.
@@ -52,18 +52,6 @@ namespace Uno.UI.Hosting;
 internal static class SecondaryApplicationLauncher
 {
 	/// <summary>
-	/// Creates a default <see cref="LaunchActivatedEventArgs"/> equivalent to the
-	/// arguments Uno produces when reporting a normal launch on each platform.
-	/// </summary>
-	/// <remarks>
-	/// Equivalent to <c>new LaunchActivatedEventArgs(ActivationKind.Launch, arguments: null)</c>
-	/// inside Uno.UI. Exposed here so external hosts do not need to reach for the
-	/// internal constructor via reflection.
-	/// </remarks>
-	internal static LaunchActivatedEventArgs CreateDefaultLaunchActivatedEventArgs()
-		=> new LaunchActivatedEventArgs();
-
-	/// <summary>
 	/// Invokes <see cref="Microsoft.UI.Xaml.Application.OnLaunched"/> on the supplied
 	/// secondary <paramref name="app"/> instance with a default
 	/// <see cref="LaunchActivatedEventArgs"/>.
@@ -87,6 +75,6 @@ internal static class SecondaryApplicationLauncher
 			throw new ArgumentNullException(nameof(app));
 		}
 
-		app.OnLaunched(CreateDefaultLaunchActivatedEventArgs());
+		app.InvokeOnLaunched();
 	}
 }

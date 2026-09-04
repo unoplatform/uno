@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.JavaScript;
@@ -32,6 +32,7 @@ using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 
 using View = Microsoft.UI.Xaml.UIElement;
 using ViewGroup = Microsoft.UI.Xaml.UIElement;
+using Microsoft.Windows.AppLifecycle;
 using Uno.Foundation;
 using System.Diagnostics;
 using Windows.UI.Core;
@@ -132,6 +133,10 @@ namespace Microsoft.UI.Xaml
 
 		internal bool InitializationComplete => _initializationComplete;
 
+		// Per-instance, because several Application instances can coexist (one per ALC) and each
+		// still needs its own OnLaunched.
+		internal bool WasLaunched { get; private set; }
+
 		partial void InitializePartial();
 
 		private static void RegisterExtensions()
@@ -164,7 +169,9 @@ namespace Microsoft.UI.Xaml
 
 		public DebugSettings DebugSettings { get; } = new DebugSettings();
 
-		public ApplicationRequiresPointerMode RequiresPointerMode { get; set; } = ApplicationRequiresPointerMode.Auto;
+		// Not part of the public WinAppSDK Application surface; kept internal for the ported
+		// SharedHelpers.IsMouseModeEnabled, which is its only reader.
+		internal ApplicationRequiresPointerMode RequiresPointerMode { get; set; } = ApplicationRequiresPointerMode.Auto;
 
 		/// <summary>
 		/// Specifies the visual feedback used to indicate the UI element
@@ -330,30 +337,6 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-#pragma warning disable CS0067 // The event is never used
-		/// <summary>
-		/// Occurs when the application transitions from Suspended state to Running state.
-		/// </summary>
-		public event EventHandler<object> Resuming;
-#pragma warning restore CS0067 // The event is never used
-
-#pragma warning disable CS0067 // The event is never used
-		/// <summary>
-		/// Occurs when the application transitions to Suspended state from some other state.
-		/// </summary>
-		public event SuspendingEventHandler Suspending;
-#pragma warning restore CS0067 // The event is never used
-
-		/// <summary>
-		/// Occurs when the app moves from the foreground to the background.
-		/// </summary>
-		public event EnteredBackgroundEventHandler EnteredBackground;
-
-		/// <summary>
-		/// Occurs when the app moves from the background to the foreground.
-		/// </summary>
-		public event LeavingBackgroundEventHandler LeavingBackground;
-
 		/// <summary>
 		/// Occurs when an exception can be handled by app code, as forwarded from a native-level Windows Runtime error.
 		/// Apps can mark the occurrence as handled in event data.
@@ -409,9 +392,47 @@ namespace Microsoft.UI.Xaml
 
 		private static partial Application StartPartial(Func<ApplicationInitializationCallbackParams, Application> callback);
 
-		protected internal virtual void OnActivated(IActivatedEventArgs args) { }
+		protected virtual void OnLaunched(LaunchActivatedEventArgs args) { }
 
-		protected internal virtual void OnLaunched(LaunchActivatedEventArgs args) { }
+		/// <summary>
+		/// Drives the launch pipeline. Platform hosts report their activation to
+		/// <see cref="Microsoft.Windows.AppLifecycle.AppInstance"/> before this runs.
+		/// </summary>
+		/// <remarks>
+		/// <see cref="OnLaunched"/> always receives plain <see cref="ActivationKind.Launch"/> arguments,
+		/// matching WinUI, which synthesizes them regardless of how the process was activated. The real
+		/// payload is read from <see cref="Microsoft.Windows.AppLifecycle.AppInstance.GetActivatedEventArgs"/>.
+		/// </remarks>
+		internal void InvokeOnLaunched()
+		{
+			var appInstance = Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent();
+
+			// OnLaunched should execute only for full apps, not for individual islands.
+			if (CoreApplication.IsFullFledgedApp && !WasLaunched)
+			{
+				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetLaunchArguments(appInstance)));
+			}
+
+			WasLaunched = true;
+			appInstance.NotifyLaunched();
+		}
+
+		/// <summary>
+		/// The arguments <see cref="OnLaunched"/> reports: those the OS delivered with a Launch
+		/// activation when there are any, otherwise the command line.
+		/// </summary>
+		/// <remarks>
+		/// A jump-list or home-screen shortcut arrives as a Launch activation carrying the item's
+		/// arguments, on every platform that has one. Reading them from the activation keeps
+		/// <see cref="OnLaunched"/> consistent without each host having to plumb them separately.
+		/// </remarks>
+		private string GetLaunchArguments(Microsoft.Windows.AppLifecycle.AppInstance appInstance)
+			=> !_isSecondaryAlcApplication
+				&& appInstance.ReportedActivation is { Kind: ExtendedActivationKind.Launch } activation
+				&& activation.Data is global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs launchArgs
+				&& !string.IsNullOrEmpty(launchArgs.Arguments)
+					? launchArgs.Arguments
+					: GetCommandLineArgsWithoutExecutable();
 
 		internal void InitializationCompleted()
 		{
@@ -499,7 +520,6 @@ namespace Microsoft.UI.Xaml
 			{
 				_isInBackground = true;
 				var enteredEventArgs = new EnteredBackgroundEventArgs(onComplete);
-				EnteredBackground?.Invoke(this, enteredEventArgs);
 				CoreApplication.RaiseEnteredBackground(enteredEventArgs);
 				var completedSynchronously = enteredEventArgs.DeferralManager.EventRaiseCompleted();
 
@@ -523,7 +543,6 @@ namespace Microsoft.UI.Xaml
 			{
 				_isInBackground = false;
 				var leavingEventArgs = new LeavingBackgroundEventArgs(onComplete);
-				LeavingBackground?.Invoke(this, leavingEventArgs);
 				CoreApplication.RaiseLeavingBackground(leavingEventArgs);
 				var completedSynchronously = leavingEventArgs.DeferralManager.EventRaiseCompleted();
 
@@ -548,7 +567,6 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			Resuming?.Invoke(null, null);
 			CoreApplication.RaiseResuming();
 			IsSuspended = false;
 		}
@@ -563,7 +581,6 @@ namespace Microsoft.UI.Xaml
 			var suspendingOperation = new SuspendingOperation(GetSuspendingOffset(), () => IsSuspended = true);
 			var suspendingEventArgs = new SuspendingEventArgs(suspendingOperation);
 
-			Suspending?.Invoke(this, suspendingEventArgs);
 			CoreApplication.RaiseSuspending(suspendingEventArgs);
 			var completedSynchronously = suspendingOperation.DeferralManager.EventRaiseCompleted();
 
@@ -706,7 +723,12 @@ namespace Microsoft.UI.Xaml
 #if __SKIA__
 		private static string GetCommandLineArgsWithoutExecutable()
 		{
-			if (!string.IsNullOrEmpty(_argumentsOverride))
+			// Non-null, not non-empty: a host that reports empty arguments is stating the app was
+			// launched with none, which must win over re-reading the command line or the page query.
+			// Not consumed, because every Application in the process - including one in a secondary
+			// AssemblyLoadContext - must see the same arguments the host reported, rather than falling
+			// back to re-reading the raw page query with Uno's activation key still in it.
+			if (_argumentsOverride is not null)
 			{
 				return _argumentsOverride;
 			}
@@ -749,17 +771,14 @@ namespace Microsoft.UI.Xaml
 #nullable enable
 		private static bool _startInvoked;
 
-		[ThreadStatic]
 		private static string? _argumentsOverride;
 
-		[ThreadStatic]
-		private static Uri? _activationUri;
-
+		/// <summary>
+		/// Supplies the launch arguments for a host that has to derive them itself. WebAssembly is the
+		/// only such host: it reports the page query with Uno's protocol-activation key removed.
+		/// </summary>
 		internal static void SetArguments(string arguments)
 			=> _argumentsOverride = arguments;
-
-		internal static void SetActivationUri(Uri uri)
-			=> _activationUri = uri;
 
 		partial void InitializePartial()
 		{
@@ -850,13 +869,13 @@ namespace Microsoft.UI.Xaml
 				}
 
 				// Force a schedule to let the dotnet exports be initialized properly
-				DispatcherQueue.Main.TryEnqueue(currentApp.InvokeOnLaunched);
+				DispatcherQueue.Main.TryEnqueue(currentApp.PrepareOnLaunched);
 			}
 			else
 			{
 				// Other platforms can be synchronous, except iOS that requires
 				// the creation of the window to be synchronous to avoid a black screen.
-				currentApp.InvokeOnLaunched();
+				currentApp.PrepareOnLaunched();
 			}
 
 			return currentApp;
@@ -864,27 +883,17 @@ namespace Microsoft.UI.Xaml
 
 		internal Task FontPreloadTask { get; private set; }
 
-		private void InvokeOnLaunched()
+		private void PrepareOnLaunched()
 		{
+			using var _ = WritePhaseEventTrace(TraceProvider.LaunchedStart, TraceProvider.LaunchedStop);
 			InitializeSystemTheme();
 
-			using (WritePhaseEventTrace(TraceProvider.LaunchedStart, TraceProvider.LaunchedStop))
-			{
-				InitializationCompleted();
-				FontPreloadTask = PreloadFonts();
+			InitializationCompleted();
+			FontPreloadTask = PreloadFonts();
 
-				// OnLaunched should execute only for full apps, not for individual islands.
-				if (CoreApplication.IsFullFledgedApp)
-				{
-					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable()));
-
-					if (OperatingSystem.IsAndroid() && _activationUri is { } uri)
-					{
-						OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning));
-						_activationUri = null;
-					}
-				}
-			}
+			// Any activation the process started with has already been pushed to AppInstance by the
+			// platform host, which runs before the app exists.
+			InvokeOnLaunched();
 		}
 
 		private static async Task PreloadFonts()

@@ -554,13 +554,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	{
 		this.LogTrace()?.Trace($"WndProc received a {nameof(PInvoke.WM_CLOSE)} message.");
 		var closingArgs = RaiseClosing();
-		if (closingArgs.Cancel)
-		{
-			return true;
-		}
-		// Closing should continue, perform suspension.
-		Application.Current.RaiseSuspending();
-		return false;
+		return closingArgs.Cancel;
 	}
 
 	private void OnWmActivate(WPARAM wParam, LPARAM lParam)

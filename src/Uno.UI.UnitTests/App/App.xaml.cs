@@ -42,11 +42,7 @@ namespace UnitTestsApp
 			this.InitializeComponent();
 		}
 
-		protected
-#if !NETFX_CORE
-			internal
-#endif
-			override void OnLaunched(LaunchActivatedEventArgs args)
+		protected override void OnLaunched(LaunchActivatedEventArgs args)
 		{
 			if (HostView == null)
 			{
