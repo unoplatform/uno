@@ -44,6 +44,8 @@ using DispatcherQueuePriority = Microsoft.UI.Dispatching.DispatcherQueuePriority
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using SampleControl.Presentation;
 using Microsoft.Windows.AppLifecycle;
+// Windows.ApplicationModel has an unrelated AppInstance of its own.
+using AppInstance = Microsoft.Windows.AppLifecycle.AppInstance;
 #else
 using DispatcherQueue = Windows.System.DispatcherQueue;
 using DispatcherQueuePriority = Windows.System.DispatcherQueuePriority;
@@ -474,7 +476,7 @@ namespace SamplesApp
 		/// </summary>
 		/// <param name="sender">The source of the suspend request.</param>
 		/// <param name="e">Details about the suspend request.</param>
-		private void OnSuspending(object sender, SuspendingEventArgs e)
+		private void OnSuspending(object? sender, SuspendingEventArgs e)
 		{
 			_isSuspended = true;
 
