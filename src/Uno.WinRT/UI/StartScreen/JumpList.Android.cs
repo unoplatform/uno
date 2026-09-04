@@ -24,7 +24,11 @@ namespace Windows.UI.StartScreen
 
 		private void LoadItems()
 		{
-			var shortcuts = ShortcutManagerCompat.GetDynamicShortcuts(ContextHelper.Current).ToArray();
+			// Shortcuts the app registered outside of JumpList cannot be converted, and would
+			// otherwise throw out of LoadCurrentAsync.
+			var shortcuts = ShortcutManagerCompat.GetDynamicShortcuts(ContextHelper.Current)
+				.Where(s => s.IsUnoShortcut())
+				.ToArray();
 			Items.Clear();
 			foreach (var shortcut in shortcuts)
 			{
