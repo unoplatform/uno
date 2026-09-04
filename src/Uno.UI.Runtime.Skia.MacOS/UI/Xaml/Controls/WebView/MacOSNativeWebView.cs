@@ -55,7 +55,12 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 		OkString = !string.IsNullOrEmpty(ok) ? ok : "OK";
 		CancelString = !string.IsNullOrEmpty(cancel) ? cancel : "Cancel";
 
-		NativeHandle = NativeUno.uno_webview_create(_window.Handle, OkString, CancelString);
+		NativeHandle = NativeUno.uno_webview_create(
+			_window.Handle,
+			OkString,
+			CancelString,
+			global::Uno.UI.FeatureConfiguration.WebView2.AllowFileAccessFromFileURLs,
+			global::Uno.UI.FeatureConfiguration.WebView2.AllowUniversalAccessFromFileURLs);
 
 		NativeUno.uno_webview_set_inspectable(NativeHandle, global::Uno.UI.FeatureConfiguration.WebView2.EnableDevTools);
 
