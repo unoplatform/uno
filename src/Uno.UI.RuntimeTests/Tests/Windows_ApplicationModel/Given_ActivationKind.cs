@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Windows.AppLifecycle;
 using Windows.ApplicationModel.Activation;
 
@@ -22,7 +18,7 @@ public class Given_ActivationKind
 				$"ActivationKind.{kind} has no matching definition in ExtendedActivationKind");
 			var kindName = Enum.GetName(typeof(ActivationKind), kind);
 			var extendedKindName = Enum.GetName(typeof(ExtendedActivationKind), extendedKind);
-			Assert.AreEqual(kindName, extendedKindName, $"Mismatch for ActivationKind.{kindName} (ExtendedActivationKind.{extendedKind}");
+			Assert.AreEqual(kindName, extendedKindName, $"Mismatch for ActivationKind.{kindName} (ExtendedActivationKind.{extendedKind})");
 		}
 	}
 }
