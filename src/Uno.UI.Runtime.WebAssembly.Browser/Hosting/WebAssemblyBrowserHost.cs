@@ -178,7 +178,7 @@ internal partial class WebAssemblyBrowserHost : UnoPlatformHost, IApplicationHos
 			return;
 		}
 
-		if (ProtocolActivation.TryParseActivationUri(arguments, out var activationUri, out var remainingArguments))
+		if (ProtocolActivationParser.TryParseActivationUri(arguments, out var activationUri, out var remainingArguments))
 		{
 			// The activation key is Uno's transport, not something the app asked to be launched with.
 			Application.SetArguments(remainingArguments);

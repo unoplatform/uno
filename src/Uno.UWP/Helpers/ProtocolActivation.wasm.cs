@@ -1,5 +1,9 @@
 ﻿using System;
+<<<<<<< HEAD:src/Uno.UWP/Helpers/ProtocolActivation.wasm.cs
 using System.Collections.Specialized;
+=======
+using System.Collections.Generic;
+>>>>>>> 5df408b6 (fix: Implement ILaunchActivatedEventArgs and share the activation parser):src/Uno.UI.Runtime.WebAssembly.Browser/Helpers/ProtocolActivation.cs
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using System.Web;
@@ -10,7 +14,36 @@ namespace Uno.Helpers
 {
 	public static partial class ProtocolActivation
 	{
+<<<<<<< HEAD:src/Uno.UWP/Helpers/ProtocolActivation.wasm.cs
 		internal const string QueryKey = "unoprotocolactivation";
+=======
+		private static readonly IEnumerable<string> _predefinedPrefixes = [
+			"bitcoin",
+			"ftp",
+			"ftps",
+			"geo",
+			"im",
+			"irc",
+			"ircs",
+			"magnet",
+			"mailto",
+			"matrix",
+			"mms",
+			"news",
+			"nntp",
+			"openpgp4fpr",
+			"sftp",
+			"sip",
+			"sms",
+			"smsto",
+			"ssh",
+			"tel",
+			"urn",
+			"webcal",
+			"wtai",
+			"xmpp"
+		];
+>>>>>>> 5df408b6 (fix: Implement ILaunchActivatedEventArgs and share the activation parser):src/Uno.UI.Runtime.WebAssembly.Browser/Helpers/ProtocolActivation.cs
 
 		/// <summary>
 		/// Registers a custom URI scheme for protocol activation on WASM.
@@ -64,7 +97,7 @@ namespace Uno.Helpers
 
 			var uriBuilder = new UriBuilder(domain);
 			var query = HttpUtility.ParseQueryString(uriBuilder.Query);
-			query[QueryKey] = ""; //set empty, otherwise %s would be encoded
+			query[ProtocolActivationParser.QueryKey] = ""; //set empty, otherwise %s would be encoded
 			uriBuilder.Query = query.ToString();
 			var uriString = uriBuilder.ToString();
 
@@ -74,6 +107,7 @@ namespace Uno.Helpers
 			NativeMethods.RegisterProtocolHandler(scheme, uriString, prompt);
 		}
 
+<<<<<<< HEAD:src/Uno.UWP/Helpers/ProtocolActivation.wasm.cs
 <<<<<<< HEAD:src/Uno.UWP/Helpers/ProtocolActivation.wasm.cs
 		internal static bool TryParseActivationUri(string queryArguments, out Uri uri)
 =======
@@ -126,6 +160,8 @@ namespace Uno.Helpers
 			return false;
 		}
 
+=======
+>>>>>>> 5df408b6 (fix: Implement ILaunchActivatedEventArgs and share the activation parser):src/Uno.UI.Runtime.WebAssembly.Browser/Helpers/ProtocolActivation.cs
 		internal static partial class NativeMethods
 		{
 			[JSImport("globalThis.navigator.registerProtocolHandler")]
