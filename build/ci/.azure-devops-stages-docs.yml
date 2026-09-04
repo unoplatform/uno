@@ -27,3 +27,45 @@ stages:
   - template: docs/.azure-devops-docs.yml
     parameters:
       poolName: '$(windowsScaledPool)'
+
+- stage: docs_deploy_dev
+  displayName: Docs Deploy - Dev
+  dependsOn: docs_generation
+  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'), not(eq(variables['Build.Reason'], 'PullRequest')))
+  jobs:
+  - template: docs/.azure-devops-docs-deploy.yml
+    parameters:
+      poolName: '$(windowsScaledPool)'
+      deploymentName: Docs_Deploy_Dev
+      displayName: Deploy Docs Dev
+      environmentName: Uno UI Docs Development
+      azureSubscription: Uno Platform - Dev Operations (uno-staticapps-dev)
+      storageAccountName: unoplatformdocsdev
+
+- stage: docs_deploy_staging
+  displayName: Docs Deploy - Staging
+  dependsOn: docs_generation
+  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/stable/'), not(eq(variables['Build.Reason'], 'PullRequest')))
+  jobs:
+  - template: docs/.azure-devops-docs-deploy.yml
+    parameters:
+      poolName: '$(windowsScaledPool)'
+      deploymentName: Docs_Deploy_Staging
+      displayName: Deploy Docs Staging
+      environmentName: Uno UI Docs Staging
+      azureSubscription: Uno Platform - Operations (uno-platform-operations @ platformuno.onmicrosoft.com)
+      storageAccountName: unoplatformdocstaging
+
+- stage: docs_deploy_prod
+  displayName: Docs Deploy - Prod
+  dependsOn: docs_deploy_staging
+  condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/stable/'), not(eq(variables['Build.Reason'], 'PullRequest')))
+  jobs:
+  - template: docs/.azure-devops-docs-deploy.yml
+    parameters:
+      poolName: '$(windowsScaledPool)'
+      deploymentName: Docs_Deploy_Prod
+      displayName: Deploy Docs Prod
+      environmentName: Uno UI Docs Production
+      azureSubscription: Uno Platform - Operations (uno-platform-operations @ platformuno.onmicrosoft.com)
+      storageAccountName: unoplatformdocsprod
