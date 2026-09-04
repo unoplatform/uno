@@ -82,11 +82,10 @@ namespace Uno.UI.Runtime.Android
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().LogDebug($"Application activity started with intent {activity.Intent}");
+					this.Log().LogDebug($"Application activity started with intent action {activity.Intent?.Action ?? "(none)"}");
 				}
 
-				// We need to call TryHandleIntent first so the application arguments are set correctly.
-				// Then, when the Application is created, it will use those arguments.
+				// Reported before the host starts, so the activation is stored rather than raised.
 				_ = TryHandleIntent(activity.Intent);
 				if (!_isRunning)
 				{
@@ -117,7 +116,8 @@ namespace Uno.UI.Runtime.Android
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"Trying to handle intent with data: {intent?.Data?.ToString() ?? "(null)"}");
+				// Scheme only: a deep link's query routinely carries an OAuth code or token.
+				this.Log().LogDebug($"Trying to handle intent with data scheme: {intent?.Data?.Scheme ?? "(none)"}");
 			}
 
 			var handled = false;
@@ -137,7 +137,7 @@ namespace Uno.UI.Runtime.Android
 						new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, arguments)));
 					handled = true;
 				}
-				else if (intent.Data != null)
+				else if (intent?.Data != null)
 				{
 					if (Uri.TryCreate(intent.Data.ToString(), UriKind.Absolute, out var uri))
 					{
@@ -171,8 +171,20 @@ namespace Uno.UI.Runtime.Android
 		/// <see cref="AppInstance.Activated"/> when the app is already up. Android delivers both through
 		/// the same intent callbacks, and <see cref="AppInstance"/> — not this type — knows which case it is.
 		/// </summary>
-		private static void ReportActivation(AppActivationArguments args)
-			=> AppInstance.GetCurrent().SetOrRaiseActivation(args);
+		private void ReportActivation(AppActivationArguments args)
+		{
+			try
+			{
+				AppInstance.GetCurrent().SetOrRaiseActivation(args);
+			}
+			catch (Exception ex)
+			{
+				// Raising Activated runs app code; a managed exception unwinding into the Android
+				// lifecycle callback would abort the process.
+				this.Log().Error("An activation handler threw.", ex);
+				Application.Current?.RaiseRecoverableUnhandledException(ex);
+			}
+		}
 
 		/// <summary>
 		/// This method is used by UI Test frameworks to get
