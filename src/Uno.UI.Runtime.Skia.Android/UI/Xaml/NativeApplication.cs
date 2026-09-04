@@ -132,13 +132,6 @@ namespace Microsoft.UI.Xaml
 
 					var arguments = intent.GetStringExtra(JumpListItem.ArgumentsExtraKey);
 
-					if (!_isRunning)
-					{
-						// The app does not exist yet at this point (the host is built in CreateHost() below),
-						// so the arguments are stashed for the LaunchActivatedEventArgs OnLaunched will get.
-						Application.SetArguments(arguments);
-					}
-
 					ReportActivation(AppActivationArguments.CreateLaunch(
 						new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, arguments)));
 					handled = true;

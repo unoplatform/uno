@@ -137,4 +137,10 @@ public partial class AppInstance
 	/// Marks the app as launched, so that any further activation is raised rather than stored.
 	/// </summary>
 	internal void NotifyLaunched() => _hasLaunched = true;
+
+	/// <summary>
+	/// The activation a platform host actually reported, as opposed to the Launch activation
+	/// <see cref="GetActivatedEventArgs"/> synthesizes when there was none.
+	/// </summary>
+	internal AppActivationArguments? ReportedActivation => _activationArguments;
 }

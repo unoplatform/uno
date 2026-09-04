@@ -414,12 +414,28 @@ namespace Microsoft.UI.Xaml
 			// OnLaunched should execute only for full apps, not for individual islands.
 			if (CoreApplication.IsFullFledgedApp && !WasLaunched)
 			{
-				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable()));
+				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetLaunchArguments(appInstance)));
 			}
 
 			WasLaunched = true;
 			appInstance.NotifyLaunched();
 		}
+
+		/// <summary>
+		/// The arguments <see cref="OnLaunched"/> reports: those the OS delivered with a Launch
+		/// activation when there are any, otherwise the command line.
+		/// </summary>
+		/// <remarks>
+		/// A jump-list or home-screen shortcut arrives as a Launch activation carrying the item's
+		/// arguments, on every platform that has one. Reading them from the activation keeps
+		/// <see cref="OnLaunched"/> consistent without each host having to plumb them separately.
+		/// </remarks>
+		private static string GetLaunchArguments(Microsoft.Windows.AppLifecycle.AppInstance appInstance)
+			=> appInstance.ReportedActivation is { Kind: ExtendedActivationKind.Launch } activation
+				&& activation.Data is global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs launchArgs
+				&& !string.IsNullOrEmpty(launchArgs.Arguments)
+					? launchArgs.Arguments
+					: GetCommandLineArgsWithoutExecutable();
 
 		internal void InitializationCompleted()
 		{

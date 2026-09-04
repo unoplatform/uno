@@ -323,7 +323,7 @@ namespace SamplesApp
 		{
 			// An activation delivered into the running app: the window already exists, so only the
 			// payload needs handling.
-			ReportActivation(args, "Application activated");
+			ReportActivation(args, "Application activated", showDialog: true);
 		}
 
 		/// <summary>
@@ -331,28 +331,30 @@ namespace SamplesApp
 		/// where a WinAppSDK-shaped app discovers how it was activated.
 		/// </summary>
 		private void ReportLaunchActivation()
-			=> ReportActivation(AppInstance.GetCurrent().GetActivatedEventArgs(), "Application launched");
+			=> ReportActivation(AppInstance.GetCurrent().GetActivatedEventArgs(), "Application launched", showDialog: false);
 
-		private async void ReportActivation(AppActivationArguments arguments, string title)
+		private async void ReportActivation(AppActivationArguments arguments, string title, bool showDialog)
 		{
-			var detail = arguments.Kind switch
-			{
-				ExtendedActivationKind.Protocol when arguments.Data is ProtocolActivatedEventArgs protocolArgs =>
-					$"Uri - {protocolArgs.Uri}, PreviousState - {protocolArgs.PreviousExecutionState}",
-				ExtendedActivationKind.Launch when arguments.Data is global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs launchArgs =>
-					$"Arguments - {launchArgs.Arguments}",
-				_ => arguments.Data?.GetType().Name ?? "(no data)",
-			};
-
+			var detail = DescribeActivation(arguments);
 			Console.WriteLine($"{title}: Kind - {arguments.Kind}, {detail}");
 
-			// Launch is the ordinary startup path and would pop a dialog on every run.
-			if (arguments.Kind != ExtendedActivationKind.Launch &&
+			// Only for an activation delivered into the running app. Reporting at launch would pop a
+			// dialog on every run, including the CI runs driven by launch arguments.
+			if (showDialog &&
 				ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog, Uno", nameof(MessageDialog.ShowAsync)))
 			{
 				await new MessageDialog($"Kind - {arguments.Kind}, {detail}", title).ShowAsync();
 			}
 		}
+
+		internal static string DescribeActivation(AppActivationArguments arguments) => arguments.Kind switch
+		{
+			ExtendedActivationKind.Protocol when arguments.Data is ProtocolActivatedEventArgs protocolArgs =>
+				$"Uri - {protocolArgs.Uri}, PreviousState - {protocolArgs.PreviousExecutionState}",
+			ExtendedActivationKind.Launch when arguments.Data is global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs launchArgs =>
+				$"Arguments - {launchArgs.Arguments}",
+			_ => arguments.Data?.GetType().Name ?? "(no data)",
+		};
 #endif
 
 		private void ActivateMainWindow()
