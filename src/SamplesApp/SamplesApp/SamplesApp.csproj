@@ -396,6 +396,12 @@
 		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">iossimulator-x64</RuntimeIdentifier>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(_Platform)' == 'ios' AND '$(BuildForTestFlight)' == 'true'">
+		<CodesignKey>iPhone Distribution</CodesignKey>
+		<RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
+		<DefineConstants>$(DefineConstants);TESTFLIGHT</DefineConstants>
+	</PropertyGroup>
+
 	<ItemGroup Condition="'$(_Platform)' == 'tvos'">
 		<PackageReference Include="SkiaSharp.NativeAssets.TvOS" />
 
