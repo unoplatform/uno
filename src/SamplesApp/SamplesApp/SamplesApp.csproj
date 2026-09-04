@@ -197,7 +197,7 @@
 		<PackageReference Include="SkiaSharp.NativeAssets.Linux" />
 		<PackageReference Include="Microsoft.Web.WebView2" Aliases="MsWebView2" />
 		<PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.23.1" />
-		<!-- WMI / system info (desktop-only; Microsoft.Windows.Compatibility provides it on wasm) -->
+		<!-- Pins BenchmarkDotNet's transitive System.Management 4.5.0 -->
 		<PackageReference Include="System.Management" Version="8.0.0" />
 	</ItemGroup>
 
@@ -205,7 +205,8 @@
 	<ItemGroup Condition="'$(_Platform)' == 'browserwasm'">
 		<PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" />
-		<PackageReference Include="Microsoft.Windows.Compatibility" />
+		<!-- Pins BenchmarkDotNet's transitive System.Management 4.5.0 -->
+		<PackageReference Include="System.Management" Version="8.0.0" />
 	</ItemGroup>
 
 	<!-- Windows / WinAppSDK packages (real WinUI) -->
