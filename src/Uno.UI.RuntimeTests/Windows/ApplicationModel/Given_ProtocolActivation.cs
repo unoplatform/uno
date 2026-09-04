@@ -68,8 +68,8 @@ public class Given_ProtocolActivation
 
 	private static bool TryParseActivationUri(string queryArguments, out Uri? uri, out string? remainingArguments)
 	{
-		var type = typeof(AppInstance).Assembly.GetType("Uno.Helpers.ProtocolActivation", throwOnError: false);
-		Assert.IsNotNull(type, "Uno.Helpers.ProtocolActivation is missing from the Uno.WinRT assembly loaded for this target.");
+		var type = typeof(AppInstance).Assembly.GetType("Uno.Helpers.ProtocolActivationParser", throwOnError: false);
+		Assert.IsNotNull(type, "Uno.Helpers.ProtocolActivationParser is missing from the Uno.WinRT assembly loaded for this target.");
 
 		var method = type!.GetMethod(
 			"TryParseActivationUri",
@@ -77,7 +77,7 @@ public class Given_ProtocolActivation
 			binder: null,
 			[typeof(string), typeof(Uri).MakeByRefType(), typeof(string).MakeByRefType()],
 			modifiers: null);
-		Assert.IsNotNull(method, "ProtocolActivation.TryParseActivationUri(string, out Uri, out string) is missing.");
+		Assert.IsNotNull(method, "ProtocolActivationParser.TryParseActivationUri(string, out Uri, out string) is missing.");
 
 		var parameters = new object?[] { queryArguments, null, null };
 		var result = (bool)method!.Invoke(null, parameters)!;
