@@ -53,18 +53,6 @@ namespace Uno.UI.Hosting;
 internal static class SecondaryApplicationLauncher
 {
 	/// <summary>
-	/// Creates a default <see cref="LaunchActivatedEventArgs"/> equivalent to the
-	/// arguments Uno produces when reporting a normal launch on each platform.
-	/// </summary>
-	/// <remarks>
-	/// Equivalent to <c>new LaunchActivatedEventArgs(ActivationKind.Launch, arguments: null)</c>
-	/// inside Uno.UI. Exposed here so external hosts do not need to reach for the
-	/// internal constructor via reflection.
-	/// </remarks>
-	internal static LaunchActivatedEventArgs CreateDefaultLaunchActivatedEventArgs()
-		=> new LaunchActivatedEventArgs();
-
-	/// <summary>
 	/// Invokes <see cref="Microsoft.UI.Xaml.Application.OnLaunched"/> on the supplied
 	/// secondary <paramref name="app"/> instance with a default
 	/// <see cref="LaunchActivatedEventArgs"/>.
@@ -88,9 +76,8 @@ internal static class SecondaryApplicationLauncher
 			throw new ArgumentNullException(nameof(app));
 		}
 
-		// A null activation means "plain launch": InvokeOnLaunched then builds the same default
-		// LaunchActivatedEventArgs CreateDefaultLaunchActivatedEventArgs() describes, without
-		// pushing a bogus activation onto the process-wide AppInstance.
+		// A null activation means "plain launch": InvokeOnLaunched synthesizes the default
+		// LaunchActivatedEventArgs itself, without pushing a bogus activation onto AppInstance.
 		app.InvokeOnLaunched(null);
 	}
 }
