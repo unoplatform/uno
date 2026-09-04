@@ -123,12 +123,6 @@ namespace Microsoft.UI.Xaml
 				BackButtonIntegration.Initialize();
 
 				InitializePartial();
-
-				var appInstance = Windows.AppLifecycle.AppInstance.GetCurrent();
-				// Set default launch activation args
-				appInstance.SetDefaultLaunchActivatedArgs(
-					AppActivationArguments.CreateLaunch(
-						new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable())));
 			}
 			else
 			{
@@ -140,19 +134,8 @@ namespace Microsoft.UI.Xaml
 		internal bool InitializationComplete => _initializationComplete;
 
 		// Per-instance, because several Application instances can coexist (one per ALC) and each
-		// still needs its own OnLaunched. CoreApplication.WasLaunched is the process-wide mirror
-		// AppInstance reads, since it cannot see Application.
-		private bool _wasLaunched;
-
-		internal bool WasLaunched
-		{
-			get => _wasLaunched;
-			private set
-			{
-				_wasLaunched = value;
-				CoreApplication.WasLaunched = value;
-			}
-		}
+		// still needs its own OnLaunched.
+		internal bool WasLaunched { get; private set; }
 
 		partial void InitializePartial();
 
@@ -431,27 +414,35 @@ namespace Microsoft.UI.Xaml
 
 		private static partial Application StartPartial(Func<ApplicationInitializationCallbackParams, Application> callback);
 
-		protected virtual void OnActivated(IActivatedEventArgs args) { }
-
 		protected virtual void OnLaunched(LaunchActivatedEventArgs args) { }
 
-		// Activation always goes through the proper OnLaunched path.
-		internal void InvokeOnActivated(IActivatedEventArgs args) => InvokeOnLaunched(args);
-
+		/// <summary>
+		/// Drives the launch/activation pipeline. Every platform host routes activations here, whether
+		/// they arrive with the process (<paramref name="activatedArgs"/> set) or on a plain launch (null).
+		/// </summary>
+		/// <remarks>
+		/// <see cref="OnLaunched"/> always receives plain <see cref="ActivationKind.Launch"/> arguments,
+		/// matching WinUI, which synthesizes them regardless of how the process was activated. The real
+		/// payload is read from <see cref="Microsoft.Windows.AppLifecycle.AppInstance.GetActivatedEventArgs"/>.
+		/// </remarks>
 		internal void InvokeOnLaunched(IActivatedEventArgs activatedArgs)
 		{
+			var appInstance = Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent();
+
 			if (activatedArgs is not null)
 			{
-				Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().SetOrRaiseActivation(AppActivationArguments.FromActivatedEventArgs(activatedArgs));
+				// Must land before OnLaunched, so the app can read it from there.
+				appInstance.SetOrRaiseActivation(AppActivationArguments.FromActivatedEventArgs(activatedArgs));
 			}
+
 			// OnLaunched should execute only for full apps, not for individual islands.
 			if (CoreApplication.IsFullFledgedApp && !WasLaunched)
 			{
-				var args = new Microsoft.UI.Xaml.LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable());
-				OnLaunched(args);
+				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, GetCommandLineArgsWithoutExecutable()));
 			}
 
 			WasLaunched = true;
+			appInstance.NotifyLaunched();
 		}
 
 		internal void InitializationCompleted()
@@ -747,9 +738,15 @@ namespace Microsoft.UI.Xaml
 #if __SKIA__
 		private static string GetCommandLineArgsWithoutExecutable()
 		{
-			if (!string.IsNullOrEmpty(_argumentsOverride))
+			// Non-null, not non-empty: a host that reports empty arguments is stating the app was
+			// launched with none, which must win over re-reading the command line or the page query.
+			if (_argumentsOverride is not null)
 			{
-				return _argumentsOverride;
+				// Consumed once, so a shortcut's arguments cannot leak into a later plain launch
+				// of the same process (Android recreates the Activity without restarting the process).
+				var arguments = _argumentsOverride;
+				_argumentsOverride = null;
+				return arguments;
 			}
 
 			if (OperatingSystem.IsBrowser()) // Skia-WASM
@@ -790,17 +787,14 @@ namespace Microsoft.UI.Xaml
 #nullable enable
 		private static bool _startInvoked;
 
-		[ThreadStatic]
 		private static string? _argumentsOverride;
 
-		[ThreadStatic]
-		private static Uri? _activationUri;
-
+		/// <summary>
+		/// Supplies the launch arguments for platforms where the OS delivers them out of band rather
+		/// than on the command line, such as an Android jump-list shortcut extra.
+		/// </summary>
 		internal static void SetArguments(string arguments)
 			=> _argumentsOverride = arguments;
-
-		internal static void SetActivationUri(Uri uri)
-			=> _activationUri = uri;
 
 		partial void InitializePartial()
 		{
@@ -913,15 +907,9 @@ namespace Microsoft.UI.Xaml
 			InitializationCompleted();
 			FontPreloadTask = PreloadFonts();
 
-			IActivatedEventArgs? activatedArgs = null;
-			if (OperatingSystem.IsAndroid() && _activationUri is { } uri)
-			{
-				// Android hands the protocol URI over before the app exists, see NativeApplication.
-				activatedArgs = new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning);
-				_activationUri = null;
-			}
-
-			InvokeOnLaunched(activatedArgs);
+			// Any activation the process started with has already been pushed to AppInstance by the
+			// platform host, which runs before the app exists.
+			InvokeOnLaunched(null);
 		}
 
 		private static async Task PreloadFonts()

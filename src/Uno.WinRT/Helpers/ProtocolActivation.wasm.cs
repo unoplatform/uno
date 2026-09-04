@@ -101,10 +101,23 @@ namespace Uno.Helpers
 			NativeMethods.RegisterProtocolHandler(scheme, uriString, prompt);
 		}
 
-		internal static bool TryParseActivationUri(string queryArguments, out Uri uri)
+		internal static bool TryParseActivationUri(string queryArguments, out Uri uri) =>
+			TryParseActivationUri(queryArguments, out uri, out _);
+
+		/// <summary>
+		/// Extracts the protocol activation URI from a browser query string.
+		/// </summary>
+		/// <param name="queryArguments">The query string, without its leading '?'.</param>
+		/// <param name="uri">The activation URI, when one is present.</param>
+		/// <param name="remainingArguments">
+		/// <paramref name="queryArguments"/> with the activation key removed, so that the app's own
+		/// launch arguments do not carry Uno's transport detail.
+		/// </param>
+		internal static bool TryParseActivationUri(string queryArguments, out Uri uri, out string remainingArguments)
 		{
 			NameValueCollection queryValues = null;
 			uri = null;
+			remainingArguments = queryArguments;
 			try
 			{
 				queryValues = HttpUtility.ParseQueryString(queryArguments);
@@ -118,9 +131,12 @@ namespace Uno.Helpers
 			if (queryValues != null &&
 				queryValues[QueryKey] is string protocolUriString)
 			{
-				protocolUriString = Uri.UnescapeDataString(protocolUriString);
+				// ParseQueryString has already decoded the value; unescaping again would corrupt a
+				// URI that legitimately contains an encoded '%' or '/'.
 				if (Uri.TryCreate(protocolUriString, UriKind.Absolute, out uri))
 				{
+					queryValues.Remove(QueryKey);
+					remainingArguments = queryValues.ToString();
 					return true;
 				}
 				else
