@@ -666,8 +666,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 						damage.UnionRect(visual._childrenContentDamageRect);
 					}
 
-					using var clip = visual.GetTotalClipPath(skipPostPaintingClipping: false);
+					var clip = visual.GetTotalClipPath(skipPostPaintingClipping: false);
 					var bounds = clip.IsEmpty ? default : clip.Bounds;
+					clip.Release();
 					visual._hasChildrenContentDamageRect = !IsRectEmpty(bounds);
 					if (visual._hasChildrenContentDamageRect)
 					{
@@ -720,8 +721,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 					// The record walk just let every child contribute damage at the current placement; seed the
 					// replay-move bookkeeping from it so the first moved replay damages this area as "previous".
 					visual._childrenContentMatrix = visual.TotalMatrix;
-					using var clip = visual.GetTotalClipPath(skipPostPaintingClipping: false);
+					var clip = visual.GetTotalClipPath(skipPostPaintingClipping: false);
 					var bounds = clip.IsEmpty ? default : clip.Bounds;
+					clip.Release();
 					visual._hasChildrenContentDamageRect = !IsRectEmpty(bounds);
 					if (visual._hasChildrenContentDamageRect)
 					{
@@ -744,9 +746,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		}
 
 		var localMatrix = TotalMatrix.ToMatrix3x2();
-		var localClip = (GetPrePaintingClipping() ?? GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, Size.X, Size.Y)))
-			.Transform(localMatrix)
-			.Combine(clipFromParent, GeometryCombineMode.Intersect);
+		var ownClip = GetPrePaintingClipping() ?? GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, Size.X, Size.Y));
+		var ownClipInParent = ownClip.Transform(localMatrix);
+		ownClip.Release();
+		// clipFromParent belongs to the caller, so it is not released here.
+		var localClip = ownClipInParent.Combine(clipFromParent, GeometryCombineMode.Intersect);
+		ownClipInParent.Release();
 
 		if (IsNativeHostVisual || CanPaint())
 		{
@@ -761,7 +766,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		var childClip = localClip;
 		if (GetPostPaintingClipping() is { } postClip)
 		{
-			childClip = childClip.Combine(postClip.Transform(localMatrix), GeometryCombineMode.Intersect);
+			var postClipInParent = postClip.Transform(localMatrix);
+			postClip.Release();
+			childClip = localClip.Combine(postClipInParent, GeometryCombineMode.Intersect);
+			postClipInParent.Release();
 		}
 
 		foreach (var child in GetChildrenInRenderOrder())
@@ -769,6 +777,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 			clipPath = child.GetNativeViewPathAndZOrder(childClip, clipPath, nativeVisualsInZOrder);
 		}
 
+		if (!ReferenceEquals(childClip, localClip))
+		{
+			childClip.Release();
+		}
+
+		localClip.Release();
 		return clipPath;
 	}
 
@@ -783,24 +797,23 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if (GetPrePaintingClipping() is { } pre)
 		{
 			// The local clip is in local coordinates. We need to transform it to root coordinates.
-			dst = Intersect(dst, pre, totalMatrix);
+			dst = IntersectInto(dst, pre, totalMatrix);
 		}
 
 		if (!skipPostPaintingClipping && GetPostPaintingClipping() is { } postClip)
 		{
-			dst = Intersect(dst, postClip, totalMatrix);
+			dst = IntersectInto(dst, postClip, totalMatrix);
 		}
 
 		return dst;
 
-		// Every step here mints geometry — the transform of the clip, and the combination itself — so release the
-		// operands rather than walking the tree leaving one abandoned per level per query.
-		static IGeometry Intersect(IGeometry dst, IGeometry clip, Matrix3x2 matrix)
+		// Every step here mints geometry — the clip, its transform, and the combination — so release them rather
+		// than walking the tree leaving three abandoned per level per query.
+		static IGeometry IntersectInto(IGeometry dst, IGeometry clip, Matrix3x2 matrix)
 		{
-			using var transformed = clip.Transform(matrix);
-			var combined = dst.Combine(transformed, GeometryCombineMode.Intersect);
-			dst.Dispose();
-			return combined;
+			var transformed = clip.Transform(matrix);
+			clip.Release();
+			return IntersectOwned(dst, transformed);
 		}
 	}
 
@@ -814,8 +827,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		// skipPostPaintingClipping: true — a visual's own post-painting clip only affects its children,
 		// not the visual itself. Ancestor post-painting clips are still applied via the parent recursion.
 	{
-		using var clip = GetTotalClipPath(skipPostPaintingClipping: true);
-		return clip.Bounds;
+		var clip = GetTotalClipPath(skipPostPaintingClipping: true);
+		var bounds = clip.Bounds;
+		clip.Release();
+		return bounds;
 	}
 
 	/// <summary>
@@ -979,7 +994,12 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 
 		var toRoot = visual.TotalMatrix.ToMatrix3x2() * inverseRootMatrix;
 
-		var effectiveClip = visual.GetPrePaintingClipping()?.Transform(toRoot);
+		IGeometry? effectiveClip = null;
+		if (visual.GetPrePaintingClipping() is { } visualOwnClip)
+		{
+			effectiveClip = visualOwnClip.Transform(toRoot);
+			visualOwnClip.Release();
+		}
 
 		// Intersect with the accumulated ancestor clip.
 		if (ancestorClipInRoot is not null)
@@ -1046,6 +1066,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if (postClipLocal is not null)
 		{
 			var postClipInRoot = postClipLocal.Transform(toRoot);
+			postClipLocal.Release();
 			childClipInRoot = childClipInRoot is not null
 				? childClipInRoot.Combine(postClipInRoot, GeometryCombineMode.Intersect)
 				: postClipInRoot;
@@ -1087,10 +1108,22 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// </summary>
 	// Note: The Clip is applied after the transformation matrix. A non-null Clip whose GetClipPath yields
 	// no path still clips everything out (empty geometry) — matching the previous SKPath behaviour.
+	/// <summary>This visual's own clipping, as a reference the caller owns and must <see cref="IDrawingResource.Release"/>,
+	/// or null when it has none. Release, not Dispose: the reference may be one taken on a cached geometry, whose
+	/// creator still holds the Dispose.</summary>
 	internal virtual IGeometry? GetPrePaintingClipping()
 		=> Clip is null
 			? null
 			: Clip.GetClipPath(this) ?? GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, 0, 0));
+
+	/// <summary>Intersects two owned clip references, releasing both in favour of the result.</summary>
+	private protected static IGeometry IntersectOwned(IGeometry a, IGeometry b)
+	{
+		var combined = a.Combine(b, GeometryCombineMode.Intersect);
+		a.Release();
+		b.Release();
+		return combined;
+	}
 
 	/// <summary>Applies this visual's pre-painting clipping (its <see cref="Clip"/> and any layout/corner clip) to the drawing session.</summary>
 	internal virtual void ApplyPrePaintingClipping(IDrawingSession session) => Clip?.ApplyClip(this, session);
@@ -1147,6 +1180,8 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	private protected virtual Rect? GetLocalCullClipBounds() => Clip?.GetBounds(this);
 
 	/// <summary>This clipping won't affect the visual itself, but its children.</summary>
+	/// <summary>Clipping that affects this visual's children but not itself, as a reference the caller owns and
+	/// must <see cref="IDrawingResource.Release"/>, or null when it has none.</summary>
 	private protected virtual IGeometry? GetPostPaintingClipping() => null;
 	/// <summary>Applies the post-painting (children) clipping to the drawing session. Overridable so simple
 	/// rect/round-rect clips can use the session's ClipRect/ClipRoundRect fast paths instead of a full path.</summary>
@@ -1155,6 +1190,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if (GetPostPaintingClipping() is { } postClip)
 		{
 			session.ClipPath(postClip);
+			postClip.Release();
 		}
 	}
 

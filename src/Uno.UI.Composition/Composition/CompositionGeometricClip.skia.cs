@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
@@ -14,7 +14,15 @@ partial class CompositionGeometricClip
 	{
 		if (Geometry?.BuildGeometry() is IGeometry path)
 		{
-			return TransformMatrix.IsIdentity ? path : path.Transform(TransformMatrix);
+			// BuildGeometry hands out the geometry object's own cached instance, so take a reference on it rather
+			// than passing the borrow along — Transform already returns one.
+			if (TransformMatrix.IsIdentity)
+			{
+				path.AddRef();
+				return path;
+			}
+
+			return path.Transform(TransformMatrix);
 		}
 
 		return null;

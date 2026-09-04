@@ -53,6 +53,7 @@ partial class CompositionClip
 		else if (GetClipPath(visual) is { } clipPath)
 		{
 			session.ClipPath(clipPath);
+			clipPath.Release();
 		}
 	}
 }

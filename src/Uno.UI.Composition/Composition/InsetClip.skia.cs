@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
@@ -26,8 +26,13 @@ partial class InsetClip
 		}
 		if (_clipPath is null || _clipPath.Value.bounds != bounds)
 		{
+			_clipPath?.path.Release();
 			_clipPath = (bounds, GeometryFactory.Current.CreateRectangleGeometry(bounds));
 		}
+
+		// The cache keeps its own reference, so hand the caller one of theirs — GetClipPath returns an owned
+		// reference, and without this the first caller to release it would free the cached instance.
+		_clipPath.Value.path.AddRef();
 		return _clipPath.Value.path;
 	}
 
