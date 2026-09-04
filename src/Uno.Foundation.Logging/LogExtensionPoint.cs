@@ -21,6 +21,26 @@ namespace Uno.Foundation.Logging
 		public static LoggerFactory Factory => _loggerFactory;
 
 		/// <summary>
+		/// Memoizes the logger for one exact <typeparamref name="T"/>. Statics of a generic instantiation
+		/// live in that type's own LoaderAllocator, so a collectible context is still unloadable.
+		/// </summary>
+		private static class Holder<T>
+		{
+			public static Logger? Logger;
+			public static int Version = -1;
+		}
+
+		/// <summary>
+		/// Drops every memoized logger. Called when the external factory changes so that types which
+		/// resolved a logger beforehand pick up the new configuration.
+		/// </summary>
+		internal static void ResetLoggerCaches()
+		{
+			_loggers.Clear();
+			_loggerFactory.ClearCache();
+		}
+
+		/// <summary>
 		/// Gets a <see cref="Logger"/> for the specified type.
 		/// </summary>
 		/// <param name="forType"></param>
@@ -36,8 +56,24 @@ namespace Uno.Foundation.Logging
 		/// <returns>A logger for the type of the instance</returns>
 		public static Logger Log<T>(this T instance)
 		{
-			var type = instance as Type ?? typeof(T);
-			return _loggers.GetValue(type, static t => _loggerFactory.CreateLogger(t));
+			if (instance is Type type)
+			{
+				return _loggers.GetValue(type, static t => _loggerFactory.CreateLogger(t));
+			}
+
+			// Guard sites evaluate this before checking the level, so it runs on every property set and
+			// every layout pass. Keyed on the static T exactly as the table lookup below is, which makes
+			// the cached value equivalent; the version stamp re-resolves it if logging is reconfigured.
+			var version = LoggerFactory.Version;
+			if (Holder<T>.Version == version && Holder<T>.Logger is { } cached)
+			{
+				return cached;
+			}
+
+			var logger = _loggers.GetValue(typeof(T), static t => _loggerFactory.CreateLogger(t));
+			Holder<T>.Logger = logger;
+			Holder<T>.Version = version;
+			return logger;
 		}
 
 		private static Logger? Log<T>(this T instance, LogLevel level)
