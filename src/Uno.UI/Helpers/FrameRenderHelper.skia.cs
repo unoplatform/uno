@@ -17,11 +17,11 @@ using Microsoft.UI.Xaml.Documents;
 using Uno.UI.Composition;
 using Uno.UI.Composition.Drawing;
 using Uno.UI.Xaml.Core;
-using static Uno.UI.Helpers.SkiaRenderHelper;
+using static Uno.UI.Helpers.FrameRenderHelper;
 
 namespace Uno.UI.Helpers;
 
-internal static class SkiaRenderHelper
+internal static class FrameRenderHelper
 {
 	private static readonly List<Visual> _emptyList = new();
 
@@ -34,7 +34,7 @@ internal static class SkiaRenderHelper
 	private static float _invertedClipPathHeight;
 	private static IGeometry? _invertedClipPath;
 
-	internal static bool CanRecordPicture([NotNullWhen(true)] UIElement? rootElement) =>
+	internal static bool CanRecordFrame([NotNullWhen(true)] UIElement? rootElement) =>
 		rootElement is { IsArrangeDirtyOrArrangeDirtyPath: false, IsMeasureDirtyOrMeasureDirtyPath: false };
 
 	/// <summary>
@@ -286,6 +286,49 @@ internal static class SkiaRenderHelper
 			Interlocked.Exchange(ref _lastPresentedGeneration, current);
 		}
 
+		// What the overlay is about to paint, unioned with what it painted last frame so a panel that shrinks (one
+		// fewer digit) still clears the tail it left behind.
+		private Rect? _lastPanelBounds;
+
+		/// <summary>
+		/// The area <see cref="DrawFps"/> will paint, in the session's coordinate space, or null when disabled.
+		/// The panel is translucent and antialiased, so its area has to be part of the frame's damage: composited
+		/// onto a region the frame never cleared it would blend over the previous frame's panel and accumulate.
+		/// </summary>
+		public Rect? TryGetOverlayBounds()
+		{
+			if (!IsEnabled)
+			{
+				return null;
+			}
+
+			var bounds = ComputePanelBounds();
+			return _lastPanelBounds is { } last ? UnionRects(last, bounds) : bounds;
+		}
+
+		private static Rect UnionRects(Rect a, Rect b)
+		{
+			var left = Math.Min(a.Left, b.Left);
+			var top = Math.Min(a.Top, b.Top);
+			return new Rect(left, top, Math.Max(a.Right, b.Right) - left, Math.Max(a.Bottom, b.Bottom) - top);
+		}
+
+		private Rect ComputePanelBounds()
+		{
+			var culture = CultureInfo.InvariantCulture;
+			var col1Width = Math.Max(MinColumn1Width, MaxTextWidth(
+				_fps.ToString("F1", culture), _droppedFrames.ToString(culture), _unpresentedFrames.ToString(culture)));
+			var col2Width = Math.Max(MinColumn2Width, MaxTextWidth(
+				FormattableString.Invariant($"{_frameTime:F1} ms"),
+				_isIdle ? "Idle" : FormattableString.Invariant($"{_drawToPresentDelayMs:F1} ms")));
+
+			return new Rect(
+				0,
+				0,
+				Padding + IconSize + IconTextGap + col1Width + ColumnGap + IconSize + IconTextGap + col2Width + Padding,
+				Padding + 3 * RowHeight + Padding);
+		}
+
 		public void DrawFps(IDrawingSession session)
 		{
 			if (!IsEnabled)
@@ -306,6 +349,7 @@ internal static class SkiaRenderHelper
 
 			var panelWidth = Padding + IconSize + IconTextGap + col1Width + ColumnGap + IconSize + IconTextGap + col2Width + Padding;
 			var panelHeight = Padding + 3 * RowHeight + Padding;
+			_lastPanelBounds = new Rect(0, 0, panelWidth, panelHeight);
 
 			using (var panel = RoundedRectangle(new Rect(0, 0, panelWidth, panelHeight), BackgroundCornerRadius))
 			{

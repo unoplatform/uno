@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -184,7 +184,7 @@ public partial class CompositionTarget
 		// the rate of Render calls the same.
 		NativeDispatcher.CheckThreadAccess();
 
-		if (SkiaRenderHelper.CanRecordPicture(ContentRoot.VisualTree.RootElement))
+		if (FrameRenderHelper.CanRecordFrame(ContentRoot.VisualTree.RootElement))
 		{
 			var shouldRender = false;
 			lock (_renderingStateGate)

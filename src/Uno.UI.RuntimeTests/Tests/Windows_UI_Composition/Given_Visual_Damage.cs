@@ -454,7 +454,7 @@ public class Given_Visual_Damage
 	private static void RenderFrame(ContainerVisual root, DamageRegion damage)
 	{
 		var recording = DrawingFactory.Current.CreateRecording();
-		SkiaRenderHelper.RecordFrame(recording, 200, 200, root, invertPath: false, damage: damage);
+		FrameRenderHelper.RecordFrame(recording, 200, 200, root, invertPath: false, damage: damage);
 		recording.Finish()?.Dispose();
 	}
 
