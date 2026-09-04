@@ -11,6 +11,7 @@ using Android.Content;
 using Android.OS;
 using Android.Runtime;
 using Java.Interop;
+using Microsoft.Windows.AppLifecycle;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
@@ -126,12 +127,20 @@ namespace Microsoft.UI.Xaml
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug("Intent contained JumpList extra arguments, calling OnLaunched.");
+						this.Log().LogDebug("Intent contained JumpList extra arguments, reporting a Launch activation.");
 					}
 
-					// The app does not exist yet at this point (the host is built in CreateHost() below),
-					// so the arguments are stashed and picked up by Application.InvokeOnLaunched.
-					Application.SetArguments(intent.GetStringExtra(JumpListItem.ArgumentsExtraKey));
+					var arguments = intent.GetStringExtra(JumpListItem.ArgumentsExtraKey);
+
+					if (!_isRunning)
+					{
+						// The app does not exist yet at this point (the host is built in CreateHost() below),
+						// so the arguments are stashed for the LaunchActivatedEventArgs OnLaunched will get.
+						Application.SetArguments(arguments);
+					}
+
+					ReportActivation(AppActivationArguments.CreateLaunch(
+						new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, arguments)));
 					handled = true;
 				}
 				else if (intent.Data != null)
@@ -140,20 +149,13 @@ namespace Microsoft.UI.Xaml
 					{
 						if (this.Log().IsEnabled(LogLevel.Debug))
 						{
-							this.Log().LogDebug("Intent data parsed successfully as Uri, calling OnActivated.");
+							this.Log().LogDebug("Intent data parsed successfully as Uri, reporting a Protocol activation.");
 						}
 
-						if (_isRunning)
-						{
-							// Application.Current rather than a cached instance: the app is created by the
-							// host built in CreateHost(), which this type never sees.
-							Application.Current?.InvokeOnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
-						}
-						else
-						{
-							Application.SetActivationUri(uri);
-						}
-
+						ReportActivation(AppActivationArguments.CreateProtocol(
+							new ProtocolActivatedEventArgs(
+								uri,
+								_isRunning ? ApplicationExecutionState.Running : ApplicationExecutionState.NotRunning)));
 						handled = true;
 					}
 					else
@@ -169,6 +171,14 @@ namespace Microsoft.UI.Xaml
 
 			return handled;
 		}
+
+		/// <summary>
+		/// Hands an activation to <see cref="AppInstance"/>, which stores it for a cold start or raises
+		/// <see cref="AppInstance.Activated"/> when the app is already up. Android delivers both through
+		/// the same intent callbacks, and <see cref="AppInstance"/> — not this type — knows which case it is.
+		/// </summary>
+		private static void ReportActivation(AppActivationArguments args)
+			=> AppInstance.GetCurrent().SetOrRaiseActivation(args);
 
 		/// <summary>
 		/// This method is used by UI Test frameworks to get

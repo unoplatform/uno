@@ -32,35 +32,27 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 
 	public override bool FinishedLaunching(UIApplication application, NSDictionary? launchOptions)
 	{
-		var currentInstance = AppInstance.GetCurrent();
-		if (launchOptions != null)
+		// Under the scene lifecycle UIKit delivers the launch activation through
+		// UISceneConnectionOptions instead, so these keys are never present.
+		if (launchOptions != null && !UnoUISceneDelegate.HasSceneManifest)
 		{
 			if (launchOptions.TryGetValue(UIApplication.LaunchOptionsUrlKey, out var urlObject))
 			{
 				_preventSecondaryActivationHandling = true;
-				var url = (NSUrl)urlObject;
-				if (TryParseUri(url, out var uri))
-				{
-					currentInstance.SetActivatedEventArgs(AppActivationArguments.CreateProtocol(new(uri, ApplicationExecutionState.NotRunning)));
-				}
+				AppleUIKitActivation.TryReportUrl(urlObject as NSUrl, ApplicationExecutionState.NotRunning);
 			}
 #if !__TVOS__
-			else if (launchOptions.TryGetValue(UIApplication.LaunchOptionsShortcutItemKey, out var shortcutItemObject))
+			else if (launchOptions.TryGetValue(UIApplication.LaunchOptionsShortcutItemKey, out var shortcutItemObject)
+				&& shortcutItemObject is UIApplicationShortcutItem shortcutItem)
 			{
 				_preventSecondaryActivationHandling = true;
-				var shortcutItem = (UIApplicationShortcutItem)shortcutItemObject;
-				currentInstance.SetActivatedEventArgs(AppActivationArguments.CreateLaunch(new(ActivationKind.Launch, shortcutItem.Type)));
+				AppleUIKitActivation.ReportShortcut(shortcutItem);
 			}
 #endif
-			else if (
-				TryGetUserActivityFromLaunchOptions(launchOptions, out var userActivity) &&
-				userActivity.ActivityType == NSUserActivityType.BrowsingWeb)
+			else if (TryGetUserActivityFromLaunchOptions(launchOptions, out var userActivity))
 			{
-				_preventSecondaryActivationHandling = true;
-				if (TryParseUri(userActivity.WebPageUrl, out var uri))
-				{
-					currentInstance.SetActivatedEventArgs(AppActivationArguments.CreateProtocol(new(uri, ApplicationExecutionState.NotRunning)));
-				}
+				_preventSecondaryActivationHandling =
+					AppleUIKitActivation.TryReportUserActivity(userActivity, ApplicationExecutionState.NotRunning);
 			}
 		}
 
@@ -146,18 +138,25 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 
 	public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
 	{
-		// If the application was not running, URL was already handled by FinishedLaunching
+		// UIKit calls this straight after a URL cold start too, where FinishedLaunching already
+		// reported the activation from launchOptions.
 		if (!_preventSecondaryActivationHandling)
 		{
-			if (TryParseUri(url, out var uri))
-			{
-				var args = AppActivationArguments.CreateProtocol(new(uri, ApplicationExecutionState.Running));
-				AppInstance.GetCurrent().RaiseActivatedEvent(args);
-			}
+			AppleUIKitActivation.TryReportUrl(url, ApplicationExecutionState.Running);
 		}
+
 		_preventSecondaryActivationHandling = false;
 		return true;
 	}
+
+#if !__TVOS__
+	public override void PerformActionForShortcutItem(UIApplication application, UIApplicationShortcutItem shortcutItem, UIOperationHandler completionHandler)
+	{
+		// Not called for a cold start from a shortcut - FinishedLaunching handles that one.
+		AppleUIKitActivation.ReportShortcut(shortcutItem);
+		completionHandler?.Invoke(true);
+	}
+#endif
 
 	/// <summary>
 	/// This method enables UI Tests to get the output path
@@ -170,43 +169,15 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 
 	private bool TryHandleUniversalLinkFromUserActivity(NSUserActivity userActivity)
 	{
-		// If the application was not running, universal link was already handled by FinishedLaunching
+		// UIKit calls this straight after a universal-link cold start too, where FinishedLaunching
+		// already reported the activation from launchOptions.
 		if (_preventSecondaryActivationHandling)
 		{
 			_preventSecondaryActivationHandling = false;
 			return true;
 		}
 
-		if (userActivity.ActivityType == NSUserActivityType.BrowsingWeb)
-		{
-			if (TryParseUri(userActivity.WebPageUrl, out var uri))
-			{
-				var args = AppActivationArguments.CreateProtocol(new(uri, ApplicationExecutionState.Running));
-				AppInstance.GetCurrent().RaiseActivatedEvent(args);
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private bool TryParseUri(NSUrl? url, [NotNullWhen(true)] out Uri? uri)
-	{
-		if (url is null)
-		{
-			uri = null;
-			return false;
-		}
-
-		if (Uri.TryCreate(url.ToString(), UriKind.Absolute, out uri))
-		{
-			return true;
-		}
-		else
-		{
-			this.Log().LogError($"Activation URI {url} could not be parsed");
-			return false;
-		}
+		return AppleUIKitActivation.TryReportUserActivity(userActivity, ApplicationExecutionState.Running);
 	}
 
 	private bool TryGetUserActivityFromLaunchOptions(NSDictionary launchOptions, out NSUserActivity? userActivity)

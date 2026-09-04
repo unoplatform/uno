@@ -1,7 +1,10 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using Windows.ApplicationModel.Core;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.Activation;
+using Windows.Foundation;
 
 namespace Microsoft.Windows.AppLifecycle;
 
@@ -10,19 +13,27 @@ namespace Microsoft.Windows.AppLifecycle;
 /// </summary>
 public partial class AppInstance
 {
-	private static Lazy<AppInstance> _current = new(() => new AppInstance());
+	private static readonly Lazy<AppInstance> _current = new(() => new AppInstance());
 
-	private AppActivationArguments _defaultActivationArguments;
-	private AppActivationArguments _appActivationArguments;
+	private AppActivationArguments? _activationArguments;
+	private bool _hasLaunched;
+	private string _key = string.Empty;
 
 	internal AppInstance()
 	{
 	}
 
 	/// <summary>
-	/// Raised for activations that have been redirected via Microsoft.Windows.AppLifecycle.AppInstance.RedirectActivationToAsync.
+	/// Raised for activations that arrive after the app has launched.
 	/// </summary>
-	public event EventHandler<AppActivationArguments> Activated;
+	/// <remarks>
+	/// On Windows this only ever fires for activations redirected through
+	/// <see cref="RedirectActivationToAsync"/>, because a second launch is a second process.
+	/// Uno also raises it where the OS delivers a further activation straight into the living
+	/// process instead of starting a new one — an Android <c>onNewIntent</c>, an iOS
+	/// <c>openURL</c> or shortcut tap, or a browser navigation on WebAssembly.
+	/// </remarks>
+	public event EventHandler<AppActivationArguments>? Activated;
 
 	/// <summary>
 	/// Gets a value that indicates whether this AppInstance object represents the current instance of the app or a different instance.
@@ -32,13 +43,27 @@ public partial class AppInstance
 	/// <summary>
 	/// Gets an app-defined string value that identifies the current app instance for redirection purposes.
 	/// </summary>
-	public string Key => "";
+	public string Key => _key;
 
 	/// <summary>
-	/// Retrieves the event arguments for an app activation that was registered by using one of the static methods of the ActivationRegistrationManager class.
+	/// Gets the process identifier of the app instance.
 	/// </summary>
-	/// <returns>An object that contains the activation type and the data payload, or null.</returns>
-	public AppActivationArguments GetActivatedEventArgs() => _appActivationArguments ?? _defaultActivationArguments ?? throw new InvalidOperationException("No activation arguments were set.");
+	public uint ProcessId => (uint)Environment.ProcessId;
+
+	/// <summary>
+	/// Retrieves the event arguments for the activation that started this app instance.
+	/// </summary>
+	/// <returns>
+	/// The activation that started this instance. Never <c>null</c>: an app started without any
+	/// activation payload gets <see cref="ExtendedActivationKind.Launch"/> over the process command line.
+	/// </returns>
+	/// <remarks>
+	/// This always describes the activation the instance *started* with. Later activations arrive
+	/// through <see cref="Activated"/> and deliberately do not change what this returns.
+	/// </remarks>
+	public AppActivationArguments GetActivatedEventArgs()
+		=> _activationArguments ?? AppActivationArguments.CreateLaunch(
+			new LaunchActivatedEventArgs(ActivationKind.Launch, Environment.CommandLine));
 
 	/// <summary>
 	/// Retrieves the current running instance of the app.
@@ -50,26 +75,66 @@ public partial class AppInstance
 	/// Retrieves a collection of all running instances of the app.
 	/// </summary>
 	/// <returns>The collection of all running instances of the app.</returns>
+	/// <remarks>
+	/// Uno does not track sibling instances, so this always reports just the current one.
+	/// </remarks>
 	public static IList<AppInstance> GetInstances() => [_current.Value];
 
 	/// <summary>
-	/// This method either sets the activation arguments if the app is not yet launched,
-	/// or raises the Activated event if the app is already launched.
+	/// Registers <paramref name="key"/> against an app instance, or finds the instance that already owns it.
 	/// </summary>
-	/// <param name="args">App activation arguments.</param>
+	/// <param name="key">The key to register.</param>
+	/// <returns>The instance that owns <paramref name="key"/>.</returns>
+	/// <remarks>
+	/// Uno cannot yet see sibling processes, so the key is always claimed by — and this always
+	/// returns — the current instance. The canonical single-instancing pattern therefore behaves
+	/// as it would on a platform that can only ever run one instance: correct on Android, iOS and
+	/// WebAssembly, and on desktop it means a second launch runs as a second instance rather than
+	/// redirecting into the first.
+	/// </remarks>
+	public static AppInstance FindOrRegisterForKey(string key)
+	{
+		var instance = _current.Value;
+		instance._key = key ?? string.Empty;
+		return instance;
+	}
+
+	/// <summary>
+	/// Releases the key previously registered by <see cref="FindOrRegisterForKey"/>.
+	/// </summary>
+	public void UnregisterKey() => _key = string.Empty;
+
+	/// <summary>
+	/// Redirects the given activation to this instance.
+	/// </summary>
+	/// <param name="args">The activation to redirect.</param>
+	/// <remarks>
+	/// Matches Windows in no-op'ing when the target is the current instance. Since Uno only ever
+	/// resolves the current instance today, this never transfers an activation across processes.
+	/// </remarks>
+	public IAsyncAction RedirectActivationToAsync(AppActivationArguments args)
+		=> Task.CompletedTask.AsAsyncAction();
+
+	/// <summary>
+	/// Stores the activation that started this instance, or raises <see cref="Activated"/> when the
+	/// app is already running. This is the single entry point every platform host funnels activations through.
+	/// </summary>
 	internal void SetOrRaiseActivation(AppActivationArguments args)
 	{
-		if (!CoreApplication.WasLaunched)
+		ArgumentNullException.ThrowIfNull(args);
+
+		if (_hasLaunched)
 		{
-			// If these are the initial activation arguments for launch, store them for later.
-			_appActivationArguments = args ?? throw new ArgumentNullException(nameof(args));
+			Activated?.Invoke(this, args);
 		}
 		else
 		{
-			Activated?.Invoke(this, args ?? throw new ArgumentNullException(nameof(args)));
+			_activationArguments = args;
 		}
 	}
 
-	internal void SetDefaultLaunchActivatedArgs(AppActivationArguments appActivationArguments) =>
-		_defaultActivationArguments = appActivationArguments ?? throw new ArgumentNullException(nameof(appActivationArguments));
+	/// <summary>
+	/// Marks the app as launched, so that any further activation is raised rather than stored.
+	/// </summary>
+	internal void NotifyLaunched() => _hasLaunched = true;
 }
