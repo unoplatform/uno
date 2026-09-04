@@ -87,6 +87,9 @@
 	</ItemGroup>
 	<ItemGroup>
 		<EmbeddedResource Include="Lottie\animation.json" />
+		<EmbeddedResource Include="Lottie\animation-null-members.json" />
+		<EmbeddedResource Include="Lottie\animation-numbers.json" />
+		<EmbeddedResource Include="Lottie\animation-trailing-comma.json" />
 		<EmbeddedResource Include="Windows_Data_Xml\DomTests\basictest.xml" />
 		<EmbeddedResource Include="Windows_UI_XAML_Controls\UserControlTests\UserControl_WriteOnlyProperty_UserControl.xaml">
 			<Generator>MSBuild:UpdateDesignTimeXaml</Generator>
