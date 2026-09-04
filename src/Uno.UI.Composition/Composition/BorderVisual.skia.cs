@@ -163,7 +163,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 			var roundRect = BuildRoundRectGeometry(rect);
 			return baseClip is null
 				? roundRect
-				: baseClip.Combine(roundRect, GeometryCombineMode.Intersect);
+				: IntersectOwned(baseClip, roundRect);
 		}
 
 		return baseClip;
@@ -174,14 +174,17 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		UpdatePathsAndCornerClip();
 		return _childClipCausedByCornerRadius?.GetClipPath(this) is { } path
 			? base.GetPostPaintingClipping() is { } baseClip
-				? path.Combine(baseClip, GeometryCombineMode.Intersect)
+				? IntersectOwned(path, baseClip)
 				: path
 			: base.GetPostPaintingClipping();
 	}
 
 	private protected override void ApplyPostPaintingClipping(IDrawingSession session)
 	{
-		if (base.GetPostPaintingClipping() is null)
+		// Only the presence of a base clip is being tested, so release the geometry the test built.
+		var probe = base.GetPostPaintingClipping();
+		probe?.Release();
+		if (probe is null)
 		{
 			// At the time of writing, this branch is always taken
 			UpdatePathsAndCornerClip();
@@ -190,6 +193,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		else if (GetPostPaintingClipping() is { } clip)
 		{
 			session.ClipPath(clip);
+			clip.Release();
 		}
 	}
 
@@ -265,9 +269,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 					var useInner = _useInnerBorderBoundsAsAreaForBackground;
 					var bgRect = useInner ? new Rect(0, 0, innerWidth, innerHeight) : new Rect(0, 0, Size.X, Size.Y);
 					var bgRadii = useInner ? fullCornerRadius.Inner : fullCornerRadius.Outer;
-					var bgGeometry = BuildRoundRectPath(bgRect, bgRadii);
-					((CompositionPathGeometry)_backgroundShape!.Geometry!).Path =
-						new CompositionPath((IGeometrySource2D)bgGeometry);
+					SetPath((CompositionPathGeometry)_backgroundShape!.Geometry!, BuildRoundRectPath(bgRect, bgRadii));
 					// Let a supporting backend fill the background as one analytic rounded rect (SDF) instead of the
 					// tessellated path. The path stays set as the fallback (non-solid brushes, non-identity transforms).
 					_backgroundShape!.RoundedRectFillHint = (bgRect, new Vector4(bgRadii.TopLeft.X, bgRadii.TopRight.X, bgRadii.BottomRight.X, bgRadii.BottomLeft.X));
@@ -277,7 +279,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 				}
 				else if (_backgroundShape is not null) // reset values
 				{
-					((CompositionPathGeometry)_backgroundShape!.Geometry!).Path = null;
+					SetPath((CompositionPathGeometry)_backgroundShape!.Geometry!, null);
 					_backgroundShape!.RoundedRectFillHint = null;
 					_backgroundShape!.Offset = Vector2.Zero;
 				}
@@ -289,9 +291,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 				if (_borderBrush is not null)
 				{
 					_borderPathOuterRect = ToRoundRect(outerArea, fullCornerRadius.Outer);
-					var borderGeometry = BuildRoundRectRingPath(outerArea, fullCornerRadius.Outer, innerArea, fullCornerRadius.Inner);
-					((CompositionPathGeometry)_borderShape!.Geometry!).Path =
-						new CompositionPath((IGeometrySource2D)borderGeometry);
+					SetPath((CompositionPathGeometry)_borderShape!.Geometry!, BuildRoundRectRingPath(outerArea, fullCornerRadius.Outer, innerArea, fullCornerRadius.Inner));
 					// Let a supporting backend fill the border as one analytic annulus (SDF) instead of a ring path.
 					var or = fullCornerRadius.Outer; var ir = fullCornerRadius.Inner;
 					_borderShape!.RoundedRectBorderHint = (
@@ -300,7 +300,7 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 				}
 				else if (_borderShape is not null)
 				{
-					((CompositionPathGeometry)_borderShape!.Geometry!).Path = null;
+					SetPath((CompositionPathGeometry)_borderShape!.Geometry!, null);
 					_borderShape!.RoundedRectBorderHint = null;
 				}
 			}
@@ -459,6 +459,18 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 		(float)_borderThickness.Top,
 		Math.Max(0, outerArea.Right - _borderThickness.Right - _borderThickness.Left),
 		Math.Max(0, outerArea.Bottom - _borderThickness.Bottom - _borderThickness.Top));
+
+	// CompositionPath just holds the reference it is handed, so the geometry behind the outgoing path is this
+	// visual's to release — every rebuild would otherwise abandon one per shape.
+	private static void SetPath(CompositionPathGeometry target, IGeometry? geometry)
+	{
+		if (target.Path is { GeometrySource: IGeometry previous })
+		{
+			previous.Release();
+		}
+
+		target.Path = geometry is null ? null : new CompositionPath((IGeometrySource2D)geometry);
+	}
 
 	private static IGeometry BuildRoundRectPath(Rect rect, NonUniformCornerRadius radii)
 	{

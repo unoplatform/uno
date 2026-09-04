@@ -169,7 +169,7 @@ public partial class ContainerVisual : Visual
 		var arrangeClip = GeometryFactory.Current.CreateRectangleGeometry(rect);
 		return baseClip is null
 			? arrangeClip
-			: baseClip.Combine(arrangeClip, GeometryCombineMode.Intersect);
+			: IntersectOwned(baseClip, arrangeClip);
 	}
 
 	internal override bool SetMatrixDirtyFromAncestor()
