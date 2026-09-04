@@ -63,8 +63,6 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public string? MicrosoftWebView2Version { get; set; }
 
-	public string? WindowsCompatibilityVersion { get; set; }
-
 	public string? UnoWasmBootstrapVersion { get; set; }
 
 	public string? UnoUniversalImageLoaderVersion { get; set; }
@@ -261,7 +259,6 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.WinAppSdkBuildTools, WinAppSdkBuildToolsVersion)
 			.UpdateManifest(PackageManifest.Group.WinAppSdkBuildToolsWinApp, WinAppSdkBuildToolsWinAppVersion)
 			.UpdateManifest(PackageManifest.Group.MicrosoftLoggingConsole, MicrosoftLoggingVersion)
-			.UpdateManifest(PackageManifest.Group.WindowsCompatibility, WindowsCompatibilityVersion)
 			.UpdateManifest(PackageManifest.Group.MsalClient, MicrosoftIdentityClientVersion)
 			.UpdateManifest(PackageManifest.Group.Mvvm, CommunityToolkitMvvmVersion)
 			.UpdateManifest(PackageManifest.Group.Prism, PrismVersion)
