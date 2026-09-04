@@ -1,5 +1,6 @@
-#nullable enable
+﻿#nullable enable
 
+using System;
 using System.Threading;
 
 namespace Uno.UI.Composition.Drawing;
@@ -21,6 +22,9 @@ public abstract class DrawingResource : IDrawingResource
 		if (Interlocked.Decrement(ref _refCount) == 0)
 		{
 			Free();
+			// A backend whose handles would otherwise be stranded by a missed Release keeps a finalizer as the
+			// backstop; releasing properly is the common path, so take it back off the finalization queue here.
+			GC.SuppressFinalize(this);
 		}
 	}
 
