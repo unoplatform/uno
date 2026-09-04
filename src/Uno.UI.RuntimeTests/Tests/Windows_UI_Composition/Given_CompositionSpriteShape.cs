@@ -10,8 +10,8 @@ using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Shapes;
-using Microsoft.UI.Xaml.Markup;
 using Path = Microsoft.UI.Xaml.Shapes.Path;
+using Microsoft.UI.Xaml.Markup;
 using System.Numerics;
 using Windows.Foundation;
 
