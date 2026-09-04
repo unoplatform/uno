@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 
@@ -8,7 +8,7 @@ namespace Uno.UI.Composition.Drawing;
 /// Opaque, backend-created bitmap/image handle. Lifetime is owned by whatever produced it (an image
 /// surface, a decode, a snapshot), so this handle is not itself disposable.
 /// </summary>
-public interface IImage
+public interface IImage : IDrawingResource
 {
 	int PixelWidth { get; }
 	int PixelHeight { get; }

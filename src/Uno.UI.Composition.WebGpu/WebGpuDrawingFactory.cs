@@ -20,7 +20,7 @@ namespace Uno.UI.Composition.WebGpu;
 
 // Backend-created gradient shader handle. The WebGPU backend mints its own (rather than delegating to Skia) so
 // the recorder can read the gradient parameters back and evaluate them in the WGSL gradient pipeline.
-public sealed class WebGpuShader : IShader
+public sealed class WebGpuShader : DrawingResource, IShader
 {
 	public bool Radial;
 	public Vector2 P0;          // start (linear) / center (radial), &gradient-local space
@@ -30,23 +30,29 @@ public sealed class WebGpuShader : IShader
 	public float[] Stops;
 	public GradientTileMode TileMode;
 	public Matrix3x2 LocalMatrix;
+
+	// Gradient parameters only; nothing native behind it.
+	protected override void Free() { }
 }
 
 // Backend-owned color filter so the WebGPU renderer can read the tint params (an IColorFilter is opaque —
 // consumed only by the paired renderer). Currently the SrcIn blend-mode tint (image fade/tint, the only
 // DrawImage color-filter case) is honored; other modes / the color matrix carry through but the image path
 // applies only SrcIn for now.
-public sealed class WebGpuColorFilter : IColorFilter
+public sealed class WebGpuColorFilter : DrawingResource, IColorFilter
 {
 	/// <summary>A SrcIn tint (<see cref="Color"/>); otherwise this is a colour-matrix filter (<see cref="Matrix"/>).</summary>
 	public bool IsTint;
 	public WColor Color;
 	public float[] Matrix;
+
+	// Tint/matrix parameters only; nothing native behind it.
+	protected override void Free() { }
 }
 
 // Backend-owned effect filter. Today only the drop shadow (SaveLayer(IEffectFilter) from Visual/ShadowState):
 // the layer content is blurred, tinted by Color and offset by (Dx,Dy), drawn behind the content.
-public sealed class WebGpuEffectFilter : IEffectFilter
+public sealed class WebGpuEffectFilter : DrawingResource, IEffectFilter
 {
 	public float Dx, Dy, SigmaX, SigmaY;
 	public WColor Color;      // acrylic tint (composited SrcOver on top) / drop-shadow color
@@ -56,7 +62,8 @@ public sealed class WebGpuEffectFilter : IEffectFilter
 	// Restore). When set, this filter is NOT the acrylic backdrop shape — DrawEffectBackdrop just draws it.
 	public ITexture EvaluatedTexture;
 	public Rect EvaluatedBounds;
-	public void Dispose() { }
+
+	protected override void Free() => EvaluatedTexture?.Release();
 }
 
 public sealed class WebGpuRenderRecord : IRenderRecord
@@ -74,7 +81,7 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 	internal WebGpuGeometryCache Compiled;
 	// Transient image textures recorded into this frame that the caller disposed while recording (e.g. the one-shot
 	// texture CompositionNineGridBrush uploads). We keep them alive for every present of this recording, then release
-	// their GPU resources here at Dispose — resident textures (surface-owned) are left untouched (DisposeRequested=false).
+	// their GPU resources here at Dispose — resident textures (surface-owned) keep the composition's own reference.
 	internal List<WebGpuTexture> Textures;
 	// Guards Dispose against a second call: the texture Release()s below are refcount decrements, so a double Dispose
 	// would over-release and free a view an in-flight ReplayRef still holds. Interlocked because Dispose (UI thread)
@@ -160,7 +167,7 @@ public sealed class WebGpuGraphicsProvider : IGraphicsProvider<IWebGpuDeviceCont
 /// context exposes its device via <see cref="IWebGpuDeviceContext"/>, consumed by <see cref="WebGpuGraphicsProvider"/>
 /// (or a user's own WebGPU-rendering <see cref="IGraphicsProvider"/>).
 /// </summary>
-public sealed unsafe class WebGpuTexture : ITexture
+public sealed unsafe class WebGpuTexture : DrawingResource, ITexture
 {
 	private readonly WebGpuDevice _d;
 	public IntPtr Tex;
@@ -230,50 +237,22 @@ public sealed unsafe class WebGpuTexture : ITexture
 	// composition right after recording its draw, but the recorded ImageCmd captures the raw view HANDLE and the WebGPU
 	// draw is compiled/replayed later at present — possibly from an OUTER frame recording whose ReplayRef still holds the
 	// (disposed) content recording's command list. So the view must outlive EVERY recording that references it, not just
-	// the innermost one. We reference-count: each recording that records or nests this texture holds a ref (AddRef); the
-	// GPU resources are freed only once the composition has disposed the texture (DisposeRequested) AND the last
-	// referencing recording has released it (refcount 0). Mirrors SkiaSharp's SKPicture refcounting the SKImage it
-	// captured across nested pictures. Resident surface-owned textures are never Dispose()d, so they are never freed here.
-	private readonly object _lifetimeGate = new();
-	private int _refCount;
-	private bool _freed;
-	internal bool DisposeRequested { get; private set; }
-
-	// Taken by every WebGpuRenderRecord that records this texture directly or nests a recording that references it.
-	internal void AddRef()
+	// the innermost one. The DrawingResource refcount is what covers that: every recording that records or nests this
+	// texture holds a reference alongside the composition's own. Mirrors SkiaSharp's SKPicture refcounting the SKImage
+	// it captured across nested pictures. Resident surface-owned textures are never disposed, so they never reach zero.
+	//
+	// The release itself is deferred: it lands at the next BeginFrameResources (drained under RenderGate, after the
+	// last present's submit), like the per-frame bind groups and buffers.
+	protected override void Free()
 	{
-		lock (_lifetimeGate) { _refCount++; }
-	}
-
-	// The composition (e.g. CompositionImageSurface swapping to a new frame) is done with the CPU image. Marks intent;
-	// the GPU free is withheld until no recording references the captured view any more.
-	public void Dispose()
-	{
-		lock (_lifetimeGate) { DisposeRequested = true; TryFree(); }
-	}
-
-	internal void Release()
-	{
-		lock (_lifetimeGate) { _refCount--; TryFree(); }
-	}
-
-	// Enqueues the deferred GPU free exactly once, when both conditions hold: the composition has disposed the texture
-	// and no recording references it. The actual view/texture release happens at the next BeginFrameResources (drained
-	// under RenderGate, after the last present's submit), like the per-frame bind groups/buffers.
-	private void TryFree()
-	{
-		if (!_freed && DisposeRequested && _refCount <= 0)
-		{
-			_freed = true;
-			if (View != IntPtr.Zero || Tex != IntPtr.Zero) { _d.DeferTextureRelease(View, Tex); View = IntPtr.Zero; Tex = IntPtr.Zero; }
-		}
+		if (View != IntPtr.Zero || Tex != IntPtr.Zero) { _d.DeferTextureRelease(View, Tex); View = IntPtr.Zero; Tex = IntPtr.Zero; }
 	}
 }
 
 /// <summary>A managed <see cref="IImage"/> over a WebGPU offscreen readback. The readback bytes are in the
 /// device's color format (RGBA for the offscreen device, BGRA for a swapchain device); <see cref="CopyPixels"/>
 /// yields BGRA per the seam's image convention, swapping R/B only when the source is RGBA. No Skia.</summary>
-internal sealed class WebGpuReadbackImage : IImage
+internal sealed class WebGpuReadbackImage : DrawingResource, IImage
 {
 	private readonly byte[] _bytes;
 	private readonly bool _sourceIsBgra;
@@ -286,6 +265,9 @@ internal sealed class WebGpuReadbackImage : IImage
 		if (_sourceIsBgra) { _bytes.AsSpan(0, n).CopyTo(destination); return; }
 		for (int i = 0; i + 3 < n; i += 4) { destination[i] = _bytes[i + 2]; destination[i + 1] = _bytes[i + 1]; destination[i + 2] = _bytes[i]; destination[i + 3] = _bytes[i + 3]; }
 	}
+
+	// Managed readback bytes; the GC reclaims them.
+	protected override void Free() { }
 }
 
 /// <summary>

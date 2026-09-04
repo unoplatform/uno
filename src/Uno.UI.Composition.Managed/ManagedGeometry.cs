@@ -14,7 +14,7 @@ namespace Uno.UI.Composition.Drawing;
 /// plain arithmetic. Backends that can't consume it natively read <see cref="Contours"/> and rebuild
 /// their own representation (the Skia backend turns them into an SKPath for rasterization).
 /// </summary>
-internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
+internal sealed partial class ManagedGeometry : DrawingResource, IGeometry, IGeometrySource2D
 {
 	private Rect? _bounds;
 	private int _segmentCount = -1;
@@ -371,7 +371,8 @@ internal sealed partial class ManagedGeometry : IGeometry, IGeometrySource2D
 		return new ManagedGeometry(result, FillRule);
 	}
 
-	public void Dispose() { }
+	// Immutable managed contours; nothing native to release.
+	protected override void Free() { }
 
 	private Rect ComputeTightBounds()
 	{

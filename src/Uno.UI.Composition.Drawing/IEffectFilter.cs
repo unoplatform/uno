@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 
@@ -9,6 +9,6 @@ namespace Uno.UI.Composition.Drawing;
 /// graph). The composition layer holds it without knowing how the backend realizes it, like <see cref="IShader"/>
 /// and <see cref="IImage"/>.
 /// </summary>
-public interface IEffectFilter : IDisposable
+public interface IEffectFilter : IDrawingResource
 {
 }
