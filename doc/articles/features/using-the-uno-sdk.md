@@ -173,7 +173,6 @@ Here are the supported properties:
 | `WinAppSdkBuildToolsVersion`        | [Microsoft.Windows.SDK.BuildTools](https://www.nuget.org/packages/Microsoft.Windows.SDK.BuildTools)                  | Contains the tools required to build applications for the Microsoft Windows App SDK.                           |
 | `WinAppSdkBuildToolsWinAppVersion`  | [Microsoft.Windows.SDK.BuildTools.WinApp](https://www.nuget.org/packages/Microsoft.Windows.SDK.BuildTools.WinApp)    | Enables `dotnet run` to launch the packaged WinAppSDK app with package identity. See [Running packaged WinUI apps with `dotnet run`](#running-packaged-winui-apps-with-dotnet-run). |
 | `WinAppSdkVersion`                  | [Microsoft.WindowsAppSDK](https://www.nuget.org/packages/Microsoft.WindowsAppSDK)                                    | Provides project templates and tools for building Windows applications.                                        |
-| `WindowsCompatibilityVersion`       | [Microsoft.Windows.Compatibility](https://www.nuget.org/packages/Microsoft.Windows.Compatibility)                    | Enables Windows desktop apps to use .NET Core by providing access to additional Windows APIs.                  |
 
 ---
 
