@@ -12,6 +12,9 @@ public static class HostBuilder
 
 	public static IUnoPlatformHostBuilder UseWebAssembly(this IUnoPlatformHostBuilder builder, Action<WebAssemblyHostBuilder> action)
 	{
+		// Eager: AddHostBuilder defers the callback, so a null would only fault when the host is built.
+		ArgumentNullException.ThrowIfNull(action);
+
 		builder.AddHostBuilder(() =>
 		{
 			var webAssemblyHostBuilder = new WebAssemblyHostBuilder();

@@ -37,9 +37,9 @@ namespace Windows.UI.Input
 
 			public PointerDeviceType PointerType { get; }
 
-			public PointerPoint Down { get; }
+			public global::Microsoft.UI.Input.PointerPoint Down { get; }
 
-			public PointerPoint? Up { get; private set; }
+			public global::Microsoft.UI.Input.PointerPoint? Up { get; private set; }
 
 			public bool IsCompleted { get; private set; }
 
@@ -55,7 +55,7 @@ namespace Windows.UI.Input
 				private set;
 			}
 
-			public Gesture(GestureRecognizer recognizer, PointerPoint down)
+			public Gesture(GestureRecognizer recognizer, global::Microsoft.UI.Input.PointerPoint down)
 			{
 				_recognizer = recognizer;
 				Settings = recognizer._gestureSettings & GestureSettingsHelper.SupportedGestures; // Keep only flags of supported gestures, so we can more quickly disable us if possible
@@ -76,7 +76,7 @@ namespace Windows.UI.Input
 				}
 			}
 
-			public void ProcessMove(PointerPoint point)
+			public void ProcessMove(global::Microsoft.UI.Input.PointerPoint point)
 			{
 				if (IsCompleted)
 				{
@@ -92,7 +92,7 @@ namespace Windows.UI.Input
 				TryUpdateHolding(point);
 			}
 
-			public void ProcessUp(PointerPoint up)
+			public void ProcessUp(global::Microsoft.UI.Input.PointerPoint up)
 			{
 				if (IsCompleted)
 				{
@@ -195,7 +195,7 @@ namespace Windows.UI.Input
 				}
 			}
 
-			private void TryUpdateHolding(PointerPoint? current = null, bool timeElapsed = false)
+			private void TryUpdateHolding(global::Microsoft.UI.Input.PointerPoint? current = null, bool timeElapsed = false)
 			{
 				Debug.Assert(timeElapsed || current != null);
 
@@ -309,7 +309,7 @@ namespace Windows.UI.Input
 				return true;
 			}
 
-			public static bool IsMultiTapGesture((ulong id, ulong ts, Point position) previousTap, PointerPoint down)
+			public static bool IsMultiTapGesture((ulong id, ulong ts, Point position) previousTap, global::Microsoft.UI.Input.PointerPoint down)
 			{
 				if (previousTap.ts == 0) // i.s. no previous tap to compare with
 				{
@@ -336,15 +336,6 @@ namespace Windows.UI.Input
 							isLongPress = true;
 							return true;
 						}
-#if __APPLE_UIKIT__
-						if (Uno.WinRTFeatureConfiguration.GestureRecognizer.InterpretForceTouchAsRightTap
-							&& isLeftTap
-							&& points.HasExceedMinHoldPressure)
-						{
-							isLongPress = true; // We handle the pressure exactly like a long press
-							return true;
-						}
-#endif
 						isLongPress = false;
 						return false;
 
@@ -371,17 +362,6 @@ namespace Windows.UI.Input
 							isLongPress = false;
 							return true;
 						}
-#if __ANDROID__
-						// On Android, usually the right button is mapped to back navigation. So, unlike UWP,
-						// we also allow a long press with the left button to be more user friendly.
-						if (Uno.WinRTFeatureConfiguration.GestureRecognizer.InterpretMouseLeftLongPressAsRightTap
-							&& IsTapGesture(LeftButton, points)
-							&& IsLongPress(points.Down, points.Up!))
-						{
-							isLongPress = true;
-							return true;
-						}
-#endif
 						isLongPress = false;
 						return false;
 
@@ -391,7 +371,7 @@ namespace Windows.UI.Input
 				}
 			}
 
-			private static bool IsLongPress(PointerPoint down, PointerPoint current)
+			private static bool IsLongPress(global::Microsoft.UI.Input.PointerPoint down, global::Microsoft.UI.Input.PointerPoint current)
 				=> current.Timestamp - down.Timestamp > HoldMinDelayMicroseconds;
 			#endregion
 		}

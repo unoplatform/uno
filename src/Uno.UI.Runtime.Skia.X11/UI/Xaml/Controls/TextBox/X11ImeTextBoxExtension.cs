@@ -34,13 +34,13 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 	public event EventHandler<ImeCompositionEventArgs>? CompositionCompleted;
 	public event EventHandler? CompositionEnded;
 
-	public void StartImeSession(TextBox textBox)
+	public void StartImeSession(TextBoxCore core)
 	{
 		_currentDisplay = IntPtr.Zero;
 		_currentWindow = IntPtr.Zero;
 		_dbusIme = null;
 
-		if (textBox.XamlRoot is not { } xamlRoot)
+		if (core.Owner.XamlRoot is not { } xamlRoot)
 		{
 			return;
 		}
@@ -59,7 +59,7 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 		if (_dbusIme?.IsEnabled == true)
 		{
 			_dbusIme.SetFocus(true);
-			UpdateSpotLocationFromTextBox(textBox);
+			UpdateSpotLocationFromTextBox(core);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -137,24 +137,24 @@ internal sealed class X11ImeTextBoxExtension : IImeTextBoxExtension
 	/// Computes and sends the caret location to the active D-Bus IME so its candidate
 	/// window tracks the caret.
 	/// </summary>
-	internal void UpdateSpotLocationFromTextBox(TextBox textBox)
+	internal void UpdateSpotLocationFromTextBox(TextBoxCore core)
 	{
 		if (_dbusIme?.IsEnabled != true)
 		{
 			return;
 		}
 
-		var textBoxView = textBox.TextBoxView;
-		if (textBoxView?.DisplayBlock?.ParsedText is null || textBox.XamlRoot is null)
+		var textBoxView = core.TextBoxView;
+		if (textBoxView?.DisplayBlock?.ParsedText is null || core.Owner.XamlRoot is null)
 		{
 			return;
 		}
 
-		var index = textBox.IsBackwardSelection ? textBox.SelectionStart : textBox.SelectionStart + textBox.SelectionLength;
+		var index = core.IsBackwardSelection ? core.SelectionStart : core.SelectionStart + core.SelectionLength;
 		var rect = textBoxView.DisplayBlock.ParsedText.GetRectForIndex(index);
 		var transform = textBoxView.DisplayBlock.TransformToVisual(null);
 		var topLeft = transform.TransformPoint(new Windows.Foundation.Point(rect.Left, rect.Top));
-		var scale = textBox.XamlRoot.RasterizationScale;
+		var scale = core.Owner.XamlRoot.RasterizationScale;
 
 		var x = (int)(topLeft.X * scale);
 		var y = (int)(topLeft.Y * scale);

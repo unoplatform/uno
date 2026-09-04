@@ -29,12 +29,3 @@ If you wish to customize the overlay color, add the following to your top-level 
 <SolidColorBrush x:Key="DatePickerLightDismissOverlayBackground"
 		Color="Pink" />
 ```
-
-Since **iOS14** the native `DatePicker` changed the way it's presented. By default iOS14 devices will display this new style.  You can still force the previous style (the one found in iOS13 or earlier) by adding the following at your `App.xaml.cs` class:
-
-```csharp
-Uno.UI.FeatureConfiguration.DatePicker.UseLegacyStyle = true;
-```
-
-> [!IMPORTANT]
-> This feature flag is required and will only affect iOS 14 devices. As of **iOS 15**, the preferred style for the DatePicker is again the one found in iOS13 and earlier.

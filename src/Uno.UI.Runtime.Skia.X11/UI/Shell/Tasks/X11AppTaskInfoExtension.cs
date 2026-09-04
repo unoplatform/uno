@@ -39,9 +39,8 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 
 	public override bool IsSupported()
 	{
-		var isSupported = Volatile.Read(ref _supportState) == 1;
 		EnsureSupportProbe();
-		return isSupported;
+		return DBusAddress.Session is not null;
 	}
 
 	protected override async Task OnSynchronizeAsync(AppTaskInfoSnapshot[] tasks)
@@ -104,7 +103,7 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 				payload.Body,
 				Array.Empty<string>(),
 				new Dictionary<string, VariantValue>(),
-				expireTimeout: -1)
+				expireTimeout: 0)
 				.WaitAsync(TimeSpan.FromSeconds(5))
 				.ConfigureAwait(false);
 			_notificationIds[task.Id] = notificationId;
@@ -139,6 +138,8 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 	{
 		_publicationConnection?.Dispose();
 		_publicationConnection = null;
+		_signatures.Clear();
+		_notificationIds.Clear();
 	}
 
 	private static async Task<bool> ServiceHasOwnerAsync(string sessionAddress)

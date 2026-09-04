@@ -22,23 +22,68 @@ namespace Microsoft.UI.Composition
 		// referencing the owner (e.g. `_.Progress`) re-evaluate when the property set changes.
 		internal CompositionObject? Owner { get; set; }
 
-		public void InsertColor(string propertyName, Color value) => SetValue(propertyName, value);
+		/// <summary>
+		/// Inserts a Color key-value pair.
+		/// </summary>
+		/// <param name="propertyName">The key associated with the value. This key can be used to retrieve the value.</param>
+		/// <param name="value">The value to insert.</param>
+		public void InsertColor(string propertyName, Color value) => SetValue(propertyName, value, stopAnimation: true);
 
-		public void InsertMatrix3x2(string propertyName, Matrix3x2 value) => SetValue(propertyName, value);
+		/// <summary>
+		/// Inserts a Matrix3x2 key-value pair.
+		/// </summary>
+		/// <param name="propertyName">The key associated with the value. This key can be used to retrieve the value.</param>
+		/// <param name="value">The value to insert.</param>
+		public void InsertMatrix3x2(string propertyName, Matrix3x2 value) => SetValue(propertyName, value, stopAnimation: true);
 
-		public void InsertMatrix4x4(string propertyName, Matrix4x4 value) => SetValue(propertyName, value);
+		/// <summary>
+		/// Inserts a Matrix4x4 key-value pair.
+		/// </summary>
+		/// <param name="propertyName">The key associated with the value. This key can be used to retrieve the value.</param>
+		/// <param name="value">The value to insert.</param>
+		public void InsertMatrix4x4(string propertyName, Matrix4x4 value) => SetValue(propertyName, value, stopAnimation: true);
 
-		public void InsertQuaternion(string propertyName, Quaternion value) => SetValue(propertyName, value);
+		/// <summary>
+		/// Inserts a quaternion key-value pair.
+		/// </summary>
+		/// <param name="propertyName">The key associated with the value. This key can be used to retrieve the value.</param>
+		/// <param name="value">The value to insert.</param>
+		public void InsertQuaternion(string propertyName, Quaternion value) => SetValue(propertyName, value, stopAnimation: true);
 
-		public void InsertScalar(string propertyName, float value) => SetValue(propertyName, value);
+		/// <summary>
+		/// Inserts a Single key-value pair.
+		/// </summary>
+		/// <param name="propertyName">The name of the property to insert.</param>
+		/// <param name="value">The value of the property to insert.</param>
+		public void InsertScalar(string propertyName, float value) => SetValue(propertyName, value, stopAnimation: true);
 
-		public void InsertVector2(string propertyName, Vector2 value) => SetValue(propertyName, value);
+		/// <summary>
+		/// Inserts a Vector2 key-value pair.
+		/// </summary>
+		/// <param name="propertyName">The key associated with the value. This key can be used to retrieve the value.</param>
+		/// <param name="value">The value to insert.</param>
+		public void InsertVector2(string propertyName, Vector2 value) => SetValue(propertyName, value, stopAnimation: true);
 
-		public void InsertVector3(string propertyName, Vector3 value) => SetValue(propertyName, value);
+		/// <summary>
+		/// Inserts a Vector3 key-value pair.
+		/// </summary>
+		/// <param name="propertyName">The key associated with the value. This key can be used to retrieve the value.</param>
+		/// <param name="value">The value to insert.</param>
+		public void InsertVector3(string propertyName, Vector3 value) => SetValue(propertyName, value, stopAnimation: true);
 
-		public void InsertVector4(string propertyName, Vector4 value) => SetValue(propertyName, value);
+		/// <summary>
+		/// Inserts a Vector4 key-value pair.
+		/// </summary>
+		/// <param name="propertyName">The key associated with the value. This key can be used to retrieve the value.</param>
+		/// <param name="value">The value to insert.</param>
+		public void InsertVector4(string propertyName, Vector4 value) => SetValue(propertyName, value, stopAnimation: true);
 
-		public void InsertBoolean(string propertyName, bool value) => SetValue(propertyName, value);
+		/// <summary>
+		/// Inserts a boolean key-value pair.
+		/// </summary>
+		/// <param name="propertyName">The key associated with the value. This key can be used to retrieve the value.</param>
+		/// <param name="value">The value to insert.</param>
+		public void InsertBoolean(string propertyName, bool value) => SetValue(propertyName, value, stopAnimation: true);
 
 		public CompositionGetValueStatus TryGetColor(string propertyName, out Color value) => TryGetValue(propertyName, out value);
 
@@ -79,9 +124,18 @@ namespace Microsoft.UI.Composition
 			return _properties.TryGetValue(propertyName, out value);
 		}
 
-		private void SetValue<T>(string propertyName, T value)
+		internal void SetValueFromAnimation<T>(string propertyName, T value)
+			where T : struct
+			=> SetValue(propertyName, value, stopAnimation: false);
+
+		private void SetValue<T>(string propertyName, T value, bool stopAnimation)
 			where T : struct
 		{
+			if (stopAnimation)
+			{
+				StopAnimation(propertyName);
+			}
+
 			if (_properties.TryGetValue(propertyName, out var existingValue))
 			{
 				if (existingValue is not T _)

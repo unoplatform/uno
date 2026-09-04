@@ -3,10 +3,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TimePickerFlyout
+	public partial class TimePickerFlyout : global::Microsoft.UI.Xaml.Controls.Primitives.PickerFlyoutBase
 	{
 		// Skipping already declared property ClockIdentifierProperty
 		// Skipping already declared property MinuteIncrementProperty

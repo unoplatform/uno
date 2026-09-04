@@ -492,6 +492,20 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					&& type.InstanceConstructors.Any(m => m.Parameters.Length == 0 && m.IsLocallyPublic(_currentModule!));
 			}
 
+			// DependencyObject is a base class, so detection must walk the base-type chain.
+			private bool IsDependencyObject(ITypeSymbol? type)
+			{
+				for (var current = type; current is not null; current = current.BaseType)
+				{
+					if (SymbolEqualityComparer.Default.Equals(current, _dependencyObjectSymbol))
+					{
+						return true;
+					}
+				}
+
+				return false;
+			}
+
 			private INamedTypeSymbol? GetBaseType(INamedTypeSymbol type)
 			{
 				if (type.BaseType != null)
@@ -621,7 +635,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 				{
 					using (writer.BlockInvariant($"static void RegisterBuilder{type.Value.Index:000}()"))
 					{
-						if (_xamlResourcesTrimming && type.Key.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol)))
+						if (_xamlResourcesTrimming && IsDependencyObject(type.Key))
 						{
 							var linkerHintsClassName = LinkerHintsHelpers.GetLinkerHintsClassName(_defaultNamespace);
 							var safeTypeName = LinkerHintsHelpers.GetPropertyAvailableName(type.Key.GetFullMetadataName());
@@ -664,7 +678,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 									writer.AppendLineIndented($"element = ref _bindableTypes[{typeIndex}];");
 									using (writer.BlockInvariant("if(element == null)"))
 									{
-										if (_xamlResourcesTrimming && type.Key.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol)))
+										if (_xamlResourcesTrimming && IsDependencyObject(type.Key))
 										{
 											var safeTypeName = LinkerHintsHelpers.GetPropertyAvailableName(type.Key.GetFullMetadataName());
 

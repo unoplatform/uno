@@ -91,7 +91,7 @@ If you need to control individual packages instead of using the `SkiaSharpVersio
    <PackageReference Update="SkiaSharp" Version="4.148.0" />
    <PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="4.148.0" />
    <PackageReference Update="SkiaSharp.NativeAssets.macOS" Version="4.148.0" />
-   <PackageReference Update="HarfBuzzSharp" Version="8.3.1.1" />
+   <PackageReference Update="HarfBuzzSharp" Version="14.2.0" />
 </ItemGroup>
 ```
 

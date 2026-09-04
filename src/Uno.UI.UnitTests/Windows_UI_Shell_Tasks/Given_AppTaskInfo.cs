@@ -190,6 +190,20 @@ public class Given_AppTaskInfo
 		Assert.ThrowsExactly<ArgumentException>(() => AppTaskContent.CreatePreviewThumbnail(null!, "Step"));
 		Assert.ThrowsExactly<ArgumentException>(
 			() => AppTaskContent.CreatePreviewThumbnail(new Uri("relative", UriKind.Relative), "Step"));
+		Assert.ThrowsExactly<ArgumentException>(
+			() => AppTaskContent.CreatePreviewThumbnail(new Uri("https://example.com/preview.png"), "Step"));
+		Assert.ThrowsExactly<ArgumentException>(
+			() => AppTaskContent.CreatePreviewThumbnail(new Uri("sample-app://preview"), "Step"));
+		Assert.ThrowsExactly<ArgumentException>(
+			() => AppTaskContent.CreatePreviewThumbnail(new Uri("file://server/share/preview.png"), "Step"));
+		Assert.ThrowsExactly<ArgumentException>(
+			() => AppTaskContent.CreatePreviewThumbnail(new Uri("ms-appx:/Assets/preview.png"), "Step"));
+		Assert.ThrowsExactly<ArgumentException>(
+			() => AppTaskContent.CreatePreviewThumbnail(new Uri("ms-appdata:/local/preview.png"), "Step"));
+
+		_ = AppTaskContent.CreatePreviewThumbnail(new Uri("ms-appx:///Assets/StoreLogo.png"), "Step");
+		_ = AppTaskContent.CreatePreviewThumbnail(new Uri("ms-appdata:///local/preview.png"), "Step");
+		_ = AppTaskContent.CreatePreviewThumbnail(new Uri("file:///C:/preview.png"), "Step");
 
 		var nullSteps = AppTaskContent.CreateSequenceOfSteps(null!, "Step");
 		var task = AppTaskInfo.Create(

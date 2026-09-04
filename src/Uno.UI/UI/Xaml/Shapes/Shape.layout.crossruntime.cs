@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-#if __SKIA__ || __WASM__
+#if __SKIA__
 using System;
 using System.Linq;
 using Windows.Foundation;
@@ -14,8 +14,6 @@ using System.Diagnostics;
 #if __SKIA__
 using NativePath = Microsoft.UI.Composition.SkiaGeometrySource2D;
 
-#elif __WASM__
-using NativePath = Microsoft.UI.Xaml.Shapes.Shape;
 #endif
 
 namespace Microsoft.UI.Xaml.Shapes;
@@ -49,8 +47,6 @@ partial class Shape
 
 #if __SKIA__
 		Render(path, xScale, yScale, dX, dY);
-#elif __WASM__
-		Render(path, stretchedSize, xScale, yScale, dX, dY);
 #endif
 
 		return stretchedSize;

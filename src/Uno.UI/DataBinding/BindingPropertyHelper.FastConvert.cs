@@ -1,5 +1,4 @@
-﻿#if !NETFX_CORE
-using System;
+﻿using System;
 
 using Uno.Extensions;
 using System.Globalization;
@@ -18,16 +17,6 @@ using FontWeight = Windows.UI.Text.FontWeight;
 using System.Diagnostics.CodeAnalysis;
 using System.Numerics;
 
-
-#if __ANDROID__
-using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-using Android.Graphics;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-#endif
 
 namespace Uno.UI.DataBinding
 {
@@ -530,16 +519,6 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastStringToPath(Type outputType, string input, ref object output)
 		{
-#if __WASM__
-			if (__LinkerHints.Is_Microsoft_UI_Xaml_Media_Geometry_Available
-				&& outputType == typeof(Geometry))
-			{
-				output = (Geometry)input;
-
-				return true;
-			}
-#endif
-
 			return false;
 		}
 
@@ -1152,4 +1131,3 @@ namespace Uno.UI.DataBinding
 		}
 	}
 }
-#endif

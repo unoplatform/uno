@@ -120,9 +120,9 @@ public class CommandingHelpers
 
 		if (localLabelAsI == DependencyProperty.UnsetValue || string.IsNullOrEmpty(localLabel))
 		{
-			if (target is IDependencyObjectStoreProvider dosp)
+			if (target is DependencyObject dosp)
 			{
-				dosp.Store.SetBinding(labelProperty, new Binding { Path = "Label", Source = uiCommand });
+				dosp.SetBinding(labelProperty, new Binding { Path = "Label", Source = uiCommand });
 			}
 		}
 	}
@@ -139,10 +139,10 @@ public class CommandingHelpers
 
 		if (localIconAsI == DependencyProperty.UnsetValue || localIcon == null)
 		{
-			if (target is IDependencyObjectStoreProvider dosp)
+			if (target is DependencyObject dosp)
 			{
 				IconSourceToIconSourceElementConverter converter = new IconSourceToIconSourceElementConverter();
-				dosp.Store.SetBinding(iconProperty, new Binding { Path = "IconSource", Source = uiCommand, Converter = converter });
+				dosp.SetBinding(iconProperty, new Binding { Path = "IconSource", Source = uiCommand, Converter = converter });
 			}
 		}
 	}
@@ -160,9 +160,9 @@ public class CommandingHelpers
 
 		if (localIconSourceAsI == DependencyProperty.UnsetValue || localIconSource == null)
 		{
-			if (target is IDependencyObjectStoreProvider dosp)
+			if (target is DependencyObject dosp)
 			{
-				dosp.Store.SetBinding(iconSourceProperty, new Binding { Path = "IconSource", Source = uiCommand });
+				dosp.SetBinding(iconSourceProperty, new Binding { Path = "IconSource", Source = uiCommand });
 			}
 		}
 	}

@@ -21,6 +21,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
+/// Takes the native-side strong reference on a freshly created element.
+/// Creators hand back an autoreleased object, so without this the peer dies at the next pool drain and
+/// every later `uno_native_*` call retains freed memory.
+void uno_native_track(NSView<UNONativeElement>* element);
+
 NSView* uno_native_create_sample(NSWindow *window, const char* _Nullable text);
 
 void uno_native_arrange(NSView<UNONativeElement>* element, double arrangeLeft, double arrangeTop, double arrangeWidth, double arrangeHeight);
