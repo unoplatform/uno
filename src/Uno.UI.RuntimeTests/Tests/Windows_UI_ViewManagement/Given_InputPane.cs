@@ -298,6 +298,54 @@ public class Given_InputPane
 		}
 	}
 
+	// The bring-into-view guarantee must survive arranging against the un-occluded height: content that
+	// sizes itself to the viewport now keeps a field behind the keyboard instead of being squeezed above
+	// it, so the scroll has to do the work. This is the geometry the taller-than-viewport tests never hit.
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public async Task When_Occluded_Field_In_Viewport_Sized_Content_Then_Scrolled_Above_Occlusion()
+	{
+		var textBox = new TextBox { Height = 40, PlaceholderText = "bottom", VerticalAlignment = VerticalAlignment.Bottom };
+		var scrollViewer = new ScrollViewer
+		{
+			HorizontalAlignment = HorizontalAlignment.Stretch,
+			VerticalAlignment = VerticalAlignment.Stretch,
+			Content = new Grid { Children = { textBox } },
+		};
+
+		var inputPane = InputPane.GetForCurrentView();
+		try
+		{
+			await UITestHelper.Load(scrollViewer);
+			Assert.IsTrue(textBox.Focus(FocusState.Programmatic), "TextBox failed to take focus.");
+			await WindowHelper.WaitForIdle();
+
+			var viewportHeight = scrollViewer.ActualHeight;
+			var scrollViewerTopLeft = scrollViewer.TransformToVisual(null).TransformPoint(default);
+			var occludedTop = scrollViewerTopLeft.Y + (viewportHeight * 0.6);
+
+			Assert.IsTrue(GetBottom(textBox) > occludedTop, "Test setup: the TextBox must start behind the keyboard.");
+
+			inputPane.OccludedRect = new Rect(scrollViewerTopLeft.X, occludedTop, scrollViewer.ActualWidth, viewportHeight * 0.4);
+
+			await WindowHelper.WaitFor(
+				() => GetBottom(textBox) <= occludedTop + 0.5,
+				message: $"Focused TextBox (bottom {GetBottom(textBox)}) was left below the keyboard top ({occludedTop}).");
+
+			// The scroll must stay minimal: flush with the keyboard top, not over-scrolled.
+			Assert.IsTrue(
+				GetBottom(textBox) > occludedTop - textBox.ActualHeight - 40,
+				$"Focused TextBox (bottom {GetBottom(textBox)}) was over-scrolled way above the keyboard top ({occludedTop}).");
+		}
+		finally
+		{
+			inputPane.OccludedRect = new Rect(0, 0, 0, 0);
+			WindowHelper.WindowContent = null;
+		}
+	}
+
 	// A sign-in card centered in a Grid that fills a full-window ScrollViewer, with the focused field
 	// nowhere near the keyboard.
 	private static (ScrollViewer ScrollViewer, Border Card, TextBox TextBox) BuildCenteredCardPage()
