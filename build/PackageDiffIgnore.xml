@@ -3494,6 +3494,10 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.OnActivated(Windows.ApplicationModel.Activation.IActivatedEventArgs args)" reason="Removed Application.OnActivated; activations are read from AppInstance to match WinAppSDK (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)" reason="Application.OnLaunched narrowed from Uno's protected internal to WinUI's protected (breaking changes for 7.0, uno#8339)" />
 
+
+		  <!-- Application.RequiresPointerMode made internal. -->
+		  <Member fullName="Microsoft.UI.Xaml.ApplicationRequiresPointerMode Microsoft.UI.Xaml.Application.get_RequiresPointerMode()" reason="Made internal; not part of the public WinAppSDK Application surface, and its only reader is the ported SharedHelpers (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.set_RequiresPointerMode(Microsoft.UI.Xaml.ApplicationRequiresPointerMode value)" reason="Made internal; not part of the public WinAppSDK Application surface, and its only reader is the ported SharedHelpers (breaking changes for 7.0, uno#8339)" />
 		  <!-- Application.Suspending/Resuming/EnteredBackground/LeavingBackground moved to CoreApplication, which carries the same events in the public WinAppSDK surface (events listed in <Events>). -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.add_Suspending(Microsoft.UI.Xaml.SuspendingEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.remove_Suspending(Microsoft.UI.Xaml.SuspendingEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
@@ -4942,6 +4946,10 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.OnActivated(Windows.ApplicationModel.Activation.IActivatedEventArgs args)" reason="Removed Application.OnActivated; activations are read from AppInstance to match WinAppSDK (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)" reason="Application.OnLaunched narrowed from Uno's protected internal to WinUI's protected (breaking changes for 7.0, uno#8339)" />
 
+
+		  <!-- Application.RequiresPointerMode made internal. -->
+		  <Member fullName="Microsoft.UI.Xaml.ApplicationRequiresPointerMode Microsoft.UI.Xaml.Application.get_RequiresPointerMode()" reason="Made internal; not part of the public WinAppSDK Application surface, and its only reader is the ported SharedHelpers (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.set_RequiresPointerMode(Microsoft.UI.Xaml.ApplicationRequiresPointerMode value)" reason="Made internal; not part of the public WinAppSDK Application surface, and its only reader is the ported SharedHelpers (breaking changes for 7.0, uno#8339)" />
 		  <!-- Application.Suspending/Resuming/EnteredBackground/LeavingBackground moved to CoreApplication, which carries the same events in the public WinAppSDK surface (events listed in <Events>). -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.add_Suspending(Microsoft.UI.Xaml.SuspendingEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.remove_Suspending(Microsoft.UI.Xaml.SuspendingEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />

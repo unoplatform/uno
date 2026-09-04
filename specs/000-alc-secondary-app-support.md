@@ -1,4 +1,4 @@
-# ALC Secondary App Support Specification
+﻿# ALC Secondary App Support Specification
 
 ## Overview & Objectives
 
@@ -263,7 +263,6 @@ internal static ContentControl? ContentHostOverride { get; set; }
 **Members** (signatures frozen — see "Stability contract" below):
 
 ```csharp
-internal static LaunchActivatedEventArgs CreateDefaultLaunchActivatedEventArgs();
 internal static void LaunchSecondary(Application app);
 ```
 
@@ -304,8 +303,12 @@ This is the deliberate trade-off:
 The following are part of Uno's external-host extensibility surface and will not change without a deprecation cycle, even though they are declared `internal`:
 
 - The type's full name: `Uno.UI.Hosting.SecondaryApplicationLauncher`.
-- `static LaunchActivatedEventArgs CreateDefaultLaunchActivatedEventArgs()`.
 - `static void LaunchSecondary(Microsoft.UI.Xaml.Application app)` — including the exact parameter type, return type, and the contract that it must be invoked on the platform UI thread.
+
+`CreateDefaultLaunchActivatedEventArgs()` was part of this contract and has been removed in 7.0.
+`LaunchSecondary` takes no arguments parameter, so the value it returned had nowhere to go: its only
+possible use was reflecting against `Application.OnLaunched` directly, which is exactly what this
+helper exists to avoid. `LaunchSecondary` now synthesizes the default arguments itself.
 
 What is free to change: the implementation body, any private helpers, the public ctor / member set of `Application.OnLaunched` and `LaunchActivatedEventArgs` themselves (the helper insulates downstream from those refactors).
 

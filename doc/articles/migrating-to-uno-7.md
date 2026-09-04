@@ -464,6 +464,10 @@ suspended state, and Uno Platform previously reported one on Windows only, when 
 which also skipped the `EnteredBackground` that precedes `Suspending`. Save state from
 `Window.Closed` instead. Android, iOS and tvOS report the real platform lifecycle as before.
 
+**`Application.RequiresPointerMode` is now `internal`.** It is not part of the public Windows App SDK
+`Application` surface either, and nothing in Uno Platform's rendering depends on the value an app sets.
+Delete the assignment; there is no replacement to move to.
+
 ### `FeatureConfiguration` flags removed
 
 The native-only flags below no longer exist; delete the calls — behavior is the unified
