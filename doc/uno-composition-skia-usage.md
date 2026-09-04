@@ -1,11 +1,11 @@
-# SkiaSharp usage in the Uno Composition area
+﻿# SkiaSharp usage in the Uno Composition area
 
 > Inventory of the SkiaSharp API surface consumed under `src/Uno.UI.Composition/Composition/**`
 > (the composition layer). Extracted by static scan of the source on branch
 > `feature/drawing-backend-abstraction`; counts are occurrence counts and are approximate. Companion to
 > `doc/uno-drawing-backend-abstraction.md` — this is the *raw coupling* the abstraction is factoring out.
 >
-> Out of scope (composition-adjacent, separate files in `Uno.UI`): `SkiaRenderHelper`, `CompositionTarget`,
+> Out of scope (composition-adjacent, separate files in `Uno.UI`): `FrameRenderHelper`, `CompositionTarget`,
 > `RenderTargetBitmap`, and text rasterization under `UI/Xaml/Documents` (`SKFont`/`SKTypeface`/`SKTextBlob`).
 
 ## Types referenced (by frequency)

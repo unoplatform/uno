@@ -1,4 +1,4 @@
-# Merge reconciliation — items to review (feature/breakingchanges merge)
+﻿# Merge reconciliation — items to review (feature/breakingchanges merge)
 
 ## Dropped upstream additions (incompatible with our neutral-drawing seam)
 - **CompositionSpriteShape.skia.cs**: upstream added raw-Skia damage-tracking helpers
@@ -20,7 +20,7 @@ each still drives the neutral pipeline correctly at runtime.
 Upstream renamed these .skia.cs -> .cs (cross-platform-ized) with content changes; we kept our neutral
 .skia.cs and dropped upstream's .cs. UN-FOLDED upstream deltas to review/re-integrate:
 - CompositionTarget.Rendering: upstream had a **253-line** change (frame scheduling / rendering) — NOT folded in.
-- SkiaRenderHelper: upstream had a **58-line** change — NOT folded in.
+- FrameRenderHelper: upstream had a **58-line** change — NOT folded in.
 - SKCanvasVisual: upstream had a **6-line** change — NOT folded in (our version lives in Uno.UI.Composition.Skia).
 Also: upstream made these cross-platform (.cs); ours are Skia-only (.skia.cs) — verify non-Skia variants still build.
 

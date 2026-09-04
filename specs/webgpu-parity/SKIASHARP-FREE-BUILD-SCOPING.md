@@ -1,4 +1,4 @@
-# Scoping: a SkiaSharp-free *build* of Uno (Skia targets) — WebGPU + managed engines
+﻿# Scoping: a SkiaSharp-free *build* of Uno (Skia targets) — WebGPU + managed engines
 
 Status: scoping/analysis (no implementation yet). Follows the finding that proved the
 SkiaSharp-free **run**). This doc scopes removing the SkiaSharp managed **assembly reference** from a build.
@@ -57,7 +57,7 @@ become pluggable:
 3. **Default renderer** — `Uno.UI/UI/Xaml/Media/CompositionTarget.Rendering.skia.cs:29`:
    `internal static IRenderer Renderer { get; set; } = new SkiaRenderer();` (hard type reference to the backend).
 
-Everything else in `Uno.UI` is neutral (`SkiaRenderHelper` is misnamed but uses only the neutral seam;
+Everything else in `Uno.UI` is neutral (`FrameRenderHelper` is misnamed but uses only the neutral seam;
 `CompositionTarget` records frames through `IRenderer`/`IDrawingSession`). So the framework is ONE indirection away
 from backend-agnostic: replace these 3 compile-time references with runtime resolution.
 

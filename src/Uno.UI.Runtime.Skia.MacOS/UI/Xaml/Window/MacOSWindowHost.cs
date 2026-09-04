@@ -34,7 +34,7 @@ namespace Uno.UI.Runtime.Skia.MacOS;
 
 internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCorePointerInputSource, IAccessibilityOwner
 {
-	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
+	private readonly FrameRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly MacOSWindowNative _nativeWindow;
 	private readonly Window _winUIWindow;
 	private readonly XamlRoot _xamlRoot;

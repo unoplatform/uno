@@ -110,7 +110,7 @@ public partial class CompositionTarget
 		// back to software rendering instead of hanging.
 	}
 
-	private readonly SkiaRenderHelper.FpsHelper _fpsHelper = new();
+	private readonly FrameRenderHelper.FpsHelper _fpsHelper = new();
 	private readonly Lock _frameGate = new();
 	private readonly Lock _xamlRootBoundsGate = new();
 
@@ -235,7 +235,7 @@ public partial class CompositionTarget
 			_phaseLastRenderStart = phaseT0;
 		}
 		var recording = Renderer.CreateRecording();
-		var (path, nativeVisualsInZOrder) = SkiaRenderHelper.RecordFrame(
+		var (path, nativeVisualsInZOrder) = FrameRenderHelper.RecordFrame(
 			recording,
 			(float)bounds.Width,
 			(float)bounds.Height,
@@ -250,6 +250,14 @@ public partial class CompositionTarget
 			_phaseRecordTicks += phaseT1 - phaseT0;
 			_phaseFinishTicks += phaseT2 - phaseT1;
 		}
+		// The FPS overlay paints translucent, antialiased pixels straight onto the target after the replay, so its
+		// area has to be damaged too — left out, it would composite over a region this frame never cleared and
+		// accumulate on top of the previous frame's panel.
+		if (_fpsHelper.TryGetOverlayBounds() is { } overlayBounds)
+		{
+			frameDamage.UnionRect(overlayBounds);
+		}
+
 		frameDamage.ClampTo(frameRect);
 		// Snapped with the scale the present path will apply. If the scale changes before the frame is presented,
 		// that present sees `resized` and skips the damage clip entirely, so a stale value here cannot be used.
@@ -365,7 +373,7 @@ public partial class CompositionTarget
 
 		if (lastRenderedFrameNullable is not { } lastRenderedFrame)
 		{
-			return SkiaRenderHelper.EmptyClipPath;
+			return FrameRenderHelper.EmptyClipPath;
 		}
 		else
 		{
