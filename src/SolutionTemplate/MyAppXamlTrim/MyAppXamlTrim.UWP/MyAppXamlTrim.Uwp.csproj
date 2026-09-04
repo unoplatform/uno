@@ -13,7 +13,7 @@
     <PackageReference Include="Microsoft.UI.Xaml" Version="2.6.2" />
     <PackageReference Include="Uno.UI" Version="$(NBGV_SemVer2)" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
-    <PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.1" />
+    <PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.1.1" />
   </ItemGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
