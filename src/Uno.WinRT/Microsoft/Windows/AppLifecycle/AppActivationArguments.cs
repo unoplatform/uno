@@ -1,10 +1,11 @@
-using System;
+#nullable enable
+
 using Windows.ApplicationModel.Activation;
 
 namespace Microsoft.Windows.AppLifecycle;
 
 /// <summary>
-/// Contains information about the type and data payload for an app activation that was registered by using one of the static methods of the ActivationRegistrationManager class.
+/// Contains information about the type and data payload for an app activation.
 /// </summary>
 public partial class AppActivationArguments
 {
@@ -17,6 +18,13 @@ public partial class AppActivationArguments
 	/// <summary>
 	/// Gets the data payload for a registered activation.
 	/// </summary>
+	/// <remarks>
+	/// The concrete type follows <see cref="Kind"/>: a
+	/// <see cref="Windows.ApplicationModel.Activation.LaunchActivatedEventArgs"/> for
+	/// <see cref="ExtendedActivationKind.Launch"/>, a
+	/// <see cref="Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs"/> for
+	/// <see cref="ExtendedActivationKind.Protocol"/>, and so on.
+	/// </remarks>
 	public object Data { get; }
 
 	/// <summary>
@@ -24,14 +32,17 @@ public partial class AppActivationArguments
 	/// </summary>
 	public ExtendedActivationKind Kind { get; }
 
-	internal static AppActivationArguments CreateLaunch(LaunchActivatedEventArgs launchArgs) => new AppActivationArguments(ExtendedActivationKind.Launch, launchArgs);
+	internal static AppActivationArguments CreateLaunch(LaunchActivatedEventArgs launchArgs)
+		=> new(ExtendedActivationKind.Launch, launchArgs);
 
-	internal static AppActivationArguments CreateProtocol(ProtocolActivatedEventArgs protocolArgs) => new AppActivationArguments(ExtendedActivationKind.Protocol, protocolArgs);
+	internal static AppActivationArguments CreateProtocol(ProtocolActivatedEventArgs protocolArgs)
+		=> new(ExtendedActivationKind.Protocol, protocolArgs);
 
+	/// <summary>
+	/// Wraps a platform activation payload, mapping its
+	/// <see cref="Windows.ApplicationModel.Activation.ActivationKind"/> onto the matching
+	/// <see cref="ExtendedActivationKind"/>. The two enums share their numeric values below 5000.
+	/// </summary>
 	internal static AppActivationArguments FromActivatedEventArgs(IActivatedEventArgs args)
-	{
-		var extendedKind = (ExtendedActivationKind)(int)args.Kind;
-		var data = args;
-		return new AppActivationArguments(extendedKind, data);
-	}
+		=> new((ExtendedActivationKind)(int)args.Kind, args);
 }

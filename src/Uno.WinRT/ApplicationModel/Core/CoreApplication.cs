@@ -108,5 +108,4 @@ public static partial class CoreApplication
 	/// Gets a value indicating whether the the app is running as a full fledged app or as Uno islands only.
 	/// </summary>
 	internal static bool IsFullFledgedApp { get; set; } = true;
-	public static bool WasLaunched { get; internal set; }
 }
