@@ -85,10 +85,15 @@ internal static class FontDetailsCache
 		{
 			SKData data;
 			using (var stream = await AppDataUriEvaluator.ToStream(uri, CancellationToken.None))
-			using (var buffer = new MemoryStream())
 			{
-				await stream.CopyToAsync(buffer, CancellationToken.None);
-				data = SKData.CreateCopy(buffer.ToArray());
+				// Read straight into the native buffer. Staging through a MemoryStream grew it by doubling
+				// (81,920 -> 163,840 -> 327,680 -> ...) and ToArray() then copied the whole thing once more, so
+				// a font of a few hundred KB left several large-object-heap arrays behind - all of them dead as
+				// soon as SkiaSharp had taken its own copy, and all of them charged against the gen2 budget on
+				// the startup path.
+				data = stream.CanSeek
+					? SKData.Create(stream, checked((int)(stream.Length - stream.Position)))
+					: SKData.Create(stream);
 			}
 
 			// A manifest maps each weight/style to a different file, so only cache when there's none: then
