@@ -1325,11 +1325,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		// WinUI's CUIAWindow::UIARaiseTextEditTextChangedEvent only raises for AutoCorrect / Composition /
-		// CompositionFinalized — `None` falls through the switch without raising, and any other value is
-		// E_INVALIDARG. Mirror that so `None` (or an out-of-range cast) is not surfaced as a spurious event.
+		// AutomationPeer_Partial.cpp forwards every defined AutomationTextEditChangeType value.
 		switch (changeType)
 		{
+			case Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType.None:
 			case Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType.AutoCorrect:
 			case Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType.Composition:
 			case Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType.CompositionFinalized:

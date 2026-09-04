@@ -13,22 +13,13 @@ using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Windows.System;
-#if __APPLE_UIKIT__
-using View = UIKit.UIView;
-#elif __ANDROID__
-using View = Android.Views.View;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 	public partial class ButtonBase : ContentControl
 	{
 		public
-#if __ANDROID__
-			new
-#endif
 			event RoutedEventHandler Click;
 
 		public ButtonBase()
@@ -47,8 +38,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			base.OnLoaded();
 			OnLoadedPartial();
-
-			RegisterEvents();
 		}
 
 		partial void OnLoadedPartial();
@@ -137,15 +126,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			ownerType: typeof(ButtonBase),
 			typeMetadata: new FrameworkPropertyMetadata(default(bool)));
 
-		partial void RegisterEvents();
-
-#if __ANDROID__ || __APPLE_UIKIT__
-		private void OnCanExecuteChanged()
-		{
-			this.CoerceValue(IsEnabledProperty);
-		}
-#endif
-
 		private protected override object CoerceIsEnabled(object baseValue, DependencyPropertyValuePrecedences precedence)
 		{
 			if (Command != null
@@ -156,9 +136,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			return base.CoerceIsEnabled(baseValue, precedence);
 		}
-
-		private protected override void OnContentTemplateRootSet() => RegisterEvents();
-
 
 		// Might be changed if the method does not conflict in UnoViewGroup.
 		internal override bool IsViewHit()

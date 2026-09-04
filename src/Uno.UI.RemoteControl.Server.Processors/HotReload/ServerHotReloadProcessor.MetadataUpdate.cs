@@ -21,6 +21,7 @@ using Uno.Roslyn.MSBuild;
 using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messaging.HotReload;
+using Uno.UI.RemoteControl.Server;
 
 namespace Uno.UI.RemoteControl.Host.HotReload
 {
@@ -129,6 +130,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					// file-system observer is active, so a flushed edit can neither be folded into the
 					// baseline nor go unobserved.
 					_fileUpdater.ReportWorkspaceState(HotReloadWorkspaceState.Ready);
+
+					// Enforce the concurrent-workspace cap (see #24205): register this now-active app
+					// workspace. If the dev-server is already at capacity, the oldest workspace(s) get
+					// their hot reload disabled (workspace disposed, connection kept, app notified).
+					// IDE-driven connections never reach this path, so only app workspaces are counted.
+					// The capacity comes from HotReloadWorkspaceOptions via the injected registry.
+					_workspaceRegistry.Register(this);
 
 					return manager;
 				}

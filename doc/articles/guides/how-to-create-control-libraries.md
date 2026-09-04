@@ -130,6 +130,6 @@ In both cases, for the build system to include the assets files, the following p
 
 ## Considerations for the Skia Renderer
 
-When creating a library that is compatible with the Skia Renderer, it is generally best to only use the `net10.0` and `net10.0-windows10.xxx` targets frameworks.
+When creating a library for the Skia renderer, `net10.0` and `net10.0-windows10.xxx` are enough for most libraries: the `net10.0` asset serves every Uno Platform head. Add `net10.0-ios`, `net10.0-android`, or `net10.0-tvos` only when the library needs types from a platform SDK — an application head for one of those platforms consumes the matching asset as-is.
 
 For more information, see the [Skia renderer](xref:uno.features.renderer.skia) documentation.

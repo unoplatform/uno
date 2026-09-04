@@ -85,7 +85,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				{
 					Setters = { new Setter(ListViewItem.PaddingProperty, new Thickness(0)) }
 				},
-				ItemTemplate = new DataTemplate(() => new Border
+				ItemTemplate = new DataTemplate(null, (_, _) => new Border
 				{
 					Width = 200,
 					Height = 100,

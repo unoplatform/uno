@@ -57,7 +57,6 @@
 			UnoUIRuntimeIdentifier="$(UnoUIRuntimeIdentifier.ToLowerInvariant())"
 			ResolvedCompileFileDefinitionsInput="@(ResolvedCompileFileDefinitions)"
 			RuntimeCopyLocalItemsInput="@(RuntimeCopyLocalItems)"
-			NuGetPackageRoot="$(NuGetPackageRoot)"
 			TargetFrameworkVersion="$(TargetFrameworkVersion)">
 			<Output TaskParameter="RuntimeCopyLocalItemsToAdd" ItemName="RuntimeCopyLocalItemsMerged2" />
 			<Output TaskParameter="RuntimeCopyLocalItemsToRemove" ItemName="_RuntimeCopyLocalItemsToRemove" />
@@ -89,9 +88,20 @@
 	</Target>
 
 	<Target Name="_UnoValidateReferencesUnoRuntimeIdentifier" BeforeTargets="CoreCompile">
+		<PropertyGroup>
+			<!-- Normalized so a value other than 'true' cannot fail the task's boolean parameter conversion. -->
+			<_UnoDisableUNOB0020Validation>false</_UnoDisableUNOB0020Validation>
+			<_UnoDisableUNOB0020Validation Condition="'$(UnoDisableUNOB0020Validation)'=='true'">true</_UnoDisableUNOB0020Validation>
+		</PropertyGroup>
+
 		<RuntimeAssetsValidatorTask_v0
 			UnoUIRuntimeIdentifier="$(UnoUIRuntimeIdentifier.ToLowerInvariant())"
 			UnoRuntimeIdentifier="$(UnoRuntimeIdentifier.ToLowerInvariant())"
+			UnoWinRTRuntimeIdentifier="$(UnoWinRTRuntimeIdentifier.ToLowerInvariant())"
+			TargetPlatformIdentifier="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))"
+			NuGetPackageRoot="$(NuGetPackageRoot)"
+			ResolvedCompileFileDefinitionsInput="@(ResolvedCompileFileDefinitions)"
+			DisablePlatformAssetValidation="$(_UnoDisableUNOB0020Validation)"
 			RuntimeCopyLocalItemsInput="@(RuntimeCopyLocalItems)">
 		</RuntimeAssetsValidatorTask_v0>
 	</Target>

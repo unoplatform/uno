@@ -661,6 +661,26 @@ partial class AutomationPeer
 	}
 
 	/// <summary>
+	/// Raises an event when a text control programmatically changes its text.
+	/// </summary>
+	/// <param name="automationTextEditChangeType">The kind of text-edit change.</param>
+	/// <param name="changedData">The text that changed.</param>
+#if __SKIA__
+	public void RaiseTextEditTextChangedEvent(AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)
+	{
+		AutomationPeerListener?.NotifyTextEditTextChangedEvent(this, automationTextEditChangeType, changedData);
+	}
+#else
+	public void RaiseTextEditTextChangedEvent(AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)
+	{
+		Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(
+			"Microsoft.UI.Xaml.Automation.Peers.AutomationPeer",
+			"void AutomationPeer.RaiseTextEditTextChangedEvent(AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)",
+			Uno.Foundation.Logging.LogLevel.Warning);
+	}
+#endif
+
+	/// <summary>
 	/// Helper: Raises the event if there are listeners for it.
 	/// </summary>
 	internal static void RaiseEventIfListener(UIElement? element, AutomationEvents eventId)

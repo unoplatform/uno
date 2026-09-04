@@ -310,7 +310,7 @@ internal class Win32RawElementProvider :
 				Win32UIAutomationInterop.UIA_ClassNamePropertyId => peer?.GetClassName(),
 				Win32UIAutomationInterop.UIA_ControlTypePropertyId => GetControlTypeId(peer),
 				Win32UIAutomationInterop.UIA_LocalizedControlTypePropertyId => peer?.GetLocalizedControlType(),
-				Win32UIAutomationInterop.UIA_FrameworkIdPropertyId => "Uno",
+				Win32UIAutomationInterop.UIA_FrameworkIdPropertyId => "XAML",
 				Win32UIAutomationInterop.UIA_ProviderDescriptionPropertyId => "Uno Platform UIA Provider",
 				Win32UIAutomationInterop.UIA_ProcessIdPropertyId => GetProcessId(),
 				Win32UIAutomationInterop.UIA_NativeWindowHandlePropertyId => _isRoot ? (int)_hwnd : 0,

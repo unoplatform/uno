@@ -30,6 +30,7 @@ using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messaging.HotReload;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
 using Uno.UI.RemoteControl.Server.Telemetry;
+using Uno.UI.RemoteControl.Server;
 using Uno.HotReload.Info;
 using Uno.HotReload.IO;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -39,19 +40,23 @@ using static Uno.HotReload.Utils.RoslynExtensions;
 
 namespace Uno.UI.RemoteControl.Host.HotReload
 {
-	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable
+	partial class ServerHotReloadProcessor : IServerProcessor, IDisposable, IHotReloadWorkspaceSlot
 	{
 		private static readonly TimeSpan _waitForIdeResultTimeout = TimeSpan.FromSeconds(25);
 		private readonly CancellationTokenSource _ct = new();
+		// 0 = active, 1 = hot reload disabled for this connection (workspace cap, see #24205).
+		private int _hotReloadDisabled;
 		private readonly IRemoteControlServer _remoteControlServer;
 		private readonly ITelemetry _telemetry;
 		private readonly HotReloadTracker _tracker;
 		private readonly WorkspaceGatedFileUpdater _fileUpdater;
+		private readonly HotReloadWorkspaceRegistry _workspaceRegistry;
 
-		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer, ITelemetry<ServerHotReloadProcessor> telemetry)
+		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer, ITelemetry<ServerHotReloadProcessor> telemetry, HotReloadWorkspaceRegistry workspaceRegistry)
 		{
 			_remoteControlServer = remoteControlServer;
 			_telemetry = telemetry;
+			_workspaceRegistry = workspaceRegistry;
 			_tracker = new(async (status, ct) => await _remoteControlServer.SendFrame(new HotReloadStatusMessage(status)), ct => RequestHotReloadToIde(), _reporter);
 
 			// Update requests are gated on the workspace lifecycle: queued while the baseline is being
@@ -476,9 +481,56 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		public void Dispose()
 		{
+			_workspaceRegistry.Unregister(this);
 			_fileUpdater.ReportWorkspaceState(HotReloadWorkspaceState.Disposed);
 			_ct.Cancel();
 			_workspace?.Ct.Cancel();
+		}
+
+		/// <summary>
+		/// Concurrent-workspace cap eviction (see #24205): another connection needed a hot-reload
+		/// workspace slot and this one is among the oldest, so disable hot reload here — dispose the
+		/// Roslyn workspace / EnC session to reclaim memory and report the end-of-life to the app —
+		/// WITHOUT closing the connection (closing it would trigger the client's auto-reconnect).
+		/// Fire-and-forget: the registry calls this from another connection's thread.
+		/// </summary>
+		void IHotReloadWorkspaceSlot.RequestDisable(string reason)
+			=> _ = DisableHotReloadAsync(reason);
+
+		private async Task DisableHotReloadAsync(string reason)
+		{
+			if (Interlocked.Exchange(ref _hotReloadDisabled, 1) == 1)
+			{
+				return; // already disabled/disposed
+			}
+
+			_workspaceRegistry.Unregister(this);
+
+			// Dispose the workspace (manager.Dispose -> EndSession + workspace.Dispose + file watcher),
+			// but keep the connection so the client does not reconnect.
+			var workspace = _workspace;
+			_workspace = null;
+			workspace?.Ct.Cancel();
+			// Terminal-but-NOT-closed: the /rc connection stays open (only hot reload is turned off),
+			// so report Failed rather than Disposed. Disposed makes WorkspaceGatedFileUpdater tell
+			// clients "the connection has been closed", which is misleading here (see #24205 review).
+			_fileUpdater.ReportWorkspaceState(HotReloadWorkspaceState.Failed);
+
+			if (this.Log().IsEnabled(LogLevel.Information))
+			{
+				this.Log().LogInformation("Hot reload disabled for this connection: {Reason}", reason);
+			}
+
+			try
+			{
+				// Report the end-of-life to the app over the hot-reload status channel.
+				await _tracker.SendUpdate(serverError: reason);
+				await Notify(HotReloadEvent.Disabled);
+			}
+			catch (Exception notifyError)
+			{
+				this.Log().LogWarning(notifyError, "Failed to notify hot-reload disabled state after workspace-cap eviction");
+			}
 		}
 
 		#region Helpers - IDE Channel SendAndWaitForResult

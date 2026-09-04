@@ -29,20 +29,4 @@ public static class FoundationFeatureConfiguration
 		[DefaultValue(_defaultAllowNegativeWidthHeight)]
 		public static bool AllowNegativeWidthHeight { get; set; } = _defaultAllowNegativeWidthHeight;
 	}
-
-#if __WASM__
-	public static class Runtime
-	{
-		/// <summary>
-		/// [Deprecated] Indicates if exception thrown in javascript should be rethrown in managed code.
-		/// </summary>
-		[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
-		public static bool RethrowNativeExceptions
-		{
-			// Obsolete, remove in next major
-			get => true;
-			set { }
-		}
-	}
-#endif
 }

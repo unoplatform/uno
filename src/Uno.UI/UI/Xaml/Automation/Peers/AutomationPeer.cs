@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 #nullable enable
@@ -601,26 +601,32 @@ public partial class AutomationPeer : DependencyObject
 	}
 #endif
 
-	/// <summary>
-	/// Raises an event when a text control programmatically changes its text (e.g. AutoCorrect or IME composition).
-	/// </summary>
-	/// <param name="automationTextEditChangeType">The kind of text-edit change.</param>
-	/// <param name="changedData">The text that changed.</param>
-#if __SKIA__
-	public void RaiseTextEditTextChangedEvent(Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)
+	private static IAutomationPeerListener? _automationPeerListener;
+
+	internal static IAutomationPeerListener? AutomationPeerListener
 	{
-		// TextEditTextChanged is an app-facing UIA event: in WinUI no built-in control auto-raises it —
-		// it is called from AutoCorrect/Composition text services (AutomationPeer_Partial.cpp:916-940).
-		// Route straight to the listener (like RaiseNotificationEvent); the per-backend
-		// NotifyTextEditTextChangedEvent handlers gate delivery on IsAccessibilityEnabled.
-		AutomationPeerListener?.NotifyTextEditTextChangedEvent(this, automationTextEditChangeType, changedData);
+		get => TestAutomationPeerListener ?? _automationPeerListener;
+		set
+		{
+			if (_automationPeerListener is not null)
+			{
+				throw new InvalidOperationException("AutomationPeerListener should only be set once.");
+			}
+
+			_automationPeerListener = value;
+		}
 	}
-#else
-	public void RaiseTextEditTextChangedEvent(Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)
+
+	internal static IAutomationPeerListener? TestAutomationPeerListener { get; set; }
+
+	public void RaisePropertyChangedEvent(AutomationProperty automationProperty, object oldValue, object newValue)
 	{
-		ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseTextEditTextChangedEvent(AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)", LogLevel.Warning);
+		var listener = AutomationPeerListener;
+		if (listener is not null && listener.ListenerExistsHelper(AutomationEvents.PropertyChanged))
+		{
+			listener.NotifyPropertyChangedEvent(this, automationProperty, oldValue, newValue);
+		}
 	}
-#endif
 
 #if !__SKIA__
 	/// <summary>

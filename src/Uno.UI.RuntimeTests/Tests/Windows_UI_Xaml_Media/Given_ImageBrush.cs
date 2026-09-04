@@ -17,6 +17,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 	[RunsOnUIThread]
 	public class Given_ImageBrush
 	{
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/8339")]
+		public void When_Reparented_To_TileBrush()
+		{
+			// Reparent (7.0 breaking change): the hierarchy is now Brush -> TileBrush -> ImageBrush, matching WinUI.
+			Assert.AreEqual(typeof(TileBrush), typeof(ImageBrush).BaseType);
+			Assert.IsInstanceOfType(new ImageBrush(), typeof(TileBrush));
+#if HAS_UNO
+			// AlignmentX/AlignmentY/Stretch are now owned by TileBrush, not ImageBrush.
+			Assert.AreEqual(typeof(TileBrush), ImageBrush.AlignmentXProperty.OwnerType);
+			Assert.AreEqual(typeof(TileBrush), ImageBrush.AlignmentYProperty.OwnerType);
+			Assert.AreEqual(typeof(TileBrush), ImageBrush.StretchProperty.OwnerType);
+#endif
+		}
+
+		[TestMethod]
+		public void When_TileBrush_Defaults_Preserved()
+		{
+			// Guards the reparent against adopting the generated stub's default(...) metadata,
+			// which would silently flip Stretch Fill->None and alignment Center->Left/Top.
+			var brush = new ImageBrush();
+			Assert.AreEqual(Stretch.Fill, brush.Stretch);
+			Assert.AreEqual(AlignmentX.Center, brush.AlignmentX);
+			Assert.AreEqual(AlignmentY.Center, brush.AlignmentY);
+		}
+
 		[DataRow(Stretch.Fill, false)]
 		[DataRow(Stretch.Fill, true)]
 #if !__APPLE_UIKIT__

@@ -121,7 +121,7 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual("42", proxy["UnknownProperty"]);
 		}
 
-		public partial class MyControl : DependencyObject
+		public partial class MyControl : FrameworkElement
 		{
 			public MyControl(MyControl parent = null)
 			{

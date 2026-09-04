@@ -40,15 +40,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			{
 				AutomationPeer.TestAutomationPeerListener = listener;
 
-				peer.RaiseTextEditTextChangedEvent(
+				var changeTypes = new[]
+				{
+					AutomationTextEditChangeType.None,
 					AutomationTextEditChangeType.AutoCorrect,
-					new[] { "teh -> the" });
+					AutomationTextEditChangeType.Composition,
+					AutomationTextEditChangeType.CompositionFinalized,
+				};
 
-				Assert.AreEqual(1, listener.Count, "The event must reach the listener exactly once");
-				Assert.AreEqual(AutomationTextEditChangeType.AutoCorrect, listener.LastChangeType);
+				foreach (var changeType in changeTypes)
+				{
+					peer.RaiseTextEditTextChangedEvent(changeType, new[] { changeType.ToString() });
+				}
+
+				Assert.AreEqual(changeTypes.Length, listener.Count, "Every WinUI text-edit change type must reach the listener");
+				Assert.AreEqual(AutomationTextEditChangeType.CompositionFinalized, listener.LastChangeType);
 				Assert.IsNotNull(listener.LastChangedData);
 				Assert.AreEqual(1, listener.LastChangedData.Count);
-				Assert.AreEqual("teh -> the", listener.LastChangedData[0]);
+				Assert.AreEqual(nameof(AutomationTextEditChangeType.CompositionFinalized), listener.LastChangedData[0]);
 			}
 			finally
 			{
