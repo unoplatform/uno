@@ -99,8 +99,8 @@ public partial class AcrylicBrush
 		_brush?.Dispose();
 		if (forceCreateAcrylicBrush)
 		{
-			// Default to the direct SkiaAcrylicBrush (bc's default); the WinUI-style composition-effect graph is
-			// opt-in via AcrylicBrush.UseCompositionEffectBrush.
+			// Default to the direct material brush; the WinUI-style composition-effect graph is opt-in via
+			// AcrylicBrush.UseCompositionEffectBrush.
 			_brush = AcrylicBrushExtensions.GetUseCompositionEffectBrush(this)
 				? CreateAcrylicBrushViaCompositionEffect(compositor, useCrossFadeEffect)
 				: CreateAcrylicBrushDirect(compositor);
@@ -136,8 +136,8 @@ public partial class AcrylicBrush
 		return _sharedNoiseTexture;
 	}
 
-	// The direct acrylic material (bc's default): a dedicated SkiaAcrylicBrush doing backdrop blur + luminosity +
-	// tint + noise on the neutral drawing seam, rather than a WinUI composition-effect graph.
+	// The direct acrylic material: a dedicated brush doing backdrop blur + luminosity + tint + noise on the neutral
+	// drawing seam, rather than a WinUI composition-effect graph.
 	private CompositionBrush CreateAcrylicBrushDirect(Compositor compositor)
 	{
 		if (EnsureNoiseTexture() is not { } noise)
@@ -150,7 +150,7 @@ public partial class AcrylicBrush
 
 		_isUsingOpaqueBrush = tintColor.A == 255;
 
-		return new global::Microsoft.UI.Composition.SkiaAcrylicBrush(compositor)
+		return new global::Microsoft.UI.Composition.AcrylicMaterialBrush(compositor)
 		{
 			IsOpaque = _isUsingOpaqueBrush,
 			LuminosityColor = luminosityColor,

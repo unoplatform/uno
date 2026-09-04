@@ -264,6 +264,26 @@ internal class SkiaDrawingSession : IDrawingSession
 	public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter)
 		=> _canvas.DrawImage(ResolveImage(texture), x, y, _linearSampling, ImagePaint(opacity: 1f, colorFilter));
 
+	public void DrawImageTiled(ITexture texture, in Rect destination, EdgeExtend extendX, EdgeExtend extendY, float opacity = 1f)
+	{
+		var image = ResolveImage(texture);
+		// Anchored at the destination origin so the repeat unit lands on whole texels.
+		var local = SKMatrix.CreateTranslation((float)destination.Left, (float)destination.Top);
+		using var shader = SKShader.CreateImage(image, ToSK(extendX), ToSK(extendY), _linearSampling, local);
+		var paint = ImagePaint(opacity, colorFilter: null);
+		paint.Shader = shader;
+		_canvas.DrawRect(destination.ToSKRect(), paint);
+		paint.Shader = null;
+	}
+
+	private static SKShaderTileMode ToSK(EdgeExtend extend) => extend switch
+	{
+		EdgeExtend.Clamp => SKShaderTileMode.Clamp,
+		EdgeExtend.Wrap => SKShaderTileMode.Repeat,
+		EdgeExtend.Mirror => SKShaderTileMode.Mirror,
+		_ => SKShaderTileMode.Decal,
+	};
+
 	public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow)
 	{
 		var skImage = ResolveImage(texture);

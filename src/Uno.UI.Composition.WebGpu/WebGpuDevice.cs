@@ -276,6 +276,17 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// all three (auto-derived layouts are pipeline-exclusive — that blocked arena'ing the path stencil+cover pair).
 	public IntPtr ClipBgl;
 	public IntPtr Smp;
+	private readonly IntPtr[] _tiledSmp = new IntPtr[16];
+
+	/// <summary>The sampler for a tiled image draw with these per-axis edge modes.</summary>
+	public IntPtr TiledSampler(EdgeExtend x, EdgeExtend y) => _tiledSmp[((int)x * 4) + (int)y];
+
+	private static WGPUAddressMode Address(EdgeExtend extend) => extend switch
+	{
+		EdgeExtend.Wrap => WGPUAddressMode.Repeat,
+		EdgeExtend.Mirror => WGPUAddressMode.MirrorRepeat,
+		_ => WGPUAddressMode.ClampToEdge,
+	};
 
 	// Gradient stops are evaluated analytically in-shader (exact, unlike a quantised LUT). The cap sizes the colour
 	// + stop arrays in the uniform; raised well past any realistic UI gradient so >16-stop gradients render all their
@@ -828,6 +839,18 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		ImageClipBgl = ClipBgl;   // shared, so a stamped clip group binds here too
 		var sd = new WGPUSamplerDescriptor { AddressModeU = WGPUAddressMode.ClampToEdge, AddressModeV = WGPUAddressMode.ClampToEdge, MagFilter = WGPUFilterMode.Linear, MinFilter = WGPUFilterMode.Linear, MipmapFilter = WGPUMipmapFilterMode.Nearest, MaxAnisotropy = 1 };
 		Smp = wgpuDeviceCreateSampler(Dev, &sd);
+		// Address-mode variants for tiled image draws. EdgeExtend.None shares the clamp sampler: a non-filling
+		// draw is bounded by its quad instead, so nothing ever samples past the texture.
+		for (var x = 0; x < 4; x++)
+		{
+			for (var y = 0; y < 4; y++)
+			{
+				var td = sd;
+				td.AddressModeU = Address((EdgeExtend)x);
+				td.AddressModeV = Address((EdgeExtend)y);
+				_tiledSmp[(x * 4) + y] = wgpuDeviceCreateSampler(Dev, &td);
+			}
+		}
 	}
 
 	private IntPtr MakePipe(IntPtr module, WGPUStringView vs, WGPUStringView fs, bool colorWrite, bool colorAttrs, WGPUBlendState* blend, WGPUStencilFaceState front, WGPUStencilFaceState back, uint stencilWrite, uint stencilRead, WGPUCompareFunction depthCompare = WGPUCompareFunction.Always, bool depthWrite = false, IntPtr layout = default, uint samples = 0)

@@ -197,6 +197,7 @@ internal sealed unsafe class ImageCmd : WebGpuCommand
 	public int W, H;
 	public float Opacity;
 	public float U0, V0, U1 = 1f, V1 = 1f;   // source UV sub-rect (whole texture by default)
+	public EdgeExtend ExtendX, ExtendY;      // sampler address modes; UVs run past 1 for a tiled fill
 	public int TintMode;        // 0 = none, 1 = SrcIn blend-mode tint
 	public Vector4 Tint;        // straight-alpha tint color (0..1) for TintMode 1
 	public float[] ColorMatrix; // null, or 20-float (4x5) effect colour matrix applied in the image shader
