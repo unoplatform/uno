@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Uno;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -8,12 +8,8 @@ namespace Windows.ApplicationModel.Activation;
 /// <summary>
 /// Provides event information when an app is launched.
 /// </summary>
-public sealed partial class LaunchActivatedEventArgs : IActivatedEventArgs
+public sealed partial class LaunchActivatedEventArgs : ILaunchActivatedEventArgs
 {
-	internal LaunchActivatedEventArgs()
-	{
-	}
-
 	internal LaunchActivatedEventArgs(ActivationKind kind, string arguments)
 	{
 		Arguments = arguments;

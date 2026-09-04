@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Runtime.InteropServices.JavaScript;
 using System.Web;
@@ -11,8 +10,6 @@ namespace Uno.Helpers
 {
 	public static partial class ProtocolActivation
 	{
-		internal const string QueryKey = "unoprotocolactivation";
-
 		private static readonly IEnumerable<string> _predefinedPrefixes = [
 			"bitcoin",
 			"ftp",
@@ -99,54 +96,6 @@ namespace Uno.Helpers
 
 			// register scheme
 			NativeMethods.RegisterProtocolHandler(scheme, uriString, prompt);
-		}
-
-		internal static bool TryParseActivationUri(string queryArguments, out Uri uri) =>
-			TryParseActivationUri(queryArguments, out uri, out _);
-
-		/// <summary>
-		/// Extracts the protocol activation URI from a browser query string.
-		/// </summary>
-		/// <param name="queryArguments">The query string, without its leading '?'.</param>
-		/// <param name="uri">The activation URI, when one is present.</param>
-		/// <param name="remainingArguments">
-		/// <paramref name="queryArguments"/> with the activation key removed, so that the app's own
-		/// launch arguments do not carry Uno's transport detail.
-		/// </param>
-		internal static bool TryParseActivationUri(string queryArguments, out Uri uri, out string remainingArguments)
-		{
-			NameValueCollection queryValues = null;
-			uri = null;
-			remainingArguments = queryArguments;
-			try
-			{
-				queryValues = HttpUtility.ParseQueryString(queryArguments);
-			}
-			catch (Exception ex)
-			{
-				typeof(ProtocolActivation).Log().LogError(
-					"Launch arguments could not be parsed as a query string", ex);
-			}
-
-			if (queryValues != null &&
-				queryValues[QueryKey] is string protocolUriString)
-			{
-				// ParseQueryString has already decoded the value; unescaping again would corrupt a
-				// URI that legitimately contains an encoded '%' or '/'.
-				if (Uri.TryCreate(protocolUriString, UriKind.Absolute, out uri))
-				{
-					queryValues.Remove(QueryKey);
-					remainingArguments = queryValues.ToString();
-					return true;
-				}
-				else
-				{
-					typeof(ProtocolActivation).Log().LogError($"Activation URI {protocolUriString} could not be parsed");
-				}
-			}
-
-			// arguments did not contain activation URI or it could not be parsed
-			return false;
 		}
 
 		internal static partial class NativeMethods
