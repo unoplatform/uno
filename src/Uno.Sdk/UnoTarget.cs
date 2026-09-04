@@ -12,7 +12,4 @@ internal static class UnoTarget
 	public const string iOS = "ios";
 	public const string tvOS = "tvos";
 	public const string SkiaDesktop = "desktop";
-
-	// Legacy
-	public const string SkiaLinuxFramebuffer = "skia-linux-fb";
 }

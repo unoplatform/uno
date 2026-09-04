@@ -21,8 +21,6 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public bool SdkDebugging { get; set; }
 
-	public bool SingleProject { get; set; }
-
 	[Required]
 	public string OutputType { get; set; } = null!;
 
@@ -37,11 +35,6 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 	public string TargetFramework { get; set; } = null!;
 
 	private string TargetFrameworkVersion = null!;
-
-	private string TargetRuntime = null!;
-
-	[Required]
-	public string ProjectName { get; set; } = null!;
 
 	public string? UnoExtensionsVersion { get; set; }
 
@@ -148,22 +141,9 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 	{
 		try
 		{
-			if (TargetFramework.Contains('-'))
-			{
-				var frameworkParts = TargetFramework.Split('-');
-				TargetFrameworkVersion = frameworkParts[0];
-				var runtime = frameworkParts[1].ToLowerInvariant();
-				TargetRuntime = runtime;
-			}
-			else
-			{
-				TargetFrameworkVersion = TargetFramework;
-				TargetRuntime = UnoTarget.Reference;
-				if (ProjectName.EndsWith("Skia.Linux.FrameBuffer", StringComparison.InvariantCultureIgnoreCase))
-				{
-					TargetRuntime = UnoTarget.SkiaLinuxFramebuffer;
-				}
-			}
+			TargetFrameworkVersion = TargetFramework.Contains('-')
+				? TargetFramework.Split('-')[0]
+				: TargetFramework;
 
 			_manifest = new PackageManifest(Log, TargetFrameworkVersion);
 			if (NuGetVersion.TryParse(_manifest.UnoVersion, out var unoVersion))

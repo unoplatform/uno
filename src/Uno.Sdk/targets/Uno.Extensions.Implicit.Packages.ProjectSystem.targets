@@ -70,7 +70,6 @@
 				AND $([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')) != ''
 				AND $([MSBuild]::VersionLessThan($([MSBuild]::GetTargetFrameworkVersion('$(TargetFramework)')), '11.0')) " />
 		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Graphics" ProjectSystem="true" />
-		<_UnoProjectSystemPackageReference Include="Microsoft.Maui.Controls.Build.Tasks" ProjectSystem="true" Condition="$(SingleProject) == 'true'"/>
 
 		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Navigation.UI" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
 		<_UnoProjectSystemPackageReference Include="Xamarin.AndroidX.Navigation.Fragment" ProjectSystem="true" Condition="$(IsAndroid) == 'true'" />
