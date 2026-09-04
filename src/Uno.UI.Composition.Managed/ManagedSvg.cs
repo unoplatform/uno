@@ -212,11 +212,14 @@ internal sealed class ManagedSvg : ISvgDocument
 	{
 		if (gradientRef is { } reference && ResolveGradient(reference, gradientBounds, alpha) is { } shader)
 		{
-			var save = session.SaveCount;
-			session.Save();
-			session.ClipPath(clip, ClipOperation.Intersect);
-			session.DrawRect(clip.Bounds, shader);
-			session.RestoreToCount(save);
+			using (shader)
+			{
+				var save = session.SaveCount;
+				session.Save();
+				session.ClipPath(clip, ClipOperation.Intersect);
+				session.DrawRect(clip.Bounds, shader);
+				session.RestoreToCount(save);
+			}
 		}
 		else
 		{

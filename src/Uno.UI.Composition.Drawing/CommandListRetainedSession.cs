@@ -176,7 +176,8 @@ internal sealed class CommandListRecorder : ICommandRecorder
 
 	public void SaveLayer(IColorFilter colorFilter)
 	{
-		_commands.Add(ctx => ctx.Target.SaveLayer(colorFilter));
+		var cf = Retain(colorFilter);
+		_commands.Add(ctx => ctx.Target.SaveLayer(cf));
 		Push();
 		_depth++;
 	}
@@ -190,7 +191,8 @@ internal sealed class CommandListRecorder : ICommandRecorder
 
 	public void SaveLayer(IEffectFilter filter)
 	{
-		_commands.Add(ctx => ctx.Target.SaveLayer(filter));
+		var f = Retain(filter);
+		_commands.Add(ctx => ctx.Target.SaveLayer(f));
 		Push();
 		_depth++;
 	}
@@ -225,7 +227,8 @@ internal sealed class CommandListRecorder : ICommandRecorder
 	public void DrawRect(in Rect rect, IShader shader)
 	{
 		var r = rect;
-		_commands.Add(ctx => ctx.Target.DrawRect(r, shader));
+		var s = Retain(shader);
+		_commands.Add(ctx => ctx.Target.DrawRect(r, s));
 	}
 
 	public void DrawRoundedRect(in Rect rect, Vector4 radii, Color color)
@@ -282,24 +285,36 @@ internal sealed class CommandListRecorder : ICommandRecorder
 		=> _commands.Add(ctx => ctx.Target.DrawLine(p0, p1, color, strokeWidth));
 
 	public void DrawImage(ITexture texture, float x, float y, float opacity = 1f)
-		=> _commands.Add(ctx => ctx.Target.DrawImage(texture, x, y, opacity));
+	{
+		var tex = Retain(texture);
+		_commands.Add(ctx => ctx.Target.DrawImage(tex, x, y, opacity));
+	}
 
 	public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter)
-		=> _commands.Add(ctx => ctx.Target.DrawImage(texture, x, y, colorFilter));
+	{
+		var tex = Retain(texture);
+		var cf = Retain(colorFilter);
+		_commands.Add(ctx => ctx.Target.DrawImage(tex, x, y, cf));
+	}
 
 	public void DrawImageTiled(ITexture texture, in Rect destination, EdgeExtend extendX, EdgeExtend extendY, float opacity = 1f)
 	{
 		var d = destination;
-		_commands.Add(ctx => ctx.Target.DrawImageTiled(texture, d, extendX, extendY, opacity));
+		var tex = Retain(texture);
+		_commands.Add(ctx => ctx.Target.DrawImageTiled(tex, d, extendX, extendY, opacity));
 	}
 
 	public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow)
 	{
 		var c = centerSlice;
 		var d = destination;
-		_commands.Add(ctx => ctx.Target.DrawImageNineSlice(texture, c, d, centerHollow));
+		var tex = Retain(texture);
+		_commands.Add(ctx => ctx.Target.DrawImageNineSlice(tex, c, d, centerHollow));
 	}
 
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity)
-		=> _commands.Add(ctx => ctx.Target.DrawEffectBackdrop(filter, opacity));
+	{
+		var f = Retain(filter);
+		_commands.Add(ctx => ctx.Target.DrawEffectBackdrop(f, opacity));
+	}
 }
