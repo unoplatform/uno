@@ -67,6 +67,23 @@ If your target framework is Android 12, you must also add `Exported = true` to t
 
 `CategoryDefault` is required (must be included for all implicit intents) and `CategoryBrowsable` is optional (allows opening the custom URI from the browser).
 
+> [!IMPORTANT]
+> The activity must also declare a `LaunchMode` that reuses the running instance:
+>
+> ```csharp
+> [Activity(
+>     Exported = true,
+>     MainLauncher = true,
+>     LaunchMode = Android.Content.PM.LaunchMode.SingleTask)]
+> ```
+>
+> Android's default `standard` launch mode creates a **new** activity instance for every incoming
+> intent. A deep link arriving while your app is running therefore stacks a second instance on top of
+> the first, and because the app's window belongs to the first one, the second shows nothing — the app
+> appears to go black, with no error. `SingleTask` (or `SingleTop`) delivers the intent to the existing
+> instance through `OnNewIntent` instead, which is also what lets the activation reach
+> `AppInstance.Activated` while the app is running.
+
 ### WebAssembly
 
 The WebAssembly implementation uses the [`Navigator.registerProtocolHandler` API](https://developer.mozilla.org/en-US/docs/Web/API/Navigator/registerProtocolHandler).
