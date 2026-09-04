@@ -22,15 +22,13 @@ public abstract class DrawingResource : IDrawingResource
 		if (Interlocked.Decrement(ref _refCount) == 0)
 		{
 			Free();
-			// A backend whose handles would otherwise be stranded by a missed Release keeps a finalizer as the
-			// backstop; releasing properly is the common path, so take it back off the finalization queue here.
+			// Released properly, so the backends that keep a finalizer as a backstop no longer need theirs.
 			GC.SuppressFinalize(this);
 		}
 	}
 
-	// Drops the creation reference, once. Aliasing this straight onto Release would break the idempotence
-	// IDisposable promises: a second Dispose would decrement a second time and free the resource while a recording
-	// still referenced it.
+	// Drops the creation reference, once: aliased straight onto Release, a second Dispose would decrement again and
+	// free the resource while a recording still referenced it.
 	public void Dispose()
 	{
 		if (Interlocked.Exchange(ref _creatorDone, 1) == 0)

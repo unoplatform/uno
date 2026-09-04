@@ -25,9 +25,8 @@ internal sealed class ReplayContext
 internal sealed class CommandList : IRenderRecord
 {
 	private List<Action<ReplayContext>>? _commands;
-	// References this recording holds on the resources its verbs captured. A closure captures a reference where a
-	// native display list would have copied, so the recording must keep them alive until it is itself disposed —
-	// the composition may drop its own reference as soon as the draw call returns.
+	// A closure captures a reference where a native display list would have copied, so this recording holds one on
+	// everything its verbs captured: the composition may drop its own as soon as the draw call returns.
 	private List<IDrawingResource>? _retained;
 
 	internal CommandList(List<Action<ReplayContext>> commands, List<IDrawingResource>? retained)

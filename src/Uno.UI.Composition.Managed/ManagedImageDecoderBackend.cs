@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Runtime.InteropServices;
 using Windows.Graphics.Imaging;
 
 namespace Uno.UI.Composition.Drawing;
@@ -36,7 +37,7 @@ public sealed class ManagedImageDecoderBackend : IImageEncoderDecoder
 	}
 
 	public IImage CreateImage(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul)
-		=> new ManagedImage(pixelWidth, pixelHeight, bgraPremul.ToArray());
+		=> new ManagedImage(pixelWidth, pixelHeight, bgraPremul);
 
 	public ImageFrames CreateFrames(IImage image)
 		=> new(new[] { image }, DecodedImage.SingleFrameDurations);
@@ -58,15 +59,21 @@ public sealed class ManagedImageDecoderBackend : IImageEncoderDecoder
 }
 
 /// <summary>A managed, byte[]-backed <see cref="IImage"/>. Pixels are BGRA8888 premultiplied, tightly packed.</summary>
-internal sealed class ManagedImage : DrawingResource, IImage
+internal sealed unsafe class ManagedImage : DrawingResource, IImage
 {
-	private readonly byte[] _bgraPremul;
+	private IntPtr _bgraPremul;
+	private readonly int _length;
 
-	public ManagedImage(int pixelWidth, int pixelHeight, byte[] bgraPremul)
+	// The decoder hands over a managed array it allocated per frame; copy it into a buffer this image owns so the
+	// array can be collected straight away instead of being pinned on the large-object heap for the image's whole
+	// lifetime. Retained big arrays are the ones that fragment.
+	public ManagedImage(int pixelWidth, int pixelHeight, ReadOnlySpan<byte> bgraPremul)
 	{
 		PixelWidth = pixelWidth;
 		PixelHeight = pixelHeight;
-		_bgraPremul = bgraPremul;
+		_length = bgraPremul.Length;
+		_bgraPremul = (IntPtr)NativeMemory.Alloc((nuint)Math.Max(1, _length));
+		bgraPremul.CopyTo(new Span<byte>((void*)_bgraPremul, _length));
 	}
 
 	public int PixelWidth { get; }
@@ -74,8 +81,16 @@ internal sealed class ManagedImage : DrawingResource, IImage
 	public int PixelHeight { get; }
 
 	public void CopyPixels(Span<byte> destination)
-		=> _bgraPremul.AsSpan(0, Math.Min(_bgraPremul.Length, destination.Length)).CopyTo(destination);
+		=> new ReadOnlySpan<byte>((void*)_bgraPremul, _length)
+			.Slice(0, Math.Min(_length, destination.Length))
+			.CopyTo(destination);
 
-	// Managed pixels only; the GC reclaims them.
-	protected override void Free() { }
+	protected override void Free()
+	{
+		var buffer = System.Threading.Interlocked.Exchange(ref _bgraPremul, IntPtr.Zero);
+		if (buffer != IntPtr.Zero) { NativeMemory.Free((void*)buffer); }
+	}
+
+	// Unmanaged, so a missed Release would lose the buffer rather than leave it to the GC.
+	~ManagedImage() => Free();
 }
