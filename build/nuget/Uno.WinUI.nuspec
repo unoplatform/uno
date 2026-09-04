@@ -38,26 +38,29 @@
 				$(HarfbuzzSharpVersion) in src/Directory.Build.targets whenever those are bumped.
 			-->
 
+			<!--
+				The Uno.* versions below are placeholders: PrepareNuGetPackage (build/Uno.UI.Build.csproj)
+				rewrites them to $(NBGV_SemVer2) at pack time. "to-be-set-by-ci" is deliberate -- it fails
+				the pack loudly if that substitution ever stops matching, where a plausible literal would
+				silently ship a wrong floor. Non-Uno versions ship verbatim and are maintained by hand.
+			-->
+
 			<!-- .NET 10 -->
 			<group targetFramework="net10.0">
-				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
-				<dependency id="System.Numerics.Vectors" version="4.5.0" />
-				<dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.3.0" />
-				<dependency id="System.Memory" version="4.5.2" />
+				<dependency id="Uno.Foundation.Logging" version="to-be-set-by-ci" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
-				<dependency id="System.Collections.Immutable" version="1.3.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.6.1" />
-				<dependency id="Uno.WinRT" version="2.4.5" />
+				<dependency id="Uno.WinRT" version="to-be-set-by-ci" />
 				<dependency id="SkiaSharp" version="4.151.1" />
 				<dependency id="HarfBuzzSharp" version="14.2.1.1" />
 			</group>
 
 			<!-- .NET 11 -->
 			<group targetFramework="net11.0">
-				<dependency id="Uno.Foundation.Logging" version="0.0.0" />
+				<dependency id="Uno.Foundation.Logging" version="to-be-set-by-ci" />
 				<dependency id="Uno.Diagnostics.Eventing" version="2.0.1" />
 				<dependency id="Uno.Fonts.Fluent" version="2.6.1" />
-				<dependency id="Uno.WinRT" version="2.4.5" />
+				<dependency id="Uno.WinRT" version="to-be-set-by-ci" />
 				<dependency id="SkiaSharp" version="4.151.1" />
 				<dependency id="HarfBuzzSharp" version="14.2.1.1" />
 			</group>
