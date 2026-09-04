@@ -506,6 +506,17 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 		return new WebGpuTexture(_device, tex, view, w, h);
 	}
 
+	private WebGpuTexture Blur(WebGpuTexture src, float sigma)
+	{
+		int w = src.PixelWidth, h = src.PixelHeight;
+		var surface = new WebGpuRenderSurface(_device, w, h);
+		var present = new WebGpuPresentSession(_device, surface, this);
+		present.BlurInto(src, sigma, sigma);
+		var (tex, view) = surface.DetachColor();
+		surface.Dispose();
+		return new WebGpuTexture(_device, tex, view, w, h);
+	}
+
 	// Contrast / GammaTransfer: a per-channel function of one input.
 	private ITexture RunColorFunc(WebGpuTexture src, float[] u20)
 	{
@@ -607,17 +618,24 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 			}
 			case BlurEffectNode b:
 			{
-				// ClampEdge is always on in effect: the pyramid samples through a ClampToEdge sampler, so the soft
-				// border smears the edge texel instead of fading to transparent. Declining that mode would drop the
-				// blur altogether (the recipe fallback has none), so the clamp stands as the approximation.
 				if (TryEvaluateTree(b.Source, bounds) is not WebGpuTexture src || b.Sigma <= 0f) { return TryEvaluateTree(b.Source, bounds); }
 				int w = src.PixelWidth, h = src.PixelHeight;
-				var surface = new WebGpuRenderSurface(_device, w, h);
-				var present = new WebGpuPresentSession(_device, surface, this);
-				present.BlurInto(src, b.Sigma, b.Sigma);
-				var (tex, view) = surface.DetachColor();
-				surface.Dispose();
-				return new WebGpuTexture(_device, tex, view, w, h);
+				// A soft border — D2D's default — fades to transparent past the source edge, but the pyramid samples
+				// clamp-to-edge and would smear the edge texel outwards instead. Pad the source so the clamp has
+				// transparency to read, then crop the fade back to the source rect the way Skia crops to bounds.
+				// The pyramid itself is shared with the per-frame acrylic backdrop, which does want the clamp.
+				var margin = b.ClampEdge ? 0 : Math.Min(256, (int)MathF.Ceiling(b.Sigma * 3f));
+				if (margin == 0)
+				{
+					return Blur(src, b.Sigma);
+				}
+
+				var padded = (WebGpuTexture)RenderOffscreen(w + (2 * margin), h + (2 * margin), s => s.DrawImage(src, margin, margin));
+				var blurred = Blur(padded, b.Sigma);
+				padded.Dispose();
+				var cropped = RenderOffscreen(w, h, s => s.DrawImage(blurred, -margin, -margin));
+				blurred.Dispose();
+				return cropped;
 			}
 			case UnsupportedEffectNode u:
 				return u.Source is null ? null : TryEvaluateTree(u.Source, bounds);
