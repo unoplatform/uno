@@ -3489,6 +3489,20 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_SizeChanged(Microsoft.UI.Xaml.WindowSizeChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.add_VisibilityChanged(Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_VisibilityChanged(Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+
+		  <!-- Application.OnActivated removed: WinUI declares it only behind Feature_UwpSupportApi, and a WinAppSDK app reads its activation from Microsoft.Windows.AppLifecycle.AppInstance instead. OnLaunched keeps its signature but loses the Uno-only `internal` half of its accessibility, listed in case the diff reports that as a removal. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.OnActivated(Windows.ApplicationModel.Activation.IActivatedEventArgs args)" reason="Removed Application.OnActivated; activations are read from AppInstance to match WinAppSDK (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)" reason="Application.OnLaunched narrowed from Uno's protected internal to WinUI's protected (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- Application.Suspending/Resuming/EnteredBackground/LeavingBackground moved to CoreApplication, which carries the same events in the public WinAppSDK surface (events listed in <Events>). -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.add_Suspending(Microsoft.UI.Xaml.SuspendingEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.remove_Suspending(Microsoft.UI.Xaml.SuspendingEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.add_Resuming(System.EventHandler`1&lt;System.Object&gt; value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.remove_Resuming(System.EventHandler`1&lt;System.Object&gt; value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.add_EnteredBackground(Microsoft.UI.Xaml.EnteredBackgroundEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.remove_EnteredBackground(Microsoft.UI.Xaml.EnteredBackgroundEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.add_LeavingBackground(Microsoft.UI.Xaml.LeavingBackgroundEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.remove_LeavingBackground(Microsoft.UI.Xaml.LeavingBackgroundEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
 	  </Methods>
 	  <Events>
 		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->
@@ -3496,6 +3510,12 @@
 		  <Member fullName="Microsoft.UI.Xaml.WindowActivatedEventHandler Microsoft.UI.Xaml.Window::Activated" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.WindowSizeChangedEventHandler Microsoft.UI.Xaml.Window::SizeChanged" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler Microsoft.UI.Xaml.Window::VisibilityChanged" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+
+		  <!-- App lifecycle events moved to CoreApplication (accessors paired in <Methods>). -->
+		  <Member fullName="Microsoft.UI.Xaml.SuspendingEventHandler Microsoft.UI.Xaml.Application::Suspending" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.EventHandler`1&lt;System.Object&gt; Microsoft.UI.Xaml.Application::Resuming" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.EnteredBackgroundEventHandler Microsoft.UI.Xaml.Application::EnteredBackground" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.LeavingBackgroundEventHandler Microsoft.UI.Xaml.Application::LeavingBackground" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
 
 		  <!-- ====================================================================== -->
 		  <!-- BEGIN WinUI sync (Category B): shadow event removals.                  -->
@@ -4917,6 +4937,20 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_SizeChanged(Microsoft.UI.Xaml.WindowSizeChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.add_VisibilityChanged(Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_VisibilityChanged(Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+
+		  <!-- Application.OnActivated removed: WinUI declares it only behind Feature_UwpSupportApi, and a WinAppSDK app reads its activation from Microsoft.Windows.AppLifecycle.AppInstance instead. OnLaunched keeps its signature but loses the Uno-only `internal` half of its accessibility, listed in case the diff reports that as a removal. -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.OnActivated(Windows.ApplicationModel.Activation.IActivatedEventArgs args)" reason="Removed Application.OnActivated; activations are read from AppInstance to match WinAppSDK (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)" reason="Application.OnLaunched narrowed from Uno's protected internal to WinUI's protected (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- Application.Suspending/Resuming/EnteredBackground/LeavingBackground moved to CoreApplication, which carries the same events in the public WinAppSDK surface (events listed in <Events>). -->
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.add_Suspending(Microsoft.UI.Xaml.SuspendingEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.remove_Suspending(Microsoft.UI.Xaml.SuspendingEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.add_Resuming(System.EventHandler`1&lt;System.Object&gt; value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.remove_Resuming(System.EventHandler`1&lt;System.Object&gt; value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.add_EnteredBackground(Microsoft.UI.Xaml.EnteredBackgroundEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.remove_EnteredBackground(Microsoft.UI.Xaml.EnteredBackgroundEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.add_LeavingBackground(Microsoft.UI.Xaml.LeavingBackgroundEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Application.remove_LeavingBackground(Microsoft.UI.Xaml.LeavingBackgroundEventHandler value)" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
 	  </Methods>
 	  <Events>
 		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->
@@ -4924,6 +4958,12 @@
 		  <Member fullName="Microsoft.UI.Xaml.WindowActivatedEventHandler Microsoft.UI.Xaml.Window::Activated" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.WindowSizeChangedEventHandler Microsoft.UI.Xaml.Window::SizeChanged" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler Microsoft.UI.Xaml.Window::VisibilityChanged" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+
+		  <!-- App lifecycle events moved to CoreApplication (accessors paired in <Methods>). -->
+		  <Member fullName="Microsoft.UI.Xaml.SuspendingEventHandler Microsoft.UI.Xaml.Application::Suspending" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.EventHandler`1&lt;System.Object&gt; Microsoft.UI.Xaml.Application::Resuming" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.EnteredBackgroundEventHandler Microsoft.UI.Xaml.Application::EnteredBackground" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.LeavingBackgroundEventHandler Microsoft.UI.Xaml.Application::LeavingBackground" reason="Moved the app lifecycle events to CoreApplication; WinUI declares them only behind Feature_UwpSupportApi (breaking changes for 7.0, uno#8339)" />
 
 		  <!-- ====================================================================== -->
 		  <!-- BEGIN WinUI sync (Category B): shadow event removals.                  -->

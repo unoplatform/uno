@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -24,7 +25,7 @@ namespace MyAppXamlTrim
 			this.InitializeComponent();
 
 #if HAS_UNO || NETFX_CORE
-			this.Suspending += OnSuspending;
+			CoreApplication.Suspending += OnSuspending;
 #endif
 		}
 
