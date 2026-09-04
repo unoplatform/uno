@@ -31,7 +31,9 @@ public interface IGeometry : IDrawingResource
 	/// <summary>Whether the filled interior of the geometry contains <paramref name="point"/>.</summary>
 	bool FillContains(Vector2 point);
 
-	/// <summary>Returns a new geometry with <paramref name="matrix"/> baked in.</summary>
+	/// <summary>Returns a geometry with <paramref name="matrix"/> baked in, as a reference the caller owns and must
+	/// release. An implementation may hand back a shared instance for an identity matrix, so this is not
+	/// necessarily a new object — only necessarily a new reference.</summary>
 	IGeometry Transform(Matrix3x2 matrix);
 
 	/// <summary>Returns a new geometry combining this one and <paramref name="other"/> per <paramref name="mode"/>.</summary>
