@@ -783,15 +783,25 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		if (GetPrePaintingClipping() is { } pre)
 		{
 			// The local clip is in local coordinates. We need to transform it to root coordinates.
-			dst = dst.Combine(pre.Transform(totalMatrix), GeometryCombineMode.Intersect);
+			dst = Intersect(dst, pre, totalMatrix);
 		}
 
 		if (!skipPostPaintingClipping && GetPostPaintingClipping() is { } postClip)
 		{
-			dst = dst.Combine(postClip.Transform(totalMatrix), GeometryCombineMode.Intersect);
+			dst = Intersect(dst, postClip, totalMatrix);
 		}
 
 		return dst;
+
+		// Every step here mints geometry — the transform of the clip, and the combination itself — so release the
+		// operands rather than walking the tree leaving one abandoned per level per query.
+		static IGeometry Intersect(IGeometry dst, IGeometry clip, Matrix3x2 matrix)
+		{
+			using var transformed = clip.Transform(matrix);
+			var combined = dst.Combine(transformed, GeometryCombineMode.Intersect);
+			dst.Dispose();
+			return combined;
+		}
 	}
 
 	/// <summary>
@@ -803,7 +813,10 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	internal Rect GetTotalClipRectInRootCoordinates()
 		// skipPostPaintingClipping: true — a visual's own post-painting clip only affects its children,
 		// not the visual itself. Ancestor post-painting clips are still applied via the parent recursion.
-		=> GetTotalClipPath(skipPostPaintingClipping: true).Bounds;
+	{
+		using var clip = GetTotalClipPath(skipPostPaintingClipping: true);
+		return clip.Bounds;
+	}
 
 	/// <summary>
 	/// Draws the content of this visual.

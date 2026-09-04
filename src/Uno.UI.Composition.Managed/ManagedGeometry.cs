@@ -132,9 +132,11 @@ internal sealed partial class ManagedGeometry : DrawingResource, IGeometry, IGeo
 	public IGeometry Transform(Matrix3x2 matrix)
 	{
 		// Nothing to bake in, and this type is immutable, so the instance can be shared — which also keeps any
-		// cache keyed on geometry identity intact.
+		// cache keyed on geometry identity intact. Still hand back a reference of its own: every other path returns
+		// a new geometry, and a caller that disposed this one would otherwise be freeing its own input.
 		if (matrix.IsIdentity)
 		{
+			AddRef();
 			return this;
 		}
 
