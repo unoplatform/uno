@@ -855,7 +855,10 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 14. Replace every `Application.OnActivated` override with `AppInstance.GetCurrent().GetActivatedEventArgs()`
    read from `OnLaunched`, plus an `AppInstance.GetCurrent().Activated` handler for activations that
    arrive while the app runs.
-15. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+15. Move `Suspending`, `Resuming`, `EnteredBackground` and `LeavingBackground` subscriptions from
+   `Application` to `CoreApplication`, and save state from `Window.Closed` on desktop, where
+   suspension is no longer reported.
+16. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)
