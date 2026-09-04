@@ -13,23 +13,28 @@ namespace Uno.UI.RuntimeTests.Tests.AssemblyLoadContext;
 /// <summary>
 /// TEMPORARY MEASUREMENT INSTRUMENT — DELETE BEFORE MERGE.
 ///
-/// Establishes, per platform, which collectible-<see cref="System.Runtime.Loader.AssemblyLoadContext"/>
-/// shapes are actually available, because the answer decides how the real tests can be written and
-/// the repo does not record it anywhere:
+/// Establishes, per platform, how a collectible
+/// <see cref="System.Runtime.Loader.AssemblyLoadContext"/> actually behaves, because the
+/// reproduction's design depends on it and the repo does not record it.
 ///
-/// <list type="bullet">
-///   <item>the real-assembly path is Skia-desktop-only — <c>AlcApp</c> is built by shelling out to
-///   <c>dotnet build</c> at test time and loaded with <c>LoadFromAssemblyPath</c>, and
-///   <c>Given_HotReloadClientOperation_Alc</c> records that <c>Assembly.Location</c> is empty on
-///   WASM;</item>
-///   <item>the emit path (<c>AssemblyBuilderAccess.RunAndCollect</c>) is guarded on
-///   <see cref="RuntimeFeature.IsDynamicCodeSupported"/> throughout the repo, but nothing states
-///   its value on the WASM interpreter leg.</item>
+/// The first pass established: emit works on both legs (WASM reports
+/// <c>IsDynamicCodeSupported=True, IsDynamicCodeCompiled=False</c>), <c>Assembly.Location</c> is
+/// empty on WASM so <c>LoadFromAssemblyPath</c> is unavailable there, an EMPTY collectible ALC dies
+/// in 1 collect round on desktop but survived 10 on WASM, and <c>HEAPU8</c> did not move across 5
+/// tiny emit/unload cycles.
+///
+/// This pass characterises the two open questions that first pass raised:
+/// <list type="number">
+///   <item>Does the WASM ALC die at ANY round count, and is its survival merely Mono's conservative
+///   stack scan seeing a stale slot? Hence many more rounds, with deliberate stack churn between
+///   them to overwrite the staging frame's slots.</item>
+///   <item>Does the linear heap move at all once the collectible payload is substantial rather than
+///   a single empty type? Hence a many-type/many-method payload over more cycles, sampling both the
+///   linear heap and the managed heap so "managed grew" is distinguishable from "linear grew".</item>
 /// </list>
 ///
-/// This asserts nothing. It writes findings to the console so they can be read out of the CI job
-/// log for each leg. Console output reaches the log on WASM through Chrome's
-/// <c>--enable-logging=stderr</c>.
+/// Asserts nothing. Writes findings to the console, which reaches the CI job log on WASM through
+/// Chrome's <c>--enable-logging=stderr</c>.
 /// </summary>
 [TestClass]
 [PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaWasm)]
@@ -37,21 +42,34 @@ public class Given_CollectibleAlc_Probe
 {
 	private const string Tag = "[ALC-PROBE]";
 
-	/// <summary>Cycles to sample for the memory series. Small: this is a probe, not the measurement.</summary>
-	private const int MemoryProbeCycles = 5;
+	/// <summary>Upper bound on collect rounds before declaring a context un-reclaimed.</summary>
+	private const int MaxCollectRounds = 200;
+
+	/// <summary>Cycles for the memory series.</summary>
+	private const int MemoryProbeCycles = 25;
+
+	/// <summary>Shape of the substantial payload: types per emitted assembly, methods per type.</summary>
+	private const int PayloadTypes = 40;
+	private const int PayloadMethodsPerType = 10;
 
 	[TestMethod]
-	[Timeout(300_000)]
+	[Timeout(900_000)]
 	public void Probe_ReportsCollectibleAlcCapabilities()
 	{
 		Report($"platform={RuntimeTestsPlatformHelper.CurrentPlatform} isBrowser={OperatingSystem.IsBrowser()}");
 		Report($"runtime={RuntimeInformation()}");
+		Report($"IsDynamicCodeSupported={RuntimeFeature.IsDynamicCodeSupported} IsDynamicCodeCompiled={RuntimeFeature.IsDynamicCodeCompiled}");
+		Report($"maxCollectRounds={MaxCollectRounds} memoryCycles={MemoryProbeCycles} payload={PayloadTypes}x{PayloadMethodsPerType}");
 
-		ReportDynamicCodeSupport();
-		ReportEmitCollectibility();
 		ReportAssemblyLocationAvailability();
-		ReportEmptyAlcCollection();
-		ReportMemoryReadPaths();
+
+		// Question 1: does an unloaded collectible ALC ever die on this leg, with the staging frame's
+		// stack slots deliberately overwritten between rounds?
+		ReportCollection("emptyAlc", static () => CreateAndUnloadEmptyAlc());
+		ReportCollection("emitTinyAssembly", static () => EmitTinyCollectibleAssemblyAndTrack());
+		ReportCollection("emitPayloadAssembly", static () => EmitPayloadCollectibleAssemblyAndTrack());
+
+		// Question 2: does either heap move with a substantial collectible payload?
 		ReportMemorySeries();
 
 		Report("done");
@@ -60,88 +78,86 @@ public class Given_CollectibleAlc_Probe
 	private static string RuntimeInformation()
 		=> $"{System.Runtime.InteropServices.RuntimeInformation.FrameworkDescription} / {System.Runtime.InteropServices.RuntimeInformation.RuntimeIdentifier}";
 
-	private static void ReportDynamicCodeSupport()
-		=> Report($"IsDynamicCodeSupported={RuntimeFeature.IsDynamicCodeSupported} IsDynamicCodeCompiled={RuntimeFeature.IsDynamicCodeCompiled}");
-
 	/// <summary>
-	/// The decisive question for the managed test: can a collectible assembly be produced at all on
-	/// this leg? Reports the exception rather than letting it escape, since a throw here is itself
-	/// the finding.
-	/// </summary>
-	private static void ReportEmitCollectibility()
-	{
-		try
-		{
-			var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
-				new AssemblyName("AlcProbeEmit"),
-				AssemblyBuilderAccess.RunAndCollect);
-
-			var probeType = assemblyBuilder
-				.DefineDynamicModule("main")
-				.DefineType("ProbeType", TypeAttributes.Public)
-				.CreateType()!;
-
-			var instance = Activator.CreateInstance(probeType);
-
-			Report($"emit=ok isCollectible={probeType.Assembly.IsCollectible} instantiated={instance is not null}");
-		}
-		catch (Exception error)
-		{
-			Report($"emit=FAILED {error.GetType().Name}: {error.Message}");
-		}
-	}
-
-	/// <summary>
-	/// The other candidate substrate: loading real bytes. Reports whether this assembly even has a
-	/// location to load from (expected empty on WASM), which is what rules the
-	/// <c>LoadFromAssemblyPath</c> shape in or out.
+	/// Confirms whether real bytes are loadable at all on this leg — the alternative substrate to
+	/// emit, and the one WASM rules out.
 	/// </summary>
 	private static void ReportAssemblyLocationAvailability()
 	{
-		var assembly = typeof(Given_CollectibleAlc_Probe).Assembly;
-		var location = assembly.Location;
-
+		var location = typeof(Given_CollectibleAlc_Probe).Assembly.Location;
 		Report($"assemblyLocation='{location}' isEmpty={string.IsNullOrEmpty(location)}");
-
-		if (string.IsNullOrEmpty(location))
-		{
-			return;
-		}
-
-		try
-		{
-			var alc = new System.Runtime.Loader.AssemblyLoadContext("AlcProbeLoad", isCollectible: true);
-			try
-			{
-				var loaded = alc.LoadFromAssemblyPath(location);
-				Report($"loadFromAssemblyPath=ok isCollectible={loaded.IsCollectible}");
-			}
-			finally
-			{
-				alc.Unload();
-			}
-		}
-		catch (Exception error)
-		{
-			Report($"loadFromAssemblyPath=FAILED {error.GetType().Name}: {error.Message}");
-		}
 	}
 
 	/// <summary>
-	/// Baseline for the managed assertion: does a collectible ALC with NOTHING loaded into it die
-	/// after Unload within the bounded loop this repo uses elsewhere? If even this does not die on a
-	/// leg, a WeakReference-based assertion cannot be written there at all.
+	/// Runs the staging factory, then collects with stack churn between rounds, reporting the round
+	/// at which the tracked object died or that it never did.
 	/// </summary>
-	private static void ReportEmptyAlcCollection()
+	private static void ReportCollection(string label, Func<WeakReference> stage)
 	{
-		var tracker = CreateAndUnloadEmptyAlc();
-		var collected = TryWaitUntilCollected(tracker, out var iterations);
+		WeakReference tracker;
+		try
+		{
+			tracker = stage();
+		}
+		catch (Exception error)
+		{
+			Report($"{label}: STAGING FAILED {error.GetType().Name}: {error.Message}");
+			return;
+		}
 
-		Report($"emptyAlcCollected={collected} iterations={iterations}");
+		var deadAtRound = -1;
+		for (var round = 1; round <= MaxCollectRounds; round++)
+		{
+			// Overwrite the staging frame's stack slots before collecting. Mono's interpreter scans
+			// the stack conservatively, so a stale slot still referencing the context would look
+			// exactly like a real pin — this is what separates the two.
+			ChurnStack(depth: 96);
+
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
+			GC.Collect();
+
+			if (!tracker.IsAlive)
+			{
+				deadAtRound = round;
+				break;
+			}
+		}
+
+		Report(deadAtRound > 0
+			? $"{label}: collected=True atRound={deadAtRound}"
+			: $"{label}: collected=False afterRounds={MaxCollectRounds}");
 	}
 
-	// Separate non-inlined frame so no local in the frame that runs the GC keeps the context alive;
-	// Debug codegen extends local lifetimes to the end of the method.
+	/// <summary>
+	/// Recurses with live object locals so the stack region the staging frame used is definitively
+	/// overwritten, then lets it all become garbage.
+	/// </summary>
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static object? ChurnStack(int depth)
+	{
+		if (depth <= 0)
+		{
+			return null;
+		}
+
+		var a = new object();
+		var b = new byte[64];
+		var c = new object();
+
+		var deeper = ChurnStack(depth - 1);
+
+		GC.KeepAlive(a);
+		GC.KeepAlive(b);
+		GC.KeepAlive(c);
+
+		return deeper ?? c;
+	}
+
+	// Every staging helper below lives in its own non-inlined frame and returns only a
+	// WeakReference: locals in the frame that later runs the GC keep their objects alive, and Debug
+	// codegen extends local lifetimes to the end of the method.
+
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static WeakReference CreateAndUnloadEmptyAlc()
 	{
@@ -151,32 +167,103 @@ public class Given_CollectibleAlc_Probe
 		return new WeakReference(alc);
 	}
 
-	private static bool TryWaitUntilCollected(WeakReference reference, out int iterations)
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static WeakReference EmitTinyCollectibleAssemblyAndTrack()
 	{
-		// Matches the sibling ALC fixtures: unloading is asynchronous and takes several collections
-		// to walk the graph, and a second collect after finalizers can release the last reference.
-		for (iterations = 0; iterations < 10 && reference.IsAlive; iterations++)
-		{
-			GC.Collect();
-			GC.WaitForPendingFinalizers();
-			GC.Collect();
-		}
+		var probeType = EmitCollectibleType("AlcProbeEmitTiny", types: 1, methodsPerType: 0);
 
-		return !reference.IsAlive;
+		Report($"  emitTinyAssembly: isCollectible={probeType.Assembly.IsCollectible}");
+
+		// Track the Assembly, whose lifetime is the collectible LoaderAllocator's lifetime.
+		return new WeakReference(probeType.Assembly);
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static WeakReference EmitPayloadCollectibleAssemblyAndTrack()
+	{
+		var probeType = EmitCollectibleType("AlcProbeEmitPayload", PayloadTypes, PayloadMethodsPerType);
+
+		Report($"  emitPayloadAssembly: isCollectible={probeType.Assembly.IsCollectible}");
+
+		return new WeakReference(probeType.Assembly);
 	}
 
 	/// <summary>
-	/// Reports the memory read the real test will use. Note it is NOT the same quantity on every
-	/// leg: <c>MemoryManager.AppMemoryUsage</c> is <c>Module.HEAPU8.length</c> on WASM
-	/// (<c>MemoryManager.wasm.cs</c>) but <c>GC.GetGCMemoryInfo().MemoryLoadBytes</c> on desktop
-	/// Skia (<c>MemoryManager.skia.cs</c>) — so no assertion may span both.
-	///
-	/// <c>WebAssemblyImports.EvalString("Module.HEAPU8.length")</c> is deliberately NOT used as a
-	/// cross-check: it needs <c>System.Runtime.InteropServices.JavaScript</c>, which the
-	/// Skia-flavoured test assembly does not target.
+	/// Emits a RunAndCollect assembly of the requested shape and returns its first type, having
+	/// instantiated it so the type is genuinely used rather than merely defined.
 	/// </summary>
-	private static void ReportMemoryReadPaths()
-		=> Report($"appMemoryUsage={ReadAppMemoryUsage()}");
+	private static Type EmitCollectibleType(string assemblyName, int types, int methodsPerType)
+	{
+		var module = AssemblyBuilder
+			.DefineDynamicAssembly(new AssemblyName(assemblyName), AssemblyBuilderAccess.RunAndCollect)
+			.DefineDynamicModule("main");
+
+		Type? first = null;
+		for (var t = 0; t < types; t++)
+		{
+			var typeBuilder = module.DefineType($"ProbeType{t}", TypeAttributes.Public);
+
+			for (var m = 0; m < methodsPerType; m++)
+			{
+				var methodBuilder = typeBuilder.DefineMethod(
+					$"Method{m}",
+					MethodAttributes.Public,
+					typeof(void),
+					Type.EmptyTypes);
+
+				methodBuilder.GetILGenerator().Emit(OpCodes.Ret);
+			}
+
+			var created = typeBuilder.CreateType()!;
+			first ??= created;
+
+			GC.KeepAlive(Activator.CreateInstance(created));
+		}
+
+		return first!;
+	}
+
+	/// <summary>
+	/// The series the native-reclamation test would assert on. Samples BOTH heaps after a settling
+	/// collect: <c>MemoryManager.AppMemoryUsage</c> is <c>Module.HEAPU8.length</c> on WASM
+	/// (<c>MemoryManager.wasm.cs</c>) but <c>GC.GetGCMemoryInfo().MemoryLoadBytes</c> on desktop
+	/// Skia (<c>MemoryManager.skia.cs</c>), so it is reported per leg and never compared across
+	/// them; <c>GC.GetTotalMemory</c> is the managed heap on both.
+	/// </summary>
+	private static void ReportMemorySeries()
+	{
+		if (!RuntimeFeature.IsDynamicCodeSupported)
+		{
+			Report("memorySeries=skipped (no dynamic code support)");
+			return;
+		}
+
+		Report($"memorySeries start appMemoryUsage={ReadAppMemoryUsage()} managedHeap={GC.GetTotalMemory(false)}");
+
+		for (var cycle = 1; cycle <= MemoryProbeCycles; cycle++)
+		{
+			try
+			{
+				EmitAndDropPayloadAssembly();
+			}
+			catch (Exception error)
+			{
+				Report($"memorySeries ABORTED at cycle {cycle}: {error.GetType().Name}: {error.Message}");
+				return;
+			}
+
+			ChurnStack(depth: 96);
+			GC.Collect();
+			GC.WaitForPendingFinalizers();
+			GC.Collect();
+
+			Report($"cycle={cycle} appMemoryUsage={ReadAppMemoryUsage()} managedHeap={GC.GetTotalMemory(false)}");
+		}
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static void EmitAndDropPayloadAssembly()
+		=> EmitCollectibleType("AlcProbeCycle", PayloadTypes, PayloadMethodsPerType);
 
 	private static string ReadAppMemoryUsage()
 	{
@@ -188,55 +275,6 @@ public class Given_CollectibleAlc_Probe
 		{
 			return $"FAILED {error.GetType().Name}: {error.Message}";
 		}
-	}
-
-	/// <summary>
-	/// The series the native-reclamation test would assert on. Emits and unloads a collectible
-	/// assembly per cycle and samples memory after a settling collect, so the real test's growth
-	/// floor can be derived from measurement rather than guessed from another application's numbers.
-	/// </summary>
-	private static void ReportMemorySeries()
-	{
-		if (!RuntimeFeature.IsDynamicCodeSupported)
-		{
-			Report("memorySeries=skipped (no dynamic code support, so no per-cycle collectible load)");
-			return;
-		}
-
-		for (var cycle = 1; cycle <= MemoryProbeCycles; cycle++)
-		{
-			try
-			{
-				EmitAndDropCollectibleAssembly();
-			}
-			catch (Exception error)
-			{
-				Report($"memorySeries=ABORTED at cycle {cycle}: {error.GetType().Name}: {error.Message}");
-				return;
-			}
-
-			GC.Collect();
-			GC.WaitForPendingFinalizers();
-			GC.Collect();
-
-			Report($"cycle={cycle} appMemoryUsage={ReadAppMemoryUsage()}");
-		}
-	}
-
-	[MethodImpl(MethodImplOptions.NoInlining)]
-	private static void EmitAndDropCollectibleAssembly()
-	{
-		var assemblyBuilder = AssemblyBuilder.DefineDynamicAssembly(
-			new AssemblyName("AlcProbeCycle"),
-			AssemblyBuilderAccess.RunAndCollect);
-
-		var probeType = assemblyBuilder
-			.DefineDynamicModule("main")
-			.DefineType("ProbeType", TypeAttributes.Public)
-			.CreateType()!;
-
-		// Instantiate so the type is genuinely used, not merely defined.
-		GC.KeepAlive(Activator.CreateInstance(probeType));
 	}
 
 	private static void Report(string message)
