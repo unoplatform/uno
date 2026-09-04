@@ -111,6 +111,7 @@ public static partial class CoreApplication
 	/// </summary>
 	internal static bool IsFullFledgedApp { get; set; } = true;
 <<<<<<< HEAD:src/Uno.UWP/ApplicationModel/Core/CoreApplication.cs
+<<<<<<< HEAD:src/Uno.UWP/ApplicationModel/Core/CoreApplication.cs
 
 	/// <summary>
 	/// Sets the invalidateRender and setContinuousRender callbacks for this layer.
@@ -141,4 +142,6 @@ public static partial class CoreApplication
 =======
 	public static bool WasLaunched { get; internal set; }
 >>>>>>> 753cb90e (chore: Cleanup):src/Uno.WinRT/ApplicationModel/Core/CoreApplication.cs
+=======
+>>>>>>> c82677c7 (feat!: Route all activations through AppInstance):src/Uno.WinRT/ApplicationModel/Core/CoreApplication.cs
 }

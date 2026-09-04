@@ -93,7 +93,9 @@ namespace SamplesApp
 			UnhandledException += App_UnhandledException;
 #endif
 
-			Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent().Activated += OnAppInstanceActivated;
+#if HAS_UNO
+			AppInstance.GetCurrent().Activated += OnAppInstanceActivated;
+#endif
 
 >>>>>>> b2e0caea (refactor: Propagate WasLaunched, adjust Samples app activation handling)
 			// Fix language for UI tests
@@ -183,6 +185,9 @@ namespace SamplesApp
 			ActivateMainWindow();
 
 			SetWindowTitle();
+#if HAS_UNO
+			ReportLaunchActivation();
+#endif
 			HandleLaunchArguments(e);
 
 			Console.WriteLine("Done loading " + sw.Elapsed);
@@ -289,17 +294,26 @@ namespace SamplesApp
 		}
 #endif
 
-#if !WINAPPSDK
-		protected override async void OnActivated(IActivatedEventArgs args)
+#if HAS_UNO
+		private void OnAppInstanceActivated(object? sender, AppActivationArguments args)
 		{
-			base.OnActivated(args);
+			// An activation delivered into the running app: the window already exists, so only the
+			// payload needs handling.
+			ReportActivation(args, "Application activated");
+		}
 
-			EnsureMainWindow();
-			InitializeFrame();
-			ActivateMainWindow();
+		/// <summary>
+		/// Reports the activation the app was started with, if any. Called from OnLaunched, which is
+		/// where a WinAppSDK-shaped app discovers how it was activated.
+		/// </summary>
+		private void ReportLaunchActivation()
+			=> ReportActivation(AppInstance.GetCurrent().GetActivatedEventArgs(), "Application launched");
 
-			if (args.Kind == ActivationKind.Protocol)
+		private async void ReportActivation(AppActivationArguments arguments, string title)
+		{
+			var detail = arguments.Kind switch
 			{
+<<<<<<< HEAD
 <<<<<<< HEAD
 				var protocolActivatedEventArgs = (ProtocolActivatedEventArgs)e;
 				var dlg = new MessageDialog(
@@ -314,31 +328,25 @@ namespace SamplesApp
 				var protocolActivatedEventArgs = (ProtocolActivatedEventArgs)args;
 				await ProcessProtocolActivation(protocolActivatedEventArgs);
 >>>>>>> b2e0caea (refactor: Propagate WasLaunched, adjust Samples app activation handling)
+=======
+				ExtendedActivationKind.Protocol when arguments.Data is ProtocolActivatedEventArgs protocolArgs =>
+					$"Uri - {protocolArgs.Uri}, PreviousState - {protocolArgs.PreviousExecutionState}",
+				ExtendedActivationKind.Launch when arguments.Data is global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs launchArgs =>
+					$"Arguments - {launchArgs.Arguments}",
+				_ => arguments.Data?.GetType().Name ?? "(no data)",
+			};
+
+			Console.WriteLine($"{title}: Kind - {arguments.Kind}, {detail}");
+
+			// Launch is the ordinary startup path and would pop a dialog on every run.
+			if (arguments.Kind != ExtendedActivationKind.Launch &&
+				ApiInformation.IsMethodPresent("Windows.UI.Popups.MessageDialog, Uno", nameof(MessageDialog.ShowAsync)))
+			{
+				await new MessageDialog($"Kind - {arguments.Kind}, {detail}", title).ShowAsync();
+>>>>>>> c82677c7 (feat!: Route all activations through AppInstance)
 			}
 		}
 #endif
-
-		private void OnAppInstanceActivated(object? sender, AppActivationArguments args) => ProcessAppActivationArguments(args);
-
-		private async void ProcessAppActivationArguments(AppActivationArguments arguments)
-		{
-			if (arguments.Kind == ExtendedActivationKind.Protocol)
-			{
-				var protocolActivatedEventArgs = (ProtocolActivatedEventArgs)arguments.Data;
-				await ProcessProtocolActivation(protocolActivatedEventArgs);
-			}
-			else if (arguments.Kind == ExtendedActivationKind.Launch)
-			{
-				// No additional handling is required for Launch activations here.
-				// The main window and navigation are already initialized by the
-				// app's primary activation path before this method is invoked.
-			}
-		}
-
-		private Task ProcessProtocolActivation(ProtocolActivatedEventArgs args)
-		{
-			return Task.CompletedTask;
-		}
 
 		private void ActivateMainWindow()
 		{
@@ -418,6 +426,7 @@ namespace SamplesApp
 				return;
 			}
 
+<<<<<<< HEAD
 			if (TryNavigateToLaunchSample(args))
 			{
 				return;
@@ -429,6 +438,8 @@ namespace SamplesApp
 				await dlg.ShowAsync();
 			}
 
+=======
+>>>>>>> c82677c7 (feat!: Route all activations through AppInstance)
 			if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm && vm.CurrentSelectedSample is null)
 			{
 				vm.SetSelectedSample(CancellationToken.None, "Playground", "Playground");

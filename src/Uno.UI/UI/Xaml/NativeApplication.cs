@@ -12,7 +12,11 @@ using Android.Content;
 using Android.OS;
 using Android.Runtime;
 using Java.Interop;
+<<<<<<< HEAD:src/Uno.UI/UI/Xaml/NativeApplication.cs
 >>>>>>> 50cd5beb (feat: Abstract away shared OnActivated and OnLaunched logic):src/Uno.UI.Runtime.Android/NativeApplication.cs
+=======
+using Microsoft.Windows.AppLifecycle;
+>>>>>>> c82677c7 (feat!: Route all activations through AppInstance):src/Uno.UI.Runtime.Android/NativeApplication.cs
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 <<<<<<< HEAD:src/Uno.UI/UI/Xaml/NativeApplication.cs
@@ -122,9 +126,10 @@ namespace Microsoft.UI.Xaml
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug("Intent contained JumpList extra arguments, calling OnLaunched.");
+						this.Log().LogDebug("Intent contained JumpList extra arguments, reporting a Launch activation.");
 					}
 
+<<<<<<< HEAD:src/Uno.UI/UI/Xaml/NativeApplication.cs
 <<<<<<< HEAD:src/Uno.UI/UI/Xaml/NativeApplication.cs
 #if ANDROID_SKIA
 =======
@@ -135,6 +140,19 @@ namespace Microsoft.UI.Xaml
 #else
 					_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
 #endif
+=======
+					var arguments = intent.GetStringExtra(JumpListItem.ArgumentsExtraKey);
+
+					if (!_isRunning)
+					{
+						// The app does not exist yet at this point (the host is built in CreateHost() below),
+						// so the arguments are stashed for the LaunchActivatedEventArgs OnLaunched will get.
+						Application.SetArguments(arguments);
+					}
+
+					ReportActivation(AppActivationArguments.CreateLaunch(
+						new global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs(ActivationKind.Launch, arguments)));
+>>>>>>> c82677c7 (feat!: Route all activations through AppInstance):src/Uno.UI.Runtime.Android/NativeApplication.cs
 					handled = true;
 				}
 				else if (intent.Data != null)
@@ -143,6 +161,7 @@ namespace Microsoft.UI.Xaml
 					{
 						if (this.Log().IsEnabled(LogLevel.Debug))
 						{
+<<<<<<< HEAD:src/Uno.UI/UI/Xaml/NativeApplication.cs
 							this.Log().LogDebug("Intent data parsed successfully as Uri, calling OnActivated.");
 						}
 
@@ -161,6 +180,15 @@ namespace Microsoft.UI.Xaml
 						}
 
 >>>>>>> 50cd5beb (feat: Abstract away shared OnActivated and OnLaunched logic):src/Uno.UI.Runtime.Android/NativeApplication.cs
+=======
+							this.Log().LogDebug("Intent data parsed successfully as Uri, reporting a Protocol activation.");
+						}
+
+						ReportActivation(AppActivationArguments.CreateProtocol(
+							new ProtocolActivatedEventArgs(
+								uri,
+								_isRunning ? ApplicationExecutionState.Running : ApplicationExecutionState.NotRunning)));
+>>>>>>> c82677c7 (feat!: Route all activations through AppInstance):src/Uno.UI.Runtime.Android/NativeApplication.cs
 						handled = true;
 					}
 					else
@@ -176,6 +204,14 @@ namespace Microsoft.UI.Xaml
 
 			return handled;
 		}
+
+		/// <summary>
+		/// Hands an activation to <see cref="AppInstance"/>, which stores it for a cold start or raises
+		/// <see cref="AppInstance.Activated"/> when the app is already up. Android delivers both through
+		/// the same intent callbacks, and <see cref="AppInstance"/> — not this type — knows which case it is.
+		/// </summary>
+		private static void ReportActivation(AppActivationArguments args)
+			=> AppInstance.GetCurrent().SetOrRaiseActivation(args);
 
 		/// <summary>
 		/// This method is used by UI Test frameworks to get
