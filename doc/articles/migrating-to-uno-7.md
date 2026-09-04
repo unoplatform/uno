@@ -547,6 +547,94 @@ own target framework, the library's calls included.
   `false`. They are now internal on WinAppSDK, matching the intended Skia-only public surface
   (they remain public in the Skia `Uno.UI` build). There is no known WinAppSDK consumer; if
   you called these from a WinAppSDK head, copy the extension methods into your own project.
+### Activation is read from `AppInstance`
+
+**`Application.OnActivated` is removed.** It is not part of the shipping WinUI 3 surface —
+`microsoft.ui.xaml.coretypes2.idl` declares it only behind the UWP-support feature gate — and a Windows
+App SDK app discovers how it was activated through `Microsoft.Windows.AppLifecycle.AppInstance` instead.
+An existing override now fails to compile, which is deliberate: a method that silently stopped being
+invoked would be far harder to notice than a build error.
+
+`OnLaunched` always runs, and always receives plain `ActivationKind.Launch` arguments, matching WinUI's
+`FrameworkApplication`, which synthesizes them regardless of how the process was activated. The real
+payload comes from `AppInstance`:
+
+```csharp
+// Before
+protected override void OnActivated(IActivatedEventArgs args)
+{
+    if (args.Kind == ActivationKind.Protocol)
+    {
+        var uri = ((ProtocolActivatedEventArgs)args).Uri;
+        // …
+    }
+}
+
+// After
+using Microsoft.Windows.AppLifecycle;
+
+protected override void OnLaunched(LaunchActivatedEventArgs args)
+{
+    // …create and activate the window as usual…
+
+    var activation = AppInstance.GetCurrent().GetActivatedEventArgs();
+    if (activation.Kind == ExtendedActivationKind.Protocol &&
+        activation.Data is Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs protocol)
+    {
+        var uri = protocol.Uri;
+        // …
+    }
+}
+```
+
+`GetActivatedEventArgs()` never returns `null` and never throws; with no activation payload it reports
+`ExtendedActivationKind.Launch` over the process command line. It always describes the activation the
+process *started* with, so an activation that arrives while the app is already running is raised on
+`AppInstance.GetCurrent().Activated` — subscribe to it in the `App` constructor. See
+[Custom protocol activation](xref:Uno.Features.ProtocolActivation) for a complete `App.xaml.cs`.
+
+**`Application.OnLaunched` is `protected virtual`**, not Uno's `protected internal virtual`, matching
+WinUI. Declare the override as `protected override void OnLaunched(LaunchActivatedEventArgs args)` —
+which is what the templates generate, and what C# already required of an override in another assembly.
+
+**On WebAssembly, `LaunchActivatedEventArgs.Arguments` no longer carries the internal
+`unoprotocolactivation` query key** that transports a protocol activation across the browser
+navigation. The key is stripped before the app sees the arguments, so code that parsed it out of
+`Arguments` should read the URI from `GetActivatedEventArgs()` instead.
+
+### App lifecycle events move to `CoreApplication`
+
+**`Application.Suspending`, `Application.Resuming`, `Application.EnteredBackground` and
+`Application.LeavingBackground` are removed.** Subscribe to the events of the same names on
+`Windows.ApplicationModel.Core.CoreApplication`, which Uno Platform already raised in lockstep with
+these — including the `SuspendingOperation` deferral, so handler bodies need no change:
+
+```csharp
+// Before
+this.Suspending += OnSuspending;
+this.Resuming += OnResuming;
+
+// After
+using Windows.ApplicationModel.Core;
+
+CoreApplication.Suspending += OnSuspending;
+CoreApplication.Resuming += OnResuming;
+```
+
+The handler signature changes from the `SuspendingEventHandler` family to
+`EventHandler<SuspendingEventArgs>`, so a nullable-enabled file needs `object? sender`. The
+`SuspendingEventHandler`, `EnteredBackgroundEventHandler` and `LeavingBackgroundEventHandler`
+delegates themselves remain — they are still Windows App SDK types.
+
+Like `OnActivated`, all four sat behind the UWP-support feature gate in WinUI: the shipping WinUI 3
+`Application` exposes only `ResourceManagerRequested` and `UnhandledException`. `CoreApplication` is
+also the more portable choice, being Windows Runtime API that compiles against the Windows App SDK,
+which `Application.Suspending` does not.
+
+**On Skia Desktop, suspension is no longer reported at all.** Windows App SDK desktop apps have no
+suspended state, and Uno Platform previously reported one on Windows only, when a window closed —
+which also skipped the `EnteredBackground` that precedes `Suspending`. Save state from
+`Window.Closed` instead. Android, iOS and tvOS report the real platform lifecycle as before.
 
 ### `FeatureConfiguration` flags removed
 
@@ -1266,9 +1354,12 @@ be removed, and the `Uno0004` and `Uno0005` diagnostics are no longer reported.
 19. Remove any `UnoRuntimeIdentifier`, `UnoUIRuntimeIdentifier` or `UnoWinRTRuntimeIdentifier` property from
    application heads, and replace `UnoRuntimeIdentifier` with `UnoRuntimeVariant` in cross-runtime libraries —
    UNOB0024 points them out.
-20. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+20. Replace every `Application.OnActivated` override with `AppInstance.GetCurrent().GetActivatedEventArgs()`
+   read from `OnLaunched`, plus an `AppInstance.GetCurrent().Activated` handler for activations that
+   arrive while the app runs.
+21. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
-21. On iOS/tvOS, call `Uno.Storage.ApplicationDataMigrator.MigrateSettings()` at startup to
+22. On iOS/tvOS, call `Uno.Storage.ApplicationDataMigrator.MigrateSettings()` at startup to
    bring pre-7.0 application settings into the `UnoApplicationData` container, and update any
    native/interop code that read them from `NSUserDefaults.StandardUserDefaults`.
 
