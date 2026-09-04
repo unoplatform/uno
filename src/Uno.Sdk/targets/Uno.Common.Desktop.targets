@@ -6,6 +6,12 @@
 
 		<IsMSALSupported>true</IsMSALSupported>
 
+		<!--
+		The desktop runtime packages define this too, but they are only referenced by executable heads,
+		which would leave a netX.0-desktop class library without it.
+		-->
+		<DefineConstants Condition="!$(DefineConstants.Contains('__DESKTOP__'))">$(DefineConstants);__DESKTOP__</DefineConstants>
+
 		<!-- Enable the netx.0-desktop target -->
 		<TargetPlatformIdentifier>Desktop</TargetPlatformIdentifier>
 		<TargetFrameworkIdentifier>Desktop</TargetFrameworkIdentifier>

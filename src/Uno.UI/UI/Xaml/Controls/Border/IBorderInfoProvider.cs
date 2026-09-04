@@ -38,7 +38,5 @@ internal partial interface IBorderInfoProvider
 	/// </summary>
 	CornerRadius CornerRadius { get; }
 
-#if UNO_HAS_BORDER_VISUAL
 	BorderVisual BorderVisual { get; }
-#endif
 }

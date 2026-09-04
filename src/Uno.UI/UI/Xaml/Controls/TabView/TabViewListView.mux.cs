@@ -17,12 +17,6 @@ public partial class TabViewListView : ListView
 	/// </summary>
 	public TabViewListView()
 	{
-		// TODO: Uno specific - avoid stretching tabs vertically.
-		// Can be removed when #1133 is fixed.
-#if __ANDROID__ || __IOS__
-		ShouldApplyChildStretch = false;
-#endif
-
 		this.SetDefaultStyleKey();
 
 		ContainerContentChanging += OnContainerContentChanging;

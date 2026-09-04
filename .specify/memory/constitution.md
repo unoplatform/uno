@@ -37,7 +37,7 @@ contracts. Deviations from WinUI behavior are permitted ONLY when:
 - The target platform has a fundamental technical constraint that
   prevents faithful reproduction (documented in code comments).
 - No API for such functionality exists in WinUI and it is specifically targeted towards non-WinUI platforms.
-- EXCEPTION: Uno.UI.Toolkit can contain custom APIs that are available across all targets (including WinUI).
+- EXCEPTION: Uno.UI.Extras can contain custom APIs that are available across all targets (including WinUI).
 
 **Rationale**: Uno Platform's value proposition is write-once WinUI code.
 API drift erodes developer trust and breaks existing WinUI applications

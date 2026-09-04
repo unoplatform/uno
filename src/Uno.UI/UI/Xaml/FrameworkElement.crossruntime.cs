@@ -1,8 +1,4 @@
-﻿#if __NETSTD_REFERENCE__
-#pragma warning disable IDE0051
-#endif
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Uno.Disposables;
@@ -14,7 +10,6 @@ using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Foundation;
 using View = Microsoft.UI.Xaml.UIElement;
-using System.Collections;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI;
@@ -24,7 +19,7 @@ using System.Dynamic;
 
 namespace Microsoft.UI.Xaml
 {
-	public partial class FrameworkElement : IEnumerable
+	public partial class FrameworkElement
 	{
 #pragma warning disable CS0067 // Unused only in reference API.
 		public event SizeChangedEventHandler SizeChanged;
@@ -239,19 +234,9 @@ namespace Microsoft.UI.Xaml
 
 		private protected virtual void OnUnloaded() { }
 
-#if DEBUG && __NETSTD_REFERENCE__
-		private void OnGenericPropertyUpdated(DependencyPropertyChangedEventArgs args) { }
-#endif
 
 		public override string ToString()
 		{
-#if __WASM__
-			if (FeatureConfiguration.UIElement.RenderToStringWithId && !Name.IsNullOrEmpty())
-			{
-				return $"{base.ToString()}\"{Name}\"";
-			}
-#endif
-
 			return base.ToString();
 		}
 	}

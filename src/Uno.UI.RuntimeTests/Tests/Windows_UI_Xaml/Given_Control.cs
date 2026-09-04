@@ -69,7 +69,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			{
 				Setters =
 				{
-					new Setter(TemplateProperty, new ControlTemplate(() => new Grid())
+					new Setter(TemplateProperty, new ControlTemplate(null, (_, _) => new Grid())
 					{
 						TargetType = typeof(OnApplyTemplateCounterControl),
 					})
@@ -214,7 +214,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				{
 					Setters =
 					{
-						new Setter(Control.TemplateProperty, new ControlTemplate(() => new Grid())
+						new Setter(Control.TemplateProperty, new ControlTemplate(null, (_, _) => new Grid())
 						{
 							TargetType = typeof(OnApplyTemplateCounterControl),
 						})
@@ -377,10 +377,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[RunsOnUIThread]
 		public async Task When_CCButton_ApplyTemplate_WithChild()
 		{
-			// When_CC(Button|Expander)_ApplyTemplate_With(No)?Child tests are designed to verify that
-			// when content is added as direct child (as a result of IsContentPresenterBypassEnabled),
-			// the template would still be applied.
-			// These tests can be removed once IsContentPresenterBypassEnabled is removed.
+			// When_CC(Button|Expander)_ApplyTemplate_With(No)?Child verify that the control template
+			// is applied whether or not Content is set.
 
 			var SUT = XamlHelper.LoadXaml<Button>("""
 				<Button>
@@ -561,7 +559,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			allControlTypes = allControlTypes.Except(builtInControls);
 
-			var url = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.GetWinUIThemeResourceUrl(2));
+			var url = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.WinUIThemeResourceURL);
 
 			StringBuilder nonWinUI = new StringBuilder();
 			foreach (var controlInstance in allControlTypes.Select(t => Activator.CreateInstance(t) as Control))

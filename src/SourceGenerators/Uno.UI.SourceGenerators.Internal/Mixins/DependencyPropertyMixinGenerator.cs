@@ -205,10 +205,10 @@ using View = Microsoft.UI.Xaml.FrameworkElement;
 			{
 				new PropertyDefinition("BackgroundSizing", "BackgroundSizing", "default"),
 				new PropertyDefinition("HorizontalContentAlignment", "HorizontalAlignment",
-					"(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? HorizontalAlignment.Left : HorizontalAlignment.Center)",
+					"HorizontalAlignment.Center",
 					frameworkPropertyOption: "AffectsArrange"),
 				new PropertyDefinition("VerticalContentAlignment", "VerticalAlignment",
-					"(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? VerticalAlignment.Top : VerticalAlignment.Center)",
+					"VerticalAlignment.Center",
 					frameworkPropertyOption: "AffectsArrange"),
 			}),
 			new ClassDefinition("Picker", "__IOS__", "public", new[]
@@ -271,7 +271,11 @@ using View = Microsoft.UI.Xaml.FrameworkElement;
 				new PropertyDefinition("GroupPadding", "Thickness", "Thickness.Empty"),
 				new PropertyDefinition("CacheLength", "double", "4.0"),
 			}),
-			new ClassDefinition("ItemsWrapGridLayout", "true", "internal", new[]
+			// ItemsWrapGridLayout only derives from DependencyObject (via VirtualizingPanelLayout) in the native
+			// (!UNO_REFERENCE_API) build. UNO_REFERENCE_API is defined for Skia, WebAssembly and Reference, where
+			// ItemsWrapGridLayout is a baseless type, so the mixin must match that availability to avoid generating
+			// DependencyObject plumbing on a non-DO type.
+			new ClassDefinition("ItemsWrapGridLayout", "!UNO_REFERENCE_API", "internal", new[]
 			{
 				new PropertyDefinition("ItemHeight", "double", "Double.NaN"),
 				new PropertyDefinition("ItemWidth", "double", "Double.NaN"),

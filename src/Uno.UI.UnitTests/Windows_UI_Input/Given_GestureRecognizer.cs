@@ -7,7 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.Devices.Input;
 using Windows.Foundation;
-using Windows.UI.Input;
+using Microsoft.UI.Input;
+using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using AwesomeAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Disposables;
@@ -340,8 +341,51 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 + step, 25).WithDelta(step, 0).WithCumulative(step, 0)
+				v => v.Started().At(25, 25).WithCumulative(step, 0)
+			);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20473")]
+		public void Manipulation_Begin_DoesNotRecoverThresholdAsDelta()
+		{
+			// The distance travelled before recognition is reported through Started.Cumulative and must
+			// never be replayed as a delta, otherwise a pan visibly jumps by the dead-zone once recognized.
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
+			var result = new ManipulationRecorder(sut);
+			var threshold = GestureRecognizer.Manipulation.StartTouch.TranslateX;
+			var move = 7; // deliberately != threshold, so reporting the wrong one fails the assertion
+
+			sut.ProcessDownEvent(25, 25);
+			sut.ProcessMoveEvent(25 + threshold, 25);
+			sut.ProcessMoveEvent(25 + threshold + move, 25);
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().At(25, 25).WithCumulative(threshold, 0),
+				// Delta covers only the movement since recognition; Cumulative still tracks from the press.
+				v => v.Delta().At(25 + threshold + move, 25).WithDelta(move, 0).WithCumulative(threshold + move, 0)
+			);
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20473")]
+		public void Manipulation_Begin_AbsorbsWholeCrossingMove()
+		{
+			// A single coalesced move that overshoots the threshold is absorbed in full: the whole distance
+			// is reported through Started.Cumulative and no ManipulationUpdated fires. Pins the behaviour
+			// against a return to clamping the absorbed amount to the dead-zone.
+			var sut = new GestureRecognizer { GestureSettings = ManipulationsWithoutInertia };
+			var result = new ManipulationRecorder(sut);
+			var threshold = GestureRecognizer.Manipulation.StartTouch.TranslateX;
+			var overshoot = 15; // deliberately larger than the threshold
+
+			sut.ProcessDownEvent(25, 25);
+			sut.ProcessMoveEvent(25 + threshold + overshoot, 25);
+
+			result.ShouldBe(
+				v => v.Starting(),
+				v => v.Started().At(25, 25).WithCumulative(threshold + overshoot, 0)
 			);
 		}
 
@@ -389,8 +433,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 + step, 25).WithDelta(step, 0).WithCumulative(step, 0),
+				v => v.Started().At(25, 25).WithCumulative(step, 0),
 				v => v.Delta().At(25 + step * 2, 25).WithDelta(step, 0).WithCumulative(step * 2, 0)
 			);
 		}
@@ -408,8 +451,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 + step, 25).WithDelta(step, 0).WithCumulative(step, 0),
+				v => v.Started().At(25, 25).WithCumulative(step, 0),
 				v => v.End().At(25 + step + 1, 25).WithCumulative(step + 1, 0)
 			);
 		}
@@ -429,8 +471,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 + step, 25).WithDelta(step, 0).WithCumulative(step, 0),
+				v => v.Started().At(25, 25).WithCumulative(step, 0),
 				v => v.Delta().At(25 + step * 2, 25).WithDelta(step, 0).WithCumulative(step * 2, 0),
 				v => v.End().At(25 + step * 2 + 2, 25).WithCumulative(step * 2 + 2, 0)
 			);
@@ -453,8 +494,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 + stepX, 25 + stepY).WithDelta(stepX, 0).WithCumulative(stepX, 0),
+				v => v.Started().At(25, 25).WithCumulative(stepX, 0),
 				v => v.Delta().At(25 + stepX * 2, 25 + stepY * 2).WithDelta(stepX, 0).WithCumulative(stepX * 2, 0),
 				v => v.End().At(25 + stepX * 2 + 1, 25 + stepY * 2 + 1).WithCumulative(stepX * 2 + 1, 0)
 			);
@@ -477,8 +517,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 + stepX, 25 + stepY).WithDelta(0, stepY).WithCumulative(0, stepY),
+				v => v.Started().At(25, 25).WithCumulative(0, stepY),
 				v => v.Delta().At(25 + stepX * 2, 25 + stepY * 2).WithDelta(0, stepY).WithCumulative(0, stepY * 2),
 				v => v.End().At(25 + stepX * 2 + 1, 25 + stepY * 2 + 1).WithCumulative(0, stepX * 2 + 1)
 			);
@@ -501,8 +540,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 - stepX, 25 - stepY).WithDelta(-stepX, 0).WithCumulative(-stepX, 0),
+				v => v.Started().At(25, 25).WithCumulative(-stepX, 0),
 				v => v.Delta().At(25 - stepX * 2, 25 - stepY * 2).WithDelta(-stepX, 0).WithCumulative(-stepX * 2, 0),
 				v => v.End().At(25 - stepX * 2 - 1, 25 - stepY * 2 - 1).WithCumulative(-stepX * 2 - 1, 0)
 			);
@@ -525,8 +563,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25, 25).WithEmptyCumulative(),
-				v => v.Delta().At(25 - stepX, 25 - stepY).WithDelta(0, -stepY).WithCumulative(0, -stepY),
+				v => v.Started().At(25, 25).WithCumulative(0, -stepY),
 				v => v.Delta().At(25 - stepX * 2, 25 - stepY * 2).WithDelta(0, -stepY).WithCumulative(0, -stepY * 2),
 				v => v.End().At(25 - stepX * 2 - 1, 25 - stepY * 2 - 1).WithCumulative(0, -stepX * 2 - 1)
 			);
@@ -1037,8 +1074,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().WithCumulative(scale: 1),
-				v => v.Delta().WithDelta(tX: 90, tY: 90).WithCumulative(tX: 90, tY: 90),
+				v => v.Started().WithCumulative(tX: 90, tY: 90, scale: 1),
 				v => v.Inertia(),
 				v => v.Delta().IsInertial(),
 				v => v.Delta().IsInertial(),
@@ -1084,8 +1120,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().WithCumulative(scale: 1),
-				v => v.Delta().WithDelta(tX: 90, tY: 0).WithCumulative(tX: 90, tY: 0),
+				v => v.Started().WithCumulative(tX: 90, tY: 0, scale: 1),
 				v => v.Inertia(),
 				v => v.Delta().IsInertial(),
 				v => v.Delta().IsInertial(),
@@ -1131,8 +1166,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().WithCumulative(scale: 1),
-				v => v.Delta().WithDelta(tX: 0, tY: 90).WithCumulative(tX: 0, tY: 90),
+				v => v.Started().WithCumulative(tX: 0, tY: 90, scale: 1),
 				v => v.Inertia(),
 				v => v.Delta().IsInertial(),
 				v => v.Delta().IsInertial(),
@@ -1164,6 +1198,53 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		}
 
 		[TestMethod]
+		public void Manipulation_Inertia_Aborted_By_Press_Then_Tap_Is_Still_Raised()
+		{
+			using var _ = Touch();
+			var sut = new GestureRecognizer
+			{
+				GestureSettings = GestureSettings.Tap
+					| GestureSettings.ManipulationTranslateY | GestureSettings.ManipulationTranslateInertia
+			};
+			var taps = new List<TappedEventArgs>();
+			sut.Tapped += (snd, e) => taps.Add(e);
+
+			// Flick at 2 px/ms so the manipulation goes to inertia on the up.
+			sut.ProcessDownEvent(10, 10, ts: 0);
+			sut.ProcessMoveEvent(10, 100, ts: 100 * MicrosecondsPerMillisecond);
+			sut.ProcessUpEvent(10, 104, ts: 102 * MicrosecondsPerMillisecond);
+			sut.PendingManipulation!.IsCoasting.Should().BeTrue();
+
+			// The press aborts the coasting manipulation and the recognizer reports it, but the gestures of that
+			// press are still recognized: this is the WinUI behavior, muting them is opt-in
+			// (cf. Uno.UI.Xaml.ManipulationExtensions.IsTapToStopInertiaEnabled).
+			sut.ProcessDownEvent(50, 50, ts: 110 * MicrosecondsPerMillisecond);
+			sut.LastDownStoppedInertia.Should().BeTrue();
+			sut.PendingManipulation!.IsCoasting.Should().BeFalse();
+
+			sut.ProcessUpEvent(51, 51, ts: 112 * MicrosecondsPerMillisecond);
+			taps.Should().HaveCount(1);
+			taps[0].Position.Should().Be(new Point(50, 50));
+			taps[0].TapCount.Should().Be(1u);
+			taps[0].PointerDeviceType.Should().Be(PointerDeviceType.Touch);
+		}
+
+		[TestMethod]
+		public void Manipulation_Press_Without_Inertia_Then_No_Inertia_Reported_As_Stopped()
+		{
+			using var _ = Touch();
+			var sut = new GestureRecognizer
+			{
+				GestureSettings = GestureSettings.Tap
+					| GestureSettings.ManipulationTranslateY | GestureSettings.ManipulationTranslateInertia
+			};
+
+			sut.ProcessDownEvent(50, 50, ts: 0);
+
+			sut.LastDownStoppedInertia.Should().BeFalse();
+		}
+
+		[TestMethod]
 		public void Manipulation_Inertia_Translate_Negative()
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
@@ -1178,8 +1259,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().WithCumulative(scale: 1),
-				v => v.Delta().WithDelta(tX: 90, tY: 90).WithCumulative(tX: 90, tY: 90),
+				v => v.Started().WithCumulative(tX: 90, tY: 90, scale: 1),
 				v => v.Inertia(),
 				v => v.Delta().IsInertial(),
 				v => v.Delta().IsInertial(),
@@ -2023,9 +2103,9 @@ namespace Uno.UI.Tests.Windows_UI_Input
 	{
 		private static long _frameId = 0;
 
-		public static PointerDevice MousePointer { get; } = new PointerDevice(PointerDeviceType.Mouse);
-		public static PointerDevice PenPointer { get; } = new PointerDevice(PointerDeviceType.Pen);
-		public static PointerDevice TouchPointer { get; } = new PointerDevice(PointerDeviceType.Touch);
+		public static PointerDevice MousePointer { get; } = new PointerDevice((global::Windows.Devices.Input.PointerDeviceType)PointerDeviceType.Mouse);
+		public static PointerDevice PenPointer { get; } = new PointerDevice((global::Windows.Devices.Input.PointerDeviceType)PointerDeviceType.Pen);
+		public static PointerDevice TouchPointer { get; } = new PointerDevice((global::Windows.Devices.Input.PointerDeviceType)PointerDeviceType.Touch);
 
 		public static PointerPointProperties LeftButton { get; } = new PointerPointProperties
 		{
@@ -2088,8 +2168,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			id ??= 1;
 			ts ??= frameId;
 			var pointer = device.HasValue
-				? new PointerDevice(device.Value)
-				: (currentPointer.device ?? new PointerDevice(PointerDeviceType.Touch));
+				? new PointerDevice((global::Windows.Devices.Input.PointerDeviceType)device.Value)
+				: (currentPointer.device ?? new PointerDevice((global::Windows.Devices.Input.PointerDeviceType)PointerDeviceType.Touch));
 			var location = new Windows.Foundation.Point(x, y);
 			properties ??= currentPointer.properties ?? LeftButton;
 
@@ -2097,13 +2177,13 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		}
 
 		public static TappedEventArgs Tap(double x, double y, uint tapCount = 1, PointerDeviceType? device = null)
-			=> new TappedEventArgs(1, device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y), tapCount);
+			=> new TappedEventArgs(1, device ?? (PointerDeviceType?)_currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y), tapCount);
 
 		public static RightTappedEventArgs RightTap(double x, double y, PointerDeviceType? device = null)
-			=> new RightTappedEventArgs(1, device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y));
+			=> new RightTappedEventArgs(1, device ?? (PointerDeviceType?)_currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y));
 
 		public static HoldingEventArgs Hold(double x, double y, HoldingState state, PointerDeviceType? device = null, uint? ptId = null)
-			=> new HoldingEventArgs(ptId ?? 1, device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y), state);
+			=> new HoldingEventArgs(ptId ?? 1, device ?? (PointerDeviceType?)_currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y), state);
 
 		public static DraggingEventArgs Drag(PointerPoint point, DraggingState state)
 			=> new DraggingEventArgs(point, state, 1);

@@ -1957,7 +1957,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			public RecycledGridCellPeer(FrameworkElement owner) : base(owner) { }
 
-			protected override string GetNameCore() => Owner.DataContext?.ToString() ?? string.Empty;
+			protected override string GetNameCore() => (Owner as FrameworkElement)?.DataContext?.ToString() ?? string.Empty;
 		}
 
 		private sealed partial class HeaderRowPeer : FrameworkElementAutomationPeer

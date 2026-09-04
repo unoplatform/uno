@@ -101,67 +101,65 @@ Consider the following XAML which is using the Windows Community Toolkit's [Blur
 
 ### Available prefixes
 
-The pre-defined prefixes are listed below:
+A prefix resolves from the **target framework** of the project being compiled. A class library sees the same
+prefixes as an application head built for the same target framework, so conditional markup behaves identically in
+both.
+
+| Prefix | Target framework | Namespace | Put in `mc:Ignorable`? |
+|---|---|---|---|
+| `android` | `netX.0-android` | `http://uno.ui/android` | yes |
+| `ios` | `netX.0-ios` | `http://uno.ui/ios` | yes |
+| `tvos` | `netX.0-tvos` | `http://uno.ui/tvos` | yes |
+| `desktop` | `netX.0-desktop` | `http://uno.ui/desktop` | yes |
+| `wasm` | `netX.0-browserwasm` | `http://uno.ui/wasm` | yes |
+| `winappsdk`, or `win` | `netX.0-windows10.x` (WinAppSDK) | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no |
+
+Each has a negated counterpart — `not_android`, `not_ios`, `not_tvos`, `not_desktop`, `not_wasm`, and
+`not_winappsdk` (or `not_win`) — which applies to every target framework the positive one does not. The negated
+prefixes use the default presentation namespace and do not need to be listed in `mc:Ignorable`, with the exception
+of `not_winappsdk` / `not_win`, which the WinAppSDK XAML compiler cannot resolve.
 
 > [!NOTE]
-> Skia in the context of this table refers to all Skia targets, including when Android, iOS, or Wasm are running with Skia rendering.
->
-> [!NOTE]
-> Unless explicitly stated, Android, iOS, and web in the context of this table refer to all rendering modes for those platforms (both native and Skia where applicable).
->
-> [!IMPORTANT]
-> The `wasm` prefix applies to **all** WebAssembly platforms, including both native (DOM-based) WebAssembly and WebAssembly running with Skia rendering. If you need to target only WebAssembly with Skia, use the `wasmskia` prefix. If you need to exclude WebAssembly with Skia, there is no dedicated prefix - use conditional compilation or platform-specific files instead.
+> `win` and `not_win` are **not deprecated**. They are the original spelling of `winappsdk` and `not_winappsdk`,
+> both spellings resolve identically, and both remain fully supported — `win` and `not_win` are still the more
+> common form across Uno Platform's own markup. Nothing here retires them, and no migration is required. Pick one
+> spelling per file rather than mixing the two, since a file that uses `win:` alongside `not_winappsdk:` reads as
+> though the two name different conditions when they are exact opposites.
 
-| Prefix            | Included platforms                             | Excluded platforms                   | Namespace                                                   | Put in `mc:Ignorable`? |
-|-------------------|------------------------------------------------|--------------------------------------|-------------------------------------------------------------|------------------------|
-| `win`             | WinUI                                          | Android, iOS, web, Skia              | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `not_win`         | Android, iOS, web, Skia                        | WinUI                                | `http://uno.ui/not_win`                                     | yes                    |
-| `android`         | Android                                        | WinUI, iOS, web, Skia                | `http://uno.ui/android`                                     | yes                    |
-| `ios`             | iOS                                            | WinUI, Android, web, Skia            | `http://uno.ui/ios`                                         | yes                    |
-| `wasm`            | All WebAssembly (native and Skia)              | WinUI, Android, iOS                  | `http://uno.ui/wasm`                                        | yes                    |
-| `skia`            | Skia (all Skia platforms)                      | WinUI, Android (without Skia), iOS (without Skia), WebAssembly (DOM only) | `http://uno.ui/skia`                                        | yes                    |
-| `androidskia`     | Android running with Skia rendering            | Everything else                      | `http://uno.ui/androidskia`                                 | yes                    |
-| `iosskia`         | iOS running with Skia rendering                | Everything else                      | `http://uno.ui/iosskia`                                     | yes                    |
-| `wasmskia`        | Web running with Skia rendering                | Everything else                      | `http://uno.ui/wasmskia`                                    | yes                    |
-| `not_android`     | WinUI, iOS, web, Skia                          | Android                              | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `not_ios`         | WinUI, Android, web, Skia                      | iOS                                  | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `not_wasm`        | WinUI, Android, iOS, Skia (Desktop/Mobile only)              | All WebAssembly                                  | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `not_skia`        | WinUI, Android, iOS, web                       | Skia                                 | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `not_androidskia` | All except Android running with Skia rendering | Android running with Skia rendering  | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `not_iosskia`     | All except iOS running with Skia rendering     | iOS running with Skia rendering      | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
-| `not_wasmskia`    | All except web running with Skia rendering     | web running with Skia rendering      | `http://schemas.microsoft.com/winfx/2006/xaml/presentation` | no                     |
+More visually:
 
-More visually, platform support for the pre-defined prefixes is shown in the below table:
+| Prefix | `netX.0` | `-android` | `-ios` | `-tvos` | `-desktop` | `-browserwasm` | `-windows10.x` |
+|---|---|---|---|---|---|---|---|
+| `android` | ✖ | ✔ | ✖ | ✖ | ✖ | ✖ | ✖ |
+| `ios` | ✖ | ✖ | ✔ | ✖ | ✖ | ✖ | ✖ |
+| `tvos` | ✖ | ✖ | ✖ | ✔ | ✖ | ✖ | ✖ |
+| `desktop` | ✖ | ✖ | ✖ | ✖ | ✔ | ✖ | ✖ |
+| `wasm` | ✖ | ✖ | ✖ | ✖ | ✖ | ✔ | ✖ |
+| `winappsdk` | ✖ | ✖ | ✖ | ✖ | ✖ | ✖ | ✔ |
+
+A project that targets a plain `netX.0` therefore sees no positive prefix at all — only the negated forms. That is
+the correct behaviour for a target framework that carries no platform.
 
 > [!NOTE]
-> The columns below represent rendering modes, not platforms. "Web" includes both native (DOM) and Skia rendering. When WebAssembly runs with Skia rendering, both `wasm` and `skia` prefixes will be active.
-> \* Only applies when WebAssembly is running with Skia rendering
-
-| Prefix        |  Windows  | Android (Native) |  iOS (Native)  |  Web (All)  | Skia (Desktop/Mobile) |
-|---------------|-----------|------------------|----------------|-------------|-----------------------|
-| `win`         | ✔         | ✖                | ✖              | ✖           | ✖                     |
-| `android`     | ✖         | ✔                | ✖              | ✖           | ✖                     |
-| `ios`         | ✖         | ✖                | ✔              | ✖           | ✖                     |
-| `wasm`        | ✖         | ✖                | ✖              | ✔           | ✖                     |
-| `skia`        | ✖         | ✖                | ✖              | ✔*          | ✔                     |
-| `not_win`     | ✖         | ✔                | ✔              | ✔           | ✔                     |
-| `not_android` | ✔         | ✖                | ✔              | ✔           | ✔                     |
-| `not_ios`     | ✔         | ✔                | ✖              | ✔           | ✔                     |
-| `not_wasm`    | ✔         | ✔                | ✔              | ✖           | ✔                     |
-| `not_skia`    | ✔         | ✔                | ✔              | ✔           | ✖                     |
+> No prefix identifies a drawing backend. `Uno.UI` is compiled once and selects its backend at run time, so the
+> backend is not a compile-time condition and cannot be branched on in markup.
 
 ### XAML prefixes in cross-targeted libraries
 
-For Uno Platform 6.0 and above, XAML prefixes behave differently in class libraries than when used directly in application code. Specifically, it isn't possible to distinguish Skia and Wasm/Native in a library, since both platforms use the `net9.0`/`net10.0` target. The `wasm` and `skia` prefixes will always evaluate to false inside of a library.
+Conditional prefixes work in a class library exactly as they do in an application head, and resolve from the
+library's own target framework. A library that multi-targets `netX.0;netX.0-android;netX.0-ios` therefore emits
+`android:` markup in its `-android` assembly and `ios:` markup in its `-ios` assembly, and an application head
+consumes the assembly matching its own target framework.
 
-The prefix `netstdref` is available and will include the objects or properties in both Skia and Wasm builds. A prefix `not_nestdref` can also be used to exclude them. Since Skia and Wasm/Native are similar, it is often not necessary to make the distinction.
+A library that targets only `netX.0` has no platform prefix available, because there is no platform in its target
+framework. Add the platform target frameworks you need conditional markup for.
 
-In cases where it is needed (fonts are one example), the XAML files must be placed directly in the app project.
-
-| Prefix          | Namespace                                                   | Put in `mc:Ignorable`? |
-|-----------------|-------------------------------------------------------------|------------------------|
-| `netstdref`     | `http://uno.ui/netstdref`                                   | yes                    |
-| `not_netstdref` | `http://uno.ui/not_netstdref`                               | yes                    |
+> [!NOTE]
+> Before Uno Platform 7.0 the platform prefixes did not resolve this way: `android:`, `ios:` and `wasm:` were
+> suppressed on every target that rendered with Skia, which by 6.0 was all of them, and a library's
+> platform-specific assembly was replaced by its `netX.0` one when consumed by a mobile head. Markup written
+> against that behaviour — in particular `not_android:` or `not_ios:` used to mean "everywhere" — now resolves
+> differently.
 
 ### Specifying namespaces
 
@@ -178,6 +176,12 @@ Specifying CLR namespaces in platform specific XAML namespace can be done as fol
 ```
 
 In this example, types prefixed in the `android` XAML namespace will be looked up in `My.Custom.Namespace1`, `MyCustomNamespace2` then in all the namespaces defined in default namespace `http://schemas.microsoft.com/winfx/2006/xaml/presentation`.
+
+Several CLR namespaces are covered by listing them in one `#using:` segment, separated by `;`, as above. **The XAML
+prefix itself must be spelled exactly** as one of the names in the table above — matching is an exact comparison
+against the prefix, so a decorated variant such as `xmlns:androidNamespace1` is not recognised as conditional and
+is treated as an ordinary namespace. One conditional prefix per platform per file, with the CLR namespaces it needs
+listed after `#using:`.
 
 > [!NOTE]
 > When using Uno Platform 4.x and in the absence of CLR namespace specification (using the `#using:` prefix), type matching is done through partial name based matching, without using the namespace information. In Uno Platform 4.8, this partial matching can be controlled by the `UnoEnableXamlFuzzyMatching` msbuild property. Uno Platform 5.0 and later will be setting `UnoEnableXamlFuzzyMatching` to `false` by default and will force explicit type matching.

@@ -117,7 +117,7 @@ namespace Uno.UI.RemoteControl.HotReload
 
 			try
 			{
-				// Dispose() lives in the base partial file, which some consumers (e.g. Uno.UI.Toolkit)
+				// Dispose() lives in the base partial file, which some consumers (e.g. Uno.UI.Extras)
 				// link WITHOUT: cast through IDisposable so this binds in the full assembly (where the
 				// type is IDisposable) and compiles-to-no-op in those partial embeds. Harmless there:
 				// the teardown only runs for a collectible context, which such embeds never have.
@@ -258,6 +258,7 @@ namespace Uno.UI.RemoteControl.HotReload
 #if !WINUI
 			var parentAsContentControl = oldView.GetVisualTreeParent() as ContentControl;
 			parentAsContentControl = parentAsContentControl ?? (oldView.GetVisualTreeParent() as ContentPresenter)?.FindFirstParent<ContentControl>();
+			var parentAsUserControl = oldView.GetVisualTreeParent() as UserControl;
 #else
 			var parentAsContentControl = VisualTreeHelper.GetParent(oldView) as ContentControl;
 			parentAsContentControl = parentAsContentControl ?? (VisualTreeHelper.GetParent(oldView) as ContentPresenter)?.FindFirstParent<ContentControl>();
@@ -271,6 +272,12 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				parentAsContentControl.Content = newView;
 			}
+#if !WINUI
+			else if ((parentAsUserControl?.Content as FrameworkElement) == oldView)
+			{
+				parentAsUserControl.Content = newView;
+			}
+#endif
 			else if (newView is Page newPage && oldView is Page oldPage)
 			{
 				// In the case of Page, swapping the actual page is not supported, so we

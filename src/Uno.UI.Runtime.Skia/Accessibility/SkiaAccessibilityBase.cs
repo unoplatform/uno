@@ -346,6 +346,10 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		}
 	}
 
+	public virtual void NotifyTextBoxPlaceholderChanged(AutomationPeer peer)
+	{
+	}
+
 	/// <summary>
 	/// Routes property changes to platform-specific update methods.
 	/// Subclasses can override to add platform-specific property handling
