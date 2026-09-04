@@ -244,3 +244,7 @@ Points worth knowing:
 - **An activation is not attributed to a window.** `AppInstance` holds one activation for the process,
   matching the Windows App SDK, so an app that opens several windows decides for itself which one should
   act on it.
+- **`AppInstance` outlives any one application object.** Subscribing in the `App` constructor is right for
+  an ordinary app, whose lifetime is the process's. A host that loads applications into collectible
+  `AssemblyLoadContext`s — Hot Design, or anything using the secondary-application launcher — must detach
+  its handler when the application is retired, or the handler keeps that context alive.

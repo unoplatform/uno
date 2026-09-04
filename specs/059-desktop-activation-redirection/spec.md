@@ -1,4 +1,4 @@
-# Spec 059: Desktop Activation & Single-Instance Redirection (Skia Desktop)
+﻿# Spec 059: Desktop Activation & Single-Instance Redirection (Skia Desktop)
 
 > **Status**: Not started — specification only. The preceding change routed every activation
 > through `Microsoft.Windows.AppLifecycle.AppInstance` and wired Android, iOS/tvOS and
@@ -824,6 +824,14 @@ already-landed Uno Platform implementation is compatible — it returns a comple
 (`AppInstance.RedirectActivationToAsync`) — but for the wrong reason
 (there is never another instance). Once redirection is real, the `IsCurrent` guard must become
 explicit rather than incidental.
+
+**Decision on the signature (recorded 2026-09-04).** Uno Platform keeps `FindOrRegisterForKey` returning
+a non-nullable `AppInstance`, and does *not* pre-emptively annotate it. The Windows App SDK ships no
+nullable reference metadata for this surface — Uno Platform's own generated mirror of it
+(`src/Uno.WinRT/Generated/3.0.0.0/Microsoft.Windows.AppLifecycle/AppInstance.cs`) carries no `#nullable`
+directive and declares the parameter and return type unannotated — so matching upstream means staying
+oblivious rather than promising non-null. Returning `null` once redirection lands is then a metadata
+change rather than a semantic break, and this phase is no longer gated on shipping inside 7.0.
 
 **S2 — `FindOrRegisterForKey` may return `null`.**
 
