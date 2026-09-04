@@ -112,7 +112,7 @@ Here are the supported features:
 | `Serialization`      | Adds support for [Serialization](xref:Uno.Extensions.Serialization.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                         |
 | `SimpleTheme`        | Adds support for the [Simple Design Theme](xref:Uno.Themes.Simple.GetStarted) library. If the `Toolkit` feature is also used, it will add support for the Simple Design Toolkit library.                                                    |
 | `Skia`               | Adds support for [SkiaSharp](https://github.com/mono/SkiaSharp).                                                                                                                                                                           |
-| `SkiaRenderer`       | Adds support for using Skia as the graphics rendering engine. For more details, see [Skia Rendering documentation](xref:uno.features.renderer.skia).                                                                                               |
+| `SkiaRenderer`       | No-op, kept for backwards compatibility. Skia is always used as the graphics rendering engine on Uno Platform targets. The WinAppSDK target is not provided by Uno Platform and always renders natively with WinUI. For more details, see [Skia Rendering documentation](xref:uno.features.renderer.skia). |
 | `SpellChecking`      | Adds support for [spell-checking](xref:Uno.Features.SpellChecking) in TextBox controls on all Skia-based targets via [Uno.WinUI.SpellChecking](https://www.nuget.org/packages/Uno.WinUI.SpellChecking).                                    |
 | `Storage`            | Adds support for [Storage](xref:Uno.Extensions.Storage.Overview) using [Uno.Extensions](xref:Uno.Extensions.Overview).                                                                                                                     |
 | `Svg`                | [SVG](xref:Uno.Features.SVG) support for iOS, and Android. This option is not needed when only targeting WebAssembly and WinAppSDK.                                                                                          |
@@ -301,7 +301,7 @@ Enable this with:
 
 When set, `Uno.Sdk` stops adding the following implicit package references on the `net*-windows10*` target framework:
 
-- `Uno.WinUI` (also removes the bundled `Uno.UI.Toolkit.dll` it ships under `lib/net*-windows10.0.19041.0/`)
+- `Uno.WinUI` (also removes the Uno Platform extension APIs it bundles under `lib/net*-windows10.0.19041.0/`)
 - `Uno.Resizetizer`
 - `Uno.Sdk.Extras`
 - `Uno.Settings.DevServer`
@@ -362,7 +362,7 @@ By default, the Uno.Sdk specifies a set of OS Platform versions, as follows:
 
 | Target | `SupportedOSPlatformVersion` |
 |--------|----------------------------|
-| Android | 21 |
+| Android | 24 |
 | iOS | 14.2 |
 | macOS | 10.14 |
 | tvOS  | 14.2 |
@@ -374,7 +374,7 @@ You can set this property in a `Choose` MSBuild block in order to alter its valu
  <Choose>
     <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
       <PropertyGroup>
-        <SupportedOSPlatformVersion>21.0</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion>24.0</SupportedOSPlatformVersion>
       </PropertyGroup>
     </When>
     <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
@@ -448,23 +448,31 @@ Many Uno projects and libraries make use of a `winappsdk-workaround.targets` fil
 
 ## Cross Targeting Support
 
-By Default when using the Uno.Sdk you get the added benefit of default includes for an easier time building Cross Targeted Applications. The supported file extensions are as shown below:
+By Default when using the Uno.Sdk you get the added benefit of default includes for an easier time building Cross Targeted Applications. A file carrying one of the suffixes below is compiled only for the target frameworks it names, in class libraries and application heads alike:
 
-- `*.wasm.cs` (WebAssembly)
-- `*.desktop.cs` (Desktop)
-- `*.iOS.cs` (iOS)
-- `*.tvOS.cs`(tvOS)
-- `*.UIKit.cs`, `*.Apple.cs` (iOS & tvOS)
-- `*.Android.cs` (Android)
-- `*.WinAppSDK.cs` (Windows App SDK)
+| Suffix | Compiled for |
+|---|---|
+| `*.Android.cs` | `netX.0-android` |
+| `*.iOS.cs` | `netX.0-ios` |
+| `*.tvOS.cs` | `netX.0-tvos` |
+| `*.UIKit.cs` | `netX.0-ios` and `netX.0-tvos` |
+| `*.desktop.cs` | `netX.0-desktop` |
+| `*.wasm.cs`, `*.browserwasm.cs` | `netX.0-browserwasm` |
+| `*.WinAppSDK.cs` | `netX.0-windows10.x` |
+| `*.crossruntime.cs`, `*.skia.cs` | every target framework except `netX.0-windows10.x` |
 
-For class libraries we also provide:
-
-- `*.reference.cs` (Reference only)
-- `*.crossruntime.cs` (WebAssembly, Desktop, or Reference)
+`*.crossruntime.cs` and `*.skia.cs` are equivalent, and hold code for the targets Uno Platform renders itself as opposed to the WinAppSDK one. Neither names a drawing backend: `Uno.UI` is compiled once and resolves its backend at run time.
 
 > [!NOTE]
-> For backwards compatibility, using `.skia.cs` is currently equivalent to `.desktop.cs`. This might change in the future, so we recommend using the suffixes above instead.
+> Before Uno Platform 7.0, `*.skia.cs` and `*.crossruntime.cs` were compiled only for `netX.0-desktop`, which made
+> `*.skia.cs` an alias of `*.desktop.cs`. A file that is genuinely desktop-only should be renamed to `*.desktop.cs`.
+
+<!-- Separates two adjacent alerts, which markdownlint would otherwise read as one blockquote (MD028). -->
+
+> [!NOTE]
+> `*.reference.cs`, `*.iOSmacOS.cs` and `*.Apple.cs` are no longer recognized. `*.reference.cs` and
+> `*.iOSmacOS.cs` named build flavors that no longer exist and can be removed; rename `*.Apple.cs` to
+> `*.UIKit.cs`, which always had the identical rule.
 
 As discussed above setting `EnableDefaultUnoItems` to false will disable these includes.
 
@@ -491,13 +499,11 @@ In addition to the per-file suffixes described above, the Uno.Sdk recognizes a s
 | `Platforms/Android/` | `*-android` | `Main.Android.cs`, `AndroidManifest.xml`, Android resources |
 | `Platforms/iOS/` | `*-ios` | `Main.iOS.cs`, `Info.plist`, `Entitlements.plist`, `PrivacyInfo.xcprivacy` |
 | `Platforms/tvOS/` | `*-tvos` | tvOS-specific entry point and resources |
-| `Platforms/MacCatalyst/` | `*-maccatalyst` | Mac Catalyst entry point, `Info.plist`, `Entitlements.plist` |
-| `Platforms/MacOS/` | `*-macos` | macOS entry point, `Info.plist`, `Entitlements.plist` |
 | `Platforms/Desktop/` | `*-desktop` | `Program.cs` with the `UnoPlatformHostBuilder` configuration |
 | `Platforms/Wasm/` (or `Platforms/WebAssembly/`) | `*-browserwasm` | `Program.cs`, `wwwroot/`, `manifest.webmanifest` |
 | `Platforms/Windows/` | `*-windows10.*` | `Package.appxmanifest`, `app.manifest`, splash screens, tile/app-icon PNGs referenced by the manifest |
 
-The location of each folder can be overridden via the matching MSBuild property if your project uses a different layout: `PlatformsProjectFolder`, `AndroidProjectFolder`, `iOSProjectFolder`, `tvOSProjectFolder`, `MacCatalystProjectFolder`, `MacOSProjectFolder`, `DesktopProjectFolder`, `WasmProjectFolder`, `WindowsProjectFolder`.
+The location of each folder can be overridden via the matching MSBuild property if your project uses a different layout: `PlatformsProjectFolder`, `AndroidProjectFolder`, `iOSProjectFolder`, `tvOSProjectFolder`, `DesktopProjectFolder`, `WasmProjectFolder`, `WindowsProjectFolder`.
 
 ## Apple Privacy Manifest Support
 

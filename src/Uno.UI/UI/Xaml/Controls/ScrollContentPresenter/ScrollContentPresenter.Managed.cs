@@ -1,5 +1,4 @@
-﻿#if UNO_HAS_MANAGED_SCROLL_PRESENTER
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
@@ -25,7 +24,7 @@ using _PointerDeviceType = global::Microsoft.UI.Input.PointerDeviceType;
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : ContentPresenter, IDirectManipulationHandler
-#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+#if !__CROSSRUNTIME__
 		, ICustomClippingElement
 #endif
 	{
@@ -256,9 +255,10 @@ namespace Microsoft.UI.Xaml.Controls
 			float? zoomFactor = null,
 			bool disableAnimation = false,
 			bool isIntermediate = false,
+			bool isTouch = false,
 			[CallerMemberName] string callerName = "",
 			[CallerLineNumber] int callerLine = -1)
-			=> Set(horizontalOffset, verticalOffset, zoomFactor, options: new(disableAnimation, IsIntermediate: isIntermediate), callerName, callerLine);
+			=> Set(horizontalOffset, verticalOffset, zoomFactor, options: new(disableAnimation, IsTouch: isTouch, IsIntermediate: isIntermediate), callerName, callerLine);
 
 		private bool Set(
 			double? horizontalOffset = null,
@@ -747,8 +747,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// However, we determine the final value of the inertia to snap on the right snap-point.
 			var shouldSnapHorizontally = scrollable.Horizontally && sv is { HorizontalSnapPointsType: SnapPointsType.OptionalSingle or SnapPointsType.MandatorySingle };
 			var shouldSnapVertically = scrollable.Vertically && sv is { VerticalSnapPointsType: SnapPointsType.OptionalSingle or SnapPointsType.MandatorySingle };
-			var shouldSnapToTouchTextBox = sv.ShouldSnapToTouchTextBox();
-			if (shouldSnapHorizontally || shouldSnapVertically || shouldSnapToTouchTextBox)
+			if (shouldSnapHorizontally || shouldSnapVertically)
 			{
 				// Make clear that inertia is not allowed for the OnUpdated, but this is only for safety!
 				_touchInertia = null;
@@ -759,7 +758,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				double? h = null, v = null;
 
-				if (shouldSnapHorizontally || shouldSnapToTouchTextBox)
+				if (shouldSnapHorizontally)
 				{
 					var v0 = args.Velocities.Linear.X;
 					var duration = GestureRecognizer.Manipulation.InertiaProcessor.GetCompletionTime(v0, inertia.DesiredDisplacementDeceleration);
@@ -768,7 +767,7 @@ namespace Microsoft.UI.Xaml.Controls
 					h = HorizontalOffset - endValue;
 				}
 
-				if (shouldSnapVertically || shouldSnapToTouchTextBox)
+				if (shouldSnapVertically)
 				{
 					var v0 = args.Velocities.Linear.Y;
 					var duration = GestureRecognizer.Manipulation.InertiaProcessor.GetCompletionTime(v0, inertia.DesiredDisplacementDeceleration);
@@ -835,7 +834,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return direction;
 		}
 
-#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+#if !__CROSSRUNTIME__
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => true; // force scrollviewer to always clip
 #endif
@@ -898,4 +897,3 @@ namespace Microsoft.UI.Xaml.Controls
 	/// </param>
 	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsTouch = false, bool IsIntermediate = false);
 }
-#endif

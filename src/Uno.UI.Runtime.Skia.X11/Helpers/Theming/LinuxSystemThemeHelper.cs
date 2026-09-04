@@ -16,8 +16,11 @@ internal class LinuxSystemThemeHelper : ISystemThemeHelperExtension
 	private const string ObjectPath = "/org/freedesktop/portal/desktop";
 
 	public event EventHandler? SystemThemeChanged;
+	public event EventHandler? HighContrastChanged;
 
 	private SystemTheme _currentTheme = SystemTheme.Light;
+	private bool _currentHighContrast;
+
 	private SystemTheme CurrentTheme
 	{
 		get => _currentTheme;
@@ -38,7 +41,32 @@ internal class LinuxSystemThemeHelper : ISystemThemeHelperExtension
 		}
 	}
 
+	private bool CurrentHighContrast
+	{
+		get => _currentHighContrast;
+		set
+		{
+			if (NativeDispatcher.Main.HasThreadAccess)
+			{
+				if (_currentHighContrast != value)
+				{
+					_currentHighContrast = value;
+					HighContrastChanged?.Invoke(this, EventArgs.Empty);
+				}
+			}
+			else
+			{
+				NativeDispatcher.Main.Enqueue(() => CurrentHighContrast = value);
+			}
+		}
+	}
+
 	public SystemTheme GetSystemTheme() => CurrentTheme;
+
+	public bool IsHighContrastEnabled() => CurrentHighContrast;
+
+	public string GetHighContrastSchemeName() =>
+		CurrentTheme == SystemTheme.Dark ? "High Contrast Black" : "High Contrast White";
 
 	public static LinuxSystemThemeHelper Instance { get; } = new();
 
@@ -80,21 +108,49 @@ internal class LinuxSystemThemeHelper : ISystemThemeHelperExtension
 			var result = await settings.ReadOneAsync("org.freedesktop.appearance", "color-scheme");
 			CurrentTheme = result.GetUInt32() == 1 ? SystemTheme.Dark : SystemTheme.Light;
 
+			try
+			{
+				var contrast = await settings.ReadOneAsync("org.freedesktop.appearance", "contrast");
+				CurrentHighContrast = contrast.GetUInt32() == 1;
+			}
+			catch (DBusErrorReplyException)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug("The desktop portal does not expose the optional high-contrast setting.");
+				}
+				CurrentHighContrast = false;
+			}
+
 			// ignoring IDisposable return value here since we're watching for the lifetime of the app
 			await settings.WatchSettingChangedAsync((exception, tuple) =>
 			{
-				if (exception is not null)
+				try
+				{
+					if (exception is not null)
+					{
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().Error($"{nameof(settings.WatchSettingChangedAsync)} threw an exception", exception);
+						}
+						return;
+					}
+
+					if (tuple is { Namespace: "org.freedesktop.appearance", Key: "color-scheme" })
+					{
+						CurrentTheme = tuple.Value.GetUInt32() == 1 ? SystemTheme.Dark : SystemTheme.Light;
+					}
+					else if (tuple is { Namespace: "org.freedesktop.appearance", Key: "contrast" })
+					{
+						CurrentHighContrast = tuple.Value.GetUInt32() == 1;
+					}
+				}
+				catch (Exception e)
 				{
 					if (this.Log().IsEnabled(LogLevel.Error))
 					{
-						this.Log().Error($"{nameof(settings.WatchSettingChangedAsync)} threw an exception", exception);
+						this.Log().Error("Unable to process a desktop portal appearance change.", e);
 					}
-					return;
-				}
-
-				if (tuple is { Namespace: "org.freedesktop.appearance", Key: "color-scheme" })
-				{
-					CurrentTheme = tuple.Value.GetUInt32() == 1 ? SystemTheme.Dark : SystemTheme.Light;
 				}
 			});
 		}

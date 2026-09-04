@@ -1,4 +1,4 @@
-﻿#if __WASM__ || __SKIA__
+﻿#if __SKIA__
 // "Managed Measure Dirty Path" means it's the responsibility of the
 // managed code (Uno) to walk the tree and do the measure phase.
 #define IMPLEMENTS_MANAGED_MEASURE_DIRTY_PATH
@@ -58,7 +58,6 @@ namespace Microsoft.UI.Xaml
 			get => IsLayoutFlagSet(LayoutFlag.FirstMeasureDone);
 		}
 
-#if !__ANDROID__
 		/// <summary>
 		/// Determines if InvalidateArrange has been called
 		/// </summary>
@@ -67,7 +66,6 @@ namespace Microsoft.UI.Xaml
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => IsLayoutFlagSet(LayoutFlag.ArrangeDirty);
 		}
-#endif
 
 #if IMPLEMENTS_MANAGED_ARRANGE_DIRTY_PATH
 		internal bool IsArrangeDirtyPath
@@ -142,12 +140,10 @@ namespace Microsoft.UI.Xaml
 			/// </remarks>
 			MeasureDirtyPathDisabled = 0b0000_1000,
 
-#if !__ANDROID__ // On Android, it's directly connected to IsLayoutRequested
 			/// <summary>
 			/// Means the Arrange is dirty on the current element or one of its child
 			/// </summary>
 			ArrangeDirty = 0b0001_0000,
-#endif
 
 #if IMPLEMENTS_MANAGED_ARRANGE_DIRTY_PATH
 			/// <summary>
@@ -180,9 +176,7 @@ namespace Microsoft.UI.Xaml
 			LayoutFlag.MeasureDuringArrange |
 			LayoutFlag.MeasuringSelf |
 #endif
-#if !__ANDROID__
 			LayoutFlag.ArrangeDirty |
-#endif
 #if IMPLEMENTS_MANAGED_ARRANGE_DIRTY_PATH
 			LayoutFlag.ArrangeDirtyPath |
 			LayoutFlag.FirstArrangeDone |

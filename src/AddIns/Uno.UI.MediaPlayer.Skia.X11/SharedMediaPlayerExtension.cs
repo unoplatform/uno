@@ -79,7 +79,7 @@ internal class SharedMediaPlayerExtension : IMediaPlayerExtension
 				uri = new Uri(MsAppXScheme + ":///" + value.OriginalString.TrimStart('/'));
 			}
 
-			if (uri.IsLocalResource())
+			if (uri.IsMsAppx())
 			{
 				var filePath = uri.PathAndQuery;
 

@@ -36,7 +36,7 @@ public class Given_CalendarDatePicker
 
 		Assert.IsGreaterThan(300, calendarView.ActualHeight);
 
-		flyout.Close();
+		flyout.Hide();
 	}
 
 	[TestMethod]

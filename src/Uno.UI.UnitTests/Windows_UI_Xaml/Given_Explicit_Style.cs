@@ -164,41 +164,22 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_Default_Style_Provider_Is_Replaced()
 		{
-			AssertProviderReplacement(typeof(UwpDefaultStyleTestControl), isNative: false);
-			AssertProviderReplacement(typeof(NativeDefaultStyleTestControl), isNative: true);
+			var type = typeof(DefaultStyleTestControl);
+			var originalStyle = new Style(type);
+			var replacementStyle = new Style(type);
 
-			static void AssertProviderReplacement(Type type, bool isNative)
-			{
-				var originalStyle = new Style(type);
-				var replacementStyle = new Style(type);
+			Style.RegisterDefaultStyleForType(
+				type,
+				new TestResourceDictionaryProvider(type, originalStyle));
+			Assert.AreSame(originalStyle, Style.GetDefaultStyleForType(type));
 
-				FeatureConfiguration.Style.UseUWPDefaultStylesOverride[type] = !isNative;
-				try
-				{
-					Style.RegisterDefaultStyleForType(
-						type,
-						new TestResourceDictionaryProvider(type, originalStyle),
-						isNative);
-					Assert.AreSame(originalStyle, Style.GetDefaultStyleForType(type));
-
-					Style.RegisterDefaultStyleForType(
-						type,
-						new TestResourceDictionaryProvider(type, replacementStyle),
-						isNative);
-					Assert.AreSame(replacementStyle, Style.GetDefaultStyleForType(type));
-				}
-				finally
-				{
-					FeatureConfiguration.Style.UseUWPDefaultStylesOverride.Remove(type);
-				}
-			}
+			Style.RegisterDefaultStyleForType(
+				type,
+				new TestResourceDictionaryProvider(type, replacementStyle));
+			Assert.AreSame(replacementStyle, Style.GetDefaultStyleForType(type));
 		}
 
-		private sealed class UwpDefaultStyleTestControl : Control
-		{
-		}
-
-		private sealed class NativeDefaultStyleTestControl : Control
+		private sealed class DefaultStyleTestControl : Control
 		{
 		}
 

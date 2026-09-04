@@ -24,7 +24,7 @@ using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.ListViewPages;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.DevTools.Input;
 
 #if !WINAPPSDK
 using Uno.UI;
@@ -1552,7 +1552,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -1599,7 +1599,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -1646,6 +1646,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #elif __WASM__
 		[Ignore("Flaky in CI.")]
 #endif
+		// The scrolls below are animated and are only awaited with fixed delays. Skia macOS steps through more
+		// animation frames than Win32, so those delays can elapse while the viewport is still moving and the
+		// layout-slot assertions observe an intermediate offset.
+		// See https://github.com/unoplatform/uno/issues/9080.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaMacOS)]
 		public async Task When_Large_List_Scroll_To_End_Then_Back_Up_And_First_Item()
 		{
 			var materialized = 0;
@@ -1654,7 +1659,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
@@ -1715,7 +1720,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
@@ -1786,7 +1791,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var list = new ListView
 			{
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -2121,7 +2126,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -2189,7 +2194,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -2251,7 +2256,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var list = new ListView
 			{
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -3138,62 +3143,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Item_Removed_And_Relayout_NV286()
 		{
-			using (FeatureConfigurationHelper.UseListViewAnimations())
+			var source = new ObservableCollection<string>();
+			var index = 0;
+			for (int i = 0; i < 5; i++)
 			{
-				var source = new ObservableCollection<string>();
-				var index = 0;
-				for (int i = 0; i < 5; i++)
-				{
-					InsertAnItem();
-				}
-
-				var SUT = new ListView
-				{
-					HorizontalAlignment = HorizontalAlignment.Left,
-					Width = 300,
-					Height = 180,
-					Background = new SolidColorBrush(Colors.Beige),
-					ItemsSource = source,
-					ItemTemplate = NV286_Template
-				};
-
-				var errorCatchGrid = new ErrorCatchGrid
-				{
-					Children =
-					{
-						SUT
-					}
-				};
-
-				WindowHelper.WindowContent = errorCatchGrid;
-				await WindowHelper.WaitForLoaded(SUT);
-				await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(3));
-
-				source.RemoveAt(source.Count - 1);
 				InsertAnItem();
-				InsertAnItem();
+			}
 
-				await Task.Delay(5); // The key to reproing the bug is to trigger a relayout asynchronously, while the disappear animation is still in flight
-				var viewToModify = SUT.ContainerFromIndex(3) as ListViewItem;
-				Assert.IsNotNull(viewToModify);
-				var border = viewToModify.FindFirstDescendant<Border>(b => b.Name == "ItemBorder");
-				Assert.IsNotNull(border);
-				border.Width += 20;
+			var SUT = new ListView
+			{
+				HorizontalAlignment = HorizontalAlignment.Left,
+				Width = 300,
+				Height = 180,
+				Background = new SolidColorBrush(Colors.Beige),
+				ItemsSource = source,
+				ItemTemplate = NV286_Template
+			};
 
-				await WindowHelper.WaitForIdle();
-
-				if (errorCatchGrid.Exception is { } e)
+			var errorCatchGrid = new ErrorCatchGrid
+			{
+				Children =
 				{
-					throw e;
+					SUT
 				}
+			};
 
-				// If all goes well, the app will not crash when the removed item finishes animating
+			WindowHelper.WindowContent = errorCatchGrid;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(3));
 
-				void InsertAnItem()
-				{
-					index++;
-					source.Insert(0, $"Item {index}");
-				}
+			source.RemoveAt(source.Count - 1);
+			InsertAnItem();
+			InsertAnItem();
+
+			await Task.Delay(5); // The key to reproing the bug is to trigger a relayout asynchronously, while the disappear animation is still in flight
+			var viewToModify = SUT.ContainerFromIndex(3) as ListViewItem;
+			Assert.IsNotNull(viewToModify);
+			var border = viewToModify.FindFirstDescendant<Border>(b => b.Name == "ItemBorder");
+			Assert.IsNotNull(border);
+			border.Width += 20;
+
+			await WindowHelper.WaitForIdle();
+
+			if (errorCatchGrid.Exception is { } e)
+			{
+				throw e;
+			}
+
+			// If all goes well, the app will not crash when the removed item finishes animating
+
+			void InsertAnItem()
+			{
+				index++;
+				source.Insert(0, $"Item {index}");
 			}
 		}
 
@@ -3678,39 +3680,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			const int ITEMS_TO_ADD = 6;
 			const int INDEX_TO_DELETE = 3;
-			using (FeatureConfigurationHelper.UseListViewAnimations())
+
+			var source = Enumerable.Range(0, ITEMS_TO_ADD).Select(a => new DefaultItem { Name = $"Item {a}", Value = a * a }).ToArray();
+
+			var SUT = new ListView
 			{
-				var source = Enumerable.Range(0, ITEMS_TO_ADD).Select(a => new DefaultItem { Name = $"Item {a}", Value = a * a }).ToArray();
+				Width = 200,
+				Height = 300,
+				ItemTemplate = DefaultItemTemplate
+			};
 
-				var SUT = new ListView
-				{
-					Width = 200,
-					Height = 300,
-					ItemTemplate = DefaultItemTemplate
-				};
+			var model = new When_Deleting_Item_DataContext(source);
+			SUT.DataContext = model;
+			SUT.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Path = new PropertyPath(nameof(model.Items)), Mode = BindingMode.OneWay });
 
-				var model = new When_Deleting_Item_DataContext(source);
-				SUT.DataContext = model;
-				SUT.SetBinding(ItemsControl.ItemsSourceProperty, new Binding { Path = new PropertyPath(nameof(model.Items)), Mode = BindingMode.OneWay });
+			WindowHelper.WindowContent = SUT;
 
-				WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
 
-				await WindowHelper.WaitForLoaded(SUT);
+			Assert.AreEqual(ITEMS_TO_ADD, SUT.Items.Count);
 
-				Assert.AreEqual(ITEMS_TO_ADD, SUT.Items.Count);
+			var container = SUT.ContainerFromIndex(INDEX_TO_DELETE) as ContentControl;
 
-				var container = SUT.ContainerFromIndex(INDEX_TO_DELETE) as ContentControl;
+			model.Items.RemoveAt(INDEX_TO_DELETE);
 
-				model.Items.RemoveAt(INDEX_TO_DELETE);
+			// Ensure the container has properly been cleaned
+			// up after being removed.
+			Assert.IsNull(container.Content);
 
-				// Ensure the container has properly been cleaned
-				// up after being removed.
-				Assert.IsNull(container.Content);
+			Assert.IsNull(container.GetBindingExpression(ContentControl.ContentProperty));
 
-				Assert.IsNull(container.GetBindingExpression(ContentControl.ContentProperty));
-
-				Assert.HasCount(5, SUT.Items);
-			}
+			Assert.HasCount(5, SUT.Items);
 		}
 
 #if __SKIA__ || __WASM__
@@ -3817,6 +3817,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		// Skia-WASM: the second scroll samples mid-recycle, so the materialized index moves backwards, see https://github.com/unoplatform/uno/issues/24156
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
 		public async Task When_Incremental_Load_Default()
 		{
 			const int BatchSize = 25;
@@ -3870,7 +3872,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Destabilized by changes in https://github.com/unoplatform/uno/pull/23269
+		// Skia-WASM: the materialized index regresses during the settle that follows a successful poll, see https://github.com/unoplatform/uno/issues/24147
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native | RuntimeTestPlatforms.SkiaWasm)] // Destabilized by changes in https://github.com/unoplatform/uno/pull/23269
 		public async Task When_Incremental_Load_ShouldStop()
 		{
 			const int BatchSize = 25;
@@ -4423,7 +4426,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				ItemsSource = Enumerable.Range(0, NumberOfItems).Select(x => $"Item {x}").ToList(),
 				ItemContainerStyle = NoSpaceContainerStyle,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 
 					var tb = new TextBlock();
@@ -4504,7 +4507,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var SUT = new ListView()
 			{
 				ItemContainerStyle = BasicContainerStyle,
-				HeaderTemplate = new DataTemplate(() =>
+				HeaderTemplate = new DataTemplate(null, (_, _) =>
 				{
 					var s = new StackPanel
 					{
@@ -4697,7 +4700,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				Height = 400,
 				ItemsSource = Enumerable.Range(0, 100).Select(i => $"item {i}" + new string('\n', random.Next(0, 5))).ToArray(),
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					var tb = new TextBlock();
 					tb.SetBinding(TextBlock.TextProperty, new Binding());
@@ -4872,7 +4875,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Height = 100,
 				Background = new SolidColorBrush(Colors.Pink),
 			};
-			var setup = new StackPanel { border, SUT };
+			var setup = new StackPanel { Children = { border, SUT } };
 
 			await UITestHelper.Load(setup, x => x.IsLoaded && SUT.ContainerFromIndex(2) is { });
 			await WindowHelper.WaitForIdle();
@@ -5944,10 +5947,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 						new ListView
 						{
 							ItemsSource = Enumerable.Range(0, 200).Select(x => $"asd {x}"),
-							HeaderTemplate = new DataTemplate(() => new StackPanel
+							HeaderTemplate = new DataTemplate(null, (_, _) => new StackPanel
 							{
-								new TextBlock() { Text = "header" },
-								new TextBlock().Apply(x => x.SetBinding(TextBlock.TextProperty, new Binding())),
+								Children =
+								{
+									new TextBlock() { Text = "header" },
+									new TextBlock().Apply(x => x.SetBinding(TextBlock.TextProperty, new Binding())),
+								}
 							}.Apply(x => x.DataContextChanged += (s, e) => LvHeaderDcChanged?.Invoke(s, e))),
 						}.Apply(x => Grid.SetRow(x, 1)),
 					},
@@ -6110,6 +6116,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		public class SubclassOfObservableCollection : ObservableCollection<string>
 		{
+		}
+	}
+
+	// Repro tests for https://github.com/unoplatform/uno/issues/2136
+	[TestClass]
+	[RunsOnUIThread]
+	public class Given_ItemsStackPanel_Stretch
+	{
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/2136")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+#if __APPLE_UIKIT__
+		[Ignore("Disable all listview tests until crash is resolved https://github.com/unoplatform/uno/issues/17101")]
+#endif
+		public async Task When_ListView_ItemsStackPanel_Children_Are_Stretched_To_Full_Width()
+		{
+			const double ContainerWidth = 300;
+
+			var sut = new ListView
+			{
+				Width = ContainerWidth,
+				Height = 400,
+				ItemsSource = new[] { "Item 1", "Item 2", "Item 3" },
+				ItemTemplate = XamlHelper.LoadXaml<DataTemplate>("""
+					<DataTemplate>
+						<Border Height="50" Background="Blue" HorizontalAlignment="Stretch">
+							<TextBlock Text="{Binding}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+						</Border>
+					</DataTemplate>
+					"""),
+			};
+
+			await UITestHelper.Load(sut, x => x.IsLoaded);
+			await UITestHelper.WaitForIdle();
+			await UITestHelper.WaitFor(() => sut.ItemsPanelRoot?.ActualWidth > 0, timeoutMS: 3000);
+
+			var panel = sut.ItemsPanelRoot;
+			Assert.IsNotNull(panel, "ItemsPanelRoot should not be null.");
+
+			// #2136 is specific to ItemsStackPanel, so fail loudly if the default panel ever changes.
+			Assert.IsInstanceOfType(panel, typeof(ItemsStackPanel),
+				$"Expected the default ListView ItemsPanel to be an ItemsStackPanel, but got {panel.GetType().Name}.");
+
+			Assert.AreEqual(ContainerWidth, panel.ActualWidth, 2d,
+				$"Expected ItemsPanelRoot to have ActualWidth={ContainerWidth}, but got {panel.ActualWidth}.");
+
+			await UITestHelper.WaitFor(() => sut.ContainerFromIndex(0) is ListViewItem, timeoutMS: 3000);
+			var container = sut.ContainerFromIndex(0) as ListViewItem;
+			Assert.IsNotNull(container, "Expected container for index 0.");
+			await UITestHelper.WaitFor(() => container.ActualWidth > 0, timeoutMS: 3000);
+
+			// The regression is items failing to fill the panel, so measure the container against the panel itself.
+			Assert.AreEqual(panel.ActualWidth, container.ActualWidth, 2d,
+				$"Expected ListViewItem to be stretched to the panel width ({panel.ActualWidth}px), but got {container.ActualWidth}.");
 		}
 	}
 }

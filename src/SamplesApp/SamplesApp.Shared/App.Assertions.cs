@@ -109,7 +109,7 @@ partial class App
 		var textBox = new TextBox();
 		var xamlRoot = _mainWindow.RootElement.XamlRoot;
 		textBox.XamlRoot = xamlRoot;
-		var textBoxView = new TextBoxView(textBox);
+		var textBoxView = new TextBoxView(textBox.Core);
 		ApiExtensibility.CreateInstance<IOverlayTextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
 
 		if (textBoxViewExtension is not null)

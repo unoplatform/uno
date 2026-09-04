@@ -161,14 +161,14 @@ public partial class Given_Parser
 
 		test.ExpectedDiagnostics.AddRange(
 		[
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 40, 14, 40, 14).WithArguments("Property 'CounterAxisAlignment' does not exist on 'StackPanel'"),
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 40, 14, 40, 14).WithArguments("Property 'Justify' does not exist on 'StackPanel'"),
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 60, 16, 60, 16).WithArguments("Property 'CounterAxisAlignment' does not exist on 'StackPanel'"),
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 107, 8, 107, 8).WithArguments("Property 'CounterAxisAlignment' does not exist on 'StackPanel'"),
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 92, 37, 92, 37).WithArguments("Missing comma between members of 'Binding'"),
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 92, 22, 92, 22).WithArguments("Property 'AncestorType' is not supported on 'RelativeSource'"),
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 95, 36, 95, 36).WithArguments("Missing comma between members of 'Binding'"),
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 95, 22, 95, 22).WithArguments("Property 'AncestorType' is not supported on 'RelativeSource'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 40, 14, 40, 14).WithArguments("Property 'CounterAxisAlignment' does not exist on 'StackPanel'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 40, 14, 40, 14).WithArguments("Property 'Justify' does not exist on 'StackPanel'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 60, 16, 60, 16).WithArguments("Property 'CounterAxisAlignment' does not exist on 'StackPanel'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 107, 8, 107, 8).WithArguments("Property 'CounterAxisAlignment' does not exist on 'StackPanel'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 92, 37, 92, 37).WithArguments("Missing comma between members of 'Binding'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 92, 22, 92, 22).WithArguments("Property 'AncestorType' is not supported on 'RelativeSource'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 95, 36, 95, 36).WithArguments("Missing comma between members of 'Binding'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 95, 22, 95, 22).WithArguments("Property 'AncestorType' is not supported on 'RelativeSource'"),
 		]);
 
 		await test.RunAsync();
@@ -197,7 +197,7 @@ public partial class Given_Parser
 
 		test.ExpectedDiagnostics.AddRange(
 		[
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 7, 10, 7, 10).WithArguments("Missing comma between members of 'Binding'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 7, 10, 7, 10).WithArguments("Missing comma between members of 'Binding'"),
 		]);
 
 		await test.RunAsync();
@@ -226,7 +226,7 @@ public partial class Given_Parser
 
 		test.ExpectedDiagnostics.AddRange(
 		[
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 7, 3, 7, 3).WithArguments("Property 'AncestorType' is not supported on 'RelativeSource'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 7, 3, 7, 3).WithArguments("Property 'AncestorType' is not supported on 'RelativeSource'"),
 		]);
 
 		await test.RunAsync();
@@ -255,7 +255,7 @@ public partial class Given_Parser
 
 		test.ExpectedDiagnostics.AddRange(
 		[
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 7, 3, 7, 3).WithArguments("'Page' is not a valid 'RelativeSourceMode'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 7, 3, 7, 3).WithArguments("'Page' is not a valid 'RelativeSourceMode'"),
 		]);
 
 		await test.RunAsync();
@@ -289,7 +289,7 @@ public partial class Given_Parser
 
 		test.ExpectedDiagnostics.AddRange(
 		[
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 6, 3, 6, 3).WithArguments("Failed to create a 'Microsoft.UI.Xaml.Controls.Orientation' from the text 'InvalidOrientation'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 6, 3, 6, 3).WithArguments("Failed to create a 'Microsoft.UI.Xaml.Controls.Orientation' from the text 'InvalidOrientation'"),
 		]);
 
 		await test.RunAsync();
@@ -323,8 +323,8 @@ public partial class Given_Parser
 
 		test.ExpectedDiagnostics.AddRange(
 		[
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 6, 3, 6, 3).WithArguments("Failed to create a 'Microsoft.UI.Xaml.Controls.Orientation' from the text 'BadValue'"),
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 7, 4, 7, 4).WithArguments("Failed to create a 'Microsoft.UI.Xaml.TextWrapping' from the text 'BadWrap'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 6, 3, 6, 3).WithArguments("Failed to create a 'Microsoft.UI.Xaml.Controls.Orientation' from the text 'BadValue'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 7, 4, 7, 4).WithArguments("Failed to create a 'Microsoft.UI.Xaml.TextWrapping' from the text 'BadWrap'"),
 		]);
 
 		await test.RunAsync();
@@ -425,7 +425,7 @@ public partial class Given_Parser
 
 		test.ExpectedDiagnostics.AddRange(
 		[
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 39, 37, 39, 37).WithArguments("Missing comma between members of 'Binding'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 39, 37, 39, 37).WithArguments("Missing comma between members of 'Binding'"),
 		]);
 
 		await test.RunAsync();
@@ -568,7 +568,7 @@ public partial class Given_Parser
 		test.ExpectedDiagnostics.AddRange(
 		[
 			DiagnosticResult.CompilerError("UXAML0001")
-				.WithSpan("C:/Project/0/MainPage.xaml", 4, 3, 4, 3)
+				.WithSpan("//Project/0/MainPage.xaml", 4, 3, 4, 3)
 				.WithArguments("Element must have x:Name attribute specified since it uses x:Load."),
 		]);
 
@@ -597,7 +597,7 @@ public partial class Given_Parser
 		test.ExpectedDiagnostics.AddRange(
 		[
 			DiagnosticResult.CompilerError("UXAML0001")
-				.WithSpan("C:/Project/0/MainPage.xaml", 1, 3, 1, 3)
+				.WithSpan("//Project/0/MainPage.xaml", 1, 3, 1, 3)
 				.WithArguments("x:Load cannot be used on the root of a Page, User Control or DataTemplate, or direct children of a Resource Dictionary, and can only be used on elements of type UIElement or FlyoutBase"),
 		]);
 
@@ -628,7 +628,7 @@ public partial class Given_Parser
 		[
 			DiagnosticResult.CompilerError("UXAML0001")
 
-				.WithSpan("C:/Project/0/MainPage.xaml", 7, 6, 7, 6)
+				.WithSpan("//Project/0/MainPage.xaml", 7, 6, 7, 6)
 				.WithArguments("x:Load cannot be used on the root of a Page, User Control or DataTemplate, or direct children of a Resource Dictionary, and can only be used on elements of type UIElement or FlyoutBase"),
 		]);
 
@@ -658,7 +658,7 @@ public partial class Given_Parser
 		test.ExpectedDiagnostics.AddRange(
 		[
 			DiagnosticResult.CompilerError("UXAML0001")
-				.WithSpan("C:/Project/0/MyRD.xaml", 5, 4, 5, 4)
+				.WithSpan("//Project/0/MyRD.xaml", 5, 4, 5, 4)
 				.WithArguments("x:Load cannot be used on the root of a Page, User Control or DataTemplate, or direct children of a Resource Dictionary, and can only be used on elements of type UIElement or FlyoutBase"),
 		]);
 
@@ -684,7 +684,7 @@ public partial class Given_Parser
 		test.ExpectedDiagnostics.AddRange(
 		[
 			DiagnosticResult.CompilerError("UXAML0001")
-				.WithSpan("C:/Project/0/MainPage.xaml", 5, 4, 5, 4)
+				.WithSpan("//Project/0/MainPage.xaml", 5, 4, 5, 4)
 				.WithArguments("x:Load cannot be used on the root of a Page, User Control or DataTemplate, or direct children of a Resource Dictionary, and can only be used on elements of type UIElement or FlyoutBase"),
 		]);
 

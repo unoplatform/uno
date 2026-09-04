@@ -1,10 +1,12 @@
 using System;
+using Microsoft.UI.Input;
+using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
+using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
 using System.Threading;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Input;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.Input.Pointer;

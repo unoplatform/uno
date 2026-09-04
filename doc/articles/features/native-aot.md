@@ -58,7 +58,6 @@ and requires setting the `$(PublishAot)` MSBuild property within `App.csproj` to
     ```xml
     <PropertyGroup>
       <PublishAot Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' ">true</PublishAot>
-      <PublishAot Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst' ">true</PublishAot>
       <!-- repeat for any other platforms that Native AOT should be enabled on… -->
     </PropertyGroup>
     ```
