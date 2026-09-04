@@ -117,7 +117,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			// active backend were swapped across the await.
 			var factory = DrawingFactory.Current;
 			using var texture = RenderToTexture(factory, visual, render);
-			var image = await factory.SnapshotAsync(texture);
+			using var image = await factory.SnapshotAsync(texture);
 			CopyPixelsTo(image, render.Buffer.Pointer, render.ByteCount);
 			return (render.ByteCount, render.TargetWidth, render.TargetHeight);
 		}

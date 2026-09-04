@@ -276,22 +276,50 @@ public sealed unsafe class WebGpuTexture : DrawingResource, ITexture
 /// <summary>A managed <see cref="IImage"/> over a WebGPU offscreen readback. The readback bytes are in the
 /// device's color format (RGBA for the offscreen device, BGRA for a swapchain device); <see cref="CopyPixels"/>
 /// yields BGRA per the seam's image convention, swapping R/B only when the source is RGBA. No Skia.</summary>
-internal sealed class WebGpuReadbackImage : DrawingResource, IImage
+internal sealed unsafe class WebGpuReadbackImage : DrawingResource, IImage
 {
-	private readonly byte[] _bytes;
+	private IntPtr _bytes;
+	private readonly int _length;
 	private readonly bool _sourceIsBgra;
-	public WebGpuReadbackImage(int width, int height, byte[] bytes, bool sourceIsBgra) { PixelWidth = width; PixelHeight = height; _bytes = bytes; _sourceIsBgra = sourceIsBgra; }
-	public int PixelWidth { get; }
-	public int PixelHeight { get; }
-	public void CopyPixels(Span<byte> destination)
+
+	/// <summary>Drops the readback's 256-byte row padding into a tightly-packed buffer this image owns.</summary>
+	// The buffer is unmanaged: a window-sized snapshot runs to several megabytes, which as a managed array would
+	// land on the large-object heap — and on wasm in a heap with little room to spare. This way it is gone the
+	// moment the image is released, rather than at the next gen2 collection.
+	public WebGpuReadbackImage(int width, int height, ReadOnlySpan<byte> paddedRows, int paddedStride, bool sourceIsBgra)
 	{
-		int n = Math.Min(_bytes.Length, destination.Length);
-		if (_sourceIsBgra) { _bytes.AsSpan(0, n).CopyTo(destination); return; }
-		for (int i = 0; i + 3 < n; i += 4) { destination[i] = _bytes[i + 2]; destination[i + 1] = _bytes[i + 1]; destination[i + 2] = _bytes[i]; destination[i + 3] = _bytes[i + 3]; }
+		PixelWidth = width;
+		PixelHeight = height;
+		_sourceIsBgra = sourceIsBgra;
+		var stride = width * 4;
+		_length = stride * height;
+		_bytes = (IntPtr)NativeMemory.Alloc((nuint)_length);
+		var destination = new Span<byte>((void*)_bytes, _length);
+		for (var y = 0; y < height; y++)
+		{
+			paddedRows.Slice(y * paddedStride, stride).CopyTo(destination.Slice(y * stride, stride));
+		}
 	}
 
-	// Managed readback bytes; the GC reclaims them.
-	protected override void Free() { }
+	public int PixelWidth { get; }
+	public int PixelHeight { get; }
+
+	public void CopyPixels(Span<byte> destination)
+	{
+		var source = new ReadOnlySpan<byte>((void*)_bytes, _length);
+		int n = Math.Min(_length, destination.Length);
+		if (_sourceIsBgra) { source.Slice(0, n).CopyTo(destination); return; }
+		for (int i = 0; i + 3 < n; i += 4) { destination[i] = source[i + 2]; destination[i + 1] = source[i + 1]; destination[i + 2] = source[i]; destination[i + 3] = source[i + 3]; }
+	}
+
+	protected override void Free()
+	{
+		var buffer = System.Threading.Interlocked.Exchange(ref _bytes, IntPtr.Zero);
+		if (buffer != IntPtr.Zero) { NativeMemory.Free((void*)buffer); }
+	}
+
+	// Unmanaged, so a missed Release would lose the buffer rather than leave it to the GC.
+	~WebGpuReadbackImage() => Free();
 }
 
 /// <summary>
@@ -431,14 +459,14 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 		bool srcBgra = _device.ColorFormat == WGPUTextureFormat.BGRA8Unorm;
 		if (!OperatingSystem.IsBrowser())
 		{
-			return new WebGpuReadbackImage(w, h, _device.ReadPixelsFromTex(t.Tex, w, h), srcBgra);
+			return _device.ReadPixelsToImage(t.Tex, w, h, srcBgra);
 		}
 
 		_device.EncodeCopyTexToReadbackBuffer(t.Tex, w, h, out var buf, out var total, out var padded);
 		// Browser GPU→CPU map must run off the JS event loop; the JS bridge lives in the host init assembly.
 		var paddedBytes = Convert.FromBase64String(await WebGpuJsInterop.MapReadBase64Async((int)buf, total));
 		_device.DestroyBuffer(buf);
-		return new WebGpuReadbackImage(w, h, WebGpuDevice.Unpad(paddedBytes, w, h, padded), srcBgra);
+		return new WebGpuReadbackImage(w, h, paddedBytes, padded, srcBgra);
 	}
 	public IShader CreateLinearGradientShader(Vector2 start, Vector2 end, WColor[] colors, float[] colorPositions, GradientTileMode tileMode, System.Numerics.Matrix3x2 localMatrix)
 		=> new WebGpuShader { Radial = false, P0 = start, P1 = end, Colors = colors, Stops = colorPositions, TileMode = tileMode, LocalMatrix = localMatrix };

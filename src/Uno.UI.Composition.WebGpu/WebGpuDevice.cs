@@ -387,7 +387,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	/// <summary>Synchronous GPU→CPU readback of a texture, tightly-packed in the device color format, via a blocking
 	/// wgpuDevicePoll spin. Off-browser only (a native thread can pump the map); on the browser the drawing factory's
 	/// SnapshotAsync maps off the JS event loop instead, so this is never reached there.</summary>
-	public byte[] ReadPixelsFromTex(IntPtr tex, int w, int h)
+	public WebGpuReadbackImage ReadPixelsToImage(IntPtr tex, int w, int h, bool sourceIsBgra)
 	{
 		EncodeCopyTexToReadbackBuffer(tex, w, h, out var buf, out var total, out var padded);
 		_ = wgpuDevicePoll(Dev, 1u, null);
@@ -403,10 +403,11 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		while (!mapped[0]) { _ = wgpuDevicePoll(Dev, 1u, null); }
 		mh.Free();
 		var mp = (byte*)(void*)wgpuBufferGetMappedRange(buf, 0, (nuint)total);
-		var outp = Unpad(new ReadOnlySpan<byte>(mp, (int)total), w, h, padded);
+		// Unpadded straight out of the mapped range into the image's own buffer — no intermediate array.
+		var image = new WebGpuReadbackImage(w, h, new ReadOnlySpan<byte>(mp, (int)total), padded, sourceIsBgra);
 		wgpuBufferUnmap(buf);
 		wgpuBufferDestroy(buf);
-		return outp;
+		return image;
 	}
 
 	/// <summary>Creates a MAP_READ buffer, copies <paramref name="tex"/> into it (256-byte-aligned rows) and submits.
@@ -431,18 +432,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	}
 
 	public void DestroyBuffer(IntPtr buf) => wgpuBufferDestroy(buf);
-
-	/// <summary>Drops the 256-byte row padding, yielding tightly-packed w×h×4 bytes.</summary>
-	public static byte[] Unpad(ReadOnlySpan<byte> paddedRows, int w, int h, int padded)
-	{
-		int unpadded = w * 4;
-		var outp = new byte[w * h * 4];
-		for (int y = 0; y < h; y++)
-		{
-			paddedRows.Slice(y * padded, unpadded).CopyTo(outp.AsSpan(y * unpadded, unpadded));
-		}
-		return outp;
-	}
 
 	/// <summary>Set by the browser head at WebGPU init: maps a readback buffer (by wgpu handle ptr) off the JS
 	/// event loop and returns its raw (row-padded) bytes. The only way to complete a GPU→CPU map on WASM, where a
