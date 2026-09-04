@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.JavaScript;
@@ -337,30 +337,6 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-#pragma warning disable CS0067 // The event is never used
-		/// <summary>
-		/// Occurs when the application transitions from Suspended state to Running state.
-		/// </summary>
-		public event EventHandler<object> Resuming;
-#pragma warning restore CS0067 // The event is never used
-
-#pragma warning disable CS0067 // The event is never used
-		/// <summary>
-		/// Occurs when the application transitions to Suspended state from some other state.
-		/// </summary>
-		public event SuspendingEventHandler Suspending;
-#pragma warning restore CS0067 // The event is never used
-
-		/// <summary>
-		/// Occurs when the app moves from the foreground to the background.
-		/// </summary>
-		public event EnteredBackgroundEventHandler EnteredBackground;
-
-		/// <summary>
-		/// Occurs when the app moves from the background to the foreground.
-		/// </summary>
-		public event LeavingBackgroundEventHandler LeavingBackground;
-
 		/// <summary>
 		/// Occurs when an exception can be handled by app code, as forwarded from a native-level Windows Runtime error.
 		/// Apps can mark the occurrence as handled in event data.
@@ -533,7 +509,6 @@ namespace Microsoft.UI.Xaml
 			{
 				_isInBackground = true;
 				var enteredEventArgs = new EnteredBackgroundEventArgs(onComplete);
-				EnteredBackground?.Invoke(this, enteredEventArgs);
 				CoreApplication.RaiseEnteredBackground(enteredEventArgs);
 				var completedSynchronously = enteredEventArgs.DeferralManager.EventRaiseCompleted();
 
@@ -557,7 +532,6 @@ namespace Microsoft.UI.Xaml
 			{
 				_isInBackground = false;
 				var leavingEventArgs = new LeavingBackgroundEventArgs(onComplete);
-				LeavingBackground?.Invoke(this, leavingEventArgs);
 				CoreApplication.RaiseLeavingBackground(leavingEventArgs);
 				var completedSynchronously = leavingEventArgs.DeferralManager.EventRaiseCompleted();
 
@@ -582,7 +556,6 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			Resuming?.Invoke(null, null);
 			CoreApplication.RaiseResuming();
 			IsSuspended = false;
 		}
@@ -597,7 +570,6 @@ namespace Microsoft.UI.Xaml
 			var suspendingOperation = new SuspendingOperation(GetSuspendingOffset(), () => IsSuspended = true);
 			var suspendingEventArgs = new SuspendingEventArgs(suspendingOperation);
 
-			Suspending?.Invoke(this, suspendingEventArgs);
 			CoreApplication.RaiseSuspending(suspendingEventArgs);
 			var completedSynchronously = suspendingOperation.DeferralManager.EventRaiseCompleted();
 

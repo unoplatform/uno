@@ -605,8 +605,6 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		{
 			return true;
 		}
-		// Closing should continue, perform suspension.
-		Application.Current.RaiseSuspending();
 		// DefWindowProc destroys the window from here.
 		StopRenderThread();
 		return false;
