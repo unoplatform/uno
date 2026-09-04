@@ -1,9 +1,10 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 
 namespace Microsoft.Windows.AppLifecycle;
@@ -13,7 +14,7 @@ namespace Microsoft.Windows.AppLifecycle;
 /// </summary>
 public partial class AppInstance
 {
-	private static readonly Lazy<AppInstance> _current = new(() => new AppInstance());
+	private static readonly AppInstance _current = new();
 
 	private AppActivationArguments? _activationArguments;
 	private bool _hasLaunched;
@@ -69,7 +70,7 @@ public partial class AppInstance
 	/// Retrieves the current running instance of the app.
 	/// </summary>
 	/// <returns>The current running instance of the app.</returns>
-	public static AppInstance GetCurrent() => _current.Value;
+	public static AppInstance GetCurrent() => _current;
 
 	/// <summary>
 	/// Retrieves a collection of all running instances of the app.
@@ -78,7 +79,7 @@ public partial class AppInstance
 	/// <remarks>
 	/// Uno does not track sibling instances, so this always reports just the current one.
 	/// </remarks>
-	public static IList<AppInstance> GetInstances() => [_current.Value];
+	public static IList<AppInstance> GetInstances() => [_current];
 
 	/// <summary>
 	/// Registers <paramref name="key"/> against an app instance, or finds the instance that already owns it.
@@ -94,7 +95,7 @@ public partial class AppInstance
 	/// </remarks>
 	public static AppInstance FindOrRegisterForKey(string key)
 	{
-		var instance = _current.Value;
+		var instance = _current;
 		instance._key = key ?? string.Empty;
 		return instance;
 	}
@@ -125,18 +126,70 @@ public partial class AppInstance
 
 		if (_hasLaunched)
 		{
+			LogActivation(args, "raising Activated");
 			Activated?.Invoke(this, args);
 		}
 		else
 		{
+			LogActivation(args, "storing as the startup activation");
 			_activationArguments = args;
 		}
 	}
 
 	/// <summary>
+	/// Reports the activation the app was started with, for hosts that only learn of it after
+	/// <see cref="Microsoft.UI.Xaml.Application.OnLaunched"/> has already run.
+	/// </summary>
+	/// <remarks>
+	/// The UIKit scene lifecycle delivers a cold-start URL or shortcut through
+	/// <c>scene:willConnectToSession:options:</c>, which UIKit raises only *after*
+	/// <c>didFinishLaunchingWithOptions</c> has started the app. Storing it keeps
+	/// <see cref="GetActivatedEventArgs"/> truthful, and raising it as well means an app that only
+	/// subscribed to <see cref="Activated"/> still hears about it.
+	/// </remarks>
+	internal void ReportStartupActivation(AppActivationArguments args)
+	{
+		ArgumentNullException.ThrowIfNull(args);
+
+		LogActivation(args, "storing as the startup activation, reported late");
+		_activationArguments = args;
+
+		if (_hasLaunched)
+		{
+			Activated?.Invoke(this, args);
+		}
+	}
+
+	/// <summary>
+	/// Whether the app has progressed past its launch, and so whether a further activation is
+	/// raised rather than stored.
+	/// </summary>
+	internal bool HasLaunched => _hasLaunched;
+
+	/// <summary>
 	/// Marks the app as launched, so that any further activation is raised rather than stored.
 	/// </summary>
 	internal void NotifyLaunched() => _hasLaunched = true;
+
+	/// <summary>
+	/// Records what became of a reported activation. This type is the one point every platform host
+	/// routes activations through, so it is the only place that can answer "why did my deep link
+	/// not arrive?".
+	/// </summary>
+	private void LogActivation(AppActivationArguments args, string outcome)
+	{
+		if (this.Log().IsEnabled(LogLevel.Debug))
+		{
+			this.Log().LogDebug($"Activation of kind {args.Kind} reported: {outcome}.");
+		}
+
+		if (_hasLaunched && Activated is null && this.Log().IsEnabled(LogLevel.Information))
+		{
+			this.Log().LogInfo(
+				$"An activation of kind {args.Kind} arrived while the app was running, but nothing is " +
+				$"subscribed to {nameof(AppInstance)}.{nameof(Activated)}, so it will be ignored.");
+		}
+	}
 
 	/// <summary>
 	/// The activation a platform host actually reported, as opposed to the Launch activation

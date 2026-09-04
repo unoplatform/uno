@@ -112,7 +112,6 @@ public class UnoUISceneDelegate : UISceneDelegate
 		}
 		catch (Exception ex)
 		{
-			// A managed exception must never escape into a UIKit callback.
 			Application.Current?.RaiseRecoverableUnhandledException(ex);
 		}
 	}
@@ -272,19 +271,26 @@ public class UnoUISceneDelegate : UISceneDelegate
 		{
 			foreach (var context in urlContexts)
 			{
-				AppleUIKitActivation.TryReportUrl(context.Url, ApplicationExecutionState.Running);
+				AppleUIKitActivation.TryReportUrl(context.Url, AppleUIKitActivation.CurrentExecutionState);
 			}
 		});
 
 	public sealed override void ContinueUserActivity(UIScene scene, NSUserActivity userActivity) =>
-		Forward(() => AppleUIKitActivation.TryReportUserActivity(userActivity, ApplicationExecutionState.Running));
+		Forward(() => AppleUIKitActivation.TryReportUserActivity(userActivity, AppleUIKitActivation.CurrentExecutionState));
 
 #if !__TVOS__
 	[Export("windowScene:performActionForShortcutItem:completionHandler:")]
 	public void PerformActionForShortcutItem(UIWindowScene windowScene, UIApplicationShortcutItem shortcutItem, UIOperationHandler completionHandler)
 	{
-		Forward(() => AppleUIKitActivation.ReportShortcut(shortcutItem));
-		completionHandler?.Invoke(true);
+		try
+		{
+			Forward(() => AppleUIKitActivation.ReportShortcut(shortcutItem));
+		}
+		finally
+		{
+			// UIKit waits on this regardless of what the app's handler did.
+			completionHandler?.Invoke(true);
+		}
 	}
 #endif
 
@@ -301,9 +307,7 @@ public class UnoUISceneDelegate : UISceneDelegate
 	/// </summary>
 	private static void ReportConnectionActivation(UISceneConnectionOptions connectionOptions)
 	{
-		var previousExecutionState = Application.Current is null
-			? ApplicationExecutionState.NotRunning
-			: ApplicationExecutionState.Running;
+		var previousExecutionState = AppleUIKitActivation.CurrentExecutionState;
 
 		if (connectionOptions.UrlContexts is { Count: > 0 } urlContexts)
 		{
@@ -335,6 +339,10 @@ public class UnoUISceneDelegate : UISceneDelegate
 				}
 			}
 		}
+
+		// This scene carried no activation, so the app launched plainly and anything arriving later
+		// is a further activation rather than the startup one.
+		AppleUIKitActivation.MarkStartupActivationSettled();
 	}
 
 	/// <summary>
@@ -363,15 +371,5 @@ public class UnoUISceneDelegate : UISceneDelegate
 		return null;
 	}
 
-	private void Forward(Action action)
-	{
-		try
-		{
-			action();
-		}
-		catch (Exception ex)
-		{
-			Application.Current?.RaiseRecoverableUnhandledException(ex);
-		}
-	}
+	private void Forward(Action action) => NativeCallbackGuard.Run(action);
 }
