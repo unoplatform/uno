@@ -64,6 +64,9 @@ public sealed class WebGpuEffectFilter : DrawingResource, IEffectFilter
 	public Rect EvaluatedBounds;
 
 	protected override void Free() => EvaluatedTexture?.Release();
+
+	// The evaluator's texture is only released here, so a missed Release on the filter would strand it.
+	~WebGpuEffectFilter() => Free();
 }
 
 public sealed class WebGpuRenderRecord : IRenderRecord
@@ -121,7 +124,13 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 		var c = System.Threading.Interlocked.Exchange(ref Compiled, null);
 		if (c is { Device: { } dev }) { dev.DeferCompiledRelease(c.Owned, c.StampOwned, c.XformSlot); }
 		Commands = null;
+		GC.SuppressFinalize(this);
 	}
+
+	// The compiled draw-list's GPU buffers and its transform-table slot are reachable only through this object, so a
+	// recording dropped without Dispose would strand them for the life of the device. Both release queues are
+	// concurrent, so the finalizer can hand them over.
+	~WebGpuRenderRecord() => Dispose();
 }
 
 /// <summary>A host graphics context that owns a <see cref="WebGpuDevice"/> (e.g. an on-window swapchain context).
@@ -246,6 +255,21 @@ public sealed unsafe class WebGpuTexture : DrawingResource, ITexture
 	protected override void Free()
 	{
 		if (View != IntPtr.Zero || Tex != IntPtr.Zero) { _d.DeferTextureRelease(View, Tex); View = IntPtr.Zero; Tex = IntPtr.Zero; }
+	}
+
+	// View/Tex are bare handles, so a missed Release would strand the GPU allocation for the life of the device —
+	// nothing else can reach them once this object is collected. The release queue is concurrent, so handing them
+	// over from the finalizer is safe. Late instead of lost, and noisy about it: reaching here means a reference
+	// was never released.
+	~WebGpuTexture()
+	{
+		if (View == IntPtr.Zero && Tex == IntPtr.Zero) { return; }
+		if (this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn($"A {PixelWidth}x{PixelHeight} WebGPU texture was finalized with live handles: a reference was never released. Freeing it late.");
+		}
+
+		Free();
 	}
 }
 
