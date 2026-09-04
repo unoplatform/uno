@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel;
+using Windows.ApplicationModel.Core;
 using Windows.ApplicationModel.Activation;
 using Windows.UI.Core;
 using Windows.UI.Popups;
@@ -116,8 +117,8 @@ namespace SamplesApp
 			this.InitializeComponent();
 
 #if !WINAPPSDK
-			this.Suspending += OnSuspending;
-			this.Resuming += OnResuming;
+			CoreApplication.Suspending += OnSuspending;
+			CoreApplication.Resuming += OnResuming;
 #endif
 #if __SKIA__ && !UNO_ISLANDS
 			DispatcherQueue.GetForCurrentThread().TryEnqueue(DispatcherQueuePriority.Low, () =>

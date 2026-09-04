@@ -85,7 +85,6 @@ This guide will walk you through the necessary steps to localize an Uno Platform
             ChangeStartingLanguage();
 
             this.InitializeComponent();
-            this.Suspending += OnSuspending;
         }
 
         private void ChangeStartingLanguage()
