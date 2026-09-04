@@ -24,7 +24,15 @@ namespace Windows.UI.StartScreen
 
 		private void LoadItems()
 		{
+<<<<<<< HEAD:src/Uno.UWP/UI/StartScreen/JumpList.Android.cs
 			var shortcuts = ShortcutManagerCompat.GetDynamicShortcuts(ContextHelper.Current).ToArray();
+=======
+			// Shortcuts the app registered outside of JumpList cannot be converted, and would
+			// otherwise throw out of LoadCurrentAsync.
+			var shortcuts = ShortcutManagerCompat.GetDynamicShortcuts(ContextHelper.ApplicationContext)
+				.Where(s => s.IsUnoShortcut())
+				.ToArray();
+>>>>>>> a4931503 (fix(android): Skip non-Uno shortcuts when loading the jump list):src/Uno.WinRT/UI/StartScreen/JumpList.Android.cs
 			Items.Clear();
 			foreach (var shortcut in shortcuts)
 			{
