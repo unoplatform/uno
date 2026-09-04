@@ -1563,9 +1563,12 @@ be removed, and the `Uno0004` and `Uno0005` diagnostics are no longer reported.
 21. Replace every `Application.OnActivated` override with `AppInstance.GetCurrent().GetActivatedEventArgs()`
    read from `OnLaunched`, plus an `AppInstance.GetCurrent().Activated` handler for activations that
    arrive while the app runs.
-22. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+22. Move `Suspending`, `Resuming`, `EnteredBackground` and `LeavingBackground` subscriptions from
+   `Application` to `CoreApplication`, and save state from `Window.Closed` on desktop, where
+   suspension is no longer reported.
+23. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
-23. On iOS/tvOS, call `Uno.Storage.ApplicationDataMigrator.MigrateSettings()` at startup to
+24. On iOS/tvOS, call `Uno.Storage.ApplicationDataMigrator.MigrateSettings()` at startup to
    bring pre-7.0 application settings into the `UnoApplicationData` container, and update any
    native/interop code that read them from `NSUserDefaults.StandardUserDefaults`.
 
