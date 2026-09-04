@@ -439,8 +439,11 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 		render(recorder);
 		var surface = new WebGpuRenderSurface(_device, pixelWidth, pixelHeight);
 		var present = new WebGpuPresentSession(_device, surface, this);
-		present.ReplayNested(recorder.Finish());   // encodes + submits the nested render into the surface's color texture
-												   // Take ownership of the resolved color texture; dispose releases only the (finished) MSAA + depth targets.
+		var record = recorder.Finish();
+		present.ReplayNested(record);   // encodes + submits the nested render into the surface's color texture
+		// The recording referenced every texture it drew; the pass is submitted, so hand those references back.
+		record.Dispose();
+		// Take ownership of the resolved color texture; disposing the surface releases only the (finished) MSAA + depth targets.
 		var (tex, view) = surface.DetachColor();
 		surface.Dispose();
 		return new WebGpuTexture(_device, tex, view, pixelWidth, pixelHeight);
@@ -566,13 +569,23 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 	// General evaluator for NON-backdrop trees (leaves + colour-matrix + blur + blend/composite + Unsupported→source).
 	// Renders the tree to a texture by offscreen composition, or returns null for any node it does not handle, which
 	// leaves the caller on the acrylic/recipe path.
+	//
+	// The returned texture carries a reference the CALLER owns and must release. That is what lets every arm release
+	// its children uniformly: an arm cannot otherwise tell a tree-owned TextureInput leaf from a texture the
+	// evaluator just rendered, and releasing the wrong one either leaks or frees the tree's input out from under it.
 	private ITexture TryEvaluateTree(EffectNode node, Rect bounds)
 	{
 		switch (node)
 		{
 			case TextureInput t:
 			{
-				if (t.ExtendX == EdgeExtend.None && t.ExtendY == EdgeExtend.None) { return t.Texture; }
+				if (t.ExtendX == EdgeExtend.None && t.ExtendY == EdgeExtend.None)
+				{
+					// The tree owns this leaf (DisposeTree releases it), so hand the caller its own reference.
+					t.Texture.AddRef();
+					return t.Texture;
+				}
+
 				// A BorderEffect extends its source past its own rect, and downstream nodes sample over the whole
 				// bounds, so realize the extended fill as a bounds-sized input here.
 				int tw = Math.Max(1, (int)Math.Round(bounds.Width)), th = Math.Max(1, (int)Math.Round(bounds.Height));
@@ -587,14 +600,19 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 			{
 				if (TryEvaluateTree(cm.Source, bounds) is not { } src) { return null; }
 				int w = src.PixelWidth, h = src.PixelHeight;
-				var filter = CreateColorMatrixColorFilter(cm.Matrix);
-				return RenderOffscreen(w, h, s => s.DrawImage(src, 0, 0, filter));
+				using var filter = CreateColorMatrixColorFilter(cm.Matrix);
+				var result = RenderOffscreen(w, h, s => s.DrawImage(src, 0, 0, filter));
+				src.Release();
+				return result;
 			}
 			case BlendEffectNode blend:
 			{
 				if (TryEvaluateTree(blend.Background, bounds) is not WebGpuTexture bg) { return null; }
-				if (TryEvaluateTree(blend.Foreground, bounds) is not WebGpuTexture fg) { return null; }
-				return RunBlend(bg, fg, BlendShaderId(blend.Mode));
+				if (TryEvaluateTree(blend.Foreground, bounds) is not WebGpuTexture fg) { bg.Release(); return null; }
+				var result = RunBlend(bg, fg, BlendShaderId(blend.Mode));
+				bg.Release();
+				fg.Release();
+				return result;
 			}
 			case CompositeEffectNode comp:
 			{
@@ -603,29 +621,42 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 				int id = BlendShaderId(comp.Mode);
 				for (int i = 1; i < comp.Sources.Count; i++)
 				{
-					if (TryEvaluateTree(comp.Sources[i], bounds) is not WebGpuTexture next) { return null; }
-					if (RunBlend(acc, next, id) is not WebGpuTexture folded) { return null; }
+					if (TryEvaluateTree(comp.Sources[i], bounds) is not WebGpuTexture next) { acc.Release(); return null; }
+					var folded = RunBlend(acc, next, id) as WebGpuTexture;
+					acc.Release();
+					next.Release();
+					if (folded is null) { return null; }
 					acc = folded;
 				}
+
 				return acc;
 			}
 			case CrossFadeEffectNode cf:
 			{
 				if (TryEvaluateTree(cf.SourceA, bounds) is not WebGpuTexture a) { return null; }
-				if (TryEvaluateTree(cf.SourceB, bounds) is not WebGpuTexture bb) { return null; }
-				return RunCombine(a, bb, 1f - cf.Weight, cf.Weight, 0f, 0f, alphaMask: false);
+				if (TryEvaluateTree(cf.SourceB, bounds) is not WebGpuTexture bb) { a.Release(); return null; }
+				var result = RunCombine(a, bb, 1f - cf.Weight, cf.Weight, 0f, 0f, alphaMask: false);
+				a.Release();
+				bb.Release();
+				return result;
 			}
 			case ArithmeticCompositeEffectNode ar:
 			{
 				if (TryEvaluateTree(ar.Foreground, bounds) is not WebGpuTexture fg) { return null; }
-				if (TryEvaluateTree(ar.Background, bounds) is not WebGpuTexture bg) { return null; }
-				return RunCombine(fg, bg, ar.Source1, ar.Source2, ar.Multiply, ar.Offset, alphaMask: false);
+				if (TryEvaluateTree(ar.Background, bounds) is not WebGpuTexture bg) { fg.Release(); return null; }
+				var result = RunCombine(fg, bg, ar.Source1, ar.Source2, ar.Multiply, ar.Offset, alphaMask: false);
+				fg.Release();
+				bg.Release();
+				return result;
 			}
 			case AlphaMaskEffectNode am:
 			{
 				if (TryEvaluateTree(am.Source, bounds) is not WebGpuTexture src2) { return null; }
-				if (TryEvaluateTree(am.Mask, bounds) is not WebGpuTexture mask) { return null; }
-				return RunCombine(src2, mask, 0f, 0f, 0f, 0f, alphaMask: true);
+				if (TryEvaluateTree(am.Mask, bounds) is not WebGpuTexture mask) { src2.Release(); return null; }
+				var result = RunCombine(src2, mask, 0f, 0f, 0f, 0f, alphaMask: true);
+				src2.Release();
+				mask.Release();
+				return result;
 			}
 			case WhiteNoiseEffectNode n:
 			{
@@ -637,7 +668,9 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 				if (TryEvaluateTree(ct.Source, bounds) is not WebGpuTexture s) { return null; }
 				var u = new float[20];
 				u[0] = 0f; u[1] = ct.Contrast; u[2] = ct.Clamp ? 1f : 0f;
-				return RunColorFunc(s, u);
+				var result = RunColorFunc(s, u);
+				s.Release();
+				return result;
 			}
 			case GammaTransferEffectNode g:
 			{
@@ -648,11 +681,14 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 				u[8] = g.Exponents[0]; u[9] = g.Exponents[1]; u[10] = g.Exponents[2]; u[11] = g.Exponents[3];
 				u[12] = g.Offsets[0]; u[13] = g.Offsets[1]; u[14] = g.Offsets[2]; u[15] = g.Offsets[3];
 				u[16] = g.Disable[0] ? 1f : 0f; u[17] = g.Disable[1] ? 1f : 0f; u[18] = g.Disable[2] ? 1f : 0f; u[19] = g.Disable[3] ? 1f : 0f;
-				return RunColorFunc(s, u);
+				var result = RunColorFunc(s, u);
+				s.Release();
+				return result;
 			}
 			case BlurEffectNode b:
 			{
-				if (TryEvaluateTree(b.Source, bounds) is not WebGpuTexture src || b.Sigma <= 0f) { return TryEvaluateTree(b.Source, bounds); }
+				if (TryEvaluateTree(b.Source, bounds) is not WebGpuTexture src) { return null; }
+				if (b.Sigma <= 0f) { return src; }
 				int w = src.PixelWidth, h = src.PixelHeight;
 				// A soft border — D2D's default — fades to transparent past the source edge, but the pyramid samples
 				// clamp-to-edge and would smear the edge texel outwards instead. Pad the source so the clamp has
@@ -661,17 +697,21 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 				var margin = b.ClampEdge ? 0 : Math.Min(256, (int)MathF.Ceiling(b.Sigma * 3f));
 				if (margin == 0)
 				{
-					return Blur(src, b.Sigma);
+					var blurredOnly = Blur(src, b.Sigma);
+					src.Release();
+					return blurredOnly;
 				}
 
 				var padded = (WebGpuTexture)RenderOffscreen(w + (2 * margin), h + (2 * margin), s => s.DrawImage(src, margin, margin));
+				src.Release();
 				var blurred = Blur(padded, b.Sigma);
-				padded.Dispose();
+				padded.Release();
 				var cropped = RenderOffscreen(w, h, s => s.DrawImage(blurred, -margin, -margin));
-				blurred.Dispose();
+				blurred.Release();
 				return cropped;
 			}
 			case UnsupportedEffectNode u:
+				// Pass-through: the child's reference transfers straight to our caller.
 				return u.Source is null ? null : TryEvaluateTree(u.Source, bounds);
 			default:
 				return null;   // SourceInput / Blend / Composite / … — later phases

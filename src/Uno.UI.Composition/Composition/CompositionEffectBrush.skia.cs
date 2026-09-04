@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using Windows.Foundation;
 using Uno.UI.Composition.Drawing;
@@ -40,8 +40,9 @@ public partial class CompositionEffectBrush : CompositionBrush
 			}
 			else if (source is { } src)
 			{
+				using var recipeFilter = session.Factory.CreateColorMatrixColorFilter(matrix);
 				var count = session.Save();
-				session.SaveLayer(session.Factory.CreateColorMatrixColorFilter(matrix));
+				session.SaveLayer(recipeFilter);
 				src.TryPaint(session, opacity, bounds);
 				session.RestoreToCount(count);
 			}

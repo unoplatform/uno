@@ -30,7 +30,12 @@ namespace Microsoft.UI.Composition
 				return false;
 			}
 
-			session.DrawRect(bounds, shader);
+			// Built fresh for these bounds and this opacity, so this paint owns it.
+			using (shader)
+			{
+				session.DrawRect(bounds, shader);
+			}
+
 			return true;
 		}
 
