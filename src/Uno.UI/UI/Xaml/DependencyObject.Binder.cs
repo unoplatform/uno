@@ -906,11 +906,11 @@ namespace Microsoft.UI.Xaml
 
 		#endregion
 
-		internal BindingExpression? GetBindingExpression(DependencyProperty dependencyProperty)
+		internal BindingExpression? GetBindingExpressionInternal(DependencyProperty dependencyProperty)
 			=> _properties.GetBindingExpression(dependencyProperty);
 
 		internal Microsoft.UI.Xaml.Data.Binding? GetBinding(DependencyProperty dependencyProperty)
-			=> GetBindingExpression(dependencyProperty)?.ParentBinding;
+			=> GetBindingExpressionInternal(dependencyProperty)?.ParentBinding;
 
 		internal bool IsPropertyTemplateBound(DependencyProperty dependencyProperty)
 			=> _properties.IsPropertyTemplateBound(dependencyProperty);

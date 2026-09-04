@@ -65,9 +65,8 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="dp">The binding target property from which to retrieve the binding expression.</param>
 		/// <returns>The binding expression, or null if the property is not bound.</returns>
-		// `new` hides the wider Uno-only DependencyObject member; WinUI declares this on FrameworkElement only.
-		public new BindingExpression GetBindingExpression(DependencyProperty dp)
-			=> base.GetBindingExpression(dp);
+		public BindingExpression GetBindingExpression(DependencyProperty dp)
+			=> GetBindingExpressionInternal(dp);
 
 	}
 }

@@ -407,8 +407,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public void When_GetBindingExpression_Then_Declared_Public_On_FrameworkElement()
 		{
-			// The test assembly sees Uno's internal DependencyObject member through InternalsVisibleTo,
-			// so the behavioral tests below pass with or without the public FrameworkElement one.
+			// The behavioral tests below would still compile against an internal member, so guard
+			// the accessibility and the declaring type explicitly.
 			var method = typeof(FrameworkElement).GetMethod(
 				nameof(FrameworkElement.GetBindingExpression),
 				System.Reflection.BindingFlags.Public
