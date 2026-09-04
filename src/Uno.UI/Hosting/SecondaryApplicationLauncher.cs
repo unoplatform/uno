@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using Microsoft.UI.Xaml;
@@ -16,8 +16,7 @@ namespace Uno.UI.Hosting;
 /// <remarks>
 /// <para>
 /// Why <c>internal</c>: this helper relies on otherwise non-public Uno internals
-/// (<see cref="LaunchActivatedEventArgs"/>'s parameterless constructor and the
-/// <c>internal</c> <c>Application.InvokeOnLaunched</c> entry point that drives the
+/// (the <c>internal</c> <c>Application.InvokeOnLaunched</c> entry point that drives the
 /// <see cref="Application.OnLaunched"/> override hook).
 /// Exposing it as <c>public</c> would invite app-developer code to call it directly,
 /// where it would silently bypass the platform's normal activation pipeline and
@@ -76,8 +75,6 @@ internal static class SecondaryApplicationLauncher
 			throw new ArgumentNullException(nameof(app));
 		}
 
-		// A null activation means "plain launch": InvokeOnLaunched synthesizes the default
-		// LaunchActivatedEventArgs itself, without pushing a bogus activation onto AppInstance.
-		app.InvokeOnLaunched(null);
+		app.InvokeOnLaunched();
 	}
 }

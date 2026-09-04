@@ -169,7 +169,9 @@ namespace Microsoft.UI.Xaml
 
 		public DebugSettings DebugSettings { get; } = new DebugSettings();
 
-		public ApplicationRequiresPointerMode RequiresPointerMode { get; set; } = ApplicationRequiresPointerMode.Auto;
+		// Not part of the public WinAppSDK Application surface; kept internal for the ported
+		// SharedHelpers.IsMouseModeEnabled, which is its only reader.
+		internal ApplicationRequiresPointerMode RequiresPointerMode { get; set; } = ApplicationRequiresPointerMode.Auto;
 
 		/// <summary>
 		/// Specifies the visual feedback used to indicate the UI element
@@ -393,23 +395,17 @@ namespace Microsoft.UI.Xaml
 		protected virtual void OnLaunched(LaunchActivatedEventArgs args) { }
 
 		/// <summary>
-		/// Drives the launch/activation pipeline. Every platform host routes activations here, whether
-		/// they arrive with the process (<paramref name="activatedArgs"/> set) or on a plain launch (null).
+		/// Drives the launch pipeline. Platform hosts report their activation to
+		/// <see cref="Microsoft.Windows.AppLifecycle.AppInstance"/> before this runs.
 		/// </summary>
 		/// <remarks>
 		/// <see cref="OnLaunched"/> always receives plain <see cref="ActivationKind.Launch"/> arguments,
 		/// matching WinUI, which synthesizes them regardless of how the process was activated. The real
 		/// payload is read from <see cref="Microsoft.Windows.AppLifecycle.AppInstance.GetActivatedEventArgs"/>.
 		/// </remarks>
-		internal void InvokeOnLaunched(IActivatedEventArgs activatedArgs)
+		internal void InvokeOnLaunched()
 		{
 			var appInstance = Microsoft.Windows.AppLifecycle.AppInstance.GetCurrent();
-
-			if (activatedArgs is not null)
-			{
-				// Must land before OnLaunched, so the app can read it from there.
-				appInstance.SetOrRaiseActivation(AppActivationArguments.FromActivatedEventArgs(activatedArgs));
-			}
 
 			// OnLaunched should execute only for full apps, not for individual islands.
 			if (CoreApplication.IsFullFledgedApp && !WasLaunched)
@@ -430,8 +426,9 @@ namespace Microsoft.UI.Xaml
 		/// arguments, on every platform that has one. Reading them from the activation keeps
 		/// <see cref="OnLaunched"/> consistent without each host having to plumb them separately.
 		/// </remarks>
-		private static string GetLaunchArguments(Microsoft.Windows.AppLifecycle.AppInstance appInstance)
-			=> appInstance.ReportedActivation is { Kind: ExtendedActivationKind.Launch } activation
+		private string GetLaunchArguments(Microsoft.Windows.AppLifecycle.AppInstance appInstance)
+			=> !_isSecondaryAlcApplication
+				&& appInstance.ReportedActivation is { Kind: ExtendedActivationKind.Launch } activation
 				&& activation.Data is global::Windows.ApplicationModel.Activation.LaunchActivatedEventArgs launchArgs
 				&& !string.IsNullOrEmpty(launchArgs.Arguments)
 					? launchArgs.Arguments
@@ -728,13 +725,12 @@ namespace Microsoft.UI.Xaml
 		{
 			// Non-null, not non-empty: a host that reports empty arguments is stating the app was
 			// launched with none, which must win over re-reading the command line or the page query.
+			// Not consumed, because every Application in the process - including one in a secondary
+			// AssemblyLoadContext - must see the same arguments the host reported, rather than falling
+			// back to re-reading the raw page query with Uno's activation key still in it.
 			if (_argumentsOverride is not null)
 			{
-				// Consumed once, so a shortcut's arguments cannot leak into a later plain launch
-				// of the same process (Android recreates the Activity without restarting the process).
-				var arguments = _argumentsOverride;
-				_argumentsOverride = null;
-				return arguments;
+				return _argumentsOverride;
 			}
 
 			if (OperatingSystem.IsBrowser()) // Skia-WASM
@@ -778,8 +774,8 @@ namespace Microsoft.UI.Xaml
 		private static string? _argumentsOverride;
 
 		/// <summary>
-		/// Supplies the launch arguments for platforms where the OS delivers them out of band rather
-		/// than on the command line, such as an Android jump-list shortcut extra.
+		/// Supplies the launch arguments for a host that has to derive them itself. WebAssembly is the
+		/// only such host: it reports the page query with Uno's protocol-activation key removed.
 		/// </summary>
 		internal static void SetArguments(string arguments)
 			=> _argumentsOverride = arguments;
@@ -897,7 +893,7 @@ namespace Microsoft.UI.Xaml
 
 			// Any activation the process started with has already been pushed to AppInstance by the
 			// platform host, which runs before the app exists.
-			InvokeOnLaunched(null);
+			InvokeOnLaunched();
 		}
 
 		private static async Task PreloadFonts()

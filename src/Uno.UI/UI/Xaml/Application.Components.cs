@@ -3,38 +3,39 @@ using System.Collections.Generic;
 using Microsoft.UI.Xaml.Markup;
 using Uno.Foundation.Logging;
 
-namespace Microsoft.UI.Xaml;
-
-public partial class Application
+namespace Microsoft.UI.Xaml
 {
-	private Dictionary<string, string> _loadableComponents;
-
-	internal bool IsLoadableComponent(Uri resource)
+	public partial class Application
 	{
-		EnsureLoadableComponents();
+		private Dictionary<string, string> _loadableComponents;
 
-		return _loadableComponents.ContainsKey(resource.OriginalString);
-	}
-
-	public static void LoadComponent(object component, Uri resourceLocator)
-	{
-		if (Current._loadableComponents.TryGetValue(resourceLocator.OriginalString, out var document))
+		internal bool IsLoadableComponent(Uri resource)
 		{
-			XamlReader.LoadUsingComponent(document, component, resourceLocator.OriginalString);
+			EnsureLoadableComponents();
+
+			return _loadableComponents.ContainsKey(resource.OriginalString);
 		}
-		else
+
+		public static void LoadComponent(object component, Uri resourceLocator)
 		{
-			if (typeof(Application).Log().IsEnabled(LogLevel.Debug))
+			if (Current._loadableComponents.TryGetValue(resourceLocator.OriginalString, out var document))
 			{
-				typeof(Application).Log().LogDebug($"Skipping component load, could not find registration for {resourceLocator}");
+				XamlReader.LoadUsingComponent(document, component, resourceLocator.OriginalString);
+			}
+			else
+			{
+				if (typeof(Application).Log().IsEnabled(LogLevel.Debug))
+				{
+					typeof(Application).Log().LogDebug($"Skipping component load, could not find registration for {resourceLocator}");
+				}
 			}
 		}
-	}
 
-	internal static void RegisterComponent(Uri resourceLocator, string xaml)
-	{
-		Current._loadableComponents[resourceLocator.OriginalString] = xaml;
-	}
+		internal static void RegisterComponent(Uri resourceLocator, string xaml)
+		{
+			Current._loadableComponents[resourceLocator.OriginalString] = xaml;
+		}
 
-	private void EnsureLoadableComponents() => _loadableComponents ??= new Dictionary<string, string>();
+		private void EnsureLoadableComponents() => _loadableComponents ??= new Dictionary<string, string>();
+	}
 }
