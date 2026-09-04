@@ -155,7 +155,6 @@ internal class PackageManifest
 		public const string Prism = nameof(Prism);
 		public const string UnoFonts = nameof(UnoFonts);
 		public const string AndroidMaterial = nameof(AndroidMaterial);
-		public const string AndroidXLegacySupportV4 = nameof(AndroidXLegacySupportV4);
 		public const string AndroidXSplashScreen = nameof(AndroidXSplashScreen);
 		public const string AndroidXAppCompat = nameof(AndroidXAppCompat);
 		public const string AndroidXRecyclerView = nameof(AndroidXRecyclerView);

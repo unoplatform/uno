@@ -71,8 +71,6 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 
 	public string? AndroidMaterialVersion { get; set; }
 
-	public string? AndroidXLegacySupportV4Version { get; set; }
-
 	public string? AndroidXSplashScreenVersion { get; set; }
 
 	public string? AndroidXAppCompatVersion { get; set; }
@@ -267,7 +265,6 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			.UpdateManifest(PackageManifest.Group.Prism, PrismVersion)
 			.UpdateManifest(PackageManifest.Group.UnoFonts, UnoFontsVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidMaterial, AndroidMaterialVersion)
-			.UpdateManifest(PackageManifest.Group.AndroidXLegacySupportV4, AndroidXLegacySupportV4Version)
 			.UpdateManifest(PackageManifest.Group.AndroidXSplashScreen, AndroidXSplashScreenVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXAppCompat, AndroidXAppCompatVersion)
 			.UpdateManifest(PackageManifest.Group.AndroidXRecyclerView, AndroidXRecyclerViewVersion)

@@ -194,10 +194,6 @@
 			"description": "Provides an explicit override for the version of Android Material to use.",
 			"type": "nuget-version"
 		},
-		"AndroidXLegacySupportV4Version": {
-			"description": "Provides an explicit override for the version of AndroidX.Legacy.Support.V4 to use.",
-			"type": "nuget-version"
-		},
 		"AndroidXSplashScreenVersion": {
 			"description": "Provides an explicit override for the version of AndroidX.Core.SplashScreen to use.",
 			"type": "nuget-version"
