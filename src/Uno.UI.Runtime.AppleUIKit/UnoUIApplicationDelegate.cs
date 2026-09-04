@@ -39,14 +39,14 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 			if (launchOptions.TryGetValue(UIApplication.LaunchOptionsUrlKey, out var urlObject))
 			{
 				_preventSecondaryActivationHandling = true;
-				AppleUIKitActivation.TryReportUrl(urlObject as NSUrl, ApplicationExecutionState.NotRunning);
+				NativeCallbackGuard.Run(() => AppleUIKitActivation.TryReportUrl(urlObject as NSUrl, ApplicationExecutionState.NotRunning));
 			}
 #if !__TVOS__
 			else if (launchOptions.TryGetValue(UIApplication.LaunchOptionsShortcutItemKey, out var shortcutItemObject)
 				&& shortcutItemObject is UIApplicationShortcutItem shortcutItem)
 			{
 				_preventSecondaryActivationHandling = true;
-				AppleUIKitActivation.ReportShortcut(shortcutItem);
+				NativeCallbackGuard.Run(() => AppleUIKitActivation.ReportShortcut(shortcutItem));
 			}
 #endif
 			else if (TryGetUserActivityFromLaunchOptions(launchOptions, out var userActivity))
@@ -117,44 +117,46 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 	private void OnDeactivated(NSNotification notification) =>
 		Guarded(() => NativeWindowWrapper.Instance?.OnNativeActivated(CoreWindowActivationState.Deactivated));
 
-	private static void Guarded(Action action)
+	private static void Guarded(Action action) => NativeCallbackGuard.Run(action);
+
+	public override bool ContinueUserActivity(UIApplication application, NSUserActivity userActivity, UIApplicationRestorationHandler completionHandler)
 	{
-		try
-		{
-			action();
-		}
-		catch (Exception ex)
-		{
-			// A managed exception must never escape into a native callback.
-			Application.Current?.RaiseRecoverableUnhandledException(ex);
-		}
+		var handled = false;
+		NativeCallbackGuard.Run(() => handled = TryHandleUniversalLinkFromUserActivity(userActivity));
+		return handled;
 	}
 
-	public override bool ContinueUserActivity(UIApplication application, NSUserActivity userActivity, UIApplicationRestorationHandler completionHandler) =>
-		TryHandleUniversalLinkFromUserActivity(userActivity);
-
 	public override void UserActivityUpdated(UIApplication application, NSUserActivity userActivity) =>
-		TryHandleUniversalLinkFromUserActivity(userActivity);
+		NativeCallbackGuard.Run(() => TryHandleUniversalLinkFromUserActivity(userActivity));
 
 	public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
 	{
+		var handled = true;
+
 		// UIKit calls this straight after a URL cold start too, where FinishedLaunching already
 		// reported the activation from launchOptions.
 		if (!_preventSecondaryActivationHandling)
 		{
-			AppleUIKitActivation.TryReportUrl(url, ApplicationExecutionState.Running);
+			NativeCallbackGuard.Run(() => handled = AppleUIKitActivation.TryReportUrl(url, AppleUIKitActivation.CurrentExecutionState));
 		}
 
 		_preventSecondaryActivationHandling = false;
-		return true;
+		return handled;
 	}
 
 #if !__TVOS__
 	public override void PerformActionForShortcutItem(UIApplication application, UIApplicationShortcutItem shortcutItem, UIOperationHandler completionHandler)
 	{
-		// Not called for a cold start from a shortcut - FinishedLaunching handles that one.
-		AppleUIKitActivation.ReportShortcut(shortcutItem);
-		completionHandler?.Invoke(true);
+		try
+		{
+			// Not called for a cold start from a shortcut - FinishedLaunching handles that one.
+			NativeCallbackGuard.Run(() => AppleUIKitActivation.ReportShortcut(shortcutItem));
+		}
+		finally
+		{
+			// UIKit waits on this regardless of what the app's handler did.
+			completionHandler?.Invoke(true);
+		}
 	}
 #endif
 
@@ -177,7 +179,7 @@ public partial class UnoUIApplicationDelegate : UIApplicationDelegate
 			return true;
 		}
 
-		return AppleUIKitActivation.TryReportUserActivity(userActivity, ApplicationExecutionState.Running);
+		return AppleUIKitActivation.TryReportUserActivity(userActivity, AppleUIKitActivation.CurrentExecutionState);
 	}
 
 	private bool TryGetUserActivityFromLaunchOptions(NSDictionary launchOptions, out NSUserActivity? userActivity)
