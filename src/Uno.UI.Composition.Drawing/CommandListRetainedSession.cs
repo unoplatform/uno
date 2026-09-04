@@ -25,14 +25,15 @@ internal sealed class ReplayContext
 internal sealed class CommandList : IRenderRecord
 {
 	private List<Action<ReplayContext>>? _commands;
-	// Geometry snapshots the recording owns and frees on dispose — the composition disposes the originals right
-	// after the draw call. Other resources (shaders/filters/images) are brush-owned and outlive the recording.
-	private List<IGeometry>? _ownedGeometries;
+	// References this recording holds on the resources its verbs captured. A closure captures a reference where a
+	// native display list would have copied, so the recording must keep them alive until it is itself disposed —
+	// the composition may drop its own reference as soon as the draw call returns.
+	private List<IDrawingResource>? _retained;
 
-	internal CommandList(List<Action<ReplayContext>> commands, List<IGeometry>? ownedGeometries)
+	internal CommandList(List<Action<ReplayContext>> commands, List<IDrawingResource>? retained)
 	{
 		_commands = commands;
-		_ownedGeometries = ownedGeometries;
+		_retained = retained;
 	}
 
 	public void Replay(IDrawingSession target)
@@ -57,12 +58,12 @@ internal sealed class CommandList : IRenderRecord
 	public void Dispose()
 	{
 		_commands = null;
-		if (_ownedGeometries is { } owned)
+		if (_retained is { } retained)
 		{
-			_ownedGeometries = null;
-			foreach (var geometry in owned)
+			_retained = null;
+			foreach (var resource in retained)
 			{
-				geometry.Dispose();
+				resource.Release();
 			}
 		}
 	}
@@ -80,15 +81,15 @@ internal sealed class CommandListRecorder : ICommandRecorder
 	private Matrix4x4 _matrix = Matrix4x4.Identity;
 	// A fresh session's save count is 1 (SkiaSharp/SKCanvas convention); Save() returns the count to restore to.
 	private int _depth = 1;
-	private List<IGeometry>? _ownedGeometries;
+	private List<IDrawingResource>? _retained;
 
-	// Replay happens after the caller has disposed the geometry (it assumes the draw copied it, as a native
-	// display list would), so snapshot it into a copy this recording owns and frees on Dispose.
-	private IGeometry Own(IGeometry geometry)
+	// Replay happens after the caller has dropped its reference (the draw is assumed to have copied, as a native
+	// display list would), so take one of our own for every resource a recorded closure captures.
+	private T Retain<T>(T resource) where T : IDrawingResource
 	{
-		var snapshot = geometry.Transform(Matrix3x2.Identity);
-		(_ownedGeometries ??= new()).Add(snapshot);
-		return snapshot;
+		resource.AddRef();
+		(_retained ??= new()).Add(resource);
+		return resource;
 	}
 
 	private void Push() => _stack.Push(_matrix);
@@ -101,7 +102,7 @@ internal sealed class CommandListRecorder : ICommandRecorder
 		}
 	}
 
-	public IRenderRecord Finish() => new CommandList(_commands, _ownedGeometries);
+	public IRenderRecord Finish() => new CommandList(_commands, _retained);
 
 	public Matrix4x4 TotalMatrix => _matrix;
 
@@ -208,7 +209,7 @@ internal sealed class CommandListRecorder : ICommandRecorder
 
 	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect)
 	{
-		var g = Own(geometry);
+		var g = Retain(geometry);
 		_commands.Add(ctx => ctx.Target.ClipPath(g, operation));
 	}
 
@@ -242,34 +243,38 @@ internal sealed class CommandListRecorder : ICommandRecorder
 
 	public void DrawPath(IGeometry geometry, Color color)
 	{
-		var g = Own(geometry);
+		var g = Retain(geometry);
 		_commands.Add(ctx => ctx.Target.DrawPath(g, color));
 	}
 
 	public void DrawPaths(ReadOnlySpan<PathInstance> instances, Color color)
 	{
-		// The span cannot outlive this call, so copy the placements; the geometries themselves stay referenced
-		// (cache-owned, per this overload's contract).
+		// The span cannot outlive this call, so copy the placements. The geometries are retained rather than copied,
+		// so the instances still share one geometry — which is the whole point of the overload.
 		var placed = instances.ToArray();
+		foreach (var instance in placed)
+		{
+			Retain(instance.Geometry);
+		}
+
 		_commands.Add(ctx => ctx.Target.DrawPaths(placed, color));
 	}
 
 	public void DrawPath(IGeometry geometry, Color color, Vector2 offset)
 	{
-		// Referenced, not snapshotted: this overload's contract is that the geometry is cache-owned and outlives
-		// the recording. Copying it per instance would undo the sharing the overload exists to enable.
-		_commands.Add(ctx => ctx.Target.DrawPath(geometry, color, offset));
+		var g = Retain(geometry);
+		_commands.Add(ctx => ctx.Target.DrawPath(g, color, offset));
 	}
 
 	public void DrawShadow(IGeometry silhouette, Color color, float sigmaX, float sigmaY, bool additive)
 	{
-		var g = Own(silhouette);
+		var g = Retain(silhouette);
 		_commands.Add(ctx => ctx.Target.DrawShadow(g, color, sigmaX, sigmaY, additive));
 	}
 
 	public void StrokePath(IGeometry geometry, Color color, float strokeWidth)
 	{
-		var g = Own(geometry);
+		var g = Retain(geometry);
 		_commands.Add(ctx => ctx.Target.StrokePath(g, color, strokeWidth));
 	}
 

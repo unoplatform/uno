@@ -104,10 +104,9 @@ public interface IDrawingSession
 	/// of them into one draw. The default routes through Save/Translate/Restore, which is correct but costs four
 	/// session calls per instance; override it where that matters.
 	/// <para>
-	/// CONTRACT: <paramref name="geometry"/> must outlive the session and any recording made from it — it is
-	/// referenced, not copied. That is the point: a snapshot per instance would reintroduce exactly the
-	/// duplication instancing removes. Pass geometry owned by a cache (immutable, not disposed by the caller),
-	/// never a transient built for one draw.
+	/// The geometry is shared across the instances rather than copied per instance — that is the point of the
+	/// overload. A recording retains what it captures (<see cref="IDrawingResource"/>), so the caller is free to
+	/// drop its own reference once the call returns.
 	/// </para>
 	/// </summary>
 	void DrawPath(IGeometry geometry, Color color, Vector2 offset)
@@ -122,8 +121,7 @@ public interface IDrawingSession
 	/// Fills a whole run of placed geometries in ONE call, all in <paramref name="color"/>. Handing the backend the
 	/// entire run — rather than one call per instance — is what lets it merge them into a single draw; a lazy
 	/// per-call batch would need an end-of-run signal this interface has no place to put (the session is not
-	/// disposable). Same sharing contract as the single-instance overload: the geometries are referenced, not
-	/// copied, so they must outlive the session and any recording made from it.
+	/// disposable). Same sharing as the single-instance overload: the geometries are retained, not copied.
 	/// </summary>
 	void DrawPaths(ReadOnlySpan<PathInstance> instances, Color color)
 	{

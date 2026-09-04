@@ -131,9 +131,8 @@ internal sealed partial class ManagedGeometry : DrawingResource, IGeometry, IGeo
 
 	public IGeometry Transform(Matrix3x2 matrix)
 	{
-		// Identity is not a copy. A retained session snapshots every recorded geometry with Transform(identity),
-		// so without this each record deep-copies every contour of every path — and the copy also defeats any
-		// cache keyed on geometry identity. Safe because this type is immutable and Dispose is a no-op.
+		// Nothing to bake in, and this type is immutable, so the instance can be shared — which also keeps any
+		// cache keyed on geometry identity intact.
 		if (matrix.IsIdentity)
 		{
 			return this;
