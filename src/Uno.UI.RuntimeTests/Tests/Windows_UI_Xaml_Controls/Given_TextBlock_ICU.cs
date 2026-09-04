@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Windows.Foundation;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -158,5 +159,50 @@ public class Given_TextBlock_ICU
 
 		Assert.IsTrue(SUT.ActualWidth > 0, "RTL FlowDirection text should have non-zero width.");
 		Assert.IsTrue(SUT.ActualHeight > 0, "RTL FlowDirection text should have non-zero height.");
+	}
+
+	[TestMethod]
+	public async Task When_Text_Is_Remeasured_After_Other_Text_Then_Size_Is_Unchanged()
+	{
+		// Line-break opportunities come from an ICU break iterator that is cached per thread and
+		// re-pointed at each new string, so a measure must not depend on what was measured before it.
+		// Wrapping at a fixed width is what makes those boundaries observable: a stale iterator
+		// changes where the text breaks, and so its height.
+		const string Probe = "The quick brown fox jumps over the lazy dog";
+
+		var before = await MeasureWrappedAsync(Probe);
+
+		// Different script, different length, and a single character, to leave the most stale state behind.
+		await MeasureWrappedAsync("مرحبا بالعالم وأهلا وسهلا بكم جميعا");
+		await MeasureWrappedAsync("a");
+
+		var after = await MeasureWrappedAsync(Probe);
+
+		Assert.AreEqual(before.Width, after.Width, 0.01, $"Width changed after measuring other text: {before.Width} -> {after.Width}.");
+		Assert.AreEqual(before.Height, after.Height, 0.01, $"Height changed after measuring other text, so the text wrapped differently: {before.Height} -> {after.Height}.");
+	}
+
+	[TestMethod]
+	public async Task When_Wrapped_Text_Is_Measured_Then_It_Breaks_Onto_Several_Lines()
+	{
+		// Guards the boundaries themselves rather than their stability: were the iterator to return
+		// no break opportunities, the text would occupy a single line and the test above would still pass.
+		var single = await MeasureWrappedAsync("a");
+		var wrapped = await MeasureWrappedAsync("The quick brown fox jumps over the lazy dog");
+
+		Assert.IsTrue(
+			wrapped.Height > single.Height * 2,
+			$"Wrapped text should occupy several lines, but its height ({wrapped.Height}) is not much more than one line ({single.Height}).");
+	}
+
+	private static async Task<Size> MeasureWrappedAsync(string text)
+	{
+		var SUT = new TextBlock { Text = text, TextWrapping = TextWrapping.Wrap, Width = 120 };
+
+		WindowHelper.WindowContent = SUT;
+		await WindowHelper.WaitForLoaded(SUT);
+		await WindowHelper.WaitForIdle();
+
+		return new Size(SUT.ActualWidth, SUT.ActualHeight);
 	}
 }
