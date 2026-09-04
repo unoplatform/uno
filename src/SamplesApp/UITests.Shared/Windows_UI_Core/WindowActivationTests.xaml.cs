@@ -72,8 +72,6 @@ namespace UITests.Windows_UI_Core
 				}
 				XamlWindow.Current.Activated -= WindowActivated;
 				XamlWindow.Current.VisibilityChanged -= WindowVisibilityChanged;
-#if !WINAPPSDK
-#endif
 				CoreApplication.EnteredBackground -= CoreApplicationEnteredBackground;
 				CoreApplication.LeavingBackground -= CoreApplicationLeavingBackground;
 				CoreApplication.Suspending -= CoreApplicationSuspending;
