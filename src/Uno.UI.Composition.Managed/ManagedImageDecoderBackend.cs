@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -58,7 +58,7 @@ public sealed class ManagedImageDecoderBackend : IImageEncoderDecoder
 }
 
 /// <summary>A managed, byte[]-backed <see cref="IImage"/>. Pixels are BGRA8888 premultiplied, tightly packed.</summary>
-internal sealed class ManagedImage : IImage
+internal sealed class ManagedImage : DrawingResource, IImage
 {
 	private readonly byte[] _bgraPremul;
 
@@ -75,4 +75,7 @@ internal sealed class ManagedImage : IImage
 
 	public void CopyPixels(Span<byte> destination)
 		=> _bgraPremul.AsSpan(0, Math.Min(_bgraPremul.Length, destination.Length)).CopyTo(destination);
+
+	// Managed pixels only; the GC reclaims them.
+	protected override void Free() { }
 }

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 
@@ -10,7 +10,7 @@ namespace Uno.UI.Composition.Drawing;
 /// the producing backend when drawn. Its lifetime is framework-owned and released deterministically via
 /// <see cref="IDisposable.Dispose"/> — no GC-driven texture caching.
 /// </summary>
-public interface ITexture : IDisposable
+public interface ITexture : IDrawingResource
 {
 	int PixelWidth { get; }
 

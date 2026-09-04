@@ -338,7 +338,7 @@ public class Given_SvgImageSource_ManagedEngine
 		public ICommandRecorder CreateRecording() => throw new NotSupportedException();
 	}
 
-	private sealed class LinearShader : IEvaluableShader
+	private sealed class LinearShader : DrawingResource, IEvaluableShader
 	{
 		private readonly Vector2 _start;
 		private readonly Vector2 _axis;
@@ -356,9 +356,11 @@ public class Given_SvgImageSource_ManagedEngine
 		}
 
 		public Color Eval(Vector2 p) => Sample(_colors, _positions, Math.Clamp(Vector2.Dot(p - _start, _axis) / _lenSq, 0f, 1f));
+
+		protected override void Free() { }
 	}
 
-	private sealed class RadialShader : IEvaluableShader
+	private sealed class RadialShader : DrawingResource, IEvaluableShader
 	{
 		private readonly Vector2 _center;
 		private readonly float _radius;
@@ -374,6 +376,8 @@ public class Given_SvgImageSource_ManagedEngine
 		}
 
 		public Color Eval(Vector2 p) => Sample(_colors, _positions, Math.Clamp((p - _center).Length() / _radius, 0f, 1f));
+
+		protected override void Free() { }
 	}
 
 	private static Color Sample(Color[] colors, float[] positions, float t)

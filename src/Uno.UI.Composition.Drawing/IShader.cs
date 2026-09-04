@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 namespace Uno.UI.Composition.Drawing;
 
@@ -7,6 +7,6 @@ namespace Uno.UI.Composition.Drawing;
 /// draw verbs and produced by <see cref="IDrawingFactory"/>. Expensive to build and cached by the producing brush
 /// across frames, so — like <see cref="IGeometry"/> — it crosses the boundary as a handle rather than by value.
 /// </summary>
-public interface IShader
+public interface IShader : IDrawingResource
 {
 }

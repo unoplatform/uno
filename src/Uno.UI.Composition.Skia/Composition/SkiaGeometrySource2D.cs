@@ -9,7 +9,7 @@ using Windows.Graphics;
 
 namespace Microsoft.UI.Composition
 {
-	internal partial class SkiaGeometrySource2D : IGeometrySource2D, IGeometry, IDisposable
+	internal partial class SkiaGeometrySource2D : DrawingResource, IGeometrySource2D, IGeometry
 	{
 		private readonly SKPath _geometry;
 
@@ -226,6 +226,6 @@ namespace Microsoft.UI.Composition
 			}
 		}
 
-		public void Dispose() => _geometry.Dispose();
+		protected override void Free() => _geometry.Dispose();
 	}
 }

@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using SkiaSharp;
@@ -7,13 +7,13 @@ namespace Uno.UI.Composition.Drawing;
 
 /// <summary>SkiaSharp-backed <see cref="IImage"/> wrapping an <see cref="SKImage"/>. Also
 /// <see cref="IDisposable"/> so its owner (<see cref="ImageFrames"/>) can release the native image.</summary>
-internal sealed class SkiaImage : IImage, IDisposable
+internal sealed class SkiaImage : DrawingResource, IImage
 {
 	public SkiaImage(SKImage image) => Image = image;
 
 	public SKImage Image { get; }
 
-	public void Dispose() => Image.Dispose();
+	protected override void Free() => Image.Dispose();
 
 	public int PixelWidth => Image.Width;
 

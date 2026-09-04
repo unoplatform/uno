@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Numerics;
@@ -11,7 +11,7 @@ namespace Uno.UI.Composition.Drawing;
 /// and consumed by the drawing pipeline for filling, clipping, stroking and hit-testing. It is a stateful
 /// resource handle, not a draw-time value: it is queried, transformed and combined outside of any draw call.
 /// </summary>
-public interface IGeometry : IDisposable
+public interface IGeometry : IDrawingResource
 {
 	/// <summary>The tight (on-curve) bounds of the geometry.</summary>
 	Rect Bounds { get; }
