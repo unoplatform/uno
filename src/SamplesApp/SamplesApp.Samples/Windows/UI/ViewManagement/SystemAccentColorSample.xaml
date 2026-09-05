@@ -1,0 +1,193 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_ViewManagement.SystemAccentColorSample"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <ScrollViewer Padding="16">
+        <StackPanel Spacing="16">
+
+            <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="System accent color" />
+            <TextBlock Text="The swatches show the values returned by UISettings.GetColorValue. The controls below use the SystemAccentColor theme resources. On macOS, change the accent color in System Settings → Appearance and everything should update live." TextWrapping="Wrap" />
+            <Button Click="OnRefreshClick" Content="Refresh values" />
+
+            <!--  Force a specific accent via FeatureConfiguration.AccentColor.OverrideAccentColor  -->
+            <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Override accent color" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Click="OnOverrideRedClick" Content="Red" />
+                <Button Click="OnOverrideGreenClick" Content="Green" />
+                <Button Click="OnOverridePurpleClick" Content="Purple" />
+                <Button Click="OnClearOverrideClick" Content="Use OS accent" />
+            </StackPanel>
+
+            <!--  Raw UISettings.GetColorValue swatches (set from code-behind)  -->
+            <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="UISettings.GetColorValue" />
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <StackPanel Width="92" Spacing="4">
+                    <Border
+                        x:Name="Dark3Swatch"
+                        Height="56"
+                        CornerRadius="4" />
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        Text="Dark3" />
+                    <TextBlock
+                        x:Name="Dark3Hex"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource CaptionTextBlockStyle}" />
+                </StackPanel>
+                <StackPanel Width="92" Spacing="4">
+                    <Border
+                        x:Name="Dark2Swatch"
+                        Height="56"
+                        CornerRadius="4" />
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        Text="Dark2" />
+                    <TextBlock
+                        x:Name="Dark2Hex"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource CaptionTextBlockStyle}" />
+                </StackPanel>
+                <StackPanel Width="92" Spacing="4">
+                    <Border
+                        x:Name="Dark1Swatch"
+                        Height="56"
+                        CornerRadius="4" />
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        Text="Dark1" />
+                    <TextBlock
+                        x:Name="Dark1Hex"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource CaptionTextBlockStyle}" />
+                </StackPanel>
+                <StackPanel Width="92" Spacing="4">
+                    <Border
+                        x:Name="AccentSwatch"
+                        Height="56"
+                        CornerRadius="4" />
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        Text="Accent" />
+                    <TextBlock
+                        x:Name="AccentHex"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource CaptionTextBlockStyle}" />
+                </StackPanel>
+                <StackPanel Width="92" Spacing="4">
+                    <Border
+                        x:Name="Light1Swatch"
+                        Height="56"
+                        CornerRadius="4" />
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        Text="Light1" />
+                    <TextBlock
+                        x:Name="Light1Hex"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource CaptionTextBlockStyle}" />
+                </StackPanel>
+                <StackPanel Width="92" Spacing="4">
+                    <Border
+                        x:Name="Light2Swatch"
+                        Height="56"
+                        CornerRadius="4" />
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        Text="Light2" />
+                    <TextBlock
+                        x:Name="Light2Hex"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource CaptionTextBlockStyle}" />
+                </StackPanel>
+                <StackPanel Width="92" Spacing="4">
+                    <Border
+                        x:Name="Light3Swatch"
+                        Height="56"
+                        CornerRadius="4" />
+                    <TextBlock
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource CaptionTextBlockStyle}"
+                        Text="Light3" />
+                    <TextBlock
+                        x:Name="Light3Hex"
+                        HorizontalAlignment="Center"
+                        Style="{StaticResource CaptionTextBlockStyle}" />
+                </StackPanel>
+            </StackPanel>
+
+            <!--  Controls driven by the SystemAccentColor theme resources  -->
+            <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Theme resources &amp; controls" />
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <Border
+                    Width="80"
+                    Height="56"
+                    Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                    CornerRadius="4" />
+                <Border
+                    Width="80"
+                    Height="56"
+                    Background="{ThemeResource SystemControlHighlightAccentBrush}"
+                    CornerRadius="4" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <Button Content="Accent button" Style="{StaticResource AccentButtonStyle}" />
+                <ToggleSwitch Header="Toggle" IsOn="True" />
+            </StackPanel>
+
+            <Slider
+                Width="240"
+                HorizontalAlignment="Left"
+                Maximum="100"
+                Value="60" />
+            <ProgressBar
+                Width="240"
+                HorizontalAlignment="Left"
+                Maximum="100"
+                Value="60" />
+
+            <!--  NavigationView selection indicator: the canonical accent-color regression (issue #6767)  -->
+            <NavigationView
+                Height="160"
+                IsBackButtonVisible="Collapsed"
+                IsSettingsVisible="False"
+                PaneDisplayMode="Top">
+                <NavigationView.MenuItems>
+                    <NavigationViewItem Content="Home" IsSelected="True" />
+                    <NavigationViewItem Content="Documents" />
+                    <NavigationViewItem Content="Settings" />
+                </NavigationView.MenuItems>
+            </NavigationView>
+
+            <!--  Explicit RequestedTheme subtree: must also follow the accent (enhanced lifecycle)  -->
+            <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" Text="Subtree with explicit RequestedTheme=Light" />
+            <Border
+                Padding="12"
+                Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+                CornerRadius="4"
+                RequestedTheme="Light">
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Border
+                        Width="80"
+                        Height="56"
+                        Background="{ThemeResource SystemControlBackgroundAccentBrush}"
+                        CornerRadius="4" />
+                    <Button Content="Accent button" Style="{StaticResource AccentButtonStyle}" />
+                    <ToggleSwitch Header="Toggle" IsOn="True" />
+                </StackPanel>
+            </Border>
+
+        </StackPanel>
+    </ScrollViewer>
+</Page>
