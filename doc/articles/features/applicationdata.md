@@ -8,7 +8,7 @@ uid: Uno.Features.ApplicationData
 
 To store persistent application data and user settings, you can utilize the `Windows.Storage.ApplicationData` class in Uno Platform.
 
-Legend
+## Legend
 
 - ✔  Supported
 
