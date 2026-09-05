@@ -52,23 +52,60 @@ public partial class DependencyObject
 	/// </summary>
 	internal void SetTheme(Theme theme) => _theme = theme;
 
-	// MUX Reference: CDependencyObject.h:300-302
-	//   XUINT32 fIsProcessingThemeWalk : 1;  // bit 16
-	//   "Indicates whether the DO is currently processing themes. It is used to prevent stack
-	//    overflows caused by cycles."
-	// WinUI packs this with other lifecycle bits on every CDependencyObject (corep.h:224-348), so it
-	// lives here on the store.
-	private bool _isProcessingThemeWalk;
+	// Per-store transient lifecycle/theme flags, packed into one field instead of one bool field per
+	// flag — WinUI packs the equivalent state into CDependencyObject's m_bitFields (corep.h:224-348).
+	[global::System.Flags]
+	private enum StoreFlags : byte
+	{
+		None = 0,
+
+		// MUX Reference: CDependencyObject.h:300-302 — fIsProcessingThemeWalk. "Indicates whether the DO
+		// is currently processing themes ... to prevent stack overflows caused by cycles."
+		IsProcessingThemeWalk = 1 << 0,
+
+		// Re-entrancy guard for UpdateChildResourceBindings.
+		IsUpdatingChildResourceBindings = 1 << 1,
+
+		// The members below are only written on enhanced-lifecycle targets (see their gated call sites).
+
+		// Transient forceRefresh of the theme walk this object is currently processing.
+		WalkForceRefresh = 1 << 2,
+
+		// MUX Reference: CDependencyObject.h:302 — fIsProcessingEnterLeave.
+		IsProcessingEnterLeave = 1 << 3,
+
+		// MUX Reference: CDependencyObject.h — fLive, carried here for non-UIElement DOs.
+		IsActive = 1 << 4,
+
+		// Blocks DataContext inheritance for stores owned by a ResourceDictionary item.
+		IsResourceDictionaryItem = 1 << 5,
+	}
+
+	private StoreFlags _flags;
+
+	private bool GetFlag(StoreFlags flag) => (_flags & flag) != 0;
+
+	private void SetFlag(StoreFlags flag, bool value)
+	{
+		if (value)
+		{
+			_flags |= flag;
+		}
+		else
+		{
+			_flags &= ~flag;
+		}
+	}
 
 	/// <summary>
 	/// Gets whether this object is currently processing a theme walk (re-entrancy guard).
 	/// </summary>
-	internal bool IsProcessingThemeWalk => _isProcessingThemeWalk;
+	internal bool IsProcessingThemeWalk => GetFlag(StoreFlags.IsProcessingThemeWalk);
 
 	/// <summary>
 	/// Sets whether this object is currently processing a theme walk.
 	/// </summary>
-	internal void SetIsProcessingThemeWalk(bool value) => _isProcessingThemeWalk = value;
+	internal void SetIsProcessingThemeWalk(bool value) => SetFlag(StoreFlags.IsProcessingThemeWalk, value);
 
 	#endregion
 
@@ -83,12 +120,11 @@ public partial class DependencyObject
 	// UpdateChildResourceBindings, which has no walk parameters, so the walking store carries them
 	// here while IsProcessingThemeWalk is set.
 	private Theme _walkTheme;
-	private bool _walkForceRefresh;
 
 	// Valid only while IsProcessingThemeWalk — read by FrameworkElement.UpdateThemeBindings to
 	// thread the walk context into the Resources dictionary's per-child notification.
 	internal Theme WalkTheme => _walkTheme;
-	internal bool WalkForceRefresh => _walkForceRefresh;
+	internal bool WalkForceRefresh => GetFlag(StoreFlags.WalkForceRefresh);
 
 	/// <remarks>
 	/// MUX Reference: CDependencyObject::NotifyThemeChanged — Theming.cpp:110-157.
@@ -136,7 +172,7 @@ public partial class DependencyObject
 		using var cacheGuard = core.ThemeWalkResourceCache.BeginCachingThemeResources();
 
 		_walkTheme = theme;
-		_walkForceRefresh = forceRefresh;
+		SetFlag(StoreFlags.WalkForceRefresh, forceRefresh);
 
 		try
 		{
@@ -221,9 +257,11 @@ public partial class DependencyObject
 	/// SetThemeResource(pDP, pThemeResource) — is hosted end-to-end by the shared
 	/// <see cref="UpdateThemeReference"/> path below, which inlines the slot push.
 	///
-	/// TODO Uno: WinUI's pModifiedValue bookkeeping (SetModifierValueBeingSet, Theming.cpp:355-362)
-	/// and the freeze/unfreeze around SetValue (Theming.cpp:390-392) have no Uno analog — modified
-	/// (animated) values are tracked per-precedence by the store, and Uno has no SimulateFreeze.
+	/// The pModifiedValue bookkeeping (SetModifierValueBeingSet, Theming.cpp:355-362) is ported —
+	/// see ArmModifierValueBeingSet, armed by <see cref="UpdateThemeReference"/> around the value set.
+	///
+	/// TODO Uno: the freeze/unfreeze around SetValue (Theming.cpp:390-392) has no Uno analog —
+	/// Uno has no SimulateFreeze/SimulateUnfreeze.
 	/// </remarks>
 	internal void SetThemeResourceBinding(DependencyProperty property, ThemeResourceReference themeRef, DependencyPropertyValuePrecedences? precedence = null)
 	{
@@ -263,6 +301,43 @@ public partial class DependencyObject
 		_themeResources.Set(property, effectivePrecedence, themeRef);
 	}
 
+	// MUX Reference: CDependencyObject::SetThemeResourceBinding — Theming.cpp:355-362.
+	//   bool modiferValueBeingSet = (pModifiedValue && pModifiedValue->HasModifiers());
+	//   if (modiferValueBeingSet) pModifiedValue->SetModifierValueBeingSet(true);
+	//   auto modiferGuard = wil::scope_exit([&] { if (modiferValueBeingSet) pModifiedValue->SetModifierValueBeingSet(false); });
+	// Held around the engine re-applying a theme-resolved value, so the base-value write cannot make a
+	// held animation lose (the !IsModifierValueBeingSet() guard at PropertySystem.cpp:1649).
+	private ModifierValueBeingSetScope ArmModifierValueBeingSet(DependencyProperty property)
+		=> ModifierValueBeingSetScope.Arm(_properties.FindPropertyDetails(property)?.GetModifiedValue());
+
+	// WinUI's wil::scope_exit; default-constructed (nothing armed) when the property has no modifiers.
+	// The previous value is saved so a cascading re-entry on the same property cannot disarm an outer
+	// scope early — WinUI relies on deleting the CModifiedValue once !HasModifiers (PropertySystem.cpp:290-294),
+	// which Uno does not do.
+	private readonly struct ModifierValueBeingSetScope : IDisposable
+	{
+		private readonly ModifiedValue? _modifiedValue;
+		private readonly bool _previous;
+
+		private ModifierValueBeingSetScope(ModifiedValue modifiedValue)
+		{
+			_modifiedValue = modifiedValue;
+			_previous = modifiedValue.IsModifierValueBeingSet;
+			modifiedValue.IsModifierValueBeingSet = true;
+		}
+
+		internal static ModifierValueBeingSetScope Arm(ModifiedValue? modifiedValue)
+			=> modifiedValue is { HasModifiers: true } ? new ModifierValueBeingSetScope(modifiedValue) : default;
+
+		public void Dispose()
+		{
+			if (_modifiedValue is not null)
+			{
+				_modifiedValue.IsModifierValueBeingSet = _previous;
+			}
+		}
+	}
+
 	#endregion
 
 	#region Theme reference updates — WinUI: UpdateAllThemeReferences / UpdateThemeReference (Theming.cpp lines 260-346)
@@ -277,7 +352,7 @@ public partial class DependencyObject
 	/// WinUI snapshots property indices into a stack_vector (size 50 to handle ListViewItemPresenter
 	/// with 41+ theme refs), then calls UpdateThemeReference(propertyIndex) for each.
 	/// </remarks>
-	internal void UpdateAllThemeReferences(DependencyObject? owner, ThemeWalkResourceCache? cache = null, Theme? ownerThemeOverride = null, bool preferAppResourceOverride = false)
+	internal void UpdateAllThemeReferences(DependencyObject? owner, ThemeWalkResourceCache? cache = null, Theme? ownerThemeOverride = null)
 	{
 		if (_themeResources is not { HasEntries: true })
 		{
@@ -297,7 +372,7 @@ public partial class DependencyObject
 		if (snapshotCount == 1)
 		{
 			var entry = entries[0];
-			UpdateThemeReference(entry.Property, entry.Precedence, entry.Reference, owner, cache, ownerThemeOverride, preferAppResourceOverride);
+			UpdateThemeReference(entry.Property, entry.Precedence, entry.Reference, owner, cache, ownerThemeOverride);
 			return;
 		}
 
@@ -318,8 +393,7 @@ public partial class DependencyObject
 					snapshot[i].Reference,
 					owner,
 					cache,
-					ownerThemeOverride,
-					preferAppResourceOverride);
+					ownerThemeOverride);
 			}
 		}
 		finally
@@ -352,8 +426,7 @@ public partial class DependencyObject
 		ThemeResourceReference themeRef,
 		DependencyObject? owner,
 		ThemeWalkResourceCache? cache,
-		Theme? ownerThemeOverride = null,
-		bool preferAppResourceOverride = false)
+		Theme? ownerThemeOverride = null)
 	{
 		// MUX Reference: Theming.cpp:364-379 — SetThemeResourceBinding pushes the owner's theme onto
 		// the core requested-theme-for-subtree slot ("Push theme that resource lookup should use to
@@ -392,12 +465,26 @@ public partial class DependencyObject
 			// owner's own inheritance chain.
 			var ownerTheme = ownerThemeOverride ?? ThemeResolution.ResolveOwnerTheme(owner);
 
+			// A VSM setter's reference resolves under the setter side, not under the object it is
+			// registered on — WinUI keeps it on the CSetter entirely (ThemeResource.cpp:189-198).
+			// The pin applies during a walk too: the walk theme here is the TARGET's, which is exactly
+			// the boundary the setter value must not be re-scoped by (#24021).
+			if (themeRef.ResolutionOwner is { } resolutionOwner)
+			{
+				var setterTheme = ThemeResolution.ResolvePinnedOwnerTheme(resolutionOwner);
+				prevSlotTheme = core.GetRequestedThemeForSubTree();
+				if (prevSlotTheme != Theming.GetBaseValue(setterTheme))
+				{
+					core.SetRequestedThemeForSubTree(setterTheme);
+					popSlotTheme = true;
+				}
+			}
 			// MUX: Theming.cpp:368-376 — "Push theme that resource lookup should use to get the
 			// property value": only OUTSIDE a theme walk (`!IsProcessingThemeWalk()`) and when the
 			// owner's base theme differs from the slot. During a walk the slot already carries the
 			// walk's theme (set in NotifyThemeChanged, Theming.cpp:137-149) while the owner's
 			// per-object theme is not yet persisted — pushing here would re-scope to the stale theme.
-			if (!IsProcessingThemeWalk)
+			else if (!IsProcessingThemeWalk)
 			{
 				prevSlotTheme = core.GetRequestedThemeForSubTree();
 				if (prevSlotTheme != Theming.GetBaseValue(ownerTheme))
@@ -442,7 +529,7 @@ public partial class DependencyObject
 					|| ownerThemeOverride is not null
 					|| !themeRef.IsValueFromInitialTheme))
 			{
-				themeRef.RefreshValue(cache, preferAppResourceOverride);
+				themeRef.RefreshValue(cache);
 			}
 
 			// MUX: Theming.cpp:385-387 — GetLastResolvedThemeValue: the value to apply is the ref's
@@ -463,21 +550,26 @@ public partial class DependencyObject
 				return;
 			}
 
-			if (themeRef.SetterBindingPath is { } bindingPath)
+			// MUX: Theming.cpp:355-362 — arm the per-property modifier-being-set gate across the value
+			// application (Theming.cpp:393), so re-resolving under a held animation cannot let the base win.
+			using (ArmModifierValueBeingSet(property))
 			{
-				try
+				if (themeRef.SetterBindingPath is { } bindingPath)
 				{
-					_isSettingPersistentResourceBinding = true;
-					bindingPath.Value = convertedValue;
+					try
+					{
+						_isSettingPersistentResourceBinding = true;
+						bindingPath.Value = convertedValue;
+					}
+					finally
+					{
+						_isSettingPersistentResourceBinding = false;
+					}
 				}
-				finally
+				else
 				{
-					_isSettingPersistentResourceBinding = false;
+					SetValue(property, convertedValue, precedence, isPersistentResourceBinding: true);
 				}
-			}
-			else
-			{
-				SetValue(property, convertedValue, precedence, isPersistentResourceBinding: true);
 			}
 
 			// MUX: Theming.cpp:397 — store the reference back in the map
@@ -506,8 +598,6 @@ public partial class DependencyObject
 	#endregion
 
 	#region Property-value theme propagation — WinUI: NotifyThemeChangedCoreImpl property walk (Theming.cpp lines 166-255)
-
-	private bool _isUpdatingChildResourceBindings;
 
 	// Notifies new property value of theme change that was applied to the property owner.
 	/// <remarks>
@@ -602,7 +692,7 @@ public partial class DependencyObject
 	/// </remarks>
 	private void UpdateChildResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
 	{
-		if (_isUpdatingChildResourceBindings)
+		if (GetFlag(StoreFlags.IsUpdatingChildResourceBindings))
 		{
 			// Some DPs might be creating reference cycles, so we make sure not to enter an infinite loop.
 			return;
@@ -616,7 +706,7 @@ public partial class DependencyObject
 			}
 			finally
 			{
-				_isUpdatingChildResourceBindings = false;
+				SetFlag(StoreFlags.IsUpdatingChildResourceBindings, false);
 			}
 
 			if (ActualInstance is IThemeChangeAware themeChangeAware)
@@ -639,7 +729,7 @@ public partial class DependencyObject
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	private void InnerUpdateChildResourceBindings(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider = null)
 	{
-		_isUpdatingChildResourceBindings = true;
+		SetFlag(StoreFlags.IsUpdatingChildResourceBindings, true);
 
 		foreach (var propertyDetail in _properties.GetAllDetails())
 		{
@@ -709,7 +799,7 @@ public partial class DependencyObject
 			if (dependencyObject is not UIElement { IsActiveInVisualTree: true }
 				&& dependencyObject is DependencyObject walkProvider)
 			{
-				walkProvider.NotifyThemeChanged(_walkTheme, _walkForceRefresh);
+				walkProvider.NotifyThemeChanged(_walkTheme, WalkForceRefresh);
 			}
 
 			return;
@@ -746,11 +836,34 @@ public partial class DependencyObject
 			throw new ArgumentException();
 		}
 
+		// A theme-resolved {ThemeResource}/{StaticResource} value re-applied during a per-element re-resolution
+		// — load-time (FrameworkElement.OnFwEltLoading) and element/subtree theme change (NotifyThemeChangedCore)
+		// — flows through SetValue at Local precedence, which marks ModifiedValue.LocalValueNewerThanAnimatedValue
+		// and would defeat an in-effect (held) animation, e.g. a Control's filled VisualState keyframe (the
+		// "checked CheckBox renders empty until hover" bug). MUX Reference: the precedence rule
+		// (ModifiedValue.cpp CModifiedValue::GetEffectiveValue, lines 255-282). WinUI re-resolves in the same hold
+		// window but avoids the defeat with a per-property GATE, not a suppress: SetThemeResourceBinding arms
+		// SetModifierValueBeingSet(true) when the property HasModifiers (true while animated), which makes the
+		// !IsModifierValueBeingSet() guard at PropertySystem.cpp:1649 false and SKIPS the hardcoded
+		// SetBaseValue(.., BaseValueSourceLocal) at :1651 entirely (Theming.cpp:405-410) — so the base is never
+		// re-stamped and the local-newer bit is never set. Uno has no such gate (ApplyResource/SetResourceBinding
+		// default to Local), so it reuses the counter-based suppress it already wraps the global theme switch in
+		// (CoreServices.RaiseThemeChanged, Application.OnResourcesChanged), extended here to the per-element choke
+		// point. This masks the flag-flip rather than skipping the re-stamp; a faithful port of WinUI's
+		// modifier-being-set gate (which would let the suppress be removed) is tracked as follow-up. Counter-based,
+		// so it nests safely under the global guard; try/finally so the counter unwinds on an exception in any phase.
+		UpdateResourceBindingsCore(updateReason, resourceContextProvider, containingDictionary);
+	}
+
+	private void UpdateResourceBindingsCore(ResourceUpdateReason updateReason, FrameworkElement? resourceContextProvider, ResourceDictionary? containingDictionary)
+	{
 		// The owner whose effective theme drives every {ThemeResource} resolution below: this element, or —
 		// for a standalone resource DO with no inheritance parent — the injected resource-context element
 		// (the dictionary's owning element), matching WinUI's per-owner {ThemeResource} resolution. Resolve
 		// it lazily and at most once, reused across all three phases, instead of walking the inheritance
-		// chain separately in each. Not computed at all for elements that need none of the phases.
+		// chain separately in each. Not computed at all for elements that need none of the phases — which
+		// is why this stays a local function: it is never converted to a delegate, so its capture becomes a
+		// by-ref struct closure (no per-element heap allocation on the theme-walk choke point).
 		Theme? ownerThemeCache = null;
 		Theme GetOwnerTheme()
 			=> ownerThemeCache ??= ThemeResolution.ResolveOwnerTheme(
@@ -874,6 +987,14 @@ public partial class DependencyObject
 		// the owner's effective theme scoped onto the core requested-theme-for-subtree slot by
 		// UpdateResourceBindings (EnsureActiveThemeDictionary, Resources.cpp:764-768).
 
+		// ...except for a VSM setter, whose value resolves on the setter side in WinUI and so must not
+		// pick up the target's own RequestedTheme here either (see ThemeResourceReference.ResolutionOwner).
+		// The setter's dual registration means the pinned owner is on the sibling theme-resource entry.
+		using var setterScope = _themeResources?.Get(property, binding.Precedence)?.ResolutionOwner is { } setterOwner
+			? Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(
+				ThemeResolution.ResolvePinnedOwnerTheme(setterOwner))
+			: default;
+
 		// Note: we intentionally do NOT skip theme resource bindings here even though
 		// Phase 1 (UpdateAllThemeReferences) may have already resolved them. The Phase 2
 		// tree walk serves as a fallback when Phase 1 can't resolve (e.g., element not yet
@@ -956,21 +1077,27 @@ public partial class DependencyObject
 	private void SetResourceBindingValue(DependencyProperty property, ResourceBinding binding, object? value)
 	{
 		var convertedValue = BindingPropertyHelper.Convert(property.Type, value);
-		if (binding.SetterBindingPath != null)
+
+		// Uno's Phase-2 resource-binding fallback re-applies the same resolved value the theme-reference
+		// path does, so it needs the same modifier-being-set gate (MUX: Theming.cpp:355-362).
+		using (ArmModifierValueBeingSet(property))
 		{
-			try
+			if (binding.SetterBindingPath != null)
 			{
-				_isSettingPersistentResourceBinding = binding.IsPersistent;
-				binding.SetterBindingPath.Value = convertedValue;
+				try
+				{
+					_isSettingPersistentResourceBinding = binding.IsPersistent;
+					binding.SetterBindingPath.Value = convertedValue;
+				}
+				finally
+				{
+					_isSettingPersistentResourceBinding = false;
+				}
 			}
-			finally
+			else
 			{
-				_isSettingPersistentResourceBinding = false;
+				SetValue(property, convertedValue, binding.Precedence, isPersistentResourceBinding: binding.IsPersistent);
 			}
-		}
-		else
-		{
-			SetValue(property, convertedValue, binding.Precedence, isPersistentResourceBinding: binding.IsPersistent);
 		}
 	}
 
