@@ -35,6 +35,12 @@ internal sealed class EnCHarness : IDisposable
 	public required DocumentId DocumentId { get; init; }
 
 	/// <summary>
+	/// Everything the session reported. The shim takes its reporter by constructor, so this is where
+	/// a test observes what it said (e.g. that no engine member became unreadable).
+	/// </summary>
+	public required RecordingReporter Reporter { get; init; }
+
+	/// <summary>
 	/// Whether disposing the harness ends the EnC session. Defaults to <see langword="true"/>
 	/// (shim-level tests drive <see cref="Watch"/> directly); tests that hand <see cref="Watch"/>
 	/// to a <see cref="HotReloadManager"/> must set this to <see langword="false"/> — the
@@ -53,7 +59,18 @@ internal sealed class EnCHarness : IDisposable
 	public static SourceText AppText(string expression)
 		=> SourceText.From(AppSource(expression), Encoding.UTF8);
 
-	public static async Task<EnCHarness> CreateAsync(TempDirectory temp, CancellationToken ct)
+	/// <summary>
+	/// Wraps a complete document body, for the tests that need a baseline shape
+	/// <see cref="AppSource"/> cannot express (a base type, several types, …).
+	/// </summary>
+	public static SourceText RawText(string source)
+		=> SourceText.From(source, Encoding.UTF8);
+
+	/// <param name="appSource">
+	/// The baseline content of the single document. Defaults to the ConflictLib-consuming shape used
+	/// by the reference-identity tests.
+	/// </param>
+	public static async Task<EnCHarness> CreateAsync(TempDirectory temp, CancellationToken ct, string? appSource = null)
 	{
 		var v1 = EmitLibrary(temp, "ConflictLib", "1.0.0.0", ConflictLibSource, subdir: "v1");
 
@@ -76,7 +93,7 @@ internal sealed class EnCHarness : IDisposable
 						documentId,
 						name: "App.cs",
 						loader: TextLoader.From(TextAndVersion.Create(
-							AppText("\"v\" + Conflict.Info.Version"),
+							appSource is null ? AppText("\"v\" + Conflict.Info.Version") : RawText(appSource),
 							VersionStamp.Create(),
 							appPath)),
 						filePath: appPath),
@@ -95,7 +112,8 @@ internal sealed class EnCHarness : IDisposable
 		var emitted = await solution.EmitCompilationOutputAsync(ct);
 		emitted.EnsureSuccess();
 
-		var watch = await WatchHotReloadService.CreateAsync(solution, _capabilities, ct);
+		var reporter = new RecordingReporter();
+		var watch = await WatchHotReloadService.CreateAsync(solution, _capabilities, reporter, ct);
 
 		return new EnCHarness
 		{
@@ -104,6 +122,7 @@ internal sealed class EnCHarness : IDisposable
 			Solution = solution,
 			ProjectId = projectId,
 			DocumentId = documentId,
+			Reporter = reporter,
 		};
 	}
 
