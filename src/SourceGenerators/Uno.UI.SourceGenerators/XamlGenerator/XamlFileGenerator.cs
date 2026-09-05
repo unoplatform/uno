@@ -70,6 +70,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly Stack<LogicalScope> _logicalScopeStack = new Stack<LogicalScope>();
 		private readonly Stack<XLoadScope> _xLoadScopeStack = new Stack<XLoadScope>();
 		private int _resourceOwner;
+		private int _fieldBackedResourceOwner;
 		private readonly XamlFileDefinition _fileDefinition;
 		private readonly string _defaultNamespace;
 		private readonly RoslynMetadataHelper _metadataHelper;
@@ -1027,7 +1028,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								BuildBaseUri(writer);
 
-								using (ResourceOwnerScope())
+								using (ResourceOwnerScope(declaredAsField: true))
 								{
 									writer.AppendLineIndented("global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();");
 									writer.AppendLineIndented($"global::System.Object {CurrentResourceOwner};");
@@ -2305,6 +2306,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool IsCustomMarkupExtensionType(XamlType? xamlType, bool allowExtensionSuffix = true) =>
 			// Determine if the type is a custom markup extension
 			GetMarkupExtensionType(xamlType, allowExtensionSuffix) != null;
+
+		/// <summary>
+		/// Determines if an object is a markup extension usage (e.g. <c>{local:ResourceString Name=Foo}</c>)
+		/// rather than an element.
+		/// </summary>
+		/// <remarks>
+		/// The "Extension" suffix is only considered when the name does not resolve to an element type, so a
+		/// control with a companion "&lt;Name&gt;Extension" markup extension is not misdetected (#21992).
+		/// </remarks>
+		private bool IsMarkupExtensionObject(XamlObjectDefinition objectDefinition)
+			=> FindType(objectDefinition.Type) is { } type
+				? type.Is(Generation.MarkupExtensionSymbol.Value)
+				: IsCustomMarkupExtensionType(objectDefinition.Type);
 
 		private bool IsXamlTypeConverter(INamedTypeSymbol? symbol)
 		{
@@ -4227,7 +4241,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				xamlApplyPrefix: appliedType != null && !_isHotReloadEnabled ? _fileUniqueId : null,
 				delegateType,
 				!_isTopLevelDictionary,
-				passTemplateSettings);
+				passTemplateSettings,
+				LocalResourceOwner);
 		}
 
 		private void RegisterPartial(string format, params object[] values)
@@ -6817,7 +6832,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			foreach (var member in xamlObject.Members)
 			{
-				foreach (var element in EnumerateSubElements(member.Objects, stoppingCondition))
+				// A markup extension's members are values handed to the extension, not members of an
+				// element, so its subtree is not part of the element tree. Walking it would mistake
+				// e.g. `{local:ResourceString Name=Foo}` for an element named "Foo".
+				foreach (var element in EnumerateSubElements(member.Objects, stoppingCondition, skipMarkupExtensions: true))
 				{
 					yield return element;
 				}
@@ -6831,11 +6849,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private IEnumerable<XamlObjectDefinition> EnumerateSubElements(IEnumerable<XamlObjectDefinition> objects, Func<XamlObjectDefinition, bool>? stoppingCondition)
+		private IEnumerable<XamlObjectDefinition> EnumerateSubElements(IEnumerable<XamlObjectDefinition> objects, Func<XamlObjectDefinition, bool>? stoppingCondition, bool skipMarkupExtensions = false)
 		{
 			foreach (var child in objects.Safe())
 			{
 				if (stoppingCondition != null && stoppingCondition(child))
+				{
+					continue;
+				}
+
+				if (skipMarkupExtensions && IsMarkupExtensionObject(child))
 				{
 					continue;
 				}
@@ -7395,6 +7418,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private string CurrentResourceOwnerName
 			=> CurrentResourceOwner ?? "this";
 
+		/// <summary>
+		/// The current resource owner when it only exists as a lambda or method parameter, and is
+		/// therefore invisible to the class-level ApplyTo_* methods the apply blocks are hoisted into.
+		/// Such an owner has to be forwarded to them explicitly.
+		/// </summary>
+		private string? LocalResourceOwner
+			=> _resourceOwner != _fieldBackedResourceOwner ? CurrentResourceOwner : null;
+
 		public bool HasImplicitViewPinning
 			=> Generation.IOSViewSymbol.Value is not null || Generation.AppKitViewSymbol.Value is not null;
 
@@ -7406,11 +7437,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// in order for FrameworkTemplates contents to access the code-behind context, without
 		/// causing circular references and case memory leaks.
 		/// </remarks>
-		private IDisposable ResourceOwnerScope()
+		/// <param name="declaredAsField">
+		/// Set when the owner is also stored in a field of the generated class, which keeps it reachable
+		/// from the class-level methods. Otherwise it lives only for the duration of a lambda or method.
+		/// </param>
+		private IDisposable ResourceOwnerScope(bool declaredAsField = false)
 		{
 			_resourceOwner++;
 
-			return new DisposableAction(() => _resourceOwner--);
+			var previousFieldBacked = _fieldBackedResourceOwner;
+			if (declaredAsField)
+			{
+				_fieldBackedResourceOwner = _resourceOwner;
+			}
+
+			return new DisposableAction(() =>
+			{
+				_fieldBackedResourceOwner = previousFieldBacked;
+				_resourceOwner--;
+			});
 		}
 
 		/// <summary>

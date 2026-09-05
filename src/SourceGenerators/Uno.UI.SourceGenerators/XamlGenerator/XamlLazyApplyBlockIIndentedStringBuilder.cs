@@ -27,6 +27,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string? _exposeContextMethod;
 		private readonly string _appliedType;
 		private readonly bool _passTemplateSettings;
+		private readonly string? _localResourceOwner;
 
 		/// <summary>
 		/// Name of the callback method generated in the scope that is being used for this apply, if any.
@@ -49,6 +50,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <param name="delegateType"></param>
 		/// <param name="exposeContext">Indicates if the scope should be provided as '__that' parameter in the callback method.</param>
 		/// <param name="passTemplateSettings">Indicates if the materializing template's settings should be provided as '__settings' parameter in the callback method.</param>
+		/// <param name="localResourceOwner">Name of the resource owner to forward to the callback method, when it is not reachable from there.</param>
 		public XamlLazyApplyBlockIIndentedStringBuilder(
 			IIndentedStringBuilder source,
 			NameScope scope,
@@ -57,7 +59,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			string? xamlApplyPrefix,
 			string? delegateType,
 			bool exposeContext,
-			bool passTemplateSettings = false)
+			bool passTemplateSettings = false,
+			string? localResourceOwner = null)
 		{
 			_source = source;
 			_scope = scope;
@@ -65,6 +68,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_delegateType = delegateType;
 			_exposeContext = exposeContext;
 			_passTemplateSettings = passTemplateSettings;
+			_localResourceOwner = localResourceOwner;
 			_appliedType = appliedType?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) ?? "global::System.Object";
 
 			_exposeContextMethod = _xamlApplyPrefix is null && exposeContext
@@ -100,10 +104,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						? ", global::Uno.UI.TemplateMaterializationSettings __settings"
 						: "";
 
-					_source.AppendIndented($".GenericApply(__that, __nameScope, {settingsArg}{_exposeContextMethod}");
+					// A resource owner that only exists as a lambda or method parameter cannot be seen from this
+					// class-level method, so it travels with the call instead.
+					var ownerArg = _localResourceOwner is null ? "" : $"{_localResourceOwner}, ";
+					var ownerParameter = _localResourceOwner is null ? "" : $", object {_localResourceOwner}";
+
+					_source.AppendIndented($".GenericApply(__that, __nameScope, {settingsArg}{ownerArg}{_exposeContextMethod}");
 
 					AnalyzerSuppressionsGenerator.GenerateTrimExclusions(_inner);
-					blockDisposable = _inner.BlockInvariant($"private void {_exposeContextMethod}({_appliedType} {AppliedParameterName}, {_scope.ClassName} __that, global::Microsoft.UI.Xaml.NameScope __nameScope{settingsParameter})");
+					blockDisposable = _inner.BlockInvariant($"private void {_exposeContextMethod}({_appliedType} {AppliedParameterName}, {_scope.ClassName} __that, global::Microsoft.UI.Xaml.NameScope __nameScope{settingsParameter}{ownerParameter})");
 				}
 				else
 				{

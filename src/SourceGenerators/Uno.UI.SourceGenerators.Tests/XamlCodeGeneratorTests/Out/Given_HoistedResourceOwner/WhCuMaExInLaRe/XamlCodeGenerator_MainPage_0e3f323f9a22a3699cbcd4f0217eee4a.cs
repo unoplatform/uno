@@ -48,57 +48,26 @@ namespace TestRepro
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
 			base.IsParsing = true;
-			Resources[typeof(global::Microsoft.UI.Xaml.Controls.TextBlock)] = 
-			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
-			{
-				return 
-					global::MyProject.GlobalStaticResources.__PreserveProperties(
-						new global::Microsoft.UI.Xaml.Style
-						{
-							TargetType = typeof(global::Microsoft.UI.Xaml.Controls.TextBlock),
-							// Source MainPage.xaml (Line 7:6)
-							Setters = 
-							{
-								global::MyProject.GlobalStaticResources.__PreserveProperties(
-									new global::Microsoft.UI.Xaml.Setter
-									{
-										Property = global::Microsoft.UI.Xaml.Controls.TextBlock.ForegroundProperty,
-										Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Red),
-										// Source MainPage.xaml (Line 8:8)
-									}
-								)
-								,
-							}
-						}
-						.GenericApply(__that, __nameScope, __ResourceOwner_1, ApplyTo_Pag_ResΞ0_Sty)
-					)
-				;
-			}
+			Resources["DeleteSymbol"] = 
+			global::MyProject.GlobalStaticResources.__PreserveProperties(
+				new global::Microsoft.UI.Xaml.Controls.SymbolIconSource
+				{
+					Symbol = global::Microsoft.UI.Xaml.Controls.Symbol.Delete,
+					// Source MainPage.xaml (Line 12:5)
+				}
 			)
 			;
-			Resources["MyCustomButtonStyle"] = 
+			Resources["HistorySwipeItems"] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
 			{
 				return 
 					global::MyProject.GlobalStaticResources.__PreserveProperties(
-						new global::Microsoft.UI.Xaml.Style
+						new global::Microsoft.UI.Xaml.Controls.SwipeItems
 						{
-							TargetType = typeof(global::Microsoft.UI.Xaml.Controls.Button),
-							// Source MainPage.xaml (Line 10:6)
-							Setters = 
-							{
-								global::MyProject.GlobalStaticResources.__PreserveProperties(
-									new global::Microsoft.UI.Xaml.Setter
-									{
-										Property = global::Microsoft.UI.Xaml.Controls.Button.BackgroundProperty,
-										Value = new global::Microsoft.UI.Xaml.Media.SolidColorBrush(global::Microsoft.UI.Colors.Azure),
-										// Source MainPage.xaml (Line 11:8)
-									}
-								)
-								,
-							}
+							Mode = global::Microsoft.UI.Xaml.Controls.SwipeMode.Execute,
+							// Source MainPage.xaml (Line 13:5)
 						}
-						.GenericApply(__that, __nameScope, __ResourceOwner_1, ApplyTo_Pag_ResΞ1_Sty)
+						.GenericApply(__that, __nameScope, __ResourceOwner_1, ApplyTo_Pag_ResΞ0_ResDicΞ1_SwiIte)
 					)
 				;
 			}
@@ -107,12 +76,12 @@ namespace TestRepro
 			// Source MainPage.xaml (Line 1:2)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
-				new global::Microsoft.UI.Xaml.Controls.ListView
+				new global::Microsoft.UI.Xaml.Controls.Grid
 				{
 					IsParsing = true,
-					// Source MainPage.xaml (Line 14:4)
+					// Source MainPage.xaml (Line 20:3)
 				}
-				.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_LisVie)
+				.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_Gri)
 			)
 			;
 			
@@ -130,26 +99,34 @@ namespace TestRepro
 
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-		private void ApplyTo_Pag_ResΞ0_Sty(global::Microsoft.UI.Xaml.Style __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope, object __ResourceOwner_1)
+		private void ApplyTo_Pag_ResΞ0_ResDicΞ1_SwiIte(global::Microsoft.UI.Xaml.Controls.SwipeItems __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope, object __ResourceOwner_1)
 		{
-			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file://///Project/0/MainPage.xaml#L7:6");
+			__p1.Add(
+				global::MyProject.GlobalStaticResources.__PreserveProperties(
+					new global::Microsoft.UI.Xaml.Controls.SwipeItem
+					{
+						// Source MainPage.xaml (Line 14:6)
+					}
+					.GenericApply(__that, __nameScope, __ResourceOwner_1, ApplyTo_Pag_ResΞ0_ResDicΞ1_SwiIteΞ0_SwiIte)
+				)
+			);
 		}
-
-
 
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-		private void ApplyTo_Pag_ResΞ1_Sty(global::Microsoft.UI.Xaml.Style __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope, object __ResourceOwner_1)
+		private void ApplyTo_Pag_ResΞ0_ResDicΞ1_SwiIteΞ0_SwiIte(global::Microsoft.UI.Xaml.Controls.SwipeItem __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope, object __ResourceOwner_1)
 		{
-			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file://///Project/0/MainPage.xaml#L10:6");
+			/* _isTopLevelDictionary:False */
+			__that._component_0 = __p1;
+			global::Microsoft.UI.Xaml.Automation.AutomationProperties.SetName(__p1, (string)global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(string), ((global::Microsoft.UI.Xaml.Markup.IMarkupExtensionOverrides)new global::TestRepro.ResourceStringExtension { Name = "DeleteHistorySwipeItem" }).ProvideValue(global::Uno.UI.Helpers.MarkupHelper.CreateParserContext(__p1, typeof(global::Microsoft.UI.Xaml.Automation.AutomationProperties), "Name", typeof(string), (__ResourceOwner_1 as object as global::Uno.UI.IXamlResourceDictionaryProvider)?.GetResourceDictionary() ?? (object)__ResourceOwner_1))));
+			global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.SwipeItem.IconSourceProperty, "DeleteSymbol", isThemeResourceExtension: false, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
 		}
-
 
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-		private void ApplyTo_PagΞ0_LisVie(global::Microsoft.UI.Xaml.Controls.ListView __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+		private void ApplyTo_PagΞ0_Gri(global::Microsoft.UI.Xaml.Controls.Grid __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
-			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a, "file://///Project/0/MainPage.xaml", 14, 4);
+			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a, "file://///Project/0/MainPage.xaml", 20, 3);
 			__p1.CreationComplete();
 		}
 
@@ -167,9 +144,8 @@ namespace TestRepro
 		private void ApplyTo_Pag_Δ1(global::Microsoft.UI.Xaml.Controls.Page __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
 			/* _isTopLevelDictionary:False */
-			__that._component_0 = __p1;
+			__that._component_1 = __p1;
 			// Class TestRepro.MainPage
-			global::Uno.UI.ResourceResolverSingleton.Instance.ApplyResource(__p1, global::Microsoft.UI.Xaml.Controls.Page.BackgroundProperty, "ApplicationPageBackgroundThemeBrush", isThemeResourceExtension: true, isHotReloadSupported: true, context: global::MyProject.GlobalStaticResources.__ParseContext_);
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a, "file://///Project/0/MainPage.xaml", 1, 2);
 			__p1.CreationComplete();
 		}
@@ -194,10 +170,21 @@ namespace TestRepro
 			{
 				get => _component_0_HolderBackingPseudoField ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
 			}
-			private global::Microsoft.UI.Xaml.Controls.Page _component_0
+			private global::Microsoft.UI.Xaml.Controls.SwipeItem _component_0
 			{
-				get => (global::Microsoft.UI.Xaml.Controls.Page)_component_0_Holder.Instance;
+				get => (global::Microsoft.UI.Xaml.Controls.SwipeItem)_component_0_Holder.Instance;
 				set => _component_0_Holder.Instance = value;
+			}
+			
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_HolderBackingPseudoField { get; set; }
+			private global::Microsoft.UI.Xaml.Markup.ComponentHolder _component_1_Holder
+			{
+				get => _component_1_HolderBackingPseudoField ??= new global::Microsoft.UI.Xaml.Markup.ComponentHolder(isWeak: true);
+			}
+			private global::Microsoft.UI.Xaml.Controls.Page _component_1
+			{
+				get => (global::Microsoft.UI.Xaml.Controls.Page)_component_1_Holder.Instance;
+				set => _component_1_Holder.Instance = value;
 			}
 			
 		private interface IMainPage_Bindings
@@ -239,7 +226,7 @@ namespace TestRepro
 			void IMainPage_Bindings.UpdateResources()
 			{
 				var owner = Owner;
-				owner._component_0.UpdateResourceBindings();
+				owner._component_0.UpdateResourceBindings(resourceContextProvider: owner._component_1);
 			}
 			void IMainPage_Bindings.StopTracking()
 			{
