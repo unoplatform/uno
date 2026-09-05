@@ -26,7 +26,7 @@ namespace Microsoft.UI.Composition
 		public static SKColor ToSKColor(this Color color)
 			=> new SKColor(red: color.R, green: color.G, blue: color.B, alpha: color.A);
 
-		public static SKColor ToSKColor(this System.Drawing.Color color)
+		public static SKColor ToSKColor(this global::System.Drawing.Color color)
 			=> new SKColor(red: color.R, green: color.G, blue: color.B, alpha: color.A);
 
 		public static SKColor ToSKColor(this Color color, double alphaMultiplier)
@@ -152,6 +152,18 @@ namespace Microsoft.UI.Composition
 			return opacity == 1.0f ?
 			null :
 			_opacityToColorFilter[(byte)(0xFF * opacity)] ??= SKColorFilter.CreateBlendMode(new SKColor(0xFF, 0xFF, 0xFF, (byte)(0xFF * opacity)), SKBlendMode.Modulate);
+		}
+
+		/// <summary>
+		/// Builds a fresh (immutable) <see cref="SKPath"/> containing <paramref name="rect"/>. SkiaSharp 4 routes
+		/// path construction through <see cref="SKPathBuilder"/>; callers Transform/Op the result into a reusable
+		/// working path.
+		/// </summary>
+		internal static SKPath CreateRectPath(SKRect rect)
+		{
+			var builder = new SKPathBuilder();
+			builder.AddRect(rect);
+			return builder.Detach();
 		}
 	}
 }

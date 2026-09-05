@@ -45,7 +45,7 @@ public class Given_UnoFocusInputHandler
 		var ts2 = new ToggleSwitch();
 		var SUT = new ScrollViewer
 		{
-			new StackPanel
+			Content = new StackPanel
 			{
 				Spacing = 1200,
 				Children =

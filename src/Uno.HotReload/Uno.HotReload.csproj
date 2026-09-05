@@ -13,6 +13,7 @@
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override-noplatform.props" />
+	<Import Project="../Uno.DevServer.Roslyn.props" />
 	<Import Project="..\Uno.DevServer.Processors.Override.targets" />
 
 	<ItemGroup>
@@ -41,26 +42,16 @@
 		<PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.10" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)'=='net9.0'">
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.13.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.13.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.13.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.13.0" />
-		<PackageReference Include="Microsoft.Build" Version="17.7.2" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Framework" Version="17.8.43" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.8.43" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.43" ExcludeAssets="runtime" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='net10.0'">
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="4.14.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.14.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.14.0" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.14.0" />
-		<PackageReference Include="Microsoft.Build" Version="17.7.2" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Framework" Version="17.8.43" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="17.8.43" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.43" ExcludeAssets="runtime" />
+	<!-- Versions come from Uno.DevServer.Roslyn.props — the shared per-TFM matrix. -->
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis" Version="$(DevServerRoslynVersion)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="$(DevServerRoslynVersion)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(DevServerRoslynVersion)" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(DevServerRoslynVersion)" />
+		<PackageReference Include="Microsoft.Build" Version="$(DevServerMSBuildVersion)" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Framework" Version="$(DevServerMSBuildToolsVersion)" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="$(DevServerMSBuildToolsVersion)" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Utilities.Core" Version="$(DevServerMSBuildToolsVersion)" ExcludeAssets="runtime" />
 	</ItemGroup>
 
 </Project>

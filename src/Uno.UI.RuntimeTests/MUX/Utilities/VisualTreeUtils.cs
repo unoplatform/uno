@@ -10,11 +10,7 @@ namespace MUXControlsTestApp.Utilities
 	public static class VisualTreeUtils
 	{
 		public static T FindVisualChildByType<T>(this DependencyObject element)
-#if !WINAPPSDK
-			where T : class, DependencyObject
-#else
 			where T : DependencyObject
-#endif
 		{
 			if (element == null)
 			{
@@ -40,11 +36,7 @@ namespace MUXControlsTestApp.Utilities
 		}
 
 		public static T FindElementOfTypeInSubtree<T>(this DependencyObject element)
-#if !WINAPPSDK
-			where T : class, DependencyObject
-#else
 			where T : DependencyObject
-#endif
 		{
 			if (element == null)
 			{
@@ -97,11 +89,7 @@ namespace MUXControlsTestApp.Utilities
 		}
 
 		public static T FindVisualParentByType<T>(this DependencyObject element)
-			where T :
-#if HAS_UNO
-			class,
-#endif
-			DependencyObject
+			where T : DependencyObject
 		{
 			if (element is null)
 			{
@@ -114,11 +102,7 @@ namespace MUXControlsTestApp.Utilities
 		}
 
 		public static List<T> FindVisualChildrenByType<T>(DependencyObject parent)
-#if !WINAPPSDK
-			where T : class, DependencyObject
-#else
 			where T : DependencyObject
-#endif
 		{
 			List<T> children = new List<T>();
 			T parentAsT = parent as T;

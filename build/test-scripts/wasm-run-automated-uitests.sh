@@ -31,6 +31,11 @@ export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/Samples
 export UNO_ORIGINAL_TEST_RESULTS_DIRECTORY=$BUILD_SOURCESDIRECTORY/build
 export UNO_ORIGINAL_TEST_RESULTS=$UNO_ORIGINAL_TEST_RESULTS_DIRECTORY/TestResult-original.xml
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-wasm-automated-$SITE_SUFFIX-$UITEST_AUTOMATED_GROUP-$UITEST_RUNTIME_TEST_GROUP-chromium.txt
+
+## Create the failed-tests directory up front: every abort path below (a crashed harness,
+## a killed app, a non-zero transform tool) otherwise skips the mkdir and leaves
+## `PublishBuildArtifacts@1` retrying a missing PathtoPublish for minutes.
+mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 export UNO_RUNTIME_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-wasm-runtimetest-$SITE_SUFFIX-$UITEST_AUTOMATED_GROUP-$UITEST_RUNTIME_TEST_GROUP-chromium.txt
 export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
 
@@ -111,7 +116,6 @@ cp $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/TestResults/*/*.xml
 
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
-mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
 echo "Running NUnitTransformTool"
 

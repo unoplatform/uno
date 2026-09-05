@@ -18,7 +18,9 @@ This automatically adds references to the `Xamarin.AndroidX.Wear` and `Xamarin.A
 
 ## What gets configured
 
-When the `AndroidWear` feature is enabled, the template stamps the following declaration into your `AndroidManifest.xml`:
+When the `AndroidWear` feature is enabled, `SupportedOSPlatformVersion` (Android `minSdkVersion`) defaults to `26.0` instead of `21.0`, unless you set it explicitly — the `androidx.wear.protolayout` libraries referenced by `Xamarin.AndroidX.Wear.Tiles` require API 26 or higher.
+
+Additionally, the template stamps the following declaration into your `AndroidManifest.xml`:
 
 ```xml
 <uses-feature android:name="android.hardware.type.watch" android:required="false" />

@@ -24,7 +24,7 @@ public abstract partial class SKCanvasElement : FrameworkElement
 	{
 		if (ApiExtensibility.CreateInstance<SKCanvasVisualBaseFactory>(this, out var factory))
 		{
-			return _skCanvasVisual = factory.CreateInstance((o, size) => RenderOverride((SKCanvas)o, size), Compositor.GetSharedCompositor());
+			return _skCanvasVisual = factory.CreateInstance((o, size) => RenderOverride((SKCanvas)o, size), ElementVisualCompositor);
 		}
 		else
 		{

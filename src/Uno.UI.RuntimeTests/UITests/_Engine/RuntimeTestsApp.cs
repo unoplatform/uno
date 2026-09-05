@@ -48,19 +48,10 @@ public partial class RuntimeTestsApp : IApp
 
 	public async Task RunAsync(string metadataName)
 	{
-#if __SKIA__
-		var assemblyName = "SamplesApp.Skia";
-#elif __WASM__
-		var assemblyName = "SamplesApp.Wasm";
-#else
-		throw new PlatformNotSupportedException();
-#pragma warning disable CS0162
-		var assemblyName = "";
-#endif
-		if (TestServices.WindowHelper.IsXamlIsland)
-		{
-			assemblyName = "UnoIslands" + assemblyName;
-		}
+		// The islands host still carries the .Skia suffix; the samples head does not.
+		var assemblyName = TestServices.WindowHelper.IsXamlIsland
+			? "UnoIslandsSamplesApp.Skia"
+			: "SamplesApp";
 
 		if (Type.GetType($"{metadataName}, {assemblyName}") is { } sampleType
 			&& Activator.CreateInstance(sampleType) is FrameworkElement sample)

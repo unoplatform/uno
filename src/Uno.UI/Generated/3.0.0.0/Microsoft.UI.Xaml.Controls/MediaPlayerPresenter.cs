@@ -3,10 +3,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class MediaPlayerPresenter
+	public partial class MediaPlayerPresenter : global::Microsoft.UI.Xaml.FrameworkElement
 	{
 		// Skipping already declared property IsFullWindowProperty
 		// Skipping already declared property MediaPlayerProperty

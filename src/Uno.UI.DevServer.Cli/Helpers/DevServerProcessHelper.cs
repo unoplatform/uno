@@ -352,6 +352,34 @@ internal static class DevServerProcessHelper
 	}
 
 	/// <summary>
+	/// Starts a child that owns the console, waits for it, and returns its exit code verbatim.
+	/// </summary>
+	/// <remarks>
+	/// For interactive children whose own stdout is the user-facing output — the settings app's headless
+	/// sign-in, which prints the loopback redirect URI to complete on and its own result. Unlike
+	/// <see cref="RunConsoleProcessAsync"/> this emits nothing above <see cref="LogLevel.Debug"/>, so parent
+	/// lines cannot interleave with the child's output or break parsing of it, and it does not reinterpret
+	/// the exit code: a non-zero code here can be an ordinary outcome (the user cancelled the sign-in)
+	/// rather than a failure, so classifying it is the caller's business.
+	/// </remarks>
+	public static async Task<int> RunInteractiveProcessAsync(ProcessStartInfo startInfo, ILogger logger)
+	{
+		logger.LogDebug("Starting interactive process: {File} {Args}", startInfo.FileName, startInfo.Arguments);
+
+		using Process process = new() { StartInfo = startInfo };
+
+		process.Start();
+
+		logger.LogDebug("Started interactive process: {Pid}", process.Id);
+
+		await process.WaitForExitAsync();
+
+		logger.LogDebug("Interactive process exited (code: {ExitCode})", process.ExitCode);
+
+		return process.ExitCode;
+	}
+
+	/// <summary>
 	/// Spawns the host in direct mode (no <c>--command</c>) and waits for
 	/// the HTTP port to become reachable.  The result's <c>ExitCode</c> is 0 on
 	/// success and 1 on timeout or process failure; the failure kind, host exit

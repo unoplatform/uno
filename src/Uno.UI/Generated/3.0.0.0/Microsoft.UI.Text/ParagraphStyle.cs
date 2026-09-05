@@ -3,43 +3,43 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Text
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum ParagraphStyle
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Undefined = 0,
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		None = 1,
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Normal = 2,
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Heading1 = 3,
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Heading2 = 4,
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Heading3 = 5,
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Heading4 = 6,
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Heading5 = 7,
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Heading6 = 8,
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Heading7 = 9,
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Heading8 = 10,
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Heading9 = 11,
 #endif
 	}
