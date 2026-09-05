@@ -1,16 +1,16 @@
-﻿#if !__ANDROID__ && !__APPLE_UIKIT__
+﻿#if !__ANDROID__ && !__APPLE_UIKIT__ && !__SKIA__
 using System;
 using Uno;
 
 namespace Windows.Security.Credentials;
 
-[NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+[NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 // This class is ** NOT ** sealed in order to allow projects for which the security limit described bellow is not
 // really a concern (for instance if they are only storing an OAuth token) to inherit and provide they own
 // implementation of 'IPersister'.
 partial class PasswordVault
 {
-	[NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	[NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 	public PasswordVault()
 	{
 #if !__WASM__

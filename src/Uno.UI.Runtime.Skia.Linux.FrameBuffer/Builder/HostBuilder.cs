@@ -8,6 +8,7 @@ public static class HostBuilder
 	public static IUnoPlatformHostBuilder UseLinuxFrameBuffer(this IUnoPlatformHostBuilder builder)
 	{
 		builder.AddHostBuilder(() => new FramebufferHostBuilder());
+		LinuxPasswordVaultExtensions.Register();
 		return builder;
 	}
 
@@ -19,6 +20,7 @@ public static class HostBuilder
 		builder.AddHostBuilder(() =>
 		{
 			var fbBuilder = new FramebufferHostBuilder();
+			LinuxPasswordVaultExtensions.Register();
 			if (((IPlatformHostBuilder)fbBuilder).IsSupported)
 			{
 				action.Invoke(fbBuilder);

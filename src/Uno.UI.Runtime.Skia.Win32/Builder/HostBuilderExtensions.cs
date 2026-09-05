@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno.UI.Runtime.Skia.Win32;
 
 namespace Uno.UI.Hosting;
 
@@ -7,6 +8,7 @@ public static class HostBuilderExtensions
 	public static IUnoPlatformHostBuilder UseWin32(this IUnoPlatformHostBuilder builder)
 	{
 		builder.AddHostBuilder(() => new Win32HostBuilder());
+		RegisterPasswordVault();
 		return builder;
 	}
 
@@ -18,6 +20,7 @@ public static class HostBuilderExtensions
 		builder.AddHostBuilder(() =>
 		{
 			var win32Builder = new Win32HostBuilder();
+			RegisterPasswordVault();
 			if (((IPlatformHostBuilder)win32Builder).IsSupported)
 			{
 				action.Invoke(win32Builder);
@@ -26,5 +29,13 @@ public static class HostBuilderExtensions
 		});
 
 		return builder;
+	}
+
+	private static void RegisterPasswordVault()
+	{
+		if (OperatingSystem.IsWindows())
+		{
+			Win32PasswordVaultExtension.Register();
+		}
 	}
 }
