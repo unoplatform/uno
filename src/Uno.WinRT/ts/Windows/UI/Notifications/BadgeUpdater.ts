@@ -1,11 +1,15 @@
 ﻿interface Navigator {
-	setAppBadge(value: number):void;
-	clearAppBadge(): void;
+	setAppBadge?(value: number): void;
+	clearAppBadge?(): void;
 }
 
 namespace Windows.UI.Notifications {
 
 	export class BadgeUpdater {
+
+		public static isSupported(): boolean {
+			return !!navigator.setAppBadge && !!navigator.clearAppBadge;
+		}
 
 		public static setNumber(value: number) {
 			if (navigator.setAppBadge) {

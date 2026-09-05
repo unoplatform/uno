@@ -25,8 +25,8 @@
 	</Properties>
 
 	<Dependencies>
-		<TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.19041.0" />
-		<TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.19041.0" />
+		<TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.17763.0" MaxVersionTested="10.0.26100.0" />
+		<TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.26100.0" />
 	</Dependencies>
 
 	<Resources>
@@ -47,6 +47,13 @@
 				<uap:SplashScreen Image="Assets\SplashScreen.png" />
 			</uap:VisualElements>
 			<Extensions>
+				<uap3:Extension Category="windows.appExtension">
+					<uap3:AppExtension
+					  Name="com.microsoft.apptaskprovider"
+					  PublicFolder="Public"
+					  Id="SamplesApp.AppTaskProvider"
+					  DisplayName="SamplesApp app task provider" />
+				</uap3:Extension>
 				<uap5:Extension Category="windows.appExecutionAlias">
 					<uap5:AppExecutionAlias>
 						<uap5:ExecutionAlias Alias="unosamplesapp.exe" />

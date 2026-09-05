@@ -8,6 +8,9 @@ namespace __Windows.UI.Notifications
 		{
 			private const string JsType = "globalThis.Windows.UI.Notifications.BadgeUpdater";
 
+			[JSImport($"{JsType}.isSupported")]
+			internal static partial bool IsSupported();
+
 			[JSImport($"{JsType}.clear")]
 			internal static partial void Clear();
 
