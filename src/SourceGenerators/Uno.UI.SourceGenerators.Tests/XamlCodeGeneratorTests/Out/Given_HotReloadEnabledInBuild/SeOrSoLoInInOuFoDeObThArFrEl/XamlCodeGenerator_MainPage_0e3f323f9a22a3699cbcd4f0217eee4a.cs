@@ -302,7 +302,7 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.Setter
 						{
 							Target = new global::Microsoft.UI.Xaml.TargetPropertyPath(this._TheListViewSubject, "Background"),
-							Value = @"Red",
+							Value = "Red",
 							// Source MainPage.xaml (Line 27:12)
 						}
 					)
@@ -335,7 +335,7 @@ namespace TestRepro
 						new global::Microsoft.UI.Xaml.Setter
 						{
 							Target = new global::Microsoft.UI.Xaml.TargetPropertyPath(this._TheListViewSubject, "Background"),
-							Value = @"Green",
+							Value = "Green",
 							// Source MainPage.xaml (Line 35:12)
 						}
 					)
@@ -429,7 +429,7 @@ namespace TestRepro
 									new global::Microsoft.UI.Xaml.Controls.Button
 									{
 										IsParsing = true,
-										Content = @"DoSomething",
+										Content = "DoSomething",
 										// Source MainPage.xaml (Line 16:10)
 									}
 									.GenericApply(__that, __nameScope, __settings, ApplyTo_Ξ0_StaPanΞ1_But)
@@ -476,7 +476,7 @@ namespace TestRepro
 						global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
 						new Microsoft.UI.Xaml.Data.Binding()
 						{
-							Path = @"",
+							Path = "",
 						}
 					);
 					global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a, "file://///Project/0/MainPage.xaml", 15, 10);

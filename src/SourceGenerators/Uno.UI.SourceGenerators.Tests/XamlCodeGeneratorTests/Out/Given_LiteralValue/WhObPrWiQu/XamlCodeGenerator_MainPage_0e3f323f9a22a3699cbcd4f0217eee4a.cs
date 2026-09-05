@@ -51,21 +51,14 @@ namespace TestRepro
 			// Source MainPage.xaml (Line 1:2)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
-				new global::Microsoft.UI.Xaml.Controls.TextBlock
+				new global::TestRepro.MyControl
 				{
 					IsParsing = true,
-					// Source MainPage.xaml (Line 7:3)
+					Value = "IsEnabled=\"False\" ",
+					// Source MainPage.xaml (Line 8:3)
 				}
 				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler0)(__p1 => 
 				{
-				__p1.SetBinding(
-					global::Microsoft.UI.Xaml.Controls.TextBlock.TextProperty,
-					new Microsoft.UI.Xaml.Data.Binding()
-					{
-						Path = "ThePath",
-						RelativeSource = new RelativeSource(default),
-					}
-				);
 				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
 				__p1.CreationComplete();
 				}
@@ -99,9 +92,9 @@ namespace MyProject
 {
 	static class MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions
 	{
-		public delegate void XamlApplyHandler0(global::Microsoft.UI.Xaml.Controls.TextBlock instance);
+		public delegate void XamlApplyHandler0(global::TestRepro.MyControl instance);
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static global::Microsoft.UI.Xaml.Controls.TextBlock MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::Microsoft.UI.Xaml.Controls.TextBlock instance, XamlApplyHandler0 handler)
+		public static global::TestRepro.MyControl MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply(this global::TestRepro.MyControl instance, XamlApplyHandler0 handler)
 		{
 			handler(instance);
 			return instance;
