@@ -5,6 +5,7 @@ using System.Globalization;
 using Windows.Globalization;
 using System.Linq;
 using System.Collections.Generic;
+using System.Runtime.ExceptionServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_Globalization;
 
@@ -135,5 +136,87 @@ public class Given_DateTimeFormatter
 
 			Assert.AreEqual(expected, formattedTime, $"Mismatch for template: {template}");
 		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23718")]
+	public void When_CreatingWithHourPattern_ShouldNotThrowFirstChanceException()
+	{
+		// The pattern "{hour.integer(1)}" is what TimePicker/TimePickerFlyout uses to resolve the
+		// default clock. Constructing the formatter must not raise a first-chance ArgumentException
+		// from the internal template parser, which was noise when debugging with all CLR exceptions on.
+		// FirstChanceException can fire from any thread, so we filter to the specific template-parser
+		// message in the handler and guard the shared flag to avoid races and false positives.
+		var sync = new object();
+		var sawTemplateParseException = false;
+		void OnFirstChance(object sender, FirstChanceExceptionEventArgs e)
+		{
+			if (e.Exception is ArgumentException && e.Exception.Message.Contains("Failed to parse date time template"))
+			{
+				lock (sync)
+				{
+					sawTemplateParseException = true;
+				}
+			}
+		}
+
+		AppDomain.CurrentDomain.FirstChanceException += OnFirstChance;
+		try
+		{
+			var formatter = new DateTimeFormatter("{hour.integer(1)}");
+			Assert.IsNotNull(formatter);
+		}
+		finally
+		{
+			AppDomain.CurrentDomain.FirstChanceException -= OnFirstChance;
+		}
+
+		bool sawException;
+		lock (sync)
+		{
+			sawException = sawTemplateParseException;
+		}
+
+		Assert.IsFalse(
+			sawException,
+			"Constructing a DateTimeFormatter from a format pattern should not raise a first-chance template-parse exception (#23718).");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23718")]
+	public void When_CreatingWithHourPattern_ShouldFormatCorrectly()
+	{
+		var formatter = new DateTimeFormatter("{hour.integer(1)}", ["en-US"], "US", CalendarIdentifiers.Gregorian, ClockIdentifiers.TwentyFourHour);
+
+		Assert.AreEqual("{hour.integer(1)}", formatter.Template);
+		CollectionAssert.Contains(formatter.Patterns.ToList(), "{hour.integer(1)}");
+
+		var formatted = formatter.Format(new DateTimeOffset(2024, 6, 17, 14, 30, 0, TimeSpan.Zero));
+		Assert.AreEqual("14", formatted);
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23718")]
+	public void When_TimeThenSpecificDate_ShouldKeepDatePortion()
+	{
+		// When a time component comes before a specific date (e.g. "hour shortdate"), the parsed
+		// date node must be preserved in the normalized template rather than dropped.
+		var formatter = new DateTimeFormatter("hour shortdate");
+
+		Assert.AreEqual("shortdate hour", formatter.Template);
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23718")]
+	public void When_LongTimeTemplate_ShouldNormalizeTemplate()
+	{
+		// The IsLongTime flag must be copied from the parsed template so normalization keeps "longtime".
+		var formatter = new DateTimeFormatter("longtime");
+
+		Assert.AreEqual("longtime", formatter.Template);
 	}
 }

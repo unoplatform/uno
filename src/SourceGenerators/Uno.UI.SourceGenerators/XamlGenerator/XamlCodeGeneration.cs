@@ -118,9 +118,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			=> _defaultNamespace == "Uno.UI";
 
 		private bool IsUnoFluentAssembly
-			=> _defaultNamespace == "Uno.UI.FluentTheme" || _defaultNamespace.StartsWith("Uno.UI.FluentTheme.v", StringComparison.Ordinal);
+			=> _defaultNamespace == "Uno.UI.FluentTheme";
 
-		private const string WinUIThemeResourcePathSuffixFormatString = "themeresources_v{0}.xaml";
 		private static string WinUICompactPathSuffix = Path.Combine("DensityStyles", "Compact.xaml");
 
 		internal Lazy<INamedTypeSymbol?> AssemblyMetadataSymbol { get; }
@@ -723,20 +722,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
-			// Try "using:" or "clr-namespace:" prefixed namespaces
+			// Try "using:" prefixed namespaces
 			var nsName = trimmedNamespace;
 			if (nsName.StartsWith("using:", StringComparison.Ordinal))
 			{
 				nsName = nsName.Substring("using:".Length);
-			}
-			else if (nsName.StartsWith("clr-namespace:", StringComparison.Ordinal))
-			{
-				nsName = nsName.Substring("clr-namespace:".Length);
-				var semiIndex = nsName.IndexOf(';');
-				if (semiIndex > 0)
-				{
-					nsName = nsName.Substring(0, semiIndex);
-				}
 			}
 
 			return _metadataHelper.FindTypeByFullName(nsName + "." + xamlType.Name) as INamedTypeSymbol;
@@ -785,7 +775,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			foreach (var exception in Flatten(e))
 			{
 				var diagnostic = Diagnostic.Create(
-					XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
+					(exception as XamlParsingException)?.Descriptor ?? XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
 					GetExceptionFileLocation(exception),
 					exception.Message);
 
@@ -1048,10 +1038,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							else if (xamlFiles.Any() && IsUnoFluentAssembly)
 							{
 								// For Uno assembly, we expose WinUI resources using same uri as on Windows
-								for (int fluentVersion = 1; fluentVersion <= XamlConstants.MaxFluentResourcesVersion; fluentVersion++)
-								{
-									RegisterForFile(string.Format(CultureInfo.InvariantCulture, WinUIThemeResourcePathSuffixFormatString, fluentVersion), XamlFilePathHelper.GetWinUIThemeResourceUrl(fluentVersion));
-								}
+								RegisterForFile(XamlFilePathHelper.WinUIThemeResourceFileName, XamlFilePathHelper.WinUIThemeResourceURL);
 								RegisterForFile(WinUICompactPathSuffix, XamlFilePathHelper.WinUICompactURL);
 							}
 
@@ -1094,14 +1081,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								// We leave context null because local resources should be found through Application.Resources
 								// Pass ALC to support secondary ALC scenarios
-								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.LocalResourcePrefix}{map.GetSourceLink(file)}\", context: null, dictionary: () => {file.UniqueID}_ResourceDictionary, {filePath}, __alc);");
+								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.MsResourceFilesPrefix}{map.GetSourceLink(file)}\", context: null, dictionary: () => {file.UniqueID}_ResourceDictionary, {filePath}, __alc);");
 								// Local resources can also be found through the ms-appx:/// prefix
 								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.AppXIdentifier}{map.GetSourceLink(file)}\", context: null, dictionary: () => {file.UniqueID}_ResourceDictionary, null, __alc);");
 							}
 							else
 							{
 								// Standard registration without ALC support
-								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.LocalResourcePrefix}{map.GetSourceLink(file)}\", context: null, dictionary: () => {file.UniqueID}_ResourceDictionary, {filePath});");
+								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.MsResourceFilesPrefix}{map.GetSourceLink(file)}\", context: null, dictionary: () => {file.UniqueID}_ResourceDictionary, {filePath});");
 								// Local resources can also be found through the ms-appx:/// prefix
 								writer.AppendLineIndented($"global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{XamlFilePathHelper.AppXIdentifier}{map.GetSourceLink(file)}\", context: null, dictionary: () => {file.UniqueID}_ResourceDictionary);");
 							}

@@ -156,10 +156,21 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		//UNO TODO: Implement GetClickablePointRasterizedClient on UIElement
 		internal Point GetClickablePointRasterizedClient()
 		{
-			return new Point();
+#if __SKIA__
+			var bounds = GetGlobalBoundsWithOptions(
+				ignoreClipping: false,
+				ignoreClippingOnScrollContentPresenters: false,
+				useTargetInformation: false,
+				skipPostPaintingClipping: false);
+
+			return bounds.Width > 0 && bounds.Height > 0
+				? new Point(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2)
+				: default;
+#else
+			return default;
+#endif
 		}
 
 		//TODO:MZ: Implement all these in appropriate places :-)
@@ -827,7 +838,25 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+#if __SKIA__
+		// Reused per-thread so the automation/IsOffscreen path doesn't allocate a native SKPath per call.
+		// GetTotalClipPath rewinds it at the root, so no explicit reset is needed here.
+		[ThreadStatic]
+		private static SkiaSharp.SKPath? _globalBoundsClipScratch;
+#endif
+
 		internal Rect GetGlobalBoundsWithOptions(bool ignoreClipping, bool ignoreClippingOnScrollContentPresenters, bool useTargetInformation)
+			=> GetGlobalBoundsWithOptions(
+				ignoreClipping,
+				ignoreClippingOnScrollContentPresenters,
+				useTargetInformation,
+				skipPostPaintingClipping: true);
+
+		private Rect GetGlobalBoundsWithOptions(
+			bool ignoreClipping,
+			bool ignoreClippingOnScrollContentPresenters,
+			bool useTargetInformation,
+			bool skipPostPaintingClipping)
 		{
 #if __SKIA__
 			if (!IsInLiveTree)
@@ -852,7 +881,9 @@ namespace Microsoft.UI.Xaml
 				// wrongly considered on-screen (IsOffscreen == false).
 				// TODO: ignoreClippingOnScrollContentPresenters is not yet honored separately. Every caller
 				// currently passes false, so the full ancestor clip (including ScrollContentPresenters) applies.
-				var clip = Visual.GetTotalClipRectInRootCoordinates();
+				var clipPath = _globalBoundsClipScratch ??= new SkiaSharp.SKPath();
+				Visual.GetTotalClipPath(clipPath, skipPostPaintingClipping);
+				var clip = clipPath.Bounds;
 
 				var left = Math.Max(globalBounds.Left, clip.Left);
 				var top = Math.Max(globalBounds.Top, clip.Top);
@@ -880,11 +911,10 @@ namespace Microsoft.UI.Xaml
 #endif
 		}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		// WinUI stores fIsProcessingEnterLeave (bit 15) in a DependencyObjectBitFields uint on
 		// CDependencyObject (corep.h:224-348; CDependencyObject.h:298). The per-object theme (m_theme) and
-		// the theme-walk bit (fIsProcessingThemeWalk, bit 16) now live on DependencyObjectStore, since WinUI
-		// carries them on every CDependencyObject — not just elements. See DependencyObjectStore.Theming.cs.
+		// the theme-walk bit (fIsProcessingThemeWalk, bit 16) now live on DependencyObject, since WinUI
+		// carries them on every CDependencyObject — not just elements. See DependencyObject.Theming.cs.
 		[Flags]
 		private enum UIElementFlag : uint
 		{
@@ -1069,7 +1099,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		// MUX Reference: CDependencyObject ActivateImpl/DeactivateImpl — the UIElement side of
-		// m_bitFields.fLive, dispatched from DependencyObjectStore (DependencyObjectStore.mux.cs).
+		// m_bitFields.fLive, dispatched from DependencyObject (DependencyObject.mux.cs).
 		// The Depth reset on deactivation is Uno-specific bookkeeping for the enhanced lifecycle.
 		internal void ActivateImpl()
 		{
@@ -1085,12 +1115,13 @@ namespace Microsoft.UI.Xaml
 		// MUX Reference: CUIElement::NotifyThemeChangedCore — uielement.cpp:14483-14508
 		internal virtual void NotifyThemeChangedCore(Theme theme, bool forceRefresh)
 		{
-			// TODO Uno: NOT PORTED — "Set opacity dirty to ensure it is correct when having
-			// HighContrastAdjustment opacity overrides." (CUIElement::NWSetOpacityDirty,
-			// uielement.cpp:14486) — HighContrastAdjustment rendering is not implemented.
+#if __SKIA__
+			// MUX Reference: CUIElement::NWSetOpacityDirty (uielement.cpp:14486).
+			UpdateHighContrastOpacityOverride(forceInvalidate: true);
+#endif
 
 			// Notify element's properties that theme has changed
-			((IDependencyObjectStoreProvider)this).Store.NotifyThemeChangedCoreImpl(theme, forceRefresh);
+			((DependencyObject)this).NotifyThemeChangedCoreImpl(theme, forceRefresh);
 
 			// Recursively notify element subtree that theme has changed
 			// (indexed with Count re-read each iteration so the walk stays resilient if a child's
@@ -1207,8 +1238,15 @@ namespace Microsoft.UI.Xaml
 
 			// Pass updated params to children.
 			// MUX Reference: uielement.cpp:1356 — CUIElement::EnterImpl calls CDependencyObject::EnterImpl
-			// here. The CDependencyObject layer lives on DependencyObjectStore (DependencyObjectStore.mux.cs).
-			((IDependencyObjectStoreProvider)this).Store.EnterImpl(null, @params);
+			// here. The CDependencyObject layer lives on DependencyObject (DependencyObject.mux.cs).
+			((DependencyObject)this).EnterImpl(null, @params);
+
+#if __SKIA__
+			if (@params.IsLive)
+			{
+				UpdateHighContrastOpacityOverride();
+			}
+#endif
 
 			// Extends EnterImpl to the ContextFlyout.
 			// In WinUI, EnterSparseProperties calls EnterEffectiveValue for IsVisualTreeProperty values,
@@ -1791,8 +1829,8 @@ namespace Microsoft.UI.Xaml
 			//}
 
 			// MUX Reference: CUIElement::LeaveImpl calls CDependencyObject::LeaveImpl here. The
-			// CDependencyObject layer lives on DependencyObjectStore (DependencyObjectStore.mux.cs).
-			((IDependencyObjectStoreProvider)this).Store.LeaveImpl(null, @params);
+			// CDependencyObject layer lives on DependencyObject (DependencyObject.mux.cs).
+			((DependencyObject)this).LeaveImpl(null, @params);
 
 			// Extends LeaveImpl to the ContextFlyout.
 			// In WinUI, LeaveSparseProperties calls LeaveEffectiveValue for IsVisualTreeProperty values,
@@ -1886,7 +1924,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 		}
-#endif
 
 		internal virtual bool WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation horizontal)
 			=> true;

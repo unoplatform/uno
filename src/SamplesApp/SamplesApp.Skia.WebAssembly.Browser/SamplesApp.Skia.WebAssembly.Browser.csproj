@@ -45,6 +45,7 @@
 
 	<ItemGroup>
 		<WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=1024m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
+		<WasmShellMonoEnvironment Include="MONO_INTERPRETER_OPTIONS" Value="-ssa" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">

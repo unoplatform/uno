@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Documents
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum LogicalDirection
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Backward = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Forward = 1,
 #endif
 	}

@@ -1,0 +1,95 @@
+<Page
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.ItemContainerTests.ItemContainer_In_ListView_ItemTemplate"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.ItemContainerTests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <Grid Margin="16" ColumnSpacing="16">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            Grid.Column="0"
+            FontWeight="SemiBold"
+            Text="ListView with ItemContainer in ItemTemplate"
+            TextWrapping="Wrap" />
+
+        <ListView
+            x:Name="ItemContainerListView"
+            Grid.Row="1"
+            Grid.Column="0"
+            Height="200"
+            AutomationProperties.AutomationId="ItemContainerListView"
+            SelectionMode="Single">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ItemContainer Padding="12">
+                        <TextBlock Text="{Binding}" />
+                    </ItemContainer>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <TextBlock
+            Grid.Row="0"
+            Grid.Column="1"
+            FontWeight="SemiBold"
+            Text="Standard ListView (reference)"
+            TextWrapping="Wrap" />
+
+        <ListView
+            x:Name="StandardListView"
+            Grid.Row="1"
+            Grid.Column="1"
+            Height="200"
+            AutomationProperties.AutomationId="StandardListView"
+            SelectionMode="Single">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Border Padding="12">
+                        <TextBlock Text="{Binding}" />
+                    </Border>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <TextBlock
+            x:Name="ItemContainerListViewStatus"
+            Grid.Row="2"
+            Grid.Column="0"
+            AutomationProperties.AutomationId="ItemContainerListViewStatus"
+            Text="Selected: None / SelectionChanged: 0"
+            TextWrapping="Wrap" />
+
+        <TextBlock
+            x:Name="StandardListViewStatus"
+            Grid.Row="2"
+            Grid.Column="1"
+            AutomationProperties.AutomationId="StandardListViewStatus"
+            Text="Selected: None / SelectionChanged: 0"
+            TextWrapping="Wrap" />
+
+        <TextBlock
+            x:Name="PointerDiagnostics"
+            Grid.Row="3"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="0,12,0,0"
+            AutomationProperties.AutomationId="PointerDiagnostics"
+            Text="No pointer interaction recorded."
+            TextWrapping="Wrap" />
+    </Grid>
+</Page>

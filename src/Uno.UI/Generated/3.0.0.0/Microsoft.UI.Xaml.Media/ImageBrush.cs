@@ -3,10 +3,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ImageBrush
+	public partial class ImageBrush : global::Microsoft.UI.Xaml.Media.TileBrush
 	{
 		// Skipping already declared property ImageSourceProperty
 		// Skipping already declared property ImageSource

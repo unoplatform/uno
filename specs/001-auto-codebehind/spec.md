@@ -94,7 +94,7 @@ A developer using Uno Platform targets (Skia, WebAssembly, Mobile) and/or WinUI 
 - **FR-010**: The feature MUST work on all Uno Platform target frameworks (Skia, WebAssembly, Android, iOS, macOS, tvOS).
 - **FR-011**: The feature MUST work on WinUI target frameworks (`net10.0-windows10.0.*`) via Uno.Sdk integration.
 - **FR-012**: The generated source MUST be produced by a Roslyn source generator (IIncrementalGenerator) to integrate with the standard build pipeline and IDE experience.
-- **FR-013**: The generated class MUST be declared as `partial` to allow the XAML source generator to add `InitializeComponent()` and named fields to the same class.
+- **FR-013**: The generated class MUST be declared as `public sealed partial`. `partial` lets the XAML source generator add `InitializeComponent()` and named fields to the same class; `public sealed` matches the accessibility and sealed-ness of a conventional hand-authored code-behind (and of every project-template page). Keeping the modifiers identical whether the code-behind is auto-generated or user-authored means swapping between the two under hot reload does not change the class modifiers, avoiding an `ENC0004` ("updating the modifiers of class") rude edit.
 
 ### Key Entities
 

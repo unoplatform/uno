@@ -38,8 +38,8 @@ namespace Microsoft.UI.Xaml.Input
 		internal static PointerRoutedEventArgs LastPointerEvent { get; private set; }
 
 		/// <inheritdoc />
-		global::Windows.UI.Input.PointerPoint CoreWindow.IPointerEventArgs.GetLocation(object relativeTo)
-			=> (global::Windows.UI.Input.PointerPoint)GetCurrentPoint(relativeTo as UIElement);
+		global::Microsoft.UI.Input.PointerPoint CoreWindow.IPointerEventArgs.GetLocation(object relativeTo)
+			=> GetCurrentPoint(relativeTo as UIElement);
 
 		public IList<PointerPoint> GetIntermediatePoints(UIElement relativeTo)
 			=> new List<PointerPoint>(1) { GetCurrentPoint(relativeTo) };

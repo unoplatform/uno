@@ -3,10 +3,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class AppBarSeparator : global::Microsoft.UI.Xaml.Controls.ICommandBarElement
+	public partial class AppBarSeparator : global::Microsoft.UI.Xaml.Controls.Control, global::Microsoft.UI.Xaml.Controls.ICommandBarElement
 	{
 		// Skipping already declared property DynamicOverflowOrderProperty
 		// Skipping already declared property IsCompactProperty

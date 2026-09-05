@@ -22,9 +22,9 @@ using Windows.UI.ViewManagement;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Toolkit.Extensions;
+using Uno.UI.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.DevTools.Input;
 
 using static Private.Infrastructure.TestServices;
 using Disposable = Uno.Disposables.Disposable;
@@ -1553,6 +1553,63 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22007")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11)] // Flaky on Skia X11 #9080
+#if __WASM__
+		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
+#elif !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Shift_MouseWheel_Then_ScrollHorizontally()
+		{
+#if WINAPPSDK
+			Assert.Inconclusive("Mouse pointer helper not supported on WinAppSDK.");
+#else
+			// Shift + vertical mouse wheel must scroll horizontally: wheel-down scrolls right,
+			// wheel-up scrolls left (matching WinUI / standard desktop behavior). See #22007.
+			var sut = new ScrollViewer
+			{
+				Height = 256,
+				Width = 256,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+				HorizontalScrollMode = ScrollMode.Enabled,
+				VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
+				Content = new Border
+				{
+					Height = 256,
+					Width = 4192,
+					Background = new SolidColorBrush(Colors.DeepPink)
+				}
+			};
+
+			var sutBounds = await UITestHelper.Load(sut);
+
+			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
+			using var mouse = input.GetMouse();
+
+			sut.HorizontalOffset.Should().Be(0);
+
+			mouse.MoveTo(sutBounds.GetCenter());
+
+			// Wheel down + Shift => scroll right (increasing horizontal offset).
+			mouse.Wheel(-120, Windows.System.VirtualKeyModifiers.Shift);
+
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+			sut.HorizontalOffset.Should().BeGreaterThan(0);
+			var afterWheelDown = sut.HorizontalOffset;
+
+			// Wheel up + Shift => scroll left (decreasing horizontal offset).
+			mouse.Wheel(120, Windows.System.VirtualKeyModifiers.Shift);
+
+			await UITestHelper.WaitForIdle(waitForCompositionAnimations: true);
+
+			sut.HorizontalOffset.Should().BeLessThan(afterWheelDown);
+#endif
+		}
+
+		[TestMethod]
 #if !UNO_HAS_MANAGED_SCROLL_PRESENTER
 		[Ignore("We're only testing managed scrollers.")]
 #endif
@@ -1695,11 +1752,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var input = InputInjector.TryCreate() ?? throw new InvalidOperationException("Pointer injection not available on this platform.");
 			using var finger = input.GetFinger();
 			var bounds = SUT.GetAbsoluteBounds();
+			const double drag = 50;
+#if HAS_UNO
+			var threshold = Microsoft.UI.Input.GestureRecognizer.Manipulation.StartTouch.TranslateY;
+#else
+			// Not reachable: the test is [Ignore]d on WinAppSDK, where the threshold type is internal to Uno.
+			const double threshold = 10;
+#endif
+
 			finger.Press(bounds.GetCenter());
-			finger.MoveTo(bounds.GetCenter().Offset(0, -50));
+			// Moves of exactly one threshold: the manipulation is recognized on the first one, and that
+			// distance is absorbed rather than replayed as a delta (#20473).
+			finger.MoveTo(bounds.GetCenter().Offset(0, -drag), steps: (uint)(drag / threshold) - 1);
 			finger.Release();
 			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(50, SUT.VerticalOffset);
+			Assert.AreEqual(drag - threshold, SUT.VerticalOffset);
 		}
 
 		[TestMethod]

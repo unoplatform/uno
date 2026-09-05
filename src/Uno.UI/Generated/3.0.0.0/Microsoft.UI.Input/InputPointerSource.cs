@@ -3,15 +3,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Input
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class InputPointerSource : global::Microsoft.UI.Input.InputObject
 	{
 		// Skipping already declared property Cursor
 		// Skipping already declared property DeviceKinds
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Input.InputPointerSource GetForIsland(global::Microsoft.UI.Content.ContentIsland island)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Input.InputPointerSource", "GetForIsland(ContentIsland island)");

@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition.Interactions
 {
-#if false || false
+#if false
 	public enum InteractionSourceMode
 	{
 		// Skipping already declared field Microsoft.UI.Composition.Interactions.InteractionSourceMode.Disabled

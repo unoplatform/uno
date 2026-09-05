@@ -32,20 +32,5 @@ namespace SamplesApp.UITests.Windows_UI_Xaml
 
 			_app.WaitForText("TestsStatus", "SUCCESS");
 		}
-
-		[Test]
-		[AutoRetry]
-		[ActivePlatforms(Platform.Android)] // Tests display of Android native view
-		public void When_Native_View()
-		{
-			Run("UITests.Shared.Windows_UI_Xaml.UIElementTests.UIElement_Native_Child");
-
-			_app.WaitForElement("SpacerBorder");
-			var spacerRect = _app.GetPhysicalRect("SpacerBorder");
-
-			using var scrn = TakeScreenshot("Ready", ignoreInSnapshotCompare: true);
-
-			ImageAssert.HasColorAt(scrn, spacerRect.X, spacerRect.Y, Color.Red);
-		}
 	}
 }

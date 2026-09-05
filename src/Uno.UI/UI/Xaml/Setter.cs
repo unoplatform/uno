@@ -35,8 +35,10 @@ namespace Microsoft.UI.Xaml
 		private DependencyProperty? _property;
 		private TargetPropertyPath? _target;
 
-		// This property is not part of the WinUI API, but is 
-		// required to determine if the value has a binding set
+		// Deliberately not named ValueProperty: the XAML generator treats a "<Name>Property"
+		// member as proof that Name is DP-backed, and would route Setter.Value through
+		// SetValue/SetBinding — but the value lives in _value, so it would be dropped.
+		// WinUI does back Value with a DP; aligning is tracked by uno-private#2292.
 		private static DependencyProperty InternalValueProperty { get; }
 			= DependencyProperty.Register(
 				nameof(Value),

@@ -208,6 +208,8 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 				_renderer = CreateSoftwareRenderer(mouseIndicatorOptions);
 			}
 
+			Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = _renderer is SoftwareRenderer;
+
 			WUX.Application.Start(CreateApp);
 		}
 

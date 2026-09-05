@@ -6,9 +6,9 @@ namespace Uno.UI.Runtime.Skia {
 
 		constructor(canvas: HTMLCanvasElement) {
 			this.canvas = canvas;
-			this.anyGL = (<any>window).GL;
+			this.anyGL = EmscriptenWebGL.assertGL();
 
-			this.glCtx = WebGlBrowserRenderer.createWebGLContext(this.canvas, this.anyGL);
+			this.glCtx = EmscriptenWebGL.createContext(this.canvas, { antialias: 1 });
 			if (!this.glCtx || this.glCtx < 0)
 				throw `Failed to create WebGL context: err ${this.glCtx}`;
 		}
@@ -51,34 +51,6 @@ namespace Uno.UI.Runtime.Skia {
 
 		public static makeCurrent(instance: WebGlBrowserRenderer) {
 			instance.anyGL.makeContextCurrent(instance.glCtx);
-		}
-
-		private static createWebGLContext(canvas: any, anyGL: any) {
-			var contextAttributes = {
-				alpha: 1,
-				depth: 1,
-				stencil: 8,
-				antialias: 1,
-				premultipliedAlpha: 1,
-				preserveDrawingBuffer: 0,
-				preferLowPowerToHighPerformance: 0,
-				failIfMajorPerformanceCaveat: 0,
-				majorVersion: 2,
-				minorVersion: 0,
-				enableExtensionsByDefault: 1,
-				explicitSwapControl: 0,
-				renderViaOffscreenBackBuffer: 0,
-			};
-
-			var ctx = anyGL.createContext(canvas, contextAttributes);
-			if (!ctx && contextAttributes.majorVersion > 1) {
-				console.warn('Falling back to WebGL 1.0');
-				contextAttributes.majorVersion = 1;
-				contextAttributes.minorVersion = 0;
-				ctx = anyGL.createContext(canvas, contextAttributes);
-			}
-
-			return ctx;
 		}
 	}
 }

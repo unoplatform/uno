@@ -11,9 +11,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class CalendarViewBaseItem
 	{
-#if !UNO_HAS_BORDER_VISUAL
-		private BorderLayerRenderer _borderRenderer;
-#endif
 
 		private Size _lastSize;
 
@@ -50,9 +47,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 
-#if UNO_HAS_BORDER_VISUAL
 		private protected override ContainerVisual CreateElementVisual() => Compositor.GetSharedCompositor().CreateBorderVisual();
-#endif
 
 		private void UpdateChromeIfNeeded(Rect rect)
 		{
@@ -65,9 +60,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateChrome()
 		{
-#if !UNO_HAS_BORDER_VISUAL
-			_borderRenderer ??= new BorderLayerRenderer(this);
-#endif
 
 			// DrawBackground			=> General background for all items
 			// DrawControlBackground	=> Control.Background customized by the apps (can be customized in the element changing event)
@@ -76,11 +68,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// OR DrawBorder			=> Draws the border ...
 			// DrawInnerBorder			=> The today / selected state
 
-#if UNO_HAS_BORDER_VISUAL
 			this.UpdateAllBorderProperties();
-#else
-			_borderRenderer.Update();
-#endif
 		}
 
 

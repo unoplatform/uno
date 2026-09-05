@@ -2,7 +2,8 @@
 {
 	public partial class StateTrigger : StateTriggerBase
 	{
-		public bool IsActive
+		// Hides the internal DependencyObject.IsActive (live-tree state).
+		public new bool IsActive
 		{
 			get => (bool)GetValue(IsActiveProperty);
 			set => SetValue(IsActiveProperty, value);

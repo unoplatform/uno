@@ -4,20 +4,20 @@
 namespace Microsoft.UI.Xaml.CustomAttributes
 {
 	[global::System.AttributeUsageAttribute(global::System.AttributeTargets.Property | global::System.AttributeTargets.Method, Inherited = true, AllowMultiple = false)]
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class MUXPropertyDefaultValueAttribute : global::System.Attribute
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public MUXPropertyDefaultValueAttribute() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.CustomAttributes.MUXPropertyDefaultValueAttribute", "MUXPropertyDefaultValueAttribute()");
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.CustomAttributes.MUXPropertyDefaultValueAttribute.MUXPropertyDefaultValueAttribute()
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		public string value;
 #endif
 	}

@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class RectangleGeometry : global::Microsoft.UI.Xaml.Media.Geometry

@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+	
+	<PropertyGroup>
+		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
+	</PropertyGroup>
+
+	<Import Project="../targetframework-override.props" />
+
+	<PropertyGroup>
+		<AssemblyName>Uno.UI.RuntimeTests</AssemblyName>
+		<RootNamespace>Uno.UI.RuntimeTests</RootNamespace>
+
+		<UnoEnableImplicitXamlNamespaces>true</UnoEnableImplicitXamlNamespaces>
+
+		<!--
+		Required for Catalyst nuget restore to revalidate
+		once transitive dependencies have been updated.
+		-->
+		<NoWarn>$(NoWarn);NU1703;CS0105</NoWarn>
+
+		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
+		<NoWarn>$(NoWarn);CS1998</NoWarn>
+		<!--
+		error IL2111: Method 'MUXControlsTestApp.UtilitiesTemp.ControlStateViewer.ControlType.set' with parameters or return value with `DynamicallyAccessedMembersAttribute` is accessed via reflection. Trimmer can't guarantee availability of the requirements of the method.
+		  (within a generated `__PreserveProperties(new ControlStateViewer {…})` invocation; doesn't make sense!)
+		  -->
+		<NoWarn>$(NoWarn);IL2111</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup Label="GlobalUsings">
+		<Using Include="AwesomeAssertions" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AwesomeAssertions" />
+		<PackageReference Include="MSTest.TestFramework" />
+		<PackageReference Include="MSTest.Analyzers" />
+		<PackageReference Include="Combinatorial.MSTest" />
+		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.netcoremobile.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\TestFramework\ActivePlatformsAttribute.cs">
+			<Link>UITests\_Engine\UnoUITests\ActivePlatformsAttribute.cs</Link>
+		</Compile>
+		<Compile Include="..\SamplesApp\SamplesApp.UITests\TestFramework\ImageAssert.ExpectedPixels.cs" Link="Helpers\ImageAssert.ExpectedPixels.cs" />
+		<Compile Include="..\SamplesApp\SamplesApp.UITests\TestFramework\ImageAssert.Validations.cs" Link="Helpers\ImageAssert.Validations.cs" />
+		<Compile Include="..\Uno.Foundation\_Compat\IsExternalInit.cs" Link="_Compat\IsExternalInit.cs" />
+		<Compile Include="$(MSBuildThisFileDirectory)..\SamplesApp\SamplesApp.UITests\**\Extensions\*.cs">
+			<Link>UITests\_Engine\SamplesAppUITests\%(RecursiveDir)%(FileName)%(Extension)</Link>
+		</Compile>
+	</ItemGroup>
+
+	<Import Project="UnitTestsImport.props" />
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.netcoremobile.csproj" />
+		<ProjectReference Include="..\Uno.UWP\Uno.netcoremobile.csproj" />
+		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.netcoremobile.csproj" />
+		<ProjectReference Include="..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.netcoremobile.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Assets\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PRIResource Include="Resources\**\*.resw" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(DocsGeneration)'==''">
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+	</ItemGroup>
+
+	<ItemGroup>
+		<AndroidAsset Remove="Assets\Border_Snapshot.bgra8" />
+		<AndroidAsset Remove="Assets\UnoA4.pdf" />
+		<AndroidAsset Remove="Assets\UnoA4.png" />
+		<AndroidAsset Remove="Assets\UnoA4_Protected.pdf" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource Include="Assets\Border_Snapshot.bgra8" />
+		<EmbeddedResource Include="Assets\UnoA4.pdf" />
+		<EmbeddedResource Include="Assets\UnoA4.png" />
+		<EmbeddedResource Include="Assets\UnoA4_Crop.png" />
+		<EmbeddedResource Include="Assets\UnoA4_Protected.pdf" />
+		<EmbeddedResource Include="Assets\UnoA4_Protected.png" />
+	</ItemGroup>
+
+	<!-- The Skia/WASM accessibility semantic-DOM tests use composition APIs (UIElement.Visual) that
+	     don't exist on native mobile, so they don't compile there and aren't applicable (native
+	     surfaces accessibility through native views). Exclude them from the native mobile head. -->
+	<ItemGroup>
+		<Compile Remove="Tests\Windows_UI_Xaml_Automation\Given_Accessible*.cs" />
+		<Compile Remove="Tests\Windows_UI_Xaml_Automation\WasmSemanticDomHelper.cs" />
+	</ItemGroup>
+
+	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
+
+</Project>

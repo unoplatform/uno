@@ -18,6 +18,7 @@ using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
+using Uno.UI.Xaml.Controls;
 using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia.Android;
@@ -34,6 +35,9 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 		SetEGLContextClientVersion(2);
 		SetEGLConfigChooser(8, 8, 8, 8, 0, 8);
 		SetRenderer(_renderer = new InternalRenderer());
+		// The scene is still presented through GL, but when not hardware-accelerated it is
+		// rasterized on the CPU first, which is what IsSoftwareRenderer reflects.
+		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = !_renderer.HardwareAccelerated;
 		ExploreByTouchHelper = new UnoExploreByTouchHelper(this);
 		TextInputPlugin = new TextInputPlugin(this);
 		ViewCompat.SetAccessibilityDelegate(this, ExploreByTouchHelper);
@@ -126,7 +130,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 			if (AndroidSkiaTextBoxNotificationsProviderSingleton.Instance.LiveTextBoxesMap.TryGetValue(virtualId, out var textBox))
 			{
 				var autofillValue = (AutofillValue)values.ValueAt(i)!;
-				textBox.Text = autofillValue.TextValue;
+				textBox.Text = autofillValue.TextValue ?? string.Empty;
 			}
 		}
 	}
@@ -143,12 +147,18 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 
 		private readonly bool _hardwareAccelerated = FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid;
 
+		internal bool HardwareAccelerated => _hardwareAccelerated;
+
+		private bool _firstFrameSignaled;
+
 		private GRContext? _context;
 		private GRGlFramebufferInfo _glInfo;
 		private GRBackendRenderTarget? _renderTarget;
 
 		private SKSurface? _glBackedSurface;
 		private SKSurface? _softwareSurface;
+
+		private readonly RetainedLayer _retainedLayer = new();
 
 		void IRenderer.OnDrawFrame(IGL10? gl)
 		{
@@ -161,8 +171,8 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 				_context = GRContext.CreateGl(glInterface);
 			}
 
-			var surface = _hardwareAccelerated ? _glBackedSurface : _softwareSurface;
-			var nativeClipPath = ((CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(surface?.Canvas,
+			var renderSurface = _hardwareAccelerated ? _retainedLayer.Surface : _softwareSurface;
+			var nativeClipPath = ((CompositionTarget)Microsoft.UI.Xaml.Window.CurrentSafe!.RootElement!.Visual.CompositionTarget!).OnNativePlatformFrameRequested(renderSurface?.Canvas,
 			size =>
 			{
 				// read the info from the buffer
@@ -189,33 +199,45 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 				_renderTarget?.Dispose();
 				_renderTarget = new GRBackendRenderTarget((int)size.Width, (int)size.Height, samples, buffer[1], _glInfo);
 
-				if (_glBackedSurface == null)
+				_glBackedSurface = SKSurface.Create(_context, _renderTarget, SurfaceOrigin, ColorType);
+
+				if (_hardwareAccelerated)
 				{
-					_glBackedSurface = SKSurface.Create(_context, _renderTarget, SurfaceOrigin, ColorType);
+					return _retainedLayer.EnsureSurface(_context, (int)size.Width, (int)size.Height, SKColors.Transparent).Canvas;
 				}
 
-				if (!_hardwareAccelerated && _softwareSurface is null)
-				{
-					var info = new SKImageInfo((int)size.Width, (int)size.Height, ColorType);
-					_softwareSurface = SKSurface.Create(info);
-				}
-
-				surface = _hardwareAccelerated ? _glBackedSurface : _softwareSurface;
-				return surface!.Canvas;
+				var info = new SKImageInfo((int)size.Width, (int)size.Height, ColorType);
+				_softwareSurface = SKSurface.Create(info);
+				return _softwareSurface.Canvas;
 			});
 
 			ApplicationActivity.NativeLayerHost!.Path = nativeClipPath;
 
-			if (!_hardwareAccelerated && _glBackedSurface is not null)
+			if (_hardwareAccelerated)
+			{
+				if (_glBackedSurface is not null)
+				{
+					_retainedLayer.Present(_glBackedSurface);
+				}
+			}
+			else if (_glBackedSurface is not null)
 			{
 				var glBackedCanvas = _glBackedSurface.Canvas;
 				glBackedCanvas.Clear(SKColors.Transparent);
 				glBackedCanvas.DrawSurface(_softwareSurface, 0, 0);
 				glBackedCanvas.Flush();
 			}
-			// else : we already drew directly on the OpenGL-backed canvas
 
 			_context!.Flush();
+
+			if (!_firstFrameSignaled)
+			{
+				_firstFrameSignaled = true;
+				NativeWindowWrapper.Instance.NotifyFirstFrameRendered();
+				// Trigger OnPreDraw re-evaluation so the splash can dismiss once the first frame is on screen
+				ApplicationActivity.RelativeLayout?.Post(() =>
+					ApplicationActivity.RelativeLayout?.Invalidate());
+			}
 		}
 
 		void IRenderer.OnSurfaceChanged(IGL10? gl, int width, int height)
@@ -238,8 +260,11 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 
 		private void FreeContext()
 		{
+			_retainedLayer.Dispose();
 			_glBackedSurface?.Dispose();
 			_glBackedSurface = null;
+			_softwareSurface?.Dispose();
+			_softwareSurface = null;
 			_renderTarget?.Dispose();
 			_renderTarget = null;
 			_context?.Dispose();

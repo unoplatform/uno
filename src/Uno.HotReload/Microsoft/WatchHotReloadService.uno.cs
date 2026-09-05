@@ -8,10 +8,9 @@ namespace Uno.HotReload.Microsoft;
 
 partial class WatchHotReloadService : IWatchHotReloadService
 {
-	public static async ValueTask<WatchHotReloadService> CreateAsync(Workspace workspace, string[] metadataUpdateCapabilities, CancellationToken ct)
+	public static async ValueTask<WatchHotReloadService> CreateAsync(Solution currentSolution, string[] metadataUpdateCapabilities, CancellationToken ct)
 	{
-		var currentSolution = workspace.CurrentSolution;
-		var hotReloadService = new WatchHotReloadService(workspace.Services, metadataUpdateCapabilities);
+		var hotReloadService = new WatchHotReloadService(currentSolution.Workspace.Services, metadataUpdateCapabilities);
 		await hotReloadService.StartSessionAsync(currentSolution, ct).ConfigureAwait(false);
 
 		// Read the documents to memory

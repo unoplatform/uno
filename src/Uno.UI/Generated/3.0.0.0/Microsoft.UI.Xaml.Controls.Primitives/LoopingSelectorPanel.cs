@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class LoopingSelectorPanel : global::Microsoft.UI.Xaml.Controls.Canvas, global::Microsoft.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo

@@ -106,17 +106,31 @@ namespace Uno.UI.Runtime.Skia {
 		public static setupEvents(elementId: string) {
 			const videoElement = document.getElementById(elementId) as HTMLVideoElement;
 			if (videoElement) {
-				videoElement.onloadedmetadata = e => BrowserMediaPlayerExtension.unoExports.OnLoadedMetadata(elementId, videoElement.videoWidth !== 0);
-				videoElement.onstalled = e => BrowserMediaPlayerExtension.unoExports.OnStalled(elementId);
-				videoElement.onratechange = e => BrowserMediaPlayerExtension.unoExports.OnRateChange(elementId);
-				videoElement.ondurationchange = e => BrowserMediaPlayerExtension.unoExports.OnDurationChange(elementId);
-				videoElement.onended = e => BrowserMediaPlayerExtension.unoExports.OnEnded(elementId);
-				videoElement.onerror = e => BrowserMediaPlayerExtension.unoExports.OnError(elementId);
-				videoElement.onpause = e => BrowserMediaPlayerExtension.unoExports.OnPause(elementId);
-				videoElement.onplaying = e => BrowserMediaPlayerExtension.unoExports.OnPlaying(elementId);
-				videoElement.onseeked = e => BrowserMediaPlayerExtension.unoExports.OnSeeked(elementId);
-				videoElement.onvolumechange = e => BrowserMediaPlayerExtension.unoExports.OnVolumeChange(elementId);
-				// videoElement.ontimeupdate = e => BrowserMediaPlayerExtension.unoExports.OnTimeUpdate(elementId);
+				if((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+					videoElement.onloadedmetadata = e => BrowserMediaPlayerExtension.unoExports.OnLoadedMetadataAsync(elementId, videoElement.videoWidth !== 0);
+					videoElement.onstalled = e => BrowserMediaPlayerExtension.unoExports.OnStalledAsync(elementId);
+					videoElement.onratechange = e => BrowserMediaPlayerExtension.unoExports.OnRateChangeAsync(elementId);
+					videoElement.ondurationchange = e => BrowserMediaPlayerExtension.unoExports.OnDurationChangeAsync(elementId);
+					videoElement.onended = e => BrowserMediaPlayerExtension.unoExports.OnEndedAsync(elementId);
+					videoElement.onerror = e => BrowserMediaPlayerExtension.unoExports.OnErrorAsync(elementId);
+					videoElement.onpause = e => BrowserMediaPlayerExtension.unoExports.OnPauseAsync(elementId);
+					videoElement.onplaying = e => BrowserMediaPlayerExtension.unoExports.OnPlayingAsync(elementId);
+					videoElement.onseeked = e => BrowserMediaPlayerExtension.unoExports.OnSeekedAsync(elementId);
+					videoElement.onvolumechange = e => BrowserMediaPlayerExtension.unoExports.OnVolumeChangeAsync(elementId);
+					// videoElement.ontimeupdate = e => BrowserMediaPlayerExtension.unoExports.OnTimeUpdateAsync(elementId);
+				} else {
+					videoElement.onloadedmetadata = e => BrowserMediaPlayerExtension.unoExports.OnLoadedMetadata(elementId, videoElement.videoWidth !== 0);
+					videoElement.onstalled = e => BrowserMediaPlayerExtension.unoExports.OnStalled(elementId);
+					videoElement.onratechange = e => BrowserMediaPlayerExtension.unoExports.OnRateChange(elementId);
+					videoElement.ondurationchange = e => BrowserMediaPlayerExtension.unoExports.OnDurationChange(elementId);
+					videoElement.onended = e => BrowserMediaPlayerExtension.unoExports.OnEnded(elementId);
+					videoElement.onerror = e => BrowserMediaPlayerExtension.unoExports.OnError(elementId);
+					videoElement.onpause = e => BrowserMediaPlayerExtension.unoExports.OnPause(elementId);
+					videoElement.onplaying = e => BrowserMediaPlayerExtension.unoExports.OnPlaying(elementId);
+					videoElement.onseeked = e => BrowserMediaPlayerExtension.unoExports.OnSeeked(elementId);
+					videoElement.onvolumechange = e => BrowserMediaPlayerExtension.unoExports.OnVolumeChange(elementId);
+					// videoElement.ontimeupdate = e => BrowserMediaPlayerExtension.unoExports.OnTimeUpdate(elementId);
+				}				
 			}
 		}
 	}

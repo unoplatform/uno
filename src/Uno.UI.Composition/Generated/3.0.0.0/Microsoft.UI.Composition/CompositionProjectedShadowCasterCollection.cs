@@ -3,18 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CompositionProjectedShadowCasterCollection : global::Microsoft.UI.Composition.CompositionObject, global::System.Collections.Generic.IEnumerable<global::Microsoft.UI.Composition.CompositionProjectedShadowCaster>, global::System.Collections.IEnumerable
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		internal CompositionProjectedShadowCasterCollection()
 		{
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static int MaxRespectedCasters
 		{
 			get
@@ -23,8 +23,8 @@ namespace Microsoft.UI.Composition
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public int Count
 		{
 			get
@@ -34,50 +34,50 @@ namespace Microsoft.UI.Composition
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCasterCollection.MaxRespectedCasters.get
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public void InsertAbove(global::Microsoft.UI.Composition.CompositionProjectedShadowCaster newCaster, global::Microsoft.UI.Composition.CompositionProjectedShadowCaster reference)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadowCasterCollection", "InsertAbove(CompositionProjectedShadowCaster newCaster, CompositionProjectedShadowCaster reference)");
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public void InsertAtBottom(global::Microsoft.UI.Composition.CompositionProjectedShadowCaster newCaster)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadowCasterCollection", "InsertAtBottom(CompositionProjectedShadowCaster newCaster)");
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public void InsertAtTop(global::Microsoft.UI.Composition.CompositionProjectedShadowCaster newCaster)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadowCasterCollection", "InsertAtTop(CompositionProjectedShadowCaster newCaster)");
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public void InsertBelow(global::Microsoft.UI.Composition.CompositionProjectedShadowCaster newCaster, global::Microsoft.UI.Composition.CompositionProjectedShadowCaster reference)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadowCasterCollection", "InsertBelow(CompositionProjectedShadowCaster newCaster, CompositionProjectedShadowCaster reference)");
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public void Remove(global::Microsoft.UI.Composition.CompositionProjectedShadowCaster caster)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadowCasterCollection", "Remove(CompositionProjectedShadowCaster caster)");
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public void RemoveAll()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionProjectedShadowCasterCollection", "RemoveAll()");
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::System.Collections.Generic.IEnumerator<global::Microsoft.UI.Composition.CompositionProjectedShadowCaster> GetEnumerator()
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionProjectedShadowCasterCollection", "GetEnumerator()");
@@ -87,9 +87,9 @@ namespace Microsoft.UI.Composition
 		// Forced skipping of method Microsoft.UI.Composition.CompositionProjectedShadowCasterCollection.Count.get
 		// Processing: System.Collections.Generic.IEnumerable<Microsoft.UI.Composition.CompositionProjectedShadowCaster>
 		// Processing: System.Collections.IEnumerable
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		// DeclaringType: System.Collections.IEnumerable
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+		[global::Uno.NotImplemented("__SKIA__")]
 		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
 		{
 			throw new global::System.NotSupportedException();

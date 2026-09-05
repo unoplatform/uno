@@ -16,13 +16,12 @@ namespace Microsoft.UI.Xaml
 	/// </summary>
 	/// <remarks>
 	/// This is the root of the Uno visual-tree and property hierarchy. The dependency-property
-	/// store and binder are carried here, replacing the per-type mixin that the
-	/// <c>DependencyObjectGenerator</c> used to emit while <see cref="DependencyObject"/> was an interface.
+	/// store and binder are carried directly on this type; the machinery that used to live in a
+	/// separate <c>DependencyObjectStore</c> now spans the <c>DependencyObject.*.cs</c> partials.
 	/// </remarks>
 	[global::Microsoft.UI.Xaml.Data.Bindable]
-	public partial class DependencyObject : IDependencyObjectStoreProvider, IDependencyObjectInternal, IWeakReferenceProvider
+	public partial class DependencyObject : IDependencyObjectInternal, IWeakReferenceProvider
 	{
-		private DependencyObjectStore __storeBackingField;
 		private BinderReferenceHolder _refHolder;
 		private ManagedWeakReference _selfWeakReference;
 
@@ -30,37 +29,40 @@ namespace Microsoft.UI.Xaml
 
 		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; } = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
 
-		private DependencyObjectStore __Store
-		{
-			get
-			{
-				if (__storeBackingField == null)
-				{
-					__storeBackingField = new DependencyObjectStore(this);
-					__InitializeBinder();
-				}
+		// Public property-system and binder API. These stay in this nullable-oblivious file so their signatures
+		// match the historical (interface-era) public surface exactly; the implementations live on the
+		// nullable-annotated DependencyObject.*.cs partials.
+		public object GetValue(DependencyProperty dp) => GetValueInternal(dp);
 
-				return __storeBackingField;
-			}
-		}
+		public void SetValue(DependencyProperty dp, object value) => SetValueInternal(dp, value);
 
-		public bool IsStoreInitialized => __storeBackingField != null;
+		public void ClearValue(DependencyProperty dp) => ClearValueInternal(dp);
 
-		DependencyObjectStore IDependencyObjectStoreProvider.Store => __Store;
+		public object ReadLocalValue(DependencyProperty dp) => ReadLocalValueInternal(dp);
 
-		public object GetValue(DependencyProperty dp) => __Store.GetValue(dp);
+		public object GetAnimationBaseValue(DependencyProperty dp) => GetAnimationBaseValueInternal(dp);
 
-		public void SetValue(DependencyProperty dp, object value) => __Store.SetValue(dp, value);
+		public long RegisterPropertyChangedCallback(DependencyProperty dp, DependencyPropertyChangedCallback callback) => RegisterPropertyChangedCallbackInternal(dp, callback);
 
-		public void ClearValue(DependencyProperty dp) => __Store.ClearValue(dp);
+		public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) => UnregisterPropertyChangedCallbackInternal(dp, token);
 
-		public object ReadLocalValue(DependencyProperty dp) => __Store.ReadLocalValue(dp);
+		// Uno-only, but public because the XAML source generator emits calls to these into the
+		// consuming assembly (XamlFileGenerator emits the DependencyProperty overload for DPs and
+		// the string overload for the x:Bind/POCO path).
+		/// <summary>
+		/// Set a binding using a regular or attached DependencyProperty
+		/// </summary>
+		/// <param name="dependencyProperty">The dependency property to bind</param>
+		/// <param name="binding">The binding expression</param>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public void SetBinding(DependencyProperty dependencyProperty, BindingBase binding) => SetBindingInternal(dependencyProperty, binding);
 
-		public object GetAnimationBaseValue(DependencyProperty dp) => __Store.GetAnimationBaseValue(dp);
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public void SetBinding(string dependencyProperty, BindingBase binding) => SetBindingInternal(dependencyProperty, binding);
 
-		public long RegisterPropertyChangedCallback(DependencyProperty dp, DependencyPropertyChangedCallback callback) => __Store.RegisterPropertyChangedCallback(dp, callback);
+		internal ManagedWeakReference SelfWeakReference => _selfWeakReference ??= WeakReferencePool.RentSelfWeakReference(this);
 
-		public void UnregisterPropertyChangedCallback(DependencyProperty dp, long token) => __Store.UnregisterPropertyChangedCallback(dp, token);
+		ManagedWeakReference IWeakReferenceProvider.WeakReference => SelfWeakReference;
 
 		void IDependencyObjectInternal.OnPropertyChanged2(DependencyPropertyChangedEventArgs args) => OnPropertyChanged2(args);
 
@@ -74,80 +76,10 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		// Invoked from constructors of derived types; the binder itself is initialized lazily from
-		// the __Store getter via __InitializeBinder().
+		// Invoked from constructors of derived types. The binder is initialized from the instance
+		// constructor now, so this is a no-op kept to avoid churning every derived constructor.
 		private protected void InitializeBinder() { }
 
-		/// <summary>
-		/// Obsolete method kept for binary compatibility
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void ClearBindings() => __Store.ClearBindings();
-
-		/// <summary>
-		/// Obsolete method kept for binary compatibility
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void RestoreBindings() => __Store.RestoreBindings();
-
-		ManagedWeakReference IWeakReferenceProvider.WeakReference
-			=> _selfWeakReference ??= WeakReferencePool.RentSelfWeakReference(this);
-
 		public override string ToString() => GetType().FullName;
-
-		#region TemplatedParent DependencyProperty // legacy api, should no longer to be used.
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public DependencyObject TemplatedParent
-		{
-			get => (DependencyObject)GetValue(TemplatedParentProperty);
-			set => SetValue(TemplatedParentProperty, value);
-		}
-
-		// Using a DependencyProperty as the backing store for TemplatedParent.  This enables animation, styling, binding, etc...
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		[UnconditionalSuppressMessage("Trimming", "IL2111")]
-		public static DependencyProperty TemplatedParentProperty { get; } =
-			DependencyProperty.Register(
-				name: nameof(TemplatedParent),
-				propertyType: typeof(DependencyObject),
-				ownerType: typeof(DependencyObject),
-				typeMetadata: new FrameworkPropertyMetadata(
-					defaultValue: null,
-					options: /*FrameworkPropertyMetadataOptions.Inherits | */FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.WeakStorage,
-					propertyChangedCallback: (s, e) => ((DependencyObject)s).OnTemplatedParentChanged(e)
-				)
-			);
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		internal protected virtual void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-		{
-		}
-
-		#endregion
-
-		public void SetBinding(object target, string dependencyProperty, BindingBase binding)
-			=> __Store.SetBinding(target, dependencyProperty, binding);
-
-		public void SetBinding(string dependencyProperty, BindingBase binding)
-			=> __Store.SetBinding(dependencyProperty, binding);
-
-		public void SetBinding(DependencyProperty dependencyProperty, BindingBase binding)
-			=> __Store.SetBinding(dependencyProperty, binding);
-
-		public void SetBindingValue(object value, [CallerMemberName] string propertyName = null)
-			=> __Store.SetBindingValue(value, propertyName);
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		internal bool IsAutoPropertyInheritanceEnabled { get => __Store.IsAutoPropertyInheritanceEnabled; set => __Store.IsAutoPropertyInheritanceEnabled = value; }
-
-		public BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
-			=> __Store.GetBindingExpression(dependencyProperty);
-
-		public void ResumeBindings() => __Store.ResumeBindings();
-
-		public void SuspendBindings() => __Store.SuspendBindings();
 	}
 }

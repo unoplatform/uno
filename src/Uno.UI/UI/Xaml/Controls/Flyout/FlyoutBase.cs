@@ -44,12 +44,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private bool _isLightDismissEnabled = true;
 		private readonly SerialDisposable _sizeChangedDisposable = new SerialDisposable();
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		// MUX Reference: FlyoutBase_partial.h:359 — m_isFlyoutPresenterRequestedThemeOverridden.
 		// Element-level theme forwarding is a Skia/WASM-only feature (native flyouts follow the
 		// application/OS theme), so this flag is gated alongside ForwardThemeToPresenter.
 		private bool m_isFlyoutPresenterRequestedThemeOverridden;
-#endif
 
 		private bool m_hasPlacementOverride;
 		private FlyoutPlacementMode m_placementOverride;
@@ -67,6 +65,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private InputDeviceType m_inputDeviceTypeUsedToOpen;
 
+		/// <summary>
+		/// Whether touch was the input device that opened this flyout. Set before <see cref="Opening"/> fires.
+		/// </summary>
+		private protected bool WasOpenedByTouch => m_inputDeviceTypeUsedToOpen == InputDeviceType.Touch;
+
 		internal FlyoutPlacementMode EffectivePlacement => m_hasPlacementOverride ? m_placementOverride : Placement;
 
 		protected FlyoutBase()
@@ -77,7 +80,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// Propagates Enter to the flyout's content for keyboard accelerator registration.
 		/// Subclasses (Flyout, MenuFlyout) override to propagate to their specific content.
 		/// </summary>
-		internal virtual void Enter(DependencyObject pNamescopeOwner, EnterParams @params)
+		internal new virtual void Enter(DependencyObject pNamescopeOwner, EnterParams @params)
 		{
 		}
 
@@ -85,7 +88,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// Propagates Leave to the flyout's content for keyboard accelerator unregistration.
 		/// Subclasses (Flyout, MenuFlyout) override to propagate to their specific content.
 		/// </summary>
-		internal virtual void Leave(DependencyObject pNamescopeOwner, LeaveParams @params)
+		internal new virtual void Leave(DependencyObject pNamescopeOwner, LeaveParams @params)
 		{
 		}
 
@@ -161,12 +164,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			OnOpened();
 		}
-
-		/// <summary>
-		/// Controls the appeareance of <see cref="MenuFlyout"/>, when true the native popups and appearance
-		/// is used, otherwise the UWP appeareance is used. The default value is provided by <see cref="FeatureConfiguration.Style.UseUWPDefaultStyles"/>.
-		/// </summary>
-		public bool UseNativePopup { get; set; } = !FeatureConfiguration.Style.UseUWPDefaultStyles;
 
 		protected virtual void InitializePopupPanel()
 		{
@@ -383,27 +380,23 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			private set
 			{
 				// MUX Reference: FlyoutBase_Partial.cpp SetPlacementTarget (lines 2973-3008)
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				// Detach ActualThemeChanged from old target on reassignment
 				if (_targetWeakRef?.IsAlive == true && _targetWeakRef.Target is FrameworkElement oldTarget)
 				{
 					oldTarget.ActualThemeChanged -= OnPlacementTargetActualThemeChanged;
 				}
-#endif
 
 				WeakReferencePool.ReturnWeakReference(this, _targetWeakRef);
 				_targetWeakRef = value is not null ? WeakReferencePool.RentWeakReference(this, value) : null;
 			}
 		}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		// Hook up an event handler that will forward any theme changes to the flyout.
 		// MUX Reference: FlyoutBase_Partial.cpp SetPlacementTarget (lines 3000-3005)
 		private void OnPlacementTargetActualThemeChanged(FrameworkElement sender, object args)
 		{
 			ForwardThemeToPresenter();
 		}
-#endif
 
 		/// <summary>
 		/// Defines an optional position of the popup in the <see cref="Target"/> element.
@@ -431,13 +424,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			if (!cancel)
 			{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				// Detach ActualThemeChanged on close to avoid holding the flyout alive
 				if (_targetWeakRef?.IsAlive == true && _targetWeakRef.Target is FrameworkElement closingTarget)
 				{
 					closingTarget.ActualThemeChanged -= OnPlacementTargetActualThemeChanged;
 				}
-#endif
 
 				m_openingCanceled = true;
 
@@ -539,13 +530,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			Target = placementTarget;
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			// Attach ActualThemeChanged while open so flyout tracks target's theme
 			if (placementTarget is not null)
 			{
 				placementTarget.ActualThemeChanged += OnPlacementTargetActualThemeChanged;
 			}
-#endif
 
 			ForwardTargetPropertiesToPresenter();
 
@@ -754,7 +743,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// OS + application theme, so on native this is a no-op and the flyout follows the app/OS theme.
 		private void ForwardThemeToPresenter()
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			if (_popup?.Child is not Control presenter)
 			{
 				return;
@@ -809,11 +797,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				// popup itself rather than the presenter set as the popup's child.
 				_popup.RequestedTheme = requestedTheme;
 			}
-#else
-			// Native: OS + application theme only. We intentionally do not forward any element-level theme;
-			// the presenter keeps its inherited theme, so the flyout content follows the application/OS theme
-			// via the normal {ThemeResource} resolution and the Popup.UpdateThemeBindings propagation path.
-#endif
 		}
 
 		private protected virtual void OnOpened() { }
@@ -876,12 +859,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		protected internal virtual void Close()
-		{
-			Hide(canCancel: true);
-		}
-
-		protected internal virtual void Open()
+		internal virtual void Open()
 		{
 			EnsurePopupCreated();
 

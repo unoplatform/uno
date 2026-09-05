@@ -139,11 +139,43 @@ namespace Microsoft.UI.Xaml
 		}
 
 		internal virtual bool IsFocusable =>
-					/*IsActive() &&*/ //TODO Uno: No concept of IsActive in Uno yet.
+#if __CROSSRUNTIME__
+					// WinUI: CUIElement::IsFocusable requires IsActive() (the element is in the live tree),
+					// so focusing a detached element fails and focus-candidate searches skip detached subtrees.
+					IsActiveOrAttachedUnderActiveAncestor() &&
+#endif
 					IsVisible() &&
 					(IsEnabled() || ((this as FrameworkElement)?.AllowFocusWhenDisabled == true)) &&
 					(IsTabStop || IsFocusableForFocusEngagement()) &&
 					AreAllAncestorsVisible();
+
+#if __CROSSRUNTIME__
+		// WinUI's IsActive() equivalent for focusability. Uno's enhanced lifecycle activates freshly attached
+		// children one lifecycle step after they get a live parent (WinUI enters them synchronously during the
+		// same call), so an element attached under an active ancestor must count as active to keep same-tick
+		// focus working (e.g. ComboBox focusing its item container right when the dropdown opens). Only visual
+		// parents count here; a logical parent alone does not make an element part of the live tree.
+		internal bool IsActiveOrAttachedUnderActiveAncestor()
+		{
+			if (IsActiveInVisualTree)
+			{
+				return true;
+			}
+
+			var parent = this.GetVisualTreeParent();
+			while (parent is not null)
+			{
+				if (parent.IsActiveInVisualTree)
+				{
+					return true;
+				}
+
+				parent = parent.GetVisualTreeParent();
+			}
+
+			return false;
+		}
+#endif
 
 		internal virtual bool IsFocusableForFocusEngagement() => false;
 

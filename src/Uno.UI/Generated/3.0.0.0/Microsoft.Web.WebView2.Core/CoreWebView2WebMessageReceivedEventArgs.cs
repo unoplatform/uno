@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2WebMessageReceivedEventArgs
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::System.Collections.Generic.IReadOnlyList<object> AdditionalObjects
 		{
 			get
@@ -18,8 +18,8 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public string Source
 		{
 			get

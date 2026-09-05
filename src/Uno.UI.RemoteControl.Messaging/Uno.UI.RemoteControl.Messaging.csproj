@@ -2,6 +2,8 @@
 
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
+		<!-- Compiles the linked file-update contracts below into this assembly's namespace (spec 052) -->
+		<DefineConstants>$(DefineConstants);UNO_RC_MESSAGING</DefineConstants>
 
 		<PackageId>Uno.WinUI.DevServer.Messaging</PackageId>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
@@ -10,7 +12,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<!-- File-update contracts shared with Uno.UI.RemoteControl / Uno.HotReload (spec 052) -->
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\IUpdateFileRequest.cs" Link="IDEChannel\Contracts\IUpdateFileRequest.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\FileEdit.cs" Link="IDEChannel\Contracts\FileEdit.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\FileEditResult.cs" Link="IDEChannel\Contracts\FileEditResult.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\Messages\FileUpdateResult.cs" Link="IDEChannel\Contracts\FileUpdateResult.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="System.Text.Json" Version="8.0.5" />
+		<PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
 		<PackageReference Include="PolySharp" Version="1.14.1">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

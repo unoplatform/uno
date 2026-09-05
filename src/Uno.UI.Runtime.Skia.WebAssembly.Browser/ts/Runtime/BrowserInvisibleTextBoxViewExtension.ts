@@ -2,9 +2,27 @@
 	export class BrowserInvisibleTextBoxViewExtension {
 		private static _exports: any;
 		private static _imeExports: any;
-		private static readonly inputElementId = "uno-input";
 		private static readonly isMacOS = navigator?.platform.toUpperCase().includes('MAC') ?? false;
 		private static inputElement: HTMLInputElement | HTMLTextAreaElement | null;
+
+		// Issue-1 trailing-click guard state (see installTrailingClickGuard).
+		private static swallowNextCanvasClick: boolean;
+		private static lastPointerType: string;
+
+		// Set while a managed-initiated blur/detach is in progress so the input's own blur
+		// listener doesn't report it back to the FocusManager (that would be redundant and
+		// could clear focus on the wrong TextBox during a focus switch). Genuine, browser-
+		// initiated blurs happen with this false and ARE reported (see OnNativeBlur).
+		private static suppressBlurNotification: boolean;
+
+		// Visual handle of the TextBox that currently owns the shared input, so a stale managed
+		// blur from a TextBox that already lost it cannot detach its successor's input.
+		private static currentHandle: number = 0;
+
+		// Bumped by focus()/detachCore() to supersede the deferred detach scheduled by blur():
+		// a blur immediately followed by a focus is a TextBox-to-TextBox move, and detaching
+		// would needlessly dismiss the soft keyboard (see blur).
+		private static detachGeneration: number = 0;
 		private static isInSelectionChange: boolean;
 		private static acceptsReturn: boolean;
 		private static isComposing: boolean;
@@ -16,6 +34,11 @@
 		private static nextSelectionEnd: number;
 		private static nextSelectionDirection: "forward" | "backward" | "none";
 
+		// Single ordered chain for all JS→managed text interop in MT mode.
+		// Guarantees callbacks reach managed code in the exact order the browser dispatched the events.
+		// Not used in ST mode.
+		private static interopQueue: Promise<any> = Promise.resolve();
+
 		// Android soft keyboards report all key events with keyCode 229 ("Unidentified").
 		// Text changes are synced via the oninput handler instead.
 		private static readonly ANDROID_IME_KEYCODE = 229;
@@ -26,6 +49,37 @@
 
 				BrowserInvisibleTextBoxViewExtension._exports = browserExports.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension;
 				BrowserInvisibleTextBoxViewExtension._imeExports = browserExports.Uno.UI.Runtime.Skia.WasmImeTextBoxExtension;
+
+				BrowserInvisibleTextBoxViewExtension.installTrailingClickGuard();
+
+				if (WebAssemblyThreading.isThreadingEnabled()) {
+					document.onselectionchange = () => {
+						const input = document.activeElement;
+
+						if (input instanceof HTMLInputElement) {
+							if (BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange) {
+								BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange = false;
+							}
+							else {
+								// Snapshot direction + positions before any later setSelectionRange can flip them.
+								const backward = input.selectionDirection == "backward";
+								const start = backward ? input.selectionEnd : input.selectionStart;
+								const length = backward
+									? input.selectionStart - input.selectionEnd
+									: input.selectionEnd - input.selectionStart;
+								BrowserInvisibleTextBoxViewExtension.enqueue(async () => {
+									BrowserInvisibleTextBoxViewExtension.isInSelectionChange = true;
+
+									await BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChangedAsync(start, length);
+
+									BrowserInvisibleTextBoxViewExtension.isInSelectionChange = false;
+								});
+							}
+						}
+					}
+
+					return;
+				}
 
 				document.onselectionchange = () => {
 					let input = document.activeElement;
@@ -50,15 +104,67 @@
 			}
 		}
 
+		public static enqueue(work: () => any): void {
+			// catch() keeps the chain alive if one notification rejects.
+			BrowserInvisibleTextBoxViewExtension.interopQueue =
+				BrowserInvisibleTextBoxViewExtension.interopQueue.then(work).catch(() => { });
+		}
+
+		// Neutralizes the touch-only, WebKit-internal race that dismisses the soft keyboard right
+		// after a TextBox tap (see swallowNextCanvasClick). Uno already preventDefaults pointer
+		// events, but per the Pointer Events spec that does NOT suppress the compatibility
+		// mouse events touch browsers synthesize, so the trailing mousedown still reaches the
+		// canvas and blurs #uno-input. We can't preventDefault it from the pointer path, so we
+		// intercept the mouse event itself, scoped to the single tap that just focused the input.
+		private static installTrailingClickGuard() {
+			// Any new pointer gesture disarms a stale flag, so only the mouse events synthesized
+			// from the very tap that focused the input are ever swallowed. Also records the pointer
+			// type: the bug is exclusive to touch/pen, where the compat mousedown is deferred until
+			// after focus. With a mouse, mousedown precedes focus, so there is nothing to guard.
+			document.addEventListener("pointerdown", (ev: PointerEvent) => {
+				BrowserInvisibleTextBoxViewExtension.lastPointerType = ev.pointerType;
+				BrowserInvisibleTextBoxViewExtension.swallowNextCanvasClick = false;
+			}, { capture: true });
+
+			// focusin bubbles (unlike focus), so a single document-level listener catches the
+			// invisible input regardless of when it is (re)created.
+			document.addEventListener("focusin", (ev: FocusEvent) => {
+				const target = ev.target as HTMLElement;
+				if (target?.id === UnoDomIds.input
+					&& (BrowserInvisibleTextBoxViewExtension.lastPointerType === "touch"
+						|| BrowserInvisibleTextBoxViewExtension.lastPointerType === "pen")) {
+					BrowserInvisibleTextBoxViewExtension.swallowNextCanvasClick = true;
+				}
+			}, { capture: true });
+
+			const swallow = (ev: Event) => {
+				if (BrowserInvisibleTextBoxViewExtension.swallowNextCanvasClick
+					&& (ev.target as HTMLElement)?.id === UnoDomIds.canvas) {
+					ev.preventDefault();
+					ev.stopImmediatePropagation();
+					BrowserInvisibleTextBoxViewExtension.swallowNextCanvasClick = false;
+				}
+			};
+			document.addEventListener("mousedown", swallow, { capture: true });
+			document.addEventListener("click", swallow, { capture: true });
+		}
+
 		private static createInput(isPasswordBox: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string) {
 			BrowserInvisibleTextBoxViewExtension.acceptsReturn = acceptsReturn;
+			// A previous input may have been removed mid-composition without a compositionend;
+			// never carry that state over to a fresh element.
+			BrowserInvisibleTextBoxViewExtension.isComposing = false;
+			BrowserInvisibleTextBoxViewExtension.suppressNextInput = false;
 			const input = document.createElement(acceptsReturn && !isPasswordBox ? "textarea" : "input");
+			// The keydown/keyup handlers capture acceptsReturn by closure; record it so canRetarget
+			// only reuses the element when the captured behavior still matches.
+			(input as any).__unoAcceptsReturn = acceptsReturn;
 			if (isPasswordBox) {
 				(input as HTMLInputElement).type = "password";
 				input.autocomplete = "password";
 			}
 
-			input.id = BrowserInvisibleTextBoxViewExtension.inputElementId;
+			input.id = UnoDomIds.input;
 			input.tabIndex = -1;
 			input.spellcheck = false;
 			input.style.whiteSpace = "pre-wrap";
@@ -82,26 +188,70 @@
 			input.setAttribute("inputmode", inputMode);
 			input.setAttribute("enterkeyhint", enterKeyHint);
 
-			input.oninput = ev => {
-				// During IME composition, text state is managed by the composition event path.
-				// The oninput event still fires but we must skip the normal text sync.
-				// Also suppress the final input event after compositionend (browser fires input after compositionend).
-				if (BrowserInvisibleTextBoxViewExtension.isComposing || BrowserInvisibleTextBoxViewExtension.suppressNextInput) {
-					BrowserInvisibleTextBoxViewExtension.suppressNextInput = false;
+			if (WebAssemblyThreading.isThreadingEnabled()) {
+				input.oninput = ev => {
+					// See the ST branch below for why composition/suppressed input is skipped.
+					if (BrowserInvisibleTextBoxViewExtension.isComposing || BrowserInvisibleTextBoxViewExtension.suppressNextInput) {
+						BrowserInvisibleTextBoxViewExtension.suppressNextInput = false;
+						return;
+					}
+
+					const element = ev.target as HTMLInputElement;
+					const value = element.value;
+					const backward = element.selectionDirection == "backward";
+					const start = backward ? element.selectionEnd : element.selectionStart;
+					const length = backward ? element.selectionStart - element.selectionEnd : element.selectionEnd - element.selectionStart;
+
+					BrowserInvisibleTextBoxViewExtension.enqueue(async () => {
+						BrowserInvisibleTextBoxViewExtension.isInSelectionChange = true;
+
+						await BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChangedAsync(value, start, length);
+
+						BrowserInvisibleTextBoxViewExtension.isInSelectionChange = false;
+					});
+				};
+
+				input.onpaste = ev => {
+					ev.preventDefault();
+
+					const text = ev.clipboardData.getData("text");
+
+					BrowserInvisibleTextBoxViewExtension.enqueue(() => BrowserInvisibleTextBoxViewExtension._exports.OnNativePasteAsync(text));
+				};
+			}
+			else {
+				input.oninput = ev => {
+					// During IME composition, text state is managed by the composition event path.
+					// The oninput event still fires but we must skip the normal text sync.
+					// Also suppress the final input event after compositionend (browser fires input after compositionend).
+					if (BrowserInvisibleTextBoxViewExtension.isComposing || BrowserInvisibleTextBoxViewExtension.suppressNextInput) {
+						BrowserInvisibleTextBoxViewExtension.suppressNextInput = false;
+						return;
+					}
+					let input = ev.target as HTMLInputElement;
+					if (input.selectionDirection == "backward") {
+						BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionEnd, input.selectionStart - input.selectionEnd);
+					} else {
+						BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart);
+					}
+				};
+
+				input.onpaste = ev => {
+					BrowserInvisibleTextBoxViewExtension._exports.OnNativePaste(ev.clipboardData.getData("text"));
+					ev.preventDefault();
+				};
+			}
+
+			// C# drives focus one-way (StartEntry/EndEntry call focus()/blur()), so a blur the
+			// browser initiates on its own — e.g. tapping outside, or the touch-synthesized
+			// mousedown in issue 1 — is otherwise invisible to the FocusManager and LostFocus
+			// never fires. Report only those; managed-initiated blurs set suppressBlurNotification.
+			input.addEventListener("blur", () => {
+				if (BrowserInvisibleTextBoxViewExtension.suppressBlurNotification) {
 					return;
 				}
-				let input = ev.target as HTMLInputElement;
-				if (input.selectionDirection == "backward") {
-					BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionEnd, input.selectionStart - input.selectionEnd);
-				} else {
-					BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart);
-				}
-			};
-
-			input.onpaste = ev => {
-				BrowserInvisibleTextBoxViewExtension._exports.OnNativePaste(ev.clipboardData.getData("text"));
-				ev.preventDefault();
-			};
+				BrowserInvisibleTextBoxViewExtension._exports.OnNativeBlur();
+			});
 
 			// Handle Enter key from Android virtual keyboards which don't fire keydown events.
 			// Android keyboards typically fire beforeinput with inputType "insertLineBreak" or "insertParagraph" instead.
@@ -109,7 +259,12 @@
 				if ((ev.inputType === "insertLineBreak" || ev.inputType === "insertParagraph") && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
 					ev.preventDefault();
 
-					BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
+					if (WebAssemblyThreading.isThreadingEnabled()) {
+						BrowserInvisibleTextBoxViewExtension.enqueue(() => BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressedAsync());
+					}
+					else {
+						BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
+					}
 				}
 			});
 
@@ -233,35 +388,122 @@
 		}
 
 		public static focus(handle: number, isPassword: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string): boolean {
+			// Supersede any detach a preceding managed blur scheduled: focus is moving between
+			// TextBoxes, and detaching in between would dismiss the soft keyboard (see blur).
+			BrowserInvisibleTextBoxViewExtension.detachGeneration++;
+
 			const semanticElement = document.getElementById(`uno-semantics-${handle}`);
 			if (semanticElement && document.activeElement === semanticElement) {
 				BrowserInvisibleTextBoxViewExtension.detach();
 				return false;
 			}
 
-			// NOTE: We can get focused as true while we have inputElement.
-			// This happens when TextBox is focused twice with different FocusStates (e.g, Pointer, Programmatic, Keyboard)
-			// For such case, we do call StartEntry twice without any EndEntry in between.
-			// So, cleanup the existing inputElement and create a new one.
-			BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
-			this.createInput(isPassword, text, acceptsReturn, inputMode, enterKeyHint);
+			const existingInput = BrowserInvisibleTextBoxViewExtension.inputElement;
+			if (existingInput != null && BrowserInvisibleTextBoxViewExtension.canRetarget(existingInput, isPassword, acceptsReturn)) {
+				// Reuse the shared input in place: mobile browsers keep the soft keyboard up across
+				// a TextBox-to-TextBox move only while an editable element stays focused throughout.
+				BrowserInvisibleTextBoxViewExtension.acceptsReturn = acceptsReturn;
+				existingInput.setAttribute("inputmode", inputMode);
+				existingInput.setAttribute("enterkeyhint", enterKeyHint);
+				BrowserInvisibleTextBoxViewExtension.setText(text);
 
-			// It's necessary to actually focus the native input, not just make it visible. This is particularly
-			// important to mobile browsers (to open the software keyboard) and for assistive technology to not steal
-			// events and properly recognize password inputs to not read it.
-			BrowserInvisibleTextBoxViewExtension.inputElement.focus();
+				// It's necessary to actually focus the native input, not just make it visible. This is particularly
+				// important to mobile browsers (to open the software keyboard) and for assistive technology to not steal
+				// events and properly recognize password inputs to not read it.
+				if (document.activeElement !== existingInput) {
+					existingInput.focus();
+				}
+			}
+			else {
+				// The element kind must change (input/textarea/password), or an IME composition is in
+				// progress and must not leak into the next TextBox. Focus the new element BEFORE
+				// removing the old one so focus hands off editable-to-editable without a gap that
+				// would dismiss the soft keyboard. The implicit blur of the old element is
+				// managed-initiated, so suppress its notification.
+				existingInput?.removeAttribute("id");
+				this.createInput(isPassword, text, acceptsReturn, inputMode, enterKeyHint);
+				BrowserInvisibleTextBoxViewExtension.runSuppressingBlur(() => {
+					BrowserInvisibleTextBoxViewExtension.inputElement.focus();
+					existingInput?.remove();
+				});
+			}
+
+			BrowserInvisibleTextBoxViewExtension.currentHandle = Number(handle);
+
+			// The retarget path keeps the input focused, so no focusin fires and the trailing-click
+			// guard never arms; arm it here for both paths (see installTrailingClickGuard).
+			if (BrowserInvisibleTextBoxViewExtension.lastPointerType === "touch"
+				|| BrowserInvisibleTextBoxViewExtension.lastPointerType === "pen") {
+				BrowserInvisibleTextBoxViewExtension.swallowNextCanvasClick = true;
+			}
 			return true;
 		}
 
-		public static blur() {
-			// reset focus
-			(document.activeElement as HTMLElement)?.blur();
-			BrowserInvisibleTextBoxViewExtension.detach();
+		// The shared input can be handed to another TextBox without being recreated only when the
+		// element kind it was created with still matches the target TextBox.
+		private static canRetarget(input: HTMLInputElement | HTMLTextAreaElement, isPassword: boolean, acceptsReturn: boolean): boolean {
+			if (BrowserInvisibleTextBoxViewExtension.isComposing) {
+				return false;
+			}
+			const needsTextArea = acceptsReturn && !isPassword;
+			if (input instanceof HTMLTextAreaElement) {
+				return needsTextArea;
+			}
+			return !needsTextArea
+				&& (input.type === "password") === isPassword
+				&& (input as any).__unoAcceptsReturn === acceptsReturn;
+		}
+
+		// Runs a managed-initiated focus mutation with the blur listener muted, so it isn't
+		// reported back to the FocusManager (which already drove the change). Callers make the
+		// blur dispatch synchronously inside the window: detachCore blurs explicitly before
+		// removing, and the swap path in focus() focuses the successor (implicitly blurring the
+		// old input) before removing it.
+		private static runSuppressingBlur(action: () => void) {
+			BrowserInvisibleTextBoxViewExtension.suppressBlurNotification = true;
+			try {
+				action();
+			} finally {
+				BrowserInvisibleTextBoxViewExtension.suppressBlurNotification = false;
+			}
+		}
+
+		private static detachCore() {
+			BrowserInvisibleTextBoxViewExtension.detachGeneration++;
+			BrowserInvisibleTextBoxViewExtension.currentHandle = 0;
+			// Blur explicitly before removing: the .blur() method dispatches synchronously, so it
+			// lands inside the suppression window. WebKit can otherwise defer the implicit blur that
+			// fires on element removal past that window, which would clear the wrong TextBox's focus.
+			BrowserInvisibleTextBoxViewExtension.inputElement?.blur();
+			BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
+			BrowserInvisibleTextBoxViewExtension.inputElement = null;
+		}
+
+		public static blur(handle: number) {
+			// Managed-initiated blur (EndEntry): the FocusManager already knows focus is leaving.
+			const blurredHandle = Number(handle);
+			if (blurredHandle !== 0
+				&& BrowserInvisibleTextBoxViewExtension.currentHandle !== 0
+				&& blurredHandle !== BrowserInvisibleTextBoxViewExtension.currentHandle) {
+				// Stale blur from a TextBox that no longer owns the shared input; detaching now
+				// would tear down its successor's entry session.
+				return;
+			}
+
+			// Don't detach synchronously: when focus is moving to another TextBox, EndEntry runs
+			// before StartEntry in the same task, and detaching in between commits the soft-keyboard
+			// dismissal on iOS even though another TextBox is about to take over. Defer by one
+			// microtask; an intervening focus()/detach() supersedes this via detachGeneration.
+			const generation = ++BrowserInvisibleTextBoxViewExtension.detachGeneration;
+			queueMicrotask(() => {
+				if (generation === BrowserInvisibleTextBoxViewExtension.detachGeneration) {
+					BrowserInvisibleTextBoxViewExtension.runSuppressingBlur(BrowserInvisibleTextBoxViewExtension.detachCore);
+				}
+			});
 		}
 
 		public static detach() {
-			BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
-			BrowserInvisibleTextBoxViewExtension.inputElement = null;
+			BrowserInvisibleTextBoxViewExtension.runSuppressingBlur(BrowserInvisibleTextBoxViewExtension.detachCore);
 		}
 
 		public static hasInput(): boolean {
@@ -299,8 +541,8 @@
 		public static updateSize(width: number, height: number) {
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 			if (input != null) {
-				input.style.width = `${width}`;
-				input.style.height = `${height}`;
+				input.style.width = `${width}px`;
+				input.style.height = `${height}px`;
 			}
 		}
 

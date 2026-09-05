@@ -14,6 +14,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 	{
 		private StorageFolder? _rootFolder;
 
+		protected override bool HasFileSystemBackedPath => true;
+
 		protected override async Task<StorageFolder> GetRootFolderAsync()
 		{
 			var testFolderName = Guid.NewGuid().ToString();

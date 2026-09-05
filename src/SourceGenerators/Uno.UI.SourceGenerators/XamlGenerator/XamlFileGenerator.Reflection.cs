@@ -308,14 +308,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return true;
 		}
 
-		private static bool IsRelevantProperty(XamlMember? member, XamlObjectDefinition objectDefinition)
+		private static bool IsRelevantProperty(XamlMember? member)
 		{
 			if (member?.Name == "Phase") // Phase is not relevant as it's not an actual property
-			{
-				return false;
-			}
-
-			if (member?.Name == "IsNativeStyle" && objectDefinition.Type.Name == "Style")
 			{
 				return false;
 			}
@@ -803,15 +798,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// Trim prefixes from namespace declaration
 		/// </summary>
 		private static string GetTrimmedNamespace(string nsNamespace)
-		{
-			var nsName = nsNamespace.TrimStart("using:");
-			if (nsName.StartsWith("clr-namespace:", StringComparison.Ordinal))
-			{
-				nsName = nsName.Split(';')[0].TrimStart("clr-namespace:");
-			}
-
-			return nsName;
-		}
+			=> nsNamespace.TrimStart("using:");
 
 		private IEnumerable<string> FindLocalizableProperties(INamedTypeSymbol? type)
 		{

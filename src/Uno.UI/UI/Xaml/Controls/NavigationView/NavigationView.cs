@@ -30,10 +30,6 @@ using Windows.System.Profile;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using static Microsoft.UI.Xaml.Controls._Tracing;
-#if __ANDROID__
-using System.Linq;
-using Uno.UI.Extensions;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -188,14 +184,6 @@ public partial class NavigationView : ContentControl
 
 		m_shadowCasterEaseOutStoryboardRevoker.Disposable = null;
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle).
-		m_leftNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
-		m_leftNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
-		m_topNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
-		m_topNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
-		m_topNavOverflowItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = null;
-#endif
 
 		if (isFromDestructor)
 		{
@@ -485,11 +473,6 @@ public partial class NavigationView : ContentControl
 					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-				// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle).
-				leftNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
-				m_leftNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => leftNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
-#endif
 
 				leftNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
 				m_leftNavItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => leftNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
@@ -518,11 +501,6 @@ public partial class NavigationView : ContentControl
 					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-				// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle).
-				topNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
-				m_topNavItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => topNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
-#endif
 
 				topNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
 				m_topNavItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => topNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
@@ -552,11 +530,6 @@ public partial class NavigationView : ContentControl
 					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-				// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle).
-				topNavListOverflowRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
-				m_topNavOverflowItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => topNavListOverflowRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
-#endif
 
 				topNavListOverflowRepeater.ElementPrepared += OnRepeaterElementPrepared;
 				m_topNavOverflowItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => topNavListOverflowRepeater.ElementPrepared -= OnRepeaterElementPrepared);
@@ -607,11 +580,6 @@ public partial class NavigationView : ContentControl
 					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-				// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle).
-				leftFooterMenuNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
-				m_leftNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => leftFooterMenuNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
-#endif
 
 				leftFooterMenuNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
 				m_leftNavFooterMenuItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => leftFooterMenuNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
@@ -641,11 +609,6 @@ public partial class NavigationView : ContentControl
 					stackLayoutImpl.IsVirtualizationEnabled = false;
 				}
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-				// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle).
-				topFooterMenuNavRepeater.UnoBeforeElementPrepared += OnRepeaterUnoBeforeElementPrepared;
-				m_topNavFooterMenuItemsRepeaterUnoBeforeElementPreparedRevoker.Disposable = Disposable.Create(() => topFooterMenuNavRepeater.UnoBeforeElementPrepared -= OnRepeaterUnoBeforeElementPrepared);
-#endif
 
 				topFooterMenuNavRepeater.ElementPrepared += OnRepeaterElementPrepared;
 				m_topNavFooterMenuItemsRepeaterElementPreparedRevoker.Disposable = Disposable.Create(() => topFooterMenuNavRepeater.ElementPrepared -= OnRepeaterElementPrepared);
@@ -1402,15 +1365,6 @@ public partial class NavigationView : ContentControl
 					m_selectedItemLayoutUpdatedRevoker.Disposable = Disposable.Create(() => nvi.LayoutUpdated -= OnSelectedItemLayoutUpdated);
 				}
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-				// Native Android/iOS only: ElementPrepared fires after OnApplyTemplate there (no enhanced lifecycle),
-				// so re-run initialization and refresh the selection indicator for the late-realized item.
-				nvibImpl.Reinitialize();
-				if (SelectedItem != null && m_activeIndicator == null)
-				{
-					AnimateSelectionChanged(SelectedItem);
-				}
-#endif
 			}
 		}
 	}
@@ -1700,13 +1654,8 @@ public partial class NavigationView : ContentControl
 										var footerItemsRepeaterMargin = footerItemsRepeater.Margin;
 										footerItemsRepeaterTopBottomMargin = footerItemsRepeaterMargin.Top + footerItemsRepeaterMargin.Bottom;
 									}
-									// TODO:MZ: Is this still needed for iOS?
-#if __APPLE_UIKIT__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
-									return footerItemsRepeater.DesiredSize.Height + footerItemsRepeaterTopBottomMargin;
-#else
 									var footerItemsDesiredHeight = LayoutUtils.MeasureAndGetDesiredHeightFor(footerItemsRepeater, LayoutUtils.c_infSize);
 									return footerItemsDesiredHeight + footerItemsRepeaterTopBottomMargin;
-#endif
 								}
 								var footersDesiredHeight = GetFootersActualHeight(footerItemsRepeater);
 
@@ -1720,11 +1669,7 @@ public partial class NavigationView : ContentControl
 											var paneFooterMargin = paneFooter.Margin;
 											paneFooterTopBottomMargin = paneFooterMargin.Top + paneFooterMargin.Bottom;
 										}
-#if __APPLE_UIKIT__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
-										return paneFooter.DesiredSize.Height + paneFooterTopBottomMargin;
-#else
 										return paneFooter.ActualHeight + paneFooterTopBottomMargin;
-#endif
 									}
 									return 0.0;
 								}
@@ -1744,11 +1689,7 @@ public partial class NavigationView : ContentControl
 										var menuItemsMargin = menuItems.Margin;
 										menuItemsTopBottomMargin = menuItemsMargin.Top + menuItemsMargin.Bottom;
 									}
-#if __APPLE_UIKIT__ // Uno workaround: The arrange is async on iOS, ActualHeight is not set yet. This would constraints the footer to MaxHeight 0.
-									return menuItems.DesiredSize.Height + menuItemsTopBottomMargin;
-#else
 									return menuItems.ActualHeight + menuItemsTopBottomMargin;
-#endif
 								}
 								var menuItemsActualHeight = GetMenuItemsActualHeight(menuItems);
 
@@ -4098,8 +4039,11 @@ public partial class NavigationView : ContentControl
 			{
 				// Exchange items between Primary and Overflow
 				{
-					m_topDataProvider.MoveItemsToPrimaryList(itemsToBeAdded);
+					// Uno workaround: move items out of primary first so the overflow list never becomes
+					// empty mid-exchange — OnOverflowItemsSourceCollectionChanged would collapse the overflow
+					// button for good (upstream bug: https://github.com/microsoft/microsoft-ui-xaml/issues/6626).
 					m_topDataProvider.MoveItemsOutOfPrimaryList(itemsToBeRemoved);
+					m_topDataProvider.MoveItemsToPrimaryList(itemsToBeAdded);
 				}
 
 				if (NeedRearrangeOfTopElementsAfterOverflowSelectionChanged(selectedOverflowItemIndex))

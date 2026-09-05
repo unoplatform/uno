@@ -1,8 +1,4 @@
-﻿#if IS_UNIT_TESTS
-#pragma warning disable CS0067 // This event is never used
-#endif
-
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -24,11 +20,7 @@ using Uno.Extensions;
 
 using View = Microsoft.UI.Xaml.UIElement;
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
-#else
-using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.IScrollContentPresenter;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {

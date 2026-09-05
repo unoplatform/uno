@@ -3,21 +3,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media.Animation
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class RepositionThemeTransition : global::Microsoft.UI.Xaml.Media.Animation.Transition
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsStaggeringEnabledProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsStaggeringEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Media.Animation.RepositionThemeTransition),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public bool IsStaggeringEnabled
 		{
 			get

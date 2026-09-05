@@ -44,4 +44,13 @@ partial class TextCommandBarFlyout
 	private DispatcherHelper m_dispatcherHelper;
 
 	private bool m_isSettingToggleButtonState;
+
+	// Uno specific: the show mode captured when the flyout opens, before the CommandBar's Opened
+	// handler flips a Transient flyout to Standard. Used to auto-open the proofing menu only for a
+	// context menu (opened Standard), never for a Transient selection flyout the user expands.
+	private bool m_openedAsContextMenu;
+
+	// Uno specific: whether touch opened the flyout, captured at open time. The proofing auto-open is
+	// only suppressed for a touch-driven selection flyout; pen/mouse keep the WinUI default.
+	private bool m_openedByTouch;
 }

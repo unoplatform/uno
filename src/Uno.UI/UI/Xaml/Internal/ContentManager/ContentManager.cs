@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using Uno.UI.Xaml.Core;
@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Controls;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using Uno.Disposables;
 using Uno.UI.Xaml.Islands;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -69,9 +70,7 @@ internal partial class ContentManager
 			// TODO: Add RootScrollViewer everywhere
 			visualTree.SetPublicRootVisual(newContent, rootScrollViewer: null, rootContentPresenter: null);
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			WinUICoreServices.Instance.RaisePendingLoadedRequests();
-#endif
 
 			if (_rootVisual is null)
 			{
@@ -95,9 +94,6 @@ internal partial class ContentManager
 
 		_content = newContent;
 
-#if IS_UNIT_TESTS // Tests rely on synchronous window activation.
-		NotifyContentLoaded();
-#endif
 	}
 
 	private void FrameworkElement_Loaded(object sender, RoutedEventArgs e)
@@ -135,21 +131,8 @@ internal partial class ContentManager
 			return;
 		}
 
-#if !IS_UNIT_TESTS
 		// Even if we're on the main thread, we need to delay this enough so that the window is initialized (i.e. Application._initializationComplete is true)
 		_ = rootElement.Dispatcher.RunAsync(CoreDispatcherPriority.High, () => LoadRootElementPlatform(xamlRoot, rootElement));
-#else
-		var dispatcher = rootElement.Dispatcher;
-
-		if (dispatcher.HasThreadAccess)
-		{
-			LoadRootElementPlatform(xamlRoot, rootElement);
-		}
-		else
-		{
-			_ = dispatcher.RunAsync(CoreDispatcherPriority.High, () => LoadRootElementPlatform(xamlRoot, rootElement));
-		}
-#endif
 	}
 
 	static partial void LoadRootElementPlatform(XamlRoot xamlRoot, UIElement rootElement);
@@ -157,4 +140,10 @@ internal partial class ContentManager
 	internal static void AttachToWindow(UIElement rootElement, Microsoft.UI.Xaml.Window window) => AttachToWindowPlatform(rootElement, window);
 
 	static partial void AttachToWindowPlatform(UIElement rootElement, Microsoft.UI.Xaml.Window window);
+
+	static partial void LoadRootElementPlatform(XamlRoot xamlRoot, UIElement rootElement)
+	{
+		xamlRoot.InvalidateMeasure();
+		xamlRoot.InvalidateArrange();
+	}
 }

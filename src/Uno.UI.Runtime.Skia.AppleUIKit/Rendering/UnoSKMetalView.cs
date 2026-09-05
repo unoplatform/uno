@@ -21,6 +21,8 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		private readonly GRContext? _context;
 		private readonly IMTLCommandQueue? _queue;
 
+		private readonly RetainedLayer _retainedLayer = new();
+
 		private RootViewController? _owner;
 		private CADisplayLink _link;
 		private Thread? _renderThread;
@@ -57,6 +59,8 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			});
 
 			_queue = queue;
+
+			Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = false;
 
 			ColorPixelFormat = MTLPixelFormat.BGRA8Unorm;
 			DepthStencilPixelFormat = MTLPixelFormat.Depth32Float_Stencil8;
@@ -148,11 +152,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 			_link.Paused = true;
 
-			var size = DrawableSize;
-
-			var width = (int)size.Width;
-			var height = (int)size.Height;
-
 			SKSurface? surface = null;
 			SKCanvas? canvas = null;
 			ICAMetalDrawable? drawable = null;
@@ -161,15 +160,15 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			try
 			{
 				// Defer the acquisition of the drawable
-#if __TVOS__ // TODO: tvOS is not supported yet.
-				surface = SKSurface.CreateNull(width, height);
-#else
 				surface = SKSurface.Create(_context, this, GRSurfaceOrigin.TopLeft, (int)SampleCount, SKColorType.Bgra8888);
-#endif
 
 				canvas = surface.Canvas;
 
-				_owner?.OnRenderFrameRequested(canvas);
+				_owner?.OnRenderFrameRequested(
+					_retainedLayer.Surface?.Canvas,
+					size => _retainedLayer.EnsureSurface(_context!, (int)size.Width, (int)size.Height, SKColors.Transparent).Canvas);
+
+				_retainedLayer.Present(surface);
 
 				// Flush
 				_context!.Flush(submit: true);

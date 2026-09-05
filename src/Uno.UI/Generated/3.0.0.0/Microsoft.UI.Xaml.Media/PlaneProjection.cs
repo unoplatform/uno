@@ -3,300 +3,38 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media
 {
-#if false || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
+#if false
+	[global::Uno.NotImplemented]
 #endif
 	public partial class PlaneProjection : global::Microsoft.UI.Xaml.Media.Projection
 	{
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty CenterOfRotationXProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(CenterOfRotationX), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Media.PlaneProjection),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty CenterOfRotationYProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(CenterOfRotationY), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Media.PlaneProjection),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty CenterOfRotationZProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(CenterOfRotationZ), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Media.PlaneProjection),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty GlobalOffsetXProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(GlobalOffsetX), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Media.PlaneProjection),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty GlobalOffsetYProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(GlobalOffsetY), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Media.PlaneProjection),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty GlobalOffsetZProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(GlobalOffsetZ), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Media.PlaneProjection),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty LocalOffsetXProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(LocalOffsetX), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Media.PlaneProjection),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty LocalOffsetYProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(LocalOffsetY), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Media.PlaneProjection),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty LocalOffsetZProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(LocalOffsetZ), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Media.PlaneProjection),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ProjectionMatrixProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ProjectionMatrix), typeof(global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D),
-			typeof(global::Microsoft.UI.Xaml.Media.PlaneProjection),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D)));
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty RotationXProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(RotationX), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Media.PlaneProjection),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty RotationYProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(RotationY), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Media.PlaneProjection),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty RotationZProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(RotationZ), typeof(double),
-			typeof(global::Microsoft.UI.Xaml.Media.PlaneProjection),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public double CenterOfRotationX
-		{
-			get
-			{
-				return (double)this.GetValue(CenterOfRotationXProperty);
-			}
-			set
-			{
-				this.SetValue(CenterOfRotationXProperty, value);
-			}
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public double CenterOfRotationY
-		{
-			get
-			{
-				return (double)this.GetValue(CenterOfRotationYProperty);
-			}
-			set
-			{
-				this.SetValue(CenterOfRotationYProperty, value);
-			}
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public double CenterOfRotationZ
-		{
-			get
-			{
-				return (double)this.GetValue(CenterOfRotationZProperty);
-			}
-			set
-			{
-				this.SetValue(CenterOfRotationZProperty, value);
-			}
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public double GlobalOffsetX
-		{
-			get
-			{
-				return (double)this.GetValue(GlobalOffsetXProperty);
-			}
-			set
-			{
-				this.SetValue(GlobalOffsetXProperty, value);
-			}
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public double GlobalOffsetY
-		{
-			get
-			{
-				return (double)this.GetValue(GlobalOffsetYProperty);
-			}
-			set
-			{
-				this.SetValue(GlobalOffsetYProperty, value);
-			}
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public double GlobalOffsetZ
-		{
-			get
-			{
-				return (double)this.GetValue(GlobalOffsetZProperty);
-			}
-			set
-			{
-				this.SetValue(GlobalOffsetZProperty, value);
-			}
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public double LocalOffsetX
-		{
-			get
-			{
-				return (double)this.GetValue(LocalOffsetXProperty);
-			}
-			set
-			{
-				this.SetValue(LocalOffsetXProperty, value);
-			}
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public double LocalOffsetY
-		{
-			get
-			{
-				return (double)this.GetValue(LocalOffsetYProperty);
-			}
-			set
-			{
-				this.SetValue(LocalOffsetYProperty, value);
-			}
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public double LocalOffsetZ
-		{
-			get
-			{
-				return (double)this.GetValue(LocalOffsetZProperty);
-			}
-			set
-			{
-				this.SetValue(LocalOffsetZProperty, value);
-			}
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D ProjectionMatrix
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Media.Media3D.Matrix3D)this.GetValue(ProjectionMatrixProperty);
-			}
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public double RotationX
-		{
-			get
-			{
-				return (double)this.GetValue(RotationXProperty);
-			}
-			set
-			{
-				this.SetValue(RotationXProperty, value);
-			}
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public double RotationY
-		{
-			get
-			{
-				return (double)this.GetValue(RotationYProperty);
-			}
-			set
-			{
-				this.SetValue(RotationYProperty, value);
-			}
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public double RotationZ
-		{
-			get
-			{
-				return (double)this.GetValue(RotationZProperty);
-			}
-			set
-			{
-				this.SetValue(RotationZProperty, value);
-			}
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public PlaneProjection() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Media.PlaneProjection", "PlaneProjection()");
-		}
-#endif
+		// Skipping already declared property CenterOfRotationXProperty
+		// Skipping already declared property CenterOfRotationYProperty
+		// Skipping already declared property CenterOfRotationZProperty
+		// Skipping already declared property GlobalOffsetXProperty
+		// Skipping already declared property GlobalOffsetYProperty
+		// Skipping already declared property GlobalOffsetZProperty
+		// Skipping already declared property LocalOffsetXProperty
+		// Skipping already declared property LocalOffsetYProperty
+		// Skipping already declared property LocalOffsetZProperty
+		// Skipping already declared property ProjectionMatrixProperty
+		// Skipping already declared property RotationXProperty
+		// Skipping already declared property RotationYProperty
+		// Skipping already declared property RotationZProperty
+		// Skipping already declared property CenterOfRotationX
+		// Skipping already declared property CenterOfRotationY
+		// Skipping already declared property CenterOfRotationZ
+		// Skipping already declared property GlobalOffsetX
+		// Skipping already declared property GlobalOffsetY
+		// Skipping already declared property GlobalOffsetZ
+		// Skipping already declared property LocalOffsetX
+		// Skipping already declared property LocalOffsetY
+		// Skipping already declared property LocalOffsetZ
+		// Skipping already declared property ProjectionMatrix
+		// Skipping already declared property RotationX
+		// Skipping already declared property RotationY
+		// Skipping already declared property RotationZ
+		// Skipping already declared method Microsoft.UI.Xaml.Media.PlaneProjection.PlaneProjection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.PlaneProjection()
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.CenterOfRotationXProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Media.PlaneProjection.CenterOfRotationYProperty.get

@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum ColorInterpolationMode
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		ScRgbLinearInterpolation = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		SRgbLinearInterpolation = 1,
 #endif
 	}

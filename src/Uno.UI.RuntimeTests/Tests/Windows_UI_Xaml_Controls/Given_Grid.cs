@@ -21,7 +21,7 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Shapes;
 using Uno.Extensions;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.DevTools.Input;
 
 #if HAS_UNO
 using DirectUI;
@@ -525,7 +525,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Child_Added_Measure_And_Visible_Arrange()
 		{
 			// This test emulates the layout sequence associated with DataGridColumnHeadersPresenter in the WCT

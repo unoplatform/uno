@@ -3,10 +3,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class GridViewItem
+	public partial class GridViewItem : global::Microsoft.UI.Xaml.Controls.Primitives.SelectorItem
 	{
 		// Skipping already declared property TemplateSettings
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.GridViewItem.GridViewItem()

@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,10 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Uno.Foundation.Extensibility;
 
 namespace Microsoft.Web.WebView2.Core;
 
@@ -113,6 +117,25 @@ public partial class CoreWebView2
 			_hostToFolderMap.Remove(hostName);
 		}
 	}
+
+	/// <summary>
+	/// Resolves an optional capability of the native WebView, or throws describing why it is unavailable.
+	/// </summary>
+	internal T RequireCapability<T>(string typeName, string memberName)
+		where T : class
+		=> _nativeWebView as T ?? throw CapabilityUnavailable(typeName, memberName);
+
+	/// <summary>
+	/// Builds the exception for a capability the native WebView cannot serve, distinguishing "not initialized
+	/// yet" from "this platform does not implement it". The latter reproduces the generated stub exactly, so
+	/// platforms that do not opt in keep their current behaviour and not-implemented reporting.
+	/// </summary>
+	internal Exception CapabilityUnavailable(string typeName, string memberName)
+		=> _nativeWebView is null
+			? new InvalidOperationException(
+				$"The native WebView is not initialized, so {typeName}.{memberName} is unavailable. " +
+				"Await the WebView2 control's EnsureCoreWebView2Async() before using this member.")
+			: global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException(typeName, memberName);
 
 	internal void NavigateWithHttpRequestMessage(global::Windows.Web.Http.HttpRequestMessage requestMessage)
 	{
@@ -415,6 +438,21 @@ public partial class CoreWebView2
 			_webResourceRequestedSupport.WebResourceRequested -= OnNativeWebResourceRequested;
 			_webResourceRequestedSupport = null;
 		}
+	}
+
+	internal INativeWebView? GetNativeWebViewFromTemplate()
+	{
+		if (VisualTreeHelper.GetChild((DependencyObject)_owner, 0) is not ContentPresenter { Name: "WebViewTemplateRoot" } contentPresenter)
+		{
+			return null;
+		}
+
+		if (ApiExtensibility.CreateInstance<INativeWebViewProvider>(this, out var nativeWebViewProvider))
+		{
+			return nativeWebViewProvider.CreateNativeWebView(contentPresenter);
+		}
+
+		return null;
 	}
 }
 

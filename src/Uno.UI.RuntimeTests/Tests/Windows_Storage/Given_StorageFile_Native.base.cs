@@ -14,6 +14,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 
 		protected virtual Task CleanupRootFolderAsync() => Task.CompletedTask;
 
+		/// <summary>
+		/// True when the provider's <see cref="StorageFile.Path"/> is a real filesystem path, so a test may
+		/// manipulate the backing file directly through <see cref="File"/>. Virtual providers (browser OPFS,
+		/// Android SAF) expose a synthetic path and must opt out.
+		/// </summary>
+		protected virtual bool HasFileSystemBackedPath => false;
+
 		[TestMethod]
 		public async Task When_CreateFile_Name_Matches()
 		{
@@ -283,6 +290,137 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 				{
 					Assert.Fail($"Input stream flush threw {ex}");
 				}
+			}
+			finally
+			{
+				await DeleteIfNotNullAsync(createdFile);
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_OpenStreamForReadAsync_Stream_Is_ReadOnly()
+		{
+			StorageFile? createdFile = null;
+			try
+			{
+				var rootFolder = await GetRootFolderAsync();
+				var fileName = GetRandomTextFileName();
+				createdFile = await rootFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+				await FileIO.WriteTextAsync(createdFile, "Some content");
+
+				using var stream = await createdFile.OpenStreamForReadAsync();
+				Assert.IsTrue(stream.CanRead, "Read stream should be readable");
+				Assert.IsFalse(stream.CanWrite, "Read stream should not be writable");
+			}
+			finally
+			{
+				await DeleteIfNotNullAsync(createdFile);
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_OpenStreamForWriteAsync_Stream_CanWrite()
+		{
+			StorageFile? createdFile = null;
+			try
+			{
+				var rootFolder = await GetRootFolderAsync();
+				var fileName = GetRandomTextFileName();
+				createdFile = await rootFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+
+				using (var stream = await createdFile.OpenStreamForWriteAsync())
+				{
+					Assert.IsTrue(stream.CanWrite, "Write stream should be writable");
+
+					using var writer = new StreamWriter(stream);
+					await writer.WriteAsync("Test content");
+					await writer.FlushAsync();
+				}
+
+				var content = await FileIO.ReadTextAsync(createdFile);
+				Assert.AreEqual("Test content", content);
+			}
+			finally
+			{
+				await DeleteIfNotNullAsync(createdFile);
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21311")]
+		// Exercises Uno's StorageFile.OpenStreamAsync FileMode mapping; native WinUI's StorageFile isn't subject to it.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_OpenStreamForWriteAsync_FileDoesNotExist_Stream_CreatesFile()
+		{
+			if (!HasFileSystemBackedPath)
+			{
+				Assert.Inconclusive("Provider's StorageFile.Path is not a real filesystem path.");
+			}
+
+			StorageFile? createdFile = null;
+			try
+			{
+				var rootFolder = await GetRootFolderAsync();
+				var fileName = GetRandomTextFileName();
+
+				// Hold a StorageFile reference, then delete the backing file to reproduce
+				// the regression: OpenStreamForWriteAsync used to hard-code FileMode.Open
+				// and threw FileNotFoundException when the file was missing. With the fix
+				// it maps ReadWrite → FileMode.OpenOrCreate and re-creates the file.
+				createdFile = await rootFolder.CreateFileAsync(fileName);
+				File.Delete(createdFile.Path);
+				Assert.IsFalse(File.Exists(createdFile.Path), "Pre-condition: backing file should be deleted");
+
+				using (var stream = await createdFile.OpenStreamForWriteAsync())
+				{
+					using var writer = new StreamWriter(stream);
+					await writer.WriteAsync("Recreated content");
+					await writer.FlushAsync();
+				}
+
+				Assert.IsTrue(File.Exists(createdFile.Path), "OpenStreamForWriteAsync should have recreated the file");
+				var content = await FileIO.ReadTextAsync(createdFile);
+				Assert.AreEqual("Recreated content", content);
+			}
+			finally
+			{
+				await DeleteIfNotNullAsync(createdFile);
+				await CleanupRootFolderAsync();
+			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21311")]
+		// Exercises Uno's StorageFile.OpenStreamAsync FileMode mapping; native WinUI's StorageFile isn't subject to it.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_OpenStreamForReadAsync_FileDoesNotExist_Throws()
+		{
+			if (!HasFileSystemBackedPath)
+			{
+				Assert.Inconclusive("Provider's StorageFile.Path is not a real filesystem path.");
+			}
+
+			StorageFile? createdFile = null;
+			try
+			{
+				var rootFolder = await GetRootFolderAsync();
+				var fileName = GetRandomTextFileName();
+
+				createdFile = await rootFolder.CreateFileAsync(fileName);
+				File.Delete(createdFile.Path);
+				Assert.IsFalse(File.Exists(createdFile.Path), "Pre-condition: backing file should be deleted");
+
+				var fileRef = createdFile;
+				createdFile = null;
+
+				await Assert.ThrowsAsync<FileNotFoundException>(
+					async () =>
+					{
+						using var _ = await fileRef.OpenStreamForReadAsync();
+					});
 			}
 			finally
 			{

@@ -3,6 +3,7 @@
 		{
 			"IsDebug": true,
 			"IsMono": false,
+			"Ignore": "Removing the file deletes a type, which Roslyn 5.6 reports as ENC0033 while these expectations declare no diagnostic. Whether to record it or to stop treating a file removal as a rude edit is an open decision, tracked in https://github.com/unoplatform/uno/pull/24085",
 			"PassResults": [
 				{
 					"MetadataUpdates": 1,
@@ -13,6 +14,7 @@
 		{
 			"IsDebug": true,
 			"IsMono": true,
+			"Ignore": "Removing the file deletes a type, which Roslyn 5.6 reports as ENC0033 while these expectations declare no diagnostic. Whether to record it or to stop treating a file removal as a rude edit is an open decision, tracked in https://github.com/unoplatform/uno/pull/24085",
 			"PassResults": [
 				{
 					"MetadataUpdates": 1,

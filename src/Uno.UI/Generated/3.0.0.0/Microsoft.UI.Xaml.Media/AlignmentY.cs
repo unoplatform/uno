@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media
 {
-#if false || false
+#if false
 	public enum AlignmentY
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Media.AlignmentY.Top

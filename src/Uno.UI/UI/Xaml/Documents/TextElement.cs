@@ -1,7 +1,3 @@
-﻿#if IS_UNIT_TESTS
-#pragma warning disable CS0067
-#endif
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +19,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Color = System.Drawing.Color;
 
 using BaseClass = Microsoft.UI.Xaml.DependencyObject;
+using Microsoft.UI.Xaml.Documents.TextFormatting;
 
 namespace Microsoft.UI.Xaml.Documents
 {
@@ -389,7 +386,7 @@ namespace Microsoft.UI.Xaml.Documents
 				hl.SetCurrentForeground();
 			}
 
-			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
+			((DependencyObject)this).SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 		}
 
 		internal protected virtual List<AutomationPeer> AppendAutomationPeerChildren(int startPos, int endPos)
@@ -397,5 +394,8 @@ namespace Microsoft.UI.Xaml.Documents
 			//return S_OK;
 			return null;
 		}
+
+		partial void OnForegroundChangedPartial()
+			=> (this.GetParent() as IBlock)?.Invalidate(false);
 	}
 }

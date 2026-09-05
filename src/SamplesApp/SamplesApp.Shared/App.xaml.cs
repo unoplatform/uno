@@ -161,7 +161,7 @@ namespace SamplesApp
 
 			SetupAndroidEnvironment();
 
-#if __IOS__ && !__MACCATALYST__ && !TESTFLIGHT
+#if __IOS__ && !TESTFLIGHT
 			LaunchiOSWatchDog();
 #endif
 			var activationKind =
@@ -230,7 +230,7 @@ namespace SamplesApp
 			// This is done by the IcuDataInitializerGenerator for external projects
 			var icuType = Type.GetType("Microsoft.UI.Xaml.Documents.UnicodeText+ICU, Uno.UI");
 			var setMethod = icuType?.GetMethod("SetDataAssembly", BindingFlags.Public | BindingFlags.Static);
-			var assembly = AppDomain.CurrentDomain.GetAssemblies().First(a => a.GetName().Name is { } name && name.StartsWith("SamplesApp", StringComparison.Ordinal) && !name.Equals("SamplesApp.Skia", StringComparison.Ordinal));
+			var assembly = typeof(App).Assembly;
 			setMethod?.Invoke(null, [assembly]);
 		}
 #endif
@@ -415,17 +415,21 @@ namespace SamplesApp
 
 			Console.WriteLine($"HandleLaunchArguments: {args}");
 
+			// Check the "sample=" deep link before the System.CommandLine-based handlers: on
+			// platforms where Console.ResetColor throws (Android, WebAssembly), System.CommandLine's
+			// parse-error path throws PlatformNotSupportedException and would abort argument handling
+			// before the deep link is ever evaluated.
+			if (TryNavigateToLaunchSample(args))
+			{
+				return;
+			}
+
 			if (HandleAutoScreenshots(args))
 			{
 				return;
 			}
 
 			if (await HandleRuntimeTests(args))
-			{
-				return;
-			}
-
-			if (TryNavigateToLaunchSample(args))
 			{
 				return;
 			}
@@ -499,7 +503,8 @@ namespace SamplesApp
 					builder.AddConsole();
 				}
 
-#if __APPLE_UIKIT__
+#if __APPLE_UIKIT__ && !__TVOS__
+				// Uno.Extensions.Logging.OSLog ships no tvOS asset, so tvOS keeps the console provider above.
 				builder.AddProvider(new Uno.Extensions.Logging.OSLogLoggerProvider());
 #endif
 

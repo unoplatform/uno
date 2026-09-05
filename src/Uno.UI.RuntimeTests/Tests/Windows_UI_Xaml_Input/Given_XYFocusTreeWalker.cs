@@ -10,6 +10,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Private.Infrastructure;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
@@ -31,7 +33,7 @@ public partial class Given_XYFocusTreeWalker
 	}
 
 	[TestMethod]
-	public void VerifyFindElement()
+	public async Task VerifyFindElement()
 	{
 		var root = new XYFocusCUIElement();
 
@@ -40,13 +42,25 @@ public partial class Given_XYFocusTreeWalker
 
 		root.Children.Add(candidate);
 
-		var candidateList = FindElements(root, current, null, true, false);
-		Assert.HasCount(1, candidateList);
-		Assert.AreEqual(candidate, candidateList[0].Element);
+		// Candidates must be in the live visual tree to count as focusable (WinUI's IsActive() gate).
+		TestServices.WindowHelper.WindowContent = root;
+		try
+		{
+			await TestServices.WindowHelper.WaitForLoaded(root, x => x.IsLoaded);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var candidateList = FindElements(root, current, null, true, false);
+			Assert.HasCount(1, candidateList);
+			Assert.AreEqual(candidate, candidateList[0].Element);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
 	}
 
 	[TestMethod]
-	public void VerifyFindElementIgnoresNonFocusableChildren()
+	public async Task VerifyFindElementIgnoresNonFocusableChildren()
 	{
 		var root = new XYFocusCUIElement();
 
@@ -58,9 +72,20 @@ public partial class Given_XYFocusTreeWalker
 		root.Children.Add(candidate);
 		root.Children.Add(nonFocusableCandidate);
 
-		var candidateList = FindElements(root, current, null, true, false);
-		Assert.HasCount(1, candidateList);
-		Assert.AreEqual(candidate, candidateList[0].Element);
+		TestServices.WindowHelper.WindowContent = root;
+		try
+		{
+			await TestServices.WindowHelper.WaitForLoaded(root, x => x.IsLoaded);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var candidateList = FindElements(root, current, null, true, false);
+			Assert.HasCount(1, candidateList);
+			Assert.AreEqual(candidate, candidateList[0].Element);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
 	}
 
 	[Ignore("https://github.com/unoplatform/uno/issues/17399 — needs a focusable Panel subclass to mirror the unit-test mock's `_children` parent-child semantics; ContentControl.Content is not picked up by the focus walker without an applied template.")]

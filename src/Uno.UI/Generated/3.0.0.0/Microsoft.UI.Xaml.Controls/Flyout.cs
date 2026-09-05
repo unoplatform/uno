@@ -3,10 +3,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class Flyout
+	public partial class Flyout : global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase
 	{
 		// Skipping already declared property ContentProperty
 		// Skipping already declared property FlyoutPresenterStyleProperty

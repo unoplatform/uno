@@ -65,6 +65,9 @@ public class X11NativeWebView : INativeWebView
 	[DllImport("libgdk-3.so", CallingConvention = CallingConvention.Cdecl)]
 	private static extern IntPtr gdk_x11_window_get_xid(IntPtr window);
 
+	[DllImport("libgdk-3.so", CallingConvention = CallingConvention.Cdecl)]
+	private static extern void gdk_x11_window_set_frame_sync_enabled(IntPtr window, int frameSyncEnabled);
+
 	static X11NativeWebView()
 	{
 		try
@@ -171,6 +174,29 @@ public class X11NativeWebView : INativeWebView
 			_window.Add(_webview);
 			_webview.ShowAll();
 			_window.Realize(); // creates the Gdk window (and the X11 window) without showing it
+
+			// WMs that support _NET_WM_FRAME_DRAWN (e.g. Mutter/GNOME, on both X11 and
+			// XWayland) make GDK wait for the WM's acknowledgement of each frame before
+			// painting the next one. Our window gets reparented into the app's window and
+			// is never managed by the WM, so no acknowledgement ever comes and GTK (and
+			// therefore WebKit) stops painting entirely, leaving the webview blank.
+			try
+			{
+				gdk_x11_window_set_frame_sync_enabled(_window.Window.Handle, /* False */ 0);
+			}
+			catch (EntryPointNotFoundException e) // GTK < 3.8
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn("Couldn't disable GDK frame sync. The webview might not render under Mutter-based window managers (e.g. GNOME).", e);
+				}
+			}
+
+			// Set override-redirect before the window is first mapped, so that the WM never
+			// starts managing it as a toplevel. Some WMs (e.g. Weston's XWM on WSLg) would
+			// otherwise never let go of the window when we reparent it into the app's window,
+			// leaving the webview invisible.
+			_window.Window.OverrideRedirect = true;
 			return gdk_x11_window_get_xid(_window.Window.Handle);
 		});
 
@@ -202,10 +228,18 @@ public class X11NativeWebView : INativeWebView
 			var tcs = new TaskCompletionSource<T>();
 			GLib.Idle.Add(() =>
 			{
-				tcs.SetResult(func());
+				// an exception escaping the idle callback would leave the caller blocked forever
+				try
+				{
+					tcs.SetResult(func());
+				}
+				catch (Exception e)
+				{
+					tcs.SetException(e);
+				}
 				return false;
 			});
-			return tcs.Task.Result;
+			return tcs.Task.GetAwaiter().GetResult();
 		}
 	}
 
@@ -220,11 +254,19 @@ public class X11NativeWebView : INativeWebView
 			var tcs = new TaskCompletionSource();
 			GLib.Idle.Add(() =>
 			{
-				func();
-				tcs.SetResult();
+				// an exception escaping the idle callback would leave the caller blocked forever
+				try
+				{
+					func();
+					tcs.SetResult();
+				}
+				catch (Exception e)
+				{
+					tcs.SetException(e);
+				}
 				return false;
 			});
-			tcs.Task.Wait();
+			tcs.Task.GetAwaiter().GetResult();
 		}
 	}
 

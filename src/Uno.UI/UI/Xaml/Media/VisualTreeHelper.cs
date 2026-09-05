@@ -118,15 +118,6 @@ namespace Microsoft.UI.Xaml.Media
 		{
 #if __CROSSRUNTIME__
 			parent.AddChild(child, index);
-#elif IS_UNIT_TESTS
-			if (parent is FrameworkElement fe)
-			{
-				fe.AddChild(child, index);
-			}
-			else
-			{
-				throw new NotSupportedException("AddView on UIElement is not implemented on IS_UNIT_TESTS.");
-			}
 #else
 			throw new NotSupportedException("AddView not implemented on this platform.");
 #endif
@@ -328,15 +319,6 @@ namespace Microsoft.UI.Xaml.Media
 		{
 #if __CROSSRUNTIME__
 			view.AddChild(child);
-#elif IS_UNIT_TESTS
-			if (view is FrameworkElement fe)
-			{
-				fe.AddChild(child);
-			}
-			else
-			{
-				throw new NotImplementedException("AddChild on UIElement is not implemented on IS_UNIT_TESTS.");
-			}
 #else
 			throw new NotImplementedException("AddChild not implemented on this platform.");
 #endif
@@ -750,29 +732,14 @@ namespace Microsoft.UI.Xaml.Media
 				? GetManagedVisualChildren(elt)
 				: Enumerable.Empty<UIElement>();
 
-#if IS_UNIT_TESTS
-		internal static IEnumerable<UIElement> GetManagedVisualChildren(_View view)
-			=> view.GetChildren();
-#else
 		internal static MaterializableList<UIElement> GetManagedVisualChildren(_View view)
 			=> view._children;
-#endif
 
-#if IS_UNIT_TESTS
-		internal static IEnumerator<UIElement> GetManagedVisualChildrenReversedEnumerator(_View view)
-			=> GetManagedVisualChildren(view).Reverse().GetEnumerator();
-#else
 		internal static MaterializableList<UIElement>.ReverseEnumerator GetManagedVisualChildrenReversedEnumerator(_View view)
 			=> view._children.GetReverseEnumerator();
-#endif
 
-#if IS_UNIT_TESTS
-		internal static IEnumerator<UIElement> GetManagedVisualChildrenReversedEnumerator(_View view, Predicate<UIElement> predicate)
-			=> GetManagedVisualChildren(view).Where(elt => predicate(elt)).Reverse().GetEnumerator();
-#else
 		internal static MaterializableList<UIElement>.ReverseReduceEnumerator GetManagedVisualChildrenReversedEnumerator(_View view, Predicate<UIElement> predicate)
 			=> view._children.GetReverseEnumerator(predicate);
-#endif
 		#endregion
 
 		#region HitTest tracing

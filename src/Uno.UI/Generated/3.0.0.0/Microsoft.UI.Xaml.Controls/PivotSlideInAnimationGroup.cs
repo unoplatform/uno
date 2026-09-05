@@ -3,19 +3,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum PivotSlideInAnimationGroup
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Default = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		GroupOne = 1,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		GroupTwo = 2,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		GroupThree = 3,
 #endif
 	}

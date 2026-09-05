@@ -22,4 +22,7 @@ internal partial class CompositionBrushWrapper : CompositionBrush
 
 	internal override void Paint(SKCanvas canvas, float opacity, SKRect bounds) => _wrappedBrush?.Paint(canvas, opacity, bounds);
 	internal override bool CanPaint() => WrappedBrush?.CanPaint() ?? false;
+
+	internal override bool RequiresRepaintOnEveryFrame => WrappedBrush?.RequiresRepaintOnEveryFrame ?? false;
+	internal override float DamageRegionSamplingMargin => WrappedBrush?.DamageRegionSamplingMargin ?? 0;
 }

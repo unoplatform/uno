@@ -1,64 +1,44 @@
+#nullable enable
+
 using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.Web.WebView2.Core;
-using Uno.Foundation.Extensibility;
 using Uno.UI.Hosting;
-using Uno.UI.Xaml.Controls;
-using Uno.UI.Xaml.Controls.Extensions;
-using Uno.WinUI.Runtime.Skia.Android;
-using Windows.UI.Core;
-using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml.Documents.TextFormatting;
-using Uno.WinUI.Runtime.Skia.Android.UI.Xaml.Controls.TextBox;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
-public class AndroidHost : ISkiaApplicationHost
+/// <summary>
+/// Host for an Uno Skia Android application.
+/// </summary>
+/// <remarks>
+/// Unlike desktop hosts, this host does not own a run loop: Android's loop is
+/// <c>Looper.MainLooper</c>, and <see cref="UnoPlatformHost.Run"/> is invoked from
+/// <c>Activity.OnStart</c> on that very looper. Every stage must therefore complete
+/// synchronously — introducing a real <c>await</c> in <see cref="Initialize"/>,
+/// <c>InitializeAsync</c> or <see cref="RunLoop"/> would make <see cref="UnoPlatformHost.Run"/>
+/// throw, and app authors cannot switch to <c>RunAsync</c> because the call site is
+/// owned by <see cref="NativeApplication"/>.
+/// </remarks>
+internal sealed class AndroidHost : SkiaHost, ISkiaApplicationHost
 {
-	private Func<Application> _appBuilder;
+	private readonly Func<Application> _appBuilder;
 
-	/// <summary>
-	/// Creates a host for an Uno Skia Android application.
-	/// </summary>
-	/// <param name="appBuilder">App builder.</param>
-	/// <remarks>
-	/// Environment.CommandLine is used to fill LaunchEventArgs.Arguments.
-	/// </remarks>
 	public AndroidHost(Func<Application> appBuilder)
 	{
-		_appBuilder = appBuilder;
+		_appBuilder = appBuilder ?? throw new ArgumentNullException(nameof(appBuilder));
 	}
 
-	public Task Run()
-	{
-		try
-		{
-			ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new AndroidSkiaWindowFactory());
-			ApiExtensibility.Register(typeof(IUnoCorePointerInputSource), o => AndroidCorePointerInputSource.Instance);
-			ApiExtensibility.Register(typeof(IUnoKeyboardInputSource), o => AndroidKeyboardInputSource.Instance);
-			ApiExtensibility.Register(typeof(ITextBoxNotificationsProviderSingleton), _ => AndroidSkiaTextBoxNotificationsProviderSingleton.Instance);
-			ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new AndroidSkiaNativeElementHostingExtension(o));
-			ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new AndroidNativeWebViewProvider(o));
-			ApiExtensibility.Register(typeof(ISkiaNativeDatePickerProviderExtension), _ => new AndroidSkiaDatePickerProvider());
-			ApiExtensibility.Register(typeof(ISkiaNativeTimePickerProviderExtension), _ => new AndroidSkiaTimePickerProvider());
-			ApiExtensibility.Register(typeof(IInputPaneExtension), _ => new InputPaneExtension());
-			ApiExtensibility.Register<MediaPlayerPresenter>(typeof(IMediaPlayerPresenterExtension), o => new AndroidSkiaMediaPlayerPresenterExtension(o));
-			ApiExtensibility.Register(typeof(IFontFallbackService), _ => AndroidSkiaFontFallbackService.Instance);
-			ApiExtensibility.Register(typeof(IImeTextBoxExtension), _ => new AndroidImeTextBoxExtension());
+	protected override void Initialize() => ExtensionsRegistrar.Register();
 
-			void CreateApp(ApplicationInitializationCallbackParams _)
-			{
-				var app = _appBuilder();
-				app.Host = this;
-			}
-			Application.Start(CreateApp);
-		}
-		catch (Exception e)
+	protected override Task RunLoop()
+	{
+		void CreateApp(ApplicationInitializationCallbackParams _)
 		{
-			Console.WriteLine($"App failed to initialize: {e}");
+			var app = _appBuilder();
+			app.Host = this;
 		}
+
+		Application.Start(CreateApp);
 
 		return Task.CompletedTask;
 	}

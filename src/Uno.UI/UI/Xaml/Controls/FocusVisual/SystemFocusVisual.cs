@@ -66,9 +66,6 @@ internal partial class SystemFocusVisual : Control
 			}
 #else
 			element.SizeChanged += focusVisual.FocusedElementSizeChanged;
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-			element.LayoutUpdated += focusVisual.FocusedElementLayoutUpdated;
-#endif
 			element.EffectiveViewportChanged += focusVisual.FocusedElementEffectiveViewportChanged;
 			element.Unloaded += focusVisual.FocusedElementUnloaded;
 
@@ -83,9 +80,6 @@ internal partial class SystemFocusVisual : Control
 			focusVisual._focusedElementSubscriptions.Disposable = Disposable.Create(() =>
 			{
 				element.SizeChanged -= focusVisual.FocusedElementSizeChanged;
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-				element.LayoutUpdated -= focusVisual.FocusedElementLayoutUpdated;
-#endif
 				element.EffectiveViewportChanged -= focusVisual.FocusedElementEffectiveViewportChanged;
 				element.UnregisterPropertyChangedCallback(VisibilityProperty, visibilityToken);
 
@@ -178,9 +172,6 @@ internal partial class SystemFocusVisual : Control
 
 	private void FocusedElementVisibilityChanged(DependencyObject sender, DependencyProperty dp) => SetLayoutProperties();
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-	private void FocusedElementLayoutUpdated(object? sender, object e) => SetLayoutProperties();
-#endif
 
 	private void FocusedElementSizeChanged(object sender, SizeChangedEventArgs args) => SetLayoutProperties();
 

@@ -3,12 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface ICompositionSupportsSystemBackdrop
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		global::Windows.UI.Composition.CompositionBrush SystemBackdrop
 		{
 			get;
