@@ -22,6 +22,21 @@
 		<Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\PagerControlTests\**" />
 		<None Include="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\PagerControlTests\**"
 		      Link="Microsoft\UI\Xaml\Controls\PagerControlTests\%(RecursiveDir)%(Filename)%(Extension)" />
+
+		<!--
+		Wasm_CustomEvent drives the DOM directly - UIElement.HtmlId, RegisterHtmlEventHandler and a
+		document.getElementById script - which only ever existed on the native WebAssembly backend that
+		7.0 removes. It compiled until now only because nothing defined __WASM__ where the samples were
+		built; the browserwasm head does. Excluded rather than deleted because SamplesApp.UITests still
+		carries six tests against it (Given_CustomEvents, WasmTests), and retiring the sample and those
+		together is a separate call.
+		-->
+		<Page Remove="$(MSBuildThisFileDirectory)Wasm\Wasm_CustomEvent.xaml" />
+		<Compile Remove="$(MSBuildThisFileDirectory)Wasm\Wasm_CustomEvent.xaml.cs" />
+		<None Include="$(MSBuildThisFileDirectory)Wasm\Wasm_CustomEvent.xaml"
+		      Link="Wasm\Wasm_CustomEvent.xaml" />
+		<None Include="$(MSBuildThisFileDirectory)Wasm\Wasm_CustomEvent.xaml.cs"
+		      Link="Wasm\Wasm_CustomEvent.xaml.cs" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(UseWinUI)'=='true'">

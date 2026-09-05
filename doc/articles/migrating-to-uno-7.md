@@ -86,6 +86,8 @@ on macOS with Skia rendering. To migrate:
 | `Uno.WinUI` UI assemblies for `net*-android/ios/tvos` are now the Skia binaries | Same TFM string, but binary-incompatible with previously native-built consumers. Recompile all libraries against 7.0 and remove native bootstrap. |
 | `Xamarin.AndroidX.*` transitive deps removed (AppCompat, RecyclerView, Activity, Browser, SwipeRefreshLayout) | If *your own* code uses AndroidX, add explicit `PackageReference`s. |
 | `SkiaSharp.Views.Uno.WinUI` no longer referenced implicitly | The `Uno.Sdk` used to add it to every Uno Platform target, and to WebAssembly heads using the `lottie`, `svg`, `material`, `cupertino`, or `simpletheme` features. Nothing in Uno Platform needs it anymore — SVG draws through `Uno.WinUI.Graphics2DSK` and Lottie through `SkiaSharp.Skottie`. If *your own* code uses `SKXamlCanvas` or `SKSwapChainPanel`, switch to [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), which is hardware-accelerated and referenced implicitly; otherwise add an explicit `PackageReference`. |
+| `Microsoft.Windows.Compatibility` no longer referenced implicitly (WebAssembly) | The `Uno.Sdk` added this .NET Framework porting meta-package to every WebAssembly executable, pulling in 56 extra packages — 47% of a blank app's restore graph — including 21 RID-specific native packages for a target that has no RIDs. It arrived as a .NET 5 migration workaround and nothing in Uno Platform uses it. Most of what it provides is Windows-only and throws `PlatformNotSupportedException` in a browser regardless. If *your own* code uses one of its assemblies, add an explicit `PackageReference` to that specific package — the ones that genuinely work in a browser are `System.ServiceModel.*`, `System.ServiceModel.Syndication`, `System.Runtime.Caching`, `System.IO.Packaging`, `System.Configuration.ConfigurationManager`, `System.ComponentModel.Composition`, `System.CodeDom`, `System.Reflection.Context` and `System.Security.Cryptography.Pkcs`/`.Xml` — or reference `Microsoft.Windows.Compatibility` itself. The `WindowsCompatibilityVersion` MSBuild property is removed with it; specify a version on your own `PackageReference`. |
+| `LibVLCSharp` no longer referenced implicitly | `Uno.WinUI.Runtime.Skia.X11` — which every desktop head references implicitly — carried a `LibVLCSharp` dependency it never used, so the managed assembly landed in every desktop app's output. It now arrives only with the `MediaPlayerElement` (or `MediaElement`) feature, through `Uno.WinUI.MediaPlayer.Skia.X11` / `Uno.WinUI.MediaPlayer.Skia.Win32`, which have always declared it themselves. `MediaPlayerElement` is unaffected — it already required that feature. If *your own* code uses `LibVLCSharp` types directly, add an explicit `PackageReference`. |
 | Windows App SDK default moved from 1.7 to 2.3.1 | Windows heads now build against Windows App SDK 2.x, so packaged apps take a framework dependency on `Microsoft.WindowsAppRuntime.2` and end users need the matching [Windows App Runtime](https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads) — 2.3.1 or later from the **Stable release** section — installed. To stay on 1.x, set `<WinAppSdkVersion>` (and `<WinAppSdkBuildToolsVersion>`) explicitly in your Windows head. |
 | `Uno.UI.Toolkit` types moved to the `Uno.UI.*` namespaces | The old name was routinely confused with the separate Uno Toolkit (`Uno.Toolkit.UI`). Each type now sits in the namespace it belongs to — see [the mapping table below](#unouitoolkit-types-move-to-the-unoui-namespaces). Type names and behavior are unchanged. `Uno.Diagnostics.UI`, `Uno.UI.Markup`, `Uno.Helpers` and `Uno.UI.Maps` are unaffected — only the `Uno.UI.Toolkit*` namespaces moved. |
 
@@ -116,6 +118,7 @@ are unchanged, and there is **no** forwarding shim: the old namespaces stop reso
 | `ElevatedView`, `CommandBarExtensions`, `SplitViewExtensions` | `Uno.UI.Toolkit` | `Uno.UI.Xaml.Controls` |
 | `UIElementExtensions` | `Uno.UI.Toolkit` | `Uno.UI.Xaml` |
 | `AutomationPropertiesExtensions` | `Uno.UI.Toolkit` | `Uno.UI.Xaml.Automation` |
+| `ScrollBarExtensions` | `Uno.UI.Toolkit` | `Uno.UI.Xaml.Controls.Primitives` |
 | `VisibleBoundsPadding` | `Uno.UI.Toolkit` | `Uno.UI.Behaviors` |
 | `StorageFileHelper` | `Uno.UI.Toolkit` | `Uno.Storage` |
 | input injection dev helpers | `Uno.UI.Toolkit.DevTools.Input` (and `.DevTools.Xaml`) | `Uno.UI.DevTools.Input` (and `.DevTools.Xaml`) |
@@ -344,6 +347,36 @@ assembly it has always lived in is itself renamed `Uno` → `Uno.WinRT` in 7.0.
   The `Uno.UI.FluentTheme.v1` assembly is removed along with these types, and
   `Uno.UI.FluentTheme.v2` is merged into `Uno.UI.FluentTheme` — see **Packages** above.
 
+- **`Window` event handler delegates:** `Microsoft.UI.Xaml.WindowActivatedEventHandler`,
+  `WindowSizeChangedEventHandler`, `WindowVisibilityChangedEventHandler`, and
+  `WindowClosedEventHandler`. None of them exists in WinUI, which declares every `Window` event
+  as `TypedEventHandler<object, TArgs>` — `Activated`, `SizeChanged`, and `VisibilityChanged`
+  now do the same, and `Closed` already did, which left `WindowClosedEventHandler`
+  unreferenced. The handler shape is unchanged for `Activated` and `SizeChanged`, so lambdas,
+  method groups, and `+=`/`-=` keep compiling; only code that named the delegate type
+  explicitly breaks:
+
+  ```diff
+  - window.SizeChanged += new WindowSizeChangedEventHandler(OnSizeChanged);
+  + window.SizeChanged += OnSizeChanged;
+  ```
+
+- **`Window.VisibilityChanged` now carries `Microsoft.UI.Xaml.WindowVisibilityChangedEventArgs`**
+  instead of `Windows.UI.Core.VisibilityChangedEventArgs`, matching WinUI. A handler declared
+  with the old argument type no longer binds, so update its signature. Both members carry the
+  same meaning on the new type — `Visible` is get-only and `Handled` is get/set:
+
+  ```diff
+  - private void OnVisibilityChanged(object sender, VisibilityChangedEventArgs e)
+  + private void OnVisibilityChanged(object sender, WindowVisibilityChangedEventArgs e)
+    {
+        VisibilityLabel.Text = e.Visible ? "Visible" : "Hidden";
+    }
+  ```
+
+  `Windows.UI.Core.VisibilityChangedEventArgs` itself is **not** removed — it is still the
+  argument type of the legacy `CoreWindow.VisibilityChanged` event.
+
 ### `FeatureConfiguration` flags removed
 
 The native-only flags below no longer exist; delete the calls — behavior is the unified
@@ -499,6 +532,84 @@ change only breaks code that used the Uno-only members leaked by the wrong base.
   `IsSpellCheckEnabled` also stops a password box spell-checking its own masked text, which
   removes the squiggly underline it used to draw.
 
+### WinRT projection alignment (WinUI parity)
+
+A few WinRT members were projected differently by Uno than by WinUI's own C# projection. 7.0
+aligns them. Most call sites stay source-compatible, but the underlying signatures change, so
+recompile against 7.0 rather than swapping assemblies in place.
+
+- **`Thickness` and `CornerRadius` members are properties, not fields.** `Thickness.Left`,
+  `Top`, `Right`, `Bottom` and `CornerRadius.TopLeft`, `TopRight`, `BottomRight`, `BottomLeft`
+  are `{ get; set; }` properties, as they are in WinUI. Reading and assigning them is
+  unchanged; what no longer compiles is passing one by reference:
+
+  ```diff
+  - Normalize(ref thickness.Left);
+  + thickness.Left = Normalize(thickness.Left);
+  ```
+
+  The same applies to `Uno.UI.Composition.Thickness` and `Uno.UI.Composition.CornerRadius`.
+
+- **`GridLength.Value` and `GridLength.GridUnitType` are read-only properties.** WinUI exposes
+  both as get-only, so a `GridLength` is built entirely through its constructor. Code that
+  mutated a `default` instance has to construct one instead:
+
+  ```diff
+  - GridLength star = default;
+  - star.GridUnitType = GridUnitType.Star;
+  - star.Value = 1.0;
+  + GridLength star = new(1.0, GridUnitType.Star);
+  ```
+
+- **`GridLength`'s second constructor parameter is renamed to `type`.** WinUI's signature is
+  `GridLength(double value, GridUnitType type)`; Uno called it `gridUnitType`. Only named
+  arguments are affected:
+
+  ```diff
+  - new GridLength(1.0, gridUnitType: GridUnitType.Star)
+  + new GridLength(1.0, type: GridUnitType.Star)
+  ```
+
+- **`Duration.TimeSpan` is a read-only property.** WinUI exposes it as get-only, so a
+  `Duration` carrying a time span comes from the constructor. Assigning the old field left
+  the duration in its `Automatic` default state, so `HasTimeSpan` stayed `false`; the
+  constructor sets both:
+
+  ```diff
+  - Duration d = default;
+  - d.TimeSpan = TimeSpan.FromSeconds(2);
+  + Duration d = new(TimeSpan.FromSeconds(2));
+  ```
+
+- **`Duration.Type` is no longer public.** WinUI's `Duration` exposes no `Type` member at
+  all; the state is reached through `HasTimeSpan` and comparison against `Duration.Automatic`
+  and `Duration.Forever`. The `DurationType` enum itself stays public, as it is in WinUI:
+
+  ```diff
+  - if (d.Type == DurationType.TimeSpan) { }
+  + if (d.HasTimeSpan) { }
+
+  - if (d.Type == DurationType.Forever) { }
+  + if (d == Duration.Forever) { }
+  ```
+
+- **`DataTemplate.LoadContent()` returns `DependencyObject`.** WinUI's return type is
+  `DependencyObject`, not `UIElement`. Pattern-matching call sites (`is FrameworkElement fe`,
+  `as UIElement`) are unaffected; an explicitly typed local needs a cast:
+
+  ```diff
+  - UIElement root = template.LoadContent();
+  + UIElement root = (UIElement)template.LoadContent();
+  ```
+
+- **`Windows.Foundation.GuidHelper.Equals` takes `in Guid` instead of `ref Guid`.** `in`
+  arguments are passed without a keyword, so drop `ref` at the call site:
+
+  ```diff
+  - GuidHelper.Equals(ref first, ref second);
+  + GuidHelper.Equals(first, second);
+  ```
+
 ### XAML changes
 
 - **The WPF-style `clr-namespace:` xmlns form is no longer accepted.** WinUI only supports
@@ -652,7 +763,9 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
    `AppBuilder` delegate to the base constructor.
 11. Rename `Uno.UI.Toolkit` usings and `xmlns` declarations to their new `Uno.UI.*` namespaces.
 12. Update assembly-qualified type names that reach MRT Core (`Microsoft.Windows.ApplicationModel.Resources.*`) — the assembly is now `Uno.WinRT`, not `Uno.UI`.
-13. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+13. Retype `Window.VisibilityChanged` handlers to `WindowVisibilityChangedEventArgs`, and drop
+   any explicit `Window*EventHandler` delegate construction.
+14. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)

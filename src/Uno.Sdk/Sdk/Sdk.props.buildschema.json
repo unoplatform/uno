@@ -178,10 +178,6 @@
 			"description": "Provides an explicit override for the version of Uno Logging to use.",
 			"type": "nuget-version"
 		},
-		"WindowsCompatibilityVersion": {
-			"description": "Provides an explicit override for the version of Windows.Compatibility to use.",
-			"type": "nuget-version"
-		},
 		"UnoWasmBootstrapVersion": {
 			"description": "Provides an explicit override for the version of the Uno.Wasm.Bootstrap packages to use.",
 			"type": "nuget-version"
