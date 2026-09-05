@@ -137,7 +137,7 @@ namespace Microsoft.UI.Xaml.Data
 					.ToArray();
 			}
 
-			if (ParentBinding.ElementName != null)
+			if (ParentBinding.ElementNameSubject != null)
 			{
 				_isElementNameSource = true;
 			}
@@ -364,7 +364,7 @@ namespace Microsoft.UI.Xaml.Data
 
 		internal void ApplyElementName()
 		{
-			if (ParentBinding.ElementName is ElementNameSubject elementNameSubject)
+			if (ParentBinding.ElementNameSubject is { } elementNameSubject)
 			{
 
 				if (elementNameSubject.IsLoadTimeBound)

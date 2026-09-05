@@ -154,9 +154,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 			binding.Should().NotBeNull();
 			binding.Path.Should().NotBeNull();
 			binding.Path.Path.Should().Be("Tag");
-			// https://github.com/unoplatform/uno/issues/8532
-			//binding.ElementName.Should().BeOfType<ElementNameSubject>().Which.Name.Should().Be("topLevel");
-			binding.ElementName.Should().BeOfType<ElementNameSubject>();
+			// The compiled XAML generator routes the element through the subject only; the public
+			// ElementName string is not populated yet - https://github.com/unoplatform/uno/issues/8532
+			//binding.ElementName.Should().Be("topLevel");
+			binding.ElementNameSubject.Should().NotBeNull();
 			binding.Converter.Should().NotBeNull();
 			binding.ConverterParameter.Should().Be("topLevel");
 			binding.ConverterLanguage.Should().Be("topLevel");
@@ -187,7 +188,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 			binding.Should().NotBeNull();
 			binding.Path.Should().NotBeNull();
 			binding.Path.Path.Should().Be("Tag");
-			binding.ElementName.Should().BeOfType<ElementNameSubject>();
+			binding.ElementNameSubject.Should().NotBeNull();
 			binding.Converter.Should().NotBeNull();
 			binding.ConverterParameter.Should().Be("topLevel");
 			binding.ConverterLanguage.Should().Be("topLevel");
