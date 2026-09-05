@@ -74,6 +74,7 @@
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\DiscoveryIssueMapper.cs" Link="Mcp\DiscoveryIssueMapper.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\HealthReport.cs" Link="Mcp\HealthReport.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\HealthReportFactory.cs" Link="Mcp\HealthReportFactory.cs" />
+		<Compile Include="..\Uno.UI.DevServer.Cli\Helpers\SdkManifest.cs" Link="Helpers\SdkManifest.cs" />
 		<Compile Include="..\Uno.UI.DevServer.Cli\Mcp\McpJsonUtilities.cs" Link="Mcp\McpJsonUtilities.cs" />
 
 		<!-- Link host-side assembly resolution helper for unit testing -->
