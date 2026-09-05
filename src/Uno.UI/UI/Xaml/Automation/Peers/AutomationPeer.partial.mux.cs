@@ -645,24 +645,40 @@ partial class AutomationPeer
 	/// Raises the structure changed event.
 	/// </summary>
 	/// <param name="structureChangeType">The type of structure change.</param>
-	/// <param name="child">The child peer involved in the change (required for ChildRemoved).</param>
-	public void RaiseStructureChangedEvent(AutomationStructureChangeType structureChangeType, AutomationPeer child)
+	/// <param name="child">The child peer involved in the change (required for ChildRemoved; may be null otherwise).</param>
+	public void RaiseStructureChangedEvent(AutomationStructureChangeType structureChangeType, AutomationPeer? child)
 	{
 #if HAS_UNO
-		// TODO Uno: Implement RaiseStructureChangedEvent when UIA infrastructure is available.
-		// For now this is a stub that maintains API compatibility.
-
-		if (structureChangeType == AutomationStructureChangeType.ChildRemoved)
+		if (structureChangeType == AutomationStructureChangeType.ChildRemoved && child is null)
 		{
-			if (child is null)
-			{
-				throw new ArgumentNullException(nameof(child));
-			}
-			// UIAutomationCore expects runtime id of the removed child to be returned.
-			_ = child.GetRuntimeId();
+			throw new ArgumentNullException(nameof(child));
 		}
+
+#if __SKIA__
+		AutomationPeerListener?.NotifyStructureChangedEvent(this, structureChangeType, child);
+#endif
 #endif
 	}
+
+	/// <summary>
+	/// Raises an event when a text control programmatically changes its text.
+	/// </summary>
+	/// <param name="automationTextEditChangeType">The kind of text-edit change.</param>
+	/// <param name="changedData">The text that changed.</param>
+#if __SKIA__
+	public void RaiseTextEditTextChangedEvent(AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)
+	{
+		AutomationPeerListener?.NotifyTextEditTextChangedEvent(this, automationTextEditChangeType, changedData);
+	}
+#else
+	public void RaiseTextEditTextChangedEvent(AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)
+	{
+		Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented(
+			"Microsoft.UI.Xaml.Automation.Peers.AutomationPeer",
+			"void AutomationPeer.RaiseTextEditTextChangedEvent(AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)",
+			Uno.Foundation.Logging.LogLevel.Warning);
+	}
+#endif
 
 	/// <summary>
 	/// Helper: Raises the event if there are listeners for it.

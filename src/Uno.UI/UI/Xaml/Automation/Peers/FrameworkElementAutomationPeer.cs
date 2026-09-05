@@ -364,6 +364,9 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 	protected override bool IsPeripheralCore()
 		=> AutomationProperties.GetIsPeripheral(Owner);
 
+	protected override int GetCultureCore()
+		=> AutomationProperties.GetCulture(Owner);
+
 	protected override bool IsDataValidForFormCore()
 		=> AutomationProperties.GetIsDataValidForForm(Owner);
 
@@ -411,7 +414,10 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 		return peers;
 	}
 
-	internal IReadOnlyList<AutomationPeerAnnotation> GetAnnotationsCoreImpl()
+	protected override IList<AutomationPeerAnnotation> GetAnnotationsCore()
+		=> GetAnnotationsCoreImpl();
+
+	internal IList<AutomationPeerAnnotation> GetAnnotationsCoreImpl()
 	{
 		var annotations = new List<AutomationPeerAnnotation>();
 

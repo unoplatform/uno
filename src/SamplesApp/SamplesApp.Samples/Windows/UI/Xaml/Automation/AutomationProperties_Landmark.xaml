@@ -1,0 +1,36 @@
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Automation.AutomationProperties_Landmark"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <StackPanel Padding="16" Spacing="12">
+        <TextBlock Text="Elements setting AutomationProperties.LandmarkType / LocalizedLandmarkType are force-promoted into the accessibility tree (as Group) even though a plain Grid otherwise has no peer." TextWrapping="Wrap" />
+
+        <Grid
+            Padding="12"
+            AutomationProperties.AutomationId="landmark-main"
+            AutomationProperties.LandmarkType="Main"
+            Background="{ThemeResource SystemControlBackgroundBaseLowBrush}">
+            <TextBlock Text="Main landmark region" />
+        </Grid>
+
+        <Grid
+            Padding="12"
+            AutomationProperties.AutomationId="landmark-nav"
+            AutomationProperties.LandmarkType="Navigation"
+            Background="{ThemeResource SystemControlBackgroundBaseLowBrush}">
+            <TextBlock Text="Navigation landmark region" />
+        </Grid>
+
+        <Grid
+            Padding="12"
+            AutomationProperties.AutomationId="landmark-localized"
+            AutomationProperties.LocalizedLandmarkType="Primary section"
+            Background="{ThemeResource SystemControlBackgroundBaseLowBrush}">
+            <TextBlock Text="LocalizedLandmarkType only — maps to a Custom landmark" />
+        </Grid>
+    </StackPanel>
+</UserControl>

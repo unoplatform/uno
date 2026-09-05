@@ -580,7 +580,11 @@ namespace Uno.UI.Runtime.Skia {
 				// Write the TRIMMED value so live-sync matches the creation-time path
 				// (setAriaStringAttribute) and never persists leading/trailing whitespace.
 				const trimmed = automationId ? automationId.trim() : "";
-				if (trimmed.length > 0) {
+				// WA-04: aria-labelledby takes ARIA precedence over aria-label. Never set a competing
+				// aria-label when the element is already named by aria-labelledby (order-independent
+				// with the aria-label removal in updateAriaLabelledBy) — this covers the case where a
+				// late live-update re-applies the name after the labelledby drain.
+				if (trimmed.length > 0 && !element.hasAttribute("aria-labelledby")) {
 					element.setAttribute("aria-label", trimmed);
 				} else {
 					element.removeAttribute("aria-label");
@@ -606,10 +610,14 @@ namespace Uno.UI.Runtime.Skia {
 		 * Updates the ARIA landmark role on a semantic element.
 		 * VoiceOver rotor uses landmarks (main, navigation, search, etc.) for quick navigation.
 		 */
-		public static updateLandmarkRole(handle: number, role: string): void {
+		public static updateLandmarkRole(handle: number, role: string | null): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				element.setAttribute("role", role);
+				if (role) {
+					element.setAttribute("role", role);
+				} else {
+					element.removeAttribute("role");
+				}
 			}
 		}
 
@@ -620,7 +628,11 @@ namespace Uno.UI.Runtime.Skia {
 		public static updateAriaRoleDescription(handle: number, roleDescription: string): void {
 			const element = Accessibility.getSemanticElementByHandle(handle);
 			if (element) {
-				element.setAttribute("aria-roledescription", roleDescription);
+				if (roleDescription) {
+					element.setAttribute("aria-roledescription", roleDescription);
+				} else {
+					element.removeAttribute("aria-roledescription");
+				}
 			}
 		}
 
@@ -823,6 +835,10 @@ namespace Uno.UI.Runtime.Skia {
 			if (element) {
 				if (idList) {
 					element.setAttribute("aria-labelledby", idList);
+					// WA-04: aria-labelledby takes ARIA precedence over aria-label. Remove any competing
+					// aria-label so the element is not named twice — this also handles the two-phase
+					// build where aria-label was applied before the labeller's semantic node existed.
+					element.removeAttribute("aria-label");
 				} else {
 					element.removeAttribute("aria-labelledby");
 				}

@@ -1,3 +1,5 @@
+#nullable enable
+
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Automation;
@@ -57,11 +59,14 @@ public class Given_AutomationPeer_InvalidatePeer
 
 		public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId) => Events.Add(eventId);
 
+		public void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer? child) { }
+
 		public void NotifyInvalidatePeer(AutomationPeer peer) => InvalidatedPeers.Add(peer);
 
 		public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue) { }
 
 		public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId) { }
+		public void NotifyTextEditTextChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, System.Collections.Generic.IReadOnlyList<string> changedData) { }
 	}
 #endif
 }

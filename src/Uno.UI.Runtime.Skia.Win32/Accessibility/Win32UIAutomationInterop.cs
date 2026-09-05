@@ -140,6 +140,8 @@ internal static class Win32UIAutomationInterop
 	internal const int UIA_FlowsFromPropertyId = 30148;
 	internal const int UIA_OptimizeForVisualContentPropertyId = 30149;
 	internal const int UIA_IsPeripheralPropertyId = 30150;
+	internal const int UIA_AnnotationTypesPropertyId = 30155;
+	internal const int UIA_AnnotationObjectsPropertyId = 30156;
 	internal const int UIA_ProviderDescriptionPropertyId = 30107;
 	internal const int UIA_IsDialogPropertyId = 30174;
 	internal const int UIA_PositionInSetPropertyId = 30152;
@@ -187,6 +189,7 @@ internal static class Win32UIAutomationInterop
 	internal const int UIA_HeaderControlTypeId = 50034;
 	internal const int UIA_HeaderItemControlTypeId = 50035;
 	internal const int UIA_TableControlTypeId = 50036;
+	internal const int UIA_TitleBarControlTypeId = 50037;
 	internal const int UIA_SeparatorControlTypeId = 50038;
 	internal const int UIA_SemanticZoomControlTypeId = 50039;
 	internal const int UIA_AppBarControlTypeId = 50040;
@@ -233,9 +236,10 @@ internal static class Win32UIAutomationInterop
 	internal const int UIA_ToolTipClosedEventId = 20001;
 	internal const int UIA_StructureChangedEventId = 20002;
 	internal const int UIA_MenuOpenedEventId = 20003;
-	internal const int UIA_MenuClosedEventId = 20004;
+	internal const int UIA_MenuClosedEventId = 20007;
 	internal const int UIA_AutomationFocusChangedEventId = 20005;
-	internal const int UIA_AutomationPropertyChangedEventId = 20006;
+	internal const int UIA_LayoutInvalidatedEventId = 20008;
+	internal const int UIA_AutomationPropertyChangedEventId = 20004;
 	internal const int UIA_Invoke_InvokedEventId = 20009;
 	internal const int UIA_SelectionItem_ElementAddedToSelectionEventId = 20010;
 	internal const int UIA_SelectionItem_ElementRemovedFromSelectionEventId = 20011;
@@ -387,11 +391,56 @@ internal static class Win32UIAutomationInterop
 	}
 
 	[DllImport("uiautomationcore.dll")]
+	internal static extern int UiaRaiseTextEditTextChangedEvent(
+		[MarshalAs(UnmanagedType.Interface)] IRawElementProviderSimple provider,
+		int textEditChangeType,
+		[MarshalAs(UnmanagedType.SafeArray, SafeArraySubType = VarEnum.VT_BSTR)] string[]? changedData);
+
+	[DllImport("uiautomationcore.dll")]
+	private static extern int UiaGetReservedNotSupportedValue(
+		[MarshalAs(UnmanagedType.IUnknown)] out object notSupportedValue);
+
+	private static object? _reservedNotSupportedValue;
+
+	/// <summary>
+	/// Returns the process-wide UIA "not supported" sentinel, or <c>null</c> when it cannot be
+	/// obtained. Providers must return this value — never <c>VT_EMPTY</c>/<c>null</c> — for text
+	/// attributes they do not implement, so clients can tell "unsupported" apart from "no value".
+	/// WinUI does the same translation in <c>CUIATextRangeProviderWrapper::GetAttributeValue</c>.
+	/// </summary>
+	internal static object? GetReservedNotSupportedValue()
+	{
+		if (_reservedNotSupportedValue is { } cached)
+		{
+			return cached;
+		}
+
+		// The sentinel is a process-wide singleton, so a benign race just re-fetches the same object.
+		var hResult = UiaGetReservedNotSupportedValue(out var value);
+		if (hResult < 0)
+		{
+			if (typeof(Win32UIAutomationInterop).Log().IsEnabled(LogLevel.Warning))
+			{
+				typeof(Win32UIAutomationInterop).Log().Warn(
+					$"[UIA] UiaGetReservedNotSupportedValue failed with HRESULT 0x{hResult:X8}.");
+			}
+
+			return null;
+		}
+
+		_reservedNotSupportedValue = value;
+		return value;
+	}
+
+	[DllImport("uiautomationcore.dll")]
 	private static extern int UiaDisconnectProvider(
 		[MarshalAs(UnmanagedType.Interface)] IRawElementProviderSimple provider);
 
 	/// <summary>
 	/// Handles WM_GETOBJECT by returning the root UIA provider to the automation framework.
+	/// Every object id is forwarded — matching WinUI's <c>CJupiterControl::HandleGetObjectMessage</c>,
+	/// which passes wParam/lParam straight through — so the UIA-to-MSAA bridge can also serve
+	/// legacy <c>OBJID_CLIENT</c> clients instead of falling back to <c>DefWindowProc</c>.
 	/// </summary>
 	internal static LRESULT HandleGetObject(HWND hwnd, WPARAM wParam, LPARAM lParam, Win32RawElementProvider? rootProvider)
 	{
@@ -415,5 +464,20 @@ internal static class Win32UIAutomationInterop
 		}
 
 		return new LRESULT(result);
+	}
+
+	/// <summary>
+	/// Tells UIA that it can drop every map entry referring to <paramref name="hwnd"/>, which is
+	/// required once a window that previously returned providers goes away. Mirrors WinUI's
+	/// <c>CUIAWindow::FlushUiaBridgeEventTable</c>.
+	/// </summary>
+	internal static void FlushUiaBridgeEventTable(nint hwnd)
+	{
+		if (hwnd == 0)
+		{
+			return;
+		}
+
+		UiaReturnRawElementProvider(hwnd, 0, 0, null);
 	}
 }
