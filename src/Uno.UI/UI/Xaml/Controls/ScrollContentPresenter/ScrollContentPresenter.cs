@@ -223,6 +223,11 @@ namespace Microsoft.UI.Xaml.Controls
 				(child as ICustomScrollInfo)?.ApplyViewport(ref finalSize);
 			}
 
+			// WinUI-aligned: flush pending scroll offset updates to the ScrollViewer.
+			// On WinUI, ArrangeOverride → VerifyScrollData → InvalidateScrollOwner
+			// → put_HorizontalOffset/VerticalOffset updates the DPs during the arrange pass.
+			Scroller?.OnPresenterArranged();
+
 			return finalSize;
 		}
 
