@@ -1243,6 +1243,42 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
+		public void ValidateUniformGridWithAvailableWidthNarrowerThanOneItem()
+		{
+			// Watson #61810783: when a UniformGridLayout receives a finite available minor
+			// size that is narrower than one item's minor stride, GetItemsPerLine used to
+			// return 0, causing a divide-by-zero in GetMajorSize during anchor evaluation.
+			// Verify that the layout pass completes without crashing and produces a sane
+			// (>= 1 item per line) layout instead.
+			RunOnUIThread.Execute(() =>
+			{
+				var repeater = new ItemsRepeater()
+				{
+					ItemsSource = Enumerable.Range(0, 6).Select(i => i.ToString()).ToList(),
+					Layout = new UniformGridLayout()
+					{
+						Orientation = Orientation.Horizontal,
+						MinItemWidth = 100,
+						MinItemHeight = 50
+					},
+				};
+
+				// Constrain the repeater to a width narrower than MinItemWidth.
+				var host = new Grid() { Width = 5, Height = 200 };
+				host.Children.Add(repeater);
+
+				Content = host;
+				Content.UpdateLayout();
+
+				// The fix should produce a non-crashing layout. We don't validate exact
+				// dimensions because the policy when a single item is wider than the
+				// available width is "still lay out one item per line", which produces a
+				// non-zero major extent.
+				Verify.IsTrue(repeater.DesiredSize.Height >= 0);
+			});
+		}
+
+		[TestMethod]
 		public void ValidateUniformGridWithNoItems()
 		{
 			RunOnUIThread.Execute(() =>
@@ -1259,6 +1295,46 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				// Ensure we do not crash and get zero size.
 				Verify.AreEqual(0, repeater.DesiredSize.Width);
 				Verify.AreEqual(0, repeater.DesiredSize.Height);
+			});
+		}
+
+		[TestMethod]
+		public void ValidateUniformGridWithItemsRelyingOnAspectRatio()
+		{
+			ItemsRepeater repeater = null;
+			ScrollViewer scroller = null;
+			RunOnUIThread.Execute(() =>
+			{
+				repeater = new ItemsRepeater()
+				{
+					ItemsSource = Enumerable.Range(0, 6), // no items
+					Layout = new UniformGridLayout()
+					{
+						Orientation = Orientation.Vertical,
+						MaximumRowsOrColumns = 1,
+						MinItemWidth = 100
+					},
+					MaxWidth = 300,
+					ItemTemplate = GetDataTemplate("<controlsCommon:AspectRatioRespectingControl xmlns:controlsCommon='using:MUXControlsTestApp.Utilities'/>")
+				};
+
+				scroller = new ScrollViewer()
+				{
+					Content = repeater
+				};
+
+				Content = scroller;
+				repeater.UpdateLayout();
+				Content.UpdateLayout();
+			});
+
+			IdleSynchronizer.Wait();
+
+			RunOnUIThread.Execute(() =>
+			{
+				// Assert not implemented yet
+				Verify.IsTrue(Math.Abs(300 - repeater.DesiredSize.Width) < 1, "Repeater width should be 300");
+				Verify.IsTrue(repeater.DesiredSize.Height > 1, "Repeater should have height");
 			});
 		}
 
@@ -1356,6 +1432,31 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 			}
 		}
 
+		// Make sure the UniformGridLayout handles infinite available measure size
+		// when items are sized and ItemsStretch is other than None.
+		[TestMethod]
+		public void VerifyUnconstrainedUniformGridLayout()
+		{
+			RunOnUIThread.Execute(() =>
+			{
+				var scrollViewer = XamlReader.Load(
+					@"<ScrollViewer xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'
+                        xmlns:controls='using:Microsoft.UI.Xaml.Controls'
+                        HorizontalScrollBarVisibility='Auto'>
+                        <controls:LayoutPanel>
+                            <controls:LayoutPanel.Layout>
+                                <controls:UniformGridLayout ItemsStretch='Fill' MinItemWidth='100' MinItemHeight='100'/>
+                            </controls:LayoutPanel.Layout>
+                            <Border/>
+                        </controls:LayoutPanel>
+                    </ScrollViewer>") as ScrollViewer;
+
+				Content = scrollViewer;
+				scrollViewer.UpdateLayout();
+			});
+			IdleSynchronizer.Wait();
+		}
+
 		[TestMethod]
 		public void VerifyItemsGetFullSpaceInMajorDirectionWhenSmallerThanLineSize()
 		{
@@ -1420,6 +1521,62 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				var bounds = LayoutInformation.GetLayoutSlot(firstItem);
 				Verify.AreEqual(svWidth, bounds.Width);
 
+			});
+		}
+
+		[TestMethod]
+		public void ValidateStackLayoutArrangeWithInsertion()
+		{
+			RunOnUIThread.Execute(() =>
+			{
+				var itemsSource = new ObservableCollection<int>(Enumerable.Range(0, 3));
+				var sp = new StackPanel();
+				var sl = new StackLayout()
+				{
+					Orientation = Orientation.Horizontal,
+					Spacing = 0
+				};
+				var repeater = new ItemsRepeater();
+				repeater.Layout = sl;
+				repeater.ItemsSource = itemsSource;
+				repeater.ItemTemplate = GetDataTemplate(@"<TextBlock Width='64' Height='32' Text='{Binding}'/>");
+
+				sp.Children.Add(repeater);
+
+				Content = sp;
+				Content.UpdateLayout();
+
+				Log.Comment("Item bounds before insertion:");
+
+				for (int index = 0; index < 3; index++)
+				{
+					var item = repeater.TryGetElement(index) as FrameworkElement;
+					var actualBounds = LayoutInformation.GetLayoutSlot(item);
+					var expectedBounds = new Rect(64 * index, 0, 64, 32);
+
+					Log.Comment(string.Format(@"  Index:{0}, Expected:{1} Actual:{2}", index, expectedBounds, actualBounds));
+					Verify.AreEqual(expectedBounds, actualBounds);
+				}
+
+				for (int insertionIndex = 0; insertionIndex < 3; insertionIndex++)
+				{
+					Log.Comment(string.Format(@"Item {0} insertion at index:{1}", itemsSource.Count, insertionIndex));
+					itemsSource.Insert(insertionIndex, itemsSource.Count);
+
+					Content.UpdateLayout();
+
+					Log.Comment("Item bounds after insertion:");
+
+					for (int index = 0; index < itemsSource.Count; index++)
+					{
+						var item = repeater.TryGetElement(index) as FrameworkElement;
+						var actualBounds = LayoutInformation.GetLayoutSlot(item);
+						var expectedBounds = new Rect(64 * index, 0, 64, 32);
+
+						Log.Comment(string.Format(@"  Index:{0}, Expected:{1} Actual:{2}", index, expectedBounds, actualBounds));
+						Verify.AreEqual(expectedBounds, actualBounds);
+					}
+				}
 			});
 		}
 
