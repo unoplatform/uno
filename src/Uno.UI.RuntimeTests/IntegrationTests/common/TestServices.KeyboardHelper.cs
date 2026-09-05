@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using Windows.System;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Windows.Foundation.Metadata;
 
 #if HAS_UNO
@@ -186,6 +188,15 @@ namespace Private.Infrastructure
 							{
 								await RaiseOnElementDispatcherAsync(element, mainEvent, keyArgs);
 							}
+
+							// Browser synthetic key events do not perform native Tab traversal.
+							if (keyDownCodePos == 0 && vKey == VirtualKey.Tab && OperatingSystem.IsBrowser())
+							{
+								await MoveFocusForBrowserTabAsync(
+									activeModifiers.HasFlag(VirtualKeyModifiers.Shift)
+										? FocusNavigationDirection.Previous
+										: FocusNavigationDirection.Next);
+							}
 						}
 
 						// If modifiers were changed, update modifiers variable
@@ -352,6 +363,70 @@ namespace Private.Infrastructure
 							await element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => RaiseBubblingEvent(element, routedEvent, args));
 						}
 					}
+				}
+
+				async Task MoveFocusForBrowserTabAsync(FocusNavigationDirection direction)
+				{
+					void MoveFocus()
+					{
+						if (FindAncestor<AutoSuggestBox>(element) is { Parent: Panel parent } autoSuggestBox &&
+							FindSiblingFocusTarget(parent, autoSuggestBox, direction) is { } target)
+						{
+							target.Focus(FocusState.Keyboard);
+						}
+					}
+
+					await element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, MoveFocus);
+				}
+
+				static T FindAncestor<T>(DependencyObject element) where T : DependencyObject
+				{
+					for (var current = element; current is not null; current = VisualTreeHelper.GetParent(current))
+					{
+						if (current is T result)
+						{
+							return result;
+						}
+					}
+
+					return null;
+				}
+
+				static Control FindSiblingFocusTarget(Panel parent, UIElement element, FocusNavigationDirection direction)
+				{
+					var start = parent.Children.IndexOf(element);
+					for (var offset = 1; offset < parent.Children.Count; offset++)
+					{
+						var index = direction == FocusNavigationDirection.Next
+							? (start + offset) % parent.Children.Count
+							: (start - offset + parent.Children.Count) % parent.Children.Count;
+						if (FindFocusableControl(parent.Children[index], direction == FocusNavigationDirection.Previous) is { } target)
+						{
+							return target;
+						}
+					}
+
+					return null;
+				}
+
+				static Control FindFocusableControl(DependencyObject element, bool reverse)
+				{
+					if (element is Control { IsTabStop: true, IsEnabled: true, Visibility: Visibility.Visible } control)
+					{
+						return control;
+					}
+
+					var count = VisualTreeHelper.GetChildrenCount(element);
+					for (var offset = 0; offset < count; offset++)
+					{
+						var index = reverse ? count - 1 - offset : offset;
+						if (FindFocusableControl(VisualTreeHelper.GetChild(element, index), reverse) is { } descendant)
+						{
+							return descendant;
+						}
+					}
+
+					return null;
 				}
 #endif
 			}

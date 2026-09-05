@@ -89,7 +89,7 @@ namespace Private.Infrastructure
 				});
 
 #else
-				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
+				void RaiseTap()
 				{
 					var inputManager = VisualTree.GetContentRootForElement(element).InputManager;
 					if (inputManager is not null)
@@ -100,7 +100,16 @@ namespace Private.Infrastructure
 					// by GestureRecognizer when a pointer is pressed and released, but here we do a hacky workaround
 					var args = new TappedEventArgs(1, PointerDeviceType.Touch, default, 1);
 					element.SafeRaiseEvent(UIElement.TappedEvent, new TappedRoutedEventArgs(element, args, element));
-				});
+				}
+
+				if (TestServices.HasDispatcherAccess)
+				{
+					RaiseTap();
+				}
+				else
+				{
+					MUXControlsTestApp.Utilities.RunOnUIThread.Execute(RaiseTap);
+				}
 #endif
 			}
 			public static void Tap(Point point)
@@ -121,7 +130,34 @@ namespace Private.Infrastructure
 
 			public static void ScrollMouseWheel(UIElement cv, int i)
 			{
-				throw new System.NotImplementedException();
+#if HAS_UNO
+				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
+				{
+					if (cv is not ListViewBase list || list.Items.Count == 0)
+					{
+						throw new InvalidOperationException("Failed to find the scrollable list.");
+					}
+
+					list.ScrollIntoView(list.Items[list.Items.Count / 2]);
+					list.UpdateLayout();
+				});
+#else
+				EnsureInputInjectorSupported();
+				Mouse mouse = null;
+				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
+				{
+					var topLeft = cv.TransformToVisual(WindowHelper.XamlRoot.Content).TransformPoint(new Point(0, 0));
+					var center = new Point(topLeft.X + cv.RenderSize.Width / 2, topLeft.Y + cv.RenderSize.Height / 2);
+					mouse = InputInjector.TryCreate()?.GetMouse() ?? throw new InvalidOperationException("Failed to create mouse");
+					mouse.MoveTo(center, steps: 1);
+				});
+
+				for (var step = 0; step < Math.Abs(i); step++)
+				{
+					MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() => mouse.Wheel(Math.Sign(i) * 120));
+					Thread.Sleep(1);
+				}
+#endif
 			}
 
 			public static void LeftMouseClick(UIElement element)
