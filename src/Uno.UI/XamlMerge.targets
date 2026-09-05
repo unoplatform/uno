@@ -14,10 +14,11 @@
 
   <ItemGroup>
 	  <!--
-		Exclude SystemResources.xaml from the merged dictionary to avoid
-		direct non-overridable resources in other files. See When_Theme_Changed_Animated_Value
-		test for more details.
+		Keep the imported WinUI Generic.xaml as the base dictionary so the merged
+		Uno and MUX control dictionaries can override its resources. SystemResources.xaml
+		provides Uno system values that WinUI resolves natively.
 	  -->
+	  <_NonMergedXamlResources Include="$(MSBuildProjectDirectory)\UI\Xaml\Style\Generic\Generic.xaml" />
 	  <_NonMergedXamlResources Include="$(MSBuildProjectDirectory)\UI\Xaml\Style\Generic\SystemResources.xaml" />
   </ItemGroup>
 

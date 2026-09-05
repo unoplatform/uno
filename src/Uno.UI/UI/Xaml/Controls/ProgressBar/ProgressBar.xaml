@@ -1,7 +1,7 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
 <!-- MUX reference ProgressBar.xaml, tag winui3/release/1.4.2 -->
 <ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:controls="using:Microsoft.UI.Xaml.Controls" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
-  <Style TargetType="controls:ProgressBar">
+  <Style x:Key="XamlDefaultProgressBar" TargetType="controls:ProgressBar">
     <Setter Property="Foreground" Value="{ThemeResource ProgressBarForeground}" />
     <Setter Property="Background" Value="{ThemeResource ProgressBarBackground}" />
     <Setter Property="BorderThickness" Value="{ThemeResource ProgressBarBorderThemeThickness}" />
@@ -180,4 +180,5 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <Style TargetType="controls:ProgressBar" BasedOn="{StaticResource XamlDefaultProgressBar}" />
 </ResourceDictionary>

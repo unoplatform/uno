@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
@@ -12,6 +13,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [TestClass]
 public class Given_SplitView
 {
+	private sealed class TestSplitView : SplitView
+	{
+		internal DependencyObject GetPart(string name) => GetTemplateChild(name);
+	}
+
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task Update_OpenPaneLength()
@@ -36,5 +42,96 @@ public class Given_SplitView
 		await UITestHelper.WaitForIdle();
 
 		Assert.AreEqual(sut.OpenPaneLength, columnDefinition.Width.Value, "ColumnDefinition Width should be equal to OpenPaneLength after update");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task Default_Template_Contains_Pinned_Parts()
+	{
+		var sut = new TestSplitView
+		{
+			Content = new Border(),
+			Pane = new Border(),
+			DisplayMode = SplitViewDisplayMode.Inline,
+			IsPaneOpen = true,
+		};
+
+		await UITestHelper.Load(sut, x => x.IsLoaded);
+
+		Assert.IsNotNull(sut.Template);
+		Assert.IsNotNull(sut.GetPart("PaneRoot"));
+		Assert.IsNotNull(sut.GetPart("ContentRoot"));
+		Assert.IsNotNull(sut.GetPart("LightDismissLayer"));
+
+		sut.IsPaneOpen = false;
+		await UITestHelper.WaitForIdle();
+		sut.IsPaneOpen = true;
+		await UITestHelper.WaitForIdle();
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task Right_Pane_Inline_Transitions_Are_Present_And_Run()
+	{
+		var inline = await LoadRightPane(SplitViewDisplayMode.Inline);
+		var rootGrid = inline.FindFirstDescendant<Grid>();
+		Assert.IsNotNull(rootGrid);
+
+		var displayModeStates = VisualStateManager
+			.GetVisualStateGroups(rootGrid)
+			.Single(group => group.Name == "DisplayModeStates");
+		var transitions = displayModeStates.Transitions
+			.Select(transition => (transition.From, transition.To))
+			.ToArray();
+
+		CollectionAssert.IsSubsetOf(
+			new[]
+			{
+				("Closed", "OpenInlineRight"),
+				("OpenInlineRight", "Closed"),
+				("ClosedCompactRight", "OpenInlineRight"),
+				("OpenInlineRight", "ClosedCompactRight"),
+			},
+			transitions);
+
+		await ExerciseRightPane(inline, SplitViewDisplayMode.Inline);
+
+		var compactInline = await LoadRightPane(SplitViewDisplayMode.CompactInline);
+		await ExerciseRightPane(compactInline, SplitViewDisplayMode.CompactInline);
+	}
+
+	private static async Task<TestSplitView> LoadRightPane(SplitViewDisplayMode displayMode)
+	{
+		var sut = new TestSplitView
+		{
+			Content = new Border(),
+			Pane = new Border(),
+			DisplayMode = displayMode,
+			PanePlacement = SplitViewPanePlacement.Right,
+			IsPaneOpen = false,
+		};
+
+		await UITestHelper.Load(sut, x => x.IsLoaded);
+		return sut;
+	}
+
+	private static async Task ExerciseRightPane(TestSplitView sut, SplitViewDisplayMode displayMode)
+	{
+		var paneRoot = sut.GetPart("PaneRoot") as FrameworkElement;
+		Assert.IsNotNull(paneRoot);
+
+		sut.IsPaneOpen = true;
+		await UITestHelper.WaitFor(() => Grid.GetColumn(paneRoot) == 1 && Grid.GetColumnSpan(paneRoot) == 1);
+
+		sut.IsPaneOpen = false;
+		if (displayMode == SplitViewDisplayMode.Inline)
+		{
+			await UITestHelper.WaitFor(() => paneRoot.Visibility == Visibility.Collapsed);
+		}
+		else
+		{
+			await UITestHelper.WaitFor(() => Grid.GetColumnSpan(paneRoot) == 2);
+			Assert.AreEqual(HorizontalAlignment.Right, paneRoot.HorizontalAlignment);
+		}
 	}
 }

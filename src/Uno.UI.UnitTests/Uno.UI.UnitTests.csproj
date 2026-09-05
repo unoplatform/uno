@@ -137,7 +137,9 @@
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.csproj" />
 		<ProjectReference Include="..\Uno.UI.Tests.ViewLibrary\Uno.UI.Tests.ViewLibrary.csproj" />
 		<ProjectReference Include="..\Uno.UI.Tests.ViewLibraryProps\Uno.UI.Tests.ViewLibraryProps.csproj" />
-		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj">
+			<AdditionalProperties>UnoUnitTestBuild=true</AdditionalProperties>
+		</ProjectReference>
 		<ProjectReference Include="..\Uno.UI.Extras\Uno.UI.Extras.Skia.csproj" />
 	</ItemGroup>
 
