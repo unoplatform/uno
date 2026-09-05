@@ -1,0 +1,198 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.RichTextBlockTests.RichTextBlock_Trimming"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.RichTextBlockTests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Padding="16" Spacing="8">
+            <TextBlock FontWeight="Bold" Text="RichTextBlock Trimming Matrix" />
+            <TextBlock TextWrapping="Wrap">
+                Manual test - drag the Width slider below and watch each cell react:
+                the ellipsis should appear/disappear and each "IsTextTrimmed" status line should flip
+                between True and False as the RichTextBlock is resized. Every flip should also append a
+                line to the event log at the bottom (from IsTextTrimmedChanged).
+            </TextBlock>
+
+            <Slider
+                x:Name="WidthSlider"
+                Header="Width"
+                Maximum="500"
+                Minimum="120"
+                Value="300" />
+
+            <Grid ColumnSpacing="8" RowSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    FontWeight="SemiBold"
+                    Text="TextWrapping=Wrap" />
+                <TextBlock
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    FontWeight="SemiBold"
+                    Text="TextWrapping=NoWrap" />
+
+                <TextBlock
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    VerticalAlignment="Top"
+                    FontWeight="SemiBold"
+                    Text="TextTrimming=None" />
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Width="{Binding Value, ElementName=WidthSlider}"
+                    Padding="8"
+                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                    BorderThickness="1">
+                    <StackPanel Spacing="4">
+                        <RichTextBlock
+                            x:Name="Rtb_None_Wrap"
+                            MaxLines="2"
+                            TextTrimming="None"
+                            TextWrapping="Wrap">
+                            <Paragraph>
+                                <Run Text="The quick brown fox jumps over the lazy dog while pondering rich text trimming and line wrapping." />
+                            </Paragraph>
+                        </RichTextBlock>
+                        <TextBlock x:Name="Status_None_Wrap" Text="IsTextTrimmed: False" />
+                    </StackPanel>
+                </Border>
+                <Border
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Width="{Binding Value, ElementName=WidthSlider}"
+                    Padding="8"
+                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                    BorderThickness="1">
+                    <StackPanel Spacing="4">
+                        <RichTextBlock
+                            x:Name="Rtb_None_NoWrap"
+                            MaxLines="2"
+                            TextTrimming="None"
+                            TextWrapping="NoWrap">
+                            <Paragraph>
+                                <Run Text="The quick brown fox jumps over the lazy dog while pondering rich text trimming and line wrapping." />
+                            </Paragraph>
+                        </RichTextBlock>
+                        <TextBlock x:Name="Status_None_NoWrap" Text="IsTextTrimmed: False" />
+                    </StackPanel>
+                </Border>
+
+                <TextBlock
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    VerticalAlignment="Top"
+                    FontWeight="SemiBold"
+                    Text="TextTrimming=CharacterEllipsis" />
+                <Border
+                    Grid.Row="2"
+                    Grid.Column="1"
+                    Width="{Binding Value, ElementName=WidthSlider}"
+                    Padding="8"
+                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                    BorderThickness="1">
+                    <StackPanel Spacing="4">
+                        <RichTextBlock
+                            x:Name="Rtb_CharEllipsis_Wrap"
+                            MaxLines="2"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="Wrap">
+                            <Paragraph>
+                                <Run Text="The quick brown fox jumps over the lazy dog while pondering rich text trimming and line wrapping." />
+                            </Paragraph>
+                        </RichTextBlock>
+                        <TextBlock x:Name="Status_CharEllipsis_Wrap" Text="IsTextTrimmed: False" />
+                    </StackPanel>
+                </Border>
+                <Border
+                    Grid.Row="2"
+                    Grid.Column="2"
+                    Width="{Binding Value, ElementName=WidthSlider}"
+                    Padding="8"
+                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                    BorderThickness="1">
+                    <StackPanel Spacing="4">
+                        <RichTextBlock
+                            x:Name="Rtb_CharEllipsis_NoWrap"
+                            MaxLines="2"
+                            TextTrimming="CharacterEllipsis"
+                            TextWrapping="NoWrap">
+                            <Paragraph>
+                                <Run Text="The quick brown fox jumps over the lazy dog while pondering rich text trimming and line wrapping." />
+                            </Paragraph>
+                        </RichTextBlock>
+                        <TextBlock x:Name="Status_CharEllipsis_NoWrap" Text="IsTextTrimmed: False" />
+                    </StackPanel>
+                </Border>
+
+                <TextBlock
+                    Grid.Row="3"
+                    Grid.Column="0"
+                    VerticalAlignment="Top"
+                    FontWeight="SemiBold"
+                    Text="TextTrimming=WordEllipsis" />
+                <Border
+                    Grid.Row="3"
+                    Grid.Column="1"
+                    Width="{Binding Value, ElementName=WidthSlider}"
+                    Padding="8"
+                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                    BorderThickness="1">
+                    <StackPanel Spacing="4">
+                        <RichTextBlock
+                            x:Name="Rtb_WordEllipsis_Wrap"
+                            MaxLines="2"
+                            TextTrimming="WordEllipsis"
+                            TextWrapping="Wrap">
+                            <Paragraph>
+                                <Run Text="The quick brown fox jumps over the lazy dog while pondering rich text trimming and line wrapping." />
+                            </Paragraph>
+                        </RichTextBlock>
+                        <TextBlock x:Name="Status_WordEllipsis_Wrap" Text="IsTextTrimmed: False" />
+                    </StackPanel>
+                </Border>
+                <Border
+                    Grid.Row="3"
+                    Grid.Column="2"
+                    Width="{Binding Value, ElementName=WidthSlider}"
+                    Padding="8"
+                    BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                    BorderThickness="1">
+                    <StackPanel Spacing="4">
+                        <RichTextBlock
+                            x:Name="Rtb_WordEllipsis_NoWrap"
+                            MaxLines="2"
+                            TextTrimming="WordEllipsis"
+                            TextWrapping="NoWrap">
+                            <Paragraph>
+                                <Run Text="The quick brown fox jumps over the lazy dog while pondering rich text trimming and line wrapping." />
+                            </Paragraph>
+                        </RichTextBlock>
+                        <TextBlock x:Name="Status_WordEllipsis_NoWrap" Text="IsTextTrimmed: False" />
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <TextBlock FontWeight="SemiBold" Text="IsTextTrimmedChanged log (newest first, capped at 20):" />
+            <ItemsControl x:Name="TrimLog" />
+        </StackPanel>
+    </ScrollViewer>
+</Page>

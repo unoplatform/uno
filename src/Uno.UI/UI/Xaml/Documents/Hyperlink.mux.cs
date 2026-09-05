@@ -29,5 +29,9 @@ namespace Microsoft.UI.Xaml.Documents
 
 		internal IFocusable? GetIFocusable() =>
 			_focusableHelper;
+
+		// MUX Reference Hyperlink::OnCreateAutomationPeerImpl — Hyperlink exposes a HyperlinkAutomationPeer.
+		private protected override Automation.Peers.AutomationPeer OnCreateAutomationPeerCore()
+			=> new Automation.Peers.HyperlinkAutomationPeer(this);
 	}
 }

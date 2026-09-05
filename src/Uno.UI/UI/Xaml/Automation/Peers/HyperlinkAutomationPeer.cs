@@ -1,4 +1,6 @@
-// MUX Reference HyperlinkAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference HyperlinkAutomationPeer_Partial.cpp, tag winui3/release/2.4.0, commit e8442d07a
 
 using System;
 using Microsoft.UI.Xaml.Automation.Provider;
@@ -38,6 +40,12 @@ internal partial class HyperlinkAutomationPeer : AutomationPeer, IInvokeProvider
 
 		throw new InvalidOperationException("Owner Hyperlink has been garbage collected.");
 	}
+
+	// Used by the Text pattern adapter (TextAdapter.RangeFromChild) to map a link peer back to its
+	// owning Hyperlink. Returns null if the owner has been collected.
+#nullable enable
+	internal Hyperlink? Owner => _ownerWeak.TryGetTarget(out var owner) ? owner : null;
+#nullable restore
 
 	protected override object GetPatternCore(PatternInterface patternInterface)
 	{
@@ -172,10 +180,31 @@ internal partial class HyperlinkAutomationPeer : AutomationPeer, IInvokeProvider
 
 	protected override Point GetClickablePointCore()
 	{
-		// TODO Uno: Computing clickable point for inline text elements requires
-		// text view infrastructure (ITextView, content start/end offsets,
-		// TextRangeToTextBounds) which is not yet available.
-		return default;
+		var owner = GetOwner();
+		var element = owner.GetContainingFrameworkElement();
+
+		if (Text.TextAdapter.GetTextView(element) is not { } textView ||
+			owner.ContentStart is not { } contentStart ||
+			owner.ContentEnd is not { } contentEnd)
+		{
+			return default;
+		}
+
+		// The view's bounds APIs take flat character indexes while a TextPointer carries a container
+		// offset, so convert before asking for the range's rects.
+		var bounds = textView.TextRangeToTextBounds(
+			(uint)textView.GetCharacterIndex(contentStart.Offset),
+			(uint)textView.GetCharacterIndex(contentEnd.Offset));
+
+		if (bounds.Length == 0)
+		{
+			return default;
+		}
+
+		// We're looking for the point at the start of the link, so we only care about the first
+		// rectangle, and return its top-left because the length is determined from there.
+		var first = bounds[0];
+		return element.TransformToVisual(null).TransformPoint(new Point(first.Left, first.Top));
 	}
 
 	protected override bool IsOffscreenCore()
