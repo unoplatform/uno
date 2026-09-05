@@ -3,45 +3,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Background
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false
 	public enum BackgroundTaskCancellationReason
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Abort = 0,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Terminating = 1,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		LoggingOff = 2,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ServicingUpdate = 3,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		IdleTask = 4,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		Uninstall = 5,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ConditionLoss = 6,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		SystemPolicy = 7,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		QuietHoursEntered = 8,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ExecutionTimeExceeded = 9,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		ResourceRevocation = 10,
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		EnergySaver = 11,
-#endif
+		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundTaskCancellationReason.Abort
+		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundTaskCancellationReason.Terminating
+		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundTaskCancellationReason.LoggingOff
+		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundTaskCancellationReason.ServicingUpdate
+		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundTaskCancellationReason.IdleTask
+		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundTaskCancellationReason.Uninstall
+		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundTaskCancellationReason.ConditionLoss
+		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundTaskCancellationReason.SystemPolicy
+		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundTaskCancellationReason.QuietHoursEntered
+		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundTaskCancellationReason.ExecutionTimeExceeded
+		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundTaskCancellationReason.ResourceRevocation
+		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundTaskCancellationReason.EnergySaver
 	}
 #endif
 }

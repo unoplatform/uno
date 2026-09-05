@@ -7,6 +7,7 @@ public static class HostBuilder
 {
 	public static IUnoPlatformHostBuilder UseLinuxFrameBuffer(this IUnoPlatformHostBuilder builder)
 	{
+		LinuxBackgroundTaskExtensions.Register();
 		builder.AddHostBuilder(() => new FramebufferHostBuilder());
 		return builder;
 	}
@@ -15,6 +16,7 @@ public static class HostBuilder
 	{
 		// Eager: AddHostBuilder defers the callback, so a null would only fault when the host is built.
 		ArgumentNullException.ThrowIfNull(action);
+		LinuxBackgroundTaskExtensions.Register();
 
 		builder.AddHostBuilder(() =>
 		{
