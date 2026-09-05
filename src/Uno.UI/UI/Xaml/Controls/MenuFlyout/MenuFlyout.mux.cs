@@ -30,12 +30,10 @@ partial class MenuFlyout
 			//params.fUseLayoutRounding = false;
 			//params.fCoercedIsEnabled = false;
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			foreach (MenuFlyoutItemBase item in items)
 			{
 				item.Enter(parameters, 0);
 			}
-#endif
 		}
 	}
 
@@ -59,12 +57,10 @@ partial class MenuFlyout
 			//params.fUseLayoutRounding = false;
 			//params.fCoercedIsEnabled = false;
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			foreach (MenuFlyoutItemBase item in items)
 			{
 				item.Leave(parameters);
 			}
-#endif
 		}
 	}
 

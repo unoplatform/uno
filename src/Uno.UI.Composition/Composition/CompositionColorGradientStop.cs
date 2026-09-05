@@ -1,6 +1,9 @@
 ﻿#nullable enable
 
+using System;
 using Windows.UI;
+
+using static Microsoft.UI.Composition.SubPropertyHelpers;
 
 namespace Microsoft.UI.Composition
 {
@@ -25,6 +28,38 @@ namespace Microsoft.UI.Composition
 		{
 			get => _color;
 			set => SetProperty(ref _color, value);
+		}
+
+		internal override object GetAnimatableProperty(string propertyName, string subPropertyName)
+		{
+			if (propertyName.Equals(nameof(Offset), StringComparison.OrdinalIgnoreCase))
+			{
+				return Offset;
+			}
+			else if (propertyName.Equals(nameof(Color), StringComparison.OrdinalIgnoreCase))
+			{
+				return GetColor(subPropertyName, Color);
+			}
+			else
+			{
+				return base.GetAnimatableProperty(propertyName, subPropertyName);
+			}
+		}
+
+		private protected override void SetAnimatableProperty(ReadOnlySpan<char> propertyName, ReadOnlySpan<char> subPropertyName, object? propertyValue)
+		{
+			if (propertyName.Equals(nameof(Offset), StringComparison.OrdinalIgnoreCase))
+			{
+				Offset = ValidateValue<float>(propertyValue);
+			}
+			else if (propertyName.Equals(nameof(Color), StringComparison.OrdinalIgnoreCase))
+			{
+				Color = UpdateColor(subPropertyName, Color, propertyValue);
+			}
+			else
+			{
+				base.SetAnimatableProperty(propertyName, subPropertyName, propertyValue);
+			}
 		}
 	}
 }

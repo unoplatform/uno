@@ -6,7 +6,9 @@
 		<RollForward>Major</RollForward>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<UseWPF>true</UseWPF>
-		<NoWarn>SYSLIB0014;MSB3277</NoWarn>
+		<!-- NU1903: SQLitePCLRaw.lib.e_sqlite3 (GHSA-2m69-gcr7-jv3q), transitive via Microsoft.AppCenter;
+		     no unaffected replacement version is available yet. -->
+		<NoWarn>SYSLIB0014;MSB3277;NU1903</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -24,8 +26,6 @@
 		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.0.1" />
 		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
-		<PackageReference Include="System.Text.Json" Version="8.0.5" />
-		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
 		<!-- END WORKAROUND -->
 	</ItemGroup>
 

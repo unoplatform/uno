@@ -42,7 +42,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (Flyout is { IsOpen: true } flyout)
 			{
-				flyout.Close();
+				flyout.Hide();
 			}
 		}
 	}

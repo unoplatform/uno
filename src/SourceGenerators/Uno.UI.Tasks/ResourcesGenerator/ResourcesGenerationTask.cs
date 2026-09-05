@@ -72,7 +72,14 @@ public class ResourcesGenerationTask_v0 : Task
 	{
 		TraceLog($"Resources file found : {resource.ItemSpec}");
 
-		var resourceCandidate = ResourceCandidate.Parse(resource.ItemSpec, resource.ItemSpec);
+		var qualifierPath = ResourceQualifierPathResolver.Resolve(
+			resource.ItemSpec,
+			resource.GetMetadata("Link"),
+			resource.GetMetadata("TargetPath"),
+			resource.GetMetadata("DefiningProjectDirectory"),
+			TargetProjectDirectory);
+
+		var resourceCandidate = ResourceCandidate.Parse(resource.ItemSpec, qualifierPath);
 
 		var language = resourceCandidate.GetQualifierValue("language");
 		if (language == null)

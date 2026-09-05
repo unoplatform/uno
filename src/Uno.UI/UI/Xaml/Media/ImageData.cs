@@ -4,12 +4,6 @@ using System;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
 
-#if __APPLE_UIKIT__
-using _UIImage = UIKit.UIImage;
-#elif __ANDROID__
-using Android.Graphics;
-#endif
-
 namespace Uno.UI.Xaml.Media;
 
 /// <summary>
@@ -33,56 +27,13 @@ internal partial struct ImageData
 		Error = exception ?? throw new ArgumentNullException(nameof(exception));
 	}
 
-#if __APPLE_UIKIT__
-	public static ImageData FromNative(_UIImage uiImage) => new ImageData(uiImage);
-
-	private ImageData(_UIImage uiImage)
-	{
-		Kind = ImageDataKind.NativeImage;
-		NativeImage = uiImage ?? throw new ArgumentNullException(nameof(uiImage));
-	}
-#elif __SKIA__
+#if __SKIA__
 	public static ImageData FromCompositionSurface(SkiaCompositionSurface compositionSurface) => new(compositionSurface);
 
 	private ImageData(SkiaCompositionSurface compositionSurface)
 	{
 		Kind = ImageDataKind.CompositionSurface;
 		CompositionSurface = compositionSurface;
-	}
-#elif __WASM__
-	public static ImageData FromDataUri(string dataUri) => new ImageData(ImageDataKind.DataUri, dataUri);
-
-	public static ImageData FromUrl(Uri url, ImageSource source) => new ImageData(url.ToString(), source);
-
-	public static ImageData FromUrl(string url, ImageSource source) => new ImageData(url, source);
-
-	private ImageData(ImageDataKind kind, string value)
-	{
-		Kind = kind;
-		Value = value;
-	}
-
-	private ImageData(string url, ImageSource source)
-	{
-		Kind = ImageDataKind.Url;
-		Value = url;
-		Source = source;
-	}
-#elif __ANDROID__
-	public static ImageData FromBitmap(Bitmap? bitmap)
-	{
-		if (bitmap is null)
-		{
-			return ImageData.Empty;
-		}
-
-		return new ImageData(bitmap);
-	}
-
-	private ImageData(Bitmap bitmap)
-	{
-		Kind = ImageDataKind.NativeImage;
-		Bitmap = bitmap ?? throw new ArgumentNullException(nameof(bitmap));
 	}
 #endif
 
@@ -96,16 +47,8 @@ internal partial struct ImageData
 
 	public byte[]? ByteArray { get; } = null;
 
-#if __APPLE_UIKIT__
-	public _UIImage? NativeImage { get; } = null;
-#elif __SKIA__
+#if __SKIA__
 	public SkiaCompositionSurface? CompositionSurface { get; } = null;
-#elif __WASM__
-	internal ImageSource? Source { get; } = null;
-
-	public string? Value { get; } = null;
-#elif __ANDROID__
-	public Bitmap? Bitmap { get; } = null;
 #endif
 
 	public override string ToString() =>
@@ -114,15 +57,8 @@ internal partial struct ImageData
 			ImageDataKind.Empty => "Empty",
 			ImageDataKind.Error => $"Error[{Error}]",
 			ImageDataKind.ByteArray => $"Byte array: Length {ByteArray?.Length ?? -1}",
-#if __APPLE_UIKIT__
-			ImageDataKind.NativeImage => $"Native UIImage: {NativeImage}",
-#endif
 #if __SKIA__
 			ImageDataKind.CompositionSurface => $"CompositionSurface: {CompositionSurface}",
-#endif
-#if __WASM__
-			ImageDataKind.DataUri => $"DataUri: {Value}",
-			ImageDataKind.Url => $"Url: {Value}, Source: {Source}",
 #endif
 			_ => $"{Kind}"
 		};

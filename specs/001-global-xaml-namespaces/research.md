@@ -46,7 +46,7 @@
 **Decision**: When resolving unprefixed types, search order is:
 1. Presentation namespace CLR namespaces (existing `_knownNamespaces` for the default xmlns)
 2. Global namespace CLR namespaces (from `XmlnsDefinition` attributes targeting the global URI)
-3. Standard fallbacks (using:, clr-namespace:)
+3. Standard fallbacks (using:)
 
 **Rationale**: WinUI framework types should always take precedence over user-registered types to prevent accidental shadowing of framework controls.
 

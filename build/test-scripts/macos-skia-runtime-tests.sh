@@ -3,10 +3,22 @@ set -x #echo on
 set -euo pipefail
 IFS=$'\n\t'
 
+if [ `uname` = "Darwin" ]; then
+	echo "uname -a:"
+	uname -a
+	echo "arch:"
+	arch
+fi
+
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP:-}
 
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-macos-runtimetests-$UITEST_RUNTIME_TEST_GROUP.txt
 export TEST_RESULTS_FILE=$BUILD_SOURCESDIRECTORY/build/skia-macos-runtime-tests-results.xml
+
+## Create the failed-tests directory up front: every abort path below (a crashed harness,
+## a killed app, a non-zero transform tool) otherwise skips the mkdir and leaves
+## `PublishBuildArtifacts@1` retrying a missing PathtoPublish for minutes.
+mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
 if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST | base64 -b 0`
@@ -18,11 +30,20 @@ if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 fi
 
 cd $SamplesAppArtifactPath
-dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE
+
+mkdir -p "$BUILD_SOURCESDIRECTORY/build/uitests-failure-results"
+
+# https://github.com/dotnet/runtime/blob/main/docs/design/coreclr/botr/xplat-minidump-generation.md#configurationpolicy
+export DOTNET_DbgEnableMiniDump=1
+export DOTNET_DbgMiniDumpName="$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/coredump-macos.%p"
+export DOTNET_CreateDumpDiagnostics=1
+export DOTNET_CreateDumpLogToFile="$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/createdump-macos.log"
+export DOTNET_EnableCrashReport=1
+
+dotnet SamplesApp.dll --runtime-tests=$TEST_RESULTS_FILE
 
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
-mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
 echo "Running NUnitTransformTool"
 

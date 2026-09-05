@@ -12,7 +12,7 @@
 		<Nullable>enable</Nullable>
 		
 		<!-- Required as the project name does not end with `.Skia` when building for netcoremobile targets -->
-		<UnoDisableTargetFrameworkPlatformOverride Condition="!$(UnoTargetFrameworkOverride.Contains('windows10'))">true</UnoDisableTargetFrameworkPlatformOverride>
+		<UnoShouldUseNoPlatformOverride Condition="!$(UnoTargetFrameworkOverride.Contains('windows10'))">true</UnoShouldUseNoPlatformOverride>
     </PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />
@@ -24,7 +24,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="!$(TargetFramework.Contains('windows10'))">
-		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" PrivateAssets="all" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" PrivateAssets="all" />
 	</ItemGroup>
 
 	<!-- Windows-only sources (used only by the WinAppSDK target). -->

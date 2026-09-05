@@ -1,22 +1,15 @@
-﻿using System;
-using Microsoft.UI.Xaml.Controls;
-using Windows.Foundation;
+using System;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	// Declared here (with no members) so the sync generator sees the interface as defined by Uno; its
+	// only member, WinUI's TryCreateAnimatedVisual (AnimatedVisualPlayer.idl:22-29), stays in the
+	// generated partial.
+	/// <summary>
+	/// An animated Visual that can be used by other objects, such as an AnimatedVisualPlayer.
+	/// </summary>
 	public partial interface IAnimatedVisualSource
 	{
-		void Update(AnimatedVisualPlayer player);
-		void Load();
-		void Unload();
-		void Play(double fromProgress, double toProgress, bool looped);
-		void Stop();
-		void Pause();
-		void Resume();
-
-		void SetProgress(double progress);
-
-		Size Measure(Size availableSize);
 	}
 
 	internal partial interface IAnimatedVisualSourceWithUri

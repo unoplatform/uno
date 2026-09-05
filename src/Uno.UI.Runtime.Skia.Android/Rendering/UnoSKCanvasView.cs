@@ -18,6 +18,7 @@ using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
+using Uno.UI.Xaml.Controls;
 using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia.Android;
@@ -129,7 +130,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 			if (AndroidSkiaTextBoxNotificationsProviderSingleton.Instance.LiveTextBoxesMap.TryGetValue(virtualId, out var textBox))
 			{
 				var autofillValue = (AutofillValue)values.ValueAt(i)!;
-				textBox.Text = autofillValue.TextValue;
+				textBox.Text = autofillValue.TextValue ?? string.Empty;
 			}
 		}
 	}
@@ -147,6 +148,8 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 		private readonly bool _hardwareAccelerated = FeatureConfiguration.Rendering.UseOpenGLOnSkiaAndroid;
 
 		internal bool HardwareAccelerated => _hardwareAccelerated;
+
+		private bool _firstFrameSignaled;
 
 		private GRContext? _context;
 		private GRGlFramebufferInfo _glInfo;
@@ -226,6 +229,15 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 			}
 
 			_context!.Flush();
+
+			if (!_firstFrameSignaled)
+			{
+				_firstFrameSignaled = true;
+				NativeWindowWrapper.Instance.NotifyFirstFrameRendered();
+				// Trigger OnPreDraw re-evaluation so the splash can dismiss once the first frame is on screen
+				ApplicationActivity.RelativeLayout?.Post(() =>
+					ApplicationActivity.RelativeLayout?.Invalidate());
+			}
 		}
 
 		void IRenderer.OnSurfaceChanged(IGL10? gl, int width, int height)

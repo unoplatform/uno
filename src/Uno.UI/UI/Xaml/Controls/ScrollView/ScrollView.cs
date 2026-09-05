@@ -1,5 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference ScrollView.cpp, commit b8cfb8490
 
 using System;
 using System.Collections.Generic;
@@ -928,6 +929,30 @@ public partial class ScrollView : Control, IScrollView
 		}
 	}
 
+	private void OnScrollPresenterScrollStarting(
+		object sender,
+		ScrollingScrollStartingEventArgs args)
+	{
+		if (ScrollStarting is not null)
+		{
+			//SCROLLVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
+			ScrollStarting.Invoke(this, args);
+		}
+	}
+
+	private void OnScrollPresenterZoomStarting(
+		object sender,
+		ScrollingZoomStartingEventArgs args)
+	{
+		if (ZoomStarting is not null)
+		{
+			//SCROLLVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH, METH_NAME, this);
+
+			ZoomStarting.Invoke(this, args);
+		}
+	}
+
 	private void OnScrollPresenterViewChanged(
 		object sender,
 		object args)
@@ -1273,6 +1298,8 @@ public partial class ScrollView : Control, IScrollView
 			scrollPresenter.ZoomCompleted += OnScrollPresenterZoomCompleted;
 			scrollPresenter.BringingIntoView += OnScrollPresenterBringingIntoView;
 			scrollPresenter.AnchorRequested += OnScrollPresenterAnchorRequested;
+			scrollPresenter.ScrollStarting += OnScrollPresenterScrollStarting;
+			scrollPresenter.ZoomStarting += OnScrollPresenterZoomStarting;
 
 			DependencyObject scrollPresenterAsDO = scrollPresenter as DependencyObject;
 
@@ -1362,6 +1389,8 @@ public partial class ScrollView : Control, IScrollView
 			scrollPresenter.ZoomCompleted -= OnScrollPresenterZoomCompleted;
 			scrollPresenter.BringingIntoView -= OnScrollPresenterBringingIntoView;
 			scrollPresenter.AnchorRequested -= OnScrollPresenterAnchorRequested;
+			scrollPresenter.ScrollStarting -= OnScrollPresenterScrollStarting;
+			scrollPresenter.ZoomStarting -= OnScrollPresenterZoomStarting;
 
 			DependencyObject scrollPresenterAsDO = scrollPresenter as DependencyObject;
 

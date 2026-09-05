@@ -45,3 +45,27 @@
 .DocSearch.DocSearch-Container {
   z-index: 9999;
 }
+
+.DocSearch-SearchBar {
+  position: static !important;
+  top: auto !important;
+  left: auto !important;
+  width: 100% !important;
+}
+
+// "See all results" footer link (resultsFooterComponent) inside the DocSearch modal.
+.DocSearch-HitsFooter {
+  padding: 10px 0 4px;
+  text-align: center;
+
+  .uno-see-all-results {
+    color: $blue;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

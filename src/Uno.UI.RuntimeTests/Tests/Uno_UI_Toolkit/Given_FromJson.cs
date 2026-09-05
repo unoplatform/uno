@@ -9,7 +9,7 @@ using Private.Infrastructure;
 using Uno.UI.Helpers;
 using static Private.Infrastructure.TestServices;
 
-namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Toolkit;
+namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Extras;
 
 [TestClass]
 [RunsOnUIThread]

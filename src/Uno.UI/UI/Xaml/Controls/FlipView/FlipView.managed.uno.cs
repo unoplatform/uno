@@ -1,4 +1,4 @@
-﻿#if __WASM__ || __SKIA__
+﻿#if __SKIA__
 
 using System.Diagnostics;
 
