@@ -503,7 +503,8 @@ namespace SamplesApp
 					builder.AddConsole();
 				}
 
-#if __APPLE_UIKIT__
+#if __APPLE_UIKIT__ && !__TVOS__
+				// Uno.Extensions.Logging.OSLog ships no tvOS asset, so tvOS keeps the console provider above.
 				builder.AddProvider(new Uno.Extensions.Logging.OSLogLoggerProvider());
 #endif
 

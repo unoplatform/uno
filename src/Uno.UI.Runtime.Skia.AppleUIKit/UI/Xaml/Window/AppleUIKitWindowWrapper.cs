@@ -64,6 +64,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		}));
 #endif
 
+		// Must precede SetNativeWindow, which starts observing size: without RasterizationScale
+		// the first SetSizes reports 0x0 pixels.
 		_displayInformation = DisplayInformation.GetForCurrentViewSafe() ?? throw new InvalidOperationException("DisplayInformation must be available when the window is initialized");
 		_displayInformation.DpiChanged += OnDpiChanged;
 		_subscriptions.Add(Disposable.Create(() => _displayInformation.DpiChanged -= OnDpiChanged));
@@ -330,6 +332,9 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_mainController.VisibleBoundsChanged += OnVisibleBoundsChanged;
 		_subscriptions.Add(Disposable.Create(() => _mainController.VisibleBoundsChanged -= OnVisibleBoundsChanged));
 
+#if !__TVOS__
+		// tvOS has no status bar, and StatusBar.GetForCurrentView() is [NotImplemented]
+		// there, so it would throw during window creation.
 		var statusBar = StatusBar.GetForCurrentView();
 		void OnStatusBarVisibilityChanged(StatusBar sender, object args) => RaiseNativeSizeChanged();
 		statusBar.Showing += OnStatusBarVisibilityChanged;
@@ -339,6 +344,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			statusBar.Showing -= OnStatusBarVisibilityChanged;
 			statusBar.Hiding -= OnStatusBarVisibilityChanged;
 		}));
+#endif
 
 		RaiseNativeSizeChanged();
 	}

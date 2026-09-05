@@ -50,7 +50,6 @@
 				SkiaSharpVersion="$(SkiaSharpVersion)"
 				SvgSkiaVersion="$(SvgSkiaVersion)"
 				UnoLoggingVersion="$(UnoLoggingVersion)"
-				WindowsCompatibilityVersion="$(WindowsCompatibilityVersion)"
 				UnoWasmBootstrapVersion="$(UnoWasmBootstrapVersion)"
 				UnoUniversalImageLoaderVersion="$(UnoUniversalImageLoaderVersion)"
 				AndroidMaterialVersion="$(AndroidMaterialVersion)"

@@ -147,16 +147,6 @@
 		}
 	},
 	{
-		"group": "WindowsCompatibility",
-		"version": "10.0.10",
-		"packages": [
-			"Microsoft.Windows.Compatibility"
-		],
-		"versionOverride": {
-			"net11.0": "11.0.0-preview.7.26381.103"
-		}
-	},
-	{
 		"group": "MsalClient",
 		"version": "4.87.0",
 		"packages": [
