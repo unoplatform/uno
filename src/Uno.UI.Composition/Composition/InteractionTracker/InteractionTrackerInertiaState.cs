@@ -71,9 +71,9 @@ internal sealed class InteractionTrackerInertiaState : InteractionTrackerState
 	{
 	}
 
-	internal override void ReceivePointerWheel(int delta, bool isHorizontal)
+	internal override void ReceivePointerWheel(double delta, bool isHorizontal)
 	{
-		var newDelta = isHorizontal ? new Vector3(delta, 0, 0) : new Vector3(0, delta, 0);
+		var newDelta = isHorizontal ? new Vector3((float)delta, 0, 0) : new Vector3(0, (float)delta, 0);
 		var totalDelta = (_handler.FinalModifiedPosition - _interactionTracker.Position) + newDelta;
 		// Constant velocity for 250ms
 		var velocity = totalDelta / 0.25f;

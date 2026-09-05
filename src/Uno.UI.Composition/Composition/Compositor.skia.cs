@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
@@ -39,7 +40,15 @@ public partial class Compositor
 
 	internal static bool SkipVisualTreePainting { get; set; }
 
-	internal bool IsAnimating => _runningAnimations.Count > 0;
+	// Frame drivers (e.g. the wheel decay) are motion too, so "wait until animations settle" must cover
+	// them. They live on the CompositionTarget, which this assembly cannot name, so they are counted.
+	private static int _frameDriverCount;
+
+	internal static void AddFrameDriver() => Interlocked.Increment(ref _frameDriverCount);
+
+	internal static void RemoveFrameDriver() => Interlocked.Decrement(ref _frameDriverCount);
+
+	internal bool IsAnimating => _runningAnimations.Count > 0 || Volatile.Read(ref _frameDriverCount) > 0;
 
 	internal void RegisterAnimation(CompositionAnimation animation, CompositionObject host)
 	{

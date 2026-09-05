@@ -154,6 +154,9 @@ public partial class CompositionTarget
 			AssertRenderStateMachine();
 			LogRenderState();
 		}
+
+		// One native frame, one driver step: the tick this arms records the next picture.
+		ArmFrameDriverTick();
 	}
 
 	/// <summary>
