@@ -25,7 +25,7 @@ public partial class InjectedInputMouseInfo
 
 	public int DeltaX { get; set; }
 
-	internal PointerEventArgs ToEventArgs(InjectedInputState state, VirtualKeyModifiers modifiers)
+	internal PointerEventArgs ToEventArgs(InjectedInputState state, VirtualKeyModifiers modifiers, Size bounds)
 	{
 		var update = default(PointerUpdateKind);
 		var position = state.Position;
@@ -94,9 +94,24 @@ public partial class InjectedInputMouseInfo
 			properties.MouseWheelDelta = default;
 			properties.IsHorizontalMouseWheel = false;
 
-			// Should we use MouseData ??? But How to discriminate between X and Y moves?
-			position.X += DeltaX;
-			position.Y += DeltaY;
+			if (MouseOptions.HasFlag(InjectedInputMouseOptions.Absolute))
+			{
+				// DeltaX/DeltaY are normalized coordinates in the 0-65535 range, mirroring Win32 SendInput's
+				// MOUSEEVENTF_ABSOLUTE convention: (0,0) is the top-left corner of the display surface and
+				// (65535,65535) is the bottom-right corner. Uno has no portable notion of monitors/virtual
+				// desktop wired into pointer injection, so - unlike real Windows, where VirtualDesk switches
+				// between the primary monitor and the full virtual desktop - the normalized space always maps
+				// onto the current root visual's bounds.
+				if (bounds.Width > 0 && bounds.Height > 0)
+				{
+					position = new Point(DeltaX / 65535.0 * bounds.Width, DeltaY / 65535.0 * bounds.Height);
+				}
+			}
+			else
+			{
+				position.X += DeltaX;
+				position.Y += DeltaY;
+			}
 		}
 		else
 		{
