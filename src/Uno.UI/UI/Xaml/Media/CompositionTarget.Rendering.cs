@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -249,6 +249,15 @@ public partial class CompositionTarget
 		canvas.DrawPath(damage, _damageOverlayStroke);
 	}
 
+	private int _surfaceContentsInvalid;
+
+	/// <summary>
+	/// Declares that the surface no longer holds the previously presented frame, so the next one must
+	/// be painted in full rather than clipped to its damage region. A natively resized surface comes
+	/// back uninitialized, and a damage-clipped paint would leave that garbage on screen.
+	/// </summary>
+	internal void InvalidateSurfaceContents() => Interlocked.Exchange(ref _surfaceContentsInvalid, 1);
+
 	private SKPath Draw(SKCanvas? canvas, Func<Size, SKCanvas> resizeFunc)
 	{
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(Draw)}");
@@ -314,7 +323,8 @@ public partial class CompositionTarget
 			}
 
 			var damage = lastRenderedFrame.damage;
-			var useDamageRegion = !canvasRecreated;
+			var surfaceContentsInvalid = Interlocked.Exchange(ref _surfaceContentsInvalid, 0) == 1;
+			var useDamageRegion = !canvasRecreated && !surfaceContentsInvalid;
 			var overlayEnabled = global::Uno.UI.FeatureConfiguration.Rendering.DamageRegionOverlay;
 
 			if (useDamageRegion && !overlayEnabled)

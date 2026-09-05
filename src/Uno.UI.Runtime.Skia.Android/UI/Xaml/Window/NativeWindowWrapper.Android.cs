@@ -17,13 +17,14 @@ using Windows.UI.ViewManagement;
 using Size = Windows.Foundation.Size;
 using MUX = Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml;
+using Uno.UI.Runtime.Skia.Android;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapper
 {
-	private static readonly Lazy<NativeWindowWrapper> _instance = new(() => new NativeWindowWrapper());
-
+	private ApplicationActivity _activity;
+	private bool _showPending;
 	private readonly ActivationPreDrawListener _preDrawListener;
 	private readonly DisplayInformation _displayInformation;
 	private bool _contentViewAttachedToWindow;
@@ -34,6 +35,17 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private Rect _previousTrueVisibleBounds;
 
+	/// <summary>
+	/// Creates a wrapper for the window an existing activity already drives.
+	/// </summary>
+	public NativeWindowWrapper(ApplicationActivity activity)
+		: this()
+		=> _activity = activity;
+
+	/// <summary>
+	/// Creates a wrapper for a window whose hosting activity does not exist yet. <see cref="ShowCore"/>
+	/// launches one, and <see cref="CurrentActivity"/> is set once it adopts this window.
+	/// </summary>
 	public NativeWindowWrapper()
 	{
 		_preDrawListener = new ActivationPreDrawListener(this);
@@ -44,17 +56,37 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		DispatchDpiChanged();
 	}
 
-	public override object NativeWindow => Microsoft.UI.Xaml.ApplicationActivity.Instance?.Window;
+	public override object NativeWindow => _activity?.Window;
 
-	internal static NativeWindowWrapper Instance => _instance.Value;
+	/// <summary>
+	/// The activity currently driving this window. Updated on activity re-creation, since the
+	/// managed Window (and this wrapper) outlive individual activities on Android.
+	/// </summary>
+	internal ApplicationActivity CurrentActivity
+	{
+		get => _activity;
+		set => _activity = value;
+	}
+
+	// Per-window input sources, resolved by each window's InputManager via its IXamlRootHost
+	// and fed by the driving activity's native event dispatch.
+	internal AndroidCorePointerInputSource PointerSource { get; } = new();
+
+	internal AndroidKeyboardInputSource KeyboardSource { get; } = new();
 
 	private void DispatchDpiChanged() =>
 		RasterizationScale = (float)_displayInformation.RawPixelsPerViewPixel;
 
 	public override string Title
 	{
-		get => Microsoft.UI.Xaml.ApplicationActivity.Instance.Title;
-		set => Microsoft.UI.Xaml.ApplicationActivity.Instance.Title = value;
+		get => _activity?.Title ?? string.Empty;
+		set
+		{
+			if (_activity is { } activity)
+			{
+				activity.Title = value;
+			}
+		}
 	}
 
 	internal int SystemUiVisibility { get; set; }
@@ -66,6 +98,18 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
 	internal void OnNativeClosed() => RaiseClosing();
+
+	/// <summary>
+	/// Closing a window means finishing the task hosting it. The main window's activity is left
+	/// alone: finishing it would close the whole app rather than a window.
+	/// </summary>
+	protected override void CloseCore()
+	{
+		if (_activity is { } activity && !ReferenceEquals(Window, MUX.Window.CurrentSafe))
+		{
+			activity.FinishAndRemoveTask();
+		}
+	}
 
 	internal void RaiseNativeSizeChanged()
 	{
@@ -80,8 +124,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		{
 			_previousTrueVisibleBounds = visibleBounds;
 
-			// TODO: Adjust when multiple windows are supported on Android #13827
-			ApplicationView.GetForCurrentView()?.SetTrueVisibleBounds(visibleBounds);
+			// Per window: GetForCurrentView() resolves the main window, which would let a
+			// secondary window overwrite the main window's visible bounds.
+			if (Window?.AppWindow is { } appWindow)
+			{
+				ApplicationView.GetOrCreateForWindowId(appWindow.Id).SetTrueVisibleBounds(visibleBounds);
+			}
 		}
 	}
 
@@ -98,6 +146,34 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 			return;
 		}
 
+		if (_activity is not { } activity)
+		{
+			// A secondary window has no activity until Android hands us one. Ask for a task to host
+			// it and stop here: the activity that adopts this window calls CompleteDeferredShow from
+			// its OnStart, once it has built the render stack there is nothing to attach to before.
+			_showPending = true;
+			ApplicationActivity.LaunchForWindow(this);
+			return;
+		}
+
+		ShowForActivity(activity);
+	}
+
+	/// <summary>
+	/// Runs a show that <see cref="ShowCore"/> deferred because the window had no activity yet.
+	/// Called by the adopting activity once its render stack exists; a no-op otherwise.
+	/// </summary>
+	internal void CompleteDeferredShow()
+	{
+		if (_showPending && _activity is { } activity)
+		{
+			_showPending = false;
+			ShowForActivity(activity);
+		}
+	}
+
+	private void ShowForActivity(ApplicationActivity activity)
+	{
 		MUX.Application.Current.RequestedThemeChanged += (_, _) =>
 		{
 			if (MUX.Application.Current.InitializationComplete)
@@ -106,8 +182,21 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 			}
 		};
 
-		ApplicationActivity.Instance.ContentViewAttachedToWindow += Instance_ContentViewAttachedToWindow;
-		ApplicationActivity.Instance.EnsureContentView();
+		AttachContentView(activity);
+	}
+
+	private void AttachContentView(ApplicationActivity activity)
+	{
+		activity.ContentViewAttachedToWindow += Instance_ContentViewAttachedToWindow;
+		activity.EnsureContentView();
+
+		// The activity attaches its own surface in OnStart when it adopts an existing window, so the
+		// attach can already have happened before this subscription and the event fired with nobody
+		// listening. The pre-draw listener holds back every draw pass until this flag is set -- and a
+		// window that never draws also never gets its SurfaceView z-ordered behind it -- so seed the
+		// flag from the activity's current state rather than relying on the event alone.
+		_contentViewAttachedToWindow |= activity.IsContentViewAttachedToWindow;
+
 		ApplySystemOverlaysTheming();
 	}
 
@@ -116,7 +205,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private (Size windowSize, Rect visibleBounds) GetVisualBounds()
 	{
-		if (ContextHelper.Current is not Activity activity)
+		if (_activity is not { Window: not null } activity)
 		{
 			return default;
 		}
@@ -172,15 +261,18 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private WindowInsetsCompat GetWindowInsets(Activity activity)
 	{
+		// Prefer the attached window's own insets. CurrentWindowMetrics reports them as if the window
+		// filled the display, so in multi-window and freeform it misses the caption bar the system
+		// draws over the window -- and the app then lays out underneath it.
+		if (activity.Window?.DecorView is { IsAttachedToWindow: true } decorView
+			&& ViewCompat.GetRootWindowInsets(decorView) is { } rootInsets)
+		{
+			return rootInsets;
+		}
+
 		if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.R)
 		{
 			return WindowInsetsCompat.ToWindowInsetsCompat(activity.WindowManager?.CurrentWindowMetrics.WindowInsets);
-		}
-
-		var decorView = activity.Window.DecorView;
-		if (decorView.IsAttachedToWindow)
-		{
-			return ViewCompat.GetRootWindowInsets(decorView);
 		}
 
 		return null;
@@ -193,13 +285,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 		{
 			// In edge-to-edge experience we want to adjust the theming of status bar to match the app theme.
 			if (Microsoft.UI.Xaml.Application.Current is { } application &&
-				(ContextHelper.TryGetCurrent(out var context)) &&
-				context is Activity activity &&
-				activity.Window?.DecorView is { FitsSystemWindows: false } decorView)
+				_activity?.Window is { DecorView: { FitsSystemWindows: false } decorView } nativeWindow)
 			{
 				var requestedTheme = application.RequestedTheme;
 
-				var insetsController = WindowCompat.GetInsetsController(activity.Window, decorView);
+				var insetsController = WindowCompat.GetInsetsController(nativeWindow, decorView);
 
 				// "appearance light" refers to status bar set to light theme == dark foreground
 				insetsController.AppearanceLightStatusBars = requestedTheme == Microsoft.UI.Xaml.ApplicationTheme.Light;
@@ -209,7 +299,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private Size GetWindowSize()
 	{
-		if (ContextHelper.Current is not Activity activity)
+		if (_activity is not { Window: not null } activity)
 		{
 			return default;
 		}
@@ -218,7 +308,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 		if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.R)
 		{
-			var windowMetrics = (ContextHelper.Current as Activity)?.WindowManager?.CurrentWindowMetrics;
+			var windowMetrics = activity.WindowManager?.CurrentWindowMetrics;
+			if (windowMetrics is null)
+			{
+				return default;
+			}
+
 			displaySize = new Size(windowMetrics.Bounds.Width(), windowMetrics.Bounds.Height());
 		}
 		else
@@ -245,8 +340,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private void UpdateFullScreenMode(bool isFullscreen)
 	{
+		if (_activity is not { Window: not null } activity)
+		{
+			return;
+		}
+
 #pragma warning disable 618
-		var activity = ContextHelper.Current as Activity;
 #pragma warning disable CA1422 // Validate platform compatibility
 		var uiOptions = (int)activity.Window.DecorView.SystemUiVisibility;
 #pragma warning restore CA1422 // Validate platform compatibility
@@ -280,8 +379,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private void AddPreDrawListener()
 	{
-		if (Uno.UI.ContextHelper.Current is Android.App.Activity activity &&
-			activity.Window.DecorView is { } decorView)
+		if (_activity?.Window?.DecorView is { } decorView)
 		{
 			decorView.ViewTreeObserver.AddOnPreDrawListener(_preDrawListener);
 		}
@@ -289,8 +387,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 
 	private void RemovePreDrawListener()
 	{
-		if (Uno.UI.ContextHelper.Current is Android.App.Activity activity &&
-			activity.Window.DecorView is { } decorView)
+		if (_activity?.Window?.DecorView is { } decorView)
 		{
 			decorView.ViewTreeObserver.RemoveOnPreDrawListener(_preDrawListener);
 		}

@@ -129,18 +129,26 @@ namespace Uno.UI
 		public BaseActivity(IntPtr handle, JniHandleOwnership transfer)
 			: base(handle, transfer)
 		{
-			ContextHelper.Current = this;
 			Initialize();
 		}
 
 		public BaseActivity()
 		{
-			ContextHelper.Current = this;
 			Initialize();
 		}
 
 		private void Initialize()
 		{
+			// Seed the ambient context only while no activity holds it: add-ins created below
+			// (e.g. Uno.UI.Foldable) resolve their lifecycle events through ContextHelper.Current
+			// and throw when it is null. Claiming it unconditionally would let an activity that is
+			// merely being constructed displace the live foreground one; from OnCreate onwards
+			// SetAsCurrent/ResignCurrent are the sole writers.
+			if (!ContextHelper.TryGetCurrent(out _))
+			{
+				ContextHelper.Current = this;
+			}
+
 			// Eagerly create the ApplicationView instance for IBaseActivityEvents
 			// to be useable (specifically for the Create event)
 			ApplicationView.GetOrCreateForWindowId(AppWindow.MainWindowId);
@@ -237,7 +245,7 @@ namespace Uno.UI
 
 			Microsoft.UI.Xaml.Application.Current?.RaiseLeavingBackground(() =>
 			{
-				NativeWindowWrapper.Instance.OnNativeVisibilityChanged(true);
+				OnNativeVisibilityChanged(true);
 			});
 		}
 
@@ -264,7 +272,7 @@ namespace Uno.UI
 			SetAsCurrent();
 
 			Microsoft.UI.Xaml.Application.Current?.RaiseResuming();
-			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+			OnNativeActivationChanged(CoreWindowActivationState.CodeActivated);
 		}
 
 		public override void OnTopResumedActivityChanged(bool isTopResumedActivity)
@@ -277,7 +285,16 @@ namespace Uno.UI
 
 		partial void InnerTopResumedActivityChanged(bool isTopResumedActivity)
 		{
-			NativeWindowWrapper.Instance.OnNativeActivated(
+			// Becoming top-resumed is the only foreground handover between live activities: with
+			// several windows open the others stay started and resumed, so they never run the
+			// create/start/resume path that otherwise claims Current. Without this, closing the
+			// foreground window leaves Current null even though other windows are still alive.
+			if (isTopResumedActivity)
+			{
+				SetAsCurrent();
+			}
+
+			OnNativeActivationChanged(
 				isTopResumedActivity ?
 					CoreWindowActivationState.CodeActivated :
 					CoreWindowActivationState.Deactivated);
@@ -295,7 +312,7 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.Deactivated);
+			OnNativeActivationChanged(CoreWindowActivationState.Deactivated);
 		}
 
 		protected override void OnStop()
@@ -316,7 +333,7 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			NativeWindowWrapper.Instance.OnNativeVisibilityChanged(false);
+			OnNativeVisibilityChanged(false);
 			Microsoft.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Microsoft.UI.Xaml.Application.Current?.RaiseSuspending());
 		}
 
@@ -328,7 +345,27 @@ namespace Uno.UI
 
 		partial void InnerDestroy();
 
-		partial void InnerDestroy() => ResignCurrent();
+		partial void InnerDestroy()
+		{
+			ResignCurrent();
+
+			// Never leave a destroyed activity as the ambient foreground context: hand over to a
+			// live one when there is another, and clear it when there is not. Clearing matters as
+			// much as handing over -- on a re-creation the replacement activity is constructed
+			// after this runs, and Initialize() seeds Current only while no activity holds it. A
+			// stale reference here would read as "claimed" and leave the destroyed activity in
+			// place for everything the replacement's constructor touches.
+			if (ContextHelper.TryGetCurrent(out var current) && ReferenceEquals(current, this))
+			{
+				BaseActivity? next;
+				lock (_instances)
+				{
+					next = _instances.Values.FirstOrDefault(activity => !ReferenceEquals(activity, this));
+				}
+
+				ContextHelper.SetForeground(next);
+			}
+		}
 
 		private void SetAsCurrent()
 		{
@@ -346,6 +383,20 @@ namespace Uno.UI
 			{
 				CurrentChanged?.Invoke(this, new CurrentActivityChangedEventArgs(null));
 			}
+		}
+
+		/// <summary>
+		/// Notifies a derived activity that the window it drives changed activation state.
+		/// </summary>
+		private protected virtual void OnNativeActivationChanged(CoreWindowActivationState state)
+		{
+		}
+
+		/// <summary>
+		/// Notifies a derived activity that the window it drives changed visibility.
+		/// </summary>
+		private protected virtual void OnNativeVisibilityChanged(bool isVisible)
+		{
 		}
 		#endregion
 

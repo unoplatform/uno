@@ -17,8 +17,6 @@ namespace Uno.UI.Runtime.Skia.Android;
 
 internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 {
-	public static AndroidCorePointerInputSource Instance { get; } = new();
-
 	//private readonly Action<string>? _trace = Console.WriteLine;
 	private readonly Action<string>? _trace = typeof(AndroidCorePointerInputSource).Log().IsEnabled(LogLevel.Trace)
 		? msg => typeof(AndroidCorePointerInputSource).Log().Trace(msg)
@@ -26,7 +24,7 @@ internal sealed class AndroidCorePointerInputSource : IUnoCorePointerInputSource
 
 	private IAsyncAction? _pendingAsyncHoverExit;
 
-	private AndroidCorePointerInputSource()
+	internal AndroidCorePointerInputSource()
 	{
 	}
 
