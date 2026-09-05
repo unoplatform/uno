@@ -125,7 +125,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void RemoveAtEnd()
 		{
-			m_items.RemoveAt(m_items.Count - 1);
+			// Vector.h's VectorInnerImpl::RemoveAtEnd leaves an empty vector untouched.
+			if (m_items.Count > 0)
+			{
+				m_items.RemoveAt(m_items.Count - 1);
+			}
+
 			m_vectorChangedEventSource?.Invoke(this, null);
 		}
 
