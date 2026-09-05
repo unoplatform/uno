@@ -290,9 +290,10 @@ _Danger 3-4. Heavier multi-file changes: remove the legacy templated-parent mech
   - Assigning the templated parent moved off the call sites onto `TemplateMaterializationSettings.OnMemberCreated`, so `LoadContent` decides it once and the two call sites stop diverging (the `XamlReader` path had been skipping non-`FrameworkElement` members and, when the templated parent was null, the member callback too). It is an instance method rather than a delegate deliberately: lazily materialized members (`x:Load`, `VisualState`) capture the settings, so a closure over the templated parent would pin it for as long as the template content, which outlives it in the pool. `TemplateMemberCreatedCallback` is removed. Covered by `Given_FrameworkTemplate_And_Leak`, which fails against a closure-capturing implementation.
   - The stated prerequisite ("fix the tests that force `_isLegacyTemplate=true`") was already moot: `_isLegacyTemplate` is a `private const` nothing assigns, and the suites pass with it `false`.
   - Files: `src/Uno.UI/UI/Xaml/FrameworkTemplate.cs`, `src/Uno.UI/UI/Xaml/TemplatedParentScope.cs` (deleted), `src/Uno.UI/UI/Xaml/ControlTemplate.cs`, `src/Uno.UI/Uno/TemplateMaterializationSettings.cs`, `src/Uno.UI/Uno/FrameworkTemplateBuilder.cs`, `src/Uno.UI/UI/Xaml/Markup/Reader/XamlObjectBuilder.cs`
-- [ ] **BC39** — Clean up `DependencyPropertyValuePrecedences` enum  `d2·M` · PR #15684
+- [x] **BC39** — Clean up `DependencyPropertyValuePrecedences` enum  `d2·M` · PR #23685
   - Hard-remove obsolete enum members (no `[EditorBrowsable]` aliases).
-  - Files: `src/Uno.UI/UI/Xaml/DependencyPropertyValuePrecedences.cs`, `src/Uno.UI/UI/Xaml/DependencyObjectStore.cs`, `src/Uno.UI/UI/Xaml/Internal/DependencyPropertyHelper.cs`
+  - `TemplatedParent` removed; `ExplicitStyle`/`ImplicitStyle` collapsed into a single `Style` (WinUI's `BaseValueSourceStyle`); `DefaultStyle` renamed `BuiltInStyle` (WinUI's `BaseValueSourceBuiltInStyle`). PR #15684 was abandoned; the work landed as PR #23685.
+  - Files: `src/Uno.UI/UI/Xaml/DependencyPropertyValuePrecedences.cs`, `src/Uno.UI/UI/Xaml/Internal/DependencyPropertyHelper.cs` (`DependencyObjectStore.cs` was dropped entirely by BC26 phase 2).
 - [ ] **BC53** — Rename `Uno.UI.Toolkit` assembly/namespace -> **`Uno.UI.Extras`**  `d4·M` · #12322
   - Name decided. Hard rename, no type-forwarders / xmlns alias (per hard-remove policy). Only the `Uno.UI.Toolkit`, `.DevTools.*` and `.Extensions` namespaces move; `Uno.Diagnostics.UI`, `Uno.UI.Markup`, `Uno.Helpers`, `Uno.UI` and `Uno.UI.Maps` stay. See [spec 056](../056-assembly-renames/spec.md).
 - [x] **BC71** — Remove the Fluent resource-version surface  `d2·M` · #14765
@@ -322,9 +323,9 @@ _Danger 4-5. Ship last, never batched — each lands as its own separately-stabi
 - [ ] **BC54** — `FlyoutBase.DataContext` -> non-public  `d4·L` · #12491
   - Keep `DataContext` internal so `FlyoutBase`->`Popup` forwarding still works; hide only the public surface. **Folded into the BC58 spec.**
   - Files: `src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs`, `src/Uno.UI/UI/Xaml/Controls/Flyout/FlyoutBase.cs`, `src/Uno.UI/UI/Xaml/DependencyObjectStore.Binder.cs`
-- [ ] **BC26** — `DependencyObject` becomes a class  `d4·L` · #17099 · **[impact spec](bc26-dependencyobject-as-class.md)**
-  - See notes.
-  - Files: `src/Uno.UI/UI/Xaml/DependencyObject.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs`, `src/Uno.UI/UI/Xaml/UIElement.skia.cs`
+- [x] **BC26** — `DependencyObject` becomes a class  `d4·L` · #17099 · PR #23537, #23702 · **[impact spec](bc26-dependencyobject-as-class.md)**
+  - Landed as a class on every target; `DependencyObjectGenerator` was deleted outright rather than trimmed, and phase 2 (uno-private#2210) went on to drop `DependencyObjectStore` and fold its storage onto `DependencyObject`.
+  - Files: `src/Uno.UI/UI/Xaml/DependencyObject.cs`, `src/Uno.UI/UI/Xaml/DependencyObject.Store.cs`, `src/Uno.UI/UI/Xaml/DependencyObject.Binder.cs`, `src/Uno.UI/UI/Xaml/UIElement.skia.cs`
 - [ ] **BC14** — `UserControl` inherits `Control`  `d5·L` · **[impact spec](bc14-usercontrol-to-control.md)**
   - Reparent to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Controls/UserControl/UserControl.cs`, `src/Uno.UI/UI/Xaml/Controls/Page/Page.cs`, `src/Uno.UI/UI/Xaml/Controls/ContentControl/ContentControl.cs`

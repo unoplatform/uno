@@ -425,9 +425,9 @@ partial class Application
 		// THREADING CONTRACT for the sweeps below: the rebuildable Type-keyed caches
 		// (Application registry, DependencyProperty, Style, MetadataAPI, ResourceResolver, …) are
 		// populated and swept on the same UI/teardown thread, so they need no gate. The caches that
-		// DO carry their own _*Gate lock (UIElementNativeRegistrar, HtmlElementHelper,
-		// CompositionTarget, PagePool) are the ones additionally reachable off that thread — the WASM
-		// rendering frame callback and native element creation. Every step is isolated through
+		// DO carry their own _*Gate lock (CompositionTarget, PagePool) are the ones additionally
+		// reachable off that thread — the rendering frame callback and native element creation.
+		// Every step is isolated through
 		// RunCleanupStep so that, even if that contract is ever violated and an enumeration throws
 		// (e.g. a concurrent-modification), one failing sweep cannot abort the remaining sweeps and
 		// silently re-leak the ALC.
@@ -489,36 +489,6 @@ partial class Application
 			}
 			// else: unknown ALC in a per-window teardown — skip; a wide sweep would break a live sibling's lookups.
 		});
-
-#if __WASM__
-		// UIElementNativeRegistrar (WASM) — the Type→registration-id map keys on every element
-		// type ever created, including the previewed app's control types. Desktop ClrMD guards
-		// never see this cache; drop its collectible-ALC keys here. REBUILDABLE (the JS-side map
-		// holds only strings and is left intact; a re-registration simply mints a fresh id), so the
-		// sweep stays all-non-default even when the dying ALC is known.
-		RunCleanupStep(nameof(UIElement.ClearNonDefaultAlcElementRegistrations), UIElement.ClearNonDefaultAlcElementRegistrations);
-
-		// CompositionTarget.Rendering (WASM) — a secondary-ALC subscriber that did not detach
-		// before unload keeps its ALC pinned through the static handler list.
-		// DESTRUCTIVE (a dropped handler is never re-subscribed): scope to the dying ALC when known,
-		// wide only at a genuine global shutdown, skipped when a per-window teardown lacks its ALC.
-		RunCleanupStep(nameof(Media.CompositionTarget.ClearAlcHandlers), () =>
-		{
-			if (dyingAlc is not null)
-			{
-				Media.CompositionTarget.ClearAlcHandlers(dyingAlc);
-			}
-			else if (allowUnscopedDestructive)
-			{
-				Media.CompositionTarget.ClearNonDefaultAlcHandlers();
-			}
-			// else: unknown ALC in a per-window teardown — skip; a wide sweep would drop a live sibling's handlers.
-		});
-
-		// HtmlElementHelper (WASM) — Type→HtmlTag cache keyed by external (app) element types.
-		// REBUILDABLE (re-cached on demand), so the sweep stays all-non-default.
-		RunCleanupStep(nameof(HtmlElementHelper.ClearNonDefaultAlcEntries), HtmlElementHelper.ClearNonDefaultAlcEntries);
-#endif
 
 		// Shared resources (theme brushes etc.) first consumed by a secondary-ALC element record
 		// it as their InheritanceContext parent (DependencyObject._associatedParent); nothing

@@ -13,7 +13,6 @@
 	"lib": [ "ES2018", "DOM", "DOM.Iterable" ]
   },
 	"include": [
-		"../Uno.UI/ts/types/**/*",
 		"ts/**/*",
 		"tsBindings/**/*"
 	]

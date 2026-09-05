@@ -2377,6 +2377,9 @@
 		  <Member fullName="Uno.UI.Runtime.Skia.Android.AndroidHost" reason="AndroidHost reduced to internal; use UseAndroid() on the host builder (breaking changes for 7.0)" />
 		  <!-- Legacy WinRTFeatureConfiguration holder removed with its sole flag (accessors paired in <Properties>/<Methods> below). -->
 		  <Member fullName="Uno.WinRTFeatureConfiguration/ApplicationLanguages" reason="Removed empty WinRTFeatureConfiguration.ApplicationLanguages holder after deleting UseLegacyPrimaryLanguageOverride (BC50, breaking changes for 7.0)" />
+		  <!-- WASM DOM renderer removal: the DOM-interop event payload type is unraisable now that its only producer (UIElementWasmExtensions) is gone. -->
+		  <Member fullName="Uno.Extensions.HtmlCustomEventArgs" reason="Removed with the WebAssembly DOM renderer and its HTML interop surface (breaking changes for 7.0, uno#8339)" />
+
 		  <!-- BC01: legacy templated-parent mechanism removed; the template factory is now a plain System.Func (uno#18672, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.FrameworkTemplateBuilder" reason="BC01: legacy template builder delegate removed with the ambient TemplatedParentScope (uno#18672, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.NewFrameworkTemplateBuilder" reason="BC01: replaced by Uno.UI.FrameworkTemplateBuilder, declared next to TemplateManager instead of in the WinUI namespace (uno#18672, breaking changes for 7.0)" />
@@ -2458,6 +2461,10 @@
 
 		  <!-- DependencyObject as class (BC26): fields of the removed DependencyObjectStore (incl. its nested TraceProvider). -->
 		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.DependencyObjectStore(::|\.|/).+$" reason="DependencyObject as class: DependencyObjectStore removed" isRegex="true" />
+
+		  <!-- BC62: Application.TraceProvider's misspelled LauchedStart/LauchedStop consts were corrected to LaunchedStart/LaunchedStop; the old spellings read as removed fields. -->
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Application/TraceProvider::LauchedStart" reason="Corrected the LauchedStart typo to LaunchedStart (BC62, breaking changes for 7.0)" />
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Application/TraceProvider::LauchedStop" reason="Corrected the LauchedStop typo to LaunchedStop (BC62, breaking changes for 7.0)" />
 
 		  <!-- Duration.TimeSpan public field removed; WinUI exposes TimeSpan as a get-only property (paired accessor is emitted by the property, not a field). -->
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Duration::TimeSpan" reason="Made Duration.TimeSpan read-only to match WinUI (breaking changes for 7.0, uno#8339)" />
@@ -3805,6 +3812,9 @@
 		  <Member fullName="Uno.UI.Runtime.Skia.Android.AndroidHost" reason="AndroidHost reduced to internal; use UseAndroid() on the host builder (breaking changes for 7.0)" />
 		  <!-- Legacy WinRTFeatureConfiguration holder removed with its sole flag (accessors paired in <Properties>/<Methods> below). -->
 		  <Member fullName="Uno.WinRTFeatureConfiguration/ApplicationLanguages" reason="Removed empty WinRTFeatureConfiguration.ApplicationLanguages holder after deleting UseLegacyPrimaryLanguageOverride (BC50, breaking changes for 7.0)" />
+		  <!-- WASM DOM renderer removal: the DOM-interop event payload type is unraisable now that its only producer (UIElementWasmExtensions) is gone. -->
+		  <Member fullName="Uno.Extensions.HtmlCustomEventArgs" reason="Removed with the WebAssembly DOM renderer and its HTML interop surface (breaking changes for 7.0, uno#8339)" />
+
 		  <!-- BC01: legacy templated-parent mechanism removed; the template factory is now a plain System.Func (uno#18672, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.FrameworkTemplateBuilder" reason="BC01: legacy template builder delegate removed with the ambient TemplatedParentScope (uno#18672, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.NewFrameworkTemplateBuilder" reason="BC01: replaced by Uno.UI.FrameworkTemplateBuilder, declared next to TemplateManager instead of in the WinUI namespace (uno#18672, breaking changes for 7.0)" />
@@ -3886,6 +3896,10 @@
 
 		  <!-- DependencyObject as class (BC26): fields of the removed DependencyObjectStore (incl. its nested TraceProvider). -->
 		  <Member fullName="^.+ Microsoft\.UI\.Xaml\.DependencyObjectStore(::|\.|/).+$" reason="DependencyObject as class: DependencyObjectStore removed" isRegex="true" />
+
+		  <!-- BC62: Application.TraceProvider's misspelled LauchedStart/LauchedStop consts were corrected to LaunchedStart/LaunchedStop; the old spellings read as removed fields. -->
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Application/TraceProvider::LauchedStart" reason="Corrected the LauchedStart typo to LaunchedStart (BC62, breaking changes for 7.0)" />
+		  <Member fullName="System.Int32 Microsoft.UI.Xaml.Application/TraceProvider::LauchedStop" reason="Corrected the LauchedStop typo to LaunchedStop (BC62, breaking changes for 7.0)" />
 
 		  <!-- Duration.TimeSpan public field removed; WinUI exposes TimeSpan as a get-only property (paired accessor is emitted by the property, not a field). -->
 		  <Member fullName="System.TimeSpan Microsoft.UI.Xaml.Duration::TimeSpan" reason="Made Duration.TimeSpan read-only to match WinUI (breaking changes for 7.0, uno#8339)" />

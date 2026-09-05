@@ -81,10 +81,6 @@
 		<PRIResource Include="Resources\**\*.resw" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Compile Include="Tests\Windows_UI_Xaml_Controls\HtmlElementAttributeTests\Given_HtmlElementAttribute.Wasm.cs" />
-	</ItemGroup>
-
 	<!-- Implicit XAML namespace tests are Uno-only (WinAppSDK doesn't support implicit xmlns) -->
 	<ItemGroup>
 		<Compile Remove="Tests\Windows_UI_Xaml\ImplicitXamlNamespaces\**\*.cs" />
