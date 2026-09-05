@@ -20,6 +20,13 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 	private const string UnoUIAssemblyName = "Uno.UI";
 
 	/// <summary>
+	/// The value earlier releases stamped for the UI layer every drawn-by-Uno target framework shares. Uno
+	/// Platform 7.0 has a single UI runtime and stamps nothing, so this exists only to recognise assemblies
+	/// built for one of the native renderers, which stamped their platform here instead.
+	/// </summary>
+	private const string SharedUIRuntimeIdentifier = "skia";
+
+	/// <summary>
 	/// Maximum number of missing type names listed in a single UNOB0020 warning.
 	/// </summary>
 	private const int MaxReportedMissingTypes = 5;
@@ -33,12 +40,6 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 
 	public string NuGetPackageRoot { get; set; } = "";
 
-	public string UnoRuntimeIdentifier { get; set; } = "";
-
-	public string UnoUIRuntimeIdentifier { get; set; } = "";
-
-	public string UnoWinRTRuntimeIdentifier { get; set; } = "";
-
 	/// <summary>
 	/// The platform of the target framework being built, e.g. "android". Deliberately not the runtime identifiers:
 	/// those are only set by the runtime packages, which class libraries do not always reference.
@@ -47,23 +48,14 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 
 	public bool DisablePlatformAssetValidation { get; set; }
 
+	public bool DisableUIRuntimeValidation { get; set; }
+
 	public override bool Execute()
 	{
 		bool succeeded = true;
 
 		try
 		{
-			if (UnoRuntimeIdentifier == "reference")
-			{
-				return true;
-			}
-
-			// The assemblies of a project are all compiled against a single UI runtime. Two-layer heads name it
-			// through UnoUIRuntimeIdentifier, single-layer heads through UnoRuntimeIdentifier.
-			var expectedUIRuntimeIdentifier = string.IsNullOrEmpty(UnoUIRuntimeIdentifier)
-				? UnoRuntimeIdentifier
-				: UnoUIRuntimeIdentifier;
-
 			var platformAssetValidator = CreatePlatformAssetValidator();
 
 			foreach (var assembly in RuntimeCopyLocalItemsInput ?? [])
@@ -98,15 +90,26 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 					continue;
 				}
 
-				if (GetAssemblyMetadata(originalAssembly, UnoUIRuntimeIdentifierKey) is { Length: > 0 } identifier
-					&& !expectedUIRuntimeIdentifier.Equals(identifier, StringComparison.OrdinalIgnoreCase))
+				if (!DisableUIRuntimeValidation
+					&& GetAssemblyMetadata(originalAssembly, UnoUIRuntimeIdentifierKey) is { Length: > 0 } identifier
+					&& !SharedUIRuntimeIdentifier.Equals(identifier, StringComparison.OrdinalIgnoreCase))
 				{
 					succeeded = false;
 
 					Log.LogError(
-						$"The assembly {assembly.ItemSpec} has a different UnoUIRuntimeIdentifier than the one used to build the project. " +
-						$"(Expected: {expectedUIRuntimeIdentifier}, Actual: {identifier})"
-					);
+						subcategory: null,
+						errorCode: "UNOB0026",
+						helpKeyword: null,
+						file: null,
+						lineNumber: 0,
+						columnNumber: 0,
+						endLineNumber: 0,
+						endColumnNumber: 0,
+						message: "The assembly '{0}' was built for the '{1}' UI runtime, which Uno Platform no longer provides. " +
+							"Update the package to a version built for this release. https://aka.platform.uno/UNOB0026",
+						// The value is a foreign assembly's string heap content: unbounded, and free to contain
+						// control characters a log processor would act on.
+						messageArgs: [assembly.ItemSpec, PlatformAssetValidator.Sanitize(identifier)]);
 				}
 
 				platformAssetValidator?.Validate(originalAssembly, assemblyPath);
@@ -295,7 +298,7 @@ public class RuntimeAssetsValidatorTask_v0 : Microsoft.Build.Utilities.Task
 		/// <summary>
 		/// Type names come from a foreign assembly's string heap, which allows control characters.
 		/// </summary>
-		private static string Sanitize(string name)
+		internal static string Sanitize(string name)
 		{
 			var builder = new StringBuilder(name.Length);
 
