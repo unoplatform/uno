@@ -4,7 +4,12 @@ namespace Uno.UI.Runtime.Skia {
 		modalHandle: number;
 		triggerHandle: number;
 		focusableHandles: number[];
-		hiddenElements: { element: HTMLElement; originalAriaHidden: string | null; originalTabIndex: string | null }[];
+		hiddenElements: {
+			element: HTMLElement;
+			originalAriaHidden: string | null;
+			originalInert: string | null;
+			originalTabIndexes: { element: HTMLElement; value: string | null }[];
+		}[];
 		keydownHandler: (e: KeyboardEvent) => void;
 		parentState: FocusTrapState | null;
 	}
@@ -18,36 +23,73 @@ namespace Uno.UI.Runtime.Skia {
 		private static activeTrap: FocusTrapState | null = null;
 
 		/**
+		 * True when the browser honours the `inert` attribute, which removes a whole subtree from
+		 * both the accessibility tree and the tab order. Browsers that ignore it need the explicit
+		 * per-element `tabindex="-1"` fallback below, otherwise Tab would walk out of the modal
+		 * into the background content.
+		 */
+		public static supportsInert(): boolean {
+			return "inert" in HTMLElement.prototype;
+		}
+
+		/**
+		 * Forces every semantic element of a background subtree out of the tab order and returns the
+		 * values that were replaced, so the subtree can be restored exactly when the modal closes.
+		 * Only used when `supportsInert()` is false.
+		 */
+		public static suppressTabStops(subtreeRoot: HTMLElement): { element: HTMLElement; value: string | null }[] {
+			const targets = [subtreeRoot].concat(
+				Array.from(subtreeRoot.querySelectorAll("[id^='uno-semantics-']")) as HTMLElement[]);
+
+			return targets.map(element => {
+				const value = element.getAttribute("tabindex");
+				element.setAttribute("tabindex", "-1");
+				return { element, value };
+			});
+		}
+
+		/**
 		 * Activates a focus trap for a modal dialog.
 		 * Hides background elements and starts Tab wrapping.
 		 */
 		public static activateFocusTrap(modalHandle: number, triggerHandle: number, focusableHandles: number[]): void {
 			const parentState = FocusTrap.activeTrap;
 
-			// Hide all semantic elements outside the modal
-			const semanticsRoot = document.getElementById("uno-semantics-root");
-			const modalElement = document.getElementById(`uno-semantics-${modalHandle}`);
+			// Hide sibling subtree roots along the modal-to-root path. aria-hidden + inert
+			// removes each whole subtree from AT and keyboard navigation without walking and
+			// rewriting every semantic descendant.
+			const semanticsRoot = Accessibility.getSemanticsRoot();
+			const modalElement = Accessibility.getSemanticElementByHandle(modalHandle);
 			const hiddenElements: FocusTrapState["hiddenElements"] = [];
+			const needsTabIndexFallback = !FocusTrap.supportsInert();
 
 			if (semanticsRoot && modalElement) {
-				const allElements = semanticsRoot.querySelectorAll("[id^='uno-semantics-']");
-				allElements.forEach((el: HTMLElement) => {
-					if (el !== modalElement && !modalElement.contains(el)) {
-						hiddenElements.push({
-							element: el,
-							originalAriaHidden: el.getAttribute("aria-hidden"),
-							originalTabIndex: el.getAttribute("tabindex")
-						});
-						el.setAttribute("aria-hidden", "true");
-						el.setAttribute("tabindex", "-1");
+				let current: HTMLElement = modalElement;
+				while (current !== semanticsRoot) {
+					const parent: HTMLElement | null = current.parentElement;
+					if (!parent) {
+						break;
 					}
-				});
-			}
 
-			// Set role="dialog" on modal element
-			if (modalElement) {
-				modalElement.setAttribute("role", "dialog");
-				modalElement.setAttribute("aria-modal", "true");
+					for (const sibling of Array.from(parent.children) as HTMLElement[]) {
+						if (sibling === current) {
+							continue;
+						}
+
+						hiddenElements.push({
+							element: sibling,
+							originalAriaHidden: sibling.getAttribute("aria-hidden"),
+							originalInert: sibling.getAttribute("inert"),
+							originalTabIndexes: needsTabIndexFallback
+								? FocusTrap.suppressTabStops(sibling)
+								: []
+						});
+						sibling.setAttribute("aria-hidden", "true");
+						sibling.setAttribute("inert", "");
+					}
+
+					current = parent;
+				}
 			}
 
 			// Create keydown handler for Tab wrapping.
@@ -74,7 +116,7 @@ namespace Uno.UI.Runtime.Skia {
 
 			// Focus the first focusable element in the modal
 			if (focusableHandles.length > 0) {
-				const firstElement = document.getElementById(`uno-semantics-${focusableHandles[0]}`);
+				const firstElement = Accessibility.getSemanticElementByHandle(focusableHandles[0]);
 				if (firstElement) {
 					firstElement.focus();
 				}
@@ -100,7 +142,6 @@ namespace Uno.UI.Runtime.Skia {
 						const target = current.parentState;
 						document.removeEventListener("keydown", target.keydownHandler, true);
 						FocusTrap.restoreHiddenElements(target);
-						FocusTrap.removeDialogRole(target.modalHandle);
 						// Splice out of linked list
 						current.parentState = target.parentState;
 						return;
@@ -116,19 +157,16 @@ namespace Uno.UI.Runtime.Skia {
 			// Restore hidden elements
 			FocusTrap.restoreHiddenElements(trap);
 
-			// Remove dialog role
-			FocusTrap.removeDialogRole(modalHandle);
-
 			// Reactivate parent trap or clear
 			FocusTrap.activeTrap = trap.parentState;
 
 			// Restore focus to trigger element, with fallback to parent trap or body
 			if (trap.triggerHandle) {
-				const triggerElement = document.getElementById(`uno-semantics-${trap.triggerHandle}`);
+				const triggerElement = Accessibility.getSemanticElementByHandle(trap.triggerHandle);
 				if (triggerElement) {
 					triggerElement.focus();
 				} else if (trap.parentState && trap.parentState.focusableHandles.length > 0) {
-					const fallback = document.getElementById(`uno-semantics-${trap.parentState.focusableHandles[0]}`);
+					const fallback = Accessibility.getSemanticElementByHandle(trap.parentState.focusableHandles[0]);
 					if (fallback) {
 						fallback.focus();
 					}
@@ -170,7 +208,7 @@ namespace Uno.UI.Runtime.Skia {
 			if (shiftKey) {
 				// Shift+Tab: wrap from first to last
 				if (currentIndex <= 0) {
-					const lastElement = document.getElementById(`uno-semantics-${handles[handles.length - 1]}`);
+					const lastElement = Accessibility.getSemanticElementByHandle(handles[handles.length - 1]);
 					if (lastElement) {
 						lastElement.focus();
 						return true;
@@ -179,7 +217,7 @@ namespace Uno.UI.Runtime.Skia {
 			} else {
 				// Tab: wrap from last to first
 				if (currentIndex >= handles.length - 1) {
-					const firstElement = document.getElementById(`uno-semantics-${handles[0]}`);
+					const firstElement = Accessibility.getSemanticElementByHandle(handles[0]);
 					if (firstElement) {
 						firstElement.focus();
 						return true;
@@ -211,19 +249,18 @@ namespace Uno.UI.Runtime.Skia {
 				} else {
 					item.element.removeAttribute("aria-hidden");
 				}
-				if (item.originalTabIndex !== null) {
-					item.element.setAttribute("tabindex", item.originalTabIndex);
+				if (item.originalInert !== null) {
+					item.element.setAttribute("inert", item.originalInert);
 				} else {
-					item.element.removeAttribute("tabindex");
+					item.element.removeAttribute("inert");
 				}
-			}
-		}
-
-		private static removeDialogRole(modalHandle: number): void {
-			const modalElement = document.getElementById(`uno-semantics-${modalHandle}`);
-			if (modalElement) {
-				modalElement.removeAttribute("role");
-				modalElement.removeAttribute("aria-modal");
+				for (const tabIndex of item.originalTabIndexes) {
+					if (tabIndex.value !== null) {
+						tabIndex.element.setAttribute("tabindex", tabIndex.value);
+					} else {
+						tabIndex.element.removeAttribute("tabindex");
+					}
+				}
 			}
 		}
 	}

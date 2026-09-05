@@ -357,6 +357,12 @@ UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window
 	return _unoHelp;
 }
 
+- (NSString *)accessibilityIdentifier {
+	// Exposes AutomationProperties.AutomationId to UI test frameworks
+	// (Appium Mac2 / XCUITest) via NSAccessibility's identifier attribute.
+	return _unoIdentifier;
+}
+
 - (NSString *)accessibilityPlaceholderValue {
 	// accessibilityPlaceholderValue is announced for empty text fields.
 	// It maps to the description (PlaceholderText when Header is set).
@@ -378,6 +384,13 @@ UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window
 		[names addObject:@"AXARIAPosInSet"];
 		[names addObject:@"AXARIASetSize"];
 	}
+	// XCUITest and the Appium Mac2 driver locate elements via the legacy
+	// attribute system, querying NSAccessibilityIdentifierAttribute ("AXIdentifier").
+	// The modern -accessibilityIdentifier getter is not consulted on that path,
+	// so we must advertise the attribute explicitly when an identifier exists.
+	if (_unoIdentifier.length > 0 && ![names containsObject:NSAccessibilityIdentifierAttribute]) {
+		[names addObject:NSAccessibilityIdentifierAttribute];
+	}
 	// Remove expand/collapse attributes for elements that don't support them.
 	// Without this, VoiceOver announces "collapsed" on buttons, textboxes, etc.
 	if (!_unoHasExpandCollapse) {
@@ -398,6 +411,11 @@ UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window
 	}
 	if ([attribute isEqualToString:@"AXARIASetSize"] && _unoSizeOfSet > 0) {
 		return @(_unoSizeOfSet);
+	}
+	// XCUITest's identifier-based locators read this attribute, not the
+	// modern -accessibilityIdentifier getter.
+	if ([attribute isEqualToString:NSAccessibilityIdentifierAttribute]) {
+		return _unoIdentifier;
 	}
 	return [super accessibilityAttributeValue:attribute];
 }
@@ -1113,6 +1131,13 @@ void uno_accessibility_update_label(intptr_t handle, const char* label) {
 	if (element) {
 		element.unoLabel = label ? [NSString stringWithUTF8String:label] : nil;
 		NSAccessibilityPostNotification(element, NSAccessibilityTitleChangedNotification);
+	}
+}
+
+void uno_accessibility_update_identifier(intptr_t handle, const char* identifier) {
+	UNOAccessibilityElement *element = findElementGlobal(handle);
+	if (element) {
+		element.unoIdentifier = identifier ? [NSString stringWithUTF8String:identifier] : nil;
 	}
 }
 

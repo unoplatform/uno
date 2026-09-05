@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -26,6 +27,9 @@ internal sealed partial class LiveRegionManager
 	private string? _pendingAssertiveContent;
 	private Timer? _politeDebounceTimer;
 	private Timer? _assertiveDebounceTimer;
+	private int _lifecycleGeneration;
+	private int _politeGeneration;
+	private int _assertiveGeneration;
 	private long _politeThrottleTimestamp;
 	private long _assertiveThrottleTimestamp;
 	/// <summary>
@@ -44,7 +48,7 @@ internal sealed partial class LiveRegionManager
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			this.Log().Debug($"HandleLiveRegionChanged peer={peer.GetType().Name} liveSetting={liveSetting} content='{content}'");
+			this.Log().Debug($"HandleLiveRegionChanged peer={peer.GetType().Name} liveSetting={liveSetting} contentLength={content?.Length ?? 0}");
 		}
 
 		if (string.IsNullOrEmpty(content))
@@ -76,7 +80,7 @@ internal sealed partial class LiveRegionManager
 
 		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			this.Log().Trace($"LiveRegionChanged: liveSetting={liveSetting}, content={content}");
+			this.Log().Trace($"LiveRegionChanged: liveSetting={liveSetting}, contentLength={content.Length}");
 		}
 
 		switch (liveSetting)
@@ -117,31 +121,79 @@ internal sealed partial class LiveRegionManager
 	{
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			this.Log().Debug($"EnqueuePolite content='{content}' debounce={DebounceMs}ms");
+			this.Log().Debug($"EnqueuePolite contentLength={content.Length} debounce={DebounceMs}ms");
 		}
-		_pendingPoliteContent = content;
-		_politeDebounceTimer?.Dispose();
-		_politeDebounceTimer = new Timer(_ => FlushPolite(), null, DebounceMs, Timeout.Infinite);
+		var lifecycleGeneration = Volatile.Read(ref _lifecycleGeneration);
+		RunOnDispatcher(() =>
+		{
+			if (lifecycleGeneration != Volatile.Read(ref _lifecycleGeneration))
+			{
+				return;
+			}
+
+			_pendingPoliteContent = content;
+			if (_politeDebounceTimer is null)
+			{
+				SchedulePolite(DebounceMs);
+			}
+		});
 	}
 
 	private void EnqueueAssertive(string content)
 	{
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			this.Log().Debug($"EnqueueAssertive content='{content}' debounce={DebounceMs}ms");
+			this.Log().Debug($"EnqueueAssertive contentLength={content.Length} debounce={DebounceMs}ms");
 		}
-		_pendingAssertiveContent = content;
-		_assertiveDebounceTimer?.Dispose();
-		_assertiveDebounceTimer = new Timer(_ => FlushAssertive(), null, DebounceMs, Timeout.Infinite);
+		var lifecycleGeneration = Volatile.Read(ref _lifecycleGeneration);
+		RunOnDispatcher(() =>
+		{
+			if (lifecycleGeneration != Volatile.Read(ref _lifecycleGeneration))
+			{
+				return;
+			}
+
+			_pendingAssertiveContent = content;
+			if (_assertiveDebounceTimer is null)
+			{
+				ScheduleAssertive(DebounceMs);
+			}
+		});
 	}
 
-	private void FlushPolite()
+	private void SchedulePolite(int delay)
 	{
-		var content = _pendingPoliteContent;
-		_pendingPoliteContent = null;
+		var generation = ++_politeGeneration;
+		_politeDebounceTimer?.Dispose();
+		_politeDebounceTimer = new Timer(
+			_ => NativeDispatcher.Main.Enqueue(() => FlushPolite(generation)),
+			null,
+			delay,
+			Timeout.Infinite);
+	}
+
+	private void ScheduleAssertive(int delay)
+	{
+		var generation = ++_assertiveGeneration;
+		_assertiveDebounceTimer?.Dispose();
+		_assertiveDebounceTimer = new Timer(
+			_ => NativeDispatcher.Main.Enqueue(() => FlushAssertive(generation)),
+			null,
+			delay,
+			Timeout.Infinite);
+	}
+
+	private void FlushPolite(int generation)
+	{
+		if (generation != _politeGeneration)
+		{
+			return;
+		}
+
 		_politeDebounceTimer?.Dispose();
 		_politeDebounceTimer = null;
-
+		var content = _pendingPoliteContent;
+		_pendingPoliteContent = null;
 		if (string.IsNullOrEmpty(content))
 		{
 			return;
@@ -150,28 +202,30 @@ internal sealed partial class LiveRegionManager
 		var now = Environment.TickCount64;
 		if (now - _politeThrottleTimestamp < PoliteThrottleMs)
 		{
-			// Throttled — re-enqueue with remaining throttle time
-			var remaining = PoliteThrottleMs - (int)(now - _politeThrottleTimestamp);
 			_pendingPoliteContent = content;
-			_politeDebounceTimer = new Timer(_ => FlushPolite(), null, remaining, Timeout.Infinite);
+			SchedulePolite(PoliteThrottleMs - (int)(now - _politeThrottleTimestamp));
 			return;
 		}
 
 		_politeThrottleTimestamp = now;
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			this.Log().Debug($"FlushPolite announcing content='{content}'");
+			this.Log().Debug($"FlushPolite announcing contentLength={content.Length}");
 		}
 		NativeMethods.UpdateLiveRegionContent(IntPtr.Zero, content, 1);
 	}
 
-	private void FlushAssertive()
+	private void FlushAssertive(int generation)
 	{
-		var content = _pendingAssertiveContent;
-		_pendingAssertiveContent = null;
+		if (generation != _assertiveGeneration)
+		{
+			return;
+		}
+
 		_assertiveDebounceTimer?.Dispose();
 		_assertiveDebounceTimer = null;
-
+		var content = _pendingAssertiveContent;
+		_pendingAssertiveContent = null;
 		if (string.IsNullOrEmpty(content))
 		{
 			return;
@@ -180,17 +234,15 @@ internal sealed partial class LiveRegionManager
 		var now = Environment.TickCount64;
 		if (now - _assertiveThrottleTimestamp < AssertiveThrottleMs)
 		{
-			// Throttled — re-enqueue with remaining throttle time
-			var remaining = AssertiveThrottleMs - (int)(now - _assertiveThrottleTimestamp);
 			_pendingAssertiveContent = content;
-			_assertiveDebounceTimer = new Timer(_ => FlushAssertive(), null, remaining, Timeout.Infinite);
+			ScheduleAssertive(AssertiveThrottleMs - (int)(now - _assertiveThrottleTimestamp));
 			return;
 		}
 
 		_assertiveThrottleTimestamp = now;
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			this.Log().Debug($"FlushAssertive announcing content='{content}'");
+			this.Log().Debug($"FlushAssertive announcing contentLength={content.Length}");
 		}
 		NativeMethods.UpdateLiveRegionContent(IntPtr.Zero, content, 2);
 	}
@@ -204,13 +256,31 @@ internal sealed partial class LiveRegionManager
 		{
 			this.Log().Debug("ClearPending — clearing all pending announcements");
 		}
-		_politeDebounceTimer?.Dispose();
-		_politeDebounceTimer = null;
-		_assertiveDebounceTimer?.Dispose();
-		_assertiveDebounceTimer = null;
-		_pendingPoliteContent = null;
-		_pendingAssertiveContent = null;
-		NativeMethods.ClearPendingAnnouncements();
+		Interlocked.Increment(ref _lifecycleGeneration);
+		RunOnDispatcher(() =>
+		{
+			_politeGeneration++;
+			_assertiveGeneration++;
+			_politeDebounceTimer?.Dispose();
+			_politeDebounceTimer = null;
+			_assertiveDebounceTimer?.Dispose();
+			_assertiveDebounceTimer = null;
+			_pendingPoliteContent = null;
+			_pendingAssertiveContent = null;
+			NativeMethods.ClearPendingAnnouncements();
+		});
+	}
+
+	private static void RunOnDispatcher(Action action)
+	{
+		if (NativeDispatcher.Main.HasThreadAccess)
+		{
+			action();
+		}
+		else
+		{
+			NativeDispatcher.Main.Enqueue(action);
+		}
 	}
 
 	private static partial class NativeMethods

@@ -24,6 +24,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) intptr_t unoHandle;
 @property (nonatomic, weak, nullable) UNOAccessibilityContext *unoContext;
 @property (nonatomic, strong, nullable) NSString *unoRole;
+@property (nonatomic, strong, nullable) NSString *unoIdentifier; // maps to AutomationProperties.AutomationId / accessibilityIdentifier
 @property (nonatomic, strong, nullable) NSString *unoLabel;
 @property (nonatomic, strong, nullable) NSString *unoValue;
 @property (nonatomic, strong, nullable) NSString *unoHelp;
@@ -101,6 +102,7 @@ void uno_accessibility_remove_element(NSWindow* _Nonnull window, intptr_t parent
 // the element's back-pointer. Callers must tolerate a missing element (drops
 // silently when the owning context has been torn down).
 void uno_accessibility_update_label(intptr_t handle, const char* _Nullable label);
+void uno_accessibility_update_identifier(intptr_t handle, const char* _Nullable identifier);
 void uno_accessibility_update_frame(intptr_t handle, float width, float height, float x, float y);
 void uno_accessibility_update_visibility(intptr_t handle, bool visible);
 void uno_accessibility_update_focusable(intptr_t handle, bool focusable);

@@ -314,7 +314,7 @@
 			// TextBoxes, and detaching in between would dismiss the soft keyboard (see blur).
 			BrowserInvisibleTextBoxViewExtension.detachGeneration++;
 
-			const semanticElement = document.getElementById(`uno-semantics-${handle}`);
+			const semanticElement = Accessibility.getSemanticElementByHandle(handle);
 			if (semanticElement && document.activeElement === semanticElement) {
 				BrowserInvisibleTextBoxViewExtension.detach();
 				return false;

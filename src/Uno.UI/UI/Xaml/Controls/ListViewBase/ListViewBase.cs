@@ -61,6 +61,21 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public event TypedEventHandler<ListViewBase, ContainerContentChangingEventArgs> ContainerContentChanging;
+		internal event EventHandler<UnoContainerClearingEventArgs> UnoContainerClearing;
+		internal event EventHandler UnoItemsChangedForAccessibility;
+
+		internal sealed class UnoContainerClearingEventArgs : EventArgs
+		{
+			internal UnoContainerClearingEventArgs(SelectorItem container, int index)
+			{
+				Container = container;
+				Index = index;
+			}
+
+			internal SelectorItem Container { get; }
+
+			internal int Index { get; }
+		}
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
@@ -559,6 +574,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			ApplyMultiSelectStateToCachedItems();
+			UnoItemsChangedForAccessibility?.Invoke(this, EventArgs.Empty);
 		}
 
 		partial void ApplyMultiSelectStateToCachedItems();
@@ -852,12 +868,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 			//Call base after so that list state is 'fresh' when we update SelectedItem
 			base.OnItemsSourceSingleCollectionChanged(sender, args, section);
+			UnoItemsChangedForAccessibility?.Invoke(this, EventArgs.Empty);
 
 			void completeRefresh()
 			{
 				Refresh();
 				ObserveCollectionChanged();
 				base.OnItemsSourceSingleCollectionChanged(sender, args, section);
+				UnoItemsChangedForAccessibility?.Invoke(this, EventArgs.Empty);
 			}
 		}
 
@@ -1029,6 +1047,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Refresh();
 				ObserveCollectionChanged();
 				base.OnItemsSourceGroupsChanged(sender, args);
+				UnoItemsChangedForAccessibility?.Invoke(this, EventArgs.Empty);
 				return;
 			}
 
@@ -1094,6 +1113,7 @@ namespace Microsoft.UI.Xaml.Controls
 			ObserveCollectionChanged();
 
 			base.OnItemsSourceGroupsChanged(sender, args);
+			UnoItemsChangedForAccessibility?.Invoke(this, EventArgs.Empty);
 		}
 
 		/// <summary>
@@ -1135,6 +1155,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal override void ContainerClearedForItem(object item, SelectorItem itemContainer)
 		{
+			UnoContainerClearing?.Invoke(
+				this,
+				new UnoContainerClearingEventArgs(itemContainer, IndexFromContainer(itemContainer)));
 			ClearContainerForDragDrop(itemContainer);
 
 			base.ContainerClearedForItem(item, itemContainer);

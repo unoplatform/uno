@@ -152,6 +152,24 @@ namespace Microsoft.UI.Xaml.Controls
 
 			OnPasswordChangedPartial(e);
 
+			var listensToPropertyChanged = AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged);
+			var listensToTextChanged = AutomationPeer.ListenerExistsHelper(AutomationEvents.TextPatternOnTextChanged);
+			if ((listensToPropertyChanged || listensToTextChanged) &&
+				GetOrCreateAutomationPeer() is PasswordBoxAutomationPeer passwordPeer)
+			{
+				if (listensToPropertyChanged)
+				{
+					passwordPeer.RaiseValuePropertyChangedEvent(
+						PasswordBoxAutomationPeer.MaskPasswordValue((string)e.OldValue),
+						PasswordBoxAutomationPeer.MaskPasswordValue((string)e.NewValue));
+				}
+
+				if (listensToTextChanged)
+				{
+					passwordPeer.RaiseAutomationEvent(AutomationEvents.TextPatternOnTextChanged);
+				}
+			}
+
 			if (Password.IsNullOrEmpty() &&
 				((PasswordRevealMode == PasswordRevealMode.Peek) || (UseIsPasswordEnabledProperty && IsPasswordRevealButtonEnabled)))
 			{
@@ -263,8 +281,25 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(PlaceholderText),
 				typeof(string),
 				typeof(PasswordBox),
-				new FrameworkPropertyMetadata(defaultValue: string.Empty, options: FrameworkPropertyMetadataOptions.AffectsMeasure)
+				new FrameworkPropertyMetadata(
+					defaultValue: string.Empty,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (instance, args) => ((PasswordBox)instance).OnPlaceholderTextChanged(args))
 			);
+
+		private void OnPlaceholderTextChanged(DependencyPropertyChangedEventArgs args)
+		{
+			if (!AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged) ||
+				GetOrCreateAutomationPeer() is not PasswordBoxAutomationPeer peer)
+			{
+				return;
+			}
+
+			AutomationPeer.AutomationPeerListener?.NotifyTextBoxPlaceholderChanged(peer);
+			peer.RaisePlaceholderTextChangedEvents(
+				(string)args.OldValue ?? string.Empty,
+				(string)args.NewValue ?? string.Empty);
+		}
 
 		#endregion
 

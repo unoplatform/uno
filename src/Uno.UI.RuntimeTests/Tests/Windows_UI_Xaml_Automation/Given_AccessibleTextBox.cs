@@ -233,17 +233,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.Load(textBox);
 			textBox.Focus(FocusState.Programmatic);
 			textBox.Select(textBox.Text.Length, 0);
+			await UITestHelper.WaitForIdle();
 			textBox.GetOrCreateAutomationPeer();
 
 			EnableAccessibilityThroughDom();
-			await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 5000, message: "Timed out waiting for the semantic textbox to be created.");
+			await UITestHelper.WaitFor(() => SemanticElementExists(textBox), timeoutMS: 10000, message: "Timed out waiting for the semantic textbox to be created.");
 			await UITestHelper.WaitForIdle();
 
 			Assert.AreEqual("test", GetSemanticTextBoxValue(textBox), "Semantic textbox should mirror the existing managed value when accessibility is enabled.");
 			Assert.AreEqual("4", GetSemanticTextBoxCaret(textBox), "Semantic textbox should inherit the managed caret position when created.");
 			// The hidden native <input> is detached asynchronously once the semantic textbox owns focus;
 			// poll for it instead of asserting synchronously, which raced on the slower WASM scheduler.
-			await UITestHelper.WaitFor(() => !HiddenNativeTextBoxExists(), timeoutMS: 5000,
+			await UITestHelper.WaitFor(() => !HiddenNativeTextBoxExists(), timeoutMS: 10000,
 				message: "The hidden browser textbox should be detached once the semantic textbox owns focus.");
 
 			TypeTextIntoSemanticTextBox(textBox, "test");
@@ -316,6 +317,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			await UITestHelper.WaitForIdle();
 
 			Assert.IsTrue(SemanticElementHasAttribute(textBox, "readonly"), "A read-only TextBox must emit a semantic input with the readonly attribute set.");
+			Assert.IsFalse(SemanticElementHasAttribute(textBox, "aria-readonly"), "Native readonly must not be duplicated by aria-readonly.");
 		}
 
 		/// <summary>
@@ -340,6 +342,115 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual("password", GetSemanticInputType(passwordBox), "A PasswordBox must emit input[type=password].");
 		}
 
+		/// <summary>
+		/// T038/T039 (WASM DOM live-sync): programmatic PasswordBox.Password changes must keep the
+		/// semantic input value synchronized using the masked UIA value so the browser still exposes
+		/// a protected password field without leaking the raw password string.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_PasswordBox_Password_Changes_Then_Dom_Value_Live_Syncs()
+		{
+			var passwordBox = new PasswordBox();
+
+			await UITestHelper.Load(passwordBox);
+			passwordBox.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(passwordBox), timeoutMS: 5000, message: "Timed out waiting for the password semantic element to be created.");
+
+			passwordBox.Password = "secret";
+			await UITestHelper.WaitFor(() => GetSemanticInputValue(passwordBox) == new string('•', 6), timeoutMS: 3000,
+				message: "A PasswordBox.Password change did not update the semantic password value.");
+
+			passwordBox.Password = "updated!";
+			await UITestHelper.WaitFor(() => GetSemanticInputValue(passwordBox) == new string('•', 8), timeoutMS: 3000,
+				message: "A second PasswordBox.Password change did not update the semantic password value.");
+
+			passwordBox.Password = string.Empty;
+			await UITestHelper.WaitFor(() => GetSemanticInputValue(passwordBox) == string.Empty, timeoutMS: 3000,
+				message: "Clearing PasswordBox.Password left stale masked content in the semantic password input.");
+		}
+
+		/// <summary>
+		/// T040 (WASM DOM live-sync): when PlaceholderText is the accessible-name fallback, changing it
+		/// must update both the semantic input placeholder and the aria-label exposed to AT.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_TextBox_Placeholder_Changes_Then_Placeholder_And_Accessible_Name_Update()
+		{
+			var textBox = new TextBox { PlaceholderText = "Email address" };
+
+			await UITestHelper.Load(textBox);
+			textBox.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(
+				() => SemanticElementExists(textBox) &&
+					GetSemanticAttribute(textBox, "placeholder") == "Email address" &&
+					GetSemanticAttribute(textBox, "aria-label") == "Email address",
+				timeoutMS: 5000,
+				message: "Timed out waiting for the initial placeholder-backed TextBox semantics.");
+
+			textBox.PlaceholderText = "Work email";
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(textBox, "placeholder") == "Work email" &&
+					GetSemanticAttribute(textBox, "aria-label") == "Work email",
+				timeoutMS: 3000,
+				message: "Changing PlaceholderText did not update the semantic placeholder/name fallback.");
+		}
+
+		/// <summary>
+		/// T040/T030 (WASM DOM live-sync): when Header supplies the name, PlaceholderText becomes the
+		/// help-text fallback. Its updates must refresh the placeholder attribute and aria-description,
+		/// while a later FullDescription must continue to win over PlaceholderText changes.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Headered_TextBox_Placeholder_Changes_Then_Description_Updates_Without_Overriding_FullDescription()
+		{
+			var textBox = new TextBox
+			{
+				Header = "Email",
+				PlaceholderText = "Enter your email"
+			};
+
+			await UITestHelper.Load(textBox);
+			textBox.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(
+				() => SemanticElementExists(textBox) &&
+					GetSemanticAttribute(textBox, "aria-label") == "Email" &&
+					GetSemanticAttribute(textBox, "placeholder") == "Enter your email" &&
+					GetSemanticAttribute(textBox, "aria-description") == "Enter your email",
+				timeoutMS: 5000,
+				message: "Timed out waiting for the initial header/placeholder TextBox semantics.");
+
+			textBox.PlaceholderText = "Work email only";
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(textBox, "placeholder") == "Work email only" &&
+					GetSemanticAttribute(textBox, "aria-label") == "Email" &&
+					GetSemanticAttribute(textBox, "aria-description") == "Work email only",
+				timeoutMS: 3000,
+				message: "Changing PlaceholderText did not refresh the help-text fallback.");
+
+			AutomationProperties.SetFullDescription(textBox, "Use your corporate address");
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(textBox, "aria-description") == "Use your corporate address", timeoutMS: 3000,
+				message: "FullDescription did not replace the placeholder-backed help-text fallback.");
+
+			textBox.PlaceholderText = "Ignored by description";
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(textBox, "placeholder") == "Ignored by description" &&
+					GetSemanticAttribute(textBox, "aria-label") == "Email" &&
+					GetSemanticAttribute(textBox, "aria-description") == "Use your corporate address",
+				timeoutMS: 3000,
+				message: "Changing PlaceholderText overrode FullDescription instead of preserving precedence.");
+		}
 
 		// TextBox-specific accessors. Generic helpers (existence, attribute, tag name, input type,
 		// attribute presence) live in WasmSemanticDomHelper and are used directly via the
@@ -347,7 +458,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		// hidden native input check) stay local.
 
 		private static string GetSemanticTextBoxValue(TextBox textBox)
-			=> InvokeBrowserJs($"(function(){{const element = document.getElementById('{GetSemanticElementId(textBox)}'); return element ? element.value : '';}})()");
+			=> GetSemanticInputValue(textBox);
 
 		private static string GetSemanticTextBoxCaret(TextBox textBox)
 			=> InvokeBrowserJs($"(function(){{const element = document.getElementById('{GetSemanticElementId(textBox)}'); return element ? String(element.selectionStart ?? -1) : '-1';}})()");

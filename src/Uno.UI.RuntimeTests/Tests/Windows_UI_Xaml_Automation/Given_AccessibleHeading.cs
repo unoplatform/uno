@@ -121,6 +121,25 @@ public class Given_AccessibleHeading
 		Assert.AreEqual("7", GetSemanticAttribute(heading, "aria-level"), "A runtime HeadingLevel change must live-update aria-level to the true level (FR-011).");
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_Heading_Has_Identity_Role_Override_Then_True_Level_Is_Preserved()
+	{
+		var heading = new TextBlock { Text = "Identity heading" };
+		AutomationProperties.SetHeadingLevel(heading, AutomationHeadingLevel.Level3);
+		AutomationProperties.SetRoleOverride(heading, "heading");
+
+		await UITestHelper.Load(heading);
+		EnableAccessibilityThroughDom();
+		await UITestHelper.WaitFor(() => SemanticElementExists(heading), timeoutMS: 5000,
+			message: "Timed out waiting for the overridden heading semantic element.");
+
+		Assert.AreEqual("heading", GetSemanticAttribute(heading, "role"));
+		Assert.AreEqual("3", GetSemanticAttribute(heading, "aria-level"),
+			"An identity role override must not erase AutomationProperties.HeadingLevel.");
+	}
+
 
 
 

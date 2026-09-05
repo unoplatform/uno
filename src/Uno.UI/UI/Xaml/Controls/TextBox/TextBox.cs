@@ -227,8 +227,33 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(PlaceholderText),
 				typeof(string),
 				typeof(TextBox),
-				new FrameworkPropertyMetadata(defaultValue: string.Empty, options: FrameworkPropertyMetadataOptions.AffectsMeasure)
+				new FrameworkPropertyMetadata(
+					defaultValue: string.Empty,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: (instance, args) => ((TextBox)instance).OnPlaceholderTextChanged(args))
 			);
+
+		private void OnPlaceholderTextChanged(DependencyPropertyChangedEventArgs args)
+		{
+			if (!AutomationPeer.ListenerExistsHelper(AutomationEvents.PropertyChanged))
+			{
+				return;
+			}
+
+			var oldPlaceholder = (string)args.OldValue ?? string.Empty;
+			var newPlaceholder = (string)args.NewValue ?? string.Empty;
+			switch (GetOrCreateAutomationPeer())
+			{
+				case TextBoxAutomationPeer textPeer:
+					AutomationPeer.AutomationPeerListener?.NotifyTextBoxPlaceholderChanged(textPeer);
+					textPeer.RaisePlaceholderTextChangedEvents(oldPlaceholder, newPlaceholder);
+					break;
+				case PasswordBoxAutomationPeer passwordPeer:
+					AutomationPeer.AutomationPeerListener?.NotifyTextBoxPlaceholderChanged(passwordPeer);
+					passwordPeer.RaisePlaceholderTextChangedEvents(oldPlaceholder, newPlaceholder);
+					break;
+			}
+		}
 
 		#endregion
 

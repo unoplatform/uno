@@ -59,6 +59,10 @@ jobs:
       dotnet test --solution src/Uno.UI-UnitTests-only.slnf -c Release -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -bl:$(build.artifactstagingdirectory)\unit-tests-run-$(XAML_FLAVOR_BUILD).binlog --no-build --no-progress --report-trx --results-directory $(Build.SourcesDirectory)/artifacts/TestResults
     displayName: Run unit tests
 
+  - pwsh: |
+      dotnet test --project src/SamplesApp/SamplesApp.AppiumTests/SamplesApp.AppiumTests.csproj -c Release -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true --filter TestCategory=HostIndependent --no-progress --report-trx --results-directory $(Build.SourcesDirectory)/artifacts/TestResults
+    displayName: Run Appium host-independent tests
+
   - task: PublishTestResults@2
     displayName: Publish TRX Test Results
     inputs:

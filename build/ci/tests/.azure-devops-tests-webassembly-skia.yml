@@ -109,3 +109,58 @@ jobs:
       PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results
       ArtifactName: runtime-tests-wasm-skia-failures
       ArtifactType: Container
+
+- job: Skia_Browser_Accessibility_Automation
+  displayName: 'Accessibility Automation'
+  timeoutInMinutes: 30
+  cancelTimeoutInMinutes: 2
+
+  pool:
+    vmImage: ${{ parameters.vmLinuxImage }}
+
+  dependsOn: Skia_Tests_Build_Browser
+
+  variables:
+    SamplesAppArtifactName: $[ dependencies.Skia_Tests_Build_Browser.outputs['set_samples_artifact.SamplesAppArtifactName'] ]
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+    XAML_FLAVOR_BUILD: ${{ parameters.XAML_FLAVOR_BUILD }}
+
+  steps:
+  - task: DownloadPipelineArtifact@2
+    displayName: Downloading $(SamplesAppArtifactName)
+    inputs:
+      artifact: $(SamplesAppArtifactName)
+      path: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
+  - template: ../templates/dotnet-install.yml
+
+  - template: ../templates/linux-install-deps.yml
+
+  - bash: |
+        set -euo pipefail
+        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+        sudo apt-get update
+        sudo apt-get install -y ./google-chrome-stable_current_amd64.deb
+    displayName: Install chrome
+
+  - bash: build/test-scripts/wasm-run-appium-accessibility-tests.sh
+    displayName: Run WebAssembly accessibility automation tests
+
+  - task: PublishTestResults@2
+    displayName: Publish WebAssembly accessibility automation results
+    condition: always()
+    inputs:
+      testRunTitle: 'WebAssembly Accessibility Automation Tests'
+      testResultsFormat: 'VSTest'
+      testResultsFiles: '$(build.sourcesdirectory)/build/appium-wasm-test-results/*.trx'
+      failTaskOnFailedTests: true
+      failTaskOnMissingResultsFile: true
+
+  - task: PublishBuildArtifacts@1
+    displayName: Publish accessibility automation diagnostics
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/build/uitests-failure-results/appium-wasm
+      ArtifactName: accessibility-automation-wasm-skia-failures
+      ArtifactType: Container

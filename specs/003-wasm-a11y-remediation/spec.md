@@ -21,10 +21,11 @@ A verification audit of the *existing* Skia-on-WebAssembly accessibility layer (
 real defects: one mapping is **broken** (RadioButton), several are **partial**
 (PasswordBox/Heading live-sync, ScrollViewer region), one is a **gap** (standalone body
 text), and a cross-cutting **tabindex** flaw puts non-interactive elements (headings,
-composite containers) into the keyboard tab order. The subsystem is also **runtime-untested**
-(its runtime tests are almost entirely `[Ignore]`d). This feature remediates those
-defects and establishes DOM-level test coverage. It targets the **Skia WASM** AOM only;
-the native WASM-DOM target is maintenance-only.
+composite containers) into the keyboard tab order. At audit time, the subsystem was also
+**runtime-untested** (its runtime tests were almost entirely `[Ignore]`d). This feature
+remediates those defects and establishes active DOM-level runtime and external automation
+coverage. It targets the **Skia WASM** AOM only; the native WASM-DOM target is
+maintenance-only.
 
 ## User Scenarios & Testing *(mandatory)*
 
