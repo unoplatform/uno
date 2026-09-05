@@ -12,6 +12,7 @@ partial class RectangleClip
 {
 	private SKRoundRect? _skRoundRect;
 	private static readonly SKPathBuilder _spareClipPathBuilder = new();
+	private SKPath? _clipPath;
 
 	private protected override Rect? GetBoundsCore(Visual visual)
 	{
@@ -25,11 +26,25 @@ partial class RectangleClip
 	// The path returned here is reused, do not cache
 	internal override SKPath GetClipPath(Visual visual)
 	{
+		// Detaching a builder hands out a brand new native SKPath, and this runs for every rounded visual
+		// on every frame. The path depends only on this clip's own properties -- GetBoundsCore ignores the
+		// visual -- so build it once and let OnPropertyChangedCore drop it when any of them changes.
+		if (_clipPath is { } cached)
+		{
+			return cached;
+		}
+
 		var builder = _spareClipPathBuilder;
 		builder.Reset();
 		builder.AddRoundRect(GetClipRoundedRect(visual), SKPathDirection.Clockwise);
 
-		return builder.Detach();
+		return _clipPath = builder.Detach();
+	}
+
+	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
+	{
+		_clipPath = null;
+		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
 	}
 
 	private protected override SKRect? GetClipRect(Visual visual)
