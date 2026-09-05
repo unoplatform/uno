@@ -13,9 +13,7 @@ namespace Uno.UI.Runtime.Skia.Android;
 
 internal sealed class AndroidKeyboardInputSource : IUnoKeyboardInputSource
 {
-	public static AndroidKeyboardInputSource Instance { get; } = new();
-
-	private AndroidKeyboardInputSource()
+	internal AndroidKeyboardInputSource()
 	{
 	}
 
