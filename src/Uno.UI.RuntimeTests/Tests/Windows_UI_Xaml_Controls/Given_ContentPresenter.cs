@@ -25,6 +25,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public partial class Given_ContentPresenter
 {
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20966")]
+	public async Task When_Content_Cleared_Then_Space_Is_Reclaimed()
+	{
+		var SUT = new ContentPresenter { Content = "Some content" };
+		var host = new StackPanel { Width = 300 };
+		host.Children.Add(SUT);
+
+		await UITestHelper.Load(host);
+
+		Assert.IsTrue(SUT.ActualHeight > 0, "Text content should occupy a line");
+
+		SUT.Content = null;
+		await TestServices.WindowHelper.WaitForIdle();
+
+		// WinUI's ContentPresenter materializes no visuals at all while the content is null and no
+		// template is set, so the line of text height must go away with the content.
+		Assert.AreEqual(0d, SUT.ActualHeight, "Height should be reclaimed once the content is cleared");
+
+		SUT.Content = "Some other content";
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(SUT.ActualHeight > 0, "Text content should occupy a line again");
+	}
+
+	[TestMethod]
 	public async Task When_Padding_Set_In_SizeChanged()
 	{
 		var SUT = new ContentPresenter()
