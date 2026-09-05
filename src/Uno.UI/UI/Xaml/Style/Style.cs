@@ -339,6 +339,17 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
+			// Fallback: Try to find a default style in the type's assembly's Generic.xaml
+			// This handles custom controls defined in the app assembly (issue #4424)
+			if (style is null)
+			{
+				if (ResourceResolver.TryGetStyleFromGenericXaml(type, out var genericStyle))
+				{
+					style = genericStyle;
+					_defaultStyleCache[type] = style;
+				}
+			}
+
 			if (_logger.IsEnabled(LogLevel.Debug))
 			{
 				if (style != null)
