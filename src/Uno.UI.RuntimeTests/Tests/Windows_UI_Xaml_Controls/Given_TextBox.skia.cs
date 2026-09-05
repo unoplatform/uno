@@ -1155,6 +1155,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task When_Scrolling_Updates_With_Movement()
 		{
 			if (OperatingSystem.IsLinux() || OperatingSystem.IsBrowser())
@@ -1212,7 +1213,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Scrolling_Updates_After_Backspace()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -1310,6 +1311,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task When_Pointer_Tap()
 		{
 			if (OperatingSystem.IsBrowser())
@@ -1427,6 +1429,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task When_Pointer_RightClick_No_Selection()
 		{
 			if (OperatingSystem.IsBrowser())
@@ -1519,6 +1522,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task When_Pointer_Hold_Drag()
 		{
 			if (OperatingSystem.IsBrowser())
@@ -1614,6 +1618,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task When_LongText_Pointer_Hold_Drag_OutOfBounds()
 		{
 			if (OperatingSystem.IsBrowser())
@@ -1809,6 +1814,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task When_Typing_While_Pointer_Held()
 		{
 			if (OperatingSystem.IsBrowser())
@@ -1879,6 +1885,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(VirtualKey.Back, VirtualKeyModifiers.None)]
 		[DataRow(VirtualKey.Delete, VirtualKeyModifiers.None)]
 		[DataRow(VirtualKey.A, VirtualKeyModifiers.Control)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task When_Move_Caret_While_Pointer_Held(VirtualKey key, VirtualKeyModifiers modifiers)
 		{
 			if (OperatingSystem.IsBrowser())
@@ -2074,6 +2081,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task When_Escape_While_Pointer_Held()
 		{
 			if (OperatingSystem.IsBrowser())
@@ -2642,7 +2650,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Multiline_Wrapping_UpDown()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -2870,6 +2878,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task When_Multiline_Wrapping_Text_Ends_In_Too_Many_Spaces()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -3235,6 +3244,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task When_Multiline_Pointer_TripleTap()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -3286,6 +3296,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task When_Multiline_Pointer_TripleTap_With_Wrapping()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
@@ -3696,6 +3707,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task When_Right_Tap_Selection_Persists()
 		{
 			if (OperatingSystem.IsIOS())
@@ -4520,6 +4532,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task When_Variable_Width_Tab()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();

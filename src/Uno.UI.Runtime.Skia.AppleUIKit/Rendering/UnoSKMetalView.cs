@@ -152,11 +152,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 			_link.Paused = true;
 
-			var size = DrawableSize;
-
-			var width = (int)size.Width;
-			var height = (int)size.Height;
-
 			SKSurface? surface = null;
 			SKCanvas? canvas = null;
 			ICAMetalDrawable? drawable = null;
@@ -165,11 +160,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			try
 			{
 				// Defer the acquisition of the drawable
-#if __TVOS__ // TODO: tvOS is not supported yet.
-				surface = SKSurface.CreateNull(width, height);
-#else
 				surface = SKSurface.Create(_context, this, GRSurfaceOrigin.TopLeft, (int)SampleCount, SKColorType.Bgra8888);
-#endif
 
 				canvas = surface.Canvas;
 
