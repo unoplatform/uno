@@ -385,16 +385,17 @@ namespace Microsoft.UI.Composition
 			OnPropertyChanged(propertyName, false);
 		}
 
-		private protected void SetProperty(ref Matrix4x4 field, Matrix4x4 value, [CallerMemberName] string? propertyName = null)
+		private protected bool SetProperty(ref Matrix4x4 field, Matrix4x4 value, [CallerMemberName] string? propertyName = null)
 		{
 			if (field.Equals(value))
 			{
-				return;
+				return false;
 			}
 
 			field = value;
 
 			OnPropertyChanged(propertyName, false);
+			return true;
 		}
 
 		private protected bool SetProperty(ref Vector2 field, Vector2 value, [CallerMemberName] string? propertyName = null)

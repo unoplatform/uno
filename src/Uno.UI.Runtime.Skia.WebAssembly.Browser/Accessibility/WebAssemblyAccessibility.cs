@@ -22,6 +22,7 @@ using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -452,6 +453,13 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			if (--_onChildAddedDepth == 0)
 			{
 				DrainPendingLabelledBy();
+				NativeDispatcher.Main.Enqueue(() =>
+				{
+					if (IsAccessibilityEnabled)
+					{
+						UpdateSemanticSubtreeGeometry(child);
+					}
+				});
 			}
 		}
 	}
@@ -753,29 +761,15 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					return;
 				}
 
-				if (_semanticParentMap.TryGetValue(handle, out var semanticParentHandle)
+				if (TryGetSemanticParentHandle(handle, out var semanticParentHandle)
 					&& containerVisual.Owner?.Target is UIElement element)
 				{
-					// Use the full element-to-semantic-parent transform so that
-					// RenderTransform, Scale, etc. are reflected in the position.
-					var semanticParentElement = FindUIElementByHandle(element, semanticParentHandle);
-					var localRect = new Windows.Foundation.Rect(0, 0, visual.Size.X, visual.Size.Y);
-					if (semanticParentElement is not null)
-					{
-						var transform = UIElement.GetTransform(from: element, to: semanticParentElement);
-						var transformedRect = transform.Transform(localRect);
-						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
-					}
-					else
-					{
-						var transform = UIElement.GetTransform(from: element, to: null);
-						var transformedRect = transform.Transform(localRect);
-						NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
-					}
+					UpdateSemanticElementGeometry(handle, element, semanticParentHandle);
 				}
-				else
+				else if (HasSemanticElement(handle))
 				{
-					// Root element or element not in semantic map — use full transform to root
+					// The root element — it owns a node but has no semantic parent, so it is
+					// positioned against the visual tree root using the full transform.
 					if (containerVisual.Owner?.Target is UIElement rootElement)
 					{
 						var transform = UIElement.GetTransform(from: rootElement, to: null);
@@ -789,7 +783,89 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 						NativeMethods.UpdateSemanticElementPositioning(handle, visual.Size.X, visual.Size.Y, totalOffset.X, totalOffset.Y);
 					}
 				}
+				else if (!_isCreatingAOM && containerVisual.Owner?.Target is UIElement prunedElement)
+				{
+					// The element is pruned from the AOM (Grid, Border, ContentPresenter, …) so it owns
+					// no DOM node. Its offset/transform only ever materializes inside the positions its
+					// semantic descendants hold relative to the semantic ancestor they are DOM-parented
+					// under, and nothing else re-emits those — without this they keep the geometry
+					// computed before layout ran, which collapses every descendant onto the same point.
+					UpdateNearestSemanticDescendantsGeometry(prunedElement);
+				}
 			}
+		}
+	}
+
+	/// <summary>
+	/// Writes the DOM geometry of a semantic node. Positions are relative to the semantic parent the
+	/// node is DOM-nested under, using the full element-to-parent transform so RenderTransform, Scale
+	/// and the offsets of any pruned element in between are all reflected.
+	/// </summary>
+	private static void UpdateSemanticElementGeometry(IntPtr handle, UIElement element, IntPtr semanticParentHandle)
+	{
+		var semanticParentElement = FindUIElementByHandle(element, semanticParentHandle);
+		var localRect = new Windows.Foundation.Rect(0, 0, element.Visual.Size.X, element.Visual.Size.Y);
+		var transform = UIElement.GetTransform(from: element, to: semanticParentElement);
+		var transformedRect = transform.Transform(localRect);
+		NativeMethods.UpdateSemanticElementPositioning(handle, (float)transformedRect.Width, (float)transformedRect.Height, (float)transformedRect.X, (float)transformedRect.Y);
+	}
+
+	/// <summary>
+	/// Resolves the handle of the semantic node a given node is DOM-nested under. A node is either
+	/// tracked in <see cref="_semanticParentMap"/> or realized inside a virtualized region, in which
+	/// case its DOM parent is that region's container. Returns false for the root node, which has no
+	/// semantic parent, and for elements pruned from the accessibility tree.
+	/// </summary>
+	private bool TryGetSemanticParentHandle(IntPtr handle, out IntPtr semanticParentHandle)
+	{
+		if (_semanticParentMap.TryGetValue(handle, out semanticParentHandle))
+		{
+			return true;
+		}
+
+		foreach (var region in _virtualizedRegions)
+		{
+			if (region.ContainsRealizedHandle(handle))
+			{
+				semanticParentHandle = region.ContainerHandle;
+				return true;
+			}
+		}
+
+		semanticParentHandle = IntPtr.Zero;
+		return false;
+	}
+
+	/// <summary>
+	/// Re-emits the geometry of the nearest semantic descendants of <paramref name="element"/>. The walk
+	/// stops at the first semantic node on each branch: that node owns a DOM element, so its own subtree
+	/// is nested underneath it and follows it automatically.
+	/// </summary>
+	private void UpdateNearestSemanticDescendantsGeometry(UIElement element)
+	{
+		foreach (var child in element.GetChildren())
+		{
+			if (TryGetSemanticParentHandle(child.Visual.Handle, out var childSemanticParentHandle))
+			{
+				UpdateSemanticElementGeometry(child.Visual.Handle, child, childSemanticParentHandle);
+			}
+			else
+			{
+				UpdateNearestSemanticDescendantsGeometry(child);
+			}
+		}
+	}
+
+	private void UpdateSemanticSubtreeGeometry(UIElement element)
+	{
+		if (TryGetSemanticParentHandle(element.Visual.Handle, out var semanticParentHandle))
+		{
+			UpdateSemanticElementGeometry(element.Visual.Handle, element, semanticParentHandle);
+		}
+
+		foreach (var child in element.GetChildren())
+		{
+			UpdateSemanticSubtreeGeometry(child);
 		}
 	}
 
@@ -926,6 +1002,27 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		{
 			@this._isCreatingAOM = false;
 		}
+
+		if (rootElement is FrameworkElement rootFrameworkElement)
+		{
+			rootFrameworkElement.LayoutUpdated += OnInitialLayoutUpdated;
+			void OnInitialLayoutUpdated(object? sender, object args)
+			{
+				rootFrameworkElement.LayoutUpdated -= OnInitialLayoutUpdated;
+				if (@this.IsAccessibilityEnabled && @this._rootElementHandle == rootElement.Visual.Handle)
+				{
+					@this.UpdateSemanticSubtreeGeometry(rootElement);
+				}
+			}
+		}
+
+		NativeDispatcher.Main.Enqueue(() =>
+		{
+			if (@this.IsAccessibilityEnabled && @this._rootElementHandle == rootElement.Visual.Handle)
+			{
+				@this.UpdateSemanticSubtreeGeometry(rootElement);
+			}
+		});
 		Control.OnIsFocusableChangedCallback = @this.UpdateIsFocusable;
 
 		// Initialize subsystems

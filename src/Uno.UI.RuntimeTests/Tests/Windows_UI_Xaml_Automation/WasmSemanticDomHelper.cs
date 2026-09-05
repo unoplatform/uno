@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Reflection;
 using Microsoft.UI.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Windows.Foundation;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 {
@@ -42,6 +43,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		/// <summary>Returns true when the semantic node has non-zero browser bounds.</summary>
 		public static bool SemanticElementHasNonEmptyBounds(UIElement element)
 			=> InvokeBrowserJs($"(function(){{const e = document.getElementById('{GetSemanticElementId(element)}'); if (!e) {{ return '0'; }} const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 ? '1' : '0'; }})()") == "1";
+
+		/// <summary>
+		/// Returns the element's semantic node <c>getBoundingClientRect()</c> in viewport coordinates.
+		/// Reading the browser rect (rather than the inline <c>style.left/top</c>) is what makes the
+		/// geometry assertions meaningful: it composes the whole chain of nested semantic nodes, so a
+		/// dropped ancestor offset or transform shows up here exactly as an assistive technology or a
+		/// UI test driver would see it. Throws when the node is absent so a missing node fails loudly
+		/// instead of silently comparing zeroes.
+		/// </summary>
+		public static Rect GetSemanticElementRect(UIElement element)
+		{
+			var raw = InvokeBrowserJs($"(function(){{const e = document.getElementById('{GetSemanticElementId(element)}'); if (!e) {{ return ''; }} const r = e.getBoundingClientRect(); return r.left + ';' + r.top + ';' + r.width + ';' + r.height; }})()");
+
+			Assert.AreNotEqual(string.Empty, raw, $"No semantic node found for {element.GetType().Name}.");
+
+			var parts = raw.Split(';');
+			Assert.AreEqual(4, parts.Length, $"Unexpected rect payload '{raw}'.");
+
+			return new Rect(
+				double.Parse(parts[0], CultureInfo.InvariantCulture),
+				double.Parse(parts[1], CultureInfo.InvariantCulture),
+				double.Parse(parts[2], CultureInfo.InvariantCulture),
+				double.Parse(parts[3], CultureInfo.InvariantCulture));
+		}
 
 		/// <summary>
 		/// Returns the value of an attribute on the element's semantic node, or empty string when the
