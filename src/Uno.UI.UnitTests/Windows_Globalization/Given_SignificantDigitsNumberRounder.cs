@@ -29,6 +29,105 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[DataRow(123.456f, (uint)2, 120f)]
+		[DataRow(0.012345f, (uint)2, 0.012f)]
+		[DataRow(-987.65f, (uint)3, -988f)]
+		public void When_RoundingSingle_Then_UsesSignificantDigits(float value, uint significantDigits, float expected)
+		{
+			var sut = new SignificantDigitsNumberRounder
+			{
+				SignificantDigits = significantDigits,
+			};
+
+			Assert.AreEqual(expected, sut.RoundSingle(value), 0.000001f);
+		}
+
+		[TestMethod]
+		[DataRow(12345678901d, (uint)3, 12300000000d)]
+		[DataRow(-12345678901d, (uint)3, -12300000000d)]
+		public void When_Value_ExceedsInt32_Then_RoundsWithoutOverflow(double value, uint significantDigits, double expected)
+		{
+			var sut = new SignificantDigitsNumberRounder
+			{
+				SignificantDigits = significantDigits,
+			};
+
+			Assert.AreEqual(expected, sut.RoundDouble(value));
+		}
+
+		[TestMethod]
+		public void When_Value_Is_Immediately_Below_Decade_Then_Directed_Rounding_Is_Preserved()
+		{
+			var sut = new SignificantDigitsNumberRounder
+			{
+				SignificantDigits = 3,
+				RoundingAlgorithm = RoundingAlgorithm.RoundDown,
+			};
+
+			Assert.AreEqual(999d, sut.RoundDouble(999.9999999999999d));
+		}
+
+		[TestMethod]
+		public void When_Value_Is_Subnormal_Then_It_Is_Rounded()
+		{
+			var sut = new SignificantDigitsNumberRounder
+			{
+				SignificantDigits = 3,
+			};
+
+			Assert.AreEqual(1.23E-310, sut.RoundDouble(1.23456789E-310), 1E-322);
+		}
+
+		[TestMethod]
+		public void When_SignificantDigits_Exceeds_Double_Precision_Then_Value_Is_Unchanged()
+		{
+			var sut = new SignificantDigitsNumberRounder
+			{
+				SignificantDigits = 310,
+			};
+
+			Assert.AreEqual(123.456d, sut.RoundDouble(123.456d));
+		}
+
+		[TestMethod]
+		public void When_Subnormal_Value_Is_Immediately_Below_Decade_Then_Directed_Rounding_Is_Preserved()
+		{
+			var sut = new SignificantDigitsNumberRounder
+			{
+				SignificantDigits = 3,
+				RoundingAlgorithm = RoundingAlgorithm.RoundDown,
+			};
+
+			Assert.AreEqual(9.99E-314, sut.RoundDouble(Math.BitDecrement(1E-313)), 1E-323);
+		}
+
+		[TestMethod]
+		public void When_SignificantDigits_Equals_Double_Precision_Then_Directed_Rounding_Is_Applied()
+		{
+			const double value = 1.9985277518021318;
+			var sut = new SignificantDigitsNumberRounder
+			{
+				SignificantDigits = 17,
+				RoundingAlgorithm = RoundingAlgorithm.RoundUp,
+			};
+
+			Assert.AreEqual(Math.BitIncrement(value), sut.RoundDouble(value));
+		}
+
+		[TestMethod]
+		public void When_Fallback_Scaling_Is_Used_Then_Directed_Rounding_Does_Not_Cross_The_Input()
+		{
+			const double value = 6.6E-300;
+			var sut = new SignificantDigitsNumberRounder
+			{
+				SignificantDigits = 16,
+				RoundingAlgorithm = RoundingAlgorithm.RoundDown,
+			};
+
+			Assert.IsTrue(sut.RoundDouble(value) <= value);
+		}
+
+		[TestMethod]
 		[DataRow(1.25, 1.3)]
 		[DataRow(1.27, 1.3)]
 		[DataRow(1.23, 1.3)]

@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using Uno;
 using Uno.Globalization.NumberFormatting;
 
 namespace Windows.Globalization.NumberFormatting;
@@ -43,36 +42,39 @@ public partial class SignificantDigitsNumberRounder : INumberRounder
 	{
 	}
 
-	[NotImplemented]
-	public int RoundInt32(int value)
-	{
-		throw new global::System.NotImplementedException("The member int SignificantDigitsNumberRounder.RoundInt32(int value) is not implemented in Uno.");
-	}
+	public int RoundInt32(int value) => IntegralRounding.ToInt32(RoundInt64(value));
 
-	[NotImplemented]
-	public uint RoundUInt32(uint value)
-	{
-		throw new global::System.NotImplementedException("The member uint SignificantDigitsNumberRounder.RoundUInt32(uint value) is not implemented in Uno.");
-	}
+	public uint RoundUInt32(uint value) => IntegralRounding.ToUInt32(RoundUInt64(value));
 
-	[NotImplemented]
 	public long RoundInt64(long value)
 	{
-		throw new global::System.NotImplementedException("The member long SignificantDigitsNumberRounder.RoundInt64(long value) is not implemented in Uno.");
+		var magnitude = IntegralRounding.GetMagnitude(value, out var isNegative);
+		var rounded = RoundMagnitude(magnitude, isNegative);
+
+		return IntegralRounding.ToInt64(rounded, isNegative);
 	}
 
-	[NotImplemented]
-	public ulong RoundUInt64(ulong value)
+	public ulong RoundUInt64(ulong value) => RoundMagnitude(value, false);
+
+	private ulong RoundMagnitude(ulong magnitude, bool isNegative)
 	{
-		throw new global::System.NotImplementedException("The member ulong SignificantDigitsNumberRounder.RoundUInt64(ulong value) is not implemented in Uno.");
+		var digitCount = Rounder.GetDigitCount(magnitude);
+
+		if (digitCount <= SignificantDigits)
+		{
+			return magnitude;
+		}
+
+		var increment = Rounder.GetPowerOfTen(digitCount - (int)SignificantDigits);
+
+		return Rounder.RoundMagnitude(magnitude, increment, isNegative, RoundingAlgorithm);
 	}
 
-	public float RoundSingle(float value)
-	{
-		return (float)Math.Round(value, (int)SignificantDigits, MidpointRounding.AwayFromZero);
-	}
+	public float RoundSingle(float value) => (float)RoundFloatingPoint(value, 9);
 
-	public double RoundDouble(double value)
+	public double RoundDouble(double value) => RoundFloatingPoint(value, 17);
+
+	private double RoundFloatingPoint(double value, uint maximumSignificantDigits)
 	{
 		if (double.IsNaN(value) ||
 			double.IsInfinity(value))
@@ -80,20 +82,67 @@ public partial class SignificantDigitsNumberRounder : INumberRounder
 			return double.NaN;
 		}
 
-		var integerPart = (int)Math.Truncate(value);
-		var integerPartLength = (uint)integerPart.GetLength();
-		var diffLength = SignificantDigits - integerPartLength;
-
-		if (SignificantDigits < integerPartLength)
+		if (value == 0)
 		{
-			diffLength = integerPartLength - SignificantDigits;
-			var pow10 = Math.Pow(10, diffLength);
-			value /= pow10;
-			value = Rounder.Round(value, 0, RoundingAlgorithm);
-			value *= pow10;
 			return value;
 		}
 
-		return Rounder.Round(value, (int)diffLength, RoundingAlgorithm);
+		if (SignificantDigits > maximumSignificantDigits)
+		{
+			return value;
+		}
+
+		var magnitude = Math.Abs(value);
+		var exponent = (int)Math.Floor(Math.Log10(magnitude));
+		var scale = Math.Pow(10, exponent);
+
+		if (scale == 0)
+		{
+			return value;
+		}
+
+		if (magnitude < scale)
+		{
+			exponent--;
+			scale /= 10;
+		}
+		else
+		{
+			var nextScale = Math.Pow(10, exponent + 1);
+			if (nextScale > 0 && magnitude >= nextScale)
+			{
+				exponent++;
+				scale = nextScale;
+			}
+		}
+
+		var decimalPlaces = (int)SignificantDigits - 1 - exponent;
+		if (decimalPlaces is >= -308 and <= 308)
+		{
+			var factor = Math.Pow(10, decimalPlaces);
+			if (double.IsFinite(value * factor))
+			{
+				return Rounder.Round(value, decimalPlaces, RoundingAlgorithm);
+			}
+		}
+
+		var normalized = exponent < -308
+			? value * 1E308 * Math.Pow(10, -exponent - 308)
+			: value / scale;
+		var rounded = Rounder.Round(normalized, (int)SignificantDigits - 1, RoundingAlgorithm);
+		var result = exponent < -308
+			? rounded * Math.Pow(10, exponent + 308) * 1E-308
+			: rounded * scale;
+
+		return RoundingAlgorithm switch
+		{
+			RoundingAlgorithm.RoundDown when result > value => Math.BitDecrement(result),
+			RoundingAlgorithm.RoundUp when result < value => Math.BitIncrement(result),
+			RoundingAlgorithm.RoundTowardsZero when value > 0 && result > value => Math.BitDecrement(result),
+			RoundingAlgorithm.RoundTowardsZero when value < 0 && result < value => Math.BitIncrement(result),
+			RoundingAlgorithm.RoundAwayFromZero when value > 0 && result < value => Math.BitIncrement(result),
+			RoundingAlgorithm.RoundAwayFromZero when value < 0 && result > value => Math.BitDecrement(result),
+			_ => result,
+		};
 	}
 }

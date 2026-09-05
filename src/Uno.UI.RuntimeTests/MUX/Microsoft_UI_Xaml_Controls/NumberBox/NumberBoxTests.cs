@@ -13,6 +13,8 @@ using Microsoft.UI.Xaml.Automation;
 using MUXControlsTestApp;
 using Private.Infrastructure;
 using System.Threading.Tasks;
+using Windows.Globalization.NumberFormatting;
+using Windows.System.UserProfile;
 
 #if !HAS_UNO_WINUI
 using Windows.UI.Xaml.Controls;
@@ -69,6 +71,56 @@ namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 			});
 
 			return;
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23884")]
+		public void VerifySelectionFlyoutPropagates()
+		{
+			var numberBox = SetupNumberBox();
+			TextBox textBox = null;
+
+			RunOnUIThread.Execute(() =>
+			{
+				Content.UpdateLayout();
+
+				textBox = TestUtilities.FindDescendents<TextBox>(numberBox).Where(e => e.Name == "InputBox").Single();
+				Assert.IsNotNull(numberBox.SelectionFlyout, "NumberBox should have a default SelectionFlyout (TextControlCommandBarSelectionFlyout).");
+				Assert.AreSame(numberBox.SelectionFlyout, textBox.SelectionFlyout, "The default SelectionFlyout should match between NumberBox and its inner TextBox.");
+
+				var customFlyout = new Flyout();
+				numberBox.SelectionFlyout = customFlyout;
+				Content.UpdateLayout();
+
+				Assert.AreSame(customFlyout, textBox.SelectionFlyout, "Setting a custom SelectionFlyout on NumberBox should propagate to the inner TextBox.");
+
+				numberBox.SelectionFlyout = null;
+				Content.UpdateLayout();
+
+				Assert.IsNull(textBox.SelectionFlyout, "Clearing SelectionFlyout on NumberBox should propagate to the inner TextBox.");
+			});
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void VerifyDefaultNumberFormatterUsesRegionalSettings()
+		{
+#if HAS_UNO
+			RunOnUIThread.Execute(() =>
+			{
+				var numberBox = new NumberBox();
+				var formatter = numberBox.NumberFormatter as DecimalFormatter;
+				Assert.IsNotNull(formatter, "Default NumberFormatter should be a DecimalFormatter.");
+				var expectedLanguage = GlobalizationPreferences.Languages[0].Split('_')[0];
+
+				Assert.AreEqual(expectedLanguage, formatter.Languages[0]);
+				Assert.AreEqual(GlobalizationPreferences.HomeGeographicRegion, formatter.GeographicRegion);
+				Assert.AreEqual(1, formatter.IntegerDigits);
+				Assert.AreEqual(0, formatter.FractionDigits);
+			});
+#endif
 		}
 
 		[TestMethod]
