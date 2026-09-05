@@ -1,4 +1,6 @@
-﻿using System.Threading;
+// [UITest -> runtime-test migration] NOT migrated to a runtime test:
+// WASM-DOM specific: the sample (Wasm_CustomEvent, #if __WASM__-only) uses WebAssemblyRuntime.InvokeJS to dispatch raw/custom DOM Events and RegisterHtmlEventHandler/RegisterHtmlCustomEventHandler to bind to them by HtmlId — a browser-DOM-only mechanism with no Skia equivalent; not translatable to a Skia runtime test.
+using System.Threading;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
