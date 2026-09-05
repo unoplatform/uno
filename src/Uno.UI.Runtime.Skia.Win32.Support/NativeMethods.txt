@@ -200,6 +200,7 @@ GetCapture
 GetClientRect
 GetClipboardData
 GetClipboardFormatName
+GetClipboardSequenceNumber
 GetDC
 GetDeviceCaps
 GetDpiForWindow
@@ -232,6 +233,7 @@ GlobalUnlock
 InternetGetConnectedState
 InvalidateRect
 IsChild
+IsClipboardFormatAvailable
 IsZoomed
 LoadCursor
 LoadRegTypeLib
