@@ -91,7 +91,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				rect.Y -= increment;
+				rect.Y += increment;
 			}
 		}
 

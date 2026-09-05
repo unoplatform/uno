@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// UniformGridLayout.cpp, commit 3f3e328
+// MUX Reference UniformGridLayout.cpp, commit b8cfb8490
 
 using System;
 using System.Collections.Specialized;
@@ -88,12 +88,27 @@ namespace Microsoft.UI.Xaml.Controls
 				true /* isWrapping */,
 				(FlowLayoutLineAlignment)(m_itemsJustification),
 				LayoutId);
+
+			var gridState = GetAsGridState(context.LayoutState);
+			gridState.InvalidateElementSize();
+
 			return new Size(value.Width, value.Height);
 		}
 
 		protected internal override void OnItemsChangedCore(VirtualizingLayoutContext context, object source, NotifyCollectionChangedEventArgs args)
 		{
-			GetFlowAlgorithm(context).OnItemsSourceChanged(source, args, context);
+			// The LayoutState can be null when a collection change is raised against a
+			// layout that has not been (or is no longer) initialized for this context -
+			// for example a stray CollectionChanged delivered to an unloaded ItemsRepeater
+			// whose RepeaterLayoutContext can no longer resolve its owner. Guard against it
+			// (mirrors StackLayout::OnItemsChangedCore) instead of dereferencing a null state.
+			if (context.LayoutState is { } layoutState)
+			{
+				if (GetAsGridState(layoutState) is { } gridState)
+				{
+					gridState.FlowAlgorithm().OnItemsSourceChanged(source, args, context);
+				}
+			}
 			// Always invalidate layout to keep the view accurate.
 			InvalidateLayout();
 		}
@@ -255,6 +270,10 @@ namespace Microsoft.UI.Xaml.Controls
 				LayoutId, extent.Width, extent.Height, lineSize, itemsPerLine);
 			return extent;
 		}
+
+		// TODO Uno: The #ifdef DBG Algorithm_GetFlowLayoutLogItemIndexDbg / Algorithm_SetFlowLayoutAnchorInfoDbg
+		// debug hooks from UniformGridLayout.cpp are not ported: the underlying FlowLayoutAlgorithm debug
+		// infrastructure (LogItemIndexDbg / SetLayoutAnchorInfoDbg) is not present in Uno's port.
 
 		void IFlowLayoutAlgorithmDelegates.Algorithm_OnElementMeasured(
 			UIElement element,

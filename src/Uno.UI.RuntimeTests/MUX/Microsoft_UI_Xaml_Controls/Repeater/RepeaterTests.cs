@@ -683,9 +683,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__ || __SKIA__
-		[Ignore("Fails https://github.com/unoplatform/uno/issues/9080")]
-#endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/9080")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.NativeUIKit)]
 		public async Task VerifyRepeaterDoesNotLeakItemContainers()
 		{
 			ObservableCollection<int> items = new ObservableCollection<int>();
