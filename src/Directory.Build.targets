@@ -179,7 +179,6 @@
 
 		<PackageReference Update="Svg.Skia" Version="3.0.6" />
 		<PackageReference Update="GtkSharp" Version="3.24.24.38" />
-		<PackageReference Update="System.Json" Version="4.7.1" />
 		<PackageReference Update="AwesomeAssertions" Version="9.2.0" />
 		<PackageReference Update="JetBrains.Annotations" Version="2024.3.0" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
