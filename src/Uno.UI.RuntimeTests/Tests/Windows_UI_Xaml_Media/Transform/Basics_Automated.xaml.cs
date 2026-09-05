@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.UI.Xaml.Controls;
-using Uno.UI.Samples;
 using Uno.UITest;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media

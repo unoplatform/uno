@@ -1,0 +1,196 @@
+﻿#nullable enable
+
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using Uno.Storage;
+using Windows.Foundation.Collections;
+
+namespace Windows.Storage;
+
+/// <summary>
+/// Provides access to the settings in a settings container. The ApplicationDataContainer.Values
+/// property returns an object that can be cast to this type.
+/// </summary>
+public sealed partial class ApplicationDataContainerSettings : IPropertySet, IObservableMap<string, object>, IDictionary<string, object>, IEnumerable<KeyValuePair<string, object>>
+{
+	private readonly ApplicationDataContainer _container;
+	private readonly NativeApplicationSettings _nativeApplicationSettings;
+
+	internal ApplicationDataContainerSettings(ApplicationDataContainer container, ApplicationDataLocality locality)
+	{
+		_container = container ?? throw new ArgumentNullException(nameof(container));
+		_nativeApplicationSettings = NativeApplicationSettings.GetForLocality(locality);
+	}
+
+	/// <summary>
+	/// Occurs when the map changes.
+	/// </summary>
+	/// <remarks>
+	/// Note: WinUI's ApplicationDataContainerSettings does not raise this event even though
+	/// the class implements IObservableMap. Uno Platform raises this event for consistency
+	/// with other IObservableMap implementations.
+	/// </remarks>
+	public event MapChangedEventHandler<string, object>? MapChanged;
+
+	/// <summary>
+	/// Gets or sets the value associated with the specified key.
+	/// </summary>
+	/// <param name="key">The key of the value to get or set.</param>
+	/// <returns>The value associated with the specified key.</returns>
+	public object this[string key]
+	{
+		// A key that is absent — or whose stored value cannot be read back — reads as null rather than throwing.
+		get => _nativeApplicationSettings[_container.GetSettingKey(key)]!;
+		set
+		{
+			var exists = ContainsKey(key);
+			_nativeApplicationSettings[_container.GetSettingKey(key)] = value;
+
+			// Assigning null removes the setting, so the change reported has to be the removal that happened.
+			var change = value is null
+				? CollectionChange.ItemRemoved
+				: exists
+					? CollectionChange.ItemChanged
+					: CollectionChange.ItemInserted;
+
+			if (value is not null || exists)
+			{
+				MapChanged?.Invoke(this, new MapChangedEventArgs(change, key));
+			}
+		}
+	}
+
+	/// <summary>
+	/// Gets the number of related application settings.
+	/// </summary>
+	public uint Size => (uint)Count;
+
+	public int Count => GetFullPublicKeys().Count();
+
+	public bool IsReadOnly => false;
+
+	public ICollection<string> Keys => GetFullPublicKeys()
+		.Select(k => k.Substring(_container.ContainerPath.Length))
+		.ToArray();
+
+	/// <remarks>
+	/// Unreadable entries are not filtered out: <see cref="Keys"/>, <see cref="Count"/>, this collection and the
+	/// enumerator all have to project the same set of keys. Dropping an entry here — but not from the enumerator —
+	/// would make <see cref="Count"/> disagree with <c>Values.Count</c>.
+	/// </remarks>
+	public ICollection<object> Values => GetFullPublicKeys()
+		.Select(k => _nativeApplicationSettings[k]!)
+		.ToArray();
+
+	public void Add(string key, object value)
+	{
+		if (ContainsKey(key))
+		{
+			throw new ArgumentException("An item with the same key has already been added.");
+		}
+
+		if (value != null)
+		{
+			_nativeApplicationSettings[_container.GetSettingKey(key)] = value;
+			MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.ItemInserted, key));
+		}
+	}
+
+	public void Add(KeyValuePair<string, object> item)
+		=> Add(item.Key, item.Value);
+
+	public bool Contains(global::System.Collections.Generic.KeyValuePair<string, object> item) =>
+		ContainsKey(item.Key) &&
+		Equals(
+			_nativeApplicationSettings[_container.GetSettingKey(item.Key)],
+			item.Value
+		);
+
+	public bool ContainsKey(string key) => _nativeApplicationSettings.ContainsKey(_container.GetSettingKey(key));
+
+	public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
+	{
+		if (array is null)
+		{
+			throw new ArgumentNullException(nameof(array));
+		}
+		if (arrayIndex < 0 || arrayIndex > array.Length)
+		{
+			throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+		}
+		if (array.Length - arrayIndex < Count)
+		{
+			throw new ArgumentException("The number of elements in the source dictionary is greater than the available space from arrayIndex to the end of the destination array.");
+		}
+		foreach (var kvp in this)
+		{
+			array[arrayIndex++] = kvp;
+		}
+	}
+
+	public bool Remove(string key)
+	{
+		var removed = _nativeApplicationSettings.Remove(_container.GetSettingKey(key));
+		if (removed)
+		{
+			MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.ItemRemoved, key));
+		}
+		return removed;
+	}
+
+	public bool Remove(KeyValuePair<string, object> item) => Remove(item.Key);
+
+	public bool TryGetValue(string key, [MaybeNullWhen(false)] out object value) =>
+		_nativeApplicationSettings.TryGetValue(_container.GetSettingKey(key), out value);
+
+	/// <summary>
+	/// Removes all related application settings.
+	/// </summary>
+	/// <remarks>
+	/// Only the settings of this container are removed. Sub-containers are a separate namespace and are
+	/// removed through <see cref="ApplicationDataContainer.DeleteContainer(string)"/>.
+	/// </remarks>
+	public void Clear()
+	{
+		_nativeApplicationSettings.RemoveKeys(IsCurrentContainerPublicKey);
+		MapChanged?.Invoke(this, new MapChangedEventArgs(CollectionChange.Reset, null));
+	}
+
+	public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
+	{
+		foreach (var key in Keys)
+		{
+			yield return new KeyValuePair<string, object>(key, this[key]);
+		}
+	}
+
+	internal void ClearIncludingInternal() =>
+		_nativeApplicationSettings.RemoveKeys(IsCurrentContainerInternalKey);
+
+	internal object? GetInternalValue(string key) =>
+		_nativeApplicationSettings[_container.GetSettingKey(key)];
+
+	internal void SetInternalValue(string key, object value) =>
+		_nativeApplicationSettings[_container.GetSettingKey(key)] = value;
+
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+	private IEnumerable<string> GetFullPublicKeys() => _nativeApplicationSettings
+		.GetKeys(IsCurrentContainerPublicKey);
+
+	private bool IsCurrentContainerKey(string key) => key.StartsWith(_container.ContainerPath, StringComparison.Ordinal);
+
+	private bool IsInternalKey(string key) =>
+		ApplicationDataContainer.IsInternalKey(GetRelativeKey(key));
+
+	private bool IsCurrentContainerPublicKey(string key) =>
+		IsCurrentContainerKey(key) && !IsInternalKey(key);
+
+	private bool IsCurrentContainerInternalKey(string key) =>
+		IsCurrentContainerKey(key) && IsInternalKey(key);
+
+	private string GetRelativeKey(string key) => key.Substring(_container.ContainerPath.Length);
+}

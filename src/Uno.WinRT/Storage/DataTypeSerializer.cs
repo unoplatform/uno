@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Text.Json;
 using Uno.Extensions.Specialized;
+using Uno.Foundation.Logging;
 using Uno.Helpers.Serialization;
 using Uno.Storage.Internal;
 
@@ -71,6 +72,30 @@ internal class DataTypeSerializer
 		return value.GetType().FullName + ":" + serializedValue;
 	}
 
+	/// <summary>
+	/// Determines whether a persisted string carries the "{TypeName}:{value}" shape produced by <see cref="Serialize"/>.
+	/// Used to tell settings written by Uno Platform apart from values owned by other code in a shared store.
+	/// </summary>
+	public static bool IsSerializedValue(string value)
+	{
+		var index = value.IndexOf(Separator);
+		if (index <= 0)
+		{
+			return false;
+		}
+
+		var typeName = value.Substring(0, index);
+		foreach (var supportedType in SupportedTypes)
+		{
+			if (supportedType.FullName == typeName)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	[UnconditionalSuppressMessage("Trimming", "IL2057", Justification = "GetType may return null, normal flow of operation")]
 	public static object? Deserialize(string? value)
 	{
@@ -87,25 +112,46 @@ internal class DataTypeSerializer
 			var dataType = Type.GetType(typeName) ?? Type.GetType(typeName + ", " + typeof(Foundation.Point).GetTypeInfo().Assembly.FullName);
 			var valueField = value.Substring(index + 1);
 
-			if (dataType == typeof(DateTimeOffset))
+			// Only the types Serialize can produce are resolved. The store is a plain key/value file the
+			// app, other libraries, or (in the browser) any same-origin script can write to.
+			if (dataType is null || !SupportedTypes.Contains(dataType))
 			{
-				return DateTimeOffset.Parse(valueField, CultureInfo.InvariantCulture);
+				return null;
 			}
-			else if (dataType == typeof(Guid))
+
+			// A single malformed entry — a hand-edited file, a partially written value, a legacy format —
+			// must not throw out of a settings read and take the whole enumeration down with it.
+			try
 			{
-				return Guid.Parse(valueField);
+				if (dataType == typeof(DateTimeOffset))
+				{
+					return DateTimeOffset.Parse(valueField, CultureInfo.InvariantCulture);
+				}
+				else if (dataType == typeof(Guid))
+				{
+					return Guid.Parse(valueField);
+				}
+				else if (dataType == typeof(TimeSpan))
+				{
+					return TimeSpan.Parse(valueField, CultureInfo.InvariantCulture);
+				}
+				else if (dataType == typeof(ApplicationDataCompositeValue))
+				{
+					return DeserializeCompositeValue(valueField);
+				}
+				else
+				{
+					return Convert.ChangeType(valueField, dataType, CultureInfo.InvariantCulture);
+				}
 			}
-			else if (dataType == typeof(TimeSpan))
+			catch (Exception e)
 			{
-				return TimeSpan.Parse(valueField, CultureInfo.InvariantCulture);
-			}
-			else if (dataType == typeof(ApplicationDataCompositeValue))
-			{
-				return DeserializeCompositeValue(valueField);
-			}
-			else if (dataType is not null)
-			{
-				return Convert.ChangeType(valueField, dataType!, CultureInfo.InvariantCulture);
+				if (typeof(DataTypeSerializer).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(DataTypeSerializer).Log().Error($"Failed to deserialize a stored setting of type {typeName}", e);
+				}
+
+				return null;
 			}
 		}
 
