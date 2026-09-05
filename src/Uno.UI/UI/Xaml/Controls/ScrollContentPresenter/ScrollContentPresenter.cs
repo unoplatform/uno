@@ -223,6 +223,11 @@ namespace Microsoft.UI.Xaml.Controls
 				(child as ICustomScrollInfo)?.ApplyViewport(ref finalSize);
 			}
 
+			// WinUI-aligned: flush pending scroll offset updates to the ScrollViewer.
+			// On WinUI, ArrangeOverride → VerifyScrollData → InvalidateScrollOwner
+			// → put_HorizontalOffset/VerticalOffset updates the DPs during the arrange pass.
+			Scroller?.OnPresenterArranged();
+
 			return finalSize;
 		}
 
@@ -318,9 +323,10 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					else
 					{
-						success = Set(
-							horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta),
-							disableAnimation: false);
+						// Velocity-based wheel inertia: each notch adds a velocity impulse to a per-VSync
+						// integration loop with exponential decay. Rapid spinning coalesces into higher
+						// peak velocity (longer scroll), instead of restarting a 1 s eased animation per notch.
+						success = TryStartWheelInertia(GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta), 0);
 					}
 				}
 				else if (canScrollVertically && !properties.IsHorizontalMouseWheel)
@@ -336,9 +342,8 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					else
 					{
-						success = Set(
-							verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
-							disableAnimation: false);
+						// Velocity-based wheel inertia (see horizontal branch).
+						success = TryStartWheelInertia(0, GetVerticalScrollWheelDelta(DesiredSize, -delta));
 					}
 				}
 
