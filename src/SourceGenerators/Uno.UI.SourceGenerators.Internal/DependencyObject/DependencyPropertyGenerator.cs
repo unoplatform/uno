@@ -490,7 +490,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 
-			builder.AppendLineIndented($"private static void Set{propertyName}Value({propertyTargetName} instance, {propertyTypeName} value) => instance.SetValue({propertyOwnerTypeName}.{propertyName}Property, value);");
+			builder.AppendLineIndented($"private static void Set{propertyName}Value({propertyTargetName} instance, {propertyTypeName} value) => instance.SetValue({propertyOwnerTypeName}.{propertyName}Property, {GetBoxedValueExpression(propertyTypeName)});");
 
 			GeneratePropertyStorage(builder, propertyName);
 
@@ -613,7 +613,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			if (propertyData.PropertyHasSetter)
 			{
-				builder.AppendLineIndented($"private void Set{propertyName}Value({propertyTypeName} value) => SetValue({propertyName}Property, value);");
+				builder.AppendLineIndented($"private void Set{propertyName}Value({propertyTypeName} value) => SetValue({propertyName}Property, {GetBoxedValueExpression(propertyTypeName)});");
 			}
 
 			if (localCache)
@@ -716,6 +716,22 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 		}
+
+		/// <summary>
+		/// The expression a generated setter passes to <c>SetValue</c>. <c>SetValue</c> takes an <c>object</c>,
+		/// so a <c>bool</c> would be boxed on every set — 24 bytes each time, for properties that are set
+		/// constantly (visual states, IsEnabled propagation, focus flags). Uno.UI already keeps the two
+		/// boxed instances, so use them.
+		/// </summary>
+		/// <remarks>
+		/// <c>Uno.UI.Helpers.Boxes</c> is internal to Uno.UI, which is the only assembly using
+		/// <c>[GeneratedDependencyProperty]</c>. Any other consumer would get a compile error here rather
+		/// than a silent behaviour change.
+		/// </remarks>
+		private static string GetBoxedValueExpression(string propertyTypeName)
+			=> propertyTypeName == "bool"
+				? "global::Uno.UI.Helpers.Boxes.Box(value)"
+				: "value";
 
 		private static void GeneratePropertyStorage(IndentedStringBuilder builder, string propertyName)
 		{

@@ -54,7 +54,11 @@ public sealed class DependencyPropertyMixinGenerator : IIncrementalGenerator
 					sb.AppendLine($"\t\t{dp.Modifier}public {dp.PropertyType} {dp.Name}");
 					sb.AppendLine("\t\t{");
 					sb.AppendLine($"\t\t\tget {{ return ({dp.PropertyType})this.GetValue({dp.Name}Property); }}");
-					sb.AppendLine($"\t\t\tset {{ this.SetValue({dp.Name}Property, value); }}");
+					// SetValue takes an object, so a bool would be boxed on every set. Uno.UI already keeps the
+					// two boxed instances, and these properties (IsTabStop, focus flags and the like) are set
+					// often enough for a 24-byte allocation each time to be worth avoiding.
+					var setterValue = dp.PropertyType == "bool" ? "global::Uno.UI.Helpers.Boxes.Box(value)" : "value";
+					sb.AppendLine($"\t\t\tset {{ this.SetValue({dp.Name}Property, {setterValue}); }}");
 					sb.AppendLine("\t\t}");
 					sb.AppendLine();
 
