@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
@@ -87,6 +89,139 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(HorizontalAlignment.Left, cc.HorizontalContentAlignment);
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24159")]
+		public async Task When_Explicit_Style_Uses_Fluent_Default_Value()
+		{
+			// WinUI resolves a control's built-in style from the framework's generic.xaml, and its
+			// {ThemeResource} setters let Application.Resources (i.e. XamlControlsResources) override
+			// the resolved value. A ToggleButton carrying an explicit style that doesn't set
+			// Background must therefore surface the Fluent ToggleButtonBackground, not the legacy one.
+			var expected = Application.Current.Resources["ToggleButtonBackground"] as SolidColorBrush;
+			Assert.IsNotNull(expected);
+
+			var button = new ToggleButton
+			{
+				Content = "Explicit style",
+				Style = new Style(typeof(ToggleButton)),
+			};
+
+			try
+			{
+				await UITestHelper.Load(button);
+
+				var actual = button.Background as SolidColorBrush;
+				Assert.IsNotNull(actual);
+				Assert.AreEqual(expected.Color, actual.Color);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24159")]
+		public async Task When_Explicit_Style_Uses_Uwp_Default_Value()
+		{
+			// Counterpart of When_Explicit_Style_Uses_Fluent_Default_Value: without
+			// XamlControlsResources the built-in style must still resolve to the legacy value.
+			using var uwpStyles = StyleHelper.UseUwpStyles();
+
+			var expected = Application.Current.Resources["SystemControlBackgroundBaseLowBrush"] as SolidColorBrush;
+			Assert.IsNotNull(expected);
+
+			var button = new ToggleButton
+			{
+				Content = "Explicit style",
+				Style = new Style(typeof(ToggleButton)),
+			};
+
+			try
+			{
+				await UITestHelper.Load(button);
+
+				var actual = button.Background as SolidColorBrush;
+				Assert.IsNotNull(actual);
+				Assert.AreEqual(expected.Color, actual.Color);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24159")]
+		public async Task When_Uwp_ToggleButton_Uses_State_Resources()
+		{
+			using var uwpStyles = StyleHelper.UseUwpStyles();
+			var resources = Application.Current.Resources;
+			var stateResources = new Dictionary<string, SolidColorBrush>
+			{
+				["ToggleButtonBackgroundCheckedPressed"] = new(Colors.Red),
+				["ToggleButtonForegroundCheckedPressed"] = new(Colors.Green),
+				["ToggleButtonBorderBrushCheckedPressed"] = new(Colors.Blue),
+				["ToggleButtonBackgroundIndeterminate"] = new(Colors.Yellow),
+				["ToggleButtonForegroundIndeterminate"] = new(Colors.Magenta),
+				["ToggleButtonBorderBrushIndeterminate"] = new(Colors.Cyan),
+			};
+			var originalResources = new Dictionary<string, object>();
+
+			foreach (var (key, brush) in stateResources)
+			{
+				originalResources[key] = resources[key];
+				resources[key] = brush;
+			}
+
+			var button = new ToggleButton
+			{
+				Content = "State resources",
+				IsThreeState = true,
+			};
+
+			try
+			{
+				await UITestHelper.Load(button);
+
+				var rootGrid = button.GetTemplateChild("RootGrid") as Grid;
+				var contentPresenter = button.GetTemplateChild("ContentPresenter") as ContentPresenter;
+				Assert.IsNotNull(rootGrid);
+				Assert.IsNotNull(contentPresenter);
+
+				Assert.IsTrue(VisualStateManager.GoToState(button, "CheckedPressed", useTransitions: false));
+				await TestServices.WindowHelper.WaitForIdle();
+				AssertBrush(stateResources["ToggleButtonBackgroundCheckedPressed"], rootGrid.Background);
+				AssertBrush(stateResources["ToggleButtonForegroundCheckedPressed"], contentPresenter.Foreground);
+				AssertBrush(stateResources["ToggleButtonBorderBrushCheckedPressed"], contentPresenter.BorderBrush);
+
+				Assert.IsTrue(VisualStateManager.GoToState(button, "Indeterminate", useTransitions: false));
+				await TestServices.WindowHelper.WaitForIdle();
+				AssertBrush(stateResources["ToggleButtonBackgroundIndeterminate"], rootGrid.Background);
+				AssertBrush(stateResources["ToggleButtonForegroundIndeterminate"], contentPresenter.Foreground);
+				AssertBrush(stateResources["ToggleButtonBorderBrushIndeterminate"], contentPresenter.BorderBrush);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+				foreach (var (key, value) in originalResources)
+				{
+					resources[key] = value;
+				}
+			}
+
+			static void AssertBrush(SolidColorBrush expected, Brush actual)
+			{
+				Assert.IsInstanceOfType<SolidColorBrush>(actual);
+				Assert.AreEqual(expected.Color, ((SolidColorBrush)actual).Color);
+			}
+		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]

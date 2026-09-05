@@ -289,6 +289,7 @@ namespace Microsoft.UI.Xaml
 		public static void RegisterDefaultStyleForType(Type type, IXamlResourceDictionaryProvider dictionaryProvider)
 		{
 			_lookup[type] = ProvideStyle;
+			_defaultStyleCache.Remove(type);
 
 			Style ProvideStyle()
 			{
