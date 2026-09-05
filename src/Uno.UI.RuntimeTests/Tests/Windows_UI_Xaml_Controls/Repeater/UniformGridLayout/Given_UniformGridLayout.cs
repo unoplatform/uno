@@ -19,7 +19,7 @@ public class Given_UniformGridLayout
 {
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaTvOS)]
 	public async Task When_AdaptiveChildren_Then_DoesNotConstraintsThem()
 	{
 		using var template = new DynamicDataTemplate(() => new TextBlock

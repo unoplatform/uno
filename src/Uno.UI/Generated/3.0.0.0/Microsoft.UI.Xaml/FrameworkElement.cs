@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class FrameworkElement
+	public partial class FrameworkElement : global::Microsoft.UI.Xaml.UIElement
 	{
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]

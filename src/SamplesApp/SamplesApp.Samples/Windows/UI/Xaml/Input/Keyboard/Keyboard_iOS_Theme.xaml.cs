@@ -22,7 +22,7 @@ namespace UITests.Windows_UI_Xaml_Input.Keyboard
 		IsManualTest = true)]
 	public sealed partial class Keyboard_iOS_Theme : Page
 	{
-		private const string SampleDescription = "[iOS-only] Keyboard theme should be determined based on the following precedences: KeyboardAppearance > RequestedTheme > Device Theme.";
+		private const string SampleDescription = "[iOS-only] Keyboard theme should be determined based on the following precedences: RequestedTheme > Device Theme.";
 
 		public Keyboard_iOS_Theme()
 		{
@@ -42,33 +42,6 @@ namespace UITests.Windows_UI_Xaml_Input.Keyboard
 			};
 
 			root.RequestedTheme = theme;
-		}
-
-		private void UpdateKeyboardAppearance(object sender, RoutedEventArgs e)
-		{
-#if __APPLE_UIKIT__
-			var appearance = (sender as RadioButton).Content switch
-			{
-				"Light" => UIKit.UIKeyboardAppearance.Light,
-				"Dark" => UIKit.UIKeyboardAppearance.Dark,
-				"Default" => UIKit.UIKeyboardAppearance.Default,
-
-				_ => throw new ArgumentOutOfRangeException()
-			};
-			foreach (var item in TestPanel.Children.OfType<FrameworkElement>())
-			{
-				if (item is TextBox tbox && tbox.PlaceholderText?.StartsWith("custom") == true)
-				{
-					tbox.PlaceholderText = $"custom: {appearance}";
-					tbox.KeyboardAppearance = appearance;
-				}
-				else if (item is PasswordBox pbox && pbox.PlaceholderText?.StartsWith("custom") == true)
-				{
-					pbox.PlaceholderText = $"custom: {appearance}";
-					pbox.KeyboardAppearance = appearance;
-				}
-			}
-#endif
 		}
 	}
 }

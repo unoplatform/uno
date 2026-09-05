@@ -1,0 +1,47 @@
+parameters:
+  vmImage: ''
+  vmMacImage: ''
+  vmMacImageTest: ''
+  vmLinuxImage: ''
+  vmLinuxPool: ''
+  xCodeRootTest: ''
+  xCodeRootBuild: ''
+  poolName: ''
+  XAML_FLAVOR_BUILD: ''
+
+  # Runtime Test Groups
+  TVOS_RUNTIME_TEST_GROUP_COUNT: 4
+  TVOS_RUNTIME_TESTS_GROUPS:
+  - key: '0'
+    value: '01'
+  - key: '1'
+    value: '02'
+  - key: '2'
+    value: '03'
+  - key: '3'
+    value: '04'
+
+jobs:
+##
+## Runtime tests
+##
+- ${{ each RuntimeTestGroup in parameters.TVOS_RUNTIME_TESTS_GROUPS }}:
+  - template: .azure-devops-tests-tvos-runner.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+      JobName: 'Skia_tvOS_Runtime_Tests_group_${{ RuntimeTestGroup.value }}'
+      JobDisplayName: 'Runtime Tests ${{ RuntimeTestGroup.key }}'
+      TestRunName: 'tvOS Skia Runtime Tests ${{ RuntimeTestGroup.key }}'
+      JobTimeoutInMinutes: 90
+      vmImage: ${{ parameters.vmMacImageTest }}
+      UITEST_TEST_TIMEOUT: '90m'
+      UITEST_RUNTIME_TEST_GROUP: ${{ RuntimeTestGroup.key }}
+      UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.TVOS_RUNTIME_TEST_GROUP_COUNT }}
+      UITEST_ALLOW_RERUN: 'false'
+      SAMPLESAPP_BUNDLE_ID: 'uno.platform.samplesapp.skia'
+      UITEST_VARIANT: 'skia'
+      TEST_KIND: runtime
+      xCodeRoot: ${{ parameters.xCodeRootTest }}
+      dependsOn:
+        - Skia_Tests_Build_tvOS
+      BuildJobName: 'Skia_Tests_Build_tvOS'

@@ -1,0 +1,15 @@
+<Project>
+	<PropertyGroup>
+		<IsAppleUIKit>true</IsAppleUIKit>
+		<IsTvOS>true</IsTvOS>
+		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">14.2</SupportedOSPlatformVersion>
+
+		<EnableDefaulttvOSItems Condition="$(EnableDefaulttvOSItems) == ''">false</EnableDefaulttvOSItems>
+
+		<!-- Gates the Microsoft.Identity.Client / Uno.WinUI.MSAL injection, which is what carries
+		     this target's buildTransitive System.framework workaround to out-of-repo heads. -->
+		<IsMSALSupported>true</IsMSALSupported>
+	</PropertyGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)Uno.SingleProject.tvOS.targets" Condition=" $(_IsUnoSingleProjectAndLegacy) == 'true' " />
+</Project>

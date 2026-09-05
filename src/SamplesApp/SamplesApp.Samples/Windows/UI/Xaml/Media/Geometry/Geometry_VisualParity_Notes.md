@@ -16,7 +16,7 @@ These showcase pages exist so a maintainer can spot-check Uno Skia's `Microsoft.
 
 ## Verification protocol
 
-1. Build and run `SamplesApp.Skia.Generic` (Skia Desktop on Windows).
+1. Build and run the `SamplesApp` desktop target (Skia Desktop on Windows).
 2. Build and run the WinUI/WinAppSDK target of the same SamplesApp (or open the same XAML in a small reference WinUI app).
 3. Navigate to each `Geometry_*_Showcase` sample in both apps.
 4. Take screenshots of both at the same window size.
