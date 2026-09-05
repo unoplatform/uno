@@ -148,3 +148,31 @@ The following demonstrates the same code, but re-written in a sequential order t
 In the above example, the `VisualState` blocks are sequential, ordered from `LargeScreen` to `MediumScreen` to `SmallScreen`. Because of this, the compiler will execute the first true occurrence in the order written.
 
 The `LargeScreen` setter target is triggered when the window width is `>=` 1000 pixels. When this statement becomes false, the `VisualState` executes the next setter target that matches, i.e. the `MediumScreen` block. When the `MediumScreen` adaptive trigger is false, the `VisualState` finally executes the setter target for the `SmallScreen` block.
+
+## Simulating a Window Size (Uno-specific)
+
+Uno Platform exposes a `SetWindowSizeOverride` extensibility hook, primarily intended for hosts (such as design-time tooling) that simulate a form factor by resizing hosted content rather than the window itself. This API has no WinUI equivalent and is hidden from IntelliSense (`EditorBrowsable(Never)`).
+
+```csharp
+// Make every AdaptiveTrigger evaluate against a simulated size instead of the window bounds.
+AdaptiveTrigger.SetWindowSizeOverride(new Size(400, 640));
+
+// Clear it: triggers evaluate against the window bounds again.
+AdaptiveTrigger.SetWindowSizeOverride(null);
+```
+
+When a host loads a guest application into its own (collectible) `AssemblyLoadContext`, the global override would also re-evaluate the host's own triggers. To simulate a size for the guest only, scope the override to the guest's load context:
+
+```csharp
+// Only affects triggers whose nearest non-default-load-context ancestor
+// belongs to guestLoadContext (nested contexts resolve to the innermost one).
+AdaptiveTrigger.SetWindowSizeOverride(new Size(400, 640), guestLoadContext);
+
+// Clear just that scope.
+AdaptiveTrigger.SetWindowSizeOverride(null, guestLoadContext);
+```
+
+Each trigger evaluates against the most specific value available: the override scoped to its owner's load context first, then the global override, then the window (`XamlRoot`) bounds. A scoped override never keeps a collectible load context alive, and is dropped automatically when the context unloads. Both overloads must be called on the UI thread, as they synchronously re-evaluate every live trigger.
+
+> [!NOTE]
+> The scope matches only triggers that have at least one ancestor whose type is loaded in the given context. Guest content composed solely of shared framework types — including popup and flyout subtrees, which are re-parented under the host's popup root — cannot be attributed to the guest context and falls back to the global override.
