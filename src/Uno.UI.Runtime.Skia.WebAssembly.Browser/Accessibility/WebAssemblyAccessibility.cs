@@ -350,6 +350,18 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
+		// AddChild also fires while a subtree is still detached (XAML builds bottom-up) and for live parents under
+		// a Collapsed ancestor. A node emitted then hangs off the semantic root with zero geometry; attaching the
+		// subtree root, or showing the ancestor, replays every descendant through the recursion below instead.
+		if (!parent.IsActiveInVisualTree || (_onChildAddedDepth == 0 && IsUnderCollapsedElement(parent)))
+		{
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"[A11y] OnChildAdded: skipped child={child.GetType().Name} handle={child.Visual.Handle}: parent {parent.GetType().Name} is detached or under a Collapsed ancestor");
+			}
+			return;
+		}
+
 		_onChildAddedDepth++;
 		try
 		{
@@ -1346,6 +1358,19 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// </summary>
 	private static bool IsPrunedAsHidden(UIElement element)
 		=> element.Visibility == Visibility.Collapsed;
+
+	private static bool IsUnderCollapsedElement(UIElement element)
+	{
+		for (var current = element; current is not null; current = current.GetParent() as UIElement)
+		{
+			if (current.Visibility == Visibility.Collapsed)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 	/// <summary>
 	/// Determines whether a UIElement should be included in the semantic accessibility tree.
