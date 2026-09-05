@@ -139,9 +139,9 @@ namespace Uno.UI
 		public static class DependencyObject
 		{
 			/// <summary>
-			/// When set to true, the <see cref="DependencyObject"/> will create hard references
-			/// instead of weak references for some highly used fields, in common cases to improve the
-			/// overall performance.
+			/// When set to true, a loaded <see cref="DependencyObject"/> holds its parent through a hard
+			/// reference instead of a weak one, to improve the overall performance. The reference is
+			/// released when the element is unloaded.
 			/// </summary>
 			public static bool IsStoreHardReferenceEnabled { get; set; }
 				= true;

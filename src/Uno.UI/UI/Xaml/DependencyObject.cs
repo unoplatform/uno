@@ -2,6 +2,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using Uno.UI;
 using Uno.UI.Controls;
 using Uno.UI.DataBinding;
@@ -60,7 +61,35 @@ namespace Microsoft.UI.Xaml
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void SetBinding(string dependencyProperty, BindingBase binding) => SetBindingInternal(dependencyProperty, binding);
 
-		internal ManagedWeakReference SelfWeakReference => _selfWeakReference ??= WeakReferencePool.RentSelfWeakReference(this);
+		internal ManagedWeakReference SelfWeakReference
+		{
+			get
+			{
+				var current = _selfWeakReference;
+				if (current is not null)
+				{
+					return current;
+				}
+
+				// Published atomically: consumers compare handle identity, so exactly one handle
+				// may ever escape for a given object.
+				var minted = WeakReferencePool.RentSelfWeakReference(this);
+				var published = Interlocked.CompareExchange(ref _selfWeakReference, minted, null);
+
+				if (published is not null)
+				{
+					// Lost the race. The minted handle never escaped and a self reference cannot go
+					// back to the pool (ReturnWeakReference refuses them), so free its GC handle here
+					// rather than leaving it for ManagedGCHandle's finalizer.
+					minted.GetUnsafeTargetHandle()?.Dispose();
+					minted.Dispose();
+
+					return published;
+				}
+
+				return minted;
+			}
+		}
 
 		ManagedWeakReference IWeakReferenceProvider.WeakReference => SelfWeakReference;
 
