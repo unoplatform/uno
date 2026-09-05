@@ -73,6 +73,14 @@ namespace Uno.UI.Xaml.Core
 		{
 			_isAdditionalFrameRequested = 0;
 
+			// MUX Reference: xcpcore.cpp:6422-6426 — the layout pass is a synchronous callout to app code,
+			// and applying templates makes a great many elements enter the tree, each of which resolves its
+			// theme references. WinUI caches those lookups for the duration of the pass (its scenario 2,
+			// "spares ~69k ResourceDictionary lookups"). ResourceDictionary already evicts affected entries
+			// when a dictionary is mutated (ResourceDictionary.cs:249, :494 — MUX Resources.cpp:207, :335),
+			// which is what makes caching safe across the callout.
+			using var themeResourceCacheSession = Instance.ThemeWalkResourceCache.BeginCachingThemeResources();
+
 			// NOTE: The below code should really be replaced with just this:
 			// ----------------------------
 			//if (GetXamlRoot()?.VisualTree?.RootElement is { } root)
