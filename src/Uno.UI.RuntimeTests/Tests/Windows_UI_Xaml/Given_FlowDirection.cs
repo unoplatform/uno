@@ -818,4 +818,115 @@ public class Given_FlowDirection
 			flyout.Hide();
 		}
 	}
+
+	private static Rect GetVisualBounds(FrameworkElement element)
+		=> element.TransformToVisual(null).TransformBounds(new Rect(0, 0, element.ActualWidth, element.ActualHeight));
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[DataRow(FlowDirection.LeftToRight)]
+	[DataRow(FlowDirection.RightToLeft)]
+	public async Task When_MenuFlyout_Shown_At_Point(FlowDirection flowDirection)
+	{
+		// A menu opens towards the trailing side of its point: to the right in left-to-right, to the left in right-to-left.
+		var target = new Border { Width = 200, Height = 200, Background = new SolidColorBrush(Colors.LightGray), FlowDirection = flowDirection };
+		var root = new Grid { Width = 600, Height = 400, Children = { target } };
+		var flyout = new MenuFlyout { Items = { new MenuFlyoutItem { Text = "First item" }, new MenuFlyoutItem { Text = "Second item" } } };
+
+		TestServices.WindowHelper.WindowContent = root;
+		await TestServices.WindowHelper.WaitForLoaded(root);
+
+		var position = new Point(60, 40);
+		flyout.ShowAt(target, new FlyoutShowOptions { Position = position });
+
+		try
+		{
+			var item = (MenuFlyoutItem)flyout.Items[0];
+			await TestServices.WindowHelper.WaitForLoaded(item);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var presenter = item.FindFirstParent<MenuFlyoutPresenter>();
+			Assert.IsNotNull(presenter);
+			var bounds = GetVisualBounds(presenter);
+			var expectedPoint = target.TransformToVisual(null).TransformPoint(position);
+
+			Assert.AreEqual(expectedPoint.Y, bounds.Top, 2, "The menu should open below the point.");
+
+			if (flowDirection is FlowDirection.LeftToRight)
+			{
+				Assert.AreEqual(expectedPoint.X, bounds.Left, 2, "The menu should open towards the right of the point.");
+			}
+			else
+			{
+				Assert.AreEqual(expectedPoint.X, bounds.Right, 2, "The menu should open towards the left of the point.");
+			}
+		}
+		finally
+		{
+			flyout.Hide();
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	[DataRow(FlyoutPlacementMode.Left, FlowDirection.LeftToRight)]
+	[DataRow(FlyoutPlacementMode.Left, FlowDirection.RightToLeft)]
+	[DataRow(FlyoutPlacementMode.BottomEdgeAlignedLeft, FlowDirection.LeftToRight)]
+	[DataRow(FlyoutPlacementMode.BottomEdgeAlignedLeft, FlowDirection.RightToLeft)]
+	public async Task When_Flyout_Placement_Is_Horizontal(FlyoutPlacementMode placement, FlowDirection flowDirection)
+	{
+		// Placements are relative to the target's flow direction: "left" is the leading side, which is the right in right-to-left.
+		var content = new Border { Width = 80, Height = 40, Background = new SolidColorBrush(Colors.Red) };
+		var flyout = new Flyout { Content = content, Placement = placement };
+		var target = new Button { Content = "Target", Width = 200, Height = 60, FlowDirection = flowDirection, Flyout = flyout, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+		var root = new Grid { Width = 600, Height = 400, Children = { target } };
+
+		TestServices.WindowHelper.WindowContent = root;
+		await TestServices.WindowHelper.WaitForLoaded(root);
+
+		flyout.ShowAt(target);
+
+		try
+		{
+			await TestServices.WindowHelper.WaitForLoaded(content);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var presenter = content.FindFirstParent<FlyoutPresenter>();
+			Assert.IsNotNull(presenter);
+			var bounds = GetVisualBounds(presenter);
+			var targetBounds = GetVisualBounds(target);
+			bool isRightToLeft = flowDirection is FlowDirection.RightToLeft;
+
+			if (placement is FlyoutPlacementMode.Left)
+			{
+				if (isRightToLeft)
+				{
+					Assert.IsTrue(bounds.Left >= targetBounds.Right - 1, $"Expected the flyout ({bounds}) on the right of the target ({targetBounds}).");
+				}
+				else
+				{
+					Assert.IsTrue(bounds.Right <= targetBounds.Left + 1, $"Expected the flyout ({bounds}) on the left of the target ({targetBounds}).");
+				}
+			}
+			else
+			{
+				Assert.IsTrue(bounds.Top >= targetBounds.Bottom - 1, $"Expected the flyout ({bounds}) below the target ({targetBounds}).");
+
+				if (isRightToLeft)
+				{
+					Assert.AreEqual(targetBounds.Right, bounds.Right, 2, "Expected the flyout to be aligned with the target's leading (right) edge.");
+				}
+				else
+				{
+					Assert.AreEqual(targetBounds.Left, bounds.Left, 2, "Expected the flyout to be aligned with the target's leading (left) edge.");
+				}
+			}
+		}
+		finally
+		{
+			flyout.Hide();
+		}
+	}
 }
