@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -165,14 +165,17 @@ internal sealed class DamageRegion : IDisposable
 			}
 		}
 
-		var region = GeometryFactory.Current.CreateRectangleGeometry(all[0]);
-		for (var i = 1; i < all.Count; i++)
+		// One path holding a contour per rect, not a chain of Combine unions: Combine is a general polygon boolean
+		// and pays no attention to the operands being boxes, while identically-wound rect contours already union
+		// under the non-zero rule. Building the region costs a contour append per rect instead of a boolean per rect.
+		var builder = GeometryFactory.Current.CreatePrimitiveGeometryBuilder();
+		builder.FillRule = GeometryFillRule.NonZero;
+		for (var i = 0; i < all.Count; i++)
 		{
-			using var rect = GeometryFactory.Current.CreateRectangleGeometry(all[i]);
-			var previous = region;
-			region = previous.Combine(rect, GeometryCombineMode.Union);
-			previous.Dispose();
+			builder.AddRectangle(all[i]);
 		}
+
+		var region = builder.Build();
 
 		Reset();
 		return region;
