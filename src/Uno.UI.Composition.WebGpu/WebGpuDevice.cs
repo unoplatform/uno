@@ -302,10 +302,10 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// renders into a multisampled color texture that resolves into the single-sample present/readback texture.
 	// Multisample count, probed per device at init (PickSampleCount): 2x when the device supports it for our colour
 	// format (half the MSAA colour/depth bandwidth + resolve cost of 4x for near-identical AA at typical DPI), else
-	// 4x — the only count besides 1 the WebGPU spec guarantees for every format (lavapipe/CI reject 2x for
-	// Bgra8Unorm). (1x/no-MSAA would need a separate no-resolve path — not wired.)
-	// The host (WebGpuInitDevice) picks the MSAA sample count and bakes it here via the adopt ctor.
-	public uint MsaaSamples { get; private set; } = 4;
+	// Single-sampled unless the host asks otherwise: the pass renders straight into the attachment with no
+	// resolve, and the recorder emits its analytic AA ring instead. The host (WebGpuInitDevice) picks the count
+	// and bakes it here via the adopt ctor.
+	public uint MsaaSamples { get; private set; } = 1;
 
 	/// <summary>
 	/// Masks rasterize at <see cref="MaskSuperSample"/>x linear resolution and are box-filtered down. 4x4
@@ -362,7 +362,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 			if (p != 0) { Dev = (IntPtr)p; ownImport = true; System.Console.WriteLine($"[webgpu] backend imported JS device ptr={p}"); }
 		}
 		Q = (!ownImport && ctx.Queue != IntPtr.Zero) ? ctx.Queue : wgpuDeviceGetQueue(Dev);
-		MsaaSamples = ctx.SampleCount == 0 ? 4u : ctx.SampleCount;
+		MsaaSamples = ctx.SampleCount == 0 ? 1u : ctx.SampleCount;
 		// The analytic AA ring REPLACES multisampling; running both antialiases each edge twice and spreads ink
 		// half a pixel too far. It is emitted only when the attachment is single-sampled.
 		WebGpuCommandRecorder.AnalyticAa = MsaaSamples == 1;
