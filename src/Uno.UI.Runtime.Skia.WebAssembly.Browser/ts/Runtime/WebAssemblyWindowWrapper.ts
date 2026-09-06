@@ -103,11 +103,11 @@ namespace Uno.UI.Runtime.Skia {
 			document.body.style.cursor = cssCursor;
 		}
 
-		public resizeWindow(width: number, height: number) {
+		public static resizeWindow(width: number, height: number) {
 			window.resizeTo(width, height);
 		}
 
-		public moveWindow(x: number, y: number) {
+		public static moveWindow(x: number, y: number) {
 			window.moveTo(x, y);
 		}
 	}
