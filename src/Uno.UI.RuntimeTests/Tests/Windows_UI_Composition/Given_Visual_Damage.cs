@@ -339,6 +339,8 @@ public class Given_Visual_Damage
 	// A ShapeVisual is bounded by its shapes, not by its Size, so it answers the moved-visual question through
 	// its own TryGetLocalContentBounds override. Its content is deliberately smaller than the visual here: the
 	// reported region has to cover what is painted without being widened to the whole visual or to the clip.
+	// The shape is fully rounded so the two branches are told apart: a corner of the shape's bounding box lies
+	// outside the exact outline, and is damaged only if the cheap bounds branch answered for the move.
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
@@ -360,6 +362,7 @@ public class Given_Visual_Damage
 		var geometry = compositor.CreateRoundedRectangleGeometry();
 		geometry.Offset = new Vector2(20, 10);
 		geometry.Size = new Vector2(60, 30);
+		geometry.CornerRadius = new Vector2(30, 15);
 
 		var shape = compositor.CreateSpriteShape(geometry);
 		shape.FillBrush = compositor.CreateColorBrush(Colors.Magenta);
@@ -379,6 +382,12 @@ public class Given_Visual_Damage
 		Assert.IsTrue(reported.Contains(50, 25), $"The vacated shape is not covered (damage bounds: {reported.Bounds}).");
 		Assert.IsTrue(reported.Contains(50, 125), $"The moved shape is not covered (damage bounds: {reported.Bounds}).");
 
+		// The corner of the moved shape's bounding box: ~6px outside the rounded outline, so covered only when
+		// the move was answered from the shape's bounds instead of re-deriving its exact geometry.
+		Assert.IsTrue(
+			reported.Contains(22, 112),
+			$"The moved shape was reported as its exact outline rather than its bounds (damage bounds: {reported.Bounds}).");
+
 		// Falling back to the visual's Size, or worse to the clip, would reach well past the shape's 80px right edge.
 		Assert.IsTrue(
 			reported.Bounds.Right <= 120,
@@ -388,71 +397,92 @@ public class Given_Visual_Damage
 #endif
 	}
 
-	// A real scroll contributes two rects per moved visual, so a list frame runs well past the point where the
-	// region stops keeping every contribution as its own contour and starts collapsing them to a bounding rect.
-	// Collapsing is only ever allowed to report more, never less: every vacated and every new position has to
-	// survive it.
+	// Past a contour budget the region stops keeping every contribution as its own contour and fuses everything
+	// into one bounding rect. That is the only path that can silently widen the damage, and it is reached by a
+	// frame whose contributions are spread out — a grid of moved items, not a dense scrolling column, where the
+	// cheap running-rect merge absorbs them all into a single contour long before the budget. Collapsing is
+	// allowed to report more, never less: every vacated and every new position has to survive it.
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	public async Task When_Many_Visuals_Move_Then_Collapsed_Damage_Is_A_Superset()
 	{
 #if __SKIA__
-		const int ItemCount = 8;
-		const float ItemHeight = 20;
-		const float Delta = 5;
+		const int Columns = 6;
+		const int Rows = 6;
+		const float Spacing = 60;
+		const float ItemSize = 10;
+		const float Origin = 10;
+		const float Delta = 30;
+		const float FrameSize = 400;
 
 		var compositor = Compositor.GetSharedCompositor();
 
 		var root = compositor.CreateContainerVisual();
-		root.Size = new Vector2(200, 200);
+		root.Size = new Vector2(FrameSize, FrameSize);
 
 		var mover = compositor.CreateContainerVisual();
-		mover.Size = new Vector2(200, 200);
+		mover.Size = new Vector2(FrameSize, FrameSize);
 		root.Children.InsertAtTop(mover);
 
-		for (var i = 0; i < ItemCount; i++)
+		// Each item moves further than its own height, so its vacated and its new rect are two contributions
+		// that are not worth fusing — and neither are two items'. 36 items therefore produce 72 contours.
+		for (var row = 0; row < Rows; row++)
 		{
-			var item = compositor.CreateSpriteVisual();
-			item.Brush = compositor.CreateColorBrush(Colors.Magenta);
-			item.Size = new Vector2(100, ItemHeight);
-			item.Offset = new Vector3(0, i * ItemHeight, 0);
-			mover.Children.InsertAtTop(item);
+			for (var column = 0; column < Columns; column++)
+			{
+				var item = compositor.CreateSpriteVisual();
+				item.Brush = compositor.CreateColorBrush(Colors.Magenta);
+				item.Size = new Vector2(ItemSize, ItemSize);
+				item.Offset = new Vector3(Origin + column * Spacing, Origin + row * Spacing, 0);
+				mover.Children.InsertAtTop(item);
+			}
 		}
 
 		using var damage = new DamageRegion();
-		RenderFrame(root, damage);
+		RenderFrame(root, damage, FrameSize);
 		damage.Reset();
 
 		mover.Offset = new Vector3(0, Delta, 0);
-		RenderFrame(root, damage);
+		RenderFrame(root, damage, FrameSize);
 
-		using var reported = SnapshotDamage(damage);
+		using var reported = SnapshotDamage(damage, FrameSize);
 
-		for (var i = 0; i < ItemCount; i++)
+		for (var row = 0; row < Rows; row++)
 		{
-			var centre = i * ItemHeight + ItemHeight / 2;
-			Assert.IsTrue(
-				reported.Contains(50, centre),
-				$"Item {i} vacated y={centre}, which is not covered (damage bounds: {reported.Bounds}).");
-			Assert.IsTrue(
-				reported.Contains(50, centre + Delta),
-				$"Item {i} moved to y={centre + Delta}, which is not covered (damage bounds: {reported.Bounds}).");
+			for (var column = 0; column < Columns; column++)
+			{
+				var x = Origin + column * Spacing + ItemSize / 2;
+				var y = Origin + row * Spacing + ItemSize / 2;
+
+				Assert.IsTrue(
+					reported.Contains(x, y),
+					$"Item ({column},{row}) vacated ({x},{y}), which is not covered (damage bounds: {reported.Bounds}).");
+				Assert.IsTrue(
+					reported.Contains(x, y + Delta),
+					$"Item ({column},{row}) moved to ({x},{y + Delta}), which is not covered (damage bounds: {reported.Bounds}).");
+			}
 		}
 
-		// The items are 100 wide, so collapsing must not have grown the region across the whole frame.
+		// The gap between two clusters, which no contribution covers: reaching it is the fused bounding rect, so
+		// this pins that the collapse the assertions above are about actually ran.
 		Assert.IsTrue(
-			reported.Bounds.Right <= 140,
-			$"Collapsing widened the damage far beyond the moved items (damage bounds: {reported.Bounds}).");
+			reported.Contains(45, 45),
+			$"The contour budget was never reached, so nothing collapsed (damage bounds: {reported.Bounds}).");
+
+		// Still bounded by the items, not widened to the frame's clip.
+		Assert.IsTrue(
+			reported.Bounds.Right <= Origin + (Columns - 1) * Spacing + ItemSize + 10,
+			$"Collapsing widened the damage beyond the moved items (damage bounds: {reported.Bounds}).");
 #else
 		await Task.CompletedTask;
 #endif
 	}
 
 #if __SKIA__
-	private static void RenderFrame(ContainerVisual root, DamageRegion damage)
+	private static void RenderFrame(ContainerVisual root, DamageRegion damage, float frameSize = 200)
 	{
-		var (picture, _, _) = SkiaRenderHelper.RecordPictureAndReturnPath(200, 200, root, invertPath: false, damage: damage);
+		var (picture, _, _) = SkiaRenderHelper.RecordPictureAndReturnPath(frameSize, frameSize, root, invertPath: false, damage: damage);
 		picture.Dispose();
 	}
 
