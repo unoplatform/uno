@@ -402,7 +402,11 @@ public partial class GestureRecognizer
 				}
 			}
 
-			~CompositionInertiaProcessorTimer() => Stop();
+			// Deliberately no finalizer. Stop() unsubscribes from CompositionTarget.Rendering, whose accessor
+			// asserts UI-thread access, and a throw from a finalizer takes the process down. It also could
+			// never do anything useful: while a handler is subscribed the event roots this instance, so the
+			// object is only ever collectable once Stop() has already run. InertiaProcessor.Dispose() is what
+			// actually ends the timer.
 		}
 #endif
 	}
