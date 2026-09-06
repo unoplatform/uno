@@ -142,6 +142,15 @@ public class Given_Visual_ArrangePending
 			remove { }
 		}
 
+		// This fake records frame requests; it never drives per-frame motion, so nothing subscribes.
+		public event EventHandler<long>? FrameStarting
+		{
+			add { }
+			remove { }
+		}
+
+		public long FrameIntervalInTicks => TimeSpan.TicksPerSecond / 60;
+
 		public void RequestNewFrame() => NewFrameRequests++;
 
 		public void AddDamage(SKRect bounds) { }
