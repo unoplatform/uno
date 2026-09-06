@@ -11,7 +11,7 @@
         <StackPanel Spacing="16">
 
             <TextBlock Style="{StaticResource TitleTextBlockStyle}" Text="System accent color" />
-            <TextBlock Text="The swatches show the values returned by UISettings.GetColorValue. The controls below use the SystemAccentColor theme resources. On macOS, change the accent color in System Settings → Appearance and everything should update live." TextWrapping="Wrap" />
+            <TextBlock Text="The swatches show the values returned by UISettings.GetColorValue. The controls below use the SystemAccentColor theme resources. On macOS (System Settings → Appearance) or Linux (GNOME 47+ Settings → Appearance, KDE Plasma 6 System Settings → Colors &amp; Themes), change the accent color and everything should update live." TextWrapping="Wrap" />
             <Button Click="OnRefreshClick" Content="Refresh values" />
 
             <!--  Force a specific accent via FeatureConfiguration.AccentColor.OverrideAccentColor  -->

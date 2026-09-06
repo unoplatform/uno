@@ -10,7 +10,8 @@ namespace UITests.Windows_UI_ViewManagement;
 [Sample("Windows.UI.ViewManagement",
 	Name = "SystemAccentColor",
 	Description = "Shows that SystemAccentColor and the accent brushes follow the OS accent color. "
-		+ "On macOS, open System Settings → Appearance and change the accent color while this "
+		+ "On macOS (System Settings → Appearance) or Linux (GNOME 47+ Settings → Appearance, KDE Plasma 6 System "
+		+ "Settings → Colors & Themes), change the accent color while this "
 		+ "sample is visible: the swatches and the controls below update live. The override buttons "
 		+ "force a specific accent color on any platform.",
 	IsManualTest = true,
