@@ -75,7 +75,7 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 	public readonly WGPUTextureFormat ColorFormat;
 	// 2× is the preferred default (quality/cost sweet spot for UI); the browser stays 4× in
 	// PickSampleCount because the WebGPU spec only guarantees sample counts 1 and 4.
-	public uint MsaaSamples { get; private set; } = 2;
+	public uint MsaaSamples { get; private set; } = 1;
 	public IntPtr Smp;                       // present-blit sampler (used by the swapchain/browser contexts)
 	public JSObject JsDeviceObject;          // browser only: the live JS GPUDevice (the honest neutral handle)
 	private bool _hasFormatFeatures;
@@ -194,7 +194,7 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 		Adapter = IntPtr.Zero;   // JS adapter isn't imported
 		Dev = dev;
 		Q = wgpuDeviceGetQueue(Dev);
-		MsaaSamples = RequestedSampleCount() is 1u ? 1u : 4u;   // browser (Dawn) init is async — can't probe; spec guarantees only 1×/4×
+		MsaaSamples = RequestedSampleCount() is 4u ? 4u : 1u;   // browser (Dawn) init is async — can't probe; spec guarantees only 1×/4×
 		CreatePresentSampler();
 	}
 
@@ -208,10 +208,9 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 		Smp = wgpuDeviceCreateSampler(Dev, &sd);
 	}
 
-	// MSAA sample count, no DPI/scale input: prefer 2× (needs the format feature), else 4× (spec-guaranteed), else 1×.
-	// The browser can't synchronously probe → 4×.
-	// UNO_WEBGPU_MSAA=1|2|4|8 overrides the sample count (validated against the device; the browser
-	// honours only 1, since the spec guarantees just 1 and 4 and Dawn init can't probe synchronously).
+	// UNO_WEBGPU_MSAA=1|2|4|8 opts back into multisampling. Also the control for comparing it against the
+	// analytic-AA default: the browser honours only 4, since the spec guarantees just 1 and 4 and Dawn init
+	// can't probe synchronously.
 	private static uint? RequestedSampleCount()
 		=> Environment.GetEnvironmentVariable("UNO_WEBGPU_MSAA") switch
 		{
@@ -222,17 +221,17 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 			_ => null,
 		};
 
+	// Single-sampled by default: the analytic AA ring over the coverage atlas resolves edges more crisply than
+	// multisampling and skips its 2x fill cost, so MSAA is opt-in rather than negotiated.
 	private uint PickSampleCount()
 	{
-		// The WebGPU spec only guarantees sample counts 1 and 4, so the browser uses 4.
-		if (_browser || OperatingSystem.IsBrowser()) { return RequestedSampleCount() is 1u ? 1u : 4u; }
-		if (RequestedSampleCount() is { } requested && (requested == 1u || SupportsSampleCount(requested)))
+		if (RequestedSampleCount() is not { } requested || requested == 1u)
 		{
-			return requested;
+			return 1u;
 		}
-		if (_hasFormatFeatures && SupportsSampleCount(2)) { return 2u; }
-		if (SupportsSampleCount(4)) { return 4u; }
-		return 1u;
+
+		if (_browser || OperatingSystem.IsBrowser()) { return requested == 4u ? 4u : 1u; }
+		return SupportsSampleCount(requested) ? requested : 1u;
 	}
 
 	private bool SupportsSampleCount(uint samples)
