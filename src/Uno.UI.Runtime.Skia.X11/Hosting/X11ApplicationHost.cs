@@ -114,6 +114,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 		ApiExtensibility.Register<XamlRoot>(typeof(Uno.Graphics.INativeOpenGLWrapper), xamlRoot => new X11NativeOpenGLWrapper(xamlRoot));
 
 		ApiExtensibility.Register(typeof(ISystemThemeHelperExtension), _ => LinuxSystemThemeHelper.Instance);
+		ApiExtensibility.Register(typeof(IAccentColorExtension), _ => LinuxAccentColorExtension.Instance);
 		ApiExtensibility.Register(typeof(ITextScaleFactorExtension), _ => X11TextScaleFactorExtension.Instance);
 
 		if (Type.GetType("Uno.UI.MediaPlayer.Skia.X11.X11MediaPlayerPresenterExtension, Uno.UI.MediaPlayer.Skia.X11") is { } mediaPresenterExtensionType

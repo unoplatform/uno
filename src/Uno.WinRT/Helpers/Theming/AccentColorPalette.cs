@@ -50,7 +50,7 @@ internal readonly struct AccentColorPalette
 	/// Factors were reverse-engineered from Windows default blue (#0078D7) and its palette.
 	/// This is a linear-RGB approximation and diverges from the Windows HSL-based palette
 	/// (most visibly for warm hues). It is only used where the OS exposes a single accent color
-	/// (macOS, Android); the Win32 host reads the real OS palette from the registry.
+	/// (macOS, Linux, Android); the Win32 host reads the real OS palette from the registry.
 	/// </remarks>
 	public static AccentColorPalette FromAccentColor(Color accent)
 	{
