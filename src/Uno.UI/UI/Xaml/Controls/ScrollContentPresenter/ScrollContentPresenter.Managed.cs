@@ -15,7 +15,6 @@ using Windows.Foundation;
 
 //using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 
-using static System.Net.Mime.MediaTypeNames;
 using static Uno.UI.Xaml.Core.InputManager.PointerManager;
 
 using _PointerDeviceType = global::Microsoft.UI.Input.PointerDeviceType;
@@ -658,9 +657,11 @@ namespace Microsoft.UI.Xaml.Controls
 			var h = Math.Clamp(_flingH.GetPosition(elapsed), 0, maxH);
 			var v = Math.Clamp(_flingV.GetPosition(elapsed), 0, maxV);
 
-			// Done once both curves are spent, or the content has run into an edge in the direction of travel.
-			var running = elapsed < Math.Max(_flingH.Duration, _flingV.Duration)
-				&& (h > 0 && h < maxH || v > 0 && v < maxV);
+			// Each axis against its own curve: sharing one duration keeps the fling ticking after the axis
+			// that was actually moving has settled at an edge, publishing no-op frames until the other
+			// axis's curve — which nothing is travelling — runs out.
+			var running = (elapsed < _flingH.Duration && h > 0 && h < maxH)
+				|| (elapsed < _flingV.Duration && v > 0 && v < maxV);
 
 			if (!running)
 			{
@@ -698,9 +699,6 @@ namespace Microsoft.UI.Xaml.Controls
 				return false;
 			}
 
-			var compositor = Visual.Compositor;
-			var now = compositor.TimestampInTicks;
-
 			if (!_isWheelDecayRunning)
 			{
 				if (FrameDriverTarget is not { } wheelTarget)
@@ -708,9 +706,10 @@ namespace Microsoft.UI.Xaml.Controls
 					return false;
 				}
 
-				// Seeded from the current offset, which a coasting fling may still be advancing.
-				_wheelDecayH.Start(HorizontalOffset, now);
-				_wheelDecayV.Start(VerticalOffset, now);
+				// Seeded from the current offset, which a coasting fling may still be advancing, and anchored
+				// on the first frame rather than on a clock read here — cf. StartFling.
+				_wheelDecayH.Start(HorizontalOffset, wheelTarget.FrameIntervalInTicks);
+				_wheelDecayV.Start(VerticalOffset, wheelTarget.FrameIntervalInTicks);
 				_isWheelDecayRunning = true;
 				_wheelDecayTarget = wheelTarget;
 				wheelTarget.FrameStarting += OnWheelDecayFrame;
@@ -1202,14 +1201,11 @@ namespace Microsoft.UI.Xaml.Controls
 	/// Options for the ScrollContentPrensenter.Update
 	/// </summary>
 	/// <param name="DisableAnimation">Request to disable the animation.</param>
-	/// <param name="LinearAnimationDuration">
-	/// Requests to use a linear animation with a specific duration instead of the default animation strategy.
-	/// This is for the for inertia processor with touch scrolling where the total duration is calculated based on the velocity.
-	/// </param>
 	/// <param name="IsTouch">Indicates that the scroll is coming from an inertia processor.</param>
 	/// <param name="IsIntermediate">
 	/// Indicates that the scroll is an intermediate value, not the final one
 	/// (i.e. active touch scrolling, touch scroll inertia or scroll animation).
 	/// </param>
+	/// <param name="IsWheelDecay">Indicates that the scroll is a frame of the wheel's decay, which must not stop itself.</param>
 	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsTouch = false, bool IsIntermediate = false, bool IsWheelDecay = false);
 }

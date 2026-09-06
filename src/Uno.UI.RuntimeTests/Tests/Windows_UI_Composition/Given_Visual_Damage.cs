@@ -479,6 +479,45 @@ public class Given_Visual_Damage
 #endif
 	}
 
+	// A render callback enqueued before the owning target unregistered can still reach the region after it
+	// was disposed - reachable in production since the target now disposes it on unregister. Every entry
+	// point has to drop the contribution instead of writing to the freed native paths.
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	public void When_Region_Is_Disposed_Then_Contributions_Are_Dropped()
+	{
+#if __SKIA__
+		var damage = new DamageRegion();
+
+		damage.UnionRect(new SKRect(10, 10, 40, 40));
+		Assert.IsFalse(damage.IsEmpty, "A region with a contribution should not report empty.");
+
+		damage.Dispose();
+
+		Assert.IsTrue(damage.IsEmpty, "A disposed region must report empty rather than claiming rects it no longer owns.");
+
+		// None of these may touch the freed native paths.
+		damage.UnionRect(new SKRect(50, 50, 80, 80));
+		using (var addition = Microsoft.UI.Composition.SkiaExtensions.CreateRectPath(new SKRect(0, 0, 20, 20)))
+		{
+			damage.Union(addition);
+		}
+
+		damage.Reset();
+
+		// Seeded non-empty, so an untouched destination cannot pass the assertion below by accident.
+		using var snapshot = Microsoft.UI.Composition.SkiaExtensions.CreateRectPath(new SKRect(0, 0, 100, 100));
+		damage.SnapshotAndReset(snapshot, new SKRect(0, 0, 200, 200));
+
+		Assert.IsTrue(snapshot.IsEmpty, "A disposed region must snapshot as empty.");
+		Assert.IsTrue(damage.IsEmpty, "A disposed region must stay empty after further contributions.");
+
+		// Idempotent: the target disposes on unregister, and the region may be disposed again on teardown.
+		damage.Dispose();
+#endif
+	}
+
 #if __SKIA__
 	private static void RenderFrame(ContainerVisual root, DamageRegion damage, float frameSize = 200)
 	{

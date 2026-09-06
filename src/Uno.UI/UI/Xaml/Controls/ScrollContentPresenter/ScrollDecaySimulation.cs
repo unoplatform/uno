@@ -33,6 +33,7 @@ internal struct ScrollDecaySimulation
 	private double _velocity;
 	private double _position;
 	private long _lastTimestampInTicks;
+	private long _frameIntervalInTicks;
 
 	public readonly bool IsRunning => _velocity != 0;
 
@@ -41,11 +42,19 @@ internal struct ScrollDecaySimulation
 	/// <summary>Where the motion currently in flight will come to rest, ignoring bounds.</summary>
 	public readonly double ProjectedEnd => _position + _velocity / Lambda;
 
-	public void Start(double position, long timestampInTicks)
+	/// <param name="frameIntervalInTicks">
+	/// The nominal frame step this motion is ticked on. The first tick is back-dated by it, so the frame the
+	/// impulse arrives on advances by a whole step rather than by whatever is left of one.
+	/// </param>
+	public void Start(double position, long frameIntervalInTicks)
 	{
 		_position = position;
 		_velocity = 0;
-		_lastTimestampInTicks = timestampInTicks;
+		_frameIntervalInTicks = frameIntervalInTicks;
+
+		// Anchored on the first tick, not on a clock read here: the frame grid runs behind the raw clock the
+		// impulse arrives on, so the first elapsed time would be negative and the frame would be dropped.
+		_lastTimestampInTicks = 0;
 	}
 
 	/// <param name="distance">Signed distance this impulse would travel on its own.</param>
@@ -55,6 +64,11 @@ internal struct ScrollDecaySimulation
 	/// <returns>False once the motion has settled.</returns>
 	public bool Tick(long timestampInTicks, double min, double max)
 	{
+		if (_lastTimestampInTicks == 0)
+		{
+			_lastTimestampInTicks = timestampInTicks - _frameIntervalInTicks;
+		}
+
 		var elapsed = (timestampInTicks - _lastTimestampInTicks) / (double)TimeSpan.TicksPerSecond;
 		_lastTimestampInTicks = timestampInTicks;
 

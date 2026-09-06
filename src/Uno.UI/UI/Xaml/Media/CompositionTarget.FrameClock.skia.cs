@@ -31,9 +31,14 @@ public partial class CompositionTarget
 	{
 		add
 		{
+			if (value is null)
+			{
+				return;
+			}
+
 			var wasEmpty = _frameStarting is null;
 			_frameStarting += value;
-			if (wasEmpty && _frameStarting is not null)
+			if (wasEmpty)
 			{
 				Compositor.AddFrameDriver();
 
@@ -44,6 +49,11 @@ public partial class CompositionTarget
 		}
 		remove
 		{
+			if (value is null)
+			{
+				return;
+			}
+
 			var wasPresent = _frameStarting is not null;
 			_frameStarting -= value;
 			if (wasPresent && _frameStarting is null)

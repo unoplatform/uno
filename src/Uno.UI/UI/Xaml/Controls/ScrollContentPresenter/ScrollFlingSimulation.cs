@@ -55,12 +55,21 @@ internal readonly struct ScrollFlingSimulation
 		_distance = distance;
 	}
 
+	/// <summary>
+	/// Whether this device scrolls the way Apple's does. Includes a WebAssembly app running in an iOS or
+	/// iPadOS browser, where the OS APIs only ever report "browser": the user's other apps still decelerate
+	/// on UIScrollView's curve, so the app has to as well. Probed once, not per fling.
+	/// </summary>
+	private static readonly bool _isApplePlatform =
+		OperatingSystem.IsIOS() || OperatingSystem.IsMacCatalyst() || OperatingSystem.IsMacOS()
+		|| Uno.UI.Helpers.DeviceTargetHelper.BrowserHost is Uno.UI.Helpers.BrowserHostPlatform.iOS;
+
 	/// <param name="velocityPerSecond">Launch velocity in logical pixels per second.</param>
 	public static ScrollFlingSimulation Create(double start, double velocityPerSecond)
 	{
 		velocityPerSecond = Math.Clamp(velocityPerSecond, -MaxLaunchVelocityPerSecond, MaxLaunchVelocityPerSecond);
 
-		if (OperatingSystem.IsIOS() || OperatingSystem.IsMacCatalyst() || OperatingSystem.IsMacOS())
+		if (_isApplePlatform)
 		{
 			return new ScrollFlingSimulation(start, velocityPerSecond, isApple: true, duration: 0, distance: 0);
 		}

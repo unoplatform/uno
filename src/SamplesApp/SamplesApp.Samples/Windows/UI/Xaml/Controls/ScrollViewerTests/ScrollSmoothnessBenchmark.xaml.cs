@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -136,7 +137,7 @@ public sealed partial class ScrollSmoothnessBenchmark : UserControl
 				Height = 28,
 				CornerRadius = new CornerRadius(4),
 				BorderThickness = new Thickness(1),
-				BorderBrush = (Brush)Application.Current.Resources["SystemControlForegroundBaseMediumLowBrush"],
+				BorderBrush = BorderBrushFromTheme(),
 				Child = new TextBlock { Text = j.ToString(CultureInfo.InvariantCulture), Margin = new Thickness(4, 2, 4, 2) },
 			});
 		}
@@ -146,6 +147,12 @@ public sealed partial class ScrollSmoothnessBenchmark : UserControl
 		row.Children.Add(inner);
 		return row;
 	}
+
+	/// <summary>A head whose theme dictionaries do not carry the key must still get a usable benchmark.</summary>
+	private static Brush BorderBrushFromTheme()
+		=> Application.Current.Resources.TryGetValue("SystemControlForegroundBaseMediumLowBrush", out var brush) && brush is Brush themed
+			? themed
+			: new SolidColorBrush(Colors.Gray);
 
 	private void OnRendering(object? sender, object args)
 	{

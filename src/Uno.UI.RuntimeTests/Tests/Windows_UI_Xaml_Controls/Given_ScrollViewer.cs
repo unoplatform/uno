@@ -2201,7 +2201,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				finger.Press(c);
 				for (var i = 1; i <= 12; i++)
 				{
-					finger.MoveTo(c.Offset(0, -i * 22), steps: 1);
+					finger.MoveTo(c.Offset(0, -i * 22d), steps: 1);
 					await Task.Delay(8);
 				}
 
@@ -2589,7 +2589,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			const int MaxFrames = 600;
 
 			ScrollDecaySimulation decay = new();
-			decay.Start(Origin, 0);
+			decay.Start(Origin, TimeSpan.TicksPerSecond / 60);
 			decay.AddImpulse(Distance);
 
 			Assert.AreEqual(Origin + Distance, decay.ProjectedEnd, delta: 0.001, "The impulse does not project to the distance it carries.");
@@ -2620,7 +2620,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finger.Press(from);
 			for (var i = 1; i <= 12; i++)
 			{
-				finger.MoveTo(from.Offset(0, -i * 22), steps: 1);
+				finger.MoveTo(from.Offset(0, -i * 22d), steps: 1);
 				await Task.Delay(8);
 			}
 
