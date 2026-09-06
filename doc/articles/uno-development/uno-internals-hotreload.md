@@ -52,6 +52,12 @@ static void BeforeElementReplaced(FrameworkElement, FrameworkElement, Type[]?);
 static void AfterElementReplaced(FrameworkElement, FrameworkElement, Type[]?);
 ```
 
+### Content that is not in the visual tree
+
+The UI Update only walks materialized elements, so content assigned to a `ContentControl` whose subtree never had a layout pass is invisible to it — the template never applied, so the content is not a visual child. The `ContentControl` and `Frame` element-update handlers re-create such content themselves, from `ElementUpdate`.
+
+`BeforeElementReplaced` / `AfterElementReplaced` are **not** raised for those swaps, and they are not counted in the operation's replaced-element total — those notifications belong to the elements the walk owns. A handler that tracks a content instance should reconcile in `AfterVisualTreeUpdate`, which runs once after the whole phase. `CaptureState` / `RestoreState` do not run either: the content was never materialized, so there is no visual state to preserve.
+
 ## Pausing / Resuming UI Update
 
 Pausing and resuming UI Update is done by calling

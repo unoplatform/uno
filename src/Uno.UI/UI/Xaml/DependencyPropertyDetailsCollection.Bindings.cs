@@ -86,16 +86,6 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		internal void ApplyTemplateBindings()
-		{
-			var bindings = _bindings.Data;
-
-			for (int i = 0; i < bindings.Length; i++)
-			{
-				bindings[i].ApplyTemplateBindingParent();
-			}
-		}
-
 		/// <summary>
 		/// Suspends the <see cref="Binding"/> instances from reacting to DataContext changes
 		/// </summary>
@@ -312,7 +302,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		// Resolve a binding's TargetNullValue / FallbackValue {ThemeResource} against the binding-target
-		// element's effective theme: the caller (DependencyObjectStore.UpdateResourceBindings) scopes it
+		// element's effective theme: the caller (DependencyObject.UpdateResourceBindings) scopes it
 		// onto the core requested-theme-for-subtree slot, which the dictionary leaf reads to select the
 		// Light/Dark sub-dictionary (EnsureActiveThemeDictionary, Resources.cpp:764-768) — matching
 		// WinUI's per-owner {ThemeResource} resolution.

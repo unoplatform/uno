@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml
 {
-#if false || false
+#if false
 	public enum ElementSoundPlayerState
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.ElementSoundPlayerState.Auto

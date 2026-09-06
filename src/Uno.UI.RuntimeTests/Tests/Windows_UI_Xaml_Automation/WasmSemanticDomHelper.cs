@@ -39,6 +39,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		public static bool SemanticElementExists(UIElement element)
 			=> InvokeBrowserJs($"(function(){{return document.getElementById('{GetSemanticElementId(element)}') ? '1' : '0';}})()") == "1";
 
+		/// <summary>Returns true when the semantic node has non-zero browser bounds.</summary>
+		public static bool SemanticElementHasNonEmptyBounds(UIElement element)
+			=> InvokeBrowserJs($"(function(){{const e = document.getElementById('{GetSemanticElementId(element)}'); if (!e) {{ return '0'; }} const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 ? '1' : '0'; }})()") == "1";
+
 		/// <summary>
 		/// Returns the value of an attribute on the element's semantic node, or empty string when the
 		/// node or attribute is absent. Use <see cref="SemanticElementHasAttribute"/> to distinguish

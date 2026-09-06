@@ -3,19 +3,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Content
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IContentSiteInput
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		bool ProcessesKeyboardInput
 		{
 			get;
 			set;
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		bool ProcessesPointerInput
 		{
 			get;

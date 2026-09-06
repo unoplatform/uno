@@ -3,7 +3,7 @@
 namespace Microsoft.UI.Xaml.Media.Animation;
 
 [ContentProperty(Name = nameof(DefaultNavigationTransitionInfo))]
-#if IS_UNIT_TESTS || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 [global::Uno.NotImplemented]
 #endif
 public partial class NavigationThemeTransition : Transition

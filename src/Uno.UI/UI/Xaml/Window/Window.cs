@@ -122,7 +122,14 @@ public partial class Window
 		}
 
 		// We set up the DisplayInformation instance after Initialize so that we have an actual window to bind to.
-		global::Windows.Graphics.Display.DisplayInformation.GetOrCreateForWindowId(AppWindow.Id);
+		// A macOS hosted-ALC window has no native window (Initialize skips it), so skip this too: the macOS
+		// DisplayInformation extension subscribes to MacOSWindowNative.NativeWindowReady and only unsubscribes
+		// when a native window is created — which never happens here — leaking the extension (pinning the ALC)
+		// and letting it bind to the next unrelated native window.
+		if (!IsMacOSHostedAlcWindow)
+		{
+			global::Windows.Graphics.Display.DisplayInformation.GetOrCreateForWindowId(AppWindow.Id);
+		}
 	}
 
 	internal INativeWindowWrapper? NativeWrapper => _windowImplementation.NativeWindowWrapper;
@@ -148,7 +155,7 @@ public partial class Window
 	/// <summary>
 	/// Occurs when the window has successfully been activated.
 	/// </summary>
-	public event WindowActivatedEventHandler? Activated
+	public event TypedEventHandler<object, WindowActivatedEventArgs> Activated
 	{
 		add
 		{
@@ -163,7 +170,7 @@ public partial class Window
 	/// <summary>
 	/// Occurs when the app window has first rendered or has changed its rendering size.
 	/// </summary>
-	public event WindowSizeChangedEventHandler? SizeChanged
+	public event TypedEventHandler<object, WindowSizeChangedEventArgs> SizeChanged
 	{
 		add
 		{
@@ -178,7 +185,7 @@ public partial class Window
 	/// <summary>
 	/// Occurs when the value of the Visible property changes.
 	/// </summary>
-	public event WindowVisibilityChangedEventHandler? VisibilityChanged
+	public event TypedEventHandler<object, WindowVisibilityChangedEventArgs> VisibilityChanged
 	{
 		add
 		{
@@ -637,13 +644,13 @@ public partial class Window
 	/// Provides a memory-friendly registration to the <see cref="SizeChanged" /> event.
 	/// </summary>
 	/// <returns>A disposable instance that will cancel the registration.</returns>
-	internal IDisposable RegisterSizeChangedEvent(Microsoft.UI.Xaml.WindowSizeChangedEventHandler handler)
+	internal IDisposable RegisterSizeChangedEvent(TypedEventHandler<object, WindowSizeChangedEventArgs> handler)
 	{
 		return WeakEventHelper.RegisterEvent(
 			_sizeChangedHandlers ??= new(),
 			handler,
 			(h, s, e) =>
-				(h as Microsoft.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e!)
+				(h as TypedEventHandler<object, WindowSizeChangedEventArgs>)?.Invoke(s, (WindowSizeChangedEventArgs)e!)
 		);
 	}
 

@@ -2,9 +2,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation
 {
-#if NET46
-	[global::Uno.NotImplemented]
-#endif
 	public partial class AutomationProperty
 	{
 	}

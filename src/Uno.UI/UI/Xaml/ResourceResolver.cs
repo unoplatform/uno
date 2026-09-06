@@ -18,6 +18,8 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Resources;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.Loader;
+using Windows.UI;
+using Uno.UI.Xaml.Core;
 
 namespace Uno.UI
 {
@@ -42,11 +44,7 @@ namespace Uno.UI
 		/// The master system resources dictionary.
 		/// </summary>
 		private static ResourceDictionary MasterDictionary =>
-#if __NETSTD_REFERENCE__
-			throw new InvalidOperationException();
-#else
 			Uno.UI.GlobalStaticResources.MasterDictionary;
-#endif
 
 		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByUri = new(StringComparer.OrdinalIgnoreCase);
 		private static readonly Dictionary<string, ResourceDictionary> _registeredDictionariesByAssembly = new(StringComparer.Ordinal);
@@ -61,6 +59,8 @@ namespace Uno.UI
 		/// </summary>
 		private static readonly ConditionalWeakTable<System.Runtime.Loader.AssemblyLoadContext, Dictionary<string, Func<ResourceDictionary>>>
 			_registeredDictionariesByUriByAlc = [];
+		private static readonly ConditionalWeakTable<ResourceDictionary, HighContrastResourceState>
+			_highContrastResourceStates = [];
 
 		private static readonly object _alcDictionariesLock = new();
 
@@ -364,15 +364,15 @@ namespace Uno.UI
 						updateReason, effectivePrecedence);
 				}
 
-				if (owner is IDependencyObjectStoreProvider themeOwnerProvider)
+				if (owner is DependencyObject themeOwnerProvider)
 				{
-					themeOwnerProvider.Store.SetThemeResourceBinding(property, themeRef, precedence);
+					themeOwnerProvider.SetThemeResourceBinding(property, themeRef, precedence);
 
 					// Also register a ResourceBinding for the initial tree-walk resolution
 					// at load time, which will also pin the providing dictionary. The _resourceBindings
 					// path handles the load-time tree-walk resolution, and the _themeResources path
 					// handles efficient theme-change re-resolution.
-					themeOwnerProvider.Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
+					themeOwnerProvider.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
 				}
 				else if (themeRef.IsResolved)
 				{
@@ -401,7 +401,7 @@ namespace Uno.UI
 
 			// Register in the ResourceBinding path to ensure deferred resolution on loading
 			// still works (and HotReload re-resolution for parse-time-resolved values).
-			(owner as IDependencyObjectStoreProvider)?.Store.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
+			(owner as DependencyObject)?.SetResourceBinding(property, specializedKey, updateReason, context, precedence, null);
 		}
 
 		/// <summary>
@@ -431,7 +431,7 @@ namespace Uno.UI
 			// onto the store's full SetThemeResourceBinding sequence yet because the value must resolve
 			// under the setter target's scoped theme before the clone exists.
 			var targetRef = themeRef.CloneForTarget(effectivePrecedence);
-			(owner as IDependencyObjectStoreProvider)?.Store.SetThemeResource(property, targetRef);
+			(owner as DependencyObject)?.SetThemeResource(property, targetRef);
 		}
 
 		/// <summary>
@@ -457,7 +457,7 @@ namespace Uno.UI
 				&& bindingPath.DataContext != null)
 			{
 				var property = DependencyProperty.GetProperty(bindingPath.DataContext.GetType(), bindingPath.LeafPropertyName);
-				if (property != null && bindingPath.DataContext is IDependencyObjectStoreProvider provider)
+				if (property != null && bindingPath.DataContext is DependencyObject provider)
 				{
 					// Set current resource value
 					bindingPath.Value = value;
@@ -471,12 +471,12 @@ namespace Uno.UI
 						var themeRef = new ThemeResourceReference(
 							resourceKey, providingDictionary, value, isResolved: true, context,
 							updateReason, precedence, bindingPath);
-						provider.Store.SetThemeResource(property, themeRef);
+						provider.SetThemeResource(property, themeRef);
 					}
 
 					// Always register ResourceBinding for re-pin at load time and
 					// HotReload support, matching the dual-registration in ApplyResource.
-					provider.Store.SetResourceBinding(property, resourceKey, updateReason, context, precedence, bindingPath);
+					provider.SetResourceBinding(property, resourceKey, updateReason, context, precedence, bindingPath);
 
 					return true;
 				}
@@ -495,7 +495,7 @@ namespace Uno.UI
 
 			if (scope != null)
 			{
-				var dictionaries = (scope.Target as IDependencyObjectStoreProvider)?.Store.GetResourceDictionaries(true);
+				var dictionaries = (scope.Target as DependencyObject)?.GetResourceDictionaries(true);
 
 				if (dictionaries != null)
 				{
@@ -1091,7 +1091,7 @@ namespace Uno.UI
 			if (!XamlFilePathHelper.IsAbsolutePath(source))
 			{
 				// If we don't have an absolute path it must be a local resource reference
-				source = XamlFilePathHelper.LocalResourcePrefix + XamlFilePathHelper.ResolveAbsoluteSource(currentAbsolutePath, source);
+				source = XamlFilePathHelper.MsResourceFilesPrefix + XamlFilePathHelper.ResolveAbsoluteSource(currentAbsolutePath, source);
 			}
 
 			// When secondary ALCs are active, check the ALC-scoped registry first.
@@ -1161,7 +1161,7 @@ namespace Uno.UI
 			if (!XamlFilePathHelper.IsAbsolutePath(source))
 			{
 				// If we don't have an absolute path it must be a local resource reference
-				source = XamlFilePathHelper.LocalResourcePrefix + XamlFilePathHelper.ResolveAbsoluteSource(currentAbsolutePath, source);
+				source = XamlFilePathHelper.MsResourceFilesPrefix + XamlFilePathHelper.ResolveAbsoluteSource(currentAbsolutePath, source);
 			}
 
 			// Try ALC-specific registry first (for non-default ALCs)
@@ -1260,6 +1260,156 @@ namespace Uno.UI
 			=> ResourceDictionary.GetStaticResourceAliasPassthrough(resourceKey, parseContext as XamlParseContext);
 
 		internal static void UpdateSystemThemeBindings(ResourceUpdateReason updateReason) => MasterDictionary.UpdateThemeBindings(updateReason);
+
+		internal static void UpdateSystemColorAndBrushResources(
+			IReadOnlyList<ColorAndBrushResourceInfo> resources,
+			bool restoreDefaults) =>
+			UpdateSystemColorAndBrushResources(MasterDictionary, resources, restoreDefaults);
+
+		internal static void UpdateSystemColorAndBrushResources(
+			ResourceDictionary rootDictionary,
+			IReadOnlyList<ColorAndBrushResourceInfo> resources,
+			bool restoreDefaults = false)
+		{
+			var visited = new HashSet<ResourceDictionary>(ReferenceEqualityComparer.Instance);
+			UpdateSystemColorAndBrushResourcesCore(rootDictionary, resources, restoreDefaults, visited);
+		}
+
+		private static void UpdateSystemColorAndBrushResourcesCore(
+			ResourceDictionary dictionary,
+			IReadOnlyList<ColorAndBrushResourceInfo> resources,
+			bool restoreDefaults,
+			HashSet<ResourceDictionary> visited)
+		{
+			if (!visited.Add(dictionary))
+			{
+				return;
+			}
+
+			UpdateHighContrastDictionary(dictionary, "HighContrast", resources, restoreDefaults, visited);
+			UpdateHighContrastDictionary(dictionary, "HighContrastBlack", resources, restoreDefaults, visited);
+			UpdateHighContrastDictionary(dictionary, "HighContrastWhite", resources, restoreDefaults, visited);
+			UpdateHighContrastDictionary(dictionary, "HighContrastCustom", resources, restoreDefaults, visited);
+
+			foreach (var mergedDictionary in dictionary.MergedDictionaries.ToArray())
+			{
+				UpdateSystemColorAndBrushResourcesCore(mergedDictionary, resources, restoreDefaults, visited);
+			}
+		}
+
+		private static void UpdateHighContrastDictionary(
+			ResourceDictionary dictionary,
+			string themeKey,
+			IReadOnlyList<ColorAndBrushResourceInfo> resources,
+			bool restoreDefaults,
+			HashSet<ResourceDictionary> visited)
+		{
+			if (!dictionary.TryGetThemeDictionary(themeKey, out var themeDictionary))
+			{
+				return;
+			}
+
+			UpdateHighContrastResourcesCore(themeDictionary, resources, restoreDefaults, visited);
+		}
+
+		private static void UpdateHighContrastResourcesCore(
+			ResourceDictionary themeDictionary,
+			IReadOnlyList<ColorAndBrushResourceInfo> resources,
+			bool restoreDefaults,
+			HashSet<ResourceDictionary> visited)
+		{
+			if (!visited.Add(themeDictionary))
+			{
+				return;
+			}
+
+			HighContrastResourceState state = null;
+			var shouldUpdateResources = !restoreDefaults
+				|| _highContrastResourceStates.TryGetValue(themeDictionary, out state);
+			if (shouldUpdateResources)
+			{
+				foreach (var resource in resources)
+				{
+					var systemColor = Color.FromArgb(
+						resource.OverrideAlpha ? byte.MaxValue : (byte)(resource.RgbValue >> 24),
+						(byte)(resource.RgbValue >> 16),
+						(byte)(resource.RgbValue >> 8),
+						(byte)resource.RgbValue);
+
+					if (themeDictionary.ContainsKeyLocal(resource.ColorKey)
+						&& themeDictionary.TryGetValue(resource.ColorKey, out var colorValue, shouldCheckSystem: false)
+						&& colorValue is Color currentColor)
+					{
+						state ??= _highContrastResourceStates.GetValue(
+							themeDictionary,
+							static _ => new HighContrastResourceState());
+						var targetColor = state.GetTargetColor(
+							resource.ColorKey,
+							currentColor,
+							systemColor,
+							restoreDefaults);
+						if (currentColor != targetColor)
+						{
+							themeDictionary[resource.ColorKey] = targetColor;
+						}
+					}
+
+					if (resource.BrushKey is { } brushKey
+						&& themeDictionary.ContainsKeyLocal(brushKey)
+						&& themeDictionary.TryGetValue(brushKey, out var brushValue, shouldCheckSystem: false)
+						&& brushValue is SolidColorBrush brush)
+					{
+						state ??= _highContrastResourceStates.GetValue(
+							themeDictionary,
+							static _ => new HighContrastResourceState());
+						var targetColor = state.GetTargetColor(
+							brushKey,
+							brush.Color,
+							systemColor,
+							restoreDefaults);
+						if (brush.Color != targetColor)
+						{
+							brush.Color = targetColor;
+						}
+					}
+				}
+
+				if (restoreDefaults && state is not null)
+				{
+					_highContrastResourceStates.Remove(themeDictionary);
+				}
+			}
+
+			foreach (var mergedDictionary in themeDictionary.MergedDictionaries.ToArray())
+			{
+				UpdateHighContrastResourcesCore(mergedDictionary, resources, restoreDefaults, visited);
+			}
+		}
+
+		private sealed class HighContrastResourceState
+		{
+			private readonly Dictionary<string, Color> _baselineColors = new(StringComparer.Ordinal);
+			private readonly Dictionary<string, Color> _lastAppliedColors = new(StringComparer.Ordinal);
+
+			public Color GetTargetColor(
+				string resourceKey,
+				Color currentColor,
+				Color systemColor,
+				bool restoreDefault)
+			{
+				if (!_baselineColors.TryGetValue(resourceKey, out var baselineColor)
+					|| (_lastAppliedColors.TryGetValue(resourceKey, out var lastAppliedColor)
+						&& currentColor != lastAppliedColor))
+				{
+					baselineColor = currentColor;
+					_baselineColors[resourceKey] = baselineColor;
+				}
+
+				var targetColor = restoreDefault ? baselineColor : systemColor;
+				_lastAppliedColors[resourceKey] = targetColor;
+				return targetColor;
+			}
+		}
 
 		/// <summary>
 		/// Sets the ambient ALC context for resource resolution and returns an <see cref="IDisposable"/>

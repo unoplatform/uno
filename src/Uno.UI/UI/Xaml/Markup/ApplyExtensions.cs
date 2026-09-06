@@ -58,6 +58,16 @@ namespace Uno.UI.Helpers.Xaml
 			apply(instance, arg1, arg2);
 			return instance;
 		}
+
+		/// <summary>
+		/// Executes the provided apply handler on the specified instance. Used by the XAML code generator.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static TType GenericApply<TType, TArg1, TArg2, TArg3>(this TType instance, TArg1 arg1, TArg2 arg2, TArg3 arg3, Action<TType, TArg1, TArg2, TArg3> apply)
+		{
+			apply(instance, arg1, arg2, arg3);
+			return instance;
+		}
 	}
 }
 

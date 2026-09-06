@@ -82,17 +82,11 @@ public partial class VisualInteractionSource : CompositionObject, ICompositionIn
 		Source.VisualInteractionSource = null;
 	}
 
-	// IMPORTANT: The correct API is Microsoft.UI.Input.PointerPoint!
-	// Currently, Microsoft.UI.Input.PointerPoint is in Uno.UI assembly.
-	// Uno.UI.Composition doesn't have access to Uno.UI (the dependency is the other way around).
-	// For now, the API diverges from WinUI, and an implicit conversion operator will be provided to convert
-	// from Microsoft.UI.Input.PointerPoint to Windows.UI.Input.PointerPoint.
-	// In Uno 6, we will make a breaking change to match WinUI.
-	public void TryRedirectForManipulation(global::Windows.UI.Input.PointerPoint pointerPoint)
+	public void TryRedirectForManipulation(global::Microsoft.UI.Input.PointerPoint pointerPoint)
 	{
 		// https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.ui.composition.interactions.visualinteractionsource.tryredirectformanipulation
 		// > This method should only be called with a PointerDeviceType of Touch.
-		if (pointerPoint.PointerDeviceType == global::Windows.Devices.Input.PointerDeviceType.Touch &&
+		if (pointerPoint.PointerDeviceType == global::Microsoft.UI.Input.PointerDeviceType.Touch &&
 			Source.CompositionTarget is { } compositionTarget)
 		{
 			foreach (var tracker in Trackers)

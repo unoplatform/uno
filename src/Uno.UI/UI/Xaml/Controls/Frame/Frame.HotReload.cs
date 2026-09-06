@@ -1,6 +1,7 @@
 ﻿#if HAS_UNO // We don't have access to the instance of the page entry in the backstack on Windows
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection.Metadata;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
@@ -34,6 +35,8 @@ partial class Frame
 					frame.RemovePageFromCache(type.FullName);
 					frame.RemovePageFromCache(Navigation.PageStackEntry.BuildDescriptor(type));
 				}
+
+				PatchStrandedContent(frame, updatedTypes);
 			}
 			else // Uno's legacy implementation
 			{
@@ -68,6 +71,39 @@ partial class Frame
 						entry.SourcePageType = expectedType;
 					}
 				}
+
+				PatchStrandedContent(frame, updatedTypes);
+			}
+		}
+
+		/// <summary>
+		/// Re-creates the frame's current page when it was hot-reloaded while never
+		/// materialized (see <see cref="ContentControlElementMetadataUpdateHandler.CreateReplacementForStrandedContent"/>),
+		/// then keeps the navigation history pointing at the new instance.
+		/// </summary>
+		private static void PatchStrandedContent(Frame frame, Type[] updatedTypes)
+		{
+			if (ContentControlElementMetadataUpdateHandler.CreateReplacementForStrandedContent(frame, updatedTypes) is not Page newPage)
+			{
+				return;
+			}
+
+			newPage.Frame = frame;
+			frame.SetContent(newPage);
+
+			// Legacy mode syncs CurrentEntry in OnContentChanged; the WinUI-behavior
+			// history entry must be patched explicitly.
+			if (frame._useWinUIBehavior && frame.GetCurrentPageStackEntry() is { } entry)
+			{
+				entry.Instance = newPage;
+				SetSourcePageType(entry, newPage.GetType());
+			}
+
+			[UnconditionalSuppressMessage("Trimming", "IL2067")]
+			// Replacement types come from TypeMappings, which preserves their constructors.
+			static void SetSourcePageType(Navigation.PageStackEntry entry, Type type)
+			{
+				entry.SourcePageType = type;
 			}
 		}
 	}

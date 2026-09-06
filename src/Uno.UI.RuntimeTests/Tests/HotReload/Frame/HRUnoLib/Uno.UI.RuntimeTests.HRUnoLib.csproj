@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net10.0</TargetFramework>
+		<TargetFramework>net11.0</TargetFramework>
 		<UnoSingleProject>true</UnoSingleProject>
 		<OutputType>Library</OutputType>
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
@@ -10,7 +10,7 @@
 		<Nullable>enable</Nullable>
 
 		<!-- in-solution build -->
-		<_UnoBaseReferenceBinPath Condition="exists('$(MSBuildThisFileDirectory)../../../../../SamplesApp')">$(MSBuildThisFileDirectory)../../../../../SamplesApp/SamplesApp.Skia.Generic/bin/$(Configuration)/$(TargetFramework)</_UnoBaseReferenceBinPath>
+		<_UnoBaseReferenceBinPath Condition="exists('$(MSBuildThisFileDirectory)../../../../../SamplesApp')">$(MSBuildThisFileDirectory)../../../../../SamplesApp/SamplesApp/bin/$(Configuration)/$(NetCurrent)-desktop</_UnoBaseReferenceBinPath>
 
 		<!-- CI runtime test job -->
 		<_UnoBaseReferenceBinPath Condition="exists('$(SamplesAppArtifactPath)')">$(SamplesAppArtifactPath)</_UnoBaseReferenceBinPath>

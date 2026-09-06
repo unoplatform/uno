@@ -77,7 +77,11 @@ namespace Uno.UI.Runtime.Skia {
 			if (videoElement) {
 				videoElement.onfullscreenchange = e => {
 					if (!document.fullscreenElement) {
-						BrowserMediaPlayerPresenterExtension.unoExports.OnExitFullscreen(elementId);
+						if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+							BrowserMediaPlayerPresenterExtension.unoExports.OnExitFullscreenAsync(elementId);
+						} else {
+							BrowserMediaPlayerPresenterExtension.unoExports.OnExitFullscreen(elementId);
+						}
 					}
 				};
 			}

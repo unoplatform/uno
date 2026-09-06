@@ -68,18 +68,19 @@
 // https://github.com/AvaloniaUI/Avalonia/blob/e0127c610c38701c3af34f580273f6efd78285b5/src/Avalonia.X11/XI2Manager.cs
 
 using System;
+using Microsoft.UI.Input;
+using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
+using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.Devices.Input;
 using Windows.Foundation;
-using Windows.UI.Input;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Collections;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
-using PointerEventArgs = Windows.UI.Core.PointerEventArgs;
 namespace Uno.WinUI.Runtime.Skia.X11;
 
 // Thanks to the amazing Peter Hutterer and Martin Kepplinger for creating evemu recordings
@@ -309,7 +310,13 @@ internal partial class X11PointerInputSource
 
 		var timeInMicroseconds = (ulong)(data.time * 1000); // Time is given in milliseconds since system boot. See also: https://github.com/unoplatform/uno/issues/14535
 		var deviceType = data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchEnd or XiEventType.XI_TouchUpdate ? PointerDeviceType.Touch : PointerDeviceType.Mouse;
-		var pointerId = (uint)(data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchEnd or XiEventType.XI_TouchUpdate ? data.detail : data.sourceid); // for touch, data.detail is the touch ID
+		// For touch, data.detail is the touch ID. For mouse, we use data.deviceid: we only process the
+		// master-delivered copies of device events (cf. the deviceid == sourceid filtering in HandleXI2Event),
+		// so deviceid here is always the master pointer, giving one stable id per cursor. sourceid (the
+		// originating slave) is not stable: WM-generated crossing events (map-under-pointer, grab
+		// activation/deactivation) carry sourceid = the master itself while regular events carry
+		// sourceid = the slave, which would split one cursor into two pointer ids.
+		var pointerId = (uint)(data.evtype is XiEventType.XI_TouchBegin or XiEventType.XI_TouchEnd or XiEventType.XI_TouchUpdate ? data.detail : data.deviceid);
 		var point = new PointerPoint(
 			frameId: (uint)data.time, // UNO TODO: How should we set the frame, timestamp may overflow.
 			timestamp: timeInMicroseconds,
@@ -360,8 +367,8 @@ internal partial class X11PointerInputSource
 		var point = new PointerPoint(
 			frameId: (uint)data.time, // UNO TODO: How should we set the frame, timestamp may overflow.
 			timestamp: timestampInMicroseconds,
-			PointerDevice.For(PointerDeviceType.Mouse),
-			(uint)data.sourceid,
+			PointerDevice.For(pointerType),
+			(uint)data.deviceid, // master device id, must match the id used for button/motion events
 			new Point(data.event_x / scale, data.event_y / scale),
 			new Point(data.event_x / scale, data.event_y / scale),
 			properties.HasPressedButton,

@@ -212,6 +212,7 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 					RenderSurfaceType = RenderSurfaceType.Software;
 					break;
 			}
+			Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = RenderSurfaceType == RenderSurfaceType.Software;
 			return result;
 		}
 		catch (Exception e)

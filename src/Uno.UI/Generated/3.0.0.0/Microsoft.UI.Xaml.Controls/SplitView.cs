@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class SplitView : global::Microsoft.UI.Xaml.Controls.Control
@@ -12,8 +12,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ContentProperty
 		// Skipping already declared property DisplayModeProperty
 		// Skipping already declared property IsPaneOpenProperty
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(LightDismissOverlayMode), typeof(global::Microsoft.UI.Xaml.Controls.LightDismissOverlayMode),
@@ -29,8 +29,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Content
 		// Skipping already declared property DisplayMode
 		// Skipping already declared property IsPaneOpen
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Controls.LightDismissOverlayMode LightDismissOverlayMode
 		{
 			get

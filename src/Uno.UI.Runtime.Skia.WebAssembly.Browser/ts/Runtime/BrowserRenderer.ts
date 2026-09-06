@@ -8,10 +8,15 @@ namespace Uno.UI.Runtime.Skia {
 			this.canvas = canvas;
 			this.managedHandle = managedHandle;
 			const skiaSharpExports = WebAssemblyWindowWrapper.getAssemblyExports();
-			this.requestRender = () => skiaSharpExports.Uno.UI.Runtime.Skia.BrowserRenderer.RenderFrame(this.managedHandle);
-
-			this.setCanvasSize();
-			window.addEventListener("resize", x => this.setCanvasSize());
+			
+			if (WebAssemblyThreading.isThreadingEnabled()) {
+				this.requestRender = () => skiaSharpExports.Uno.UI.Runtime.Skia.BrowserRenderer.RenderFrameAsync(this.managedHandle);
+			}
+			else {
+				this.requestRender = () => skiaSharpExports.Uno.UI.Runtime.Skia.BrowserRenderer.RenderFrame(this.managedHandle);
+				this.setCanvasSize();
+				window.addEventListener("resize", x => this.setCanvasSize());
+			}
 		}
 
 		public static createInstance(managedHandle: number, canvasId: string) {

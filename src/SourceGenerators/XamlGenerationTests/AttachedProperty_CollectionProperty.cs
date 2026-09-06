@@ -4,11 +4,7 @@ using System.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-#if XAMARIN
-using NativeDependencyObject = System.Object;
-#else
 using NativeDependencyObject = Microsoft.UI.Xaml.DependencyObject;
-#endif
 
 namespace XamlGenerationTests.Shared
 {

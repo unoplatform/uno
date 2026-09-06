@@ -214,7 +214,7 @@ public partial class Given_VisualStateManager
 		{
 			Name = "control",
 			Tag = "initial",
-			Template = new ControlTemplate(() => new Grid()),
+			Template = new ControlTemplate(null, (_, _) => new Grid()),
 		};
 		var group = new VisualStateGroup { States = { State(1), State(2) } };
 

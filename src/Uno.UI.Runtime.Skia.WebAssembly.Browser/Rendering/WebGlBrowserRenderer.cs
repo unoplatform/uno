@@ -1,7 +1,9 @@
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices.JavaScript;
 using SkiaSharp;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -19,6 +21,7 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 
 	private GRBackendRenderTarget? _renderTarget;
 	private SKSurface? _surface;
+	private readonly RetainedLayer _retainedLayer = new();
 
 	private WebGlBrowserRenderer(JsInfo jsInfo)
 	{
@@ -67,10 +70,19 @@ internal partial class WebGlBrowserRenderer : IBrowserRenderer
 		_renderTarget = new GRBackendRenderTarget(width, height, _jsInfo.Samples, _jsInfo.Stencil, glInfo);
 
 		_surface = SKSurface.Create(_context, _renderTarget, SurfaceOrigin, ColorType);
-		return _surface.Canvas;
+
+		return _retainedLayer.EnsureSurface(_context, width, height, SKColors.Transparent).Canvas;
 	}
 
-	public void Flush() => _context.Flush();
+	public void Flush()
+	{
+		if (_surface is { } surface)
+		{
+			_retainedLayer.Present(surface);
+		}
+
+		_context.Flush();
+	}
 
 	public bool NeedsForceResize() => false;
 

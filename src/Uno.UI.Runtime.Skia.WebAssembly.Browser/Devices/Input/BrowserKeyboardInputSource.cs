@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
@@ -15,6 +16,7 @@ internal partial class BrowserKeyboardInputSource : IUnoKeyboardInputSource
 
 	public event TypedEventHandler<object, KeyEventArgs>? KeyDown;
 	public event TypedEventHandler<object, KeyEventArgs>? KeyUp;
+	event TypedEventHandler<object, CharacterReceivedEventArgs>? IUnoKeyboardInputSource.CharacterReceived { add { } remove { } }
 
 	internal static bool LastTabWasForward { get; private set; } = true;
 
@@ -39,7 +41,7 @@ internal partial class BrowserKeyboardInputSource : IUnoKeyboardInputSource
 	{
 		if (_log.IsEnabled(LogLevel.Debug))
 		{
-			_log.Debug($"Native Keyboard Event: down={down}, ctrl={ctrl}, shift={shift}, meta={meta}, code={code}, key=${key}");
+			_log.Debug($"Native Keyboard Event: down={down}, ctrl={ctrl}, shift={shift}, alt={alt}, meta={meta}, code={code}, key={key}");
 		}
 
 		// Ensure that the async context is set properly, since we're raising
@@ -73,6 +75,22 @@ internal partial class BrowserKeyboardInputSource : IUnoKeyboardInputSource
 		}
 
 		return (byte)(args.Handled ? HtmlEventDispatchResult.PreventDefault : HtmlEventDispatchResult.Ok);
+	}
+
+	[JSExport]
+	private static Task OnNativeKeyboardEventAsync(
+		[JSMarshalAs<JSType.Any>] object inputSource,
+		bool down,
+		bool ctrl,
+		bool shift,
+		bool alt,
+		bool meta,
+		string code,
+		string key)
+	{
+		OnNativeKeyboardEvent(inputSource, down, ctrl, shift, alt, meta, code, key);
+
+		return Task.CompletedTask;
 	}
 
 	private static char? GetUnicodeKey(string key)

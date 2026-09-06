@@ -3,33 +3,33 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition.SystemBackdrops
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface ISystemBackdropControllerWithTargets : global::Microsoft.UI.Composition.SystemBackdrops.ISystemBackdropController, global::System.IDisposable
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		global::Microsoft.UI.Composition.SystemBackdrops.SystemBackdropState State
 		{
 			get;
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		bool AddSystemBackdropTarget(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop systemBackdropTarget);
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		void RemoveAllSystemBackdropTargets();
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		bool RemoveSystemBackdropTarget(global::Microsoft.UI.Composition.ICompositionSupportsSystemBackdrop systemBackdropTarget);
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		void SetSystemBackdropConfiguration(global::Microsoft.UI.Composition.SystemBackdrops.SystemBackdropConfiguration configuration);
 #endif
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.ISystemBackdropControllerWithTargets.State.get
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.ISystemBackdropControllerWithTargets.StateChanged.add
 		// Forced skipping of method Microsoft.UI.Composition.SystemBackdrops.ISystemBackdropControllerWithTargets.StateChanged.remove
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Composition.SystemBackdrops.ISystemBackdropControllerWithTargets, object> StateChanged;
 #endif
 	}

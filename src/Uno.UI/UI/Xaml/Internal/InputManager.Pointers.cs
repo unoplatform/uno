@@ -3,7 +3,6 @@ using System;
 using System.Linq;
 using Windows.Devices.Input;
 using Windows.UI.Core;
-using Windows.UI.Input;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -95,10 +94,6 @@ partial class InputManager
 			}
 
 			_reRouted = new ReRouted(routedArgs, from, to);
-
-#if HAS_NATIVE_IMPLICIT_POINTER_CAPTURE
-			UIElement.ReRoutePointerSequenceTo(to);
-#endif
 		}
 		#endregion
 

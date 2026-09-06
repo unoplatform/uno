@@ -1,4 +1,4 @@
-﻿// This file is included in both Uno.UWP (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
+﻿// This file is included in both Uno.dll (internal as Windows.whatever) and Uno.UI (public as Microsoft.whatever)
 using System;
 using System.Collections.Generic;
 using System.Text;

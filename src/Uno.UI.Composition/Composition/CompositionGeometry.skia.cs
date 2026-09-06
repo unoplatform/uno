@@ -110,12 +110,22 @@ namespace Microsoft.UI.Composition
 			// IMPORTANT:
 			// - The order of following operations is important for dashed strokes.
 			// - Stroke might get merged in the end.
-			// - WPF starts with bottom right ellipse arc.
-			// - TODO: Verify UWP behavior
+			// - The path starts at the top (12 o'clock) and winds clockwise, matching
+			//   Windows.UI.Composition (and the After Effects/Lottie convention). This is
+			//   what a trim window [0..t] measures against, so trimmed ellipses — e.g. the
+			//   determinate ProgressRing fill and LottieGen-generated progress arcs — grow
+			//   from the top exactly as they do on WinUI. (WPF, by contrast, starts at the
+			//   bottom-right; do not "restore" that here.)
 
 			var builder = new SKPathBuilder();
 
-			builder.MoveTo(new SKPoint(rect.Right, rect.Top + radius.Y));
+			builder.MoveTo(new SKPoint(rect.Left + radius.X, rect.Top));
+			// Top-right Arc
+			builder.CubicTo(
+				new SKPoint(rect.Right - bezierX, rect.Top),       // 1st control point
+				new SKPoint(rect.Right, rect.Top + bezierY),       // 2nd control point
+				new SKPoint(rect.Right, rect.Top + radius.Y));      // End point
+
 			// Bottom-right Arc
 			builder.CubicTo(
 				new SKPoint(rect.Right, rect.Bottom - bezierY),  // 1st control point
@@ -133,12 +143,6 @@ namespace Microsoft.UI.Composition
 				new SKPoint(rect.Left, rect.Top + bezierY),           // 1st control point
 				new SKPoint(rect.Left + bezierX, rect.Top),           // 2nd control point
 				new SKPoint(rect.Left + radius.X, rect.Top));          // End point
-
-			// Top-right Arc
-			builder.CubicTo(
-				new SKPoint(rect.Right - bezierX, rect.Top),       // 1st control point
-				new SKPoint(rect.Right, rect.Top + bezierY),       // 2nd control point
-				new SKPoint(rect.Right, rect.Top + radius.Y));      // End point
 
 			builder.Close();
 

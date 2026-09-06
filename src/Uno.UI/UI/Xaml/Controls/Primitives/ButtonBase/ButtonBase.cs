@@ -38,8 +38,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			base.OnLoaded();
 			OnLoadedPartial();
-
-			RegisterEvents();
 		}
 
 		partial void OnLoadedPartial();
@@ -128,8 +126,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			ownerType: typeof(ButtonBase),
 			typeMetadata: new FrameworkPropertyMetadata(default(bool)));
 
-		partial void RegisterEvents();
-
 		private protected override object CoerceIsEnabled(object baseValue, DependencyPropertyValuePrecedences precedence)
 		{
 			if (Command != null
@@ -140,9 +136,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			return base.CoerceIsEnabled(baseValue, precedence);
 		}
-
-		private protected override void OnContentTemplateRootSet() => RegisterEvents();
-
 
 		// Might be changed if the method does not conflict in UnoViewGroup.
 		internal override bool IsViewHit()

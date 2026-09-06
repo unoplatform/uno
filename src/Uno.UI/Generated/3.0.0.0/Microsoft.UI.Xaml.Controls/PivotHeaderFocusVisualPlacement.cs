@@ -3,13 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum PivotHeaderFocusVisualPlacement
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		ItemHeaders = 0,
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		SelectedItemHeader = 1,
 #endif
 	}

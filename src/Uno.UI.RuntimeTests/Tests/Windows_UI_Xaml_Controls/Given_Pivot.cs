@@ -133,6 +133,76 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11914")]
+		public async Task When_Pivot_LoadedWithItemsSource_Then_FirstItemContentIsVisible()
+		{
+			var items = new[]
+			{
+				new PivotItem { Header = "Tab 1", Content = new TextBlock { Text = "Content 1" } },
+				new PivotItem { Header = "Tab 2", Content = new TextBlock { Text = "Content 2" } },
+				new PivotItem { Header = "Tab 3", Content = new TextBlock { Text = "Content 3" } },
+			};
+
+			var SUT = new Pivot
+			{
+				ItemsSource = items,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			// The first item should be selected by default
+			SUT.SelectedIndex.Should().Be(0);
+
+			// Container generation and template application are asynchronous, they are not what #11914 is about.
+			var container = await WindowHelper.WaitForNonNull(
+				() => SUT.ContainerFromIndex(0) as PivotItem,
+				message: "PivotItem container at index 0 should exist");
+			container.Content.Should().NotBeNull("First PivotItem content should not be null after initial load");
+
+			var contentPresenter = await WindowHelper.WaitForNonNull(
+				() => container.FindFirstChild<ContentPresenter>(),
+				message: "ContentPresenter inside PivotItem should exist");
+
+			// Asserted without waiting: #11914 is precisely about the content not being set at once on initial load.
+			contentPresenter.Content.Should().NotBeNull("ContentPresenter content should not be null on initial load (issue #11914: Pivot content is not set at once on Android)");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/11914")]
+		public async Task When_Pivot_LoadedWithInlineItems_Then_FirstItemContentIsVisible()
+		{
+			var SUT = new Pivot();
+			SUT.Items.Add(new PivotItem { Header = "Tab 1", Content = new TextBlock { Text = "Hello World" } });
+			SUT.Items.Add(new PivotItem { Header = "Tab 2", Content = new TextBlock { Text = "Second Tab" } });
+
+			await UITestHelper.Load(SUT);
+
+			// SelectedIndex should be 0 after initial load
+			SUT.SelectedIndex.Should().Be(0);
+			SUT.SelectedItem.Should().NotBeNull("SelectedItem should not be null after initial load");
+
+			// Container generation and template application are asynchronous, they are not what #11914 is about.
+			var selectedContainer = await WindowHelper.WaitForNonNull(
+				() => SUT.ContainerFromIndex(0) as PivotItem,
+				message: "PivotItem container at index 0 should exist");
+
+			var contentPresenter = await WindowHelper.WaitForNonNull(
+				() => selectedContainer.FindFirstChild<ContentPresenter>(),
+				message: "ContentPresenter inside PivotItem should exist");
+
+			// Asserted without waiting: the selected item's content must be set on initial load, without reselection.
+			contentPresenter.Content.Should().NotBeNull("Content of selected PivotItem should be set on initial load (issue #11914)");
+
+			// TextBlock materialization is part of the visual-tree scaffolding, not the #11914 regression.
+			var tb = await WindowHelper.WaitForNonNull(
+				() => contentPresenter.FindFirstChild<TextBlock>(),
+				message: "TextBlock inside ContentPresenter should exist after initial load");
+			tb.Text.Should().Be("Hello World", "TextBlock content should match PivotItem content");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task Pivot_Single_ItemContent_Visible()
 		{

@@ -147,7 +147,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var photoTemplateImage = photoTemplateContent.FindName("PhotoTemplateImage") as Image;
 			Assert.IsNotNull(photoTemplateImage);
 
-			var uriSourceExpression = photoTemplateImage.Source.GetBindingExpression(Microsoft.UI.Xaml.Media.Imaging.BitmapImage.UriSourceProperty);
+			var uriSourceExpression = photoTemplateImage.Source.GetBindingExpressionInternal(Microsoft.UI.Xaml.Media.Imaging.BitmapImage.UriSourceProperty);
 			Assert.IsNotNull(uriSourceExpression);
 			Assert.AreEqual("Thumbnail", uriSourceExpression.ParentBinding.Path.Path);
 		}
@@ -1097,6 +1097,29 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			{
 				Assert.AreEqual(42, owner.Test.Value);
 			}
+		}
+
+		[TestMethod]
+		public void When_Xmlns_ClrNamespace()
+		{
+			var xaml = "<NonDefaultXamlNamespace Test=\"42\" xmlns=\"clr-namespace:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests;assembly=Uno.UI.Tests\" />";
+			Assert.ThrowsExactly<XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
+		}
+
+		[TestMethod]
+		public void When_Xmlns_ClrNamespace_Prefixed()
+		{
+			var xaml = "<Border xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" xmlns:local=\"clr-namespace:Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests\" />";
+			Assert.ThrowsExactly<XamlParseException>(() => Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
+		}
+
+		[TestMethod]
+		public void When_Xmlns_ClrNamespace_Ignorable()
+		{
+			var xaml = "<Border xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" " +
+				"xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\" " +
+				"xmlns:d=\"clr-namespace:Uno.UI.Tests.DesignTime\" mc:Ignorable=\"d\" />";
+			Assert.IsInstanceOfType<Border>(Microsoft.UI.Xaml.Markup.XamlReader.Load(xaml));
 		}
 
 		[TestMethod]

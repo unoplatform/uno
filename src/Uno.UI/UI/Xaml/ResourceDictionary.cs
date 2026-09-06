@@ -10,7 +10,6 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.UI.Xaml.Data;
 using Uno.Extensions;
-using Uno.Helpers.Theming;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
@@ -128,6 +127,19 @@ namespace Microsoft.UI.Xaml
 		public IList<ResourceDictionary> MergedDictionaries => _mergedDictionaries;
 		public IDictionary<object, object> ThemeDictionaries => GetOrCreateThemeDictionaries();
 
+		internal bool TryGetThemeDictionary(string themeKey, out ResourceDictionary themeDictionary)
+		{
+			if (_themeDictionaries?.TryGetValue(themeKey, out var value, shouldCheckSystem: false) == true
+				&& value is ResourceDictionary dictionary)
+			{
+				themeDictionary = dictionary;
+				return true;
+			}
+
+			themeDictionary = null;
+			return false;
+		}
+
 		/// <summary>
 		/// Determines if this instance is empty
 		/// </summary>
@@ -241,11 +253,7 @@ namespace Microsoft.UI.Xaml
 				_values.Remove(keyToRemove);
 				if (value is FrameworkElement fe)
 				{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 					fe.LeaveImpl(new LeaveParams());
-#else
-					fe.PerformOnUnloaded(isFromResources: true);
-#endif
 				}
 
 				ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
@@ -273,6 +281,8 @@ namespace Microsoft.UI.Xaml
 		public void Add(object key, object value) => Set(new ResourceKey(key), value, throwIfPresent: true);
 
 		public bool ContainsKey(object key) => ContainsKey(key, shouldCheckSystem: true);
+
+		internal bool ContainsKeyLocal(object key) => _values.ContainsKey(new ResourceKey(key));
 
 		public bool ContainsKey(object key, bool shouldCheckSystem)
 		{
@@ -508,10 +518,10 @@ namespace Microsoft.UI.Xaml
 					newDictionary._parent = this;
 					ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 				}
-				else if (value is IDependencyObjectStoreProvider provider)
+				else if (value is DependencyObject provider)
 				{
-					// Resources do not inherit DataContext (see DependencyObjectStore.IsResourceDictionaryItem).
-					provider.Store.IsResourceDictionaryItem = true;
+					// Resources do not inherit DataContext (see DependencyObject.IsResourceDictionaryItem).
+					provider.IsResourceDictionaryItem = true;
 				}
 			}
 
@@ -538,7 +548,6 @@ namespace Microsoft.UI.Xaml
 				// theme. Mirrors WinUI resolving a deferred theme-dictionary resource under the requested theme
 				// (EnsureActiveThemeDictionary, Resources.cpp:687-819, theme selection :764-768).
 				var themeKey = GetActiveTheme();
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				// On enhanced targets the resolution leaf reads the core requested-theme-for-subtree slot,
 				// then FrameworkTheming (GetActiveTheme) — the static Themes.Active mirror is not consulted —
 				// so pin the materialization theme by scoping the core slot itself (the save/set/restore
@@ -551,10 +560,6 @@ namespace Microsoft.UI.Xaml
 					: default;
 				var previousActiveTheme = Themes.Active;
 				var overrideActiveTheme = !scopeCoreSlot && themeKey.Key is not null && !themeKey.Equals(previousActiveTheme);
-#else
-				var previousActiveTheme = Themes.Active;
-				var overrideActiveTheme = themeKey.Key is not null && !themeKey.Equals(previousActiveTheme);
-#endif
 
 				try
 				{
@@ -588,10 +593,10 @@ namespace Microsoft.UI.Xaml
 					{
 						ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 					}
-					else if (newValue is IDependencyObjectStoreProvider storeProvider)
+					else if (newValue is DependencyObject storeProvider)
 					{
-						// Resources do not inherit DataContext (see DependencyObjectStore.IsResourceDictionaryItem).
-						storeProvider.Store.IsResourceDictionaryItem = true;
+						// Resources do not inherit DataContext (see DependencyObject.IsResourceDictionaryItem).
+						storeProvider.IsResourceDictionaryItem = true;
 					}
 
 					if (!FeatureConfiguration.ResourceDictionary.IncludeUnreferencedDictionaries)
@@ -609,9 +614,7 @@ namespace Microsoft.UI.Xaml
 						Themes.Active = previousActiveTheme;
 					}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 					slotScope.Dispose();
-#endif
 				}
 
 				// A lazily-materialized resource (e.g. a SolidColorBrush whose Color is a {ThemeResource})
@@ -619,11 +622,11 @@ namespace Microsoft.UI.Xaml
 				// against the owning element's effective theme so the resource matches the theme of the element
 				// hosting this dictionary, matching WinUI's per-owner {ThemeResource} resolution. Only when the
 				// owner already has an established (non-None) theme — otherwise the global fallback stands.
-				if (value is IDependencyObjectStoreProvider materializedProvider
+				if (value is DependencyObject materializedProvider
 					&& GetResourceOwner() is { } resourceOwner
-					&& ((IDependencyObjectStoreProvider)resourceOwner).Store.GetTheme() != Theme.None)
+					&& ((DependencyObject)resourceOwner).GetTheme() != Theme.None)
 				{
-					materializedProvider.Store.UpdateResourceBindings(
+					materializedProvider.UpdateResourceBindings(
 						ResourceUpdateReason.ThemeResource,
 						resourceContextProvider: resourceOwner,
 						containingDictionary: this);
@@ -751,9 +754,12 @@ namespace Microsoft.UI.Xaml
 			var baseOrRequestedThemeChanged = !activeThemeKey.Equals(_activeTheme);
 
 			// MUX (Resources.cpp:701): highContrastChanged = (m_activeTheme & Theme::HighContrastMask) != core->GetFrameworkTheming()->GetHighContrastTheme()
-			// Uno: high contrast is a single app-global bool — the FrameworkTheming::GetHighContrastTheme()
-			// analog collapsed to HighContrast/HighContrastNone.
+#if UNO_HAS_ENHANCED_LIFECYCLE
+			var core = Uno.UI.Xaml.Core.CoreServices.Instance;
+			var highContrastTheme = core.Theming.GetHighContrastTheme();
+#else
 			var highContrastTheme = Themes.IsHighContrast ? Theme.HighContrast : Theme.HighContrastNone;
+#endif
 			var highContrastChanged = Theming.GetHighContrastValue(_activeThemeValue) != highContrastTheme;
 
 			if (_activeThemeDictionary is null ||                                       // No active theme dictionary
@@ -762,11 +768,9 @@ namespace Microsoft.UI.Xaml
 				ResourceDictionary resources = null;
 				bool isHighContrast = false;
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 				// If we already have an active theme dictionary, that means we're trying to
 				// resolve a different one because of a theme switch.
 				var themeSwitchOccurred = _activeThemeDictionary is not null;
-#endif
 
 				// Find theme dictionary corresponding to current theme
 
@@ -781,13 +785,19 @@ namespace Microsoft.UI.Xaml
 					// returned true." otherwise); else switch on the OS high-contrast variant
 					// (core->GetFrameworkTheming()->GetHighContrastTheme()) — HighContrastBlack /
 					// HighContrastWhite / HighContrastCustom → the same-named key.
-					// Uno: GetActiveTheme() already composes requested-or-base, so the subtree branch is
-					// the base-derived variant key below, and the app-wide branch collapses onto it
-					// because high contrast is a single bool.
-					// TODO Uno: detect the OS high-contrast variant (White/Black/Custom —
-					// SystemThemingInterop.GetSystemHighContrastTheme) and port the app-wide variant
-					// switch 1:1.
-					resources = GetThemeDictionary(GetHighContrastKeyForBaseTheme(activeThemeKey));
+					ResourceKey highContrastKey;
+#if UNO_HAS_ENHANCED_LIFECYCLE
+					highContrastKey = core.IsThemeRequestedForSubTree()
+						? GetHighContrastKeyForBaseTheme(activeThemeKey)
+						: GetHighContrastKey(highContrastTheme);
+#else
+					highContrastKey = GetHighContrastKeyForBaseTheme(activeThemeKey);
+#endif
+
+					if (!highContrastKey.Equals(ResourceKey.Empty))
+					{
+						resources = GetThemeDictionary(highContrastKey);
+					}
 
 					if (resources is null)
 					{
@@ -839,22 +849,33 @@ namespace Microsoft.UI.Xaml
 						InvalidateNotFoundCache(false);
 					}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 					// Make sure we re-evaluate all ThemeResource expressions inside this
 					// theme dictionary first if a theme switch occurred.
 					if (themeSwitchOccurred)
 					{
 						// MUX: m_pActiveThemeDictionary->NotifyThemeChanged(m_activeTheme, highContrastChanged)
-						// (Resources.cpp:809-814); the theme walk lives on the store.
-						((IDependencyObjectStoreProvider)_activeThemeDictionary).Store.NotifyThemeChanged(_activeThemeValue, highContrastChanged);
+						// (Resources.cpp:809-814). The DependencyObject cast is deliberate — it binds to the
+						// base notification, not the shadowing ResourceDictionary.NotifyThemeChanged below,
+						// preserving the target this call had when the walk lived on DependencyObjectStore.
+						((DependencyObject)_activeThemeDictionary).NotifyThemeChanged(_activeThemeValue, highContrastChanged);
 					}
-#endif
 				}
 			}
 		}
 
 		private static ResourceKey GetHighContrastKeyForBaseTheme(in ResourceKey baseTheme)
 			=> baseTheme.Equals(Themes.Dark) ? Themes.HighContrastBlack : Themes.HighContrastWhite;
+
+#if UNO_HAS_ENHANCED_LIFECYCLE
+		private static ResourceKey GetHighContrastKey(Theme highContrastTheme) =>
+			highContrastTheme switch
+			{
+				Theme.HighContrastBlack => Themes.HighContrastBlack,
+				Theme.HighContrastWhite => Themes.HighContrastWhite,
+				Theme.HighContrastCustom => Themes.HighContrastCustom,
+				_ => ResourceKey.Empty,
+			};
+#endif
 
 		// MUX: theme sub-dictionaries resolve with LookupScope::LocalOnly (self + merged + local theme,
 		// Resources.cpp:725-784); the "HighContrast" and "Default" fallbacks additionally search the
@@ -1186,7 +1207,6 @@ namespace Microsoft.UI.Xaml
 			return null;
 		}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		/// <summary>
 		/// Notifies every resource in this dictionary (and its merged/source dictionaries) of a theme
 		/// change, as part of an in-progress theme walk.
@@ -1200,15 +1220,15 @@ namespace Microsoft.UI.Xaml
 		/// only persisted after its walk completes (persist-after-Core, Theming.cpp:155), so it is stale
 		/// while the dictionary is being processed.
 		/// </remarks>
-		internal void NotifyThemeChanged(Theme theme, bool forceRefresh)
+		internal new void NotifyThemeChanged(Theme theme, bool forceRefresh)
 		{
 			// MUX: DOCollection.cpp:1302-1312 — snapshot the values first; notifying an item can
 			// re-enter the dictionary (e.g. a refresh materializing a lazy sibling resource mutates
 			// the backing map).
-			var snapshot = new List<IDependencyObjectStoreProvider>();
+			var snapshot = new List<DependencyObject>();
 			foreach (var item in _values.Values)
 			{
-				if (item is IDependencyObjectStoreProvider provider)
+				if (item is DependencyObject provider)
 				{
 					snapshot.Add(provider);
 				}
@@ -1216,7 +1236,7 @@ namespace Microsoft.UI.Xaml
 
 			foreach (var provider in snapshot)
 			{
-				provider.Store.NotifyThemeChanged(theme, forceRefresh);
+				provider.NotifyThemeChanged(theme, forceRefresh);
 			}
 
 			foreach (var mergedDict in _mergedDictionaries)
@@ -1229,7 +1249,6 @@ namespace Microsoft.UI.Xaml
 				target.NotifyThemeChanged(theme, forceRefresh);
 			}
 		}
-#endif
 
 		internal void UpdateThemeBindings(ResourceUpdateReason updateReason)
 		{
@@ -1240,9 +1259,9 @@ namespace Microsoft.UI.Xaml
 
 			foreach (var item in _values.Values)
 			{
-				if (item is IDependencyObjectStoreProvider provider)
+				if (item is DependencyObject provider)
 				{
-					provider.Store.UpdateResourceBindings(updateReason, resourceContextProvider: owner, containingDictionary: this);
+					provider.UpdateResourceBindings(updateReason, resourceContextProvider: owner, containingDictionary: this);
 				}
 			}
 
@@ -1295,9 +1314,58 @@ namespace Microsoft.UI.Xaml
 
 		internal static object GetStaticResourceAliasPassthrough(string resourceKey, XamlParseContext parseContext) => new StaticResourceAliasRedirect(resourceKey, parseContext);
 
+		// Per-thread stack of active by-name scopes, so a Pop disposes the scope opened by its matching
+		// Push. LIFO and thread-local: the paired calls are balanced within a single synchronous resolution.
+		[ThreadStatic]
+		private static Stack<Uno.UI.Xaml.Core.CoreServices.RequestedThemeForSubTreeScope> _byNameThemeScopes;
+
+		/// <summary>
+		/// Scopes {ThemeResource} resolution to the named base theme ("Light"/"Dark") until the matching
+		/// <see cref="PopRequestedThemeForSubTreeByName"/>. Infrastructure entry point for external markup
+		/// packages (e.g. Uno.Extensions.Markup) that resolve theme resources with no owning element; not
+		/// intended for application code.
+		/// </summary>
+		/// <remarks>
+		/// Routes to the core requested-theme-for-subtree slot that the resolution leaf reads
+		/// (GetActiveTheme → CoreServices.GetRequestedThemeForSubTree), the same single slot WinUI's
+		/// CCoreServices::LookupThemeResource(theme, key) scopes. This is not the removed process-global
+		/// Themes stack — it is an owner-less scope over the core slot. On targets without the core slot
+		/// (native, or before a CoreServices instance exists) it is a balanced no-op.
+		/// </remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void PushRequestedThemeForSubTreeByName(string theme)
+		{
+			var scopes = _byNameThemeScopes ??= new();
+			scopes.Push(
+				Uno.UI.Xaml.Core.CoreServices.HasInstance
+					? Uno.UI.Xaml.Core.CoreServices.Instance.ScopeRequestedThemeForSubTree(ThemeFromSubTreeName(theme))
+					: default);
+		}
+
+		/// <summary>
+		/// Restores the theme scoped by the matching <see cref="PushRequestedThemeForSubTreeByName"/>.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void PopRequestedThemeForSubTreeByName()
+		{
+			if (_byNameThemeScopes is { Count: > 0 } scopes)
+			{
+				scopes.Pop().Dispose();
+			}
+		}
+
+		// The core slot carries only the base Light/Dark theme (high contrast is composed separately at the
+		// resolution leaf). "Default" (a request with no specific base theme) and any other name map to None,
+		// so resolution falls back to the app/OS base theme — matching how WinUI resolves a Default request.
+		private static Theme ThemeFromSubTreeName(string theme) => theme switch
+		{
+			"Light" => Theme.Light,
+			"Dark" => Theme.Dark,
+			_ => Theme.None,
+		};
+
 		// The single theme read of the resolution leaf: every theme sub-dictionary selection
 		// (GetActiveThemeDictionary, lazy materialization) keys on this ambient.
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		// MUX Reference: CResourceDictionary::EnsureActiveThemeDictionary theme selection
 		// (Resources.cpp:764-768) — "core->IsThemeRequestedForSubTree() ?
 		// core->GetRequestedThemeForSubTree() : core->GetFrameworkTheming()->GetBaseTheme()".
@@ -1320,9 +1388,6 @@ namespace Microsoft.UI.Xaml
 
 			return Themes.Active;
 		}
-#else
-		internal static ResourceKey GetActiveTheme() => Themes.Active;
-#endif
 
 		// Maps a per-object Theme (CDependencyObject::m_theme) to the BASE Light/Dark sub-dictionary key —
 		// the analog of WinUI's RequestedThemeForSubTree. High contrast is composed separately at the
@@ -1411,6 +1476,7 @@ namespace Microsoft.UI.Xaml
 			public static SpecializedResourceDictionary.ResourceKey HighContrast { get; } = "HighContrast";
 			public static SpecializedResourceDictionary.ResourceKey HighContrastWhite { get; } = "HighContrastWhite";
 			public static SpecializedResourceDictionary.ResourceKey HighContrastBlack { get; } = "HighContrastBlack";
+			public static SpecializedResourceDictionary.ResourceKey HighContrastCustom { get; } = "HighContrastCustom";
 
 			// The application/OS base theme. The per-subtree theme lives in the core
 			// requested-theme-for-subtree slot (CCoreServices::m_requestedThemeForSubTree), which
@@ -1422,7 +1488,7 @@ namespace Microsoft.UI.Xaml
 			// from the accessibility settings — high contrast is orthogonal to the Light/Dark base theme and
 			// is composed at the resolution leaf (GetActiveThemeDictionary), matching WinUI reading it from
 			// FrameworkTheming rather than from the per-object/subtree theme.
-			public static bool IsHighContrast => SystemThemeHelper.IsHighContrast;
+			public static bool IsHighContrast => ThemingHelper.IsHighContrastActive;
 		}
 	}
 }

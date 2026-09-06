@@ -13,6 +13,8 @@ public partial class Popup
 
 	internal void SetShouldTakeFocus(bool value) => m_shouldTakeFocus = value;
 
+	// We don't check IsActive() because we want the focus logic to also work with unrooted popups,
+	// which are never in the live tree.
 	internal override bool IsFocusable =>
 		m_fIsLightDismiss &&
 		IsVisible() &&

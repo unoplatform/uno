@@ -5994,9 +5994,10 @@ public class MenuFlyoutIntegrationTests
 			LOG_OUTPUT("MenuFlyout sub-menu bounds: left=%.0f top=%.0f width=%.0f height=%.0f", flyoutSubMenuBounds.Left, flyoutSubMenuBounds.Top, flyoutSubMenuBounds.Width, flyoutSubMenuBounds.Height);
 
 			VERIFY_ARE_EQUAL(0.0, flyoutBounds.Top);
-			VERIFY_ARE_EQUAL(xamlRootSize.Height, flyoutBounds.Height);
+			// XamlRoot.Size is a float Size while the bounds come from a double ActualHeight, so exact equality was never an invariant here.
+			VERIFY_ARE_VERY_CLOSE(flyoutBounds.Height, xamlRootSize.Height, 1.0, "MenuFlyout height should be clamped to the XAML root height");
 			VERIFY_ARE_EQUAL(0.0, flyoutSubMenuBounds.Top);
-			VERIFY_ARE_EQUAL(xamlRootSize.Height, flyoutSubMenuBounds.Height);
+			VERIFY_ARE_VERY_CLOSE(flyoutSubMenuBounds.Height, xamlRootSize.Height, 1.0, "MenuFlyout sub-menu height should be clamped to the XAML root height");
 		});
 
 		LOG_OUTPUT("Tapping on the button again to hide the MenuFlyout.");

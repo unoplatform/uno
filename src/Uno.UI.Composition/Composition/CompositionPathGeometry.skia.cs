@@ -21,6 +21,10 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 
 	internal override IGeometrySource2D? BuildGeometry() => _geometrySource2D;
 
+	// The built SKPath for this geometry's current Path, used by PathKeyFrameAnimation to morph
+	// between keyframe geometries.
+	internal SKPath? GetSKPath() => _geometrySource2D?.Geometry;
+
 	private void InternalBuildGeometry()
 	{
 		SkiaGeometrySource2D? geometrySource = null;

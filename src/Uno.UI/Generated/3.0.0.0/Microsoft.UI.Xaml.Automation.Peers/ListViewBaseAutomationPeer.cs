@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ListViewBaseAutomationPeer : global::Microsoft.UI.Xaml.Automation.Peers.SelectorAutomationPeer, global::Microsoft.UI.Xaml.Automation.Provider.IDropTargetProvider

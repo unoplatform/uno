@@ -79,12 +79,10 @@ public partial class BitmapIcon : IconElement, IThemeChangeAware
 
 	private void UpdateImageMonochromeColor()
 	{
-#if !IS_UNIT_TESTS
 		if (_image is not null)
 		{
 			_image.MonochromeColor = ShowAsMonochrome ? (Foreground as SolidColorBrush)?.Color : null;
 		}
-#endif
 	}
 
 	// The way this works in WinUI is by the MarkInheritedPropertyDirty call in CFrameworkElement::NotifyThemeChangedForInheritedProperties

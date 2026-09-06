@@ -18,15 +18,27 @@ public static class ApiExtensibility
 	/// </summary>
 	/// <param name="type">The type to register</param>
 	/// <param name="builder">A builder that will be provided an optional owner, and returns an instance of the extension</param>
-	/// <remarks>This method is generally called automatically when the <see cref="ApiExtensionAttribute"/> has been defined in an assembly.</remarks>
+	/// <remarks>
+	/// This method is generally called automatically when the <see cref="ApiExtensionAttribute"/> has been defined in an assembly.
+	/// <para>
+	/// Registration is idempotent: if <paramref name="type"/> is already registered the first registration
+	/// is kept and this call is a no-op. This supports scenarios where multiple applications run in the same
+	/// process and share this registry — for example a host and a secondary application loaded into a
+	/// collectible <see cref="System.Runtime.Loader.AssemblyLoadContext"/> that shares Uno.Foundation with
+	/// the host. Each application's generated startup registers the same framework providers via
+	/// <see cref="ApiExtensionAttribute"/>; keeping the first avoids a fatal duplicate-key
+	/// <see cref="ArgumentException"/> when the second application initializes.
+	/// </para>
+	/// </remarks>
 	public static void Register(Type type, Func<object, object> builder)
 	{
 		type = type ?? throw new ArgumentNullException(nameof(type));
-		builder = builder ?? throw new ArgumentNullException(nameof(type));
+		builder = builder ?? throw new ArgumentNullException(nameof(builder));
 
 		lock (_gate)
 		{
-			_registrations.Add(type, builder);
+			// TryAdd is a single lookup and idempotent (no-op when already present) — CA1864.
+			_registrations.TryAdd(type, builder);
 		}
 	}
 
@@ -36,24 +48,34 @@ public static class ApiExtensibility
 	/// <typeparam name="TOwner">Type of owner.</typeparam>
 	/// <param name="type">The type to register</param>
 	/// <param name="builder">A builder that will be provided an optional owner, and returns an instance of the extension</param>
-	/// <remarks>This method is generally called automatically when the <see cref="ApiExtensionAttribute"/> has been defined in an assembly.</remarks>
+	/// <remarks>
+	/// This method is generally called automatically when the <see cref="ApiExtensionAttribute"/> has been defined in an assembly.
+	/// Registration is idempotent — see <see cref="Register(Type, Func{object, object})"/> for details.
+	/// </remarks>
 	public static void Register<TOwner>(Type type, Func<TOwner, object> builder)
 	{
 		type = type ?? throw new ArgumentNullException(nameof(type));
-		builder = builder ?? throw new ArgumentNullException(nameof(type));
-
-		Func<object, object> objectBuilder = o =>
-		{
-			if (!(o is TOwner owner))
-			{
-				throw new InvalidOperationException($"Expected owner of type {typeof(TOwner).Name} to resolve instance of {type.Name}.");
-			}
-
-			return builder(owner);
-		};
+		builder = builder ?? throw new ArgumentNullException(nameof(builder));
 
 		lock (_gate)
 		{
+			// Check for an existing registration before building the wrapper lambda so a duplicate
+			// (idempotent) registration does not allocate the closure needlessly.
+			if (_registrations.ContainsKey(type))
+			{
+				return;
+			}
+
+			Func<object, object> objectBuilder = o =>
+			{
+				if (!(o is TOwner owner))
+				{
+					throw new InvalidOperationException($"Expected owner of type {typeof(TOwner).Name} to resolve instance of {type.Name}.");
+				}
+
+				return builder(owner);
+			};
+
 			_registrations.Add(type, objectBuilder);
 		}
 	}

@@ -2,6 +2,7 @@
 
 using System.Collections.Concurrent;
 using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.DataBinding;
@@ -105,11 +106,19 @@ internal partial class BrowserMediaPlayerPresenterExtension : IMediaPlayerPresen
 	{
 		if (_elementIdToMediaPlayerPresenter.TryGetValue(id, out var weakRef) && weakRef.Target is BrowserMediaPlayerPresenterExtension @this)
 		{
-			if (@this._presenter.TemplatedParent is MediaPlayerElement mpe)
+			if (@this._presenter.GetTemplatedParent() is MediaPlayerElement mpe)
 			{
 				mpe.IsFullWindow = false;
 			}
 		}
+	}
+
+	[JSExport]
+	private static Task OnExitFullscreenAsync(string id)
+	{
+		OnExitFullscreenAsync(id);
+
+		return Task.CompletedTask;
 	}
 
 	public uint NaturalVideoHeight => _htmlElement is { } ? (uint)NativeMethods.GetVideoNaturalHeight(_htmlElement.ElementId) : 0;

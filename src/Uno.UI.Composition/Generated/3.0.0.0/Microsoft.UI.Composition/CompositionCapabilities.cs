@@ -3,39 +3,27 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition
 {
-#if false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CompositionCapabilities
 	{
 		// Skipping already declared method Microsoft.UI.Composition.CompositionCapabilities.CompositionCapabilities()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionCapabilities.CompositionCapabilities()
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public bool AreEffectsSupported()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionCapabilities", "AreEffectsSupported()");
-		}
-#endif
-#if false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public bool AreEffectsFast()
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.CompositionCapabilities", "AreEffectsFast()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Composition.CompositionCapabilities.AreEffectsSupported()
+		// Skipping already declared method Microsoft.UI.Composition.CompositionCapabilities.AreEffectsFast()
 		// Forced skipping of method Microsoft.UI.Composition.CompositionCapabilities.Changed.add
 		// Forced skipping of method Microsoft.UI.Composition.CompositionCapabilities.Changed.remove
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.UI.Composition.CompositionCapabilities, object> Changed
 		{
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			add
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionCapabilities", "event Changed");
 			}
-			[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+			[global::Uno.NotImplemented("__SKIA__")]
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.CompositionCapabilities", "event Changed");

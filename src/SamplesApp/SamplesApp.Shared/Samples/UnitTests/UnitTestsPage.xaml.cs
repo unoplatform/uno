@@ -21,10 +21,6 @@ namespace SamplesApp.Samples.UnitTests
 
 			// Manually load the runtime tests assembly
 			Assembly.Load("Uno.UI.RuntimeTests");
-
-#if __WASM__
-			var t = typeof(SamplesApp.UnitTests.TSBindings.TSBindingsTests);
-#endif
 		}
 	}
 }

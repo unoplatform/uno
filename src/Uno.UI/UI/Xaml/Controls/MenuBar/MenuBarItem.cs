@@ -52,7 +52,6 @@ namespace Microsoft.UI.Xaml.Controls
 			SynchronizeMenuBar();
 		}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		// In WinUI, CDependencyObject::EnterImpl has EnterSparseProperties which propagates
 		// Enter to all DP values including the Items collection. In Uno, we need to do this explicitly.
 		// MenuBarItem.Items is an ObservableVector (not a DependencyObject), so the generic
@@ -90,7 +89,6 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 		}
-#endif
 
 		// IUIElement / IUIElementOverridesHelper
 		protected override AutomationPeer OnCreateAutomationPeer()

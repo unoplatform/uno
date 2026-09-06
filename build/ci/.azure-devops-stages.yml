@@ -114,6 +114,25 @@ stages:
     parameters:
       poolName: '$(linuxScaledPool)'
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+- stage: wasm_tests
+  displayName: Tests - WebAssembly Native
+  # Native targets are maintenance-only: native runtime tests run on branch builds (master/feature) only, never on PRs.
+  condition: and(succeededOrFailed(), ne(variables['Build.Reason'], 'PullRequest'))
+  dependsOn:
+    - Setup
+
+  jobs:
+  
+  - template: tests/.azure-devops-tests-webassembly-native.yml
+    parameters:
+      poolName: '$(linuxScaledPool)'
+
+>>>>>>> origin/master
+=======
+>>>>>>> origin/master
 - template: tests/.azure-devops-tests-skia-stages.yml
   parameters:
     vmImage: '$(windows2022HostedVMImage)'
@@ -126,6 +145,43 @@ stages:
     xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
     XAML_FLAVOR_BUILD: WinUI
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+- stage: android_tests
+  displayName: Tests - Android Native
+  # Native targets are maintenance-only: native runtime tests run on branch builds (master/feature) only, never on PRs.
+  condition: and(succeededOrFailed(), ne(variables['Build.Reason'], 'PullRequest'))
+  dependsOn:
+    - Setup
+
+  jobs:
+  - template: tests/.azure-devops-tests-android-native.yml
+    parameters:
+      vmWindowsImage: '$(windows2019HostedVMImage)'
+      vmLinuxImage: '$(linuxVMImage)'
+      vmMacOSImage: '$(macOSVMImage)'
+      vmLinuxPool: '$(linuxScaledPool)'
+      xCodeRoot: '$(xCodeRoot)'
+
+- stage: ios_tests
+  displayName: Tests - iOS Native
+  # Disabled: native targets are maintenance-only. Always-false condition skips the stage.
+  condition: false
+  dependsOn:
+    - Setup
+
+  jobs:
+  - template: tests/.azure-devops-tests-ios-native.yml
+    parameters:
+      vmImage: '$(macOSVMImage)'
+      vmImageTest: '$(macOSVMImage_UITests)'
+      xCodeRootBuild: '$(xCodeRoot)'
+      xCodeRootTest: '$(xCodeRoot_iOS_UITests)'
+
+>>>>>>> origin/master
+=======
+>>>>>>> origin/master
 - stage: wasdk_tests
   displayName: Tests - WinAppSDK
   dependsOn:
@@ -169,9 +225,13 @@ stages:
 ##
 ## Publishing
 ##
+# A servicing/* branch continues a previous version line after master has moved on
+# to a newer one, so it publishes dev packages the same way master does. The same
+# pattern is added to the CI triggers, the dev-feed push step and version.json's
+# publicReleaseRefSpec.
 - stage: Publish_Dev
   displayName: 'Publish - Dev NuGet'
-  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')), not(eq(variables['build.reason'], 'PullRequest')))
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/servicing/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: binaries_build_winui
   jobs:
   - template: publish/.azure-devops-publish-nuget-dev.yml

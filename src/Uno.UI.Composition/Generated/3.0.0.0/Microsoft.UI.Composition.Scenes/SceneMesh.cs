@@ -3,18 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Composition.Scenes
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class SceneMesh : global::Microsoft.UI.Composition.Scenes.SceneObject
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		internal SceneMesh()
 		{
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Composition.Scenes.SceneBoundingBox Bounds
 		{
 			get
@@ -23,8 +23,8 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.Graphics.DirectX.DirectXPrimitiveTopology PrimitiveTopology
 		{
 			get
@@ -37,15 +37,15 @@ namespace Microsoft.UI.Composition.Scenes
 			}
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Composition.Scenes.SceneMesh Create(global::Microsoft.UI.Composition.Compositor compositor)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Composition.Scenes.SceneMesh", "Create(Compositor compositor)");
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public void FillMeshAttribute(global::Microsoft.UI.Composition.Scenes.SceneAttributeSemantic semantic, global::Microsoft.Graphics.DirectX.DirectXPixelFormat format, global::Windows.Foundation.MemoryBuffer memory)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Composition.Scenes.SceneMesh", "FillMeshAttribute(SceneAttributeSemantic semantic, DirectXPixelFormat format, MemoryBuffer memory)");

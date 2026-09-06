@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 #if __CROSSRUNTIME__
 		/// <inheritdoc />
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		private protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnBackgroundChanged(e);
 		}

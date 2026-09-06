@@ -3,25 +3,25 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Content
 {
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IContentSiteBridge : global::System.IDisposable
 	{
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue
 		{
 			get;
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		global::Microsoft.UI.Content.ContentLayoutDirection? LayoutDirectionOverride
 		{
 			get;
 			set;
 		}
 #endif
-#if __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		float OverrideScale
 		{
 			get;

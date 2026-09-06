@@ -59,10 +59,14 @@ namespace Uno.WinUI.Runtime.Skia.X11
 			_contextCurrentDisposable!.Dispose();
 		}
 
+		protected override bool UsesRetainedLayer => true;
+		protected override GRContext? GpuContext => _grContext;
+
 		public override void Dispose()
 		{
 			using var lockDisposable = X11Helper.XLock(_x11Window.Display);
 			MakeCurrent();
+			DisposeRetainedLayer();
 			_grContext.Dispose();
 			_glInterface.Dispose();
 			if (!EglHelper.EglTerminate(_eglDisplay))

@@ -1,4 +1,4 @@
-# Uno Platform — Breaking-Changes Rollout (Epic [#8339](https://github.com/unoplatform/uno/issues/8339))
+﻿# Uno Platform — Breaking-Changes Rollout (Epic [#8339](https://github.com/unoplatform/uno/issues/8339))
 
 > Ordered, danger-ranked checklist for the next major. Items are sequenced **least dangerous first** (native-only & dead code) to **most dangerous last** (pervasive type-system changes). Each unchecked item is meant to be picked up by a single subagent in its own worktree.
 
@@ -8,7 +8,7 @@ _Generated 2026-06-15 from a per-item investigation of the current `dev/mazi/bre
 
 1. **Hard-remove everything now** — no `[Obsolete]`/`[EditorBrowsable]` deprecation shims. This is THE breaking major; many items have been pending since 2022.
 2. **Match WinUI exactly** — when reducing visibility / changing signatures, the target shape is the WinUI one. Do not invent intermediate Uno-only surfaces. Native divergences are removed, not preserved.
-3. **Native targets are being dropped** (native Android Views, iOS/UIKit, WASM DOM). Native-only changes are therefore very safe and ship first. _Non-UI WinRT APIs in `Uno.UWP`/`Uno.Foundation` are NOT being dropped_ (Skia-on-Android still consumes them) — those are judged on normal merit.
+3. **Native targets are being dropped** (native Android Views, iOS/UIKit, WASM DOM). Native-only changes are therefore very safe and ship first. _Non-UI WinRT APIs in `Uno.WinRT`/`Uno.Foundation` are NOT being dropped_ (Skia-on-Android still consumes them) — those are judged on normal merit.
 4. **The 5 pervasive type-system items get their own impact specs** (BC14, BC26, BC38, BC58 + BC54 folded into BC58) with Pros/Cons. They ship last, one stabilized PR each.
 5. **Validate at runtime, not compile-only.** For anything that changes behaviour (Phase 5 especially) prove it with a runtime test that fails-before/passes-after.
 
@@ -54,7 +54,7 @@ _Danger 1. The safe vanguard: deletions scoped to native targets being dropped, 
 - [ ] **BC35** — Remove `IgnoreINPCSameReferences` flag  `d1·S`
   - Hard-delete the flag; inline the always-taken branch.
   - Files: `src/Uno.UI/FeatureConfiguration.cs`, `src/Uno.UI/DataBinding/BindingPath.BindingItem.cs`
-- [ ] **BC67** — Remove `ColorKeyFrameCollection` throwing shadow setters  `d1·S`
+- [x] **BC67** — Remove `ColorKeyFrameCollection` throwing shadow setters  `d1·S`
   - Delete the entire `new`-shadow back-compat block to match `DoubleKeyFrameCollection`/`ObjectKeyFrameCollection`.
   - Files: `src/Uno.UI/UI/Xaml/Media/Animation/ColorKeyFrameCollection.cs`, `src/Uno.UI/UI/Xaml/DependencyObjectCollection.cs`, `src/Uno.UI/UI/Xaml/Media/Animation/DoubleKeyFrameCollection.cs`
 
@@ -80,7 +80,7 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
 - [ ] **BC04** — Remove `EventsBubblingInManagedCode` DP  `d2·S`
   - Hard-remove the public DP — native bubbling is gone.
   - Files: `src/Uno.UI/UI/Xaml/UIElement.RoutedEvents.cs`, `src/Uno.UI/UI/Xaml/RoutedEventArgs.cs`, `src/Uno.UI/UI/Xaml/Input/PointerRoutedEventArgs.cs`
-- [ ] **BC02** — Remove legacy WASM `IJSObject` DOM-interop API  `d2·S` · PR #19230
+- [x] **BC02** — Remove legacy WASM `IJSObject` DOM-interop API  `d2·S` · PR #19230
   - Hard-delete.
   - Files: `src/Uno.Foundation.Runtime.WebAssembly/Interop/IJSObject.wasm.cs`, `src/Uno.Foundation.Runtime.WebAssembly/Interop/IJSObjectMetadata.wasm.cs`, `src/Uno.Foundation.Runtime.WebAssembly/Interop/JSObjectHandle.wasm.cs`
 - [x] **BC32** — Delete `DelegatedInkTrailVisual` stub  `d2·S`
@@ -98,30 +98,30 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
 - [ ] **BC33** — Remove `UseInvalidate(Measure/Arrange)Path` flags  `d2·M`
   - Hard-delete both flags; inline the always-true dirty-path branch.
   - Files: `src/Uno.UI/FeatureConfiguration.cs`, `src/Uno.UI/UI/Xaml/UIElement.Layout.crossruntime.cs`, `src/Uno.UI/UI/Xaml/UIElement.skia.cs`
-- [ ] **BC49** — Remove empty `RestoreBindings`/`ClearBindings`  `d2·S` · #13046
+- [x] **BC49** — Remove empty `RestoreBindings`/`ClearBindings`  `d2·S` · #13046
   - Hard-delete.
   - Files: `src/Uno.UI/UI/Xaml/DependencyObjectStore.Binder.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators.Internal/Mixins/FrameworkElementUIKitMixinGenerator.cs`
-- [ ] **BC70** — Remove no-op `AdjustArrange`  `d2·S` · #14478
+- [x] **BC70** — Remove no-op `AdjustArrange`  `d2·S` · #14478
   - Hard-delete.
   - Files: `src/Uno.UI/UI/Xaml/IFrameworkElement.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.Interface.skia.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.Interface.reference.cs`
-- [ ] **BC72** — Delete `Uno.UWP` `Vector2Extensions`  `d2·S`
+- [x] **BC72** — Delete `Uno.UWP` `Vector2Extensions`  `d2·S`
   - Hard-delete.
   - Files: `src/Uno.UWP/Extensions/Vector2Extensions.cs`, `src/Uno.Foundation/Extensions/VectorExtensions.cs`, `build/PackageDiffIgnore.xml`
-- [ ] **BC07** — Remove redundant bootstrapper meta-packages ⚠️  `d2·M` · PR #17788
-  - **Verify** not already removed, then hard-delete the meta-packages.
-  - Files: `build/Uno.UI.Build.csproj`, `build/nuget/Uno.WinUI.Skia.X11.nuspec`, `build/nuget/Uno.WinUI.Skia.MacOS.nuspec`
+- [x] **BC07** — Remove redundant bootstrapper meta-packages ⚠️  `d2·M` · PR #17788
+  - Hard-deleted the three meta nuspecs and their pack-pipeline wiring; repointed the two internal `*.Skia.Linux.FrameBuffer` validation heads to the `Uno.WinUI.Runtime.Skia.Linux.FrameBuffer` runtime head.
+  - Files: `build/Uno.UI.Build.csproj`, `build/nuget/Uno.WinUI.Skia.X11.nuspec`, `build/nuget/Uno.WinUI.Skia.MacOS.nuspec`, `build/nuget/Uno.WinUI.Skia.Linux.FrameBuffer.nuspec`, `src/SolutionTemplate/UnoAppWinUI/UnoAppWinUI.Skia.Linux.FrameBuffer/UnoAppWinUI.Skia.Linux.FrameBuffer.csproj`, `src/SolutionTemplate/UnoAppWinUILinuxValidation/UnoAppWinUILinuxValidation.Skia.Linux.FrameBuffer/UnoAppWinUILinuxValidation.Skia.Linux.FrameBuffer.csproj`, `doc/articles/migrating-to-uno-7.md`
 - [x] **BC43** — Remove `PointerPoint.op_Explicit` shim  `d2·S`
   - Hard-delete.
   - Files: `src/Uno.UI/UI/Input/WinRT/PointerPoint.cs`, `src/Uno.ReferenceImplComparer/Program.cs`
 - [ ] **BC18** — Remove `UseLegacyHitTest` flag  `d2·S`
   - Hard-delete the flag; inline the always-taken branch.
   - Files: `src/Uno.UI/FeatureConfiguration.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.cs`, `src/Uno.UI/UI/Xaml/UIElement.Pointers.Managed.cs`
-- [ ] **BC45** — Remove `UseLegacyContentAlignment` flag  `d2·S`
+- [x] **BC45** — Remove `UseLegacyContentAlignment` flag  `d2·S`
   - Hard-delete the flag; inline the always-taken branch.
   - Files: `src/Uno.UI/FeatureConfiguration.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators.Internal/Mixins/DependencyPropertyMixinGenerator.cs`
 - [ ] **BC55** — Replace deprecated Android `PreferenceManager` ⚠️  `d2·S` · #1833
   - Use `Context.GetSharedPreferences` with the legacy default name (or `AndroidX.Preference`) — MUST read the **same backing file** so existing user settings survive upgrade.
-  - Files: `src/Uno.UWP/Storage/ApplicationDataContainer.Android.cs`
+  - Files: `src/Uno/Storage/ApplicationDataContainer.Android.cs`
 - [x] **BC37** — Remove non-DP (CLR) `Setter` codegen fallback  `d2·S` · PR #16134
   - Hard-delete.
   - Files: `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs`, `src/Uno.UI/UI/Xaml/Setter.Generic.cs`, `src/SamplesApp/SamplesApp.Samples/Windows_UI_Xaml_Controls/ComboBox/ComboBox_FullScreen_Popup.xaml`
@@ -138,52 +138,54 @@ _Danger 2. Cross-target but low blast radius: delete always-on/off flags (inline
 
 _Danger 2. Tighten Uno-only public surface to match WinUI (internal/protected/sealed/explicit-interface/hide) plus tiny signature & typo fixes. Each is narrow and independent; effort S. Ideal single sweep._
 
-- [ ] **BC24** — Hide `BrushConverter` from IntelliSense  `d2·S`
+- [x] **BC24** — Hide `BrushConverter` from IntelliSense  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Media/BrushConverter.cs`, `src/Uno.UI/UI/Xaml/Media/Brush.cs`, `src/Uno.UI/LinkerDefinition.Wasm.xml`
-- [ ] **BC15** — Seal `PropertyPath`  `d2·S`
+- [x] **BC15** — Seal `PropertyPath`  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Data/PropertyPath.cs`, `src/Uno.UI/Generated/3.0.0.0/Microsoft.UI.Xaml/PropertyPath.cs`
-- [ ] **BC22** — `IMenu`/`IMenuPresenter`/`ISubMenuOwner` -> non-public  `d2·S`
+- [x] **BC22** — `IMenu`/`IMenuPresenter`/`ISubMenuOwner` -> non-public  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Controls/MenuFlyout/IMenu.cs`, `src/Uno.UI/UI/Xaml/Controls/MenuFlyout/IMenuPresenter.cs`, `src/Uno.UI/UI/Xaml/Controls/MenuFlyout/ISubMenuOwner.cs`
-- [ ] **BC57** — `OnTemplateRecycled` -> explicit interface impl  `d2·S` · #13083
+- [x] **BC57** — `OnTemplateRecycled` -> explicit interface impl  `d2·S` · #13083
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/IFrameworkTemplatePoolAware.cs`, `src/Uno.UI/UI/Xaml/Controls/TextBox/TextBox.cs`, `src/Uno.UI/UI/Xaml/Controls/ToggleSwitch/ToggleSwitch.cs`
-- [ ] **BC48** — `MaterializableList<T>` -> internal  `d2·S`
+- [x] **BC48** — `MaterializableList<T>` -> internal  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UWP/Collections/MaterializableList.cs`, `src/Uno.UI/UI/Xaml/Media/VisualTreeHelper.cs`, `src/Uno.UI/UI/Xaml/UIElement.crossruntime.cs`
-- [ ] **BC08** — `NavigatingCancelEventArgs` ctor -> non-public  `d2·S`
+- [x] **BC08** — `NavigatingCancelEventArgs` ctor -> non-public  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Navigation/NavigatingCancelEventArgs.cs`, `src/Uno.UI/UI/Xaml/Navigation/NavigationHelpers.cs`, `src/Uno.UI/UI/Xaml/Controls/Frame/Frame.legacy.cs`
-- [ ] **BC11** — `PageStackEntry.SourcePageType` setter -> non-public  `d2·S`
+- [x] **BC11** — `PageStackEntry.SourcePageType` setter -> non-public  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Navigation/PageStackEntry.Properties.cs`, `src/Uno.UI/UI/Xaml/Navigation/PageStackEntry.cs`, `src/Uno.UI/UI/Xaml/Controls/Frame/Frame.legacy.cs`
-- [ ] **BC12** — `Frame.BackStack` setter -> non-public  `d2·S`
+- [x] **BC12** — `Frame.BackStack` setter -> non-public  `d2·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Controls/Frame/Frame.Properties.cs`, `src/Uno.UI/UI/Xaml/Controls/Frame/Frame.legacy.cs`, `src/Uno.UI/UI/Xaml/Controls/Frame/Frame.partial.mux.cs`
-- [ ] **BC09** — `ComboBox.OnIsDropDownOpenChanged` -> private protected  `d2·S`
+- [x] **BC09** — `ComboBox.OnIsDropDownOpenChanged` -> private protected  `d2·S`
   - Make `private protected`.
   - Files: `src/Uno.UI/UI/Xaml/Controls/ComboBox/ComboBox.custom.cs`, `src/Uno.UI/UI/Xaml/Controls/ComboBox/ComboBox.partial.mux.cs`
-- [ ] **BC20** — `FrameworkPropertyMetadata.DefaultUpdateSourceTrigger` -> internal ⚠️  `d2·S`
+- [x] **BC20** — `FrameworkPropertyMetadata.DefaultUpdateSourceTrigger` -> internal ⚠️  `d2·S`
   - Make `DefaultUpdateSourceTrigger` internal/remove. Optional stretch: make the whole `FrameworkPropertyMetadata` internal (verify no custom-control author relies on it).
   - Files: `src/Uno.UI/UI/Xaml/FrameworkPropertyMetadata.cs`, `src/Uno.UI/DataBinding/BindingExpression.cs`, `src/Uno.UI/UI/Xaml/FrameworkPropertyMetadataOptions.cs`
-- [ ] **BC25** — `Border.ChildProperty` -> internal  `d2·S`
+- [x] **BC25** — `Border.ChildProperty` -> internal  `d2·S`
   - Make the DP `internal` (keep the DP, hide the field) to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Controls/Border/Border.cs`, `src/Uno.UI.UnitTests/DependencyProperty/Given_DependencyProperty.cs`
-- [ ] **BC16** — Re-apply `PropertyChangedParams` change ⚠️  `d2·M` · PR #17414
+- [x] **BC16** — Re-apply `PropertyChangedParams` change ⚠️  `d2·M` · PR #17414 — **DROPPED**
   - **VERIFY design first.** The post-revert pooled `DependencyPropertyChangedEventArgs` may already capture the allocation win, and the struct drops precedence/bypass fields. Decide whether re-applying is still desired before doing it.
+  - **Decision: drop.** `DependencyObjectStore.DependencyPropertyChangedEventArgsPool` (Rent/Return) already pools the args and captures the allocation win the struct targeted. `PropertyChangedParams` is also `internal` (no public-surface impact, so out of scope for this phase) and re-introducing it would drop the precedence/bypass fields. **Deleted the dead `#if false` struct (`PropertyChangedParams.cs`) and its stale commented reference** rather than leaving misleading "bring back in Uno 6" dead code.
   - Files: `src/Uno.UI/UI/Xaml/PropertyChangedParams.cs`, `src/Uno.UI/UI/Xaml/IDependencyObjectInternal.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs`
-- [ ] **BC62** — Fix `Lauched`->`Launched` trace constants  `d2·S` · #13709
+- [x] **BC62** — Fix `Lauched`->`Launched` trace constants  `d2·S` · #13709
   - Adjust signature to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Application.cs`, `src/Uno.UI/UI/Xaml/Application.skia.cs`, `src/Uno.UI/UI/Xaml/Application.wasm.cs`
-- [ ] **BC41** — `VisualInteractionSource` param -> `Microsoft.UI.Input`  `d2·S`
+- [x] **BC41** — `VisualInteractionSource` param -> `Microsoft.UI.Input`  `d2·S` — DONE (relocated PointerPoint to Uno.UWP)
   - Adjust signature to match WinUI.
+  - **Blocked: not a mechanical signature flip.** `VisualInteractionSource.TryRedirectForManipulation` is declared in `Uno.UI.Composition`, but `Microsoft.UI.Input.PointerPoint` exists only in `Uno.UI` (the `IS_UNO_UI_PROJECT` branch of `PointerPoint.cs`). `Uno.UI.Composition` references `Uno.UWP`/`Uno.Foundation`, not `Uno.UI`, so it cannot name that type in the public signature — the param stays `Windows.UI.Input.PointerPoint`. Genuinely matching WinUI requires relocating `Microsoft.UI.Input.PointerPoint` to a lower assembly (broad, risky, not effort-S). Deferred out of this sweep; left as-is with the existing divergence comment.
   - Files: `src/Uno.UI.Composition/Composition/VisualInteractionSource.cs`, `src/Uno.UI.Composition/Composition/ICompositionTarget.cs`, `src/Uno.UI/UI/Xaml/Media/CompositionTarget.cs`
-- [ ] **BC28** — `CompositionSpriteShape.StrokeDashArray` get-only  `d2·S`
+- [x] **BC28** — `CompositionSpriteShape.StrokeDashArray` get-only  `d2·S`
   - Adjust signature to match WinUI.
   - Files: `src/Uno.UI.Composition/Composition/CompositionSpriteShape.cs`, `src/Uno.UI.Composition/Composition/CompositionSpriteShape.skia.cs`, `src/Uno.UI.Composition/Composition/CompositionStrokeDashArray.cs`
-- [ ] **BC64** — `Duration.TimeSpan` -> read-only property  `d2·S` · #13096
+- [x] **BC64** — `Duration.TimeSpan` -> read-only property  `d2·S` · #13096
   - Make `TimeSpan` a read-only property (WinUI). Confirm treatment of the WinUI-divergent public `Type` field (issue notes UWP may differ).
   - Files: `src/Uno.UI/UI/Xaml/Duration.cs`, `src/Uno.UI/UI/Xaml/DurationType.cs`, `src/Uno.UI/Generated/3.0.0.0/Microsoft.UI.Xaml/Duration.cs`
 
@@ -193,51 +195,74 @@ _Danger 2. Tighten Uno-only public surface to match WinUI (internal/protected/se
 
 _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type base-class realignments, enum/type-shape changes, and behaviour-changing defaults. Several silently change runtime behaviour even on defaults — gate each on a migration note + runtime/visual validation, not compile-only._
 
-- [ ] **BC17** — `XamlCompositionBrushBase.CompositionBrush` -> protected  `d3·S`
+- [x] **BC17** — `XamlCompositionBrushBase.CompositionBrush` -> protected  `d3·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Media/XamlCompositionBrushBase.cs`, `src/Uno.UI/UI/Xaml/Media/XamlCompositionBrushBase.skia.cs`, `src/Uno.UI/UI/Xaml/Media/AcrylicBrush/AcrylicBrush.skia.cs`
-- [ ] **BC19** — Remove `FlyoutBase.Close()` (use `Hide()`)  `d3·S`
+- [x] **BC19** — Remove `FlyoutBase.Close()` (use `Hide()`)  `d3·S`
   - Reduce visibility to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Controls/Flyout/FlyoutBase.cs`, `src/Uno.UI/UI/Xaml/Controls/Flyout/Flyout.cs`, `src/Uno.UI/UI/Xaml/Controls/Button/Button.cs`
-- [ ] **BC27** — `DoubleCollection`: composition not `List<T>`  `d3·S`
+- [x] **BC27** — `DoubleCollection`: composition not `List<T>`  `d3·S`
   - Reparent to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Media/DoubleCollection.cs`, `src/Uno.UI/UI/Xaml/Media/PointCollection.cs`, `src/Uno.UI/Generated/3.0.0.0/Microsoft.UI.Xaml.Media/DoubleCollection.cs`
-- [ ] **BC73** — `TimePickerFlyoutPresenter` -> `Control` base  `d3·S`
+- [x] **BC73** — `TimePickerFlyoutPresenter` -> `Control` base  `d3·S`
   - Reparent to match WinUI.
   - Files: `src/Uno.UI/UI/Xaml/Controls/TimePicker/TimePickerFlyoutPresenter.cs`, `src/Uno.UI/UI/Xaml/Controls/TimePicker/TimePickerFlyoutPresenter.Properties.cs`, `src/Uno.UI/UI/Xaml/Controls/TimePicker/TimePickerFlyoutPresenter.partial.mux.cs`
-- [ ] **BC13** — Fix `WindowActivatedEventArgs.WindowActivationState` type  `d3·M`
+- [x] **BC13** — Fix `WindowActivatedEventArgs.WindowActivationState` type  `d3·M`
   - See notes.
   - Files: `src/Uno.UI/UI/Xaml/Window/WindowActivatedEventArgs.cs`, `src/Uno.UI/Generated/3.0.0.0/Microsoft.UI.Xaml/WindowActivationState.cs`, `src/Uno.WinAppSDKSyncGenerator/Helpers/SymbolMatchingHelpers.cs`
-- [ ] **BC65** — `FrameworkElement`/`ContentControl`: drop `IEnumerable`  `d3·S`
+- [x] **BC65** — `FrameworkElement`/`ContentControl`: drop `IEnumerable`  `d3·S`
   - See notes.
-  - Files: `src/Uno.UI/UI/Xaml/FrameworkElement.crossruntime.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.skia.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.wasm.cs`
-- [ ] **BC34** — Remove `TextBox.OnVerticalContentAlignmentChanged` override  `d3·S`
-  - Delete the `TextBox` override; make base `OnVerticalContentAlignmentChanged` `private protected`.
+  - Landed separately on `feature/breakingchanges` (PR #23744) with the accompanying collection-initializer migration sweep. Originally deferred out of this sweep as mis-sized: the `IEnumerable` (+ `GetEnumerator`) is load-bearing for C# **collection-initializer syntax** (`new StackPanel { child1, child2 }`), so its removal required migrating every `new <Panel/Control> { ... }` initializer across tests, samples, and user-facing code — a dedicated pass rather than an effort-`S` interface tidy.
+  - Files: `src/Uno.UI/UI/Xaml/FrameworkElement.crossruntime.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.skia.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.reference.cs`, `src/Uno.UI/UI/Xaml/Controls/ContentControl/ContentControl.cs`
+- [x] **BC34** — Remove `TextBox.OnVerticalContentAlignmentChanged` override  `d3·S`
+  - Delete the empty `TextBox` override and the `ContentPresenter` base virtual (both no-ops; layout stays driven by `AffectsArrange`).
   - Files: `src/Uno.UI/UI/Xaml/Controls/TextBox/TextBox.cs`, `src/Uno.UI/UI/Xaml/Controls/ContentPresenter/ContentPresenter.cs`
-- [ ] **BC36** — `ContentPresenter.ContentTemplateRoot` -> internal  `d3·S` · #16148
+- [x] **BC36** — `ContentPresenter.ContentTemplateRoot` -> internal  `d3·S` · #16148
   - Make `internal` (not `private` — in-assembly callers read it cross-type).
+  - **Superseded by #2163:** it is now `private`. The cross-type callers were only reading it because
+    `ContentControl.ContentTemplateRoot` (the real WinUI accessor) was always null; the presenter now
+    reports its root there instead.
   - Files: `src/Uno.UI/UI/Xaml/Controls/ContentPresenter/ContentPresenter.cs`, `src/Uno.UI/UI/Xaml/Controls/Button/HyperlinkButton.mux.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.cs`
-- [ ] **BC52** — Reparent `RadioMenuFlyoutItem` -> `MenuFlyoutItem`  `d3·M`
+- [x] **BC52** — Reparent `RadioMenuFlyoutItem` -> `MenuFlyoutItem`  `d3·M`
   - Reparent to `MenuFlyoutItem`; re-implement the toggle behavior currently inherited from `ToggleMenuFlyoutItem`.
   - Files: `src/Uno.UI/UI/Xaml/Controls/RadioMenuFlyoutItem/RadioMenuFlyoutItem.cs`, `src/Uno.UI/UI/Xaml/Controls/RadioMenuFlyoutItem/RadioMenuFlyoutItem.Properties.cs`, `src/Uno.WinAppSDKSyncGenerator/Generator.cs`
+- [x] **Reparent `PasswordBox` -> `Control`** — no longer inherits `TextBox`  `d3·L` · **[impact spec](bc2138-passwordbox-to-control.md)** · PR #24038
+  - Both `TextBox` and `PasswordBox` derive from `Control` and share the editing implementation by composition — an `internal sealed TextBoxCore` reached through an `internal ITextBoxHost`. Stops the password being mirrored into the inherited `Text` and removes the leaked text-input API. An *internal shared base* is impossible (CS0060) and a public one would add Uno-only surface, so composition is used instead; WinUI's own `CTextBoxBase` accessor design carries over as the interface.
+  - Files: `src/Uno.UI/UI/Xaml/Controls/TextBoxCore/*.cs` (new), `src/Uno.UI/UI/Xaml/Controls/PasswordBox/PasswordBox.cs`, `src/Uno.UI/UI/Xaml/Controls/TextBox/TextBox*.cs`, `src/Uno.UI/UI/Xaml/Controls/CommandBarFlyout/TextCommandBarFlyout.mux.cs`, `src/Uno.UI/UI/Xaml/Internal/TextControlFlyoutHelper.cs`
+- [x] **Reparent `MediaPlayerPresenter` -> `FrameworkElement`**  `d3·M` · PR #23807
+  - Reparent to match WinUI, dropping the extra `Border` level; the video surface is hosted through an `internal UIElement Child` instead of the inherited `Border.Child`.
+  - Files: `src/Uno.UI/UI/Xaml/Controls/MediaPlayerElement/MediaPlayerPresenter.cs`
+- [x] **Reparent `ImageBrush` -> `TileBrush`**  `d3·M` · PR #23806
+  - Materialize the missing `TileBrush` base and move `AlignmentX`/`AlignmentY`/`Stretch` onto it, so the DPs are declared where WinUI declares them.
+  - Files: `src/Uno.UI/UI/Xaml/Media/TileBrush.cs` (new), `src/Uno.UI/UI/Xaml/Media/ImageBrush.cs`
+- [x] **Reparent `FadeIn`/`FadeOutThemeAnimation` -> `Timeline`**  `d3·M` · PR #23805
+  - Reparent off Uno's `DoubleAnimation`, which leaked `From`/`To`/`By`/`EasingFunction`/`EnableDependentAnimation`; each animation drives its fixed `Opacity` target. `RepositionThemeAnimation` already derived `Timeline`.
+  - Files: `src/Uno.UI/UI/Xaml/Media/Animation/FadeInThemeAnimation.cs`, `src/Uno.UI/UI/Xaml/Media/Animation/FadeOutThemeAnimation.cs`
 - [ ] **BC74** — Android drawable extension in retarget keys  `d3·S` · PR #15891
-  - Adjust signature to match WinUI.
+  - Adjust signature to match WinUI. **Deferred out of Phase 5:** draft PR #15891 still targets `master` and is blocked on the nine-patch (`.9.png`) regression it exposes. Not moot under Skia-only — Skia-on-Android still resolves drawables through this path.
   - Files: `src/Uno.UWP/Helpers/AndroidResourceNameEncoder.cs`, `src/Uno.UWP/Helpers/DrawableHelper.Android.cs`, `src/SourceGenerators/Uno.UI.Tasks/ResourceConverters/AndroidResourceConverter.cs`
-- [ ] **BC50** — Default `UseLegacyPrimaryLanguageOverride` = false  `d3·S` · #13704
-  - Flip default to `false` (WinUI restart-to-apply). **Behavior change** — runtime language-switch apps must opt back in; needs a migration note.
+- [x] **BC50** — Remove `UseLegacyPrimaryLanguageOverride`  `d3·S` · #13704
+  - Hard-remove the flag and the legacy path; `PrimaryLanguageOverride` is always restart-to-apply (WinUI). **Behavior change** — the flag defaulted to `true`, so runtime language-switch apps must set the culture themselves; migration note added.
   - Files: `src/Uno.UWP/FeatureConfiguration/WinRTFeatureConfiguration.cs`, `src/Uno.UWP/Globalization/ApplicationLanguages.cs`, `src/Uno.UI/UI/Xaml/Application.cs`
-- [ ] **BC42** — Remove `clr-namespace:` XAML leniency  `d3·M`
-  - Remove the leniency; migrate repo XAML/tests/docs to `using:`. Hard-error, no deprecation cycle.
-  - Files: `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.Reflection.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeBehindParser.cs`
-- [ ] **BC51** — Implement `ms-resource:///` URI rewrite  `d3·M`
-  - Implement the rewrite to `ms-resource:///Files/`. **Changes compiled URI value** — behavior-changing, validate at runtime.
-  - Files: `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs`, `src/Uno.UI/UI/Xaml/XamlFilePathHelper.shared.cs`
-- [ ] **BC21** — Delete legacy `AutomationProperties` member ⚠️  `d3·S`
-  - **INVESTIGATE / likely drop.** The member at ~L44 (`AnnotationsProperty`) is valid WinUI and must NOT be deleted — the line ref drifted. Real target is probably the native `OnAutomationIdChanged` branches in `AutomationProperties.uno.cs`.
-  - Files: `src/Uno.UI/UI/Xaml/Automation/AutomationProperties.cs`, `src/Uno.UI/UI/Xaml/Automation/AutomationProperties.uno.cs`
-- [ ] **BC75** — Move MRT Core (`ApplicationModel.Resources`) -> `Uno.UWP`  `d3·M`
-  - Move the MRT-Core types to `Uno.UWP` (lower risk than a new assembly).
-  - Files: `src/Uno.UI/Windows/ApplicationModel/Resources/ResourceLoader.cs`, `src/Uno.UI/Windows/ApplicationModel/Resources/IResourceContext.cs`, `src/Uno.UI/Windows/ApplicationModel/Resources/IResourceManager.cs`
+- [x] **BC42** — Remove `clr-namespace:` XAML leniency  `d3·M`
+  - Remove the leniency; migrate repo XAML/tests/docs to `using:`. Hard-error (`UXAML0006`) on the xmlns declaration at build time and a `XamlParseException` from `XamlReader`, no deprecation cycle. Only `mc:Ignorable` prefixes are exempt.
+  - Files: `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlNamespaceValidation.cs`, `.../XamlFileParser.cs`, `.../XamlFileParserContext.cs`, `.../XamlCodeGeneration.Diagnostics.cs`, `.../XamlCodeGeneration.cs`, `.../XamlFileGenerator.Reflection.cs`, `.../XamlCodeBehindParser.cs`, `src/Uno.UI/UI/Xaml/Markup/Reader/XamlNamespaceValidation.cs`, `.../XamlStringParser.cs`, `.../XamlTypeResolver.cs`
+- [x] **BC51** — Implement `ms-resource:///` URI rewrite  `d3·M`
+  - **Decision: ship the rewrite, paired with a runtime mapping.** A relative URI on a `Uri`-typed property compiles to `ms-resource:///Files/<raw>` (raw concat, leading `/` trimmed, file folder ignored), and `ImageSource` resolution maps `ms-resource:///Files/X` to `ms-appx:///X` so relative-URI `BitmapIcon`/`BitmapIconSource` in **application** XAML keep loading the same asset — there the compiled value changes and the behavior does not.
+  - Two consequences go beyond readback, both carried in the migration note: a relative value is now absolute at the point of use, and in a library the two property kinds resolve against different roots. On the first, measured on WinAppSDK 1.7: `Launcher.LaunchUriAsync` returns `true` without launching anything for `ms-resource` and `ms-appx` alike, so a relative `NavigateUri` is equally inert on WinUI — the silent failure is parity rather than a regression, but it is quieter than the exception Uno used to raise.
+  - The `ms-appx` special case moved from the **owner** type to the **property** type: `Image.Source`, `ImageBrush.ImageSource`, and custom `ImageSource` properties all resolve against the base URI (the latter two previously fell through to the verbatim branch). `ResourceDictionary.Source` is untouched — it resolves via `RetrieveDictionaryForSource`.
+  - **Svg carve-out, now measured (WinAppSDK 1.7):** WinUI resolves file-relative only where the value lands in a `BitmapImage`; every relative svg URI compiles to `ms-resource:///Files/…`, whether written on `SvgImageSource.UriSource` or on an `ImageSource`-typed property such as `Image.Source`. Uno keeps svg on `ms-appx` — a deliberate divergence. The discriminator is **how the sink resolves the form**, not what the form can express: `ms-appx` is resolved as an asset path and carries the assembly prefix a library's assets need, whereas `ms-resource` is understood only by `XamlFilePathHelper`'s mapping, which resolves against the app root. (An assembly-qualified `ms-resource` *is* emitted for `ResourceDictionary.Source`, because dictionary resolution is a registry string-key lookup rather than asset resolution — so the form is not the constraint.)
+  - Expected values measured on native WinUI (WinAppSDK 1.7), application **and** library XAML. Known remaining divergence, pre-existing and out of scope: Uno resolves the `ms-appx` form against the assembly root, WinUI against the XAML file's folder.
+  - **Public API rename shipped with it:** `Uno.Extensions.UriExtensions.IsLocalResource` → `IsMsAppx`. The old name said "local resource" but the predicate tests for `ms-appx`, three lines from the `ms-resource:///Files/` helpers this work introduced — the two are opposite ends of the mapping. No forwarding shim; registered in `build/PackageDiffIgnore.xml`.
+  - Files: `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlFileGenerator.cs`, `src/Uno.UI/UI/Xaml/XamlFilePathHelper.shared.cs`, `src/Uno.UI/UI/Xaml/Media/ImageSource.cs`, `src/Uno.Foundation/Extensions/UriExtensions.cs`
+- [x] **BC21** — Delete legacy `AutomationProperties` member ⚠️  `d3·S` · PR #19700
+  - **Resolved as a drifted line reference, not a deletion.** The member at ~L44 is `AnnotationsProperty`, which is valid WinUI and was correctly left in place. The real defect was the misspelled `AccessibilityView` registration, already fixed on `master`; nothing remains to remove.
+  - Files: `src/Uno.UI/UI/Xaml/Automation/AutomationProperties.cs`
+- [x] **BC75** — Move MRT Core (`Microsoft.Windows.ApplicationModel.Resources`) -> `Uno.WinRT`  `d3·M` · PR #23669
+  - Landed inside the four-namespace sync-generator relocation, not as its own PR: the back-compat redirect that forced this namespace into `Uno.UI` was removed, so it now generates into `src/Uno.WinRT` — assembly `Uno.WinRT`, package `Uno.WinRT` — matching its WinAppSDK metadata home. Relocating types across assemblies is binary-breaking, so the 11 types are registered in `build/PackageDiffIgnore.xml`. No `[assembly: TypeForwardedTo]` shim was added, though `Uno.UI` does reference the target assembly and could carry one — per ground rule 1 the break is taken now rather than shimmed.
+  - Follow-ups shipped separately from the relocation: the migration note in `doc/articles/migrating-to-uno-7.md`, and `Given_MrtCoreAssemblyIdentity`, which asserts each type resolves from assembly `Uno.WinRT` and that `Uno.UI` declares none of the namespace. The test is a **regression guard**, not fails-before/passes-after — the move had already landed.
+  - **Unowned follow-up — needs its own tracking item.** The same relocation moved three further namespace groups (`Microsoft.UI.System`, `Microsoft.Graphics.DirectX`/`.Display`, `Microsoft.UI.IClosableNotifier`) out of `Uno.UI`/`Uno.UI.Composition`, and BC41 moved `Microsoft.UI.Input.*` (`PointerPoint`, `PointerDeviceType`, …) the same way. All four are undocumented and unguarded, and `Microsoft.UI.Input.*` is far more widely consumed than any MRT Core type. Do not park this on BC41 — that item is closed.
+  - Files: `src/Uno.WinRT/Microsoft/Windows/ApplicationModel/Resources/*`, `src/Uno.WinAppSDKSyncGenerator/Generator.cs`, `build/PackageDiffIgnore.xml`
 
 ---
 
@@ -245,21 +270,45 @@ _Danger 3. Wider but localized: visibility on more-derivable hooks, per-type bas
 
 _Danger 3-4. Heavier multi-file changes: remove the legacy templated-parent mechanism, repurpose the precedence enum, tear down Fluent V1 scaffolding, rename the Toolkit assembly, and remove the legacy `Windows.UI.Input.*` surface. Each is its own PR._
 
-- [ ] **BC01** — Remove legacy templated-parent mechanism  `d3·L` · #18672
-  - Hard-remove legacy path incl. public `FrameworkTemplateBuilder` delegate + legacy ctors. **First** fix the tests that currently force `_isLegacyTemplate=true`.
-  - Files: `src/Uno.UI/UI/Xaml/FrameworkTemplate.cs`, `src/Uno.UI/UI/Xaml/TemplatedParentScope.cs`, `src/Uno.UI/UI/Xaml/ControlTemplate.cs`
+- [x] **#2163** — Remove the `ContentPresenter` bypass  `d2·M` · **[impact spec](bc2163-remove-contentpresenter-bypass.md)**
+  - `ContentControl` skipped the `ContentPresenter` and parented `Content` directly when it had no
+    `Template` and its default style declared none — an Android 4.4 stack-depth workaround. **Already
+    inert before the change:** `Uno.UI` is Skia-only, so the conditionally-gated default `ControlTemplate`
+    (`netstdref:` at the time, `not_winappsdk:` after the prefix cleanup) was always applied. Mostly
+    dead-code removal; also drops the `Type`-keyed `HasDefaultTemplate` memo and the ALC-teardown sweep
+    that only existed to unpin it.
+  - Behaviour delta: a `ContentControl` subclass with its own `DefaultStyleKey` and no `Template` no longer
+    renders `Content` (WinUI parity). `ContentControl.ContentTemplateRoot` goes from always-null to
+    populated by the templated `ContentPresenter`, which supersedes BC36 (Phase 5).
+  - Files: `src/Uno.UI/UI/Xaml/Controls/ContentControl/ContentControl.cs`, `…/ContentPresenter/ContentPresenter.cs`,
+    `…/Primitives/ButtonBase/ButtonBase.cs`, `…/Button/HyperlinkButton.mux.cs`, `…/UI/Xaml/FrameworkElement.Layout.cs`,
+    `…/UI/Xaml/Application.Alc.cs`,
+    `src/Uno.WinAppSDKSyncGenerator/Helpers/SymbolMatchingHelpers.cs`, `build/PackageDiffIgnore.xml`
+- [x] **BC01** — Remove legacy templated-parent mechanism  `d3·L` · #18672
+  - Hard-removed the ambient `TemplatedParentScope` (including its `DependencyObjectStore` ctor hook), both `ENABLE_LEGACY_*` symbols, both `Microsoft.UI.Xaml` builder delegates (`FrameworkTemplateBuilder` **and** `NewFrameworkTemplateBuilder`), every builder ctor (now internal behind `MarkupHelper.Create*`), the TP-less `Func<View?>` factories, and the vestigial `DependencyObject.TemplatedParent` DP.
+  - The surviving factory shape is `Uno.UI.FrameworkTemplateBuilder` — `(object? owner, TemplateMaterializationSettings settings) => UIElement?`. Both it and `Uno.UI.TemplateMaterializationSettings` sit next to `TemplateManager` rather than in the WinUI namespace: neither has a WinUI counterpart, so neither belongs under `Microsoft.UI.Xaml`. The settings are framework-constructed only (internal ctor); a builder still reads the properties.
+  - Assigning the templated parent moved off the call sites onto `TemplateMaterializationSettings.OnMemberCreated`, so `LoadContent` decides it once and the two call sites stop diverging (the `XamlReader` path had been skipping non-`FrameworkElement` members and, when the templated parent was null, the member callback too). It is an instance method rather than a delegate deliberately: lazily materialized members (`x:Load`, `VisualState`) capture the settings, so a closure over the templated parent would pin it for as long as the template content, which outlives it in the pool. `TemplateMemberCreatedCallback` is removed. Covered by `Given_FrameworkTemplate_And_Leak`, which fails against a closure-capturing implementation.
+  - The stated prerequisite ("fix the tests that force `_isLegacyTemplate=true`") was already moot: `_isLegacyTemplate` is a `private const` nothing assigns, and the suites pass with it `false`.
+  - Files: `src/Uno.UI/UI/Xaml/FrameworkTemplate.cs`, `src/Uno.UI/UI/Xaml/TemplatedParentScope.cs` (deleted), `src/Uno.UI/UI/Xaml/ControlTemplate.cs`, `src/Uno.UI/Uno/TemplateMaterializationSettings.cs`, `src/Uno.UI/Uno/FrameworkTemplateBuilder.cs`, `src/Uno.UI/UI/Xaml/Markup/Reader/XamlObjectBuilder.cs`
 - [ ] **BC39** — Clean up `DependencyPropertyValuePrecedences` enum  `d2·M` · PR #15684
   - Hard-remove obsolete enum members (no `[EditorBrowsable]` aliases).
   - Files: `src/Uno.UI/UI/Xaml/DependencyPropertyValuePrecedences.cs`, `src/Uno.UI/UI/Xaml/DependencyObjectStore.cs`, `src/Uno.UI/UI/Xaml/Internal/DependencyPropertyHelper.cs`
-- [ ] **BC71** — Remove Fluent V1 public surface  `d2·M` · #14765
-  - Hard-remove `XamlControlsResourcesV1` + `ControlsResourcesVersion.Version1` + build/package scaffolding (V1 content is already gone).
-  - Files: `src/Uno.UI.FluentTheme.v1/XamlControlsResourcesV1.cs`, `src/Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Skia.csproj`, `src/Uno.UI.FluentTheme.v1/Uno.UI.FluentTheme.v1.Wasm.csproj`
-- [ ] **BC53** — Rename `Uno.UI.Toolkit` assembly/namespace ⚠️  `d4·M` · #12322
-  - **DECIDE the new assembly/namespace name.** Hard rename, no type-forwarders / xmlns alias (per hard-remove policy).
-  - Files: `src/Uno.UI.Toolkit/`, `src/Uno.UI.Toolkit/Uno.UI.Toolkit.Skia.csproj`, `src/Uno.UI.Toolkit/Uno.UI.Toolkit.Wasm.csproj`
+- [ ] **BC53** — Rename `Uno.UI.Toolkit` assembly/namespace -> **`Uno.UI.Extras`**  `d4·M` · #12322
+  - Name decided. Hard rename, no type-forwarders / xmlns alias (per hard-remove policy). Only the `Uno.UI.Toolkit`, `.DevTools.*` and `.Extensions` namespaces move; `Uno.Diagnostics.UI`, `Uno.UI.Markup`, `Uno.Helpers`, `Uno.UI` and `Uno.UI.Maps` stay. See [spec 056](../056-assembly-renames/spec.md).
+- [x] **BC71** — Remove the Fluent resource-version surface  `d2·M` · #14765
+  - Hard-removed `XamlControlsResourcesV1`, the whole `ControlsResourcesVersion` enum, and `XamlControlsResources.ControlsResourcesVersion` (WinAppSDK has no such surface and V2 was already forced unconditionally), plus the `Uno.UI.FluentTheme.v1` project and its build/pack scaffolding. Collapsed the now-single-version theme-resource plumbing. Verified against the WinUI source at `winui3/release/1.8.2`: `XamlControlsResources` now matches its IDL 1:1 (ctor, `EnsureRevealLights`, `UseCompactResources`, `UseCompactResourcesProperty`) and `ControlsResourcesVersion` / `XamlControlsResourcesV1` / `XamlControlsResourcesV2` appear nowhere upstream.
+  - With V1 gone the "v2" naming had nothing left to distinguish, so `Uno.UI.FluentTheme.v2` was merged into `Uno.UI.FluentTheme`: one assembly, one `GlobalStaticResources` init in the ctor, `Resources/Version2/**` flattened to `Resources/**`, and the merged dictionary renamed `themeresources_v2.xaml` -> `themeresources.xaml` (the name WinUI uses; the `_v2` suffix never existed upstream). This removed `XamlControlsResourcesV2`, which had no WinAppSDK counterpart and had become a duplicate of `XamlControlsResources` — the acrylic `TintLuminosityOpacity` table now exists once. Its public `ms-appx:` URI changes, so a hand-merged `ResourceDictionary.Source` needs updating; merging `XamlControlsResources` is unaffected.
+  - Files: `src/Uno.UI.FluentTheme.v1/` (deleted), `src/Uno.UI.FluentTheme.v2/` (merged into `src/Uno.UI.FluentTheme/`), `src/Uno.UI/UI/Xaml/Controls/ControlsResourcesVersion.cs`, `src/Uno.UI.FluentTheme/XamlControlsResources.cs`, `src/Uno.UI.FluentTheme/FluentMerge.targets`, `src/Uno.UI/UI/Xaml/XamlFilePathHelper.shared.cs`, `src/SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.cs`, `build/nuget/Uno.WinUI.nuspec`, `build/PackageDiffIgnore.xml`
+  - Follow-up (deliberately out of scope here): the MUX `*_v1.xaml` API-contract dictionaries under `src/Uno.UI/UI/Xaml/Controls/**` still compile into `Uno.UI` — unrelated to Fluent V1. Eight of the ten contribute live content to `mergedstyles.xaml` (implicit `InfoBar`/`RatingControl` styles, `MUX_TreeViewItemStyle`, `DefaultTreeViewStyle`, `TreeViewItemDataTemplate`, `DefaultTwoPaneViewStyle`), forming the base tier that the Fluent dictionary overrides when merged; `ColorPicker_v1.xaml`, `TreeView_themeresources_v1.xaml` and `TwoPaneView_rs1.xaml` contribute nothing. The open question is whether that base tier is reachable at all in 7.0 — upstream deleted all 99 `*_v1.xaml` at the fork.
+  - WinUI-parity gaps found while diffing against `winui3/release/1.8.2`, all pre-existing and none blocking BC71:
+    - `UseCompactResources` is inert here (no changed-callback). Upstream registers `OnUseCompactResourcesPropertyChanged`, which throws `hresult_invalid_argument` outside prerelease builds and otherwise re-sources to `compact_themeresources.xaml`. Matching it means restoring an `UpdateSource()` method (upstream calls it from both the ctor and the callback) and clearing `ThemeDictionaries` before reassigning `Source`, as upstream does.
+    - The real fix for the acrylic block is to restore the `TintLuminosityOpacity` attribute in the ported Fluent dictionaries — WinUI 3 carries it inline in `AcrylicBrush_themeresources.xaml` and does no programmatic assignment; our C# fix-up would then delete itself. (WinUI **2** did assign it in code, with the same values, which is where our copy came from.)
+    - Root cause of all of the above: our `XamlControlsResources` is a port of **WinUI 2**, not WinUI 3. The pre-fork `dev/dll/XamlControlsResources.h` declares `UpdateAcrylicBrushesLightTheme`/`DarkTheme`, `UpdateTintLuminosityOpacity`, `UpdateSource` and `IsUsingControlsResourcesVersion2` — our file mirrors all of them, including the write-only `_isUsingResourcesVersion2` (upstream's `s_tlsIsControlsResourcesVersion2`, which upstream actually *read* from Controls; we never ported the reader). WinUI 3 dropped the whole versioning concept at the repo fork (`aac7a6ddf`, 2023-10-19): 99 `*_v1.xaml` files deleted and `ControlsResourcesVersion` removed from the IDL in one commit. A future pass should re-baseline this type against WinUI 3 rather than patch the WinUI 2 port further.
+    - `EnsureRevealLights` is marked `[NotImplemented]` but upstream's body is an empty no-op kept only for compat, so we are already at parity — the attribute misreports it.
+    - `CppWinRTHelpers.SetDefaultStyleKey` points `DefaultStyleResourceUri` at the theme-resources URI; upstream's `SetDefaultStyleKeyWorker` points it at `Themes/generic.xaml`. `Given_Control.When_Non_BuiltIn_Control` asserts the Uno value, so changing it means updating that test.
 - [ ] **BC76** — Remove/internalize `Windows.UI.Input.*` (~173 types)  `d4·M` · #18875
   - Hard-remove the ~173 stub types. The **real** `InputInjector` family (test infra) -> move to `Microsoft.UI.Input.Preview.Injection` and update call sites.
-  - Files: `src/Uno.UWP/Generated/3.0.0.0/Windows.UI.Input`, `src/Uno.UWP/Generated/3.0.0.0/Windows.UI.Input.Spatial`, `src/Uno.UWP/Generated/3.0.0.0/Windows.UI.Input.Inking`
+  - Files: `src/Uno/Generated/3.0.0.0/Windows.UI.Input`, `src/Uno/Generated/3.0.0.0/Windows.UI.Input.Spatial`, `src/Uno/Generated/3.0.0.0/Windows.UI.Input.Inking`
 
 ---
 
@@ -298,8 +347,11 @@ _Danger 4-5. Ship last, never batched — each lands as its own separately-stabi
 - **Setter pipeline (Phase 3):** `BC37` (remove CLR-property Setter codegen) → `BC44` (remove `Setter<T>`) → `BC63` (remove `SetterBase.set_Property`). Land adjacently, in order.
 - **DataContext / DependencyObject (Phase 7):** do `BC58` (generator-wide DataContext->FE-only) **first**; it gates `BC54` (FlyoutBase symptom) and de-risks `BC26` (DependencyObject->class). All touch the same generated DO mixin.
 - **Background / UserControl (Phase 7):** `BC38` (Background -> Control) precedes `BC14` (UserControl -> Control) so the property relocation is not redone.
-- **Behaviour-drift items (validate at runtime):** `BC50` (culture no longer changes on setter), `BC45` (Center/Center default), `BC74` (drawable key collision), `BC42` (drop `clr-namespace:`), `BC51` (`ms-resource:///` rewrite) — each changes runtime behaviour even for default users.
-- **Verify-first / open-decision items:** `BC07` (maybe already removed), `BC16` (struct design maybe obsolete), `BC21` (line ref drifted; may drop), `BC53` (needs a new name), `BC55` (must preserve the prefs backing file).
+- **Templated parent (Phase 6):** `#2163` makes the `ContentPresenter` report its materialized root to
+  `GetTemplatedParent()`. `BC01` removes the *legacy* templated-parent mechanism (the DP), not that
+  accessor — but land `#2163` first, or re-verify the report site after `BC01`.
+- **Behaviour-drift items (validate at runtime):** `BC50` (culture no longer changes on setter), `BC45` (Center/Center default — source-breaking only; the flag defaulted to `false`, so default users are unaffected), `BC74` (drawable key collision), `BC42` (drop `clr-namespace:`), `BC51` (`ms-resource:///` rewrite) — most change runtime behaviour even for default users.
+- **Verify-first / open-decision items:** `BC16` (struct design maybe obsolete), `BC53` (needs a new name), `BC55` (must preserve the prefs backing file).
 
 ---
 

@@ -15,6 +15,10 @@ using Windows.Graphics.Interop.Direct2D;
 
 namespace Microsoft.Graphics.Canvas.Geometry;
 
+/// <summary>
+/// Builds a path geometry out of a sequence of figures and segments, for use with
+/// <see cref="CanvasGeometry.CreatePath(CanvasPathBuilder)"/>.
+/// </summary>
 internal class CanvasPathBuilder : IDisposable
 {
 	private List<CompositionPathCommand> _commands = new List<CompositionPathCommand>();

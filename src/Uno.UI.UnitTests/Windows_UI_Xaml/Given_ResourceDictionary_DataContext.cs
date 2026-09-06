@@ -25,7 +25,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var dictionary = new ResourceDictionary { ["res"] = resource };
 
 			Assert.IsTrue(
-				((IDependencyObjectStoreProvider)resource).Store.IsResourceDictionaryItem,
+				((DependencyObject)resource).IsResourceDictionaryItem,
 				"An element stored as a ResourceDictionary value must be flagged so it does not inherit/cache DataContext.");
 
 			Assert.IsTrue(dictionary.ContainsKey("res"));
