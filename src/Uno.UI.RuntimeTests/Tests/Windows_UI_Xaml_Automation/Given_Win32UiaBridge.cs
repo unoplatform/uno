@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
 
@@ -18,6 +19,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 	[TestClass]
 	public class Given_Win32UiaBridge
 	{
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32)]
+		[DataRow(AutomationTextEditChangeType.None, false)]
+		[DataRow(AutomationTextEditChangeType.AutoCorrect, true)]
+		[DataRow(AutomationTextEditChangeType.Composition, true)]
+		[DataRow(AutomationTextEditChangeType.CompositionFinalized, true)]
+		[DataRow((AutomationTextEditChangeType)99, false)]
+		public void When_TextEdit_ChangeType_Is_Mapped_Then_None_Is_Not_Raised(
+			AutomationTextEditChangeType changeType, bool expected)
+		{
+			var interopType = Type.GetType(
+				"Uno.UI.Runtime.Skia.Win32.Win32UIAutomationInterop, Uno.UI.Runtime.Skia.Win32");
+			Assert.IsNotNull(interopType);
+
+			var method = interopType.GetMethod("IsTextEditChangeTypeSupported", BindingFlags.Static | BindingFlags.NonPublic);
+			Assert.IsNotNull(method);
+			Assert.AreEqual(expected, method.Invoke(null, new object[] { changeType }));
+		}
+
 #if __SKIA__
 		private const uint WM_GETOBJECT = 0x003D;
 

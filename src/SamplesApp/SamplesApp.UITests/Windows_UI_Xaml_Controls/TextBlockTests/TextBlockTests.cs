@@ -421,21 +421,18 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 			_app.WaitForElement("text");
 
 			var w1 = _app.GetLogicalRect("textBorder").Width;
-			var misses1 = _app.Marked("misses").GetDependencyPropertyValue<int>("Text");
 
 			_app.Marked("text").SetDependencyPropertyValue("Padding", "10");
 
 			_app.WaitForElement("text");
 
 			var w2 = _app.GetLogicalRect("textBorder").Width;
-			var misses2 = _app.Marked("misses").GetDependencyPropertyValue<int>("Text");
 
 			_app.Marked("text").SetDependencyPropertyValue("Padding", "40");
 
 			_app.WaitForElement("text");
 
 			var w3 = _app.GetLogicalRect("textBorder").Width;
-			var misses3 = _app.Marked("misses").GetDependencyPropertyValue<int>("Text");
 
 			using var _ = new AssertionScope();
 

@@ -818,7 +818,7 @@ internal sealed class TextRangeAdapter : ITextRangeProvider
 	private static IParsedText? GetParsedText(FrameworkElement? owner)
 		=> owner switch
 		{
-			TextBox textBox => textBox.TextBoxView.DisplayBlock.ParsedText,
+			ITextBoxHost { Core: { IsPassword: false } core } => core.TextBoxView?.DisplayBlock?.ParsedText,
 			TextBlock textBlock => textBlock.ParsedText,
 			_ => null,
 		};
@@ -852,9 +852,9 @@ internal sealed class TextRangeAdapter : ITextRangeProvider
 
 	public void Select()
 	{
-		if (_owner is TextBox textBox)
+		if (_owner is ITextBoxHost { Core: { } core })
 		{
-			textBox.Select(_start, Math.Max(0, _end - _start));
+			core.Select(_start, Math.Max(0, _end - _start));
 		}
 		// No-op for read-only text containers (TextBlock, etc.).
 	}

@@ -3,7 +3,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class AutomationPeer : global::Microsoft.UI.Xaml.DependencyObject
@@ -12,8 +12,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.AutomationPeer()
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.AutomationPeer()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.ListenerExists(Microsoft.UI.Xaml.Automation.Peers.AutomationEvents)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.Automation.Peers.RawElementProviderRuntimeId GenerateRawElementProviderRuntimeId()
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "GenerateRawElementProviderRuntimeId()");
@@ -100,8 +100,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.IsRequiredForFormCore()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.SetFocusCore()
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.AutomationPeer.GetPeerFromPointCore(Windows.Foundation.Point)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		protected virtual object GetElementFromPointCore(global::Windows.Foundation.Point pointInWindowCoordinates)
 		{
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "GetElementFromPointCore(Point pointInWindowCoordinates)");

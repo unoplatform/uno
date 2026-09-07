@@ -182,7 +182,7 @@ internal static partial class SemanticElementFactory
 		// Apply relationship attributes (aria-describedby, aria-controls, aria-flowto)
 		if (created)
 		{
-			ApplyRelationshipAttributes(peer, handle);
+			WebAssemblyAccessibility.Instance.UpdateRelationships(peer, handle);
 		}
 
 		// Apply aria-expanded for ExpandCollapse-capable elements not handled by their
@@ -404,11 +404,11 @@ internal static partial class SemanticElementFactory
 		// Extract placeholder text from the control
 		if (peer is FrameworkElementAutomationPeer feap)
 		{
-			if (feap.Owner is TextBox textBox)
+			if (feap.Owner is ITextBoxHost { Core: { } core })
 			{
-				placeholder = textBox.PlaceholderText;
-				selectionStart = Math.Max(0, Math.Min(textBox.SelectionStart, value.Length));
-				selectionEnd = Math.Max(selectionStart, Math.Min(textBox.SelectionStart + textBox.SelectionLength, value.Length));
+				placeholder = core.PlaceholderText;
+				selectionStart = Math.Max(0, Math.Min(core.SelectionStart, value.Length));
+				selectionEnd = Math.Max(selectionStart, Math.Min(core.SelectionStart + core.SelectionLength, value.Length));
 			}
 		}
 
@@ -1142,25 +1142,27 @@ internal static partial class SemanticElementFactory
 	/// Applies ARIA relationship attributes (describedby, controls, flowto) to a semantic element.
 	/// Resolves AutomationPeer collections to space-separated DOM element IDs.
 	/// </summary>
-	private static void ApplyRelationshipAttributes(AutomationPeer peer, IntPtr handle)
+	internal static bool ApplyRelationshipAttributes(AutomationPeer peer, IntPtr handle, bool clearMissing)
 	{
-		var describedByIds = ResolvePeerCollectionToIdList(peer.GetDescribedBy());
-		if (describedByIds is not null)
+		var describedByIds = ResolvePeerCollectionToIdList(peer.GetDescribedBy(), out var hasDescribedBy);
+		if (describedByIds is not null || clearMissing)
 		{
-			NativeMethods.UpdateAriaDescribedBy(handle, describedByIds);
+			NativeMethods.UpdateAriaDescribedBy(handle, describedByIds ?? string.Empty);
 		}
 
-		var controlledIds = ResolvePeerCollectionToIdList(peer.GetControlledPeers());
-		if (controlledIds is not null)
+		var controlledIds = ResolvePeerCollectionToIdList(peer.GetControlledPeers(), out var hasControlledPeers);
+		if (controlledIds is not null || clearMissing)
 		{
-			NativeMethods.UpdateAriaControls(handle, controlledIds);
+			NativeMethods.UpdateAriaControls(handle, controlledIds ?? string.Empty);
 		}
 
-		var flowsToIds = ResolvePeerCollectionToIdList(peer.GetFlowsTo());
-		if (flowsToIds is not null)
+		var flowsToIds = ResolvePeerCollectionToIdList(peer.GetFlowsTo(), out var hasFlowsTo);
+		if (flowsToIds is not null || clearMissing)
 		{
-			NativeMethods.UpdateAriaFlowTo(handle, flowsToIds);
+			NativeMethods.UpdateAriaFlowTo(handle, flowsToIds ?? string.Empty);
 		}
+
+		return hasDescribedBy || hasControlledPeers || hasFlowsTo;
 	}
 
 	/// <summary>
@@ -1275,8 +1277,9 @@ internal static partial class SemanticElementFactory
 	/// using the uno-semantics-{handle} convention. Returns an empty string when the collection
 	/// exists but none of its peers has a semantic node, allowing live updates to clear stale IDREFs.
 	/// </summary>
-	internal static string? ResolvePeerCollectionToIdList(IEnumerable<AutomationPeer>? peers)
+	private static string? ResolvePeerCollectionToIdList(IEnumerable<AutomationPeer>? peers, out bool hasRelatedPeers)
 	{
+		hasRelatedPeers = false;
 		if (peers is null)
 		{
 			return null;
@@ -1285,6 +1288,7 @@ internal static partial class SemanticElementFactory
 		StringBuilder? sb = null;
 		foreach (var relatedPeer in peers)
 		{
+			hasRelatedPeers = true;
 			if (relatedPeer is FrameworkElementAutomationPeer { Owner: { } relatedOwner })
 			{
 				var relatedHandle = relatedOwner.Visual.Handle;

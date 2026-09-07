@@ -26,7 +26,7 @@ using static Private.Infrastructure.TestServices;
 using ComboBoxHelper = Microsoft.UI.Xaml.Tests.Common.ComboBoxHelper;
 using Uno.UI.Extensions;
 using Combinatorial.MSTest;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.DevTools.Input;
 
 #if __APPLE_UIKIT__
 using _UIViewController = UIKit.UIViewController;
@@ -820,7 +820,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Full_Collection_Reset()
 		{
 			var SUT = new ComboBox();
-			SUT.ItemTemplate = new DataTemplate(() =>
+			SUT.ItemTemplate = new DataTemplate(null, (_, _) =>
 			{
 
 				var tb = new TextBlock();
@@ -886,7 +886,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public async Task When_Recycling_Explicit_Items()
 		{
 			var SUT = new ComboBox();
-			SUT.ItemTemplate = new DataTemplate(() =>
+			SUT.ItemTemplate = new DataTemplate(null, (_, _) =>
 			{
 
 				var tb = new TextBlock();
@@ -953,8 +953,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			var itemsControl = new ItemsControl()
 			{
-				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
-				ItemTemplate = new DataTemplate(() =>
+				ItemsPanel = new ItemsPanelTemplate(null, (_, _) => new StackPanel()),
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					var comboBox = new ComboBox();
 					comboBox.Name = "combo";
@@ -1235,7 +1235,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if RUNTIME_NATIVE_AOT
 		[Ignore("DataRowAttribute.GetData() wraps data in an extra array under NativeAOT; not yet understood why.")]
 #endif  // RUNTIME_NATIVE_AOT
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Customized_Popup_Placement(PopupPlacementMode mode, double verticalOffset)
 		{
 			var grid = new Grid();

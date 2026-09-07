@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Microsoft.UI.Xaml.Automation;
 using Uno.Foundation.Logging;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -389,6 +390,12 @@ internal static class Win32UIAutomationInterop
 			return false;
 		}
 	}
+
+	// CUIAWindow suppresses None even though AutomationPeer forwards it to the bridge.
+	internal static bool IsTextEditChangeTypeSupported(AutomationTextEditChangeType changeType)
+		=> changeType is AutomationTextEditChangeType.AutoCorrect
+			or AutomationTextEditChangeType.Composition
+			or AutomationTextEditChangeType.CompositionFinalized;
 
 	[DllImport("uiautomationcore.dll")]
 	internal static extern int UiaRaiseTextEditTextChangedEvent(

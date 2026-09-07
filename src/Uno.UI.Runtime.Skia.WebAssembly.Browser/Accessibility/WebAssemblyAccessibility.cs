@@ -52,8 +52,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	protected override void DisposeCore()
 	{
 		// WebAssembly runs in a single browser tab; disposal is not part of the
-		// per-window lifecycle exercised by the Skia-Desktop router. No-op so the
-		// base-class lifecycle contract holds.
+		// per-window lifecycle exercised by the Skia-Desktop router.
+		_relationshipPeers.Clear();
 	}
 
 	private bool _isAccessibilityEnabled;
@@ -184,6 +184,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// outermost OnChildAdded call for panels loaded after accessibility is already enabled.
 	/// </summary>
 	private readonly List<(IntPtr Handle, WeakReference<AutomationPeer> Peer)> _pendingLabelledBy = new();
+	private readonly Dictionary<IntPtr, WeakReference<AutomationPeer>> _relationshipPeers = new();
+	private bool _relationshipRefreshQueued;
 
 	/// <summary>
 	/// Reentrancy depth of <see cref="OnChildAdded"/>. OnChildAdded recurses through a whole subtree
@@ -453,6 +455,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			if (--_onChildAddedDepth == 0)
 			{
 				DrainPendingLabelledBy();
+				QueueRelationshipRefresh();
 			}
 		}
 	}
@@ -485,6 +488,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			// Only remove from DOM if this element was actually in the semantic tree
 			var childHandle = child.Visual.Handle;
 			_pendingLabelledBy.RemoveAll(entry => entry.Handle == childHandle);
+			_relationshipPeers.Remove(childHandle);
 			if (_semanticParentMap.TryGetValue(childHandle, out var semanticParent))
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
@@ -495,6 +499,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				_semanticParentMap.Remove(childHandle);
 				_prunedHandles.Remove(childHandle);
 			}
+			QueueRelationshipRefresh();
 		}
 		catch (Exception ex)
 		{
@@ -1054,12 +1059,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 		{
-			if (owner is TextBox textBox)
+			if (owner is ITextBoxHost { Core: { } core })
 			{
 				var maxLength = value?.Length ?? 0;
 				selectionStart = Math.Max(0, Math.Min(selectionStart, maxLength));
 				selectionEnd = Math.Max(selectionStart, Math.Min(selectionEnd, maxLength));
-				textBox.SetPendingSelection(selectionStart, selectionEnd - selectionStart);
+				core.SetPendingSelection(selectionStart, selectionEnd - selectionStart);
 			}
 
 			var peer = owner.GetOrCreateAutomationPeer();
@@ -1140,7 +1145,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// Route through FocusSynchronizer if available (handles IsSyncing guard)
 		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 		{
-			if (owner is TextBox)
+			if (owner is ITextBoxHost)
 			{
 				BrowserInvisibleTextBoxViewExtension.DetachNativeInputPreservingFocus();
 			}
@@ -1302,6 +1307,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// registered. Re-resolve the deferred aria-labelledby IDREFs so emission is order-independent
 		// (covers labellers built after the labelled control). HasSemanticElement still gates each one.
 		DrainPendingLabelledBy();
+		QueueRelationshipRefresh();
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -1342,6 +1348,60 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				NativeMethods.UpdateAriaLabelledBy(labelledHandle, labelledById);
 				_pendingLabelledBy.RemoveAt(i);
+			}
+		}
+	}
+
+	internal void UpdateRelationships(AutomationPeer peer, IntPtr handle)
+	{
+		var wasTracked = _relationshipPeers.TryGetValue(handle, out var reference);
+		if (SemanticElementFactory.ApplyRelationshipAttributes(peer, handle, clearMissing: wasTracked))
+		{
+			if (reference is not null)
+			{
+				reference.SetTarget(peer);
+			}
+			else
+			{
+				_relationshipPeers.Add(handle, new WeakReference<AutomationPeer>(peer));
+			}
+		}
+		else
+		{
+			_relationshipPeers.Remove(handle);
+		}
+	}
+
+	internal void QueueRelationshipRefresh()
+	{
+		if (!_isAccessibilityEnabled || IsDisposed || _relationshipRefreshQueued || _relationshipPeers.Count == 0)
+		{
+			return;
+		}
+
+		// A target can enter or leave the semantic tree without its source collection changing.
+		// Refresh only relation-bearing peers, once per batch, after all sibling nodes are registered.
+		_relationshipRefreshQueued = true;
+		NativeDispatcher.Main.Enqueue(RefreshRelationships, NativeDispatcherPriority.Normal);
+	}
+
+	private void RefreshRelationships()
+	{
+		_relationshipRefreshQueued = false;
+		if (!_isAccessibilityEnabled || IsDisposed)
+		{
+			return;
+		}
+
+		foreach (var (handle, reference) in _relationshipPeers.ToArray())
+		{
+			if (HasSemanticElement(handle) && reference.TryGetTarget(out var peer))
+			{
+				UpdateRelationships(peer, handle);
+			}
+			else
+			{
+				_relationshipPeers.Remove(handle);
 			}
 		}
 	}
@@ -2228,7 +2288,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				{
 					this.Log().Trace($"[A11y] PROP CHANGE: Value handle={element.Visual.Handle} element={element.GetType().Name} valueLen={valueProvider.Value?.Length ?? 0}");
 				}
-				UpdateTextBoxValueKeepingSelection(element.Visual.Handle, valueProvider.Value, element as TextBox);
+				UpdateTextBoxValueKeepingSelection(element.Visual.Handle, valueProvider.Value, (element as ITextBoxHost)?.Core);
 			}
 		}
 		else if (automationProperty == ValuePatternIdentifiers.IsReadOnlyProperty &&
@@ -2283,35 +2343,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			var labelledById = SemanticElementFactory.ResolveLabelledByIdRef(peer);
 			NativeMethods.UpdateAriaLabelledBy(element.Visual.Handle, labelledById ?? string.Empty);
 		}
-		else if (automationProperty == AutomationElementIdentifiers.DescribedByProperty &&
+		else if ((automationProperty == AutomationElementIdentifiers.DescribedByProperty ||
+			automationProperty == AutomationElementIdentifiers.ControlledPeersProperty ||
+			automationProperty == AutomationElementIdentifiers.FlowsToProperty) &&
 			TryGetPeerOwner(peer, out element))
 		{
-			// Dynamic aria-describedby: when DescribedBy collection changes
-			var describedByIds = SemanticElementFactory.ResolvePeerCollectionToIdList(peer.GetDescribedBy());
-			if (describedByIds is not null)
-			{
-				NativeMethods.UpdateAriaDescribedBy(element.Visual.Handle, describedByIds);
-			}
-		}
-		else if (automationProperty == AutomationElementIdentifiers.ControlledPeersProperty &&
-			TryGetPeerOwner(peer, out element))
-		{
-			// Dynamic aria-controls: when ControlledPeers collection changes
-			var controlledIds = SemanticElementFactory.ResolvePeerCollectionToIdList(peer.GetControlledPeers());
-			if (controlledIds is not null)
-			{
-				NativeMethods.UpdateAriaControls(element.Visual.Handle, controlledIds);
-			}
-		}
-		else if (automationProperty == AutomationElementIdentifiers.FlowsToProperty &&
-			TryGetPeerOwner(peer, out element))
-		{
-			// Dynamic aria-flowto: when FlowsTo collection changes
-			var flowsToIds = SemanticElementFactory.ResolvePeerCollectionToIdList(peer.GetFlowsTo());
-			if (flowsToIds is not null)
-			{
-				NativeMethods.UpdateAriaFlowTo(element.Visual.Handle, flowsToIds);
-			}
+			UpdateRelationships(peer, element.Visual.Handle);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.PositionInSetProperty &&
 			TryGetPeerOwner(peer, out element))
@@ -2389,7 +2426,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					{
 						this.Log().Trace($"[A11y] AUTOMATION EVENT: {eventId} handle={textElement.Visual.Handle} valueLen={textValueProvider.Value?.Length ?? 0}");
 					}
-					UpdateTextBoxValueKeepingSelection(textElement.Visual.Handle, textValueProvider.Value, textElement as TextBox);
+					UpdateTextBoxValueKeepingSelection(textElement.Visual.Handle, textValueProvider.Value, (textElement as ITextBoxHost)?.Core);
 				}
 				break;
 
@@ -2505,22 +2542,22 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	}
 	protected override void OnNativeStructureChanged() { }
 
-	internal void SyncTextBoxValueAndSelection(TextBox textBox)
+	internal void SyncTextBoxValueAndSelection(TextBoxCore core)
 	{
-		if (!_isAccessibilityEnabled || !HasSemanticElement(textBox.Visual.Handle))
+		if (!_isAccessibilityEnabled || !HasSemanticElement(core.Owner.Visual.Handle))
 		{
 			return;
 		}
 
-		UpdateTextBoxValueKeepingSelection(textBox.Visual.Handle, textBox.Text, textBox);
+		UpdateTextBoxValueKeepingSelection(core.Owner.Visual.Handle, core.Text, core);
 	}
 
-	private static void UpdateTextBoxValueKeepingSelection(IntPtr handle, string? value, TextBox? textBox = null)
+	private static void UpdateTextBoxValueKeepingSelection(IntPtr handle, string? value, TextBoxCore? core = null)
 	{
-		textBox ??= TryGetTextBoxForHandle(handle, out var resolvedTextBox) ? resolvedTextBox : null;
-		var normalizedValue = value ?? textBox?.Text ?? string.Empty;
+		core ??= TryGetTextBoxForHandle(handle, out var resolvedCore) ? resolvedCore : null;
+		var normalizedValue = value ?? core?.Text ?? string.Empty;
 
-		if (TryGetTextSelection(textBox, normalizedValue.Length, out var selectionStart, out var selectionEnd))
+		if (TryGetTextSelection(core, normalizedValue.Length, out var selectionStart, out var selectionEnd))
 		{
 			NativeMethods.UpdateTextBoxValue(handle, normalizedValue, selectionStart, selectionEnd);
 			return;
@@ -2532,36 +2569,36 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	private static void UpdateTextBoxValuePreservingSelection(IntPtr handle, string value)
 		=> NativeMethods.UpdateTextBoxValue(handle, value ?? string.Empty, PreserveTextSelectionSentinel, PreserveTextSelectionSentinel);
 
-	private static bool TryGetTextBoxForHandle(IntPtr handle, [NotNullWhen(true)] out TextBox? textBox)
+	private static bool TryGetTextBoxForHandle(IntPtr handle, [NotNullWhen(true)] out TextBoxCore? core)
 	{
-		textBox = null;
+		core = null;
 
 		if (handle == IntPtr.Zero)
 		{
 			return false;
 		}
 
-		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: TextBox owner })
+		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: ITextBoxHost owner })
 		{
-			textBox = owner;
+			core = owner.Core;
 			return true;
 		}
 
 		return false;
 	}
 
-	private static bool TryGetTextSelection(TextBox? textBox, int maxLength, out int selectionStart, out int selectionEnd)
+	private static bool TryGetTextSelection(TextBoxCore? core, int maxLength, out int selectionStart, out int selectionEnd)
 	{
 		selectionStart = PreserveTextSelectionSentinel;
 		selectionEnd = PreserveTextSelectionSentinel;
 
-		if (textBox is null)
+		if (core is null)
 		{
 			return false;
 		}
 
-		selectionStart = Math.Max(0, Math.Min(textBox.SelectionStart, maxLength));
-		selectionEnd = Math.Max(selectionStart, Math.Min(textBox.SelectionStart + textBox.SelectionLength, maxLength));
+		selectionStart = Math.Max(0, Math.Min(core.SelectionStart, maxLength));
+		selectionEnd = Math.Max(selectionStart, Math.Min(core.SelectionStart + core.SelectionLength, maxLength));
 		return true;
 	}
 

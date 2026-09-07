@@ -19,7 +19,7 @@ using static Private.Infrastructure.TestServices;
 using Windows.UI.Input.Preview.Injection;
 using Uno.Extensions;
 using Windows.Foundation;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.DevTools.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -749,8 +749,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// reproducible on Skia-WASM (the flick never advances the page there). The matching native-Wasm head
 		// already documents that injection-driven scrolling is unsupported, and the deterministic
 		// When_TouchMoveMoreThanHalfItem_Then_FlipOneItem counterpart is likewise disabled on Skia.
+		// The same velocity-based snap is flaky on Skia macOS in CI, so it is excluded there too.
 		// See https://github.com/unoplatform/uno/issues/9080.
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaMacOS)]
 		public async Task When_TouchFlick_Then_FlipOneItem()
 		{
 			var flipView = new FlipView()

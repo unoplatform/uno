@@ -4,7 +4,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Uno.UI;
+using Uno.Foundation.Logging;
 using DirectUI;
 using System.Linq;
 using Windows.Foundation;
@@ -15,14 +17,7 @@ using Uno.UI.Xaml.Core.Scaling;
 
 
 
-#if __ANDROID__
-using View = Android.Views.ViewGroup;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-using UIKit;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
@@ -39,9 +34,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 	[ThreadStatic]
 	private static HashSet<AutomationPeer> t_peersResolvingName;
 
-#if !__ANDROID__ && !__APPLE_UIKIT__
 	private const int MaxAutomationTreeDepth = 512;
-#endif
 
 	public UIElement Owner { get; }
 
@@ -149,7 +142,6 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 		//UNO TODO: Properly implement GetAutomationPeerChildren on FrameworkElementAutomationPeer
 		//Temporarily disabled as android, ios, macos doesn't use UIElement
 
-#if !__ANDROID__ && !__APPLE_UIKIT__
 		if (depth > MaxAutomationTreeDepth)
 		{
 			return;
@@ -178,7 +170,6 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 				}
 			}
 		}
-#endif
 	}
 
 	internal IList<AutomationPeer> GetAutomationPeersForChildrenOfElement(UIElement element)
@@ -376,7 +367,33 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 		=> AutomationProperties.GetIsPeripheral(Owner);
 
 	protected override int GetCultureCore()
-		=> AutomationProperties.GetCulture(Owner);
+	{
+		// CFrameworkElementAutomationPeer::GetCultureHelper uses Language only when Culture is unset.
+		if (Owner.GetCurrentHighestValuePrecedence(AutomationProperties.CultureProperty) != DependencyPropertyValuePrecedences.DefaultValue)
+		{
+			return AutomationProperties.GetCulture(Owner);
+		}
+
+		if (Owner is not FrameworkElement { Language: { Length: > 0 } language })
+		{
+			return 0;
+		}
+
+		try
+		{
+			return CultureInfo.GetCultureInfo(language).LCID;
+		}
+		catch (CultureNotFoundException error)
+		{
+			// WinUI's LocaleNameToLCID lookup returns zero for an unknown language.
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Unable to resolve the automation culture for '{language}': {error.Message}");
+			}
+
+			return 0;
+		}
+	}
 
 	protected override bool IsDataValidForFormCore()
 		=> AutomationProperties.GetIsDataValidForForm(Owner);
@@ -612,7 +629,7 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 					// - We want to disable accessibility focus for elements whose names are aggregated into the name of their parent.
 					// - We want to prevent these elements from enumerating their own children in GetSimpleAccessibilityName(),
 					//	 which might be called as a result of calling automationPeer.GetName() below.
-					AutomationProperties.SetAccessibilityView(child, AccessibilityView.Raw);
+					AutomationProperties.SetAccessibilityView((DependencyObject)child, AccessibilityView.Raw);
 					return child;
 				})
 				.Select(FromIFrameworkElement)

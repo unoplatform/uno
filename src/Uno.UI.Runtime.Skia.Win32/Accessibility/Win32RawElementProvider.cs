@@ -310,7 +310,7 @@ internal class Win32RawElementProvider :
 				Win32UIAutomationInterop.UIA_ClassNamePropertyId => peer?.GetClassName(),
 				Win32UIAutomationInterop.UIA_ControlTypePropertyId => GetControlTypeId(peer),
 				Win32UIAutomationInterop.UIA_LocalizedControlTypePropertyId => peer?.GetLocalizedControlType(),
-				Win32UIAutomationInterop.UIA_FrameworkIdPropertyId => "Uno",
+				Win32UIAutomationInterop.UIA_FrameworkIdPropertyId => "XAML",
 				Win32UIAutomationInterop.UIA_ProviderDescriptionPropertyId => "Uno Platform UIA Provider",
 				Win32UIAutomationInterop.UIA_ProcessIdPropertyId => GetProcessId(),
 				Win32UIAutomationInterop.UIA_NativeWindowHandlePropertyId => _isRoot ? (int)_hwnd : 0,
@@ -366,8 +366,8 @@ internal class Win32RawElementProvider :
 				Win32UIAutomationInterop.UIA_AriaPropertiesPropertyId => null,
 
 				// Culture / peripheral / other
-				// Culture is a locale LCID; WinUI serves VT_EMPTY (null) when unset (0).
-				Win32UIAutomationInterop.UIA_CulturePropertyId => GetPositiveOrNull(peer?.GetCulture() ?? 0),
+				// UIAWrapper::ConvertToVariant returns VT_I4, including an explicit zero LCID.
+				Win32UIAutomationInterop.UIA_CulturePropertyId => peer?.GetCulture() ?? 0,
 				Win32UIAutomationInterop.UIA_IsPeripheralPropertyId => peer?.IsPeripheral() ?? false,
 
 				// Annotations — one GetAnnotations() serves both the type ids and the element providers

@@ -64,7 +64,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 								Name = "topLevel",
 								Tag = @"42",
 								ContentTemplate = 								global::MyProject.GlobalStaticResources.__PreserveProperties(
-									new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_GriΞ0_ConCon_ConTemΞ0_DatTem)
+									global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(this, Build_PagΞ0_GriΞ0_ConCon_ConTemΞ0_DatTem)
 								)
 								,
 								// Source Binding_ElementName_In_Template.xaml (Line 11:4)
@@ -111,7 +111,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 
 		}
 		partial void OnInitializeCompleted();
-		private static _View Build_PagΞ0_GriΞ0_ConCon_ConTemΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private static _View Build_PagΞ0_GriΞ0_ConCon_ConTemΞ0_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 		{
 			
 			return new __Binding_ElementName_In_Template_d9353a41d6883de0ddf51bf7c4e43f1e.__PagΞ0_GriΞ0_ConCon_ConTemΞ0_DatTem().Build(__owner, __settings);
@@ -140,7 +140,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
-				public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+				public _View Build(object __ResourceOwner_1, global::Uno.UI.TemplateMaterializationSettings __settings)
 				{
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;
@@ -154,6 +154,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 						}
 						.Binding_ElementName_In_Template_d9353a41d6883de0ddf51bf7c4e43f1e_XamlApply((Binding_ElementName_In_Template_d9353a41d6883de0ddf51bf7c4e43f1eXamlApplyExtensions.XamlApplyHandler3)(__p1 => 
 						{
+						global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 						/* _isTopLevelDictionary:False */
 						__that._component_0 = __p1;
 						__nameScope.RegisterName("innerTextBlock", __p1);

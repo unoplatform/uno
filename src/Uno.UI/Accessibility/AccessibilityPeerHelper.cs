@@ -752,8 +752,7 @@ internal static class AccessibilityPeerHelper
 
 	internal static bool CanCopyText(AutomationPeer peer)
 		=> !ResolveProviderPeer(peer).IsPassword() &&
-			GetTextBox(peer) is { IsEnabled: true, FocusState: not FocusState.Unfocused, SelectionLength: > 0 } textBox &&
-			textBox is not PasswordBox;
+			GetTextBox(peer) is { IsEnabled: true, FocusState: not FocusState.Unfocused, SelectionLength: > 0 };
 
 	internal static bool CanCutText(AutomationPeer peer)
 		=> CanCopyText(peer) &&
@@ -904,7 +903,7 @@ internal static class AccessibilityPeerHelper
 #if __SKIA__
 			if (providerPeer is FrameworkElementAutomationPeer { Owner: TextBox textBox })
 			{
-				return textBox.SelectInternal(selectionStart, selectionEnd - selectionStart) &&
+				return ((ITextBoxHost)textBox).Core.SelectInternal(selectionStart, selectionEnd - selectionStart) &&
 					TryGetTextSelection(providerPeer, out actualStart, out actualEnd) &&
 					actualStart == selectionStart &&
 					actualEnd == selectionEnd;
@@ -1034,6 +1033,12 @@ internal static class AccessibilityPeerHelper
 			&& provider.GetSupportedViews().Contains(viewId)
 			&& TryPerform(() => provider.SetCurrentView(viewId));
 	}
+
+	internal static bool TryChangeView(AutomationPeer peer, double viewId)
+		=> double.IsFinite(viewId) &&
+			viewId is >= int.MinValue and <= int.MaxValue &&
+			viewId == Math.Truncate(viewId) &&
+			TryChangeView(peer, (int)viewId);
 
 	internal static bool TrySetDockPosition(AutomationPeer peer, DockPosition dockPosition)
 		=> TryPerformProvider<IDockProvider>(

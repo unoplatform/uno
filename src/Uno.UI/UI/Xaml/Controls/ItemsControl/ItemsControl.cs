@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -17,17 +17,10 @@ using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using System.Diagnostics.CodeAnalysis;
 
-#if __ANDROID__
-using _View = Android.Views.View;
-using _ViewGroup = Android.Views.ViewGroup;
-#elif __APPLE_UIKIT__
-using UIKit;
-using _View = UIKit.UIView;
-using _ViewGroup = UIKit.UIView;
-#else
 using _View = Microsoft.UI.Xaml.UIElement;
 using _ViewGroup = Microsoft.UI.Xaml.UIElement;
-#endif
+using System.Text;
+using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -57,7 +50,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// FrameworkTemplate pooling to function properly when an ItemTemplateSelector has been
 		/// specified.
 		/// </summary>
-		private readonly static DataTemplate InnerContentPresenterTemplate = new DataTemplate(() => new ContentPresenter());
+		private readonly static DataTemplate InnerContentPresenterTemplate = new DataTemplate(null, (_, _) => new ContentPresenter());
 
 		public static ItemsControl GetItemsOwner(DependencyObject element)
 		{
@@ -106,7 +99,7 @@ namespace Microsoft.UI.Xaml.Controls
 			get { return _internalItemsPanelRoot; }
 			set
 			{
-				if (_internalItemsPanelRoot is IDependencyObjectStoreProvider provider)
+				if (_internalItemsPanelRoot is DependencyObject provider)
 				{
 					provider.SetParent(null);
 				}
@@ -121,7 +114,7 @@ namespace Microsoft.UI.Xaml.Controls
 			get { return _itemsPanelRoot; }
 			set
 			{
-				if (_itemsPanelRoot is IDependencyObjectStoreProvider provider)
+				if (_itemsPanelRoot is DependencyObject provider)
 				{
 					provider.SetParent(null);
 				}
@@ -1030,11 +1023,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (ItemsPanelRoot == null
 				|| !ShouldItemsControlManageChildren
-#if __ANDROID__
-				// workaround for INCC callback on disposed object
-				// see: Given_xBind.When_XBind_TargetDisposed_Test()
-				|| (Handle == nint.Zero || ItemsPanelRoot.Handle == nint.Zero)
-#endif
 				)
 			{
 				return;
@@ -1591,9 +1579,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal IEnumerable<DependencyObject> MaterializedContainers =>
 			GetItemsPanelChildren()
-#if !IS_UNIT_TESTS // TODO
 				.Prepend(_containerBeingPrepared) // we put it first, because it's the most likely to be requested
-#endif
 				.Trim()
 				.Distinct();
 
@@ -1766,5 +1752,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// TODO Uno: Implement from WinUI
 		private protected bool IsItemsHostInvalid => false;
+
+		partial void RequestLayoutPartial()
+		{
+			InvalidateMeasure();
+		}
 	}
 }

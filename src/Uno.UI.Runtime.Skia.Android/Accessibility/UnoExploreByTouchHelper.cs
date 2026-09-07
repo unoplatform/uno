@@ -1927,9 +1927,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		return request.Action switch
 		{
 			AccessibilityNativeAction.ChangeView
-				when double.IsFinite(request.Number) &&
-					request.Number == System.Math.Truncate(request.Number)
-				=> AccessibilityPeerHelper.TryChangeView(peer, (int)request.Number),
+				=> AccessibilityPeerHelper.TryChangeView(peer, request.Number),
 			AccessibilityNativeAction.ZoomIn
 				=> AccessibilityPeerHelper.TryZoomByUnit(peer, ZoomUnit.SmallIncrement),
 			AccessibilityNativeAction.ZoomOut
@@ -1960,8 +1958,17 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		};
 	}
 
+#if NET11_0_OR_GREATER
+	protected override void OnPopulateNodeForVirtualView(int virtualViewId, AccessibilityNodeInfoCompat? node)
+#else   // NET11_0_OR_GREATER
 	protected override void OnPopulateNodeForVirtualView(int virtualViewId, AccessibilityNodeInfoCompat node)
+#endif  // NET11_0_OR_GREATER
 	{
+		if (node is null)
+		{
+			return;
+		}
+
 		if (!TryGetVisiblePeer(virtualViewId, out var peer))
 		{
 			node.ContentDescription = "";
@@ -2580,7 +2587,11 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		if (effectivePeer.GetLabeledBy() is { } labeledByPeer &&
 			TryGetVirtualId(labeledByPeer, out var labeledById))
 		{
+#if NET11_0_OR_GREATER
+			node.AddLabeledBy(_host, labeledById);
+#else
 			node.SetLabeledBy(_host, labeledById);
+#endif
 		}
 
 		if (effectivePeer.GetDescribedBy() is { } describedByPeers)

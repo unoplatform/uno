@@ -22,13 +22,7 @@ internal class FocusManagerCoreWindowAdapter : FocusAdapter
 #if HAS_UNO // Uno specific: WinUI implementation just returns false.
 	internal override bool ShouldDepartFocus(FocusNavigationDirection direction)
 	{
-#if __WASM__ // In case of WASM we want to depart focus when tabbing out of the root visual.
-		bool isTabbingDirection = direction == FocusNavigationDirection.Next || direction == FocusNavigationDirection.Previous;
-
-		return isTabbingDirection;
-#else
 		return base.ShouldDepartFocus(direction);
-#endif
 	}
 #endif
 }

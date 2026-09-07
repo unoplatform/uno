@@ -12,7 +12,7 @@ namespace Microsoft.UI.Xaml.Controls;
 /// <summary>
 /// Represents an object that enables the hosting of web content.
 /// </summary>
-#if IS_UNIT_TESTS || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 [Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 #endif
 public partial class WebView2 : Control, IWebView
