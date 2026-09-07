@@ -7,6 +7,30 @@
 findings below remain the actionable backlog; the items marked ✅ under *Implementation status*
 are done, runtime-tested, and validated against the live UIA tree.
 
+### WinUI source and runtime reconciliation (2026-09-07)
+
+**Code review assessment:** the app-facing
+[`AutomationPeer::RaiseTextEditTextChangedEventImpl`](https://github.com/microsoft/microsoft-ui-xaml/blob/439bda90582f7892ca595a193f55dbfc6ae2010c/dxaml/xcp/dxaml/lib/AutomationPeer_Partial.cpp#L916-L944)
+forwards `None`, but the same call proceeds through `CAutomationPeer` to
+[`CUIAWindow::UIARaiseTextEditTextChangedEvent`](https://github.com/microsoft/microsoft-ui-xaml/blob/439bda90582f7892ca595a193f55dbfc6ae2010c/dxaml/xcp/win/shared/UIAWindow.cpp#L1841-L1899),
+which suppresses `None` before calling UI Automation. These are successive layers, not competing
+implementations: preserve peer-to-listener routing while filtering `None` in the Win32 bridge.
+
+**Root-cause fixes:** reject null text-edit data at the public API (`E_INVALIDARG`); materialize
+the calling provider for explicit structure/notification events instead of dropping or retargeting
+them; retain empty notification strings; and resolve an unset automation culture from `Language`,
+while preserving an explicitly supplied zero as a supported `VT_I4` value.
+
+**Compile validation:** the Skia Win32 backend and desktop SamplesApp built successfully.
+**Runtime validation:** 75 targeted desktop runtime cases passed. The same probe cases ran in
+native WinUI (Windows App SDK 2.3.1) and the source-built Skia Win32 app, with an out-of-process
+`IUIAutomation6` observer registering all four text-edit change types separately. Their 18 event
+and culture-property records matched: no `None` event, preserved text-edit payloads and `EventsSource`,
+notifications on their own source (including empty/null display strings), all six explicit structure
+event types/senders, and LCIDs `1036`, `12`, `0`, and `1031`. Public API outcomes/HRESULTs also matched;
+WinUI's managed projection surfaces disabled actions as `COMException`, whereas Uno exposes its
+existing `ElementNotEnabledException`, both with `UIA_E_ELEMENTNOTENABLED`.
+
 ### Implementation status (2026-07-09)
 
 Phase 1 (shared foundations) — landed with runtime tests (Skia Desktop) + live UIA-tree
@@ -44,8 +68,9 @@ Phase 3 (Win32):
   (`3f6a6171a1`, `99b4addb0a`). Verified live with FlaUI (2 adds → 2 `ChildAdded` on the added
   elements; 1 remove → `ChildRemoved` on the container) via `AutomationProperties_StructureAndProps`.
 - ✅ **W32-06 (IsPeripheral + Culture + ClickablePoint)** — `FrameworkElementAutomationPeer.GetCultureCore`
-  reads `AutomationProperties.Culture`; Win32 `GetPropertyValue` serves `IsPeripheral`, `Culture`
-  (VT_EMPTY when unset), and `ClickablePoint` instead of null. The peers already compute the point
+  reads an explicit `AutomationProperties.Culture`, otherwise the `Language` LCID; Win32
+  `GetPropertyValue` serves `IsPeripheral`, `Culture` (`VT_I4`, including zero), and `ClickablePoint`
+  instead of null. The peers already compute the point
   (Slider/ScrollBar return NaN to *suppress* it, per WinUI `SliderAutomationPeer::GetClickablePointCore`);
   the Win32 backend was simply dropping it. Verified live with FlaUI (`IsPeripheral=True`,
   `Culture=en-US`; Slider ClickablePoint now served as an off-screen `(INT_MIN, INT_MIN)` from NaN so a
@@ -65,7 +90,9 @@ Phase 3 (Win32):
   `[NotImplemented]` stub) now routes change-type + data through a new
   `IAutomationPeerListener.NotifyTextEditTextChangedEvent`; Win32 raises `UiaRaiseTextEditTextChangedEvent`.
   In WinUI no built-in control auto-raises it — it's the app-facing API for AutoCorrect/Composition.
-  Validated: `Given_TextEditTextChangedEvent` (routing) + live FlaUI trigger (P/Invoke → `hr=S_OK`).
+  The public peer forwards `None`, but the downstream `CUIAWindow` bridge suppresses it; see the
+  source/runtime reconciliation above. Coverage: `Given_TextEditTextChangedEvent` (routing and null
+  validation), `Given_Win32UiaBridge` (change-type mapping), and a native WinUI/UIA client comparison.
 - ✅ **Bugfix** — corrected two miskeyed UIA event IDs (`MenuClosed` 20004→20007, `AutomationPropertyChanged`
   20006→20004) found while adding the event IDs above; `MenuClosed` was firing the wrong UIA event.
 
@@ -443,7 +470,7 @@ omits or nulls properties WinUI serves (`UIAWrapper.cpp:485-795`):
 |----------|--------------------------|
 | `ClickablePoint` | peer `GetClickablePoint()`, client→screen, `VT_EMPTY` when `(0,0)` (`UIAWrapper.cpp:551-574`). FlaUI/Appium `GetClickablePoint` relies on it — currently absent entirely. |
 | `FlowsTo` / `FlowsFrom` | peer-array variants (`UIAWrapper.cpp:682-687`); FEAP implements both and WASM already consumes them — pure wiring. |
-| `Culture` | served from peer (`:756`); also fix shared `GetCultureHelper` hardcoded `return 0` (`AutomationPeer.h.mux.cs:60-69`) to read the Culture DP. |
+| `Culture` | served from the peer as `VT_I4` (`:756`), including zero; use an explicit Culture DP value, otherwise resolve the `Language` LCID (`CFrameworkElementAutomationPeer::GetCultureHelper`). |
 | `AnnotationTypes` / `AnnotationObjects` | one `GetAnnotations` call serves both ids (`:707-712`); wire FEAP's orphaned `GetAnnotationsCoreImpl` to `GetAnnotationsCore` and raise the **dual** property-changed WinUI emits on annotation change (`UIAWindow.cpp:1753-1783`). |
 | `IsPeripheral` | served (`:736`); Uno stubs null. |
 

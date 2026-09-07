@@ -668,6 +668,11 @@ partial class AutomationPeer
 #if __SKIA__
 	public void RaiseTextEditTextChangedEvent(AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)
 	{
+		if (changedData is null)
+		{
+			throw new ArgumentException("The changed data must not be null.", nameof(changedData));
+		}
+
 		AutomationPeerListener?.NotifyTextEditTextChangedEvent(this, automationTextEditChangeType, changedData);
 	}
 #else

@@ -1040,9 +1040,9 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		// Structure events are meaningful only for providers already exposed to UIA. Creating one
-		// here would register a COM wrapper from an event path and keep the element alive.
-		var provider = FindExistingProviderForPeer(peer, resolveEventsSource: true);
+		// WinUI materializes the calling peer's provider even if the client has not navigated to it.
+		var provider = FindExistingProviderForPeer(peer, resolveEventsSource: true)
+			?? GetProviderForPeer(peer, resolveEventsSource: true);
 		if (provider is null)
 		{
 			return;
@@ -1053,9 +1053,18 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		int[]? runtimeId = null;
 		if (structureChangeType == AutomationStructureChangeType.ChildRemoved)
 		{
-			runtimeId = child is not null
-				? FindExistingProviderForPeer(child, resolveEventsSource: true)?.GetRuntimeId()
+			var childProvider = child is not null
+				? FindExistingProviderForPeer(child, resolveEventsSource: true)
 				: null;
+			if (childProvider is null
+				&& child is not null
+				&& child.TryGetProviderOwner(out var childOwner)
+				&& childOwner.XamlRoot is not null)
+			{
+				childProvider = GetProviderForPeer(child, resolveEventsSource: true);
+			}
+
+			runtimeId = childProvider?.GetRuntimeId();
 			if (runtimeId is null)
 			{
 				structureChangeType = AutomationStructureChangeType.ChildrenInvalidated;
@@ -1283,17 +1292,17 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	public override void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
 	{
 		if (!IsAccessibilityEnabled
-			|| !AreUiaClientsListening()
-			|| string.IsNullOrEmpty(displayString))
+			|| !AreUiaClientsListening())
 		{
 			return;
 		}
 
-		// Use specific provider if available, otherwise fall back to root
-		IRawElementProviderSimple target = _rootProvider;
-		if (FindExistingProviderForPeer(peer, resolveEventsSource: true) is { } elementProvider)
+		// CUIAWindow raises on the calling peer (or EventsSource), never on the window as a fallback.
+		var target = FindExistingProviderForPeer(peer, resolveEventsSource: true)
+			?? GetProviderForPeer(peer, resolveEventsSource: true);
+		if (target is null)
 		{
-			target = elementProvider;
+			return;
 		}
 
 		try
@@ -1319,22 +1328,9 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 	{
 		if (!IsAccessibilityEnabled
 			|| !AreUiaClientsListening()
-			|| changedData is null)
+			|| !Win32UIAutomationInterop.IsTextEditChangeTypeSupported(changeType))
 		{
-			// WinUI rejects a null changedData (E_POINTER) without raising; mirror that (no crash).
 			return;
-		}
-
-		// AutomationPeer_Partial.cpp forwards every defined AutomationTextEditChangeType value.
-		switch (changeType)
-		{
-			case Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType.None:
-			case Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType.AutoCorrect:
-			case Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType.Composition:
-			case Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType.CompositionFinalized:
-				break;
-			default:
-				return;
 		}
 
 		// Materialize a provider if the client has not navigated to the element yet, mirroring the

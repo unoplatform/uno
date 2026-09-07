@@ -8,9 +8,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Helpers;
 
-#if __SKIA__
 using Microsoft.UI.Xaml.Automation;
-#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 {
@@ -23,6 +21,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 	[TestClass]
 	public class Given_TextEditTextChangedEvent
 	{
+		[TestMethod]
+		[RunsOnUIThread]
+		[DataRow(AutomationTextEditChangeType.None)]
+		[DataRow(AutomationTextEditChangeType.AutoCorrect)]
+		[DataRow(AutomationTextEditChangeType.Composition)]
+		[DataRow(AutomationTextEditChangeType.CompositionFinalized)]
+		public void When_ChangedData_Is_Null_Then_Throws(AutomationTextEditChangeType changeType)
+		{
+			var peer = new ButtonAutomationPeer(new Button());
+
+			var error = Assert.ThrowsExactly<ArgumentException>(
+				() => peer.RaiseTextEditTextChangedEvent(changeType, null!));
+
+			Assert.AreEqual(unchecked((int)0x80070057), error.HResult);
+		}
+
 #if __SKIA__
 		[TestMethod]
 		[RunsOnUIThread]

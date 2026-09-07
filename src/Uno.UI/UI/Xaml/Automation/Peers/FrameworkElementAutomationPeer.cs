@@ -4,7 +4,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Uno.UI;
+using Uno.Foundation.Logging;
 using DirectUI;
 using System.Linq;
 using Windows.Foundation;
@@ -365,7 +367,33 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 		=> AutomationProperties.GetIsPeripheral(Owner);
 
 	protected override int GetCultureCore()
-		=> AutomationProperties.GetCulture(Owner);
+	{
+		// CFrameworkElementAutomationPeer::GetCultureHelper uses Language only when Culture is unset.
+		if (Owner.GetCurrentHighestValuePrecedence(AutomationProperties.CultureProperty) != DependencyPropertyValuePrecedences.DefaultValue)
+		{
+			return AutomationProperties.GetCulture(Owner);
+		}
+
+		if (Owner is not FrameworkElement { Language: { Length: > 0 } language })
+		{
+			return 0;
+		}
+
+		try
+		{
+			return CultureInfo.GetCultureInfo(language).LCID;
+		}
+		catch (CultureNotFoundException error)
+		{
+			// WinUI's LocaleNameToLCID lookup returns zero for an unknown language.
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Unable to resolve the automation culture for '{language}': {error.Message}");
+			}
+
+			return 0;
+		}
+	}
 
 	protected override bool IsDataValidForFormCore()
 		=> AutomationProperties.GetIsDataValidForForm(Owner);
