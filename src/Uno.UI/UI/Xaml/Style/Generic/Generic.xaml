@@ -14913,11 +14913,13 @@
                 Visibility="Collapsed"
                 Source="{TemplateBinding PosterSource}"
                 Stretch="{TemplateBinding Stretch}" />
+                        <!-- Unlike WinUI, Uno implements full-window playback, so IsFullWindow stays bound:
+                             MediaPlayerPresenter.GetLayoutOwner reads it to pick the layout owner. -->
                         <MediaPlayerPresenter x:Name="MediaPlayerPresenter"
+                IsFullWindow="{TemplateBinding IsFullWindow}"
                 Stretch="{TemplateBinding Stretch}"
-                MediaPlayer="{TemplateBinding MediaPlayer}" />
-                <!-- TODO 39683362: Return to MediaPlayerPresenter properties once Full Screen is supported -->
-                <!-- IsFullWindow="{TemplateBinding IsFullWindow}" -->
+                MediaPlayer="{TemplateBinding MediaPlayer}"
+                Visibility="Collapsed" />
                         <ContentPresenter     x:Name="TransportControlsPresenter"
                 Visibility="{TemplateBinding AreTransportControlsEnabled}" />
                         <Grid x:Name="TimedTextSourcePresenter" />
