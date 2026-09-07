@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Foundation;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.WebAssembly.Browser;
 
@@ -32,6 +33,8 @@ internal static partial class RenderWorker
 	private static GRBackendRenderTarget? _backendRenderTarget;
 	private static SKSurface? _surface;
 	private static SKCanvas? _canvas;
+
+	private static readonly RetainedLayer _retainedLayer = new();
 
 	private const string ModuleName = "uno-render-worker";
 
@@ -117,11 +120,16 @@ internal static partial class RenderWorker
 
 				_surface = SKSurface.Create(_grContext, _backendRenderTarget, GRSurfaceOrigin.BottomLeft, SKColorType.Rgba8888);
 
-				return _canvas = _surface!.Canvas;
+				return _canvas = _retainedLayer.EnsureSurface(_grContext, width, height, SKColors.Transparent).Canvas;
 			});
 
 			if (_canvas is not null)
 			{
+				if (_surface is { } surface)
+				{
+					_retainedLayer.Present(surface);
+				}
+
 				_grContext.Flush(submit: true);
 			}
 
