@@ -1,5 +1,4 @@
-﻿#if __SKIA__ || __WASM__ || WINAPPSDK
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -88,4 +87,3 @@ public class Given_Background
 		Assert.AreEqual(brush, grid.GetValue(Panel.BackgroundProperty));
 	}
 }
-#endif

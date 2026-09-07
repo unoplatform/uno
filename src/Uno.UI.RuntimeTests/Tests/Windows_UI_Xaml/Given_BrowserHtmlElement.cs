@@ -1,4 +1,4 @@
-﻿#if (__SKIA__ || __WASM__) && HAS_UNO
+﻿#if __SKIA__ && HAS_UNO
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,30 +19,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 [TestClass]
 public class Given_BrowserHtmlElement
 {
-#if __WASM__
-	[TestMethod]
-	public async Task Given_HasParent()
-	{
-		var owner = new ContentControl() { Width = 100, Height = 100 };
-		var root = new Border()
-		{
-			Child = owner,
-			Width = 100,
-			Height = 100,
-			Background = new SolidColorBrush(Colors.Red),
-			Padding = new Microsoft.UI.Xaml.Thickness(10)
-		};
-		var SUT = BrowserHtmlElement.CreateHtmlElement("div");
-		owner.Content = SUT;
-
-		WindowHelper.WindowContent = root;
-
-		await WindowHelper.WaitForLoaded(owner);
-
-		Assert.AreEqual(owner.TemplatedRoot.GetHtmlId(), SUT.ExecuteJavascript($"return element.parentElement.id"));
-	}
-#endif
-
 	[TestMethod]
 	public async Task Given_SetAttribute()
 	{

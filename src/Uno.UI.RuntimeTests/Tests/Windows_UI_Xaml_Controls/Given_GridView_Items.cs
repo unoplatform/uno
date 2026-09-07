@@ -15,14 +15,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 	[TestClass]
 	[RunsOnUIThread]
-#if !__APPLE_UIKIT__ && !__ANDROID__
 	[Ignore]
-#endif
 	public class Given_GridView_Items
 	{
-#if !__ANDROID__
 		[Ignore]
-#endif
 		[TestMethod]
 		public async Task When_GridViewItems_WillRespect_ItemsWidth()
 		{
@@ -54,9 +50,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(30, LayoutInformation.GetLayoutSlot(gvi2).Width);
 		}
 
-#if !__ANDROID__
 		[Ignore]
-#endif
 		[TestMethod]
 		public async Task When_GridViewItems_ItemsWidthChanges_Refresh_Layout()
 		{
@@ -89,9 +83,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(gridView.ActualWidth / 2, LayoutInformation.GetLayoutSlot(gvi2).Width, 1);
 		}
 
-#if !__APPLE_UIKIT__
 		[Ignore]
-#endif
 		[TestMethod]
 		public async Task When_GridViewItems_LayoutSlots()
 		{

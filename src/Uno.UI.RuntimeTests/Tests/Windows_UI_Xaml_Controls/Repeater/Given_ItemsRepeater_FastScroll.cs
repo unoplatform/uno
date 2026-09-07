@@ -46,9 +46,6 @@ public class Given_ItemsRepeater_FastScroll
 		""";
 
 	[TestMethod]
-#if __ANDROID__ || __IOS__ || __WASM__
-	[Ignore("Fails due to async native scrolling.")]
-#endif
 	public async Task When_FastScrollWithHighVarianceItems_Then_NoOverlap()
 	{
 		var sut = CreateHighVarianceSut(itemCount: 200, viewport: new Size(300, 600));
@@ -67,9 +64,6 @@ public class Given_ItemsRepeater_FastScroll
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __ANDROID__ || __IOS__ || __WASM__
-	[Ignore("Fails due to async native scrolling.")]
-#endif
 	public async Task When_ScrollIncrementallyToBottomAndBack_Then_FirstItemFlushAtZero()
 	{
 		// Regression for a chat-style scenario: after navigating up/down through a list of items
@@ -109,9 +103,6 @@ public class Given_ItemsRepeater_FastScroll
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __IOS__ || __WASM__
-	[Ignore("Fails due to async native scrolling.")]
-#endif
 	public async Task When_TallItemReRealizedAfterScrollCycle_Then_PositionIsStable()
 	{
 		// Regression for the ItemsRepeater rendering corruption observed during fast scrolling
@@ -149,9 +140,6 @@ public class Given_ItemsRepeater_FastScroll
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __ANDROID__ || __IOS__ || __WASM__
-	[Ignore("Fails due to async native scrolling.")]
-#endif
 	public async Task When_RealizedItemGrows_Then_LayoutRemainsConsistent()
 	{
 		const double OriginalHeight = 60;
@@ -195,9 +183,6 @@ public class Given_ItemsRepeater_FastScroll
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __IOS__ || __WASM__
-	[Ignore("Fails due to async native scrolling.")]
-#endif
 	public async Task When_FastScrollHorizontal_WithHighVarianceItems_Then_NoOverlap()
 	{
 		// Horizontal orientation counterpart of When_FastScrollWithHighVarianceItems_Then_NoOverlap.
@@ -219,9 +204,6 @@ public class Given_ItemsRepeater_FastScroll
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __IOS__ || __WASM__
-	[Ignore("Fails due to async native scrolling.")]
-#endif
 	public async Task When_ScrolledThroughList_Then_ExtentAccommodatesRealContent()
 	{
 		// The pre-fix symptom: the clamp caused StackLayout to report an ExtentHeight smaller than
@@ -250,9 +232,6 @@ public class Given_ItemsRepeater_FastScroll
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __ANDROID__ || __IOS__ || __WASM__
-	[Ignore("Fails due to async native scrolling.")]
-#endif
 	public async Task When_BottomClickedFromInitialState_Then_LastItemFlushAtViewportBottom()
 	{
 		// Reproduces issue #23041 / studio.live#1333: clicking "Bottom" once on a freshly-loaded
@@ -309,8 +288,6 @@ public class Given_ItemsRepeater_FastScroll
 	[TestMethod]
 #if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
-#elif __ANDROID__ || __IOS__ || __WASM__
-	[Ignore("Fails due to async native scrolling.")]
 #endif
 	public async Task When_WheelScrollDownThroughVarianceList_Then_OffsetMonotonicallyAdvances()
 	{
@@ -385,8 +362,6 @@ public class Given_ItemsRepeater_FastScroll
 	[TestMethod]
 #if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
-#elif __ANDROID__ || __IOS__ || __WASM__
-	[Ignore("Fails due to async native scrolling.")]
 #endif
 	public async Task When_SmallWheelFlicksOnMultiTemplateContent_Then_EachAdvancesOffset()
 	{
@@ -429,8 +404,6 @@ public class Given_ItemsRepeater_FastScroll
 	[TestMethod]
 #if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
-#elif __ANDROID__ || __IOS__ || __WASM__
-	[Ignore("Fails due to async native scrolling.")]
 #endif
 	public async Task When_SlowWheelOnMultiTemplate_Then_ItemsDoNotJumpInIRLocalSpace()
 	{
@@ -501,9 +474,6 @@ public class Given_ItemsRepeater_FastScroll
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __ANDROID__ || __IOS__ || __WASM__
-	[Ignore("Fails due to async native scrolling.")]
-#endif
 	public async Task When_ScrollBarThumbDragged_Then_OffsetTracksRequestMonotonically()
 	{
 		// Reproduces the "scrollbar drag becomes unresponsive" symptom reported on the studio.live
@@ -538,9 +508,6 @@ public class Given_ItemsRepeater_FastScroll
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __ANDROID__ || __IOS__ || __WASM__
-	[Ignore("Fails due to async native scrolling.")]
-#endif
 	public async Task When_ProgrammaticScrollArmsIntent_Then_ThumbDragHolds()
 	{
 #if HAS_UNO

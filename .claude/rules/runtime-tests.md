@@ -1,5 +1,5 @@
 ---
-description: Conventions for writing Uno runtime tests (real visual tree, runs on Skia/WASM/native/WinUI). Auto-loaded in Uno.UI.RuntimeTests. Build/run via the /runtime-tests skill.
+description: Conventions for writing Uno runtime tests (real visual tree, runs on Skia and on native WinUI). Auto-loaded in Uno.UI.RuntimeTests. Build/run via the /runtime-tests skill.
 paths:
   - "src/Uno.UI.RuntimeTests/**/*.cs"
 ---
@@ -14,7 +14,7 @@ Build & run with the **`/runtime-tests`** skill. WinUI parity: `/winui-runtime-t
 - **`WaitForLoaded` requires the target to settle to a non-zero `ActualWidth`/`ActualHeight`.** Its default is-loaded check polls for non-zero size (and also fails on an empty templated `Control` or an unpopulated `ListView`), so it **times out on a `Collapsed`, empty, or zero-size element** — and `UITestHelper.Load` inherits this since it calls `WaitForLoaded`. For those cases pass a custom predicate, e.g. `await UITestHelper.Load(el, x => x.IsLoaded)` or `x => x.GetTemplateRoot() != null`.
 - **Always reset shared state in `finally`**: `WindowHelper.WindowContent = null`, `popup.IsOpen = false`, or `VisualTreeHelper.CloseAllPopups(WindowHelper.XamlRoot)`. `[TestCleanup]` may be skipped on exceptions — use try-finally for anything critical.
 - **Skip per platform with attributes, not `#if` on the method.** Wrapping `[TestMethod]` in `#if` compiles but breaks test discovery. Use:
-  - `[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]` (Exclude = "skip on these"; Include = "only these"). Flags: `SkiaWin32/X11/Wpf/MacOS/Android/IOS/Wasm`, `NativeWinUI/Wasm/Android/IOS`.
+  - `[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]` (Exclude = "skip on these"; Include = "only these"). Flags: `SkiaWin32/X11/MacOS/Islands/FrameBuffer/Wasm/Android/IOS/TvOS` plus the `SkiaDesktop`/`SkiaMobile`/`SkiaUIKit`/`Skia` groups, and `NativeWinUI` for the WinAppSDK head. There are no other native platforms — Uno 7.0 removed native Android/iOS/WASM rendering.
   - `[Ignore("reason")]` for a hard skip; `[GitHubWorkItem(url)]` documents an issue **without** skipping.
   - `#if` is fine *inside* a method body (e.g. type aliasing).
 - **Link issue-covering tests to their issue**: when a test reproduces or guards a specific GitHub issue, annotate it (method- or class-level) with `[GitHubWorkItem("https://github.com/unoplatform/uno/issues/<n>")]`. It's traceability metadata only — it does **not** skip the test (unlike `[Ignore]`).

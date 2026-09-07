@@ -24,9 +24,6 @@ public class Given_Control_Visibility
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)] // Times out in Skia UIKit CI https://github.com/unoplatform/uno-private/issues/806
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/16369")]
-#if !HAS_RENDER_TARGET_BITMAP
-	[Ignore("Cannot take screenshot on this platform.")]
-#endif
 	[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Regarding Assembly.GetTypes(): trimmer may remove types and/or constructors, but `typeof()` expressions should retain types we care about.")]
 	[UnconditionalSuppressMessage("Trimming", "IL2062", Justification = "Regarding Activator.CreateInstance(): trimmer may remove types and/or constructors, but that won't break the test (see `catch(MissingMethodException)`).")]
 	[UnconditionalSuppressMessage("Trimming", "IL2065", Justification = "Regarding Activator.CreateInstance(): trimmer may remove types and/or constructors, but that won't break the test (see `catch(MissingMethodException)`).")]
@@ -59,21 +56,6 @@ public class Given_Control_Visibility
 #endif
 #if HAS_UNO_WINUI
 					type == typeof(ItemsView) ||
-#endif
-#if __ANDROID__ || __APPLE_UIKIT__
-					// OnApplyTemplate crashes with NRE.
-					type == typeof(AutoSuggestBox) ||
-					type == typeof(TwoPaneView) ||
-					type == typeof(NativePivotPresenter) ||
-					type == typeof(MessageDialogContentDialog) ||
-#endif
-#if __ANDROID__
-					// RefreshContainer requires a control of type NativeRefreshControl in its hierarchy.
-					type == typeof(RefreshContainer) ||
-#endif
-#if __APPLE_UIKIT__
-					// Native implementation not found. Make sure FlipView has a style which contains an ItemsPanel of type {nameof(PagedCollectionView)}.
-					type == typeof(FlipView) ||
 #endif
 					type == typeof(MediaTransportControls) || // matches winui
 					type == typeof(MenuBarItem) || // matches winui

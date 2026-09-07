@@ -341,7 +341,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 
 #if HAS_UNO // FeatureConfiguration is Uno-only
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS)] // On iOS native the flyout sizing is not handled differently, so the results are different.
 		[CombinatorialData]
 		public async Task When_ConstrainedByVisibleBounds(bool constrain)
 		{
@@ -454,7 +453,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 
 			// It's unclear what the right behavior is, but we don't care.
 			// This test just "documents" the current behavior, and can't run on WinUI.
-#if __SKIA__ || __WASM__
+#if __SKIA__
 			Assert.IsTrue(args.Handled);
 #else
 			Assert.IsFalse(args.Handled);

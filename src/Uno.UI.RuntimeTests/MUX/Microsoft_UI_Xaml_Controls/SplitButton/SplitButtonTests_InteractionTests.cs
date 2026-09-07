@@ -3,8 +3,6 @@
 
 // MUX Reference InteractionTests/SplitButtonTests.cpp, tag winui3/release/1.4.2
 
-#if !WINDOWS_UWP
-
 using System;
 using System.Linq;
 using Microsoft.UI.Xaml.Controls;
@@ -415,4 +413,3 @@ namespace Windows.UI.Xaml.Tests.MUXControls.InteractionTests
 		}
 	}
 }
-#endif

@@ -1068,9 +1068,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("UNO TODO - This test is failing on WASM")]
-#endif
 #if __SKIA__
 		[RequiresFullWindow]
 		[Ignore("This test sometimes breaks the state of the app for unknown reasons. This doesn't happen in isolation, but only when run a part of a larger test run.")]
@@ -1337,9 +1334,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-#if __ANDROID__
-		[Ignore("UNO TODO - This this is crashing the app on Android")]
-#endif
 		public async Task VerifySelfAdaptivePanel()
 		{
 			TestCleanupWrapper cleanup;
@@ -1664,7 +1658,7 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__ || __ANDROID__ || __SKIA__
+#if __SKIA__
 		[Ignore("UNO TODO - This test is failing on iOS/macOS/Android/Skia")]
 #endif
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
@@ -2623,9 +2617,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-#if __ANDROID__
-		[Ignore("UNO TODO - This test is failing on Android")]
-#endif
 		public async Task VerifyTransitionAnimation()
 		{
 			TestCleanupWrapper cleanup;
@@ -2909,9 +2900,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-#if __ANDROID__
-		[Ignore("UNO TODO - This test is failing on Android")]
-#endif
 		public async Task ValidateDCompTree()
 		{
 			//WUCRenderingScopeGuard guard(DCompRendering.WUCCompleteSynchronousCompTree, false /* resizeWindow */);
@@ -3280,9 +3268,6 @@ namespace Microsoft.UI.Xaml.Tests.Enterprise
 		}
 
 		[TestMethod]
-#if __ANDROID__
-		[Ignore("UNO TODO - This this is crashing the app on Android")]
-#endif
 		public async Task CanChangeMonthCalendarIdentifier()
 		{
 			await VerifyChangingCalendarIdentifier(CalendarViewDisplayMode.Month);

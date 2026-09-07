@@ -45,11 +45,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public class Given_TextBlock
 	{
-#if __ANDROID__
-		[Ignore("Visually looks good, but fails :(")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
-#endif
 		[TestMethod]
 		[DataRow((ushort)400, FontStyle.Italic, FontStretch.Condensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_Condensed-MediumItalic.ttf")]
 		[DataRow((ushort)400, FontStyle.Normal, FontStretch.SemiCondensed, "ms-appx:///Assets/Fonts/OpenSans/OpenSans_SemiCondensed-Regular.ttf")]
@@ -496,9 +491,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("Fails")]
-#endif
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task When_Multiline_Wrapping_Text_Ends_In_Too_Many_Spaces()
 		{
@@ -765,24 +757,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
-#if __WASM__
-		[TestMethod]
-		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19380")]
-		public async Task When_Changing_Text_Through_Inlines()
-		{
-			var SUT = new TextBlock { Text = "Initial Text" };
-			await Uno.UI.RuntimeTests.Helpers.UITestHelper.Load(SUT);
-			var width = Uno.UI.Xaml.WindowManagerInterop.GetClientViewSize(SUT.HtmlId).clientSize.Width;
-
-			SUT.Inlines.Clear();
-			SUT.Inlines.Add(new Run { Text = "Updated Text" });
-
-			await Uno.UI.RuntimeTests.Helpers.UITestHelper.WaitForIdle();
-
-			Uno.UI.Xaml.WindowManagerInterop.GetClientViewSize(SUT.HtmlId).clientSize.Width.Should().BeApproximately(width, precision: width * 0.4);
-		}
-#endif
-
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 		[DataRow("ms-appx:///Assets/Fonts/CascadiaCode-Regular.ttf")]
@@ -886,9 +860,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if !__ANDROID__
 		[Ignore("Android-only test for AndroidAssets backward compatibility")]
-#endif
 		public async Task When_FontFamily_In_AndroidAsset()
 		{
 			var SUT = new TextBlock { Text = "\xE102\xE102\xE102\xE102\xE102" };
@@ -919,9 +891,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
-#endif
 		public async Task When_SolidColorBrush_With_Opacity()
 		{
 			var SUT = new TextBlock
@@ -963,9 +932,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
-#endif
 		public async Task When_Text_Wrapped_At_LineBreak()
 		{
 			var tb1 = new TextBlock()
@@ -1002,23 +968,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(container);
 			await WindowHelper.WaitFor(() => SUT.DesiredSize != default);
 
-#if !__WASM__ // Disabled due to #14231
 			Assert.AreEqual(0, SUT.DesiredSize.Width);
-#endif
 			Assert.IsGreaterThan(0, SUT.DesiredSize.Height);
 		}
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/289")]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("Layout logic forces DesiredSize to be smaller than availableSize, which prevents us from fixing the behaviour to match wasm and skia.")]
-#endif
 		[DataRow(TextTrimming.None)]
-#if __WASM__
-		[DataRow(TextTrimming.Clip)]
-		[DataRow(TextTrimming.CharacterEllipsis)]
-		[DataRow(TextTrimming.WordEllipsis)]
-#endif
 		public async Task When_Text_Does_Not_Fit(TextTrimming trimming)
 		{
 			var lv = new ListView()
@@ -1046,7 +1002,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-#if !__APPLE_UIKIT__ // Line height is not supported on iOS
 		[TestMethod]
 		public async Task When_Empty_TextBlock_LineHeight_Override()
 		{
@@ -1061,12 +1016,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(container);
 			await WindowHelper.WaitFor(() => SUT.DesiredSize != default);
 
-#if !__WASM__ // Disabled due to #14231
 			Assert.AreEqual(0, SUT.DesiredSize.Width);
-#endif
 			Assert.AreEqual(100, SUT.DesiredSize.Height);
 		}
-#endif
 
 		[TestMethod]
 		public async Task When_Empty_TextBlocks_Stacked()
@@ -1251,7 +1203,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 		}
 
-#if HAS_RENDER_TARGET_BITMAP
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21322")]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
@@ -1285,7 +1236,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var screenshot2 = await UITestHelper.ScreenShot(duplicate);
 			await ImageAssert.AreSimilarAsync(screenshot, screenshot2);
 		}
-#endif
 
 
 #if __SKIA__
@@ -1385,8 +1335,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		public async Task When_IsTextSelectionEnabled_PointerDrag()
 		{
@@ -1433,8 +1381,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		public async Task When_IsTextSelectionEnabled_TappedMouse_Then_ClearSelection()
 		{
@@ -1671,8 +1617,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		public async Task When_IsTextSelectionEnabled_DoubleTapped()
 		{
@@ -1721,8 +1665,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		public async Task When_IsTextSelectionEnabled_Chunking_DoubleTapped()
 		{
@@ -1764,8 +1706,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		public async Task When_IsTextSelectionEnabled_Wrapping_DoubleTapped()
 		{
@@ -1816,8 +1756,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif __WASM__
-		[Ignore("Requires authorization to access to the clipboard on WASM.")]
 #endif
 		// Clipboard is currently not available on skia-WASM
 		[TestMethod]
@@ -1859,8 +1797,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif __WASM__
-		[Ignore("Requires authorization to access to the clipboard on WASM.")]
 #endif
 		// Clipboard is currently not available on skia-WASM
 		// Flaky on Skia.iOS uno-private#795
@@ -1977,8 +1913,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		// Clipboard is currently not available on skia-WASM
 		[TestMethod]
@@ -2034,11 +1968,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24126")]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Command-bar overflow timing is only validated on Skia #9080
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Command-bar overflow timing is only validated on Skia #9080
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		public async Task When_IsTextSelectionEnabled_ContextMenu_SelectAll()
 		{
@@ -2147,8 +2079,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		public async Task When_IsTextSelectionEnabled_TouchScroll_Then_DoesNotSelectText()
 		{
@@ -2181,8 +2111,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		public async Task When_IsTextSelectionEnabled_TouchScroll_Then_DoesNotAlterSelection()
 		{

@@ -77,9 +77,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
-#if __WASM__
-		[Ignore("Currently flaky on WASM, part of #9080 epic")]
-#endif
 		public async Task When_NestedInSVAndOutOfViewportOnInitialLoad_Then_MaterializedEvenWhenScrollingOnMinorAxis()
 		{
 			var sut = default(ItemsRepeater);
@@ -109,9 +106,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			TestServices.WindowHelper.WindowContent = sv;
 			await TestServices.WindowHelper.WaitForIdle();
 
-#if !__APPLE_UIKIT__
 			sut.Children.Count.Should().BeLessThanOrEqualTo(1);
-#endif
 
 			sv.ChangeView(null, sv.ExtentHeight, null, disableAnimation: true);
 
@@ -122,7 +117,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __ANDROID__ || __SKIA__
+#if __SKIA__
 		[Ignore("Currently fails https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public async Task When_NestedIRSlowlyChangeViewport_Then_MaterializedNeededItems()
@@ -302,10 +297,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __ANDROID__ || __SKIA__
+#if __SKIA__
 		[Ignore("Currently fails https://github.com/unoplatform/uno/issues/9080")]
-#elif __WASM__
-		[Ignore("Flaky on CI https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public async Task When_UnloadAndReload_Then_ReMaterializeItems()
 		{

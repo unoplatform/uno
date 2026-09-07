@@ -1,4 +1,4 @@
-﻿#if __APPLE_UIKIT__ || __ANDROID__ || __SKIA__ || __WASM__
+﻿#if __SKIA__
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -9,29 +9,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel
 	[TestClass]
 	public class Given_PackageId
 	{
-#if __APPLE_UIKIT__ || __ANDROID__
-		[TestMethod]
-		public void When_FamilyNameQueried()
-		{
-			var SUT = Package.Current.Id;
-			Assert.IsNotNull(SUT.FamilyName);
-		}
-
-		[TestMethod]
-		public void When_FullNameQueried()
-		{
-			var SUT = Package.Current.Id;
-			Assert.IsNotNull(SUT.FullName);
-		}
-
-		[TestMethod]
-		public void When_NameQueried()
-		{
-			var SUT = Package.Current.Id;
-			Assert.IsNotNull(SUT.Name);
-		}
-#endif
-
 		[TestMethod]
 		public void When_VersionQueried()
 		{
@@ -46,7 +23,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_ApplicationModel
 			}
 		}
 
-#if __SKIA__ || __WASM__
+#if __SKIA__
 		[TestMethod]
 		public void When_VersionQueried_ReturnsValidVersion()
 		{

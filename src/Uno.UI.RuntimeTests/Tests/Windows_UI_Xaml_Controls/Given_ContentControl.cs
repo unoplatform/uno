@@ -16,8 +16,6 @@ using Windows_UI_Xaml_Controls;
 using static Private.Infrastructure.TestServices;
 #if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __APPLE_UIKIT__
-using UIKit;
 #endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -205,13 +203,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			contentControl.Content = null;
 
-#if __APPLE_UIKIT__ || __ANDROID__
-			Assert.IsEmpty(comboBox.Items);
-			Assert.AreEqual(-1, comboBox.SelectedIndex);
-#else // this is correct
 			Assert.HasCount(3, comboBox.Items);
 			Assert.AreEqual(1, comboBox.SelectedIndex);
-#endif
 		}
 
 #if HAS_UNO

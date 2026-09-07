@@ -347,9 +347,6 @@ public class TimePickerIntegrationTests
 	}
 
 	[TestMethod]
-#if __ANDROID__ || __APPLE_UIKIT__
-	[Ignore("This is only relevant for managed implementation")]
-#endif
 	public async Task ValidateMinuteIncrementProperty()
 	{
 		var timePicker = await SetupTimePickerTestAsync();

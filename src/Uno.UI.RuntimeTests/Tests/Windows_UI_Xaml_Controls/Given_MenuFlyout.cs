@@ -226,15 +226,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-#if __ANDROID__
-		[TestMethod]
-		[RequiresFullWindow]
-		public async Task Verify_MenuBarItem_Bounds_Managed_Popups()
-		{
-			await Verify_MenuBarItem_Bounds();
-		}
-#endif
-
 #if HAS_UNO
 		[TestMethod]
 		public async Task When_MenuFlyoutItem_CommandChanging()
@@ -319,9 +310,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
-#if __APPLE_UIKIT__
-		[Ignore("https://github.com/unoplatform/uno/issues/13314")]
-#endif
 		public async Task When_MenuFlyoutSubItem_Should_Have_Correct_Placement()
 		{
 			if (WindowHelper.IsXamlIsland)
@@ -496,7 +484,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/480")]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Owner-subtree theme override is Skia-only; WinUI honors OS/app theme only
 		public async Task When_Flyout_Menu_Uses_Owner_Subtree_Theme_Light_Under_Dark_App()
 		{
 #if HAS_UNO
@@ -580,7 +568,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RequiresFullWindow]
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/480")]
 		// Skia-WASM: the item resolves the application theme instead of the owner's subtree theme, see https://github.com/unoplatform/uno/issues/24143
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native | RuntimeTestPlatforms.SkiaWasm)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)] // Owner-subtree theme override is Skia-only; WinUI honors OS/app theme only
 		public async Task When_MenuFlyout_Item_Uses_Owner_Subtree_Theme_Light_Under_Dark_App()
 		{
 #if HAS_UNO
@@ -689,7 +677,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		// Skia-WASM: the item resolves the application theme instead of the owner's subtree theme, see https://github.com/unoplatform/uno/issues/24143
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native | RuntimeTestPlatforms.SkiaWasm)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)] // Owner-subtree theme override is Skia-only; WinUI honors OS/app theme only
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/480")]
 		public async Task When_MenuFlyout_Opens_First_Time_Foreground_Should_Not_Flash_Wrong_Theme()
 		{

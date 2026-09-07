@@ -8,7 +8,7 @@ using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 
-#if !WINDOWS_UWP && !WINAPPSDK
+#if !WINAPPSDK
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 using Windows.ApplicationModel.Core;

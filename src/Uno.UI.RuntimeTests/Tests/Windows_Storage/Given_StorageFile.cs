@@ -391,21 +391,6 @@ namespace Uno.UI.RuntimeTests.Tests
 			Assert.IsTrue(bytes1.SequenceEqual(bytes2));
 		}
 
-#if __ANDROID__
-		[TestMethod]
-		public async Task When_Copy_Saf()
-		{
-			var file1 = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/ingredient3.png"));
-			await file1.CopyAsync(ApplicationData.Current.LocalCacheFolder, "ingredient3.png", NameCollisionOption.ReplaceExisting);
-
-			var directory = new Java.IO.File(ApplicationData.Current.LocalCacheFolder.Path);
-			var documentFile = AndroidX.DocumentFile.Provider.DocumentFile.FromFile(directory).CreateFile("image/png", "ingredient3.png");
-
-			var file2 = StorageFile.GetFromSafDocument(documentFile);
-			await file2.CopyAsync(ApplicationData.Current.LocalFolder, "When_Copy_Saf_uno_logo.png", NameCollisionOption.ReplaceExisting);
-		}
-#endif
-
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_GetFileFromPath_With_Spaces_OpenAsync_Returns_Content()

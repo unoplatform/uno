@@ -15,9 +15,6 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 public class Given_ProgressRing
 {
 	[TestMethod]
-#if !(WINAPPSDK || __SKIA__ || __WASM__)
-	[Ignore("IAnimatedVisualSource is not implemented")]
-#endif
 	public async Task When_NoProgress_IsIndeterminate_Toggle()
 	{
 		var SUT = new ProgressRing { Width = 20, Height = 20 };
@@ -53,9 +50,6 @@ public class Given_ProgressRing
 	}
 
 	[TestMethod]
-#if !(WINAPPSDK || __SKIA__ || __WASM__)
-	[Ignore("IAnimatedVisualSource is not implemented")]
-#endif
 	public async Task When_HalfProgress_IsIndeterminate_Toggle()
 	{
 		var SUT = new ProgressRing { Width = 20, Height = 20 };

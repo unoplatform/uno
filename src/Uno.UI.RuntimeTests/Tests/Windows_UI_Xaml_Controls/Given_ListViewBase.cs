@@ -30,10 +30,6 @@ using Uno.UI.DevTools.Input;
 using Uno.UI;
 #endif
 
-#if __APPLE_UIKIT__
-using Foundation;
-#endif
-
 using Point = Windows.Foundation.Point;
 using TabView = Microsoft.UI.Xaml.Controls.TabView;
 using TabViewItem = Microsoft.UI.Xaml.Controls.TabViewItem;
@@ -44,9 +40,6 @@ using MUXControlsTestApp.Utilities;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
-#if __APPLE_UIKIT__
-	[Ignore("Disable all listview tests until crash is resolved https://github.com/unoplatform/uno/issues/17101")]
-#endif
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public partial class Given_ListViewBase // resources
 	{
@@ -165,9 +158,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
-#if __APPLE_UIKIT__
-		[Ignore("Unlike other platforms, MaterializedContainers are removed immediately upon removal, and are not created on insertion until re-measure.")]
-#endif
 #if RUNTIME_NATIVE_AOT
 		[Ignore(".BeEquivalentTo() unsupported under NativeAOT; see: https://github.com/AwesomeAssertions/AwesomeAssertions/issues/290")]
 #endif  // RUNTIME_NATIVE_AOT
@@ -692,9 +682,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __APPLE_UIKIT__
-		[Ignore("The test can't find MultiSelectSquare")]
-#endif
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Different_Selections_IsMultiSelectCheckBoxEnabled()
 		{
@@ -1293,9 +1280,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if NETFX_CORE
-		[Ignore("KeyboardHelper doesn't work on Windows")]
-#endif
 		public async Task When_Space_Or_Enter()
 		{
 			var SUT = new ListView
@@ -1541,9 +1525,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
-#if __APPLE_UIKIT__ || __ANDROID__
-		[Ignore("Disabled because of animated scrolling, even when explicitly requested.")]
-#endif
 		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_Full_Size()
 		{
 			var materialized = 0;
@@ -1588,9 +1569,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		// Flaky on Skia Android - https://github.com/unoplatform/uno/issues/9080
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)]
-#if __APPLE_UIKIT__ || __ANDROID__
-		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
-#endif
 		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_Half_Size()
 		{
 			var materialized = 0;
@@ -1641,11 +1619,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __APPLE_UIKIT__ || __ANDROID__
-		[Ignore("Disabled because of animated scrolling, even when explicitly requested.")]
-#elif __WASM__
-		[Ignore("Flaky in CI.")]
-#endif
 		// The scrolls below are animated and are only awaited with fixed delays. Skia macOS steps through more
 		// animation frames than Win32, so those delays can elapse while the viewport is still moving and the
 		// layout-slot assertions observe an intermediate offset.
@@ -1708,11 +1681,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __APPLE_UIKIT__ || __ANDROID__
-		[Ignore("Disabled because of animated scrolling, even when explicitly requested.")]
-#elif __WASM__
-		[Ignore("Flaky in CI.")]
-#endif
 		public async Task When_Large_List_Scroll_To_End_Then_Back_Up_And_First_Item2()
 		{
 			var container = new Grid { Height = 500, Width = 100 };
@@ -1780,8 +1748,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif !HAS_RENDER_TARGET_BITMAP
-		[Ignore("Cannot take screenshot on this platform.")]
 #endif
 		public async Task When_Large_List_Scroll_To_End_Then_Back_Up_TryClick()
 		{
@@ -2114,9 +2080,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Skia)] // Especially flaky on all Skia targets #9080
-#if __APPLE_UIKIT__ || __ANDROID__
-		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
-#endif
 		public async Task When_SmallExtent_And_Large_List_Scroll_To_End_And_Back_Half_Size()
 		{
 			var materialized = 0;
@@ -2183,9 +2146,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __APPLE_UIKIT__ || __ANDROID__
-		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
-#endif
 		public async Task When_SmallExtent_And_Very_Large_List_Scroll_To_End_And_Back_Half_Size()
 		{
 			var materialized = 0;
@@ -2243,9 +2203,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		// Flaky on Skia Android - https://github.com/unoplatform/uno/issues/9080
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid)]
-#if __APPLE_UIKIT__ || __ANDROID__
-		[Ignore("Disabled because of animated scrolling, even when explicitly requested")]
-#endif
 		public async Task When_LargeExtent_And_Very_Large_List_Scroll_To_End_And_Back_Half_Size()
 		{
 			const int ElementHeight = 50;
@@ -2303,7 +2260,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await WindowHelper.WaitForIdle();
 
-#if HAS_UNO && !(__IOS__ || __ANDROID__)
+#if HAS_UNO
 				var evpScaling = (list.ItemsPanelRoot as IVirtualizingPanel).GetLayouter().CacheLength * VirtualizingPanelLayout.ExtendedViewportScaling;
 #else
 				var evpScaling = 0.5;
@@ -3240,8 +3197,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __WASM__ || __SKIA__
-		[Ignore("Fails on WASM/Skia - https://github.com/unoplatform/uno/issues/7323")]
+#if __SKIA__
+		[Ignore("Fails on Skia - https://github.com/unoplatform/uno/issues/7323")]
 #endif
 		public async Task When_ItemTemplate_Selector_Correct_Reuse()
 		{
@@ -3380,9 +3337,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __WASM__
-		[Ignore] // https://github.com/unoplatform/uno/issues/7323
-#endif
 		public async Task When_Unequal_Size_Item_Removed()
 		{
 			var source = new ObservableCollection<ItemHeightViewModel>(
@@ -3409,7 +3363,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			for (int i = 100; i <= 1000; i += 100)
 			{
 				sv.ChangeView(null, i, null, disableAnimation: true);
-#if __SKIA__ || __WASM__
+#if __SKIA__
 				// Without invalidating, the ListView.managed items panel size remains at its original estimated size, which was overestimated based on abnormally large first item, which would result in scroll overshooting
 				panel.InvalidateMeasure();
 #endif
@@ -3425,7 +3379,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			for (int i = 1000; i >= -100; i -= 100)
 			{
 				sv.ChangeView(null, i, null, disableAnimation: true);
-#if __SKIA__ || __WASM__
+#if __SKIA__
 				panel.InvalidateMeasure();
 #endif
 				await Task.Delay(10);
@@ -3444,9 +3398,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __WASM__
-		[Ignore("Fails on WASM")]
-#endif
 		public async Task When_Unmaterialized_Item_Size_Changed()
 		{
 			var source = new ObservableCollection<ItemHeightViewModel>(
@@ -3485,7 +3436,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			for (int i = 1000; i >= -100; i -= 100)
 			{
 				sv.ChangeView(null, i, null, disableAnimation: true);
-#if __SKIA__ || __WASM__
+#if __SKIA__
 				panel.InvalidateMeasure();
 #endif
 				await Task.Delay(50);
@@ -3713,7 +3664,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.HasCount(5, SUT.Items);
 		}
 
-#if __SKIA__ || __WASM__
+#if __SKIA__
 		[TestMethod]
 		[RequiresFullWindow]
 		[RunsOnUIThread]
@@ -3873,7 +3824,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		// Skia-WASM: the materialized index regresses during the settle that follows a successful poll, see https://github.com/unoplatform/uno/issues/24147
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native | RuntimeTestPlatforms.SkiaWasm)] // Destabilized by changes in https://github.com/unoplatform/uno/pull/23269
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)] // Destabilized by changes in https://github.com/unoplatform/uno/pull/23269
 		public async Task When_Incremental_Load_ShouldStop()
 		{
 			const int BatchSize = 25;
@@ -3942,48 +3893,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				sv.ExtentHeight
 			);
 		}
-
-#if __APPLE_UIKIT__ || __ANDROID__
-		[TestMethod]
-		public async Task When_Smooth_Scrolling()
-		{
-			// setup
-			var container = new Grid { Height = 210, VerticalAlignment = VerticalAlignment.Bottom };
-
-			var source = Enumerable.Range(0, 50).ToArray();
-			var lv = new ListView
-			{
-				ItemsSource = source,
-				ItemTemplate = FixedSizeItemTemplate, // height=29
-				ItemContainerStyle = BasicContainerStyle,
-			};
-			container.Children.Add(lv);
-
-			WindowHelper.WindowContent = container;
-			await WindowHelper.WaitForLoaded(lv);
-			await Task.Delay(1000);
-
-			// check the listview doesnt already have all items materialized
-			var count = lv.NativePanel?.EnumerateChildren().Count();
-			Assert.IsTrue(count < source.Length, $"Native ListView is not {(count.HasValue ? $"virtualized (count={count})" : "loaded")}.");
-
-			// scroll to bottom
-			Uno.UI.Helpers.ListViewHelper.SmoothScrollToIndex(lv, lv.Items.Count - 1);
-			await Task.Delay(2000);
-			await WindowHelper.WaitForIdle();
-
-			// check if the last item is now materialized
-			var materialized = lv.NativePanel.EnumerateChildren()
-				.Reverse()
-#if __ANDROID__
-				.Select(x => (x as ListViewItem)?.Content as int?)
-#elif __APPLE_UIKIT__
-				.Select(x => ((x as ListViewBaseInternalContainer)?.Content as ListViewItem)?.Content as int?)
-#endif
-				.ToArray();
-			Assert.IsTrue(materialized.Contains(source.Last()), $"Failed to scroll. materialized: {string.Join(",", materialized)}");
-		}
-#endif
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
@@ -4080,30 +3989,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			sut.ItemsPanelRoot.InvalidateMeasure();
 			await WindowHelper.WaitForIdle();
 
-			var children =
-#if __ANDROID__ || __APPLE_UIKIT__
-				sut is ListView lv
-					? lv.NativePanel.EnumerateChildren()
-					: sut.ItemsPanelRoot.Children;
-#else
-				sut.ItemsPanelRoot.Children;
-#endif
+			var children = sut.ItemsPanelRoot.Children;
 			var materialized = children.Count(IsVisible);
 			Assert.AreEqual(3, materialized, $"ListView should still contains 3 materialized items, no more no less.");
 
 			bool IsVisible(object x) => x is UIElement uie
 				? uie.Visibility == Visibility.Visible
-#if __APPLE_UIKIT__
-				: !(x as UIKit.UIView)?.Hidden ?? false;
-#else
 				: false;
-#endif
 		}
 
 		[TestMethod]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("The behaviour of virtualizing panels is only accurate for managed virtualizing panels.")]
-#endif
 		public async Task When_Item_Removed_From_ItemsSource_Item_Removed_From_Tree()
 		{
 			var source = new ObservableCollection<string>()
@@ -4411,9 +4306,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
-#if __WASM__
-		[Ignore("https://github.com/unoplatform/uno/issues/15093")]
-#endif
 		// For this test to work, make sure you are running the SampleApp with LightTheme enabled.
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task When_ThemeChange()
@@ -4498,7 +4390,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __WASM__ || __SKIA__
+#if __SKIA__
 		[Ignore("https://github.com/unoplatform/uno/issues/234")]
 #endif
 		public async Task When_HeaderTemplate_DataContext()
@@ -4541,52 +4433,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(SUT.DataContext, header.DataContext);
 			Assert.AreEqual("test value", header.Text);
-		}
-#endif
-
-#if __APPLE_UIKIT__
-		[TestMethod]
-		[RunsOnUIThread]
-		public async Task When_HeaderDataContext_Cleared_FromNavigation()
-		{
-			var frame = new Frame();
-
-			WindowHelper.WindowContent = frame;
-			await WindowHelper.WaitFor(() => frame.IsLoaded);
-			await WindowHelper.WaitForIdle();
-
-			frame.Navigate(typeof(When_HeaderDataContext_Cleared_FromNavigation_Page));
-			await WindowHelper.WaitForIdle();
-
-			var page = (When_HeaderDataContext_Cleared_FromNavigation_Page)frame.Content;
-			var sut = frame.FindFirstDescendant<ListView>();
-			var panel = (NativeListViewBase)sut.InternalItemsPanelRoot;
-
-			page.LvHeaderDcChanged += (s, e) => { /* for debugging */ };
-			Assert.IsNotNull(page.DataContext);
-
-			for (var i = 0; i < 3; i++) // may not always trigger, but 3 times is usually more than enough
-			{
-				// scroll header out of viewport and back in
-				ScrollTo(sut, 100000);
-				await WindowHelper.WaitForIdle();
-				await Task.Delay(1000);
-				ScrollTo(sut, 0);
-				await WindowHelper.WaitForIdle();
-				await Task.Delay(1000);
-
-				// frame navigate away and back
-				frame.Navigate(typeof(BackNavigationPage));
-				await WindowHelper.WaitForIdle();
-				await Task.Delay(1000);
-				frame.GoBack();
-				await WindowHelper.WaitForIdle();
-
-				// check if data-context is still set
-				Assert.AreEqual(GetListViewHeader()?.DataContext, page.DataContext);
-			}
-
-			UIElement GetListViewHeader() => (panel.GetSupplementaryView(NativeListViewBase.ListViewHeaderElementKindNS, global::Foundation.NSIndexPath.FromRowSection(0, 0)) as ListViewBaseInternalContainer)?.Content;
 		}
 #endif
 
@@ -4666,9 +4512,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// SkiaWasm excluded: ScrollIntoView scroll/realization stalls under the headless xvfb browser (flaky). #23524
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23524")]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("This test is for managed ListViewBase.")]
-#endif
 		public async Task When_ScrollIntoView_No_Virtualization()
 		{
 			var source = Enumerable.Range(0, 100).ToArray();
@@ -4741,8 +4584,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif __WASM__
-		[Ignore("Failing on WASM: https://github.com/unoplatform/uno/issues/17742")]
 #endif
 		public async Task When_UpdateLayout_In_DragDropping()
 		{
@@ -4797,8 +4638,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if !HAS_INPUT_INJECTOR || !HAS_RENDER_TARGET_BITMAP
-		[Ignore("InputInjector or RenderTargetBitmap is not supported on this platform.")]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_Drop_Outside_Bounds()
 		{
@@ -4859,8 +4700,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif __WASM__
-		[Ignore("Failing on WASM: https://github.com/unoplatform/uno/issues/17742")]
 #endif
 		public async Task When_UpdateLayout_In_DragDropping_2()
 		{
@@ -4925,8 +4764,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif __WASM__
-		[Ignore("Failing on WASM https://github.com/unoplatform/uno/issues/17742")]
 #endif
 		public async Task When_DragDrop_ItemsSource_Is_Subclass_Of_ObservableCollection()
 		{
@@ -5016,13 +4853,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				"timed out waiting for the 3 freshly added items to be materialized");
 
 			var tree = sut.TreeGraph();
-#if !__ANDROID__
 			var panel = sut.FindFirstDescendant<ItemsStackPanel>() ?? throw new Exception("Failed to find the ListView's Panel (ItemsStackPanel)");
 			Assert.HasCount(3, panel.Children);
-#else
-			var count = sut.MaterializedContainers.Count();
-			Assert.AreEqual(3, count);
-#endif
 		}
 
 		[TestMethod]
@@ -5056,10 +4888,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __ANDROID__
-		[Ignore("droid: Scrollable/Extent-Height doesnt get updated until manually scroll occurs, but otherwise the visuals are good.")]
-#endif
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.Native)] // Very flaky on all targets #9080
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.NativeWinUI)] // Very flaky on all targets #9080
 		public async Task When_ScrollIntoView_FreshlyAddedOffscreenItem()
 		{
 			const int FixedItemHeight = 29;
@@ -5134,9 +4963,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var tree = sut.TreeGraph();
 			Assert.IsTrue(Enumerable.Range(0, 4).All(x => sut.ContainerFromIndex(x) is { }), "All containers should be materialized.");
 
-#if !(__ANDROID__ || __IOS__)
 			Assert.AreEqual(4, sut.ItemsPanelRoot.Children.OfType<ListViewItem>().Count(), "There should be only 4 materialized container.");
-#endif
 		}
 
 		// {ThemeResource} inheritance for grid/list row content presented after tab reload — kahua #482.
@@ -5222,7 +5049,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/482")]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Owner-subtree theme override is Skia-only; WinUI honors OS/app theme only
 		public async Task When_Grid_Row_Presented_After_Tab_Navigation_Light_Under_Dark_App()
 		{
 #if HAS_UNO
@@ -5766,13 +5593,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			protected override DataTemplate SelectTemplateCore(object item)
 			{
-				if (
-#if __APPLE_UIKIT__
-				// On iOS, the template selector may be invoked with a null item. This is arguably also a bug, but not presently under test here.
-				item != null &&
-#endif
-					!_itemsSource.Contains(item)
-					)
+				if (!_itemsSource.Contains(item))
 				{
 					var ex = new InvalidOperationException($"Selector called for item not in source ({item})");
 					Exception = Exception ?? ex;
@@ -5923,54 +5744,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public override int GetHashCode() => 0;
 		}
 
-#if HAS_UNO
-		public partial class When_HeaderDataContext_Cleared_FromNavigation_Page : Page
-		{
-			public event TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> LvHeaderDcChanged;
-
-			public When_HeaderDataContext_Cleared_FromNavigation_Page()
-			{
-				DataContext = "MainVM";
-				Content = new Grid
-				{
-					RowDefinitions =
-					{
-						new() { Height = new GridLength(1, GridUnitType.Auto) },
-						new() { Height = new GridLength(1, GridUnitType.Star) },
-					},
-					Children =
-					{
-						new Button { Content = "Next" }.Apply(x =>
-						{
-							Grid.SetRow(x, 0);
-							x.Click += (s, e) => Frame.Navigate(typeof(BackNavigationPage));
-						}),
-						new ListView
-						{
-							ItemsSource = Enumerable.Range(0, 200).Select(x => $"asd {x}"),
-							HeaderTemplate = new DataTemplate(null, (_, _) => new StackPanel
-							{
-								Children =
-								{
-									new TextBlock() { Text = "header" },
-									new TextBlock().Apply(x => x.SetBinding(TextBlock.TextProperty, new Binding())),
-								}
-							}.Apply(x => x.DataContextChanged += (s, e) => LvHeaderDcChanged?.Invoke(s, e))),
-						}.Apply(x => Grid.SetRow(x, 1)),
-					},
-				};
-			}
-		}
-#endif
-
-		public partial class BackNavigationPage : Page
-		{
-			public BackNavigationPage()
-			{
-				Content = new Button().Apply(x => x.Click += (s, e) => Frame.GoBack());
-			}
-		}
-
 		public partial class UpdateLayoutOnUnloadedControl : UserControl
 		{
 			public UpdateLayoutOnUnloadedControl()
@@ -5984,42 +5757,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		private static ContentControl[] GetPanelVisibleChildren(ListViewBase list)
 		{
-#if __ANDROID__ || __APPLE_UIKIT__
-			return list
-				.GetItemsPanelChildren()
-				.OfType<ContentControl>()
-				.ToArray();
-#else
 			return list.ItemsPanelRoot
 				.Children
 				.OfType<ContentControl>()
 				.Where(c => c.Visibility == Visibility.Visible) // Managed ItemsStackPanel currently uses the dirty trick of leaving reyclable items attached to panel and collapsed
 				.ToArray();
-#endif
 		}
 
 		private static ContentControl[] GetAllPanelChildren(ListViewBase list)
 		{
-#if __ANDROID__
-			return list
-				.GetItemsPanelChildren()
-				.OfType<ContentControl>()
-				.ToArray();
-#elif __APPLE_UIKIT__
-			return list
-				.GetItemsPanelChildren()
-				.OfType<ContentControl>()
-				// iOS does not seem to provide to exclude the recycled items, so we mark
-				// then using IsDisplayed.
-				.Where(c => c.Superview?.Superview is ListViewBaseInternalContainer container && container.IsDisplayed)
-				.ToArray();
-#else
 			return list.ItemsPanelRoot
 				.Children
 				.OfType<ContentControl>()
 				.Where(c => c.Visibility == Visibility.Visible) // Managed ItemsStackPanel currently uses the dirty trick of leaving reyclable items attached to panel and collapsed
 				.ToArray();
-#endif
 		}
 
 		// Maps each data item to its realized container. Keyed by data item (not index) so identity can be
@@ -6128,9 +5879,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/2136")]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __APPLE_UIKIT__
-		[Ignore("Disable all listview tests until crash is resolved https://github.com/unoplatform/uno/issues/17101")]
-#endif
 		public async Task When_ListView_ItemsStackPanel_Children_Are_Stretched_To_Full_Width()
 		{
 			const double ContainerWidth = 300;

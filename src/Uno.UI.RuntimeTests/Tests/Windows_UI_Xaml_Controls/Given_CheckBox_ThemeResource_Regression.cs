@@ -29,7 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// must be re-pinned there; otherwise a checked CheckBox reverts to the stock brush on a visual-state re-entry.
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Owner-subtree theme override is Skia-only; WinUI honors OS/app theme only
 		public async Task When_App_Override_Checked_Survives_IsChecked_Reentry_Under_Dark_App()
 		{
 			using var _ = ThemeHelper.UseApplicationDarkTheme();
@@ -75,7 +75,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// CheckedNormal); asserts in the enabled CheckedNormal state after the round-trip.
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Owner-subtree theme override is Skia-only; WinUI honors OS/app theme only
 		public async Task When_App_Override_Checked_Survives_IsEnabled_Toggle_Under_Dark_App()
 		{
 			using var _ = ThemeHelper.UseApplicationDarkTheme();
@@ -121,7 +121,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// through Frame navigation and re-entering PointerOver must keep the Light (Blue) value.
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Owner-subtree theme override is Skia-only; WinUI honors OS/app theme only
 		public async Task When_VisualStateSetter_PointerOver_Keeps_Light_After_Frame_Navigation_Under_Dark_App()
 		{
 			using var _ = ThemeHelper.UseApplicationDarkTheme();
@@ -161,7 +161,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// switch the application theme at runtime.
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_App_Override_Checked_Survives_Application_Theme_Change()
 		{
 			var originalTheme = Application.Current.RequestedTheme;
@@ -223,7 +223,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// OverrideAccentBrush = #FF0062A9. (The non-matching leaf — Light-under-Dark — was never affected.)
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_App_Override_Checked_Resolves_On_Matching_App_Theme_Leaf()
 		{
 			// SampleFont is aliased by the overrides dictionary (ContentControlThemeFontFamily); merge it plus the

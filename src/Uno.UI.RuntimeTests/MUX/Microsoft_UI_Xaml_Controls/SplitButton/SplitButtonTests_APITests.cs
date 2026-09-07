@@ -3,7 +3,6 @@
 
 // MUX Reference APITests/SplitButtonTests.cpp, tag winui3/release/1.4.2
 
-#if !WINDOWS_UWP
 using System;
 using System.Windows.Input;
 using MUXControlsTestApp.Utilities;
@@ -91,4 +90,3 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 	}
 #pragma warning restore CS0067
 }
-#endif

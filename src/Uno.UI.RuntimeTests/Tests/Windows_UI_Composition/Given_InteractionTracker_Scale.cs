@@ -17,9 +17,6 @@ public class Given_InteractionTracker_Scale
 {
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23688")]
-#if !HAS_COMPOSITION_API
-	[Ignore("Composition APIs are not supported on this platform.")]
-#endif
 	public async Task When_TryUpdateScale_AtOrigin()
 	{
 		var border = new Border
@@ -58,9 +55,6 @@ public class Given_InteractionTracker_Scale
 
 	[TestMethod]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23688")]
-#if !HAS_COMPOSITION_API
-	[Ignore("Composition APIs are not supported on this platform.")]
-#endif
 	public async Task When_TryUpdateScale_WithCenterPoint()
 	{
 		var border = new Border

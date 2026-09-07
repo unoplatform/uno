@@ -19,14 +19,9 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls;
 #endif
 
-#if __IOS__
-using UIKit;
-using _View = UIKit.UIView;
-#endif
-
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
-#if !HAS_UNO || __ANDROID__ || __IOS__ || __SKIA__
+#if !HAS_UNO || __SKIA__
 [RunsOnUIThread]
 [TestClass]
 [PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaIslands | RuntimeTestPlatforms.SkiaFrameBuffer)]
@@ -148,54 +143,8 @@ public class Given_WebView2
 		await TestHelper.RetryAssert(Do, 3);
 	}
 
-#if __ANDROID__ || __IOS__
 	[TestMethod]
-	public async Task When_IsScrollable()
-	{
-		var border = new Border();
-		var webView = new WebView();
-		webView.Source = new Uri("https://bing.com");
-		webView.Width = 200;
-		webView.Height = 200;
-		border.Child = webView;
-		TestServices.WindowHelper.WindowContent = border;
-		await TestServices.WindowHelper.WaitForLoaded(border);
-
-		Assert.IsTrue(webView.IsScrollEnabled);
-
-#if __IOS__
-		var nativeWebView = ((_View)webView)
-			.FindSubviewsOfType<INativeWebView>()
-			.FirstOrDefault();
-		var scrollView = ((_View)nativeWebView)?.FindSubviewsOfType<UIScrollView>().FirstOrDefault();
-		Assert.IsTrue(scrollView.ScrollEnabled);
-		Assert.IsTrue(scrollView.Bounces);
-#endif
-
-#if __ANDROID__
-		var nativeWebView = (webView as Android.Views.ViewGroup)?
-			.GetChildren(v => v is Android.Webkit.WebView)
-			.FirstOrDefault() as Android.Webkit.WebView;
-		Assert.IsTrue(nativeWebView.HorizontalScrollBarEnabled);
-		Assert.IsTrue(nativeWebView.VerticalScrollBarEnabled);
-#endif
-		webView.IsScrollEnabled = false;
-
-#if __IOS__
-		Assert.IsFalse(scrollView.ScrollEnabled);
-		Assert.IsFalse(scrollView.Bounces);
-#endif
-
-#if __ANDROID__
-		Assert.IsFalse(nativeWebView.HorizontalScrollBarEnabled);
-		Assert.IsFalse(nativeWebView.VerticalScrollBarEnabled);
-#endif
-
-	}
-#endif
-
-	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
 	public async Task When_ExecuteScriptAsync_Has_No_Result()
 	{
 		async Task Do()
@@ -221,7 +170,7 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
 	public async Task When_ExecuteScriptAsync()
 	{
 		async Task Do()
@@ -253,7 +202,7 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
 	public async Task When_ExecuteScriptAsync_String_Double_Quote()
 	{
 		async Task Do()
@@ -280,7 +229,7 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
 	public async Task When_ExecuteScriptAsync_String()
 	{
 		async Task Do()
@@ -311,7 +260,7 @@ public class Given_WebView2
 	[Ignore("Crashes")]
 #endif
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaUIKit // Flaky on UIKit - #9080
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit // Flaky on UIKit - #9080
 #if RUNTIME_NATIVE_AOT
 		// TODO: figure out why it's hanging on Android+NativeAOT: 
 		| RuntimeTestPlatforms.SkiaAndroid
@@ -390,7 +339,7 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit | RuntimeTestPlatforms.SkiaWin32)] // Temporarily disabled due to #11997
 	public async Task When_ExecuteScriptAsync_Non_String()
 	{
 		async Task Do()
@@ -416,9 +365,6 @@ public class Given_WebView2
 		await TestHelper.RetryAssert(Do, 3);
 	}
 
-#if __IOS__
-	[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
-#endif
 	[TestMethod]
 	// Fails on iOS https://github.com/unoplatform/uno/issues/9080
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS
@@ -497,7 +443,7 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS
 #if RUNTIME_NATIVE_AOT
 		// Hangs on Android+NativeAOT: https://github.com/dotnet/android/issues/12542
 		| RuntimeTestPlatforms.SkiaAndroid
@@ -607,10 +553,10 @@ public class Given_WebView2
 		Assert.IsTrue(webView.Source.OriginalString.StartsWith("https://httpbin.org/status/444", StringComparison.OrdinalIgnoreCase));
 	}
 
-#if !WINAPPSDK && !__ANDROID__
+#if !WINAPPSDK
 	[TestMethod]
 	[CombinatorialData]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaTvOS)] // Flaky on iOS Skia / Native UIKit https://github.com/unoplatform/uno/issues/9080
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.SkiaTvOS)] // Flaky on iOS Skia https://github.com/unoplatform/uno/issues/9080
 	public async Task When_Navigate_Unsupported_Scheme(bool handled)
 	{
 		var border = new Border();
@@ -646,7 +592,7 @@ public class Given_WebView2
 			await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
 		}
 	}
-#endif // !WINAPPSDK && !__ANDROID__
+#endif // !WINAPPSDK
 }
 
 #endif
