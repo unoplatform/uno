@@ -3,38 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ComboBoxHelper
 	{
-#if __SKIA__
-		internal ComboBoxHelper()
-		{
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty KeepInteriorCornersSquareProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-			"KeepInteriorCornersSquare", typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static void SetKeepInteriorCornersSquare(global::Microsoft.UI.Xaml.Controls.ComboBox comboBox, bool value)
-		{
-			comboBox.SetValue(KeepInteriorCornersSquareProperty, value);
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static bool GetKeepInteriorCornersSquare(global::Microsoft.UI.Xaml.Controls.ComboBox comboBox)
-		{
-			return (bool)comboBox.GetValue(KeepInteriorCornersSquareProperty);
-		}
-#endif
+		// Skipping already declared property KeepInteriorCornersSquareProperty
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.SetKeepInteriorCornersSquare(Microsoft.UI.Xaml.Controls.ComboBox, bool)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.GetKeepInteriorCornersSquare(Microsoft.UI.Xaml.Controls.ComboBox)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Primitives.ComboBoxHelper.KeepInteriorCornersSquareProperty.get
 	}
 }
