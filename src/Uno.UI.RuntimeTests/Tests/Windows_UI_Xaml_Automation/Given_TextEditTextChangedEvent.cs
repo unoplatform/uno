@@ -23,6 +23,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 	{
 		[TestMethod]
 		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.NativeWinUI)]
 		[DataRow(AutomationTextEditChangeType.None)]
 		[DataRow(AutomationTextEditChangeType.AutoCorrect)]
 		[DataRow(AutomationTextEditChangeType.Composition)]
