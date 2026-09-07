@@ -57,10 +57,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 #if !__TVOS__
 		var keyboardWillShow = UIKeyboard.Notifications.ObserveWillShow(OnKeyboardWillShow);
 		var keyboardWillHide = UIKeyboard.Notifications.ObserveWillHide(OnKeyboardWillHide);
+		var keyboardWillChangeFrame = UIKeyboard.Notifications.ObserveWillChangeFrame(OnKeyboardWillChangeFrame);
 		_subscriptions.Add(Disposable.Create(() =>
 		{
 			keyboardWillShow.Dispose();
 			keyboardWillHide.Dispose();
+			keyboardWillChangeFrame.Dispose();
 		}));
 #endif
 
@@ -407,6 +409,40 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			}
 
 			_inputPane.OccludedRect = ((NSValue?)e.Notification.UserInfo.ObjectForKey(UIKeyboard.FrameEndUserInfoKey))?.CGRectValue ?? default;
+		}
+		catch (Exception ex)
+		{
+			// The app must not crash if any managed exception happens in the
+			// native callback
+			Application.Current.RaiseRecoverableUnhandledException(ex);
+		}
+	}
+
+	private void OnKeyboardWillChangeFrame(object? sender, UIKeyboardEventArgs e)
+	{
+		try
+		{
+			// Only refreshes the rect of a keyboard that is already up - the show and hide notifications
+			// own the transitions. This is what keeps the occluded rect accurate when the keyboard resizes
+			// without being re-shown, as it does when focus moves between inputs whose accessory views
+			// differ (see TextBoxExtensions.ShowKeyboardDismissButton).
+			if (!_inputPane.Visible || e.Notification.UserInfo is null)
+			{
+				return;
+			}
+
+			if (((NSValue?)e.Notification.UserInfo.ObjectForKey(UIKeyboard.FrameEndUserInfoKey))?.CGRectValue is not { } frame)
+			{
+				return;
+			}
+
+			// A keyboard on its way out reports a frame below the screen; that one belongs to WillHide.
+			if (!frame.IntersectsWith(UIScreen.MainScreen.Bounds))
+			{
+				return;
+			}
+
+			_inputPane.OccludedRect = frame;
 		}
 		catch (Exception ex)
 		{
