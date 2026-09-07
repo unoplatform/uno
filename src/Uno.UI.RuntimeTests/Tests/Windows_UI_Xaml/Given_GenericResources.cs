@@ -1,10 +1,12 @@
 #nullable enable
 
-using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
@@ -72,23 +74,18 @@ public class Given_GenericResources
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
-	public void When_WebView2_Default_Template_Hosts_Native_View()
+	public async Task When_WebView2_Default_Template_Hosts_Native_View()
 	{
 		// CoreWebView2.GetNativeWebViewFromTemplate only attaches a native view when the first
 		// child is a ContentPresenter named WebViewTemplateRoot; WinUI's generic.xaml has no
 		// WebView2 style, so Uno has to supply this one.
-		var style = Application.Current!.Resources[typeof(WebView2)] as Style;
-		Assert.IsNotNull(style);
+		var sut = new WebView2 { Width = 100, Height = 100 };
 
-		var template = style.Setters
-			.OfType<Setter>()
-			.FirstOrDefault(setter => setter.Property == Control.TemplateProperty)?
-			.Value as ControlTemplate;
-		Assert.IsNotNull(template);
+		await UITestHelper.Load(sut, x => x.IsLoaded);
 
-		var root = template.LoadContent() as ContentPresenter;
-		Assert.IsNotNull(root);
-		Assert.AreEqual("WebViewTemplateRoot", root.Name);
+		Assert.IsNotNull(sut.Template);
+		Assert.AreEqual(1, VisualTreeHelper.GetChildrenCount(sut));
+		Assert.AreEqual("WebViewTemplateRoot", (VisualTreeHelper.GetChild(sut, 0) as ContentPresenter)?.Name);
 	}
 }
 #endif
