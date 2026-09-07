@@ -1922,7 +1922,6 @@ namespace Microsoft.UI.Xaml
 				var layoutClip = clip.Value;
 				var isAncestorClip = ShouldApplyLayoutClipAsAncestorClip();
 
-#if SUPPORTS_RTL
 				// The clip is expressed in layout coordinates, before this element's own flow direction mirroring is applied, while the visual
 				// applies it in its local (drawing) coordinates, after its transform. When the element mirrors itself (it is the boundary of a
 				// right-to-left subtree, or a TextBlock un-mirroring its text within one), mirror the clip the same way so that it keeps
@@ -1933,7 +1932,6 @@ namespace Microsoft.UI.Xaml
 				{
 					layoutClip = flowDirectionTransform.Transform(layoutClip);
 				}
-#endif
 
 				visual.LayoutClip = (layoutClip, isAncestorClip);
 			}
