@@ -14,10 +14,8 @@ namespace Windows.Globalization.NumberFormatting
 		// own default (en-US) so default-constructed formatting output is unchanged by locale awareness.
 		private const string DefaultGeographicRegion = "US";
 
-		// Real WinRT reports "ZZ" (ISO 3166 "Unknown or Invalid Territory") for ResolvedGeographicRegion
-		// when the formatter was default-constructed, i.e. no geographic region was actually resolved.
-		// Captured from a live WinRT debugger session watch dump (see the commented block in
-		// Given_DecimalFormatter.When_Initialize) - not derived/guessed.
+		// WinRT DecimalFormatter reports "ZZ" even with an explicit region and after formatting/parsing.
+		// The public resolved-region contract is distinct from our internal culture lookup.
 		private const string UnresolvedGeographicRegion = "ZZ";
 
 		private readonly FormatterHelper _formatterHelper;
@@ -100,6 +98,10 @@ namespace Windows.Globalization.NumberFormatting
 		/// <summary>
 		/// Gets the geographic region that was most recently used to format or parse decimal values.
 		/// </summary>
+		/// <remarks>
+		/// DecimalFormatter reports "ZZ" (unknown territory), including when an explicit geographic region
+		/// was supplied. Formatting and parsing do not change this value.
+		/// </remarks>
 		public string ResolvedGeographicRegion { get; }
 
 		public string ResolvedLanguage => _translator.ResolvedLanguage;

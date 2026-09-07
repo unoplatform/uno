@@ -217,6 +217,7 @@ namespace Uno.Globalization.NumberFormatting
 		{
 			var text = magnitude.ToString(ShortPrecisionFormat, CultureInfo.InvariantCulture);
 
+			// An approximate comparison would accept a lossy representation instead of a true round trip.
 			if (double.TryParse(text, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed) &&
 				parsed == magnitude)
 			{

@@ -595,6 +595,22 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[DataRow("US")]
+		[DataRow("CZ")]
+		[DataRow("CZE")]
+		[DataRow("203")]
+		[DataRow("ZZ")]
+		public void When_ExplicitRegion_Then_ResolvedRegionStaysUnknownAfterFormattingAndParsing(string geographicRegion)
+		{
+			var sut = new DecimalFormatter(new[] { "cs-CZ" }, geographicRegion);
+			var formatted = sut.FormatDouble(1234.5);
+
+			Assert.AreEqual("ZZ", sut.ResolvedGeographicRegion);
+			Assert.AreEqual(1234.5, sut.ParseDouble(formatted));
+			Assert.AreEqual("ZZ", sut.ResolvedGeographicRegion);
+		}
+
+		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		// Native WinRT only accepts ISO 3166-1 assigned alpha-2/alpha-3 codes plus the user-assigned
 		// ranges - an arbitrary uppercase letter pair is rejected.

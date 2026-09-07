@@ -70,79 +70,51 @@ public partial class SignificantDigitsNumberRounder : INumberRounder
 		return Rounder.RoundMagnitude(magnitude, increment, isNegative, RoundingAlgorithm);
 	}
 
-	public float RoundSingle(float value) => (float)RoundFloatingPoint(value, 9);
-
-	public double RoundDouble(double value) => RoundFloatingPoint(value, 17);
-
-	private double RoundFloatingPoint(double value, uint maximumSignificantDigits)
+	public float RoundSingle(float value)
 	{
-		if (double.IsNaN(value) ||
-			double.IsInfinity(value))
+		if (!float.IsFinite(value))
+		{
+			return float.NaN;
+		}
+
+		// WinRT uses binary32 scaling here, with more than eight significant digits left unchanged.
+		if (value == 0 || SignificantDigits > 8)
+		{
+			return value;
+		}
+
+		var exponent = (int)MathF.Floor(MathF.Log10(MathF.Abs(value)));
+		var decimalPlaces = (int)SignificantDigits - 1 - exponent;
+		if (decimalPlaces > 38)
+		{
+			return Rounder.RoundSingle(value * 1E38f, decimalPlaces - 38, RoundingAlgorithm) / 1E38f;
+		}
+
+		return Rounder.RoundSingle(value, decimalPlaces, RoundingAlgorithm);
+	}
+
+	public double RoundDouble(double value)
+	{
+		if (!double.IsFinite(value))
 		{
 			return double.NaN;
 		}
 
-		if (value == 0)
+		// Exact zero preserves its sign without treating subnormal inputs as zero.
+		if (value == 0 || SignificantDigits > 17)
 		{
 			return value;
 		}
 
-		if (SignificantDigits > maximumSignificantDigits)
-		{
-			return value;
-		}
-
-		var magnitude = Math.Abs(value);
-		var exponent = (int)Math.Floor(Math.Log10(magnitude));
-		var scale = Math.Pow(10, exponent);
-
-		if (scale == 0)
-		{
-			return value;
-		}
-
-		if (magnitude < scale)
-		{
-			exponent--;
-			scale /= 10;
-		}
-		else
-		{
-			var nextScale = Math.Pow(10, exponent + 1);
-			if (nextScale > 0 && magnitude >= nextScale)
-			{
-				exponent++;
-				scale = nextScale;
-			}
-		}
-
+		// Match WinRT's decimal scaling order, including binary rounding at decade boundaries.
+		var exponent = (int)Math.Floor(Math.Log10(Math.Abs(value)));
 		var decimalPlaces = (int)SignificantDigits - 1 - exponent;
-		if (decimalPlaces is >= -308 and <= 308)
+		if (decimalPlaces > 308)
 		{
-			var factor = Math.Pow(10, decimalPlaces);
-			if (double.IsFinite(value * factor))
-			{
-				return Rounder.Round(value, decimalPlaces, RoundingAlgorithm);
-			}
+			// Split an otherwise overflowing factor; do not renormalize through a rounded tiny divisor.
+			return Rounder.Round(value * 1E308, decimalPlaces - 308, RoundingAlgorithm) / 1E308;
 		}
 
-		var normalized = exponent < -308
-			? value * 1E308 * Math.Pow(10, -exponent - 308)
-			: value / scale;
-		var rounded = Rounder.Round(normalized, (int)SignificantDigits - 1, RoundingAlgorithm);
-		var result = exponent < -308
-			? rounded * Math.Pow(10, exponent + 308) * 1E-308
-			: rounded * scale;
-
-		return RoundingAlgorithm switch
-		{
-			RoundingAlgorithm.RoundDown when result > value => Math.BitDecrement(result),
-			RoundingAlgorithm.RoundUp when result < value => Math.BitIncrement(result),
-			RoundingAlgorithm.RoundTowardsZero when value > 0 && result > value => Math.BitDecrement(result),
-			RoundingAlgorithm.RoundTowardsZero when value < 0 && result < value => Math.BitIncrement(result),
-			RoundingAlgorithm.RoundAwayFromZero when value > 0 && result < value => Math.BitIncrement(result),
-			RoundingAlgorithm.RoundAwayFromZero when value < 0 && result > value => Math.BitDecrement(result),
-			_ => result,
-		};
+		return Rounder.Round(value, decimalPlaces, RoundingAlgorithm);
 	}
 }

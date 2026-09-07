@@ -110,6 +110,15 @@ internal static class Rounder
 		return result;
 	}
 
+	public static float RoundSingle(float value, int digits, RoundingAlgorithm roundingAlgorithm)
+	{
+		var pow10 = MathF.Pow(10, digits);
+		var scaled = value * pow10;
+		var rounded = (float)Round(scaled, 0, roundingAlgorithm);
+
+		return rounded / pow10;
+	}
+
 	public static double Round(double value, int digits, RoundingAlgorithm roundingAlgorithm)
 	{
 		var pow10 = Math.Pow(10, digits);
