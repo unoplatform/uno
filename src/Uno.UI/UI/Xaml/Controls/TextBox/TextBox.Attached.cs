@@ -34,4 +34,47 @@ public class TextBoxExtensions
 
 		core.OnInputReturnTypeChanged((InputReturnType)args.NewValue, initial: false);
 	}
+
+	/// <summary>
+	/// Gets whether a toolbar carrying a "Done" button, which dismisses the soft keyboard, is shown above it.
+	/// </summary>
+	public static bool GetShowKeyboardDismissButton(DependencyObject obj) => (bool)obj.GetValue(ShowKeyboardDismissButtonProperty);
+
+	/// <summary>
+	/// Sets whether a toolbar carrying a "Done" button, which dismisses the soft keyboard, is shown above it.
+	/// </summary>
+	public static void SetShowKeyboardDismissButton(DependencyObject obj, bool value) => obj.SetValue(ShowKeyboardDismissButtonProperty, value);
+
+	/// <summary>
+	/// Shows a toolbar with a "Done" button above the soft keyboard, dismissing it when tapped. This is
+	/// meant for inputs the Enter key cannot dismiss the keyboard from - a multi-line <see cref="TextBox"/>,
+	/// where Enter inserts a newline, being the primary case.
+	/// </summary>
+	/// <remarks>
+	/// The value is inherited, so it can be set on a page or a container to opt every text input below it in.
+	/// This is currently an iOS-only feature; other targets ignore the property, as their soft keyboards
+	/// already offer a way out (the Android back button) or are backed by a hardware keyboard.
+	/// </remarks>
+	[DynamicDependency(nameof(GetShowKeyboardDismissButton))]
+	[DynamicDependency(nameof(SetShowKeyboardDismissButton))]
+	public static readonly DependencyProperty ShowKeyboardDismissButtonProperty =
+		DependencyProperty.RegisterAttached(
+			"ShowKeyboardDismissButton",
+			typeof(bool),
+			typeof(TextBox),
+			new FrameworkPropertyMetadata(
+				defaultValue: false,
+				options: FrameworkPropertyMetadataOptions.Inherits,
+				propertyChangedCallback: OnShowKeyboardDismissButtonChanged));
+
+	private static void OnShowKeyboardDismissButtonChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+	{
+		// Inherited, so this is raised on every text input below the element the value was set on.
+		if (dependencyObject is not ITextBoxHost { Core: { } core })
+		{
+			return;
+		}
+
+		core.OnShowKeyboardDismissButtonChanged();
+	}
 }
