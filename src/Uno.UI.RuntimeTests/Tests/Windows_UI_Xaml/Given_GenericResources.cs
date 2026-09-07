@@ -38,10 +38,16 @@ public class Given_GenericResources
 			"SystemColorWindowTextColor",
 			"XamlDefaultButton",
 			"XamlDefaultCheckBox",
+			"XamlDefaultComboBox",
 			"XamlDefaultFrame",
+			"XamlDefaultPasswordBox",
 			"XamlDefaultPivot",
 			"XamlDefaultProgressBar",
+			"XamlDefaultRadioButton",
+			"XamlDefaultRepeatButton",
 			"XamlDefaultSlider",
+			"XamlDefaultTextBox",
+			"XamlDefaultToggleButton",
 			"XamlDefaultToggleSwitch",
 		};
 

@@ -6087,7 +6087,7 @@
     </Style>
     <Style TargetType="Button" BasedOn="{StaticResource XamlDefaultButton}" />
     <!-- Default style for Windows.UI.Xaml.Controls.Primitives.RepeatButton -->
-    <Style TargetType="RepeatButton">
+    <Style x:Key="XamlDefaultRepeatButton" TargetType="RepeatButton">
         <Setter Property="Background" Value="{ThemeResource RepeatButtonBackground}" />
         <Setter Property="BackgroundSizing" Value="OuterBorderEdge" />
         <Setter Property="Foreground" Value="{ThemeResource RepeatButtonForeground}" />
@@ -6176,8 +6176,9 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="RepeatButton" BasedOn="{StaticResource XamlDefaultRepeatButton}" />
     <!-- Default style for Windows.UI.Xaml.Controls.Primitives.ToggleButton -->
-    <Style TargetType="ToggleButton">
+    <Style x:Key="XamlDefaultToggleButton" TargetType="ToggleButton">
         <Setter Property="Background" Value="{ThemeResource ToggleButtonBackground}" />
         <Setter Property="BackgroundSizing" Value="OuterBorderEdge" />
         <Setter Property="Foreground" Value="{ThemeResource ToggleButtonForeground}" />
@@ -6392,6 +6393,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="ToggleButton" BasedOn="{StaticResource XamlDefaultToggleButton}" />
     <!-- Default style for Windows.UI.Xaml.Controls.Primitives.HyperlinkButton -->
     <Style TargetType="HyperlinkButton">
         <Setter Property="Background" Value="{ThemeResource HyperlinkButtonBackground}" />
@@ -6547,7 +6549,7 @@
         </Setter>
     </Style>
     <!-- Default style for Windows.UI.Xaml.Controls.RadioButton -->
-    <Style TargetType="RadioButton">
+    <Style x:Key="XamlDefaultRadioButton" TargetType="RadioButton">
         <Setter Property="Background" Value="{ThemeResource RadioButtonBackground}" />
         <Setter Property="Foreground" Value="{ThemeResource RadioButtonForeground}" />
         <Setter Property="BorderBrush" Value="{ThemeResource RadioButtonBorderBrush}" />
@@ -6748,6 +6750,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="RadioButton" BasedOn="{StaticResource XamlDefaultRadioButton}" />
     <!-- Default style for Windows.UI.Xaml.Controls.CheckBox -->
     <Style x:Key="XamlDefaultCheckBox" TargetType="CheckBox">
         <Setter Property="Background" Value="{ThemeResource CheckBoxBackgroundUnchecked}" />
@@ -8892,7 +8895,7 @@
     </Style>
     <!-- Default style for Windows.UI.Xaml.Controls.ComboBox -->
 
-    <Style TargetType="ComboBox">
+    <Style x:Key="XamlDefaultComboBox" TargetType="ComboBox">
         <Setter Property="Padding" Value="12,5,0,7" />
         <Setter Property="MaxDropDownHeight" Value="504" />
         <Setter Property="Foreground" Value="{ThemeResource ComboBoxForeground}" />
@@ -9290,6 +9293,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="ComboBox" BasedOn="{StaticResource XamlDefaultComboBox}" />
     <!-- Default style for Windows.UI.Xaml.Controls.ListView -->
     <!-- Default style for Windows.UI.Xaml.Controls.GridView -->
     <!-- Default style for Windows.UI.Xaml.Controls.GridViewHeaderItem -->
@@ -19494,7 +19498,7 @@
 
     <Thickness x:Key="PasswordBoxTopHeaderMargin">0,0,0,4</Thickness>
 
-    <Style TargetType="PasswordBox">
+    <Style x:Key="XamlDefaultPasswordBox" TargetType="PasswordBox">
         <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
         <Setter Property="Background" Value="{ThemeResource TextControlBackground}" />
         <Setter Property="SelectionHighlightColor" Value="{ThemeResource TextControlSelectionHighlightColor}" />
@@ -19821,6 +19825,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="PasswordBox" BasedOn="{StaticResource XamlDefaultPasswordBox}" />
 
     <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemRevealStyle}" />
 
@@ -20585,7 +20590,7 @@
 
     <Thickness x:Key="TextBoxTopHeaderMargin">0,0,0,4</Thickness>
 
-    <Style TargetType="TextBox">
+    <Style x:Key="XamlDefaultTextBox" TargetType="TextBox">
         <Setter Property="Foreground" Value="{ThemeResource TextControlForeground}" />
         <Setter Property="Background" Value="{ThemeResource TextControlBackground}" />
         <Setter Property="BorderBrush" Value="{ThemeResource TextControlBorderBrush}" />
@@ -20896,6 +20901,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <Style TargetType="TextBox" BasedOn="{StaticResource XamlDefaultTextBox}" />
 
     <Thickness x:Key="AutoSuggestBoxTopHeaderMargin">0,0,0,4</Thickness>
 
