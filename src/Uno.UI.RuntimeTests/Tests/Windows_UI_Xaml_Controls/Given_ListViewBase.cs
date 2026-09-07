@@ -4445,10 +4445,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			grid.AddChild(SUT);
 			WindowHelper.WindowContent = grid;
 			await WindowHelper.WaitForIdle();
+			var exploredTextBlocks = new HashSet<TextBlock>();
 			var expectedForeground = Windows.UI.Color.FromArgb(0xE4, 0, 0, 0);
 			foreach (var listViewItem in GetPanelVisibleChildren(SUT))
 			{
 				var tb = listViewItem.FindFirstDescendant<TextBlock>();
+				exploredTextBlocks.Add(tb);
 				Assert.AreEqual(expectedForeground, ((SolidColorBrush)tb.Foreground).Color);
 			}
 
@@ -4459,12 +4461,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				ScrollTo(SUT, scrollPosition);
 				await Task.Delay(500);
 				await WindowHelper.WaitForIdle();
+				var seenNewTextBlock = false;
 				expectedForeground = Colors.White;
 				foreach (var listViewItem in GetPanelVisibleChildren(SUT))
 				{
 					var tb = listViewItem.FindFirstDescendant<TextBlock>();
+					seenNewTextBlock |= exploredTextBlocks.Add(tb);
 					Assert.AreEqual(expectedForeground, ((SolidColorBrush)tb.Foreground).Color);
 				}
+
+				Assert.IsTrue(seenNewTextBlock);
 			}
 		}
 
