@@ -289,6 +289,7 @@ namespace Microsoft.UI.Xaml
 		public static void RegisterDefaultStyleForType(Type type, IXamlResourceDictionaryProvider dictionaryProvider)
 		{
 			_lookup[type] = ProvideStyle;
+			// A replacement provider must not be masked by an already materialized style.
 			_defaultStyleCache.Remove(type);
 
 			Style ProvideStyle()
