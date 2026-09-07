@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.InteropServices;
 using DirectUI;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -26,6 +27,7 @@ public class Given_PropertyPathParser
 	[TestMethod]
 	[DataRow("")]
 	[DataRow((string)null)]
+	[DataRow("\0Ignored")]
 	public void When_EmptyPath_Then_SourceAccess(string path)
 	{
 		var parser = Parse(path);
@@ -55,6 +57,52 @@ public class Given_PropertyPathParser
 		var parser = Parse(path);
 
 		Assert.AreSame(path, parser.GetDescriptorAt(0).Name);
+	}
+
+	[TestMethod]
+	[DataRow("Description")]
+	[DataRow("Label")]
+	[DataRow("CommandBarTemplateSettings")]
+	[DataRow("TemplateSettings")]
+	[DataRow("AccessKey")]
+	[DataRow("KeyboardAccelerators")]
+	[DataRow("IconSource")]
+	[DataRow("IsEnabled")]
+	[DataRow("IsVisible")]
+	public void When_CommonPropertyName_Then_SharedStringIsReused(string name)
+	{
+		var parser = Parse($"Owner.{name}");
+
+		Assert.AreEqual(name, parser.GetDescriptorAt(1).Name);
+		Assert.AreSame(PropertyPathCommonNames.TryGetCommonPropertyName(name), parser.GetDescriptorAt(1).Name);
+		Assert.IsNull(PropertyPathCommonNames.TryGetCommonPropertyName(name.ToLowerInvariant()));
+	}
+
+	[TestMethod]
+	public void When_PathContainsNullTerminator_Then_RemainingCharactersAreIgnored()
+	{
+		var parser = Parse("Name\0.Ignored");
+
+		Assert.AreEqual(1, parser.DescriptorCount);
+		AssertPropertyAccess(parser, 0, "Name");
+	}
+
+	[TestMethod]
+	[DataRow("")]
+	[DataRow("Name")]
+	[DataRow("Description.Label")]
+	[DataRow("[1][2]")]
+	public void When_InlineDescriptorsDoNotNeedStrings_Then_ParsingDoesNotAllocate(string path)
+	{
+		_ = Parse(path);
+		var parser = new PropertyPathParser();
+		var before = GC.GetAllocatedBytesForCurrentThread();
+
+		parser.SetSource(path, null);
+
+		var allocated = GC.GetAllocatedBytesForCurrentThread() - before;
+		Assert.AreEqual(0L, allocated);
+		GC.KeepAlive(parser);
 	}
 
 	[TestMethod]
@@ -136,7 +184,7 @@ public class Given_PropertyPathParser
 	}
 
 	[TestMethod]
-	public void When_EmptyIndexer_Then_ZeroIntIndexer()
+	public void When_EmptyIndexer_Then_StringIndexer()
 	{
 		var parser = Parse("Items[]");
 
@@ -144,35 +192,68 @@ public class Given_PropertyPathParser
 		AssertPropertyAccess(parser, 0, "Items");
 
 		var indexer = parser.GetDescriptorAt(1);
+		Assert.AreEqual(PropertyPathStepDescriptorKind.StringIndexer, indexer.Kind);
+		Assert.AreEqual("", indexer.Name);
+	}
+
+	[TestMethod]
+	[DataRow("\u0661\u0662\u0663")]
+	[DataRow("\u0967\u0968\u0969")]
+	[DataRow("\uff11\uff12\uff13")]
+	[DataRow("1\u0662\uff13")]
+	public void When_UnicodeDigitIndexer_Then_IntIndexer(string digits)
+	{
+		var parser = Parse($"Items[{digits}]");
+
+		Assert.AreEqual(2, parser.DescriptorCount);
+		AssertPropertyAccess(parser, 0, "Items");
+
+		var indexer = parser.GetDescriptorAt(1);
 		Assert.AreEqual(PropertyPathStepDescriptorKind.IntIndexer, indexer.Kind);
-		Assert.AreEqual(0, indexer.Index);
+		Assert.AreEqual(123, indexer.Index);
 	}
 
 	[TestMethod]
-	public void When_NonAsciiDigitIndexer_Then_StringIndexer()
+	[DataRow("\u00B2", 0)]
+	[DataRow("12\u00B2", 12)]
+	[DataRow("\u07C1", 0)]
+	[DataRow("12\u07C1", 12)]
+	[DataRow("\u0BE7", 0)]
+	public void When_CrtDigitHasNoConversion_Then_ConversionStops(string digits, int expected)
 	{
-		// std::iswdigit only matches ASCII digits, so these must not be parsed as an integer index.
-		var parser = Parse("Items[\u0661\u0662\u0663]");
+		var indexer = Parse($"Items[{digits}]").GetDescriptorAt(1);
+
+		Assert.AreEqual(PropertyPathStepDescriptorKind.IntIndexer, indexer.Kind);
+		Assert.AreEqual(expected, indexer.Index);
+	}
+
+	[TestMethod]
+	[DataRow("\u0DE6")]
+	[DataRow("\u1A80")]
+	[DataRow("\uA9D0")]
+	[DataRow("\uABF0")]
+	public void When_DigitIsOutsideCrtTable_Then_StringIndexer(string digits)
+	{
+		var indexer = Parse($"Items[{digits}]").GetDescriptorAt(1);
+
+		Assert.AreEqual(PropertyPathStepDescriptorKind.StringIndexer, indexer.Kind);
+		Assert.AreEqual(digits, indexer.Name);
+	}
+
+	[TestMethod]
+	[DataRow("2147483648")]
+	[DataRow("4294967296")]
+	[DataRow("999999999999999999999999999")]
+	public void When_IndexerLargerThanInt_Then_IntMaxValue(string digits)
+	{
+		var parser = Parse($"Items[{digits}]");
 
 		Assert.AreEqual(2, parser.DescriptorCount);
 		AssertPropertyAccess(parser, 0, "Items");
 
 		var indexer = parser.GetDescriptorAt(1);
-		Assert.AreEqual(PropertyPathStepDescriptorKind.StringIndexer, indexer.Kind);
-		Assert.AreEqual("\u0661\u0662\u0663", indexer.Name);
-	}
-
-	[TestMethod]
-	public void When_IndexerLargerThanInt_Then_StringIndexer()
-	{
-		var parser = Parse("Items[99999999999]");
-
-		Assert.AreEqual(2, parser.DescriptorCount);
-		AssertPropertyAccess(parser, 0, "Items");
-
-		var indexer = parser.GetDescriptorAt(1);
-		Assert.AreEqual(PropertyPathStepDescriptorKind.StringIndexer, indexer.Kind);
-		Assert.AreEqual("99999999999", indexer.Name);
+		Assert.AreEqual(PropertyPathStepDescriptorKind.IntIndexer, indexer.Kind);
+		Assert.AreEqual(int.MaxValue, indexer.Index);
 	}
 
 	[TestMethod]
@@ -235,6 +316,7 @@ public class Given_PropertyPathParser
 	[DataRow("(Grid.Row)Name", DisplayName = "Missing separator after attached property")]
 	[DataRow("(Unknown.Unknown)", DisplayName = "Unresolvable attached property")]
 	[DataRow("Items[0", DisplayName = "Unterminated indexer")]
+	[DataRow("Items[\0]", DisplayName = "Null-terminated indexer")]
 	[DataRow("Items[0]Name", DisplayName = "Missing separator after indexer")]
 	[DataRow("Name.", DisplayName = "Trailing separator")]
 	[DataRow("First..Second", DisplayName = "Empty step")]
@@ -244,11 +326,27 @@ public class Given_PropertyPathParser
 	}
 
 	[TestMethod]
-	public void When_SetSource_CalledTwice_Then_Ignored()
+	[DataRow("Name.")]
+	[DataRow("A.B.C.D.")]
+	[DataRow("Items[0]Name")]
+	public void When_ParseFails_Then_NoPartialDescriptorsArePublished(string path)
+	{
+		var parser = new PropertyPathParser();
+		Assert.ThrowsExactly<ArgumentException>(() => parser.SetSource(path, null));
+		Assert.AreEqual(0, parser.DescriptorCount);
+
+		parser.SetSource("Replacement", null);
+		Assert.AreEqual(1, parser.DescriptorCount);
+		AssertPropertyAccess(parser, 0, "Replacement");
+	}
+
+	[TestMethod]
+	public void When_SetSource_CalledTwice_Then_UnexpectedHResult()
 	{
 		var parser = new PropertyPathParser();
 		parser.SetSource("First", null);
-		parser.SetSource("Second.Third", null);
+		var exception = Assert.ThrowsExactly<COMException>(() => parser.SetSource("Second.Third", null));
+		Assert.AreEqual(unchecked((int)0x8000FFFF), exception.HResult);
 
 		Assert.AreEqual(1, parser.DescriptorCount);
 		AssertPropertyAccess(parser, 0, "First");
@@ -283,9 +381,12 @@ public class Given_PropertyPathParser
 	}
 
 	[TestMethod]
-	public void When_Listener_Then_ValueIsResolved()
+	[DataRow("Child.Values[1]", "b")]
+	[DataRow("Child.Values[\u0661]", "b")]
+	[DataRow("Child.Values[\u00B2]", "a")]
+	public void When_Listener_Then_ValueIsResolved(string path, string expected)
 	{
-		var parser = Parse("Child.Values[1]");
+		var parser = Parse(path);
 
 		using var listener = new PropertyPathListener();
 		listener.Initialize(null, parser, fListenToChanges: false, fUseWeakReferenceForSource: false);
@@ -293,7 +394,7 @@ public class Given_PropertyPathParser
 		listener.SetSource(new Source { Child = new Child { Values = new[] { "a", "b", "c" } } });
 
 		Assert.IsTrue(listener.FullPathExists());
-		Assert.AreEqual("b", listener.GetValue());
+		Assert.AreEqual(expected, listener.GetValue());
 	}
 
 	[TestMethod]

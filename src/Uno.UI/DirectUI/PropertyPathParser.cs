@@ -1,9 +1,15 @@
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
+
+// MUX Reference dxaml/xcp/dxaml/lib/PropertyPathParser.h and PropertyPathParser.cpp, commit 3c9c168844f06c6ac000a97977f0bb3f4c90fd75
+
 #nullable enable
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using Microsoft.UI.Xaml;
 using Uno.UI.Xaml.Markup;
 
@@ -11,13 +17,6 @@ namespace DirectUI;
 
 internal partial class PropertyPathParser // src\dxaml\xcp\dxaml\lib\PropertyPathParser.h
 {
-	// public:
-	//public PropertyPathParser();
-	//public ~PropertyPathParser();
-
-	// public:
-	//public void SetSource(string szPath, XamlServiceProviderContext context);
-
 	/// <summary>
 	/// The number of steps collected by <see cref="SetSource"/>.
 	/// </summary>
@@ -38,27 +37,7 @@ internal partial class PropertyPathParser // src\dxaml\xcp\dxaml\lib\PropertyPat
 			: m_overflowDescriptors![index - InlineDescriptorCapacity];
 	}
 
-	// private:
-	//private void Parse(string szPropertyPath, XamlServiceProviderContext context);
-
-	//private bool IsNumericIndex(string szIndex);
-
-	//private void AppendStepDescriptor(PropertyPathStepDescriptor pDescriptor);
-
-	//private PropertyPathStepDescriptor CreateDependencyPropertyPathStepDescriptor(
-	//	uint nPropertyLength,
-	//	string pchProperty,
-	//	XamlServiceProviderContext context);
-
-	//private DependencyProperty/*?*/ GetDPFromName(
-	//	uint nPropertyLength,
-	//	string pchProperty,
-	//	XamlServiceProviderContext context);
-
-	// private:
-
-	// A path usually holds 0-2 steps, so the first two are kept inline to avoid heap allocations
-	// in the common case. This mirrors the Jupiter::stack_vector<PropertyPathStepDescriptor, 2> used by WinUI.
+	// Uno: managed inline slots and an overflow list replace WinUI's tagged native heap pointer.
 	private const int InlineDescriptorCapacity = 2;
 
 	[InlineArray(InlineDescriptorCapacity)]
@@ -73,24 +52,25 @@ internal partial class PropertyPathParser // src\dxaml\xcp\dxaml\lib\PropertyPat
 }
 partial class PropertyPathParser // src\dxaml\xcp\dxaml\lib\PropertyPathParser.cpp
 {
-	public PropertyPathParser()
+	// Called from PropertyPathParser::Parse to move descriptors from stack storage into the object.
+	// Must only be called once per object.
+	private void FinalizeDescriptors(
+		in InlineDescriptorBuffer descriptors,
+		List<PropertyPathStepDescriptor>? overflowDescriptors,
+		int count)
 	{
+		Debug.Assert(m_descriptorCount == 0);
+		m_inlineDescriptors = descriptors;
+		m_overflowDescriptors = overflowDescriptors;
+		m_descriptorCount = count;
 	}
-	//~PropertyPathParser()
-	//{
-	//	std::for_each(m_descriptors.begin(), m_descriptors.end(),
-	//		[](PropertyPathStepDescriptor * pDescriptor)
-	//		{
-	//		delete pDescriptor;
-	//	});
-	//}
 
 	public void SetSource(string? szPath, XamlServiceProviderContext? context)
 	{
 		// The source can only be called once
 		if (m_descriptorCount != 0)
 		{
-			return;
+			throw new COMException("The property path has already been parsed.", unchecked((int)0x8000FFFF));
 		}
 
 		Parse(szPath, context);
@@ -106,12 +86,20 @@ partial class PropertyPathParser // src\dxaml\xcp\dxaml\lib\PropertyPathParser.c
 		//string pCurrentProperty = null;
 		bool fExpectingProperty = false;
 
+		// Build up descriptors in a local stack_vector during parsing.
+		// At the end, we'll transfer to our storage with FinalizeDescriptors.
+		// Uno: a captured value-type buffer keeps the first two slots allocation-free.
+		InlineDescriptorBuffer localDescriptors = default;
+		List<PropertyPathStepDescriptor>? localOverflowDescriptors = null;
+		var localDescriptorCount = 0;
+
 		// If the property path is empty or NULL then this means that we're binding
 		// directly to the source
-		if (string.IsNullOrEmpty(szPropertyPath))
+		if (string.IsNullOrEmpty(szPropertyPath) || szPropertyPath[0] == '\0')
 		{
 			// This will be the only step in the chain
 			AppendStepDescriptor(PropertyPathStepDescriptor.CreateSourceAccess());
+			FinalizeDescriptors(localDescriptors, localOverflowDescriptors, localDescriptorCount);
 
 			return;
 		}
@@ -122,6 +110,11 @@ partial class PropertyPathParser // src\dxaml\xcp\dxaml\lib\PropertyPathParser.c
 		//pCurrentProperty = pPropertyPath;
 		var source = szPropertyPath;
 		var path = szPropertyPath.AsSpan();
+		// Uno: native WCHAR pointers stop at the first terminator, even inside a managed string.
+		if (path.IndexOf('\0') is var terminator && terminator >= 0)
+		{
+			path = path.Slice(0, terminator);
+		}
 		var iPropertyPath = 0;
 		var iCurrentProperty = 0;
 
@@ -197,9 +190,10 @@ partial class PropertyPathParser // src\dxaml\xcp\dxaml\lib\PropertyPathParser.c
 					// Update the pointer for the current property
 					iCurrentProperty = iPropertyPath + 1;
 
-					// Now we can create a property path step, and add it to the list
-					AppendStepDescriptor(
-						PropertyPathStepDescriptor.CreatePropertyAccess(GetSegment(source, iProperty, cProperty)));
+					// Check if this is a common property name we can use without allocation
+					var commonName = PropertyPathCommonNames.TryGetCommonPropertyName(path.Slice(iProperty, cProperty));
+					AppendStepDescriptor(PropertyPathStepDescriptor.CreatePropertyAccess(
+						commonName ?? GetSegment(source, iProperty, cProperty)));
 
 					// If the separator found was a '.' then the next 
 					// step must be a property otherwise it is an indexer
@@ -248,9 +242,9 @@ partial class PropertyPathParser // src\dxaml\xcp\dxaml\lib\PropertyPathParser.c
 					var szIndex = path.Slice(iIndex, cIndex);
 
 					// Create the right type of indexer
-					if (TryGetIntIndex(szIndex, out var index))
+					if (IsNumericIndex(szIndex))
 					{
-						AppendStepDescriptor(PropertyPathStepDescriptor.CreateIntIndexer(index));
+						AppendStepDescriptor(PropertyPathStepDescriptor.CreateIntIndexer(ParseIntIndexer(szIndex)));
 					}
 					else
 					{
@@ -292,51 +286,41 @@ partial class PropertyPathParser // src\dxaml\xcp\dxaml\lib\PropertyPathParser.c
 
 			iPropertyPath++;
 		}
+
+		// Transfer descriptors to optimal storage if parsing succeeded
+		FinalizeDescriptors(localDescriptors, localOverflowDescriptors, localDescriptorCount);
+
+		void AppendStepDescriptor(in PropertyPathStepDescriptor descriptor)
+		{
+			if (localDescriptorCount < InlineDescriptorCapacity)
+			{
+				localDescriptors[localDescriptorCount] = descriptor;
+			}
+			else
+			{
+				(localOverflowDescriptors ??= new List<PropertyPathStepDescriptor>()).Add(descriptor);
+			}
+
+			localDescriptorCount++;
+		}
 	}
 
-	private void AppendStepDescriptor(in PropertyPathStepDescriptor descriptor)
+	private static bool IsNumericIndex(ReadOnlySpan<char> szIndex)
 	{
-		if (m_descriptorCount < InlineDescriptorCapacity)
+		if (szIndex.IsEmpty)
 		{
-			m_inlineDescriptors[m_descriptorCount] = descriptor;
-		}
-		else
-		{
-			(m_overflowDescriptors ??= new List<PropertyPathStepDescriptor>()).Add(descriptor);
+			return false;
 		}
 
-		m_descriptorCount++;
-	}
-
-	/// <summary>
-	/// Materializes a path segment, reusing the source instance when the segment spans the whole path.
-	/// </summary>
-	private static string GetSegment(string source, int start, int length)
-		=> start == 0 && length == source.Length ? source : source.Substring(start, length);
-
-	/// <summary>
-	/// Mirrors the native <c>std::iswdigit</c> + <c>_wtoi</c> pair: only ASCII digits form an integer
-	/// indexer (so e.g. Arabic-Indic digits stay a string indexer) and an empty index is 0.
-	/// </summary>
-	private static bool TryGetIntIndex(ReadOnlySpan<char> szIndex, out int index)
-	{
 		foreach (var c in szIndex)
 		{
-			if ((uint)(c - '0') > 9) // std::iswdigit -> "0123456789"
+			if (!IsWideDigit(c))
 			{
-				index = 0;
 				return false;
 			}
 		}
 
-		if (szIndex.IsEmpty)
-		{
-			index = 0;
-			return true;
-		}
-
-		// An index too large for an int falls back to a string indexer instead of throwing.
-		return int.TryParse(szIndex, NumberStyles.None, CultureInfo.InvariantCulture, out index);
+		return true;
 	}
 
 	private PropertyPathStepDescriptor CreateDependencyPropertyPathStepDescriptor(

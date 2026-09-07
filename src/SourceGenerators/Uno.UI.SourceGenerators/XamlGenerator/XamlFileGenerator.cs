@@ -3336,12 +3336,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(objectDefinition).isInside;
-				// Template members get their templated parent from the materializing template's settings, so the
-				// apply block needs access to it. Computed before the block so it can shape the callback signature.
+				// Template members get their templated parent from the materializing template's settings. This only
+				// gates the OnTemplateMemberCreated call below; the signature is shaped by isInsideFrameworkTemplate.
 				var needsTemplatedParent = isInsideFrameworkTemplate
 					&& IsType(objectDefinitionType, Generation.DependencyObjectSymbol.Value);
 
-				using (var writer = CreateApplyBlock(outerwriter, objectDefinition, passTemplateSettings: needsTemplatedParent))
+				// Every apply block inside a template takes the settings, even when the object itself has no
+				// templated parent to receive: a nested apply for a descendant that does need them passes
+				// __settings along from here, so it has to be in scope even here.
+				using (var writer = CreateApplyBlock(outerwriter, objectDefinition, passTemplateSettings: isInsideFrameworkTemplate))
 				{
 					XamlMemberDefinition? uidMember = null;
 					XamlMemberDefinition? nameMember = null;
