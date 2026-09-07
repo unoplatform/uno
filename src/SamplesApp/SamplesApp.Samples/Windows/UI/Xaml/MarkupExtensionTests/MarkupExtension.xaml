@@ -16,8 +16,8 @@
 
         <DataTemplate x:Key="MarkupDataTemplate" x:DataType="ex:EntityObject">
             <StackPanel>
-                <TextBlock FontSize="16" Text="{x:Bind StringProperty, Mode=OneWay}" />
-                <TextBlock FontSize="16" Text="{x:Bind IntProperty, Mode=OneWay}" />
+                <TextBlock FontSize="16" Text="{x:Bind StringProperty, Mode=OneTime}" />
+                <TextBlock FontSize="16" Text="{x:Bind IntProperty, Mode=OneTime}" />
 
                 <!--  Make a markup extension inside a DataTemplate generates correctly  -->
                 <TextBlock FontSize="16" Text="{ex:Simple TextValue={StaticResource ResourceString2}}" />
