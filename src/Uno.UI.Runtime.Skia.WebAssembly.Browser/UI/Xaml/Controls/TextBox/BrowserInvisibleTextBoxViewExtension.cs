@@ -107,6 +107,14 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	}
 
 	[JSExport]
+	private static Task OnNativeBlurAsync()
+	{
+		OnNativeBlur();
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
 	private static Task OnSelectionChangedAsync(int selectionStart, int selectionLength)
 	{
 		OnSelectionChanged(selectionStart, selectionLength);

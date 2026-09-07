@@ -220,6 +220,14 @@
 					BrowserInvisibleTextBoxViewExtension.enqueue(() => BrowserInvisibleTextBoxViewExtension._exports.OnNativePasteAsync(text));
 				};
 
+				input.addEventListener("blur", () => {
+					if (BrowserInvisibleTextBoxViewExtension.suppressBlurNotification) {
+						return;
+					}
+
+					BrowserInvisibleTextBoxViewExtension.enqueue(() => BrowserInvisibleTextBoxViewExtension._exports.OnNativeBlurAsync());
+				});
+
 				// See below.
 				input.addEventListener("beforeinput", (ev: InputEvent) => {
 					if ((ev.inputType === "insertLineBreak" || ev.inputType === "insertParagraph") && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
