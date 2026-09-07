@@ -1,8 +1,4 @@
-﻿#if DEPENDENCY_PROPERTY_CACHE_TESTS
-#define IS_UNIT_TESTS
-#endif
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
@@ -39,16 +35,10 @@ namespace Microsoft.UI.Xaml
 		private readonly static DependencyPropertyRegistry _registry = DependencyPropertyRegistry.Instance;
 
 		private readonly static NameToPropertyDictionary _getPropertyCache = new NameToPropertyDictionary();
-		private readonly static object _getPropertyCacheGate = new();
-		private static int _getPropertyCacheVersion;
-#if IS_UNIT_TESTS
-		internal static Action<Type, string> GetPropertyCacheSearchKeyUpdatedTestHook;
-		internal static Action<Type, string> GetPropertyCacheResetTestHook;
-#endif
 		private static object DefaultThemeAnimationDurationBox = new Duration(FeatureConfiguration.ThemeAnimation.DefaultThemeAnimationDuration);
 
 		/// <summary>
-		/// A synchronized <see cref="PropertyCacheEntry"/> reused for lookups to avoid creating new instances.
+		/// A static <see cref="PropertyCacheEntry"/> used for lookups and avoid creating new instances. This assumes that uses are non-reentrant.
 		/// </summary>
 		private readonly static PropertyCacheEntry _searchPropertyCacheEntry = new();
 
@@ -64,19 +54,11 @@ namespace Microsoft.UI.Xaml
 		{
 			_registry.RemoveNonDefaultAlcEntries();
 			_getInheritedPropertiesForType.RemoveNonDefaultAlcEntries();
+			_getPropertyCache.RemoveNonDefaultAlcEntries();
 			_isTypeNullableDictionary.RemoveNonDefaultAlcEntries();
 
-			lock (_getPropertyCacheGate)
-			{
-				_getPropertyCache.RemoveNonDefaultAlcEntries();
-
-				// The pooled lookup key retains the last-queried Type past the cache prunes.
-				_searchPropertyCacheEntry.Update(typeof(object), "");
-				unchecked
-				{
-					_getPropertyCacheVersion++;
-				}
-			}
+			// The pooled lookup key retains the last-queried Type past the cache prunes.
+			_searchPropertyCacheEntry.Update(typeof(object), "");
 		}
 
 		private readonly PropertyMetadata _ownerTypeMetadata; // For perf consideration, we keep direct ref the metadata for the owner type
@@ -393,42 +375,14 @@ namespace Microsoft.UI.Xaml
 				throw new InvalidOperationException("The dependency property system should not be accessed from non UI thread.");
 			}
 
-			while (true)
+			_searchPropertyCacheEntry.Update(type, name);
+
+			if (!_getPropertyCache.TryGetValue(_searchPropertyCacheEntry, out var result))
 			{
-				PropertyCacheEntry key;
-				int version;
-				lock (_getPropertyCacheGate)
-				{
-					_searchPropertyCacheEntry.Update(type, name);
-#if IS_UNIT_TESTS
-					GetPropertyCacheSearchKeyUpdatedTestHook?.Invoke(type, name);
-#endif
-
-					if (_getPropertyCache.TryGetValue(_searchPropertyCacheEntry, out var cached))
-					{
-						return cached;
-					}
-
-					key = _searchPropertyCacheEntry.Clone();
-					version = _getPropertyCacheVersion;
-				}
-
-				var resolved = InternalGetProperty(type, name);
-
-				lock (_getPropertyCacheGate)
-				{
-					if (_getPropertyCache.TryGetValue(key, out var published))
-					{
-						return published;
-					}
-
-					if (version == _getPropertyCacheVersion)
-					{
-						_getPropertyCache.Add(key, resolved);
-						return resolved;
-					}
-				}
+				_getPropertyCache.Add(_searchPropertyCacheEntry.Clone(), result = InternalGetProperty(type, name));
 			}
+
+			return result;
 		}
 
 		internal static DependencyProperty GetProperty(string type, string name)
@@ -443,23 +397,12 @@ namespace Microsoft.UI.Xaml
 
 		private static void ResetGetPropertyCache(Type ownerType, string name)
 		{
-			lock (_getPropertyCacheGate)
+			if (_getPropertyCache.Count != 0)
 			{
-				if (_getPropertyCache.Count != 0)
-				{
-					_searchPropertyCacheEntry.Update(ownerType, name);
+				_searchPropertyCacheEntry.Update(ownerType, name);
 
-					_getPropertyCache.Remove(_searchPropertyCacheEntry);
-				}
-
-				unchecked
-				{
-					_getPropertyCacheVersion++;
-				}
+				_getPropertyCache.Remove(_searchPropertyCacheEntry);
 			}
-#if IS_UNIT_TESTS
-			GetPropertyCacheResetTestHook?.Invoke(ownerType, name);
-#endif
 		}
 
 		private static DependencyProperty InternalGetProperty(Type type, string name)
@@ -509,8 +452,9 @@ namespace Microsoft.UI.Xaml
 
 		private static void RegisterProperty(Type ownerType, string name, DependencyProperty newProperty)
 		{
-			_registry.Add(ownerType, name, newProperty);
 			ResetGetPropertyCache(ownerType, name);
+
+			_registry.Add(ownerType, name, newProperty);
 		}
 
 		/// <summary>

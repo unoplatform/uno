@@ -78,27 +78,18 @@ namespace Uno.UI
 
 		private static readonly Logger _log = typeof(ResourceResolver).Log();
 
-		[ThreadStatic]
-		private static Stack<XamlScope> _scopeStack;
-
-		private static Stack<XamlScope> ScopeStack
-		{
-			get
-			{
-				if (_scopeStack is null)
-				{
-					_scopeStack = new Stack<XamlScope>();
-					_scopeStack.Push(XamlScope.Create());
-				}
-
-				return _scopeStack;
-			}
-		}
+		private static readonly Stack<XamlScope> _scopeStack;
 
 		/// <summary>
 		/// The current xaml scope for resource resolution.
 		/// </summary>
-		internal static XamlScope CurrentScope => ScopeStack.Peek();
+		internal static XamlScope CurrentScope => _scopeStack.Peek();
+
+		static ResourceResolver()
+		{
+			_scopeStack = new Stack<XamlScope>();
+			_scopeStack.Push(XamlScope.Create()); //There should always be a base-level scope (this will be used when no template is being resolved)
+		}
 
 		/// <summary>
 		/// Performs a one-time, typed resolution of a named resource, using Application.Resources.
@@ -874,7 +865,7 @@ namespace Uno.UI
 		/// Push a new <see cref="XamlScope"/>, typically because a template is being materialized.
 		/// </summary>
 		/// <param name="scope"></param>
-		internal static void PushNewScope(XamlScope scope) => ScopeStack.Push(scope);
+		internal static void PushNewScope(XamlScope scope) => _scopeStack.Push(scope);
 		/// <summary>
 		/// Push a new Resources source to the current xaml scope.
 		/// </summary>
@@ -884,27 +875,24 @@ namespace Uno.UI
 		/// </summary>
 		internal static void PushSourceToScope(ManagedWeakReference source)
 		{
-			var scopeStack = ScopeStack;
-			var current = scopeStack.Pop();
-			scopeStack.Push(current.Push(source));
+			var current = _scopeStack.Pop();
+			_scopeStack.Push(current.Push(source));
 		}
 		/// <summary>
 		/// Pop Resources source from current xaml scope.
 		/// </summary>
 		internal static void PopSourceFromScope()
 		{
-			var scopeStack = ScopeStack;
-			var current = scopeStack.Pop();
-			scopeStack.Push(current.Pop());
+			var current = _scopeStack.Pop();
+			_scopeStack.Push(current.Pop());
 		}
 		/// <summary>
 		/// Pop current <see cref="XamlScope"/>, typically because template materialization is complete.
 		/// </summary>
 		internal static void PopScope()
 		{
-			var scopeStack = ScopeStack;
-			scopeStack.Pop();
-			if (scopeStack.Count == 0)
+			_scopeStack.Pop();
+			if (_scopeStack.Count == 0)
 			{
 				throw new InvalidOperationException("Base scope should never be popped.");
 			}
