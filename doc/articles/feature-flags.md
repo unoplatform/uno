@@ -37,6 +37,20 @@ A decoded image that nothing displays anymore (its `Image` was unloaded or given
 
 Uno decodes an image at its full size unless `DecodePixelWidth` or `DecodePixelHeight` is set, where WinUI decodes it at its rendered size by default, so the same images can hold far more memory than on WinUI. Set the limit to the app's memory budget: a higher one keeps more recently shown images ready to show again, a lower one (down to `0`) frees them sooner. A decode size reduces what each image holds in the first place.
 
+## Accent color
+
+### Overriding the system accent color
+
+By default, the `SystemAccentColor` theme resources and `UISettings.GetColorValue(UIColorType.Accent)` follow the accent color of the operating system, see [View Management](xref:Uno.Features.WinUIViewManagement). To force a specific accent regardless of the OS, for example to enforce a brand color or to get deterministic screenshots in tests, set `Uno.UI.FeatureConfiguration.AccentColor.OverrideAccentColor` before the UI is created, typically in the `App` constructor:
+
+```csharp
+#if HAS_UNO
+Uno.UI.FeatureConfiguration.AccentColor.OverrideAccentColor = Windows.UI.Color.FromArgb(0xFF, 0x10, 0x7C, 0x10);
+#endif
+```
+
+The lighter and darker shades are derived from the color you provide. Set the property back to `null` to follow the operating system again. Changing the override at runtime raises `UISettings.ColorValuesChanged` and updates `{ThemeResource}` references to the accent resources.
+
 ## ComboBox
 
 ### Default preferred placement
