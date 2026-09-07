@@ -22,6 +22,7 @@ using Microsoft.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
+using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -51,8 +52,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	protected override void DisposeCore()
 	{
 		// WebAssembly runs in a single browser tab; disposal is not part of the
-		// per-window lifecycle exercised by the Skia-Desktop router. No-op so the
-		// base-class lifecycle contract holds.
+		// per-window lifecycle exercised by the Skia-Desktop router.
+		_relationshipPeers.Clear();
 	}
 
 	private bool _isAccessibilityEnabled;
@@ -183,6 +184,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// outermost OnChildAdded call for panels loaded after accessibility is already enabled.
 	/// </summary>
 	private readonly List<(IntPtr Handle, WeakReference<AutomationPeer> Peer)> _pendingLabelledBy = new();
+	private readonly Dictionary<IntPtr, WeakReference<AutomationPeer>> _relationshipPeers = new();
+	private bool _relationshipRefreshQueued;
 
 	/// <summary>
 	/// Reentrancy depth of <see cref="OnChildAdded"/>. OnChildAdded recurses through a whole subtree
@@ -452,6 +455,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			if (--_onChildAddedDepth == 0)
 			{
 				DrainPendingLabelledBy();
+				QueueRelationshipRefresh();
 			}
 		}
 	}
@@ -484,6 +488,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			// Only remove from DOM if this element was actually in the semantic tree
 			var childHandle = child.Visual.Handle;
 			_pendingLabelledBy.RemoveAll(entry => entry.Handle == childHandle);
+			_relationshipPeers.Remove(childHandle);
 			if (_semanticParentMap.TryGetValue(childHandle, out var semanticParent))
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
@@ -494,6 +499,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				_semanticParentMap.Remove(childHandle);
 				_prunedHandles.Remove(childHandle);
 			}
+			QueueRelationshipRefresh();
 		}
 		catch (Exception ex)
 		{
@@ -1301,6 +1307,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// registered. Re-resolve the deferred aria-labelledby IDREFs so emission is order-independent
 		// (covers labellers built after the labelled control). HasSemanticElement still gates each one.
 		DrainPendingLabelledBy();
+		QueueRelationshipRefresh();
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
@@ -1341,6 +1348,60 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			{
 				NativeMethods.UpdateAriaLabelledBy(labelledHandle, labelledById);
 				_pendingLabelledBy.RemoveAt(i);
+			}
+		}
+	}
+
+	internal void UpdateRelationships(AutomationPeer peer, IntPtr handle)
+	{
+		var wasTracked = _relationshipPeers.TryGetValue(handle, out var reference);
+		if (SemanticElementFactory.ApplyRelationshipAttributes(peer, handle, clearMissing: wasTracked))
+		{
+			if (reference is not null)
+			{
+				reference.SetTarget(peer);
+			}
+			else
+			{
+				_relationshipPeers.Add(handle, new WeakReference<AutomationPeer>(peer));
+			}
+		}
+		else
+		{
+			_relationshipPeers.Remove(handle);
+		}
+	}
+
+	internal void QueueRelationshipRefresh()
+	{
+		if (!_isAccessibilityEnabled || IsDisposed || _relationshipRefreshQueued || _relationshipPeers.Count == 0)
+		{
+			return;
+		}
+
+		// A target can enter or leave the semantic tree without its source collection changing.
+		// Refresh only relation-bearing peers, once per batch, after all sibling nodes are registered.
+		_relationshipRefreshQueued = true;
+		NativeDispatcher.Main.Enqueue(RefreshRelationships, NativeDispatcherPriority.Normal);
+	}
+
+	private void RefreshRelationships()
+	{
+		_relationshipRefreshQueued = false;
+		if (!_isAccessibilityEnabled || IsDisposed)
+		{
+			return;
+		}
+
+		foreach (var (handle, reference) in _relationshipPeers.ToArray())
+		{
+			if (HasSemanticElement(handle) && reference.TryGetTarget(out var peer))
+			{
+				UpdateRelationships(peer, handle);
+			}
+			else
+			{
+				_relationshipPeers.Remove(handle);
 			}
 		}
 	}
@@ -2276,35 +2337,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			var labelledById = SemanticElementFactory.ResolveLabelledByIdRef(peer);
 			NativeMethods.UpdateAriaLabelledBy(element.Visual.Handle, labelledById ?? string.Empty);
 		}
-		else if (automationProperty == AutomationElementIdentifiers.DescribedByProperty &&
+		else if ((automationProperty == AutomationElementIdentifiers.DescribedByProperty ||
+			automationProperty == AutomationElementIdentifiers.ControlledPeersProperty ||
+			automationProperty == AutomationElementIdentifiers.FlowsToProperty) &&
 			TryGetPeerOwner(peer, out element))
 		{
-			// Dynamic aria-describedby: when DescribedBy collection changes
-			var describedByIds = SemanticElementFactory.ResolvePeerCollectionToIdList(peer.GetDescribedBy());
-			if (describedByIds is not null)
-			{
-				NativeMethods.UpdateAriaDescribedBy(element.Visual.Handle, describedByIds);
-			}
-		}
-		else if (automationProperty == AutomationElementIdentifiers.ControlledPeersProperty &&
-			TryGetPeerOwner(peer, out element))
-		{
-			// Dynamic aria-controls: when ControlledPeers collection changes
-			var controlledIds = SemanticElementFactory.ResolvePeerCollectionToIdList(peer.GetControlledPeers());
-			if (controlledIds is not null)
-			{
-				NativeMethods.UpdateAriaControls(element.Visual.Handle, controlledIds);
-			}
-		}
-		else if (automationProperty == AutomationElementIdentifiers.FlowsToProperty &&
-			TryGetPeerOwner(peer, out element))
-		{
-			// Dynamic aria-flowto: when FlowsTo collection changes
-			var flowsToIds = SemanticElementFactory.ResolvePeerCollectionToIdList(peer.GetFlowsTo());
-			if (flowsToIds is not null)
-			{
-				NativeMethods.UpdateAriaFlowTo(element.Visual.Handle, flowsToIds);
-			}
+			UpdateRelationships(peer, element.Visual.Handle);
 		}
 		else if (automationProperty == AutomationElementIdentifiers.PositionInSetProperty &&
 			TryGetPeerOwner(peer, out element))

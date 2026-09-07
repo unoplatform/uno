@@ -31,6 +31,13 @@ event types/senders, and LCIDs `1036`, `12`, `0`, and `1031`. Public API outcome
 WinUI's managed projection surfaces disabled actions as `COMException`, whereas Uno exposes its
 existing `ElementNotEnabledException`, both with `UIA_E_ELEMENTNOTENABLED`.
 
+**Browser root-cause fix and runtime validation:** semantic-node filtering must not permanently
+discard a relation whose target is registered later. Relation-bearing peers are weakly tracked and
+refreshed once per semantic-tree mutation batch, including virtualized target realization/removal.
+The published Skia-WASM app passed 44 targeted cases, including all three relationship attributes
+(`aria-describedby`, `aria-controls`, `aria-flowto`) with a following-sibling target, removal,
+reinsertion, and clearing the relation property.
+
 ### Implementation status (2026-07-09)
 
 Phase 1 (shared foundations) — landed with runtime tests (Skia Desktop) + live UIA-tree
@@ -114,6 +121,8 @@ Phase 4 (WASM — validated on a published Skia-WASM head via Playwright DOM ass
   IDREF is present (no double/competing naming, FR-019).
 - ✅ **WA-02** — `aria-describedby`/`controls`/`flowto` gate each related element on
   `HasSemanticElement`, so a node-less (e.g. Collapsed) target no longer produces a dangling IDREF.
+  Relations are re-resolved after semantic-tree changes so following siblings resolve, removed
+  targets are cleared, and reinserted targets are restored without changing the source collection.
 - **WA-05** — already handled: region/form gated on a name, main/nav/search kept unnamed
   (ARIA-valid), including landmark-only elements promoted onto the generic factory path.
 - ✅ **WA-07** — the 14 stale `[JSImport]` declarations left on
