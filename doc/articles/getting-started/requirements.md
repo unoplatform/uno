@@ -19,7 +19,7 @@ Uno Platform runs in browsers that support WebAssembly, including Chromium-based
 Two paths are available:
 
 - Applications built with Uno Platform's [Skia Desktop](xref:Uno.Skia.Desktop) target framework, supporting Windows 7 and above, using the `net10.0-desktop` target framework.
-- Apps built with WinAppSDK or WinUI run on [Windows 10 2004 (19041)](https://learn.microsoft.com/windows/uwp/whats-new/windows-10-build-19041) and above, using the `net10.0-windows10.0.19041` target framework. Uno.UI's API definition is aligned with that build, and it is the default `TargetPlatformMinVersion`. Lower versions can be targeted explicitly, down to the Windows App SDK floor of Windows 10 1809 (17763).
+- Apps built with WinAppSDK or WinUI run on [Windows 10 2004 (19041)](https://learn.microsoft.com/windows/uwp/whats-new/windows-10-build-19041) and above by default, using the `net10.0-windows10.0.19041` target framework. Uno.UI's API definition is aligned with that build, and it is the default `TargetPlatformMinVersion`. A lower `TargetPlatformMinVersion` can be set explicitly, down to the Windows App SDK floor of [Windows 10 1809 (17763)](https://learn.microsoft.com/windows/uwp/whats-new/windows-10-build-17763).
 
 ## Android
 

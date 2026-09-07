@@ -85,8 +85,8 @@ targets. These are the values the `Uno.Sdk` applies when a head does not set
 | Android | 21 on `net10.0-android`, 24 on `net11.0-android` | **24 on both** | .NET 11 requires API 24 (Android 7.0). 7.0 applies the same floor to `net10.0-android` so a single value covers every target framework. |
 | WinAppSDK | `10.0.18362.0` | **`10.0.19041.0`** | Windows 10 1903 is out of support and is not listed as a supported OS for the Windows App SDK. 19041 matches the `windows10.0.19041.0` target framework already used throughout. |
 
-The Android Wear floor is unchanged at API 26, and the `net*-desktop` and
-`net*-browserwasm` targets remain ungated.
+The Android Wear floor is unchanged at API 26, and no minimum OS version is enforced
+for the `net*-desktop` and `net*-browserwasm` targets.
 
 A head that sets these properties explicitly keeps its own value, so an app can still
 target lower versions where the underlying SDK allows it — but those combinations are no
