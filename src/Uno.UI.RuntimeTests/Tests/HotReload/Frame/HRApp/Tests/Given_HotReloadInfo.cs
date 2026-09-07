@@ -76,10 +76,10 @@ public class Given_HotReloadInfo : BaseTestClass
 		try
 		{
 			// Perform first replace
-			await client.TryUpdateFileAsync(new (file, "<!--place_holder-->", "<ToggleButton /><!--place_holder-->"), ct);
+			await client.TryUpdateFileAsync(new(file, "<!--place_holder-->", "<ToggleButton /><!--place_holder-->"), ct);
 
 			// Invoke HR that will **NOT** change anything
-			await client.TryUpdateFileAsync(new (file, "<!--place_holder-->", "<!--place_holder_no_changes-->"), ct);
+			await client.TryUpdateFileAsync(new(file, "<!--place_holder-->", "<!--place_holder_no_changes-->"), ct);
 
 			// This should cause https://github.com/dotnet/roslyn/issues/79898
 			// But as we produced changes in previous HR update (HRInfo), it should be fine.
