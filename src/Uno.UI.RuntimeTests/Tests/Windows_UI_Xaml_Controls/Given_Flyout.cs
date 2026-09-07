@@ -409,7 +409,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		// "Popup successfully fits left-aligned on Android - possibly because the status bar offset changes the layouting?"
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaTvOS)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Too_Large_For_Any_Fallback()
 		{
 			var target = new TextBlock
@@ -1546,7 +1546,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWasm)]
 		public async Task When_Button_ContextFlyout_XamlRoot()
 		{
 			var flyout = new Flyout();
@@ -1684,44 +1683,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finally
 			{
 				flyout?.Hide();
-			}
-		}
-#endif
-
-#if __APPLE_UIKIT__
-		[TestMethod]
-		[RequiresFullWindow]
-		public async Task When_Native_DatePickerFlyout_Placement()
-		{
-			var flyout = new NativeDatePickerFlyout();
-			try
-			{
-				var grid = new Grid();
-				var host = new Button() { Content = "Asd", Margin = new Thickness(30, 0) };
-				grid.Children.Add(host);
-				flyout.Content = new Button() { Content = "Test" };
-				FlyoutBase.SetAttachedFlyout(host, flyout);
-
-				TestServices.WindowHelper.WindowContent = grid;
-				await TestServices.WindowHelper.WaitForIdle();
-				await TestServices.WindowHelper.WaitForLoaded(grid);
-
-				FlyoutBase.ShowAttachedFlyout(host);
-
-				await TestServices.WindowHelper.WaitForIdle();
-				await TestServices.WindowHelper.WaitForIdle();
-
-				var popups = VisualTreeHelper.GetOpenPopupsForXamlRoot(host.XamlRoot);
-				var popupPanel = popups[0].PopupPanel;
-				var child = popupPanel.Children[0];
-				var transform = child.TransformToVisual(grid);
-				var topLeft = transform.TransformPoint(default);
-				Assert.AreEqual(0, topLeft.X); // Positioned on the left edge of the screen
-				Assert.IsGreaterThan(100, topLeft.Y); // Positioned lower on the screen
-			}
-			finally
-			{
-				flyout.Hide();
 			}
 		}
 #endif
@@ -2203,7 +2164,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		/// </summary>
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)] // Owner-subtree theme override is Skia-only; WinUI honors OS/app theme only
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/475")]
 		public async Task When_Flyout_Opened_From_Inner_Light_Boundary_Resolves_Light_ThemeResource()
 		{

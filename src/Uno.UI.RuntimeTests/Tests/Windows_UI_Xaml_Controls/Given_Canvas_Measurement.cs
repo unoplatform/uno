@@ -36,9 +36,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __ANDROID__
-		[Ignore("Currently fails on Android https://github.com/unoplatform/uno/issues/9080")]
-#endif
 		[RequiresFullWindow]
 		public async Task When_Verify_Canvas_With_Outer_Clip()
 		{
@@ -64,12 +61,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RequiresFullWindow]
 		public async Task When_Verify_Canvas_ZIndex()
 		{
-#if __ANDROID__
-			Assert.Inconclusive(); // Android doesn't support Canvas.ZIndex on any panel
-#endif
-#if __APPLE_UIKIT__
-			Assert.Inconclusive(); // iOS doesn't support Canvas.ZIndex on any panel
-#endif
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
@@ -119,9 +110,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __ANDROID__
-		[Ignore("Fails on Android.")]
-#endif
 		public async Task When_Canvas_Larger_Than_Parent_Should_Not_Clip()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))

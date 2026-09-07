@@ -52,9 +52,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/15460")]
-#if __ANDROID__
-		[Ignore("Doesn't pass in CI on Android")]
-#endif
 		public async Task When_ImplicitStyle()
 		{
 			var implicitStyle = new Style()

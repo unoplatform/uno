@@ -23,11 +23,7 @@ using Uno.UI.RuntimeTests.Helpers;
 using Combinatorial.MSTest;
 
 
-#if __APPLE_UIKIT__
-using UIKit;
-#else
 using Uno.UI.Extensions;
-#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -399,7 +395,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, false, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 10, false, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 10, false, false)]
-#if !__SKIA__ && !__WASM__
+#if !__SKIA__
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 0, false, false)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 0, false, false)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 10, false, false)]
@@ -413,7 +409,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 0, false, false)]
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 10, false, false)]
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 10, false, false)]
-#if !__SKIA__ && !__WASM__
+#if !__SKIA__
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 0, false, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0, false, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10, false, false)]
@@ -451,7 +447,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 0, false, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 10, false, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 10, false, false)]
-#if !__SKIA__ && !__WASM__
+#if !__SKIA__
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 0, false, false)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 0, false, false)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 10, false, false)]
@@ -482,7 +478,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 0, true, false)]
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 0, 10, true, false)]
 		[DataRow(HorizontalAlignment.Stretch, VerticalAlignment.Top, 10, 10, true, false)]
-#if !__SKIA__ && !__WASM__
+#if !__SKIA__
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 0, true, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0, true, false)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10, true, false)]
@@ -538,7 +534,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 0, false, true)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 0, 10, false, true)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Top, 10, 10, false, true)]
-#if !__SKIA__ && !__WASM__
+#if !__SKIA__
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 0, false, true)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 10, 0, false, true)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Top, 0, 10, false, true)]
@@ -556,7 +552,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 0, false, true)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 0, 10, false, true)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Center, 10, 10, false, true)]
-#if !__SKIA__ && !__WASM__
+#if !__SKIA__
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 0, false, true)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 10, 0, false, true)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Center, 0, 10, false, true)]
@@ -574,7 +570,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 0, false, true)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 0, 10, false, true)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Bottom, 10, 10, false, true)]
-#if !__SKIA__ && !__WASM__
+#if !__SKIA__
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 0, false, true)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 10, 0, false, true)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Bottom, 0, 10, false, true)]
@@ -592,7 +588,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 0, false, true)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 0, 10, false, true)]
 		[DataRow(HorizontalAlignment.Left, VerticalAlignment.Stretch, 10, 10, false, true)]
-#if !__SKIA__ && !__WASM__
+#if !__SKIA__
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 0, false, true)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 10, 0, false, true)]
 		[DataRow(HorizontalAlignment.Center, VerticalAlignment.Stretch, 0, 10, false, true)]
@@ -904,39 +900,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(new Point(20, -80), innerPoint);
 			Assert.AreEqual(new Point(40, -60), outerPoint);
 		}
-
-#if __ANDROID__
-		[TestMethod]
-		[RequiresFullWindow]
-		[RunsOnUIThread]
-		public async Task When_Offset_Within_Native_View()
-		{
-			var item = new Border()
-			{
-				Width = 100,
-				Height = 100,
-				Background = new SolidColorBrush(Colors.Red)
-			};
-
-			var innerNativeContainer = new Android.Widget.LinearLayout(ContextHelper.Current);
-			innerNativeContainer.SetPadding(33, 22, 0, 0);
-			innerNativeContainer.AddChild(item);
-
-			var outerNativeContainer = new Android.Widget.LinearLayout(ContextHelper.Current);
-			outerNativeContainer.SetPadding(7, 8, 0, 0);
-			outerNativeContainer.AddChild(innerNativeContainer);
-
-			var root = new ContentControl { Content = outerNativeContainer };
-
-			WindowContent = root;
-			await WaitForLoaded(root);
-			await WaitForIdle();
-
-			var point = item.TransformToVisual(root).TransformPoint(default);
-
-			Assert.AreEqual(new Point(40, 30), point);
-		}
-#endif
 
 		private static double X(HorizontalAlignment alignment, double available, double used, double margin)
 			=> alignment switch

@@ -7,7 +7,7 @@ using Windows.System;
 namespace Uno.UI.RuntimeTests.Tests.Windows_System
 {
 	[TestClass]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Wasm)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 	public class Given_BrowserVirtualKeyHelper
 	{
 		[TestMethod]

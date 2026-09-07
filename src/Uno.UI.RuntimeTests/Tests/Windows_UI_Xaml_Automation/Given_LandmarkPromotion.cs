@@ -16,7 +16,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 	{
 		[TestMethod]
 		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 		public void When_LandmarkType_Set_Then_Promoted_As_Group()
 		{
 			var grid = new Grid();
@@ -31,7 +30,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 		public void When_LocalizedLandmarkType_Set_Then_Promoted()
 		{
 			var grid = new Grid();
@@ -45,7 +43,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_Peer_Requested_Before_LocalizedLandmarkType_Set_Then_Promoted()
 		{
 			var grid = new Grid();
@@ -61,7 +59,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 		public void When_Name_And_Landmark_Then_NamedContainer_Precedence_But_Landmark_Exposed()
 		{
 			var grid = new Grid();
@@ -79,7 +76,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public void When_No_Name_Or_Landmark_Then_Not_Promoted()
 		{
 			var grid = new Grid();

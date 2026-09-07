@@ -25,9 +25,6 @@ using Point = Windows.Foundation.Point;
 using Windows.UI.Input.Preview.Injection;
 using Uno.UI.DevTools.Input;
 #endif
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 {

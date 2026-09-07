@@ -735,7 +735,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 		[TestMethod]
 		// Opening and inspecting the picker flyout is unreliable on Android in CI (see When_Time_Zone, #9080).
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.Android)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaAndroid)]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23538")]
 		public async Task When_MinYear_Equals_MaxYear_Year_Should_Not_Loop()
 		{
@@ -791,7 +791,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 		[TestMethod]
 		// Opening and inspecting the picker flyout is unreliable on Android in CI (see When_Time_Zone, #9080).
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.Android)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaAndroid)]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23538")]
 		public async Task When_Year_Range_Spans_Multiple_Years_Year_Column_Is_Populated()
 		{
@@ -846,7 +846,7 @@ namespace Microsoft.UI.Tests.Controls.DatePickerTests
 
 		[TestMethod]
 		// Opening and inspecting the picker flyout is unreliable on Android in CI (see When_Time_Zone, #9080).
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.Android)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaAndroid)]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23589")]
 		public async Task When_Year_Range_Spans_Two_Years_Year_Should_Not_Loop()
 		{

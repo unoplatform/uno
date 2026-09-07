@@ -8,8 +8,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation.Collections;
 #if WINAPPSDK
 using Uno.UI.Extensions;
-#elif __APPLE_UIKIT__
-using UIKit;
 #else
 using Uno.UI;
 #endif

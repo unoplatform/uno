@@ -19,8 +19,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
 [TestClass]
 [RunsOnUIThread]
-[PlatformCondition(ConditionMode.Exclude,
-	RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.NativeIOS)]
 public class Given_ElementTheme
 {
 	#region Basic RequestedTheme Propagation
@@ -4702,7 +4700,7 @@ public class Given_ElementTheme
 
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.NativeWasm)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24021")]
 	public async Task When_Editable_ComboBox_Focused_In_Dark_Theme_ContentElement_Foreground_Is_Light()
 	{

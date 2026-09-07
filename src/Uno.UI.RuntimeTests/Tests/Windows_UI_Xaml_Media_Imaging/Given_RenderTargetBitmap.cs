@@ -27,12 +27,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		private static readonly System.Numerics.Vector2 BorderSize = new(10, 10);
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("Not implemented yet.")]
-#endif
-#if __APPLE_UIKIT__
-		[Ignore("Currently fails on iOS: https://github.com/unoplatform/uno/issues/9080")]
-#endif
 		public async Task When_Render_Border_GetPixelsAsync()
 		{
 			var dpi = TestServices.WindowHelper.XamlRoot.RasterizationScale;
@@ -87,9 +81,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __WASM__
-		[Ignore("Not implemented yet.")]
-#endif
 		public async Task When_Render_Then_CanRenderOnCanvas()
 		{
 			var border = new Border()
@@ -132,9 +123,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("Not implemented yet.")]
-#endif
 		public async Task When_RenderNotOpaqueContent_Then_ImageNotOpaque()
 		{
 			var nonOpaqueColor = Color.FromArgb(0x80, 0xCC, 0x00, 0x00);
@@ -157,9 +145,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("Not implemented yet.")]
-#endif
 		public async Task When_Render_Asymmetric_Content_Then_Not_Flipped()
 		{
 			// Guards against vertically-flipped output when rendering through a GPU

@@ -103,38 +103,6 @@ public class Given_CalendarView
 		Assert.IsLessThanOrEqualTo(maxDecadeIndex - (maxDisplayedItems - pHost.Panel.Rows - 1), pHost.Panel.FirstVisibleIndex);
 	}
 
-#if __WASM__
-	[TestMethod]
-	[Ignore("Fails on Fluent styles #17272")]
-	public async Task When_ItemCornerRadius()
-	{
-		var calendarView = new CalendarView();
-		calendarView.OutOfScopeBackground = new SolidColorBrush(Microsoft.UI.Colors.Red);
-		calendarView.CalendarItemCornerRadius = new CornerRadius(40);
-		calendarView.DayItemCornerRadius = new CornerRadius(20);
-
-		await UITestHelper.Load(calendarView);
-		await TestServices.WindowHelper.WaitForIdle();
-
-		var hasOutOfScope = false;
-
-		foreach (var dayItem in calendarView.EnumerateDescendants().OfType<CalendarViewDayItem>())
-		{
-			var color = Uno.Foundation.WebAssemblyRuntime.InvokeJS($"document.getElementById({dayItem.HtmlId}).style[\"background-color\"]");
-			if (color == "rgb(255, 0, 0)")
-			{
-				hasOutOfScope = true;
-				var result = Uno.Foundation.WebAssemblyRuntime.InvokeJS($"document.getElementById({dayItem.HtmlId}).style[\"border-radius\"]");
-				Assert.AreEqual("21px", result);
-			}
-		}
-
-		Assert.IsTrue(hasOutOfScope);
-	}
-#endif
-#if __ANDROID__ || __APPLE_UIKIT__
-	[Ignore("Test fails on these platforms")]
-#endif
 	[TestMethod]
 	public async Task SelectedDatesBorder()
 	{
@@ -259,7 +227,6 @@ public class Given_CalendarView
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS)] // Test is flaky on iOS native because the calendar takes longer to fully #9080.
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20575")]
 	public async Task When_Year_Mode_Shown()
 	{
@@ -285,7 +252,7 @@ public class Given_CalendarView
 	[TestMethod]
 	// SkiaWasm excluded: rapid-click month scroll animations re-target/rewind under the headless xvfb browser (flaky). #23524
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23524")]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native | RuntimeTestPlatforms.SkiaWasm)] // Destabilized by changes in https://github.com/unoplatform/uno/pull/23269
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaWasm)] // Destabilized by changes in https://github.com/unoplatform/uno/pull/23269
 	public async Task When_NextMonth_InQuickSequence()
 	{
 		var sut = new CalendarView() { DisplayMode = CalendarViewDisplayMode.Month };
@@ -314,7 +281,6 @@ public class Given_CalendarView
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeUIKit)] // Flaky on UIKit - #9080
 	public async Task When_Spanish_Language()
 	{
 		var calendarView = new CalendarView()
@@ -328,7 +294,6 @@ public class Given_CalendarView
 	}
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeUIKit)] // Flaky on UIKit - #9080
 	public async Task When_English_Language()
 	{
 		var calendarView = new CalendarView()

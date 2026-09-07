@@ -129,11 +129,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var coords = parent.GetRelativeCoords(SUT); // logical
 			var center = new Point(coords.CenterX, coords.CenterY); // logical
-#if __ANDROID__
-			// droid-specific: the snapshot size is in physical size, NOT logical
-			// so the coords needs to be converted into physical to be against the snapshot.
-			center = ViewHelper.LogicalToPhysicalPixels(center); // physical
-#endif
 
 			ImageAssert.HasPixels(snapshot, ExpectedPixels
 				.At((int)center.X, (int)center.Y)
@@ -174,9 +169,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
-#endif
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Flipview_Items_Modified()
 		{
@@ -210,30 +202,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		}
 
-#if __ANDROID__
-		[TestMethod]
-		public async Task When_NativeChild_Clipped()
-		{
-			var flipView = new FlipView
-			{
-				Items =
-				{
-					new FlipViewItem {Content = "Inline item 1"},
-					new FlipViewItem {Content = "Inline item 2"},
-				}
-			};
-
-			WindowHelper.WindowContent = flipView;
-
-			await WindowHelper.WaitForLoaded(flipView);
-
-			var nativeChild = flipView.FindFirstChild<NativePagedView>();
-
-			Assert.IsNotNull(nativeChild);
-			Assert.IsTrue(flipView.ClipChildren);
-		}
-#endif
-
 		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
 		{
 			var renderer = new RenderTargetBitmap();
@@ -245,9 +213,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("Currently fails on iOS, https://github.com/unoplatform/uno/issues/9080")]
-#endif
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 		public async Task When_Flipview_DataTemplateSelector()
 		{
@@ -272,7 +237,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 
-#if __WASM__ || __SKIA__
+#if __SKIA__
 			var flipViewItems = (SUT as FrameworkElement)?.FindChildren<FlipViewItem>()?.ToArray() ?? new FlipViewItem[0];
 
 			for (var i = 0; i < SUT.Items.Count; i++)
@@ -310,35 +275,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 #endif
 		}
-
-#if __WASM__
-		[TestMethod]
-		public async Task When_Multiple_Items_Should_Not_Scroll()
-		{
-			var itemsSource = new ObservableCollection<string>();
-			AddItem(itemsSource);
-			AddItem(itemsSource);
-			AddItem(itemsSource);
-
-			var flipView = new FlipView
-			{
-				Width = 100,
-				Height = 100,
-				ItemsSource = itemsSource,
-			};
-
-			WindowHelper.WindowContent = flipView;
-			await WindowHelper.WaitForLoaded(flipView);
-			var scrollViewer = (ScrollViewer)flipView.GetTemplateChild("ScrollingHost");
-			var border = (Border)VisualTreeHelper.GetChildren(scrollViewer).Single();
-			var grid = (Grid)VisualTreeHelper.GetChildren(border).Single();
-			var scrollContentPresenter = (ScrollContentPresenter)VisualTreeHelper.GetChildren(grid).First();
-			var classes = Uno.Foundation.WebAssemblyRuntime.InvokeJS($"document.getElementById({scrollContentPresenter.HtmlId}).classList");
-			var classesArray = classes.Split(' ');
-			Assert.IsTrue(classesArray.Contains("scroll-x-hidden"), $"Classes found: {classes}");
-			Assert.IsTrue(classesArray.Contains("scroll-y-disabled"), $"Classes found: {classes}");
-		}
-#endif
 
 		private sealed class FlipViewVM : INotifyPropertyChanged
 		{
@@ -632,9 +568,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_TouchMoveLessThanHalfItem_Then_DoNotFlip()
@@ -685,9 +619,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #elif __SKIA__
 		[Ignore("Changes on the ScrollCrontentPresenter made this test to fail. We will look in a separate issue: uno-private#1410")]
@@ -740,9 +672,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		// The injected touch flick relies on the ScrollContentPresenter velocity-based snap, which is not
@@ -803,7 +733,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 	}
 
-#if __SKIA__ || __WASM__
+#if __SKIA__
 	static class Extensions
 	{
 		internal static IEnumerable<T> FindChildren<T>(this FrameworkElement root) where T : FrameworkElement
