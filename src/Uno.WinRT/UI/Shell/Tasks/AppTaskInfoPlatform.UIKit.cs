@@ -41,7 +41,7 @@ internal sealed class AppleAppTaskInfoExtension : AppTaskInfoExtensionBase
 				UpdateBadge(visibleTaskCount);
 				completion.SetResult();
 			}
-			catch (Exception error)
+			catch (Exception error) when (IsRecoverable(error))
 			{
 				completion.SetException(error);
 			}

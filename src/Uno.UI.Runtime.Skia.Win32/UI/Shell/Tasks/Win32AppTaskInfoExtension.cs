@@ -48,7 +48,7 @@ internal sealed class Win32AppTaskInfoExtension : AppTaskInfoExtensionBase
 
 					completion.SetResult();
 				}
-				catch (Exception error)
+				catch (Exception error) when (IsRecoverable(error))
 				{
 					completion.SetException(error);
 				}

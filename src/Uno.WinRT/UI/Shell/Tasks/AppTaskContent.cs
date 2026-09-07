@@ -94,9 +94,8 @@ public sealed class AppTaskContent
 
 		if (!isLocalFile && !isCanonicalAppUri)
 		{
-			throw new ArgumentException(
-				"Preview thumbnails must use a local file, ms-appx, or ms-appdata URI.",
-				nameof(imageUri));
+			// Native CreatePreviewThumbnail returns E_POINTER for unsupported schemes and authorities.
+			throw new NullReferenceException("The preview URI cannot be resolved by the app task provider.");
 		}
 
 		return new(

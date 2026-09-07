@@ -190,16 +190,20 @@ public class Given_AppTaskInfo
 		Assert.ThrowsExactly<ArgumentException>(() => AppTaskContent.CreatePreviewThumbnail(null!, "Step"));
 		Assert.ThrowsExactly<ArgumentException>(
 			() => AppTaskContent.CreatePreviewThumbnail(new Uri("relative", UriKind.Relative), "Step"));
-		Assert.ThrowsExactly<ArgumentException>(
-			() => AppTaskContent.CreatePreviewThumbnail(new Uri("https://example.com/preview.png"), "Step"));
-		Assert.ThrowsExactly<ArgumentException>(
-			() => AppTaskContent.CreatePreviewThumbnail(new Uri("sample-app://preview"), "Step"));
-		Assert.ThrowsExactly<ArgumentException>(
-			() => AppTaskContent.CreatePreviewThumbnail(new Uri("file://server/share/preview.png"), "Step"));
-		Assert.ThrowsExactly<ArgumentException>(
-			() => AppTaskContent.CreatePreviewThumbnail(new Uri("ms-appx:/Assets/preview.png"), "Step"));
-		Assert.ThrowsExactly<ArgumentException>(
-			() => AppTaskContent.CreatePreviewThumbnail(new Uri("ms-appdata:/local/preview.png"), "Step"));
+		foreach (var uri in new[]
+		{
+			"https://example.com/preview.png",
+			"sample-app://preview",
+			"file://server/share/preview.png",
+			"ms-appx:/Assets/preview.png",
+			"ms-appdata:/local/preview.png",
+			"ms-appx://some-host/Assets/preview.png",
+		})
+		{
+			var error = Assert.ThrowsExactly<NullReferenceException>(
+				() => AppTaskContent.CreatePreviewThumbnail(new Uri(uri), "Step"));
+			Assert.AreEqual(unchecked((int)0x80004003), error.HResult);
+		}
 
 		_ = AppTaskContent.CreatePreviewThumbnail(new Uri("ms-appx:///Assets/StoreLogo.png"), "Step");
 		_ = AppTaskContent.CreatePreviewThumbnail(new Uri("ms-appdata:///local/preview.png"), "Step");
@@ -579,10 +583,59 @@ public class Given_AppTaskInfo
 		await extension.WaitForInvocation();
 		extension.SetAvailability(false);
 		extension.SetAvailability(true);
-		extension.Synchronize(1, [snapshot]);
 		await extension.WaitForInvocation();
 
 		CollectionAssert.AreEqual(new[] { "replay", "replay" }, extension.InvokedTitles.ToArray());
+	}
+
+	[TestMethod]
+	public async Task When_Presenter_Is_Invalidated_Then_Last_Snapshot_Is_Replayed()
+	{
+		var extension = new ControllableAppTaskInfoExtension();
+		extension.Synchronize(1, [CreateSnapshot("saved")]);
+		await extension.WaitForInvocation();
+
+		extension.Invalidate();
+		await extension.WaitForInvocation();
+
+		CollectionAssert.AreEqual(new[] { "saved", "saved" }, extension.InvokedTitles.ToArray());
+	}
+
+	[TestMethod]
+	public async Task When_Presenter_Is_Invalidated_While_Busy_Then_Latest_Snapshot_Is_Replayed()
+	{
+		var extension = new ControllableAppTaskInfoExtension();
+		var completion = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+		extension.AddCompletion(completion.Task);
+		extension.Synchronize(1, [CreateSnapshot("old")]);
+		await extension.WaitForInvocation();
+		extension.Synchronize(2, [CreateSnapshot("latest")]);
+		extension.Invalidate();
+
+		completion.SetResult();
+		await extension.WaitForInvocation();
+		CollectionAssert.AreEqual(new[] { "old", "latest" }, extension.InvokedTitles.ToArray());
+	}
+
+	[TestMethod]
+	public async Task When_Presenter_Has_Unrecoverable_Error_Then_It_Reaches_The_Calling_Context()
+	{
+		var context = new ExceptionCaptureContext();
+		var previousContext = SynchronizationContext.Current;
+		try
+		{
+			SynchronizationContext.SetSynchronizationContext(context);
+			var extension = new ControllableAppTaskInfoExtension();
+			extension.AddCompletion(Task.FromException(new InvalidProgramException("Fatal test failure.")));
+			extension.Synchronize(1, [CreateSnapshot("fatal")]);
+		}
+		finally
+		{
+			SynchronizationContext.SetSynchronizationContext(previousContext);
+		}
+
+		var dispatch = await context.Dispatch.Task.WaitAsync(TimeSpan.FromSeconds(5));
+		Assert.ThrowsExactly<InvalidProgramException>(dispatch);
 	}
 
 	[TestMethod]
@@ -755,6 +808,8 @@ public class Given_AppTaskInfo
 
 		internal void AddCompletion(Task completion) => _completions.Enqueue(completion);
 
+		internal void Invalidate() => InvalidateSynchronization();
+
 		internal Task<bool> WaitForInvocation() => _invocationSignal.WaitAsync(TimeSpan.FromSeconds(5));
 
 		protected override Task OnSynchronizeAsync(AppTaskInfoSnapshot[] tasks)
@@ -797,5 +852,14 @@ public class Given_AppTaskInfo
 		internal int? Value { get; private set; }
 
 		public void SetBadge(int? value) => Value = value;
+	}
+
+	private sealed class ExceptionCaptureContext : SynchronizationContext
+	{
+		internal TaskCompletionSource<Action> Dispatch { get; } =
+			new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+		public override void Post(SendOrPostCallback callback, object? state)
+			=> Dispatch.TrySetResult(() => callback(state));
 	}
 }

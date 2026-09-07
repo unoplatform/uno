@@ -11,7 +11,7 @@ internal static class AppTaskValidation
 
 	// Windows returns E_INVALIDARG for a relative URI and dereferences a null one; both are surfaced
 	// as ArgumentException so the whole API family has one predictable failure mode.
-	internal static Uri RequireAbsoluteUri(Uri uri, string parameterName)
+	internal static Uri RequireAbsoluteUri(Uri? uri, string parameterName)
 	{
 		if (uri is null)
 		{

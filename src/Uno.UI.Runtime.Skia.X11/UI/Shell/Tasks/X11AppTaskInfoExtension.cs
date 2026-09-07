@@ -6,31 +6,54 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Tmds.DBus.Protocol;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Shell.Tasks;
-using Uno.WinUI.Runtime.Skia.X11.DBus;
 using Windows.UI.Shell.Tasks;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
-internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
+internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase, IDisposable
 {
-	private const string Service = "org.freedesktop.Notifications";
-	private static readonly ObjectPath ObjectPath = new("/org/freedesktop/Notifications");
 	private static readonly X11AppTaskInfoExtension Instance = new();
 
+	private readonly IAppTaskNotificationService _service;
+	private readonly long _probeIntervalMilliseconds;
+	private readonly Timer? _supportTimer;
 	private readonly Dictionary<string, string> _signatures = new(StringComparer.Ordinal);
 	private readonly Dictionary<string, uint> _notificationIds = new(StringComparer.Ordinal);
 	private readonly object _supportProbeGate = new();
-	private DBusConnection? _publicationConnection;
 	private Task? _supportProbe;
 	private int _supportState;
+	private int _isDisposed;
+	private string? _supportOwner;
+	private string? _publishedOwner;
 	private long _nextSupportProbeAt;
 
 	private X11AppTaskInfoExtension()
+		: this(new DBusAppTaskNotificationService(), TimeSpan.FromSeconds(5))
 	{
+	}
+
+	internal X11AppTaskInfoExtension(IAppTaskNotificationService service, TimeSpan probeInterval)
+	{
+		ArgumentNullException.ThrowIfNull(service);
+		if (probeInterval < TimeSpan.Zero)
+		{
+			throw new ArgumentOutOfRangeException(nameof(probeInterval));
+		}
+
+		_service = service;
+		_probeIntervalMilliseconds = (long)probeInterval.TotalMilliseconds;
+		if (probeInterval > TimeSpan.Zero)
+		{
+			_supportTimer = new Timer(
+				static state => ((X11AppTaskInfoExtension)state!).EnsureSupportProbe(),
+				this,
+				probeInterval,
+				probeInterval);
+		}
+
 		EnsureSupportProbe();
 	}
 
@@ -40,7 +63,7 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 	public override bool IsSupported()
 	{
 		EnsureSupportProbe();
-		return DBusAddress.Session is not null;
+		return Volatile.Read(ref _isDisposed) == 0 && Volatile.Read(ref _supportState) == 1;
 	}
 
 	protected override async Task OnSynchronizeAsync(AppTaskInfoSnapshot[] tasks)
@@ -50,26 +73,26 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 			await PublishAsync(tasks);
 			Volatile.Write(ref _supportState, 1);
 		}
-		catch
+		catch (Exception error) when (IsRecoverable(error))
 		{
 			ResetPublicationConnection();
 			Volatile.Write(ref _supportState, 0);
-			Interlocked.Exchange(ref _nextSupportProbeAt, Environment.TickCount64 + 5000);
+			Interlocked.Exchange(ref _nextSupportProbeAt, Environment.TickCount64 + _probeIntervalMilliseconds);
 			throw;
 		}
 	}
 
 	private async Task PublishAsync(AppTaskInfoSnapshot[] tasks)
 	{
-		var sessionAddress = DBusAddress.Session;
-		if (sessionAddress is null)
+		var owner = await _service.GetOwnerAsync().ConfigureAwait(false);
+		if (!string.Equals(_publishedOwner, owner, StringComparison.Ordinal))
 		{
-			throw new InvalidOperationException("The D-Bus session address is unavailable.");
+			// Notification IDs and cached payloads belong to one unique bus owner, not the reusable service name.
+			_signatures.Clear();
+			_notificationIds.Clear();
+			_publishedOwner = owner;
 		}
 
-		var connection = await GetPublicationConnectionAsync(sessionAddress);
-		var service = new DBusService(connection, Service);
-		var notifications = service.CreateNotifications(ObjectPath);
 		var currentIds = tasks.Select(static task => task.Id).ToHashSet(StringComparer.Ordinal);
 		var removedIds = _signatures.Keys.Where(id => !currentIds.Contains(id)).ToArray();
 
@@ -77,9 +100,7 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 		{
 			if (_notificationIds.TryGetValue(removedId, out var notificationId))
 			{
-				await notifications.CloseNotificationAsync(notificationId)
-					.WaitAsync(TimeSpan.FromSeconds(5))
-					.ConfigureAwait(false);
+				await _service.CloseAsync(owner, notificationId).ConfigureAwait(false);
 				_notificationIds.Remove(removedId);
 			}
 
@@ -95,83 +116,30 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 			}
 
 			_notificationIds.TryGetValue(task.Id, out var replacesId);
-			var notificationId = await notifications.NotifyAsync(
-				"Uno Platform",
+			var notificationId = await _service.NotifyAsync(
+				owner,
 				replacesId,
 				payload.Icon,
 				payload.Summary,
-				payload.Body,
-				Array.Empty<string>(),
-				new Dictionary<string, VariantValue>(),
-				expireTimeout: 0)
-				.WaitAsync(TimeSpan.FromSeconds(5))
+				payload.Body)
 				.ConfigureAwait(false);
 			_notificationIds[task.Id] = notificationId;
 			_signatures[task.Id] = payload.Signature;
 		}
 	}
 
-	private async Task<DBusConnection> GetPublicationConnectionAsync(string sessionAddress)
-	{
-		if (_publicationConnection is not null)
-		{
-			return _publicationConnection;
-		}
-
-		var connection = new DBusConnection(sessionAddress);
-		try
-		{
-			await connection.ConnectAsync()
-				.AsTask()
-				.WaitAsync(TimeSpan.FromSeconds(5))
-				.ConfigureAwait(false);
-			return _publicationConnection = connection;
-		}
-		catch
-		{
-			connection.Dispose();
-			throw;
-		}
-	}
-
 	private void ResetPublicationConnection()
 	{
-		_publicationConnection?.Dispose();
-		_publicationConnection = null;
+		_service.Reset();
+		_publishedOwner = null;
 		_signatures.Clear();
 		_notificationIds.Clear();
 	}
 
-	private static async Task<bool> ServiceHasOwnerAsync(string sessionAddress)
-	{
-		try
-		{
-			using var connection = new DBusConnection(sessionAddress);
-			await connection.ConnectAsync()
-				.AsTask()
-				.WaitAsync(TimeSpan.FromSeconds(5))
-				.ConfigureAwait(false);
-			var service = new DBusService(connection, "org.freedesktop.DBus");
-			var dbus = service.CreateDBus("/org/freedesktop/DBus");
-			return await dbus.NameHasOwnerAsync(Service)
-				.WaitAsync(TimeSpan.FromSeconds(5))
-				.ConfigureAwait(false);
-		}
-		catch (Exception error)
-		{
-			if (typeof(X11AppTaskInfoExtension).Log().IsEnabled(LogLevel.Debug))
-			{
-				typeof(X11AppTaskInfoExtension).Log().Debug(
-					$"Unable to probe the '{Service}' D-Bus service: {error.Message}");
-			}
-
-			return false;
-		}
-	}
-
 	private void EnsureSupportProbe()
 	{
-		if (Environment.TickCount64 < Interlocked.Read(ref _nextSupportProbeAt))
+		if (Volatile.Read(ref _isDisposed) != 0 ||
+			Environment.TickCount64 < Interlocked.Read(ref _nextSupportProbeAt))
 		{
 			return;
 		}
@@ -183,20 +151,51 @@ internal sealed class X11AppTaskInfoExtension : AppTaskInfoExtensionBase
 				return;
 			}
 
-			Interlocked.Exchange(ref _nextSupportProbeAt, Environment.TickCount64 + 5000);
+			Interlocked.Exchange(ref _nextSupportProbeAt, Environment.TickCount64 + _probeIntervalMilliseconds);
 			_supportProbe = ProbeSupportAsync();
+			ObserveSupportProbe(_supportProbe);
 		}
 	}
 
+	private static async void ObserveSupportProbe(Task probe) => await probe;
+
 	private async Task ProbeSupportAsync()
 	{
-		var sessionAddress = DBusAddress.Session;
-		var isSupported = sessionAddress is not null && await ServiceHasOwnerAsync(sessionAddress);
-		var supportState = isSupported ? 1 : 2;
+		AppTaskNotificationSupport support;
+		try
+		{
+			support = await _service.ProbeAsync().ConfigureAwait(false);
+		}
+		catch (Exception error) when (IsRecoverable(error))
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Unable to probe the app task notification service: {error.Message}");
+			}
+			support = default;
+		}
+
+		if (Volatile.Read(ref _isDisposed) != 0)
+		{
+			return;
+		}
+
+		var supportState = support.IsSupported ? 1 : 2;
+		var previousOwner = Interlocked.Exchange(ref _supportOwner, support.Owner);
 		var previousState = Interlocked.Exchange(ref _supportState, supportState);
-		if (supportState == 1 && previousState != 1)
+		if (supportState == 1 &&
+			(previousState != 1 || !string.Equals(previousOwner, support.Owner, StringComparison.Ordinal)))
 		{
 			InvalidateSynchronization();
+		}
+	}
+
+	public void Dispose()
+	{
+		if (Interlocked.Exchange(ref _isDisposed, 1) == 0)
+		{
+			_supportTimer?.Dispose();
+			_service.Dispose();
 		}
 	}
 

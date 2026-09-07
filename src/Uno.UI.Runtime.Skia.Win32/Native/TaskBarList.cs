@@ -1,3 +1,5 @@
+using System;
+using System.Threading;
 using Uno.Foundation.Logging;
 using Windows.Win32;
 using Windows.Win32.Foundation;
@@ -14,6 +16,7 @@ internal static unsafe class TaskBarList
 {
 	private static ITaskbarList3* _taskbarList;
 	private static bool _initialized;
+	private static long _nextInitializationAttempt;
 	private static readonly object _lock = new();
 
 	/// <summary>
@@ -83,9 +86,14 @@ internal static unsafe class TaskBarList
 
 	private static unsafe bool EnsureInitialized()
 	{
-		if (_initialized)
+		if (Volatile.Read(ref _initialized))
 		{
 			return _taskbarList != null;
+		}
+
+		if (Environment.TickCount64 < Interlocked.Read(ref _nextInitializationAttempt))
+		{
+			return false;
 		}
 
 		lock (_lock)
@@ -95,6 +103,13 @@ internal static unsafe class TaskBarList
 				return _taskbarList != null;
 			}
 
+			if (Environment.TickCount64 < _nextInitializationAttempt)
+			{
+				return false;
+			}
+
+			// Bound repeated COM failures without permanently disabling recovery after the shell starts.
+			Interlocked.Exchange(ref _nextInitializationAttempt, Environment.TickCount64 + 5000);
 			var taskbarListClsid = CLSID.TaskbarList;
 			var taskbarListIid = ITaskbarList3.IID_Guid;
 			ITaskbarList3* taskbarList;
@@ -121,7 +136,7 @@ internal static unsafe class TaskBarList
 			}
 
 			_taskbarList = taskbarList;
-			_initialized = true;
+			Volatile.Write(ref _initialized, true);
 			return true;
 		}
 	}

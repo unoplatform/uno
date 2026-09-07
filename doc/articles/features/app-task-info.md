@@ -31,12 +31,12 @@ Task records are stored below `ApplicationData.Current.LocalFolder` and survive 
 
 Uno Platform uses the nearest available shell surface outside native Windows:
 
-- **Skia on Windows** maps `Running` to indeterminate taskbar progress, `Paused` and `NeedsAttention` to paused progress, and `Error` to error progress.
+- **Skia on Windows** maps `Running` to indeterminate taskbar progress, `Paused` and `NeedsAttention` to paused progress, and `Error` to error progress. Failed taskbar initialization is retried no more than once every five seconds, so a missing shell does not trigger COM activation on every update.
 - **Android** creates one notification per task, with active tasks marked as ongoing. Buttons and free-form text input are mapped to notification actions. Android 13 or later requires the `POST_NOTIFICATIONS` permission.
 - **iOS, tvOS, and Mac Catalyst** show the number of active, attention-required, and errored tasks as the app icon badge. The app must request badge authorization.
 - **WebAssembly** shows the number of active, attention-required, and errored tasks through the browser Badging API. The browser and installation mode must support `navigator.setAppBadge`.
 - **macOS** shows the number of active, attention-required, and errored tasks in the Dock badge.
-- **Linux with X11** publishes and updates notifications through `org.freedesktop.Notifications`. The notification shows the task title, state, current step or result summary, and question. Buttons and text input are persisted but not surfaced as notification actions. A D-Bus session and notification service are required.
+- **Linux with X11** publishes and updates notifications through `org.freedesktop.Notifications`. The notification shows the task title, state, current step or result summary, and question. Buttons and text input are persisted but not surfaced as notification actions. A reachable D-Bus session and an owned or D-Bus-activatable notification service are required. `IsSupported()` is initially false while the asynchronous probe is pending; availability is refreshed every five seconds. A changed daemon owner invalidates notification IDs and replays the latest task snapshot without requiring the app to mutate a task.
 
 An explicit badge set through `BadgeUpdater` takes precedence over the automatic app-task count. Clearing that explicit badge reveals the current app-task count again.
 
@@ -84,6 +84,8 @@ The managed implementation follows the behavior observed on Windows 11 (build 26
 | `AppTaskContent.MaxButtons` | `2` | `2` |
 | `AddButton` past the limit, with a relative URI, or with `null` | `E_INVALIDARG` | `ArgumentException` |
 | `SetTextInput` called twice on the same content | `E_INVALIDARG` | `ArgumentException` |
+| `CreatePreviewThumbnail` with a null or relative URI | `E_INVALIDARG` | `ArgumentException` |
+| `CreatePreviewThumbnail` with HTTP/custom schemes, UNC paths, or non-canonical app URI authorities | `E_POINTER` | `NullReferenceException` with the same HRESULT |
 | `SetTextInput` template contents, `SetQuestion(null)`, `AddButton(null, uri)` | Not validated | Not validated |
 | `CreateSequenceOfSteps` with an empty `executingStep` | `E_INVALIDARG` | `ArgumentException` |
 | `CreateSequenceOfSteps` with `null` steps or `null` entries | `S_OK`; entries become empty strings | Same |
@@ -103,14 +105,22 @@ The managed implementation follows the behavior observed on Windows 11 (build 26
 | `FindAll` ordering | Ascending start time | Same |
 | Mutating an `AppTaskContent` after it was passed to `Create`/`Update` | No effect on the task | Same |
 
-Two behaviors are not reproduced, because Windows has no defined result to reproduce:
+**Null task/asset URI arguments** have no defined Windows result to reproduce: `AppTaskInfo.Create`
+and the `AppTaskResultAsset` constructor dereference a null `Uri` and terminate the process with an
+access violation (`0xC0000005`) instead of returning an HRESULT. Uno raises `ArgumentException`
+rather than reproducing a native process crash.
 
-- **`null` URI arguments.** `AppTaskInfo.Create` and the `AppTaskResultAsset` constructor dereference a `null` `Uri` and terminate the process with an access violation (`0xC0000005`) instead of returning an `HRESULT`. Uno raises `ArgumentException`, which is what the same argument produces on the API's other entry points.
-- **Remote preview thumbnails.** `CreatePreviewThumbnail` accepts `ms-appx`, `ms-appdata` and `file` URIs but returns `E_POINTER` for `http`, `https` and custom schemes, which the C#/WinRT projection surfaces as `NullReferenceException`. Uno accepts any absolute URI: the Uno shell presenters do not consume the thumbnail, and `NullReferenceException` is not a contract an app can act on.
+Preview thumbnails follow the native URI contract: canonical `ms-appx:///`, `ms-appdata:///`, and
+local `file:///` URIs are accepted; unsupported schemes and authorities return the managed
+projection of `E_POINTER`. The shell adapters preserve the thumbnail URI but do not render it.
 
 ### Platforms without an implementation
 
-`AppTaskInfo.Create` throws `PlatformNotSupportedException` on targets where Uno has no app-task implementation at all — currently only the `netstandard2.0` reference assembly, which has no local storage to persist tasks into. This is Uno's standard signal for an unimplemented target rather than a contract difference; the Windows documentation states that the APIs "will not have any effect" when the operating-system feature is missing, but that path could not be exercised on the validation machine because `AppTaskInfo.IsSupported()` reports `true` there. On every implemented target, always guard calls with `AppTaskInfo.IsSupported()`.
+`AppTaskInfo.Create` throws `PlatformNotSupportedException` when no supported app-task presenter is
+available. This includes the reference assembly, denied Android notification permission, and X11 sessions
+without a reachable or activatable notification service. On every target, guard creation with
+`AppTaskInfo.IsSupported()`. On X11, retry that capability query after the initial asynchronous
+probe instead of treating the first false result as permanent.
 
 ### Restore tasks at startup
 
@@ -166,4 +176,6 @@ UNUserNotificationCenter.Current.RequestAuthorization(
 
 Run SamplesApp on an Uno head — Skia Desktop, WebAssembly, Android, or iOS — and open **Windows.UI.Shell.Tasks > AppTaskInfo**. The sample exercises every task state and content factory, restores persisted tasks, updates deep links, and shows the persisted public task properties beside the platform shell approximation.
 
-The sample is excluded from `SamplesApp.Windows`, because `Microsoft.Windows.SDK.NET.Ref` does not project the experimental `Windows.UI.Shell.Tasks` types yet. Use the native Windows API directly from a packaged WinUI app until that projection ships.
+The sample is excluded from the SamplesApp WinAppSDK target, because `Microsoft.Windows.SDK.NET.Ref`
+does not project the experimental `Windows.UI.Shell.Tasks` types yet. Native Windows callers need
+the Windows activation-factory contract until that managed projection ships.

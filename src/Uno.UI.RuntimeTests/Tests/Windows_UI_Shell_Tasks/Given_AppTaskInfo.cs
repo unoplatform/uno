@@ -26,9 +26,9 @@ public class Given_AppTaskInfo
 		if (!AppTaskInfo.IsSupported())
 		{
 			Assert.AreEqual(0, AppTaskInfo.FindAll().Length);
+			Assert.Inconclusive("The platform app-task presenter is unavailable.");
 			return;
 		}
-		RemoveAllTasks();
 
 		AppTaskInfo? task = null;
 		try
@@ -40,7 +40,7 @@ public class Given_AppTaskInfo
 				new Uri("ms-appx:///Assets/StoreLogo.png"),
 				AppTaskContent.CreateSequenceOfSteps(Array.Empty<string>(), "Starting"));
 
-			var created = AppTaskInfo.FindAll().Single();
+			var created = AppTaskInfo.FindAll().Single(candidate => candidate.Id == task.Id);
 			Assert.AreEqual(task.Id, created.Id);
 			Assert.AreEqual(AppTaskState.Running, created.State);
 			Assert.AreEqual("Starting", created.GetExecutingStep());
@@ -54,7 +54,7 @@ public class Given_AppTaskInfo
 					AppTaskContent.CreateTextSummaryResult("Completed in the runtime-test app"));
 			});
 
-			var updated = AppTaskInfo.FindAll().Single();
+			var updated = AppTaskInfo.FindAll().Single(candidate => candidate.Id == task.Id);
 			Assert.AreEqual("Runtime task updated", updated.Title);
 			Assert.AreEqual("Background-thread update", updated.Subtitle);
 			Assert.AreEqual(new Uri("sample-app://tasks/runtime/updated"), updated.DeepLink);
@@ -62,12 +62,11 @@ public class Given_AppTaskInfo
 			Assert.IsNotNull(updated.EndTime);
 
 			task.Remove();
-			Assert.AreEqual(0, AppTaskInfo.FindAll().Length);
+			Assert.IsFalse(AppTaskInfo.FindAll().Any(candidate => candidate.Id == task.Id));
 		}
 		finally
 		{
 			task?.Remove();
-			RemoveAllTasks();
 		}
 	}
 
@@ -78,10 +77,9 @@ public class Given_AppTaskInfo
 		if (!await WaitForSupport())
 		{
 			Assert.AreEqual(0, AppTaskInfo.FindAll().Length);
+			Assert.Inconclusive("The platform app-task presenter is unavailable.");
 			return;
 		}
-
-		RemoveAllTasks();
 
 		AppTaskInfo? keeper = null;
 		AppTaskInfo? evicted = null;
@@ -89,24 +87,23 @@ public class Given_AppTaskInfo
 		{
 			keeper = CreateTask("Kept task");
 			evicted = CreateTask("Evicted task");
-			Assert.AreEqual(2, AppTaskInfo.FindAll().Length);
+			Assert.AreEqual(2, AppTaskInfo.FindAll().Count(candidate => candidate.Id == keeper.Id || candidate.Id == evicted.Id));
 
 			evicted.UpdateState((AppTaskState)5);
 
 			Assert.AreEqual((AppTaskState)5, evicted.State);
-			Assert.AreEqual(1, AppTaskInfo.FindAll().Length);
-			Assert.AreEqual(keeper.Id, AppTaskInfo.FindAll().Single().Id);
+			Assert.IsFalse(AppTaskInfo.FindAll().Any(candidate => candidate.Id == evicted.Id));
+			Assert.IsTrue(AppTaskInfo.FindAll().Any(candidate => candidate.Id == keeper.Id));
 
 			// The eviction survives a round-trip through the real task store.
 			evicted.UpdateState(AppTaskState.Running);
-			Assert.AreEqual(1, AppTaskInfo.FindAll().Length);
-			Assert.AreEqual(keeper.Id, AppTaskInfo.FindAll().Single().Id);
+			Assert.IsFalse(AppTaskInfo.FindAll().Any(candidate => candidate.Id == evicted.Id));
+			Assert.IsTrue(AppTaskInfo.FindAll().Any(candidate => candidate.Id == keeper.Id));
 		}
 		finally
 		{
 			evicted?.Remove();
 			keeper?.Remove();
-			RemoveAllTasks();
 		}
 	}
 
@@ -117,10 +114,9 @@ public class Given_AppTaskInfo
 		if (!await WaitForSupport())
 		{
 			Assert.AreEqual(0, AppTaskInfo.FindAll().Length);
+			Assert.Inconclusive("The platform app-task presenter is unavailable.");
 			return;
 		}
-
-		RemoveAllTasks();
 
 		AppTaskInfo? task = null;
 		try
@@ -129,19 +125,18 @@ public class Given_AppTaskInfo
 
 			Assert.ThrowsExactly<ArgumentException>(() => task.UpdateState(AppTaskState.NeedsAttention));
 			Assert.AreEqual(AppTaskState.Running, task.State);
-			Assert.AreEqual(AppTaskState.Running, AppTaskInfo.FindAll().Single().State);
+			Assert.AreEqual(AppTaskState.Running, AppTaskInfo.FindAll().Single(candidate => candidate.Id == task.Id).State);
 
 			var withQuestion = AppTaskContent.CreateTextSummaryResult("Waiting for input");
 			withQuestion.SetQuestion("Continue?");
 			task.Update(AppTaskState.NeedsAttention, withQuestion);
 
 			Assert.AreEqual(AppTaskState.NeedsAttention, task.State);
-			Assert.AreEqual(AppTaskState.NeedsAttention, AppTaskInfo.FindAll().Single().State);
+			Assert.AreEqual(AppTaskState.NeedsAttention, AppTaskInfo.FindAll().Single(candidate => candidate.Id == task.Id).State);
 		}
 		finally
 		{
 			task?.Remove();
-			RemoveAllTasks();
 		}
 	}
 
@@ -152,10 +147,9 @@ public class Given_AppTaskInfo
 		if (!await WaitForSupport())
 		{
 			Assert.AreEqual(0, AppTaskInfo.FindAll().Length);
+			Assert.Inconclusive("The platform app-task presenter is unavailable.");
 			return;
 		}
-
-		RemoveAllTasks();
 
 		AppTaskInfo? task = null;
 		try
@@ -167,9 +161,9 @@ public class Given_AppTaskInfo
 				new Uri("ms-appx:///Assets/StoreLogo.png"),
 				null!);
 
-			Assert.AreEqual(1, AppTaskInfo.FindAll().Length);
+			Assert.IsTrue(AppTaskInfo.FindAll().Any(candidate => candidate.Id == task.Id));
 			Assert.ThrowsExactly<ArgumentException>(() => task.GetExecutingStep());
-			Assert.ThrowsExactly<ArgumentException>(() => AppTaskInfo.FindAll().Single().GetCompletedSteps());
+			Assert.ThrowsExactly<ArgumentException>(() => AppTaskInfo.FindAll().Single(candidate => candidate.Id == task.Id).GetCompletedSteps());
 
 			task.Update(AppTaskState.Running, AppTaskContent.CreateSequenceOfSteps(["One"], "Two"));
 			Assert.AreEqual("Two", AppTaskInfo.FindAll().Single().GetExecutingStep());
@@ -177,7 +171,6 @@ public class Given_AppTaskInfo
 		finally
 		{
 			task?.Remove();
-			RemoveAllTasks();
 		}
 	}
 
@@ -199,13 +192,6 @@ public class Given_AppTaskInfo
 			new Uri("ms-appx:///Assets/StoreLogo.png"),
 			AppTaskContent.CreateTextSummaryResult(title));
 
-	private static void RemoveAllTasks()
-	{
-		foreach (var task in AppTaskInfo.FindAll())
-		{
-			task.Remove();
-		}
-	}
 }
 
 #endif

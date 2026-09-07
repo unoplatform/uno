@@ -23,6 +23,8 @@ internal abstract class AppTaskInfoExtensionBase : IAppTaskInfoExtension
 	private long _activeRevision = -1;
 	private long _queuedRevision = -1;
 	private Windows.UI.Shell.Tasks.AppTaskInfoSnapshot[]? _queuedTasks;
+	private long _latestRevision = -1;
+	private Windows.UI.Shell.Tasks.AppTaskInfoSnapshot[]? _latestTasks;
 	private bool _isSynchronizing;
 	private bool _isAvailable;
 
@@ -30,14 +32,16 @@ internal abstract class AppTaskInfoExtensionBase : IAppTaskInfoExtension
 
 	public void SetAvailability(bool isAvailable)
 	{
+		bool replay;
 		lock (_synchronizationGate)
 		{
-			if (isAvailable && !_isAvailable)
-			{
-				_lastRevision = -1;
-			}
-
+			replay = isAvailable && !_isAvailable;
 			_isAvailable = isAvailable;
+		}
+
+		if (replay)
+		{
+			InvalidateSynchronization();
 		}
 	}
 
@@ -45,6 +49,13 @@ internal abstract class AppTaskInfoExtensionBase : IAppTaskInfoExtension
 	{
 		lock (_synchronizationGate)
 		{
+			if (revision < _latestRevision)
+			{
+				return;
+			}
+
+			_latestRevision = revision;
+			_latestTasks = tasks;
 			if (revision <= _lastRevision || revision <= _activeRevision || revision <= _queuedRevision)
 			{
 				return;
@@ -60,20 +71,37 @@ internal abstract class AppTaskInfoExtensionBase : IAppTaskInfoExtension
 			_isSynchronizing = true;
 		}
 
-		_ = ProcessQueueSafelyAsync();
+		ProcessQueueSafelyAsync();
 	}
 
 	protected abstract Task OnSynchronizeAsync(Windows.UI.Shell.Tasks.AppTaskInfoSnapshot[] tasks);
 
 	protected void InvalidateSynchronization()
 	{
+		bool start = false;
 		lock (_synchronizationGate)
 		{
 			_lastRevision = -1;
+			if (_latestTasks is not null)
+			{
+				_queuedRevision = _latestRevision;
+				_queuedTasks = _latestTasks;
+				if (!_isSynchronizing)
+				{
+					_isSynchronizing = true;
+					start = true;
+				}
+			}
+		}
+
+		if (start)
+		{
+			ProcessQueueSafelyAsync();
 		}
 	}
 
-	private async Task ProcessQueueSafelyAsync()
+	// This void entry point surfaces unrecoverable failures through the caller's context rather than an unobserved Task.
+	private async void ProcessQueueSafelyAsync()
 	{
 		try
 		{
@@ -99,8 +127,9 @@ internal abstract class AppTaskInfoExtensionBase : IAppTaskInfoExtension
 	}
 
 	// Presenter failures must never tear down the app, but process-level failures still have to surface.
-	private static bool IsRecoverable(Exception error) =>
+	protected static bool IsRecoverable(Exception error) =>
 		error is not (OutOfMemoryException
+			or StackOverflowException
 			or AccessViolationException
 			or BadImageFormatException
 			or InvalidProgramException

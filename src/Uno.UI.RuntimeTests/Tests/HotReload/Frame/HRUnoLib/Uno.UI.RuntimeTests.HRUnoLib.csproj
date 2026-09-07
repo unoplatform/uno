@@ -40,7 +40,7 @@
 		<Reference Include="$(_UnoBaseReferenceBinPath)/*.dll" Exclude="@(UnoReferenceExclusion)" />
 
 		<PackageReference Include="Uno.Fonts.Fluent" />
-		<PackageReference Include="Uno.Fonts.OpenSans" Version="2.7.1" />
+		<PackageReference Include="Uno.Fonts.OpenSans" />
 	</ItemGroup>
 
 	<Import Project="..\..\..\..\..\Uno.UI.Runtime.Skia.X11\buildTransitive\*.Skia.X11.props" />

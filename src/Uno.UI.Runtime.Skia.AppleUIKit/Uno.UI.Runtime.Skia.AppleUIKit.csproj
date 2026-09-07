@@ -41,7 +41,17 @@
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="SkiaSharp.Views" />
-		<PackageReference Include="Uno.icu-ios" />
+		<!--
+		Uno.icu-ios only ships iOS slices, and its targets pick the device archives for
+		any RID that does not contain 'iossimulator', so a tvOS head would force-load
+		iOS-device arm64 objects and fail the native link. Uno.icu-tvos carries the
+		tvos/tvossimulator slices instead. One of the two is required on every Apple
+		UIKit head: UnicodeText.ICU reaches ICU through [DllImport("__Internal")], which
+		the native linker resolves at link time, so without it the head fails to link
+		with undefined _u_*_77 / _ubidi_*_77 symbols.
+		-->
+		<PackageReference Include="Uno.icu-ios" Condition="'$(IsTvOS)' != 'true'" />
+		<PackageReference Include="Uno.icu-tvos" Condition="'$(IsTvOS)' == 'true'" />
 	</ItemGroup>
 
 	<ItemGroup>
