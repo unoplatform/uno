@@ -595,6 +595,7 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/6908")]
 		[DataRow("US")]
 		[DataRow("CZ")]
 		[DataRow("CZE")]
