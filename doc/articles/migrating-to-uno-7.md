@@ -72,6 +72,26 @@ on macOS with Skia rendering. To migrate:
 5. Publish with the [macOS desktop packaging](xref:uno.publishing.desktop.macos) flow
    instead of the Mac Catalyst one.
 
+### Minimum OS versions raised
+
+Uno Platform 7.0 raises the default minimum OS version on the mobile and WinAppSDK
+targets. These are the values the `Uno.Sdk` applies when a head does not set
+`SupportedOSPlatformVersion` / `TargetPlatformMinVersion` itself.
+
+| Target | 6.x | 7.0 | Why |
+|---|---|---|---|
+| iOS | 14.2 | **15.0** | Xcode 27 — the toolchain .NET 11 builds with — refuses deployment targets below iOS 15. |
+| tvOS | 14.2 | **15.0** | Same Xcode 27 floor. |
+| Android | 21 on `net10.0-android`, 24 on `net11.0-android` | **24 on both** | .NET 11 requires API 24 (Android 7.0). 7.0 applies the same floor to `net10.0-android` so a single value covers every target framework. |
+| WinAppSDK | `10.0.18362.0` | **`10.0.19041.0`** | Windows 10 1903 is out of support and is not listed as a supported OS for the Windows App SDK. 19041 matches the `windows10.0.19041.0` target framework already used throughout. |
+
+The Android Wear floor is unchanged at API 26, and the `net*-desktop` and
+`net*-browserwasm` targets remain ungated.
+
+A head that sets these properties explicitly keeps its own value, so an app can still
+target lower versions where the underlying SDK allows it — but those combinations are no
+longer tested by Uno Platform.
+
 ### Packages
 
 | Removed / changed | Migration |
@@ -765,7 +785,10 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 12. Update assembly-qualified type names that reach MRT Core (`Microsoft.Windows.ApplicationModel.Resources.*`) — the assembly is now `Uno.WinRT`, not `Uno.UI`.
 13. Retype `Window.VisibilityChanged` handlers to `WindowVisibilityChangedEventArgs`, and drop
    any explicit `Window*EventHandler` delegate construction.
-14. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+14. Raise `SupportedOSPlatformVersion` to **15.0** (iOS/tvOS) and **24.0** (Android), and
+   `TargetPlatformMinVersion` to **10.0.19041.0** (WinAppSDK), in any head that pins them
+   explicitly.
+15. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)

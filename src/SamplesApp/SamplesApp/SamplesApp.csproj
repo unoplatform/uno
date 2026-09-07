@@ -336,8 +336,8 @@
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(_IsUIKit)' == 'true'">
-		<!-- 13.0 is the floor the .NET 11 iOS/tvOS SDKs enforce -->
-		<SupportedOSPlatformVersion>13.0</SupportedOSPlatformVersion>
+		<!-- Xcode 27 (.NET 11) refuses deployment targets below 15.0 -->
+		<SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
 		<!-- iOS 17 compatibility -->
 		<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>
 		<!-- AOT currently fails (uno-private #648): interpret instead -->
@@ -489,7 +489,7 @@
 
 	<!-- ==================== Windows build configuration ==================== -->
 	<PropertyGroup Condition="'$(_Platform)' == 'windows'">
-		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+		<TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
 		<UseWinUI>true</UseWinUI>
 		<EnableMsixTooling>true</EnableMsixTooling>
 		<DefineConstants>$(DefineConstants);WINAPPSDK</DefineConstants>
