@@ -36,7 +36,7 @@ Uno Platform uses the nearest available shell surface outside native Windows:
 - **iOS, tvOS, and Mac Catalyst** show the number of active, attention-required, and errored tasks as the app icon badge. The app must request badge authorization.
 - **WebAssembly** shows the number of active, attention-required, and errored tasks through the browser Badging API. The browser and installation mode must support `navigator.setAppBadge`.
 - **macOS** shows the number of active, attention-required, and errored tasks in the Dock badge.
-- **Linux with X11** publishes and updates notifications through `org.freedesktop.Notifications`. The notification shows the task title, state, current step or result summary, and question. Buttons and text input are persisted but not surfaced as notification actions. A reachable D-Bus session and an owned or D-Bus-activatable notification service are required. `IsSupported()` is initially false while the asynchronous probe is pending; availability is refreshed every five seconds. A changed daemon owner invalidates notification IDs and replays the latest task snapshot without requiring the app to mutate a task.
+- **Linux with X11** publishes and updates notifications through `org.freedesktop.Notifications`. The notification shows the task title, state, current step or result summary, and question. Buttons and text input are persisted but not surfaced as notification actions. A reachable D-Bus session and a running notification service, or one that D-Bus can activate, are required. `IsSupported()` is initially false while the asynchronous probe is pending; availability is refreshed every five seconds. A changed daemon owner invalidates notification IDs and replays the latest task snapshot without requiring the app to mutate a task.
 
 An explicit badge set through `BadgeUpdater` takes precedence over the automatic app-task count. Clearing that explicit badge reveals the current app-task count again.
 
@@ -118,7 +118,7 @@ projection of `E_POINTER`. The shell adapters preserve the thumbnail URI but do 
 
 `AppTaskInfo.Create` throws `PlatformNotSupportedException` when no supported app-task presenter is
 available. This includes the reference assembly, denied Android notification permission, and X11 sessions
-without a reachable or activatable notification service. On every target, guard creation with
+without a reachable notification service that is running or can be activated. On every target, guard creation with
 `AppTaskInfo.IsSupported()`. On X11, retry that capability query after the initial asynchronous
 probe instead of treating the first false result as permanent.
 
