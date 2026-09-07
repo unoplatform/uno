@@ -33,6 +33,20 @@ For details, see [Vulkan Rendering Backend](xref:Uno.Skia.Vulkan).
 
 Set `Uno.UI.FeatureConfiguration.Rendering.SkipVisualTreePainting` to `true` to skip painting of the visual tree entirely, producing frames with no visual output. Frame scheduling, rendering events, composition animations and `RenderTargetBitmap` keep working as usual. This is intended for scenarios where the visual output is of no interest (e.g. automated tests) to save CPU/GPU. Default: `false`.
 
+## Accent color
+
+### Overriding the system accent color
+
+By default, the `SystemAccentColor` theme resources and `UISettings.GetColorValue(UIColorType.Accent)` follow the accent color of the operating system, see [View Management](xref:Uno.Features.WinUIViewManagement). To force a specific accent regardless of the OS, for example to enforce a brand color or to get deterministic screenshots in tests, set `Uno.UI.FeatureConfiguration.AccentColor.OverrideAccentColor` before the UI is created, typically in the `App` constructor:
+
+```csharp
+#if HAS_UNO
+Uno.UI.FeatureConfiguration.AccentColor.OverrideAccentColor = Windows.UI.Color.FromArgb(0xFF, 0x10, 0x7C, 0x10);
+#endif
+```
+
+The lighter and darker shades are derived from the color you provide. Set the property back to `null` to follow the operating system again. Changing the override at runtime raises `UISettings.ColorValuesChanged` and updates `{ThemeResource}` references to the accent resources.
+
 ## ComboBox
 
 ### Default preferred placement
