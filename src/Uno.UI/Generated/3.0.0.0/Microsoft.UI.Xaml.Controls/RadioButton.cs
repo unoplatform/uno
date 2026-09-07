@@ -3,10 +3,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class RadioButton
+	public partial class RadioButton : global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton
 	{
 		// Skipping already declared property GroupNameProperty
 		// Skipping already declared property GroupName

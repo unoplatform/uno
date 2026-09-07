@@ -149,7 +149,6 @@ internal class PackageManifest
 		public const string WinAppSdkBuildTools = nameof(WinAppSdkBuildTools);
 		public const string WinAppSdkBuildToolsWinApp = nameof(WinAppSdkBuildToolsWinApp);
 		public const string MicrosoftLoggingConsole = nameof(MicrosoftLoggingConsole);
-		public const string WindowsCompatibility = nameof(WindowsCompatibility);
 		public const string MsalClient = nameof(MsalClient);
 		public const string Mvvm = nameof(Mvvm);
 		public const string Prism = nameof(Prism);
@@ -169,5 +168,16 @@ internal class PackageManifest
 		public const string AndroidXWear = nameof(AndroidXWear);
 		public const string AndroidXWearTiles = nameof(AndroidXWearTiles);
 		public const string Maui = nameof(Maui);
+
+		// Microsoft.Maui.Controls.Compatibility is kept in its own group because it is no
+		// longer built or shipped as of .NET 11 Preview 6, while Microsoft.Maui.Controls and
+		// Microsoft.Maui.Graphics continue to ship. Sharing the Maui group would apply that
+		// group's net11 override to a package that has no net11 version, which fails the
+		// packages.json validation. Splitting it lets the net11 override cover only the
+		// packages that still exist, while net10 and earlier keep a deterministic pin.
+		// MauiVersion updates both groups, so the public override still moves all of the
+		// MAUI packages together.
+		// https://github.com/dotnet/core/blob/main/release-notes/11.0/preview/preview6/dotnetmaui.md
+		public const string MauiCompatibility = nameof(MauiCompatibility);
 	}
 }

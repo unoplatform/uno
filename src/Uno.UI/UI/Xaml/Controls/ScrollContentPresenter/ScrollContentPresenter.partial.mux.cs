@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ScrollContentPresenter_Partial.cpp, commit dc46907e92
+// Licensed under the MIT License.
+
+// MUX Reference ScrollContentPresenter_Partial.cpp, commit 3c9c168844
 
 #nullable disable
 
@@ -1236,7 +1237,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// on the SCP, so we need to consult ScrollOwner first and fall back to
 			// TemplatedParent for parity with WinUI.
 			var spScrollContainer = (ScrollOwner as ScrollViewer)
-				?? (TemplatedParent as ScrollViewer);
+				?? (GetTemplatedParent() as ScrollViewer);
 			var spCurrentScrollInfo = GetCurrentScrollInfo();
 
 			// If our content is not an IScrollInfo, we should have selected a style
@@ -1339,14 +1340,14 @@ namespace Microsoft.UI.Xaml.Controls
 			double availableHeight = 0.0;
 			global::Windows.Foundation.Rect clipRect = default;
 
-			var spTemplatedParent = TemplatedParent ?? ScrollOwner;
+			var spTemplatedParent = GetTemplatedParent() ?? ScrollOwner;
 			var spScrollViewer = spTemplatedParent as ScrollViewer;
 			var pScrollData = GetScrollData();
 			extentWidth = pScrollData.m_extent.Width;
 			viewportWidth = pScrollData.m_viewport.Width;
 			offset = pScrollData.GetOffsetX();
 
-			var spTemplatedGrandParent = spScrollViewer?.TemplatedParent;
+			var spTemplatedGrandParent = spScrollViewer?.GetTemplatedParent();
 			var spTextBoxParent = spTemplatedGrandParent as TextBox;
 
 			// Detemine the TextWrapping and HorizontalScrollBarVisiblity properties.
@@ -1431,8 +1432,8 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				global::Windows.Foundation.Rect clipRect = default;
-				var scrollViewer = (TemplatedParent as ScrollViewer) ?? (ScrollOwner as ScrollViewer);
-				if (scrollViewer?.TemplatedParent is TextBox)
+				var scrollViewer = (GetTemplatedParent() as ScrollViewer) ?? (ScrollOwner as ScrollViewer);
+				if (scrollViewer?.GetTemplatedParent() is TextBox)
 				{
 					// We may need to allow glyphs to overhang into the ScrollViewer's padding.
 					CalculateTextBoxClipRect(availableSize, out clipRect);
@@ -2239,7 +2240,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// NOTE: We are updating the clip only if there is a scroll owner that hosts
 				// this control. This is a limited fix for 22803.
-				if (TemplatedParent is not null || ScrollOwner is not null)
+				if (GetTemplatedParent() is not null || ScrollOwner is not null)
 				{
 					UpdateClip(finalSize);
 				}
@@ -2356,7 +2357,9 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					var desiredSize = spChild.DesiredSize;
 					var childWidth = Math.Max(desiredSize.Width, finalSize.Width);
-					var childHeight = Math.Max(desiredSize.Height, finalSize.Height);
+					// Keep viewport-sized content above the input pane instead of turning the
+					// keyboard-occlusion padding into additional scrollable extent.
+					var childHeight = Math.Max(desiredSize.Height, finalSize.Height + _occludedRectPadding.Bottom);
 					if (SizesContentToTemplatedParent && spChild is StackPanel stackPanel)
 					{
 						if (stackPanel.Orientation == Orientation.Horizontal &&

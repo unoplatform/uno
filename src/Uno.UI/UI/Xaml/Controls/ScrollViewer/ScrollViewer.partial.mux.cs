@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ScrollViewer_Partial.cpp, commit dc46907e92
+// Licensed under the MIT License.
+
+// MUX Reference ScrollViewer_Partial.cpp, commit 3c9c168844
 
 #nullable disable
 

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference ScrollContentPresenter_Partial.h, commit dc46907e92
+// Licensed under the MIT License.
+
+// MUX Reference ScrollContentPresenter_Partial.h, commit 3c9c168844
 
 // Uncomment for DManip debug outputs.
 //#define DM_DEBUG

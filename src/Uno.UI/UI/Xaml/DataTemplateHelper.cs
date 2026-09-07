@@ -22,8 +22,7 @@ namespace Microsoft.UI.Xaml
 				var result = dataTemplateSelector.SelectTemplate(data);
 
 				if (result == null
-					&& container != null
-					&& !FeatureConfiguration.DataTemplateSelector.UseLegacyTemplateSelectorOverload)
+					&& container != null)
 				{
 					result = dataTemplateSelector.SelectTemplate(data, container);
 				}

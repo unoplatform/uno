@@ -3,25 +3,11 @@ using System;
 using Windows.Foundation;
 using Uno.UI;
 using Windows.System;
-#if __ANDROID__
-using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-#elif __APPLE_UIKIT__
-using UIKit;
-using View = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__
 	public sealed partial class ScrollContentPresenter : ContentPresenter, ILayoutConstraints
-#else
-	public partial class ScrollContentPresenter : ContentPresenter, ILayoutConstraints
-#endif
 	{
 		public ScrollContentPresenter()
 		{
@@ -43,43 +29,28 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				if (_scroller is { } oldScroller)
 				{
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 					if (oldScroller.Target is ScrollViewer oldScrollerTarget)
 					{
 						UnhookScrollEvents(oldScrollerTarget);
 					}
-#endif
 					WeakReferencePool.ReturnWeakReference(this, oldScroller);
 				}
 
 				_scroller = WeakReferencePool.RentWeakReference(this, value);
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 				if (IsInLiveTree && value is ScrollViewer newTarget)
 				{
 					HookScrollEvents(newTarget);
 				}
-#endif
 			}
 		}
 		#endregion
 
 		private ScrollViewer Scroller => ScrollOwner as ScrollViewer;
 
-		internal double TargetHorizontalOffset =>
-#if __WASM__ // On wasm the scroll might be async (especially with disableAnimation: false), so we need to use the pending value to support high speed multiple scrolling events
-			_pendingScrollTo?.horizontal ?? HorizontalOffset;
-#else
-			HorizontalOffset;
-#endif
+		internal double TargetHorizontalOffset => HorizontalOffset;
 
-		internal double TargetVerticalOffset =>
-#if __WASM__ // On wasm the scroll might be async (especially with disableAnimation: false), so we need to use the pending value to support high speed multiple scrolling events
-			_pendingScrollTo?.vertical ?? VerticalOffset;
-#else
-			VerticalOffset;
-#endif
+		internal double TargetVerticalOffset => VerticalOffset;
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER || __WASM__
 		public static DependencyProperty SizesContentToTemplatedParentProperty { get; } = DependencyProperty.Register(
 			nameof(SizesContentToTemplatedParent),
 			typeof(bool),
@@ -91,7 +62,6 @@ namespace Microsoft.UI.Xaml.Controls
 			get => (bool)GetValue(SizesContentToTemplatedParentProperty);
 			set => SetValue(SizesContentToTemplatedParentProperty, value);
 		}
-#endif
 
 #if !__SKIA__
 		public Rect MakeVisible(UIElement visual, Rect rectangle)
@@ -110,22 +80,12 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 
-#if __WASM__
-		bool _forceChangeToCurrentView;
-		bool IScrollContentPresenter.ForceChangeToCurrentView
-		{
-			get => _forceChangeToCurrentView;
-			set => _forceChangeToCurrentView = value;
-		}
-
-#elif __SKIA__
 		bool _forceChangeToCurrentView;
 		internal bool ForceChangeToCurrentView
 		{
 			get => _forceChangeToCurrentView;
 			set => _forceChangeToCurrentView = value;
 		}
-#endif
 
 		private void InitializeScrollContentPresenter()
 		{
@@ -166,119 +126,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public double ViewportWidth => DesiredSize.Width - Margin.Left - Margin.Right;
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER || __WASM__
-#if __SKIA__
 		protected override Size MeasureOverride(Size availableSize)
 			=> MeasureOverridePort(availableSize);
 
 		protected override Size ArrangeOverride(Size finalSize)
 			=> ArrangeOverridePort(finalSize);
-#else
-		protected override Size MeasureOverride(Size availableSize)
-		{
-			if (Content is UIElement child)
-			{
-				var (minSize, maxSize) = Scroller.GetMinMax();
-
-				var slotSize = availableSize
-					.AtMost(maxSize)
-					.AtLeast(minSize);
-
-				bool sizesContentToTemplatedParent = SizesContentToTemplatedParent;
-
-				if (ScrollOwner is ScrollViewer scrollViewer)
-				{
-					if (sizesContentToTemplatedParent)
-					{
-						slotSize = scrollViewer.ViewportMeasureSize;
-					}
-				}
-
-				// when set to true, this means that we wanted to set to infinity but were blocked in doing it.
-				bool childPreventsInfiniteAvailableWidth = false;
-				bool childPreventsInfiniteAvailableHeight = false;
-
-				// The decision to allow the content to overflow during measure is driven by ScrollBarVisibility,
-				// not by Can[H|V]erticallyScroll. The latter is tied to ScrollMode (user-input gate) and is used by
-				// the pointer-wheel and direct-manipulation paths; gating layout on it would also disable layout overflow
-				// whenever ScrollMode is Disabled (e.g. PipsPager), which then traps the content inside a viewport-sized
-				// layout slot and produces a LayoutClip that masks any content that scrolls in via programmatic
-				// ChangeView / BringIntoView.
-				var allowVerticalOverflow = ScrollOwner is not ScrollViewer verticallyOwningScrollViewer
-					|| verticallyOwningScrollViewer.VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
-				var allowHorizontalOverflow = ScrollOwner is not ScrollViewer horizontallyOwningScrollViewer
-					|| horizontallyOwningScrollViewer.HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled;
-
-				if (allowVerticalOverflow)
-				{
-					childPreventsInfiniteAvailableHeight = !child.WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation.Vertical);
-					if (!sizesContentToTemplatedParent && !childPreventsInfiniteAvailableHeight)
-					{
-						slotSize.Height = double.PositiveInfinity;
-					}
-				}
-				if (allowHorizontalOverflow)
-				{
-					childPreventsInfiniteAvailableWidth = !child.WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation.Horizontal);
-					if (!sizesContentToTemplatedParent && !childPreventsInfiniteAvailableWidth)
-					{
-						slotSize.Width = double.PositiveInfinity;
-					}
-				}
-
-				if (child is ItemsPresenter itemsPresenter)
-				{
-					itemsPresenter.EvaluateAndSetNonClippingBehavior(childPreventsInfiniteAvailableWidth || childPreventsInfiniteAvailableHeight);
-				}
-
-				child.Measure(slotSize);
-
-				var desired = child.DesiredSize;
-
-				// Give opportunity to the the content to define the viewport size itself
-				(child as ICustomScrollInfo)?.ApplyViewport(ref desired);
-
-				// Mirror of ScrollViewer_Partial.cpp:9440 OnScrollContentPresenterMeasured.
-				// When the SCP is (re-)measured and the owning ScrollViewer has anchoring active,
-				// force ArrangeOverride to re-run so the anchoring offset correction fires.
-				Scroller?.OnScrollContentPresenterMeasured();
-
-				return new Size(
-					Math.Min(availableSize.Width, desired.Width),
-					Math.Min(availableSize.Height, desired.Height)
-				);
-			}
-
-			return new Size(0, 0);
-		}
-
-		protected override Size ArrangeOverride(Size finalSize)
-		{
-			if (Content is UIElement child)
-			{
-				Rect childRect = default;
-
-				var desiredSize = child.DesiredSize;
-
-				childRect.Width = Math.Max(finalSize.Width, desiredSize.Width);
-				childRect.Height = Math.Max(finalSize.Height, desiredSize.Height);
-
-				child.Arrange(childRect);
-
-				// Give opportunity to the the content to define the viewport size itself
-				(child as ICustomScrollInfo)?.ApplyViewport(ref finalSize);
-			}
-
-#if __SKIA__
-			if (Scroller?.IsInDirectManipulationCompletion() == true)
-			{
-				Scroller.PostDirectManipulationLayoutRefreshed();
-			}
-#endif
-
-			return finalSize;
-		}
-#endif
 
 		internal override bool IsViewHit()
 			=> true;
@@ -310,7 +162,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (e.KeyModifiers == VirtualKeyModifiers.Control)
 				{
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 					if (Scroller?.ZoomMode == ZoomMode.Enabled)
 					{
 						// Calculate zoom change (positive delta = zoom in, negative = zoom out)
@@ -337,18 +188,12 @@ namespace Microsoft.UI.Xaml.Controls
 								disableAnimation: false);
 						}
 					}
-#endif
 				}
 				else if (canScrollHorizontally && (properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
 				{
 					// IsHorizontalMouseWheel already carries the correct sign (positive = right). A Shift-redirected
 					// vertical wheel uses the vertical convention (positive = up), so negate to get positive = right.
 					var horizontalDelta = properties.IsHorizontalMouseWheel ? delta : -delta;
-#if __WASM__
-					success = Set(
-						horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta),
-						disableAnimation: false);
-#else
 					// Trackpad/touchpad-style scroll events can arrive at display-refresh rate (~60/s) with precise
 					// pixel-level deltas. The 1-second composition animation is NOT suitable because:
 					// 1. When many events have accumulated the target far ahead of the visual, the animation's
@@ -379,15 +224,9 @@ namespace Microsoft.UI.Xaml.Controls
 							horizontalOffset: TargetHorizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, horizontalDelta),
 							disableAnimation: false);
 					}
-#endif
 				}
 				else if (canScrollVertically && !properties.IsHorizontalMouseWheel)
 				{
-#if __WASM__
-					success = Set(
-						verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
-						disableAnimation: false);
-#else
 					if (OperatingSystem.IsIOS() || OperatingSystem.IsMacOS())
 					{
 						var vScrollAmount = Math.Abs(delta) < ScrollViewerDefaultMouseWheelDelta
@@ -403,7 +242,6 @@ namespace Microsoft.UI.Xaml.Controls
 							verticalOffset: TargetVerticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
 							disableAnimation: false);
 					}
-#endif
 				}
 
 				// This is not similar to what WinUI is doing, since we already differ quite a bit from
@@ -441,29 +279,5 @@ namespace Microsoft.UI.Xaml.Controls
 			return Math.Max(minOffset, Math.Min(offset, maxOffset));
 		}
 
-#elif __APPLE_UIKIT__ // Note: No __ANDROID__, the ICustomScrollInfo support is made directly in the NativeScrollContentPresenter
-		protected override Size MeasureOverride(Size size)
-		{
-			var result = base.MeasureOverride(size);
-
-			(RealContent as ICustomScrollInfo).ApplyViewport(ref result);
-
-			return result;
-		}
-
-		/// <inheritdoc />
-		protected override Size ArrangeOverride(Size finalSize)
-		{
-			var result = base.ArrangeOverride(finalSize);
-
-			(RealContent as ICustomScrollInfo).ApplyViewport(ref result);
-
-			return result;
-		}
-#endif
-
-#if __WASM__ || __NETSTD_REFERENCE__
-		protected override void OnContentChanged(object oldValue, object newValue) => base.OnContentChanged(oldValue, newValue);
-#endif
 	}
 }

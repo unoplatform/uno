@@ -81,11 +81,11 @@
 		</ItemGroup>
 	</Target>
 
-	<!-- List of packages that provide an uno-runtime folder -->
-	<ItemGroup>
-		<UnoRuntimeEnabledPackage Include="Uno.UI" PackageBasePath="$(MSBuildThisFileDirectory).." Condition="!$(_IsUnoWinUIPackage)" />
-		<UnoRuntimeEnabledPackage Include="Uno.WinUI" PackageBasePath="$(MSBuildThisFileDirectory).." Condition="$(_IsUnoWinUIPackage)" />
-	</ItemGroup>
+	<!--
+		Uno.UI / Uno.WinUI are deliberately absent from UnoRuntimeEnabledPackage: lib/ carries the
+		Skia build directly, so there is no runtime flavor to swap in. Uno.WinRT and Uno.Foundation
+		still register themselves (see their own .props).
+	-->
 
 	<!--
   Cross-runtime libraries creation targets

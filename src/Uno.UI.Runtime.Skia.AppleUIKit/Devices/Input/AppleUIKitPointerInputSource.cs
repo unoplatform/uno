@@ -21,6 +21,11 @@ using Windows.UI.Input;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
+/// <summary>
+/// One instance per window/scene, owned by its <see cref="Uno.UI.Runtime.Skia.AppleUIKit.RootViewController"/>.
+/// Native touches are already scoped to the window's own <see cref="TopViewLayer"/>, so this must not be a
+/// process-wide singleton, or every window's pointer manager would observe every other window's touches.
+/// </summary>
 internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSource
 {
 #if __IOS__
@@ -69,12 +74,6 @@ internal sealed class AppleUIKitCorePointerInputSource : IUnoCorePointerInputSou
 	private double _activeScrollPendingX;
 	private double _activeScrollPendingY;
 #endif
-	public static AppleUIKitCorePointerInputSource Instance { get; } = new();
-
-	private AppleUIKitCorePointerInputSource()
-	{
-	}
-
 #pragma warning disable CS0067
 	public event TypedEventHandler<object, PointerEventArgs>? PointerCaptureLost;
 	public event TypedEventHandler<object, PointerEventArgs>? PointerEntered;

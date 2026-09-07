@@ -25,21 +25,6 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 	public partial class Given_DependencyProperty
 	{
 		[TestMethod]
-		public void When_SimpleInheritance()
-		{
-			var SUT = new DependencyObjectCollection();
-			var level1 = new DependencyObjectCollection();
-			var level2 = new MyObject();
-
-			SUT.Add(level1);
-			level1.Add(level2);
-
-			SUT.DataContext = 42;
-
-			Assert.AreEqual(42, level2.DataContext);
-		}
-
-		[TestMethod]
 		public void When_DataContext_Binding()
 		{
 			var SUT = new MyObject();
@@ -227,9 +212,9 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 			SUT.InnerFramework = independentChild;
 
 			int parentCtxChanged = 0, childCtxChanged = 0, SUTCtxChanged = 0;
-			parent.RegisterPropertyChangedCallback(UIElement.DataContextProperty, (snd, dp) => parentCtxChanged++);
-			independentChild.RegisterPropertyChangedCallback(UIElement.DataContextProperty, (snd, dp) => childCtxChanged++);
-			SUT.RegisterPropertyChangedCallback(UIElement.DataContextProperty, (snd, dp) => SUTCtxChanged++);
+			parent.RegisterPropertyChangedCallback(FrameworkElement.DataContextProperty, (snd, dp) => parentCtxChanged++);
+			independentChild.RegisterPropertyChangedCallback(FrameworkElement.DataContextProperty, (snd, dp) => childCtxChanged++);
+			SUT.RegisterPropertyChangedCallback(FrameworkElement.DataContextProperty, (snd, dp) => SUTCtxChanged++);
 
 			Assert.AreEqual(42, SUT.DataContext);
 
@@ -260,9 +245,9 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 			SUT.InnerStandard = independentChild;
 
 			int parentCtxChanged = 0, childCtxChanged = 0, SUTCtxChanged = 0;
-			parent.RegisterPropertyChangedCallback(UIElement.DataContextProperty, (snd, dp) => parentCtxChanged++);
-			independentChild.RegisterPropertyChangedCallback(UIElement.DataContextProperty, (snd, dp) => childCtxChanged++);
-			SUT.RegisterPropertyChangedCallback(UIElement.DataContextProperty, (snd, dp) => SUTCtxChanged++);
+			parent.RegisterPropertyChangedCallback(FrameworkElement.DataContextProperty, (snd, dp) => parentCtxChanged++);
+			independentChild.RegisterPropertyChangedCallback(FrameworkElement.DataContextProperty, (snd, dp) => childCtxChanged++);
+			SUT.RegisterPropertyChangedCallback(FrameworkElement.DataContextProperty, (snd, dp) => SUTCtxChanged++);
 
 			Assert.AreEqual(42, SUT.DataContext);
 
@@ -275,7 +260,7 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 		}
 	}
 
-	public partial class MyBasicListType : DependencyObject
+	public partial class MyBasicListType : FrameworkElement
 	{
 
 		#region MyList DependencyProperty
@@ -308,7 +293,7 @@ namespace Uno.UI.Tests.BinderTests_DataContext
 
 	}
 
-	public partial class MyObject : DependencyObject
+	public partial class MyObject : FrameworkElement
 	{
 
 		#region InnerObject DependencyProperty

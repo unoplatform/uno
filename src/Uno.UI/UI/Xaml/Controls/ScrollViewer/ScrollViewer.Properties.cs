@@ -134,21 +134,12 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		#region BringIntoViewOnFocusChange (Attached DP)
-#if __APPLE_UIKIT__
-		[global::Uno.NotImplemented]
-#endif
 		public static bool GetBringIntoViewOnFocusChange(global::Microsoft.UI.Xaml.DependencyObject element)
 			=> (bool)element.GetValue(BringIntoViewOnFocusChangeProperty);
 
-#if __APPLE_UIKIT__
-		[global::Uno.NotImplemented]
-#endif
 		public static void SetBringIntoViewOnFocusChange(global::Microsoft.UI.Xaml.DependencyObject element, bool bringIntoViewOnFocusChange)
 			=> element.SetValue(BringIntoViewOnFocusChangeProperty, bringIntoViewOnFocusChange);
 
-#if __APPLE_UIKIT__
-		[global::Uno.NotImplemented]
-#endif
 		public bool BringIntoViewOnFocusChange
 		{
 			get => (bool)GetValue(BringIntoViewOnFocusChangeProperty);

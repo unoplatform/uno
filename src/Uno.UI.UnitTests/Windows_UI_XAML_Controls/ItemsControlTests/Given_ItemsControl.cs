@@ -28,7 +28,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 		public async Task When_EarlyItems()
 		{
 			var style = new Style(typeof(ItemsControl));
-			style.Setters.Add(new Setter<ItemsControl>("Template", x => x.Template = XamlHelper.LoadXaml<ControlTemplate>("""
+			style.Setters.Add(new Setter(Control.TemplateProperty, XamlHelper.LoadXaml<ControlTemplate>("""
 				<ControlTemplate>
 					<ItemsPresenter />
 				</ControlTemplate>
@@ -91,9 +91,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			var style = new Style(typeof(ItemsControl))
 			{
 				Setters =  {
-					new Setter<ItemsControl>("Template", t =>
-						t.Template = new ControlTemplate(() => itemsPresenter)
-					)
+					new Setter(Control.TemplateProperty, new ControlTemplate(null, (_, _) => itemsPresenter))
 				}
 			};
 
@@ -101,7 +99,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 
 			var SUT = new ItemsControl()
 			{
-				ItemsPanel = new ItemsPanelTemplate(() => panel),
+				ItemsPanel = new ItemsPanelTemplate(null, (_, _) => panel),
 				Items = {
 					new Border { Name = "b1" }
 				},
@@ -130,7 +128,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			{
 				ItemsPanelRoot = panel,
 				InternalItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					count++;
 					return new Border();
@@ -225,7 +223,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			{
 				ItemsPanelRoot = panel,
 				InternalItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() => { return new Border(); }),
+				ItemTemplate = new DataTemplate(null, (_, _) => { return new Border(); }),
 				ItemsSource = source
 			};
 
@@ -262,7 +260,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			{
 				ItemsPanelRoot = panel,
 				InternalItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					count++;
 					return new Border();
@@ -299,7 +297,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			{
 				ItemsPanelRoot = panel,
 				InternalItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					count++;
 					return new Border();
@@ -324,7 +322,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			{
 				ItemsPanelRoot = panel,
 				InternalItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					count++;
 					return new Border();
@@ -359,7 +357,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			{
 				ItemsPanelRoot = panel,
 				InternalItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					count++;
 					return new Border();
@@ -394,7 +392,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			{
 				ItemsPanelRoot = panel,
 				InternalItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					count++;
 					return new Border();
@@ -438,7 +436,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 				ItemsPanelRoot = panel,
 				ItemContainerStyle = BuildBasicContainerStyle(),
 				InternalItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					count++;
 					return new Border();
@@ -498,7 +496,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 				ItemsPanelRoot = panel,
 				ItemContainerStyle = BuildBasicContainerStyle(),
 				InternalItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					count++;
 					return new Border();
@@ -541,7 +539,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 				ItemsPanelRoot = panel,
 				ItemContainerStyle = BuildBasicContainerStyle(),
 				InternalItemsPanelRoot = panel,
-				ItemTemplate = new DataTemplate(() =>
+				ItemTemplate = new DataTemplate(null, (_, _) =>
 				{
 					count++;
 					return new Border();
@@ -570,25 +568,12 @@ namespace Uno.UI.Tests.ItemsControlTests
 			Assert.AreEqual(4, count);
 		}
 
+		// Empty ItemContainerStyle: these tests assert only item/container generation, not container visuals.
+		// The previous Setter<ListViewItem>("Template", ...) was a type-guarded no-op on the ContentPresenter
+		// containers ItemsControl actually creates, and a real Control.Template setter is invalid there, so no
+		// container Template is applied either way.
 		private Style BuildBasicContainerStyle() =>
-			new Style(typeof(Microsoft.UI.Xaml.Controls.ListViewItem))
-			{
-				Setters = {
-					new Setter<ListViewItem>("Template", t =>
-						t.Template = new ControlTemplate(() =>
-							new Grid
-							{
-								Children = {
-									new ContentPresenter().Apply(p => {
-										p.SetBinding(ContentPresenter.ContentTemplateProperty, new Binding(){ Path = "ContentTemplate", RelativeSource = RelativeSource.TemplatedParent });
-										p.SetBinding(ContentPresenter.ContentProperty, new Binding(){ Path = "Content", RelativeSource = RelativeSource.TemplatedParent });
-									})
-								}
-							}
-						)
-					)
-				}
-			};
+			new Style(typeof(Microsoft.UI.Xaml.Controls.ListViewItem));
 
 	}
 

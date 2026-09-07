@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using Microsoft.UI.Xaml;
 using System;
 using System.ComponentModel;
@@ -6,14 +6,8 @@ using Uno.Media;
 using Windows.Foundation;
 
 using Rect = Windows.Foundation.Rect;
-
-#if __APPLE_UIKIT__
-using Foundation;
-using UIKit;
-using CoreGraphics;
-#elif __ANDROID__
-using Android.Graphics;
-#endif
+using SkiaSharp;
+using Microsoft.UI.Composition;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -32,11 +26,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		public static implicit operator Geometry(string data)
 		{
-#if __WASM__
-			return new GeometryData(data);
-#else
 			return Parsers.ParseGeometry(data);
-#endif
 		}
 
 		public Rect Bounds => ComputeBounds();
@@ -86,26 +76,54 @@ namespace Microsoft.UI.Xaml.Media
 
 		#endregion
 
-#if __APPLE_UIKIT__
-		public static implicit operator UIImage(Geometry g)
-		{
-			return g.ToNativeImage();
-		}
-
-		public static implicit operator CGPath(Geometry g)
-		{
-			return g.ToCGPath();
-		}
-
-		public virtual UIImage ToNativeImage() { throw new InvalidOperationException(); }
-
-		public virtual UIImage ToNativeImage(CGSize targetSize, UIColor color = default(UIColor), Thickness margin = default(Thickness)) { throw new InvalidOperationException(); }
-
-		public virtual CGPath ToCGPath() { throw new InvalidOperationException(); }
-
-#elif __ANDROID__
-		public virtual Path ToPath() { throw new InvalidOperationException(); }
-#endif
 		public virtual void Dispose() { throw new InvalidOperationException(); }
+
+		// TODO: Can we mark Geometry and GetSKPath method as abstract?
+		// While this will diverge from UWP, it doesn't seem to matter whether it's abstract or not because
+		// this class doesn't have public constructors in UWP, which makes it not-inheritable either way.
+		internal virtual SKPath GetSKPath() => throw new NotSupportedException($"Geometry {this} is not supported");
+
+		/// <remarks>
+		/// Note: Try not to depend on this. See the note in <see cref="CompositionSpriteShape.NegativeFillGeometry"/>
+		/// </remarks>
+		internal virtual SKPath GetFilledSKPath() => null;
+
+		/// <summary>
+		/// Returns the SKPath with the <see cref="Transform"/> applied, if any.
+		/// </summary>
+		internal SKPath GetTransformedSKPath()
+		{
+			var path = GetSKPath();
+			return ApplyTransformToPath(path);
+		}
+
+		/// <summary>
+		/// Returns the filled SKPath with the <see cref="Transform"/> applied, if any.
+		/// </summary>
+		internal SKPath GetTransformedFilledSKPath()
+		{
+			var path = GetFilledSKPath();
+			return ApplyTransformToPath(path);
+		}
+
+		private SKPath ApplyTransformToPath(SKPath path)
+		{
+			if (path is null)
+			{
+				return null;
+			}
+
+			if (Transform is { MatrixCore: var matrix } && !matrix.IsIdentity)
+			{
+				var skMatrix = matrix.ToSKMatrix();
+				var transformed = new SKPath();
+				path.Transform(skMatrix, transformed);
+				return transformed;
+			}
+
+			return path;
+		}
+
+		internal virtual SkiaGeometrySource2D GetGeometrySource2D() => new SkiaGeometrySource2D(GetTransformedSKPath());
 	}
 }

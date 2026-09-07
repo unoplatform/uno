@@ -551,11 +551,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsNotNull(first.Content);
 				Assert.IsNotNull(second.Content);
 
-				var firstInnerContent = first.ContentTemplateRoot as ContentControl;
+				var firstInnerContent = VisualTreeHelper.GetChild(first, 0) as ContentControl;
 				Assert.AreEqual(source[0], firstInnerContent?.Content);
 				Assert.IsNotNull(firstInnerContent.GetBindingExpression(ContentControl.ContentProperty));
 
-				var secondInnerContent = second.ContentTemplateRoot as ContentControl;
+				var secondInnerContent = VisualTreeHelper.GetChild(second, 0) as ContentControl;
 				Assert.AreEqual(source[1], secondInnerContent.Content);
 				Assert.IsNotNull(secondInnerContent.GetBindingExpression(ContentControl.ContentProperty));
 			}
@@ -579,11 +579,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsNotNull(first.Content);
 				Assert.IsNotNull(second.Content);
 
-				var firstInnerContent = first.ContentTemplateRoot as ContentControl;
+				var firstInnerContent = VisualTreeHelper.GetChild(first, 0) as ContentControl;
 				Assert.AreEqual(source[0], firstInnerContent?.Content);
 				Assert.IsNotNull(firstInnerContent.GetBindingExpression(ContentControl.ContentProperty));
 
-				var secondInnerContent = second.ContentTemplateRoot as ContentControl;
+				var secondInnerContent = VisualTreeHelper.GetChild(second, 0) as ContentControl;
 				Assert.AreEqual(source[1], secondInnerContent.Content);
 				Assert.IsNotNull(secondInnerContent.GetBindingExpression(ContentControl.ContentProperty));
 			}

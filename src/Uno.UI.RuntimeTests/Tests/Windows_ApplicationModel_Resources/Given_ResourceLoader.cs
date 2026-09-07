@@ -20,7 +20,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		{
 			CultureInfo.CurrentUICulture = new CultureInfo(DefaultLanguage);
 			ApplicationLanguages.PrimaryLanguageOverride = DefaultLanguage;
-#if __XAMARIN__ || __WASM__
+#if __WASM__
 			ResourceLoader.DefaultLanguage = DefaultLanguage;
 #endif
 		}
@@ -30,7 +30,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		{
 			CultureInfo.CurrentUICulture = new CultureInfo(DefaultLanguage);
 			ApplicationLanguages.PrimaryLanguageOverride = DefaultLanguage;
-#if __XAMARIN__ || __WASM__
+#if __WASM__
 			ResourceLoader.DefaultLanguage = DefaultLanguage;
 #endif
 		}
@@ -162,7 +162,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.NativeWinUI)] // Unstable test due to device language settings: NSLocale.PreferredLanguages can be 'en' or 'en-US'.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaTvOS)] // Unstable test due to device language settings: NSLocale.PreferredLanguages can be 'en' or 'en-US'.
 #if __APPLE_UIKIT__
 		[Ignore("Unstable test due to device language settings: NSLocale.PreferredLanguages can be 'en' or 'en-US'.")]
 #endif

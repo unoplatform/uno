@@ -1,5 +1,4 @@
 ﻿#nullable enable
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
@@ -198,4 +197,3 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 	}
 }
-#endif

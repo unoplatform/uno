@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference SemanticZoomAutomationPeer_Partial.cpp, tag winui3/release/1.8.4, commit dc46907e92
+// Licensed under the MIT License.
+
+// MUX Reference SemanticZoomAutomationPeer_Partial.cpp, commit 3c9c168844
 
 #nullable enable
 

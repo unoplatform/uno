@@ -112,7 +112,7 @@ public partial class Popup
 	{
 		if (property == IsLightDismissEnabledProperty)
 		{
-			defaultValue = Uno.UI.Helpers.Boxes.Box(FeatureConfiguration.Popup.EnableLightDismissByDefault);
+			defaultValue = Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse;
 			return true;
 		}
 		return base.GetDefaultValue2(property, out defaultValue);
@@ -156,7 +156,6 @@ public partial class Popup
 	partial void OnHorizontalOffsetChangedPartial(double oldHorizontalOffset, double newHorizontalOffset) =>
 		PopupPanel?.InvalidateMeasure();
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 	// MUX Reference: Popup.cpp CPopup::NotifyThemeChangedCore (lines 3666-3687).
 	// Popup's Child is reparented to PopupRoot's visual tree, so the normal PropagateThemeToChildren walk
 	// won't reach it; we explicitly propagate a runtime theme change to the logical child here. Element-level
@@ -176,7 +175,6 @@ public partial class Popup
 		// Uno's light-dismiss overlay is the PopupPanel background, which re-resolves through this popup's
 		// own LightDismissOverlayBackground theme reference instead.
 	}
-#endif
 
 	internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 	{

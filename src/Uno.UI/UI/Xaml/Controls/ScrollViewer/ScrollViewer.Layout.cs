@@ -37,16 +37,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void TrimOverscroll(Orientation orientation);
 
-		// Refresh dimensions at the platform's post-arrange lifecycle point.
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		internal override void AfterArrange()
 		{
 			base.AfterArrange();
-#else
-		internal override void OnLayoutUpdated()
-		{
-			base.OnLayoutUpdated();
-#endif
 			if (m_dimensionsUpdatedInArrange)
 			{
 				m_dimensionsUpdatedInArrange = false;
@@ -63,11 +56,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return this.GetUseLayoutRounding() ? fe.LayoutRound(value) : value;
 		}
 
-#if __APPLE_UIKIT__
-		internal
-#else
 		private
-#endif
 			void UpdateDimensionProperties()
 		{
 			// The dimensions of the presenter (which are often but not always the same as the ScrollViewer) determine the viewport size
@@ -133,13 +122,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				static double GetEffectiveMargin(double leadingMargin, double trailingMargin)
 				{
-#if !__WASM__
 					return leadingMargin + trailingMargin;
-#else
-					// Issue needs to be fixed first for WASM for missing trailing Margin
-					// Details here: https://github.com/unoplatform/uno/issues/7000
-					return leadingMargin;
-#endif
 				}
 			}
 			else

@@ -1,10 +1,6 @@
 ﻿#nullable enable
 
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.ScrollContentPresenter;
-#else
-using _ScrollContentPresenter = Microsoft.UI.Xaml.Controls.IScrollContentPresenter;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -23,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_isTemplateApplied = _presenter != null;
 
-#if __WASM__ || __SKIA__
+#if __SKIA__
 			if (_presenter != null && ForceChangeToCurrentView)
 			{
 				_presenter.ForceChangeToCurrentView = ForceChangeToCurrentView;
@@ -34,17 +30,6 @@ namespace Microsoft.UI.Xaml.Controls
 			_isVerticalScrollBarMaterialized = false;
 			_horizontalScrollbar = null;
 			_isHorizontalScrollBarMaterialized = false;
-
-#if __APPLE_UIKIT__ || __ANDROID__
-			if (scpTemplatePart is ScrollContentPresenter scp && scp.Native is null)
-			{
-				// For Android and iOS, ensure that the ScrollContentPresenter contains a native SCP,
-				// which will handle the actual scrolling.
-				var nativeSCP = new NativeScrollContentPresenter(this);
-				scp.Content = scp.Native = nativeSCP;
-				_presenter = nativeSCP;
-			}
-#endif
 
 			if (scpTemplatePart is ScrollContentPresenter presenter)
 			{

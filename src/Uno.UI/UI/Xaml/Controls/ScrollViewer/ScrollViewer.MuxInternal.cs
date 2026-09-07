@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				_forceChangeToCurrentView = value;
 
-#if __WASM__ || __SKIA__
+#if __SKIA__
 				if (_presenter != null)
 				{
 					_presenter.ForceChangeToCurrentView = value;
@@ -93,8 +93,6 @@ namespace Microsoft.UI.Xaml.Controls
 				isForMakeVisible: false,
 				out var handled);
 			return handled;
-#elif __WASM__
-			return ChangeView(bounds.X, bounds.Y, null, true);
 #else
 			return ChangeView(bounds.X, bounds.Y, null, !animate);
 #endif
@@ -231,13 +229,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static bool ScrollContentControl_SetFocusOnFlyoutLightDismissPopupByPointer(UIElement pScrollContentControl)
 		{
-#if __WASM__
-			if ((pScrollContentControl as ScrollViewer)?.DisableSetFocusOnPopupByPointer ?? false)
-			{
-				return false;
-			}
-#endif
-
 			PopupRoot? pPopupRoot = null;
 			Popup? pPopup = null;
 

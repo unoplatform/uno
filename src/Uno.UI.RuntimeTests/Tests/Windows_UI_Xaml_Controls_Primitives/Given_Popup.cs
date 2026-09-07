@@ -43,23 +43,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls_Primitives
 			}
 		}
 
-#if __ANDROID__
-		[TestMethod]
-		public async Task Check_Can_Reach_Main_Visual_Tree_Alternate_Mode()
-		{
-			var originalConfig = FeatureConfiguration.Popup.UseNativePopup;
-			FeatureConfiguration.Popup.UseNativePopup = !originalConfig;
-			try
-			{
-				await Check_Can_Reach_Main_Visual_Tree();
-			}
-			finally
-			{
-				FeatureConfiguration.Popup.UseNativePopup = originalConfig;
-			}
-		}
-#endif
-
 		[TestMethod]
 		public void When_IsLightDismissEnabled_Default()
 		{

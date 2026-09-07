@@ -11,7 +11,6 @@ using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.FlyoutPages;
 using Uno.UI.RuntimeTests.FramePages;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Toolkit.Extensions;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Core;
@@ -410,7 +409,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		// "Popup successfully fits left-aligned on Android - possibly because the status bar offset changes the layouting?"
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Too_Large_For_Any_Fallback()
 		{
 			var target = new TextBlock
@@ -755,7 +754,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finally
 			{
 #if HAS_UNO
-				SUT.contextFlyout.Close();
+				SUT.contextFlyout.Hide();
 #endif
 			}
 		}
@@ -1931,14 +1930,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		private static void VerifyRelativeContentPosition(Windows.Foundation.Point position, HorizontalPosition horizontalPosition, VerticalPosition verticalPosition, FrameworkElement content, double minimumTargetOffset, FrameworkElement target)
 		{
 			var contentScreenBounds = content.GetOnScreenBounds();
-#if __ANDROID__
-			if (FeatureConfiguration.Popup.UseNativePopup)
-			{
-				// Adjust for status bar height, which is omitted from TransformToVisual() for elements inside of a native popup.
-				var rootViewBounds = ((FrameworkElement)Window.Current.Content).GetOnScreenBounds();
-				contentScreenBounds.Y += rootViewBounds.Y;
-			}
-#endif
 			var contentCenter = contentScreenBounds.GetCenter();
 			var targetScreenBounds = target.GetOnScreenBounds();
 			var targetCenter = targetScreenBounds.GetCenter();
