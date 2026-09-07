@@ -43,7 +43,6 @@
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.Linux" />
 		<PackageReference Include="HarfbuzzSharp" />
 		<PackageReference Include="SkiaSharp" />
-		<PackageReference Include="LibVLCSharp" Version="3.9.7.1" />
 	</ItemGroup>
 
 	<ItemGroup>

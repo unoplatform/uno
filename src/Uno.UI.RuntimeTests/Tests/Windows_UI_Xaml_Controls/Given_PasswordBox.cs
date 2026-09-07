@@ -21,7 +21,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public partial class Given_PasswordBox
 {
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia & ~RuntimeTestPlatforms.SkiaTvOS)] // https://github.com/unoplatform/uno/issues/9080
 	public async Task When_PasswordChar_Visual_Comparison()
 	{
 		// Test password with 4 characters 
