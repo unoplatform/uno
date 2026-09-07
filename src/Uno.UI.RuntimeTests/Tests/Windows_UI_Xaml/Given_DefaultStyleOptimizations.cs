@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 
@@ -103,8 +104,15 @@ public class Given_DefaultStyleOptimizations
 			// ... while keeping the very same contract.
 			Assert.AreEqual(defaultStyle.TargetType, optimizedStyle.TargetType, $"TargetType changed for {key}");
 			Assert.AreEqual(defaultStyle.BasedOn?.TargetType, optimizedStyle.BasedOn?.TargetType, $"BasedOn changed for {key}");
-			Assert.AreEqual(GetSetterProperties(defaultStyle), GetSetterProperties(optimizedStyle), $"Setters changed for {key}");
+			var addedProperty = defaultStyle.TargetType == typeof(ComboBox)
+				? ComboBoxHelper.KeepInteriorCornersSquareProperty
+				: null;
+			Assert.AreEqual(GetSetterProperties(defaultStyle, addedProperty), GetSetterProperties(optimizedStyle, addedProperty), $"Setters changed for {key}");
 		}
+
+		var comboBoxStyle = GetStyle(optimized, "DefaultComboBoxStyle");
+		Assert.IsTrue(comboBoxStyle.Setters.OfType<Setter>().Any(setter =>
+			setter.Property == ComboBoxHelper.KeepInteriorCornersSquareProperty && Equals(setter.Value, true)));
 	}
 
 	[TestMethod]
@@ -209,8 +217,11 @@ public class Given_DefaultStyleOptimizations
 		await UITestHelper.Load(checkBox);
 		var root = checkBox.GetTemplateChild("RootGrid") as Grid;
 		var presenter = checkBox.GetTemplateChild("ContentPresenter") as ContentPresenter;
+		var glyph = checkBox.GetTemplateChild("CheckGlyph") as AnimatedIcon;
 		Assert.IsNotNull(root);
 		Assert.IsNotNull(presenter);
+		Assert.IsNotNull(glyph);
+		Assert.AreEqual("NormalOff", AnimatedIcon.GetState(glyph));
 
 		foreach (var state in new[] { "CheckedNormal", "UncheckedPointerOver", "IndeterminateNormal", "UncheckedDisabled" })
 		{
@@ -222,6 +233,133 @@ public class Given_DefaultStyleOptimizations
 			Assert.AreSame(background, root.Background, $"Background template binding was lost after {state}.");
 			Assert.AreSame(border, root.BorderBrush, $"Border template binding was lost after {state}.");
 			Assert.AreSame(foreground, presenter.Foreground, $"Foreground template binding was lost after {state}.");
+			Assert.AreEqual("NormalOff", AnimatedIcon.GetState(glyph), $"Animated icon state was not restored after {state}.");
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Optimized_AppBarButton_Uses_Label_Font_Resource()
+	{
+		var button = new AppBarButton
+		{
+			Label = "Resource override",
+			Style = GetStyle(CreateResources(optimized: true), typeof(AppBarButton)),
+		};
+		button.Resources["AppBarButtonLabelFontSize"] = 18d;
+
+		await UITestHelper.Load(button);
+
+		var label = button.GetTemplateChild("TextLabel") as TextBlock;
+		Assert.IsNotNull(label);
+		Assert.AreEqual(18d, label.FontSize);
+	}
+
+	[TestMethod]
+	[DataRow(false)]
+	[DataRow(true)]
+#if !HAS_RENDER_TARGET_BITMAP
+	[Ignore("Cannot take screenshot on this platform.")]
+#endif
+	public async Task When_Optimized_CommandBar_Opens_With_Visible_Ellipsis(bool noGrid)
+	{
+		using var _ = FeatureConfigurationHelper.UseIconElementNoGridContainer(noGrid);
+		var commandBar = new CommandBar
+		{
+			Width = 320,
+			Foreground = new SolidColorBrush(Microsoft.UI.Colors.Green),
+			Style = GetStyle(CreateResources(optimized: true), typeof(CommandBar)),
+		};
+		commandBar.PrimaryCommands.Add(new AppBarButton { Label = "Primary", Icon = new SymbolIcon(Symbol.Add) });
+		commandBar.SecondaryCommands.Add(new AppBarButton { Label = "Secondary" });
+		await UITestHelper.Load(commandBar);
+
+		try
+		{
+			var moreButton = commandBar.GetTemplateChild("MoreButton") as Button;
+			var ellipsis = commandBar.GetTemplateChild("EllipsisIcon") as FontIcon;
+			Assert.IsNotNull(moreButton);
+			Assert.IsNotNull(ellipsis);
+			Assert.AreEqual(20d, ellipsis.FontSize);
+			Assert.AreEqual(3d, ellipsis.Height);
+
+			var screenshot = await UITestHelper.ScreenShot(moreButton);
+			ImageAssert.HasColorInRectangle(
+				screenshot,
+				new System.Drawing.Rectangle(0, 0, screenshot.Width, screenshot.Height),
+				Microsoft.UI.Colors.Green);
+
+			commandBar.IsOpen = true;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var popup = commandBar.GetTemplateChild("OverflowPopup") as Popup;
+			var items = commandBar.GetTemplateChild("SecondaryItemsControl") as ItemsControl;
+			Assert.IsNotNull(popup);
+			Assert.IsNotNull(items);
+			Assert.IsTrue(popup.IsOpen);
+			Assert.AreEqual(1, items.Items.Count);
+		}
+		finally
+		{
+			commandBar.IsOpen = false;
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+	}
+
+	[TestMethod]
+	[RequiresFullWindow]
+	[DataRow(VerticalAlignment.Top, true)]
+	[DataRow(VerticalAlignment.Bottom, false)]
+	public async Task When_Optimized_Editable_ComboBox_Updates_Interior_Corners(VerticalAlignment alignment, bool opensDown)
+	{
+		var controlRadius = new CornerRadius(12);
+		var overlayRadius = new CornerRadius(8);
+		var comboBox = new ComboBox
+		{
+			IsEditable = true,
+			Width = 240,
+			Margin = new Thickness(24),
+			VerticalAlignment = alignment,
+			MaxDropDownHeight = 120,
+			CornerRadius = controlRadius,
+			ItemsSource = new[] { "First", "Second", "Third", "Fourth", "Fifth" },
+			Style = GetStyle(CreateResources(optimized: true), typeof(ComboBox)),
+		};
+		comboBox.Resources["OverlayCornerRadius"] = overlayRadius;
+		await UITestHelper.Load(new Grid { Children = { comboBox } });
+		Assert.IsTrue(ComboBoxHelper.GetKeepInteriorCornersSquare(comboBox));
+
+		try
+		{
+			var popupBorder = comboBox.GetTemplateChild("PopupBorder") as Border;
+			var textBox = comboBox.GetTemplateChild("EditableText") as TextBox;
+			Assert.IsNotNull(popupBorder);
+			Assert.IsNotNull(textBox);
+
+			comboBox.IsDropDownOpen = true;
+			await UITestHelper.WaitForLoaded(popupBorder);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var offset = popupBorder.TransformToVisual(textBox).TransformPoint(new Windows.Foundation.Point(0, 0)).Y;
+			Assert.AreEqual(opensDown, offset > 0);
+			Assert.AreEqual(opensDown ? new CornerRadius(0, 0, 8, 8) : new CornerRadius(8, 8, 0, 0), popupBorder.CornerRadius);
+			Assert.AreEqual(opensDown ? new CornerRadius(12, 12, 0, 0) : new CornerRadius(0, 0, 12, 12), textBox.CornerRadius);
+
+			comboBox.IsDropDownOpen = false;
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(overlayRadius, popupBorder.CornerRadius);
+			Assert.AreEqual(controlRadius, textBox.CornerRadius);
+
+			ComboBoxHelper.SetKeepInteriorCornersSquare(comboBox, false);
+			comboBox.IsDropDownOpen = true;
+			await UITestHelper.WaitForLoaded(popupBorder);
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.AreEqual(overlayRadius, popupBorder.CornerRadius, "Disabling the helper must revoke the open handler.");
+			Assert.AreEqual(controlRadius, textBox.CornerRadius);
+		}
+		finally
+		{
+			comboBox.IsDropDownOpen = false;
+			await TestServices.WindowHelper.WaitForIdle();
 		}
 	}
 
@@ -340,11 +478,12 @@ public class Given_DefaultStyleOptimizations
 		return (Style)value;
 	}
 
-	private static string GetSetterProperties(Style style)
+	private static string GetSetterProperties(Style style, DependencyProperty? excludedProperty = null)
 		=> string.Join(
 			";",
 			style.Setters
 				.OfType<Setter>()
+				.Where(setter => excludedProperty is null || setter.Property != excludedProperty)
 				.Select(setter => setter.Property?.Name ?? "?")
 				.OrderBy(name => name, StringComparer.Ordinal));
 

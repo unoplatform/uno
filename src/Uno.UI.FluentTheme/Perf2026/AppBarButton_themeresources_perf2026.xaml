@@ -2,6 +2,7 @@
 <!-- MUX Reference controls/dev/CommonStyles/AppBarButton_themeresources_perf2026.xaml, commit 3c9c168844f06c6ac000a97977f0bb3f4c90fd75 -->
 <!-- Uno: shared resources remain in the base dictionary; this dictionary overlays the selected styles. -->
 <ResourceDictionary xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+  <x:Double x:Key="AppBarButtonLabelFontSize">12</x:Double>
   <Style TargetType="AppBarButton" BasedOn="{StaticResource DefaultAppBarButtonStyle}" />
   <Style x:Key="AppBarButtonOverflowStyle" TargetType="AppBarButton" BasedOn="{StaticResource DefaultAppBarButtonStyle}">
     <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -229,7 +230,7 @@
               <Viewbox x:Name="ContentViewbox" Height="{ThemeResource AppBarButtonContentHeight}" Margin="{ThemeResource AppBarButtonContentViewboxCollapsedMargin}" HorizontalAlignment="Stretch" AutomationProperties.AccessibilityView="Raw">
                 <ContentPresenter x:Name="Content" Content="{TemplateBinding Icon}" Foreground="{TemplateBinding Foreground}" />
               </Viewbox>
-              <TextBlock x:Name="TextLabel" Grid.Row="1" Text="{TemplateBinding Label}" Foreground="{TemplateBinding Foreground}" FontSize="12" FontFamily="{TemplateBinding FontFamily}" TextAlignment="Center" TextWrapping="Wrap" Margin="{ThemeResource AppBarButtonTextLabelMargin}" AutomationProperties.AccessibilityView="Raw" />
+              <TextBlock x:Name="TextLabel" Grid.Row="1" Text="{TemplateBinding Label}" Foreground="{TemplateBinding Foreground}" FontSize="{ThemeResource AppBarButtonLabelFontSize}" FontFamily="{TemplateBinding FontFamily}" TextAlignment="Center" TextWrapping="Wrap" Margin="{ThemeResource AppBarButtonTextLabelMargin}" AutomationProperties.AccessibilityView="Raw" />
               <TextBlock x:Name="OverflowTextLabel" Text="{TemplateBinding Label}" Foreground="{TemplateBinding Foreground}" FontSize="{ThemeResource ControlContentThemeFontSize}" FontFamily="{TemplateBinding FontFamily}" TextAlignment="Left" TextTrimming="Clip" TextWrapping="NoWrap" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="12,0,12,0" Padding="{ThemeResource AppBarButtonOverflowTextLabelPadding}" Visibility="Collapsed" AutomationProperties.AccessibilityView="Raw" />
               <TextBlock x:Name="KeyboardAcceleratorTextLabel" Grid.Column="1" Style="{ThemeResource CaptionTextBlockStyle}" Text="{TemplateBinding KeyboardAcceleratorTextOverride}" MinWidth="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.KeyboardAcceleratorTextMinWidth}" Margin="24,0,12,0" Foreground="{ThemeResource AppBarButtonKeyboardAcceleratorTextForeground}" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="Collapsed" AutomationProperties.AccessibilityView="Raw" />
               <Grid x:Name="SubItemChevronPanel" Grid.Column="2" Visibility="Collapsed">

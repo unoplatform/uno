@@ -5,10 +5,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
-    xmlns:local="using:Microsoft.UI.Xaml.Controls"
-    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
-    xmlns:contract7NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,7)">
+    xmlns:local="using:Microsoft.UI.Xaml.Controls">
     <Style TargetType="CheckBox" BasedOn="{StaticResource DefaultCheckBoxStyle}" />
     <Style x:Key="DefaultCheckBoxStyle" TargetType="CheckBox">
         <Setter Property="Background" Value="{ThemeResource CheckBoxBackgroundUnchecked}" />
@@ -25,7 +22,7 @@
         <Setter Property="MinHeight" Value="{StaticResource CheckBoxHeight}" />
         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
         <Setter Property="FocusVisualMargin" Value="{StaticResource CheckBoxFocusVisualMargin}" />
-        <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+        <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="CheckBox">
@@ -33,8 +30,7 @@
                         Background="{TemplateBinding Background}"
                         BorderBrush="{TemplateBinding BorderBrush}"
                         BorderThickness="{TemplateBinding BorderThickness}"
-                        contract7Present:CornerRadius="{TemplateBinding CornerRadius}"
-                        contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}">
+                        CornerRadius="{TemplateBinding CornerRadius}">
 
                         <VisualStateManager.VisualStateGroups>
                             <VisualStateGroup x:Name="CombinedStates">
@@ -77,13 +73,6 @@
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="CheckedNormal">
-
-                                    <Storyboard>
-                                        <contract7NotPresent:DoubleAnimation Storyboard.TargetName="CheckGlyph"
-                                            Storyboard.TargetProperty="Opacity"
-                                            To="1"
-                                            Duration="0" />
-                                    </Storyboard>
                                     <VisualState.Setters>
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource CheckBoxForegroundChecked}" />
                                         <Setter Target="RootGrid.Background" Value="{ThemeResource CheckBoxBackgroundChecked}" />
@@ -95,13 +84,6 @@
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="CheckedPointerOver">
-
-                                    <Storyboard>
-                                        <contract7NotPresent:DoubleAnimation Storyboard.TargetName="CheckGlyph"
-                                            Storyboard.TargetProperty="Opacity"
-                                            To="1"
-                                            Duration="0" />
-                                    </Storyboard>
                                     <VisualState.Setters>
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource CheckBoxForegroundCheckedPointerOver}" />
                                         <Setter Target="RootGrid.Background" Value="{ThemeResource CheckBoxBackgroundCheckedPointerOver}" />
@@ -113,13 +95,6 @@
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="CheckedPressed">
-
-                                    <Storyboard>
-                                        <contract7NotPresent:DoubleAnimation Storyboard.TargetName="CheckGlyph"
-                                            Storyboard.TargetProperty="Opacity"
-                                            To="1"
-                                            Duration="0" />
-                                    </Storyboard>
                                     <VisualState.Setters>
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource CheckBoxForegroundCheckedPressed}" />
                                         <Setter Target="RootGrid.Background" Value="{ThemeResource CheckBoxBackgroundCheckedPressed}" />
@@ -131,13 +106,6 @@
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="CheckedDisabled">
-
-                                    <Storyboard>
-                                        <contract7NotPresent:DoubleAnimation Storyboard.TargetName="CheckGlyph"
-                                            Storyboard.TargetProperty="Opacity"
-                                            To="1"
-                                            Duration="0" />
-                                    </Storyboard>
                                     <VisualState.Setters>
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource CheckBoxForegroundCheckedDisabled}" />
                                         <Setter Target="RootGrid.Background" Value="{ThemeResource CheckBoxBackgroundCheckedDisabled}" />
@@ -150,13 +118,6 @@
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="IndeterminateNormal">
-
-                                    <Storyboard>
-                                        <contract7NotPresent:DoubleAnimation Storyboard.TargetName="CheckGlyph"
-                                            Storyboard.TargetProperty="Opacity"
-                                            To="1"
-                                            Duration="0" />
-                                    </Storyboard>
                                     <VisualState.Setters>
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource CheckBoxForegroundIndeterminate}" />
                                         <Setter Target="RootGrid.Background" Value="{ThemeResource CheckBoxBackgroundIndeterminate}" />
@@ -170,13 +131,6 @@
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="IndeterminatePointerOver">
-
-                                    <Storyboard>
-                                        <contract7NotPresent:DoubleAnimation Storyboard.TargetName="CheckGlyph"
-                                            Storyboard.TargetProperty="Opacity"
-                                            To="1"
-                                            Duration="0" />
-                                    </Storyboard>
                                     <VisualState.Setters>
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource CheckBoxForegroundIndeterminatePointerOver}" />
                                         <Setter Target="RootGrid.Background" Value="{ThemeResource CheckBoxBackgroundIndeterminatePointerOver}" />
@@ -190,13 +144,6 @@
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="IndeterminatePressed">
-
-                                    <Storyboard>
-                                        <contract7NotPresent:DoubleAnimation Storyboard.TargetName="CheckGlyph"
-                                            Storyboard.TargetProperty="Opacity"
-                                            To="1"
-                                            Duration="0" />
-                                    </Storyboard>
                                     <VisualState.Setters>
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource CheckBoxForegroundIndeterminatePressed}" />
                                         <Setter Target="RootGrid.Background" Value="{ThemeResource CheckBoxBackgroundIndeterminatePressed}" />
@@ -210,13 +157,6 @@
                                     </VisualState.Setters>
                                 </VisualState>
                                 <VisualState x:Name="IndeterminateDisabled">
-
-                                    <Storyboard>
-                                        <contract7NotPresent:DoubleAnimation Storyboard.TargetName="CheckGlyph"
-                                            Storyboard.TargetProperty="Opacity"
-                                            To="1"
-                                            Duration="0" />
-                                    </Storyboard>
                                     <VisualState.Setters>
                                         <Setter Target="ContentPresenter.Foreground" Value="{ThemeResource CheckBoxForegroundIndeterminateDisabled}" />
                                         <Setter Target="RootGrid.Background" Value="{ThemeResource CheckBoxBackgroundIndeterminateDisabled}" />
@@ -249,13 +189,11 @@
                                 UseLayoutRounding="False"
                                 Height="{StaticResource CheckBoxSize}"
                                 Width="{StaticResource CheckBoxSize}"
-                                contract7Present:RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
-                                contract7Present:RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}"
-                                contract7NotPresent:RadiusX="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
-                                contract7NotPresent:RadiusY="{Binding Source={ThemeResource ControlCornerRadius}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}"/>
+                                RadiusX="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource TopLeftCornerRadiusDoubleValueConverter}}"
+                                RadiusY="{Binding CornerRadius, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BottomRightCornerRadiusDoubleValueConverter}}"/>
                             <local:AnimatedIcon x:Name="CheckGlyph"
                                                 Foreground="{ThemeResource CheckBoxCheckGlyphForegroundUnchecked}"
-                                                contract7NotPresent:Opacity="0"
+                                                local:AnimatedIcon.State="NormalOff"
                                                 Margin="0,1,0,-1">
                                 <animatedvisuals:AnimatedAcceptVisualSource/>
                                 <local:AnimatedIcon.FallbackIconSource>
@@ -274,6 +212,7 @@
                             ContentTemplate="{TemplateBinding ContentTemplate}"
                             ContentTransitions="{TemplateBinding ContentTransitions}"
                             Content="{TemplateBinding Content}"
+                            Foreground="{TemplateBinding Foreground}"
                             Margin="{TemplateBinding Padding}"
                             HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                             VerticalAlignment="{TemplateBinding VerticalContentAlignment}"

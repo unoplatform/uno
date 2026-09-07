@@ -25,8 +25,10 @@ It is also enabled by `Uno.UI.FeatureConfiguration.Perf2026.EnableAll` unless co
 The style source baseline is Microsoft UI XAML commit
 [`3c9c168844f06c6ac000a97977f0bb3f4c90fd75`](https://github.com/microsoft/microsoft-ui-xaml/tree/3c9c168844f06c6ac000a97977f0bb3f4c90fd75/controls/dev).
 Each dictionary identifies its source file. The overlay retains existing Uno template-host adaptations
-(such as gradient-border presenters and CommandBar template-part naming) and shares the base theme's
-resource keys. It imports the selected optimized styles, not the entire resource set or TabView control.
+(such as gradient-border presenters, root-bounded popups, and the CommandBar style-key alias) and
+shares the base theme's resource keys. It imports the selected optimized styles, not the entire
+resource set or TabView control. The optimized ComboBox also enables the ported
+`ComboBoxHelper.KeepInteriorCornersSquare` behavior for editable drop-downs; the legacy style is unchanged.
 
 ## Disabling accessibility text scaling (Android and iOS)
 

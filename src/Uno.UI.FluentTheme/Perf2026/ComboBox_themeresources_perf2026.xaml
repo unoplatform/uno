@@ -25,8 +25,7 @@
         <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
         <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
         <Setter Property="UseSystemFocusVisuals" Value="{ThemeResource IsApplicationFocusVisualKindReveal}" />
-        <!-- Uno TODO: We don't have KeepInteriorCornersSquare yet. #16486 -->
-        <!-- <Setter Property="primitives:ComboBoxHelper.KeepInteriorCornersSquare" Value="true"/> -->
+        <Setter Property="primitives:ComboBoxHelper.KeepInteriorCornersSquare" Value="true" />
         <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
         <Setter Property="ItemsPanel">
             <Setter.Value>
@@ -178,7 +177,7 @@
                                 <CompositeTransform x:Name="PillTransform" ScaleY="1" />
                             </Rectangle.RenderTransform>
                         </Rectangle>
-                        <ContentPresenter x:Name="ContentPresenter" Grid.Row="1" Grid.Column="0" Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                        <ContentPresenter x:Name="ContentPresenter" Grid.Row="1" Grid.Column="0" Margin="{TemplateBinding Padding}" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
                             <TextBlock x:Name="PlaceholderTextBlock" Text="{TemplateBinding PlaceholderText}" Foreground="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource ComboBoxPlaceHolderForeground}}" />
                         </ContentPresenter>
                         <TextBox x:Name="EditableText" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Style="{TemplateBinding TextBoxStyle}" Margin="0,0,0,0" Padding="{ThemeResource ComboBoxEditableTextPadding}" BorderBrush="Transparent" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" PlaceholderText="{TemplateBinding PlaceholderText}" Foreground="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource ComboBoxPlaceHolderForeground}}" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Visibility="Collapsed" Header="{TemplateBinding Header}" AutomationProperties.Name="{TemplateBinding AutomationProperties.Name}" x:Load="False" CornerRadius="{TemplateBinding CornerRadius}" />
