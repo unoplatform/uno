@@ -13790,6 +13790,9 @@
                             <VisualStateGroup x:Name="FocusStates">
                                 <VisualState x:Name="Focused">
 
+                                    <!-- TODO Uno (#24432): FocusVisualWhite/Black are not in this template
+                                         (they are not in WinUI's either). WinUI no-ops on an unresolved
+                                         Storyboard.TargetName; the Uno generator fails to compile. -->
                                     <!-- <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="FocusVisualWhite"
                         Storyboard.TargetProperty="Opacity"
