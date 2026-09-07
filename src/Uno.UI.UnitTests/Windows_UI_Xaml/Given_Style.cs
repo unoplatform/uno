@@ -185,7 +185,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Control control = new();
 			control.Style = explicitStyle;
-			builtInStyle.ApplyTo(control, DependencyPropertyValuePrecedences.ImplicitStyle);
+			builtInStyle.ApplyTo(control, DependencyPropertyValuePrecedences.BuiltInStyle);
 
 			Assert.AreEqual("explicit", control.Tag);
 			Assert.AreEqual(0, builtInCount);
@@ -201,17 +201,17 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var builtInCount = 0;
 			var explicitCount = 0;
 
-			var explicitTemplate = new ControlTemplate(() => null);
+			var explicitTemplate = new ControlTemplate(null, (_, _) => null);
 
 			var builtInStyle = new Style(typeof(Control));
-			builtInStyle.Setters.Add(CreateCountingSetter(Control.TemplateProperty, new ControlTemplate(() => null), () => builtInCount++));
+			builtInStyle.Setters.Add(CreateCountingSetter(Control.TemplateProperty, new ControlTemplate(null, (_, _) => null), () => builtInCount++));
 
 			var explicitStyle = new Style(typeof(Control));
 			explicitStyle.Setters.Add(CreateCountingSetter(Control.TemplateProperty, explicitTemplate, () => explicitCount++));
 
 			Control control = new();
 			control.Style = explicitStyle;
-			builtInStyle.ApplyTo(control, DependencyPropertyValuePrecedences.ImplicitStyle);
+			builtInStyle.ApplyTo(control, DependencyPropertyValuePrecedences.BuiltInStyle);
 
 			Assert.AreSame(explicitTemplate, control.Template);
 			Assert.AreEqual(0, builtInCount);

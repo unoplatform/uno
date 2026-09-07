@@ -18,10 +18,6 @@ namespace Microsoft.UI.Xaml.Controls;
 
 public partial class ProgressBar : RangeBase
 {
-#if __ANDROID__
-	private Size? m_previousMeasuredWidths;
-#endif
-
 	public ProgressBar()
 	{
 		this.SetDefaultStyleKey();
@@ -47,18 +43,6 @@ public partial class ProgressBar : RangeBase
 		// NOTE: Example of how named parts are loaded from the template. Important to remember that it's possible for
 		// any of them not to be found, since devs can replace the template with their own.
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-		// Uno-specific: TODO: Investigate why we need this. It's a quite very old workaround from 2020
-		// https://github.com/unoplatform/uno/commit/641bbc9483f33c64d5eddc474f069c07b79039ba
-		// So, maybe it's no longer needed.
-		// For now, we're sure it's no longer needed with enhanced lifecycle (actually, it's problematic if it exists there)
-		// Note: LayoutUpdated event isn't really tied to a specific element. It really means that some element in the visual tree had a layout update.
-		// So, this event subscription is wrong because it will cause the ProgressBar to transition to Updating visual state then back
-		// to a state based on its properties (e.g, Indeterminate) every time any element in the visual tree has a layout update.
-		// So it will cause some bad flickers in ProgressBar, and will also get us into a cycle in case there is a listener
-		// to CurrentStateChanged event where the listener does something that updates the layout.
-		LayoutUpdated += (snd, evt) => OnSizeChange();
-#endif
 
 		m_layoutRoot = GetTemplateChild<MUXC.Grid>(s_LayoutRootName);
 		m_determinateProgressBarIndicator = GetTemplateChild<Rectangle>(s_DeterminateProgressBarIndicatorName);
@@ -70,11 +54,6 @@ public partial class ProgressBar : RangeBase
 
 	private void OnSizeChange()
 	{
-#if __ANDROID__ // Uno workaround for #12312: SetProgressBarIndicatorWidth raises LayoutUpdated, and they many loops to stabilize
-		if (m_layoutRoot is not null &&
-			m_determinateProgressBarIndicator is not null &&
-			m_previousMeasuredWidths != new Size(m_layoutRoot.ActualWidth, m_determinateProgressBarIndicator.ActualWidth))
-#endif
 		{
 			SetProgressBarIndicatorWidth();
 		}
@@ -151,9 +130,6 @@ public partial class ProgressBar : RangeBase
 	private void SetProgressBarIndicatorWidth()
 	{
 		var templateSettings = TemplateSettings;
-#if __ANDROID__ // Uno workaround for #12312
-		m_previousMeasuredWidths = new Size(double.NaN, double.NaN);
-#endif
 		var progressBar = m_layoutRoot;
 
 		if (progressBar != null)

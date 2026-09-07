@@ -42,13 +42,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[RunsOnUIThread]
 	public class Given_FrameworkElement_And_Leak
 	{
-#if __SKIA__
-		private const string SamplesAppAssembly = "SamplesApp.Skia";
-#elif __WASM__
-		private const string SamplesAppAssembly = "SamplesApp.Wasm";
-#else   // !(__SKIA__ || __WASM__)
 		private const string SamplesAppAssembly = "SamplesApp";
-#endif  // !(__SKIA__ || __WASM__)
 
 		private const DynamicallyAccessedMemberTypes TypeRequirements = ActivatableDataRowAttribute.TypeRequirements;
 
@@ -501,17 +495,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				var SUT = new Grid();
 				root.Children.Add(SUT);
 
-				Assert.IsFalse((SUT as IDependencyObjectStoreProvider).Store.AreHardReferencesEnabled);
+				Assert.IsFalse((SUT as DependencyObject).AreHardReferencesEnabled);
 				Assert.IsNotNull(SUT.GetParent());
 
 				TestServices.WindowHelper.WindowContent = root;
 				await TestServices.WindowHelper.WaitForIdle();
 
-				Assert.IsTrue((SUT as IDependencyObjectStoreProvider).Store.AreHardReferencesEnabled);
+				Assert.IsTrue((SUT as DependencyObject).AreHardReferencesEnabled);
 				Assert.IsNotNull(SUT.GetParent());
 
 				root.Children.Clear();
-				Assert.IsFalse((SUT as IDependencyObjectStoreProvider).Store.AreHardReferencesEnabled);
+				Assert.IsFalse((SUT as DependencyObject).AreHardReferencesEnabled);
 				Assert.IsNull(SUT.GetParent());
 			}
 		}

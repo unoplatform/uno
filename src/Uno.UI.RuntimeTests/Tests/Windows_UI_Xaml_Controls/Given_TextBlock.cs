@@ -24,7 +24,7 @@ using Uno.UI.Extensions;
 using Combinatorial.MSTest;
 using Uno.UI.Helpers;
 using Microsoft.UI.Xaml.Markup;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.DevTools.Input;
 
 #if __SKIA__
 using Microsoft.UI.Xaml.Data;
@@ -37,6 +37,7 @@ using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
 using static Private.Infrastructure.TestServices;
 using Private.Infrastructure;
+
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -171,7 +172,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
 
-			Assert.IsTrue(fallbackFont.ContainsGlyph(SUT.Text[0]));
+			using var fallbackSkFont = new SKFont(fallbackFont);
+			Assert.IsTrue(fallbackSkFont.ContainsGlyph(SUT.Text[0]));
 
 			var expected = new TextBlock { Text = "示例文本", FontSize = 24, FontFamily = new FontFamily(fallbackFont.FamilyName) };
 
@@ -204,7 +206,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var fallbackFont = SKFontManager.Default.MatchCharacter(SUT.Text[0]);
 
-			Assert.IsTrue(fallbackFont.ContainsGlyph(SUT.Text[0]));
+			using var fallbackSkFont = new SKFont(fallbackFont);
+			Assert.IsTrue(fallbackSkFont.ContainsGlyph(SUT.Text[0]));
 
 			var expected = new TextBlock
 			{
@@ -252,8 +255,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.Load(new StackPanel
 			{
-				expected,
-				SUT
+				Children =
+				{
+					expected,
+					SUT
+				}
 			});
 
 			Action OnFrameRendered = async () =>
@@ -810,6 +816,74 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/19731")]
+		[DataRow("ms-appdata:///local/MsAppDataFontTest/Roboto-Regular.ttf")]
+		[DataRow("ms-appdata:///local/MsAppDataFontTest/Roboto-Regular.ttf#Roboto")]
+		public async Task When_FontFamily_From_MsAppData_Local(string font)
+		{
+			var sourceUri = new Uri("ms-appx:///Uno.UI.RuntimeTests/Assets/Fonts/Roboto-Regular.ttf");
+			var sourceFile = await Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(sourceUri);
+
+			// Unique per-invocation folder so the two DataRow variants never race on the same directory.
+			var folderName = $"MsAppDataFontTest_{Guid.NewGuid():N}";
+			var localFolder = Windows.Storage.ApplicationData.Current.LocalFolder;
+			Windows.Storage.StorageFolder fontsFolder = null;
+
+			try
+			{
+				fontsFolder = await localFolder.CreateFolderAsync(
+					folderName,
+					Windows.Storage.CreationCollisionOption.FailIfExists);
+				await sourceFile.CopyAsync(fontsFolder, "Roboto-Regular.ttf", Windows.Storage.NameCollisionOption.ReplaceExisting);
+
+				var SUT = new TextBlock { Text = "abcd" };
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				var size = new Size(1000, 1000);
+				SUT.Measure(size);
+
+				var originalSize = SUT.DesiredSize;
+
+				Assert.AreNotEqual(0, SUT.DesiredSize.Width);
+				Assert.AreNotEqual(0, SUT.DesiredSize.Height);
+
+				SUT.FontFamily = new FontFamily(font.Replace("MsAppDataFontTest", folderName));
+
+				int counter = 3;
+
+				do
+				{
+					await WindowHelper.WaitForIdle();
+					await Task.Delay(100);
+
+					SUT.InvalidateMeasure();
+				}
+				while (SUT.DesiredSize == originalSize && counter-- > 0);
+
+				Assert.AreNotEqual(originalSize, SUT.DesiredSize);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+
+				if (fontsFolder is not null)
+				{
+					try
+					{
+						await fontsFolder.DeleteAsync(Windows.Storage.StorageDeleteOption.PermanentDelete);
+					}
+					catch (Exception ex)
+					{
+						// Cleanup is best-effort — a throw here would mask the real test failure.
+						Console.WriteLine($"Failed to delete '{folderName}': {ex}");
+					}
+				}
+			}
+		}
+
+		[TestMethod]
 #if !__ANDROID__
 		[Ignore("Android-only test for AndroidAssets backward compatibility")]
 #endif
@@ -1045,8 +1119,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.Load(new StackPanel
 			{
-				textbox,
-				textblock
+				Children =
+				{
+					textbox,
+					textblock
+				}
 			});
 
 			for (int i = 0; i < 5; i++)

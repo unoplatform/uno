@@ -45,45 +45,29 @@ namespace Uno.UI.Xaml
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void SetTemplateBinding(DependencyObject instance, DependencyProperty targetProperty, DependencyProperty sourceProperty, string sourcePath)
-		{
-			if (instance is IDependencyObjectStoreProvider provider)
-			{
-				provider.Store.SetTemplateBinding(targetProperty, sourceProperty, sourcePath);
-			}
-			else
-			{
-				BindingOperations.SetBinding(
-					instance,
-					targetProperty,
-					new Binding
-					{
-						Path = new PropertyPath(sourcePath),
-						RelativeSource = RelativeSource.TemplatedParent,
-					});
-			}
-		}
+			=> instance.SetTemplateBinding(targetProperty, sourceProperty, sourcePath);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void ApplyXBind(this DependencyObject instance)
-			=> (instance as IDependencyObjectStoreProvider)?.Store.ApplyCompiledBindings();
+			=> (instance as DependencyObject)?.ApplyCompiledBindings();
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void SuspendXBind(this DependencyObject instance)
 		{
-			// DependencyObjectStore, DependencyPropertyDetailsCollection, and BindingExpression
+			// DependencyObject, DependencyPropertyDetailsCollection, and BindingExpression
 			// all keeps track of the binding suspension state. Since we only care about x:Bind here,
 			// it would be easier to skip straight to the BindingExpression, ignoring the first two.
-			(instance as IDependencyObjectStoreProvider)?.Store.SuspendCompiledBindings();
+			(instance as DependencyObject)?.SuspendCompiledBindings();
 		}
 
 
 		public static void UpdateResourceBindings(this DependencyObject instance) => UpdateResourceBindings(instance, resourceContextProvider: null);
 		public static void UpdateResourceBindings(this DependencyObject instance, FrameworkElement? resourceContextProvider)
 		{
-			if (instance is IDependencyObjectStoreProvider provider)
+			if (instance is DependencyObject provider)
 			{
-				provider.Store.ApplyElementNameBindings();
-				provider.Store.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading, resourceContextProvider);
+				provider.ApplyElementNameBindings();
+				provider.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading, resourceContextProvider);
 			}
 		}
 	}

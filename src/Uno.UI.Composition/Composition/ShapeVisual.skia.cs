@@ -122,9 +122,9 @@ public partial class ShapeVisual
 		return true;
 	}
 
-	// Reused across repaints (one per visual): the damage consumer copies it, so rebuilding in place is safe
-	// and avoids allocating a native path on every repaint.
-	private SKPath? _ownContentPathBuffer;
+	// Reused across repaints (one per visual): the builder is reset and rebuilt each repaint; Detach() produces
+	// the SKPath the damage consumer copies.
+	private SKPathBuilder? _ownContentPathBuilder;
 
 	private SKPath? BuildOwnContentPath()
 	{
@@ -133,15 +133,15 @@ public partial class ShapeVisual
 			return null;
 		}
 
-		var dst = _ownContentPathBuffer ??= new SKPath();
-		dst.Rewind();
+		var builder = _ownContentPathBuilder ??= new SKPathBuilder();
+		builder.Reset();
 
 		var any = false;
 		for (var i = 0; i < shapes.Count; i++)
 		{
 			if (shapes[i] is CompositionSpriteShape sprite)
 			{
-				any |= sprite.GetRenderPath(dst);
+				any |= sprite.GetRenderPath(builder);
 			}
 			else
 			{
@@ -153,6 +153,8 @@ public partial class ShapeVisual
 		{
 			return null;
 		}
+
+		var dst = builder.Detach();
 
 		if (ViewBox is { } viewBox && viewBox.Size.X > 0 && viewBox.Size.Y > 0)
 		{

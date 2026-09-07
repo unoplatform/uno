@@ -56,7 +56,7 @@ namespace TestRepro
 					IsParsing = true,
 					Name = "root",
 					ContentTemplate = 					global::MyProject.GlobalStaticResources.__PreserveProperties(
-						new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_ConCon_ConTemΞ0_DatTem)
+						global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(this, Build_PagΞ0_ConCon_ConTemΞ0_DatTem)
 					)
 					,
 					// Source MainPage.xaml (Line 5:6)
@@ -92,7 +92,7 @@ namespace TestRepro
 
 		}
 		partial void OnInitializeCompleted();
-		private static _View Build_PagΞ0_ConCon_ConTemΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private static _View Build_PagΞ0_ConCon_ConTemΞ0_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 		{
 			
 			return new __MainPage_0e3f323f9a22a3699cbcd4f0217eee4a.__PagΞ0_ConCon_ConTemΞ0_DatTem().Build(__owner, __settings);
@@ -121,7 +121,7 @@ namespace TestRepro
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
-				public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+				public _View Build(object __ResourceOwner_1, global::Uno.UI.TemplateMaterializationSettings __settings)
 				{
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;
@@ -134,6 +134,7 @@ namespace TestRepro
 						}
 						.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler2)(__p1 => 
 						{
+						global::Uno.UI.Helpers.MarkupHelper.OnTemplateMemberCreated(__p1, __settings);
 						/* _isTopLevelDictionary:False */
 						__that._component_0 = __p1;
 						global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);

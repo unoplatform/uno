@@ -76,7 +76,7 @@ namespace Microsoft.UI.Xaml.Data
 			{
 				if (IsTemplateBinding)
 				{
-					return (_view?.Target as IDependencyObjectStoreProvider)?.Store.GetTemplatedParent2();
+					return (_view?.Target as DependencyObject)?.GetTemplatedParent();
 				}
 				if (_isElementNameSource || ExplicitSource != null)
 				{
@@ -90,7 +90,7 @@ namespace Microsoft.UI.Xaml.Data
 				if (!_disposed &&
 					!IsTemplateBinding &&
 					ExplicitSource == null &&
-					DependencyObjectStore.AreDifferent(_dataContext?.Target, value))
+					DependencyObject.AreDifferent(_dataContext?.Target, value))
 				{
 					var previousContext = _dataContext;
 
@@ -197,7 +197,7 @@ namespace Microsoft.UI.Xaml.Data
 
 		private ManagedWeakReference GetWeakTemplatedParent()
 		{
-			return (_view?.Target as IDependencyObjectStoreProvider)?.Store.GetTemplatedParentWeakRef();
+			return (_view?.Target as DependencyObject)?.GetTemplatedParentWeakRef();
 		}
 
 		private ManagedWeakReference GetWeakDataContext()
@@ -568,12 +568,9 @@ namespace Microsoft.UI.Xaml.Data
 
 				if (GetWeakTemplatedParent()?.Target is DependencyObject templatedParent)
 				{
-					if (templatedParent is IDependencyObjectStoreProvider provider)
-					{
-						_templateBindingSubscription = provider.Store.RegisterPropertyChangedCallback(
-							_templateBindingSourceProperty,
-							OnTemplateBindingSourceChanged);
-					}
+					_templateBindingSubscription = templatedParent.RegisterPropertyChangedCallback(
+						_templateBindingSourceProperty,
+						OnTemplateBindingSourceChanged);
 
 					SetTemplateBindingTargetValue(templatedParent.GetValue(_templateBindingSourceProperty));
 				}

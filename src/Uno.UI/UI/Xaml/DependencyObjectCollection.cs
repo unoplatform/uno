@@ -130,7 +130,7 @@ namespace Microsoft.UI.Xaml
 
 		private void Initialize()
 		{
-			((IDependencyObjectStoreProvider)this).Store.RegisterSelfParentChangedCallback(
+			((DependencyObject)this).RegisterSelfParentChangedCallback(
 				(instance, k, handler) => UpdateParent(handler.NewParent)
 			);
 		}

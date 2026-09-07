@@ -29,10 +29,6 @@ Create a [new Uno Platform App project](xref:Uno.GetStarted) using one of the ge
     using System.Collections.Generic;
     using System.Text;
     using Uno.Foundation;
-    using Uno.UI.Runtime.WebAssembly;
-   
-    namespace PrismJsDemo;
-   
     using Uno.UI.NativeElementHosting;
 
     namespace PrismJsDemo;

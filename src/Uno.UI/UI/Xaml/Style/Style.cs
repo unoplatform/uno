@@ -22,8 +22,6 @@ namespace Microsoft.UI.Xaml
 
 		private readonly static Dictionary<Type, StyleProviderHandler> _lookup = new(Uno.Core.Comparison.FastTypeComparer.Default);
 		private readonly static Dictionary<Type, Style> _defaultStyleCache = new(Uno.Core.Comparison.FastTypeComparer.Default);
-		private readonly static Dictionary<Type, StyleProviderHandler> _nativeLookup = new(Uno.Core.Comparison.FastTypeComparer.Default);
-		private readonly static Dictionary<Type, Style> _nativeDefaultStyleCache = new(Uno.Core.Comparison.FastTypeComparer.Default);
 
 		/// <summary>
 		/// Performance-optimized variants of the default styles, only used when
@@ -35,16 +33,11 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Removes entries from the style caches whose Type key belongs to a non-default ALC.
 		/// These caches rebuild on demand, so the sweep may safely cover ALL non-default contexts.
-		/// User configuration (<see cref="FeatureConfiguration.Style.UseUWPDefaultStylesOverride"/>)
-		/// is NOT part of this group — it never rebuilds; see
-		/// <see cref="RemoveAlcScopedUserStyleOverrides"/>.
 		/// </summary>
 		internal static void ClearCachesForNonDefaultAlc()
 		{
 			var removed = Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_lookup)
 				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_defaultStyleCache)
-				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_nativeLookup)
-				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_nativeDefaultStyleCache)
 				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_optimizedLookup)
 				+ Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(_optimizedDefaultStyleCache);
 
@@ -61,6 +54,7 @@ namespace Microsoft.UI.Xaml
 		public static void RegisterOptimizedDefaultStyleForType(Type type, IXamlResourceDictionaryProvider dictionaryProvider)
 		{
 			_optimizedLookup[type] = ProvideStyle;
+			_optimizedDefaultStyleCache.Remove(type);
 
 			Style ProvideStyle()
 			{
@@ -71,45 +65,6 @@ namespace Microsoft.UI.Xaml
 				}
 
 				throw new InvalidOperationException($"{styleSource} was registered as optimized style provider for {type} but doesn't contain matching style.");
-			}
-		}
-
-		/// <summary>
-		/// Removes <see cref="FeatureConfiguration.Style.UseUWPDefaultStylesOverride"/> entries whose
-		/// control <see cref="Type"/> key is owned by the dying ALC. This dictionary is USER
-		/// CONFIGURATION (written via <c>SetUWPDefaultStylesOverride</c> and never rebuilt), so unlike
-		/// the rebuild-on-demand caches above it must never be swept for all non-default contexts —
-		/// that would silently delete a live sibling secondary app's (or session add-in's) override.
-		/// A previewed app configuring overrides for its own control types would otherwise pin those
-		/// types — and its collectible context — for the process lifetime.
-		/// </summary>
-		internal static void RemoveAlcScopedUserStyleOverrides(global::System.Runtime.Loader.AssemblyLoadContext? dyingAlc)
-		{
-			var removed = Uno.UI.Helpers.AlcCacheSweep.RemoveUnloadScopedEntries(FeatureConfiguration.Style.UseUWPDefaultStylesOverride, dyingAlc);
-
-			if (removed > 0 && _logger.IsEnabled(LogLevel.Debug))
-			{
-				_logger.Debug($"[ALC-CLEANUP] UseUWPDefaultStylesOverride: removed {removed} entrie(s) owned by dying ALC '{dyingAlc?.Name ?? "unload-initiated"}'.");
-			}
-		}
-
-		/// <summary>
-		/// Removes EVERY non-default-ALC <see cref="FeatureConfiguration.Style.UseUWPDefaultStylesOverride"/>
-		/// entry. DESTRUCTIVE and never rebuilt, so this is reserved for a genuine global shutdown
-		/// (<c>Application.CleanupAllSecondaryAlcCaches</c>), where every secondary app is going away and
-		/// no live sibling can be harmed. It keeps the user-override sweep consistent with the other
-		/// destructive global-shutdown sweeps (ResourceLoader lookup assemblies, CompositionTarget
-		/// handlers), which also go all-non-default there — otherwise a scoped-only override sweep would
-		/// leave keys that pin the very ALCs the shutdown exists to free. For a single dying ALC, use the
-		/// scoped <see cref="RemoveAlcScopedUserStyleOverrides"/> instead.
-		/// </summary>
-		internal static void RemoveAllNonDefaultAlcUserStyleOverrides()
-		{
-			var removed = Uno.UI.Helpers.AlcCacheSweep.RemoveNonDefaultAlcEntries(FeatureConfiguration.Style.UseUWPDefaultStylesOverride);
-
-			if (removed > 0 && _logger.IsEnabled(LogLevel.Debug))
-			{
-				_logger.Debug($"[ALC-CLEANUP] UseUWPDefaultStylesOverride: removed {removed} entrie(s) from all non-default ALCs (global shutdown).");
 			}
 		}
 
@@ -185,7 +140,7 @@ namespace Microsoft.UI.Xaml
 			// In DependencyObject::EvaluateBaseValue (DependencyObject.cpp file), the value is updated to that returned from GetValueFromStyle
 			// Then, baseValueSource is updated from BaseValueSourceBuiltInStyle to BaseValueSourceStyle
 			// The OverrideLocalPrecedence call below is the equivalent of the baseValueSource update.
-			if (baseValueSource == DependencyPropertyValuePrecedences.ImplicitStyle &&
+			if (baseValueSource == DependencyPropertyValuePrecedences.BuiltInStyle &&
 				dependencyObject is FrameworkElement fe &&
 				fe.GetActiveStyle() is { } activeStyle &&
 				// Make sure to only consider active style if it was explicit.
@@ -212,7 +167,7 @@ namespace Microsoft.UI.Xaml
 		/// WinUI keeps a setter value unrealized until the layer it belongs to actually provides the effective value,
 		/// so that a built-in style whose <c>Control.Template</c> is entirely replaced by an app style never pays for
 		/// building that template. Uno's store keeps a single base value slot and re-queries the winning style through
-		/// <c>DependencyObjectStore.ReevaluateBaseValue</c> whenever the winning precedence is cleared, so skipping
+		/// <c>DependencyObject.ReevaluateBaseValue</c> whenever the winning precedence is cleared, so skipping
 		/// the application here is observationally equivalent.
 		/// </para>
 		/// <para>
@@ -229,16 +184,14 @@ namespace Microsoft.UI.Xaml
 				return false;
 			}
 
-			var store = ((IDependencyObjectStoreProvider)o).Store;
-
-			if (store.GetBaseValueSourcePrecedence(property) >= precedence)
+			if (o.GetBaseValueSourcePrecedence(property) >= precedence)
 			{
 				return false;
 			}
 
 			// Mirror the cleanup that applying the setter at this precedence would have performed, so a binding
 			// registered by a previously applied style cannot resurface at the skipped precedence.
-			store.ClearResourceBindingsForSkippedSetter(property, precedence);
+			o.ClearResourceBindingsForSkippedSetter(property, precedence);
 			return true;
 		}
 
@@ -250,7 +203,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			Debug.Assert(precedence is DependencyPropertyValuePrecedences.ImplicitStyle or DependencyPropertyValuePrecedences.ExplicitStyle);
+			Debug.Assert(precedence is DependencyPropertyValuePrecedences.BuiltInStyle or DependencyPropertyValuePrecedences.Style);
 
 			IDisposable? localPrecedenceDisposable = null;
 
@@ -284,7 +237,7 @@ namespace Microsoft.UI.Xaml
 
 								if (TryGetAdjustedSetter(precedence, o, _flattenedSetters[i], out var adjustedSetter))
 								{
-									using (o.OverrideLocalPrecedence(DependencyPropertyValuePrecedences.ExplicitStyle))
+									using (o.OverrideLocalPrecedence(DependencyPropertyValuePrecedences.Style))
 									{
 										adjustedSetter.ApplyTo(o);
 									}
@@ -310,7 +263,7 @@ namespace Microsoft.UI.Xaml
 					localPrecedenceDisposable = null;
 
 					// Check tree for resource binding values, since some Setters may have set ThemeResource-backed values
-					(o as IDependencyObjectStoreProvider)!.Store.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading);
+					(o as DependencyObject)!.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading);
 					return localPrecedenceDisposable;
 				}
 
@@ -343,18 +296,17 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		// There shouldn't be a DependencyObject parameter. This can be removed in Uno 6 once we remove `Setter<T>`
-		internal bool TryGetPropertyValue(DependencyProperty dp, out object? value, DependencyObject @do)
+		internal bool TryGetPropertyValue(DependencyProperty dp, out object? value)
 		{
 			if (EnsureSetterMap().TryGetValue(dp, out var setter))
 			{
 				// The setter may resolve resources, which must happen in the scope the Style was declared in,
 				// exactly as it would have during ApplyTo. This matters for deferred setters, whose value is
-				// only built when this method is reached through DependencyObjectStore.ReevaluateBaseValue.
+				// only built when this method is reached through DependencyObject.ReevaluateBaseValue.
 				ResourceResolver.PushNewScope(_xamlScope);
 				try
 				{
-					if (setter.TryGetSetterValue(out value, @do) && value != DependencyProperty.UnsetValue)
+					if (setter.TryGetSetterValue(out value) && value != DependencyProperty.UnsetValue)
 					{
 						return true;
 					}
@@ -413,10 +365,6 @@ namespace Microsoft.UI.Xaml
 						}
 						map[s.Property] = setter;
 					}
-					else if (setter is ICSharpPropertySetter propertySetter)
-					{
-						map[propertySetter.Property] = setter;
-					}
 				}
 			}
 		}
@@ -426,19 +374,12 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		/// <param name="type">The type to which the style applies</param>
 		/// <param name="dictionaryProvider">Provides the dictionary in which the style is defined.</param>
-		/// <param name="isNative">True if it is the native default style, false if it is the UWP default style.</param>
 		/// <remarks>This is an Uno-specific method, normally only called from Xaml-generated code.</remarks>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void RegisterDefaultStyleForType(Type type, IXamlResourceDictionaryProvider dictionaryProvider, bool isNative)
+		public static void RegisterDefaultStyleForType(Type type, IXamlResourceDictionaryProvider dictionaryProvider)
 		{
-			if (isNative)
-			{
-				_nativeLookup[type] = ProvideStyle;
-			}
-			else
-			{
-				_lookup[type] = ProvideStyle;
-			}
+			_lookup[type] = ProvideStyle;
+			_defaultStyleCache.Remove(type);
 
 			Style ProvideStyle()
 			{
@@ -455,11 +396,11 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Returns the default Style for given type.
 		/// </summary>
-		internal static Style? GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, null, ShouldUseUWPDefaultStyle(type));
+		internal static Style? GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, null);
 
-		internal static Style? GetDefaultStyleForInstance(FrameworkElement instance, Type type) => GetDefaultStyleForType(type, instance, ShouldUseUWPDefaultStyle(type));
+		internal static Style? GetDefaultStyleForInstance(FrameworkElement instance, Type type) => GetDefaultStyleForType(type, instance);
 
-		private static Style? GetDefaultStyleForType(Type type, FrameworkElement? instance, bool useUWPDefaultStyles)
+		private static Style? GetDefaultStyleForType(Type type, FrameworkElement? instance)
 		{
 			if (type == null)
 			{
@@ -468,14 +409,12 @@ namespace Microsoft.UI.Xaml
 
 			Style? style = null;
 
-			if (useUWPDefaultStyles && FeatureConfiguration.Style.UseDefaultStyleOptimizations)
+			if (FeatureConfiguration.Style.UseDefaultStyleOptimizations)
 			{
 				style = GetStyleFromChannel(type, _optimizedDefaultStyleCache, _optimizedLookup);
 			}
 
-			style ??= useUWPDefaultStyles
-				? GetStyleFromChannel(type, _defaultStyleCache, _lookup)
-				: GetStyleFromChannel(type, _nativeDefaultStyleCache, _nativeLookup);
+			style ??= GetStyleFromChannel(type, _defaultStyleCache, _lookup);
 
 			if (style is null && instance is Control { DefaultStyleResourceUri: { } defaultStyleResourceUri })
 			{
@@ -488,26 +427,15 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 
-			if (style == null && !useUWPDefaultStyles)
-			{
-				if (_logger.IsEnabled(LogLevel.Debug))
-				{
-					_logger.LogDebug($"No native style found for type {type}, falling back on UWP style");
-				}
-
-				// If no native style found, fall back on UWP style
-				style = GetDefaultStyleForType(type, instance, useUWPDefaultStyles: true);
-			}
-
 			if (_logger.IsEnabled(LogLevel.Debug))
 			{
 				if (style != null)
 				{
-					_logger.LogDebug($"Returning {(useUWPDefaultStyles ? "UWP" : "native")} style {style} for type {type}");
+					_logger.LogDebug($"Returning default style {style} for type {type}");
 				}
 				else
 				{
-					_logger.LogDebug($"No {(useUWPDefaultStyles ? "UWP" : "native")} style found for type {type}");
+					_logger.LogDebug($"No default style found for type {type}");
 				}
 			}
 
@@ -529,14 +457,5 @@ namespace Microsoft.UI.Xaml
 			return style;
 		}
 
-		internal static bool ShouldUseUWPDefaultStyle(Type type)
-		{
-			if (type != null && FeatureConfiguration.Style.UseUWPDefaultStylesOverride.TryGetValue(type, out var value))
-			{
-				return value;
-			}
-
-			return FeatureConfiguration.Style.UseUWPDefaultStyles;
-		}
 	}
 }

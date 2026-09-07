@@ -82,10 +82,14 @@ public class Given_DefaultStyleOptimizations
 			typeof(Slider),
 			typeof(ToggleSwitch),
 			typeof(AppBarButton),
+			typeof(AppBarToggleButton),
+			typeof(ComboBoxItem),
 			typeof(CommandBar),
 			"DefaultButtonStyle",
 			"AccentButtonStyle",
 			"NavigationBackButtonNormalStyle",
+			"NavigationBackButtonSmallStyle",
+			"TabViewCloseButtonStyle",
 		];
 
 		foreach (var key in keys)
@@ -184,6 +188,40 @@ public class Given_DefaultStyleOptimizations
 			Assert.AreEqual(ColorOf(defaultRoot.Background), ColorOf(optimizedRoot.Background), $"Background differs in {state}");
 			Assert.AreEqual(ColorOf(defaultRoot.BorderBrush), ColorOf(optimizedRoot.BorderBrush), $"BorderBrush differs in {state}");
 			Assert.AreEqual(ColorOf(defaultRoot.Foreground), ColorOf(optimizedRoot.Foreground), $"Foreground differs in {state}");
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Optimized_CheckBox_Returns_To_Normal_Then_TemplateBindings_Are_Restored()
+	{
+		var background = new SolidColorBrush(Microsoft.UI.Colors.Red);
+		var foreground = new SolidColorBrush(Microsoft.UI.Colors.Green);
+		var border = new SolidColorBrush(Microsoft.UI.Colors.Blue);
+		var checkBox = new CheckBox
+		{
+			Content = "Source parity",
+			Background = background,
+			Foreground = foreground,
+			BorderBrush = border,
+			Style = GetStyle(CreateResources(optimized: true), typeof(CheckBox)),
+		};
+
+		await UITestHelper.Load(checkBox);
+		var root = checkBox.GetTemplateChild("RootGrid") as Grid;
+		var presenter = checkBox.GetTemplateChild("ContentPresenter") as ContentPresenter;
+		Assert.IsNotNull(root);
+		Assert.IsNotNull(presenter);
+
+		foreach (var state in new[] { "CheckedNormal", "UncheckedPointerOver", "IndeterminateNormal", "UncheckedDisabled" })
+		{
+			Assert.IsTrue(VisualStateManager.GoToState(checkBox, state, false));
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.IsTrue(VisualStateManager.GoToState(checkBox, "UncheckedNormal", false));
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreSame(background, root.Background, $"Background template binding was lost after {state}.");
+			Assert.AreSame(border, root.BorderBrush, $"Border template binding was lost after {state}.");
+			Assert.AreSame(foreground, presenter.Foreground, $"Foreground template binding was lost after {state}.");
 		}
 	}
 

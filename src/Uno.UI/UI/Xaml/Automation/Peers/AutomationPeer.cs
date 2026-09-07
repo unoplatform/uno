@@ -1,4 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 #nullable enable
@@ -580,6 +580,33 @@ public partial class AutomationPeer : DependencyObject
 		// 		}
 		// #else
 		ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseNotificationEvent(AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)", LogLevel.Warning);
+	}
+
+	private static IAutomationPeerListener? _automationPeerListener;
+
+	internal static IAutomationPeerListener? AutomationPeerListener
+	{
+		get => TestAutomationPeerListener ?? _automationPeerListener;
+		set
+		{
+			if (_automationPeerListener is not null)
+			{
+				throw new InvalidOperationException("AutomationPeerListener should only be set once.");
+			}
+
+			_automationPeerListener = value;
+		}
+	}
+
+	internal static IAutomationPeerListener? TestAutomationPeerListener { get; set; }
+
+	public void RaisePropertyChangedEvent(AutomationProperty automationProperty, object oldValue, object newValue)
+	{
+		var listener = AutomationPeerListener;
+		if (listener is not null && listener.ListenerExistsHelper(AutomationEvents.PropertyChanged))
+		{
+			listener.NotifyPropertyChangedEvent(this, automationProperty, oldValue, newValue);
+		}
 	}
 
 #if !__SKIA__

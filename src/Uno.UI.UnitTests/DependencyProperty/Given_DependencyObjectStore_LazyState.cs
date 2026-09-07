@@ -11,7 +11,7 @@ using Uno.UI.DataBinding;
 namespace Uno.UI.Tests.DependencyObjectStoreTests;
 
 /// <summary>
-/// A <see cref="DependencyObjectStore"/> is allocated for every <see cref="DependencyObject"/>, so its
+/// Each <see cref="DependencyObject"/> owns its property store, so its
 /// per-instance state is size-sensitive. Two of its dictionaries are only needed by a minority of
 /// objects and are therefore allocated on first use; these tests pin both the "not allocated until
 /// needed" contract and the behaviour that depends on them (token callbacks, inherited-attached
@@ -21,17 +21,17 @@ namespace Uno.UI.Tests.DependencyObjectStoreTests;
 public class Given_DependencyObjectStore_LazyState
 {
 	private static readonly FieldInfo _propertyChangedTokensField =
-		typeof(DependencyObjectStore).GetField("_propertyChangedTokens", BindingFlags.NonPublic | BindingFlags.Instance)!;
+		typeof(DependencyObject).GetField("_propertyChangedTokens", BindingFlags.NonPublic | BindingFlags.Instance)!;
 
 	private static readonly FieldInfo _inheritedForwardedPropertiesField =
-		typeof(DependencyObjectStore).GetField("_inheritedForwardedProperties", BindingFlags.NonPublic | BindingFlags.Instance)!;
+		typeof(DependencyObject).GetField("_inheritedForwardedProperties", BindingFlags.NonPublic | BindingFlags.Instance)!;
 
 	private static object? GetTokens(DependencyObject o)
-		=> _propertyChangedTokensField.GetValue(((IDependencyObjectStoreProvider)o).Store);
+		=> _propertyChangedTokensField.GetValue(o);
 
 	private static IReadOnlyDictionary<DependencyProperty, ManagedWeakReference>? GetForwarded(DependencyObject o)
 		=> (IReadOnlyDictionary<DependencyProperty, ManagedWeakReference>?)_inheritedForwardedPropertiesField
-			.GetValue(((IDependencyObjectStoreProvider)o).Store);
+			.GetValue(o);
 
 	[TestMethod]
 	public void When_No_Token_Callback_Registered_Then_Dictionary_Not_Allocated()

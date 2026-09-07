@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Disposables;
 using Microsoft.UI.Xaml;
 
@@ -34,32 +33,6 @@ namespace Uno.UI.RuntimeTests.Helpers
 			});
 #endif
 		}
-
-		public static IDisposable UseListViewAnimations()
-		{
-#if __ANDROID__
-			var originalSetting = FeatureConfiguration.NativeListViewBase.RemoveItemAnimator;
-			FeatureConfiguration.NativeListViewBase.RemoveItemAnimator = false;
-			return Disposable.Create(() => FeatureConfiguration.NativeListViewBase.RemoveItemAnimator = originalSetting);
-#else
-			return null;
-#endif
-		}
-
-		/// <summary>
-		/// On Android, ensure that native popups are used for the duration of the test. On other platforms this is a no-op.
-		/// </summary>
-		public static IDisposable UseNativePopups()
-		{
-#if !__ANDROID__
-			return null;
-#else
-			Assert.IsFalse(FeatureConfiguration.Popup.UseNativePopup);
-			FeatureConfiguration.Popup.UseNativePopup = true;
-			return Disposable.Create(() => FeatureConfiguration.Popup.UseNativePopup = false);
-#endif
-		}
-
 		/// <summary>
 		/// Enables or disables the Grid-less <see cref="Microsoft.UI.Xaml.Controls.IconElement"/> visual tree
 		/// (Uno only) for the duration of a single test.

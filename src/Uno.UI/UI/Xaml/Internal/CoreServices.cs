@@ -32,23 +32,18 @@ namespace Uno.UI.Xaml.Core
 		private double _fontScale = 1.0;
 		private double _lastEffectiveFontScale;
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 
 		private static int _isAdditionalFrameRequested;
 
 		public EventManager EventManager { get; private set; }
-#endif
 
 		public CoreServices()
 		{
 			ContentRootCoordinator = new ContentRootCoordinator(this);
 			_lastEffectiveFontScale = FontScale;
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			EventManager = EventManager.Create();
-#endif
 		}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		private static XamlRoot? GetXamlRoot()
 		{
 			if (CoreServices.Instance.ContentRootCoordinator.ContentRoots.Count > 0)
@@ -125,7 +120,6 @@ namespace Uno.UI.Xaml.Core
 #endif
 			}
 		}
-#endif
 
 		// TODO Uno: This will not be a singleton when multi-window setups are supported.
 		public static CoreServices Instance => _instance.Value;
@@ -200,12 +194,10 @@ namespace Uno.UI.Xaml.Core
 		{
 		}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		internal void RaisePendingLoadedRequests()
 		{
 			EventManager.RequestRaiseLoadedEventOnNextTick();
 		}
-#endif
 
 		/// <summary>
 		/// Gets the current text scale factor, with FeatureConfiguration overrides applied.
@@ -252,7 +244,7 @@ namespace Uno.UI.Xaml.Core
 			{
 				element.InvalidateMeasure();
 			}
-#if __SKIA__ || __WASM__
+#if __SKIA__
 			// ContentPresenter only needs Uno-level measure invalidation on Skia/WASM where
 			// GetScaledFontSize() is called during the Uno measure pass. On iOS/Android, native
 			// font APIs already handle text scaling, and invalidating ContentPresenter there
@@ -274,11 +266,6 @@ namespace Uno.UI.Xaml.Core
 						descendant.InvalidateTextScaleFontInfo();
 					}
 				}
-			}
-#elif __WASM__
-			if (element is TextBlock wasmTextBlock)
-			{
-				wasmTextBlock.InvalidateForTextScaleChange();
 			}
 #endif
 

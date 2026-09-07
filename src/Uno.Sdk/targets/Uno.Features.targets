@@ -5,6 +5,12 @@
 		<UnoFeatures Condition="$(UnoFeatures) == ''">;</UnoFeatures>
 		<UnoFeatures Condition="!$(UnoFeatures.StartsWith(';'))">;$(UnoFeatures)</UnoFeatures>
 		<UnoFeatures Condition="!$(UnoFeatures.EndsWith(';'))">$(UnoFeatures);</UnoFeatures>
+
+		<!-- Native UI rendering is removed: Skia is the only renderer. The 'nativerenderer' feature is
+		     ignored and 'skiarenderer' is always implied, so apps are always Skia even when neither is
+		     listed under UnoFeatures. This makes 'skiarenderer' effectively a no-op. -->
+		<UnoFeatures>$(UnoFeatures.Replace(';nativerenderer;', ';'))</UnoFeatures>
+		<UnoFeatures Condition="!$(UnoFeatures.Contains(';skiarenderer;'))">$(UnoFeatures)skiarenderer;</UnoFeatures>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(UnoFeatures.Contains(';mauiembedding;'))">
