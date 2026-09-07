@@ -106,11 +106,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			{
 				Content = "Explicit style",
 				Style = new Style(typeof(ToggleButton)),
+				RequestedTheme = Application.Current.RequestedTheme == ApplicationTheme.Dark ? ElementTheme.Dark : ElementTheme.Light,
 			};
 
 			try
 			{
-				await UITestHelper.Load(button);
+				// The app-level lookup and the control must use the same theme even when the test host does not.
+				await UITestHelper.Load(new Border
+				{
+					RequestedTheme = button.RequestedTheme == ElementTheme.Dark ? ElementTheme.Light : ElementTheme.Dark,
+					Child = button,
+				});
 
 				var actual = button.Background as SolidColorBrush;
 				Assert.IsNotNull(actual);
@@ -139,11 +145,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			{
 				Content = "Explicit style",
 				Style = new Style(typeof(ToggleButton)),
+				RequestedTheme = Application.Current.RequestedTheme == ApplicationTheme.Dark ? ElementTheme.Dark : ElementTheme.Light,
 			};
 
 			try
 			{
-				await UITestHelper.Load(button);
+				await UITestHelper.Load(new Border
+				{
+					RequestedTheme = button.RequestedTheme == ElementTheme.Dark ? ElementTheme.Light : ElementTheme.Dark,
+					Child = button,
+				});
 
 				var actual = button.Background as SolidColorBrush;
 				Assert.IsNotNull(actual);
