@@ -4837,39 +4837,67 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)] // Desktop touch-selection convention; mobile conventions tested separately
 		public async Task When_First_Second_Tap_Caret_Thumb_Shows()
 		{
 			var SUT = new TextBox
 			{
 				Width = 400,
+				Margin = new Thickness(100),
 				Text = "Some Text"
 			};
 
-			await UITestHelper.Load(SUT);
+			try
+			{
+				await UITestHelper.Load(SUT);
+				Assert.IsTrue(SUT.Focus(FocusState.Programmatic));
+				await WindowHelper.WaitForIdle();
+				var opened = 0;
+				Assert.IsNotNull(SUT.SelectionFlyout);
+				SUT.SelectionFlyout.Opened += (_, _) => opened++;
 
-			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
-			using var finger = injector.GetFinger();
+				var displayBlock = ((ITextBoxHost)SUT).Core.TextBoxView.DisplayBlock;
+				Point GetTextPoint(int index)
+				{
+					var start = displayBlock.ParsedText.GetRectForIndex(index);
+					var end = displayBlock.ParsedText.GetRectForIndex(index + 1);
+					return displayBlock.TransformToVisual(null).TransformPoint(
+						new Point((start.Left + end.Left) / 2, start.Top + start.Height / 2));
+				}
 
-			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
-			finger.Release();
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
-			Assert.AreEqual("Text", SUT.SelectedText);
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var finger = injector.GetFinger();
 
-			// clicking inside the selected area keeps the selection
-			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
-			finger.Release();
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
-			Assert.AreEqual("Text", SUT.SelectedText);
+				finger.Press(GetTextPoint(6));
+				finger.Release();
+				await WindowHelper.WaitFor(() => opened > 0);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+				Assert.AreEqual("Text", SUT.SelectedText);
 
-			// clicking outside the selected area drops it
-			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter() + new Point(100, 0));
-			finger.Release();
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode);
-			Assert.AreEqual("", SUT.SelectedText);
+				// clicking inside the selected area keeps the selection
+				var insidePoint = GetTextPoint(6);
+				var hitIndex = displayBlock.ParsedText.GetIndexAt(displayBlock.TransformToVisual(null).Inverse.TransformPoint(insidePoint), true, true);
+				Assert.IsTrue(hitIndex >= SUT.SelectionStart && hitIndex < SUT.SelectionStart + SUT.SelectionLength,
+					$"The inside tap must hit the selected text, not empty control space: hit {hitIndex}, selection {SUT.SelectionStart}/{SUT.SelectionLength}.");
+				finger.Press(insidePoint);
+				finger.Release();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+				Assert.AreEqual("Text", SUT.SelectedText);
+				// clicking outside the selected area drops it
+				finger.Press(GetTextPoint(1));
+				finger.Release();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode);
+				Assert.AreEqual("", SUT.SelectedText);
+			}
+			finally
+			{
+				SUT.SelectionFlyout?.Hide();
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
@@ -5600,20 +5628,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SelectionFlyout?.Hide();
 			await WindowHelper.WaitForIdle();
 
-			if (RuntimeTestsPlatformHelper.CurrentPlatform == RuntimeTestPlatforms.SkiaAndroid)
-			{
-				// InputPane can finish opening after the multi-tap delay and queue its own
-				// StartBringIntoView. Complete that setup before testing a subsequent user pan.
-				var inputPane = InputPane.GetForCurrentView();
-				if (inputPane.Visible || inputPane.TryShow())
-				{
-					await WindowHelper.WaitFor(
-						() => inputPane.Visible,
-						message: "The requested input pane must be visible before testing scrolling away from the caret.");
-					await UITestHelper.WaitForRender();
-					await WindowHelper.WaitForIdle();
-				}
-			}
+			await WaitForAndroidInputPanePositioning();
 
 			// Drag upwards on the filler below the box: the form scrolls down and the TextBox leaves the viewport.
 			var svBounds = scrollViewer.GetAbsoluteBoundsRect();
@@ -5648,6 +5663,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				boxBounds.Bottom <= viewport.Top || boxBounds.Top >= viewport.Bottom,
 				$"the ScrollViewer must not scroll back to the focused TextBox (box {boxBounds}, viewport {viewport})");
 			Assert.AreEqual(expectedCaret, SUT.CaretMode, "scrolling away must not disturb the touch caret");
+		}
+
+		private static async Task WaitForAndroidInputPanePositioning()
+		{
+			if (RuntimeTestsPlatformHelper.CurrentPlatform == RuntimeTestPlatforms.SkiaAndroid)
+			{
+				// InputPane can finish opening after a touch and queue its own StartBringIntoView.
+				// Complete that setup before testing a subsequent user pan.
+				var inputPane = InputPane.GetForCurrentView();
+				if (inputPane.Visible || inputPane.TryShow())
+				{
+					await WindowHelper.WaitFor(
+						() => inputPane.Visible,
+						message: "The requested input pane must be visible before testing scrolling away from the caret.");
+					await UITestHelper.WaitForRender();
+					await WindowHelper.WaitForIdle();
+				}
+			}
 		}
 
 		[TestMethod]
@@ -6966,17 +6999,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				message: "the TextBox should be parked inside the viewport before it is tapped");
 			await UITestHelper.WaitForIdle(true);
 
-			// One tap, not two. A second tap selects the word and pops the selection flyout, and then the scroll
-			// gesture below has nowhere to land: the flyout's light-dismiss overlay fills the window, so a press on
-			// it is consumed dismissing the flyout instead of scrolling, and the toolbar itself is placed above the
-			// selection, overlapping the viewport - a press there goes to its buttons. Both are correct behaviour;
-			// they just cost the gesture this test needs.
+			// One tap leaves a caret. A second tap also opens the selection toolbar, whose commands can overlap
+			// this small viewport and take the gesture intended for the filler. This case exercises caret scrolling.
 			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
 			finger.Release();
 			await WindowHelper.WaitFor(
 				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
 				message: "the tap should leave the insertion handle up");
 			await UITestHelper.WaitForIdle(true);
+
+			await WaitForAndroidInputPanePositioning();
 
 			// Premises spelled out rather than left to a mute "the offset did not move": the touch conventions can
 			// only be observed on CI, so each half of the scenario has to say when it is the one that broke.

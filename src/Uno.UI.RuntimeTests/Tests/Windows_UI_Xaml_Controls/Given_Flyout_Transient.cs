@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -38,13 +39,12 @@ public class Given_Flyout_Transient
 		try
 		{
 			await UITestHelper.Load(target);
-			flyout.ShowAt(target, new FlyoutShowOptions { ShowMode = mode });
-			await WindowHelper.WaitForIdle();
+			await ShowAndWaitForOpened(flyout, target, mode);
 
 			Assert.AreEqual(mode == FlyoutShowMode.Auto ? FlyoutShowMode.Standard : mode, flyout.ShowMode);
 			if (passThrough)
 			{
-				Assert.AreSame(target.XamlRoot!.Content, flyout.OverlayInputPassThroughElement);
+				AssertAutomaticRoot(target, flyout);
 			}
 			else
 			{
@@ -53,8 +53,14 @@ public class Given_Flyout_Transient
 		}
 		finally
 		{
-			flyout.Hide();
-			WindowHelper.WindowContent = null;
+			try
+			{
+				await HideAndWaitForClosed(flyout);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 	}
 
@@ -69,14 +75,13 @@ public class Given_Flyout_Transient
 		try
 		{
 			await UITestHelper.Load(target);
-			flyout.ShowAt(target, new FlyoutShowOptions { ShowMode = mode });
-			await WindowHelper.WaitForIdle();
-			Assert.AreSame(target.XamlRoot!.Content, flyout.OverlayInputPassThroughElement);
+			await ShowAndWaitForOpened(flyout, target, mode);
+			AssertAutomaticRoot(target, flyout);
 
 			flyout.ShowMode = FlyoutShowMode.Standard;
 			Assert.IsNull(flyout.OverlayInputPassThroughElement);
 			flyout.ShowMode = mode;
-			Assert.AreSame(target.XamlRoot!.Content, flyout.OverlayInputPassThroughElement);
+			AssertAutomaticRoot(target, flyout);
 
 			flyout.OverlayInputPassThroughElement = target;
 			flyout.ShowMode = FlyoutShowMode.Standard;
@@ -84,8 +89,14 @@ public class Given_Flyout_Transient
 		}
 		finally
 		{
-			flyout.Hide();
-			WindowHelper.WindowContent = null;
+			try
+			{
+				await HideAndWaitForClosed(flyout);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 	}
 
@@ -102,16 +113,21 @@ public class Given_Flyout_Transient
 		try
 		{
 			await UITestHelper.Load(target);
-			flyout.ShowAt(target, new FlyoutShowOptions { ShowMode = FlyoutShowMode.Transient });
-			await WindowHelper.WaitForIdle();
+			await ShowAndWaitForOpened(flyout, target, FlyoutShowMode.Transient);
 			Assert.AreSame(target, flyout.OverlayInputPassThroughElement);
 			flyout.ShowMode = FlyoutShowMode.Standard;
 			Assert.AreSame(target, flyout.OverlayInputPassThroughElement);
 		}
 		finally
 		{
-			flyout.Hide();
-			WindowHelper.WindowContent = null;
+			try
+			{
+				await HideAndWaitForClosed(flyout);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 	}
 
@@ -168,6 +184,53 @@ public class Given_Flyout_Transient
 		{
 			flyout.Hide();
 			WindowHelper.WindowContent = null;
+		}
+	}
+
+	private static void AssertAutomaticRoot(FrameworkElement target, FlyoutBase flyout)
+	{
+		var expected = target.XamlRoot!.Content;
+		var actual = flyout.OverlayInputPassThroughElement;
+		Assert.AreSame(expected, actual,
+			$"Expected root {expected?.GetType().FullName}; actual {actual?.GetType().FullName ?? "<null>"}; " +
+			$"value equality {Equals(expected, actual)}; stable root reference {ReferenceEquals(expected, target.XamlRoot.Content)}.");
+	}
+
+	private static async Task ShowAndWaitForOpened(FlyoutBase flyout, FrameworkElement target, FlyoutShowMode mode)
+	{
+		// WinUI can stage Open until a previous presenter unloads; dispatcher idle is not an Opened event.
+		var opened = false;
+		EventHandler<object> handler = (_, _) => opened = true;
+		flyout.Opened += handler;
+		try
+		{
+			flyout.ShowAt(target, new FlyoutShowOptions { ShowMode = mode });
+			await WindowHelper.WaitFor(() => opened);
+		}
+		finally
+		{
+			flyout.Opened -= handler;
+		}
+	}
+
+	private static async Task HideAndWaitForClosed(FlyoutBase flyout)
+	{
+		if (!flyout.IsOpen)
+		{
+			return;
+		}
+
+		var closed = false;
+		EventHandler<object> handler = (_, _) => closed = true;
+		flyout.Closed += handler;
+		try
+		{
+			flyout.Hide();
+			await WindowHelper.WaitFor(() => closed);
+		}
+		finally
+		{
+			flyout.Closed -= handler;
 		}
 	}
 }
