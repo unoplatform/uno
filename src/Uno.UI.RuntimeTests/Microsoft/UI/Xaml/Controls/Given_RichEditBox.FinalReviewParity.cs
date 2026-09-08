@@ -48,7 +48,8 @@ public partial class Given_RichEditBox
 	[DataRow(LetterCase.Upper, "a\U00010428z", "a\U00010400z")]
 	[DataRow(LetterCase.Lower, "a\U00010400z", "a\U00010428z")]
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
-	public void When_ChangeCase_Maps_Supplementary_Runes_Without_Moving_The_Range(
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public void When_Managed_ChangeCase_Maps_Supplementary_Runes_Without_Moving_The_Range(
 		LetterCase letterCase,
 		string input,
 		string expected)
