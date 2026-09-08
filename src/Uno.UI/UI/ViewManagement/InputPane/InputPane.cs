@@ -139,11 +139,18 @@ public partial class InputPane
 
 		UIElement? focusedElement = null;
 		ScrollContentPresenter? scp = null;
+		Rect? focusedBoundsBeforePadding = null;
 
 		if (xamlRoot is not null && Visible)
 		{
 			focusedElement = FocusManager.GetFocusedElement(xamlRoot) as UIElement;
 			scp = focusedElement?.FindFirstParent<ScrollContentPresenter>();
+			if (focusedElement is not null)
+			{
+				focusedBoundsBeforePadding = focusedElement
+					.TransformToVisual(null)
+					.TransformBounds(new Rect(0, 0, focusedElement.ActualSize.X, focusedElement.ActualSize.Y));
+			}
 
 			// ScrollViewer can be nested, but the outer-most SV isn't necessarily the one to handle this "padded" scroll.
 			// Only the first SV that is constrained would be the one, as unconstrained SV can just expand freely.
@@ -197,6 +204,15 @@ public partial class InputPane
 						scrollViewer.VerticalOffset + focusedBounds.Bottom - OccludedRect.Top,
 						scrollViewer.ScrollableHeight);
 					scrollViewer.ChangeView(null, targetOffset, null, disableAnimation: true);
+				}
+				else if (focusedBoundsBeforePadding is { } originalBounds &&
+					scp?.ScrollOwner is ScrollViewer unoccludedScrollViewer)
+				{
+					var targetOffset = Math.Clamp(
+						unoccludedScrollViewer.VerticalOffset + focusedBounds.Top - originalBounds.Top,
+						0,
+						unoccludedScrollViewer.ScrollableHeight);
+					unoccludedScrollViewer.ChangeView(null, targetOffset, null, disableAnimation: true);
 				}
 				else if (scp is null || !intersection.IsEmpty)
 				{
