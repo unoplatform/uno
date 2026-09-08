@@ -25,8 +25,8 @@ only when they touch different platform projects and share no incomplete file de
 
 **CRITICAL**: No user-story implementation starts until this phase is complete.
 
-- [X] T003 [P] Add failing Control/Content/Raw, EventsSource, custom-peer, item-peer, and peer-order tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MobileAccessibilityTree.cs`
-- [X] T004 [P] Add shared native-adapter test fixture abstractions in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/MobileAccessibilityTestHelper.cs`
+- [X] T003 [P] Add failing Control/Content/Raw, EventsSource, custom-peer, item-peer, and peer-order tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MobileAccessibilityTree.skia.cs`
+- [X] T004 [P] Add shared native-adapter test fixture abstractions in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/MobileAccessibilityTestHelper.skia.cs`
 - [X] T005 Implement live-peer tree inclusion, EventsSource resolution, and provider-action helpers in `src/Uno.UI/Accessibility/AccessibilityPeerHelper.cs`
 - [X] T006 Add internal test-access contracts for node lookup, registry counts, and event observation in `src/Uno.UI/Accessibility/AccessibilityPeerHelper.cs`
 - [X] T007 Run the shared automation tests from `src/Uno.UI.RuntimeTests/Uno.UI.RuntimeTests.Skia.csproj` and confirm T003 passes
@@ -45,8 +45,8 @@ names, roles, basic state, relationships, and bounds.
 
 ### Tests for User Story 1
 
-- [X] T008 [P] [US1] Add failing Android native-node tests for tree order, name, role, state, bounds, Raw pruning, and stable IDs in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_SkiaAndroidAccessibilityNode.cs`
-- [X] T009 [P] [US1] Add failing iOS native-element tests for container order, label, traits, state, frame, Raw pruning, and stable identity in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_SkiaIOSAccessibilityElement.cs`
+- [X] T008 [P] [US1] Add failing Android native-node tests for tree order, name, role, state, bounds, Raw pruning, and stable IDs in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_SkiaAndroidAccessibilityNode.skia.cs`
+- [X] T009 [P] [US1] Add failing iOS native-element tests for container order, label, traits, state, frame, Raw pruning, and stable identity in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_SkiaIOSAccessibilityElement.skia.cs`
 
 ### Implementation for User Story 1
 
@@ -77,9 +77,9 @@ Uno control/provider state changes while disabled/read-only operations fail safe
 
 ### Tests for User Story 2
 
-- [X] T019 [P] [US2] Add failing cross-platform provider-action tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MobileAccessibilityActions.cs`
+- [X] T019 [P] [US2] Add failing cross-platform provider-action tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MobileAccessibilityActions.skia.cs`
 - [X] T020 [P] [US2] Add Android native action-ID and argument tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_SkiaAndroidAccessibilityNode.cs`
-- [X] T021 [P] [US2] Add iOS activate/adjust/scroll/escape/custom-action tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_SkiaIOSAccessibilityElement.cs`
+- [X] T021 [P] [US2] Add iOS activate/adjust/scroll/escape/custom-action tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_SkiaIOSAccessibilityElement.skia.cs`
 
 ### Implementation for User Story 2
 
@@ -108,7 +108,7 @@ verify a single valid native/XAML target throughout.
 ### Tests for User Story 3
 
 - [X] T028 [P] [US3] Replace ignored focus coverage with failing mobile focus/modal tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_AccessibilityFocus.cs`
-- [X] T029 [P] [US3] Add native focus-event and stale-focused-node tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MobileAccessibilityLifecycle.cs`
+- [X] T029 [P] [US3] Add native focus-event and stale-focused-node tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MobileAccessibilityLifecycle.skia.cs`
 
 ### Implementation for User Story 3
 
@@ -134,7 +134,7 @@ the existing native node reports final state and emits the correct native signal
 
 ### Tests for User Story 4
 
-- [X] T034 [P] [US4] Add failing property, structure, notification, and automation-event tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MobileAccessibilityEvents.cs`
+- [X] T034 [P] [US4] Add failing property, structure, notification, and automation-event tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MobileAccessibilityEvents.skia.cs`
 - [X] T035 [P] [US4] Re-enable and extend announcement tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_AccessibilityAnnouncements.cs`
 
 ### Implementation for User Story 4
@@ -165,7 +165,7 @@ controls and inspect their native metadata/actions on both platforms.
 
 ### Tests for User Story 5
 
-- [X] T044 [P] [US5] Add failing range, text, collection, hierarchy, and relation tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MobileAccessibilityRichControls.cs`
+- [X] T044 [P] [US5] Add failing range, text, collection, hierarchy, and relation tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MobileAccessibilityRichControls.skia.cs`
 - [X] T045 [P] [US5] Extend existing ListView, Slider, TextBox, DataGrid, and ScrollViewer accessibility tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_AccessibleListView.cs`, `Given_AccessibleSlider.cs`, `Given_AccessibleTextBox.cs`, `Given_AccessibleDataGrid.cs`, and `Given_AccessibleScrollViewer.cs`
 
 ### Implementation for User Story 5
@@ -199,7 +199,7 @@ representative actions, and confirm secure values stay hidden.
 
 ### Tests for User Story 6
 
-- [X] T057 [P] [US6] Add failing native AutomationId/name-separation and secure-value tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MobileAccessibilityAutomation.cs`
+- [X] T057 [P] [US6] Add failing native AutomationId/name-separation and secure-value tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MobileAccessibilityAutomation.skia.cs`
 - [X] T058 [P] [US6] Add failing Android/iOS automation smoke tests in `src/SamplesApp/SamplesApp.UITests/Windows_UI_Xaml_Automation/MobileAccessibility_Tests.cs`
 
 ### Implementation for User Story 6
@@ -229,8 +229,8 @@ repeated add/remove/window/focus cycles and verify timing and registry baselines
 
 ### Tests for User Story 7
 
-- [X] T063 [P] [US7] Add failing registry leak, stale-generation, window-disposal, and thread-affinity tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MobileAccessibilityLifecycle.cs`
-- [X] T064 [P] [US7] Add 500-node update and 1,000-item virtualization performance tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MobileAccessibilityPerformance.cs`
+- [X] T063 [P] [US7] Add failing registry leak, stale-generation, window-disposal, and thread-affinity tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MobileAccessibilityLifecycle.skia.cs`
+- [X] T064 [P] [US7] Add 500-node update and 1,000-item virtualization performance tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MobileAccessibilityPerformance.skia.cs`
 
 ### Implementation for User Story 7
 
@@ -259,8 +259,8 @@ fixture and complete the manual AT matrix with no unresolved P1 blocker.
 
 ### Tests for User Story 8
 
-- [X] T070 [P] [US8] Add data-driven coverage tests for all 39 core properties, 34 patterns, pattern-state groups, relations, 30 events, and notifications in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MobileAccessibilityCapabilityMatrix.cs`
-- [X] T071 [P] [US8] Add capability fallback and unsupported-semantic diagnostics tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MobileAccessibilityCapabilityMatrix.cs`
+- [X] T070 [P] [US8] Add data-driven coverage tests for all 39 core properties, 34 patterns, pattern-state groups, relations, 30 events, and notifications in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MobileAccessibilityCapabilityMatrix.skia.cs`
+- [X] T071 [P] [US8] Add capability fallback and unsupported-semantic diagnostics tests in `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/Given_MobileAccessibilityCapabilityMatrix.skia.cs`
 
 ### Implementation for User Story 8
 

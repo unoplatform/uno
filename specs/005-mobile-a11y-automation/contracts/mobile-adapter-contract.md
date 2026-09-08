@@ -48,6 +48,8 @@ Rules:
 
 - `AccessibilityView.Raw` excludes the node from Control and Content views.
 - Custom peer children and item peers are included.
+- Valid ownerless custom peers retain their own native identities; only unrealized item
+  peers without a container are omitted.
 - `EventsSource` is resolved before state or events are projected.
 - A node's native parent/child relationship must match the promoted peer tree.
 - Relationships are applied after all referenced node IDs exist.
@@ -90,6 +92,9 @@ Query requirements:
 - Revalidate node generation and owner before every query.
 - Redact secure values before crossing into native node text or diagnostics.
 - Keep AutomationId separate from the accessible name.
+- Use the resolved peer's `GetAutomationId()` and `GetCulture()`, including custom overrides,
+  element-name fallback, and Language fallback only when Culture is unset. Explicit Culture
+  zero must not trigger a second Language fallback in the platform adapter.
 - Return unavailable/null/false for stale nodes instead of throwing through native callbacks.
 
 ## 4. Property invalidation contract
@@ -154,6 +159,9 @@ Execution rules:
 6. On success, invalidate the node and emit the applicable native event.
 7. Never advertise an action that cannot execute in the current state.
 
+View IDs are discrete Int32 values. Reject non-finite, fractional, and out-of-range numeric
+arguments before narrowing; an epsilon comparison would accept a different identifier.
+
 ## 6. Android adapter contract
 
 `AndroidSkiaAccessibility : SkiaAccessibilityBase` coordinates the existing
@@ -216,6 +224,8 @@ Required platform behavior:
 - Each element pulls properties/actions through a weak adapter reference and stable node ID.
 - Frames use `AccessibilityFrameInContainerSpace`.
 - Activation, increment, decrement, scroll, escape, and custom actions route to providers.
+- A scroll gesture on a descendant can route to a live ancestor scroll provider, including
+  Raw scroll containers, without crossing the XamlRoot or active modal boundary.
 - Property/structure changes post the narrowest appropriate layout/screen/announcement notification.
 - Native calls are marshaled to the UIKit main thread.
 
@@ -226,8 +236,15 @@ AutomationId:
 
 Identity:
 
-- Keep one element object for the lifetime of the realized node.
-- Remove it from the container and registry before invalidating the logical node.
+- Keep one element object for the lifetime of the peer occurrence, with weak source/provider
+  and optional owner references. Native IDs are monotonic and are not visual handles.
+- Rebinding a container or EventsSource retires the prior occurrence. Retained native
+  objects and their custom-action callbacks cannot resolve the replacement peer.
+- Ownerless peers validate membership through a live ancestor in the same XamlRoot.
+- Open Popup peers validate their loaded presentation panel; the logical Popup need not
+  itself be in the visual tree.
+- Peer invalidation reconciles custom peer-child changes even without a visual-tree mutation.
+- Remove stale occurrences from the container and registry during coalesced tree reconciliation.
 - A stale element action returns `false` or no-ops according to the UIKit callback contract.
 
 ## 8. Focus and modal contract

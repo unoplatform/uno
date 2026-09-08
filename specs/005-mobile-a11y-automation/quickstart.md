@@ -5,11 +5,10 @@ the implementation must validate.
 
 ## 1. Prepare the mobile build
 
-From `src`, use a single target framework and fast local build:
+From the repository root, use a single target framework and fast local build:
 
 ```powershell
-Set-Location src
-Copy-Item crosstargeting_override.props.sample crosstargeting_override.props
+Copy-Item src\crosstargeting_override.props.sample src\crosstargeting_override.props
 ```
 
 Set one target in `crosstargeting_override.props`:
@@ -24,24 +23,24 @@ Set one target in `crosstargeting_override.props`:
 ```
 
 Use `net10.0-ios` instead on a macOS machine for iOS work. Do not commit this file.
+The commands below explicitly select .NET 10 for local SDK compatibility; CI uses the
+SDK/framework versions declared in `.vsts-ci.yml`.
 
 ## 2. Build the Android runtime and SamplesApp
 
 ```powershell
-Set-Location src
-dotnet build Uno.UI-netcoremobile-only.slnf `
-  -c Release `
+dotnet build src\Uno.UI.Runtime.Skia.Android\Uno.UI.Runtime.Skia.Android.csproj `
+  -c Release -f net10.0-android `
   -p:UnoTargetFrameworkOverride=net10.0-android `
-  -p:NetPrevious=net10.0 `
+  -p:NetCurrent=net10.0 -p:NetPrevious=net9.0 `
   -p:UnoFastDevBuild=true
 
-$project = "SamplesApp\SamplesApp.Skia.netcoremobile\SamplesApp.Skia.netcoremobile.csproj"
+$project = "src\SamplesApp\SamplesApp\SamplesApp.csproj"
 $properties = @(
   "-p:Configuration=Release",
-  "-p:RuntimeIdentifier=android-x64",
-  "-p:UnoSampleAppRuntimeIdentifiers=android-x64",
   "-p:UnoTargetFrameworkOverride=net10.0-android",
-  "-p:NetPrevious=net10.0",
+  "-p:NetCurrent=net10.0",
+  "-p:NetPrevious=net9.0",
   "-p:UnoFastDevBuild=true"
 )
 
@@ -53,13 +52,20 @@ dotnet publish $project `
   @properties `
   -p:PublishTrimmed=false `
   -p:RunAOTCompilation=false `
+  -p:DoNotSetAndroidLinkTool=true `
+  "-p:AndroidLinkTool=" `
+  -p:AndroidEnableProguard=false `
+  -p:AndroidEnableMarshalMethods=false `
   -p:AndroidPackageFormat=apk `
   --no-restore
 ```
 
 Use a clean publish after changing Android linker or embedding settings. Incremental packaging
-can otherwise retain stale marshal registrations. The untrimmed local package also preserves
-`kotlinx-coroutines-android`, which is required by the runtime-test app.
+can otherwise retain stale marshal registrations. These local-test flags disable both managed
+trimming, Java shrinking, and optimized JNI marshal methods; this package exercises native
+accessibility but does not establish release-shrinker, marshal-method, or AOT correctness.
+Leave runtime identifiers to the head project rather than
+forcing an Android RID onto its generic project references.
 
 The CI-equivalent Skia Android runner is:
 
@@ -67,7 +73,9 @@ The CI-equivalent Skia Android runner is:
 build/test-scripts/android-run-skia-runtime-tests.sh
 ```
 
-It runs against an Android API 34 emulator in the `runtime_tests_skia_android` PR stage.
+It runs against an Android API 34 emulator in the `runtime_tests_skia_android` stage.
+Its CI setup owns its emulator and can reboot devices; on a shared machine use an explicitly
+selected emulator serial instead of running that setup against someone else's emulator.
 
 ## 3. Build the iOS runtime and SamplesApp
 
@@ -89,7 +97,7 @@ export UITEST_RUNTIME_TEST_GROUP_COUNT=4
 export UITEST_TEST_TIMEOUT=90m
 export SAMPLESAPP_BUNDLE_ID=uno.platform.samplesapp.skia
 export UITEST_VARIANT=skia
-export UNO_UITEST_IOSBUNDLE_PATH="src/SamplesApp/SamplesApp.Skia.netcoremobile/bin/Release/net10.0-ios/iossimulator-x64/SamplesApp.app"
+export UNO_UITEST_IOSBUNDLE_PATH="src/SamplesApp/SamplesApp/bin/Release/net10.0-ios/iossimulator-x64/SamplesApp.app"
 export BUILD_SOURCESDIRECTORY="$(pwd)"
 export BUILD_ARTIFACTSTAGINGDIRECTORY="/tmp/artifacts"
 bash build/test-scripts/ios-uitest-run.sh
@@ -107,8 +115,9 @@ $env:UITEST_RUNTIME_TESTS_FILTER =
   [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes($filter))
 ```
 
-Set the variable before invoking the platform runner. While iterating, prefer a single
-class or method name rather than the entire namespace.
+While iterating, prefer a single class or method name rather than the entire namespace.
+For Android, pass the encoded value as the `UITEST_RUNTIME_TESTS_FILTER` intent extra;
+the CI shell runner replaces that variable with its shard/retry filter.
 
 ## 5. Test-authoring pattern
 
@@ -218,121 +227,51 @@ Record separately:
 Compile-only evidence is not proof that TalkBack, VoiceOver, UIAutomator, or XCUITest can see
 the native tree.
 
-## 11. Current local evidence
+## 11. Integrated-head validation
 
-The Windows implementation worktree has the following reproducible evidence:
+The unified SamplesApp head replaces the old Generic and netcoremobile heads. Build the
+desktop runtime-test host with:
 
 ```powershell
-dotnet build src\SamplesApp\SamplesApp.Skia.Generic\SamplesApp.Skia.Generic.csproj `
-  -c Release -f net10.0 `
-  -p:UnoFastDevBuild=true `
-  -p:UnoTargetFrameworkOverride=net10.0
-
-dotnet build src\Uno.UI.Runtime.Skia.Android\Uno.UI.Runtime.Skia.Android.csproj `
-  -c Release -f net10.0-android `
-  -p:UnoFastDevBuild=true `
-  -p:UnoTargetFrameworkOverride=net10.0-android
-
-dotnet build src\Uno.UI.Runtime.Skia.AppleUIKit\Uno.UI.Runtime.Skia.AppleUIKit.csproj `
-  -c Release -f net9.0-ios18.0 -m:1 `
-  -p:RuntimeIdentifier=iossimulator-x64 `
-  -p:UnoTargetFrameworkOverride=net9.0-ios18.0 `
-  -p:UnoFastDevBuild=true `
-  -p:WarningsNotAsErrors=NU1701
-
-dotnet build src\Uno.UI-netcoremobile-only.slnf `
-  -c Release `
-  -p:UnoTargetFrameworkOverride=net10.0-android `
-  -p:NetPrevious=net10.0 `
+dotnet build src\SamplesApp\SamplesApp\SamplesApp.csproj `
+  -c Release -f net10.0-desktop `
+  -p:UnoTargetFrameworkOverride=net10.0-desktop `
+  -p:NetCurrent=net10.0 -p:NetPrevious=net9.0 `
   -p:UnoFastDevBuild=true
 ```
 
-For the iOS package build, copy `Uno.UI-netcoremobile-only.slnf` to a temporary file and remove
-the Android-only `Uno.UI.GooglePlay.netcoremobile` and
-`Uno.UI.BindingHelper.Android.netcoremobile` entries, then run:
+For an installed Android test APK, select the device explicitly and resolve the generated
+launcher activity rather than hardcoding a Java wrapper name:
 
 ```powershell
-dotnet build <ios-compatible-mobile-subset.slnf> `
-  -c Release `
-  -p:UnoTargetFrameworkOverride=net10.0-ios `
-  -p:NetPrevious=net10.0 `
-  -p:UnoFastDevBuild=true `
-  -p:WarningsNotAsErrors=NU1701
-```
-
-The Android runtime namespace is launched through the app's autostart extras:
-
-```powershell
+$serial = $env:ANDROID_SERIAL
+if ([string]::IsNullOrEmpty($serial)) { throw "Select the test emulator with ANDROID_SERIAL." }
+$package = "uno.platform.samplesapp.skia"
+$activity = (adb -s $serial shell cmd package resolve-activity --brief $package)[-1].Trim()
 $filter = [Convert]::ToBase64String(
   [Text.Encoding]::UTF8.GetBytes(
     "Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation"))
-$deviceResult =
-  "/storage/emulated/0/Android/data/uno.platform.samplesapp.skia/files/mobile-a11y.xml"
-
-adb shell am start `
-  -n uno.platform.samplesapp.skia/crc6448f3b0362cbf4bc9.MainActivity `
+$deviceResult = "/storage/emulated/0/Android/data/$package/files/mobile-a11y.xml"
+adb -s $serial shell am start -n $activity `
+  -e UITEST_RUNTIME_TEST_GROUP 0 `
+  -e UITEST_RUNTIME_TEST_GROUP_COUNT 1 `
   -e UITEST_RUNTIME_AUTOSTART_RESULT_FILE $deviceResult `
   -e UITEST_RUNTIME_TESTS_FILTER $filter
 ```
 
-The direct UIAutomator fixture is executed with the already-installed Skia package:
+Record the tested commit, package hash, framework, device, NUnit counts, and any local
+packaging overrides with the PR results. Parse NUnit results rather than trusting the
+application exit code. Results from a pre-integration package do not validate a new merge.
 
-```powershell
-$env:ANDROID_HOME = "$env:LOCALAPPDATA\Android\Sdk"
-$env:ANDROID_SDK_ROOT = $env:ANDROID_HOME
-$env:ANDROID_SERIAL = "emulator-5580"
-$env:UNO_UITEST_PLATFORM = "Android"
-$env:UNO_UITEST_APP_ID = "uno.platform.samplesapp.skia"
-$env:UITEST_VARIANT = "skia"
+`Given_SkiaIOSAccessibilityElement.PeerContracts.skia.cs` covers ownerless peers, retained nodes
+after EventsSource rebinding/unload, peer identifier/culture overrides, and child-initiated
+ancestor scrolling. These require native iOS execution; compiling the tests on Windows
+only establishes API/build compatibility. The shared and native mobile action cases also
+cover exact Int32 view IDs, including fractional and out-of-range inputs. Backend-only
+fixtures use the `.skia.cs` suffix so they do not reference Uno internals when compiling
+the native WinUI test project; public WinUI contract tests remain available there.
 
-dotnet test src\SamplesApp\SamplesApp.UITests\SamplesApp.UITests.csproj `
-  -c Release `
-  -p:UnoTargetFrameworkOverride=net10.0-android `
-  -p:UnoFastDevBuild=true `
-  --filter "FullyQualifiedName~MobileAccessibility_Android_UiAutomator_Tests"
-```
-
-The AppleUIKit command validates managed source and .NET iOS binding signatures on Windows; it
-does not launch a simulator. The Android runtime build may report the repository's existing
-`XA0101` content-item warnings.
-
-The pure capability-matrix suite currently covers 39 automation properties, all 34
-`PatternInterface` values, all 30 `AutomationEvents` values, state groups, relations, and
-unsupported fallbacks. Mobile-gated native-node, lifecycle, performance, and automation tests
-compile into the same runtime-test assembly. Android native execution is covered locally; iOS
-native execution still requires a macOS/Xcode runner.
-
-Latest local results:
-
-- Skia Desktop `Windows_UI_Xaml_Automation`: 209 passed, 0 failed, 252 platform skips.
-- Capability matrix: 25 passed, 0 failed, 4 mobile skips.
-- Android API 36 `Windows_UI_Xaml_Automation` with TalkBack and touch exploration enabled:
-  371 passed, 0 failed, 134 platform skips. This includes the SC-005 100-transition
-  focus/popup/scroll/virtualization/disable/removal stress test and the SC-008 incremental
-  update p95 frame-budget gate on a 500-node tree.
-- Android direct UIAutomator SamplesApp suite: 14 passed, 0 failed, both with TalkBack
-  disabled and with TalkBack plus touch exploration enabled. Coverage now spans the SC-006
-  action categories: Invoke, Toggle, Selection, Value, ExpandCollapse (ComboBox drop-down),
-  RangeValue, and Scroll/ScrollItem.
-- Manual Android API 36 TalkBack smoke passed for invoke, toggle, list selection, and text
-  entry. UIAutomator exposed each fixture AutomationId exactly once and kept
-  password text empty while a sibling text field reported its typed value. With TalkBack
-  active, double-tap activation expands the ComboBox and its drop-down items are exposed
-  with their own AutomationIds.
-- Android `Uno.UI-netcoremobile-only.slnf` package build: succeeded with
-  `-p:NetPrevious=net10.0`.
-- The iOS-compatible `Uno.UI-netcoremobile-only.slnf` subset builds with `net10.0-ios`
-  after excluding the Android-only `Uno.UI.GooglePlay.netcoremobile` and
-  `Uno.UI.BindingHelper.Android.netcoremobile` projects.
-- AppleUIKit managed simulator target: build succeeded with 0 warnings and 0 errors.
-- Skia iOS CI now runs the targeted `MobileAccessibility_Tests` simulator group in addition
-  to the runtime-test shards.
-- `Uno.UI.UnitTests` and `SamplesApp.UITests`: build succeeded; SamplesApp.UITests retains
-  its existing NUnit assembly-version warnings.
-
-Android native execution now covers set-text, set-selection, character/word/line/paragraph/
-page traversal, conditional copy/cut/paste, peer-keyed recycled/ownerless/shared-owner
-identity, unique nested virtual nodes, AutomationId lookup, representative actions, focus
-recovery, and secure-text redaction. Native iOS/VoiceOver/XCUITest execution, iOS recycled
-identity validation, and the manual cross-platform assistive-technology matrix still require
-macOS/Xcode and representative devices.
+A PR stacked on `dev/doti/a11y-parity-remediation-impl` is outside `.vsts-ci.yml`'s automatic
+PR branch filter. Keeping that stack does not establish a green native CI result: the
+current integrated head still needs the required Android/iOS stages on a supported runner
+before full merge readiness can be claimed.
