@@ -261,6 +261,13 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			var manager = ContextHelper.Current.GetSystemService(Context.ClipboardService) as ClipboardManager;
 			var description = manager?.PrimaryClipDescription;
+			// Android's clipboard overlay can temporarily hide metadata even for our own
+			// clipboard write. Use the same validated local content as GetContent in that case.
+			if (TryGetLocallySetContent(description, out var locallySetContent))
+			{
+				return locallySetContent.Contains(StandardDataFormats.Text);
+			}
+
 			if (manager?.HasPrimaryClip != true ||
 				description?.HasMimeType("text/*") != true ||
 				_clipboardKnownCleared ||
@@ -302,6 +309,8 @@ namespace Windows.ApplicationModel.DataTransfer
 				_clearedClipTimestamp = Build.VERSION.SdkInt >= BuildVersionCodes.O
 					? manager.PrimaryClipDescription?.Timestamp
 					: null;
+				// Android can suppress its callback while the clipboard overlay owns focus.
+				OnContentChanged();
 			}
 		}
 
