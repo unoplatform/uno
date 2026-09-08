@@ -36,22 +36,25 @@ public class TextBoxExtensions
 	}
 
 	/// <summary>
-	/// Gets whether a toolbar carrying a "Done" button, which dismisses the soft keyboard, is shown above it.
+	/// Gets whether the text inputs at or below <paramref name="obj"/> show a bar carrying a "Done" button
+	/// above the soft keyboard, which dismisses it.
 	/// </summary>
 	public static bool GetShowKeyboardDismissButton(DependencyObject obj) => (bool)obj.GetValue(ShowKeyboardDismissButtonProperty);
 
 	/// <summary>
-	/// Sets whether a toolbar carrying a "Done" button, which dismisses the soft keyboard, is shown above it.
+	/// Sets whether the text inputs at or below <paramref name="obj"/> show a bar carrying a "Done" button
+	/// above the soft keyboard, which dismisses it.
 	/// </summary>
 	public static void SetShowKeyboardDismissButton(DependencyObject obj, bool value) => obj.SetValue(ShowKeyboardDismissButtonProperty, value);
 
 	/// <summary>
-	/// Shows a toolbar with a "Done" button above the soft keyboard, dismissing it when tapped. This is
-	/// meant for inputs the Enter key cannot dismiss the keyboard from - a multi-line <see cref="TextBox"/>,
-	/// where Enter inserts a newline, being the primary case.
+	/// Shows a bar with a "Done" button above the soft keyboard, dismissing it when tapped. This is meant
+	/// for inputs the Enter key cannot dismiss the keyboard from - a multi-line <see cref="TextBox"/>, where
+	/// Enter inserts a newline, being the primary case.
 	/// </summary>
 	/// <remarks>
-	/// The value is inherited, so it can be set on a page or a container to opt every text input below it in.
+	/// The value is inherited: set it on the input itself, or on any element above one - a page or a container
+	/// opts in every text input below it, and an input can opt back out locally.
 	/// This is currently an iOS-only feature; other targets ignore the property, as their soft keyboards
 	/// already offer a way out (the Android back button) or are backed by a hardware keyboard.
 	/// </remarks>
