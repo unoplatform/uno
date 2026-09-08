@@ -168,12 +168,19 @@ public sealed unsafe partial class WebGpuPresentSession
 			try
 			{
 				var blurView = BlurPyramid(src.View, src.PixelWidth, src.PixelHeight, sigmaX, sigmaY);
+				// The pyramid hands back its REDUCED top level and leaves the upscale to the caller, but the
+				// composite below fetches exact texels -- so it read only the top-left (w >> levels) corner and
+				// returned nothing for the rest, shrinking the blurred output as sigma (and so the level count)
+				// grew. One linear tap over the full target resamples it back up first.
+				var upscaled = _d.Pool.Rent(src.PixelWidth, src.PixelHeight, 1,
+					WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+				BlurPass(blurView, upscaled, default, default, downsample: true, Vector2.Zero, Vector2.One);
 				var idu = MakeUniform(WebGpuDevice.CompositeUniformBytes);
 				var idc = stackalloc float[24]; idc[1] = 1f;   // params.x=0 (no colour matrix), params.y=1 (opacity)
 				wgpuQueueWriteBuffer(_d.Q, idu, 0, (IntPtr)idc, 96);
 				// Two entries, not three: the composite shader uses textureLoad, so its layout has no sampler.
 				var e = stackalloc WGPUBindGroupEntry[2];
-				e[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = blurView };
+				e[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = upscaled };
 				e[1] = new WGPUBindGroupEntry { Binding = 2, Buffer = idu, Offset = 0, Size = WebGpuDevice.CompositeUniformBytes };
 				var bgd = new WGPUBindGroupDescriptor { Layout = _d.CompositeBgl, EntryCount = 2, Entries = e };
 				var bg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
