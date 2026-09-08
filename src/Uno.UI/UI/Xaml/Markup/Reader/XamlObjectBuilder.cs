@@ -1204,6 +1204,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 							// Keep the public string in sync so binding.ElementName roundtrips (WinUI parity);
 							// resolution still goes through the subject.
 							binding.ElementName = value;
+							subject.Name = value;
 							AddElementName(value, subject);
 						}
 						break;
