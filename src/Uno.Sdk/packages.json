@@ -48,7 +48,7 @@
 	},
 	{
 		"group": "CoreLogging",
-		"version": "4.1.1",
+		"version": "5.0.0-dev.28",
 		"packages": [
 			"Uno.Core.Extensions.Logging.Singleton"
 		]
