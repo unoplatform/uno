@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Uno.Extensions;
 using Uno.UI.DevTools.Input;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI.Input.Preview.Injection;
@@ -157,7 +156,8 @@ public class Given_Flyout_Transient
 			var injector = InputInjector.TryCreate();
 			Assert.IsNotNull(injector);
 			using var finger = injector.GetFinger();
-			finger.Press(other.GetAbsoluteBounds().GetCenter());
+			var bounds = other.GetAbsoluteBounds();
+			finger.Press(new Windows.Foundation.Point(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2));
 			finger.Release();
 			await WindowHelper.WaitFor(() => closed);
 			await WindowHelper.WaitForIdle();
