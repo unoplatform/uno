@@ -27,6 +27,7 @@ using Windows.System;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Input.Preview.Injection;
+using Windows.UI.ViewManagement;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Xaml.Controls.Extensions;
@@ -5599,6 +5600,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SelectionFlyout?.Hide();
 			await WindowHelper.WaitForIdle();
 
+			if (RuntimeTestsPlatformHelper.CurrentPlatform == RuntimeTestPlatforms.SkiaAndroid)
+			{
+				// InputPane can finish opening after the multi-tap delay and queue its own
+				// StartBringIntoView. Complete that setup before testing a subsequent user pan.
+				var inputPane = InputPane.GetForCurrentView();
+				if (inputPane.Visible || inputPane.TryShow())
+				{
+					await WindowHelper.WaitFor(
+						() => inputPane.Visible,
+						message: "The requested input pane must be visible before testing scrolling away from the caret.");
+					await UITestHelper.WaitForRender();
+					await WindowHelper.WaitForIdle();
+				}
+			}
+
 			// Drag upwards on the filler below the box: the form scrolls down and the TextBox leaves the viewport.
 			var svBounds = scrollViewer.GetAbsoluteBoundsRect();
 			var from = new Point(svBounds.GetCenter().X, svBounds.Bottom - 30);
@@ -5647,6 +5663,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// The empty-field variant only started reaching the lock once an empty box stopped swallowing the tap: it
 		// now places the Android insertion handle like a filled one, which is what used to arm the clamp.
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
 		public Task When_Touch_Tap_Empty_Does_Not_Lock_ScrollViewer_Android()
 			=> AssertTouchCaretDoesNotLockScrollViewer(
