@@ -184,7 +184,24 @@ public partial class InputPane
 			UI.Core.CoreDispatcherPriority.Normal, () =>
 			{
 				focusedElement.UpdateLayout();
-				focusedElement.StartBringIntoView();
+
+				var focusedBounds = focusedElement
+					.TransformToVisual(null)
+					.TransformBounds(new Rect(0, 0, focusedElement.ActualSize.X, focusedElement.ActualSize.Y));
+				var intersection = focusedBounds;
+				intersection.Intersect(OccludedRect);
+
+				if (!intersection.IsEmpty && scp?.ScrollOwner is ScrollViewer scrollViewer)
+				{
+					var targetOffset = Math.Min(
+						scrollViewer.VerticalOffset + focusedBounds.Bottom - OccludedRect.Top,
+						scrollViewer.ScrollableHeight);
+					scrollViewer.ChangeView(null, targetOffset, null, disableAnimation: true);
+				}
+				else if (scp is null)
+				{
+					focusedElement.StartBringIntoView();
+				}
 			}
 		);
 	}
