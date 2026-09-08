@@ -1,4 +1,4 @@
-// Signed-area coverage fills: rasterize a path's exact per-pixel coverage into a mask, then draw the mask.
+﻿// Signed-area coverage fills: rasterize a path's exact per-pixel coverage into a mask, then draw the mask.
 #nullable disable
 using System;
 using System.Collections.Generic;
@@ -13,9 +13,12 @@ namespace Uno.UI.Composition.WebGpu;
 
 public sealed unsafe partial class WebGpuPresentSession
 {
-	// UNO_WEBGPU_COVERAGE=1 routes path fills through the coverage rasterizer instead of the tessellated /
-	// stencil-then-cover paths, so the two can be compared on the same scene.
-	private static readonly bool _coverageFills = Environment.GetEnvironmentVariable("UNO_WEBGPU_COVERAGE") is "1" or "true";
+	// UNO_WEBGPU_COVERAGE=1 gives the coverage rasterizer the fills that would otherwise render aliased -- the
+	// ones the tessellator refused, which fall through to stencil-then-cover. =all takes every fill instead, so
+	// the two rasterizers can be compared on the same scene.
+	private static readonly string _coverageMode = Environment.GetEnvironmentVariable("UNO_WEBGPU_COVERAGE");
+	private static readonly bool _coverageFills = _coverageMode is "1" or "true" or "all";
+	private static readonly bool _coverageAll = _coverageMode is "all";
 
 	/// <summary>Bound so a pathological shape cannot allocate a mask larger than a page-sized texture.</summary>
 	private const int CoverageMaxDim = 4096;
