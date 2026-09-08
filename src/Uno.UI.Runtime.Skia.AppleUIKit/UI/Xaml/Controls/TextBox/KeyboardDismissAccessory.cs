@@ -49,7 +49,13 @@ internal static class KeyboardDismissAccessory
 
 		var done = UIButton.FromType(UIButtonType.System);
 		done.SetTitle(GetDoneTitle(), UIControlState.Normal);
-		done.TitleLabel.Font = UIFont.SystemFontOfSize(17, UIFontWeight.Semibold);
+		// UIFont.SystemFontOfSize is nullable-annotated in some Microsoft.iOS versions and not in others,
+		// so the assignment is guarded rather than written straight through.
+		if (done.TitleLabel is { } title && UIFont.SystemFontOfSize(17, UIFontWeight.Semibold) is { } font)
+		{
+			title.Font = font;
+		}
+
 		done.SizeToFit();
 
 		var doneWidth = (nfloat)Math.Max(done.Frame.Width, MinimumTouchTarget);
