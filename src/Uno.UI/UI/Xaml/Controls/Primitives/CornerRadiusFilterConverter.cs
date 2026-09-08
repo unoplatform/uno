@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference CornerRadiusFilterConverter.cpp, commit 22e5052
+// MUX Reference dev\Common\CornerRadiusFilterConverter.cpp, commit 22e5052f
 
 #nullable enable
 
@@ -54,7 +54,7 @@ public partial class CornerRadiusFilterConverter : DependencyObject, IValueConve
 			typeof(CornerRadiusFilterConverter),
 			new FrameworkPropertyMetadata(1.0));
 
-	private static CornerRadius Convert(CornerRadius radius, CornerRadiusFilterKind filterKind)
+	internal static CornerRadius Convert(CornerRadius radius, CornerRadiusFilterKind filterKind)
 	{
 		var result = radius;
 
