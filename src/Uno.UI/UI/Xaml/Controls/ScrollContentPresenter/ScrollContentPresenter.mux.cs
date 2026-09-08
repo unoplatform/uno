@@ -347,11 +347,16 @@ public partial class ScrollContentPresenter
 		Thickness contentMargin = new Thickness();
 
 		var presenterPadding = Padding;
+		// The input-pane pad already shrinks the viewport. Keep only the app's
+		// original bottom padding in the target margin to avoid a second shift.
+		var contentBottomMargin = _occludedRectPadding == default
+			? presenterPadding.Bottom
+			: _oldPadding.Bottom;
 		contentMargin = new Thickness(
 			presenterPadding.Left,
 			presenterPadding.Top,
 			presenterPadding.Right,
-			presenterPadding.Bottom);
+			contentBottomMargin);
 
 		if (descendant is ScrollViewer sv)
 		{
