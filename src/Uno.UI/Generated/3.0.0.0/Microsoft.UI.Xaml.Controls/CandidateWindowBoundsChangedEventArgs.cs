@@ -3,26 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
+#if false
+	[global::Uno.NotImplemented]
 #endif
 	public partial class CandidateWindowBoundsChangedEventArgs
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		internal CandidateWindowBoundsChangedEventArgs()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Rect Bounds
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.CandidateWindowBoundsChangedEventArgs", "Bounds");
-			}
-		}
-#endif
+		// Skipping already declared property Bounds
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CandidateWindowBoundsChangedEventArgs.Bounds.get
 	}
 }

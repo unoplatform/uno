@@ -3,50 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
+#if false
+	[global::Uno.NotImplemented]
 #endif
 	public partial class RichEditBoxSelectionChangingEventArgs
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		internal RichEditBoxSelectionChangingEventArgs()
-		{
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public bool Cancel
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs", "Cancel");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs", "Cancel");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public int SelectionLength
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs", "SelectionLength");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public int SelectionStart
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs", "SelectionStart");
-			}
-		}
-#endif
+		// Skipping already declared property Cancel
+		// Skipping already declared property SelectionLength
+		// Skipping already declared property SelectionStart
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.Cancel.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.Cancel.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.SelectionLength.get
