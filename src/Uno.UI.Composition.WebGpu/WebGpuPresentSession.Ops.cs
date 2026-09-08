@@ -239,15 +239,6 @@ public sealed unsafe partial class WebGpuPresentSession
 				// after, so an atlas hook that only covers the live paths never sees a glyph.
 				ops.Add(aop0);
 			}
-			else if (_coverageFills && cmds[ci] is PathFill cpf && (_coverageAll || !cpf.FanTiles)
-				&& TryCoverageFill(cpf, owned, out var cop))
-			{
-				// The fallback, not the first choice: a tiling fan already carries its own analytic AA ring and
-				// the atlas already has a cached mask, so coverage takes what those two refuse -- which is
-				// exactly the set that would otherwise reach stencil-then-cover and render aliased. Taking every
-				// fill costs an accumulation pass per glyph run, which is what =all is for.
-				ops.Add(cop);
-			}
 			else if (cmds[ci] is PathFill pf0 && !pf0.EvenOdd)
 			{
 				// Coalesce a run of consecutive NON-ZERO paths sharing colour + clip (a text run's glyphs) into one

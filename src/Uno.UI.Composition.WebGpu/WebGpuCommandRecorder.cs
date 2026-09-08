@@ -1045,7 +1045,19 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					// every replayed (scrolled or transformed) recording. GeomMatrix carries the atlas key the same
 					// way — composed with this replay's transform, so a scaled instance keys to its own entry rather
 					// than reusing a mask baked at a different scale.
-					var replayed = new PathFill { FanDevice = dst, FanCoverage = p.FanCoverage, FanHard = dstHard, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, FanTiles = p.FanTiles, Geometry = p.Geometry, GeomMatrix = p.GeomMatrix * _m, Clip = ClipCompose(p.Clip) };
+					// The coverage rasterizer's edge list is device-space too, so it moves with the fan. Leaving it
+					// behind is invisible in the output -- the fill silently takes an older path instead -- so it
+					// stays next to the fan transforms rather than anywhere it could drift out of step.
+					float[] dstEdges = null;
+					if (p.Edges is { } srcEdges)
+					{
+						dstEdges = new float[srcEdges.Length];
+						for (int i = 0; i < srcEdges.Length; i += 2)
+						{
+							var qe = T(new Vector2(srcEdges[i], srcEdges[i + 1])); dstEdges[i] = qe.X; dstEdges[i + 1] = qe.Y;
+						}
+					}
+					var replayed = new PathFill { FanDevice = dst, FanCoverage = p.FanCoverage, FanHard = dstHard, Edges = dstEdges, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, FanTiles = p.FanTiles, Geometry = p.Geometry, GeomMatrix = p.GeomMatrix * _m, Clip = ClipCompose(p.Clip) };
 					p.StoreReplayed(_m, replayed);
 					_target.Add(replayed);
 					break;

@@ -138,7 +138,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	}
 
 
-	internal static int AtlasTried, AtlasNoKey, AtlasHit, AtlasBaked, AtlasNoRoom, AtlasNoRing, ScaleBlocked;
+	internal static int AtlasTried, AtlasNoKey, AtlasHit, AtlasBaked, AtlasNoRoom, AtlasNoRing, ScaleBlocked, CoverageBaked;
 
 	/// <summary>
 	/// Keys and places on the op's own coordinate space, with <paramref name="scale"/> giving the extra scale the
@@ -206,7 +206,8 @@ public sealed unsafe partial class WebGpuPresentSession
 		// The bake derives coverage from a 4x supersample, so its input must be a HARD silhouette. Geometry that
 		// already carries an analytic AA ring would be antialiased twice - the edge spreads half a pixel and a
 		// boundary pixel that should be empty comes out at 50%.
-		if (pf.FanHard is null && HasAaRing(pf.FanCoverage)) { AtlasNoRing++; return false; }
+		// Accumulating edges needs neither, so that bake is exempt: the fan is not its input at all.
+		if (!CanCoverageBake(pf) && pf.FanHard is null && HasAaRing(pf.FanCoverage)) { AtlasNoRing++; return false; }
 		if (!WebGpuPathAtlas.TryKey(pf.Geometry, pf.GeomMatrix, pf.BbMin, pf.BbMax, scale, out var key, out var w, out var h, out ox, out oy)) { AtlasNoKey++; return false; }
 
 		if (_d.PathAtlas.Pages.Count == 0) { _d.AddPathAtlasPage(); }
@@ -236,7 +237,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			if (slot is null) { AtlasNoRoom++; return false; }
 			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
 			else { _d.PathAtlas.HoldForCache(slot, _d.FrameSeq); }
-			RasterizeAtlasEntry(pf, slot, scale);
+			if (CanCoverageBake(pf)) { RasterizeAtlasEntryCoverage(pf, slot, scale); CoverageBaked++; } else { RasterizeAtlasEntry(pf, slot, scale); }
 			AtlasBaked++;
 		}
 

@@ -104,6 +104,25 @@ fn clipCovMapped(fc: vec2<f32>, clip: ClipU) -> f32 {
 ";
 	// Averages each 4x4 block of the supersampled mask into one coverage value. Reads with textureLoad so no
 	// sampler or filtering is involved — the average must be exact, not bilinear.
+	// Resolves the signed-area accumulator into coverage and writes it the way MaskDownsampleWgsl does, so an
+	// atlas slot baked this way is indistinguishable to the sampling side. ctrl.x > 0.5 = even-odd: fold the
+	// winding count into [0,1] instead of clamping it, so a self-overlapping outline punches holes.
+	private const string CoverageResolveWgsl = @"
+struct CovResU { ctrl: vec4<f32> };
+struct VOut { @builtin(position) p: vec4<f32>, @location(0) t: vec2<f32> };
+@group(0) @binding(0) var acc: texture_2d<f32>;
+@group(0) @binding(1) var<uniform> cr: CovResU;
+@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) t: vec2<f32>) -> VOut {
+  var o: VOut; o.p = vec4<f32>(pos, 0.0, 1.0); o.t = t; return o;
+}
+@fragment fn fs(i: VOut) -> @location(0) vec4<f32> {
+  var a = abs(textureLoad(acc, vec2<i32>(i.t), 0).r);
+  if (cr.ctrl.x > 0.5) { a = a - 2.0 * floor(a * 0.5); a = min(a, 2.0 - a); }
+  a = min(a, 1.0);
+  return vec4<f32>(a, a, a, a);
+}
+";
+
 	private const string MaskDownsampleWgsl = @"
 struct VOut { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 @group(0) @binding(0) var src: texture_2d<f32>;
@@ -202,22 +221,6 @@ struct CovOut { @builtin(position) p: vec4<f32>, @location(0) e: vec4<f32> };
 	// Draws a shape by sampling its signed-area coverage mask: one quad however complex the path was, since the
 	// mask carries the geometry. The fill rule is resolved HERE rather than during accumulation, so one mask can
 	// serve either rule -- an accumulated 2 is a self-overlap under non-zero and a hole under even-odd.
-	private const string CoverageDrawWgsl = @"
-struct CovDrawU { color: vec4<f32>, ctrl: vec4<f32> };   // color premultiplied; ctrl.x > 0.5 = even-odd
-@group(0) @binding(0) var covTex: texture_2d<f32>;
-@group(0) @binding(1) var<uniform> cd: CovDrawU;
-@group(1) @binding(0) var<uniform> clip: ClipU;
-struct CovDrawOut { @builtin(position) p: vec4<f32>, @location(0) t: vec2<f32> };
-@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) t: vec2<f32>) -> CovDrawOut {
-  var o: CovDrawOut; o.p = xformPos(clip, pos); o.t = t; return o;
-}
-@fragment fn fs(i: CovDrawOut) -> @location(0) vec4<f32> {
-  // textureLoad, not textureSample: the mask is 1:1 with the destination, so filtering would only blur an
-  // answer that is already per-pixel exact.
-  var a = abs(textureLoad(covTex, vec2<i32>(i.t), 0).r);
-  if (cd.ctrl.x > 0.5) { a = a - 2.0 * floor(a * 0.5); a = min(a, 2.0 - a); }
-  return cd.color * min(a, 1.0) * clipCov(i.p.xy, clip);
-}";
 
 	private const string ClipDepthWgsl = @"
 @vertex fn vs0(@builtin(vertex_index) vi: u32) -> @builtin(position) vec4<f32> {
