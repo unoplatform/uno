@@ -63,23 +63,6 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(SizesContentToTemplatedParentProperty, value);
 		}
 
-#if !__SKIA__
-		public Rect MakeVisible(UIElement visual, Rect rectangle)
-		{
-			// Simulate a BringIntoView request
-			var args = new BringIntoViewRequestedEventArgs()
-			{
-				AnimationDesired = true,
-				TargetRect = rectangle,
-				TargetElement = visual,
-				OriginalSource = visual
-			};
-			OnBringIntoViewRequested(args);
-
-			return args.TargetRect;
-		}
-#endif
-
 		bool _forceChangeToCurrentView;
 		internal bool ForceChangeToCurrentView
 		{
