@@ -78,6 +78,13 @@ internal enum DrawKind
 
 	/// <summary>Fan that tiles without overlap, so it fills in ONE pass with no stencil (see PathFill.FanTiles).</summary>
 	TilingFan = 8,
+
+	/// <summary>
+	/// A quad sampling a signed-area coverage mask. b0 = bind group (mask + params), b1 = quad verts.
+	/// Same shape as <see cref="Image"/> because it is the same draw: the mask carries the shape, so the
+	/// geometry is always six vertices however complex the path.
+	/// </summary>
+	Coverage = 9,
 }
 
 internal struct DrawOp

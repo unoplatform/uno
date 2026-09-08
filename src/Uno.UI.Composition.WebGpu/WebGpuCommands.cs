@@ -145,6 +145,12 @@ internal sealed class PathFill : WebGpuCommand
 	/// </summary>
 	public float[] FanHard;
 
+	/// <summary>
+	/// The flattened outline as device-space edges (x0,y0,x1,y1 per edge), for the signed-area coverage
+	/// rasterizer. Independent of the triangulation: coverage needs the boundary, not the interior, which is
+	/// why it is available for shapes the tessellator refuses. Null when the contours could not be captured.
+	/// </summary>
+	public float[] Edges;
 	/// <summary>Source geometry + transform, so an atlas entry can be keyed by shape and scale.</summary>
 	public object Geometry;
 	public Matrix4x4 GeomMatrix;
