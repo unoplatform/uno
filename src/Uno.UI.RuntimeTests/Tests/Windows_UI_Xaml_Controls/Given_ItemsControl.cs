@@ -51,7 +51,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var gridView = new GridView
 			{
 				ItemsSource = new[] { "one", "two" },
-				ItemsPanel = new ItemsPanelTemplate(() => new ItemsWrapGrid()),
+				ItemsPanel = new ItemsPanelTemplate(null, (_, _) => new ItemsWrapGrid()),
 			};
 
 			try
