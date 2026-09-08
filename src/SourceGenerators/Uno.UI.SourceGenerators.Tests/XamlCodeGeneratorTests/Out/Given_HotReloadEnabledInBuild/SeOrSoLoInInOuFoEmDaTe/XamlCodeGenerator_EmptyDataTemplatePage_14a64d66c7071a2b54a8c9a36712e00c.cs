@@ -54,7 +54,7 @@ namespace TestRepro
 				return 
 					global::MyProject.GlobalStaticResources.__PreserveProperties(
 						global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(__ResourceOwner_1, Build_Pag_ResΞ0_DatTem)
-						.GenericApply(__that, __nameScope, ApplyTo_Pag_ResΞ0_DatTem)
+						.GenericApply(__that, __nameScope, __ResourceOwner_1, ApplyTo_Pag_ResΞ0_DatTem)
 					)
 				;
 			}
@@ -118,7 +118,7 @@ namespace TestRepro
 
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-		private void ApplyTo_Pag_ResΞ0_DatTem(global::Microsoft.UI.Xaml.DataTemplate __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+		private void ApplyTo_Pag_ResΞ0_DatTem(global::Microsoft.UI.Xaml.DataTemplate __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope, object __ResourceOwner_1)
 		{
 			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file://///Project/0/EmptyDataTemplatePage.xaml#L7:4");
 		}
