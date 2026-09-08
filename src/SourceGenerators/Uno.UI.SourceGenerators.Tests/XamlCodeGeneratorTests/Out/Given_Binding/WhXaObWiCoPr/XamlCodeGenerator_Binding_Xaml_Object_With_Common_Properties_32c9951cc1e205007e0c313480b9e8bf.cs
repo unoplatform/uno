@@ -85,6 +85,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 								new Microsoft.UI.Xaml.Data.Binding()
 								{
 									Path = @"Tag",
+									ElementName = "topLevel",
 									ElementNameSubject = _topLevelSubject,
 									Converter = (global::Microsoft.UI.Xaml.Data.IValueConverter)global::Uno.UI.ResourceResolverSingleton.Instance.ResolveResourceStatic("Binding_Xaml_Object_With_Common_Properties_Return_Value_Converter", typeof(global::Microsoft.UI.Xaml.Data.IValueConverter), context: global::MyProject.GlobalStaticResources.__ParseContext_),
 									ConverterParameter = @"topLevel",
@@ -141,7 +142,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			this.Bindings.UpdateResources();
 		}
 
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "topLevel");
 		public global::Microsoft.UI.Xaml.Controls.TextBlock topLevel
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_topLevelSubject.ElementInstance;

@@ -108,7 +108,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls
 
 		}
 		partial void OnInitializeCompleted();
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _namedButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _namedButtonSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "namedButton");
 		private global::Microsoft.UI.Xaml.Controls.Button namedButton
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.Button)_namedButtonSubject.ElementInstance;

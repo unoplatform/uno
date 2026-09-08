@@ -360,7 +360,7 @@ namespace TestRepro
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _NarrowStateSubjectBackingPseudoField { get; set; }
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _NarrowStateSubject
 		{
-			get => _NarrowStateSubjectBackingPseudoField ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+			get => _NarrowStateSubjectBackingPseudoField ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "NarrowState");
 		}
 		private global::Microsoft.UI.Xaml.VisualState NarrowState
 		{
@@ -370,7 +370,7 @@ namespace TestRepro
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _TheListViewSubjectBackingPseudoField { get; set; }
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _TheListViewSubject
 		{
-			get => _TheListViewSubjectBackingPseudoField ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+			get => _TheListViewSubjectBackingPseudoField ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "TheListView");
 		}
 		private global::Microsoft.UI.Xaml.Controls.ListView TheListView
 		{
@@ -380,7 +380,7 @@ namespace TestRepro
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _WideStateSubjectBackingPseudoField { get; set; }
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _WideStateSubject
 		{
-			get => _WideStateSubjectBackingPseudoField ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+			get => _WideStateSubjectBackingPseudoField ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "WideState");
 		}
 		private global::Microsoft.UI.Xaml.VisualState WideState
 		{

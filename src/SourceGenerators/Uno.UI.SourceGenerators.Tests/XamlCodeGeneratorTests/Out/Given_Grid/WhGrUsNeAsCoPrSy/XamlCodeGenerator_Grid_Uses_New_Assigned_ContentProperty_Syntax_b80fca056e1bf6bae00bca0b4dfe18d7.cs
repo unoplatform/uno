@@ -177,7 +177,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 
 		}
 		partial void OnInitializeCompleted();
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _gridSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _gridSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "grid");
 		public global::Microsoft.UI.Xaml.Controls.Grid grid
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.Grid)_gridSubject.ElementInstance;

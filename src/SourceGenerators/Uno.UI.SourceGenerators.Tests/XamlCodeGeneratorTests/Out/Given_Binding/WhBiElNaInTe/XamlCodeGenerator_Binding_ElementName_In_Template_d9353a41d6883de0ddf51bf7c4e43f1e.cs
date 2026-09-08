@@ -117,7 +117,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 			return new __Binding_ElementName_In_Template_d9353a41d6883de0ddf51bf7c4e43f1e.__PagΞ0_GriΞ0_ConCon_ConTemΞ0_DatTem().Build(__owner, __settings);
 		}
 
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "topLevel");
 		public global::Microsoft.UI.Xaml.Controls.ContentControl topLevel
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.ContentControl)_topLevelSubject.ElementInstance;
@@ -164,6 +164,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 							new Microsoft.UI.Xaml.Data.Binding()
 							{
 								Path = @"Tag",
+								ElementName = "topLevel",
 								ElementNameSubject = _topLevelSubject,
 							}
 						);
@@ -195,7 +196,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 					get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
 					set => _component_0_Holder.Instance = value;
 				}
-				private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _innerTextBlockSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+				private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _innerTextBlockSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "innerTextBlock");
 				private global::Microsoft.UI.Xaml.Controls.TextBlock innerTextBlock
 				{
 					get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_innerTextBlockSubject.ElementInstance;

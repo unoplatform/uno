@@ -133,7 +133,7 @@ namespace TestRepro
 					get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
 					set => _component_0_Holder.Instance = value;
 				}
-				private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _tbSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+				private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _tbSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "tb");
 				private global::Microsoft.UI.Xaml.Controls.TextBlock tb
 				{
 					get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_tbSubject.ElementInstance;
@@ -311,7 +311,7 @@ namespace MyProject.__Resources
 				get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_component_0_Holder.Instance;
 				set => _component_0_Holder.Instance = value;
 			}
-			private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _tbSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+			private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _tbSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "tb");
 			private global::Microsoft.UI.Xaml.Controls.TextBlock tb
 			{
 				get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_tbSubject.ElementInstance;

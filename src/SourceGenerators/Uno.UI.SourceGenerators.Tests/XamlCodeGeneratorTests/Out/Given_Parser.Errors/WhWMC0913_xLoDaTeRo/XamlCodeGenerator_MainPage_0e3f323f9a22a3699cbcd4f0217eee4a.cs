@@ -147,7 +147,7 @@ namespace TestRepro
 					}
 					return __rootInstance;
 				}
-				private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _RootBorderSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+				private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _RootBorderSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "RootBorder");
 				private global::Microsoft.UI.Xaml.Controls.Border RootBorder
 				{
 					get => (global::Microsoft.UI.Xaml.Controls.Border)_RootBorderSubject.ElementInstance;
