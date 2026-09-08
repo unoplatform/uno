@@ -87,9 +87,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
-#if __APPLE_UIKIT__
-		[Ignore("Currently fails on iOS")]
-#endif
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Fixed_Height_And_Stretch_Uniform()
@@ -142,52 +139,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			TestServices.WindowHelper.WindowContent = null;
 		}
-
-#if __WASM__
-		[TestMethod]
-		[RunsOnUIThread]
-		public async Task When_Resource_Has_Scale_Qualifier()
-		{
-			var scales = new List<ResolutionScale>()
-			{
-				(ResolutionScale)80,
-				ResolutionScale.Scale100Percent,
-				ResolutionScale.Scale150Percent,
-				ResolutionScale.Scale200Percent,
-				ResolutionScale.Scale300Percent,
-				ResolutionScale.Scale400Percent,
-				ResolutionScale.Scale500Percent,
-			};
-
-			try
-			{
-				foreach (var scale in scales)
-				{
-					var imageOpened = new TaskCompletionSource<bool>();
-
-					var source = new BitmapImage(new Uri("ms-appx:///Assets/Icons/FluentIcon_Medium.png"));
-					source.ScaleOverride = scale;
-
-					var image = new Image { Height = 24, Width = 24, Stretch = Stretch.Uniform, Source = source };
-					image.ImageOpened += (s, e) => imageOpened.TrySetResult(true);
-					image.ImageFailed += (s, e) => imageOpened.TrySetResult(false);
-
-					TestServices.WindowHelper.WindowContent = image;
-
-					await TestServices.WindowHelper.WaitForIdle();
-					await Task.Delay(200);
-
-					var result = await imageOpened.Task;
-
-					Assert.IsTrue(result);
-				}
-			}
-			finally
-			{
-				TestServices.WindowHelper.WindowContent = null;
-			}
-		}
-#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -247,7 +198,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.IOS | RuntimeTestPlatforms.Android)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.SkiaAndroid)]
 		public async Task When_Path_Contains_Space()
 		{
 			var img = new Image { Source = "ms-appx:///Assets/image with space in path.png" };
@@ -414,8 +365,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !WINAPPSDK
 		[TestMethod]
 		[RunsOnUIThread]
-#if IS_UNIT_TESTS || __SKIA__ || __APPLE_UIKIT__
-		[Ignore("Currently fails on macOS, part of #9282! epic and Monochromatic Image not supported for IS_UNIT_TESTS and SKIA")]
+#if __SKIA__
+		[Ignore("Currently fails on macOS, part of #9282! epic and Monochromatic Image not supported for SKIA")]
 #endif
 		public async Task When_Image_Is_Monochromatic()
 		{
@@ -704,22 +655,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var uri = new Uri($"ms-appdata:///Local/{fileName}");
 			await When_Exif_Rotated_Common(uri);
 		}
-
-#if __ANDROID__
-		[TestMethod]
-		[RunsOnUIThread]
-		public async Task When_Exif_Rotated_Target_Is_Saf()
-		{
-			var directory = new Java.IO.File(ApplicationData.Current.LocalCacheFolder.Path);
-			var documentFile = AndroidX.DocumentFile.Provider.DocumentFile.FromFile(directory);
-			var safFolder = StorageFolder.GetFromSafDocument(documentFile);
-
-			var file1 = await StorageFile.GetFileFromApplicationUriAsync(new Uri("ms-appx:///Assets/testimage_exif_rotated.jpg"));
-			var file2 = await file1.CopyAsync(safFolder, "testimage_exif_rotated.jpg", NameCollisionOption.ReplaceExisting);
-			await file2.CopyAsync(ApplicationData.Current.LocalFolder, "testimage_exif_rotated.jpg", NameCollisionOption.ReplaceExisting);
-			await When_Exif_Rotated_Common(new Uri($"ms-appdata:///Local/testimage_exif_rotated.jpg"));
-		}
-#endif
 
 		[TestMethod]
 		[RunsOnUIThread]

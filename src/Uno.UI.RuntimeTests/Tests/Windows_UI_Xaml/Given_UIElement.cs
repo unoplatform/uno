@@ -1,8 +1,6 @@
 ﻿#if __CROSSRUNTIME__
 #define MEASURE_DIRTY_PATH_AVAILABLE
 #define ARRANGE_DIRTY_PATH_AVAILABLE
-#elif __ANDROID__
-#define MEASURE_DIRTY_PATH_AVAILABLE
 #endif
 
 using System;
@@ -42,10 +40,6 @@ using Uno.UI.DevTools.Input;
 using Windows.UI.Input;
 #endif
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
 	[TestClass]
@@ -66,9 +60,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("LayoutStorage not implemented properly for Layouter")]
-#endif
 		public async Task When_Not_In_Visual_Tree_Should_Reset_LayoutStorage()
 		{
 			var SUT = new TextBox { Text = "Some text", Margin = new Thickness(10) };
@@ -142,9 +133,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("It doesn't yet work properly on Android and iOS")]
-#endif
 		public async Task When_TranslateTransform_And_Clip()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
@@ -221,7 +209,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.IsFalse(sut.IsArrangeDirty);
 		}
 
-#if !__ANDROID__ && !__APPLE_UIKIT__ // Fails on Android & iOS (issue #5002)
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Collapsed_InvalidateArrange()
@@ -240,7 +227,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			await TestServices.WindowHelper.WaitFor(() => !sut.IsArrangeDirty);
 		}
-#endif
 #endif
 
 		[TestMethod]
@@ -871,13 +857,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		{
 			var treeRoot = GetTreeRoot();
 			Assert.IsNotNull(treeRoot);
-#if __ANDROID__ || __APPLE_UIKIT__
-			// On Xamarin platforms, we don't expect the real root of the tree to be a XAML element
-			Assert.IsNotInstanceOfType(treeRoot, typeof(UIElement));
-#else
-			//...and everywhere else, we do
 			Assert.IsInstanceOfType(treeRoot, typeof(UIElement));
-#endif
 			object GetTreeRoot()
 			{
 				// Ttrick - GetVisualTreeParent's return type is different
@@ -948,7 +928,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 		}
 
-#if __WASM__ || __SKIA__
+#if __SKIA__
 		[TestMethod]
 		[RunsOnUIThread]
 		[DataRow(0d)]
@@ -1322,9 +1302,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[RunsOnUIThread]
 		[RequiresFullWindow]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if !HAS_COMPOSITION_API
-		[Ignore("Composition APIs are not supported on this platform.")]
-#endif
 		public async Task When_Visual_Offset_Changes_HitTest()
 		{
 			var sut = new Button
@@ -1384,9 +1361,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-#if !HAS_COMPOSITION_API
-		[Ignore("Composition APIs are not supported on this platform.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_Visual_Offset_Changes_InjectedPointer()
@@ -1888,8 +1863,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[CombinatorialData]
 #if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
-#elif __WASM__
-		[Ignore("Failing on WASM: https://github.com/unoplatform/uno/issues/17742")]
 #endif
 		public async Task When_DragOver_Fires_Along_DragEnter_Drop(bool waitAfterRelease)
 		{

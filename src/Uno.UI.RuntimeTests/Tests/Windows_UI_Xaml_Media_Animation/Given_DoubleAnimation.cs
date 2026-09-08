@@ -47,14 +47,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		}
 
 		[TestMethod]
-#if __ANDROID__
-		[Ignore("In this scenario, droid doesnt ReportEachFrame(), so we won't be able to read the animated values to evaluate this test.")]
-#endif
 		public async Task When_RepeatForever_WithoutFrom()
 		{
-			// droid: The fix is still valid for android, because it will now be reading from non-animated value as well.
-			// However, that doesnt change anything (it worked before), because the animated was never commited into the property details.
-
 			// note: Without an actual rendered target, playing the storyboard will not
 			// affect the actual value effectively voiding this test.
 			var target = new TextBlock() { Text = "asdasd" };
@@ -121,19 +115,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Skia | RuntimeTestPlatforms.NativeUIKit)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Skia)]
 		public async Task When_RepeatForever_ShouldLoop() // Flaky - #9080
 		{
 			async Task Do()
 			{
-				// On CI, the measurement at 100ms seem to be too unreliable on Android & MacOS.
+				// On CI, the measurement at 100ms seem to be too unreliable on MacOS.
 				// Stretch the test by 5x greatly improve the stability. When testing locally, we can used 1x to save time (5s vs 25s).
-				int timeResolutionScaling =
-#if !DEBUG && __ANDROID__
-					5;
-#else
-					1;
-#endif
+				int timeResolutionScaling = 1;
 
 #if !DEBUG && __SKIA__
 				if (OperatingSystem.IsMacOS())
@@ -339,58 +328,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Animation
 			Assert.AreEqual(312.0, afterValue, "after: Should be set to 312");
 		}
 
-#if __ANDROID__
-		[TestMethod]
-		public async Task When_EasingFunction()
-		{
-			var translate = new TranslateTransform();
-			var border = new Border()
-			{
-				Background = new SolidColorBrush(Colors.Pink),
-				Margin = new Thickness(0, 50, 0, 0),
-				Width = 50,
-				Height = 50,
-				RenderTransform = translate,
-			};
-			WindowHelper.WindowContent = border;
-			await WindowHelper.WaitForLoaded(border);
-			await WindowHelper.WaitForIdle();
-
-			var myEasingFunction = new MyEasingFunction();
-			var animation = new DoubleAnimation
-			{
-				To = 100,
-				Duration = new Duration(TimeSpan.FromSeconds(0.1)),
-				EasingFunction = myEasingFunction,
-			}.BindTo(translate, nameof(translate.Y));
-
-			await animation.ToStoryboard().RunAsync();
-
-			Assert.IsTrue(myEasingFunction.WasCalledByAndroidTimeInterpolator);
-		}
-
-		private sealed class MyEasingFunction : EasingFunctionBase
-		{
-			public bool WasCalledByAndroidTimeInterpolator { get; private set; } = new();
-
-			private protected override double EaseInCore(double normalizedTime)
-			{
-				WasCalledByAndroidTimeInterpolator |= Environment.StackTrace.Contains("EasingFunctionBase.AndroidTimeInterpolator.GetInterpolation");
-				return normalizedTime;
-			}
-		}
-#endif
-
 		private static double GetTranslateY(TranslateTransform translate, bool isStillAnimating = false) =>
-#if !__ANDROID__
 			translate.Y;
-#else
-			isStillAnimating
-				// On android, animation may target a native property implementing the behavior instead of the specified dependency property.
-				// We need to retrieve the value of that native property, as reading the dp value will just give the final value.
-				? ViewHelper.PhysicalToLogicalPixels((double)translate.View.TranslationY)
-				// And, when the animation is completed, this native value is reset even for HoldEnd animation.
-				: translate.Y;
-#endif
 	}
 }

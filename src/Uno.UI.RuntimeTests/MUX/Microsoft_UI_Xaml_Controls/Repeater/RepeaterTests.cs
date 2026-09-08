@@ -40,15 +40,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	[RequiresFullWindow]
-#if __ANDROID__ || __WASM__
-	[Ignore] // TODO: Android and WASM tests are failing
-#endif
 	public class RepeaterTests : MUXApiTestBase
 	{
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("Fails on UIKit with Fluent styles #18105")]
-#endif
 		public void ValidateElementToIndexMapping()
 		{
 			ItemsRepeater repeater = null;
@@ -326,9 +320,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("Currently fails on UIKit https://github.com/unoplatform/uno/issues/9080")]
-#endif
 		public async Task VerifyFocusedItemIsRecycledOnCollectionReset()
 		{
 			List<Layout> layouts = new List<Layout>();
@@ -494,9 +485,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		// ScrollViewer scrolls vertically, but there is an inner 
 		// repeater which flows horizontally which needs corrections to be handled.
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("Currently fails on UIKit https://github.com/unoplatform/uno/issues/9080")]
-#endif
 		public async Task VerifyCorrectionsInNonScrollableDirection()
 		{
 			ItemsRepeater rootRepeater = null;
@@ -683,7 +671,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __APPLE_UIKIT__ || __SKIA__
+#if __SKIA__
 		[Ignore("Fails https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public async Task VerifyRepeaterDoesNotLeakItemContainers()

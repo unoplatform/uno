@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Extensions;
 using Windows.Foundation;
-using Windows.Graphics.Display;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -42,13 +41,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = SUT;
 			await TestServices.WindowHelper.WaitForLoaded(SUT);
 			await TestServices.WindowHelper.WaitForIdle();
-
-			// We have a problem on IOS and Android where SUT isn't relayouted after the padding
-			// change even though IsMeasureDirty is true. This is a workaround to explicity relayout.
-#if __APPLE_UIKIT__ || __ANDROID__
-			SUT.InvalidateMeasure();
-			SUT.UpdateLayout();
-#endif
 
 			Assert.AreEqual(200, ((UIElement)VisualTreeHelper.GetChild(SUT, 0)).ActualOffset.Y);
 		}
@@ -117,40 +109,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(new Rect(100, 100, 100, 100), border.GetRelativeBounds(SUT));
 		}
 
-		[TestMethod]
-		public async Task When_NativeElement()
-		{
-			var SUT = new RelativePanel()
-			{
-				Name = "test",
-				Width = 300,
-				Height = 300
-			};
-
-			WindowHelper.WindowContent = SUT;
-
-			await WindowHelper.WaitForLoaded(SUT);
-			await WindowHelper.WaitForIdle();
-
-#if __ANDROID__
-			var button = new Android.Widget.Button(ContextHelper.Current) { Text = "test" };
-			SUT.Children.Add(button);
-
-			await WindowHelper.WaitForIdle();
-
-			Assert.AreEqual(48.0, button.MeasuredHeight / DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel);
-			Assert.AreEqual(88.0, button.MeasuredWidth / DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel);
-#elif __APPLE_UIKIT__
-			var button = new UIKit.UIButton();
-			button.SetTitle("Test", UIKit.UIControlState.Normal);
-			SUT.Children.Add(button);
-
-			await WindowHelper.WaitForIdle();
-
-			Assert.AreEqual(17.0, button.Frame.Width / DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel);
-			Assert.AreEqual(17.0, button.Frame.Height / DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel);
-#endif
-		}
 	}
 
 	public partial class RelativePanelMeasuredControl : Control

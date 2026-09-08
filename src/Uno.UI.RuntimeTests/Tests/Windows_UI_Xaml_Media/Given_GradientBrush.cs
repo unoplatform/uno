@@ -47,19 +47,12 @@ public class Given_GradientBrush
 		await renderer.RenderAsync(rect);
 
 		var bitmap = await RawBitmap.From(renderer, rect);
-#if __APPLE_UIKIT__
-		ImageAssert.HasColorAt(bitmap, 0, 0, Colors.Blue, tolerance: 55);
-#else
 		ImageAssert.HasColorAt(bitmap, 0, 0, Colors.Blue, tolerance: 5);
-#endif
 	}
 
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresScaling(1f)]
-#if __ANDROID__ || __APPLE_UIKIT__
-	[Ignore("Fails on Android and iOS")]
-#endif
 	public async Task When_RadialGradientBrush_Ellipse_With_Non_Equal_Center_And_Origin()
 	{
 		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
@@ -108,9 +101,6 @@ public class Given_GradientBrush
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresScaling(1f)]
-#if __ANDROID__ || __APPLE_UIKIT__
-	[Ignore("Fails on Android and iOS")]
-#endif
 	public async Task When_RadialGradientBrush_Ellipse_With_Equal_Center_And_Origin()
 	{
 		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
@@ -159,9 +149,6 @@ public class Given_GradientBrush
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresScaling(1f)]
-#if __ANDROID__ || __APPLE_UIKIT__
-	[Ignore("Fails on Android and iOS")]
-#endif
 	public async Task When_RadialGradientBrush_Circle_With_Non_Equal_Center_And_Origin()
 	{
 		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
@@ -210,9 +197,6 @@ public class Given_GradientBrush
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresScaling(1f)]
-#if __ANDROID__ || __APPLE_UIKIT__
-	[Ignore("Fails on Android and iOS")]
-#endif
 	public async Task When_RadialGradientBrush_Circle_With_Equal_Center_And_Origin()
 	{
 		if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))

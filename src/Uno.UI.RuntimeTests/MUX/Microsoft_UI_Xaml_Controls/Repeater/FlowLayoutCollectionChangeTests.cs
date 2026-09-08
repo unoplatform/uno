@@ -171,7 +171,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __APPLE_UIKIT__ || __ANDROID__ || __SKIA__
+#if __SKIA__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void CanRemoveItemsStartingInRealizedRange()
@@ -202,7 +202,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 		[TestMethod]
 		[TestProperty("Bug", "19259478")]
-#if __WASM__ || __APPLE_UIKIT__ || __ANDROID__ || __SKIA__
+#if __SKIA__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void CanRemoveAndInsertItemsInRealizedRange()
@@ -232,7 +232,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __APPLE_UIKIT__ || __ANDROID__ || __SKIA__
+#if __SKIA__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void CanRemoveItemsAfterRealizedRange()
@@ -255,9 +255,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __APPLE_UIKIT__ || __ANDROID__
-		[Ignore("Fails on WASM, UIKit, Android and macOS https://github.com/unoplatform/uno/issues/4529")]
-#endif
 #if __SKIA__
 		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
 #endif
@@ -324,9 +321,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __APPLE_UIKIT__ || __ANDROID__
-		[Ignore("Fails on WASM, UIKit, Android and macOS https://github.com/unoplatform/uno/issues/4529")]
-#endif
 #if __SKIA__
 		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
 #endif
@@ -477,7 +471,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __APPLE_UIKIT__ || __ANDROID__ || __SKIA__
+#if __SKIA__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
 #endif
 		public void ValidateStableResets()
@@ -501,9 +495,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __APPLE_UIKIT__ || __ANDROID__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 #if __SKIA__
 		[RequiresFullWindow]
 #endif
@@ -528,9 +519,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 #if UNO_REFERENCE_API // https://github.com/unoplatform/uno/issues/4529
 		[TestMethod]
-#if __WASM__
-		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 #if __SKIA__
 		[RequiresFullWindow]
 #endif

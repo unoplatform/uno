@@ -18,10 +18,6 @@ using TabViewItem = Microsoft.UI.Xaml.Controls.TabViewItem;
 using static Uno.UI.Extensions.ViewExtensions;
 using static Private.Infrastructure.TestServices;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 
 [TestClass]
@@ -71,7 +67,7 @@ public class Given_TabView
 #endif
 
 	[TestMethod]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeIOS | RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_Leading_Item_Removed()
 	{
 		var source = new ObservableCollection<int>(Enumerable.Range(0, 100));
@@ -187,11 +183,7 @@ public class Given_TabView
 		var closeButton1 = (Button)tabviewItem1.GetTemplateChild("CloseButton");
 
 		var buttonLabel1 =
-#if __APPLE_UIKIT__
-		closeButton1.FindFirstChild<ImplicitTextBlock>();
-#else
 		((ContentPresenter)closeButton1.GetTemplateChild("ContentPresenter")).FindFirstChild<ImplicitTextBlock>();
-#endif
 
 		Assert.IsGreaterThan(0, buttonLabel1.ActualWidth, "TabViewItem Button for index 0 should have a non-zero width.");
 		Assert.IsGreaterThan(0, buttonLabel1.ActualHeight, "TabViewItem Button  for index 0 should have a non-zero height.");

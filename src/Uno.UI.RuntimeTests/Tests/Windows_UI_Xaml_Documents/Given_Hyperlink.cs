@@ -51,9 +51,7 @@ public class Given_Hyperlink
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
-#if __WASM__
-	[Ignore("Visual states/Colors are handled by browser.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	[DataRow(true, false, "#FF0078D7", "#99FFFFFF")]
@@ -104,9 +102,7 @@ public class Given_Hyperlink
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
-#if __WASM__
-	[Ignore("Visual states/Colors are handled by browser.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 	[Ignore("InputInjector is not supported on this platform.")]
 #endif
 	[DataRow(true, false, "#FF0078D7", "#99FFFFFF", "#66FFFFFF")]

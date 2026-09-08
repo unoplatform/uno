@@ -16,9 +16,6 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 	{
 #if HAS_UNO
 		[TestMethod]
-#if __APPLE_UIKIT__
-		[Ignore("Currently fails on iOS")]
-#endif
 		public async Task VerifyItemsAreCreatedOnlyOnce()
 		{
 			TabView tabView = null;

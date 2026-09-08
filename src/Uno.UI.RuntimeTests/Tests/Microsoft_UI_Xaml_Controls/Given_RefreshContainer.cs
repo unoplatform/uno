@@ -128,9 +128,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-#if __WASM__
-		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_ListViewNestedAndSwipeUpAndDown_Then_ScrollList()
@@ -177,9 +175,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_ListViewNestedAndSwipeDown_Then_RefreshRequested()
@@ -221,9 +217,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_ListViewNestedAndFlickDown_Then_RefreshRequested()
@@ -262,9 +256,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #else
 		[Ignore("This test is flaky on CI, see #9080")]
@@ -332,9 +324,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #endif
 		public async Task When_ListViewNestedAndTapItem_Then_ItemSelected()
@@ -366,9 +356,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __WASM__
-		[Ignore("Scrolling is handled by native code and InputInjector is not yet able to inject native pointers.")]
-#elif !HAS_INPUT_INJECTOR
+#if !HAS_INPUT_INJECTOR
 		[Ignore("InputInjector is not supported on this platform.")]
 #elif !__SKIA__
 		[Ignore("native implementations are not covered.")]

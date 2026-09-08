@@ -41,13 +41,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 			SUT.Arrange(new Rect(0, 0, 1, 1));
 
 			var sutLayoutUpdate1 = sutLayoutUpdatedCount;
-			var item1LayoutUpdate1 = item1LayoutUpdatedCount;
 
 			SUT.Measure(new Size(2, 2));
 			SUT.Arrange(new Rect(0, 0, 2, 2));
 
 			var sutLayoutUpdate2 = sutLayoutUpdatedCount;
-			var item1LayoutUpdate2 = item1LayoutUpdatedCount;
 
 			SUT.Arrange(new Rect(0, 0, 2, 2));
 
@@ -65,15 +63,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 
 			using (new AssertionScope())
 			{
-#if __ANDROID__
-				// Android has an issue where LayoutUpdate is called twice, caused by the presence
-				// of two calls to arrange (Arrange, ArrangeElement(this)) in FrameworkElement.
-				// Failing to call the first Arrange makes some elements fail to have a proper size in
-				// some yet unknown conditions.
-				// Issue: https://github.com/unoplatform/uno/issues/2769
-				sutLayoutUpdate1.Should().Be(2, "sut-before");
-				sutLayoutUpdate2.Should().Be(4, "sut-after");
-#elif UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
+#if UNO_HAS_ENHANCED_LIFECYCLE || WINAPPSDK
 				sutLayoutUpdate1.Should().Be(0, "sut-1");
 				sutLayoutUpdate2.Should().Be(0, "sut-2");
 				sutLayoutUpdate3.Should().Be(0, "sut-3");
@@ -82,11 +72,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 #else
 				sutLayoutUpdate1.Should().Be(1, "sut-before");
 				sutLayoutUpdate2.Should().Be(2, "sut-after");
-#endif
-
-#if __ANDROID__
-				item1LayoutUpdate1.Should().Be(1, "item1-before");
-				item1LayoutUpdate2.Should().Be(2, "item1-after");
 #endif
 			}
 		}
@@ -142,9 +127,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 			}
 		}
 
-#if __WASM__
-		[Ignore("Fails for unknown reason")]
-#endif
 		[TestMethod]
 		// https://github.com/unoplatform/uno-private/issues/801
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm | RuntimeTestPlatforms.SkiaUIKit)]

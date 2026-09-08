@@ -15,14 +15,10 @@ using Microsoft.UI.Xaml.Controls;
 #if HAS_UNO
 using Uno.UI.Xaml.Controls;
 #endif
-#if __IOS__
-using UIKit;
-using _View = UIKit.UIView;
-#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
-#if (!HAS_UNO || __ANDROID__ || __IOS__ || __SKIA__) && !WINAPPSDK
+#if (!HAS_UNO || __SKIA__) && !WINAPPSDK
 [TestClass]
 [RunsOnUIThread]
 // only SkiaMacOS right now
@@ -45,19 +41,6 @@ public class Given_WebView
 
 		await TestHelper.RetryAssert(Do, 3);
 	}
-
-#if __ANDROID__ || __IOS__ || __WASM__
-	[TestMethod]
-	public void When_NavigateWithHttpRequestMessage()
-	{
-		var webView = new WebView();
-		var uri = new Uri("https://bing.com");
-		webView.NavigateWithHttpRequestMessage(new global::Windows.Web.Http.HttpRequestMessage(global::Windows.Web.Http.HttpMethod.Get, uri));
-		Assert.IsNotNull(webView.Source);
-		Assert.AreEqual("https://bing.com/", webView.Source.OriginalString);
-		Assert.AreEqual("https://bing.com", uri.OriginalString);
-	}
-#endif
 
 	[TestMethod]
 	[Ignore("This test is flaky on CI, see #9080")]
@@ -91,52 +74,6 @@ public class Given_WebView
 
 		await TestHelper.RetryAssert(Do, 3);
 	}
-
-#if __ANDROID__ || __IOS__
-	[TestMethod]
-	public async Task When_IsScrollable()
-	{
-		var border = new Border();
-		var webView = new WebView();
-		webView.Source = new Uri("https://bing.com");
-		webView.Width = 200;
-		webView.Height = 200;
-		border.Child = webView;
-		TestServices.WindowHelper.WindowContent = border;
-		await TestServices.WindowHelper.WaitForLoaded(border);
-
-		Assert.IsTrue(webView.IsScrollEnabled);
-
-#if __IOS__
-		var nativeWebView = ((_View)webView)
-			.FindSubviewsOfType<INativeWebView>()
-			.FirstOrDefault();
-		var scrollView = ((_View)nativeWebView)?.FindSubviewsOfType<UIScrollView>().FirstOrDefault();
-		Assert.IsTrue(scrollView.ScrollEnabled);
-		Assert.IsTrue(scrollView.Bounces);
-#endif
-
-#if __ANDROID__
-		var nativeWebView = (webView as Android.Views.ViewGroup)?
-			.GetChildren(v => v is Android.Webkit.WebView)
-			.FirstOrDefault() as Android.Webkit.WebView;
-		Assert.IsTrue(nativeWebView.HorizontalScrollBarEnabled);
-		Assert.IsTrue(nativeWebView.VerticalScrollBarEnabled);
-#endif
-		webView.IsScrollEnabled = false;
-
-#if __IOS__
-		Assert.IsFalse(scrollView.ScrollEnabled);
-		Assert.IsFalse(scrollView.Bounces);
-#endif
-
-#if __ANDROID__
-		Assert.IsFalse(nativeWebView.HorizontalScrollBarEnabled);
-		Assert.IsFalse(nativeWebView.VerticalScrollBarEnabled);
-#endif
-
-	}
-#endif
 
 	[TestMethod]
 	[Ignore("Currently very flaky https://github.com/unoplatform/uno/issues/9080")]

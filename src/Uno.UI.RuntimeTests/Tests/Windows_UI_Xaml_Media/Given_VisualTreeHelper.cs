@@ -15,7 +15,6 @@ using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data;
-using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media.VisualTreeHelperPages;
 using Uno.UI.DevTools.Input;
 using Windows.Foundation;
 using Windows.UI;
@@ -141,50 +140,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 #endif
 
 #if !WINAPPSDK // Testing internal Uno methods
-		[TestMethod]
-		[RequiresFullWindow]
-		public async Task When_Nested_In_Native_View()
-		{
-			var page = new Native_View_Page();
-			WindowHelper.WindowContent = page;
-			await WindowHelper.WaitForLoaded(page);
-
-			var pageBounds = page.GetOnScreenBounds();
-			var statusBarHeight = pageBounds.Y; // Non-zero on Android
-			var sut = page.SUT;
-			var bounds = sut.GetOnScreenBounds();
-			bounds.Y -= statusBarHeight; // Status bar height is included in TransformToVisual on Android, but shouldn't be included in VisualTreeHelper.HitTest call
-			var expected = new Rect(25, 205, 80, 40);
-			RectAssert.AreEqual(expected, bounds);
-
-			GetHitTestability getHitTestability = null;
-			getHitTestability = element =>
-			{
-				var background = element switch
-				{
-					Border border => border.Background,
-					Panel panel => panel.Background,
-					ContentPresenter presenter => presenter.Background,
-					Control control => control.Background,
-					_ => null
-				};
-				return background != null ? (element.GetHitTestVisibility(), getHitTestability) : (HitTestability.Invisible, getHitTestability);
-			};
-
-			foreach (var point in GetPointsInside(bounds, perimeterOffset: 5))
-			{
-				var hitTest = VisualTreeHelper.HitTest(point, WindowHelper.WindowContent.XamlRoot?.VisualTree.RootElement, getHitTestability);
-				Assert.AreEqual(sut, hitTest.element);
-			}
-
-			foreach (var point in GetPointsOutside(bounds, perimeterOffset: 5))
-			{
-				var hitTest = VisualTreeHelper.HitTest(point, WindowHelper.XamlRoot?.VisualTree.RootElement);
-				Assert.IsNotNull(hitTest.element);
-				Assert.AreNotEqual(sut, hitTest.element);
-			}
-		}
-
 		[TestMethod]
 		[RunsOnUIThread]
 #if !UNO_HAS_MANAGED_POINTERS

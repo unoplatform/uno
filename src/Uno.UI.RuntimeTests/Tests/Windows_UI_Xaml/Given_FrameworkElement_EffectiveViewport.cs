@@ -33,21 +33,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[RunsOnUIThread]
 	public partial class Given_FrameworkElement_EffectiveViewport
 	{
-#if __ANDROID__
-		private Rect WindowBounds
-		{
-			get
-			{
-				var slot = LayoutInformation.GetLayoutSlot(TestServices.WindowHelper.CurrentTestWindow!.Content);
-				var bounds = new Rect(0, 0, slot.Width, slot.Height);
-
-				return bounds;
-			}
-		}
-#else
 		private Rect WindowBounds =>
 			new Rect(default, TestServices.WindowHelper.XamlRoot.Size);
-#endif
 
 		private Point RootLocation
 		{
@@ -288,9 +275,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[RunsOnUIThread]
 		[RequiresFullWindow]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __ANDROID__
-		[Ignore("Fails on emulator < API 30, like CI, due to invalid WindowBounds / VisibleBounds")]
-#endif
 		public async Task EVP_When_SVTree()
 		{
 			/*
@@ -336,12 +320,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			{
 				vp[sv].Effective.Should().Be(WindowBounds);
 				vp.Of<ScrollContentPresenter>().Effective.Should().Be(WindowBounds);
-#if __ANDROID__ || __APPLE_UIKIT__ // same reason as Ignore of EVP_When_ConstrainedInNonScrollableSV
-				vp[sut].Effective.Width.Should().Be(512);
-				vp[sut].Effective.Height.Should().Be(512);
-#else
 				vp[sut].Effective.Should().Be(new Rect(-128, 0, 512, 512));
-#endif
 			});
 
 			sv.ChangeView(null, verticalOffset: 512, null, disableAnimation: true);
@@ -349,16 +328,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			await RetryAssert(() =>
 			{
 				vp[sv].Effective.Should().Be(WindowBounds);
-#if !__SKIA__ && !__WASM__ && !__ANDROID__ && !__APPLE_UIKIT__
+#if !__SKIA__
 				vp.Of<ScrollContentPresenter>().Effective.Should().Be(WindowBounds);
 #endif
-#if __ANDROID__ || __APPLE_UIKIT__ // same reason as Ignore of EVP_When_ConstrainedInNonScrollableSV
-				vp[sut].Effective.Width.Should().Be(512);
-				vp[sut].Effective.Height.Should().Be(512);
-				vp[sut].Effective.Y.Should().Be(512);
-#else
 				vp[sut].Effective.Should().Be(new Rect(-128, 512, 512, 512));
-#endif
 			});
 		}
 
@@ -457,11 +430,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[RequiresFullWindow]
 		[CombinatorialData]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore(
-			"On Android and iOS the ScrollHost is not the (native)SCP but the SV, so alignments are not taken in consideration when computing the scrollport "
-			+ "(which is used as viewport for children). We will get instead 100x100@0,0.")]
-#endif
 		public async Task EVP_When_ConstrainedInNonScrollableSV(bool canHorizontallyScroll, bool canVerticallyScroll)
 		{
 			/*
@@ -808,12 +776,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			sv.ChangeView(null, verticalOffset: 512, null, disableAnimation: true);
 			await WaitForIdle();
 
-#if !__WASM__
 			await RetryAssert(() =>
 			{
 				vp.Effective.Should().Be(new Rect(0, 512, 512, 512));
 			});
-#endif
 		}
 
 		[TestMethod]
@@ -1036,47 +1002,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[TestMethod]
 		[RunsOnUIThread]
 		[RequiresFullWindow]
-#if !__APPLE_UIKIT__
 		[Ignore("This test native only element and is not supported on this platform")]
 		public void EVP_When_NativeOnlyElement_Then_PassThrough() { }
-#else
-		public async Task EVP_When_NativeOnlyElement_Then_PassThrough()
-		{
-			Border sut;
-			var tree = new Grid
-			{
-				HorizontalAlignment = HorizontalAlignment.Left,
-				VerticalAlignment = VerticalAlignment.Top,
-				Width = 512,
-				Height = 512,
-				Children =
-				{
-					new NativeOnlyElement
-					{
-						Child = (sut = new Border
-						{
-							HorizontalAlignment = HorizontalAlignment.Left,
-							VerticalAlignment = VerticalAlignment.Top,
-							Background = new SolidColorBrush(Color.FromArgb(0xFF, 0x00, 0x00, 0xF9)),
-							Width = 100,
-							Height = 100,
-						})
-					}
-				}
-			};
-
-			using var vp = VP(sut);
-
-			WindowContent = tree;
-			await WaitForIdle();
-
-			await RetryAssert(() =>
-			{
-				vp.Effective.Width.Should().BeGreaterThan(100);
-				vp.Effective.Height.Should().BeGreaterThan(100);
-			});
-		}
-#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -1439,32 +1366,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				}
 			}
 		}
-
-#if __APPLE_UIKIT__
-		public partial class NativeOnlyElement : UIKit.UIView
-		{
-			public NativeOnlyElement()
-			{
-				base.AutoresizingMask = UIKit.UIViewAutoresizing.FlexibleWidth | UIKit.UIViewAutoresizing.FlexibleHeight;
-				base.AutosizesSubviews = true;
-			}
-
-			public UIElement? Child
-			{
-				get => Subviews.FirstOrDefault() as UIElement;
-				set
-				{
-					foreach (var subview in Subviews)
-					{
-						subview.RemoveFromSuperview();
-					}
-					if (value is not null)
-					{
-						InsertSubview(value, 0);
-					}
-				}
-			}
-		}
-#endif
 	}
 }

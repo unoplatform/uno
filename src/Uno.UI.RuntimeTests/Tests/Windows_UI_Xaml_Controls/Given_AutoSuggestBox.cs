@@ -22,10 +22,6 @@ using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation;
 using Combinatorial.MSTest;
 
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
-
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
@@ -46,7 +42,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var expectedGlyph = SymbolIcon.ConvertSymbolValueToGlyph((int)Symbol.Home);
 
-#if __SKIA__ || __WASM__
+#if __SKIA__
 			var tb = SUT.FindChildren<TextBlock>().Single(tb => tb.Text.Length == 1 && tb.Text[0] == expectedGlyph);
 #else
 			var tb = (TextBlock)SUT.EnumerateAllChildren().SingleOrDefault(c => c is TextBlock textBlock && textBlock.Text.Length == 1 && textBlock.Text[0] == expectedGlyph);
@@ -56,14 +52,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var tbBounds = tb.GetAbsoluteBounds();
 
-#if __WASM__
-			Assert.AreEqual(new Size(13, 12), new Size(tbBounds.Width, tbBounds.Height));
-#elif __ANDROID__
-			Assert.AreEqual(new Size(12, 14), new Size(tbBounds.Width, tbBounds.Height));
-#else
 			// 12, 12 is the right behavior here.
 			Assert.AreEqual(new Size(12, 12), new Size(tbBounds.Width, tbBounds.Height));
-#endif
 		}
 #endif
 
@@ -231,9 +221,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		// Clipboard is currently not available on skia-WASM
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
-#if __WASM__
-		[Ignore("WASM requires user confirmation to accept reading the clipboard.")]
-#endif
 		public async Task When_UserInput_Paste()
 		{
 #if __SKIA__
@@ -547,12 +534,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.HasCount(2, listView.Items);
 			Assert.AreEqual("a1", listView.Items[0].ToString());
 			Assert.AreEqual("a2", listView.Items[1].ToString());
-#if __WASM__
-			//ItemsPanelRoot.Children works only on wasm
-			Assert.HasCount(2, listView.ItemsPanelRoot.Children);
-			Assert.AreEqual("a1", (listView.ItemsPanelRoot.Children[0] as ContentControl).Content.ToString());
-			Assert.AreEqual("a2", (listView.ItemsPanelRoot.Children[1] as ContentControl).Content.ToString());
-#endif
 		}
 #endif
 
@@ -1053,7 +1034,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid)]
 #if RUNTIME_NATIVE_AOT
 		[Ignore("TODO: figure out why this fails, how to fix")]
 #endif  // RUNTIME_NATIVE_AOT
@@ -1184,9 +1164,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !WINAPPSDK // GetTemplateChild is protected in UWP while public in Uno.
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/ziidms-private/issues/54")]
-#if ANDROID && IS_CI
-		[Ignore("This test is failing on Android in CI only.")]
-#endif
 		public async Task When_Loaded_Unloaded()
 		{
 			var SUT = new AutoSuggestBox();

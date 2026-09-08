@@ -289,9 +289,6 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validates that CommandBar can close when a secondary command is selected from the overflow.")]
 		[TestProperty("TestPass:IncludeOnlyOn", "Desktop")]
-#if __APPLE_UIKIT__ || __ANDROID__
-		[Ignore("Test is failing on iOS/Android https://github.com/unoplatform/uno/issues/9080")]
-#endif
 		public async Task DoesCloseOnSecondaryCommandSelection()
 		{
 			TestCleanupWrapper cleanup;
@@ -422,9 +419,6 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates that the overflow's open direction and alignment.")]
-#if __ANDROID__
-		[Ignore("Disabled for failing assertion: https://github.com/unoplatform/uno/issues/9080")]
-#endif
 		public async Task ValidateOverflowPlacement()
 		{
 			TestCleanupWrapper cleanup;
@@ -1033,9 +1027,6 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validates the CommandBar behavior for arrow key presses.")]
 		[TestProperty("Hosting:Mode", "UAP")]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("Keyboard nav not supported")]
-#endif
 		public async Task ValidateArrowKeys()
 		{
 			TestCleanupWrapper cleanup;
@@ -1315,7 +1306,7 @@ namespace Windows.UI.Tests.Enterprise
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native | RuntimeTestPlatforms.SkiaIOS)] // Flaky on native targets and iOS Skia https://github.com/unoplatform/uno/issues/9080
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaIOS)] // Flaky on WinUI and iOS Skia https://github.com/unoplatform/uno/issues/9080
 		[Description("Validates that the overflow menu's scrollviewer does not scroll with arrow keys.")]
 		public async Task ValidateOverflowScrollViewerDoesNotScrollWithArrowKeys()
 		{
@@ -1680,9 +1671,6 @@ namespace Windows.UI.Tests.Enterprise
 		[TestMethod]
 
 		[Description("Validates that the overflow menu is not shown when all the items are Collapsed.")]
-#if __ANDROID__
-		[Ignore("Disabled for failing assertion: https://github.com/unoplatform/uno/issues/9080")]
-#endif
 		public async Task DoesNotShowMenuIfSecondaryElementsAreCollapsed()
 		{
 			TestCleanupWrapper cleanup;
@@ -1736,9 +1724,6 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates that the CommandBar opens down/up based on the available space inside the layout bounds.")]
-#if __ANDROID__
-		[Ignore("CommandBar popup measure glitch with fullscreen")]
-#endif
 		public async Task ValidateCommandBarOpensInsideLayoutBounds()
 		{
 			TestCleanupWrapper cleanup;
@@ -2001,9 +1986,6 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validates that a minimal closed command bar with only secondary commands is visible.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
-#if __APPLE_UIKIT__ || __ANDROID__
-		[Ignore("Test is failing on iOS and Android https://github.com/unoplatform/uno/issues/17984")]
-#endif
 		public async Task ValidateClosedMinimalCommandBarWithSecondaryCommandsOnlyIsVisible()
 		{
 			TestCleanupWrapper cleanup;
@@ -2167,9 +2149,6 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validate the size of the CommandBar menu and its items based on different input modes (mouse, touch, etc.).")]
 		[TestProperty("TestPass:IncludeOnlyOn", "Desktop")]
-#if __ANDROID__
-		[Ignore("Test is failing on Android https://github.com/unoplatform/uno/issues/17984")]
-#endif
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task ValidateMenuSizingForDifferentInputModes()
 		{
@@ -2189,9 +2168,7 @@ namespace Windows.UI.Tests.Enterprise
 			double expectedMenuWidth_Touch = 0;
 			double expectedMenuWidth_NonTouch = 0;
 			//double expectedMenuItemHeight_Touch = 40;
-#if __APPLE_UIKIT__
-			double expectedMenuItemHeight_NonTouch = 31;
-#elif __SKIA__
+#if __SKIA__
 			double expectedMenuItemHeight_NonTouch = 30;
 #else
 			double expectedMenuItemHeight_NonTouch = 32;
@@ -2297,8 +2274,7 @@ namespace Windows.UI.Tests.Enterprise
 			});
 			await CloseCommandBar(cmdBar);
 
-			// Open via Keyboard (Keyboard not supported on Android)
-#if !__ANDROID__ && !__APPLE_UIKIT__
+			// Open via Keyboard
 			await OpenCommandBar(cmdBar, OpenMethod.Keyboard);
 			await RunOnUIThread(() =>
 			{
@@ -2311,7 +2287,6 @@ namespace Windows.UI.Tests.Enterprise
 				VERIFY_ARE_VERY_CLOSE(Math.Round(appBarToggleButton.ActualHeight), expectedMenuItemHeight_NonTouch, tolerance: 4);
 			});
 			await CloseCommandBar(cmdBar);
-#endif
 			// Open programmatically:
 			// We expect a programmatically opened command bar to size based on the most recently used input mode (keyboard in this case)
 			await OpenCommandBar(cmdBar, OpenMethod.Programmatic);
@@ -2414,9 +2389,6 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Verifies that items moved between Primary and Secondary commands go to the correct VisualStates.")]
 		[TestProperty("TestPass:ExcludeOn", "WindowsCore")]
-#if __ANDROID__
-		[Ignore("Unstable on android https://github.com/unoplatform/uno/issues/9080")]
-#endif
 		public async Task MoveItemsBetweenPrimaryAndSecondaryCommands()
 		{
 			TestCleanupWrapper cleanup;
@@ -2568,12 +2540,6 @@ namespace Windows.UI.Tests.Enterprise
 
 			double expectedCommandBarWidth = WindowHelper.IsXamlIsland ? WindowHelper.XamlRoot.Size.Width : WindowHelper.CurrentTestWindow!.Bounds.Width;
 
-#if __APPLE_UIKIT__
-			await RunOnUIThread(() =>
-			{
-				expectedCommandBarWidth = WindowHelper.XamlRoot.HostWindow!.NativeWrapper!.GetWindowSize().Width;
-			});
-#endif
 			double expectedCommandBarCompactClosedHeight = 48;
 			double expectedCommandBarCompactOpenHeight = 48;
 
@@ -2640,9 +2606,6 @@ namespace Windows.UI.Tests.Enterprise
 
 		[Description("Validates that setting DefaultLayoutPosition on the CommandBar propagates down to AppBarButtons and AppBarToggleButtons.")]
 		[TestProperty("Hosting:Mode", "UAP")]
-#if __ANDROID__ || __APPLE_UIKIT__
-		[Ignore("Test is failing on iOS and Android https://github.com/unoplatform/uno/issues/17984")]
-#endif
 		public async Task ValidateDefaultLayoutPositionPropagates()
 		{
 			TestCleanupWrapper cleanup;
@@ -3031,9 +2994,6 @@ namespace Windows.UI.Tests.Enterprise
 		[TestMethod]
 
 		[Description("Validates the dynamic overflow moving order.")]
-#if __ANDROID__
-		[Ignore("Test is flaky on Android https://github.com/unoplatform/uno/issues/19585")]
-#endif
 		public async Task ValidateDynamicOverflowOrderBasic()
 		{
 			TestCleanupWrapper cleanup;

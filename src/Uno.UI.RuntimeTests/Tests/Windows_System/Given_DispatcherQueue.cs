@@ -20,14 +20,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 			Assert.IsNotNull(DispatcherQueue.GetForCurrentThread());
 		}
 
-#if !__WASM__ // Wasm does not have bg threads yet ...
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaWasm)] // Wasm does not have bg threads yet ...
 		public void When_GetForCurrentThreadFromBackgroundThread()
 		{
 			Assert.IsNull(DispatcherQueue.GetForCurrentThread());
 		}
-#endif
 
 		[TestMethod]
 		[RunsOnUIThread]

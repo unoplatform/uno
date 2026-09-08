@@ -404,7 +404,7 @@ public class Given_ScrollViewer_Anchoring
 
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task Anchoring_PreservesPosition_OnContentGrowAbove()
 	{
 		// Semantic guarantee: after inserting content above the anchor, the anchor element
@@ -439,7 +439,7 @@ public class Given_ScrollViewer_Anchoring
 
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task Anchoring_PreservesPosition_OnContentShrinkAbove()
 	{
 		// Semantic guarantee: removing content above the anchor keeps the anchor at the
@@ -511,7 +511,7 @@ public class Given_ScrollViewer_Anchoring
 
 	[TestMethod]
 	[RequiresFullWindow]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task FarEdge_Anchoring_VerticalRatio1()
 	{
 		var (sv, panel, items) = BuildVertical();
