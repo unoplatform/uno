@@ -76,12 +76,12 @@ public class Given_Flyout_Transient
 		{
 			await UITestHelper.Load(target);
 			await ShowAndWaitForOpened(flyout, target, mode);
-			AssertAutomaticRoot(target, flyout);
+			var automaticRoot = AssertAutomaticRoot(target, flyout);
 
 			flyout.ShowMode = FlyoutShowMode.Standard;
 			Assert.IsNull(flyout.OverlayInputPassThroughElement);
 			flyout.ShowMode = mode;
-			AssertAutomaticRoot(target, flyout);
+			Assert.AreSame(automaticRoot, AssertAutomaticRoot(target, flyout));
 
 			flyout.OverlayInputPassThroughElement = target;
 			flyout.ShowMode = FlyoutShowMode.Standard;
@@ -117,6 +117,42 @@ public class Given_Flyout_Transient
 			Assert.AreSame(target, flyout.OverlayInputPassThroughElement);
 			flyout.ShowMode = FlyoutShowMode.Standard;
 			Assert.AreSame(target, flyout.OverlayInputPassThroughElement);
+		}
+		finally
+		{
+			try
+			{
+				await HideAndWaitForClosed(flyout);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+	public async Task When_Automatic_PassThrough_Is_Shared_By_Targets_In_The_Same_XamlRoot()
+	{
+		var first = new Button { Content = "First" };
+		var second = new Button { Content = "Second" };
+		var root = new StackPanel
+		{
+			Margin = new Thickness(100),
+			Children = { first, second },
+		};
+		var flyout = new Flyout { Content = new Border { Width = 50, Height = 30 } };
+		try
+		{
+			await UITestHelper.Load(root);
+			Assert.AreSame(first.XamlRoot, second.XamlRoot);
+			await ShowAndWaitForOpened(flyout, first, FlyoutShowMode.Transient);
+			var automaticRoot = AssertAutomaticRoot(first, flyout);
+			await HideAndWaitForClosed(flyout);
+
+			await ShowAndWaitForOpened(flyout, second, FlyoutShowMode.TransientWithDismissOnPointerMoveAway);
+			Assert.AreSame(automaticRoot, AssertAutomaticRoot(second, flyout));
 		}
 		finally
 		{
@@ -187,13 +223,17 @@ public class Given_Flyout_Transient
 		}
 	}
 
-	private static void AssertAutomaticRoot(FrameworkElement target, FlyoutBase flyout)
+	private static DependencyObject AssertAutomaticRoot(FrameworkElement target, FlyoutBase flyout)
 	{
-		var expected = target.XamlRoot!.Content;
 		var actual = flyout.OverlayInputPassThroughElement;
-		Assert.AreSame(expected, actual,
-			$"Expected root {expected?.GetType().FullName}; actual {actual?.GetType().FullName ?? "<null>"}; " +
-			$"value equality {Equals(expected, actual)}; stable root reference {ReferenceEquals(expected, target.XamlRoot.Content)}.");
+		Assert.IsNotNull(actual);
+#if HAS_UNO
+		Assert.AreSame(target.XamlRoot!.Content, actual);
+#endif
+		// Native WinUI exposes the internal public-root peer, not necessarily XamlRoot.Content.
+		// Shared-root and show-mode tests retain its identity and ownership guarantees on both backends.
+		Assert.AreNotSame(flyout, actual);
+		return actual;
 	}
 
 	private static async Task ShowAndWaitForOpened(FlyoutBase flyout, FrameworkElement target, FlyoutShowMode mode)
