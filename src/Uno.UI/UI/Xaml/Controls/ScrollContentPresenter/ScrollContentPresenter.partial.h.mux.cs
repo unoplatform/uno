@@ -20,7 +20,6 @@ namespace Microsoft.UI.Xaml.Controls
 	// Displays the content of a ScrollViewer control.
 	partial class ScrollContentPresenter // : ContentPresenter — base declared on the main partial.
 	{
-#if __SKIA__
 #pragma warning disable CS0067 // Event never used
 #pragma warning disable CS0169 // Field never used
 #pragma warning disable CS0414 // Field assigned but never used
@@ -152,6 +151,5 @@ namespace Microsoft.UI.Xaml.Controls
 #pragma warning restore CS0414
 #pragma warning restore CS0169
 #pragma warning restore CS0067
-#endif
 	}
 }

@@ -18,16 +18,13 @@ using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__
 	// MUX Reference ScrollContentPresenter_Partial.h:64 — `class ScrollContentPresenter : IScrollInfo`.
 	partial class ScrollContentPresenter : IScrollInfo
 	{
 	}
-#endif
 
 	partial class ScrollContentPresenter
 	{
-#if __SKIA__
 #pragma warning disable IDE0051 // Private member is unused
 
 		// #region Foundational IScrollInfo implementation ported from ScrollContentPresenter_Partial.cpp
@@ -3105,6 +3102,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// #endregion
 
 #pragma warning restore IDE0051
-#endif
 	}
 }
