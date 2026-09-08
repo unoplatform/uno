@@ -9,6 +9,7 @@ using Windows.Foundation;
 using Windows.UI;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
@@ -671,5 +672,578 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 			}
 		}
 #endif
+
+		#region uno#24447 - two UniformGridLayout repeaters sharing an item template must not spin the layout loop
+
+		private const int Issue24447_ItemsPerRepeater = 3;
+
+		private const string Issue24447_ItemTemplateXaml = """
+			<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+				<Border Height="40"
+						Margin="4"
+						Background="LightSteelBlue"
+						CornerRadius="8">
+					<TextBlock HorizontalAlignment="Center"
+							   VerticalAlignment="Center"
+							   Text="{Binding}" />
+				</Border>
+			</DataTemplate>
+			""";
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24447")]
+		public async Task When_Two_UniformGridLayout_Repeaters_Share_ItemTemplate_Then_Layout_Settles()
+		{
+			// The issue's repro points both repeaters at the same {StaticResource} DataTemplate,
+			// so both share the RecyclePool that is attached to that template instance.
+			var sharedTemplate = Issue24447_CreateItemTemplate();
+
+			var first = Issue24447_CreateRepeater(sharedTemplate, "A");
+			var second = Issue24447_CreateRepeater(sharedTemplate, "B");
+			var root = Issue24447_CreateRoot(first, second);
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = root;
+
+				Issue24447_AssertLayoutSettles(root, "two ItemsRepeaters sharing a single UniformGridLayout item template");
+
+				await TestServices.WindowHelper.WaitForLoaded(first);
+				await TestServices.WindowHelper.WaitForLoaded(second);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Issue24447_AssertMaterialized(first, "A");
+				Issue24447_AssertMaterialized(second, "B");
+				Issue24447_AssertNoSharedElements(first, second);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24447")]
+		public async Task When_Two_UniformGridLayout_Repeaters_Use_Distinct_ItemTemplates_Then_Layout_Settles()
+		{
+			// Same page shape, but each repeater owns its DataTemplate (and therefore its own RecyclePool).
+			// This is the contrast case: it isolates the shared pool as the trigger rather than the mere
+			// presence of two UniformGridLayout repeaters.
+			var first = Issue24447_CreateRepeater(Issue24447_CreateItemTemplate(), "A");
+			var second = Issue24447_CreateRepeater(Issue24447_CreateItemTemplate(), "B");
+			var root = Issue24447_CreateRoot(first, second);
+
+			try
+			{
+				TestServices.WindowHelper.WindowContent = root;
+
+				Issue24447_AssertLayoutSettles(root, "two ItemsRepeaters with distinct UniformGridLayout item templates");
+
+				await TestServices.WindowHelper.WaitForLoaded(first);
+				await TestServices.WindowHelper.WaitForLoaded(second);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Issue24447_AssertMaterialized(first, "A");
+				Issue24447_AssertMaterialized(second, "B");
+				Issue24447_AssertNoSharedElements(first, second);
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		private static DataTemplate Issue24447_CreateItemTemplate()
+			=> (DataTemplate)XamlReader.Load(Issue24447_ItemTemplateXaml);
+
+		private static ItemsRepeater Issue24447_CreateRepeater(DataTemplate itemTemplate, string prefix)
+			=> new()
+			{
+				ItemTemplate = itemTemplate,
+				Layout = new UniformGridLayout
+				{
+					MinItemWidth = 80,
+					MinColumnSpacing = 8,
+					MinRowSpacing = 8,
+				},
+				ItemsSource = new ObservableCollection<string>(
+					Enumerable.Range(1, Issue24447_ItemsPerRepeater).Select(i => prefix + i)),
+			};
+
+		private static FrameworkElement Issue24447_CreateRoot(ItemsRepeater first, ItemsRepeater second)
+			=> new Grid
+			{
+				// Small enough to fit any test host area, wide enough for all items of a repeater
+				// to sit on a single line and inside the effective viewport.
+				Width = 300,
+				Height = 300,
+				Children =
+				{
+					new StackPanel
+					{
+						Children =
+						{
+							new TextBlock { Text = "If you can read this, the page rendered." },
+							first,
+							second,
+						},
+					},
+				},
+			};
+
+		/// <summary>
+		/// Runs the layout loop synchronously. <see cref="UIElement.UpdateLayout"/> is what raises
+		/// <c>LayoutCycleException</c> when measure keeps re-invalidating itself, and driving it from the test
+		/// keeps the failure on this stack - the dispatcher tick path only logs the exception and retries forever.
+		/// </summary>
+		private static void Issue24447_AssertLayoutSettles(FrameworkElement root, string scenario)
+		{
+			try
+			{
+				root.UpdateLayout();
+
+				// The second pass covers a cycle that only shows up once the first effective viewport is known.
+				root.UpdateLayout();
+			}
+			catch (Exception ex)
+			{
+				Assert.Fail(
+					$"Layout never settled with {scenario}. " +
+					$"{ex.GetType().FullName}: {ex.Message}{Environment.NewLine}{ex.StackTrace}");
+			}
+		}
+
+		private static void Issue24447_AssertMaterialized(ItemsRepeater repeater, string prefix)
+		{
+			Assert.IsTrue(
+				repeater.ActualHeight > 0,
+				$"Repeater '{prefix}' should have a non-zero height once the page has been laid out.");
+
+			for (var index = 0; index < Issue24447_ItemsPerRepeater; index++)
+			{
+				var element = repeater.TryGetElement(index);
+
+				Assert.IsNotNull(
+					element,
+					$"Repeater '{prefix}' should have realized the element at index {index}.");
+				Assert.AreEqual(
+					prefix + (index + 1),
+					(element as FrameworkElement)?.DataContext,
+					$"Element {index} of repeater '{prefix}' is bound to the wrong item.");
+				Assert.AreSame(
+					repeater,
+					VisualTreeHelper.GetParent(element),
+					$"Element {index} of repeater '{prefix}' should be parented to that repeater.");
+			}
+		}
+
+		/// <summary>
+		/// Recycled elements are pooled per <see cref="DataTemplate"/>; handing one to the sibling repeater
+		/// re-parents it and re-invalidates measure on every pass. Both repeaters must own their own elements.
+		/// </summary>
+		private static void Issue24447_AssertNoSharedElements(ItemsRepeater first, ItemsRepeater second)
+		{
+			var shared = Issue24447_GetChildren(first).Intersect(Issue24447_GetChildren(second)).ToArray();
+
+			Assert.AreEqual(
+				0,
+				shared.Length,
+				"The two ItemsRepeaters must not host the same element instance.");
+		}
+
+		private static IReadOnlyList<DependencyObject> Issue24447_GetChildren(ItemsRepeater repeater)
+		{
+			var children = new List<DependencyObject>();
+			var count = VisualTreeHelper.GetChildrenCount(repeater);
+			for (var i = 0; i < count; i++)
+			{
+				children.Add(VisualTreeHelper.GetChild(repeater, i));
+			}
+
+			return children;
+		}
+
+		#endregion
+
+		#region uno#23624 - a recycled element must not keep the removed item as its DataContext
+
+		// {Binding}, not x:Bind, on purpose: the repeater only propagates the item as the element's
+		// DataContext when the template root carries no IDataTemplateComponent, which is the case
+		// the MustClearDataContext flag tracks.
+		private const string Issue23624_ItemTemplateXaml = """
+			<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+				<TextBlock Height="40" Text="{Binding Label}" />
+			</DataTemplate>
+			""";
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23624")]
+		public async Task When_Item_Removed_Then_Recycled_Element_DataContext_Is_Cleared()
+		{
+			var (host, repeater, source) = Issue23624_CreateSut(itemCount: 4);
+
+			try
+			{
+				await UITestHelper.Load(host);
+
+				var lastIndex = source.Count - 1;
+				var removedItem = source[lastIndex];
+				var recycled = await Issue23624_GetRealizedElement(repeater, lastIndex);
+
+				Assert.AreSame(
+					removedItem,
+					recycled.DataContext,
+					"Precondition: the repeater must be the one that pushed the item onto the element.");
+
+				// Removing the *last* item recycles its element while every surviving index keeps the
+				// element it already had, so nothing pulls this one back out of the pool. That is the
+				// "recycled but never reused" state the issue describes.
+				source.RemoveAt(lastIndex);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(
+					-1,
+					repeater.GetElementIndex(recycled),
+					"The element must be recycled, i.e. not realized for any index any more.");
+
+				Assert.IsNull(
+					recycled.DataContext,
+					"A recycled element must not keep the removed item as its DataContext.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23624")]
+		public async Task When_Item_Removed_Then_Recycled_Element_Raises_DataContextChanged()
+		{
+			var (host, repeater, source) = Issue23624_CreateSut(itemCount: 4);
+
+			try
+			{
+				await UITestHelper.Load(host);
+
+				var lastIndex = source.Count - 1;
+				var recycled = await Issue23624_GetRealizedElement(repeater, lastIndex);
+
+				var observed = new List<object?>();
+				void OnDataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+					=> observed.Add(args.NewValue);
+
+				recycled.DataContextChanged += OnDataContextChanged;
+				try
+				{
+					source.RemoveAt(lastIndex);
+					await TestServices.WindowHelper.WaitForIdle();
+				}
+				finally
+				{
+					recycled.DataContextChanged -= OnDataContextChanged;
+				}
+
+				Assert.IsTrue(
+					observed.Any(value => value is null),
+					"Recycling must raise DataContextChanged with a null DataContext so app cleanup logic "
+					+ $"written against WinUI runs. Observed values: [{string.Join(", ", observed)}].");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23624")]
+		public async Task When_Recycled_Element_Reused_For_Same_Item_Then_DataContext_Is_ReApplied()
+		{
+			var (host, repeater, source) = Issue23624_CreateSut(itemCount: 4);
+
+			try
+			{
+				await UITestHelper.Load(host);
+
+				var lastIndex = source.Count - 1;
+				var item = source[lastIndex];
+				var element = await Issue23624_GetRealizedElement(repeater, lastIndex);
+
+				var transitions = 0;
+				void OnDataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+					=> transitions++;
+
+				element.DataContextChanged += OnDataContextChanged;
+				try
+				{
+					source.RemoveAt(lastIndex);
+					await TestServices.WindowHelper.WaitForIdle();
+
+					// The very same instance goes back in. With the clear on recycle the element sees
+					// null -> item, so every change-driven mechanism re-fires. Without it the element
+					// sees item -> item, which is a no-op assignment that refreshes nothing.
+					source.Add(item);
+					host.UpdateLayout();
+					await TestServices.WindowHelper.WaitForIdle();
+				}
+				finally
+				{
+					element.DataContextChanged -= OnDataContextChanged;
+				}
+
+				var reused = await Issue23624_GetRealizedElement(repeater, source.Count - 1);
+
+				Assert.AreSame(element, reused, "The pooled element should be reused for the re-added item.");
+				Assert.AreSame(item, reused.DataContext, "The reused element must carry the re-added item.");
+				Assert.IsTrue(
+					transitions >= 2,
+					"Reusing a pooled element for the same item instance must still go through a "
+					+ $"null -> item transition. Observed {transitions} DataContext transition(s), expected at least 2.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		private static (ScrollViewer Host, ItemsRepeater Repeater, ObservableCollection<Issue23624_ItemModel> Source) Issue23624_CreateSut(int itemCount)
+		{
+			var source = new ObservableCollection<Issue23624_ItemModel>(
+				Enumerable.Range(0, itemCount).Select(i => new Issue23624_ItemModel($"Item {i}")));
+
+			ItemsRepeater repeater = new()
+			{
+				ItemsSource = source,
+				Layout = new StackLayout { Orientation = Orientation.Vertical },
+				ItemTemplate = (DataTemplate)XamlReader.Load(Issue23624_ItemTemplateXaml),
+			};
+
+			// The whole list (4 x 40px) fits inside the viewport, so every index is realized before the
+			// removal and the realization window never has to move.
+			ScrollViewer host = new()
+			{
+				Width = 200,
+				Height = 300,
+				Content = repeater,
+			};
+
+			return (host, repeater, source);
+		}
+
+		private static async Task<FrameworkElement> Issue23624_GetRealizedElement(ItemsRepeater repeater, int index)
+		{
+			FrameworkElement? element = null;
+
+			await UITestHelper.WaitFor(
+				() => (element = repeater.TryGetElement(index) as FrameworkElement) is not null,
+				message: $"Timeout waiting for the element at index {index} to be realized.");
+
+			return element!;
+		}
+
+		private sealed class Issue23624_ItemModel
+		{
+			public Issue23624_ItemModel(string label) => Label = label;
+
+			public string Label { get; }
+
+			public override string ToString() => Label;
+		}
+
+		#endregion
+
+		#region uno#21668 - clearing ItemsSource after an unload/reload cycle must not fault
+
+		private const int Issue21668_WaitTimeoutMS = 5000;
+
+		private const string Issue21668_ItemTemplateXaml = """
+			<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+				<Border Width="120"
+						Height="40"
+						Background="SkyBlue">
+					<TextBlock Text="{Binding}" />
+				</Border>
+			</DataTemplate>
+			""";
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21668")]
+		public async Task When_ItemsSource_Cleared_After_UnloadAndReload_Then_Does_Not_Throw()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 5).Select(i => $"Item #{i}"));
+			var repeater = new ItemsRepeater
+			{
+				ItemsSource = source,
+				Layout = new StackLayout(),
+				ItemTemplate = Issue21668_CreateItemTemplate(),
+			};
+			var root = new Border
+			{
+				Width = 200,
+				Height = 300,
+				Child = repeater,
+			};
+
+			try
+			{
+				await UITestHelper.Load(root);
+
+				Assert.IsTrue(repeater.IsLoaded, "The ItemsRepeater should be loaded.");
+				Assert.IsTrue(
+					Issue21668_MaterializedItems(repeater).Count > 0,
+					"The ItemsRepeater should have materialized items on its first load.");
+
+				// The unload/reload cycle is what arms the bug: unloading drops the data-source
+				// subscription and reloading re-installs it from the Loaded handler.
+				await Issue21668_UnloadRepeater(root, repeater);
+				await Issue21668_ReloadRepeater(root, repeater);
+
+				// Symptom under test: clearing the items source must not fault.
+				try
+				{
+					repeater.ItemsSource = null;
+				}
+				catch (Exception ex)
+				{
+					Assert.Fail(
+						$"Clearing ItemsSource after an unload/reload cycle threw {ex.GetType().Name}: " +
+						$"{ex.Message}{Environment.NewLine}{ex.StackTrace}");
+				}
+
+				await TestServices.WindowHelper.WaitForIdle();
+
+				Assert.IsNull(repeater.ItemsSourceView, "The ItemsSourceView should have been cleared.");
+
+				// And the repeater must remain usable afterwards.
+				repeater.ItemsSource = new ObservableCollection<string> { "Replaced #0", "Replaced #1" };
+				await TestServices.WindowHelper.WaitForIdle();
+				await TestServices.WindowHelper.WaitFor(
+					() => Issue21668_MaterializedItems(repeater).Contains("Replaced #0"),
+					timeoutMS: Issue21668_WaitTimeoutMS,
+					message: "The ItemsRepeater should materialize the replacement items after ItemsSource was cleared.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21668")]
+		public async Task When_Bound_ItemsSource_Goes_Null_After_UnloadAndReload_Then_Does_Not_Throw()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 5).Select(i => $"Item #{i}"));
+			var repeater = new ItemsRepeater
+			{
+				Layout = new StackLayout(),
+				ItemTemplate = Issue21668_CreateItemTemplate(),
+			};
+			repeater.SetBinding(
+				ItemsRepeater.ItemsSourceProperty,
+				new Binding { Path = new PropertyPath(nameof(Issue21668_ItemsHolder.Items)) });
+
+			var root = new Border
+			{
+				Width = 200,
+				Height = 300,
+				DataContext = new Issue21668_ItemsHolder { Items = source },
+				Child = repeater,
+			};
+
+			try
+			{
+				await UITestHelper.Load(root);
+
+				Assert.IsTrue(repeater.IsLoaded, "The ItemsRepeater should be loaded.");
+				Assert.IsNotNull(
+					repeater.ItemsSourceView,
+					"The binding should have pushed the collection into ItemsSource.");
+
+				await Issue21668_UnloadRepeater(root, repeater);
+				await Issue21668_ReloadRepeater(root, repeater);
+
+				// Mirrors the reported crash: the hosting element is being torn down, the inherited
+				// DataContext is replaced/cleared, and the ItemsSource binding pushes null into the
+				// repeater while it holds the subscription re-installed on its second Loaded.
+				try
+				{
+					root.DataContext = new Issue21668_ItemsHolder();
+					await TestServices.WindowHelper.WaitForIdle();
+
+					root.DataContext = null;
+					await TestServices.WindowHelper.WaitForIdle();
+				}
+				catch (Exception ex)
+				{
+					Assert.Fail(
+						$"Clearing the bound ItemsSource after an unload/reload cycle threw {ex.GetType().Name}: " +
+						$"{ex.Message}{Environment.NewLine}{ex.StackTrace}");
+				}
+
+				await TestServices.WindowHelper.WaitFor(
+					() => repeater.ItemsSourceView is null,
+					timeoutMS: Issue21668_WaitTimeoutMS,
+					message: "The binding should have cleared the ItemsSource once the DataContext no longer provides a collection.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		private static DataTemplate Issue21668_CreateItemTemplate()
+			=> (DataTemplate)XamlReader.Load(Issue21668_ItemTemplateXaml);
+
+		private static async Task Issue21668_UnloadRepeater(Border root, ItemsRepeater repeater)
+		{
+			root.Child = new TextBlock { Text = "ItemsRepeater unloaded" };
+			await TestServices.WindowHelper.WaitFor(
+				() => !repeater.IsLoaded,
+				timeoutMS: Issue21668_WaitTimeoutMS,
+				message: "The ItemsRepeater should have been unloaded.");
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		private static async Task Issue21668_ReloadRepeater(Border root, ItemsRepeater repeater)
+		{
+			root.Child = repeater;
+			await TestServices.WindowHelper.WaitFor(
+				() => repeater.IsLoaded,
+				timeoutMS: Issue21668_WaitTimeoutMS,
+				message: "The ItemsRepeater should have been re-loaded.");
+			await TestServices.WindowHelper.WaitForIdle();
+		}
+
+		private static IReadOnlyList<string> Issue21668_MaterializedItems(ItemsRepeater repeater)
+		{
+			var items = new List<string>();
+			var count = VisualTreeHelper.GetChildrenCount(repeater);
+			for (var i = 0; i < count; i++)
+			{
+				// ItemsRepeater parks recycled/unrealized elements at large negative offsets.
+				if (VisualTreeHelper.GetChild(repeater, i) is FrameworkElement { ActualHeight: > 0 } child
+					&& child.ActualOffset.Y > -1000
+					&& child.DataContext is string text)
+				{
+					items.Add(text);
+				}
+			}
+
+			return items;
+		}
+
+		public sealed class Issue21668_ItemsHolder
+		{
+			public ObservableCollection<string>? Items { get; set; }
+		}
+
+		#endregion
 	}
 }
