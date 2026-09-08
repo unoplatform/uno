@@ -15,6 +15,22 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Controls;
 public class Given_WebView2_Lifecycle
 {
 	[TestMethod]
+	public void When_Constructed_The_Default_Style_Uses_The_WinUI_Resource_Dictionary()
+	{
+		var webView = new WebView2();
+		try
+		{
+			Assert.AreEqual(
+				new Uri("ms-appx:///Microsoft.UI.Xaml/Themes/themeresources.xaml"),
+				webView.DefaultStyleResourceUri);
+		}
+		finally
+		{
+			webView.Close();
+		}
+	}
+
+	[TestMethod]
 	public void When_Settings_Outlive_A_Closed_Core_They_Do_Not_Retain_It()
 	{
 		var core = CreateClosedCore(out var settings);
