@@ -4,6 +4,9 @@ internal interface IAutomationPeerListener
 {
 	void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue);
 	void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId);
+	void NotifyTextBoxPlaceholderChanged(AutomationPeer peer)
+	{
+	}
 
 	/// <summary>
 	/// Mirrors WinUI's <c>CAutomationPeer::InvalidatePeer</c>: re-evaluate the peer's

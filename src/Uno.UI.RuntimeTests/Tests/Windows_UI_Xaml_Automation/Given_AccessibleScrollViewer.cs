@@ -119,6 +119,70 @@ public class Given_AccessibleScrollViewer
 			"A scrollable but unnamed ScrollViewer must NOT be exposed as an unlabeled role=region (FR-014).");
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_ScrollViewer_Has_Only_Descendant_Text_Then_No_Named_Region()
+	{
+		var scrollViewer = new ScrollViewer
+		{
+			Width = 200,
+			Height = 200,
+			Content = new StackPanel
+			{
+				Children =
+				{
+					new TextBlock { Text = "Incidental descendant text" },
+					new Border { Height = 2000 },
+				},
+			},
+		};
+
+		await UITestHelper.Load(scrollViewer);
+		await UITestHelper.WaitForIdle();
+
+		EnableAccessibilityThroughDom();
+		await UITestHelper.WaitFor(() => SemanticElementExists(scrollViewer), timeoutMS: 5000,
+			message: "Timed out waiting for the ScrollViewer's semantic node.");
+
+		Assert.AreNotEqual("region", GetSemanticAttribute(scrollViewer, "role"),
+			"Descendant text must not be flattened into a ScrollViewer landmark name.");
+		Assert.IsFalse(SemanticElementHasAttribute(scrollViewer, "aria-label"),
+			"An unnamed ScrollViewer must not copy incidental descendant text into aria-label.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+	public async Task When_ScrollViewer_Name_Changes_Then_Region_Role_Upgrades_And_Downgrades()
+	{
+		var scrollViewer = new ScrollViewer
+		{
+			Width = 200,
+			Height = 200,
+			Content = new Border { Height = 2000 },
+		};
+
+		await UITestHelper.Load(scrollViewer);
+		EnableAccessibilityThroughDom();
+		await UITestHelper.WaitFor(() => SemanticElementExists(scrollViewer), timeoutMS: 5000,
+			message: "Timed out waiting for the dynamic ScrollViewer semantic node.");
+		Assert.AreNotEqual("region", GetSemanticAttribute(scrollViewer, "role"));
+
+		AutomationProperties.SetName(scrollViewer, "Dynamic article");
+		await UITestHelper.WaitFor(
+			() => GetSemanticAttribute(scrollViewer, "role") == "region",
+			timeoutMS: 3000,
+			message: "Adding an authored name did not promote the scrollable ScrollViewer to region.");
+
+		AutomationProperties.SetName(scrollViewer, string.Empty);
+		await UITestHelper.WaitFor(
+			() => !SemanticElementHasAttribute(scrollViewer, "role") &&
+				!SemanticElementHasAttribute(scrollViewer, "aria-label"),
+			timeoutMS: 3000,
+			message: "Removing the authored name left an unlabeled region.");
+	}
+
 	/// <summary>
 	/// FR-014 invariant: aria-roledescription is not a substitute for an accessible name. An unnamed
 	/// ScrollViewer (region candidate) must never emit aria-roledescription.

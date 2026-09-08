@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>$(NetPrevious)</TargetFramework>
+		<OutputType>Exe</OutputType>
+		<RollForward>Major</RollForward>
+		<Nullable>enable</Nullable>
+		<IsPackable>false</IsPackable>
+		<NoWarn>$(NoWarn);CS1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup Label="GlobalUsings">
+		<Using Include="AwesomeAssertions" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Appium.WebDriver" />
+		<PackageReference Include="AwesomeAssertions" />
+		<PackageReference Include="MSTest" />
+	</ItemGroup>
+
+</Project>

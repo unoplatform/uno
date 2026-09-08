@@ -533,6 +533,14 @@ namespace Uno.UI.Runtime.Skia {
 				return;
 			}
 
+			const semanticsRoot = Accessibility.getSemanticsRoot();
+			if (evt.target instanceof Node && semanticsRoot?.contains(evt.target)) {
+				// Chromium UIA invocation emits trusted pointer events before the semantic click.
+				// The semantic callback owns that activation; forwarding the pointer sequence to
+				// the canvas would invoke the same XAML control a second time.
+				return;
+			}
+
 			if (this.isEventFromNativeElementHost(evt.target)) {
 				if (this.tryHandleNegotiatedNativeInput(evt)) {
 					return;

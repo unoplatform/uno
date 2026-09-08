@@ -8,6 +8,10 @@ namespace Uno.UI.Runtime.Skia {
 	export class LiveRegion {
 		private static politeRegion: HTMLDivElement;
 		private static assertiveRegion: HTMLDivElement;
+		private static politeCommitTimer: number | null = null;
+		private static assertiveCommitTimer: number | null = null;
+		private static politeGeneration = 0;
+		private static assertiveGeneration = 0;
 
 		/**
 		 * Initializes the live region elements.
@@ -64,16 +68,45 @@ namespace Uno.UI.Runtime.Skia {
 			// Use setTimeout(0) instead of requestAnimationFrame to ensure the DOM
 			// mutation crosses a task boundary — some screen readers (NVDA, JAWS) require
 			// this to detect the change and announce the new content.
+			const isAssertive = liveSetting === 2;
+			const previousTimer = isAssertive ? LiveRegion.assertiveCommitTimer : LiveRegion.politeCommitTimer;
+			if (previousTimer !== null) {
+				clearTimeout(previousTimer);
+			}
+			const generation = isAssertive ? ++LiveRegion.assertiveGeneration : ++LiveRegion.politeGeneration;
 			region.textContent = "";
-			setTimeout(() => {
-				region.textContent = content;
+			const timer = window.setTimeout(() => {
+				const currentGeneration = isAssertive ? LiveRegion.assertiveGeneration : LiveRegion.politeGeneration;
+				if (generation === currentGeneration && region.isConnected) {
+					region.textContent = content;
+				}
+				if (isAssertive) {
+					LiveRegion.assertiveCommitTimer = null;
+				} else {
+					LiveRegion.politeCommitTimer = null;
+				}
 			}, 0);
+			if (isAssertive) {
+				LiveRegion.assertiveCommitTimer = timer;
+			} else {
+				LiveRegion.politeCommitTimer = timer;
+			}
 		}
 
 		/**
 		 * Clears any pending content from both live regions.
 		 */
 		public static clearPendingAnnouncements(): void {
+			LiveRegion.politeGeneration++;
+			LiveRegion.assertiveGeneration++;
+			if (LiveRegion.politeCommitTimer !== null) {
+				clearTimeout(LiveRegion.politeCommitTimer);
+				LiveRegion.politeCommitTimer = null;
+			}
+			if (LiveRegion.assertiveCommitTimer !== null) {
+				clearTimeout(LiveRegion.assertiveCommitTimer);
+				LiveRegion.assertiveCommitTimer = null;
+			}
 			if (LiveRegion.politeRegion) {
 				LiveRegion.politeRegion.textContent = "";
 			}

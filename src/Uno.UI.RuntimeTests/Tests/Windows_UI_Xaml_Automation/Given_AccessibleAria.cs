@@ -1,10 +1,12 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 
@@ -184,6 +186,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		}
 
 		/// <summary>
+		/// A UIA Thumb (the gripper inside a Slider or ScrollBar) has no ARIA equivalent. Mapping it to
+		/// <c>role="slider"</c> nests a second, nameless and valueless slider inside the real control,
+		/// which ARIA forbids and screen readers announce as a phantom widget. Guards the control-type
+		/// table against re-introducing that mapping and keeps it consistent with
+		/// <c>AutomationProperties.GetImplicitRole</c>, which already resolves Thumb to no role.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Thumb_Then_No_Aria_Role()
+		{
+			var thumb = new Thumb { Width = 20, Height = 20 };
+
+			await UITestHelper.Load(thumb);
+
+			var peer = thumb.GetOrCreateAutomationPeer();
+			Assert.IsNotNull(peer, "Thumb should have an automation peer");
+			Assert.AreEqual(AutomationControlType.Thumb, peer.GetAutomationControlType(),
+				"Thumb must keep its UIA control type; only the ARIA projection changes.");
+
+			Assert.IsNull(AriaMapper.GetAriaRole(AutomationControlType.Thumb),
+				"AutomationControlType.Thumb must not project to any ARIA role.");
+			Assert.IsNull(AriaMapper.GetAriaAttributes(peer).Role,
+				"A Thumb's semantic element must carry no ARIA role (never 'slider').");
+		}
+
+		/// <summary>
 		/// T031 (FR-028): AccessKey maps to AriaAttributes.AccessKey (→ HTML accesskey) and must NOT be
 		/// folded into KeyShortcuts (aria-keyshortcuts). AcceleratorKey alone drives KeyShortcuts.
 		/// </summary>
@@ -238,6 +266,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			var ariaLabel = GetSemanticAttribute(button, "aria-label");
 			Assert.AreNotEqual(automationId, ariaLabel, "aria-label must not be sourced from the AutomationId on the DOM path.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_AutomationId_Changes_Then_XamlAutomationId_LiveSyncs_And_Clears()
+		{
+			var button = new Button { Content = "Action" };
+
+			await UITestHelper.Load(button);
+			button.GetOrCreateAutomationPeer();
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(button), timeoutMS: 5000,
+				message: "Timed out waiting for the semantic button.");
+
+			AutomationProperties.SetAutomationId(button, "UpdatedId");
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(button, "xamlautomationid") == "UpdatedId",
+				timeoutMS: 3000,
+				message: "A runtime AutomationId change did not reach the semantic DOM.");
+
+			AutomationProperties.SetAutomationId(button, string.Empty);
+			await UITestHelper.WaitFor(
+				() => !SemanticElementHasAttribute(button, "xamlautomationid"),
+				timeoutMS: 3000,
+				message: "Clearing AutomationId left a stale xamlautomationid attribute.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_TextBlock_Has_Only_AutomationId_Then_Generic_Metadata_Is_Preserved()
+		{
+			var textBlock = new TextBlock { Text = "Status text" };
+			AutomationProperties.SetAutomationId(textBlock, "StatusText");
+
+			await UITestHelper.Load(textBlock);
+			textBlock.GetOrCreateAutomationPeer();
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(textBlock), timeoutMS: 5000,
+				message: "Timed out waiting for the metadata-bearing TextBlock.");
+
+			Assert.AreEqual("StatusText", GetSemanticAttribute(textBlock, "xamlautomationid"));
+			Assert.AreEqual("div", GetSemanticElementTagName(textBlock),
+				"A TextBlock with explicit automation metadata must use the full generic path, not the bare body-text path.");
 		}
 
 		/// <summary>
@@ -411,6 +484,91 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			Assert.IsTrue(SemanticElementExists(home), "NavigationView item 'Home' must emit a semantic node when accessibility is enabled after load.");
 			Assert.IsTrue(SemanticElementExists(settings), "NavigationView item 'Settings' must emit a semantic node when accessibility is enabled after load.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_NavigationView_Items_Shift_Then_Virtualized_Positions_And_Counts_Update()
+		{
+			var first = new NavigationViewItem { Content = "First" };
+			var second = new NavigationViewItem { Content = "Second" };
+			var inserted = new NavigationViewItem { Content = "Inserted" };
+			var nav = new NavigationView
+			{
+				PaneDisplayMode = NavigationViewPaneDisplayMode.Left,
+				IsPaneOpen = true,
+				IsSettingsVisible = false,
+				IsBackButtonVisible = NavigationViewBackButtonVisible.Collapsed,
+				Width = 400,
+				Height = 400,
+			};
+			nav.MenuItems.Add(first);
+			nav.MenuItems.Add(second);
+
+			await UITestHelper.Load(nav);
+			await UITestHelper.WaitForIdle();
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(second, "aria-posinset") == "2", timeoutMS: 5000,
+				message: "Timed out waiting for initial NavigationView virtual positions.");
+
+			nav.MenuItems.Insert(0, inserted);
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(first, "aria-posinset") == "2" && GetSemanticAttribute(second, "aria-posinset") == "3" && GetSemanticAttribute(second, "aria-setsize") == "3",
+				timeoutMS: 3000,
+				message: "ItemsRepeater index/count changes did not update ARIA set metadata.");
+
+			nav.MenuItems.Remove(inserted);
+			await UITestHelper.WaitFor(
+				() => !SemanticElementExists(inserted) && GetSemanticAttribute(first, "aria-posinset") == "1" && GetSemanticAttribute(second, "aria-setsize") == "2",
+				timeoutMS: 3000,
+				message: "Removing a NavigationView item left stale semantic metadata.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_NavigationView_ItemsSource_Is_Replaced_Then_New_View_Owns_Aria_Counts()
+		{
+			var oldFirst = new NavigationViewItem { Content = "Old first" };
+			var oldSecond = new NavigationViewItem { Content = "Old second" };
+			var oldSource = new ObservableCollection<object> { oldFirst, oldSecond };
+			var newFirst = new NavigationViewItem { Content = "New first" };
+			var newSecond = new NavigationViewItem { Content = "New second" };
+			var newThird = new NavigationViewItem { Content = "New third" };
+			var newSource = new ObservableCollection<object> { newFirst, newSecond, newThird };
+			var nav = new NavigationView
+			{
+				MenuItemsSource = oldSource,
+				PaneDisplayMode = NavigationViewPaneDisplayMode.Left,
+				IsPaneOpen = true,
+				IsSettingsVisible = false,
+				IsBackButtonVisible = NavigationViewBackButtonVisible.Collapsed,
+				Width = 400,
+				Height = 400,
+			};
+
+			await UITestHelper.Load(nav);
+			await UITestHelper.WaitForIdle();
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(oldSecond, "aria-setsize") == "2", timeoutMS: 5000,
+				message: "Timed out waiting for the original NavigationView source metadata.");
+
+			nav.MenuItemsSource = newSource;
+			await UITestHelper.WaitFor(
+				() => !SemanticElementExists(oldFirst) && !SemanticElementExists(oldSecond) &&
+					GetSemanticAttribute(newThird, "aria-posinset") == "3" && GetSemanticAttribute(newThird, "aria-setsize") == "3",
+				timeoutMS: 5000,
+				message: "Replacing the NavigationView ItemsSource did not transfer semantic ownership to the new view.");
+
+			oldSource.Add(new NavigationViewItem { Content = "Detached old item" });
+			await UITestHelper.WaitForIdle();
+			Assert.AreEqual("3", GetSemanticAttribute(newThird, "aria-setsize"),
+				"Mutating the detached ItemsSourceView must not change live ARIA set metadata.");
+
+			newSource.Add(new NavigationViewItem { Content = "New fourth" });
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(newThird, "aria-setsize") == "4", timeoutMS: 3000,
+				message: "The replacement ItemsSourceView did not drive subsequent ARIA count updates.");
 		}
 
 		/// <summary>
@@ -848,6 +1006,177 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				"An authored LocalizedControlType must surface as aria-roledescription.");
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Description_Properties_Change_Then_AriaDescription_Follows_Precedence()
+		{
+			var button = new Button { Content = "Save" };
+
+			await UITestHelper.Load(button);
+			button.GetOrCreateAutomationPeer();
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(button), timeoutMS: 5000,
+				message: "Timed out waiting for the described Button semantic node.");
+
+			AutomationProperties.SetHelpText(button, "Fallback help");
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(button, "aria-description") == "Fallback help", timeoutMS: 3000,
+				message: "A direct HelpText change did not update aria-description.");
+
+			AutomationProperties.SetFullDescription(button, "Complete description");
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(button, "aria-description") == "Complete description", timeoutMS: 3000,
+				message: "FullDescription did not replace the HelpText fallback.");
+
+			AutomationProperties.SetFullDescription(button, string.Empty);
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(button, "aria-description") == "Fallback help", timeoutMS: 3000,
+				message: "Clearing FullDescription did not restore the HelpText fallback.");
+
+			AutomationProperties.SetHelpText(button, string.Empty);
+			await UITestHelper.WaitFor(() => !SemanticElementHasAttribute(button, "aria-description"), timeoutMS: 3000,
+				message: "Clearing both description sources left stale aria-description.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Accessible_Name_Is_Cleared_Then_RoleDescription_Is_Removed()
+		{
+			var control = new Button { Width = 100, Height = 30 };
+			AutomationProperties.SetName(control, "Widget");
+			AutomationProperties.SetLocalizedControlType(control, "custom widget");
+
+			await UITestHelper.Load(control);
+			var peer = control.GetOrCreateAutomationPeer();
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(control, "aria-roledescription") == "custom widget", timeoutMS: 5000,
+				message: "Timed out waiting for the authored role description.");
+
+			AutomationProperties.SetName(control, string.Empty);
+			peer?.RaisePropertyChangedEvent(AutomationElementIdentifiers.NameProperty, "Widget", string.Empty);
+			await UITestHelper.WaitFor(
+				() => !SemanticElementHasAttribute(control, "aria-label") && !SemanticElementHasAttribute(control, "aria-roledescription"),
+				timeoutMS: 3000,
+				message: "Clearing the accessible name left a role description without a name.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Required_For_Form_Then_Final_Host_And_Role_Control_Required_State()
+		{
+			var checkBox = new CheckBox { Content = "Accept" };
+			var slider = new Slider { Value = 50 };
+			var panel = new StackPanel { Children = { checkBox, slider } };
+
+			await UITestHelper.Load(panel);
+			checkBox.GetOrCreateAutomationPeer();
+			slider.GetOrCreateAutomationPeer();
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(checkBox) && SemanticElementExists(slider), timeoutMS: 5000,
+				message: "Timed out waiting for required native semantic controls.");
+
+			AutomationProperties.SetIsRequiredForForm(checkBox, true);
+			AutomationProperties.SetIsRequiredForForm(slider, true);
+			await UITestHelper.WaitFor(() => SemanticElementHasAttribute(checkBox, "required"), timeoutMS: 3000,
+				message: "A runtime required-state change did not reach the native checkbox.");
+
+			Assert.IsTrue(SemanticElementHasAttribute(checkBox, "required"), "Native checkbox required state must use the HTML attribute.");
+			Assert.IsFalse(SemanticElementHasAttribute(checkBox, "aria-required"), "Native required must not be duplicated with aria-required.");
+			Assert.IsFalse(SemanticElementHasAttribute(slider, "required"), "input[type=range] does not support required.");
+			Assert.IsFalse(SemanticElementHasAttribute(slider, "aria-required"), "The slider role does not support aria-required.");
+
+			AutomationProperties.SetIsRequiredForForm(checkBox, false);
+			await UITestHelper.WaitFor(() => !SemanticElementHasAttribute(checkBox, "required"), timeoutMS: 3000,
+				message: "Clearing required state left the native checkbox required.");
+		}
+
+		/// <summary>
+		/// T023/T004 (WASM DOM, generic path): generic spinbutton hosts must apply their authored form
+		/// metadata at creation time and keep range values live. NumberBox exercises the fallback path
+		/// because it maps to role=spinbutton but does not have a dedicated semantic factory element.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_NumberBox_Uses_Generic_Path_Then_Form_And_Range_Attributes_Are_Complete()
+		{
+			var numberBox = new NumberBox
+			{
+				Minimum = 1,
+				Maximum = 10,
+				Value = 5
+			};
+			AutomationProperties.SetName(numberBox, "Quantity");
+			AutomationProperties.SetFullDescription(numberBox, "Use arrow keys");
+			AutomationProperties.SetIsRequiredForForm(numberBox, true);
+			AutomationProperties.SetIsDataValidForForm(numberBox, false);
+
+			await UITestHelper.Load(numberBox);
+			numberBox.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(
+				() => SemanticElementExists(numberBox) &&
+					GetSemanticAttribute(numberBox, "role") == "spinbutton" &&
+					GetSemanticAttribute(numberBox, "aria-label") == "Quantity" &&
+					GetSemanticAttribute(numberBox, "aria-description") == "Use arrow keys" &&
+					GetSemanticAttribute(numberBox, "aria-required") == "true" &&
+					GetSemanticAttribute(numberBox, "aria-invalid") == "true" &&
+					GetSemanticAttribute(numberBox, "aria-valuemin") == "1" &&
+					GetSemanticAttribute(numberBox, "aria-valuemax") == "10" &&
+					GetSemanticAttribute(numberBox, "aria-valuenow") == "5",
+				timeoutMS: 5000,
+				message: "Timed out waiting for the complete generic NumberBox ARIA metadata.");
+
+			numberBox.Value = 7;
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(numberBox, "aria-valuenow") == "7", timeoutMS: 3000,
+				message: "Changing NumberBox.Value did not update aria-valuenow on the generic semantic host.");
+		}
+
+		/// <summary>
+		/// T023/T004/T027 (WASM DOM, generic path): generic scrollbar hosts must emit orientation,
+		/// range values, and disabled state at creation time, then live-sync when those states change.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_ScrollBar_Uses_Generic_Path_Then_Orientation_And_Range_State_Are_Complete()
+		{
+			var scrollBar = new ScrollBar
+			{
+				Minimum = 0,
+				Maximum = 100,
+				Value = 40,
+				Orientation = Orientation.Vertical,
+				IsEnabled = false,
+				Height = 120,
+				Width = 20
+			};
+
+			await UITestHelper.Load(scrollBar);
+			scrollBar.GetOrCreateAutomationPeer();
+
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(
+				() => SemanticElementExists(scrollBar) &&
+					GetSemanticAttribute(scrollBar, "role") == "scrollbar" &&
+					GetSemanticAttribute(scrollBar, "aria-orientation") == "vertical" &&
+					GetSemanticAttribute(scrollBar, "aria-valuemin") == "0" &&
+					GetSemanticAttribute(scrollBar, "aria-valuemax") == "100" &&
+					GetSemanticAttribute(scrollBar, "aria-valuenow") == "40" &&
+					GetSemanticAttribute(scrollBar, "aria-disabled") == "true",
+				timeoutMS: 5000,
+				message: "Timed out waiting for the generic ScrollBar ARIA metadata.");
+
+			scrollBar.IsEnabled = true;
+			scrollBar.Value = 75;
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(scrollBar, "aria-disabled") == "false" &&
+					GetSemanticAttribute(scrollBar, "aria-valuenow") == "75",
+				timeoutMS: 3000,
+				message: "Changing ScrollBar enabled/value state did not live-sync the generic semantic host.");
+		}
+
 		/// <summary>
 		/// T021 (FR-019, WASM) regression: aria-labelledby must resolve even when the labeller is built
 		/// AFTER the labelled control (a following sibling). Create-time resolution is order-dependent —
@@ -882,6 +1211,208 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			var expectedIdRef = GetSemanticElementId(labeller);
 			Assert.AreEqual(expectedIdRef, GetSemanticAttribute(labelled, "aria-labelledby"),
 				"aria-labelledby must be backfilled when the labeller is a following sibling built after the labelled control.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_LabeledBy_Changes_Then_IdRef_And_Accessible_Name_Update()
+		{
+			var first = new TextBlock { Text = "First label" };
+			var second = new TextBlock { Text = "Second label" };
+			AutomationProperties.SetName(first, "First label");
+			AutomationProperties.SetName(second, "Second label");
+			var labelled = new Button { Content = "Fallback" };
+			AutomationProperties.SetLabeledBy(labelled, first);
+			var panel = new StackPanel { Children = { first, second, labelled } };
+
+			await UITestHelper.Load(panel);
+			await UITestHelper.WaitForIdle();
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(labelled, "aria-labelledby") == GetSemanticElementId(first), timeoutMS: 5000,
+				message: "Timed out waiting for the initial labelled-by relationship.");
+
+			AutomationProperties.SetLabeledBy(labelled, second);
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(labelled, "aria-labelledby") == GetSemanticElementId(second) && GetSemanticAttribute(labelled, "aria-label") == "Second label",
+				timeoutMS: 3000,
+				message: "Replacing LabeledBy did not update both the IDREF and resolved name.");
+
+			AutomationProperties.SetLabeledBy(labelled, null);
+			await UITestHelper.WaitFor(
+				() => !SemanticElementHasAttribute(labelled, "aria-labelledby") && GetSemanticAttribute(labelled, "aria-label") == "Fallback",
+				timeoutMS: 3000,
+				message: "Clearing LabeledBy did not restore the control's fallback accessible name.");
+		}
+
+		[TestMethod]
+		[DataRow("aria-describedby")]
+		[DataRow("aria-controls")]
+		[DataRow("aria-flowto")]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Relationship_Target_Is_Added_Removed_And_Readded_Then_IdRef_Tracks_Lifecycle(string attribute)
+		{
+			var source = new Button { Content = "Source" };
+			var target = new TextBlock { Text = "Target" };
+			AutomationProperties.SetName(target, "Target");
+			var panel = new StackPanel { Children = { source } };
+			var relationship = attribute switch
+			{
+				"aria-describedby" => AutomationProperties.GetDescribedBy(source),
+				"aria-flowto" => AutomationProperties.GetFlowsTo(source),
+				_ => null,
+			};
+			if (relationship is not null)
+			{
+				relationship.Add(target);
+			}
+			else
+			{
+				AutomationProperties.GetControlledPeers(source).Add(target);
+			}
+
+			await UITestHelper.Load(panel);
+			await UITestHelper.WaitForIdle();
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(source), timeoutMS: 5000, message: "Timed out waiting for the relationship source.");
+			Assert.IsFalse(SemanticElementHasAttribute(source, attribute));
+
+			panel.Children.Add(target);
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(source, attribute) == GetSemanticElementId(target), timeoutMS: 3000,
+				message: $"{attribute} did not resolve when its target entered the semantic tree.");
+
+			panel.Children.Remove(target);
+			await UITestHelper.WaitFor(() => !SemanticElementHasAttribute(source, attribute), timeoutMS: 3000,
+				message: $"{attribute} was left dangling after target removal.");
+
+			panel.Children.Add(target);
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(source, attribute) == GetSemanticElementId(target), timeoutMS: 3000,
+				message: $"{attribute} did not resolve when its target was re-added.");
+
+			if (relationship is not null)
+			{
+				relationship.Clear();
+			}
+			else
+			{
+				AutomationProperties.GetControlledPeers(source).Clear();
+			}
+			await UITestHelper.WaitFor(() => !SemanticElementHasAttribute(source, attribute), timeoutMS: 3000,
+				message: $"{attribute} did not clear after an in-place collection mutation.");
+		}
+
+		[TestMethod]
+		[DataRow("aria-describedby")]
+		[DataRow("aria-controls")]
+		[DataRow("aria-flowto")]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Relationship_Target_Is_Initially_Collapsed_Then_IdRef_Resolves_When_Shown(string attribute)
+		{
+			var source = new Button { Content = "Source" };
+			var target = new TextBlock { Text = "Target", Visibility = Visibility.Collapsed };
+			AutomationProperties.SetName(target, "Target");
+			AddRelationship(source, target, attribute);
+			var panel = new StackPanel { Children = { source, target } };
+
+			await UITestHelper.Load(panel);
+			await UITestHelper.WaitForIdle();
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(source), timeoutMS: 5000, message: "Timed out waiting for the collapsed-target relationship source.");
+			Assert.IsFalse(SemanticElementExists(target));
+			Assert.IsFalse(SemanticElementHasAttribute(source, attribute));
+
+			target.Visibility = Visibility.Visible;
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(source, attribute) == GetSemanticElementId(target), timeoutMS: 3000,
+				message: $"{attribute} did not resolve when its initially-collapsed target became visible.");
+		}
+
+		[TestMethod]
+		[DataRow("aria-describedby")]
+		[DataRow("aria-controls")]
+		[DataRow("aria-flowto")]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Relationship_Target_Is_Generic_Element_Then_IdRef_Resolves(string attribute)
+		{
+			var source = new Button { Content = "Source" };
+			var target = new Border { Width = 20, Height = 20 };
+			AutomationProperties.SetName(target, "Target");
+			AddRelationship(source, target, attribute);
+			var panel = new StackPanel { Children = { source, target } };
+
+			await UITestHelper.Load(panel);
+			await UITestHelper.WaitForIdle();
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(() => SemanticElementExists(target), timeoutMS: 5000, message: "Timed out waiting for the peerless generic relationship target.");
+			Assert.AreEqual(GetSemanticElementId(target), GetSemanticAttribute(source, attribute));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_FlowsFrom_Changes_Then_Inverse_AriaFlowTo_Tracks_Lifecycle()
+		{
+			var source = new Button { Content = "Source" };
+			var directTarget = new TextBlock { Text = "Direct target" };
+			var inverseTarget = new Border { Width = 20, Height = 20 };
+			AutomationProperties.SetName(directTarget, "Direct target");
+			AutomationProperties.SetName(inverseTarget, "Inverse target");
+			AutomationProperties.GetFlowsTo(source).Add(directTarget);
+			var flowsFrom = AutomationProperties.GetFlowsFrom(inverseTarget);
+			flowsFrom.Add(source);
+			var panel = new StackPanel { Children = { source, directTarget, inverseTarget } };
+
+			await UITestHelper.Load(panel);
+			await UITestHelper.WaitForIdle();
+			EnableAccessibilityThroughDom();
+			await UITestHelper.WaitFor(
+				() => GetSemanticAttribute(source, "aria-flowto").Split(' ') is { Length: 2 } ids &&
+					System.Array.IndexOf(ids, GetSemanticElementId(directTarget)) >= 0 &&
+					System.Array.IndexOf(ids, GetSemanticElementId(inverseTarget)) >= 0,
+				timeoutMS: 5000,
+				message: "FlowsFrom did not contribute its inverse target alongside authored FlowsTo.");
+
+			flowsFrom.Clear();
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(source, "aria-flowto") == GetSemanticElementId(directTarget), timeoutMS: 3000,
+				message: "Clearing FlowsFrom removed or retained the wrong aria-flowto edge.");
+
+			flowsFrom.Add(source);
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(source, "aria-flowto").Contains(GetSemanticElementId(inverseTarget)), timeoutMS: 3000,
+				message: "An in-place FlowsFrom mutation did not restore the inverse edge.");
+
+			panel.Children.Remove(inverseTarget);
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(source, "aria-flowto") == GetSemanticElementId(directTarget), timeoutMS: 3000,
+				message: "Removing a FlowsFrom target left a dangling inverse IDREF.");
+
+			panel.Children.Add(inverseTarget);
+			await UITestHelper.WaitFor(() => GetSemanticAttribute(source, "aria-flowto").Contains(GetSemanticElementId(inverseTarget)), timeoutMS: 3000,
+				message: "Re-adding a FlowsFrom target did not restore its inverse edge.");
+
+			panel.Children.Remove(source);
+			await UITestHelper.WaitFor(() => !SemanticElementExists(source), timeoutMS: 3000, message: "The flow source was not removed.");
+			panel.Children.Insert(0, source);
+			await UITestHelper.WaitFor(
+				() => SemanticElementExists(source) && GetSemanticAttribute(source, "aria-flowto").Contains(GetSemanticElementId(inverseTarget)),
+				timeoutMS: 3000,
+				message: "Re-adding a flow source did not restore its still-authored inverse edge.");
+		}
+
+		private static void AddRelationship(UIElement source, UIElement target, string attribute)
+		{
+			switch (attribute)
+			{
+				case "aria-describedby":
+					AutomationProperties.GetDescribedBy(source).Add(target);
+					break;
+				case "aria-controls":
+					AutomationProperties.GetControlledPeers(source).Add(target);
+					break;
+				case "aria-flowto":
+					AutomationProperties.GetFlowsTo(source).Add(target);
+					break;
+			}
 		}
 
 		/// <summary>
@@ -966,10 +1497,137 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual(string.Empty, GetSemanticAttribute(field, "aria-invalid"), "aria-invalid must be removed when the field becomes valid again.");
 		}
 
+		/// <summary>
+		/// WAI-ARIA APG (Tree View): Up/Down arrow navigation moves between the tree items that are
+		/// actually visible. Items inside a collapsed branch are hidden, so they must not be part of the
+		/// navigation order — focusing one would move focus to an invisible node. Exercises the runtime's
+		/// own item-collection helper against a synthetic tree so the contract is asserted directly.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Tree_Has_Collapsed_Branch_Then_Navigation_Skips_Hidden_Items()
+		{
+			await UITestHelper.Load(new Border { Width = 10, Height = 10 });
 
+			var visited = InvokeBrowserJs("""
+				(function () {
+					const host = document.createElement('div');
+					host.innerHTML =
+						'<div role="tree" id="nav-tree">' +
+						'<div role="treeitem" id="nav-item-1"></div>' +
+						'<div role="group" hidden><div role="treeitem" id="nav-item-hidden"></div></div>' +
+						'<div role="treeitem" id="nav-item-2"></div>' +
+						'</div>';
+					document.body.appendChild(host);
+					try {
+						const tree = host.querySelector('#nav-tree');
+						return globalThis.Uno.UI.Runtime.Skia.SemanticElements
+							.getNavigableItems(tree, 'treeitem', null)
+							.map(item => item.id)
+							.join(',');
+					} finally {
+						host.remove();
+					}
+				})()
+				""");
 
+			Assert.AreEqual("nav-item-1,nav-item-2", visited,
+				"Tree arrow navigation must skip tree items inside a hidden (collapsed) branch.");
+		}
 
+		/// <summary>
+		/// WAI-ARIA APG (Menu): Up/Down arrow navigation stays inside the menu that owns the focused
+		/// item. A submenu's items belong to the submenu's own roving group, so a descendant query
+		/// must not pull them into the parent menu's navigation order.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Menu_Has_Submenu_Then_Navigation_Stays_In_Parent_Menu()
+		{
+			await UITestHelper.Load(new Border { Width = 10, Height = 10 });
 
+			var visited = InvokeBrowserJs("""
+				(function () {
+					const host = document.createElement('div');
+					host.innerHTML =
+						'<div role="menu" id="nav-menu">' +
+						'<div role="menuitem" id="nav-menu-1"></div>' +
+						'<div role="menuitem" id="nav-menu-2">' +
+						'<div role="menu" id="nav-submenu"><div role="menuitem" id="nav-submenu-1"></div></div>' +
+						'</div>' +
+						'</div>';
+					document.body.appendChild(host);
+					try {
+						const menu = host.querySelector('#nav-menu');
+						return globalThis.Uno.UI.Runtime.Skia.SemanticElements
+							.getNavigableItems(menu, 'menuitem', 'menu')
+							.map(item => item.id)
+							.join(',');
+					} finally {
+						host.remove();
+					}
+				})()
+				""");
+
+			Assert.AreEqual("nav-menu-1,nav-menu-2", visited,
+				"Menu arrow navigation must not descend into a nested submenu's items.");
+		}
+
+		/// <summary>
+		/// Modal background isolation relies on the <c>inert</c> attribute, which removes a whole
+		/// subtree from both the accessibility tree and the tab order. Browsers that do not honour
+		/// <c>inert</c> would otherwise let Tab walk out of the dialog into the background, so the
+		/// focus trap falls back to forcing every background semantic element out of the tab order
+		/// and restoring the previous values when the dialog closes. Asserts that fallback directly.
+		/// </summary>
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Inert_Unsupported_Then_Background_Tab_Stops_Are_Suppressed_And_Restored()
+		{
+			await UITestHelper.Load(new Border { Width = 10, Height = 10 });
+
+			var result = InvokeBrowserJs("""
+				(function () {
+					const host = document.createElement('div');
+					host.id = 'uno-semantics-trap-host';
+					host.innerHTML =
+						'<button id="uno-semantics-9001" tabindex="0"></button>' +
+						'<div id="uno-semantics-9002"><button id="uno-semantics-9003"></button></div>';
+					document.body.appendChild(host);
+					try {
+						const restore = globalThis.Uno.UI.Runtime.Skia.FocusTrap.suppressTabStops(host);
+						const suppressed = Array.from(host.querySelectorAll('[id^="uno-semantics-"]'))
+							.concat([host])
+							.every(element => element.getAttribute('tabindex') === '-1');
+
+						for (const item of restore) {
+							if (item.value !== null) {
+								item.element.setAttribute('tabindex', item.value);
+							} else {
+								item.element.removeAttribute('tabindex');
+							}
+						}
+
+						const restored =
+							document.getElementById('uno-semantics-9001').getAttribute('tabindex') === '0' &&
+							!document.getElementById('uno-semantics-9002').hasAttribute('tabindex') &&
+							!document.getElementById('uno-semantics-9003').hasAttribute('tabindex') &&
+							!host.hasAttribute('tabindex');
+
+						return (suppressed ? 'suppressed' : 'not-suppressed') + '|' +
+							(restored ? 'restored' : 'not-restored');
+					} finally {
+						host.remove();
+					}
+				})()
+				""");
+
+			Assert.AreEqual("suppressed|restored", result,
+				"The focus trap must remove every background semantic element from the tab order and restore the original tabindex values.");
+		}
 
 #endif
 	}

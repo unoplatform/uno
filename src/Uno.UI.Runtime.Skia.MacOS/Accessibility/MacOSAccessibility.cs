@@ -535,6 +535,19 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 	{
 		var attributes = AriaMapper.GetAriaAttributes(peer);
 
+		var automationId = owner is not null
+			? AutomationProperties.GetAutomationId(owner)
+			: null;
+		if (string.IsNullOrEmpty(automationId))
+		{
+			automationId = peer.GetAutomationId();
+		}
+		// The native setter maps null to nil but an empty string to @"", which leaves the element
+		// advertising a present-but-empty AXIdentifier (and never clears a previously set one).
+		NativeUno.uno_accessibility_update_identifier(
+			handle,
+			string.IsNullOrEmpty(automationId) ? null : automationId);
+
 		if (!string.IsNullOrEmpty(attributes.Description))
 		{
 			NativeUno.uno_accessibility_update_help(handle, attributes.Description);

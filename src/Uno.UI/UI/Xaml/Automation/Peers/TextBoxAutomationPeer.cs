@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using DirectUI;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 
@@ -66,18 +67,6 @@ public partial class TextBoxAutomationPeer : FrameworkElementAutomationPeer, Pro
 		}
 
 		((TextBox)Owner).Text = value;
-	}
-
-	/// <summary>
-	/// Raises ValueProperty changed event for accessibility listeners.
-	/// Called from TextBox when Text property changes.
-	/// </summary>
-	internal void RaiseValuePropertyChangedEvent(string oldValue, string newValue)
-	{
-		if (ListenerExistsHelper(AutomationEvents.PropertyChanged))
-		{
-			RaisePropertyChangedEvent(ValuePatternIdentifiers.ValueProperty, oldValue, newValue);
-		}
 	}
 
 	protected override string GetNameCore()

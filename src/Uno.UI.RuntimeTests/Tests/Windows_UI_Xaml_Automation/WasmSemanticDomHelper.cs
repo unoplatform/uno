@@ -68,6 +68,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			=> InvokeBrowserJs($"(function(){{const e = document.getElementById('{GetSemanticElementId(element)}'); return e ? (e.getAttribute('type') || '') : ''; }})()");
 
 		/// <summary>
+		/// Returns the current <c>value</c> property of an input/textarea semantic node, or empty
+		/// when the node is absent or does not expose a value property.
+		/// </summary>
+		public static string GetSemanticInputValue(UIElement element)
+			=> InvokeBrowserJs($"(function(){{const e = document.getElementById('{GetSemanticElementId(element)}'); return e && 'value' in e ? e.value : ''; }})()");
+
+		/// <summary>
 		/// Invokes <c>Uno.Foundation.WebAssemblyRuntime.InvokeJS</c> via reflection. The runtime
 		/// assembly isn't a direct reference of the runtime-tests project, so the lookup is kept
 		/// here in one place — and intentionally fails fast (<see cref="Assert.IsNotNull"/>) so a
