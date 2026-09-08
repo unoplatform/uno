@@ -104,3 +104,31 @@ These are the supported input return type values:
 - **Search**: Typically taking the user to the results of searching for the text they have typed.
 - **Send**: Typically delivering the text to its target.
 - **Default**: System default.
+
+## Dismissing the soft keyboard on iOS
+
+On a multi-line `TextBox` (`AcceptsReturn="True"`) the Enter key inserts a newline instead of closing the keyboard, so iOS offers no built-in way to dismiss it. Setting the `TextBoxExtensions.ShowKeyboardDismissButton` attached property adds a toolbar with a system **Done** button above the keyboard, which dismisses it and unfocuses the input:
+
+```xml
+<TextBox AcceptsReturn="True"
+         uno:TextBoxExtensions.ShowKeyboardDismissButton="True" />
+```
+
+```csharp
+Uno.UI.Xaml.Controls.TextBoxExtensions.SetShowKeyboardDismissButton(myTextBox, true);
+```
+
+> [!NOTE]
+> Add `xmlns:uno="using:Uno.UI.Xaml.Controls"` to use the property from XAML.
+
+The value is inherited, so it can be set once on a page or a container to opt in every text input below it, and overridden locally on the ones that should not show the toolbar:
+
+```xml
+<StackPanel uno:TextBoxExtensions.ShowKeyboardDismissButton="True">
+    <TextBox />
+    <PasswordBox />
+    <TextBox uno:TextBoxExtensions.ShowKeyboardDismissButton="False" />
+</StackPanel>
+```
+
+This is an iOS-only feature. Other targets ignore the property, as their soft keyboards already provide a way out (the Android back button) or are backed by a hardware keyboard.
