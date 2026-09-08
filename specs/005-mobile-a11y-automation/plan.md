@@ -73,7 +73,7 @@ state groups, five relation groups, and 30 `AutomationEvents` values, plus
 |-----------|--------|-------|
 | I. WinUI API Fidelity | PASS | No public API changes. Tree membership, EventsSource, provider behavior, errors, focus, and events come from the WinUI-aligned peer contract. |
 | II. Cross-Platform Parity | PASS | Adds the missing Skia Android/iOS backends and isolates native projections in platform projects. Legacy renderers retain compilation/current behavior. |
-| III. Test-First Quality Gates | PASS (enforced) | Every mapping/action/event slice includes real Android node or iOS element tests plus shared contract coverage; mobile Skia stages run on PRs. |
+| III. Test-First Quality Gates | REQUIRED | Native Android/iOS coverage supplements shared contracts. The stacked base is outside the automatic Azure PR branch filter; absent stages are not passing stages. |
 | IV. Performance and Resource Discipline | PASS | Removes Android per-render root invalidation, uses pull queries and targeted invalidation, weak registries, virtualization, and explicit leak/perf tests. |
 | V. Generated Code Boundaries | PASS | No `Generated/` files are modified. |
 | VI. Backward Compatibility | PASS | Internal additive backends and bug fixes; no public/binary breaking change. Behavior changes correct previously absent or invalid mobile accessibility. |
@@ -147,12 +147,12 @@ src/Uno.UI.Runtime.Skia.AppleUIKit/
         # NativeWindowWrapper adapter build/activate/show/dispose lifecycle (MODIFY)
 
 src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml_Automation/
-├── Given_MobileAccessibilityTree.cs
-├── Given_MobileAccessibilityActions.cs
-├── Given_MobileAccessibilityEvents.cs
-├── Given_MobileAccessibilityLifecycle.cs
-├── Given_SkiaAndroidAccessibilityNode.cs
-└── Given_SkiaIOSAccessibilityElement.cs
+├── Given_MobileAccessibilityTree.skia.cs
+├── Given_MobileAccessibilityActions.skia.cs
+├── Given_MobileAccessibilityEvents.skia.cs
+├── Given_MobileAccessibilityLifecycle.skia.cs
+├── Given_SkiaAndroidAccessibilityNode.skia.cs
+└── Given_SkiaIOSAccessibilityElement.skia.cs
     # New native-observable runtime coverage; existing Given_Accessible* files also extended
 
 src/SamplesApp/SamplesApp.Samples/Windows_UI.Xaml_Automation/
@@ -367,9 +367,10 @@ Implemented source coverage:
   custom fixed actions, normalized automation identity, locale spans, set-selection,
   character/word traversal, incremental invalidation, unique nested hierarchy projection,
   and realized-only virtualization;
-- iOS stable `UIAccessibilityElement` instances with per-XamlRoot weak dispatch, live values,
+- iOS peer-occurrence-keyed `UIAccessibilityElement` instances with per-XamlRoot weak dispatch, live values,
   AX custom content, localized custom actions, XCTest `automationElements`, native focus/modal
-  handling, and incremental container diffs;
+  handling, ownerless custom peers, stale rebind rejection, ancestor scrolling, and incremental
+  container diffs;
 - platform-neutral runtime contracts for native snapshots, actions, events, focus, rich
   semantics, typed internal/unsupported fallbacks, lifecycle, performance, and complete
   capability-matrix integrity;
@@ -387,21 +388,14 @@ Intentional fallbacks:
 - Android secondary windows are not supported by the current host. Root-keyed hooks are tested
   for the primary root and iOS uses a weak per-root adapter registry.
 - iOS native text selection/granularity remains blocked on a `UITextInput`-compatible bridge.
-- iOS recycled-container generation validation and native VoiceOver/XCUITest execution remain
-  macOS follow-up work.
+- native iOS/VoiceOver/XCUITest execution remains macOS/Xcode work. The iOS peer-identity
+  implementation and regressions must be exercised there, not inferred from desktop skips.
 
-Local validation completed on Windows:
-
-- generic Skia runtime-test application builds for `net10.0`;
-- Android runtime project builds for `net10.0-android`;
-- AppleUIKit runtime project compiles for `net9.0-ios18.0` / `iossimulator-x64` using the local
-  iOS reference pack;
-- capability-matrix tests pass on Skia Desktop;
-- Android API 36 completes 371 accessibility runtime tests with 0 failures and 134 platform
-  skips while TalkBack is enabled. The direct UIAutomator suite passes 14 of 14 both with and
-  without TalkBack, and manual invoke/toggle/list/text/password smoke passes with unique
-  native IDs and password redaction;
-- native iOS/VoiceOver/XCUITest execution remains macOS/Xcode work.
+Validation applies to the exact integrated head and package. Use the unified
+`src/SamplesApp/SamplesApp/SamplesApp.csproj` and the commands in [quickstart.md](./quickstart.md).
+Record current source/compile/native-runtime evidence in the PR rather than carrying forward
+counts from packages built before the parent merge. Keeping the PR stacked also keeps the
+automatic native-CI branch-filter limitation explicit.
 
 ## Complexity Tracking
 
