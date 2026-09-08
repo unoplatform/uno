@@ -8,11 +8,6 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 	public partial class CoreWebView2MoveFocusRequestedEventArgs
 	{
-#if __SKIA__
-		internal CoreWebView2MoveFocusRequestedEventArgs()
-		{
-		}
-#endif
 		// Skipping already declared property Handled
 		// Skipping already declared property Reason
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusRequestedEventArgs.Handled.get

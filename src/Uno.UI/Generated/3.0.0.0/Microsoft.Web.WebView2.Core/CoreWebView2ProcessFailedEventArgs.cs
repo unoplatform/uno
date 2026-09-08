@@ -8,11 +8,6 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 	public partial class CoreWebView2ProcessFailedEventArgs
 	{
-#if __SKIA__
-		internal CoreWebView2ProcessFailedEventArgs()
-		{
-		}
-#endif
 		// Skipping already declared property ExitCode
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
