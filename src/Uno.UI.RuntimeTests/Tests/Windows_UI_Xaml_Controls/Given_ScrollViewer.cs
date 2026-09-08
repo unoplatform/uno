@@ -1139,10 +1139,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsTrue(double.IsNaN(e.VerticalAlignmentRatio));
 				Assert.AreEqual(0, e.HorizontalOffset);
 				Assert.AreEqual(0, e.VerticalOffset);
-#if HAS_UNO // These values differ slightly from ScrollViewer's due to the fact that our implementation is based on the newer ScrollView control
-				Assert.AreEqual(item, e.OriginalSource);
+#if HAS_UNO
+				// ScrollViewer.MakeVisible originates a new request for parent contributors.
+				Assert.AreEqual(innerScrollViewer, e.OriginalSource);
 				Assert.AreEqual(innerScrollViewer, e.TargetElement);
-				Assert.AreEqual(new Rect(0, 60, 100, 100), e.TargetRect);
+				Assert.AreEqual(new Rect(30, 80, 100, 100), e.TargetRect);
 #endif
 			};
 
@@ -1154,10 +1155,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsTrue(double.IsNaN(e.VerticalAlignmentRatio));
 				Assert.AreEqual(0, e.HorizontalOffset);
 				Assert.AreEqual(0, e.VerticalOffset);
-#if HAS_UNO // These values differ slightly from ScrollViewer's due to the fact that our implementation is based on the newer ScrollView control
-				Assert.AreEqual(item, e.OriginalSource);
+#if HAS_UNO
+				// ScrollViewer.MakeVisible originates a new request for parent contributors.
+				Assert.AreEqual(outerScrollViewer, e.OriginalSource);
 				Assert.AreEqual(outerScrollViewer, e.TargetElement);
-				Assert.AreEqual(new Rect(20, 160, 100, 100), e.TargetRect);
+				Assert.AreEqual(new Rect(50, 180, 100, 100), e.TargetRect);
 #endif
 			};
 

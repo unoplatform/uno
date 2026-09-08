@@ -75,6 +75,13 @@ public partial class ScrollContentPresenter
 	{
 		base.OnBringIntoViewRequested(args);
 
+		// The source-ported ScrollViewer owns bring-into-view handling for its ScrollContentPresenter.
+		// Running this legacy ScrollPresenter-based path as well scrolls the target twice.
+		if (GetScrollOwner() is ScrollViewer)
+		{
+			return;
+		}
+
 		UIElement content = RealContent as UIElement;
 
 		if (args.Handled ||
