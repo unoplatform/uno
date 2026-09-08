@@ -8,17 +8,7 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 
-#if __ANDROID__
-using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-#elif __APPLE_UIKIT__
-using UIKit;
-using View = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -135,7 +125,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnRowChanged(DependencyObject instance, DependencyPropertyChangedEventArgs args)
 		{
-			if (instance is IFrameworkElement { Parent: IFrameworkElement parent })
+			if (instance is IFrameworkElement { Parent: FrameworkElement parent })
 			{
 				parent.InvalidateMeasure();
 			}
@@ -152,7 +142,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnColumnChanged(DependencyObject instance, DependencyPropertyChangedEventArgs args)
 		{
-			if (instance is IFrameworkElement { Parent: IFrameworkElement parent })
+			if (instance is IFrameworkElement { Parent: FrameworkElement parent })
 			{
 				parent.InvalidateMeasure();
 			}
@@ -178,7 +168,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnRowSpanChanged(DependencyObject instance, DependencyPropertyChangedEventArgs args)
 		{
-			if (instance is IFrameworkElement { Parent: IFrameworkElement parent })
+			if (instance is IFrameworkElement { Parent: FrameworkElement parent })
 			{
 				parent.InvalidateMeasure();
 			}
@@ -203,7 +193,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnColumnSpanChanged(DependencyObject instance, DependencyPropertyChangedEventArgs args)
 		{
-			if (instance is IFrameworkElement { Parent: IFrameworkElement parent })
+			if (instance is IFrameworkElement { Parent: FrameworkElement parent })
 			{
 				parent.InvalidateMeasure();
 			}

@@ -44,7 +44,7 @@ internal sealed class MacOSImeTextBoxExtension : IImeTextBoxExtension
 	{
 		// Don't wire up composition events for PasswordBox — IME composition
 		// reveals characters, which is not appropriate for password fields.
-		if (host is PasswordBox)
+		if (host is TextBoxCore { IsPassword: true })
 		{
 			return;
 		}

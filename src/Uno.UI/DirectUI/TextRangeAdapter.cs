@@ -1070,9 +1070,9 @@ internal sealed class TextRangeAdapter : ITextRangeProvider, ITextRangeProvider2
 
 	public void Select()
 	{
-		if (_owner is TextBox textBox)
+		if (_owner is ITextBoxHost { Core: { } core })
 		{
-			textBox.Select(_start, Math.Max(0, _end - _start));
+			core.Select(_start, Math.Max(0, _end - _start));
 		}
 		else if (_owner is RichEditBox richEditBox)
 		{

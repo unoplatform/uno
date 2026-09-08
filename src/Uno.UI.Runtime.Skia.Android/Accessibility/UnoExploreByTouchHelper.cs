@@ -288,9 +288,13 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		return false;
 	}
 
+#if NET11_0_OR_GREATER
+	protected override void OnPopulateNodeForVirtualView(int virtualViewId, AccessibilityNodeInfoCompat? node)
+#else
 	protected override void OnPopulateNodeForVirtualView(int virtualViewId, AccessibilityNodeInfoCompat node)
+#endif
 	{
-		if (!TryGetVirtualElement(virtualViewId, out var element))
+		if (node is null || !TryGetVirtualElement(virtualViewId, out var element))
 		{
 			return;
 		}
@@ -357,7 +361,11 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 				if (peer.GetLabeledBy() is FrameworkElementAutomationPeer labeledByPeer &&
 					_cwtElementToId.TryGetValue(labeledByPeer.Owner, out var labeledByVirtualId))
 				{
+#if NET11_0_OR_GREATER
+					node.AddLabeledBy(_host, (int)labeledByVirtualId);
+#else
 					node.SetLabeledBy(_host, (int)labeledByVirtualId);
+#endif
 				}
 
 				node.Heading = peer.GetHeadingLevel() != AutomationHeadingLevel.None;

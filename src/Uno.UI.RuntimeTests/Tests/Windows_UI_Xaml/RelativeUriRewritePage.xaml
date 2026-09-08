@@ -1,0 +1,74 @@
+﻿<Grid x:Class="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.RelativeUriRewritePage"
+	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	  xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml">
+
+	<StackPanel>
+		<!-- Uri-typed properties: rewritten to the MRT local-resource form, like WinUI. -->
+		<local:RelativeUriHolder x:Name="customUri"
+								 x:FieldModifier="public"
+								 Uri="Assets/cart.png" />
+		<local:RelativeUriHolder x:Name="customUriRooted"
+								 x:FieldModifier="public"
+								 Uri="/Assets/cart.png" />
+		<HyperlinkButton x:Name="navigateUri"
+						 x:FieldModifier="public"
+						 NavigateUri="Assets/UnoA4.pdf" />
+		<BitmapIcon x:Name="bitmapIcon"
+					x:FieldModifier="public"
+					UriSource="Assets/cart.png" />
+		<IconSourceElement x:Name="bitmapIconSourceElement"
+						   x:FieldModifier="public">
+			<BitmapIconSource x:Name="bitmapIconSource"
+							  x:FieldModifier="public"
+							  UriSource="Assets/cart.png" />
+		</IconSourceElement>
+
+		<!-- ImageSource-typed properties: resolved against the base URI, like WinUI. -->
+		<Image x:Name="image"
+			   x:FieldModifier="public"
+			   Source="Assets/Transitive-ingredient01.png" />
+		<!-- A rooted path drops the assembly prefix, so it resolves against the application root. -->
+		<Image x:Name="imageRooted"
+			   x:FieldModifier="public"
+			   Source="/Assets/cart.png" />
+		<local:RelativeUriHolder x:Name="customImageSource"
+								 x:FieldModifier="public"
+								 ImageSource="Assets/Transitive-ingredient01.png" />
+		<Border>
+			<Border.Background>
+				<ImageBrush x:Name="imageBrush"
+							x:FieldModifier="public"
+							ImageSource="Assets/Transitive-ingredient01.png" />
+			</Border.Background>
+		</Border>
+		<Image>
+			<Image.Source>
+				<BitmapImage x:Name="bitmapImage"
+							 x:FieldModifier="public"
+							 UriSource="Assets/Transitive-ingredient01.png" />
+			</Image.Source>
+		</Image>
+		<Image>
+			<Image.Source>
+				<SvgImageSource x:Name="svgImageSource"
+								x:FieldModifier="public"
+								UriSource="Assets/couch.svg" />
+			</Image.Source>
+		</Image>
+
+		<!-- An explicit local-resource URI must resolve to the matching asset, whether it reaches
+			 asset resolution through the ImageSource conversion or straight through the UriSource property. -->
+		<Image x:Name="localResourceImage"
+			   x:FieldModifier="public"
+			   Source="ms-resource:///Files/Assets/cart.png" />
+		<Image x:Name="localResourceBitmapImage"
+			   x:FieldModifier="public">
+			<Image.Source>
+				<BitmapImage x:Name="localResourceBitmap"
+							 x:FieldModifier="public"
+							 UriSource="ms-resource:///Files/Assets/cart.png" />
+			</Image.Source>
+		</Image>
+	</StackPanel>
+</Grid>

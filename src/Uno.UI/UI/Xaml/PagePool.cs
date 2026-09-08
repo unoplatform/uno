@@ -75,7 +75,6 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		private static void EnsureScavengerStarted()
 		{
-#if !IS_UNIT_TESTS
 			lock (_poolsGate)
 			{
 				if (_scavengerStarted || !FeatureConfiguration.Page.IsPoolingEnabled)
@@ -87,7 +86,6 @@ namespace Microsoft.UI.Xaml
 			}
 
 			_ = CoreDispatcher.Main.RunIdleAsync(Scavenger);
-#endif
 		}
 
 		private static async void Scavenger(IdleDispatchedHandlerArgs e)
@@ -103,7 +101,6 @@ namespace Microsoft.UI.Xaml
 
 				await Task.Delay(TimeSpan.FromSeconds(30));
 
-#if !IS_UNIT_TESTS
 				// Honor the "only runs while pooling is enabled" contract: if pooling was disabled
 				// after the loop started, stop rescheduling (an idle loop over a disabled pool is
 				// pure overhead) and allow EnsureScavengerStarted to spin it up again if pooling is
@@ -127,7 +124,6 @@ namespace Microsoft.UI.Xaml
 				}
 
 				_ = CoreDispatcher.Main.RunIdleAsync(Scavenger);
-#endif
 			}
 			catch (Exception ex)
 			{
@@ -164,7 +160,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Evicts, from every live pool, the entries older than <see cref="TimeToLive"/>.
 		/// Internal (rather than private) as a test seam: the scavenger loop itself is
-		/// dispatcher-scheduled and disabled under IS_UNIT_TESTS.
+		/// dispatcher-scheduled.
 		/// </summary>
 		/// <returns>The number of evicted page instances.</returns>
 		internal static int EvictStaleEntries()
@@ -196,7 +192,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Drops every pooled instance of every live pool (used when pooling gets disabled).
 		/// Internal (rather than private) as a test seam: the scavenger loop itself is
-		/// dispatcher-scheduled and disabled under IS_UNIT_TESTS.
+		/// dispatcher-scheduled.
 		/// </summary>
 		/// <returns>The number of dropped page instances.</returns>
 		internal static int DropAllPooledInstances()

@@ -111,19 +111,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-#if __SKIA__
-		[CombinatorialData]
-		public async Task When_Text_Changed_UserInput(bool useTextBoxOverlay)
-#else
 		public async Task When_Text_Changed_UserInput()
-#endif
 		{
-#if __SKIA__
-			var oldUseOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
-			FeatureConfiguration.TextBox.UseOverlayOnSkia = useTextBoxOverlay;
-			using var _ = Disposable.Create(() => FeatureConfiguration.TextBox.UseOverlayOnSkia = oldUseOverlay);
-#endif
-
 			var SUT = new AutoSuggestBox();
 			SUT.ItemsSource = new List<string>() { "ab", "abc", "abcde" };
 			WindowHelper.WindowContent = SUT;
@@ -149,11 +138,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_Text_Changed_UserInput_Skia()
 		{
-			var oldUseOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
-			FeatureConfiguration.TextBox.UseOverlayOnSkia = false;
 			using var _ = Disposable.Create(() =>
 			{
-				FeatureConfiguration.TextBox.UseOverlayOnSkia = oldUseOverlay;
 				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach(p => p.IsOpen = false);
 			});
 
@@ -298,11 +284,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		public async Task When_UserInput_Undo_Redo()
 		{
-			var oldUseOverlay = FeatureConfiguration.TextBox.UseOverlayOnSkia;
-			FeatureConfiguration.TextBox.UseOverlayOnSkia = false;
 			using var _ = Disposable.Create(() =>
 			{
-				FeatureConfiguration.TextBox.UseOverlayOnSkia = oldUseOverlay;
 				VisualTreeHelper.GetOpenPopupsForXamlRoot(WindowHelper.XamlRoot).ForEach(p => p.IsOpen = false);
 			});
 

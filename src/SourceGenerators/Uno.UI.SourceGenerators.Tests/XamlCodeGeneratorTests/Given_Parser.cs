@@ -124,7 +124,7 @@ public partial class Given_Parser
 		test.ExpectedDiagnostics.AddRange([
 			DiagnosticResult.CompilerError("UXAML0001").WithArguments("Root element is missing."),
 			DiagnosticResult.CompilerError("CS1061").WithSpan(9, 9, 9, 28).WithArguments("TestRepro.MainPage", "InitializeComponent"),
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 1, 1, 1, 1).WithArguments("Failed to parse file"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 1, 1, 1, 1).WithArguments("Failed to parse file"),
 		]);
 
 		await test.RunAsync();
@@ -151,7 +151,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 7, 3, 7, 3).WithArguments("The 'Grid' start tag on line 6 position 3 does not match the end tag of 'Page'. Line 7, position 3.")
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 7, 3, 7, 3).WithArguments("The 'Grid' start tag on line 6 position 3 does not match the end tag of 'Page'. Line 7, position 3.")
 			// ==> Note, even with invalid XAML, we still generate the class structure, so we should not miss `InitializeComponent`!
 		]);
 
@@ -176,7 +176,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 4, 75, 4, 75).WithArguments("Unexpected end of file has occurred. The following elements are not closed: Page. Line 4, position 75.")
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 4, 75, 4, 75).WithArguments("Unexpected end of file has occurred. The following elements are not closed: Page. Line 4, position 75.")
 			// ==> Note, even with invalid XAML, we still generate the class structure, so we should not miss `InitializeComponent`!
 		]);
 
@@ -217,7 +217,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 13, 5, 13, 5).WithArguments("Member 'PaneTitle' cannot have properties [Line: 13 Position: 5]")
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 13, 5, 13, 5).WithArguments("Member 'PaneTitle' cannot have properties [Line: 13 Position: 5]")
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
@@ -249,7 +249,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("CS0117").WithSpan(Path.Combine("Uno.UI.SourceGenerators", "Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator", "MainPage_d6cd66944958ced0c513e0a04797b51d.cs"), 57, 6, 57, 19).WithArguments("Microsoft.UI.Xaml.Controls.Grid", "InvalidMember")
+			DiagnosticResult.CompilerError("CS0117").WithSpan(Path.Combine("Uno.UI.SourceGenerators", "Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator", "MainPage_0e3f323f9a22a3699cbcd4f0217eee4a.cs"), 57, 6, 57, 19).WithArguments("Microsoft.UI.Xaml.Controls.Grid", "InvalidMember")
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
@@ -279,7 +279,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("CS0246").WithSpan(Path.Combine("Uno.UI.SourceGenerators", "Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator", "MainPage_d6cd66944958ced0c513e0a04797b51d.cs"), 61, 12, 61, 32).WithArguments("TypeThatDoesNotExist"),
+			DiagnosticResult.CompilerError("CS0246").WithSpan(Path.Combine("Uno.UI.SourceGenerators", "Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator", "MainPage_0e3f323f9a22a3699cbcd4f0217eee4a.cs"), 61, 12, 61, 32).WithArguments("TypeThatDoesNotExist"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
@@ -308,7 +308,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 6, 3, 6, 3).WithArguments("Property 'PropertyThatDoesNotExist' does not exist on 'Grid'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 6, 3, 6, 3).WithArguments("Property 'PropertyThatDoesNotExist' does not exist on 'Grid'"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
@@ -337,7 +337,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 6, 3, 6, 3).WithArguments("Invalid Thickness value 'auto,0,0,0'. Each component must be a valid number"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 6, 3, 6, 3).WithArguments("Invalid Thickness value 'auto,0,0,0'. Each component must be a valid number"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
@@ -366,7 +366,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 6, 3, 6, 3).WithArguments("Invalid CornerRadius value 'auto,0,0,0'. Each component must be a valid number"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 6, 3, 6, 3).WithArguments("Invalid CornerRadius value 'auto,0,0,0'. Each component must be a valid number"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
@@ -398,7 +398,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 8, 5, 8, 5).WithArguments("Invalid GridLength value 'invalid', expected a number (e.g., '100'), 'Auto', or a star value (e.g., '2*')"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 8, 5, 8, 5).WithArguments("Invalid GridLength value 'invalid', expected a number (e.g., '100'), 'Auto', or a star value (e.g., '2*')"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
@@ -427,7 +427,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 6, 3, 6, 3).WithArguments("Invalid Single value 'invalid'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 6, 3, 6, 3).WithArguments("Invalid Single value 'invalid'"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
@@ -457,7 +457,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/MainPage.xaml", 7, 31, 7, 31).WithArguments("Invalid Point value 'auto,0'. Each component must be a valid number"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 7, 31, 7, 31).WithArguments("Invalid Point value 'auto,0'. Each component must be a valid number"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
@@ -508,8 +508,8 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { EmptyCodeBehind("MainPage"), EmptyCodeBehind("SecondPage"), EmptyCodeBehind("ThirdPage") } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/ThirdPage.xaml", 7, 3, 7, 3).WithArguments("The 'Grid' start tag on line 6 position 3 does not match the end tag of 'Page'. Line 7, position 3."),
-			DiagnosticResult.CompilerError("UXAML0001").WithSpan("C:/Project/0/SecondPage.xaml", 6, 3, 6, 3).WithArguments("Property 'PropertyThatDoesNotExist' does not exist on 'Grid'"),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/ThirdPage.xaml", 7, 3, 7, 3).WithArguments("The 'Grid' start tag on line 6 position 3 does not match the end tag of 'Page'. Line 7, position 3."),
+			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/SecondPage.xaml", 6, 3, 6, 3).WithArguments("Property 'PropertyThatDoesNotExist' does not exist on 'Grid'"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 

@@ -203,11 +203,7 @@ namespace MUXControlsTestApp.Utilities
 		}
 
 		public static IList<T> FindDescendents<T>(DependencyObject root)
-#if WINAPPSDK
 			where T : DependencyObject
-#else
-			where T : class, DependencyObject
-#endif
 		{
 			List<T> descendentsList = new List<T>();
 

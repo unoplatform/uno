@@ -17,8 +17,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _isSelectionFlyoutUpdateQueued;
 		private bool _forceFocusedVisualState;
 
-		public event ContextMenuOpeningEventHandler? ContextMenuOpening;
-
 		private FlyoutBase GetProofingMenuFlyout(int? position = null)
 		{
 			_proofingMenu ??= new MenuFlyout();
@@ -79,11 +77,11 @@ namespace Microsoft.UI.Xaml.Controls
 			if (!_isSelectionFlyoutUpdateQueued)
 			{
 				_isSelectionFlyoutUpdateQueued = true;
-				DispatcherQueue.TryEnqueue(UpdateSelectionFlyoutVisibility);
+				QueueUpdateSelectionFlyoutVisibility();
 			}
 		}
 
-		private void UpdateSelectionFlyoutVisibility()
+		private void UpdateSelectionFlyoutVisibilityCore()
 		{
 			_isSelectionFlyoutUpdateQueued = false;
 			if (SelectionFlyout is not { } selectionFlyout || TextControlFlyoutHelper.IsOpen(ContextFlyout))
@@ -188,9 +186,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal bool FireContextMenuOpeningEventSynchronously(Point point)
 		{
 			var rootPoint = TransformToVisual(null).TransformPoint(point);
-			var args = new ContextMenuEventArgs(rootPoint.X, rootPoint.Y);
-			ContextMenuOpening?.Invoke(this, args);
-			return args.Handled;
+			return OnContextMenuOpeningHandler(rootPoint.X, rootPoint.Y);
 		}
 	}
 }

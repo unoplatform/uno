@@ -19,7 +19,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Toolkit.DevTools.Input;
+using Uno.UI.DevTools.Input;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.Streams;
@@ -32,13 +32,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public partial class Given_RichEditBox
 	{
 		[TestMethod]
-		public async Task When_TextBox_Overlay_Is_Enabled_RichEditBox_Keeps_Managed_Renderer()
+		public async Task When_RichEditBox_Uses_Managed_Renderer()
 		{
-			var previous = global::Uno.UI.FeatureConfiguration.TextBox.UseOverlayOnSkia;
 			var editor = new RichEditBox();
 			try
 			{
-				global::Uno.UI.FeatureConfiguration.TextBox.UseOverlayOnSkia = true;
 				WindowHelper.WindowContent = editor;
 				await WindowHelper.WaitForLoaded(editor);
 				editor.Document.SetText(TextSetOptions.None, "managed");
@@ -51,7 +49,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			finally
 			{
-				global::Uno.UI.FeatureConfiguration.TextBox.UseOverlayOnSkia = previous;
 				WindowHelper.WindowContent = null;
 			}
 		}
@@ -7674,22 +7671,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
 		public async Task When_InputScope_RoundTrips()
 		{
 			var SUT = new RichEditBox();
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
-
-			Assert.AreEqual(Microsoft.UI.Xaml.Input.InputScopeNameValue.Default, SUT.InputScope.Names[0].NameValue);
-
-			var scope = new Microsoft.UI.Xaml.Input.InputScope();
-			scope.Names.Add(new Microsoft.UI.Xaml.Input.InputScopeName
+			try
 			{
-				NameValue = Microsoft.UI.Xaml.Input.InputScopeNameValue.Url,
-			});
-			SUT.InputScope = scope;
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				Assert.IsNull(SUT.InputScope);
+				Assert.AreEqual(Microsoft.UI.Xaml.Input.InputScopeNameValue.Default, ((IImeSessionHost)SUT).InputScope.Names[0].NameValue);
 
-			Assert.AreSame(scope, SUT.InputScope);
+				var scope = new Microsoft.UI.Xaml.Input.InputScope();
+				scope.Names.Add(new Microsoft.UI.Xaml.Input.InputScopeName
+				{
+					NameValue = Microsoft.UI.Xaml.Input.InputScopeNameValue.Url,
+				});
+				SUT.InputScope = scope;
+
+				Assert.AreSame(scope, SUT.InputScope);
+				Assert.AreSame(scope, ((IImeSessionHost)SUT).InputScope);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]

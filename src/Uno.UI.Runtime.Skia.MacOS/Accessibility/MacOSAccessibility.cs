@@ -871,7 +871,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 				break;
 
 			case AutomationEvents.TextPatternOnTextSelectionChanged when TryGetPeerOwner(peer, out var textElement):
-				if (textElement is TextBox textBox)
+				if (textElement is ITextBoxHost { Core: { } textBox })
 				{
 					NativeUno.uno_accessibility_update_selection(
 						textElement.Visual.Handle,

@@ -681,6 +681,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal bool TryNavigateLinkAt(int position)
 		{
+			if (GetInputScope() == InputScopeNameValue.Url)
+			{
+				return false;
+			}
 			var range = Document.GetRange(position, position);
 			var link = range.Link;
 			if (!TryGetLinkUri(link, out var uri))
@@ -688,7 +692,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return false;
 			}
 
-			_ = LaunchLinkAsync(uri);
+			HandleHyperlinkNavigation(uri.OriginalString);
 			return true;
 		}
 
@@ -1149,18 +1153,11 @@ namespace Microsoft.UI.Xaml.Controls
 			if (selectionChanged || raiseForSameRange)
 			{
 				bool cancelled;
-				var selectionChangeVersion = Document.SelectionChangeVersion;
+				var selectionStartBeforeChanging = proposedStart;
+				var selectionLength = proposedEnd - proposedStart;
 				try
 				{
-					try
-					{
-						_isProcessingSelectionChanging = true;
-						cancelled = RaiseSelectionChangingIsCancelled(proposedStart, proposedEnd - proposedStart);
-					}
-					finally
-					{
-						_isProcessingSelectionChanging = false;
-					}
+					cancelled = ProcessSelectionChangingEvent(ref proposedStart, ref selectionLength);
 				}
 				catch
 				{
@@ -1171,10 +1168,10 @@ namespace Microsoft.UI.Xaml.Controls
 				textLength = GetPlainTextLength();
 				var handlerStart = Math.Clamp(Document.Selection.StartPosition, 0, textLength);
 				var handlerEnd = Math.Clamp(Document.Selection.EndPosition, handlerStart, textLength);
-				var selectionChangedByHandler = Document.SelectionChangeVersion != selectionChangeVersion;
-				if (cancelled && !selectionChangedByHandler)
+				var selectionChangedByHandler = proposedStart != selectionStartBeforeChanging
+					|| proposedStart + selectionLength != proposedEnd;
+				if (cancelled)
 				{
-					RestoreSelectionSilently(originalSelection);
 					return;
 				}
 

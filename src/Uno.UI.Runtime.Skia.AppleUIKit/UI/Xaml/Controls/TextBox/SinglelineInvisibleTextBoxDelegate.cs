@@ -96,7 +96,7 @@ internal partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 	/// </summary>
 	public override void EditingStarted(UITextField textField)
 	{
-		if (_textBoxViewExtension.GetTarget()?.Owner.Host is Control control && control.FocusState == FocusState.Unfocused)
+		if (_textBoxViewExtension.GetTarget()?.Owner.Host?.Owner is { FocusState: FocusState.Unfocused } control)
 		{
 			control.Focus(FocusState.Pointer);
 		}
@@ -107,7 +107,7 @@ internal partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 	/// </summary>
 	public override void EditingEnded(UITextField textField)
 	{
-		if (_textBoxViewExtension.GetTarget()?.Owner.Host is Control { FocusState: not FocusState.Unfocused } control)
+		if (_textBoxViewExtension.GetTarget()?.Owner.Host?.Owner is { FocusState: not FocusState.Unfocused } control)
 		{
 			control.Unfocus();
 		}
@@ -115,7 +115,7 @@ internal partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 
 	private bool OnKey(char key)
 	{
-		if (_textBoxViewExtension.GetTarget()?.Owner.Host is not UIElement host)
+		if (_textBoxViewExtension.GetTarget()?.Owner.Host?.Owner is not { } host)
 		{
 			return false;
 		}

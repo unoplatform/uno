@@ -1,11 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference TextAdapter_Partial.cpp, tag winui3/release/1.5-stable
-//
-// Minimal ITextProvider implementation that exposes the owning element's plain
-// text as a single document range. Sufficient for Narrator read-out and Inspect
-// pattern discovery. Win32 projects this adapter through Text, Text2, and the
-// platform-only TextEdit resolver, matching WinUI's windowless RichEdit split.
+// API reference: dxaml/xcp/dxaml/lib/TextAdapter_partial.cpp, commit 3c9c168844f06c6ac000a97977f0bb3f4c90fd75.
+// Uno's managed provider adapter, not a structural port of the native RichEdit provider.
+// WinUI RichEditBox obtains its windowless provider through CTextBoxBaseAutomationPeer;
+// the ordinary XAML TextAdapter sources serve the TextBlock/RichTextBlock text-container pipeline.
 
 #nullable enable
 
@@ -115,14 +113,14 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 		=> new TextRangeAdapter(_ownerPeer, _owner, 0, GetEffectiveTextLength(_owner));
 
 	public SupportedTextSelection SupportedTextSelection
-		=> _owner is TextBox or RichEditBox ? SupportedTextSelection.Single : SupportedTextSelection.None;
+		=> _owner is ITextBoxHost or RichEditBox ? SupportedTextSelection.Single : SupportedTextSelection.None;
 
 	public ITextRangeProvider[] GetSelection()
 	{
-		if (_owner is TextBox textBox)
+		if (_owner is ITextBoxHost { Core: { } core })
 		{
-			var start = textBox.SelectionStart;
-			var length = textBox.SelectionLength;
+			var start = core.SelectionStart;
+			var length = core.SelectionLength;
 			return new ITextRangeProvider[]
 			{
 				new TextRangeAdapter(_ownerPeer, _owner, start, start + length),
@@ -212,9 +210,9 @@ internal sealed class TextAdapter : ITextProvider, ITextProvider2, ITextEditProv
 	{
 		isActive = _owner.FocusState != FocusState.Unfocused;
 
-		if (_owner is Microsoft.UI.Xaml.Controls.TextBox textBox)
+		if (_owner is ITextBoxHost { Core: { } core })
 		{
-			var caret = textBox.SelectionStart + textBox.SelectionLength;
+			var caret = core.SelectionStart + core.SelectionLength;
 			return new TextRangeAdapter(_ownerPeer, _owner, caret, caret);
 		}
 

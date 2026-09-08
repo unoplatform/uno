@@ -50,7 +50,7 @@ internal sealed class TextInputPlugin
 		}
 	}
 
-	internal void NotifyViewEntered(TextBox textBox, int virtualId)
+	internal void NotifyViewEntered(TextBoxCore textBox, int virtualId)
 	{
 		SetActiveHost(textBox);
 
@@ -59,11 +59,11 @@ internal sealed class TextInputPlugin
 			return;
 		}
 
-		var physicalRect = GetPhysicalRect(textBox);
+		var physicalRect = GetPhysicalRect(textBox.Owner);
 		_afm.NotifyViewEntered(_view, virtualId, new((int)physicalRect.Left, (int)physicalRect.Top, (int)physicalRect.Right, (int)physicalRect.Bottom));
 	}
 
-	private Windows.Foundation.Rect GetPhysicalRect(TextBox textBox)
+	private Windows.Foundation.Rect GetPhysicalRect(Control textBox)
 	{
 		int[] offset = new int[2];
 		_view.GetLocationOnScreen(offset);
@@ -73,7 +73,7 @@ internal sealed class TextInputPlugin
 		return physicalRect.OffsetRect(offset[0], offset[1]);
 	}
 
-	internal void NotifyViewExited(TextBox textBox, int virtualId)
+	internal void NotifyViewExited(TextBoxCore textBox, int virtualId)
 	{
 		ClearActiveHost(textBox);
 
@@ -110,7 +110,7 @@ internal sealed class TextInputPlugin
 		_inputConnection?.OnTextInputHostChanged();
 	}
 
-	internal void NotifySelectionChanged(TextBox textBox)
+	internal void NotifySelectionChanged(TextBoxCore textBox)
 	{
 		if (ReferenceEquals(_activeHost, textBox))
 		{
@@ -203,7 +203,7 @@ internal sealed class TextInputPlugin
 		_inputTypes = ConvertInputScope(host);
 		_imeAction = host switch
 		{
-			TextBox textBox => TextBoxExtensions.GetInputReturnType(textBox).ToImeAction(),
+			TextBoxCore core => TextBoxExtensions.GetInputReturnType(core.Owner).ToImeAction(),
 			{ AcceptsReturn: false } => ImeAction.Done,
 			_ => ImeAction.None,
 		};
@@ -293,7 +293,7 @@ internal sealed class TextInputPlugin
 		{
 			textType |= InputTypes.TextVariationUri;
 		}
-		else if (host is PasswordBox { PasswordRevealMode: PasswordRevealMode.Visible })
+		else if (host is TextBoxCore { IsPassword: true, IsPasswordRevealed: true })
 		{
 			textType |= InputTypes.TextVariationVisiblePassword;
 		}
@@ -306,7 +306,7 @@ internal sealed class TextInputPlugin
 			textType |= InputTypes.TextVariationPostalAddress;
 		}
 
-		if (host is PasswordBox)
+		if (host is TextBoxCore { IsPassword: true })
 		{
 			// Note: both required. Some devices ignore TYPE_TEXT_FLAG_NO_SUGGESTIONS.
 			textType |= InputTypes.TextFlagNoSuggestions;

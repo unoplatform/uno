@@ -1118,7 +1118,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				return;
 			}
 
-			if (owner is TextBox textBox)
+			if (owner is ITextBoxHost { Core: { } textBox })
 			{
 				var maxLength = value?.Length ?? 0;
 				selectionStart = Math.Max(0, Math.Min(selectionStart, maxLength));
@@ -1220,7 +1220,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// Route through FocusSynchronizer if available (handles IsSyncing guard)
 		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 		{
-			if (owner is TextBox)
+			if (owner is ITextBoxHost)
 			{
 				BrowserInvisibleTextBoxViewExtension.DetachNativeInputPreservingFocus();
 			}
@@ -2265,7 +2265,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				{
 					this.Log().Trace($"[A11y] PROP CHANGE: Value handle={element.Visual.Handle} element={element.GetType().Name} valueLen={valueProvider.Value?.Length ?? 0}");
 				}
-				UpdateTextBoxValueKeepingSelection(element.Visual.Handle, valueProvider.Value, element as TextBox);
+				UpdateTextBoxValueKeepingSelection(element.Visual.Handle, valueProvider.Value, (element as ITextBoxHost)?.Core);
 			}
 		}
 		else if (automationProperty == ValuePatternIdentifiers.IsReadOnlyProperty &&
@@ -2427,7 +2427,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 					}
 					else if (peer.GetPattern(PatternInterface.Value) is IValueProvider textValueProvider)
 					{
-						UpdateTextBoxValueKeepingSelection(textElement.Visual.Handle, textValueProvider.Value, textElement as TextBox);
+						UpdateTextBoxValueKeepingSelection(textElement.Visual.Handle, textValueProvider.Value, (textElement as ITextBoxHost)?.Core);
 					}
 				}
 				break;
@@ -2555,14 +2555,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	}
 	protected override void OnNativeStructureChanged() { }
 
-	internal void SyncTextBoxValueAndSelection(TextBox textBox)
+	internal void SyncTextBoxValueAndSelection(TextBoxCore textBox)
 	{
-		if (!_isAccessibilityEnabled || !HasSemanticElement(textBox.Visual.Handle))
+		if (!_isAccessibilityEnabled || !HasSemanticElement(textBox.Owner.Visual.Handle))
 		{
 			return;
 		}
 
-		UpdateTextBoxValueKeepingSelection(textBox.Visual.Handle, textBox.Text, textBox);
+		UpdateTextBoxValueKeepingSelection(textBox.Owner.Visual.Handle, textBox.Text, textBox);
 	}
 
 	protected override void OnTextControlStateChanged(UIElement element)
@@ -2590,7 +2590,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			selectionIsBackward);
 	}
 
-	private static void UpdateTextBoxValueKeepingSelection(IntPtr handle, string? value, TextBox? textBox = null)
+	private static void UpdateTextBoxValueKeepingSelection(IntPtr handle, string? value, TextBoxCore? textBox = null)
 	{
 		textBox ??= TryGetTextBoxForHandle(handle, out var resolvedTextBox) ? resolvedTextBox : null;
 		var normalizedValue = value ?? textBox?.Text ?? string.Empty;
@@ -2612,7 +2612,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			PreserveTextSelectionSentinel,
 			false);
 
-	private static bool TryGetTextBoxForHandle(IntPtr handle, [NotNullWhen(true)] out TextBox? textBox)
+	private static bool TryGetTextBoxForHandle(IntPtr handle, [NotNullWhen(true)] out TextBoxCore? textBox)
 	{
 		textBox = null;
 
@@ -2621,16 +2621,16 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return false;
 		}
 
-		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: TextBox owner })
+		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: ITextBoxHost owner })
 		{
-			textBox = owner;
+			textBox = owner.Core;
 			return true;
 		}
 
 		return false;
 	}
 
-	private static bool TryGetTextSelection(TextBox? textBox, int maxLength, out int selectionStart, out int selectionEnd)
+	private static bool TryGetTextSelection(TextBoxCore? textBox, int maxLength, out int selectionStart, out int selectionEnd)
 	{
 		selectionStart = PreserveTextSelectionSentinel;
 		selectionEnd = PreserveTextSelectionSentinel;

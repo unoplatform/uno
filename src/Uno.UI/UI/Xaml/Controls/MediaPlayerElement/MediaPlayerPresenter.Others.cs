@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-#if !__ANDROID__ && !__APPLE_UIKIT__
 using System;
 using Windows.Foundation;
 using Windows.Media.Playback;
@@ -11,7 +10,7 @@ using Uno.Foundation.Logging;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class MediaPlayerPresenter : Border
+	public partial class MediaPlayerPresenter : FrameworkElement
 	{
 		private IMediaPlayerPresenterExtension? _extension;
 
@@ -55,4 +54,3 @@ namespace Microsoft.UI.Xaml.Controls
 			=> _extension?.ExitCompactOverlay();
 	}
 }
-#endif

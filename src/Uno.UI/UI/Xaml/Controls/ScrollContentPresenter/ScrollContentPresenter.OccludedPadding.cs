@@ -12,11 +12,7 @@ partial class ScrollContentPresenter
 
 	internal IDisposable Pad(Rect occludedRect)
 	{
-#if __ANDROID__
-		var viewPortPoint = UIElement.TransformToVisual(this, null).TransformPoint(new Point());
-#else
 		var viewPortPoint = this.TransformToVisual(null).TransformPoint(new Point());
-#endif
 		// A previous Pad can still be applied (the keyboard occlusion changes while it animates);
 		// it shrinks this presenter, so always reason on the unpadded viewport.
 		var viewPortSize = new Size(ActualWidth, ActualHeight + _occludedRectPadding.Bottom);
@@ -32,11 +28,7 @@ partial class ScrollContentPresenter
 		{
 			if (_occludedRectPadding == default)
 			{
-#if __ANDROID__
-				_oldPadding = Native.Padding;
-#else
 				_oldPadding = Scroller.Padding;
-#endif
 			}
 
 			// Shrink the viewport by the full occluded overlap: the minimal BringIntoView that
@@ -60,10 +52,6 @@ partial class ScrollContentPresenter
 
 	private void ApplyPadding(Thickness padding)
 	{
-#if __ANDROID__
-		Native.Padding = padding;
-#else
 		Scroller.Padding = padding;
-#endif
 	}
 }

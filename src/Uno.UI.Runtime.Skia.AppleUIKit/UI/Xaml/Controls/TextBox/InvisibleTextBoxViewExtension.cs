@@ -189,8 +189,8 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 				? UITextAutocorrectionType.Yes
 				: UITextAutocorrectionType.No;
 
-		var inputReturnType = host is TextBox textBox
-			? TextBoxExtensions.GetInputReturnType(textBox)
+		var inputReturnType = host is TextBoxCore core
+			? TextBoxExtensions.GetInputReturnType(core.Owner)
 			: host.AcceptsReturn
 				? InputReturnType.Enter
 				: InputReturnType.Done;
@@ -201,7 +201,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			_textBoxView.AutocapitalizationType = UITextAutocapitalizationType.Sentences;
 		}
 
-		_textBoxView.SecureTextEntry = host is PasswordBox;
+		_textBoxView.SecureTextEntry = host is TextBoxCore { IsPassword: true };
 		SetSoftKeyboardTheme();
 
 		// KeyboardType may have changed — re-evaluate the native view
@@ -214,7 +214,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	private void SetSoftKeyboardTheme()
 	{
-		if (_owner.Host is not Control control || _textBoxView is null)
+		if (_owner.Host?.Owner is not { } control || _textBoxView is null)
 		{
 			return;
 		}
@@ -367,7 +367,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	private void UpdateNativeViewFrame(UIView nativeView)
 	{
-		var host = _textBoxView?.Owner?.Host as FrameworkElement;
+		var host = _textBoxView?.Owner?.Host?.Owner;
 		var rect = host?.GetAbsoluteBoundsRect();
 		// GetAbsoluteBoundsRect returns WinUI DIPs which map 1:1 to iOS
 		// points.  Do NOT convert to physical pixels — UIView.Frame is in
@@ -432,7 +432,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	private static bool CouldBecomeFirstResponder(FrameworkElement? element)
 	{
-		return element is TextBox ||
+		return element is ITextBoxHost ||
 			element is RichEditBox ||
 			element is AutoSuggestBox ||
 			element is NumberBox;

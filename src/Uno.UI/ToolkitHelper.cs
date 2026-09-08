@@ -17,7 +17,7 @@ namespace Uno.UI
 			var ownerType = Type.GetType(ownerTypeName, throwOnError: false);
 			if (ownerType == null)
 			{
-				ownerType = Type.GetType(ownerTypeName + ",Uno.UI.Toolkit");
+				ownerType = Type.GetType(ownerTypeName + ",Uno.UI.Extras");
 			}
 			var dp = DependencyProperty.GetProperty(ownerType, propertyName);
 			return dp;

@@ -88,7 +88,7 @@ internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 	/// </summary>
 	public override void EditingStarted(UITextView textView)
 	{
-		if (_textBoxViewExtension.GetTarget()?.Owner.Host is Control control && control.FocusState == FocusState.Unfocused)
+		if (_textBoxViewExtension.GetTarget()?.Owner.Host?.Owner is { FocusState: FocusState.Unfocused } control)
 		{
 			control.Focus(FocusState.Pointer);
 		}
@@ -102,7 +102,7 @@ internal partial class MultilineInvisibleTextBoxDelegate : UITextViewDelegate
 		var bindableTextView = textView as MultilineInvisibleTextBoxView;
 		bindableTextView?.OnTextChanged();
 
-		if (_textBoxViewExtension.GetTarget()?.Owner.Host is Control { FocusState: not FocusState.Unfocused } control)
+		if (_textBoxViewExtension.GetTarget()?.Owner.Host?.Owner is { FocusState: not FocusState.Unfocused } control)
 		{
 			control.Unfocus();
 		}

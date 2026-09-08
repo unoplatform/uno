@@ -49,7 +49,7 @@ namespace Uno.UI.Tests.BinderTests.DependencyPropertyPath
 			Assert.AreEqual("42", SUT.MyProperty);
 		}
 
-		public partial class MyObject : DependencyObject
+		public partial class MyObject : FrameworkElement
 		{
 			public MyObject()
 			{
