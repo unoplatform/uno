@@ -3,8 +3,10 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Microsoft.Windows.AppNotifications;
 using Private.Infrastructure;
+using Windows.Data.Xml.Dom;
 
 namespace Uno.UI.RuntimeTests.Tests.Microsoft_Windows_AppNotifications;
 
@@ -83,6 +85,64 @@ public class Given_AppNotificationNativeBackend
 			if (registered)
 			{
 				manager.Unregister();
+			}
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22462")]
+	public async Task When_Legacy_Third_Line_Is_Shown_Once_And_History_Restores_It()
+	{
+		if (!OperatingSystem.IsWindows() || !AppNotificationManager.IsSupported())
+		{
+			Assert.Inconclusive("The native Windows App SDK notification backend is unavailable.");
+			return;
+		}
+
+		const string payload = "<toast><visual><binding template='ToastText04'><text id='1'>Legacy QA</text><text id='2'>Second line</text><text id='3' xml:lang='en-US'>Third line</text></binding></visual></toast>";
+		var content = new XmlDocument();
+		content.LoadXml(payload);
+		var notification = new Windows.UI.Notifications.ToastNotification(content)
+		{
+			Tag = Guid.NewGuid().ToString("N")[..16],
+			Group = "uno-runtime-qa",
+			SuppressPopup = true,
+			ExpirationTime = DateTimeOffset.UtcNow.AddMinutes(2),
+		};
+		var manager = AppNotificationManager.Default;
+		var registered = false;
+		try
+		{
+			manager.Register();
+			registered = true;
+			if (manager.Setting != AppNotificationSetting.Enabled)
+			{
+				Assert.Inconclusive("Native app notifications are disabled for this host.");
+				return;
+			}
+
+			Windows.UI.Notifications.ToastNotificationManager.CreateToastNotifier().Show(notification);
+			var shown = (await manager.GetAllAsync()).Single(record => record.Tag == notification.Tag && record.Group == notification.Group);
+			var texts = XDocument.Parse(shown.Payload).Root!.Element("visual")!.Element("binding")!.Elements("text").ToArray();
+			Assert.AreEqual(2, texts.Length);
+			Assert.AreEqual("Second line\nThird line", texts[1].Value);
+
+			var restored = Windows.UI.Notifications.ToastNotificationManager.History.GetHistory()
+				.Single(record => record.Tag == notification.Tag && record.Group == notification.Group);
+			Assert.IsTrue(XNode.DeepEquals(XDocument.Parse(payload), XDocument.Parse(restored.Content.GetXml())));
+		}
+		finally
+		{
+			if (registered)
+			{
+				try
+				{
+					await manager.RemoveByTagAndGroupAsync(notification.Tag, notification.Group);
+				}
+				finally
+				{
+					manager.Unregister();
+				}
 			}
 		}
 	}

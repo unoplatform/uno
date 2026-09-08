@@ -6,10 +6,24 @@
 	}
 	const appId = new URL(scope.location.href).searchParams.get("uno-app-id");
 
+	const tryPostMessage = (client, message, ports = []) => {
+		try {
+			client.postMessage(message, ports);
+			return true;
+		}
+		catch (error) {
+			if (!(error instanceof DOMException)) {
+				throw error;
+			}
+			console.warn("Unable to message an app notification client.", error);
+			return false;
+		}
+	};
+
 	const messageClients = async message => {
 		const windows = await scope.clients.matchAll({ type: "window", includeUncontrolled: true });
 		for (const client of windows) {
-			client.postMessage(message);
+			tryPostMessage(client, message);
 		}
 		return windows;
 	};
@@ -53,11 +67,19 @@
 				launchUrl.searchParams.set("uno-app-notification", token);
 				const exactWindow = windows.find(client => client.url === data.clientUrl);
 				if (exactWindow) {
-					const navigated = await exactWindow.navigate(launchUrl.href);
-					if (navigated) {
-						await navigated.focus();
-						notification.close();
-						return;
+					try {
+						const navigated = await exactWindow.navigate(launchUrl.href);
+						if (navigated) {
+							await navigated.focus();
+							notification.close();
+							return;
+						}
+					}
+					catch (error) {
+						if (!(error instanceof DOMException)) {
+							throw error;
+						}
+						console.warn("Unable to navigate an app notification client.", error);
 					}
 				}
 				const opened = await scope.clients.openWindow(launchUrl.href);
@@ -71,21 +93,31 @@
 		})());
 	});
 
-	const postActivation = (client, activation) => new Promise(resolve => {
+	const postActivation = (client, activation) => new Promise((resolve, reject) => {
 		const channel = new MessageChannel();
 		let completed = false;
-		const finish = accepted => {
+		const finish = (settle, value) => {
 			if (!completed) {
 				completed = true;
-				resolve(accepted);
+				scope.clearTimeout(timeout);
+				channel.port1.onmessage = null;
+				channel.port1.close();
+				channel.port2.close();
+				settle(value);
 			}
 		};
-		const timeout = scope.setTimeout(() => finish(false), 750);
+		const timeout = scope.setTimeout(() => finish(resolve, false), 750);
 		channel.port1.onmessage = message => {
-			scope.clearTimeout(timeout);
-			finish(message.data?.accepted === true);
+			finish(resolve, message.data?.accepted === true);
 		};
-		client.postMessage(activation, [channel.port2]);
+		try {
+			if (!tryPostMessage(client, activation, [channel.port2])) {
+				finish(resolve, false);
+			}
+		}
+		catch (error) {
+			finish(reject, error);
+		}
 	});
 
 	scope.addEventListener("notificationclose", event => {

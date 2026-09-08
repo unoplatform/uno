@@ -13,6 +13,7 @@ internal static class LegacyToastNotificationPayloadAdapter
 {
 	private const string LegacyTemplateAttribute = "uno-legacy-template";
 	private const string LegacySecondTextAttribute = "uno-legacy-second-text";
+	private const string LegacyThirdTextAttribute = "uno-legacy-third-text";
 	private static readonly HashSet<string> _legacyTemplates = new(StringComparer.Ordinal)
 	{
 		"ToastImageAndText01",
@@ -42,7 +43,9 @@ internal static class LegacyToastNotificationPayloadAdapter
 			else if (template.EndsWith("04", StringComparison.Ordinal) && texts.Length == 3)
 			{
 				binding.SetAttributeValue(LegacySecondTextAttribute, texts[1].Value);
+				binding.SetAttributeValue(LegacyThirdTextAttribute, texts[2].ToString(SaveOptions.DisableFormatting));
 				texts[1].Value = texts[1].Value + "\n" + texts[2].Value;
+				texts[2].Remove();
 			}
 			attribute.Value = "ToastGeneric";
 			return document.ToString(SaveOptions.DisableFormatting);
@@ -72,11 +75,21 @@ internal static class LegacyToastNotificationPayloadAdapter
 			binding.Attribute(LegacySecondTextAttribute) is { Value: var secondText })
 		{
 			texts[1].Value = secondText;
+			if (texts.Length == 2 && binding.Attribute(LegacyThirdTextAttribute) is { Value: var thirdTextXml })
+			{
+				var thirdText = XElement.Parse(thirdTextXml, LoadOptions.PreserveWhitespace);
+				if (thirdText.Name != "text")
+				{
+					throw new ArgumentException("The legacy third-text marker must contain a text element.", nameof(payload));
+				}
+				texts[1].AddAfterSelf(thirdText);
+			}
 		}
 
 		binding.SetAttributeValue("template", template);
 		marker.Remove();
 		binding.Attribute(LegacySecondTextAttribute)?.Remove();
+		binding.Attribute(LegacyThirdTextAttribute)?.Remove();
 		return document.ToString(SaveOptions.DisableFormatting);
 	}
 
