@@ -41,8 +41,16 @@ namespace Microsoft.UI.Composition
 		public Matrix4x4 TransformMatrix
 		{
 			get => _transformMatrix;
-			set => SetProperty(ref _transformMatrix, value);
+			set
+			{
+				if (SetProperty(ref _transformMatrix, value))
+				{
+					OnTransformMatrixChanged(value);
+				}
+			}
 		}
+
+		partial void OnTransformMatrixChanged(Matrix4x4 value);
 
 		public Vector3 Offset
 		{
