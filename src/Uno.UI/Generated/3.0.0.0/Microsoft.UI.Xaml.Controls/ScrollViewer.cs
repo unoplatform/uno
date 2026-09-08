@@ -3,20 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ScrollViewer : global::Microsoft.UI.Xaml.Controls.ContentControl, global::Microsoft.UI.Xaml.Controls.IScrollAnchorProvider
 	{
 		// Skipping already declared property BringIntoViewOnFocusChangeProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty CanContentRenderOutsideBoundsProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-			"CanContentRenderOutsideBounds", typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
+		// Skipping already declared property CanContentRenderOutsideBoundsProperty
 		// Skipping already declared property ComputedHorizontalScrollBarVisibilityProperty
 		// Skipping already declared property ComputedVerticalScrollBarVisibilityProperty
 		// Skipping already declared property ExtentHeightProperty
@@ -27,106 +20,22 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property HorizontalScrollModeProperty
 		// Skipping already declared property HorizontalSnapPointsAlignmentProperty
 		// Skipping already declared property HorizontalSnapPointsTypeProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsDeferredScrollingEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsDeferredScrollingEnabled", typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsHorizontalRailEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsHorizontalRailEnabled", typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsHorizontalScrollChainingEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsHorizontalScrollChainingEnabled", typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsScrollInertiaEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsScrollInertiaEnabled", typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsVerticalRailEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsVerticalRailEnabled", typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsVerticalScrollChainingEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsVerticalScrollChainingEnabled", typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsZoomChainingEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsZoomChainingEnabled", typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsZoomInertiaEnabledProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsZoomInertiaEnabled", typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty LeftHeaderProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(LeftHeader), typeof(global::Microsoft.UI.Xaml.UIElement),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.UIElement)));
-#endif
+		// Skipping already declared property IsDeferredScrollingEnabledProperty
+		// Skipping already declared property IsHorizontalRailEnabledProperty
+		// Skipping already declared property IsHorizontalScrollChainingEnabledProperty
+		// Skipping already declared property IsScrollInertiaEnabledProperty
+		// Skipping already declared property IsVerticalRailEnabledProperty
+		// Skipping already declared property IsVerticalScrollChainingEnabledProperty
+		// Skipping already declared property IsZoomChainingEnabledProperty
+		// Skipping already declared property IsZoomInertiaEnabledProperty
+		// Skipping already declared property LeftHeaderProperty
 		// Skipping already declared property MaxZoomFactorProperty
 		// Skipping already declared property MinZoomFactorProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ReduceViewportForCoreInputViewOcclusionsProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ReduceViewportForCoreInputViewOcclusions), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
+		// Skipping already declared property ReduceViewportForCoreInputViewOcclusionsProperty
 		// Skipping already declared property ScrollableHeightProperty
 		// Skipping already declared property ScrollableWidthProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TopHeaderProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TopHeader), typeof(global::Microsoft.UI.Xaml.UIElement),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.UIElement)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty TopLeftHeaderProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(TopLeftHeader), typeof(global::Microsoft.UI.Xaml.UIElement),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.UIElement)));
-#endif
+		// Skipping already declared property TopHeaderProperty
+		// Skipping already declared property TopLeftHeaderProperty
 		// Skipping already declared property VerticalAnchorRatioProperty
 		// Skipping already declared property VerticalOffsetProperty
 		// Skipping already declared property VerticalScrollBarVisibilityProperty
@@ -137,37 +46,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ViewportWidthProperty
 		// Skipping already declared property ZoomFactorProperty
 		// Skipping already declared property ZoomModeProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ZoomSnapPointsProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ZoomSnapPoints), typeof(global::System.Collections.Generic.IList<float>),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<float>)));
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty ZoomSnapPointsTypeProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(ZoomSnapPointsType), typeof(global::Microsoft.UI.Xaml.Controls.SnapPointsType),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.SnapPointsType)));
-#endif
+		// Skipping already declared property ZoomSnapPointsProperty
+		// Skipping already declared property ZoomSnapPointsTypeProperty
 		// Skipping already declared property BringIntoViewOnFocusChange
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public bool CanContentRenderOutsideBounds
-		{
-			get
-			{
-				return (bool)this.GetValue(CanContentRenderOutsideBoundsProperty);
-			}
-			set
-			{
-				this.SetValue(CanContentRenderOutsideBoundsProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property CanContentRenderOutsideBounds
 		// Skipping already declared property ComputedHorizontalScrollBarVisibility
 		// Skipping already declared property ComputedVerticalScrollBarVisibility
 		// Skipping already declared property CurrentAnchor
@@ -179,178 +61,22 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property HorizontalScrollMode
 		// Skipping already declared property HorizontalSnapPointsAlignment
 		// Skipping already declared property HorizontalSnapPointsType
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public bool IsDeferredScrollingEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsDeferredScrollingEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsDeferredScrollingEnabledProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public bool IsHorizontalRailEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsHorizontalRailEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsHorizontalRailEnabledProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public bool IsHorizontalScrollChainingEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsHorizontalScrollChainingEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsHorizontalScrollChainingEnabledProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public bool IsScrollInertiaEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsScrollInertiaEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsScrollInertiaEnabledProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public bool IsVerticalRailEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsVerticalRailEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsVerticalRailEnabledProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public bool IsVerticalScrollChainingEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsVerticalScrollChainingEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsVerticalScrollChainingEnabledProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public bool IsZoomChainingEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsZoomChainingEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsZoomChainingEnabledProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public bool IsZoomInertiaEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsZoomInertiaEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsZoomInertiaEnabledProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.UIElement LeftHeader
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(LeftHeaderProperty);
-			}
-			set
-			{
-				this.SetValue(LeftHeaderProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property IsDeferredScrollingEnabled
+		// Skipping already declared property IsHorizontalRailEnabled
+		// Skipping already declared property IsHorizontalScrollChainingEnabled
+		// Skipping already declared property IsScrollInertiaEnabled
+		// Skipping already declared property IsVerticalRailEnabled
+		// Skipping already declared property IsVerticalScrollChainingEnabled
+		// Skipping already declared property IsZoomChainingEnabled
+		// Skipping already declared property IsZoomInertiaEnabled
+		// Skipping already declared property LeftHeader
 		// Skipping already declared property MaxZoomFactor
 		// Skipping already declared property MinZoomFactor
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public bool ReduceViewportForCoreInputViewOcclusions
-		{
-			get
-			{
-				return (bool)this.GetValue(ReduceViewportForCoreInputViewOcclusionsProperty);
-			}
-			set
-			{
-				this.SetValue(ReduceViewportForCoreInputViewOcclusionsProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property ReduceViewportForCoreInputViewOcclusions
 		// Skipping already declared property ScrollableHeight
 		// Skipping already declared property ScrollableWidth
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.UIElement TopHeader
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(TopHeaderProperty);
-			}
-			set
-			{
-				this.SetValue(TopHeaderProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.UIElement TopLeftHeader
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.UIElement)this.GetValue(TopLeftHeaderProperty);
-			}
-			set
-			{
-				this.SetValue(TopLeftHeaderProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property TopHeader
+		// Skipping already declared property TopLeftHeader
 		// Skipping already declared property VerticalAnchorRatio
 		// Skipping already declared property VerticalOffset
 		// Skipping already declared property VerticalScrollBarVisibility
@@ -361,168 +87,38 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property ViewportWidth
 		// Skipping already declared property ZoomFactor
 		// Skipping already declared property ZoomMode
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public global::System.Collections.Generic.IList<float> ZoomSnapPoints
-		{
-			get
-			{
-				return (global::System.Collections.Generic.IList<float>)this.GetValue(ZoomSnapPointsProperty);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public global::Microsoft.UI.Xaml.Controls.SnapPointsType ZoomSnapPointsType
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.SnapPointsType)this.GetValue(ZoomSnapPointsTypeProperty);
-			}
-			set
-			{
-				this.SetValue(ZoomSnapPointsTypeProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property ZoomSnapPoints
+		// Skipping already declared property ZoomSnapPointsType
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.ScrollViewer()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ScrollViewer()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetHorizontalScrollBarVisibility(Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetHorizontalScrollBarVisibility(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.Controls.ScrollBarVisibility)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetVerticalScrollBarVisibility(Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetVerticalScrollBarVisibility(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.Controls.ScrollBarVisibility)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static bool GetIsHorizontalRailEnabled(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (bool)element.GetValue(IsHorizontalRailEnabledProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static void SetIsHorizontalRailEnabled(global::Microsoft.UI.Xaml.DependencyObject element, bool isHorizontalRailEnabled)
-		{
-			element.SetValue(IsHorizontalRailEnabledProperty, isHorizontalRailEnabled);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static bool GetIsVerticalRailEnabled(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (bool)element.GetValue(IsVerticalRailEnabledProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static void SetIsVerticalRailEnabled(global::Microsoft.UI.Xaml.DependencyObject element, bool isVerticalRailEnabled)
-		{
-			element.SetValue(IsVerticalRailEnabledProperty, isVerticalRailEnabled);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static bool GetIsHorizontalScrollChainingEnabled(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (bool)element.GetValue(IsHorizontalScrollChainingEnabledProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static void SetIsHorizontalScrollChainingEnabled(global::Microsoft.UI.Xaml.DependencyObject element, bool isHorizontalScrollChainingEnabled)
-		{
-			element.SetValue(IsHorizontalScrollChainingEnabledProperty, isHorizontalScrollChainingEnabled);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static bool GetIsVerticalScrollChainingEnabled(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (bool)element.GetValue(IsVerticalScrollChainingEnabledProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static void SetIsVerticalScrollChainingEnabled(global::Microsoft.UI.Xaml.DependencyObject element, bool isVerticalScrollChainingEnabled)
-		{
-			element.SetValue(IsVerticalScrollChainingEnabledProperty, isVerticalScrollChainingEnabled);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static bool GetIsZoomChainingEnabled(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (bool)element.GetValue(IsZoomChainingEnabledProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static void SetIsZoomChainingEnabled(global::Microsoft.UI.Xaml.DependencyObject element, bool isZoomChainingEnabled)
-		{
-			element.SetValue(IsZoomChainingEnabledProperty, isZoomChainingEnabled);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static bool GetIsScrollInertiaEnabled(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (bool)element.GetValue(IsScrollInertiaEnabledProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static void SetIsScrollInertiaEnabled(global::Microsoft.UI.Xaml.DependencyObject element, bool isScrollInertiaEnabled)
-		{
-			element.SetValue(IsScrollInertiaEnabledProperty, isScrollInertiaEnabled);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static bool GetIsZoomInertiaEnabled(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (bool)element.GetValue(IsZoomInertiaEnabledProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static void SetIsZoomInertiaEnabled(global::Microsoft.UI.Xaml.DependencyObject element, bool isZoomInertiaEnabled)
-		{
-			element.SetValue(IsZoomInertiaEnabledProperty, isZoomInertiaEnabled);
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetIsHorizontalRailEnabled(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetIsHorizontalRailEnabled(Microsoft.UI.Xaml.DependencyObject, bool)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetIsVerticalRailEnabled(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetIsVerticalRailEnabled(Microsoft.UI.Xaml.DependencyObject, bool)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetIsHorizontalScrollChainingEnabled(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetIsHorizontalScrollChainingEnabled(Microsoft.UI.Xaml.DependencyObject, bool)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetIsVerticalScrollChainingEnabled(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetIsVerticalScrollChainingEnabled(Microsoft.UI.Xaml.DependencyObject, bool)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetIsZoomChainingEnabled(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetIsZoomChainingEnabled(Microsoft.UI.Xaml.DependencyObject, bool)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetIsScrollInertiaEnabled(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetIsScrollInertiaEnabled(Microsoft.UI.Xaml.DependencyObject, bool)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetIsZoomInertiaEnabled(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetIsZoomInertiaEnabled(Microsoft.UI.Xaml.DependencyObject, bool)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetHorizontalScrollMode(Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetHorizontalScrollMode(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.Controls.ScrollMode)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetVerticalScrollMode(Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetVerticalScrollMode(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.Controls.ScrollMode)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetZoomMode(Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetZoomMode(Microsoft.UI.Xaml.DependencyObject, Microsoft.UI.Xaml.Controls.ZoomMode)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static bool GetCanContentRenderOutsideBounds(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (bool)element.GetValue(CanContentRenderOutsideBoundsProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static void SetCanContentRenderOutsideBounds(global::Microsoft.UI.Xaml.DependencyObject element, bool canContentRenderOutsideBounds)
-		{
-			element.SetValue(CanContentRenderOutsideBoundsProperty, canContentRenderOutsideBounds);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static bool GetIsDeferredScrollingEnabled(global::Microsoft.UI.Xaml.DependencyObject element)
-		{
-			return (bool)element.GetValue(IsDeferredScrollingEnabledProperty);
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public static void SetIsDeferredScrollingEnabled(global::Microsoft.UI.Xaml.DependencyObject element, bool isDeferredScrollingEnabled)
-		{
-			element.SetValue(IsDeferredScrollingEnabledProperty, isDeferredScrollingEnabled);
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetCanContentRenderOutsideBounds(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetCanContentRenderOutsideBounds(Microsoft.UI.Xaml.DependencyObject, bool)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetIsDeferredScrollingEnabled(Microsoft.UI.Xaml.DependencyObject)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetIsDeferredScrollingEnabled(Microsoft.UI.Xaml.DependencyObject, bool)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetBringIntoViewOnFocusChange(Microsoft.UI.Xaml.DependencyObject)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.SetBringIntoViewOnFocusChange(Microsoft.UI.Xaml.DependencyObject, bool)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.BringIntoViewOnFocusChangeProperty.get
@@ -567,22 +163,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ZoomSnapPointsTypeProperty.get
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.ScrollToHorizontalOffset(double)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.ScrollToVerticalOffset(double)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public void ZoomToFactor(float factor)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "ZoomToFactor(float factor)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.ZoomToFactor(float)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.ChangeView(double?, double?, float?)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.ChangeView(double?, double?, float?, bool)
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public void InvalidateScrollInfo()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "InvalidateScrollInfo()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.InvalidateScrollInfo()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.AnchorRequested.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.AnchorRequested.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.DirectManipulationCompleted.add
@@ -665,55 +249,10 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ZoomSnapPointsType.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewer.ZoomSnapPointsType.set
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollViewer.AnchorRequested
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public event global::System.EventHandler<object> DirectManipulationCompleted
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "event DirectManipulationCompleted");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "event DirectManipulationCompleted");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public event global::System.EventHandler<object> DirectManipulationStarted
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "event DirectManipulationStarted");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "event DirectManipulationStarted");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollViewer.DirectManipulationCompleted
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollViewer.DirectManipulationStarted
 		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollViewer.ViewChanged
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-		public event global::System.EventHandler<global::Microsoft.UI.Xaml.Controls.ScrollViewerViewChangingEventArgs> ViewChanging
-		{
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "event ViewChanging");
-			}
-			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__NETSTD_REFERENCE__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollViewer", "event ViewChanging");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.UI.Xaml.Controls.ScrollViewer.ViewChanging
 		// Processing: Microsoft.UI.Xaml.Controls.IScrollAnchorProvider
 	}
 }
