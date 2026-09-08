@@ -185,6 +185,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
 		public async Task When_ListView_Multiple_Select_On_Mobile_Then_Native_Collection_CanSelectMultiple()
 		{
+#if __SKIA__
 			var listView = new ListView
 			{
 				ItemsSource = new List<string> { "One", "Two", "Three" },
@@ -201,6 +202,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.IsTrue(
 				snapshot.Details!.Collection!.CanSelectMultiple,
 				"Multiple-selection ListView must report CanSelectMultiple=true in Collection details.");
+#endif
 		}
 
 		[TestMethod]

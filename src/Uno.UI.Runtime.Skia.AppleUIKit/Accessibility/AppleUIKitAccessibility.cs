@@ -37,16 +37,45 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	private readonly WeakReference<RootViewController> _controllerRef;
 	private readonly WeakReference<AppleUIKitAccessibility> _selfRef;
 
-	// Stable node registry: Visual.Handle -> native element
+	// Native IDs identify peer occurrences, never reusable visual containers.
 	private readonly Dictionary<nint, UnoUIAccessibilityElement> _nodeElements = new();
+	private readonly Dictionary<nint, PeerBinding> _nodePeers = new();
+	private readonly ConditionalWeakTable<AutomationPeer, NodeIdentity> _peerToNodeId = new();
+	private readonly Dictionary<nint, nint> _nodeIdByHandle = new();
+	private readonly Dictionary<nint, List<nint>> _nodeIdsByHandle = new();
+	private nint _nextNodeId;
 	private UIAccessibilityElement[] _currentAccessibilityElements = Array.Empty<UIAccessibilityElement>();
 	private static readonly NSString _accessibilityElementsKey = new("accessibilityElements");
 	private static readonly NSString _automationElementsKey = new("automationElements");
 
-	// Weak owner references for live property pull
-	private readonly Dictionary<nint, WeakReference<UIElement>> _handleToOwner = new();
+	private sealed class NodeIdentity
+	{
+		internal nint Value { get; init; }
+	}
+
+	private sealed class PeerBinding
+	{
+		internal PeerBinding(AccessibilityPeerNode node)
+		{
+			Peer = new(node.Peer);
+			ProviderPeer = new(node.ProviderPeer);
+			Owner = node.Owner is { } owner ? new(owner) : null;
+		}
+
+		internal WeakReference<AutomationPeer> Peer { get; }
+		internal WeakReference<AutomationPeer> ProviderPeer { get; }
+		internal WeakReference<UIElement>? Owner { get; }
+
+		internal bool Matches(AccessibilityPeerNode node)
+			=> Peer.TryGetTarget(out var peer) && ReferenceEquals(peer, node.Peer) &&
+				ProviderPeer.TryGetTarget(out var provider) && ReferenceEquals(provider, node.ProviderPeer) &&
+				(Owner is null
+					? node.Owner is null
+					: Owner.TryGetTarget(out var owner) && ReferenceEquals(owner, node.Owner));
+	}
 
 	private bool _rebuildPending;
+	private bool _isRebuildingTree;
 	private bool _initialBuildDone;
 	private bool _forceStructureNotification;
 	private bool _screenChangeRequested;
@@ -273,8 +302,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			return null;
 		}
 
-		_nodeElements.TryGetValue(element.Visual.Handle, out var el);
-		return el;
+		var nativeElement = FindNodeForOwnerHandle(element.Visual.Handle);
+		return nativeElement is not null && ResolvePeer(nativeElement.NodeId) is not null
+			? nativeElement
+			: null;
 	}
 
 	/// <summary>
@@ -291,14 +322,13 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			return false;
 		}
 
-		var handle = element.Visual.Handle;
-		if (!_nodeElements.TryGetValue(handle, out var el))
+		if (GetElementForOwner(element) is not UnoUIAccessibilityElement el)
 		{
 			return false;
 		}
 
-		_pendingNativeFocusHandle = handle;
-		_lastNativeFocusedHandle = handle;
+		_pendingNativeFocusHandle = el.NodeId;
+		_lastNativeFocusedHandle = el.NodeId;
 		var captured = el;
 		PostOnMain(() =>
 			UIAccessibility.PostNotification(UIAccessibilityPostNotification.LayoutChanged, captured));
@@ -372,7 +402,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			return null;
 		}
 
-		return _nodeElements.TryGetValue(element.Visual.Handle, out var accessibilityElement)
+		return GetElementForOwner(element) is UnoUIAccessibilityElement accessibilityElement
 			? CreateSnapshot(accessibilityElement)
 			: null;
 	}
@@ -474,8 +504,25 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 	private void RebuildTree()
 	{
-		_rebuildPending = false;
+		if (!_rebuildPending || _isRebuildingTree || IsDisposed)
+		{
+			return;
+		}
 
+		_rebuildPending = false;
+		_isRebuildingTree = true;
+		try
+		{
+			RebuildTreeCore();
+		}
+		finally
+		{
+			_isRebuildingTree = false;
+		}
+	}
+
+	private void RebuildTreeCore()
+	{
 		if (IsDisposed)
 		{
 			return;
@@ -509,7 +556,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 			_allScrollSources.Clear();
 			_nodeElements.Clear();
-			_handleToOwner.Clear();
+			_nodePeers.Clear();
+			_peerToNodeId.Clear();
+			_nodeIdByHandle.Clear();
+			_nodeIdsByHandle.Clear();
 			_lastOrderedHandles.Clear();
 			_nextOrderedHandles.Clear();
 			_pendingInvalidationHandles.Clear();
@@ -551,24 +601,20 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 		// Build handle-to-node-index mapping for modal-subtree filtering.
 		var handleToNodeIndex = new Dictionary<nint, int>(nodes.Count);
+		_nodeIdByHandle.Clear();
+		_nodeIdsByHandle.Clear();
 
 		for (int i = 0; i < nodes.Count; i++)
 		{
 			var node = nodes[i];
-
-			// Ownerless item peers are unrealized and have no native node yet.
-			// the shared peer tree no longer borrows the parent ItemsControl handle
-			// for virtual items without a realized container. Skip these nodes so we
-			// never create or retain a native element with the parent's handle.
-			// The element will be added on the next rebuild once its container is realized.
 			var owner = node.Owner;
-
-			if (owner is null)
+			if (owner is null &&
+				(node.Peer is ItemAutomationPeer || node.ProviderPeer is ItemAutomationPeer))
 			{
 				continue;
 			}
 
-			var handle = owner.Visual.Handle;
+			var handle = GetOrCreateNodeId(node);
 			newHandles.Add(handle);
 			handleToNodeIndex.TryAdd(handle, i);
 
@@ -576,7 +622,24 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			{
 				el = new UnoUIAccessibilityElement(metalView, handle, _selfRef);
 				_nodeElements[handle] = el;
-				_handleToOwner[handle] = new WeakReference<UIElement>(owner);
+				_nodePeers[handle] = new PeerBinding(node);
+			}
+
+			if (owner is not null)
+			{
+				var ownerHandle = owner.Visual.Handle;
+				if (!_nodeIdsByHandle.TryGetValue(ownerHandle, out var ownerIds))
+				{
+					_nodeIdsByHandle[ownerHandle] = ownerIds = new();
+				}
+				ownerIds.Add(handle);
+
+				var canonicalPeer = owner.GetOrCreateAutomationPeer();
+				if (!_nodeIdByHandle.ContainsKey(ownerHandle) ||
+					ReferenceEquals(canonicalPeer?.ResolveProviderPeer(resolveEventsSource: true), node.ProviderPeer))
+				{
+					_nodeIdByHandle[ownerHandle] = handle;
+				}
 			}
 
 			el.InvalidateCachedAccessibilityData();
@@ -595,8 +658,9 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 		foreach (var handle in toRemove)
 		{
+			_nodeElements[handle].InvalidateCachedAccessibilityData();
 			_nodeElements.Remove(handle);
-			_handleToOwner.Remove(handle);
+			_nodePeers.Remove(handle);
 		}
 
 		// If the tracked focus handle was removed from the registry, clear it.
@@ -643,7 +707,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			nint transitionFocusHandle = 0;
 			if (isNewModal)
 			{
-				if (_nodeElements.TryGetValue(_activeModalHandle, out var previousModalElement))
+				if (FindNodeForOwnerHandle(_activeModalHandle) is { } previousModalElement)
 				{
 					previousModalElement.IsModalContainer = false;
 				}
@@ -661,7 +725,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 				else
 				{
 					while (_modalFocusStack.Count > 0 &&
-						!_nodeElements.ContainsKey(_modalFocusStack[^1].ModalHandle))
+						!_nodeIdByHandle.ContainsKey(_modalFocusStack[^1].ModalHandle))
 					{
 						_modalFocusStack.RemoveAt(_modalFocusStack.Count - 1);
 					}
@@ -677,7 +741,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 				nodes, modalNodeIndex, orderedElements, handleToNodeIndex);
 
 			// Mark the modal owner element so VoiceOver excludes background peers.
-			if (_nodeElements.TryGetValue(currentModalHandle, out var modalEl))
+			if (FindNodeForOwnerHandle(currentModalHandle) is { } modalEl)
 			{
 				modalEl.IsModalContainer = true;
 			}
@@ -711,7 +775,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		else if (_activeModalHandle != 0)
 		{
 			// The modal just closed; clear modal state and restore the full element list.
-			if (_nodeElements.TryGetValue(_activeModalHandle, out var prevModalEl))
+			if (FindNodeForOwnerHandle(_activeModalHandle) is { } prevModalEl)
 			{
 				prevModalEl.IsModalContainer = false;
 			}
@@ -766,7 +830,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		{
 			UIAccessibilityElement? target = null;
 			if (screenChangeTargetHandle != 0 &&
-				_nodeElements.TryGetValue(screenChangeTargetHandle, out var requestedTarget))
+				FindNodeForOwnerHandle(screenChangeTargetHandle) is { } requestedTarget)
 			{
 				target = requestedTarget;
 			}
@@ -939,8 +1003,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			(parts ??= new()).Add(helpText);
 		}
 
-		if (_handleToOwner.TryGetValue(handle, out var ownerReference) &&
-			ownerReference.TryGetTarget(out var owner))
+		if (GetOwner(handle) is { } owner)
 		{
 			if (owner.GetValue(AutomationProperties.DescribedByProperty) is
 				IEnumerable<DependencyObject> describedBy)
@@ -953,7 +1016,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					}
 
 					var description = ReferenceEquals(descriptionElement.XamlRoot, _xamlRoot) &&
-						_nodeElements.ContainsKey(descriptionElement.Visual.Handle) &&
+						GetElementForOwner(descriptionElement) is not null &&
 						descriptionElement.GetOrCreateAutomationPeer() is { } descriptionPeer
 						? ResolveLabel(descriptionPeer)
 						: null;
@@ -1027,41 +1090,25 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		ISelectionItemProvider selection)
 		=> peer.IsEnabled()
 			? selection.IsSelected
-			: _handleToOwner.TryGetValue(handle, out var weakOwner) &&
-				weakOwner.TryGetTarget(out var owner) &&
-				owner is SelectorItem { IsSelected: true };
+			: GetOwner(handle) is SelectorItem { IsSelected: true };
 
 	internal string? GetIdentifier(nint handle)
 	{
-		// Read the AutomationId directly from the owner element, bypassing EventsSource
-		// resolution. EventsSource can redirect to a data peer whose GetAutomationId()
-		// returns a synthetic or data-object ID, not the developer-set container ID that
-		// XCUITest and automation clients expect for element lookup.
-		//
-		// Returns null when the property is unset (default is "") or explicitly empty.
-		// Whitespace-only IDs are passed through unchanged, matching WinUI string
-		// semantics: the framework does not normalize or trim AutomationId values.
-		if (!_handleToOwner.TryGetValue(handle, out var weakRef) ||
-			!weakRef.TryGetTarget(out var owner))
-		{
-			return null;
-		}
-
-		var id = AutomationProperties.GetAutomationId(owner);
+		var id = ResolvePeer(handle)?.GetAutomationId();
 		return string.IsNullOrEmpty(id) ? null : id;
 	}
 
 	internal CGRect GetFrameInContainerSpace(nint handle)
 	{
-		if (!_handleToOwner.TryGetValue(handle, out var weakRef) ||
-			!weakRef.TryGetTarget(out var element))
+		var peer = ResolvePeer(handle);
+		if (peer is null)
 		{
 			return CGRect.Empty;
 		}
 
 		try
 		{
-			if (ResolvePeer(handle)?.GetBoundingRectangle() is { } peerBounds &&
+			if (peer.GetBoundingRectangle() is { } peerBounds &&
 				HasFiniteBounds(peerBounds))
 			{
 				return new CGRect(
@@ -1069,6 +1116,11 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					peerBounds.Y,
 					peerBounds.Width,
 					peerBounds.Height);
+			}
+
+			if (GetOwner(handle) is not { } element)
+			{
+				return CGRect.Empty;
 			}
 
 			var transform = element.TransformToVisual(null);
@@ -1124,13 +1176,71 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 	internal bool Scroll(nint handle, UIAccessibilityScrollDirection direction)
 	{
-		var peer = ResolvePeer(handle);
-		if (peer is null ||
-			peer.GetPattern(PatternInterface.Scroll) is not IScrollProvider provider)
+		if (ResolvePeer(handle) is null)
 		{
 			return false;
 		}
 
+		foreach (var peer in GetScrollAncestors(handle))
+		{
+			if (!TryGetLiveOwner(peer, out _) ||
+				AccessibilityPeerHelper.ResolveProviderPeer(peer).GetPattern(PatternInterface.Scroll) is not IScrollProvider provider)
+			{
+				continue;
+			}
+
+			if (TryScroll(peer, provider, direction))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private IEnumerable<AutomationPeer> GetScrollAncestors(nint nodeId)
+	{
+		if (!_nodePeers.TryGetValue(nodeId, out var binding) ||
+			!binding.Peer.TryGetTarget(out var peer))
+		{
+			yield break;
+		}
+
+		var visited = new HashSet<AutomationPeer>(ReferenceEqualityComparer.Instance);
+		AutomationPeer? current = peer;
+		while (current is not null && visited.Add(current))
+		{
+			yield return current;
+			current = current.GetParent();
+		}
+
+		if (!TryGetLiveOwner(peer, out var owner))
+		{
+			yield break;
+		}
+
+		var visitedOwners = new HashSet<UIElement>(ReferenceEqualityComparer.Instance);
+		while (owner is not null && visitedOwners.Add(owner))
+		{
+			if (!IsLiveOwner(owner))
+			{
+				yield break;
+			}
+
+			if (owner.GetOrCreateAutomationPeer() is { } ownerPeer && visited.Add(ownerPeer))
+			{
+				yield return ownerPeer;
+			}
+
+			owner = owner.GetUIElementAdjustedParentInternal();
+		}
+	}
+
+	private bool TryScroll(
+		AutomationPeer peer,
+		IScrollProvider provider,
+		UIAccessibilityScrollDirection direction)
+	{
 		var forward = direction is
 			UIAccessibilityScrollDirection.Right or
 			UIAccessibilityScrollDirection.Down or
@@ -1541,7 +1651,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			return false;
 		}
 
-		if (!_nodeElements.TryGetValue(element.Visual.Handle, out var el))
+		if (GetElementForOwner(element) is not UnoUIAccessibilityElement el)
 		{
 			Trace($"Rejected native action {request.Action} for stale handle {element.Visual.Handle}.");
 			return false;
@@ -1614,11 +1724,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					{
 						return false;
 					}
-					if (!double.IsFinite(request.Number) || request.Number != Math.Truncate(request.Number))
-					{
-						return false;
-					}
-					return AccessibilityPeerHelper.TryChangeView(peer, (int)request.Number);
+					return AccessibilityPeerHelper.TryChangeView(peer, request.Number);
 				}
 
 			case AccessibilityNativeAction.ZoomIn:
@@ -1658,16 +1764,13 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					{
 						return false;
 					}
-					if (!double.IsFinite(request.Number) || request.Number != Math.Truncate(request.Number))
+					if (!double.IsFinite(request.Number) ||
+						request.Number != Math.Truncate(request.Number) ||
+						request.Number is < (int)DockPosition.Top or > (int)DockPosition.None)
 					{
 						return false;
 					}
-					var posInt = (int)request.Number;
-					if (posInt < (int)DockPosition.Top || posInt > (int)DockPosition.None)
-					{
-						return false;
-					}
-					return AccessibilityPeerHelper.TrySetDockPosition(peer, (DockPosition)posInt);
+					return AccessibilityPeerHelper.TrySetDockPosition(peer, (DockPosition)(int)request.Number);
 				}
 
 			case AccessibilityNativeAction.SetWindowVisualState:
@@ -1677,16 +1780,13 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					{
 						return false;
 					}
-					if (!double.IsFinite(request.Number) || request.Number != Math.Truncate(request.Number))
+					if (!double.IsFinite(request.Number) ||
+						request.Number != Math.Truncate(request.Number) ||
+						request.Number is < (int)WindowVisualState.Normal or > (int)WindowVisualState.Minimized)
 					{
 						return false;
 					}
-					var stateInt = (int)request.Number;
-					if (stateInt < (int)WindowVisualState.Normal || stateInt > (int)WindowVisualState.Minimized)
-					{
-						return false;
-					}
-					return AccessibilityPeerHelper.TrySetWindowVisualState(peer, (WindowVisualState)stateInt);
+					return AccessibilityPeerHelper.TrySetWindowVisualState(peer, (WindowVisualState)(int)request.Number);
 				}
 
 			case AccessibilityNativeAction.Move:
@@ -1810,23 +1910,24 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	protected override void SetNativeFocus(nint handle)
 	{
 		Trace($"Native focus requested for handle {handle}.");
+		if (FindNodeForOwnerHandle(handle) is not { } el || ResolvePeer(el.NodeId) is null)
+		{
+			return;
+		}
+
 		// Re-entry guard: if this call originated from us setting XAML focus in
 		// OnNativeElementFocused; updating the tracking handle is enough, so do not
 		// re-post the ScreenChanged notification and restart the loop.
 		if (_settingXamlFocus)
 		{
-			_lastNativeFocusedHandle = handle;
+			_lastNativeFocusedHandle = el.NodeId;
 			return;
 		}
 
-		if (_nodeElements.TryGetValue(handle, out var el))
-		{
-			_pendingNativeFocusHandle = handle;
-			_lastNativeFocusedHandle = handle;
-			var captured = el;
-			PostOnMain(() =>
-				UIAccessibility.PostNotification(UIAccessibilityPostNotification.LayoutChanged, captured));
-		}
+		_pendingNativeFocusHandle = el.NodeId;
+		_lastNativeFocusedHandle = el.NodeId;
+		PostOnMain(() =>
+			UIAccessibility.PostNotification(UIAccessibilityPostNotification.LayoutChanged, el));
 	}
 
 	protected override void OnNativeStructureChanged()
@@ -1863,6 +1964,11 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	/// </summary>
 	internal void OnNativeElementFocused(nint nodeId)
 	{
+		if (ResolvePeer(nodeId) is not { } providerPeer)
+		{
+			return;
+		}
+
 		Trace($"Native focus received for handle {nodeId}.");
 		_lastNativeFocusedHandle = nodeId;
 
@@ -1879,21 +1985,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 		// Native -> XAML direction: set XAML keyboard focus if the peer supports it.
 		// Only Control subclasses accept programmatic focus in Uno.
-		if (!_handleToOwner.TryGetValue(nodeId, out var weakRef) ||
-			!weakRef.TryGetTarget(out var element) ||
-			element is not Control control)
-		{
-			return;
-		}
-
-		var peer = element.GetOrCreateAutomationPeer();
-		if (peer is null)
-		{
-			return;
-		}
-
-		var providerPeer = AccessibilityPeerHelper.ResolveProviderPeer(peer);
-		if (!providerPeer.IsKeyboardFocusable())
+		if (GetOwner(nodeId) is not Control control || !providerPeer.IsKeyboardFocusable())
 		{
 			return;
 		}
@@ -1986,7 +2078,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		_recordedEvents.Clear();
 		_recordEvents = false;
 		_nodeElements.Clear();
-		_handleToOwner.Clear();
+		_nodePeers.Clear();
+		_peerToNodeId.Clear();
+		_nodeIdByHandle.Clear();
+		_nodeIdsByHandle.Clear();
 
 		if (_controllerRef.TryGetTarget(out var controller) &&
 			controller.SkCanvasView is { } metalView)
@@ -2060,23 +2155,36 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		if (NativeDispatcher.Main.HasThreadAccess)
 		{
 			// All dictionary/set access on the main thread only.
-			if (!_nodeElements.TryGetValue(handle, out var element))
+			if (!_nodeIdsByHandle.TryGetValue(handle, out var nodeIds))
 			{
 				return;
 			}
-			element.InvalidateCachedAccessibilityData();
-			_pendingInvalidationHandles.Add(handle);
-			Trace($"Queued targeted invalidation for handle {handle}.");
-			if (!_invalidationFlushScheduled)
+			foreach (var nodeId in nodeIds)
 			{
-				_invalidationFlushScheduled = true;
-				NativeDispatcher.Main.Enqueue(FlushPendingInvalidations);
+				InvalidateNode(nodeId);
 			}
+			Trace($"Queued targeted invalidation for handle {handle}.");
 		}
 		else
 		{
 			// Marshal unconditionally; no shared state read off the main thread.
 			NativeDispatcher.Main.Enqueue(() => InvalidateElement(handle));
+		}
+	}
+
+	private void InvalidateNode(nint nodeId)
+	{
+		if (IsDisposed || !_nodeElements.TryGetValue(nodeId, out var element))
+		{
+			return;
+		}
+
+		element.InvalidateCachedAccessibilityData();
+		_pendingInvalidationHandles.Add(nodeId);
+		if (!_invalidationFlushScheduled)
+		{
+			_invalidationFlushScheduled = true;
+			NativeDispatcher.Main.Enqueue(FlushPendingInvalidations);
 		}
 	}
 
@@ -2129,23 +2237,21 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		object oldValue,
 		object newValue)
 	{
-		Trace($"Property change routed for {automationProperty}.");
+		Trace("Automation property change routed.");
 		base.NotifyPropertyChangedEventCore(peer, automationProperty, oldValue, newValue);
 
 		var resolvedPeer = peer.ResolveProviderPeer(resolveEventsSource: true);
-		if (!TryGetPeerOwner(resolvedPeer, out var owner))
+		PostOnMain(() =>
 		{
-			TryGetPeerOwner(peer, out owner);
-		}
-
-		if (owner is null || !_nodeElements.ContainsKey(owner.Visual.Handle))
-		{
-			return;
-		}
-
-		// Ensures invalidation for properties not in the base mapping.
-		// Duplicate adds to the pending set are no-ops.
-		InvalidateElement(owner.Visual.Handle);
+			foreach (var (nodeId, binding) in _nodePeers)
+			{
+				if (binding.Peer.TryGetTarget(out var source) && ReferenceEquals(source, peer) ||
+					binding.ProviderPeer.TryGetTarget(out var provider) && ReferenceEquals(provider, resolvedPeer))
+				{
+					InvalidateNode(nodeId);
+				}
+			}
+		});
 
 		if (automationProperty == AutomationElementIdentifiers.IsDialogProperty)
 		{
@@ -2158,6 +2264,12 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 				}
 			});
 		}
+	}
+
+	public override void NotifyInvalidatePeer(AutomationPeer peer)
+	{
+		base.NotifyInvalidatePeer(peer);
+		PostOnMain(ScheduleRebuild);
 	}
 
 	public override void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
@@ -2252,26 +2364,107 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		RecordEvent(AccessibilityNativeEventKind.TextChanged);
 	}
 
-	private AutomationPeer? ResolvePeer(nint handle)
+	private nint GetOrCreateNodeId(AccessibilityPeerNode node)
 	{
-		if (!_handleToOwner.TryGetValue(handle, out var weakRef) ||
-			!weakRef.TryGetTarget(out var element))
+		if (_peerToNodeId.TryGetValue(node.Peer, out var identity) &&
+			_nodePeers.TryGetValue(identity.Value, out var binding) &&
+			binding.Matches(node))
+		{
+			return identity.Value;
+		}
+
+		var nodeId = checked(++_nextNodeId);
+		_peerToNodeId.Remove(node.Peer);
+		_peerToNodeId.Add(node.Peer, new NodeIdentity { Value = nodeId });
+		return nodeId;
+	}
+
+	private UnoUIAccessibilityElement? FindNodeForOwnerHandle(nint handle)
+	{
+		if (_rebuildPending && !_isRebuildingTree)
+		{
+			RebuildTree();
+		}
+
+		return _nodeIdByHandle.TryGetValue(handle, out var nodeId) &&
+			_nodeElements.TryGetValue(nodeId, out var element)
+				? element
+				: null;
+	}
+
+	private UIElement? GetOwner(nint nodeId)
+		=> _nodePeers.TryGetValue(nodeId, out var binding) &&
+			binding.Owner is { } weakOwner &&
+			weakOwner.TryGetTarget(out var owner)
+				? owner
+				: null;
+
+	private bool IsLiveOwner(UIElement owner)
+		=> ReferenceEquals(owner.XamlRoot, _xamlRoot) &&
+			(owner is Popup popup
+				? popup.IsOpen &&
+					popup.PopupPanel is { IsLoaded: true } panel &&
+					ReferenceEquals(panel.XamlRoot, _xamlRoot)
+				: owner is not FrameworkElement { IsLoaded: false }) &&
+			!IsBlockedByActiveModal(owner);
+
+	private bool TryGetLiveOwner(AutomationPeer peer, out UIElement? owner)
+	{
+		var visited = new HashSet<AutomationPeer>(ReferenceEqualityComparer.Instance);
+		while (visited.Add(peer))
+		{
+			if (TryGetPeerOwner(AccessibilityPeerHelper.ResolveProviderPeer(peer), peer, out owner))
+			{
+				return IsLiveOwner(owner);
+			}
+
+			var parent = peer.GetParent();
+			if (parent?.GetChildren() is not { } children ||
+				!children.Any(child => ReferenceEquals(child, peer)))
+			{
+				break;
+			}
+
+			peer = parent;
+		}
+
+		owner = null;
+		return false;
+	}
+
+	private AutomationPeer? ResolvePeer(nint nodeId)
+	{
+		if (_rebuildPending && !_isRebuildingTree)
+		{
+			RebuildTree();
+		}
+
+		if (IsDisposed ||
+			!_nodePeers.TryGetValue(nodeId, out var binding) ||
+			!binding.Peer.TryGetTarget(out var peer) ||
+			!binding.ProviderPeer.TryGetTarget(out var providerPeer))
 		{
 			return null;
 		}
 
-		if (IsBlockedByActiveModal(element))
+		if (!ReferenceEquals(AccessibilityPeerHelper.ResolveProviderPeer(peer), providerPeer))
 		{
+			ScheduleRebuild();
 			return null;
 		}
 
-		var peer = element.GetOrCreateAutomationPeer();
-		if (peer is null)
+		TryGetPeerOwner(providerPeer, peer, out var owner);
+		if (binding.Owner is { } ownerReference
+			? !ownerReference.TryGetTarget(out var boundOwner) || !ReferenceEquals(boundOwner, owner)
+			: owner is not null)
 		{
+			ScheduleRebuild();
 			return null;
 		}
 
-		return AccessibilityPeerHelper.ResolveProviderPeer(peer);
+		return (owner is not null ? IsLiveOwner(owner) : TryGetLiveOwner(peer, out _))
+			? providerPeer
+			: null;
 	}
 
 	private AccessibilityNativeNodeSnapshot CreateSnapshot(UnoUIAccessibilityElement element)
@@ -2320,11 +2513,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			_ => null,
 		};
 
-		UIElement? owner = null;
-		if (_handleToOwner.TryGetValue(element.NodeId, out var ownerReference))
-		{
-			ownerReference.TryGetTarget(out owner);
-		}
+		var owner = GetOwner(element.NodeId);
 
 		AccessibilityNativeNodeDetails? details = null;
 		if (peer is not null)
@@ -2371,25 +2560,20 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		AutomationLandmarkType? landmarkType = null;
 		string? localizedLandmarkType = null;
 
-		if (owner is not null)
+		if (peer.IsRequiredForForm())
 		{
-			// IsRequiredForForm: only include when explicitly true (default is false).
-			if (AutomationProperties.GetIsRequiredForForm(owner))
-			{
-				isRequired = true;
-			}
+			isRequired = true;
+		}
 
-			// IsDataValidForForm: only include when explicitly false (default is true).
-			if (!AutomationProperties.GetIsDataValidForForm(owner))
-			{
-				isDataValid = false;
-			}
+		if (!peer.IsDataValidForForm())
+		{
+			isDataValid = false;
+		}
 
-			var lcid = AutomationProperties.GetCulture(owner);
-			if (lcid != 0)
-			{
-				culture = lcid;
-			}
+		var lcid = peer.GetCulture();
+		if (lcid != 0)
+		{
+			culture = lcid;
 		}
 
 		var lt = peer.GetLandmarkType();
@@ -2538,11 +2722,6 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 	private static AccessibilityNativeHierarchyDetails? BuildHierarchy(AutomationPeer peer, UIElement? owner)
 	{
-		if (owner is null)
-		{
-			return null;
-		}
-
 		int level = peer.GetLevel();
 		int position = peer.GetPositionInSet();
 		int size = peer.GetSizeOfSet();
@@ -2614,13 +2793,12 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		List<string>? ids = null;
 		foreach (var el in elements)
 		{
-			if (!ReferenceEquals(el.XamlRoot, _xamlRoot) ||
-				!_nodeElements.ContainsKey(el.Visual.Handle))
+			if (GetElementForOwner(el) is not UnoUIAccessibilityElement nativeElement)
 			{
 				continue;
 			}
 
-			var id = AutomationProperties.GetAutomationId(el);
+			var id = nativeElement.AccessibilityIdentifier;
 			if (!string.IsNullOrEmpty(id))
 			{
 				(ids ??= new List<string>()).Add(id);
@@ -2731,13 +2909,12 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 	internal string? GetLanguage(nint handle)
 	{
-		if (!_handleToOwner.TryGetValue(handle, out var weakRef) ||
-			!weakRef.TryGetTarget(out var owner))
+		if (ResolvePeer(handle) is not { } peer)
 		{
 			return null;
 		}
 
-		var lcid = AutomationProperties.GetCulture(owner);
+		var lcid = peer.GetCulture();
 		if (lcid == 0)
 		{
 			return null;
@@ -2751,7 +2928,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
-				this.Log().Warn($"[A11y] Ignoring invalid AutomationProperties.Culture LCID {lcid}: {ex.Message}");
+				this.Log().Warn($"[A11y] Ignoring invalid automation peer culture LCID {lcid}: {ex.Message}");
 			}
 
 			return null;
@@ -2769,9 +2946,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	internal AXCustomContent[]? GetCustomContent(nint handle)
 	{
 		var peer = ResolvePeer(handle);
-		if (peer is null ||
-			!_handleToOwner.TryGetValue(handle, out var weakReference) ||
-			!weakReference.TryGetTarget(out var owner))
+		if (peer is null)
 		{
 			return null;
 		}
@@ -2809,12 +2984,12 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			}
 		}
 
-		if (AutomationProperties.GetIsRequiredForForm(owner))
+		if (peer.IsRequiredForForm())
 		{
 			Add("Required", Localize("Yes"));
 		}
 
-		if (!AutomationProperties.GetIsDataValidForForm(owner))
+		if (!peer.IsDataValidForForm())
 		{
 			Add(
 				"Validation",
@@ -2847,7 +3022,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					: peer.GetLandmarkType().ToString());
 		}
 
-		if (owner.GetValue(AutomationProperties.AnnotationsProperty) is
+		if (GetOwner(handle)?.GetValue(AutomationProperties.AnnotationsProperty) is
 			IEnumerable<AutomationAnnotation> annotations)
 		{
 			foreach (var annotation in annotations)
