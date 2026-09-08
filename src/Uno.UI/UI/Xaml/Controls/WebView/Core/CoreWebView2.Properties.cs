@@ -127,6 +127,12 @@ public partial class CoreWebView2
 	/// </summary>
 	public event TypedEventHandler<CoreWebView2, CoreWebView2WebMessageReceivedEventArgs> WebMessageReceived;
 
+	/// <summary>Occurs when a WebView2 process fails or unexpectedly exits.</summary>
+	public event TypedEventHandler<CoreWebView2, CoreWebView2ProcessFailedEventArgs> ProcessFailed;
+
+	internal void RaiseProcessFailed(CoreWebView2ProcessFailedEventArgs args) =>
+		ProcessFailed?.Invoke(this, args);
+
 	internal event TypedEventHandler<CoreWebView2, WebViewUnsupportedUriSchemeIdentifiedEventArgs> UnsupportedUriSchemeIdentified;
 
 	/// <summary>

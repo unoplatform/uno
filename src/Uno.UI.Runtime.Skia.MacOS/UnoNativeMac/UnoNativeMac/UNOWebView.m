@@ -157,6 +157,7 @@ NSView* uno_webview_create(NSWindow *window, const char *ok, const char *cancel,
     webview.cancelString = [NSString stringWithUTF8String:cancel];
 
     webview.originalSuperView = ((UNOWindow*)window).renderingView;
+    uno_native_track(webview);
     return webview;
 }
 
@@ -165,15 +166,20 @@ void uno_webview_register_message_handler(WKWebView *webview)
 #if DEBUG
     NSLog(@"uno_webview_register_message_handler %p", webview);
 #endif
-	[webview.configuration.userContentController removeScriptMessageHandlerForName:@"unoWebView"];
-	[webview.configuration.userContentController removeScriptMessageHandlerForName:@"unoWebViewLifecycle"];
     __weak id weakSelf = webview;
+    // `addScriptMessageHandler:name:` raises on a name that is already taken, and the webview outlives
+    // every visual tree exit, so a re-entering element registers on the same WKWebView a second time.
+    [webview.configuration.userContentController removeScriptMessageHandlerForName:@"unoWebView"];
+    [webview.configuration.userContentController removeScriptMessageHandlerForName:@"unoWebViewLifecycle"];
     [webview.configuration.userContentController addScriptMessageHandler:weakSelf name:@"unoWebView"];
 	[webview.configuration.userContentController addScriptMessageHandler:weakSelf name:@"unoWebViewLifecycle"];
 }
 
-void uno_webview_unregister_message_handlers(WKWebView *webview)
+void uno_webview_unregister_message_handler(WKWebView *webview)
 {
+#if DEBUG
+    NSLog(@"uno_webview_unregister_message_handler %p", webview);
+#endif
     [webview.configuration.userContentController removeScriptMessageHandlerForName:@"unoWebView"];
     [webview.configuration.userContentController removeScriptMessageHandlerForName:@"unoWebViewLifecycle"];
 }

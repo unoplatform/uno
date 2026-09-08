@@ -123,7 +123,8 @@ namespace Uno.WinAppSDKSyncGenerator
 						using (_sb.Section($"{viewName} : {ConstructBaseClassString(view)}"))
 						{
 							// Our usage of obsolete attribte is for all platforms.
-							if (view.AndroidSymbol.GetAttributes().FirstOrDefault(a => a.AttributeClass.Name == "ObsoleteAttribute") is { } obsoleteAttribute)
+							// After the native drop, view types only exist in the Skia/Reference compilations; the [Obsolete] marking is cross-platform.
+							if ((view.SkiaSymbol ?? view.NetStdReferenceSymbol ?? view.AndroidSymbol ?? view.IOSSymbol ?? view.TvOSSymbol ?? view.WasmSymbol)?.GetAttributes().FirstOrDefault(a => a.AttributeClass.Name == "ObsoleteAttribute") is { } obsoleteAttribute)
 							{
 								var message = (string)obsoleteAttribute.ConstructorArguments[0].Value;
 								_sb.AppendParagraph(message);

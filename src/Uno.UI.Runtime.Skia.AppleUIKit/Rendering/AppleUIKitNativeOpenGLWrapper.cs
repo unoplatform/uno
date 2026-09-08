@@ -1,9 +1,5 @@
 #nullable enable
 
-// EAGL (the iOS/tvOS OpenGL ES context API) is unavailable on Mac Catalyst, so this whole
-// wrapper is excluded there. Registration is additionally gated at runtime to iOS/tvOS.
-#if !__MACCATALYST__
-
 using System;
 using System.Runtime.InteropServices;
 using Microsoft.UI.Xaml;
@@ -115,5 +111,3 @@ internal class AppleUIKitNativeOpenGLWrapper : INativeOpenGLWrapper
 }
 
 #pragma warning restore CA1422
-
-#endif

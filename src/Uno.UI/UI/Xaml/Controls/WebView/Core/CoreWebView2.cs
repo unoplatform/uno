@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -15,6 +15,10 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media;
+using Uno.Foundation.Extensibility;
 
 namespace Microsoft.Web.WebView2.Core;
 
@@ -35,6 +39,7 @@ public partial class CoreWebView2
 	internal long _navigationId;
 	private object? _processedSource;
 	private bool _initializationRequested;
+	private bool _nativeCreationInProgress;
 	private bool _isClosed;
 #if __SKIA__
 	private INativeWebView? _loadedNativeWebView;
@@ -44,6 +49,7 @@ public partial class CoreWebView2
 	{
 		HostToFolderMap = _hostToFolderMap.AsReadOnly();
 		_owner = owner;
+		Settings = new CoreWebView2Settings(this);
 		Settings.UserAgentChanged += OnSettingsUserAgentChanged;
 		Settings.IsScriptEnabledChanged += OnSettingsIsScriptEnabledChanged;
 		Settings.IsZoomControlEnabledChanged += OnSettingsIsZoomControlEnabledChanged;
@@ -53,7 +59,7 @@ public partial class CoreWebView2
 	{
 		if (_nativeWebView is ISupportsUserAgent ua)
 		{
-			ua.UserAgent = Settings.UserAgent;
+			ua.UserAgent = Settings.RequestedUserAgent;
 		}
 	}
 
@@ -76,7 +82,9 @@ public partial class CoreWebView2
 	internal IWebView Owner => _owner;
 
 	internal INativeWebView? NativeWebViewForCookies => _nativeWebView;
-	internal bool HasNativeWebView => _nativeWebView is not null;
+	internal bool HasNativeWebView => _nativeWebView is not null && _nativeWebViewInitializedTcs.Task.IsCompletedSuccessfully;
+	internal INativeWebViewController? NativeController => _nativeWebView as INativeWebViewController;
+	internal string? NativeUserAgent => (_nativeWebView as ISupportsUserAgent)?.UserAgent;
 
 	internal CoreWebView2Environment? CustomEnvironment { get; private set; }
 
@@ -84,37 +92,17 @@ public partial class CoreWebView2
 
 	internal void SetCustomEnvironment(CoreWebView2Environment? environment, CoreWebView2ControllerOptions? controllerOptions)
 	{
-		if (environment is null && controllerOptions is null)
-		{
-			return;
-		}
-
 		environment ??= _defaultEnvironment;
-
-		if (_nativeWebView is not null)
+		if (!environment.IsDefaultEnvironment)
 		{
-			if (ReferenceEquals(Environment, environment) && ReferenceEquals(CustomControllerOptions, controllerOptions))
-			{
-				return;
-			}
-
-			throw new ArgumentException("CoreWebView2 has already been initialized with a different environment or controller options.", nameof(environment));
+			ValidateEnvironmentForCurrentPlatform(environment, controllerOptions);
 		}
-		else if (_initializationRequested)
-		{
-			// WinUI lets concurrent EnsureCoreWebView2Async calls await the existing
-			// creation request. Arguments supplied by later calls do not replace the
-			// environment or controller options captured by the first request.
-			return;
-		}
-
-		ValidateEnvironmentForCurrentPlatform(environment, controllerOptions);
 		environment.AttachOwner(this);
 		CustomEnvironment = environment;
 		CustomControllerOptions = controllerOptions;
 	}
 
-	private static void ValidateEnvironmentForCurrentPlatform(CoreWebView2Environment environment, CoreWebView2ControllerOptions? controllerOptions)
+	internal static void ValidateEnvironmentForCurrentPlatform(CoreWebView2Environment environment, CoreWebView2ControllerOptions? controllerOptions)
 	{
 		if (OperatingSystem.IsBrowser())
 		{
@@ -202,7 +190,7 @@ public partial class CoreWebView2
 	/// Gets the CoreWebView2Settings object contains various modifiable
 	/// settings for the running WebView.
 	/// </summary>
-	public CoreWebView2Settings Settings { get; } = new();
+	public CoreWebView2Settings Settings { get; }
 
 	public void Navigate(string uri)
 	{
@@ -585,15 +573,33 @@ public partial class CoreWebView2
 
 	internal void OnOwnerApplyTemplate()
 	{
-		if (_isClosed || (_owner.RequiresExplicitInitialization && !_initializationRequested))
+		if (_isClosed || _nativeWebView is not null || _nativeCreationInProgress
+			|| (!_owner.IsLoaded && !OperatingSystem.IsWindows())
+			|| (_owner.RequiresExplicitInitialization && !_initializationRequested))
 		{
 			return;
 		}
 
+		_nativeCreationInProgress = true;
+		_ = InitializeNativeWebViewAsync();
+	}
+
+	private async Task InitializeNativeWebViewAsync()
+	{
 		try
 		{
 			DetachWebResourceRequestedSupport();
 			_nativeWebView = GetNativeWebViewFromTemplate();
+			if (_nativeWebView is IAsyncNativeWebView asynchronous)
+			{
+				await asynchronous.InitializeAsync();
+			}
+			if (_isClosed)
+			{
+				(_nativeWebView as ISupportsClose)?.Close();
+				_nativeWebView = null;
+				return;
+			}
 			if (_nativeWebView is null)
 			{
 				_nativeWebViewInitializedTcs.TrySetException(
@@ -619,15 +625,18 @@ public partial class CoreWebView2
 		catch (Exception error)
 		{
 			_nativeWebViewInitializedTcs.TrySetException(error);
-			throw;
+		}
+		finally
+		{
+			_nativeCreationInProgress = false;
 		}
 	}
 
 	private void ApplySettingsToNativeWebView()
 	{
-		if (_nativeWebView is ISupportsUserAgent ua && Settings.UserAgent is not null)
+		if (_nativeWebView is ISupportsUserAgent ua && Settings.RequestedUserAgent is { } userAgent)
 		{
-			ua.UserAgent = Settings.UserAgent;
+			ua.UserAgent = userAgent;
 		}
 
 		if (_nativeWebView is ISupportsScriptEnabled se)
@@ -806,11 +815,12 @@ public partial class CoreWebView2
 
 
 
-	private readonly TaskCompletionSource<bool> _nativeWebViewInitializedTcs = new();
+	private readonly TaskCompletionSource<bool> _nativeWebViewInitializedTcs = new(TaskCreationOptions.RunContinuationsAsynchronously);
 	internal Task EnsureNativeWebViewAsync()
 	{
+		ThrowIfClosed();
 		_initializationRequested = true;
-		if (_owner.IsLoaded && _nativeWebView is null)
+		if (_nativeWebView is null)
 		{
 			OnOwnerApplyTemplate();
 		}
@@ -867,7 +877,7 @@ public partial class CoreWebView2
 	[MemberNotNullWhen(true, nameof(_nativeWebView))]
 	private bool VerifyWebViewAvailability()
 	{
-		if (_nativeWebView == null)
+		if (_nativeWebView == null || !_nativeWebViewInitializedTcs.Task.IsCompletedSuccessfully)
 		{
 			if (_owner.IsLoaded)
 			{
@@ -972,5 +982,25 @@ public partial class CoreWebView2
 			_webResourceRequestedSupport.WebResourceRequested -= OnNativeWebResourceRequested;
 			_webResourceRequestedSupport = null;
 		}
+	}
+
+	internal INativeWebView? GetNativeWebViewFromTemplate()
+	{
+		var contentPresenter = _owner is Microsoft.UI.Xaml.Controls.WebView2 webView2
+			? webView2.GetNativePresenter()
+			: VisualTreeHelper.GetChildrenCount((DependencyObject)_owner) > 0
+				? VisualTreeHelper.GetChild((DependencyObject)_owner, 0) as ContentPresenter
+				: null;
+		if (contentPresenter is not { Name: "WebViewTemplateRoot" })
+		{
+			return null;
+		}
+
+		if (ApiExtensibility.CreateInstance<INativeWebViewProvider>(this, out var nativeWebViewProvider))
+		{
+			return nativeWebViewProvider.CreateNativeWebView(contentPresenter);
+		}
+
+		return null;
 	}
 }

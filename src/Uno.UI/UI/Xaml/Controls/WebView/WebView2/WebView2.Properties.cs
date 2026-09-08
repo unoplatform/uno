@@ -1,114 +1,78 @@
-﻿using System;
+// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference controls/dev/Generated/WebView2.properties.cpp, commit 3c9c168844f06c6ac000a97977f0bb3f4c90fd75
+
+#nullable enable
+
+using System;
 using Microsoft.Web.WebView2.Core;
 using Windows.Foundation;
-using Microsoft.UI.Xaml;
+using Windows.UI;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-public partial class WebView2
+partial class WebView2
 {
-	/// <summary>
-	/// Gets or sets a value that indicates whether backward navigation is possible.
-	/// </summary>
-	public bool CanGoBack
+	/// <summary>Gets or sets the URI of the current top level document.</summary>
+	public Uri Source
 	{
-		get => (bool)GetValue(CanGoBackProperty);
-		set => SetValue(CanGoBackProperty, value);
+		get => (Uri)GetValue(SourceProperty);
+		set => SetValue(SourceProperty, value);
 	}
 
-	/// <summary>
-	/// Identifies the CanGoBack dependency property.
-	/// </summary>
-	public static DependencyProperty CanGoBackProperty { get; } =
-		DependencyProperty.Register(nameof(CanGoBack), typeof(bool), typeof(WebView2), new FrameworkPropertyMetadata(false));
-
-	/// <summary>
-	/// Gets or sets a value that indicates whether forward navigation is possible.
-	/// </summary>
+	/// <summary>Gets or sets a value that indicates whether forward navigation is possible.</summary>
 	public bool CanGoForward
 	{
 		get => (bool)GetValue(CanGoForwardProperty);
 		set => SetValue(CanGoForwardProperty, value);
 	}
 
-	/// <summary>
-	/// Identifies the CanGoForward dependency property.
-	/// </summary>
-	public static DependencyProperty CanGoForwardProperty { get; } =
-		DependencyProperty.Register(nameof(CanGoForward), typeof(bool), typeof(WebView2), new FrameworkPropertyMetadata(false));
-
-	/// <summary>
-	/// Gets or sets the URI of the current top level document.
-	/// </summary>
-	public Uri Source
+	/// <summary>Gets or sets a value that indicates whether backward navigation is possible.</summary>
+	public bool CanGoBack
 	{
-		get => (Uri)GetValue(SourceProperty);
-		set
-		{
-			ThrowIfClosed();
-			SetValue(SourceProperty, value);
-		}
+		get => (bool)GetValue(CanGoBackProperty);
+		set => SetValue(CanGoBackProperty, value);
 	}
 
-	/// <summary>
-	/// Identifies the Source dependency property.
-	/// </summary>
+	/// <summary>Gets or sets the color to use as the WebView2 background.</summary>
+	public Color DefaultBackgroundColor
+	{
+		get => (Color)GetValue(DefaultBackgroundColorProperty);
+		set => SetValue(DefaultBackgroundColorProperty, value);
+	}
+
+	/// <summary>Identifies the Source dependency property.</summary>
 	public static DependencyProperty SourceProperty { get; } =
-		DependencyProperty.Register(nameof(Source), typeof(Uri), typeof(WebView2), new FrameworkPropertyMetadata(null,
-			(s, e) =>
-			{
-				var webView = (WebView2)s;
-				if (!webView._sourceChangeFromCore)
-				{
-					webView.ThrowIfClosed();
-					var newUri = (Uri)e.NewValue;
-					if (newUri != null)
-					{
-						webView.EnsureCoreWebView2Implicitly();
-						var targetUrl = newUri.IsAbsoluteUri ? newUri.AbsoluteUri : newUri.OriginalString;
-						webView.CoreWebView2OrThrow.Navigate(targetUrl);
-					}
-				}
-			}));
+		DependencyProperty.Register(nameof(Source), typeof(Uri), typeof(WebView2),
+			new FrameworkPropertyMetadata(null, (sender, args) => ((WebView2)sender).OnPropertyChanged(args)));
 
-	public bool IsScrollEnabled
-	{
-		get => (bool)GetValue(IsScrollEnabledProperty);
-		set => SetValue(IsScrollEnabledProperty, value);
-	}
+	/// <summary>Identifies the CanGoForward dependency property.</summary>
+	public static DependencyProperty CanGoForwardProperty { get; } =
+		DependencyProperty.Register(nameof(CanGoForward), typeof(bool), typeof(WebView2),
+			new FrameworkPropertyMetadata(default(bool), (sender, args) => ((WebView2)sender).OnPropertyChanged(args)));
 
-	public static DependencyProperty IsScrollEnabledProperty { get; } =
-		DependencyProperty.Register(
-			nameof(IsScrollEnabled),
-			typeof(bool),
-			typeof(WebView2),
-			new FrameworkPropertyMetadata(
-				true,
-				(s, e) => ((WebView2)s)?._coreWebView2?.OnScrollEnabledChanged((bool)e.NewValue)));
+	/// <summary>Identifies the CanGoBack dependency property.</summary>
+	public static DependencyProperty CanGoBackProperty { get; } =
+		DependencyProperty.Register(nameof(CanGoBack), typeof(bool), typeof(WebView2),
+			new FrameworkPropertyMetadata(default(bool), (sender, args) => ((WebView2)sender).OnPropertyChanged(args)));
 
-#pragma warning disable 67
-	/// <summary>
-	/// Occurs when the core WebView2 process fails.
-	/// </summary>
-	public event TypedEventHandler<WebView2, CoreWebView2ProcessFailedEventArgs> CoreProcessFailed;
+	/// <summary>Identifies the DefaultBackgroundColor dependency property.</summary>
+	public static DependencyProperty DefaultBackgroundColorProperty { get; } =
+		DependencyProperty.Register(nameof(DefaultBackgroundColor), typeof(Color), typeof(WebView2),
+			new FrameworkPropertyMetadata(sc_controllerDefaultBackgroundColor, (sender, args) => ((WebView2)sender).OnPropertyChanged(args)));
 
-	/// <summary>
-	/// Occurs when the WebView2 object is initialized.
-	/// </summary>
-	public event TypedEventHandler<WebView2, CoreWebView2InitializedEventArgs> CoreWebView2Initialized;
+	/// <summary>Occurs when the WebView2 has completely loaded or loading stopped with error.</summary>
+	public event TypedEventHandler<WebView2, CoreWebView2NavigationCompletedEventArgs>? NavigationCompleted;
 
-	/// <summary>
-	/// Occurs when the WebView2 has completely loaded (body.onload has been raised) or loading stopped with error.
-	/// </summary>
-	public event TypedEventHandler<WebView2, CoreWebView2NavigationCompletedEventArgs> NavigationCompleted;
+	/// <summary>Dispatches after web content sends a message to the app host.</summary>
+	public event TypedEventHandler<WebView2, CoreWebView2WebMessageReceivedEventArgs>? WebMessageReceived;
 
-	/// <summary>
-	/// Occurs when the main frame of the WebView2 navigates to a different URI.
-	/// </summary>
-	public event TypedEventHandler<WebView2, CoreWebView2NavigationStartingEventArgs> NavigationStarting;
+	/// <summary>Occurs when the main frame of the WebView2 navigates to a different URI.</summary>
+	public event TypedEventHandler<WebView2, CoreWebView2NavigationStartingEventArgs>? NavigationStarting;
 
-	/// <summary>
-	/// Dispatches after web content sends a message to the app host.
-	/// </summary>
-	public event TypedEventHandler<WebView2, CoreWebView2WebMessageReceivedEventArgs> WebMessageReceived;
+	/// <summary>Occurs when the core WebView2 process fails.</summary>
+	public event TypedEventHandler<WebView2, CoreWebView2ProcessFailedEventArgs>? CoreProcessFailed;
+
+	/// <summary>Occurs when the WebView2 object is initialized.</summary>
+	public event TypedEventHandler<WebView2, CoreWebView2InitializedEventArgs>? CoreWebView2Initialized;
 }

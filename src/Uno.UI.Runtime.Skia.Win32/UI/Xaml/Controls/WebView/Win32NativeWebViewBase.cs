@@ -22,6 +22,7 @@ internal abstract class Win32NativeWebViewBase : INativeWebView, IReportsCancele
 	private static WeakReference<Win32NativeWebViewBase>? _webViewForNextCreateWindow;
 	private static readonly Dictionary<HWND, WeakReference<Win32NativeWebViewBase>> _hwndToWebView = new();
 	private int _destroyWindowRequested;
+	private HWND _temporaryParentHwnd;
 
 	protected ContentPresenter Presenter { get; }
 	protected HWND Hwnd { get; }
@@ -53,6 +54,11 @@ internal abstract class Win32NativeWebViewBase : INativeWebView, IReportsCancele
 
 		using var lpClassName = new Win32Helper.NativeNulTerminatedUtf16String(WindowClassName);
 
+		var parent = ParentHwnd;
+		if (parent == HWND.Null)
+		{
+			parent = EnsureTemporaryParent();
+		}
 		_webViewForNextCreateWindow = new WeakReference<Win32NativeWebViewBase>(this);
 		unsafe
 		{
@@ -65,7 +71,7 @@ internal abstract class Win32NativeWebViewBase : INativeWebView, IReportsCancele
 			PInvoke.CW_USEDEFAULT,
 			PInvoke.CW_USEDEFAULT,
 			PInvoke.CW_USEDEFAULT,
-			ParentHwnd,
+			parent,
 			HMENU.Null,
 			Win32Helper.GetHInstance(),
 			null);
@@ -74,6 +80,7 @@ internal abstract class Win32NativeWebViewBase : INativeWebView, IReportsCancele
 
 		if (Hwnd == HWND.Null)
 		{
+			DestroyTemporaryParent();
 			throw new InvalidOperationException($"{nameof(PInvoke.CreateWindowEx)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
@@ -101,6 +108,38 @@ internal abstract class Win32NativeWebViewBase : INativeWebView, IReportsCancele
 		presenter.Content = new Win32NativeWindow(Hwnd);
 	}
 
+	private unsafe HWND EnsureTemporaryParent()
+	{
+		// The controller can be initialized before a XamlRoot exists, just as with MUX's temporary host HWND.
+		using var className = new Win32Helper.NativeNulTerminatedUtf16String("Static");
+		_temporaryParentHwnd = PInvoke.CreateWindowEx(
+			0, className, new PCWSTR(), WINDOW_STYLE.WS_OVERLAPPED, 0, 0, 0, 0,
+			HWND.Null, HMENU.Null, Win32Helper.GetHInstance(), null);
+		if (_temporaryParentHwnd == HWND.Null)
+		{
+			throw new InvalidOperationException($"Cannot create the temporary WebView2 parent: {Win32Helper.GetErrorMessage()}");
+		}
+		return _temporaryParentHwnd;
+	}
+
+	protected void ReleaseTemporaryParent()
+	{
+		if (_temporaryParentHwnd != HWND.Null && ParentHwnd is var parent && parent != HWND.Null)
+		{
+			PInvoke.SetParent(Hwnd, parent);
+			DestroyTemporaryParent();
+		}
+	}
+
+	private void DestroyTemporaryParent()
+	{
+		if (_temporaryParentHwnd != HWND.Null)
+		{
+			PInvoke.DestroyWindow(_temporaryParentHwnd);
+			_temporaryParentHwnd = HWND.Null;
+		}
+	}
+
 	~Win32NativeWebViewBase() => DestroyWindow();
 
 	protected void DestroyWindow()
@@ -112,7 +151,10 @@ internal abstract class Win32NativeWebViewBase : INativeWebView, IReportsCancele
 				return;
 			}
 
-			Presenter.Content = null;
+			if (Presenter.Content is Win32NativeWindow window && (HWND)window.Hwnd == Hwnd)
+			{
+				Presenter.Content = null;
+			}
 			var success = PInvoke.DestroyWindow(Hwnd);
 			if (!success && this.Log().IsEnabled(LogLevel.Error))
 			{
@@ -123,6 +165,7 @@ internal abstract class Win32NativeWebViewBase : INativeWebView, IReportsCancele
 			{
 				_hwndToWebView.Remove(Hwnd);
 			}
+			DestroyTemporaryParent();
 		}
 
 		if (Presenter.DispatcherQueue.HasThreadAccess)

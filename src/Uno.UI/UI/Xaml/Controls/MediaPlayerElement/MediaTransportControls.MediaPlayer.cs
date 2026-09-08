@@ -191,9 +191,6 @@ namespace Microsoft.UI.Xaml.Controls
 				var elapsed = args as TimeSpan? ?? TimeSpan.Zero;
 				m_tpTimeElapsedElement.Maybe<TextBlock>(p => p.Text = FormatTime(elapsed));
 				if (
-#if __ANDROID__ || __APPLE_UIKIT__
-					!m_isInScrubMode &&
-#endif
 					m_tpMediaPositionSlider is not null)
 				{
 					m_positionUpdateUIOnly = true;
@@ -401,7 +398,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_isVolumeRewindRequestedAndAudioIsPlaying = null;
 			}
 
-#if __SKIA__ || __WASM__
+#if __SKIA__
 			//For wasm use the PlaybackRate instead the UpdateTimePositionRate
 			_mediaPlayer.PlaybackRate =
 									_mediaPlayer.PlaybackRate <= 1 ? 2 : /*To stop the Rewind*/
@@ -446,7 +443,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_isVolumeRewindRequestedAndAudioIsPlaying = _mediaPlayer.Volume;
 				_mediaPlayer.Volume = 0;
 			}
-#if __SKIA__ || __WASM__
+#if __SKIA__
 			if (_mediaPlayer.PlaybackRate != 1)
 			{
 				_mediaPlayer.PlaybackRate = 1;

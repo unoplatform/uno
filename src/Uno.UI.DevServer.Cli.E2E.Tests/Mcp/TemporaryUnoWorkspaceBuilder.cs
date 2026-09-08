@@ -181,7 +181,7 @@ internal static partial class TemporaryUnoWorkspaceBuilder
 			.Select(version => version!)
 			.Where(version =>
 			{
-				var hostPath = Path.Combine(devServerRoot, version, "tools", "rc", "host", "net10.0", "Uno.UI.RemoteControl.Host.dll");
+				var hostPath = Path.Combine(devServerRoot, version, "tools", "rc", "host", "net11.0", "Uno.UI.RemoteControl.Host.dll");
 				return File.Exists(hostPath);
 			})
 			.OrderByDescending(ParseVersionKey)
@@ -189,7 +189,7 @@ internal static partial class TemporaryUnoWorkspaceBuilder
 
 		if (compatibleVersions.Length == 0)
 		{
-			throw new InvalidOperationException("Unable to find a locally cached Uno SDK version whose DevServer package exposes a net10.0 host.");
+			throw new InvalidOperationException("Unable to find a locally cached Uno SDK version whose DevServer package exposes a net11.0 host.");
 		}
 
 		return compatibleVersions[0];

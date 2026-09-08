@@ -62,10 +62,10 @@ Each platform has its own rendering backend enum reflecting the backends it supp
 
 ### Using FeatureConfiguration Flags
 
-For backwards compatibility and for platforms without a host builder (such as Android), rendering can be configured via `FeatureConfiguration.Rendering`:
+For backwards compatibility, rendering can also be configured via `FeatureConfiguration.Rendering`:
 
 ```csharp
-// Android — set before ApplicationActivity.OnStart()
+// Android — set before host.Build()
 FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid = true;
 
 // Linux/X11 — set before host.Build()
@@ -80,10 +80,27 @@ FeatureConfiguration.Rendering.UseVulkanOnWin32 = true;
 
 ### Android
 
-Android does not use a host builder. Enable Vulkan in your `Application` class or app startup, before the activity is created:
+Android uses the same host builder as the other targets, from `CreateHost()` in your `Application` class (see [Customizing the Android `Application` class](xref:Uno.Features.CustomizingAndroidApplication)):
 
 ```csharp
-FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid = true;
+protected override UnoPlatformHost CreateHost() =>
+    UnoPlatformHostBuilder.Create()
+        .App(() => new App())
+        .UseAndroid(b => b.UseVulkan())
+        .Build();
+```
+
+Android exposes two independent options rather than a single backend enum, because the Vulkan path can fail at runtime and fall back to the canvas render view:
+
+| Option | Description |
+|--------|-------------|
+| `UseVulkan(bool)` | Use the Vulkan render view when the device reports Vulkan support. Default `true`. |
+| `UseOpenGL(bool)` | Accelerate the canvas render view — used whenever Vulkan is disabled or unavailable — with OpenGL ES. Default `true`. |
+
+To force software rendering on both paths, disable each one:
+
+```csharp
+.UseAndroid(b => b.UseVulkan(false).UseOpenGL(false))
 ```
 
 ## Fallback Behavior

@@ -10,16 +10,16 @@ namespace Microsoft.Web.WebView2.Core;
 public partial class CoreWebView2Settings
 {
 	private string? _userAgent;
+	private readonly CoreWebView2? _owner;
 	private bool _isScriptEnabled = true;
 	private bool _isZoomControlEnabled = true;
 
-	internal CoreWebView2Settings()
-	{
-	}
+	internal CoreWebView2Settings(CoreWebView2? owner = null) => _owner = owner;
 
 	internal event EventHandler? UserAgentChanged;
 	internal event EventHandler? IsScriptEnabledChanged;
 	internal event EventHandler? IsZoomControlEnabledChanged;
+	internal string? RequestedUserAgent => _userAgent;
 
 	/// <summary>
 	/// Determines whether communication from the host
@@ -36,7 +36,7 @@ public partial class CoreWebView2Settings
 	/// </remarks>
 	public string? UserAgent
 	{
-		get => _userAgent;
+		get => _owner?.NativeUserAgent ?? _userAgent;
 		set
 		{
 			if (!string.IsNullOrEmpty(value) && !string.Equals(_userAgent, value, StringComparison.Ordinal))

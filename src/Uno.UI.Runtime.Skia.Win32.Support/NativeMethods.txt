@@ -204,6 +204,7 @@ GetDC
 GetDeviceCaps
 GetDpiForWindow
 GetDpiForMonitor
+GetFocus
 GetIconInfo
 GetKeyState
 GetObject
@@ -286,3 +287,9 @@ wglGetCurrentContext
 wglGetCurrentDC
 wglGetProcAddress
 wglMakeCurrent
+GetSysColor
+SystemParametersInfo
+HIGHCONTRASTW
+HIGHCONTRASTW_FLAGS
+SYSTEM_PARAMETERS_INFO_ACTION
+SYS_COLOR_INDEX

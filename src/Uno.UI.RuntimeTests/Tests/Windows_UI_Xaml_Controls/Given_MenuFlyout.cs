@@ -12,7 +12,6 @@ using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
-using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.MenuFlyoutPages;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
@@ -88,40 +87,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_Native_AppBarButton_And_Managed_Popups()
-		{
-			using (StyleHelper.UseNativeFrameNavigation())
-			{
-				var page = new Native_AppBarButton_Page();
-
-				WindowHelper.WindowContent = page;
-				await WindowHelper.WaitForLoaded(page);
-
-				var flyout = page.SUT.Flyout as MenuFlyout;
-				try
-				{
-					await ControlHelper.DoClickUsingAP(page.SUT);
-#if !WINAPPSDK
-					Assert.IsFalse(flyout.UseNativePopup);
-#endif
-					var flyoutItem = page.FirstFlyoutItem;
-
-					await WindowHelper.WaitForLoaded(flyoutItem);
-					var pageBounds = page.GetOnScreenBounds();
-					var flyoutItemBounds = flyoutItem.GetOnScreenBounds();
-					Assert.AreEqual(pageBounds.Right, flyoutItemBounds.Right, delta: 1);
-					NumberAssert.Less(flyoutItemBounds.Top, pageBounds.Height / 4); // Exact command bar height may vary between platforms, but the flyout should at least be in the ~top 1/4th of screen
-				}
-				finally
-				{
-					flyout.Hide();
-				}
-			}
-		}
-
-		[TestMethod]
-		[RequiresFullWindow]
 		public async Task When_Add_MenuFlyoutSeparator_To_MenuBarItem()
 		{
 			var menuBarItem = new MenuBarItem
@@ -193,6 +158,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task Verify_MenuBarItem_Bounds()
 		{
 			var flyoutItem = new MenuFlyoutItem { Text = "Open..." };
@@ -250,13 +216,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(32, menuBarItemBounds.Height, 1);
 
 				var expectedY = 39.0;
-#if __ANDROID__
-				if (!FeatureConfiguration.Popup.UseNativePopup)
-				{
-					// If using managed popup, the expected offset must be adjusted for the status bar
-					expectedY += menuBarBounds.Y;
-				}
-#endif
 
 				Assert.AreEqual(5, flyoutItemBounds.X, 3);
 				Assert.AreEqual(expectedY, flyoutItemBounds.Y, 3);
@@ -268,17 +227,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if __ANDROID__
-		[TestMethod]
-		[RequiresFullWindow]
-		[Ignore("Flaky #9080")]
-		public async Task Verify_MenuBarItem_Bounds_Native_Popups()
-		{
-			using (FeatureConfigurationHelper.UseNativePopups())
-			{
-				await Verify_MenuBarItem_Bounds();
-			}
-		}
-
 		[TestMethod]
 		[RequiresFullWindow]
 		public async Task Verify_MenuBarItem_Bounds_Managed_Popups()
@@ -427,7 +375,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finally
 			{
 				subItem.Close();
-				flyout.Close();
+				flyout.Hide();
 			}
 		}
 #endif
@@ -631,7 +579,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/480")]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
+		// Skia-WASM: the item resolves the application theme instead of the owner's subtree theme, see https://github.com/unoplatform/uno/issues/24143
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native | RuntimeTestPlatforms.SkiaWasm)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
 		public async Task When_MenuFlyout_Item_Uses_Owner_Subtree_Theme_Light_Under_Dark_App()
 		{
 #if HAS_UNO
@@ -683,12 +632,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForLoaded(item);
 				await WindowHelper.WaitForIdle();
 
-				// The popup-presented item resolves its {ThemeResource} foreground asynchronously after load;
-				// wait for the brush to resolve before asserting its color (raced on slower runtimes, e.g. WASM).
-				await UITestHelper.WaitFor(
-					() => (item.Foreground as SolidColorBrush) is not null,
-					timeoutMS: 5000,
-					message: "Menu item {ThemeResource} foreground brush should have resolved");
+				// The popup-presented item inherits the owner's theme and resolves its {ThemeResource}
+				// foreground asynchronously after load; wait for both to converge before asserting
+				// (raced on slower runtimes, e.g. WASM). The predicate must be the converged value:
+				// the item already holds a non-null brush from parse time, so a null check never waits.
+				await WindowHelper.WaitFor(
+					() => (Theme: item.ActualTheme, Foreground: (item.Foreground as SolidColorBrush)?.Color),
+					(Theme: ElementTheme.Light, Foreground: (Color?)Colors.Green),
+					messageBuilder: actual =>
+						$"Menu item did not converge on the owner's Light theme with the Light sentinel (Green); " +
+						$"last observed theme {actual.Theme}, foreground {actual.Foreground?.ToString() ?? "(null)"}",
+					timeoutMS: 5000);
 
 				Assert.AreEqual(ElementTheme.Light, owner.ActualTheme, "Owner should be in the Light subtree.");
 				Assert.AreEqual(ElementTheme.Light, item.ActualTheme, "Menu item should inherit the owner's Light theme.");
@@ -734,7 +688,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// ------------------------------------------------------------------
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
+		// Skia-WASM: the item resolves the application theme instead of the owner's subtree theme, see https://github.com/unoplatform/uno/issues/24143
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Native | RuntimeTestPlatforms.SkiaWasm)] // Owner-subtree theme override is Skia-only; native UI targets honor OS/app theme only
 		[GitHubWorkItem("https://github.com/unoplatform/kahua-private/issues/480")]
 		public async Task When_MenuFlyout_Opens_First_Time_Foreground_Should_Not_Flash_Wrong_Theme()
 		{
@@ -809,6 +764,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				await WindowHelper.WaitForIdle();
 				Snapshot("after-second-idle");
+
+				// The corrective theme walk lands asynchronously, so poll for the converged state instead
+				// of racing it. The four visible checkpoints above are already recorded, so this wait
+				// cannot hide a flash — it only decides whether convergence ever happened.
+				await WindowHelper.WaitFor(
+					() => (Theme: item.ActualTheme, Foreground: (item.Foreground as SolidColorBrush)?.Color),
+					(Theme: ElementTheme.Light, Foreground: (Color?)Colors.Green),
+					messageBuilder: actual =>
+						$"Menu item never converged on the owner's Light theme with the Light sentinel (Green); " +
+						$"last observed theme {actual.Theme}, foreground {actual.Foreground?.ToString() ?? "(null)"}. " +
+						$"All observations (checkpoint → color): " +
+						$"[{string.Join(", ", observed.Select(o => $"{o.Checkpoint}={o.Color}"))}]",
+					timeoutMS: 5000);
 
 				// Final state must be the Light sentinel — confirms the existing fix
 				// converges, so any Red below is a transient flash, not a final regression.

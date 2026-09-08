@@ -34,7 +34,20 @@ public class Given_WebView2_Improvements
 		""";
 
 	[TestCleanup]
-	public void Cleanup() => TestServices.WindowHelper.WindowContent = null;
+	public void Cleanup()
+	{
+		try
+		{
+			if (TestServices.WindowHelper.WindowContent is Border { Child: WebView2 webView })
+			{
+				webView.Close();
+			}
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
 
 	[TestMethod]
 	public async Task When_Factories_And_Cookie_Defaults_Are_Used()
@@ -43,7 +56,7 @@ public class Given_WebView2_Improvements
 		var environment = await CoreWebView2Environment.CreateWithOptionsAsync(null, null, options);
 		var controllerOptions = environment.CreateCoreWebView2ControllerOptions();
 		var printSettings = environment.CreatePrintSettings();
-		var webView = new WebView2();
+		var webView = await CreateWebViewAsync();
 		var cookie = webView.CoreWebView2.CookieManager.CreateCookie("uno", "value", "example.com", "/");
 
 		Assert.IsNotNull(controllerOptions);
@@ -224,11 +237,16 @@ public class Given_WebView2_Improvements
 	[TestMethod]
 	public async Task When_Concurrent_Ensure_Uses_The_First_Environment()
 	{
-		var firstEnvironment = await CoreWebView2Environment.CreateAsync();
-		var secondEnvironment = await CoreWebView2Environment.CreateAsync();
+		var firstEnvironment = await CreateIsolatedEnvironmentAsync();
+		var secondEnvironment = await CreateIsolatedEnvironmentAsync();
 		var webView = new WebView2 { Width = 320, Height = 240 };
 		var initializedCount = 0;
-		webView.CoreWebView2Initialized += (_, _) => initializedCount++;
+		Exception? initializationError = null;
+		webView.CoreWebView2Initialized += (_, args) =>
+		{
+			initializedCount++;
+			initializationError = args.Exception;
+		};
 
 		var firstInitialization = webView.EnsureCoreWebView2Async(firstEnvironment);
 		var secondInitialization = webView.EnsureCoreWebView2Async(secondEnvironment);
@@ -238,6 +256,7 @@ public class Given_WebView2_Improvements
 		await firstInitialization;
 		await secondInitialization;
 
+		Assert.IsNotNull(webView.CoreWebView2, initializationError?.ToString());
 		Assert.AreSame(firstEnvironment, webView.CoreWebView2.Environment);
 		Assert.AreEqual(1, initializedCount);
 	}
@@ -313,17 +332,24 @@ public class Given_WebView2_Improvements
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS)]
 	public async Task When_InPrivate_Environment_Is_Applied_Before_Initialization()
 	{
-		var environment = await CoreWebView2Environment.CreateWithOptionsAsync(null, null, new CoreWebView2EnvironmentOptions());
+		var environment = await CreateIsolatedEnvironmentAsync();
 		var controllerOptions = environment.CreateCoreWebView2ControllerOptions();
 		controllerOptions.IsInPrivateModeEnabled = true;
 		var webView = new WebView2 { Width = 320, Height = 240 };
+		Exception? initializationError = null;
+		webView.CoreWebView2Initialized += (_, args) => initializationError = args.Exception;
 		var initialization = webView.EnsureCoreWebView2Async(environment, controllerOptions);
 		var border = new Border { Child = webView };
 		TestServices.WindowHelper.WindowContent = border;
 		await TestServices.WindowHelper.WaitForLoaded(border);
 		await initialization;
 
+		Assert.IsNotNull(webView.CoreWebView2, initializationError?.ToString());
 		Assert.AreSame(environment, webView.CoreWebView2.Environment);
+		if (OperatingSystem.IsWindows())
+		{
+			Assert.IsTrue(webView.CoreWebView2.Profile.IsInPrivateModeEnabled);
+		}
 		var otherEnvironment = await CoreWebView2Environment.CreateAsync();
 		Func<Task> reinitialize = async () => await webView.EnsureCoreWebView2Async(otherEnvironment);
 		await reinitialize.Should().ThrowAsync<ArgumentException>();
@@ -603,6 +629,18 @@ public class Given_WebView2_Improvements
 		Assert.AreEqual(1, completions.Count);
 		Assert.IsFalse(completions[0].IsSuccess);
 		Assert.AreEqual(CoreWebView2WebErrorStatus.OperationCanceled, completions[0].WebErrorStatus);
+	}
+
+	private static async Task<CoreWebView2Environment> CreateIsolatedEnvironmentAsync()
+	{
+		string? userDataFolder = null;
+		if (OperatingSystem.IsWindows())
+		{
+			var root = Environment.GetEnvironmentVariable("UNO_WEBVIEW2_TEST_USER_DATA_ROOT")
+				?? Path.Combine(Environment.CurrentDirectory, "webview2-test-profiles");
+			userDataFolder = Path.Combine(root, "webview2-environment-" + Guid.NewGuid().ToString("N"));
+		}
+		return await CoreWebView2Environment.CreateWithOptionsAsync(null, userDataFolder, new CoreWebView2EnvironmentOptions());
 	}
 
 	private static async Task<WebView2> CreateWebViewAsync()

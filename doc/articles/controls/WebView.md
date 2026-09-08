@@ -28,6 +28,10 @@ Afterward, you can perform actions such as navigating to an HTML string:
 MyWebView.NavigateToString("<html><body><p>Hello world!</p></body></html>");
 ```
 
+`CoreWebView2` is `null` until initialization succeeds. Setting `Source` initializes it implicitly; loading an otherwise blank control does not. On Windows, explicit initialization can complete before the control is attached to a window. Other native hosts may require the control to be loaded first.
+
+Subscribe to `CoreWebView2Initialized` to inspect its `Exception` property. A failed native creation can complete `EnsureCoreWebView2Async` without producing a core object, so check `CoreWebView2` before using it. A later call can retry initialization. Concurrent initialization requests await the first request; once initialization succeeds, non-null environment and controller arguments must match the original objects by reference.
+
 ## Desktop support
 
 To enable `WebView` on the `-desktop` target, add the `WebView` Uno Feature in your `.csproj`:
@@ -156,6 +160,15 @@ webView.CoreWebView2.Settings.IsZoomControlEnabled = false;
 
 Platform browser restrictions still apply. WebAssembly cannot override its user agent or disable scripts and browser zoom. Some WebKit-based hosts retain the requested zoom setting without changing native gesture behavior.
 
+The WinRT `UserAgent` contract ignores `null` and empty assignments. On Windows, the getter reports the actual browser user agent. To restore the default, capture it before applying an override and assign that saved value:
+
+```csharp
+var defaultUserAgent = webView.CoreWebView2.Settings.UserAgent;
+webView.CoreWebView2.Settings.UserAgent = "MyApp/1.0";
+// Later, before the next navigation:
+webView.CoreWebView2.Settings.UserAgent = defaultUserAgent;
+```
+
 ## Navigating to web content in the application package
 
 To load local web content bundled with the application, you can use the `SetVirtualHostNameToFolderMapping` method. This allows you to set a virtual hostname that maps to a folder within the package, from which the web content will be loaded:
@@ -213,15 +226,12 @@ The flag defaults to `true` in `DEBUG` builds and `false` in `RELEASE` builds.
 | Platform | What it enables | How to open |
 | ---------- | ----------------- | ------------- |
 | **Windows / Linux (Skia)** | Chromium DevTools | Right-click inside the WebView and choose **Inspect**, or press <kbd>F12</kbd>. |
-| **iOS / Mac Catalyst / macOS** | Safari Web Inspector against the `WKWebView` (iOS 16.4+, macOS 13.3+) | In Safari, enable the **Develop** menu, then pick the device → page. See Apple's [Inspecting iOS](https://developer.apple.com/documentation/safari-developer-tools/inspecting-ios) guide. |
+| **iOS / macOS** | Safari Web Inspector against the `WKWebView` (iOS 16.4+, macOS 13.3+) | In Safari, enable the **Develop** menu, then pick the device → page. See Apple's [Inspecting iOS](https://developer.apple.com/documentation/safari-developer-tools/inspecting-ios) guide. |
 | **Android** | Chrome DevTools remote debugging | Open `chrome://inspect` in desktop Chrome with the device connected. |
 | **WebAssembly** | N/A | Use the host browser's developer tools (<kbd>F12</kbd>). |
 
 > [!IMPORTANT]
 > On Apple platforms the OS gates inspection to apps signed with the get-task-allow entitlement (DEBUG / development builds). Setting the flag in a RELEASE build has no visible effect.
->
-> [!NOTE]
-> The legacy iOS-only `Uno.UI.FeatureConfiguration.WebView2.IsInspectable` property is now an obsolete alias for `EnableDevTools`.
 
 ## Customizing the WebView2 environment (Windows)
 
@@ -283,7 +293,11 @@ controllerOptions.IsInPrivateModeEnabled = true;
 await webView.EnsureCoreWebView2Async(environment, controllerOptions);
 ```
 
-Windows supports the complete environment and controller option set on both WebView2 backends. The macOS Skia host supports private mode. Other custom environment combinations throw `NotSupportedException` when the native browser cannot provide equivalent behavior.
+Windows supports these environment and controller options through the WebView2Aot backend. The macOS Skia host supports private mode. Other custom environment combinations throw `NotSupportedException` when the native browser cannot provide equivalent behavior.
+
+On Windows, the environment factories create a real native environment before returning. The same environment may be shared by multiple controls. Closing one control does not invalidate the environment or the other controls that use it.
+
+Native environments sharing a user-data folder must use compatible options, including language. Use separate folders for independent configurations or tests.
 
 ## Cookies
 
@@ -325,14 +339,15 @@ The document/content events depend on equivalent callbacks from the native brows
 
 Setting `CoreWebView2NavigationStartingEventArgs.Cancel` leaves the current document intact and completes the abandoned navigation with a `NavigationCompleted` whose `IsSuccess` is `false` and whose `WebErrorStatus` is `CoreWebView2WebErrorStatus.OperationCanceled`, matching WebView2 on every target.
 
-Call `WebView2.Close()` when the control will not be used again. Closing releases native browser resources and is terminal: subsequent navigation, script execution, or initialization calls throw `ObjectDisposedException`.
+Removing a control from the visual tree does not close its browser. Reattachment preserves the core and its document.
+
+Call `WebView2.Close()` when the control will not be used again. Closing releases native browser resources, clears `CoreWebView2`, resets `CanGoBack` and `CanGoForward`, and preserves `Source`. Closing is terminal: initialization and a new non-null `Source` are rejected with `ObjectDisposedException`. `Reload`, `NavigateToString`, and `ExecuteScriptAsync` require a valid core and throw `InvalidOperationException` without one. `GoBack` and `GoForward` are no-ops when a valid core or the corresponding history entry is absent.
+
+On Windows, `CoreWebView2.ProcessFailed` is forwarded to `WebView2.CoreProcessFailed`. A browser-process exit clears the core and history state; call `EnsureCoreWebView2Async` or set a new `Source` to recreate it using the existing environment. A renderer-process exit retains the core and can be recovered with `Reload`.
 
 ## Querying the environment and the profile (Windows)
 
 Live `CoreWebView2Environment` and `CoreWebView2Profile` metadata is implemented on Windows (Skia Desktop). On other targets, members without an equivalent native capability throw `NotImplementedException`.
-
-> [!NOTE]
-> This requires .NET 10 or later. An app targeting .NET 9 keeps the previous `NotImplementedException` behavior for all of the members below.
 
 ### Which browser is installed
 
@@ -352,7 +367,7 @@ catch (FileNotFoundException)
 
 Passing a `browserExecutableFolder` is authoritative: if no browser is found there, the call fails rather than falling back to the installed one. The version string carries a channel suffix on non-stable channels (for example `120.0.2210.91 beta`), so parse only the leading token. Note that these are static members, resolved through the Skia host — call them after the application host has started.
 
-The overload taking `CoreWebView2EnvironmentOptions` is **not** implemented, because that options type is itself unimplemented and could not be honored.
+`CreateWithOptionsAsync` accepts `CoreWebView2EnvironmentOptions` as shown above. The separate browser-version-query overload taking options remains unsupported.
 
 ### Environment and profile of a running WebView2
 
@@ -372,10 +387,7 @@ var profile = webView.CoreWebView2.Profile;
 
 `FailureReportFolderPath` is created lazily by the browser, so the directory may not exist yet.
 
-> [!NOTE]
-> Unlike the static members above, these three are provided by the default WebView2 backend only. An app that opts into the other backend with `UNO_WEBVIEW2_BACKEND=microsoft.web.webview2` gets `NotImplementedException` from them.
->
-> `ProfileName` is currently always empty on Windows. Uno creates the WebView without controller options, so no profile name is requested — the profile still resolves to the default one, and `ProfilePath` (a directory under `UserDataFolder`) is the reliable way to identify it.
+`ProfileName` reflects the native profile, including names requested through controller options. `ProfilePath` identifies its directory under `UserDataFolder`. Environment metadata remains available after an individual control is closed.
 
 ### Clearing browsing data
 
@@ -585,7 +597,7 @@ When using the WebView2 and running on WinAppSDK, make sure to create an `x64` o
 
 ## Windows Specifics
 
-Starting with Uno 7, WebView2 has two separate backends on Windows:
+Uno 6.7 has two separate backends on Windows for WebView2:
 
 - Microsoft.Web.WebView2
 - WebView2Aot
@@ -609,3 +621,5 @@ public partial class Program
     }
 }
 ```
+
+Uno 7 removes support for the Microsoft.Web.WebView2 backend, along with support for the `microsoft.web.webview2` value within the `UNO_WEBVIEW2_BACKEND` environment variable.

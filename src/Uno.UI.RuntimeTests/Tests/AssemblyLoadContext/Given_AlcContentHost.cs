@@ -763,7 +763,7 @@ public class Given_AlcContentHost
 		alcWindow.Activated += (sender, args) =>
 		{
 			activatedFired = true;
-			activationState = args.WindowActivationState;
+			activationState = (Windows.UI.Core.CoreWindowActivationState)args.WindowActivationState;
 		};
 
 		alcWindow.Activate();
@@ -785,7 +785,7 @@ public class Given_AlcContentHost
 		alcWindow.Activated += (sender, args) =>
 		{
 			activatedFired = true;
-			activationState = args.WindowActivationState;
+			activationState = (Windows.UI.Core.CoreWindowActivationState)args.WindowActivationState;
 		};
 
 		alcWindow.Activate();
@@ -807,7 +807,7 @@ public class Given_AlcContentHost
 		alcWindow.Activated += (sender, args) =>
 		{
 			activatedFired = true;
-			activationState = args.WindowActivationState;
+			activationState = (Windows.UI.Core.CoreWindowActivationState)args.WindowActivationState;
 		};
 
 		ApplyDeferredContentFromSecondaryApp();
@@ -832,7 +832,7 @@ public class Given_AlcContentHost
 		alcWindow.Activated += (sender, args) =>
 		{
 			activatedFired = true;
-			activationState = args.WindowActivationState;
+			activationState = (Windows.UI.Core.CoreWindowActivationState)args.WindowActivationState;
 		};
 
 		ApplyDeferredContentFromSecondaryApp();
@@ -1746,7 +1746,9 @@ public class Given_AlcContentHost
 
 		// Determine target framework and configuration
 		var targetFramework =
-#if NET10_0
+#if NET11_0
+			"net11.0";
+#elif NET10_0
 			"net10.0";
 #elif NET9_0
 			"net9.0";

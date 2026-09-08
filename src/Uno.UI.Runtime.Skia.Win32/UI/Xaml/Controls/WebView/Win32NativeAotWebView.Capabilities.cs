@@ -33,33 +33,6 @@ internal sealed partial class Win32NativeAotWebView
 	private bool _eventsRegistered;
 	private bool _isClosed;
 
-	private WebView2.CoreWebView2EnvironmentOptions CreateEnvironmentOptions()
-	{
-		var options = new WebView2.CoreWebView2EnvironmentOptions();
-		var customOptions = _coreWebView.CustomEnvironment?.Options;
-
-		options.put_AllowSingleSignOnUsingOSPrimaryAccount(
-			(customOptions?.AllowSingleSignOnUsingOSPrimaryAccount
-				?? FeatureConfiguration.WebView2.AllowSingleSignOnUsingOSPrimaryAccount)
-			? BOOL.TRUE
-			: BOOL.FALSE).ThrowOnError();
-
-		if (customOptions is not null)
-		{
-			SetNativeString(customOptions.AdditionalBrowserArguments, options.put_AdditionalBrowserArguments);
-			SetNativeString(customOptions.Language, options.put_Language);
-			SetNativeString(customOptions.TargetCompatibleBrowserVersion, options.put_TargetCompatibleBrowserVersion);
-			options.put_ExclusiveUserDataFolderAccess(customOptions.ExclusiveUserDataFolderAccess ? BOOL.TRUE : BOOL.FALSE).ThrowOnError();
-			options.put_IsCustomCrashReportingEnabled(customOptions.IsCustomCrashReportingEnabled ? BOOL.TRUE : BOOL.FALSE).ThrowOnError();
-		}
-		else
-		{
-			SetNativeString(FeatureConfiguration.WebView2.AdditionalBrowserArguments, options.put_AdditionalBrowserArguments);
-		}
-
-		return options;
-	}
-
 	private void CreateController(
 		WebView2.ICoreWebView2Environment environment,
 		WebView2.ICoreWebView2CreateCoreWebView2ControllerCompletedHandler handler)
@@ -106,7 +79,7 @@ internal sealed partial class Win32NativeAotWebView
 		get
 		{
 			_settings.get_UserAgent(out var value).ThrowOnError();
-			return value.ToString();
+			return value.ToStringAndDispose();
 		}
 		set => SetNativeString(value, _settings.put_UserAgent);
 	}
@@ -309,12 +282,17 @@ internal sealed partial class Win32NativeAotWebView
 			RemoveEvent("WebResourceRequested", () => _nativeWebView.remove_WebResourceRequested(_webResourceRequestedToken));
 			RemoveEvent("ContentLoading", () => _nativeWebView.remove_ContentLoading(_contentLoadingToken));
 			RemoveEvent("DOMContentLoaded", () => _nativeWebView.remove_DOMContentLoaded(_domContentLoadedToken));
+			RemoveEvent("ProcessFailed", () => _nativeWebView.remove_ProcessFailed(_processFailedToken));
+			RemoveEvent("MoveFocusRequested", () => _controller.remove_MoveFocusRequested(_moveFocusRequestedToken));
 			_eventsRegistered = false;
 		}
 
 		try
 		{
-			_controller.Close().ThrowOnError();
+			if (_controller is not null)
+			{
+				_controller.Close().ThrowOnError();
+			}
 		}
 		finally
 		{

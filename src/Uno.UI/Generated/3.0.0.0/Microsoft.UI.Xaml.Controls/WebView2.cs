@@ -3,38 +3,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class WebView2
 	{
 		// Skipping already declared property CanGoBackProperty
 		// Skipping already declared property CanGoForwardProperty
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty DefaultBackgroundColorProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(DefaultBackgroundColor), typeof(global::Windows.UI.Color),
-			typeof(global::Microsoft.UI.Xaml.Controls.WebView2),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Color)));
-#endif
+		// Skipping already declared property DefaultBackgroundColorProperty
 		// Skipping already declared property SourceProperty
 		// Skipping already declared property CanGoBack
 		// Skipping already declared property CanGoForward
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.UI.Color DefaultBackgroundColor
-		{
-			get
-			{
-				return (global::Windows.UI.Color)this.GetValue(DefaultBackgroundColorProperty);
-			}
-			set
-			{
-				this.SetValue(DefaultBackgroundColorProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property DefaultBackgroundColor
 		// Skipping already declared property Source
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.WebView2.WebView2()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.WebView2.WebView2()

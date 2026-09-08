@@ -55,4 +55,9 @@ internal sealed class InteractionTrackerInteractingState : InteractionTrackerSta
 	{
 		_interactionTracker.Owner?.RequestIgnored(_interactionTracker, new InteractionTrackerRequestIgnoredArgs(requestId));
 	}
+
+	internal override void TryUpdateScale(float value, Vector3 centerPoint, int requestId)
+	{
+		_interactionTracker.Owner?.RequestIgnored(_interactionTracker, new InteractionTrackerRequestIgnoredArgs(requestId));
+	}
 }

@@ -25,6 +25,11 @@ internal partial class MacOSNativeWebView :
 {
 	private bool _requestedIsZoomControlEnabled = true;
 
+	private nint GetCapabilityHandle() =>
+		TryGetHandle("access a capability of", out var handle)
+			? handle
+			: throw new ObjectDisposedException(nameof(MacOSNativeWebView));
+
 	internal static unsafe void RegisterCapabilityCallbacks()
 	{
 		NativeUno.uno_set_webview_pdf_callback(&PdfCallback);
@@ -38,7 +43,7 @@ internal partial class MacOSNativeWebView :
 	{
 		get
 		{
-			var ptr = NativeUno.uno_webview_get_user_agent(_webview);
+			var ptr = NativeUno.uno_webview_get_user_agent(GetCapabilityHandle());
 			if (ptr == nint.Zero)
 			{
 				return null;
@@ -47,15 +52,15 @@ internal partial class MacOSNativeWebView :
 			NativeUno.free(ptr);
 			return s;
 		}
-		set => NativeUno.uno_webview_set_user_agent(_webview, value);
+		set => NativeUno.uno_webview_set_user_agent(GetCapabilityHandle(), value);
 	}
 
 	// --- ISupportsScriptEnabled ---
 
 	bool ISupportsScriptEnabled.IsScriptEnabled
 	{
-		get => NativeUno.uno_webview_get_javascript_enabled(_webview);
-		set => NativeUno.uno_webview_set_javascript_enabled(_webview, value);
+		get => NativeUno.uno_webview_get_javascript_enabled(GetCapabilityHandle());
+		set => NativeUno.uno_webview_set_javascript_enabled(GetCapabilityHandle(), value);
 	}
 
 	// --- ISupportsZoomControl ---
@@ -70,23 +75,23 @@ internal partial class MacOSNativeWebView :
 	// --- ISupportsPostWebMessage ---
 
 	void ISupportsPostWebMessage.PostWebMessageAsJson(string json)
-		=> NativeUno.uno_webview_post_web_message(_webview, json, true);
+		=> NativeUno.uno_webview_post_web_message(GetCapabilityHandle(), json, true);
 
 	void ISupportsPostWebMessage.PostWebMessageAsString(string message)
-		=> NativeUno.uno_webview_post_web_message(_webview, message, false);
+		=> NativeUno.uno_webview_post_web_message(GetCapabilityHandle(), message, false);
 
 	// --- ISupportsDocumentCreatedScripts ---
 
 	Task<string> ISupportsDocumentCreatedScripts.AddScriptToExecuteOnDocumentCreatedAsync(string javaScript, CancellationToken ct)
 	{
-		var ptr = NativeUno.uno_webview_add_user_script(_webview, javaScript);
+		var ptr = NativeUno.uno_webview_add_user_script(GetCapabilityHandle(), javaScript);
 		var id = Marshal.PtrToStringUTF8(ptr) ?? string.Empty;
 		NativeUno.free(ptr);
 		return Task.FromResult(id);
 	}
 
 	void ISupportsDocumentCreatedScripts.RemoveScriptToExecuteOnDocumentCreated(string id)
-		=> NativeUno.uno_webview_remove_user_script(_webview, id);
+		=> NativeUno.uno_webview_remove_user_script(GetCapabilityHandle(), id);
 
 	// --- ISupportsPrint ---
 
@@ -131,17 +136,18 @@ internal partial class MacOSNativeWebView :
 			throw new System.NotSupportedException("WKWebView on macOS does not support custom CoreWebView2 PDF print settings.");
 		}
 
+		var webview = GetCapabilityHandle();
 		var tcs = new TaskCompletionSource<byte[]>(TaskCreationOptions.RunContinuationsAsynchronously);
 		var gch = GCHandle.Alloc(tcs);
 		using var reg = ct.Register(() => tcs.TrySetCanceled());
-		NativeUno.uno_webview_print_to_pdf(_webview, GCHandle.ToIntPtr(gch));
+		NativeUno.uno_webview_print_to_pdf(webview, GCHandle.ToIntPtr(gch));
 		var bytes = await tcs.Task;
 		return new MemoryStream(bytes, writable: false);
 	}
 
 	Task<CoreWebView2PrintStatus> ISupportsPrint.ShowPrintUIAsync(CoreWebView2PrintDialogKind dialogKind, CancellationToken ct)
 	{
-		var status = NativeUno.uno_webview_show_print_ui(_webview);
+		var status = NativeUno.uno_webview_show_print_ui(GetCapabilityHandle());
 		// CoreWebView2PrintStatus has only Succeeded / PrinterUnavailable / OtherError;
 		// user-cancelled is reported as OtherError to match the cross-platform enum surface.
 		return Task.FromResult(status switch
@@ -258,10 +264,11 @@ internal partial class MacOSNativeWebView :
 
 	private async Task<IReadOnlyList<CoreWebView2Cookie>> GetCookiesCoreAsync(string uri, CancellationToken ct)
 	{
+		var webview = GetCapabilityHandle();
 		var tcs = new TaskCompletionSource<string?>(TaskCreationOptions.RunContinuationsAsynchronously);
 		var gch = GCHandle.Alloc(tcs);
 		using var reg = ct.Register(() => tcs.TrySetCanceled());
-		NativeUno.uno_webview_get_cookies(_webview, GCHandle.ToIntPtr(gch), uri);
+		NativeUno.uno_webview_get_cookies(webview, GCHandle.ToIntPtr(gch), uri);
 		var json = await tcs.Task;
 		if (string.IsNullOrEmpty(json))
 		{
@@ -301,11 +308,11 @@ internal partial class MacOSNativeWebView :
 			sameSite = (int)cookie.SameSite,
 			expires = cookie.Expires,
 		});
-		QueueCookieMutation(() => RunCookieMutation(handle => NativeUno.uno_webview_set_cookie(_webview, handle, json)));
+		QueueCookieMutation(() => RunCookieMutation(handle => NativeUno.uno_webview_set_cookie(GetCapabilityHandle(), handle, json)));
 	}
 
 	void ISupportsCookieManager.DeleteCookie(CoreWebView2Cookie cookie)
-		=> QueueCookieMutation(() => RunCookieMutation(handle => NativeUno.uno_webview_delete_cookies(_webview, handle, cookie.Name, cookie.Domain, cookie.Path)));
+		=> QueueCookieMutation(() => RunCookieMutation(handle => NativeUno.uno_webview_delete_cookies(GetCapabilityHandle(), handle, cookie.Name, cookie.Domain, cookie.Path)));
 
 	void ISupportsCookieManager.DeleteCookies(string name, string? uri)
 	{
@@ -313,7 +320,7 @@ internal partial class MacOSNativeWebView :
 		{
 			if (string.IsNullOrEmpty(uri))
 			{
-				await RunCookieMutation(handle => NativeUno.uno_webview_delete_cookies(_webview, handle, name, null, null));
+				await RunCookieMutation(handle => NativeUno.uno_webview_delete_cookies(GetCapabilityHandle(), handle, name, null, null));
 				return;
 			}
 
@@ -322,23 +329,31 @@ internal partial class MacOSNativeWebView :
 			{
 				if (string.Equals(cookie.Name, name, System.StringComparison.Ordinal))
 				{
-					await RunCookieMutation(handle => NativeUno.uno_webview_delete_cookies(_webview, handle, cookie.Name, cookie.Domain, cookie.Path));
+					await RunCookieMutation(handle => NativeUno.uno_webview_delete_cookies(GetCapabilityHandle(), handle, cookie.Name, cookie.Domain, cookie.Path));
 				}
 			}
 		});
 	}
 
 	void ISupportsCookieManager.DeleteCookiesWithDomainAndPath(string name, string domain, string path)
-		=> QueueCookieMutation(() => RunCookieMutation(handle => NativeUno.uno_webview_delete_cookies(_webview, handle, name, domain, path)));
+		=> QueueCookieMutation(() => RunCookieMutation(handle => NativeUno.uno_webview_delete_cookies(GetCapabilityHandle(), handle, name, domain, path)));
 
 	void ISupportsCookieManager.DeleteAllCookies() =>
-		QueueCookieMutation(() => RunCookieMutation(handle => NativeUno.uno_webview_delete_all_cookies(_webview, handle)));
+		QueueCookieMutation(() => RunCookieMutation(handle => NativeUno.uno_webview_delete_all_cookies(GetCapabilityHandle(), handle)));
 
 	private static Task RunCookieMutation(Action<nint> start)
 	{
 		var tcs = new TaskCompletionSource<object?>(TaskCreationOptions.RunContinuationsAsynchronously);
 		var gch = GCHandle.Alloc(tcs);
-		start(GCHandle.ToIntPtr(gch));
+		try
+		{
+			start(GCHandle.ToIntPtr(gch));
+		}
+		catch
+		{
+			gch.Free();
+			throw;
+		}
 		return tcs.Task;
 	}
 }

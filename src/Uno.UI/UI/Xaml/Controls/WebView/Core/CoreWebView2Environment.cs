@@ -21,7 +21,9 @@ public partial class CoreWebView2Environment
 {
 	private const string TypeName = "Microsoft.Web.WebView2.Core.CoreWebView2Environment";
 
-	private CoreWebView2? _owner;
+	private readonly List<WeakReference<CoreWebView2>> _owners = new();
+	private INativeWebViewEnvironment? _nativeEnvironment;
+	private Task<INativeWebViewEnvironment>? _nativeEnvironmentTask;
 	private string _browserVersionString = string.Empty;
 	private readonly string _userDataFolder;
 
@@ -34,7 +36,7 @@ public partial class CoreWebView2Environment
 
 	internal CoreWebView2Environment(CoreWebView2 owner)
 	{
-		_owner = owner;
+		AttachOwner(owner);
 		_userDataFolder = string.Empty;
 	}
 
@@ -43,25 +45,29 @@ public partial class CoreWebView2Environment
 	internal string RequestedUserDataFolder => _userDataFolder;
 
 	internal CoreWebView2EnvironmentOptions? Options { get; }
+	internal bool IsDefaultEnvironment { get; set; }
 
 	internal void AttachOwner(CoreWebView2 owner)
 	{
-		if (_owner is not null && !ReferenceEquals(_owner, owner))
+		foreach (var reference in _owners)
 		{
-			throw new NotSupportedException("Reusing a CoreWebView2Environment across multiple WebView2 controls is not supported.");
+			if (reference.TryGetTarget(out var current) && ReferenceEquals(current, owner))
+			{
+				return;
+			}
 		}
-
-		_owner = owner;
+		_owners.RemoveAll(reference => !reference.TryGetTarget(out _));
+		_owners.Add(new WeakReference<CoreWebView2>(owner));
 	}
 
 	public string BrowserVersionString
 	{
-		get => _owner is null ? _browserVersionString : Native(nameof(BrowserVersionString)).BrowserVersionString;
+		get => FindNativeEnvironment()?.BrowserVersionString ?? _browserVersionString;
 		internal set => _browserVersionString = value;
 	}
 
 	public string UserDataFolder =>
-		_owner is null ? _userDataFolder : Native(nameof(UserDataFolder)).UserDataFolder;
+		FindNativeEnvironment()?.UserDataFolder ?? _userDataFolder;
 
 	public string FailureReportFolderPath => Native(nameof(FailureReportFolderPath)).FailureReportFolderPath;
 
@@ -74,8 +80,26 @@ public partial class CoreWebView2Environment
 		string? browserExecutableFolder,
 		string? userDataFolder,
 		CoreWebView2EnvironmentOptions? options) =>
-		AsyncOperation.FromTask(
-			ct => Task.FromResult(new CoreWebView2Environment(browserExecutableFolder, userDataFolder, options)));
+		AsyncOperation.FromTask(async ct =>
+		{
+			var environment = new CoreWebView2Environment(browserExecutableFolder, userDataFolder, options);
+			await environment.EnsureNativeEnvironmentAsync();
+			return environment;
+		});
+
+	internal async Task<INativeWebViewEnvironment?> EnsureNativeEnvironmentAsync()
+	{
+		if (_nativeEnvironment is not null)
+		{
+			return _nativeEnvironment;
+		}
+		if (ApiExtensibility.CreateInstance<ICoreWebView2EnvironmentStaticsExtension>(typeof(CoreWebView2Environment), out var extension))
+		{
+			_nativeEnvironmentTask ??= extension.CreateEnvironmentAsync(this);
+			_nativeEnvironment = await _nativeEnvironmentTask;
+		}
+		return _nativeEnvironment;
+	}
 
 	public static string GetAvailableBrowserVersionString()
 		=> Statics("GetAvailableBrowserVersionString()").GetAvailableBrowserVersionString(null);
@@ -104,8 +128,24 @@ public partial class CoreWebView2Environment
 
 	public CoreWebView2PrintSettings CreatePrintSettings() => new();
 
-	private ISupportsWebViewEnvironmentInfo Native(string memberName)
-		=> _owner?.RequireCapability<ISupportsWebViewEnvironmentInfo>(TypeName, memberName)
+	private INativeWebViewEnvironment? FindNativeEnvironment()
+	{
+		if (_nativeEnvironment is not null)
+		{
+			return _nativeEnvironment;
+		}
+		foreach (var reference in _owners)
+		{
+			if (reference.TryGetTarget(out var owner) && owner.NativeWebViewForCookies is INativeWebViewEnvironment native)
+			{
+				return native;
+			}
+		}
+		return null;
+	}
+
+	private INativeWebViewEnvironment Native(string memberName)
+		=> FindNativeEnvironment()
 			?? throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException(TypeName, memberName);
 
 	private static ICoreWebView2EnvironmentStaticsExtension Statics(string memberName)

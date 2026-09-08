@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
-using Uno.Foundation.Interop;
 using System.Text;
 using Uno.Diagnostics.Eventing;
 using System.Runtime.CompilerServices;
@@ -14,7 +13,6 @@ using System.Threading.Tasks;
 using Uno.Foundation.Runtime.WebAssembly.Interop;
 using Uno.Foundation.Logging;
 using System.Globalization;
-using Uno.Foundation.Runtime.WebAssembly.Helpers;
 using System.Runtime.InteropServices.JavaScript;
 
 namespace Uno.Foundation
@@ -252,60 +250,6 @@ namespace Uno.Foundation
 			var ptr = Marshal.StringToHGlobalAuto(intPtr);
 			var handle = GCHandle.FromIntPtr(ptr);
 			return handle.IsAllocated ? handle.Target : null;
-		}
-
-		public static string InvokeJSWithInterop(FormattableString formattable)
-		{
-			string command;
-			if (formattable.ArgumentCount == 0)
-			{
-				command = formattable.ToString(CultureInfo.InvariantCulture);
-			}
-			else
-			{
-				var commandBuilder =
-#if DEBUG
-					new IndentedStringBuilder();
-#else
-					new StringBuilder();
-#endif
-
-				commandBuilder.Append("(function() {");
-
-				var parameters = formattable.GetArguments();
-				var mappedParameters = new Dictionary<IJSObject, string>();
-
-				for (var i = 0; i < parameters.Length; i++)
-				{
-					var parameter = parameters[i];
-					if (parameter is IJSObject jsObject)
-					{
-						if (!mappedParameters.TryGetValue(jsObject, out var parameterReference))
-						{
-							if (!jsObject.Handle.IsAlive)
-							{
-								throw new InvalidOperationException("JSObjectHandle is invalid.");
-							}
-
-							mappedParameters[jsObject] = parameterReference = $"__parameter_{i}";
-							commandBuilder.AppendLine($"const {parameterReference} = {jsObject.Handle.GetNativeInstance()};");
-						}
-
-						parameters[i] = parameterReference;
-					}
-				}
-
-#if DEBUG
-				commandBuilder.AppendFormatInvariant(formattable.Format, parameters);
-#else
-				commandBuilder.AppendFormat(CultureInfo.InvariantCulture, formattable.Format, parameters);
-#endif
-				commandBuilder.Append("return \"ok\"; })();");
-
-				command = commandBuilder.ToString();
-			}
-
-			return InvokeJS(command);
 		}
 
 		private static readonly Dictionary<long, (TaskCompletionSource<string> task, CancellationTokenRegistration ctReg)> _asyncWaitingList

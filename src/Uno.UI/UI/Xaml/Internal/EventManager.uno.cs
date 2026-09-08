@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 
 using System;
 using System.Buffers;
@@ -70,12 +69,6 @@ internal sealed partial class EventManager
 		// This is actually what we want and what WinUI does.
 		foreach (var item in _layoutUpdatedSubscribers)
 		{
-			// Sometimes, we are racing with GC and the DependencyObjectStore is disposed (via finalizer)
-			if (((IDependencyObjectStoreProvider)item.Key).Store.IsDisposed)
-			{
-				continue;
-			}
-
 			item.Key.OnLayoutUpdated();
 		}
 	}
@@ -159,4 +152,3 @@ internal sealed partial class EventManager
 	}
 }
 
-#endif
