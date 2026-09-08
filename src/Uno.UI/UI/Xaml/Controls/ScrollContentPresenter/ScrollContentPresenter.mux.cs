@@ -347,13 +347,11 @@ public partial class ScrollContentPresenter
 		Thickness contentMargin = new Thickness();
 
 		var presenterPadding = Padding;
-		// The transient input-pane padding already shrinks the viewport. Counting it
-		// again as content margin would over-scroll the focused element.
 		contentMargin = new Thickness(
 			presenterPadding.Left,
 			presenterPadding.Top,
 			presenterPadding.Right,
-			presenterPadding.Bottom - _occludedRectPadding.Bottom);
+			presenterPadding.Bottom);
 
 		if (descendant is ScrollViewer sv)
 		{
