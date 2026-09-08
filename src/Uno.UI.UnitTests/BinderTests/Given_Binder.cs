@@ -633,6 +633,27 @@ namespace Uno.UI.Tests.BinderTests
 		}
 
 		[TestMethod]
+		public void When_ElementName_Set_In_Code()
+		{
+			var SUT = new Microsoft.UI.Xaml.Controls.Grid();
+
+			SUT.SetBinding(
+				Microsoft.UI.Xaml.Controls.Grid.TagProperty,
+				new Binding()
+				{
+					ElementName = "Value",
+					Path = "Value"
+				}
+			);
+
+			SUT.DataContext = new MySource2(42);
+
+			// ElementName is resolved through the ElementNameSubject set by the XAML code generator,
+			// so a name set in code cannot be resolved. It must not fall back to the DataContext.
+			Assert.IsNull(SUT.Tag);
+		}
+
+		[TestMethod]
 		public void When_Public_Field_And_xBind()
 		{
 			var source = new PublicField(42);
