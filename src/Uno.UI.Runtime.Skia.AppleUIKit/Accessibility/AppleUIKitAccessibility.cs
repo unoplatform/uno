@@ -41,6 +41,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	private readonly Dictionary<nint, UnoUIAccessibilityElement> _nodeElements = new();
 	private readonly Dictionary<nint, PeerBinding> _nodePeers = new();
 	private readonly ConditionalWeakTable<AutomationPeer, NodeIdentity> _peerToNodeId = new();
+	private readonly ConditionalWeakTable<AutomationPeer, List<nint>> _nodeIdsByProviderPeer = new();
 	private readonly Dictionary<nint, nint> _nodeIdByHandle = new();
 	private readonly Dictionary<nint, List<nint>> _nodeIdsByHandle = new();
 	private nint _nextNodeId;
@@ -558,6 +559,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			_nodeElements.Clear();
 			_nodePeers.Clear();
 			_peerToNodeId.Clear();
+			_nodeIdsByProviderPeer.Clear();
 			_nodeIdByHandle.Clear();
 			_nodeIdsByHandle.Clear();
 			_lastOrderedHandles.Clear();
@@ -601,6 +603,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 		// Build handle-to-node-index mapping for modal-subtree filtering.
 		var handleToNodeIndex = new Dictionary<nint, int>(nodes.Count);
+		_nodeIdsByProviderPeer.Clear();
 		_nodeIdByHandle.Clear();
 		_nodeIdsByHandle.Clear();
 
@@ -617,6 +620,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			var handle = GetOrCreateNodeId(node);
 			newHandles.Add(handle);
 			handleToNodeIndex.TryAdd(handle, i);
+			_nodeIdsByProviderPeer.GetValue(node.ProviderPeer, static _ => new()).Add(handle);
 
 			if (!_nodeElements.TryGetValue(handle, out var el))
 			{
@@ -2080,6 +2084,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		_nodeElements.Clear();
 		_nodePeers.Clear();
 		_peerToNodeId.Clear();
+		_nodeIdsByProviderPeer.Clear();
 		_nodeIdByHandle.Clear();
 		_nodeIdsByHandle.Clear();
 
@@ -2243,12 +2248,20 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		var resolvedPeer = peer.ResolveProviderPeer(resolveEventsSource: true);
 		PostOnMain(() =>
 		{
-			foreach (var (nodeId, binding) in _nodePeers)
+			var sourceId = _peerToNodeId.TryGetValue(peer, out var identity) ? identity.Value : 0;
+			if (sourceId != 0)
 			{
-				if (binding.Peer.TryGetTarget(out var source) && ReferenceEquals(source, peer) ||
-					binding.ProviderPeer.TryGetTarget(out var provider) && ReferenceEquals(provider, resolvedPeer))
+				InvalidateNode(sourceId);
+			}
+
+			if (_nodeIdsByProviderPeer.TryGetValue(resolvedPeer, out var nodeIds))
+			{
+				foreach (var nodeId in nodeIds)
 				{
-					InvalidateNode(nodeId);
+					if (nodeId != sourceId)
+					{
+						InvalidateNode(nodeId);
+					}
 				}
 			}
 		});

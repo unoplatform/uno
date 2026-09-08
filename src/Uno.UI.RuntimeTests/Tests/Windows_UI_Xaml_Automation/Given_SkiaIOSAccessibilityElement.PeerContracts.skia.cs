@@ -69,6 +69,39 @@ public partial class Given_SkiaIOSAccessibilityElement
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_Shared_EventsSource_Changes_Then_All_Native_Aliases_Are_Invalidated()
+	{
+		var source = new VirtualInvokePeer("shared-source") { ItemTypeValue = "before" };
+		var first = new ReboundPeerHost { First = source, Width = 100, Height = 100 };
+		var second = new ReboundPeerHost { First = source, Width = 100, Height = 100 };
+		var root = new StackPanel { Children = { first, second } };
+		try
+		{
+			await UITestHelper.Load(root);
+			var firstNode = GetSnapshot(first);
+			var secondNode = GetSnapshot(second);
+			Assert.IsNotNull(firstNode);
+			Assert.IsNotNull(secondNode);
+			Assert.AreNotSame(firstNode.NativeNode, secondNode.NativeNode);
+			CollectionAssert.Contains(GetNativeCustomContentValues(firstNode.NativeNode), "before");
+			CollectionAssert.Contains(GetNativeCustomContentValues(secondNode.NativeNode), "before");
+
+			source.ItemTypeValue = "after";
+			first.GetOrCreateAutomationPeer()!.RaisePropertyChangedEvent(
+				AutomationElementIdentifiers.ItemTypeProperty, "before", "after");
+			await UITestHelper.WaitForIdle();
+
+			CollectionAssert.Contains(GetNativeCustomContentValues(firstNode.NativeNode), "after");
+			CollectionAssert.Contains(GetNativeCustomContentValues(secondNode.NativeNode), "after");
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_EventsSource_Is_Rebound_Then_Retained_Native_Node_Is_Retired()
 	{
 		var host = new ReboundPeerHost { Width = 100, Height = 100 };
@@ -269,6 +302,17 @@ public partial class Given_SkiaIOSAccessibilityElement
 		return language.GetValue(element) as string;
 	}
 
+	private static string[] GetNativeCustomContentValues(object element)
+	{
+		var content = element.GetType().GetProperty("AccessibilityCustomContent")?.GetValue(element)
+			as System.Collections.IEnumerable;
+		Assert.IsNotNull(content);
+		return content.Cast<object>()
+			.Select(item => item.GetType().GetProperty("Value")?.GetValue(item))
+			.OfType<string>()
+			.ToArray();
+	}
+
 	private sealed partial class VirtualPeerHost : Grid
 	{
 		internal VirtualPeerHost()
@@ -303,10 +347,12 @@ public partial class Given_SkiaIOSAccessibilityElement
 		internal VirtualInvokePeer(string id) => _id = id;
 
 		internal int InvokeCount { get; private set; }
+		internal string ItemTypeValue { get; set; } = string.Empty;
 
 		public void Invoke() => InvokeCount++;
 
 		protected override string GetNameCore() => _id;
+		protected override string GetItemTypeCore() => ItemTypeValue;
 		protected override string GetAutomationIdCore() => _id;
 		protected override Windows.Foundation.Rect GetBoundingRectangleCore() => new(11, 13, 37, 41);
 		protected override bool IsControlElementCore() => true;
@@ -317,7 +363,7 @@ public partial class Given_SkiaIOSAccessibilityElement
 
 	private sealed partial class ReboundPeerHost : Grid
 	{
-		internal VirtualInvokePeer First { get; } = new("virtual-first");
+		internal VirtualInvokePeer First { get; init; } = new("virtual-first");
 		internal VirtualInvokePeer Second { get; } = new("virtual-second");
 
 		protected override AutomationPeer OnCreateAutomationPeer()

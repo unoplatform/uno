@@ -4,7 +4,6 @@
 
 using System;
 using System.Text;
-using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
