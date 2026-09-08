@@ -519,7 +519,7 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 		object oldValue,
 		object newValue)
 	{
-		Trace($"Property change routed for {automationProperty}.");
+		Trace("Automation property change routed.");
 		base.NotifyPropertyChangedEventCore(peer, automationProperty, oldValue, newValue);
 
 		var resolvedPeer = peer.ResolveProviderPeer(resolveEventsSource: true);

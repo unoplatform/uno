@@ -311,6 +311,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
 		public async Task When_Slider_On_Mobile_Then_Native_Range_Details_Match_Provider()
 		{
+#if __SKIA__
 			var slider = new Slider { Minimum = 0, Maximum = 100, Value = 60 };
 			AutomationProperties.SetAutomationId(slider, "slider-range-t045");
 
@@ -326,6 +327,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			Assert.AreEqual(0.0, range.Minimum, "Range.Minimum must match Slider.Minimum.");
 			Assert.AreEqual(100.0, range.Maximum, "Range.Maximum must match Slider.Maximum.");
 			Assert.IsFalse(range.IsReadOnly, "An enabled Slider must report IsReadOnly=false.");
+#endif
 		}
 
 #if __SKIA__
