@@ -578,17 +578,18 @@ fn sdRR(p: vec2<f32>, hf: vec2<f32>, radii: vec4<f32>) -> f32 {
   // 0.5 - d, which is exactly 1 for a pixel lying fully inside up to its own edge. A smoothstep over +/-fwidth(d)
   // instead ramps across two pixels and reads 0.84375 there, so a 1px border -- whose outer and inner ramps land
   // in the SAME pixel and multiply -- came out at 0.84375^2 = 0.711 and never reached the requested colour.
-  // dpdx/dpdy rather than fwidth: fwidth sums the axes, overstating a diagonal edge's gradient by up to sqrt(2).
-  // Dividing by the gradient keeps this in pixels when a replay transform scales the baked geometry.
+  // sxy is local units per screen pixel, taken from the derivatives of the linearly interpolated p -- exact and
+  // constant across the primitive. Differentiating the SDF instead reads a gradient slightly over 1 wherever a
+  // 2x2 quad straddles a corner or the axis switch in max(q.x, q.y), which cost those pixels their last LSB.
+  // Dividing by it keeps d in pixels when a replay transform scales the baked geometry.
+  let sxy = max(max(length(vec2<f32>(dpdx(i.p.x), dpdy(i.p.x))), length(vec2<f32>(dpdx(i.p.y), dpdy(i.p.y)))), 1e-4);
   let d = sdRR(i.p, i.hf, i.radii);
-  let g = max(length(vec2<f32>(dpdx(d), dpdy(d))), 1e-4);
-  var cov = clamp(0.5 - d / g, 0.0, 1.0);
-  // Compute the inner-rrect SDF + its screen-space derivative in UNIFORM control flow (outside the `if`): WGSL
-  // forbids fwidth/derivatives inside non-uniform control flow, and Dawn (browser WebGPU) enforces this strictly
-  // even though wgpu-native (desktop) tolerated it. The result is only APPLIED when an inner rect is present.
+  var cov = clamp(0.5 - d / sxy, 0.0, 1.0);
+  // sxy above stays outside the `if`: WGSL forbids derivatives in non-uniform control flow, and Dawn (browser
+  // WebGPU) enforces that strictly even though wgpu-native (desktop) tolerated it. The inner rect only gets
+  // APPLIED when one is present.
   let di = sdRR(i.p - i.icenter, i.ihalf, i.iradii);
-  let gi = max(length(vec2<f32>(dpdx(di), dpdy(di))), 1e-4);
-  if (i.ihalf.x >= 0.0) { cov = cov * clamp(0.5 + di / gi, 0.0, 1.0); }
+  if (i.ihalf.x >= 0.0) { cov = cov * clamp(0.5 + di / sxy, 0.0, 1.0); }
   cov = cov * clipCov(i.pos.xy, clip);
   return vec4<f32>(i.col.rgb, i.col.a * cov);
 }";
@@ -612,12 +613,11 @@ fn sdRR(p: vec2<f32>, hf: vec2<f32>, radii: vec4<f32>) -> f32 {
 }
 @fragment fn fs(i: VSOut) -> @location(0) vec4<f32> {
   // Same analytic box-filter coverage as RoundedRectWgsl -- see the note there.
+  let sxy = max(max(length(vec2<f32>(dpdx(i.p.x), dpdy(i.p.x))), length(vec2<f32>(dpdx(i.p.y), dpdy(i.p.y)))), 1e-4);
   let d = sdRR(i.p, i.hf, i.radii);
-  let g = max(length(vec2<f32>(dpdx(d), dpdy(d))), 1e-4);
-  var cov = clamp(0.5 - d / g, 0.0, 1.0);
+  var cov = clamp(0.5 - d / sxy, 0.0, 1.0);
   let di = sdRR(i.p - i.icenter, i.ihalf, i.iradii);
-  let gi = max(length(vec2<f32>(dpdx(di), dpdy(di))), 1e-4);
-  if (i.ihalf.x >= 0.0) { cov = cov * clamp(0.5 + di / gi, 0.0, 1.0); }
+  if (i.ihalf.x >= 0.0) { cov = cov * clamp(0.5 + di / sxy, 0.0, 1.0); }
   cov = cov * clipCov(i.pos.xy, clip);
   return vec4<f32>(i.col.rgb, i.col.a * cov);
 }";
