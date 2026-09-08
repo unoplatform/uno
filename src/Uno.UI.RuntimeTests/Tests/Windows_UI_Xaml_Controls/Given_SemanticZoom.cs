@@ -124,12 +124,12 @@ public partial class Given_SemanticZoom
 
 			await KeyboardHelper.PressKeySequence(
 				"$d$_ctrl#$d$_-#$u$_-#$u$_ctrl",
-				zoomedInView);
+				sut);
 			await WindowHelper.WaitFor(() => !sut.IsZoomedInViewActive);
 
 			await KeyboardHelper.PressKeySequence(
 				"$d$_ctrl#$d$_+#$u$_+#$u$_ctrl",
-				zoomedOutView);
+				sut);
 			await WindowHelper.WaitFor(() => sut.IsZoomedInViewActive);
 		}
 		finally
