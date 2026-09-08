@@ -39,6 +39,9 @@ jobs:
       certSecureFile: UnoPlatform-Apple-Distribution.p12
       certPwd: $(appleappstorecertificatepassword)
       keychain: temp
+      # The .p12 is encrypted with RC2-40-CBC, which OpenSSL 3 (macOS-26 image) only offers
+      # through the legacy provider. Without this the task cannot read the certificate at all.
+      opensslPkcsArgs: '-legacy'
 
   - task: InstallAppleProvisioningProfile@1
     displayName: Install Provisioning Profile
