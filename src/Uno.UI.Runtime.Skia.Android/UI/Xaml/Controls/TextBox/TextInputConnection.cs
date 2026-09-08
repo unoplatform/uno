@@ -549,10 +549,13 @@ class TextInputConnection : BaseInputConnection
 	{
 		this.LogDebug()?.Debug($"CloseConnection");
 
+		// BaseInputConnection closes composition through our virtual batch-edit callbacks.
+		// A retired connection must not replay its old buffer or end the replacement host's composition.
+		_activeHost = null;
+		_editable.RemoveEditingStateListener(DidChangeEditingState);
 		base.CloseConnection();
 
-		_editable.RemoveEditingStateListener(DidChangeEditingState);
-		for (; _batchEditNestDepth > 0; _batchEditNestDepth--)
+		while (_batchEditNestDepth > 0)
 		{
 			EndBatchEdit();
 		}

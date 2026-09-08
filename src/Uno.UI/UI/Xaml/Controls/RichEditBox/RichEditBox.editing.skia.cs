@@ -892,7 +892,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal bool TryUpdateTextFromNative(string text, int selectionStart, int selectionLength)
 		{
 			var oldText = GetPlainTextContent();
-			var textChanged = !string.Equals(oldText, text, StringComparison.Ordinal);
+			var textChanged = !NativeTextMatchesDocument(text, oldText);
 			var diff = textChanged ? GetTextDiff(oldText, text) : default;
 			var nativeTextNeedsCorrection = false;
 			if (IsReadOnly
@@ -919,7 +919,15 @@ namespace Microsoft.UI.Xaml.Controls
 				selectionLength = selectionEnd - selectionStart;
 			}
 
-			SetInteractiveSelection(selectionStart, selectionLength);
+			if (textChanged)
+			{
+				SetInteractiveSelection(selectionStart, selectionLength);
+			}
+			else
+			{
+				_platformTextApplyInProgress = false;
+				SelectFromNative(selectionStart, selectionLength);
+			}
 			if (nativeTextNeedsCorrection)
 			{
 				_textBoxView?.Extension?.Select(_selection.start, _selection.length);
@@ -929,6 +937,30 @@ namespace Microsoft.UI.Xaml.Controls
 				Document.FinalizeHistorySelection();
 			}
 
+			return true;
+		}
+
+		private static bool NativeTextMatchesDocument(string nativeText, string documentText)
+		{
+			if (string.Equals(nativeText, documentText, StringComparison.Ordinal))
+			{
+				return true;
+			}
+			if (nativeText.Length != documentText.Length)
+			{
+				return false;
+			}
+
+			// Native editors mirror TOM paragraph marks as LF. An unchanged echo must not
+			// reapply typing restrictions (for example during an AcceptsReturn transition).
+			for (var i = 0; i < nativeText.Length; i++)
+			{
+				if (nativeText[i] != documentText[i]
+					&& (nativeText[i] != '\n' || documentText[i] != '\r'))
+				{
+					return false;
+				}
+			}
 			return true;
 		}
 
