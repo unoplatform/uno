@@ -877,7 +877,8 @@ public class Given_FlowDirection
 	[DataRow(FlyoutPlacementMode.BottomEdgeAlignedLeft, FlowDirection.RightToLeft)]
 	public async Task When_Flyout_Placement_Is_Horizontal(FlyoutPlacementMode placement, FlowDirection flowDirection)
 	{
-		// Placements are relative to the target's flow direction: "left" is the leading side, which is the right in right-to-left.
+		// The side the flyout opens on follows the target's flow direction (Left opens on the right in right-to-left),
+		// but edge alignments like BottomEdgeAlignedLeft stay physical, matching WinUI.
 		var content = new Border { Width = 80, Height = 40, Background = new SolidColorBrush(Colors.Red) };
 		var flyout = new Flyout { Content = content, Placement = placement };
 		var target = new Button { Content = "Target", Width = 200, Height = 60, FlowDirection = flowDirection, Flyout = flyout, HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
@@ -913,15 +914,7 @@ public class Given_FlowDirection
 			else
 			{
 				Assert.IsTrue(bounds.Top >= targetBounds.Bottom - 1, $"Expected the flyout ({bounds}) below the target ({targetBounds}).");
-
-				if (isRightToLeft)
-				{
-					Assert.AreEqual(targetBounds.Right, bounds.Right, 2, "Expected the flyout to be aligned with the target's leading (right) edge.");
-				}
-				else
-				{
-					Assert.AreEqual(targetBounds.Left, bounds.Left, 2, "Expected the flyout to be aligned with the target's leading (left) edge.");
-				}
+				Assert.AreEqual(targetBounds.Left, bounds.Left, 2, "Expected the flyout to be aligned with the target's physical left edge regardless of flow direction.");
 			}
 		}
 		finally

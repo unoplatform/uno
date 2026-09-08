@@ -73,9 +73,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		internal FlyoutPlacementMode EffectivePlacement => m_hasPlacementOverride ? m_placementOverride : Placement;
 
 		/// <summary>
-		/// Gets the effective placement for the given flow direction: horizontal placements (left/right sides and left/right edge
-		/// alignments) are reversed for right-to-left, since placements are relative to the flow direction while the popup is positioned
-		/// in left-to-right window coordinates (WinUI: GetEffectivePlacementMode).
+		/// Gets the effective placement for the given flow direction: the side the flyout opens on is reversed for right-to-left,
+		/// while edge alignments (the AlignedLeft/AlignedRight suffixes) stay physical, matching WinUI's GetEffectivePlacementMode
+		/// which only mirrors the major placement.
 		/// </summary>
 		internal FlyoutPlacementMode GetEffectivePlacement(FlowDirection flowDirection)
 			=> flowDirection is FlowDirection.RightToLeft ? MirrorPlacement(EffectivePlacement) : EffectivePlacement;
@@ -84,10 +84,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			FlyoutPlacementMode.Left => FlyoutPlacementMode.Right,
 			FlyoutPlacementMode.Right => FlyoutPlacementMode.Left,
-			FlyoutPlacementMode.TopEdgeAlignedLeft => FlyoutPlacementMode.TopEdgeAlignedRight,
-			FlyoutPlacementMode.TopEdgeAlignedRight => FlyoutPlacementMode.TopEdgeAlignedLeft,
-			FlyoutPlacementMode.BottomEdgeAlignedLeft => FlyoutPlacementMode.BottomEdgeAlignedRight,
-			FlyoutPlacementMode.BottomEdgeAlignedRight => FlyoutPlacementMode.BottomEdgeAlignedLeft,
 			FlyoutPlacementMode.LeftEdgeAlignedTop => FlyoutPlacementMode.RightEdgeAlignedTop,
 			FlyoutPlacementMode.LeftEdgeAlignedBottom => FlyoutPlacementMode.RightEdgeAlignedBottom,
 			FlyoutPlacementMode.RightEdgeAlignedTop => FlyoutPlacementMode.LeftEdgeAlignedTop,
