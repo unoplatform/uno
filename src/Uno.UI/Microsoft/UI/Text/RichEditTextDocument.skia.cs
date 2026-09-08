@@ -177,7 +177,7 @@ namespace Microsoft.UI.Text
 				var mapped = value == global::Microsoft.UI.Text.LetterCase.Upper
 					? ToUpperInvariant(rune)
 					: ToLowerInvariant(rune);
-				result.Append(mapped.ToString());
+				result.Append(mapped);
 			}
 			return result.ToString();
 		}

@@ -6,6 +6,7 @@ using System.Xml.Linq;
 using Microsoft.UI.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -41,6 +42,27 @@ public partial class Given_RichEditBox
 		Assert.AreEqual("a\u1F88b", text);
 		Assert.AreEqual(1, range.StartPosition);
 		Assert.AreEqual(2, range.EndPosition);
+	}
+
+	[TestMethod]
+	[DataRow(LetterCase.Upper, "a\U00010428z", "a\U00010400z")]
+	[DataRow(LetterCase.Lower, "a\U00010400z", "a\U00010428z")]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+	public void When_ChangeCase_Maps_Supplementary_Runes_Without_Moving_The_Range(
+		LetterCase letterCase,
+		string input,
+		string expected)
+	{
+		var document = new RichEditBox().Document;
+		document.SetText(TextSetOptions.None, input);
+		var range = document.GetRange(1, 3);
+
+		range.ChangeCase(letterCase);
+
+		GetTextWithoutFinalEop(document, out var text);
+		Assert.AreEqual(expected, text);
+		Assert.AreEqual(1, range.StartPosition);
+		Assert.AreEqual(3, range.EndPosition);
 	}
 
 	[TestMethod]
