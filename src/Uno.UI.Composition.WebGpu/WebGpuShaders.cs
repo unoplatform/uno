@@ -159,6 +159,46 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
 @fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.p.xy, clip)); }";
 	// Fullscreen-triangle depth writers for the in-pass path-clip mask. vs0/vs1 emit the tri at z=0/z=1; the
 	// fragment writes nothing (colour masked off) — only depth (and, for the cover variants, the stencil reset).
+	// Signed-area coverage accumulation. One quad per edge spanning the rows it crosses and everything to its
+	// RIGHT: an edge contributes the partial area of the pixel it passes through, and a full +/-1 to every pixel
+	// beyond it, so the interior fills by cancellation between the entering and leaving edges and is never tested.
+	// Additive blending does the summing, so the target ends up holding the SIGNED covered area per pixel. The fill
+	// rule is applied where the mask is sampled, not here: an accumulated 2 is a self-overlap under non-zero and a
+	// hole under even-odd, and only the sampler knows which was asked for.
+	private const string CoverageWgsl = @"
+struct CovU { size: vec4<f32> };
+@group(0) @binding(0) var<storage, read> edges: array<vec4<f32>>;   // x0,y0,x1,y1 in target pixel space
+@group(0) @binding(1) var<uniform> cov: CovU;                       // size.xy = target size in px
+struct CovOut { @builtin(position) p: vec4<f32>, @location(0) e: vec4<f32> };
+@vertex fn vs(@builtin(vertex_index) vi: u32) -> CovOut {
+  let e = edges[vi / 6u];
+  let ci = vi % 6u;
+  var xs = array<f32, 6>(0.0, 1.0, 1.0, 0.0, 1.0, 0.0);
+  var ys = array<f32, 6>(0.0, 0.0, 1.0, 0.0, 1.0, 1.0);
+  let x = mix(floor(min(e.x, e.z)), cov.size.x, xs[ci]);
+  let y = mix(floor(min(e.y, e.w)), ceil(max(e.y, e.w)), ys[ci]);
+  var o: CovOut;
+  o.p = vec4<f32>(x / cov.size.x * 2.0 - 1.0, 1.0 - y / cov.size.y * 2.0, 0.0, 1.0);
+  o.e = e;
+  return o;
+}
+@fragment fn fs(i: CovOut) -> @location(0) vec4<f32> {
+  let e = i.e;
+  let dy = e.w - e.y;
+  if (abs(dy) < 1e-7) { return vec4<f32>(0.0, 0.0, 0.0, 0.0); }
+  let py = floor(i.p.y);
+  let ya = max(min(e.y, e.w), py);
+  let yb = min(max(e.y, e.w), py + 1.0);
+  if (yb <= ya) { return vec4<f32>(0.0, 0.0, 0.0, 0.0); }
+  let xa = e.x + (e.z - e.x) * (ya - e.y) / dy;
+  let xb = e.x + (e.z - e.x) * (yb - e.y) / dy;
+  let px = floor(i.p.x);
+  let ca = clamp(px + 1.0 - xa, 0.0, 1.0);
+  let cb = clamp(px + 1.0 - xb, 0.0, 1.0);
+  let s = select(-1.0, 1.0, dy > 0.0);
+  return vec4<f32>((yb - ya) * 0.5 * (ca + cb) * s, 0.0, 0.0, 0.0);
+}";
+
 	private const string ClipDepthWgsl = @"
 @vertex fn vs0(@builtin(vertex_index) vi: u32) -> @builtin(position) vec4<f32> {
   var p = array<vec2<f32>, 3>(vec2<f32>(-1.0, -1.0), vec2<f32>(3.0, -1.0), vec2<f32>(-1.0, 3.0));

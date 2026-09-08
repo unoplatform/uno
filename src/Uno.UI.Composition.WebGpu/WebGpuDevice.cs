@@ -603,6 +603,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		CoverClipBgl = ClipBgl;
 		CreatePathTablePipelines(&blend);
 		CreateClipDepthPipelines();
+		CreateCoveragePipelines();
 		CreateImagePipeline();
 		CreateMaskDownsamplePipeline();
 		CreateGradientPipeline(&blend);
@@ -611,6 +612,53 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		CreateCompositePipelines();
 	}
 
+
+	/// <summary>Single-channel float so accumulation can exceed 1 and go negative; blendable, unlike r32float.</summary>
+	public const WGPUTextureFormat CoverageFormat = WGPUTextureFormat.R16Float;
+	public IntPtr CoveragePipe;
+	public IntPtr CoverageBgl;
+
+	// Accumulates signed area into a CoverageFormat target with additive blending. Single-sampled whatever the
+	// frame is: the mask IS the coverage, so supersampling it would only quantise an answer that is already exact.
+	private void CreateCoveragePipelines()
+	{
+		var module = Module(CoverageWgsl);
+		var e = stackalloc WGPUBindGroupLayoutEntry[2];
+		e[0] = new WGPUBindGroupLayoutEntry
+		{
+			Binding = 0,
+			Visibility = WGPUShaderStage.Vertex,
+			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.ReadOnlyStorage },
+		};
+		e[1] = new WGPUBindGroupLayoutEntry
+		{
+			Binding = 1,
+			Visibility = WGPUShaderStage.Vertex,
+			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.Uniform, MinBindingSize = 16 },
+		};
+		var bgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 2, Entries = e };
+		CoverageBgl = wgpuDeviceCreateBindGroupLayout(Dev, &bgld);
+		var bgls = stackalloc IntPtr[1] { CoverageBgl };
+		var pld = new WGPUPipelineLayoutDescriptor { BindGroupLayoutCount = 1, BindGroupLayouts = (IntPtr)bgls };
+		var layout = wgpuDeviceCreatePipelineLayout(Dev, &pld);
+
+		var blend = new WGPUBlendState
+		{
+			Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.One, Operation = WGPUBlendOperation.Add },
+			Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.One, Operation = WGPUBlendOperation.Add },
+		};
+		var target = new WGPUColorTargetState { Format = CoverageFormat, Blend = &blend, WriteMask = WGPUColorWriteMask.All };
+		var fsState = new WGPUFragmentState { Module = module, EntryPoint = SV("fs"), TargetCount = 1, Targets = &target };
+		var pd = new WGPURenderPipelineDescriptor
+		{
+			Vertex = new WGPUVertexState { Module = module, EntryPoint = SV("vs"), BufferCount = 0 },
+			Fragment = &fsState,
+			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
+			Multisample = new WGPUMultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
+			Layout = layout,
+		};
+		CoveragePipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
+	}
 
 	private void CreateClipDepthPipelines()
 	{
