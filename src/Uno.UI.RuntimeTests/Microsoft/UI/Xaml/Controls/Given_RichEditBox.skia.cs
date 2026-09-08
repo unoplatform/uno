@@ -32,7 +32,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public partial class Given_RichEditBox
 	{
 		[TestMethod]
-		public async Task When_TextBox_Overlay_Is_Enabled_RichEditBox_Keeps_Managed_Renderer()
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+		[DataRow(typeof(UIElement), nameof(UIElement.UpdateLayout))]
+		[DataRow(typeof(Control), "get_FontSize")]
+		[DataRow(typeof(Control), "get_FontWeight")]
+		[DataRow(typeof(Control), "get_FontStyle")]
+		[DataRow(typeof(Control), "get_FontStretch")]
+		[DataRow(typeof(RichEditBox), "get_IsColorFontEnabled")]
+		[DataRow(typeof(RichEditBox), "get_IsSpellCheckEnabled")]
+		[DataRow(typeof(RichEditBox), "get_TextReadingOrder")]
+		[DataRow(typeof(RichEditBox), "get_TextWrapping")]
+		public void When_Internal_View_Host_Preserves_Public_Nonvirtual_API(Type declaringType, string methodName)
+		{
+			var method = declaringType.GetMethod(methodName);
+			Assert.IsNotNull(method);
+			Assert.IsFalse(method.IsVirtual, "An internal view-host adapter must not change an existing public method's CLR dispatch contract.");
+		}
+		[TestMethod]
+		public async Task When_RichEditBox_Uses_Managed_Renderer()
+		public async Task When_RichEditBox_Uses_Managed_Renderer()
 		{
 			var previous = global::Uno.UI.FeatureConfiguration.TextBox.UseOverlayOnSkia;
 			var editor = new RichEditBox();
@@ -987,7 +1005,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Copy_Puts_Selection_On_Clipboard()
 		{
 			var SUT = new RichEditBox();
@@ -1008,7 +1026,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Cut_Removes_Selection_And_Copies()
 		{
 			var SUT = new RichEditBox();
@@ -1033,7 +1051,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Paste_Inserts_At_Caret()
 		{
 			var SUT = new RichEditBox();
@@ -1172,7 +1190,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_MaxLength_Clamps_Paste()
 		{
 			var SUT = new RichEditBox();
@@ -1263,7 +1281,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_CharacterCasing_Upper_Uppercases_Paste()
 		{
 			var SUT = new RichEditBox();
@@ -1394,7 +1412,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Ctrl_C_Ctrl_V_RoundTrips()
 		{
 			var SUT = new RichEditBox();
@@ -4207,7 +4225,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await WindowHelper.WaitForLoaded(SUT);
 				var seed = new DataPackage();
 				seed.SetText("SEED");
-				Clipboard.SetContent(seed);
+				var hasSystemClipboard = RuntimeTestsPlatformHelper.CurrentPlatform != RuntimeTestPlatforms.SkiaTvOS;
+				if (hasSystemClipboard)
+				{
+					Clipboard.SetContent(seed);
+				}
 				await WindowHelper.WaitForIdle();
 
 				SUT.Document.SetText(TextSetOptions.None, "abcdef");
@@ -4215,7 +4237,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var mixed = SUT.Document.GetRange(1, 5);
 				Assert.ThrowsExactly<UnauthorizedAccessException>(() => mixed.Cut());
 				Assert.ThrowsExactly<UnauthorizedAccessException>(() => mixed.Paste(0));
-				Assert.AreEqual("SEED", await Clipboard.GetContent().GetTextAsync());
+				if (hasSystemClipboard)
+				{
+					Assert.AreEqual("SEED", await Clipboard.GetContent().GetTextAsync());
+				}
 
 				GetTextWithoutFinalEop(SUT.Document, out var text);
 				Assert.AreEqual("abcdef", text);
@@ -4420,7 +4445,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Malformed_Rtf_Clipboard_Falls_Back_To_Plain_Text()
 		{
 			var SUT = new RichEditBox();
@@ -6098,7 +6123,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Cut_Handler_Moves_Selection_Copies_And_Deletes_Same_Span()
 		{
 			var SUT = new RichEditBox();
@@ -6151,7 +6176,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Async_Range_Paste_Uses_Rebased_Operation_Range()
 		{
 			var SUT = new RichEditBox();
@@ -6183,6 +6208,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Async_Selection_Paste_Becomes_ReadOnly_Before_Continuation()
 		{
 			var SUT = new RichEditBox();
@@ -6661,6 +6687,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_CanPaste_True_With_Text_On_Clipboard()
 		{
 			var SUT = new RichEditBox();
@@ -7959,7 +7986,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// Seed the clipboard with a sentinel; a suppressed copy must leave it untouched.
 			var seed = new DataPackage();
 			seed.SetText("SENTINEL");
-			Clipboard.SetContent(seed);
+			var hasSystemClipboard = RuntimeTestsPlatformHelper.CurrentPlatform != RuntimeTestPlatforms.SkiaTvOS;
+			if (hasSystemClipboard)
+			{
+				Clipboard.SetContent(seed);
+			}
 			await WindowHelper.WaitForIdle();
 
 			SUT.Focus(FocusState.Programmatic);
@@ -7969,14 +8000,25 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			RaiseKey(SUT, VirtualKey.A, VirtualKeyModifiers.Control);
 			await WindowHelper.WaitForIdle();
 
-			SUT.CopyingToClipboard += (s, e) => e.Handled = true;
+			var count = 0;
+			SUT.CopyingToClipboard += (s, e) =>
+			{
+				count++;
+				e.Handled = true;
+			};
 
 			RaiseKey(SUT, VirtualKey.C, VirtualKeyModifiers.Control);
 			await WindowHelper.WaitForIdle();
 
-			var content = Clipboard.GetContent();
-			var text = await content.GetTextAsync();
-			Assert.AreEqual("SENTINEL", text);
+			Assert.AreEqual(1, count);
+			if (hasSystemClipboard)
+			{
+				var content = Clipboard.GetContent();
+				var text = await content.GetTextAsync();
+				Assert.AreEqual("SENTINEL", text);
+			}
+			GetTextWithoutFinalEop(SUT.Document, out var documentText);
+			Assert.AreEqual("abc", documentText);
 		}
 
 		[TestMethod]
@@ -8393,6 +8435,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				WindowHelper.WindowContent = null;
 			}
+		}
+
+		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaTvOS)]
+		public void When_Unavailable_System_Clipboard_Reports_No_Paste_Content()
+		{
+			var editor = new RichEditBox();
+			editor.Document.SetText(TextSetOptions.None, "text");
+
+			Assert.IsFalse(editor.Document.CanPaste());
+			Assert.IsFalse(editor.Document.Selection.CanPaste(0));
+			Assert.IsFalse(editor.Document.GetRange(0, 4).CanPaste(0));
 		}
 
 		[TestMethod]
@@ -9259,7 +9314,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Range_Copy_Puts_Text_On_Clipboard()
 		{
 			var SUT = new RichEditBox();
@@ -9279,7 +9334,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Range_Copy_Empty_Is_NoOp()
 		{
 			var SUT = new RichEditBox();
@@ -9304,7 +9359,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Range_Cut_Removes_And_Copies()
 		{
 			var SUT = new RichEditBox();
@@ -9329,7 +9384,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Range_Paste_Replaces_Range()
 		{
 			var SUT = new RichEditBox();
@@ -9358,6 +9413,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Range_CanPaste_Reflects_Clipboard()
 		{
 			var SUT = new RichEditBox();
@@ -9479,7 +9535,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Copy_PlainText_Drops_Character_Formatting_On_Paste()
 		{
 			// Mirrors RichEditBoxTOMTests.cpp TestClipboardCopyFormats (~437-447): ClipboardCopyFormat

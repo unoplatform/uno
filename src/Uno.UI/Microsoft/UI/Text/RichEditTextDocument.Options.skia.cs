@@ -103,11 +103,12 @@ namespace Microsoft.UI.Text
 				return TomClipboardFormat.IsAvailable(content, format);
 			}
 			catch (Exception error) when (error is InvalidOperationException
+				or NotImplementedException
 				or UnauthorizedAccessException
 				or global::System.Runtime.InteropServices.COMException)
 			{
-				// Clipboard access can fail transiently (e.g. locked by another process); treat as
-				// "nothing to paste" rather than surfacing the failure.
+				// Some hosts (including tvOS) have no system clipboard. An unavailable or transiently
+				// inaccessible clipboard must not prevent the rest of the text flyout from opening.
 				return false;
 			}
 		}
