@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using Android.App;
 using Android.OS;
 using Android.Views;
@@ -84,11 +84,11 @@ namespace SamplesApp.Droid
 		public string GetScreenshot(string displayId)
 		{
 			var rootView = Window.DecorView;
-			var bitmap = Android.Graphics.Bitmap.CreateBitmap(
+			using var bitmap = Android.Graphics.Bitmap.CreateBitmap(
 				rootView.Width,
 				rootView.Height,
 				Android.Graphics.Bitmap.Config.Argb8888);
-			var scope = new Android.Graphics.Rect(0, 0, rootView.Width, rootView.Height);
+			using var scope = new Android.Graphics.Rect(0, 0, rootView.Width, rootView.Height);
 
 			if (_pixelCopyHandlerThread is null)
 			{
@@ -96,12 +96,39 @@ namespace SamplesApp.Droid
 				_pixelCopyHandlerThread.Start();
 			}
 
-			var listener = new PixelCopyListener();
-			PixelCopy.Request(Window, scope, bitmap, listener, new Handler(_pixelCopyHandlerThread.Looper));
-			listener.WaitOne();
+			using var handler = new Handler(_pixelCopyHandlerThread.Looper);
+			var completion = new TaskCompletionSource<int>(TaskCreationOptions.RunContinuationsAsynchronously);
+			var listener = new PixelCopyListener(completion);
+			var requested = false;
+			try
+			{
+				PixelCopy.Request(Window, scope, bitmap, listener, handler);
+				requested = true;
+			}
+			finally
+			{
+				if (!requested)
+				{
+					listener.Dispose();
+				}
+			}
+
+			if (!completion.Task.Wait(TimeSpan.FromSeconds(10)))
+			{
+				throw new TimeoutException("PixelCopy screenshot did not finish within 10 seconds.");
+			}
+
+			var copyResult = completion.Task.GetAwaiter().GetResult();
+			if (copyResult != (int)PixelCopyResult.Success)
+			{
+				throw new InvalidOperationException($"PixelCopy screenshot failed: {(PixelCopyResult)copyResult} ({copyResult}).");
+			}
 
 			using var memoryStream = new MemoryStream();
-			bitmap.Compress(Android.Graphics.Bitmap.CompressFormat.Png, 100, memoryStream);
+			if (!bitmap.Compress(Android.Graphics.Bitmap.CompressFormat.Png, 100, memoryStream))
+			{
+				throw new IOException("Unable to encode the screenshot as PNG.");
+			}
 			return Convert.ToBase64String(memoryStream.ToArray());
 		}
 
@@ -127,11 +154,15 @@ namespace SamplesApp.Droid
 
 		private sealed class PixelCopyListener : Java.Lang.Object, PixelCopy.IOnPixelCopyFinishedListener
 		{
-			private readonly ManualResetEvent _event = new(false);
+			private readonly TaskCompletionSource<int> _completion;
 
-			public void WaitOne() => _event.WaitOne();
+			internal PixelCopyListener(TaskCompletionSource<int> completion) => _completion = completion;
 
-			public void OnPixelCopyFinished(int copyResult) => _event.Set();
+			public void OnPixelCopyFinished(int copyResult)
+			{
+				_completion.TrySetResult(copyResult);
+				Dispose();
+			}
 		}
 	}
 
