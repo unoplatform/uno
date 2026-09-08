@@ -113,7 +113,13 @@ namespace Microsoft.UI.Xaml.Controls
 			=> MeasureOverridePort(availableSize);
 
 		protected override Size ArrangeOverride(Size finalSize)
-			=> ArrangeOverridePort(finalSize);
+			=> _occludedRectPadding != default &&
+				!m_isSemanticZoomPresenter &&
+				m_trTopLeftHeader is null &&
+				m_trTopHeader is null &&
+				m_trLeftHeader is null
+				? ArrangeOverrideForInputPane(finalSize)
+				: ArrangeOverridePort(finalSize);
 
 		internal override bool IsViewHit()
 			=> true;

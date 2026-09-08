@@ -67,6 +67,29 @@ namespace Microsoft.UI.Xaml.Controls
 
 		partial void OnIsPointerWheelReversedChanged(bool isReversed);
 
+		private Size ArrangeOverrideForInputPane(Size finalSize)
+		{
+			if (Content is UIElement child)
+			{
+				var desiredSize = child.DesiredSize;
+				var childSize = new Size(
+					Math.Max(finalSize.Width, desiredSize.Width),
+					Math.Max(finalSize.Height + _occludedRectPadding.Bottom, desiredSize.Height));
+
+				child.Arrange(new Rect(default, childSize));
+				(child as ICustomScrollInfo)?.ApplyViewport(ref finalSize);
+
+				if (IsScrollClient())
+				{
+					VerifyScrollData(
+						finalSize,
+						new Size(childSize.Width * m_fZoomFactor, childSize.Height * m_fZoomFactor));
+				}
+			}
+
+			return finalSize;
+		}
+
 		void IScrollInfo.LineUp() => LineUp();
 
 		void IScrollInfo.LineDown() => LineDown();
