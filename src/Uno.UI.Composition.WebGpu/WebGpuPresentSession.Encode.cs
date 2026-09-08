@@ -32,13 +32,16 @@ public sealed unsafe partial class WebGpuPresentSession
 		var target = pst.Target;
 		wgpuRenderPassEncoderEnd(pst.Pass);
 
-		// Blur only the element AABB padded by the blur's reach, not the whole framebuffer.
+		// Blur only the element AABB, not the whole framebuffer -- and not a padded version of it either: a
+		// backdrop samples the element's OWN backdrop, so reaching outside pulls in whatever sits behind the
+		// neighbours. Reaching out by the blur's radius put the black border of Given_AcrylicBrush's outer Border
+		// into the corners of a white element. The pyramid samples clamp-to-edge, so the element's own edge
+		// pixels extend outward instead, which is what gives a uniform result.
 		var effect = backdrop.Effect;
-		float pad = MathF.Max(effect.SigmaX, effect.SigmaY) + 8f;
 		var aabb = backdrop.Clip.Aabb;
-		float regionX = MathF.Max(0f, aabb.X - pad), regionY = MathF.Max(0f, aabb.Y - pad);
-		float regionW = MathF.Max(1f, MathF.Min(_s.Width, aabb.Z + pad) - regionX);
-		float regionH = MathF.Max(1f, MathF.Min(_s.Height, aabb.W + pad) - regionY);
+		float regionX = Math.Clamp(aabb.X, 0f, _s.Width), regionY = Math.Clamp(aabb.Y, 0f, _s.Height);
+		float regionW = MathF.Max(1f, MathF.Min(_s.Width, aabb.Z) - regionX);
+		float regionH = MathF.Max(1f, MathF.Min(_s.Height, aabb.W) - regionY);
 		var blurred = BlurPyramidRegion(target.View, _s.Width, _s.Height, regionX, regionY, regionW, regionH, effect.SigmaX, effect.SigmaY);
 
 		var color = new WGPURenderPassColorAttachment
