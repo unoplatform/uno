@@ -497,6 +497,7 @@ public class Given_WebView2_Improvements
 			webView.NavigationCompleted += (_, _) => initialNavigationCompleted = true;
 			webView.CoreWebView2.Navigate(new Uri(filePath).AbsoluteUri);
 			await TestServices.WindowHelper.WaitFor(() => initialNavigationCompleted, 10_000);
+			Assert.IsNotNull(webView.Source);
 			var documentUrl = webView.Source.AbsoluteUri.Split('#')[0];
 			var fragmentUrl = $"{documentUrl}#target";
 
@@ -523,6 +524,7 @@ public class Given_WebView2_Improvements
 
 			Assert.IsFalse(cancelledCompletion!.IsSuccess);
 			Assert.AreEqual(CoreWebView2WebErrorStatus.OperationCanceled, cancelledCompletion.WebErrorStatus);
+			Assert.IsNotNull(webView.Source);
 			Assert.AreEqual(documentUrl, webView.Source.AbsoluteUri);
 		}
 		finally

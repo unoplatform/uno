@@ -14,9 +14,10 @@ namespace Microsoft.UI.Xaml.Controls;
 partial class WebView2
 {
 	/// <summary>Gets or sets the URI of the current top level document.</summary>
-	public Uri Source
+	/// <remarks>The default value is null. Clearing this property does not navigate the underlying browser.</remarks>
+	public Uri? Source
 	{
-		get => (Uri)GetValue(SourceProperty);
+		get => (Uri?)GetValue(SourceProperty);
 		set => SetValue(SourceProperty, value);
 	}
 

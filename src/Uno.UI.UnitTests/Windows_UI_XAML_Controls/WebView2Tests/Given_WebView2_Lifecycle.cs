@@ -1,10 +1,12 @@
 #nullable enable
 
 using System;
+using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Web.WebView2.Core;
+using Uno.UI.Xaml.Controls;
 using Windows.UI;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Controls;
@@ -12,6 +14,51 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Controls;
 [TestClass]
 public class Given_WebView2_Lifecycle
 {
+	[TestMethod]
+	public void When_Settings_Outlive_A_Closed_Core_They_Do_Not_Retain_It()
+	{
+		var core = CreateClosedCore(out var settings);
+		GC.Collect();
+		GC.WaitForPendingFinalizers();
+		GC.Collect();
+
+		Assert.IsFalse(core.TryGetTarget(out _));
+		GC.KeepAlive(settings);
+	}
+
+	[MethodImpl(MethodImplOptions.NoInlining)]
+	private static WeakReference<CoreWebView2> CreateClosedCore(out CoreWebView2Settings settings)
+	{
+		var owner = new WebView2();
+		var core = new CoreWebView2((IWebView)owner);
+		settings = core.Settings;
+		core.Close();
+		owner.Close();
+		return new WeakReference<CoreWebView2>(core);
+	}
+
+	[TestMethod]
+	public void When_Source_Is_Null_It_Does_Not_Initialize_The_Core()
+	{
+		var webView = new WebView2();
+		var initialized = 0;
+		webView.CoreWebView2Initialized += (_, _) => initialized++;
+		try
+		{
+			Assert.IsNull(webView.Source);
+			webView.Source = null;
+			Assert.IsNull(webView.Source);
+			webView.ClearValue(WebView2.SourceProperty);
+			Assert.IsNull(webView.Source);
+			Assert.IsNull(webView.CoreWebView2);
+			Assert.AreEqual(0, initialized);
+		}
+		finally
+		{
+			webView.Close();
+		}
+	}
+
 	[TestMethod]
 	public void When_Not_Initialized_CoreWebView2_Is_Null()
 	{

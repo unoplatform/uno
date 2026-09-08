@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 
 namespace Microsoft.Web.WebView2.Core;

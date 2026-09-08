@@ -203,7 +203,7 @@ partial class WebView2 : IWebView
 	}
 
 	private bool IsRenderedSubscriptionCurrent() =>
-		_renderedTarget?.TryGetTarget(out var target) == true && ReferenceEquals(Visual.CompositionTarget, target);
+		_renderedTarget?.TryGetTarget(out var target) is true && ReferenceEquals(Visual.CompositionTarget, target);
 
 	private IDisposable? SubscribeToRendered()
 	{

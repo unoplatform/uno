@@ -82,7 +82,6 @@ public partial class CoreWebView2
 	internal IWebView Owner => _owner;
 
 	internal INativeWebView? NativeWebViewForCookies => _nativeWebView;
-	internal bool HasNativeWebView => _nativeWebView is not null && _nativeWebViewInitializedTcs.Task.IsCompletedSuccessfully;
 	internal INativeWebViewController? NativeController => _nativeWebView as INativeWebViewController;
 	internal string? NativeUserAgent => (_nativeWebView as ISupportsUserAgent)?.UserAgent;
 
@@ -836,6 +835,10 @@ public partial class CoreWebView2
 		}
 
 		_isClosed = true;
+		Settings.UserAgentChanged -= OnSettingsUserAgentChanged;
+		Settings.IsScriptEnabledChanged -= OnSettingsIsScriptEnabledChanged;
+		Settings.IsZoomControlEnabledChanged -= OnSettingsIsZoomControlEnabledChanged;
+		Settings.OnOwnerClosed();
 		DetachWebResourceRequestedSupport();
 		var nativeWebView = _nativeWebView;
 		_nativeWebView = null;

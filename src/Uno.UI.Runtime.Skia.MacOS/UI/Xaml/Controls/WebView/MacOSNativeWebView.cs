@@ -131,7 +131,6 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 		if (TryGetHandle("close", out var handle))
 		{
 			NativeUno.uno_webview_stop(handle);
-			NativeUno.uno_webview_unregister_message_handler(handle);
 		}
 		_isClosed = true;
 	}

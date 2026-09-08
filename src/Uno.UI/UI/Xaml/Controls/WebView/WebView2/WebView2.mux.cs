@@ -1261,7 +1261,7 @@ partial class WebView2
 			throw new ObjectDisposedException(nameof(WebView2), s_error_wv2_closed);
 		}
 
-		var creation = m_creationInProgressAsync = new TaskCompletionSource();
+		var creation = m_creationInProgressAsync = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
 		RegisterXamlEventHandlers();
 		try
 		{

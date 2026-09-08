@@ -25,6 +25,45 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls;
 public class Given_WebView2_SourcePort
 {
 	[TestMethod]
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_Source_Is_Cleared_The_Current_Document_Is_Preserved(bool clearValue)
+	{
+		var webView = new WebView2 { Width = 320, Height = 240 };
+		try
+		{
+			await UITestHelper.Load(webView);
+			await webView.EnsureCoreWebView2Async(await CreateEnvironmentAsync());
+			await NavigateAsync(webView, "preserved-after-clear");
+			var core = webView.CoreWebView2;
+			var coreSource = core.Source;
+			var navigations = 0;
+			webView.NavigationStarting += (_, _) => navigations++;
+
+			if (clearValue)
+			{
+				webView.ClearValue(WebView2.SourceProperty);
+			}
+			else
+			{
+				webView.Source = null;
+			}
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsNull(webView.Source);
+			Assert.AreSame(core, webView.CoreWebView2);
+			Assert.AreEqual(coreSource, core.Source);
+			Assert.AreEqual(0, navigations);
+			Assert.AreEqual("\"preserved-after-clear\"", await webView.ExecuteScriptAsync("document.body.textContent"));
+		}
+		finally
+		{
+			webView.Close();
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
 	public async Task When_Focus_Leaves_And_Reenters_The_Browser_Native_Focus_Follows()
 	{
 		var webView = new WebView2 { Width = 320, Height = 240 };
@@ -75,8 +114,8 @@ public class Given_WebView2_SourcePort
 			await UITestHelper.Load(webView);
 			await webView.EnsureCoreWebView2Async(await CreateEnvironmentAsync());
 			await NavigateAsync(webView, "viewport");
-			var width = JsonSerializer.Deserialize<double>(await webView.ExecuteScriptAsync("innerWidth"));
-			var height = JsonSerializer.Deserialize<double>(await webView.ExecuteScriptAsync("innerHeight"));
+			var width = ReadJsonNumber(await webView.ExecuteScriptAsync("innerWidth"));
+			var height = ReadJsonNumber(await webView.ExecuteScriptAsync("innerHeight"));
 			Assert.AreEqual(webView.ActualWidth, width, 1d);
 			Assert.AreEqual(webView.ActualHeight, height, 1d);
 
@@ -85,8 +124,8 @@ public class Given_WebView2_SourcePort
 			await TestServices.WindowHelper.WaitForIdle();
 			for (var attempt = 0; attempt < 100; attempt++)
 			{
-				width = JsonSerializer.Deserialize<double>(await webView.ExecuteScriptAsync("innerWidth"));
-				height = JsonSerializer.Deserialize<double>(await webView.ExecuteScriptAsync("innerHeight"));
+				width = ReadJsonNumber(await webView.ExecuteScriptAsync("innerWidth"));
+				height = ReadJsonNumber(await webView.ExecuteScriptAsync("innerHeight"));
 				if (Math.Abs(webView.ActualWidth - width) <= 1 && Math.Abs(webView.ActualHeight - height) <= 1)
 				{
 					break;
@@ -267,7 +306,7 @@ public class Given_WebView2_SourcePort
 			var settings = webView.CoreWebView2.Settings;
 			var defaultUserAgent = settings.UserAgent;
 			Assert.IsFalse(string.IsNullOrEmpty(defaultUserAgent));
-			Assert.AreEqual(JsonSerializer.Serialize(defaultUserAgent), await webView.ExecuteScriptAsync("navigator.userAgent"));
+			Assert.AreEqual(defaultUserAgent, ReadJsonString(await webView.ExecuteScriptAsync("navigator.userAgent")));
 
 			settings.UserAgent = "Uno-WebView2-SourcePort";
 			await NavigateAsync(webView, "custom-ua");
@@ -278,7 +317,7 @@ public class Given_WebView2_SourcePort
 			settings.UserAgent = defaultUserAgent;
 			await NavigateAsync(webView, "restored-ua");
 			Assert.AreEqual(defaultUserAgent, settings.UserAgent);
-			Assert.AreEqual(JsonSerializer.Serialize(defaultUserAgent), await webView.ExecuteScriptAsync("navigator.userAgent"));
+			Assert.AreEqual(defaultUserAgent, ReadJsonString(await webView.ExecuteScriptAsync("navigator.userAgent")));
 		}
 		finally
 		{
@@ -446,6 +485,18 @@ public class Given_WebView2_SourcePort
 
 	[DllImport("user32.dll", EntryPoint = "GetAncestor")]
 	private static extern nint GetNativeAncestor(nint window, uint flags);
+
+	private static double ReadJsonNumber(string json)
+	{
+		using var document = JsonDocument.Parse(json);
+		return document.RootElement.GetDouble();
+	}
+
+	private static string? ReadJsonString(string json)
+	{
+		using var document = JsonDocument.Parse(json);
+		return document.RootElement.GetString();
+	}
 
 	private static async Task NavigateAsync(WebView2 webView, string content)
 	{
