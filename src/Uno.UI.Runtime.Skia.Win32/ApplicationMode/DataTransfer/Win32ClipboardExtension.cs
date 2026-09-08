@@ -1,27 +1,8 @@
-﻿// Copyright (C) 1997-2024 Sam Lantinga <slouken@libsdl.org>
-//
-// This software is provided 'as-is', without any express or implied
-// warranty.  In no event will the authors be held liable for any damages
-// arising from the use of this software.
-//
-// 	Permission is granted to anyone to use this software for any purpose,
-// 	including commercial applications, and to alter it and redistribute it
-// 	freely, subject to the following restrictions:
-//
-// 1. The origin of this software must not be misrepresented; you must not
-// 	claim that you wrote the original software. If you use this software
-// 	in a product, an acknowledgment in the product documentation would be
-// 	appreciated but is not required.
-// 2. Altered source versions must be plainly marked as such, and must not be
-// misrepresented as being the original software.
-// 3. This notice may not be removed or altered from any source distribution.
-
-// https://github.com/libsdl-org/SDL/blob/9f8157f42cc0351833c030febe8a559719c875bd/src/video/windows/SDL_windowsclipboard.c
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -32,16 +13,15 @@ using SkiaSharp;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Dispatching;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
-using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.Graphics.Gdi;
 using Windows.Win32.System.Memory;
 using Windows.Win32.System.Ole;
-using Windows.Win32.UI.Shell;
 using Windows.Win32.UI.WindowsAndMessaging;
 using Buffer = System.Buffer;
 
@@ -99,14 +79,35 @@ internal partial class Win32ClipboardExtension : IClipboardExtension
 	// _windowClass must be statically stored, otherwise lpfnWndProc will get collected and the CLR will throw some weird exceptions
 	// ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
 	private readonly WNDCLASSEXW _windowClass;
-	private readonly HWND _clipboardWindow;
+	private readonly HWND _hwnd;
 
 	private bool _observeContentChanged;
-	private DataPackage? _currentPackage;
+
+	/// <summary>A completed read, together with the clipboard generation it was read from.</summary>
+	/// <remarks>
+	/// Keyed on the sequence number rather than on WM_CLIPBOARDUPDATE alone because
+	/// <see cref="PInvoke.GetClipboardSequenceNumber"/> is lock-free and authoritative: it reports a
+	/// change even if we missed the message or have not processed it yet.
+	/// </remarks>
+	private sealed record CachedContent(DataPackage Package, uint Sequence);
+
+	// One reference field rather than a package/sequence pair, so that WndProc invalidating the cache
+	// cannot be seen half-applied by a reader on another thread. Only ever set to a COMPLETE read
+	// (see BuildPackage), and a reader revalidates the sequence anyway, so a lost update is benign.
+	private CachedContent? _cachedContent;
+
+	// Formats registered by our last write are also known without enumerating a contended clipboard.
+	// Keep only identifiers, never a payload or an incomplete read result.
+	private sealed record WrittenFormats(uint Sequence, CLIPBOARD_FORMAT[] Formats);
+	private WrittenFormats? _writtenFormats;
+
+	// Cancels the pending warm-up when the clipboard changes again before it ran.
+	private CancellationTokenSource? _warmUpCts;
 
 	private unsafe Win32ClipboardExtension()
 	{
 		using var lpClassName = new Win32Helper.NativeNulTerminatedUtf16String("UnoPlatformClipboardWindow");
+		using var windowTitle = new Win32Helper.NativeNulTerminatedUtf16String("");
 
 		_windowClass = new WNDCLASSEXW
 		{
@@ -122,14 +123,7 @@ internal partial class Win32ClipboardExtension : IClipboardExtension
 			throw new InvalidOperationException($"{nameof(PInvoke.RegisterClassEx)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
-		_clipboardWindow = CreateClipboardWindow();
-	}
-
-	private unsafe HWND CreateClipboardWindow()
-	{
-		using var lpClassName = new Win32Helper.NativeNulTerminatedUtf16String("UnoPlatformClipboardWindow");
-		using var windowTitle = new Win32Helper.NativeNulTerminatedUtf16String("");
-		var hwnd = PInvoke.CreateWindowEx(
+		_hwnd = PInvoke.CreateWindowEx(
 			0,
 			lpClassName,
 			windowTitle,
@@ -143,21 +137,15 @@ internal partial class Win32ClipboardExtension : IClipboardExtension
 			Win32Helper.GetHInstance(),
 			null);
 
-		if (hwnd == HWND.Null)
+		if (_hwnd == HWND.Null)
 		{
 			throw new InvalidOperationException($"{nameof(PInvoke.CreateWindowEx)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
-		var success = PInvoke.AddClipboardFormatListener(hwnd);
-		if (!success)
-		{
-			this.LogError()?.Error($"{nameof(PInvoke.AddClipboardFormatListener)} failed: {Win32Helper.GetErrorMessage()}");
-		}
-
-		return hwnd;
+		// No need to unregister. This class lasts the lifetime on the app.
+		var success = PInvoke.AddClipboardFormatListener(_hwnd);
+		if (!success) { this.LogError()?.Error($"{nameof(PInvoke.AddClipboardFormatListener)} failed: {Win32Helper.GetErrorMessage()}"); }
 	}
-
-	private HWND GetClipboardWindow() => _clipboardWindow;
 
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]
 	internal static LRESULT WndProc(HWND hwnd, uint msg, WPARAM wParam, LPARAM lParam)
@@ -166,7 +154,8 @@ internal partial class Win32ClipboardExtension : IClipboardExtension
 		{
 			if (msg is PInvoke.WM_CLIPBOARDUPDATE)
 			{
-				Instance._currentPackage = null;
+				Instance._cachedContent = null;
+				Instance.ScheduleWarmUp();
 				if (Instance._observeContentChanged)
 				{
 					Instance.ContentChanged?.Invoke(Instance, EventArgs.Empty);
@@ -189,15 +178,12 @@ internal partial class Win32ClipboardExtension : IClipboardExtension
 
 	public void Clear()
 	{
-		using (var clipboardDisposable = new ClipboardDisposable(GetClipboardWindow(), true))
+		using var clipboardDisposable = new ClipboardDisposable(_hwnd, true, ClipboardRetry.Blocking);
+		if (!clipboardDisposable.IsOpen)
 		{
-			if (!clipboardDisposable.IsOpen)
-			{
-				return;
-			}
+			// Previously this silently no-oped: EmptyClipboard was skipped and nothing reported it.
+			this.LogError()?.Error($"{nameof(Clear)} failed: could not take the clipboard, it is held by another application.");
 		}
-
-		_currentPackage = new DataPackage();
 	}
 
 	public void Flush() { }
@@ -224,35 +210,90 @@ internal partial class Win32ClipboardExtension : IClipboardExtension
 		return Marshal.PtrToStringUni(buffer);
 	}
 
-	private readonly ref struct ClipboardDisposable
+	/// <summary>
+	/// How hard to try to take the clipboard.
+	/// </summary>
+	/// <remarks>
+	/// <see cref="PInvoke.OpenClipboard"/> is a global exclusive lock with a single winner, so being
+	/// denied is a normal outcome under contention rather than an error. It fails quickly, which is
+	/// what makes retrying cheap; the right budget depends entirely on who is asking.
+	/// </remarks>
+	private enum ClipboardRetry
 	{
-		private readonly bool _shouldClose;
-		public bool IsOpen => _shouldClose;
+		/// <summary>
+		/// A single attempt, never waiting. For callers on the UI hot path, where a denial is
+		/// recovered by the next call instead of by waiting.
+		/// </summary>
+		/// <remarks>
+		/// Blocking here would put <c>TextBox.CanPasteClipboardContent</c> — which is re-evaluated in
+		/// every process on every clipboard change — back onto a global exclusive lock.
+		/// </remarks>
+		Once,
 
-		public ClipboardDisposable(HWND hwnd, bool ownClipboard)
+		/// <summary>
+		/// Up to <see cref="MaxOpenAttempts"/> attempts, sleeping in between. For user-initiated
+		/// writes, where losing the operation is worse than a delay and where the first attempt
+		/// almost always succeeds anyway.
+		/// </summary>
+		Blocking,
+	}
+
+	private const int MaxOpenAttempts = 10;
+	private const int OpenRetryDelayMs = 100;
+
+	/// <remarks>
+	/// Every listening process is woken by the same <see cref="PInvoke.WM_CLIPBOARDUPDATE"/> broadcast,
+	/// so a fixed backoff has them all retry in lockstep and collide again. The jitter is what breaks
+	/// up the herd, and is not decoration.
+	/// </remarks>
+	private static int NextRetryDelayMs(int baseDelayMs) =>
+		baseDelayMs + Random.Shared.Next(-baseDelayMs / 2, (baseDelayMs / 2) + 1);
+
+	private static bool TryOpenClipboard(HWND hwnd, ClipboardRetry retry)
+	{
+		var maxAttempts = retry is ClipboardRetry.Blocking ? MaxOpenAttempts : 1;
+		for (var attempt = 1; ; attempt++)
 		{
-			var opened = false;
-			for (var attempt = 0; attempt < 20 && !opened; attempt++)
+			if (PInvoke.OpenClipboard(hwnd))
 			{
-				opened = PInvoke.OpenClipboard(hwnd);
-				if (!opened && attempt < 19)
-				{
-					Thread.Sleep(10);
-				}
+				return true;
 			}
 
-			_shouldClose = opened;
-			if (!_shouldClose) { typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.OpenClipboard)} failed: {Win32Helper.GetErrorMessage()}"); }
-			if (ownClipboard && _shouldClose)
+			if (attempt >= maxAttempts)
+			{
+				// Deliberately not an error: under contention this is the expected outcome, and the
+				// callers that cannot proceed without the clipboard log it themselves.
+				typeof(Win32ClipboardExtension).LogDebug()?.Debug($"{nameof(PInvoke.OpenClipboard)} denied after {attempt} attempt(s): {Win32Helper.GetErrorMessage()}");
+				return false;
+			}
+
+			Thread.Sleep(NextRetryDelayMs(OpenRetryDelayMs));
+		}
+	}
+
+	private readonly ref struct ClipboardDisposable
+	{
+		public ClipboardDisposable(HWND hwnd, bool ownClipboard, ClipboardRetry retry)
+		{
+			IsOpen = TryOpenClipboard(hwnd, retry);
+			if (ownClipboard && IsOpen)
 			{
 				var success = PInvoke.EmptyClipboard();
 				if (!success) { typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.EmptyClipboard)} failed: {Win32Helper.GetErrorMessage()}"); }
 			}
 		}
 
+		/// <summary>
+		/// Whether the clipboard was actually opened. Callers MUST check this before calling anything
+		/// that needs the lock — <see cref="PInvoke.EnumClipboardFormats"/>,
+		/// <see cref="PInvoke.GetClipboardData"/>, <see cref="PInvoke.SetClipboardData"/> — all of
+		/// which fail with "Thread does not have a clipboard open" otherwise.
+		/// </summary>
+		public bool IsOpen { get; }
+
 		public void Dispose()
 		{
-			if (_shouldClose)
+			if (IsOpen)
 			{
 				var success = PInvoke.CloseClipboard();
 				if (!success) { typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.CloseClipboard)} failed: {Win32Helper.GetErrorMessage()}"); }
@@ -308,26 +349,117 @@ internal partial class Win32ClipboardExtension : IClipboardExtension
 
 partial class Win32ClipboardExtension // from clipboard
 {
+	/// <summary>
+	/// The standard formats this extension can decode. Anything else that happens to be on the
+	/// clipboard is surfaced by name via <see cref="DecodeUnknownData"/>, once
+	/// <see cref="PInvoke.EnumClipboardFormats"/> has told us it is there.
+	/// </summary>
+	private static readonly CLIPBOARD_FORMAT[] _knownStandardFormats =
+	[
+		CLIPBOARD_FORMAT.CF_UNICODETEXT,
+		CLIPBOARD_FORMAT.CF_OEMTEXT,
+		CLIPBOARD_FORMAT.CF_LOCALE,
+		CLIPBOARD_FORMAT.CF_DIB,
+	];
+
+	/// <summary>
+	/// The registered ids of <see cref="_knownTextBasedClipboardFormats"/>, so they can be probed
+	/// without the lock.
+	/// </summary>
+	/// <remarks>
+	/// <see cref="PInvoke.RegisterClipboardFormat"/> returns the existing id when the name is already
+	/// registered, and ids are stable for the lifetime of the session, so this is safe to cache.
+	/// </remarks>
+	private static readonly Lazy<CLIPBOARD_FORMAT[]> _knownTextBasedFormatIds = new(() =>
+		_knownTextBasedClipboardFormats.Keys
+			.Select(name => (CLIPBOARD_FORMAT)PInvoke.RegisterClipboardFormat(name))
+			.Where(id => id != 0)
+			.Distinct()
+			.ToArray());
+
+	/// <summary>How long to wait before each warm-up attempt. See <see cref="ScheduleWarmUp"/>.</summary>
+	private static readonly int[] _warmUpDelaysMs = [60, 150, 400];
+
+	/// <summary>Decodes one clipboard format's payload from its handle, or null if it could not be read.</summary>
+	private delegate object? ClipboardDecoder(CLIPBOARD_FORMAT format, string name, HGLOBAL handle);
+
 	public DataPackageView GetContent()
 	{
-		if (_currentPackage is null)
+		// Lock-free, so this is trustworthy even while another process holds the clipboard, and it
+		// notices a change we haven't been told about yet.
+		var sequence = PInvoke.GetClipboardSequenceNumber();
+		if (_cachedContent is { } cached && cached.Sequence == sequence)
 		{
-			_currentPackage = GetContentPackage();
+			return cached.Package.GetView();
 		}
 
-		return _currentPackage.GetView();
+		var package = BuildPackage(sequence, out var complete);
+		if (complete)
+		{
+			// Only a complete read is worth remembering. Caching an incomplete one is what used to turn
+			// a single denied OpenClipboard into paste being dead until the next clipboard change.
+			_cachedContent = new CachedContent(package, sequence);
+		}
+
+		return package.GetView();
 	}
 
-	private static DataPackage GetContentPackage()
+	/// <summary>
+	/// Builds the package describing the current clipboard content, without materialising any payload.
+	/// </summary>
+	/// <param name="complete">
+	/// Whether the full format list could be enumerated. When false, the clipboard was held by someone
+	/// else and only the formats we can name by ourselves were probed - so the result is usable but
+	/// must not be cached.
+	/// </param>
+	private static DataPackage BuildPackage(uint sequence, out bool complete)
 	{
 		var package = new DataPackage();
+		var registered = new HashSet<string>();
 
-		using var clipboardDisposable = new ClipboardDisposable(Instance.GetClipboardWindow(), false);
+		// 1. What can be learned without the lock. IsClipboardFormatAvailable cannot be denied, and it
+		//    reports a delay-rendered format as available without forcing the (potentially very slow)
+		//    render. This alone covers every format this extension knows how to decode.
+		foreach (var format in _knownStandardFormats)
+		{
+			if (PInvoke.IsClipboardFormatAvailable((uint)format))
+			{
+				RegisterFormat(package, registered, format, sequence);
+			}
+		}
+
+		foreach (var format in _knownTextBasedFormatIds.Value)
+		{
+			if (PInvoke.IsClipboardFormatAvailable((uint)format))
+			{
+				RegisterFormat(package, registered, format, sequence);
+			}
+		}
+
+		if (Instance._writtenFormats is { } written && written.Sequence == sequence)
+		{
+			foreach (var format in written.Formats)
+			{
+				if (PInvoke.IsClipboardFormatAvailable((uint)format))
+				{
+					RegisterFormat(package, registered, format, sequence);
+				}
+			}
+		}
+
+		// 2. Anything else needs EnumClipboardFormats, which needs the lock. Exactly one attempt: this
+		//    runs on the UI thread on every clipboard change in every process, so it must never wait.
+		//    Being denied only costs the app-specific formats we have no name for, and only until the
+		//    next call - or until the warm-up gets there first.
+		using var clipboardDisposable = new ClipboardDisposable(Instance._hwnd, false, ClipboardRetry.Once);
 		if (!clipboardDisposable.IsOpen)
 		{
+			complete = false;
 			return package;
 		}
 
+		// Collected before registering anything: GetClipboardFormatName, reached via ResolveFormat,
+		// overwrites the last Win32 error, which would make the check below meaningless.
 		var formats = new List<CLIPBOARD_FORMAT>();
 		var formatLimitReached = false;
 		for (uint lastFormat = 0; (lastFormat = PInvoke.EnumClipboardFormats(lastFormat)) != 0;)
@@ -338,111 +470,271 @@ partial class Win32ClipboardExtension // from clipboard
 				typeof(Win32ClipboardExtension).LogError()?.Error($"Clipboard contains more than {MaxClipboardSnapshotFormats} formats; remaining formats were ignored.");
 				break;
 			}
-
 			formats.Add((CLIPBOARD_FORMAT)lastFormat);
 		}
 
 		if (!formatLimitReached && Marshal.GetLastWin32Error() != (int)WIN32_ERROR.ERROR_SUCCESS)
 		{
 			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.EnumClipboardFormats)} failed: {Win32Helper.GetErrorMessage()}");
+			complete = false;
 			return package;
 		}
 
-		ulong snapshotBytes = 0;
 		foreach (var format in formats)
 		{
-			var loader = (Action<DataPackage, CLIPBOARD_FORMAT, HGLOBAL>?)(format switch
-			{
-				// https://learn.microsoft.com/en-us/windows/win32/dataxchg/standard-clipboard-formats#constants
-				// https://learn.microsoft.com/en-us/windows/win32/dataxchg/clipboard-formats#synthesized-clipboard-formats
-
-				// synthesized text formats
-				CLIPBOARD_FORMAT.CF_TEXT => null,
-				CLIPBOARD_FORMAT.CF_LOCALE => GetUnknownData, // 4 bytes CultureInfo.LCID
-				CLIPBOARD_FORMAT.CF_UNICODETEXT => GetText,
-				CLIPBOARD_FORMAT.CF_OEMTEXT => GetOemText,
-
-				// synthesized image formats
-				CLIPBOARD_FORMAT.CF_BITMAP => null, // Windows synthesizes CF_DIB from CF_BITMAP; handled below
-				CLIPBOARD_FORMAT.CF_DIB => GetDib,
-				CLIPBOARD_FORMAT.CF_DIBV5 => null,
-				CLIPBOARD_FORMAT.CF_PALETTE => null,
-
-				// synthesized meta-file formats
-				CLIPBOARD_FORMAT.CF_METAFILEPICT => null,
-				CLIPBOARD_FORMAT.CF_ENHMETAFILE => null,
-
-				CLIPBOARD_FORMAT.CF_HDROP => null,
-
-				CLIPBOARD_FORMAT.CF_SYLK => null,
-				CLIPBOARD_FORMAT.CF_DIF => null,
-				CLIPBOARD_FORMAT.CF_TIFF => null,
-				CLIPBOARD_FORMAT.CF_PENDATA => null,
-				CLIPBOARD_FORMAT.CF_RIFF => null,
-				CLIPBOARD_FORMAT.CF_WAVE => null,
-
-				_ => GetUnknownData,
-			});
-			if (loader is { })
-			{
-				// GetClipboardData must be called here, and not within async-func of SetDataProvider,
-				// or it will throw: Thread does not have a clipboard open
-				var handle = PInvoke.GetClipboardData((uint)format);
-				if (handle == default)
-				{
-					typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.GetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
-					continue;
-				}
-
-				var formatBytes = (ulong)PInvoke.GlobalSize((HGLOBAL)(IntPtr)handle);
-				if (formatBytes == 0)
-				{
-					typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.GlobalSize)} failed for clipboard format {(uint)format}: {Win32Helper.GetErrorMessage()}");
-					continue;
-				}
-
-				if (formatBytes > MaxClipboardFormatBytes || snapshotBytes > MaxClipboardSnapshotBytes - formatBytes)
-				{
-					typeof(Win32ClipboardExtension).LogError()?.Error($"Clipboard format {(uint)format} exceeds the clipboard snapshot budget and was ignored.");
-					continue;
-				}
-
-				snapshotBytes += formatBytes;
-				loader.Invoke(package, format, (HGLOBAL)(IntPtr)handle);
-			}
+			RegisterFormat(package, registered, format, sequence);
 		}
 
+		complete = !formatLimitReached;
 		return package;
 	}
-	private static unsafe void GetText(DataPackage package, CLIPBOARD_FORMAT format, HGLOBAL handle)
+
+	/// <summary>
+	/// Maps a clipboard format to the <see cref="DataPackage"/> key it is surfaced under and the
+	/// decoder for its payload, or null for the formats this extension does not surface.
+	/// </summary>
+	private static (string Name, ClipboardDecoder Decoder)? ResolveFormat(CLIPBOARD_FORMAT format) => format switch
+	{
+		// https://learn.microsoft.com/en-us/windows/win32/dataxchg/standard-clipboard-formats#constants
+		// https://learn.microsoft.com/en-us/windows/win32/dataxchg/clipboard-formats#synthesized-clipboard-formats
+
+		// synthesized text formats
+		CLIPBOARD_FORMAT.CF_TEXT => null,
+		CLIPBOARD_FORMAT.CF_LOCALE => (GetClipboardFormatName(format), DecodeUnknownData), // 4 bytes CultureInfo.LCID
+		CLIPBOARD_FORMAT.CF_UNICODETEXT => (StandardDataFormats.Text, DecodeText),
+		CLIPBOARD_FORMAT.CF_OEMTEXT => (GetClipboardFormatName(format), DecodeOemText),
+
+		// synthesized image formats
+		CLIPBOARD_FORMAT.CF_BITMAP => null, // Windows synthesizes CF_DIB from CF_BITMAP; handled below
+		CLIPBOARD_FORMAT.CF_DIB => (StandardDataFormats.Bitmap, DecodeDib),
+		CLIPBOARD_FORMAT.CF_DIBV5 => null,
+		CLIPBOARD_FORMAT.CF_PALETTE => null,
+
+		// synthesized meta-file formats
+		CLIPBOARD_FORMAT.CF_METAFILEPICT => null,
+		CLIPBOARD_FORMAT.CF_ENHMETAFILE => null,
+
+		CLIPBOARD_FORMAT.CF_HDROP => null,
+
+		CLIPBOARD_FORMAT.CF_SYLK => null,
+		CLIPBOARD_FORMAT.CF_DIF => null,
+		CLIPBOARD_FORMAT.CF_TIFF => null,
+		CLIPBOARD_FORMAT.CF_PENDATA => null,
+		CLIPBOARD_FORMAT.CF_RIFF => null,
+		CLIPBOARD_FORMAT.CF_WAVE => null,
+
+		_ => (GetClipboardFormatName(format), DecodeUnknownData),
+	};
+
+	/// <summary>
+	/// Registers a format key against a provider that will fetch the payload if anyone asks for it.
+	/// </summary>
+	/// <remarks>
+	/// Registering the key is all that <see cref="DataPackageView.Contains"/> and
+	/// <see cref="DataPackageView.AvailableFormats"/> need - they read only the keys - so "can I
+	/// paste?" is answered with no payload work and no clipboard lock at all.
+	/// </remarks>
+	private static void RegisterFormat(DataPackage package, HashSet<string> registered, CLIPBOARD_FORMAT format, uint sequence)
+	{
+		if (ResolveFormat(format) is not { } resolved || !registered.Add(resolved.Name))
+		{
+			return;
+		}
+
+		package.SetDataProvider(resolved.Name, ct => FetchPayloadAsync(format, resolved.Name, resolved.Decoder, sequence, ct));
+	}
+
+	/// <summary>
+	/// Fetches and decodes one format's payload, on demand.
+	/// </summary>
+	/// <remarks>
+	/// This is where the clipboard lock is actually needed, and where the full retry budget belongs: a
+	/// paste is user-initiated and infrequent, and a slow paste beats a failed one.
+	/// </remarks>
+	private static async Task<object> FetchPayloadAsync(CLIPBOARD_FORMAT format, string name, ClipboardDecoder decoder, uint sequence, CancellationToken ct)
+	{
+		for (var attempt = 1; ; attempt++)
+		{
+			// The open/read/close cycle must not span an await - CloseClipboard has to be called by the
+			// thread that opened - so the whole cycle runs as one unit on the dispatcher.
+			var (outcome, value) = await RunOnDispatcherAsync(() => TryFetchPayload(format, name, decoder, sequence));
+
+			switch (outcome)
+			{
+				case FetchOutcome.Success:
+					return value!;
+				case FetchOutcome.Stale:
+					throw new InvalidOperationException($"The clipboard content changed while reading format '{name}'.");
+				case FetchOutcome.Failed:
+					throw new InvalidOperationException($"Failed to read format '{name}' from the clipboard.");
+				case FetchOutcome.Denied when attempt >= MaxOpenAttempts:
+					throw new InvalidOperationException($"Could not take the clipboard to read format '{name}' after {attempt} attempts, it is held by another application.");
+			}
+
+			// Awaiting instead of sleeping: this can be running on the UI thread, and a paste must not
+			// freeze it for the length of the retry budget.
+			await Task.Delay(NextRetryDelayMs(OpenRetryDelayMs), ct);
+		}
+	}
+
+	private enum FetchOutcome
+	{
+		Success,
+
+		/// <summary>Another process held the clipboard. Worth retrying.</summary>
+		Denied,
+
+		/// <summary>The clipboard content changed since the package was built. Retrying cannot help.</summary>
+		Stale,
+
+		/// <summary>The data was there but could not be read or decoded. Retrying cannot help.</summary>
+		Failed,
+	}
+
+	private static (FetchOutcome Outcome, object? Value) TryFetchPayload(CLIPBOARD_FORMAT format, string name, ClipboardDecoder decoder, uint sequence)
+	{
+		if (PInvoke.GetClipboardSequenceNumber() != sequence)
+		{
+			// Serving content from a different clipboard generation would be worse than failing: the
+			// caller is asking about the formats it saw in this view.
+			return (FetchOutcome.Stale, null);
+		}
+
+		using var clipboardDisposable = new ClipboardDisposable(Instance._hwnd, false, ClipboardRetry.Once);
+		if (!clipboardDisposable.IsOpen)
+		{
+			return (FetchOutcome.Denied, null);
+		}
+
+		// Deliberately re-read from GetClipboardData rather than capturing a handle when the format was
+		// discovered: a clipboard data handle is owned by the clipboard and is only valid while it is
+		// open, so using a captured one later reads freed memory.
+		var handle = PInvoke.GetClipboardData((uint)format);
+		if (handle == default)
+		{
+			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.GetClipboardData)} failed (format={name}): {Win32Helper.GetErrorMessage()}");
+			return (FetchOutcome.Failed, null);
+		}
+
+		var formatBytes = (ulong)PInvoke.GlobalSize((HGLOBAL)(IntPtr)handle);
+		if (formatBytes == 0 || formatBytes > MaxClipboardFormatBytes)
+		{
+			typeof(Win32ClipboardExtension).LogError()?.Error($"Clipboard format '{name}' has an invalid or oversized payload ({formatBytes} bytes).");
+			return (FetchOutcome.Failed, null);
+		}
+
+		return decoder.Invoke(format, name, (HGLOBAL)(IntPtr)handle) is { } value
+			? (FetchOutcome.Success, value)
+			: (FetchOutcome.Failed, null);
+	}
+
+	private static async Task<T> RunOnDispatcherAsync<T>(Func<T> func)
+	{
+		if (NativeDispatcher.Main.HasThreadAccess)
+		{
+			return func();
+		}
+
+		var result = default(T)!;
+		await NativeDispatcher.Main.EnqueueAsync(() => result = func());
+		return result;
+	}
+
+	/// <summary>
+	/// Re-reads the clipboard shortly after it changed, off the message that announced the change.
+	/// </summary>
+	/// <remarks>
+	/// Every listening process handles WM_CLIPBOARDUPDATE at the same instant, which makes that the
+	/// worst possible moment to ask for the lock - all N of them collide. Waiting a jittered moment
+	/// and reading then means the complete format list is usually cached before anything asks for it.
+	/// This is fidelity only: <see cref="GetContent"/> is correct without it.
+	/// </remarks>
+	private void ScheduleWarmUp()
+	{
+		// Not disposed on purpose: the pending WarmUpAsync still holds the token, and a cancelled
+		// source with no registrations is cheap enough to leave to the GC.
+		_warmUpCts?.Cancel();
+
+		var cts = _warmUpCts = new CancellationTokenSource();
+		_ = WarmUpAsync(cts.Token);
+	}
+
+	private async Task WarmUpAsync(CancellationToken ct)
+	{
+		try
+		{
+			foreach (var baseDelayMs in _warmUpDelaysMs)
+			{
+				await Task.Delay(NextRetryDelayMs(baseDelayMs), ct);
+
+				var done = false;
+				await NativeDispatcher.Main.EnqueueAsync(() => done = TryWarmUp(ct));
+				if (done)
+				{
+					return;
+				}
+			}
+		}
+		catch (OperationCanceledException)
+		{
+			// The clipboard changed again; the newer warm-up supersedes this one.
+		}
+		catch (Exception e)
+		{
+			this.LogError()?.Error($"Exception while warming up the clipboard cache", e);
+		}
+	}
+
+	/// <returns>Whether the warm-up is finished, either because it succeeded or because it is moot.</returns>
+	private bool TryWarmUp(CancellationToken ct)
+	{
+		var sequence = PInvoke.GetClipboardSequenceNumber();
+		if (ct.IsCancellationRequested || _cachedContent?.Sequence == sequence)
+		{
+			return true;
+		}
+
+		var package = BuildPackage(sequence, out var complete);
+		if (!complete)
+		{
+			return false;
+		}
+
+		// The clipboard may have changed while we were reading it, in which case this package describes
+		// a generation nobody is asking about any more.
+		if (!ct.IsCancellationRequested && PInvoke.GetClipboardSequenceNumber() == sequence)
+		{
+			_cachedContent = new CachedContent(package, sequence);
+		}
+
+		return true;
+	}
+
+	private static unsafe object? DecodeText(CLIPBOARD_FORMAT format, string name, HGLOBAL handle)
 	{
 		using var lockDisposable = Win32Helper.GlobalLock(handle, out var ptr);
-		if (lockDisposable is null) return;
+		if (lockDisposable is null) return null;
 
 		var byteLength = checked((int)PInvoke.GlobalSize(handle));
-		if (GetUnicodeString((IntPtr)ptr, byteLength) is { } text)
-		{
-			package.SetText(text);
-		}
-		else
+		var text = GetUnicodeString((IntPtr)ptr, byteLength);
+		if (text is null)
 		{
 			typeof(Win32ClipboardExtension).LogError()?.Error("Clipboard Unicode text is not null-terminated within its allocation.");
 		}
+		return text;
 	}
-	private static unsafe void GetOemText(DataPackage package, CLIPBOARD_FORMAT format, HGLOBAL handle)
+	private static unsafe object? DecodeOemText(CLIPBOARD_FORMAT format, string name, HGLOBAL handle)
 	{
 		using var lockDisposable = Win32Helper.GlobalLock(handle, out var ptr);
-		if (lockDisposable is null) return;
+		if (lockDisposable is null) return null;
 
 		var byteLength = checked((int)PInvoke.GlobalSize(handle));
-		if (GetNullTerminatedString((byte*)ptr, byteLength, _oemEncoding.Value) is { } text)
-		{
-			package.SetData(GetClipboardFormatName(format), text);
-		}
-		else
+		var text = GetNullTerminatedString((byte*)ptr, byteLength, _oemEncoding.Value);
+		if (text is null)
 		{
 			typeof(Win32ClipboardExtension).LogError()?.Error("Clipboard OEM text is not null-terminated within its allocation.");
 		}
+		return text;
 	}
 #if false // this would require System.Drawing.Common
 	private static void GetBitmap(DataPackage package, CLIPBOARD_FORMAT format, HGLOBAL handle) => package
@@ -463,173 +755,50 @@ partial class Win32ClipboardExtension // from clipboard
 			return Task.FromResult<object>(RandomAccessStreamReference.CreateFromStream(ras));
 		});
 #endif
-	private static unsafe void GetDib(DataPackage package, CLIPBOARD_FORMAT format, HGLOBAL handle)
+	private static unsafe object? DecodeDib(CLIPBOARD_FORMAT format, string name, HGLOBAL handle)
 	{
-		// we are remapping CF_DIB to bitmap, since there is no good way to load from CF_BITMAP which contains an HBITMAP
-		// normally, this would've been mapped to "DeviceIndependentBitmap"
 		using var lockDisposable = Win32Helper.GlobalLock(handle, out var ptr, logLastError: false);
 		if (lockDisposable is null)
 		{
-			return;
+			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.GlobalLock)} failed (format={name}): {Win32Helper.GetErrorMessage()}");
+			return null;
 		}
 
 		var memSize = (uint)PInvoke.GlobalSize((HGLOBAL)(IntPtr)handle);
 		if (memSize <= Marshal.SizeOf<BITMAPINFOHEADER>())
 		{
-			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.GlobalSize)} returned {memSize}: {Win32Helper.GetErrorMessage()}");
-			return;
+			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.GlobalSize)} returned {memSize} (format={name}): {Win32Helper.GetErrorMessage()}");
+			return null;
 		}
 
-		var srcBitmapInfo = (BITMAPINFO*)ptr;
-
-		// https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader#color-tables
-		int colorTableSize = srcBitmapInfo->bmiHeader.biCompression switch
-		{
-			// BI_RGB
-			0 when srcBitmapInfo->bmiHeader.biBitCount <= 8 => Marshal.SizeOf<RGBQUAD>() * (srcBitmapInfo->bmiHeader.biClrUsed == 0 ? 1 << srcBitmapInfo->bmiHeader.biBitCount : (int)srcBitmapInfo->bmiHeader.biClrUsed),
-			0 => 0,
-			// BI_BITFIELDS
-			3 => 3 * Marshal.SizeOf<uint>(),
-			// FOURCC
-			_ => Marshal.SizeOf<RGBQUAD>() * (int)srcBitmapInfo->bmiHeader.biClrUsed
-		};
-
-		BITMAPFILEHEADER bitmapfileheader = new BITMAPFILEHEADER
-		{
-			bfType = /* BM */ 0x4d42,
-			bfSize = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + memSize),
-			bfOffBits = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + Marshal.SizeOf<BITMAPINFOHEADER>() + colorTableSize)
-		};
-
-		var bmpSize = Marshal.SizeOf<BITMAPFILEHEADER>() + (int)memSize;
-		var arr = new byte[bmpSize];
-		fixed (byte* bmp = arr)
-		{
-			Buffer.MemoryCopy(&bitmapfileheader, bmp, bmpSize, Marshal.SizeOf<BITMAPFILEHEADER>());
-			Buffer.MemoryCopy(ptr, bmp + Marshal.SizeOf<BITMAPFILEHEADER>(), memSize, memSize);
-		}
-
-		package.SetBitmap(RandomAccessStreamReference.CreateFromStream(new MemoryStream(arr).AsRandomAccessStream()));
-	}
-	private static unsafe void GetUnknownData(DataPackage package, CLIPBOARD_FORMAT format, HGLOBAL handle)
-	{
-		var name = GetClipboardFormatName(format);
-
-		using var lockDisposable = Win32Helper.GlobalLock(handle, out var ptr, logLastError: false);
-		if (lockDisposable is null)
-		{
-			return;
-		}
-
-		var size = PInvoke.GlobalSize((HGLOBAL)(IntPtr)handle);
-		if (size == 0 || size > int.MaxValue)
-		{
-			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.GlobalSize)} returned {size}: {Win32Helper.GetErrorMessage()}");
-			return;
-		}
-
-		var bufferLength = checked((int)size);
-
-		// WinUI detects certain named formats as strings. HGLOBAL itself carries no type metadata,
-		// so use the same allowlist while the clipboard-owned handle is still valid.
-		if (_knownTextBasedClipboardFormats.TryGetValue(name, out var marshaler))
-		{
-			if (marshaler.FromPointer.Invoke((IntPtr)ptr, bufferLength) is { } text)
-			{
-				package.SetData(name, text);
-			}
-			else
-			{
-				typeof(Win32ClipboardExtension).LogError()?.Error($"Clipboard text format '{name}' is not null-terminated within its allocation.");
-			}
-			return;
-		}
-
-		var buffer = new byte[bufferLength];
-		fixed (byte* pBuffer = buffer)
-		{
-			System.Buffer.MemoryCopy(ptr, pBuffer, bufferLength, bufferLength);
-		}
-
-		package.SetData(name, new MemoryStream(buffer).AsRandomAccessStream());
+		return RandomAccessStreamReference.CreateFromStream(new MemoryStream(ConvertDibToBmp(ptr, memSize)).AsRandomAccessStream());
 	}
 
-	internal static void ReadContentIntoPackage(DataPackage package, IEnumerable<CLIPBOARD_FORMAT> formats, Func<CLIPBOARD_FORMAT, HGLOBAL?> dataGetter)
+	// Derived from SDL's WIN_ConvertDIBtoBMP, translated to C# and modified:
+	// https://github.com/libsdl-org/SDL/blob/9f8157f42cc0351833c030febe8a559719c875bd/src/video/windows/SDL_windowsclipboard.c
+	//
+	// Copyright (C) 1997-2024 Sam Lantinga <slouken@libsdl.org>
+	//
+	// This software is provided 'as-is', without any express or implied
+	// warranty.  In no event will the authors be held liable for any damages
+	// arising from the use of this software.
+	//
+	// Permission is granted to anyone to use this software for any purpose,
+	// including commercial applications, and to alter it and redistribute it
+	// freely, subject to the following restrictions:
+	//
+	// 1. The origin of this software must not be misrepresented; you must not
+	//    claim that you wrote the original software. If you use this software
+	//    in a product, an acknowledgment in the product documentation would be
+	//    appreciated but is not required.
+	// 2. Altered source versions must be plainly marked as such, and must not be
+	//    misrepresented as being the original software.
+	// 3. This notice may not be removed or altered from any source distribution.
+	/// <summary>
+	/// Wraps a raw CF_DIB payload in a <see cref="BITMAPFILEHEADER"/>, yielding a self-contained BMP file.
+	/// </summary>
+	private static unsafe byte[] ConvertDibToBmp(void* dib, uint dibSize)
 	{
-		ulong snapshotBytes = 0;
-		var formatCount = 0;
-		foreach (var format in formats)
-		{
-			if (++formatCount > MaxClipboardSnapshotFormats)
-			{
-				typeof(Win32ClipboardExtension).LogError()?.Error($"Data transfer contains more than {MaxClipboardSnapshotFormats} formats; remaining formats were ignored.");
-				break;
-			}
-
-			if (!Enum.IsDefined((CLIPBOARD_FORMAT)format) || dataGetter(format) is not { } handle)
-			{
-				continue;
-			}
-
-			var formatBytes = (ulong)PInvoke.GlobalSize(handle);
-			if (formatBytes == 0 || formatBytes > MaxClipboardFormatBytes || snapshotBytes > MaxClipboardSnapshotBytes - formatBytes)
-			{
-				typeof(Win32ClipboardExtension).LogError()?.Error($"Data transfer format {(uint)format} exceeds the snapshot budget and was ignored.");
-				continue;
-			}
-
-			snapshotBytes += formatBytes;
-			switch (format)
-			{
-				case CLIPBOARD_FORMAT.CF_UNICODETEXT:
-					GetText(handle, package);
-					break;
-				case CLIPBOARD_FORMAT.CF_HDROP:
-					var files = GetFileDropList(handle);
-					if (files is not null)
-					{
-						package.SetStorageItems(files);
-					}
-					break;
-				case CLIPBOARD_FORMAT.CF_DIB:
-					GetBitmap(handle, package);
-					break;
-			}
-		}
-	}
-	private static unsafe void GetText(HGLOBAL handle, DataPackage package)
-	{
-		using var lockDisposable = Win32Helper.GlobalLock(handle, out var bytes);
-		if (lockDisposable is null)
-		{
-			return;
-		}
-
-		var byteLength = checked((int)PInvoke.GlobalSize(handle));
-		if (GetUnicodeString((IntPtr)bytes, byteLength) is { } text)
-		{
-			package.SetText(text);
-		}
-		else
-		{
-			typeof(Win32ClipboardExtension).LogError()?.Error("Transferred Unicode text is not null-terminated within its allocation.");
-		}
-	}
-	private static unsafe void GetBitmap(HGLOBAL handle, DataPackage package)
-	{
-		using var lockDisposable = Win32Helper.GlobalLock(handle, out var dib);
-		if (lockDisposable is null)
-		{
-			return;
-		}
-
-		var memSize = (uint)PInvoke.GlobalSize(handle);
-		if (memSize <= Marshal.SizeOf<BITMAPINFOHEADER>())
-		{
-			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.GlobalSize)} returned {memSize}: {Win32Helper.GetErrorMessage()}");
-			return;
-		}
-
 		var srcBitmapInfo = (BITMAPINFO*)dib;
 
 		// https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-bitmapinfoheader#color-tables
@@ -644,149 +813,111 @@ partial class Win32ClipboardExtension // from clipboard
 			_ => Marshal.SizeOf<RGBQUAD>() * (int)srcBitmapInfo->bmiHeader.biClrUsed
 		};
 
-		BITMAPFILEHEADER bitmapfileheader = new BITMAPFILEHEADER
+		var fileHeaderSize = Marshal.SizeOf<BITMAPFILEHEADER>();
+		var bitmapfileheader = new BITMAPFILEHEADER
 		{
 			bfType = /* BM */ 0x4d42,
-			bfSize = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + memSize),
-			bfOffBits = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + Marshal.SizeOf<BITMAPINFOHEADER>() + colorTableSize)
+			bfSize = (uint)(fileHeaderSize + dibSize),
+			bfOffBits = (uint)(fileHeaderSize + Marshal.SizeOf<BITMAPINFOHEADER>() + colorTableSize)
 		};
 
-		var bmpSize = (uint)(Marshal.SizeOf<BITMAPFILEHEADER>() + memSize);
-		var arr = new byte[bmpSize];
+		var arr = new byte[fileHeaderSize + dibSize];
 		fixed (byte* bmp = arr)
 		{
-			Buffer.MemoryCopy(&bitmapfileheader, bmp, bmpSize, Marshal.SizeOf<BITMAPFILEHEADER>());
-			Buffer.MemoryCopy(dib, bmp + Marshal.SizeOf<BITMAPFILEHEADER>(), bmpSize - Marshal.SizeOf<BITMAPFILEHEADER>(), bmpSize - Marshal.SizeOf<BITMAPFILEHEADER>());
+			Buffer.MemoryCopy(&bitmapfileheader, bmp, arr.Length, fileHeaderSize);
+			Buffer.MemoryCopy(dib, bmp + fileHeaderSize, dibSize, dibSize);
 		}
 
-		package.SetBitmap(RandomAccessStreamReference.CreateFromStream(new MemoryStream(arr).AsRandomAccessStream()));
+		return arr;
 	}
-	internal static unsafe List<string>? GetFileDropPaths(HGLOBAL handle)
+	private static unsafe object? DecodeUnknownData(CLIPBOARD_FORMAT format, string name, HGLOBAL handle)
 	{
-		var allocationSize = (ulong)PInvoke.GlobalSize(handle);
-		if (allocationSize < DropFilesHeaderSize || allocationSize > MaxClipboardFormatBytes)
-		{
-			typeof(Win32ClipboardExtension).LogError()?.Error($"The HDROP allocation size {allocationSize} is invalid.");
-			return null;
-		}
-
-		using var lockDisposable = Win32Helper.GlobalLock(handle, out var firstByte);
+		using var lockDisposable = Win32Helper.GlobalLock(handle, out var ptr, logLastError: false);
 		if (lockDisposable is null)
 		{
+			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.GlobalLock)} failed (format={name}): {Win32Helper.GetErrorMessage()}");
 			return null;
 		}
 
-		var hDrop = new HDROP((IntPtr)firstByte);
-
-		var filesDropped = PInvoke.DragQueryFile(hDrop, 0xFFFFFFFF, new PWSTR(), 0);
-		if (filesDropped == 0)
+		var size = (uint)PInvoke.GlobalSize((HGLOBAL)(IntPtr)handle);
+		if (size == 0 || size > int.MaxValue)
 		{
-			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.DragQueryFile)} failed when querying total count: {Win32Helper.GetErrorMessage()}");
+			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.GlobalSize)} returned {size} (format={name}): {Win32Helper.GetErrorMessage()}");
 			return null;
 		}
 
-		if (filesDropped > MaxFileDropItems)
+		var bufferLength = checked((int)size);
+
+		// note: WinUI Clipboard seem to detect certain named format as string, it is unknown by which mechanism.
+		// since HGlobal itself doesnt carry any type metadata, presumably this is done with a white list.
+		if (_knownTextBasedClipboardFormats.TryGetValue(name, out var marshaler))
 		{
-			typeof(Win32ClipboardExtension).LogError()?.Error($"HDROP contains more than {MaxFileDropItems} items.");
-			return null;
+			var text = marshaler.FromPointer.Invoke((IntPtr)ptr, bufferLength);
+			if (text is null)
+			{
+				typeof(Win32ClipboardExtension).LogError()?.Error($"Clipboard text format '{name}' is not null-terminated within its allocation.");
+			}
+			return text;
 		}
 
-		var paths = new List<string>((int)filesDropped);
-		uint totalCharacters = 0;
-		for (uint i = 0; i < filesDropped; i++)
+		var buffer = new byte[bufferLength];
+		fixed (byte* pBuffer = buffer)
 		{
-			var charLength = PInvoke.DragQueryFile(hDrop, i, new PWSTR(), 0);
-			if (charLength == 0)
-			{
-				typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.DragQueryFile)} failed when querying buffer length: {Win32Helper.GetErrorMessage()}");
-				continue;
-			}
-
-			if (charLength > MaxFileDropPathCharacters || totalCharacters > MaxFileDropTotalCharacters - charLength)
-			{
-				typeof(Win32ClipboardExtension).LogError()?.Error("HDROP exceeds the file-path character budget.");
-				return null;
-			}
-			totalCharacters += charLength;
-
-			var bufferLength = charLength + 1; // + 1 for \0
-			var buffer = Marshal.AllocHGlobal((IntPtr)(bufferLength * Unsafe.SizeOf<char>()));
-			using var bufferDisposable = new DisposableStruct<IntPtr>(Marshal.FreeHGlobal, buffer);
-			var charsWritten = PInvoke.DragQueryFile(hDrop, i, new PWSTR((char*)buffer), bufferLength);
-			if (charsWritten == 0)
-			{
-				typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.DragQueryFile)} failed when querying file path: {Win32Helper.GetErrorMessage()}");
-				return null;
-			}
-
-			paths.Add(Marshal.PtrToStringUni(buffer, (int)charsWritten));
+			System.Buffer.MemoryCopy(ptr, pBuffer, bufferLength, bufferLength);
 		}
 
-		return paths;
-	}
-
-	internal static List<IStorageItem>? GetFileDropList(HGLOBAL handle)
-	{
-		var paths = GetFileDropPaths(handle);
-		if (paths is null)
-		{
-			return null;
-		}
-
-		var files = new List<IStorageItem>(paths.Count);
-		var invalidPathCount = 0;
-		foreach (var filePath in paths)
-		{
-			if (Directory.Exists(filePath))
-			{
-				files.Add(new StorageFolder(filePath));
-			}
-			else if (File.Exists(filePath))
-			{
-				files.Add(StorageFile.GetFileFromPath(filePath));
-			}
-			else
-			{
-				invalidPathCount++;
-			}
-		}
-
-		if (invalidPathCount > 0)
-		{
-			typeof(Win32ClipboardExtension).LogError()?.Error($"HDROP contained {invalidPathCount} invalid file or directory paths.");
-		}
-
-		return files;
+		return new MemoryStream(buffer).AsRandomAccessStream();
 	}
 }
 
 partial class Win32ClipboardExtension // to clipboard
 {
+	/// <summary>A payload resolved outside the clipboard lock, ready to be handed straight to Windows.</summary>
+	private readonly record struct PendingWrite(CLIPBOARD_FORMAT Format, ReadOnlyMemory<byte> Bytes);
+
 	public void SetContent(DataPackage content)
 	{
-		using (var clipboardDisposable = new ClipboardDisposable(GetClipboardWindow(), true))
-		{
-			if (!clipboardDisposable.IsOpen)
-			{
-				return;
-			}
+		var view = content.GetView();
 
-			var view = content.GetView();
-			foreach (var format in view.AvailableFormats)
+		// Phase 1, OUTSIDE the lock. Resolving a payload pumps the message loop (see ResolveText), and
+		// pumping while holding the global clipboard lock dispatches arbitrary UI work - up to and
+		// including a re-entrant WM_CLIPBOARDUPDATE - while every other application is locked out.
+		var writes = new List<PendingWrite>();
+		foreach (var format in view.AvailableFormats)
+		{
+			var resolver = (Action<List<PendingWrite>, DataPackageView, string>?)(format switch
 			{
-				var setter = (Action<DataPackageView, string>?)(format switch
-				{
-					_ when format == StandardDataFormats.Text => SetText,
-					_ when format == StandardDataFormats.Bitmap => SetBitmap,
-					_ => SetUnknownData,
-				});
-				setter?.Invoke(view, format);
-			}
+				_ when format == StandardDataFormats.Text => ResolveText,
+				_ when format == StandardDataFormats.Bitmap => ResolveBitmap,
+				_ => ResolveUnknownData,
+			});
+			resolver?.Invoke(writes, view, format);
 		}
 
-		_currentPackage = content;
+		// Phase 2, INSIDE the lock. No pumping and no async work: just hand the payloads over.
+		// Entered even with nothing to write: an empty DataPackage still means "empty the clipboard".
+		using var clipboardDisposable = new ClipboardDisposable(_hwnd, true, ClipboardRetry.Blocking);
+		if (!clipboardDisposable.IsOpen)
+		{
+			// This used to be silent: EmptyClipboard was skipped, every SetClipboardData ran anyway and
+			// failed with "Thread does not have a clipboard open", and the copy was lost without a word.
+			this.LogError()?.Error($"{nameof(SetContent)} failed: could not take the clipboard, it is held by another application.");
+			return;
+		}
+
+		foreach (var write in writes)
+		{
+			WritePending(write);
+		}
+
+		_writtenFormats = new WrittenFormats(
+			PInvoke.GetClipboardSequenceNumber(),
+			writes.Select(write => write.Format).Distinct().Take(MaxClipboardSnapshotFormats).ToArray());
 	}
-	private static void SetText(DataPackageView view, string format)
+
+	private static void WritePending(PendingWrite write)
+		=> SetClipboardData(write.Format, write.Bytes.Span);
+	private static void ResolveText(List<PendingWrite> writes, DataPackageView view, string format)
 	{
 		var task = view.GetTextAsync().AsTask();
 		while (!task.IsCompleted)
@@ -803,9 +934,9 @@ partial class Win32ClipboardExtension // to clipboard
 		var str = task.Result;
 		var bytes = new byte[(str.Length + 1) * sizeof(char)]; // +1 char: last 2 bytes remain 0 as null terminator
 		MemoryMarshal.Cast<char, byte>(str.AsSpan()).CopyTo(bytes);
-		SetClipboardData(CLIPBOARD_FORMAT.CF_UNICODETEXT, bytes);
+		writes.Add(new PendingWrite(CLIPBOARD_FORMAT.CF_UNICODETEXT, bytes));
 	}
-	private static unsafe void SetBitmap(DataPackageView view, string format)
+	private static unsafe void ResolveBitmap(List<PendingWrite> writes, DataPackageView view, string format)
 	{
 		var task = view.GetBitmapAsync().AsTask();
 		while (!task.IsCompleted)
@@ -864,7 +995,7 @@ partial class Win32ClipboardExtension // to clipboard
 		if (bytes.Length > Marshal.SizeOf<BITMAPFILEHEADER>() &&
 			bytes[0] == 'B' && bytes[1] == 'M')
 		{
-			SetClipboardData(CLIPBOARD_FORMAT.CF_DIB, bytes.AsSpan(/* start after: */ Marshal.SizeOf<BITMAPFILEHEADER>()));
+			writes.Add(new PendingWrite(CLIPBOARD_FORMAT.CF_DIB, bytes.AsMemory(/* start after: */ Marshal.SizeOf<BITMAPFILEHEADER>())));
 		}
 		else
 		{
@@ -912,11 +1043,11 @@ partial class Win32ClipboardExtension // to clipboard
 				}
 			}
 
-			SetClipboardData(CLIPBOARD_FORMAT.CF_DIB, dib);
+			writes.Add(new PendingWrite(CLIPBOARD_FORMAT.CF_DIB, dib));
 		}
 #endif
 	}
-	private static void SetUnknownData(DataPackageView view, string format)
+	private static void ResolveUnknownData(List<PendingWrite> writes, DataPackageView view, string format)
 	{
 		if (!WaitForAsyncOperation(view.GetDataAsync(format), out var task))
 		{
@@ -948,14 +1079,15 @@ partial class Win32ClipboardExtension // to clipboard
 			var bytes = new byte[checked((int)size)];
 			ras.AsStreamForRead().ReadExactly(bytes);
 
-			SetClipboardData(cfid, bytes);
+			writes.Add(new PendingWrite(cfid, bytes));
 		}
 		else if (task.Result is string str)
 		{
 			var bytes = _knownTextBasedClipboardFormats.TryGetValue(format, out var marshaler)
 				? marshaler.ToBytes(str)
 				: GetUnicodeBytes(str);
-			SetClipboardData(cfid, bytes);
+
+			writes.Add(new PendingWrite(cfid, bytes));
 		}
 	}
 
