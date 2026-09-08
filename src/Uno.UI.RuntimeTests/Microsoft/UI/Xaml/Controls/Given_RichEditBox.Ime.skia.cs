@@ -43,6 +43,74 @@ public partial class Given_RichEditBox
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+	[DataRow(false)]
+	[DataRow(true)]
+	public void When_Normalized_Native_Text_Echo_Does_Not_Reapply_Input_Coercion(bool acceptsReturn)
+	{
+		var sut = new RichEditBox();
+		sut.Document.SetText(TextSetOptions.None, "a\rb");
+		sut.Document.GetRange(0, 3).CharacterFormat.Bold = FormatEffect.On;
+		sut.AcceptsReturn = acceptsReturn;
+		sut.Document.ClearUndoRedoHistory();
+		var version = sut.Document.TextVersion;
+
+		sut.UpdateTextFromNative("a\nb", selectionStart: 1, selectionLength: 0);
+
+		GetTextWithoutFinalEop(sut.Document, out var text);
+		Assert.AreEqual("a\rb", text);
+		Assert.AreEqual(version, sut.Document.TextVersion);
+		Assert.IsFalse(sut.Document.CanUndo());
+		Assert.AreEqual(FormatEffect.On, sut.Document.GetRange(0, 3).CharacterFormat.Bold);
+		Assert.AreEqual(1, sut.Document.Selection.StartPosition);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+	public void When_Normalized_Native_Text_Echo_Preserves_Backward_Selection()
+	{
+		var sut = new RichEditBox();
+		sut.Document.SetText(TextSetOptions.None, "a\rb");
+		sut.Document.Selection.SetRange(3, 0);
+
+		sut.UpdateTextFromNative("a\nb", selectionStart: 0, selectionLength: 3);
+
+		Assert.IsTrue(sut.IsSelectionBackwardForTesting);
+		Assert.AreEqual(0, sut.Document.Selection.StartPosition);
+		Assert.AreEqual(3, sut.Document.Selection.EndPosition);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+	public async Task When_Unchanged_Platform_Composition_Update_Does_Not_Hide_External_Edit()
+	{
+		var fake = new FakeImeTextBoxExtension();
+		using var imeDisposable = RichEditBox.SetImeExtensionForTesting(fake);
+		var sut = new RichEditBox();
+		try
+		{
+			WindowHelper.WindowContent = sut;
+			await WindowHelper.WaitForLoaded(sut);
+			sut.Document.SetText(TextSetOptions.None, "a\rb");
+			sut.Document.Selection.SetRange(1, 1);
+			sut.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("\n", cursorPosition: 1, textAlreadyApplied: true);
+			sut.UpdateTextFromNative("a\nb", selectionStart: 2, selectionLength: 0);
+			Assert.IsTrue(sut.IsComposing);
+
+			sut.Document.GetRange(0, 1).Text = "x";
+			Assert.IsFalse(sut.IsComposing, "A no-op native echo must consume its platform-apply guard.");
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
 	public async Task When_Candidate_Window_Alignment_Changes_While_Focused()
 	{
 		var fake = new FakeImeTextBoxExtension();
