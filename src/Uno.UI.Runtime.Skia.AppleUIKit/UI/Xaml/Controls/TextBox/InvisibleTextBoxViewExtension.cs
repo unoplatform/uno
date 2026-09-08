@@ -188,7 +188,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			return;
 		}
 
-		if (!TextBoxExtensions.GetShowKeyboardDismissButton(core.Owner))
+		if (!KeyboardDismissAccessory.IsSupported || !TextBoxExtensions.GetShowKeyboardDismissButton(core.Owner))
 		{
 			_textBoxView.SetKeyboardAccessoryView(null);
 			return;

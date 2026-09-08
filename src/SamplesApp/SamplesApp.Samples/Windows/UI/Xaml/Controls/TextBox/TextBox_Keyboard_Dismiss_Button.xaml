@@ -13,7 +13,7 @@
         <StackPanel Padding="12" Spacing="12">
             <TextBlock
                 Foreground="{ThemeResource TextFillColorSecondaryBrush}"
-                Text="iOS only. Tap into each box: the ones marked ✅ show a toolbar with a Done button above the keyboard, which dismisses it. The others show no toolbar."
+                Text="iOS only. Tap into each box: the ones marked ✅ show a bar with a Done button above the keyboard, which dismisses it. The others show no bar."
                 TextWrapping="Wrap" />
 
             <TextBlock FontWeight="SemiBold" Text="✅ Multiline, opted in on the control" />
@@ -33,7 +33,7 @@
             </StackPanel>
 
             <TextBlock FontWeight="SemiBold" Text="❌ Not opted in" />
-            <TextBox PlaceholderText="No toolbar above the keyboard" />
+            <TextBox PlaceholderText="No bar above the keyboard" />
 
             <TextBlock
                 x:Name="StatusText"

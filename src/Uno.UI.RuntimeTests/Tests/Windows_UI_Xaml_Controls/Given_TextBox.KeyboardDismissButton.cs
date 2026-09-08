@@ -10,7 +10,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	public partial class Given_TextBox
 	{
-		// The toolbar itself is native (iOS) and cannot be observed from a runtime test - these cover the
+		// The bar itself is native (iOS) and cannot be observed from a runtime test - these cover the
 		// managed contract the native side reads: the default, inheritance, and local overrides.
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24384")]

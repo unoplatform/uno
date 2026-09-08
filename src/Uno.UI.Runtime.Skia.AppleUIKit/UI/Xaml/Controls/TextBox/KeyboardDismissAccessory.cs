@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UIKit;
 #if !__TVOS__
 using CoreGraphics;
@@ -17,8 +17,12 @@ internal static class KeyboardDismissAccessory
 {
 #if __TVOS__
 	// tvOS has no soft keyboard to attach an accessory to.
+	internal static bool IsSupported => false;
+
 	internal static UIView? TryCreate(WeakReference<InvisibleTextBoxViewExtension> extension) => null;
 #else
+	internal static bool IsSupported => true;
+
 	private const int BarHeight = 44;
 	private const int HorizontalMargin = 16;
 	private const int MinimumTouchTarget = 44;

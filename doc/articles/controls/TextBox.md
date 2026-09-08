@@ -107,7 +107,7 @@ These are the supported input return type values:
 
 ## Dismissing the soft keyboard on iOS
 
-On a multi-line `TextBox` (`AcceptsReturn="True"`) the Enter key inserts a newline instead of closing the keyboard, so iOS offers no built-in way to dismiss it. Setting the `TextBoxExtensions.ShowKeyboardDismissButton` attached property adds a toolbar with a system **Done** button above the keyboard, which dismisses it and unfocuses the input:
+On a multi-line `TextBox` (`AcceptsReturn="True"`) the Enter key inserts a newline instead of closing the keyboard, so iOS offers no built-in way to dismiss it. Setting the `TextBoxExtensions.ShowKeyboardDismissButton` attached property adds a bar with a **Done** button above the keyboard, which dismisses it and unfocuses the input:
 
 ```xml
 <TextBox AcceptsReturn="True"
@@ -121,7 +121,7 @@ Uno.UI.Xaml.Controls.TextBoxExtensions.SetShowKeyboardDismissButton(myTextBox, t
 > [!NOTE]
 > Add `xmlns:uno="using:Uno.UI.Xaml.Controls"` to use the property from XAML.
 
-The value is inherited, so it can be set once on a page or a container to opt in every text input below it, and overridden locally on the ones that should not show the toolbar:
+The value is inherited, so it can be set once on a page or a container to opt in every text input below it, and overridden locally on the ones that should not show the bar:
 
 ```xml
 <StackPanel uno:TextBoxExtensions.ShowKeyboardDismissButton="True">
