@@ -34,6 +34,7 @@ The control policy is based on Microsoft UI XAML commit [`3c9c168844f06c6ac000a9
 | `dxaml/xcp/core/native/text/Controls/RichEditBox.cpp` and `.h` | Property dispatch and validation, formatting-accelerator masks, hyperlink policy, and content-change integration |
 | `dxaml/xcp/core/native/text/Controls/TextBoxBase.cpp` and `.h` | Shared selection-cancellation policy, focus/candidate-window lifecycle, pointer policy, default spell checking, and caret-scroll coordination |
 | `dxaml/xcp/dxaml/lib/TextBoxPlaceholderTextHelper.cpp` | Placeholder visibility and removal from automation descriptions when document content replaces the hint |
+| `dxaml/xcp/dxaml/lib/FlyoutBase_partial.cpp` and `dxaml/xcp/components/ContentRoot/PointerInputProcessor.cpp` | Transient selection-flyout input pass-through, application-owned overrides, and underlying hit-target validation |
 | `RichEditBoxAutomationPeer_Partial.cpp`, `TextBoxBaseAutomationPeer.cpp`, and generated changing-event-argument sources | Automation control identity/descriptions, accessibility-driven software-keyboard focus, and thread-affine event-argument state |
 | `dxaml/xcp/plat/win/desktop/WindowLessSiteHost.cpp` | The rich-edit capability's explicit exclusion of the lossy Value automation pattern |
 | `controls/dev/CommonStyles/RichEditBox_themeresources.xaml` | The FluentTheme template and resources |
