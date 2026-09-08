@@ -440,6 +440,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
 		public async Task When_TextBox_On_Mobile_Then_Native_TextState_Is_Editable()
 		{
+#if __SKIA__
 			var textBox = new TextBox { Text = "editable content" };
 			AutomationProperties.SetAutomationId(textBox, "textbox-textstate-t045");
 
@@ -453,6 +454,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			var ts = snapshot.Details!.TextState!;
 			Assert.IsTrue(ts.IsEditable, "An enabled TextBox must report IsEditable=true.");
 			Assert.IsFalse(ts.IsReadOnly, "A non-read-only TextBox must report IsReadOnly=false.");
+#endif
 		}
 
 		[TestMethod]

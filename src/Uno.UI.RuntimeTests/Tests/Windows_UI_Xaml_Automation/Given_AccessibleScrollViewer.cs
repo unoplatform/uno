@@ -155,6 +155,7 @@ public class Given_AccessibleScrollViewer
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
 	public async Task When_ScrollViewer_Scrollable_On_Mobile_Then_Native_Scroll_Details_Populated()
 	{
+#if __SKIA__
 		var scrollViewer = new ScrollViewer
 		{
 			Width = 200,
@@ -173,5 +174,6 @@ public class Given_AccessibleScrollViewer
 		Assert.IsTrue(
 			snapshot.Details!.Scroll!.IsVerticallyScrollable,
 			"A vertically overflowing ScrollViewer must report IsVerticallyScrollable=true.");
+#endif
 	}
 }

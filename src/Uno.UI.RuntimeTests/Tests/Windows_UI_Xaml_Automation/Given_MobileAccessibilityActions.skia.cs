@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Private.Infrastructure;
 using Uno.UI;
 using Uno.UI.RuntimeTests.Helpers;
 
@@ -18,6 +19,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
 [TestClass]
 public partial class Given_MobileAccessibilityActions
 {
+	[TestMethod]
+	[DataRow(true)]
+	[DataRow(false)]
+	public void When_Default_Action_Uses_Separate_Invoke_Provider(bool enabled)
+	{
+		var provider = new InvokeProvider();
+		var peer = CreatePeer(PatternInterface.Invoke, provider);
+		peer.IsEnabledValue = enabled;
+
+		Assert.AreEqual(enabled, AccessibilityPeerHelper.TryInvokeDefaultAction(peer));
+		Assert.AreEqual(enabled ? 1 : 0, provider.InvokeCount);
+	}
+
+	[TestMethod]
+	public void When_Default_Action_Uses_Separate_Toggle_And_Selection_Providers()
+	{
+		var toggle = new ToggleProvider();
+		var selection = new SelectionItemProvider();
+
+		Assert.IsTrue(AccessibilityPeerHelper.TryInvokeDefaultAction(CreatePeer(PatternInterface.Toggle, toggle)));
+		Assert.IsTrue(AccessibilityPeerHelper.TryInvokeDefaultAction(CreatePeer(PatternInterface.SelectionItem, selection)));
+		Assert.AreEqual(1, toggle.ToggleCount);
+		Assert.AreEqual(1, selection.SelectCount);
+	}
+
 	[TestMethod]
 	public void When_Toggle_Action_Requested_Then_Toggle_Provider_Is_Invoked()
 	{
@@ -133,6 +159,54 @@ public partial class Given_MobileAccessibilityActions
 		Assert.IsTrue(AccessibilityPeerHelper.TryChangeView(peer, 2));
 		Assert.AreEqual(2, multipleView.CurrentView);
 		Assert.IsFalse(AccessibilityPeerHelper.TryChangeView(peer, 99));
+	}
+
+	[TestMethod]
+	[DataRow(double.NaN, false)]
+	[DataRow(double.PositiveInfinity, false)]
+	[DataRow(double.NegativeInfinity, false)]
+	[DataRow(1.000000000000001, false)]
+	[DataRow(2147483648d, false)]
+	[DataRow(-2147483649d, false)]
+	[DataRow(4294967297d, false)]
+	[DataRow(2147483647d, true)]
+	[DataRow(-2147483648d, true)]
+	[DataRow(2d, true)]
+	public void When_ChangeView_Number_Must_Be_An_Exact_Int32(double viewId, bool accepted)
+	{
+		var provider = new MultipleViewProvider();
+		var peer = CreatePeer(PatternInterface.MultipleView, provider);
+
+		Assert.AreEqual(accepted, AccessibilityPeerHelper.TryChangeView(peer, viewId));
+		Assert.AreEqual(accepted ? (int)viewId : 1, provider.CurrentView);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
+	[DataRow(2147483648d, false)]
+	[DataRow(-2147483649d, false)]
+	[DataRow(1.000000000000001, false)]
+	[DataRow(2147483647d, true)]
+	[DataRow(-2147483648d, true)]
+	public async Task When_Native_ChangeView_Does_Not_Narrow_Invalid_Ids(double viewId, bool accepted)
+	{
+		var control = new AdvancedActionControl { Width = 100, Height = 100 };
+		try
+		{
+			await UITestHelper.Load(control);
+			var execute = AccessibilityPeerHelper.AndroidAccessibilityActionAccessor
+				?? AccessibilityPeerHelper.IOSAccessibilityActionAccessor;
+			Assert.IsNotNull(execute);
+
+			Assert.AreEqual(accepted, execute(control, new AccessibilityNativeActionRequest(
+				AccessibilityNativeAction.ChangeView, number: viewId)));
+			Assert.AreEqual(accepted ? (int)viewId : 1, control.Peer.CurrentView);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
 	}
 
 	[TestMethod]
@@ -278,6 +352,13 @@ public partial class Given_MobileAccessibilityActions
 			=> Patterns.GetValueOrDefault(patternInterface);
 
 		protected override bool IsEnabledCore() => IsEnabledValue;
+	}
+
+	private sealed class InvokeProvider : IInvokeProvider
+	{
+		public int InvokeCount { get; private set; }
+
+		public void Invoke() => InvokeCount++;
 	}
 
 	private sealed class ToggleProvider : IToggleProvider
@@ -428,7 +509,7 @@ public partial class Given_MobileAccessibilityActions
 	{
 		public int CurrentView { get; private set; } = 1;
 
-		public int[] GetSupportedViews() => new[] { 1, 2 };
+		public int[] GetSupportedViews() => new[] { int.MinValue, 1, 2, int.MaxValue };
 
 		public string GetViewName(int viewId) => viewId.ToString();
 
@@ -548,7 +629,7 @@ public partial class Given_MobileAccessibilityActions
 					? this
 					: base.GetPatternCore(patternInterface);
 
-		public int[] GetSupportedViews() => [1, 2];
+		public int[] GetSupportedViews() => [int.MinValue, 1, 2, int.MaxValue];
 
 		public string GetViewName(int viewId) => $"View {viewId}";
 

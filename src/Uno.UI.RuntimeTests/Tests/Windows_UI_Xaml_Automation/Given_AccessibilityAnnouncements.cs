@@ -13,8 +13,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
 public class Given_AccessibilityAnnouncements
 {
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Polite_Announcement_Then_Implementation_Receives_Message()
 	{
+#if HAS_UNO
 		var implementation = new RecordingAccessibility();
 		var previous = AccessibilityAnnouncer.TestAccessibilityImpl;
 		try
@@ -30,11 +32,14 @@ public class Given_AccessibilityAnnouncements
 		{
 			AccessibilityAnnouncer.TestAccessibilityImpl = previous;
 		}
+#endif
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Assertive_Announcement_Then_Implementation_Receives_Message()
 	{
+#if HAS_UNO
 		var implementation = new RecordingAccessibility();
 		var previous = AccessibilityAnnouncer.TestAccessibilityImpl;
 		try
@@ -50,11 +55,14 @@ public class Given_AccessibilityAnnouncements
 		{
 			AccessibilityAnnouncer.TestAccessibilityImpl = previous;
 		}
+#endif
 	}
 
 	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public void When_Accessibility_Is_Disabled_Then_Announcement_Is_Not_Routed()
 	{
+#if HAS_UNO
 		var implementation = new RecordingAccessibility { IsAccessibilityEnabled = false };
 		var previous = AccessibilityAnnouncer.TestAccessibilityImpl;
 		try
@@ -71,6 +79,7 @@ public class Given_AccessibilityAnnouncements
 		{
 			AccessibilityAnnouncer.TestAccessibilityImpl = previous;
 		}
+#endif
 	}
 
 	[TestMethod]
@@ -86,6 +95,7 @@ public class Given_AccessibilityAnnouncements
 		peer.RaiseAutomationEvent(AutomationEvents.LiveRegionChanged);
 	}
 
+#if HAS_UNO
 	private sealed class RecordingAccessibility : IUnoAccessibility
 	{
 		public bool IsAccessibilityEnabled { get; set; } = true;
@@ -110,4 +120,5 @@ public class Given_AccessibilityAnnouncements
 			LastAssertiveMessage = text;
 		}
 	}
+#endif
 }
