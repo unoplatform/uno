@@ -15,6 +15,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public partial class Given_RichEditBox
 	{
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+		public async Task When_Right_Tab_Excludes_Paragraph_Mark_Advance()
+		{
+			var editor = new RichEditBox { Width = 360, TextWrapping = TextWrapping.NoWrap };
+			try
+			{
+				await UITestHelper.Load(editor);
+				editor.Document.SetText(TextSetOptions.None, "R\t123\rnext");
+				editor.Document.GetRange(0, 0).ParagraphFormat.AddTab(90, TabAlignment.Right, TabLeader.Spaces);
+				editor.Document.GetRange(5, 6).CharacterFormat.Spacing = 12;
+				await WindowHelper.WaitForIdle();
+
+				var block = GetDisplayBlock(editor);
+				Assert.AreEqual(120, block.ParsedText.GetRectForIndex(5).X, 0.5,
+					"The paragraph marker is not part of the right-aligned tab field.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Custom_Tab_Stop_Projects_To_Layout_And_Caret_Geometry()
 		{
