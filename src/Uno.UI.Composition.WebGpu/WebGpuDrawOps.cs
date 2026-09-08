@@ -84,7 +84,6 @@ internal enum DrawKind
 	/// Same shape as <see cref="Image"/> because it is the same draw: the mask carries the shape, so the
 	/// geometry is always six vertices however complex the path.
 	/// </summary>
-	Coverage = 9,
 }
 
 internal struct DrawOp

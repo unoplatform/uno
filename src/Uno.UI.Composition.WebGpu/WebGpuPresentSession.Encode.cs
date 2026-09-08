@@ -304,13 +304,6 @@ public sealed unsafe partial class WebGpuPresentSession
 					pst.Enc.Vb((IntPtr)pathBuf, 0, pathBufBytes);
 					pst.Enc.Draw(6, (uint)(b1 / (VertexStride.Table * sizeof(float))));
 					break;
-				case DrawKind.Coverage:
-					pst.Enc.Pipe(_d.CoverageDrawPipe);
-					pst.Enc.Bg(0, (IntPtr)b0);
-					pst.Enc.Bg(1, (IntPtr)clipBg);
-					pst.Enc.Vb((IntPtr)b1, 0, (nuint)(6 * 4 * sizeof(float)));
-					pst.Enc.Draw(6);
-					break;
 
 				case DrawKind.Image:
 					pst.Enc.Pipe(_d.ImagePipe);
@@ -452,7 +445,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		line.Append($"/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip})");
 
 		// Turned away, and why
-		line.Append($" atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked}");
+		line.Append($" atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked}/cov{CoverageBaked}");
 		line.Append($"/full{AtlasNoRoom}/ring{AtlasNoRing}/scaleblk{ScaleBlocked}/big{WebGpuPathAtlas.RejBig}");
 		line.Append($"/pages{_d.PathAtlas.Pages.Count}");
 
