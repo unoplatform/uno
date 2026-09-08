@@ -22,6 +22,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public partial class Given_RichEditBox
 {
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+	[DataRow(false)]
+	[DataRow(true)]
+	public void When_Public_And_Editor_TextEdit_Events_Share_One_Listener(bool listening)
+	{
+		var peer = new RichEditBoxAutomationPeer(new RichEditBox());
+		var listener = new TextEditAutomationListener { IsListening = listening };
+		var previous = AutomationPeer.TestAutomationPeerListener;
+		try
+		{
+			AutomationPeer.TestAutomationPeerListener = listener;
+			peer.RaiseTextEditTextChangedEvent(AutomationTextEditChangeType.AutoCorrect, new[] { "public" });
+			peer.RaisePlatformTextEditTextChangedEvent(AutomationTextEditChangeType.Composition, new[] { "editor" });
+			peer.RaiseStructureChangedEvent(AutomationStructureChangeType.ChildrenInvalidated, null);
+
+			Assert.HasCount(listening ? 2 : 1, listener.TextEditChanges);
+			Assert.AreEqual(AutomationTextEditChangeType.AutoCorrect, listener.TextEditChanges[0].ChangeType);
+			CollectionAssert.AreEqual(new[] { "public" }, listener.TextEditChanges[0].ChangedData);
+			if (listening)
+			{
+				Assert.AreEqual(AutomationTextEditChangeType.Composition, listener.TextEditChanges[1].ChangeType);
+				CollectionAssert.AreEqual(new[] { "editor" }, listener.TextEditChanges[1].ChangedData);
+			}
+			CollectionAssert.AreEqual(new[] { AutomationEvents.StructureChanged }, listener.Events);
+		}
+		finally
+		{
+			AutomationPeer.TestAutomationPeerListener = previous;
+		}
+	}
+
+	[TestMethod]
 	public void When_Accessibility_Text_Input_Exceeds_Source_Limit_Is_Rejected()
 	{
 		var editor = new RichEditBox { MaxLength = 4 };
@@ -789,19 +821,23 @@ public partial class Given_RichEditBox
 		}
 	}
 
-	private sealed class TextEditAutomationListener : IAutomationPeerListener, ITextEditAutomationPeerListener
+	private sealed class TextEditAutomationListener : IAutomationPeerListener
 	{
+		internal bool IsListening { get; init; } = true;
 		internal List<AutomationEvents> Events { get; } = new();
 		internal List<(AutomationTextEditChangeType ChangeType, string[] ChangedData)> TextEditChanges { get; } = new();
 		internal List<(AutomationPeer Peer, AutomationProperty Property, object OldValue, object NewValue)> PropertyChanges { get; } = new();
 
-		public bool ListenerExistsHelper(AutomationEvents eventId) => true;
+		public bool ListenerExistsHelper(AutomationEvents eventId) => IsListening;
 
 		public void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
 			=> NotifyAutomationEvent(peer, eventId);
 
 		public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
 			=> Events.Add(eventId);
+
+		public void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer? child)
+			=> Events.Add(AutomationEvents.StructureChanged);
 
 		public void NotifyTextEditTextChangedEvent(
 			AutomationPeer peer,

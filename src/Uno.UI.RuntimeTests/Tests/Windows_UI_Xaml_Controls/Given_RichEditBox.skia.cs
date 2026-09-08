@@ -9649,6 +9649,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId) { }
 
+			public void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer child) { }
+
+			public void NotifyTextEditTextChangedEvent(AutomationPeer peer, AutomationTextEditChangeType changeType, IReadOnlyList<string> changedData) { }
+
 			public void NotifyInvalidatePeer(AutomationPeer peer) { }
 
 			public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue)

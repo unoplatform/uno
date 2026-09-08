@@ -174,7 +174,7 @@ internal static class AccessibilityRouter
 	//  Fan-out shims — automation peer listener / announcer
 	// ────────────────────────────────────────────────────────────────
 
-	private sealed class RouterAutomationPeerListener : IAutomationPeerListener, ITextEditAutomationPeerListener
+	private sealed class RouterAutomationPeerListener : IAutomationPeerListener
 	{
 		public void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty property, object oldValue, object newValue)
 			=> Resolve(peer)?.NotifyPropertyChangedEvent(peer, property, oldValue, newValue);
@@ -182,11 +182,8 @@ internal static class AccessibilityRouter
 		public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
 			=> Resolve(peer)?.NotifyAutomationEvent(peer, eventId);
 
-		public void NotifyTextEditTextChangedEvent(
-			AutomationPeer peer,
-			AutomationTextEditChangeType changeType,
-			System.Collections.Generic.IReadOnlyList<string> changedData)
-			=> Resolve(peer)?.NotifyTextEditTextChangedEvent(peer, changeType, changedData);
+		public void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer? child)
+			=> Resolve(peer)?.NotifyStructureChangedEvent(peer, structureChangeType, child);
 
 		public void NotifyInvalidatePeer(AutomationPeer peer)
 			=> Resolve(peer)?.NotifyInvalidatePeer(peer);
@@ -194,11 +191,15 @@ internal static class AccessibilityRouter
 		public void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind kind, AutomationNotificationProcessing processing, string displayString, string activityId)
 			=> Resolve(peer)?.NotifyNotificationEvent(peer, kind, processing, displayString, activityId);
 
+		public void NotifyTextEditTextChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, System.Collections.Generic.IReadOnlyList<string> changedData)
+			=> Resolve(peer)?.NotifyTextEditTextChangedEvent(peer, changeType, changedData);
+
 		public bool ListenerExistsHelper(AutomationEvents eventId)
 		{
 			foreach (var pair in XamlRootMap.Enumerate())
 			{
-				if (pair.Value is IAccessibilityOwner { Accessibility: { IsAccessibilityEnabled: true } })
+				if (pair.Value is IAccessibilityOwner { Accessibility: { } accessibility }
+					&& accessibility.ListenerExistsHelper(eventId))
 				{
 					return true;
 				}

@@ -22,7 +22,7 @@ namespace Uno.UI.Runtime.Skia;
 /// focus recovery, modal dialog lifecycle, and announcement debouncing.
 /// Platform-specific subclasses override abstract methods for native interop.
 /// </summary>
-internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPeerListener, ITextEditAutomationPeerListener
+internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPeerListener
 {
 	// Announcement debounce/throttle constants
 	private const int AnnouncementDebounceMs = 100;
@@ -39,7 +39,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	private string? _lastAnnouncedAssertiveContent;
 
 	// Focus tracking
-	private UIElement? _trackedFocusedElement;
+	private WeakReference<UIElement>? _trackedFocusedElement;
 
 	// Disposal state — guards pending dispatcher callbacks after the window closes.
 	private bool _isDisposed;
@@ -92,6 +92,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	protected abstract void UpdateHelpText(nint handle, string? helpText);
 	protected abstract void UpdateHeadingLevel(nint handle, int level);
 	protected abstract void UpdateLandmark(nint handle, string? landmarkRole);
+	protected abstract void UpdateRoleDescription(nint handle, string? roleDescription);
 	protected abstract void UpdateIsReadOnly(nint handle, bool isReadOnly);
 	protected abstract void UpdateFocusable(nint handle, bool focusable);
 	protected abstract void UpdateIsOffscreen(nint handle, bool isOffscreen);
@@ -164,7 +165,13 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 				return;
 			}
 
-			void Handler(object? sender, ScrollViewerViewChangedEventArgs e) => OnScrollSourceChanged(scrollViewer);
+			void Handler(object? sender, ScrollViewerViewChangedEventArgs e)
+			{
+				if (sender is ScrollViewer source)
+				{
+					OnScrollSourceChanged(source);
+				}
+			}
 			scrollViewer.ViewChanged += Handler;
 			_scrollViewerSubscriptions[handle] = Handler;
 		}
@@ -176,7 +183,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 				return;
 			}
 
-			void Handler(ScrollPresenter sender, object e) => OnScrollSourceChanged(scrollPresenter);
+			void Handler(ScrollPresenter sender, object e) => OnScrollSourceChanged(sender);
 			scrollPresenter.ViewChanged += Handler;
 			_scrollPresenterSubscriptions[handle] = Handler;
 		}
@@ -289,6 +296,13 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	/// </summary>
 	protected virtual void NotifyPropertyChangedEventCore(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue)
 	{
+		// Match WinUI/Win32: route property changes to the peer's EventsSource so that
+		// ListItem/TabItem/TreeItem changes are attributed to the data peer the client sees, not
+		// the raw container peer. ResolveProviderPeer returns `this` for every other peer, so this
+		// is a no-op outside those three control types. (Win32 does the equivalent via
+		// FindExistingProviderForPeer(peer, resolveEventsSource: true).)
+		peer = peer.ResolveProviderPeer(resolveEventsSource: true);
+
 		if (automationProperty == AutomationElementIdentifiers.NameProperty &&
 			TryGetPeerOwner(peer, out var element))
 		{
@@ -346,6 +360,12 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		{
 			var landmarkType = newValue is AutomationLandmarkType lt ? lt : AutomationLandmarkType.None;
 			UpdateLandmark(element.Visual.Handle, AriaMapper.GetLandmarkRole(landmarkType));
+			UpdateRoleDescription(element.Visual.Handle, AriaMapper.GetAriaAttributes(peer).RoleDescription);
+		}
+		else if (automationProperty == AutomationElementIdentifiers.LocalizedLandmarkTypeProperty &&
+			TryGetPeerOwner(peer, out element))
+		{
+			UpdateRoleDescription(element.Visual.Handle, AriaMapper.GetAriaAttributes(peer).RoleDescription);
 		}
 		else if (automationProperty == RangeValuePatternIdentifiers.MinimumProperty &&
 			TryGetPeerOwner(peer, out element))
@@ -383,6 +403,16 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	//  Shared: IAutomationPeerListener — Automation event routing
 	// ──────────────────────────────────────────────────────────────
 
+	public virtual void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer? child)
+	{
+		if (_isDisposed || !IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		OnNativeStructureChanged();
+	}
+
 	public virtual void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
 	{
 		if (_isDisposed || !IsAccessibilityEnabled)
@@ -416,6 +446,9 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		AutomationTextEditChangeType changeType,
 		System.Collections.Generic.IReadOnlyList<string> changedData)
 	{
+		// Non-Win32 backends have no native TextEdit event, but their accessible text mirrors
+		// must still reflect the editor's content without requiring a lossy Value pattern.
+		peer = peer.ResolveProviderPeer(resolveEventsSource: true);
 		if (!_isDisposed && IsAccessibilityEnabled && TryGetPeerOwner(peer, out var textElement))
 		{
 			UpdateTextValueFromProvider(peer, textElement);
@@ -648,7 +681,8 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	// ──────────────────────────────────────────────────────────────
 
 	/// <summary>Gets the currently tracked focused element.</summary>
-	protected UIElement? TrackedFocusedElement => _trackedFocusedElement;
+	protected UIElement? TrackedFocusedElement
+		=> _trackedFocusedElement is { } reference && reference.TryGetTarget(out var element) ? element : null;
 
 	/// <summary>
 	/// Begins tracking a focused element for focus recovery.
@@ -657,7 +691,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	protected void TrackFocusedElement(UIElement element)
 	{
 		UntrackFocusedElement();
-		_trackedFocusedElement = element;
+		_trackedFocusedElement = new WeakReference<UIElement>(element);
 
 		if (element is Control control)
 		{
@@ -673,22 +707,26 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	/// <summary>Stops tracking the current focused element.</summary>
 	protected void UntrackFocusedElement()
 	{
-		if (_trackedFocusedElement is null)
+		if (_trackedFocusedElement is not { } reference)
 		{
 			return;
 		}
 
-		if (_trackedFocusedElement is Control control)
+		_trackedFocusedElement = null;
+		if (!reference.TryGetTarget(out var element))
+		{
+			return;
+		}
+
+		if (element is Control control)
 		{
 			control.IsEnabledChanged -= OnTrackedElementIsEnabledChanged;
 		}
 
-		if (_trackedFocusedElement is FrameworkElement fe)
+		if (element is FrameworkElement fe)
 		{
 			fe.Unloaded -= OnTrackedElementUnloaded;
 		}
-
-		_trackedFocusedElement = null;
 	}
 
 	private void OnTrackedElementIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)

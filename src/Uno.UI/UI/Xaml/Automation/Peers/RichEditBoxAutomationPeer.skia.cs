@@ -169,10 +169,10 @@ public partial class RichEditBoxAutomationPeer
 		IReadOnlyList<string> changedData)
 	{
 		var listener = AutomationPeerListener;
-		if (listener is ITextEditAutomationPeerListener textEditListener
+		if (listener is not null
 			&& listener.ListenerExistsHelper(AutomationEvents.TextEditTextChanged))
 		{
-			textEditListener.NotifyTextEditTextChangedEvent(this, changeType, changedData);
+			listener.NotifyTextEditTextChangedEvent(this, changeType, changedData);
 		}
 	}
 
