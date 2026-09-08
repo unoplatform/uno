@@ -3815,6 +3815,10 @@
 		  <Member fullName="Microsoft.UI.Xaml.FrameworkTemplateBuilder" reason="BC01: legacy template builder delegate removed with the ambient TemplatedParentScope (uno#18672, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.NewFrameworkTemplateBuilder" reason="BC01: replaced by Uno.UI.FrameworkTemplateBuilder, declared next to TemplateManager instead of in the WinUI namespace (uno#18672, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.TemplateMaterializationSettings" reason="BC01: moved to the Uno.UI namespace, alongside FrameworkTemplateBuilder and TemplateManager -- it is Uno plumbing with no WinUI counterpart (uno#18672, breaking changes for 7.0)" />
+		  <!-- ItemsRepeater WinUI port: layout plumbing reduced to internal. In WinUI these are plain C++ types with no .idl projection, so they were never part of the WinUI surface. -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.FlowLayoutAlgorithm" reason="Reduced Uno-only public FlowLayoutAlgorithm to internal; unprojected C++ helper in WinUI (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="Microsoft.UI.Xaml.Controls.IFlowLayoutAlgorithmDelegates" reason="Reduced Uno-only public IFlowLayoutAlgorithmDelegates to internal; unprojected C++ interface in WinUI (ItemsRepeater WinUI port, uno#23406)" />
+
 	  </Types>
 	  <Fields>
 		  <!-- Members of the removed ControlsResourcesVersion enum (see the <Types> entry above), listed in case the diff reports them independently of their declaring type (BC71, breaking changes for 7.0). -->
@@ -4220,6 +4224,12 @@
 
 		  <!-- BC01: TemplateMaterializationSettings moved to the Uno.UI namespace, and its per-member callback gave way to the OnMemberCreated instance method so the templated parent cannot be captured strongly (accessors paired in <Methods> below). -->
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.TemplateMaterializationSettings::(TemplatedParent|TemplateMemberCreatedCallback)\(\)" reason="BC01: type moved to Uno.UI; TemplateMemberCreatedCallback replaced by OnMemberCreated (uno#18672, breaking changes for 7.0)" isRegex="true" />
+		  <!-- ItemsRepeater WinUI port: FlowLayout now exposes exactly the FlowLayout.idl DP set (LineAlignment/LineSpacing/MinItemSpacing/Orientation); the Uno-only MinColumnSpacing/MinRowSpacing pair had no WinUI counterpart. Accessors paired in <Methods> below. -->
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Controls.FlowLayout::MinColumnSpacing()" reason="Removed Uno-only FlowLayout.MinColumnSpacing; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.FlowLayout::MinColumnSpacingProperty()" reason="Removed Uno-only FlowLayout.MinColumnSpacingProperty; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Controls.FlowLayout::MinRowSpacing()" reason="Removed Uno-only FlowLayout.MinRowSpacing; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.FlowLayout::MinRowSpacingProperty()" reason="Removed Uno-only FlowLayout.MinRowSpacingProperty; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+
 	  </Properties>
 	  <Methods>
 		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
@@ -4923,6 +4933,19 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_SizeChanged(Microsoft.UI.Xaml.WindowSizeChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.add_VisibilityChanged(Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_VisibilityChanged(Microsoft.UI.Xaml.WindowVisibilityChangedEventHandler value)" reason="Retyped Window events to TypedEventHandler to match WinUI (#2089, breaking changes for 7.0, uno#8339)" />
+		  <!-- ItemsRepeater WinUI port: FlowLayout MinColumnSpacing/MinRowSpacing accessors, paired with the <Properties> entries above. -->
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Controls.FlowLayout.get_MinColumnSpacing()" reason="Removed Uno-only FlowLayout.MinColumnSpacing; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.FlowLayout.set_MinColumnSpacing(System.Double value)" reason="Removed Uno-only FlowLayout.MinColumnSpacing; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.FlowLayout.get_MinColumnSpacingProperty()" reason="Removed Uno-only FlowLayout.MinColumnSpacingProperty; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Controls.FlowLayout.get_MinRowSpacing()" reason="Removed Uno-only FlowLayout.MinRowSpacing; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.FlowLayout.set_MinRowSpacing(System.Double value)" reason="Removed Uno-only FlowLayout.MinRowSpacing; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.FlowLayout.get_MinRowSpacingProperty()" reason="Removed Uno-only FlowLayout.MinRowSpacingProperty; not in FlowLayout.idl (ItemsRepeater WinUI port, uno#23406)" />
+
+		  <!-- ItemsRepeater WinUI port: element get/clear helpers reduced to internal (they back the layout context and are not on ItemsRepeater.idl), and StackLayout's last implicitly-implemented IFlowLayoutAlgorithmDelegates member became explicit like its siblings. -->
+		  <Member fullName="Microsoft.UI.Xaml.UIElement Microsoft.UI.Xaml.Controls.ItemsRepeater.GetElementImpl(System.Int32 index, System.Boolean forceCreate, System.Boolean suppressAutoRecycle)" reason="Reduced Uno-only public ItemsRepeater.GetElementImpl to internal; not on ItemsRepeater.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ItemsRepeater.ClearElementImpl(Microsoft.UI.Xaml.UIElement element)" reason="Reduced Uno-only public ItemsRepeater.ClearElementImpl to internal; not on ItemsRepeater.idl (ItemsRepeater WinUI port, uno#23406)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.StackLayout.Algorithm_OnLineArranged(System.Int32 startIndex, System.Int32 countInLine, System.Double lineSize, Microsoft.UI.Xaml.Controls.VirtualizingLayoutContext context)" reason="Made StackLayout.Algorithm_OnLineArranged an explicit IFlowLayoutAlgorithmDelegates implementation, matching its siblings (ItemsRepeater WinUI port, uno#23406)" />
+
 	  </Methods>
 	  <Events>
 		  <!-- Window.Activated/SizeChanged/VisibilityChanged retyped from Uno-only delegates to WinUI's -->
