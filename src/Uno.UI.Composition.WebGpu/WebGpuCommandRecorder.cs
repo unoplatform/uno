@@ -372,9 +372,11 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 				&& Math.Abs(_fanAreaAbs - Math.Abs(_fanAreaSigned)) <= 1e-4 * _fanAreaAbs;
 			// Tessellate into non-overlapping triangles plus an analytic AA ring, so the fill runs in ONE pass
 			// over the ink alone and antialiases itself instead of leaning on the multisampled attachment.
-			var aa = TryTessellate(geometry);
+			// Explicitly, not by _allContours being empty: parity depends on the fan decomposition, and ear clipping
+		// triangulates the non-zero interior, which is a different region.
+		var aa = !evenOdd && TryTessellate(geometry);
 			if (aa) { tiles = true; }
-			_target.Add(new PathFill { FanDevice = _fan.ToArray(), FanCoverage = _fanCoverage, FanHard = _fanHard, Geometry = geometry, GeomMatrix = _m, BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, FanTiles = tiles, Clip = RelaxedClip(_bbMin, _bbMax) });
+			_target.Add(new PathFill { FanDevice = _fan.ToArray(), FanCoverage = _fanCoverage, FanHard = _fanHard, Edges = BuildEdges(), Geometry = geometry, GeomMatrix = _m, BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, FanTiles = tiles, Clip = RelaxedClip(_bbMin, _bbMax) });
 		}
 		_fan = null;
 	}
@@ -383,7 +385,9 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	{
 		if (_collectLocal) { _localContours.Add((new List<Vector2> { start }, false)); return; }
 		_pivot = Map(start.X, start.Y); _prev = _pivot; _firstInContour = true; _contourCount++; Include(_pivot);
-		if (_fanFromCentroid) { _contourPts.Clear(); _contourPts.Add(_pivot); }
+		// Collected whatever the fan strategy: the contours are the edge list the coverage rasterizer needs, and
+		// it serves the shapes the tessellator refuses, so capture cannot be conditional on tessellating.
+		_contourPts.Clear(); _contourPts.Add(_pivot);
 	}
 	void IFlattenedPathSink.LineTo(Vector2 point)
 	{
@@ -393,7 +397,8 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			return;
 		}
 		var p = Map(point.X, point.Y); Include(p);
-		if (_fanFromCentroid) { _contourPts.Add(p); _prev = p; return; }
+		_contourPts.Add(p);
+		if (_fanFromCentroid) { _prev = p; return; }
 		if (_firstInContour) { _firstInContour = false; }
 		else
 		{
@@ -411,13 +416,18 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			if (_localContours.Count > 0) { _localContours[^1] = (_localContours[^1].Pts, closed); }
 			return;
 		}
-		if (!_fanFromCentroid) { return; }
 		var n = _contourPts.Count;
 		if (n < 3) { _contourPts.Clear(); return; }
 		// One contour per glyph for a text run, so this bound has to clear a whole string, not a single shape.
 		// Truncating silently would hand the tessellator a partial path.
 		if (_allContours.Count < 512) { _allContours.Add(new List<Vector2>(_contourPts)); }
 		else { _contoursTruncated = true; }
+		if (!_fanFromCentroid)
+		{
+			_contourPts.Clear();
+			return;
+		}
+
 		var c = Vector2.Zero;
 		for (int i = 0; i < n; i++) { c += _contourPts[i]; }
 		c /= n;
@@ -434,6 +444,41 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		_contourPts.Clear();
 	}
 	private void Include(Vector2 p) { _bbMin = Vector2.Min(_bbMin, p); _bbMax = Vector2.Max(_bbMax, p); }
+
+	/// <summary>
+	/// The captured contours as closed device-space edges (x0,y0,x1,y1 each) for the coverage rasterizer. Null
+	/// when the contours were truncated, since a partial outline rasterizes to the wrong coverage rather than to
+	/// less of it.
+	/// </summary>
+	private float[] BuildEdges()
+	{
+		if (_contoursTruncated || _allContours.Count == 0)
+		{
+			return null;
+		}
+
+		var total = 0;
+		for (var i = 0; i < _allContours.Count; i++) { total += _allContours[i].Count; }
+		if (total < 3)
+		{
+			return null;
+		}
+
+		var edges = new float[total * 4];
+		var w = 0;
+		for (var i = 0; i < _allContours.Count; i++)
+		{
+			var pts = _allContours[i];
+			for (var k = 0; k < pts.Count; k++)
+			{
+				var a = pts[k];
+				var b = pts[(k + 1) % pts.Count];
+				edges[w++] = a.X; edges[w++] = a.Y; edges[w++] = b.X; edges[w++] = b.Y;
+			}
+		}
+
+		return edges;
+	}
 
 	// Triangulation topology, cached per geometry. Ear clipping is O(n^2) and these recordings re-record every
 	// frame, so tessellating per frame is a large LOSS. What makes it pay is that the

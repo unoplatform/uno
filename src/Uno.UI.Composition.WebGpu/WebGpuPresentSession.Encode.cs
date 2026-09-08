@@ -304,6 +304,14 @@ public sealed unsafe partial class WebGpuPresentSession
 					pst.Enc.Vb((IntPtr)pathBuf, 0, pathBufBytes);
 					pst.Enc.Draw(6, (uint)(b1 / (VertexStride.Table * sizeof(float))));
 					break;
+				case DrawKind.Coverage:
+					pst.Enc.Pipe(_d.CoverageDrawPipe);
+					pst.Enc.Bg(0, (IntPtr)b0);
+					pst.Enc.Bg(1, (IntPtr)clipBg);
+					pst.Enc.Vb((IntPtr)b1, 0, (nuint)(6 * 4 * sizeof(float)));
+					pst.Enc.Draw(6);
+					break;
+
 				case DrawKind.Image:
 					pst.Enc.Pipe(_d.ImagePipe);
 					pst.Enc.Bg(0, (IntPtr)b0);

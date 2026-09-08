@@ -199,6 +199,26 @@ struct CovOut { @builtin(position) p: vec4<f32>, @location(0) e: vec4<f32> };
   return vec4<f32>((yb - ya) * 0.5 * (ca + cb) * s, 0.0, 0.0, 0.0);
 }";
 
+	// Draws a shape by sampling its signed-area coverage mask: one quad however complex the path was, since the
+	// mask carries the geometry. The fill rule is resolved HERE rather than during accumulation, so one mask can
+	// serve either rule -- an accumulated 2 is a self-overlap under non-zero and a hole under even-odd.
+	private const string CoverageDrawWgsl = @"
+struct CovDrawU { color: vec4<f32>, ctrl: vec4<f32> };   // color premultiplied; ctrl.x > 0.5 = even-odd
+@group(0) @binding(0) var covTex: texture_2d<f32>;
+@group(0) @binding(1) var<uniform> cd: CovDrawU;
+@group(1) @binding(0) var<uniform> clip: ClipU;
+struct CovDrawOut { @builtin(position) p: vec4<f32>, @location(0) t: vec2<f32> };
+@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) t: vec2<f32>) -> CovDrawOut {
+  var o: CovDrawOut; o.p = xformPos(clip, pos); o.t = t; return o;
+}
+@fragment fn fs(i: CovDrawOut) -> @location(0) vec4<f32> {
+  // textureLoad, not textureSample: the mask is 1:1 with the destination, so filtering would only blur an
+  // answer that is already per-pixel exact.
+  var a = abs(textureLoad(covTex, vec2<i32>(i.t), 0).r);
+  if (cd.ctrl.x > 0.5) { a = a - 2.0 * floor(a * 0.5); a = min(a, 2.0 - a); }
+  return cd.color * min(a, 1.0) * clipCov(i.p.xy, clip);
+}";
+
 	private const string ClipDepthWgsl = @"
 @vertex fn vs0(@builtin(vertex_index) vi: u32) -> @builtin(position) vec4<f32> {
   var p = array<vec2<f32>, 3>(vec2<f32>(-1.0, -1.0), vec2<f32>(3.0, -1.0), vec2<f32>(-1.0, 3.0));
