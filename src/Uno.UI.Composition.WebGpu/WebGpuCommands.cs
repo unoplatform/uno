@@ -62,6 +62,16 @@ internal struct ClipData
 	public bool ScissorLoadBearing;
 
 	// Append a rounded clip, copy-on-write, capped at MaxRounds (drops the oldest/outermost on overflow).
+	// TODO: neither this cap nor PathFan's single slot below is expressible in the seam — IDrawingSession.ClipPath
+	// nests without limit and the Skia backend honours that exactly, via SKCanvas's own clip stack. Both caps
+	// therefore fail silently where Skia would not: the outermost round keeps its rect extent through Aabb but
+	// loses its corner rounding, an excluded one loses its constraint entirely (exclusions never tighten Aabb),
+	// and an outer path clip degrades to its bounding box. The round budget also spans the whole nesting chain,
+	// since ClipCompose pushes a child recording's rounds onto the parent's.
+	//
+	// The fix both want is a depth mask that intersects rather than replaces: a winding rule combines a path's own
+	// contours but cannot AND two independent shapes, so an unbounded slot needs one mask pass per shape (each
+	// testing the previous depth) instead of a single stencil-then-cover.
 	public static RoundClip[] Push(RoundClip[] existing, in RoundClip rc)
 	{
 		int n = existing?.Length ?? 0;
