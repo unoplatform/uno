@@ -399,15 +399,37 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region ITextBoxViewHost
 
+		// Implicit interface implementations make existing public (including inherited) members
+		// final virtual in CLR metadata. Keep the internal adapter explicit to preserve their API shape.
 		string ITextBoxViewHost.Text => GetPlainTextContent();
 
+		bool ITextBoxViewHost.IsSpellCheckEnabled => IsSpellCheckEnabled;
+
+		bool ITextBoxViewHost.IsColorFontEnabled => IsColorFontEnabled;
+
 		TextAlignment ITextBoxViewHost.TextAlignment => GetAlignment();
+
+		TextReadingOrder ITextBoxViewHost.TextReadingOrder => TextReadingOrder;
+
+		TextWrapping ITextBoxViewHost.TextWrapping => TextWrapping;
 
 		ContentControl? ITextBoxViewHost.ContentElement => _contentElement;
 
 		FontFamily ITextBoxViewHost.FontFamily => _document?.IsMathMode == true
 			? new FontFamily(global::Microsoft.UI.Text.RichEditTextDocument.MathRenderingFontFamilyName)
 			: FontFamily;
+
+		double ITextBoxViewHost.FontSize => FontSize;
+
+		global::Windows.UI.Text.FontStyle ITextBoxViewHost.FontStyle => FontStyle;
+
+		global::Windows.UI.Text.FontStretch ITextBoxViewHost.FontStretch => FontStretch;
+
+		global::Windows.UI.Text.FontWeight ITextBoxViewHost.FontWeight => FontWeight;
+
+		FlowDirection ITextBoxViewHost.FlowDirection => FlowDirection;
+
+		void ITextBoxViewHost.UpdateLayout() => UpdateLayout();
 
 		string ITextBoxViewHost.ProcessTextInput(string newText, int selectionStart, int selectionLength)
 		{

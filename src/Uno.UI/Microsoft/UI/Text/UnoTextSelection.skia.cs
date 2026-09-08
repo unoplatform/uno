@@ -16,7 +16,6 @@ namespace Microsoft.UI.Text
 		private int _lastNotifiedStart;
 		private int _lastNotifiedEnd;
 		private double? _desiredX;
-		private bool _preserveDesiredX;
 
 		internal UnoTextSelection(RichEditTextDocument document)
 			: base(document, 0, 0)
@@ -307,14 +306,22 @@ namespace Microsoft.UI.Text
 
 			SetActivePosition(target, extend);
 			SetAtEndOfLine(targetAtEndOfLine);
-			_preserveDesiredX = true;
-			try
+			var desiredX = _desiredX;
+			var targetStart = _start;
+			var targetEnd = _end;
+			var targetOptions = _options;
+			var selectionVersion = _document.SelectionChangeVersion;
+			var textVersion = _document.TextVersion;
+			OnRangeChanged();
+			// The control synchronizes the accepted selection back through SetRangeInternal.
+			// Preserve the column only for that round trip, not a canceled or reentrant application edit.
+			if (_start == targetStart
+				&& _end == targetEnd
+				&& _options == targetOptions
+				&& _document.SelectionChangeVersion == selectionVersion + 1
+				&& _document.TextVersion == textVersion)
 			{
-				OnRangeChanged();
-			}
-			finally
-			{
-				_preserveDesiredX = false;
+				_desiredX = desiredX;
 			}
 			return _start == oldStart && _end == oldEnd ? 0 : countSign * unitsMoved;
 		}
@@ -451,10 +458,7 @@ namespace Microsoft.UI.Text
 				_start = _end = 0;
 			}
 
-			if (!_preserveDesiredX)
-			{
-				_desiredX = null;
-			}
+			_desiredX = null;
 
 			if (_start == _lastNotifiedStart && _end == _lastNotifiedEnd)
 			{

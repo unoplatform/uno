@@ -19,6 +19,8 @@
 
 The Uno implementation targets the Skia renderer. Native Android views, UIKit controls, and the native WebAssembly DOM renderer are not included in this implementation.
 
+tvOS has no system clipboard: Uno's `Clipboard.GetContent` API is not implemented there. System-clipboard round trips are therefore unavailable, and `Document.CanPaste()` and range `CanPaste` return `false`. This does not disable document formatting, selection/navigation, protected-range validation, or the remaining text-flyout commands. Clipboard-dependent runtime cases are scoped separately from those portable behaviors.
+
 Uno implements the public WinUI behavior with a managed document and layout engine because the Windows RichEdit and Text Services internals used by WinUI are not public cross-platform APIs. COM identity, private `ITextDocument2`/`ITextRange2` interfaces, OLE hosting, and reference-counting behavior are therefore not exposed.
 
 ## WinUI source and managed editor boundary

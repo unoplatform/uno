@@ -1934,7 +1934,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Cr_TextChanging_State_Transition_Does_Not_Arm_Lf_Coalescing()
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Cr_TextChanging_State_Transition_Does_Not_Arm_Lf_Coalescing(bool precedingFormatNotification)
 		{
 			var SUT = new RichEditBox();
 			try
@@ -1946,20 +1949,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await TypeAsync(SUT, "a");
 
 				var transitionOnNextChange = true;
-				SUT.TextChanging += (_, _) =>
+				string transitionText = null;
+				SUT.TextChanging += (_, args) =>
 				{
-					if (transitionOnNextChange)
+					if (transitionOnNextChange && args.IsContentChanging)
 					{
 						transitionOnNextChange = false;
+						GetTextWithoutFinalEop(SUT.Document, out transitionText);
 						SUT.AcceptsReturn = false;
 						SUT.AcceptsReturn = true;
 					}
 				};
 
+				if (precedingFormatNotification)
+				{
+					SUT.Document.GetRange(0, 1).CharacterFormat.Bold = FormatEffect.On;
+				}
 				RaiseKey(SUT, VirtualKey.None, VirtualKeyModifiers.None, '\r');
 				await WindowHelper.WaitForIdle();
+				Assert.IsFalse(transitionOnNextChange, "The CR insertion must synchronously raise TextChanging.");
+				Assert.AreEqual("a\r", transitionText, "The input-state transitions must occur during the CR content change, not a preceding format notification.");
+				Assert.IsTrue(SUT.AcceptsReturn, "The TextChanging handler must complete both input-state transitions.");
+				GetTextWithoutFinalEop(SUT.Document, out var afterCarriageReturn);
+				Assert.AreEqual("a\r", afterCarriageReturn);
 				RaiseKey(SUT, VirtualKey.None, VirtualKeyModifiers.None, '\n');
 				await WindowHelper.WaitForIdle();
+				GetTextWithoutFinalEop(SUT.Document, out var afterLineFeed);
+				Assert.AreEqual("a\r\r", afterLineFeed);
 				await TypeAsync(SUT, "b");
 
 				GetTextWithoutFinalEop(SUT.Document, out var text);

@@ -689,7 +689,7 @@ internal readonly partial struct UnicodeText : IParsedText
 				// independent paragraph-rule primitive.
 				for (var node = tabCluster.Next; node is not null && count++ < 4096; node = node.Next)
 				{
-					if (node.Value.containsTab)
+					if (node.Value.containsTab || IsLineBreak(text, node.Value.end))
 					{
 						break;
 					}
@@ -702,10 +702,6 @@ internal readonly partial struct UnicodeText : IParsedText
 						}
 					}
 					width += node.Value.width;
-					if (IsLineBreak(text, node.Value.end))
-					{
-						break;
-					}
 				}
 				return width;
 			}
