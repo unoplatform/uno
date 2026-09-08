@@ -10,11 +10,27 @@ namespace Uno.UI.Tests.Microsoft_Windows_AppNotifications;
 public class Given_AppNotificationActivatedEventArgs
 {
 	[TestMethod]
-	public void When_Argument_Is_Empty_Arguments_Are_Empty()
+	[DataRow("", 1)]
+	[DataRow(";", 1)]
+	[DataRow("one=1;", 2)]
+	[DataRow(";one=1", 2)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22462")]
+	public void When_Argument_Contains_Empty_Pairs_They_Are_Preserved(string argument, int expectedCount)
 	{
-		var args = new AppNotificationActivatedEventArgs(string.Empty);
+		var args = new AppNotificationActivatedEventArgs(argument);
 
-		Assert.AreEqual(0, args.Arguments.Count);
+		Assert.AreEqual(expectedCount, args.Arguments.Count);
+		Assert.AreEqual(string.Empty, args.Arguments[string.Empty]);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22462")]
+	public void When_Arguments_Repeat_A_Key_The_Last_Value_Wins()
+	{
+		var args = new AppNotificationActivatedEventArgs("key=first;key=second%3Dvalue");
+
+		Assert.AreEqual(1, args.Arguments.Count);
+		Assert.AreEqual("second=value", args.Arguments["key"]);
 	}
 
 	[TestMethod]

@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 
 using System;
 using System.Diagnostics;
@@ -10,6 +10,8 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml;
 
@@ -114,5 +116,16 @@ public sealed partial class XamlRoot
 		}
 
 		return VisualTree.PopupRoot.OpenPopup(popup);
+	}
+
+	private FocusManager? _focusManager;
+
+	internal void InvalidateOverlays()
+	{
+		_focusManager ??= VisualTree.GetFocusManagerForElement(Content);
+		if (_focusManager?.FocusedElement is ITextBoxHost { Core: { } core })
+		{
+			core.TextBoxView?.Extension?.InvalidateLayout();
+		}
 	}
 }

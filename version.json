@@ -1,12 +1,13 @@
 {
   "$schema": "https://raw.githubusercontent.com/dotnet/Nerdbank.GitVersioning/main/src/NerdBank.GitVersioning/version.schema.json",
-  "version": "6.8-dev.{height}",
+  "version": "7.0-dev.{height}",
   "nuGetPackageVersion": {
     "semVer": 2.0
   },
   "publicReleaseRefSpec": [
     "^refs/heads/master$",
     "^refs/heads/feature/.*$",
+    "^refs/heads/servicing/.*$",
     "^refs/heads/release/stable/\\d+(?:\\.\\d+)?$"
   ],
   "cloudBuild": {

@@ -1,5 +1,4 @@
-﻿#if !NETFX_CORE
-using System;
+﻿using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Dynamic;
 
@@ -29,4 +28,3 @@ namespace Uno.UI.DataBinding
 		}
 	}
 }
-#endif

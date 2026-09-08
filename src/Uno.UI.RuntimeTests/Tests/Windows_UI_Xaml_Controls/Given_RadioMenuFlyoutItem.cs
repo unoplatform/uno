@@ -16,6 +16,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_RadioMenuFlyoutItem
 {
 	[TestMethod]
+	public void When_AutomationPeer_Reports_Toggle_State()
+	{
+		// RadioMenuFlyoutItem derives from MenuFlyoutItem (not ToggleMenuFlyoutItem), but must still
+		// expose the toggle automation surface, matching WinUI's secret ToggleMenuFlyoutItem base.
+		var item = new Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem();
+
+		var peer = FrameworkElementAutomationPeer.CreatePeerForElement(item);
+		Assert.IsInstanceOfType(peer, typeof(ToggleMenuFlyoutItemAutomationPeer));
+
+		var toggleProvider = (Microsoft.UI.Xaml.Automation.Provider.IToggleProvider)peer.GetPattern(PatternInterface.Toggle);
+		Assert.IsNotNull(toggleProvider);
+		Assert.AreEqual(Microsoft.UI.Xaml.Automation.ToggleState.Off, toggleProvider.ToggleState);
+
+		item.IsChecked = true;
+		Assert.AreEqual(Microsoft.UI.Xaml.Automation.ToggleState.On, toggleProvider.ToggleState);
+
+		// Invoking a radio item checks it; invoking again keeps it checked (radio never toggles off).
+		item.IsChecked = false;
+		toggleProvider.Toggle();
+		Assert.IsTrue(item.IsChecked);
+		toggleProvider.Toggle();
+		Assert.IsTrue(item.IsChecked);
+	}
+
+	[TestMethod]
 	public async Task When_Check_Sequence()
 	{
 		var item1 = new Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem { GroupName = "group1", IsChecked = true };

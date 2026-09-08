@@ -14,12 +14,13 @@ using NativeAppNotification = winappsdk::Microsoft.Windows.AppNotifications.AppN
 using NativeAppNotificationManager = winappsdk::Microsoft.Windows.AppNotifications.AppNotificationManager;
 using NativeAppNotificationPriority = winappsdk::Microsoft.Windows.AppNotifications.AppNotificationPriority;
 using NativeAppNotificationProgressData = winappsdk::Microsoft.Windows.AppNotifications.AppNotificationProgressData;
+using NativeAppNotificationProgressResult = winappsdk::Microsoft.Windows.AppNotifications.AppNotificationProgressResult;
 using NativeBootstrap = winappsdk::Microsoft.Windows.ApplicationModel.DynamicDependency.Bootstrap;
 using NativePackageVersion = winappsdk::Microsoft.Windows.ApplicationModel.DynamicDependency.PackageVersion;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
-internal sealed class Win32AppNotificationManagerBackend : IAppNotificationManagerBackend
+internal sealed class Win32AppNotificationManagerBackend : IAppNotificationManagerBackend, IAppNotificationRawPayloadCapability
 {
 	private const string NativeTagPrefix = "u";
 	private const string NativeGroup = "uno.appnotifications";
@@ -37,6 +38,8 @@ internal sealed class Win32AppNotificationManagerBackend : IAppNotificationManag
 	}
 
 	public static Win32AppNotificationManagerBackend Instance { get; } = new();
+
+	public bool SupportsRawPayload => true;
 
 	public bool IsSupported
 	{
@@ -155,7 +158,15 @@ internal sealed class Win32AppNotificationManagerBackend : IAppNotificationManag
 		{
 			return false;
 		}
-		var native = CreateNativeNotification(notification.ToEnvelope());
+		if (notification.IsProgressUpdate)
+		{
+			var progress = notification.Progress
+				?? throw new ArgumentException("A progress update requires progress data.", nameof(notification));
+			return Wait(_manager!.UpdateAsync(CreateProgressData(progress), GetNativeTag(notification.Id), NativeGroup)) ==
+				NativeAppNotificationProgressResult.Succeeded;
+		}
+
+		var native = CreateNativeNotification(notification.ToEnvelope(parsePayload: false));
 		_manager!.Show(native);
 		return native.Id != 0;
 	}
@@ -218,7 +229,12 @@ internal sealed class Win32AppNotificationManagerBackend : IAppNotificationManag
 
 	private static NativeAppNotification CreateNativeNotification(AppNotificationEnvelope notification)
 	{
-		var native = new NativeAppNotification(notification.RawPayload.Length > 0 ? notification.RawPayload : BuildFallbackPayload(notification))
+		if (string.IsNullOrEmpty(notification.RawPayload))
+		{
+			throw new ArgumentException("Native app notifications require their original XML payload.", nameof(notification));
+		}
+
+		var native = new NativeAppNotification(notification.RawPayload)
 		{
 			Tag = GetNativeTag(notification.Id),
 			Group = NativeGroup,
@@ -244,9 +260,6 @@ internal sealed class Win32AppNotificationManagerBackend : IAppNotificationManag
 			ValueStringOverride = progress.ValueStringOverride,
 			Status = progress.Status,
 		};
-
-	private static string BuildFallbackPayload(AppNotificationEnvelope notification)
-		=> $"<toast><visual><binding template='ToastGeneric'><text>{System.Security.SecurityElement.Escape(notification.Payload.Title?.Content ?? string.Empty)}</text><text>{System.Security.SecurityElement.Escape(notification.Payload.Body?.Content ?? string.Empty)}</text></binding></visual></toast>";
 
 	private static string GetNativeTag(uint id)
 		=> NativeTagPrefix + id.ToString("x8", System.Globalization.CultureInfo.InvariantCulture);

@@ -217,7 +217,7 @@ internal class MacOSMediaPlayerExtension : IMediaPlayerExtension
 				uri = new Uri(MsAppXScheme + ":///" + _uri.OriginalString.TrimStart('/'));
 			}
 
-			if (uri.IsLocalResource())
+			if (uri.IsMsAppx())
 			{
 				var filePath = uri.PathAndQuery;
 

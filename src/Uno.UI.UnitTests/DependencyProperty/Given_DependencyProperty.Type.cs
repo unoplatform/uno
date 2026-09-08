@@ -22,7 +22,7 @@ public class DependencyProperty_Type
 
 		var asm = typeof(FrameworkElement).Assembly;
 
-		foreach (var dependencyObject in asm.DefinedTypes.Where(t => t.ImplementedInterfaces.Contains(typeof(DependencyObject))))
+		foreach (var dependencyObject in asm.DefinedTypes.Where(t => typeof(DependencyObject).IsAssignableFrom(t)))
 		{
 			// If there is a static DependencyProperty property with name "XProperty" and also a instance property with the name "X"
 			// check whether the type of X == the "PropertyType" of the DependencyProperty property
@@ -62,7 +62,7 @@ public class DependencyProperty_Type
 	{
 		var getOwnerType = GetOwnerGetter();
 		var asm = typeof(FrameworkElement).Assembly;
-		foreach (var dependencyObject in asm.DefinedTypes.Where(t => t.ImplementedInterfaces.Contains(typeof(DependencyObject))))
+		foreach (var dependencyObject in asm.DefinedTypes.Where(t => typeof(DependencyObject).IsAssignableFrom(t)))
 		{
 			var dependencyProperties = dependencyObject.DeclaredProperties
 				.Where(p => p.PropertyType == typeof(DependencyProperty) &&

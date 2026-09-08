@@ -38,9 +38,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Web.WebView2" Aliases="mswebview2" PrivateAssets="all" />
-
-		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.106" />
 		<PackageReference Include="Microsoft.WindowsAppSDK.Foundation" Version="$(WindowsAppSdkFoundationVersion)" IncludeAssets="runtime;native" PrivateAssets="compile;contentfiles;build;buildmultitargeting;buildtransitive;analyzers" GeneratePathProperty="true" />
 		<PackageReference Include="Microsoft.WindowsAppSDK.InteractiveExperiences" Version="2.1.3" IncludeAssets="runtime;native" PrivateAssets="compile;contentfiles;build;buildmultitargeting;buildtransitive;analyzers" />
 		<PackageReference Include="Microsoft.Windows.SDK.NET.Ref" Version="$(WindowsSdkNetRefVersion)" PrivateAssets="all" ExcludeAssets="all" GeneratePathProperty="true" />
@@ -77,7 +74,7 @@
 		<None Include="$(PkgMicrosoft_WindowsAppSDK_Foundation)\lib\net6.0-windows10.0.17763.0\Microsoft.WindowsAppRuntime.Bootstrap.Net.dll" Pack="true" PackagePath="runtimes\win\lib\$(NetCurrent)" />
 	</ItemGroup>
 
-	<ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible($(TargetFramework), 'net10.0'))">
+	<ItemGroup>
 		<PackageReference Include="WebView2Aot" />
 	</ItemGroup>
 
@@ -90,8 +87,8 @@
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
 		<ProjectReference Include="..\Uno.UI.Runtime.Skia.Win32.Support\Uno.UI.Runtime.Skia.Win32.Support.csproj" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UI.Runtime.Skia\Uno.UI.Runtime.Skia.csproj" />
-		<ProjectReference Include="..\Uno.UI\Uno.UI.Skia.csproj" />
-		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
+		<ProjectReference Include="..\Uno.WinRT\Uno.WinRT.Skia.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
 	<Target Name="_UnoIncludeWin32AppNotificationProjectAssets" BeforeTargets="AssignTargetPaths">

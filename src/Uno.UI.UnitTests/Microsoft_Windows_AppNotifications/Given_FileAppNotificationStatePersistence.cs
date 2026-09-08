@@ -18,6 +18,87 @@ public class Given_FileAppNotificationStatePersistence
 	private const string ValidPayload = "<toast><visual><binding template='ToastGeneric'/></visual></toast>";
 
 	[TestMethod]
+	[DataRow(false, true)]
+	[DataRow(true, true)]
+	[DataRow(true, false)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22462")]
+	public void When_Payload_Uses_Native_Windows_Extensions_It_Survives_Reload(bool isProgressUpdate, bool hasPostedProgress)
+	{
+		const string payload = "<toast><header id='thread' title='Thread' arguments='open'/><visual><binding template='ToastGeneric'><group><subgroup><text>Grouped</text></subgroup></group></binding></visual></toast>";
+		var folder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+		var path = Path.Combine(folder, "state.bin");
+		try
+		{
+			var snapshot = Snapshot("native");
+			snapshot = snapshot with
+			{
+				Records = new[]
+				{
+					snapshot.Records.Single() with
+					{
+						Payload = payload,
+						PostingState = AppNotificationPostingState.Updating,
+						Progress = Progress(isProgressUpdate ? 3U : 1U),
+						PostedProgress = hasPostedProgress ? Progress(1) : null,
+						IsProgressUpdate = isProgressUpdate,
+					},
+				},
+			};
+			new FileAppNotificationStatePersistence(path).Save(snapshot);
+
+			var loaded = new FileAppNotificationStatePersistence(path).Load();
+			Assert.AreEqual(payload, loaded.Records.Single().Payload);
+			Assert.AreEqual(isProgressUpdate, loaded.Records.Single().IsProgressUpdate);
+			Assert.AreEqual(hasPostedProgress ? Progress(1) : null, loaded.Records.Single().PostedProgress);
+		}
+		finally
+		{
+			if (Directory.Exists(folder))
+			{
+				Directory.Delete(folder, recursive: true);
+			}
+		}
+	}
+
+	[TestMethod]
+	[DataRow(4)]
+	[DataRow(5)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22462")]
+	public void When_A_Previous_Schema_Is_Loaded_The_Existing_Record_Is_Preserved(int schemaVersion)
+	{
+		var folder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
+		var path = Path.Combine(folder, "state.bin");
+		try
+		{
+			var snapshot = Snapshot("legacy");
+			var record = snapshot.Records.Single() with { Progress = Progress(7), IsProgressUpdate = true, PostedProgress = null };
+			snapshot = snapshot with { Records = new[] { record } };
+			new FileAppNotificationStatePersistence(path).Save(snapshot);
+			var bytes = File.ReadAllBytes(path);
+			BitConverter.GetBytes(schemaVersion).CopyTo(bytes, sizeof(int));
+			// The fixture has no posted progress and no receipts; remove only the newer trailing flags.
+			var flagBytes = schemaVersion == 4 ? sizeof(bool) * 2 : sizeof(bool);
+			var flagOffset = bytes.Length - sizeof(int) - flagBytes;
+			File.WriteAllBytes(path, bytes.Where((_, index) => index < flagOffset || index >= flagOffset + flagBytes).ToArray());
+
+			var loaded = new FileAppNotificationStatePersistence(path).Load();
+			var expected = record with { IsProgressUpdate = schemaVersion >= 5, PostedProgress = record.Progress };
+
+			Assert.AreEqual(schemaVersion, loaded.SchemaVersion);
+			Assert.AreEqual(expected, loaded.Records.Single());
+			var store = new AppNotificationStateStore(new FileAppNotificationStatePersistence(path));
+			Assert.AreEqual(expected, store.GetShown().Single());
+		}
+		finally
+		{
+			if (Directory.Exists(folder))
+			{
+				Directory.Delete(folder, recursive: true);
+			}
+		}
+	}
+
+	[TestMethod]
 	public void When_Two_Processes_Add_Different_Records_Both_Are_Preserved()
 	{
 		var folder = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N"));
