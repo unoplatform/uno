@@ -38,11 +38,30 @@ public partial class Given_RichEditBox
 			editor.PlaceholderText = "Document hint";
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(Visibility.Visible, placeholder.Visibility);
-			Assert.AreEqual(AccessibilityView.Control, AutomationProperties.GetAccessibilityView(placeholder));
 
 			editor.PlaceholderText = string.Empty;
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(Visibility.Collapsed, placeholder.Visibility);
+		}
+		finally
+		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_SourcePort_VisiblePlaceholder_UsesPinnedAccessibilityPolicy()
+	{
+		var editor = new RichEditBox { Width = 280, Height = 100, PlaceholderText = "Document hint" };
+		try
+		{
+			await UITestHelper.Load(editor);
+			var placeholder = FindSourcePortPlaceholder(editor);
+			Assert.IsNotNull(placeholder);
+			Assert.AreEqual(Visibility.Visible, placeholder.Visibility);
+			Assert.AreEqual(AccessibilityView.Control, AutomationProperties.GetAccessibilityView(placeholder));
 		}
 		finally
 		{

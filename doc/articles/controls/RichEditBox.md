@@ -47,6 +47,8 @@ Two integration differences are important when maintaining the port:
 
 The source-gated experimental `HeaderPlacement` feature is not included. Platform-specific candidate-window tracking and linguistic alternatives depend on the installed input-method service. Pixel-identical text shaping and private Windows editor behavior are not compatibility guarantees.
 
+Packaged native WinUI releases can also differ from the pinned source snapshot, including the placeholder accessibility-view policy and supplementary-character case mappings. Tests of Uno's managed Unicode casing and pinned-source accessibility policy are therefore distinguished from tests that assert behavior shared with the installed native WinUI binary.
+
 For safe cross-platform transport, active or externally linked RTF destinations are removed during export. Unsupported embedded objects are represented by bounded text or image fallbacks. RTF table descriptors are retained through ordinary cell-content edits, but Uno does not host the native Windows RichEdit table or OLE UI.
 
 Math layout uses an installed OpenType MATH font when available and otherwise falls back to bounded managed layout.
