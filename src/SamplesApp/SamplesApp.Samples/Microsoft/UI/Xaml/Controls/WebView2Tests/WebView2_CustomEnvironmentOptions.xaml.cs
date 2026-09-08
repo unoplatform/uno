@@ -22,7 +22,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 				{
 					Language = string.IsNullOrEmpty(LanguageInput.Text) ? null : LanguageInput.Text,
 					AdditionalBrowserArguments = string.IsNullOrEmpty(ArgsInput.Text) ? null : ArgsInput.Text,
-					AllowSingleSignOnUsingOSPrimaryAccount = SsoToggle.IsChecked == true,
+					AllowSingleSignOnUsingOSPrimaryAccount = SsoToggle.IsChecked ?? false,
 				};
 				var userData = string.IsNullOrEmpty(UserDataInput.Text) ? null : UserDataInput.Text;
 
@@ -32,7 +32,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.WebView2Tests
 					options: envOptions);
 
 				var controllerOptions = env.CreateCoreWebView2ControllerOptions();
-				controllerOptions.IsInPrivateModeEnabled = InPrivateToggle.IsChecked == true;
+				controllerOptions.IsInPrivateModeEnabled = InPrivateToggle.IsChecked ?? false;
 				controllerOptions.ProfileName = string.IsNullOrEmpty(ProfileInput.Text) ? null : ProfileInput.Text;
 
 				var webView = new Microsoft.UI.Xaml.Controls.WebView2();
