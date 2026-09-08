@@ -233,17 +233,20 @@ public sealed unsafe partial class WebGpuPresentSession
 				ops.Add(new DrawOp(DrawKind.Solid, (nint)rvb, (uint)((j - ci) * 6), 0, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip, owned)));
 				ci = j - 1;
 			}
-			else if (_coverageFills && cmds[ci] is PathFill cpf && TryCoverageFill(cpf, owned, out var cop))
-			{
-				// Ahead of the atlas and the tessellated paths: the point of the comparison is to see this path
-				// take every fill, including the ones the others handle well.
-				ops.Add(cop);
-			}
 			else if (_pathAtlas && atlasScale is { } asc0 && TryAtlasBatch(cmds, ref ci, owned, asc0, out var aop0))
 			{
 				// Cached recordings are where STATIC text lives: its ops are built once here and replayed forever
 				// after, so an atlas hook that only covers the live paths never sees a glyph.
 				ops.Add(aop0);
+			}
+			else if (_coverageFills && cmds[ci] is PathFill cpf && (_coverageAll || !cpf.FanTiles)
+				&& TryCoverageFill(cpf, owned, out var cop))
+			{
+				// The fallback, not the first choice: a tiling fan already carries its own analytic AA ring and
+				// the atlas already has a cached mask, so coverage takes what those two refuse -- which is
+				// exactly the set that would otherwise reach stencil-then-cover and render aliased. Taking every
+				// fill costs an accumulation pass per glyph run, which is what =all is for.
+				ops.Add(cop);
 			}
 			else if (cmds[ci] is PathFill pf0 && !pf0.EvenOdd)
 			{
