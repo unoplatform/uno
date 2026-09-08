@@ -198,7 +198,7 @@ public partial class InputPane
 						scrollViewer.ScrollableHeight);
 					scrollViewer.ChangeView(null, targetOffset, null, disableAnimation: true);
 				}
-				else if (scp is null)
+				else if (scp is null || !intersection.IsEmpty)
 				{
 					focusedElement.StartBringIntoView();
 				}

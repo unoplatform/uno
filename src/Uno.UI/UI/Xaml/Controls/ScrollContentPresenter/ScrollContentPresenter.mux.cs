@@ -346,6 +346,7 @@ public partial class ScrollContentPresenter
 		GeneralTransform transform = descendant.TransformToVisual(content);
 		Thickness contentMargin = new Thickness();
 
+		// A nested ScrollViewer's padding is represented by its presenter margin.
 		if (descendant is ScrollViewer sv)
 		{
 			contentMargin = sv.Presenter.Margin;
