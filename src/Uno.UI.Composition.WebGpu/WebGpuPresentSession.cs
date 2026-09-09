@@ -223,7 +223,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		=> _opsPool.Count > 0 ? _opsPool.Pop() : new(256);
 	private void ReturnOps(List<DrawOp> ops)
 	{
-		ops.Clear();   // drops the captured ClipData/PathFan refs; keeps the backing array for reuse
+		ops.Clear();   // drops the captured ClipData refs; keeps the backing array for reuse
 		_opsPool.Push(ops);
 	}
 
@@ -427,10 +427,10 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		}
 		// Fold the clip's finite AABB into the dedicated rect slot (ctrl.y flag; min in ctrl.zw, max in
 		// size.zw): the shader then owns the rect edge and the emit widens the scissor to cull-only
-		// (see AabbInClipU). Path clips keep the scissor (the depth mask relies on it).
+		// (see AabbInClipU).
 		var foldedAabb = false;
 		var ab = cd.Aabb;
-		if (cd.PathFan is null && (ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f))
+		if (ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f)
 		{
 			cu[37] = 1f;                       // ctrl.y = rect clip enabled
 			cu[38] = ab.X; cu[39] = ab.Y;      // ctrl.zw = rect min

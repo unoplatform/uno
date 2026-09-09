@@ -123,6 +123,8 @@ internal sealed unsafe class WebGpuGeometryCache
 	// This entry baked path-clip coverage masks in its own space at unit scale; like atlas quads, a replay at
 	// another scale would sample them at the wrong size, so the same guard rebuilds instead.
 	public bool HasClipMask;
+	// Some op carries a path clip, so a restamp must bake a mask into the new stamp's bag rather than rewrite ClipU.
+	public bool HasPathClip;
 	// This entry holds path fills that WOULD have been atlased but were built while the replay transform was
 	// scaling or rotating. Ops are cached, so without a rebuild once the transform settles it keeps the aliased
 	// geometry path forever — which is what left text built during a navigation transition permanently aliased.
@@ -207,10 +209,8 @@ internal ref struct PassOps
 	public nuint SolidBufBytes, GradBufBytes, QuadBufBytes, PathBufBytes;
 
 	public PassEncoder Enc;
-	public float[] ClipFan;
-	public Vector4 ClipAabb;
 
-	public int Iters, Scissors, ClipChanges, FanOps, SharedOps, Tiled;
+	public int Iters, Scissors, SharedOps, Tiled;
 }
 
 /// <summary>

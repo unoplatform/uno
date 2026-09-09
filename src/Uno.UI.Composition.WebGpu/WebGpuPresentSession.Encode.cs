@@ -67,7 +67,6 @@ public sealed unsafe partial class WebGpuPresentSession
 
 		pst.Pass = pass;
 		pst.Enc.Rebind(pass);
-		pst.ClipFan = null; pst.ClipAabb = default;   // fresh pass: the depth mask went with the old one
 
 		if (TryScissor(aabb, out var sx, out var sy, out var sw, out var sh))
 		{
@@ -165,21 +164,8 @@ public sealed unsafe partial class WebGpuPresentSession
 		{
 			var (kind, b0, u0, b1, flag, clip, clipBg) = ops[oi];
 			pst.Iters++;
-			if (_emitStats && clip.PathFan is not null) { pst.FanOps++; }
 			if (_emitStats && kind is DrawKind.Image or DrawKind.Gradient or DrawKind.TilingFan && flag) { pst.SharedOps++; }
 			if (_emitStats && kind == DrawKind.TilingFan) { pst.Tiled++; }
-			// A path clip carried by the coverage mask needs no depth pass; only fans still on the depth mask (coverage
-			// clips off, no edge list, or a stamped session clip) go through ApplyDepthClip.
-			var depthFan = UsesDepthFan(clip) ? clip.PathFan : null;
-			if (!ReferenceEquals(depthFan, pst.ClipFan))
-			{
-				var next = clip; next.PathFan = depthFan;
-				ApplyDepthClip(pass, pst.ClipFan, pst.ClipAabb, next);
-				pst.Enc.Reset();
-				pst.ClipFan = depthFan; pst.ClipAabb = clip.Aabb;
-				pst.Enc.Reset();   // the clip setup changed pipeline + scissor state
-				pst.ClipChanges++;
-			}
 			if (!TryScissor(clip.Aabb, out var sx, out var sy, out var sw, out var sh)) { continue; }
 			// A widenable op's tight AABB is cull-only (checked above); the applied scissor is the full
 			// surface, so consecutive such ops dedup to a single SetScissorRect.
@@ -197,7 +183,7 @@ public sealed unsafe partial class WebGpuPresentSession
 						{
 							var nx = ops[oi + 1];
 							if (nx.kind != DrawKind.Solid || nx.b0 != VertexSource.PassBuffer || nx.clipBg != clipBg
-								|| !ReferenceEquals(nx.clip.PathFan, clip.PathFan) || nx.clip.Aabb != clip.Aabb) { break; }
+								|| nx.clip.Aabb != clip.Aabb) { break; }
 							count += nx.u0; oi++;
 						}
 						pst.Enc.Pipe(_d.SolidPipe);
@@ -213,7 +199,7 @@ public sealed unsafe partial class WebGpuPresentSession
 						while (oi + 1 < end)
 						{
 							var nx = ops[oi + 1];
-							if (nx.kind != DrawKind.Solid || nx.b0 != VertexSource.Slab || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
+							if (nx.kind != DrawKind.Solid || nx.b0 != VertexSource.Slab || nx.clipBg != clipBg
 								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * VertexStride.Solid * sizeof(float))) { break; }
 							count += nx.u0; oi++;
 						}
@@ -232,7 +218,7 @@ public sealed unsafe partial class WebGpuPresentSession
 						while (oi + 1 < end)
 						{
 							var nx = ops[oi + 1];
-							if (nx.kind != DrawKind.Solid || nx.b0 != VertexSource.TableSlab || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
+							if (nx.kind != DrawKind.Solid || nx.b0 != VertexSource.TableSlab || nx.clipBg != clipBg
 								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * VertexStride.Table * sizeof(float))) { break; }
 							count += nx.u0; oi++;
 						}
@@ -329,7 +315,7 @@ public sealed unsafe partial class WebGpuPresentSession
 						{
 							var nx = ops[oi + 1];
 							if (nx.kind != DrawKind.RoundedRect || nx.b0 != VertexSource.PassBuffer || nx.clipBg != clipBg
-								|| !ReferenceEquals(nx.clip.PathFan, clip.PathFan) || nx.clip.Aabb != clip.Aabb) { break; }
+								|| nx.clip.Aabb != clip.Aabb) { break; }
 							count += nx.u0; oi++;
 						}
 						pst.Enc.Pipe(_d.RrPipe);
@@ -345,7 +331,7 @@ public sealed unsafe partial class WebGpuPresentSession
 						while (oi + 1 < end)
 						{
 							var nx = ops[oi + 1];
-							if (nx.kind != DrawKind.RoundedRect || nx.b0 != VertexSource.Slab || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
+							if (nx.kind != DrawKind.RoundedRect || nx.b0 != VertexSource.Slab || nx.clipBg != clipBg
 								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 22 * sizeof(float))) { break; }
 							count += nx.u0; oi++;
 						}
@@ -363,7 +349,7 @@ public sealed unsafe partial class WebGpuPresentSession
 						while (oi + 1 < end)
 						{
 							var nx = ops[oi + 1];
-							if (nx.kind != DrawKind.RoundedRect || nx.b0 != VertexSource.TableSlab || nx.clipBg != clipBg || !ReferenceEquals(nx.clip.PathFan, clip.PathFan)
+							if (nx.kind != DrawKind.RoundedRect || nx.b0 != VertexSource.TableSlab || nx.clipBg != clipBg
 								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 23 * sizeof(float))) { break; }
 							count += nx.u0; oi++;
 						}
@@ -399,7 +385,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		line.Append($" ops={opCount} emitted={pst.Iters} sharedOps={pst.SharedOps} tiled={pst.Tiled}");
 
 		// Changed between draws
-		line.Append($" scissorChanges={pst.Scissors} clipChanges={pst.ClipChanges} fanOps={pst.FanOps}");
+		line.Append($" scissorChanges={pst.Scissors}");
 		line.Append($" clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB");
 
 		// Reused

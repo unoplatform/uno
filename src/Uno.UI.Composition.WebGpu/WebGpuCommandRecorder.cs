@@ -167,10 +167,10 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			return;
 		}
 
-		// Capture the flattened device-space fan for an exact per-fragment coverage mask (built at present time).
+		// Capture the flattened device-space contours for the per-fragment coverage mask (baked at present time).
 		// Tighten the scissor to the path bounds ONLY for Intersect (the path lies within its bounds). For
 		// Difference the visible region is OUTSIDE the path and extends past its bounds, so tightening to the
-		// bounds would wrongly clip everything beyond them — leave the scissor and let PathExclude do the exact cut.
+		// bounds would wrongly clip everything beyond them — leave the scissor and let the mask do the exact cut.
 		if (operation != ClipOperation.Difference)
 		{
 			ClipRect(geometry.Bounds, operation);
@@ -179,23 +179,15 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
 		_allContours.Clear(); _contourPts.Clear();
 		geometry.StreamFlattened(this);
-		if (_fan.Count > 0)
+		if (BuildEdges() is { } edges)
 		{
-			_clip.PathFan = _fan.ToArray();
-			_clip.PathEvenOdd = geometry.FillRule == GeometryFillRule.EvenOdd;
-			_clip.PathExclude = operation == ClipOperation.Difference;
-			// The contours are the outline the coverage mask rasterizes. When they were truncated there is no
-			// edge list, and the clip stays on the depth mask through PathFan alone.
-			if (BuildEdges() is { } edges)
+			_clip.Paths = ClipData.PushPath(_clip.Paths, new PathClip
 			{
-				_clip.Paths = ClipData.PushPath(_clip.Paths, new PathClip
-				{
-					Edges = edges,
-					EvenOdd = _clip.PathEvenOdd,
-					Exclude = _clip.PathExclude,
-					Bbox = new Vector4(_bbMin.X, _bbMin.Y, _bbMax.X, _bbMax.Y),
-				});
-			}
+				Edges = edges,
+				EvenOdd = geometry.FillRule == GeometryFillRule.EvenOdd,
+				Exclude = operation == ClipOperation.Difference,
+				Bbox = new Vector4(_bbMin.X, _bbMin.Y, _bbMax.X, _bbMax.Y),
+			});
 		}
 		_clip.ScissorInert = false;
 		_fan = null;
@@ -246,7 +238,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	private ClipData RelaxedClip(Vector2 bbMin, Vector2 bbMax)
 	{
 		var clip = _clip;
-		if (clip.ScissorInert || clip.PathFan is not null
+		if (clip.ScissorInert || clip.Paths is not null
 			|| bbMin.X < clip.Aabb.X || bbMin.Y < clip.Aabb.Y || bbMax.X > clip.Aabb.Z || bbMax.Y > clip.Aabb.W)
 		{
 			return clip;
@@ -925,8 +917,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 
 	/// <summary>
 	/// Whether a recording can be GPU-geometry-cached: only simple primitives (rect/rrect/path/image/gradient).
-	/// Path clips qualify too, because their fan is residentized (see ResidentizeFan) rather than re-tessellated
-	/// every frame, leaving only the bbox-scissored depth-mask draw to repeat. Memoized on the record.
+	/// Path clips qualify too: their coverage mask lives in the cached ops' owned bag. Memoized on the record.
 	/// </summary>
 	internal static bool IsCacheable(WebGpuRenderRecord d)
 	{
@@ -1172,19 +1163,6 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 				});
 			}
 		}
-		if (c.PathFan != null)
-		{
-			var pf = new float[c.PathFan.Length];
-			for (int i = 0; i < c.PathFan.Length; i += 2)
-			{
-				float x = c.PathFan[i], y = c.PathFan[i + 1];
-				pf[i] = x * _m.M11 + y * _m.M21 + _m.M41;
-				pf[i + 1] = x * _m.M12 + y * _m.M22 + _m.M42;
-			}
-			result.PathFan = pf;
-			result.PathEvenOdd = c.PathEvenOdd;
-			result.PathExclude = c.PathExclude;
-		}
 		if (c.Paths is { Length: > 0 })
 		{
 			result.Paths = ComposePaths(_clip.Paths, c.Paths);
@@ -1202,18 +1180,10 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		_pathsMemo ??= new();
 		if (_pathsMemo.TryGetValue((parent, child), out var memo)) { return memo; }
 		var result = parent;
+		var m = new Matrix3x2(_m.M11, _m.M12, _m.M21, _m.M22, _m.M41, _m.M42);
 		foreach (var src in child)
 		{
-			var e = new float[src.Edges.Length];
-			var bbMin = new Vector2(float.MaxValue); var bbMax = new Vector2(float.MinValue);
-			for (int i = 0; i < e.Length; i += 2)
-			{
-				float x = src.Edges[i], y = src.Edges[i + 1];
-				var q = new Vector2(x * _m.M11 + y * _m.M21 + _m.M41, x * _m.M12 + y * _m.M22 + _m.M42);
-				e[i] = q.X; e[i + 1] = q.Y;
-				bbMin = Vector2.Min(bbMin, q); bbMax = Vector2.Max(bbMax, q);
-			}
-			result = ClipData.PushPath(result, new PathClip { Edges = e, EvenOdd = src.EvenOdd, Exclude = src.Exclude, Bbox = new Vector4(bbMin.X, bbMin.Y, bbMax.X, bbMax.Y) });
+			result = ClipData.PushPath(result, src.Transformed(m));
 		}
 		_pathsMemo[(parent, child)] = result;
 		return result;

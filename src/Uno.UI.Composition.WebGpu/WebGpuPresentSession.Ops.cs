@@ -76,13 +76,6 @@ public sealed unsafe partial class WebGpuPresentSession
 				if (x.Rect != y.Rect || x.Radii != y.Radii || x.RadiiY != y.RadiiY || x.Exclude != y.Exclude) { return false; }
 			}
 		}
-		if ((a.PathFan is null) != (b.PathFan is null)) { return false; }
-		if (a.PathFan is { } fa && b.PathFan is { } fb)
-		{
-			if (a.PathEvenOdd != b.PathEvenOdd || a.PathExclude != b.PathExclude) { return false; }
-			if (!ReferenceEquals(fa, fb) && !((ReadOnlySpan<float>)fa).SequenceEqual(fb)) { return false; }
-		}
-		if (a.DepthFanOnly != b.DepthFanOnly) { return false; }
 		if (!ReferenceEquals(a.Paths, b.Paths))
 		{
 			int an = a.Paths?.Length ?? 0, bn = b.Paths?.Length ?? 0;
@@ -131,7 +124,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// needs no comparison against the device-space quad.</summary>
 	private static bool ClipIsInscribedEllipse(in ClipData clip)
 	{
-		if (clip.PathFan is not null || clip.Rounds is not { Length: 1 }) { return false; }
+		if (clip.Paths is not null || clip.Rounds is not { Length: 1 }) { return false; }
 		var rc = clip.Rounds[0];
 		if (rc.Exclude) { return false; }
 		var hw = (rc.Rect.Z - rc.Rect.X) * 0.5f;
@@ -203,12 +196,9 @@ public sealed unsafe partial class WebGpuPresentSession
 		for (int i = 0; i < cmds.Count; i++)
 		{
 			var c = cmds[i];
-			// Solid/image/gradient/path all route device fc through finv; the path stencil fan carries the xform via
-			// the shared ClipU layout (ClipBgl binds to both stencil + cover). A rect/rounded clip is fine (clipCov
-			// maps fc back via finv); a PATH clip uses the depth mask (no finv) so it's still excluded.
-			// A per-command path fan does not disqualify: the arena bakes geometry at IDENTITY, so the fan is
-			// in identity space too and the re-stamp maps it to device per frame (a handful of points) instead of
-			// re-baking the whole recording. Rejecting it sent these to the rebuild-on-move path — 399 recordings
+			// Solid/image/gradient/path all route device fc through finv, and every clip kind (rect, rounded, path
+			// mask) is expressed in the recording's own space and sampled through that same finv, so a per-command
+			// clip never disqualifies. Rejecting path clips sent these to the rebuild-on-move path — 399 recordings
 			// per frame on RenderStress_Gradients.
 			if (c is not (RectCommand or ImageCmd or GradientCmd or PathFill)) { return false; }
 		}
@@ -284,20 +274,6 @@ public sealed unsafe partial class WebGpuPresentSession
 			}
 			else { BuildSimpleOp(cmds[ci], ops, owned, pathSlot, atlasScale, maskScale); }
 		}
-	}
-
-	// Builds the draw-op(s) for a simple primitive (rect/path/image/gradient) into `ops`, allocating GPU resources
-	// pooled (owned == null, per-frame) or persistent (owned != null, a cached recording's geometry).
-	private DrawOp ResidentizeFan(DrawOp op, OwnedResources owned)
-	{
-		if (owned is not null && UsesDepthFan(op.clip) && op.clip.PathFan is { } fan && op.clip.FanBuf == 0)
-		{
-			_scratch.Clear();
-			for (int j = 0; j < fan.Length; j += 2) { var n = Ndc(new Vector2(fan[j], fan[j + 1])); _scratch.Add(n.X); _scratch.Add(n.Y); }
-			var c = op.clip; c.FanBuf = (nint)Vbuf(_scratch, owned); c.FanW = (int)_s.Width; c.FanH = (int)_s.Height;
-			op.clip = c;
-		}
-		return op;
 	}
 
 	/// <summary>
@@ -458,49 +434,12 @@ public sealed unsafe partial class WebGpuPresentSession
 		}
 	}
 
-	// Applies the in-pass path-clip transition to the shared depth buffer (all draws recorded into the open `pass`):
-	// restore the previous clip's region to depth=0, then write the new clip's mask (depth=0 kept / else clipped)
-	// via stencil-then-cover over its bbox. Content depth-tests GreaterEqual against it. No offscreen, no resolve.
-	private void ApplyDepthClip(IntPtr pass, float[] prevFan, Vector4 prevAabb, ClipData next)
-	{
-		// Restore the previous path clip's region to depth=0 (no clip) so its mask doesn't leak past its bbox.
-		if (prevFan is not null && TryScissor(prevAabb, out var px, out var py, out var pw, out var ph))
-		{
-			wgpuRenderPassEncoderSetScissorRect(pass, (uint)px, (uint)py, (uint)pw, (uint)ph);
-			wgpuRenderPassEncoderSetPipeline(pass, _d.ClipDepthSet0);
-			wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
-		}
-		if (next.PathFan is not { } fan || !TryScissor(next.Aabb, out var nx, out var ny, out var nw, out var nh))
-		{
-			return;
-		}
-		wgpuRenderPassEncoderSetScissorRect(pass, (uint)nx, (uint)ny, (uint)nw, (uint)nh);
-		var excl = next.PathExclude;
-		// An exclude clip inverts every polarity below: "clipped" is 1 for intersect and 0 for exclude.
-		wgpuRenderPassEncoderSetPipeline(pass, excl ? _d.ClipDepthSet0 : _d.ClipDepthSet1);
-		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
-		IntPtr fanBuf; int fanVerts;
-		if (next.FanBuf != 0 && next.FanW == (int)_s.Width && next.FanH == (int)_s.Height) { fanBuf = (IntPtr)next.FanBuf; fanVerts = fan.Length / 2; }
-		else { _scratch.Clear(); for (int i = 0; i < fan.Length; i += 2) { var n = Ndc(new Vector2(fan[i], fan[i + 1])); _scratch.Add(n.X); _scratch.Add(n.Y); } fanBuf = MakeBuffer(_scratch); fanVerts = _scratch.Count / 2; }
-		wgpuRenderPassEncoderSetPipeline(pass, next.PathEvenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
-		wgpuRenderPassEncoderSetBindGroup(pass, 0, next.FanXformBg != 0 ? (IntPtr)next.FanXformBg : MakeClipBg(_d.ClipBgl, default), 0, (uint*)null);   // arena xform, else identity (fan already device NDC)
-		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(fanVerts * 2 * sizeof(float)));
-		wgpuRenderPassEncoderDraw(pass, (uint)fanVerts, 1, 0, 0);
-		// Cover also resets the stencil (PassOp=Zero) so the next clip starts clean.
-		wgpuRenderPassEncoderSetPipeline(pass, excl ? _d.ClipDepthCover1 : _d.ClipDepthCover0);
-		wgpuRenderPassEncoderSetStencilReference(pass, 0);
-		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
-	}
-
-	// Gap-4 solid-scroll eligibility: a frame-solid recording whose SESSION clip is fan-free and whose commands
-	// are only solids/rrects/path-fills with no path CHILD-clip. Images/gradients (no transform-table pipe) and path
-	// child-clips (a depth mask, not restampable) keep the device rebuild path. Rounded session clips are eligible:
-	// the stamp folds them into ClipU by mapping them into the recording's local space (see StampTableClip) — list
-	// items scrolling inside a rounded container would otherwise full-rebuild every frame.
+	// Gap-4 solid-scroll eligibility: a frame-solid recording whose commands are only solids/rrects/path-fills with
+	// no path CHILD-clip. Images/gradients (no transform-table pipe) keep the device rebuild path. Rounded and path
+	// session clips are eligible: the stamp folds them into ClipU by mapping them into the recording's local space
+	// (see StampTableClip) — list items scrolling inside a rounded container would otherwise full-rebuild every frame.
 	private static bool TableFrameEligible(ReplayRefCmd rr)
 	{
-		// The session clip is per-replay; the command scan is not, so only the latter is memoized.
-		if (rr.Clip.PathFan is not null) { return false; }
 		if (rr.Data is { } d) { return d.TableEligibleMemo ??= TableEligibleScan(rr.Commands); }
 		return TableEligibleScan(rr.Commands);
 	}
@@ -510,17 +449,17 @@ public sealed unsafe partial class WebGpuPresentSession
 		for (int i = 0; i < cmds.Count; i++)
 		{
 			var c = cmds[i];
-			if (c is not (RectCommand or RoundedRectCmd or PathFill) || c.Clip.PathFan is not null) { return false; }
+			if (c is not (RectCommand or RoundedRectCmd or PathFill) || c.Clip.Paths is not null) { return false; }
 		}
 		return true;
 	}
 
 	// A widened (full-surface) scissor is sound when the op's rect constraint is enforced analytically:
 	// proven non-clipping (ScissorInert), riding the ClipU rect slot (AabbInClipU), or derivable — every
-	// non-stamp op's ClipU is built from its own ClipData, whose fan-free AABB always folds in. Widening
-	// lets consecutive ops dedupe to a single SetScissorRect.
+	// non-stamp op's ClipU is built from its own ClipData, whose AABB always folds in. Widening lets
+	// consecutive ops dedupe to a single SetScissorRect.
 	private static bool ScissorWidenable(in ClipData clip)
-		=> clip.ScissorInert || clip.AabbInClipU || (!clip.ScissorLoadBearing && clip.PathFan is null);
+		=> clip.ScissorInert || clip.AabbInClipU || !clip.ScissorLoadBearing;
 
 	private static bool IsFiniteAabb(Vector4 aabb)
 		=> aabb.X > -1e8f || aabb.Y > -1e8f || aabb.Z < 1e8f || aabb.W < 1e8f;
@@ -561,6 +500,28 @@ public sealed unsafe partial class WebGpuPresentSession
 		}
 	}
 
+	// Folds device-space session path clips into a LOCAL-space clip the same way: each path's edges are mapped
+	// through finv, so its mask bakes in the recording's space and ClipU's finv lands every fragment on it. One
+	// folded list per (local list, stamp): ops sharing a local clip then share one mask, and the folded list is
+	// what keys the mask cache.
+	private static void FoldSessionPaths(ref ClipData local, PathClip[] sessionPaths, in Matrix3x2 finv, ref Dictionary<PathClip[], PathClip[]> memo)
+	{
+		if (sessionPaths is not { Length: > 0 })
+		{
+			return;
+		}
+		var key = local.Paths ?? System.Array.Empty<PathClip>();
+		memo ??= new();
+		if (!memo.TryGetValue(key, out var folded))
+		{
+			folded = new PathClip[sessionPaths.Length + key.Length];
+			for (int i = 0; i < sessionPaths.Length; i++) { folded[i] = sessionPaths[i].Transformed(finv); }
+			System.Array.Copy(key, 0, folded, sessionPaths.Length, key.Length);
+			memo[key] = folded;
+		}
+		local.Paths = folded;
+	}
+
 	/// <summary>
 	/// ClipU layout for the pipeline that draws <paramref name="kind"/>. The image/gradient/rrect pipelines are
 	/// created with AUTO layouts, so their group is exclusive to them and cannot take a ClipBgl-based bind group.
@@ -580,13 +541,13 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// </summary>
 	private static bool PlacedByXformTable(DrawKind kind) => kind is DrawKind.Solid or DrawKind.RoundedRect;
 
-	private (ClipData Scissor, nint ClipBg, nint Buf) StampTableClip(ClipData local, OwnedResources stampOwned, Matrix3x2 finv, Matrix3x2 t2, Vector4 sessionAabb, bool sessionInert, RoundClip[] sessionRounds, nint reuseBuf, nint reuseBg, IntPtr clipBgl, Matrix3x2 opXform)
+	private (ClipData Scissor, nint ClipBg, nint Buf) StampTableClip(ClipData local, OwnedResources stampOwned, Matrix3x2 finv, Matrix3x2 t2, Vector4 sessionAabb, bool sessionInert, RoundClip[] sessionRounds, PathClip[] sessionPaths, ref Dictionary<PathClip[], PathClip[]> pathsMemo, nint reuseBuf, nint reuseBg, IntPtr clipBgl, Matrix3x2 opXform)
 	{
 		var scissor = local;
-		scissor.PathFan = null;
 		// The recorded containment proof doesn't cover the replay-site clip being stamped in below.
 		scissor.ScissorInert = local.ScissorInert && sessionInert;
 		FoldSessionRounds(ref local, sessionRounds, finv);
+		FoldSessionPaths(ref local, sessionPaths, finv, ref pathsMemo);
 		var ab = local.Aabb;
 		if (ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f)
 		{

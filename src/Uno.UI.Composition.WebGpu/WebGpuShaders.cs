@@ -34,8 +34,7 @@ internal sealed unsafe partial class WebGpuDevice
 	// wgpu's auto-layout.
 	private const string ClipStructFn = @"
 // rects[i]/radii[i] are the nested rounded-rect clips (device space), ANDed together; ex[i]>0.5 = Difference
-// (keep outside). meta.x = active count. Arbitrary path clips are applied via the shared depth buffer as an in-pass
-// mask (see the main-pass clip protocol), not sampled here — so clipCov only carries the analytic rounded-rects.
+// (keep outside). meta.x = active count.
 // radii = per-corner X radius (TL,TR,BR,BL); radiiY = per-corner Y radius (elliptical corners; == radii for circular).
 // mask.xy = origin of the clipMask texture in the clip's own space; mask.z > 0.5 = a path-clip coverage mask is bound
 // (every path clip in force multiplied into one texture, so nesting has no cap). Outside the texture coverage is 0.
@@ -242,20 +241,6 @@ fn ramp(c: f32, x: f32) -> f32 {
   return vec4<f32>((yb - ya) * avg * s, 0.0, 0.0, 0.0);
 }";
 
-	// Draws a shape by sampling its signed-area coverage mask: one quad however complex the path was, since the
-	// mask carries the geometry. The fill rule is resolved HERE rather than during accumulation, so one mask can
-	// serve either rule -- an accumulated 2 is a self-overlap under non-zero and a hole under even-odd.
-
-	private const string ClipDepthWgsl = @"
-@vertex fn vs0(@builtin(vertex_index) vi: u32) -> @builtin(position) vec4<f32> {
-  var p = array<vec2<f32>, 3>(vec2<f32>(-1.0, -1.0), vec2<f32>(3.0, -1.0), vec2<f32>(-1.0, 3.0));
-  return vec4<f32>(p[vi], 0.0, 1.0);
-}
-@vertex fn vs1(@builtin(vertex_index) vi: u32) -> @builtin(position) vec4<f32> {
-  var p = array<vec2<f32>, 3>(vec2<f32>(-1.0, -1.0), vec2<f32>(3.0, -1.0), vec2<f32>(-1.0, 3.0));
-  return vec4<f32>(p[vi], 1.0, 1.0);
-}
-@fragment fn fs() -> @location(0) vec4<f32> { return vec4<f32>(0.0, 0.0, 0.0, 0.0); }";
 	// Composites a full-size layer texture into an MSAA pass. SrcOver for plain/opacity/colorfilter layers,
 	// DstIn (out = dst * src.a) for mask layers. Optional color matrix (params.x) applied to the layer content.
 	private const string CompositeWgsl = @"

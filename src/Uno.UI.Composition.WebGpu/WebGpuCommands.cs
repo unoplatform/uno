@@ -34,6 +34,20 @@ internal sealed class PathClip
 	public bool EvenOdd;
 	public bool Exclude;
 	public Vector4 Bbox;   // device L,T,R,B of the edges
+
+	public PathClip Transformed(in Matrix3x2 m)
+	{
+		var e = new float[Edges.Length];
+		var bbMin = new Vector2(float.MaxValue); var bbMax = new Vector2(float.MinValue);
+		for (int i = 0; i < e.Length; i += 2)
+		{
+			float x = Edges[i], y = Edges[i + 1];
+			var q = new Vector2(x * m.M11 + y * m.M21 + m.M31, x * m.M12 + y * m.M22 + m.M32);
+			e[i] = q.X; e[i + 1] = q.Y;
+			bbMin = Vector2.Min(bbMin, q); bbMax = Vector2.Max(bbMax, q);
+		}
+		return new PathClip { Edges = e, EvenOdd = EvenOdd, Exclude = Exclude, Bbox = new Vector4(bbMin.X, bbMin.Y, bbMax.X, bbMax.Y) };
+	}
 }
 
 internal struct ClipData
@@ -43,27 +57,10 @@ internal struct ClipData
 							// Nested rounded-rect clips, all ANDed per-fragment (clipCov). null/empty = none. Copy-on-write: each push
 							// allocates a fresh array so Save/Restore snapshots and sibling commands keep their own reference.
 	public RoundClip[] Rounds;
-	// Arbitrary path clip: the flattened device-space fan is applied via the shared depth mask in the main pass.
-	// Single slot — innermost path wins (nested arbitrary paths keep only the AABB intersection for the outer ones).
-	public float[] PathFan;
-	public bool PathEvenOdd;
-	public bool PathExclude;   // Difference op for the path clip
-	// Every path clip in force, innermost last, for the per-fragment coverage mask (see ResolveClipMask). Unlike
-	// PathFan this nests without limit: the mask is the PRODUCT of each path's coverage, so intersecting N shapes
-	// is N accumulate+resolve passes into one texture. Copy-on-write like Rounds.
+	// Every path clip in force, innermost last, for the per-fragment coverage mask (see ResolveClipMask). Nests
+	// without limit: the mask is the PRODUCT of each path's coverage, so intersecting N shapes is N
+	// accumulate+resolve passes into one texture. Copy-on-write like Rounds.
 	public PathClip[] Paths;
-	// The stamp path re-uses ClipU under an arena transform and cannot bake a device-space mask for the session
-	// clip it folds in, so it keeps that clip on the depth mask; set there so the encode honours PathFan.
-	public bool DepthFanOnly;
-							   // RESIDENT clip-fan buffer: a CACHED recording's fan is stable, so its NDC vertex buffer is uploaded ONCE
-							   // (into owned) and reused every frame instead of re-tessellated + re-uploaded per frame in ApplyDepthClip.
-							   // 0 = not resident. FanW/FanH = surface size it was baked for (invalidated on resize).
-	public nint FanBuf;
-	public int FanW, FanH;
-	// ClipU bind group supplying the vertex transform for the FAN draw. The stencil pipelines already run the fan
-	// through xformPos, so a moved recording can keep its identity-space fan resident and be transformed in the
-	// shader instead of re-uploading the fan every frame. 0 = identity (fan already in device NDC).
-	public nint FanXformBg;
 	public static ClipData None => new() { Aabb = new Vector4(-1e9f, -1e9f, 1e9f, 1e9f), ScissorInert = true };
 
 	// The op's geometry is provably inside Aabb (containment proven at record time), so the scissor is not
@@ -80,16 +77,11 @@ internal struct ClipData
 	public bool ScissorLoadBearing;
 
 	// Append a rounded clip, copy-on-write, capped at MaxRounds (drops the oldest/outermost on overflow).
-	// TODO: neither this cap nor PathFan's single slot below is expressible in the seam — IDrawingSession.ClipPath
-	// nests without limit and the Skia backend honours that exactly, via SKCanvas's own clip stack. Both caps
-	// therefore fail silently where Skia would not: the outermost round keeps its rect extent through Aabb but
-	// loses its corner rounding, an excluded one loses its constraint entirely (exclusions never tighten Aabb),
-	// and an outer path clip degrades to its bounding box. The round budget also spans the whole nesting chain,
-	// since ClipCompose pushes a child recording's rounds onto the parent's.
-	//
-	// The fix both want is a depth mask that intersects rather than replaces: a winding rule combines a path's own
-	// contours but cannot AND two independent shapes, so an unbounded slot needs one mask pass per shape (each
-	// testing the previous depth) instead of a single stencil-then-cover.
+	// TODO: the cap is not expressible in the seam — IDrawingSession.ClipRoundRect nests without limit and the Skia
+	// backend honours that exactly. It fails silently where Skia would not: the outermost round keeps its rect
+	// extent through Aabb but loses its corner rounding, and an excluded one loses its constraint entirely
+	// (exclusions never tighten Aabb). The budget spans the whole nesting chain, since ClipCompose pushes a child
+	// recording's rounds onto the parent's. Overflow rounds could go on Paths instead, which has no cap.
 	public static PathClip[] PushPath(PathClip[] existing, PathClip pc)
 	{
 		int n = existing?.Length ?? 0;

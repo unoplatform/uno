@@ -49,14 +49,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// pass uses it (nested/pooled passes keep renting distinct transient buffers, so no in-frame write aliasing).
 	private IntPtr _xformBuf; private nuint _xformCap; private IntPtr _xformBg;
 	public IntPtr CoverTableClipBgl;
-	// In-pass path-clip depth mask: instead of an offscreen coverage texture per clip, stencil the clip fan into
-	// the shared depth buffer inside the main pass (depth=0 inside the clip, 1 outside) and let content depth-test
-	// against it (GreaterEqual). Fullscreen depth writers (bbox-scissored): SetN clears the region to N; CoverN
-	// writes N where the fan stencil is set (and resets the stencil). Depth = clip mask, stencil = fill winding.
-	public IntPtr ClipDepthSet0;   // depth := 0 over the scissor region (restore "no clip")
-	public IntPtr ClipDepthSet1;   // depth := 1 over the scissor region (prep intersect mask)
-	public IntPtr ClipDepthCover0; // depth := 0 where stencil != 0 (inside the fan) + reset stencil — intersect
-	public IntPtr ClipDepthCover1; // depth := 1 where stencil != 0 (inside the fan) + reset stencil — exclude
 	public IntPtr ImagePipe;
 	public IntPtr GradientPipe;
 	public IntPtr RrPipe;                // analytic rounded-rect / border-ring fill (per-vertex SDF quad)
@@ -668,7 +660,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		SolidClipBgl = ClipBgl;
 		CoverClipBgl = ClipBgl;
 		CreatePathTablePipelines(&blend);
-		CreateClipDepthPipelines();
 		CreateCoveragePipelines();
 		CreateImagePipeline();
 		CreateMaskDownsamplePipeline();
@@ -727,47 +718,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		CoveragePipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
 	}
 
-	// Draws the mask as a quad. Group 0 = mask + params, group 1 = the shared ClipU, so an existing clip bind
-	// group binds here unchanged.
-
-	private void CreateClipDepthPipelines()
-	{
-		var module = Module(ClipDepthWgsl);
-		var vs0 = SV("vs0"); var vs1 = SV("vs1"); var fs = SV("fs");
-		var setFace = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);                 // clear region, don't touch stencil
-		var coverFace = Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero);              // write where stencil != 0, reset it
-		ClipDepthSet0 = MakeClipDepthPipe(module, vs0, fs, setFace, 0x00, 0x00);
-		ClipDepthSet1 = MakeClipDepthPipe(module, vs1, fs, setFace, 0x00, 0x00);
-		ClipDepthCover0 = MakeClipDepthPipe(module, vs0, fs, coverFace, 0xFF, 0xFF);
-		ClipDepthCover1 = MakeClipDepthPipe(module, vs1, fs, coverFace, 0xFF, 0xFF);
-	}
-
-	// A vertex-buffer-less fullscreen pipeline that writes only depth (colour masked) with the given stencil face.
-	private IntPtr MakeClipDepthPipe(IntPtr module, WGPUStringView vs, WGPUStringView fs, WGPUStencilFaceState face, uint stencilWrite, uint stencilRead)
-	{
-		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = null, WriteMask = 0 };
-		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
-		var ds = new WGPUDepthStencilState
-		{
-			Format = DepthStencilFormat,
-			DepthWriteEnabled = WGPUOptionalBool.True,
-			DepthCompare = WGPUCompareFunction.Always,
-			StencilFront = face,
-			StencilBack = face,
-			StencilReadMask = stencilRead,
-			StencilWriteMask = stencilWrite,
-		};
-		var pd = new WGPURenderPipelineDescriptor
-		{
-			Vertex = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 0 },
-			Fragment = &fsState,
-			DepthStencil = &ds,
-			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
-			Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
-			Layout = IntPtr.Zero,
-		};
-		return wgpuDeviceCreateRenderPipeline(Dev, &pd);
-	}
 
 
 

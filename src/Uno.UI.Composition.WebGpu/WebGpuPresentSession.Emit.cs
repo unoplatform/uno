@@ -88,7 +88,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					}
 					tmp.Clear();
 					BuildSimpleOp(tc, tmp, fOwned, slot, atlasScale: tableAtlasSafe ? tableScale : null, maskScale: tableAtlasSafe ? tableScale : MaskScale(rr.Transform));
-					foreach (var o in tmp) { order.Add(new FrameOp { Kind = null, NonSolid = ResidentizeFan(o, fOwned) }); }
+					foreach (var o in tmp) { order.Add(new FrameOp { Kind = null, NonSolid = o }); }
 				}
 			}
 			long id = (fe is not null && fe.SlabId != 0) ? fe.SlabId : _d.NextSlabId();
@@ -109,9 +109,11 @@ public sealed unsafe partial class WebGpuPresentSession
 			// this entry was already stamped under the current submit (same device frame) - the rewrite would clobber
 			// uniforms this frame's earlier draws still read - so that case (and the first stamp) allocates fresh.
 			// Worth +0.3% median over allocating fresh every time, measured across all 28 perf samples.
-			var reuse = fe.HasStamp && fe.StampBufs is not null && fe.StampBufs.Count == fe.FrameOrder.Count && fe.StampFrame != _d.FrameSeq;
+			// A rewrite keeps the bind group, so it cannot swap in a freshly baked session path mask: stamp fresh.
+			var reuse = fe.HasStamp && fe.StampBufs is not null && fe.StampBufs.Count == fe.FrameOrder.Count && fe.StampFrame != _d.FrameSeq && rr.Clip.Paths is null;
 			if (!reuse && fe.StampOwned is not null) { _d.DeferRelease(fe.StampOwned); }
 			var stampOwned = reuse ? fe.StampOwned : new OwnedResources();
+			Dictionary<PathClip[], PathClip[]> pathsMemo = null;
 			var t2 = new Matrix3x2(rr.Transform.M11, rr.Transform.M12, rr.Transform.M21, rr.Transform.M22, rr.Transform.M41, rr.Transform.M42);
 			Matrix3x2 finv = Matrix3x2.Invert(t2, out var inv) ? inv : Matrix3x2.Identity;
 			var sessionAabb = rr.Clip.Aabb;
@@ -128,7 +130,7 @@ public sealed unsafe partial class WebGpuPresentSession
 				// An op with no xform-table slot (an atlas quad, an image, a gradient) is still identity-baked, so
 				// its clip has to carry the replay transform or it draws at the recording's local origin.
 				var stampXform = PlacedByXformTable(opKind) ? Matrix3x2.Identity : ArenaXform(rr.Transform);
-				var st = StampTableClip(local, stampOwned, finv, t2, sessionAabb, rr.Clip.ScissorInert, rr.Clip.Rounds, reuse ? bufs[i] : 0, reuse ? stamps[i].ClipBg : 0, stampBgl, stampXform);
+				var st = StampTableClip(local, stampOwned, finv, t2, sessionAabb, rr.Clip.ScissorInert, rr.Clip.Rounds, rr.Clip.Paths, ref pathsMemo, reuse ? bufs[i] : 0, reuse ? stamps[i].ClipBg : 0, stampBgl, stampXform);
 				if (reuse) { stamps[i] = (st.Scissor, st.ClipBg); } else { stamps.Add((st.Scissor, st.ClipBg)); bufs.Add(st.Buf); }
 			}
 			fe.StampOwned = stampOwned; fe.StampClips = stamps; fe.StampBufs = bufs; fe.StampFrame = _d.FrameSeq; fe.StampXform = rr.Transform; fe.StampClip = rr.Clip; fe.StampW = (int)_s.Width; fe.StampH = (int)_s.Height; fe.HasStamp = true;
@@ -225,7 +227,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					}
 					tmp.Clear();
 					BuildSimpleOp(tc, tmp, fOwned, fSlot, atlasScale: Vector2.One);
-					foreach (var o in tmp) { order.Add(new FrameOp { Kind = null, NonSolid = ResidentizeFan(o, fOwned) }); }
+					foreach (var o in tmp) { order.Add(new FrameOp { Kind = null, NonSolid = o }); }
 				}
 			}
 			long id = repeat ? _d.NextSlabId()
@@ -292,8 +294,8 @@ public sealed unsafe partial class WebGpuPresentSession
 			bool aHasAtlas = (AtlasHit + AtlasBaked) != atlasBefore;
 			bool aHasMask = ClipMasksBaked + FillMasksBaked != maskBefore;
 			bool aBlocked = !aAtlasSafe && aHasPath && _pathAtlas;
-			for (int _ri = 0; _ri < aOps.Count; _ri++) { aOps[_ri] = ResidentizeFan(aOps[_ri], aOwned); }
-			entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, HasAtlas = aHasAtlas, HasClipMask = aHasMask, AtlasBlockedByScale = aBlocked, AtlasScale = aScale, PurePath = aPure, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = aSlot };
+			bool aHasPathClip = false; foreach (var o in aOps) { if (o.clip.Paths is not null) { aHasPathClip = true; break; } }
+			entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, HasAtlas = aHasAtlas, HasClipMask = aHasMask, HasPathClip = aHasPathClip, AtlasBlockedByScale = aBlocked, AtlasScale = aScale, PurePath = aPure, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = aSlot };
 			StoreCompiled(rr.Data, entry);
 		}
 		if (entry.XformSlot >= 0) { WriteXform(entry.XformSlot, rr.Transform); }
@@ -301,7 +303,9 @@ public sealed unsafe partial class WebGpuPresentSession
 		{
 			if (_emitStats) { _statStamps++; }
 			// In-place restamp (same guard as the table stamp): rewrite ClipU buffers, keep bind groups.
-			var reuse = entry.HasStamp && entry.StampBufs is not null && entry.StampBufs.Count == entry.Ops.Count && entry.StampFrame != _d.FrameSeq;
+			// A rewrite keeps the bind group, so it cannot swap in a path mask baked into this stamp's bag: stamp fresh.
+			var reuse = entry.HasStamp && entry.StampBufs is not null && entry.StampBufs.Count == entry.Ops.Count && entry.StampFrame != _d.FrameSeq
+				&& rr.Clip.Paths is null && !entry.HasPathClip;
 			if (!reuse && entry.StampOwned is not null) { _d.DeferRelease(entry.StampOwned); }
 			var stampOwned = reuse ? entry.StampOwned : new OwnedResources();
 			var stamped = reuse ? entry.StampedOps : new List<DrawOp>(entry.Ops.Count);
@@ -310,33 +314,12 @@ public sealed unsafe partial class WebGpuPresentSession
 			var t2 = new Matrix3x2(rr.Transform.M11, rr.Transform.M12, rr.Transform.M21, rr.Transform.M22, rr.Transform.M41, rr.Transform.M42);
 			Matrix3x2 finv = Matrix3x2.Invert(t2, out var inv) ? inv : Matrix3x2.Identity;
 			Vector2 MoveP(float x, float y) => new(x * t2.M11 + y * t2.M21 + t2.M31, x * t2.M12 + y * t2.M22 + t2.M32);
-			// One ClipU for every fan in this recording: same arena transform, so it is built once —
-			// but LAZILY. xf/finv change every frame under a moving transform, so the content-keyed
-			// cache misses each time and this mints a buffer + bind group per recording per frame
-			// (370/frame on RenderStress_Gradients). Most recordings carry no fan at all, and once
-			// rounded rects are recognised analytically none of them do.
-			nint arenaFanBg = 0;
+			Dictionary<PathClip[], PathClip[]> pathsMemo = null;
 			for (int i = 0; i < entry.Ops.Count; i++)
 			{
 				var op = entry.Ops[i];
 				var abgl = op.kind switch { DrawKind.Gradient => _d.GradClipBgl, DrawKind.Image => _d.ImageClipBgl, _ => _d.SolidClipBgl };
 				var scissorClip = op.clip;
-				if (op.clip.PathFan is { } localFan)
-				{
-					scissorClip.DepthFanOnly = true;
-				if (arenaFanBg == 0) { arenaFanBg = (nint)MakeClipBg(_d.ClipBgl, default, stampOwned, xf, finv); }
-					// Keep the identity-space fan and its resident NDC buffer; hand the stencil draw
-					// the arena transform instead. Transforming on the CPU here would mean a fresh
-					// fan upload per op per frame (392/frame on RenderStress_Gradients).
-					scissorClip.FanXformBg = arenaFanBg;
-					var fa = new Vector4(float.MaxValue, float.MaxValue, float.MinValue, float.MinValue);
-					for (int fi = 0; fi < localFan.Length; fi += 2)
-					{
-						var mp = MoveP(localFan[fi], localFan[fi + 1]);
-						fa = new Vector4(MathF.Min(fa.X, mp.X), MathF.Min(fa.Y, mp.Y), MathF.Max(fa.Z, mp.X), MathF.Max(fa.W, mp.Y));
-					}
-					scissorClip.Aabb = new Vector4(MathF.Max(scissorClip.Aabb.X, fa.X), MathF.Max(scissorClip.Aabb.Y, fa.Y), MathF.Min(scissorClip.Aabb.Z, fa.Z), MathF.Min(scissorClip.Aabb.W, fa.W));
-				}
 				var ab = op.clip.Aabb;
 				if (ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f)
 				{
@@ -348,22 +331,10 @@ public sealed unsafe partial class WebGpuPresentSession
 				var sa = rr.Clip.Aabb;
 				scissorClip.Aabb = new Vector4(MathF.Max(scissorClip.Aabb.X, sa.X), MathF.Max(scissorClip.Aabb.Y, sa.Y), MathF.Min(scissorClip.Aabb.Z, sa.Z), MathF.Min(scissorClip.Aabb.W, sa.W));
 				scissorClip.ScissorInert = op.clip.ScissorInert && rr.Clip.ScissorInert;
-				// Carry the session fan onto the stamped op so the depth mask still clips it. The arena builds
-				// at identity with ClipData.None, so the session fan is not on the op already.
-				if (rr.Clip.PathFan is { } sessionFan)
-				{
-					scissorClip.DepthFanOnly = true;
-					scissorClip.PathFan = sessionFan;
-					scissorClip.PathEvenOdd = rr.Clip.PathEvenOdd;
-					scissorClip.PathExclude = rr.Clip.PathExclude;
-					scissorClip.FanBuf = rr.Clip.FanBuf;
-					scissorClip.FanW = rr.Clip.FanW;
-					scissorClip.FanH = rr.Clip.FanH;
-				}
 
 				var uClip = op.clip;
-				uClip.DepthFanOnly = scissorClip.DepthFanOnly;
 				FoldSessionRounds(ref uClip, rr.Clip.Rounds, finv);
+				FoldSessionPaths(ref uClip, rr.Clip.Paths, finv, ref pathsMemo);
 				var uSessionFinite = IsFiniteAabb(rr.Clip.Aabb);
 				var uAxisAligned = finv.M12 == 0 && finv.M21 == 0;
 				var uCanWiden = !uSessionFinite || uAxisAligned;
@@ -421,7 +392,6 @@ public sealed unsafe partial class WebGpuPresentSession
 			if (subHasPath) { subSlot = _d.AllocXformSlot(); _xformTransient.Add(subSlot); WriteXform(subSlot, Matrix4x4.Identity); }
 			var subOps = new List<DrawOp>();
 			BuildCoalesced(subList, subOps, subOwned, subSlot, atlasScale: Vector2.One);
-			for (int _ri = 0; _ri < subOps.Count; _ri++) { subOps[_ri] = ResidentizeFan(subOps[_ri], subOwned); }
 			ops.AddRange(subOps);
 			_d.DeferRelease(subOwned);
 			return;
@@ -437,8 +407,7 @@ public sealed unsafe partial class WebGpuPresentSession
 
 		var entry = rr.Data.Compiled;
 		var miss = entry is null;
-	// A session PATH clip does not force the device-bake path: the fan is applied separately by the in-pass
-	// depth mask, so only a session clip's rounds and AABB need folding through finv.
+		// A session clip never forces the device-bake path: its rounds, paths and AABB all fold through finv.
 		if (IsArenaSafe(rr))
 		{
 			if (_emitStats) { StatStratArena++; }
@@ -471,7 +440,6 @@ public sealed unsafe partial class WebGpuPresentSession
 			bool cHasPath = false; foreach (var c in cList) { if (c is PathFill) { cHasPath = true; break; } }
 			if (cHasPath && cSlot < 0) { cSlot = _d.AllocXformSlot(); }
 			BuildCoalesced(cList, cachedOps, owned, cSlot, atlasScale: Vector2.One);
-			for (int _ri = 0; _ri < cachedOps.Count; _ri++) { cachedOps[_ri] = ResidentizeFan(cachedOps[_ri], owned); }
 			entry = new WebGpuGeometryCache { Ops = cachedOps, Owned = owned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = cSlot };
 			StoreCompiled(rr.Data, entry);
 		}

@@ -117,8 +117,6 @@ public sealed unsafe partial class WebGpuPresentSession
 		_d.Pool.Return(accView);
 	}
 
-	// UNO_WEBGPU_COVERAGE_CLIPS=0 puts path clips back on the binary depth mask.
-	private static readonly bool _coverageClips = Environment.GetEnvironmentVariable("UNO_WEBGPU_COVERAGE_CLIPS") is not ("0" or "false");
 	internal static int ClipMasksBaked;
 
 	/// <summary>A baked path-clip mask: the texture and the device pixel its texel (0,0) sits on.</summary>
@@ -130,10 +128,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	// Immediate (unowned) requests share one entry per list and are released at the next frame start.
 	private readonly Dictionary<(PathClip[], OwnedResources), ClipMask> _clipMasks = new();
 
-	/// <summary>A path clip still applied through the depth mask: coverage clips off, no edge list, or a stamped session clip.</summary>
-	private static bool UsesDepthFan(in ClipData c) => c.PathFan is not null && (!_coverageClips || c.DepthFanOnly || c.Paths is null);
-
-	private static bool UsesMask(in ClipData c) => _coverageClips && c.Paths is { Length: > 0 } && !c.DepthFanOnly;
+	private static bool UsesMask(in ClipData c) => c.Paths is { Length: > 0 };
 
 	// Intersect paths bound the visible region, so the mask covers their boxes' intersection; an Exclude keeps the
 	// outside and bounds nothing, so with only Excludes the mask spans the surface. Outside the texture coverage
