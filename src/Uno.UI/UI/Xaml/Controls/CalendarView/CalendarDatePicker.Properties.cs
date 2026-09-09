@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno.UI.Helpers;
 
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 using Calendar = Windows.Globalization.Calendar;
@@ -100,7 +101,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsCalendarOpenProperty { get; } = DependencyProperty.Register(
-			"IsCalendarOpen", typeof(bool), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(bool)));
+			"IsCalendarOpen", typeof(bool), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 		public bool IsCalendarOpen
 		{
@@ -109,7 +110,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsGroupLabelVisibleProperty { get; } = DependencyProperty.Register(
-			"IsGroupLabelVisible", typeof(bool), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(bool)));
+			"IsGroupLabelVisible", typeof(bool), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 		public bool IsGroupLabelVisible
 		{
@@ -118,7 +119,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsOutOfScopeEnabledProperty { get; } = DependencyProperty.Register(
-			"IsOutOfScopeEnabled", typeof(bool), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(defaultValue: true));
+			"IsOutOfScopeEnabled", typeof(bool), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(defaultValue: Boxes.BooleanBoxes.BoxedTrue));
 
 		public bool IsOutOfScopeEnabled
 		{
@@ -127,7 +128,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsTodayHighlightedProperty { get; } = DependencyProperty.Register(
-			"IsTodayHighlighted", typeof(bool), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(defaultValue: true));
+			"IsTodayHighlighted", typeof(bool), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(defaultValue: Boxes.BooleanBoxes.BoxedTrue));
 
 		public bool IsTodayHighlighted
 		{

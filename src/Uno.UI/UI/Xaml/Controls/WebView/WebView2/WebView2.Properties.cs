@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Web.WebView2.Core;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 
@@ -20,7 +21,7 @@ public partial class WebView2
 	/// Identifies the CanGoBack dependency property.
 	/// </summary>
 	public static DependencyProperty CanGoBackProperty { get; } =
-		DependencyProperty.Register(nameof(CanGoBack), typeof(bool), typeof(WebView2), new FrameworkPropertyMetadata(false));
+		DependencyProperty.Register(nameof(CanGoBack), typeof(bool), typeof(WebView2), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether forward navigation is possible.
@@ -35,7 +36,7 @@ public partial class WebView2
 	/// Identifies the CanGoForward dependency property.
 	/// </summary>
 	public static DependencyProperty CanGoForwardProperty { get; } =
-		DependencyProperty.Register(nameof(CanGoForward), typeof(bool), typeof(WebView2), new FrameworkPropertyMetadata(false));
+		DependencyProperty.Register(nameof(CanGoForward), typeof(bool), typeof(WebView2), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Gets or sets the URI of the current top level document.
@@ -77,7 +78,7 @@ public partial class WebView2
 			typeof(bool),
 			typeof(WebView2),
 			new FrameworkPropertyMetadata(
-				true,
+				Boxes.BooleanBoxes.BoxedTrue,
 				(s, e) => ((WebView2)s)?.CoreWebView2.OnScrollEnabledChanged((bool)e.NewValue)));
 
 #pragma warning disable 67

@@ -3,6 +3,7 @@
 // MUX Reference RatingControl.cpp, tag winui3/release/1.7.3, commit 65718e2813a90f
 
 using System;
+using Uno.UI.Helpers;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.System;
@@ -685,7 +686,7 @@ partial class RatingControl
 
 			if (coercedValue != value)
 			{
-				SetValue(property, coercedValue);
+				SetValue(property, Boxes.Box(coercedValue));
 				return;
 			}
 		}
@@ -695,7 +696,7 @@ partial class RatingControl
 			var coercedValue = CoerceValueBetweenMinAndMax(value);
 			if (value != coercedValue)
 			{
-				SetValue(property, coercedValue);
+				SetValue(property, Boxes.Box(coercedValue));
 				// early return, we'll come back to handle the change to the corced value.
 				return;
 			}

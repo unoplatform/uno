@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 
@@ -77,10 +78,10 @@ namespace Microsoft.UI.Xaml.Markup
 			(dependencyObject as DependencyObject).SetValue(propertyToSet, value);
 
 		public static void SetPropertyFromDouble(object dependencyObject, DependencyProperty propertyToSet, double value) =>
-			(dependencyObject as DependencyObject).SetValue(propertyToSet, value);
+			(dependencyObject as DependencyObject).SetValue(propertyToSet, Boxes.Box(value));
 
 		public static void SetPropertyFromInt32(object dependencyObject, DependencyProperty propertyToSet, int value) =>
-			(dependencyObject as DependencyObject).SetValue(propertyToSet, value);
+			(dependencyObject as DependencyObject).SetValue(propertyToSet, Boxes.Box(value));
 
 		public static void SetPropertyFromInt64(object dependencyObject, DependencyProperty propertyToSet, long value) =>
 			(dependencyObject as DependencyObject).SetValue(propertyToSet, value);

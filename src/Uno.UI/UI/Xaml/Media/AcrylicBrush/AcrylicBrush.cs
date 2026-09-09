@@ -7,6 +7,7 @@ using Windows.Graphics.Effects;
 using Microsoft.Graphics.Canvas;
 using System.Collections.Generic;
 using Microsoft.Graphics.Canvas.Effects;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -39,7 +40,7 @@ namespace Microsoft.UI.Xaml.Media
 		public double TintOpacity
 		{
 			get => (double)GetValue(TintOpacityProperty);
-			set => SetValue(TintOpacityProperty, value);
+			set => SetValue(TintOpacityProperty, Boxes.Box(value));
 		}
 
 		/// <summary>
@@ -127,7 +128,7 @@ namespace Microsoft.UI.Xaml.Media
 					// on platforms other than WASM and Skia, we default to using fallback where not completely safe
 					// When this is explicitly set to false, Acrylic will be displayed
 #if __SKIA__
-					false
+					Boxes.BooleanBoxes.BoxedFalse
 #else
 					true
 #endif

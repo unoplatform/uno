@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -8,13 +9,13 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public double Springiness
 		{
 			get => (double)this.GetValue(SpringinessProperty);
-			set => this.SetValue(SpringinessProperty, value);
+			set => this.SetValue(SpringinessProperty, Boxes.Box(value));
 		}
 
 		public int Oscillations
 		{
 			get => (int)this.GetValue(OscillationsProperty);
-			set => this.SetValue(OscillationsProperty, value);
+			set => this.SetValue(OscillationsProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty OscillationsProperty { get; } =

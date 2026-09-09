@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 using Uno.Disposables;
+using Uno.UI.Helpers;
 using Windows.Foundation.Collections;
 
 namespace DirectUI;
@@ -910,7 +911,7 @@ partial class IntIndexerPathStep // src\dxaml\xcp\dxaml\lib\IntIndexerPathStep.c
 			//sTypeName.Name = strTypeName;
 			//sTypeName.Kind = TypeKind.Primitive;
 			sTypeName = typeof(int);
-			spIndex = m_nIndex;
+			spIndex = Boxes.Box(m_nIndex);
 
 			spIndexer = IndexerPropertyAccess.CreateInstance(
 				this,

@@ -18,6 +18,7 @@ using Microsoft.UI.Xaml.Media;
 using DirectUI;
 using CCalendarViewBaseItemChrome = Microsoft.UI.Xaml.Controls.CalendarViewBaseItem;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Core.Scaling;
 
@@ -923,7 +924,7 @@ namespace Microsoft.UI.Xaml.Controls
 				opacity = 0.0f;
 			}
 
-			pTextBlock.SetValue(UIElement.OpacityProperty, opacity);
+			pTextBlock.SetValue(UIElement.OpacityProperty, Boxes.Box(opacity));
 
 		}
 
@@ -939,7 +940,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				object value;
 
-				pTextBlock.SetValue(TextBlock.FontSizeProperty, (double)properties.fontSize);
+				pTextBlock.SetValue(TextBlock.FontSizeProperty, Boxes.Box((double)properties.fontSize));
 
 				value = properties.fontStyle;
 				pTextBlock.SetValue(TextBlock.FontStyleProperty, (FontStyle)value);

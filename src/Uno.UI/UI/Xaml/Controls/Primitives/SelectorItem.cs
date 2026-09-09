@@ -7,6 +7,7 @@ using Microsoft.UI.Xaml.Input;
 using Windows.UI.Core;
 using System.Threading.Tasks;
 using Uno.UI;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -141,8 +142,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				{
 					selectorItemPeer.RaisePropertyChangedEvent(
 						Automation.SelectionItemPatternIdentifiers.IsSelectedProperty,
-						oldIsSelected,
-						newIsSelected);
+						Boxes.Box(oldIsSelected),
+						Boxes.Box(newIsSelected));
 				}
 			}
 		}

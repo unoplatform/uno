@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -144,7 +145,7 @@ public partial class InfoBar
 	/// Identifies the IsClosable dependency property.
 	/// </summary>
 	public static DependencyProperty IsClosableProperty { get; } =
-		DependencyProperty.Register(nameof(IsClosable), typeof(bool), typeof(InfoBar), new FrameworkPropertyMetadata(true, OnIsClosablePropertyChanged));
+		DependencyProperty.Register(nameof(IsClosable), typeof(bool), typeof(InfoBar), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue, OnIsClosablePropertyChanged));
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether the icon is visible in the InfoBar.
@@ -159,7 +160,7 @@ public partial class InfoBar
 	/// Identifies the IsIconVisible dependency property.
 	/// </summary>
 	public static DependencyProperty IsIconVisibleProperty { get; } =
-		DependencyProperty.Register(nameof(IsIconVisible), typeof(bool), typeof(InfoBar), new FrameworkPropertyMetadata(true, OnIsIconVisiblePropertyChanged));
+		DependencyProperty.Register(nameof(IsIconVisible), typeof(bool), typeof(InfoBar), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue, OnIsIconVisiblePropertyChanged));
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether the InfoBar is open.
@@ -174,7 +175,7 @@ public partial class InfoBar
 	/// Identifies the IsOpen dependency property.
 	/// </summary>
 	public static DependencyProperty IsOpenProperty { get; } =
-		DependencyProperty.Register(nameof(IsOpen), typeof(bool), typeof(InfoBar), new FrameworkPropertyMetadata(false, OnIsOpenPropertyChanged));
+		DependencyProperty.Register(nameof(IsOpen), typeof(bool), typeof(InfoBar), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnIsOpenPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the message of the InfoBar.

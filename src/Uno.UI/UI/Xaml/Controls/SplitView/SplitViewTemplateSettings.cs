@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers;
 
 // With temporary workaround for #20623: updating SplitView.OpenPaneLength has no effect at runtime
 // that happens because we are using neither INotifyPropertyChanged or DependencyObject::SetValue here.
@@ -41,7 +42,7 @@ public sealed partial class SplitViewTemplateSettings : DependencyObject
 	public double OpenPaneLength
 	{
 		get => (double)GetValue(OpenPaneLengthProperty);
-		internal set => SetValue(OpenPaneLengthProperty, value);
+		internal set => SetValue(OpenPaneLengthProperty, Boxes.Box(value));
 	}
 
 	#endregion
@@ -56,7 +57,7 @@ public sealed partial class SplitViewTemplateSettings : DependencyObject
 	public double CompactPaneLength
 	{
 		get => (double)GetValue(CompactPaneLengthProperty);
-		internal set => SetValue(CompactPaneLengthProperty, value);
+		internal set => SetValue(CompactPaneLengthProperty, Boxes.Box(value));
 	}
 
 	#endregion
@@ -71,7 +72,7 @@ public sealed partial class SplitViewTemplateSettings : DependencyObject
 	public double ViewHeight
 	{
 		get => (double)GetValue(ViewHeightProperty);
-		internal set => SetValue(ViewHeightProperty, value);
+		internal set => SetValue(ViewHeightProperty, Boxes.Box(value));
 	}
 
 	#endregion
@@ -111,12 +112,12 @@ public sealed partial class SplitViewTemplateSettings : DependencyObject
 		nameof(NegativeOpenPaneLength),
 		typeof(double),
 		typeof(SplitViewTemplateSettings),
-		new FrameworkPropertyMetadata(default(double)));
+		new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	public double NegativeOpenPaneLength
 	{
 		get => (double)GetValue(NegativeOpenPaneLengthProperty);
-		internal set => SetValue(NegativeOpenPaneLengthProperty, value);
+		internal set => SetValue(NegativeOpenPaneLengthProperty, Boxes.Box(value));
 	}
 
 	#endregion
@@ -126,12 +127,12 @@ public sealed partial class SplitViewTemplateSettings : DependencyObject
 		nameof(NegativeOpenPaneLengthMinusCompactLength),
 		typeof(double),
 		typeof(SplitViewTemplateSettings),
-		new FrameworkPropertyMetadata(default(double)));
+		new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	public double NegativeOpenPaneLengthMinusCompactLength
 	{
 		get => (double)GetValue(NegativeOpenPaneLengthMinusCompactLengthProperty);
-		internal set => SetValue(NegativeOpenPaneLengthMinusCompactLengthProperty, value);
+		internal set => SetValue(NegativeOpenPaneLengthMinusCompactLengthProperty, Boxes.Box(value));
 	}
 
 	#endregion
@@ -141,12 +142,12 @@ public sealed partial class SplitViewTemplateSettings : DependencyObject
 		nameof(OpenPaneLengthMinusCompactLength),
 		typeof(double),
 		typeof(SplitViewTemplateSettings),
-		new FrameworkPropertyMetadata(default(double)));
+		new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	public double OpenPaneLengthMinusCompactLength
 	{
 		get => (double)GetValue(OpenPaneLengthMinusCompactLengthProperty);
-		internal set => SetValue(OpenPaneLengthMinusCompactLengthProperty, value);
+		internal set => SetValue(OpenPaneLengthMinusCompactLengthProperty, Boxes.Box(value));
 	}
 
 	#endregion

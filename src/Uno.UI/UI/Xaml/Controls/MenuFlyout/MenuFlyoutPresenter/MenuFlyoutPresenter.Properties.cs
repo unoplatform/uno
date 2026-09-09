@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -21,7 +22,7 @@ partial class MenuFlyoutPresenter
 			nameof(IsDefaultShadowEnabled),
 			typeof(bool),
 			typeof(MenuFlyoutPresenter),
-			new FrameworkPropertyMetadata(defaultValue: true));
+			new FrameworkPropertyMetadata(defaultValue: Boxes.BooleanBoxes.BoxedTrue));
 
 	/// <summary>
 	/// Gets an object that provides calculated values that can be referenced

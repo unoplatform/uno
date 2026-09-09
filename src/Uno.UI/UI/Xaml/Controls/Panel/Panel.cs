@@ -7,6 +7,7 @@ using Windows.Foundation;
 using Microsoft.UI.Xaml.Media.Animation;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Controls;
@@ -137,7 +138,7 @@ public partial class Panel : FrameworkElement, IPanel
 
 	#region IsItemsHost DependencyProperty
 	public static DependencyProperty IsItemsHostProperty { get; } = DependencyProperty.Register(
-		"IsItemsHost", typeof(bool), typeof(Panel), new FrameworkPropertyMetadata(default(bool)));
+		"IsItemsHost", typeof(bool), typeof(Panel), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 	public bool IsItemsHost
 	{

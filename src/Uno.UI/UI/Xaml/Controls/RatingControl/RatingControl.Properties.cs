@@ -4,6 +4,7 @@
 
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -34,7 +35,7 @@ partial class RatingControl
 	public int InitialSetValue
 	{
 		get => (int)GetValue(InitialSetValueProperty);
-		set => SetValue(InitialSetValueProperty, value);
+		set => SetValue(InitialSetValueProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -45,7 +46,7 @@ partial class RatingControl
 			nameof(InitialSetValue),
 			typeof(int),
 			typeof(RatingControl),
-			new FrameworkPropertyMetadata(1, OnPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.IntegerBoxes.One, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the value that determines if the user can remove the rating.
@@ -63,7 +64,7 @@ partial class RatingControl
 		DependencyProperty.Register(
 			nameof(IsClearEnabled),
 			typeof(bool),
-			typeof(RatingControl), new FrameworkPropertyMetadata(true, OnPropertyChanged));
+			typeof(RatingControl), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the value that determines if the user can change the rating.
@@ -82,7 +83,7 @@ partial class RatingControl
 			nameof(IsReadOnly),
 			typeof(bool),
 			typeof(RatingControl),
-			new FrameworkPropertyMetadata(false, OnPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets info about the visual states of the items that represent a rating.
@@ -109,7 +110,7 @@ partial class RatingControl
 	public int MaxRating
 	{
 		get => (int)GetValue(MaxRatingProperty);
-		set => SetValue(MaxRatingProperty, value);
+		set => SetValue(MaxRatingProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -128,7 +129,7 @@ partial class RatingControl
 	public double PlaceholderValue
 	{
 		get => (double)GetValue(PlaceholderValueProperty);
-		set => SetValue(PlaceholderValueProperty, value);
+		set => SetValue(PlaceholderValueProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -147,7 +148,7 @@ partial class RatingControl
 	public double Value
 	{
 		get => (double)GetValue(ValueProperty);
-		set => SetValue(ValueProperty, value);
+		set => SetValue(ValueProperty, Boxes.Box(value));
 	}
 
 	/// <summary>

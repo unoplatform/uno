@@ -4,6 +4,7 @@ using System.Numerics;
 using System.Text;
 using Windows.Foundation;
 using Uno.Extensions;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -38,20 +39,20 @@ namespace Microsoft.UI.Xaml.Media
 		public double X
 		{
 			get => (double)GetValue(XProperty);
-			set => SetValue(XProperty, value);
+			set => SetValue(XProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty XProperty { get; } =
-			DependencyProperty.Register("X", typeof(double), typeof(TranslateTransform), new FrameworkPropertyMetadata(0.0, Transform.NotifyChangedCallback));
+			DependencyProperty.Register("X", typeof(double), typeof(TranslateTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, Transform.NotifyChangedCallback));
 
 		public double Y
 		{
 			get => (double)GetValue(YProperty);
-			set => SetValue(YProperty, value);
+			set => SetValue(YProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty YProperty { get; } =
-			DependencyProperty.Register("Y", typeof(double), typeof(TranslateTransform), new FrameworkPropertyMetadata(0.0, Transform.NotifyChangedCallback));
+			DependencyProperty.Register("Y", typeof(double), typeof(TranslateTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, Transform.NotifyChangedCallback));
 	}
 }
 

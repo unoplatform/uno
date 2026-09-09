@@ -8,6 +8,7 @@ using System.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -26,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsSticky),
 				typeof(bool),
 				typeof(AppBar),
-				new FrameworkPropertyMetadata(default(bool))
+				new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse)
 			);
 
 		#endregion
@@ -44,7 +45,7 @@ namespace Microsoft.UI.Xaml.Controls
 			nameof(IsOpen),
 			typeof(bool),
 			typeof(AppBar),
-			new FrameworkPropertyMetadata(default(bool))
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse)
 		);
 
 		#endregion

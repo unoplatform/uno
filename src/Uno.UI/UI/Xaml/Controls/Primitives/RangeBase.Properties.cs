@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -13,7 +14,7 @@ public partial class RangeBase
 		set
 		{
 			EnsureValidDoubleValue(value);
-			SetValue(LargeChangeProperty, value);
+			SetValue(LargeChangeProperty, Boxes.Box(value));
 		}
 	}
 
@@ -36,7 +37,7 @@ public partial class RangeBase
 		set
 		{
 			EnsureValidDoubleValue(value);
-			SetValue(MaximumProperty, value);
+			SetValue(MaximumProperty, Boxes.Box(value));
 		}
 	}
 
@@ -59,7 +60,7 @@ public partial class RangeBase
 		set
 		{
 			EnsureValidDoubleValue(value);
-			SetValue(MinimumProperty, value);
+			SetValue(MinimumProperty, Boxes.Box(value));
 		}
 	}
 
@@ -71,7 +72,7 @@ public partial class RangeBase
 			nameof(Minimum),
 			typeof(double),
 			typeof(RangeBase),
-			new FrameworkPropertyMetadata(0.0, OnRangeChanged, CoerceMinimum));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, OnRangeChanged, CoerceMinimum));
 
 	/// <summary>
 	/// Gets or sets a Value to be added to or subtracted from the Value of a RangeBase control.
@@ -82,7 +83,7 @@ public partial class RangeBase
 		set
 		{
 			EnsureValidDoubleValue(value);
-			SetValue(SmallChangeProperty, value);
+			SetValue(SmallChangeProperty, Boxes.Box(value));
 		}
 	}
 
@@ -105,7 +106,7 @@ public partial class RangeBase
 		set
 		{
 			EnsureValidDoubleValue(value);
-			SetValue(ValueProperty, value);
+			SetValue(ValueProperty, Boxes.Box(value));
 		}
 	}
 
@@ -117,7 +118,7 @@ public partial class RangeBase
 			nameof(Value),
 			typeof(double),
 			typeof(RangeBase),
-			new FrameworkPropertyMetadata(0.0, null, CoerceValue));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, null, CoerceValue));
 
 	/// <summary>
 	/// Occurs when the range value changes.

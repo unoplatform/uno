@@ -5,6 +5,7 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Animation;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -106,13 +107,13 @@ public partial class TreeView
 	/// Identifies the CanDragItems dependency property.
 	/// </summary>
 	public static DependencyProperty CanDragItemsProperty { get; } =
-		DependencyProperty.Register(nameof(CanDragItems), typeof(bool), typeof(TreeView), new FrameworkPropertyMetadata(true));
+		DependencyProperty.Register(nameof(CanDragItems), typeof(bool), typeof(TreeView), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
 
 	/// <summary>
 	/// Identifies the CanReorderItems dependency property.
 	/// </summary>
 	public static DependencyProperty CanReorderItemsProperty { get; } =
-		DependencyProperty.Register(nameof(CanReorderItems), typeof(bool), typeof(TreeView), new FrameworkPropertyMetadata(true));
+		DependencyProperty.Register(nameof(CanReorderItems), typeof(bool), typeof(TreeView), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
 
 	/// <summary>
 	/// Identifies the ItemContainerStyle dependency property.

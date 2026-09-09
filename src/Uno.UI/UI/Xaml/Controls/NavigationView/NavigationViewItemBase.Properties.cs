@@ -3,6 +3,7 @@
 // MUX reference NavigationViewItemBase.properties.cpp, commit bac7a9c33
 
 using Microsoft.UI.Xaml;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -22,7 +23,7 @@ public partial class NavigationViewItemBase
 	/// Identifies the IsSelected dependency property.
 	/// </summary>
 	public static DependencyProperty IsSelectedProperty { get; } =
-		DependencyProperty.Register(nameof(IsSelected), typeof(bool), typeof(NavigationViewItemBase), new FrameworkPropertyMetadata(false, OnIsSelectedPropertyChanged));
+		DependencyProperty.Register(nameof(IsSelected), typeof(bool), typeof(NavigationViewItemBase), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnIsSelectedPropertyChanged));
 
 	private static void OnIsSelectedPropertyChanged(
 		DependencyObject sender,

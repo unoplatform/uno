@@ -5,6 +5,7 @@
 using System.Numerics;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
@@ -148,13 +149,13 @@ public partial class ScrollPresenter :
 	public double MinZoomFactor
 	{
 		get => (double)GetValue(MinZoomFactorProperty);
-		set => SetValue(MinZoomFactorProperty, value);
+		set => SetValue(MinZoomFactorProperty, Boxes.Box(value));
 	}
 
 	public double MaxZoomFactor
 	{
 		get => (double)GetValue(MaxZoomFactorProperty);
-		set => SetValue(MaxZoomFactorProperty, value);
+		set => SetValue(MaxZoomFactorProperty, Boxes.Box(value));
 	}
 
 
@@ -168,13 +169,13 @@ public partial class ScrollPresenter :
 	public double HorizontalAnchorRatio
 	{
 		get => (double)GetValue(HorizontalAnchorRatioProperty);
-		set => SetValue(HorizontalAnchorRatioProperty, value);
+		set => SetValue(HorizontalAnchorRatioProperty, Boxes.Box(value));
 	}
 
 	public double VerticalAnchorRatio
 	{
 		get => (double)GetValue(VerticalAnchorRatioProperty);
-		set => SetValue(VerticalAnchorRatioProperty, value);
+		set => SetValue(VerticalAnchorRatioProperty, Boxes.Box(value));
 	}
 
 	//     Windows.Foundation.Collections.IVector<ScrollSnapPointBase> HorizontalSnapPoints { get; }
@@ -293,13 +294,13 @@ public partial class ScrollPresenter :
 		nameof(HorizontalAnchorRatio),
 		typeof(double),
 		typeof(ScrollPresenter),
-		new FrameworkPropertyMetadata(defaultValue: s_defaultAnchorRatio, propertyChangedCallback: (s, e) => (s as ScrollPresenter)?.OnHorizontalAnchorRatioPropertyChanged(s, e)));
+		new FrameworkPropertyMetadata(defaultValue: Boxes.DoubleBoxes.Zero, propertyChangedCallback: (s, e) => (s as ScrollPresenter)?.OnHorizontalAnchorRatioPropertyChanged(s, e)));
 
 	public static DependencyProperty VerticalAnchorRatioProperty { get; } = DependencyProperty.Register(
 		nameof(VerticalAnchorRatio),
 		typeof(double),
 		typeof(ScrollPresenter),
-		new FrameworkPropertyMetadata(defaultValue: s_defaultAnchorRatio, propertyChangedCallback: (s, e) => (s as ScrollPresenter)?.OnVerticalAnchorRatioPropertyChanged(s, e)));
+		new FrameworkPropertyMetadata(defaultValue: Boxes.DoubleBoxes.Zero, propertyChangedCallback: (s, e) => (s as ScrollPresenter)?.OnVerticalAnchorRatioPropertyChanged(s, e)));
 
 	void OnBackgroundPropertyChanged(
 		DependencyObject sender,

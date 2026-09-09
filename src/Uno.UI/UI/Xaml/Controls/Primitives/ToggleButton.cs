@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				nameof(IsChecked),
 				typeof(bool?),
 				typeof(ToggleButton),
-				new FrameworkPropertyMetadata(false)
+				new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse)
 			);
 
 		/// <summary>
@@ -75,7 +75,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				nameof(IsThreeState),
 				typeof(bool),
 				typeof(ToggleButton),
-				new FrameworkPropertyMetadata(false));
+				new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 
 		/// <summary>
 		/// Called when the ToggleButton receives toggle stimulus.

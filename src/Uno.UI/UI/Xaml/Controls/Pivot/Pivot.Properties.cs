@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -58,7 +59,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(SelectedIndexProperty, value);
+				this.SetValue(SelectedIndexProperty, Boxes.Box(value));
 			}
 		}
 
@@ -133,14 +134,14 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"IsLocked", typeof(bool),
 			typeof(Pivot),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 		public static DependencyProperty SelectedIndexProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"SelectedIndex", typeof(int),
 			typeof(Pivot),
 			new FrameworkPropertyMetadata(
-				defaultValue: -1,
+				defaultValue: Boxes.IntegerBoxes.NegativeOne,
 				options: FrameworkPropertyMetadataOptions.None,
 				propertyChangedCallback: (s, e) => (s as Pivot)?.OnSelectedIndexChanged((int)e.OldValue, (int)e.NewValue)
 			)

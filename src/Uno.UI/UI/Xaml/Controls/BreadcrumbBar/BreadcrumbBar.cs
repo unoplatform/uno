@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using Microsoft.UI.Input;
 using Uno.Disposables;
 using Uno.UI.Core;
+using Uno.UI.Helpers;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI.Core;
@@ -418,7 +419,7 @@ public partial class BreadcrumbBar : Control
 			{
 				if (itemsRepeater.TryGetElement(itemToIndex) is { } element)
 				{
-					element.SetValue(AutomationProperties.PositionInSetProperty, accessibilityIndex);
+					element.SetValue(AutomationProperties.PositionInSetProperty, Boxes.Box(accessibilityIndex));
 					element.SetValue(AutomationProperties.SizeOfSetProperty, visibleItemsCount);
 				}
 			}

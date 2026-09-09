@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+using Uno.UI.Helpers;
 
 [assembly: ElementMetadataUpdateHandlerAttribute(typeof(Microsoft.UI.Xaml.Controls.ScrollViewer), typeof(Microsoft.UI.Xaml.Controls.ScrollViewerMetadataUpdateHandler))]
 
@@ -23,8 +24,8 @@ internal static partial class ScrollViewerMetadataUpdateHandler
 				_log.Debug($"Saving state of {element.GetDebugDepth()}-{element.GetDebugName()} (v: {sv.VerticalOffset} | h: {sv.HorizontalOffset})");
 			}
 
-			stateDictionary["VOffset"] = sv.VerticalOffset;
-			stateDictionary["HOffset"] = sv.HorizontalOffset;
+			stateDictionary["VOffset"] = Boxes.Box(sv.VerticalOffset);
+			stateDictionary["HOffset"] = Boxes.Box(sv.HorizontalOffset);
 		}
 	}
 

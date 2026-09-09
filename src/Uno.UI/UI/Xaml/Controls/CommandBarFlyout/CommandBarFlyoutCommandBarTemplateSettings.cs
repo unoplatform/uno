@@ -1,5 +1,6 @@
 ﻿using Windows.Foundation;
 using Microsoft.UI.Xaml;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -19,7 +20,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 	public double CloseAnimationEndPosition
 	{
 		get => (double)GetValue(CloseAnimationEndPositionProperty);
-		internal set => SetValue(CloseAnimationEndPositionProperty, value);
+		internal set => SetValue(CloseAnimationEndPositionProperty, Boxes.Box(value));
 	}
 
 	internal static DependencyProperty CloseAnimationEndPositionProperty { get; } =
@@ -27,7 +28,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 			nameof(CloseAnimationEndPosition),
 			typeof(double),
 			typeof(CommandBarFlyoutCommandBarTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the rectangle used to clip the content.
@@ -51,7 +52,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 	public double CurrentWidth
 	{
 		get => (double)GetValue(CurrentWidthProperty);
-		internal set => SetValue(CurrentWidthProperty, value);
+		internal set => SetValue(CurrentWidthProperty, Boxes.Box(value));
 	}
 
 	internal static DependencyProperty CurrentWidthProperty { get; } =
@@ -59,7 +60,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 			nameof(CurrentWidth),
 			typeof(double),
 			typeof(CommandBarFlyoutCommandBarTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the end position for the expand down animation.
@@ -67,7 +68,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 	public double ExpandDownAnimationEndPosition
 	{
 		get => (double)GetValue(ExpandDownAnimationEndPositionProperty);
-		internal set => SetValue(ExpandDownAnimationEndPositionProperty, value);
+		internal set => SetValue(ExpandDownAnimationEndPositionProperty, Boxes.Box(value));
 	}
 
 	internal static DependencyProperty ExpandDownAnimationEndPositionProperty { get; } =
@@ -75,7 +76,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 			nameof(ExpandDownAnimationEndPosition),
 			typeof(double),
 			typeof(CommandBarFlyoutCommandBarTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the hold position for the expand down animation.
@@ -83,7 +84,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 	public double ExpandDownAnimationHoldPosition
 	{
 		get => (double)GetValue(ExpandDownAnimationHoldPositionProperty);
-		internal set => SetValue(ExpandDownAnimationHoldPositionProperty, value);
+		internal set => SetValue(ExpandDownAnimationHoldPositionProperty, Boxes.Box(value));
 	}
 
 	internal static DependencyProperty ExpandDownAnimationHoldPositionProperty { get; } =
@@ -91,7 +92,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 			nameof(ExpandDownAnimationHoldPosition),
 			typeof(double),
 			typeof(CommandBarFlyoutCommandBarTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the start position for the expand down animation.
@@ -99,7 +100,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 	public double ExpandDownAnimationStartPosition
 	{
 		get => (double)GetValue(ExpandDownAnimationStartPositionProperty);
-		internal set => SetValue(ExpandDownAnimationStartPositionProperty, value);
+		internal set => SetValue(ExpandDownAnimationStartPositionProperty, Boxes.Box(value));
 	}
 
 	internal static DependencyProperty ExpandDownAnimationStartPositionProperty { get; } =
@@ -107,7 +108,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 			nameof(ExpandDownAnimationStartPosition),
 			typeof(double),
 			typeof(CommandBarFlyoutCommandBarTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the vertical position of the overflow when expanded down.
@@ -115,7 +116,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 	public double ExpandDownOverflowVerticalPosition
 	{
 		get => (double)GetValue(ExpandDownOverflowVerticalPositionProperty);
-		internal set => SetValue(ExpandDownOverflowVerticalPositionProperty, value);
+		internal set => SetValue(ExpandDownOverflowVerticalPositionProperty, Boxes.Box(value));
 	}
 
 	internal static DependencyProperty ExpandDownOverflowVerticalPositionProperty { get; } =
@@ -123,7 +124,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 			nameof(ExpandDownOverflowVerticalPosition),
 			typeof(double),
 			typeof(CommandBarFlyoutCommandBarTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the width of the control when expanded.
@@ -131,7 +132,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 	public double ExpandedWidth
 	{
 		get => (double)GetValue(ExpandedWidthProperty);
-		internal set => SetValue(ExpandedWidthProperty, value);
+		internal set => SetValue(ExpandedWidthProperty, Boxes.Box(value));
 	}
 
 	internal static DependencyProperty ExpandedWidthProperty { get; } =
@@ -139,7 +140,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 			nameof(ExpandedWidth),
 			typeof(double),
 			typeof(CommandBarFlyoutCommandBarTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the end position for the expand up animation.
@@ -147,7 +148,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 	public double ExpandUpAnimationEndPosition
 	{
 		get => (double)GetValue(ExpandUpAnimationEndPositionProperty);
-		internal set => SetValue(ExpandUpAnimationEndPositionProperty, value);
+		internal set => SetValue(ExpandUpAnimationEndPositionProperty, Boxes.Box(value));
 	}
 
 	internal static DependencyProperty ExpandUpAnimationEndPositionProperty { get; } =
@@ -155,7 +156,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 			nameof(ExpandUpAnimationEndPosition),
 			typeof(double),
 			typeof(CommandBarFlyoutCommandBarTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the hold position for the expand up animation.
@@ -163,7 +164,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 	public double ExpandUpAnimationHoldPosition
 	{
 		get => (double)GetValue(ExpandUpAnimationHoldPositionProperty);
-		internal set => SetValue(ExpandUpAnimationHoldPositionProperty, value);
+		internal set => SetValue(ExpandUpAnimationHoldPositionProperty, Boxes.Box(value));
 	}
 
 	internal static DependencyProperty ExpandUpAnimationHoldPositionProperty { get; } =
@@ -171,7 +172,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 			nameof(ExpandUpAnimationHoldPosition),
 			typeof(double),
 			typeof(CommandBarFlyoutCommandBarTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the start position for the expand up animation.
@@ -179,7 +180,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 	public double ExpandUpAnimationStartPosition
 	{
 		get => (double)GetValue(ExpandUpAnimationStartPositionProperty);
-		internal set => SetValue(ExpandUpAnimationStartPositionProperty, value);
+		internal set => SetValue(ExpandUpAnimationStartPositionProperty, Boxes.Box(value));
 	}
 
 	internal static DependencyProperty ExpandUpAnimationStartPositionProperty { get; } =
@@ -187,7 +188,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 			nameof(ExpandUpAnimationStartPosition),
 			typeof(double),
 			typeof(CommandBarFlyoutCommandBarTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the vertical position of the overflow when expanded up.
@@ -195,7 +196,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 	public double ExpandUpOverflowVerticalPosition
 	{
 		get => (double)GetValue(ExpandUpOverflowVerticalPositionProperty);
-		internal set => SetValue(ExpandUpOverflowVerticalPositionProperty, value);
+		internal set => SetValue(ExpandUpOverflowVerticalPositionProperty, Boxes.Box(value));
 	}
 
 	internal static DependencyProperty ExpandUpOverflowVerticalPositionProperty { get; } =
@@ -203,7 +204,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 			nameof(ExpandUpOverflowVerticalPosition),
 			typeof(double),
 			typeof(CommandBarFlyoutCommandBarTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the end position for the open animation.
@@ -211,7 +212,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 	public double OpenAnimationEndPosition
 	{
 		get => (double)GetValue(OpenAnimationEndPositionProperty);
-		internal set => SetValue(OpenAnimationEndPositionProperty, value);
+		internal set => SetValue(OpenAnimationEndPositionProperty, Boxes.Box(value));
 	}
 
 	internal static DependencyProperty OpenAnimationEndPositionProperty { get; } =
@@ -219,7 +220,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 			nameof(OpenAnimationEndPosition),
 			typeof(double),
 			typeof(CommandBarFlyoutCommandBarTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the start position for the open animation.
@@ -227,7 +228,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 	public double OpenAnimationStartPosition
 	{
 		get => (double)GetValue(OpenAnimationStartPositionProperty);
-		internal set => SetValue(OpenAnimationStartPositionProperty, value);
+		internal set => SetValue(OpenAnimationStartPositionProperty, Boxes.Box(value));
 	}
 
 	internal static DependencyProperty OpenAnimationStartPositionProperty { get; } =
@@ -235,7 +236,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 			nameof(OpenAnimationStartPosition),
 			typeof(double),
 			typeof(CommandBarFlyoutCommandBarTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the rectangle used to clip the overflow content.
@@ -259,7 +260,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 	public double WidthExpansionAnimationEndPosition
 	{
 		get => (double)GetValue(WidthExpansionAnimationEndPositionProperty);
-		internal set => SetValue(WidthExpansionAnimationEndPositionProperty, value);
+		internal set => SetValue(WidthExpansionAnimationEndPositionProperty, Boxes.Box(value));
 	}
 
 	internal static DependencyProperty WidthExpansionAnimationEndPositionProperty { get; } =
@@ -267,7 +268,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 			nameof(WidthExpansionAnimationEndPosition),
 			typeof(double),
 			typeof(CommandBarFlyoutCommandBarTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the start position for the width expansion animation.
@@ -275,7 +276,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 	public double WidthExpansionAnimationStartPosition
 	{
 		get => (double)GetValue(WidthExpansionAnimationStartPositionProperty);
-		internal set => SetValue(WidthExpansionAnimationStartPositionProperty, value);
+		internal set => SetValue(WidthExpansionAnimationStartPositionProperty, Boxes.Box(value));
 	}
 
 	internal static DependencyProperty WidthExpansionAnimationStartPositionProperty { get; } =
@@ -283,7 +284,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 			nameof(WidthExpansionAnimationStartPosition),
 			typeof(double),
 			typeof(CommandBarFlyoutCommandBarTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the amount of change for the width expansion.
@@ -291,7 +292,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 	public double WidthExpansionDelta
 	{
 		get => (double)GetValue(WidthExpansionDeltaProperty);
-		internal set => SetValue(WidthExpansionDeltaProperty, value);
+		internal set => SetValue(WidthExpansionDeltaProperty, Boxes.Box(value));
 	}
 
 	internal static DependencyProperty WidthExpansionDeltaProperty { get; } =
@@ -299,7 +300,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 			nameof(WidthExpansionDelta),
 			typeof(double),
 			typeof(CommandBarFlyoutCommandBarTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the end position for the "more" button width expansion animation.
@@ -307,7 +308,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 	public double WidthExpansionMoreButtonAnimationEndPosition
 	{
 		get => (double)GetValue(WidthExpansionMoreButtonAnimationEndPositionProperty);
-		internal set => SetValue(WidthExpansionMoreButtonAnimationEndPositionProperty, value);
+		internal set => SetValue(WidthExpansionMoreButtonAnimationEndPositionProperty, Boxes.Box(value));
 	}
 
 	internal static DependencyProperty WidthExpansionMoreButtonAnimationEndPositionProperty { get; } =
@@ -315,7 +316,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 			nameof(WidthExpansionMoreButtonAnimationEndPosition),
 			typeof(double),
 			typeof(CommandBarFlyoutCommandBarTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets the start position for the "more" button width expansion animation.
@@ -323,7 +324,7 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 	public double WidthExpansionMoreButtonAnimationStartPosition
 	{
 		get => (double)GetValue(WidthExpansionMoreButtonAnimationStartPositionProperty);
-		internal set => SetValue(WidthExpansionMoreButtonAnimationStartPositionProperty, value);
+		internal set => SetValue(WidthExpansionMoreButtonAnimationStartPositionProperty, Boxes.Box(value));
 	}
 
 	internal static DependencyProperty WidthExpansionMoreButtonAnimationStartPositionProperty { get; } =
@@ -331,5 +332,5 @@ public sealed partial class CommandBarFlyoutCommandBarTemplateSettings : Depende
 			nameof(WidthExpansionMoreButtonAnimationStartPosition),
 			typeof(double),
 			typeof(CommandBarFlyoutCommandBarTemplateSettings),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 }

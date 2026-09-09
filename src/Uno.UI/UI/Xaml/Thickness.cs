@@ -76,10 +76,14 @@ public partial struct Thickness : IEquatable<Thickness>
 		// Analysis restore NonReadonlyReferencedInGetHashCode
 	}
 
+	// Compile-linked into Uno.UI.Composition, which cannot see Uno.UI.Helpers.Boxes - and this is a
+	// diagnostic-only path where the boxing does not matter.
+#pragma warning disable UnoInternal0002
 	public override string ToString()
 	{
 		return string.Format(CultureInfo.InvariantCulture, "[Thickness: {0}-{1}-{2}-{3}]", Left, Top, Right, Bottom);
 	}
+#pragma warning restore UnoInternal0002
 
 	public static bool operator ==(Thickness t1, Thickness t2)
 	{

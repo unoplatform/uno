@@ -4,6 +4,7 @@
 
 using DirectUI;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Helpers;
 using AppBarToggleButton = Microsoft.UI.Xaml.Controls.AppBarToggleButton;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
@@ -112,8 +113,8 @@ public partial class AppBarToggleButtonAutomationPeer : ToggleButtonAutomationPe
 
 	internal void RaiseToggleStatePropertyChangedEvent(bool pOldValue, bool pNewValue)
 	{
-		var oldValue = AppBarToggleButtonAutomationPeer.ConvertToToggleState(pOldValue);
-		var newValue = AppBarToggleButtonAutomationPeer.ConvertToToggleState(pNewValue);
+		var oldValue = AppBarToggleButtonAutomationPeer.ConvertToToggleState(Boxes.Box(pOldValue));
+		var newValue = AppBarToggleButtonAutomationPeer.ConvertToToggleState(Boxes.Box(pNewValue));
 
 		if (oldValue != newValue)
 		{

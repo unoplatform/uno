@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
@@ -23,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public int SelectedIndex
 		{
 			get => (int)this.GetValue(SelectedIndexProperty);
-			set => this.SetValue(SelectedIndexProperty, value);
+			set => this.SetValue(SelectedIndexProperty, Boxes.Box(value));
 		}
 
 
@@ -37,7 +38,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public int ItemWidth
 		{
 			get => (int)this.GetValue(ItemWidthProperty);
-			set => this.SetValue(ItemWidthProperty, value);
+			set => this.SetValue(ItemWidthProperty, Boxes.Box(value));
 		}
 
 
@@ -51,7 +52,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public int ItemHeight
 		{
 			get => (int)this.GetValue(ItemHeightProperty);
-			set => this.SetValue(ItemHeightProperty, value);
+			set => this.SetValue(ItemHeightProperty, Boxes.Box(value));
 		}
 
 
@@ -59,7 +60,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			DependencyProperty.Register(
 				nameof(ItemHeight), typeof(int),
 				typeof(Primitives.LoopingSelector),
-				new FrameworkPropertyMetadata(default(int)));
+				new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 
 
 		public static DependencyProperty ItemTemplateProperty { get; } =
@@ -73,7 +74,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			DependencyProperty.Register(
 				nameof(ItemWidth), typeof(int),
 				typeof(Primitives.LoopingSelector),
-				new FrameworkPropertyMetadata(default(int)));
+				new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 
 
 		public static DependencyProperty ItemsProperty { get; } =
@@ -87,7 +88,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			DependencyProperty.Register(
 				nameof(SelectedIndex), typeof(int),
 				typeof(Primitives.LoopingSelector),
-				new FrameworkPropertyMetadata(default(int), propertyChangedCallback: (sender, args) => ((LoopingSelector)sender).OnPropertyChanged(args)));
+				new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero, propertyChangedCallback: (sender, args) => ((LoopingSelector)sender).OnPropertyChanged(args)));
 
 
 		public static DependencyProperty SelectedItemProperty { get; } =
@@ -101,6 +102,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			DependencyProperty.Register(
 				nameof(ShouldLoop), typeof(bool),
 				typeof(Primitives.LoopingSelector),
-				new FrameworkPropertyMetadata(default(bool), propertyChangedCallback: (sender, args) => ((LoopingSelector)sender).OnPropertyChanged(args)));
+				new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, propertyChangedCallback: (sender, args) => ((LoopingSelector)sender).OnPropertyChanged(args)));
 	}
 }

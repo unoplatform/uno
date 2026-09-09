@@ -10,6 +10,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -100,7 +101,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty.Register(
 				"IsOpen", typeof(bool),
 				typeof(ToolTip),
-				new FrameworkPropertyMetadata(default(bool), OnOpenChanged));
+				new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnOpenChanged));
 
 		public bool IsOpen
 		{
