@@ -41,6 +41,8 @@ The control policy is based on Microsoft UI XAML commit [`3c9c168844f06c6ac000a9
 
 Native host and automation-wrapper source is available too; it must not be confused with the editor engine itself. In particular, `CTextBoxBaseAutomationPeer` obtains RichEditBox's **windowless provider** through `GetRichEditRawElementProviderSimple` and `GetUnwrappedPattern`. The ordinary XAML `TextAdapter`/`TextRangeAdapter` sources are not the implementation of that provider. Uno uses explicitly managed automation adapters for its document, selection, geometry, and rich text-object children.
 
+On Skia WebAssembly, a parallel semantic `<textarea>` mirrors document text, selection direction, read-only state, spell checking, and placeholder text without exposing the Value pattern. ARIA relationships reference only targets present in the semantic tree. The browser adapter also handles relation getters that update their own collections, such as the source-backed visible-placeholder description, without interrupting tree creation or publishing stale relationships.
+
 `WinUIEdit.dll` supplies the Windows RichEdit/TOM, RTF, math, and windowless-provider implementations; those implementations are not present in the pinned Microsoft UI XAML repository. Uno's story storage, formatting runs, range tracking, undo/redo, RTF codec, math layout, and clipboard/IME integrations are therefore **engine adapters**, not a claimed byte-for-byte port of those components. Native OLE/TSF/message and COM ownership boundaries remain identified with `TODO Uno:` in source-backed partials.
 
 Two integration differences are important when maintaining the port:

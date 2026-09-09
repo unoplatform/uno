@@ -1156,30 +1156,44 @@ internal static partial class SemanticElementFactory
 	}
 
 	/// <summary>
-	/// Applies ARIA relationship attributes (describedby, controls, flowto) to a semantic element.
 	/// Resolves AutomationPeer collections to space-separated DOM element IDs.
 	/// </summary>
-	internal static bool ApplyRelationshipAttributes(AutomationPeer peer, IntPtr handle, bool clearMissing)
+	internal static bool ResolveRelationshipAttributes(
+		AutomationPeer peer,
+		out string? describedByIds,
+		out string? controlledIds,
+		out string? flowsToIds)
 	{
-		var describedByIds = ResolvePeerCollectionToIdList(peer.GetDescribedBy(), out var hasDescribedBy);
+		describedByIds = ResolvePeerCollectionToIdList(peer.GetDescribedBy(), out var hasDescribedBy);
+		controlledIds = ResolvePeerCollectionToIdList(peer.GetControlledPeers(), out var hasControlledPeers);
+		flowsToIds = ResolvePeerCollectionToIdList(peer.GetFlowsTo(), out var hasFlowsTo);
+		return hasDescribedBy || hasControlledPeers || hasFlowsTo;
+	}
+
+	/// <summary>
+	/// Applies resolved ARIA relationship attributes (describedby, controls, flowto) to a semantic element.
+	/// </summary>
+	internal static void ApplyRelationshipAttributes(
+		IntPtr handle,
+		string? describedByIds,
+		string? controlledIds,
+		string? flowsToIds,
+		bool clearMissing)
+	{
 		if (describedByIds is not null || clearMissing)
 		{
 			NativeMethods.UpdateAriaDescribedBy(handle, describedByIds ?? string.Empty);
 		}
 
-		var controlledIds = ResolvePeerCollectionToIdList(peer.GetControlledPeers(), out var hasControlledPeers);
 		if (controlledIds is not null || clearMissing)
 		{
 			NativeMethods.UpdateAriaControls(handle, controlledIds ?? string.Empty);
 		}
 
-		var flowsToIds = ResolvePeerCollectionToIdList(peer.GetFlowsTo(), out var hasFlowsTo);
 		if (flowsToIds is not null || clearMissing)
 		{
 			NativeMethods.UpdateAriaFlowTo(handle, flowsToIds ?? string.Empty);
 		}
-
-		return hasDescribedBy || hasControlledPeers || hasFlowsTo;
 	}
 
 	/// <summary>

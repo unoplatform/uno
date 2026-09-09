@@ -22,7 +22,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 	/// Tests automation peer properties, value pattern, and ARIA attribute mapping.
 	/// </summary>
 	[TestClass]
-	public class Given_AccessibleTextBox
+	public partial class Given_AccessibleTextBox
 	{
 		[TestCleanup]
 		public void Cleanup()
