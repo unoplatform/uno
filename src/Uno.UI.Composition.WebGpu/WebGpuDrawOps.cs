@@ -196,8 +196,7 @@ internal struct FrameOp
 
 /// <summary>
 /// The state one pass-encode works over: handles fixed once the pass is set up, and the parts that evolve as ops
-/// are encoded - the encoder, the path clip whose depth mask is currently applied, and the counters the stats line
-/// reports.
+/// are encoded - the encoder and the counters the stats line reports.
 /// </summary>
 internal ref struct PassOps
 {

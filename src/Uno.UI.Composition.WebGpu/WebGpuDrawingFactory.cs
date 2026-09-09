@@ -331,9 +331,8 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 
 	/// <summary>
 	/// The main-pass surface the backend OWNS for one render target: the host hands only a single-sample resolve
-	/// colour (the neutral <see cref="IWebGpuRenderTarget"/>), and the backend allocates its own MSAA colour + depth
-	/// and resolves into the host's colour — the same "backend brings its own depth/stencil" contract every other
-	/// target follows.
+	/// colour (the neutral <see cref="IWebGpuRenderTarget"/>), and the backend allocates its own MSAA colour and
+	/// resolves into the host's colour, as every other target does.
 	/// </summary>
 	private sealed class MainSurface
 	{

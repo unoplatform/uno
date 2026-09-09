@@ -656,17 +656,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 			StoreOp = (_d.MsaaSamples > 1 && backdrops.Count == 0) ? WGPUStoreOp.Discard : WGPUStoreOp.Store,
 			ClearValue = clear.HasValue ? new WGPUColor { R = clear.Value.R / 255.0, G = clear.Value.G / 255.0, B = clear.Value.B / 255.0, A = clear.Value.A / 255.0 } : default,
 		};
-		var depthStencil = new WGPURenderPassDepthStencilAttachment
-		{
-			View = target.DepthView,
-			DepthLoadOp = WGPULoadOp.Clear,
-			DepthStoreOp = WGPUStoreOp.Discard,
-			DepthClearValue = 0f,
-			StencilLoadOp = WGPULoadOp.Clear,
-			StencilStoreOp = WGPUStoreOp.Discard,
-			StencilClearValue = 0,
-		};
-		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color, DepthStencilAttachment = &depthStencil };
+		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color };
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &desc);
 		var encodeStart = System.Diagnostics.Stopwatch.GetTimestamp();
 
@@ -689,10 +679,10 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		}
 
 		wgpuRenderPassEncoderEnd(pst.Pass);
-		// A pooled offscreen (layer/backdrop) target: its MSAA colour has resolved into View and the depth is spent,
-		// so return both for the next same-size pass to reuse — only View (composited/sampled later) stays live. The
-		// on-window/dedicated target owns its MSAA+depth (persistent across frames) and is left untouched.
-		if (target.Pooled) { if (_d.MsaaSamples > 1) { _d.Pool.Return(target.MsaaColorView); } _d.Pool.Return(target.DepthView); }   // at 1x MsaaColorView aliases View (sampled later) — don't reclaim
+		// A pooled offscreen (layer/backdrop) target: its MSAA colour has resolved into View, so return it for the
+		// next same-size pass to reuse — only View (composited/sampled later) stays live. The on-window/dedicated
+		// target owns its MSAA colour (persistent across frames) and is left untouched.
+		if (target.Pooled && _d.MsaaSamples > 1) { _d.Pool.Return(target.MsaaColorView); }   // at 1x MsaaColorView aliases View (sampled later) — don't reclaim
 		ReturnOps(ops);   // ops are fully encoded into the pass now — recycle the list
 		ReturnSolid(solid);
 		ReturnRrect(rrect);

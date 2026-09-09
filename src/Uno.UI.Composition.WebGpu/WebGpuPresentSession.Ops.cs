@@ -312,15 +312,14 @@ public sealed unsafe partial class WebGpuPresentSession
 			case PathFill pf:
 				{
 					// A small axis-aligned shape (a glyph) draws from the coverage atlas: one tinted quad, with
-					// antialiasing baked in, instead of stencil-then-cover leaning on the multisampled attachment.
+					// antialiasing baked in.
 					if (atlasScale is { } asc1 && TryAtlasFill(pf, ops, owned, asc1)) { break; }
 					if (!HasAaRing(pf.FanCoverage) && TryMaskFill(pf, owned, maskScale ?? atlasScale ?? Vector2.One, out var mop1)) { ops.Add(mop1); break; }
 					float slotBits = System.BitConverter.Int32BitsToSingle(pathSlot);
 					if (pf.FanTiles)
 					{
-						// The fan tiles the shape, so fill it in ONE pass: no stencil fan writing a multisampled
-						// depth-stencil, and no cover quad over the whole bbox. Same pipeline as the cover, fed the
-						// fan triangles directly. TilingFan + flag => b0 is a byte offset into the shared path buffer.
+						// The fan tiles the shape, so fill it in ONE pass with its own AA ring.
+						// TilingFan + flag => b0 is a byte offset into the shared path buffer.
 						float fr = pf.Color.R / 255f, fg = pf.Color.G / 255f, fb = pf.Color.B / 255f, fa = pf.Color.A / 255f;
 						_scratch.Clear();
 						var tCov = pf.FanCoverage;

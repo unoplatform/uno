@@ -52,17 +52,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			LoadOp = WGPULoadOp.Load,
 			StoreOp = WGPUStoreOp.Store,   // a following segment, or another backdrop, reloads it
 		};
-		var depthStencil = new WGPURenderPassDepthStencilAttachment
-		{
-			View = target.DepthView,
-			DepthLoadOp = WGPULoadOp.Clear,
-			DepthStoreOp = WGPUStoreOp.Discard,
-			DepthClearValue = 0f,
-			StencilLoadOp = WGPULoadOp.Clear,
-			StencilStoreOp = WGPUStoreOp.Discard,
-			StencilClearValue = 0,
-		};
-		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color, DepthStencilAttachment = &depthStencil };
+		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color };
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &desc);
 
 		pst.Pass = pass;
@@ -247,9 +237,8 @@ public sealed unsafe partial class WebGpuPresentSession
 					break;
 
 				case DrawKind.TilingFan:
-					// Single-pass fill of a tiling fan (see PathFill.FanTiles). Uses the stencil-independent
-					// cover pipeline: there is no stencil pass here, so the masked one would discard everything.
-					pst.Enc.Pipe(_d.CoverTableDirectPipe);
+					// Single-pass fill of a tiling fan (see PathFill.FanTiles).
+					pst.Enc.Pipe(_d.PathTablePipe);
 					pst.Enc.Bg(0, (IntPtr)xformBg);
 					pst.Enc.Bg(1, (IntPtr)clipBg);
 					if (flag)

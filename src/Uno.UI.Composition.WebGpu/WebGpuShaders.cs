@@ -137,25 +137,10 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
   var o: VOut; o.p = xformPos(clip, pos); o.c = col; return o;
 }
 @fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.p.xy, clip)); }";
-	// Stencil pass (winding only, colour masked). Binds the SHARED ClipU at group 0 for the arena vertex xform so a
-	// moved path's fan follows the re-stamped transform; identity for immediate/non-arena draws (fan already NDC).
-	private const string PosOnlyWgsl = @"
-@group(0) @binding(0) var<uniform> clip: ClipU;
-@group(0) @binding(1) var clipMask: texture_2d<f32>;
-@vertex fn vs(@location(0) pos: vec2<f32>) -> @builtin(position) vec4<f32> { return xformPos(clip, pos); }
-@fragment fn fs() -> @location(0) vec4<f32> { return vec4<f32>(0.0, 0.0, 0.0, 0.0); }";
-	// TRANSFORM-TABLE variants (path fills only). Vertices are recorded-DEVICE space + a per-vertex slot index into
-	// a read-only storage buffer of local->NDC affines (a=ax,ay,az,aw  b=bx,by,_,_) that fold the replay transform
-	// AND the device->NDC projection. Recomputing a (tiny) entry per frame repositions a moved/resized visual without
-	// re-baking or re-tessellating its fan — so a scroll or a window resize touches only the table, not the verts.
-	private const string StencilTableWgsl = @"
-struct Xf { a: vec4<f32>, b: vec4<f32> };
-@group(0) @binding(0) var<storage, read> xf: array<Xf>;
-@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) ti: u32) -> @builtin(position) vec4<f32> {
-  let t = xf[ti];
-  return vec4<f32>(pos.x * t.a.x + pos.y * t.a.y + t.a.z, pos.x * t.a.w + pos.y * t.b.x + t.b.y, 0.0, 1.0);
-}
-@fragment fn fs() -> @location(0) vec4<f32> { return vec4<f32>(0.0, 0.0, 0.0, 0.0); }";
+	// TRANSFORM-TABLE variant. Vertices are recorded-DEVICE space + a per-vertex slot index into a read-only storage
+	// buffer of local->NDC affines (a=ax,ay,az,aw  b=bx,by,_,_) that fold the replay transform AND the device->NDC
+	// projection. Recomputing a (tiny) entry per frame repositions a moved/resized visual without re-baking or
+	// re-tessellating its fan — so a scroll or a window resize touches only the table, not the verts.
 	private const string CoverTableWgsl = @"
 struct Xf { a: vec4<f32>, b: vec4<f32> };
 @group(0) @binding(0) var<storage, read> xf: array<Xf>;
@@ -167,8 +152,6 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
   var o: VOut; o.p = vec4<f32>(pos.x * t.a.x + pos.y * t.a.y + t.a.z, pos.x * t.a.w + pos.y * t.b.x + t.b.y, 0.0, 1.0); o.c = col; return o;
 }
 @fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.p.xy, clip)); }";
-	// Fullscreen-triangle depth writers for the in-pass path-clip mask. vs0/vs1 emit the tri at z=0/z=1; the
-	// fragment writes nothing (colour masked off) — only depth (and, for the cover variants, the stencil reset).
 	// Signed-area coverage accumulation. One quad per edge spanning the rows it crosses and everything to its
 	// RIGHT: an edge contributes the partial area of the pixel it passes through, and a full +/-1 to every pixel
 	// beyond it, so the interior fills by cancellation between the entering and leaving edges and is never tested.

@@ -24,20 +24,12 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	public IntPtr Dev;
 	public IntPtr Q;
 	public IntPtr SolidPipe;
-	public IntPtr StencilEvenOdd;
-	public IntPtr StencilNonZero;
-	public IntPtr CoverPipe;
-	// Transform-table path-fill pipelines (device verts + per-vertex slot index). XformBgl = group 0 (storage
-	// table); CoverTableClipBgl = the cover variant's group 1 (ClipU). Solid/clip-fans/shadows stay on the NDC pipes.
-	public IntPtr StencilTableEO;
-	public IntPtr StencilTableNZ;
-	public IntPtr CoverTablePipe;
-	/// <summary>Cover pipeline that does NOT consult the stencil: for geometry that already tiles its own shape,
-	/// so there is no stencil pass to mask against (CoverTablePipe would draw nothing, since the stencil is 0).</summary>
-	public IntPtr CoverTableDirectPipe;
+	// Transform-table path-fill pipeline (device verts + per-vertex slot index) for the tiling fan. XformBgl =
+	// group 0 (storage table); CoverTableClipBgl = group 1 (ClipU).
+	public IntPtr PathTablePipe;
 	// Transform-table SOLID / ROUNDED-RECT variants (device-verts + per-vertex slot). Same table + ClipBgl as the
-	// path-fill cover, but drawn unconditionally under the clip depth (no stencil test) so a moved solid/rrect
-	// recording repositions via its slot with cross-visual coalescing preserved. See EmitTableFrameSolid.
+	// path fill, so a moved solid/rrect recording repositions via its slot with cross-visual coalescing preserved.
+	// See EmitTableFrameSolid.
 	public IntPtr SolidTablePipe;
 	public IntPtr RrTablePipe;
 	public IntPtr XformBgl;
@@ -265,8 +257,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	public IntPtr CoverClipBgl;
 	public IntPtr ImageClipBgl;
 	public IntPtr GradClipBgl;
-	// Explicit SHARED ClipU layout: solid/cover/stencil use one pipeline layout so a single ClipU bind group binds to
-	// all three (auto-derived layouts are pipeline-exclusive — that blocked arena'ing the path stencil+cover pair).
+	// Explicit SHARED ClipU layout: the solid, table and image pipelines use one pipeline layout so a single ClipU
+	// bind group binds to any of them (auto-derived layouts are pipeline-exclusive).
 	public IntPtr ClipBgl;
 	public IntPtr Smp;
 	private readonly IntPtr[] _tiledSmp = new IntPtr[16];
@@ -324,7 +316,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// offscreen/readback path assumes it); a swapchain renderer passes the surface's supported format.
 	public readonly WGPUTextureFormat ColorFormat;
 	public const WGPUTextureFormat DefaultColorFormat = WGPUTextureFormat.RGBA8Unorm;
-	public const WGPUTextureFormat DepthStencilFormat = WGPUTextureFormat.Depth24PlusStencil8;
 
 	// Adopts the device the HOST already created (Uno.UI.Composition.WebGpu.Init) via the neutral
 	// IWebGpuDeviceContext — the renderer stands on the raw wgpu handles + the host's chosen sample count, exactly
@@ -543,11 +534,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		return wgpuDeviceCreateShaderModule(Dev, &d);
 	}
 
-	private static WGPUStencilFaceState Face(WGPUCompareFunction cmp, WGPUStencilOperation pass)
-		=> new() { Compare = cmp, FailOp = WGPUStencilOperation.Keep, DepthFailOp = WGPUStencilOperation.Keep, PassOp = pass };
-
-	// Explicit ClipU bind-group layout (one uniform at binding 0, read by vertex xformPos + fragment clipCov) wrapped
-	// in a pipeline layout shared by solid/cover/stencil, so one ClipU bind group binds to all three.
+	// Explicit ClipU bind-group layout (the uniform at binding 0, read by vertex xformPos + fragment clipCov, and the
+	// path-clip mask at binding 1) wrapped in a pipeline layout the colour pipelines share.
 	private IntPtr MakeClipPipeLayout()
 	{
 		var e = stackalloc WGPUBindGroupLayoutEntry[2];
@@ -575,7 +563,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	private void CreatePipelines()
 	{
 		var colored = Module(ClipStructFn + ColoredWgsl);
-		var posOnly = Module(ClipStructFn + PosOnlyWgsl);
 		var vs = SV("vs");
 		var fs = SV("fs");
 		var clipLayout = MakeClipPipeLayout();
@@ -586,15 +573,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 			Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.OneMinusSrcAlpha, Operation = WGPUBlendOperation.Add },
 		};
 
-		// Content pipelines depth-test GreaterEqual against the clip mask (content z=0: passes where mask depth<=0,
-		// i.e. inside the clip or where no clip is active). The fan-stencil pipelines keep DepthCompare=Always
-		// (winding is independent of the clip; the clip applies at the colour-writing cover/solid/image/gradient).
-		var keep = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);
-		SolidPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, keep, keep, 0x00, 0x00, WGPUCompareFunction.GreaterEqual, layout: clipLayout);
-		StencilEvenOdd = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), 0xFF, 0xFF, layout: clipLayout);
-		StencilNonZero = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.IncrementWrap), Face(WGPUCompareFunction.Always, WGPUStencilOperation.DecrementWrap), 0xFF, 0xFF, layout: clipLayout);
-		CoverPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), 0xFF, 0xFF, WGPUCompareFunction.GreaterEqual, layout: clipLayout);
-		// All three share the one explicit ClipU layout, so a bind group made with ClipBgl binds to any of them.
+		SolidPipe = MakePipe(colored, vs, fs, &blend, clipLayout);
 		SolidClipBgl = ClipBgl;
 		CoverClipBgl = ClipBgl;
 		CreatePathTablePipelines(&blend);
@@ -666,35 +645,33 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		var module = Module(CompositeWgsl);
 		var vs = SV("vs");
 		var fs = SV("fs");
-		var keepFace = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);
-		var ds = new WGPUDepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.False, DepthCompare = WGPUCompareFunction.Always, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
 		var over = new WGPUBlendState { Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.OneMinusSrcAlpha, Operation = WGPUBlendOperation.Add }, Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.OneMinusSrcAlpha, Operation = WGPUBlendOperation.Add } };
 		var dstIn = new WGPUBlendState { Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.Zero, DstFactor = WGPUBlendFactor.SrcAlpha, Operation = WGPUBlendOperation.Add }, Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.Zero, DstFactor = WGPUBlendFactor.SrcAlpha, Operation = WGPUBlendOperation.Add } };
-		CompositeSrcOver = MakeComposite(module, vs, fs, &over, &ds);
-		CompositeDstIn = MakeComposite(module, vs, fs, &dstIn, &ds);
+		CompositeSrcOver = MakeComposite(module, vs, fs, &over);
+		CompositeDstIn = MakeComposite(module, vs, fs, &dstIn);
 		CompositeBgl = wgpuRenderPipelineGetBindGroupLayout(CompositeSrcOver, 0);
 		CompositeDstInBgl = wgpuRenderPipelineGetBindGroupLayout(CompositeDstIn, 0);
 
 		// Two-texture blend (effect graph): the fragment emits the fully-composited pixel, so the pipeline REPLACES.
 		var blendModule = Module(CompositeBlendWgsl);
 		var replace = new WGPUBlendState { Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.Zero, Operation = WGPUBlendOperation.Add }, Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.Zero, Operation = WGPUBlendOperation.Add } };
-		CompositeBlend = MakeComposite(blendModule, vs, fs, &replace, &ds);
+		CompositeBlend = MakeComposite(blendModule, vs, fs, &replace);
 		CompositeBlendBgl = wgpuRenderPipelineGetBindGroupLayout(CompositeBlend, 0);
 
 		var combineModule = Module(EffectCombineWgsl);
-		EffectCombine = MakeComposite(combineModule, vs, fs, &replace, &ds);
+		EffectCombine = MakeComposite(combineModule, vs, fs, &replace);
 		EffectCombineBgl = wgpuRenderPipelineGetBindGroupLayout(EffectCombine, 0);
 
 		var colorFuncModule = Module(ColorFuncWgsl);
-		ColorFunc = MakeComposite(colorFuncModule, vs, fs, &replace, &ds);
+		ColorFunc = MakeComposite(colorFuncModule, vs, fs, &replace);
 		ColorFuncBgl = wgpuRenderPipelineGetBindGroupLayout(ColorFunc, 0);
 
 		var noiseModule = Module(EffectNoiseWgsl);
-		EffectNoise = MakeComposite(noiseModule, vs, fs, &replace, &ds);
+		EffectNoise = MakeComposite(noiseModule, vs, fs, &replace);
 		EffectNoiseBgl = wgpuRenderPipelineGetBindGroupLayout(EffectNoise, 0);
 	}
 
-	private IntPtr MakeComposite(IntPtr module, WGPUStringView vs, WGPUStringView fs, WGPUBlendState* blend, WGPUDepthStencilState* ds)
+	private IntPtr MakeComposite(IntPtr module, WGPUStringView vs, WGPUStringView fs, WGPUBlendState* blend)
 	{
 		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 0 };
 		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = WGPUColorWriteMask.All };
@@ -703,7 +680,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		{
 			Vertex = vsState,
 			Fragment = &fsState,
-			DepthStencil = ds,
+			DepthStencil = null,
 			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
 			Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
 			Layout = IntPtr.Zero,
@@ -756,9 +733,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
 		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = WGPUColorWriteMask.All };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
-		var keepFace = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);
-		var ds = new WGPUDepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.False, DepthCompare = WGPUCompareFunction.GreaterEqual, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
-		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = IntPtr.Zero };
+		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = null, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = IntPtr.Zero };
 		RrPipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
 		RrClipBgl = wgpuRenderPipelineGetBindGroupLayout(RrPipe, 0);
 	}
@@ -773,9 +748,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
 		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = WGPUColorWriteMask.All };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
-		var keepFace = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);
-		var ds = new WGPUDepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.False, DepthCompare = WGPUCompareFunction.GreaterEqual, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
-		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = IntPtr.Zero };
+		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = null, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = IntPtr.Zero };
 		GradientPipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
 		GradBgl = wgpuRenderPipelineGetBindGroupLayout(GradientPipe, 0);
 		GradClipBgl = wgpuRenderPipelineGetBindGroupLayout(GradientPipe, 1);
@@ -826,9 +799,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 			var blend = new WGPUBlendState { Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.OneMinusSrcAlpha, Operation = WGPUBlendOperation.Add }, Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.OneMinusSrcAlpha, Operation = WGPUBlendOperation.Add } };
 		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = &blend, WriteMask = WGPUColorWriteMask.All };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
-		var keepFace = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);
-		var ds = new WGPUDepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.False, DepthCompare = WGPUCompareFunction.GreaterEqual, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
-		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = MakeImagePipeLayout() };
+		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = null, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = MakeImagePipeLayout() };
 		ImagePipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
 		ImageClipBgl = ClipBgl;   // shared, so a stamped clip group binds here too
 		var sd = new WGPUSamplerDescriptor { AddressModeU = WGPUAddressMode.ClampToEdge, AddressModeV = WGPUAddressMode.ClampToEdge, MagFilter = WGPUFilterMode.Linear, MinFilter = WGPUFilterMode.Linear, MipmapFilter = WGPUMipmapFilterMode.Nearest, MaxAnisotropy = 1 };
@@ -847,73 +818,47 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		}
 	}
 
-	private IntPtr MakePipe(IntPtr module, WGPUStringView vs, WGPUStringView fs, bool colorWrite, bool colorAttrs, WGPUBlendState* blend, WGPUStencilFaceState front, WGPUStencilFaceState back, uint stencilWrite, uint stencilRead, WGPUCompareFunction depthCompare = WGPUCompareFunction.Always, bool depthWrite = false, IntPtr layout = default, uint samples = 0)
+	// pos.xy + col.rgba vertices, no depth/stencil: every clip is analytic or a sampled mask.
+	private IntPtr MakePipe(IntPtr module, WGPUStringView vs, WGPUStringView fs, WGPUBlendState* blend, IntPtr layout)
 	{
 		var attrs = stackalloc WGPUVertexAttribute[2];
 		attrs[0] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
-		var stride = 8ul;
-		var attrCount = 1u;
-		if (colorAttrs)
-		{
-			attrs[1] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x4, Offset = 8, ShaderLocation = 1 };
-			stride = 24; attrCount = 2;
-		}
-		var vbl = new WGPUVertexBufferLayout { ArrayStride = stride, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = attrCount, Attributes = attrs };
+		attrs[1] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x4, Offset = 8, ShaderLocation = 1 };
+		var vbl = new WGPUVertexBufferLayout { ArrayStride = 24, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 2, Attributes = attrs };
 		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
-		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = colorWrite ? WGPUColorWriteMask.All : 0 };
+		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = WGPUColorWriteMask.All };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
-		var ds = new WGPUDepthStencilState
-		{
-			Format = DepthStencilFormat,
-			DepthWriteEnabled = depthWrite ? WGPUOptionalBool.True : WGPUOptionalBool.False,
-			DepthCompare = depthCompare,
-			StencilFront = front,
-			StencilBack = back,
-			StencilReadMask = stencilRead,
-			StencilWriteMask = stencilWrite,
-		};
 		var pd = new WGPURenderPipelineDescriptor
 		{
 			Vertex = vsState,
 			Fragment = &fsState,
-			DepthStencil = &ds,
+			DepthStencil = null,
 			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
-			Multisample = new WGPUMultisampleState { Count = samples == 0 ? MsaaSamples : samples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
+			Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
 			Layout = layout,
 		};
 		return wgpuDeviceCreateRenderPipeline(Dev, &pd);
 	}
 
-	// Transform-table path-fill pipelines: device-space verts + a per-vertex Uint32 slot index (last attribute).
-	// Auto-layout (Layout=0) so wgpu derives group 0 (storage table) and, for cover, group 1 (ClipU) from the WGSL.
+	// Transform-table pipelines: device-space verts + a per-vertex Uint32 slot index (last attribute).
 	private void CreatePathTablePipelines(WGPUBlendState* blend)
 	{
-		// Explicit BGLs so the cover's group 1 IS the shared ClipBgl — existing ClipU bind groups (immediate + the
-		// arena re-stamp) bind to the table cover unchanged. Group 0 = the read-only storage transform table.
+		// Explicit BGLs so group 1 IS the shared ClipBgl — existing ClipU bind groups (immediate + the arena
+		// re-stamp) bind to the table pipelines unchanged. Group 0 = the read-only storage transform table.
 		var se = new WGPUBindGroupLayoutEntry { Binding = 0, Visibility = WGPUShaderStage.Vertex, Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.ReadOnlyStorage } };
 		var sbgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 1, Entries = &se };
 		XformBgl = wgpuDeviceCreateBindGroupLayout(Dev, &sbgld);
 		CoverTableClipBgl = ClipBgl;
-		var stencilBgls = stackalloc IntPtr[1] { XformBgl };
-		var stencilPld = new WGPUPipelineLayoutDescriptor { BindGroupLayoutCount = 1, BindGroupLayouts = (IntPtr)stencilBgls };
-		var stencilLayout = wgpuDeviceCreatePipelineLayout(Dev, &stencilPld);
 		var coverBgls = stackalloc IntPtr[2] { XformBgl, ClipBgl };
 		var coverPld = new WGPUPipelineLayoutDescriptor { BindGroupLayoutCount = 2, BindGroupLayouts = (IntPtr)coverBgls };
 		var coverLayout = wgpuDeviceCreatePipelineLayout(Dev, &coverPld);
 
-		var stencilMod = Module(StencilTableWgsl);
 		var coverMod = Module(ClipStructFn + CoverTableWgsl);
 		var vs = SV("vs"); var fs = SV("fs");
-		StencilTableEO = MakeTablePipe(stencilMod, vs, fs, colorWrite: false, colorAttrs: false, blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), 0xFF, 0xFF, WGPUCompareFunction.Always, stencilLayout);
-		StencilTableNZ = MakeTablePipe(stencilMod, vs, fs, colorWrite: false, colorAttrs: false, blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.IncrementWrap), Face(WGPUCompareFunction.Always, WGPUStencilOperation.DecrementWrap), 0xFF, 0xFF, WGPUCompareFunction.Always, stencilLayout);
-		CoverTablePipe = MakeTablePipe(coverMod, vs, fs, colorWrite: true, colorAttrs: true, blend, Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), 0xFF, 0xFF, WGPUCompareFunction.GreaterEqual, coverLayout);
-		// Same shader/vertex layout, but stencil Always + no stencil writes: the tiling-fan path has no stencil
-		// pass, so the masked variant would test against 0 and discard every fragment.
-		CoverTableDirectPipe = MakeTablePipe(coverMod, vs, fs, colorWrite: true, colorAttrs: true, blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep), 0x00, 0xFF, WGPUCompareFunction.GreaterEqual, coverLayout);
-		// Solid transform-table pipe: the cover shader (pos+col+slot) drawn unconditionally under the clip depth (no
-		// stencil), so coalesced solids from moving recordings position per-vertex via their own slot.
-		var keep = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);
-		SolidTablePipe = MakeTablePipe(coverMod, vs, fs, colorWrite: true, colorAttrs: true, blend, keep, keep, 0x00, 0x00, WGPUCompareFunction.GreaterEqual, coverLayout);
+		PathTablePipe = MakeTablePipe(coverMod, vs, fs, blend, coverLayout);
+		// Same shader (pos+col+slot) for solids, so coalesced solids from moving recordings position per-vertex
+		// via their own slot.
+		SolidTablePipe = MakeTablePipe(coverMod, vs, fs, blend, coverLayout);
 		CreateRrectTablePipeline(blend, coverLayout);
 	}
 
@@ -939,47 +884,25 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
 		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = WGPUColorWriteMask.All };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
-		var keepFace = Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep);
-		var ds = new WGPUDepthStencilState { Format = DepthStencilFormat, DepthWriteEnabled = WGPUOptionalBool.False, DepthCompare = WGPUCompareFunction.GreaterEqual, StencilFront = keepFace, StencilBack = keepFace, StencilReadMask = 0, StencilWriteMask = 0 };
-		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = &ds, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = layout };
+		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = null, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = layout };
 		RrTablePipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
 	}
 
-	private IntPtr MakeTablePipe(IntPtr module, WGPUStringView vs, WGPUStringView fs, bool colorWrite, bool colorAttrs, WGPUBlendState* blend, WGPUStencilFaceState front, WGPUStencilFaceState back, uint stencilWrite, uint stencilRead, WGPUCompareFunction depthCompare, IntPtr layout)
+	private IntPtr MakeTablePipe(IntPtr module, WGPUStringView vs, WGPUStringView fs, WGPUBlendState* blend, IntPtr layout)
 	{
 		var attrs = stackalloc WGPUVertexAttribute[3];
 		attrs[0] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
-		ulong stride; uint attrCount;
-		if (colorAttrs)
-		{
-			attrs[1] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x4, Offset = 8, ShaderLocation = 1 };
-			attrs[2] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Uint32, Offset = 24, ShaderLocation = 2 };
-			stride = 28; attrCount = 3;
-		}
-		else
-		{
-			attrs[1] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Uint32, Offset = 8, ShaderLocation = 1 };
-			stride = 12; attrCount = 2;
-		}
-		var vbl = new WGPUVertexBufferLayout { ArrayStride = stride, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = attrCount, Attributes = attrs };
+		attrs[1] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x4, Offset = 8, ShaderLocation = 1 };
+		attrs[2] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Uint32, Offset = 24, ShaderLocation = 2 };
+		var vbl = new WGPUVertexBufferLayout { ArrayStride = 28, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 3, Attributes = attrs };
 		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
-		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = colorWrite ? WGPUColorWriteMask.All : 0 };
+		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = WGPUColorWriteMask.All };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
-		var ds = new WGPUDepthStencilState
-		{
-			Format = DepthStencilFormat,
-			DepthWriteEnabled = WGPUOptionalBool.False,
-			DepthCompare = depthCompare,
-			StencilFront = front,
-			StencilBack = back,
-			StencilReadMask = stencilRead,
-			StencilWriteMask = stencilWrite,
-		};
 		var pd = new WGPURenderPipelineDescriptor
 		{
 			Vertex = vsState,
 			Fragment = &fsState,
-			DepthStencil = &ds,
+			DepthStencil = null,
 			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
 			Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
 			Layout = layout,

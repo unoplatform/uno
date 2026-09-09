@@ -150,7 +150,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect)
 	{
 		// A geometry that advertises itself as a single (rounded) rect clips analytically (shader-evaluated
-		// rounds / plain scissor) instead of costing a stencil-mask fan draw and defeating coalescing.
+		// rounds / plain scissor) instead of costing a coverage-mask bake and defeating coalescing.
 		// Only under an axis-aligned matrix: the rounds are device-space axis-aligned, while the fan is
 		// exact under any transform.
 		if (_m.M12 == 0 && _m.M21 == 0 && geometry.TryGetRoundRect() is { } rr)
@@ -289,7 +289,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	private readonly List<Vector2> _contourPts = new();
 	private bool _fanFromCentroid;
 	// Every contour of the current fill, kept so the path can be re-tessellated into a NON-overlapping
-	// triangulation with an analytic AA ring (PathTessellator) instead of going through stencil-then-cover.
+	// triangulation with an analytic AA ring (PathTessellator) instead of going through a coverage mask.
 	private readonly List<List<Vector2>> _allContours = new();
 	private readonly List<float> _aaVerts = new(), _aaCov = new();
 	// Per-vertex AA coverage for the fill being recorded (null = no ring, edges rely on the attachment).
@@ -360,8 +360,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
 		_contourCount = 0; _fanAreaAbs = 0; _fanAreaSigned = 0;
 		_allContours.Clear(); _fanCoverage = null;
-		// Even-odd fills stencil by parity, and parity depends on the fan decomposition, so only the non-zero
-		// path may move its pivot.
+		// Even-odd parity depends on the fan decomposition, so only the non-zero path may move its pivot.
 		_fanFromCentroid = !evenOdd;
 		_contourPts.Clear();
 		geometry.StreamFlattened(this);
@@ -659,9 +658,8 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 
 	/// <summary>
 	/// Strokes by tessellating the polyline into a miter-joined triangle strip, which TILES — so it fills in one
-	/// pass (see PathFill.FanTiles) instead of stencilling the stroke OUTLINE and covering its whole bbox. That
-	/// outline route costs bbox-scale rasterisation twice over: the stencil fan spans the shape and so does the
-	/// cover quad, which is why a 2px outline around a 600x500 blob dominated coverMpx.
+	/// pass (see PathFill.FanTiles) instead of baking the stroke OUTLINE into a bbox-sized coverage mask, whose cost
+	/// is the bbox rather than the ink: a 2px outline around a 600x500 blob would pay for the whole blob.
 	/// Consecutive quads share their join edge exactly, so a translucent stroke does not double-blend — except
 	/// where the polyline crosses ITSELF, which this does not detect.
 	/// </summary>

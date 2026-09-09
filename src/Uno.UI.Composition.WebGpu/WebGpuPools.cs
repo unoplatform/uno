@@ -70,9 +70,9 @@ internal sealed unsafe class WebGpuTexturePool : IDisposable
 		}
 	}
 
-	/// <summary>Marks a rented view free again so it can be re-rented within the SAME frame. Used for the depth/
-	/// stencil target, which is written only inside its own (already-ended) render pass and never sampled after —
-	/// so one depth texture per size is reused across all of a frame's offscreen passes + the main pass.</summary>
+	/// <summary>Marks a rented view free again so it can be re-rented within the SAME frame: for a target that is
+	/// written only inside its own (already-ended) render pass and never sampled after, such as a coverage
+	/// accumulator or an MSAA colour that has resolved.</summary>
 	public void Return(IntPtr view)
 	{
 		if (view == IntPtr.Zero) { return; }

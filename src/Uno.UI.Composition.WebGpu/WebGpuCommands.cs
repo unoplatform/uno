@@ -147,7 +147,7 @@ internal sealed class PathFill : WebGpuCommand
 	public Vector2 BbMin, BbMax;
 	public WColor Color;
 	public bool EvenOdd;
-	/// <summary>The fan tiles the shape without overlap, so it can be filled directly — no stencil-then-cover.</summary>
+	/// <summary>The fan tiles the shape without overlap, so it can be filled directly.</summary>
 	public bool FanTiles;
 
 	/// <summary>
@@ -166,7 +166,7 @@ internal sealed class PathFill : WebGpuCommand
 	public object Geometry;
 	public Matrix4x4 GeomMatrix;
 
-	// The stencil fan the GPU consumes: FanDevice with the transform-table slot interleaved as a third float.
+	// The fan the GPU consumes: FanDevice with the transform-table slot interleaved as a third float.
 	// Recordings are cached, so FanDevice never changes — rebuilding this element by element every frame is pure
 	// waste, and a giant glyph flattens to thousands of points. Keyed by the slot it was built for.
 
