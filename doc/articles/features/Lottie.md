@@ -51,7 +51,6 @@ On all Uno Platform targets, you'll need the following packages:
 
 Additionally, on Skia Desktop targets, you'll need the following packages:
 
-* `SkiaSharp.Views.Uno.WinUI` version 4.148.0 or later
 * `SkiaSharp.Skottie` version 4.148.0 or later
 
 On Windows/WinAppSDK, use the [`CommunityToolkit.WinUI.Lottie` NuGet package](https://www.nuget.org/packages/CommunityToolkit.WinUI.Lottie).
