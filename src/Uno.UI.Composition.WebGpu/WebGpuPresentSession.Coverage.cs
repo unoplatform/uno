@@ -164,6 +164,24 @@ public sealed unsafe partial class WebGpuPresentSession
 		if (_clipMasks.TryGetValue(key, out var cached)) { return cached; }
 
 		ClipMaskRect(cd.Paths, out var ox, out var oy, out var w, out var h);
+		var (view, tex) = BakeCoverageMask(cd.Paths, ox, oy, w, h, Vector2.One);
+
+		if (owned is not null) { (owned.Textures ??= new()).Add(((nint)view, (nint)tex)); }
+		else { _d.DeferTextureRelease(view, tex); }
+		var mask = new ClipMask { View = view, OriginX = ox, OriginY = oy };
+		_clipMasks[key] = mask;
+		ClipMasksBaked++;
+		return mask;
+	}
+	/// <summary>
+	/// Bakes one coverage mask of <paramref name="w"/>x<paramref name="h"/> device pixels whose texel (0,0) sits on
+	/// device pixel (<paramref name="ox"/>,<paramref name="oy"/>): every path's signed area is accumulated into a
+	/// scratch target and resolved (fill rule, Difference) into the mask with a multiply, so the result is the
+	/// product of the paths' coverages. <paramref name="scale"/> is device pixels per unit of the paths' space.
+	/// Runs during op BUILD; the caller owns the returned texture.
+	/// </summary>
+	private (IntPtr view, IntPtr tex) BakeCoverageMask(PathClip[] paths, int ox, int oy, int w, int h, Vector2 scale)
+	{
 		var td = new WGPUTextureDescriptor
 		{
 			Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 },
@@ -190,12 +208,12 @@ public sealed unsafe partial class WebGpuPresentSession
 		size[0] = w; size[1] = h;
 		wgpuQueueWriteBuffer(_d.Q, sizeBuf, 0, (IntPtr)size, 16);
 
-		for (var pi = 0; pi < cd.Paths.Length; pi++)
+		for (var pi = 0; pi < paths.Length; pi++)
 		{
-			var path = cd.Paths[pi];
+			var path = paths[pi];
 			var edges = path.Edges;
 			var local = new float[edges.Length];
-			for (var i = 0; i < edges.Length; i += 2) { local[i] = edges[i] - ox; local[i + 1] = edges[i + 1] - oy; }
+			for (var i = 0; i < edges.Length; i += 2) { local[i] = edges[i] * scale.X - ox; local[i + 1] = edges[i + 1] * scale.Y - oy; }
 			var edgeBuf = _d.BufferPool.Rent(local.Length * sizeof(float), WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst);
 			fixed (float* p = local) { wgpuQueueWriteBuffer(_d.Q, edgeBuf, 0, (IntPtr)p, (nuint)(local.Length * sizeof(float))); }
 
@@ -234,11 +252,38 @@ public sealed unsafe partial class WebGpuPresentSession
 			_d.Pool.Return(accView);
 		}
 
+		return (view, tex);
+	}
+
+	// UNO_WEBGPU_COVERAGE_FILLS=0 leaves the fills the atlas and the tessellator both refuse on stencil-then-cover.
+	private static readonly bool _coverageFillMasks = Environment.GetEnvironmentVariable("UNO_WEBGPU_COVERAGE_FILLS") is not ("0" or "false");
+	internal static int FillMasksBaked;
+
+	/// <summary>
+	/// Draws a fill through an exact coverage mask: what the atlas refused (too large, no key) and the tessellator
+	/// refused (self-overlap, even-odd) would otherwise reach stencil-then-cover and render with no antialiasing at
+	/// all. A bake per fill, so it only takes what nothing cheaper serves. <paramref name="scale"/> is the device
+	/// scale the GPU applies to the op's space afterwards, exactly as for the atlas.
+	/// </summary>
+	private bool TryMaskFill(PathFill pf, OwnedResources owned, Vector2 scale, out DrawOp op)
+	{
+		op = default;
+		if (pf.Edges is not { Length: >= 12 } || scale.X <= 0 || scale.Y <= 0) { return false; }
+		float dx0 = pf.BbMin.X * scale.X, dy0 = pf.BbMin.Y * scale.Y, dx1 = pf.BbMax.X * scale.X, dy1 = pf.BbMax.Y * scale.Y;
+		int ox = (int)MathF.Floor(dx0) - 1, oy = (int)MathF.Floor(dy0) - 1;
+		int w = (int)MathF.Ceiling(dx1) + 1 - ox, h = (int)MathF.Ceiling(dy1) + 1 - oy;
+		if (w <= 0 || h <= 0 || w > 4096 || h > 4096) { return false; }
+
+		var (view, tex) = BakeCoverageMask(new[] { new PathClip { Edges = pf.Edges, EvenOdd = pf.EvenOdd } }, ox, oy, w, h, scale);
 		if (owned is not null) { (owned.Textures ??= new()).Add(((nint)view, (nint)tex)); }
 		else { _d.DeferTextureRelease(view, tex); }
-		var mask = new ClipMask { View = view, OriginX = ox, OriginY = oy };
-		_clipMasks[key] = mask;
-		ClipMasksBaked++;
-		return mask;
+		FillMasksBaked++;
+
+		// A tinted quad over the mask, 1:1 with device pixels once the GPU applies the scale -- the same draw an atlas
+		// entry uses, so it coalesces and re-stamps like one.
+		var bg = TintedImageBg(view, pf.Color, owned);
+		var q = TexturedQuad(new Vector2(ox / scale.X, oy / scale.Y), new Vector2(w / scale.X, h / scale.Y));
+		op = new DrawOp(DrawKind.Image, (nint)bg, 6, (nint)Vbuf(q, owned), false, pf.Clip, (nint)MakeClipBg(_d.ImageClipBgl, pf.Clip, owned));
+		return true;
 	}
 }
