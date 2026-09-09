@@ -25,6 +25,17 @@ internal struct RoundClip
 	public bool Exclude;    // Difference op: keep the area OUTSIDE the rounded rect (PushClipExclude) rather than inside
 }
 
+// One arbitrary path clip as the coverage rasterizer consumes it: closed device-space edges (x0,y0,x1,y1 each),
+// its fill rule, and whether it keeps the inside (Intersect) or the outside (Difference). Immutable once built, so
+// a composed clip can share it by reference.
+internal sealed class PathClip
+{
+	public float[] Edges;
+	public bool EvenOdd;
+	public bool Exclude;
+	public Vector4 Bbox;   // device L,T,R,B of the edges
+}
+
 internal struct ClipData
 {
 	public const int MaxRounds = 4;   // nesting depth beyond this drops the outermost (least likely to clip content)
@@ -37,6 +48,13 @@ internal struct ClipData
 	public float[] PathFan;
 	public bool PathEvenOdd;
 	public bool PathExclude;   // Difference op for the path clip
+	// Every path clip in force, innermost last, for the per-fragment coverage mask (see ResolveClipMask). Unlike
+	// PathFan this nests without limit: the mask is the PRODUCT of each path's coverage, so intersecting N shapes
+	// is N accumulate+resolve passes into one texture. Copy-on-write like Rounds.
+	public PathClip[] Paths;
+	// The stamp path re-uses ClipU under an arena transform and cannot bake a device-space mask for the session
+	// clip it folds in, so it keeps that clip on the depth mask; set there so the encode honours PathFan.
+	public bool DepthFanOnly;
 							   // RESIDENT clip-fan buffer: a CACHED recording's fan is stable, so its NDC vertex buffer is uploaded ONCE
 							   // (into owned) and reused every frame instead of re-tessellated + re-uploaded per frame in ApplyDepthClip.
 							   // 0 = not resident. FanW/FanH = surface size it was baked for (invalidated on resize).
@@ -72,6 +90,15 @@ internal struct ClipData
 	// The fix both want is a depth mask that intersects rather than replaces: a winding rule combines a path's own
 	// contours but cannot AND two independent shapes, so an unbounded slot needs one mask pass per shape (each
 	// testing the previous depth) instead of a single stencil-then-cover.
+	public static PathClip[] PushPath(PathClip[] existing, PathClip pc)
+	{
+		int n = existing?.Length ?? 0;
+		var arr = new PathClip[n + 1];
+		if (n > 0) { System.Array.Copy(existing, arr, n); }
+		arr[n] = pc;
+		return arr;
+	}
+
 	public static RoundClip[] Push(RoundClip[] existing, in RoundClip rc)
 	{
 		int n = existing?.Length ?? 0;

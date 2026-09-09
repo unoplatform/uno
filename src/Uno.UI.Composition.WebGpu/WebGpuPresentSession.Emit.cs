@@ -88,7 +88,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			// An atlas quad carries build-time NDC and no table slot, so unlike the rest of this entry it is not
 			// re-projected by the per-frame slot rewrite: it has to be rebuilt when the surface resizes, and its
 			// mask is only the right size while the replay transform still neither scales nor rotates.
-			&& !(fe.HasAtlas && (fe.BuiltW != (int)_s.Width || fe.BuiltH != (int)_s.Height
+			&& !((fe.HasAtlas || fe.HasClipMask) && (fe.BuiltW != (int)_s.Width || fe.BuiltH != (int)_s.Height
 				|| !(TryAtlasScale(rr.Transform, out var feScale) && SameAtlasScale(feScale, fe.AtlasScale))))
 			// ...and rebuild once the transform settles, so content first built mid-animation stops being aliased.
 			&& !(fe.AtlasBlockedByScale && TryAtlasScale(rr.Transform, out _));
@@ -101,6 +101,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			var tmp = new List<DrawOp>();
 			var tcmds = WebGpuCommandRecorder.TransformFor(rr.Commands, Matrix4x4.Identity, ClipData.None);
 			int tableAtlasBefore = AtlasHit + AtlasBaked;
+			int tableMaskBefore = ClipMasksBaked;
 			bool tableAtlasSafe = TryAtlasScale(rr.Transform, out var tableScale);
 			bool tableHasPath = false; for (int _i = 0; _i < tcmds.Count; _i++) { if (tcmds[_i] is PathFill) { tableHasPath = true; break; } }
 			int slot = (fe is not null && fe.XformSlot >= 0) ? fe.XformSlot : _d.AllocXformSlot();
@@ -155,8 +156,9 @@ public sealed unsafe partial class WebGpuPresentSession
 			}
 			long id = (fe is not null && fe.SlabId != 0) ? fe.SlabId : _d.NextSlabId();
 			bool tableHasAtlas = (AtlasHit + AtlasBaked) != tableAtlasBefore;
+			bool tableHasMask = ClipMasksBaked != tableMaskBefore;
 			bool tableBlocked = !tableAtlasSafe && tableHasPath && _pathAtlas;
-			fe = new WebGpuGeometryCache { TableFrame = true, FrameSolid = true, SlabId = id, FrameOrder = order, TableSolids = sv, TableRrects = rv, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = slot, HasAtlas = tableHasAtlas, AtlasBlockedByScale = tableBlocked, AtlasScale = tableScale };
+			fe = new WebGpuGeometryCache { TableFrame = true, FrameSolid = true, SlabId = id, FrameOrder = order, TableSolids = sv, TableRrects = rv, Owned = fOwned, HasClipMask = tableHasMask, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = slot, HasAtlas = tableHasAtlas, AtlasBlockedByScale = tableBlocked, AtlasScale = tableScale };
 			StoreCompiled(rr.Data, fe);
 		}
 		int sBase = 0, rBase = 0;
@@ -324,7 +326,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// first built mid-animation stops being aliased.
 	/// </summary>
 	private static bool AtlasNeedsRebuild(WebGpuGeometryCache entry, Matrix4x4 transform)
-		=> (entry.HasAtlas && !(TryAtlasScale(transform, out var scale) && SameAtlasScale(scale, entry.AtlasScale)))
+		=> ((entry.HasAtlas || entry.HasClipMask) && !(TryAtlasScale(transform, out var scale) && SameAtlasScale(scale, entry.AtlasScale)))
 			|| (entry.AtlasBlockedByScale && TryAtlasScale(transform, out _));
 
 	/// <summary>
@@ -339,7 +341,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		// A pure-path entry survives a resize through its xform table, but an atlas quad in it does not: that is an
 		// image op with build-time NDC and no table slot, so a resize leaves it scaled (visible through the
 		// offscreen RenderTargetBitmap path the shape parity tests capture through).
-		var survivesResize = entry is not null && entry.PurePath && !entry.HasAtlas;
+		var survivesResize = entry is not null && entry.PurePath && !entry.HasAtlas && !entry.HasClipMask;
 		if (miss || !entry.Arena || (aSizeChanged && !survivesResize) || AtlasNeedsRebuild(entry, rr.Transform))
 		{
 			if (_emitStats) { _statArenaRebuilds++; }
@@ -351,12 +353,14 @@ public sealed unsafe partial class WebGpuPresentSession
 			bool aHasPath = false, aPure = aList.Count > 0; foreach (var c in aList) { if (c is PathFill) { aHasPath = true; } else { aPure = false; } }
 			if (aHasPath && aSlot < 0) { aSlot = _d.AllocXformSlot(); }
 			int atlasBefore = AtlasHit + AtlasBaked;
+			int maskBefore = ClipMasksBaked;
 			bool aAtlasSafe = TryAtlasScale(rr.Transform, out var aScale);
 			BuildCoalesced(aList, aOps, aOwned, aSlot, atlasScale: aAtlasSafe ? aScale : null);
 			bool aHasAtlas = (AtlasHit + AtlasBaked) != atlasBefore;
+			bool aHasMask = ClipMasksBaked != maskBefore;
 			bool aBlocked = !aAtlasSafe && aHasPath && _pathAtlas;
 			for (int _ri = 0; _ri < aOps.Count; _ri++) { aOps[_ri] = ResidentizeFan(aOps[_ri], aOwned); }
-			entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, HasAtlas = aHasAtlas, AtlasBlockedByScale = aBlocked, AtlasScale = aScale, PurePath = aPure, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = aSlot };
+			entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, HasAtlas = aHasAtlas, HasClipMask = aHasMask, AtlasBlockedByScale = aBlocked, AtlasScale = aScale, PurePath = aPure, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = aSlot };
 			StoreCompiled(rr.Data, entry);
 		}
 		if (entry.XformSlot >= 0) { WriteXform(entry.XformSlot, rr.Transform); }
@@ -386,6 +390,7 @@ public sealed unsafe partial class WebGpuPresentSession
 				var scissorClip = op.clip;
 				if (op.clip.PathFan is { } localFan)
 				{
+					scissorClip.DepthFanOnly = true;
 				if (arenaFanBg == 0) { arenaFanBg = (nint)MakeClipBg(_d.ClipBgl, default, stampOwned, xf, finv); }
 					// Keep the identity-space fan and its resident NDC buffer; hand the stencil draw
 					// the arena transform instead. Transforming on the CPU here would mean a fresh
@@ -414,6 +419,7 @@ public sealed unsafe partial class WebGpuPresentSession
 				// at identity with ClipData.None, so the session fan is not on the op already.
 				if (rr.Clip.PathFan is { } sessionFan)
 				{
+					scissorClip.DepthFanOnly = true;
 					scissorClip.PathFan = sessionFan;
 					scissorClip.PathEvenOdd = rr.Clip.PathEvenOdd;
 					scissorClip.PathExclude = rr.Clip.PathExclude;
@@ -423,6 +429,7 @@ public sealed unsafe partial class WebGpuPresentSession
 				}
 
 				var uClip = op.clip;
+				uClip.DepthFanOnly = scissorClip.DepthFanOnly;
 				FoldSessionRounds(ref uClip, rr.Clip.Rounds, finv);
 				var uSessionFinite = IsFiniteAabb(rr.Clip.Aabb);
 				var uAxisAligned = finv.M12 == 0 && finv.M21 == 0;

@@ -176,11 +176,15 @@ public sealed unsafe partial class WebGpuPresentSession
 				var chh = Math.Min(cb.W, _s.Height) - Math.Max(cb.Y, 0);
 				if (cw > 0 && chh > 0) { pst.CoverMpx += cw * chh / 1e6; }
 			}
-			if (!ReferenceEquals(clip.PathFan, pst.ClipFan))
+			// A path clip carried by the coverage mask needs no depth pass; only fans still on the depth mask (coverage
+			// clips off, no edge list, or a stamped session clip) go through ApplyDepthClip.
+			var depthFan = UsesDepthFan(clip) ? clip.PathFan : null;
+			if (!ReferenceEquals(depthFan, pst.ClipFan))
 			{
-				ApplyDepthClip(pass, pst.ClipFan, pst.ClipAabb, clip);
+				var next = clip; next.PathFan = depthFan;
+				ApplyDepthClip(pass, pst.ClipFan, pst.ClipAabb, next);
 				pst.Enc.Reset();
-				pst.ClipFan = clip.PathFan; pst.ClipAabb = clip.Aabb;
+				pst.ClipFan = depthFan; pst.ClipAabb = clip.Aabb;
 				pst.Enc.Reset();   // the clip setup changed pipeline + scissor state
 				pst.ClipChanges++;
 			}
@@ -448,7 +452,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		line.Append($"/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip})");
 
 		// Turned away, and why
-		line.Append($" atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked}/cov{CoverageBaked}");
+		line.Append($" atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked}/cov{CoverageBaked} clipMasks={ClipMasksBaked}");
 		line.Append($"/full{AtlasNoRoom}/ring{AtlasNoRing}/scaleblk{ScaleBlocked}/big{WebGpuPathAtlas.RejBig}");
 		line.Append($"/pages{_d.PathAtlas.Pages.Count}");
 

@@ -116,7 +116,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	private bool BeginOwnedFrameEncoder()
 	{
 		var owns = _frameEncoder == IntPtr.Zero;
-		if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); }
+		if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); _clipMasks.Clear(); }
 		return owns;
 	}
 

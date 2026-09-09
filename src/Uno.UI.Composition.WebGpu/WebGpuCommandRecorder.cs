@@ -177,12 +177,25 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		}
 		_fan = new List<float>();
 		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
+		_allContours.Clear(); _contoursTruncated = false; _contourPts.Clear();
 		geometry.StreamFlattened(this);
 		if (_fan.Count > 0)
 		{
 			_clip.PathFan = _fan.ToArray();
 			_clip.PathEvenOdd = geometry.FillRule == GeometryFillRule.EvenOdd;
 			_clip.PathExclude = operation == ClipOperation.Difference;
+			// The contours are the outline the coverage mask rasterizes. When they were truncated there is no
+			// edge list, and the clip stays on the depth mask through PathFan alone.
+			if (BuildEdges() is { } edges)
+			{
+				_clip.Paths = ClipData.PushPath(_clip.Paths, new PathClip
+				{
+					Edges = edges,
+					EvenOdd = _clip.PathEvenOdd,
+					Exclude = _clip.PathExclude,
+					Bbox = new Vector4(_bbMin.X, _bbMin.Y, _bbMax.X, _bbMax.Y),
+				});
+			}
 		}
 		_clip.ScissorInert = false;
 		_fan = null;
@@ -1176,6 +1189,37 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			result.PathEvenOdd = c.PathEvenOdd;
 			result.PathExclude = c.PathExclude;
 		}
+		if (c.Paths is { Length: > 0 })
+		{
+			result.Paths = ComposePaths(_clip.Paths, c.Paths);
+		}
+		return result;
+	}
+
+	// The composed path list for (parent, child), memoized by reference: every command of a replayed recording
+	// under one clip composes the same pair, and the present session keys its clip masks on the resulting array,
+	// so handing each command its own copy would bake the same mask once per command instead of once per clip.
+	private Dictionary<(PathClip[], PathClip[]), PathClip[]> _pathsMemo;
+
+	private PathClip[] ComposePaths(PathClip[] parent, PathClip[] child)
+	{
+		_pathsMemo ??= new();
+		if (_pathsMemo.TryGetValue((parent, child), out var memo)) { return memo; }
+		var result = parent;
+		foreach (var src in child)
+		{
+			var e = new float[src.Edges.Length];
+			var bbMin = new Vector2(float.MaxValue); var bbMax = new Vector2(float.MinValue);
+			for (int i = 0; i < e.Length; i += 2)
+			{
+				float x = src.Edges[i], y = src.Edges[i + 1];
+				var q = new Vector2(x * _m.M11 + y * _m.M21 + _m.M41, x * _m.M12 + y * _m.M22 + _m.M42);
+				e[i] = q.X; e[i + 1] = q.Y;
+				bbMin = Vector2.Min(bbMin, q); bbMax = Vector2.Max(bbMax, q);
+			}
+			result = ClipData.PushPath(result, new PathClip { Edges = e, EvenOdd = src.EvenOdd, Exclude = src.Exclude, Bbox = new Vector4(bbMin.X, bbMin.Y, bbMax.X, bbMax.Y) });
+		}
+		_pathsMemo[(parent, child)] = result;
 		return result;
 	}
 }

@@ -126,6 +126,9 @@ internal sealed unsafe class WebGpuGeometryCache
 	// This entry emitted atlas quads. Their coverage masks were baked at unit scale in the recording's own space,
 	// so a replay at any other scale would sample a wrong-sized mask — the replay guard rebuilds instead.
 	public bool HasAtlas;
+	// This entry baked path-clip coverage masks in its own space at unit scale; like atlas quads, a replay at
+	// another scale would sample them at the wrong size, so the same guard rebuilds instead.
+	public bool HasClipMask;
 	// This entry holds path fills that WOULD have been atlased but were built while the replay transform was
 	// scaling or rotating. Ops are cached, so without a rebuild once the transform settles it keeps the aliased
 	// geometry path forever — which is what left text built during a navigation transition permanently aliased.
