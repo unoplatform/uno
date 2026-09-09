@@ -20,51 +20,21 @@ namespace Uno.UI.Composition.WebGpu;
 
 public sealed unsafe partial class WebGpuPresentSession
 {
-	// Fills the shadow silhouette into an offscreen coverage surface (stencil-then-cover, white), then blurs it
-	// separably (H then V). Returns the blurred coverage texture + its device-space placement. NOTE: the per-
-	// shadow textures are not pooled/freed yet — fine for offscreen/one-shot; the on-window path needs cleanup.
+	// Bakes the shadow silhouette's coverage into a padded offscreen mask, then blurs it. Returns the blurred
+	// coverage texture + its device-space placement; the mask itself is released at the end of the frame.
 	private IntPtr RenderShadow(ShadowCmd sh, out Vector2 origin, out Vector2 size)
 	{
 		float pad = MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f;
-		origin = new Vector2(sh.BbMin.X - pad, sh.BbMin.Y - pad);
-		int sw = Math.Clamp((int)MathF.Ceiling(sh.BbMax.X - sh.BbMin.X + 2 * pad), 1, 4096);
-		int sh2 = Math.Clamp((int)MathF.Ceiling(sh.BbMax.Y - sh.BbMin.Y + 2 * pad), 1, 4096);
+		int ox = (int)MathF.Floor(sh.BbMin.X - pad), oy = (int)MathF.Floor(sh.BbMin.Y - pad);
+		int sw = Math.Clamp((int)MathF.Ceiling(sh.BbMax.X + pad) - ox, 1, 4096);
+		int sh2 = Math.Clamp((int)MathF.Ceiling(sh.BbMax.Y + pad) - oy, 1, 4096);
+		origin = new Vector2(ox, oy);
 		size = new Vector2(sw, sh2);
 
-		var cov = new WebGpuRenderSurface(_d, sw, sh2, _d.Pool);
-		var fanNdc = new float[sh.FanDevice.Length];
-		for (int i = 0; i < sh.FanDevice.Length; i += 2)
-		{
-			fanNdc[i] = (sh.FanDevice[i] - origin.X) / sw * 2f - 1f;
-			fanNdc[i + 1] = 1f - (sh.FanDevice[i + 1] - origin.Y) / sh2 * 2f;
-		}
-		var fanBuf = MakeBuffer(fanNdc);
-		var cq = new List<float>();
-		void CQ(float x, float y) { cq.Add(x); cq.Add(y); cq.Add(1f); cq.Add(1f); cq.Add(1f); cq.Add(1f); }
-		CQ(-1, -1); CQ(1, -1); CQ(1, 1); CQ(-1, -1); CQ(1, 1); CQ(-1, 1);
-		var coverBuf = MakeBuffer(cq.ToArray());
-		var noClip = MakeClipBg(_d.CoverClipBgl, default);
-
-		var color = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = cov.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? cov.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = _d.MsaaSamples > 1 ? WGPUStoreOp.Discard : WGPUStoreOp.Store, ClearValue = default };
-		var depthStencil = new WGPURenderPassDepthStencilAttachment { View = cov.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
-		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color, DepthStencilAttachment = &depthStencil };
-		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &desc);
-		wgpuRenderPassEncoderSetPipeline(pass, sh.EvenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
-		wgpuRenderPassEncoderSetBindGroup(pass, 0, MakeClipBg(_d.ClipBgl, default), 0, (uint*)null);   // identity xform (shadow fan already NDC)
-		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(fanNdc.Length * sizeof(float)));
-		wgpuRenderPassEncoderDraw(pass, (uint)(fanNdc.Length / 2), 1, 0, 0);
-		wgpuRenderPassEncoderSetPipeline(pass, _d.CoverPipe);
-		wgpuRenderPassEncoderSetBindGroup(pass, 0, noClip, 0, (uint*)null);
-		wgpuRenderPassEncoderSetStencilReference(pass, 0);
-		wgpuRenderPassEncoderSetVertexBuffer(pass, 0, coverBuf, 0, (nuint)(cq.Count * sizeof(float)));
-		wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
-		wgpuRenderPassEncoderEnd(pass);
-		if (_d.MsaaSamples > 1) { _d.Pool.Return(cov.MsaaColorView); }   // at 1x MsaaColorView aliases cov.View (blurred next) — don't reclaim
-		_d.Pool.Return(cov.DepthView);
-
-		var blurred = BlurPyramid(cov.View, sw, sh2, sh.SigmaX, sh.SigmaY);
-		// The coverage resolve was consumed by the pyramid's first downsample pass — re-rentable this frame.
-		_d.Pool.Return(cov.View);
+		var path = new PathClip { Edges = sh.Edges, EvenOdd = sh.EvenOdd, Bbox = new Vector4(sh.BbMin.X, sh.BbMin.Y, sh.BbMax.X, sh.BbMax.Y) };
+		var (covView, covTex) = BakeCoverageMask(new[] { path }, ox, oy, sw, sh2, Vector2.One);
+		var blurred = BlurPyramid(covView, sw, sh2, sh.SigmaX, sh.SigmaY);
+		_d.DeferTextureRelease(covView, covTex);
 		return blurred;
 	}
 

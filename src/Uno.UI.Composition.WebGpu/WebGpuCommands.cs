@@ -208,7 +208,7 @@ internal sealed class GradientCmd : WebGpuCommand
 // separably gaussian-blurred (SigmaX/Y), then composited tinted by Color. Same fan/bbox form as PathFill.
 internal sealed class ShadowCmd : WebGpuCommand
 {
-	public float[] FanDevice;
+	public float[] Edges;   // the silhouette as device-space edges (x0,y0,x1,y1 each), for the coverage bake
 	public Vector2 BbMin, BbMax;
 	public bool EvenOdd;
 	public WColor Color;
