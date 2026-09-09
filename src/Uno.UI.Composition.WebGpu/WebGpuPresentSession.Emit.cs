@@ -123,14 +123,10 @@ public sealed unsafe partial class WebGpuPresentSession
 			{
 				var fo = fe.FrameOrder[i];
 				var local = fo.Kind is null ? fo.NonSolid.clip : fo.Clip;
-				// An atlas quad in a stamped recording is a DrawKind.Image draw: it needs the image pipeline's own
-				// ClipU layout, not the shared one, or the draw is rejected and the process aborts.
-				var opKind = fo.Kind ?? fo.NonSolid.kind;
-				var stampBgl = ClipBglForKind(opKind);
 				// An op with no xform-table slot (an atlas quad, an image, a gradient) is still identity-baked, so
 				// its clip has to carry the replay transform or it draws at the recording's local origin.
 				var stampXform = fo.Kind is not null ? Matrix3x2.Identity : PixelXform(rr.Transform);
-				var st = StampTableClip(local, stampOwned, finv, t2, sessionAabb, rr.Clip.ScissorInert, rr.Clip.Entries, rr.Clip.Paths, ref pathsMemo, reuse ? bufs[i] : 0, reuse ? stamps[i].ClipBg : 0, stampBgl, stampXform);
+				var st = StampTableClip(local, stampOwned, finv, t2, sessionAabb, rr.Clip.ScissorInert, rr.Clip.Entries, rr.Clip.Paths, ref pathsMemo, reuse ? bufs[i] : 0, reuse ? stamps[i].ClipBg : 0, stampXform);
 				if (reuse) { stamps[i] = (st.Scissor, st.ClipBg); } else { stamps.Add((st.Scissor, st.ClipBg)); bufs.Add(st.Buf); }
 			}
 			fe.StampOwned = stampOwned; fe.StampClips = stamps; fe.StampBufs = bufs; fe.StampFrame = _d.FrameSeq; fe.StampXform = rr.Transform; fe.StampClip = rr.Clip; fe.StampSessionEntries = sessionEntries; fe.HasStamp = true;
@@ -201,7 +197,7 @@ public sealed unsafe partial class WebGpuPresentSession
 						AppendSolidRect(sv, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
 						tj++;
 					}
-					order.Add(new FrameOp { Kind = DrawKind.Solid, ByteOff = rel * VertexStride.Solid * sizeof(float), Count = (uint)((tj - ti) * 6), Clip = rc0.Clip, ClipBg = (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip, fOwned) });
+					order.Add(new FrameOp { Kind = DrawKind.Solid, ByteOff = rel * VertexStride.Solid * sizeof(float), Count = (uint)((tj - ti) * 6), Clip = rc0.Clip, ClipBg = (nint)MakeClipBg(rc0.Clip, fOwned) });
 					ti = tj - 1;
 				}
 				else if (tc is RoundedRectCmd rr0)
@@ -212,7 +208,7 @@ public sealed unsafe partial class WebGpuPresentSession
 						AppendRrect(rv, rrj);
 						tj++;
 					}
-					order.Add(new FrameOp { Kind = DrawKind.RoundedRect, ByteOff = rel * 22 * sizeof(float), Count = (uint)((tj - ti) * 6), Clip = rr0.Clip, ClipBg = (nint)MakeClipBg(_d.RrClipBgl, rr0.Clip, fOwned) });
+					order.Add(new FrameOp { Kind = DrawKind.RoundedRect, ByteOff = rel * 22 * sizeof(float), Count = (uint)((tj - ti) * 6), Clip = rr0.Clip, ClipBg = (nint)MakeClipBg(rr0.Clip, fOwned) });
 					ti = tj - 1;
 				}
 				else
@@ -320,7 +316,6 @@ public sealed unsafe partial class WebGpuPresentSession
 			for (int i = 0; i < entry.Ops.Count; i++)
 			{
 				var op = entry.Ops[i];
-				var abgl = op.kind switch { DrawKind.Gradient => _d.GradClipBgl, DrawKind.Image => _d.ImageClipBgl, _ => _d.SolidClipBgl };
 				var scissorClip = op.clip;
 				var ab = op.clip.Aabb;
 				if (ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f)
@@ -349,7 +344,7 @@ public sealed unsafe partial class WebGpuPresentSession
 				}
 				else
 				{
-					var aClipBg = MakeClipBgOwned(abgl, uClip, stampOwned, xf, finv, out var buf, out var aFolded);
+					var aClipBg = MakeClipBgOwned(uClip, stampOwned, xf, finv, out var buf, out var aFolded);
 					scissorClip.AabbInClipU = aFolded;
 					scissorClip.ScissorLoadBearing = !scissorClip.AabbInClipU;
 					bufs.Add(buf);
@@ -464,7 +459,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		var blurView = RenderShadow(sh, out var origin, out var size);
 		var sbg = TintedImageBg(blurView, sh.Color);
 		var sq = TexturedQuad(origin, size);
-		ops.Add(new DrawOp(DrawKind.Image, (nint)sbg, 0, (nint)MakeBuffer(sq), false, sh.Clip, (nint)MakeClipBg(_d.ImageClipBgl, sh.Clip)));
+		ops.Add(new DrawOp(DrawKind.Image, (nint)sbg, 0, (nint)MakeBuffer(sq), false, sh.Clip, (nint)MakeClipBg(sh.Clip)));
 	}
 
 	/// <summary>
@@ -558,7 +553,7 @@ public sealed unsafe partial class WebGpuPresentSession
 				var blur = BlurPyramidRegion(layerSurface.View, surfW, surfH, rx - loX, ry - loY, rw, rh, fx.SigmaX, fx.SigmaY);
 				var sfbg = TintedImageBg(blur, fx.Color);
 				var fq = TexturedQuad(new Vector2(fx.Dx + rx, fx.Dy + ry), new Vector2(rw, rh));
-				ops.Add(new DrawOp(DrawKind.Image, (nint)sfbg, 0, (nint)MakeBuffer(fq), false, lyr.Clip, (nint)MakeClipBg(_d.ImageClipBgl, lyr.Clip)));
+				ops.Add(new DrawOp(DrawKind.Image, (nint)sfbg, 0, (nint)MakeBuffer(fq), false, lyr.Clip, (nint)MakeClipBg(lyr.Clip)));
 			}
 		}
 

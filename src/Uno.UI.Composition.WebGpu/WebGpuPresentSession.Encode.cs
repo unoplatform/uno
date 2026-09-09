@@ -96,7 +96,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		var imageBg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgDesc));
 
 		var verts = MakeBuffer(TexturedQuad(origin, size));
-		var clipBg = MakeClipBg(_d.ImageClipBgl, backdrop.Clip);
+		var clipBg = MakeClipBg(backdrop.Clip);
 
 		pst.Enc.Pipe(_d.ImagePipe);
 		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 0, pst.PassBg, 0, (uint*)null);
@@ -123,7 +123,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		Vert(aabb.X, aabb.Y); Vert(aabb.Z, aabb.W); Vert(aabb.X, aabb.W);
 
 		var buf = MakeBuffer(verts);
-		var clipBg = MakeClipBg(_d.SolidClipBgl, backdrop.Clip);
+		var clipBg = MakeClipBg(backdrop.Clip);
 
 		pst.Enc.Pipe(_d.SolidPipe);
 		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 0, pst.PassBg, 0, (uint*)null);

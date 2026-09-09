@@ -231,7 +231,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					j++;
 				}
 				var rvb = Vbuf(_scratch, owned);
-				ops.Add(new DrawOp(DrawKind.Solid, (nint)rvb, (uint)((j - ci) * 6), 0, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip, owned)));
+				ops.Add(new DrawOp(DrawKind.Solid, (nint)rvb, (uint)((j - ci) * 6), 0, false, rc0.Clip, (nint)MakeClipBg(rc0.Clip, owned)));
 				ci = j - 1;
 			}
 			else if (_pathAtlas && atlasScale is { } asc0 && TryAtlasBatch(cmds, ref ci, owned, asc0, out var aop0))
@@ -252,7 +252,7 @@ public sealed unsafe partial class WebGpuPresentSession
 				var sCov = pf0.FanCoverage;
 				for (int i = 0; i < pf0.FanDevice.Length; i += 2) { PushVertT(new Vector2(pf0.FanDevice[i], pf0.FanDevice[i + 1]), sr, sg, sb, sa * (sCov is null ? 1f : sCov[i >> 1]), slotBits); }
 				var sClip = pf0.Clip;
-				var sClipBg = MakeClipBg(_d.CoverClipBgl, sClip, owned);
+				var sClipBg = MakeClipBg(sClip, owned);
 				var sCount = (uint)(pf0.FanDevice.Length / 2);
 				ops.Add(owned is null
 					? new DrawOp(DrawKind.TilingFan, AppendPathBlock(_scratch), sCount, 0, true, sClip, (nint)sClipBg)
@@ -302,7 +302,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					void V(Vector2 p) { v.Add(p.X); v.Add(p.Y); v.Add(c.X); v.Add(c.Y); v.Add(c.Z); v.Add(c.W); v.Add(0f); v.Add(0f); }
 					V(rc.P0); V(rc.P1); V(rc.P2); V(rc.P0); V(rc.P2); V(rc.P3);
 					var rClip = rc.Clip;
-					ops.Add(new DrawOp(DrawKind.Solid, (nint)Vbuf(v.ToArray(), owned), 6, 0, false, rClip, (nint)MakeClipBg(_d.SolidClipBgl, rClip, owned)));
+					ops.Add(new DrawOp(DrawKind.Solid, (nint)Vbuf(v.ToArray(), owned), 6, 0, false, rClip, (nint)MakeClipBg(rClip, owned)));
 					break;
 				}
 			case PathFill pf:
@@ -321,7 +321,7 @@ public sealed unsafe partial class WebGpuPresentSession
 						var tCov = pf.FanCoverage;
 						for (int i = 0; i < pf.FanDevice.Length; i += 2) { PushVertT(new Vector2(pf.FanDevice[i], pf.FanDevice[i + 1]), fr, fg, fb, fa * (tCov is null ? 1f : tCov[i >> 1]), slotBits); }
 						var tClip = pf.Clip;
-						var tClipBg = MakeClipBg(_d.CoverClipBgl, tClip, owned);
+						var tClipBg = MakeClipBg(tClip, owned);
 						var tCount = (uint)(pf.FanDevice.Length / 2);
 						ops.Add(owned is null
 							? new DrawOp(DrawKind.TilingFan, AppendPathBlock(_scratch), tCount, 0, true, tClip, (nint)tClipBg)
@@ -365,14 +365,14 @@ public sealed unsafe partial class WebGpuPresentSession
 						var ioff = _quadVerts.Count * sizeof(float);
 						void QS(Vector2 pos, float u, float vv) { _quadVerts.Add(pos.X); _quadVerts.Add(pos.Y); _quadVerts.Add(u); _quadVerts.Add(vv); }
 						QS(im.P0, im.U0, im.V0); QS(im.P1, im.U1, im.V0); QS(im.P2, im.U1, im.V1); QS(im.P0, im.U0, im.V0); QS(im.P2, im.U1, im.V1); QS(im.P3, im.U0, im.V1);
-						ops.Add(new DrawOp(DrawKind.Image, (nint)bg, 0, ioff, true, im.Clip, (nint)MakeClipBg(_d.ImageClipBgl, im.Clip, owned)));
+						ops.Add(new DrawOp(DrawKind.Image, (nint)bg, 0, ioff, true, im.Clip, (nint)MakeClipBg(im.Clip, owned)));
 					}
 					else
 					{
 						var q = new float[24];
 						void QV(int idx, Vector2 pos, float u, float vv) { q[idx] = pos.X; q[idx + 1] = pos.Y; q[idx + 2] = u; q[idx + 3] = vv; }
 						QV(0, im.P0, im.U0, im.V0); QV(4, im.P1, im.U1, im.V0); QV(8, im.P2, im.U1, im.V1); QV(12, im.P0, im.U0, im.V0); QV(16, im.P2, im.U1, im.V1); QV(20, im.P3, im.U0, im.V1);
-						ops.Add(new DrawOp(DrawKind.Image, (nint)bg, 0, (nint)Vbuf(q, owned), false, im.Clip, (nint)MakeClipBg(_d.ImageClipBgl, im.Clip, owned)));
+						ops.Add(new DrawOp(DrawKind.Image, (nint)bg, 0, (nint)Vbuf(q, owned), false, im.Clip, (nint)MakeClipBg(im.Clip, owned)));
 					}
 					break;
 				}
@@ -399,7 +399,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					var gClip = gc.Clip;
 					Span<Vector2> cover = stackalloc Vector2[OctSides * 3];
 					var gCount = (uint)GradientCover(gc, gClip, cover);
-					var gClipBg = (nint)MakeClipBg(_d.GradClipBgl, gClip, owned);
+					var gClipBg = (nint)MakeClipBg(gClip, owned);
 					if (owned is null)
 					{
 						// flag == true: b1 is a BYTE offset into the shared per-pass gradient buffer.
@@ -423,7 +423,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					AppendRrect(tmp, rrc);
 					var buf = Vbuf(tmp, owned);
 					ReturnRrect(tmp);
-					ops.Add(new DrawOp(DrawKind.RoundedRect, (nint)buf, 6, 0, false, rrc.Clip, (nint)MakeClipBg(_d.RrClipBgl, rrc.Clip, owned)));
+					ops.Add(new DrawOp(DrawKind.RoundedRect, (nint)buf, 6, 0, false, rrc.Clip, (nint)MakeClipBg(rrc.Clip, owned)));
 					break;
 				}
 		}
@@ -517,24 +517,12 @@ public sealed unsafe partial class WebGpuPresentSession
 	}
 
 	/// <summary>
-	/// ClipU layout for the pipeline that draws <paramref name="kind"/>. The image/gradient/rrect pipelines are
-	/// created with AUTO layouts, so their group is exclusive to them and cannot take a ClipBgl-based bind group.
-	/// </summary>
-	private IntPtr ClipBglForKind(DrawKind kind) => kind switch
-	{
-		// Image now shares ClipBgl (explicit pipeline layout). Gradient and rrect are still AUTO-layout
-		// pipelines, so their ClipU group stays exclusive to them.
-		DrawKind.Gradient => _d.GradClipBgl,
-		_ => _d.ClipBgl,
-	};
-
-	/// <summary>
 	/// True when an op of this kind is placed by the xform TABLE (its verts carry a slot index), so its clip must
 	/// NOT also carry the replay transform. Everything else in a table recording is identity-baked with no slot,
 	/// and the clip's xform is the only thing that can move it.
 	/// </summary>
 
-	private (ClipData Scissor, nint ClipBg, nint Buf) StampTableClip(ClipData local, OwnedResources stampOwned, Matrix3x2 finv, Matrix3x2 t2, Vector4 sessionAabb, bool sessionInert, ClipEntry[] sessionEntries, PathClip[] sessionPaths, ref Dictionary<PathClip[], PathClip[]> pathsMemo, nint reuseBuf, nint reuseBg, IntPtr clipBgl, Matrix3x2 opXform)
+	private (ClipData Scissor, nint ClipBg, nint Buf) StampTableClip(ClipData local, OwnedResources stampOwned, Matrix3x2 finv, Matrix3x2 t2, Vector4 sessionAabb, bool sessionInert, ClipEntry[] sessionEntries, PathClip[] sessionPaths, ref Dictionary<PathClip[], PathClip[]> pathsMemo, nint reuseBuf, nint reuseBg, Matrix3x2 opXform)
 	{
 		var scissor = local;
 		// The recorded containment proof doesn't cover the replay-site clip being stamped in below.
@@ -563,7 +551,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			scissor.ScissorLoadBearing = !scissor.AabbInClipU;
 			return (scissor, reuseBg, reuseBuf);
 		}
-		var bg = (nint)MakeClipBgOwned(clipBgl, local, stampOwned, opXform, finv, out var buf, out var folded);
+		var bg = (nint)MakeClipBgOwned(local, stampOwned, opXform, finv, out var buf, out var folded);
 		scissor.AabbInClipU = folded;
 		scissor.ScissorLoadBearing = !scissor.AabbInClipU;
 		return (scissor, bg, buf);

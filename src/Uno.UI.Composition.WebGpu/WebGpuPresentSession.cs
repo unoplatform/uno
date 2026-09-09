@@ -483,7 +483,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	}
 
 	// Owned variant exposing the ClipU slab slot so a later restamp can RewriteClipU it in place.
-	private IntPtr MakeClipBgOwned(IntPtr bgl, ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU)
+	private IntPtr MakeClipBgOwned(ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU)
 	{
 		var mask = ResolveClipMask(cd, owned);
 		var floats = FillClipU(cd, xform, finv, mask, out aabbInClipU);
@@ -496,14 +496,14 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		e[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = mask.View != IntPtr.Zero ? mask.View : _d.DummyTex };
 		e[2] = new WGPUBindGroupEntry { Binding = 2, TextureView = cd.Coverage != 0 ? (IntPtr)cd.Coverage : _d.DummyTex };
 		e[3] = new WGPUBindGroupEntry { Binding = 3, Sampler = _d.Smp };
-		var bgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 4, Entries = e };
+		var bgd = new WGPUBindGroupDescriptor { Layout = _d.ClipBgl, EntryCount = 4, Entries = e };
 		buf = slot;
 		return Bg(ref bgd, owned);
 	}
 
-	private IntPtr MakeClipBg(IntPtr bgl, ClipData cd, OwnedResources owned = null, Matrix3x2 xform = default, Matrix3x2 finv = default)
+	private IntPtr MakeClipBg(ClipData cd, OwnedResources owned = null, Matrix3x2 xform = default, Matrix3x2 finv = default)
 	{
-		if (owned is not null) { return MakeClipBgOwned(bgl, cd, owned, xform, finv, out _, out _); }
+		if (owned is not null) { return MakeClipBgOwned(cd, owned, xform, finv, out _, out _); }
 		var mask = ResolveClipMask(cd, null);
 		var floats = FillClipU(cd, xform, finv, mask, out _);
 		var bytes = floats * sizeof(float);
@@ -519,7 +519,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 			me[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = mask.View != IntPtr.Zero ? mask.View : _d.DummyTex };
 			me[2] = new WGPUBindGroupEntry { Binding = 2, TextureView = cd.Coverage != 0 ? (IntPtr)cd.Coverage : _d.DummyTex };
 			me[3] = new WGPUBindGroupEntry { Binding = 3, Sampler = _d.Smp };
-			var mbgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 4, Entries = me };
+			var mbgd = new WGPUBindGroupDescriptor { Layout = _d.ClipBgl, EntryCount = 4, Entries = me };
 			return Bg(ref mbgd, null);
 		}
 
@@ -527,7 +527,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		// whole frame's clips upload in one queue write per chunk. Do NOT content-key this: a clip carries
 		// DEVICE-space geometry, so under any moving transform every lookup misses and mints a buffer + bind
 		// group per draw.
-		return _d.ClipBgSlabFor(bgl, bytes).Rent(bgl, cu);
+		return _d.ClipBgSlabFor(_d.ClipBgl, bytes).Rent(_d.ClipBgl, cu);
 	}
 
 	// Coverage atlas: ON by default - it is what makes arbitrary path edges and glyphs crisp without MSAA.
@@ -585,7 +585,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 							AppendSolidRect(solid, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
 							j++;
 						}
-						ops.Add(new DrawOp(DrawKind.Solid, VertexSource.PassBuffer, (uint)((j - ci) * 6), (nint)start, false, rc0.Clip, (nint)MakeClipBg(_d.SolidClipBgl, rc0.Clip)));
+						ops.Add(new DrawOp(DrawKind.Solid, VertexSource.PassBuffer, (uint)((j - ci) * 6), (nint)start, false, rc0.Clip, (nint)MakeClipBg(rc0.Clip)));
 						ci = j - 1;   // the for-loop's ci++ advances past the run
 						break;
 					}
@@ -601,7 +601,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 						// Shared rrect buffer (VertexSource.PassBuffer, b1=start vert): adjacent same-clip rrects coalesce on emit.
 						int st = rrect.Count / 22;
 						AppendRrect(rrect, rri);
-						ops.Add(new DrawOp(DrawKind.RoundedRect, VertexSource.PassBuffer, 6, (nint)st, false, rri.Clip, (nint)MakeClipBg(_d.RrClipBgl, rri.Clip)));
+						ops.Add(new DrawOp(DrawKind.RoundedRect, VertexSource.PassBuffer, 6, (nint)st, false, rri.Clip, (nint)MakeClipBg(rri.Clip)));
 						break;
 					}
 				case ReplayRefCmd rr:

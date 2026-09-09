@@ -242,6 +242,6 @@ public sealed unsafe partial class WebGpuPresentSession
 	private DrawOp MakeAtlasOp(PathFill pf, WebGpuPathAtlas.Page page, List<float> quads, OwnedResources owned)
 	{
 		var clip = WithCoverage(pf.Clip, page.View);
-		return new DrawOp(DrawKind.Solid, (nint)Vbuf(quads, owned), (uint)(quads.Count / VertexStride.Solid), 0, false, clip, (nint)MakeClipBg(_d.SolidClipBgl, clip, owned));
+		return new DrawOp(DrawKind.Solid, (nint)Vbuf(quads, owned), (uint)(quads.Count / VertexStride.Solid), 0, false, clip, (nint)MakeClipBg(clip, owned));
 	}
 }

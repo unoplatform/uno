@@ -24,8 +24,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	public IntPtr Dev;
 	public IntPtr Q;
 	public IntPtr SolidPipe;
-	// Transform-table path-fill pipeline (device verts + per-vertex slot index) for the tiling fan. XformBgl =
-	// group 0 (storage table); CoverTableClipBgl = group 1 (ClipU).
+	// Transform-table path-fill pipeline (device verts + per-vertex slot index) for the tiling fan. Group 1 = the
+	// storage table (XformBgl), group 2 = ClipBgl.
 	public IntPtr PathTablePipe;
 	// Transform-table SOLID / ROUNDED-RECT variants (device-verts + per-vertex slot). Same table + ClipBgl as the
 	// path fill, so a moved solid/rrect recording repositions via its slot with cross-visual coalescing preserved.
@@ -40,11 +40,9 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// across frames safely because wgpuQueueWriteBuffer is queue-ordered after the prior frame's reads; only the main
 	// pass uses it (nested/pooled passes keep renting distinct transient buffers, so no in-frame write aliasing).
 	private IntPtr _xformBuf; private nuint _xformCap; private IntPtr _xformBg;
-	public IntPtr CoverTableClipBgl;
 	public IntPtr ImagePipe;
 	public IntPtr GradientPipe;
 	public IntPtr RrPipe;                // analytic rounded-rect / border-ring fill (per-vertex SDF quad)
-	public IntPtr RrClipBgl;             // group 0: ClipU
 	public IntPtr BlurPipe;              // separable gaussian (fullscreen), single-sample
 	public IntPtr BlurBgl;
 	public IntPtr CompositeSrcOver;      // composite a layer texture into an MSAA pass (SrcOver / DstIn)
@@ -252,11 +250,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 
 	public IntPtr ImgBgl;
 	public IntPtr GradBgl;
-	// group(1) clip-uniform layouts (one per color-writing pipeline; all describe the same ClipU).
-	public IntPtr SolidClipBgl;
-	public IntPtr CoverClipBgl;
-	public IntPtr ImageClipBgl;
-	public IntPtr GradClipBgl;
 	// Explicit SHARED ClipU layout: the solid, table and image pipelines use one pipeline layout so a single ClipU
 	// bind group binds to any of them (auto-derived layouts are pipeline-exclusive).
 	public IntPtr ClipBgl;
@@ -607,8 +600,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		};
 
 		SolidPipe = MakePipe(colored, vs, fs, &blend, clipLayout);
-		SolidClipBgl = ClipBgl;
-		CoverClipBgl = ClipBgl;
 		CreatePathTablePipelines(&blend);
 		CreateCoveragePipelines();
 		CreateImagePipeline();
@@ -768,7 +759,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
 		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = null, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = ColourLayout(ClipBgl) };
 		RrPipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
-		RrClipBgl = ClipBgl;
 	}
 
 	private void CreateGradientPipeline(WGPUBlendState* blend)
@@ -793,7 +783,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
 		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = null, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = ColourLayout(GradBgl, ClipBgl) };
 		GradientPipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
-		GradClipBgl = ClipBgl;
 	}
 
 
@@ -839,7 +828,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
 		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = null, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = MakeImagePipeLayout() };
 		ImagePipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
-		ImageClipBgl = ClipBgl;   // shared, so a stamped clip group binds here too
 		var sd = new WGPUSamplerDescriptor { AddressModeU = WGPUAddressMode.ClampToEdge, AddressModeV = WGPUAddressMode.ClampToEdge, MagFilter = WGPUFilterMode.Linear, MinFilter = WGPUFilterMode.Linear, MipmapFilter = WGPUMipmapFilterMode.Nearest, MaxAnisotropy = 1 };
 		Smp = wgpuDeviceCreateSampler(Dev, &sd);
 		// Address-mode variants for tiled image draws. EdgeExtend.None shares the clamp sampler: a non-filling
@@ -887,7 +875,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		var se = new WGPUBindGroupLayoutEntry { Binding = 0, Visibility = WGPUShaderStage.Vertex, Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.ReadOnlyStorage } };
 		var sbgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 1, Entries = &se };
 		XformBgl = wgpuDeviceCreateBindGroupLayout(Dev, &sbgld);
-		CoverTableClipBgl = ClipBgl;
 		var coverLayout = ColourLayout(XformBgl, ClipBgl);
 
 		var coverMod = Module(ClipStructFn + CoverTableWgsl);
