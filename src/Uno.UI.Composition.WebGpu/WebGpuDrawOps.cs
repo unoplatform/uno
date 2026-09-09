@@ -132,6 +132,9 @@ internal sealed unsafe class WebGpuGeometryCache
 	// The replay scale this entry's masks were baked at. A different scale needs different masks, so it forces a
 	// rebuild rather than sampling one sized for the old scale.
 	public Vector2 AtlasScale;
+	// The device scale this entry's fill masks were baked at (axis lengths of the replay transform, so a rotation
+	// leaves it unchanged and the masks stay valid: the quad rotates them at sampling time).
+	public Vector2 MaskScale;
 	// All ops are path fills — their verts are device-space + the transform table, so the recording is fully
 	// surface-size-independent: a resize repositions them via the per-frame table entry and needs NO rebuild (unlike
 	// a mixed entry whose solid/rrect verts are NDC-baked). Lets the arena resize-staleness skip pure-path entries.

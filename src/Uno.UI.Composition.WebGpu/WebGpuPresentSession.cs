@@ -25,6 +25,8 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	private int _statCrMiss, _statCrMove, _statCrPathFlip, _statCrSize, _statCrClip;
 	private static readonly bool _emitStats = Environment.GetEnvironmentVariable("UNO_WEBGPU_STATS") is "1" or "true";
 	private static int _emitStatsFrame;
+	// UNO_WEBGPU_STATS_EVERY = frames between stats lines (default 60).
+	private static readonly int _emitStatsEvery = int.TryParse(Environment.GetEnvironmentVariable("UNO_WEBGPU_STATS_EVERY"), out var e) && e > 0 ? e : 60;
 	// Build-shape counters (per stats interval): geometry-cache rebuilds / clip re-stamps observed while replaying.
 	private static int _statTableRebuilds, _statStamps, _statArenaRebuilds, _statCachedRebuilds;
 
@@ -673,7 +675,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		};
 		EncodeOps(0, ops.Count, ref pst);
 		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
-		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % 60) == 0)
+		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % _emitStatsEvery) == 0)
 		{
 			WriteFrameStats(ops.Count, ref pst);
 		}

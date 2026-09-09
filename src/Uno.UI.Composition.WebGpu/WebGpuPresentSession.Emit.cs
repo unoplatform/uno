@@ -31,8 +31,8 @@ public sealed unsafe partial class WebGpuPresentSession
 			// An atlas quad carries build-time NDC and no table slot, so unlike the rest of this entry it is not
 			// re-projected by the per-frame slot rewrite: it has to be rebuilt when the surface resizes, and its
 			// mask is only the right size while the replay transform still neither scales nor rotates.
-			&& !((fe.HasAtlas || fe.HasClipMask) && (fe.BuiltW != (int)_s.Width || fe.BuiltH != (int)_s.Height
-				|| !(TryAtlasScale(rr.Transform, out var feScale) && SameAtlasScale(feScale, fe.AtlasScale))))
+			&& !((fe.HasAtlas || fe.HasClipMask) && (fe.BuiltW != (int)_s.Width || fe.BuiltH != (int)_s.Height))
+			&& !MasksNeedRebuild(fe, rr.Transform)
 			// ...and rebuild once the transform settles, so content first built mid-animation stops being aliased.
 			&& !(fe.AtlasBlockedByScale && TryAtlasScale(rr.Transform, out _));
 		if (!hit)
@@ -95,7 +95,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			bool tableHasAtlas = (AtlasHit + AtlasBaked) != tableAtlasBefore;
 			bool tableHasMask = ClipMasksBaked + FillMasksBaked != tableMaskBefore;
 			bool tableBlocked = !tableAtlasSafe && tableHasPath && _pathAtlas;
-			fe = new WebGpuGeometryCache { TableFrame = true, FrameSolid = true, SlabId = id, FrameOrder = order, TableSolids = sv, TableRrects = rv, Owned = fOwned, HasClipMask = tableHasMask, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = slot, HasAtlas = tableHasAtlas, AtlasBlockedByScale = tableBlocked, AtlasScale = tableScale };
+			fe = new WebGpuGeometryCache { TableFrame = true, FrameSolid = true, SlabId = id, FrameOrder = order, TableSolids = sv, TableRrects = rv, Owned = fOwned, HasClipMask = tableHasMask, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = slot, HasAtlas = tableHasAtlas, AtlasBlockedByScale = tableBlocked, AtlasScale = tableScale, MaskScale = MaskScale(rr.Transform) };
 			StoreCompiled(rr.Data, fe);
 		}
 		int sBase = 0, rBase = 0;
@@ -261,8 +261,14 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// first built mid-animation stops being aliased.
 	/// </summary>
 	private static bool AtlasNeedsRebuild(WebGpuGeometryCache entry, Matrix4x4 transform)
-		=> ((entry.HasAtlas || entry.HasClipMask) && !(TryAtlasScale(transform, out var scale) && SameAtlasScale(scale, entry.AtlasScale)))
-			|| (entry.AtlasBlockedByScale && TryAtlasScale(transform, out _));
+		=> MasksNeedRebuild(entry, transform) || (entry.AtlasBlockedByScale && TryAtlasScale(transform, out _));
+
+	// Atlas entries are keyed on an axis-aligned scale, so any rotation invalidates them; a fill mask is baked at the
+	// transform's axis lengths and rotated by its quad, so only a change in those lengths does. Asking the atlas
+	// question of a mask-only entry rebuilt (and re-baked) every spinning recording every frame.
+	private static bool MasksNeedRebuild(WebGpuGeometryCache entry, Matrix4x4 transform)
+		=> (entry.HasAtlas && !(TryAtlasScale(transform, out var scale) && SameAtlasScale(scale, entry.AtlasScale)))
+			|| (entry.HasClipMask && !SameAtlasScale(MaskScale(transform), entry.MaskScale));
 
 	/// <summary>
 	/// Replays an ARENA recording: geometry baked once in its own identity space, with the replay transform
@@ -295,7 +301,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			bool aHasMask = ClipMasksBaked + FillMasksBaked != maskBefore;
 			bool aBlocked = !aAtlasSafe && aHasPath && _pathAtlas;
 			bool aHasPathClip = false; foreach (var o in aOps) { if (o.clip.Paths is not null) { aHasPathClip = true; break; } }
-			entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, HasAtlas = aHasAtlas, HasClipMask = aHasMask, HasPathClip = aHasPathClip, AtlasBlockedByScale = aBlocked, AtlasScale = aScale, PurePath = aPure, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = aSlot };
+			entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, HasAtlas = aHasAtlas, HasClipMask = aHasMask, HasPathClip = aHasPathClip, AtlasBlockedByScale = aBlocked, AtlasScale = aScale, MaskScale = MaskScale(rr.Transform), PurePath = aPure, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = aSlot };
 			StoreCompiled(rr.Data, entry);
 		}
 		if (entry.XformSlot >= 0) { WriteXform(entry.XformSlot, rr.Transform); }
