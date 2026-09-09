@@ -75,7 +75,7 @@ namespace TestRepro
 								{
 									Mode = global::Microsoft.UI.Xaml.Data.BindingMode.TwoWay,
 								}
-									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.IsEnabled*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ViewModel.IsEnabled)) : (false, default), (___ctx, __value) => { if(___ctx is global::TestRepro.MainPage ___tctx) ___tctx.ViewModel.IsEnabled = (bool)global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(bool), __value); } , new [] {"ViewModel.IsEnabled"}))
+									.BindingApply(__that, (___b, ___t) =>  /*defaultBindModeOneTime ViewModel.IsEnabled*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, ___t, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? ((true, ___tctx.ViewModel.IsEnabled)) : (false, default), (___ctx, __value) => { if(___ctx is global::TestRepro.MainPage ___tctx) ___tctx.ViewModel.IsEnabled = (bool)global::Microsoft.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(bool), __value); }, typeof(bool), new [] {"ViewModel.IsEnabled"}))
 							);
 							global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
 							__p1.CreationComplete();
