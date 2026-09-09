@@ -100,10 +100,17 @@ namespace Microsoft.UI.Xaml.Controls {
         private static onLoad(event: Event) {
             const iframe = event.currentTarget as HTMLIFrameElement;
             const absoluteUrl = iframe.contentWindow.location.href;
-            WebView.unoExports.DispatchLoadEvent(iframe.id, absoluteUrl);
 
+			const isMultithreaded = (<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled();
+
+			if (isMultithreaded) {
+				WebView.unoExports.DispatchLoadEventAsync(iframe.id, absoluteUrl);
+			} else {
+				WebView.unoExports.DispatchLoadEvent(iframe.id, absoluteUrl);
+			}
+			
             try {
-                if (iframe.contentWindow && WebView.unoExports.DispatchNewWindowRequested) {
+                if (iframe.contentWindow) {
                     
                     const unoExports = WebView.unoExports;
                     
@@ -114,17 +121,28 @@ namespace Microsoft.UI.Xaml.Controls {
                         iframe.contentWindow.open = function(url?: string, target?: string, features?: string) {
                             const referer = iframe.contentWindow.location.href;
 
-                            const handled = unoExports.DispatchNewWindowRequested(
-                                iframe.id,
-                                url || '',
-                                referer
-                            );
+							if (isMultithreaded) {
+								unoExports.DispatchNewWindowRequestedAsync(iframe.id, url || '', referer)
+									.then((handled: boolean) => {
+										if (!handled) {
+											(iframe.contentWindow as any).__unoOriginalOpen.call(this, url, target, features);
+										}
+									});
+							} else {
+								const handled = unoExports.DispatchNewWindowRequested(
+									iframe.id,
+									url || '',
+									referer
+								);
 
-                            if (!handled) {
-                                return (iframe.contentWindow as any).__unoOriginalOpen.call(this, url, target, features);
-                            }
+								if (!handled) {
+									return (iframe.contentWindow as any).__unoOriginalOpen.call(this, url, target, features);
+								}
+							}
                             
-                            return null;
+							// In MT, we always return null since we cannot know whether DispatchNewWindowRequested
+							// was handled or not before this call returns.
+							return null;
                         };
                         (iframe.contentWindow as any).__unoOpenOverridden = true;
                     }
@@ -135,7 +153,22 @@ namespace Microsoft.UI.Xaml.Controls {
                         if (link) {
                             const targetUrl = link.href;
                             const referer = iframe.contentWindow.location.href;
-                            
+
+							if (isMultithreaded) {
+								// In MT, we always preventDefault()/stopPropagation(), if the click wasn't handled we play it back.
+								e.preventDefault();
+								e.stopPropagation();
+
+								unoExports.DispatchNewWindowRequestedAsync(iframe.id, targetUrl, referer)
+									.then((handled: boolean) => {
+										if (!handled) {
+											(iframe.contentWindow as any).__unoOriginalOpen.call(iframe.contentWindow, targetUrl, '_blank');
+										}
+									});
+
+								return;
+							}
+
                             const handled = unoExports.DispatchNewWindowRequested(
                                 iframe.id,
                                 targetUrl,
