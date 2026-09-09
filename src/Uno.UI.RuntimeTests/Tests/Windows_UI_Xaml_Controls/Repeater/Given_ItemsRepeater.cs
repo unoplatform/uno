@@ -673,6 +673,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 		}
 #endif
 
+		// The #nullable enable above lives inside the #if HAS_UNO block, so it does not reach here
+		// on the WinAppSDK head.
+#nullable enable
+
 		#region uno#24447 - two UniformGridLayout repeaters sharing an item template must not spin the layout loop
 
 		private const int Issue24447_ItemsPerRepeater = 3;
