@@ -137,7 +137,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			Exclude = exclude,
 		};
 		// Nested rounded clips stack (all ANDed in clipCov) instead of the innermost overwriting the outer.
-		_clip.Rounds = ClipData.Push(_clip.Rounds, rc);
+		ClipData.PushRound(ref _clip, rc);
 		// Difference (PushClipExclude): keep the area OUTSIDE the rounded rect — so DON'T tighten the scissor to it
 		// (the visible region extends past the rect); the per-fragment clipCov inverts the coverage.
 		if (!exclude)
@@ -1133,7 +1133,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			var sy = new Vector2(_m.M21, _m.M22).Length();
 			foreach (var src in rounds)
 			{
-				result.Rounds = ClipData.Push(result.Rounds, new RoundClip
+				ClipData.PushRound(ref result, new RoundClip
 				{
 					Rect = TransformedAabb(src.Rect, _m),
 					Radii = src.Radii * sx,

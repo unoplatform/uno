@@ -489,7 +489,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		{
 			var q0 = new Vector2(src.Rect.X * finv.M11 + src.Rect.Y * finv.M21 + finv.M31, src.Rect.X * finv.M12 + src.Rect.Y * finv.M22 + finv.M32);
 			var q1 = new Vector2(src.Rect.Z * finv.M11 + src.Rect.W * finv.M21 + finv.M31, src.Rect.Z * finv.M12 + src.Rect.W * finv.M22 + finv.M32);
-			local.Rounds = ClipData.Push(local.Rounds, new RoundClip
+			ClipData.PushRound(ref local, new RoundClip
 			{
 				Rect = new Vector4(MathF.Min(q0.X, q1.X), MathF.Min(q0.Y, q1.Y), MathF.Max(q0.X, q1.X), MathF.Max(q0.Y, q1.Y)),
 				Radii = src.Radii * fsx,

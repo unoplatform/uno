@@ -35,6 +35,38 @@ internal sealed class PathClip
 	public bool Exclude;
 	public Vector4 Bbox;   // device L,T,R,B of the edges
 
+	// A rounded rect flattened to edges, for a round that ClipU has no slot left for. Chord error <= 0.1 px.
+	public static PathClip FromRound(in RoundClip rc)
+	{
+		float l = rc.Rect.X, t = rc.Rect.Y, r = rc.Rect.Z, b = rc.Rect.W;
+		var pts = new List<Vector2>();
+		// Corners in path order TL, TR, BR, BL; each arc sweeps a quarter turn from its start tangent.
+		Corner(pts, new Vector2(l + rc.Radii.X, t + rc.RadiiY.X), rc.Radii.X, rc.RadiiY.X, MathF.PI);
+		Corner(pts, new Vector2(r - rc.Radii.Y, t + rc.RadiiY.Y), rc.Radii.Y, rc.RadiiY.Y, 1.5f * MathF.PI);
+		Corner(pts, new Vector2(r - rc.Radii.Z, b - rc.RadiiY.Z), rc.Radii.Z, rc.RadiiY.Z, 0f);
+		Corner(pts, new Vector2(l + rc.Radii.W, b - rc.RadiiY.W), rc.Radii.W, rc.RadiiY.W, 0.5f * MathF.PI);
+		var e = new float[pts.Count * 4];
+		for (int i = 0, w = 0; i < pts.Count; i++)
+		{
+			var a = pts[i]; var c = pts[(i + 1) % pts.Count];
+			e[w++] = a.X; e[w++] = a.Y; e[w++] = c.X; e[w++] = c.Y;
+		}
+		return new PathClip { Edges = e, Exclude = rc.Exclude, Bbox = rc.Rect };
+
+		static void Corner(List<Vector2> pts, Vector2 c, float rx, float ry, float start)
+		{
+			if (rx <= 0f || ry <= 0f) { pts.Add(c); return; }
+			var rmax = MathF.Max(rx, ry);
+			var step = 2f * MathF.Acos(MathF.Max(1f - 0.1f / rmax, 0f));
+			int n = Math.Clamp((int)MathF.Ceiling(MathF.PI * 0.5f / MathF.Max(step, 1e-3f)), 1, 32);
+			for (int i = 0; i <= n; i++)
+			{
+				var a = start + MathF.PI * 0.5f * i / n;
+				pts.Add(new Vector2(c.X + rx * MathF.Cos(a), c.Y + ry * MathF.Sin(a)));
+			}
+		}
+	}
+
 	public PathClip Transformed(in Matrix3x2 m)
 	{
 		var e = new float[Edges.Length];
@@ -76,12 +108,22 @@ internal struct ClipData
 	// that could not fold the full rect constraint) — blocks the emit's derived-widening fallback.
 	public bool ScissorLoadBearing;
 
-	// Append a rounded clip, copy-on-write, capped at MaxRounds (drops the oldest/outermost on overflow).
-	// TODO: the cap is not expressible in the seam — IDrawingSession.ClipRoundRect nests without limit and the Skia
-	// backend honours that exactly. It fails silently where Skia would not: the outermost round keeps its rect
-	// extent through Aabb but loses its corner rounding, and an excluded one loses its constraint entirely
-	// (exclusions never tighten Aabb). The budget spans the whole nesting chain, since ClipCompose pushes a child
-	// recording's rounds onto the parent's. Overflow rounds could go on Paths instead, which has no cap.
+	// Append a rounded clip, copy-on-write. ClipU holds MaxRounds analytic rounds; a round beyond that goes on Paths
+	// as a flattened outline instead, so nesting depth is unbounded and only the (rare) overflow pays a mask bake.
+	public static void PushRound(ref ClipData clip, in RoundClip rc)
+	{
+		int n = clip.Rounds?.Length ?? 0;
+		if (n < MaxRounds)
+		{
+			var arr = new RoundClip[n + 1];
+			if (n > 0) { System.Array.Copy(clip.Rounds, arr, n); }
+			arr[n] = rc;
+			clip.Rounds = arr;
+			return;
+		}
+		clip.Paths = PushPath(clip.Paths, PathClip.FromRound(rc));
+	}
+
 	public static PathClip[] PushPath(PathClip[] existing, PathClip pc)
 	{
 		int n = existing?.Length ?? 0;
@@ -91,21 +133,6 @@ internal struct ClipData
 		return arr;
 	}
 
-	public static RoundClip[] Push(RoundClip[] existing, in RoundClip rc)
-	{
-		int n = existing?.Length ?? 0;
-		if (n < MaxRounds)
-		{
-			var arr = new RoundClip[n + 1];
-			if (n > 0) { System.Array.Copy(existing, arr, n); }
-			arr[n] = rc;
-			return arr;
-		}
-		var capped = new RoundClip[MaxRounds];
-		System.Array.Copy(existing, 1, capped, 0, MaxRounds - 1);
-		capped[MaxRounds - 1] = rc;
-		return capped;
-	}
 }
 
 // Draw commands share one ordered stream so cross-type z-order (rect over path over image) is preserved.

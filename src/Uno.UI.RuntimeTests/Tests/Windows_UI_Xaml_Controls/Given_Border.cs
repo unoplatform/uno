@@ -210,6 +210,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 #if __ANDROID__
+		[Ignore("It doesn't yet work properly on Android")]
+#endif
+		public async Task When_Nested_Rounded_Clips_Exceed_Four()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			// Five nested rounded clips; only the OUTERMOST one cuts the corners noticeably. A renderer with a fixed
+			// number of analytic clip slots must still honour it rather than dropping the oldest.
+			FrameworkElement current = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Microsoft.UI.Colors.Red) };
+			for (int i = 0; i < 4; i++)
+			{
+				current = new Border { Width = 100, Height = 100, CornerRadius = new CornerRadius(1), Child = current };
+			}
+			var SUT = new Border { Width = 100, Height = 100, CornerRadius = new CornerRadius(40), Child = current };
+
+			await UITestHelper.Load(SUT);
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.HasColorAt(screenshot, 50, 50, Microsoft.UI.Colors.Red, tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, 50, 3, Microsoft.UI.Colors.Red, tolerance: 10);
+			ImageAssert.DoesNotHaveColorAt(screenshot, 5, 5, Microsoft.UI.Colors.Red, tolerance: 10);
+			ImageAssert.DoesNotHaveColorAt(screenshot, 94, 94, Microsoft.UI.Colors.Red, tolerance: 10);
+		}
+
+		[TestMethod]
+#if __ANDROID__
 		[Ignore("Fails on Android")]
 #endif
 		public async Task When_Clipped_With_TransformMatrix()
