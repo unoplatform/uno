@@ -181,16 +181,16 @@ public sealed unsafe partial class WebGpuPresentSession
 		QV(x0, y0, u0, v0); QV(x1, y1, u1, v1); QV(x0, y1, u0, v1);
 	}
 
-	/// <summary>Six solid vertices (pos, colour, uv 0..1) covering the device rect at <paramref name="origin"/>.</summary>
-	private static float[] CoverageQuad(Vector2 origin, Vector2 size, WColor color)
+	/// <summary>Six solid vertices (pos, colour, coverage uv over <paramref name="uv"/> = u0,v0,u1,v1) covering the rect at <paramref name="origin"/>.</summary>
+	private static float[] CoverageQuad(Vector2 origin, Vector2 size, WColor color, Vector4 uv)
 	{
 		float cr = color.R / 255f, cg = color.G / 255f, cb = color.B / 255f, ca = color.A / 255f;
 		var q = new float[6 * VertexStride.Solid];
 		int i = 0;
 		void V(float x, float y, float u, float v) { q[i++] = x; q[i++] = y; q[i++] = cr; q[i++] = cg; q[i++] = cb; q[i++] = ca; q[i++] = u; q[i++] = v; }
 		float x0 = origin.X, y0 = origin.Y, x1 = origin.X + size.X, y1 = origin.Y + size.Y;
-		V(x0, y0, 0, 0); V(x1, y0, 1, 0); V(x1, y1, 1, 1);
-		V(x0, y0, 0, 0); V(x1, y1, 1, 1); V(x0, y1, 0, 1);
+		V(x0, y0, uv.X, uv.Y); V(x1, y0, uv.Z, uv.Y); V(x1, y1, uv.Z, uv.W);
+		V(x0, y0, uv.X, uv.Y); V(x1, y1, uv.Z, uv.W); V(x0, y1, uv.X, uv.W);
 		return q;
 	}
 

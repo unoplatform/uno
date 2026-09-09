@@ -29,6 +29,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	private static readonly int _emitStatsEvery = int.TryParse(Environment.GetEnvironmentVariable("UNO_WEBGPU_STATS_EVERY"), out var e) && e > 0 ? e : 60;
 	// Build-shape counters (per stats interval): geometry-cache rebuilds / clip re-stamps observed while replaying.
 	private static int _statTableRebuilds, _statStamps, _statArenaRebuilds, _statCachedRebuilds;
+	private static int _statArMiss, _statArFlip, _statArMasks;   // why arena entries rebuilt: new recording / strategy flip / masks stale
 
 	private readonly WebGpuDevice _d;
 	private readonly WebGpuRenderSurface _s;
@@ -416,7 +417,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	}
 
 	// The ClipU header (ctrl, size, xform, xoff, finv, mask) followed by one entry per analytic clip; match the WGSL.
-	internal const int ClipUHeaderBytes = 96, ClipEntryBytes = 80;
+	internal const int ClipUHeaderBytes = 112, ClipEntryBytes = 80;
 	// wgpu wants a binding to cover the header plus one array element, so an entry-less clip still binds one (zeroed).
 	internal const int ClipUMinBytes = ClipUHeaderBytes + ClipEntryBytes;
 	private const int ClipUHeaderFloats = ClipUHeaderBytes / sizeof(float), ClipEntryFloats = ClipEntryBytes / sizeof(float);
@@ -456,7 +457,11 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		cu[16] = finv.M11; cu[17] = finv.M12; cu[18] = finv.M21; cu[19] = finv.M22;
 		// mask.xy = texel (0,0) of the bound path-clip mask in the clip's space; mask.z = one is bound; mask.w = the op's
 		// own coverage texture is bound (sampled by vertex uv).
-		if (mask.View != IntPtr.Zero) { cu[20] = mask.OriginX; cu[21] = mask.OriginY; cu[22] = 1f; }
+		if (mask.View != IntPtr.Zero)
+		{
+			cu[20] = mask.OriginX; cu[21] = mask.OriginY; cu[22] = 1f;
+			cu[24] = mask.SlotX; cu[25] = mask.SlotY; cu[26] = mask.W; cu[27] = mask.H;   // maskExt
+		}
 		if (cd.Coverage != 0) { cu[23] = 1f; }
 		for (int i = 0; i < n; i++)
 		{
@@ -658,6 +663,8 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		}
 
 		if (_emitStats) { OpsBuildTicks += System.Diagnostics.Stopwatch.GetTimestamp() - _renderIntoStart; }
+		// Every mask this pass samples from the frame's sheet has to be baked before the pass opens.
+		FlushMaskSheets();
 
 		var color = new WGPURenderPassColorAttachment
 		{

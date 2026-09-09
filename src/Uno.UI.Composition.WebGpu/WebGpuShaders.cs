@@ -37,11 +37,12 @@ internal sealed unsafe partial class WebGpuDevice
 // mask.w > 0.5 = the op's own shape is a coverage texture (an atlas page or a mask of its own), sampled by per-vertex
 // uv: the innermost clip, carried in the vertices so many small shapes (a glyph run) still draw as one.
 // pixel-space transform and finv/xoff.zw its inverse, which maps a fragment back into the recording's space -- where
-// the rect, the mask (mask.xy = texture origin, mask.z > 0.5 = bound) and the entries all live. Each entry is a
+// the rect, the mask (mask.xy = its origin, mask.z > 0.5 = bound; maskExt = its slot x,y,w,h within the bound texture,
+// which may be a shared sheet) and the entries all live. Each entry is a
 // rounded rect in its OWN space, reached through its 2x3 (q = m.xz*p.x + m.yw*p.y + t.xy), so nesting has no cap
 // and needs no axis alignment; t.z > 0.5 = Difference (keep the outside). radX/radY = per-corner radii TL,TR,BR,BL.
 struct ClipEntry { m: vec4<f32>, t: vec4<f32>, rect: vec4<f32>, radX: vec4<f32>, radY: vec4<f32> };
-struct ClipU { ctrl: vec4<f32>, size: vec4<f32>, xform: vec4<f32>, xoff: vec4<f32>, finv: vec4<f32>, mask: vec4<f32>, entries: array<ClipEntry> };
+struct ClipU { ctrl: vec4<f32>, size: vec4<f32>, xform: vec4<f32>, xoff: vec4<f32>, finv: vec4<f32>, mask: vec4<f32>, maskExt: vec4<f32>, entries: array<ClipEntry> };
 // The pass projection: basis.xy = the target's top-left in device pixels, basis.zw = its size. Bound at group 0 of
 // every colour pipeline, so vertices are uploaded in pixels and a resize or a size-to-content layer re-targets
 // cached geometry for free.
@@ -102,10 +103,9 @@ fn clipCov(fcRaw: vec2<f32>, uv: vec2<f32>) -> f32 {
 // Exact texel of the path-clip mask under this fragment (both are in the clip's space; the origin is whole pixels).
 // Explicit bounds rather than relying on textureLoad's out-of-range behaviour, which differs between backends.
 fn clipMaskCov(fc: vec2<f32>) -> f32 {
-  let t = vec2<i32>(floor(fc - clip.mask.xy));
-  let dims = vec2<i32>(textureDimensions(clipMask));
-  if (t.x < 0 || t.y < 0 || t.x >= dims.x || t.y >= dims.y) { return 0.0; }
-  return textureLoad(clipMask, t, 0).r;
+  let t = floor(fc - clip.mask.xy);
+  if (t.x < 0.0 || t.y < 0.0 || t.x >= clip.maskExt.z || t.y >= clip.maskExt.w) { return 0.0; }
+  return textureLoad(clipMask, vec2<i32>(t + clip.maskExt.xy), 0).r;
 }
 // Same, for a caller that already mapped the fragment into the clip's space — the gradient shader needs that
 // point anyway, and mapping it twice per fragment is a matrix multiply wasted on every pixel it covers.
@@ -146,6 +146,64 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) t: vec2<f32> };
   return vec4<f32>(a, a, a, a);
 }
 ";
+
+	// The sheet variants of the two coverage passes: every edge of every slot in one draw, each quad stopping at
+	// its own slot's right bound (ext) instead of the target's, and every slot resolved in one draw with the fill
+	// rule and Difference flag riding the quad's vertices instead of a uniform.
+	private const string CoverageSheetWgsl = @"
+struct CovU { size: vec4<f32> };
+@group(0) @binding(0) var<storage, read> edges: array<vec4<f32>>;   // x0,y0,x1,y1 in sheet pixels
+@group(0) @binding(1) var<storage, read> ext: array<f32>;           // per edge: its slot's right bound
+@group(0) @binding(2) var<uniform> cov: CovU;                       // size.xy = sheet size in px
+struct CovOut { @builtin(position) p: vec4<f32>, @location(0) e: vec4<f32> };
+@vertex fn vs(@builtin(vertex_index) vi: u32) -> CovOut {
+  let e = edges[vi / 6u];
+  let ci = vi % 6u;
+  var xs = array<f32, 6>(0.0, 1.0, 1.0, 0.0, 1.0, 0.0);
+  var ys = array<f32, 6>(0.0, 0.0, 1.0, 0.0, 1.0, 1.0);
+  let x = mix(floor(min(e.x, e.z)), ext[vi / 6u], xs[ci]);
+  let y = mix(floor(min(e.y, e.w)), ceil(max(e.y, e.w)), ys[ci]);
+  var o: CovOut;
+  o.p = vec4<f32>(x / cov.size.x * 2.0 - 1.0, 1.0 - y / cov.size.y * 2.0, 0.0, 1.0);
+  o.e = e;
+  return o;
+}
+fn ramp(c: f32, x: f32) -> f32 {
+  if (x <= c - 1.0) { return x; }
+  if (x >= c) { return c - 0.5; }
+  let t = x - (c - 1.0);
+  return (c - 1.0) + t - 0.5 * t * t;
+}
+@fragment fn fs(i: CovOut) -> @location(0) vec4<f32> {
+  let e = i.e;
+  let dy = e.w - e.y;
+  if (abs(dy) < 1e-7) { return vec4<f32>(0.0, 0.0, 0.0, 0.0); }
+  let py = floor(i.p.y);
+  let ya = max(min(e.y, e.w), py);
+  let yb = min(max(e.y, e.w), py + 1.0);
+  if (yb <= ya) { return vec4<f32>(0.0, 0.0, 0.0, 0.0); }
+  let xa = e.x + (e.z - e.x) * (ya - e.y) / dy;
+  let xb = e.x + (e.z - e.x) * (yb - e.y) / dy;
+  let c = floor(i.p.x) + 1.0;
+  let lo = min(xa, xb); let hi = max(xa, xb);
+  var avg = clamp(c - xa, 0.0, 1.0);
+  if (hi - lo > 1e-6) { avg = (ramp(c, hi) - ramp(c, lo)) / (hi - lo); }
+  let s = select(-1.0, 1.0, dy > 0.0);
+  return vec4<f32>((yb - ya) * avg * s, 0.0, 0.0, 0.0);
+}";
+	private const string CoverageResolveSheetWgsl = @"
+struct VOut { @builtin(position) p: vec4<f32>, @location(0) t: vec2<f32>, @location(1) f: vec2<f32> };
+@group(0) @binding(0) var acc: texture_2d<f32>;
+@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) t: vec2<f32>, @location(2) f: vec2<f32>) -> VOut {
+  var o: VOut; o.p = vec4<f32>(pos, 0.0, 1.0); o.t = t; o.f = f; return o;
+}
+@fragment fn fs(i: VOut) -> @location(0) vec4<f32> {
+  var a = abs(textureLoad(acc, vec2<i32>(i.t), 0).r);
+  if (i.f.x > 0.5) { a = a - 2.0 * floor(a * 0.5); a = min(a, 2.0 - a); }
+  a = min(a, 1.0);
+  if (i.f.y > 0.5) { a = 1.0 - a; }
+  return vec4<f32>(a, a, a, a);
+}";
 
 	private const string ColoredWgsl = @"
 @group(1) @binding(0) var<storage, read> clip: ClipU;

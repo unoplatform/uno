@@ -113,7 +113,8 @@ public sealed unsafe partial class WebGpuPresentSession
 	internal static int ClipMasksBaked;
 
 	/// <summary>A baked path-clip mask: the texture and the device pixel its texel (0,0) sits on.</summary>
-	internal struct ClipMask { public IntPtr View; public int OriginX, OriginY; }
+	// The bound texture, the mask's origin in the clip's space, and its slot within the texture (a sheet holds many).
+	internal struct ClipMask { public IntPtr View; public int OriginX, OriginY, SlotX, SlotY, W, H; }
 
 	// Per frame. Keyed on the composed path list AND the owning bag: the list is shared by every command under
 	// one clip (ClipCompose memoizes it), so a clip is baked once per frame; the bag is part of the key because a
@@ -179,17 +180,24 @@ public sealed unsafe partial class WebGpuPresentSession
 			BakeCoverageMaskInto(paths, slot.Owner.View, (int)ox, (int)oy, w, h, Vector2.One);
 			ClipMasksBaked++;
 		}
-		return new ClipMask { View = slot.Owner.View, OriginX = (int)slot.OriginX, OriginY = (int)slot.OriginY };
+		return new ClipMask { View = slot.Owner.View, OriginX = (int)slot.OriginX, OriginY = (int)slot.OriginY, SlotX = slot.X, SlotY = slot.Y, W = slot.W, H = slot.H };
 	}
 
 	private ClipMask BakeFrameClipMask(PathClip[] paths, OwnedResources owned)
 	{
 		ClipMaskRect(paths, out var ox, out var oy, out var w, out var h);
+		// A single path on a per-frame op goes on the frame's sheet; a product of several needs its own multiply bake.
+		if (owned is null && paths.Length == 1 && TryReserveSheetSlot(w, h, out var sheet, out var sx, out var sy))
+		{
+			AddSheetFill(sheet, sx, sy, w, h, paths[0].Edges, new Vector2(ox + 1, oy + 1), Vector2.One, paths[0].EvenOdd, paths[0].Exclude);
+			ClipMasksBaked++;
+			return new ClipMask { View = sheet.View, OriginX = ox, OriginY = oy, SlotX = sx, SlotY = sy, W = w, H = h };
+		}
 		var (view, tex) = BakeCoverageMask(paths, ox, oy, w, h, Vector2.One);
 		if (owned is not null) { (owned.Textures ??= new()).Add(((nint)view, (nint)tex)); }
 		else { _d.DeferTextureRelease(view, tex); }
 		ClipMasksBaked++;
-		return new ClipMask { View = view, OriginX = ox, OriginY = oy };
+		return new ClipMask { View = view, OriginX = ox, OriginY = oy, W = w, H = h };
 	}
 	/// <summary>
 	/// Bakes one coverage mask of <paramref name="w"/>x<paramref name="h"/> device pixels whose texel (0,0) sits on
@@ -304,15 +312,26 @@ public sealed unsafe partial class WebGpuPresentSession
 			w = (int)MathF.Ceiling(dx1) + 1 - ox; h = (int)MathF.Ceiling(dy1) + 1 - oy;
 		}
 
-		var (view, tex) = BakeCoverageMask(new[] { new PathClip { Edges = pf.Edges, EvenOdd = pf.EvenOdd } }, ox, oy, w, h, scale);
-		if (owned is not null) { (owned.Textures ??= new()).Add(((nint)view, (nint)tex)); }
-		else { _d.DeferTextureRelease(view, tex); }
+		// A per-frame fill goes on the frame's sheet and samples its slot; a cached recording's gets a texture of its own.
+		IntPtr view; var uv = new Vector4(0f, 0f, 1f, 1f);
+		if (owned is null && TryReserveSheetSlot(w, h, out var sheet, out var sx, out var sy))
+		{
+			AddSheetFill(sheet, sx, sy, w, h, pf.Edges, new Vector2((ox + 1) / scale.X, (oy + 1) / scale.Y), scale, pf.EvenOdd, false);
+			view = sheet.View;
+			uv = new Vector4(sx, sy, sx + w, sy + h) / SheetSize;
+		}
+		else
+		{
+			(view, var tex) = BakeCoverageMask(new[] { new PathClip { Edges = pf.Edges, EvenOdd = pf.EvenOdd } }, ox, oy, w, h, scale);
+			if (owned is not null) { (owned.Textures ??= new()).Add(((nint)view, (nint)tex)); }
+			else { _d.DeferTextureRelease(view, tex); }
+		}
 		FillMasksBaked++;
 
 		// A solid quad with the mask as its coverage, 1:1 with device pixels once the GPU applies the scale -- the same
 		// draw an atlas entry uses, so it coalesces and re-stamps like one.
 		var clip = WithCoverage(pf.Clip, view);
-		var q = CoverageQuad(new Vector2(ox / scale.X, oy / scale.Y), new Vector2(w / scale.X, h / scale.Y), pf.Color);
+		var q = CoverageQuad(new Vector2(ox / scale.X, oy / scale.Y), new Vector2(w / scale.X, h / scale.Y), pf.Color, uv);
 		op = new DrawOp(DrawKind.Solid, (nint)Vbuf(q, owned), 6, 0, false, clip, (nint)MakeClipBg(clip, owned));
 		return true;
 	}

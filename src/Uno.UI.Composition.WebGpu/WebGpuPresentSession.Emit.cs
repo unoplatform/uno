@@ -276,7 +276,11 @@ public sealed unsafe partial class WebGpuPresentSession
 		int aSlot = (miss || entry is null) ? -1 : entry.XformSlot;
 		if (miss || !entry.Arena || AtlasNeedsRebuild(entry, rr.Transform))
 		{
-			if (_emitStats) { _statArenaRebuilds++; }
+			if (_emitStats)
+			{
+				_statArenaRebuilds++;
+				if (miss) { _statArMiss++; } else if (!entry.Arena) { _statArFlip++; } else { _statArMasks++; }
+			}
 			if (entry is not null) { _d.DeferRelease(entry.Owned); _d.DeferRelease(entry.StampOwned); }
 			var aOwned = new OwnedResources();
 			var aOps = new List<DrawOp>();

@@ -398,12 +398,12 @@ public sealed unsafe partial class WebGpuPresentSession
 		line.Append($"/empty{WebGpuCommandRecorder.StatBlockEmpty}");
 
 		// Rebuilt anyway, and why
-		line.Append($" tableRebuilds={_statTableRebuilds} arenaRebuilds={_statArenaRebuilds} stamps={_statStamps}");
+		line.Append($" tableRebuilds={_statTableRebuilds} arenaRebuilds={_statArenaRebuilds}(miss{_statArMiss}/flip{_statArFlip}/masks{_statArMasks}) stamps={_statStamps}");
 		line.Append($" cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}");
 		line.Append($"/flip{_statCrPathFlip}/clip{_statCrClip})");
 
 		// Turned away, and why
-		line.Append($" atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked} clipMasks={ClipMasksBaked} fillMasks={FillMasksBaked}");
+		line.Append($" atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked} clipMasks={ClipMasksBaked} fillMasks={FillMasksBaked} sheet={SheetSlotsBaked}");
 		line.Append($"/full{AtlasNoRoom}/noedges{AtlasNoEdges}/scaleblk{ScaleBlocked}/big{WebGpuPathAtlas.RejBig}");
 		line.Append($"/pages{_d.PathAtlas.Pages.Count}");
 
@@ -411,6 +411,7 @@ public sealed unsafe partial class WebGpuPresentSession
 
 		WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = 0;
 		_statTableRebuilds = _statStamps = _statArenaRebuilds = _statCachedRebuilds = 0;
+		_statArMiss = _statArFlip = _statArMasks = 0;
 		_statCrMiss = _statCrMove = _statCrPathFlip = _statCrClip = 0;
 		StatStratReappend = StatStratArena = StatStratCached = StatStratTableFrame = 0;
 	}
