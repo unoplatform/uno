@@ -147,7 +147,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var photoTemplateImage = photoTemplateContent.FindName("PhotoTemplateImage") as Image;
 			Assert.IsNotNull(photoTemplateImage);
 
-			var uriSourceExpression = photoTemplateImage.Source.GetBindingExpression(Microsoft.UI.Xaml.Media.Imaging.BitmapImage.UriSourceProperty);
+			var uriSourceExpression = photoTemplateImage.Source.GetBindingExpressionInternal(Microsoft.UI.Xaml.Media.Imaging.BitmapImage.UriSourceProperty);
 			Assert.IsNotNull(uriSourceExpression);
 			Assert.AreEqual("Thumbnail", uriSourceExpression.ParentBinding.Path.Path);
 		}

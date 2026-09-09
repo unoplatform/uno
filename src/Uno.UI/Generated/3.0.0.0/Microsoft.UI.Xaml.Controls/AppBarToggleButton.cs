@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class AppBarToggleButton : global::Microsoft.UI.Xaml.Controls.ICommandBarElement
+	public partial class AppBarToggleButton : global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton, global::Microsoft.UI.Xaml.Controls.ICommandBarElement
 	{
 		// Skipping already declared property DynamicOverflowOrderProperty
 		// Skipping already declared property IconProperty

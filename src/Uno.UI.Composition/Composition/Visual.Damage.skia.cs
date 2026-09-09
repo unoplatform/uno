@@ -268,6 +268,28 @@ public partial class Visual
 		return true;
 	}
 
+	/// <summary>
+	/// The bounds of everything this visual and its subtree paint, in root coordinates. False when some
+	/// part of it can't be bounded analytically, in which case the caller has to fall back to its clip.
+	/// </summary>
+	internal bool TryGetSubtreeContentBoundsInRoot(out SKRect boundsInRoot)
+	{
+		boundsInRoot = SKRect.Empty;
+
+		if (!TryGetLocalContentBounds(out var own))
+		{
+			return false;
+		}
+
+		if (!own.IsEmpty)
+		{
+			boundsInRoot = TotalMatrix.ToSKMatrix().MapRect(own);
+		}
+
+		// A shadow's silhouette already covers the descendants, see TryGetShadowSilhouetteBounds.
+		return ShadowState is not null || TryAccumulateDescendantContentBoundsInRoot(ref boundsInRoot);
+	}
+
 	private bool TryAccumulateDescendantContentBoundsInRoot(ref SKRect acc)
 	{
 		foreach (var child in GetChildrenInRenderOrder())

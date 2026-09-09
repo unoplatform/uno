@@ -169,9 +169,13 @@ stages:
 ##
 ## Publishing
 ##
+# A servicing/* branch continues a previous version line after master has moved on
+# to a newer one, so it publishes dev packages the same way master does. The same
+# pattern is added to the CI triggers, the dev-feed push step and version.json's
+# publicReleaseRefSpec.
 - stage: Publish_Dev
   displayName: 'Publish - Dev NuGet'
-  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')), not(eq(variables['build.reason'], 'PullRequest')))
+  condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/heads/servicing/'), startsWith(variables['Build.SourceBranch'], 'refs/heads/feature')), not(eq(variables['build.reason'], 'PullRequest')))
   dependsOn: binaries_build_winui
   jobs:
   - template: publish/.azure-devops-publish-nuget-dev.yml

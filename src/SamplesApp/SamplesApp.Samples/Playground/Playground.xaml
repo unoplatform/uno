@@ -5,7 +5,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:UITests.Playground"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:monaco="using:Monaco"
     d:DesignHeight="300"
     d:DesignWidth="400"
     mc:Ignorable="d">
@@ -27,12 +26,10 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Grid>
-                <TextBox
-                    x:Name="xamlText"
-                    AcceptsReturn="True"
-                    FontFamily="ms-appx:///Assets/Fonts/CascadiaCode-Regular.ttf" />
-            </Grid>
+            <TextBox
+                x:Name="xamlText"
+                AcceptsReturn="True"
+                FontFamily="ms-appx:///Assets/Fonts/CascadiaCode-Regular.ttf" />
 
             <ContentControl x:Name="renderSurface" Grid.Column="1" />
         </Grid>

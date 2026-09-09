@@ -320,7 +320,7 @@ public class Given_Window
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaIOS)] // Flaky on iOS Skia https://github.com/unoplatform/uno/issues/9080
 	public async Task When_Window_Closed_Is_Handled()
 	{
 		AssertSupportsMultipleWindows();

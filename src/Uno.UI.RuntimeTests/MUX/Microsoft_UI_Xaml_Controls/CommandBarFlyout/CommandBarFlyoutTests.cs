@@ -103,6 +103,7 @@ public class CommandBarFlyoutTests : MUXApiTestBase
 
 	[TestMethod]
 	[TestProperty("Description", "Verifies that the overflow popup does not size itself to be larger than its max height if a sufficiently large number of AppBarButtons are present.")]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 	public async Task VerifyCommandBarSizingSecondaryItemsMaxHeight()
 	{
 		await VerifyCommandBarSizing(CommandBarSizingOptions.SecondaryItemsMaxHeight);

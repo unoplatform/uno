@@ -157,18 +157,30 @@ $ANDROID_HOME/platform-tools/adb shell am start \
   -e UITEST_RUNTIME_AUTOSTART_RESULT_FILE "$UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH" \
   -e UITEST_RUNTIME_TESTS_FILTER "$UITEST_RUNTIME_TESTS_FILTER" \
 
-# Set the timeout in seconds
-UITEST_TEST_TIMEOUT_AS_MINUTES=${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1}
-TIMEOUT=$(($UITEST_TEST_TIMEOUT_AS_MINUTES * 60))
+TIMEOUT=0
+if [ "${UITEST_TEST_TIMEOUT:${#UITEST_TEST_TIMEOUT}-1:1}" = "s" ]; then
+	# UITEST_TEST_TIMEOUT ends with `s`; assume it's seconds
+	TIMEOUT=${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1}
+else
+	# UITEST_TEST_TIMEOUT doesn't end with `s`; assume it's minutes.
+	TIMEOUT=$((${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1} * 60))
+fi
+
 END_TIME=$((SECONDS+TIMEOUT))
 
 echo "Waiting for $UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH to be available..."
 
-while [[ ! $($ANDROID_HOME/platform-tools/adb shell test -e "$UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH" > /dev/null) && $SECONDS -lt $END_TIME ]]; do
+while [[ $SECONDS -lt $END_TIME ]]; do
     sleep 15
 
 	## Dump the emulator's system log
 	$ANDROID_HOME/platform-tools/adb shell logcat -d > $LOGS_PATH/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.interim.txt
+
+	# exit loop if the output file exists
+	if $ANDROID_HOME/platform-tools/adb shell test -e "$UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH" ; then
+		echo "Test result file $UITEST_RUNTIME_AUTOSTART_RESULT_FILENAME exists on-device."
+		break
+	fi
 
     # exit loop if the APP_PID is not running anymore
     if ! $ANDROID_HOME/platform-tools/adb shell ps | grep "$UNO_UITEST_APP_ID" > /dev/null; then
