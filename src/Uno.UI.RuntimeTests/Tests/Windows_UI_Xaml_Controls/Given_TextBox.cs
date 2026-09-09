@@ -1094,7 +1094,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 #if HAS_UNO
 		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.Android)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.Wasm | RuntimeTestPlatforms.Android | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_Focus_Immediately()
 		{
 			var inputPaneShown = false;

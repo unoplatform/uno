@@ -242,7 +242,7 @@ internal sealed partial class FocusSynchronizer
 		// Unsubscribe from previous element
 		UntrackFocusedElement();
 
-		_trackedElement = element;
+		_trackedElement = new WeakReference<UIElement>(element);
 
 		// Track IsEnabled changes
 		if (element is Control control)
@@ -259,25 +259,29 @@ internal sealed partial class FocusSynchronizer
 
 	private void UntrackFocusedElement()
 	{
-		if (_trackedElement is null)
+		if (_trackedElement is not { } reference)
 		{
 			return;
 		}
 
-		if (_trackedElement is Control control)
+		_trackedElement = null;
+		if (!reference.TryGetTarget(out var element))
+		{
+			return;
+		}
+
+		if (element is Control control)
 		{
 			control.IsEnabledChanged -= OnTrackedElementIsEnabledChanged;
 		}
 
-		if (_trackedElement is FrameworkElement fe)
+		if (element is FrameworkElement fe)
 		{
 			fe.Unloaded -= OnTrackedElementUnloaded;
 		}
-
-		_trackedElement = null;
 	}
 
-	private UIElement? _trackedElement;
+	private WeakReference<UIElement>? _trackedElement;
 
 	private void OnTrackedElementIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
 	{

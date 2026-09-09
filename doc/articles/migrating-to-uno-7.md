@@ -72,6 +72,26 @@ on macOS with Skia rendering. To migrate:
 5. Publish with the [macOS desktop packaging](xref:uno.publishing.desktop.macos) flow
    instead of the Mac Catalyst one.
 
+### Minimum OS versions raised
+
+Uno Platform 7.0 raises the default minimum OS version on the mobile and WinAppSDK
+targets. These are the values the `Uno.Sdk` applies when a head does not set
+`SupportedOSPlatformVersion` / `TargetPlatformMinVersion` itself.
+
+| Target | 6.x | 7.0 | Why |
+|---|---|---|---|
+| iOS | 14.2 | **15.0** | Xcode 27 — the toolchain .NET 11 builds with — refuses deployment targets below iOS 15. |
+| tvOS | 14.2 | **15.0** | Same Xcode 27 floor. |
+| Android | 21 on `net10.0-android`, 24 on `net11.0-android` | **24 on both** | .NET 11 requires API 24 (Android 7.0). 7.0 applies the same floor to `net10.0-android` so a single value covers every target framework. |
+| WinAppSDK | `10.0.18362.0` | **`10.0.19041.0`** | Windows 10 1903 is out of support and is not listed as a supported OS for the Windows App SDK. 19041 matches the `windows10.0.19041.0` target framework already used throughout. |
+
+The Android Wear floor is unchanged at API 26, and no minimum OS version is enforced
+for the `net*-desktop` and `net*-browserwasm` targets.
+
+A head that sets these properties explicitly keeps its own value, so an app can still
+target lower versions where the underlying SDK allows it — but those combinations are no
+longer tested by Uno Platform.
+
 ### Packages
 
 | Removed / changed | Migration |
@@ -86,6 +106,8 @@ on macOS with Skia rendering. To migrate:
 | `Uno.WinUI` UI assemblies for `net*-android/ios/tvos` are now the Skia binaries | Same TFM string, but binary-incompatible with previously native-built consumers. Recompile all libraries against 7.0 and remove native bootstrap. |
 | `Xamarin.AndroidX.*` transitive deps removed (AppCompat, RecyclerView, Activity, Browser, SwipeRefreshLayout) | If *your own* code uses AndroidX, add explicit `PackageReference`s. |
 | `SkiaSharp.Views.Uno.WinUI` no longer referenced implicitly | The `Uno.Sdk` used to add it to every Uno Platform target, and to WebAssembly heads using the `lottie`, `svg`, `material`, `cupertino`, or `simpletheme` features. Nothing in Uno Platform needs it anymore — SVG draws through `Uno.WinUI.Graphics2DSK` and Lottie through `SkiaSharp.Skottie`. If *your own* code uses `SKXamlCanvas` or `SKSwapChainPanel`, switch to [`SKCanvasElement`](xref:Uno.Controls.SKCanvasElement), which is hardware-accelerated and referenced implicitly; otherwise add an explicit `PackageReference`. |
+| `Microsoft.Windows.Compatibility` no longer referenced implicitly (WebAssembly) | The `Uno.Sdk` added this .NET Framework porting meta-package to every WebAssembly executable, pulling in 56 extra packages — 47% of a blank app's restore graph — including 21 RID-specific native packages for a target that has no RIDs. It arrived as a .NET 5 migration workaround and nothing in Uno Platform uses it. Most of what it provides is Windows-only and throws `PlatformNotSupportedException` in a browser regardless. If *your own* code uses one of its assemblies, add an explicit `PackageReference` to that specific package — the ones that genuinely work in a browser are `System.ServiceModel.*`, `System.ServiceModel.Syndication`, `System.Runtime.Caching`, `System.IO.Packaging`, `System.Configuration.ConfigurationManager`, `System.ComponentModel.Composition`, `System.CodeDom`, `System.Reflection.Context` and `System.Security.Cryptography.Pkcs`/`.Xml` — or reference `Microsoft.Windows.Compatibility` itself. The `WindowsCompatibilityVersion` MSBuild property is removed with it; specify a version on your own `PackageReference`. |
+| `LibVLCSharp` no longer referenced implicitly | `Uno.WinUI.Runtime.Skia.X11` — which every desktop head references implicitly — carried a `LibVLCSharp` dependency it never used, so the managed assembly landed in every desktop app's output. It now arrives only with the `MediaPlayerElement` (or `MediaElement`) feature, through `Uno.WinUI.MediaPlayer.Skia.X11` / `Uno.WinUI.MediaPlayer.Skia.Win32`, which have always declared it themselves. `MediaPlayerElement` is unaffected — it already required that feature. If *your own* code uses `LibVLCSharp` types directly, add an explicit `PackageReference`. |
 | Windows App SDK default moved from 1.7 to 2.3.1 | Windows heads now build against Windows App SDK 2.x, so packaged apps take a framework dependency on `Microsoft.WindowsAppRuntime.2` and end users need the matching [Windows App Runtime](https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads) — 2.3.1 or later from the **Stable release** section — installed. To stay on 1.x, set `<WinAppSdkVersion>` (and `<WinAppSdkBuildToolsVersion>`) explicitly in your Windows head. |
 | `Uno.UI.Toolkit` types moved to the `Uno.UI.*` namespaces | The old name was routinely confused with the separate Uno Toolkit (`Uno.Toolkit.UI`). Each type now sits in the namespace it belongs to — see [the mapping table below](#unouitoolkit-types-move-to-the-unoui-namespaces). Type names and behavior are unchanged. `Uno.Diagnostics.UI`, `Uno.UI.Markup`, `Uno.Helpers` and `Uno.UI.Maps` are unaffected — only the `Uno.UI.Toolkit*` namespaces moved. |
 
@@ -763,7 +785,10 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 12. Update assembly-qualified type names that reach MRT Core (`Microsoft.Windows.ApplicationModel.Resources.*`) — the assembly is now `Uno.WinRT`, not `Uno.UI`.
 13. Retype `Window.VisibilityChanged` handlers to `WindowVisibilityChangedEventArgs`, and drop
    any explicit `Window*EventHandler` delegate construction.
-14. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
+14. Raise `SupportedOSPlatformVersion` to **15.0** (iOS/tvOS) and **24.0** (Android), and
+   `TargetPlatformMinVersion` to **10.0.19041.0** (WinAppSDK), in any head that pins them
+   explicitly.
+15. Re-baseline visual/snapshot tests and re-test text, lists/scroll, IME, pickers, and
    safe-area/notch handling on devices.
 
 See the [Uno 6.0 migration guide](xref:Uno.Development.MigratingToUno6#optional-use-of-skia-rendering-for-ios-android-and-webassembly)

@@ -4,7 +4,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using Uno.UI;
+using Uno.Foundation.Logging;
 using DirectUI;
 using System.Linq;
 using Windows.Foundation;
@@ -364,6 +366,35 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 	protected override bool IsPeripheralCore()
 		=> AutomationProperties.GetIsPeripheral(Owner);
 
+	protected override int GetCultureCore()
+	{
+		// CFrameworkElementAutomationPeer::GetCultureHelper uses Language only when Culture is unset.
+		if (Owner.GetCurrentHighestValuePrecedence(AutomationProperties.CultureProperty) != DependencyPropertyValuePrecedences.DefaultValue)
+		{
+			return AutomationProperties.GetCulture(Owner);
+		}
+
+		if (Owner is not FrameworkElement { Language: { Length: > 0 } language })
+		{
+			return 0;
+		}
+
+		try
+		{
+			return CultureInfo.GetCultureInfo(language).LCID;
+		}
+		catch (CultureNotFoundException error)
+		{
+			// WinUI's LocaleNameToLCID lookup returns zero for an unknown language.
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Unable to resolve the automation culture for '{language}': {error.Message}");
+			}
+
+			return 0;
+		}
+	}
+
 	protected override bool IsDataValidForFormCore()
 		=> AutomationProperties.GetIsDataValidForForm(Owner);
 
@@ -411,7 +442,10 @@ public partial class FrameworkElementAutomationPeer : AutomationPeer
 		return peers;
 	}
 
-	internal IReadOnlyList<AutomationPeerAnnotation> GetAnnotationsCoreImpl()
+	protected override IList<AutomationPeerAnnotation> GetAnnotationsCore()
+		=> GetAnnotationsCoreImpl();
+
+	internal IList<AutomationPeerAnnotation> GetAnnotationsCoreImpl()
 	{
 		var annotations = new List<AutomationPeerAnnotation>();
 
