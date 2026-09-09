@@ -157,14 +157,6 @@ internal sealed class PathFill : WebGpuCommand
 	public float[] FanCoverage;
 
 	/// <summary>
-	/// The same triangulation WITHOUT the analytic AA ring: interior on the true edge, coverage 1 throughout.
-	/// An atlas bake supersamples 4x and derives its own coverage, so feeding it <see cref="FanCoverage"/> would
-	/// antialias the edge twice and visibly fatten curves (it broke the Ellipse golden-image parity). Only built
-	/// when the ring exists, i.e. when the frame is single-sampled.
-	/// </summary>
-	public float[] FanHard;
-
-	/// <summary>
 	/// The flattened outline as device-space edges (x0,y0,x1,y1 per edge), for the signed-area coverage
 	/// rasterizer. Independent of the triangulation: coverage needs the boundary, not the interior, which is
 	/// why it is available for shapes the tessellator refuses. Null when the contours could not be captured.

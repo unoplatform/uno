@@ -292,8 +292,6 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	// triangulation with an analytic AA ring (PathTessellator) instead of going through stencil-then-cover.
 	private readonly List<List<Vector2>> _allContours = new();
 	private readonly List<float> _aaVerts = new(), _aaCov = new();
-	private readonly List<float> _hardVerts = new(), _hardCov = new();
-	private float[] _fanHard;
 	// Per-vertex AA coverage for the fill being recorded (null = no ring, edges rely on the attachment).
 	private float[] _fanCoverage;
 	// Stroke tessellation: contours collected in LOCAL space (offsetting must happen before the transform so a
@@ -380,7 +378,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		// triangulates the non-zero interior, which is a different region.
 		var aa = !evenOdd && TryTessellate(geometry);
 			if (aa) { tiles = true; }
-			_target.Add(new PathFill { FanDevice = _fan.ToArray(), FanCoverage = _fanCoverage, FanHard = _fanHard, Edges = BuildEdges(), Geometry = geometry, GeomMatrix = _m, BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, FanTiles = tiles, Clip = RelaxedClip(_bbMin, _bbMax) });
+			_target.Add(new PathFill { FanDevice = _fan.ToArray(), FanCoverage = _fanCoverage, Edges = BuildEdges(), Geometry = geometry, GeomMatrix = _m, BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, FanTiles = tiles, Clip = RelaxedClip(_bbMin, _bbMax) });
 		}
 		_fan = null;
 	}
@@ -503,7 +501,6 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	/// </summary>
 	private bool TryTessellate(IGeometry geometry)
 	{
-		_fanHard = null;
 		if (_allContours.Count != _contourCount) { return false; }
 		PathTessellator.Simplify(_allContours);
 		var total = 0;
@@ -544,12 +541,6 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		_fan.Clear();
 		_fan.AddRange(_aaVerts);
 		_fanCoverage = _aaCov.ToArray();
-
-		// Ring-free twin for the atlas. Recordings are cached, so this runs once per record, not per frame.
-		if (AnalyticAa && PathTessellator.BuildGeometry(_allContours, idx, 0f, _hardVerts, _hardCov))
-		{
-			_fanHard = _hardVerts.ToArray();
-		}
 		return true;
 	}
 
@@ -1029,17 +1020,6 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 						var q = T(new Vector2(src[i], src[i + 1])); dst[i] = q.X; dst[i + 1] = q.Y;
 						bbMin = Vector2.Min(bbMin, q); bbMax = Vector2.Max(bbMax, q);
 					}
-					// The ring-free twin has to be transformed too, or the atlas bake falls back to the ringed fan and
-					// antialiases the mask twice.
-					float[] dstHard = null;
-					if (p.FanHard is { } srcHard)
-					{
-						dstHard = new float[srcHard.Length];
-						for (int i = 0; i < srcHard.Length; i += 2)
-						{
-							var qh = T(new Vector2(srcHard[i], srcHard[i + 1])); dstHard[i] = qh.X; dstHard[i + 1] = qh.Y;
-						}
-					}
 					// FanTiles carries over: an affine map scales every triangle area by the same determinant, so
 					// sum(|area|) == |sum(area)| still holds. Dropping it silently disabled the single-pass fill for
 					// every replayed (scrolled or transformed) recording. GeomMatrix carries the atlas key the same
@@ -1057,7 +1037,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 							var qe = T(new Vector2(srcEdges[i], srcEdges[i + 1])); dstEdges[i] = qe.X; dstEdges[i + 1] = qe.Y;
 						}
 					}
-					var replayed = new PathFill { FanDevice = dst, FanCoverage = p.FanCoverage, FanHard = dstHard, Edges = dstEdges, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, FanTiles = p.FanTiles, Geometry = p.Geometry, GeomMatrix = p.GeomMatrix * _m, Clip = ClipCompose(p.Clip) };
+					var replayed = new PathFill { FanDevice = dst, FanCoverage = p.FanCoverage, Edges = dstEdges, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, FanTiles = p.FanTiles, Geometry = p.Geometry, GeomMatrix = p.GeomMatrix * _m, Clip = ClipCompose(p.Clip) };
 					p.StoreReplayed(_m, replayed);
 					_target.Add(replayed);
 					break;

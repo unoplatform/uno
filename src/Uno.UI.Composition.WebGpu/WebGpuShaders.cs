@@ -110,11 +110,8 @@ fn clipCovMapped(fc: vec2<f32>, clip: ClipU) -> f32 {
   return cov;
 }
 ";
-	// Averages each 4x4 block of the supersampled mask into one coverage value. Reads with textureLoad so no
-	// sampler or filtering is involved — the average must be exact, not bilinear.
-	// Resolves the signed-area accumulator into coverage and writes it the way MaskDownsampleWgsl does, so an
-	// atlas slot baked this way is indistinguishable to the sampling side. ctrl.x > 0.5 = even-odd: fold the
-	// winding count into [0,1] instead of clamping it, so a self-overlapping outline punches holes.
+	// Resolves the signed-area accumulator into coverage. ctrl.x > 0.5 = even-odd: fold the winding count into
+	// [0,1] instead of clamping it, so a self-overlapping outline punches holes.
 	private const string CoverageResolveWgsl = @"
 struct CovResU { ctrl: vec4<f32> };   // ctrl.x > 0.5 = even-odd; ctrl.y > 0.5 = keep the outside (Difference)
 struct VOut { @builtin(position) p: vec4<f32>, @location(0) t: vec2<f32> };
@@ -132,24 +129,6 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) t: vec2<f32> };
 }
 ";
 
-	private const string MaskDownsampleWgsl = @"
-struct VOut { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
-@group(0) @binding(0) var src: texture_2d<f32>;
-@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) uv: vec2<f32>) -> VOut {
-  var o: VOut; o.p = vec4<f32>(pos, 0.0, 1.0); o.uv = uv; return o;
-}
-@fragment fn fs(i: VOut) -> @location(0) vec4<f32> {
-  let dims = vec2<f32>(textureDimensions(src));
-  let base = vec2<i32>(floor(i.uv * dims / 4.0)) * 4;
-  var a = 0.0;
-  for (var y = 0; y < 4; y = y + 1) {
-    for (var x = 0; x < 4; x = x + 1) {
-      a = a + textureLoad(src, base + vec2<i32>(x, y), 0).a;
-    }
-  }
-  a = a / 16.0;
-  return vec4<f32>(a, a, a, a);
-}";
 	private const string ColoredWgsl = @"
 @group(0) @binding(0) var<uniform> clip: ClipU;
 @group(0) @binding(1) var clipMask: texture_2d<f32>;

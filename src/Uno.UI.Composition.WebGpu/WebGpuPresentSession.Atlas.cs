@@ -21,102 +21,6 @@ namespace Uno.UI.Composition.WebGpu;
 public sealed unsafe partial class WebGpuPresentSession
 {
 	/// <summary>
-	/// Rasterizes one fill's coverage into its atlas slot: stencil-then-cover in white into a scratch surface
-	/// (multisampled, so the baked coverage is antialiased however the frame is later sampled), then a texture
-	/// copy into the page. Runs during op BUILD, before the frame's render pass opens — a copy cannot be
-	/// recorded inside a render pass.
-	/// </summary>
-	private void RasterizeAtlasEntry(PathFill pf, WebGpuPathAtlas.Slot slot, Vector2 scale)
-	{
-		const int SS = WebGpuDevice.MaskSuperSample;
-		int sw = slot.W * SS, sh = slot.H * SS;
-
-		// Supersampled rather than MSAA: the bake stays independent of the frame's sample count and gets 17
-		// coverage levels instead of 5. It has to use the same surface + pipeline pairing as RenderShadow — a
-		// hand-rolled single-sample attachment rasterizes geometry but never writes stencil, so stencil-then-cover
-		// silently fills the whole slot.
-		var surf = new WebGpuRenderSurface(_d, sw, sh, _d.Pool);
-
-		var src = pf.FanHard ?? pf.FanDevice;
-		var fan = new float[src.Length];
-		for (int i = 0; i < src.Length; i += 2)
-		{
-			fan[i] = ((src[i] - slot.OriginX) * scale.X + 1f) / slot.W * 2f - 1f;
-			fan[i + 1] = 1f - ((src[i + 1] - slot.OriginY) * scale.Y + 1f) / slot.H * 2f;
-		}
-		var fanBuf = MakeBuffer(fan);
-		var cq = new List<float>();
-		void CQ(float x, float y) { cq.Add(x); cq.Add(y); cq.Add(1f); cq.Add(1f); cq.Add(1f); cq.Add(1f); }
-		CQ(-1, -1); CQ(1, -1); CQ(1, 1); CQ(-1, -1); CQ(1, 1); CQ(-1, 1);
-		var coverBuf = MakeBuffer(cq.ToArray());
-
-		var color = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = surf.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? surf.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = _d.MsaaSamples > 1 ? WGPUStoreOp.Discard : WGPUStoreOp.Store, ClearValue = default };
-		var depthStencil = new WGPURenderPassDepthStencilAttachment { View = surf.DepthView, DepthLoadOp = WGPULoadOp.Clear, DepthStoreOp = WGPUStoreOp.Discard, DepthClearValue = 0f, StencilLoadOp = WGPULoadOp.Clear, StencilStoreOp = WGPUStoreOp.Discard, StencilClearValue = 0 };
-		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color, DepthStencilAttachment = &depthStencil };
-		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &desc);
-		if (pf.FanTiles)
-		{
-			// Already a non-overlapping triangulation: fill it directly. The ring-free twin carries no coverage.
-			var cov = pf.FanHard is not null ? null : pf.FanCoverage;
-			var tf = new List<float>(pf.FanDevice.Length * 3);
-			for (int i = 0, v = 0; i < fan.Length; i += 2, v++)
-			{
-				var a = cov is null ? 1f : cov[v];
-				tf.Add(fan[i]); tf.Add(fan[i + 1]); tf.Add(1f); tf.Add(1f); tf.Add(1f); tf.Add(a);
-			}
-			var tfBuf = MakeBuffer(tf.ToArray());
-			wgpuRenderPassEncoderSetPipeline(pass, _d.MaskCoverPipe);
-			wgpuRenderPassEncoderSetBindGroup(pass, 0, MakeClipBg(_d.CoverClipBgl, ClipData.None), 0, (uint*)null);
-			wgpuRenderPassEncoderSetStencilReference(pass, 0);
-			wgpuRenderPassEncoderSetVertexBuffer(pass, 0, tfBuf, 0, (nuint)(tf.Count * sizeof(float)));
-			wgpuRenderPassEncoderDraw(pass, (uint)(fan.Length / 2), 1, 0, 0);
-		}
-		else
-		{
-			// A centroid fan self-overlaps and its union is a FATTER shape with the counters filled in, so the
-			// mask needs real winding: stencil the fan, then cover through it.
-			wgpuRenderPassEncoderSetPipeline(pass, pf.EvenOdd ? _d.StencilEvenOdd : _d.StencilNonZero);
-			wgpuRenderPassEncoderSetBindGroup(pass, 0, MakeClipBg(_d.ClipBgl, ClipData.None), 0, (uint*)null);
-			wgpuRenderPassEncoderSetVertexBuffer(pass, 0, fanBuf, 0, (nuint)(fan.Length * sizeof(float)));
-			wgpuRenderPassEncoderDraw(pass, (uint)(fan.Length / 2), 1, 0, 0);
-			wgpuRenderPassEncoderSetPipeline(pass, _d.CoverPipe);
-			wgpuRenderPassEncoderSetBindGroup(pass, 0, MakeClipBg(_d.CoverClipBgl, ClipData.None), 0, (uint*)null);
-			wgpuRenderPassEncoderSetStencilReference(pass, 0);
-			wgpuRenderPassEncoderSetVertexBuffer(pass, 0, coverBuf, 0, (nuint)(cq.Count * sizeof(float)));
-			wgpuRenderPassEncoderDraw(pass, 6, 1, 0, 0);
-		}
-		wgpuRenderPassEncoderEnd(pass);
-
-		// Filtering straight into the atlas (viewport = slot) avoids an MSAA resolve and a texture copy.
-		var dq = new float[]
-		{
-			-1f, -1f, 0f, 1f,
-			 1f, -1f, 1f, 1f,
-			 1f,  1f, 1f, 0f,
-			-1f, -1f, 0f, 1f,
-			 1f,  1f, 1f, 0f,
-			-1f,  1f, 0f, 0f,
-		};
-		var dqBuf = MakeBuffer(dq);
-		var de = new WGPUBindGroupEntry { Binding = 0, TextureView = surf.View };
-		var dbgd = new WGPUBindGroupDescriptor { Layout = _d.MaskDownsampleBgl, EntryCount = 1, Entries = &de };
-		var dbg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &dbgd));
-
-		var aca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = slot.Owner.View, ResolveTarget = IntPtr.Zero, LoadOp = WGPULoadOp.Load, StoreOp = WGPUStoreOp.Store, ClearValue = default };
-		var arp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &aca };
-		var apass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &arp);
-		wgpuRenderPassEncoderSetViewport(apass, slot.X, slot.Y, slot.W, slot.H, 0f, 1f);
-		wgpuRenderPassEncoderSetPipeline(apass, _d.MaskDownsamplePipe);
-		wgpuRenderPassEncoderSetBindGroup(apass, 0, (IntPtr)dbg, 0, (uint*)null);
-		wgpuRenderPassEncoderSetVertexBuffer(apass, 0, dqBuf, 0, (nuint)(dq.Length * sizeof(float)));
-		wgpuRenderPassEncoderDraw(apass, 6, 1, 0, 0);
-		wgpuRenderPassEncoderEnd(apass);
-
-		if (_d.MsaaSamples > 1) { _d.Pool.Return(surf.MsaaColorView); }
-		_d.Pool.Return(surf.DepthView);
-	}
-
-	/// <summary>
 	/// Emits an atlased fill as a tinted quad, or returns false to leave it on the geometry path.
 	/// </summary>
 	private bool TryAtlasFill(PathFill pf, List<DrawOp> ops, OwnedResources owned, Vector2 scale)
@@ -138,7 +42,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	}
 
 
-	internal static int AtlasTried, AtlasNoKey, AtlasHit, AtlasBaked, AtlasNoRoom, AtlasNoRing, ScaleBlocked, CoverageBaked;
+	internal static int AtlasTried, AtlasNoKey, AtlasHit, AtlasBaked, AtlasNoRoom, AtlasNoEdges, ScaleBlocked;
 
 	/// <summary>
 	/// Keys and places on the op's own coordinate space, with <paramref name="scale"/> giving the extra scale the
@@ -203,11 +107,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		// the entry) but renders identical content crisp through the retained path and tessellated through the
 		// command-list fallback.
 		bool hitOnly = owned is null;
-		// The bake derives coverage from a 4x supersample, so its input must be a HARD silhouette. Geometry that
-		// already carries an analytic AA ring would be antialiased twice - the edge spreads half a pixel and a
-		// boundary pixel that should be empty comes out at 50%.
-		// Accumulating edges needs neither, so that bake is exempt: the fan is not its input at all.
-		if (!CanCoverageBake(pf) && pf.FanHard is null && HasAaRing(pf.FanCoverage)) { AtlasNoRing++; return false; }
+		if (!CanCoverageBake(pf)) { AtlasNoEdges++; return false; }
 		if (!WebGpuPathAtlas.TryKey(pf.Geometry, pf.GeomMatrix, pf.BbMin, pf.BbMax, scale, out var key, out var w, out var h, out ox, out oy)) { AtlasNoKey++; return false; }
 
 		if (_d.PathAtlas.Pages.Count == 0) { _d.AddPathAtlasPage(); }
@@ -237,7 +137,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			if (slot is null) { AtlasNoRoom++; return false; }
 			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
 			else { _d.PathAtlas.HoldForCache(slot, _d.FrameSeq); }
-			if (CanCoverageBake(pf)) { RasterizeAtlasEntryCoverage(pf, slot, scale); CoverageBaked++; } else { RasterizeAtlasEntry(pf, slot, scale); }
+			RasterizeAtlasEntryCoverage(pf, slot, scale);
 			AtlasBaked++;
 		}
 

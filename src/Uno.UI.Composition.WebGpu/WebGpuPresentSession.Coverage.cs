@@ -1,5 +1,5 @@
-﻿// Signed-area coverage: rasterizes a path's exact per-pixel coverage analytically, as an alternative producer
-// for the atlas masks that RasterizeAtlasEntry otherwise bakes by supersampling a triangulated silhouette.
+﻿// Signed-area coverage: rasterizes a path's exact per-pixel coverage analytically. The one producer behind every
+// atlas mask, path-clip mask and standalone fill mask.
 #nullable disable
 using System;
 using System.Collections.Generic;
@@ -14,18 +14,12 @@ namespace Uno.UI.Composition.WebGpu;
 
 public sealed unsafe partial class WebGpuPresentSession
 {
-	// UNO_WEBGPU_COVERAGE=1 bakes atlas masks by accumulating signed edge area instead of supersampling a
-	// triangulated silhouette, which also lets shapes the tessellator refused into the atlas at all.
-	private static readonly string _coverageMode = Environment.GetEnvironmentVariable("UNO_WEBGPU_COVERAGE");
-	internal static readonly bool _coverageFills = _coverageMode is "1" or "true";
-
-	/// <summary>True when <paramref name="pf"/> can be baked by accumulating its edges rather than its fan.</summary>
-	internal static bool CanCoverageBake(PathFill pf) => _coverageFills && pf.Edges is { Length: >= 12 };
+	/// <summary>True when <paramref name="pf"/> carries an outline to bake; a stroke strip has none.</summary>
+	internal static bool CanCoverageBake(PathFill pf) => pf.Edges is { Length: >= 12 };
 
 	/// <summary>
 	/// Bakes <paramref name="slot"/>'s mask from the fill's edge list: accumulate signed area per pixel into a
-	/// scratch target, then resolve that into the slot. Needs no triangulation and no hard silhouette -- the edges
-	/// ARE the outline -- so it is exact rather than quantised to the supersample's levels.
+	/// scratch target, then resolve that into the slot. Needs no triangulation -- the edges ARE the outline.
 	/// <para>
 	/// Runs during op BUILD, before the frame's render pass opens: each step is its own pass, and a pass cannot be
 	/// nested inside another. Only the slot outlives the frame, and the atlas owns it.
@@ -76,8 +70,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		wgpuRenderPassEncoderDraw(pass, (uint)(local.Length / 4 * 6), 1, 0, 0);
 		wgpuRenderPassEncoderEnd(pass);
 
-		// Resolve into the slot the way the supersampled bake's downsample does (viewport = slot, Load so the rest
-		// of the page survives), so the sampling side cannot tell the two producers apart.
+		// Resolve into the slot (viewport = slot, Load so the rest of the page survives).
 		var ru = _d.BufferPool.Rent(16, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
 		var rp = stackalloc float[4];
 		rp[0] = pf.EvenOdd ? 1f : 0f;
@@ -90,9 +83,9 @@ public sealed unsafe partial class WebGpuPresentSession
 		var resolveBg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &rbgd));
 
 		// Row 0 of the accumulator is the TOP row (its vertex shader already maps pixel y down from NDC +1), and
-		// NDC +1 is the top of the slot viewport -- so v runs opposite to y, exactly as the supersampled bake's
-		// downsample quad does. Matching orientations by eye is not possible here: a flipped mask still fills
-		// roughly the right pixels, so it reads as bad antialiasing rather than as an upside-down glyph.
+		// NDC +1 is the top of the slot viewport -- so v runs opposite to y. Matching orientations by eye is not
+		// possible here: a flipped mask still fills roughly the right pixels, so it reads as bad antialiasing
+		// rather than as an upside-down glyph.
 		var q = new float[]
 		{
 			-1f, -1f, 0f, slot.H,

@@ -402,8 +402,8 @@ public sealed unsafe partial class WebGpuPresentSession
 		line.Append($"/flip{_statCrPathFlip}/size{_statCrSize}/clip{_statCrClip})");
 
 		// Turned away, and why
-		line.Append($" atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked}/cov{CoverageBaked} clipMasks={ClipMasksBaked} fillMasks={FillMasksBaked}");
-		line.Append($"/full{AtlasNoRoom}/ring{AtlasNoRing}/scaleblk{ScaleBlocked}/big{WebGpuPathAtlas.RejBig}");
+		line.Append($" atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked} clipMasks={ClipMasksBaked} fillMasks={FillMasksBaked}");
+		line.Append($"/full{AtlasNoRoom}/noedges{AtlasNoEdges}/scaleblk{ScaleBlocked}/big{WebGpuPathAtlas.RejBig}");
 		line.Append($"/pages{_d.PathAtlas.Pages.Count}");
 
 		System.Console.WriteLine(line.ToString());

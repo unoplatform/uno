@@ -300,18 +300,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// and bakes it here via the adopt ctor.
 	public uint MsaaSamples { get; private set; } = 1;
 
-	/// <summary>
-	/// Masks rasterize at <see cref="MaskSuperSample"/>x linear resolution and are box-filtered down. 4x4
-	/// supersampling yields 17 coverage levels where 4x MSAA yields 5, and Skia's mask rasterizer computes exact
-	/// area — five levels is visibly chunky on small text. Supersampling also makes the baked coverage
-	/// independent of how the frame itself is sampled, which is the point of caching it.
-	/// </summary>
-	public const int MaskSuperSample = 4;
-
-	public IntPtr MaskStencilEvenOdd, MaskStencilNonZero, MaskCoverPipe, MaskDirectPipe;
-
-	/// <summary>Box-filters the supersampled mask down into an atlas slot. No depth, no sampler (textureLoad).</summary>
-	public IntPtr MaskDownsamplePipe, MaskDownsampleBgl;
 	public IntPtr CoverageResolvePipe, CoverageResolveBgl;
 	// Same resolve with colour = src * dst, so successive path clips AND into one mask (its first pass clears to 1).
 	public IntPtr CoverageResolveMulPipe;
@@ -542,39 +530,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		return wgpuDeviceCreateRenderPipeline(Dev, &pd);
 	}
 
-	private void CreateMaskDownsamplePipeline()
-	{
-		var module = Module(MaskDownsampleWgsl);
-		var e = new WGPUBindGroupLayoutEntry
-		{
-			Binding = 0,
-			Visibility = WGPUShaderStage.Fragment,
-			Texture = new WGPUTextureBindingLayout { SampleType = WGPUTextureSampleType.Float, ViewDimension = WGPUTextureViewDimension._2D },
-		};
-		var bgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 1, Entries = &e };
-		MaskDownsampleBgl = wgpuDeviceCreateBindGroupLayout(Dev, &bgld);
-		var bgl = MaskDownsampleBgl;
-		var pld = new WGPUPipelineLayoutDescriptor { BindGroupLayoutCount = 1, BindGroupLayouts = (IntPtr)(&bgl) };
-		var layout = wgpuDeviceCreatePipelineLayout(Dev, &pld);
-
-		var attrs = stackalloc WGPUVertexAttribute[2];
-		attrs[0] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
-		attrs[1] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 8, ShaderLocation = 1 };
-		var vb = new WGPUVertexBufferLayout { ArrayStride = 16, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 2, Attributes = attrs };
-		var vs = SV("vs"); var fs = SV("fs");
-		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vb };
-		var ct = new WGPUColorTargetState { Format = ColorFormat, WriteMask = WGPUColorWriteMask.All };
-		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &ct };
-		var pd = new WGPURenderPipelineDescriptor
-		{
-			Vertex = vsState,
-			Fragment = &fsState,
-			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
-			Multisample = new WGPUMultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
-			Layout = layout,
-		};
-		MaskDownsamplePipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
-	}
 
 
 
@@ -639,30 +594,12 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		StencilEvenOdd = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), 0xFF, 0xFF, layout: clipLayout);
 		StencilNonZero = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.IncrementWrap), Face(WGPUCompareFunction.Always, WGPUStencilOperation.DecrementWrap), 0xFF, 0xFF, layout: clipLayout);
 		CoverPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), Face(WGPUCompareFunction.NotEqual, WGPUStencilOperation.Zero), 0xFF, 0xFF, WGPUCompareFunction.GreaterEqual, layout: clipLayout);
-		// Coverage-mask baking runs at a FIXED sample rate, whatever the frame uses. The mask is rasterized once
-		// and sampled forever after, so it must not inherit a single-sampled frame's aliasing -- that is the whole
-		// reason the atlas exists. Skia does the same thing with a scanline rasterizer; multisampling is our
-		// equivalent, and it is paid once per entry.
-		MaskStencilEvenOdd = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Invert), 0xFF, 0xFF, layout: clipLayout);
-		MaskStencilNonZero = MakePipe(posOnly, vs, fs, colorWrite: false, colorAttrs: false, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.IncrementWrap), Face(WGPUCompareFunction.Always, WGPUStencilOperation.DecrementWrap), 0xFF, 0xFF, layout: clipLayout);
-		MaskCoverPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &blend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep), 0x00, 0xFF, WGPUCompareFunction.Always, layout: clipLayout);
-		// Mask baking needs COVERAGE, not winding, so it does not use the stencil at all: overlapping fan triangles
-		// are combined with a MAX blend, which saturates to 1 inside the shape however they overlap. That sidesteps
-		// stencil-then-cover entirely -- which cancels to zero for a tiling triangulation whose interior and AA ring
-		// wind oppositely, and which never wrote stencil at all in this offscreen configuration.
-		var maxBlend = new WGPUBlendState
-		{
-			Color = new WGPUBlendComponent { Operation = WGPUBlendOperation.Max, SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.One },
-			Alpha = new WGPUBlendComponent { Operation = WGPUBlendOperation.Max, SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.One },
-		};
-		MaskDirectPipe = MakePipe(colored, vs, fs, colorWrite: true, colorAttrs: true, &maxBlend, Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep), Face(WGPUCompareFunction.Always, WGPUStencilOperation.Keep), 0x00, 0xFF, WGPUCompareFunction.Always, layout: clipLayout);
 		// All three share the one explicit ClipU layout, so a bind group made with ClipBgl binds to any of them.
 		SolidClipBgl = ClipBgl;
 		CoverClipBgl = ClipBgl;
 		CreatePathTablePipelines(&blend);
 		CreateCoveragePipelines();
 		CreateImagePipeline();
-		CreateMaskDownsamplePipeline();
 		CreateCoverageResolvePipeline();
 		CreateGradientPipeline(&blend);
 		CreateRoundedRectPipeline(&blend);
