@@ -43,7 +43,7 @@ namespace TestRepro
 			// Source MainPage.xaml (Line 1:2)
 			base.Content = 
 			global::MyProject.GlobalStaticResources.__PreserveProperties(
-				new Microsoft.UI.Xaml.ElementStub( () => 
+				new Microsoft.UI.Xaml.ElementStub(() => 
 				new global::Microsoft.UI.Xaml.Controls.ContentControl
 				{
 					IsParsing = true,

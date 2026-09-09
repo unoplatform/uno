@@ -139,7 +139,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal Lazy<INamedTypeSymbol?> AndroidContentContextSymbol { get; }
 		internal Lazy<INamedTypeSymbol?> AndroidViewSymbol { get; }
 		internal Lazy<INamedTypeSymbol?> IOSViewSymbol { get; }
-		internal Lazy<INamedTypeSymbol?> AppKitViewSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ICollectionSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ICollectionOfTSymbol { get; }
 		internal Lazy<INamedTypeSymbol> IConvertibleSymbol { get; }
@@ -350,7 +349,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			AndroidContentContextSymbol = GetOptionalSymbolAsLazy("Android.Content.Context");
 			AndroidViewSymbol = GetOptionalSymbolAsLazy("Android.Views.View");
 			IOSViewSymbol = GetOptionalSymbolAsLazy("UIKit.UIView");
-			AppKitViewSymbol = GetOptionalSymbolAsLazy("AppKit.NSView");
 			CreateFromStringAttributeSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.CreateFromStringAttribute);
 			NativePageSymbol = GetOptionalSymbolAsLazy(XamlConstants.Types.NativePage);
 			WindowSymbol = GetOptionalSymbolAsLazy(XamlConstants.Types.Window);
