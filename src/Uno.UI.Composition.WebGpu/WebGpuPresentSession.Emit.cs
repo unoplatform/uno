@@ -460,9 +460,9 @@ public sealed unsafe partial class WebGpuPresentSession
 		{
 			return;
 		}
-		var blurView = RenderShadow(sh, out var origin, out var size);
+		var blurView = RenderShadow(sh, out var origin, out var size, out var uv);
 		var sbg = TintedImageBg(blurView, sh.Color);
-		var sq = TexturedQuad(origin, size);
+		var sq = TexturedQuad(origin, size, uv);
 		ops.Add(new DrawOp(DrawKind.Image, (nint)sbg, 0, (nint)MakeBuffer(sq), false, sh.Clip, (nint)MakeClipBg(sh.Clip)));
 	}
 

@@ -203,9 +203,9 @@ public sealed unsafe partial class WebGpuPresentSession
 
 	/// <summary>
 	/// Six vertices (pos.xy in pixels, uv.xy) for an axis-aligned textured quad covering the device rect at
-	/// <paramref name="origin"/>, sampling the whole texture.
+	/// <paramref name="origin"/>, sampling the texture rect <paramref name="uv"/> (x0, y0, x1, y1).
 	/// </summary>
-	private float[] TexturedQuad(Vector2 origin, Vector2 size)
+	private float[] TexturedQuad(Vector2 origin, Vector2 size, Vector4 uv)
 	{
 		var q = new float[24];
 		void V(int i, Vector2 pos, float u, float v)
@@ -216,10 +216,12 @@ public sealed unsafe partial class WebGpuPresentSession
 		var tr = origin + new Vector2(size.X, 0);
 		var br = origin + size;
 		var bl = origin + new Vector2(0, size.Y);
-		V(0, origin, 0, 0); V(4, tr, 1, 0); V(8, br, 1, 1);
-		V(12, origin, 0, 0); V(16, br, 1, 1); V(20, bl, 0, 1);
+		V(0, origin, uv.X, uv.Y); V(4, tr, uv.Z, uv.Y); V(8, br, uv.Z, uv.W);
+		V(12, origin, uv.X, uv.Y); V(16, br, uv.Z, uv.W); V(20, bl, uv.X, uv.W);
 		return q;
 	}
+
+	private float[] TexturedQuad(Vector2 origin, Vector2 size) => TexturedQuad(origin, size, new Vector4(0f, 0f, 1f, 1f));
 
 	/// <summary>
 	/// Bind group for a SrcIn-tinted image draw: the texture carries coverage in its alpha and the colour comes

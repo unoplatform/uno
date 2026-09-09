@@ -98,7 +98,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	// the passes that sample the targets are encoded after them.
 	private void FlushPendingBakes()
 	{
-		if (_pendingBakes.Count == 0) { return; }
+		if (_pendingBakes.Count == 0) { FlushPendingBlurs(); return; }
 		foreach (var b in _pendingBakes)
 		{
 			// Accumulator dims rounded up so the pool sees a few sizes per target, not one per frame.
@@ -168,6 +168,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		_pendingBakes.Clear();
 		_bakeByTarget.Clear();
 		_sheet = null;
+		FlushPendingBlurs();
 	}
 
 	internal static int SheetSlotsBaked, BakeBatches;

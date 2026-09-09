@@ -23,12 +23,13 @@ public sealed unsafe partial class WebGpuPresentSession
 	// The blurred shadow as a texture with its device-space placement. Cached in the atlas under the silhouette's
 	// geometry, transform and blur radius (a texture of its own, since a shadow is padded by its blur reach), so a
 	// static shadow bakes once: on a miss the silhouette's coverage is baked, blurred, and resampled into the entry.
-	private IntPtr RenderShadow(ShadowCmd sh, out Vector2 origin, out Vector2 size)
+	private IntPtr RenderShadow(ShadowCmd sh, out Vector2 origin, out Vector2 size, out Vector4 uv)
 	{
 		float pad = MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f;
 		var bbMin = sh.BbMin - new Vector2(pad); var bbMax = sh.BbMax + new Vector2(pad);
 		int sigmaKey = ((int)(sh.SigmaX * 16f) << 16) ^ (int)(sh.SigmaY * 16f);
 		var keyed = WebGpuPathAtlas.TryKey(sh.Geometry, sh.GeomMatrix, bbMin, bbMax, Vector2.One, out var key, out var w, out var h, out var ox, out var oy, allowBig: true, extra: sigmaKey) && _pathAtlas;
+		uv = new Vector4(0f, 0f, 1f, 1f);
 		if (keyed && _d.PathAtlas.TryGet(key, out var hit))
 		{
 			_d.PathAtlas.NoteUse(hit, _d.FrameSeq);
@@ -44,14 +45,28 @@ public sealed unsafe partial class WebGpuPresentSession
 		origin = new Vector2(ox, oy);
 		size = new Vector2(w, h);
 
+		// Shadows are per-frame ops: one whose key has held for a run of frames (see Recurring) is static and gets an
+		// entry of its own, baked and blurred once. Every other shadow goes on the frame's shadow sheet for its blur
+		// radius, so N moving shadows cost one bake and one blur pyramid, not N.
+		if (!(keyed && _d.PathAtlas.Recurring(key, _d.FrameSeq)))
+		{
+			if (TryReserveShadowSlot(MathF.Max(sh.SigmaX, sh.SigmaY), w, h, out var sheet, out var sx, out var sy))
+			{
+				AddBake(sheet.Bake, sx, sy, w, h, sh.Edges, new Vector2(ox + 1, oy + 1), Vector2.One, sh.EvenOdd, false);
+				uv = new Vector4(sx, sy, sx + w, sy + h) / SheetSize;
+				ShadowSlotsBaked++;
+				return sheet.Blurred;
+			}
+			var (view, tex) = NewMaskTexture(w, h);
+			AddBake(BatchFor(view, w, h, load: false), 0, 0, w, h, sh.Edges, new Vector2(ox + 1, oy + 1), Vector2.One, sh.EvenOdd, false);
+			_d.DeferTextureRelease(view, tex);
+			return DeferBlur(view, w, h, sh.SigmaX, sh.SigmaY);
+		}
+
 		var path = new PathClip { Edges = sh.Edges, EvenOdd = sh.EvenOdd, Bbox = new Vector4(sh.BbMin.X, sh.BbMin.Y, sh.BbMax.X, sh.BbMax.Y) };
 		var (covView, covTex) = BakeCoverageMask(new[] { path }, (int)ox, (int)oy, w, h, Vector2.One);
 		var blurred = BlurPyramid(covView, w, h, sh.SigmaX, sh.SigmaY);
 		_d.DeferTextureRelease(covView, covTex);
-		// Shadows are per-frame ops: only a key seen last frame too gets an entry (see Recurring), so a moving
-		// shadow costs its bake and nothing else.
-		if (!keyed || !_d.PathAtlas.Recurring(key, _d.FrameSeq)) { return blurred; }
-
 		// The pyramid hands back its reduced top level; one linear tap brings it up to the entry's full size. The
 		// blur pipeline targets the default colour format, so the entry is created in that format too.
 		var slot = AddStandaloneSlot(key, w, h, ox, oy, WebGpuDevice.DefaultColorFormat);
@@ -60,16 +75,84 @@ public sealed unsafe partial class WebGpuPresentSession
 		return slot.Owner.View;
 	}
 
+	// A frame's moving shadows of one pyramid depth: their silhouettes bake on one sheet (a coverage batch like any
+	// other) and the whole sheet runs through one blur pyramid into Blurred, which the shadow draws sample by slot.
+	// The kernel on the pyramid's top level is fixed and sigma only picks the depth, so a depth is a blur class.
+	private sealed class ShadowSheet
+	{
+		public BakeBatch Bake;
+		public IntPtr Blurred;     // the pyramid's top level for the whole sheet, rented up front so draws can bind it
+	}
+
+	private readonly Dictionary<int, ShadowSheet> _shadowSheetByDepth = new();
+	private readonly List<(IntPtr Src, int W, int H, float SigmaX, float SigmaY, IntPtr Dst)> _pendingBlurs = new();
+	internal static int ShadowSlotsBaked;
+
+	// Reserves a w x h slot on the frame's shadow sheet for this blur depth. A slot already holds its shadow's blur
+	// reach (the caller padded it by 3 sigma), so slots only need to sit on the top level's texel grid, one texel
+	// apart, for a slot's edge samples not to read a neighbour.
+	private bool TryReserveShadowSlot(float sigma, int w, int h, out ShadowSheet sheet, out int x, out int y)
+	{
+		sheet = null; x = y = 0;
+		var levels = BlurLevels(sigma);
+		int step = 1 << levels;
+		int gw = (w + step - 1) / step * step + step, gh = (h + step - 1) / step * step + step;
+		if (gw > SheetSize || gh > SheetSize) { return false; }
+		_shadowSheetByDepth.TryGetValue(levels, out var cur);
+		if (cur is not null)
+		{
+			var b = cur.Bake;
+			if (b.CursorX + gw > SheetSize) { b.ShelfY += b.ShelfH; b.ShelfH = 0; b.CursorX = 0; }
+			if (b.ShelfY + gh > SheetSize) { cur = null; }
+		}
+		if (cur is null)
+		{
+			var view = _d.Pool.Rent(SheetSize, SheetSize, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, _d.ColorFormat);
+			int top = SheetSize >> levels;
+			var blurred = _d.Pool.Rent(top, top, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+			cur = new ShadowSheet { Bake = BatchFor(view, SheetSize, SheetSize, load: false), Blurred = blurred };
+			_shadowSheetByDepth[levels] = cur;
+			// The sigma that maps back to exactly this depth (see BlurLevels), so the pyramid builds the same levels.
+			float depthSigma = 2f * step;
+			_pendingBlurs.Add((view, SheetSize, SheetSize, depthSigma, depthSigma, blurred));
+		}
+		sheet = cur;
+		x = cur.Bake.CursorX; y = cur.Bake.ShelfY;
+		cur.Bake.CursorX += gw;
+		if (gh > cur.Bake.ShelfH) { cur.Bake.ShelfH = gh; }
+		return true;
+	}
+
+	// A blur that must run after the frame's bakes: the result texture is rented now so the draw can bind it.
+	private IntPtr DeferBlur(IntPtr src, int w, int h, float sigmaX, float sigmaY)
+	{
+		var levels = BlurLevels(MathF.Max(sigmaX, sigmaY));
+		while (levels > 1 && ((w >> levels) < 4 || (h >> levels) < 4)) { levels--; }
+		var dst = _d.Pool.Rent(Math.Max(1, w >> levels), Math.Max(1, h >> levels), 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+		_pendingBlurs.Add((src, w, h, sigmaX, sigmaY, dst));
+		return dst;
+	}
+
+	// Runs the blurs queued behind the frame's bakes, once those are encoded.
+	private void FlushPendingBlurs()
+	{
+		foreach (var b in _pendingBlurs) { BlurPyramidRegion(b.Src, b.W, b.H, 0f, 0f, b.W, b.H, b.SigmaX, b.SigmaY, b.Dst); }
+		_pendingBlurs.Clear();
+		_shadowSheetByDepth.Clear();
+	}
+
+	// Pyramid depth for a blur radius: halve until the fixed 9-tap kernel on the top level spans the sigma.
+	private static int BlurLevels(float sigma) => Math.Clamp((int)MathF.Round(MathF.Log2(MathF.Max(sigma, 1f) / 2f)), 1, 5);
+
 	// Blur pyramid over a REGION of `src`: extract the device-px rect (rx,ry,rw,rh) out of the fullW×fullH source
 	// into a sigma-scaled downsample pyramid (depth set by the requested blur radius), then a fixed 9-tap separable
 	// gaussian on the small top level. Returns the region-sized blurred view; the caller maps screen px -> region uv
 	// in the composite (bilinear upscales it). Only the region behind the acrylic element is ever processed, and the
 	// per-pass kernel is constant, so a large blur is a few tiny passes instead of a full-frame O(sigma) kernel.
-	private IntPtr BlurPyramidRegion(IntPtr src, int fullW, int fullH, float rx, float ry, float rw, float rh, float sigmaX, float sigmaY)
+	private IntPtr BlurPyramidRegion(IntPtr src, int fullW, int fullH, float rx, float ry, float rw, float rh, float sigmaX, float sigmaY, IntPtr dst = default)
 	{
 		int iw = Math.Max(1, (int)MathF.Round(rw)), ih = Math.Max(1, (int)MathF.Round(rh));
-		float sigma = MathF.Max(sigmaX, sigmaY);
-		int levels = Math.Clamp((int)MathF.Round(MathF.Log2(MathF.Max(sigma, 1f) / 2f)), 1, 5);
+		int levels = BlurLevels(MathF.Max(sigmaX, sigmaY));
 		while (levels > 1 && ((iw >> levels) < 4 || (ih >> levels) < 4)) { levels--; }
 
 		var origin = new Vector2(rx / fullW, ry / fullH);
@@ -90,7 +173,8 @@ public sealed unsafe partial class WebGpuPresentSession
 		var hh = _d.Pool.Rent(cw, ch, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 		BlurPass(cur, hh, new Vector2(1f, 0f), new Vector2(1f / cw, 0f), downsample: false, Vector2.Zero, Vector2.One);
 		_d.Pool.Return(cur);
-		var vv = _d.Pool.Rent(cw, ch, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+		// The final pass lands in the caller's texture when it brought one (a blur deferred behind the frame's bakes).
+		var vv = dst != IntPtr.Zero ? dst : _d.Pool.Rent(cw, ch, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 		BlurPass(hh, vv, new Vector2(0f, 1f), new Vector2(0f, 1f / ch), downsample: false, Vector2.Zero, Vector2.One);
 		_d.Pool.Return(hh);
 		return vv;
