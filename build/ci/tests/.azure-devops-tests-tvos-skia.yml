@@ -34,7 +34,7 @@ jobs:
       TestRunName: 'tvOS Skia Runtime Tests ${{ RuntimeTestGroup.key }}'
       JobTimeoutInMinutes: 90
       vmImage: ${{ parameters.vmMacImageTest }}
-      UITEST_TEST_TIMEOUT: '90m'
+      UITEST_TEST_TIMEOUT: '75m'
       UITEST_RUNTIME_TEST_GROUP: ${{ RuntimeTestGroup.key }}
       UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.TVOS_RUNTIME_TEST_GROUP_COUNT }}
       UITEST_ALLOW_RERUN: 'false'
