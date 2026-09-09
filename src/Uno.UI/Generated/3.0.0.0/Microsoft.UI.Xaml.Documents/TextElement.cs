@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ExitDisplayModeOnAccessKeyInvoked), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.TextElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property FontFamilyProperty
 		// Skipping already declared property FontSizeProperty
@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsAccessKeyScope), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.TextElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property IsTextScaleFactorEnabledProperty
 #if __SKIA__
@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(KeyTipHorizontalOffset), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Documents.TextElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -71,7 +71,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(KeyTipVerticalOffset), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Documents.TextElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -162,7 +162,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			set
 			{
-				this.SetValue(ExitDisplayModeOnAccessKeyInvokedProperty, value);
+				this.SetValue(ExitDisplayModeOnAccessKeyInvokedProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -182,7 +182,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			set
 			{
-				this.SetValue(IsAccessKeyScopeProperty, value);
+				this.SetValue(IsAccessKeyScopeProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -197,7 +197,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			set
 			{
-				this.SetValue(KeyTipHorizontalOffsetProperty, value);
+				this.SetValue(KeyTipHorizontalOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -225,7 +225,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			set
 			{
-				this.SetValue(KeyTipVerticalOffsetProperty, value);
+				this.SetValue(KeyTipVerticalOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif

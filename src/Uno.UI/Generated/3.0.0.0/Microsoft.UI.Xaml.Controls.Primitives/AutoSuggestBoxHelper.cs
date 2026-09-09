@@ -19,13 +19,13 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"KeepInteriorCornersSquare", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.AutoSuggestBoxHelper),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static void SetKeepInteriorCornersSquare(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox autoSuggestBox, bool value)
 		{
-			autoSuggestBox.SetValue(KeepInteriorCornersSquareProperty, value);
+			autoSuggestBox.SetValue(KeepInteriorCornersSquareProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 #endif
 #if __SKIA__

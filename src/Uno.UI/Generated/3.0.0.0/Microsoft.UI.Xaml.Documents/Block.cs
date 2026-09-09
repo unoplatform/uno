@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(LineHeight), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Documents.Block),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -72,7 +72,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			set
 			{
-				this.SetValue(LineHeightProperty, value);
+				this.SetValue(LineHeightProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
