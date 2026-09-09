@@ -193,9 +193,7 @@ dotnet_diagnostic.MSTEST0032.severity = warning
 dotnet_diagnostic.MSTEST0037.severity = suggestion
 
 # UnoInternal0002: Avoid boxing allocation, use 'Uno.UI.Helpers.Boxes' instead.
-# An explicit entry is required: the rule is in the Performance category, which
-# dotnet_analyzer_diagnostic.category-Performance above already sets to error.
-dotnet_diagnostic.UnoInternal0002.severity = warning
+dotnet_diagnostic.UnoInternal0002.severity = error
 
 # UnoInternal0003: Possibly incorrect conversion reaching a typed 'SetValue' overload.
 # This one guards against storing the wrong boxed type, so it stays an error.

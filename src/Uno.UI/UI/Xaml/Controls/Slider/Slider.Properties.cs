@@ -1,5 +1,6 @@
 ﻿using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -51,7 +52,7 @@ public partial class Slider
 	public double IntermediateValue
 	{
 		get => (double)GetValue(IntermediateValueProperty);
-		set => SetValue(IntermediateValueProperty, value);
+		set => SetValue(IntermediateValueProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -62,7 +63,7 @@ public partial class Slider
 			nameof(IntermediateValue),
 			typeof(double),
 			typeof(Slider),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets or sets a value that indicates the direction of increasing value.
@@ -81,7 +82,7 @@ public partial class Slider
 			nameof(IsDirectionReversed),
 			typeof(bool),
 			typeof(Slider),
-			new FrameworkPropertyMetadata(false));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Gets or sets a value that determines whether the slider value
@@ -101,7 +102,7 @@ public partial class Slider
 			nameof(IsThumbToolTipEnabled),
 			typeof(bool),
 			typeof(Slider),
-			new FrameworkPropertyMetadata(true));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
 
 	/// <summary>
 	/// Gets or sets the orientation of a Slider.
@@ -154,7 +155,7 @@ public partial class Slider
 	public double StepFrequency
 	{
 		get => (double)GetValue(StepFrequencyProperty);
-		set => SetValue(StepFrequencyProperty, value);
+		set => SetValue(StepFrequencyProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -195,7 +196,7 @@ public partial class Slider
 	public double TickFrequency
 	{
 		get => (double)GetValue(TickFrequencyProperty);
-		set => SetValue(TickFrequencyProperty, value);
+		set => SetValue(TickFrequencyProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -206,7 +207,7 @@ public partial class Slider
 			nameof(TickFrequency),
 			typeof(double),
 			typeof(Slider),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Gets or sets a value that indicates where to draw tick marks in relation to the track.

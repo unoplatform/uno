@@ -7,6 +7,7 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 using Windows.Globalization.NumberFormatting;
 
@@ -31,7 +32,7 @@ partial class NumberBox
 			nameof(AcceptsExpression),
 			typeof(bool),
 			typeof(NumberBox),
-			new FrameworkPropertyMetadata(false, (s, e) => (s as NumberBox)?.OnAcceptsExpressionPropertyChanged(e)));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, (s, e) => (s as NumberBox)?.OnAcceptsExpressionPropertyChanged(e)));
 
 	/// <summary>
 	/// Gets or sets content that is shown below the control. The content should provide guidance about the input expected by the control.
@@ -123,7 +124,7 @@ partial class NumberBox
 			nameof(IsWrapEnabled),
 			typeof(bool),
 			typeof(NumberBox),
-			new FrameworkPropertyMetadata(false, (s, e) => (s as NumberBox)?.OnIsWrapEnabledPropertyChanged(e)));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, (s, e) => (s as NumberBox)?.OnIsWrapEnabledPropertyChanged(e)));
 
 	/// <summary>
 	/// Gets or sets a number that is added to or subtracted from Value when a large change is made, such as with the PageUp and PageDown keys.
@@ -131,7 +132,7 @@ partial class NumberBox
 	public double LargeChange
 	{
 		get => (double)GetValue(LargeChangeProperty);
-		set => SetValue(LargeChangeProperty, value);
+		set => SetValue(LargeChangeProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -150,7 +151,7 @@ partial class NumberBox
 	public double Maximum
 	{
 		get => (double)GetValue(MaximumProperty);
-		set => SetValue(MaximumProperty, value);
+		set => SetValue(MaximumProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -169,7 +170,7 @@ partial class NumberBox
 	public double Minimum
 	{
 		get => (double)GetValue(MinimumProperty);
-		set => SetValue(MinimumProperty, value);
+		set => SetValue(MinimumProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -245,7 +246,7 @@ partial class NumberBox
 			nameof(PreventKeyboardDisplayOnProgrammaticFocus),
 			typeof(bool),
 			typeof(NumberBox),
-			new FrameworkPropertyMetadata(false));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Gets or sets the flyout that is shown when text is selected, or null if no flyout is shown.
@@ -292,7 +293,7 @@ partial class NumberBox
 	public double SmallChange
 	{
 		get => (double)GetValue(SmallChangeProperty);
-		set => SetValue(SmallChangeProperty, value);
+		set => SetValue(SmallChangeProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -411,7 +412,7 @@ partial class NumberBox
 			// unfortunately. x:Bind is recommended over Binding anyway due to its perf and debuggability benefits.
 			if (!value.IsNaN() || !Value.IsNaN())
 			{
-				SetValue(ValueProperty, value);
+				SetValue(ValueProperty, Boxes.Box(value));
 			}
 		}
 	}

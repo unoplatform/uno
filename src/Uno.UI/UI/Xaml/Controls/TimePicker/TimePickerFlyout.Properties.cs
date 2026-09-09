@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -29,7 +30,7 @@ partial class TimePickerFlyout
 	public int MinuteIncrement
 	{
 		get => (int)GetValue(MinuteIncrementProperty);
-		set => SetValue(MinuteIncrementProperty, value);
+		set => SetValue(MinuteIncrementProperty, Boxes.Box(value));
 	}
 
 	public static DependencyProperty MinuteIncrementProperty { get; } =
@@ -38,7 +39,7 @@ partial class TimePickerFlyout
 			typeof(int),
 			typeof(TimePickerFlyout),
 			new FrameworkPropertyMetadata(
-				defaultValue: (int)TimePickerFlyout.GetDefaultMinuteIncrement(),
+				defaultValue: Boxes.Box((int)TimePickerFlyout.GetDefaultMinuteIncrement()),
 				options: FrameworkPropertyMetadataOptions.None)
 		);
 

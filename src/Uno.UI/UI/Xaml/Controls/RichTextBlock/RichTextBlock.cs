@@ -2,6 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Markup;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -35,7 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(RichTextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: true,
+					defaultValue: Boxes.BooleanBoxes.BoxedTrue,
 					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);

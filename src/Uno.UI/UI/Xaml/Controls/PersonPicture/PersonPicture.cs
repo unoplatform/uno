@@ -4,6 +4,7 @@
 
 using System;
 using System.Globalization;
+using Uno.UI.Helpers;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.Contacts;
 using Windows.Foundation;
@@ -398,7 +399,7 @@ public partial class PersonPicture : Control
 				automationName = StringUtil.FormatString(
 					ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_BadgeItemTextOverride),
 					contactName,
-					BadgeNumber,
+					Boxes.Box(BadgeNumber),
 					BadgeText);
 			}
 			else
@@ -406,7 +407,7 @@ public partial class PersonPicture : Control
 				automationName = StringUtil.FormatString(
 					GetLocalizedPluralBadgeItemStringResource(BadgeNumber),
 					contactName,
-					BadgeNumber);
+					Boxes.Box(BadgeNumber));
 			}
 		}
 		else if (!string.IsNullOrEmpty(BadgeGlyph) || BadgeImageSource != null)

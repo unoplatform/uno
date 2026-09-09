@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 using Uno.UI.Dispatching;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.Diagnostics;
 
@@ -118,7 +119,7 @@ internal sealed class ElementRefHandleRegistry : IElementRefHandleRegistry
 		if (value <= 0)
 		{
 			// IDs are issued by ++_nextId starting at 1; a non-positive value is a bug.
-			throw new ArgumentOutOfRangeException(nameof(value), value, "Handle ID must be positive.");
+			throw new ArgumentOutOfRangeException(nameof(value), Boxes.Box(value), "Handle ID must be positive.");
 		}
 
 		Span<char> buffer = stackalloc char[8];

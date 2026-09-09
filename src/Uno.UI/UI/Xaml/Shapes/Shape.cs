@@ -115,7 +115,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double StrokeThickness
 		{
 			get => (double)this.GetValue(StrokeThicknessProperty);
-			set => this.SetValue(StrokeThicknessProperty, value);
+			set => this.SetValue(StrokeThicknessProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty StrokeThicknessProperty { get; } = DependencyProperty.Register(
@@ -232,7 +232,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double StrokeMiterLimit
 		{
 			get => (double)this.GetValue(StrokeMiterLimitProperty);
-			set => this.SetValue(StrokeMiterLimitProperty, value);
+			set => this.SetValue(StrokeMiterLimitProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty StrokeMiterLimitProperty { get; } = DependencyProperty.Register(
@@ -268,7 +268,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double StrokeDashOffset
 		{
 			get => (double)this.GetValue(StrokeDashOffsetProperty);
-			set => this.SetValue(StrokeDashOffsetProperty, value);
+			set => this.SetValue(StrokeDashOffsetProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty StrokeDashOffsetProperty { get; } = DependencyProperty.Register(
@@ -276,7 +276,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: Boxes.DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsArrange
 			)
 		);

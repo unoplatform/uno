@@ -47,7 +47,7 @@ public partial class ScrollBar
 	public double ViewportSize
 	{
 		get => (double)GetValue(ViewportSizeProperty);
-		set => SetValue(ViewportSizeProperty, value);
+		set => SetValue(ViewportSizeProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -58,7 +58,7 @@ public partial class ScrollBar
 			nameof(ViewportSize),
 			typeof(double),
 			typeof(ScrollBar),
-			new FrameworkPropertyMetadata(0.0));
+			new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 
 	/// <summary>
 	/// Occurs one or more times as content scrolls in a ScrollBar when the user moves the Thumb by using the mouse.

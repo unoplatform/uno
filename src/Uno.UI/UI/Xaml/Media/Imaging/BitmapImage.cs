@@ -13,6 +13,7 @@ using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel;
 using Windows.Graphics.Display;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Media.Imaging
 {
@@ -76,12 +77,12 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		public int DecodePixelWidth
 		{
 			get { return (int)GetValue(DecodePixelWidthProperty); }
-			set { SetValue(DecodePixelWidthProperty, value); }
+			set { SetValue(DecodePixelWidthProperty, Boxes.Box(value)); }
 		}
 
 		// Using a DependencyProperty as the backing store for DecodePixelWidth.  This enables animation, styling, binding, etc...
 		public static DependencyProperty DecodePixelWidthProperty { get; } =
-			DependencyProperty.Register("DecodePixelWidth", typeof(int), typeof(BitmapImage), new FrameworkPropertyMetadata(0, (s, e) => ((BitmapImage)s)?.OnDecodePixelWidthChanged(e)));
+			DependencyProperty.Register("DecodePixelWidth", typeof(int), typeof(BitmapImage), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero, (s, e) => ((BitmapImage)s)?.OnDecodePixelWidthChanged(e)));
 
 
 		private void OnDecodePixelWidthChanged(DependencyPropertyChangedEventArgs e)
@@ -96,12 +97,12 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		public int DecodePixelHeight
 		{
 			get { return (int)GetValue(DecodePixelHeightProperty); }
-			set { SetValue(DecodePixelHeightProperty, value); }
+			set { SetValue(DecodePixelHeightProperty, Boxes.Box(value)); }
 		}
 
 		// Using a DependencyProperty as the backing store for DecodePixelHeight.  This enables animation, styling, binding, etc...
 		public static DependencyProperty DecodePixelHeightProperty { get; } =
-			DependencyProperty.Register("DecodePixelHeight", typeof(int), typeof(BitmapImage), new FrameworkPropertyMetadata(0, (s, e) => ((BitmapImage)s)?.OnDecodePixelHeightChanged(e)));
+			DependencyProperty.Register("DecodePixelHeight", typeof(int), typeof(BitmapImage), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero, (s, e) => ((BitmapImage)s)?.OnDecodePixelHeightChanged(e)));
 
 
 		private void OnDecodePixelHeightChanged(DependencyPropertyChangedEventArgs e)

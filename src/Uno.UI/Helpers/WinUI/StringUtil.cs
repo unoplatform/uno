@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.Helpers.WinUI
 {
@@ -35,7 +36,7 @@ namespace Uno.UI.Helpers.WinUI
 		internal static string Swprintf_s(string input, params object[] inpVars)
 		{
 			int i = 0;
-			input = SimpleCppFormatRegex().Replace(input, m => ("{" + i++/*increase have to be on right side*/ + "}"));
+			input = SimpleCppFormatRegex().Replace(input, m => ("{" + Boxes.Box(i++)/*increase have to be on right side*/ + "}"));
 			return string.Format(CultureInfo.CurrentCulture, input, inpVars);
 		}
 

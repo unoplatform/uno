@@ -4,6 +4,7 @@
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -42,7 +43,7 @@ public partial class TreeViewItem
 	public double GlyphOpacity
 	{
 		get => (double)GetValue(GlyphOpacityProperty);
-		set => SetValue(GlyphOpacityProperty, value);
+		set => SetValue(GlyphOpacityProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -51,7 +52,7 @@ public partial class TreeViewItem
 	public double GlyphSize
 	{
 		get => (double)GetValue(GlyphSizeProperty);
-		set => SetValue(GlyphSizeProperty, value);
+		set => SetValue(GlyphSizeProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -124,13 +125,13 @@ public partial class TreeViewItem
 	/// Identifies the HasUnrealizedChildren dependency property.
 	/// </summary>
 	public static DependencyProperty HasUnrealizedChildrenProperty { get; } =
-		DependencyProperty.Register(nameof(HasUnrealizedChildren), typeof(bool), typeof(TreeViewItem), new FrameworkPropertyMetadata(false, OnHasUnrealizedChildrenPropertyChanged));
+		DependencyProperty.Register(nameof(HasUnrealizedChildren), typeof(bool), typeof(TreeViewItem), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnHasUnrealizedChildrenPropertyChanged));
 
 	/// <summary>
 	/// Identifies the IsExpanded dependency property.
 	/// </summary>
 	public static DependencyProperty IsExpandedProperty { get; } =
-		DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(TreeViewItem), new FrameworkPropertyMetadata(false, OnIsExpandedPropertyChanged));
+		DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(TreeViewItem), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnIsExpandedPropertyChanged));
 
 	/// <summary>
 	/// Identifies the ItemsSource dependency property.

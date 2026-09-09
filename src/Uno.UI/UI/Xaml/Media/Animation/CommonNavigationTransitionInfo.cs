@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -18,7 +19,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		DependencyProperty.Register(
 			"IsStaggeringEnabled", typeof(bool),
 			typeof(CommonNavigationTransitionInfo),
-			new FrameworkPropertyMetadata(default(bool))
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse)
 		);
 
 		#endregion
@@ -43,7 +44,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		} = DependencyProperty.RegisterAttached(
 			"IsStaggerElement", typeof(bool),
 			typeof(CommonNavigationTransitionInfo),
-			new FrameworkPropertyMetadata(default(bool))
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse)
 		);
 
 		#endregion

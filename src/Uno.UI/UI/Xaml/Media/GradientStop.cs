@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.UI.Xaml.Markup;
 using Windows.UI;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -30,14 +31,14 @@ namespace Microsoft.UI.Xaml.Media
 		public double Offset
 		{
 			get { return (double)this.GetValue(OffsetProperty); }
-			set { this.SetValue(OffsetProperty, value); }
+			set { this.SetValue(OffsetProperty, Boxes.Box(value)); }
 		}
 		public static DependencyProperty OffsetProperty { get; } =
 			DependencyProperty.Register(
 				"Offset",
 				typeof(double),
 				typeof(GradientStop),
-				new FrameworkPropertyMetadata(default(double), propertyChangedCallback: (s, _) => ((GradientStop)s).InvalidateRender?.Invoke())
+				new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, propertyChangedCallback: (s, _) => ((GradientStop)s).InvalidateRender?.Invoke())
 			);
 	}
 }

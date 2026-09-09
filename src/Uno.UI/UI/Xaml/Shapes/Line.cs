@@ -1,6 +1,7 @@
 using Windows.Foundation;
 using System;
 using Uno.Media;
+using Uno.UI.Helpers;
 using Microsoft.UI.Composition;
 
 namespace Microsoft.UI.Xaml.Shapes
@@ -11,7 +12,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double X1
 		{
 			get => (double)GetValue(X1Property);
-			set => SetValue(X1Property, value);
+			set => SetValue(X1Property, Boxes.Box(value));
 		}
 
 		public static DependencyProperty X1Property { get; } = DependencyProperty.Register(
@@ -19,7 +20,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Line),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: Boxes.DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);
@@ -29,7 +30,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double X2
 		{
 			get => (double)GetValue(X2Property);
-			set => SetValue(X2Property, value);
+			set => SetValue(X2Property, Boxes.Box(value));
 		}
 
 		public static DependencyProperty X2Property { get; } = DependencyProperty.Register(
@@ -37,7 +38,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Line),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: Boxes.DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);
@@ -47,7 +48,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double Y1
 		{
 			get => (double)GetValue(Y1Property);
-			set => SetValue(Y1Property, value);
+			set => SetValue(Y1Property, Boxes.Box(value));
 		}
 
 		public static DependencyProperty Y1Property { get; } = DependencyProperty.Register(
@@ -55,7 +56,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Line),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: Boxes.DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);
@@ -65,7 +66,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double Y2
 		{
 			get => (double)GetValue(Y2Property);
-			set => SetValue(Y2Property, value);
+			set => SetValue(Y2Property, Boxes.Box(value));
 		}
 
 		public static DependencyProperty Y2Property { get; } = DependencyProperty.Register(
@@ -73,7 +74,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Line),
 			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
+				defaultValue: Boxes.DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 			)
 		);

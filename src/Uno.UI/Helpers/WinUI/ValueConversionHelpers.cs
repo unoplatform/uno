@@ -4,6 +4,7 @@
 
 using System;
 using System.Globalization;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 
 namespace Uno.UI.Helpers.WinUI;
@@ -32,14 +33,14 @@ internal static class ValueConversionHelpers
 		parameterType == PropertyType.UInt8 ? byte.Parse(hstr, CultureInfo.InvariantCulture) :
 		parameterType == PropertyType.Int16 ? short.Parse(hstr, CultureInfo.InvariantCulture) :
 		parameterType == PropertyType.UInt16 ? ushort.Parse(hstr, CultureInfo.InvariantCulture) :
-		parameterType == PropertyType.Int32 ? int.Parse(hstr, CultureInfo.InvariantCulture) :
+		parameterType == PropertyType.Int32 ? Boxes.Box(int.Parse(hstr, CultureInfo.InvariantCulture)) :
 		parameterType == PropertyType.UInt32 ? uint.Parse(hstr, CultureInfo.InvariantCulture) :
 		parameterType == PropertyType.Int64 ? long.Parse(hstr, CultureInfo.InvariantCulture) :
 		parameterType == PropertyType.UInt64 ? ulong.Parse(hstr, CultureInfo.InvariantCulture) :
 		parameterType == PropertyType.Single ? float.Parse(hstr, CultureInfo.InvariantCulture) :
-		parameterType == PropertyType.Double ? double.Parse(hstr, CultureInfo.InvariantCulture) :
+		parameterType == PropertyType.Double ? Boxes.Box(double.Parse(hstr, CultureInfo.InvariantCulture)) :
 		parameterType == PropertyType.Char16 ? char.Parse(hstr) :
-		parameterType == PropertyType.Boolean ? bool.Parse(hstr) :
+		parameterType == PropertyType.Boolean ? Boxes.Box(bool.Parse(hstr)) :
 		parameterType == PropertyType.String ? hstr :
 		parameterType == PropertyType.Guid ? Guid.Parse(hstr, CultureInfo.InvariantCulture) :
 		null;

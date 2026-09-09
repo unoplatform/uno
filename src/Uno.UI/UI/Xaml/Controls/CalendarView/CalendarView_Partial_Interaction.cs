@@ -5,6 +5,7 @@ using System;
 using Windows.System;
 using Microsoft.UI.Xaml.Input;
 using DirectUI;
+using Uno.UI.Helpers;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 using Uno.UI.Xaml.Input;
 
@@ -229,7 +230,7 @@ namespace Microsoft.UI.Xaml.Controls
 								lastFocusedIndex,
 								ElementType.ItemContainer,
 								action,
-								false, // !XboxUtility.IsGamepadNavigationDirection(originalKey),  /* allowWrap */
+								Boxes.BooleanBoxes.BoxedFalse, // !XboxUtility.IsGamepadNavigationDirection(originalKey),  /* allowWrap */
 								-1,  /* itemIndexHintForHeaderNavigation */
 								out newFocusedIndexUint,
 								out newFocusedType,

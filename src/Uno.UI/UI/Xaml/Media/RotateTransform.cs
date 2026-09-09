@@ -5,6 +5,7 @@ using Windows.Foundation;
 using global::System.Numerics;
 using Uno.Extensions;
 using Uno.UI;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -29,29 +30,29 @@ namespace Microsoft.UI.Xaml.Media
 		public double CenterY
 		{
 			get => (double)this.GetValue(CenterYProperty);
-			set => this.SetValue(CenterYProperty, value);
+			set => this.SetValue(CenterYProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty CenterYProperty { get; } =
-			DependencyProperty.Register("CenterY", typeof(double), typeof(RotateTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
+			DependencyProperty.Register("CenterY", typeof(double), typeof(RotateTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, NotifyChangedCallback));
 
 		public double CenterX
 		{
 			get => (double)this.GetValue(CenterXProperty);
-			set => this.SetValue(CenterXProperty, value);
+			set => this.SetValue(CenterXProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty CenterXProperty { get; } =
-			DependencyProperty.Register("CenterX", typeof(double), typeof(RotateTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
+			DependencyProperty.Register("CenterX", typeof(double), typeof(RotateTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, NotifyChangedCallback));
 
 		public double Angle
 		{
 			get => (double)this.GetValue(AngleProperty);
-			set => this.SetValue(AngleProperty, value);
+			set => this.SetValue(AngleProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty AngleProperty { get; } =
-			DependencyProperty.Register("Angle", typeof(double), typeof(RotateTransform), new FrameworkPropertyMetadata(0.0, NotifyChangedCallback));
+			DependencyProperty.Register("Angle", typeof(double), typeof(RotateTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, NotifyChangedCallback));
 	}
 }
 

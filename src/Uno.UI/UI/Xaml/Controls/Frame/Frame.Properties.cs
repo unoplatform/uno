@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml.Navigation;
+using Uno.UI.Helpers;
 
 [assembly: UnconditionalSuppressMessage("Trimming", "IL2111", Scope = "member",
 	Target = "M:Microsoft.UI.Xaml.Controls.Frame.#cctor()",
@@ -36,7 +37,7 @@ partial class Frame
 	public int BackStackDepth
 	{
 		get => (int)GetValue(BackStackDepthProperty);
-		internal set => SetValue(BackStackDepthProperty, value);
+		internal set => SetValue(BackStackDepthProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -47,7 +48,7 @@ partial class Frame
 			nameof(BackStackDepth),
 			typeof(int),
 			typeof(Frame),
-			new FrameworkPropertyMetadata(0, (s, e) => ((Frame)s)?.OnBackStackDepthChanged(e)));
+			new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero, (s, e) => ((Frame)s)?.OnBackStackDepthChanged(e)));
 
 	protected virtual void OnBackStackDepthChanged(DependencyPropertyChangedEventArgs e)
 	{
@@ -59,7 +60,7 @@ partial class Frame
 	public int CacheSize
 	{
 		get => (int)GetValue(CacheSizeProperty);
-		set => SetValue(CacheSizeProperty, value);
+		set => SetValue(CacheSizeProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -89,7 +90,7 @@ partial class Frame
 			nameof(CanGoBack),
 			typeof(bool),
 			typeof(Frame),
-			new FrameworkPropertyMetadata(false));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Gets a value that indicates whether there is at least one entry in forward navigation history.
@@ -108,7 +109,7 @@ partial class Frame
 			nameof(CanGoForward),
 			typeof(bool),
 			typeof(Frame),
-			new FrameworkPropertyMetadata(true));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
 
 	/// <summary>
 	/// Gets a type reference for the content that is currently displayed.
@@ -167,7 +168,7 @@ partial class Frame
 			nameof(IsNavigationStackEnabled),
 			typeof(bool),
 			typeof(Frame),
-			new FrameworkPropertyMetadata(true));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
 
 	/// <summary>
 	/// Gets or sets a type reference of the current content, or the content that should be navigated to.

@@ -9,6 +9,7 @@ using Uno.Extensions;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using System.Diagnostics;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -33,7 +34,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			set => this.SetValue(EnableDependentAnimationProperty, value);
 		}
 		public static DependencyProperty EnableDependentAnimationProperty { get; } =
-			DependencyProperty.Register("EnableDependentAnimation", typeof(bool), typeof(DoubleAnimationUsingKeyFrames), new FrameworkPropertyMetadata(false));
+			DependencyProperty.Register("EnableDependentAnimation", typeof(bool), typeof(DoubleAnimationUsingKeyFrames), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 		public DoubleAnimationUsingKeyFrames()
 		{

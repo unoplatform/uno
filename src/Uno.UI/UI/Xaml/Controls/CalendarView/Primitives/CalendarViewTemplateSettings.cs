@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
@@ -13,14 +14,14 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public double MinViewWidth
 		{
 			get => (double)GetValue(MinViewWidthProperty);
-			internal set => SetValue(MinViewWidthProperty, value);
+			internal set => SetValue(MinViewWidthProperty, Boxes.Box(value));
 		}
 
 		private static readonly DependencyProperty MinViewWidthProperty = DependencyProperty.Register(
 			"MinViewWidth",
 			typeof(double),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(default(double)));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 		/// <summary>Gets the text of the header.</summary>
 		/// <returns>The text of the header.</returns>
@@ -146,7 +147,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			"HasMoreContentAfter",
 			typeof(bool),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 		/// <summary>Gets a value that indicates whether the CalendarView has more content before the displayed content.</summary>
 		/// <returns>**true** if the CalendarView has more content after the displayed content; otherwise, **false**.</returns>
@@ -160,7 +161,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			"HasMoreContentBefore",
 			typeof(bool),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 		/// <summary>Gets a value that indicates whether the CalendarView has more views (like year or decade) that can be shown.</summary>
 		/// <returns>**true** if the CalendarView has more views (like year or decade) that can be shown; otherwise, **false**.</returns>
@@ -174,7 +175,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			"HasMoreViews",
 			typeof(bool),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 		/// <summary>Gets the rectangle used to clip the CalendarView.</summary>
 		/// <returns>The rectangle used to clip the CalendarView.</returns>
@@ -195,27 +196,27 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public double CenterX
 		{
 			get => (double)GetValue(CenterXProperty);
-			internal set => SetValue(CenterXProperty, value);
+			internal set => SetValue(CenterXProperty, Boxes.Box(value));
 		}
 
 		private static readonly DependencyProperty CenterXProperty = DependencyProperty.Register(
 			"CenterX",
 			typeof(double),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(default(double)));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 
 		/// <summary>Gets the Y coordinate of the CalendarView 's center point.</summary>
 		/// <returns>The Y coordinate of the CalendarView 's center point.</returns>
 		public double CenterY
 		{
 			get => (double)GetValue(CenterYProperty);
-			internal set => SetValue(CenterYProperty, value);
+			internal set => SetValue(CenterYProperty, Boxes.Box(value));
 		}
 
 		private static readonly DependencyProperty CenterYProperty = DependencyProperty.Register(
 			"CenterY",
 			typeof(double),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(default(double)));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 	}
 }

@@ -23,6 +23,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Dispatching;
 using Uno.UI.Extensions;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
@@ -108,7 +109,7 @@ namespace Microsoft.UI.Xaml
 			nameof(CanDrag),
 			typeof(bool),
 			typeof(UIElement),
-			new FrameworkPropertyMetadata(default(bool), OnCanDragChanged));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnCanDragChanged));
 
 		private static void OnCanDragChanged(DependencyObject snd, DependencyPropertyChangedEventArgs args)
 		{
@@ -133,7 +134,7 @@ namespace Microsoft.UI.Xaml
 			nameof(AllowDrop),
 			typeof(bool),
 			typeof(UIElement),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 		public bool AllowDrop
 		{

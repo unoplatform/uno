@@ -11,6 +11,7 @@ using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
@@ -961,7 +962,7 @@ namespace Uno.UI
 
 					var initializer = new ResourceDictionary.ResourceInitializer(dictionary);
 					_assemblyRef++; // We don't actually use this key, we just need it to be unique
-					assemblyDict[_assemblyRef] = initializer;
+					assemblyDict[Boxes.Box(_assemblyRef)] = initializer;
 				}
 			}
 

@@ -4,6 +4,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -25,7 +26,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MirroredWhenRightToLeftProperty { get; } =
-			DependencyProperty.Register(nameof(MirroredWhenRightToLeft), typeof(bool), typeof(AnimatedIcon), new FrameworkPropertyMetadata(false, OnMirroredWhenRightToLeftPropertyChanged));
+			DependencyProperty.Register(nameof(MirroredWhenRightToLeft), typeof(bool), typeof(AnimatedIcon), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnMirroredWhenRightToLeftPropertyChanged));
 
 		public IAnimatedVisualSource2 Source
 		{

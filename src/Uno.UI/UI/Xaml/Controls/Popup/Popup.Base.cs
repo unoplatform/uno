@@ -2,6 +2,7 @@
 using DirectUI;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
@@ -198,8 +199,8 @@ public partial class Popup : FrameworkElement, IPopup, IBackButtonListener
 	{
 		if (Child is DependencyObject provider)
 		{
-			provider.SetValue(AllowFocusOnInteractionProperty, AllowFocusOnInteraction, DependencyPropertyValuePrecedences.Local);
-			provider.SetValue(AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled, DependencyPropertyValuePrecedences.Local);
+			provider.SetValue(AllowFocusOnInteractionProperty, Boxes.Box(AllowFocusOnInteraction), DependencyPropertyValuePrecedences.Local);
+			provider.SetValue(AllowFocusWhenDisabledProperty, Boxes.Box(AllowFocusWhenDisabled), DependencyPropertyValuePrecedences.Local);
 		}
 	}
 

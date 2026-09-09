@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Windows.Foundation;
 using Uno.UI;
+using Uno.UI.Helpers;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Input;
 using Windows.System;
@@ -878,13 +879,13 @@ namespace Microsoft.UI.Xaml.Controls
 					var offset = addedItems.IndexOf(ctrl.Content);
 					if (offset >= 0)
 					{
-						_containersForIndexRepair.Add(container, startingIndex + offset);
+						_containersForIndexRepair.Add(container, Boxes.Box(startingIndex + offset));
 					}
 				}
 				else if (currentIndex >= startingIndex)
 				{
 					// we store the index, that should be set after the collection change
-					_containersForIndexRepair.Add(container, currentIndex + indexChange);
+					_containersForIndexRepair.Add(container, Boxes.Box(currentIndex + indexChange));
 				}
 			}
 		}
@@ -910,12 +911,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (currentIndex < firstRemainingIndex)
 				{
-					_containersForIndexRepair.Add(container, -1);
+					_containersForIndexRepair.Add(container, Boxes.IntegerBoxes.NegativeOne);
 				}
 				else
 				{
 					// we store the index, that should be set after the collection change
-					_containersForIndexRepair.Add(container, currentIndex - indexChange);
+					_containersForIndexRepair.Add(container, Boxes.Box(currentIndex - indexChange));
 				}
 			}
 		}
@@ -940,14 +941,14 @@ namespace Microsoft.UI.Xaml.Controls
 				if (currentIndex >= oldStartingIndex && currentIndex < oldStartingIndex + count)
 				{
 					// Moved item — preserve relative offset within the range
-					_containersForIndexRepair.Add(container, newStartingIndex + (currentIndex - oldStartingIndex));
+					_containersForIndexRepair.Add(container, Boxes.Box(newStartingIndex + (currentIndex - oldStartingIndex)));
 				}
 				else if (oldStartingIndex < newStartingIndex)
 				{
 					// Forward move: items in gap (oldEnd, newEnd] shift down by count
 					if (currentIndex > oldStartingIndex + count - 1 && currentIndex <= newStartingIndex + count - 1)
 					{
-						_containersForIndexRepair.Add(container, currentIndex - count);
+						_containersForIndexRepair.Add(container, Boxes.Box(currentIndex - count));
 					}
 				}
 				else
@@ -955,7 +956,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// Backward move: items in gap [newStartingIndex, oldStartingIndex) shift up by count
 					if (currentIndex >= newStartingIndex && currentIndex < oldStartingIndex)
 					{
-						_containersForIndexRepair.Add(container, currentIndex + count);
+						_containersForIndexRepair.Add(container, Boxes.Box(currentIndex + count));
 					}
 				}
 			}

@@ -18,7 +18,7 @@ partial class TextBox
 		nameof(CanUndo),
 		typeof(bool),
 		typeof(TextBox),
-		new FrameworkPropertyMetadata(defaultValue: false)
+		new FrameworkPropertyMetadata(defaultValue: Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse)
 		{
 			PropMethodCall = GetCanUndo,
 		});
@@ -39,7 +39,7 @@ partial class TextBox
 		nameof(CanRedo),
 		typeof(bool),
 		typeof(TextBox),
-		new FrameworkPropertyMetadata(defaultValue: false)
+		new FrameworkPropertyMetadata(defaultValue: Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse)
 		{
 			PropMethodCall = GetCanRedo,
 		});

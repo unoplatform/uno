@@ -14,6 +14,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Collections;
 using Uno.Extensions;
 using Uno.UI.Extensions;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
@@ -1940,7 +1941,7 @@ namespace Microsoft.UI.Xaml
 				typeof(bool),
 				typeof(UIElement),
 				new FrameworkPropertyMetadata(
-					defaultValue: false,
+					defaultValue: Boxes.BooleanBoxes.BoxedFalse,
 					propertyChangedCallback: OnCanBeScrollAnchorChangedStatic));
 
 		/// <summary>

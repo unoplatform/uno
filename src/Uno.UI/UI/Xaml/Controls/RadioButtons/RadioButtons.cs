@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using Microsoft.UI.Private.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Helpers;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI.Core;
@@ -314,8 +315,8 @@ namespace Microsoft.UI.Xaml.Controls
 					var itemSourceView = repeater.ItemsSourceView;
 					if (itemSourceView != null)
 					{
-						element.SetValue(AutomationProperties.PositionInSetProperty, args.Index + 1);
-						element.SetValue(AutomationProperties.SizeOfSetProperty, itemSourceView.Count);
+						element.SetValue(AutomationProperties.PositionInSetProperty, Boxes.Box(args.Index + 1));
+						element.SetValue(AutomationProperties.SizeOfSetProperty, Boxes.Box(itemSourceView.Count));
 					}
 				}
 			}
@@ -355,7 +356,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var element = args.Element;
 			if (element != null)
 			{
-				element.SetValue(AutomationProperties.PositionInSetProperty, args.NewIndex + 1);
+				element.SetValue(AutomationProperties.PositionInSetProperty, Boxes.Box(args.NewIndex + 1));
 
 				// When the selected item's index changes, update selection to match
 				var elementAsToggle = element as ToggleButton;
@@ -383,7 +384,7 @@ namespace Microsoft.UI.Xaml.Controls
 						var element = repeater.TryGetElement(index);
 						if (element != null)
 						{
-							element.SetValue(AutomationProperties.SizeOfSetProperty, count);
+							element.SetValue(AutomationProperties.SizeOfSetProperty, Boxes.Box(count));
 						}
 					}
 				}
