@@ -28,10 +28,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		if (_emitStats) { StatStratTableFrame++; }
 		var fe = feCur;
 		bool hit = fe is { TableFrame: true, FrameOrder: not null }
-			// An atlas quad carries build-time NDC and no table slot, so unlike the rest of this entry it is not
-			// re-projected by the per-frame slot rewrite: it has to be rebuilt when the surface resizes, and its
-			// mask is only the right size while the replay transform still neither scales nor rotates.
-			&& !((fe.HasAtlas || fe.HasClipMask) && (fe.BuiltW != (int)_s.Width || fe.BuiltH != (int)_s.Height))
+			// An atlas quad or mask is only the right size while the replay scale it was baked at holds.
 			&& !MasksNeedRebuild(fe, rr.Transform)
 			// ...and rebuild once the transform settles, so content first built mid-animation stops being aliased.
 			&& !(fe.AtlasBlockedByScale && TryAtlasScale(rr.Transform, out _));
@@ -95,14 +92,14 @@ public sealed unsafe partial class WebGpuPresentSession
 			bool tableHasAtlas = (AtlasHit + AtlasBaked) != tableAtlasBefore;
 			bool tableHasMask = ClipMasksBaked + FillMasksBaked != tableMaskBefore;
 			bool tableBlocked = !tableAtlasSafe && tableHasPath && _pathAtlas;
-			fe = new WebGpuGeometryCache { TableFrame = true, FrameSolid = true, SlabId = id, FrameOrder = order, TableSolids = sv, TableRrects = rv, Owned = fOwned, HasClipMask = tableHasMask, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = slot, HasAtlas = tableHasAtlas, AtlasBlockedByScale = tableBlocked, AtlasScale = tableScale, MaskScale = MaskScale(rr.Transform) };
+			fe = new WebGpuGeometryCache { TableFrame = true, FrameSolid = true, SlabId = id, FrameOrder = order, TableSolids = sv, TableRrects = rv, Owned = fOwned, HasClipMask = tableHasMask, Transform = rr.Transform, Clip = rr.Clip, Device = _d, XformSlot = slot, HasAtlas = tableHasAtlas, AtlasBlockedByScale = tableBlocked, AtlasScale = tableScale, MaskScale = MaskScale(rr.Transform) };
 			StoreCompiled(rr.Data, fe);
 		}
 		int sBase = 0, rBase = 0;
 		if (fe.TableSolids.Count > 0 && !_d.SolidTableSlab.TryByteOffset(fe.SlabId, out sBase)) { sBase = _d.SolidTableSlab.Put(fe.SlabId, fe.TableSolids); }
 		if (fe.TableRrects.Count > 0 && !_d.RrectTableSlab.TryByteOffset(fe.SlabId, out rBase)) { rBase = _d.RrectTableSlab.Put(fe.SlabId, fe.TableRrects); }
 		WriteXform(fe.XformSlot, rr.Transform);
-		if (!fe.HasStamp || fe.StampXform != rr.Transform || !ClipDataEquals(fe.StampClip, rr.Clip) || fe.StampW != (int)_s.Width || fe.StampH != (int)_s.Height)
+		if (!fe.HasStamp || fe.StampXform != rr.Transform || !ClipDataEquals(fe.StampClip, rr.Clip))
 		{
 			if (_emitStats) { _statStamps++; }
 			// In-place restamp: rewrite the previous stamp's ClipU buffers and keep its bind groups. Unsafe only when
@@ -129,11 +126,11 @@ public sealed unsafe partial class WebGpuPresentSession
 				var stampBgl = ClipBglForKind(opKind);
 				// An op with no xform-table slot (an atlas quad, an image, a gradient) is still identity-baked, so
 				// its clip has to carry the replay transform or it draws at the recording's local origin.
-				var stampXform = PlacedByXformTable(opKind) ? Matrix3x2.Identity : ArenaXform(rr.Transform);
+				var stampXform = PlacedByXformTable(opKind) ? Matrix3x2.Identity : PixelXform(rr.Transform);
 				var st = StampTableClip(local, stampOwned, finv, t2, sessionAabb, rr.Clip.ScissorInert, rr.Clip.Rounds, rr.Clip.Paths, ref pathsMemo, reuse ? bufs[i] : 0, reuse ? stamps[i].ClipBg : 0, stampBgl, stampXform);
 				if (reuse) { stamps[i] = (st.Scissor, st.ClipBg); } else { stamps.Add((st.Scissor, st.ClipBg)); bufs.Add(st.Buf); }
 			}
-			fe.StampOwned = stampOwned; fe.StampClips = stamps; fe.StampBufs = bufs; fe.StampFrame = _d.FrameSeq; fe.StampXform = rr.Transform; fe.StampClip = rr.Clip; fe.StampW = (int)_s.Width; fe.StampH = (int)_s.Height; fe.HasStamp = true;
+			fe.StampOwned = stampOwned; fe.StampClips = stamps; fe.StampBufs = bufs; fe.StampFrame = _d.FrameSeq; fe.StampXform = rr.Transform; fe.StampClip = rr.Clip; fe.HasStamp = true;
 		}
 		for (int i = 0; i < fe.FrameOrder.Count; i++)
 		{
@@ -177,7 +174,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		{
 			fe = rr.Data.Compiled;
 			fMiss = fe is null;
-			fStale = !fMiss && (!fe.FrameSolid || fe.TableFrame || fe.FrameOrder is null || fe.Transform != rr.Transform || fe.BuiltW != (int)_s.Width || fe.BuiltH != (int)_s.Height || !ClipDataEquals(fe.Clip, rr.Clip));
+			fStale = !fMiss && (!fe.FrameSolid || fe.TableFrame || fe.FrameOrder is null || fe.Transform != rr.Transform || !ClipDataEquals(fe.Clip, rr.Clip));
 		}
 		if (fMiss || fStale)
 		{
@@ -236,7 +233,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	// point into a slice that may since have been reclaimed.
 			sBase = sv.Count > 0 ? _d.SolidSlab.Put(id, sv) : 0;
 			rBase = rv.Count > 0 ? _d.RrectSlab.Put(id, rv) : 0;
-			fe = new WebGpuGeometryCache { FrameSolid = true, SlabId = id, FrameOrder = order, FrameSolidVerts = sv, FrameRrectVerts = rv, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = fSlot };
+			fe = new WebGpuGeometryCache { FrameSolid = true, SlabId = id, FrameOrder = order, FrameSolidVerts = sv, FrameRrectVerts = rv, Owned = fOwned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, XformSlot = fSlot };
 			if (repeat) { _d.DeferRelease(fOwned); }
 			else { StoreCompiled(rr.Data, fe); }
 		}
@@ -273,17 +270,12 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// <summary>
 	/// Replays an ARENA recording: geometry baked once in its own identity space, with the replay transform
 	/// applied on the GPU. A move re-stamps the per-op clip bind groups and reuses the vertex buffers; only a
-	/// resize, a scale/rotation change, or an atlas entry that can no longer be reused forces a rebuild.
+	/// scale change, or an atlas entry that can no longer be reused, forces a rebuild.
 	/// </summary>
 	private void EmitArenaReplay(ReplayRefCmd rr, List<DrawOp> ops, WebGpuGeometryCache entry, bool miss)
 	{
 		int aSlot = (miss || entry is null) ? -1 : entry.XformSlot;
-		bool aSizeChanged = entry is not null && (entry.BuiltW != (int)_s.Width || entry.BuiltH != (int)_s.Height);
-		// A pure-path entry survives a resize through its xform table, but an atlas quad in it does not: that is an
-		// image op with build-time NDC and no table slot, so a resize leaves it scaled (visible through the
-		// offscreen RenderTargetBitmap path the shape parity tests capture through).
-		var survivesResize = entry is not null && entry.PurePath && !entry.HasAtlas && !entry.HasClipMask;
-		if (miss || !entry.Arena || (aSizeChanged && !survivesResize) || AtlasNeedsRebuild(entry, rr.Transform))
+		if (miss || !entry.Arena || AtlasNeedsRebuild(entry, rr.Transform))
 		{
 			if (_emitStats) { _statArenaRebuilds++; }
 			if (entry is not null) { _d.DeferRelease(entry.Owned); _d.DeferRelease(entry.StampOwned); }
@@ -301,7 +293,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			bool aHasMask = ClipMasksBaked + FillMasksBaked != maskBefore;
 			bool aBlocked = !aAtlasSafe && aHasPath && _pathAtlas;
 			bool aHasPathClip = false; foreach (var o in aOps) { if (o.clip.Paths is not null) { aHasPathClip = true; break; } }
-			entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, HasAtlas = aHasAtlas, HasClipMask = aHasMask, HasPathClip = aHasPathClip, AtlasBlockedByScale = aBlocked, AtlasScale = aScale, MaskScale = MaskScale(rr.Transform), PurePath = aPure, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = aSlot };
+			entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, HasAtlas = aHasAtlas, HasClipMask = aHasMask, HasPathClip = aHasPathClip, AtlasBlockedByScale = aBlocked, AtlasScale = aScale, MaskScale = MaskScale(rr.Transform), PurePath = aPure, Device = _d, XformSlot = aSlot };
 			StoreCompiled(rr.Data, entry);
 		}
 		if (entry.XformSlot >= 0) { WriteXform(entry.XformSlot, rr.Transform); }
@@ -316,7 +308,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			var stampOwned = reuse ? entry.StampOwned : new OwnedResources();
 			var stamped = reuse ? entry.StampedOps : new List<DrawOp>(entry.Ops.Count);
 			var bufs = reuse ? entry.StampBufs : new List<nint>(entry.Ops.Count);
-			var xf = ArenaXform(rr.Transform);
+			var xf = PixelXform(rr.Transform);
 			var t2 = new Matrix3x2(rr.Transform.M11, rr.Transform.M12, rr.Transform.M21, rr.Transform.M22, rr.Transform.M41, rr.Transform.M42);
 			Matrix3x2 finv = Matrix3x2.Invert(t2, out var inv) ? inv : Matrix3x2.Identity;
 			Vector2 MoveP(float x, float y) => new(x * t2.M11 + y * t2.M21 + t2.M31, x * t2.M12 + y * t2.M22 + t2.M32);
@@ -384,10 +376,9 @@ public sealed unsafe partial class WebGpuPresentSession
 		}
 
 		// Under a size-to-content layer surface every replay cache below (table-frame / frame-solid / arena /
-		// compiled) is unusable: they bake window-space geometry keyed on the recording, and this pass's NDC basis
-		// is shifted into the layer's sub-rect. Rebuild fresh and UNCACHED through the basis-aware immediate build
-		// (BuildCoalesced goes via Ndc, and the transient path slot's WriteXform folds the basis). The main-window
-		// path is untouched, so the caches keep working where they pay.
+		// compiled) is unusable: their clip stamps fold the pass basis into finv and are keyed on the recording, not
+		// the pass. Rebuild fresh and UNCACHED through the immediate build. The main-window path is untouched, so
+		// the caches keep working where they pay.
 		if (_basisOx != 0f || _basisOy != 0f || _basisW != _s.Width || _basisH != _s.Height)
 		{
 			var subOwned = new OwnedResources();
@@ -424,7 +415,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		if (_emitStats) { StatStratCached++; }
 		var transformChanged = !miss && entry.Transform != rr.Transform;
 		int cSlot = (miss || entry is null) ? -1 : entry.XformSlot;
-		if (miss || transformChanged || entry.Arena || entry.BuiltW != (int)_s.Width || entry.BuiltH != (int)_s.Height || !ClipDataEquals(entry.Clip, rr.Clip))
+		if (miss || transformChanged || entry.Arena || !ClipDataEquals(entry.Clip, rr.Clip))
 		{
 			// Why did this rebuild? The cached path is the only replay path that re-bakes geometry on a
 			// MOVE (table and arena both re-stamp), so a scrolling recording that lands here pays a full
@@ -435,7 +426,6 @@ public sealed unsafe partial class WebGpuPresentSession
 				if (miss) { _statCrMiss++; }
 				else if (transformChanged) { _statCrMove++; }
 				else if (entry.Arena) { _statCrPathFlip++; }
-				else if (entry.BuiltW != (int)_s.Width || entry.BuiltH != (int)_s.Height) { _statCrSize++; }
 				else { _statCrClip++; }
 			}
 			if (entry is not null) { _d.DeferRelease(entry.Owned); }
@@ -446,7 +436,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			bool cHasPath = false; foreach (var c in cList) { if (c is PathFill) { cHasPath = true; break; } }
 			if (cHasPath && cSlot < 0) { cSlot = _d.AllocXformSlot(); }
 			BuildCoalesced(cList, cachedOps, owned, cSlot, atlasScale: Vector2.One);
-			entry = new WebGpuGeometryCache { Ops = cachedOps, Owned = owned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, BuiltW = (int)_s.Width, BuiltH = (int)_s.Height, XformSlot = cSlot };
+			entry = new WebGpuGeometryCache { Ops = cachedOps, Owned = owned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, XformSlot = cSlot };
 			StoreCompiled(rr.Data, entry);
 		}
 		if (entry.XformSlot >= 0) { WriteXform(entry.XformSlot, Matrix4x4.Identity); }

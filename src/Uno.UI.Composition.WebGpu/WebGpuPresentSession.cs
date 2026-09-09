@@ -22,7 +22,7 @@ namespace Uno.UI.Composition.WebGpu;
 public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 {
 	// UNO_WEBGPU_STATS=1: per-pass emit-shape diagnostics (see RenderInto).
-	private int _statCrMiss, _statCrMove, _statCrPathFlip, _statCrSize, _statCrClip;
+	private int _statCrMiss, _statCrMove, _statCrPathFlip, _statCrClip;
 	private static readonly bool _emitStats = Environment.GetEnvironmentVariable("UNO_WEBGPU_STATS") is "1" or "true";
 	private static int _emitStatsFrame;
 	// UNO_WEBGPU_STATS_EVERY = frames between stats lines (default 60).
@@ -135,7 +135,16 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		x = (int)MathF.Min(x, limW); y = (int)MathF.Min(y, limH);
 		w = r - x; h = b - y; return w > 0 && h > 0;
 	}
-	private Vector2 Ndc(Vector2 dev) => new(2f * (dev.X - _basisOx) / BasisW - 1f, 1f - 2f * (dev.Y - _basisOy) / BasisH);
+	// The pass projection bind group (group 0 of every colour draw): the basis the vertex shader projects pixels by.
+	private IntPtr MakePassBg()
+	{
+		var buf = _d.BufferPool.Rent(16, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
+		var basis = stackalloc float[4] { _basisOx, _basisOy, BasisW, BasisH };
+		wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)basis, 16);
+		var e = new WGPUBindGroupEntry { Binding = 0, Buffer = buf, Offset = 0, Size = 16 };
+		var bgd = new WGPUBindGroupDescriptor { Layout = _d.PassBgl, EntryCount = 1, Entries = &e };
+		return _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &bgd));
+	}
 
 	private float BasisW => _basisW > 0f ? _basisW : _s.Width;
 	private float BasisH => _basisH > 0f ? _basisH : _s.Height;
@@ -245,11 +254,10 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	{
 		int need = (slot + 1) * 8;
 		while (_xforms.Count < need) { _xforms.Add(0f); }
-		// device->NDC for the CURRENT target via the basis, matching Ndc().
-		float w = BasisW, h = BasisH;
+		// The pixel affine as the table shaders unpack it: a = (m00, m01, tx, m10), b = (m11, ty, _, _).
 		int o = slot * 8;
-		_xforms[o + 0] = 2f * r.M11 / w; _xforms[o + 1] = 2f * r.M21 / w; _xforms[o + 2] = 2f * (r.M41 - _basisOx) / w - 1f; _xforms[o + 3] = -2f * r.M12 / h;
-		_xforms[o + 4] = -2f * r.M22 / h; _xforms[o + 5] = 1f - 2f * (r.M42 - _basisOy) / h; _xforms[o + 6] = 0f; _xforms[o + 7] = 0f;
+		_xforms[o + 0] = r.M11; _xforms[o + 1] = r.M21; _xforms[o + 2] = r.M41; _xforms[o + 3] = r.M12;
+		_xforms[o + 4] = r.M22; _xforms[o + 5] = r.M42; _xforms[o + 6] = 0f; _xforms[o + 7] = 0f;
 	}
 
 	private int AllocTransientPathSlot()
@@ -291,7 +299,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	private int AppendSolidRect(List<float> solid, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float r, float g, float b, float a)
 	{
 		int start = solid.Count / 6;
-		void V(Vector2 p) { var n = Ndc(p); solid.Add(n.X); solid.Add(n.Y); solid.Add(r); solid.Add(g); solid.Add(b); solid.Add(a); }
+		void V(Vector2 p) { solid.Add(p.X); solid.Add(p.Y); solid.Add(r); solid.Add(g); solid.Add(b); solid.Add(a); }
 		V(p0); V(p1); V(p2); V(p0); V(p2); V(p3);
 		return start;
 	}
@@ -312,23 +320,23 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		ReadOnlySpan<int> tri = stackalloc int[6] { 0, 1, 2, 2, 1, 3 };
 		foreach (var idx in tri)
 		{
-			var n = Ndc(dev[idx]);
-			rr.Add(n.X); rr.Add(n.Y); rr.Add(ctr[idx].X); rr.Add(ctr[idx].Y); rr.Add(hf.X); rr.Add(hf.Y);
+			var d = dev[idx];
+			rr.Add(d.X); rr.Add(d.Y); rr.Add(ctr[idx].X); rr.Add(ctr[idx].Y); rr.Add(hf.X); rr.Add(hf.Y);
 			rr.Add(rad.X); rr.Add(rad.Y); rr.Add(rad.Z); rr.Add(rad.W); rr.Add(cr); rr.Add(cg); rr.Add(cb); rr.Add(color);
 			rr.Add(ih.X); rr.Add(ih.Y); rr.Add(ic.X); rr.Add(ic.Y); rr.Add(ir.X); rr.Add(ir.Y); rr.Add(ir.Z); rr.Add(ir.W);
 		}
 		return start;
 	}
 
-	// Transform-table SOLID vert (7 floats): LOCAL device pos (NOT Ndc — the slot's affine applies the replay
-	// transform + projection in-shader) + colour + the raw-bits slot index. Mirrors AppendSolidRect, minus the Ndc.
+	// Transform-table SOLID vert (7 floats): local pixel pos (the slot's affine applies the replay transform
+	// in-shader) + colour + the raw-bits slot index.
 	private void AppendSolidRectLocalT(List<float> solid, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float r, float g, float b, float a, float slotBits)
 	{
 		void V(Vector2 p) { solid.Add(p.X); solid.Add(p.Y); solid.Add(r); solid.Add(g); solid.Add(b); solid.Add(a); solid.Add(slotBits); }
 		V(p0); V(p1); V(p2); V(p0); V(p2); V(p3);
 	}
 
-	// Transform-table ROUNDED-RECT vert (23 floats): LOCAL device corner (NOT Ndc) + the per-vertex SDF params
+	// Transform-table ROUNDED-RECT vert (23 floats): local pixel corner + the per-vertex SDF params
 	// (p/hf/radii, all local + transform-invariant) + colour + inner-ring params + the raw-bits slot index.
 	private void AppendRrectLocalT(List<float> rr, RoundedRectCmd rrc, float slotBits)
 	{
@@ -369,8 +377,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 
 	private void PushVert(Vector2 dev, float r, float g, float b, float a)
 	{
-		var n = Ndc(dev);
-		_scratch.Add(n.X); _scratch.Add(n.Y); _scratch.Add(r); _scratch.Add(g); _scratch.Add(b); _scratch.Add(a);
+		_scratch.Add(dev.X); _scratch.Add(dev.Y); _scratch.Add(r); _scratch.Add(g); _scratch.Add(b); _scratch.Add(a);
 	}
 
 	private void PushVertT(Vector2 dev, float r, float g, float b, float a, float slotBits)
@@ -664,7 +671,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 
 		var pst = new PassOps
 		{
-			Pass = pass, Target = target, Ops = ops, Backdrops = backdrops,
+			Pass = pass, Target = target, Ops = ops, Backdrops = backdrops, PassBg = MakePassBg(),
 			SolidBuf = solidBuf, SolidBufBytes = solidBufBytes,
 			RrectBuf = rrectBuf,
 			GradBuf = gradBuf, GradBufBytes = gradBufBytes,

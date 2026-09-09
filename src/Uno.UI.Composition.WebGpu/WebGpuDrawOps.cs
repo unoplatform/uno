@@ -105,10 +105,6 @@ internal sealed unsafe class WebGpuGeometryCache
 	// Back-reference to the owning device so the recording's Dispose (UI thread) can enqueue this for a render-thread
 	// free. Set at build time (render thread).
 	public WebGpuDevice Device;
-	// Surface size (px) the geometry's NDC verts were baked for. Verts are CPU-NDC'd (pos/size), so a size change
-	// (window resize) makes the cached NDC stale — rebuild when the current surface differs. Without this, cached
-	// recordings replay old-size NDC into the resized surface and look stretched.
-	public int BuiltW, BuiltH;
 	// Stable transform-table slot for this recording's path-fill geometry: its fan/cover verts are stored in
 	// recorded-device space and bake this slot as a per-vertex index; the slot's local->NDC affine is rewritten each
 	// frame (folding the replay transform + current device->NDC projection), so resize/move never re-bakes the verts.
@@ -163,11 +159,9 @@ internal sealed unsafe class WebGpuGeometryCache
 	public List<float> TableSolids;   // resident local solid verts (7 floats/v) — re-Put only when the slice was culled
 	public List<float> TableRrects;   // resident local rrect verts (23 floats/v)
 									  // Per-op (device scissor, clip bind group) for the current stamp, parallel to FrameOrder. Rebuilt only when the
-									  // replay transform / session clip / surface size changes (memoized like the arena stamp); the slab base is applied
-									  // on top each frame. StampW/StampH invalidate it on resize (the clip uniform + scissor are device-space).
+									  // replay transform / session clip changes (memoized like the arena stamp); the slab base is applied on top each frame.
 	public List<(ClipData Scissor, nint ClipBg)> StampClips;
 	public ClipData StampClip;
-	public int StampW, StampH;
 	// Arena stamp memo: the per-op clip bind groups + device scissors for a given replay transform depend only on
 	// that transform, so cache the fully-stamped ops (built with StampOwned) and reuse them verbatim while the
 	// transform is unchanged — a STATIC arena visual then costs one AddRange/frame, no per-op MakeClipBg.
@@ -208,6 +202,7 @@ internal ref struct PassOps
 	public System.Collections.Generic.List<DrawOp> Ops;
 	public System.Collections.Generic.List<BackdropCmd> Backdrops;
 	public IntPtr SolidBuf, RrectBuf, GradBuf, QuadBuf, PathBuf, XformBg;
+	public IntPtr PassBg;   // group 0 of every colour draw: this pass's projection
 	public nuint SolidBufBytes, GradBufBytes, QuadBufBytes, PathBufBytes;
 
 	public PassEncoder Enc;
@@ -226,7 +221,7 @@ internal ref struct PassOps
 internal unsafe struct PassEncoder
 {
 	private IntPtr _pass;
-	private IntPtr _pipe, _bg0, _bg1, _vb;
+	private IntPtr _pipe, _bg0, _bg1, _bg2, _vb;
 	private nuint _vbOffset, _vbSize;
 	private int _sx, _sy, _sw, _sh;
 
@@ -248,7 +243,7 @@ internal unsafe struct PassEncoder
 
 	public void Reset()
 	{
-		_pipe = -1; _bg0 = -1; _bg1 = -1; _vb = -1;
+		_pipe = -1; _bg0 = -1; _bg1 = -1; _bg2 = -1; _vb = -1;
 		_vbOffset = unchecked((nuint)ulong.MaxValue);
 		_vbSize = 0;
 		_sx = _sy = _sw = _sh = -1;
@@ -273,6 +268,7 @@ internal unsafe struct PassEncoder
 	{
 		if (group == 0) { if (bg == _bg0) { return; } _bg0 = bg; }
 		else if (group == 1) { if (bg == _bg1) { return; } _bg1 = bg; }
+		else if (group == 2) { if (bg == _bg2) { return; } _bg2 = bg; }
 		wgpuRenderPassEncoderSetBindGroup(_pass, group, bg, 0, (uint*)null);
 	}
 

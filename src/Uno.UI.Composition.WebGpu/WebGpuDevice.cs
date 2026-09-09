@@ -260,6 +260,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// Explicit SHARED ClipU layout: the solid, table and image pipelines use one pipeline layout so a single ClipU
 	// bind group binds to any of them (auto-derived layouts are pipeline-exclusive).
 	public IntPtr ClipBgl;
+	// Group 0 of every colour pipeline: the pass projection (16 bytes), one bind group per pass.
+	public IntPtr PassBgl;
 	public IntPtr Smp;
 	private readonly IntPtr[] _tiledSmp = new IntPtr[16];
 
@@ -534,7 +536,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		return wgpuDeviceCreateShaderModule(Dev, &d);
 	}
 
-	// Explicit ClipU bind-group layout (the uniform at binding 0, read by vertex xformPos + fragment clipCov, and the
+	// Explicit ClipU bind-group layout (the uniform at binding 0, read by vertex place + fragment clipCov, and the
 	// path-clip mask at binding 1) wrapped in a pipeline layout the colour pipelines share.
 	private IntPtr MakeClipPipeLayout()
 	{
@@ -555,8 +557,24 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		};
 		var bgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 2, Entries = e };
 		ClipBgl = wgpuDeviceCreateBindGroupLayout(Dev, &bgld);
-		var bgl = ClipBgl;
-		var pld = new WGPUPipelineLayoutDescriptor { BindGroupLayoutCount = 1, BindGroupLayouts = (IntPtr)(&bgl) };
+		var pe = new WGPUBindGroupLayoutEntry
+		{
+			Binding = 0,
+			Visibility = WGPUShaderStage.Vertex,
+			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.Uniform, MinBindingSize = 16 },
+		};
+		var pbgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 1, Entries = &pe };
+		PassBgl = wgpuDeviceCreateBindGroupLayout(Dev, &pbgld);
+		return ColourLayout(ClipBgl);
+	}
+
+	// [pass, group1, ..., ClipBgl]: the pass projection first, the op's clip last, the pipeline's own groups between.
+	private IntPtr ColourLayout(params IntPtr[] groups)
+	{
+		var bgls = stackalloc IntPtr[groups.Length + 1];
+		bgls[0] = PassBgl;
+		for (int i = 0; i < groups.Length; i++) { bgls[i + 1] = groups[i]; }
+		var pld = new WGPUPipelineLayoutDescriptor { BindGroupLayoutCount = (nuint)(groups.Length + 1), BindGroupLayouts = (IntPtr)bgls };
 		return wgpuDeviceCreatePipelineLayout(Dev, &pld);
 	}
 
@@ -733,14 +751,22 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
 		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = WGPUColorWriteMask.All };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
-		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = null, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = IntPtr.Zero };
+		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = null, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = ColourLayout(ClipBgl) };
 		RrPipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
-		RrClipBgl = wgpuRenderPipelineGetBindGroupLayout(RrPipe, 0);
+		RrClipBgl = ClipBgl;
 	}
 
 	private void CreateGradientPipeline(WGPUBlendState* blend)
 	{
 		var module = Module(ClipStructFn + GradientWgsl);
+		var ge = new WGPUBindGroupLayoutEntry
+		{
+			Binding = 0,
+			Visibility = WGPUShaderStage.Fragment,
+			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.Uniform, MinBindingSize = (ulong)GradientUniformBytes },
+		};
+		var gbgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 1, Entries = &ge };
+		GradBgl = wgpuDeviceCreateBindGroupLayout(Dev, &gbgld);
 		var vs = SV("vs");
 		var fs = SV("fs");
 		var attr = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
@@ -748,10 +774,9 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
 		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = WGPUColorWriteMask.All };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
-		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = null, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = IntPtr.Zero };
+		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = null, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = ColourLayout(GradBgl, ClipBgl) };
 		GradientPipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
-		GradBgl = wgpuRenderPipelineGetBindGroupLayout(GradientPipe, 0);
-		GradClipBgl = wgpuRenderPipelineGetBindGroupLayout(GradientPipe, 1);
+		GradClipBgl = ClipBgl;
 	}
 
 
@@ -779,11 +804,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		};
 		var bgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 3, Entries = e };
 		ImgBgl = wgpuDeviceCreateBindGroupLayout(Dev, &bgld);
-		var groups = stackalloc IntPtr[2];
-		groups[0] = ImgBgl;
-		groups[1] = ClipBgl;
-		var pld = new WGPUPipelineLayoutDescriptor { BindGroupLayoutCount = 2, BindGroupLayouts = (IntPtr)groups };
-		return wgpuDeviceCreatePipelineLayout(Dev, &pld);
+		return ColourLayout(ImgBgl, ClipBgl);
 	}
 
 	private void CreateImagePipeline()
@@ -849,9 +870,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		var sbgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 1, Entries = &se };
 		XformBgl = wgpuDeviceCreateBindGroupLayout(Dev, &sbgld);
 		CoverTableClipBgl = ClipBgl;
-		var coverBgls = stackalloc IntPtr[2] { XformBgl, ClipBgl };
-		var coverPld = new WGPUPipelineLayoutDescriptor { BindGroupLayoutCount = 2, BindGroupLayouts = (IntPtr)coverBgls };
-		var coverLayout = wgpuDeviceCreatePipelineLayout(Dev, &coverPld);
+		var coverLayout = ColourLayout(XformBgl, ClipBgl);
 
 		var coverMod = Module(ClipStructFn + CoverTableWgsl);
 		var vs = SV("vs"); var fs = SV("fs");

@@ -205,19 +205,8 @@ public sealed unsafe partial class WebGpuPresentSession
 		return cmds.Count > 0;
 	}
 
-	// The NDC->NDC affine that maps the recording's own (identity-baked) NDC verts to the replay transform `t`
-	// (device->device). Derived so re-stamping this uniform reproduces baking `t` into the verts: with A = the
-	// device->NDC map (surface size), the vertex xform is A·T·A⁻¹. Lets a moved cached visual reuse its geometry.
-	private Matrix3x2 ArenaXform(Matrix4x4 t)
-	{
-		float w = _s.Width, h = _s.Height;
-		float a = t.M11, b = t.M21, c = t.M12, d = t.M22, e = t.M41, f = t.M42;
-		return new Matrix3x2(
-			a, -c * w / h,
-			-b * h / w, d,
-			a + b * h / w + 2f * e / w - 1f,
-			-(c * w / h + d) - 2f * f / h + 1f);
-	}
+	// The replay transform as the pixel affine the vertex shader applies to a recording's identity-baked verts.
+	private static Matrix3x2 PixelXform(Matrix4x4 t) => new(t.M11, t.M12, t.M21, t.M22, t.M41, t.M42);
 
 	// Builds ops for a command list, COALESCING runs of consecutive same-clip solid rects into one vertex buffer +
 	// one draw (a Border's background+edges collapse from 4 draws to 1). Used for cached recordings — the per-command
@@ -303,7 +292,7 @@ public sealed unsafe partial class WebGpuPresentSession
 				{
 					var c = new Vector4(rc.Color.R / 255f, rc.Color.G / 255f, rc.Color.B / 255f, rc.Color.A / 255f);
 					var v = new List<float>();
-					void V(Vector2 p) { var n = Ndc(p); v.Add(n.X); v.Add(n.Y); v.Add(c.X); v.Add(c.Y); v.Add(c.Z); v.Add(c.W); }
+					void V(Vector2 p) { v.Add(p.X); v.Add(p.Y); v.Add(c.X); v.Add(c.Y); v.Add(c.Z); v.Add(c.W); }
 					V(rc.P0); V(rc.P1); V(rc.P2); V(rc.P0); V(rc.P2); V(rc.P3);
 					var rClip = rc.Clip;
 					ops.Add(new DrawOp(DrawKind.Solid, (nint)Vbuf(v.ToArray(), owned), 6, 0, false, rClip, (nint)MakeClipBg(_d.SolidClipBgl, rClip, owned)));
@@ -367,14 +356,14 @@ public sealed unsafe partial class WebGpuPresentSession
 					{
 						// flag == true: b1 is a BYTE offset into the shared per-pass quad buffer (see gradients).
 						var ioff = _quadVerts.Count * sizeof(float);
-						void QS(Vector2 pos, float u, float vv) { var n = Ndc(pos); _quadVerts.Add(n.X); _quadVerts.Add(n.Y); _quadVerts.Add(u); _quadVerts.Add(vv); }
+						void QS(Vector2 pos, float u, float vv) { _quadVerts.Add(pos.X); _quadVerts.Add(pos.Y); _quadVerts.Add(u); _quadVerts.Add(vv); }
 						QS(im.P0, im.U0, im.V0); QS(im.P1, im.U1, im.V0); QS(im.P2, im.U1, im.V1); QS(im.P0, im.U0, im.V0); QS(im.P2, im.U1, im.V1); QS(im.P3, im.U0, im.V1);
 						ops.Add(new DrawOp(DrawKind.Image, (nint)bg, 0, ioff, true, im.Clip, (nint)MakeClipBg(_d.ImageClipBgl, im.Clip, owned)));
 					}
 					else
 					{
 						var q = new float[24];
-						void QV(int idx, Vector2 pos, float u, float vv) { var n = Ndc(pos); q[idx] = n.X; q[idx + 1] = n.Y; q[idx + 2] = u; q[idx + 3] = vv; }
+						void QV(int idx, Vector2 pos, float u, float vv) { q[idx] = pos.X; q[idx + 1] = pos.Y; q[idx + 2] = u; q[idx + 3] = vv; }
 						QV(0, im.P0, im.U0, im.V0); QV(4, im.P1, im.U1, im.V0); QV(8, im.P2, im.U1, im.V1); QV(12, im.P0, im.U0, im.V0); QV(16, im.P2, im.U1, im.V1); QV(20, im.P3, im.U0, im.V1);
 						ops.Add(new DrawOp(DrawKind.Image, (nint)bg, 0, (nint)Vbuf(q, owned), false, im.Clip, (nint)MakeClipBg(_d.ImageClipBgl, im.Clip, owned)));
 					}
@@ -408,13 +397,13 @@ public sealed unsafe partial class WebGpuPresentSession
 					{
 						// flag == true: b1 is a BYTE offset into the shared per-pass gradient buffer.
 						var goff = _gradVerts.Count * sizeof(float);
-						for (var t = 0; t < gCount; t++) { var n = Ndc(cover[t]); _gradVerts.Add(n.X); _gradVerts.Add(n.Y); }
+						for (var t = 0; t < gCount; t++) { _gradVerts.Add(cover[t].X); _gradVerts.Add(cover[t].Y); }
 						ops.Add(new DrawOp(DrawKind.Gradient, (nint)gbg, gCount, goff, true, gClip, gClipBg));
 					}
 					else
 					{
 						var gq = new float[gCount * 2];
-						for (var t = 0; t < gCount; t++) { var n = Ndc(cover[t]); gq[t * 2] = n.X; gq[t * 2 + 1] = n.Y; }
+						for (var t = 0; t < gCount; t++) { gq[t * 2] = cover[t].X; gq[t * 2 + 1] = cover[t].Y; }
 						ops.Add(new DrawOp(DrawKind.Gradient, (nint)gbg, gCount, (nint)Vbuf(gq, owned), false, gClip, gClipBg));
 					}
 					break;

@@ -155,13 +155,13 @@ public sealed unsafe partial class WebGpuPresentSession
 		float x1 = x0 + slot.W / scale.X, y1 = y0 + slot.H / scale.Y;
 		float u0 = (float)slot.X / WebGpuPathAtlas.Size, v0 = (float)slot.Y / WebGpuPathAtlas.Size;
 		float u1 = (float)(slot.X + slot.W) / WebGpuPathAtlas.Size, v1 = (float)(slot.Y + slot.H) / WebGpuPathAtlas.Size;
-		void QV(float x, float y, float uu, float vv) { var n = Ndc(new Vector2(x, y)); dst.Add(n.X); dst.Add(n.Y); dst.Add(uu); dst.Add(vv); }
+		void QV(float x, float y, float uu, float vv) { dst.Add(x); dst.Add(y); dst.Add(uu); dst.Add(vv); }
 		QV(x0, y0, u0, v0); QV(x1, y0, u1, v0); QV(x1, y1, u1, v1);
 		QV(x0, y0, u0, v0); QV(x1, y1, u1, v1); QV(x0, y1, u0, v1);
 	}
 
 	/// <summary>
-	/// Six vertices (pos.xy in NDC, uv.xy) for an axis-aligned textured quad covering the device rect at
+	/// Six vertices (pos.xy in pixels, uv.xy) for an axis-aligned textured quad covering the device rect at
 	/// <paramref name="origin"/>, sampling the whole texture.
 	/// </summary>
 	private float[] TexturedQuad(Vector2 origin, Vector2 size)
@@ -169,8 +169,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		var q = new float[24];
 		void V(int i, Vector2 pos, float u, float v)
 		{
-			var n = Ndc(pos);
-			q[i] = n.X; q[i + 1] = n.Y; q[i + 2] = u; q[i + 3] = v;
+			q[i] = pos.X; q[i + 1] = pos.Y; q[i + 2] = u; q[i + 3] = v;
 		}
 
 		var tr = origin + new Vector2(size.X, 0);
