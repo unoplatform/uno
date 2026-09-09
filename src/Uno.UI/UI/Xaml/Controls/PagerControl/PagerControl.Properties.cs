@@ -3,6 +3,7 @@
 // MUX reference PagerControl.properties.cpp, tag winui3/release/1.7.3, commit 65718e2813a9
 
 using System.Windows.Input;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 
@@ -17,7 +18,7 @@ public partial class PagerControl
 	}
 
 	public static DependencyProperty ButtonPanelAlwaysShowFirstLastPageIndexProperty { get; } =
-		DependencyProperty.Register(nameof(ButtonPanelAlwaysShowFirstLastPageIndex), typeof(bool), typeof(PagerControl), new FrameworkPropertyMetadata(true, OnPropertyChanged));
+		DependencyProperty.Register(nameof(ButtonPanelAlwaysShowFirstLastPageIndex), typeof(bool), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue, OnPropertyChanged));
 
 	public PagerControlDisplayMode DisplayMode
 	{
@@ -110,11 +111,11 @@ public partial class PagerControl
 	public int NumberOfPages
 	{
 		get => (int)GetValue(NumberOfPagesProperty);
-		set => SetValue(NumberOfPagesProperty, value);
+		set => SetValue(NumberOfPagesProperty, Boxes.Box(value));
 	}
 
 	public static DependencyProperty NumberOfPagesProperty { get; } =
-		DependencyProperty.Register(nameof(NumberOfPages), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(0, OnPropertyChanged));
+		DependencyProperty.Register(nameof(NumberOfPages), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero, OnPropertyChanged));
 
 	public string PrefixText
 	{
@@ -155,11 +156,11 @@ public partial class PagerControl
 	public int SelectedPageIndex
 	{
 		get => (int)GetValue(SelectedPageIndexProperty);
-		set => SetValue(SelectedPageIndexProperty, value);
+		set => SetValue(SelectedPageIndexProperty, Boxes.Box(value));
 	}
 
 	public static DependencyProperty SelectedPageIndexProperty { get; } =
-		DependencyProperty.Register(nameof(SelectedPageIndex), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(0, OnPropertyChanged));
+		DependencyProperty.Register(nameof(SelectedPageIndex), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero, OnPropertyChanged));
 
 	public string SuffixText
 	{

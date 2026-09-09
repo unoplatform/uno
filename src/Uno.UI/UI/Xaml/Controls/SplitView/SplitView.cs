@@ -8,6 +8,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 using Windows.UI.Core;
 
@@ -38,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double CompactPaneLength
 		{
 			get { return (double)this.GetValue(CompactPaneLengthProperty); }
-			set { this.SetValue(CompactPaneLengthProperty, value); }
+			set { this.SetValue(CompactPaneLengthProperty, Boxes.Box(value)); }
 		}
 
 		public static DependencyProperty CompactPaneLengthProperty { get; } =
@@ -153,7 +154,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(SplitView),
 				new FrameworkPropertyMetadata(
-					false,
+					Boxes.BooleanBoxes.BoxedFalse,
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((SplitView)s)?.OnIsPaneOpenChanged(e)
 				)
@@ -171,7 +172,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double OpenPaneLength
 		{
 			get { return (double)this.GetValue(OpenPaneLengthProperty); }
-			set { this.SetValue(OpenPaneLengthProperty, value); }
+			set { this.SetValue(OpenPaneLengthProperty, Boxes.Box(value)); }
 		}
 
 		public static DependencyProperty OpenPaneLengthProperty { get; } =

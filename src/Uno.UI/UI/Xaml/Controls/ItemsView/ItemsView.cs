@@ -13,6 +13,7 @@ using Microsoft.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.System;
@@ -837,8 +838,8 @@ partial class ItemsView : Control
 
 			if (itemsRepeater.ItemsSourceView is { } itemsSourceView)
 			{
-				element.SetValue(AutomationProperties.PositionInSetProperty, index + 1);
-				element.SetValue(AutomationProperties.SizeOfSetProperty, itemsSourceView.Count);
+				element.SetValue(AutomationProperties.PositionInSetProperty, Boxes.Box(index + 1));
+				element.SetValue(AutomationProperties.SizeOfSetProperty, Boxes.Box(itemsSourceView.Count));
 			}
 		}
 	}
@@ -915,7 +916,7 @@ partial class ItemsView : Control
 
 			//ITEMSVIEW_TRACE_VERBOSE(*this, TRACE_MSG_METH_INT, METH_NAME, this, newIndex);
 
-			element.SetValue(AutomationProperties.PositionInSetProperty, newIndex + 1);
+			element.SetValue(AutomationProperties.PositionInSetProperty, Boxes.Box(newIndex + 1));
 		}
 	}
 
@@ -1511,7 +1512,7 @@ partial class ItemsView : Control
 				{
 					if (itemsRepeater.TryGetElement(index) is { } element)
 					{
-						element.SetValue(AutomationProperties.SizeOfSetProperty, count);
+						element.SetValue(AutomationProperties.SizeOfSetProperty, Boxes.Box(count));
 					}
 				}
 			}

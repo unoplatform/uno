@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -86,7 +87,7 @@ partial class ComboBox
 		   nameof(IsDropDownOpen),
 		   typeof(bool),
 		   typeof(ComboBox),
-		   new FrameworkPropertyMetadata(false));
+		   new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether the user can
@@ -106,7 +107,7 @@ partial class ComboBox
 			nameof(IsEditable),
 			typeof(bool),
 			typeof(ComboBox),
-			new FrameworkPropertyMetadata(false));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Gets whether the SelectionBoxItem is highlighted.
@@ -130,7 +131,7 @@ partial class ComboBox
 			nameof(IsTextSearchEnabled),
 			typeof(bool),
 			typeof(ComboBox),
-			new FrameworkPropertyMetadata(true));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
 
 	/// <summary>
 	/// Gets or sets a value that specifies whether the area outside of a light-dismiss UI is darkened.

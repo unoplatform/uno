@@ -6,6 +6,7 @@
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -32,48 +33,48 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MaximumRowsOrColumnsProperty { get; } = DependencyProperty.Register(
-			"MaximumRowsOrColumns", typeof(int), typeof(UniformGridLayout), new FrameworkPropertyMetadata(-1, propertyChangedCallback: (sender, args) => ((UniformGridLayout)sender).OnPropertyChanged(args)));
+			"MaximumRowsOrColumns", typeof(int), typeof(UniformGridLayout), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.NegativeOne, propertyChangedCallback: (sender, args) => ((UniformGridLayout)sender).OnPropertyChanged(args)));
 
 		public int MaximumRowsOrColumns
 		{
 			get => (int)GetValue(MaximumRowsOrColumnsProperty);
-			set => SetValue(MaximumRowsOrColumnsProperty, value);
+			set => SetValue(MaximumRowsOrColumnsProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty MinColumnSpacingProperty { get; } = DependencyProperty.Register(
-			"MinColumnSpacing", typeof(double), typeof(UniformGridLayout), new FrameworkPropertyMetadata(0d, propertyChangedCallback: (sender, args) => ((UniformGridLayout)sender).OnPropertyChanged(args)));
+			"MinColumnSpacing", typeof(double), typeof(UniformGridLayout), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, propertyChangedCallback: (sender, args) => ((UniformGridLayout)sender).OnPropertyChanged(args)));
 
 		public double MinColumnSpacing
 		{
 			get => (double)GetValue(MinColumnSpacingProperty);
-			set => SetValue(MinColumnSpacingProperty, value);
+			set => SetValue(MinColumnSpacingProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty MinItemHeightProperty { get; } = DependencyProperty.Register(
-			"MinItemHeight", typeof(double), typeof(UniformGridLayout), new FrameworkPropertyMetadata(0d, propertyChangedCallback: (sender, args) => ((UniformGridLayout)sender).OnPropertyChanged(args)));
+			"MinItemHeight", typeof(double), typeof(UniformGridLayout), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, propertyChangedCallback: (sender, args) => ((UniformGridLayout)sender).OnPropertyChanged(args)));
 
 		public double MinItemHeight
 		{
 			get => (double)GetValue(MinItemHeightProperty);
-			set => SetValue(MinItemHeightProperty, value);
+			set => SetValue(MinItemHeightProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty MinItemWidthProperty { get; } = DependencyProperty.Register(
-			"MinItemWidth", typeof(double), typeof(UniformGridLayout), new FrameworkPropertyMetadata(0d, propertyChangedCallback: (sender, args) => ((UniformGridLayout)sender).OnPropertyChanged(args)));
+			"MinItemWidth", typeof(double), typeof(UniformGridLayout), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, propertyChangedCallback: (sender, args) => ((UniformGridLayout)sender).OnPropertyChanged(args)));
 
 		public double MinItemWidth
 		{
 			get => (double)GetValue(MinItemWidthProperty);
-			set => SetValue(MinItemWidthProperty, value);
+			set => SetValue(MinItemWidthProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty MinRowSpacingProperty { get; } = DependencyProperty.Register(
-			"MinRowSpacing", typeof(double), typeof(UniformGridLayout), new FrameworkPropertyMetadata(0d, propertyChangedCallback: (sender, args) => ((UniformGridLayout)sender).OnPropertyChanged(args)));
+			"MinRowSpacing", typeof(double), typeof(UniformGridLayout), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, propertyChangedCallback: (sender, args) => ((UniformGridLayout)sender).OnPropertyChanged(args)));
 
 		public double MinRowSpacing
 		{
 			get => (double)GetValue(MinRowSpacingProperty);
-			set => SetValue(MinRowSpacingProperty, value);
+			set => SetValue(MinRowSpacingProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty OrientationProperty { get; } = DependencyProperty.Register(

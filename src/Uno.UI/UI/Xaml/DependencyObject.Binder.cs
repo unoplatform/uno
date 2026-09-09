@@ -19,6 +19,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers;
 
 using Uno.UI.Controls;
 
@@ -295,7 +296,7 @@ namespace Microsoft.UI.Xaml
 		}
 
 		private object?[] GetTraceProperties()
-			=> new object?[] { GetHashCode(), _originalObjectType?.ToString() };
+			=> new object?[] { Boxes.Box(GetHashCode()), _originalObjectType?.ToString() };
 
 
 		internal void SetBinding(object target, string dependencyProperty, BindingBase binding)
@@ -646,7 +647,7 @@ namespace Microsoft.UI.Xaml
 
 			if (!ChildrenBindableMap.TryGetValue(property, out var indexRaw))
 			{
-				ChildrenBindableMap[property] = index = ChildrenBindableMap.Count;
+				ChildrenBindableMap[property] = Boxes.Box(index = ChildrenBindableMap.Count);
 				ChildrenBindable.Add(null); // The caller will replace null with a non-null value.
 			}
 			else
@@ -765,7 +766,7 @@ namespace Microsoft.UI.Xaml
 				_mentoredChildrenMap ??= new HashtableEx(DependencyPropertyComparer.Default);
 				_mentoredChildren ??= new List<ManagedWeakReference?>();
 				index = _mentoredChildren.Count;
-				_mentoredChildrenMap[property] = index;
+				_mentoredChildrenMap[property] = Boxes.Box(index);
 				_mentoredChildren.Add(null);
 			}
 

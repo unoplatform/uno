@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Hosting;
 using Microsoft.UI.Xaml.Input;
 using Uno.Disposables;
+using Uno.UI.Helpers;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -265,7 +266,7 @@ public partial class NavigationViewItem : NavigationViewItemBase
 		var splitView = GetSplitView();
 		if (splitView != null)
 		{
-			SetValue(CompactPaneLengthProperty, splitView.CompactPaneLength); //PropertyValue.CreateDouble(splitView.CompactPaneLength));
+			SetValue(CompactPaneLengthProperty, Boxes.Box(splitView.CompactPaneLength)); //PropertyValue.CreateDouble(splitView.CompactPaneLength));
 
 			// Only update when on left
 			var presenter = GetPresenter();

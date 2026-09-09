@@ -7,6 +7,7 @@ using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Helpers;
 using Uno.UI.Helpers.WinUI;
 
 
@@ -36,7 +37,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsActiveProperty { get; } = DependencyProperty.Register(
-			nameof(IsActive), typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(true, OnIsActivePropertyChanged));
+			nameof(IsActive), typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue, OnIsActivePropertyChanged));
 
 		// Hides the internal DependencyObject.IsActive (live-tree state).
 		public new bool IsActive
@@ -46,7 +47,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsIndeterminateProperty { get; } = DependencyProperty.Register(
-			nameof(IsIndeterminate), typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(true, OnIsIndeterminatePropertyChanged));
+			nameof(IsIndeterminate), typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue, OnIsIndeterminatePropertyChanged));
 
 
 		public bool IsIndeterminate
@@ -58,16 +59,16 @@ namespace Microsoft.UI.Xaml.Controls
 		public double Value
 		{
 			get { return (double)GetValue(ValueProperty); }
-			set { SetValue(ValueProperty, value); }
+			set { SetValue(ValueProperty, Boxes.Box(value)); }
 		}
 
 		public static DependencyProperty ValueProperty { get; } = DependencyProperty.Register(
-			nameof(Value), typeof(double), typeof(ProgressRing), new FrameworkPropertyMetadata(0d, (s, e) => (s as ProgressRing)?.OnValuePropertyChanged(e)));
+			nameof(Value), typeof(double), typeof(ProgressRing), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, (s, e) => (s as ProgressRing)?.OnValuePropertyChanged(e)));
 
 		public double Maximum
 		{
 			get { return (double)GetValue(MaximumProperty); }
-			set { SetValue(MaximumProperty, value); }
+			set { SetValue(MaximumProperty, Boxes.Box(value)); }
 		}
 
 		public static DependencyProperty MaximumProperty { get; } = DependencyProperty.Register(
@@ -76,11 +77,11 @@ namespace Microsoft.UI.Xaml.Controls
 		public double Minimum
 		{
 			get { return (double)GetValue(MinimumProperty); }
-			set { SetValue(MinimumProperty, value); }
+			set { SetValue(MinimumProperty, Boxes.Box(value)); }
 		}
 
 		public static DependencyProperty MinimumProperty { get; } = DependencyProperty.Register(
-			nameof(Minimum), typeof(double), typeof(ProgressRing), new FrameworkPropertyMetadata(0d, (s, e) => (s as ProgressRing)?.OnMinimumPropertyChanged(e)));
+			nameof(Minimum), typeof(double), typeof(ProgressRing), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, (s, e) => (s as ProgressRing)?.OnMinimumPropertyChanged(e)));
 
 
 
