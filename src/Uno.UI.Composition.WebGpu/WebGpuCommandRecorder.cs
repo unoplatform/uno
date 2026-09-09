@@ -393,10 +393,9 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			var tiles = !evenOdd && _contourCount == 1 && _fanAreaAbs > 0
 				&& Math.Abs(_fanAreaAbs - Math.Abs(_fanAreaSigned)) <= 1e-4 * _fanAreaAbs;
 			// Tessellate into non-overlapping triangles plus an analytic AA ring, so the fill runs in ONE pass
-			// over the ink alone and antialiases itself instead of leaning on the multisampled attachment.
-			// Explicitly, not by _allContours being empty: parity depends on the fan decomposition, and ear clipping
-			// triangulates the non-zero interior, which is a different region.
-			var aa = !evenOdd && TryTessellate(geometry);
+			// over the ink alone and antialiases itself instead of leaning on the multisampled attachment. Under
+			// either fill rule: the tessellator admits only outlines on which the two rules agree.
+			var aa = TryTessellate(geometry);
 			if (aa) { tiles = true; }
 			else if (!tiles) { StatFanRefused++; }
 			_target.Add(new PathFill { FanDevice = _fan.ToArray(), FanCoverage = _fanCoverage, Edges = BuildEdges(), Geometry = geometry, GeomMatrix = _m, BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, FanTiles = tiles, Clip = RelaxedClip(_bbMin, _bbMax) });
@@ -518,7 +517,9 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	/// <summary>
 	/// Replaces the fan with a non-overlapping triangulation plus a one-pixel analytic AA ring, so the fill can
 	/// take the single-pass path and antialias itself. Leaves the fan untouched (returning false) whenever the
-	/// result cannot be trusted.
+	/// result cannot be trusted. Holes are found by even-odd depth and the area check rejects every outline whose
+	/// non-zero region differs, so a success is valid under both fill rules -- which lets XAML shapes, even-odd by
+	/// default, take the fan instead of a mask.
 	/// </summary>
 	private bool TryTessellate(IGeometry geometry)
 	{
