@@ -1,7 +1,9 @@
 ﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
+#if HAS_UNO
 using Uno.UI.Xaml.Controls;
+#endif
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests;
 
@@ -24,8 +26,12 @@ public sealed partial class TextBox_Keyboard_Dismiss_Button : UserControl
 	{
 		if (e.OriginalSource is Control control)
 		{
+#if HAS_UNO
 			StatusText.Text = $"Focus: {control.GetType().Name}, " +
 				$"ShowKeyboardDismissButton={TextBoxExtensions.GetShowKeyboardDismissButton(control)}";
+#else
+			StatusText.Text = $"Focus: {control.GetType().Name}";
+#endif
 		}
 	}
 }
