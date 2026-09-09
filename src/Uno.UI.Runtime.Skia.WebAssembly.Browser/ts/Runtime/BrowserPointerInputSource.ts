@@ -89,6 +89,13 @@ namespace Uno.UI.Runtime.Skia {
 		private _nativeScrollInertiaSession = 0;
 		private _nativeScrollInertiaGesture: NativeScrollGesture | null = null;
 
+		private _hasNativeScrollAnswer = false;
+		private _lastNativeScrollElementId = 0;
+		private _lastNativeScrollAxis: "horizontal" | "vertical" | null = null;
+		private _lastNativeScrollSign = 0;
+		private _lastNativeScrollAnswerTimestamp = 0;
+		private _lastNativeScrollAccepted = true;
+
 		private constructor(manageSource: any) {
 			this._bootTime = Date.now() - performance.now();
 			this._source = manageSource;
@@ -291,6 +298,10 @@ namespace Uno.UI.Runtime.Skia {
 			}
 
 			if (gesture.unoOwnsGesture) {
+				if (WebAssemblyThreading.isThreadingEnabled()) {
+					return this.postNativeScrollDelta(gesture, remainingHorizontalDelta, remainingVerticalDelta, isIntermediate, isInertial);
+				}
+
 				return BrowserPointerInputSource._exports.OnNativeScrollDelta(
 					gesture.unoElementId,
 					remainingHorizontalDelta,
@@ -300,6 +311,57 @@ namespace Uno.UI.Runtime.Skia {
 			}
 
 			return remainingHorizontalDelta !== horizontalDelta || remainingVerticalDelta !== verticalDelta;
+		}
+
+		// A stream quiet for longer than this is treated as new.
+		private static readonly nativeScrollAnswerLifetime = 200;
+
+		// WASM-MT only: the managed answer to a scroll delta arrives after the event handler has returned,
+		// so postNativeScrollDelta stands in the answer given to the previous delta.
+		private postNativeScrollDelta(gesture: NativeScrollGesture, horizontalDelta: number, verticalDelta: number, isIntermediate: boolean, isInertial: boolean): boolean {
+			const elementId = gesture.unoElementId;
+			const axis = gesture.primaryAxis;
+			const sign = Math.sign(Math.abs(horizontalDelta) > Math.abs(verticalDelta) ? horizontalDelta : verticalDelta);
+			const timestamp = performance.now();
+
+			// Another element, axis or direction is another stream: a boundary reached scrolling one way must
+			// not suppress the first delta going back the other way.
+			const isSameStream = this._hasNativeScrollAnswer
+				&& this._lastNativeScrollElementId === elementId
+				&& this._lastNativeScrollAxis === axis
+				&& this._lastNativeScrollSign === sign
+				&& timestamp - this._lastNativeScrollAnswerTimestamp <= BrowserPointerInputSource.nativeScrollAnswerLifetime;
+
+			if (!isSameStream) {
+				this._hasNativeScrollAnswer = true;
+				this._lastNativeScrollElementId = elementId;
+				this._lastNativeScrollAxis = axis;
+				this._lastNativeScrollSign = sign;
+				this._lastNativeScrollAccepted = true;
+			}
+
+			// Every delta keeps the stream alive, so a continuous scroll never expires mid-gesture.
+			this._lastNativeScrollAnswerTimestamp = timestamp;
+
+			BrowserPointerInputSource._exports.OnNativeScrollDeltaAsync(
+				elementId,
+				horizontalDelta,
+				verticalDelta,
+				isIntermediate,
+				isInertial)
+			.then((result: boolean) => {
+				// The stream may have ended or turned around while this delta was in flight.
+				if (this._hasNativeScrollAnswer
+					&& this._lastNativeScrollElementId === elementId
+					&& this._lastNativeScrollAxis === axis
+					&& this._lastNativeScrollSign === sign) {
+						this._lastNativeScrollAccepted = result;
+						this._lastNativeScrollAnswerTimestamp = performance.now();
+					}
+			})
+			.catch((e: any) => console.warn(`Failed to apply negotiated native scroll: ${e}`));
+
+			return this._lastNativeScrollAccepted;
 		}
 
 		private cancelNativeScrollInertia(): void {
@@ -334,8 +396,15 @@ namespace Uno.UI.Runtime.Skia {
 				return;
 			}
 
+			this._hasNativeScrollAnswer = false;
+
 			try {
-				BrowserPointerInputSource._exports.OnNativeScrollCompleted(gesture.unoElementId);
+				if (WebAssemblyThreading.isThreadingEnabled()) {
+					BrowserPointerInputSource._exports.OnNativeScrollCompletedAsync(gesture.unoElementId)
+						.catch((e: any) => console.warn(`Failed to complete negotiated native scroll: ${e}`));
+				} else {
+					BrowserPointerInputSource._exports.OnNativeScrollCompleted(gesture.unoElementId);
+				}
 			} catch (e) {
 				console.warn(`Failed to complete negotiated native scroll: ${e}`);
 			}

@@ -227,6 +227,15 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 	}
 
 	[JSExport]
+	private static Task<bool> OnNativeScrollDeltaAsync(
+		nint unoElementId,
+		double horizontalDelta,
+		double verticalDelta,
+		bool isIntermediate,
+		bool isInertial)
+		=> Task.FromResult(OnNativeScrollDelta(unoElementId, horizontalDelta, verticalDelta, isIntermediate, isInertial));
+
+	[JSExport]
 	private static void OnNativeScrollCompleted(nint unoElementId)
 	{
 		try
@@ -242,6 +251,14 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 				_log.Error($"Failed to complete negotiated native scroll: {error}");
 			}
 		}
+	}
+
+	[JSExport]
+	private static Task OnNativeScrollCompletedAsync(nint unoElementId)
+	{
+		OnNativeScrollCompleted(unoElementId);
+
+		return Task.CompletedTask;
 	}
 
 	[NotImplemented] public bool HasCapture => false;
