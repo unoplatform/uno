@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ToOffset), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Animation.DragOverThemeAnimation),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -70,7 +70,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 			set
 			{
-				this.SetValue(ToOffsetProperty, value);
+				this.SetValue(ToOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif

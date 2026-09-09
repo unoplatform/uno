@@ -28,7 +28,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(AutoReverse), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Media.Animation.Timeline),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property BeginTimeProperty
 		// Skipping already declared property DurationProperty
@@ -40,7 +40,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(SpeedRatio), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Animation.Timeline),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -52,7 +52,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 			set
 			{
-				this.SetValue(AutoReverseProperty, value);
+				this.SetValue(AutoReverseProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -70,7 +70,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 			set
 			{
-				this.SetValue(SpeedRatioProperty, value);
+				this.SetValue(SpeedRatioProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif

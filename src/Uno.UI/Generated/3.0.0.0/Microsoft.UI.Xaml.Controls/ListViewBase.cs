@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsActiveView), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.ListViewBase),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property IsItemClickEnabledProperty
 		// Skipping already declared property IsMultiSelectCheckBoxEnabledProperty
@@ -49,7 +49,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsSwipeEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.ListViewBase),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -57,7 +57,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsZoomedInView), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.ListViewBase),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -82,7 +82,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ShowsScrollingPlaceholders), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.ListViewBase),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property SingleSelectionFollowsFocusProperty
 		// Skipping already declared property CanDragItems
@@ -132,7 +132,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsActiveViewProperty, value);
+				this.SetValue(IsActiveViewProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -148,7 +148,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsSwipeEnabledProperty, value);
+				this.SetValue(IsSwipeEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -162,7 +162,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsZoomedInViewProperty, value);
+				this.SetValue(IsZoomedInViewProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -216,7 +216,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(ShowsScrollingPlaceholdersProperty, value);
+				this.SetValue(ShowsScrollingPlaceholdersProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif

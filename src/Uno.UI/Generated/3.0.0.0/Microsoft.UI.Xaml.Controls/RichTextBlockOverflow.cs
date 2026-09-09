@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(HasOverflowContent), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsTextTrimmed), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(MaxLines), typeof(int),
 			typeof(global::Microsoft.UI.Xaml.Controls.RichTextBlockOverflow),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(int)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -118,7 +118,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(MaxLinesProperty, value);
+				this.SetValue(MaxLinesProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
