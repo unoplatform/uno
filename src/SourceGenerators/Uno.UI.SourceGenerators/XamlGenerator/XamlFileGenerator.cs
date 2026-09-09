@@ -6379,11 +6379,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return xamlObjectDefinition.Type.Name
 				is "DataTemplate"
 				or "ItemsPanelTemplate"
-				or "ControlTemplate"
-
-				// This case is specific the custom ListView for iOS. Should be removed
-				// when the list rebuilt to be compatible.
-				or "ListViewBaseLayoutTemplate";
+				or "ControlTemplate";
 		}
 
 		private void BuildChild(IIndentedStringBuilder writer, XamlMemberDefinition? owner, XamlObjectDefinition xamlObjectDefinition, string? outerClosure = null)
@@ -6431,11 +6427,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						var contentDefinition = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == XamlConstants.UnknownContent);
 						var contentLocation = (IXamlLocation)xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "Key") ?? xamlObjectDefinition;
 
-						// This case is to support the layout switching for the ListViewBaseLayout, which is not
-						// a FrameworkTemplate. This will need to be removed when this custom list view is removed.
-						var contentType = typeName == "ListViewBaseLayoutTemplate"
-							? "global::Uno.UI.Controls.Legacy.ListViewBaseLayout"
-							: "_View";
+						var contentType = "_View";
 
 						if (_isHotReloadEnabled)
 						{
