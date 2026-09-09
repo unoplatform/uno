@@ -38,7 +38,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(SelectedIndex), typeof(int),
 			typeof(global::Microsoft.UI.Xaml.Controls.ListPickerFlyout),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(int)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -124,7 +124,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(SelectedIndexProperty, value);
+				this.SetValue(SelectedIndexProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(CenterX), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(CenterY), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(CenterZ), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -38,7 +38,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(RotationX), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(RotationY), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -54,7 +54,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(RotationZ), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -62,7 +62,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ScaleX), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -70,7 +70,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ScaleY), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ScaleZ), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -86,7 +86,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(TranslateX), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -94,7 +94,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(TranslateY), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -102,7 +102,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(TranslateZ), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Media3D.CompositeTransform3D),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -114,7 +114,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(CenterXProperty, value);
+				this.SetValue(CenterXProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -128,7 +128,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(CenterYProperty, value);
+				this.SetValue(CenterYProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -142,7 +142,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(CenterZProperty, value);
+				this.SetValue(CenterZProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -156,7 +156,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(RotationXProperty, value);
+				this.SetValue(RotationXProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -170,7 +170,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(RotationYProperty, value);
+				this.SetValue(RotationYProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -184,7 +184,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(RotationZProperty, value);
+				this.SetValue(RotationZProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -198,7 +198,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(ScaleXProperty, value);
+				this.SetValue(ScaleXProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -212,7 +212,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(ScaleYProperty, value);
+				this.SetValue(ScaleYProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -226,7 +226,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(ScaleZProperty, value);
+				this.SetValue(ScaleZProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -240,7 +240,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(TranslateXProperty, value);
+				this.SetValue(TranslateXProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -254,7 +254,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(TranslateYProperty, value);
+				this.SetValue(TranslateYProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -268,7 +268,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(TranslateZProperty, value);
+				this.SetValue(TranslateZProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif

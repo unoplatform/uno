@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(AreOpenCloseAnimationsEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property AttachedFlyoutProperty
 #if __SKIA__
@@ -38,7 +38,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ShouldConstrainToRootBounds), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property ShowModeProperty
 #if __SKIA__
@@ -69,7 +69,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			set
 			{
-				this.SetValue(AreOpenCloseAnimationsEnabledProperty, value);
+				this.SetValue(AreOpenCloseAnimationsEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -112,7 +112,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			set
 			{
-				this.SetValue(ShouldConstrainToRootBoundsProperty, value);
+				this.SetValue(ShouldConstrainToRootBoundsProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif

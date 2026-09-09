@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(CacheLength), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Controls.ItemsStackPanel),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 		// Skipping already declared property GroupHeaderPlacementProperty
 		// Skipping already declared property GroupPaddingProperty
@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(CacheLengthProperty, value);
+				this.SetValue(CacheLengthProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif

@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(Depth), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(OffsetX), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(OffsetY), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Media3D.PerspectiveTransform3D),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -42,7 +42,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(DepthProperty, value);
+				this.SetValue(DepthProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(OffsetXProperty, value);
+				this.SetValue(OffsetXProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -70,7 +70,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(OffsetYProperty, value);
+				this.SetValue(OffsetYProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif

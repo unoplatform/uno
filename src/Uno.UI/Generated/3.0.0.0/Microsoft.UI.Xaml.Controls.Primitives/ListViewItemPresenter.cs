@@ -174,7 +174,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(DisabledOpacity), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -198,7 +198,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(DragOpacity), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -294,7 +294,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ReorderHintOffset), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -310,7 +310,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(RevealBackgroundShowsAboveContent), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -422,7 +422,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(SelectionCheckMarkVisualEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -478,7 +478,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(SelectionIndicatorVisualEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -770,7 +770,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			set
 			{
-				this.SetValue(DisabledOpacityProperty, value);
+				this.SetValue(DisabledOpacityProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -812,7 +812,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			set
 			{
-				this.SetValue(DragOpacityProperty, value);
+				this.SetValue(DragOpacityProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -980,7 +980,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			set
 			{
-				this.SetValue(ReorderHintOffsetProperty, value);
+				this.SetValue(ReorderHintOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -1008,7 +1008,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			set
 			{
-				this.SetValue(RevealBackgroundShowsAboveContentProperty, value);
+				this.SetValue(RevealBackgroundShowsAboveContentProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -1204,7 +1204,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			set
 			{
-				this.SetValue(SelectionCheckMarkVisualEnabledProperty, value);
+				this.SetValue(SelectionCheckMarkVisualEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -1302,7 +1302,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			set
 			{
-				this.SetValue(SelectionIndicatorVisualEnabledProperty, value);
+				this.SetValue(SelectionIndicatorVisualEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
