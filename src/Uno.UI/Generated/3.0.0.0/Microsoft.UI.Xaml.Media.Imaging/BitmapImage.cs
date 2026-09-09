@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(AutoPlay), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Media.Imaging.BitmapImage),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property CreateOptionsProperty
 		// Skipping already declared property DecodePixelHeightProperty
@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsAnimatedBitmap), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Media.Imaging.BitmapImage),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsPlaying), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Media.Imaging.BitmapImage),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property UriSourceProperty
 #if __SKIA__
@@ -47,7 +47,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			}
 			set
 			{
-				this.SetValue(AutoPlayProperty, value);
+				this.SetValue(AutoPlayProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
