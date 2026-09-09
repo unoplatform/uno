@@ -22,7 +22,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 	/// subsequent same-class test; the two classes each pass as a unit.
 	/// </summary>
 	[TestClass]
-	public class Given_WasmAriaRelations
+	public partial class Given_WasmAriaRelations
 	{
 		[TestMethod]
 		[RunsOnUIThread]
