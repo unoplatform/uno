@@ -294,13 +294,13 @@ public partial class ScrollPresenter :
 		nameof(HorizontalAnchorRatio),
 		typeof(double),
 		typeof(ScrollPresenter),
-		new FrameworkPropertyMetadata(defaultValue: Boxes.DoubleBoxes.Zero, propertyChangedCallback: (s, e) => (s as ScrollPresenter)?.OnHorizontalAnchorRatioPropertyChanged(s, e)));
+		new FrameworkPropertyMetadata(defaultValue: Boxes.Box(s_defaultAnchorRatio), propertyChangedCallback: (s, e) => (s as ScrollPresenter)?.OnHorizontalAnchorRatioPropertyChanged(s, e)));
 
 	public static DependencyProperty VerticalAnchorRatioProperty { get; } = DependencyProperty.Register(
 		nameof(VerticalAnchorRatio),
 		typeof(double),
 		typeof(ScrollPresenter),
-		new FrameworkPropertyMetadata(defaultValue: Boxes.DoubleBoxes.Zero, propertyChangedCallback: (s, e) => (s as ScrollPresenter)?.OnVerticalAnchorRatioPropertyChanged(s, e)));
+		new FrameworkPropertyMetadata(defaultValue: Boxes.Box(s_defaultAnchorRatio), propertyChangedCallback: (s, e) => (s as ScrollPresenter)?.OnVerticalAnchorRatioPropertyChanged(s, e)));
 
 	void OnBackgroundPropertyChanged(
 		DependencyObject sender,
