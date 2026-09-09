@@ -207,6 +207,8 @@ internal sealed class ShadowCmd : WebGpuCommand
 	public WColor Color;
 	public float SigmaX, SigmaY;
 	public bool Additive;
+	public object Geometry;      // + GeomMatrix: the blurred shadow's cache key (see RenderShadow)
+	public Matrix4x4 GeomMatrix;
 }
 
 // A SaveLayer group: its Commands are rendered into a full-size offscreen surface, then composited onto the

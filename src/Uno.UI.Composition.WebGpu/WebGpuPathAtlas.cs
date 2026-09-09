@@ -52,7 +52,10 @@ internal sealed unsafe class WebGpuPathAtlas
 	/// different pixel footprints. All four 2x2 terms are in it too — the mask is rasterized in its final device
 	/// orientation, so two angles of one geometry would otherwise collide and share the wrong mask.
 	/// </summary>
-	internal readonly record struct Key(object Geometry, int M11, int M12, int M21, int M22, int PhaseX, int PhaseY, int W, int H);
+	internal readonly record struct Key(object Geometry, int M11, int M12, int M21, int M22, int PhaseX, int PhaseY, int W, int H, int Extra = 0);
+
+	/// <summary>Too big for a shelf on a shared page: such an entry gets a page of its own size (see <see cref="AddStandalone"/>).</summary>
+	public static bool IsBig(int w, int h) => w > MaxDim || h > MaxDim || w * h > MaxArea;
 
 	/// <summary>
 	/// A reserved region. Origin is the shape's device-space bbox corner the entry was rasterized against, which
@@ -89,6 +92,9 @@ internal sealed unsafe class WebGpuPathAtlas
 	internal sealed class Page
 	{
 		public IntPtr Texture, View;
+		public int W = Size, H = Size;
+		// A page sized to one big entry: never shelf-packed, retired as soon as that entry is freed.
+		public bool Standalone;
 		public int ShelfY, ShelfH, CursorX;
 		public int Live;
 		public readonly Dictionary<(int W, int H), Stack<Slot>> Free = new();
@@ -109,12 +115,33 @@ internal sealed unsafe class WebGpuPathAtlas
 		return page;
 	}
 
+	/// <summary>Shared (shelf-packed) pages, the ones <see cref="MaxPages"/> bounds.</summary>
+	public int RegularPages
+	{
+		get
+		{
+			var n = 0;
+			for (var i = 0; i < _pages.Count; i++) { if (!_pages[i].Standalone) { n++; } }
+			return n;
+		}
+	}
+
+	/// <summary>An entry with a texture of its own: same key, reference count and idle sweep as a page slot.</summary>
+	public Slot AddStandalone(in Key key, int w, int h, float originX, float originY, IntPtr texture, IntPtr view)
+	{
+		var page = new Page { Texture = texture, View = view, W = w, H = h, Standalone = true, Live = 1 };
+		_pages.Add(page);
+		var slot = new Slot(0, 0, w, h, originX, originY) { Key = key, Owner = page, RefCount = 1 };
+		_slots[key] = slot;
+		return slot;
+	}
+
 	/// <summary>True when every page is exhausted and a new one is required.</summary>
 	public bool NeedsPage
 	{
 		get
 		{
-			for (var i = 0; i < _pages.Count; i++) { if (_pages[i].ShelfY + _pages[i].ShelfH < Size) { return false; } }
+			for (var i = 0; i < _pages.Count; i++) { if (!_pages[i].Standalone && _pages[i].ShelfY + _pages[i].ShelfH < Size) { return false; } }
 			return true;
 		}
 	}
@@ -130,7 +157,7 @@ internal sealed unsafe class WebGpuPathAtlas
 		// indefinitely: rows that scroll away release their slots, and rows scrolling in take them.
 		for (var i = 0; i < _pages.Count; i++)
 		{
-			if (_pages[i].Free.TryGetValue((w, h), out var bucket) && bucket.Count > 0)
+			if (!_pages[i].Standalone && _pages[i].Free.TryGetValue((w, h), out var bucket) && bucket.Count > 0)
 			{
 				var reused = bucket.Pop() with { OriginX = originX, OriginY = originY, Key = key, RefCount = 1 };
 				_pages[i].Live++;
@@ -144,6 +171,7 @@ internal sealed unsafe class WebGpuPathAtlas
 		for (var i = 0; i < _pages.Count; i++)
 		{
 			var page = _pages[i];
+			if (page.Standalone) { continue; }
 			if (page.CursorX + w > Size)
 			{
 				page.ShelfY += page.ShelfH;
@@ -219,12 +247,15 @@ internal sealed unsafe class WebGpuPathAtlas
 		// Only the LAST holder may reclaim the region — see Slot.RefCount.
 		if (--slot.RefCount > 0) { return; }
 		if (_slots.TryGetValue(slot.Key, out var cur) && ReferenceEquals(cur, slot)) { _slots.Remove(slot.Key); }
-		if (!page.Free.TryGetValue((slot.W, slot.H), out var bucket)) { page.Free[(slot.W, slot.H)] = bucket = new Stack<Slot>(); }
-		bucket.Push(slot);
+		if (!page.Standalone)
+		{
+			if (!page.Free.TryGetValue((slot.W, slot.H), out var bucket)) { page.Free[(slot.W, slot.H)] = bucket = new Stack<Slot>(); }
+			bucket.Push(slot);
+		}
 
-		// A page with no live slots is pure memory: retire it (unless it is the only one, which would just be
+		// A page with no live slots is pure memory: retire it (unless it is the only shared one, which would just be
 		// reallocated immediately).
-		if (--page.Live <= 0 && _pages.Count > 1)
+		if (--page.Live <= 0 && (page.Standalone || RegularPages > 1))
 		{
 			_pages.Remove(page);
 			Retired.Add(page);
@@ -241,7 +272,7 @@ internal sealed unsafe class WebGpuPathAtlas
 	/// actually covers on screen, so every pixel quantity here — footprint, origin snap, subpixel phase — is
 	/// computed in DEVICE space, while the origin is returned in the op's own space for placing the quad.
 	/// </param>
-	public static bool TryKey(object? geometry, in Matrix4x4 matrix, Vector2 bbMin, Vector2 bbMax, Vector2 scale, out Key key, out int w, out int h, out float originX, out float originY)
+	public static bool TryKey(object? geometry, in Matrix4x4 matrix, Vector2 bbMin, Vector2 bbMax, Vector2 scale, out Key key, out int w, out int h, out float originX, out float originY, bool allowBig = false, int extra = 0)
 	{
 		key = default;
 		w = h = 0;
@@ -251,7 +282,8 @@ internal sealed unsafe class WebGpuPathAtlas
 		var dw = (bbMax.X - bbMin.X) * scale.X;
 		var dh = (bbMax.Y - bbMin.Y) * scale.Y;
 		if (dw <= 0 || dh <= 0) { return false; }
-		if (dw > MaxDim || dh > MaxDim || dw * dh > MaxArea)
+		// A big entry gets its own texture, capped at the largest a texture may be; a shared-page entry must fit a shelf.
+		if (allowBig ? (dw > 4094 || dh > 4094) : (dw > MaxDim || dh > MaxDim || dw * dh > MaxArea))
 		{ RejBig++; return false; }
 
 		// Snap the slot origin to whole DEVICE pixels and let the mask absorb the fractional offset. Placing the
@@ -282,7 +314,8 @@ internal sealed unsafe class WebGpuPathAtlas
 			Math.Clamp(phaseX, 0, SubPixel - 1),
 			Math.Clamp(phaseY, 0, SubPixel - 1),
 			w,
-			h);
+			h,
+			extra);
 		return true;
 	}
 }

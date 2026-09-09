@@ -663,6 +663,8 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 				SigmaX = sigmaX,
 				SigmaY = sigmaY,
 				Additive = additive,
+				Geometry = silhouette,
+				GeomMatrix = _m,
 				Clip = _clip,
 			});
 		}
@@ -1068,7 +1070,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 						sbbMin = Vector2.Min(sbbMin, q); sbbMax = Vector2.Max(sbbMax, q);
 					}
 					var ss = new Vector2(_m.M11, _m.M12).Length();
-					_target.Add(new ShadowCmd { Edges = sdst, BbMin = sbbMin, BbMax = sbbMax, EvenOdd = sh.EvenOdd, Color = sh.Color, SigmaX = sh.SigmaX * ss, SigmaY = sh.SigmaY * ss, Additive = sh.Additive, Clip = ClipCompose(sh.Clip) });
+					_target.Add(new ShadowCmd { Edges = sdst, BbMin = sbbMin, BbMax = sbbMax, EvenOdd = sh.EvenOdd, Color = sh.Color, SigmaX = sh.SigmaX * ss, SigmaY = sh.SigmaY * ss, Additive = sh.Additive, Geometry = sh.Geometry, GeomMatrix = sh.GeomMatrix * _m, Clip = ClipCompose(sh.Clip) });
 					break;
 				case ImageCmd im:
 					_target.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), View = im.View, W = im.W, H = im.H, Opacity = im.Opacity, U0 = im.U0, V0 = im.V0, U1 = im.U1, V1 = im.V1, TintMode = im.TintMode, Tint = im.Tint, ColorMatrix = im.ColorMatrix, Clip = ClipCompose(im.Clip) });

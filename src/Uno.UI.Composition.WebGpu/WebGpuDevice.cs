@@ -441,7 +441,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	/// <summary>Opens another atlas page. Pages are added when the existing ones are exhausted.</summary>
 	public void AddPathAtlasPage()
 	{
-		if (PathAtlas.Pages.Count >= WebGpuPathAtlas.MaxPages) { return; }
+		if (PathAtlas.RegularPages >= WebGpuPathAtlas.MaxPages) { return; }
 		var td = new WGPUTextureDescriptor
 		{
 			Size = new WGPUExtent3D { Width = WebGpuPathAtlas.Size, Height = WebGpuPathAtlas.Size, DepthOrArrayLayers = 1 },

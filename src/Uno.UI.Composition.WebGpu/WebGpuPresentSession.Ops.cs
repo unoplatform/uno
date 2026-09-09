@@ -239,17 +239,13 @@ public sealed unsafe partial class WebGpuPresentSession
 				// after, so an atlas hook that only covers the live paths never sees a glyph.
 				ops.Add(aop0);
 			}
-			else if (cmds[ci] is PathFill mpf && !HasAaRing(mpf.FanCoverage) && TryMaskFill(mpf, owned, maskScale ?? atlasScale ?? Vector2.One, out var mop0))
+			else if (cmds[ci] is PathFill mpf && !mpf.FanTiles && TryBigFill(mpf, ops, owned, maskScale ?? atlasScale ?? Vector2.One))
 			{
-				// Every fill with no analytic AA ring -- even-odd, self-overlapping, a tessellation that failed --
-				// draws through an exact coverage mask. The mask scale is the device density to bake at; a replay the
-				// atlas refuses (rotation, skew) still gets one from its transform and draws softer through its quad.
-				ops.Add(mop0);
 			}
 			else if (cmds[ci] is PathFill pf0 && pf0.FanTiles)
 			{
 				// A ringed tessellation fills in one pass over its own triangles, the ring in the vertex coverage
-				// carrying the antialiasing. Everything without a ring was taken by the mask above.
+				// carrying the antialiasing. Everything the tessellator refused was taken by the mask above.
 				float sr = pf0.Color.R / 255f, sg = pf0.Color.G / 255f, sb = pf0.Color.B / 255f, sa = pf0.Color.A / 255f;
 				_scratch.Clear();
 				var sCov = pf0.FanCoverage;
@@ -284,6 +280,16 @@ public sealed unsafe partial class WebGpuPresentSession
 		return 6;
 	}
 
+	// A fill the tessellator refused (self-overlap, even-odd, or simply failed) draws through an exact coverage mask:
+	// a cached entry with a texture of its own when the geometry is keyable, else a per-frame bake. The scale is the
+	// device density to bake at, so a rotated replay still gets a mask and draws it through its quad.
+	private bool TryBigFill(PathFill pf, List<DrawOp> ops, OwnedResources owned, Vector2 scale)
+	{
+		if (_pathAtlas && TryAtlasFill(pf, ops, owned, scale, big: true)) { return true; }
+		if (TryMaskFill(pf, owned, scale, out var op)) { ops.Add(op); return true; }
+		return false;
+	}
+
 	private void BuildSimpleOp(WebGpuCommand cmd, List<DrawOp> ops, OwnedResources owned, int pathSlot, Vector2? atlasScale = null, Vector2? maskScale = null)
 	{
 		switch (cmd)
@@ -303,7 +309,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					// A small axis-aligned shape (a glyph) draws from the coverage atlas: one tinted quad, with
 					// antialiasing baked in.
 					if (atlasScale is { } asc1 && TryAtlasFill(pf, ops, owned, asc1)) { break; }
-					if (!HasAaRing(pf.FanCoverage) && TryMaskFill(pf, owned, maskScale ?? atlasScale ?? Vector2.One, out var mop1)) { ops.Add(mop1); break; }
+					if (!pf.FanTiles && TryBigFill(pf, ops, owned, maskScale ?? atlasScale ?? Vector2.One)) { break; }
 					float slotBits = System.BitConverter.Int32BitsToSingle(pathSlot);
 					if (pf.FanTiles)
 					{

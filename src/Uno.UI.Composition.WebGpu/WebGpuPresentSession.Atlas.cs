@@ -23,9 +23,9 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// <summary>
 	/// Emits an atlased fill as a tinted quad, or returns false to leave it on the geometry path.
 	/// </summary>
-	private bool TryAtlasFill(PathFill pf, List<DrawOp> ops, OwnedResources owned, Vector2 scale)
+	private bool TryAtlasFill(PathFill pf, List<DrawOp> ops, OwnedResources owned, Vector2 scale, bool big = false)
 	{
-		if (!TryAtlasOp(pf, owned, scale, out var op)) { return false; }
+		if (!TryAtlasOp(pf, owned, scale, out var op, big)) { return false; }
 		ops.Add(op);
 		return true;
 	}
@@ -50,10 +50,10 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// recording (identity-baked geometry mapped by the xform table). Getting that scale wrong bakes the mask at
 	/// the wrong size, which is what broke When_ShapeVisual_ViewBox_Shape_Combinations.
 	/// </summary>
-	private bool TryAtlasOp(PathFill pf, OwnedResources owned, Vector2 scale, out DrawOp result)
+	private bool TryAtlasOp(PathFill pf, OwnedResources owned, Vector2 scale, out DrawOp result, bool big = false)
 	{
 		result = default;
-		if (!TryAtlasSlot(pf, owned, scale, out var slot, out var ox, out var oy)) { return false; }
+		if (!TryAtlasSlot(pf, owned, scale, out var slot, out var ox, out var oy, big)) { return false; }
 		_atlasQuads.Clear();
 		AppendAtlasQuad(_atlasQuads, slot, ox, oy, scale);
 		result = MakeAtlasOp(pf, slot.Owner, _atlasQuads, owned);
@@ -95,8 +95,11 @@ public sealed unsafe partial class WebGpuPresentSession
 		return true;
 	}
 
-	/// <summary>Resolves (baking on a miss) the atlas entry for one fill.</summary>
-	private bool TryAtlasSlot(PathFill pf, OwnedResources owned, Vector2 scale, out WebGpuPathAtlas.Slot slot, out float ox, out float oy)
+	/// <summary>
+	/// Resolves (baking on a miss) the atlas entry for one fill. <paramref name="big"/> admits fills too large for
+	/// a shared page as entries with a texture of their own -- the cached form of what used to be a per-frame mask.
+	/// </summary>
+	private bool TryAtlasSlot(PathFill pf, OwnedResources owned, Vector2 scale, out WebGpuPathAtlas.Slot slot, out float ox, out float oy, bool big = false)
 	{
 		slot = null; ox = oy = 0;
 		if (!_pathAtlas) { return false; }
@@ -108,9 +111,9 @@ public sealed unsafe partial class WebGpuPresentSession
 		// command-list fallback.
 		bool hitOnly = owned is null;
 		if (!CanCoverageBake(pf)) { AtlasNoEdges++; return false; }
-		if (!WebGpuPathAtlas.TryKey(pf.Geometry, pf.GeomMatrix, pf.BbMin, pf.BbMax, scale, out var key, out var w, out var h, out ox, out oy)) { AtlasNoKey++; return false; }
+		if (!WebGpuPathAtlas.TryKey(pf.Geometry, pf.GeomMatrix, pf.BbMin, pf.BbMax, scale, out var key, out var w, out var h, out ox, out oy, allowBig: big)) { AtlasNoKey++; return false; }
 
-		if (_d.PathAtlas.Pages.Count == 0) { _d.AddPathAtlasPage(); }
+		if (_d.PathAtlas.RegularPages == 0) { _d.AddPathAtlasPage(); }
 		if (_d.PathAtlas.TryGet(key, out slot))
 		{
 			AtlasHit++;
@@ -126,13 +129,21 @@ public sealed unsafe partial class WebGpuPresentSession
 		}
 		else
 		{
-			slot = _d.PathAtlas.Allocate(key, w, h, ox, oy);
-			if (slot is null)
+			if (WebGpuPathAtlas.IsBig(w, h))
 			{
-				// Every page is exhausted: open another rather than falling back, which would leave this shape
-				// aliased at one sample while its neighbours stayed crisp.
-				_d.AddPathAtlasPage();
+				slot = AddStandaloneSlot(key, w, h, ox, oy, _d.ColorFormat);
+				FillMasksBaked++;
+			}
+			else
+			{
 				slot = _d.PathAtlas.Allocate(key, w, h, ox, oy);
+				if (slot is null)
+				{
+					// Every page is exhausted: open another rather than falling back, which would leave this shape
+					// aliased at one sample while its neighbours stayed crisp.
+					_d.AddPathAtlasPage();
+					slot = _d.PathAtlas.Allocate(key, w, h, ox, oy);
+				}
 			}
 			if (slot is null) { AtlasNoRoom++; return false; }
 			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
@@ -144,6 +155,20 @@ public sealed unsafe partial class WebGpuPresentSession
 		return true;
 	}
 
+	// A texture of the entry's own size, registered as its own atlas page so it shares the key, reference count and
+	// idle sweep of a shelf slot. Format follows what will be rendered into it.
+	private WebGpuPathAtlas.Slot AddStandaloneSlot(in WebGpuPathAtlas.Key key, int w, int h, float ox, float oy, WGPUTextureFormat format)
+	{
+		var td = new WGPUTextureDescriptor
+		{
+			Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 },
+			Format = format, MipLevelCount = 1, SampleCount = 1, Dimension = WGPUTextureDimension._2D,
+			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding,
+		};
+		var tex = wgpuDeviceCreateTexture(_d.Dev, &td);
+		return _d.PathAtlas.AddStandalone(key, w, h, ox, oy, tex, wgpuTextureCreateView(tex, null));
+	}
+
 	/// <summary>Appends one entry as 6 vertices (pos.xy, uv.xy), placed at the fill's OWN origin.</summary>
 	private void AppendAtlasQuad(List<float> dst, WebGpuPathAtlas.Slot slot, float ox, float oy, Vector2 scale)
 	{
@@ -153,8 +178,9 @@ public sealed unsafe partial class WebGpuPresentSession
 		// the subpixel phase is part of the key, so the mask already suits it.
 		float x0 = ox - 1f / scale.X, y0 = oy - 1f / scale.Y;
 		float x1 = x0 + slot.W / scale.X, y1 = y0 + slot.H / scale.Y;
-		float u0 = (float)slot.X / WebGpuPathAtlas.Size, v0 = (float)slot.Y / WebGpuPathAtlas.Size;
-		float u1 = (float)(slot.X + slot.W) / WebGpuPathAtlas.Size, v1 = (float)(slot.Y + slot.H) / WebGpuPathAtlas.Size;
+		float pw = slot.Owner.W, ph = slot.Owner.H;
+		float u0 = slot.X / pw, v0 = slot.Y / ph;
+		float u1 = (slot.X + slot.W) / pw, v1 = (slot.Y + slot.H) / ph;
 		void QV(float x, float y, float uu, float vv) { dst.Add(x); dst.Add(y); dst.Add(uu); dst.Add(vv); }
 		QV(x0, y0, u0, v0); QV(x1, y0, u1, v0); QV(x1, y1, u1, v1);
 		QV(x0, y0, u0, v0); QV(x1, y1, u1, v1); QV(x0, y1, u0, v1);

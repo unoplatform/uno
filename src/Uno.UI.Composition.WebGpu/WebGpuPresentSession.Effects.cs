@@ -20,22 +20,42 @@ namespace Uno.UI.Composition.WebGpu;
 
 public sealed unsafe partial class WebGpuPresentSession
 {
-	// Bakes the shadow silhouette's coverage into a padded offscreen mask, then blurs it. Returns the blurred
-	// coverage texture + its device-space placement; the mask itself is released at the end of the frame.
+	// The blurred shadow as a texture with its device-space placement. Cached in the atlas under the silhouette's
+	// geometry, transform and blur radius (a texture of its own, since a shadow is padded by its blur reach), so a
+	// static shadow bakes once: on a miss the silhouette's coverage is baked, blurred, and resampled into the entry.
 	private IntPtr RenderShadow(ShadowCmd sh, out Vector2 origin, out Vector2 size)
 	{
 		float pad = MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f;
-		int ox = (int)MathF.Floor(sh.BbMin.X - pad), oy = (int)MathF.Floor(sh.BbMin.Y - pad);
-		int sw = Math.Clamp((int)MathF.Ceiling(sh.BbMax.X + pad) - ox, 1, 4096);
-		int sh2 = Math.Clamp((int)MathF.Ceiling(sh.BbMax.Y + pad) - oy, 1, 4096);
+		var bbMin = sh.BbMin - new Vector2(pad); var bbMax = sh.BbMax + new Vector2(pad);
+		int sigmaKey = ((int)(sh.SigmaX * 16f) << 16) ^ (int)(sh.SigmaY * 16f);
+		var keyed = WebGpuPathAtlas.TryKey(sh.Geometry, sh.GeomMatrix, bbMin, bbMax, Vector2.One, out var key, out var w, out var h, out var ox, out var oy, allowBig: true, extra: sigmaKey) && _pathAtlas;
+		if (keyed && _d.PathAtlas.TryGet(key, out var hit))
+		{
+			_d.PathAtlas.NoteUse(hit, _d.FrameSeq);
+			origin = new Vector2(hit.OriginX, hit.OriginY);
+			size = new Vector2(hit.W, hit.H);
+			return hit.Owner.View;
+		}
+		if (!keyed)
+		{
+			ox = MathF.Floor(bbMin.X); oy = MathF.Floor(bbMin.Y);
+			w = Math.Clamp((int)MathF.Ceiling(bbMax.X - ox) + 2, 1, 4096); h = Math.Clamp((int)MathF.Ceiling(bbMax.Y - oy) + 2, 1, 4096);
+		}
 		origin = new Vector2(ox, oy);
-		size = new Vector2(sw, sh2);
+		size = new Vector2(w, h);
 
 		var path = new PathClip { Edges = sh.Edges, EvenOdd = sh.EvenOdd, Bbox = new Vector4(sh.BbMin.X, sh.BbMin.Y, sh.BbMax.X, sh.BbMax.Y) };
-		var (covView, covTex) = BakeCoverageMask(new[] { path }, ox, oy, sw, sh2, Vector2.One);
-		var blurred = BlurPyramid(covView, sw, sh2, sh.SigmaX, sh.SigmaY);
+		var (covView, covTex) = BakeCoverageMask(new[] { path }, (int)ox, (int)oy, w, h, Vector2.One);
+		var blurred = BlurPyramid(covView, w, h, sh.SigmaX, sh.SigmaY);
 		_d.DeferTextureRelease(covView, covTex);
-		return blurred;
+		if (!keyed) { return blurred; }
+
+		// The pyramid hands back its reduced top level; one linear tap brings it up to the entry's full size. The
+		// blur pipeline targets the default colour format, so the entry is created in that format too.
+		var slot = AddStandaloneSlot(key, w, h, ox, oy, WebGpuDevice.DefaultColorFormat);
+		_d.PathAtlas.HoldForCache(slot, _d.FrameSeq);
+		BlurPass(blurred, slot.Owner.View, default, default, downsample: true, Vector2.Zero, Vector2.One);
+		return slot.Owner.View;
 	}
 
 	// Blur pyramid over a REGION of `src`: extract the device-px rect (rx,ry,rw,rh) out of the fullW×fullH source
