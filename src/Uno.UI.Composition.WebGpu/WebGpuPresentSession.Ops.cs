@@ -252,6 +252,14 @@ public sealed unsafe partial class WebGpuPresentSession
 				// after, so an atlas hook that only covers the live paths never sees a glyph.
 				ops.Add(aop0);
 			}
+			else if (_coverageFillMasks && atlasScale is { } fsc0 && cmds[ci] is PathFill mpf && !HasAaRing(mpf.FanCoverage) && TryMaskFill(mpf, owned, fsc0, out var mop0))
+			{
+				// Takes every fill with no analytic AA ring: stencil-then-cover (even-odd, self-overlapping) AND a tiling
+				// fan whose tessellation failed, which fills in one pass but hard-edged. Gated on atlasScale like the
+				// atlas: it is the same "this op space maps to device pixels by a known scale" guarantee a device-pixel
+				// mask needs, and its absence means a table-frame entry whose quads would not follow the transform table.
+				ops.Add(mop0);
+			}
 			else if (cmds[ci] is PathFill pf0 && !pf0.EvenOdd)
 			{
 				// Coalesce a run of consecutive NON-ZERO paths sharing colour + clip (a text run's glyphs) into one
@@ -371,6 +379,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					// A small axis-aligned shape (a glyph) draws from the coverage atlas: one tinted quad, with
 					// antialiasing baked in, instead of stencil-then-cover leaning on the multisampled attachment.
 					if (atlasScale is { } asc1 && TryAtlasFill(pf, ops, owned, asc1)) { break; }
+					if (_coverageFillMasks && atlasScale is { } fsc1 && !HasAaRing(pf.FanCoverage) && TryMaskFill(pf, owned, fsc1, out var mop1)) { ops.Add(mop1); break; }
 					float slotBits = System.BitConverter.Int32BitsToSingle(pathSlot);
 					if (pf.FanTiles)
 					{
