@@ -139,11 +139,6 @@ internal sealed unsafe class WebGpuRenderSurface
 }
 
 
-// A clip is a device-space scissor AABB (fast reject + plain-rect clip) plus an optional device-space,
-// axis-aligned rounded-rect whose corners are masked per-fragment in the shaders. A rotated rounded clip
-// degrades to its AABB (the exact fix is clip-local-space eval, as with the radial gradient — follow-up).
-// A single analytic rounded-rect clip (device space). Nested clips stack in ClipData.Rounds and are ANDed in-shader.
-
 internal sealed class OwnedResources
 {
 	public System.Collections.Generic.List<nint> Buffers = new();

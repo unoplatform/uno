@@ -66,14 +66,14 @@ public sealed unsafe partial class WebGpuPresentSession
 		// Both arrays are copy-on-write and a recording's clip is immutable, so across frames these are almost
 		// always the SAME instance — compare by reference before walking them. This runs per replayed recording
 		// per frame in every stamp guard, and the fan walk is O(fan length).
-		if (!ReferenceEquals(a.Rounds, b.Rounds))
+		if (!ReferenceEquals(a.Entries, b.Entries))
 		{
-			int an = a.Rounds?.Length ?? 0, bn = b.Rounds?.Length ?? 0;
+			int an = a.Entries?.Length ?? 0, bn = b.Entries?.Length ?? 0;
 			if (an != bn) { return false; }
 			for (int i = 0; i < an; i++)
 			{
-				var x = a.Rounds[i]; var y = b.Rounds[i];
-				if (x.Rect != y.Rect || x.Radii != y.Radii || x.RadiiY != y.RadiiY || x.Exclude != y.Exclude) { return false; }
+				var x = a.Entries[i]; var y = b.Entries[i];
+				if (x.M != y.M || x.Rect != y.Rect || x.Radii != y.Radii || x.RadiiY != y.RadiiY || x.Exclude != y.Exclude) { return false; }
 			}
 		}
 		if (!ReferenceEquals(a.Paths, b.Paths))
@@ -124,9 +124,9 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// needs no comparison against the device-space quad.</summary>
 	private static bool ClipIsInscribedEllipse(in ClipData clip)
 	{
-		if (clip.Paths is not null || clip.Rounds is not { Length: 1 }) { return false; }
-		var rc = clip.Rounds[0];
-		if (rc.Exclude) { return false; }
+		if (clip.Paths is not null || clip.Entries is not { Length: 1 }) { return false; }
+		var rc = clip.Entries[0];
+		if (rc.Exclude || !rc.M.IsIdentity) { return false; }
 		var hw = (rc.Rect.Z - rc.Rect.X) * 0.5f;
 		var hh = (rc.Rect.W - rc.Rect.Y) * 0.5f;
 		if (hw <= 0 || hh <= 0) { return false; }
@@ -452,11 +452,16 @@ public sealed unsafe partial class WebGpuPresentSession
 	private static bool IsFiniteAabb(Vector4 aabb)
 		=> aabb.X > -1e8f || aabb.Y > -1e8f || aabb.Z < 1e8f || aabb.W < 1e8f;
 
-	// Intersects a DEVICE-space session AABB into a LOCAL-space clip AABB through finv, so the folded
-	// radius-0 ClipU rect (see AabbInClipU) also carries the session's plain-rect clip and the scissor can
-	// widen. Only exact when finv is axis-aligned — callers must not widen (or fold) otherwise.
-	private static void FoldSessionAabb(ref ClipData local, Vector4 sessionAabb, in Matrix3x2 finv)
+	// Folds the replay site's finite AABB into the op's clip. Axis-aligned, it tightens the local AABB through finv
+	// (and rides the ClipU rect slot); otherwise it becomes an entry with square corners in the session's space,
+	// exact under any transform. Either way the whole rect constraint is analytic and the scissor can widen.
+	private static void FoldSessionAabb(ref ClipData local, Vector4 sessionAabb, in Matrix3x2 finv, in Matrix3x2 t2)
 	{
+		if (finv.M12 != 0 || finv.M21 != 0)
+		{
+			ClipData.PushEntry(ref local, new ClipEntry { M = t2, Rect = sessionAabb });
+			return;
+		}
 		var q0 = new Vector2(sessionAabb.X * finv.M11 + sessionAabb.Y * finv.M21 + finv.M31, sessionAabb.X * finv.M12 + sessionAabb.Y * finv.M22 + finv.M32);
 		var q1 = new Vector2(sessionAabb.Z * finv.M11 + sessionAabb.W * finv.M21 + finv.M31, sessionAabb.Z * finv.M12 + sessionAabb.W * finv.M22 + finv.M32);
 		local.Aabb = new Vector4(
@@ -464,29 +469,23 @@ public sealed unsafe partial class WebGpuPresentSession
 			MathF.Min(local.Aabb.Z, MathF.Max(q0.X, q1.X)), MathF.Min(local.Aabb.W, MathF.Max(q0.Y, q1.Y)));
 	}
 
-	// Folds device-space session rounds into a LOCAL-space clip: ClipU carries a single finv (fragment ->
-	// recording-local), so the rounds are mapped through that same finv (exact for axis-aligned transforms).
-	private static void FoldSessionRounds(ref ClipData local, RoundClip[] sessionRounds, in Matrix3x2 finv)
+	// Folds the replay site's entries into the op's clip: each keeps its shape and reaches its own space from the
+	// recording's through the replay transform. Exact under any affine.
+	private static void FoldSessionEntries(ref ClipData local, ClipEntry[] sessionEntries, in Matrix3x2 t2)
 	{
-		if (sessionRounds is not { Length: > 0 })
+		if (sessionEntries is not { Length: > 0 })
 		{
 			return;
 		}
-		var fsx = new Vector2(finv.M11, finv.M12).Length();
-		var fsy = new Vector2(finv.M21, finv.M22).Length();
-		foreach (var src in sessionRounds)
+		foreach (var src in sessionEntries)
 		{
-			var q0 = new Vector2(src.Rect.X * finv.M11 + src.Rect.Y * finv.M21 + finv.M31, src.Rect.X * finv.M12 + src.Rect.Y * finv.M22 + finv.M32);
-			var q1 = new Vector2(src.Rect.Z * finv.M11 + src.Rect.W * finv.M21 + finv.M31, src.Rect.Z * finv.M12 + src.Rect.W * finv.M22 + finv.M32);
-			ClipData.PushRound(ref local, new RoundClip
-			{
-				Rect = new Vector4(MathF.Min(q0.X, q1.X), MathF.Min(q0.Y, q1.Y), MathF.Max(q0.X, q1.X), MathF.Max(q0.Y, q1.Y)),
-				Radii = src.Radii * fsx,
-				RadiiY = src.RadiiY * fsy,
-				Exclude = src.Exclude,
-			});
+			ClipData.PushEntry(ref local, src.Under(t2));
 		}
 	}
+
+	// How many entries a stamp adds beyond the op's own: the session's, plus its finite AABB under a rotation.
+	private static int SessionEntryCount(in ClipData session, in Matrix3x2 finv)
+		=> (session.Entries?.Length ?? 0) + (IsFiniteAabb(session.Aabb) && (finv.M12 != 0 || finv.M21 != 0) ? 1 : 0);
 
 	// Folds device-space session path clips into a LOCAL-space clip the same way: each path's edges are mapped
 	// through finv, so its mask bakes in the recording's space and ClipU's finv lands every fragment on it. One
@@ -529,12 +528,12 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// </summary>
 	private static bool PlacedByXformTable(DrawKind kind) => kind is DrawKind.Solid or DrawKind.RoundedRect;
 
-	private (ClipData Scissor, nint ClipBg, nint Buf) StampTableClip(ClipData local, OwnedResources stampOwned, Matrix3x2 finv, Matrix3x2 t2, Vector4 sessionAabb, bool sessionInert, RoundClip[] sessionRounds, PathClip[] sessionPaths, ref Dictionary<PathClip[], PathClip[]> pathsMemo, nint reuseBuf, nint reuseBg, IntPtr clipBgl, Matrix3x2 opXform)
+	private (ClipData Scissor, nint ClipBg, nint Buf) StampTableClip(ClipData local, OwnedResources stampOwned, Matrix3x2 finv, Matrix3x2 t2, Vector4 sessionAabb, bool sessionInert, ClipEntry[] sessionEntries, PathClip[] sessionPaths, ref Dictionary<PathClip[], PathClip[]> pathsMemo, nint reuseBuf, nint reuseBg, IntPtr clipBgl, Matrix3x2 opXform)
 	{
 		var scissor = local;
 		// The recorded containment proof doesn't cover the replay-site clip being stamped in below.
 		scissor.ScissorInert = local.ScissorInert && sessionInert;
-		FoldSessionRounds(ref local, sessionRounds, finv);
+		FoldSessionEntries(ref local, sessionEntries, t2);
 		FoldSessionPaths(ref local, sessionPaths, finv, ref pathsMemo);
 		var ab = local.Aabb;
 		if (ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f)
@@ -548,23 +547,18 @@ public sealed unsafe partial class WebGpuPresentSession
 				MathF.Max(MathF.Max(p0.X, p1.X), MathF.Max(p2.X, p3.X)), MathF.Max(MathF.Max(p0.Y, p1.Y), MathF.Max(p2.Y, p3.Y)));
 		}
 		scissor.Aabb = new Vector4(MathF.Max(ab.X, sessionAabb.X), MathF.Max(ab.Y, sessionAabb.Y), MathF.Min(ab.Z, sessionAabb.Z), MathF.Min(ab.W, sessionAabb.W));
-		// Widening the scissor is only sound when the whole rect clip rides ClipU: the op's own AABB always
-		// does; a finite session AABB folds in exactly only under an axis-aligned transform.
-		var sessionFinite = IsFiniteAabb(sessionAabb);
-		var axisAligned = finv.M12 == 0 && finv.M21 == 0;
-		var canWiden = !sessionFinite || axisAligned;
-		if (sessionFinite && axisAligned)
+		if (IsFiniteAabb(sessionAabb))
 		{
-			FoldSessionAabb(ref local, sessionAabb, finv);
+			FoldSessionAabb(ref local, sessionAabb, finv, t2);
 		}
 		if (reuseBuf != 0)
 		{
-			scissor.AabbInClipU = RewriteClipU(reuseBuf, local, opXform, finv) && canWiden;
+			scissor.AabbInClipU = RewriteClipU(reuseBuf, local, opXform, finv);
 			scissor.ScissorLoadBearing = !scissor.AabbInClipU;
 			return (scissor, reuseBg, reuseBuf);
 		}
 		var bg = (nint)MakeClipBgOwned(clipBgl, local, stampOwned, opXform, finv, out var buf, out var folded);
-		scissor.AabbInClipU = folded && canWiden;
+		scissor.AabbInClipU = folded;
 		scissor.ScissorLoadBearing = !scissor.AabbInClipU;
 		return (scissor, bg, buf);
 	}

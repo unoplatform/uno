@@ -227,7 +227,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 
 	// Reused so the per-frame op rebuild does not allocate a list and an array per primitive.
 	private readonly List<float> _scratch = new();
-	private readonly float[] _clipU = new float[76];   // ClipU: rects[4]+radii[4] + ex+ctrl+size+xform+xoff+finv + radiiY[4] = 288B
+	private float[] _clipU = new float[ClipUHeaderFloats + 8 * ClipEntryFloats];   // grows to the largest clip list seen
 
 	private readonly Stack<List<DrawOp>> _opsPool = new();
 	private List<DrawOp> RentOps()
@@ -415,54 +415,57 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		return bg;
 	}
 
-	private const int ClipUBytes = 304;   // rects[4]+radii[4] (128) + ex+ctrl+size+xform+xoff+finv (96) + radiiY[4] (64) + mask (16); match the WGSL struct
+	// The ClipU header (ctrl, size, xform, xoff, finv, mask) followed by one entry per analytic clip; match the WGSL.
+	internal const int ClipUHeaderBytes = 96, ClipEntryBytes = 80;
+	// wgpu wants a binding to cover the header plus one array element, so an entry-less clip still binds one (zeroed).
+	internal const int ClipUMinBytes = ClipUHeaderBytes + ClipEntryBytes;
+	private const int ClipUHeaderFloats = ClipUHeaderBytes / sizeof(float), ClipEntryFloats = ClipEntryBytes / sizeof(float);
 
-	private bool FillClipU(ClipData cd, Matrix3x2 xform, Matrix3x2 finv, ClipMask mask = default)
+	// Writes the op's ClipU into _clipU; returns its length in floats and whether the clip's AABB rode along.
+	private int FillClipU(ClipData cd, Matrix3x2 xform, Matrix3x2 finv, ClipMask mask, out bool foldedAabb)
 	{
 		if (xform == default) { xform = Matrix3x2.Identity; }   // default(Matrix3x2) is all-zero; treat as identity
 		if (finv == default) { finv = Matrix3x2.Identity; }
+		var entries = cd.Entries;
+		int n = entries?.Length ?? 0;
+		int floats = ClipUHeaderFloats + Math.Max(n, 1) * ClipEntryFloats;
+		if (_clipU.Length < floats) { _clipU = new float[Math.Max(floats, _clipU.Length * 2)]; }
 		var cu = _clipU;
-		System.Array.Clear(cu);
-		var rounds = cd.Rounds;
-		int n = rounds?.Length ?? 0;
-		if (n > ClipData.MaxRounds) { n = ClipData.MaxRounds; }
-		for (int i = 0; i < n; i++)
-		{
-			var rc = rounds[i];
-			cu[i * 4 + 0] = rc.Rect.X; cu[i * 4 + 1] = rc.Rect.Y; cu[i * 4 + 2] = rc.Rect.Z; cu[i * 4 + 3] = rc.Rect.W;   // rects[i]
-			cu[16 + i * 4 + 0] = rc.Radii.X; cu[16 + i * 4 + 1] = rc.Radii.Y; cu[16 + i * 4 + 2] = rc.Radii.Z; cu[16 + i * 4 + 3] = rc.Radii.W;   // radii[i] (X)
-			cu[56 + i * 4 + 0] = rc.RadiiY.X; cu[56 + i * 4 + 1] = rc.RadiiY.Y; cu[56 + i * 4 + 2] = rc.RadiiY.Z; cu[56 + i * 4 + 3] = rc.RadiiY.W;   // radiiY[i]
-			cu[32 + i] = rc.Exclude ? 1f : 0f;   // ex[i]
-		}
+		System.Array.Clear(cu, 0, floats);
 		// Fold the clip's finite AABB into the dedicated rect slot (ctrl.y flag; min in ctrl.zw, max in
 		// size.zw): the shader then owns the rect edge and the emit widens the scissor to cull-only
 		// (see AabbInClipU).
-		var foldedAabb = false;
+		cu[0] = n;   // ctrl.x = entry count
+		foldedAabb = false;
 		var ab = cd.Aabb;
 		if (ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f)
 		{
-			cu[37] = 1f;                       // ctrl.y = rect clip enabled
-			cu[38] = ab.X; cu[39] = ab.Y;      // ctrl.zw = rect min
-			cu[42] = ab.Z; cu[43] = ab.W;      // size.zw = rect max
+			cu[1] = 1f;                      // ctrl.y = rect clip enabled
+			cu[2] = ab.X; cu[3] = ab.Y;      // ctrl.zw = rect min
+			cu[6] = ab.Z; cu[7] = ab.W;      // size.zw = rect max
 			foldedAabb = true;
 		}
-		cu[36] = n;                              // ctrl.x = active count
-		cu[40] = _s.Width; cu[41] = _s.Height;   // size
-												 // xform maps stored (identity-baked) NDC verts to the replay NDC: px = M11*x + M21*y + M31, py = M12*x + M22*y + M32.
-		cu[44] = xform.M11; cu[45] = xform.M21; cu[46] = xform.M12; cu[47] = xform.M22;
-		cu[48] = xform.M31; cu[49] = xform.M32;   // xoff.xy (NDC translation)
-												  // finv maps the device fragment position back to the recording's own space (inverse device affine) so a clip
-												  // baked at identity is correct after the move. Identity => clipCov sees fc unchanged. finv 2x2 in `finv`,
-												  // finv translation in xoff.zw (px = fM11*x + fM21*y + fM31, py = fM12*x + fM22*y + fM32).
-		// Under a size-to-content layer the fragment position is sub-LOCAL while the baked clip/gradient geometry is
-		// ABSOLUTE device, so finvMap must shift sub-local->absolute first; composing with finv folds that into its
-		// translation. A zero basis (window / full-size layer) leaves this unchanged.
-		cu[50] = finv.M31 + finv.M11 * _basisOx + finv.M21 * _basisOy;
-		cu[51] = finv.M32 + finv.M12 * _basisOx + finv.M22 * _basisOy;
-		cu[52] = finv.M11; cu[53] = finv.M12; cu[54] = finv.M21; cu[55] = finv.M22;
+		// xform = the op's pixel-space transform: px = M11*x + M21*y + M31, py = M12*x + M22*y + M32.
+		cu[8] = xform.M11; cu[9] = xform.M21; cu[10] = xform.M12; cu[11] = xform.M22;
+		cu[12] = xform.M31; cu[13] = xform.M32;   // xoff.xy
+		// finv maps the device fragment position back to the recording's own space. Under a size-to-content layer the
+		// fragment position is sub-LOCAL while the clip is ABSOLUTE device, so the basis shift folds into its
+		// translation (xoff.zw); a zero basis leaves this unchanged.
+		cu[14] = finv.M31 + finv.M11 * _basisOx + finv.M21 * _basisOy;
+		cu[15] = finv.M32 + finv.M12 * _basisOx + finv.M22 * _basisOy;
+		cu[16] = finv.M11; cu[17] = finv.M12; cu[18] = finv.M21; cu[19] = finv.M22;
 		// mask.xy = texel (0,0) of the bound path-clip mask in the clip's space; mask.z = one is bound.
-		if (mask.View != IntPtr.Zero) { cu[72] = mask.OriginX; cu[73] = mask.OriginY; cu[74] = 1f; }
-		return foldedAabb;
+		if (mask.View != IntPtr.Zero) { cu[20] = mask.OriginX; cu[21] = mask.OriginY; cu[22] = 1f; }
+		for (int i = 0; i < n; i++)
+		{
+			var e = entries[i]; int o = ClipUHeaderFloats + i * ClipEntryFloats;
+			cu[o + 0] = e.M.M11; cu[o + 1] = e.M.M12; cu[o + 2] = e.M.M21; cu[o + 3] = e.M.M22;   // m
+			cu[o + 4] = e.M.M31; cu[o + 5] = e.M.M32; cu[o + 6] = e.Exclude ? 1f : 0f;           // t
+			cu[o + 8] = e.Rect.X; cu[o + 9] = e.Rect.Y; cu[o + 10] = e.Rect.Z; cu[o + 11] = e.Rect.W;
+			cu[o + 12] = e.Radii.X; cu[o + 13] = e.Radii.Y; cu[o + 14] = e.Radii.Z; cu[o + 15] = e.Radii.W;
+			cu[o + 16] = e.RadiiY.X; cu[o + 17] = e.RadiiY.Y; cu[o + 18] = e.RadiiY.Z; cu[o + 19] = e.RadiiY.W;
+		}
+		return floats;
 	}
 
 	// In-place restamp of an existing owned ClipU slab slot: the shadow write flushes as part of ONE per-chunk
@@ -470,8 +473,10 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	// survives, making a per-frame restamp free of native calls.
 	private bool RewriteClipU(nint slot, ClipData cd, Matrix3x2 xform, Matrix3x2 finv)
 	{
-		var folded = FillClipU(cd, xform, finv);
-		_d.ClipSlab.Write(slot, _clipU);
+		var floats = FillClipU(cd, xform, finv, default, out var folded);
+		// The caller's reuse guard keeps the entry count, and so the size class, unchanged (see StampSessionEntries).
+		System.Diagnostics.Debug.Assert(floats * sizeof(float) <= _d.ClipSlab.SlotBytesOf(slot));
+		_d.ClipSlab.Write(slot, _clipU, floats);
 		return folded;
 	}
 
@@ -479,12 +484,13 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	private IntPtr MakeClipBgOwned(IntPtr bgl, ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU)
 	{
 		var mask = ResolveClipMask(cd, owned);
-		aabbInClipU = FillClipU(cd, xform, finv, mask);
-		var slot = _d.ClipSlab.Alloc();
-		_d.ClipSlab.Write(slot, _clipU);
+		var floats = FillClipU(cd, xform, finv, mask, out aabbInClipU);
+		var bytes = floats * sizeof(float);
+		var slot = _d.ClipSlab.Alloc(bytes);
+		_d.ClipSlab.Write(slot, _clipU, floats);
 		(owned.ClipSlots ??= new()).Add(slot);
 		var e = stackalloc WGPUBindGroupEntry[2];
-		e[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = _d.ClipSlab.BufferOf(slot), Offset = _d.ClipSlab.OffsetOf(slot), Size = ClipUBytes };
+		e[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = _d.ClipSlab.BufferOf(slot), Offset = _d.ClipSlab.OffsetOf(slot), Size = (nuint)bytes };
 		e[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = mask.View != IntPtr.Zero ? mask.View : _d.DummyTex };
 		var bgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 2, Entries = e };
 		buf = slot;
@@ -495,16 +501,17 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	{
 		if (owned is not null) { return MakeClipBgOwned(bgl, cd, owned, xform, finv, out _, out _); }
 		var mask = ResolveClipMask(cd, null);
-		FillClipU(cd, xform, finv, mask);
+		var floats = FillClipU(cd, xform, finv, mask, out _);
+		var bytes = floats * sizeof(float);
 		var cu = _clipU;
 		if (mask.View != IntPtr.Zero)
 		{
 			// A per-op group rather than a slab slot: the slab's persistent groups bind DummyTex, and the mask is
 			// per clip. Buffer, group and mask are all per-frame.
-			var ub = MakeUniform(ClipUBytes);
-			fixed (float* pcu = cu) { wgpuQueueWriteBuffer(_d.Q, ub, 0, (IntPtr)pcu, (nuint)ClipUBytes); }
+			var ub = _d.BufferPool.Rent(bytes, WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst);
+			fixed (float* pcu = cu) { wgpuQueueWriteBuffer(_d.Q, ub, 0, (IntPtr)pcu, (nuint)bytes); }
 			var me = stackalloc WGPUBindGroupEntry[2];
-			me[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = ub, Offset = 0, Size = ClipUBytes };
+			me[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = ub, Offset = 0, Size = (nuint)bytes };
 			me[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = mask.View };
 			var mbgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 2, Entries = me };
 			return Bg(ref mbgd, null);
@@ -514,7 +521,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		// whole frame's clips upload in one queue write per chunk. Do NOT content-key this: a clip carries
 		// DEVICE-space geometry, so under any moving transform every lookup misses and mints a buffer + bind
 		// group per draw.
-		return _d.ClipBgSlabFor(bgl, ClipUBytes).Rent(bgl, cu);
+		return _d.ClipBgSlabFor(bgl, bytes).Rent(bgl, cu);
 	}
 
 	// Coverage atlas: ON by default - it is what makes arbitrary path edges and glyphs crisp without MSAA.

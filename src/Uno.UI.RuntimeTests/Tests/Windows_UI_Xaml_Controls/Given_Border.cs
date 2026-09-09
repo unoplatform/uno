@@ -238,6 +238,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 #if __ANDROID__
+		[Ignore("It doesn't yet work properly on Android")]
+#endif
+		public async Task When_Rotated_Rounded_Clip()
+		{
+			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			// A circular clip rotated 45 degrees is still a circle: the red square's tips must be cut, not kept by a
+			// clip that only knows the rotated shape's bounding box.
+			var clipped = new Border
+			{
+				Width = 100,
+				Height = 100,
+				CornerRadius = new CornerRadius(50),
+				RenderTransformOrigin = new Point(0.5, 0.5),
+				RenderTransform = new RotateTransform { Angle = 45 },
+				Child = new Border { Width = 100, Height = 100, Background = new SolidColorBrush(Microsoft.UI.Colors.Red) },
+			};
+			var SUT = new Border { Width = 200, Height = 200, Child = clipped };
+
+			await UITestHelper.Load(SUT);
+			var screenshot = await UITestHelper.ScreenShot(SUT);
+			ImageAssert.HasColorAt(screenshot, 100, 100, Microsoft.UI.Colors.Red, tolerance: 10);
+			ImageAssert.HasColorAt(screenshot, 100, 58, Microsoft.UI.Colors.Red, tolerance: 10);
+			ImageAssert.DoesNotHaveColorAt(screenshot, 108, 42, Microsoft.UI.Colors.Red, tolerance: 10);
+			ImageAssert.DoesNotHaveColorAt(screenshot, 42, 108, Microsoft.UI.Colors.Red, tolerance: 10);
+		}
+
+		[TestMethod]
+#if __ANDROID__
 		[Ignore("Fails on Android")]
 #endif
 		public async Task When_Clipped_With_TransformMatrix()

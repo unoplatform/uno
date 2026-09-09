@@ -62,18 +62,18 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	public IntPtr DummyTex;                 // 1x1 placeholder for the clip coverage binding when no path clip
 	public WebGpuTexturePool Pool;                // transient offscreen pool (reused across frames)
 	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
-	public WebGpuClipSlab ClipSlab;               // chunked uniform slab backing every owned/restamped ClipU
+	public WebGpuClipSlab ClipSlab;               // size-classed storage slab backing every owned/restamped ClipU
 	public WebGpuUniformSlab GradSlab;            // per-frame gradient uniforms, one queue write per chunk
-	// Per-frame ClipU slabs for IMMEDIATE ops, one per bind-group layout (a slot's bind group is created once and
-	// reused, so it must always be built with the same layout).
-	private readonly System.Collections.Generic.Dictionary<nint, WebGpuUniformSlab> _clipBgSlabs = new();
+	// Per-frame ClipU slabs for IMMEDIATE ops, one per (bind-group layout, byte size): a slot's bind group is created
+	// once and reused, so it must always be built with the same layout and bind the same size.
+	private readonly System.Collections.Generic.Dictionary<(nint, int), WebGpuUniformSlab> _clipBgSlabs = new();
 
 	public WebGpuUniformSlab ClipBgSlabFor(IntPtr layout, int clipUBytes)
 	{
-		if (!_clipBgSlabs.TryGetValue(layout, out var slab))
+		if (!_clipBgSlabs.TryGetValue((layout, clipUBytes), out var slab))
 		{
-			slab = new WebGpuUniformSlab(this, clipUBytes, DummyTex);
-			_clipBgSlabs[layout] = slab;
+			slab = new WebGpuUniformSlab(this, clipUBytes, DummyTex, WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst);
+			_clipBgSlabs[(layout, clipUBytes)] = slab;
 		}
 		return slab;
 	}
@@ -541,11 +541,13 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	private IntPtr MakeClipPipeLayout()
 	{
 		var e = stackalloc WGPUBindGroupLayoutEntry[2];
+		// Read-only storage, not a uniform: the struct ends in a runtime-sized entry array, so a binding's size is the
+		// header plus however many clips this op carries.
 		e[0] = new WGPUBindGroupLayoutEntry
 		{
 			Binding = 0,
 			Visibility = WGPUShaderStage.Vertex | WGPUShaderStage.Fragment,
-			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.Uniform, MinBindingSize = 304 },
+			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.ReadOnlyStorage, MinBindingSize = WebGpuPresentSession.ClipUMinBytes },
 		};
 		// The path-clip coverage mask rides the same group, so one clip bind group still binds to every pipeline.
 		// Clips without a path bind DummyTex and never read it: ClipU.mask.z gates the sample.

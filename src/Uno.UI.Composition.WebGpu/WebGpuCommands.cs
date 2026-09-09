@@ -17,12 +17,18 @@ using WColor = Windows.UI.Color;
 
 namespace Uno.UI.Composition.WebGpu;
 
-internal struct RoundClip
+// One analytic clip: a rounded rect in its own space, reached from the space the clip is expressed in through M.
+// Exact under any affine, since the shape never leaves the space it was recorded in.
+internal struct ClipEntry
 {
-	public Vector4 Rect;    // device rounded-rect L,T,R,B
-	public Vector4 Radii;   // per-corner X radius (TL,TR,BR,BL), device px
+	public Matrix3x2 M;     // clip space -> this entry's space
+	public Vector4 Rect;    // L,T,R,B in the entry's space
+	public Vector4 Radii;   // per-corner X radius (TL,TR,BR,BL)
 	public Vector4 RadiiY;  // per-corner Y radius (elliptical corners; equals Radii for circular)
-	public bool Exclude;    // Difference op: keep the area OUTSIDE the rounded rect (PushClipExclude) rather than inside
+	public bool Exclude;    // Difference op: keep the area OUTSIDE the rounded rect rather than inside
+
+	// The same entry expressed in a space that reaches this one through `m` (p_here = Transform(p_new, m)).
+	public ClipEntry Under(in Matrix3x2 m) => new() { M = m * M, Rect = Rect, Radii = Radii, RadiiY = RadiiY, Exclude = Exclude };
 }
 
 // One arbitrary path clip as the coverage rasterizer consumes it: closed device-space edges (x0,y0,x1,y1 each),
@@ -34,38 +40,6 @@ internal sealed class PathClip
 	public bool EvenOdd;
 	public bool Exclude;
 	public Vector4 Bbox;   // device L,T,R,B of the edges
-
-	// A rounded rect flattened to edges, for a round that ClipU has no slot left for. Chord error <= 0.1 px.
-	public static PathClip FromRound(in RoundClip rc)
-	{
-		float l = rc.Rect.X, t = rc.Rect.Y, r = rc.Rect.Z, b = rc.Rect.W;
-		var pts = new List<Vector2>();
-		// Corners in path order TL, TR, BR, BL; each arc sweeps a quarter turn from its start tangent.
-		Corner(pts, new Vector2(l + rc.Radii.X, t + rc.RadiiY.X), rc.Radii.X, rc.RadiiY.X, MathF.PI);
-		Corner(pts, new Vector2(r - rc.Radii.Y, t + rc.RadiiY.Y), rc.Radii.Y, rc.RadiiY.Y, 1.5f * MathF.PI);
-		Corner(pts, new Vector2(r - rc.Radii.Z, b - rc.RadiiY.Z), rc.Radii.Z, rc.RadiiY.Z, 0f);
-		Corner(pts, new Vector2(l + rc.Radii.W, b - rc.RadiiY.W), rc.Radii.W, rc.RadiiY.W, 0.5f * MathF.PI);
-		var e = new float[pts.Count * 4];
-		for (int i = 0, w = 0; i < pts.Count; i++)
-		{
-			var a = pts[i]; var c = pts[(i + 1) % pts.Count];
-			e[w++] = a.X; e[w++] = a.Y; e[w++] = c.X; e[w++] = c.Y;
-		}
-		return new PathClip { Edges = e, Exclude = rc.Exclude, Bbox = rc.Rect };
-
-		static void Corner(List<Vector2> pts, Vector2 c, float rx, float ry, float start)
-		{
-			if (rx <= 0f || ry <= 0f) { pts.Add(c); return; }
-			var rmax = MathF.Max(rx, ry);
-			var step = 2f * MathF.Acos(MathF.Max(1f - 0.1f / rmax, 0f));
-			int n = Math.Clamp((int)MathF.Ceiling(MathF.PI * 0.5f / MathF.Max(step, 1e-3f)), 1, 32);
-			for (int i = 0; i <= n; i++)
-			{
-				var a = start + MathF.PI * 0.5f * i / n;
-				pts.Add(new Vector2(c.X + rx * MathF.Cos(a), c.Y + ry * MathF.Sin(a)));
-			}
-		}
-	}
 
 	public PathClip Transformed(in Matrix3x2 m)
 	{
@@ -84,11 +58,10 @@ internal sealed class PathClip
 
 internal struct ClipData
 {
-	public const int MaxRounds = 4;   // nesting depth beyond this drops the outermost (least likely to clip content)
 	public Vector4 Aabb;    // device L,T,R,B scissor
-							// Nested rounded-rect clips, all ANDed per-fragment (clipCov). null/empty = none. Copy-on-write: each push
-							// allocates a fresh array so Save/Restore snapshots and sibling commands keep their own reference.
-	public RoundClip[] Rounds;
+	// Every analytic clip in force, all ANDed per-fragment (clipCov). null/empty = none. Copy-on-write: each push
+	// allocates a fresh array so Save/Restore snapshots and sibling commands keep their own reference.
+	public ClipEntry[] Entries;
 	// Every path clip in force, innermost last, for the per-fragment coverage mask (see ResolveClipMask). Nests
 	// without limit: the mask is the PRODUCT of each path's coverage, so intersecting N shapes is N
 	// accumulate+resolve passes into one texture. Copy-on-write like Rounds.
@@ -108,20 +81,13 @@ internal struct ClipData
 	// that could not fold the full rect constraint) — blocks the emit's derived-widening fallback.
 	public bool ScissorLoadBearing;
 
-	// Append a rounded clip, copy-on-write. ClipU holds MaxRounds analytic rounds; a round beyond that goes on Paths
-	// as a flattened outline instead, so nesting depth is unbounded and only the (rare) overflow pays a mask bake.
-	public static void PushRound(ref ClipData clip, in RoundClip rc)
+	public static void PushEntry(ref ClipData clip, in ClipEntry e)
 	{
-		int n = clip.Rounds?.Length ?? 0;
-		if (n < MaxRounds)
-		{
-			var arr = new RoundClip[n + 1];
-			if (n > 0) { System.Array.Copy(clip.Rounds, arr, n); }
-			arr[n] = rc;
-			clip.Rounds = arr;
-			return;
-		}
-		clip.Paths = PushPath(clip.Paths, PathClip.FromRound(rc));
+		int n = clip.Entries?.Length ?? 0;
+		var arr = new ClipEntry[n + 1];
+		if (n > 0) { System.Array.Copy(clip.Entries, arr, n); }
+		arr[n] = e;
+		clip.Entries = arr;
 	}
 
 	public static PathClip[] PushPath(PathClip[] existing, PathClip pc)

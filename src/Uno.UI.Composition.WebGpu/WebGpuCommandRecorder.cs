@@ -118,26 +118,42 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		var a = DeviceAabb(rect);
 		_clip.Aabb = new Vector4(MathF.Max(_clip.Aabb.X, a.X), MathF.Max(_clip.Aabb.Y, a.Y), MathF.Min(_clip.Aabb.Z, a.Z), MathF.Min(_clip.Aabb.W, a.W));
 		_clip.ScissorInert = false;
+		// Under a rotation or skew the box only bounds the rect; the exact edge is an entry with square corners.
+		if (_m.M12 != 0 || _m.M21 != 0)
+		{
+			PushEntry(rect, Vector4.Zero, Vector4.Zero, exclude: false);
+		}
+	}
+
+	// The rounded rect stays in the recorder's current space; the entry carries the way back into it from the
+	// clip's space, so a rotated or skewed clip is exact rather than its bounding box.
+	private void PushEntry(in Rect rect, Vector4 radii, Vector4 radiiY, bool exclude)
+	{
+		var m = new Matrix3x2(_m.M11, _m.M12, _m.M21, _m.M22, _m.M41, _m.M42);
+		if (!Matrix3x2.Invert(m, out var inv))
+		{
+			// A collapsed transform draws nothing anyway; keep the clip well-formed.
+			inv = Matrix3x2.Identity;
+		}
+		ClipData.PushEntry(ref _clip, new ClipEntry
+		{
+			M = inv,
+			Rect = new Vector4((float)rect.Left, (float)rect.Top, (float)rect.Right, (float)rect.Bottom),
+			Radii = radii,
+			RadiiY = radiiY,
+			Exclude = exclude,
+		});
 	}
 
 	public void ClipRoundRect(in RoundRectangle roundRect, ClipOperation operation = ClipOperation.Intersect)
 	{
 		var aabb = DeviceAabb(roundRect.Rect);
-		// Device-space, axis-aligned rounded rect (exact under scale/translate). Per-corner radii carry BOTH axes
-		// (elliptical corners), each axis scaled by the matrix's corresponding axis length; a full rotation would need
-		// clip-local eval (falls back to the AABB below).
-		var sx = new Vector2(_m.M11, _m.M12).Length();
-		var sy = new Vector2(_m.M21, _m.M22).Length();
 		var exclude = operation == ClipOperation.Difference;
-		var rc = new RoundClip
-		{
-			Rect = aabb,
-			Radii = new Vector4(roundRect.TopLeft.X * sx, roundRect.TopRight.X * sx, roundRect.BottomRight.X * sx, roundRect.BottomLeft.X * sx),
-			RadiiY = new Vector4(roundRect.TopLeft.Y * sy, roundRect.TopRight.Y * sy, roundRect.BottomRight.Y * sy, roundRect.BottomLeft.Y * sy),
-			Exclude = exclude,
-		};
 		// Nested rounded clips stack (all ANDed in clipCov) instead of the innermost overwriting the outer.
-		ClipData.PushRound(ref _clip, rc);
+		PushEntry(roundRect.Rect,
+			new Vector4(roundRect.TopLeft.X, roundRect.TopRight.X, roundRect.BottomRight.X, roundRect.BottomLeft.X),
+			new Vector4(roundRect.TopLeft.Y, roundRect.TopRight.Y, roundRect.BottomRight.Y, roundRect.BottomLeft.Y),
+			exclude);
 		// Difference (PushClipExclude): keep the area OUTSIDE the rounded rect — so DON'T tighten the scissor to it
 		// (the visible region extends past the rect); the per-fragment clipCov inverts the coverage.
 		if (!exclude)
@@ -149,11 +165,9 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 
 	public void ClipPath(IGeometry geometry, ClipOperation operation = ClipOperation.Intersect)
 	{
-		// A geometry that advertises itself as a single (rounded) rect clips analytically (shader-evaluated
-		// rounds / plain scissor) instead of costing a coverage-mask bake and defeating coalescing.
-		// Only under an axis-aligned matrix: the rounds are device-space axis-aligned, while the fan is
-		// exact under any transform.
-		if (_m.M12 == 0 && _m.M21 == 0 && geometry.TryGetRoundRect() is { } rr)
+		// A geometry that advertises itself as a single (rounded) rect clips analytically (an entry / plain
+		// scissor) instead of costing a coverage-mask bake and defeating coalescing.
+		if (geometry.TryGetRoundRect() is { } rr)
 		{
 			if (operation == ClipOperation.Intersect
 				&& rr.TopLeft == Vector2.Zero && rr.TopRight == Vector2.Zero && rr.BottomRight == Vector2.Zero && rr.BottomLeft == Vector2.Zero)
@@ -243,34 +257,39 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		{
 			return clip;
 		}
-		if (clip.Rounds is { Length: > 0 } rounds)
+		if (clip.Entries is { Length: > 0 } entries)
 		{
-			RoundClip[] kept = null;
+			ClipEntry[] kept = null;
 			int keptCount = 0;
-			for (int i = 0; i < rounds.Length; i++)
+			for (int i = 0; i < entries.Length; i++)
 			{
-				var rc = rounds[i];
+				var e = entries[i];
+				// The op's box in the entry's space: its corners mapped, then boxed again -- a superset of the op.
+				var c0 = Vector2.Transform(bbMin, e.M); var c1 = Vector2.Transform(new Vector2(bbMax.X, bbMin.Y), e.M);
+				var c2 = Vector2.Transform(bbMax, e.M); var c3 = Vector2.Transform(new Vector2(bbMin.X, bbMax.Y), e.M);
+				var lo = Vector2.Min(Vector2.Min(c0, c1), Vector2.Min(c2, c3));
+				var hi = Vector2.Max(Vector2.Max(c0, c1), Vector2.Max(c2, c3));
 				bool inert;
-				if (rc.Exclude)
+				if (e.Exclude)
 				{
-					// An exclude-round can't cut an op that doesn't overlap its rect.
-					inert = bbMax.X <= rc.Rect.X || bbMax.Y <= rc.Rect.Y || bbMin.X >= rc.Rect.Z || bbMin.Y >= rc.Rect.W;
+					// An exclude entry can't cut an op that doesn't overlap its rect.
+					inert = hi.X <= e.Rect.X || hi.Y <= e.Rect.Y || lo.X >= e.Rect.Z || lo.Y >= e.Rect.W;
 				}
 				else
 				{
-					// An intersect-round is coverage-1 inside its rect inset by the largest radii.
-					float rx = MathF.Max(MathF.Max(rc.Radii.X, rc.Radii.Y), MathF.Max(rc.Radii.Z, rc.Radii.W));
-					float ry = MathF.Max(MathF.Max(rc.RadiiY.X, rc.RadiiY.Y), MathF.Max(rc.RadiiY.Z, rc.RadiiY.W));
-					inert = bbMin.X >= rc.Rect.X + rx && bbMin.Y >= rc.Rect.Y + ry && bbMax.X <= rc.Rect.Z - rx && bbMax.Y <= rc.Rect.W - ry;
+					// An intersect entry is coverage-1 inside its rect inset by the largest radii.
+					float rx = MathF.Max(MathF.Max(e.Radii.X, e.Radii.Y), MathF.Max(e.Radii.Z, e.Radii.W));
+					float ry = MathF.Max(MathF.Max(e.RadiiY.X, e.RadiiY.Y), MathF.Max(e.RadiiY.Z, e.RadiiY.W));
+					inert = lo.X >= e.Rect.X + rx && lo.Y >= e.Rect.Y + ry && hi.X <= e.Rect.Z - rx && hi.Y <= e.Rect.W - ry;
 				}
 				if (!inert)
 				{
-					kept ??= new RoundClip[rounds.Length];
-					kept[keptCount++] = rc;
+					kept ??= new ClipEntry[entries.Length];
+					kept[keptCount++] = e;
 				}
 			}
-			if (keptCount == 0) { clip.Rounds = null; }
-			else if (keptCount < rounds.Length) { System.Array.Resize(ref kept, keptCount); clip.Rounds = kept; }
+			if (keptCount == 0) { clip.Entries = null; }
+			else if (keptCount < entries.Length) { System.Array.Resize(ref kept, keptCount); clip.Entries = kept; }
 		}
 		clip.ScissorInert = true;
 		return clip;
@@ -1126,20 +1145,14 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			var a = TransformedAabb(c.Aabb, _m);
 			result.Aabb = new Vector4(MathF.Max(result.Aabb.X, a.X), MathF.Max(result.Aabb.Y, a.Y), MathF.Min(result.Aabb.Z, a.Z), MathF.Min(result.Aabb.W, a.W));
 		}
-		// Child rounded clips AND with the parent's; transform each rect and scale radii by the replay matrix.
-		if (c.Rounds is { Length: > 0 } rounds)
+		// Child entries AND with the parent's: each keeps its shape and gains the way back from the parent's space.
+		if (c.Entries is { Length: > 0 } entries)
 		{
-			var sx = new Vector2(_m.M11, _m.M12).Length();
-			var sy = new Vector2(_m.M21, _m.M22).Length();
-			foreach (var src in rounds)
+			var m = new Matrix3x2(_m.M11, _m.M12, _m.M21, _m.M22, _m.M41, _m.M42);
+			if (!Matrix3x2.Invert(m, out var inv)) { inv = Matrix3x2.Identity; }
+			foreach (var src in entries)
 			{
-				ClipData.PushRound(ref result, new RoundClip
-				{
-					Rect = TransformedAabb(src.Rect, _m),
-					Radii = src.Radii * sx,
-					RadiiY = src.RadiiY * sy,
-					Exclude = src.Exclude,
-				});
+				ClipData.PushEntry(ref result, src.Under(inv));
 			}
 		}
 		if (c.Paths is { Length: > 0 })

@@ -162,6 +162,7 @@ internal sealed unsafe class WebGpuGeometryCache
 									  // replay transform / session clip changes (memoized like the arena stamp); the slab base is applied on top each frame.
 	public List<(ClipData Scissor, nint ClipBg)> StampClips;
 	public ClipData StampClip;
+	public int StampSessionEntries;   // entries the last stamp folded in from the session (sets each slot's size class)
 	// Arena stamp memo: the per-op clip bind groups + device scissors for a given replay transform depend only on
 	// that transform, so cache the fully-stamped ops (built with StampOwned) and reuse them verbatim while the
 	// transform is unchanged — a STATIC arena visual then costs one AddRange/frame, no per-op MakeClipBg.

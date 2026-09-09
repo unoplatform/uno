@@ -107,12 +107,15 @@ public sealed unsafe partial class WebGpuPresentSession
 			// uniforms this frame's earlier draws still read - so that case (and the first stamp) allocates fresh.
 			// Worth +0.3% median over allocating fresh every time, measured across all 28 perf samples.
 			// A rewrite keeps the bind group, so it cannot swap in a freshly baked session path mask: stamp fresh.
-			var reuse = fe.HasStamp && fe.StampBufs is not null && fe.StampBufs.Count == fe.FrameOrder.Count && fe.StampFrame != _d.FrameSeq && rr.Clip.Paths is null;
+			var t2 = new Matrix3x2(rr.Transform.M11, rr.Transform.M12, rr.Transform.M21, rr.Transform.M22, rr.Transform.M41, rr.Transform.M42);
+			Matrix3x2 finv = Matrix3x2.Invert(t2, out var inv) ? inv : Matrix3x2.Identity;
+			// A rewrite keeps each slot, so the entry count (the slot's size class) must match the last stamp's.
+			var sessionEntries = SessionEntryCount(rr.Clip, finv);
+			var reuse = fe.HasStamp && fe.StampBufs is not null && fe.StampBufs.Count == fe.FrameOrder.Count && fe.StampFrame != _d.FrameSeq && rr.Clip.Paths is null
+				&& fe.StampSessionEntries == sessionEntries;
 			if (!reuse && fe.StampOwned is not null) { _d.DeferRelease(fe.StampOwned); }
 			var stampOwned = reuse ? fe.StampOwned : new OwnedResources();
 			Dictionary<PathClip[], PathClip[]> pathsMemo = null;
-			var t2 = new Matrix3x2(rr.Transform.M11, rr.Transform.M12, rr.Transform.M21, rr.Transform.M22, rr.Transform.M41, rr.Transform.M42);
-			Matrix3x2 finv = Matrix3x2.Invert(t2, out var inv) ? inv : Matrix3x2.Identity;
 			var sessionAabb = rr.Clip.Aabb;
 			var stamps = reuse ? fe.StampClips : new List<(ClipData Scissor, nint ClipBg)>(fe.FrameOrder.Count);
 			var bufs = reuse ? fe.StampBufs : new List<nint>(fe.FrameOrder.Count);
@@ -127,10 +130,10 @@ public sealed unsafe partial class WebGpuPresentSession
 				// An op with no xform-table slot (an atlas quad, an image, a gradient) is still identity-baked, so
 				// its clip has to carry the replay transform or it draws at the recording's local origin.
 				var stampXform = PlacedByXformTable(opKind) ? Matrix3x2.Identity : PixelXform(rr.Transform);
-				var st = StampTableClip(local, stampOwned, finv, t2, sessionAabb, rr.Clip.ScissorInert, rr.Clip.Rounds, rr.Clip.Paths, ref pathsMemo, reuse ? bufs[i] : 0, reuse ? stamps[i].ClipBg : 0, stampBgl, stampXform);
+				var st = StampTableClip(local, stampOwned, finv, t2, sessionAabb, rr.Clip.ScissorInert, rr.Clip.Entries, rr.Clip.Paths, ref pathsMemo, reuse ? bufs[i] : 0, reuse ? stamps[i].ClipBg : 0, stampBgl, stampXform);
 				if (reuse) { stamps[i] = (st.Scissor, st.ClipBg); } else { stamps.Add((st.Scissor, st.ClipBg)); bufs.Add(st.Buf); }
 			}
-			fe.StampOwned = stampOwned; fe.StampClips = stamps; fe.StampBufs = bufs; fe.StampFrame = _d.FrameSeq; fe.StampXform = rr.Transform; fe.StampClip = rr.Clip; fe.HasStamp = true;
+			fe.StampOwned = stampOwned; fe.StampClips = stamps; fe.StampBufs = bufs; fe.StampFrame = _d.FrameSeq; fe.StampXform = rr.Transform; fe.StampClip = rr.Clip; fe.StampSessionEntries = sessionEntries; fe.HasStamp = true;
 		}
 		for (int i = 0; i < fe.FrameOrder.Count; i++)
 		{
@@ -302,15 +305,16 @@ public sealed unsafe partial class WebGpuPresentSession
 			if (_emitStats) { _statStamps++; }
 			// In-place restamp (same guard as the table stamp): rewrite ClipU buffers, keep bind groups.
 			// A rewrite keeps the bind group, so it cannot swap in a path mask baked into this stamp's bag: stamp fresh.
+			var xf = PixelXform(rr.Transform);
+			var t2 = new Matrix3x2(rr.Transform.M11, rr.Transform.M12, rr.Transform.M21, rr.Transform.M22, rr.Transform.M41, rr.Transform.M42);
+			Matrix3x2 finv = Matrix3x2.Invert(t2, out var inv) ? inv : Matrix3x2.Identity;
+			var sessionEntries = SessionEntryCount(rr.Clip, finv);
 			var reuse = entry.HasStamp && entry.StampBufs is not null && entry.StampBufs.Count == entry.Ops.Count && entry.StampFrame != _d.FrameSeq
-				&& rr.Clip.Paths is null && !entry.HasPathClip;
+				&& rr.Clip.Paths is null && !entry.HasPathClip && entry.StampSessionEntries == sessionEntries;
 			if (!reuse && entry.StampOwned is not null) { _d.DeferRelease(entry.StampOwned); }
 			var stampOwned = reuse ? entry.StampOwned : new OwnedResources();
 			var stamped = reuse ? entry.StampedOps : new List<DrawOp>(entry.Ops.Count);
 			var bufs = reuse ? entry.StampBufs : new List<nint>(entry.Ops.Count);
-			var xf = PixelXform(rr.Transform);
-			var t2 = new Matrix3x2(rr.Transform.M11, rr.Transform.M12, rr.Transform.M21, rr.Transform.M22, rr.Transform.M41, rr.Transform.M42);
-			Matrix3x2 finv = Matrix3x2.Invert(t2, out var inv) ? inv : Matrix3x2.Identity;
 			Vector2 MoveP(float x, float y) => new(x * t2.M11 + y * t2.M21 + t2.M31, x * t2.M12 + y * t2.M22 + t2.M32);
 			Dictionary<PathClip[], PathClip[]> pathsMemo = null;
 			for (int i = 0; i < entry.Ops.Count; i++)
@@ -331,31 +335,28 @@ public sealed unsafe partial class WebGpuPresentSession
 				scissorClip.ScissorInert = op.clip.ScissorInert && rr.Clip.ScissorInert;
 
 				var uClip = op.clip;
-				FoldSessionRounds(ref uClip, rr.Clip.Rounds, finv);
+				FoldSessionEntries(ref uClip, rr.Clip.Entries, t2);
 				FoldSessionPaths(ref uClip, rr.Clip.Paths, finv, ref pathsMemo);
-				var uSessionFinite = IsFiniteAabb(rr.Clip.Aabb);
-				var uAxisAligned = finv.M12 == 0 && finv.M21 == 0;
-				var uCanWiden = !uSessionFinite || uAxisAligned;
-				if (uSessionFinite && uAxisAligned)
+				if (IsFiniteAabb(rr.Clip.Aabb))
 				{
-					FoldSessionAabb(ref uClip, rr.Clip.Aabb, finv);
+					FoldSessionAabb(ref uClip, rr.Clip.Aabb, finv, t2);
 				}
 				if (reuse)
 				{
-					scissorClip.AabbInClipU = RewriteClipU(bufs[i], uClip, xf, finv) && uCanWiden;
+					scissorClip.AabbInClipU = RewriteClipU(bufs[i], uClip, xf, finv);
 					scissorClip.ScissorLoadBearing = !scissorClip.AabbInClipU;
 					stamped[i] = new DrawOp(op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, stamped[i].clipBg);
 				}
 				else
 				{
 					var aClipBg = MakeClipBgOwned(abgl, uClip, stampOwned, xf, finv, out var buf, out var aFolded);
-					scissorClip.AabbInClipU = aFolded && uCanWiden;
+					scissorClip.AabbInClipU = aFolded;
 					scissorClip.ScissorLoadBearing = !scissorClip.AabbInClipU;
 					bufs.Add(buf);
 					stamped.Add(new DrawOp(op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, (nint)aClipBg));
 				}
 			}
-			entry.StampOwned = stampOwned; entry.StampedOps = stamped; entry.StampBufs = bufs; entry.StampFrame = _d.FrameSeq; entry.StampXform = rr.Transform; entry.StampClip = rr.Clip; entry.HasStamp = true;
+			entry.StampOwned = stampOwned; entry.StampedOps = stamped; entry.StampBufs = bufs; entry.StampFrame = _d.FrameSeq; entry.StampXform = rr.Transform; entry.StampClip = rr.Clip; entry.StampSessionEntries = sessionEntries; entry.HasStamp = true;
 		}
 		ops.AddRange(entry.StampedOps);
 		return;
