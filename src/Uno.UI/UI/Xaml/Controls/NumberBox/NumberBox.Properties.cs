@@ -304,7 +304,7 @@ partial class NumberBox
 			nameof(SmallChange),
 			typeof(double),
 			typeof(NumberBox),
-			new FrameworkPropertyMetadata(1.0, (s, e) => (s as NumberBox)?.OnSmallChangePropertyChanged(e)));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One, (s, e) => (s as NumberBox)?.OnSmallChangePropertyChanged(e)));
 
 	/// <summary>
 	/// Gets or sets a value that indicates the placement of buttons used to increment or decrement the Value property.

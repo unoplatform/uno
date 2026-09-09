@@ -113,7 +113,7 @@ public partial class TreeViewItem
 	/// Identifies the GlyphOpacity dependency property.
 	/// </summary>
 	public static DependencyProperty GlyphOpacityProperty { get; } =
-		DependencyProperty.Register(nameof(GlyphOpacity), typeof(double), typeof(TreeViewItem), new FrameworkPropertyMetadata(1.0));
+		DependencyProperty.Register(nameof(GlyphOpacity), typeof(double), typeof(TreeViewItem), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One));
 
 	/// <summary>
 	/// Identifies the GlyphSize dependency property.
