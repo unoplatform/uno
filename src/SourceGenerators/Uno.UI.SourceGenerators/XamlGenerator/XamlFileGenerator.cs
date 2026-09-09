@@ -342,17 +342,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				writer.AppendLineInvariantIndented("using {0};", _defaultNamespace);
 
-				// For Subclass build functionality
+				// For Subclass build functionality.
+				// _View is the return type of every generated FrameworkTemplate builder, and those
+				// builders are converted to Uno.UI.FrameworkTemplateBuilder, which returns UIElement.
+				// Native view rendering is gone, so UIElement is the only correct alias on every target.
 				writer.AppendLineIndented("");
-				writer.AppendLineIndented("#if HAS_UNO_SKIA");
 				writer.AppendLineIndented("using _View = Microsoft.UI.Xaml.UIElement;");
-				writer.AppendLineIndented("#elif __ANDROID__");
-				writer.AppendLineIndented("using _View = Android.Views.View;");
-				writer.AppendLineIndented("#elif __APPLE_UIKIT__ || __IOS__ || __TVOS__");
-				writer.AppendLineIndented("using _View = UIKit.UIView;");
-				writer.AppendLineIndented("#else");
-				writer.AppendLineIndented("using _View = Microsoft.UI.Xaml.UIElement;");
-				writer.AppendLineIndented("#endif");
 
 				writer.AppendLineIndented("");
 
