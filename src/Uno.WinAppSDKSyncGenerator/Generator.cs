@@ -1505,7 +1505,7 @@ namespace Uno.WinAppSDKSyncGenerator
 
 								if (isAttachedPropertyMethod)
 								{
-									var instanceParamName = SanitizeParameter(method.Parameters.First().Name);
+									var instanceParamName = SanitizeParameter(method.Parameters[0].Name);
 
 									if (method.Name.StartsWith("Get", StringComparison.Ordinal))
 									{
@@ -1514,7 +1514,13 @@ namespace Uno.WinAppSDKSyncGenerator
 									}
 									else if (method.Name.StartsWith("Set", StringComparison.Ordinal))
 									{
-										var valueParamName = SanitizeParameter(method.Parameters.ElementAt(1).Name);
+										var valueParameter = method.Parameters[1];
+										var valueParamName = SanitizeParameter(valueParameter.Name);
+										if (valueParameter.Type.SpecialType is SpecialType.System_Int32 or SpecialType.System_Double or SpecialType.System_Boolean)
+										{
+											valueParamName = $"global::Uno.UI.Helpers.Boxes.Box({valueParamName})";
+										}
+
 										b.AppendLineInvariant($"{instanceParamName}.SetValue({filteredName}Property, {valueParamName});");
 									}
 								}
@@ -1941,7 +1947,8 @@ namespace Uno.WinAppSDKSyncGenerator
 							if (getLocal != null || getAttached != null)
 							{
 								var attachedModifier = getAttached != null ? "Attached" : "";
-								var propertyDisplayType = MapWinAppSDKTypes((getAttached?.ReturnType ?? getLocal?.Type).ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
+								var propertyType = getAttached?.ReturnType ?? getLocal?.Type;
+								var propertyDisplayType = MapWinAppSDKTypes(propertyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
 
 								b.AppendLineInvariant($"public {staticQualifier}{SanitizeType(property.Type)} {property.Name} {{{{ get; }}}} =");
 
@@ -1958,7 +1965,17 @@ namespace Uno.WinAppSDKSyncGenerator
 								}
 
 								b.AppendLineInvariant($"\ttypeof({property.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}),");
-								b.AppendLineInvariant($"\tnew {BaseXamlNamespace}.FrameworkPropertyMetadata(default({propertyDisplayType})));");
+
+								// FrameworkPropertyMetadata takes an object, so default(T) would box on every registration.
+								var defaultValue = propertyType.SpecialType switch
+								{
+									SpecialType.System_Int32 => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero",
+									SpecialType.System_Boolean => "global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse",
+									SpecialType.System_Double => "global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero",
+									_ => $"default({propertyDisplayType})",
+								};
+
+								b.AppendLineInvariant($"\tnew {BaseXamlNamespace}.FrameworkPropertyMetadata({defaultValue}));");
 							}
 							else
 							{
@@ -1985,7 +2002,11 @@ namespace Uno.WinAppSDKSyncGenerator
 								{
 									using (b.BlockInvariant($"set"))
 									{
-										b.AppendLineInvariant($"this.SetValue({property.Name}Property, value);");
+										var setterValue = property.Type.SpecialType is SpecialType.System_Int32 or SpecialType.System_Double or SpecialType.System_Boolean
+											? "global::Uno.UI.Helpers.Boxes.Box(value)"
+											: "value";
+
+										b.AppendLineInvariant($"this.SetValue({property.Name}Property, {setterValue});");
 									}
 								}
 							}
