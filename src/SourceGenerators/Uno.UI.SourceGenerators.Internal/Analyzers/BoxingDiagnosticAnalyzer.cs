@@ -161,7 +161,7 @@ internal sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 		else if (operandSpecialType == SpecialType.System_Double)
 		{
 			// Keep the values to check against synchronized with Boxes.Box(double).
-			return !operation.Operand.ConstantValue.HasValue || operation.Operand.ConstantValue.Value is 0.0;
+			return !operation.Operand.ConstantValue.HasValue || operation.Operand.ConstantValue.Value is 0.0 or 1.0;
 		}
 		else if (operandType.Name == "RoutedEventFlag" && !IsOptimizedHasFlagCall(operation, hasFlagMethod))
 		{

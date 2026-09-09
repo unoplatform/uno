@@ -114,13 +114,22 @@ internal static class Boxes
 		_ => value,
 	};
 
+	private const long OneBits = 0x3FF0000000000000; // BitConverter.DoubleToInt64Bits(1.0)
+
 	public static object Box(double value)
 	{
 		// https://github.com/dotnet/roslyn/blob/17dcec138afd78a265be020ef8ca0e22a254aa88/src/Compilers/Core/Portable/Collections/Boxes.cs#L87
-		// There are many representations of zero in floating point.
-		// Use the boxed value only if the bit pattern is all zeros.
+		// Compared as a bit pattern rather than by value, so negative zero and NaN keep their own
+		// box instead of collapsing onto the cached one.
 		// Keep the values to check against in sync with BoxingDiagnosticAnalyzer.
-		return BitConverter.DoubleToInt64Bits(value) == 0 ? DoubleBoxes.Zero : value;
+		var bits = BitConverter.DoubleToInt64Bits(value);
+		if (bits == 0)
+		{
+			return DoubleBoxes.Zero;
+		}
+
+		// 1.0 is worth caching on its own: Opacity, ScaleX and ScaleY all default to it.
+		return bits == OneBits ? DoubleBoxes.One : value;
 	}
 
 	public static object Box(VerticalAlignment value) => value switch

@@ -74,7 +74,7 @@ namespace Microsoft.UI.Xaml.Media
 		}
 
 		public static DependencyProperty ScaleXProperty { get; } =
-			DependencyProperty.Register("ScaleX", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(1.0d, NotifyChangedCallback));
+			DependencyProperty.Register("ScaleX", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One, NotifyChangedCallback));
 
 		public double ScaleY
 		{
@@ -83,7 +83,7 @@ namespace Microsoft.UI.Xaml.Media
 		}
 
 		public static DependencyProperty ScaleYProperty { get; } =
-			DependencyProperty.Register("ScaleY", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(1.0d, NotifyChangedCallback));
+			DependencyProperty.Register("ScaleY", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One, NotifyChangedCallback));
 
 		public double SkewX
 		{

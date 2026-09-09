@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		}
 
 		public static DependencyProperty AmplitudeProperty { get; } =
-			DependencyProperty.Register("Amplitude", typeof(double), typeof(BackEase), new FrameworkPropertyMetadata(1d));
+			DependencyProperty.Register("Amplitude", typeof(double), typeof(BackEase), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One));
 
 		// https://github.com/dotnet/wpf/blob/c3439bc20a3c2ee28d98e7d0eebcf7edcc37b7b9/src/Microsoft.DotNet.Wpf/src/PresentationCore/System/Windows/Media/Animation/BackEase.cs#L42-L45
 		private protected override double EaseInCore(double normalizedTime)
