@@ -166,7 +166,7 @@ public partial class Slider
 			nameof(StepFrequency),
 			typeof(double),
 			typeof(Slider),
-			new FrameworkPropertyMetadata(1.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One));
 
 	/// <summary>
 	/// Gets or sets the converter logic that converts the range value of the Slider into tool tip content.

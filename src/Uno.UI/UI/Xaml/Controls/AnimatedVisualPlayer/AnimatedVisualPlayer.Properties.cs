@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference AnimatedVisualPlayer.idl, commit 3cae15f0
 
@@ -90,7 +90,7 @@ partial class AnimatedVisualPlayer
 		nameof(PlaybackRate),
 		typeof(double),
 		typeof(AnimatedVisualPlayer),
-		new FrameworkPropertyMetadata(1.0, OnPlaybackRatePropertyChanged));
+		new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One, OnPlaybackRatePropertyChanged));
 
 	/// <summary>
 	/// Identifies the <see cref="AnimationOptimization"/> dependency property.
