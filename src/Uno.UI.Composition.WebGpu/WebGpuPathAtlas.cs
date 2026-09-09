@@ -195,27 +195,30 @@ internal sealed unsafe class WebGpuPathAtlas
 	public const int CacheIdleFrames = 180;
 
 	/// <summary>
-	/// A standalone entry is a whole texture, and one held for the cache belongs to a per-frame op (a shadow, a
-	/// path clip) whose key changes with its transform: static content hits every frame and is kept, moving content
-	/// would only accumulate, so it is let go almost at once.
+	/// A standalone entry is a whole texture and belongs to a per-frame op (a shadow, a path clip) that proved static
+	/// (see <see cref="Recurring"/>); once it stops recurring the texture is let go soon rather than held for seconds.
 	/// </summary>
-	public const int StandaloneIdleFrames = 2;
+	public const int StandaloneIdleFrames = 30;
 
 	private readonly List<Slot> _cacheHeld = new();
 	private readonly List<Key> _stale = new();
 
-	private readonly Dictionary<Key, long> _requests = new();
+	private readonly Dictionary<Key, (long Frame, int Run)> _requests = new();
+
+	/// <summary>Consecutive frames a per-frame op's key must recur before the cache admits it.</summary>
+	public const int AdmitRun = 8;
 
 	/// <summary>
-	/// Whether a per-frame op's key was also requested LAST frame. A per-frame op has no owner to say whether it
-	/// is static or moving, so the cache admits it only once its key has held for two frames: static content pays one
-	/// extra per-frame bake at first sight, moving content (a new key every frame) never enters and never piles up.
+	/// Whether a per-frame op's key has recurred for <see cref="AdmitRun"/> consecutive frames. A per-frame op has no
+	/// owner to say whether it is static or moving, and a slowly moving one keeps the same quantised key for a frame
+	/// or two, so admission waits for a run: static content pays a few per-frame bakes at first sight, moving content
+	/// never enters and never piles up.
 	/// </summary>
 	public bool Recurring(in Key key, long frame)
 	{
-		var seen = _requests.TryGetValue(key, out var last) && last == frame - 1;
-		_requests[key] = frame;
-		return seen;
+		var run = _requests.TryGetValue(key, out var last) && last.Frame == frame - 1 ? last.Run + 1 : 1;
+		_requests[key] = (frame, run);
+		return run >= AdmitRun;
 	}
 
 	/// <summary>Records that an entry was used this frame, so the idle sweep keeps it.</summary>
@@ -241,7 +244,7 @@ internal sealed unsafe class WebGpuPathAtlas
 	{
 		if ((frame & 63) == 0)
 		{
-			foreach (var kv in _requests) { if (kv.Value < frame - 2) { _stale.Add(kv.Key); } }
+			foreach (var kv in _requests) { if (kv.Value.Frame < frame - 2) { _stale.Add(kv.Key); } }
 			foreach (var k in _stale) { _requests.Remove(k); }
 			_stale.Clear();
 		}
