@@ -45,6 +45,7 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		AccessibilityAnnouncer.AccessibilityImpl = this;
 		UIElementAccessibilityHelper.ExternalOnChildAdded = (parent, child, index) => RouteChildAdded(parent, child, index);
 		UIElementAccessibilityHelper.ExternalOnChildRemoved = (parent, child) => RouteChildRemoved(parent, child);
+		UIElementAccessibilityHelper.ExternalOnTextControlStateChanged = element => RouteTextControlStateChanged(element);
 		VisualAccessibilityHelper.ExternalOnVisualOffsetOrSizeChanged = visual => RouteVisualOffsetOrSizeChanged(visual);
 		AutomationPeer.AutomationPeerListener = this;
 	}
@@ -184,8 +185,18 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// outermost OnChildAdded call for panels loaded after accessibility is already enabled.
 	/// </summary>
 	private readonly List<(IntPtr Handle, WeakReference<AutomationPeer> Peer)> _pendingLabelledBy = new();
-	private readonly Dictionary<IntPtr, WeakReference<AutomationPeer>> _relationshipPeers = new();
+	private readonly Dictionary<IntPtr, RelationshipState> _relationshipPeers = new();
 	private bool _relationshipRefreshQueued;
+
+	private sealed class RelationshipState
+	{
+		public RelationshipState(AutomationPeer peer) => Peer = new WeakReference<AutomationPeer>(peer);
+
+		public WeakReference<AutomationPeer> Peer { get; }
+		public bool HasRelationships { get; set; }
+		public bool IsUpdating { get; set; }
+		public AutomationPeer? PendingPeer { get; set; }
+	}
 
 	/// <summary>
 	/// Reentrancy depth of <see cref="OnChildAdded"/>. OnChildAdded recurses through a whole subtree
@@ -356,7 +367,9 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// AddChild also fires while a subtree is still detached (XAML builds bottom-up) and for live parents under
 		// a Collapsed ancestor. A node emitted then hangs off the semantic root with zero geometry; attaching the
 		// subtree root, or showing the ancestor, replays every descendant through the recursion below instead.
-		if (!parent.IsActiveInVisualTree || (_onChildAddedDepth == 0 && IsUnderCollapsedElement(parent)))
+		if (!parent.IsActiveInVisualTree
+			|| (_onChildAddedDepth == 0 && IsUnderCollapsedElement(parent))
+			|| IsNativeTextControlSubtree(parent))
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -767,6 +780,10 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 				if (_prunedHandles.Remove(handle) && containerVisual.Owner?.Target is UIElement shownElement)
 				{
 					var shownParent = shownElement.GetParent() as UIElement;
+					if (!shownElement.IsActiveOrAttachedUnderActiveAncestor() || IsNativeTextControlSubtree(shownParent))
+					{
+						return;
+					}
 					var shownParentHandle = shownParent is not null ? FindSemanticParent(shownParent) : _rootElementHandle;
 					BuildSemanticsTreeRecursive(shownParentHandle, shownElement);
 					return;
@@ -1007,6 +1024,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		@this._semanticParentMap.Clear();
 		@this._prunedHandles.Clear();
 		@this._pendingLabelledBy.Clear();
+		@this._relationshipPeers.Clear();
+		@this._relationshipRefreshQueued = false;
 		@this._onChildAddedDepth = 0;
 		@this._rootElementHandle = IntPtr.Zero;
 		@this._focusSearchRoot = null;
@@ -1448,21 +1467,54 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 	internal void UpdateRelationships(AutomationPeer peer, IntPtr handle)
 	{
-		var wasTracked = _relationshipPeers.TryGetValue(handle, out var reference);
-		if (SemanticElementFactory.ApplyRelationshipAttributes(peer, handle, clearMissing: wasTracked))
+		if (!_relationshipPeers.TryGetValue(handle, out var state))
 		{
-			if (reference is not null)
-			{
-				reference.SetTarget(peer);
-			}
-			else
-			{
-				_relationshipPeers.Add(handle, new WeakReference<AutomationPeer>(peer));
-			}
+			state = new RelationshipState(peer);
+			_relationshipPeers.Add(handle, state);
 		}
 		else
 		{
-			_relationshipPeers.Remove(handle);
+			state.Peer.SetTarget(peer);
+		}
+
+		state.PendingPeer = peer;
+		if (state.IsUpdating)
+		{
+			return;
+		}
+
+		// Peer queries can mutate their relation collections (including WinUI's placeholder helper).
+		// Register before calling out, and publish IDREFs only from the final, non-reentrant snapshot.
+		state.IsUpdating = true;
+		try
+		{
+			while (state.PendingPeer is { } currentPeer)
+			{
+				state.PendingPeer = null;
+				var hasRelationships = SemanticElementFactory.ResolveRelationshipAttributes(
+					currentPeer, out var describedByIds, out var controlledIds, out var flowsToIds);
+				if (!_relationshipPeers.TryGetValue(handle, out var current) || !ReferenceEquals(current, state))
+				{
+					return;
+				}
+
+				if (state.PendingPeer is null)
+				{
+					SemanticElementFactory.ApplyRelationshipAttributes(
+						handle, describedByIds, controlledIds, flowsToIds, clearMissing: state.HasRelationships);
+					state.HasRelationships = hasRelationships;
+				}
+			}
+
+			if (!state.HasRelationships)
+			{
+				_relationshipPeers.Remove(handle);
+			}
+		}
+		finally
+		{
+			state.PendingPeer = null;
+			state.IsUpdating = false;
 		}
 	}
 
@@ -1487,9 +1539,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		foreach (var (handle, reference) in _relationshipPeers.ToArray())
+		foreach (var (handle, state) in _relationshipPeers.ToArray())
 		{
-			if (HasSemanticElement(handle) && reference.TryGetTarget(out var peer))
+			if (!_relationshipPeers.TryGetValue(handle, out var current) || !ReferenceEquals(current, state))
+			{
+				continue;
+			}
+
+			if (HasSemanticElement(handle) && state.Peer.TryGetTarget(out var peer))
 			{
 				UpdateRelationships(peer, handle);
 			}
@@ -1779,6 +1836,19 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		// Ultimate fallback: use the root element handle
 		return _rootElementHandle;
+	}
+
+	private bool IsNativeTextControlSubtree(UIElement? element)
+	{
+		for (var current = element; current is not null; current = current.GetParent() as UIElement)
+		{
+			if (current is TextBox or PasswordBox or RichEditBox && IsSemanticElement(current))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	internal void BuildSemanticsTreeRecursive(IntPtr parentHandle, UIElement child, int depth = 0)
