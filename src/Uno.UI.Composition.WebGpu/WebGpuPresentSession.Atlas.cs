@@ -288,11 +288,13 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// </summary>
 	private IntPtr TintedImageBg(IntPtr view, WColor tint, OwnedResources owned = null)
 	{
-		var ubuf = Ubuf(112, owned);
-		var u = stackalloc float[8];
+		var ubuf = Ubuf(WebGpuDevice.ImageUniformBytes, owned);
+		var u = stackalloc float[36];
+		for (var zi = 0; zi < 36; zi++) { u[zi] = 0f; }
 		u[0] = 1f; u[1] = 1f;
 		u[4] = tint.R / 255f; u[5] = tint.G / 255f; u[6] = tint.B / 255f; u[7] = tint.A / 255f;
-		wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)u, 32);
+		// Whole uniform, so a recycled buffer cannot leave the edge-AA flag set: the mask carries the coverage.
+		wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)u, WebGpuDevice.ImageUniformBytes);
 		var e = stackalloc WGPUBindGroupEntry[3];
 		e[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = view };
 		e[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };

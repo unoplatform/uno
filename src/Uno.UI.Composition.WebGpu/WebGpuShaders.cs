@@ -23,9 +23,7 @@ internal sealed unsafe partial class WebGpuDevice
 	/// layout's MinBindingSize, every bind group's entry size and the writer all have to agree: a bind group that
 	/// disagrees with the layout is rejected at draw time, and one that disagrees with the struct reads garbage.
 	/// </summary>
-	public const int ImageUniformBytes = 112;
-
-	/// <summary>
+	public const int ImageUniformBytes = 144;   // op+tint+m0..m3+off (112) + edge + ctrl2 (32); match ImageWgsl
 	/// Bytes in the composite uniform block (24 floats: opacity plus a 4x5 colour matrix), as declared by
 	/// <see cref="CompositeWgsl"/> and <see cref="CompositeBlendWgsl"/>. Same agreement requirement as above.
 	/// </summary>
@@ -641,7 +639,8 @@ fn sdRR(p: vec2<f32>, hf: vec2<f32>, radii: vec4<f32>) -> f32 {
 }";
 	private const string ImageWgsl = @"
 struct VOut { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
-struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec4<f32>, m3: vec4<f32>, off: vec4<f32> };
+// edge = the quad's own uv rect (u0,v0,u1,v1); ctrl2.x > 0.5 = antialias the quad's edges analytically.
+struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec4<f32>, m3: vec4<f32>, off: vec4<f32>, edge: vec4<f32>, ctrl2: vec4<f32> };
 @group(0) @binding(0) var tex: texture_2d<f32>;
 @group(0) @binding(1) var smp: sampler;
 @group(0) @binding(2) var<uniform> u: U;
@@ -649,6 +648,17 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 @group(1) @binding(1) var clipMask: texture_2d<f32>;
 @vertex fn vs(@location(0) pos: vec2<f32>, @location(1) uv: vec2<f32>) -> VOut { var o: VOut; o.p = xformPos(clip, pos); o.uv = uv; return o; }
 @fragment fn fs(i: VOut) -> @location(0) vec4<f32> {
+  // Analytic box-filter coverage of the quad's own edges, in pixels via the uv derivatives -- the rounded-rect
+  // treatment, so a rotated image is not hard-edged at one sample. Gated: an atlas or mask quad already carries its
+  // coverage in the texture and must not be antialiased twice. Derivatives stay outside the branch.
+  let du = max(length(vec2<f32>(dpdx(i.uv.x), dpdy(i.uv.x))), 1e-6);
+  let dv = max(length(vec2<f32>(dpdx(i.uv.y), dpdy(i.uv.y))), 1e-6);
+  var cov = 1.0;
+  if (u.ctrl2.x > 0.5) {
+    let cx = clamp(min(i.uv.x - u.edge.x, u.edge.z - i.uv.x) / du + 0.5, 0.0, 1.0);
+    let cy = clamp(min(i.uv.y - u.edge.y, u.edge.w - i.uv.y) / dv + 0.5, 0.0, 1.0);
+    cov = cx * cy;
+  }
   var c = textureSample(tex, smp, i.uv);   // premultiplied
   if (u.op.z > 0.5) {
     // 4x5 colour matrix (effect brush): unpremultiply -> matrix + offset -> clamp -> premultiply.
@@ -670,6 +680,6 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
     rgb = clamp(rgb + vec3<f32>(nz), vec3<f32>(0.0), vec3<f32>(1.0));
     c = vec4<f32>(rgb, 1.0);
   }
-  return c * u.op.x * clipCov(i.p.xy, clip);
+  return c * u.op.x * cov * clipCov(i.p.xy, clip);
 }";
 }
