@@ -127,11 +127,6 @@ internal class X11WindowWrapper : NativeWindowWrapperBase
 		using var lockDisposable = X11Helper.XLock(display);
 		using var lockDisposable2 = X11Helper.XLock(topDisplay);
 
-		if (!visible)
-		{
-			SetFullScreenMode(false);
-		}
-
 		if (visible)
 		{
 			_ = XLib.XMapWindow(display, window);
