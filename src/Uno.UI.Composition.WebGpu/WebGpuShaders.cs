@@ -214,6 +214,13 @@ struct CovOut { @builtin(position) p: vec4<f32>, @location(0) e: vec4<f32> };
   o.e = e;
   return o;
 }
+// Primitive of clamp(c - x, 0, 1) with respect to x.
+fn ramp(c: f32, x: f32) -> f32 {
+  if (x <= c - 1.0) { return x; }
+  if (x >= c) { return c - 0.5; }
+  let t = x - (c - 1.0);
+  return (c - 1.0) + t - 0.5 * t * t;
+}
 @fragment fn fs(i: CovOut) -> @location(0) vec4<f32> {
   let e = i.e;
   let dy = e.w - e.y;
@@ -224,11 +231,15 @@ struct CovOut { @builtin(position) p: vec4<f32>, @location(0) e: vec4<f32> };
   if (yb <= ya) { return vec4<f32>(0.0, 0.0, 0.0, 0.0); }
   let xa = e.x + (e.z - e.x) * (ya - e.y) / dy;
   let xb = e.x + (e.z - e.x) * (yb - e.y) / dy;
-  let px = floor(i.p.x);
-  let ca = clamp(px + 1.0 - xa, 0.0, 1.0);
-  let cb = clamp(px + 1.0 - xb, 0.0, 1.0);
+  // Mean of clamp(c - x, 0, 1) over the edge span in this row, via its primitive: exact for any slope. The
+  // trapezoid of the two clamped endpoints is exact only while the span stays inside one linear piece of the
+  // ramp, which a shallow edge crossing several columns per row does not -- it thinned the top of every ellipse.
+  let c = floor(i.p.x) + 1.0;
+  let lo = min(xa, xb); let hi = max(xa, xb);
+  var avg = clamp(c - xa, 0.0, 1.0);
+  if (hi - lo > 1e-6) { avg = (ramp(c, hi) - ramp(c, lo)) / (hi - lo); }
   let s = select(-1.0, 1.0, dy > 0.0);
-  return vec4<f32>((yb - ya) * 0.5 * (ca + cb) * s, 0.0, 0.0, 0.0);
+  return vec4<f32>((yb - ya) * avg * s, 0.0, 0.0, 0.0);
 }";
 
 	// Draws a shape by sampling its signed-area coverage mask: one quad however complex the path was, since the
