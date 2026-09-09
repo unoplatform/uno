@@ -187,6 +187,14 @@ public sealed unsafe partial class WebGpuPresentSession
 		return ok;
 	}
 
+	/// <summary>
+	/// Device pixels per unit of the op's space for a mask bake: the transform's column lengths. Unlike the atlas
+	/// scale this never refuses -- a rotated or skewed replay bakes at roughly device density and draws through its
+	/// quad, softer than 1:1 but never aliased and never left without a route.
+	/// </summary>
+	private static Vector2 MaskScale(Matrix4x4 t)
+		=> new(MathF.Max(1e-3f, new Vector2(t.M11, t.M12).Length()), MathF.Max(1e-3f, new Vector2(t.M21, t.M22).Length()));
+
 	private static bool SameAtlasScale(Vector2 a, Vector2 b)
 		=> MathF.Abs(a.X - b.X) < 1e-3f && MathF.Abs(a.Y - b.Y) < 1e-3f;
 
@@ -226,7 +234,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	// BuildSimpleOp path did not coalesce, so every cached visual emitted a draw per rect (a major draw-count source
 	// on Intel, where per-draw overhead dominates — see the RenderDoc capture). Coalesced rects share a clip so they
 	// share the arena xform (one clip bind group), staying correct under re-stamp.
-	private void BuildCoalesced(List<WebGpuCommand> cmds, List<DrawOp> ops, OwnedResources owned, int pathSlot, Vector2? atlasScale = null)
+	private void BuildCoalesced(List<WebGpuCommand> cmds, List<DrawOp> ops, OwnedResources owned, int pathSlot, Vector2? atlasScale = null, Vector2? maskScale = null)
 	{
 		float slotBits = System.BitConverter.Int32BitsToSingle(pathSlot);
 		for (int ci = 0; ci < cmds.Count; ci++)
@@ -252,78 +260,29 @@ public sealed unsafe partial class WebGpuPresentSession
 				// after, so an atlas hook that only covers the live paths never sees a glyph.
 				ops.Add(aop0);
 			}
-			else if (_coverageFillMasks && atlasScale is { } fsc0 && cmds[ci] is PathFill mpf && !HasAaRing(mpf.FanCoverage) && TryMaskFill(mpf, owned, fsc0, out var mop0))
+			else if (cmds[ci] is PathFill mpf && !HasAaRing(mpf.FanCoverage) && TryMaskFill(mpf, owned, maskScale ?? atlasScale ?? Vector2.One, out var mop0))
 			{
-				// Takes every fill with no analytic AA ring: stencil-then-cover (even-odd, self-overlapping) AND a tiling
-				// fan whose tessellation failed, which fills in one pass but hard-edged. Gated on atlasScale like the
-				// atlas: it is the same "this op space maps to device pixels by a known scale" guarantee a device-pixel
-				// mask needs, and its absence means a table-frame entry whose quads would not follow the transform table.
+				// Every fill with no analytic AA ring -- even-odd, self-overlapping, a tessellation that failed --
+				// draws through an exact coverage mask. The mask scale is the device density to bake at; a replay the
+				// atlas refuses (rotation, skew) still gets one from its transform and draws softer through its quad.
 				ops.Add(mop0);
 			}
-			else if (cmds[ci] is PathFill pf0 && !pf0.EvenOdd)
+			else if (cmds[ci] is PathFill pf0 && pf0.FanTiles)
 			{
-				// Coalesce a run of consecutive NON-ZERO paths sharing colour + clip (a text run's glyphs) into one
-				// stencil (all fans) + one cover over the union bbox — N glyphs collapse from 2N draws to 2. Safe for
-				// non-zero winding: the union of same-colour shapes fills identically. Even-odd is excluded (an overlap
-				// would XOR to a hole), and per-path clips (PathFan) never enter cached recordings (not arena-safe).
+				// A ringed tessellation fills in one pass over its own triangles, the ring in the vertex coverage
+				// carrying the antialiasing. Everything without a ring was taken by the mask above.
+				float sr = pf0.Color.R / 255f, sg = pf0.Color.G / 255f, sb = pf0.Color.B / 255f, sa = pf0.Color.A / 255f;
 				_scratch.Clear();
-				var bbMin = new Vector2(float.MaxValue); var bbMax = new Vector2(float.MinValue);
-				// Measure the run BEFORE building anything: a run of one (the common case, since shapes rarely
-				// share a colour) reuses the fan already cached on the command instead of re-interleaving it.
-				int j = ci;
-				while (j < cmds.Count && cmds[j] is PathFill pfj && !pfj.EvenOdd
-					&& pfj.Color.R == pf0.Color.R && pfj.Color.G == pf0.Color.G && pfj.Color.B == pf0.Color.B && pfj.Color.A == pf0.Color.A
-					&& ClipDataEquals(pfj.Clip, pf0.Clip))
-				{
-					bbMin = Vector2.Min(bbMin, pfj.BbMin); bbMax = Vector2.Max(bbMax, pfj.BbMax);
-					j++;
-				}
-
-				var singleFan = j - ci == 1 ? pf0.SlottedFan(slotBits) : null;
-				if (singleFan is null)
-				{
-					for (int k = ci; k < j; k++)
-					{
-						var pfk = (PathFill)cmds[k];
-						for (int i = 0; i < pfk.FanDevice.Length; i += 2) { _scratch.Add(pfk.FanDevice[i]); _scratch.Add(pfk.FanDevice[i + 1]); _scratch.Add(slotBits); }
-					}
-				}
-				// A LONE tiling fill skips stencil-then-cover entirely (see PathFill.FanTiles). A run of >1 stays
-				// coalesced: for a glyph run, 2 draws total beats one draw per glyph, and glyph covers are small.
-				if (j - ci == 1 && pf0.FanTiles)
-				{
-					float sr = pf0.Color.R / 255f, sg = pf0.Color.G / 255f, sb = pf0.Color.B / 255f, sa = pf0.Color.A / 255f;
-					_scratch.Clear();
-					var sCov = pf0.FanCoverage;
-					for (int i = 0; i < pf0.FanDevice.Length; i += 2) { PushVertT(new Vector2(pf0.FanDevice[i], pf0.FanDevice[i + 1]), sr, sg, sb, sa * (sCov is null ? 1f : sCov[i >> 1]), slotBits); }
-					var sClip = pf0.Clip;
-					var sClipBg = MakeClipBg(_d.CoverClipBgl, sClip, owned);
-					var sCount = (uint)(pf0.FanDevice.Length / 2);
-					ops.Add(owned is null
-						? new DrawOp(DrawKind.TilingFan, AppendPathBlock(_scratch), sCount, 0, true, sClip, (nint)sClipBg)
-						: new DrawOp(DrawKind.TilingFan, (nint)Vbuf(_scratch, owned), sCount, 0, false, sClip, (nint)sClipBg));
-					ci = j - 1;
-					continue;
-				}
-				uint fanCount = (uint)((singleFan?.Length ?? _scratch.Count) / 3);
-				var fanShared = owned is null
-					? (singleFan is not null ? AppendPathBlock(singleFan) : AppendPathBlock(_scratch))
-					: -1;
-				var fanBuf = owned is null
-					? IntPtr.Zero
-					: (singleFan is not null ? Vbuf(singleFan, owned) : Vbuf(_scratch, owned));
-				float pr = pf0.Color.R / 255f, pg = pf0.Color.G / 255f, pb = pf0.Color.B / 255f, pa = pf0.Color.A / 255f;
-				_scratch.Clear();
-				var tl = bbMin; var br = bbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
-				PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(tr, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits);
-				PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits); PushVertT(bl, pr, pg, pb, pa, slotBits);
-				// TablePath: b0/b1 are BYTE offsets into the shared per-pass path buffer instead of private buffers.
+				var sCov = pf0.FanCoverage;
+				for (int i = 0; i < pf0.FanDevice.Length; i += 2) { PushVertT(new Vector2(pf0.FanDevice[i], pf0.FanDevice[i + 1]), sr, sg, sb, sa * (sCov is null ? 1f : sCov[i >> 1]), slotBits); }
+				var sClip = pf0.Clip;
+				var sClipBg = MakeClipBg(_d.CoverClipBgl, sClip, owned);
+				var sCount = (uint)(pf0.FanDevice.Length / 2);
 				ops.Add(owned is null
-					? new DrawOp(DrawKind.TablePath, fanShared, fanCount, AppendPathBlock(_scratch), false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, owned))
-					: new DrawOp(DrawKind.Path, (nint)fanBuf, fanCount, (nint)Vbuf(_scratch, owned), false, pf0.Clip, (nint)MakeClipBg(_d.CoverClipBgl, pf0.Clip, owned)));
-				ci = j - 1;
+					? new DrawOp(DrawKind.TilingFan, AppendPathBlock(_scratch), sCount, 0, true, sClip, (nint)sClipBg)
+					: new DrawOp(DrawKind.TilingFan, (nint)Vbuf(_scratch, owned), sCount, 0, false, sClip, (nint)sClipBg));
 			}
-			else { BuildSimpleOp(cmds[ci], ops, owned, pathSlot, atlasScale); }
+			else { BuildSimpleOp(cmds[ci], ops, owned, pathSlot, atlasScale, maskScale); }
 		}
 	}
 
@@ -360,7 +319,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		return 6;
 	}
 
-	private void BuildSimpleOp(WebGpuCommand cmd, List<DrawOp> ops, OwnedResources owned, int pathSlot, Vector2? atlasScale = null)
+	private void BuildSimpleOp(WebGpuCommand cmd, List<DrawOp> ops, OwnedResources owned, int pathSlot, Vector2? atlasScale = null, Vector2? maskScale = null)
 	{
 		switch (cmd)
 		{
@@ -379,7 +338,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					// A small axis-aligned shape (a glyph) draws from the coverage atlas: one tinted quad, with
 					// antialiasing baked in, instead of stencil-then-cover leaning on the multisampled attachment.
 					if (atlasScale is { } asc1 && TryAtlasFill(pf, ops, owned, asc1)) { break; }
-					if (_coverageFillMasks && atlasScale is { } fsc1 && !HasAaRing(pf.FanCoverage) && TryMaskFill(pf, owned, fsc1, out var mop1)) { ops.Add(mop1); break; }
+					if (!HasAaRing(pf.FanCoverage) && TryMaskFill(pf, owned, maskScale ?? atlasScale ?? Vector2.One, out var mop1)) { ops.Add(mop1); break; }
 					float slotBits = System.BitConverter.Int32BitsToSingle(pathSlot);
 					if (pf.FanTiles)
 					{
@@ -398,19 +357,7 @@ public sealed unsafe partial class WebGpuPresentSession
 							: new DrawOp(DrawKind.TilingFan, (nint)Vbuf(_scratch, owned), tCount, 0, false, tClip, (nint)tClipBg));
 						break;
 					}
-					var slotted = pf.SlottedFan(slotBits);
-					var fanShared = owned is null ? AppendPathBlock(slotted) : -1;
-					var fanBuf = owned is null ? IntPtr.Zero : Vbuf(slotted, owned);
-					float pr = pf.Color.R / 255f, pg = pf.Color.G / 255f, pb = pf.Color.B / 255f, pa = pf.Color.A / 255f;
-					_scratch.Clear();
-					var tl = pf.BbMin; var br = pf.BbMax; var tr = new Vector2(br.X, tl.Y); var bl = new Vector2(tl.X, br.Y);
-					PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(tr, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits);
-					PushVertT(tl, pr, pg, pb, pa, slotBits); PushVertT(br, pr, pg, pb, pa, slotBits); PushVertT(bl, pr, pg, pb, pa, slotBits);
-					var pClip = pf.Clip;
-					var clipBg = MakeClipBg(_d.CoverClipBgl, pClip, owned);
-					ops.Add(owned is null
-						? new DrawOp(DrawKind.TablePath, fanShared, (uint)(pf.FanDevice.Length / 2), AppendPathBlock(_scratch), pf.EvenOdd, pClip, (nint)clipBg)
-						: new DrawOp(DrawKind.Path, (nint)fanBuf, (uint)(pf.FanDevice.Length / 2), (nint)Vbuf(_scratch, owned), pf.EvenOdd, pClip, (nint)clipBg));
+					// A ringless fill with no usable outline has no area to draw.
 					break;
 				}
 			case ImageCmd im:
@@ -631,7 +578,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// NOT also carry the replay transform. Everything else in a table recording is identity-baked with no slot,
 	/// and the clip's xform is the only thing that can move it.
 	/// </summary>
-	private static bool PlacedByXformTable(DrawKind kind) => kind is DrawKind.Solid or DrawKind.RoundedRect or DrawKind.TablePath;
+	private static bool PlacedByXformTable(DrawKind kind) => kind is DrawKind.Solid or DrawKind.RoundedRect;
 
 	private (ClipData Scissor, nint ClipBg, nint Buf) StampTableClip(ClipData local, OwnedResources stampOwned, Matrix3x2 finv, Matrix3x2 t2, Vector4 sessionAabb, bool sessionInert, RoundClip[] sessionRounds, nint reuseBuf, nint reuseBg, IntPtr clipBgl, Matrix3x2 opXform)
 	{

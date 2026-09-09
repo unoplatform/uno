@@ -55,9 +55,6 @@ internal enum DrawKind
 	/// <summary>Axis-aligned rect. b0 = verts, or 0 to take the shared per-pass solid buffer at b1/u0.</summary>
 	Solid = 0,
 
-	/// <summary>Arbitrary path, stencil-then-cover. b0 = fan, u0 = fan vertex count, b1 = cover, flag = even-odd.</summary>
-	Path = 1,
-
 	/// <summary>Textured quad. b0 = bind group, b1 = quad verts.</summary>
 	Image = 2,
 
@@ -72,9 +69,6 @@ internal enum DrawKind
 
 	/// <summary>Ends the pass segment so a backdrop can sample what is already drawn, then reopens it.</summary>
 	BackdropSegment = 6,
-
-	/// <summary>Path whose verts carry an xform-table slot, so a move rewrites the slot and not the geometry.</summary>
-	TablePath = 7,
 
 	/// <summary>Fan that tiles without overlap, so it fills in ONE pass with no stencil (see PathFill.FanTiles).</summary>
 	TilingFan = 8,
@@ -217,7 +211,6 @@ internal ref struct PassOps
 	public Vector4 ClipAabb;
 
 	public int Iters, Scissors, ClipChanges, FanOps, SharedOps, Tiled;
-	public double CoverMpx;
 }
 
 /// <summary>

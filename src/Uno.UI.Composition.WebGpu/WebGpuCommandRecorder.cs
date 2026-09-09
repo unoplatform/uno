@@ -177,7 +177,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		}
 		_fan = new List<float>();
 		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
-		_allContours.Clear(); _contoursTruncated = false; _contourPts.Clear();
+		_allContours.Clear(); _contourPts.Clear();
 		geometry.StreamFlattened(this);
 		if (_fan.Count > 0)
 		{
@@ -304,7 +304,6 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	private float[] _fanHard;
 	// Per-vertex AA coverage for the fill being recorded (null = no ring, edges rely on the attachment).
 	private float[] _fanCoverage;
-	private bool _contoursTruncated;
 	// Stroke tessellation: contours collected in LOCAL space (offsetting must happen before the transform so a
 	// non-uniform scale strokes correctly, same as DrawLine).
 	private List<(List<Vector2> Pts, bool Closed)> _localContours;
@@ -370,7 +369,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		_fan = new List<float>();
 		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
 		_contourCount = 0; _fanAreaAbs = 0; _fanAreaSigned = 0;
-		_allContours.Clear(); _fanCoverage = null; _contoursTruncated = false;
+		_allContours.Clear(); _fanCoverage = null;
 		// Even-odd fills stencil by parity, and parity depends on the fan decomposition, so only the non-zero
 		// path may move its pivot.
 		_fanFromCentroid = !evenOdd;
@@ -431,10 +430,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		}
 		var n = _contourPts.Count;
 		if (n < 3) { _contourPts.Clear(); return; }
-		// One contour per glyph for a text run, so this bound has to clear a whole string, not a single shape.
-		// Truncating silently would hand the tessellator a partial path.
-		if (_allContours.Count < 512) { _allContours.Add(new List<Vector2>(_contourPts)); }
-		else { _contoursTruncated = true; }
+		_allContours.Add(new List<Vector2>(_contourPts));
 		if (!_fanFromCentroid)
 		{
 			_contourPts.Clear();
@@ -465,7 +461,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	/// </summary>
 	private float[] BuildEdges()
 	{
-		if (_contoursTruncated || _allContours.Count == 0)
+		if (_allContours.Count == 0)
 		{
 			return null;
 		}
@@ -516,7 +512,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	private bool TryTessellate(IGeometry geometry)
 	{
 		_fanHard = null;
-		if (_contoursTruncated || _allContours.Count != _contourCount) { return false; }
+		if (_allContours.Count != _contourCount) { return false; }
 		PathTessellator.Simplify(_allContours);
 		var total = 0;
 		for (var i = 0; i < _allContours.Count; i++) { total += _allContours[i].Count; }
