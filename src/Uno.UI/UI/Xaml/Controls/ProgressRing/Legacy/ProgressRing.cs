@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.UI.Xaml;
 using Uno.UI.Controls.Legacy.Primitives;
+using Uno.UI.Helpers;
 
 using Microsoft.UI.Xaml.Controls;
 
@@ -24,7 +25,7 @@ public partial class ProgressRing : Control
 	}
 
 	public static DependencyProperty IsActiveProperty { get; } =
-		DependencyProperty.Register(nameof(IsActive), typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: OnIsActiveChanged));
+		DependencyProperty.Register(nameof(IsActive), typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(defaultValue: Boxes.BooleanBoxes.BoxedFalse, propertyChangedCallback: OnIsActiveChanged));
 
 	private static void OnIsActiveChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 	{

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Data
 {
@@ -22,7 +23,7 @@ namespace Microsoft.UI.Xaml.Data
 
 		// Using a DependencyProperty as the backing store for IsSourceGrouped.  This enables animation, styling, binding, etc...
 		public static DependencyProperty IsSourceGroupedProperty { get; } =
-			DependencyProperty.Register(nameof(IsSourceGrouped), typeof(bool), typeof(CollectionViewSource), new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: (o, e) => ((CollectionViewSource)o).UpdateView()));
+			DependencyProperty.Register(nameof(IsSourceGrouped), typeof(bool), typeof(CollectionViewSource), new FrameworkPropertyMetadata(defaultValue: Boxes.BooleanBoxes.BoxedFalse, propertyChangedCallback: (o, e) => ((CollectionViewSource)o).UpdateView()));
 
 		public object Source
 		{

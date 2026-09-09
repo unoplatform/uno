@@ -18,12 +18,12 @@
 
 		#region Spacing - DP with common callback
 		public static DependencyProperty SpacingProperty { get; } = DependencyProperty.Register(
-			"Spacing", typeof(double), typeof(StackLayout), new FrameworkPropertyMetadata(default(double), OnDependencyPropertyChanged));
+			"Spacing", typeof(double), typeof(StackLayout), new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero, OnDependencyPropertyChanged));
 
 		public double Spacing
 		{
 			get { return (double)GetValue(SpacingProperty); }
-			set { SetValue(SpacingProperty, value); }
+			set { SetValue(SpacingProperty, global::Uno.UI.Helpers.Boxes.Box(value)); }
 		}
 		#endregion
 
@@ -40,6 +40,6 @@
 		}
 
 		internal static DependencyProperty IsVirtualizationEnabledProperty { get; } =
-			DependencyProperty.Register(nameof(IsVirtualizationEnabled), typeof(bool), typeof(StackLayout), new FrameworkPropertyMetadata(true, OnDependencyPropertyChanged));
+			DependencyProperty.Register(nameof(IsVirtualizationEnabled), typeof(bool), typeof(StackLayout), new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedTrue, OnDependencyPropertyChanged));
 	}
 }

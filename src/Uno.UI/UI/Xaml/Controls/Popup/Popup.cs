@@ -12,6 +12,7 @@ using Uno.UI;
 using Uno;
 using Uno.Disposables;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives;
@@ -275,7 +276,7 @@ public partial class Popup
 	public double HorizontalOffset
 	{
 		get => (double)GetValue(HorizontalOffsetProperty);
-		set => SetValue(HorizontalOffsetProperty, value);
+		set => SetValue(HorizontalOffsetProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -287,7 +288,7 @@ public partial class Popup
 			typeof(double),
 			typeof(Popup),
 			new FrameworkPropertyMetadata(
-				0.0,
+				Boxes.DoubleBoxes.Zero,
 				FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) => ((Popup)s)?.OnHorizontalOffsetChanged((double)e.OldValue, (double)e.NewValue)
 			)
@@ -308,7 +309,7 @@ public partial class Popup
 	public double VerticalOffset
 	{
 		get => (double)GetValue(VerticalOffsetProperty);
-		set => SetValue(VerticalOffsetProperty, value);
+		set => SetValue(VerticalOffsetProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -320,7 +321,7 @@ public partial class Popup
 			typeof(double),
 			typeof(Popup),
 			new FrameworkPropertyMetadata(
-				0.0,
+				Boxes.DoubleBoxes.Zero,
 				FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) => ((Popup)s)?.OnVerticalOffsetChanged((double)e.OldValue, (double)e.NewValue)
 			)

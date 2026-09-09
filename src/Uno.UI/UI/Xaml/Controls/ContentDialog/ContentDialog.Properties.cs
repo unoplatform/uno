@@ -2,6 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 using System;
 using System.Windows.Input;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -119,7 +120,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"FullSizeDesired", typeof(bool),
 			typeof(Controls.ContentDialog),
-			new FrameworkPropertyMetadata(default(bool), UpdateVisualState));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, UpdateVisualState));
 
 		private static void UpdateVisualState(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs newValue)
 			=> (dependencyObject as ContentDialog).UpdateVisualState();
@@ -128,13 +129,13 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"IsPrimaryButtonEnabled", typeof(bool),
 			typeof(Controls.ContentDialog),
-			new FrameworkPropertyMetadata(true));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
 
 		public static DependencyProperty IsSecondaryButtonEnabledProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"IsSecondaryButtonEnabled", typeof(bool),
 			typeof(Controls.ContentDialog),
-			new FrameworkPropertyMetadata(true));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
 
 		public static DependencyProperty PrimaryButtonCommandParameterProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(

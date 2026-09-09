@@ -53,7 +53,8 @@ internal sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 				if (!conversion.IsBoxing ||
 					!HasSpecialBox(conversionOperation, hasFlagMethod) ||
 					conversionOperation.Syntax.Parent is not { } parent ||
-					parent.IsKind(SyntaxKind.AttributeArgument))
+					parent.IsKind(SyntaxKind.AttributeArgument) ||
+					IsInOmittedConditionalCall(conversionOperation))
 				{
 					return;
 				}
@@ -84,6 +85,46 @@ internal sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 				}
 			}, OperationKind.Invocation);
 		});
+	}
+
+	/// <summary>
+	/// Whether the conversion is an argument to a <see cref="System.Diagnostics.ConditionalAttribute"/> method whose
+	/// symbol is undefined. The whole call is dropped at emit, so the boxing never happens - reporting it would only
+	/// churn tracing code (REPEATER_TRACE_INFO and friends) for no runtime gain.
+	/// </summary>
+	private static bool IsInOmittedConditionalCall(IConversionOperation operation)
+	{
+		// A params argument is wrapped in an implicit array creation, so walk up rather than
+		// expecting the argument to be the direct parent.
+		IOperation? current = operation.Parent;
+		while (current is IConversionOperation or IArgumentOperation or IArrayInitializerOperation or IArrayCreationOperation)
+		{
+			current = current.Parent;
+		}
+
+		if (current is not IInvocationOperation invocation)
+		{
+			return false;
+		}
+
+		var definedSymbols = (operation.Syntax.SyntaxTree.Options as CSharpParseOptions)?.PreprocessorSymbolNames;
+		if (definedSymbols is null)
+		{
+			return false;
+		}
+
+		foreach (var attribute in invocation.TargetMethod.GetAttributes())
+		{
+			if (attribute.AttributeClass?.Name == "ConditionalAttribute" &&
+				attribute.ConstructorArguments.Length == 1 &&
+				attribute.ConstructorArguments[0].Value is string condition &&
+				!definedSymbols.Contains(condition))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private static bool HasSpecialBox(IConversionOperation operation, IMethodSymbol hasFlagMethod)
