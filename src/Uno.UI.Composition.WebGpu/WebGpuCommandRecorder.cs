@@ -201,6 +201,8 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 				EvenOdd = geometry.FillRule == GeometryFillRule.EvenOdd,
 				Exclude = operation == ClipOperation.Difference,
 				Bbox = new Vector4(_bbMin.X, _bbMin.Y, _bbMax.X, _bbMax.Y),
+				Geometry = geometry,
+				GeomMatrix = _m,
 			});
 		}
 		_clip.ScissorInert = false;

@@ -30,17 +30,6 @@ public sealed unsafe partial class WebGpuPresentSession
 		return true;
 	}
 
-	/// <summary>True when any vertex carries partial coverage, i.e. the fan has an analytic AA ring baked in.</summary>
-	private static bool HasAaRing(float[] coverage)
-	{
-		if (coverage is null) { return false; }
-		for (int i = 0; i < coverage.Length; i++)
-		{
-			if (coverage[i] < 0.999f) { return true; }
-		}
-		return false;
-	}
-
 
 	internal static int AtlasTried, AtlasNoKey, AtlasHit, AtlasBaked, AtlasNoRoom, AtlasNoEdges, ScaleBlocked;
 

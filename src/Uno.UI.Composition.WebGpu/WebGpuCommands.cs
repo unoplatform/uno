@@ -40,6 +40,8 @@ internal sealed class PathClip
 	public bool EvenOdd;
 	public bool Exclude;
 	public Vector4 Bbox;   // device L,T,R,B of the edges
+	public object Geometry;      // + GeomMatrix: the mask's cache key, like a fill's (see ResolveClipMask)
+	public Matrix4x4 GeomMatrix;
 
 	public PathClip Transformed(in Matrix3x2 m)
 	{
@@ -52,7 +54,8 @@ internal sealed class PathClip
 			e[i] = q.X; e[i + 1] = q.Y;
 			bbMin = Vector2.Min(bbMin, q); bbMax = Vector2.Max(bbMax, q);
 		}
-		return new PathClip { Edges = e, EvenOdd = EvenOdd, Exclude = Exclude, Bbox = new Vector4(bbMin.X, bbMin.Y, bbMax.X, bbMax.Y) };
+		var m4 = new Matrix4x4(m.M11, m.M12, 0, 0, m.M21, m.M22, 0, 0, 0, 0, 1, 0, m.M31, m.M32, 0, 1);
+		return new PathClip { Edges = e, EvenOdd = EvenOdd, Exclude = Exclude, Bbox = new Vector4(bbMin.X, bbMin.Y, bbMax.X, bbMax.Y), Geometry = Geometry, GeomMatrix = GeomMatrix * m4 };
 	}
 }
 

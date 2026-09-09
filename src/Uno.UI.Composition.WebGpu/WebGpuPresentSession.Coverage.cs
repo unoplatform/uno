@@ -151,15 +151,44 @@ public sealed unsafe partial class WebGpuPresentSession
 		var key = (cd.Paths, owned);
 		if (_clipMasks.TryGetValue(key, out var cached)) { return cached; }
 
-		ClipMaskRect(cd.Paths, out var ox, out var oy, out var w, out var h);
-		var (view, tex) = BakeCoverageMask(cd.Paths, ox, oy, w, h, Vector2.One);
+		var mask = TryCachedClipMask(cd.Paths, owned) ?? BakeFrameClipMask(cd.Paths, owned);
+		_clipMasks[key] = mask;
+		return mask;
+	}
 
+	// A single intersecting path clip is a shape like any fill: its mask lives in the atlas (a texture of its own),
+	// keyed by geometry and transform, so a static clip bakes once and a scrolled one is a hit. Nested paths and
+	// Difference clips keep the per-frame product bake below.
+	private ClipMask? TryCachedClipMask(PathClip[] paths, OwnedResources owned)
+	{
+		if (!_pathAtlas || paths.Length != 1 || paths[0].Exclude) { return null; }
+		var p = paths[0];
+		if (!WebGpuPathAtlas.TryKey(p.Geometry, p.GeomMatrix, new Vector2(p.Bbox.X, p.Bbox.Y), new Vector2(p.Bbox.Z, p.Bbox.W), Vector2.One,
+			out var key, out var w, out var h, out var ox, out var oy, allowBig: true)) { return null; }
+		if (_d.PathAtlas.TryGet(key, out var slot))
+		{
+			_d.PathAtlas.NoteUse(slot, _d.FrameSeq);
+			if (owned is not null) { _d.PathAtlas.Retain(slot); (owned.AtlasSlots ??= new()).Add(slot); }
+		}
+		else
+		{
+			slot = AddStandaloneSlot(key, w, h, ox, oy, _d.ColorFormat);
+			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
+			else { _d.PathAtlas.HoldForCache(slot, _d.FrameSeq); }
+			BakeCoverageMaskInto(paths, slot.Owner.View, (int)ox, (int)oy, w, h, Vector2.One);
+			ClipMasksBaked++;
+		}
+		return new ClipMask { View = slot.Owner.View, OriginX = (int)slot.OriginX, OriginY = (int)slot.OriginY };
+	}
+
+	private ClipMask BakeFrameClipMask(PathClip[] paths, OwnedResources owned)
+	{
+		ClipMaskRect(paths, out var ox, out var oy, out var w, out var h);
+		var (view, tex) = BakeCoverageMask(paths, ox, oy, w, h, Vector2.One);
 		if (owned is not null) { (owned.Textures ??= new()).Add(((nint)view, (nint)tex)); }
 		else { _d.DeferTextureRelease(view, tex); }
-		var mask = new ClipMask { View = view, OriginX = ox, OriginY = oy };
-		_clipMasks[key] = mask;
 		ClipMasksBaked++;
-		return mask;
+		return new ClipMask { View = view, OriginX = ox, OriginY = oy };
 	}
 	/// <summary>
 	/// Bakes one coverage mask of <paramref name="w"/>x<paramref name="h"/> device pixels whose texel (0,0) sits on
@@ -179,7 +208,13 @@ public sealed unsafe partial class WebGpuPresentSession
 		};
 		var tex = wgpuDeviceCreateTexture(_d.Dev, &td);
 		var view = wgpuTextureCreateView(tex, null);
+		BakeCoverageMaskInto(paths, view, ox, oy, w, h, scale);
+		return (view, tex);
+	}
 
+	// The bake itself, into a w x h target the caller owns (a fresh texture or an atlas entry's).
+	private void BakeCoverageMaskInto(PathClip[] paths, IntPtr view, int ox, int oy, int w, int h, Vector2 scale)
+	{
 		// Full-target quad; row 0 of the accumulator is the top, so v runs opposite to y (see the fill bake).
 		var q = new float[]
 		{
@@ -239,8 +274,6 @@ public sealed unsafe partial class WebGpuPresentSession
 			wgpuRenderPassEncoderEnd(rpass);
 			_d.Pool.Return(accView);
 		}
-
-		return (view, tex);
 	}
 
 	internal static int FillMasksBaked;
