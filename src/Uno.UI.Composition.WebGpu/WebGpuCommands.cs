@@ -185,8 +185,6 @@ internal sealed class PathFill : WebGpuCommand
 	// The stencil fan the GPU consumes: FanDevice with the transform-table slot interleaved as a third float.
 	// Recordings are cached, so FanDevice never changes — rebuilding this element by element every frame is pure
 	// waste, and a giant glyph flattens to thousands of points. Keyed by the slot it was built for.
-	private float[] _fanSlotted;
-	private float _fanSlotBits = float.NaN;
 
 	// The transformed copy this command produced for a given replay transform. Inline replay runs every frame and
 	// is otherwise a full transform + allocation of the whole fan each time.
@@ -201,36 +199,6 @@ internal sealed class PathFill : WebGpuCommand
 		_replayedM = m;
 	}
 
-	public float[] SlottedFan(float slotBits)
-	{
-		var verts = FanDevice.Length / 2;
-		var arr = _fanSlotted;
-		if (arr is null || arr.Length != verts * 3)
-		{
-			arr = new float[verts * 3];
-			for (var i = 0; i < verts; i++)
-			{
-				arr[i * 3] = FanDevice[i * 2];
-				arr[i * 3 + 1] = FanDevice[i * 2 + 1];
-				arr[i * 3 + 2] = slotBits;
-			}
-
-			_fanSlotted = arr;
-			_fanSlotBits = slotBits;
-			return arr;
-		}
-
-		// The transform-table slot can be reassigned between frames while the geometry is unchanged. Rewriting
-		// just the slot column keeps the positions (two thirds of the data) and, more importantly, does not
-		// allocate — a fresh array per fill per frame is straight GC pressure, which the profile shows dominating.
-		if (!_fanSlotBits.Equals(slotBits))
-		{
-			for (var i = 0; i < verts; i++) { arr[i * 3 + 2] = slotBits; }
-			_fanSlotBits = slotBits;
-		}
-
-		return arr;
-	}
 }
 
 internal sealed unsafe class ImageCmd : WebGpuCommand

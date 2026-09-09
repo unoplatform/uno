@@ -255,14 +255,12 @@ public sealed unsafe partial class WebGpuPresentSession
 		return (view, tex);
 	}
 
-	// UNO_WEBGPU_COVERAGE_FILLS=0 leaves the fills the atlas and the tessellator both refuse on stencil-then-cover.
-	private static readonly bool _coverageFillMasks = Environment.GetEnvironmentVariable("UNO_WEBGPU_COVERAGE_FILLS") is not ("0" or "false");
 	internal static int FillMasksBaked;
 
 	/// <summary>
-	/// Draws a fill through an exact coverage mask: what the atlas refused (too large, no key) and the tessellator
-	/// refused (self-overlap, even-odd) would otherwise reach stencil-then-cover and render with no antialiasing at
-	/// all. A bake per fill, so it only takes what nothing cheaper serves. <paramref name="scale"/> is the device
+	/// Draws a fill through an exact coverage mask: the route for every fill the atlas refused (too large, no key)
+	/// and the tessellator refused (self-overlap, even-odd, or one that simply failed). A bake per fill, so the
+	/// atlas and the ringed tiling fan take what they can first. <paramref name="scale"/> is the device
 	/// scale the GPU applies to the op's space afterwards, exactly as for the atlas.
 	/// </summary>
 	private bool TryMaskFill(PathFill pf, OwnedResources owned, Vector2 scale, out DrawOp op)
@@ -272,7 +270,17 @@ public sealed unsafe partial class WebGpuPresentSession
 		float dx0 = pf.BbMin.X * scale.X, dy0 = pf.BbMin.Y * scale.Y, dx1 = pf.BbMax.X * scale.X, dy1 = pf.BbMax.Y * scale.Y;
 		int ox = (int)MathF.Floor(dx0) - 1, oy = (int)MathF.Floor(dy0) - 1;
 		int w = (int)MathF.Ceiling(dx1) + 1 - ox, h = (int)MathF.Ceiling(dy1) + 1 - oy;
-		if (w <= 0 || h <= 0 || w > 4096 || h > 4096) { return false; }
+		if (w <= 0 || h <= 0) { return false; }
+		// A mask beyond a page-sized texture bakes at reduced density and upscales through its quad: softer than
+		// 1:1, but never refused, because refusal would leave the fill with no route at all.
+		var big = MathF.Max(w, h);
+		if (big > 4096f)
+		{
+			var k = 4096f / big;
+			scale *= k; dx0 *= k; dy0 *= k; dx1 *= k; dy1 *= k;
+			ox = (int)MathF.Floor(dx0) - 1; oy = (int)MathF.Floor(dy0) - 1;
+			w = (int)MathF.Ceiling(dx1) + 1 - ox; h = (int)MathF.Ceiling(dy1) + 1 - oy;
+		}
 
 		var (view, tex) = BakeCoverageMask(new[] { new PathClip { Edges = pf.Edges, EvenOdd = pf.EvenOdd } }, ox, oy, w, h, scale);
 		if (owned is not null) { (owned.Textures ??= new()).Add(((nint)view, (nint)tex)); }

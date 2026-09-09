@@ -20,63 +20,6 @@ namespace Uno.UI.Composition.WebGpu;
 
 public sealed unsafe partial class WebGpuPresentSession
 {
-	/// <summary>
-	/// Collapses the maximal run of non-zero path fills sharing colour and clip — a text run's glyphs — into one
-	/// stencil and one cover over their union bbox. Without it, any recording that also contains a rect (every list
-	/// row, grid cell and card, since they all have a background) paid two draws per glyph.
-	/// </summary>
-	/// <returns>False when the command at <paramref name="index"/> is not an eligible fill; otherwise the run is
-	/// emitted and <paramref name="index"/> is left on its last command.</returns>
-	private bool TryEmitGlyphRun(
-		List<WebGpuCommand> cmds,
-		ref int index,
-		float slotBits,
-		OwnedResources owned,
-		List<FrameOp> order)
-	{
-		if (cmds[index] is not PathFill first || first.EvenOdd || first.FanTiles)
-		{
-			return false;
-		}
-
-		_scratch.Clear();
-		var bbMin = new Vector2(float.MaxValue);
-		var bbMax = new Vector2(float.MinValue);
-		int end = index;
-		while (end < cmds.Count && cmds[end] is PathFill fill && !fill.EvenOdd
-			&& fill.Color.R == first.Color.R && fill.Color.G == first.Color.G
-			&& fill.Color.B == first.Color.B && fill.Color.A == first.Color.A
-			&& ClipDataEquals(fill.Clip, first.Clip))
-		{
-			for (int i = 0; i < fill.FanDevice.Length; i += 2)
-			{
-				_scratch.Add(fill.FanDevice[i]);
-				_scratch.Add(fill.FanDevice[i + 1]);
-				_scratch.Add(slotBits);
-			}
-
-			bbMin = Vector2.Min(bbMin, fill.BbMin);
-			bbMax = Vector2.Max(bbMax, fill.BbMax);
-			end++;
-		}
-
-		var fan = Vbuf(_scratch, owned);
-		uint fanCount = (uint)(_scratch.Count / 3);
-
-		float r = first.Color.R / 255f, g = first.Color.G / 255f, b = first.Color.B / 255f, a = first.Color.A / 255f;
-		_scratch.Clear();
-		var topRight = new Vector2(bbMax.X, bbMin.Y);
-		var bottomLeft = new Vector2(bbMin.X, bbMax.Y);
-		PushVertT(bbMin, r, g, b, a, slotBits); PushVertT(topRight, r, g, b, a, slotBits); PushVertT(bbMax, r, g, b, a, slotBits);
-		PushVertT(bbMin, r, g, b, a, slotBits); PushVertT(bbMax, r, g, b, a, slotBits); PushVertT(bottomLeft, r, g, b, a, slotBits);
-		var cover = Vbuf(_scratch, owned);
-
-		var op = new DrawOp(DrawKind.Path, (nint)fan, fanCount, (nint)cover, false, first.Clip, (nint)MakeClipBg(_d.CoverClipBgl, first.Clip, owned));
-		order.Add(new FrameOp { Kind = null, NonSolid = ResidentizeFan(op, owned) });
-		index = end - 1;
-		return true;
-	}
-
 	// Geometry is built once in identity space with a shared per-vertex slot; a move rewrites the slot and
 	// re-stamps the clips. The slab offset is re-derived every frame, never cached: a recording that scrolled
 	// out had its slice reclaimed, and a stale offset reads another visual's verts.
@@ -136,21 +79,15 @@ public sealed unsafe partial class WebGpuPresentSession
 					// Path fills (glyphs/icons): local device fan/cover + the shared slot, residentized so the fan/cover
 					// buffers upload once. The move repositions them via the slot; clipCov uses the per-frame finv stamp.
 					//
-					// The atlas first: coalesced stencil-then-cover has NO antialiasing at a single sample, so a glyph
-					// that reaches the collapse below instead of a mask renders aliased.
-					// A RUN of atlas quads collapses to one draw. Without this each glyph emitted its own FrameOp,
+					// The atlas first. A RUN of atlas quads collapses to one draw. Without this each glyph emitted its own FrameOp,
 					// so per-glyph geometry cost a draw per character (ops 420 -> 4530 on a 1800-row log view).
 					if (_pathAtlas && tableAtlasSafe && TryAtlasBatch(tcmds, ref ti, fOwned, tableScale, out var aop))
 					{
 						order.Add(new FrameOp { Kind = null, NonSolid = aop });
 						continue;
 					}
-					if (TryEmitGlyphRun(tcmds, ref ti, slotBits, fOwned, order))
-					{
-						continue;
-					}
 					tmp.Clear();
-					BuildSimpleOp(tc, tmp, fOwned, slot);
+					BuildSimpleOp(tc, tmp, fOwned, slot, atlasScale: tableAtlasSafe ? tableScale : null, maskScale: tableAtlasSafe ? tableScale : MaskScale(rr.Transform));
 					foreach (var o in tmp) { order.Add(new FrameOp { Kind = null, NonSolid = ResidentizeFan(o, fOwned) }); }
 				}
 			}
@@ -286,12 +223,8 @@ public sealed unsafe partial class WebGpuPresentSession
 						order.Add(new FrameOp { Kind = null, NonSolid = aop2 });
 						continue;
 					}
-					if (TryEmitGlyphRun(tcmds, ref ti, System.BitConverter.Int32BitsToSingle(fSlot), fOwned, order))
-					{
-						continue;
-					}
 					tmp.Clear();
-					BuildSimpleOp(tc, tmp, fOwned, fSlot);
+					BuildSimpleOp(tc, tmp, fOwned, fSlot, atlasScale: Vector2.One);
 					foreach (var o in tmp) { order.Add(new FrameOp { Kind = null, NonSolid = ResidentizeFan(o, fOwned) }); }
 				}
 			}
@@ -355,7 +288,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			int atlasBefore = AtlasHit + AtlasBaked;
 			int maskBefore = ClipMasksBaked + FillMasksBaked;
 			bool aAtlasSafe = TryAtlasScale(rr.Transform, out var aScale);
-			BuildCoalesced(aList, aOps, aOwned, aSlot, atlasScale: aAtlasSafe ? aScale : null);
+			BuildCoalesced(aList, aOps, aOwned, aSlot, atlasScale: aAtlasSafe ? aScale : null, maskScale: aAtlasSafe ? aScale : MaskScale(rr.Transform));
 			bool aHasAtlas = (AtlasHit + AtlasBaked) != atlasBefore;
 			bool aHasMask = ClipMasksBaked + FillMasksBaked != maskBefore;
 			bool aBlocked = !aAtlasSafe && aHasPath && _pathAtlas;
@@ -487,7 +420,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			var subSlot = -1;
 			if (subHasPath) { subSlot = _d.AllocXformSlot(); _xformTransient.Add(subSlot); WriteXform(subSlot, Matrix4x4.Identity); }
 			var subOps = new List<DrawOp>();
-			BuildCoalesced(subList, subOps, subOwned, subSlot);
+			BuildCoalesced(subList, subOps, subOwned, subSlot, atlasScale: Vector2.One);
 			for (int _ri = 0; _ri < subOps.Count; _ri++) { subOps[_ri] = ResidentizeFan(subOps[_ri], subOwned); }
 			ops.AddRange(subOps);
 			_d.DeferRelease(subOwned);

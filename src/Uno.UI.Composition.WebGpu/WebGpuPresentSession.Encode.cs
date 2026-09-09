@@ -166,17 +166,8 @@ public sealed unsafe partial class WebGpuPresentSession
 			var (kind, b0, u0, b1, flag, clip, clipBg) = ops[oi];
 			pst.Iters++;
 			if (_emitStats && clip.PathFan is not null) { pst.FanOps++; }
-			if (_emitStats && (kind == DrawKind.TablePath || (kind is DrawKind.Image or DrawKind.Gradient or DrawKind.TilingFan && flag))) { pst.SharedOps++; }
+			if (_emitStats && kind is DrawKind.Image or DrawKind.Gradient or DrawKind.TilingFan && flag) { pst.SharedOps++; }
 			if (_emitStats && kind == DrawKind.TilingFan) { pst.Tiled++; }
-			// Fragment area the stencil-then-cover path actually rasterises: the cover quad spans the whole
-			// bbox even when the shape is a 2px stroke outline, so this is where the waste shows up.
-			if (_emitStats && kind is DrawKind.Path or DrawKind.TablePath)
-			{
-				var cb = clip.Aabb;
-				var cw = Math.Min(cb.Z, _s.Width) - Math.Max(cb.X, 0);
-				var chh = Math.Min(cb.W, _s.Height) - Math.Max(cb.Y, 0);
-				if (cw > 0 && chh > 0) { pst.CoverMpx += cw * chh / 1e6; }
-			}
 			// A path clip carried by the coverage mask needs no depth pass; only fans still on the depth mask (coverage
 			// clips off, no edge list, or a stamped session clip) go through ApplyDepthClip.
 			var depthFan = UsesDepthFan(clip) ? clip.PathFan : null;
@@ -268,20 +259,7 @@ public sealed unsafe partial class WebGpuPresentSession
 						pst.Enc.Draw(u0);   // u0 = 6 * (coalesced) rect count
 					}
 					break;
-				case DrawKind.Path:
-					// Path fill via the transform table: fan verts = device pos + slot index (stride 3); cover verts =
-					// device pos + colour + slot index (stride 7). Group 0 = storage table (positions the verts);
-					// group 1 (cover) = ClipU (analytic clip coverage). Table entries were written during op-build.
-					pst.Enc.Pipe(flag ? _d.StencilTableEO : _d.StencilTableNZ);
-					pst.Enc.Bg(0, (IntPtr)xformBg);
-					pst.Enc.Vb((IntPtr)b0, 0, (nuint)(u0 * 3 * sizeof(float)));
-					pst.Enc.Draw(u0);
-					pst.Enc.Pipe(_d.CoverTablePipe);
-					pst.Enc.Bg(0, (IntPtr)xformBg);
-					pst.Enc.Bg(1, (IntPtr)clipBg);
-					pst.Enc.Vb((IntPtr)b1, 0, (nuint)(42 * sizeof(float)));
-					pst.Enc.Draw(6);
-					break;
+
 				case DrawKind.TilingFan:
 					// Single-pass fill of a tiling fan (see PathFill.FanTiles). Uses the stencil-independent
 					// cover pipeline: there is no stencil pass here, so the masked one would discard everything.
@@ -299,20 +277,6 @@ public sealed unsafe partial class WebGpuPresentSession
 						pst.Enc.Draw(u0);
 					}
 					break;
-				case DrawKind.TablePath:
-					// Shared-buffer path fill: same as DrawKind.Path, but b0/b1 are byte offsets into pathBuf, so the
-					// vertex buffer is bound once for the whole pass instead of twice per fill.
-					pst.Enc.Pipe(flag ? _d.StencilTableEO : _d.StencilTableNZ);
-					pst.Enc.Bg(0, (IntPtr)xformBg);
-					pst.Enc.Vb((IntPtr)pathBuf, 0, pathBufBytes);
-					pst.Enc.Draw(u0, (uint)(b0 / (3 * sizeof(float))));
-					pst.Enc.Pipe(_d.CoverTablePipe);
-					pst.Enc.Bg(0, (IntPtr)xformBg);
-					pst.Enc.Bg(1, (IntPtr)clipBg);
-					pst.Enc.Vb((IntPtr)pathBuf, 0, pathBufBytes);
-					pst.Enc.Draw(6, (uint)(b1 / (VertexStride.Table * sizeof(float))));
-					break;
-
 				case DrawKind.Image:
 					pst.Enc.Pipe(_d.ImagePipe);
 					pst.Enc.Bg(0, (IntPtr)b0);
@@ -433,7 +397,6 @@ public sealed unsafe partial class WebGpuPresentSession
 
 		// Drawn
 		line.Append($" ops={opCount} emitted={pst.Iters} sharedOps={pst.SharedOps} tiled={pst.Tiled}");
-		line.Append($" coverMpx={pst.CoverMpx:F1} strips={WgStrokeStats.Strips}");
 
 		// Changed between draws
 		line.Append($" scissorChanges={pst.Scissors} clipChanges={pst.ClipChanges} fanOps={pst.FanOps}");
