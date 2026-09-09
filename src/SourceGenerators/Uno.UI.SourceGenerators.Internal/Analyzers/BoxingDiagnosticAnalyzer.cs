@@ -50,10 +50,14 @@ internal sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 			{
 				var conversionOperation = (IConversionOperation)context.Operation;
 				var conversion = conversionOperation.GetConversion();
+				// Only a conversion to object is reported: the cached boxes are object-typed, so boxing to an
+				// interface (int -> IComparable, an enum -> Enum) has no fix and must not be flagged.
 				if (!conversion.IsBoxing ||
+					conversionOperation.Type?.SpecialType != SpecialType.System_Object ||
 					!HasSpecialBox(conversionOperation, hasFlagMethod) ||
 					conversionOperation.Syntax.Parent is not { } parent ||
 					parent.IsKind(SyntaxKind.AttributeArgument) ||
+					IsStringConcatenationOperand(conversionOperation) ||
 					IsInOmittedConditionalCall(conversionOperation))
 				{
 					return;
@@ -86,6 +90,15 @@ internal sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 			}, OperationKind.Invocation);
 		});
 	}
+
+	/// <summary>
+	/// Whether the conversion is an operand of a string concatenation. The compiler lowers those back to a
+	/// <c>ToString()</c> call and the box never reaches IL, so "fixing" one with <c>Boxes.Box</c> would make the
+	/// operand statically <c>object</c> and introduce the very allocation this rule is meant to remove.
+	/// </summary>
+	private static bool IsStringConcatenationOperand(IConversionOperation operation)
+		=> operation.Parent is IBinaryOperation { OperatorKind: BinaryOperatorKind.Add } binary &&
+			binary.Type?.SpecialType == SpecialType.System_String;
 
 	/// <summary>
 	/// Whether the conversion is an argument to a <see cref="System.Diagnostics.ConditionalAttribute"/> method whose

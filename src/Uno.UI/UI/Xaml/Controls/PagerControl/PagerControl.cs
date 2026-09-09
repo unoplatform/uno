@@ -760,7 +760,7 @@ public partial class PagerControl : Control
 		};
 		// Set the default style of buttons
 		button.Style = (Style)ResourceAccessor.ResourceLookup(this, c_numberPanelButtonStyleName);
-		AutomationProperties.SetName(button, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PagerControlPageTextName) + " " + Boxes.Box(pageNumber));
+		AutomationProperties.SetName(button, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PagerControlPageTextName) + " " + pageNumber);
 		AutomationProperties.SetPositionInSet(button, pageNumber);
 		AutomationProperties.SetSizeOfSet(button, numberOfPages);
 		m_numberPanelElements.Add(button);

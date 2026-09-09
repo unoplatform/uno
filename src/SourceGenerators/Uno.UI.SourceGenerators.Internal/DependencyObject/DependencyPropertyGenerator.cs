@@ -734,9 +734,9 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 		/// common values, so use them.
 		/// </summary>
 		/// <remarks>
-		/// <c>Uno.UI.Helpers.Boxes</c> is internal to Uno.UI, which is the only assembly using
-		/// <c>[GeneratedDependencyProperty]</c>. Any other consumer would get a compile error here rather
-		/// than a silent behaviour change.
+		/// <c>hasBoxes</c> is false when <c>Uno.UI.Helpers.Boxes</c> is not accessible from the compilation,
+		/// which is every consumer of <c>[GeneratedDependencyProperty]</c> outside Uno.UI. Those keep the
+		/// plain value rather than failing to compile.
 		/// </remarks>
 		private static string GetBoxedValueExpression(string propertyTypeName, bool hasBoxes)
 			=> hasBoxes && propertyTypeName is "bool" or "int" or "double"

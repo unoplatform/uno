@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using Windows.Foundation;
 using Uno.Extensions;
-using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -157,7 +156,7 @@ namespace Microsoft.UI.Xaml.Media
 			sb.Append('[');
 			foreach (Point p in _points)
 			{
-				sb.Append(Boxes.Box(p.X) + "," + Boxes.Box(p.Y) + " ");
+				sb.Append(p.X + "," + p.Y + " ");
 			}
 			sb.Append(']');
 
