@@ -416,10 +416,15 @@ public sealed unsafe partial class WebGpuPresentSession
 			case ImageCmd im:
 				{
 					var view = im.View;
-					var ubuf = Ubuf(112, owned);
-					var op = stackalloc float[28];
+					var ubuf = Ubuf(WebGpuDevice.ImageUniformBytes, owned);
+					var op = stackalloc float[36];
+					for (var zi = 0; zi < 36; zi++) { op[zi] = 0f; }
 					bool hasMatrix = im.ColorMatrix is { Length: >= 20 };
 					op[0] = im.Opacity; op[1] = im.TintMode; op[2] = hasMatrix ? 1f : 0f; op[3] = 0;
+					// The quad's uv rect, and the edge-AA flag: every image draw is a plain quad whose silhouette is its
+					// own edges, tiled ones included (their uv range is the whole quad).
+					op[28] = im.U0; op[29] = im.V0; op[30] = im.U1; op[31] = im.V1;
+					op[32] = 1f;
 					op[4] = im.Tint.X; op[5] = im.Tint.Y; op[6] = im.Tint.Z; op[7] = im.Tint.W;
 					if (im.ColorMatrix is { Length: >= 20 } mm)
 					{
@@ -429,7 +434,7 @@ public sealed unsafe partial class WebGpuPresentSession
 						op[20] = mm[15]; op[21] = mm[16]; op[22] = mm[17]; op[23] = mm[18];  // m3
 						op[24] = mm[4]; op[25] = mm[9]; op[26] = mm[14]; op[27] = mm[19];    // off (5th column)
 					}
-					wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)op, 112);
+					wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)op, WebGpuDevice.ImageUniformBytes);
 					var entries = stackalloc WGPUBindGroupEntry[3];
 					entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = view };
 					entries[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.TiledSampler(im.ExtendX, im.ExtendY) };

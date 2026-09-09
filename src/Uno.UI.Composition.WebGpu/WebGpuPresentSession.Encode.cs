@@ -84,13 +84,14 @@ public sealed unsafe partial class WebGpuPresentSession
 	}
 
 	/// <summary>
-	/// Draws the blurred backdrop over its region. Luminosity, noise and opacity ride in the 112-byte image uniform,
+	/// Draws the blurred backdrop over its region. Luminosity, noise and opacity ride in the image uniform,
 	/// so the acrylic recipe costs one textured quad.
 	/// </summary>
 	private void DrawBlurredBackdrop(ref PassOps pst, BackdropCmd backdrop, IntPtr blurred, Vector2 origin, Vector2 size)
 	{
 		var uniform = MakeUniform(WebGpuDevice.ImageUniformBytes);
-		var fields = stackalloc float[28];
+		var fields = stackalloc float[36];
+		for (var zi = 0; zi < 36; zi++) { fields[zi] = 0f; }
 		var lum = backdrop.Effect.LumColor;
 		fields[0] = backdrop.Opacity;
 		fields[3] = 1f;
