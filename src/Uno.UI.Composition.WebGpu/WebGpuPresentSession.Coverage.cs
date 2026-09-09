@@ -17,99 +17,6 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// <summary>True when <paramref name="pf"/> carries an outline to bake; a stroke strip has none.</summary>
 	internal static bool CanCoverageBake(PathFill pf) => pf.Edges is { Length: >= 12 };
 
-	/// <summary>
-	/// Bakes <paramref name="slot"/>'s mask from the fill's edge list: accumulate signed area per pixel into a
-	/// scratch target, then resolve that into the slot. Needs no triangulation -- the edges ARE the outline.
-	/// <para>
-	/// Runs during op BUILD, before the frame's render pass opens: each step is its own pass, and a pass cannot be
-	/// nested inside another. Only the slot outlives the frame, and the atlas owns it.
-	/// </para>
-	/// </summary>
-	private void RasterizeAtlasEntryCoverage(PathFill pf, WebGpuPathAtlas.Slot slot, Vector2 scale)
-	{
-		var edges = pf.Edges;
-
-		// Mask-local pixel space on the same placement AppendAtlasQuad draws with: the fill's own origin, shifted a
-		// pixel so an edge sitting exactly on the bbox boundary still has the pixel it partly covers.
-		var local = new float[edges.Length];
-		for (var i = 0; i < edges.Length; i += 2)
-		{
-			local[i] = (edges[i] - slot.OriginX) * scale.X + 1f;
-			local[i + 1] = (edges[i + 1] - slot.OriginY) * scale.Y + 1f;
-		}
-
-		var edgeBuf = _d.BufferPool.Rent(local.Length * sizeof(float), WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst);
-		fixed (float* p = local) { wgpuQueueWriteBuffer(_d.Q, edgeBuf, 0, (IntPtr)p, (nuint)(local.Length * sizeof(float))); }
-
-		var sizeBuf = _d.BufferPool.Rent(16, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
-		var size = stackalloc float[4];
-		size[0] = slot.W; size[1] = slot.H;
-		wgpuQueueWriteBuffer(_d.Q, sizeBuf, 0, (IntPtr)size, 16);
-
-		var accView = _d.Pool.Rent(slot.W, slot.H, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.CoverageFormat);
-
-		var ae = stackalloc WGPUBindGroupEntry[2];
-		ae[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = edgeBuf, Offset = 0, Size = (nuint)(local.Length * sizeof(float)) };
-		ae[1] = new WGPUBindGroupEntry { Binding = 1, Buffer = sizeBuf, Offset = 0, Size = 16 };
-		var abgd = new WGPUBindGroupDescriptor { Layout = _d.CoverageBgl, EntryCount = 2, Entries = ae };
-		var accumBg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &abgd));
-
-		// Cleared to zero: the accumulator starts at "no area", and every edge adds its contribution.
-		var color = new WGPURenderPassColorAttachment
-		{
-			DepthSlice = uint.MaxValue,
-			View = accView,
-			LoadOp = WGPULoadOp.Clear,
-			StoreOp = WGPUStoreOp.Store,
-			ClearValue = new WGPUColor { R = 0, G = 0, B = 0, A = 0 },
-		};
-		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color };
-		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &desc);
-		wgpuRenderPassEncoderSetPipeline(pass, _d.CoveragePipe);
-		wgpuRenderPassEncoderSetBindGroup(pass, 0, (IntPtr)accumBg, 0, (uint*)null);
-		wgpuRenderPassEncoderDraw(pass, (uint)(local.Length / 4 * 6), 1, 0, 0);
-		wgpuRenderPassEncoderEnd(pass);
-
-		// Resolve into the slot (viewport = slot, Load so the rest of the page survives).
-		var ru = _d.BufferPool.Rent(16, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
-		var rp = stackalloc float[4];
-		rp[0] = pf.EvenOdd ? 1f : 0f;
-		wgpuQueueWriteBuffer(_d.Q, ru, 0, (IntPtr)rp, 16);
-
-		var re = stackalloc WGPUBindGroupEntry[2];
-		re[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = accView };
-		re[1] = new WGPUBindGroupEntry { Binding = 1, Buffer = ru, Offset = 0, Size = 16 };
-		var rbgd = new WGPUBindGroupDescriptor { Layout = _d.CoverageResolveBgl, EntryCount = 2, Entries = re };
-		var resolveBg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &rbgd));
-
-		// Row 0 of the accumulator is the TOP row (its vertex shader already maps pixel y down from NDC +1), and
-		// NDC +1 is the top of the slot viewport -- so v runs opposite to y. Matching orientations by eye is not
-		// possible here: a flipped mask still fills roughly the right pixels, so it reads as bad antialiasing
-		// rather than as an upside-down glyph.
-		var q = new float[]
-		{
-			-1f, -1f, 0f, slot.H,
-			 1f, -1f, slot.W, slot.H,
-			 1f,  1f, slot.W, 0f,
-			-1f, -1f, 0f, slot.H,
-			 1f,  1f, slot.W, 0f,
-			-1f,  1f, 0f, 0f,
-		};
-		var qBuf = MakeBuffer(q);
-
-		var rca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = slot.Owner.View, ResolveTarget = IntPtr.Zero, LoadOp = WGPULoadOp.Load, StoreOp = WGPUStoreOp.Store, ClearValue = default };
-		var rrp = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &rca };
-		var rpass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rrp);
-		wgpuRenderPassEncoderSetViewport(rpass, slot.X, slot.Y, slot.W, slot.H, 0f, 1f);
-		wgpuRenderPassEncoderSetPipeline(rpass, _d.CoverageResolvePipe);
-		wgpuRenderPassEncoderSetBindGroup(rpass, 0, (IntPtr)resolveBg, 0, (uint*)null);
-		wgpuRenderPassEncoderSetVertexBuffer(rpass, 0, qBuf, 0, (nuint)(q.Length * sizeof(float)));
-		wgpuRenderPassEncoderDraw(rpass, 6, 1, 0, 0);
-		wgpuRenderPassEncoderEnd(rpass);
-
-		_d.Pool.Return(accView);
-	}
-
 	internal static int ClipMasksBaked;
 
 	/// <summary>A baked path-clip mask: the texture and the device pixel its texel (0,0) sits on.</summary>
@@ -177,7 +84,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			slot = AddStandaloneSlot(key, w, h, ox, oy, _d.ColorFormat);
 			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
 			else { _d.PathAtlas.HoldForCache(slot, _d.FrameSeq); }
-			BakeCoverageMaskInto(paths, slot.Owner.View, (int)ox, (int)oy, w, h, Vector2.One);
+			AddBake(BatchFor(slot.Owner.View, slot.Owner.W, slot.Owner.H, load: true), slot.X, slot.Y, w, h, p.Edges, new Vector2(ox + 1, oy + 1), Vector2.One, p.EvenOdd, false);
 			ClipMasksBaked++;
 		}
 		return new ClipMask { View = slot.Owner.View, OriginX = (int)slot.OriginX, OriginY = (int)slot.OriginY, SlotX = slot.X, SlotY = slot.Y, W = slot.W, H = slot.H };
@@ -189,9 +96,9 @@ public sealed unsafe partial class WebGpuPresentSession
 		// A single path on a per-frame op goes on the frame's sheet; a product of several needs its own multiply bake.
 		if (owned is null && paths.Length == 1 && TryReserveSheetSlot(w, h, out var sheet, out var sx, out var sy))
 		{
-			AddSheetFill(sheet, sx, sy, w, h, paths[0].Edges, new Vector2(ox + 1, oy + 1), Vector2.One, paths[0].EvenOdd, paths[0].Exclude);
+			AddBake(sheet, sx, sy, w, h, paths[0].Edges, new Vector2(ox + 1, oy + 1), Vector2.One, paths[0].EvenOdd, paths[0].Exclude);
 			ClipMasksBaked++;
-			return new ClipMask { View = sheet.View, OriginX = ox, OriginY = oy, SlotX = sx, SlotY = sy, W = w, H = h };
+			return new ClipMask { View = sheet.Target, OriginX = ox, OriginY = oy, SlotX = sx, SlotY = sy, W = w, H = h };
 		}
 		var (view, tex) = BakeCoverageMask(paths, ox, oy, w, h, Vector2.One);
 		if (owned is not null) { (owned.Textures ??= new()).Add(((nint)view, (nint)tex)); }
@@ -208,20 +115,25 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// </summary>
 	private (IntPtr view, IntPtr tex) BakeCoverageMask(PathClip[] paths, int ox, int oy, int w, int h, Vector2 scale)
 	{
-		var td = new WGPUTextureDescriptor
-		{
-			Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 },
-			// The device's swapchain format, which is what the resolve pipelines target -- not DefaultColorFormat.
-			Format = _d.ColorFormat, MipLevelCount = 1, SampleCount = 1, Dimension = WGPUTextureDimension._2D,
-			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding,
-		};
-		var tex = wgpuDeviceCreateTexture(_d.Dev, &td);
-		var view = wgpuTextureCreateView(tex, null);
+		var (view, tex) = NewMaskTexture(w, h);
 		BakeCoverageMaskInto(paths, view, ox, oy, w, h, scale);
 		return (view, tex);
 	}
 
-	// The bake itself, into a w x h target the caller owns (a fresh texture or an atlas entry's).
+	// A w x h mask in the device's swapchain format, which is what the resolve pipelines target -- not DefaultColorFormat.
+	private (IntPtr view, IntPtr tex) NewMaskTexture(int w, int h)
+	{
+		var td = new WGPUTextureDescriptor
+		{
+			Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 },
+			Format = _d.ColorFormat, MipLevelCount = 1, SampleCount = 1, Dimension = WGPUTextureDimension._2D,
+			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding,
+		};
+		var tex = wgpuDeviceCreateTexture(_d.Dev, &td);
+		return (wgpuTextureCreateView(tex, null), tex);
+	}
+
+	// The product bake, into a w x h texture the caller owns: single paths go through the batched bakes instead.
 	private void BakeCoverageMaskInto(PathClip[] paths, IntPtr view, int ox, int oy, int w, int h, Vector2 scale)
 	{
 		// Full-target quad; row 0 of the accumulator is the top, so v runs opposite to y (see the fill bake).
@@ -314,15 +226,17 @@ public sealed unsafe partial class WebGpuPresentSession
 
 		// A per-frame fill goes on the frame's sheet and samples its slot; a cached recording's gets a texture of its own.
 		IntPtr view; var uv = new Vector4(0f, 0f, 1f, 1f);
+		var origin = new Vector2((ox + 1) / scale.X, (oy + 1) / scale.Y);
 		if (owned is null && TryReserveSheetSlot(w, h, out var sheet, out var sx, out var sy))
 		{
-			AddSheetFill(sheet, sx, sy, w, h, pf.Edges, new Vector2((ox + 1) / scale.X, (oy + 1) / scale.Y), scale, pf.EvenOdd, false);
-			view = sheet.View;
+			AddBake(sheet, sx, sy, w, h, pf.Edges, origin, scale, pf.EvenOdd, false);
+			view = sheet.Target;
 			uv = new Vector4(sx, sy, sx + w, sy + h) / SheetSize;
 		}
 		else
 		{
-			(view, var tex) = BakeCoverageMask(new[] { new PathClip { Edges = pf.Edges, EvenOdd = pf.EvenOdd } }, ox, oy, w, h, scale);
+			(view, var tex) = NewMaskTexture(w, h);
+			AddBake(BatchFor(view, w, h, load: false), 0, 0, w, h, pf.Edges, origin, scale, pf.EvenOdd, false);
 			if (owned is not null) { (owned.Textures ??= new()).Add(((nint)view, (nint)tex)); }
 			else { _d.DeferTextureRelease(view, tex); }
 		}

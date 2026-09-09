@@ -396,6 +396,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		line.Append($" block=ref{WebGpuCommandRecorder.StatBlockRef}/layer{WebGpuCommandRecorder.StatBlockLayer}");
 		line.Append($"/shadow{WebGpuCommandRecorder.StatBlockShadow}/other{WebGpuCommandRecorder.StatBlockOther}");
 		line.Append($"/empty{WebGpuCommandRecorder.StatBlockEmpty}");
+		line.Append($" fan=refused{WebGpuCommandRecorder.StatFanRefused}/contours{WebGpuCommandRecorder.StatTessContours}/points{WebGpuCommandRecorder.StatTessPoints}/tri{WebGpuCommandRecorder.StatTessTri}/area{WebGpuCommandRecorder.StatTessArea}/fold{WebGpuCommandRecorder.StatTessFold}");
 
 		// Rebuilt anyway, and why
 		line.Append($" tableRebuilds={_statTableRebuilds} arenaRebuilds={_statArenaRebuilds}(miss{_statArMiss}/flip{_statArFlip}/masks{_statArMasks}) stamps={_statStamps}");
@@ -403,7 +404,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		line.Append($"/flip{_statCrPathFlip}/clip{_statCrClip})");
 
 		// Turned away, and why
-		line.Append($" atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked} clipMasks={ClipMasksBaked} fillMasks={FillMasksBaked} sheet={SheetSlotsBaked}");
+		line.Append($" atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked} clipMasks={ClipMasksBaked} fillMasks={FillMasksBaked} sheet={SheetSlotsBaked} bakes={BakeBatches}");
 		line.Append($"/full{AtlasNoRoom}/noedges{AtlasNoEdges}/scaleblk{ScaleBlocked}/big{WebGpuPathAtlas.RejBig}");
 		line.Append($"/pages{_d.PathAtlas.Pages.Count}");
 

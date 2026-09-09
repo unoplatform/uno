@@ -395,9 +395,10 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			// Tessellate into non-overlapping triangles plus an analytic AA ring, so the fill runs in ONE pass
 			// over the ink alone and antialiases itself instead of leaning on the multisampled attachment.
 			// Explicitly, not by _allContours being empty: parity depends on the fan decomposition, and ear clipping
-		// triangulates the non-zero interior, which is a different region.
-		var aa = !evenOdd && TryTessellate(geometry);
+			// triangulates the non-zero interior, which is a different region.
+			var aa = !evenOdd && TryTessellate(geometry);
 			if (aa) { tiles = true; }
+			else if (!tiles) { StatFanRefused++; }
 			_target.Add(new PathFill { FanDevice = _fan.ToArray(), FanCoverage = _fanCoverage, Edges = BuildEdges(), Geometry = geometry, GeomMatrix = _m, BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, FanTiles = tiles, Clip = RelaxedClip(_bbMin, _bbMax) });
 		}
 		_fan = null;
@@ -521,16 +522,16 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	/// </summary>
 	private bool TryTessellate(IGeometry geometry)
 	{
-		if (_allContours.Count != _contourCount) { return false; }
+		if (_allContours.Count != _contourCount) { StatTessContours++; return false; }
 		PathTessellator.Simplify(_allContours);
 		var total = 0;
 		for (var i = 0; i < _allContours.Count; i++) { total += _allContours[i].Count; }
-		if (_allContours.Count == 0 || total < 3 || total > PathTessellator.MaxPoints) { return false; }
+		if (_allContours.Count == 0 || total < 3 || total > PathTessellator.MaxPoints) { StatTessPoints++; return false; }
 
 		if (!_triCache.TryGetValue(geometry, out var tris) || tris is null || tris.Length < 4 || tris[0] != total)
 		{
 			var built = PathTessellator.TryTriangulate(_allContours);
-			if (built is null) { return false; }
+			if (built is null) { StatTessTri++; return false; }
 			tris = new int[built.Length + 1];
 			tris[0] = total;
 			Array.Copy(built, 0, tris, 1, built.Length);
@@ -552,11 +553,11 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		}
 		double windArea = 0;
 		for (var i = 0; i < _allContours.Count; i++) { windArea += PathTessellator.SignedArea2(_allContours[i]); }
-		if (Math.Abs(triArea - Math.Abs(windArea)) > 1e-2 * Math.Max(triArea, 1)) { return false; }
+		if (Math.Abs(triArea - Math.Abs(windArea)) > 1e-2 * Math.Max(triArea, 1)) { StatTessArea++; return false; }
 
 		// Half the ramp, in device pixels (the points are already device-space). Zero when the attachment is
 		// multisampled: the triangulation still pays for itself by filling only the ink, and MSAA keeps the edges.
-		if (!PathTessellator.BuildGeometry(_allContours, idx, AnalyticAa ? 0.5f : 0f, _aaVerts, _aaCov)) { return false; }
+		if (!PathTessellator.BuildGeometry(_allContours, idx, AnalyticAa ? 0.5f : 0f, _aaVerts, _aaCov)) { StatTessFold++; return false; }
 
 		_fan.Clear();
 		_fan.AddRange(_aaVerts);
@@ -927,6 +928,8 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	public IRenderRecord Finish() => _data;
 
 	internal static int StatBlockRef, StatBlockLayer, StatBlockShadow, StatBlockOther, StatBlockEmpty;
+	// Fills that took the mask route, and why tessellation refused (UNO_WEBGPU_STATS).
+	internal static int StatFanRefused, StatTessContours, StatTessPoints, StatTessTri, StatTessArea, StatTessFold;
 
 	/// <summary>
 	/// Whether a recording can be GPU-geometry-cached: only simple primitives (rect/rrect/path/image/gradient).

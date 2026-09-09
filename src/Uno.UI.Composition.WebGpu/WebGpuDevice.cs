@@ -287,7 +287,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// and bakes it here via the adopt ctor.
 	public uint MsaaSamples { get; private set; } = 1;
 
-	public IntPtr CoverageResolvePipe, CoverageResolveBgl;
+	public IntPtr CoverageResolveBgl;
 	// Same resolve with colour = src * dst, so successive path clips AND into one mask (its first pass clears to 1).
 	public IntPtr CoverageResolveMulPipe;
 
@@ -462,13 +462,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		PathAtlas.Retired.Clear();
 	}
 
-
-	private void CreateCoverageResolvePipeline()
-	{
-		CoverageResolvePipe = CreateCoverageResolvePipeline(multiply: false);
-		CoverageResolveMulPipe = CreateCoverageResolvePipeline(multiply: true);
-	}
-
 	private void CreateCoverageSheetPipelines()
 	{
 		var module = Module(CoverageSheetWgsl);
@@ -526,7 +519,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		CoverageResolveSheetPipe = wgpuDeviceCreateRenderPipeline(Dev, &rpd);
 	}
 
-	private IntPtr CreateCoverageResolvePipeline(bool multiply)
+	private IntPtr CreateCoverageResolvePipeline()
 	{
 		var module = Module(CoverageResolveWgsl);
 		var e = stackalloc WGPUBindGroupLayoutEntry[2];
@@ -560,7 +553,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 			Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.Dst, DstFactor = WGPUBlendFactor.Zero, Operation = WGPUBlendOperation.Add },
 			Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.Dst, DstFactor = WGPUBlendFactor.Zero, Operation = WGPUBlendOperation.Add },
 		};
-		var ct = new WGPUColorTargetState { Format = ColorFormat, Blend = multiply ? &blend : null, WriteMask = WGPUColorWriteMask.All };
+		var ct = new WGPUColorTargetState { Format = ColorFormat, Blend = &blend, WriteMask = WGPUColorWriteMask.All };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &ct };
 		var pd = new WGPURenderPipelineDescriptor
 		{
@@ -661,7 +654,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		CreateCoveragePipelines();
 		CreateCoverageSheetPipelines();
 		CreateImagePipeline();
-		CreateCoverageResolvePipeline();
+		CoverageResolveMulPipe = CreateCoverageResolvePipeline();
 		CreateGradientPipeline(&blend);
 		CreateRoundedRectPipeline(&blend);
 		CreateBlurPipeline();

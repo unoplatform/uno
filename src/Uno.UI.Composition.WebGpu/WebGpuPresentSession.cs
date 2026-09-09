@@ -663,8 +663,8 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		}
 
 		if (_emitStats) { OpsBuildTicks += System.Diagnostics.Stopwatch.GetTimestamp() - _renderIntoStart; }
-		// Every mask this pass samples from the frame's sheet has to be baked before the pass opens.
-		FlushMaskSheets();
+		// Every mask this pass samples has to be baked before the pass opens.
+		FlushPendingBakes();
 
 		var color = new WGPURenderPassColorAttachment
 		{

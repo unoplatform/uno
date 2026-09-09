@@ -142,7 +142,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			if (slot is null) { AtlasNoRoom++; return false; }
 			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
 			else { _d.PathAtlas.HoldForCache(slot, _d.FrameSeq); }
-			RasterizeAtlasEntryCoverage(pf, slot, scale);
+			QueueEntryBake(pf, slot, scale);
 			if (big) { FillMasksBaked++; } else { AtlasBaked++; }
 		}
 
