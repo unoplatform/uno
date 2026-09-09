@@ -9,6 +9,8 @@
 		<UnoForceHotReloadCodeGen>true</UnoForceHotReloadCodeGen>
 		<AssemblyName>Uno.UI.UnitTests</AssemblyName>
 		<RootNamespace>Uno.UI.Tests</RootNamespace>
+		<!-- We don't care about boxing allocations in tests -->
+		<NoWarn>$(NoWarn);UnoInternal0002</NoWarn>
 		<!--
 			This define lets the test runner alone signal it is the unit-test host
 			(distinct from runtime-test or production builds) so files Compile-linked
