@@ -39,7 +39,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsColorFontEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.TextBox),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property IsReadOnlyProperty
 		// Skipping already declared property IsSpellCheckEnabledProperty
@@ -53,7 +53,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(PreventKeyboardDisplayOnProgrammaticFocus), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.TextBox),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property ProofingMenuFlyoutProperty
 		// Skipping already declared property SelectionFlyoutProperty
@@ -124,7 +124,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsColorFontEnabledProperty, value);
+				this.SetValue(IsColorFontEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -144,7 +144,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty, value);
+				this.SetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif

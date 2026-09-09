@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static void SetAreCheckStatesEnabled(global::Microsoft.UI.Xaml.Controls.MenuFlyoutSubItem @object, bool value)
 		{
-			@object.SetValue(AreCheckStatesEnabledProperty, value);
+			@object.SetValue(AreCheckStatesEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 #endif
 #if __SKIA__

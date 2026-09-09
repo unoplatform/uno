@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(HorizontalShift), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(HorizontalSourceEndOffset), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -47,7 +47,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(HorizontalSourceStartOffset), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsHorizontalShiftClamped), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -63,7 +63,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsVerticalShiftClamped), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -71,7 +71,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(MaxHorizontalShiftRatio), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -79,7 +79,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(MaxVerticalShiftRatio), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -95,7 +95,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(VerticalShift), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -103,7 +103,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(VerticalSourceEndOffset), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -119,7 +119,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(VerticalSourceStartOffset), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Controls.ParallaxView),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -145,7 +145,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(HorizontalShiftProperty, value);
+				this.SetValue(HorizontalShiftProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -159,7 +159,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(HorizontalSourceEndOffsetProperty, value);
+				this.SetValue(HorizontalSourceEndOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -187,7 +187,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(HorizontalSourceStartOffsetProperty, value);
+				this.SetValue(HorizontalSourceStartOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -201,7 +201,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsHorizontalShiftClampedProperty, value);
+				this.SetValue(IsHorizontalShiftClampedProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -215,7 +215,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsVerticalShiftClampedProperty, value);
+				this.SetValue(IsVerticalShiftClampedProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -229,7 +229,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(MaxHorizontalShiftRatioProperty, value);
+				this.SetValue(MaxHorizontalShiftRatioProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -243,7 +243,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(MaxVerticalShiftRatioProperty, value);
+				this.SetValue(MaxVerticalShiftRatioProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -271,7 +271,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(VerticalShiftProperty, value);
+				this.SetValue(VerticalShiftProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -285,7 +285,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(VerticalSourceEndOffsetProperty, value);
+				this.SetValue(VerticalSourceEndOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -313,7 +313,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(VerticalSourceStartOffsetProperty, value);
+				this.SetValue(VerticalSourceStartOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif

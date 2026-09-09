@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ColorFontPaletteIndex), typeof(int),
 			typeof(global::Microsoft.UI.Xaml.Documents.Glyphs),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(int)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(FontRenderingEmSize), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Documents.Glyphs),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -54,7 +54,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsColorFontEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.Glyphs),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -62,7 +62,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(OriginX), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Documents.Glyphs),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -70,7 +70,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(OriginY), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Documents.Glyphs),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -98,7 +98,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			set
 			{
-				this.SetValue(ColorFontPaletteIndexProperty, value);
+				this.SetValue(ColorFontPaletteIndexProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -126,7 +126,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			set
 			{
-				this.SetValue(FontRenderingEmSizeProperty, value);
+				this.SetValue(FontRenderingEmSizeProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -168,7 +168,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			set
 			{
-				this.SetValue(IsColorFontEnabledProperty, value);
+				this.SetValue(IsColorFontEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -182,7 +182,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			set
 			{
-				this.SetValue(OriginXProperty, value);
+				this.SetValue(OriginXProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -196,7 +196,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			set
 			{
-				this.SetValue(OriginYProperty, value);
+				this.SetValue(OriginYProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif

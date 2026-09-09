@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(CharacterSpacing), typeof(int),
 			typeof(global::Microsoft.UI.Xaml.Controls.Control),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(int)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero));
 #endif
 		// Skipping already declared property CornerRadiusProperty
 #if __SKIA__
@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"IsTemplateKeyTipTarget", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.Control),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property IsTextScaleFactorEnabledProperty
 		// Skipping already declared property PaddingProperty
@@ -84,7 +84,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(CharacterSpacingProperty, value);
+				this.SetValue(CharacterSpacingProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -149,7 +149,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static void SetIsTemplateKeyTipTarget(global::Microsoft.UI.Xaml.DependencyObject element, bool value)
 		{
-			element.SetValue(IsTemplateKeyTipTargetProperty, value);
+			element.SetValue(IsTemplateKeyTipTargetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 		}
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.Control.BackgroundProperty.get
