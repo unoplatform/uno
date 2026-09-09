@@ -13,7 +13,11 @@ namespace Uno.UI.NativeElementHosting {
 			if (anyModule.getAssemblyExports !== undefined) {
 				const browserExports = await anyModule.getAssemblyExports("Uno.UI");
 
-				BrowserHtmlElement.dispatchEventNativeElementMethod = browserExports.Uno.UI.NativeElementHosting.BrowserHtmlElement.DispatchEventNativeElementMethod;
+				if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+					BrowserHtmlElement.dispatchEventNativeElementMethod = browserExports.Uno.UI.NativeElementHosting.BrowserHtmlElement.DispatchEventNativeElementMethodAsync;
+				} else {
+					BrowserHtmlElement.dispatchEventNativeElementMethod = browserExports.Uno.UI.NativeElementHosting.BrowserHtmlElement.DispatchEventNativeElementMethod;
+				}
 			} else {
 				throw `BrowserHtmlElement: Unable to find dotnet exports`;
 			}
