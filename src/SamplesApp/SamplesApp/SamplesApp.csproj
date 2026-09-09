@@ -237,6 +237,8 @@
 		<WasmBuildNative>true</WasmBuildNative>
 		<!-- Workaround for https://github.com/dotnet/aspnetcore/issues/63970 -->
 		<WasmFingerprintAssets>false</WasmFingerprintAssets>
+		<!-- Workaround for Bootstrapper DotnetJs Fingerprinting issue -->
+		<WasmShellEnableDotnetJsFingerprinting>false</WasmShellEnableDotnetJsFingerprinting>
 		<!--
 		This wwwroot is mounted at two roots: the runtime tests serve it at localhost:8000/ and PR
 		staging from /pr-<N>/wasm-skia-net9/. Uno.Sdk defaults this to "/" for deep-link routing, which
