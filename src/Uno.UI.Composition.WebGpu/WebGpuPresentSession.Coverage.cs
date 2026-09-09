@@ -1,4 +1,4 @@
-// Signed-area coverage: rasterizes a path's exact per-pixel coverage analytically, as an alternative producer
+﻿// Signed-area coverage: rasterizes a path's exact per-pixel coverage analytically, as an alternative producer
 // for the atlas masks that RasterizeAtlasEntry otherwise bakes by supersampling a triangulated silhouette.
 #nullable disable
 using System;
@@ -115,5 +115,130 @@ public sealed unsafe partial class WebGpuPresentSession
 		wgpuRenderPassEncoderEnd(rpass);
 
 		_d.Pool.Return(accView);
+	}
+
+	// UNO_WEBGPU_COVERAGE_CLIPS=0 puts path clips back on the binary depth mask.
+	private static readonly bool _coverageClips = Environment.GetEnvironmentVariable("UNO_WEBGPU_COVERAGE_CLIPS") is not ("0" or "false");
+	internal static int ClipMasksBaked;
+
+	/// <summary>A baked path-clip mask: the texture and the device pixel its texel (0,0) sits on.</summary>
+	internal struct ClipMask { public IntPtr View; public int OriginX, OriginY; }
+
+	// Per frame. Keyed on the composed path list AND the owning bag: the list is shared by every command under
+	// one clip (ClipCompose memoizes it), so a clip is baked once per frame; the bag is part of the key because a
+	// texture that lives in bag A must not be sampled by a group cached in bag B, which A's release would strand.
+	// Immediate (unowned) requests share one entry per list and are released at the next frame start.
+	private readonly Dictionary<(PathClip[], OwnedResources), ClipMask> _clipMasks = new();
+
+	/// <summary>A path clip still applied through the depth mask: coverage clips off, no edge list, or a stamped session clip.</summary>
+	private static bool UsesDepthFan(in ClipData c) => c.PathFan is not null && (!_coverageClips || c.DepthFanOnly || c.Paths is null);
+
+	private static bool UsesMask(in ClipData c) => _coverageClips && c.Paths is { Length: > 0 } && !c.DepthFanOnly;
+
+	// Intersect paths bound the visible region, so the mask covers their boxes' intersection; an Exclude keeps the
+	// outside and bounds nothing, so with only Excludes the mask spans the surface. Outside the texture coverage
+	// reads 0. Grown a pixel each side like the fill bake, and never empty: an empty intersection bakes a 1x1 mask
+	// whose texel accumulates ~0, which still clips.
+	private void ClipMaskRect(PathClip[] paths, out int ox, out int oy, out int w, out int h)
+	{
+		float l = 0f, t = 0f, r = _s.Width, b = _s.Height;
+		foreach (var p in paths)
+		{
+			if (p.Exclude) { continue; }
+			l = MathF.Max(l, p.Bbox.X); t = MathF.Max(t, p.Bbox.Y); r = MathF.Min(r, p.Bbox.Z); b = MathF.Min(b, p.Bbox.W);
+		}
+		ox = (int)MathF.Floor(l) - 1; oy = (int)MathF.Floor(t) - 1;
+		w = Math.Clamp((int)MathF.Ceiling(r) + 1 - ox, 1, 4096);
+		h = Math.Clamp((int)MathF.Ceiling(b) + 1 - oy, 1, 4096);
+	}
+
+	/// <summary>
+	/// The coverage mask for a clip's path list, baking it on first use this frame: each path's signed area is
+	/// accumulated into a scratch target and resolved (fill rule, Difference) into the mask with a multiply, so the
+	/// mask is the product of every path's coverage and nesting depth is unbounded. Runs during op BUILD.
+	/// </summary>
+	private ClipMask ResolveClipMask(in ClipData cd, OwnedResources owned)
+	{
+		if (!UsesMask(cd)) { return default; }
+		var key = (cd.Paths, owned);
+		if (_clipMasks.TryGetValue(key, out var cached)) { return cached; }
+
+		ClipMaskRect(cd.Paths, out var ox, out var oy, out var w, out var h);
+		var td = new WGPUTextureDescriptor
+		{
+			Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 },
+			// The device's swapchain format, which is what the resolve pipelines target -- not DefaultColorFormat.
+			Format = _d.ColorFormat, MipLevelCount = 1, SampleCount = 1, Dimension = WGPUTextureDimension._2D,
+			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding,
+		};
+		var tex = wgpuDeviceCreateTexture(_d.Dev, &td);
+		var view = wgpuTextureCreateView(tex, null);
+
+		// Full-target quad; row 0 of the accumulator is the top, so v runs opposite to y (see the fill bake).
+		var q = new float[]
+		{
+			-1f, -1f, 0f, h,
+			 1f, -1f, w, h,
+			 1f,  1f, w, 0f,
+			-1f, -1f, 0f, h,
+			 1f,  1f, w, 0f,
+			-1f,  1f, 0f, 0f,
+		};
+		var qBuf = MakeBuffer(q);
+		var sizeBuf = _d.BufferPool.Rent(16, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
+		var size = stackalloc float[4];
+		size[0] = w; size[1] = h;
+		wgpuQueueWriteBuffer(_d.Q, sizeBuf, 0, (IntPtr)size, 16);
+
+		for (var pi = 0; pi < cd.Paths.Length; pi++)
+		{
+			var path = cd.Paths[pi];
+			var edges = path.Edges;
+			var local = new float[edges.Length];
+			for (var i = 0; i < edges.Length; i += 2) { local[i] = edges[i] - ox; local[i + 1] = edges[i + 1] - oy; }
+			var edgeBuf = _d.BufferPool.Rent(local.Length * sizeof(float), WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst);
+			fixed (float* p = local) { wgpuQueueWriteBuffer(_d.Q, edgeBuf, 0, (IntPtr)p, (nuint)(local.Length * sizeof(float))); }
+
+			var accView = _d.Pool.Rent(w, h, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.CoverageFormat);
+			var ae = stackalloc WGPUBindGroupEntry[2];
+			ae[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = edgeBuf, Offset = 0, Size = (nuint)(local.Length * sizeof(float)) };
+			ae[1] = new WGPUBindGroupEntry { Binding = 1, Buffer = sizeBuf, Offset = 0, Size = 16 };
+			var abgd = new WGPUBindGroupDescriptor { Layout = _d.CoverageBgl, EntryCount = 2, Entries = ae };
+			var accumBg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &abgd));
+			var acc = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = accView, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = new WGPUColor { R = 0, G = 0, B = 0, A = 0 } };
+			var adesc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &acc };
+			var apass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &adesc);
+			wgpuRenderPassEncoderSetPipeline(apass, _d.CoveragePipe);
+			wgpuRenderPassEncoderSetBindGroup(apass, 0, (IntPtr)accumBg, 0, (uint*)null);
+			wgpuRenderPassEncoderDraw(apass, (uint)(local.Length / 4 * 6), 1, 0, 0);
+			wgpuRenderPassEncoderEnd(apass);
+
+			var ru = _d.BufferPool.Rent(16, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
+			var rp = stackalloc float[4];
+			rp[0] = path.EvenOdd ? 1f : 0f; rp[1] = path.Exclude ? 1f : 0f;
+			wgpuQueueWriteBuffer(_d.Q, ru, 0, (IntPtr)rp, 16);
+			var re = stackalloc WGPUBindGroupEntry[2];
+			re[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = accView };
+			re[1] = new WGPUBindGroupEntry { Binding = 1, Buffer = ru, Offset = 0, Size = 16 };
+			var rbgd = new WGPUBindGroupDescriptor { Layout = _d.CoverageResolveBgl, EntryCount = 2, Entries = re };
+			var resolveBg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &rbgd));
+			// The first path clears the mask to 1 and multiplies into it; each later one multiplies into the result.
+			var rca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = view, LoadOp = pi == 0 ? WGPULoadOp.Clear : WGPULoadOp.Load, StoreOp = WGPUStoreOp.Store, ClearValue = new WGPUColor { R = 1, G = 1, B = 1, A = 1 } };
+			var rdesc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &rca };
+			var rpass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rdesc);
+			wgpuRenderPassEncoderSetPipeline(rpass, _d.CoverageResolveMulPipe);
+			wgpuRenderPassEncoderSetBindGroup(rpass, 0, (IntPtr)resolveBg, 0, (uint*)null);
+			wgpuRenderPassEncoderSetVertexBuffer(rpass, 0, qBuf, 0, (nuint)(q.Length * sizeof(float)));
+			wgpuRenderPassEncoderDraw(rpass, 6, 1, 0, 0);
+			wgpuRenderPassEncoderEnd(rpass);
+			_d.Pool.Return(accView);
+		}
+
+		if (owned is not null) { (owned.Textures ??= new()).Add(((nint)view, (nint)tex)); }
+		else { _d.DeferTextureRelease(view, tex); }
+		var mask = new ClipMask { View = view, OriginX = ox, OriginY = oy };
+		_clipMasks[key] = mask;
+		ClipMasksBaked++;
+		return mask;
 	}
 }

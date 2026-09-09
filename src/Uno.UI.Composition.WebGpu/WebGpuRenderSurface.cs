@@ -172,6 +172,9 @@ internal sealed class OwnedResources
 	// Coverage-atlas slots this bag's draw ops sample; freed with the bag, because those ops bake the slot's UVs
 	// and would sample another shape's mask if the region were reclaimed while they still existed.
 	public System.Collections.Generic.List<WebGpuPathAtlas.Slot> AtlasSlots;
+	// Path-clip coverage masks this bag's clip bind groups sample. They live exactly as long as the bag: a mask
+	// from the per-frame pool under a bind group that outlives the frame is a use-after-free.
+	public System.Collections.Generic.List<(nint view, nint tex)> Textures;
 	// Release-once claim: a rebuild (render thread) and the recording's Dispose (UI thread) can both hand the
 	// same bag to DeferRelease — the rebuild reads the compiled entry before it stores the replacement, so a
 	// Dispose in that window re-defers the old bag. Double-releasing recycles wgpu ids under in-flight uses

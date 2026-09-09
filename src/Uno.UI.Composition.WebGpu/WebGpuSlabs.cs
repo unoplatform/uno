@@ -103,11 +103,15 @@ internal sealed unsafe class WebGpuUniformSlab : IDisposable
 	private readonly WebGpuDevice _d;
 	private readonly List<Chunk> _chunks = new();
 	private readonly int _uniformBytes, _slotBytes, _slotFloats, _uniformFloats;
+	// A constant texture bound at binding 1 of every slot's group (the clip layouts carry the path-clip mask there;
+	// slab-rented clips have none and bind the placeholder). Zero for layouts with only the uniform.
+	private readonly IntPtr _extraTexture;
 	private int _next;
 
-	public WebGpuUniformSlab(WebGpuDevice d, int uniformBytes)
+	public WebGpuUniformSlab(WebGpuDevice d, int uniformBytes, IntPtr extraTexture = default)
 	{
 		_d = d;
+		_extraTexture = extraTexture;
 		_uniformBytes = uniformBytes;
 		_uniformFloats = uniformBytes / sizeof(float);
 		_slotBytes = (uniformBytes + 255) / 256 * 256;   // uniform bind offsets must be 256-aligned
@@ -131,9 +135,12 @@ internal sealed unsafe class WebGpuUniformSlab : IDisposable
 		Array.Copy(data, 0, c.Shadow, slot * _slotFloats, Math.Min(data.Length, _uniformFloats));
 		if (c.Bgs[slot] == IntPtr.Zero)
 		{
-			var e = new WGPUBindGroupEntry { Binding = 0, Buffer = c.Buf, Offset = (nuint)(slot * _slotBytes), Size = (nuint)_uniformBytes };
-			var bgd = new WGPUBindGroupDescriptor { Layout = layout, EntryCount = 1, Entries = &e };
-			c.Bgs[slot] = wgpuDeviceCreateBindGroup(_d.Dev, &bgd);
+			var e = stackalloc WGPUBindGroupEntry[2];
+				e[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = c.Buf, Offset = (nuint)(slot * _slotBytes), Size = (nuint)_uniformBytes };
+				e[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = _extraTexture };
+				var bgd = new WGPUBindGroupDescriptor { Layout = layout, EntryCount = 1, Entries = e };
+				if (_extraTexture != IntPtr.Zero) { bgd.EntryCount = 2; }
+				c.Bgs[slot] = wgpuDeviceCreateBindGroup(_d.Dev, &bgd);
 		}
 		return c.Bgs[slot];
 	}
@@ -165,10 +172,10 @@ internal sealed unsafe class WebGpuUniformSlab : IDisposable
 
 internal sealed unsafe class WebGpuClipSlab : IDisposable
 {
-	// ClipU is 288 bytes; uniform bind offsets must align to minUniformBufferOffsetAlignment (256 under the
+	// ClipU is 304 bytes; uniform bind offsets must align to minUniformBufferOffsetAlignment (256 under the
 	// default WebGPU limits), so slots sit on 512-byte boundaries.
 	public const int SlotBytes = 512;
-	public const int ClipUFloats = 72;
+	public const int ClipUFloats = 76;
 	private const int SlotFloats = SlotBytes / sizeof(float);
 	private const int ChunkSlots = 2048;   // 1MB of GPU + 1MB of shadow per chunk
 

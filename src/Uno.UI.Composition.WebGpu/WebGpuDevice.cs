@@ -88,7 +88,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	{
 		if (!_clipBgSlabs.TryGetValue(layout, out var slab))
 		{
-			slab = new WebGpuUniformSlab(this, clipUBytes);
+			slab = new WebGpuUniformSlab(this, clipUBytes, DummyTex);
 			_clipBgSlabs[layout] = slab;
 		}
 		return slab;
@@ -261,6 +261,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		_pendingBindGroups.AddRange(owned.BindGroups);
 		if (owned.ClipSlots is { } slots) { _pendingClipSlots.AddRange(slots); }
 		if (owned.AtlasSlots is { } aslots) { _pendingAtlasSlots.AddRange(aslots); }
+		if (owned.Textures is { } texs) { foreach (var tx in texs) { _pendingTextures.Enqueue(tx); } }
 		return true;
 	}
 	internal void DeferReleaseBuffer(nint buf) { if (buf != IntPtr.Zero) { _pendingBuffers.Add(buf); } }
@@ -320,6 +321,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	/// <summary>Box-filters the supersampled mask down into an atlas slot. No depth, no sampler (textureLoad).</summary>
 	public IntPtr MaskDownsamplePipe, MaskDownsampleBgl;
 	public IntPtr CoverageResolvePipe, CoverageResolveBgl;
+	// Same resolve with colour = src * dst, so successive path clips AND into one mask (its first pass clears to 1).
+	public IntPtr CoverageResolveMulPipe;
 
 	/// <summary>A single-sample render target in the DEVICE colour format, usable as a shader input.</summary>
 	public IntPtr CreateMaskTarget(int w, int h)
@@ -496,6 +499,12 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 
 	private void CreateCoverageResolvePipeline()
 	{
+		CoverageResolvePipe = CreateCoverageResolvePipeline(multiply: false);
+		CoverageResolveMulPipe = CreateCoverageResolvePipeline(multiply: true);
+	}
+
+	private IntPtr CreateCoverageResolvePipeline(bool multiply)
+	{
 		var module = Module(CoverageResolveWgsl);
 		var e = stackalloc WGPUBindGroupLayoutEntry[2];
 		// The accumulator is r16float and is read by exact texel, so it binds unfilterable with no sampler.
@@ -512,7 +521,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.Uniform, MinBindingSize = 16 },
 		};
 		var bgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 2, Entries = e };
-		CoverageResolveBgl = wgpuDeviceCreateBindGroupLayout(Dev, &bgld);
+		if (CoverageResolveBgl == IntPtr.Zero) { CoverageResolveBgl = wgpuDeviceCreateBindGroupLayout(Dev, &bgld); }
 		var bgl = CoverageResolveBgl;
 		var pld = new WGPUPipelineLayoutDescriptor { BindGroupLayoutCount = 1, BindGroupLayouts = (IntPtr)(&bgl) };
 		var layout = wgpuDeviceCreatePipelineLayout(Dev, &pld);
@@ -523,7 +532,12 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		var vb = new WGPUVertexBufferLayout { ArrayStride = 16, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 2, Attributes = attrs };
 		var vs = SV("vs"); var fs = SV("fs");
 		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vb };
-		var ct = new WGPUColorTargetState { Format = ColorFormat, WriteMask = WGPUColorWriteMask.All };
+		var blend = new WGPUBlendState
+		{
+			Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.Dst, DstFactor = WGPUBlendFactor.Zero, Operation = WGPUBlendOperation.Add },
+			Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.Dst, DstFactor = WGPUBlendFactor.Zero, Operation = WGPUBlendOperation.Add },
+		};
+		var ct = new WGPUColorTargetState { Format = ColorFormat, Blend = multiply ? &blend : null, WriteMask = WGPUColorWriteMask.All };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &ct };
 		var pd = new WGPURenderPipelineDescriptor
 		{
@@ -533,7 +547,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 			Multisample = new WGPUMultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
 			Layout = layout,
 		};
-		CoverageResolvePipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
+		return wgpuDeviceCreateRenderPipeline(Dev, &pd);
 	}
 
 	private void CreateMaskDownsamplePipeline()
@@ -589,13 +603,22 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// in a pipeline layout shared by solid/cover/stencil, so one ClipU bind group binds to all three.
 	private IntPtr MakeClipPipeLayout()
 	{
-		var e = new WGPUBindGroupLayoutEntry
+		var e = stackalloc WGPUBindGroupLayoutEntry[2];
+		e[0] = new WGPUBindGroupLayoutEntry
 		{
 			Binding = 0,
 			Visibility = WGPUShaderStage.Vertex | WGPUShaderStage.Fragment,
-			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.Uniform, MinBindingSize = 288 },
+			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.Uniform, MinBindingSize = 304 },
 		};
-		var bgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 1, Entries = &e };
+		// The path-clip coverage mask rides the same group, so one clip bind group still binds to every pipeline.
+		// Clips without a path bind DummyTex and never read it: ClipU.mask.z gates the sample.
+		e[1] = new WGPUBindGroupLayoutEntry
+		{
+			Binding = 1,
+			Visibility = WGPUShaderStage.Fragment,
+			Texture = new WGPUTextureBindingLayout { SampleType = WGPUTextureSampleType.Float, ViewDimension = WGPUTextureViewDimension._2D },
+		};
+		var bgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 2, Entries = e };
 		ClipBgl = wgpuDeviceCreateBindGroupLayout(Dev, &bgld);
 		var bgl = ClipBgl;
 		var pld = new WGPUPipelineLayoutDescriptor { BindGroupLayoutCount = 1, BindGroupLayouts = (IntPtr)(&bgl) };

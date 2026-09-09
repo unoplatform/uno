@@ -82,6 +82,19 @@ public sealed unsafe partial class WebGpuPresentSession
 			if (a.PathEvenOdd != b.PathEvenOdd || a.PathExclude != b.PathExclude) { return false; }
 			if (!ReferenceEquals(fa, fb) && !((ReadOnlySpan<float>)fa).SequenceEqual(fb)) { return false; }
 		}
+		if (a.DepthFanOnly != b.DepthFanOnly) { return false; }
+		if (!ReferenceEquals(a.Paths, b.Paths))
+		{
+			int an = a.Paths?.Length ?? 0, bn = b.Paths?.Length ?? 0;
+			if (an != bn) { return false; }
+			for (int i = 0; i < an; i++)
+			{
+				var x = a.Paths[i]; var y = b.Paths[i];
+				if (ReferenceEquals(x, y)) { continue; }
+				if (x.EvenOdd != y.EvenOdd || x.Exclude != y.Exclude || x.Edges.Length != y.Edges.Length) { return false; }
+				if (!((ReadOnlySpan<float>)x.Edges).SequenceEqual(y.Edges)) { return false; }
+			}
+		}
 		return true;
 	}
 
@@ -310,7 +323,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	// pooled (owned == null, per-frame) or persistent (owned != null, a cached recording's geometry).
 	private DrawOp ResidentizeFan(DrawOp op, OwnedResources owned)
 	{
-		if (owned is not null && op.clip.PathFan is { } fan && op.clip.FanBuf == 0)
+		if (owned is not null && UsesDepthFan(op.clip) && op.clip.PathFan is { } fan && op.clip.FanBuf == 0)
 		{
 			_scratch.Clear();
 			for (int j = 0; j < fan.Length; j += 2) { var n = Ndc(new Vector2(fan[j], fan[j + 1])); _scratch.Add(n.X); _scratch.Add(n.Y); }
