@@ -296,7 +296,7 @@ namespace Uno.UI.Runtime.Skia {
 					remainingHorizontalDelta,
 					remainingVerticalDelta,
 					isIntermediate,
-					isInertial) !== 0;
+					isInertial);
 			}
 
 			return remainingHorizontalDelta !== horizontalDelta || remainingVerticalDelta !== verticalDelta;

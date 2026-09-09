@@ -200,13 +200,12 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 	}
 
 	[JSExport]
-	[return: JSMarshalAs<JSType.Number>]
-	private static int OnNativeScrollDelta(
-		[JSMarshalAs<JSType.Number>] nint unoElementId,
+	private static bool OnNativeScrollDelta(
+		nint unoElementId,
 		double horizontalDelta,
 		double verticalDelta,
-		[JSMarshalAs<JSType.Boolean>] bool isIntermediate,
-		[JSMarshalAs<JSType.Boolean>] bool isInertial)
+		bool isIntermediate,
+		bool isInertial)
 	{
 		try
 		{
@@ -214,9 +213,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 			// ViewChanged and running layout) from outside the dispatcher.
 			using var syncContextScope = NativeDispatcher.Main.SynchronizationContext.Apply();
 
-			return BrowserNativeElementHostingExtension.ApplyNegotiatedScroll(unoElementId, horizontalDelta, verticalDelta, isIntermediate, isInertial)
-				? 1
-				: 0;
+			return BrowserNativeElementHostingExtension.ApplyNegotiatedScroll(unoElementId, horizontalDelta, verticalDelta, isIntermediate, isInertial);
 		}
 		catch (Exception error)
 		{
@@ -225,12 +222,12 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 				_log.Error($"Failed to apply negotiated native scroll: {error}");
 			}
 
-			return 0;
+			return false;
 		}
 	}
 
 	[JSExport]
-	private static void OnNativeScrollCompleted([JSMarshalAs<JSType.Number>] nint unoElementId)
+	private static void OnNativeScrollCompleted(nint unoElementId)
 	{
 		try
 		{
