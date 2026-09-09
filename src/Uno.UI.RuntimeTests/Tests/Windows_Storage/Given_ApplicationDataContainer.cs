@@ -1,33 +1,38 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Windows.Foundation.Collections;
 using Windows.Storage;
 
-namespace Uno.UI.Samples.Tests.Windows_Storage
+namespace Uno.UI.RuntimeTests.Tests.Windows_Storage
 {
 	[TestClass]
 	public class Given_ApplicationDataContainer
 	{
 		[TestCleanup]
-		public void Cleanup()
-		{
-			var SUT = ApplicationData.Current.LocalSettings;
-			SUT.Values.Clear();
-		}
+		public void Cleanup() => ClearAllSettings();
 
 		[TestInitialize]
-		public void Initialize()
+		public void Initialize() => ClearAllSettings();
+
+		private void ClearAllSettings()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
 			SUT.Values.Clear();
+			foreach (var container in SUT.Containers.ToList())
+			{
+				SUT.DeleteContainer(container.Key);
+			}
 		}
 
 		[TestMethod]
 		public void When_Nothing()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
+
+			Assert.IsNotNull(SUT.Values);
+			Assert.HasCount(0, SUT.Values);
+			Assert.HasCount(0, SUT.Containers);
 		}
 
 		[TestMethod]
@@ -277,6 +282,13 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+		public void When_Container_Values_Type()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			Assert.IsInstanceOfType(SUT.Values, typeof(ApplicationDataContainerSettings));
+		}
+
+		[TestMethod]
 		public void When_KeyDoesNotExist_TryGetValue()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
@@ -423,6 +435,512 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 			Assert.AreEqual("value3", result["key1"]);
 			Assert.AreEqual("value2", result["key2"]);
 			Assert.AreEqual("value4", result["key3"]);
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Create()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
+			Assert.IsNotNull(container);
+			Assert.AreEqual("nested", container.Name);
+			Assert.HasCount(1, SUT.Containers);
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Create_Existing_Always()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
+			container.Values["test"] = "42";
+			Assert.IsNotNull(container);
+			Assert.AreEqual("nested", container.Name);
+			Assert.HasCount(1, SUT.Containers);
+			var container2 = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
+			Assert.IsNotNull(container2);
+			Assert.AreEqual("nested", container2.Name);
+			Assert.HasCount(1, SUT.Containers);
+			Assert.AreEqual("42", container2.Values["test"]);
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Create_Existing_NotFound()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var act = () => SUT.CreateContainer("nonexistent", ApplicationDataCreateDisposition.Existing);
+			act.Should().Throw<Exception>();
+			Assert.HasCount(0, SUT.Containers);
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Create_Existing_Found()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
+			container.Values["test"] = "42";
+			Assert.IsNotNull(container);
+			Assert.AreEqual("nested", container.Name);
+			Assert.HasCount(1, SUT.Containers);
+
+			var container2 = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Existing);
+			Assert.IsNotNull(container2);
+			Assert.AreEqual("nested", container2.Name);
+			Assert.HasCount(1, SUT.Containers);
+			Assert.AreEqual("42", container2.Values["test"]);
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Create_Existing_Nested_NotFound()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
+			Assert.IsNotNull(container);
+
+			var act = () => container.CreateContainer("nonexistent", ApplicationDataCreateDisposition.Existing);
+			act.Should().Throw<Exception>();
+			Assert.HasCount(0, container.Containers);
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Create_Existing_Nested_Found()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
+			var innerContainer = container.CreateContainer("inner", ApplicationDataCreateDisposition.Always);
+			innerContainer.Values["innerValue"] = "123";
+
+			var foundContainer = container.CreateContainer("inner", ApplicationDataCreateDisposition.Existing);
+			Assert.IsNotNull(foundContainer);
+			Assert.AreEqual("inner", foundContainer.Name);
+			Assert.AreEqual("123", foundContainer.Values["innerValue"]);
+		}
+
+		[TestMethod]
+		public void When_Multiple_Nesting_Containers_Structure()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
+			Assert.IsNotNull(container);
+			Assert.AreEqual("nested", container.Name);
+			Assert.HasCount(1, SUT.Containers);
+			var container2 = container.CreateContainer("nested2", ApplicationDataCreateDisposition.Always);
+			Assert.IsNotNull(container2);
+			Assert.AreEqual("nested2", container2.Name);
+			Assert.HasCount(1, container.Containers);
+
+			var container3 = container.CreateContainer("nested3", ApplicationDataCreateDisposition.Always);
+			Assert.IsNotNull(container3);
+			Assert.AreEqual("nested3", container3.Name);
+			Assert.HasCount(2, container.Containers);
+
+			Assert.HasCount(1, SUT.Containers);
+
+			var containerRoot2 = SUT.CreateContainer("nestedRoot2", ApplicationDataCreateDisposition.Always);
+			Assert.IsNotNull(containerRoot2);
+			Assert.AreEqual("nestedRoot2", containerRoot2.Name);
+			Assert.HasCount(2, SUT.Containers);
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Delete()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
+			Assert.IsNotNull(container);
+			Assert.AreEqual("nested", container.Name);
+			Assert.HasCount(1, SUT.Containers);
+			SUT.DeleteContainer("nested");
+			Assert.HasCount(0, SUT.Containers);
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Value_Not_In_Root()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
+			Assert.IsNotNull(container);
+			Assert.AreEqual("nested", container.Name);
+			Assert.HasCount(1, SUT.Containers);
+			container.Values["test"] = "42";
+			Assert.AreEqual("42", container.Values["test"]);
+			Assert.IsFalse(SUT.Values.ContainsKey("test"));
+
+			SUT.Values["test"] = "43";
+			Assert.AreEqual("43", SUT.Values["test"]);
+			Assert.AreEqual("42", container.Values["test"]);
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Not_Included_In_Values()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("nested", ApplicationDataCreateDisposition.Always);
+			Assert.IsNotNull(container);
+			Assert.AreEqual("nested", container.Name);
+			Assert.HasCount(1, SUT.Containers);
+			container.Values["test"] = "42";
+			Assert.HasCount(1, SUT.Containers);
+			Assert.HasCount(0, SUT.Values);
+		}
+
+		// Note: WinUI does not raise MapChanged events for ApplicationDataContainerSettings,
+		// but Uno Platform does for consistency with other IObservableMap implementations.
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_MapChanged_Indexer_Insert()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var settings = (IObservableMap<string, object>)SUT.Values;
+
+			CollectionChange? lastChange = null;
+			string lastKey = null;
+			int eventCount = 0;
+
+			settings.MapChanged += (sender, args) =>
+			{
+				lastChange = args.CollectionChange;
+				lastKey = args.Key;
+				eventCount++;
+			};
+
+			SUT.Values["mapchanged_insert_test"] = "value";
+
+			Assert.AreEqual(1, eventCount);
+			Assert.AreEqual(CollectionChange.ItemInserted, lastChange);
+			Assert.AreEqual("mapchanged_insert_test", lastKey);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_MapChanged_Indexer_Update()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var settings = (IObservableMap<string, object>)SUT.Values;
+
+			SUT.Values["mapchanged_update_test"] = "value1";
+
+			CollectionChange? lastChange = null;
+			string lastKey = null;
+			int eventCount = 0;
+
+			settings.MapChanged += (sender, args) =>
+			{
+				lastChange = args.CollectionChange;
+				lastKey = args.Key;
+				eventCount++;
+			};
+
+			SUT.Values["mapchanged_update_test"] = "value2";
+
+			Assert.AreEqual(1, eventCount);
+			Assert.AreEqual(CollectionChange.ItemChanged, lastChange);
+			Assert.AreEqual("mapchanged_update_test", lastKey);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_MapChanged_Add()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var settings = (IObservableMap<string, object>)SUT.Values;
+
+			CollectionChange? lastChange = null;
+			string lastKey = null;
+			int eventCount = 0;
+
+			settings.MapChanged += (sender, args) =>
+			{
+				lastChange = args.CollectionChange;
+				lastKey = args.Key;
+				eventCount++;
+			};
+
+			SUT.Values.Add("mapchanged_add_test", "value");
+
+			Assert.AreEqual(1, eventCount);
+			Assert.AreEqual(CollectionChange.ItemInserted, lastChange);
+			Assert.AreEqual("mapchanged_add_test", lastKey);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_MapChanged_Remove()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var settings = (IObservableMap<string, object>)SUT.Values;
+
+			SUT.Values["mapchanged_remove_test"] = "value";
+
+			CollectionChange? lastChange = null;
+			string lastKey = null;
+			int eventCount = 0;
+
+			settings.MapChanged += (sender, args) =>
+			{
+				lastChange = args.CollectionChange;
+				lastKey = args.Key;
+				eventCount++;
+			};
+
+			SUT.Values.Remove("mapchanged_remove_test");
+
+			Assert.AreEqual(1, eventCount);
+			Assert.AreEqual(CollectionChange.ItemRemoved, lastChange);
+			Assert.AreEqual("mapchanged_remove_test", lastKey);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_MapChanged_Remove_NonExistent()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var settings = (IObservableMap<string, object>)SUT.Values;
+
+			int eventCount = 0;
+
+			settings.MapChanged += (sender, args) =>
+			{
+				eventCount++;
+			};
+
+			SUT.Values.Remove("mapchanged_nonexistent_key");
+
+			Assert.AreEqual(0, eventCount);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_MapChanged_Clear()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var settings = (IObservableMap<string, object>)SUT.Values;
+
+			SUT.Values["mapchanged_clear_test1"] = "value1";
+			SUT.Values["mapchanged_clear_test2"] = "value2";
+
+			CollectionChange? lastChange = null;
+			string lastKey = null;
+			int eventCount = 0;
+
+			settings.MapChanged += (sender, args) =>
+			{
+				lastChange = args.CollectionChange;
+				lastKey = args.Key;
+				eventCount++;
+			};
+
+			SUT.Values.Clear();
+
+			Assert.AreEqual(1, eventCount);
+			Assert.AreEqual(CollectionChange.Reset, lastChange);
+			Assert.IsNull(lastKey);
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Keys_Are_Relative()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("keysRelative", ApplicationDataCreateDisposition.Always);
+			container.Values["alpha"] = "1";
+			container.Values["beta"] = "2";
+
+			var keys = container.Values.Keys.ToList();
+			Assert.Contains("alpha", keys);
+			Assert.Contains("beta", keys);
+			// Keys should not contain the container path prefix
+			Assert.IsFalse(keys.Any(k => k.Contains("keysRelative")));
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Enumerate()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var container = SUT.CreateContainer("enumerate", ApplicationDataCreateDisposition.Always);
+			container.Values["x"] = "10";
+			container.Values["y"] = "20";
+
+			var dict = new Dictionary<string, object>();
+			foreach (var kvp in container.Values)
+			{
+				dict[kvp.Key] = kvp.Value;
+			}
+
+			Assert.AreEqual("10", dict["x"]);
+			Assert.AreEqual("20", dict["y"]);
+			Assert.IsFalse(dict.Keys.Any(k => k.Contains("enumerate")));
+		}
+
+		[TestMethod]
+		public void When_Delete_Container_Does_Not_Corrupt_Sibling()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			var containerA = SUT.CreateContainer("siblingA", ApplicationDataCreateDisposition.Always);
+			var containerB = SUT.CreateContainer("siblingB", ApplicationDataCreateDisposition.Always);
+
+			containerA.Values["a1"] = "value_a1";
+			containerB.Values["b1"] = "value_b1";
+
+			// Delete container A
+			SUT.DeleteContainer("siblingA");
+
+			// Container B should still be intact
+			Assert.HasCount(1, SUT.Containers);
+			Assert.AreEqual("value_b1", containerB.Values["b1"]);
+			Assert.IsTrue(SUT.Containers.ContainsKey("siblingB"));
+		}
+
+		[TestMethod]
+		public void When_Delete_Container_Does_Not_Corrupt_Root_Settings()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			SUT.Values["rootSetting"] = "rootValue";
+			var container = SUT.CreateContainer("toDelete", ApplicationDataCreateDisposition.Always);
+			container.Values["nested"] = "nestedValue";
+
+			SUT.DeleteContainer("toDelete");
+
+			// Root settings should still be intact
+			Assert.AreEqual("rootValue", SUT.Values["rootSetting"]);
+			Assert.HasCount(0, SUT.Containers);
+		}
+
+		[TestMethod]
+		public void When_CopyTo()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			SUT.Values["one"] = "1";
+			SUT.Values["two"] = "2";
+
+			var exactFit = new KeyValuePair<string, object>[2];
+			SUT.Values.CopyTo(exactFit, 0);
+			CollectionAssert.AreEquivalent(new[] { "one", "two" }, exactFit.Select(p => p.Key).ToArray());
+
+			var offset = new KeyValuePair<string, object>[3];
+			SUT.Values.CopyTo(offset, 1);
+			Assert.AreEqual(default, offset[0]);
+			CollectionAssert.AreEquivalent(new[] { "one", "two" }, offset.Skip(1).Select(p => p.Key).ToArray());
+
+			Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => SUT.Values.CopyTo(new KeyValuePair<string, object>[2], -1));
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.Values.CopyTo(new KeyValuePair<string, object>[2], 1));
+		}
+
+		[TestMethod]
+		public void When_CopyTo_Empty_At_End_Of_Array()
+		{
+			// An empty set fits at the very end of an array: arrayIndex == array.Length is not out of range.
+			var SUT = ApplicationData.Current.LocalSettings;
+			var array = new KeyValuePair<string, object>[2];
+
+			SUT.Values.CopyTo(array, array.Length);
+		}
+
+		[TestMethod]
+		public void When_Key_Starts_With_Underscores()
+		{
+			// Uno Platform reserves a private-use prefix for its internal keys, so an application key may
+			// start with any character it likes — including the "__" that used to be reserved.
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			SUT.Values["__legacy"] = "value";
+
+			Assert.IsTrue(SUT.Values.ContainsKey("__legacy"));
+			Assert.AreEqual("value", SUT.Values["__legacy"]);
+			Assert.Contains("__legacy", SUT.Values.Keys);
+			Assert.Contains("value", SUT.Values.Values);
+			Assert.HasCount(1, SUT.Values);
+			Assert.Contains(new KeyValuePair<string, object>("__legacy", "value"), SUT.Values.ToList());
+
+			SUT.Values.Clear();
+
+			Assert.IsFalse(SUT.Values.ContainsKey("__legacy"));
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_MapChanged_Indexer_Null_Removes()
+		{
+			// Assigning null removes the setting, so the reported change must be the removal.
+			var SUT = ApplicationData.Current.LocalSettings;
+			SUT.Values["test"] = "42";
+
+			var changes = new List<(CollectionChange Change, string Key)>();
+			void OnMapChanged(IObservableMap<string, object> sender, IMapChangedEventArgs<string> args)
+				=> changes.Add((args.CollectionChange, args.Key));
+
+			((IObservableMap<string, object>)SUT.Values).MapChanged += OnMapChanged;
+			try
+			{
+				SUT.Values["test"] = null;
+			}
+			finally
+			{
+				((IObservableMap<string, object>)SUT.Values).MapChanged -= OnMapChanged;
+			}
+
+			Assert.IsFalse(SUT.Values.ContainsKey("test"));
+			Assert.HasCount(1, changes);
+			Assert.AreEqual(CollectionChange.ItemRemoved, changes[0].Change);
+			Assert.AreEqual("test", changes[0].Key);
+		}
+
+		[TestMethod]
+		public void When_Clear_Values_Does_Not_Delete_Containers()
+		{
+			// Clear() removes the settings of this container only. Containers are a separate namespace,
+			// removed through DeleteContainer.
+			var SUT = ApplicationData.Current.LocalSettings;
+			SUT.Values["rootSetting"] = "rootValue";
+			var container = SUT.CreateContainer("survivor", ApplicationDataCreateDisposition.Always);
+			container.Values["nested"] = "nestedValue";
+
+			SUT.Values.Clear();
+
+			Assert.HasCount(0, SUT.Values);
+			Assert.IsTrue(SUT.Containers.ContainsKey("survivor"));
+			Assert.AreEqual("nestedValue", SUT.Containers["survivor"].Values["nested"]);
+		}
+
+		[TestMethod]
+		public void When_Nested_Container_Keys_Are_Hidden_From_Parent()
+		{
+			var SUT = ApplicationData.Current.LocalSettings;
+			SUT.Values["rootSetting"] = "rootValue";
+
+			var container = SUT.CreateContainer("child", ApplicationDataCreateDisposition.Always);
+			container.Values["nested"] = "nestedValue";
+
+			// The child's keys and the container bookkeeping must not leak into the parent's settings.
+			Assert.HasCount(1, SUT.Values);
+			Assert.Contains("rootSetting", SUT.Values.Keys);
+			Assert.AreEqual(1, SUT.Values.Keys.Count);
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_Container_Name_Is_Null_Or_Empty()
+		{
+			// An empty name cannot round-trip through the persisted container list, so it is rejected up front
+			// rather than producing a container that disappears on the next launch.
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			Assert.ThrowsExactly<ArgumentNullException>(() => SUT.CreateContainer(null, ApplicationDataCreateDisposition.Always));
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.CreateContainer("", ApplicationDataCreateDisposition.Always));
+			Assert.ThrowsExactly<ArgumentNullException>(() => SUT.DeleteContainer(null));
+			Assert.ThrowsExactly<ArgumentException>(() => SUT.DeleteContainer(""));
+		}
+
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_Setting_Key_Is_Null()
+		{
+			// A null key would otherwise address the container's own bookkeeping slot.
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			Assert.ThrowsExactly<ArgumentNullException>(() => SUT.Values[null] = "value");
+			Assert.ThrowsExactly<ArgumentNullException>(() => _ = SUT.Values[null]);
+			Assert.ThrowsExactly<ArgumentNullException>(() => SUT.Values.ContainsKey(null));
+			Assert.ThrowsExactly<ArgumentNullException>(() => SUT.Values.Remove(null));
 		}
 	}
 }

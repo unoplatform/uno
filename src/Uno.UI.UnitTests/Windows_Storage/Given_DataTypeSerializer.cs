@@ -53,8 +53,11 @@ public class Given_DataTypeSerializer
 		// Arrange
 		string value = "System.Int32:invalid";
 
-		// Act & Assert
-		Assert.ThrowsExactly<FormatException>(() => DataTypeSerializer.Deserialize(value));
+		// Act
+		var result = DataTypeSerializer.Deserialize(value);
+
+		// Assert - a malformed stored value reads back as null rather than throwing out of a settings read
+		Assert.IsNull(result);
 	}
 
 	[TestMethod]
