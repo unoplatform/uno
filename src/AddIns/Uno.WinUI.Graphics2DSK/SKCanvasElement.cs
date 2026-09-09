@@ -1,5 +1,7 @@
-using System;
+﻿using System;
+using System.Numerics;
 using System.Runtime.CompilerServices;
+using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
@@ -26,6 +28,11 @@ public abstract partial class SKCanvasElement : Grid
 	// Graphics3DGL add-in. Concrete-island references are isolated in NoInlining methods guarded by a presence check.
 	private FrameworkElement? _island;
 	private bool _islandRequested;
+	// The last resort when the backend exposes no SKCanvas and the GL island is unavailable or failed: draw into a
+	// raster SKSurface and hand its pixels to the active backend as a texture. Slower than either, never blank.
+	private bool _software;
+	private SKSurface? _softSurface;
+	private int _softW, _softH;
 
 	private protected override ContainerVisual CreateElementVisual()
 		=> _canvasVisual = new SKCanvasVisual(this, Compositor.GetSharedCompositor());
@@ -56,17 +63,76 @@ public abstract partial class SKCanvasElement : Grid
 
 		if (!IsGLCanvasElementAvailable())
 		{
-			// Graphics3DGL isn't referenced — no GL fallback, and don't touch SkiaGLCanvasElement (keeps its base
-			// assembly unloaded). Log so a blank element on a non-Skia backend is diagnosable.
-			if (this.Log().IsEnabled(LogLevel.Warning))
+			// Graphics3DGL isn't referenced — no GL island, and don't touch SkiaGLCanvasElement (keeps its base
+			// assembly unloaded). Draw through the software surface instead.
+			if (this.Log().IsEnabled(LogLevel.Information))
 			{
-				this.Log().LogWarning($"{nameof(SKCanvasElement)} cannot draw on the active backend (it exposes no SKCanvas) and the Uno.WinUI.Graphics3DGL add-in — needed for the GL fallback — is not referenced; this element will not render. Reference Uno.WinUI.Graphics3DGL, or use a Skia backend.");
+				this.Log().LogInformation($"{nameof(SKCanvasElement)}: the active backend exposes no SKCanvas and Uno.WinUI.Graphics3DGL is not referenced; drawing through a software surface.");
 			}
 
+			_software = true;
 			return;
 		}
 
 		DispatcherQueue.TryEnqueue(CreateIsland);
+	}
+
+	/// <summary>The GL island could not get a usable context: drop it and draw through the software surface.</summary>
+	internal void OnIslandUnavailable()
+	{
+		if (this.Log().IsEnabled(LogLevel.Information))
+		{
+			this.Log().LogInformation($"{nameof(SKCanvasElement)}: the GL island is unavailable; drawing through a software surface.");
+		}
+
+		_software = true;
+		// Reached from the island's own Loaded handler, so detach it once that has run.
+		DispatcherQueue.TryEnqueue(() =>
+		{
+			if (_island is not null)
+			{
+				Children.Remove(_island);
+				_island = null;
+			}
+			_canvasVisual?.Invalidate();
+		});
+	}
+
+	internal bool UseSoftwareSurface => _software;
+
+	// Renders through a raster SKSurface at device resolution and draws the pixels as a texture of the active
+	// backend. The surface persists across frames and is recreated only when the device size changes.
+	internal void PaintSoftware(IDrawingSession session, Vector2 size)
+	{
+		var m = session.TotalMatrix;
+		var sx = MathF.Max(1e-3f, new Vector2(m.M11, m.M12).Length());
+		var sy = MathF.Max(1e-3f, new Vector2(m.M21, m.M22).Length());
+		var w = Math.Max(1, (int)MathF.Ceiling(size.X * sx));
+		var h = Math.Max(1, (int)MathF.Ceiling(size.Y * sy));
+		if (_softSurface is null || _softW != w || _softH != h)
+		{
+			_softSurface?.Dispose();
+			_softSurface = SKSurface.Create(new SKImageInfo(w, h, SKColorType.Bgra8888, SKAlphaType.Premul));
+			_softW = w;
+			_softH = h;
+		}
+
+		var canvas = _softSurface.Canvas;
+		canvas.Clear(SKColors.Transparent);
+		canvas.Save();
+		canvas.Scale(sx, sy);
+		canvas.ClipRect(new SKRect(0, 0, size.X, size.Y));
+		RenderOverride(canvas, new Size(size.X, size.Y));
+		canvas.Restore();
+		canvas.Flush();
+
+		using var pixmap = _softSurface.PeekPixels();
+		// The recording takes its own reference to the texture on DrawImage; this one is the creator's.
+		using var texture = session.Factory.CreateTexture(w, h, pixmap.GetPixelSpan());
+		session.Save();
+		session.Scale(1f / sx, 1f / sy);
+		session.DrawImage(texture, 0f, 0f);
+		session.Restore();
 	}
 
 	private static bool IsGLCanvasElementAvailable()

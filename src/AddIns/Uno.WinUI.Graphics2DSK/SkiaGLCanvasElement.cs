@@ -1,4 +1,4 @@
-#if CROSSRUNTIME
+﻿#if CROSSRUNTIME
 using System;
 using Silk.NET.OpenGL;
 using SkiaSharp;
@@ -34,6 +34,8 @@ internal sealed class SkiaGLCanvasElement : GLCanvasElement
 		_grContext = GRContext.CreateGl(
 			GRGlInterface.Create() ?? throw new NotSupportedException("OpenGL is not available (GRGlInterface create failed)."));
 	}
+
+	protected override void OnGLUnavailable() => _owner.OnIslandUnavailable();
 
 	protected override void OnDestroy(GL gl)
 	{

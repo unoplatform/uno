@@ -34,7 +34,12 @@ internal sealed class SKCanvasVisual(SKCanvasElement owner, Compositor composito
 		{
 			// The active backend exposes no SKCanvas (e.g. WebGPU) — bring up the GL island. It's added as a child
 			// and painted by base.Paint on the next frame (EnsureIslandFallback re-invalidates once it's created).
+			// Without an island, or once it has reported that GL is unusable, the software surface draws instead.
 			owner.EnsureIslandFallback();
+			if (owner.UseSoftwareSurface)
+			{
+				owner.PaintSoftware(session.Session, Size);
+			}
 		}
 	}
 
