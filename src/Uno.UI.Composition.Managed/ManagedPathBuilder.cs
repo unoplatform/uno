@@ -216,6 +216,43 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 
 
 	/// <summary>
+	/// Recognises a closed contour of axis-aligned line segments tracing a rectangle -- what a plain Rectangle
+	/// shape or a rect PathGeometry builds -- so it clips and fills analytically like a rounded rect with zero
+	/// radii. Without this every gradient- or image-filled Rectangle went through the arbitrary-path route.
+	/// Three lines with the closing edge implicit, or four with the last landing back on the start.
+	/// </summary>
+	private static RoundRectangle? TryInferRectangle(ManagedContour contour)
+	{
+		var seg = contour.Segments;
+		var pts = new Vector2[4];
+		pts[0] = contour.Start;
+		for (int i = 0; i < 3; i++)
+		{
+			if (seg[i].Kind != ManagedSegmentKind.Line) { return null; }
+			pts[i + 1] = seg[i].End;
+		}
+		const float Tol = 0.01f;
+		if (seg.Length == 4)
+		{
+			if (seg[3].Kind != ManagedSegmentKind.Line) { return null; }
+			if (MathF.Abs(seg[3].End.X - pts[0].X) > Tol || MathF.Abs(seg[3].End.Y - pts[0].Y) > Tol) { return null; }
+		}
+		// Consecutive corners share exactly one coordinate, alternating: that is an axis-aligned quadrilateral.
+		for (int i = 0; i < 4; i++)
+		{
+			var a = pts[i]; var b = pts[(i + 1) % 4];
+			bool sameX = MathF.Abs(a.X - b.X) <= Tol, sameY = MathF.Abs(a.Y - b.Y) <= Tol;
+			if (sameX == sameY) { return null; }
+		}
+		float l = MathF.Min(MathF.Min(pts[0].X, pts[1].X), MathF.Min(pts[2].X, pts[3].X));
+		float r = MathF.Max(MathF.Max(pts[0].X, pts[1].X), MathF.Max(pts[2].X, pts[3].X));
+		float tp = MathF.Min(MathF.Min(pts[0].Y, pts[1].Y), MathF.Min(pts[2].Y, pts[3].Y));
+		float bt = MathF.Max(MathF.Max(pts[0].Y, pts[1].Y), MathF.Max(pts[2].Y, pts[3].Y));
+		if (!(r > l + Tol && bt > tp + Tol)) { return null; }
+		return new RoundRectangle { Rect = new Rect(l, tp, r - l, bt - tp) };
+	}
+
+	/// <summary>
 	/// Recognises the 4-cubic closed contour an ellipse flattens to. An ellipse IS a rounded rectangle whose
 	/// radii are its half-extents, so reporting it as one lets clip coverage be computed analytically instead of
 	/// through a depth mask. Returns null for anything that is not exactly axis-aligned, so a mis-detection
@@ -287,6 +324,7 @@ internal sealed class ManagedPathBuilder : IPathBuilder, IPrimitiveGeometryBuild
 	{
 		if (_contours.Count != 1) { return null; }
 		var contour = _contours[0];
+		if (contour.Closed && contour.Segments.Length is 3 or 4 && contour.Segments[0].Kind == ManagedSegmentKind.Line) { return TryInferRectangle(contour); }
 		if (contour.Closed && contour.Segments.Length == 4) { return TryInferEllipse(contour); }
 		if (!contour.Closed || contour.Segments.Length != 8) { return null; }
 		var seg = contour.Segments;
