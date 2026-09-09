@@ -26,7 +26,7 @@ public partial class RangeBase
 			nameof(LargeChange),
 			typeof(double),
 			typeof(RangeBase),
-			new FrameworkPropertyMetadata(1.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One));
 
 	/// <summary>
 	/// Gets or sets the Maximum possible Value of the range element.
@@ -49,7 +49,7 @@ public partial class RangeBase
 			nameof(Maximum),
 			typeof(double),
 			typeof(RangeBase),
-			new FrameworkPropertyMetadata(1.0, OnRangeChanged, CoerceMaximum));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One, OnRangeChanged, CoerceMaximum));
 
 	/// <summary>
 	/// Gets or sets the Minimum possible Value of the range element.

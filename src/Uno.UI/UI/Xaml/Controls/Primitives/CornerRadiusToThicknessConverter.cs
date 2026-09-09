@@ -52,7 +52,7 @@ public sealed partial class CornerRadiusToThicknessConverter : DependencyObject,
 			nameof(Multiplier),
 			typeof(double),
 			typeof(CornerRadiusToThicknessConverter),
-			new FrameworkPropertyMetadata(1.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One));
 
 	private static Thickness Convert(CornerRadius radius, CornerRadiusToThicknessConverterKind filterKind, double multiplier)
 	{

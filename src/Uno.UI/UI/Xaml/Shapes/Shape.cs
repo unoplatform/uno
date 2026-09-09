@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Uno.Disposables;
 using System.Text;
@@ -123,7 +123,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
-				defaultValue: 1.0d,
+				defaultValue: Boxes.DoubleBoxes.One,
 				propertyChangedCallback: (s, e) => ((Shape)s).OnStrokeThicknessChanged()
 			) // Perf: WinUI uses AffectsMeasure, we optimize this and only invalidate measure if Stroke is not null
 		);

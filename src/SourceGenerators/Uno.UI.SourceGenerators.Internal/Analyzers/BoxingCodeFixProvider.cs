@@ -69,7 +69,12 @@ public sealed class BoxingCodeFixProvider : CodeFixProvider
 					else if (typeInfo.Type!.SpecialType == SpecialType.System_Double)
 					{
 						boxClassName = "DoubleBoxes";
-						boxMemberName = literalExpression.Token.Value is 0.0 ? "Zero" : null;
+						boxMemberName = literalExpression.Token.Value switch
+						{
+							0.0 => "Zero",
+							1.0 => "One",
+							_ => null,
+						};
 					}
 
 					if (boxMemberName is not null && boxClassName is not null)

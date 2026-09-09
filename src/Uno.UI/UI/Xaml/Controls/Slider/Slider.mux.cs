@@ -80,7 +80,7 @@ public partial class Slider
 		}
 		else if (property == SmallChangeProperty)
 		{
-			value = SLIDER_DEFAULT_SMALL_CHANGE;
+			value = Boxes.Box(SLIDER_DEFAULT_SMALL_CHANGE);
 		}
 		else
 		{

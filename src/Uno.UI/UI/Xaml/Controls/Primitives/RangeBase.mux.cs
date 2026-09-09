@@ -36,7 +36,7 @@ public partial class RangeBase : Control
 		if (pDP == LargeChangeProperty ||
 			pDP == MaximumProperty)
 		{
-			pValue = 1.0;
+			pValue = Boxes.DoubleBoxes.One;
 		}
 		else if (pDP == SmallChangeProperty)
 		{
