@@ -48,7 +48,9 @@ public sealed unsafe partial class WebGpuPresentSession
 		var (covView, covTex) = BakeCoverageMask(new[] { path }, (int)ox, (int)oy, w, h, Vector2.One);
 		var blurred = BlurPyramid(covView, w, h, sh.SigmaX, sh.SigmaY);
 		_d.DeferTextureRelease(covView, covTex);
-		if (!keyed) { return blurred; }
+		// Shadows are per-frame ops: only a key seen last frame too gets an entry (see Recurring), so a moving
+		// shadow costs its bake and nothing else.
+		if (!keyed || !_d.PathAtlas.Recurring(key, _d.FrameSeq)) { return blurred; }
 
 		// The pyramid hands back its reduced top level; one linear tap brings it up to the entry's full size. The
 		// blur pipeline targets the default colour format, so the entry is created in that format too.

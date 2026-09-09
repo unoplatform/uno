@@ -172,6 +172,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		}
 		else
 		{
+			if (owned is null && !_d.PathAtlas.Recurring(key, _d.FrameSeq)) { return null; }
 			slot = AddStandaloneSlot(key, w, h, ox, oy, _d.ColorFormat);
 			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
 			else { _d.PathAtlas.HoldForCache(slot, _d.FrameSeq); }

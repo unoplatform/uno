@@ -105,9 +105,10 @@ public sealed unsafe partial class WebGpuPresentSession
 		if (_d.PathAtlas.RegularPages == 0) { _d.AddPathAtlasPage(); }
 		if (_d.PathAtlas.TryGet(key, out slot))
 		{
-			// A standalone entry is a cached mask, not an atlas quad: the replay guards must treat it as one (its
-			// scale, not its axis alignment, decides when it is stale).
-			if (slot.Owner.Standalone) { FillMaskHits++; } else { AtlasHit++; }
+			// An entry baked through the big-fill route is a cached mask, not an atlas quad, whatever its size: it was
+			// baked at the transform's axis lengths and its quad rotates it, so the replay guards must compare its
+			// scale, not its axis alignment.
+			if (big) { FillMaskHits++; } else { AtlasHit++; }
 			_d.PathAtlas.NoteUse(slot, _d.FrameSeq);
 			// A REUSED entry needs its own reference for this recording. One slot backs a glyph everywhere it
 			// appears, so without this the recording that baked it releases the region out from under every other
@@ -120,14 +121,12 @@ public sealed unsafe partial class WebGpuPresentSession
 		}
 		else
 		{
+			// A per-frame op enters the cache only once its key has held for two frames (see Recurring); until then
+			// it takes the per-frame bake, so moving content never accumulates entries.
+			if (owned is null && big && !_d.PathAtlas.Recurring(key, _d.FrameSeq)) { return false; }
 			if (WebGpuPathAtlas.IsBig(w, h))
 			{
-				// Only a cached recording gets a texture of its own: a per-frame op re-recorded under a moving transform
-				// keys differently every frame, so an entry for it would never hit and only pile up. It takes the
-				// per-frame bake instead.
-				if (owned is null) { return false; }
 				slot = AddStandaloneSlot(key, w, h, ox, oy, _d.ColorFormat);
-				FillMasksBaked++;
 			}
 			else
 			{
@@ -144,7 +143,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
 			else { _d.PathAtlas.HoldForCache(slot, _d.FrameSeq); }
 			RasterizeAtlasEntryCoverage(pf, slot, scale);
-			if (!slot.Owner.Standalone) { AtlasBaked++; }
+			if (big) { FillMasksBaked++; } else { AtlasBaked++; }
 		}
 
 		return true;

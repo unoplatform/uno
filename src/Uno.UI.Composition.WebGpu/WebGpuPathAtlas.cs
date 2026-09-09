@@ -202,6 +202,21 @@ internal sealed unsafe class WebGpuPathAtlas
 	public const int StandaloneIdleFrames = 2;
 
 	private readonly List<Slot> _cacheHeld = new();
+	private readonly List<Key> _stale = new();
+
+	private readonly Dictionary<Key, long> _requests = new();
+
+	/// <summary>
+	/// Whether a per-frame op's key was also requested LAST frame. A per-frame op has no owner to say whether it
+	/// is static or moving, so the cache admits it only once its key has held for two frames: static content pays one
+	/// extra per-frame bake at first sight, moving content (a new key every frame) never enters and never piles up.
+	/// </summary>
+	public bool Recurring(in Key key, long frame)
+	{
+		var seen = _requests.TryGetValue(key, out var last) && last == frame - 1;
+		_requests[key] = frame;
+		return seen;
+	}
 
 	/// <summary>Records that an entry was used this frame, so the idle sweep keeps it.</summary>
 	public void NoteUse(Slot slot, long frame)
@@ -224,6 +239,12 @@ internal sealed unsafe class WebGpuPathAtlas
 	/// <summary>Drops the cache's reference to entries unused for <see cref="CacheIdleFrames"/> frames.</summary>
 	public void SweepCache(long frame)
 	{
+		if ((frame & 63) == 0)
+		{
+			foreach (var kv in _requests) { if (kv.Value < frame - 2) { _stale.Add(kv.Key); } }
+			foreach (var k in _stale) { _requests.Remove(k); }
+			_stale.Clear();
+		}
 		for (var i = _cacheHeld.Count - 1; i >= 0; i--)
 		{
 			var slot = _cacheHeld[i];
