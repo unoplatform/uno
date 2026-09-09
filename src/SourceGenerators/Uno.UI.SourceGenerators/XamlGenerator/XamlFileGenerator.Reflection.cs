@@ -185,32 +185,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return IsType(xamlType, Generation.FrameworkElementSymbol.Value);
 		}
 
-		private bool IsAndroidView(XamlType xamlType)
-		{
-			return IsType(xamlType, Generation.AndroidViewSymbol.Value);
-		}
-
-		private bool IsIOSUIView(XamlType xamlType)
-		{
-			return IsType(xamlType, Generation.IOSViewSymbol.Value);
-		}
-
 		private bool IsDependencyObject(XamlObjectDefinition component)
 			=> IsType(GetType(component.Type), Generation.DependencyObjectSymbol.Value);
 
 		private bool IsUIElement(INamedTypeSymbol? symbol)
 			=> IsType(symbol, Generation.UIElementSymbol.Value);
-
-		/// <summary>
-		/// Is the type derived from the native view type on a Xamarin platform?
-		/// </summary>
-		private bool IsNativeView(XamlType xamlType) => IsAndroidView(xamlType) || IsIOSUIView(xamlType);
-
-		/// <summary>
-		/// Is the type one of the base view types in WinUI? (UIElement is most commonly used to mean 'any WinUI view type,' but
-		/// FrameworkElement is valid too)
-		/// </summary>
-		private bool IsManagedViewBaseType(INamedTypeSymbol? targetType) => SymbolEqualityComparer.Default.Equals(targetType, Generation.UIElementSymbol.Value) || SymbolEqualityComparer.Default.Equals(targetType, Generation.FrameworkElementSymbol.Value);
 
 		private static bool IsDependencyProperty(INamedTypeSymbol? propertyOwner, string name)
 		{
