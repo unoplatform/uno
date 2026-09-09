@@ -31,7 +31,8 @@ public sealed class BoxingCodeFixProvider : CodeFixProvider
 				var root = await model!.SyntaxTree.GetRootAsync(ct).ConfigureAwait(false);
 				var node = root.FindNode(context.Span, getInnermostNodeForTie: true);
 				var boxesType = model.Compilation.GetTypeByMetadataName("Uno.UI.Helpers.Boxes");
-				if (boxesType is null)
+				if (boxesType is null ||
+					!model.Compilation.IsSymbolAccessibleWithin(boxesType, model.Compilation.Assembly))
 				{
 					return document;
 				}
