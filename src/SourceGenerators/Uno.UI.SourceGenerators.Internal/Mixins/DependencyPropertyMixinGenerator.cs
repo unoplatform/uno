@@ -54,7 +54,13 @@ public sealed class DependencyPropertyMixinGenerator : IIncrementalGenerator
 					sb.AppendLine($"\t\t{dp.Modifier}public {dp.PropertyType} {dp.Name}");
 					sb.AppendLine("\t\t{");
 					sb.AppendLine($"\t\t\tget {{ return ({dp.PropertyType})this.GetValue({dp.Name}Property); }}");
-					sb.AppendLine($"\t\t\tset {{ this.SetValue({dp.Name}Property, value); }}");
+					// SetValue takes an object, so a value type would be boxed on every set. Uno.UI already
+					// keeps boxes for the common values, and these properties are set often enough for the
+					// allocation to be worth avoiding.
+					var setterValue = dp.PropertyType is "bool" or "int" or "double"
+						? "global::Uno.UI.Helpers.Boxes.Box(value)"
+						: "value";
+					sb.AppendLine($"\t\t\tset {{ this.SetValue({dp.Name}Property, {setterValue}); }}");
 					sb.AppendLine("\t\t}");
 					sb.AppendLine();
 

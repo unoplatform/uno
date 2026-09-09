@@ -294,10 +294,20 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			var groupedByContainingProvider = filteredAttributedSymbolsProvider
 			   .GroupBy(data => data.ContainingTypeFullyQualifiedName, StringComparer.Ordinal);
 
-			context.RegisterSourceOutput(groupedByContainingProvider, GenerateSource);
+			// Boxes is internal to Uno.UI. Anything else using [GeneratedDependencyProperty] simply
+			// does not get the boxing optimization, rather than failing to compile. The accessibility
+			// check matters: the type is also present, but not accessible, in referenced Uno packages.
+			var hasBoxesProvider = context.CompilationProvider
+				.Select(static (compilation, _) =>
+					compilation.GetTypeByMetadataName("Uno.UI.Helpers.Boxes") is { } boxes &&
+					compilation.IsSymbolAccessibleWithin(boxes, compilation.Assembly));
+
+			context.RegisterSourceOutput(
+				groupedByContainingProvider.Combine(hasBoxesProvider),
+				(context, data) => GenerateSource(context, data.Left, data.Right));
 		}
 
-		private void GenerateSource(SourceProductionContext context, ImmutableArray<GenerationCandidateData> dpCandidatesData)
+		private void GenerateSource(SourceProductionContext context, ImmutableArray<GenerationCandidateData> dpCandidatesData, bool hasBoxes)
 		{
 			if (dpCandidatesData.Length == 0)
 			{
@@ -384,11 +394,11 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						}
 						else if (dpCandidateData.IsAttached)
 						{
-							GenerateAttachedProperty(builder, dpCandidateData, dpCandidateData.AttachedPropertyData, attachedPropertiesBackingFieldStatements, ref boolCounter);
+							GenerateAttachedProperty(builder, dpCandidateData, dpCandidateData.AttachedPropertyData, attachedPropertiesBackingFieldStatements, hasBoxes, ref boolCounter);
 						}
 						else
 						{
-							GenerateProperty(builder, dpCandidateData, dpCandidateData.PropertyData, ref boolCounter);
+							GenerateProperty(builder, dpCandidateData, dpCandidateData.PropertyData, hasBoxes, ref boolCounter);
 						}
 					}
 
@@ -416,7 +426,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			context.AddSource(dpCandidatesData[0].ContainingTypeHintName, builder.ToString());
 		}
 
-		private static void GenerateAttachedProperty(IndentedStringBuilder builder, GenerationCandidateData data, AttachedPropertyData attachedPropertyData, Dictionary<(string ContainingNamespace, string Name), List<string>> backingFieldStatements, ref int boolCounter)
+		private static void GenerateAttachedProperty(IndentedStringBuilder builder, GenerationCandidateData data, AttachedPropertyData attachedPropertyData, Dictionary<(string ContainingNamespace, string Name), List<string>> backingFieldStatements, bool hasBoxes, ref int boolCounter)
 		{
 			var propertyName = data.PropertyName;
 
@@ -490,13 +500,13 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				}
 			}
 
-			builder.AppendLineIndented($"private static void Set{propertyName}Value({propertyTargetName} instance, {propertyTypeName} value) => instance.SetValue({propertyOwnerTypeName}.{propertyName}Property, value);");
+			builder.AppendLineIndented($"private static void Set{propertyName}Value({propertyTargetName} instance, {propertyTypeName} value) => instance.SetValue({propertyOwnerTypeName}.{propertyName}Property, {GetBoxedValueExpression(propertyTypeName, hasBoxes)});");
 
 			GeneratePropertyStorage(builder, propertyName);
 
 			builder.AppendLineIndented($"DependencyProperty.RegisterAttached(");
 
-			BuildPropertyParameters(builder, data, propertyTypeName);
+			BuildPropertyParameters(builder, data, propertyTypeName, hasBoxes);
 
 			if (localCache)
 			{
@@ -570,7 +580,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			boolCounter++;
 		}
 
-		private static void GenerateProperty(IndentedStringBuilder builder, GenerationCandidateData data, PropertyData propertyData, ref int boolCounter)
+		private static void GenerateProperty(IndentedStringBuilder builder, GenerationCandidateData data, PropertyData propertyData, bool hasBoxes, ref int boolCounter)
 		{
 			var propertyName = data.PropertyName;
 			if (!propertyData.HasProperty)
@@ -613,7 +623,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			if (propertyData.PropertyHasSetter)
 			{
-				builder.AppendLineIndented($"private void Set{propertyName}Value({propertyTypeName} value) => SetValue({propertyName}Property, value);");
+				builder.AppendLineIndented($"private void Set{propertyName}Value({propertyTypeName} value) => SetValue({propertyName}Property, {GetBoxedValueExpression(propertyTypeName, hasBoxes)});");
 			}
 
 			if (localCache)
@@ -634,7 +644,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			builder.AppendLineIndented($"DependencyProperty.Register(");
 
-			BuildPropertyParameters(builder, data, propertyTypeName);
+			BuildPropertyParameters(builder, data, propertyTypeName, hasBoxes);
 
 			if (localCache)
 			{
@@ -717,6 +727,39 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 			}
 		}
 
+		/// <summary>
+		/// The expression a generated setter passes to <c>SetValue</c>. <c>SetValue</c> takes an <c>object</c>,
+		/// so a value type would be boxed on every set - for properties that are set constantly (visual states,
+		/// IsEnabled propagation, focus flags) that is an allocation per set. Uno.UI already keeps boxes for the
+		/// common values, so use them.
+		/// </summary>
+		/// <remarks>
+		/// <c>Uno.UI.Helpers.Boxes</c> is internal to Uno.UI, which is the only assembly using
+		/// <c>[GeneratedDependencyProperty]</c>. Any other consumer would get a compile error here rather
+		/// than a silent behaviour change.
+		/// </remarks>
+		private static string GetBoxedValueExpression(string propertyTypeName, bool hasBoxes)
+			=> hasBoxes && propertyTypeName is "bool" or "int" or "double"
+				? "global::Uno.UI.Helpers.Boxes.Box(value)"
+				: "value";
+
+		/// <summary>
+		/// The cached box for a <c>DefaultValue</c> literal, or <c>null</c> when there is no box for it.
+		/// Keep the recognised values in sync with <c>Boxes.Box</c> and the BoxingDiagnosticAnalyzer.
+		/// </summary>
+		private static string? GetBoxedDefaultValueExpression(string propertyTypeName, object? defaultValue)
+			=> (propertyTypeName, defaultValue) switch
+			{
+				("bool", false) => "global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse",
+				("bool", true) => "global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedTrue",
+				("int", -1) => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.NegativeOne",
+				("int", 0) => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero",
+				("int", 1) => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.One",
+				("double", 0.0d) => "global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero",
+				("double", 1.0d) => "global::Uno.UI.Helpers.Boxes.DoubleBoxes.One",
+				_ => null,
+			};
+
 		private static void GeneratePropertyStorage(IndentedStringBuilder builder, string propertyName)
 		{
 			builder.AppendLineIndented($"/// <summary>");
@@ -728,7 +771,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 		private static void BuildPropertyParameters(
 			IndentedStringBuilder builder,
 			GenerationCandidateData data,
-			string propertyTypeName)
+			string propertyTypeName,
+			bool hasBoxes)
 		{
 			var propertyName = data.PropertyName;
 			var metadataOptions = data.MetadataOptions;
@@ -761,7 +805,12 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					var o => o?.ToString() ?? "null",
 				};
 
-				builder.AppendLineIndented($"\t\tdefaultValue: ({propertyTypeName}){defaultValueString} /* {defaultValueMethodName}, {data.ContainingTypeFullyQualifiedName} */");
+				// defaultValue is an object parameter, so a cast would box on every registration.
+				// Reuse the cached box when the literal is one we keep.
+				var boxedDefaultValue = hasBoxes ? GetBoxedDefaultValueExpression(propertyTypeName, defaultValue.Value.Value.Value) : null;
+				defaultValueString = boxedDefaultValue ?? $"({propertyTypeName}){defaultValueString}";
+
+				builder.AppendLineIndented($"\t\tdefaultValue: {defaultValueString} /* {defaultValueMethodName}, {data.ContainingTypeFullyQualifiedName} */");
 			}
 			else
 			{
