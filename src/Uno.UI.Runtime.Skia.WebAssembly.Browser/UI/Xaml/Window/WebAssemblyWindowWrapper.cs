@@ -107,6 +107,14 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 		}
 	}
 
+	[JSExport]
+	private static Task OnResizeAsync([JSMarshalAs<JSType.Any>] object instance, double width, double height, float scale)
+	{
+		OnResize(instance, width, height, scale);
+
+		return Task.CompletedTask;
+	}
+
 	// Fed from a visualViewport listener on the JS side. occludedHeight is the height (in the
 	// same logical/CSS pixels as the window bounds) the on-screen keyboard covers at the bottom
 	// of the viewport, already gated on the invisible text input being focused, so browser-chrome
@@ -141,14 +149,6 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 	private static Task OnViewportOcclusionChangedAsync([JSMarshalAs<JSType.Any>] object instance, double viewportWidth, double viewportHeight, double occludedHeight)
 	{
 		OnViewportOcclusionChanged(instance, viewportWidth, viewportHeight, occludedHeight);
-
-		return Task.CompletedTask;
-	}
-
-	[JSExport]
-	private static Task OnResizeAsync([JSMarshalAs<JSType.Any>] object instance, double width, double height, float scale)
-	{
-		OnResize(instance, width, height, scale);
 
 		return Task.CompletedTask;
 	}
