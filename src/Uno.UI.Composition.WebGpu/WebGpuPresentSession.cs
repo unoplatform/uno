@@ -298,8 +298,8 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	// Appends one device-space quad (two tris) to the shared solid buffer; returns the start vertex index. 6 verts.
 	private int AppendSolidRect(List<float> solid, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float r, float g, float b, float a)
 	{
-		int start = solid.Count / 6;
-		void V(Vector2 p) { solid.Add(p.X); solid.Add(p.Y); solid.Add(r); solid.Add(g); solid.Add(b); solid.Add(a); }
+		int start = solid.Count / VertexStride.Solid;
+		void V(Vector2 p) { solid.Add(p.X); solid.Add(p.Y); solid.Add(r); solid.Add(g); solid.Add(b); solid.Add(a); solid.Add(0f); solid.Add(0f); }
 		V(p0); V(p1); V(p2); V(p0); V(p2); V(p3);
 		return start;
 	}
@@ -332,7 +332,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	// in-shader) + colour + the raw-bits slot index.
 	private void AppendSolidRectLocalT(List<float> solid, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float r, float g, float b, float a, float slotBits)
 	{
-		void V(Vector2 p) { solid.Add(p.X); solid.Add(p.Y); solid.Add(r); solid.Add(g); solid.Add(b); solid.Add(a); solid.Add(slotBits); }
+		void V(Vector2 p) { solid.Add(p.X); solid.Add(p.Y); solid.Add(r); solid.Add(g); solid.Add(b); solid.Add(a); solid.Add(slotBits); solid.Add(0f); solid.Add(0f); }
 		V(p0); V(p1); V(p2); V(p0); V(p2); V(p3);
 	}
 
@@ -377,12 +377,12 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 
 	private void PushVert(Vector2 dev, float r, float g, float b, float a)
 	{
-		_scratch.Add(dev.X); _scratch.Add(dev.Y); _scratch.Add(r); _scratch.Add(g); _scratch.Add(b); _scratch.Add(a);
+		_scratch.Add(dev.X); _scratch.Add(dev.Y); _scratch.Add(r); _scratch.Add(g); _scratch.Add(b); _scratch.Add(a); _scratch.Add(0f); _scratch.Add(0f);
 	}
 
 	private void PushVertT(Vector2 dev, float r, float g, float b, float a, float slotBits)
 	{
-		_scratch.Add(dev.X); _scratch.Add(dev.Y); _scratch.Add(r); _scratch.Add(g); _scratch.Add(b); _scratch.Add(a); _scratch.Add(slotBits);
+		_scratch.Add(dev.X); _scratch.Add(dev.Y); _scratch.Add(r); _scratch.Add(g); _scratch.Add(b); _scratch.Add(a); _scratch.Add(slotBits); _scratch.Add(0f); _scratch.Add(0f);
 	}
 
 	private IntPtr MakeUniform(int byteSize)
@@ -454,8 +454,10 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		cu[14] = finv.M31 + finv.M11 * _basisOx + finv.M21 * _basisOy;
 		cu[15] = finv.M32 + finv.M12 * _basisOx + finv.M22 * _basisOy;
 		cu[16] = finv.M11; cu[17] = finv.M12; cu[18] = finv.M21; cu[19] = finv.M22;
-		// mask.xy = texel (0,0) of the bound path-clip mask in the clip's space; mask.z = one is bound.
+		// mask.xy = texel (0,0) of the bound path-clip mask in the clip's space; mask.z = one is bound; mask.w = the op's
+		// own coverage texture is bound (sampled by vertex uv).
 		if (mask.View != IntPtr.Zero) { cu[20] = mask.OriginX; cu[21] = mask.OriginY; cu[22] = 1f; }
+		if (cd.Coverage != 0) { cu[23] = 1f; }
 		for (int i = 0; i < n; i++)
 		{
 			var e = entries[i]; int o = ClipUHeaderFloats + i * ClipEntryFloats;
@@ -489,10 +491,12 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		var slot = _d.ClipSlab.Alloc(bytes);
 		_d.ClipSlab.Write(slot, _clipU, floats);
 		(owned.ClipSlots ??= new()).Add(slot);
-		var e = stackalloc WGPUBindGroupEntry[2];
+		var e = stackalloc WGPUBindGroupEntry[4];
 		e[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = _d.ClipSlab.BufferOf(slot), Offset = _d.ClipSlab.OffsetOf(slot), Size = (nuint)bytes };
 		e[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = mask.View != IntPtr.Zero ? mask.View : _d.DummyTex };
-		var bgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 2, Entries = e };
+		e[2] = new WGPUBindGroupEntry { Binding = 2, TextureView = cd.Coverage != 0 ? (IntPtr)cd.Coverage : _d.DummyTex };
+		e[3] = new WGPUBindGroupEntry { Binding = 3, Sampler = _d.Smp };
+		var bgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 4, Entries = e };
 		buf = slot;
 		return Bg(ref bgd, owned);
 	}
@@ -504,16 +508,18 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		var floats = FillClipU(cd, xform, finv, mask, out _);
 		var bytes = floats * sizeof(float);
 		var cu = _clipU;
-		if (mask.View != IntPtr.Zero)
+		if (mask.View != IntPtr.Zero || cd.Coverage != 0)
 		{
-			// A per-op group rather than a slab slot: the slab's persistent groups bind DummyTex, and the mask is
-			// per clip. Buffer, group and mask are all per-frame.
+			// A per-op group rather than a slab slot: the slab's persistent groups bind DummyTex, and the mask and
+			// coverage textures are per op. Buffer and group are per-frame; the textures outlive them.
 			var ub = _d.BufferPool.Rent(bytes, WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst);
 			fixed (float* pcu = cu) { wgpuQueueWriteBuffer(_d.Q, ub, 0, (IntPtr)pcu, (nuint)bytes); }
-			var me = stackalloc WGPUBindGroupEntry[2];
+			var me = stackalloc WGPUBindGroupEntry[4];
 			me[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = ub, Offset = 0, Size = (nuint)bytes };
-			me[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = mask.View };
-			var mbgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 2, Entries = me };
+			me[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = mask.View != IntPtr.Zero ? mask.View : _d.DummyTex };
+			me[2] = new WGPUBindGroupEntry { Binding = 2, TextureView = cd.Coverage != 0 ? (IntPtr)cd.Coverage : _d.DummyTex };
+			me[3] = new WGPUBindGroupEntry { Binding = 3, Sampler = _d.Smp };
+			var mbgd = new WGPUBindGroupDescriptor { Layout = bgl, EntryCount = 4, Entries = me };
 			return Bg(ref mbgd, null);
 		}
 
@@ -573,7 +579,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 			{
 				case RectCommand rc0:
 					{
-						int j = ci; int start = solid.Count / 6;
+						int j = ci; int start = solid.Count / VertexStride.Solid;
 						while (j < cmds.Count && cmds[j] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
 						{
 							AppendSolidRect(solid, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);

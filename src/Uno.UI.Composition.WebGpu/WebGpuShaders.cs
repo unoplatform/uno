@@ -34,6 +34,8 @@ internal sealed unsafe partial class WebGpuDevice
 	// wgpu's auto-layout.
 	private const string ClipStructFn = @"
 // Per-draw clip + placement. ctrl.x = entry count; ctrl.y > 0.5 = a plain rect clip (min ctrl.zw, max size.zw); xform/xoff.xy = the op's
+// mask.w > 0.5 = the op's own shape is a coverage texture (an atlas page or a mask of its own), sampled by per-vertex
+// uv: the innermost clip, carried in the vertices so many small shapes (a glyph run) still draw as one.
 // pixel-space transform and finv/xoff.zw its inverse, which maps a fragment back into the recording's space -- where
 // the rect, the mask (mask.xy = texture origin, mask.z > 0.5 = bound) and the entries all live. Each entry is a
 // rounded rect in its OWN space, reached through its 2x3 (q = m.xz*p.x + m.yw*p.y + t.xy), so nesting has no cap
@@ -86,10 +88,16 @@ fn entryCov(e: ClipEntry, p: vec2<f32>, ddx: vec2<f32>, ddy: vec2<f32>) -> f32 {
   let cov = clamp(0.5 - d / sxy, 0.0, 1.0);
   return select(cov, 1.0 - cov, e.t.z > 0.5);
 }
-fn clipCov(fcRaw: vec2<f32>) -> f32 {
-  // Fast path: no clip => full coverage, and NO finvMap (unclipped fragments must cost what they did pre-arena).
-  if (clip.ctrl.x < 0.5 && clip.ctrl.y < 0.5 && clip.mask.z < 0.5) { return 1.0; }
-  return clipCovMapped(finvMap(fcRaw));
+// The op's own coverage texture at uv, or 1 when the shape is carried by the geometry itself.
+fn covTex(uv: vec2<f32>) -> f32 {
+  if (clip.mask.w > 0.5) { return textureSampleLevel(coverageTex, covSmp, uv, 0.0).a; }
+  return 1.0;
+}
+fn clipCov(fcRaw: vec2<f32>, uv: vec2<f32>) -> f32 {
+  let own = covTex(uv);
+  // Fast path: no clip => the shape's own coverage, and NO finvMap (unclipped fragments must cost what they did pre-arena).
+  if (clip.ctrl.x < 0.5 && clip.ctrl.y < 0.5 && clip.mask.z < 0.5) { return own; }
+  return own * clipCovMapped(finvMap(fcRaw));
 }
 // Exact texel of the path-clip mask under this fragment (both are in the clip's space; the origin is whole pixels).
 // Explicit bounds rather than relying on textureLoad's out-of-range behaviour, which differs between backends.
@@ -142,11 +150,13 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) t: vec2<f32> };
 	private const string ColoredWgsl = @"
 @group(1) @binding(0) var<storage, read> clip: ClipU;
 @group(1) @binding(1) var clipMask: texture_2d<f32>;
-struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
-@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) col: vec4<f32>) -> VOut {
-  var o: VOut; o.p = place(pos); o.c = col; return o;
+@group(1) @binding(2) var coverageTex: texture_2d<f32>;
+@group(1) @binding(3) var covSmp: sampler;
+struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32>, @location(1) uv: vec2<f32> };
+@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) col: vec4<f32>, @location(2) uv: vec2<f32>) -> VOut {
+  var o: VOut; o.p = place(pos); o.c = col; o.uv = uv; return o;
 }
-@fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.p.xy)); }";
+@fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.p.xy, i.uv)); }";
 	// TRANSFORM-TABLE variant. Vertices are recorded pixels + a per-vertex slot index into a read-only storage buffer
 	// of pixel affines (a=m00,m01,tx,m10  b=m11,ty,_,_) carrying the replay transform. Recomputing a (tiny) entry per
 	// frame repositions a moved visual without re-baking or re-tessellating its fan.
@@ -155,12 +165,14 @@ struct Xf { a: vec4<f32>, b: vec4<f32> };
 @group(1) @binding(0) var<storage, read> xf: array<Xf>;
 @group(2) @binding(0) var<storage, read> clip: ClipU;
 @group(2) @binding(1) var clipMask: texture_2d<f32>;
-struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32> };
-@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) col: vec4<f32>, @location(2) ti: u32) -> VOut {
+@group(2) @binding(2) var coverageTex: texture_2d<f32>;
+@group(2) @binding(3) var covSmp: sampler;
+struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32>, @location(1) uv: vec2<f32> };
+@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) col: vec4<f32>, @location(2) ti: u32, @location(3) uv: vec2<f32>) -> VOut {
   let t = xf[ti];
-  var o: VOut; o.p = project(vec2<f32>(pos.x * t.a.x + pos.y * t.a.y + t.a.z, pos.x * t.a.w + pos.y * t.b.x + t.b.y)); o.c = col; return o;
+  var o: VOut; o.p = project(vec2<f32>(pos.x * t.a.x + pos.y * t.a.y + t.a.z, pos.x * t.a.w + pos.y * t.b.x + t.b.y)); o.c = col; o.uv = uv; return o;
 }
-@fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.p.xy)); }";
+@fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.p.xy, i.uv)); }";
 	// Signed-area coverage accumulation. One quad per edge spanning the rows it crosses and everything to its
 	// RIGHT: an edge contributes the partial area of the pixel it passes through, and a full +/-1 to every pixel
 	// beyond it, so the interior fills by cancellation between the entering and leaving edges and is never tested.
@@ -454,9 +466,13 @@ struct Grad { header: vec4<f32>, geo: vec4<f32>, colors: array<vec4<f32>, 64>, s
 @group(1) @binding(0) var<uniform> g: Grad;
 @group(2) @binding(0) var<storage, read> clip: ClipU;
 @group(2) @binding(1) var clipMask: texture_2d<f32>;
-@vertex fn vs(@location(0) pos: vec2<f32>) -> @builtin(position) vec4<f32> { return place(pos); }
+@group(2) @binding(2) var coverageTex: texture_2d<f32>;
+@group(2) @binding(3) var covSmp: sampler;
+struct GVOut { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
+@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) uv: vec2<f32>) -> GVOut { var o: GVOut; o.p = place(pos); o.uv = uv; return o; }
 fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
-@fragment fn fs(@builtin(position) fc: vec4<f32>) -> @location(0) vec4<f32> {
+@fragment fn fs(i: GVOut) -> @location(0) vec4<f32> {
+  let fc = i.p;
   // Arena: map the device fragment back to the recording's own space so the gradient geometry (baked at identity)
   // is correct after a transform re-stamp. Identity finv => gfc == fc.xy for immediate/non-arena draws.
   let gfc = finvMap(fc.xy);
@@ -522,7 +538,7 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
     else if (n < 4) { col = g.colors[2]; }
     else if (t <= s3) { col = mix(g.colors[2], g.colors[3], select(0.0, (t - s2) / (s3 - s2), s3 > s2)); }
     else { col = g.colors[3]; }
-    return vec4<f32>(col.rgb, col.a * clipCovMapped(gfc));
+    return vec4<f32>(col.rgb, col.a * covTex(i.uv) * clipCovMapped(gfc));
   }
   if (t >= stopAt(n - 1)) { col = g.colors[n - 1]; }
   else if (t <= stopAt(0)) { col = g.colors[0]; }
@@ -537,7 +553,7 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
       }
     }
   }
-  return vec4<f32>(col.rgb, col.a * clipCovMapped(gfc));
+  return vec4<f32>(col.rgb, col.a * covTex(i.uv) * clipCovMapped(gfc));
 }";
 	// Analytic rounded-rect / border-ring fill. The SDF is evaluated in LOCAL
 	// centred space (`p`/`hf`/`radii` interpolated per-vertex) so it's exact under any affine transform; the four
@@ -547,6 +563,8 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
 struct VSOut { @builtin(position) pos: vec4<f32>, @location(0) p: vec2<f32>, @location(1) hf: vec2<f32>, @location(2) radii: vec4<f32>, @location(3) col: vec4<f32>, @location(4) ihalf: vec2<f32>, @location(5) icenter: vec2<f32>, @location(6) iradii: vec4<f32> };
 @group(1) @binding(0) var<storage, read> clip: ClipU;
 @group(1) @binding(1) var clipMask: texture_2d<f32>;
+@group(1) @binding(2) var coverageTex: texture_2d<f32>;
+@group(1) @binding(3) var covSmp: sampler;
 @vertex fn vs(@location(0) cpos: vec2<f32>, @location(1) p: vec2<f32>, @location(2) hf: vec2<f32>, @location(3) radii: vec4<f32>, @location(4) col: vec4<f32>, @location(5) ihalf: vec2<f32>, @location(6) icenter: vec2<f32>, @location(7) iradii: vec4<f32>) -> VSOut {
   var o: VSOut; o.pos = project(cpos); o.p = p; o.hf = hf; o.radii = radii; o.col = col; o.ihalf = ihalf; o.icenter = icenter; o.iradii = iradii; return o;
 }
@@ -572,7 +590,7 @@ fn sdRR(p: vec2<f32>, hf: vec2<f32>, radii: vec4<f32>) -> f32 {
   // APPLIED when one is present.
   let di = sdRR(i.p - i.icenter, i.ihalf, i.iradii);
   if (i.ihalf.x >= 0.0) { cov = cov * clamp(0.5 + di / sxy, 0.0, 1.0); }
-  cov = cov * clipCov(i.pos.xy);
+  cov = cov * clipCov(i.pos.xy, vec2<f32>(0.0));
   return vec4<f32>(i.col.rgb, i.col.a * cov);
 }";
 	// Transform-table rounded-rect: identical SDF/clip to RoundedRectWgsl, but the LOCAL (identity-baked) corners
@@ -585,6 +603,8 @@ struct VSOut { @builtin(position) pos: vec4<f32>, @location(0) p: vec2<f32>, @lo
 @group(1) @binding(0) var<storage, read> xf: array<Xf>;
 @group(2) @binding(0) var<storage, read> clip: ClipU;
 @group(2) @binding(1) var clipMask: texture_2d<f32>;
+@group(2) @binding(2) var coverageTex: texture_2d<f32>;
+@group(2) @binding(3) var covSmp: sampler;
 @vertex fn vs(@location(0) cpos: vec2<f32>, @location(1) p: vec2<f32>, @location(2) hf: vec2<f32>, @location(3) radii: vec4<f32>, @location(4) col: vec4<f32>, @location(5) ihalf: vec2<f32>, @location(6) icenter: vec2<f32>, @location(7) iradii: vec4<f32>, @location(8) ti: u32) -> VSOut {
   let t = xf[ti];
   var o: VSOut; o.pos = project(vec2<f32>(cpos.x * t.a.x + cpos.y * t.a.y + t.a.z, cpos.x * t.a.w + cpos.y * t.b.x + t.b.y)); o.p = p; o.hf = hf; o.radii = radii; o.col = col; o.ihalf = ihalf; o.icenter = icenter; o.iradii = iradii; return o;
@@ -601,7 +621,7 @@ fn sdRR(p: vec2<f32>, hf: vec2<f32>, radii: vec4<f32>) -> f32 {
   var cov = clamp(0.5 - d / sxy, 0.0, 1.0);
   let di = sdRR(i.p - i.icenter, i.ihalf, i.iradii);
   if (i.ihalf.x >= 0.0) { cov = cov * clamp(0.5 + di / sxy, 0.0, 1.0); }
-  cov = cov * clipCov(i.pos.xy);
+  cov = cov * clipCov(i.pos.xy, vec2<f32>(0.0));
   return vec4<f32>(i.col.rgb, i.col.a * cov);
 }";
 	private const string ImageWgsl = @"
@@ -613,6 +633,8 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 @group(1) @binding(2) var<uniform> u: U;
 @group(2) @binding(0) var<storage, read> clip: ClipU;
 @group(2) @binding(1) var clipMask: texture_2d<f32>;
+@group(2) @binding(2) var coverageTex: texture_2d<f32>;
+@group(2) @binding(3) var covSmp: sampler;
 @vertex fn vs(@location(0) pos: vec2<f32>, @location(1) uv: vec2<f32>) -> VOut { var o: VOut; o.p = place(pos); o.uv = uv; return o; }
 @fragment fn fs(i: VOut) -> @location(0) vec4<f32> {
   // Analytic box-filter coverage of the quad's own edges, in pixels via the uv derivatives -- the rounded-rect
@@ -647,6 +669,6 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
     rgb = clamp(rgb + vec3<f32>(nz), vec3<f32>(0.0), vec3<f32>(1.0));
     c = vec4<f32>(rgb, 1.0);
   }
-  return c * u.op.x * cov * clipCov(i.p.xy);
+  return c * u.op.x * cov * clipCov(i.p.xy, vec2<f32>(0.0));
 }";
 }

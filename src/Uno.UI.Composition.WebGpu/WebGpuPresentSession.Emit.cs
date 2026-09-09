@@ -51,7 +51,7 @@ public sealed unsafe partial class WebGpuPresentSession
 				var tc = tcmds[ti];
 				if (tc is RectCommand rc0)
 				{
-					int rel = sv.Count / 7; int tj = ti;
+					int rel = sv.Count / VertexStride.Table; int tj = ti;
 					while (tj < tcmds.Count && tcmds[tj] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
 					{
 						AppendSolidRectLocalT(sv, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f, slotBits);
@@ -129,7 +129,7 @@ public sealed unsafe partial class WebGpuPresentSession
 				var stampBgl = ClipBglForKind(opKind);
 				// An op with no xform-table slot (an atlas quad, an image, a gradient) is still identity-baked, so
 				// its clip has to carry the replay transform or it draws at the recording's local origin.
-				var stampXform = PlacedByXformTable(opKind) ? Matrix3x2.Identity : PixelXform(rr.Transform);
+				var stampXform = fo.Kind is not null ? Matrix3x2.Identity : PixelXform(rr.Transform);
 				var st = StampTableClip(local, stampOwned, finv, t2, sessionAabb, rr.Clip.ScissorInert, rr.Clip.Entries, rr.Clip.Paths, ref pathsMemo, reuse ? bufs[i] : 0, reuse ? stamps[i].ClipBg : 0, stampBgl, stampXform);
 				if (reuse) { stamps[i] = (st.Scissor, st.ClipBg); } else { stamps.Add((st.Scissor, st.ClipBg)); bufs.Add(st.Buf); }
 			}
@@ -195,7 +195,7 @@ public sealed unsafe partial class WebGpuPresentSession
 				var tc = tcmds[ti];
 				if (tc is RectCommand rc0)
 				{
-					int rel = sv.Count / 6; int tj = ti;
+					int rel = sv.Count / VertexStride.Solid; int tj = ti;
 					while (tj < tcmds.Count && tcmds[tj] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
 					{
 						AppendSolidRect(sv, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);

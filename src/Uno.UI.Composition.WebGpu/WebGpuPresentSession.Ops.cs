@@ -63,6 +63,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		// across visuals whose only difference is the layout-clip rectangle.
 		if (a.ScissorInert != b.ScissorInert) { return false; }
 		if (!a.ScissorInert && a.Aabb != b.Aabb) { return false; }
+		if (a.Coverage != b.Coverage) { return false; }
 		// Both arrays are copy-on-write and a recording's clip is immutable, so across frames these are almost
 		// always the SAME instance — compare by reference before walking them. This runs per replayed recording
 		// per frame in every stamp guard, and the fan walk is O(fan length).
@@ -298,7 +299,7 @@ public sealed unsafe partial class WebGpuPresentSession
 				{
 					var c = new Vector4(rc.Color.R / 255f, rc.Color.G / 255f, rc.Color.B / 255f, rc.Color.A / 255f);
 					var v = new List<float>();
-					void V(Vector2 p) { v.Add(p.X); v.Add(p.Y); v.Add(c.X); v.Add(c.Y); v.Add(c.Z); v.Add(c.W); }
+					void V(Vector2 p) { v.Add(p.X); v.Add(p.Y); v.Add(c.X); v.Add(c.Y); v.Add(c.Z); v.Add(c.W); v.Add(0f); v.Add(0f); }
 					V(rc.P0); V(rc.P1); V(rc.P2); V(rc.P0); V(rc.P2); V(rc.P3);
 					var rClip = rc.Clip;
 					ops.Add(new DrawOp(DrawKind.Solid, (nint)Vbuf(v.ToArray(), owned), 6, 0, false, rClip, (nint)MakeClipBg(_d.SolidClipBgl, rClip, owned)));
@@ -403,13 +404,13 @@ public sealed unsafe partial class WebGpuPresentSession
 					{
 						// flag == true: b1 is a BYTE offset into the shared per-pass gradient buffer.
 						var goff = _gradVerts.Count * sizeof(float);
-						for (var t = 0; t < gCount; t++) { _gradVerts.Add(cover[t].X); _gradVerts.Add(cover[t].Y); }
+						for (var t = 0; t < gCount; t++) { _gradVerts.Add(cover[t].X); _gradVerts.Add(cover[t].Y); _gradVerts.Add(0f); _gradVerts.Add(0f); }
 						ops.Add(new DrawOp(DrawKind.Gradient, (nint)gbg, gCount, goff, true, gClip, gClipBg));
 					}
 					else
 					{
-						var gq = new float[gCount * 2];
-						for (var t = 0; t < gCount; t++) { gq[t * 2] = cover[t].X; gq[t * 2 + 1] = cover[t].Y; }
+						var gq = new float[gCount * 4];
+						for (var t = 0; t < gCount; t++) { gq[t * 4] = cover[t].X; gq[t * 4 + 1] = cover[t].Y; }
 						ops.Add(new DrawOp(DrawKind.Gradient, (nint)gbg, gCount, (nint)Vbuf(gq, owned), false, gClip, gClipBg));
 					}
 					break;
@@ -532,7 +533,6 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// NOT also carry the replay transform. Everything else in a table recording is identity-baked with no slot,
 	/// and the clip's xform is the only thing that can move it.
 	/// </summary>
-	private static bool PlacedByXformTable(DrawKind kind) => kind is DrawKind.Solid or DrawKind.RoundedRect;
 
 	private (ClipData Scissor, nint ClipBg, nint Buf) StampTableClip(ClipData local, OwnedResources stampOwned, Matrix3x2 finv, Matrix3x2 t2, Vector4 sessionAabb, bool sessionInert, ClipEntry[] sessionEntries, PathClip[] sessionPaths, ref Dictionary<PathClip[], PathClip[]> pathsMemo, nint reuseBuf, nint reuseBg, IntPtr clipBgl, Matrix3x2 opXform)
 	{

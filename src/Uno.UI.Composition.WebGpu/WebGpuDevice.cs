@@ -72,7 +72,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	{
 		if (!_clipBgSlabs.TryGetValue((layout, clipUBytes), out var slab))
 		{
-			slab = new WebGpuUniformSlab(this, clipUBytes, DummyTex, WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst);
+			slab = new WebGpuUniformSlab(this, clipUBytes, DummyTex, WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst, DummyTex, Smp);
 			_clipBgSlabs[(layout, clipUBytes)] = slab;
 		}
 		return slab;
@@ -354,9 +354,9 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		BufferPool = new WebGpuBufferPool(this);
 		ClipSlab = new WebGpuClipSlab(this);
 		GradSlab = new WebGpuUniformSlab(this, GradientUniformBytes);
-		SolidSlab = new WebGpuSlab(this, 6);
+		SolidSlab = new WebGpuSlab(this, VertexStride.Solid);
 		RrectSlab = new WebGpuSlab(this, 22);
-		SolidTableSlab = new WebGpuSlab(this, 7);
+		SolidTableSlab = new WebGpuSlab(this, VertexStride.Table);
 		RrectTableSlab = new WebGpuSlab(this, 23);
 		System.Console.WriteLine($"[webgpu] engine init — msaa={MsaaSamples}x colorFormat={ColorFormat}");
 	}
@@ -540,7 +540,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// path-clip mask at binding 1) wrapped in a pipeline layout the colour pipelines share.
 	private IntPtr MakeClipPipeLayout()
 	{
-		var e = stackalloc WGPUBindGroupLayoutEntry[2];
+		var e = stackalloc WGPUBindGroupLayoutEntry[4];
 		// Read-only storage, not a uniform: the struct ends in a runtime-sized entry array, so a binding's size is the
 		// header plus however many clips this op carries.
 		e[0] = new WGPUBindGroupLayoutEntry
@@ -557,7 +557,20 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 			Visibility = WGPUShaderStage.Fragment,
 			Texture = new WGPUTextureBindingLayout { SampleType = WGPUTextureSampleType.Float, ViewDimension = WGPUTextureViewDimension._2D },
 		};
-		var bgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 2, Entries = e };
+		// The op's own coverage texture (see ClipData.Coverage) and the sampler its per-vertex uv reads it with.
+		e[2] = new WGPUBindGroupLayoutEntry
+		{
+			Binding = 2,
+			Visibility = WGPUShaderStage.Fragment,
+			Texture = new WGPUTextureBindingLayout { SampleType = WGPUTextureSampleType.Float, ViewDimension = WGPUTextureViewDimension._2D },
+		};
+		e[3] = new WGPUBindGroupLayoutEntry
+		{
+			Binding = 3,
+			Visibility = WGPUShaderStage.Fragment,
+			Sampler = new WGPUSamplerBindingLayout { Type = WGPUSamplerBindingType.Filtering },
+		};
+		var bgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 4, Entries = e };
 		ClipBgl = wgpuDeviceCreateBindGroupLayout(Dev, &bgld);
 		var pe = new WGPUBindGroupLayoutEntry
 		{
@@ -771,8 +784,10 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		GradBgl = wgpuDeviceCreateBindGroupLayout(Dev, &gbgld);
 		var vs = SV("vs");
 		var fs = SV("fs");
-		var attr = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
-		var vbl = new WGPUVertexBufferLayout { ArrayStride = 8, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 1, Attributes = &attr };
+		var gattrs = stackalloc WGPUVertexAttribute[2];
+		gattrs[0] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
+		gattrs[1] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 8, ShaderLocation = 1 };
+		var vbl = new WGPUVertexBufferLayout { ArrayStride = 16, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 2, Attributes = gattrs };
 		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
 		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = WGPUColorWriteMask.All };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
@@ -841,13 +856,14 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		}
 	}
 
-	// pos.xy + col.rgba vertices, no depth/stencil: every clip is analytic or a sampled mask.
+	// pos.xy + col.rgba + coverage uv vertices, no depth/stencil: every clip is analytic or a sampled mask.
 	private IntPtr MakePipe(IntPtr module, WGPUStringView vs, WGPUStringView fs, WGPUBlendState* blend, IntPtr layout)
 	{
-		var attrs = stackalloc WGPUVertexAttribute[2];
+		var attrs = stackalloc WGPUVertexAttribute[3];
 		attrs[0] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
 		attrs[1] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x4, Offset = 8, ShaderLocation = 1 };
-		var vbl = new WGPUVertexBufferLayout { ArrayStride = 24, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 2, Attributes = attrs };
+		attrs[2] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 24, ShaderLocation = 2 };
+		var vbl = new WGPUVertexBufferLayout { ArrayStride = 32, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 3, Attributes = attrs };
 		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
 		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = WGPUColorWriteMask.All };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
@@ -911,11 +927,12 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 
 	private IntPtr MakeTablePipe(IntPtr module, WGPUStringView vs, WGPUStringView fs, WGPUBlendState* blend, IntPtr layout)
 	{
-		var attrs = stackalloc WGPUVertexAttribute[3];
+		var attrs = stackalloc WGPUVertexAttribute[4];
 		attrs[0] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
 		attrs[1] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x4, Offset = 8, ShaderLocation = 1 };
 		attrs[2] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Uint32, Offset = 24, ShaderLocation = 2 };
-		var vbl = new WGPUVertexBufferLayout { ArrayStride = 28, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 3, Attributes = attrs };
+		attrs[3] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 28, ShaderLocation = 3 };
+		var vbl = new WGPUVertexBufferLayout { ArrayStride = 36, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 4, Attributes = attrs };
 		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
 		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = WGPUColorWriteMask.All };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };

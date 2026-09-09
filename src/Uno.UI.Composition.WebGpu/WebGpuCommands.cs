@@ -69,6 +69,9 @@ internal struct ClipData
 	// without limit: the mask is the PRODUCT of each path's coverage, so intersecting N shapes is N
 	// accumulate+resolve passes into one texture. Copy-on-write like Rounds.
 	public PathClip[] Paths;
+	// The op's own shape as a coverage texture (an atlas page or a mask of its own), sampled by the op's vertex uv:
+	// the innermost clip. 0 = the geometry carries the shape. Set by the present session, never by the recorder.
+	public nint Coverage;
 	public static ClipData None => new() { Aabb = new Vector4(-1e9f, -1e9f, 1e9f, 1e9f), ScissorInert = true };
 
 	// The op's geometry is provably inside Aabb (containment proven at record time), so the scissor is not

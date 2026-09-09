@@ -105,15 +105,17 @@ internal sealed unsafe class WebGpuUniformSlab : IDisposable
 	private readonly int _uniformBytes, _slotBytes, _slotFloats, _uniformFloats;
 	// A constant texture bound at binding 1 of every slot's group (the clip layouts carry the path-clip mask there;
 	// slab-rented clips have none and bind the placeholder). Zero for layouts with only the uniform.
-	private readonly IntPtr _extraTexture;
+	private readonly IntPtr _extraTexture, _extraTexture2, _sampler;   // bindings 1..3 when set (clip layouts)
 	private readonly WGPUBufferUsage _usage;
 	private int _next;
 
-	public WebGpuUniformSlab(WebGpuDevice d, int uniformBytes, IntPtr extraTexture = default, WGPUBufferUsage usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst)
+	public WebGpuUniformSlab(WebGpuDevice d, int uniformBytes, IntPtr extraTexture = default, WGPUBufferUsage usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst, IntPtr extraTexture2 = default, IntPtr sampler = default)
 	{
 		_d = d;
 		_usage = usage;
 		_extraTexture = extraTexture;
+		_extraTexture2 = extraTexture2;
+		_sampler = sampler;
 		_uniformBytes = uniformBytes;
 		_uniformFloats = uniformBytes / sizeof(float);
 		_slotBytes = (uniformBytes + 255) / 256 * 256;   // uniform bind offsets must be 256-aligned
@@ -137,12 +139,14 @@ internal sealed unsafe class WebGpuUniformSlab : IDisposable
 		Array.Copy(data, 0, c.Shadow, slot * _slotFloats, Math.Min(data.Length, _uniformFloats));
 		if (c.Bgs[slot] == IntPtr.Zero)
 		{
-			var e = stackalloc WGPUBindGroupEntry[2];
-				e[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = c.Buf, Offset = (nuint)(slot * _slotBytes), Size = (nuint)_uniformBytes };
-				e[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = _extraTexture };
-				var bgd = new WGPUBindGroupDescriptor { Layout = layout, EntryCount = 1, Entries = e };
-				if (_extraTexture != IntPtr.Zero) { bgd.EntryCount = 2; }
-				c.Bgs[slot] = wgpuDeviceCreateBindGroup(_d.Dev, &bgd);
+			var e = stackalloc WGPUBindGroupEntry[4];
+			e[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = c.Buf, Offset = (nuint)(slot * _slotBytes), Size = (nuint)_uniformBytes };
+			int n = 1;
+			if (_extraTexture != IntPtr.Zero) { e[n++] = new WGPUBindGroupEntry { Binding = 1, TextureView = _extraTexture }; }
+			if (_extraTexture2 != IntPtr.Zero) { e[n++] = new WGPUBindGroupEntry { Binding = 2, TextureView = _extraTexture2 }; }
+			if (_sampler != IntPtr.Zero) { e[n++] = new WGPUBindGroupEntry { Binding = 3, Sampler = _sampler }; }
+			var bgd = new WGPUBindGroupDescriptor { Layout = layout, EntryCount = (nuint)n, Entries = e };
+			c.Bgs[slot] = wgpuDeviceCreateBindGroup(_d.Dev, &bgd);
 		}
 		return c.Bgs[slot];
 	}

@@ -23,11 +23,11 @@ namespace Uno.UI.Composition.WebGpu;
 /// <summary>Floats per vertex in the two shared vertex layouts. See <see cref="VertexSource"/> for where each lives.</summary>
 internal static class VertexStride
 {
-	/// <summary>Position + premultiplied colour: every solid and rounded rect not placed by the xform table.</summary>
-	public const int Solid = 6;
+	/// <summary>Position + premultiplied colour + coverage uv: every solid not placed by the xform table.</summary>
+	public const int Solid = 8;
 
-	/// <summary>Position + colour + xform-table slot, so a move rewrites the slot instead of the geometry.</summary>
-	public const int Table = 7;
+	/// <summary>Position + colour + xform-table slot + coverage uv, so a move rewrites the slot instead of the geometry.</summary>
+	public const int Table = 9;
 }
 
 /// <summary>

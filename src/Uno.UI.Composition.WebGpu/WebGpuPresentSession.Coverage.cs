@@ -308,11 +308,11 @@ public sealed unsafe partial class WebGpuPresentSession
 		else { _d.DeferTextureRelease(view, tex); }
 		FillMasksBaked++;
 
-		// A tinted quad over the mask, 1:1 with device pixels once the GPU applies the scale -- the same draw an atlas
-		// entry uses, so it coalesces and re-stamps like one.
-		var bg = TintedImageBg(view, pf.Color, owned);
-		var q = TexturedQuad(new Vector2(ox / scale.X, oy / scale.Y), new Vector2(w / scale.X, h / scale.Y));
-		op = new DrawOp(DrawKind.Image, (nint)bg, 6, (nint)Vbuf(q, owned), false, pf.Clip, (nint)MakeClipBg(_d.ImageClipBgl, pf.Clip, owned));
+		// A solid quad with the mask as its coverage, 1:1 with device pixels once the GPU applies the scale -- the same
+		// draw an atlas entry uses, so it coalesces and re-stamps like one.
+		var clip = WithCoverage(pf.Clip, view);
+		var q = CoverageQuad(new Vector2(ox / scale.X, oy / scale.Y), new Vector2(w / scale.X, h / scale.Y), pf.Color);
+		op = new DrawOp(DrawKind.Solid, (nint)Vbuf(q, owned), 6, 0, false, clip, (nint)MakeClipBg(_d.SolidClipBgl, clip, owned));
 		return true;
 	}
 }

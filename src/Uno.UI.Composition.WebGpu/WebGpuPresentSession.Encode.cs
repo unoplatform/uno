@@ -115,7 +115,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		var verts = new System.Collections.Generic.List<float>(36);
 		void Vert(float x, float y)
 		{
-			verts.Add(x); verts.Add(y); verts.Add(r); verts.Add(g); verts.Add(b); verts.Add(a);
+			verts.Add(x); verts.Add(y); verts.Add(r); verts.Add(g); verts.Add(b); verts.Add(a); verts.Add(0f); verts.Add(0f);
 		}
 
 		var aabb = backdrop.Clip.Aabb;
@@ -285,11 +285,11 @@ public sealed unsafe partial class WebGpuPresentSession
 						if (flag)
 						{
 							pst.Enc.Vb((IntPtr)gradBuf, 0, gradBufBytes);
-							pst.Enc.Draw(gn, (uint)(b1 / (2 * sizeof(float))));
+							pst.Enc.Draw(gn, (uint)(b1 / (4 * sizeof(float))));
 						}
 						else
 						{
-							pst.Enc.Vb((IntPtr)b1, 0, (nuint)(gn * 2 * sizeof(float)));
+							pst.Enc.Vb((IntPtr)b1, 0, (nuint)(gn * 4 * sizeof(float)));
 							pst.Enc.Draw(gn);
 						}
 						break;
