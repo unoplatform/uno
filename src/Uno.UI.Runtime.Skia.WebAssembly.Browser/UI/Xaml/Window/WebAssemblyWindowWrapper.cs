@@ -138,6 +138,14 @@ internal partial class WebAssemblyWindowWrapper : NativeWindowWrapperBase
 	}
 
 	[JSExport]
+	private static Task OnViewportOcclusionChangedAsync([JSMarshalAs<JSType.Any>] object instance, double viewportWidth, double viewportHeight, double occludedHeight)
+	{
+		OnViewportOcclusionChanged(instance, viewportWidth, viewportHeight, occludedHeight);
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
 	private static Task OnResizeAsync([JSMarshalAs<JSType.Any>] object instance, double width, double height, float scale)
 	{
 		OnResize(instance, width, height, scale);
