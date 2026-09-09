@@ -55,18 +55,41 @@ partial class PowerManager
 	static partial void EndRemainingDischargedTime() => NativeMethods.EndRemainingDischargedTime();
 
 	[JSExport]
-	internal static int DispatchChargingChanged()
+	internal static void DispatchChargingChanged()
 	{
 		RaiseBatteryStatusChanged();
 		RaisePowerSupplyStatusChanged();
-		return 0;
+	}
+
+	[JSExport]
+	internal static Task DispatchChargingChangedAsync()
+	{
+		DispatchChargingChanged();
+
+		return Task.CompletedTask;
 	}
 
 	[JSExport]
 	internal static void DispatchRemainingChargePercentChanged() => RaiseRemainingChargePercentChanged();
 
 	[JSExport]
+	internal static Task DispatchRemainingChargePercentChangedAsync()
+	{
+		RaiseRemainingChargePercentChanged();
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
 	internal static void DispatchRemainingDischargeTimeChanged() => RaiseRemainingDischargeTimeChanged();
+
+	[JSExport]
+	internal static Task DispatchRemainingDischargeTimeChangedAsync()
+	{
+		RaiseRemainingDischargeTimeChanged();
+
+		return Task.CompletedTask;
+	}
 
 	private static BatteryStatus GetBatteryStatus()
 	{
