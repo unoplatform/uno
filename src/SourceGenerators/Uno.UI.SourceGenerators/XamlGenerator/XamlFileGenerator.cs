@@ -386,8 +386,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								BuildInitializeComponent(writer, topLevelControl, controlBaseType);
 
-								Safely(TryBuildElementStubHolders, writer);
-
 								Safely(BuildPartials, writer);
 
 								Safely(BuildMethods, writer);
@@ -1051,8 +1049,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								BuildComponentFields(writer);
 
-								TryBuildElementStubHolders(writer);
-
 								BuildBackingFields(writer);
 
 								BuildMethods(writer);
@@ -1122,20 +1118,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private string GetSourceLocationLiteral(IXamlLocation location)
 			=> SymbolDisplay.FormatLiteral($"{FileUri}#L{location.LineNumber}:{location.LinePosition}", quote: true);
-
-		/// <summary>
-		/// Builds the element stub holder variables, use for platform having implicit pinning
-		/// </summary>
-		private void TryBuildElementStubHolders(IIndentedStringBuilder writer)
-		{
-			if (HasImplicitViewPinning)
-			{
-				foreach (var elementStubHolder in CurrentScope.ElementStubHolders)
-				{
-					writer.AppendLineIndented($"private Func<_View> {elementStubHolder};");
-				}
-			}
-		}
 
 		private (string bindingsInterfaceName, string bindingsClassName) GetBindingsTypeNames(string className)
 			=> ($"I{className}_Bindings", $"{className}_Bindings");
@@ -6904,20 +6886,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return null;
 				}
 
-				var elementStubHolderNameStatement = "";
-
-				if (HasImplicitViewPinning)
-				{
-					// Build the ElemenStub builder holder variable to ensute that the element stub
-					// does not keep a hard reference to "this" through the closure needed to keep
-					// the namescope and other variables. The ElementStub, in turn keeps a weak
-					// reference to the builder's target instance.
-					var elementStubHolderName = $"_elementStubHolder_{CurrentScope.ElementStubHolders.Count}";
-					elementStubHolderNameStatement = $"{elementStubHolderName} = ";
-					CurrentScope.ElementStubHolders.Add(elementStubHolderName);
-				}
-
-				writer.AppendLineIndented($"new {XamlConstants.Types.ElementStub}({elementStubHolderNameStatement} () => ");
+				writer.AppendLineIndented($"new {XamlConstants.Types.ElementStub}(() => ");
 
 				var disposable = new DisposableAction(() =>
 				{
@@ -7410,9 +7379,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private string? LocalResourceOwner
 			=> _resourceOwner != _fieldBackedResourceOwner ? CurrentResourceOwner : null;
-
-		public bool HasImplicitViewPinning
-			=> Generation.IOSViewSymbol.Value is not null || Generation.AppKitViewSymbol.Value is not null;
 
 		/// <summary>
 		/// Pushes a ResourceOwner variable name onto the stack

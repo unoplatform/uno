@@ -58,7 +58,7 @@ namespace TestRepro
 					Children = 
 					{
 						global::MyProject.GlobalStaticResources.__PreserveProperties(
-							new Microsoft.UI.Xaml.ElementStub( () => 
+							new Microsoft.UI.Xaml.ElementStub(() => 
 							new global::Microsoft.UI.Xaml.Controls.Primitives.ToggleButton
 							{
 								IsParsing = true,
