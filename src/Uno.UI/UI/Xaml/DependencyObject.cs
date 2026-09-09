@@ -37,6 +37,18 @@ namespace Microsoft.UI.Xaml
 
 		public void SetValue(DependencyProperty dp, object value) => SetValueInternal(dp, value);
 
+		/// <summary>
+		/// Avoids a boxing allocation on every set of a <see cref="bool"/> property by reusing the two cached boxes.
+		/// </summary>
+		/// <remarks>
+		/// Only <see cref="bool"/> gets an overload: C# defines no implicit conversion *to* bool, so nothing can
+		/// silently bind here. An <c>int</c> or <c>double</c> overload would capture <c>byte</c>/<c>short</c>/<c>char</c>
+		/// and <c>float</c>/<c>long</c> arguments through implicit numeric conversion and store the wrong boxed type,
+		/// which only surfaces as an <see cref="InvalidCastException"/> in the unbox on the way out. Those types use
+		/// <c>Boxes.Box(...)</c> at the call site instead. UnoInternal0003 guards this overload.
+		/// </remarks>
+		internal void SetValue(DependencyProperty dp, bool value) => SetValueInternal(dp, Uno.UI.Helpers.Boxes.Box(value));
+
 		public void ClearValue(DependencyProperty dp) => ClearValueInternal(dp);
 
 		public object ReadLocalValue(DependencyProperty dp) => ReadLocalValueInternal(dp);
