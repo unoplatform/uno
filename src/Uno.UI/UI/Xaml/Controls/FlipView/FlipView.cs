@@ -7,6 +7,7 @@ using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -27,7 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Using a DependencyProperty as the backing store for UseTouchAnimationsForAllNavigation.  This enables animation, styling, binding, etc...
 		public static DependencyProperty UseTouchAnimationsForAllNavigationProperty { get; } =
-			DependencyProperty.Register("UseTouchAnimationsForAllNavigation", typeof(bool), typeof(FlipView), new FrameworkPropertyMetadata(true));
+			DependencyProperty.Register("UseTouchAnimationsForAllNavigation", typeof(bool), typeof(FlipView), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
 
 		partial void InitializePartial();
 

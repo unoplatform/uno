@@ -2,6 +2,7 @@
 using System;
 using Windows.Foundation;
 using Uno.UI;
+using Uno.UI.Helpers;
 using Windows.System;
 using View = Microsoft.UI.Xaml.UIElement;
 
@@ -57,7 +58,7 @@ namespace Microsoft.UI.Xaml.Controls
 			nameof(SizesContentToTemplatedParent),
 			typeof(bool),
 			typeof(ScrollContentPresenter),
-			new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		public bool SizesContentToTemplatedParent
 		{

@@ -13,7 +13,7 @@ public static class AcrylicBrushExtensions
 			"UseCompositionEffectBrush",
 			typeof(bool),
 			typeof(AcrylicBrushExtensions),
-			new FrameworkPropertyMetadata(true));
+			new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedTrue));
 
 	/// <summary>
 	/// Gets a value indicating whether the specified <see cref="AcrylicBrush"/> uses the

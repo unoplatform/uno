@@ -1,4 +1,5 @@
 ﻿using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -32,6 +33,6 @@ public partial class Slider : RangeBase
 			nameof(IsTrackerEnabled),
 			typeof(bool),
 			typeof(Slider),
-			new FrameworkPropertyMetadata(true));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
 }
 

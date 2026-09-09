@@ -16,9 +16,9 @@ public partial class MenuFlyoutPresenterTemplateSettings : DependencyObject
 	public double FlyoutContentMinWidth
 	{
 		get => (double)GetValue(FlyoutContentMinWidthProperty);
-		internal set => SetValue(FlyoutContentMinWidthProperty, value);
+		internal set => SetValue(FlyoutContentMinWidthProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 	}
 
 	internal static DependencyProperty FlyoutContentMinWidthProperty { get; } =
-		DependencyProperty.Register(nameof(FlyoutContentMinWidth), typeof(double), typeof(MenuFlyoutPresenterTemplateSettings), new FrameworkPropertyMetadata(0.0));
+		DependencyProperty.Register(nameof(FlyoutContentMinWidth), typeof(double), typeof(MenuFlyoutPresenterTemplateSettings), new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 }

@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -17,7 +18,7 @@ partial class AppBarButton
 	public int DynamicOverflowOrder
 	{
 		get => (int)GetValue(DynamicOverflowOrderProperty);
-		set => SetValue(DynamicOverflowOrderProperty, value);
+		set => SetValue(DynamicOverflowOrderProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -28,7 +29,7 @@ partial class AppBarButton
 			nameof(DynamicOverflowOrder),
 			typeof(int),
 			typeof(AppBarButton),
-			new FrameworkPropertyMetadata(default(int)));
+			new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 
 	/// <summary>
 	/// Gets or sets the image displayed on the app bar button.
@@ -66,7 +67,7 @@ partial class AppBarButton
 			nameof(IsCompact),
 			typeof(bool),
 			typeof(AppBarButton),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Gets a value that indicates whether this item is in the overflow menu.
@@ -85,7 +86,7 @@ partial class AppBarButton
 			nameof(IsInOverflow),
 			typeof(bool),
 			typeof(AppBarButton),
-			new FrameworkPropertyMetadata(false));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Gets or sets a string that overrides the default key combination string associated with a keyboard accelerator.
@@ -178,7 +179,7 @@ partial class AppBarButton
 			nameof(UseOverflowStyle),
 			typeof(bool),
 			typeof(AppBarButton),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 	bool ICommandBarElement3.IsInOverflow
 	{

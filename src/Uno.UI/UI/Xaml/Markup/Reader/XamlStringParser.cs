@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using Uno.Extensions;
+using Uno.UI.Helpers;
 using Uno.Foundation.Logging;
 using System.IO;
 using System.Reflection;
@@ -224,7 +225,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 						break;
 
 					default:
-						throw new InvalidOperationException("Unable to process {2} node at Line {0}, position {1}".InvariantCultureFormat(reader.LineNumber, reader.LinePosition, reader.NodeType));
+						throw new InvalidOperationException("Unable to process {2} node at Line {0}, position {1}".InvariantCultureFormat(Boxes.Box(reader.LineNumber), Boxes.Box(reader.LinePosition), reader.NodeType));
 				}
 			}
 
