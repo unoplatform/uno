@@ -321,9 +321,9 @@
 				<AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
 			</PropertyGroup>
 			<!--
-			SourceLink itself is provided implicitly by the .NET SDK (Microsoft.NET.Sdk.SourceLink.props), so no
-			PackageReference is needed. Referencing one would suppress the SDK's copy and pin an older, unmaintained
-			Microsoft.Build.Tasks.Git.
+				SourceLink itself is provided implicitly by the .NET SDK (Microsoft.NET.Sdk.SourceLink.props), so no
+				PackageReference is needed. Referencing one would suppress the SDK's copy and pin an older, unmaintained
+				Microsoft.Build.Tasks.Git.
 			-->
 		</When>
 	</Choose>
