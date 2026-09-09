@@ -276,7 +276,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		}
 	}
 
-	internal static int FillMasksBaked;
+	internal static int FillMasksBaked, FillMaskHits;
 
 	/// <summary>
 	/// Draws a fill through an exact coverage mask: the route for every fill the atlas refused (too large, no key)

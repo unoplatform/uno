@@ -105,7 +105,9 @@ public sealed unsafe partial class WebGpuPresentSession
 		if (_d.PathAtlas.RegularPages == 0) { _d.AddPathAtlasPage(); }
 		if (_d.PathAtlas.TryGet(key, out slot))
 		{
-			AtlasHit++;
+			// A standalone entry is a cached mask, not an atlas quad: the replay guards must treat it as one (its
+			// scale, not its axis alignment, decides when it is stale).
+			if (slot.Owner.Standalone) { FillMaskHits++; } else { AtlasHit++; }
 			_d.PathAtlas.NoteUse(slot, _d.FrameSeq);
 			// A REUSED entry needs its own reference for this recording. One slot backs a glyph everywhere it
 			// appears, so without this the recording that baked it releases the region out from under every other
@@ -120,6 +122,10 @@ public sealed unsafe partial class WebGpuPresentSession
 		{
 			if (WebGpuPathAtlas.IsBig(w, h))
 			{
+				// Only a cached recording gets a texture of its own: a per-frame op re-recorded under a moving transform
+				// keys differently every frame, so an entry for it would never hit and only pile up. It takes the
+				// per-frame bake instead.
+				if (owned is null) { return false; }
 				slot = AddStandaloneSlot(key, w, h, ox, oy, _d.ColorFormat);
 				FillMasksBaked++;
 			}
@@ -138,7 +144,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
 			else { _d.PathAtlas.HoldForCache(slot, _d.FrameSeq); }
 			RasterizeAtlasEntryCoverage(pf, slot, scale);
-			AtlasBaked++;
+			if (!slot.Owner.Standalone) { AtlasBaked++; }
 		}
 
 		return true;

@@ -194,6 +194,13 @@ internal sealed unsafe class WebGpuPathAtlas
 	/// <summary>Frames an entry may go unused before the cache drops its reference.</summary>
 	public const int CacheIdleFrames = 180;
 
+	/// <summary>
+	/// A standalone entry is a whole texture, and one held for the cache belongs to a per-frame op (a shadow, a
+	/// path clip) whose key changes with its transform: static content hits every frame and is kept, moving content
+	/// would only accumulate, so it is let go almost at once.
+	/// </summary>
+	public const int StandaloneIdleFrames = 2;
+
 	private readonly List<Slot> _cacheHeld = new();
 
 	/// <summary>Records that an entry was used this frame, so the idle sweep keeps it.</summary>
@@ -221,7 +228,7 @@ internal sealed unsafe class WebGpuPathAtlas
 		{
 			var slot = _cacheHeld[i];
 			if (!slot.CacheHeld) { _cacheHeld.RemoveAt(i); continue; }
-			if (frame - slot.LastUsed <= CacheIdleFrames) { continue; }
+			if (frame - slot.LastUsed <= (slot.Owner is { Standalone: true } ? StandaloneIdleFrames : CacheIdleFrames)) { continue; }
 			slot.CacheHeld = false;
 			_cacheHeld.RemoveAt(i);
 			// A recording that also uses this entry holds its own reference, so this only reclaims the region

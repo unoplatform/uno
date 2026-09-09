@@ -41,7 +41,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			var tmp = new List<DrawOp>();
 			var tcmds = WebGpuCommandRecorder.TransformFor(rr.Commands, Matrix4x4.Identity, ClipData.None);
 			int tableAtlasBefore = AtlasHit + AtlasBaked;
-			int tableMaskBefore = ClipMasksBaked + FillMasksBaked;
+			int tableMaskBefore = ClipMasksBaked + FillMasksBaked + FillMaskHits;
 			bool tableAtlasSafe = TryAtlasScale(rr.Transform, out var tableScale);
 			bool tableHasPath = false; for (int _i = 0; _i < tcmds.Count; _i++) { if (tcmds[_i] is PathFill) { tableHasPath = true; break; } }
 			int slot = (fe is not null && fe.XformSlot >= 0) ? fe.XformSlot : _d.AllocXformSlot();
@@ -90,7 +90,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			}
 			long id = (fe is not null && fe.SlabId != 0) ? fe.SlabId : _d.NextSlabId();
 			bool tableHasAtlas = (AtlasHit + AtlasBaked) != tableAtlasBefore;
-			bool tableHasMask = ClipMasksBaked + FillMasksBaked != tableMaskBefore;
+			bool tableHasMask = ClipMasksBaked + FillMasksBaked + FillMaskHits != tableMaskBefore;
 			bool tableBlocked = !tableAtlasSafe && tableHasPath && _pathAtlas;
 			fe = new WebGpuGeometryCache { TableFrame = true, FrameSolid = true, SlabId = id, FrameOrder = order, TableSolids = sv, TableRrects = rv, Owned = fOwned, HasClipMask = tableHasMask, Transform = rr.Transform, Clip = rr.Clip, Device = _d, XformSlot = slot, HasAtlas = tableHasAtlas, AtlasBlockedByScale = tableBlocked, AtlasScale = tableScale, MaskScale = MaskScale(rr.Transform) };
 			StoreCompiled(rr.Data, fe);
@@ -285,11 +285,11 @@ public sealed unsafe partial class WebGpuPresentSession
 			bool aHasPath = false, aPure = aList.Count > 0; foreach (var c in aList) { if (c is PathFill) { aHasPath = true; } else { aPure = false; } }
 			if (aHasPath && aSlot < 0) { aSlot = _d.AllocXformSlot(); }
 			int atlasBefore = AtlasHit + AtlasBaked;
-			int maskBefore = ClipMasksBaked + FillMasksBaked;
+			int maskBefore = ClipMasksBaked + FillMasksBaked + FillMaskHits;
 			bool aAtlasSafe = TryAtlasScale(rr.Transform, out var aScale);
 			BuildCoalesced(aList, aOps, aOwned, aSlot, atlasScale: aAtlasSafe ? aScale : null, maskScale: aAtlasSafe ? aScale : MaskScale(rr.Transform));
 			bool aHasAtlas = (AtlasHit + AtlasBaked) != atlasBefore;
-			bool aHasMask = ClipMasksBaked + FillMasksBaked != maskBefore;
+			bool aHasMask = ClipMasksBaked + FillMasksBaked + FillMaskHits != maskBefore;
 			bool aBlocked = !aAtlasSafe && aHasPath && _pathAtlas;
 			bool aHasPathClip = false; foreach (var o in aOps) { if (o.clip.Paths is not null) { aHasPathClip = true; break; } }
 			entry = new WebGpuGeometryCache { Ops = aOps, Owned = aOwned, Transform = rr.Transform, Clip = rr.Clip, Arena = true, HasAtlas = aHasAtlas, HasClipMask = aHasMask, HasPathClip = aHasPathClip, AtlasBlockedByScale = aBlocked, AtlasScale = aScale, MaskScale = MaskScale(rr.Transform), PurePath = aPure, Device = _d, XformSlot = aSlot };
