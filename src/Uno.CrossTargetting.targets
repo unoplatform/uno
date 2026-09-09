@@ -44,10 +44,6 @@
 					   defined on the Android and Apple target frameworks too. Prefer HAS_UNO in new code.
   - __CROSSRUNTIME__: Currently have the same semantics as UNO_REFERENCE_API
   - __NETSTD_REFERENCE__: Used when building the reference assemblies (only true for Reference)
-  - UNO_HAS_UIELEMENT_IMPLICIT_PINNING: Used to mark targets that have specific constraints on
-										UIElements. On iOS, this means additional weak references
-										backed fields to handle opaque native reference pinning and avoid
-										memory leaks.
   - UNO_HAS_MANAGED_SCROLL_PRESENTER: Determines if the platforms supports managed scroll presenter which
 									  uses render transforms instead of native scroll feature (if any)
   - UNO_HAS_MANAGED_POINTERS: Determines if the pointer events are dispatched by uno instead of the system (if any).
@@ -77,11 +73,11 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsIOS)">
-		<DefineConstants>$(DefineConstants);UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_RENDER_TARGET_BITMAP</DefineConstants>
+		<DefineConstants>$(DefineConstants);HAS_RENDER_TARGET_BITMAP</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsTvOS)">
-		<DefineConstants>$(DefineConstants);UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_RENDER_TARGET_BITMAP</DefineConstants>
+		<DefineConstants>$(DefineConstants);HAS_RENDER_TARGET_BITMAP</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsAppleUIKit)">
