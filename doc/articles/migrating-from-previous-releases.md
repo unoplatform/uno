@@ -32,6 +32,21 @@ On the Linux Framebuffer target, the default mouse wheel scroll direction is now
 
 This change was introduced in [PR #22924](https://github.com/unoplatform/uno/pull/22924).
 
+### Element-level theming on Skia and WebAssembly
+
+Uno Platform 6.6 implements WinUI-compatible element-level theming on the Skia and WebAssembly targets. Setting `FrameworkElement.RequestedTheme` — including on the root element, which is what `Uno.Toolkit.UI.SystemThemeHelper.SetApplicationTheme`/`SetRootTheme` do — now themes that element's subtree only, exactly as it does on WinUI.
+
+Previously, setting the root element's `RequestedTheme` also switched the application-level theme (an Uno-specific behavior WinUI never had). After upgrading:
+
+- `Application.Current.RequestedTheme` no longer changes when a root element's theme is set. It keeps reporting the application-level theme, which follows the OS unless set in the `Application` constructor.
+- Programmatic resource lookups (`ResourceDictionary` indexer/`TryGetValue`, or helpers such as the Community Toolkit's `FindResource`) keep resolving `ThemeDictionaries` against the application-level theme, matching WinUI. The UI itself still updates: `{ThemeResource}` references inside the themed subtree re-resolve against the element theme.
+
+If your code — tests in particular — needs the theme-specific value of a resource, read the effective value from an element in the themed subtree (`element.ActualTheme`, or a theme-bound property such as a control's `Foreground`), or query the theme dictionary explicitly, for example `(ResourceDictionary)resources.ThemeDictionaries["Dark"]`.
+
+The native Android and native iOS UI targets retain the previous behavior.
+
+This change was introduced in [PR #22803](https://github.com/unoplatform/uno/pull/22803).
+
 ### Uno.Extensions MVUX bindable generation tool
 
 Uno.Extensions 7.2 (shipped with Uno Platform 6.6) changes the default MVUX bindable generation tool from version 2 to version 3, which improves Hot Reload support. Typical MVUX code is unaffected, because navigation and bindings reference your model type rather than the generated bindable. However, the *name* of the generated bindable view model changes: version 2 generated `Bindable{ModelName}` (for example, `BindableMainModel`), while version 3 generates `{Name}ViewModel` (for example, `MainModel` generates `MainViewModel`).
