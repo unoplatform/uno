@@ -35,7 +35,38 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 
 		public bool Wraps { get; }
 
-		public RenderLine(List<RenderSegmentSpan> spans, LineStackingStrategy lineStackingStrategy, float lineHeight, bool firstLine, bool wraps)
+		/// <summary>
+		/// Set when text trimming collapsed this line. The shaped ellipsis is painted after the line's
+		/// spans; it is decoration, so it takes no part in the character index space.
+		/// </summary>
+		public CollapsedLineSymbol? CollapsingSymbol { get; set; }
+
+		/// <summary>
+		/// Produces a copy of this line trimmed to <paramref name="spans"/> with a collapsing symbol at its
+		/// end. Collapsing only drops glyphs from the tail, so the line's stacking metrics are unchanged.
+		/// </summary>
+		internal RenderLine CollapseTo(List<RenderSegmentSpan> spans, CollapsedLineSymbol symbol)
+			=> new(this, spans, symbol);
+
+		private RenderLine(RenderLine source, List<RenderSegmentSpan> spans, CollapsedLineSymbol symbol)
+		{
+			_segmentSpans = new(spans);
+
+			var width = symbol.Width;
+			foreach (var span in _segmentSpans)
+			{
+				width += span.Width;
+			}
+
+			Width = width;
+			WidthWithoutTrailingSpaces = width;
+			Height = source.Height;
+			BaselineOffsetY = source.BaselineOffsetY;
+			Wraps = false;
+			CollapsingSymbol = symbol;
+		}
+
+		public RenderLine(List<RenderSegmentSpan> spans, LineStackingStrategy lineStackingStrategy, float lineHeight, bool firstLine, bool wraps, TextLineBounds textLineBounds)
 		{
 			_segmentSpans = new(spans);
 
@@ -59,34 +90,43 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 
 			for (var i = 0; i < _segmentSpans.Count; i++)
 			{
-				var inline = _segmentSpans[i].Segment.Inline;
+				var segment = _segmentSpans[i].Segment;
 
-				maxStackHeight = Math.Max(maxStackHeight, inline.LineHeight);
-				maxAboveBaselineHeight = Math.Max(maxAboveBaselineHeight, inline.AboveBaselineHeight);
-				maxBelowBaselineHeight = Math.Max(maxBelowBaselineHeight, inline.BelowBaselineHeight);
+				float baseline, lineSpacing;
+				if (segment.IsInlineObject)
+				{
+					// An embedded object stacks by its own metrics rather than a font's: its ascent is the
+					// child's baseline and its descent the remainder of its height, so the child's baseline
+					// lands on the line's baseline.
+					var objectMetrics = segment.ObjectMetrics;
+					baseline = objectMetrics.Baseline;
+					lineSpacing = objectMetrics.Height;
+				}
+				else
+				{
+					// Constrain the inline's font metrics by the owner's TextLineBounds before stacking.
+					(baseline, lineSpacing) = segment.Inline.FontInfo.GetTextLineBoundsMetrics(textLineBounds);
+				}
+
+				maxStackHeight = Math.Max(maxStackHeight, lineSpacing);
+				maxAboveBaselineHeight = Math.Max(maxAboveBaselineHeight, baseline);
+				maxBelowBaselineHeight = Math.Max(maxBelowBaselineHeight, lineSpacing - baseline);
 			}
 
 			switch (lineStackingStrategy)
 			{
 				case LineStackingStrategy.MaxHeight:
-					if (lineHeight == 0)
 					{
-						Height = maxStackHeight;
-						BaselineOffsetY = -maxBelowBaselineHeight;
-					}
-					else
-					{
-						if (lineHeight < maxStackHeight)
-						{
-							Height = maxStackHeight;
-							BaselineOffsetY = -maxBelowBaselineHeight;
+						// The natural line is MAX(tallest run, ascent + descent): a baseline-aligned run
+						// such as an embedded object can have an ascent taller than any single run's
+						// height (LsTextLine.cpp:1315-1324).
+						var naturalHeight = Math.Max(maxStackHeight, maxAboveBaselineHeight + maxBelowBaselineHeight);
 
-						}
-						else
-						{
-							Height = lineHeight;
-							BaselineOffsetY = GetBaselineOffsetY(lineHeight, maxStackHeight, maxBelowBaselineHeight);
-						}
+						// MaxHeight grows the line but leaves the baseline where the font puts it, so the
+						// extra leading falls below it — ApplyLineStackingStrategy's default arm uses
+						// lineOffset = 0. Sliding the baseline down instead is BlockLineHeight's rule.
+						Height = Math.Max(lineHeight, naturalHeight);
+						BaselineOffsetY = maxAboveBaselineHeight - Height;
 					}
 
 					break;
@@ -128,7 +168,7 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 					float charSpacingOffset = (GetLeftCharacterSpacingOffset() + GetRightCharacterSpacingOffset());
 					return ((charSpacingOffset + availableWidth - WidthWithoutTrailingSpaces) / 2, 0);
 
-				default: // TextAlignment.Justify
+				case TextAlignment.Justify:
 					float justifySpaceOffset = 0;
 
 					if (Wraps && availableWidth > WidthWithoutTrailingSpaces)
@@ -137,6 +177,11 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 					}
 
 					return (GetLeftCharacterSpacingOffset(), justifySpaceOffset);
+
+				// DetectFromContent is resolved to a concrete edge before it reaches here, the way
+				// ParagraphNode::CalculateLineOffset does it; the leading edge is the fallback.
+				default:
+					return (GetLeftCharacterSpacingOffset(), 0);
 			}
 
 			int CountJustifySpaces()

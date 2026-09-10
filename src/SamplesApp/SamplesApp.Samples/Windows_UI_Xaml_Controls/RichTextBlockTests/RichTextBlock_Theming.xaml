@@ -1,0 +1,77 @@
+﻿<Page
+    x:Class="UITests.Windows_UI_Xaml_Controls.RichTextBlockTests.RichTextBlock_Theming"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Windows_UI_Xaml_Controls.RichTextBlockTests"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+
+    <ScrollViewer>
+        <StackPanel Padding="16" Spacing="8">
+            <TextBlock FontWeight="Bold" Text="RichTextBlock Theming" />
+            <TextBlock TextWrapping="Wrap">
+                Manual test - click "Toggle Theme" below and flip between Light and Dark a few times, watching each block:
+                1) The first block has no explicit Foreground and should always match the page's default text color.
+                2) The second block sets Foreground on the RichTextBlock itself, which cascades into both paragraphs - except the highlighted Run, which pins a hardcoded color and must NOT change with theme.
+                3) The third block has a themed SelectionHighlightColor - drag-select its text in both themes and confirm the highlight (and the selected text on top of it) stays legible.
+            </TextBlock>
+
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button Click="OnToggleThemeClick" Content="Toggle Theme" />
+                <TextBlock
+                    x:Name="CurrentThemeDisplay"
+                    VerticalAlignment="Center"
+                    FontWeight="SemiBold" />
+            </StackPanel>
+
+            <TextBlock FontWeight="SemiBold" Text="1) Default foreground (inherits theme):" />
+            <Border
+                Padding="12"
+                BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                BorderThickness="1">
+                <RichTextBlock x:Name="DefaultForegroundBlock">
+                    <Paragraph>
+                        <Run Text="This RichTextBlock has no Foreground set, so it uses the default themed text brush. Toggling the theme should flip this text between dark-on-light and light-on-dark." />
+                    </Paragraph>
+                </RichTextBlock>
+            </Border>
+
+            <TextBlock FontWeight="SemiBold" Text="2) Control-level Foreground cascades; one Run overrides locally:" />
+            <Border
+                Padding="12"
+                BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                BorderThickness="1">
+                <RichTextBlock x:Name="CascadingForegroundBlock" Foreground="{ThemeResource SystemAccentColor}">
+                    <Paragraph>
+                        <Run Text="This whole paragraph inherits the RichTextBlock's accent-colored Foreground, since no Run here overrides it." />
+                    </Paragraph>
+                    <Paragraph>
+                        <Run Text="Accent-colored text, then " />
+                        <Run
+                            x:Name="OverrideRun"
+                            Foreground="Red"
+                            Text="this Run stays red regardless of theme" />
+                        <Run Text=", and back to accent-colored text." />
+                    </Paragraph>
+                </RichTextBlock>
+            </Border>
+
+            <TextBlock FontWeight="SemiBold" Text="3) Selection highlight themed via SelectionHighlightColor:" />
+            <Border
+                Padding="12"
+                BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}"
+                BorderThickness="1">
+                <RichTextBlock x:Name="SelectionThemedBlock" IsTextSelectionEnabled="True">
+                    <RichTextBlock.SelectionHighlightColor>
+                        <SolidColorBrush Color="{ThemeResource SystemAccentColor}" />
+                    </RichTextBlock.SelectionHighlightColor>
+                    <Paragraph>
+                        <Run Text="Drag-select this text in both Light and Dark theme. The selection highlight uses the accent color and the selected text should remain readable on top of it in either theme." />
+                    </Paragraph>
+                </RichTextBlock>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

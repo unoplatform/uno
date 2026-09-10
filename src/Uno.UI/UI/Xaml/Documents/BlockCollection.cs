@@ -9,5 +9,11 @@ namespace Microsoft.UI.Xaml.Documents
 		{
 			base.Add(block);
 		}
+
+		// CBlockCollection::MarkDirty — drops the cached block lengths. The owner is a RichTextBlock
+		// rather than a text element, so the invalidation chain ends here.
+		internal void MarkDirty() => MarkDirtyPartial();
+
+		partial void MarkDirtyPartial();
 	}
 }
