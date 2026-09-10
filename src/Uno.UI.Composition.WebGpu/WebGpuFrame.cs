@@ -241,12 +241,24 @@ internal sealed unsafe partial class WebGpuFrame
 	private List<float> RentRrect() => RentVerts();
 	private void ReturnRrect(List<float> s) => ReturnVerts(s);
 
+	/// <summary>Grows the list by <paramref name="n"/> floats and returns the new tail to write into.</summary>
+	internal static Span<float> Grow(List<float> list, int n)
+	{
+		int c = list.Count;
+		System.Runtime.InteropServices.CollectionsMarshal.SetCount(list, c + n);
+		return System.Runtime.InteropServices.CollectionsMarshal.AsSpan(list).Slice(c, n);
+	}
+
 	// Appends one quad (two tris) as solid verts; returns the start vertex index.
-	private int AppendSolidRect(List<float> solid, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float r, float g, float b, float a)
+	private static int AppendSolidRect(List<float> solid, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float r, float g, float b, float a)
 	{
 		int start = solid.Count / VertexStride.Solid;
-		void V(Vector2 p) { solid.Add(p.X); solid.Add(p.Y); solid.Add(r); solid.Add(g); solid.Add(b); solid.Add(a); solid.Add(0f); solid.Add(0f); }
-		V(p0); V(p1); V(p2); V(p0); V(p2); V(p3);
+		var v = Grow(solid, 6 * VertexStride.Solid);
+		ReadOnlySpan<Vector2> pts = stackalloc Vector2[6] { p0, p1, p2, p0, p2, p3 };
+		for (int i = 0, o = 0; i < 6; i++, o += VertexStride.Solid)
+		{
+			v[o] = pts[i].X; v[o + 1] = pts[i].Y; v[o + 2] = r; v[o + 3] = g; v[o + 4] = b; v[o + 5] = a; v[o + 6] = 0f; v[o + 7] = 0f;
+		}
 		return start;
 	}
 
@@ -258,12 +270,15 @@ internal sealed unsafe partial class WebGpuFrame
 		Span<Vector2> dev = stackalloc Vector2[4] { p0, p1, p3, p2 };
 		Span<Vector2> ctr = stackalloc Vector2[4] { new(-hf.X, -hf.Y), new(hf.X, -hf.Y), new(-hf.X, hf.Y), new(hf.X, hf.Y) };
 		ReadOnlySpan<int> tri = stackalloc int[6] { 0, 1, 2, 2, 1, 3 };
+		var v = Grow(rr, 6 * VertexStride.RoundedRect);
+		int o = 0;
 		foreach (var idx in tri)
 		{
 			var d = dev[idx];
-			rr.Add(d.X); rr.Add(d.Y); rr.Add(ctr[idx].X); rr.Add(ctr[idx].Y); rr.Add(hf.X); rr.Add(hf.Y);
-			rr.Add(rad.X); rr.Add(rad.Y); rr.Add(rad.Z); rr.Add(rad.W); rr.Add(cr); rr.Add(cg); rr.Add(cb); rr.Add(color);
-			rr.Add(ih.X); rr.Add(ih.Y); rr.Add(ic.X); rr.Add(ic.Y); rr.Add(ir.X); rr.Add(ir.Y); rr.Add(ir.Z); rr.Add(ir.W);
+			v[o] = d.X; v[o + 1] = d.Y; v[o + 2] = ctr[idx].X; v[o + 3] = ctr[idx].Y; v[o + 4] = hf.X; v[o + 5] = hf.Y;
+			v[o + 6] = rad.X; v[o + 7] = rad.Y; v[o + 8] = rad.Z; v[o + 9] = rad.W; v[o + 10] = cr; v[o + 11] = cg; v[o + 12] = cb; v[o + 13] = color;
+			v[o + 14] = ih.X; v[o + 15] = ih.Y; v[o + 16] = ic.X; v[o + 17] = ic.Y; v[o + 18] = ir.X; v[o + 19] = ir.Y; v[o + 20] = ir.Z; v[o + 21] = ir.W;
+			o += VertexStride.RoundedRect;
 		}
 	}
 

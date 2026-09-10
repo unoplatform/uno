@@ -180,10 +180,11 @@ internal sealed unsafe partial class WebGpuFrame
 		var dst = owned is null ? _solid : _scratch;
 		if (owned is not null) { _scratch.Clear(); }
 		uint start = (uint)(dst.Count / VertexStride.Solid);
-		for (int i = 0; i < tris.Length; i += 2)
+		var v = Grow(dst, tris.Length / 2 * VertexStride.Solid);
+		for (int i = 0, o = 0; i < tris.Length; i += 2, o += VertexStride.Solid)
 		{
 			float ca = a * (cov is null ? 1f : cov[i >> 1]);
-			dst.Add(tris[i] + off.X); dst.Add(tris[i + 1] + off.Y); dst.Add(r); dst.Add(g); dst.Add(b); dst.Add(ca); dst.Add(0f); dst.Add(0f);
+			v[o] = tris[i] + off.X; v[o + 1] = tris[i + 1] + off.Y; v[o + 2] = r; v[o + 3] = g; v[o + 4] = b; v[o + 5] = ca; v[o + 6] = 0f; v[o + 7] = 0f;
 		}
 		ops.Add(owned is null
 			? DrawOp.Shared(DrawKind.Solid, start, count, IntPtr.Zero, pc.Clip, clipBg)

@@ -199,8 +199,11 @@ internal sealed unsafe partial class WebGpuFrame
 
 	private static void AppendQuad(List<float> dst, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float u0, float v0, float u1, float v1)
 	{
-		void Q(Vector2 pos, float u, float v) { dst.Add(pos.X); dst.Add(pos.Y); dst.Add(u); dst.Add(v); }
-		Q(p0, u0, v0); Q(p1, u1, v0); Q(p2, u1, v1); Q(p0, u0, v0); Q(p2, u1, v1); Q(p3, u0, v1);
+		var q = Grow(dst, 6 * VertexStride.Quad);
+		ReadOnlySpan<Vector2> pts = stackalloc Vector2[6] { p0, p1, p2, p0, p2, p3 };
+		ReadOnlySpan<float> us = stackalloc float[6] { u0, u1, u1, u0, u1, u0 };
+		ReadOnlySpan<float> vs = stackalloc float[6] { v0, v0, v1, v0, v1, v1 };
+		for (int i = 0, o = 0; i < 6; i++, o += VertexStride.Quad) { q[o] = pts[i].X; q[o + 1] = pts[i].Y; q[o + 2] = us[i]; q[o + 3] = vs[i]; }
 	}
 
 	// The gradient's geometry is baked in its recording's space; under a replay transform the points move with it and
