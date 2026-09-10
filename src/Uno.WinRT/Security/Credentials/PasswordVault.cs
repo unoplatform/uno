@@ -16,7 +16,10 @@ namespace Windows.Security.Credentials;
 
 public partial class PasswordVault
 {
-	private readonly object _updateGate = new object();
+	// HRESULT_FROM_WIN32(ERROR_NOT_FOUND): the HRESULT the Windows vault reports for a missing item.
+	private const int ElementNotFoundHResult = unchecked((int)0x80070490);
+
+	private static readonly object PersistenceGate = new();
 	private readonly IPersister _persister;
 
 	private ImmutableList<PasswordCredential> _credentials;
@@ -28,15 +31,17 @@ public partial class PasswordVault
 	}
 
 	public IReadOnlyList<PasswordCredential> RetrieveAll()
-		=> _credentials;
+		=> GetCredentials(); // UWP: an empty vault returns an empty list instead of throwing
 
 	public IReadOnlyList<PasswordCredential> FindAllByResource(string resource)
 	{
+		ValidateSearchArgument(resource, nameof(resource));
+
 		// UWP: 'resource' is case sensitive
-		var result = _credentials.Where(cred => cred.Resource == resource).ToImmutableList();
+		var result = GetCredentials().Where(cred => cred.Resource == resource).ToImmutableList();
 		if (result.IsEmpty)
 		{
-			throw new Exception("No match"); // UWP: Throw 'Exception' if no match
+			throw NoMatch(); // UWP: Throw 'Exception' if no match
 		}
 
 		return result;
@@ -44,11 +49,13 @@ public partial class PasswordVault
 
 	public IReadOnlyList<PasswordCredential> FindAllByUserName(string userName)
 	{
+		ValidateSearchArgument(userName, nameof(userName));
+
 		// UWP: 'userName' is case sensitive
-		var result = _credentials.Where(cred => cred.UserName == userName).ToImmutableList();
+		var result = GetCredentials().Where(cred => cred.UserName == userName).ToImmutableList();
 		if (result.IsEmpty)
 		{
-			throw new Exception("No match"); // UWP: Throw 'Exception' if no match
+			throw NoMatch(); // UWP: Throw 'Exception' if no match
 		}
 
 		return result;
@@ -56,11 +63,21 @@ public partial class PasswordVault
 
 	public PasswordCredential Retrieve(string resource, string userName)
 	{
+		if (string.IsNullOrEmpty(resource))
+		{
+			throw new ArgumentException("Invalid resource value", nameof(resource));
+		}
+
+		if (string.IsNullOrEmpty(userName))
+		{
+			throw new ArgumentException("Invalid username value", nameof(userName));
+		}
+
 		// UWP: Retrieve is case IN-sensitive for both 'resource' and 'userName'
-		var result = _credentials.FirstOrDefault(cred => Comparer.Instance.Equals(cred, resource, userName));
+		var result = GetCredentials().FirstOrDefault(cred => Comparer.Instance.Equals(cred, resource, userName));
 		if (result == null)
 		{
-			throw new Exception("No match"); // UWP: Throw 'Exception' if no match
+			throw NoMatch(); // UWP: Throw 'Exception' if no match
 		}
 
 		return result;
@@ -68,34 +85,41 @@ public partial class PasswordVault
 
 	public void Remove(PasswordCredential credential)
 	{
-		while (true)
+		if (credential is null)
 		{
-			var capture = _credentials;
+			throw new ArgumentException("Invalid credential argument", nameof(credential));
+		}
+
+		lock (PersistenceGate)
+		{
+			using var persistenceLock =
+				(_persister as ISynchronizedPersister)?.AcquireLock();
+			var capture = Load();
 			var updated = capture.Remove(credential, Comparer.Instance);
 
 			if (capture == updated)
 			{
-				return;
+				_credentials = capture;
+				throw NoMatch(); // UWP: removing an absent credential throws
 			}
 
-			lock (_updateGate)
-			{
-				if (capture == _credentials)
-				{
-					Persist(updated);
-					_credentials = updated;
-
-					return;
-				}
-			}
+			Persist(updated);
+			_credentials = updated;
 		}
 	}
 
 	public void Add(PasswordCredential credential)
 	{
-		while (true)
+		if (credential is null)
 		{
-			var capture = _credentials;
+			throw new ArgumentException("Invalid credential argument", nameof(credential));
+		}
+
+		lock (PersistenceGate)
+		{
+			using var persistenceLock =
+				(_persister as ISynchronizedPersister)?.AcquireLock();
+			var capture = Load();
 			var existing = capture.FirstOrDefault(c => Comparer.Instance.Equals(c, credential));
 
 			ImmutableList<PasswordCredential> updated;
@@ -111,24 +135,40 @@ public partial class PasswordVault
 				if (existing.Password == credential.Password)
 				{
 					// no change, abort update!
+					_credentials = capture;
 					return;
 				}
 
 				updated = capture.Replace(existing, credential);
 			}
 
-			lock (_updateGate)
-			{
-				if (capture == _credentials)
-				{
-					Persist(updated);
-					_credentials = updated;
-
-					return;
-				}
-			}
+			Persist(updated);
+			_credentials = updated;
 		}
 	}
+
+	/// <summary>
+	/// Reads the current state of the vault. UWP has no per-instance cache: a vault always
+	/// observes credentials written by other instances and other processes.
+	/// </summary>
+	private ImmutableList<PasswordCredential> GetCredentials()
+	{
+		lock (PersistenceGate)
+		{
+			return _credentials = Load();
+		}
+	}
+
+	private static void ValidateSearchArgument(string value, string parameterName)
+	{
+		if (string.IsNullOrEmpty(value))
+		{
+			throw new ArgumentException("Invalid search argument", parameterName);
+		}
+	}
+
+	private static Exception NoMatch()
+		=> new Exception("No match") { HResult = ElementNotFoundHResult };
 
 	public ImmutableList<PasswordCredential> Load()
 	{
@@ -155,7 +195,7 @@ public partial class PasswordVault
 				}
 			}
 		}
-		catch (Exception e)
+		catch (Exception e) when (e is not PasswordVaultUnavailableException)
 		{
 			this.Log().Warn("Failed to load values from persister, assume empty.", e);
 		}
@@ -203,6 +243,11 @@ public partial class PasswordVault
 		/// <param name="outputStream">The target stream where credentials can be stored</param>
 		/// <returns>A <see cref="WriteTransaction"/> which ensure to atomatically update the credentials</returns>
 		WriteTransaction OpenWrite(out Stream outputStream);
+	}
+
+	protected interface ISynchronizedPersister
+	{
+		IDisposable AcquireLock();
 	}
 
 	/// <summary>
