@@ -478,15 +478,15 @@ public sealed unsafe partial class WebGpuPresentSession
 		// still pays a full offscreen render + blur every frame. Mask (DstIn) and colour-matrix layers keep
 		// full-surface semantics (an empty mask must still erase; a matrix offset can produce coverage).
 		var contentBounds = ClampToClip(CmdListBounds(lyr.Commands), lyr.Clip);
-		var haveVis = lyr.CompositeMode == 0 && lyr.ColorMatrix is null && contentBounds.X <= contentBounds.Z && contentBounds.Y <= contentBounds.W;
+		var haveVis = lyr.CompositeMode == 0 && lyr.ColorMatrix is null;
 		if (haveVis)
 		{
+			// Either part may be empty (content or shadow entirely clipped out); an empty layer is culled, never rendered.
 			var vis = contentBounds;
 			if (lyr.ShadowEffect is { } sfx)
 			{
 				var spad = MathF.Ceiling(3f * MathF.Max(sfx.SigmaX, sfx.SigmaY)) + 2f;
-				var sb = ClampToClip(Inflate(new Vector4(contentBounds.X + sfx.Dx, contentBounds.Y + sfx.Dy, contentBounds.Z + sfx.Dx, contentBounds.W + sfx.Dy), spad), lyr.Clip);
-				vis = new Vector4(MathF.Min(vis.X, sb.X), MathF.Min(vis.Y, sb.Y), MathF.Max(vis.Z, sb.Z), MathF.Max(vis.W, sb.W));
+				vis = Union(vis, ClampToClip(Inflate(new Vector4(contentBounds.X + sfx.Dx, contentBounds.Y + sfx.Dy, contentBounds.Z + sfx.Dx, contentBounds.W + sfx.Dy), spad), lyr.Clip));
 			}
 			if (vis.X >= vis.Z || vis.Y >= vis.W || vis.Z <= 0 || vis.W <= 0 || vis.X >= _s.Width || vis.Y >= _s.Height)
 			{

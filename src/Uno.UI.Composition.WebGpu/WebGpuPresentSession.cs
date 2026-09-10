@@ -220,6 +220,14 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 
 	private static Vector4 Inflate(Vector4 b, float pad) => new(b.X - pad, b.Y - pad, b.Z + pad, b.W + pad);
 
+	// The bounds of both; an empty (inverted) side contributes nothing.
+	private static Vector4 Union(Vector4 a, Vector4 b)
+	{
+		if (a.X >= a.Z || a.Y >= a.W) { return b; }
+		if (b.X >= b.Z || b.Y >= b.W) { return a; }
+		return new Vector4(MathF.Min(a.X, b.X), MathF.Min(a.Y, b.Y), MathF.Max(a.Z, b.Z), MathF.Max(a.W, b.W));
+	}
+
 	private static Vector4 TransformBounds(Vector4 b, Matrix4x4 m)
 	{
 		if (b.X > b.Z) { return b; }   // empty stays empty
