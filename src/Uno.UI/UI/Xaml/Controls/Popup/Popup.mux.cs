@@ -82,6 +82,10 @@ public partial class Popup
 		return handled;
 	}
 
+	// We'll treat a popup associated with a sub-menu as light-dismiss
+	// because we know that the parent menu of a sub-menu is always light-dismiss.
+	internal bool IsSelfOrAncestorLightDismiss() => IsLightDismissEnabled || IsSubMenu;
+
 	internal static Popup? GetClosestPopupAncestor(UIElement element)
 	{
 		var node = element.GetUIElementAdjustedParentInternal(false);

@@ -450,7 +450,7 @@ partial class AppBar
 			// a light-dismiss layer - the popup will have its own light-dismiss layer,
 			// and it can interfere with ours.
 			var popupAncestor = Popup.GetClosestPopupAncestor(this);
-			if (popupAncestor is null || !popupAncestor.IsLightDismissEnabled)
+			if (popupAncestor is null || !popupAncestor.IsSelfOrAncestorLightDismiss())
 			{
 				if (!m_isInOverlayState)
 				{
