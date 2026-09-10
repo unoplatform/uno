@@ -155,6 +155,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 
 		private void InnerInitialize()
 		{
+			LinuxBackgroundTaskExtensions.Register();
 			_isDispatcherThread = true;
 			FrameBufferWindowWrapper.Init(_hostBuilder.DisplayOrientation);
 			var keyboardSource = new FrameBufferKeyboardInputSource(this, _hostBuilder.KeymapParams);

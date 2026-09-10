@@ -3,17 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Background
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial interface IBackgroundTaskRegistration3 : global::Windows.ApplicationModel.Background.IBackgroundTaskRegistration
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		global::Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup TaskGroup
-		{
-			get;
-		}
-#endif
+		// Skipping already declared property TaskGroup
 		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration3.TaskGroup.get
 	}
 }

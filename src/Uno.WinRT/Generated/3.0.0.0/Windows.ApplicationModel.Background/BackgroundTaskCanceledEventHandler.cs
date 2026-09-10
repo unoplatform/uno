@@ -3,7 +3,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Background
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-	public delegate void BackgroundTaskCanceledEventHandler(global::Windows.ApplicationModel.Background.IBackgroundTaskInstance sender, global::Windows.ApplicationModel.Background.BackgroundTaskCancellationReason reason);
-#endif
+	// Skipping already declared delegate Windows.ApplicationModel.Background.BackgroundTaskCanceledEventHandler
 }

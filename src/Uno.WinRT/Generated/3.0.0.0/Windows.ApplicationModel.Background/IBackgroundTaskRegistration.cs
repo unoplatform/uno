@@ -9,26 +9,15 @@ namespace Windows.ApplicationModel.Background
 	public partial interface IBackgroundTaskRegistration
 	{
 		// Skipping already declared property Name
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		global::System.Guid TaskId
-		{
-			get;
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		void Unregister(bool cancelTask);
-#endif
+		// Skipping already declared property TaskId
+		// Skipping already declared method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.Unregister(bool)
 		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.Name.get
 		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.TaskId.get
 		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.Completed.add
 		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.Completed.remove
 		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.Progress.add
 		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.Progress.remove
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		event global::Windows.ApplicationModel.Background.BackgroundTaskCompletedEventHandler Completed;
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		event global::Windows.ApplicationModel.Background.BackgroundTaskProgressEventHandler Progress;
-#endif
+		// Skipping already declared event Windows.ApplicationModel.Background.IBackgroundTaskRegistration.Completed
+		// Skipping already declared event Windows.ApplicationModel.Background.IBackgroundTaskRegistration.Progress
 	}
 }
