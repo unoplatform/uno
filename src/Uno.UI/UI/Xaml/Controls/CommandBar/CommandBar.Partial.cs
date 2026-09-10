@@ -243,8 +243,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			base.OnApplyTemplate();
 
-			GetTemplatePart("PrimaryItemsControl", out m_tpPrimaryItemsControlPart);
-			GetTemplatePart("SecondaryItemsControl", out m_tpSecondaryItemsControlPart);
+			m_tpPrimaryItemsControlPart = GetTemplateChild<ItemsControl>("PrimaryItemsControl");
+			m_tpSecondaryItemsControlPart = GetTemplateChild<ItemsControl>("SecondaryItemsControl");
 
 			if (m_tpSecondaryItemsControlPart is { })
 			{
@@ -255,10 +255,10 @@ namespace Microsoft.UI.Xaml.Controls
 			// Apply a shadow
 			//IFC_RETURN(ApplyElevationEffect(m_tpSecondaryItemsControlPart.AsOrNull<IUIElement>().Get()));
 
-			GetTemplatePart<FrameworkElement>("ContentControl", out var contentControl);
-			GetTemplatePart<FrameworkElement>("OverflowContentRoot", out var overflowContentRoot);
-			GetTemplatePart<Popup>("OverflowPopup", out var overflowPopup);
-			GetTemplatePart<FrameworkElement>("WindowedPopupPadding", out var windowedPopupPadding);
+			var contentControl = GetTemplateChild<FrameworkElement>("ContentControl");
+			var overflowContentRoot = GetTemplateChild<FrameworkElement>("OverflowContentRoot");
+			var overflowPopup = GetTemplateChild<Popup>("OverflowPopup");
+			var windowedPopupPadding = GetTemplateChild<FrameworkElement>("WindowedPopupPadding");
 
 			m_tpContentControl = contentControl;
 
@@ -1589,7 +1589,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		protected override bool ContainsElement(DependencyObject pElement)
+		internal override bool ContainsElement(DependencyObject pElement)
 		{
 			bool isAncestorOfElement = false;
 
@@ -1628,7 +1628,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		protected override void RestoreSavedFocusImpl(DependencyObject? savedFocusedElement, FocusState savedFocusState)
+		private protected override void RestoreSavedFocusImpl(DependencyObject? savedFocusedElement, FocusState savedFocusState)
 		{
 			// If we did save focus from a previous element when opening, then defer to the AppBar's
 			// implemenation to restore it.  The CommandBar handles the case where there was no
@@ -1895,19 +1895,95 @@ namespace Microsoft.UI.Xaml.Controls
 			return visibleBounds.Width <= m_overflowContentMaxWidth;
 		}
 
-		protected override void GetVerticalOffsetNeededToOpenUp(out double neededOffset, out bool opensWindowed)
+		private bool HasPrimaryCommands()
 		{
-			base.GetVerticalOffsetNeededToOpenUp(out neededOffset, out opensWindowed);
+			if (m_tpPrimaryCommands is { Count: > 0 })
+			{
+				return true;
+			}
+
+			if (m_tpDynamicPrimaryCommands is { Count: > 0 })
+			{
+				return true;
+			}
+
+			return false;
+		}
+
+		//
+		// When a CommandBar opens, there are two things that change:
+		// 1. The primary commands (if any) expand. This can open upwards or downwards.
+		// 2. The overflow commands (if any) open a (sometimes windowed) popup. This can also open
+		//    upwards or downwards.
+		//
+		// This function checks that there is room for both things.
+		//
+		private protected override bool GetShouldOpenUp()
+		{
+			// Bottom appbars always open up. All other appbars by default open down.
+			var shouldOpenUp = Mode == AppBarMode.Bottom;
+
+			if (Mode == AppBarMode.Inline)
+			{
+				var appBarHasSpaceToOpenDown = true;
+
+				// The AppBar itself only grows when it has primary commands to expand; with none, the
+				// overflow popup alone decides the direction.
+				if (HasPrimaryCommands())
+				{
+					appBarHasSpaceToOpenDown = HasSpaceForAppBarToOpenDown();
+				}
+
+				var overflowPopupHasSpaceToOpenDown = HasSpaceForOverflowPopupToOpenDown();
+
+				// Since we open down by default, we'll open up only if we *don't* have space in the
+				// down direction for either component.
+				shouldOpenUp = !appBarHasSpaceToOpenDown || !overflowPopupHasSpaceToOpenDown;
+			}
+
+			return shouldOpenUp;
+		}
+
+		private bool HasSpaceForOverflowPopupToOpenDown()
+		{
+			MUX_ASSERT(Mode == AppBarMode.Inline);
+
+			var transform = TransformToVisual(null);
 
 			var templateSettings = CommandBarTemplateSettings;
-
 			var overflowContentHeight = templateSettings.OverflowContentHeight;
 
-			// Add the height of the overflow content.
-			neededOffset += overflowContentHeight;
+			// When opening down, the overflow popup is lined up with the bottom of the expanded AppBar.
+			var combinedHeights = ContentHeight + overflowContentHeight;
 
 			// We open windowed if our popup is windowed.
-			// opensWindowed = m_tpOverflowPopup && !!m_tpOverflowPopup.Cast<Popup>()->IsWindowed();
+			bool opensWindowed = false;
+			//opensWindowed = m_tpOverflowPopup && m_tpOverflowPopup.Cast<Popup>()->IsWindowed();
+
+			// Transform the bottom of the overflow popup to Xaml island coordinates.
+			var bottomOfOverflowPopup = transform.TransformPoint(new Point(0, combinedHeights));
+
+			var layoutBounds = new Rect();
+
+			if (opensWindowed)
+			{
+				// UNO TODO: Windowed modes are not supported
+				//wf::Point topLeftPoint = { 0, 0 };
+				//IFC_RETURN(transform->TransformPoint(topLeftPoint, &topLeftPoint));
+				//IFC_RETURN(DXamlCore::GetCurrent()->CalculateAvailableMonitorRect(this, topLeftPoint, &layoutBounds));
+			}
+			else
+			{
+				var windowBounds = DXamlCore.Current.GetContentBoundsForElement(this);
+				layoutBounds = DXamlCore.Current.GetContentLayoutBoundsForElement(this);
+
+				// Convert the layout bounds X/Y offsets from screen coordinates into window coordinates.
+				layoutBounds.X -= windowBounds.X;
+				layoutBounds.Y -= windowBounds.Y;
+			}
+
+			// Unlike HasSpaceForAppBarToOpenDown, WinUI rounds nothing and allows no slack here.
+			return bottomOfOverflowPopup.Y <= layoutBounds.Y + layoutBounds.Height;
 		}
 
 		private Size GetOverflowContentSize()
