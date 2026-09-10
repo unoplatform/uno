@@ -179,8 +179,8 @@ internal sealed class GradientCmd : WebGpuCommand
 	public float[] Uniform;          // packed Grad struct (WebGpuDevice.GradientUniformBytes / 4 floats)
 }
 
-// A drop shadow: the silhouette (flattened, device space) is filled into an offscreen coverage texture,
-// separably gaussian-blurred (SigmaX/Y), then composited tinted by Color. Same fan/bbox form as PathFill.
+// A drop shadow: the silhouette's coverage is baked offscreen at draw time, gaussian-blurred (SigmaX/Y), then
+// composited tinted by Color.
 internal sealed class ShadowCmd : WebGpuCommand
 {
 	public IGeometry Geometry;     // the silhouette, with the matrix that was current: baked at draw time
@@ -212,11 +212,11 @@ internal sealed class BackdropCmd : WebGpuCommand
 	public float Opacity;
 }
 
-// A deferred replay of a cacheable child recording under a transform+clip. Captures BOTH the recording
-// (WebGpuRenderRecord, which owns its compiled GPU draw-list — the persistent retained state) and its immutable
-// command-list reference. The list is captured directly so a build survives the recording's Dispose (which only
-// nulls Commands + defers the compiled state's GPU free to the render thread); the frame presents on the render
-// thread while the main thread may Dispose the recording.
+// A replayed child recording under the matrix and clip current where it was replayed. Captures BOTH the recording
+// (WebGpuRenderRecord, which owns its arena entry — the persistent retained state) and its immutable command-list
+// reference. The list is captured directly so a frame survives the recording's Dispose (which only nulls Commands
+// and defers the arena entry's GPU free to the render thread); the frame presents on the render thread while the
+// main thread may Dispose the recording.
 internal sealed class ReplayRefCmd : WebGpuCommand
 {
 	public WebGpuRenderRecord Data;

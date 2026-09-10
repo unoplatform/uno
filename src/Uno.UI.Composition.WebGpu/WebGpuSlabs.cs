@@ -1,5 +1,5 @@
-﻿// The persistent, shared buffers. One GPU buffer holds every visual's geometry (or every clip uniform) so a
-// frame uploads once and draws from offsets, instead of a buffer and a queue write per visual.
+﻿// The shared uniform buffers: one GPU buffer holds a frame's (or the arena's) clip and gradient uniforms in
+// fixed slots, so a frame uploads once per chunk and binds by offset instead of a buffer and a queue write per draw.
 #nullable disable
 using System;
 using System.Collections.Generic;
@@ -16,75 +16,6 @@ using WColor = Windows.UI.Color;
 
 namespace Uno.UI.Composition.WebGpu;
 
-internal sealed unsafe class WebGpuSlab
-{
-	private readonly WebGpuDevice _d;
-	private readonly int _stride;                 // floats per vertex
-	private readonly WebGpuVertexSlab _alloc = new();
-	private readonly List<float> _shadow = new();
-	private readonly HashSet<long> _live = new();
-	public IntPtr Buf;                             // persistent GPU buffer (Vertex | CopyDst)
-	private int _bufVerts;                         // GPU buffer capacity in vertices
-
-	public WebGpuSlab(WebGpuDevice d, int strideFloats) { _d = d; _stride = strideFloats; }
-
-	public void BeginFrame() => _live.Clear();
-	public void MarkLive(long id) => _live.Add(id);
-	public void EndFrame() => _alloc.RetainOnly(_live);
-	public int ByteOffset(long id) => (_alloc.TryGet(id, out var s) ? s.Off : 0) * _stride * sizeof(float);
-
-	// A recording whose LOCAL verts don't change on a move re-derives its slice's CURRENT byte offset each frame
-	// (never a cached one — a stale offset into a culled-then-reclaimed slice reads another visual's verts). Returns
-	// false if the slice was reclaimed (culled last frame) so the caller re-Puts it; marks it live on a hit so it survives.
-	public bool TryByteOffset(long id, out int byteOff)
-	{
-		if (_alloc.TryGet(id, out var s)) { byteOff = s.Off * _stride * sizeof(float); _live.Add(id); return true; }
-		byteOff = 0; return false;
-	}
-
-	// Reserve/reuse `id`'s stable slice, and upload ONLY what changed: the whole shadow if the buffer had to grow,
-	// otherwise a dirty diff against the CPU shadow — skip the write entirely when byte-identical (static UI), else
-	// write only the changed [lo..hi] sub-range. Returns the slice's BYTE offset.
-	public int Put(long id, System.Collections.Generic.List<float> verts)
-	{
-		_live.Add(id);
-		int vcount = verts.Count / _stride;
-		int voff = _alloc.Ensure(id, vcount, out _);
-		int capVerts = _alloc.Capacity;
-		int needFloats = capVerts * _stride;
-		if (_shadow.Count < needFloats) { System.Runtime.InteropServices.CollectionsMarshal.SetCount(_shadow, needFloats); }
-		var dst = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_shadow);
-		var src = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(verts);
-		int byteOff = voff * _stride * sizeof(float);
-		int n = verts.Count;
-		var slot = dst.Slice(voff * _stride, n);
-		if (Buf == IntPtr.Zero || _bufVerts < capVerts)
-		{
-			// (Re)allocate the persistent buffer (1.5x headroom already in the allocator) and upload the whole shadow.
-			src.CopyTo(slot);
-			if (Buf != IntPtr.Zero) { _d.DeferReleaseBuffer(Buf); }
-			_bufVerts = capVerts;
-			var bd = new WGPUBufferDescriptor { Size = (nuint)(_bufVerts * _stride * sizeof(float)), Usage = WGPUBufferUsage.Vertex | WGPUBufferUsage.CopyDst };
-			Buf = wgpuDeviceCreateBuffer(_d.Dev, &bd);
-			fixed (float* p = dst) { wgpuQueueWriteBuffer(_d.Q, Buf, 0, (IntPtr)p, (nuint)(needFloats * sizeof(float))); }
-			return byteOff;
-		}
-		// Dirty diff vs the shadow: first/last changed float. Identical → nothing to upload (the common static case).
-		int lo = 0; while (lo < n && slot[lo] == src[lo]) { lo++; }
-		if (lo == n) { return byteOff; }
-		int hi = n - 1; while (hi > lo && slot[hi] == src[hi]) { hi--; }
-		int len = hi - lo + 1;
-		src.Slice(lo, len).CopyTo(slot.Slice(lo, len));
-		fixed (float* p = &dst[voff * _stride + lo]) { wgpuQueueWriteBuffer(_d.Q, Buf, (nuint)(byteOff + lo * sizeof(float)), (IntPtr)p, (nuint)(len * sizeof(float))); }
-		return byteOff;
-	}
-}
-
-// One chunked uniform buffer backing every OWNED (restampable) ClipU. A stamp is a stable 512-byte slice —
-// chunk buffers never move, so the op's clip bind group survives for the slot's lifetime — written into a CPU
-// shadow; a frame's restamps flush as ONE queue write per dirty chunk range instead of one wgpuQueueWriteBuffer
-// per op (a scrolling table restamps thousands of ClipUs per frame; the per-call/per-copy overhead dominated
-// opsBuild and submit). Slot handles are 1-based nints so 0 keeps meaning "none" at the call sites.
 // Per-frame uniform slab: 256-aligned slots in a shared buffer, each with a bind group created once and reused
 // for the life of the slab. A frame's gradient uniforms then upload in ONE queue write per chunk instead of one
 // per gradient — a native call costs far more than the bytes it carries. Slots are handed out sequentially and
@@ -307,50 +238,3 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 // --- Device-bound factory ---
 
 /// <summary>A wgpu texture uploaded once from a neutral <see cref="IImage"/>'s pixels. Owned/disposed by the framework.</summary>
-
-// Per-visual STABLE slice allocator over a persistent per-kind vertex buffer (
-// WebGpuVertexSlab). Each visual (keyed by its recording's command-list identity) gets a fixed offset+capacity in
-// a shared GPU buffer, so a content change rewrites its slice IN PLACE (stable offset → dirty only that byte
-// range) and geometry is RESIDENT across frames (no re-upload for a static visual). Holds CPU metadata only.
-internal sealed class WebGpuVertexSlab
-{
-	internal struct Slice { public int Off; public int Cap; public int Len; }   // in vertices (caller's stride)
-	private readonly Dictionary<long, Slice> _map = new();
-	private readonly List<(int off, int cap)> _free = new();
-	private int _cap;                       // high-water = the buffer length (in vertices) to size to
-	private readonly List<long> _toFree = new();
-
-	internal int Capacity => _cap;
-	internal void Reset() { _map.Clear(); _free.Clear(); _cap = 0; }
-	internal bool TryGet(long id, out Slice s) => _map.TryGetValue(id, out s);
-
-	// Reserve `verts` vertices for `id`, reusing its slot when it still fits (stable offset), else best-fit/grow.
-	// Returns the VERTEX offset. `grew` is set when the high-water advanced (the GPU buffer must be (re)allocated).
-	internal int Ensure(long id, int verts, out bool grew)
-	{
-		grew = false;
-		if (_map.TryGetValue(id, out var s))
-		{
-			if (s.Cap >= verts) { s.Len = verts; _map[id] = s; return s.Off; }
-			_free.Add((s.Off, s.Cap));   // outgrew → reclaim, reallocate below
-		}
-		int want = verts + (verts >> 1);   // 1.5x slack so small growth doesn't realloc next frame
-		int bestI = -1, bestCap = int.MaxValue;
-		for (int i = 0; i < _free.Count; i++) { if (_free[i].cap >= verts && _free[i].cap < bestCap) { bestI = i; bestCap = _free[i].cap; } }
-		int off, capAlloc;
-		if (bestI >= 0) { off = _free[bestI].off; capAlloc = _free[bestI].cap; _free.RemoveAt(bestI); }
-		else { off = _cap; capAlloc = want; _cap += want; grew = true; }
-		_map[id] = new Slice { Off = off, Cap = capAlloc, Len = verts };
-		return off;
-	}
-
-	internal void Free(long id) { if (_map.TryGetValue(id, out var s)) { _free.Add((s.Off, s.Cap)); _map.Remove(id); } }
-
-	// Free slices of visuals not present this frame (returns their capacity to the free list). `live` = this frame's ids.
-	internal void RetainOnly(HashSet<long> live)
-	{
-		_toFree.Clear();
-		foreach (var id in _map.Keys) { if (!live.Contains(id)) { _toFree.Add(id); } }
-		foreach (var id in _toFree) { Free(id); }
-	}
-}

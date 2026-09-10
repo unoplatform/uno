@@ -231,23 +231,6 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32>, @locat
   var o: VOut; o.p = place(pos); o.c = col; o.uv = uv; return o;
 }
 @fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.p.xy, i.uv)); }";
-	// TRANSFORM-TABLE variant. Vertices are recorded pixels + a per-vertex slot index into a read-only storage buffer
-	// of pixel affines (a=m00,m01,tx,m10  b=m11,ty,_,_) carrying the replay transform. Recomputing a (tiny) entry per
-	// frame repositions a moved visual without re-baking or re-tessellating its fan.
-	private const string CoverTableWgsl = @"
-struct Xf { a: vec4<f32>, b: vec4<f32> };
-@group(1) @binding(0) var<storage, read> xf: array<Xf>;
-@group(2) @binding(0) var<uniform> clip: ClipU;
-@group(2) @binding(4) var<storage, read> clipMore: array<ClipEntry>;
-@group(2) @binding(1) var clipMask: texture_2d<f32>;
-@group(2) @binding(2) var coverageTex: texture_2d<f32>;
-@group(2) @binding(3) var covSmp: sampler;
-struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32>, @location(1) uv: vec2<f32> };
-@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) col: vec4<f32>, @location(2) ti: u32, @location(3) uv: vec2<f32>) -> VOut {
-  let t = xf[ti];
-  var o: VOut; o.p = project(vec2<f32>(pos.x * t.a.x + pos.y * t.a.y + t.a.z, pos.x * t.a.w + pos.y * t.b.x + t.b.y)); o.c = col; o.uv = uv; return o;
-}
-@fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.p.xy, i.uv)); }";
 	// Signed-area coverage accumulation. One quad per edge spanning the rows it crosses and everything to its
 	// RIGHT: an edge contributes the partial area of the pixel it passes through, and a full +/-1 to every pixel
 	// beyond it, so the interior fills by cancellation between the entering and leaving edges and is never tested.
@@ -299,8 +282,8 @@ fn ramp(c: f32, x: f32) -> f32 {
   return vec4<f32>((yb - ya) * avg * s, 0.0, 0.0, 0.0);
 }";
 
-	// Composites a full-size layer texture into an MSAA pass. SrcOver for plain/opacity/colorfilter layers,
-	// DstIn (out = dst * src.a) for mask layers. Optional color matrix (params.x) applied to the layer content.
+	// Draws a texture over the whole target (a fullscreen triangle, exact texel fetch): the effect evaluator's final
+	// draw. Optional colour matrix (params.x); params.z = a sub-rect at m1.xy of size m0.zw.
 	private const string CompositeWgsl = @"
 struct CU { params: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec4<f32>, m3: vec4<f32>, off: vec4<f32> };
 @group(0) @binding(0) var src: texture_2d<f32>;
@@ -646,7 +629,7 @@ struct VSOut { @builtin(position) pos: vec4<f32>, @location(0) p: vec2<f32>, @lo
 @group(1) @binding(2) var coverageTex: texture_2d<f32>;
 @group(1) @binding(3) var covSmp: sampler;
 @vertex fn vs(@location(0) cpos: vec2<f32>, @location(1) p: vec2<f32>, @location(2) hf: vec2<f32>, @location(3) radii: vec4<f32>, @location(4) col: vec4<f32>, @location(5) ihalf: vec2<f32>, @location(6) icenter: vec2<f32>, @location(7) iradii: vec4<f32>) -> VSOut {
-  var o: VSOut; o.pos = project(cpos); o.p = p; o.hf = hf; o.radii = radii; o.col = col; o.ihalf = ihalf; o.icenter = icenter; o.iradii = iradii; return o;
+  var o: VSOut; o.pos = place(cpos); o.p = p; o.hf = hf; o.radii = radii; o.col = col; o.ihalf = ihalf; o.icenter = icenter; o.iradii = iradii; return o;
 }
 fn sdRR(p: vec2<f32>, hf: vec2<f32>, radii: vec4<f32>) -> f32 {
   let rTop = select(radii.x, radii.y, p.x > 0.0); let rBot = select(radii.w, radii.z, p.x > 0.0);
@@ -668,38 +651,6 @@ fn sdRR(p: vec2<f32>, hf: vec2<f32>, radii: vec4<f32>) -> f32 {
   // sxy above stays outside the `if`: WGSL forbids derivatives in non-uniform control flow, and Dawn (browser
   // WebGPU) enforces that strictly even though wgpu-native (desktop) tolerated it. The inner rect only gets
   // APPLIED when one is present.
-  let di = sdRR(i.p - i.icenter, i.ihalf, i.iradii);
-  if (i.ihalf.x >= 0.0) { cov = cov * clamp(0.5 + di / sxy, 0.0, 1.0); }
-  cov = cov * clipCov(i.pos.xy, vec2<f32>(0.0));
-  return vec4<f32>(i.col.rgb, i.col.a * cov);
-}";
-	// Transform-table rounded-rect: identical SDF/clip to RoundedRectWgsl, but the LOCAL (identity-baked) corners
-	// `cpos` are positioned by the per-vertex slot's local->NDC affine (xf[ti]) instead of being pre-baked NDC. The
-	// SDF params (p/hf/radii) are already transform-invariant local units, so a moved recording rewrites only its
-	// slot. clipCov uses the final builtin position + the clip's finv (device fragment -> local clip space).
-	private const string RoundedRectTableWgsl = @"
-struct Xf { a: vec4<f32>, b: vec4<f32> };
-struct VSOut { @builtin(position) pos: vec4<f32>, @location(0) p: vec2<f32>, @location(1) hf: vec2<f32>, @location(2) radii: vec4<f32>, @location(3) col: vec4<f32>, @location(4) ihalf: vec2<f32>, @location(5) icenter: vec2<f32>, @location(6) iradii: vec4<f32> };
-@group(1) @binding(0) var<storage, read> xf: array<Xf>;
-@group(2) @binding(0) var<uniform> clip: ClipU;
-@group(2) @binding(4) var<storage, read> clipMore: array<ClipEntry>;
-@group(2) @binding(1) var clipMask: texture_2d<f32>;
-@group(2) @binding(2) var coverageTex: texture_2d<f32>;
-@group(2) @binding(3) var covSmp: sampler;
-@vertex fn vs(@location(0) cpos: vec2<f32>, @location(1) p: vec2<f32>, @location(2) hf: vec2<f32>, @location(3) radii: vec4<f32>, @location(4) col: vec4<f32>, @location(5) ihalf: vec2<f32>, @location(6) icenter: vec2<f32>, @location(7) iradii: vec4<f32>, @location(8) ti: u32) -> VSOut {
-  let t = xf[ti];
-  var o: VSOut; o.pos = project(vec2<f32>(cpos.x * t.a.x + cpos.y * t.a.y + t.a.z, cpos.x * t.a.w + cpos.y * t.b.x + t.b.y)); o.p = p; o.hf = hf; o.radii = radii; o.col = col; o.ihalf = ihalf; o.icenter = icenter; o.iradii = iradii; return o;
-}
-fn sdRR(p: vec2<f32>, hf: vec2<f32>, radii: vec4<f32>) -> f32 {
-  let rTop = select(radii.x, radii.y, p.x > 0.0); let rBot = select(radii.w, radii.z, p.x > 0.0);
-  let rad = select(rTop, rBot, p.y > 0.0); let q = abs(p) - hf + vec2<f32>(rad, rad);
-  return min(max(q.x, q.y), 0.0) + length(max(q, vec2<f32>(0.0, 0.0))) - rad;
-}
-@fragment fn fs(i: VSOut) -> @location(0) vec4<f32> {
-  // Same analytic box-filter coverage as RoundedRectWgsl -- see the note there.
-  let sxy = max(max(length(vec2<f32>(dpdx(i.p.x), dpdy(i.p.x))), length(vec2<f32>(dpdx(i.p.y), dpdy(i.p.y)))), 1e-4);
-  let d = sdRR(i.p, i.hf, i.radii);
-  var cov = clamp(0.5 - d / sxy, 0.0, 1.0);
   let di = sdRR(i.p - i.icenter, i.ihalf, i.iradii);
   if (i.ihalf.x >= 0.0) { cov = cov * clamp(0.5 + di / sxy, 0.0, 1.0); }
   cov = cov * clipCov(i.pos.xy, vec2<f32>(0.0));

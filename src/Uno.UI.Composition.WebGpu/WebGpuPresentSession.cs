@@ -1,19 +1,15 @@
-﻿// The WebGPU implementation of the neutral drawing seam: turns a recorded frame into render passes, with no
-// SkiaSharp anywhere in the path. Recording lives in WebGpuCommandRecorder, the op and encode shapes in
-// WebGpuDrawOps.cs, and the resources in WebGpuDrawingFactory.cs.
+// The WebGPU implementation of the neutral drawing seam: turns a recorded frame into render passes, with no
+// SkiaSharp anywhere in the path. Recording lives in WebGpuCommandRecorder, the walk over the recorded tree in
+// WebGpuPresentSession.Walk.cs, the op and encode shapes in WebGpuDrawOps.cs, and the resources in
+// WebGpuDrawingFactory.cs.
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Uno.WebGpu.Native;
 using static Uno.WebGpu.Native.WGPU;
 using Uno.UI.Composition.Drawing;
-using Uno.Foundation.Logging;
-using Windows.Graphics.Effects.Interop;
 using Windows.Foundation;
 using WColor = Windows.UI.Color;
 
@@ -21,31 +17,27 @@ namespace Uno.UI.Composition.WebGpu;
 
 public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 {
-	// UNO_WEBGPU_STATS=1: per-pass emit-shape diagnostics (see RenderInto).
-	private int _statCrMiss, _statCrMove, _statCrPathFlip, _statCrClip;
+	// UNO_WEBGPU_STATS=1: per-pass emit-shape diagnostics (see WriteFrameStats).
 	private static readonly bool _emitStats = Environment.GetEnvironmentVariable("UNO_WEBGPU_STATS") is "1" or "true";
 	private static int _emitStatsFrame;
 	// UNO_WEBGPU_STATS_EVERY = frames between stats lines (default 60).
 	private static readonly int _emitStatsEvery = int.TryParse(Environment.GetEnvironmentVariable("UNO_WEBGPU_STATS_EVERY"), out var e) && e > 0 ? e : 60;
-	// Build-shape counters (per stats interval): geometry-cache rebuilds / clip re-stamps observed while replaying.
-	private static int _statTableRebuilds, _statStamps, _statArenaRebuilds, _statCachedRebuilds;
-	private static int _statArMiss, _statArFlip, _statArMasks;   // why arena entries rebuilt: new recording / strategy flip / masks stale
 
 	private readonly WebGpuDevice _d;
 	private readonly WebGpuRenderSurface _s;
 	private WColor? _presentClear;
-	// The composition records in LOGICAL coordinates; without this the frame renders at logical size on a
-	// physical-size surface.
+	// The composition records in LOGICAL coordinates; the root DPI scale is the walk's root matrix.
 	private Vector2 _presentScale = Vector2.One;
-	private readonly System.Collections.Generic.Stack<Vector2> _presentScaleStack = new();
+	private readonly Stack<Vector2> _presentScaleStack = new();
 	private IntPtr _frameEncoder;
 	// Immediate-mode drawing on the present session (e.g. the FPS/diagnostics overlay drawn after Replay) records
-	// here and is composited onto the replayed frame at Dispose — the present session IS a real drawing session,
-	// like the Skia one, not a replay-only sink. State verbs (Save/Scale/clip/…) forward here too so the overlay
-	// honours the transform; Scale/Save/Restore additionally drive the frame's root DPI scale (_presentScale).
+	// here and joins the replayed frame's pass at Dispose — the present session IS a real drawing session, like the
+	// Skia one, not a replay-only sink. State verbs (Save/Scale/clip/…) forward here too so the overlay honours the
+	// transform; Scale/Save/Restore additionally drive the frame's root DPI scale (_presentScale).
 	private readonly WebGpuCommandRecorder _overlay;
 	private readonly IDrawingFactory _factory;
 	private List<WebGpuCommand> _pendingCmds;
+	private Vector2 _pendingScale = Vector2.One;
 	private WColor? _pendingClear;
 	internal WebGpuPresentSession(WebGpuDevice d, WebGpuRenderSurface s, IDrawingFactory factory) { _d = d; _s = s; _factory = factory; _overlay = new WebGpuCommandRecorder(factory); }
 
@@ -53,14 +45,15 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	// Op-build vs pass-encode, accumulated across the frame's passes (UNO_WEBGPU_STATS).
 	internal static long OpsBuildTicks, EncodeTicks;
 
-	private void RunFrame(List<WebGpuCommand> cmds, WColor? clear, bool load = false)
+	// One frame: the main list under its root matrix, the overlay (already in device pixels) on top, one submit.
+	private void RunFrame(List<WebGpuCommand> cmds, in Matrix3x2 m, List<WebGpuCommand> overlay, WColor? clear, bool load = false)
 	{
 		var owns = _frameEncoder == IntPtr.Zero;
 		if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); _clipMasks.Clear(); }
 		long t0 = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 		try
 		{
-			RenderInto(cmds, _s, clear, load);
+			RenderInto(cmds, m, ClipData.None, _s, clear, load, overlay: overlay);
 		}
 		finally
 		{
@@ -93,23 +86,22 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 					if (_d.MsaaSamples > 1) { _d.Pool.Return(ls.MsaaColorView); }   // at 1x MsaaColorView aliases View
 					_d.Pool.Return(ls.View);
 				}
-
 				_frameLayerSurfaces.Clear();
 				_frameEncoder = IntPtr.Zero;
 			}
 		}
 	}
 
-	// Stores a freshly built compiled entry on its recording, handling the Dispose race: Dispose exchanged the
-	// field before this store, so it couldn't see the new entry — hand it over here (the exchange keeps the
-	// release single-shot whichever side wins).
+	// Stores a freshly built arena entry on its recording, handling the Dispose race: Dispose exchanged the field
+	// before this store, so it couldn't see the new entry — hand it over here (the exchange keeps the release
+	// single-shot whichever side wins).
 	private void StoreCompiled(WebGpuRenderRecord rec, WebGpuGeometryCache fe)
 	{
 		fe.Device = _d;
 		rec.Compiled = fe;
 		if (rec.Commands is null && System.Threading.Interlocked.Exchange(ref rec.Compiled, null) is { } orphan)
 		{
-			_d.DeferCompiledRelease(orphan.Owned, orphan.StampOwned, orphan.XformSlot);
+			_d.DeferCompiledRelease(orphan.Owned, orphan.StampOwned);
 		}
 	}
 
@@ -118,7 +110,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	// NDC basis for the surface the open pass renders into: device-space (_basisOx,_basisOy) is its top-left and
 	// (_basisW,_basisH) its size. The window and a full-size layer get (0,0,W,H) — the target itself; a
 	// size-to-content layer gets its device sub-rect, so absolute device coords map into the smaller offscreen.
-	// A scissor must also be contained in its attachment, which the same size gives us. Saved/restored per RenderInto.
+	// A scissor must also be contained in its attachment, which the same size gives us. Saved/restored per build.
 	private float _basisOx, _basisOy, _basisW, _basisH;
 
 	// Size-to-content layer offscreens (on by default). UNO_WEBGPU_NO_SUBLAYER=1 forces the full-window offscreen
@@ -136,6 +128,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		x = (int)MathF.Min(x, limW); y = (int)MathF.Min(y, limH);
 		w = r - x; h = b - y; return w > 0 && h > 0;
 	}
+
 	// The pass projection bind group (group 0 of every colour draw): the basis the vertex shader projects pixels by.
 	private IntPtr MakePassBg()
 	{
@@ -152,24 +145,11 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 
 	private static readonly Vector4 _emptyBounds = new(float.MaxValue, float.MaxValue, float.MinValue, float.MinValue);
 
-	// True if the list directly contains a backdrop, which makes size-to-content unsafe: it must sample the real
-	// framebuffer, which a sub-surface lacks. Nested layers are fine: their composites place by the current basis.
-	private static bool HasBackdrop(List<WebGpuCommand> cmds)
-	{
-		for (int i = 0; i < cmds.Count; i++)
-		{
-			if (cmds[i] is BackdropCmd)
-			{
-				return true;
-			}
-		}
-		return false;
-	}
-
 	// How many layers deep the content being built sits: 0 for the window, 1 inside a layer, and so on. A layer's
 	// content composites layers one level deeper, so the sheets holding those must render before it does.
 	private int _layerDepth;
 
+	// The bounds of a command list in its own space, each command cut to its own clip.
 	private static Vector4 CmdListBounds(List<WebGpuCommand> cmds)
 	{
 		var b = _emptyBounds;
@@ -228,88 +208,47 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		return new Vector4(MathF.Min(a.X, b.X), MathF.Min(a.Y, b.Y), MathF.Max(a.Z, b.Z), MathF.Max(a.W, b.W));
 	}
 
-	private static Vector4 TransformBounds(Vector4 b, Matrix4x4 m)
+	private static Vector4 TransformBounds(Vector4 b, in Matrix4x4 m) => TransformBounds(b, new Matrix3x2(m.M11, m.M12, m.M21, m.M22, m.M41, m.M42));
+
+	// The box of the mapped corners; an empty or unbounded box stays as it is.
+	private static Vector4 TransformBounds(Vector4 b, in Matrix3x2 m)
 	{
-		if (b.X > b.Z) { return b; }   // empty stays empty
-		Vector2 T(float x, float y) => new(x * m.M11 + y * m.M21 + m.M41, x * m.M12 + y * m.M22 + m.M42);
-		var q0 = T(b.X, b.Y); var q1 = T(b.Z, b.Y); var q2 = T(b.Z, b.W); var q3 = T(b.X, b.W);
+		if (b.X > b.Z || b.Y > b.W || !IsFiniteAabb(b)) { return b; }
+		if (m.IsIdentity) { return b; }
+		var q0 = Map(new Vector2(b.X, b.Y), m); var q1 = Map(new Vector2(b.Z, b.Y), m);
+		var q2 = Map(new Vector2(b.Z, b.W), m); var q3 = Map(new Vector2(b.X, b.W), m);
 		var min = Vector2.Min(Vector2.Min(q0, q1), Vector2.Min(q2, q3));
 		var max = Vector2.Max(Vector2.Max(q0, q1), Vector2.Max(q2, q3));
 		return new Vector4(min.X, min.Y, max.X, max.Y);
 	}
 
-	// Reused so the per-frame op rebuild does not allocate a list and an array per primitive.
+	// Reused so the per-frame op build does not allocate a list and an array per primitive.
 	private readonly List<float> _scratch = new();
 	private readonly float[] _clipU = new float[ClipUFloats];   // the uniform: header + the first ClipUniformEntries entries
 	private float[] _clipMore = new float[4 * ClipEntryFloats];  // the entries past those, for the overflow buffer; grows
 
 	private readonly Stack<List<DrawOp>> _opsPool = new();
-	private List<DrawOp> RentOps()
-		=> _opsPool.Count > 0 ? _opsPool.Pop() : new(256);
+	private List<DrawOp> RentOps() => _opsPool.Count > 0 ? _opsPool.Pop() : new(256);
 	private void ReturnOps(List<DrawOp> ops)
 	{
 		ops.Clear();   // drops the captured ClipData refs; keeps the backing array for reuse
 		_opsPool.Push(ops);
 	}
 
-	// Per-pass transform table (path fills). 8 floats/slot = a local->NDC affine (a=ax,ay,az,aw  b=bx,by,_,_) folding
-	// an extra transform R and the current device->NDC projection. Indexed by a per-recording stable slot baked into
-	// the fan/cover verts; rewritten every frame the recording draws, so resize/move/DPI touches only this table, not
-	// the (recorded-device or, for arena, local-space) verts. `_xforms` is per-RenderInto (saved/restored around the
-	// recursive nested-layer render); transient (immediate-draw) slots are freed at the pass's end.
-	private List<float> _xforms;
-	private readonly Stack<List<float>> _xformsPool = new();
-	private List<int> _xformTransient;
-	private readonly Stack<List<int>> _xformTransientPool = new();
-	private List<float> RentXforms() => _xformsPool.Count > 0 ? _xformsPool.Pop() : new(64);
-	private List<int> RentTransient() => _xformTransientPool.Count > 0 ? _xformTransientPool.Pop() : new(16);
+	// The pass's shared vertex buffers, one per layout: every per-frame draw appends its verts here in op order, so
+	// adjacent ops sharing a clip occupy a contiguous range and encode as ONE draw, and the whole pass uploads each
+	// buffer once. Fields rather than locals because the builders append to them; saved/restored around a nested build.
+	private List<float> _solid, _rrect, _gradVerts, _quadVerts;
+	private List<BackdropCmd> _backdrops;
+	private readonly Stack<List<float>> _vertsPool = new();
+	private List<float> RentVerts() { var l = _vertsPool.Count > 0 ? _vertsPool.Pop() : new List<float>(4096); l.Clear(); return l; }
+	private void ReturnVerts(List<float> s) { s.Clear(); _vertsPool.Push(s); }
+	private List<float> RentRrect() => RentVerts();
+	private void ReturnRrect(List<float> s) => ReturnVerts(s);
 
-	private void WriteXform(int slot, Matrix4x4 r)
-	{
-		int need = (slot + 1) * 8;
-		while (_xforms.Count < need) { _xforms.Add(0f); }
-		// The pixel affine as the table shaders unpack it: a = (m00, m01, tx, m10), b = (m11, ty, _, _).
-		int o = slot * 8;
-		_xforms[o + 0] = r.M11; _xforms[o + 1] = r.M21; _xforms[o + 2] = r.M41; _xforms[o + 3] = r.M12;
-		_xforms[o + 4] = r.M22; _xforms[o + 5] = r.M42; _xforms[o + 6] = 0f; _xforms[o + 7] = 0f;
-	}
+	private const int RrectStride = 22;   // floats per rounded-rect vertex: corner + local SDF params + colour + inner ring
 
-	private int AllocTransientPathSlot()
-	{
-		int slot = _d.AllocXformSlot();
-		_xformTransient.Add(slot);
-		WriteXform(slot, Matrix4x4.Identity);
-		return slot;
-	}
-
-	// Per-pass shared SOLID vertex buffer: every device-space solid run — immediate draws AND
-	// solid-only cached recordings — appends its 6-float verts here in op order, so adjacent solid ops sharing a clip
-	// occupy a CONTIGUOUS range and the emit loop coalesces them into ONE draw (cross-visual, not just within one
-	// recording). Uploaded once per pass; recycled next pass. A PassBuffer solid op references (b1=startVert, u0=count)
-	// into this buffer; b0!=0 is a legacy private-buffer solid (mixed/arena recording) that draws on its own.
-	private readonly Stack<List<float>> _solidPool = new();
-	private List<float> _gradVerts;
-	private List<float> _quadVerts;
-	private List<float> _pathVerts;
-
-	private int AppendPathBlock(float[] src)
-	{
-		while ((_pathVerts.Count * sizeof(float)) % 84 != 0) { _pathVerts.Add(0f); }
-		var off = _pathVerts.Count * sizeof(float);
-		_pathVerts.AddRange(src);
-		return off;
-	}
-
-	private int AppendPathBlock(List<float> src)
-	{
-		while ((_pathVerts.Count * sizeof(float)) % 84 != 0) { _pathVerts.Add(0f); }
-		var off = _pathVerts.Count * sizeof(float);
-		_pathVerts.AddRange(src);
-		return off;
-	}
-	private List<float> RentSolid() => _solidPool.Count > 0 ? _solidPool.Pop() : new(4096);
-	private void ReturnSolid(List<float> s) { s.Clear(); _solidPool.Push(s); }
-	// Appends one device-space quad (two tris) to the shared solid buffer; returns the start vertex index. 6 verts.
+	// Appends one quad (two tris) as solid verts; returns the start vertex index.
 	private int AppendSolidRect(List<float> solid, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float r, float g, float b, float a)
 	{
 		int start = solid.Count / VertexStride.Solid;
@@ -318,18 +257,12 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		return start;
 	}
 
-	// Per-pass shared ROUNDED-RECT buffer (22 floats/vert, per-vertex SDF params). Every rrect — immediate and
-	// re-appended cached — lands here in op order so adjacent rrect ops sharing a clip coalesce into ONE draw across
-	// visuals as one draw of 6*N verts rather than N draws of 6. Returns the start vertex index.
-	private readonly Stack<List<float>> _rrectPool = new();
-	private List<float> RentRrect() => _rrectPool.Count > 0 ? _rrectPool.Pop() : new(4096);
-	private void ReturnRrect(List<float> s) { s.Clear(); _rrectPool.Push(s); }
-	private int AppendRrect(List<float> rr, RoundedRectCmd rrc)
+	// Appends one rounded rect at the given corners: per-vertex SDF params in its own centred space (transform-invariant).
+	private void AppendRrect(List<float> rr, RoundedRectCmd rrc, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
 	{
-		int start = rr.Count / 22;
 		var hf = rrc.Half; var rad = rrc.Radii; var ih = rrc.InnerHalf; var ic = rrc.InnerCenter; var ir = rrc.InnerRadii;
 		float cr = rrc.Color.R / 255f, cg = rrc.Color.G / 255f, cb = rrc.Color.B / 255f, color = rrc.Color.A / 255f * rrc.Opacity;
-		Span<Vector2> dev = stackalloc Vector2[4] { rrc.P0, rrc.P1, rrc.P3, rrc.P2 };
+		Span<Vector2> dev = stackalloc Vector2[4] { p0, p1, p3, p2 };
 		Span<Vector2> ctr = stackalloc Vector2[4] { new(-hf.X, -hf.Y), new(hf.X, -hf.Y), new(-hf.X, hf.Y), new(hf.X, hf.Y) };
 		ReadOnlySpan<int> tri = stackalloc int[6] { 0, 1, 2, 2, 1, 3 };
 		foreach (var idx in tri)
@@ -338,33 +271,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 			rr.Add(d.X); rr.Add(d.Y); rr.Add(ctr[idx].X); rr.Add(ctr[idx].Y); rr.Add(hf.X); rr.Add(hf.Y);
 			rr.Add(rad.X); rr.Add(rad.Y); rr.Add(rad.Z); rr.Add(rad.W); rr.Add(cr); rr.Add(cg); rr.Add(cb); rr.Add(color);
 			rr.Add(ih.X); rr.Add(ih.Y); rr.Add(ic.X); rr.Add(ic.Y); rr.Add(ir.X); rr.Add(ir.Y); rr.Add(ir.Z); rr.Add(ir.W);
-		}
-		return start;
-	}
-
-	// Transform-table SOLID vert (7 floats): local pixel pos (the slot's affine applies the replay transform
-	// in-shader) + colour + the raw-bits slot index.
-	private void AppendSolidRectLocalT(List<float> solid, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float r, float g, float b, float a, float slotBits)
-	{
-		void V(Vector2 p) { solid.Add(p.X); solid.Add(p.Y); solid.Add(r); solid.Add(g); solid.Add(b); solid.Add(a); solid.Add(slotBits); solid.Add(0f); solid.Add(0f); }
-		V(p0); V(p1); V(p2); V(p0); V(p2); V(p3);
-	}
-
-	// Transform-table ROUNDED-RECT vert (23 floats): local pixel corner + the per-vertex SDF params
-	// (p/hf/radii, all local + transform-invariant) + colour + inner-ring params + the raw-bits slot index.
-	private void AppendRrectLocalT(List<float> rr, RoundedRectCmd rrc, float slotBits)
-	{
-		var hf = rrc.Half; var rad = rrc.Radii; var ih = rrc.InnerHalf; var ic = rrc.InnerCenter; var ir = rrc.InnerRadii;
-		float cr = rrc.Color.R / 255f, cg = rrc.Color.G / 255f, cb = rrc.Color.B / 255f, color = rrc.Color.A / 255f * rrc.Opacity;
-		Span<Vector2> dev = stackalloc Vector2[4] { rrc.P0, rrc.P1, rrc.P3, rrc.P2 };
-		Span<Vector2> ctr = stackalloc Vector2[4] { new(-hf.X, -hf.Y), new(hf.X, -hf.Y), new(-hf.X, hf.Y), new(hf.X, hf.Y) };
-		ReadOnlySpan<int> tri = stackalloc int[6] { 0, 1, 2, 2, 1, 3 };
-		foreach (var idx in tri)
-		{
-			var d = dev[idx];
-			rr.Add(d.X); rr.Add(d.Y); rr.Add(ctr[idx].X); rr.Add(ctr[idx].Y); rr.Add(hf.X); rr.Add(hf.Y);
-			rr.Add(rad.X); rr.Add(rad.Y); rr.Add(rad.Z); rr.Add(rad.W); rr.Add(cr); rr.Add(cg); rr.Add(cb); rr.Add(color);
-			rr.Add(ih.X); rr.Add(ih.Y); rr.Add(ic.X); rr.Add(ic.Y); rr.Add(ir.X); rr.Add(ir.Y); rr.Add(ir.Z); rr.Add(ir.W); rr.Add(slotBits);
 		}
 	}
 
@@ -392,11 +298,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	private void PushVert(Vector2 dev, float r, float g, float b, float a)
 	{
 		_scratch.Add(dev.X); _scratch.Add(dev.Y); _scratch.Add(r); _scratch.Add(g); _scratch.Add(b); _scratch.Add(a); _scratch.Add(0f); _scratch.Add(0f);
-	}
-
-	private void PushVertT(Vector2 dev, float r, float g, float b, float a, float slotBits)
-	{
-		_scratch.Add(dev.X); _scratch.Add(dev.Y); _scratch.Add(r); _scratch.Add(g); _scratch.Add(b); _scratch.Add(a); _scratch.Add(slotBits); _scratch.Add(0f); _scratch.Add(0f);
 	}
 
 	private IntPtr MakeUniform(int byteSize)
@@ -435,7 +336,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	// bound beside it (see ClipBgl). Uniform reads are what make the common one-to-four-clip draw cheap.
 	internal const int ClipUniformEntries = 4;
 	internal const int ClipUBytes = ClipUHeaderBytes + ClipUniformEntries * ClipEntryBytes;
-	// wgpu wants a binding to cover the header plus one array element, so an entry-less clip still binds one (zeroed).
 	private const int ClipUHeaderFloats = ClipUHeaderBytes / sizeof(float), ClipEntryFloats = ClipEntryBytes / sizeof(float), ClipUFloats = ClipUBytes / sizeof(float);
 
 	// Writes the op's ClipU into _clipU (and the entries past the uniform's four into _clipMore): the analytic entries,
@@ -449,7 +349,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		int more = Math.Max(0, n - ClipUniformEntries);
 		if (_clipMore.Length < more * ClipEntryFloats) { _clipMore = new float[Math.Max(more * ClipEntryFloats, _clipMore.Length * 2)]; }
 		var cu = _clipU;
-		System.Array.Clear(cu);
+		Array.Clear(cu);
 		// Fold the clip's finite AABB into the dedicated rect slot (ctrl.y flag; min in ctrl.zw, max in
 		// size.zw): the shader then owns the rect edge and the emit widens the scissor to cull-only
 		// (see AabbInClipU).
@@ -519,7 +419,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	{
 		var more = FillClipU(cd, xform, finv, null, out var folded);
 		_d.ClipSlab.Write(slot, _clipU, ClipUFloats);
-		// The caller's reuse guard keeps the entry count unchanged (see StampSessionEntries), so the overflow buffer fits.
+		// The caller's reuse guard keeps the entry count unchanged, so the overflow buffer fits.
 		if (more > 0) { WriteClipMore(more, _d.ClipSlab.MoreOf(slot)); }
 		return folded;
 	}
@@ -560,14 +460,13 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 			var mb = more > 0 ? WriteClipMore(more, _d.BufferPool.Rent(more * ClipEntryBytes, WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst)) : IntPtr.Zero;
 			var me = stackalloc WGPUBindGroupEntry[5];
 			me[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = ub, Offset = 0, Size = ClipUBytes };
-			me[4] = ClipMoreEntry(mb, more);
 			me[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = masks.View != IntPtr.Zero ? masks.View : _d.DummyTex };
 			me[2] = new WGPUBindGroupEntry { Binding = 2, TextureView = cd.Coverage != 0 ? (IntPtr)cd.Coverage : _d.DummyTex };
 			me[3] = new WGPUBindGroupEntry { Binding = 3, Sampler = _d.Smp };
+			me[4] = ClipMoreEntry(mb, more);
 			var mbgd = new WGPUBindGroupDescriptor { Layout = _d.ClipBgl, EntryCount = 5, Entries = me };
 			return Bg(ref mbgd, null);
 		}
-
 		// Immediate ops take a recycled per-frame slab slot: its bind group is created once and reused, and the
 		// whole frame's clips upload in one queue write per chunk. Do NOT content-key this: a clip carries
 		// DEVICE-space geometry, so under any moving transform every lookup misses and mints a buffer + bind
@@ -586,13 +485,12 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	{
 		public List<DrawOp> Ops;
 		public List<BackdropCmd> Backdrops;
-		public List<float> Solid, Rrect, Grad, Quad, Path, Xforms;
-		public List<int> XformTransient;
+		public List<float> Solid, Rrect, Grad, Quad;
 		public float BasisOx, BasisOy, BasisW, BasisH;
 		public Vector4 Bound;   // device rect every scissor stays within: a sheet slot; the whole target otherwise
-		public nint SolidBuf, RrectBuf, GradBuf, QuadBuf, PathBuf;
-		public nuint SolidBufBytes, GradBufBytes, QuadBufBytes, PathBufBytes;
-		public IntPtr XformBg, PassBg;
+		public nint SolidBuf, RrectBuf, GradBuf, QuadBuf;
+		public nuint SolidBufBytes, GradBufBytes, QuadBufBytes;
+		public IntPtr PassBg;
 	}
 
 	private static readonly Vector4 _unbounded = new(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue);
@@ -604,18 +502,21 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	/// </summary>
 	// basisW/basisH default (0) to the target's own size at origin (basisOx,basisOy) — the whole-target mapping the
 	// window and full-size layers use. A size-to-content layer passes its device sub-rect.
-	private void RenderInto(List<WebGpuCommand> cmds, WebGpuRenderSurface target, WColor? clear, bool load = false,
-		float basisOx = 0f, float basisOy = 0f, float basisW = 0f, float basisH = 0f)
+	private void RenderInto(List<WebGpuCommand> cmds, in Matrix3x2 m, in ClipData outer, WebGpuRenderSurface target, WColor? clear, bool load = false,
+		float basisOx = 0f, float basisOy = 0f, float basisW = 0f, float basisH = 0f, List<WebGpuCommand> overlay = null)
 	{
-		var build = BuildPass(cmds, target, basisOx, basisOy, basisW, basisH, _unbounded);
+		var build = BuildPass(cmds, m, outer, target, basisOx, basisOy, basisW, basisH, _unbounded, overlay);
 		_singleBuild[0] = build;
 		EncodePass(target, clear, load, _singleBuild);
 	}
 
 	private readonly PassBuild[] _singleBuild = new PassBuild[1];
 
+	/// <summary>Timestamp the current build started, for the op-build half of the stats line.</summary>
+	private long _renderIntoStart;
+
 	// Builds the ops for one command list under a basis: the whole draw-side work of a pass, none of the encoding.
-	private PassBuild BuildPass(List<WebGpuCommand> cmds, WebGpuRenderSurface target, float basisOx, float basisOy, float basisW, float basisH, Vector4 bound)
+	private PassBuild BuildPass(List<WebGpuCommand> cmds, in Matrix3x2 m, in ClipData outer, WebGpuRenderSurface target, float basisOx, float basisOy, float basisW, float basisH, Vector4 bound, List<WebGpuCommand> overlay = null)
 	{
 		_renderIntoStart = System.Diagnostics.Stopwatch.GetTimestamp();
 
@@ -626,117 +527,30 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		_basisH = basisH > 0f ? basisH : target.Height;
 
 		var b = new PassBuild { BasisOx = _basisOx, BasisOy = _basisOy, BasisW = _basisW, BasisH = _basisH, Bound = bound };
-		var ops = b.Ops = RentOps();
-		var solid = b.Solid = RentSolid();
-		var rrect = b.Rrect = RentRrect();
-		var savedXforms = _xforms; var savedTransient = _xformTransient;
-		// Immediate gradient quads share ONE per-pass buffer, like solids. Giving each quad its own pooled buffer
-		// reads cleaner but costs a queue write apiece: 500 native calls per frame on RenderStress_Gradients to
-		// carry 48 bytes each, and a native call costs far more than the bytes it carries. Fields rather than
-		// locals because BuildSimpleOp appends to them; saved/restored so each nested build uploads its own.
-		var savedGradVerts = _gradVerts;
-		var savedQuadVerts = _quadVerts;
-		var savedPathVerts = _pathVerts;
-		_gradVerts = b.Grad = RentSolid(); _gradVerts.Clear();
-		_quadVerts = b.Quad = RentSolid(); _quadVerts.Clear();
-		_pathVerts = b.Path = RentSolid(); _pathVerts.Clear();
-		_xforms = b.Xforms = RentXforms(); _xforms.Clear();
-		_xformTransient = b.XformTransient = RentTransient(); _xformTransient.Clear();
-		// Recordings emitted so far in THIS pass. A recording replayed more than once in one frame (same command
-		// list at different transforms) can't share its single resident slab slice — see the frame-solid branch.
-		var frameEmitted = new HashSet<List<WebGpuCommand>>(System.Collections.Generic.ReferenceEqualityComparer.Instance);
-		var backdrops = b.Backdrops = new List<BackdropCmd>();
-		for (int ci = 0; ci < cmds.Count; ci++)
-		{
-			var cmd = cmds[ci];
-			switch (cmd)
-			{
-				case RectCommand rc0:
-					{
-						int j = ci; int start = solid.Count / VertexStride.Solid;
-						while (j < cmds.Count && cmds[j] is RectCommand rcj && ClipDataEquals(rcj.Clip, rc0.Clip))
-						{
-							AppendSolidRect(solid, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
-							j++;
-						}
-						ops.Add(new DrawOp(DrawKind.Solid, VertexSource.PassBuffer, (uint)((j - ci) * 6), (nint)start, false, rc0.Clip, (nint)MakeClipBg(rc0.Clip)));
-						ci = j - 1;   // the for-loop's ci++ advances past the run
-						break;
-					}
-				case PathCmd:
-					BuildSimpleOp(cmd, ops, null, AllocTransientPathSlot(), atlasScale: Vector2.One);   // pooled (per-frame); transient table slot
-					break;
-				case ImageCmd:
-				case GradientCmd:
-					BuildSimpleOp(cmd, ops, null, -1, atlasScale: Vector2.One);   // pooled (per-frame)
-					break;
-				case RoundedRectCmd rri:
-					{
-						// Shared rrect buffer (VertexSource.PassBuffer, b1=start vert): adjacent same-clip rrects coalesce on emit.
-						int st = rrect.Count / 22;
-						AppendRrect(rrect, rri);
-						ops.Add(new DrawOp(DrawKind.RoundedRect, VertexSource.PassBuffer, 6, (nint)st, false, rri.Clip, (nint)MakeClipBg(rri.Clip)));
-						break;
-					}
-				case ReplayRefCmd rr:
-					EmitReplayRef(rr, ops, frameEmitted);
-					break;
-				case ShadowCmd sh:
-					EmitShadow(sh, ops);
-					break;
-				case LayerCmd lyr:
-					EmitLayer(lyr, ops);
-					break;
-				case BackdropCmd bk:
-					{
-						// Defer to encode-time pass-segmenting: a BackdropSegment op splits THIS pass here so the backdrop samples the
-						// framebuffer RESOLVED SO FAR (the content behind it) in place — no offscreen, no prefix re-render. Works for
-						// the on-window target AND pooled layer targets: both store+reload their MSAA across the segment (see the
-						// main-pass + segment StoreOp), so an acrylic inside a layer/flyout skips the full-window offscreen the old
-						// pooled fallback re-rendered per backdrop, and an empty prefix costs nothing (no separate blurred offscreen).
-						int bi = backdrops.Count; backdrops.Add(bk);
-						ops.Add(new DrawOp(DrawKind.BackdropSegment, 0, 0, (nint)bi, false, bk.Clip, 0));
-						break;
-					}
-			}
-		}
+		var saved = (_solid, _rrect, _gradVerts, _quadVerts, _backdrops);
+		b.Ops = RentOps();
+		_solid = b.Solid = RentVerts();
+		_rrect = b.Rrect = RentVerts();
+		_gradVerts = b.Grad = RentVerts();
+		_quadVerts = b.Quad = RentVerts();
+		_backdrops = b.Backdrops = new List<BackdropCmd>();
 
-		// Upload the whole pass's coalesceable solid + rrect geometry in ONE buffer each; PassBuffer ops index them.
-		b.SolidBuf = solid.Count > 0 ? (nint)MakeBuffer(solid) : IntPtr.Zero;
-		b.RrectBuf = rrect.Count > 0 ? (nint)MakeBuffer(rrect) : IntPtr.Zero;
+		Walk(cmds, m, outer, b.Ops);
+		if (overlay is not null) { Walk(overlay, Matrix3x2.Identity, ClipData.None, b.Ops); }
+
+		// Upload the whole pass's shared geometry in ONE buffer per layout; the ops index them.
+		b.SolidBuf = _solid.Count > 0 ? (nint)MakeBuffer(_solid) : IntPtr.Zero;
+		b.SolidBufBytes = (nuint)(_solid.Count * sizeof(float));
+		b.RrectBuf = _rrect.Count > 0 ? (nint)MakeBuffer(_rrect) : IntPtr.Zero;
 		b.GradBuf = _gradVerts.Count > 0 ? (nint)MakeBuffer(_gradVerts) : IntPtr.Zero;
 		b.GradBufBytes = (nuint)(_gradVerts.Count * sizeof(float));
 		b.QuadBuf = _quadVerts.Count > 0 ? (nint)MakeBuffer(_quadVerts) : IntPtr.Zero;
 		b.QuadBufBytes = (nuint)(_quadVerts.Count * sizeof(float));
-		b.PathBuf = _pathVerts.Count > 0 ? (nint)MakeBuffer(_pathVerts) : IntPtr.Zero;
-		b.PathBufBytes = (nuint)(_pathVerts.Count * sizeof(float));
-		b.SolidBufBytes = (nuint)(solid.Count * sizeof(float));
-
-		if (_xforms.Count > 0)
-		{
-			if (ReferenceEquals(target, _s))
-			{
-				b.XformBg = _d.EnsureXformBindGroup(_xforms);
-			}
-			else
-			{
-				int xbytes = _xforms.Count * sizeof(float);
-				var xbuf = _d.BufferPool.Rent(xbytes, WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst);
-				var xspan = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(_xforms);
-				fixed (float* xp = xspan) { wgpuQueueWriteBuffer(_d.Q, xbuf, 0, (IntPtr)xp, (nuint)xbytes); }
-				var xe = new WGPUBindGroupEntry { Binding = 0, Buffer = xbuf, Offset = 0, Size = (nuint)xbytes };
-				var xbgd = new WGPUBindGroupDescriptor { Layout = _d.XformBgl, EntryCount = 1, Entries = &xe };
-				b.XformBg = (nint)_d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &xbgd));
-			}
-		}
 		b.PassBg = MakePassBg();
 
 		if (_emitStats) { OpsBuildTicks += System.Diagnostics.Stopwatch.GetTimestamp() - _renderIntoStart; }
 
-		_gradVerts = savedGradVerts;
-		_quadVerts = savedQuadVerts;
-		_pathVerts = savedPathVerts;
-		_xforms = savedXforms; _xformTransient = savedTransient;
+		(_solid, _rrect, _gradVerts, _quadVerts, _backdrops) = saved;
 		(_basisOx, _basisOy, _basisW, _basisH) = savedBasis;
 		return b;
 	}
@@ -750,17 +564,10 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 
 		var color = new WGPURenderPassColorAttachment
 		{
-			// Render into the multisampled color and resolve into the single-sample target texture.
-			// A fresh MSAA buffer can't LoadOp.Load, so we always clear (transparent when no clear was given);
-			// the neutral loop redraws the whole frame each present, so nothing prior needs preserving here.
-			// The resolve into target.View happens regardless of StoreOp; StoreOp.Discard drops the MSAA samples
-			// afterwards (never sampled) to save the store bandwidth — target.View (sampled later) is unaffected.
+			// 1x: render straight into the single-sample View and Store it. MSAA: render into the multisampled colour,
+			// resolve into View, and Discard the samples unless a backdrop will segment this pass (it ends and reopens
+			// with LoadOp.Load, which needs the samples Stored). A fresh MSAA buffer can't Load, so it always clears.
 			DepthSlice = uint.MaxValue,
-			// 1x: render straight into the single-sample View (no resolve target), and Store it (it IS the result).
-			// MSAA store: the resolved target.View is all any later consumer (blit, backdrop sample) reads, so the
-			// multisampled buffer is Discarded after resolve — EXCEPT when a case-6 backdrop will segment this pass
-			// (it ends + reopens with LoadOp.Load, which requires the samples were Stored). The overlay is inlined
-			// into this same pass (see Dispose), so there is no follow-up load pass to keep the samples alive for.
 			View = target.MsaaColorView,
 			ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero,
 			LoadOp = load ? WGPULoadOp.Load : WGPULoadOp.Clear,
@@ -785,8 +592,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 				RrectBuf = b.RrectBuf,
 				GradBuf = b.GradBuf, GradBufBytes = b.GradBufBytes,
 				QuadBuf = b.QuadBuf, QuadBufBytes = b.QuadBufBytes,
-				PathBuf = b.PathBuf, PathBufBytes = b.PathBufBytes,
-				XformBg = b.XformBg,
 				Enc = enc,
 			};
 			EncodeOps(0, b.Ops.Count, ref pst);
@@ -819,14 +624,10 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	private void ReleaseBuild(PassBuild b)
 	{
 		ReturnOps(b.Ops);
-		ReturnSolid(b.Solid);
-		ReturnRrect(b.Rrect);
-		foreach (var slot in b.XformTransient) { _d.FreeXformSlot(slot); }
-		b.Xforms.Clear(); _xformsPool.Push(b.Xforms);
-		b.XformTransient.Clear(); _xformTransientPool.Push(b.XformTransient);
-		ReturnSolid(b.Grad);
-		ReturnSolid(b.Quad);
-		ReturnSolid(b.Path);
+		ReturnVerts(b.Solid);
+		ReturnVerts(b.Rrect);
+		ReturnVerts(b.Grad);
+		ReturnVerts(b.Quad);
 	}
 
 	// The device rect the current build's scissors stay within (see PassBuild.Bound).
@@ -865,10 +666,9 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	public void DrawImageNineSlice(ITexture texture, in Rect centerSlice, in Rect destination, bool centerHollow) => _overlay.DrawImageNineSlice(texture, centerSlice, destination, centerHollow);
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity) => _overlay.DrawEffectBackdrop(filter, opacity);
 
-	// Renders the deferred frame with the immediate-mode overlay (e.g. the diagnostics FPS counter drawn after Replay)
-	// appended as final, top-most commands. Doing it in ONE pass — rather than a follow-up LoadOp.Load overlay pass —
-	// is what lets the fast path's MSAA target resolve on-tile (StoreOp.Discard) instead of storing every sample every
-	// frame. Mirrors the reference, which composites its FPS panel into the draw list as a final image.
+	// Renders the deferred frame under its root DPI scale with the immediate-mode overlay (e.g. the diagnostics FPS
+	// counter drawn after Replay, already in device pixels) on top, in ONE pass: a follow-up LoadOp.Load overlay pass
+	// would force the MSAA target to store every sample every frame.
 	public void Dispose()
 	{
 		lock (_d.RenderGate)
@@ -878,16 +678,8 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 				// No frame was replayed this present (e.g. a transitional frame during an async backend switch).
 				return;
 			}
-			var cmds = main;
-			if (_overlay.Finish() is WebGpuRenderRecord od && od.Commands.Count > 0)
-			{
-				cmds = new List<WebGpuCommand>(main.Count + od.Commands.Count);
-				cmds.AddRange(main);
-				cmds.AddRange(od.Commands);
-			}
-			RunFrame(cmds, _pendingClear);
-			_d.SolidSlab.EndFrame(); _d.RrectSlab.EndFrame();   // free slices of recordings not seen this frame
-			_d.SolidTableSlab.EndFrame(); _d.RrectTableSlab.EndFrame();
+			var overlay = _overlay.Finish() is WebGpuRenderRecord od && od.Commands.Count > 0 ? od.Commands : null;
+			RunFrame(main, Matrix3x2.CreateScale(_pendingScale.X, _pendingScale.Y), overlay, _pendingClear);
 			_pendingCmds = null;
 		}
 	}

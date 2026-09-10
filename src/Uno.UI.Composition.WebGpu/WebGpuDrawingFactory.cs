@@ -73,14 +73,13 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 {
 	internal List<WebGpuCommand> Commands = new();
 	internal WColor? ClearColor;
-	internal bool? Cacheable;   // memoized: all commands are simple primitives with no path clip
-	// Memoized command-list scans. These are pure functions of an immutable list but ran per replay per
-	// FRAME: ~450 replays/frame over lists of up to ~600 commands is hundreds of thousands of type checks.
-	internal bool? ReappendableMemo, ArenaSafeMemo, TableEligibleMemo;
-	internal Vector4? IdentityBounds;   // memoized union AABB of Commands (recorded/identity space), for layer bounding
-								// The compiled GPU draw-list for this recording (the persistent retained state IRenderRecord is contracted to hold):
-								// built once on the render thread at first replay, reused every frame, freed (deferred to the render thread) when
-								// this recording is disposed. Written by the render thread, taken by the UI thread's Dispose — via Interlocked.
+	// Memoised scans of the immutable command list: every command is a plain draw (the recording lives in the arena);
+	// some command, directly or through a nested recording, is a backdrop; the union of the commands' bounds.
+	internal bool? PlainMemo, HasBackdropMemo;
+	internal Vector4? IdentityBounds;
+	// The arena entry for this recording (the persistent retained state IRenderRecord is contracted to hold): built
+	// once on the render thread at first replay, reused every frame, freed (deferred to the render thread) when this
+	// recording is disposed. Written by the render thread, taken by the UI thread's Dispose — via Interlocked.
 	internal WebGpuGeometryCache Compiled;
 	// Transient image textures recorded into this frame that the caller disposed while recording (e.g. the one-shot
 	// texture CompositionNineGridBrush uploads). We keep them alive for every present of this recording, then release
@@ -93,8 +92,7 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 	private int _disposed;
 
 	// Backend-bound: dispatches to the WebGpu session that must consume it (guaranteed same-backend by the single
-	// registered backend). A recorder nests it (deferred ReplayRef / inline transform); a present session encodes
-	// and submits it as the frame.
+	// registered backend). A recorder nests it as a ReplayRef; a present session encodes and submits it as the frame.
 	public void Replay(IDrawingSession into)
 	{
 		switch (into)
@@ -121,16 +119,16 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 		// frame's ReplayRef may still hold this command list (with the raw view handle) and be compiled after us.
 		if (Textures is { } textures) { foreach (var t in textures) { t.Release(); } }
 		if (Geometries is { } geometries) { foreach (var g in geometries) { g.Release(); } }
-		// Hand the compiled draw-list's GPU resources to the render thread for a deferred free (an in-flight frame may
+		// Hand the arena entry's GPU resources to the render thread for a deferred free (an in-flight frame may
 		// still reference them). Interlocked so a concurrent render-thread rebuild can't leak or double-free it.
 		var c = System.Threading.Interlocked.Exchange(ref Compiled, null);
-		if (c is { Device: { } dev }) { dev.DeferCompiledRelease(c.Owned, c.StampOwned, c.XformSlot); }
+		if (c is { Device: { } dev }) { dev.DeferCompiledRelease(c.Owned, c.StampOwned); }
 		Commands = null;
 		GC.SuppressFinalize(this);
 	}
 
-	// The compiled draw-list's buffers and transform-table slot are reachable only through this object. Both release
-	// queues are concurrent, so the finalizer can hand them over.
+	// The arena entry's buffers are reachable only through this object. The release queues are concurrent, so the
+	// finalizer can hand them over.
 	~WebGpuRenderRecord() => Dispose();
 }
 

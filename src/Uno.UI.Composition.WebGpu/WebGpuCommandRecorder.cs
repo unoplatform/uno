@@ -1,4 +1,5 @@
-﻿// Records drawing calls into a WebGpuRenderRecord, and decides what can be replayed from the GPU geometry cache.
+﻿// Records drawing calls into a WebGpuRenderRecord: every command in the recording's own space, with the matrix and
+// clip current when it was drawn. Nothing is resolved to the screen here; the present walk does that.
 #nullable disable
 using System;
 using System.Collections.Generic;
@@ -28,12 +29,11 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 	private float[] _pendingColorMatrix;   // active effect colour matrix, applied per DrawImage in the image shader
 	private readonly WebGpuRenderRecord _data = new();
 	private List<WebGpuCommand> _target;   // current emit target (root command list, or a layer's list)
-										   // The owning drawing factory, surfaced as IDrawingSession.Factory so an add-in painting into this recording mints
-										   // session-native textures within the paint scope. Null only for the internal transform-scratch recorder
-										   // (TransformFor), whose Factory is never read.
+	// The owning drawing factory, surfaced as IDrawingSession.Factory so an add-in painting into this recording mints
+	// session-native textures within the paint scope.
 	private readonly IDrawingFactory _factory;
 
-	public WebGpuCommandRecorder(IDrawingFactory factory = null) { _target = _data.Commands; _factory = factory; }
+	public WebGpuCommandRecorder(IDrawingFactory factory) { _target = _data.Commands; _factory = factory; }
 
 	public Matrix4x4 TotalMatrix => _m;
 	public void SetMatrix(in Matrix4x4 matrix) => _m = matrix;
@@ -47,8 +47,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 	public int Save() { var pre = _stack.Count; _stack.Push(new SaveEntry { M = _m, Clip = _clip, PendingColorMatrix = _pendingColorMatrix }); return pre; }
 	public int SaveCount => _stack.Count;
 	public object NativeSurface => null;
-	public IDrawingFactory Factory => _factory
-		?? throw new InvalidOperationException("This WebGPU recorder was created without a drawing factory (internal transform recorder).");
+	public IDrawingFactory Factory => _factory;
 	public void Restore()
 	{
 		if (_stack.Count == 0) { return; }
@@ -629,77 +628,20 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 
 	public IRenderRecord Finish() => _data;
 
-	internal static int StatBlockRef, StatBlockLayer, StatBlockShadow, StatBlockOther, StatBlockEmpty;
-
-	/// <summary>
-	/// Whether a recording can be GPU-geometry-cached: only simple primitives (rect/rrect/path/image/gradient).
-	/// Path clips qualify too: their coverage mask lives in the cached ops' owned bag. Memoized on the record.
-	/// </summary>
-	internal static bool IsCacheable(WebGpuRenderRecord d)
-	{
-		if (d.Cacheable is { } memo) { return memo; }
-		bool ok = d.Commands.Count > 0;
-		if (!ok) { StatBlockEmpty++; }
-		foreach (var c in d.Commands)
-		{
-			if (c is not (RectCommand or RoundedRectCmd or PathCmd or ImageCmd or GradientCmd))
-			{
-				ok = false;
-				switch (c)
-				{
-					case ReplayRefCmd: StatBlockRef++; break;
-					case LayerCmd: StatBlockLayer++; break;
-					case ShadowCmd: StatBlockShadow++; break;
-					default: StatBlockOther++; break;
-				}
-				break;
-			}
-		}
-		d.Cacheable = ok;
-		return ok;
-	}
-
-
-	// Transforms a recording's (simple) commands to device space under a transform+clip, for building its GPU
-	// cache. Uses the inline (always-transform) path so it never emits a nested ReplayRef.
-	internal static List<WebGpuCommand> TransformFor(List<WebGpuCommand> commands, Matrix4x4 transform, ClipData clip)
-	{
-		var rec = new WebGpuCommandRecorder();
-		rec._m = transform;
-		rec._clip = clip;
-		rec.ReplayInline(new WebGpuRenderRecord { Commands = commands });
-		return rec._data.Commands;
-	}
-
-	// Retained sub-recordings (SKPicture equivalent) are recorded at identity; replaying one bakes in the target
-	// session's current matrix + clip. A cacheable recording is deferred as a ReplayRef capturing its immutable
-	// command list (the present caches its GPU geometry); otherwise its commands are transformed inline.
+	// A retained sub-recording (the SKPicture equivalent) is recorded at identity; replaying it here adds a node
+	// carrying the current matrix and clip. The recording's commands are never copied or transformed: the present
+	// walk composes the matrices, and caches the recording's GPU geometry keyed on its immutable command list.
 	public void Replay(IRenderRecord data)
 	{
-		if (data is WebGpuRenderRecord cacheable && IsCacheable(cacheable))
-		{
-			// The nested recording's command list (with the raw image view handles) is captured by reference and may
-			// be compiled at present AFTER the nested recording is disposed — so this recording must also hold a ref to
-			// its textures to keep the views alive for the whole time this recording can be replayed.
-			TrackNestedTextures(cacheable);
-			_target.Add(new ReplayRefCmd { Data = cacheable, Commands = cacheable.Commands, Transform = _m, Clip = _clip });
-			StatCacheableReplays++;
-			return;
-		}
-		if (data is WebGpuRenderRecord inl)
-		{
-			StatInlineReplays++; StatInlineCmds += inl.Commands.Count;
-		}
-		ReplayInline(data);
+		if (data is not WebGpuRenderRecord rec) { return; }
+		// The nested list (with its raw image view handles) is captured by reference and may be drawn after the
+		// nested recording is disposed, so this recording holds its textures and geometries alive too.
+		TrackNestedTextures(rec);
+		_target.Add(new ReplayRefCmd { Data = rec, Commands = rec.Commands, Transform = _m, Clip = _clip });
 	}
 
-	// Per-frame record-phase counters: a recording is only cacheable when EVERY command is a simple primitive, so
-	// one nested replay/layer/shadow anywhere forces the whole list to be re-transformed inline — reallocating a
-	// fan array per path fill (i.e. per glyph) every frame. Reset and reported by the backend's stats line.
-	internal static int StatCacheableReplays, StatInlineReplays, StatInlineCmds;
-
-	// Take a ref to every texture the nested recording references, so an outer frame keeps them alive as long as it can
-	// be replayed. Balanced by this recording's Dispose (which Releases every entry in its Textures list).
+	// Take a ref to every texture and geometry the nested recording references, so an outer frame keeps them alive as
+	// long as it can be replayed. Balanced by this recording's Dispose (which Releases every entry in its lists).
 	private void TrackNestedTextures(WebGpuRenderRecord source)
 	{
 		if (source.Textures is { } src)
@@ -712,151 +654,5 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 			var dst = _data.Geometries ??= new();
 			foreach (var g in geos) { g.AddRef(); dst.Add(g); }
 		}
-	}
-
-	private void ReplayInline(IRenderRecord data)
-	{
-		if (data is not WebGpuRenderRecord d) { return; }
-		// Inlined (non-cacheable) recordings copy their ImageCmds (with the same view handle) into this target, so this
-		// recording must keep those textures alive too. TransformFor wraps a bare command list (Textures == null), so
-		// this is a no-op on the present-time transform path.
-		TrackNestedTextures(d);
-		Vector2 T(Vector2 p) => new(p.X * _m.M11 + p.Y * _m.M21 + _m.M41, p.X * _m.M12 + p.Y * _m.M22 + _m.M42);
-		foreach (var cmd in d.Commands)
-		{
-			switch (cmd)
-			{
-				case RectCommand r:
-					_target.Add(new RectCommand { Color = r.Color, Clip = ClipCompose(r.Clip), P0 = T(r.P0), P1 = T(r.P1), P2 = T(r.P2), P3 = T(r.P3) });
-					break;
-				case RoundedRectCmd rrc:
-					// Local Half/Radii/Inner are intrinsic (transform-independent); only the device corners move.
-					_target.Add(new RoundedRectCmd { P0 = T(rrc.P0), P1 = T(rrc.P1), P2 = T(rrc.P2), P3 = T(rrc.P3), Half = rrc.Half, Radii = rrc.Radii, Color = rrc.Color, Opacity = rrc.Opacity, InnerHalf = rrc.InnerHalf, InnerCenter = rrc.InnerCenter, InnerRadii = rrc.InnerRadii, Clip = ClipCompose(rrc.Clip) });
-					break;
-				case PathCmd p:
-					{
-						// The geometry stays; only its matrix composes with this replay's. Bounds follow the new matrix.
-						var pm = p.M * M3;
-						Geo.Bounds(p.Geometry, pm, out var pmin, out var pmax);
-						_target.Add(new PathCmd { Geometry = p.Geometry, M = pm, Stroke = p.Stroke, Color = p.Color, EvenOdd = p.EvenOdd, BbMin = pmin, BbMax = pmax, Clip = ClipCompose(p.Clip) });
-						break;
-					}
-				case ShadowCmd sh:
-					{
-						var sm = sh.M * M3;
-						Geo.Bounds(sh.Geometry, sm, out var smin, out var smax);
-						var ss = new Vector2(_m.M11, _m.M12).Length();
-						_target.Add(new ShadowCmd { Geometry = sh.Geometry, M = sm, BbMin = smin, BbMax = smax, EvenOdd = sh.EvenOdd, Color = sh.Color, SigmaX = sh.SigmaX * ss, SigmaY = sh.SigmaY * ss, Additive = sh.Additive, Clip = ClipCompose(sh.Clip) });
-						break;
-					}
-				case ImageCmd im:
-					_target.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), View = im.View, W = im.W, H = im.H, Opacity = im.Opacity, U0 = im.U0, V0 = im.V0, U1 = im.U1, V1 = im.V1, TintMode = im.TintMode, Tint = im.Tint, ColorMatrix = im.ColorMatrix, Clip = ClipCompose(im.Clip) });
-					break;
-				case GradientCmd gc:
-					// Transform the device-space geometry baked into the uniform by the replay matrix too, so the
-					// gradient stays aligned with its (transformed) quad.
-					var uu = (float[])gc.Uniform.Clone();
-					var ga = T(new Vector2(uu[4], uu[5])); uu[4] = ga.X; uu[5] = ga.Y;
-					if (uu[0] < 0.5f)
-					{
-						var gb = T(new Vector2(uu[6], uu[7])); uu[6] = gb.X; uu[7] = gb.Y;
-					}
-					else
-					{
-						// Center + focal are points → transform by T. The unit-ellipse map M is relative to device
-						// deltas, so under the extra device transform T2 it becomes M' = M * T2^-1 (deltas map back
-						// through T2 before M). Center/focal stay in the (new) device space.
-						int ob = WebGpuDevice.GradOriginBase;
-						var go = T(new Vector2(uu[ob], uu[ob + 1])); uu[ob] = go.X; uu[ob + 1] = go.Y;
-						float t11 = _m.M11, t12 = _m.M12, t21 = _m.M21, t22 = _m.M22;
-						float dt = t11 * t22 - t21 * t12;
-						if (MathF.Abs(dt) < 1e-12f) { dt = dt < 0 ? -1e-12f : 1e-12f; }
-						// T2^-1 (row-major [[i00,i01],[i10,i11]]), where T2 = [[t11,t21],[t12,t22]] (MapM convention).
-						float i00 = t22 / dt, i01 = -t21 / dt, i10 = -t12 / dt, i11 = t11 / dt;
-						// M row-major from packed cols: m00=uu[6], m10=uu[7], m01=uu[ob+2], m11=uu[ob+3]. M' = M * T2^-1.
-						float m00 = uu[6], m10 = uu[7], m01 = uu[ob + 2], m11 = uu[ob + 3];
-						float n00 = m00 * i00 + m01 * i10, n01 = m00 * i01 + m01 * i11;
-						float n10 = m10 * i00 + m11 * i10, n11 = m10 * i01 + m11 * i11;
-						uu[6] = n00; uu[7] = n10; uu[ob + 2] = n01; uu[ob + 3] = n11;
-					}
-					_target.Add(new GradientCmd { P0 = T(gc.P0), P1 = T(gc.P1), P2 = T(gc.P2), P3 = T(gc.P3), Uniform = uu, Clip = ClipCompose(gc.Clip) });
-					break;
-				case LayerCmd lyr:
-					var saved = _target;
-					var layerList = new List<WebGpuCommand>();
-					_target = layerList;
-					Replay(new WebGpuRenderRecord { Commands = lyr.Commands });   // recursively transform sub-commands
-					_target = saved;
-					_target.Add(new LayerCmd { Commands = layerList, CompositeMode = lyr.CompositeMode, ColorMatrix = lyr.ColorMatrix, ShadowEffect = lyr.ShadowEffect, Clip = ClipCompose(lyr.Clip) });
-					break;
-				case BackdropCmd bk:
-					_target.Add(new BackdropCmd { Effect = bk.Effect, Opacity = bk.Opacity, Clip = ClipCompose(bk.Clip) });
-					break;
-				case ReplayRefCmd rr:
-					// Compose this replay's transform/clip onto the ref so the present still caches it.
-					_target.Add(new ReplayRefCmd { Data = rr.Data, Commands = rr.Commands, Transform = rr.Transform * _m, Clip = ClipCompose(rr.Clip) });
-					break;
-			}
-		}
-	}
-
-	// AABB of a child rect (its 4 corners) under the replay transform t.
-	// Takes the matrix, not a Func: this runs for every command and every replay, and an indirect call per corner
-	// (plus the closure the delegate conversion forces on the caller) is real cost under wasm.
-	private static Vector4 TransformedAabb(Vector4 rect, in Matrix4x4 m)
-	{
-		static Vector2 Mp(float x, float y, in Matrix4x4 m) => new(x * m.M11 + y * m.M21 + m.M41, x * m.M12 + y * m.M22 + m.M42);
-		var a = Mp(rect.X, rect.Y, m); var b = Mp(rect.Z, rect.Y, m); var e = Mp(rect.Z, rect.W, m); var f = Mp(rect.X, rect.W, m);
-		var l = MathF.Min(MathF.Min(a.X, b.X), MathF.Min(e.X, f.X)); var top = MathF.Min(MathF.Min(a.Y, b.Y), MathF.Min(e.Y, f.Y));
-		var r = MathF.Max(MathF.Max(a.X, b.X), MathF.Max(e.X, f.X)); var bo = MathF.Max(MathF.Max(a.Y, b.Y), MathF.Max(e.Y, f.Y));
-		return new Vector4(l, top, r, bo);
-	}
-
-	// Intersect a child (sub-recording) clip into the current session clip, transforming it by the replay matrix.
-	private ClipData ClipCompose(ClipData c)
-	{
-		var result = _clip;
-		// The op's containment proof only covers its own recorded clip; the replay-site clip can still cut it,
-		// so the composed op is scissor-inert only when both sides are.
-		result.ScissorInert = c.ScissorInert && _clip.ScissorInert;
-		if (!(c.Aabb.X <= -1e8f && c.Aabb.Y <= -1e8f && c.Aabb.Z >= 1e8f && c.Aabb.W >= 1e8f))
-		{
-			var a = TransformedAabb(c.Aabb, _m);
-			result.Aabb = new Vector4(MathF.Max(result.Aabb.X, a.X), MathF.Max(result.Aabb.Y, a.Y), MathF.Min(result.Aabb.Z, a.Z), MathF.Min(result.Aabb.W, a.W));
-		}
-		// Child entries AND with the parent's: each keeps its shape and gains the way back from the parent's space.
-		if (c.Entries is { Length: > 0 } entries)
-		{
-			var m = new Matrix3x2(_m.M11, _m.M12, _m.M21, _m.M22, _m.M41, _m.M42);
-			if (!Matrix3x2.Invert(m, out var inv)) { inv = Matrix3x2.Identity; }
-			foreach (var src in entries)
-			{
-				ClipData.PushEntry(ref result, src.Under(inv));
-			}
-		}
-		if (c.Paths is { Length: > 0 })
-		{
-			result.Paths = ComposePaths(_clip.Paths, c.Paths);
-		}
-		return result;
-	}
-
-	// The composed path list for (parent, child), memoized by reference: every command of a replayed recording
-	// under one clip composes the same pair, and the present session keys its clip masks on the resulting array,
-	// so handing each command its own copy would bake the same mask once per command instead of once per clip.
-	private Dictionary<(PathClip[], PathClip[]), PathClip[]> _pathsMemo;
-
-	private PathClip[] ComposePaths(PathClip[] parent, PathClip[] child)
-	{
-		_pathsMemo ??= new();
-		if (_pathsMemo.TryGetValue((parent, child), out var memo)) { return memo; }
-		var result = parent;
-		var m = new Matrix3x2(_m.M11, _m.M12, _m.M21, _m.M22, _m.M41, _m.M42);
-		foreach (var src in child)
-		{
-			result = ClipData.PushPath(result, src.Transformed(m));
-		}
-		_pathsMemo[(parent, child)] = result;
-		return result;
 	}
 }

@@ -1,20 +1,11 @@
-﻿// Encoding ops into a render pass: one case per DrawKind, the backdrop's pass-segment split, and the per-frame
+// Encoding ops into a render pass: one case per DrawKind, the backdrop's pass-segment split, and the per-frame
 // stats dump.
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Uno.WebGpu.Native;
 using static Uno.WebGpu.Native.WGPU;
-using Uno.UI.Composition.Drawing;
-using Uno.Foundation.Logging;
-using Windows.Graphics.Effects.Interop;
-using Windows.Foundation;
-using WColor = Windows.UI.Color;
 
 namespace Uno.UI.Composition.WebGpu;
 
@@ -34,9 +25,7 @@ public sealed unsafe partial class WebGpuPresentSession
 
 		// Blur only the element AABB, not the whole framebuffer -- and not a padded version of it either: a
 		// backdrop samples the element's OWN backdrop, so reaching outside pulls in whatever sits behind the
-		// neighbours. Reaching out by the blur's radius put the black border of Given_AcrylicBrush's outer Border
-		// into the corners of a white element. The pyramid samples clamp-to-edge, so the element's own edge
-		// pixels extend outward instead, which is what gives a uniform result.
+		// neighbours. The pyramid samples clamp-to-edge, so the element's own edge pixels extend outward instead.
 		var effect = backdrop.Effect;
 		var aabb = backdrop.Clip.Aabb;
 		float regionX = Math.Clamp(aabb.X, 0f, _s.Width), regionY = Math.Clamp(aabb.Y, 0f, _s.Height);
@@ -62,7 +51,6 @@ public sealed unsafe partial class WebGpuPresentSession
 		{
 			pst.Enc.Scissor(sx, sy, sw, sh);
 			DrawBlurredBackdrop(ref pst, backdrop, blurred, new Vector2(regionX, regionY), new Vector2(regionW, regionH));
-
 			if (effect.Color.A != 0)
 			{
 				DrawBackdropTint(ref pst, backdrop);
@@ -112,12 +100,11 @@ public sealed unsafe partial class WebGpuPresentSession
 	{
 		var c = backdrop.Effect.Color;
 		float r = c.R / 255f, g = c.G / 255f, b = c.B / 255f, a = c.A / 255f;
-		var verts = new System.Collections.Generic.List<float>(36);
+		var verts = new List<float>(48);
 		void Vert(float x, float y)
 		{
 			verts.Add(x); verts.Add(y); verts.Add(r); verts.Add(g); verts.Add(b); verts.Add(a); verts.Add(0f); verts.Add(0f);
 		}
-
 		var aabb = backdrop.Clip.Aabb;
 		Vert(aabb.X, aabb.Y); Vert(aabb.Z, aabb.Y); Vert(aabb.Z, aabb.W);
 		Vert(aabb.X, aabb.Y); Vert(aabb.Z, aabb.W); Vert(aabb.X, aabb.W);
@@ -134,29 +121,24 @@ public sealed unsafe partial class WebGpuPresentSession
 	}
 
 	/// <summary>
-	/// Encodes ops [<paramref name="start"/>, <paramref name="end"/>) into the pass, applying each op's scissor and
-	/// path-clip mask as it goes. Split out of RenderInto so the command walk and the encode loop can each be read
-	/// on their own.
+	/// Encodes ops [<paramref name="start"/>, <paramref name="end"/>) into the pass, applying each op's scissor as it
+	/// goes. Runs of same-clip solids or rounded rects in the pass buffers collapse into one draw each.
 	/// </summary>
 	private void EncodeOps(int start, int end, ref PassOps pst)
 	{
 		var pass = pst.Pass;
-		var target = pst.Target;
 		var ops = pst.Ops;
 		var backdrops = pst.Backdrops;
 		var solidBuf = pst.SolidBuf; var solidBufBytes = pst.SolidBufBytes;
 		var rrectBuf = pst.RrectBuf;
 		var gradBuf = pst.GradBuf; var gradBufBytes = pst.GradBufBytes;
 		var quadBuf = pst.QuadBuf; var quadBufBytes = pst.QuadBufBytes;
-		var pathBuf = pst.PathBuf; var pathBufBytes = pst.PathBufBytes;
-		var xformBg = pst.XformBg;
 
 		for (int oi = start; oi < end; oi++)
 		{
 			var (kind, b0, u0, b1, flag, clip, clipBg) = ops[oi];
 			pst.Iters++;
-			if (_emitStats && kind is DrawKind.Image or DrawKind.Gradient or DrawKind.TilingFan && flag) { pst.SharedOps++; }
-			if (_emitStats && kind == DrawKind.TilingFan) { pst.Tiled++; }
+			if (_emitStats && kind is DrawKind.Image or DrawKind.Gradient && flag) { pst.SharedOps++; }
 			if (!TryScissor(clip.Aabb, out var sx, out var sy, out var sw, out var sh)) { continue; }
 			// A widenable op's tight AABB is cull-only (checked above); the applied scissor is the full
 			// surface, so consecutive such ops dedup to a single SetScissorRect.
@@ -181,8 +163,7 @@ public sealed unsafe partial class WebGpuPresentSession
 						while (oi + 1 < end)
 						{
 							var nx = ops[oi + 1];
-							if (nx.kind != DrawKind.Solid || nx.b0 != VertexSource.PassBuffer || nx.clipBg != clipBg
-								|| nx.clip.Aabb != clip.Aabb) { break; }
+							if (nx.kind != DrawKind.Solid || nx.b0 != VertexSource.PassBuffer || nx.clipBg != clipBg || nx.clip.Aabb != clip.Aabb) { break; }
 							count += nx.u0; oi++;
 						}
 						pst.Enc.Pipe(_d.SolidPipe);
@@ -192,82 +173,17 @@ public sealed unsafe partial class WebGpuPresentSession
 						pst.Enc.Draw(count);
 						break;
 					}
-				case DrawKind.Solid when b0 == VertexSource.Slab:
-					{
-						// Coalesce a byte-contiguous run sharing this clip and bind group.
-						int byteOff = (int)b1; uint count = u0;
-						while (oi + 1 < end)
-						{
-							var nx = ops[oi + 1];
-							if (nx.kind != DrawKind.Solid || nx.b0 != VertexSource.Slab || nx.clipBg != clipBg
-								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * VertexStride.Solid * sizeof(float))) { break; }
-							count += nx.u0; oi++;
-						}
-						pst.Enc.Pipe(_d.SolidPipe);
-						pst.Enc.Bg(0, pst.PassBg);
-						pst.Enc.Bg(1, (IntPtr)clipBg);
-						pst.Enc.Vb(_d.SolidSlab.Buf, (nuint)byteOff, (nuint)(count * VertexStride.Solid * sizeof(float)));
-						pst.Enc.Draw(count);
-						break;
-					}
-				case DrawKind.Solid when b0 == VertexSource.TableSlab:
-					{
-						// Resident SOLID TABLE SLAB (b1 = absolute byte offset, stride 7 = pos+col+slot). Group 0 = the
-						// transform table (each vertex's slot positions it), group 1 = ClipU. Coalesce byte-contiguous
-						// same-clip runs ACROSS recordings — each vertex still carries its own slot, so one draw is correct.
-						int byteOff = (int)b1; uint count = u0;
-						while (oi + 1 < end)
-						{
-							var nx = ops[oi + 1];
-							if (nx.kind != DrawKind.Solid || nx.b0 != VertexSource.TableSlab || nx.clipBg != clipBg
-								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * VertexStride.Table * sizeof(float))) { break; }
-							count += nx.u0; oi++;
-						}
-						pst.Enc.Pipe(_d.SolidTablePipe);
-						pst.Enc.Bg(0, pst.PassBg);
-						pst.Enc.Bg(1, (IntPtr)xformBg);
-						pst.Enc.Bg(2, (IntPtr)clipBg);
-						pst.Enc.Vb(_d.SolidTableSlab.Buf, (nuint)byteOff, (nuint)(count * VertexStride.Table * sizeof(float)));
-						pst.Enc.Draw(count);
-						break;
-					}
 				case DrawKind.Solid:
-					// b0 = vertex buffer (private/immediate or a resident frame-solid buffer); b1 = byte offset into it.
+					// b0 = the op's own vertex buffer; b1 = byte offset into it; u0 = vertex count.
 					pst.Enc.Pipe(_d.SolidPipe);
 					pst.Enc.Bg(0, pst.PassBg);
 					pst.Enc.Bg(1, (IntPtr)clipBg);
-					if (b0 == solidBuf)
-					{
-						// Whole shared buffer bound once (dedups across the run); the op's slice is a vertex offset.
-						pst.Enc.Vb((IntPtr)b0, 0, solidBufBytes);
-						pst.Enc.Draw(u0, (uint)(b1 / (VertexStride.Solid * sizeof(float))));
-					}
-					else
-					{
-						pst.Enc.Vb((IntPtr)b0, (nuint)b1, (nuint)(u0 * VertexStride.Solid * sizeof(float)));
-						pst.Enc.Draw(u0);   // u0 = 6 * (coalesced) rect count
-					}
-					break;
-
-				case DrawKind.TilingFan:
-					// Single-pass fill of a tiling fan (see PathCmd.FanTiles).
-					pst.Enc.Pipe(_d.PathTablePipe);
-					pst.Enc.Bg(0, pst.PassBg);
-					pst.Enc.Bg(1, (IntPtr)xformBg);
-					pst.Enc.Bg(2, (IntPtr)clipBg);
-					if (flag)
-					{
-						pst.Enc.Vb((IntPtr)pathBuf, 0, pathBufBytes);
-						pst.Enc.Draw(u0, (uint)(b0 / (VertexStride.Table * sizeof(float))));
-					}
-					else
-					{
-						pst.Enc.Vb((IntPtr)b0, 0, (nuint)(u0 * VertexStride.Table * sizeof(float)));
-						pst.Enc.Draw(u0);
-					}
+					pst.Enc.Vb((IntPtr)b0, (nuint)b1, (nuint)(u0 * VertexStride.Solid * sizeof(float)));
+					pst.Enc.Draw(u0);
 					break;
 				case DrawKind.Image:
-					pst.Enc.Pipe(_d.ImagePipe);
+				case DrawKind.Mask:
+					pst.Enc.Pipe(kind == DrawKind.Mask ? _d.ImageDstInPipe : _d.ImagePipe);
 					pst.Enc.Bg(0, pst.PassBg);
 					pst.Enc.Bg(1, (IntPtr)b0);
 					pst.Enc.Bg(2, (IntPtr)clipBg);
@@ -278,9 +194,9 @@ public sealed unsafe partial class WebGpuPresentSession
 					}
 					else
 					{
-						var atlasVerts = u0 == 0 ? 6u : u0;
-						pst.Enc.Vb((IntPtr)b1, 0, (nuint)(atlasVerts * 4 * sizeof(float)));
-						pst.Enc.Draw(atlasVerts);
+						var verts = u0 == 0 ? 6u : u0;
+						pst.Enc.Vb((IntPtr)b1, 0, (nuint)(verts * 4 * sizeof(float)));
+						pst.Enc.Draw(verts);
 					}
 					break;
 				case DrawKind.Gradient:
@@ -302,78 +218,33 @@ public sealed unsafe partial class WebGpuPresentSession
 						}
 						break;
 					}
-				case DrawKind.CompositeLayer:
-					wgpuRenderPassEncoderSetPipeline(pass, u0 == 1 ? _d.CompositeDstIn : _d.CompositeSrcOver);
-					pst.Enc.Reset();   // set directly, so the dedup cache no longer reflects the encoder
-					pst.Enc.Bg(0, (IntPtr)b0);
-					wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
-					break;
 				case DrawKind.BackdropSegment:
 					pass = EncodeBackdropSegment(backdrops[(int)b1], ref pst);
 					break;
 				case DrawKind.RoundedRect when b0 == VertexSource.PassBuffer:
 					{
-						// Shared rrect buffer (b1=start vert, u0=6). COALESCE the run of following rrect ops sharing this
-						// clip bind group + clip: their 22-float verts are contiguous, so the run draws in ONE call.
+						// Shared rrect buffer (b1 = start vert, u0 = 6): the run of following rrect ops sharing this clip
+						// bind group and clip is contiguous, so it draws in ONE call.
 						int startVert = (int)b1; uint count = u0;
 						while (oi + 1 < end)
 						{
 							var nx = ops[oi + 1];
-							if (nx.kind != DrawKind.RoundedRect || nx.b0 != VertexSource.PassBuffer || nx.clipBg != clipBg
-								|| nx.clip.Aabb != clip.Aabb) { break; }
+							if (nx.kind != DrawKind.RoundedRect || nx.b0 != VertexSource.PassBuffer || nx.clipBg != clipBg || nx.clip.Aabb != clip.Aabb) { break; }
 							count += nx.u0; oi++;
 						}
 						pst.Enc.Pipe(_d.RrPipe);
 						pst.Enc.Bg(0, pst.PassBg);
 						pst.Enc.Bg(1, (IntPtr)clipBg);
-						pst.Enc.Vb(rrectBuf, (nuint)(startVert * 22 * sizeof(float)), (nuint)(count * 22 * sizeof(float)));
-						pst.Enc.Draw(count);
-						break;
-					}
-				case DrawKind.RoundedRect when b0 == VertexSource.Slab:
-					{
-						// Resident RRECT SLAB (b1 = absolute byte offset). Coalesce byte-contiguous same-clip runs.
-						int byteOff = (int)b1; uint count = u0;
-						while (oi + 1 < end)
-						{
-							var nx = ops[oi + 1];
-							if (nx.kind != DrawKind.RoundedRect || nx.b0 != VertexSource.Slab || nx.clipBg != clipBg
-								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 22 * sizeof(float))) { break; }
-							count += nx.u0; oi++;
-						}
-						pst.Enc.Pipe(_d.RrPipe);
-						pst.Enc.Bg(0, pst.PassBg);
-						pst.Enc.Bg(1, (IntPtr)clipBg);
-						pst.Enc.Vb(_d.RrectSlab.Buf, (nuint)byteOff, (nuint)(count * 22 * sizeof(float)));
-						pst.Enc.Draw(count);
-						break;
-					}
-				case DrawKind.RoundedRect when b0 == VertexSource.TableSlab:
-					{
-						// Resident RRECT TABLE SLAB (b1 = absolute byte offset, stride 23). Group 0 = the transform table
-						// (per-vertex slot positions the local corners), group 1 = ClipU. Coalesce byte-contiguous same-clip runs.
-						int byteOff = (int)b1; uint count = u0;
-						while (oi + 1 < end)
-						{
-							var nx = ops[oi + 1];
-							if (nx.kind != DrawKind.RoundedRect || nx.b0 != VertexSource.TableSlab || nx.clipBg != clipBg
-								|| nx.clip.Aabb != clip.Aabb || (int)nx.b1 != byteOff + (int)(count * 23 * sizeof(float))) { break; }
-							count += nx.u0; oi++;
-						}
-						pst.Enc.Pipe(_d.RrTablePipe);
-						pst.Enc.Bg(0, pst.PassBg);
-						pst.Enc.Bg(1, (IntPtr)xformBg);
-						pst.Enc.Bg(2, (IntPtr)clipBg);
-						pst.Enc.Vb(_d.RrectTableSlab.Buf, (nuint)byteOff, (nuint)(count * 23 * sizeof(float)));
+						pst.Enc.Vb(rrectBuf, (nuint)(startVert * RrectStride * sizeof(float)), (nuint)(count * RrectStride * sizeof(float)));
 						pst.Enc.Draw(count);
 						break;
 					}
 				case DrawKind.RoundedRect:
-					// b0 = vertex buffer (resident frame-solid or legacy per-op); b1 = byte offset; u0 = vertex count.
+					// b0 = the op's own vertex buffer; b1 = byte offset; u0 = vertex count.
 					pst.Enc.Pipe(_d.RrPipe);
 					pst.Enc.Bg(0, pst.PassBg);
 					pst.Enc.Bg(1, (IntPtr)clipBg);
-					pst.Enc.Vb((IntPtr)b0, (nuint)b1, (nuint)(u0 * 22 * sizeof(float)));
+					pst.Enc.Vb((IntPtr)b0, (nuint)b1, (nuint)(u0 * RrectStride * sizeof(float)));
 					pst.Enc.Draw(u0);
 					break;
 			}
@@ -381,47 +252,22 @@ public sealed unsafe partial class WebGpuPresentSession
 	}
 
 	/// <summary>
-	/// Dumps the frame's encode counters (<c>UNO_WEBGPU_STATS=1</c>, every 60th frame) and clears them, grouped by
-	/// the question each set answers: how much got drawn, what the encoder had to change between draws, how much of
-	/// the scene came from reused recordings, and why the reuse and admission paths turned work away.
+	/// Dumps the frame's encode counters (<c>UNO_WEBGPU_STATS=1</c>, every 60th frame) and clears them: how much got
+	/// drawn, what the encoder had to change between draws, how the arena served replayed recordings, and what the
+	/// atlas and the sheets did.
 	/// </summary>
 	private void WriteFrameStats(int opCount, ref PassOps pst)
 	{
 		var line = new System.Text.StringBuilder(512);
 		line.Append($"[webgpu-stats] {_s.Width}x{_s.Height}:");
-
-		// Drawn
-		line.Append($" ops={opCount} emitted={pst.Iters} sharedOps={pst.SharedOps} tiled={pst.Tiled}");
-
-		// Changed between draws
-		line.Append($" scissorChanges={pst.Scissors}");
-		line.Append($" clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB");
-
-		// Reused
-		line.Append($" strat=re{StatStratReappend}/ar{StatStratArena}/ca{StatStratCached}/tf{StatStratTableFrame}");
-		line.Append($" replays=c{WebGpuCommandRecorder.StatCacheableReplays}+i{WebGpuCommandRecorder.StatInlineReplays}");
-		line.Append($" inlineCmds={WebGpuCommandRecorder.StatInlineCmds}");
-		line.Append($" block=ref{WebGpuCommandRecorder.StatBlockRef}/layer{WebGpuCommandRecorder.StatBlockLayer}");
-		line.Append($"/shadow{WebGpuCommandRecorder.StatBlockShadow}/other{WebGpuCommandRecorder.StatBlockOther}");
-		line.Append($"/empty{WebGpuCommandRecorder.StatBlockEmpty}");
+		line.Append($" ops={opCount} emitted={pst.Iters} sharedOps={pst.SharedOps}");
+		line.Append($" scissorChanges={pst.Scissors} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB");
+		line.Append($" arena={StatArenaHits} rebuilds={_statArenaRebuilds}(miss{_statArMiss}/masks{_statArMasks}) stamps={_statStamps}");
 		line.Append($" fan=refused{WebGpuShapeCache.StatFanRefused}/points{WebGpuShapeCache.StatTessPoints}/tri{WebGpuShapeCache.StatTessTri}/area{WebGpuShapeCache.StatTessArea}/fold{WebGpuShapeCache.StatTessFold}");
-
-		// Rebuilt anyway, and why
-		line.Append($" tableRebuilds={_statTableRebuilds} arenaRebuilds={_statArenaRebuilds}(miss{_statArMiss}/flip{_statArFlip}/masks{_statArMasks}) stamps={_statStamps}");
-		line.Append($" cachedRebuilds={_statCachedRebuilds}(miss{_statCrMiss}/move{_statCrMove}");
-		line.Append($"/flip{_statCrPathFlip}/clip{_statCrClip})");
-
-		// Turned away, and why
 		line.Append($" atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked} clipMasks={ClipMasksBaked} fillMasks={FillMasksBaked} sheet={SheetSlotsBaked} shadowSheet={ShadowSlotsBaked} bakes={BakeBatches} layerSheet={LayerSheetSlots}/{LayerSheetPasses}");
 		line.Append($"/full{AtlasNoRoom}/noedges{AtlasNoEdges}/scaleblk{ScaleBlocked}/big{WebGpuPathAtlas.RejBig}");
 		line.Append($"/pages{_d.PathAtlas.Pages.Count}");
-
 		System.Console.WriteLine(line.ToString());
-
-		WebGpuCommandRecorder.StatCacheableReplays = WebGpuCommandRecorder.StatInlineReplays = WebGpuCommandRecorder.StatInlineCmds = 0;
-		_statTableRebuilds = _statStamps = _statArenaRebuilds = _statCachedRebuilds = 0;
-		_statArMiss = _statArFlip = _statArMasks = 0;
-		_statCrMiss = _statCrMove = _statCrPathFlip = _statCrClip = 0;
-		StatStratReappend = StatStratArena = StatStratCached = StatStratTableFrame = 0;
+		StatArenaHits = _statArenaRebuilds = _statArMiss = _statArMasks = _statStamps = 0;
 	}
 }

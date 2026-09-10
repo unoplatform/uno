@@ -24,31 +24,14 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	public IntPtr Dev;
 	public IntPtr Q;
 	public IntPtr SolidPipe;
-	// Transform-table path-fill pipeline (device verts + per-vertex slot index) for the tiling fan. Group 1 = the
-	// storage table (XformBgl), group 2 = ClipBgl.
-	public IntPtr PathTablePipe;
-	// Transform-table SOLID / ROUNDED-RECT variants (device-verts + per-vertex slot). Same table + ClipBgl as the
-	// path fill, so a moved solid/rrect recording repositions via its slot with cross-visual coalescing preserved.
-	// See EmitTableFrameSolid.
-	public IntPtr SolidTablePipe;
-	public IntPtr RrTablePipe;
-	public IntPtr XformBgl;
-	// Persistent storage buffer + cached bind group for the main pass's per-frame arena transform table (group 0 of
-	// the table path-fill pipelines). The table CONTENTS are rewritten every frame, but the buffer identity + bind
-	// group only change when the table grows, so the bind group survives across frames — sparing a CreateBuffer +
-	// CreateBindGroup on every path-fill frame. Bound at full capacity (the shader only indexes valid slots). Reused
-	// across frames safely because wgpuQueueWriteBuffer is queue-ordered after the prior frame's reads; only the main
-	// pass uses it (nested/pooled passes keep renting distinct transient buffers, so no in-frame write aliasing).
-	private IntPtr _xformBuf; private nuint _xformCap; private IntPtr _xformBg;
 	public IntPtr ImagePipe;
+	public IntPtr ImageDstInPipe;        // the image draw blended DstIn: a mask layer's composite
 	public IntPtr GradientPipe;
 	public IntPtr RrPipe;                // analytic rounded-rect / border-ring fill (per-vertex SDF quad)
 	public IntPtr BlurPipe;              // separable gaussian (fullscreen), single-sample
 	public IntPtr BlurBgl;
-	public IntPtr CompositeSrcOver;      // composite a layer texture into an MSAA pass (SrcOver / DstIn)
-	public IntPtr CompositeDstIn;
-	public IntPtr CompositeBgl;         // SrcOver's group(0) layout
-	public IntPtr CompositeDstInBgl;    // DstIn's group(0) layout (auto-layouts aren't interchangeable)
+	public IntPtr CompositeSrcOver;      // fullscreen SrcOver of a texture: the effect evaluator's final draw
+	public IntPtr CompositeBgl;         // its group(0) layout
 	public IntPtr CompositeBlend;       // two-texture blend: fg(0) over bg(3), full Porter-Duff + separable/non-separable
 	public IntPtr CompositeBlendBgl;    // group(0): fg tex, sampler, uniform (params.z = mode id), bg tex
 	public IntPtr EffectCombine;        // two-texture linear combine (CrossFade/ArithmeticComposite) + AlphaMask
@@ -75,15 +58,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		GradSlab?.Flush();
 		_clipBgSlab?.Flush();
 	}
-	public WebGpuSlab SolidSlab;                  // persistent shared slab: all recordings' solid verts (6 floats/v)
-	public WebGpuSlab RrectSlab;                  // persistent shared slab: all recordings' rrect verts (22 floats/v)
-												  // Transform-TABLE shared slabs: local (identity-baked) verts + a trailing per-vertex slot index (solid = 7
-												  // floats/v, rrect = 23). A moved recording rewrites its transform-table slot instead of re-Putting these verts,
-												  // while sibling recordings still coalesce into one draw (each vertex indexes its own slot). See EmitTableFrameSolid.
-	public WebGpuSlab SolidTableSlab;
-	public WebGpuSlab RrectTableSlab;
-	private long _nextSlabId = 1;                 // stable per-recording slab id (assigned on cache miss)
-	public long NextSlabId() => _nextSlabId++;
 	// Serializes a whole frame's render (reset → record → submit → poll) on this device. The on-window render
 	// loop and off-loop renders (RenderTargetBitmap) share the device's transient pools/caches, so two frames
 	// must not overlap or one frame's BeginFrameResources frees the other's in-flight resources (wgpu panics).
@@ -102,18 +76,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// Decoupled from the renderer's WebGpuGeometryCache: the device only needs the GPU resources to free (two
 	// OwnedResources bags) + the transform-table slot to reclaim, so the queue carries those primitives — keeping
 	// WebGpuDevice (init tier) free of any renderer type.
-	private readonly System.Collections.Concurrent.ConcurrentQueue<(OwnedResources Owned, OwnedResources StampOwned, int XformSlot)> _pendingCompiled = new();
-	internal void DeferCompiledRelease(OwnedResources owned, OwnedResources stampOwned, int xformSlot) => _pendingCompiled.Enqueue((owned, stampOwned, xformSlot));
-
-	// Transform-table slot allocator (render-thread only). Each cached path-fill recording owns a STABLE slot — an
-	// index into the per-frame _xforms storage buffer. Its device verts bake that index once; the slot's local->NDC
-	// affine is rewritten every frame it draws, so a move/resize/DPI change touches only the table, never the verts.
-	// A disposed recording's slot is recycled when its compiled state drains below (render thread), so alloc/free are
-	// unsynchronized. XformSlotHigh is the high-water count (the per-frame table's resident region size).
-	public int XformSlotHigh;
-	private readonly System.Collections.Generic.Stack<int> _freeXformSlots = new();
-	public int AllocXformSlot() => _freeXformSlots.Count > 0 ? _freeXformSlots.Pop() : XformSlotHigh++;
-	public void FreeXformSlot(int slot) { if (slot >= 0) { _freeXformSlots.Push(slot); } }
+	private readonly System.Collections.Concurrent.ConcurrentQueue<(OwnedResources Owned, OwnedResources StampOwned)> _pendingCompiled = new();
+	internal void DeferCompiledRelease(OwnedResources owned, OwnedResources stampOwned) => _pendingCompiled.Enqueue((owned, stampOwned));
 
 	// Per-frame bind groups reference the frame's pooled buffers, so they're released at the next frame start once
 	// the previous frame's GPU work has completed (present DevicePolls). A cached recording's persistent resources
@@ -150,11 +114,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		ReleaseRetiredAtlasPages();
 
 
-		// Free compiled draw-lists whose owning recording was disposed (their slab slices are reclaimed separately by
-		// each slab's RetainOnly, since a disposed recording is never replayed → never marked live).
-		// The slot free rides the Owned claim: when a rebuild already claimed the bag it also kept (reused) the
-		// slot for the replacement entry, so freeing it here would alias two live recordings onto one slot.
-		while (_pendingCompiled.TryDequeue(out var c)) { var claimed = DeferRelease(c.Owned); DeferRelease(c.StampOwned); if (claimed && c.XformSlot >= 0) { _freeXformSlots.Push(c.XformSlot); } }
+		// Free the arena entries whose owning recording was disposed.
+		while (_pendingCompiled.TryDequeue(out var c)) { DeferRelease(c.Owned); DeferRelease(c.StampOwned); }
 	}
 
 	public IntPtr TrackBg(IntPtr bg) { _pendingBindGroups.Add((nint)bg); return bg; }
@@ -187,38 +148,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		return bg;
 	}
 
-	// Uploads the frame's transform table into the persistent storage buffer (grown 1.5× on demand) and returns a
-	// bind group cached by buffer identity — rebuilt only when the buffer reallocates. Only the main on-window pass
-	// calls this; nested/pooled passes rent transient buffers so concurrent in-frame writes never alias this one.
-	public IntPtr EnsureXformBindGroup(System.Collections.Generic.List<float> xforms)
-	{
-		int count = xforms.Count;
-		if (count == 0) { return IntPtr.Zero; }
-		nuint needed = (nuint)(count * sizeof(float));
-		if (_xformBuf == IntPtr.Zero || _xformCap < needed)
-		{
-			// Defer the outgrown buffer + its bind group to the next frame start (like the per-frame bind groups/
-			// buffers) instead of releasing immediately: under pipelining the prior frame's submitted commands may
-			// still bind them, so an immediate release could reclaim a resource the in-flight GPU work still reads.
-			if (_xformBg != IntPtr.Zero) { _pendingBindGroups.Add((nint)_xformBg); _xformBg = IntPtr.Zero; }
-			if (_xformBuf != IntPtr.Zero) { _pendingBuffers.Add((nint)_xformBuf); }
-			nuint cap = (needed + (needed >> 1) + (nuint)3) & ~(nuint)3;
-			var bd = new WGPUBufferDescriptor { Size = cap, Usage = WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst };
-			_xformBuf = wgpuDeviceCreateBuffer(Dev, &bd);
-			_xformCap = cap;
-		}
-		var span = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(xforms);
-		fixed (float* p = span) { wgpuQueueWriteBuffer(Q, _xformBuf, 0, (IntPtr)p, needed); }
-		if (_xformBg == IntPtr.Zero)
-		{
-			var e = new WGPUBindGroupEntry { Binding = 0, Buffer = _xformBuf, Offset = 0, Size = _xformCap };
-			var bgd = new WGPUBindGroupDescriptor { Layout = XformBgl, EntryCount = 1, Entries = &e };
-			_xformBg = wgpuDeviceCreateBindGroup(Dev, &bgd);
-		}
-		return _xformBg;
-	}
-
-
 	// Queues a transient image texture's GPU release for the next frame start. A brush that uploads a one-shot
 	// texture (e.g. CompositionNineGridBrush) disposes it right after recording its draw, but the WebGPU draw is
 	// replayed at present (possibly across several presents of the same recording) — so the texture must live until
@@ -243,8 +172,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 
 	public IntPtr ImgBgl;
 	public IntPtr GradBgl;
-	// Explicit SHARED ClipU layout: the solid, table and image pipelines use one pipeline layout so a single ClipU
-	// bind group binds to any of them (auto-derived layouts are pipeline-exclusive).
+	// Explicit SHARED ClipU layout: every colour pipeline binds it at its last group, so a single ClipU bind group
+	// binds to any of them (auto-derived layouts are pipeline-exclusive).
 	public IntPtr ClipBgl;
 	// Group 0 of every colour pipeline: the pass projection (16 bytes), one bind group per pass.
 	public IntPtr PassBgl;
@@ -344,10 +273,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		BufferPool = new WebGpuBufferPool(this);
 		ClipSlab = new WebGpuClipSlab(this);
 		GradSlab = new WebGpuUniformSlab(this, GradientUniformBytes);
-		SolidSlab = new WebGpuSlab(this, VertexStride.Solid);
-		RrectSlab = new WebGpuSlab(this, 22);
-		SolidTableSlab = new WebGpuSlab(this, VertexStride.Table);
-		RrectTableSlab = new WebGpuSlab(this, 23);
 		System.Console.WriteLine($"[webgpu] engine init — msaa={MsaaSamples}x colorFormat={ColorFormat}");
 	}
 
@@ -653,7 +578,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		};
 
 		SolidPipe = MakePipe(colored, vs, fs, &blend, clipLayout);
-		CreatePathTablePipelines(&blend);
 		CreateCoveragePipelines();
 		CreateCoverageSheetPipelines();
 		CreateImagePipeline();
@@ -725,11 +649,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		var vs = SV("vs");
 		var fs = SV("fs");
 		var over = new WGPUBlendState { Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.OneMinusSrcAlpha, Operation = WGPUBlendOperation.Add }, Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.OneMinusSrcAlpha, Operation = WGPUBlendOperation.Add } };
-		var dstIn = new WGPUBlendState { Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.Zero, DstFactor = WGPUBlendFactor.SrcAlpha, Operation = WGPUBlendOperation.Add }, Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.Zero, DstFactor = WGPUBlendFactor.SrcAlpha, Operation = WGPUBlendOperation.Add } };
 		CompositeSrcOver = MakeComposite(module, vs, fs, &over);
-		CompositeDstIn = MakeComposite(module, vs, fs, &dstIn);
 		CompositeBgl = wgpuRenderPipelineGetBindGroupLayout(CompositeSrcOver, 0);
-		CompositeDstInBgl = wgpuRenderPipelineGetBindGroupLayout(CompositeDstIn, 0);
 
 		// Two-texture blend (effect graph): the fragment emits the fully-composited pixel, so the pipeline REPLACES.
 		var blendModule = Module(CompositeBlendWgsl);
@@ -883,6 +804,12 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
 		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = null, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = MakeImagePipeLayout() };
 		ImagePipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
+		// DstIn: the destination keeps only where the texture has alpha (out = dst * src.a).
+		var dstIn = new WGPUBlendState { Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.Zero, DstFactor = WGPUBlendFactor.SrcAlpha, Operation = WGPUBlendOperation.Add }, Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.Zero, DstFactor = WGPUBlendFactor.SrcAlpha, Operation = WGPUBlendOperation.Add } };
+		var maskTarget = new WGPUColorTargetState { Format = ColorFormat, Blend = &dstIn, WriteMask = WGPUColorWriteMask.All };
+		var maskFs = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &maskTarget };
+		pd.Fragment = &maskFs;
+		ImageDstInPipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
 		var sd = new WGPUSamplerDescriptor { AddressModeU = WGPUAddressMode.ClampToEdge, AddressModeV = WGPUAddressMode.ClampToEdge, MagFilter = WGPUFilterMode.Linear, MinFilter = WGPUFilterMode.Linear, MipmapFilter = WGPUMipmapFilterMode.Linear, MaxAnisotropy = 1 };
 		Smp = wgpuDeviceCreateSampler(Dev, &sd);
 		// Address-mode variants for tiled image draws. EdgeExtend.None shares the clamp sampler: a non-filling
@@ -922,74 +849,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		return wgpuDeviceCreateRenderPipeline(Dev, &pd);
 	}
 
-	// Transform-table pipelines: device-space verts + a per-vertex Uint32 slot index (last attribute).
-	private void CreatePathTablePipelines(WGPUBlendState* blend)
-	{
-		// Explicit BGLs so group 1 IS the shared ClipBgl — existing ClipU bind groups (immediate + the arena
-		// re-stamp) bind to the table pipelines unchanged. Group 0 = the read-only storage transform table.
-		var se = new WGPUBindGroupLayoutEntry { Binding = 0, Visibility = WGPUShaderStage.Vertex, Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.ReadOnlyStorage } };
-		var sbgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 1, Entries = &se };
-		XformBgl = wgpuDeviceCreateBindGroupLayout(Dev, &sbgld);
-		var coverLayout = ColourLayout(XformBgl, ClipBgl);
-
-		var coverMod = Module(ClipStructFn + CoverTableWgsl);
-		var vs = SV("vs"); var fs = SV("fs");
-		PathTablePipe = MakeTablePipe(coverMod, vs, fs, blend, coverLayout);
-		// Same shader (pos+col+slot) for solids, so coalesced solids from moving recordings position per-vertex
-		// via their own slot.
-		SolidTablePipe = MakeTablePipe(coverMod, vs, fs, blend, coverLayout);
-		CreateRrectTablePipeline(blend, coverLayout);
-	}
-
-	// Transform-table rounded-rect pipeline: 8 float attrs (cpos/p/hf/radii/col/ihalf/icenter/iradii) + a trailing
-	// Uint32 slot. Explicit layout group0 = the storage transform table, group1 = the shared ClipU (ClipBgl).
-	private void CreateRrectTablePipeline(WGPUBlendState* blend, IntPtr layout)
-	{
-		var module = Module(ClipStructFn + RoundedRectTableWgsl);
-		var vs = SV("vs"); var fs = SV("fs");
-		var attrs = stackalloc WGPUVertexAttribute[9]
-		{
-			new() { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 },   // cpos (LOCAL device)
-			new() { Format = WGPUVertexFormat.Float32x2, Offset = 8, ShaderLocation = 1 },   // p (local centred)
-			new() { Format = WGPUVertexFormat.Float32x2, Offset = 16, ShaderLocation = 2 },  // hf
-			new() { Format = WGPUVertexFormat.Float32x4, Offset = 24, ShaderLocation = 3 },  // radii
-			new() { Format = WGPUVertexFormat.Float32x4, Offset = 40, ShaderLocation = 4 },  // col
-			new() { Format = WGPUVertexFormat.Float32x2, Offset = 56, ShaderLocation = 5 },  // ihalf
-			new() { Format = WGPUVertexFormat.Float32x2, Offset = 64, ShaderLocation = 6 },  // icenter
-			new() { Format = WGPUVertexFormat.Float32x4, Offset = 72, ShaderLocation = 7 },  // iradii
-			new() { Format = WGPUVertexFormat.Uint32, Offset = 88, ShaderLocation = 8 },     // slot index
-		};
-		var vbl = new WGPUVertexBufferLayout { ArrayStride = 92, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 9, Attributes = attrs };
-		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
-		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = WGPUColorWriteMask.All };
-		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
-		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = null, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = layout };
-		RrTablePipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
-	}
-
-	private IntPtr MakeTablePipe(IntPtr module, WGPUStringView vs, WGPUStringView fs, WGPUBlendState* blend, IntPtr layout)
-	{
-		var attrs = stackalloc WGPUVertexAttribute[4];
-		attrs[0] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
-		attrs[1] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x4, Offset = 8, ShaderLocation = 1 };
-		attrs[2] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Uint32, Offset = 24, ShaderLocation = 2 };
-		attrs[3] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 28, ShaderLocation = 3 };
-		var vbl = new WGPUVertexBufferLayout { ArrayStride = 36, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 4, Attributes = attrs };
-		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
-		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = WGPUColorWriteMask.All };
-		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
-		var pd = new WGPURenderPipelineDescriptor
-		{
-			Vertex = vsState,
-			Fragment = &fsState,
-			DepthStencil = null,
-			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
-			Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
-			Layout = layout,
-		};
-		return wgpuDeviceCreateRenderPipeline(Dev, &pd);
-	}
-
 	// Persistent UTF-8 for a WGPUStringView (WGSL/entry points; created once at pipeline init, intentionally not freed).
 	private static WGPUStringView SV(string s)
 		=> new() { Data = Marshal.StringToCoTaskMemUTF8(s), Length = (nuint)System.Text.Encoding.UTF8.GetByteCount(s) };
@@ -1005,7 +864,5 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	{
 		Pool?.Dispose();
 		BufferPool?.Dispose();
-		if (_xformBg != IntPtr.Zero) { wgpuBindGroupRelease(_xformBg); _xformBg = IntPtr.Zero; }
-		if (_xformBuf != IntPtr.Zero) { wgpuBufferRelease(_xformBuf); _xformBuf = IntPtr.Zero; }
 	}
 }
