@@ -14,6 +14,7 @@ using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia;
 using Microsoft.UI.Xaml;
 using SkiaSharp;
 using Uno.Disposables;
@@ -22,7 +23,7 @@ using Uno.UI.Xaml.Controls;
 
 namespace Uno.WinUI.Runtime.Skia.X11;
 
-internal partial class X11XamlRootHost : IXamlRootHost
+internal partial class X11XamlRootHost : IXamlRootHost, IAccessibilityOwner
 {
 	private const int DefaultColorDepth = 32;
 	private const int FallbackColorDepth = 24;
@@ -83,6 +84,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	private X11Window? _x11Window;
 	private X11Window? _x11TopWindow;
 	private X11Renderer? _renderer;
+	private X11Accessibility? _accessibility;
 
 	private static readonly Stopwatch _stopwatch = Stopwatch.StartNew();
 
@@ -143,6 +145,7 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		{
 			using (X11Helper.XLock(RootX11Window.Display))
 			{
+				DisposeAccessibility();
 				XamlRootMap.Unregister(xamlRoot);
 				_windowToHost.Remove(winUIWindow, out var _);
 				CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged -= UpdateWindowPropertiesFromCoreApplication;
@@ -554,6 +557,8 @@ internal partial class X11XamlRootHost : IXamlRootHost
 		}
 
 		_ = X11Helper.XClearWindow(RootX11Window.Display, RootX11Window.Window); // the root window is never drawn, just always blank
+
+		InitializeAccessibility();
 	}
 
 	// https://github.com/gamedevtech/X11OpenGLWindow/blob/4a3d55bb7aafd135670947f71bd2a3ee691d3fb3/README.md
@@ -660,6 +665,31 @@ internal partial class X11XamlRootHost : IXamlRootHost
 	}
 
 	UIElement? IXamlRootHost.RootElement => _window.RootElement;
+
+	SkiaAccessibilityBase? IAccessibilityOwner.Accessibility => _accessibility;
+
+	internal void InitializeAccessibility()
+	{
+		if (_accessibility is not null)
+		{
+			return;
+		}
+
+		_accessibility = new X11Accessibility(this, _window);
+		_accessibility.Initialize();
+	}
+
+	internal void DisposeAccessibility()
+	{
+		if (_accessibility is not { } accessibility)
+		{
+			return;
+		}
+
+		_accessibility = null;
+		accessibility.Dispose();
+		AccessibilityRouter.NotifyDisposed(this);
+	}
 
 	private void RaiseConfigureCallback()
 	{
