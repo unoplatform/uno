@@ -1,97 +1,113 @@
+#nullable enable
+
+using System.Collections;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.DataBinding;
 
-namespace Uno.UI.Tests.BinderTests
+namespace Uno.UI.Tests.BinderTests;
+
+[TestClass]
+public partial class Given_BindingPropertyHelper_InterfaceProperties
 {
-	[TestClass]
-	public partial class Given_BindingPropertyHelper_InterfaceProperties
+	[TestMethod]
+	public void When_GetPropertyType_InterfaceProperty_Array()
 	{
-		[TestMethod]
-		public void When_GetPropertyType_InterfaceProperty_Array()
-		{
-			// Arrange: IReadOnlyList<string> backed by an array (which has Length, not Count)
-			var arrayType = typeof(string[]);
-			
-			// Act: Try to get Count property type (which is on IReadOnlyList<T>, not on array)
-			var propertyType = BindingPropertyHelper.GetPropertyType(arrayType, "Count", false);
-			
-			// Assert: Should find Count from IReadOnlyList<T> interface
-			Assert.IsNotNull(propertyType, "Count property should be found via IReadOnlyList<T> interface");
-			Assert.AreEqual(typeof(int), propertyType);
-		}
+		// An array exposes Length, and gets Count only through IReadOnlyCollection<T>.
+		var propertyType = BindingPropertyHelper.GetPropertyType(typeof(string[]), "Count", false);
 
-		[TestMethod]
-		public void When_GetValueGetter_InterfaceProperty_Array()
-		{
-			// Arrange
-			var arrayType = typeof(string[]);
-			var testArray = new[] { "Item1", "Item2", "Item3" };
-			
-			// Act: Get a value getter for Count property
-			var getter = BindingPropertyHelper.GetValueGetter(arrayType, "Count");
-			var count = getter(testArray);
-			
-			// Assert
-			Assert.IsNotNull(count, "Count getter should return a value");
-			Assert.AreEqual(3, count);
-		}
+		Assert.AreEqual(typeof(int), propertyType);
+	}
 
-		[TestMethod]
-		public void When_GetValueGetter_InterfaceIndexer_Array()
-		{
-			// Arrange
-			var arrayType = typeof(string[]);
-			var testArray = new[] { "Item1", "Item2", "Item3" };
-			
-			// Act: Get a value getter for indexer via IReadOnlyList<T>
-			var getter = BindingPropertyHelper.GetValueGetter(arrayType, "[0]");
-			var value = getter(testArray);
-			
-			// Assert
-			Assert.IsNotNull(value, "Indexer getter should return a value");
-			Assert.AreEqual("Item1", value);
-		}
+	[TestMethod]
+	public void When_GetValueGetter_InterfaceProperty_Array()
+	{
+		var getter = BindingPropertyHelper.GetValueGetter(typeof(string[]), "Count");
 
-		[TestMethod]
-		public void When_GetPropertyType_InterfaceProperty_List()
-		{
-			// Arrange: IReadOnlyList<string> backed by a List (which has Count directly)
-			var listType = typeof(List<string>);
-			
-			// Act: Try to get Count property type
-			var propertyType = BindingPropertyHelper.GetPropertyType(listType, "Count", false);
-			
-			// Assert: Should find Count property
-			Assert.IsNotNull(propertyType, "Count property should be found");
-			Assert.AreEqual(typeof(int), propertyType);
-		}
+		Assert.AreEqual(3, getter(new[] { "Item1", "Item2", "Item3" }));
+	}
 
-		[TestMethod]
-		public void When_GetPropertyType_NonExistentProperty()
-		{
-			// Arrange
-			var arrayType = typeof(string[]);
-			
-			// Act: Try to get a property that doesn't exist
-			var propertyType = BindingPropertyHelper.GetPropertyType(arrayType, "NonExistent", false);
-			
-			// Assert: Should return null
-			Assert.IsNull(propertyType, "Non-existent property should return null");
-		}
+	[TestMethod]
+	public void When_GetValueGetter_InterfaceIndexer_Array()
+	{
+		var getter = BindingPropertyHelper.GetValueGetter(typeof(string[]), "[0]");
 
-		[TestMethod]
-		public void When_GetPropertyType_ConcreteProperty_Priority()
-		{
-			// Arrange: Array has Length property directly
-			var arrayType = typeof(string[]);
-			
-			// Act: Try to get Length property type
-			var propertyType = BindingPropertyHelper.GetPropertyType(arrayType, "Length", false);
-			
-			// Assert: Should find Length from array type (not interface)
-			Assert.IsNotNull(propertyType, "Length property should be found");
-			Assert.AreEqual(typeof(int), propertyType);
-		}
+		Assert.AreEqual("Item1", getter(new[] { "Item1", "Item2", "Item3" }));
+	}
+
+	[TestMethod]
+	public void When_GetPropertyType_InterfaceProperty_List()
+	{
+		var propertyType = BindingPropertyHelper.GetPropertyType(typeof(List<string>), "Count", false);
+
+		Assert.AreEqual(typeof(int), propertyType);
+	}
+
+	[TestMethod]
+	public void When_GetPropertyType_NonExistentProperty()
+	{
+		var propertyType = BindingPropertyHelper.GetPropertyType(typeof(string[]), "NonExistent", false);
+
+		Assert.IsNull(propertyType);
+	}
+
+	[TestMethod]
+	public void When_GetPropertyType_ExplicitInterfaceProperty()
+	{
+		var propertyType = BindingPropertyHelper.GetPropertyType(typeof(ExplicitReadOnlyList), "Count", false);
+
+		Assert.AreEqual(typeof(int), propertyType);
+	}
+
+	[TestMethod]
+	public void When_GetValueGetter_ExplicitInterfaceProperty()
+	{
+		var getter = BindingPropertyHelper.GetValueGetter(typeof(ExplicitReadOnlyList), "Count");
+
+		Assert.AreEqual(2, getter(new ExplicitReadOnlyList()));
+	}
+
+	[TestMethod]
+	public void When_GetValueGetter_ExplicitInterfaceIndexer()
+	{
+		var getter = BindingPropertyHelper.GetValueGetter(typeof(ExplicitReadOnlyList), "[1]");
+
+		Assert.AreEqual("B", getter(new ExplicitReadOnlyList()));
+	}
+
+	[TestMethod]
+	public void When_GetPropertyType_ConcreteProperty_Wins_Over_Interface()
+	{
+		// Both the concrete type and ICounted declare Count, with different types.
+		var propertyType = BindingPropertyHelper.GetPropertyType(typeof(ConcreteCounted), "Count", false);
+		var getter = BindingPropertyHelper.GetValueGetter(typeof(ConcreteCounted), "Count");
+
+		Assert.AreEqual(typeof(int), propertyType);
+		Assert.AreEqual(42, getter(new ConcreteCounted()));
+	}
+
+	private interface ICounted
+	{
+		string Count { get; }
+	}
+
+	private class ConcreteCounted : ICounted
+	{
+		public int Count => 42;
+
+		string ICounted.Count => "from-interface";
+	}
+
+	private class ExplicitReadOnlyList : IReadOnlyList<string>
+	{
+		private readonly string[] _items = new[] { "A", "B" };
+
+		string IReadOnlyList<string>.this[int index] => _items[index];
+
+		int IReadOnlyCollection<string>.Count => _items.Length;
+
+		IEnumerator<string> IEnumerable<string>.GetEnumerator() => ((IEnumerable<string>)_items).GetEnumerator();
+
+		IEnumerator IEnumerable.GetEnumerator() => _items.GetEnumerator();
 	}
 }
