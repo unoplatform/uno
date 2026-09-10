@@ -29,7 +29,29 @@ internal static class BorderHelper
 
 	public static void UpdateBackground(this IBorderInfoProvider @this)
 	{
-		if (@this is Border { UseBackgroundOverride: true } && ThemingHelper.IsHighContrastActive)
+		if (@this is Uno.UI.Xaml.Islands.XamlIslandRoot islandRoot
+			&& islandRoot.BackdropBackground != Uno.UI.Xaml.Islands.BackdropBackgroundMode.None)
+		{
+			if (islandRoot.BackdropBackground == Uno.UI.Xaml.Islands.BackdropBackgroundMode.Transparent)
+			{
+				// MUX BaseContentRenderer::PanelRenderContent skips the island root's background primitive
+				// while the island is transparent; the Background property keeps its theme brush.
+				@this.BorderVisual.BackgroundBrush = null;
+			}
+			else
+			{
+				// The material can't be rendered here. MUX's MicaController would paint FallbackColor;
+				// Uno paints the window background, which resolves to SolidBackgroundFillColorBase under
+				// the Fluent styles (and to the high-contrast window colour when that is active) rather
+				// than the flat black/white the root visual carries.
+				var pageBrush = Uno.UI.ResourceResolver.ResolveTopLevelResource(
+					"ApplicationPageBackgroundThemeBrush",
+					null) as Brush;
+				@this.BorderVisual.BackgroundBrush =
+					(pageBrush ?? @this.Background)?.GetOrCreateCompositionBrush(@this.BorderVisual.Compositor);
+			}
+		}
+		else if (@this is Border { UseBackgroundOverride: true } && ThemingHelper.IsHighContrastActive)
 		{
 			var windowBrush = Uno.UI.ResourceResolver.ResolveTopLevelResource(
 				"SystemColorWindowColorBrush",

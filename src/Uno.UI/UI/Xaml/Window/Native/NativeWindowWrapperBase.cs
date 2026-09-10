@@ -308,4 +308,8 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	public virtual void SetSystemBackdrop(Microsoft.UI.Xaml.Media.SystemBackdrop? backdrop)
 	{
 	}
+
+	// Heads that don't override SetSystemBackdrop render no material, so they must not report support:
+	// the window would go transparent over nothing.
+	public virtual bool IsSystemBackdropSupported(Microsoft.UI.Xaml.Media.SystemBackdrop backdrop) => false;
 }

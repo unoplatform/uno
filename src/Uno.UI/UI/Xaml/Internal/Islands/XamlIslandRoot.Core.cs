@@ -15,6 +15,24 @@ using WinUICoreServices = global::Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.Xaml.Islands;
 
+/// <summary>
+/// What the island root paints while a <see cref="Microsoft.UI.Xaml.Media.SystemBackdrop"/> is set.
+/// </summary>
+internal enum BackdropBackgroundMode
+{
+	/// <summary>No backdrop: the root paints its own theme background.</summary>
+	None,
+
+	/// <summary>The material is rendering, so the root's background is suppressed to let it through.</summary>
+	Transparent,
+
+	/// <summary>
+	/// A backdrop was requested but this platform renders no material. The root paints the window
+	/// background instead - Uno's equivalent of the solid colour MUX's MicaController falls back to.
+	/// </summary>
+	Fallback,
+}
+
 internal partial class XamlIslandRoot
 {
 	private ContentRoot _contentRoot = null!;
@@ -25,9 +43,32 @@ internal partial class XamlIslandRoot
 	{
 		_contentRoot = coreServices.ContentRootCoordinator.CreateContentRoot(ContentRootType.XamlIslandRoot, Colors.Transparent, this);
 		_contentRoot.XamlIslandRoot = this;
+
+		// MUX applies CXamlIslandRoot::NotifyThemeChangedCore from InitializeCommon() and again on every
+		// theme change, so the initial and runtime colours come from one place. CreateContentRoot's
+		// backgroundColor is discarded on this branch (VisualTree only uses it when it owns a RootVisual),
+		// so seed it here from the same source CoreServices.NotifyThemeChange uses.
+		((IRootElement)this).SetBackgroundColor(ThemingHelper.FromArgb(coreServices.Theming.GetRootVisualBackground()));
 	}
 
 	internal ContentRoot ContentRoot => _contentRoot;
+
+	internal BackdropBackgroundMode BackdropBackground { get; private set; }
+
+	internal bool HasTransparentBackground => BackdropBackground == BackdropBackgroundMode.Transparent;
+
+	/// <summary>
+	/// Chooses what the island root paints under a <see cref="Microsoft.UI.Xaml.Media.SystemBackdrop"/>,
+	/// without disturbing the <see cref="Panel.Background"/> property itself.
+	/// </summary>
+	internal void SetBackdropBackground(BackdropBackgroundMode mode)
+	{
+		if (BackdropBackground != mode)
+		{
+			BackdropBackground = mode;
+			this.UpdateBackground();
+		}
+	}
 
 	private void SetPublicRootVisual(
 		UIElement? rootVisual,
