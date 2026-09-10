@@ -16,8 +16,8 @@ internal sealed unsafe class WebGpuSwapChainContext : ISwapChain, IWebGpuDeviceC
 	private readonly WebGpuInitDevice _device;
 	private IntPtr _surface;
 	private WebGpuSwapchainTarget? _target;
-	// The scene renders (MSAA) and resolves into this OFFSCREEN single-sample texture; Present() then blits it into
-	// the acquired swapchain image. A direct MSAA-resolve straight into the swapchain texture does NOT composite on
+	// The scene renders into this OFFSCREEN texture; Present() then blits it into
+	// the acquired swapchain image. A direct render into the swapchain texture does NOT composite on
 	// several native surfaces (and SwiftShader in the browser) — a render pass that TARGETS the swapchain image (the
 	// blit) does. The MSAA colour + depth the scene renders into are the RENDER BACKEND's (it allocates them to match
 	// this resolve target); this host owns only the single-sample resolve texture + the present/blit.
@@ -88,7 +88,6 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 	nint IWebGpuDeviceContext.Device => _device.Dev;
 	nint IWebGpuDeviceContext.Queue => _device.Q;
 	uint IWebGpuDeviceContext.ColorFormat => (uint)_device.ColorFormat;
-	uint IWebGpuDeviceContext.SampleCount => _device.MsaaSamples;
 	public GraphicsContextKind Kind => GraphicsContextKind.WebGpu;
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)

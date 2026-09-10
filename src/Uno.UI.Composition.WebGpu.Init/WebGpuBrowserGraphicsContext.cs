@@ -14,8 +14,8 @@ namespace Uno.UI.Composition.WebGpu;
 /// JavaScript (navigator.gpu) and imported into the wgpu handle table by the caller (BrowserRenderer /
 /// WebGpuJsInterop), then handed to the constructor.
 ///
-/// Presentation differs from native: the backend renders MSAA and resolves into an OFFSCREEN single-sample
-/// texture, which is then COPIED into the canvas' current texture. A direct MSAA-resolve into the canvas texture
+/// Presentation differs from native: the backend renders into an OFFSCREEN texture, which is then COPIED into the
+/// canvas' current texture. A direct render into the canvas texture
 /// does not composite on the browser's SwiftShader WebGPU adapter, whereas a plain texture-to-texture copy does;
 /// and the browser presents implicitly when control returns to the event loop (no wgpuSurfacePresent).
 /// </summary>
@@ -24,7 +24,7 @@ internal sealed unsafe class WebGpuBrowserGraphicsContext : ISwapChain, IWebGpuD
 	private readonly WebGpuInitDevice _device;
 	private IntPtr _surface;
 	private WebGpuSwapchainTarget? _target;
-	private IntPtr _presentTex;    // offscreen single-sample resolve target (the backend resolves MSAA into this)
+	private IntPtr _presentTex;    // the offscreen the backend renders into
 	private IntPtr _presentView;
 	private IntPtr _canvasTexture;  // this frame's acquired canvas texture (blit destination)
 	private bool _frameAcquired;
@@ -78,7 +78,6 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 	nint IWebGpuDeviceContext.Device => _device.Dev;
 	nint IWebGpuDeviceContext.Queue => _device.Q;
 	uint IWebGpuDeviceContext.ColorFormat => (uint)_device.ColorFormat;
-	uint IWebGpuDeviceContext.SampleCount => _device.MsaaSamples;
 	System.Runtime.InteropServices.JavaScript.JSObject IWebGpuDeviceContext.JsDevice => _device.JsDeviceObject;
 	public GraphicsContextKind Kind => GraphicsContextKind.WebGpu;
 	public IRenderTarget AcquireRenderTarget(int width, int height)

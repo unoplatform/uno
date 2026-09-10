@@ -27,7 +27,4 @@ public interface IWebGpuDeviceContext : IGraphicsContext
 
 	/// <summary>The WebGPU colour-format enum value the backend's pipelines must use, chosen by the host. 0 means the backend's default.</summary>
 	uint ColorFormat { get; }
-
-	/// <summary>The MSAA sample count the host picked. 0 means the backend's default.</summary>
-	uint SampleCount { get; }
 }

@@ -25,9 +25,6 @@ internal sealed class WebGpuShapeCache
 		public static readonly Shape Empty = new();
 	}
 
-	/// <summary>Ring on: the attachment is single-sampled, so the triangles antialias themselves.</summary>
-	public bool AnalyticAa = true;
-
 	// The quantisation policy, the one place deciding which transforms share a shape: density in sixteenths (exact
 	// for every common DPI, a zoom re-tessellates sixteen times per octave) and the recorded linear part in 1/64.
 	public static float DensityClass(float scale) => MathF.Max(1f / 16f, MathF.Round(scale * 16f) / 16f);
@@ -203,11 +200,11 @@ internal sealed class WebGpuShapeCache
 		foreach (var c in contours) { windArea += PathTessellator.SignedArea2(c); }
 		if (Math.Abs(triArea - Math.Abs(windArea)) > 1e-2 * Math.Max(triArea, 1)) { StatTessArea++; return false; }
 
-		// Half the ring, in the recording's units: half a device pixel at this density. Zero without analytic AA.
+		// Half the antialiasing ring, in the recording's units: half a device pixel at this density.
 		var verts = new List<float>(); var coverage = new List<float>();
-		if (!PathTessellator.BuildGeometry(contours, idx, AnalyticAa ? 0.5f / density : 0f, verts, coverage)) { StatTessFold++; return false; }
+		if (!PathTessellator.BuildGeometry(contours, idx, 0.5f / density, verts, coverage)) { StatTessFold++; return false; }
 		tris = verts.ToArray();
-		cov = AnalyticAa ? coverage.ToArray() : null;
+		cov = coverage.ToArray();
 		return true;
 	}
 

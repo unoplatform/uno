@@ -63,9 +63,8 @@ internal static class WebGpuContext
 }
 
 /// <summary>
-/// The Uno-provided WebGPU device BRING-UP (the host "GPU-API half"): creates instance/adapter/device/queue, picks
-/// the MSAA sample count by capability (2× if the colour format supports it, else 4×, else 1× — no DPI/scale input),
-/// and owns the present-blit sampler. It exposes the neutral <see cref="IWebGpuDeviceContext"/> the render backend
+/// The Uno-provided WebGPU device BRING-UP (the host "GPU-API half"): creates instance/adapter/device/queue and owns
+/// the present-blit sampler.
 /// adopts to build its engine; it names no renderer type. Native path creates the device synchronously; the browser
 /// path adopts a device imported from JS.
 /// </summary>
@@ -73,13 +72,8 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 {
 	public IntPtr Inst, Adapter, Dev, Q;
 	public readonly WGPUTextureFormat ColorFormat;
-	// 2× is the preferred default (quality/cost sweet spot for UI); the browser stays 4× in
-	// PickSampleCount because the WebGPU spec only guarantees sample counts 1 and 4.
-	public uint MsaaSamples { get; private set; } = 1;
 	public IntPtr Smp;                       // present-blit sampler (used by the swapchain/browser contexts)
 	public JSObject JsDeviceObject;          // browser only: the live JS GPUDevice (the honest neutral handle)
-	private bool _hasFormatFeatures;
-	private readonly bool _browser;
 
 	public static IntPtr CreateInstancePtr() => CreateInstance();
 
@@ -156,14 +150,6 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 		var dbox = new IntPtr[1];
 		var dh = GCHandle.Alloc(dbox);
 		var ddesc = new WGPUDeviceDescriptor();
-		// wgpu-native's TextureAdapterSpecificFormatFeatures (when present) is what makes 2× MSAA valid for BGRA8/
-		// RGBA8; without it 2× fails validation. Request it so PickSampleCount's 2× tier is usable.
-		WGPUFeatureName* feats = stackalloc WGPUFeatureName[2];
-		uint featCount = 0;
-		var fmtFeat = (WGPUFeatureName)WGPUNativeFeature.TextureAdapterSpecificFormatFeatures;
-		_hasFormatFeatures = wgpuAdapterHasFeature(Adapter, fmtFeat) != 0;
-		if (_hasFormatFeatures) { feats[featCount++] = fmtFeat; }
-		if (featCount > 0) { ddesc.RequiredFeatures = feats; ddesc.RequiredFeatureCount = featCount; }
 		// Non-fatal uncaptured-error handler (wgpu's default panics the process on any validation/OOM error).
 		ddesc.UncapturedErrorCallbackInfo = new WGPUUncapturedErrorCallbackInfo
 		{
@@ -181,20 +167,17 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 		if (Dev == IntPtr.Zero) { throw new InvalidOperationException("WebGPU: wgpuAdapterRequestDevice returned no device."); }
 
 		Q = wgpuDeviceGetQueue(Dev);
-		MsaaSamples = PickSampleCount();
 		CreatePresentSampler();
-		System.Console.WriteLine($"[webgpu] init device — msaa={MsaaSamples}x fmtFeatures={_hasFormatFeatures} colorFormat={ColorFormat}");
+		System.Console.WriteLine($"[webgpu] init device — colorFormat={ColorFormat}");
 	}
 
 	private WebGpuInitDevice(WGPUTextureFormat colorFormat, IntPtr inst, IntPtr dev)
 	{
-		_browser = true;
 		ColorFormat = colorFormat;
 		Inst = inst;
 		Adapter = IntPtr.Zero;   // JS adapter isn't imported
 		Dev = dev;
 		Q = wgpuDeviceGetQueue(Dev);
-		MsaaSamples = RequestedSampleCount() is 4u ? 4u : 1u;   // browser (Dawn) init is async — can't probe; spec guarantees only 1×/4×
 		CreatePresentSampler();
 	}
 
@@ -208,66 +191,12 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 		Smp = wgpuDeviceCreateSampler(Dev, &sd);
 	}
 
-	// UNO_WEBGPU_MSAA=1|2|4|8 opts back into multisampling. Also the control for comparing it against the
-	// analytic-AA default: the browser honours only 4, since the spec guarantees just 1 and 4 and Dawn init
-	// can't probe synchronously.
-	private static uint? RequestedSampleCount()
-		=> Environment.GetEnvironmentVariable("UNO_WEBGPU_MSAA") switch
-		{
-			"1" => 1u,
-			"2" => 2u,
-			"4" => 4u,
-			"8" => 8u,
-			_ => null,
-		};
-
-	// Single-sampled by default: the analytic AA ring over the coverage atlas resolves edges more crisply than
-	// multisampling and skips its 2x fill cost, so MSAA is opt-in rather than negotiated.
-	private uint PickSampleCount()
-	{
-		if (RequestedSampleCount() is not { } requested || requested == 1u)
-		{
-			return 1u;
-		}
-
-		if (_browser || OperatingSystem.IsBrowser()) { return requested == 4u ? 4u : 1u; }
-		return SupportsSampleCount(requested) ? requested : 1u;
-	}
-
-	private bool SupportsSampleCount(uint samples)
-	{
-		wgpuDevicePushErrorScope(Dev, WGPUErrorFilter.Validation);
-		var td = new WGPUTextureDescriptor
-		{
-			Size = new WGPUExtent3D { Width = 1, Height = 1, DepthOrArrayLayers = 1 },
-			Format = ColorFormat,
-			MipLevelCount = 1,
-			SampleCount = samples,
-			Dimension = WGPUTextureDimension._2D,
-			Usage = WGPUTextureUsage.RenderAttachment,
-		};
-		var tex = wgpuDeviceCreateTexture(Dev, &td);
-		var box = new uint[2];
-		var h = GCHandle.Alloc(box);
-		wgpuDevicePopErrorScope(Dev, new WGPUPopErrorScopeCallbackInfo
-		{
-			Mode = WGPUCallbackMode.AllowProcessEvents,
-			Callback = (IntPtr)(delegate* unmanaged[Cdecl]<WGPUPopErrorScopeStatus, WGPUErrorType, WGPUStringView, IntPtr, IntPtr, void>)&OnPopErrorScope,
-			Userdata1 = GCHandle.ToIntPtr(h),
-		});
-		for (int i = 0; i < 1000 && box[0] == 0; i++) { wgpuInstanceProcessEvents(Inst); }
-		h.Free();
-		if (tex != IntPtr.Zero) { wgpuTextureDestroy(tex); }
-		return box[1] == (uint)WGPUErrorType.NoError;
-	}
-
 	// --- neutral IWebGpuDeviceContext ---
 	nint IWebGpuDeviceContext.Instance => Inst;
 	nint IWebGpuDeviceContext.Adapter => Adapter;
 	nint IWebGpuDeviceContext.Device => Dev;
 	nint IWebGpuDeviceContext.Queue => Q;
 	uint IWebGpuDeviceContext.ColorFormat => (uint)ColorFormat;
-	uint IWebGpuDeviceContext.SampleCount => MsaaSamples;
 	JSObject IWebGpuDeviceContext.JsDevice => JsDeviceObject;
 	public GraphicsContextKind Kind => GraphicsContextKind.WebGpu;
 
@@ -295,12 +224,5 @@ internal sealed unsafe class WebGpuInitDevice : IWebGpuDeviceContext
 			? System.Runtime.InteropServices.Marshal.PtrToStringUTF8(message.Data, (int)message.Length)
 			: "";
 		System.Console.Error.WriteLine($"[webgpu] uncaptured error ({type}): {msg}");
-	}
-
-	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
-	private static void OnPopErrorScope(WGPUPopErrorScopeStatus status, WGPUErrorType type, WGPUStringView message, IntPtr u1, IntPtr u2)
-	{
-		var box = (uint[])GCHandle.FromIntPtr(u1).Target!;
-		box[0] = 1; box[1] = (uint)type;
 	}
 }

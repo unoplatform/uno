@@ -81,11 +81,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 				_ = wgpuDevicePoll(_d.Dev, 0u, null);
 
 				// The frame is submitted, so every layer's colour texture is free to be reused by the next frame.
-				foreach (var ls in _frameLayerSurfaces)
-				{
-					if (_d.MsaaSamples > 1) { _d.Pool.Return(ls.MsaaColorView); }   // at 1x MsaaColorView aliases View
-					_d.Pool.Return(ls.View);
-				}
+				foreach (var ls in _frameLayerSurfaces) { _d.Pool.Return(ls.View); }
 				_frameLayerSurfaces.Clear();
 				_frameEncoder = IntPtr.Zero;
 			}
@@ -496,9 +492,8 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	private static readonly Vector4 _unbounded = new(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue);
 
 	/// <summary>
-	/// Renders a command list into a target surface's pass, resolving into its single-sample view. Layers render
-	/// into a surface of their own, or a slot of the frame's layer sheet, and composite here; shadows and layers
-	/// pre-render before the pass opens.
+	/// Renders a command list into a target surface's pass. Layers render into a surface of their own, or a slot of the
+	/// frame's layer sheet, and composite here; shadows and layers pre-render before the pass opens.
 	/// </summary>
 	// basisW/basisH default (0) to the target's own size at origin (basisOx,basisOy) — the whole-target mapping the
 	// window and full-size layers use. A size-to-content layer passes its device sub-rect.
@@ -564,14 +559,10 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 
 		var color = new WGPURenderPassColorAttachment
 		{
-			// 1x: render straight into the single-sample View and Store it. MSAA: render into the multisampled colour,
-			// resolve into View, and Discard the samples unless a backdrop will segment this pass (it ends and reopens
-			// with LoadOp.Load, which needs the samples Stored). A fresh MSAA buffer can't Load, so it always clears.
 			DepthSlice = uint.MaxValue,
-			View = target.MsaaColorView,
-			ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero,
+			View = target.View,
 			LoadOp = load ? WGPULoadOp.Load : WGPULoadOp.Clear,
-			StoreOp = (_d.MsaaSamples > 1 && !HasBackdrops(builds)) ? WGPUStoreOp.Discard : WGPUStoreOp.Store,
+			StoreOp = WGPUStoreOp.Store,
 			ClearValue = clear.HasValue ? new WGPUColor { R = clear.Value.R / 255.0, G = clear.Value.G / 255.0, B = clear.Value.B / 255.0, A = clear.Value.A / 255.0 } : default,
 		};
 		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color };
@@ -607,17 +598,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		_bound = savedBound;
 
 		wgpuRenderPassEncoderEnd(pass);
-		// A pooled offscreen (layer/backdrop) target: its MSAA colour has resolved into View, so return it for the
-		// next same-size pass to reuse — only View (composited/sampled later) stays live. The on-window/dedicated
-		// target owns its MSAA colour (persistent across frames) and is left untouched.
-		if (target.Pooled && _d.MsaaSamples > 1) { _d.Pool.Return(target.MsaaColorView); }   // at 1x MsaaColorView aliases View (sampled later) — don't reclaim
 		foreach (var b in builds) { ReleaseBuild(b); }
-	}
-
-	private static bool HasBackdrops(IReadOnlyList<PassBuild> builds)
-	{
-		foreach (var b in builds) { if (b.Backdrops.Count > 0) { return true; } }
-		return false;
 	}
 
 	// Everything a build rented goes back once its ops are encoded.
@@ -667,8 +648,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	public void DrawEffectBackdrop(IEffectFilter filter, float opacity) => _overlay.DrawEffectBackdrop(filter, opacity);
 
 	// Renders the deferred frame under its root DPI scale with the immediate-mode overlay (e.g. the diagnostics FPS
-	// counter drawn after Replay, already in device pixels) on top, in ONE pass: a follow-up LoadOp.Load overlay pass
-	// would force the MSAA target to store every sample every frame.
+	// counter drawn after Replay, already in device pixels) on top, in one pass.
 	public void Dispose()
 	{
 		lock (_d.RenderGate)

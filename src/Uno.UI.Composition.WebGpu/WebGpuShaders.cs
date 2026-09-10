@@ -143,28 +143,10 @@ fn clipCovMapped(fc: vec2<f32>) -> f32 {
   return cov;
 }
 ";
-	// Resolves the signed-area accumulator into coverage. ctrl.x > 0.5 = even-odd: fold the winding count into
-	// [0,1] instead of clamping it, so a self-overlapping outline punches holes.
-	private const string CoverageResolveWgsl = @"
-struct CovResU { ctrl: vec4<f32> };   // ctrl.x > 0.5 = even-odd; ctrl.y > 0.5 = keep the outside (Difference)
-struct VOut { @builtin(position) p: vec4<f32>, @location(0) t: vec2<f32> };
-@group(0) @binding(0) var acc: texture_2d<f32>;
-@group(0) @binding(1) var<uniform> cr: CovResU;
-@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) t: vec2<f32>) -> VOut {
-  var o: VOut; o.p = vec4<f32>(pos, 0.0, 1.0); o.t = t; return o;
-}
-@fragment fn fs(i: VOut) -> @location(0) vec4<f32> {
-  var a = abs(textureLoad(acc, vec2<i32>(i.t), 0).r);
-  if (cr.ctrl.x > 0.5) { a = a - 2.0 * floor(a * 0.5); a = min(a, 2.0 - a); }
-  a = min(a, 1.0);
-  if (cr.ctrl.y > 0.5) { a = 1.0 - a; }
-  return vec4<f32>(a, a, a, a);
-}
-";
-
-	// The sheet variants of the two coverage passes: every edge of every slot in one draw, each quad stopping at
-	// its own slot's right bound (ext) instead of the target's, and every slot resolved in one draw with the fill
-	// rule and Difference flag riding the quad's vertices instead of a uniform.
+	// The two coverage passes over a sheet of slots. Accumulate: one quad per edge spanning the rows it crosses and
+	// everything to its right up to its slot's bound (ext), so an edge contributes the partial area of the pixel it
+	// passes through and a full +/-1 beyond, and additive blending sums the SIGNED covered area per pixel. Resolve:
+	// every slot in one draw, the fill rule and Difference flag riding the quad's vertices.
 	private const string CoverageSheetWgsl = @"
 struct CovU { size: vec4<f32> };
 @group(0) @binding(0) var<storage, read> edges: array<vec4<f32>>;   // x0,y0,x1,y1 in sheet pixels
@@ -231,57 +213,6 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32>, @locat
   var o: VOut; o.p = place(pos); o.c = col; o.uv = uv; return o;
 }
 @fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.p.xy, i.uv)); }";
-	// Signed-area coverage accumulation. One quad per edge spanning the rows it crosses and everything to its
-	// RIGHT: an edge contributes the partial area of the pixel it passes through, and a full +/-1 to every pixel
-	// beyond it, so the interior fills by cancellation between the entering and leaving edges and is never tested.
-	// Additive blending does the summing, so the target ends up holding the SIGNED covered area per pixel. The fill
-	// rule is applied where the mask is sampled, not here: an accumulated 2 is a self-overlap under non-zero and a
-	// hole under even-odd, and only the sampler knows which was asked for.
-	private const string CoverageWgsl = @"
-struct CovU { size: vec4<f32> };
-@group(0) @binding(0) var<storage, read> edges: array<vec4<f32>>;   // x0,y0,x1,y1 in target pixel space
-@group(0) @binding(1) var<uniform> cov: CovU;                       // size.xy = target size in px
-struct CovOut { @builtin(position) p: vec4<f32>, @location(0) e: vec4<f32> };
-@vertex fn vs(@builtin(vertex_index) vi: u32) -> CovOut {
-  let e = edges[vi / 6u];
-  let ci = vi % 6u;
-  var xs = array<f32, 6>(0.0, 1.0, 1.0, 0.0, 1.0, 0.0);
-  var ys = array<f32, 6>(0.0, 0.0, 1.0, 0.0, 1.0, 1.0);
-  let x = mix(floor(min(e.x, e.z)), cov.size.x, xs[ci]);
-  let y = mix(floor(min(e.y, e.w)), ceil(max(e.y, e.w)), ys[ci]);
-  var o: CovOut;
-  o.p = vec4<f32>(x / cov.size.x * 2.0 - 1.0, 1.0 - y / cov.size.y * 2.0, 0.0, 1.0);
-  o.e = e;
-  return o;
-}
-// Primitive of clamp(c - x, 0, 1) with respect to x.
-fn ramp(c: f32, x: f32) -> f32 {
-  if (x <= c - 1.0) { return x; }
-  if (x >= c) { return c - 0.5; }
-  let t = x - (c - 1.0);
-  return (c - 1.0) + t - 0.5 * t * t;
-}
-@fragment fn fs(i: CovOut) -> @location(0) vec4<f32> {
-  let e = i.e;
-  let dy = e.w - e.y;
-  if (abs(dy) < 1e-7) { return vec4<f32>(0.0, 0.0, 0.0, 0.0); }
-  let py = floor(i.p.y);
-  let ya = max(min(e.y, e.w), py);
-  let yb = min(max(e.y, e.w), py + 1.0);
-  if (yb <= ya) { return vec4<f32>(0.0, 0.0, 0.0, 0.0); }
-  let xa = e.x + (e.z - e.x) * (ya - e.y) / dy;
-  let xb = e.x + (e.z - e.x) * (yb - e.y) / dy;
-  // Mean of clamp(c - x, 0, 1) over the edge span in this row, via its primitive: exact for any slope. The
-  // trapezoid of the two clamped endpoints is exact only while the span stays inside one linear piece of the
-  // ramp, which a shallow edge crossing several columns per row does not -- it thinned the top of every ellipse.
-  let c = floor(i.p.x) + 1.0;
-  let lo = min(xa, xb); let hi = max(xa, xb);
-  var avg = clamp(c - xa, 0.0, 1.0);
-  if (hi - lo > 1e-6) { avg = (ramp(c, hi) - ramp(c, lo)) / (hi - lo); }
-  let s = select(-1.0, 1.0, dy > 0.0);
-  return vec4<f32>((yb - ya) * avg * s, 0.0, 0.0, 0.0);
-}";
-
 	// Draws a texture over the whole target (a fullscreen triangle, exact texel fetch): the effect evaluator's final
 	// draw. Optional colour matrix (params.x); params.z = a sub-rect at m1.xy of size m0.zw.
 	private const string CompositeWgsl = @"

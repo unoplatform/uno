@@ -17,52 +17,33 @@ using WColor = Windows.UI.Color;
 namespace Uno.UI.Composition.WebGpu;
 
 // Renderer-internal render surface (main pass + offscreen layers): the MSAA colour the backend owns,
-// resolving into a single-sample colour (its own, for offscreens; the host's IWebGpuRenderTarget.ColorView, for
-// the main pass). Not the neutral seam type — that is the host's WebGpuSwapchainTarget.
+// its own colour for an offscreen, a pooled one for a layer, the host's IWebGpuRenderTarget.ColorView for the main
+// pass. Not the neutral seam type — that is the host's WebGpuSwapchainTarget.
 internal sealed unsafe class WebGpuRenderSurface
 {
 	public IntPtr Tex;
-	public IntPtr View;              // single-sample resolve target (offscreen readback / swapchain image)
-	public IntPtr MsaaColorTex;
-	public IntPtr MsaaColorView;     // multisampled color the pass renders into, resolved into View
+	public IntPtr View;              // the colour the pass renders into, sampled afterwards as a layer / coverage / readback source
 	public int Width { get; }
 	public int Height { get; }
-	// True when the MSAA colour was rented from the transient pool. It is write-only within this surface's own
-	// render pass (it resolves into View) and never sampled afterwards, so once the pass ends it can be returned to
-	// the pool and reused by the next same-size offscreen/main pass — only the single-sample resolve View must stay
-	// live (it's sampled later as a layer/coverage/backdrop texture).
-	public bool Pooled { get; private set; }
 	public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
 
-	// Pooled surfaces rent their views from the WebGpuTexturePool, which owns and reclaims them — Dispose must not
-	// touch those. Directly-created surfaces (offscreen readback / swapchain resolve) own their textures and MUST
-	// release them, otherwise every window resize leaks a full-window MSAA color texture until VRAM is
-	// exhausted (wgpuDeviceCreateTexture: "Not enough memory left").
-	private readonly bool _ownsResources = true;
-	// For a swapchain surface the colour View/Tex are the per-frame acquired swapchain image, borrowed from the
-	// context (WebGpuSwapChainContext) which releases them in Present. Only the MSAA colour is owned here, so
-	// Dispose (on resize) must NOT release the borrowed colour — doing so double-frees the swapchain view.
-	private readonly bool _ownsColor = true;
+	// Only the dedicated offscreen owns its colour. A pooled surface's is reclaimed by the pool; a swapchain surface's
+	// is the per-frame acquired image, borrowed from the context, which releases it in Present.
+	private readonly bool _ownsColor;
 
 	public void Dispose()
 	{
-		if (!_ownsResources)
-		{
-			return;
-		}
-		if (_ownsColor)
-		{
-			if (View != IntPtr.Zero) { wgpuTextureViewRelease(View); View = IntPtr.Zero; }
-			if (Tex != IntPtr.Zero) { wgpuTextureDestroy(Tex); Tex = IntPtr.Zero; }
-		}
-		// At 1x MsaaColorView aliases the (already-released) View and there is no MSAA texture — only release it when
-		// it's a distinct multisampled texture (MsaaColorTex set).
-		if (MsaaColorTex != IntPtr.Zero) { wgpuTextureViewRelease(MsaaColorView); MsaaColorView = IntPtr.Zero; wgpuTextureDestroy(MsaaColorTex); MsaaColorTex = IntPtr.Zero; }
+		if (!_ownsColor) { return; }
+		if (View != IntPtr.Zero) { wgpuTextureViewRelease(View); View = IntPtr.Zero; }
+		if (Tex != IntPtr.Zero) { wgpuTextureDestroy(Tex); Tex = IntPtr.Zero; }
 	}
 
+	// A dedicated offscreen (RenderOffscreen, effect evaluation): TextureBinding so the result can be sampled, CopySrc
+	// so it can be read back.
 	public WebGpuRenderSurface(WebGpuDevice device, int width, int height)
 	{
 		Width = width; Height = height;
+		_ownsColor = true;
 		var td = new WGPUTextureDescriptor
 		{
 			Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 },
@@ -70,74 +51,34 @@ internal sealed unsafe class WebGpuRenderSurface
 			MipLevelCount = 1,
 			SampleCount = 1,
 			Dimension = WGPUTextureDimension._2D,
-			// TextureBinding so a resolved surface can be sampled (e.g. shadow coverage feeding the blur pass).
 			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.CopySrc | WGPUTextureUsage.TextureBinding,
 		};
 		Tex = wgpuDeviceCreateTexture(device.Dev, &td);
 		View = wgpuTextureCreateView(Tex, null);
-		CreateMultisampledTargets(device, width, height);
 	}
 
-	// External-color variant for a swapchain: the color View/Tex are provided per frame (the acquired
-	// swapchain image, used as the resolve target); the multisampled color is owned here.
+	// The main pass: the colour is the acquired swapchain image, set per frame by the factory.
 	public WebGpuRenderSurface(WebGpuDevice device, int width, int height, bool externalColor)
 	{
 		Width = width; Height = height;
-		_ownsColor = false;   // View/Tex are the borrowed swapchain image (set per frame); only the MSAA colour is owned
-		CreateMultisampledTargets(device, width, height);
 	}
 
-	// Pooled transient offscreen: MSAA color + a single-sample resolve target (sampled later), both rented
-	// from the pool so a steady-state frame allocates nothing. Dispose is a no-op (the pool reclaims on BeginFrame).
+	// A transient offscreen (a layer, a sheet) rented from the pool, so a steady-state frame allocates nothing.
 	public WebGpuRenderSurface(WebGpuDevice device, int width, int height, WebGpuTexturePool pool)
 	{
 		Width = width; Height = height;
-		_ownsResources = false;   // the pool owns and reclaims these; Dispose must not release them
-		Pooled = true;
-		// CopySrc so the resolved result can be read back (ReadPixelsFromTex, via SnapshotAsync) for RenderTargetBitmap / offscreen.
 		View = pool.Rent(width, height, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopySrc, device.ColorFormat);
 		Tex = pool.TexForView(View);
-		// 1x: no separate MSAA colour — the pass renders straight into the single-sample View (no resolve). Otherwise
-		// the pass renders into a multisampled colour that resolves into View. MsaaColorView aliases View at 1x, so the
-		// pool-return/Dispose paths must NOT free it as if it were a distinct texture (guarded on MsaaSamples>1).
-		MsaaColorView = device.MsaaSamples > 1
-			? pool.Rent(width, height, (int)device.MsaaSamples, WGPUTextureUsage.RenderAttachment, device.ColorFormat)
-			: View;
 	}
 
-	// Hands the resolved single-sample color texture/view to a longer-lived owner (RenderOffscreen → ITexture)
-	// and nulls them here so Dispose releases only the (now-finished) MSAA + depth targets. Only valid on a
-	// resource-owning surface (the dedicated ctor), after the render has been submitted+resolved.
+	// Hands the colour to a longer-lived owner (RenderOffscreen -> ITexture); Dispose then has nothing left to release.
 	internal (IntPtr tex, IntPtr view) DetachColor()
 	{
 		var t = Tex; var v = View;
 		Tex = IntPtr.Zero; View = IntPtr.Zero;
 		return (t, v);
 	}
-
-	private void CreateMultisampledTargets(WebGpuDevice device, int width, int height)
-	{
-		// 1x: no multisampled colour — the pass renders straight into the single-sample View (no resolve). For the
-		// swapchain external-colour surface View is set per frame, so MsaaColorView is aliased to it there.
-		if (device.MsaaSamples <= 1)
-		{
-			MsaaColorView = View;   // Zero for the swapchain ctor (View set per frame) — aliased in the context
-			return;
-		}
-		var cd = new WGPUTextureDescriptor
-		{
-			Size = new WGPUExtent3D { Width = (uint)width, Height = (uint)height, DepthOrArrayLayers = 1 },
-			Format = device.ColorFormat,
-			MipLevelCount = 1,
-			SampleCount = device.MsaaSamples,
-			Dimension = WGPUTextureDimension._2D,
-			Usage = WGPUTextureUsage.RenderAttachment,
-		};
-		MsaaColorTex = wgpuDeviceCreateTexture(device.Dev, &cd);
-		MsaaColorView = wgpuTextureCreateView(MsaaColorTex, null);
-	}
 }
-
 
 internal sealed class OwnedResources
 {

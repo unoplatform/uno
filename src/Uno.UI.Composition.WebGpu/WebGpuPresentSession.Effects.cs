@@ -323,7 +323,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// </summary>
 	private void DrawEffectPass(IntPtr pipeline, IntPtr bindGroup)
 	{
-		var color = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _s.MsaaColorView, ResolveTarget = _d.MsaaSamples > 1 ? _s.View : IntPtr.Zero, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
+		var color = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _s.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
 		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color };
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &desc);
 		wgpuRenderPassEncoderSetPipeline(pass, pipeline);

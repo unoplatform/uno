@@ -92,7 +92,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	{
 		// Read LAST frame's timestamps here: the resolve/copy are recorded into the frame encoder, so mapping
 		// before submit targets a buffer still pending in an unsubmitted command buffer and never completes.
-		ResetUniformRing();
 		GradSlab?.Reset();
 		_clipBgSlab?.Reset();
 		FrameSeq++;
@@ -119,34 +118,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	}
 
 	public IntPtr TrackBg(IntPtr bg) { _pendingBindGroups.Add((nint)bg); return bg; }
-
-	// Per-frame uniform ring. A gradient's uniform holds DEVICE-space geometry, so under a moving transform its
-	// content differs every frame and a content-keyed cache can never hit — yet each gradient still needs its own
-	// live buffer within the frame. Creating a buffer + bind group per gradient per frame is what made 500
-	// gradients cost ~500 CreateBindGroup calls a frame. Allocate pairs ONCE and reuse them by index: the contents
-	// are rewritten each frame (queue writes are ordered against submits, so overwriting is safe).
-	private readonly List<(IntPtr Buf, IntPtr Bg)> _uniformRing = new();
-	private int _uniformRingNext;
-
-	public void ResetUniformRing() => _uniformRingNext = 0;
-
-	public IntPtr RentRingUniform(nuint bytes, IntPtr layout, out IntPtr buf)
-	{
-		if (_uniformRingNext < _uniformRing.Count)
-		{
-			var e = _uniformRing[_uniformRingNext++];
-			buf = e.Buf;
-			return e.Bg;
-		}
-		var bd = new WGPUBufferDescriptor { Size = bytes, Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
-		buf = wgpuDeviceCreateBuffer(Dev, &bd);
-		var entry = new WGPUBindGroupEntry { Binding = 0, Buffer = buf, Offset = 0, Size = bytes };
-		var bgd = new WGPUBindGroupDescriptor { Layout = layout, EntryCount = 1, Entries = &entry };
-		var bg = wgpuDeviceCreateBindGroup(Dev, &bgd);
-		_uniformRing.Add((buf, bg));
-		_uniformRingNext++;
-		return bg;
-	}
 
 	// Queues a transient image texture's GPU release for the next frame start. A brush that uploads a one-shot
 	// texture (e.g. CompositionNineGridBrush) disposes it right after recording its draw, but the WebGPU draw is
@@ -207,30 +178,11 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// Single-sampled unless the host asks otherwise: the pass renders straight into the attachment with no
 	// resolve, and the recorder emits its analytic AA ring instead. The host (WebGpuInitDevice) picks the count
 	// and bakes it here via the adopt ctor.
-	public uint MsaaSamples { get; private set; } = 1;
-
-	public IntPtr CoverageResolveBgl;
 	/// <summary>Path rasterisation inputs, resolved at draw time at the density they are drawn at.</summary>
 	internal readonly WebGpuShapeCache Shapes = new();
 	// Same resolve with colour = src * dst, so successive path clips AND into one mask (its first pass clears to 1).
-	public IntPtr CoverageResolveMulPipe;
 
 	/// <summary>A single-sample render target in the DEVICE colour format, usable as a shader input.</summary>
-	public IntPtr CreateMaskTarget(int w, int h)
-	{
-		var td = new WGPUTextureDescriptor
-		{
-			Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 },
-			Format = ColorFormat,
-			MipLevelCount = 1,
-			SampleCount = 1,
-			Dimension = WGPUTextureDimension._2D,
-			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding,
-		};
-		var tex = wgpuDeviceCreateTexture(Dev, &td);
-		return wgpuTextureCreateView(tex, null);
-	}
-
 	// The color-attachment format the pipelines + offscreen targets use. Rgba8Unorm by default (the
 	// offscreen/readback path assumes it); a swapchain renderer passes the surface's supported format.
 	public readonly WGPUTextureFormat ColorFormat;
@@ -256,16 +208,12 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 			if (p != 0) { Dev = (IntPtr)p; ownImport = true; System.Console.WriteLine($"[webgpu] backend imported JS device ptr={p}"); }
 		}
 		Q = (!ownImport && ctx.Queue != IntPtr.Zero) ? ctx.Queue : wgpuDeviceGetQueue(Dev);
-		MsaaSamples = ctx.SampleCount == 0 ? 1u : ctx.SampleCount;
-		// The analytic AA ring REPLACES multisampling; running both antialiases each edge twice and spreads ink
-		// half a pixel too far. It is emitted only when the attachment is single-sampled.
-		Shapes.AnalyticAa = MsaaSamples == 1;
 		FinishInit();
 	}
 
 	private void FinishInit()
 	{
-		CreatePipelines();   // bakes MsaaSamples (already set from the host context) into every pipeline
+		CreatePipelines();
 		DummyTex = CreateColorTarget(1, 1);
 		var moreDesc = new WGPUBufferDescriptor { Size = WebGpuPresentSession.ClipEntryBytes, Usage = WGPUBufferUsage.Storage };
 		DummyClipMore = wgpuDeviceCreateBuffer(Dev, &moreDesc);
@@ -273,7 +221,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		BufferPool = new WebGpuBufferPool(this);
 		ClipSlab = new WebGpuClipSlab(this);
 		GradSlab = new WebGpuUniformSlab(this, GradientUniformBytes);
-		System.Console.WriteLine($"[webgpu] engine init — msaa={MsaaSamples}x colorFormat={ColorFormat}");
+		System.Console.WriteLine($"[webgpu] engine init — colorFormat={ColorFormat}");
 	}
 
 	/// <summary>Synchronous GPU→CPU readback of a texture, tightly-packed in the device color format, via a blocking
@@ -441,58 +389,6 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		CoverageResolveSheetPipe = wgpuDeviceCreateRenderPipeline(Dev, &rpd);
 	}
 
-	private IntPtr CreateCoverageResolvePipeline()
-	{
-		var module = Module(CoverageResolveWgsl);
-		var e = stackalloc WGPUBindGroupLayoutEntry[2];
-		// The accumulator is r16float and is read by exact texel, so it binds unfilterable with no sampler.
-		e[0] = new WGPUBindGroupLayoutEntry
-		{
-			Binding = 0,
-			Visibility = WGPUShaderStage.Fragment,
-			Texture = new WGPUTextureBindingLayout { SampleType = WGPUTextureSampleType.UnfilterableFloat, ViewDimension = WGPUTextureViewDimension._2D },
-		};
-		e[1] = new WGPUBindGroupLayoutEntry
-		{
-			Binding = 1,
-			Visibility = WGPUShaderStage.Fragment,
-			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.Uniform, MinBindingSize = 16 },
-		};
-		var bgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 2, Entries = e };
-		if (CoverageResolveBgl == IntPtr.Zero) { CoverageResolveBgl = wgpuDeviceCreateBindGroupLayout(Dev, &bgld); }
-		var bgl = CoverageResolveBgl;
-		var pld = new WGPUPipelineLayoutDescriptor { BindGroupLayoutCount = 1, BindGroupLayouts = (IntPtr)(&bgl) };
-		var layout = wgpuDeviceCreatePipelineLayout(Dev, &pld);
-
-		var attrs = stackalloc WGPUVertexAttribute[2];
-		attrs[0] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 0, ShaderLocation = 0 };
-		attrs[1] = new WGPUVertexAttribute { Format = WGPUVertexFormat.Float32x2, Offset = 8, ShaderLocation = 1 };
-		var vb = new WGPUVertexBufferLayout { ArrayStride = 16, StepMode = WGPUVertexStepMode.Vertex, AttributeCount = 2, Attributes = attrs };
-		var vs = SV("vs"); var fs = SV("fs");
-		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vb };
-		var blend = new WGPUBlendState
-		{
-			Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.Dst, DstFactor = WGPUBlendFactor.Zero, Operation = WGPUBlendOperation.Add },
-			Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.Dst, DstFactor = WGPUBlendFactor.Zero, Operation = WGPUBlendOperation.Add },
-		};
-		var ct = new WGPUColorTargetState { Format = ColorFormat, Blend = &blend, WriteMask = WGPUColorWriteMask.All };
-		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &ct };
-		var pd = new WGPURenderPipelineDescriptor
-		{
-			Vertex = vsState,
-			Fragment = &fsState,
-			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
-			Multisample = new WGPUMultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
-			Layout = layout,
-		};
-		return wgpuDeviceCreateRenderPipeline(Dev, &pd);
-	}
-
-
-
-
-
-
 	private IntPtr Module(string wgsl)
 	{
 		var code = SV(wgsl);
@@ -578,10 +474,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		};
 
 		SolidPipe = MakePipe(colored, vs, fs, &blend, clipLayout);
-		CreateCoveragePipelines();
 		CreateCoverageSheetPipelines();
 		CreateImagePipeline();
-		CoverageResolveMulPipe = CreateCoverageResolvePipeline();
 		CreateGradientPipeline(&blend);
 		CreateRoundedRectPipeline(&blend);
 		CreateBlurPipeline();
@@ -591,58 +485,10 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 
 	/// <summary>Single-channel float so accumulation can exceed 1 and go negative; blendable, unlike r32float.</summary>
 	public const WGPUTextureFormat CoverageFormat = WGPUTextureFormat.R16Float;
-	public IntPtr CoveragePipe;
 	public IntPtr CoverageSheetPipe, CoverageSheetBgl, CoverageResolveSheetPipe, CoverageResolveSheetBgl;   // the per-frame mask sheet's passes
-	public IntPtr CoverageBgl;
 
 	// Accumulates signed area into a CoverageFormat target with additive blending. Single-sampled whatever the
 	// frame is: the mask IS the coverage, so supersampling it would only quantise an answer that is already exact.
-	private void CreateCoveragePipelines()
-	{
-		var module = Module(CoverageWgsl);
-		var e = stackalloc WGPUBindGroupLayoutEntry[2];
-		e[0] = new WGPUBindGroupLayoutEntry
-		{
-			Binding = 0,
-			Visibility = WGPUShaderStage.Vertex,
-			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.ReadOnlyStorage },
-		};
-		e[1] = new WGPUBindGroupLayoutEntry
-		{
-			Binding = 1,
-			Visibility = WGPUShaderStage.Vertex,
-			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.Uniform, MinBindingSize = 16 },
-		};
-		var bgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 2, Entries = e };
-		CoverageBgl = wgpuDeviceCreateBindGroupLayout(Dev, &bgld);
-		var bgls = stackalloc IntPtr[1] { CoverageBgl };
-		var pld = new WGPUPipelineLayoutDescriptor { BindGroupLayoutCount = 1, BindGroupLayouts = (IntPtr)bgls };
-		var layout = wgpuDeviceCreatePipelineLayout(Dev, &pld);
-
-		var blend = new WGPUBlendState
-		{
-			Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.One, Operation = WGPUBlendOperation.Add },
-			Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.One, Operation = WGPUBlendOperation.Add },
-		};
-		var target = new WGPUColorTargetState { Format = CoverageFormat, Blend = &blend, WriteMask = WGPUColorWriteMask.All };
-		var fsState = new WGPUFragmentState { Module = module, EntryPoint = SV("fs"), TargetCount = 1, Targets = &target };
-		var pd = new WGPURenderPipelineDescriptor
-		{
-			Vertex = new WGPUVertexState { Module = module, EntryPoint = SV("vs"), BufferCount = 0 },
-			Fragment = &fsState,
-			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
-			Multisample = new WGPUMultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
-			Layout = layout,
-		};
-		CoveragePipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
-	}
-
-
-
-
-
-
-
 	private void CreateCompositePipelines()
 	{
 		var module = Module(CompositeWgsl);
@@ -682,7 +528,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 			Fragment = &fsState,
 			DepthStencil = null,
 			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
-			Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
+			Multisample = new WGPUMultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
 			Layout = IntPtr.Zero,
 		};
 		return wgpuDeviceCreateRenderPipeline(Dev, &pd);
@@ -733,7 +579,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
 		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = WGPUColorWriteMask.All };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
-		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = null, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = ColourLayout(ClipBgl) };
+		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = null, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = ColourLayout(ClipBgl) };
 		RrPipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
 	}
 
@@ -757,7 +603,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		var vsState = new WGPUVertexState { Module = module, EntryPoint = vs, BufferCount = 1, Buffers = &vbl };
 		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = blend, WriteMask = WGPUColorWriteMask.All };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
-		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = null, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = ColourLayout(GradBgl, ClipBgl) };
+		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = null, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = ColourLayout(GradBgl, ClipBgl) };
 		GradientPipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
 	}
 
@@ -802,7 +648,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 			var blend = new WGPUBlendState { Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.OneMinusSrcAlpha, Operation = WGPUBlendOperation.Add }, Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.One, DstFactor = WGPUBlendFactor.OneMinusSrcAlpha, Operation = WGPUBlendOperation.Add } };
 		var target = new WGPUColorTargetState { Format = ColorFormat, Blend = &blend, WriteMask = WGPUColorWriteMask.All };
 		var fsState = new WGPUFragmentState { Module = module, EntryPoint = fs, TargetCount = 1, Targets = &target };
-		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = null, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = MakeImagePipeLayout() };
+		var pd = new WGPURenderPipelineDescriptor { Vertex = vsState, Fragment = &fsState, DepthStencil = null, Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None }, Multisample = new WGPUMultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 }, Layout = MakeImagePipeLayout() };
 		ImagePipe = wgpuDeviceCreateRenderPipeline(Dev, &pd);
 		// DstIn: the destination keeps only where the texture has alpha (out = dst * src.a).
 		var dstIn = new WGPUBlendState { Color = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.Zero, DstFactor = WGPUBlendFactor.SrcAlpha, Operation = WGPUBlendOperation.Add }, Alpha = new WGPUBlendComponent { SrcFactor = WGPUBlendFactor.Zero, DstFactor = WGPUBlendFactor.SrcAlpha, Operation = WGPUBlendOperation.Add } };
@@ -843,7 +689,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 			Fragment = &fsState,
 			DepthStencil = null,
 			Primitive = new WGPUPrimitiveState { Topology = WGPUPrimitiveTopology.TriangleList, StripIndexFormat = WGPUIndexFormat.Undefined, FrontFace = WGPUFrontFace.CCW, CullMode = WGPUCullMode.None },
-			Multisample = new WGPUMultisampleState { Count = MsaaSamples, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
+			Multisample = new WGPUMultisampleState { Count = 1, Mask = uint.MaxValue, AlphaToCoverageEnabled = 0 },
 			Layout = layout,
 		};
 		return wgpuDeviceCreateRenderPipeline(Dev, &pd);

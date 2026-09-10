@@ -12,10 +12,10 @@ namespace Uno.UI.Composition.WebGpu;
 public sealed unsafe partial class WebGpuPresentSession
 {
 	/// <summary>
-	/// Encodes one backdrop (the acrylic path): ends the open pass so its MSAA resolves into the target view - the
-	/// content BEHIND the backdrop - blurs the affected region, then opens a fresh pass that loads that content back
-	/// and composites the blurred backdrop and its tint over the effect region. Ops after this one draw on top in the
-	/// new pass, so each command is still encoded exactly once with no prefix re-render.
+	/// Encodes one backdrop (the acrylic path): ends the open pass so the target holds the content BEHIND the backdrop,
+	/// blurs the affected region, then opens a fresh pass that loads that content back and composites the blurred
+	/// backdrop and its tint over the effect region. Ops after this one draw on top in the new pass, so each command is
+	/// still encoded exactly once with no prefix re-render.
 	/// </summary>
 	/// <returns>The newly opened pass, which the caller is responsible for ending.</returns>
 	private IntPtr EncodeBackdropSegment(BackdropCmd backdrop, ref PassOps pst)
@@ -36,8 +36,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		var color = new WGPURenderPassColorAttachment
 		{
 			DepthSlice = uint.MaxValue,
-			View = target.MsaaColorView,
-			ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero,
+			View = target.View,
 			LoadOp = WGPULoadOp.Load,
 			StoreOp = WGPUStoreOp.Store,   // a following segment, or another backdrop, reloads it
 		};

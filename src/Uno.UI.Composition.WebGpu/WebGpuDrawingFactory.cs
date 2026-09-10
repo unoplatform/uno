@@ -362,11 +362,7 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 {
 	private readonly WebGpuDevice _device;
 
-	/// <summary>
-	/// The main-pass surface the backend OWNS for one render target: the host hands only a single-sample resolve
-	/// colour (the neutral <see cref="IWebGpuRenderTarget"/>), and the backend allocates its own MSAA colour and
-	/// resolves into the host's colour, as every other target does.
-	/// </summary>
+	/// <summary>The main-pass surface for one render target: the host's colour (the neutral <see cref="IWebGpuRenderTarget"/>) wrapped as a surface.</summary>
 	private sealed class MainSurface
 	{
 		public WebGpuRenderSurface Surface;
@@ -446,11 +442,9 @@ public sealed class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRenderTarget>
 			}
 		}
 
-		var _mainSurface = main.Surface;
-		// Point the backend surface at the resolve colour view (host owns its lifetime; the render pass only needs the view).
-		_mainSurface.View = main.ColorView;
-		if (_device.MsaaSamples == 1) { _mainSurface.MsaaColorView = main.ColorView; }   // 1x: render straight into it
-		return new WebGpuPresentSession(_device, _mainSurface, this);
+		// Point the backend surface at the host's colour view (host owns its lifetime; the render pass only needs the view).
+		main.Surface.View = main.ColorView;
+		return new WebGpuPresentSession(_device, main.Surface, this);
 	}
 
 	public ITexture CreateTexture(IImage image) => new WebGpuTexture(_device, image);
