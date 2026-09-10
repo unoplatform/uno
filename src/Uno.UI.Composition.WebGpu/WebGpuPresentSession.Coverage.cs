@@ -71,7 +71,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	{
 		if (!_pathAtlas || paths.Length != 1 || paths[0].Exclude) { return null; }
 		var p = paths[0];
-		if (!WebGpuPathAtlas.TryKey(p.Geometry, p.GeomMatrix, new Vector2(p.Bbox.X, p.Bbox.Y), new Vector2(p.Bbox.Z, p.Bbox.W), Vector2.One,
+		if (!WebGpuPathAtlas.TryKey(p.GeomKey, p.GeomMatrix, new Vector2(p.Bbox.X, p.Bbox.Y), new Vector2(p.Bbox.Z, p.Bbox.W), Vector2.One,
 			out var key, out var w, out var h, out var ox, out var oy, allowBig: true)) { return null; }
 		if (_d.PathAtlas.TryGet(key, out var slot))
 		{

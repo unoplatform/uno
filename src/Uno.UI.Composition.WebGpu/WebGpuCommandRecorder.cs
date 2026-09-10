@@ -201,7 +201,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 				EvenOdd = geometry.FillRule == GeometryFillRule.EvenOdd,
 				Exclude = operation == ClipOperation.Difference,
 				Bbox = new Vector4(_bbMin.X, _bbMin.Y, _bbMax.X, _bbMax.Y),
-				Geometry = geometry,
+				GeomKey = _edgeHash,
 				GeomMatrix = _m,
 			});
 		}
@@ -398,7 +398,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			var aa = TryTessellate(geometry);
 			if (aa) { tiles = true; }
 			else if (!tiles) { StatFanRefused++; }
-			_target.Add(new PathFill { FanDevice = _fan.ToArray(), FanCoverage = _fanCoverage, Edges = BuildEdges(), Geometry = geometry, GeomMatrix = _m, BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, FanTiles = tiles, Clip = RelaxedClip(_bbMin, _bbMax) });
+			_target.Add(new PathFill { FanDevice = _fan.ToArray(), FanCoverage = _fanCoverage, Edges = BuildEdges(), GeomKey = _edgeHash, GeomMatrix = _m, BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, FanTiles = tiles, Clip = RelaxedClip(_bbMin, _bbMax) });
 		}
 		_fan = null;
 	}
@@ -496,7 +496,24 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			}
 		}
 
+		_edgeHash = EdgeHash(edges, _bbMin);
 		return edges;
+	}
+
+	// The outline's identity for the caches: its edges relative to its own bbox corner, quantised to 1/256 px. Two
+	// geometry objects with the same outline (an ItemsRepeater's identical cells) then share one atlas entry and one
+	// mask, which a reference key never let them do. Never zero, so zero can mean "no outline".
+	private long _edgeHash;
+	private static long EdgeHash(float[] edges, Vector2 origin)
+	{
+		ulong h = 14695981039346656037UL;
+		for (var i = 0; i < edges.Length; i++)
+		{
+			var v = (long)MathF.Round((edges[i] - (i % 2 == 0 ? origin.X : origin.Y)) * 256f);
+			h = (h ^ (ulong)v) * 1099511628211UL;
+		}
+		h = (h ^ (ulong)edges.Length) * 1099511628211UL;
+		return h == 0 ? 1 : (long)h;
 	}
 
 	// Triangulation topology, cached per geometry. Ear clipping is O(n^2) and these recordings re-record every
@@ -667,7 +684,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 				SigmaX = sigmaX,
 				SigmaY = sigmaY,
 				Additive = additive,
-				Geometry = silhouette,
+				GeomKey = _edgeHash,
 				GeomMatrix = _m,
 				Clip = _clip,
 			});
@@ -1063,7 +1080,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 							var qe = T(new Vector2(srcEdges[i], srcEdges[i + 1])); dstEdges[i] = qe.X; dstEdges[i + 1] = qe.Y;
 						}
 					}
-					var replayed = new PathFill { FanDevice = dst, FanCoverage = p.FanCoverage, Edges = dstEdges, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, FanTiles = p.FanTiles, Geometry = p.Geometry, GeomMatrix = p.GeomMatrix * _m, Clip = ClipCompose(p.Clip) };
+					var replayed = new PathFill { FanDevice = dst, FanCoverage = p.FanCoverage, Edges = dstEdges, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, FanTiles = p.FanTiles, GeomKey = p.GeomKey, GeomMatrix = p.GeomMatrix * _m, Clip = ClipCompose(p.Clip) };
 					p.StoreReplayed(_m, replayed);
 					_target.Add(replayed);
 					break;
@@ -1076,7 +1093,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 						sbbMin = Vector2.Min(sbbMin, q); sbbMax = Vector2.Max(sbbMax, q);
 					}
 					var ss = new Vector2(_m.M11, _m.M12).Length();
-					_target.Add(new ShadowCmd { Edges = sdst, BbMin = sbbMin, BbMax = sbbMax, EvenOdd = sh.EvenOdd, Color = sh.Color, SigmaX = sh.SigmaX * ss, SigmaY = sh.SigmaY * ss, Additive = sh.Additive, Geometry = sh.Geometry, GeomMatrix = sh.GeomMatrix * _m, Clip = ClipCompose(sh.Clip) });
+					_target.Add(new ShadowCmd { Edges = sdst, BbMin = sbbMin, BbMax = sbbMax, EvenOdd = sh.EvenOdd, Color = sh.Color, SigmaX = sh.SigmaX * ss, SigmaY = sh.SigmaY * ss, Additive = sh.Additive, GeomKey = sh.GeomKey, GeomMatrix = sh.GeomMatrix * _m, Clip = ClipCompose(sh.Clip) });
 					break;
 				case ImageCmd im:
 					_target.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), View = im.View, W = im.W, H = im.H, Opacity = im.Opacity, U0 = im.U0, V0 = im.V0, U1 = im.U1, V1 = im.V1, TintMode = im.TintMode, Tint = im.Tint, ColorMatrix = im.ColorMatrix, Clip = ClipCompose(im.Clip) });

@@ -100,7 +100,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		// command-list fallback.
 		bool hitOnly = owned is null;
 		if (!CanCoverageBake(pf)) { AtlasNoEdges++; return false; }
-		if (!WebGpuPathAtlas.TryKey(pf.Geometry, pf.GeomMatrix, pf.BbMin, pf.BbMax, scale, out var key, out var w, out var h, out ox, out oy, allowBig: big)) { AtlasNoKey++; return false; }
+		if (!WebGpuPathAtlas.TryKey(pf.GeomKey, pf.GeomMatrix, pf.BbMin, pf.BbMax, scale, out var key, out var w, out var h, out ox, out oy, allowBig: big)) { AtlasNoKey++; return false; }
 
 		if (_d.PathAtlas.RegularPages == 0) { _d.AddPathAtlasPage(); }
 		if (_d.PathAtlas.TryGet(key, out slot))

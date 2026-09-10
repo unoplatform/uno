@@ -40,7 +40,7 @@ internal sealed class PathClip
 	public bool EvenOdd;
 	public bool Exclude;
 	public Vector4 Bbox;   // device L,T,R,B of the edges
-	public object Geometry;      // + GeomMatrix: the mask's cache key, like a fill's (see ResolveClipMask)
+	public long GeomKey;         // outline hash + GeomMatrix: the mask's cache key, like a fill's (see ResolveClipMask)
 	public Matrix4x4 GeomMatrix;
 
 	public PathClip Transformed(in Matrix3x2 m)
@@ -55,7 +55,7 @@ internal sealed class PathClip
 			bbMin = Vector2.Min(bbMin, q); bbMax = Vector2.Max(bbMax, q);
 		}
 		var m4 = new Matrix4x4(m.M11, m.M12, 0, 0, m.M21, m.M22, 0, 0, 0, 0, 1, 0, m.M31, m.M32, 0, 1);
-		return new PathClip { Edges = e, EvenOdd = EvenOdd, Exclude = Exclude, Bbox = new Vector4(bbMin.X, bbMin.Y, bbMax.X, bbMax.Y), Geometry = Geometry, GeomMatrix = GeomMatrix * m4 };
+		return new PathClip { Edges = e, EvenOdd = EvenOdd, Exclude = Exclude, Bbox = new Vector4(bbMin.X, bbMin.Y, bbMax.X, bbMax.Y), GeomKey = GeomKey, GeomMatrix = GeomMatrix * m4 };
 	}
 }
 
@@ -161,8 +161,8 @@ internal sealed class PathFill : WebGpuCommand
 	/// why it is available for shapes the tessellator refuses. Null when the contours could not be captured.
 	/// </summary>
 	public float[] Edges;
-	/// <summary>Source geometry + transform, so an atlas entry can be keyed by shape and scale.</summary>
-	public object Geometry;
+	/// <summary>Outline hash (WebGpuCommandRecorder.EdgeHash) + transform: the atlas key, shared by every identical shape.</summary>
+	public long GeomKey;
 	public Matrix4x4 GeomMatrix;
 
 	// The fan the GPU consumes: FanDevice with the transform-table slot interleaved as a third float.
@@ -213,7 +213,7 @@ internal sealed class ShadowCmd : WebGpuCommand
 	public WColor Color;
 	public float SigmaX, SigmaY;
 	public bool Additive;
-	public object Geometry;      // + GeomMatrix: the blurred shadow's cache key (see RenderShadow)
+	public long GeomKey;         // outline hash + GeomMatrix: the blurred shadow's cache key (see RenderShadow)
 	public Matrix4x4 GeomMatrix;
 }
 

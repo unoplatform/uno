@@ -28,7 +28,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		float pad = MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f;
 		var bbMin = sh.BbMin - new Vector2(pad); var bbMax = sh.BbMax + new Vector2(pad);
 		int sigmaKey = ((int)(sh.SigmaX * 16f) << 16) ^ (int)(sh.SigmaY * 16f);
-		var keyed = WebGpuPathAtlas.TryKey(sh.Geometry, sh.GeomMatrix, bbMin, bbMax, Vector2.One, out var key, out var w, out var h, out var ox, out var oy, allowBig: true, extra: sigmaKey) && _pathAtlas;
+		var keyed = WebGpuPathAtlas.TryKey(sh.GeomKey, sh.GeomMatrix, bbMin, bbMax, Vector2.One, out var key, out var w, out var h, out var ox, out var oy, allowBig: true, extra: sigmaKey) && _pathAtlas;
 		uv = new Vector4(0f, 0f, 1f, 1f);
 		if (keyed && _d.PathAtlas.TryGet(key, out var hit))
 		{

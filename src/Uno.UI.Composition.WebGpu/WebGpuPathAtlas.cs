@@ -52,7 +52,7 @@ internal sealed unsafe class WebGpuPathAtlas
 	/// different pixel footprints. All four 2x2 terms are in it too — the mask is rasterized in its final device
 	/// orientation, so two angles of one geometry would otherwise collide and share the wrong mask.
 	/// </summary>
-	internal readonly record struct Key(object Geometry, int M11, int M12, int M21, int M22, int PhaseX, int PhaseY, int W, int H, int Extra = 0);
+	internal readonly record struct Key(long Shape, int M11, int M12, int M21, int M22, int PhaseX, int PhaseY, int W, int H, int Extra = 0);
 
 	/// <summary>Too big for a shelf on a shared page: such an entry gets a page of its own size (see <see cref="AddStandalone"/>).</summary>
 	public static bool IsBig(int w, int h) => w > MaxDim || h > MaxDim || w * h > MaxArea;
@@ -303,12 +303,12 @@ internal sealed unsafe class WebGpuPathAtlas
 	/// actually covers on screen, so every pixel quantity here — footprint, origin snap, subpixel phase — is
 	/// computed in DEVICE space, while the origin is returned in the op's own space for placing the quad.
 	/// </param>
-	public static bool TryKey(object? geometry, in Matrix4x4 matrix, Vector2 bbMin, Vector2 bbMax, Vector2 scale, out Key key, out int w, out int h, out float originX, out float originY, bool allowBig = false, int extra = 0)
+	public static bool TryKey(long shape, in Matrix4x4 matrix, Vector2 bbMin, Vector2 bbMax, Vector2 scale, out Key key, out int w, out int h, out float originX, out float originY, bool allowBig = false, int extra = 0)
 	{
 		key = default;
 		w = h = 0;
 		originX = originY = 0;
-		if (geometry is null || scale.X <= 0 || scale.Y <= 0) { return false; }
+		if (shape == 0 || scale.X <= 0 || scale.Y <= 0) { return false; }
 
 		var dw = (bbMax.X - bbMin.X) * scale.X;
 		var dh = (bbMax.Y - bbMin.Y) * scale.Y;
@@ -337,7 +337,7 @@ internal sealed unsafe class WebGpuPathAtlas
 		var phaseX = (int)MathF.Floor((devMinX - oxDev) * SubPixel);
 		var phaseY = 0;
 		key = new Key(
-			geometry,
+			shape,
 			(int)MathF.Round(matrix.M11 * scale.X * 64f),
 			(int)MathF.Round(matrix.M12 * scale.X * 64f),
 			(int)MathF.Round(matrix.M21 * scale.Y * 64f),
