@@ -109,7 +109,7 @@
 	</Target>
 
 	<ItemGroup>
-		<Page Update="Tests\Windows_UI_Xaml_Controls\FlyoutPages\When_PlacementTarget_Binding.xaml">
+		<Page Update="Microsoft\UI\Xaml\Controls\FlyoutPages\When_PlacementTarget_Binding.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</Page>
 	</ItemGroup>
