@@ -1218,10 +1218,14 @@ partial class AppBar
 		// Pixel rounding can sometimes cause the bounds and AppBar size to be off by a pixel when we expect them to be equal.
 		// To account for that possibility, we'll allow the AppBar to open down if its height is at most one pixel greater
 		// than the layout bounds height, after rounding the values to the nearest integer.
-		// XcpRound is floor(x + 0.5); Math.Round would round halves to even and disagree on exactly the .5 boundary this slack is about.
-		var hasSpace = (Math.Floor(bottomOfExpandedAppBar.Y + 0.5) <= Math.Floor(layoutBounds.Y + layoutBounds.Height + 1 + 0.5));
+		var hasSpace = XcpRound(bottomOfExpandedAppBar.Y) <= XcpRound(layoutBounds.Y + layoutBounds.Height + 1);
 		return hasSpace;
 	}
+
+	// MUX Reference dxaml\xcp\components\math\inlined.cpp, XcpRound.
+	// Math.Round would round halves to even and disagree on exactly the .5 boundary
+	// that the one-pixel slack above exists to absorb.
+	internal static double XcpRound(double x) => Math.Floor(x + 0.5);
 
 	internal bool TryDismissInlineAppBar()
 	{
