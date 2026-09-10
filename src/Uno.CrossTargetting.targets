@@ -40,14 +40,10 @@
   - __SKIA__: Used when building for the Skia backend
   - __WASM__: Used when building for the WebAssembly backend
   - UNO_REFERENCE_API: True for Skia, Wasm and Reference. The name is historical: for a consumer this is
-					   simply "drawn by Uno rather than by WinUI", the same condition as HAS_UNO, and it is
-					   defined on the Android and Apple target frameworks too. Prefer HAS_UNO in new code.
+					   simply "drawn by Uno rather than by WinUI", the same condition as HAS_UNO.
+					   Prefer HAS_UNO in new code.
   - __CROSSRUNTIME__: Currently have the same semantics as UNO_REFERENCE_API
   - __NETSTD_REFERENCE__: Used when building the reference assemblies (only true for Reference)
-  - UNO_HAS_UIELEMENT_IMPLICIT_PINNING: Used to mark targets that have specific constraints on
-										UIElements. On iOS, this means additional weak references
-										backed fields to handle opaque native reference pinning and avoid
-										memory leaks.
   - UNO_HAS_MANAGED_SCROLL_PRESENTER: Determines if the platforms supports managed scroll presenter which
 									  uses render transforms instead of native scroll feature (if any)
   - UNO_HAS_MANAGED_POINTERS: Determines if the pointer events are dispatched by uno instead of the system (if any).
@@ -77,11 +73,11 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsIOS)">
-		<DefineConstants>$(DefineConstants);UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_RENDER_TARGET_BITMAP</DefineConstants>
+		<DefineConstants>$(DefineConstants);HAS_RENDER_TARGET_BITMAP</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsTvOS)">
-		<DefineConstants>$(DefineConstants);UNO_HAS_UIELEMENT_IMPLICIT_PINNING;HAS_RENDER_TARGET_BITMAP</DefineConstants>
+		<DefineConstants>$(DefineConstants);HAS_RENDER_TARGET_BITMAP</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsAppleUIKit)">

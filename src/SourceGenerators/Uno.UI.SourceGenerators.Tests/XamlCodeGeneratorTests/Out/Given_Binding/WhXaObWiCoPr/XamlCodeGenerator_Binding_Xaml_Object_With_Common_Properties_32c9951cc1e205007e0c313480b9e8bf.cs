@@ -161,12 +161,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls
 		[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
 		private class Binding_Xaml_Object_With_Common_Properties_Bindings : IBinding_Xaml_Object_With_Common_Properties_Bindings
 		{
-			#if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-			private global::System.WeakReference _ownerReference;
-			private global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Common_Properties Owner { get => (global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Common_Properties)_ownerReference?.Target; set => _ownerReference = new global::System.WeakReference(value); }
-			#else
 			private global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Common_Properties Owner { get; set; }
-			#endif
 			public Binding_Xaml_Object_With_Common_Properties_Bindings(global::Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests.Controls.Binding_Xaml_Object_With_Common_Properties owner)
 			{
 				Owner = owner;
