@@ -26,6 +26,10 @@ internal partial class Mouse : IInjectedPointer, IDisposable
 	private readonly InputInjector _input;
 
 #if !HAS_UNO
+	// Below the observed real-InputInjector ceiling of ~16 items per InjectMouseInput call.
+	private const int MaxInjectBatchSize = 10;
+
+	// Window-relative, i.e. the same space callers pass to MoveTo.
 	private Point _currentPosition;
 	private bool _leftPressed;
 	private bool _rightPressed;
@@ -37,8 +41,7 @@ internal partial class Mouse : IInjectedPointer, IDisposable
 	{
 		_input = input;
 #if !HAS_UNO
-		GetCursorPos(out var pt);
-		_currentPosition = new Point(pt.X, pt.Y);
+		_currentPosition = GetCursorWindowPosition();
 #endif
 	}
 
@@ -228,9 +231,7 @@ internal partial class Mouse : IInjectedPointer, IDisposable
 		// On WinAppSDK, use absolute coordinates with screen-space conversion.
 		// The Absolute flag requires coordinates normalized to 0-65535 range.
 		var normalizedTarget = ToNormalizedScreenCoordinates(x, y);
-		var normalizedFrom = _currentPosition.X == 0 && _currentPosition.Y == 0
-			? normalizedTarget
-			: ToNormalizedScreenCoordinates(_currentPosition.X, _currentPosition.Y);
+		var normalizedFrom = ToNormalizedScreenCoordinates(_currentPosition.X, _currentPosition.Y);
 
 		steps ??= (uint)Math.Min(Math.Max(Math.Abs(normalizedTarget.X - normalizedFrom.X), Math.Abs(normalizedTarget.Y - normalizedFrom.Y)) / 100, 512);
 		stepOffsetInMilliseconds ??= 1;
@@ -253,7 +254,9 @@ internal partial class Mouse : IInjectedPointer, IDisposable
 				DeltaX = posX,
 				DeltaY = posY,
 				TimeOffsetInMilliseconds = stepOffsetInMilliseconds.Value,
-				MouseOptions = InjectedInputMouseOptions.Move | InjectedInputMouseOptions.Absolute,
+				// VirtualDesk: normalized coordinates are mapped over SM_*VIRTUALSCREEN (the whole
+				// multi-monitor desktop), not just the primary monitor - see ToNormalizedScreenCoordinates.
+				MouseOptions = InjectedInputMouseOptions.Move | InjectedInputMouseOptions.Absolute | InjectedInputMouseOptions.VirtualDesk,
 			};
 		}
 
@@ -262,7 +265,19 @@ internal partial class Mouse : IInjectedPointer, IDisposable
 	}
 
 	private void Inject(IEnumerable<InjectedInputMouseInfo> infos)
-		=> _input.InjectMouseInput(infos);
+	{
+#if !HAS_UNO
+		// The real WinAppSDK InputInjector rejects a single InjectMouseInput call with more than
+		// ~16 items (observed: E_INVALIDARG). MoveTo can interpolate hundreds of steps across a
+		// large screen distance, so batch defensively below that ceiling.
+		foreach (var chunk in infos.Chunk(MaxInjectBatchSize))
+		{
+			_input.InjectMouseInput(chunk);
+		}
+#else
+		_input.InjectMouseInput(infos);
+#endif
+	}
 
 #if HAS_UNO
 	private void Inject(IEnumerable<(InjectedInputMouseInfo, VirtualKeyModifiers)> infos)
@@ -387,25 +402,65 @@ internal partial class Mouse : IInjectedPointer, IDisposable
 #if !HAS_UNO
 	internal static Microsoft.UI.Xaml.Window? TestServices_WindowHelper_CurrentTestWindow { get; set; }
 
-	private static Point ToNormalizedScreenCoordinates(double x, double y)
+	/// <summary>
+	/// Reads the OS cursor position, converting it from screen pixels into the window-relative
+	/// coordinates the rest of this type works in - the inverse of <see cref="ToScreenCoordinates"/>.
+	/// </summary>
+	private static Point GetCursorWindowPosition()
 	{
-		RECT rect = new();
-		GetWindowRect(WinRT.Interop.WindowNative.GetWindowHandle(TestServices_WindowHelper_CurrentTestWindow), ref rect);
-		var scale = TestServices_WindowHelper_CurrentTestWindow?.Content.XamlRoot.RasterizationScale ?? 1;
+		if (!GetCursorPos(out var cursor))
+		{
+			return default;
+		}
 
-		var screenX = (rect.Left + x) * scale;
-		var screenY = (rect.Top + y) * scale;
+		var (originX, originY, scale) = GetClientOrigin();
 
-		var screenWidth = GetSystemMetrics(SM_CXSCREEN);
-		var screenHeight = GetSystemMetrics(SM_CYSCREEN);
-
-		return new Point(
-			screenX / screenWidth * 65535.0,
-			screenY / screenHeight * 65535.0);
+		return new Point((cursor.X - originX) / scale, (cursor.Y - originY) / scale);
 	}
 
-	private const int SM_CXSCREEN = 0;
-	private const int SM_CYSCREEN = 1;
+	/// <summary>
+	/// Gets the screen position, in physical pixels, of the window's client area origin - which is
+	/// where the XamlRoot coordinates callers work in start - along with its rasterization scale.
+	/// </summary>
+	private static (int X, int Y, double Scale) GetClientOrigin()
+	{
+		POINT origin = new();
+		ClientToScreen(WinRT.Interop.WindowNative.GetWindowHandle(TestServices_WindowHelper_CurrentTestWindow), ref origin);
+		var scale = TestServices_WindowHelper_CurrentTestWindow?.Content.XamlRoot.RasterizationScale ?? 1;
+
+		return (origin.X, origin.Y, scale);
+	}
+
+	private static Point ToScreenCoordinates(double x, double y)
+	{
+		var (originX, originY, scale) = GetClientOrigin();
+
+		return new Point(originX + x * scale, originY + y * scale);
+	}
+
+	/// <summary>
+	/// Maps a window-relative position to the 0-65535 range expected by
+	/// <see cref="InjectedInputMouseOptions.Absolute"/>, over the whole virtual desktop so that
+	/// windows on a secondary monitor stay in range. Pair with <see cref="InjectedInputMouseOptions.VirtualDesk"/>.
+	/// </summary>
+	private static Point ToNormalizedScreenCoordinates(double x, double y)
+	{
+		var screen = ToScreenCoordinates(x, y);
+
+		var left = GetSystemMetrics(SM_XVIRTUALSCREEN);
+		var top = GetSystemMetrics(SM_YVIRTUALSCREEN);
+		var width = GetSystemMetrics(SM_CXVIRTUALSCREEN);
+		var height = GetSystemMetrics(SM_CYVIRTUALSCREEN);
+
+		return new Point(
+			(screen.X - left) / width * 65535.0,
+			(screen.Y - top) / height * 65535.0);
+	}
+
+	private const int SM_XVIRTUALSCREEN = 76;
+	private const int SM_YVIRTUALSCREEN = 77;
+	private const int SM_CXVIRTUALSCREEN = 78;
+	private const int SM_CYVIRTUALSCREEN = 79;
 
 	[LibraryImport("user32.dll")]
 	private static partial int GetSystemMetrics(int nIndex);
@@ -416,22 +471,13 @@ internal partial class Mouse : IInjectedPointer, IDisposable
 
 	[LibraryImport("user32.dll", SetLastError = true)]
 	[return: MarshalAs(UnmanagedType.Bool)]
-	private static partial bool GetWindowRect(IntPtr hWnd, ref RECT lpRect);
+	private static partial bool ClientToScreen(IntPtr hWnd, ref POINT lpPoint);
 
 	[StructLayout(LayoutKind.Sequential)]
 	private struct POINT
 	{
 		public int X;
 		public int Y;
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	private struct RECT
-	{
-		public int Left;
-		public int Top;
-		public int Right;
-		public int Bottom;
 	}
 #endif
 }

@@ -33,7 +33,17 @@ public enum InjectedInputMouseOptions : uint
 
 	MoveNoCoalesce = 8192,
 
+	/// <remarks>
+	/// Uno has no cross-platform notion of a multi-monitor virtual desktop, so this flag has no effect:
+	/// normalized coordinates set via <see cref="Absolute"/> always map onto the current XamlRoot's bounds,
+	/// with or without this flag.
+	/// </remarks>
 	VirtualDesk = 16384,
 
+	/// <remarks>
+	/// On Uno, the "display surface" normalized coordinates map onto is the current XamlRoot's bounds -
+	/// there is no cross-platform notion of screen/monitor resolution independent of the app window - and
+	/// this mapping is unaffected by <see cref="VirtualDesk"/>.
+	/// </remarks>
 	Absolute = 32768,
 }
