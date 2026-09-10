@@ -21,12 +21,7 @@ namespace Windows.Storage
 		{
 			public object this[string key]
 			{
-				get
-				{
-					var value = UnoUserDefaults.Instance.ValueForKey((NSString)key)?.ToString();
-
-					return DataTypeSerializer.Deserialize(value);
-				}
+				get => DataTypeSerializer.Deserialize(GetRawValue(key));
 				set
 				{
 					if (value != null)
@@ -42,21 +37,19 @@ namespace Windows.Storage
 			}
 
 			public ICollection<string> Keys
-				=> UnoUserDefaults.Instance
-				.ToDictionary()
+				=> UnoUserDefaults.Domain
 				.Keys
 				.Select(key => key.ToString())
 				.ToList();
 
 			public ICollection<object> Values
-				=> UnoUserDefaults.Instance
-				.ToDictionary()
+				=> UnoUserDefaults.Domain
 				.Values
 				.Select(value => DataTypeSerializer.Deserialize(value?.ToString()))
 				.ToList();
 
 			public int Count
-				=> (int)UnoUserDefaults.Instance.ToDictionary().Count;
+				=> (int)UnoUserDefaults.Domain.Count;
 
 			public bool IsReadOnly => false;
 
@@ -80,13 +73,10 @@ namespace Windows.Storage
 			public void Add(KeyValuePair<string, object> item)
 				=> Add(item.Key, item.Value);
 
+			// Drops the whole suite in one native call instead of marshaling a removal per key.
 			public void Clear()
 			{
-				foreach (var pair in UnoUserDefaults.Instance.ToDictionary())
-				{
-					UnoUserDefaults.Instance.RemoveObject(pair.Key.ToString());
-				}
-
+				UnoUserDefaults.Instance.RemovePersistentDomain(UnoUserDefaults.SuiteName);
 				UnoUserDefaults.Instance.Synchronize();
 			}
 
@@ -94,15 +84,14 @@ namespace Windows.Storage
 				=> throw new NotSupportedException();
 
 			public bool ContainsKey(string key)
-				=> UnoUserDefaults.Instance.ToDictionary().ContainsKey((NSString)key);
+				=> UnoUserDefaults.Domain.ContainsKey((NSString)key);
 
 			public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
 				=> throw new NotSupportedException();
 
 			public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
 			{
-				return UnoUserDefaults.Instance
-					.ToDictionary()
+				return UnoUserDefaults.Domain
 					.Select(pair => new KeyValuePair<string, object>(pair.Key.ToString(), DataTypeSerializer.Deserialize(pair.Value?.ToString())))
 					.GetEnumerator();
 			}
@@ -124,7 +113,7 @@ namespace Windows.Storage
 
 			public bool TryGetValue(string key, out object value)
 			{
-				if (UnoUserDefaults.Instance.ToDictionary().TryGetValue((NSString)key, out var nativeValue))
+				if (UnoUserDefaults.Domain.TryGetValue((NSString)key, out var nativeValue))
 				{
 					value = DataTypeSerializer.Deserialize(nativeValue?.ToString());
 					return true;
@@ -135,6 +124,9 @@ namespace Windows.Storage
 			}
 
 			IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+			private static string GetRawValue(string key)
+				=> UnoUserDefaults.Domain.TryGetValue((NSString)key, out var value) ? value?.ToString() : null;
 		}
 	}
 }
