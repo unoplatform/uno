@@ -98,6 +98,22 @@ internal class ApplicationBarService
 	internal void SetXamlRoot(XamlRoot xamlRoot)
 	{
 		_weakXamlRoot = new WeakReference<XamlRoot>(xamlRoot);
+
+		// Uno-specific: the popup host is created in code, so it never enters a visual tree on its
+		// own. Without an explicit XamlRoot it can never be shown, and every bounds lookup - which
+		// goes through the popup's XamlRoot - would report an empty rect, leaving the dismiss layer
+		// 0x0 and the hosted AppBar unmeasurable.
+		if (m_tpPopupHost is not null)
+		{
+			m_tpPopupHost.XamlRoot = xamlRoot;
+		}
+
+		if (m_tpDismissLayer is not null)
+		{
+			var bounds = TryGetBoundsFromXamlRoot();
+			m_tpDismissLayer.Width = bounds.Width;
+			m_tpDismissLayer.Height = bounds.Height;
+		}
 	}
 
 	private void Initialize()
