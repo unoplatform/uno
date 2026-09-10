@@ -1,20 +1,38 @@
-using Uno.Foundation.Logging;
-using Uno.Extensions;
-
+using System;
 using Windows.Data.Xml.Dom;
 
 namespace Windows.UI.Notifications
 {
 	public partial class ToastNotification
 	{
-		private string _tag;
+		private string _tag = string.Empty;
+		private string _group = string.Empty;
 
 		public ToastNotification(XmlDocument content)
 		{
-			Content = content;
+			Content = content ?? throw new ArgumentException("ToastNotification content cannot be null.", nameof(content));
 		}
 
 		public XmlDocument Content { get; internal set; }
+
+		public DateTimeOffset? ExpirationTime { get; set; }
+
+		public bool ExpiresOnReboot { get; set; }
+
+		public string Group
+		{
+			get => _group;
+			set
+			{
+				ArgumentNullException.ThrowIfNull(value);
+				ValidateIdentifierLength(value, nameof(value));
+				_group = value;
+			}
+		}
+
+		public ToastNotificationPriority Priority { get; set; }
+
+		public bool SuppressPopup { get; set; }
 
 		public string Tag
 		{
@@ -24,15 +42,23 @@ namespace Windows.UI.Notifications
 			}
 			set
 			{
-				_tag = value;
-				if (_tag.Length > 64)
+				ArgumentNullException.ThrowIfNull(value);
+				if (value.Length == 0)
 				{
-					// UWP limit: 16 chars, since Creators Update (15063) - 64 characters
-					if (this.Log().IsEnabled(LogLevel.Warning))
-					{
-						this.Log().LogWarning("Windows.UI.Notifications.ToastNotification.Tag is set to string longer than UWP limit");
-					}
+					throw new ArgumentException("A non-empty notification tag is required.", nameof(value));
 				}
+				ValidateIdentifierLength(value, nameof(value));
+				_tag = value;
+			}
+		}
+
+		internal uint AppNotificationId { get; set; }
+
+		private static void ValidateIdentifierLength(string value, string parameterName)
+		{
+			if (value.Length > 64)
+			{
+				throw new ArgumentException("Notification identifiers cannot exceed 64 characters.", parameterName);
 			}
 		}
 	}

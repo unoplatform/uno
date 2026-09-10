@@ -29,6 +29,9 @@
 		D1CC768D2ABA1337002A44F0 /* UNOPickers.m in Sources */ = {isa = PBXBuildFile; fileRef = D1CC768C2ABA1337002A44F0 /* UNOPickers.m */; };
 		D1F248A92A67288B008A609E /* UnoNativeMac.h in Headers */ = {isa = PBXBuildFile; fileRef = D1F248A82A67288B008A609E /* UnoNativeMac.h */; };
 		D1FE7A2B2B75C8C300ACFC76 /* UNOSoftView.m in Sources */ = {isa = PBXBuildFile; fileRef = D1FE7A2A2B75C8BB00ACFC76 /* UNOSoftView.m */; };
+		E2A000012F20000100000001 /* UNONotifications.h in Headers */ = {isa = PBXBuildFile; fileRef = E2A000022F20000100000002 /* UNONotifications.h */; };
+		E2A000032F20000100000003 /* UNONotifications.m in Sources */ = {isa = PBXBuildFile; fileRef = E2A000042F20000100000004 /* UNONotifications.m */; };
+		E2A000052F20000100000005 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E2A000062F20000100000006 /* UserNotifications.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,6 +67,9 @@
 		D1F248A82A67288B008A609E /* UnoNativeMac.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UnoNativeMac.h; sourceTree = "<group>"; };
 		D1FE7A2A2B75C8BB00ACFC76 /* UNOSoftView.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNOSoftView.m; sourceTree = "<group>"; };
 		D1FE7A2C2B75C8E100ACFC76 /* UNOSoftView.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNOSoftView.h; sourceTree = "<group>"; };
+		E2A000022F20000100000002 /* UNONotifications.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = UNONotifications.h; sourceTree = "<group>"; };
+		E2A000042F20000100000004 /* UNONotifications.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = UNONotifications.m; sourceTree = "<group>"; };
+		E2A000062F20000100000006 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +78,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D13AB8A82B5839B200693F8E /* libSkiaSharp.dylib in Frameworks */,
+				E2A000052F20000100000005 /* UserNotifications.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -82,6 +89,7 @@
 			isa = PBXGroup;
 			children = (
 				D13AB8A72B5839B200693F8E /* libSkiaSharp.dylib */,
+				E2A000062F20000100000006 /* UserNotifications.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -109,6 +117,8 @@
 			children = (
 				A1B2C3D42F01A00100000002 /* UNOAccessibility.h */,
 				A1B2C3D42F01A00100000004 /* UNOAccessibility.m */,
+				E2A000022F20000100000002 /* UNONotifications.h */,
+				E2A000042F20000100000004 /* UNONotifications.m */,
 				43BC95F92E618F0900902390 /* MouseButtons.m */,
 				43BC95F52E618E4700902390 /* MouseButtons.h */,
 				D11A81682D09F05400B3C0A5 /* UNOMediaPlayer.h */,
@@ -148,6 +158,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1B2C3D42F01A00100000001 /* UNOAccessibility.h in Headers */,
+				E2A000012F20000100000001 /* UNONotifications.h in Headers */,
 				D11A81672CF523B900B3C0A5 /* UNOWebView.h in Headers */,
 				D11A81692D09F05B00B3C0A5 /* UNOMediaPlayer.h in Headers */,
 				D1B8C7F62F03A00100000001 /* UNOSpeechRecognizer.h in Headers */,
@@ -215,6 +226,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1B2C3D42F01A00100000003 /* UNOAccessibility.m in Sources */,
+				E2A000032F20000100000003 /* UNONotifications.m in Sources */,
 				D1CC768D2ABA1337002A44F0 /* UNOPickers.m in Sources */,
 				D1FE7A2B2B75C8C300ACFC76 /* UNOSoftView.m in Sources */,
 				D1A0651E2A7066F700101BE6 /* UNOMetalViewDelegate.m in Sources */,

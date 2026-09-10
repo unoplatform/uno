@@ -1,63 +1,102 @@
 #nullable enable
 
-using Uno.Foundation.Logging;
-using Uno.Extensions;
-
-using Windows.Data.Xml.Dom;
 using System;
+using Windows.Data.Xml.Dom;
 
 namespace Windows.UI.Notifications
 {
 
 	public partial class ScheduledToastNotification
 	{
+		private string _id = string.Empty;
+		private string _tag = string.Empty;
+		private string _group = string.Empty;
 
 		public ScheduledToastNotification(XmlDocument content, DateTimeOffset deliveryTime)
 		{
-			if (content is null)
-			{
-				// yes, UWP throws here ArgumentException, and not ArgumentNullException
-				throw new ArgumentException("ScheduledToastNotification constructor: XmlDocument content cannot be null");
-			}
-			Content = content;
+			Content = content ?? throw new ArgumentException("ScheduledToastNotification content cannot be null.", nameof(content));
 			DeliveryTime = deliveryTime;
+			ScheduleIdentifier = Guid.NewGuid().ToString("N");
 		}
 
-		public XmlDocument Content { get; internal set; }
-		public DateTimeOffset DeliveryTime { get; internal set; }
+		public ScheduledToastNotification(XmlDocument content, DateTimeOffset deliveryTime, TimeSpan snoozeInterval, uint maximumSnoozeCount)
+			: this(content, deliveryTime)
+		{
+			if (snoozeInterval < TimeSpan.FromMinutes(1) || snoozeInterval > TimeSpan.FromMinutes(60))
+			{
+				throw new ArgumentException("The snooze interval must be between 1 and 60 minutes.", nameof(snoozeInterval));
+			}
+			if (maximumSnoozeCount is < 1 or > 5)
+			{
+				throw new ArgumentException("The maximum snooze count must be between 1 and 5.", nameof(maximumSnoozeCount));
+			}
+			SnoozeInterval = snoozeInterval;
+			MaximumSnoozeCount = maximumSnoozeCount;
+		}
 
-		private string _tag = "";
+		public XmlDocument Content { get; }
+
+		public DateTimeOffset DeliveryTime { get; }
+
+		public DateTimeOffset? ExpirationTime { get; set; }
+
+		public string Group
+		{
+			get => _group;
+			set
+			{
+				ArgumentNullException.ThrowIfNull(value);
+				ValidateIdentifierLength(value, 64, nameof(value));
+				_group = value;
+			}
+		}
+
+		public string Id
+		{
+			get => _id;
+			set
+			{
+				ArgumentNullException.ThrowIfNull(value);
+				ValidateIdentifierLength(value, 16, nameof(value));
+				_id = value;
+			}
+		}
+
+		public uint MaximumSnoozeCount { get; }
+
+#if __ANDROID__
+		public NotificationMirroring NotificationMirroring
+		{
+			get => SchedulingNotificationMirroring;
+			set => SchedulingNotificationMirroring = value;
+		}
+#endif
+
+		public TimeSpan? SnoozeInterval { get; }
+
+		public bool SuppressPopup { get; set; }
 
 		public string Tag
 		{
-			get
-			{
-				return _tag;
-			}
+			get => _tag;
 			set
 			{
-				if (value is null)
-				{
-					throw new ArgumentNullException("ScheduledToastNotification.Tag cannot be null");
-				}
+				ArgumentNullException.ThrowIfNull(value);
+				ValidateIdentifierLength(value, 64, nameof(value));
 				_tag = value;
-				if (_tag.Length > 64)
-				{
-					// UWP limit: 16 chars, since Creators Update (15063) - 64 characters
-					if (this.Log().IsEnabled(LogLevel.Warning))
-					{
-						this.Log().LogWarning("Windows.UI.Notifications.ScheduledToastNotification.Tag is set to string longer than UWP limit");
-					}
-				}
 			}
 		}
 
-#if __ANDROID__
-		public NotificationMirroring NotificationMirroring { get; set; }
+		internal string ScheduleIdentifier { get; set; }
 
-		public global::System.DateTimeOffset? ExpirationTime { get; set; }
-#endif
+		internal NotificationMirroring SchedulingNotificationMirroring { get; set; }
 
-
+		private static void ValidateIdentifierLength(string value, int maximumLength, string parameterName)
+		{
+			if (value.Length > maximumLength)
+			{
+				throw new ArgumentException($"The identifier cannot exceed {maximumLength} characters.", parameterName);
+			}
+		}
 	}
 }

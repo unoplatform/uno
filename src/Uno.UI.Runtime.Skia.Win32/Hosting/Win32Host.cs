@@ -31,6 +31,7 @@ using Uno.UI.Runtime.Skia.Extensions.System;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Microsoft.UI.Xaml.Media;
+using Microsoft.Windows.AppNotifications.Internal;
 using Uno.Graphics;
 using Uno.UI.UI.Input.Internal;
 
@@ -88,6 +89,7 @@ public class Win32Host : SkiaHost, ISkiaApplicationHost
 		ApiExtensibility.Register<FolderPicker>(typeof(IFolderPickerExtension), o => new Win32FileFolderPickerExtension(o));
 		ApiExtensibility.Register<FileSavePicker>(typeof(IFileSavePickerExtension), o => new Win32FileSaverExtension(o));
 		ApiExtensibility.Register(typeof(ILauncherExtension), o => new WindowsLauncherExtension(o));
+		ApiExtensibility.Register(typeof(IAppNotificationManagerBackend), _ => Win32AppNotificationManagerBackend.Instance);
 		ApiExtensibility.Register<DragDropManager>(typeof(IDragDropExtension), manager => new Win32DragDropExtension(manager));
 		ApiExtensibility.Register<ContentPresenter>(typeof(ContentPresenter.INativeElementHostingExtension), o => new Win32NativeElementHostingExtension(o));
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new Win32NativeWebViewProvider(o));
