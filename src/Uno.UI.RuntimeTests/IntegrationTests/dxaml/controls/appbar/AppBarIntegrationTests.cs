@@ -2350,6 +2350,23 @@ namespace Windows.UI.Tests.Enterprise
 			var closedRegistration = CreateSafeEventRegistration<AppBar, EventHandler<object>>("Closed");
 			AttachOpenedAndClosedHandlers(appBar, openedEvent, openedRegistration, closedEvent, closedRegistration);
 
+			// Uno specific: AppBar raises Closed from the IsOpen frame, but the DisplayModeStates
+			// transition keeps running for another ~167ms, and until it completes the bar still covers -
+			// and so swallows clicks aimed at - whatever sits beneath it. dxaml's IdleSynchronizer waits
+			// animations out before returning from WaitForIdle; WindowHelper.WaitForIdle does not.
+			// VisualStateGroup.CurrentState is assigned before the transition runs, so the event is the
+			// only reliable signal that it finished.
+			var transitionCompleted = new Event();
+			VisualStateGroup displayModeStates = null;
+			void OnDisplayModeStateChanged(object sender, VisualStateChangedEventArgs args) => transitionCompleted.Set();
+
+			await RunOnUIThread(() =>
+			{
+				displayModeStates = GetDisplayModeStates(appBar);
+				VERIFY_IS_NOT_NULL(displayModeStates);
+				displayModeStates.CurrentStateChanged += OnDisplayModeStateChanged;
+			});
+
 			await RunOnUIThread(async () => appBarBounds = await ControlHelper.GetBounds(appBar));
 			await WindowHelper.WaitForIdle();
 
@@ -2359,8 +2376,29 @@ namespace Windows.UI.Tests.Enterprise
 			TestServices.InputHelper.LeftMouseClick(appBar);
 			await openedEvent.WaitForDefault();
 
+			transitionCompleted.Reset();
 			await RunOnUIThread(() => appBar.IsOpen = false);
 			await closedEvent.WaitForDefault();
+			await transitionCompleted.WaitForDefault();
+
+			await RunOnUIThread(() => displayModeStates.CurrentStateChanged -= OnDisplayModeStateChanged);
+		}
+
+		private static VisualStateGroup GetDisplayModeStates(AppBar appBar)
+		{
+			if (VisualTreeHelper.GetChildrenCount(appBar) > 0 &&
+				VisualTreeHelper.GetChild(appBar, 0) is FrameworkElement layoutRoot)
+			{
+				foreach (var group in VisualStateManager.GetVisualStateGroups(layoutRoot))
+				{
+					if (group.Name == "DisplayModeStates")
+					{
+						return group;
+					}
+				}
+			}
+
+			return null;
 		}
 
 		private async Task<Page> SetupTopBottomInlineAppBarsPage()
