@@ -36,4 +36,22 @@ public class Given_SnapshotLayout
 			$"snapshot paths must stay within {MaxRepositoryRelativePathLength} characters -- shorten the " +
 			"test method name, or the XAML fixture the generated file is named after");
 	}
+
+	[TestMethod]
+	public void When_Snapshots_Live_Outside_The_Project_Root_Folder()
+	{
+		var projectFolder = Path.GetFullPath(Path.Combine("..", "..", ".."));
+		var legacyFolder = Path.Combine(projectFolder, "XamlCodeGeneratorTests", "Out");
+
+		// The csproj globs reach Out/ at the project root only. A test merged from a branch written
+		// against the older layout lands its snapshots here instead, where they are compiled into the
+		// assembly as ordinary sources rather than embedded, and the build breaks on the XAML they emit.
+		var strays = Directory.Exists(legacyFolder)
+			? Directory.EnumerateFiles(legacyFolder, "*.cs", SearchOption.AllDirectories).ToArray()
+			: [];
+
+		strays.Should().BeEmpty(
+			$"snapshots belong under {Path.Combine(projectFolder, "Out")} -- move them there and delete " +
+			legacyFolder);
+	}
 }
