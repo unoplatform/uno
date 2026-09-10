@@ -19,7 +19,10 @@ parameters:
 jobs:
 - job: ${{ parameters.JobName }}
   timeoutInMinutes: ${{ parameters.JobTimeoutInMinutes }}
-  cancelTimeoutInMinutes: 0
+  # The test script now ends the run before the job wall and does its own teardown, but if the wall
+  # is ever reached anyway, this is the window in which the always() publish steps below still run.
+  # At 0 a timed-out job published nothing at all.
+  cancelTimeoutInMinutes: 10
   dependsOn: ${{ parameters.dependsOn }}
   displayName: ${{ parameters.JobDisplayName }}
   pool:
@@ -43,6 +46,12 @@ jobs:
       value: $[ dependencies.${{ parameters.BuildJobName }}.outputs['set_ios_artifact.SamplesAppArtifactName'] ]
 
   steps:
+  # Recorded first so the test script can tell how much of the job budget the setup steps have
+  # already spent, and stop waiting for results while there is still room to run its teardown.
+  - bash: |
+      echo "##vso[task.setvariable variable=UNO_IOS_JOB_START_EPOCH]`date +%s`"
+    displayName: Record job start time
+
   - checkout: self
     clean: true
 
@@ -105,6 +114,8 @@ jobs:
       UITEST_RUNTIME_TEST_GROUP: "${{ parameters.UITEST_RUNTIME_TEST_GROUP }}"
       UITEST_RUNTIME_TEST_GROUP_COUNT: "${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}"
       UITEST_TEST_TIMEOUT: "${{ parameters.UITEST_TEST_TIMEOUT }}"
+      UITEST_JOB_TIMEOUT_MINUTES: "${{ parameters.JobTimeoutInMinutes }}"
+      UNO_IOS_JOB_START_EPOCH: "$(UNO_IOS_JOB_START_EPOCH)"
       UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/$(SamplesAppArtifactName)/SamplesApp.app"
       SAMPLESAPP_BUNDLE_ID: "${{ parameters.SAMPLESAPP_BUNDLE_ID }}"
 
@@ -138,6 +149,8 @@ jobs:
       UITEST_RUNTIME_TEST_GROUP: "${{ parameters.UITEST_RUNTIME_TEST_GROUP }}"
       UITEST_RUNTIME_TEST_GROUP_COUNT: "${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}"
       UITEST_TEST_TIMEOUT: "${{ parameters.UITEST_TEST_TIMEOUT }}"
+      UITEST_JOB_TIMEOUT_MINUTES: "${{ parameters.JobTimeoutInMinutes }}"
+      UNO_IOS_JOB_START_EPOCH: "$(UNO_IOS_JOB_START_EPOCH)"
       UITEST_VARIANT: "${{ parameters.UITEST_VARIANT }}"
       UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/$(SamplesAppArtifactName)/SamplesApp.app"
       SAMPLESAPP_BUNDLE_ID: "${{ parameters.SAMPLESAPP_BUNDLE_ID }}"
