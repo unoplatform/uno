@@ -204,6 +204,8 @@ partial class AppBar
 
 	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 	{
+		base.OnPropertyChanged2(args);
+
 		if (args.Property == IsOpenProperty)
 		{
 			bool isOpen = (bool)args.NewValue;
