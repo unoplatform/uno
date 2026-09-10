@@ -20,21 +20,28 @@ namespace Uno.UI.RuntimeTests.Tests.XBindStaticInpcTests
 		{
 			XBindStaticInpcApp_12608.MyObj = new XBindStaticInpcObject_12608 { Value = 0 };
 
-			var page = new XBindStaticInpcPage_12608();
-			WindowHelper.WindowContent = page;
-			await WindowHelper.WaitForLoaded(page);
-			await WindowHelper.WaitForIdle();
+			try
+			{
+				var page = new XBindStaticInpcPage_12608();
+				WindowHelper.WindowContent = page;
+				await WindowHelper.WaitForLoaded(page);
+				await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("0", page.BoundTextBlock.Text, "Initial bound text should reflect Value=0.");
+				Assert.AreEqual("0", page.BoundTextBlock.Text, "Initial bound text should reflect Value=0.");
 
-			XBindStaticInpcApp_12608.MyObj.Value = 42;
-			await WindowHelper.WaitForIdle();
+				XBindStaticInpcApp_12608.MyObj.Value = 42;
+				await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(
-				"42",
-				page.BoundTextBlock.Text,
-				"x:Bind (OneWay) through a static-class root should propagate INPC updates. " +
-				"See https://github.com/unoplatform/uno/issues/12608");
+				Assert.AreEqual(
+					"42",
+					page.BoundTextBlock.Text,
+					"x:Bind (OneWay) through a static-class root should propagate INPC updates. " +
+					"See https://github.com/unoplatform/uno/issues/12608");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		// A path whose segment after the static type is a NESTED TYPE has no observable static root,
@@ -46,12 +53,19 @@ namespace Uno.UI.RuntimeTests.Tests.XBindStaticInpcTests
 		{
 			XBindStaticInpcApp_12608.Nested.MyObj = new XBindStaticInpcObject_12608 { Value = 7 };
 
-			var page = new XBindStaticInpcPage_12608();
-			WindowHelper.WindowContent = page;
-			await WindowHelper.WaitForLoaded(page);
-			await WindowHelper.WaitForIdle();
+			try
+			{
+				var page = new XBindStaticInpcPage_12608();
+				WindowHelper.WindowContent = page;
+				await WindowHelper.WaitForLoaded(page);
+				await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("7", page.NestedRootTextBlock.Text, "Initial bound text should reflect Value=7.");
+				Assert.AreEqual("7", page.NestedRootTextBlock.Text, "Initial bound text should reflect Value=7.");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 	}
 }
