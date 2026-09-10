@@ -887,8 +887,17 @@ partial class AppBar
 			// matter because Blue apps wouldn't have had access to them.
 			// For post-WinBlue AppBars, we fire the Opening/Closing & Opened/Closed
 			// events based on our display mode state transitions.
-			if (m_tpDisplayModesStateGroup is null)
+			//
+			// Uno specific: WinUI can defer that raise to the transition because its VSM still
+			// completes a transition superseded mid-flight (VisualStateManagerActuator.cpp,
+			// CompleteTransitionToState). Uno's VisualStateGroup drops it, so a bar reopened from
+			// its own Closed handler would never see Opened again. Raise here instead, clearing the
+			// latch so OnDisplayModesStateChanged does not raise a second time.
+			// TODO Uno: restore the C++ shape once VisualStateGroup completes superseded transitions.
+			if (m_isChangingOpenedState)
 			{
+				m_isChangingOpenedState = false;
+
 				if (isOpen)
 				{
 					OnOpened(routedEventArgs);
