@@ -133,6 +133,7 @@ fn clipCovMapped(fc: vec2<f32>) -> f32 {
   }
   // ctrl.x is the live count: a binding always spans at least one entry so the layout's minimum size holds.
   let n = u32(clip.ctrl.x);
+  if (n == 1u) { return cov * entryCov(clip.entries[0], fc); }
   for (var i = 0u; i < n; i = i + 1u) { cov = cov * entryCov(clip.entries[i], fc); }
   return cov;
 }
@@ -564,7 +565,9 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
     let A = dot(on, on) - 1.0;
     let B = 2.0 * dot(d0, on);
     let C = dot(d0, d0);
-    if (abs(A) < 1e-7) {
+    if (dot(on, on) < 1e-12) {
+      t = length(pn);   // focal at the centre: concentric circles, exactly what the solve below yields
+    } else if (abs(A) < 1e-7) {
       // Focal on the ellipse boundary → the quadratic degenerates to linear.
       t = select(0.0, -C / B, abs(B) > 1e-9);
     } else {
