@@ -362,8 +362,8 @@ internal sealed unsafe partial class WebGpuFrame
 		return Bg(ref bgd, owned);
 	}
 
-	// The ClipU header (ctrl, size, xform, xoff, finv, own) followed by one entry per clip; match the WGSL.
-	internal const int ClipUHeaderBytes = 96, ClipEntryBytes = 96;
+	// The ClipU header (ctrl, size, xform, xoff, finv, own, inner) followed by one entry per clip; match the WGSL.
+	internal const int ClipUHeaderBytes = 112, ClipEntryBytes = 96;
 	// The uniform carries the header and the first four entries; a draw with more puts the rest in a storage buffer
 	// bound beside it (see ClipBgl). Uniform reads are what make the common one-to-four-clip draw cheap.
 	internal const int ClipUniformEntries = 4;
@@ -406,6 +406,10 @@ internal sealed unsafe partial class WebGpuFrame
 		cu[16] = finv.M11; cu[17] = finv.M12; cu[18] = finv.M21; cu[19] = finv.M22;
 		// own.x = the op's own coverage texture is bound (sampled by vertex uv); own.y = drawn scaled or rotated, so filtered.
 		if (cd.Coverage != 0) { cu[20] = 1f; cu[21] = cd.CoverageFiltered ? 1f : 0f; }
+		// inner: the largest axis-aligned rect every clip covers in full, a pixel inside each edge. An excluded, masked or
+		// rotated entry leaves none; a rounded corner insets its sides by the inscribed-square fraction of its radii.
+		float ix = -1e30f, iy = -1e30f, iz = 1e30f, iw = 1e30f;
+		if (foldedAabb) { ix = ab.X + 1f; iy = ab.Y + 1f; iz = ab.Z - 1f; iw = ab.W - 1f; }
 		// A fragment step in the recording's space is a column of finv; through an entry's own matrix it is the entry's
 		// step per device pixel, constant under an affine, so it is computed once here rather than per fragment.
 		var ddx = new Vector2(finv.M11, finv.M12); var ddy = new Vector2(finv.M21, finv.M22);
@@ -424,7 +428,22 @@ internal sealed unsafe partial class WebGpuFrame
 			dst[o + 20] = MathF.Max(MathF.Max(qx.Length(), qy.Length()), 1e-6f);   // k.x
 			dst[o + 21] = e.Radii == e.RadiiY ? 1f : 0f;                            // k.y
 			dst[o + 22] = 0f; dst[o + 23] = 0f;
+			if (iz <= ix) { continue; }
+			if (e.Mask || e.Exclude || MathF.Abs(e.M.M12) > 1e-6f || MathF.Abs(e.M.M21) > 1e-6f || MathF.Abs(e.M.M11) < 1e-9f || MathF.Abs(e.M.M22) < 1e-9f)
+			{
+				ix = 1f; iz = 0f;
+				continue;
+			}
+			const float inset = 0.2929f;   // 1 - 1/sqrt(2): the corner ellipse's inscribed square
+			float k = dst[o + 20];
+			float qL = e.Rect.X + MathF.Max(e.Radii.X, e.Radii.W) * inset + k, qR = e.Rect.Z - MathF.Max(e.Radii.Y, e.Radii.Z) * inset - k;
+			float qT = e.Rect.Y + MathF.Max(e.RadiiY.X, e.RadiiY.Y) * inset + k, qB = e.Rect.W - MathF.Max(e.RadiiY.Z, e.RadiiY.W) * inset - k;
+			// Back from the entry's space: q = s * p + t per axis.
+			float pL = (qL - e.M.M31) / e.M.M11, pR = (qR - e.M.M31) / e.M.M11, pT = (qT - e.M.M32) / e.M.M22, pB = (qB - e.M.M32) / e.M.M22;
+			ix = MathF.Max(ix, MathF.Min(pL, pR)); iz = MathF.Min(iz, MathF.Max(pL, pR));
+			iy = MathF.Max(iy, MathF.Min(pT, pB)); iw = MathF.Min(iw, MathF.Max(pT, pB));
 		}
+		cu[24] = ix; cu[25] = iy; cu[26] = iz; cu[27] = iw;
 		return more;
 	}
 

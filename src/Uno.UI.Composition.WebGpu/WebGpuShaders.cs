@@ -44,9 +44,11 @@ internal sealed unsafe partial class WebGpuDevice
 // all of a draw's masks. Either kind: t.z > 0.5 = Difference (keep the outside). k.x = the entry's units per device
 // pixel (constant under an affine, so computed once per draw), k.y > 0.5 = every corner is circular. Nesting has no cap:
 // the uniform holds the first four entries, read at constant indices (a uniform read is far cheaper than a storage read
-// on integrated GPUs), and a draw with more carries the rest in clipMore.
+// on integrated GPUs), and a draw with more carries the rest in clipMore. inner = the largest axis-aligned rect (in the
+// recording's space) that every clip covers in full, so the fragments inside it, most of a clipped shape, skip the
+// entry maths altogether.
 struct ClipEntry { m: vec4<f32>, t: vec4<f32>, rect: vec4<f32>, radX: vec4<f32>, radY: vec4<f32>, k: vec4<f32> };
-struct ClipU { ctrl: vec4<f32>, size: vec4<f32>, xform: vec4<f32>, xoff: vec4<f32>, finv: vec4<f32>, own: vec4<f32>, entries: array<ClipEntry, 4> };
+struct ClipU { ctrl: vec4<f32>, size: vec4<f32>, xform: vec4<f32>, xoff: vec4<f32>, finv: vec4<f32>, own: vec4<f32>, inner: vec4<f32>, entries: array<ClipEntry, 4> };
 // The pass projection: basis.xy = the target's top-left in device pixels, basis.zw = its size. Bound at group 0 of
 // every colour pipeline, so vertices are uploaded in pixels and a resize or a size-to-content layer re-targets
 // cached geometry for free.
@@ -61,12 +63,6 @@ fn project(p: vec2<f32>) -> vec4<f32> {
 fn place(pos: vec2<f32>) -> vec4<f32> {
   return project(vec2<f32>(clip.xform.x * pos.x + clip.xform.y * pos.y + clip.xoff.x,
                            clip.xform.z * pos.x + clip.xform.w * pos.y + clip.xoff.y));
-}
-// Maps a (moved) device fragment position back to the recording's own space so device-space fragment inputs (clip
-// shape, gradient geometry) baked at identity stay correct after an arena transform re-stamp. Identity = no-op.
-fn finvMap(fcRaw: vec2<f32>) -> vec2<f32> {
-  return vec2<f32>(clip.finv.x * fcRaw.x + clip.finv.z * fcRaw.y + clip.xoff.z,
-                   clip.finv.y * fcRaw.x + clip.finv.w * fcRaw.y + clip.xoff.w);
 }
 // Coverage of one clip entry at p (recording space). ddx/ddy = how p moves per fragment step, so the entry's own
 // pixel scale follows from its matrix and the SDF distance converts to pixels without derivative builtins.
@@ -114,17 +110,15 @@ fn covTex(uv: vec2<f32>) -> f32 {
   }
   return 1.0;
 }
-fn clipCov(fcRaw: vec2<f32>, uv: vec2<f32>) -> f32 {
+// Coverage at rp, the fragment's position in the recording's space (the vertex position interpolated, exact under
+// an affine placement), times the op's own coverage texture.
+fn clipCov(rp: vec2<f32>, uv: vec2<f32>) -> f32 {
   let own = covTex(uv);
-  // Fast path: no clip => the shape's own coverage, and NO finvMap (unclipped fragments must cost what they did pre-arena).
   if (clip.ctrl.x < 0.5 && clip.ctrl.y < 0.5) { return own; }
-  return own * clipCovMapped(finvMap(fcRaw));
+  return own * clipCovMapped(rp);
 }
-// Exact texel of the path-clip mask under this fragment (both are in the clip's space; the origin is whole pixels).
-// Explicit bounds rather than relying on textureLoad's out-of-range behaviour, which differs between backends.
-// Same, for a caller that already mapped the fragment into the clip's space — the gradient shader needs that
-// point anyway, and mapping it twice per fragment is a matrix multiply wasted on every pixel it covers.
 fn clipCovMapped(fc: vec2<f32>) -> f32 {
+  if (all(fc >= clip.inner.xy) && all(fc <= clip.inner.zw)) { return 1.0; }
   // Dedicated plain-rect clip (ctrl.y flag; min in ctrl.zw, max in size.zw): carries the clip's AABB analytically
   // so the per-op device SCISSOR is cull-only and the emit collapses SetScissorRect calls (see AabbInClipU).
   var cov = 1.0;
@@ -208,11 +202,11 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) t: vec2<f32>, @locat
 @group(1) @binding(1) var clipMask: texture_2d<f32>;
 @group(1) @binding(2) var coverageTex: texture_2d<f32>;
 @group(1) @binding(3) var covSmp: sampler;
-struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32>, @location(1) uv: vec2<f32> };
+struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32>, @location(1) uv: vec2<f32>, @location(2) rp: vec2<f32> };
 @vertex fn vs(@location(0) pos: vec2<f32>, @location(1) col: vec4<f32>, @location(2) uv: vec2<f32>) -> VOut {
-  var o: VOut; o.p = place(pos); o.c = col; o.uv = uv; return o;
+  var o: VOut; o.p = place(pos); o.c = col; o.uv = uv; o.rp = pos; return o;
 }
-@fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.p.xy, i.uv)); }";
+@fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.rp, i.uv)); }";
 	// Draws a texture over the whole target (a fullscreen triangle, exact texel fetch): the effect evaluator's final
 	// draw. Optional colour matrix (params.x); params.z = a sub-rect at m1.xy of size m0.zw.
 	private const string CompositeWgsl = @"
@@ -459,14 +453,12 @@ struct Grad { header: vec4<f32>, geo: vec4<f32>, colors: array<vec4<f32>, 64>, s
 @group(2) @binding(1) var clipMask: texture_2d<f32>;
 @group(2) @binding(2) var coverageTex: texture_2d<f32>;
 @group(2) @binding(3) var covSmp: sampler;
-struct GVOut { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
-@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) uv: vec2<f32>) -> GVOut { var o: GVOut; o.p = place(pos); o.uv = uv; return o; }
+struct GVOut { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32>, @location(1) rp: vec2<f32> };
+@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) uv: vec2<f32>) -> GVOut { var o: GVOut; o.p = place(pos); o.uv = uv; o.rp = pos; return o; }
 fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
 @fragment fn fs(i: GVOut) -> @location(0) vec4<f32> {
-  let fc = i.p;
-  // Arena: map the device fragment back to the recording's own space so the gradient geometry (baked at identity)
-  // is correct after a transform re-stamp. Identity finv => gfc == fc.xy for immediate/non-arena draws.
-  let gfc = finvMap(fc.xy);
+  // The gradient geometry lives in the recording's space, where rp is.
+  let gfc = i.rp;
   var t: f32 = 0.0;
   if (g.header.x < 0.5) {
     let a = g.geo.xy; let b = g.geo.zw; let ab = b - a; let denom = dot(ab, ab);
@@ -553,14 +545,14 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
 	// pixel corners only position the quad. `ihalf.x >= 0` = BORDER RING (subtract an inner rounded rect). clipCov
 	// applies neutral's analytic rounded/rect clips using the device-pixel builtin position.
 	private const string RoundedRectWgsl = @"
-struct VSOut { @builtin(position) pos: vec4<f32>, @location(0) p: vec2<f32>, @location(1) hf: vec2<f32>, @location(2) radii: vec4<f32>, @location(3) col: vec4<f32>, @location(4) ihalf: vec2<f32>, @location(5) icenter: vec2<f32>, @location(6) iradii: vec4<f32> };
+struct VSOut { @builtin(position) pos: vec4<f32>, @location(0) p: vec2<f32>, @location(1) hf: vec2<f32>, @location(2) radii: vec4<f32>, @location(3) col: vec4<f32>, @location(4) ihalf: vec2<f32>, @location(5) icenter: vec2<f32>, @location(6) iradii: vec4<f32>, @location(7) rp: vec2<f32> };
 @group(1) @binding(0) var<uniform> clip: ClipU;
 @group(1) @binding(4) var<storage, read> clipMore: array<ClipEntry>;
 @group(1) @binding(1) var clipMask: texture_2d<f32>;
 @group(1) @binding(2) var coverageTex: texture_2d<f32>;
 @group(1) @binding(3) var covSmp: sampler;
 @vertex fn vs(@location(0) cpos: vec2<f32>, @location(1) p: vec2<f32>, @location(2) hf: vec2<f32>, @location(3) radii: vec4<f32>, @location(4) col: vec4<f32>, @location(5) ihalf: vec2<f32>, @location(6) icenter: vec2<f32>, @location(7) iradii: vec4<f32>) -> VSOut {
-  var o: VSOut; o.pos = place(cpos); o.p = p; o.hf = hf; o.radii = radii; o.col = col; o.ihalf = ihalf; o.icenter = icenter; o.iradii = iradii; return o;
+  var o: VSOut; o.pos = place(cpos); o.p = p; o.hf = hf; o.radii = radii; o.col = col; o.ihalf = ihalf; o.icenter = icenter; o.iradii = iradii; o.rp = cpos; return o;
 }
 fn sdRR(p: vec2<f32>, hf: vec2<f32>, radii: vec4<f32>) -> f32 {
   let rTop = select(radii.x, radii.y, p.x > 0.0); let rBot = select(radii.w, radii.z, p.x > 0.0);
@@ -584,11 +576,11 @@ fn sdRR(p: vec2<f32>, hf: vec2<f32>, radii: vec4<f32>) -> f32 {
   // APPLIED when one is present.
   let di = sdRR(i.p - i.icenter, i.ihalf, i.iradii);
   if (i.ihalf.x >= 0.0) { cov = cov * clamp(0.5 + di / sxy, 0.0, 1.0); }
-  cov = cov * clipCov(i.pos.xy, vec2<f32>(0.0));
+  cov = cov * clipCov(i.rp, vec2<f32>(0.0));
   return vec4<f32>(i.col.rgb, i.col.a * cov);
 }";
 	private const string ImageWgsl = @"
-struct VOut { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
+struct VOut { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32>, @location(1) rp: vec2<f32> };
 // edge = the quad's own uv rect (u0,v0,u1,v1); ctrl2.x > 0.5 = antialias the quad's edges analytically.
 struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec4<f32>, m3: vec4<f32>, off: vec4<f32>, edge: vec4<f32>, ctrl2: vec4<f32> };
 @group(1) @binding(0) var tex: texture_2d<f32>;
@@ -599,7 +591,7 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 @group(2) @binding(1) var clipMask: texture_2d<f32>;
 @group(2) @binding(2) var coverageTex: texture_2d<f32>;
 @group(2) @binding(3) var covSmp: sampler;
-@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) uv: vec2<f32>) -> VOut { var o: VOut; o.p = place(pos); o.uv = uv; return o; }
+@vertex fn vs(@location(0) pos: vec2<f32>, @location(1) uv: vec2<f32>) -> VOut { var o: VOut; o.p = place(pos); o.uv = uv; o.rp = pos; return o; }
 @fragment fn fs(i: VOut) -> @location(0) vec4<f32> {
   // Analytic box-filter coverage of the quad's own edges, in pixels via the uv derivatives -- the rounded-rect
   // treatment, so a rotated image is not hard-edged at one sample. Gated: an atlas or mask quad already carries its
@@ -633,6 +625,6 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
     rgb = clamp(rgb + vec3<f32>(nz), vec3<f32>(0.0), vec3<f32>(1.0));
     c = vec4<f32>(rgb, 1.0);
   }
-  return c * u.op.x * cov * clipCov(i.p.xy, vec2<f32>(0.0));
+  return c * u.op.x * cov * clipCov(i.rp, vec2<f32>(0.0));
 }";
 }
