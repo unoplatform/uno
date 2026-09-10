@@ -247,6 +247,13 @@ internal sealed unsafe partial class WebGpuFrame
 		return Bg(ref bgd, owned);
 	}
 
+	private static bool PixelAligned(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
+	{
+		static bool Whole(float v) => MathF.Abs(v - MathF.Round(v)) < 1e-3f;
+		return p0.Y == p1.Y && p1.X == p2.X && p2.Y == p3.Y && p3.X == p0.X
+			&& Whole(p0.X) && Whole(p0.Y) && Whole(p2.X) && Whole(p2.Y);
+	}
+
 	// The image draw's bind group: texture, the sampler for its edge extension, and the uniform carrying opacity,
 	// tint, colour matrix, uv rect and the edge-antialiasing flag.
 	private IntPtr ImageBg(ImageCmd im, OwnedResources owned)
@@ -256,9 +263,9 @@ internal sealed unsafe partial class WebGpuFrame
 		for (var zi = 0; zi < 36; zi++) { op[zi] = 0f; }
 		bool hasMatrix = im.ColorMatrix is { Length: >= 20 };
 		op[0] = im.Opacity; op[1] = im.TintMode; op[2] = hasMatrix ? 1f : 0f; op[3] = 0;
-		// The quad's uv rect, and the edge-AA flag: every image draw is a plain quad whose silhouette is its own edges.
+		// The quad's uv rect, and the edge-AA flag: the quad's silhouette is its own edges, unless it sits on whole pixels.
 		op[28] = im.U0; op[29] = im.V0; op[30] = im.U1; op[31] = im.V1;
-		op[32] = 1f;
+		op[32] = owned is null && PixelAligned(im.P0, im.P1, im.P2, im.P3) ? 0f : 1f;
 		op[4] = im.Tint.X; op[5] = im.Tint.Y; op[6] = im.Tint.Z; op[7] = im.Tint.W;
 		if (im.ColorMatrix is { Length: >= 20 } mm)
 		{

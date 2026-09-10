@@ -592,12 +592,13 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 @vertex fn vs(@location(0) pos: vec2<f32>, @location(1) uv: vec2<f32>) -> VOut { var o: VOut; o.p = place(pos); o.uv = uv; o.rp = pos; return o; }
 @fragment fn fs(i: VOut) -> @location(0) vec4<f32> {
   // Analytic box-filter coverage of the quad's own edges, in pixels via the uv derivatives -- the rounded-rect
-  // treatment, so a rotated image is not hard-edged at one sample. Gated: an atlas or mask quad already carries its
-  // coverage in the texture and must not be antialiased twice. Derivatives stay outside the branch.
-  let du = max(length(vec2<f32>(dpdx(i.uv.x), dpdy(i.uv.x))), 1e-6);
-  let dv = max(length(vec2<f32>(dpdx(i.uv.y), dpdy(i.uv.y))), 1e-6);
+  // treatment, so a rotated image is not hard-edged at one sample. Gated by a uniform (so the derivatives sit in
+  // uniform control flow): off for an atlas or mask quad, which carries its coverage in the texture, and for a quad
+  // on whole pixels, which has no edge to soften.
   var cov = 1.0;
   if (u.ctrl2.x > 0.5) {
+    let du = max(length(vec2<f32>(dpdx(i.uv.x), dpdy(i.uv.x))), 1e-6);
+    let dv = max(length(vec2<f32>(dpdx(i.uv.y), dpdy(i.uv.y))), 1e-6);
     let cx = clamp(min(i.uv.x - u.edge.x, u.edge.z - i.uv.x) / du + 0.5, 0.0, 1.0);
     let cy = clamp(min(i.uv.y - u.edge.y, u.edge.w - i.uv.y) / dv + 0.5, 0.0, 1.0);
     cov = cx * cy;
