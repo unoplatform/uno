@@ -105,17 +105,18 @@ internal sealed unsafe class WebGpuUniformSlab : IDisposable
 	private readonly int _uniformBytes, _slotBytes, _slotFloats, _uniformFloats;
 	// A constant texture bound at binding 1 of every slot's group (the clip layouts carry the path-clip mask there;
 	// slab-rented clips have none and bind the placeholder). Zero for layouts with only the uniform.
-	private readonly IntPtr _extraTexture, _extraTexture2, _sampler;   // bindings 1..3 when set (clip layouts)
+	private readonly IntPtr _extraTexture, _extraTexture2, _sampler, _extraBuffer;   // bindings 1..4 when set (clip layouts)
 	private readonly WGPUBufferUsage _usage;
 	private int _next;
 
-	public WebGpuUniformSlab(WebGpuDevice d, int uniformBytes, IntPtr extraTexture = default, WGPUBufferUsage usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst, IntPtr extraTexture2 = default, IntPtr sampler = default)
+	public WebGpuUniformSlab(WebGpuDevice d, int uniformBytes, IntPtr extraTexture = default, WGPUBufferUsage usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst, IntPtr extraTexture2 = default, IntPtr sampler = default, IntPtr extraBuffer = default)
 	{
 		_d = d;
 		_usage = usage;
 		_extraTexture = extraTexture;
 		_extraTexture2 = extraTexture2;
 		_sampler = sampler;
+		_extraBuffer = extraBuffer;
 		_uniformBytes = uniformBytes;
 		_uniformFloats = uniformBytes / sizeof(float);
 		_slotBytes = (uniformBytes + 255) / 256 * 256;   // uniform bind offsets must be 256-aligned
@@ -139,12 +140,13 @@ internal sealed unsafe class WebGpuUniformSlab : IDisposable
 		Array.Copy(data, 0, c.Shadow, slot * _slotFloats, Math.Min(data.Length, _uniformFloats));
 		if (c.Bgs[slot] == IntPtr.Zero)
 		{
-			var e = stackalloc WGPUBindGroupEntry[4];
+			var e = stackalloc WGPUBindGroupEntry[5];
 			e[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = c.Buf, Offset = (nuint)(slot * _slotBytes), Size = (nuint)_uniformBytes };
 			int n = 1;
 			if (_extraTexture != IntPtr.Zero) { e[n++] = new WGPUBindGroupEntry { Binding = 1, TextureView = _extraTexture }; }
 			if (_extraTexture2 != IntPtr.Zero) { e[n++] = new WGPUBindGroupEntry { Binding = 2, TextureView = _extraTexture2 }; }
 			if (_sampler != IntPtr.Zero) { e[n++] = new WGPUBindGroupEntry { Binding = 3, Sampler = _sampler }; }
+			if (_extraBuffer != IntPtr.Zero) { e[n++] = new WGPUBindGroupEntry { Binding = 4, Buffer = _extraBuffer, Offset = 0, Size = WebGpuPresentSession.ClipEntryBytes }; }
 			var bgd = new WGPUBindGroupDescriptor { Layout = layout, EntryCount = (nuint)n, Entries = e };
 			c.Bgs[slot] = wgpuDeviceCreateBindGroup(_d.Dev, &bgd);
 		}
@@ -178,13 +180,14 @@ internal sealed unsafe class WebGpuUniformSlab : IDisposable
 
 internal sealed unsafe class WebGpuClipSlab : IDisposable
 {
-	// A ClipU is its 96-byte header plus one 96-byte entry per clip, so slots come in size classes: each
-	// class is its own chunked buffer with fixed slots (storage bind offsets align to 256), a shadow copy and dirty
-	// tracking, and a handle names (class, slot). A slot is rewritten in place only within its class.
+	// Owned ClipU slots: chunked uniform buffers with fixed 512-byte slots (uniform bind offsets align to 256), a
+	// shadow copy and dirty tracking, so a per-frame restamp is a shadow write flushed once per chunk. A slot whose
+	// draw has more than four clips also owns the storage buffer holding the rest.
 	private sealed class Chunk
 	{
 		public IntPtr Buf;
 		public float[] Shadow;
+		public IntPtr[] More;
 		public int DirtyMin = int.MaxValue;
 		public int DirtyMax = -1;
 	}
@@ -216,7 +219,9 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 		return _classes[ci];
 	}
 
-	public nint Alloc(int bytes)
+	public nint Alloc() => Alloc(WebGpuPresentSession.ClipUBytes);
+
+	private nint Alloc(int bytes)
 	{
 		var sc = ClassFor(bytes);
 		var ci = _classByBytes[sc.SlotBytes];
@@ -227,8 +232,8 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 			slot = sc.Next++;
 			if (slot / sc.ChunkSlots >= sc.Chunks.Count)
 			{
-				var bd = new WGPUBufferDescriptor { Size = (nuint)(sc.ChunkSlots * sc.SlotBytes), Usage = WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst };
-				sc.Chunks.Add(new Chunk { Buf = wgpuDeviceCreateBuffer(_d.Dev, &bd), Shadow = new float[sc.ChunkSlots * sc.SlotFloats] });
+				var bd = new WGPUBufferDescriptor { Size = (nuint)(sc.ChunkSlots * sc.SlotBytes), Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
+				sc.Chunks.Add(new Chunk { Buf = wgpuDeviceCreateBuffer(_d.Dev, &bd), Shadow = new float[sc.ChunkSlots * sc.SlotFloats], More = new IntPtr[sc.ChunkSlots] });
 			}
 		}
 		return ((nint)ci << SlotShift) | (nint)(slot + 1);
@@ -237,9 +242,15 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 	public void Free(nint handle)
 	{
 		if (handle == 0) { return; }
-		var sc = _classes[(int)(handle >> SlotShift)];
-		sc.Free.Push((int)(handle & ((1 << SlotShift) - 1)) - 1);
+		var (sc, slot) = Decode(handle);
+		var c = sc.Chunks[slot / sc.ChunkSlots];
+		var idx = slot % sc.ChunkSlots;
+		if (c.More[idx] != IntPtr.Zero) { _d.DeferReleaseBuffer(c.More[idx]); c.More[idx] = IntPtr.Zero; }
+		sc.Free.Push(slot);
 	}
+
+	public IntPtr MoreOf(nint handle) { var (sc, slot) = Decode(handle); return sc.Chunks[slot / sc.ChunkSlots].More[slot % sc.ChunkSlots]; }
+	public void SetMore(nint handle, IntPtr buf) { var (sc, slot) = Decode(handle); sc.Chunks[slot / sc.ChunkSlots].More[slot % sc.ChunkSlots] = buf; }
 
 	private (SizeClass sc, int slot) Decode(nint handle) => (_classes[(int)(handle >> SlotShift)], (int)(handle & ((1 << SlotShift) - 1)) - 1);
 

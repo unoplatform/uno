@@ -42,9 +42,11 @@ internal sealed unsafe partial class WebGpuDevice
 // rounded rect in its OWN space (rect = L,T,R,B; radX/radY = per-corner radii TL,TR,BR,BL), exact under any affine.
 // t.w > 0.5: a path mask, q being its texel and rect its slot (x, y, w, h) in clipMask, which one texture holds for
 // all of a draw's masks. Either kind: t.z > 0.5 = Difference (keep the outside). k.x = the entry's units per device
-// pixel (constant under an affine, so computed once per draw), k.y > 0.5 = every corner is circular. Nesting has no cap.
+// pixel (constant under an affine, so computed once per draw), k.y > 0.5 = every corner is circular. Nesting has no cap:
+// the uniform holds the first four entries, read at constant indices (a uniform read is far cheaper than a storage read
+// on integrated GPUs), and a draw with more carries the rest in clipMore.
 struct ClipEntry { m: vec4<f32>, t: vec4<f32>, rect: vec4<f32>, radX: vec4<f32>, radY: vec4<f32>, k: vec4<f32> };
-struct ClipU { ctrl: vec4<f32>, size: vec4<f32>, xform: vec4<f32>, xoff: vec4<f32>, finv: vec4<f32>, own: vec4<f32>, entries: array<ClipEntry> };
+struct ClipU { ctrl: vec4<f32>, size: vec4<f32>, xform: vec4<f32>, xoff: vec4<f32>, finv: vec4<f32>, own: vec4<f32>, entries: array<ClipEntry, 4> };
 // The pass projection: basis.xy = the target's top-left in device pixels, basis.zw = its size. Bound at group 0 of
 // every colour pipeline, so vertices are uploaded in pixels and a resize or a size-to-content layer re-targets
 // cached geometry for free.
@@ -131,10 +133,13 @@ fn clipCovMapped(fc: vec2<f32>) -> f32 {
     let dmax = vec2<f32>(clip.size.z, clip.size.w) - fc;
     cov = clamp(0.5 + min(min(dmin.x, dmin.y), min(dmax.x, dmax.y)), 0.0, 1.0);
   }
-  // ctrl.x is the live count: a binding always spans at least one entry so the layout's minimum size holds.
-  let n = u32(clip.ctrl.x);
-  if (n == 1u) { return cov * entryCov(clip.entries[0], fc); }
-  for (var i = 0u; i < n; i = i + 1u) { cov = cov * entryCov(clip.entries[i], fc); }
+  let n = u32(clip.ctrl.x);   // ctrl.x is the live count
+  if (n == 0u) { return cov; }
+  cov = cov * entryCov(clip.entries[0], fc);
+  if (n > 1u) { cov = cov * entryCov(clip.entries[1], fc); }
+  if (n > 2u) { cov = cov * entryCov(clip.entries[2], fc); }
+  if (n > 3u) { cov = cov * entryCov(clip.entries[3], fc); }
+  for (var i = 4u; i < n; i = i + 1u) { cov = cov * entryCov(clipMore[i - 4u], fc); }
   return cov;
 }
 ";
@@ -216,7 +221,8 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) t: vec2<f32>, @locat
 }";
 
 	private const string ColoredWgsl = @"
-@group(1) @binding(0) var<storage, read> clip: ClipU;
+@group(1) @binding(0) var<uniform> clip: ClipU;
+@group(1) @binding(4) var<storage, read> clipMore: array<ClipEntry>;
 @group(1) @binding(1) var clipMask: texture_2d<f32>;
 @group(1) @binding(2) var coverageTex: texture_2d<f32>;
 @group(1) @binding(3) var covSmp: sampler;
@@ -231,7 +237,8 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32>, @locat
 	private const string CoverTableWgsl = @"
 struct Xf { a: vec4<f32>, b: vec4<f32> };
 @group(1) @binding(0) var<storage, read> xf: array<Xf>;
-@group(2) @binding(0) var<storage, read> clip: ClipU;
+@group(2) @binding(0) var<uniform> clip: ClipU;
+@group(2) @binding(4) var<storage, read> clipMore: array<ClipEntry>;
 @group(2) @binding(1) var clipMask: texture_2d<f32>;
 @group(2) @binding(2) var coverageTex: texture_2d<f32>;
 @group(2) @binding(3) var covSmp: sampler;
@@ -533,7 +540,8 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 	private const string GradientWgsl = @"
 struct Grad { header: vec4<f32>, geo: vec4<f32>, colors: array<vec4<f32>, 64>, stops: array<vec4<f32>, 16>, origin: vec4<f32> };
 @group(1) @binding(0) var<uniform> g: Grad;
-@group(2) @binding(0) var<storage, read> clip: ClipU;
+@group(2) @binding(0) var<uniform> clip: ClipU;
+@group(2) @binding(4) var<storage, read> clipMore: array<ClipEntry>;
 @group(2) @binding(1) var clipMask: texture_2d<f32>;
 @group(2) @binding(2) var coverageTex: texture_2d<f32>;
 @group(2) @binding(3) var covSmp: sampler;
@@ -632,7 +640,8 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
 	// applies neutral's analytic rounded/rect clips using the device-pixel builtin position.
 	private const string RoundedRectWgsl = @"
 struct VSOut { @builtin(position) pos: vec4<f32>, @location(0) p: vec2<f32>, @location(1) hf: vec2<f32>, @location(2) radii: vec4<f32>, @location(3) col: vec4<f32>, @location(4) ihalf: vec2<f32>, @location(5) icenter: vec2<f32>, @location(6) iradii: vec4<f32> };
-@group(1) @binding(0) var<storage, read> clip: ClipU;
+@group(1) @binding(0) var<uniform> clip: ClipU;
+@group(1) @binding(4) var<storage, read> clipMore: array<ClipEntry>;
 @group(1) @binding(1) var clipMask: texture_2d<f32>;
 @group(1) @binding(2) var coverageTex: texture_2d<f32>;
 @group(1) @binding(3) var covSmp: sampler;
@@ -672,7 +681,8 @@ fn sdRR(p: vec2<f32>, hf: vec2<f32>, radii: vec4<f32>) -> f32 {
 struct Xf { a: vec4<f32>, b: vec4<f32> };
 struct VSOut { @builtin(position) pos: vec4<f32>, @location(0) p: vec2<f32>, @location(1) hf: vec2<f32>, @location(2) radii: vec4<f32>, @location(3) col: vec4<f32>, @location(4) ihalf: vec2<f32>, @location(5) icenter: vec2<f32>, @location(6) iradii: vec4<f32> };
 @group(1) @binding(0) var<storage, read> xf: array<Xf>;
-@group(2) @binding(0) var<storage, read> clip: ClipU;
+@group(2) @binding(0) var<uniform> clip: ClipU;
+@group(2) @binding(4) var<storage, read> clipMore: array<ClipEntry>;
 @group(2) @binding(1) var clipMask: texture_2d<f32>;
 @group(2) @binding(2) var coverageTex: texture_2d<f32>;
 @group(2) @binding(3) var covSmp: sampler;
@@ -702,7 +712,8 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
 @group(1) @binding(0) var tex: texture_2d<f32>;
 @group(1) @binding(1) var smp: sampler;
 @group(1) @binding(2) var<uniform> u: U;
-@group(2) @binding(0) var<storage, read> clip: ClipU;
+@group(2) @binding(0) var<uniform> clip: ClipU;
+@group(2) @binding(4) var<storage, read> clipMore: array<ClipEntry>;
 @group(2) @binding(1) var clipMask: texture_2d<f32>;
 @group(2) @binding(2) var coverageTex: texture_2d<f32>;
 @group(2) @binding(3) var covSmp: sampler;

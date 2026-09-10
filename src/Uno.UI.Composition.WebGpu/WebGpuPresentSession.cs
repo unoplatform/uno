@@ -240,7 +240,8 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 
 	// Reused so the per-frame op rebuild does not allocate a list and an array per primitive.
 	private readonly List<float> _scratch = new();
-	private float[] _clipU = new float[ClipUHeaderFloats + 8 * ClipEntryFloats];   // grows to the largest clip list seen
+	private readonly float[] _clipU = new float[ClipUFloats];   // the uniform: header + the first ClipUniformEntries entries
+	private float[] _clipMore = new float[4 * ClipEntryFloats];  // the entries past those, for the overflow buffer; grows
 
 	private readonly Stack<List<DrawOp>> _opsPool = new();
 	private List<DrawOp> RentOps()
@@ -430,22 +431,25 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 
 	// The ClipU header (ctrl, size, xform, xoff, finv, own) followed by one entry per clip; match the WGSL.
 	internal const int ClipUHeaderBytes = 96, ClipEntryBytes = 96;
+	// The uniform carries the header and the first four entries; a draw with more puts the rest in a storage buffer
+	// bound beside it (see ClipBgl). Uniform reads are what make the common one-to-four-clip draw cheap.
+	internal const int ClipUniformEntries = 4;
+	internal const int ClipUBytes = ClipUHeaderBytes + ClipUniformEntries * ClipEntryBytes;
 	// wgpu wants a binding to cover the header plus one array element, so an entry-less clip still binds one (zeroed).
-	internal const int ClipUMinBytes = ClipUHeaderBytes + ClipEntryBytes;
-	private const int ClipUHeaderFloats = ClipUHeaderBytes / sizeof(float), ClipEntryFloats = ClipEntryBytes / sizeof(float);
+	private const int ClipUHeaderFloats = ClipUHeaderBytes / sizeof(float), ClipEntryFloats = ClipEntryBytes / sizeof(float), ClipUFloats = ClipUBytes / sizeof(float);
 
-	// Writes the op's ClipU into _clipU: the analytic entries, then the clip's path masks as mask entries. Returns its
-	// length in floats and whether the clip's AABB rode along.
+	// Writes the op's ClipU into _clipU (and the entries past the uniform's four into _clipMore): the analytic entries,
+	// then the clip's path masks as mask entries. Returns the overflow entry count and whether the clip's AABB rode along.
 	private int FillClipU(ClipData cd, Matrix3x2 xform, Matrix3x2 finv, ClipEntry[] masks, out bool foldedAabb)
 	{
 		if (xform == default) { xform = Matrix3x2.Identity; }   // default(Matrix3x2) is all-zero; treat as identity
 		if (finv == default) { finv = Matrix3x2.Identity; }
 		var entries = cd.Entries;
 		int na = entries?.Length ?? 0, nm = masks?.Length ?? 0, n = na + nm;
-		int floats = ClipUHeaderFloats + Math.Max(n, 1) * ClipEntryFloats;
-		if (_clipU.Length < floats) { _clipU = new float[Math.Max(floats, _clipU.Length * 2)]; }
+		int more = Math.Max(0, n - ClipUniformEntries);
+		if (_clipMore.Length < more * ClipEntryFloats) { _clipMore = new float[Math.Max(more * ClipEntryFloats, _clipMore.Length * 2)]; }
 		var cu = _clipU;
-		System.Array.Clear(cu, 0, floats);
+		System.Array.Clear(cu);
 		// Fold the clip's finite AABB into the dedicated rect slot (ctrl.y flag; min in ctrl.zw, max in
 		// size.zw): the shader then owns the rect edge and the emit widens the scissor to cull-only
 		// (see AabbInClipU).
@@ -475,18 +479,37 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		var ddx = new Vector2(finv.M11, finv.M12); var ddy = new Vector2(finv.M21, finv.M22);
 		for (int i = 0; i < n; i++)
 		{
-			var e = i < na ? entries[i] : masks[i - na]; int o = ClipUHeaderFloats + i * ClipEntryFloats;
-			cu[o + 0] = e.M.M11; cu[o + 1] = e.M.M12; cu[o + 2] = e.M.M21; cu[o + 3] = e.M.M22;   // m
-			cu[o + 4] = e.M.M31; cu[o + 5] = e.M.M32; cu[o + 6] = e.Exclude ? 1f : 0f; cu[o + 7] = e.Mask ? 1f : 0f;   // t
-			cu[o + 8] = e.Rect.X; cu[o + 9] = e.Rect.Y; cu[o + 10] = e.Rect.Z; cu[o + 11] = e.Rect.W;
-			cu[o + 12] = e.Radii.X; cu[o + 13] = e.Radii.Y; cu[o + 14] = e.Radii.Z; cu[o + 15] = e.Radii.W;
-			cu[o + 16] = e.RadiiY.X; cu[o + 17] = e.RadiiY.Y; cu[o + 18] = e.RadiiY.Z; cu[o + 19] = e.RadiiY.W;
+			var e = i < na ? entries[i] : masks[i - na];
+			var dst = i < ClipUniformEntries ? cu : _clipMore;
+			int o = i < ClipUniformEntries ? ClipUHeaderFloats + i * ClipEntryFloats : (i - ClipUniformEntries) * ClipEntryFloats;
+			dst[o + 0] = e.M.M11; dst[o + 1] = e.M.M12; dst[o + 2] = e.M.M21; dst[o + 3] = e.M.M22;   // m
+			dst[o + 4] = e.M.M31; dst[o + 5] = e.M.M32; dst[o + 6] = e.Exclude ? 1f : 0f; dst[o + 7] = e.Mask ? 1f : 0f;   // t
+			dst[o + 8] = e.Rect.X; dst[o + 9] = e.Rect.Y; dst[o + 10] = e.Rect.Z; dst[o + 11] = e.Rect.W;
+			dst[o + 12] = e.Radii.X; dst[o + 13] = e.Radii.Y; dst[o + 14] = e.Radii.Z; dst[o + 15] = e.Radii.W;
+			dst[o + 16] = e.RadiiY.X; dst[o + 17] = e.RadiiY.Y; dst[o + 18] = e.RadiiY.Z; dst[o + 19] = e.RadiiY.W;
 			var qx = new Vector2(e.M.M11 * ddx.X + e.M.M21 * ddx.Y, e.M.M11 * ddy.X + e.M.M21 * ddy.Y);
 			var qy = new Vector2(e.M.M12 * ddx.X + e.M.M22 * ddx.Y, e.M.M12 * ddy.X + e.M.M22 * ddy.Y);
-			cu[o + 20] = MathF.Max(MathF.Max(qx.Length(), qy.Length()), 1e-6f);   // k.x
-			cu[o + 21] = e.Radii == e.RadiiY ? 1f : 0f;                            // k.y
+			dst[o + 20] = MathF.Max(MathF.Max(qx.Length(), qy.Length()), 1e-6f);   // k.x
+			dst[o + 21] = e.Radii == e.RadiiY ? 1f : 0f;                            // k.y
+			dst[o + 22] = 0f; dst[o + 23] = 0f;
 		}
-		return floats;
+		return more;
+	}
+
+	// Binding 4: the overflow entries, or the placeholder when the draw has none (the shader never reads it then).
+	private WGPUBindGroupEntry ClipMoreEntry(IntPtr buf, int more)
+		=> new() { Binding = 4, Buffer = buf != IntPtr.Zero ? buf : _d.DummyClipMore, Offset = 0, Size = (nuint)(Math.Max(more, 1) * ClipEntryBytes) };
+
+	// The overflow entries as a storage buffer: `buf` when it already exists (a restamp rewrites in place), else a new one.
+	private IntPtr WriteClipMore(int more, IntPtr buf)
+	{
+		if (buf == IntPtr.Zero)
+		{
+			var bd = new WGPUBufferDescriptor { Size = (nuint)(more * ClipEntryBytes), Usage = WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst };
+			buf = wgpuDeviceCreateBuffer(_d.Dev, &bd);
+		}
+		fixed (float* p = _clipMore) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, (nuint)(more * ClipEntryBytes)); }
+		return buf;
 	}
 
 	// In-place restamp of an existing owned ClipU slab slot: the shadow write flushes as part of ONE per-chunk
@@ -494,10 +517,10 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	// survives, making a per-frame restamp free of native calls.
 	private bool RewriteClipU(nint slot, ClipData cd, Matrix3x2 xform, Matrix3x2 finv)
 	{
-		var floats = FillClipU(cd, xform, finv, null, out var folded);
-		// The caller's reuse guard keeps the entry count, and so the size class, unchanged (see StampSessionEntries).
-		System.Diagnostics.Debug.Assert(floats * sizeof(float) <= _d.ClipSlab.SlotBytesOf(slot));
-		_d.ClipSlab.Write(slot, _clipU, floats);
+		var more = FillClipU(cd, xform, finv, null, out var folded);
+		_d.ClipSlab.Write(slot, _clipU, ClipUFloats);
+		// The caller's reuse guard keeps the entry count unchanged (see StampSessionEntries), so the overflow buffer fits.
+		if (more > 0) { WriteClipMore(more, _d.ClipSlab.MoreOf(slot)); }
 		return folded;
 	}
 
@@ -505,17 +528,18 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	private IntPtr MakeClipBgOwned(ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU)
 	{
 		var masks = ResolveClipMasks(cd, owned);
-		var floats = FillClipU(cd, xform, finv, masks.Entries, out aabbInClipU);
-		var bytes = floats * sizeof(float);
-		var slot = _d.ClipSlab.Alloc(bytes);
-		_d.ClipSlab.Write(slot, _clipU, floats);
+		var more = FillClipU(cd, xform, finv, masks.Entries, out aabbInClipU);
+		var slot = _d.ClipSlab.Alloc();
+		_d.ClipSlab.Write(slot, _clipU, ClipUFloats);
+		if (more > 0) { _d.ClipSlab.SetMore(slot, WriteClipMore(more, IntPtr.Zero)); }   // freed with the slot
 		(owned.ClipSlots ??= new()).Add(slot);
-		var e = stackalloc WGPUBindGroupEntry[4];
-		e[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = _d.ClipSlab.BufferOf(slot), Offset = _d.ClipSlab.OffsetOf(slot), Size = (nuint)bytes };
+		var e = stackalloc WGPUBindGroupEntry[5];
+		e[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = _d.ClipSlab.BufferOf(slot), Offset = _d.ClipSlab.OffsetOf(slot), Size = ClipUBytes };
 		e[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = masks.View != IntPtr.Zero ? masks.View : _d.DummyTex };
 		e[2] = new WGPUBindGroupEntry { Binding = 2, TextureView = cd.Coverage != 0 ? (IntPtr)cd.Coverage : _d.DummyTex };
 		e[3] = new WGPUBindGroupEntry { Binding = 3, Sampler = _d.Smp };
-		var bgd = new WGPUBindGroupDescriptor { Layout = _d.ClipBgl, EntryCount = 4, Entries = e };
+		e[4] = ClipMoreEntry(more > 0 ? _d.ClipSlab.MoreOf(slot) : IntPtr.Zero, more);
+		var bgd = new WGPUBindGroupDescriptor { Layout = _d.ClipBgl, EntryCount = 5, Entries = e };
 		buf = slot;
 		return Bg(ref bgd, owned);
 	}
@@ -524,21 +548,23 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	{
 		if (owned is not null) { return MakeClipBgOwned(cd, owned, xform, finv, out _, out _); }
 		var masks = ResolveClipMasks(cd, null);
-		var floats = FillClipU(cd, xform, finv, masks.Entries, out _);
-		var bytes = floats * sizeof(float);
+		var more = FillClipU(cd, xform, finv, masks.Entries, out _);
 		var cu = _clipU;
-		if (masks.View != IntPtr.Zero || cd.Coverage != 0)
+		if (masks.View != IntPtr.Zero || cd.Coverage != 0 || more > 0)
 		{
-			// A per-op group rather than a slab slot: the slab's persistent groups bind DummyTex, and the mask and
-			// coverage textures are per op. Buffer and group are per-frame; the textures outlive them.
-			var ub = _d.BufferPool.Rent(bytes, WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst);
-			fixed (float* pcu = cu) { wgpuQueueWriteBuffer(_d.Q, ub, 0, (IntPtr)pcu, (nuint)bytes); }
-			var me = stackalloc WGPUBindGroupEntry[4];
-			me[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = ub, Offset = 0, Size = (nuint)bytes };
+			// A per-op group rather than a slab slot: the slab's persistent groups bind the placeholders, and the mask
+			// and coverage textures and the overflow entries are per op. Buffers and group are per-frame; the textures
+			// outlive them.
+			var ub = _d.BufferPool.Rent(ClipUBytes, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
+			fixed (float* pcu = cu) { wgpuQueueWriteBuffer(_d.Q, ub, 0, (IntPtr)pcu, ClipUBytes); }
+			var mb = more > 0 ? WriteClipMore(more, _d.BufferPool.Rent(more * ClipEntryBytes, WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst)) : IntPtr.Zero;
+			var me = stackalloc WGPUBindGroupEntry[5];
+			me[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = ub, Offset = 0, Size = ClipUBytes };
+			me[4] = ClipMoreEntry(mb, more);
 			me[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = masks.View != IntPtr.Zero ? masks.View : _d.DummyTex };
 			me[2] = new WGPUBindGroupEntry { Binding = 2, TextureView = cd.Coverage != 0 ? (IntPtr)cd.Coverage : _d.DummyTex };
 			me[3] = new WGPUBindGroupEntry { Binding = 3, Sampler = _d.Smp };
-			var mbgd = new WGPUBindGroupDescriptor { Layout = _d.ClipBgl, EntryCount = 4, Entries = me };
+			var mbgd = new WGPUBindGroupDescriptor { Layout = _d.ClipBgl, EntryCount = 5, Entries = me };
 			return Bg(ref mbgd, null);
 		}
 
@@ -546,7 +572,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		// whole frame's clips upload in one queue write per chunk. Do NOT content-key this: a clip carries
 		// DEVICE-space geometry, so under any moving transform every lookup misses and mints a buffer + bind
 		// group per draw.
-		return _d.ClipBgSlabFor(_d.ClipBgl, bytes).Rent(_d.ClipBgl, cu);
+		return _d.ClipBgSlab.Rent(_d.ClipBgl, cu);
 	}
 
 	// Coverage atlas: ON by default - it is what makes arbitrary path edges and glyphs crisp without MSAA.

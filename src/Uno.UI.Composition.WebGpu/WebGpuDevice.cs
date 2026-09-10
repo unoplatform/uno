@@ -58,29 +58,22 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	public IntPtr EffectNoise;          // procedural WhiteNoise generator (no input)
 	public IntPtr EffectNoiseBgl;
 	public IntPtr DummyTex;                 // 1x1 placeholder for the clip coverage binding when no path clip
+	public IntPtr DummyClipMore;            // one-entry placeholder for the clip overflow binding when a draw has four clips or fewer
 	public WebGpuTexturePool Pool;                // transient offscreen pool (reused across frames)
 	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
 	public WebGpuClipSlab ClipSlab;               // size-classed storage slab backing every owned/restamped ClipU
 	public WebGpuUniformSlab GradSlab;            // per-frame gradient uniforms, one queue write per chunk
 	// Per-frame ClipU slabs for IMMEDIATE ops, one per (bind-group layout, byte size): a slot's bind group is created
 	// once and reused, so it must always be built with the same layout and bind the same size.
-	private readonly System.Collections.Generic.Dictionary<(nint, int), WebGpuUniformSlab> _clipBgSlabs = new();
+	private WebGpuUniformSlab _clipBgSlab;
 
-	public WebGpuUniformSlab ClipBgSlabFor(IntPtr layout, int clipUBytes)
-	{
-		if (!_clipBgSlabs.TryGetValue((layout, clipUBytes), out var slab))
-		{
-			slab = new WebGpuUniformSlab(this, clipUBytes, DummyTex, WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst, DummyTex, Smp);
-			_clipBgSlabs[(layout, clipUBytes)] = slab;
-		}
-		return slab;
-	}
+	public WebGpuUniformSlab ClipBgSlab => _clipBgSlab ??= new WebGpuUniformSlab(this, WebGpuPresentSession.ClipUBytes, DummyTex, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst, DummyTex, Smp, DummyClipMore);
 
 	/// <summary>Uploads every per-frame uniform slab — call before any submit whose commands read them.</summary>
 	public void FlushFrameSlabs()
 	{
 		GradSlab?.Flush();
-		foreach (var kv in _clipBgSlabs) { kv.Value.Flush(); }
+		_clipBgSlab?.Flush();
 	}
 	public WebGpuSlab SolidSlab;                  // persistent shared slab: all recordings' solid verts (6 floats/v)
 	public WebGpuSlab RrectSlab;                  // persistent shared slab: all recordings' rrect verts (22 floats/v)
@@ -137,7 +130,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		// before submit targets a buffer still pending in an unsubmitted command buffer and never completes.
 		ResetUniformRing();
 		GradSlab?.Reset();
-		foreach (var kv in _clipBgSlabs) { kv.Value.Reset(); }
+		_clipBgSlab?.Reset();
 		FrameSeq++;
 		Pool.BeginFrame();
 		BufferPool.BeginFrame();
@@ -345,6 +338,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	{
 		CreatePipelines();   // bakes MsaaSamples (already set from the host context) into every pipeline
 		DummyTex = CreateColorTarget(1, 1);
+		var moreDesc = new WGPUBufferDescriptor { Size = WebGpuPresentSession.ClipEntryBytes, Usage = WGPUBufferUsage.Storage };
+		DummyClipMore = wgpuDeviceCreateBuffer(Dev, &moreDesc);
 		Pool = new WebGpuTexturePool(this);
 		BufferPool = new WebGpuBufferPool(this);
 		ClipSlab = new WebGpuClipSlab(this);
@@ -585,14 +580,20 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// path-clip mask at binding 1) wrapped in a pipeline layout the colour pipelines share.
 	private IntPtr MakeClipPipeLayout()
 	{
-		var e = stackalloc WGPUBindGroupLayoutEntry[4];
-		// Read-only storage, not a uniform: the struct ends in a runtime-sized entry array, so a binding's size is the
-		// header plus however many clips this op carries.
+		var e = stackalloc WGPUBindGroupLayoutEntry[5];
+		// The ClipU uniform: header plus the first four entries, a fixed size. Entries past those ride the storage
+		// buffer at binding 4, so nesting stays uncapped while the common draw reads only the uniform.
 		e[0] = new WGPUBindGroupLayoutEntry
 		{
 			Binding = 0,
 			Visibility = WGPUShaderStage.Vertex | WGPUShaderStage.Fragment,
-			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.ReadOnlyStorage, MinBindingSize = WebGpuPresentSession.ClipUMinBytes },
+			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.Uniform, MinBindingSize = WebGpuPresentSession.ClipUBytes },
+		};
+		e[4] = new WGPUBindGroupLayoutEntry
+		{
+			Binding = 4,
+			Visibility = WGPUShaderStage.Vertex | WGPUShaderStage.Fragment,
+			Buffer = new WGPUBufferBindingLayout { Type = WGPUBufferBindingType.ReadOnlyStorage, MinBindingSize = WebGpuPresentSession.ClipEntryBytes },
 		};
 		// The path-clip coverage mask rides the same group, so one clip bind group still binds to every pipeline.
 		// Clips without a path bind DummyTex and never read it: ClipU.mask.z gates the sample.
@@ -615,7 +616,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 			Visibility = WGPUShaderStage.Fragment,
 			Sampler = new WGPUSamplerBindingLayout { Type = WGPUSamplerBindingType.Filtering },
 		};
-		var bgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 4, Entries = e };
+		var bgld = new WGPUBindGroupLayoutDescriptor { EntryCount = 5, Entries = e };
 		ClipBgl = wgpuDeviceCreateBindGroupLayout(Dev, &bgld);
 		var pe = new WGPUBindGroupLayoutEntry
 		{
