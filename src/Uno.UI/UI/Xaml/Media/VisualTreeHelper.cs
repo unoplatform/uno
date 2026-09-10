@@ -96,19 +96,57 @@ namespace Microsoft.UI.Xaml.Media
 			throw new NotSupportedException();
 		}
 
+		// Both accessors below walk the children by index rather than through LINQ. Enumerating a
+		// MaterializableList goes through its Materialized copy -- a fresh List<T> whenever the collection
+		// has been touched -- and LINQ additionally boxes the enumerator. These two run for every element
+		// on every measure (FrameworkElement.HasTemplateChild) and for every node of every tree walk.
 		public static DependencyObject/* ? */ GetChild(DependencyObject reference, int childIndex)
 		{
-			return (reference as UIElement)?
-				.GetChildren()
-				.Where(c => c is not ElementStub)
-				.ElementAtOrDefault(childIndex);
+			// Matches ElementAtOrDefault: any out-of-range index yields null. Negative indices are rejected
+			// up front so they stay O(1), as they were with ElementAtOrDefault's own short-circuit.
+			if (childIndex < 0 || reference is not UIElement element)
+			{
+				return null;
+			}
+
+			var children = element.GetChildren();
+			for (var i = 0; i < children.Count; i++)
+			{
+				var child = children[i];
+				if (child is ElementStub)
+				{
+					continue;
+				}
+
+				if (childIndex == 0)
+				{
+					return child;
+				}
+
+				childIndex--;
+			}
+
+			return null;
 		}
 
 		public static int GetChildrenCount(DependencyObject reference)
 		{
-			return (reference as UIElement)?
-				.GetChildren()
-				.Count(c => c is not ElementStub) ?? 0;
+			if (reference is not UIElement element)
+			{
+				return 0;
+			}
+
+			var children = element.GetChildren();
+			var count = 0;
+			for (var i = 0; i < children.Count; i++)
+			{
+				if (children[i] is not ElementStub)
+				{
+					count++;
+				}
+			}
+
+			return count;
 		}
 
 		internal static int GetViewGroupChildrenCount(_ViewGroup reference)
