@@ -38,6 +38,16 @@ The **[Uno Platform Studio Agent](xref:Uno.PlatformStudio.Agent)** is the orches
 
 **App MCP** allows AI agents to control the running app using pointer and keyboard interactions along with visual tree queries. It enables AI agents from Visual Studio, VS Code, Claude Code, GitHub Copilot CLI, Codex, and more to interact with your application.
 
+### Hot Design Previews
+
+**Hot Design Previews** lets you work with individual pages and components in isolation, using the data and application state you want to build, validate, and test. If you are familiar with Storybook, Previews offer the same concept for cross-platform .NET application development.
+
+### Hot Design Snippets
+
+**Hot Design Snippets** are ready-made XAML building blocks that you can drag onto the Hot Design canvas and customize in place. They include components, navigation, sections, cards, and full-page layouts—all producing clean XAML that works with MVUX and MVVM.
+
+Login forms, search bars, chip rows, tab bars, navigation drawers, and product cards are provided out of the box.
+
 ## True Single Project across Mobile, Web, Desktop, and Embedded
 
 Our Single Project approach is .NET ecosystem’s first and only true Single Project solution, empowering developers with a unified approach, spanning mobile, web, desktop, and embedded apps. This genuine Single Project approach simplifies development, accelerates build times, and facilitates platform-specific development, enhancing your productivity and efficiency.
