@@ -341,7 +341,11 @@ public partial class Page
 
 		if (child is null)
 		{
-			return new Size(0, 0);
+			// Uno specific: WinUI's CUserControl::ApplyTemplate is a final no-op, so a Page there can
+			// never have a templated child to fall back to. Uno expands Control templates normally, so
+			// defer to Control.MeasureOverride, which measures the first child - and which also returns
+			// 0x0 when there is genuinely no child, as Page_Partial.cpp does.
+			return base.MeasureOverride(availableSize);
 		}
 
 		var availableBounds = new Rect(0, 0, availableSize.Width, availableSize.Height);
@@ -376,6 +380,12 @@ public partial class Page
 			CalculateUpdatedBounds(ref arrangeBounds);
 
 			ArrangeElement(child, arrangeBounds);
+		}
+		else
+		{
+			// Uno specific: see MeasureOverride. Control.ArrangeOverride arranges the templated child
+			// and returns finalSize, so this stays 1:1 with Page_Partial.cpp when there is no child.
+			base.ArrangeOverride(arrangeSize);
 		}
 
 		return arrangeSize;
