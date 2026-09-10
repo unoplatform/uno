@@ -11,17 +11,17 @@ internal sealed class BrowserSkiaTextBoxNotificationsProviderSingleton : ITextBo
 	{
 	}
 
-	public void OnFocused(TextBox textBox) => SyncTextBox(textBox);
+	public void OnFocused(TextBoxCore core) => SyncTextBox(core);
 
-	public void OnUnfocused(TextBox textBox)
+	public void OnUnfocused(TextBoxCore core)
 	{
 	}
 
-	public void OnEnteredVisualTree(TextBox textBox)
+	public void OnEnteredVisualTree(TextBoxCore core)
 	{
 	}
 
-	public void OnLeaveVisualTree(TextBox textBox)
+	public void OnLeaveVisualTree(TextBoxCore core)
 	{
 	}
 
@@ -29,10 +29,10 @@ internal sealed class BrowserSkiaTextBoxNotificationsProviderSingleton : ITextBo
 	{
 	}
 
-	public void NotifyValueChanged(TextBox textBox) => SyncTextBox(textBox);
+	public void NotifyValueChanged(TextBoxCore core) => SyncTextBox(core);
 
-	public void NotifySelectionChanged(TextBox textBox) => SyncTextBox(textBox);
+	public void NotifySelectionChanged(TextBoxCore core) => SyncTextBox(core);
 
-	private static void SyncTextBox(TextBox textBox)
-		=> WebAssemblyAccessibility.Instance.SyncTextBoxValueAndSelection(textBox);
+	private static void SyncTextBox(TextBoxCore core)
+		=> WebAssemblyAccessibility.Instance.SyncTextBoxValueAndSelection(core);
 }

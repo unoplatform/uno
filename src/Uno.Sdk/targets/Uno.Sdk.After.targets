@@ -133,7 +133,6 @@
 				AND (
 					$(TargetFrameworks.Contains('-ios'))
 					OR $(TargetFrameworks.Contains('-android'))
-					OR $(TargetFrameworks.Contains('-maccatalyst'))
 				)
 				AND $([MSBuild]::GetTargetPlatformIdentifier($(_UnoFirstOriginalTargetFramework))) != 'desktop'">
 

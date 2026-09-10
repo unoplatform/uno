@@ -32,13 +32,13 @@ internal partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 	{
 		if (textField is SinglelineInvisibleTextBoxView textBoxView)
 		{
-			if (_textBoxViewExtension.GetTarget()?.Owner.TextBox is not TextBox textBox)
+			if (_textBoxViewExtension.GetTarget()?.Owner.Core is not { } core)
 			{
 				return false;
 			}
 
 			// Both IsReadOnly = true and IsTabStop = false can prevent editing
-			if (textBox.IsReadOnly || !textBox.IsTabStop)
+			if (core.IsReadOnly || !core.Owner.IsTabStop)
 			{
 				return false;
 			}
@@ -62,13 +62,13 @@ internal partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 			//	return false;
 			//}
 
-			if (textBox.MaxLength > 0)
+			if (core.MaxLength > 0)
 			{
 				// When replacing text from pasting (multiple characters at once)
 				// we should only allow it (return true) when the new text length
-				// is lower or equal to the allowed length (TextBox.MaxLength)
+				// is lower or equal to the allowed length (MaxLength)
 				var newLength = (textBoxView.Text?.Length ?? 0) + replacementString.Length - range.Length;
-				return newLength <= textBox.MaxLength;
+				return newLength <= core.MaxLength;
 			}
 		}
 
@@ -101,9 +101,9 @@ internal partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 	/// </summary>
 	public override void EditingStarted(UITextField textField)
 	{
-		if (_textBoxViewExtension.GetTarget()?.Owner.TextBox is TextBox textBox && textBox.FocusState == FocusState.Unfocused)
+		if (_textBoxViewExtension.GetTarget()?.Owner.Core is { Owner.FocusState: FocusState.Unfocused } core)
 		{
-			textBox.Focus(FocusState.Pointer);
+			core.Owner.Focus(FocusState.Pointer);
 		}
 	}
 
@@ -112,15 +112,15 @@ internal partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 	/// </summary>
 	public override void EditingEnded(UITextField textField)
 	{
-		if (_textBoxViewExtension.GetTarget()?.Owner.TextBox is TextBox { FocusState: not FocusState.Unfocused } textBox)
+		if (_textBoxViewExtension.GetTarget()?.Owner.Core is { Owner.FocusState: not FocusState.Unfocused } core)
 		{
-			textBox.Unfocus();
+			core.Owner.Unfocus();
 		}
 	}
 
 	private bool OnKey(char key)
 	{
-		if (_textBoxViewExtension.GetTarget()?.Owner.TextBox is not TextBox textBox)
+		if (_textBoxViewExtension.GetTarget()?.Owner.Core is not { } core)
 		{
 			return false;
 		}
@@ -131,10 +131,10 @@ internal partial class SinglelineInvisibleTextBoxDelegate : UITextFieldDelegate
 			CanBubbleNatively = false
 		};
 
-		var downHandled = textBox.RaiseEvent(UIElement.KeyDownEvent, keyRoutedEventArgs);
+		var downHandled = core.Owner.RaiseEvent(UIElement.KeyDownEvent, keyRoutedEventArgs);
 
 		keyRoutedEventArgs.Handled = false; // reset to unhandled for Up
-		var upHandled = textBox.RaiseEvent(UIElement.KeyUpEvent, keyRoutedEventArgs);
+		var upHandled = core.Owner.RaiseEvent(UIElement.KeyUpEvent, keyRoutedEventArgs);
 
 		return downHandled || upHandled;
 	}

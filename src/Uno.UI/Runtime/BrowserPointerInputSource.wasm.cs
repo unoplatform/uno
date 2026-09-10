@@ -11,11 +11,14 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
-using Windows.UI.Input;
-using static Windows.UI.Input.PointerUpdateKind;
+using Microsoft.UI.Input;
+using static Microsoft.UI.Input.PointerUpdateKind;
 using _NativeMethods = __Windows.UI.Core.CoreWindow.NativeMethods;
 using _PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
 using _PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
+// PointerDeviceType now exists in both namespaces (Microsoft.UI.Input.PointerDeviceType relocated to Uno.dll);
+// the native DOM handling here works with the device-layer enum, so bind the bare name to it.
+using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
 
 namespace Uno.UI.Runtime;
 
@@ -98,7 +101,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 
 		try
 		{
-			_logTrace?.Trace($"Pointer evt={(HtmlPointerEvent)@event}|id={pointerId}|x={x}|y={x}|ctrl={ctrl}|shift={shift}|bts={buttons}|btUpdate={buttonUpdate}|type={(PointerDeviceType)deviceType}|ts={timestamp}|pres={pressure}|wheelX={wheelDeltaX}|wheelY={wheelDeltaY}|relTarget={hasRelatedTarget}");
+			_logTrace?.Trace($"Pointer evt={(HtmlPointerEvent)@event}|id={pointerId}|x={x}|y={x}|ctrl={ctrl}|shift={shift}|bts={buttons}|btUpdate={buttonUpdate}|type={(global::Windows.Devices.Input.PointerDeviceType)deviceType}|ts={timestamp}|pres={pressure}|wheelX={wheelDeltaX}|wheelY={wheelDeltaY}|relTarget={hasRelatedTarget}");
 
 			// Ensure that the async context is set properly, since we're raising
 			// events from outside the dispatcher.
@@ -106,9 +109,9 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 
 			var that = (BrowserPointerInputSource)inputSource;
 			var evt = (HtmlPointerEvent)@event;
-			var pointerType = (PointerDeviceType)deviceType;
+			var pointerType = (global::Windows.Devices.Input.PointerDeviceType)deviceType;
 			var pointerDevice = PointerDevice.For(pointerType);
-			var pointerIdentifier = _PointerIdentifierPool.RentManaged(new _PointerIdentifier((PointerDeviceType)deviceType, (uint)pointerId));
+			var pointerIdentifier = _PointerIdentifierPool.RentManaged(new _PointerIdentifier((global::Windows.Devices.Input.PointerDeviceType)deviceType, (uint)pointerId));
 
 			var frameId = ToFrameId(timestamp);
 			var ts = that.ToTimestamp(timestamp);
@@ -149,7 +152,7 @@ internal partial class BrowserPointerInputSource : IUnoCorePointerInputSource
 				case HtmlPointerEvent.pointerup:
 					//case HtmlPointerEvent.lostpointercapture: // if pointer is captured, we don't get a up, just a capture lost (with skia for wasm)
 					that.PointerReleased?.Invoke(that, args);
-					if (that._isIOs && args is { CurrentPoint.PointerDeviceType: PointerDeviceType.Touch, DispatchResult: UIElement.PointerEventDispatchResult { VisualTreeAltered: true } })
+					if (that._isIOs && args is { CurrentPoint.PointerDeviceType: global::Microsoft.UI.Input.PointerDeviceType.Touch, DispatchResult: UIElement.PointerEventDispatchResult { VisualTreeAltered: true } })
 					{
 						// On iOS, when the element under the pointer is removed, the browser won't send any pointer leave event.
 

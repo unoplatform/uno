@@ -183,7 +183,7 @@ internal sealed partial class Win32NativeAotWebView : Win32NativeWebViewBase, IS
 	{
 		if (_coreWebView.Owner is Microsoft.UI.Xaml.Controls.WebView2 view)
 		{
-			Presenter.SetBinding(FrameworkElement.BackgroundProperty, new Binding()
+			Presenter.SetBinding(ContentPresenter.BackgroundProperty, new Binding()
 			{
 				Path = new(nameof(view.Background)),
 				Source = view,

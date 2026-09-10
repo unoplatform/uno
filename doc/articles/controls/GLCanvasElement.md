@@ -64,20 +64,15 @@ XAML:
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:BlankApp"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:skia="http://uno.ui/skia#using:UITests.Shared.Windows_UI_Composition"
-             xmlns:not_skia="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:not_win="http://uno.ui/not_win"
-             mc:Ignorable="skia not_win">
+             xmlns:not_winappsdk="http://uno.ui/not_winappsdk#using:BlankApp"
+             xmlns:winappsdk="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             mc:Ignorable="not_winappsdk">
 
     <Grid>
-        <skia:SimpleTriangleGlCanvasElement />
-        <win:Grid>
+        <not_winappsdk:SimpleTriangleGlCanvasElement />
+        <winappsdk:Grid>
             <local:SimpleTriangleGlCanvasElement />
-        </win:Grid>
-        <not_win:Grid>
-            <not_skia:TextBlock Text="This sample is only supported on skia targets and WinUI." />
-        </not_win:Grid>
+        </winappsdk:Grid>
     </Grid>
 </UserControl>
 ```

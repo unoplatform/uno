@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using Windows.Storage;
 
-#if XAMARIN || UNO_REFERENCE_API
+#if __ANDROID__ || __APPLE_UIKIT__ || UNO_REFERENCE_API
 using Microsoft.UI.Xaml.Controls;
 #else
 using Windows.Graphics.Imaging;
@@ -476,12 +476,7 @@ namespace SampleControl.Presentation
 				_useFluentStyles = value;
 				if (_useFluentStyles)
 				{
-					_fluentResources = _fluentResources ?? new XamlControlsResources()
-					{
-#if !WINAPPSDK
-						ControlsResourcesVersion = ControlsResourcesVersion.Version2
-#endif
-					};
+					_fluentResources ??= new XamlControlsResources();
 					Application.Current.Resources.MergedDictionaries.Add(_fluentResources);
 				}
 				else

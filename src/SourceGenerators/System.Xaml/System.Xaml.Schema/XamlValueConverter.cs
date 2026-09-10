@@ -87,6 +87,7 @@ namespace Uno.Xaml.Schema
 			return Equals (a);
 		}
 
+		[UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "TODO")]
 		protected virtual TConverterBase CreateInstance ()
 		{
 			if (ConverterType == null)

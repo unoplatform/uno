@@ -35,6 +35,7 @@ using Windows.Win32.UI.WindowsAndMessaging;
 using Uno.UI.Dispatching;
 using Point = System.Drawing.Point;
 
+
 namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHost, IAccessibilityOwner
@@ -240,8 +241,10 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 	{
 		Debug.Assert(_hwnd == HWND.Null || hwnd == _hwnd); // the null check is for when this method gets called inside CreateWindow before setting _hwnd
 
-		if (msg == Win32UIAutomationInterop.WM_GETOBJECT
-			&& (int)lParam.Value == Win32UIAutomationInterop.UiaRootObjectId)
+		// WinUI forwards every WM_GETOBJECT object id to UiaReturnRawElementProvider
+		// (CJupiterWindow::WndProc -> CJupiterControl::HandleGetObjectMessage), which lets the
+		// UIA-to-MSAA bridge answer legacy OBJID_CLIENT requests too.
+		if (msg == Win32UIAutomationInterop.WM_GETOBJECT)
 		{
 			return Win32UIAutomationInterop.HandleGetObject(
 				hwnd, wParam, lParam, _accessibility?.RootProvider);
@@ -835,7 +838,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 			surfaceCanvas.Translate(0, targetSize);
 			surfaceCanvas.Scale(1, -1);
 			using var scaledImage = SKImage.FromBitmap(scaledBitmap);
-			surfaceCanvas.DrawImage(scaledImage, 0, 0);
+			surfaceCanvas.DrawImage(scaledImage, 0, 0, SKSamplingOptions.Default, null);
 			surface.Snapshot().ReadPixels(info, (IntPtr)(presBits + Marshal.SizeOf<BITMAPINFOHEADER>()));
 		}
 

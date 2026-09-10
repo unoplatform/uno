@@ -4,10 +4,9 @@
 					xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls"
 					xmlns:mux="using:Microsoft.UI.Xaml.Controls"
 					xmlns:not_win="http://uno.ui/not_win"
-					xmlns:ios="http://nventive.com/ios"
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-					mc:Ignorable="d not_win ios">
+					mc:Ignorable="d not_win">
 	<Style x:Key="BasicListViewContainerStyle"
 		   TargetType="ListViewItem">
 		<Setter Property="Template">
@@ -849,10 +848,6 @@
 								</VisualState>
 
 								<VisualState x:Name="Pressed">
-									<ios:VisualState.Setters>
-										<Setter Target="PressedOverlay.Opacity"
-													Value="0.9" />
-									</ios:VisualState.Setters>
 								</VisualState>
 
 								<VisualState x:Name="Disabled">

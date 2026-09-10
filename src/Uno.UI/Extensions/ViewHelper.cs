@@ -1,4 +1,4 @@
-﻿#if IS_UNIT_TESTS || UNO_REFERENCE_API
+﻿#if UNO_REFERENCE_API
 using System;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -46,7 +46,7 @@ namespace Uno.UI
 
 		internal static double PhysicalToLogicalPixels(double value)
 		{
-			// TODO: Platform check here is very unfortunate. Try to refactor this into Uno.UWP
+			// TODO: Platform check here is very unfortunate. Try to refactor this into Uno.WinRT.dll
 			if (Uno.UI.Helpers.DeviceTargetHelper.IsMobile())
 			{
 				return value / _cachedDensity;
@@ -57,7 +57,7 @@ namespace Uno.UI
 
 		internal static double LogicalToPhysicalPixels(double value)
 		{
-			// TODO: Platform check here is very unfortunate. Try to refactor this into Uno.UWP
+			// TODO: Platform check here is very unfortunate. Try to refactor this into Uno.WinRT.dll
 			if (Uno.UI.Helpers.DeviceTargetHelper.IsMobile())
 			{
 				if (double.IsNaN(value))

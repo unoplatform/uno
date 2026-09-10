@@ -12,7 +12,6 @@ using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
-using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.MenuFlyoutPages;
 using Windows.UI;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
@@ -88,40 +87,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_Native_AppBarButton_And_Managed_Popups()
-		{
-			using (StyleHelper.UseNativeFrameNavigation())
-			{
-				var page = new Native_AppBarButton_Page();
-
-				WindowHelper.WindowContent = page;
-				await WindowHelper.WaitForLoaded(page);
-
-				var flyout = page.SUT.Flyout as MenuFlyout;
-				try
-				{
-					await ControlHelper.DoClickUsingAP(page.SUT);
-#if !WINAPPSDK
-					Assert.IsFalse(flyout.UseNativePopup);
-#endif
-					var flyoutItem = page.FirstFlyoutItem;
-
-					await WindowHelper.WaitForLoaded(flyoutItem);
-					var pageBounds = page.GetOnScreenBounds();
-					var flyoutItemBounds = flyoutItem.GetOnScreenBounds();
-					Assert.AreEqual(pageBounds.Right, flyoutItemBounds.Right, delta: 1);
-					NumberAssert.Less(flyoutItemBounds.Top, pageBounds.Height / 4); // Exact command bar height may vary between platforms, but the flyout should at least be in the ~top 1/4th of screen
-				}
-				finally
-				{
-					flyout.Hide();
-				}
-			}
-		}
-
-		[TestMethod]
-		[RequiresFullWindow]
 		public async Task When_Add_MenuFlyoutSeparator_To_MenuBarItem()
 		{
 			var menuBarItem = new MenuBarItem
@@ -193,6 +158,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task Verify_MenuBarItem_Bounds()
 		{
 			var flyoutItem = new MenuFlyoutItem { Text = "Open..." };
@@ -250,13 +216,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(32, menuBarItemBounds.Height, 1);
 
 				var expectedY = 39.0;
-#if __ANDROID__
-				if (!FeatureConfiguration.Popup.UseNativePopup)
-				{
-					// If using managed popup, the expected offset must be adjusted for the status bar
-					expectedY += menuBarBounds.Y;
-				}
-#endif
 
 				Assert.AreEqual(5, flyoutItemBounds.X, 3);
 				Assert.AreEqual(expectedY, flyoutItemBounds.Y, 3);
@@ -268,17 +227,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if __ANDROID__
-		[TestMethod]
-		[RequiresFullWindow]
-		[Ignore("Flaky #9080")]
-		public async Task Verify_MenuBarItem_Bounds_Native_Popups()
-		{
-			using (FeatureConfigurationHelper.UseNativePopups())
-			{
-				await Verify_MenuBarItem_Bounds();
-			}
-		}
-
 		[TestMethod]
 		[RequiresFullWindow]
 		public async Task Verify_MenuBarItem_Bounds_Managed_Popups()
@@ -427,7 +375,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			finally
 			{
 				subItem.Close();
-				flyout.Close();
+				flyout.Hide();
 			}
 		}
 #endif

@@ -154,7 +154,11 @@ internal sealed class DefaultRemoteControlProcessorFactory : IRemoteControlProce
 		}
 
 		var normalized = basePath.Replace('/', Path.DirectorySeparatorChar);
-#if NET10_0_OR_GREATER
+#if false
+		// ignored; never executed due to `false`; present to minimize diffs around replacing `#if` with `#elif`
+#elif NET11_0_OR_GREATER
+		var candidate = Path.Combine(normalized, "net11.0");
+#elif NET10_0_OR_GREATER
 		var candidate = Path.Combine(normalized, "net10.0");
 #elif NET9_0_OR_GREATER
 		var candidate = Path.Combine(normalized, "net9.0");

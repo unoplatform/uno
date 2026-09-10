@@ -9,7 +9,6 @@
 		<AssemblyName>Uno.UI.MediaPlayer.Skia.X11</AssemblyName>
 		<RootNamespace>Uno.UI.MediaPlayer.Skia.X11</RootNamespace>
 
-		<DefineConstants>$(DefineConstants);IS_MPE_X11</DefineConstants>
 
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<PackageId>Uno.WinUI.MediaPlayer.Skia.X11</PackageId>
@@ -29,7 +28,7 @@
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 		
 		<ProjectReference Include="..\..\Uno.UI.Runtime.Skia.X11\Uno.UI.Runtime.Skia.X11.csproj" />
-		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 	</ItemGroup>
 
 	<Target Name="_UnoUIUnoUIMediaPlayerSkiaX11OverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">

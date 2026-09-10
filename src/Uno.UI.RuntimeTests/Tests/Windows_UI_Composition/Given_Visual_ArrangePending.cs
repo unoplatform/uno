@@ -148,7 +148,7 @@ public class Given_Visual_ArrangePending
 
 		public void AddDamage(SKPath region) { }
 
-		public void TryRedirectForManipulation(Windows.UI.Input.PointerPoint pointerPoint, InteractionTracker tracker) { }
+		public void TryRedirectForManipulation(Microsoft.UI.Input.PointerPoint pointerPoint, InteractionTracker tracker) { }
 	}
 #endif
 }
