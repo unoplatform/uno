@@ -1184,7 +1184,7 @@ partial class AppBar
 		m_hasUpdatedTemplateSettings = true;
 	}
 
-	protected bool GetShouldOpenUp()
+	private protected virtual bool GetShouldOpenUp()
 	{
 		// Bottom appbars always open up. All other appbars by default open down
 		bool shouldOpenUp = m_Mode == AppBarMode.Bottom;
@@ -1208,7 +1208,7 @@ partial class AppBar
 
 	// If the appbar is inline, check to see if opening in the default direction would cause the appbar to appear partially
 	// offscreen.
-	private bool HasSpaceForAppBarToOpenDown()
+	private protected bool HasSpaceForAppBarToOpenDown()
 	{
 		MUX_ASSERT(m_Mode == AppBarMode.Inline);
 
