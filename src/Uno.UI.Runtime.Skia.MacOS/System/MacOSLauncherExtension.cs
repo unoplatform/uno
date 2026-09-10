@@ -1,3 +1,4 @@
+using Windows.Storage;
 using Windows.System;
 
 using Uno.Foundation.Extensibility;
@@ -27,6 +28,12 @@ internal class MacOSLauncherExtension : ILauncherExtension
 		}
 
 		return Task.FromResult(NativeUno.uno_application_open_url(uri.AbsoluteUri));
+	}
+
+	public Task<bool> LaunchFileAsync(IStorageFile file)
+	{
+		var fileUri = new Uri(file.Path, UriKind.Absolute).AbsoluteUri;
+		return Task.FromResult(NativeUno.uno_application_open_url(fileUri));
 	}
 
 	public Task<LaunchQuerySupportStatus> QueryUriSupportAsync(Uri uri, LaunchQuerySupportType launchQuerySupportType)

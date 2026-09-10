@@ -8,6 +8,7 @@ using Uno.Extensions;
 using Uno.Extensions.System;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
+using Windows.Storage;
 
 namespace Windows.System
 {
@@ -31,6 +32,15 @@ namespace Windows.System
 			return await LaunchUriFallbackAsync(uri);
 		}
 
+		internal static async Task<bool> LaunchFilePlatformAsync(IStorageFile file)
+		{
+			if (_launcherExtension.Value is ILauncherExtension ext)
+			{
+				return await ext.LaunchFileAsync(file);
+			}
+			return LaunchFileFallback(file);
+		}
+
 		private static Task<bool> LaunchUriFallbackAsync(Uri uri)
 		{
 			try
@@ -52,6 +62,29 @@ namespace Windows.System
 					typeof(Launcher).Log().LogError($"Could not launch URI - {ex}");
 				}
 				return Task.FromResult(false);
+			}
+		}
+
+		private static bool LaunchFileFallback(IStorageFile file)
+		{
+			try
+			{
+				var processStartInfo = new ProcessStartInfo(file.Path)
+				{
+					UseShellExecute = true,
+				};
+
+				var process = new Process();
+				process.StartInfo = processStartInfo;
+				return process.Start();
+			}
+			catch (Exception ex)
+			{
+				if (typeof(Launcher).Log().IsEnabled(LogLevel.Error))
+				{
+					typeof(Launcher).Log().LogError($"Could not launch file - {ex}");
+				}
+				return false;
 			}
 		}
 

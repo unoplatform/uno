@@ -8,20 +8,8 @@ namespace Windows.System
 #endif
 	public static partial class Launcher
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFileAsync(global::Windows.Storage.IStorageFile file)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "LaunchFileAsync(IStorageFile file)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<bool> LaunchFileAsync(global::Windows.Storage.IStorageFile file, global::Windows.System.LauncherOptions options)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Windows.System.Launcher", "LaunchFileAsync(IStorageFile file, LauncherOptions options)");
-		}
-#endif
+		// Skipping already declared method Windows.System.Launcher.LaunchFileAsync(Windows.Storage.IStorageFile)
+		// Skipping already declared method Windows.System.Launcher.LaunchFileAsync(Windows.Storage.IStorageFile, Windows.System.LauncherOptions)
 		// Skipping already declared method Windows.System.Launcher.LaunchUriAsync(System.Uri)
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
