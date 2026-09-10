@@ -9,8 +9,8 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
-using Uno.UI.RuntimeTests.Helpers;
 using Path = Microsoft.UI.Xaml.Shapes.Path;
+using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO
 using Uno.UI.Controls.Legacy;
