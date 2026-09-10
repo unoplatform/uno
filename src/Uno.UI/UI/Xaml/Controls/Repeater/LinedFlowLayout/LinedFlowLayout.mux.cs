@@ -465,7 +465,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (m_isVirtualizingContext && m_itemsInfoFirstIndex == -1 && m_aspectRatios != null)
 				{
-					int firstRealizedItemIndex = m_elementManager.GetFirstRealizedDataIndex();
+					int firstRealizedItemIndex = m_elementManager.GetFirstRealizedDataIndex;
 					int lastRealizedItemIndex = firstRealizedItemIndex + m_elementManager.GetRealizedElementCount - 1;
 
 					MUX_ASSERT(firstRealizedItemIndex >= 0);
@@ -978,7 +978,7 @@ namespace Microsoft.UI.Xaml.Controls
 				MUX_ASSERT(preStillSizedItemCountDbg + stillSizedItemCountDbg + postStillSizedItemCountDbg == sizedItemCount);
 #endif
 
-				int firstRealizedItemIndex = m_elementManager.GetFirstRealizedDataIndex();
+				int firstRealizedItemIndex = m_elementManager.GetFirstRealizedDataIndex;
 				int lastRealizedItemIndex = firstRealizedItemIndex + m_elementManager.GetRealizedElementCount - 1;
 
 				MUX_ASSERT(firstRealizedItemIndex >= 0);
@@ -3167,7 +3167,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// LINEDFLOWLAYOUT_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR_INT, METH_NAME, this, L"newLastRealizedItemIndex", newLastRealizedItemIndex);
 			// LINEDFLOWLAYOUT_TRACE_VERBOSE_DBG(*this, TRACE_MSG_METH_STR_INT, METH_NAME, this, L"newRealizedItemCount", newRealizedItemCount);
-			int oldFirstRealizedItemIndex = m_elementManager.GetFirstRealizedDataIndex(); // -1 and unused in non-virtualizing mode.
+			int oldFirstRealizedItemIndex = m_elementManager.GetFirstRealizedDataIndex; // -1 and unused in non-virtualizing mode.
 			int oldLastRealizedItemIndex = oldFirstRealizedItemIndex == -1 ? -1 : oldFirstRealizedItemIndex + m_elementManager.GetRealizedElementCount - 1;
 
 			// Discard the first realized items fallen off the realization window.
@@ -3182,7 +3182,7 @@ namespace Microsoft.UI.Xaml.Controls
 					Math.Min(newFirstRealizedItemIndex, oldFirstRealizedItemIndex + m_elementManager.GetRealizedElementCount) - 1 /*startIndex*/);
 			}
 
-			MUX_ASSERT(newFirstRealizedItemIndex <= m_elementManager.GetFirstRealizedDataIndex() || -1 == m_elementManager.GetFirstRealizedDataIndex());
+			MUX_ASSERT(newFirstRealizedItemIndex <= m_elementManager.GetFirstRealizedDataIndex || -1 == m_elementManager.GetFirstRealizedDataIndex);
 
 			int firstStillRealizedItemIndex = -1;
 			int lastStillRealizedItemIndex = -1;
@@ -3201,7 +3201,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			if (m_elementManager.GetFirstRealizedDataIndex() != -1 && newFirstRealizedItemIndex < m_elementManager.GetFirstRealizedDataIndex())
+			if (m_elementManager.GetFirstRealizedDataIndex != -1 && newFirstRealizedItemIndex < m_elementManager.GetFirstRealizedDataIndex)
 			{
 				MUX_ASSERT(oldFirstRealizedItemIndex > 0);
 
@@ -3212,7 +3212,7 @@ namespace Microsoft.UI.Xaml.Controls
 					newFirstRealizedItemIndex /*endRealizedItemIndex*/);
 
 				// Ensure and measure the realized items after the old first realized item.
-				MUX_ASSERT(newFirstRealizedItemIndex == m_elementManager.GetFirstRealizedDataIndex());
+				MUX_ASSERT(newFirstRealizedItemIndex == m_elementManager.GetFirstRealizedDataIndex);
 
 				if (firstStillRealizedItemIndex != -1)
 				{
@@ -3243,7 +3243,7 @@ namespace Microsoft.UI.Xaml.Controls
 			else
 			{
 				// Ensure and measure the realized items.
-				MUX_ASSERT(newFirstRealizedItemIndex == m_elementManager.GetFirstRealizedDataIndex() || m_elementManager.GetFirstRealizedDataIndex() == -1);
+				MUX_ASSERT(newFirstRealizedItemIndex == m_elementManager.GetFirstRealizedDataIndex || m_elementManager.GetFirstRealizedDataIndex == -1);
 
 				if (firstStillRealizedItemIndex != -1)
 				{
@@ -3694,7 +3694,7 @@ namespace Microsoft.UI.Xaml.Controls
 			out int firstFullyRealizedLineIndex,
 			out int firstItemInFullyRealizedLine)
 		{
-			int firstRealizedItemIndex = m_isVirtualizingContext ? m_elementManager.GetFirstRealizedDataIndex() : 0;
+			int firstRealizedItemIndex = m_isVirtualizingContext ? m_elementManager.GetFirstRealizedDataIndex : 0;
 
 			if (firstRealizedItemIndex == -1)
 			{
@@ -5724,8 +5724,8 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					MeasureItemRange(
 						actualLineHeight,
-						m_elementManager.GetFirstRealizedDataIndex() /*beginRealizedItemIndex*/,
-						m_elementManager.GetFirstRealizedDataIndex() + m_elementManager.GetRealizedElementCount - 1 /*endRealizedItemIndex*/);
+						m_elementManager.GetFirstRealizedDataIndex /*beginRealizedItemIndex*/,
+						m_elementManager.GetFirstRealizedDataIndex + m_elementManager.GetRealizedElementCount - 1 /*endRealizedItemIndex*/);
 				}
 
 				if (maxLineWidth == 0.0f)
@@ -6200,7 +6200,7 @@ namespace Microsoft.UI.Xaml.Controls
 			MUX_ASSERT(sizedLineCount <= lineCount);
 			MUX_ASSERT(sizedLineCount >= realizedLineCount);
 
-			int oldFirstRealizedDataIndex = m_elementManager.GetFirstRealizedDataIndex(); // -1 and unused in non-virtualizing mode.
+			int oldFirstRealizedDataIndex = m_elementManager.GetFirstRealizedDataIndex; // -1 and unused in non-virtualizing mode.
 			int oldLastRealizedDataIndex = oldFirstRealizedDataIndex == -1 ? -1 : oldFirstRealizedDataIndex + m_elementManager.GetRealizedElementCount - 1;
 			int oldFirstSizedItemIndex = m_firstSizedItemIndex;
 			int oldLastSizedItemIndex = m_lastSizedItemIndex;
@@ -6510,7 +6510,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// LINEDFLOWLAYOUT_TRACE_INFO_DBG(*this, TRACE_MSG_METH_STR_INT, METH_NAME, this, L"firstStillRealizedItemIndex", firstStillRealizedItemIndex);
 			// LINEDFLOWLAYOUT_TRACE_INFO_DBG(*this, TRACE_MSG_METH_STR_INT, METH_NAME, this, L"lastStillRealizedItemIndex", lastStillRealizedItemIndex);
 			// Discard the first realized items fallen off the realization window.
-			if (m_elementManager.GetFirstRealizedDataIndex() != -1 && unrealizedNearItemCount > m_elementManager.GetFirstRealizedDataIndex())
+			if (m_elementManager.GetFirstRealizedDataIndex != -1 && unrealizedNearItemCount > m_elementManager.GetFirstRealizedDataIndex)
 			{
 				MUX_ASSERT(m_isVirtualizingContext);
 
@@ -6518,12 +6518,12 @@ namespace Microsoft.UI.Xaml.Controls
 				//     m_elementManager.GetFirstRealizedDataIndex(), unrealizedNearItemCount - 1);
 				m_elementManager.DiscardElementsOutsideWindow(
 					false /*forward*/,
-					Math.Min(unrealizedNearItemCount, m_elementManager.GetFirstRealizedDataIndex() + m_elementManager.GetRealizedElementCount) - 1 /*startIndex*/);
+					Math.Min(unrealizedNearItemCount, m_elementManager.GetFirstRealizedDataIndex + m_elementManager.GetRealizedElementCount) - 1 /*startIndex*/);
 			}
 
-			MUX_ASSERT(unrealizedNearItemCount <= m_elementManager.GetFirstRealizedDataIndex() || -1 == m_elementManager.GetFirstRealizedDataIndex());
+			MUX_ASSERT(unrealizedNearItemCount <= m_elementManager.GetFirstRealizedDataIndex || -1 == m_elementManager.GetFirstRealizedDataIndex);
 
-			if (m_elementManager.GetFirstRealizedDataIndex() != -1 && unrealizedNearItemCount < m_elementManager.GetFirstRealizedDataIndex())
+			if (m_elementManager.GetFirstRealizedDataIndex != -1 && unrealizedNearItemCount < m_elementManager.GetFirstRealizedDataIndex)
 			{
 				MUX_ASSERT(oldFirstRealizedDataIndex > 0);
 
@@ -6537,7 +6537,7 @@ namespace Microsoft.UI.Xaml.Controls
 					unrealizedNearItemCount /*endRealizedItemIndex*/);
 
 				// Ensure and measure the realized & unfrozen items after the old first realized item.
-				MUX_ASSERT(unrealizedNearItemCount == m_elementManager.GetFirstRealizedDataIndex());
+				MUX_ASSERT(unrealizedNearItemCount == m_elementManager.GetFirstRealizedDataIndex);
 
 				if (firstStillRealizedItemIndex != -1)
 				{
@@ -6577,7 +6577,7 @@ namespace Microsoft.UI.Xaml.Controls
 			else
 			{
 				// Ensure and measure the realized & unfrozen items.
-				MUX_ASSERT(unrealizedNearItemCount == m_elementManager.GetFirstRealizedDataIndex() || m_elementManager.GetFirstRealizedDataIndex() == -1);
+				MUX_ASSERT(unrealizedNearItemCount == m_elementManager.GetFirstRealizedDataIndex || m_elementManager.GetFirstRealizedDataIndex == -1);
 
 				if (firstStillRealizedItemIndex != -1)
 				{
@@ -6627,7 +6627,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			MUX_ASSERT(unrealizedNearItemCount >= 0);
 			MUX_ASSERT(m_isVirtualizingContext || unrealizedNearItemCount == 0);
-			MUX_ASSERT(!m_isVirtualizingContext || m_elementManager.GetFirstRealizedDataIndex() == unrealizedNearItemCount);
+			MUX_ASSERT(!m_isVirtualizingContext || m_elementManager.GetFirstRealizedDataIndex == unrealizedNearItemCount);
 			MUX_ASSERT(m_elementManager.GetRealizedElementCount == realizedItemCount);
 
 			if (m_elementManager.GetRealizedElement(unrealizedNearItemCount) is { } firstElement)
@@ -6661,7 +6661,7 @@ namespace Microsoft.UI.Xaml.Controls
 			MUX_ASSERT(!(firstStillSizedLineIndex != -1 && forceRelayout));
 			MUX_ASSERT(unrealizedNearItemCount >= 0);
 			MUX_ASSERT(m_isVirtualizingContext || unrealizedNearItemCount == 0);
-			MUX_ASSERT(!m_isVirtualizingContext || m_elementManager.GetFirstRealizedDataIndex() == unrealizedNearItemCount);
+			MUX_ASSERT(!m_isVirtualizingContext || m_elementManager.GetFirstRealizedDataIndex == unrealizedNearItemCount);
 			MUX_ASSERT(unsizedNearItemCount <= unrealizedNearItemCount);
 
 			bool itemHasNewDesiredWidth = ComputeFrozenItemsAndLayout(
