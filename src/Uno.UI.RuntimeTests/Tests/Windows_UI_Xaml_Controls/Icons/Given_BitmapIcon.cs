@@ -107,7 +107,7 @@ public class Given_BitmapIcon
 #elif !__SKIA__
 	[Ignore("BitmapIcon flicker fix is Skia-specific - Image.skia.cs updates the surface brush color filter in place without reloading.")]
 #endif
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)] // Flaky - https://github.com/unoplatform/uno/issues/24489
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaUIKit)] // Flaky on Skia iOS/tvOS only - https://github.com/unoplatform/uno/issues/24489
 	public async Task When_Foreground_Changed_With_ShowAsMonochrome_True()
 	{
 		var bitmapIcon = new BitmapIcon

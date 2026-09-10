@@ -81,7 +81,7 @@ public class Given_InputPane
 	[RunsOnUIThread]
 	[RequiresFullWindow]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
-	[Ignore("Flaky on all targets - https://github.com/unoplatform/uno/issues/24489")]
+	[Ignore("Flaky on all targets, not one platform - https://github.com/unoplatform/uno/issues/24489")]
 	public async Task When_Focused_TextBox_Has_Content_Below_Then_Scrolled_Above_Occlusion()
 	{
 		var textBox = new TextBox { Height = 40, PlaceholderText = "middle" };
@@ -203,7 +203,7 @@ public class Given_InputPane
 	[RunsOnUIThread]
 	[RequiresFullWindow]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
-	[Ignore("Flaky on all targets - https://github.com/unoplatform/uno/issues/24489")]
+	[Ignore("Flaky on all targets, not one platform - https://github.com/unoplatform/uno/issues/24489")]
 	public async Task When_Focused_Element_Not_Occluded_Then_Centered_Content_Is_Not_Moved()
 	{
 		var (scrollViewer, card, textBox) = BuildCenteredCardPage();
@@ -307,7 +307,7 @@ public class Given_InputPane
 	[RunsOnUIThread]
 	[RequiresFullWindow]
 	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Skia)]
-	[Ignore("Flaky on all targets - https://github.com/unoplatform/uno/issues/24489")]
+	[Ignore("Flaky on all targets, not one platform - https://github.com/unoplatform/uno/issues/24489")]
 	public async Task When_Occluded_Field_In_Viewport_Sized_Content_Then_Scrolled_Above_Occlusion()
 	{
 		var textBox = new TextBox { Height = 40, PlaceholderText = "bottom", VerticalAlignment = VerticalAlignment.Bottom };
