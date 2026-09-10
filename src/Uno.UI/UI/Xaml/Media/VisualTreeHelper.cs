@@ -102,7 +102,9 @@ namespace Microsoft.UI.Xaml.Media
 		// on every measure (FrameworkElement.HasTemplateChild) and for every node of every tree walk.
 		public static DependencyObject/* ? */ GetChild(DependencyObject reference, int childIndex)
 		{
-			if (reference is not UIElement element)
+			// Matches ElementAtOrDefault: any out-of-range index yields null. Negative indices are rejected
+			// up front so they stay O(1), as they were with ElementAtOrDefault's own short-circuit.
+			if (childIndex < 0 || reference is not UIElement element)
 			{
 				return null;
 			}
@@ -124,7 +126,6 @@ namespace Microsoft.UI.Xaml.Media
 				childIndex--;
 			}
 
-			// Matches ElementAtOrDefault: out-of-range (including negative) yields null.
 			return null;
 		}
 
