@@ -1,9 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+	<PropertyGroup>
+		<!-- Desktop and headless heads, the ones this check has always applied to. -->
+		<_UnoSvgCheckApplies>false</_UnoSvgCheckApplies>
+		<_UnoSvgCheckApplies
+			Condition="'$(UnoHasRuntimeHost)'=='true' and ('$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))'=='desktop' or '$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))'=='')">true</_UnoSvgCheckApplies>
+	</PropertyGroup>
+
 	<Target Name="_ValidateSvgDependencySkia"
 			BeforeTargets="Compile"
-			Condition="'$(IsUnoHead)'=='true' and '$(UnoRuntimeIdentifier)'=='Skia' and '$(UnoDisableSvgSkiaVersionCheck)'==''">
+			Condition="'$(IsUnoHead)'=='true' and '$(_UnoSvgCheckApplies)'=='true' and '$(UnoDisableSvgSkiaVersionCheck)'==''">
 
 		<!--
 		Nuget does not support dynamic references in packages, and we need Svg.Skia only for the Skia UnoRuntime

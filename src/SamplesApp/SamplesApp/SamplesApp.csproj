@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
 	<!--
 	Uno.Sdk is imported by path rather than via Sdk="Uno.Sdk.Private": an Sdk attribute resolves through
 	NuGet at evaluation time, so a fresh clone could not load this project until the SDK had been packed.
@@ -55,14 +55,15 @@
 		<AssemblyName Condition="'$(_Platform)' == 'windows'">SamplesApp.Windows</AssemblyName>
 
 		<!--
-		Every non-WinUI TFM renders with Skia, so the runtime identifier is Skia on all of them. That is
-		what defines __SKIA__ (Uno.CrossTargetting.targets) and includes the .skia.cs variants. The
-		platform file suffixes are gated on $(IsAndroid)/$(IsAppleUIKit), not on this, so the head's own
-		.Android.cs/.iOS.cs entry points are still compiled. WinUI leaves it empty (native rendering).
+		Every non-WinUI TFM renders with Skia, so the runtime flavor is Generic on all of them, and this
+		head is now the only source — the Uno.Sdk no longer sets it. That is what defines __SKIA__
+		(Uno.CrossTargetting.targets) and includes the .skia.cs variants. The platform file suffixes are
+		gated on $(IsAndroid)/$(IsAppleUIKit), not on this, so the head's own .Android.cs/.iOS.cs entry
+		points are still compiled. WinUI leaves it empty (native rendering).
 		-->
 		<!-- True for every non-WinUI TFM (desktop/wasm/android/ios/tvos) — gates the Skia framework refs. -->
 		<_IsSkiaTfm Condition="'$(_Platform)' != 'windows'">true</_IsSkiaTfm>
-		<UnoRuntimeIdentifier Condition="'$(UnoRuntimeIdentifier)' == '' AND '$(_IsSkiaTfm)' == 'true'">Skia</UnoRuntimeIdentifier>
+		<UnoRuntimeFlavor Condition="'$(UnoRuntimeFlavor)' == '' AND '$(_IsSkiaTfm)' == 'true'">Generic</UnoRuntimeFlavor>
 		<!-- Apple UIKit (iOS + tvOS; no MacCatalyst). NOTE: these TFMs require macOS to build — not
 		     compile-validated on Windows. -->
 		<_IsUIKit Condition="'$(_Platform)' == 'ios' OR '$(_Platform)' == 'tvos'">true</_IsUIKit>
