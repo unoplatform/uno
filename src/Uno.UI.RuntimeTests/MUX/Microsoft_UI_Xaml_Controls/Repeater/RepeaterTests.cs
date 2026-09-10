@@ -827,7 +827,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		// it creates the RecyclePool on the DataTemplate and populates it,
 		// which forms the reference cycle that must be breakable by the tracker.
 		[TestMethod]
-		[Ignore("UNO: GC-based cycle-breaking through the XAML tracker is not yet wired up in Uno.")]
+		[Ignore("UNO (uno#24478): GC-based cycle-breaking through the XAML tracker is not yet wired up in Uno.")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24478")]
 		public async Task VerifyRepeaterWithRecycledElementsDoesNotLeak()
 		{
 			WeakReference repeaterWeakRef = null;
@@ -886,7 +887,8 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		// DataTemplateSelector equivalent) can be garbage collected after
 		// elements are recycled and the repeater is removed from the tree.
 		[TestMethod]
-		[Ignore("UNO: GC-based cycle-breaking through the XAML tracker is not yet wired up in Uno.")]
+		[Ignore("UNO (uno#24478): GC-based cycle-breaking through the XAML tracker is not yet wired up in Uno.")]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24478")]
 		public async Task VerifyRepeaterWithRecyclingElementFactoryDoesNotLeak()
 		{
 			WeakReference repeaterWeakRef = null;
