@@ -28,7 +28,7 @@ namespace Uno.UI.RuntimeTests.Tests.AssemblyLoadContext;
 [UnconditionalSuppressMessage("Trimming", "IL2070", Justification = "Types manipulated here have been marked earlier")]
 [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = "Types manipulated here have been marked earlier")]
 [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = "Types manipulated here have been marked earlier")]
-public class Given_AlcContentHost
+public partial class Given_AlcContentHost
 {
 	private TestAssemblyLoadContext? _testAlc;
 	private TestAssemblyLoadContext? _testAlcSecondary;
