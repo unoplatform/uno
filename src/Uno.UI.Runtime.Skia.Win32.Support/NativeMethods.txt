@@ -203,6 +203,7 @@ GetClipboardFormatName
 GetClipboardSequenceNumber
 GetDC
 GetDeviceCaps
+GetDoubleClickTime
 GetDpiForWindow
 GetDpiForMonitor
 GetIconInfo
