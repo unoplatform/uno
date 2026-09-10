@@ -152,12 +152,16 @@ public sealed unsafe partial class WebGpuPresentSession
 	// A texture of the entry's own size, registered as its own atlas page so it shares the key, reference count and
 	// idle sweep of a shelf slot. Format follows what will be rendered into it.
 	private WebGpuPathAtlas.Slot AddStandaloneSlot(in WebGpuPathAtlas.Key key, int w, int h, float ox, float oy, WGPUTextureFormat format)
+		=> AddStandaloneSlot(key, w, h, ox, oy, format, w, h, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding);
+
+	// The entry draws w x h, over a texture of texW x texH: a blurred shadow is stored at its pyramid's top level.
+	private WebGpuPathAtlas.Slot AddStandaloneSlot(in WebGpuPathAtlas.Key key, int w, int h, float ox, float oy, WGPUTextureFormat format, int texW, int texH, WGPUTextureUsage usage)
 	{
 		var td = new WGPUTextureDescriptor
 		{
-			Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 },
+			Size = new WGPUExtent3D { Width = (uint)texW, Height = (uint)texH, DepthOrArrayLayers = 1 },
 			Format = format, MipLevelCount = 1, SampleCount = 1, Dimension = WGPUTextureDimension._2D,
-			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding,
+			Usage = usage,
 		};
 		var tex = wgpuDeviceCreateTexture(_d.Dev, &td);
 		return _d.PathAtlas.AddStandalone(key, w, h, ox, oy, tex, wgpuTextureCreateView(tex, null));

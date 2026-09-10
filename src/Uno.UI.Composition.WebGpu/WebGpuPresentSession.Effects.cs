@@ -37,6 +37,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			_d.PathAtlas.NoteUse(hit, _d.FrameSeq);
 			origin = new Vector2(hit.OriginX, hit.OriginY);
 			size = new Vector2(hit.W, hit.H);
+			uv = hit.Uv;
 			return hit.Owner.View;
 		}
 		if (!keyed)
@@ -47,33 +48,34 @@ public sealed unsafe partial class WebGpuPresentSession
 		origin = new Vector2(ox, oy);
 		size = new Vector2(w, h);
 
-		// Shadows are per-frame ops: one whose key has held for a run of frames (see Recurring) is static and gets an
-		// entry of its own, baked and blurred once. Every other shadow goes on the frame's shadow sheet for its blur
-		// radius, so N moving shadows cost one bake and one blur pyramid, not N.
-		if (!(keyed && _d.PathAtlas.Recurring(key, _d.FrameSeq)))
+		// Every shadow of the frame bakes on the shadow sheet for its blur radius, so N shadows cost one bake and one
+		// blur pyramid, not N. One whose key has held for a run of frames (see Recurring) is static: its blurred slot
+		// is copied out of the sheet into an entry of its own, at the pyramid's top-level size, and drawn from there.
+		float sigma = MathF.Max(sh.SigmaX, sh.SigmaY);
+		if (TryReserveShadowSlot(sigma, w, h, out var sheet, out var sx, out var sy))
 		{
-			if (TryReserveShadowSlot(MathF.Max(sh.SigmaX, sh.SigmaY), w, h, out var sheet, out var sx, out var sy))
+			AddBake(sheet.Bake, sx, sy, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - sh.Offset, Vector2.One, sh.EvenOdd);
+			ShadowSlotsBaked++;
+			if (!(keyed && _d.PathAtlas.Recurring(key, _d.FrameSeq)))
 			{
-				AddBake(sheet.Bake, sx, sy, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - sh.Offset, Vector2.One, sh.EvenOdd);
 				uv = new Vector4(sx, sy, sx + w, sy + h) / SheetSize;
-				ShadowSlotsBaked++;
 				return sheet.Blurred;
 			}
-			var (view, tex) = NewMaskTexture(w, h);
-			AddBake(BatchFor(view, w, h, load: false), 0, 0, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - sh.Offset, Vector2.One, sh.EvenOdd);
-			_d.DeferTextureRelease(view, tex);
-			return DeferBlur(view, w, h, sh.SigmaX, sh.SigmaY);
+			// The slot's texels on the top level, plus the one a bilinear tap at its far edge reads (the slot's gutter).
+			int step = 1 << BlurLevels(sigma);
+			int tw = (w + step - 1) / step + 1, th = (h + step - 1) / step + 1;
+			var slot = AddStandaloneSlot(key, w, h, ox, oy, WebGpuDevice.DefaultColorFormat, tw, th, WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopyDst);
+			slot.Uv = new Vector4(0f, 0f, (float)w / step / tw, (float)h / step / th);
+			_d.PathAtlas.HoldForCache(slot, _d.FrameSeq);
+			_pendingCopies.Add((sheet.Blurred, sx / step, sy / step, slot.Owner.Texture, tw, th));
+			uv = slot.Uv;
+			return slot.Owner.View;
 		}
-
-		var (covView, covTex) = BakeCoverageMask(shape.Edges, sh.Offset, sh.EvenOdd, (int)ox, (int)oy, w, h);
-		var blurred = BlurPyramid(covView, w, h, sh.SigmaX, sh.SigmaY);
-		_d.DeferTextureRelease(covView, covTex);
-		// The pyramid hands back its reduced top level; one linear tap brings it up to the entry's full size. The
-		// blur pipeline targets the default colour format, so the entry is created in that format too.
-		var slot = AddStandaloneSlot(key, w, h, ox, oy, WebGpuDevice.DefaultColorFormat);
-		_d.PathAtlas.HoldForCache(slot, _d.FrameSeq);
-		BlurPass(blurred, slot.Owner.View, default, default, downsample: true, Vector2.Zero, Vector2.One);
-		return slot.Owner.View;
+		// Too big for the sheet: its own bake and pyramid.
+		var (view, tex) = NewMaskTexture(w, h);
+		AddBake(BatchFor(view, w, h, load: false), 0, 0, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - sh.Offset, Vector2.One, sh.EvenOdd);
+		_d.DeferTextureRelease(view, tex);
+		return DeferBlur(view, w, h, sh.SigmaX, sh.SigmaY);
 	}
 
 	// A frame's moving shadows of one pyramid depth: their silhouettes bake on one sheet (a coverage batch like any
@@ -87,6 +89,7 @@ public sealed unsafe partial class WebGpuPresentSession
 
 	private readonly Dictionary<int, ShadowSheet> _shadowSheetByDepth = new();
 	private readonly List<(IntPtr Src, int W, int H, float SigmaX, float SigmaY, IntPtr Dst)> _pendingBlurs = new();
+	private readonly List<(IntPtr SrcView, int X, int Y, IntPtr Dst, int W, int H)> _pendingCopies = new();   // after the blurs
 	internal static int ShadowSlotsBaked;
 
 	// Reserves a w x h slot on the frame's shadow sheet for this blur depth. A slot already holds its shadow's blur
@@ -110,7 +113,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		{
 			var view = _d.Pool.Rent(SheetSize, SheetSize, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, _d.ColorFormat);
 			int top = SheetSize >> levels;
-			var blurred = _d.Pool.Rent(top, top, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+			var blurred = _d.Pool.Rent(top, top, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopySrc, WebGpuDevice.DefaultColorFormat);
 			cur = new ShadowSheet { Bake = BatchFor(view, SheetSize, SheetSize, load: false), Blurred = blurred };
 			_shadowSheetByDepth[levels] = cur;
 			// The sigma that maps back to exactly this depth (see BlurLevels), so the pyramid builds the same levels.
@@ -140,6 +143,14 @@ public sealed unsafe partial class WebGpuPresentSession
 		foreach (var b in _pendingBlurs) { BlurPyramidRegion(b.Src, b.W, b.H, 0f, 0f, b.W, b.H, b.SigmaX, b.SigmaY, b.Dst); }
 		_pendingBlurs.Clear();
 		_shadowSheetByDepth.Clear();
+		foreach (var c in _pendingCopies)
+		{
+			var src = new WGPUTexelCopyTextureInfo { Texture = _d.Pool.TexForView(c.SrcView), MipLevel = 0, Origin = new WGPUOrigin3D { X = (uint)c.X, Y = (uint)c.Y }, Aspect = WGPUTextureAspect.All };
+			var dst = new WGPUTexelCopyTextureInfo { Texture = c.Dst, MipLevel = 0, Origin = default, Aspect = WGPUTextureAspect.All };
+			var ext = new WGPUExtent3D { Width = (uint)c.W, Height = (uint)c.H, DepthOrArrayLayers = 1 };
+			wgpuCommandEncoderCopyTextureToTexture(_frameEncoder, &src, &dst, &ext);
+		}
+		_pendingCopies.Clear();
 	}
 
 	// Pyramid depth for a blur radius: halve until the fixed 9-tap kernel on the top level spans the sigma.

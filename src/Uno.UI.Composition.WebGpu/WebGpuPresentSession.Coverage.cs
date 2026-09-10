@@ -119,19 +119,6 @@ public sealed unsafe partial class WebGpuPresentSession
 		return new MaskSet { View = batch.Target, Entries = entries };
 	}
 
-	/// <summary>
-	/// Bakes one coverage mask of <paramref name="w"/>x<paramref name="h"/> device pixels whose texel (0,0) sits on
-	/// device pixel (<paramref name="ox"/>,<paramref name="oy"/>), immediately: the one bake outside the frame's
-	/// batches, for a shadow whose blur must follow at once. <paramref name="scale"/> is device pixels per unit of
-	/// the paths' space. The caller owns the returned texture.
-	/// </summary>
-	private (IntPtr view, IntPtr tex) BakeCoverageMask(float[] edges, Vector2 offset, bool evenOdd, int ox, int oy, int w, int h)
-	{
-		var (view, tex) = NewMaskTexture(w, h);
-		BakeCoverageMaskInto(edges, offset, evenOdd, view, ox, oy, w, h);
-		return (view, tex);
-	}
-
 	// A w x h mask in the device's swapchain format, which is what the resolve pipelines target -- not DefaultColorFormat.
 	private (IntPtr view, IntPtr tex) NewMaskTexture(int w, int h)
 	{
@@ -143,67 +130,6 @@ public sealed unsafe partial class WebGpuPresentSession
 		};
 		var tex = wgpuDeviceCreateTexture(_d.Dev, &td);
 		return (wgpuTextureCreateView(tex, null), tex);
-	}
-
-	// The immediate bake itself, into a w x h texture the caller owns.
-	private void BakeCoverageMaskInto(float[] edges, Vector2 offset, bool evenOdd, IntPtr view, int ox, int oy, int w, int h)
-	{
-		// Full-target quad; row 0 of the accumulator is the top, so v runs opposite to y (see the fill bake).
-		var q = new float[]
-		{
-			-1f, -1f, 0f, h,
-			 1f, -1f, w, h,
-			 1f,  1f, w, 0f,
-			-1f, -1f, 0f, h,
-			 1f,  1f, w, 0f,
-			-1f,  1f, 0f, 0f,
-		};
-		var qBuf = MakeBuffer(q);
-		var sizeBuf = _d.BufferPool.Rent(16, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
-		var size = stackalloc float[4];
-		size[0] = w; size[1] = h;
-		wgpuQueueWriteBuffer(_d.Q, sizeBuf, 0, (IntPtr)size, 16);
-
-		{
-			var local = new float[edges.Length];
-			for (var i = 0; i < edges.Length; i += 2) { local[i] = edges[i] + offset.X - ox; local[i + 1] = edges[i + 1] + offset.Y - oy; }
-			var edgeBuf = _d.BufferPool.Rent(local.Length * sizeof(float), WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst);
-			fixed (float* p = local) { wgpuQueueWriteBuffer(_d.Q, edgeBuf, 0, (IntPtr)p, (nuint)(local.Length * sizeof(float))); }
-
-			var accView = _d.Pool.Rent(w, h, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.CoverageFormat);
-			var ae = stackalloc WGPUBindGroupEntry[2];
-			ae[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = edgeBuf, Offset = 0, Size = (nuint)(local.Length * sizeof(float)) };
-			ae[1] = new WGPUBindGroupEntry { Binding = 1, Buffer = sizeBuf, Offset = 0, Size = 16 };
-			var abgd = new WGPUBindGroupDescriptor { Layout = _d.CoverageBgl, EntryCount = 2, Entries = ae };
-			var accumBg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &abgd));
-			var acc = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = accView, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = new WGPUColor { R = 0, G = 0, B = 0, A = 0 } };
-			var adesc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &acc };
-			var apass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &adesc);
-			wgpuRenderPassEncoderSetPipeline(apass, _d.CoveragePipe);
-			wgpuRenderPassEncoderSetBindGroup(apass, 0, (IntPtr)accumBg, 0, (uint*)null);
-			wgpuRenderPassEncoderDraw(apass, (uint)(local.Length / 4 * 6), 1, 0, 0);
-			wgpuRenderPassEncoderEnd(apass);
-
-			var ru = _d.BufferPool.Rent(16, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
-			var rp = stackalloc float[4];
-			rp[0] = evenOdd ? 1f : 0f; rp[1] = 0f;
-			wgpuQueueWriteBuffer(_d.Q, ru, 0, (IntPtr)rp, 16);
-			var re = stackalloc WGPUBindGroupEntry[2];
-			re[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = accView };
-			re[1] = new WGPUBindGroupEntry { Binding = 1, Buffer = ru, Offset = 0, Size = 16 };
-			var rbgd = new WGPUBindGroupDescriptor { Layout = _d.CoverageResolveBgl, EntryCount = 2, Entries = re };
-			var resolveBg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &rbgd));
-			// The mask clears to 1 and the resolve multiplies into it.
-			var rca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = view, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = new WGPUColor { R = 1, G = 1, B = 1, A = 1 } };
-			var rdesc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &rca };
-			var rpass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rdesc);
-			wgpuRenderPassEncoderSetPipeline(rpass, _d.CoverageResolveMulPipe);
-			wgpuRenderPassEncoderSetBindGroup(rpass, 0, (IntPtr)resolveBg, 0, (uint*)null);
-			wgpuRenderPassEncoderSetVertexBuffer(rpass, 0, qBuf, 0, (nuint)(q.Length * sizeof(float)));
-			wgpuRenderPassEncoderDraw(rpass, 6, 1, 0, 0);
-			wgpuRenderPassEncoderEnd(rpass);
-			_d.Pool.Return(accView);
-		}
 	}
 
 	internal static int FillMasksBaked, FillMaskHits;

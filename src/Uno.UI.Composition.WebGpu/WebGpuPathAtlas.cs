@@ -81,6 +81,9 @@ internal sealed unsafe class WebGpuPathAtlas
 
 		/// <summary>True while the CACHE holds one of this slot's references (a per-frame bake, owned by nobody else).</summary>
 		public bool CacheHeld;
+
+		/// <summary>The part of the page a draw of this entry samples; a blurred shadow stored reduced covers less than its page.</summary>
+		public Vector4 Uv = new(0f, 0f, 1f, 1f);
 	}
 
 	/// <summary>
