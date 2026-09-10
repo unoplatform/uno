@@ -161,6 +161,14 @@ public sealed unsafe partial class WebGpuPresentSession
 			// A widenable op's tight AABB is cull-only (checked above); the applied scissor is the full
 			// surface, so consecutive such ops dedup to a single SetScissorRect.
 			if (ScissorWidenable(clip)) { sx = 0; sy = 0; sw = (int)BasisW; sh = (int)BasisH; }
+			// On the layer sheet every draw stays inside its layer's slot, whatever its clip says.
+			if (_bound.X > float.MinValue)
+			{
+				if (!TryScissor(_bound, out var bx, out var by, out var bw, out var bh)) { continue; }
+				int x1 = Math.Min(sx + sw, bx + bw), y1 = Math.Min(sy + sh, by + bh);
+				sx = Math.Max(sx, bx); sy = Math.Max(sy, by); sw = x1 - sx; sh = y1 - sy;
+				if (sw <= 0 || sh <= 0) { continue; }
+			}
 			pst.Enc.Scissor(sx, sy, sw, sh);
 			pst.Scissors++;
 			switch (kind)
@@ -404,7 +412,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		line.Append($"/flip{_statCrPathFlip}/clip{_statCrClip})");
 
 		// Turned away, and why
-		line.Append($" atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked} clipMasks={ClipMasksBaked} fillMasks={FillMasksBaked} sheet={SheetSlotsBaked} shadowSheet={ShadowSlotsBaked} bakes={BakeBatches}");
+		line.Append($" atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked} clipMasks={ClipMasksBaked} fillMasks={FillMasksBaked} sheet={SheetSlotsBaked} shadowSheet={ShadowSlotsBaked} bakes={BakeBatches} layerSheet={LayerSheetSlots}/{LayerSheetPasses}");
 		line.Append($"/full{AtlasNoRoom}/noedges{AtlasNoEdges}/scaleblk{ScaleBlocked}/big{WebGpuPathAtlas.RejBig}");
 		line.Append($"/pages{_d.PathAtlas.Pages.Count}");
 

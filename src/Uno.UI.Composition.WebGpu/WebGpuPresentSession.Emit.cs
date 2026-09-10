@@ -501,7 +501,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		bool subRect = false;
 		float subOx = 0f, subOy = 0f;
 		int subW = 0, subH = 0;
-		if (haveVis && _subLayerSizing && !HasLayerOrBackdrop(lyr.Commands))
+		if (haveVis && _subLayerSizing && !HasBackdrop(lyr.Commands))
 		{
 			// Size to what the layer draws AND, for a shadow, the region the blur READS — Inflate(content, pad), not
 			// the OFFSET shadow bounds: the shadow is composited in parent space from that read region, so using the
@@ -523,24 +523,37 @@ public sealed unsafe partial class WebGpuPresentSession
 			}
 		}
 
+		// A size-to-content layer draws into a slot of the frame's layer sheet: one pass renders every such layer of
+		// the frame, and one blur pyramid per depth serves every shadow among them. Slots carrying a shadow sit on
+		// that depth's top-level texel grid, a texel apart, so the blur of one never reaches its neighbour.
 		WebGpuRenderSurface layerSurface;
-		if (subRect)
+		LayerSheet sheet = null;
+		int slotX = 0, slotY = 0;
+		_layerDepth++;
+		if (subRect && TryReserveLayerSlot(subW, subH, lyr.ShadowEffect is { } sfe ? 1 << BlurLevels(MathF.Max(sfe.SigmaX, sfe.SigmaY)) : 1, out sheet, out slotX, out slotY))
+		{
+			layerSurface = sheet.Surface;
+			sheet.Builds.Add(BuildPass(lyr.Commands, layerSurface, subOx - slotX, subOy - slotY, LayerSheetSize, LayerSheetSize, new Vector4(subOx, subOy, subOx + subW, subOy + subH)));
+		}
+		else if (subRect)
 		{
 			layerSurface = new WebGpuRenderSurface(_d, subW, subH, _d.Pool);
 			RenderInto(lyr.Commands, layerSurface, null, false, subOx, subOy, subW, subH);
+			_frameLayerSurfaces.Add(layerSurface);
 		}
 		else
 		{
 			layerSurface = new WebGpuRenderSurface(_d, (int)_s.Width, (int)_s.Height, _d.Pool);
 			RenderInto(lyr.Commands, layerSurface, null);
+			// The colour view can NOT be returned here: the composite op below samples it, and that is encoded later
+			// in the parent's pass.
+			_frameLayerSurfaces.Add(layerSurface);
 		}
+		_layerDepth--;
+		var onSheet = sheet is not null;
 
-		// The colour view can NOT be returned here: the composite op below samples it, and that is encoded later
-		// in the parent's pass.
-		if (layerSurface.Pooled) { _frameLayerSurfaces.Add(layerSurface); }
-
-	// The pyramid runs only over the content's region padded by the blur reach, so a card-sized caster costs
-	// card-sized blur passes rather than full-window ones.
+		// The pyramid runs only over the content's region padded by the blur reach, so a card-sized caster costs
+		// card-sized blur passes rather than full-window ones; a sheet layer shares one pyramid per depth.
 		if (lyr.ShadowEffect is { } fx)
 		{
 			var pad = MathF.Ceiling(3f * MathF.Max(fx.SigmaX, fx.SigmaY)) + 2f;
@@ -554,9 +567,19 @@ public sealed unsafe partial class WebGpuPresentSession
 			float rw = MathF.Min(hiX, MathF.Ceiling(rg.Z)) - rx, rh = MathF.Min(hiY, MathF.Ceiling(rg.W)) - ry;
 			if (rw >= 1f && rh >= 1f)
 			{
-				var blur = BlurPyramidRegion(layerSurface.View, surfW, surfH, rx - loX, ry - loY, rw, rh, fx.SigmaX, fx.SigmaY);
+				IntPtr blur; var uv = new Vector4(0f, 0f, 1f, 1f);
+				if (onSheet)
+				{
+					blur = LayerSheetBlur(sheet, MathF.Max(fx.SigmaX, fx.SigmaY));
+					float sx0 = rx - subOx + slotX, sy0 = ry - subOy + slotY;
+					uv = new Vector4(sx0, sy0, sx0 + rw, sy0 + rh) / LayerSheetSize;
+				}
+				else
+				{
+					blur = BlurPyramidRegion(layerSurface.View, surfW, surfH, rx - loX, ry - loY, rw, rh, fx.SigmaX, fx.SigmaY);
+				}
 				var sfbg = TintedImageBg(blur, fx.Color);
-				var fq = TexturedQuad(new Vector2(fx.Dx + rx, fx.Dy + ry), new Vector2(rw, rh));
+				var fq = TexturedQuad(new Vector2(fx.Dx + rx, fx.Dy + ry), new Vector2(rw, rh), uv);
 				ops.Add(new DrawOp(DrawKind.Image, (nint)sfbg, 0, (nint)MakeBuffer(fq), false, lyr.Clip, (nint)MakeClipBg(lyr.Clip)));
 			}
 		}
@@ -565,11 +588,12 @@ public sealed unsafe partial class WebGpuPresentSession
 		cu[0] = lyr.ColorMatrix is { Length: >= 20 } ? 1f : 0f; cu[1] = 1f;
 		if (subRect)
 		{
-			// params.z = sub-rect flag; m0 = (offset in THIS target's framebuffer pixels, sub size). The composite
-			// fragment samples the smaller layer texture by its own framebuffer position. A colour-matrix layer never
-			// takes the sub-rect path, so m0 is free here.
+			// params.z = sub-rect flag; m0 = (offset in THIS target's framebuffer pixels, sub size) and m1.xy = the
+			// slot's corner in the layer texture. The composite fragment samples the layer texture by its own
+			// framebuffer position. A colour-matrix layer never takes the sub-rect path, so m0/m1 are free here.
 			cu[2] = 1f;
-			cu[4] = subOx - _basisOx; cu[5] = subOy - _basisOy; cu[6] = subW; cu[7] = subH;
+			cu[4] = subOx - _basisOx - slotX; cu[5] = subOy - _basisOy - slotY; cu[6] = subW; cu[7] = subH;
+			cu[8] = slotX; cu[9] = slotY;
 		}
 		if (lyr.ColorMatrix is { Length: >= 20 } mm)
 		{

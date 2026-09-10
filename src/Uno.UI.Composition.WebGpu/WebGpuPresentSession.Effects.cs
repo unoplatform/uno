@@ -145,6 +145,94 @@ public sealed unsafe partial class WebGpuPresentSession
 	// Pyramid depth for a blur radius: halve until the fixed 9-tap kernel on the top level spans the sigma.
 	private static int BlurLevels(float sigma) => Math.Clamp((int)MathF.Round(MathF.Log2(MathF.Max(sigma, 1f) / 2f)), 1, 5);
 
+	// ------------------------------------------------------------------------------------------------ layer sheet
+
+	private const int LayerSheetSize = 2048;
+
+	// The frame's size-to-content layers at one nesting depth, shelf-packed into one texture rendered in one pass;
+	// the blurs its shadows share, one pyramid per blur depth, run right after that pass. Sheets are per nesting
+	// depth because a layer's content composites the layers nested in it, so those must be rendered first, and a
+	// texture cannot be drawn into and sampled in the same pass.
+	private sealed class LayerSheet
+	{
+		public WebGpuRenderSurface Surface;
+		public int Depth;
+		public readonly List<PassBuild> Builds = new();
+		public readonly Dictionary<int, IntPtr> Blurs = new();   // blur depth -> the pyramid's top level, rented up front
+		public int CursorX, ShelfY, ShelfH;
+	}
+
+	private readonly List<LayerSheet> _layerSheets = new();
+	internal static int LayerSheetSlots, LayerSheetPasses;
+
+	// Reserves a w x h slot on the sheet for the current nesting depth, aligned to `step` (the shadow's top-level
+	// texel) with a texel of that size around it.
+	private bool TryReserveLayerSlot(int w, int h, int step, out LayerSheet sheet, out int x, out int y)
+	{
+		sheet = null; x = y = 0;
+		int gw = (w + step - 1) / step * step + 2 * step, gh = (h + step - 1) / step * step + 2 * step;
+		if (gw > LayerSheetSize || gh > LayerSheetSize) { return false; }
+		LayerSheet cur = null;
+		for (int i = _layerSheets.Count - 1; i >= 0; i--) { if (_layerSheets[i].Depth == _layerDepth) { cur = _layerSheets[i]; break; } }
+		if (cur is not null)
+		{
+			int cx = (cur.CursorX + step - 1) / step * step;
+			if (cx + gw > LayerSheetSize) { cur.ShelfY += cur.ShelfH; cur.ShelfH = 0; cur.CursorX = 0; cx = 0; }
+			int sy = (cur.ShelfY + step - 1) / step * step;
+			if (sy + gh > LayerSheetSize) { cur = null; }
+			else { cur.CursorX = cx; cur.ShelfY = sy; }
+		}
+		if (cur is null)
+		{
+			cur = new LayerSheet { Surface = new WebGpuRenderSurface(_d, LayerSheetSize, LayerSheetSize, _d.Pool), Depth = _layerDepth };
+			_layerSheets.Add(cur);
+			_frameLayerSurfaces.Add(cur.Surface);
+		}
+		sheet = cur; x = cur.CursorX + step; y = cur.ShelfY + step;
+		cur.CursorX += gw;
+		if (gh > cur.ShelfH) { cur.ShelfH = gh; }
+		LayerSheetSlots++;
+		return true;
+	}
+
+	// The blurred sheet for this depth, rented now so the shadow draws can bind it; the pyramid runs after the sheet's pass.
+	private IntPtr LayerSheetBlur(LayerSheet sheet, float sigma)
+	{
+		var levels = BlurLevels(sigma);
+		if (!sheet.Blurs.TryGetValue(levels, out var blurred))
+		{
+			int top = LayerSheetSize >> levels;
+			blurred = _d.Pool.Rent(top, top, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
+			sheet.Blurs[levels] = blurred;
+		}
+		return blurred;
+	}
+
+	// Renders the sheets one level deeper than the pass about to open (the layers it composites), each followed by
+	// its shadow pyramids. A sheet's own pass flushes the level below it first, so the deepest render first.
+	private void FlushLayerSheets(int depth)
+	{
+		if (_layerSheets.Count == 0) { return; }
+		var sheets = new List<LayerSheet>();
+		for (int i = _layerSheets.Count - 1; i >= 0; i--)
+		{
+			if (_layerSheets[i].Depth == depth + 1) { sheets.Add(_layerSheets[i]); _layerSheets.RemoveAt(i); }
+		}
+		var saved = _layerDepth;
+		_layerDepth = depth + 1;
+		foreach (var sheet in sheets)
+		{
+			EncodePass(sheet.Surface, null, false, sheet.Builds);
+			LayerSheetPasses++;
+			foreach (var (levels, blurred) in sheet.Blurs)
+			{
+				float depthSigma = 2f * (1 << levels);
+				BlurPyramidRegion(sheet.Surface.View, LayerSheetSize, LayerSheetSize, 0f, 0f, LayerSheetSize, LayerSheetSize, depthSigma, depthSigma, blurred);
+			}
+		}
+		_layerDepth = saved;
+	}
+
 	// Blur pyramid over a REGION of `src`: extract the device-px rect (rx,ry,rw,rh) out of the fullW×fullH source
 	// into a sigma-scaled downsample pyramid (depth set by the requested blur radius), then a fixed 9-tap separable
 	// gaussian on the small top level. Returns the region-sized blurred view; the caller maps screen px -> region uv

@@ -152,19 +152,23 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 
 	private static readonly Vector4 _emptyBounds = new(float.MaxValue, float.MaxValue, float.MinValue, float.MinValue);
 
-	// True if the list directly contains a nested layer or a backdrop — either makes size-to-content unsafe: a nested
-	// layer composites in window space, and a backdrop must sample the real framebuffer, which a sub-surface lacks.
-	private static bool HasLayerOrBackdrop(List<WebGpuCommand> cmds)
+	// True if the list directly contains a backdrop, which makes size-to-content unsafe: it must sample the real
+	// framebuffer, which a sub-surface lacks. Nested layers are fine: their composites place by the current basis.
+	private static bool HasBackdrop(List<WebGpuCommand> cmds)
 	{
 		for (int i = 0; i < cmds.Count; i++)
 		{
-			if (cmds[i] is LayerCmd or BackdropCmd)
+			if (cmds[i] is BackdropCmd)
 			{
 				return true;
 			}
 		}
 		return false;
 	}
+
+	// How many layers deep the content being built sits: 0 for the window, 1 inside a layer, and so on. A layer's
+	// content composites layers one level deeper, so the sheets holding those must render before it does.
+	private int _layerDepth;
 
 	private static Vector4 CmdListBounds(List<WebGpuCommand> cmds)
 	{
@@ -534,14 +538,43 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	// UNO_WEBGPU_PATH_ATLAS=0 opts out (falls back to tessellated AA, which aliases on curved outlines).
 	private static readonly bool _pathAtlas = Environment.GetEnvironmentVariable("UNO_WEBGPU_PATH_ATLAS") is not "0";
 
+	// The ops of one command list, built for one target basis, with the pass buffers they index. A pass encodes one
+	// build for a window or a full-size layer, and several for the layer sheet, where every size-to-content layer of
+	// the frame draws into its own slot of one texture under its own basis.
+	private sealed class PassBuild
+	{
+		public List<DrawOp> Ops;
+		public List<BackdropCmd> Backdrops;
+		public List<float> Solid, Rrect, Grad, Quad, Path, Xforms;
+		public List<int> XformTransient;
+		public float BasisOx, BasisOy, BasisW, BasisH;
+		public Vector4 Bound;   // device rect every scissor stays within: a sheet slot; the whole target otherwise
+		public nint SolidBuf, RrectBuf, GradBuf, QuadBuf, PathBuf;
+		public nuint SolidBufBytes, GradBufBytes, QuadBufBytes, PathBufBytes;
+		public IntPtr XformBg, PassBg;
+	}
+
+	private static readonly Vector4 _unbounded = new(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue);
+
 	/// <summary>
-	/// Renders a command list into a target surface's MSAA pass, resolving into its single-sample view. Layers
-	/// recurse into a surface of their own and composite here; shadows and layers pre-render before the pass opens.
+	/// Renders a command list into a target surface's pass, resolving into its single-sample view. Layers render
+	/// into a surface of their own, or a slot of the frame's layer sheet, and composite here; shadows and layers
+	/// pre-render before the pass opens.
 	/// </summary>
 	// basisW/basisH default (0) to the target's own size at origin (basisOx,basisOy) — the whole-target mapping the
 	// window and full-size layers use. A size-to-content layer passes its device sub-rect.
 	private void RenderInto(List<WebGpuCommand> cmds, WebGpuRenderSurface target, WColor? clear, bool load = false,
 		float basisOx = 0f, float basisOy = 0f, float basisW = 0f, float basisH = 0f)
+	{
+		var build = BuildPass(cmds, target, basisOx, basisOy, basisW, basisH, _unbounded);
+		_singleBuild[0] = build;
+		EncodePass(target, clear, load, _singleBuild);
+	}
+
+	private readonly PassBuild[] _singleBuild = new PassBuild[1];
+
+	// Builds the ops for one command list under a basis: the whole draw-side work of a pass, none of the encoding.
+	private PassBuild BuildPass(List<WebGpuCommand> cmds, WebGpuRenderSurface target, float basisOx, float basisOy, float basisW, float basisH, Vector4 bound)
 	{
 		_renderIntoStart = System.Diagnostics.Stopwatch.GetTimestamp();
 
@@ -551,27 +584,27 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		_basisW = basisW > 0f ? basisW : target.Width;
 		_basisH = basisH > 0f ? basisH : target.Height;
 
-		var ops = RentOps();
-		var solid = RentSolid();
-		var rrect = RentRrect();
+		var b = new PassBuild { BasisOx = _basisOx, BasisOy = _basisOy, BasisW = _basisW, BasisH = _basisH, Bound = bound };
+		var ops = b.Ops = RentOps();
+		var solid = b.Solid = RentSolid();
+		var rrect = b.Rrect = RentRrect();
 		var savedXforms = _xforms; var savedTransient = _xformTransient;
 		// Immediate gradient quads share ONE per-pass buffer, like solids. Giving each quad its own pooled buffer
 		// reads cleaner but costs a queue write apiece: 500 native calls per frame on RenderStress_Gradients to
 		// carry 48 bytes each, and a native call costs far more than the bytes it carries. Fields rather than
-		// locals because BuildSimpleOp appends to them; saved/restored so each nested pass uploads its own.
+		// locals because BuildSimpleOp appends to them; saved/restored so each nested build uploads its own.
 		var savedGradVerts = _gradVerts;
 		var savedQuadVerts = _quadVerts;
 		var savedPathVerts = _pathVerts;
-		_gradVerts = RentSolid(); _gradVerts.Clear();
-		_quadVerts = RentSolid(); _quadVerts.Clear();
-		_pathVerts = RentSolid(); _pathVerts.Clear();
-		var mainPass = ReferenceEquals(target, _s);
-		_xforms = RentXforms(); _xforms.Clear();
-		_xformTransient = RentTransient(); _xformTransient.Clear();
+		_gradVerts = b.Grad = RentSolid(); _gradVerts.Clear();
+		_quadVerts = b.Quad = RentSolid(); _quadVerts.Clear();
+		_pathVerts = b.Path = RentSolid(); _pathVerts.Clear();
+		_xforms = b.Xforms = RentXforms(); _xforms.Clear();
+		_xformTransient = b.XformTransient = RentTransient(); _xformTransient.Clear();
 		// Recordings emitted so far in THIS pass. A recording replayed more than once in one frame (same command
 		// list at different transforms) can't share its single resident slab slice — see the frame-solid branch.
 		var frameEmitted = new HashSet<List<WebGpuCommand>>(System.Collections.Generic.ReferenceEqualityComparer.Instance);
-		var backdrops = new List<BackdropCmd>();
+		var backdrops = b.Backdrops = new List<BackdropCmd>();
 		for (int ci = 0; ci < cmds.Count; ci++)
 		{
 			var cmd = cmds[ci];
@@ -628,22 +661,21 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		}
 
 		// Upload the whole pass's coalesceable solid + rrect geometry in ONE buffer each; PassBuffer ops index them.
-		nint solidBuf = solid.Count > 0 ? (nint)MakeBuffer(solid) : IntPtr.Zero;
-		nint rrectBuf = rrect.Count > 0 ? (nint)MakeBuffer(rrect) : IntPtr.Zero;
-		nint gradBuf = _gradVerts.Count > 0 ? (nint)MakeBuffer(_gradVerts) : IntPtr.Zero;
-		var gradBufBytes = (nuint)(_gradVerts.Count * sizeof(float));
-		nint quadBuf = _quadVerts.Count > 0 ? (nint)MakeBuffer(_quadVerts) : IntPtr.Zero;
-		var quadBufBytes = (nuint)(_quadVerts.Count * sizeof(float));
-		nint pathBuf = _pathVerts.Count > 0 ? (nint)MakeBuffer(_pathVerts) : IntPtr.Zero;
-		var pathBufBytes = (nuint)(_pathVerts.Count * sizeof(float));
-		var solidBufBytes = (nuint)(solid.Count * sizeof(float));
+		b.SolidBuf = solid.Count > 0 ? (nint)MakeBuffer(solid) : IntPtr.Zero;
+		b.RrectBuf = rrect.Count > 0 ? (nint)MakeBuffer(rrect) : IntPtr.Zero;
+		b.GradBuf = _gradVerts.Count > 0 ? (nint)MakeBuffer(_gradVerts) : IntPtr.Zero;
+		b.GradBufBytes = (nuint)(_gradVerts.Count * sizeof(float));
+		b.QuadBuf = _quadVerts.Count > 0 ? (nint)MakeBuffer(_quadVerts) : IntPtr.Zero;
+		b.QuadBufBytes = (nuint)(_quadVerts.Count * sizeof(float));
+		b.PathBuf = _pathVerts.Count > 0 ? (nint)MakeBuffer(_pathVerts) : IntPtr.Zero;
+		b.PathBufBytes = (nuint)(_pathVerts.Count * sizeof(float));
+		b.SolidBufBytes = (nuint)(solid.Count * sizeof(float));
 
-		nint xformBg = IntPtr.Zero;
 		if (_xforms.Count > 0)
 		{
-			if (target == _s)
+			if (ReferenceEquals(target, _s))
 			{
-				xformBg = _d.EnsureXformBindGroup(_xforms);
+				b.XformBg = _d.EnsureXformBindGroup(_xforms);
 			}
 			else
 			{
@@ -653,13 +685,27 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 				fixed (float* xp = xspan) { wgpuQueueWriteBuffer(_d.Q, xbuf, 0, (IntPtr)xp, (nuint)xbytes); }
 				var xe = new WGPUBindGroupEntry { Binding = 0, Buffer = xbuf, Offset = 0, Size = (nuint)xbytes };
 				var xbgd = new WGPUBindGroupDescriptor { Layout = _d.XformBgl, EntryCount = 1, Entries = &xe };
-				xformBg = (nint)_d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &xbgd));
+				b.XformBg = (nint)_d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &xbgd));
 			}
 		}
+		b.PassBg = MakePassBg();
 
 		if (_emitStats) { OpsBuildTicks += System.Diagnostics.Stopwatch.GetTimestamp() - _renderIntoStart; }
-		// Every mask this pass samples has to be baked before the pass opens.
+
+		_gradVerts = savedGradVerts;
+		_quadVerts = savedQuadVerts;
+		_pathVerts = savedPathVerts;
+		_xforms = savedXforms; _xformTransient = savedTransient;
+		(_basisOx, _basisOy, _basisW, _basisH) = savedBasis;
+		return b;
+	}
+
+	// Encodes builds into one pass on the target, each under its own basis and scissor bound. Everything the pass
+	// samples -- masks, the frame's layer sheets -- is encoded first.
+	private void EncodePass(WebGpuRenderSurface target, WColor? clear, bool load, IReadOnlyList<PassBuild> builds)
+	{
 		FlushPendingBakes();
+		FlushLayerSheets(_layerDepth);
 
 		var color = new WGPURenderPassColorAttachment
 		{
@@ -677,51 +723,73 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 			View = target.MsaaColorView,
 			ResolveTarget = _d.MsaaSamples > 1 ? target.View : IntPtr.Zero,
 			LoadOp = load ? WGPULoadOp.Load : WGPULoadOp.Clear,
-			StoreOp = (_d.MsaaSamples > 1 && backdrops.Count == 0) ? WGPUStoreOp.Discard : WGPUStoreOp.Store,
+			StoreOp = (_d.MsaaSamples > 1 && !HasBackdrops(builds)) ? WGPUStoreOp.Discard : WGPUStoreOp.Store,
 			ClearValue = clear.HasValue ? new WGPUColor { R = clear.Value.R / 255.0, G = clear.Value.G / 255.0, B = clear.Value.B / 255.0, A = clear.Value.A / 255.0 } : default,
 		};
 		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color };
 		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &desc);
 		var encodeStart = System.Diagnostics.Stopwatch.GetTimestamp();
 
-		var pst = new PassOps
+		var savedBasis = (_basisOx, _basisOy, _basisW, _basisH);
+		var savedBound = _bound;
+		var enc = new PassEncoder(pass);
+		foreach (var b in builds)
 		{
-			Pass = pass, Target = target, Ops = ops, Backdrops = backdrops, PassBg = MakePassBg(),
-			SolidBuf = solidBuf, SolidBufBytes = solidBufBytes,
-			RrectBuf = rrectBuf,
-			GradBuf = gradBuf, GradBufBytes = gradBufBytes,
-			QuadBuf = quadBuf, QuadBufBytes = quadBufBytes,
-			PathBuf = pathBuf, PathBufBytes = pathBufBytes,
-			XformBg = xformBg,
-			Enc = new PassEncoder(pass),
-		};
-		EncodeOps(0, ops.Count, ref pst);
-		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
-		if (_emitStats && ops.Count > 0 && (_emitStatsFrame++ % _emitStatsEvery) == 0)
-		{
-			WriteFrameStats(ops.Count, ref pst);
+			(_basisOx, _basisOy, _basisW, _basisH) = (b.BasisOx, b.BasisOy, b.BasisW, b.BasisH);
+			_bound = b.Bound;
+			var pst = new PassOps
+			{
+				Pass = pass, Target = target, Ops = b.Ops, Backdrops = b.Backdrops, PassBg = b.PassBg,
+				SolidBuf = b.SolidBuf, SolidBufBytes = b.SolidBufBytes,
+				RrectBuf = b.RrectBuf,
+				GradBuf = b.GradBuf, GradBufBytes = b.GradBufBytes,
+				QuadBuf = b.QuadBuf, QuadBufBytes = b.QuadBufBytes,
+				PathBuf = b.PathBuf, PathBufBytes = b.PathBufBytes,
+				XformBg = b.XformBg,
+				Enc = enc,
+			};
+			EncodeOps(0, b.Ops.Count, ref pst);
+			pass = pst.Pass;   // a backdrop segment reopens the pass
+			enc = pst.Enc;
+			if (_emitStats && b.Ops.Count > 0 && (_emitStatsFrame++ % _emitStatsEvery) == 0)
+			{
+				WriteFrameStats(b.Ops.Count, ref pst);
+			}
 		}
+		if (_emitStats) { EncodeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - encodeStart; }
+		(_basisOx, _basisOy, _basisW, _basisH) = savedBasis;
+		_bound = savedBound;
 
-		wgpuRenderPassEncoderEnd(pst.Pass);
+		wgpuRenderPassEncoderEnd(pass);
 		// A pooled offscreen (layer/backdrop) target: its MSAA colour has resolved into View, so return it for the
 		// next same-size pass to reuse — only View (composited/sampled later) stays live. The on-window/dedicated
 		// target owns its MSAA colour (persistent across frames) and is left untouched.
 		if (target.Pooled && _d.MsaaSamples > 1) { _d.Pool.Return(target.MsaaColorView); }   // at 1x MsaaColorView aliases View (sampled later) — don't reclaim
-		ReturnOps(ops);   // ops are fully encoded into the pass now — recycle the list
-		ReturnSolid(solid);
-		ReturnRrect(rrect);
-		foreach (var s in _xformTransient) { _d.FreeXformSlot(s); }
-		_xforms.Clear(); _xformsPool.Push(_xforms);
-		_xformTransient.Clear(); _xformTransientPool.Push(_xformTransient);
-		ReturnSolid(_gradVerts);
-		ReturnSolid(_quadVerts);
-		ReturnSolid(_pathVerts);
-		_gradVerts = savedGradVerts;
-		_quadVerts = savedQuadVerts;
-		_pathVerts = savedPathVerts;
-		_xforms = savedXforms; _xformTransient = savedTransient;
-		(_basisOx, _basisOy, _basisW, _basisH) = savedBasis;
+		foreach (var b in builds) { ReleaseBuild(b); }
 	}
+
+	private static bool HasBackdrops(IReadOnlyList<PassBuild> builds)
+	{
+		foreach (var b in builds) { if (b.Backdrops.Count > 0) { return true; } }
+		return false;
+	}
+
+	// Everything a build rented goes back once its ops are encoded.
+	private void ReleaseBuild(PassBuild b)
+	{
+		ReturnOps(b.Ops);
+		ReturnSolid(b.Solid);
+		ReturnRrect(b.Rrect);
+		foreach (var slot in b.XformTransient) { _d.FreeXformSlot(slot); }
+		b.Xforms.Clear(); _xformsPool.Push(b.Xforms);
+		b.XformTransient.Clear(); _xformTransientPool.Push(b.XformTransient);
+		ReturnSolid(b.Grad);
+		ReturnSolid(b.Quad);
+		ReturnSolid(b.Path);
+	}
+
+	// The device rect the current build's scissors stay within (see PassBuild.Bound).
+	private Vector4 _bound = new(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue);
 
 	public Matrix4x4 TotalMatrix => _overlay.TotalMatrix;
 	public void SetMatrix(in Matrix4x4 matrix) => _overlay.SetMatrix(matrix);
