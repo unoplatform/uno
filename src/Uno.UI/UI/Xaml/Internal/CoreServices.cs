@@ -162,6 +162,13 @@ namespace Uno.UI.Xaml.Core
 
 		public UIElement? VisualRoot => _mainVisualTree?.PublicRootVisual;
 
+		/// <summary>
+		/// Every namescope table, keyed by owner. One per CoreServices, matching
+		/// CCoreServices::m_nameScopeRoot — owner identity already partitions multi-window and
+		/// XamlIsland scopes, so no separate root per tree is needed.
+		/// </summary>
+		internal NameScoping.NameScopeRoot NameScopeRoot { get; } = new();
+
 		internal void InitCoreWindowContentRoot()
 		{
 			if (_mainVisualTree is not null)

@@ -840,6 +840,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (!IsWindow(topLevelControlType)) // Window is not a DependencyObject
 			{
 				writer.AppendLineIndented("NameScope.SetNameScope(this, __nameScope);");
+				writer.AppendLineIndented("__nameScope.Owner = this;");
 			}
 			writer.AppendLineIndented("var __that = this;");
 			TrySetParsing(writer, topLevelControlType, isInitializer: false);
@@ -882,6 +883,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineIndented("if (__that.Content != null)");
 				using var _ = writer.Block();
 				writer.AppendLineIndented("NameScope.SetNameScope(__that.Content, __nameScope);");
+				writer.AppendLineIndented("__nameScope.Owner = __that.Content;");
+			}
+			else
+			{
+				// After the root's own properties: setting Name marks it as a usage name, so the
+				// definition-name mark must come last (WinUI ParseXamlWithExistingFrameworkRoot).
+				writer.AppendLineIndented("__nameScope.MarkOwnerAsPossiblyHavingDefinitionName();");
 			}
 
 			writer.AppendLineIndented("OnInitializeCompleted();");

@@ -46,6 +46,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
+			__nameScope.Owner = this;
 			var __that = this;
 			base.IsParsing = true;
 			Resources["RootResource"] = 
@@ -78,6 +79,7 @@ namespace Uno.UI.Tests.Given_ResourceDictionary
 			}
 			))
 			;
+			__nameScope.MarkOwnerAsPossiblyHavingDefinitionName();
 			OnInitializeCompleted();
 
 		}

@@ -208,13 +208,13 @@ namespace Uno.UI.Xaml.Core
 			//	EnsureRenderTargetBitmapRoot());
 			//}
 
-			//if (publicRootVisual != null)
-			//{
-			//	// A visual set as the root of the tree implicitly becomes a permanent
-			//	// namescope owner, and will always have a name store.
-			//	publicRootVisual.IsStandardNameScopeOwner = true;
-			//	publicRootVisual.IsStandardNameScopeMember = false;
-			//}
+			if (publicRootVisual != null)
+			{
+				// A visual set as the root of the tree implicitly becomes a permanent
+				// namescope owner, and will always have a name store.
+				publicRootVisual.IsStandardNameScopeOwner = true;
+				publicRootVisual.IsStandardNameScopeMember = false;
+			}
 
 			//TODO Uno specific - we need to add the public content first, until
 			//https://github.com/unoplatform/uno/issues/325 is properly supported.
@@ -438,11 +438,14 @@ namespace Uno.UI.Xaml.Core
 
 				EnterParams enterParams = new(
 					isLive: true
-				);
+				)
+				{
+					Depth = 0,
+				};
 
 				// In WinUI, this is called only under IsMainVisualTree condition.
 				// This might be needed for now in Uno because RootVisual does not *yet* have XamlIslandRootCollection
-				root.Enter(enterParams, 0);
+				root.EnterTree(null, enterParams);
 			}
 		}
 

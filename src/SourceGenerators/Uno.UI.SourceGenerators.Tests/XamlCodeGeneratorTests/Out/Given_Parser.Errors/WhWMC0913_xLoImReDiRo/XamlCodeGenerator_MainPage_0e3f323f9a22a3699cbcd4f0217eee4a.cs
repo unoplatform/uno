@@ -46,6 +46,7 @@ namespace TestRepro
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);
+			__nameScope.Owner = this;
 			var __that = this;
 			base.IsParsing = true;
 			Resources["MyKey"] = 
@@ -86,6 +87,7 @@ namespace TestRepro
 			}
 			))
 			;
+			__nameScope.MarkOwnerAsPossiblyHavingDefinitionName();
 			OnInitializeCompleted();
 
 			// Force materialization of x:Name resources, which will assign them to named property field.

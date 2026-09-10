@@ -798,10 +798,10 @@ namespace Microsoft.UI.Xaml
 				}
 
 				// WinUI nulls out the VisualTree pointer for shared FlyoutBase (Bug 19548424).
-				oldValue?.Leave(null, new LeaveParams { IsForKeyboardAccelerator = true, VisualTree = null });
+				oldValue?.PropagateKeyboardAcceleratorLeave(null, new LeaveParams { IsForKeyboardAccelerator = true, VisualTree = null });
 
 				newValue?.SetParent(this);
-				newValue?.Enter(null, new EnterParams { IsForKeyboardAccelerator = true, VisualTree = null });
+				newValue?.PropagateKeyboardAcceleratorEnter(null, new EnterParams { IsForKeyboardAccelerator = true, VisualTree = null });
 			}
 #endif
 
@@ -1666,7 +1666,9 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var enterParams = new EnterParams(IsActiveInVisualTree);
-			ChildEnter(child, enterParams);
+			// Owner stays null here: seeding a real namescope owner is a behaviour change and
+			// belongs to the registration step, not this plumbing one.
+			ChildEnter(child, null, enterParams);
 
 			OnChildAdded(child);
 			UIElementAccessibilityHelper.ExternalOnChildAdded?.Invoke(this, child, index);
