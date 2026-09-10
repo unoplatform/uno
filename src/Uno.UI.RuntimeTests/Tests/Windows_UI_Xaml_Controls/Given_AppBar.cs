@@ -12,6 +12,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [RunsOnUIThread]
 public class Given_AppBar
 {
+	// Everything below asserts on members of the port itself - AppBar.XcpRound, Popup.IsSubMenu
+	// and the private storyboard fields. Native WinUI exposes none of them, so the whole class
+	// only compiles and runs against Uno.
+#if HAS_UNO
 	[TestMethod]
 	public async Task When_Template_Applied_Then_Overlay_Storyboards_Are_Resolved()
 	{
@@ -60,4 +64,5 @@ public class Given_AppBar
 		Assert.IsNotNull(field, $"{fieldName} no longer exists on AppBar.");
 		return (Storyboard)field.GetValue(appBar);
 	}
+#endif
 }
