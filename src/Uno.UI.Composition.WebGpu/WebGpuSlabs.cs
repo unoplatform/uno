@@ -119,9 +119,12 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 		public IntPtr Buf;
 		public float[] Shadow;
 		public IntPtr[] More;
-		public int DirtyMin = int.MaxValue;
-		public int DirtyMax = -1;
+		public bool[] IsDirty;
+		public readonly List<int> Dirty = new();
 	}
+
+	// Dirty slots closer than this merge into one write: fewer queue calls at the price of a little dead data.
+	private const int MergeGap = 8;
 
 	private const int SlotBytes = (WebGpuFrame.ClipUBytes + 255) / 256 * 256;
 	private const int SlotFloats = SlotBytes / sizeof(float);
@@ -145,7 +148,7 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 			if (slot / ChunkSlots >= _chunks.Count)
 			{
 				var bd = new WGPUBufferDescriptor { Size = (nuint)(ChunkSlots * SlotBytes), Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
-				_chunks.Add(new Chunk { Buf = wgpuDeviceCreateBuffer(_d.Dev, &bd), Shadow = new float[ChunkSlots * SlotFloats], More = new IntPtr[ChunkSlots] });
+				_chunks.Add(new Chunk { Buf = wgpuDeviceCreateBuffer(_d.Dev, &bd), Shadow = new float[ChunkSlots * SlotFloats], More = new IntPtr[ChunkSlots], IsDirty = new bool[ChunkSlots] });
 			}
 		}
 		return slot + 1;
@@ -175,25 +178,32 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 	{
 		var c = ChunkOf(handle, out var idx);
 		Array.Copy(clipU, 0, c.Shadow, idx * SlotFloats, Math.Min(floats, SlotFloats));
-		if (idx < c.DirtyMin) { c.DirtyMin = idx; }
-		if (idx > c.DirtyMax) { c.DirtyMax = idx; }
+		if (!c.IsDirty[idx]) { c.IsDirty[idx] = true; c.Dirty.Add(idx); }
 	}
 
 	/// <summary>Bytes uploaded by the last <see cref="Flush"/>, for UNO_WEBGPU_STATS.</summary>
 	public long LastFlushBytes;
 
-	/// <summary>One queue write per dirty chunk range - call before any submit whose commands read clips.</summary>
+	/// <summary>One queue write per run of dirty slots - call before any submit whose commands read clips.</summary>
 	public void Flush()
 	{
 		LastFlushBytes = 0;
 		foreach (var c in _chunks)
 		{
-			if (c.DirtyMax < 0) { continue; }
-			int lo = c.DirtyMin * SlotFloats, len = (c.DirtyMax + 1 - c.DirtyMin) * SlotFloats;
-			LastFlushBytes += len * sizeof(float);
-			fixed (float* p = &c.Shadow[lo]) { wgpuQueueWriteBuffer(_d.Q, c.Buf, (nuint)(lo * sizeof(float)), (IntPtr)p, (nuint)(len * sizeof(float))); }
-			c.DirtyMin = int.MaxValue;
-			c.DirtyMax = -1;
+			if (c.Dirty.Count == 0) { continue; }
+			c.Dirty.Sort();
+			int start = c.Dirty[0], end = start;
+			for (int i = 1; i <= c.Dirty.Count; i++)
+			{
+				int slot = i < c.Dirty.Count ? c.Dirty[i] : int.MaxValue;
+				if (slot - end <= MergeGap) { end = slot; continue; }
+				int lo = start * SlotFloats, len = (end + 1 - start) * SlotFloats;
+				LastFlushBytes += len * sizeof(float);
+				fixed (float* p = &c.Shadow[lo]) { wgpuQueueWriteBuffer(_d.Q, c.Buf, (nuint)(lo * sizeof(float)), (IntPtr)p, (nuint)(len * sizeof(float))); }
+				start = end = slot;
+			}
+			foreach (var slot in c.Dirty) { c.IsDirty[slot] = false; }
+			c.Dirty.Clear();
 		}
 	}
 
