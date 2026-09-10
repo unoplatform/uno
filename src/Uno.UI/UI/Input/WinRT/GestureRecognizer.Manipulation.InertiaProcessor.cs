@@ -330,37 +330,83 @@ public partial class GestureRecognizer
 		}
 
 #if IS_UNO_UI_PROJECT
+		/// <summary>
+		/// Ticks the inertia once per frame, before that frame's picture is recorded.
+		/// </summary>
+		/// <remarks>
+		/// CompositionTarget.Rendering is raised from a dispatcher continuation *after* the record, so a
+		/// driver on it writes into the following frame — a structural frame of latency on every fling.
+		/// Compositor.FrameStarting runs before the paint walk and carries one timestamp for the whole
+		/// frame, so the position is both current and evaluated against the same clock as everything else.
+		/// </remarks>
 		private sealed class CompositionInertiaProcessorTimer(Action<TimeSpan> onTick) : IInertiaProcessorTimer
 		{
-			private EventHandler<object>? _handler;
+			// Unsubscribe from the target we subscribed to: MainFrameDriverTarget can change or go null,
+			// and a missed -= leaks a frame driver that keeps the compositor ticking forever.
+			private Microsoft.UI.Xaml.Media.CompositionTarget? _target;
+			private EventHandler<long>? _handler;
+			private long _startTimestamp;
+
+			private EventHandler<object>? _renderingHandler;
 			private Stopwatch? _time;
 
-			public bool IsRunning => _handler is not null;
+			public bool IsRunning => _handler is not null || _renderingHandler is not null;
 
 			public void Start()
 			{
 				Stop();
 
-				_time = Stopwatch.StartNew();
-				_handler = (_, args) =>
+				if (Microsoft.UI.Xaml.Media.CompositionTarget.MainFrameDriverTarget is { } target)
 				{
-					// Note: We are not using the ((Microsoft.UI.Xaml.Media.RenderingEventArgs)args).RenderingTime as we are not able to have the value at t0
-					onTick(_time.Elapsed);
-				};
+					// Anchored on the first tick, not here: the grid sits at the mean tick offset, so timing from
+					// a raw clock read would make the first elapsed value negative.
+					_startTimestamp = 0;
+					_handler = (_, timestamp) =>
+					{
+						if (_startTimestamp == 0)
+						{
+							_startTimestamp = timestamp - target.FrameIntervalInTicks;
+						}
 
-				CompositionTarget.Rendering += _handler;
+						onTick(TimeSpan.FromTicks(timestamp - _startTimestamp));
+					};
+					_target = target;
+					target.FrameStarting += _handler;
+					return;
+				}
+
+				// No target to ride: the post-record hook is a frame late, but Process is the only thing that can
+				// complete the inertia, so not ticking at all would strand the manipulation inertial forever.
+				_time = Stopwatch.StartNew();
+				_renderingHandler = (_, _) => onTick(_time.Elapsed);
+				CompositionTarget.Rendering += _renderingHandler;
 			}
 
 			public void Stop()
 			{
 				if (_handler is not null)
 				{
-					CompositionTarget.Rendering -= _handler;
+					if (_target is { } target)
+					{
+						target.FrameStarting -= _handler;
+						_target = null;
+					}
+
 					_handler = null;
+				}
+
+				if (_renderingHandler is not null)
+				{
+					CompositionTarget.Rendering -= _renderingHandler;
+					_renderingHandler = null;
 				}
 			}
 
-			~CompositionInertiaProcessorTimer() => Stop();
+			// Deliberately no finalizer. Stop() unsubscribes from CompositionTarget.Rendering, whose accessor
+			// asserts UI-thread access, and a throw from a finalizer takes the process down. It also could
+			// never do anything useful: while a handler is subscribed the event roots this instance, so the
+			// object is only ever collectable once Stop() has already run. InertiaProcessor.Dispose() is what
+			// actually ends the timer.
 		}
 #endif
 	}

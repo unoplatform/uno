@@ -1,21 +1,17 @@
 ﻿#nullable enable
 
 using System;
-using System.Diagnostics;
 using System.Numerics;
-using System.Threading;
+using Uno.Foundation.Logging;
+using Uno.UI.Composition;
 
 namespace Microsoft.UI.Composition.Interactions;
 
 internal class InteractionTrackerPointerWheelInertiaHandler : IInteractionTrackerInertiaHandler
 {
-	// InteractionTracker works at 60 FPS, per documentation
-	// https://learn.microsoft.com/en-us/windows/uwp/composition/interaction-tracker-manipulations#why-use-interactiontracker
-	// > InteractionTracker was built to utilize the new Animation engine that operates on an independent thread at 60 FPS,resulting in smooth motion.
-	private const int IntervalInMilliseconds = 17; // Ceiling of 1000/60
-
-	private Timer? _timer;
-	private Stopwatch? _stopwatch;
+	private ICompositionTarget? _target;
+	private EventHandler<long>? _handler;
+	private long _startTimestamp;
 
 	private readonly InteractionTracker _interactionTracker;
 	private readonly Vector3 _minPosition;
@@ -44,37 +40,72 @@ internal class InteractionTrackerPointerWheelInertiaHandler : IInteractionTracke
 
 	public float FinalScale => _interactionTracker.Scale; // TODO: Scale not yet implemented
 
+	/// <summary>
+	/// Advanced once per presented frame rather than at a fixed interval of its own, so the motion is
+	/// sampled on the cadence the frames are actually shown on.
+	/// </summary>
 	public void Start()
 	{
-		if (_timer is not null)
+		if (_handler is not null)
 		{
-			throw new InvalidOperationException("Cannot start inertia timer twice.");
+			throw new InvalidOperationException("Cannot start inertia twice.");
 		}
 
-		_stopwatch = Stopwatch.StartNew();
-		_timer = new Timer(OnTick, null, 0, IntervalInMilliseconds);
+		if (Compositor.FrameDriverTargetResolver?.Invoke() is not { } target)
+		{
+			// Advance is the only path out of the inertia state, so settle here rather than leaving the
+			// tracker mid-inertia with nothing left to move it.
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn("No frame-driver target resolved; completing wheel inertia immediately.");
+			}
+
+			_interactionTracker.SetPosition(FinalModifiedPosition, requestId: 0);
+			_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, requestId: 0));
+			return;
+		}
+
+		_startTimestamp = 0;
+		_target = target;
+		_handler = OnTick;
+		target.FrameStarting += _handler;
 	}
 
+	/// <summary>
+	/// Idempotent, and the only way this stops. Unsubscribes from the target it joined: a subscription
+	/// left behind keeps the compositor reporting itself as animating for good.
+	/// </summary>
 	public void Stop()
 	{
-		_timer?.Dispose();
-		_stopwatch?.Stop();
+		if (_handler is not null)
+		{
+			_target!.FrameStarting -= _handler;
+			_handler = null;
+			_target = null;
+		}
 	}
 
-	private void OnTick(object? state)
+	private void OnTick(object? sender, long timestampInTicks)
 	{
-		var currentElapsed = _stopwatch!.ElapsedMilliseconds;
+		if (_startTimestamp == 0)
+		{
+			_startTimestamp = timestampInTicks - _target!.FrameIntervalInTicks;
+		}
 
+		Advance((timestampInTicks - _startTimestamp) / (double)TimeSpan.TicksPerMillisecond);
+	}
+
+	private void Advance(double currentElapsed)
+	{
 		if (currentElapsed >= 250)
 		{
 			_interactionTracker.SetPosition(FinalModifiedPosition, requestId: 0);
 			_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, requestId: 0));
-			_timer!.Dispose();
-			_stopwatch!.Stop();
+			Stop();
 			return;
 		}
 
-		var newPosition = _initialPosition + (currentElapsed / 1000.0f) * InitialVelocity;
+		var newPosition = _initialPosition + (float)(currentElapsed / 1000.0) * InitialVelocity;
 		var clampedNewPosition = Vector3.Clamp(newPosition, _minPosition, _maxPosition);
 
 		_interactionTracker.SetPosition(clampedNewPosition, requestId: 0);
@@ -82,8 +113,7 @@ internal class InteractionTrackerPointerWheelInertiaHandler : IInteractionTracke
 		if (clampedNewPosition.Equals(FinalModifiedPosition))
 		{
 			_interactionTracker.ChangeState(new InteractionTrackerIdleState(_interactionTracker, requestId: 0));
-			_timer!.Dispose();
-			_stopwatch!.Stop();
+			Stop();
 		}
 	}
 }
