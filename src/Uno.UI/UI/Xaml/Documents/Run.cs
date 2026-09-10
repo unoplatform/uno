@@ -116,6 +116,22 @@ namespace Microsoft.UI.Xaml.Documents
 
 		internal IReadOnlyList<Segment> Segments => _segments ??= GetSegments();
 
+		internal InlineObjectInfo? InlineObject { get; set; }
+
+		internal TextAlignment? ParagraphAlignment { get; set; }
+
+		internal ParagraphLayoutInfo? ParagraphLayout { get; set; }
+
+		internal global::Windows.UI.Color? CharacterBackground { get; set; }
+		internal global::Microsoft.UI.Text.UnderlineType? RichEditUnderlineType { get; set; }
+		internal bool IsHidden { get; set; }
+		internal float RichEditBaselineOffset { get; set; }
+		internal float RichEditKerningThreshold { get; set; }
+		internal string? RichEditLanguageTag { get; set; }
+		internal global::Microsoft.UI.Text.TextScript RichEditTextScript { get; set; } = global::Microsoft.UI.Text.TextScript.Default;
+		internal bool RichEditSmallCaps { get; set; }
+		internal bool RichEditOutline { get; set; }
+
 		public global::Microsoft.UI.Xaml.FlowDirection FlowDirection
 		{
 			get => (global::Microsoft.UI.Xaml.FlowDirection)this.GetValue(FlowDirectionProperty);

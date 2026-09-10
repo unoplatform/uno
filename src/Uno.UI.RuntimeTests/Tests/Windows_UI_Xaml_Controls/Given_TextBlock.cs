@@ -744,13 +744,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
 		public async Task When_Inlines_Transitively_Change()
 		{
 			if (!ApiInformation.IsTypePresent("Microsoft.UI.Xaml.Media.Imaging.RenderTargetBitmap, Uno.UI"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
-			var SUT = new TextBlock();
+			var SUT = new TextBlock { Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red) };
 
 			await UITestHelper.Load(SUT, tb => tb.IsLoaded);
 
@@ -760,8 +761,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await UITestHelper.WaitForIdle();
 
+			Assert.AreEqual("ABCDEFGHIJK", SUT.Text);
+			Assert.AreEqual(1, SUT.Inlines.TraversedTree.leafTree.Length);
 			var bitmap = await UITestHelper.ScreenShot(SUT);
-			ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height), ((SolidColorBrush)Uno.UI.Xaml.Media.DefaultBrushes.TextForegroundBrush).Color, tolerance: 15);
+			ImageAssert.HasColorInRectangle(bitmap, new Rectangle(0, 0, bitmap.Width, bitmap.Height), Microsoft.UI.Colors.Red, tolerance: 15);
 		}
 #endif
 

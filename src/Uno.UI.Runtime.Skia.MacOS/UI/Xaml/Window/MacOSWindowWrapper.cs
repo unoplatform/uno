@@ -67,6 +67,49 @@ internal class MacOSWindowWrapper : NativeWindowWrapperBase
 		NativeUno.uno_window_resize(_nativeWindow.Handle, w, h);
 	}
 
+	public override PointInt32 ConvertLocalToScreen(Point localPoint)
+		=> TryConvertLocalToScreen(localPoint, out var screenPoint)
+			? screenPoint
+			: base.ConvertLocalToScreen(localPoint);
+
+	public override bool TryConvertLocalToScreen(Point localPoint, out PointInt32 screenPoint)
+	{
+		screenPoint = default;
+		if (_nativeWindow.Handle == nint.Zero)
+		{
+			return false;
+		}
+
+		NativeUno.uno_window_convert_local_to_screen(_nativeWindow.Handle, localPoint.X, localPoint.Y, out var x, out var y);
+		var scale = RasterizationScale == 0 ? 1 : RasterizationScale;
+		screenPoint = new PointInt32((int)Math.Round(x * scale), (int)Math.Round(y * scale));
+		return true;
+	}
+
+	public override Point ConvertScreenToLocal(PointInt32 screenPoint)
+		=> TryConvertScreenToLocal(screenPoint, out var localPoint)
+			? localPoint
+			: base.ConvertScreenToLocal(screenPoint);
+
+	public override bool TryConvertScreenToLocal(PointInt32 screenPoint, out Point localPoint)
+	{
+		localPoint = default;
+		if (_nativeWindow.Handle == nint.Zero)
+		{
+			return false;
+		}
+
+		var scale = RasterizationScale == 0 ? 1 : RasterizationScale;
+		NativeUno.uno_window_convert_screen_to_local(
+			_nativeWindow.Handle,
+			screenPoint.X / scale,
+			screenPoint.Y / scale,
+			out var x,
+			out var y);
+		localPoint = new Point(x, y);
+		return true;
+	}
+
 	private void OnHostPositionChanged(double x, double y)
 	{
 		// in physical pixels

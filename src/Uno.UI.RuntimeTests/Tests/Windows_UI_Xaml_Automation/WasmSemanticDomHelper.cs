@@ -26,6 +26,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			InvokeBrowserJs("(function(){const button = document.getElementById('uno-enable-accessibility'); if (button) { button.click(); } return 'ok';})()");
 		}
 
+		public static void ResetAccessibilityThroughDom()
+		{
+			InvokeBrowserJs("(function(){globalThis.Uno.UI.Runtime.Skia.Accessibility.resetForTesting(); return 'ok';})()");
+		}
+
 		/// <summary>
 		/// Returns the deterministic id assigned to a UIElement's semantic node. Targets the exact
 		/// element under test via its Visual.Handle; a generic role selector would match the first

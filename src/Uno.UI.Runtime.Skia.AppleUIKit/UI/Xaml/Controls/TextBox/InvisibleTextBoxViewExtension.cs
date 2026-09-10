@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -27,40 +28,45 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	internal TextBoxView Owner => _owner;
 
+	private IImeSessionHost? ImeHost => _owner.Host as IImeSessionHost;
+
 	public bool IsOverlayLayerInitialized(XamlRoot xamlRoot) => true;
 
-	public void StartEntry()
+	public void StartEntry(bool suppressSoftwareKeyboard = false)
 	{
 		// StartEntry can be called twice without any EndEntry.
 		// This happens when the managed TextBox receives Focus
 		// with two different `FocusState`s (e.g, Programmatic and Keyboard/Pointer)
 		if (_textBoxView is not null)
 		{
-			if (!_textBoxView.IsFirstResponder)
+			if (!suppressSoftwareKeyboard && !_textBoxView.IsFirstResponder)
 			{
 				_textBoxView.BecomeFirstResponder();
 			}
 			return;
 		}
 
-		var core = _owner.Core;
-		if (core is null || core.Owner.XamlRoot is null)
+		var host = ImeHost;
+		if (host?.XamlRoot is null)
 		{
 			return;
 		}
 
-		EnsureTextBoxView(core);
+		EnsureTextBoxView(host);
 		SetSoftKeyboardTheme();
 
-		AddViewToTextInputLayer(core.Owner.XamlRoot);
+		AddViewToTextInputLayer(host.XamlRoot);
 
-		// change FirstResponder's View before removing the previous view to avoid flickering
-		_textBoxView.BecomeFirstResponder();
+		if (!suppressSoftwareKeyboard)
+		{
+			// change FirstResponder's View before removing the previous view to avoid flickering
+			_textBoxView.BecomeFirstResponder();
+		}
 
 		RemovePreviousViewFromTextInputLayer();
 
-		var start = core.SelectionStart;
-		var length = core.SelectionLength;
+		var start = host.SelectionStart;
+		var length = host.SelectionLength;
 		_textBoxView.Select(start, length);
 	}
 
@@ -76,6 +82,8 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	public void UpdateSize() => InvalidateLayout();
 
 	public void UpdatePosition() => InvalidateLayout();
+
+	public void NotifyImePositionChanged() => _textBoxView?.NotifyImePositionChanged();
 
 	public void InvalidateLayout()
 	{
@@ -99,6 +107,18 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			text = text.Replace('\r', '\n');
 			_textBoxView.SetTextNative(text);
 		}
+	}
+
+	public void ReplaceText(int start, int length, string replacement)
+	{
+		if (GetNativeText() is not { } text)
+		{
+			return;
+		}
+
+		start = Math.Clamp(start, 0, text.Length);
+		length = Math.Clamp(length, 0, text.Length - start);
+		SetText(string.Concat(text.AsSpan(0, start), replacement, text.AsSpan(start + length)));
 	}
 
 	public int GetSelectionLength()
@@ -135,17 +155,25 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	public void SetPasswordRevealState(PasswordRevealState passwordRevealState) { }
 
-	public void UpdateNativeView() => UpdateProperties();
+	public void UpdateNativeView()
+	{
+		// Property changes before focus must not create an unattached native responder.
+		if (_textBoxView is not null && ImeHost is { } host)
+		{
+			EnsureTextBoxView(host);
+			UpdateProperties();
+		}
+	}
 
 	public void UpdateProperties()
 	{
-		if (_textBoxView is null || _owner.Core is not { } core)
+		if (_textBoxView is null || ImeHost is not { } host)
 		{
 			return;
 		}
 
-		_textBoxView.AutocapitalizationType = InputScopeHelper.ConvertInputScopeToCapitalization(core.InputScope);
-		_textBoxView.KeyboardType = InputScopeHelper.ConvertInputScopeToKeyboardType(core.InputScope);
+		_textBoxView.AutocapitalizationType = InputScopeHelper.ConvertInputScopeToCapitalization(host.InputScope);
+		_textBoxView.KeyboardType = InputScopeHelper.ConvertInputScopeToKeyboardType(host.InputScope);
 
 		// Apply the iOS 26 number-pad-popover opt-out after KeyboardType is set so the iPad +
 		// numeric-keyboard gate is evaluated against the final value. Single-line only; the
@@ -155,18 +183,25 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			singleline.TryDisableNumberPadPopover();
 		}
 
-		_textBoxView.SpellCheckingType = core.IsSpellCheckEnabled ? UITextSpellCheckingType.Yes : UITextSpellCheckingType.No;
-		_textBoxView.AutocorrectionType = core.IsSpellCheckEnabled ? UITextAutocorrectionType.Yes : UITextAutocorrectionType.No;
+		_textBoxView.SpellCheckingType = host.IsSpellCheckEnabled ? UITextSpellCheckingType.Yes : UITextSpellCheckingType.No;
+		_textBoxView.AutocorrectionType =
+			host.IsSpellCheckEnabled && host.IsTextPredictionEnabled
+				? UITextAutocorrectionType.Yes
+				: UITextAutocorrectionType.No;
 
-		var inputReturnType = TextBoxExtensions.GetInputReturnType(core.Owner);
+		var inputReturnType = host is TextBoxCore core
+			? TextBoxExtensions.GetInputReturnType(core.Owner)
+			: host.AcceptsReturn
+				? InputReturnType.Enter
+				: InputReturnType.Done;
 		_textBoxView.ReturnKeyType = inputReturnType.ToUIReturnKeyType();
 
-		if (core.IsSpellCheckEnabled)
+		if (host.IsSpellCheckEnabled)
 		{
 			_textBoxView.AutocapitalizationType = UITextAutocapitalizationType.Sentences;
 		}
 
-		_textBoxView.SecureTextEntry = core.IsPassword;
+		_textBoxView.SecureTextEntry = host is TextBoxCore { IsPassword: true };
 		SetSoftKeyboardTheme();
 
 		// KeyboardType may have changed — re-evaluate the native view
@@ -179,56 +214,72 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	private void SetSoftKeyboardTheme()
 	{
-		if (_owner.Core is not { } core || _textBoxView is null)
+		if (_owner.Host?.Owner is not { } control || _textBoxView is null)
 		{
 			return;
 		}
 
-		if (core.Owner.ActualTheme == ElementTheme.Default)
+		if (control.ActualTheme == ElementTheme.Default)
 		{
 			_textBoxView.KeyboardAppearance = UIKeyboardAppearance.Default;
 		}
-		else if (core.Owner.ActualTheme == ElementTheme.Light)
+		else if (control.ActualTheme == ElementTheme.Light)
 		{
 			_textBoxView.KeyboardAppearance = UIKeyboardAppearance.Light;
 		}
-		else if (core.Owner.ActualTheme == ElementTheme.Dark)
+		else if (control.ActualTheme == ElementTheme.Dark)
 		{
 			_textBoxView.KeyboardAppearance = UIKeyboardAppearance.Dark;
 		}
 	}
 
 	[MemberNotNull(nameof(_textBoxView))]
-	private void EnsureTextBoxView(TextBoxCore core)
+	private void EnsureTextBoxView(IImeSessionHost host)
 	{
 		if (_textBoxView is null ||
-			!_textBoxView.IsCompatible(core))
+			!_textBoxView.IsCompatible(host))
 		{
-			// The current view is not compatible with the given engine state.
-			// We need to create a new one.
-			var inputText = GetNativeText() ?? core.Text;
-			_textBoxView = CreateNativeView(core);
+			var previousView = _textBoxView;
+			var wasFirstResponder = previousView?.IsFirstResponder == true;
+			// RichEditBox can recreate the UIKit editor from a synchronous TextChanging handler,
+			// before its native mirror has received the document mutation.
+			var inputText = host is RichEditBox ? host.Text : GetNativeText() ?? host.Text;
+			_textBoxView = CreateNativeView(host);
 			if (_textBoxView is UIView nativeView)
 			{
 				nativeView.Alpha = 0.01f;
 			}
 			UpdateProperties();
 			SetText(inputText ?? string.Empty);
+
+			if (wasFirstResponder && host.XamlRoot is { } xamlRoot)
+			{
+				_latestNativeView = previousView as UIView;
+				AddViewToTextInputLayer(xamlRoot);
+				_textBoxView.BecomeFirstResponder();
+				RemovePreviousViewFromTextInputLayer();
+				_textBoxView.Select(host.SelectionStart, host.SelectionLength);
+			}
 		}
 	}
 
-	internal void SyncSelectionToTextBox()
+	internal void SyncSelectionToTextBox(IInvisibleTextBoxView source)
 	{
-		if (_owner?.Core is { } core)
+		if (ReferenceEquals(_textBoxView, source) && ImeHost is { } host)
 		{
 			var start = GetSelectionStart();
 			var length = GetSelectionLength();
-			core.SelectInternal(start, length);
+			host.SelectFromNative(start, length);
 		}
 	}
 
-	internal void ProcessNativeTextInput(string? text)
+	internal void ProcessNativeTextInput(IInvisibleTextBoxView source, string? text)
 	{
+		if (!ReferenceEquals(_textBoxView, source))
+		{
+			return;
+		}
+
 		// During IME composition, text updates are managed by the shared
 		// TextBox.skia.cs composition handlers via IImeTextBoxExtension events.
 		// Suppress the normal text processing path to prevent double processing.
@@ -237,21 +288,20 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			return;
 		}
 
-		if (_owner?.Core is { } core)
+		if (ImeHost is { } host)
 		{
 			var newSelectionStart = GetSelectionStart();
-			core.SetPendingSelection(newSelectionStart, 0);
-			var updatedText = core.ProcessTextInput(text ?? string.Empty);
-			if (text != updatedText)
+			host.UpdateTextFromNative(text ?? string.Empty, newSelectionStart, 0);
+			if (text != host.Text)
 			{
-				SetText(updatedText);
+				SetText(host.Text);
 			}
 		}
 	}
 
 	private string? GetNativeText() => _textBoxView?.Text;
 
-	private IInvisibleTextBoxView CreateNativeView(TextBoxCore core) => core.AcceptsReturn != true ?
+	private IInvisibleTextBoxView CreateNativeView(IImeSessionHost host) => !host.AcceptsReturn ?
 		new SinglelineInvisibleTextBoxView(this) : new MultilineInvisibleTextBoxView(this);
 
 	public void AddViewToTextInputLayer(XamlRoot xamlRoot)
@@ -266,7 +316,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 			var view = layer.Subviews.LastOrDefault();
 
 			// prevents adding the same native view multiple times. This should not happen very often.
-			if ((view as IInvisibleTextBoxView)?.Owner?.Core != _textBoxView?.Owner?.Core)
+			if (!ReferenceEquals(view, nativeView))
 			{
 				_latestNativeView = view;
 				layer.AddSubview(nativeView);
@@ -278,7 +328,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	public void RemoveViewFromTextInputLayer()
 	{
-		var xamlRoot = _owner.Core?.Owner.XamlRoot;
+		var xamlRoot = ImeHost?.XamlRoot;
 		if (xamlRoot is null)
 		{
 			return;
@@ -317,8 +367,8 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 
 	private void UpdateNativeViewFrame(UIView nativeView)
 	{
-		var core = _textBoxView?.Owner?.Core;
-		var rect = core?.Owner.GetAbsoluteBoundsRect();
+		var host = _textBoxView?.Owner?.Host?.Owner;
+		var rect = host?.GetAbsoluteBoundsRect();
 		// GetAbsoluteBoundsRect returns WinUI DIPs which map 1:1 to iOS
 		// points.  Do NOT convert to physical pixels — UIView.Frame is in
 		// points, not physical pixels.
@@ -383,8 +433,9 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	private static bool CouldBecomeFirstResponder(FrameworkElement? element)
 	{
 		return element is ITextBoxHost ||
-		element is AutoSuggestBox ||
-		element is NumberBox;
+			element is RichEditBox ||
+			element is AutoSuggestBox ||
+			element is NumberBox;
 	}
 
 	internal static UIView? GetOverlayLayer(XamlRoot xamlRoot) =>

@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Threading;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Dispatching;
@@ -1114,8 +1115,18 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 
 		try
 		{
-			_ = Win32UIAutomationInterop.UiaRaiseAutomationPropertyChangedEvent(
-				provider, propertyId.Value, oldValue, newValue);
+			if (ReferenceEquals(automationProperty, AutomationElementIdentifiers.BoundingRectangleProperty))
+			{
+				Marshal.ThrowExceptionForHR(
+					Win32UIAutomationInterop.UiaRaiseAutomationPropertyChangedEvent(
+						provider, propertyId.Value, null, null));
+			}
+			else
+			{
+				Marshal.ThrowExceptionForHR(
+					Win32UIAutomationInterop.UiaRaiseAutomationPropertyChangedEvent(
+						provider, propertyId.Value, oldValue, newValue));
+			}
 		}
 		catch (Exception ex)
 		{
@@ -1221,6 +1232,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 				case AutomationEvents.TextPatternOnTextSelectionChanged:
 					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
 						provider, Win32UIAutomationInterop.UIA_Text_TextSelectionChangedEventId);
+					break;
+				case AutomationEvents.ConversionTargetChanged:
+					_ = Win32UIAutomationInterop.UiaRaiseAutomationEvent(
+						provider, Win32UIAutomationInterop.UIA_TextEdit_ConversionTargetChangedEventId);
 					break;
 				case AutomationEvents.StructureChanged:
 					// Drop the cached subtree (cascading to virtual peers) and coalesce
@@ -1347,13 +1362,17 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		var dataArray = new string[changedData.Count];
 		for (var i = 0; i < changedData.Count; i++)
 		{
-			dataArray[i] = changedData[i];
+			dataArray[i] = changedData[i] ?? string.Empty;
 		}
 
 		try
 		{
 			// Uno's AutomationTextEditChangeType values match UIA TextEditChangeType exactly.
-			_ = Win32UIAutomationInterop.UiaRaiseTextEditTextChangedEvent(target, (int)changeType, dataArray);
+			var result = Win32UIAutomationInterop.UiaRaiseTextEditTextChangedEvent(target, (int)changeType, dataArray);
+			if (result < 0 && this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"UiaRaiseTextEditTextChangedEvent failed with HRESULT 0x{result:X8}.");
+			}
 		}
 		catch (Exception ex) when (
 			ex is System.Runtime.InteropServices.COMException
@@ -1454,6 +1473,10 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		if (ReferenceEquals(property, AutomationElementIdentifiers.NameProperty))
 		{
 			return Win32UIAutomationInterop.UIA_NamePropertyId;
+		}
+		if (ReferenceEquals(property, AutomationElementIdentifiers.BoundingRectangleProperty))
+		{
+			return Win32UIAutomationInterop.UIA_BoundingRectanglePropertyId;
 		}
 		if (ReferenceEquals(property, TogglePatternIdentifiers.ToggleStateProperty))
 		{

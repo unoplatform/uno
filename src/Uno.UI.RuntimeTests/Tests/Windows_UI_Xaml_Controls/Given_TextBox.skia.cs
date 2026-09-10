@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Combinatorial.MSTest;
 using Microsoft.UI.Xaml;
@@ -26,6 +27,7 @@ using Windows.System;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Input.Preview.Injection;
+using Windows.UI.ViewManagement;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Xaml.Controls.Extensions;
@@ -4835,39 +4837,67 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)] // Desktop touch-selection convention; mobile conventions tested separately
 		public async Task When_First_Second_Tap_Caret_Thumb_Shows()
 		{
 			var SUT = new TextBox
 			{
 				Width = 400,
+				Margin = new Thickness(100),
 				Text = "Some Text"
 			};
 
-			await UITestHelper.Load(SUT);
+			try
+			{
+				await UITestHelper.Load(SUT);
+				Assert.IsTrue(SUT.Focus(FocusState.Programmatic));
+				await WindowHelper.WaitForIdle();
+				var opened = 0;
+				Assert.IsNotNull(SUT.SelectionFlyout);
+				SUT.SelectionFlyout.Opened += (_, _) => opened++;
 
-			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
-			using var finger = injector.GetFinger();
+				var displayBlock = ((ITextBoxHost)SUT).Core.TextBoxView.DisplayBlock;
+				Point GetTextPoint(int index)
+				{
+					var start = displayBlock.ParsedText.GetRectForIndex(index);
+					var end = displayBlock.ParsedText.GetRectForIndex(index + 1);
+					return displayBlock.TransformToVisual(null).TransformPoint(
+						new Point((start.Left + end.Left) / 2, start.Top + start.Height / 2));
+				}
 
-			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
-			finger.Release();
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
-			Assert.AreEqual("Text", SUT.SelectedText);
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var finger = injector.GetFinger();
 
-			// clicking inside the selected area keeps the selection
-			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
-			finger.Release();
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
-			Assert.AreEqual("Text", SUT.SelectedText);
+				finger.Press(GetTextPoint(6));
+				finger.Release();
+				await WindowHelper.WaitFor(() => opened > 0);
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+				Assert.AreEqual("Text", SUT.SelectedText);
 
-			// clicking outside the selected area drops it
-			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter() + new Point(100, 0));
-			finger.Release();
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode);
-			Assert.AreEqual("", SUT.SelectedText);
+				// clicking inside the selected area keeps the selection
+				var insidePoint = GetTextPoint(6);
+				var hitIndex = displayBlock.ParsedText.GetIndexAt(displayBlock.TransformToVisual(null).Inverse.TransformPoint(insidePoint), true, true);
+				Assert.IsTrue(hitIndex >= SUT.SelectionStart && hitIndex < SUT.SelectionStart + SUT.SelectionLength,
+					$"The inside tap must hit the selected text, not empty control space: hit {hitIndex}, selection {SUT.SelectionStart}/{SUT.SelectionLength}.");
+				finger.Press(insidePoint);
+				finger.Release();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsBothEndsShowing, SUT.CaretMode);
+				Assert.AreEqual("Text", SUT.SelectedText);
+				// clicking outside the selected area drops it
+				finger.Press(GetTextPoint(1));
+				finger.Release();
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing, SUT.CaretMode);
+				Assert.AreEqual("", SUT.SelectedText);
+			}
+			finally
+			{
+				SUT.SelectionFlyout?.Hide();
+				WindowHelper.WindowContent = null;
+			}
 		}
 
 		[TestMethod]
@@ -5598,6 +5628,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.SelectionFlyout?.Hide();
 			await WindowHelper.WaitForIdle();
 
+			await WaitForAndroidInputPanePositioning();
+
 			// Drag upwards on the filler below the box: the form scrolls down and the TextBox leaves the viewport.
 			var svBounds = scrollViewer.GetAbsoluteBoundsRect();
 			var from = new Point(svBounds.GetCenter().X, svBounds.Bottom - 30);
@@ -5633,6 +5665,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(expectedCaret, SUT.CaretMode, "scrolling away must not disturb the touch caret");
 		}
 
+		private static async Task WaitForAndroidInputPanePositioning()
+		{
+			if (RuntimeTestsPlatformHelper.CurrentPlatform == RuntimeTestPlatforms.SkiaAndroid)
+			{
+				// InputPane can finish opening after a touch and queue its own StartBringIntoView.
+				// Complete that setup before testing a subsequent user pan.
+				var inputPane = InputPane.GetForCurrentView();
+				if (inputPane.Visible || inputPane.TryShow())
+				{
+					await WindowHelper.WaitFor(
+						() => inputPane.Visible,
+						message: "The requested input pane must be visible before testing scrolling away from the caret.");
+					await UITestHelper.WaitForRender();
+					await WindowHelper.WaitForIdle();
+				}
+			}
+		}
+
 		[TestMethod]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // mobile conventions: run on Desktop (dev) + real Android only
 		public Task When_Touch_Tap_Does_Not_Lock_ScrollViewer_Android()
@@ -5646,6 +5696,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// The empty-field variant only started reaching the lock once an empty box stopped swallowing the tap: it
 		// now places the Android insertion handle like a filled one, which is what used to arm the clamp.
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)]
 		public Task When_Touch_Tap_Empty_Does_Not_Lock_ScrollViewer_Android()
 			=> AssertTouchCaretDoesNotLockScrollViewer(
@@ -6948,17 +6999,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				message: "the TextBox should be parked inside the viewport before it is tapped");
 			await UITestHelper.WaitForIdle(true);
 
-			// One tap, not two. A second tap selects the word and pops the selection flyout, and then the scroll
-			// gesture below has nowhere to land: the flyout's light-dismiss overlay fills the window, so a press on
-			// it is consumed dismissing the flyout instead of scrolling, and the toolbar itself is placed above the
-			// selection, overlapping the viewport - a press there goes to its buttons. Both are correct behaviour;
-			// they just cost the gesture this test needs.
+			// One tap leaves a caret. A second tap also opens the selection toolbar, whose commands can overlap
+			// this small viewport and take the gesture intended for the filler. This case exercises caret scrolling.
 			finger.Press(SUT.GetAbsoluteBoundsRect().GetCenter());
 			finger.Release();
 			await WindowHelper.WaitFor(
 				() => SUT.CaretMode == TextBoxCore.CaretDisplayMode.CaretWithThumbsOnlyEndShowing,
 				message: "the tap should leave the insertion handle up");
 			await UITestHelper.WaitForIdle(true);
+
+			await WaitForAndroidInputPanePositioning();
 
 			// Premises spelled out rather than left to a mute "the offset did not move": the touch conventions can
 			// only be observed on CI, so each half of the scenario has to say when it is the one that broke.
@@ -7819,11 +7869,150 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			fake.SimulateCompositionUpdate("ni");
 			await WindowHelper.WaitForIdle();
 
-			// Cancel without committing — text should retain last composition
+			// Cancel without committing — the transient preedit is removed.
 			fake.SimulateCompositionCancel();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual("ni", SUT.Text);
+			Assert.AreEqual("", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Text_Selection_And_Layout_Changes_Update_Session()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+			var SUT = new TextBox
+			{
+				Width = 200,
+			};
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+
+				fake.Updates.Clear();
+				SUT.Text = "abcd";
+				await WindowHelper.WaitForIdle();
+				CollectionAssert.Contains(fake.Updates, ImeSessionUpdate.TextAndSelection);
+
+				fake.Updates.Clear();
+				SUT.Select(1, 2);
+				await WindowHelper.WaitForIdle();
+				CollectionAssert.Contains(fake.Updates, ImeSessionUpdate.TextAndSelection);
+
+				fake.Updates.Clear();
+				SUT.Width = 220;
+				await WindowHelper.WaitForIdle();
+				CollectionAssert.Contains(fake.Updates, ImeSessionUpdate.TextAndSelection);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_IME_Focused_Input_Options_Change_Update_Session()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+			var SUT = new TextBox();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				SUT.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitForIdle();
+				fake.SimulateCompositionStart();
+				fake.SimulateCompositionUpdate("ni");
+				fake.Updates.Clear();
+
+				SUT.InputScope = new InputScope
+				{
+					Names =
+						{
+							new InputScopeName { NameValue = InputScopeNameValue.EmailSmtpAddress },
+						},
+				};
+				SUT.IsTextPredictionEnabled = false;
+				SUT.AcceptsReturn = true;
+				SUT.IsSpellCheckEnabled = false;
+
+				CollectionAssert.AreEqual(
+					new[]
+					{
+						ImeSessionUpdate.InputScope,
+						ImeSessionUpdate.TextPrediction,
+						ImeSessionUpdate.AcceptsReturn,
+						ImeSessionUpdate.SpellCheck,
+					},
+					fake.Updates);
+				Assert.IsTrue(SUT.IsComposing);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_IME_Partial_Result_Preserves_Committed_Prefix()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "AB" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Select(1, 0);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("nihao");
+			fake.SimulateCompositionPartialCommit("你", "hao", cursorPosition: 3);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("A你haoB", SUT.Text);
+			Assert.IsTrue(SUT.IsComposing);
+			Assert.AreEqual(2, ((ITextBoxHost)SUT).Core.CompositionStartIndex);
+			Assert.AreEqual(3, ((ITextBoxHost)SUT).Core.CompositionLength);
+
+			fake.SimulateCompositionUpdate("ha");
+			fake.SimulateCompositionComplete("好");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("A你好B", SUT.Text);
+			Assert.IsFalse(SUT.IsComposing);
+		}
+
+		[TestMethod]
+		public async Task When_IME_Partial_Result_Then_Cancel_Keeps_Only_Committed_Prefix()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+			var fake = new FakeImeTextBoxExtension();
+			using var imeDisposable = TextBox.SetImeExtensionForTesting(fake);
+
+			var SUT = new TextBox { Text = "AB" };
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			SUT.Select(1, 0);
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			fake.SimulateCompositionStart();
+			fake.SimulateCompositionUpdate("nihao");
+			fake.SimulateCompositionPartialCommit("你", "hao", cursorPosition: 3);
+			fake.SimulateCompositionCancel();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("A你B", SUT.Text);
 			Assert.IsFalse(SUT.IsComposing);
 		}
 
@@ -8131,13 +8320,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			public bool IsComposing { get; private set; }
 			public bool EndImeSessionCalled { get; set; }
+			public List<ImeSessionUpdate> Updates { get; } = new();
 
 			public event EventHandler CompositionStarted;
 			public event EventHandler<ImeCompositionEventArgs> CompositionUpdated;
 			public event EventHandler<ImeCompositionEventArgs> CompositionCompleted;
+			public event EventHandler<ImePartialCompositionEventArgs> CompositionPartiallyCommitted;
+			public event EventHandler<ImeCompositionEventArgs> CompositionCanceled;
 			public event EventHandler CompositionEnded;
 
-			public void StartImeSession(TextBoxCore core) { }
+			public event EventHandler<ImeCandidateWindowBoundsChangedEventArgs> CandidateWindowBoundsChanged
+			{
+				add { }
+				remove { }
+			}
+
+			public void StartImeSession(IImeSessionHost host, ImeSessionActivation activation) { }
+
+			public void UpdateImeSession(IImeSessionHost host, ImeSessionUpdate update) => Updates.Add(update);
+
+			public Task<IReadOnlyList<string>> GetLinguisticAlternativesAsync(string compositionText, CancellationToken cancellationToken)
+				=> Task.FromResult<IReadOnlyList<string>>(Array.Empty<string>());
 
 			public void EndImeSession()
 			{
@@ -8155,16 +8358,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				CompositionStarted?.Invoke(this, EventArgs.Empty);
 			}
 
-			public void SimulateCompositionUpdate(string text, int cursorPosition = -1)
+			public void SimulateCompositionUpdate(
+				string text,
+				int cursorPosition = -1,
+				int resolvedLength = 0,
+				bool textAlreadyApplied = false)
 			{
-				CompositionUpdated?.Invoke(this, new ImeCompositionEventArgs(text, cursorPosition));
+				CompositionUpdated?.Invoke(
+					this,
+					new ImeCompositionEventArgs(text, cursorPosition, resolvedLength, textAlreadyApplied));
 			}
 
-			public void SimulateCompositionComplete(string text)
+			public void SimulateCompositionComplete(string text, bool textAlreadyApplied = false)
 			{
 				IsComposing = false;
-				CompositionCompleted?.Invoke(this, new ImeCompositionEventArgs(text));
+				CompositionCompleted?.Invoke(
+					this,
+					new ImeCompositionEventArgs(text, textAlreadyApplied: textAlreadyApplied));
 				CompositionEnded?.Invoke(this, EventArgs.Empty);
+			}
+
+			public void SimulateCompositionPartialCommit(
+				string committedText,
+				string compositionText,
+				int cursorPosition = -1,
+				int resolvedLength = 0,
+				bool textAlreadyApplied = false)
+			{
+				CompositionPartiallyCommitted?.Invoke(
+					this,
+					new ImePartialCompositionEventArgs(
+						committedText,
+						compositionText,
+						cursorPosition,
+						resolvedLength,
+						textAlreadyApplied));
 			}
 
 			public void SimulateDirectCommit(string text)
@@ -8177,6 +8405,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public void SimulateCompositionCancel()
 			{
 				IsComposing = false;
+				CompositionCanceled?.Invoke(this, new ImeCompositionEventArgs(string.Empty));
 				CompositionEnded?.Invoke(this, EventArgs.Empty);
 			}
 		}

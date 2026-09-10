@@ -537,6 +537,27 @@ void uno_window_get_position(NSWindow *window, double *x, double *y)
     *y = origin.y;
 }
 
+void uno_window_convert_local_to_screen(NSWindow *window, double x, double y, double *screenX, double *screenY)
+{
+    NSView *view = ((UNOWindow *)window).renderingView ?: window.contentView;
+    NSPoint windowPoint = [view convertPoint:NSMakePoint(x, y) toView:nil];
+    NSPoint screenPoint = [window convertPointToScreen:windowPoint];
+    *screenX = screenPoint.x;
+    // AppKit's global origin is the primary screen's bottom-left, even for windows on other displays.
+    *screenY = NSMaxY(NSScreen.screens.firstObject.frame) - screenPoint.y;
+}
+
+void uno_window_convert_screen_to_local(NSWindow *window, double screenX, double screenY, double *x, double *y)
+{
+    NSView *view = ((UNOWindow *)window).renderingView ?: window.contentView;
+    // Invert against the same desktop-wide origin, not this window's screen or the union of all screens.
+    NSPoint screenPoint = NSMakePoint(screenX, NSMaxY(NSScreen.screens.firstObject.frame) - screenY);
+    NSPoint windowPoint = [window convertPointFromScreen:screenPoint];
+    NSPoint localPoint = [view convertPoint:windowPoint fromView:nil];
+    *x = localPoint.x;
+    *y = localPoint.y;
+}
+
 char* uno_window_get_title(NSWindow *window)
 {
     return strdup(window.title.UTF8String);
@@ -1024,6 +1045,14 @@ void uno_set_ime_active(UNOWindow* window, bool active)
             [window makeFirstResponder:renderingView];
         }
     }
+}
+
+void uno_notify_ime_position_changed(UNOWindow* window)
+{
+    // Object getters and void messages to nil are safe; the container contentView is not the text-input client.
+    NSView *renderingView = window.renderingView;
+    NSTextInputContext *inputContext = renderingView.inputContext;
+    [inputContext invalidateCharacterCoordinates];
 }
 
 double uno_window_get_refresh_rate(NSWindow* window)

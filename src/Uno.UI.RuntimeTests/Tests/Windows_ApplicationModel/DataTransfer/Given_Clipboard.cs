@@ -86,6 +86,7 @@ partial class Given_Clipboard
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(Include, SkiaWin32)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23962")]
 	public async Task When_GetSet_Clipboard_ByteArray()
 	{
 		var package = new DataPackage();

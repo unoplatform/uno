@@ -38,3 +38,33 @@ internal class ImeCompositionEventArgs : EventArgs
 		TextAlreadyApplied = textAlreadyApplied;
 	}
 }
+
+/// <summary>
+/// Event args for an IME result that commits a prefix while continuing composition.
+/// </summary>
+internal sealed class ImePartialCompositionEventArgs : EventArgs
+{
+	public ImePartialCompositionEventArgs(
+		string committedText,
+		string compositionText,
+		int cursorPosition,
+		int resolvedLength,
+		bool textAlreadyApplied = false)
+	{
+		CommittedText = committedText;
+		CompositionText = compositionText;
+		CursorPosition = cursorPosition;
+		ResolvedLength = resolvedLength;
+		TextAlreadyApplied = textAlreadyApplied;
+	}
+
+	public string CommittedText { get; }
+
+	public string CompositionText { get; }
+
+	public int CursorPosition { get; }
+
+	public int ResolvedLength { get; }
+
+	public bool TextAlreadyApplied { get; }
+}

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -9,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Win32;
 using SkiaSharp;
 using Uno.ApplicationModel.DataTransfer;
 using Uno.Disposables;
@@ -29,32 +29,51 @@ namespace Uno.UI.Runtime.Skia.Win32;
 
 internal partial class Win32ClipboardExtension : IClipboardExtension
 {
+	private const ulong MaxClipboardFormatBytes = 32ul * 1024 * 1024;
+	private const ulong MaxClipboardSnapshotBytes = 64ul * 1024 * 1024;
+	private const int MaxClipboardSnapshotFormats = 128;
+	private const uint MaxFileDropItems = 4096;
+	private const uint MaxFileDropPathCharacters = 32_767;
+	private const uint MaxFileDropTotalCharacters = 1_048_576;
+	// DROPFILES is a fixed 20-byte Win32 header followed by the path payload.
+	private const int DropFilesHeaderSize = 20;
+
 	public static Win32ClipboardExtension Instance { get; } = new();
 
 
-	private static readonly Dictionary<string, (PointerToString FromPointer, StringToPointer ToPointer)> _knownTextBasedClipboardFormats = new()
+	private static readonly Dictionary<string, (PointerToString FromPointer, StringToBytes ToBytes)> _knownTextBasedClipboardFormats = new()
 	{
-		["HTML Format"] = (Marshal.PtrToStringUTF8, Marshal.StringToCoTaskMemUTF8), // HTML fragment with header metadata
-		["Rich Text Format"] = (Marshal.PtrToStringAnsi, Marshal.StringToCoTaskMemAnsi), // RTF document
-		["Rich Text & Unicode"] = (Marshal.PtrToStringUni, Marshal.StringToCoTaskMemUni), // RTF with Unicode support
-		["Rich Text Format Without Objects"] = (Marshal.PtrToStringAnsi, Marshal.StringToCoTaskMemAnsi), // RTF without embedded objects
-		["XML Spreadsheet"] = (Marshal.PtrToStringUTF8, Marshal.StringToCoTaskMemUTF8), // Excel XML format
-		["CSV"] = (Marshal.PtrToStringAnsi, Marshal.StringToCoTaskMemAnsi), // Comma-separated values
-		["Csv"] = (Marshal.PtrToStringAnsi, Marshal.StringToCoTaskMemAnsi), // Alternate CSV registration (Excel)
-		["MIME:text/plain"] = (Marshal.PtrToStringUTF8, Marshal.StringToCoTaskMemUTF8), // Plain text via MIME
-		["MIME:text/html"] = (Marshal.PtrToStringUTF8, Marshal.StringToCoTaskMemUTF8), // HTML via MIME
-		["text/html"] = (Marshal.PtrToStringUTF8, Marshal.StringToCoTaskMemUTF8), // Raw HTML (Chromium/browsers)
-		["text/plain"] = (Marshal.PtrToStringUTF8, Marshal.StringToCoTaskMemUTF8), // Raw plain text (Chromium/browsers)
-		["text/uri-list"] = (Marshal.PtrToStringUTF8, Marshal.StringToCoTaskMemUTF8), // Newline-separated URIs
-		["UniformResourceLocator"] = (Marshal.PtrToStringAnsi, Marshal.StringToCoTaskMemAnsi), // Single URL
-		["UniformResourceLocatorW"] = (Marshal.PtrToStringUni, Marshal.StringToCoTaskMemUni), // Single URL (wide)
-		["FileName"] = (Marshal.PtrToStringAnsi, Marshal.StringToCoTaskMemAnsi), // File path
-		["FileNameW"] = (Marshal.PtrToStringUni, Marshal.StringToCoTaskMemUni), // File path (wide)
+		["HTML Format"] = (GetUtf8String, GetUtf8Bytes), // HTML fragment with header metadata
+		["Rich Text Format"] = (GetAnsiString, GetAnsiBytes), // RTF document
+		["Rich Text & Unicode"] = (GetUnicodeString, GetUnicodeBytes), // RTF with Unicode support
+		["Rich Text Format Without Objects"] = (GetAnsiString, GetAnsiBytes), // RTF without embedded objects
+		["XML Spreadsheet"] = (GetUtf8String, GetUtf8Bytes), // Excel XML format
+		["CSV"] = (GetAnsiString, GetAnsiBytes), // Comma-separated values
+		["Csv"] = (GetAnsiString, GetAnsiBytes), // Alternate CSV registration (Excel)
+		["MIME:text/plain"] = (GetUtf8String, GetUtf8Bytes), // Plain text via MIME
+		["MIME:text/html"] = (GetUtf8String, GetUtf8Bytes), // HTML via MIME
+		["text/html"] = (GetUtf8String, GetUtf8Bytes), // Raw HTML (Chromium/browsers)
+		["text/plain"] = (GetUtf8String, GetUtf8Bytes), // Raw plain text (Chromium/browsers)
+		["text/uri-list"] = (GetUtf8String, GetUtf8Bytes), // Newline-separated URIs
+		["UniformResourceLocator"] = (GetAnsiString, GetAnsiBytes), // Single URL
+		["UniformResourceLocatorW"] = (GetUnicodeString, GetUnicodeBytes), // Single URL (wide)
+		["FileName"] = (GetAnsiString, GetAnsiBytes), // File path
+		["FileNameW"] = (GetUnicodeString, GetUnicodeBytes), // File path (wide)
 	};
+	private static readonly Lazy<Encoding> _ansiEncoding = new(() =>
+	{
+		Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+		return Encoding.GetEncoding(0);
+	});
 	private static readonly Lazy<Encoding> _oemEncoding = new(() =>
 	{
 		Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-		return Encoding.GetEncoding(CultureInfo.CurrentCulture.TextInfo.OEMCodePage);
+		using var codePageKey = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\Nls\CodePage");
+		if (codePageKey?.GetValue("OEMCP") is not string value || !int.TryParse(value, out var codePage))
+		{
+			throw new InvalidOperationException("Unable to determine the Windows OEM code page.");
+		}
+		return Encoding.GetEncoding(codePage);
 	});
 
 	// _windowClass must be statically stored, otherwise lpfnWndProc will get collected and the CLR will throw some weird exceptions
@@ -76,6 +95,11 @@ internal partial class Win32ClipboardExtension : IClipboardExtension
 	// cannot be seen half-applied by a reader on another thread. Only ever set to a COMPLETE read
 	// (see BuildPackage), and a reader revalidates the sequence anyway, so a lost update is benign.
 	private CachedContent? _cachedContent;
+
+	// Formats registered by our last write are also known without enumerating a contended clipboard.
+	// Keep only identifiers, never a payload or an incomplete read result.
+	private sealed record WrittenFormats(uint Sequence, CLIPBOARD_FORMAT[] Formats);
+	private WrittenFormats? _writtenFormats;
 
 	// Cancels the pending warm-up when the clipboard changes again before it ran.
 	private CancellationTokenSource? _warmUpCts;
@@ -276,8 +300,51 @@ internal partial class Win32ClipboardExtension : IClipboardExtension
 			}
 		}
 	}
-	private delegate string? PointerToString(nint p);
-	private delegate nint StringToPointer(string s);
+	private delegate string? PointerToString(nint p, int byteLength);
+	private delegate byte[] StringToBytes(string s);
+
+	private static unsafe string? GetAnsiString(nint pointer, int byteLength)
+		=> GetNullTerminatedString((byte*)pointer, byteLength, _ansiEncoding.Value);
+
+	private static unsafe string? GetUtf8String(nint pointer, int byteLength)
+		=> GetNullTerminatedString((byte*)pointer, byteLength, Encoding.UTF8);
+
+	private static unsafe string? GetUnicodeString(nint pointer, int byteLength)
+	{
+		if (byteLength < sizeof(char) || (byteLength & 1) != 0)
+		{
+			return null;
+		}
+
+		var bytes = new ReadOnlySpan<byte>((void*)pointer, byteLength);
+		for (var index = 0; index < byteLength; index += sizeof(char))
+		{
+			if (bytes[index] == 0 && bytes[index + 1] == 0)
+			{
+				return Encoding.Unicode.GetString(bytes[..index]);
+			}
+		}
+
+		return null;
+	}
+
+	private static unsafe string? GetNullTerminatedString(byte* pointer, int byteLength, Encoding encoding)
+	{
+		if (byteLength <= 0)
+		{
+			return string.Empty;
+		}
+
+		var bytes = new ReadOnlySpan<byte>(pointer, byteLength);
+		var terminator = bytes.IndexOf((byte)0);
+		return terminator >= 0 ? encoding.GetString(bytes[..terminator]) : null;
+	}
+
+	private static byte[] GetAnsiBytes(string value) => _ansiEncoding.Value.GetBytes(value + '\0');
+
+	private static byte[] GetUtf8Bytes(string value) => Encoding.UTF8.GetBytes(value + '\0');
+
+	private static byte[] GetUnicodeBytes(string value) => Encoding.Unicode.GetBytes(value + '\0');
 }
 
 partial class Win32ClipboardExtension // from clipboard
@@ -369,6 +436,17 @@ partial class Win32ClipboardExtension // from clipboard
 			}
 		}
 
+		if (Instance._writtenFormats is { } written && written.Sequence == sequence)
+		{
+			foreach (var format in written.Formats)
+			{
+				if (PInvoke.IsClipboardFormatAvailable((uint)format))
+				{
+					RegisterFormat(package, registered, format, sequence);
+				}
+			}
+		}
+
 		// 2. Anything else needs EnumClipboardFormats, which needs the lock. Exactly one attempt: this
 		//    runs on the UI thread on every clipboard change in every process, so it must never wait.
 		//    Being denied only costs the app-specific formats we have no name for, and only until the
@@ -383,12 +461,19 @@ partial class Win32ClipboardExtension // from clipboard
 		// Collected before registering anything: GetClipboardFormatName, reached via ResolveFormat,
 		// overwrites the last Win32 error, which would make the check below meaningless.
 		var formats = new List<CLIPBOARD_FORMAT>();
+		var formatLimitReached = false;
 		for (uint lastFormat = 0; (lastFormat = PInvoke.EnumClipboardFormats(lastFormat)) != 0;)
 		{
+			if (formats.Count >= MaxClipboardSnapshotFormats)
+			{
+				formatLimitReached = true;
+				typeof(Win32ClipboardExtension).LogError()?.Error($"Clipboard contains more than {MaxClipboardSnapshotFormats} formats; remaining formats were ignored.");
+				break;
+			}
 			formats.Add((CLIPBOARD_FORMAT)lastFormat);
 		}
 
-		if (Marshal.GetLastWin32Error() != (int)WIN32_ERROR.ERROR_SUCCESS)
+		if (!formatLimitReached && Marshal.GetLastWin32Error() != (int)WIN32_ERROR.ERROR_SUCCESS)
 		{
 			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.EnumClipboardFormats)} failed: {Win32Helper.GetErrorMessage()}");
 			complete = false;
@@ -400,7 +485,7 @@ partial class Win32ClipboardExtension // from clipboard
 			RegisterFormat(package, registered, format, sequence);
 		}
 
-		complete = true;
+		complete = !formatLimitReached;
 		return package;
 	}
 
@@ -531,6 +616,13 @@ partial class Win32ClipboardExtension // from clipboard
 			return (FetchOutcome.Failed, null);
 		}
 
+		var formatBytes = (ulong)PInvoke.GlobalSize((HGLOBAL)(IntPtr)handle);
+		if (formatBytes == 0 || formatBytes > MaxClipboardFormatBytes)
+		{
+			typeof(Win32ClipboardExtension).LogError()?.Error($"Clipboard format '{name}' has an invalid or oversized payload ({formatBytes} bytes).");
+			return (FetchOutcome.Failed, null);
+		}
+
 		return decoder.Invoke(format, name, (HGLOBAL)(IntPtr)handle) is { } value
 			? (FetchOutcome.Success, value)
 			: (FetchOutcome.Failed, null);
@@ -623,18 +715,26 @@ partial class Win32ClipboardExtension // from clipboard
 		using var lockDisposable = Win32Helper.GlobalLock(handle, out var ptr);
 		if (lockDisposable is null) return null;
 
-		return Marshal.PtrToStringUni((IntPtr)ptr);
+		var byteLength = checked((int)PInvoke.GlobalSize(handle));
+		var text = GetUnicodeString((IntPtr)ptr, byteLength);
+		if (text is null)
+		{
+			typeof(Win32ClipboardExtension).LogError()?.Error("Clipboard Unicode text is not null-terminated within its allocation.");
+		}
+		return text;
 	}
 	private static unsafe object? DecodeOemText(CLIPBOARD_FORMAT format, string name, HGLOBAL handle)
 	{
 		using var lockDisposable = Win32Helper.GlobalLock(handle, out var ptr);
 		if (lockDisposable is null) return null;
 
-		var length = (int)PInvoke.GlobalSize((HGLOBAL)(IntPtr)handle);
-
-		return length > 1
-			? _oemEncoding.Value.GetString((byte*)ptr, length - 1)
-			: string.Empty;
+		var byteLength = checked((int)PInvoke.GlobalSize(handle));
+		var text = GetNullTerminatedString((byte*)ptr, byteLength, _oemEncoding.Value);
+		if (text is null)
+		{
+			typeof(Win32ClipboardExtension).LogError()?.Error("Clipboard OEM text is not null-terminated within its allocation.");
+		}
+		return text;
 	}
 #if false // this would require System.Drawing.Common
 	private static void GetBitmap(DataPackage package, CLIPBOARD_FORMAT format, HGLOBAL handle) => package
@@ -752,7 +852,12 @@ partial class Win32ClipboardExtension // from clipboard
 		// since HGlobal itself doesnt carry any type metadata, presumably this is done with a white list.
 		if (_knownTextBasedClipboardFormats.TryGetValue(name, out var marshaler))
 		{
-			return marshaler.FromPointer.Invoke((IntPtr)ptr) ?? string.Empty;
+			var text = marshaler.FromPointer.Invoke((IntPtr)ptr, bufferLength);
+			if (text is null)
+			{
+				typeof(Win32ClipboardExtension).LogError()?.Error($"Clipboard text format '{name}' is not null-terminated within its allocation.");
+			}
+			return text;
 		}
 
 		var buffer = new byte[bufferLength];
@@ -768,11 +873,7 @@ partial class Win32ClipboardExtension // from clipboard
 partial class Win32ClipboardExtension // to clipboard
 {
 	/// <summary>A payload resolved outside the clipboard lock, ready to be handed straight to Windows.</summary>
-	/// <remarks>
-	/// Exactly one of <paramref name="Bytes"/> and <paramref name="CoTaskMem"/> carries the payload;
-	/// <paramref name="CoTaskMem"/> being non-zero selects it.
-	/// </remarks>
-	private readonly record struct PendingWrite(CLIPBOARD_FORMAT Format, ReadOnlyMemory<byte> Bytes, IntPtr CoTaskMem);
+	private readonly record struct PendingWrite(CLIPBOARD_FORMAT Format, ReadOnlyMemory<byte> Bytes);
 
 	public void SetContent(DataPackage content)
 	{
@@ -801,7 +902,6 @@ partial class Win32ClipboardExtension // to clipboard
 			// This used to be silent: EmptyClipboard was skipped, every SetClipboardData ran anyway and
 			// failed with "Thread does not have a clipboard open", and the copy was lost without a word.
 			this.LogError()?.Error($"{nameof(SetContent)} failed: could not take the clipboard, it is held by another application.");
-			FreePendingWrites(writes);
 			return;
 		}
 
@@ -809,31 +909,14 @@ partial class Win32ClipboardExtension // to clipboard
 		{
 			WritePending(write);
 		}
+
+		_writtenFormats = new WrittenFormats(
+			PInvoke.GetClipboardSequenceNumber(),
+			writes.Select(write => write.Format).Distinct().Take(MaxClipboardSnapshotFormats).ToArray());
 	}
 
 	private static void WritePending(PendingWrite write)
-	{
-		if (write.CoTaskMem != IntPtr.Zero)
-		{
-			SetClipboardCoTaskMemData(write.Format, write.CoTaskMem);
-		}
-		else
-		{
-			SetClipboardData(write.Format, write.Bytes.Span);
-		}
-	}
-
-	/// <summary>Releases payloads that were resolved but never handed over, so they don't leak.</summary>
-	private static void FreePendingWrites(List<PendingWrite> writes)
-	{
-		foreach (var write in writes)
-		{
-			if (write.CoTaskMem != IntPtr.Zero)
-			{
-				Marshal.FreeCoTaskMem(write.CoTaskMem);
-			}
-		}
-	}
+		=> SetClipboardData(write.Format, write.Bytes.Span);
 	private static void ResolveText(List<PendingWrite> writes, DataPackageView view, string format)
 	{
 		var task = view.GetTextAsync().AsTask();
@@ -851,7 +934,7 @@ partial class Win32ClipboardExtension // to clipboard
 		var str = task.Result;
 		var bytes = new byte[(str.Length + 1) * sizeof(char)]; // +1 char: last 2 bytes remain 0 as null terminator
 		MemoryMarshal.Cast<char, byte>(str.AsSpan()).CopyTo(bytes);
-		writes.Add(new PendingWrite(CLIPBOARD_FORMAT.CF_UNICODETEXT, bytes, default));
+		writes.Add(new PendingWrite(CLIPBOARD_FORMAT.CF_UNICODETEXT, bytes));
 	}
 	private static unsafe void ResolveBitmap(List<PendingWrite> writes, DataPackageView view, string format)
 	{
@@ -881,6 +964,10 @@ partial class Win32ClipboardExtension // to clipboard
 
 		var stream = task2.Result;
 		Debug.Assert(stream.CanRead);
+		using var positionRestorer = new DisposableStruct<IRandomAccessStream, ulong>(
+			static (randomAccessStream, position) => randomAccessStream.Seek(position),
+			stream,
+			stream.Position);
 		stream.Seek(0);
 
 #if false
@@ -908,7 +995,7 @@ partial class Win32ClipboardExtension // to clipboard
 		if (bytes.Length > Marshal.SizeOf<BITMAPFILEHEADER>() &&
 			bytes[0] == 'B' && bytes[1] == 'M')
 		{
-			writes.Add(new PendingWrite(CLIPBOARD_FORMAT.CF_DIB, bytes.AsMemory(/* start after: */ Marshal.SizeOf<BITMAPFILEHEADER>()), default));
+			writes.Add(new PendingWrite(CLIPBOARD_FORMAT.CF_DIB, bytes.AsMemory(/* start after: */ Marshal.SizeOf<BITMAPFILEHEADER>())));
 		}
 		else
 		{
@@ -956,7 +1043,7 @@ partial class Win32ClipboardExtension // to clipboard
 				}
 			}
 
-			writes.Add(new PendingWrite(CLIPBOARD_FORMAT.CF_DIB, dib, default));
+			writes.Add(new PendingWrite(CLIPBOARD_FORMAT.CF_DIB, dib));
 		}
 #endif
 	}
@@ -977,6 +1064,10 @@ partial class Win32ClipboardExtension // to clipboard
 
 		if (task.Result is IRandomAccessStream ras)
 		{
+			using var positionRestorer = new DisposableStruct<IRandomAccessStream, ulong>(
+				static (randomAccessStream, position) => randomAccessStream.Seek(position),
+				ras,
+				ras.Position);
 			ras.Seek(0);
 			var size = ras.Size;
 			if (size > int.MaxValue)
@@ -988,47 +1079,62 @@ partial class Win32ClipboardExtension // to clipboard
 			var bytes = new byte[checked((int)size)];
 			ras.AsStreamForRead().ReadExactly(bytes);
 
-			writes.Add(new PendingWrite(cfid, bytes, default));
+			writes.Add(new PendingWrite(cfid, bytes));
 		}
 		else if (task.Result is string str)
 		{
-			var p = _knownTextBasedClipboardFormats.TryGetValue(format, out var marshaler)
-				? marshaler.ToPointer(str)
-				: Marshal.StringToCoTaskMemUni(str);
+			var bytes = _knownTextBasedClipboardFormats.TryGetValue(format, out var marshaler)
+				? marshaler.ToBytes(str)
+				: GetUnicodeBytes(str);
 
-			writes.Add(new PendingWrite(cfid, default, p));
+			writes.Add(new PendingWrite(cfid, bytes));
 		}
 	}
 
 	private static unsafe void SetClipboardData(CLIPBOARD_FORMAT format, ReadOnlySpan<byte> data)
 	{
 		// If the hMem parameter identifies a memory object, the object must have been allocated using the function with the GMEM_MOVEABLE flag
-		var shouldFree = true;
-		using var allocDisposable = Win32Helper.GlobalAlloc(
-			GLOBAL_ALLOC_FLAGS.GMEM_MOVEABLE,
-			(UIntPtr)data.Length,
-			out var handle,
-			// ReSharper disable once AccessToModifiedClosure
-			() => shouldFree);
-
-		if (allocDisposable is null) return;
-
-		using var lockDisposable = Win32Helper.GlobalLock(handle, out var dst);
-		fixed (byte* src = &MemoryMarshal.GetReference(data))
+		var handle = PInvoke.GlobalAlloc(GLOBAL_ALLOC_FLAGS.GMEM_MOVEABLE, (UIntPtr)data.Length);
+		if (handle == IntPtr.Zero)
 		{
-			Buffer.MemoryCopy(src, dst, data.Length, data.Length);
+			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.GlobalAlloc)} failed: {Win32Helper.GetErrorMessage()}");
+			return;
 		}
 
-		var result = PInvoke.SetClipboardData((uint)format, new HANDLE(handle));
-		if (result == HANDLE.Null)
+		var transferred = false;
+		try
 		{
-			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.SetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
+			using (var lockDisposable = Win32Helper.GlobalLock(handle, out var dst))
+			{
+				if (lockDisposable is null)
+				{
+					return;
+				}
+
+				fixed (byte* src = &MemoryMarshal.GetReference(data))
+				{
+					Buffer.MemoryCopy(src, dst, data.Length, data.Length);
+				}
+			}
+
+			var result = PInvoke.SetClipboardData((uint)format, new HANDLE(handle));
+			if (result == HANDLE.Null)
+			{
+				typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.SetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
+			}
+			else
+			{
+				// If SetClipboardData succeeds, the system owns the object identified by the hMem parameter.
+				// The application may not write to or free the data once ownership has been transferred to the system.
+				transferred = true;
+			}
 		}
-		else
+		finally
 		{
-			// If SetClipboardData succeeds, the system owns the object identified by the hMem parameter.
-			// The application may not write to or free the data once ownership has been transferred to the system
-			shouldFree = false;
+			if (!transferred && PInvoke.GlobalFree(handle) != IntPtr.Zero)
+			{
+				typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.GlobalFree)} failed: {Win32Helper.GetErrorMessage()}");
+			}
 		}
 	}
 	private static void SetClipboardHBitmapData(CLIPBOARD_FORMAT format, HBITMAP hbitmap)
@@ -1046,22 +1152,6 @@ partial class Win32ClipboardExtension // to clipboard
 			// On success the system owns the HBITMAP; do not delete it
 		}
 	}
-	private static void SetClipboardCoTaskMemData(CLIPBOARD_FORMAT format, IntPtr p)
-	{
-		var result = PInvoke.SetClipboardData((uint)format, new HANDLE(p));
-		if (result == HANDLE.Null)
-		{
-			typeof(Win32ClipboardExtension).LogError()?.Error($"{nameof(PInvoke.SetClipboardData)} failed: {Win32Helper.GetErrorMessage()}");
-
-			Marshal.FreeCoTaskMem(p);
-		}
-		else
-		{
-			// If SetClipboardData succeeds, the system owns the object identified by the hMem parameter.
-			// The application may not write to or free the data once ownership has been transferred to the system
-		}
-	}
-
 	private static bool WaitForAsyncOperation<T>(IAsyncOperation<T> operation, out Task<T> task)
 	{
 		task = operation.AsTask();
@@ -1073,4 +1163,3 @@ partial class Win32ClipboardExtension // to clipboard
 		return task.IsCompletedSuccessfully;
 	}
 }
-

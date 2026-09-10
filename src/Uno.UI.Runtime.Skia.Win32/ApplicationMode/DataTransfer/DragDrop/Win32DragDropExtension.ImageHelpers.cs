@@ -71,49 +71,8 @@ internal partial class Win32DragDropExtension
 		return extension is ".png" or ".jpg" or ".jpeg" or ".gif" or ".bmp" or ".tiff" or ".ico";
 	}
 
-	private static unsafe List<string> ExtractFilePathsFromHDrop(HGLOBAL handle)
-	{
-		var filePaths = new List<string>();
-
-		using var lockDisposable = Win32Helper.GlobalLock(handle, out var firstByte);
-		if (lockDisposable is null)
-		{
-			return filePaths;
-		}
-
-		var hDrop = new Windows.Win32.UI.Shell.HDROP((IntPtr)firstByte);
-		var filesDropped = PInvoke.DragQueryFile(hDrop, 0xFFFFFFFF, new PWSTR(), 0);
-
-		for (uint i = 0; i < filesDropped; i++)
-		{
-			var charLength = PInvoke.DragQueryFile(hDrop, i, new PWSTR(), 0);
-			if (charLength == 0)
-			{
-				continue;
-			}
-			charLength++; // + 1 for \0
-
-			var buffer = Marshal.AllocHGlobal((IntPtr)(charLength * sizeof(char)));
-			try
-			{
-				var charsWritten = PInvoke.DragQueryFile(hDrop, i, new PWSTR((char*)buffer), charLength);
-				if (charsWritten > 0)
-				{
-					var path = Marshal.PtrToStringUni(buffer);
-					if (!string.IsNullOrEmpty(path))
-					{
-						filePaths.Add(path);
-					}
-				}
-			}
-			finally
-			{
-				Marshal.FreeHGlobal(buffer);
-			}
-		}
-
-		return filePaths;
-	}
+	private static List<string> ExtractFilePathsFromHDrop(HGLOBAL handle)
+		=> Win32ClipboardExtension.GetFileDropPaths(handle) ?? new List<string>();
 
 	private static Microsoft.UI.Xaml.Media.Imaging.BitmapImage? LoadImageFromFile(string filePath)
 	{
