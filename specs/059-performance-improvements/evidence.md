@@ -1,7 +1,6 @@
 # Uno Platform performance improvements — measured evidence
 
 **Status**: In progress
-**Branch**: `dev/mazi/perf-impr` (based on `feature/breakingchanges`)
 **Audience**: Internal engineering (Uno Platform maintainers)
 
 Every entry below corresponds to **exactly one commit**. A fix is only listed once it has a
@@ -24,17 +23,18 @@ labelled as such — they are never presented as measurements.
 
 ## 2. Harnesses
 
-Both harnesses live outside the repo (they reference it) so they never ship. They are reproducible
-from the commands below.
+The three harnesses below live outside the repo (they reference it) so they never ship. They are
+reproducible from the commands below, run from a local scratch directory referred to as
+`<local-path>`.
 
-### 2.1 Integration harness — `D:\Throwaway\uno-perf-int`
+### 2.1 Integration harness — `<local-path>/uno-perf-int`
 
 A headless Uno app (`Uno.UI.Runtime.Skia.Headless`) that project-references the repo's own
 `Uno.UI`, `Uno.UI.Composition`, `Uno.WinRT`, `Uno.Foundation` and `Uno.UI.Dispatching`, so it
 measures **the real framework**, rebuilt from the working tree:
 
 ```bash
-cd D:/Throwaway/uno-perf-int
+cd <local-path>/uno-perf-int
 dotnet build -c Release -p:UnoFastDevBuild=true -p:UnoTargetFrameworkOverride=net10.0
 dotnet bin/Release/net10.0/UnoPerfInt.dll all
 ```
@@ -56,22 +56,22 @@ Reported per iteration: wall time, **managed bytes allocated on the UI thread**
 > metric. Wall-clock is only reported from a quiet machine, with a control workload
 > (`tree.build` / `dp.set-get`, untouched by most fixes) to detect drift.
 
-### 2.2 Allocation profiler — `D:\Throwaway\uno-perf-analyzer`
+### 2.2 Allocation profiler — `<local-path>/uno-perf-analyzer`
 
 `dotnet-trace` + a TraceEvent-based analyzer that attributes sampled allocations **by type and by
 call stack**, which is how each finding below was located rather than guessed:
 
 ```bash
-cd D:/Throwaway/uno-perf-int
+cd <local-path>/uno-perf-int
 dotnet-trace collect --format nettrace -o alloc.nettrace \
   --providers "Microsoft-Windows-DotNETRuntime:0x200001:5,Microsoft-DotNETCore-SampleProfiler" \
   -- dotnet bin/Release/net10.0/UnoPerfInt.dll layout
 
-cd D:/Throwaway/uno-perf-analyzer
+cd <local-path>/uno-perf-analyzer
 dotnet bin/Release/net10.0/AllocAnalyzer.dll ../uno-perf-int/alloc.nettrace 25 15
 ```
 
-### 2.3 Micro-benchmarks — `D:\Throwaway\uno-perf-bench`
+### 2.3 Micro-benchmarks — `<local-path>/uno-perf-bench`
 
 BenchmarkDotNet 0.15.4, used for isolated `Old` vs `New` comparisons where a change can be
 extracted from its surroundings.
