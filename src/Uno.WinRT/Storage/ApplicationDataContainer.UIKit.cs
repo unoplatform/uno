@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Foundation;
+using Uno.Storage.Internal;
 using Windows.Foundation.Collections;
 
 namespace Windows.Storage
@@ -18,120 +19,20 @@ namespace Windows.Storage
 
 		private class NSUserDefaultsPropertySet : IPropertySet
 		{
-			private static readonly NSUserDefaults _userDefaults = new NSUserDefaults("UnoApplicationData", NSUserDefaultsType.SuiteName);
-			private static readonly object _migrationGate = new object();
-
-			// Sentinel flagging that the migration from the standard user defaults already ran. It is stored
-			// in the same suite as the user data, so it must be filtered out of every public property set member.
-			private const string MigrationKey = "__uno_migrated";
-
-			// Cached native form of the sentinel key, so comparing it against the native dictionary keys
-			// never materializes a managed string per key.
-			private static readonly NSString _migrationKeyNative = new NSString(MigrationKey);
-
-			private static volatile bool _migrated;
-
-			public NSUserDefaultsPropertySet()
-			{
-				MigrateIfNeeded();
-			}
-
-			private static void MigrateIfNeeded()
-			{
-				if (_migrated)
-				{
-					return;
-				}
-
-				// The lock ensures a concurrent caller waits for the migration to complete
-				// instead of observing a partially migrated container.
-				lock (_migrationGate)
-				{
-					if (_migrated)
-					{
-						return;
-					}
-
-					if (!_userDefaults.BoolForKey(MigrationKey))
-					{
-						Migrate();
-					}
-
-					_migrated = true;
-				}
-			}
-
-			private static void Migrate()
-			{
-				var standardDefaults = NSUserDefaults.StandardUserDefaults;
-				foreach (var pair in standardDefaults.ToDictionary())
-				{
-					if (pair.Key is not NSString key)
-					{
-						continue;
-					}
-
-					var value = pair.Value?.ToString();
-					if (value != null && IsUnoSerializedValue(value))
-					{
-						_userDefaults.SetValueForKey(pair.Value, key);
-						standardDefaults.RemoveObject(key.ToString());
-					}
-				}
-
-				_userDefaults.SetBool(true, MigrationKey);
-				_userDefaults.Synchronize();
-				standardDefaults.Synchronize();
-			}
-
-			private static bool IsUnoSerializedValue(string value)
-			{
-				var index = value.IndexOf(':');
-				if (index <= 0)
-				{
-					return false;
-				}
-
-				var typeName = value.Substring(0, index);
-				return DataTypeSerializer.SupportedTypes.Any(t => t.FullName == typeName);
-			}
-
-			private static bool IsInternalKey(string key) => key == MigrationKey;
-
-			// Compares natively (isEqual:) rather than through NSString's implicit string conversion,
-			// which would allocate a managed string for every key of every enumeration.
-			private static bool IsInternalKey(NSObject key) => key is NSString nativeKey && nativeKey.IsEqual(_migrationKeyNative);
-
-			// The sentinel shares the suite with the user data, so writes must not be able to overwrite it.
-			private static void ThrowIfInternalKey(string key)
-			{
-				if (IsInternalKey(key))
-				{
-					throw new ArgumentException($"The key '{key}' is reserved for internal use.", nameof(key));
-				}
-			}
-
 			public object this[string key]
 			{
 				get
 				{
-					if (IsInternalKey(key))
-					{
-						return null;
-					}
-
-					var value = _userDefaults.ValueForKey((NSString)key)?.ToString();
+					var value = UnoUserDefaults.Instance.ValueForKey((NSString)key)?.ToString();
 
 					return DataTypeSerializer.Deserialize(value);
 				}
 				set
 				{
-					ThrowIfInternalKey(key);
-
 					if (value != null)
 					{
 						var nativeObject = NSObject.FromObject(DataTypeSerializer.Serialize(value));
-						_userDefaults.SetValueForKey(nativeObject, (NSString)key);
+						UnoUserDefaults.Instance.SetValueForKey(nativeObject, (NSString)key);
 					}
 					else
 					{
@@ -141,22 +42,21 @@ namespace Windows.Storage
 			}
 
 			public ICollection<string> Keys
-				=> _userDefaults
+				=> UnoUserDefaults.Instance
 				.ToDictionary()
 				.Keys
-				.Where(k => !IsInternalKey(k))
-				.Select(k => k.ToString())
+				.Select(key => key.ToString())
 				.ToList();
 
 			public ICollection<object> Values
-				=> _userDefaults
+				=> UnoUserDefaults.Instance
 				.ToDictionary()
-				.Where(pair => !IsInternalKey(pair.Key))
-				.Select(pair => DataTypeSerializer.Deserialize(pair.Value?.ToString()))
+				.Values
+				.Select(value => DataTypeSerializer.Deserialize(value?.ToString()))
 				.ToList();
 
 			public int Count
-				=> _userDefaults.ToDictionary().Keys.Count(k => !IsInternalKey(k));
+				=> (int)UnoUserDefaults.Instance.ToDictionary().Count;
 
 			public bool IsReadOnly => false;
 
@@ -166,8 +66,6 @@ namespace Windows.Storage
 
 			public void Add(string key, object value)
 			{
-				ThrowIfInternalKey(key);
-
 				if (ContainsKey(key))
 				{
 					throw new ArgumentException("An item with the same key has already been added.");
@@ -175,7 +73,7 @@ namespace Windows.Storage
 				if (value != null)
 				{
 					var nativeObject = NSObject.FromObject(DataTypeSerializer.Serialize(value));
-					_userDefaults.SetValueForKey(nativeObject, (NSString)key);
+					UnoUserDefaults.Instance.SetValueForKey(nativeObject, (NSString)key);
 				}
 			}
 
@@ -184,34 +82,28 @@ namespace Windows.Storage
 
 			public void Clear()
 			{
-				foreach (var pair in _userDefaults.ToDictionary())
+				foreach (var pair in UnoUserDefaults.Instance.ToDictionary())
 				{
-					if (IsInternalKey(pair.Key))
-					{
-						continue;
-					}
-
-					_userDefaults.RemoveObject(pair.Key.ToString());
+					UnoUserDefaults.Instance.RemoveObject(pair.Key.ToString());
 				}
 
-				_userDefaults.Synchronize();
+				UnoUserDefaults.Instance.Synchronize();
 			}
 
 			public bool Contains(KeyValuePair<string, object> item)
 				=> throw new NotSupportedException();
 
 			public bool ContainsKey(string key)
-				=> !IsInternalKey(key) && _userDefaults.ToDictionary().ContainsKey((NSString)key);
+				=> UnoUserDefaults.Instance.ToDictionary().ContainsKey((NSString)key);
 
 			public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
 				=> throw new NotSupportedException();
 
 			public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
 			{
-				return _userDefaults
+				return UnoUserDefaults.Instance
 					.ToDictionary()
-					.Where(k => !IsInternalKey(k.Key))
-					.Select(k => new KeyValuePair<string, object>(k.Key.ToString(), DataTypeSerializer.Deserialize(k.Value?.ToString())))
+					.Select(pair => new KeyValuePair<string, object>(pair.Key.ToString(), DataTypeSerializer.Deserialize(pair.Value?.ToString())))
 					.GetEnumerator();
 			}
 
@@ -222,8 +114,8 @@ namespace Windows.Storage
 					return false;
 				}
 
-				_userDefaults.RemoveObject((NSString)key);
-				_userDefaults.Synchronize();
+				UnoUserDefaults.Instance.RemoveObject(key);
+				UnoUserDefaults.Instance.Synchronize();
 
 				return true;
 			}
@@ -232,9 +124,9 @@ namespace Windows.Storage
 
 			public bool TryGetValue(string key, out object value)
 			{
-				if (!IsInternalKey(key) && _userDefaults.ToDictionary().TryGetValue((NSString)key, out var nsvalue))
+				if (UnoUserDefaults.Instance.ToDictionary().TryGetValue((NSString)key, out var nativeValue))
 				{
-					value = DataTypeSerializer.Deserialize(nsvalue?.ToString());
+					value = DataTypeSerializer.Deserialize(nativeValue?.ToString());
 					return true;
 				}
 
