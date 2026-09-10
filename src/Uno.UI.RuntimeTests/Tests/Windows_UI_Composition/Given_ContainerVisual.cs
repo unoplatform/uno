@@ -191,9 +191,7 @@ public class Given_ContainerVisual
 			await UITestHelper.Load(fallback);
 			var actual = await UITestHelper.ScreenShot(fallback);
 
-			// One step: the WebGPU backend keys cached coverage masks by outline, so the second scene samples the
-			// first scene's entry, and that differs from a fresh bake by a single 8-bit step at antialiased edges.
-			await ImageAssert.AreEqualAsync(actual, expected, tolerance: 1);
+			await ImageAssert.AreEqualAsync(actual, expected);
 		}
 		finally
 		{
@@ -226,7 +224,7 @@ public class Given_ContainerVisual
 			await UITestHelper.Load(immediate);
 			var actual = await UITestHelper.ScreenShot(immediate);
 
-			await ImageAssert.AreEqualAsync(actual, expected, tolerance: 1);   // see When_Retained_Fallback_Renders_Identically
+			await ImageAssert.AreEqualAsync(actual, expected);
 		}
 		finally
 		{
