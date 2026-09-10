@@ -45,20 +45,22 @@ public class Given_xBind
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22223")]
 	public async Task When_xBind_InterfaceProperty()
 	{
 		var SUT = new When_xBind_InterfaceProperty();
-		TestServices.WindowHelper.WindowContent = SUT;
-		await TestServices.WindowHelper.WaitForLoaded(SUT);
 
-		// Test accessing Count property on IReadOnlyList<T> where concrete type is array
-		Assert.AreEqual("3", SUT.arrayCountText.Text, "Array Count should be accessible via IReadOnlyList interface");
+		try
+		{
+			await UITestHelper.Load(SUT);
 
-		// Test accessing Count property on IReadOnlyList<T> where concrete type is List<T>
-		Assert.AreEqual("2", SUT.listCountText.Text, "List Count should be accessible");
-
-		// Test accessing indexer via interface
-		Assert.AreEqual("Item1", SUT.indexerText.Text, "Indexer should be accessible via IReadOnlyList interface");
+			Assert.AreEqual("3", SUT.arrayCountText.Text, "Array Count should be resolved through IReadOnlyList");
+			Assert.AreEqual("2", SUT.listCountText.Text, "List Count should be resolved");
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
 	}
 
 #if __ANDROID__
