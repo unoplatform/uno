@@ -39,10 +39,14 @@
 			-->
 
 			<!--
-				The Uno.* versions below are placeholders: PrepareNuGetPackage (build/Uno.UI.Build.csproj)
-				rewrites them to $(NBGV_SemVer2) at pack time. "to-be-set-by-ci" is deliberate -- it fails
-				the pack loudly if that substitution ever stops matching, where a plausible literal would
-				silently ship a wrong floor. Non-Uno versions ship verbatim and are maintained by hand.
+				Uno.Foundation.Logging and Uno.WinRT below are placeholders: PrepareNuGetPackage
+				(build/Uno.UI.Build.csproj) rewrites them to $(NBGV_SemVer2) at pack time.
+				"to-be-set-by-ci" is deliberate: it fails the pack loudly if that substitution ever
+				stops matching, where a plausible literal would silently ship a wrong floor.
+
+				Everything else here ships verbatim and is maintained by hand, including the other
+				Uno.* entries (Uno.Diagnostics.Eventing, Uno.Fonts.Fluent). No poke exists for those
+				ids, so giving them the placeholder would break the pack instead of substituting it.
 			-->
 
 			<!-- .NET 10 -->
