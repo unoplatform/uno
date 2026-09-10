@@ -5383,11 +5383,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					if (isTemplateBindingAttachedProperty)
 					{
-						return "@\"(" + memberValue + ")\"";
+						return "\"(" + DoubleEscape(memberValue) + ")\"";
 					}
 					else
 					{
-						return "@\"" + memberValue + "\"";
+						return "\"" + DoubleEscape(memberValue) + "\"";
 					}
 				}
 

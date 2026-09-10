@@ -77,7 +77,7 @@ namespace TestRepro
 								"DataContext",
 								new Microsoft.UI.Xaml.Data.Binding()
 								{
-									Path = @"PreviewDropViewModel",
+									Path = "PreviewDropViewModel",
 								}
 							);
 							}
