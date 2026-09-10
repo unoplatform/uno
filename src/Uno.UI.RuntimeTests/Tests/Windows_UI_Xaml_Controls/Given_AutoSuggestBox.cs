@@ -1073,7 +1073,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		// Flaky on Android Skia: placement is asserted before the suggestion list settles on its final height, so
+		// the popup is positioned for a shorter child. https://github.com/unoplatform/uno/issues/24480
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaAndroid)]
 #if RUNTIME_NATIVE_AOT
 		[Ignore("TODO: figure out why this fails, how to fix")]
 #endif  // RUNTIME_NATIVE_AOT
