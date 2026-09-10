@@ -4807,7 +4807,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var candidateName = withoutGlobal.Substring(0, nextDotPos);
-				if (_metadataHelper.FindTypeByFullName(candidateName) is INamedTypeSymbol)
+				if (_metadataHelper.FindTypeByFullName(candidateName) is INamedTypeSymbol candidateType)
 				{
 					// Found the type. The rest after the type is the member path.
 					var restAfterType = withoutGlobal.Substring(nextDotPos + 1);
@@ -4818,13 +4818,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						// Path is just "global::Type.Member" with no instance path to observe
 						return false;
 					}
-					else
+
+					var firstMember = restAfterType.Substring(0, firstDotInRest);
+
+					// The segment right after the type must be a readable static property or field.
+					// A nested type, a method group or an instance member would emit an expression
+					// that does not compile, so fall back to the unobserved behavior instead.
+					if (!IsReadableStaticValueMember(candidateType, firstMember))
 					{
-						var firstMember = restAfterType.Substring(0, firstDotInRest);
-						staticRoot = "global::" + candidateName + "." + firstMember;
-						instancePath = restAfterType.Substring(firstDotInRest + 1);
-						return true;
+						return false;
 					}
+
+					staticRoot = "global::" + candidateName + "." + firstMember;
+					instancePath = restAfterType.Substring(firstDotInRest + 1);
+					return true;
 				}
 
 				lastDotPos = nextDotPos;
@@ -4832,6 +4839,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			return false;
 		}
+
+		/// <summary>
+		/// Determines whether <paramref name="memberName"/> is a static property or field of
+		/// <paramref name="type"/> that the generated code is allowed to read.
+		/// </summary>
+		private bool IsReadableStaticValueMember(INamedTypeSymbol type, string memberName)
+		{
+			if (type.GetPropertyWithName(memberName) is { IsStatic: true, GetMethod: { } getMethod })
+			{
+				return IsAccessibleFromGeneratedCode(getMethod);
+			}
+
+			if (type.GetFieldWithName(memberName) is { IsStatic: true } field)
+			{
+				return IsAccessibleFromGeneratedCode(field);
+			}
+
+			return false;
+		}
+
+		private bool IsAccessibleFromGeneratedCode(ISymbol symbol)
+			=> _metadataHelper.Compilation.IsSymbolAccessibleWithin(symbol, _metadataHelper.Compilation.Assembly);
 
 		private ITypeSymbol GetXBindPropertyPathType(string propertyPath, INamedTypeSymbol? rootType, IXamlLocation location)
 		{
