@@ -33,6 +33,21 @@
 	</Target>
 
 	<!--
+		Application heads must build through the Uno.Sdk since 7.0. Libraries are unaffected, and so are
+		WinAppSDK heads: this file is not imported when $(_UnoIsWinAppSDKDefined) is true, so a plain
+		WinUI app referencing Uno.WinUI as a library keeps building.
+
+		The check only sees OutputType, so an executable that merely links Uno.WinUI (a console
+		harness, a benchmark runner) trips it too; UnoDisableUNOB0021Validation is the way out.
+	-->
+	<Target Name="ValidateUnoSdkUsage" BeforeTargets="BeforeBuild">
+		<Error Code="UNOB0021"
+			   HelpLink="https://aka.platform.uno/UNOB0021"
+			   Text="Uno Platform application projects must use the Uno.Sdk. Support for the legacy project format (a Microsoft.NET.Sdk project referencing the Uno.WinUI package, with one head project per platform) was removed in Uno Platform 7.0. See https://aka.platform.uno/UNOB0021 for the migration steps."
+			   Condition="'$(UsingUnoSdk)'!='true' and '$(UnoDisableUNOB0021Validation)'!='true' and ('$(OutputType)'=='Exe' or '$(OutputType)'=='WinExe')" />
+	</Target>
+
+	<!--
 	Include a marker for _FindInvalidWinAppSDKUnoPlatformReference to determine if a net7.0-only project is referenced
 	from a WinAppSDK project.
 	-->
