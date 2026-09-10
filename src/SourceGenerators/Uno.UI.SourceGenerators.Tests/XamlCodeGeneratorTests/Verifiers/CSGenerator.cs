@@ -441,6 +441,8 @@ build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceF
 			/// 32 characters that identify nothing the snapshot doesn't already say. It is put back by
 			/// <see cref="ExpandUniqueId"/>, which recomputes it the same way. Only names that round-trip
 			/// against one of the test's own XAML files are collapsed; anything else keeps the name it has.
+			/// A test may hold two XAML files that sanitize alike (A.Page.xaml and A_Page.xaml both give
+			/// A_Page), and there the hash is the only thing telling the two snapshots apart, so it stays.
 			/// </remarks>
 			private string CollapseUniqueId(string fileName)
 			{
@@ -449,7 +451,7 @@ build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceF
 					var sanitized = SanitizeFileName(xamlFile.FileName);
 					if (fileName == $"{sanitized}_{HashBuilder.Build(ProjectItemFolder + xamlFile.FileName)}.cs")
 					{
-						return $"{sanitized}.cs";
+						return IsSanitizedNameUnique(sanitized) ? $"{sanitized}.cs" : fileName;
 					}
 				}
 
@@ -461,13 +463,27 @@ build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceF
 				foreach (var xamlFile in _xamlFiles)
 				{
 					var sanitized = SanitizeFileName(xamlFile.FileName);
-					if (snapshotName == $"{sanitized}.cs")
+					if (snapshotName == $"{sanitized}.cs" && IsSanitizedNameUnique(sanitized))
 					{
 						return $"{sanitized}_{HashBuilder.Build(ProjectItemFolder + xamlFile.FileName)}.cs";
 					}
 				}
 
 				return snapshotName;
+			}
+
+			private bool IsSanitizedNameUnique(string sanitized)
+			{
+				var matches = 0;
+				foreach (var xamlFile in _xamlFiles)
+				{
+					if (SanitizeFileName(xamlFile.FileName) == sanitized && ++matches > 1)
+					{
+						return false;
+					}
+				}
+
+				return true;
 			}
 
 			// Mirrors XamlFileDefinition.SanitizedFileName.
