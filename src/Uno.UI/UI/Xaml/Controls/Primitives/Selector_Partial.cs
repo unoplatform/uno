@@ -444,14 +444,13 @@ partial class Selector
 	}
 
 	internal bool AutomationPeerIsSelected(object item)
+		=> AutomationPeerIsSelected(Items.IndexOf(item), item);
+
+	internal bool AutomationPeerIsSelected(int index, object item)
 	{
-		if (m_tpDataSourceAsSelectionInfo is { } && item is { })
+		if (m_tpDataSourceAsSelectionInfo is { } && index >= 0)
 		{
-			var index = Items.IndexOf(item);
-			if (index >= 0)
-			{
-				return m_tpDataSourceAsSelectionInfo.IsSelected(index);
-			}
+			return m_tpDataSourceAsSelectionInfo.IsSelected(index);
 		}
 
 		if (this is ListViewBase listViewBase && listViewBase.IsSelectionMultiple)
@@ -459,7 +458,7 @@ partial class Selector
 			return listViewBase.SelectedItems.Contains(item);
 		}
 
-		return Equals(SelectedItem, item);
+		return index >= 0 ? SelectedIndex == index : Equals(SelectedItem, item);
 	}
 
 	internal bool IsSelectionPatternApplicable() => true;

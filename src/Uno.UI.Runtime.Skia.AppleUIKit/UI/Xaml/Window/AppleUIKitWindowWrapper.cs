@@ -9,6 +9,7 @@ using UIKit;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia;
 using Uno.UI.Runtime.Skia.AppleUIKit;
 using Uno.UI.Runtime.Skia.AppleUIKit.UI.Xaml;
 using Windows.Foundation;
@@ -28,6 +29,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	private readonly InputPane _inputPane;
 	private readonly XamlRoot _xamlRoot;
 	private readonly CompositeDisposable _subscriptions = new();
+	private bool _isClosed;
 
 	// Captured at construction: ContentHostOverride is ambient static state that is only valid
 	// while the window is being created, but it is needed again when the scene connects.
@@ -51,6 +53,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		XamlRootMap.Register(xamlRoot, _mainController);
 		_mainController.View!.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
+		// Initialize the per-window accessibility adapter. Activation is deferred
+		// until the window is actually shown or receives a native activation signal.
+		var accessibility = new AppleUIKitAccessibility(xamlRoot, _mainController);
+		_mainController.SetAccessibility(accessibility);
+
 
 		_inputPane = InputPane.GetForCurrentView();
 
@@ -155,6 +162,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		{
 			return;
 		}
+		AccessibilityRouter.SetActive(_mainController);
 
 		if (_xamlRoot.Content is FrameworkElement { IsLoaded: false } fe)
 		{
@@ -168,6 +176,12 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 				}
 
 				NativeWindowHelpers.TransitionFromSplashScreen(nativeWindow, _mainController);
+
+				// Guarantee a tree build once the root content is fully loaded.
+				// The constructor-level ScheduleRebuild covers content that already existed
+				// when the adapter was created; this covers the common path where Window.Content
+				// is set before Show() and the root FrameworkElement raises Loaded here.
+				_mainController.TriggerInitialBuild();
 			}
 
 			fe.Loaded += OnLoaded;
@@ -180,11 +194,20 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 			}
 
 			NativeWindowHelpers.TransitionFromSplashScreen(nativeWindow, _mainController);
+			_mainController.TriggerInitialBuild();
 		}
 	}
 
 	protected override void CloseCore()
 	{
+		if (_isClosed)
+		{
+			return;
+		}
+
+		_isClosed = true;
+		_mainController.DisposeAccessibility();
+		XamlRootMap.Unregister(_xamlRoot);
 		MarkHidden();
 
 		if (!_isSceneDisconnected &&
@@ -246,7 +269,14 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal void OnNativeVisibilityChanged(bool visible) => IsVisible = visible;
 
-	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
+	internal void OnNativeActivated(CoreWindowActivationState state)
+	{
+		ActivationState = state;
+		if (state != CoreWindowActivationState.Deactivated)
+		{
+			AccessibilityRouter.SetActive(_mainController);
+		}
+	}
 
 	internal void OnNativeClosed() => RaiseClosing();
 

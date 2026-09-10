@@ -13,6 +13,7 @@ using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Text;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -97,7 +98,11 @@ public partial class Slider
 		{
 			OnOrientationChanged();
 			UpdateVisualState();
+#if __SKIA__
+			RaiseOrientationPropertyChanged(args);
+#endif
 		}
+
 		else if (
 			args.Property == IsDirectionReversedProperty ||
 			args.Property == IntermediateValueProperty)
@@ -135,6 +140,26 @@ public partial class Slider
 			OnIsFocusEngagedChanged();
 		}
 	}
+
+#if __SKIA__
+	private void RaiseOrientationPropertyChanged(DependencyPropertyChangedEventArgs args)
+	{
+		if (AutomationPeer.AutomationPeerListener?.ListenerExistsHelper(AutomationEvents.PropertyChanged) == true &&
+			GetOrCreateAutomationPeer() is { } peer)
+		{
+			AutomationPeer.AutomationPeerListener.NotifyPropertyChangedEvent(
+				peer,
+				AutomationElementIdentifiers.OrientationProperty,
+				ToAutomationOrientation(args.OldValue),
+				ToAutomationOrientation(args.NewValue));
+		}
+	}
+
+	private static AutomationOrientation ToAutomationOrientation(object value)
+		=> value is Orientation.Vertical
+			? AutomationOrientation.Vertical
+			: AutomationOrientation.Horizontal;
+#endif
 
 	// OnFocusEngaged property changed handler.
 	private void OnFocusEngaged(

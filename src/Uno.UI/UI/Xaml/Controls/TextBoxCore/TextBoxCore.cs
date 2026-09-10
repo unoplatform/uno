@@ -103,7 +103,17 @@ internal sealed partial class TextBoxCore
 	private bool CanPasteClipboardContent
 	{
 		get => _host.CanPasteClipboardContent;
-		set => _host.CanPasteClipboardContent = value;
+		set
+		{
+			if (_host.CanPasteClipboardContent != value)
+			{
+				_host.CanPasteClipboardContent = value;
+				if (AutomationPeer.AutomationPeerListener is not null)
+				{
+					_host.Owner.GetOrCreateAutomationPeer()?.InvalidatePeer();
+				}
+			}
+		}
 	}
 #endif
 
