@@ -57,7 +57,7 @@ The following conditional symbols are predefined for each Uno platform:
 | Android         | `__ANDROID__`      | |
 | iOS             | `__IOS__`          | |
 | tvOS            | `__TVOS__`         | |
-| iOS or tvOS     | `__APPLE_UIKIT__`  | Defined inside the Uno Platform repository only — **not** in consumer projects. In your own code write `__IOS__ || __TVOS__`. |
+| iOS or tvOS     | `__APPLE_UIKIT__`  | Defined inside the Uno Platform repository only — **not** in consumer projects. In your own code write `__IOS__ \|\| __TVOS__`. |
 | WebAssembly     | `__WASM__`         | Only available in the `net10.0-browserwasm` target framework |
 | Desktop         | `__DESKTOP__`      | Only available in the `net10.0-desktop` target framework. |
 | Skia            | `__UNO_SKIA__`     | Defined by the `Uno.WinUI.Runtime.Skia.*` packages, which the Uno.Sdk references only for executables. A **class library** does not get it — use `__DESKTOP__`, `__WASM__` or a runtime check instead. |
