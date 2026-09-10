@@ -2490,6 +2490,9 @@
 		  <!-- Reference compilation produced are gone. _fullyInitialized sat under !UNO_HAS_ENHANCED_LIFECYCLE, -->
 		  <!-- which Skia defines, so it never existed in the build lib/ now ships.                            -->
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.NavigationViewItemBase::_fullyInitialized" reason="Reference flavor folded into Skia; field was compiled only under !UNO_HAS_ENHANCED_LIFECYCLE (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- AppBar port: the Uno-only protected state-group backing field gave way to the port's private m_tpDisplayModesStateGroup, which is what WinUI keeps too. -->
+		  <Member fullName="System.WeakReference`1&lt;Microsoft.UI.Xaml.VisualStateGroup&gt; Microsoft.UI.Xaml.Controls.AppBar::m_tpDisplayModesStateGroupRef" reason="Removed the Uno-only protected AppBar.m_tpDisplayModesStateGroupRef field; the port holds the state group privately (AppBar WinUI port, breaking changes for 7.0, uno#8339)" />
 	  </Fields>
 	  <Properties>
 		  <!-- Fluent resources-version selector removed: only version 2 exists and WinAppSDK has no equivalent surface. Accessors paired in the <Methods> block below (BC71, breaking changes for 7.0). -->
@@ -2768,6 +2771,10 @@
 		  <Member fullName="Microsoft.UI.Xaml.Data.UpdateSourceTrigger Microsoft.UI.Xaml.FrameworkPropertyMetadata::DefaultUpdateSourceTrigger()" reason="Removed Uno-only FrameworkPropertyMetadata.DefaultUpdateSourceTrigger (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border::ChildProperty()" reason="Removed Border.ChildProperty DP; Child is a plain CLR property in WinUI (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings::HiddenRootMarginProperty()" reason="Narrowed AppBarTemplateSettings.HiddenRootMarginProperty to internal; WinUI has no such DP and its siblings were already internal (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- AppBar port: Uno-only implementation members narrowed to match WinUI's AppBar IDL (accessors paired in <Methods> below). -->
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Controls.AppBar::ContentHeight()" reason="Narrowed the Uno-only AppBar.ContentHeight helper to private protected; the WinUI AppBar IDL has no such member (AppBar WinUI port, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AppBar::TemplateSettingsProperty()" reason="Narrowed AppBar.TemplateSettingsProperty to private; the WinUI AppBar IDL exposes no TemplateSettings DP (AppBar WinUI port, breaking changes for 7.0, uno#8339)" />
 		  <!-- ScrollControllerPanRequestedEventArgs.PointerPoint retyped from Windows.UI.Input.PointerPoint to Microsoft.UI.Input.PointerPoint (getter/ctor paired in <Methods> below). -->
 		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs::PointerPoint()" reason="Retyped ScrollControllerPanRequestedEventArgs.PointerPoint to Microsoft.UI.Input.PointerPoint (BC41, breaking changes for 7.0)" />
 
@@ -3415,6 +3422,15 @@
 		  <Member fullName="Microsoft.UI.Xaml.Data.UpdateSourceTrigger Microsoft.UI.Xaml.FrameworkPropertyMetadata.get_DefaultUpdateSourceTrigger()" reason="Removed Uno-only FrameworkPropertyMetadata.DefaultUpdateSourceTrigger (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border.get_ChildProperty()" reason="Removed Border.ChildProperty DP; Child is a plain CLR property in WinUI (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.get_HiddenRootMarginProperty()" reason="Narrowed AppBarTemplateSettings.HiddenRootMarginProperty to internal; WinUI has no such DP and its siblings were already internal (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- AppBar port: Uno-only implementation members narrowed to match WinUI's AppBar IDL, which exposes none of them. Paired with the <Properties>/<Fields> entries. -->
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Controls.AppBar.get_ContentHeight()" reason="Narrowed the Uno-only AppBar.ContentHeight helper to private protected; the WinUI AppBar IDL has no such member (AppBar WinUI port, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.AppBar.ContainsElement(Microsoft.UI.Xaml.DependencyObject pElement)" reason="Narrowed AppBar.ContainsElement to internal; it is a DirectUI implementation detail with no WinUI IDL surface (AppBar WinUI port, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.AppBar.TryDismissInlineAppBar()" reason="Narrowed AppBar.TryDismissInlineAppBar to internal; it is a DirectUI implementation detail with no WinUI IDL surface (AppBar WinUI port, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.AppBar.RestoreSavedFocusImpl(Microsoft.UI.Xaml.DependencyObject savedFocusedElement, Microsoft.UI.Xaml.FocusState savedFocusState)" reason="Narrowed AppBar.RestoreSavedFocusImpl to private protected; it is a DirectUI implementation detail with no WinUI IDL surface (AppBar WinUI port, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.AppBar.GetTemplatePart(System.String name, T&amp; element)" reason="Removed the Uno-only AppBar.GetTemplatePart helper; the port resolves template parts itself and the WinUI AppBar IDL has no such member (AppBar WinUI port, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.AppBar.set_TemplateSettings(Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings value)" reason="Made AppBar.TemplateSettings get-only, as the WinUI AppBar IDL declares it (AppBar WinUI port, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AppBar.get_TemplateSettingsProperty()" reason="Narrowed AppBar.TemplateSettingsProperty to private; the WinUI AppBar IDL exposes no TemplateSettings DP (AppBar WinUI port, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ComboBox.OnIsDropDownOpenChanged(System.Boolean oldIsDropDownOpen, System.Boolean newIsDropDownOpen)" reason="Hid Uno-only ComboBox.OnIsDropDownOpenChanged (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Frame.set_BackStack(System.Collections.Generic.IList`1&lt;Microsoft.UI.Xaml.Navigation.PageStackEntry&gt; value)" reason="Removed Frame.BackStack setter to match WinUI get-only property (breaking changes for 7.0, uno#8339)" />
 
@@ -3926,6 +3942,9 @@
 		  <!-- Reference compilation produced are gone. _fullyInitialized sat under !UNO_HAS_ENHANCED_LIFECYCLE, -->
 		  <!-- which Skia defines, so it never existed in the build lib/ now ships.                            -->
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.NavigationViewItemBase::_fullyInitialized" reason="Reference flavor folded into Skia; field was compiled only under !UNO_HAS_ENHANCED_LIFECYCLE (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- AppBar port: the Uno-only protected state-group backing field gave way to the port's private m_tpDisplayModesStateGroup, which is what WinUI keeps too. -->
+		  <Member fullName="System.WeakReference`1&lt;Microsoft.UI.Xaml.VisualStateGroup&gt; Microsoft.UI.Xaml.Controls.AppBar::m_tpDisplayModesStateGroupRef" reason="Removed the Uno-only protected AppBar.m_tpDisplayModesStateGroupRef field; the port holds the state group privately (AppBar WinUI port, breaking changes for 7.0, uno#8339)" />
 	  </Fields>
 	  <Properties>
 		  <!-- Fluent resources-version selector removed: only version 2 exists and WinAppSDK has no equivalent surface. Accessors paired in the <Methods> block below (BC71, breaking changes for 7.0). -->
@@ -4204,6 +4223,10 @@
 		  <Member fullName="Microsoft.UI.Xaml.Data.UpdateSourceTrigger Microsoft.UI.Xaml.FrameworkPropertyMetadata::DefaultUpdateSourceTrigger()" reason="Removed Uno-only FrameworkPropertyMetadata.DefaultUpdateSourceTrigger (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border::ChildProperty()" reason="Removed Border.ChildProperty DP; Child is a plain CLR property in WinUI (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings::HiddenRootMarginProperty()" reason="Narrowed AppBarTemplateSettings.HiddenRootMarginProperty to internal; WinUI has no such DP and its siblings were already internal (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- AppBar port: Uno-only implementation members narrowed to match WinUI's AppBar IDL (accessors paired in <Methods> below). -->
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Controls.AppBar::ContentHeight()" reason="Narrowed the Uno-only AppBar.ContentHeight helper to private protected; the WinUI AppBar IDL has no such member (AppBar WinUI port, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AppBar::TemplateSettingsProperty()" reason="Narrowed AppBar.TemplateSettingsProperty to private; the WinUI AppBar IDL exposes no TemplateSettings DP (AppBar WinUI port, breaking changes for 7.0, uno#8339)" />
 		  <!-- ScrollControllerPanRequestedEventArgs.PointerPoint retyped from Windows.UI.Input.PointerPoint to Microsoft.UI.Input.PointerPoint (getter/ctor paired in <Methods> below). -->
 		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs::PointerPoint()" reason="Retyped ScrollControllerPanRequestedEventArgs.PointerPoint to Microsoft.UI.Input.PointerPoint (BC41, breaking changes for 7.0)" />
 
@@ -4851,6 +4874,15 @@
 		  <Member fullName="Microsoft.UI.Xaml.Data.UpdateSourceTrigger Microsoft.UI.Xaml.FrameworkPropertyMetadata.get_DefaultUpdateSourceTrigger()" reason="Removed Uno-only FrameworkPropertyMetadata.DefaultUpdateSourceTrigger (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border.get_ChildProperty()" reason="Removed Border.ChildProperty DP; Child is a plain CLR property in WinUI (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.get_HiddenRootMarginProperty()" reason="Narrowed AppBarTemplateSettings.HiddenRootMarginProperty to internal; WinUI has no such DP and its siblings were already internal (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- AppBar port: Uno-only implementation members narrowed to match WinUI's AppBar IDL, which exposes none of them. Paired with the <Properties>/<Fields> entries. -->
+		  <Member fullName="System.Double Microsoft.UI.Xaml.Controls.AppBar.get_ContentHeight()" reason="Narrowed the Uno-only AppBar.ContentHeight helper to private protected; the WinUI AppBar IDL has no such member (AppBar WinUI port, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.AppBar.ContainsElement(Microsoft.UI.Xaml.DependencyObject pElement)" reason="Narrowed AppBar.ContainsElement to internal; it is a DirectUI implementation detail with no WinUI IDL surface (AppBar WinUI port, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.AppBar.TryDismissInlineAppBar()" reason="Narrowed AppBar.TryDismissInlineAppBar to internal; it is a DirectUI implementation detail with no WinUI IDL surface (AppBar WinUI port, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.AppBar.RestoreSavedFocusImpl(Microsoft.UI.Xaml.DependencyObject savedFocusedElement, Microsoft.UI.Xaml.FocusState savedFocusState)" reason="Narrowed AppBar.RestoreSavedFocusImpl to private protected; it is a DirectUI implementation detail with no WinUI IDL surface (AppBar WinUI port, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.AppBar.GetTemplatePart(System.String name, T&amp; element)" reason="Removed the Uno-only AppBar.GetTemplatePart helper; the port resolves template parts itself and the WinUI AppBar IDL has no such member (AppBar WinUI port, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.AppBar.set_TemplateSettings(Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings value)" reason="Made AppBar.TemplateSettings get-only, as the WinUI AppBar IDL declares it (AppBar WinUI port, breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.AppBar.get_TemplateSettingsProperty()" reason="Narrowed AppBar.TemplateSettingsProperty to private; the WinUI AppBar IDL exposes no TemplateSettings DP (AppBar WinUI port, breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ComboBox.OnIsDropDownOpenChanged(System.Boolean oldIsDropDownOpen, System.Boolean newIsDropDownOpen)" reason="Hid Uno-only ComboBox.OnIsDropDownOpenChanged (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Frame.set_BackStack(System.Collections.Generic.IList`1&lt;Microsoft.UI.Xaml.Navigation.PageStackEntry&gt; value)" reason="Removed Frame.BackStack setter to match WinUI get-only property (breaking changes for 7.0, uno#8339)" />
 
