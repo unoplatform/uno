@@ -3,4 +3,3 @@
 
 # Native binaries — built from source in CI
 Uno.UI.Runtime.Skia.MacOS/libUnoNativeMac.dylib
-crosstargeting_override.props
