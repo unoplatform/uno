@@ -24,12 +24,6 @@ public partial class Page : UserControl
 
 	protected internal virtual void OnNavigatingFrom(NavigatingCancelEventArgs e) { }
 
-	// MUX Reference Page_Partial.cpp
-	internal void AppBarClosedSizeChanged()
-	{
-		InvalidateMeasure();
-	}
-
 	#region TopAppBar
 	public AppBar TopAppBar
 	{
