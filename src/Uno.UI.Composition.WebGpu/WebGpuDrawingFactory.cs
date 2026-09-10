@@ -234,13 +234,46 @@ public sealed unsafe class WebGpuTexture : DrawingResource, ITexture
 		}
 		var rgba = new byte[w * h * 4];
 		for (int i = 0; i < rgba.Length; i += 4) { rgba[i] = bgra[i + 2]; rgba[i + 1] = bgra[i + 1]; rgba[i + 2] = bgra[i]; rgba[i + 3] = bgra[i + 3]; }
-		var td = new WGPUTextureDescriptor { Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 }, Format = WGPUTextureFormat.RGBA8Unorm, MipLevelCount = 1, SampleCount = 1, Dimension = WGPUTextureDimension._2D, Usage = WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopyDst | WGPUTextureUsage.CopySrc };
+		// A full mip chain: a draw that minifies the image then samples the level near its on-screen size instead of
+		// striding across the full-resolution one, which is what makes large images bandwidth-bound.
+		var td = new WGPUTextureDescriptor { Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 }, Format = WGPUTextureFormat.RGBA8Unorm, MipLevelCount = (uint)MipLevels(w, h), SampleCount = 1, Dimension = WGPUTextureDimension._2D, Usage = WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopyDst | WGPUTextureUsage.CopySrc };
 		Tex = wgpuDeviceCreateTexture(device.Dev, &td);
 		View = wgpuTextureCreateView(Tex, null);
-		var dst = new WGPUTexelCopyTextureInfo { Texture = Tex, Aspect = WGPUTextureAspect.All, MipLevel = 0, Origin = default };
-		var layout = new WGPUTexelCopyBufferLayout { BytesPerRow = (uint)(w * 4), RowsPerImage = (uint)h };
-		var ext = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 };
-		fixed (byte* p = rgba) { wgpuQueueWriteTexture(device.Q, &dst, (IntPtr)p, (nuint)rgba.Length, &layout, &ext); }
+		for (uint level = 0; ; level++)
+		{
+			var dst = new WGPUTexelCopyTextureInfo { Texture = Tex, Aspect = WGPUTextureAspect.All, MipLevel = level, Origin = default };
+			var layout = new WGPUTexelCopyBufferLayout { BytesPerRow = (uint)(w * 4), RowsPerImage = (uint)h };
+			var ext = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 };
+			fixed (byte* p = rgba) { wgpuQueueWriteTexture(device.Q, &dst, (IntPtr)p, (nuint)rgba.Length, &layout, &ext); }
+			if (w == 1 && h == 1) { break; }
+			rgba = Halve(rgba, ref w, ref h);
+		}
+	}
+
+	private static int MipLevels(int w, int h)
+	{
+		int n = 1;
+		while (w > 1 || h > 1) { w = Math.Max(1, w >> 1); h = Math.Max(1, h >> 1); n++; }
+		return n;
+	}
+
+	// The next mip level: each texel the mean of a 2x2 block above it (premultiplied, so a plain mean is right).
+	private static byte[] Halve(byte[] src, ref int w, ref int h)
+	{
+		int dw = Math.Max(1, w >> 1), dh = Math.Max(1, h >> 1);
+		var dst = new byte[dw * dh * 4];
+		for (int y = 0; y < dh; y++)
+		{
+			int y0 = Math.Min(y * 2, h - 1), y1 = Math.Min(y * 2 + 1, h - 1);
+			for (int x = 0; x < dw; x++)
+			{
+				int x0 = Math.Min(x * 2, w - 1), x1 = Math.Min(x * 2 + 1, w - 1);
+				int a = (y0 * w + x0) * 4, b = (y0 * w + x1) * 4, c = (y1 * w + x0) * 4, d = (y1 * w + x1) * 4, o = (y * dw + x) * 4;
+				for (int k = 0; k < 4; k++) { dst[o + k] = (byte)((src[a + k] + src[b + k] + src[c + k] + src[d + k] + 2) >> 2); }
+			}
+		}
+		w = dw; h = dh;
+		return dst;
 	}
 
 	// A transient image texture (e.g. CompositionNineGridBrush, or any per-frame-changing image) is disposed by the
