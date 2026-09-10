@@ -416,19 +416,20 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		return bg;
 	}
 
-	// The ClipU header (ctrl, size, xform, xoff, finv, mask) followed by one entry per analytic clip; match the WGSL.
-	internal const int ClipUHeaderBytes = 112, ClipEntryBytes = 80;
+	// The ClipU header (ctrl, size, xform, xoff, finv, own) followed by one entry per clip; match the WGSL.
+	internal const int ClipUHeaderBytes = 96, ClipEntryBytes = 80;
 	// wgpu wants a binding to cover the header plus one array element, so an entry-less clip still binds one (zeroed).
 	internal const int ClipUMinBytes = ClipUHeaderBytes + ClipEntryBytes;
 	private const int ClipUHeaderFloats = ClipUHeaderBytes / sizeof(float), ClipEntryFloats = ClipEntryBytes / sizeof(float);
 
-	// Writes the op's ClipU into _clipU; returns its length in floats and whether the clip's AABB rode along.
-	private int FillClipU(ClipData cd, Matrix3x2 xform, Matrix3x2 finv, ClipMask mask, out bool foldedAabb)
+	// Writes the op's ClipU into _clipU: the analytic entries, then the clip's path masks as mask entries. Returns its
+	// length in floats and whether the clip's AABB rode along.
+	private int FillClipU(ClipData cd, Matrix3x2 xform, Matrix3x2 finv, ClipEntry[] masks, out bool foldedAabb)
 	{
 		if (xform == default) { xform = Matrix3x2.Identity; }   // default(Matrix3x2) is all-zero; treat as identity
 		if (finv == default) { finv = Matrix3x2.Identity; }
 		var entries = cd.Entries;
-		int n = entries?.Length ?? 0;
+		int na = entries?.Length ?? 0, nm = masks?.Length ?? 0, n = na + nm;
 		int floats = ClipUHeaderFloats + Math.Max(n, 1) * ClipEntryFloats;
 		if (_clipU.Length < floats) { _clipU = new float[Math.Max(floats, _clipU.Length * 2)]; }
 		var cu = _clipU;
@@ -455,19 +456,13 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		cu[14] = finv.M31 + finv.M11 * _basisOx + finv.M21 * _basisOy;
 		cu[15] = finv.M32 + finv.M12 * _basisOx + finv.M22 * _basisOy;
 		cu[16] = finv.M11; cu[17] = finv.M12; cu[18] = finv.M21; cu[19] = finv.M22;
-		// mask.xy = texel (0,0) of the bound path-clip mask in the clip's space; mask.z = one is bound; mask.w = the op's
-		// own coverage texture is bound (sampled by vertex uv).
-		if (mask.View != IntPtr.Zero)
-		{
-			cu[20] = mask.OriginX; cu[21] = mask.OriginY; cu[22] = 1f;
-			cu[24] = mask.SlotX; cu[25] = mask.SlotY; cu[26] = mask.W; cu[27] = mask.H;   // maskExt
-		}
-		if (cd.Coverage != 0) { cu[23] = 1f; }
+		// own.x = the op's own coverage texture is bound (sampled by vertex uv).
+		if (cd.Coverage != 0) { cu[20] = 1f; }
 		for (int i = 0; i < n; i++)
 		{
-			var e = entries[i]; int o = ClipUHeaderFloats + i * ClipEntryFloats;
+			var e = i < na ? entries[i] : masks[i - na]; int o = ClipUHeaderFloats + i * ClipEntryFloats;
 			cu[o + 0] = e.M.M11; cu[o + 1] = e.M.M12; cu[o + 2] = e.M.M21; cu[o + 3] = e.M.M22;   // m
-			cu[o + 4] = e.M.M31; cu[o + 5] = e.M.M32; cu[o + 6] = e.Exclude ? 1f : 0f;           // t
+			cu[o + 4] = e.M.M31; cu[o + 5] = e.M.M32; cu[o + 6] = e.Exclude ? 1f : 0f; cu[o + 7] = e.Mask ? 1f : 0f;   // t
 			cu[o + 8] = e.Rect.X; cu[o + 9] = e.Rect.Y; cu[o + 10] = e.Rect.Z; cu[o + 11] = e.Rect.W;
 			cu[o + 12] = e.Radii.X; cu[o + 13] = e.Radii.Y; cu[o + 14] = e.Radii.Z; cu[o + 15] = e.Radii.W;
 			cu[o + 16] = e.RadiiY.X; cu[o + 17] = e.RadiiY.Y; cu[o + 18] = e.RadiiY.Z; cu[o + 19] = e.RadiiY.W;
@@ -480,7 +475,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	// survives, making a per-frame restamp free of native calls.
 	private bool RewriteClipU(nint slot, ClipData cd, Matrix3x2 xform, Matrix3x2 finv)
 	{
-		var floats = FillClipU(cd, xform, finv, default, out var folded);
+		var floats = FillClipU(cd, xform, finv, null, out var folded);
 		// The caller's reuse guard keeps the entry count, and so the size class, unchanged (see StampSessionEntries).
 		System.Diagnostics.Debug.Assert(floats * sizeof(float) <= _d.ClipSlab.SlotBytesOf(slot));
 		_d.ClipSlab.Write(slot, _clipU, floats);
@@ -490,15 +485,15 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	// Owned variant exposing the ClipU slab slot so a later restamp can RewriteClipU it in place.
 	private IntPtr MakeClipBgOwned(ClipData cd, OwnedResources owned, Matrix3x2 xform, Matrix3x2 finv, out nint buf, out bool aabbInClipU)
 	{
-		var mask = ResolveClipMask(cd, owned);
-		var floats = FillClipU(cd, xform, finv, mask, out aabbInClipU);
+		var masks = ResolveClipMasks(cd, owned);
+		var floats = FillClipU(cd, xform, finv, masks.Entries, out aabbInClipU);
 		var bytes = floats * sizeof(float);
 		var slot = _d.ClipSlab.Alloc(bytes);
 		_d.ClipSlab.Write(slot, _clipU, floats);
 		(owned.ClipSlots ??= new()).Add(slot);
 		var e = stackalloc WGPUBindGroupEntry[4];
 		e[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = _d.ClipSlab.BufferOf(slot), Offset = _d.ClipSlab.OffsetOf(slot), Size = (nuint)bytes };
-		e[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = mask.View != IntPtr.Zero ? mask.View : _d.DummyTex };
+		e[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = masks.View != IntPtr.Zero ? masks.View : _d.DummyTex };
 		e[2] = new WGPUBindGroupEntry { Binding = 2, TextureView = cd.Coverage != 0 ? (IntPtr)cd.Coverage : _d.DummyTex };
 		e[3] = new WGPUBindGroupEntry { Binding = 3, Sampler = _d.Smp };
 		var bgd = new WGPUBindGroupDescriptor { Layout = _d.ClipBgl, EntryCount = 4, Entries = e };
@@ -509,11 +504,11 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	private IntPtr MakeClipBg(ClipData cd, OwnedResources owned = null, Matrix3x2 xform = default, Matrix3x2 finv = default)
 	{
 		if (owned is not null) { return MakeClipBgOwned(cd, owned, xform, finv, out _, out _); }
-		var mask = ResolveClipMask(cd, null);
-		var floats = FillClipU(cd, xform, finv, mask, out _);
+		var masks = ResolveClipMasks(cd, null);
+		var floats = FillClipU(cd, xform, finv, masks.Entries, out _);
 		var bytes = floats * sizeof(float);
 		var cu = _clipU;
-		if (mask.View != IntPtr.Zero || cd.Coverage != 0)
+		if (masks.View != IntPtr.Zero || cd.Coverage != 0)
 		{
 			// A per-op group rather than a slab slot: the slab's persistent groups bind DummyTex, and the mask and
 			// coverage textures are per op. Buffer and group are per-frame; the textures outlive them.
@@ -521,7 +516,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 			fixed (float* pcu = cu) { wgpuQueueWriteBuffer(_d.Q, ub, 0, (IntPtr)pcu, (nuint)bytes); }
 			var me = stackalloc WGPUBindGroupEntry[4];
 			me[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = ub, Offset = 0, Size = (nuint)bytes };
-			me[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = mask.View != IntPtr.Zero ? mask.View : _d.DummyTex };
+			me[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = masks.View != IntPtr.Zero ? masks.View : _d.DummyTex };
 			me[2] = new WGPUBindGroupEntry { Binding = 2, TextureView = cd.Coverage != 0 ? (IntPtr)cd.Coverage : _d.DummyTex };
 			me[3] = new WGPUBindGroupEntry { Binding = 3, Sampler = _d.Smp };
 			var mbgd = new WGPUBindGroupDescriptor { Layout = _d.ClipBgl, EntryCount = 4, Entries = me };

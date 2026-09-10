@@ -23,7 +23,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		public int MinX = int.MaxValue, MinY = int.MaxValue, MaxX, MaxY;   // union of the slots: the accumulator's extent
 		public readonly List<float> Edges = new();     // x0,y0,x1,y1 per edge, in target pixels
 		public readonly List<float> Ext = new();       // per edge: the right bound of its slot, so its quad stops there
-		public readonly List<float> Slots = new();     // per slot: x, y, w, h, evenOdd, exclude
+		public readonly List<float> Slots = new();     // per slot: x, y, w, h, evenOdd, 0
 		public int Count;
 		public int CursorX, ShelfY, ShelfH;            // shelf packing; frame sheets only
 	}
@@ -45,33 +45,66 @@ public sealed unsafe partial class WebGpuPresentSession
 		return b;
 	}
 
-	// Reserves a w x h slot on the frame's sheet, opening another when it is full. False when the mask is larger than
-	// a sheet; such a mask bakes into a texture of its own.
+	// Shelf-packs rects into an areaW x areaH region from the given cursor state, advancing it; false, state untouched,
+	// when they do not all fit.
+	private static bool TryPack(ref int cursorX, ref int shelfY, ref int shelfH, int areaW, int areaH, (int Ox, int Oy, int W, int H)[] rects, (int X, int Y)[] pos)
+	{
+		int cx = cursorX, sy = shelfY, sh = shelfH;
+		for (var i = 0; i < rects.Length; i++)
+		{
+			int w = rects[i].W, h = rects[i].H;
+			if (w > areaW) { return false; }
+			if (cx + w > areaW) { sy += sh; sh = 0; cx = 0; }
+			if (sy + h > areaH) { return false; }
+			pos[i] = (cx, sy); cx += w;
+			if (h > sh) { sh = h; }
+		}
+		cursorX = cx; shelfY = sy; shelfH = sh;
+		return true;
+	}
+
+	// Reserves slots for all the rects together on ONE frame sheet: the one still open when they fit there, else a
+	// fresh one. False when they do not fit a sheet even empty; such masks bake into a texture of their own.
+	private bool TryReserveSheetSlots((int Ox, int Oy, int W, int H)[] rects, (int X, int Y)[] pos, out BakeBatch sheet)
+	{
+		sheet = _sheet;
+		if (sheet is not null && TryPack(ref sheet.CursorX, ref sheet.ShelfY, ref sheet.ShelfH, SheetSize, SheetSize, rects, pos))
+		{
+			SheetSlotsBaked += rects.Length;
+			return true;
+		}
+		int cx = 0, sy = 0, sh = 0;
+		if (!TryPack(ref cx, ref sy, ref sh, SheetSize, SheetSize, rects, pos)) { sheet = null; return false; }
+		var view = _d.Pool.Rent(SheetSize, SheetSize, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, _d.ColorFormat);
+		sheet = _sheet = BatchFor(view, SheetSize, SheetSize, load: false);
+		sheet.CursorX = cx; sheet.ShelfY = sy; sheet.ShelfH = sh;
+		SheetSlotsBaked += rects.Length;
+		return true;
+	}
+
 	private bool TryReserveSheetSlot(int w, int h, out BakeBatch sheet, out int x, out int y)
 	{
-		sheet = null; x = y = 0;
-		if (w > SheetSize || h > SheetSize) { return false; }
-		var cur = _sheet;
-		if (cur is not null)
-		{
-			if (cur.CursorX + w > SheetSize) { cur.ShelfY += cur.ShelfH; cur.ShelfH = 0; cur.CursorX = 0; }
-			if (cur.ShelfY + h > SheetSize) { cur = null; }
-		}
-		if (cur is null)
-		{
-			var view = _d.Pool.Rent(SheetSize, SheetSize, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, _d.ColorFormat);
-			cur = _sheet = BatchFor(view, SheetSize, SheetSize, load: false);
-		}
-		sheet = cur; x = cur.CursorX; y = cur.ShelfY;
-		cur.CursorX += w;
-		if (h > cur.ShelfH) { cur.ShelfH = h; }
-		SheetSlotsBaked++;
-		return true;
+		var pos = new (int X, int Y)[1];
+		var ok = TryReserveSheetSlots(new[] { (0, 0, w, h) }, pos, out sheet);
+		(x, y) = pos[0];
+		return ok;
+	}
+
+	// Packs rects into a texture of their own: as wide as the widest, or the square root of their area rounded up to
+	// a power of two when that is wider, and as tall as the shelves come to.
+	private static void PackOwn((int Ox, int Oy, int W, int H)[] rects, (int X, int Y)[] pos, out int w, out int h)
+	{
+		long area = 0; int maxW = 1;
+		foreach (var r in rects) { area += (long)r.W * r.H; maxW = Math.Max(maxW, r.W); }
+		w = Math.Max(maxW, (int)System.Numerics.BitOperations.RoundUpToPowerOf2((uint)Math.Ceiling(Math.Sqrt(area))));
+		int cx = 0, sy = 0, sh = 0;
+		TryPack(ref cx, ref sy, ref sh, w, int.MaxValue, rects, pos);
+		h = Math.Max(1, sy + sh);
 	}
 
 	// Queues one outline into a slot of the batch. Edges are in the fill's space and map to target pixels by
 	// (e - origin) * scale + 1 (the one-pixel skirt) + the slot corner.
-	private void AddBake(BakeBatch b, int x, int y, int w, int h, float[] edges, Vector2 origin, Vector2 scale, bool evenOdd, bool exclude)
+	private void AddBake(BakeBatch b, int x, int y, int w, int h, float[] edges, Vector2 origin, Vector2 scale, bool evenOdd)
 	{
 		float right = x + w;
 		for (var i = 0; i < edges.Length; i += 4)
@@ -80,7 +113,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			b.Edges.Add((edges[i + 2] - origin.X) * scale.X + 1f + x); b.Edges.Add((edges[i + 3] - origin.Y) * scale.Y + 1f + y);
 			b.Ext.Add(right);
 		}
-		b.Slots.Add(x); b.Slots.Add(y); b.Slots.Add(w); b.Slots.Add(h); b.Slots.Add(evenOdd ? 1f : 0f); b.Slots.Add(exclude ? 1f : 0f);
+		b.Slots.Add(x); b.Slots.Add(y); b.Slots.Add(w); b.Slots.Add(h); b.Slots.Add(evenOdd ? 1f : 0f); b.Slots.Add(0f);
 		b.Count++;
 		if (x < b.MinX) { b.MinX = x; }
 		if (y < b.MinY) { b.MinY = y; }
@@ -91,7 +124,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	// One atlas entry's bake, on the placement AppendAtlasQuad draws with: the fill's own origin, shifted a pixel so
 	// an edge sitting exactly on the bbox boundary still has the pixel it partly covers.
 	private void QueueEntryBake(PathFill pf, WebGpuPathAtlas.Slot slot, Vector2 scale)
-		=> AddBake(BatchFor(slot.Owner.View, slot.Owner.W, slot.Owner.H, load: true), slot.X, slot.Y, slot.W, slot.H, pf.Edges, new Vector2(slot.OriginX, slot.OriginY), scale, pf.EvenOdd, false);
+		=> AddBake(BatchFor(slot.Owner.View, slot.Owner.W, slot.Owner.H, load: true), slot.X, slot.Y, slot.W, slot.H, pf.Edges, new Vector2(slot.OriginX, slot.OriginY), scale, pf.EvenOdd);
 
 	// Bakes every pending batch: one accumulate pass over all its edges into a scratch accumulator covering the
 	// union of its slots, one resolve pass writing the slots into the target. Runs before a render pass begins, so

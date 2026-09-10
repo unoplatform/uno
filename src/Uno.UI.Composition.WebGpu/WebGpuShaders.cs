@@ -33,16 +33,17 @@ internal sealed unsafe partial class WebGpuDevice
 	// at its own contiguous group index (colored group 0, image/gradient group 1); a group hole is rejected by
 	// wgpu's auto-layout.
 	private const string ClipStructFn = @"
-// Per-draw clip + placement. ctrl.x = entry count; ctrl.y > 0.5 = a plain rect clip (min ctrl.zw, max size.zw); xform/xoff.xy = the op's
-// mask.w > 0.5 = the op's own shape is a coverage texture (an atlas page or a mask of its own), sampled by per-vertex
-// uv: the innermost clip, carried in the vertices so many small shapes (a glyph run) still draw as one.
-// pixel-space transform and finv/xoff.zw its inverse, which maps a fragment back into the recording's space -- where
-// the rect, the mask (mask.xy = its origin, mask.z > 0.5 = bound; maskExt = its slot x,y,w,h within the bound texture,
-// which may be a shared sheet) and the entries all live. Each entry is a
-// rounded rect in its OWN space, reached through its 2x3 (q = m.xz*p.x + m.yw*p.y + t.xy), so nesting has no cap
-// and needs no axis alignment; t.z > 0.5 = Difference (keep the outside). radX/radY = per-corner radii TL,TR,BR,BL.
+// Per-draw clip + placement. ctrl.x = entry count; ctrl.y > 0.5 = a plain rect clip (min ctrl.zw, max size.zw);
+// xform/xoff.xy = the op's pixel-space transform and finv/xoff.zw its inverse, which maps a fragment back into the
+// recording's space -- where the rect and the entries live. own.x > 0.5 = the op's own shape is a coverage texture (an
+// atlas page or a mask of its own), sampled by per-vertex uv: the innermost clip, carried in the vertices so many
+// small shapes (a glyph run) still draw as one.
+// Each entry is reached through its 2x3 (q = m.xz*p.x + m.yw*p.y + t.xy) and is one of two kinds. t.w < 0.5: a
+// rounded rect in its OWN space (rect = L,T,R,B; radX/radY = per-corner radii TL,TR,BR,BL), exact under any affine.
+// t.w > 0.5: a path mask, q being its texel and rect its slot (x, y, w, h) in clipMask, which one texture holds for
+// all of a draw's masks. Either kind: t.z > 0.5 = Difference (keep the outside). Nesting has no cap.
 struct ClipEntry { m: vec4<f32>, t: vec4<f32>, rect: vec4<f32>, radX: vec4<f32>, radY: vec4<f32> };
-struct ClipU { ctrl: vec4<f32>, size: vec4<f32>, xform: vec4<f32>, xoff: vec4<f32>, finv: vec4<f32>, mask: vec4<f32>, maskExt: vec4<f32>, entries: array<ClipEntry> };
+struct ClipU { ctrl: vec4<f32>, size: vec4<f32>, xform: vec4<f32>, xoff: vec4<f32>, finv: vec4<f32>, own: vec4<f32>, entries: array<ClipEntry> };
 // The pass projection: basis.xy = the target's top-left in device pixels, basis.zw = its size. Bound at group 0 of
 // every colour pipeline, so vertices are uploaded in pixels and a resize or a size-to-content layer re-targets
 // cached geometry for free.
@@ -66,8 +67,14 @@ fn finvMap(fcRaw: vec2<f32>) -> vec2<f32> {
 }
 // Coverage of one clip entry at p (recording space). ddx/ddy = how p moves per fragment step, so the entry's own
 // pixel scale follows from its matrix and the SDF distance converts to pixels without derivative builtins.
+fn maskCov(e: ClipEntry, q: vec2<f32>) -> f32 {
+  let t = floor(q);
+  if (t.x < 0.0 || t.y < 0.0 || t.x >= e.rect.z || t.y >= e.rect.w) { return 0.0; }
+  return textureLoad(clipMask, vec2<i32>(t + e.rect.xy), 0).r;
+}
 fn entryCov(e: ClipEntry, p: vec2<f32>, ddx: vec2<f32>, ddy: vec2<f32>) -> f32 {
   let q = vec2<f32>(e.m.x * p.x + e.m.z * p.y + e.t.x, e.m.y * p.x + e.m.w * p.y + e.t.y);
+  if (e.t.w > 0.5) { let a = maskCov(e, q); return select(a, 1.0 - a, e.t.z > 0.5); }
   let qx = vec2<f32>(e.m.x * ddx.x + e.m.z * ddx.y, e.m.x * ddy.x + e.m.z * ddy.y);
   let qy = vec2<f32>(e.m.y * ddx.x + e.m.w * ddx.y, e.m.y * ddy.x + e.m.w * ddy.y);
   let sxy = max(max(length(qx), length(qy)), 1e-6);
@@ -91,22 +98,17 @@ fn entryCov(e: ClipEntry, p: vec2<f32>, ddx: vec2<f32>, ddy: vec2<f32>) -> f32 {
 }
 // The op's own coverage texture at uv, or 1 when the shape is carried by the geometry itself.
 fn covTex(uv: vec2<f32>) -> f32 {
-  if (clip.mask.w > 0.5) { return textureSampleLevel(coverageTex, covSmp, uv, 0.0).a; }
+  if (clip.own.x > 0.5) { return textureSampleLevel(coverageTex, covSmp, uv, 0.0).a; }
   return 1.0;
 }
 fn clipCov(fcRaw: vec2<f32>, uv: vec2<f32>) -> f32 {
   let own = covTex(uv);
   // Fast path: no clip => the shape's own coverage, and NO finvMap (unclipped fragments must cost what they did pre-arena).
-  if (clip.ctrl.x < 0.5 && clip.ctrl.y < 0.5 && clip.mask.z < 0.5) { return own; }
+  if (clip.ctrl.x < 0.5 && clip.ctrl.y < 0.5) { return own; }
   return own * clipCovMapped(finvMap(fcRaw));
 }
 // Exact texel of the path-clip mask under this fragment (both are in the clip's space; the origin is whole pixels).
 // Explicit bounds rather than relying on textureLoad's out-of-range behaviour, which differs between backends.
-fn clipMaskCov(fc: vec2<f32>) -> f32 {
-  let t = floor(fc - clip.mask.xy);
-  if (t.x < 0.0 || t.y < 0.0 || t.x >= clip.maskExt.z || t.y >= clip.maskExt.w) { return 0.0; }
-  return textureLoad(clipMask, vec2<i32>(t + clip.maskExt.xy), 0).r;
-}
 // Same, for a caller that already mapped the fragment into the clip's space — the gradient shader needs that
 // point anyway, and mapping it twice per fragment is a matrix multiply wasted on every pixel it covers.
 fn clipCovMapped(fc: vec2<f32>) -> f32 {
@@ -118,7 +120,6 @@ fn clipCovMapped(fc: vec2<f32>) -> f32 {
     let dmax = vec2<f32>(clip.size.z, clip.size.w) - fc;
     cov = clamp(0.5 + min(min(dmin.x, dmin.y), min(dmax.x, dmax.y)), 0.0, 1.0);
   }
-  if (clip.mask.z > 0.5) { cov = cov * clipMaskCov(fc); }
   // finv is affine, so a fragment step in the recording's space is one of its columns.
   let ddx = vec2<f32>(clip.finv.x, clip.finv.y);
   let ddy = vec2<f32>(clip.finv.z, clip.finv.w);

@@ -52,13 +52,13 @@ public sealed unsafe partial class WebGpuPresentSession
 		{
 			if (TryReserveShadowSlot(MathF.Max(sh.SigmaX, sh.SigmaY), w, h, out var sheet, out var sx, out var sy))
 			{
-				AddBake(sheet.Bake, sx, sy, w, h, sh.Edges, new Vector2(ox + 1, oy + 1), Vector2.One, sh.EvenOdd, false);
+				AddBake(sheet.Bake, sx, sy, w, h, sh.Edges, new Vector2(ox + 1, oy + 1), Vector2.One, sh.EvenOdd);
 				uv = new Vector4(sx, sy, sx + w, sy + h) / SheetSize;
 				ShadowSlotsBaked++;
 				return sheet.Blurred;
 			}
 			var (view, tex) = NewMaskTexture(w, h);
-			AddBake(BatchFor(view, w, h, load: false), 0, 0, w, h, sh.Edges, new Vector2(ox + 1, oy + 1), Vector2.One, sh.EvenOdd, false);
+			AddBake(BatchFor(view, w, h, load: false), 0, 0, w, h, sh.Edges, new Vector2(ox + 1, oy + 1), Vector2.One, sh.EvenOdd);
 			_d.DeferTextureRelease(view, tex);
 			return DeferBlur(view, w, h, sh.SigmaX, sh.SigmaY);
 		}

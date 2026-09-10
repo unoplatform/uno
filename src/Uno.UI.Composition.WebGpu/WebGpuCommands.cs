@@ -17,18 +17,20 @@ using WColor = Windows.UI.Color;
 
 namespace Uno.UI.Composition.WebGpu;
 
-// One analytic clip: a rounded rect in its own space, reached from the space the clip is expressed in through M.
-// Exact under any affine, since the shape never leaves the space it was recorded in.
+// One clip entry, reached from the space the clip is expressed in through M. Analytic: a rounded rect in its own
+// space, exact under any affine since the shape never leaves the space it was recorded in. Mask: M maps to the
+// mask's texels and Rect is its slot in the draw's mask texture (see WebGpuPresentSession.ResolveClipMasks).
 internal struct ClipEntry
 {
-	public Matrix3x2 M;     // clip space -> this entry's space
-	public Vector4 Rect;    // L,T,R,B in the entry's space
+	public Matrix3x2 M;     // clip space -> this entry's space (a mask's texel space)
+	public Vector4 Rect;    // L,T,R,B in the entry's space; a mask's slot x,y,w,h
 	public Vector4 Radii;   // per-corner X radius (TL,TR,BR,BL)
 	public Vector4 RadiiY;  // per-corner Y radius (elliptical corners; equals Radii for circular)
-	public bool Exclude;    // Difference op: keep the area OUTSIDE the rounded rect rather than inside
+	public bool Exclude;    // Difference op: keep the area OUTSIDE rather than inside
+	public bool Mask;       // a path mask entry rather than a rounded rect
 
 	// The same entry expressed in a space that reaches this one through `m` (p_here = Transform(p_new, m)).
-	public ClipEntry Under(in Matrix3x2 m) => new() { M = m * M, Rect = Rect, Radii = Radii, RadiiY = RadiiY, Exclude = Exclude };
+	public ClipEntry Under(in Matrix3x2 m) => new() { M = m * M, Rect = Rect, Radii = Radii, RadiiY = RadiiY, Exclude = Exclude, Mask = Mask };
 }
 
 // One arbitrary path clip as the coverage rasterizer consumes it: closed device-space edges (x0,y0,x1,y1 each),
@@ -40,7 +42,7 @@ internal sealed class PathClip
 	public bool EvenOdd;
 	public bool Exclude;
 	public Vector4 Bbox;   // device L,T,R,B of the edges
-	public long GeomKey;         // outline hash + GeomMatrix: the mask's cache key, like a fill's (see ResolveClipMask)
+	public long GeomKey;         // outline hash + GeomMatrix: the mask's cache key, like a fill's (see ResolveClipMasks)
 	public Matrix4x4 GeomMatrix;
 
 	public PathClip Transformed(in Matrix3x2 m)
@@ -65,9 +67,8 @@ internal struct ClipData
 	// Every analytic clip in force, all ANDed per-fragment (clipCov). null/empty = none. Copy-on-write: each push
 	// allocates a fresh array so Save/Restore snapshots and sibling commands keep their own reference.
 	public ClipEntry[] Entries;
-	// Every path clip in force, innermost last, for the per-fragment coverage mask (see ResolveClipMask). Nests
-	// without limit: the mask is the PRODUCT of each path's coverage, so intersecting N shapes is N
-	// accumulate+resolve passes into one texture. Copy-on-write like Rounds.
+	// Every path clip in force, innermost last; each becomes a mask entry at op build (see ResolveClipMasks), so
+	// nesting has no limit. Copy-on-write like Entries.
 	public PathClip[] Paths;
 	// The op's own shape as a coverage texture (an atlas page or a mask of its own), sampled by the op's vertex uv:
 	// the innermost clip. 0 = the geometry carries the shape. Set by the present session, never by the recorder.

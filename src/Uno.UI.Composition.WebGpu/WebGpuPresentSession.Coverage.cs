@@ -19,60 +19,57 @@ public sealed unsafe partial class WebGpuPresentSession
 
 	internal static int ClipMasksBaked;
 
-	/// <summary>A baked path-clip mask: the texture and the device pixel its texel (0,0) sits on.</summary>
-	// The bound texture, the mask's origin in the clip's space, and its slot within the texture (a sheet holds many).
-	internal struct ClipMask { public IntPtr View; public int OriginX, OriginY, SlotX, SlotY, W, H; }
+	// A clip's path masks: one mask entry per path (its slot in View), so nesting has no limit and no product bake. All
+	// of one clip's masks live in ONE texture, the single mask binding a draw has.
+	internal struct MaskSet { public IntPtr View; public ClipEntry[] Entries; }
 
 	// Per frame. Keyed on the composed path list AND the owning bag: the list is shared by every command under
 	// one clip (ClipCompose memoizes it), so a clip is baked once per frame; the bag is part of the key because a
 	// texture that lives in bag A must not be sampled by a group cached in bag B, which A's release would strand.
 	// Immediate (unowned) requests share one entry per list and are released at the next frame start.
-	private readonly Dictionary<(PathClip[], OwnedResources), ClipMask> _clipMasks = new();
+	private readonly Dictionary<(PathClip[], OwnedResources), MaskSet> _clipMasks = new();
 
 	private static bool UsesMask(in ClipData c) => c.Paths is { Length: > 0 };
 
-	// Intersect paths bound the visible region, so the mask covers their boxes' intersection; an Exclude keeps the
-	// outside and bounds nothing, so with only Excludes the mask spans the surface. Outside the texture coverage
-	// reads 0. Grown a pixel each side like the fill bake, and never empty: an empty intersection bakes a 1x1 mask
-	// whose texel accumulates ~0, which still clips.
-	private void ClipMaskRect(PathClip[] paths, out int ox, out int oy, out int w, out int h)
+	// The slot a path's mask needs: its box grown a pixel each side and, for a per-frame bake, clamped to the surface,
+	// since nothing outside it is ever seen. Never empty: an off-surface path bakes a 1x1 mask whose texel reads ~0.
+	private void MaskRect(PathClip p, bool clampToSurface, out int ox, out int oy, out int w, out int h)
 	{
-		float l = 0f, t = 0f, r = _s.Width, b = _s.Height;
-		foreach (var p in paths)
-		{
-			if (p.Exclude) { continue; }
-			l = MathF.Max(l, p.Bbox.X); t = MathF.Max(t, p.Bbox.Y); r = MathF.Min(r, p.Bbox.Z); b = MathF.Min(b, p.Bbox.W);
-		}
+		float l = p.Bbox.X, t = p.Bbox.Y, r = p.Bbox.Z, b = p.Bbox.W;
+		if (clampToSurface) { l = MathF.Max(l, 0f); t = MathF.Max(t, 0f); r = MathF.Min(r, _s.Width); b = MathF.Min(b, _s.Height); }
 		ox = (int)MathF.Floor(l) - 1; oy = (int)MathF.Floor(t) - 1;
 		w = Math.Clamp((int)MathF.Ceiling(r) + 1 - ox, 1, 4096);
 		h = Math.Clamp((int)MathF.Ceiling(b) + 1 - oy, 1, 4096);
 	}
 
+	// A mask entry whose texel (0,0), at slot (x, y), sits on pixel (ox, oy) of the clip's space.
+	private static ClipEntry MaskEntry(int ox, int oy, int x, int y, int w, int h, bool exclude)
+		=> new() { Mask = true, M = Matrix3x2.CreateTranslation(-ox, -oy), Rect = new Vector4(x, y, w, h), Exclude = exclude };
+
 	/// <summary>
-	/// The coverage mask for a clip's path list, baking it on first use this frame: each path's signed area is
-	/// accumulated into a scratch target and resolved (fill rule, Difference) into the mask with a multiply, so the
-	/// mask is the product of every path's coverage and nesting depth is unbounded. Runs during op BUILD.
+	/// The mask entries for a clip's path list, baking on first use this frame. One path: a cached entry when its key
+	/// is known or recurs, else a sheet slot. Several: slots reserved together on one texture. Runs during op BUILD.
 	/// </summary>
-	private ClipMask ResolveClipMask(in ClipData cd, OwnedResources owned)
+	private MaskSet ResolveClipMasks(in ClipData cd, OwnedResources owned)
 	{
 		if (!UsesMask(cd)) { return default; }
 		var key = (cd.Paths, owned);
 		if (_clipMasks.TryGetValue(key, out var cached)) { return cached; }
 
-		var mask = TryCachedClipMask(cd.Paths, owned) ?? BakeFrameClipMask(cd.Paths, owned);
-		_clipMasks[key] = mask;
-		return mask;
+		var set = cd.Paths.Length == 1 && TryCachedClipMask(cd.Paths[0], owned, out var one) ? one : BakeFrameClipMasks(cd.Paths, owned);
+		_clipMasks[key] = set;
+		return set;
 	}
 
-	// A single intersecting path clip is a shape like any fill: its mask lives in the atlas (a texture of its own),
-	// keyed by geometry and transform, so a static clip bakes once and a scrolled one is a hit. Nested paths and
-	// Difference clips keep the per-frame product bake below.
-	private ClipMask? TryCachedClipMask(PathClip[] paths, OwnedResources owned)
+	// A single path clip is a shape like any fill: its mask lives in the atlas (a texture of its own), keyed by outline
+	// and transform, so a static clip bakes once and a scrolled one is a hit. Difference is applied where the entry
+	// is sampled, so the mask is the same either way.
+	private bool TryCachedClipMask(PathClip p, OwnedResources owned, out MaskSet set)
 	{
-		if (!_pathAtlas || paths.Length != 1 || paths[0].Exclude) { return null; }
-		var p = paths[0];
+		set = default;
+		if (!_pathAtlas) { return false; }
 		if (!WebGpuPathAtlas.TryKey(p.GeomKey, p.GeomMatrix, new Vector2(p.Bbox.X, p.Bbox.Y), new Vector2(p.Bbox.Z, p.Bbox.W), Vector2.One,
-			out var key, out var w, out var h, out var ox, out var oy, allowBig: true)) { return null; }
+			out var key, out var w, out var h, out var ox, out var oy, allowBig: true)) { return false; }
 		if (_d.PathAtlas.TryGet(key, out var slot))
 		{
 			_d.PathAtlas.NoteUse(slot, _d.FrameSeq);
@@ -80,38 +77,50 @@ public sealed unsafe partial class WebGpuPresentSession
 		}
 		else
 		{
-			if (owned is null && !_d.PathAtlas.Recurring(key, _d.FrameSeq)) { return null; }
+			if (owned is null && !_d.PathAtlas.Recurring(key, _d.FrameSeq)) { return false; }
 			slot = AddStandaloneSlot(key, w, h, ox, oy, _d.ColorFormat);
 			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
 			else { _d.PathAtlas.HoldForCache(slot, _d.FrameSeq); }
-			AddBake(BatchFor(slot.Owner.View, slot.Owner.W, slot.Owner.H, load: true), slot.X, slot.Y, w, h, p.Edges, new Vector2(ox + 1, oy + 1), Vector2.One, p.EvenOdd, false);
+			AddBake(BatchFor(slot.Owner.View, slot.Owner.W, slot.Owner.H, load: true), slot.X, slot.Y, w, h, p.Edges, new Vector2(ox + 1, oy + 1), Vector2.One, p.EvenOdd);
 			ClipMasksBaked++;
 		}
-		return new ClipMask { View = slot.Owner.View, OriginX = (int)slot.OriginX, OriginY = (int)slot.OriginY, SlotX = slot.X, SlotY = slot.Y, W = slot.W, H = slot.H };
+		set = new MaskSet { View = slot.Owner.View, Entries = new[] { MaskEntry((int)slot.OriginX, (int)slot.OriginY, slot.X, slot.Y, slot.W, slot.H, p.Exclude) } };
+		return true;
 	}
 
-	private ClipMask BakeFrameClipMask(PathClip[] paths, OwnedResources owned)
+	// Per-frame masks, one slot per path, all on one texture: the frame's sheet when they fit on it together, else a
+	// texture of their own packed the same way (a cached recording's masks always take their own, since they outlive
+	// the frame).
+	private MaskSet BakeFrameClipMasks(PathClip[] paths, OwnedResources owned)
 	{
-		ClipMaskRect(paths, out var ox, out var oy, out var w, out var h);
-		// A single path on a per-frame op goes on the frame's sheet; a product of several needs its own multiply bake.
-		if (owned is null && paths.Length == 1 && TryReserveSheetSlot(w, h, out var sheet, out var sx, out var sy))
+		var n = paths.Length;
+		var rects = new (int Ox, int Oy, int W, int H)[n];
+		var pos = new (int X, int Y)[n];
+		for (var i = 0; i < n; i++) { MaskRect(paths[i], clampToSurface: owned is null, out var ox, out var oy, out var w, out var h); rects[i] = (ox, oy, w, h); }
+		if (!(owned is null && TryReserveSheetSlots(rects, pos, out var batch)))
 		{
-			AddBake(sheet, sx, sy, w, h, paths[0].Edges, new Vector2(ox + 1, oy + 1), Vector2.One, paths[0].EvenOdd, paths[0].Exclude);
-			ClipMasksBaked++;
-			return new ClipMask { View = sheet.Target, OriginX = ox, OriginY = oy, SlotX = sx, SlotY = sy, W = w, H = h };
+			PackOwn(rects, pos, out var tw, out var th);
+			var (view, tex) = NewMaskTexture(tw, th);
+			if (owned is not null) { (owned.Textures ??= new()).Add(((nint)view, (nint)tex)); }
+			else { _d.DeferTextureRelease(view, tex); }
+			batch = BatchFor(view, tw, th, load: false);
 		}
-		var (view, tex) = BakeCoverageMask(paths, ox, oy, w, h, Vector2.One);
-		if (owned is not null) { (owned.Textures ??= new()).Add(((nint)view, (nint)tex)); }
-		else { _d.DeferTextureRelease(view, tex); }
-		ClipMasksBaked++;
-		return new ClipMask { View = view, OriginX = ox, OriginY = oy, W = w, H = h };
+		var entries = new ClipEntry[n];
+		for (var i = 0; i < n; i++)
+		{
+			var (ox, oy, w, h) = rects[i]; var (x, y) = pos[i];
+			AddBake(batch, x, y, w, h, paths[i].Edges, new Vector2(ox + 1, oy + 1), Vector2.One, paths[i].EvenOdd);
+			entries[i] = MaskEntry(ox, oy, x, y, w, h, paths[i].Exclude);
+		}
+		ClipMasksBaked += n;
+		return new MaskSet { View = batch.Target, Entries = entries };
 	}
+
 	/// <summary>
 	/// Bakes one coverage mask of <paramref name="w"/>x<paramref name="h"/> device pixels whose texel (0,0) sits on
-	/// device pixel (<paramref name="ox"/>,<paramref name="oy"/>): every path's signed area is accumulated into a
-	/// scratch target and resolved (fill rule, Difference) into the mask with a multiply, so the result is the
-	/// product of the paths' coverages. <paramref name="scale"/> is device pixels per unit of the paths' space.
-	/// Runs during op BUILD; the caller owns the returned texture.
+	/// device pixel (<paramref name="ox"/>,<paramref name="oy"/>), immediately: the one bake outside the frame's
+	/// batches, for a shadow whose blur must follow at once. <paramref name="scale"/> is device pixels per unit of
+	/// the paths' space. The caller owns the returned texture.
 	/// </summary>
 	private (IntPtr view, IntPtr tex) BakeCoverageMask(PathClip[] paths, int ox, int oy, int w, int h, Vector2 scale)
 	{
@@ -133,7 +142,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		return (wgpuTextureCreateView(tex, null), tex);
 	}
 
-	// The product bake, into a w x h texture the caller owns: single paths go through the batched bakes instead.
+	// The immediate bake itself, into a w x h texture the caller owns.
 	private void BakeCoverageMaskInto(PathClip[] paths, IntPtr view, int ox, int oy, int w, int h, Vector2 scale)
 	{
 		// Full-target quad; row 0 of the accumulator is the top, so v runs opposite to y (see the fill bake).
@@ -229,14 +238,14 @@ public sealed unsafe partial class WebGpuPresentSession
 		var origin = new Vector2((ox + 1) / scale.X, (oy + 1) / scale.Y);
 		if (owned is null && TryReserveSheetSlot(w, h, out var sheet, out var sx, out var sy))
 		{
-			AddBake(sheet, sx, sy, w, h, pf.Edges, origin, scale, pf.EvenOdd, false);
+			AddBake(sheet, sx, sy, w, h, pf.Edges, origin, scale, pf.EvenOdd);
 			view = sheet.Target;
 			uv = new Vector4(sx, sy, sx + w, sy + h) / SheetSize;
 		}
 		else
 		{
 			(view, var tex) = NewMaskTexture(w, h);
-			AddBake(BatchFor(view, w, h, load: false), 0, 0, w, h, pf.Edges, origin, scale, pf.EvenOdd, false);
+			AddBake(BatchFor(view, w, h, load: false), 0, 0, w, h, pf.Edges, origin, scale, pf.EvenOdd);
 			if (owned is not null) { (owned.Textures ??= new()).Add(((nint)view, (nint)tex)); }
 			else { _d.DeferTextureRelease(view, tex); }
 		}
