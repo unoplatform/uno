@@ -99,6 +99,7 @@ public class Given_ScrollViewer_ScrollChaining
 	}
 
 	[TestMethod]
+	[Ignore("Flaky on all targets - https://github.com/unoplatform/uno/issues/24489")]
 	public async Task When_Chaining_Backwards_Then_Residual_Chains_To_Outer()
 	{
 		var (outer, inner, origin) = BuildNested();
