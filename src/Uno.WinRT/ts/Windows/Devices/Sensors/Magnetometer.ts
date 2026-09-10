@@ -11,16 +11,16 @@ namespace Windows.Devices.Sensors {
 
 	export class Magnetometer {
 
-		private static dispatchReading: (magneticFieldX: number, magneticFieldY: number, magneticFieldZ: number) => number;		
+		private static dispatchReading: (magneticFieldX: number, magneticFieldY: number, magneticFieldZ: number) => (void | Promise<void>);		
 		private static magnetometer: any;
 
 		public static initialize(): boolean {
 			try {
 				if (typeof window.Magnetometer === "function") {
-					if ((<any>globalThis).DotnetExports !== undefined) {
-						this.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.Magnetometer.DispatchReading;
+					if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+						this.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.Magnetometer.DispatchReadingAsync;
 					} else {
-						throw `Magnetometer: Unable to find dotnet exports`;
+						this.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.Magnetometer.DispatchReading;
 					}
 					let MagnetometerClass: any = window.Magnetometer;
 					this.magnetometer = new MagnetometerClass({ referenceFrame: 'device' });
