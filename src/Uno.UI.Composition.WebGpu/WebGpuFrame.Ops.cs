@@ -46,6 +46,72 @@ internal sealed unsafe partial class WebGpuFrame
 		return true;
 	}
 
+	// A fill clipped to an ellipse still rasterises its whole bounding quad; the corners run the fragment shader
+	// only to be multiplied by zero coverage. Discarding them in the shader does not help — the fragments still
+	// launch — but not emitting them does. The circumscribed octagon is tangent to the inscribed ellipse, so it
+	// covers everything visible while rasterising ~17% less than the quad (16 sides measured no better on a UHD 620).
+	private const int OctSides = 8;
+
+	/// <summary>True when the clip is a single inclusive ellipse inscribed in the shape, so the quad's corners
+	/// are guaranteed to be clipped away. An affine map preserves "ellipse inscribed in parallelogram", so this
+	/// needs no comparison against the device-space quad.</summary>
+	private static bool ClipIsInscribedEllipse(in ClipData clip)
+	{
+		if (clip.Paths is not null || clip.Entries is not { Length: 1 }) { return false; }
+		var rc = clip.Entries[0];
+		if (rc.Exclude || !rc.M.IsIdentity) { return false; }
+		var hw = (rc.Rect.Z - rc.Rect.X) * 0.5f;
+		var hh = (rc.Rect.W - rc.Rect.Y) * 0.5f;
+		if (hw <= 0 || hh <= 0) { return false; }
+		var tx = hw * 0.02f; var ty = hh * 0.02f;
+		return MathF.Abs(rc.Radii.X - hw) <= tx && MathF.Abs(rc.Radii.Y - hw) <= tx
+			&& MathF.Abs(rc.Radii.Z - hw) <= tx && MathF.Abs(rc.Radii.W - hw) <= tx
+			&& MathF.Abs(rc.RadiiY.X - hh) <= ty && MathF.Abs(rc.RadiiY.Y - hh) <= ty
+			&& MathF.Abs(rc.RadiiY.Z - hh) <= ty && MathF.Abs(rc.RadiiY.W - hh) <= ty;
+	}
+
+	/// <summary>
+	/// Writes the circumscribed n-gon as n triangles fanned from the quad's centre. The ellipse inscribed in the
+	/// parallelogram p0..p3 is c + u*cos(t) + v*sin(t) with u, v the half-edge vectors; pushing each sample out by
+	/// 1/cos(pi/n) puts the polygon's edges tangent to it, so it covers everything the ellipse does.
+	/// </summary>
+	private static void OctagonTris(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, Span<Vector2> tris)
+	{
+		var c = new Vector2((p0.X + p1.X + p2.X + p3.X) * 0.25f, (p0.Y + p1.Y + p2.Y + p3.Y) * 0.25f);
+		var u = new Vector2((p1.X - p0.X) * 0.5f, (p1.Y - p0.Y) * 0.5f);
+		var v = new Vector2((p3.X - p0.X) * 0.5f, (p3.Y - p0.Y) * 0.5f);
+		var push = 1f / MathF.Cos(MathF.PI / OctSides);
+		Span<Vector2> o = stackalloc Vector2[OctSides];
+		for (var i = 0; i < OctSides; i++)
+		{
+			var a = (2f * MathF.PI * i + MathF.PI) / OctSides;
+			var cs = MathF.Cos(a) * push; var sn = MathF.Sin(a) * push;
+			o[i] = new Vector2(c.X + u.X * cs + v.X * sn, c.Y + u.Y * cs + v.Y * sn);
+		}
+		for (var i = 0; i < OctSides; i++)
+		{
+			tris[i * 3] = c;
+			tris[i * 3 + 1] = o[i];
+			tris[i * 3 + 2] = o[(i + 1) % OctSides];
+		}
+	}
+
+	/// <summary>
+	/// The triangles a gradient covers: the corner-cut octagon when the clip is the inscribed ellipse, else the quad's
+	/// two triangles. Returns the number of points written.
+	/// </summary>
+	private static int GradientCover(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, in ClipData clip, Span<Vector2> pts)
+	{
+		if (ClipIsInscribedEllipse(clip))
+		{
+			OctagonTris(p0, p1, p2, p3, pts);
+			return OctSides * 3;
+		}
+		pts[0] = p0; pts[1] = p1; pts[2] = p2;
+		pts[3] = p0; pts[4] = p2; pts[5] = p3;
+		return 6;
+	}
+
 	/// <summary>
 	/// The replay scale to bake an arena recording's masks at, or false when the transform cannot be expressed as
 	/// one. Rotation and skew are refused HERE and only here: an arena mask is baked from identity-space geometry

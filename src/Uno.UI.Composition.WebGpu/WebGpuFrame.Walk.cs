@@ -209,10 +209,14 @@ internal sealed unsafe partial class WebGpuFrame
 		var u = identity ? gc.Uniform : TransformedGradient(gc.Uniform, m);
 		var gbg = owned is null ? _d.GradSlab.Rent(_d.GradBgl, u) : GradientBg(u, owned);
 		var (p0, p1, p2, p3) = identity ? (gc.P0, gc.P1, gc.P2, gc.P3) : (Map(gc.P0, m), Map(gc.P1, m), Map(gc.P2, m), Map(gc.P3, m));
-		var dst = owned is null ? _gradVerts : new List<float>(6 * VertexStride.Quad);
+		Span<Vector2> cover = stackalloc Vector2[OctSides * 3];
+		var count = (uint)GradientCover(p0, p1, p2, p3, cd, cover);
+		var dst = owned is null ? _gradVerts : new List<float>((int)count * VertexStride.Quad);
 		var first = (uint)(dst.Count / VertexStride.Quad);
-		AppendQuad(dst, p0, p1, p2, p3, 0f, 0f, 0f, 0f);
-		ops.Add(QuadOp(DrawKind.Gradient, dst, first, gbg, cd, owned));
+		for (var t = 0; t < count; t++) { dst.Add(cover[t].X); dst.Add(cover[t].Y); dst.Add(0f); dst.Add(0f); }
+		ops.Add(owned is null
+			? DrawOp.Shared(DrawKind.Gradient, first, count, gbg, cd, MakeClipBg(cd))
+			: DrawOp.Own(DrawKind.Gradient, Vbuf(dst, owned), count, gbg, cd, MakeClipBg(cd, owned)));
 	}
 
 	private static float[] TransformedGradient(float[] src, in Matrix3x2 m)

@@ -332,7 +332,7 @@ internal sealed unsafe class WebGpuEffects
 	}
 
 	// Standalone two-texture blend for the effect-graph evaluator (BlendEffect/CompositeEffect): composites the
-	// foreground over the background with `shaderMode` (CompositeBlendWgsl id) into this session's target surface.
+	// foreground over the background with `shaderMode` (CompositeBlendWgsl id) into the frame's target surface.
 	// Both inputs are already offscreen textures, so this is a plain fullscreen pass — no dst-copy.
 	internal void BlendInto(WebGpuTexture bg, WebGpuTexture fg, int shaderMode)
 	{
