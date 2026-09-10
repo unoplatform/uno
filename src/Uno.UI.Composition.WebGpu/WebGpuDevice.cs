@@ -167,7 +167,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	public const int GradColorsBase = 8;                                    // floats: after header(4) + geo(4)
 	public const int GradStopsBase = GradColorsBase + MaxGradientStops * 4; // colours are vec4 each
 	public const int GradOriginBase = GradStopsBase + MaxGradientStops;     // stops are one float each (packed as vec4[])
-	public const int GradientUniformBytes = (GradOriginBase + 4) * 4;       // + origin(vec4)
+	public const int GradRampBase = GradOriginBase + 4;                     // scale, bias (vec4 each) per interval of a <= 4-stop gradient
+	public const int GradientUniformBytes = (GradRampBase + 8 * 4) * 4;
 
 	// Multisample count for anti-aliasing. Every pipeline + the color/depth render targets use this; the pass
 	// renders into a multisampled color texture that resolves into the single-sample present/readback texture.

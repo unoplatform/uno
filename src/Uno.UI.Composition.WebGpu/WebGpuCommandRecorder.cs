@@ -415,7 +415,10 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 		}
 		else
 		{
-			u[4] = a.X; u[5] = a.Y; u[6] = b.X; u[7] = b.Y;
+			// geo.zw = the direction over its squared length, so t = dot(p - a, geo.zw).
+			var ab = b - a; var len2 = ab.LengthSquared();
+			u[4] = a.X; u[5] = a.Y;
+			if (len2 > 0f) { u[6] = ab.X / len2; u[7] = ab.Y / len2; }
 		}
 
 		for (var i = 0; i < count; i++)
@@ -426,6 +429,20 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 			u[WebGpuDevice.GradColorsBase + i * 4 + 2] = c.B / 255f;
 			u[WebGpuDevice.GradColorsBase + i * 4 + 3] = c.A / 255f;
 			u[WebGpuDevice.GradStopsBase + i] = g.Stops is { Length: > 0 } && i < g.Stops.Length ? g.Stops[i] : (count > 1 ? i / (float)(count - 1) : 0f);
+		}
+		if (count <= 4)
+		{
+			for (var i = 0; i < count - 1; i++)
+			{
+				float s0 = u[WebGpuDevice.GradStopsBase + i], s1 = u[WebGpuDevice.GradStopsBase + i + 1];
+				int c0 = WebGpuDevice.GradColorsBase + i * 4, r = WebGpuDevice.GradRampBase + i * 8;
+				for (var ch = 0; ch < 4; ch++)
+				{
+					float scale = s1 > s0 ? (u[c0 + 4 + ch] - u[c0 + ch]) / (s1 - s0) : 0f;
+					u[r + ch] = scale;
+					u[r + 4 + ch] = u[c0 + ch] - s0 * scale;
+				}
+			}
 		}
 
 		var gp0 = Map((float)rect.Left, (float)rect.Top);

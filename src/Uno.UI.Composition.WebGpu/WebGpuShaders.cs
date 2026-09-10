@@ -446,7 +446,7 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 	// Evaluates a linear/radial gradient per pixel. The fragment uses its framebuffer position (device pixels) so
 	// the gradient geometry can be baked to device space at record time.
 	private const string GradientWgsl = @"
-struct Grad { header: vec4<f32>, geo: vec4<f32>, colors: array<vec4<f32>, 64>, stops: array<vec4<f32>, 16>, origin: vec4<f32> };
+struct Grad { header: vec4<f32>, geo: vec4<f32>, colors: array<vec4<f32>, 64>, stops: array<vec4<f32>, 16>, origin: vec4<f32>, ramp: array<vec4<f32>, 8> };
 @group(1) @binding(0) var<uniform> g: Grad;
 @group(2) @binding(0) var<uniform> clip: ClipU;
 @group(2) @binding(4) var<storage, read> clipMore: array<ClipEntry>;
@@ -461,8 +461,7 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
   let gfc = i.rp;
   var t: f32 = 0.0;
   if (g.header.x < 0.5) {
-    let a = g.geo.xy; let b = g.geo.zw; let ab = b - a; let denom = dot(ab, ab);
-    if (denom > 0.0) { t = dot(gfc - a, ab) / denom; }
+    t = dot(gfc - g.geo.xy, g.geo.zw);   // geo.zw = direction / |direction|^2
   } else {
     // Radial: map the device delta from the (device-space) center into unit-ellipse space via M — the inverse of
     // the gradient's local->device linear map, per-axis normalized by the local radii. M carries rotation, so a
@@ -505,24 +504,23 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
   else { let f = fract(t * 0.5) * 2.0; if (f > 1.0) { t = 2.0 - f; } else { t = f; } }
   let n = i32(g.header.y);
   var col = g.colors[0];
-  // Fast path for <=4 stops (the overwhelmingly common case). The general path below indexes the 64-entry
-  // colour array and the packed stop array with a LOOP VARIABLE; dynamic indexing into a uniform array spills
-  // on Intel-class GPUs, and this shader is fragment-bound over large areas. Constant indices avoid that.
+  // Fast path for <=4 stops (the overwhelmingly common case): each interval's colour is t * scale + bias from the
+  // uniform's ramp, picked at constant indices (a loop variable into a uniform array spills on Intel-class GPUs).
+  // Past the LAST stop is tested before before-the-first, because coincident stops satisfy both: two stops at
+  // the same offset are a hard switch (the focused TextBox border puts both at 1.0 for an accent underline).
   if (n <= 4) {
-    let s0 = g.stops[0][0]; let s1 = g.stops[0][1]; let s2 = g.stops[0][2]; let s3 = g.stops[0][3];
-    // Past the LAST stop is tested before before-the-first, because coincident stops satisfy both. Two stops at
-    // the same offset are a hard switch (the focused TextBox border puts both at 1.0 to get an accent underline
-    // under a grey ring); testing t <= s0 first makes every fragment take colors[0] and floods the shape with it.
-    let sLast = select(select(select(s0, s1, n >= 2), s2, n >= 3), s3, n >= 4);
+    let s = g.stops[0];
+    let sLast = select(select(select(s.x, s.y, n >= 2), s.z, n >= 3), s.w, n >= 4);
     let cLast = select(select(select(g.colors[0], g.colors[1], n >= 2), g.colors[2], n >= 3), g.colors[3], n >= 4);
     if (n >= 2 && t >= sLast) { col = cLast; }
-    else if (n < 2 || t <= s0) { col = g.colors[0]; }
-    else if (t <= s1) { col = mix(g.colors[0], g.colors[1], select(0.0, (t - s0) / (s1 - s0), s1 > s0)); }
-    else if (n < 3) { col = g.colors[1]; }
-    else if (t <= s2) { col = mix(g.colors[1], g.colors[2], select(0.0, (t - s1) / (s2 - s1), s2 > s1)); }
-    else if (n < 4) { col = g.colors[2]; }
-    else if (t <= s3) { col = mix(g.colors[2], g.colors[3], select(0.0, (t - s2) / (s3 - s2), s3 > s2)); }
-    else { col = g.colors[3]; }
+    else if (n < 2 || t <= s.x) { col = g.colors[0]; }
+    else {
+      let i1 = t > s.y && n >= 3;
+      let i2 = t > s.z && n >= 4;
+      let sc = select(select(g.ramp[0], g.ramp[2], i1), g.ramp[4], i2);
+      let bi = select(select(g.ramp[1], g.ramp[3], i1), g.ramp[5], i2);
+      col = t * sc + bi;
+    }
     return vec4<f32>(col.rgb, col.a * covTex(i.uv) * clipCovMapped(gfc));
   }
   if (t >= stopAt(n - 1)) { col = g.colors[n - 1]; }

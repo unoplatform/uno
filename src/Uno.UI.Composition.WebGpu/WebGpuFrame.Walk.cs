@@ -224,17 +224,19 @@ internal sealed unsafe partial class WebGpuFrame
 	{
 		var u = (float[])src.Clone();
 		var a = Map(new Vector2(u[4], u[5]), m); u[4] = a.X; u[5] = a.Y;
+		float dt = m.M11 * m.M22 - m.M21 * m.M12;
+		if (MathF.Abs(dt) < 1e-12f) { dt = dt < 0 ? -1e-12f : 1e-12f; }
+		float i00 = m.M22 / dt, i01 = -m.M21 / dt, i10 = -m.M12 / dt, i11 = m.M11 / dt;
 		if (u[0] < 0.5f)
 		{
-			var b = Map(new Vector2(u[6], u[7]), m); u[6] = b.X; u[7] = b.Y;
+			// Linear: the direction is a covector, so it moves by the inverse transpose.
+			float dx = u[6], dy = u[7];
+			u[6] = i00 * dx + i10 * dy; u[7] = i01 * dx + i11 * dy;
 			return u;
 		}
 		// Radial: centre and focal are points; the unit-ellipse map M acts on device deltas, so it becomes M * m^-1.
 		int ob = WebGpuDevice.GradOriginBase;
 		var o = Map(new Vector2(u[ob], u[ob + 1]), m); u[ob] = o.X; u[ob + 1] = o.Y;
-		float dt = m.M11 * m.M22 - m.M21 * m.M12;
-		if (MathF.Abs(dt) < 1e-12f) { dt = dt < 0 ? -1e-12f : 1e-12f; }
-		float i00 = m.M22 / dt, i01 = -m.M21 / dt, i10 = -m.M12 / dt, i11 = m.M11 / dt;
 		float m00 = u[6], m10 = u[7], m01 = u[ob + 2], m11 = u[ob + 3];
 		u[6] = m00 * i00 + m01 * i10; u[ob + 2] = m00 * i01 + m01 * i11;
 		u[7] = m10 * i00 + m11 * i10; u[ob + 3] = m10 * i01 + m11 * i11;
