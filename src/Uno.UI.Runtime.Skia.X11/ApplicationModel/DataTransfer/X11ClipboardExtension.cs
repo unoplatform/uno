@@ -245,7 +245,7 @@ internal class X11ClipboardExtension : IClipboardExtension
 				X11Helper.GetAtom(_x11Window.Display, X11Helper.XA_INTEGER),
 				32,
 				PropertyMode.Replace,
-				_ownershipTimestamp,
+				[_ownershipTimestamp],
 				1);
 		}
 		else if (target == X11Helper.GetAtom(_x11Window.Display, X11Helper.TARGETS))
