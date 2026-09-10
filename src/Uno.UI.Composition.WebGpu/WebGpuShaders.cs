@@ -41,8 +41,9 @@ internal sealed unsafe partial class WebGpuDevice
 // Each entry is reached through its 2x3 (q = m.xz*p.x + m.yw*p.y + t.xy) and is one of two kinds. t.w < 0.5: a
 // rounded rect in its OWN space (rect = L,T,R,B; radX/radY = per-corner radii TL,TR,BR,BL), exact under any affine.
 // t.w > 0.5: a path mask, q being its texel and rect its slot (x, y, w, h) in clipMask, which one texture holds for
-// all of a draw's masks. Either kind: t.z > 0.5 = Difference (keep the outside). Nesting has no cap.
-struct ClipEntry { m: vec4<f32>, t: vec4<f32>, rect: vec4<f32>, radX: vec4<f32>, radY: vec4<f32> };
+// all of a draw's masks. Either kind: t.z > 0.5 = Difference (keep the outside). k.x = the entry's units per device
+// pixel (constant under an affine, so computed once per draw), k.y > 0.5 = every corner is circular. Nesting has no cap.
+struct ClipEntry { m: vec4<f32>, t: vec4<f32>, rect: vec4<f32>, radX: vec4<f32>, radY: vec4<f32>, k: vec4<f32> };
 struct ClipU { ctrl: vec4<f32>, size: vec4<f32>, xform: vec4<f32>, xoff: vec4<f32>, finv: vec4<f32>, own: vec4<f32>, entries: array<ClipEntry> };
 // The pass projection: basis.xy = the target's top-left in device pixels, basis.zw = its size. Bound at group 0 of
 // every colour pipeline, so vertices are uploaded in pixels and a resize or a size-to-content layer re-targets
@@ -72,29 +73,33 @@ fn maskCov(e: ClipEntry, q: vec2<f32>) -> f32 {
   if (t.x < 0.0 || t.y < 0.0 || t.x >= e.rect.z || t.y >= e.rect.w) { return 0.0; }
   return textureLoad(clipMask, vec2<i32>(t + e.rect.xy), 0).r;
 }
-fn entryCov(e: ClipEntry, p: vec2<f32>, ddx: vec2<f32>, ddy: vec2<f32>) -> f32 {
+fn entryCov(e: ClipEntry, p: vec2<f32>) -> f32 {
   let q = vec2<f32>(e.m.x * p.x + e.m.z * p.y + e.t.x, e.m.y * p.x + e.m.w * p.y + e.t.y);
   if (e.t.w > 0.5) { let a = maskCov(e, q); return select(a, 1.0 - a, e.t.z > 0.5); }
-  let qx = vec2<f32>(e.m.x * ddx.x + e.m.z * ddx.y, e.m.x * ddy.x + e.m.z * ddy.y);
-  let qy = vec2<f32>(e.m.y * ddx.x + e.m.w * ddx.y, e.m.y * ddy.x + e.m.w * ddy.y);
-  let sxy = max(max(length(qx), length(qy)), 1e-6);
   let c = (e.rect.xy + e.rect.zw) * 0.5;
   let h = (e.rect.zw - e.rect.xy) * 0.5;
   let lp = q - c;
   let rx = select(select(e.radX.x, e.radX.y, lp.x > 0.0), select(e.radX.w, e.radX.z, lp.x > 0.0), lp.y > 0.0);
   let ry = select(select(e.radY.x, e.radY.y, lp.x > 0.0), select(e.radY.w, e.radY.z, lp.x > 0.0), lp.y > 0.0);
   let r = vec2<f32>(rx, ry);
-  // Elliptical corner via a first-order (gradient-normalised) implicit-ellipse distance. Degenerates EXACTLY to the
-  // circular rounded-box SDF when rx == ry (and to a sharp box when r == 0), so circular clips are unchanged.
   let qq = abs(lp) - h + r;
-  let outside = max(qq, vec2<f32>(0.0, 0.0));
-  let rg = max(r, vec2<f32>(1e-6, 1e-6));
-  let el = length(outside / rg);
-  let grad = length(outside / (rg * rg)) / max(el, 1e-6);
-  let dCorner = (el - 1.0) / max(grad, 1e-6);
-  let d = min(max(qq.x, qq.y), 0.0) + dCorner;
-  let cov = clamp(0.5 - d / sxy, 0.0, 1.0);
-  return select(cov, 1.0 - cov, e.t.z > 0.5);
+  // A pixel more than a pixel inside the corner box is fully covered: most of a clipped shape's pixels, spared the distance.
+  let excl = e.t.z > 0.5;
+  if (max(qq.x, qq.y) <= -e.k.x) { return select(1.0, 0.0, excl); }
+  var d: f32;
+  if (e.k.y > 0.5) {
+    // Circular corners (or none): the rounded-box distance, one square root.
+    d = min(max(qq.x, qq.y), 0.0) + length(max(qq, vec2<f32>(0.0, 0.0))) - rx;
+  } else {
+    // Elliptical corner via a first-order (gradient-normalised) implicit-ellipse distance.
+    let outside = max(qq, vec2<f32>(0.0, 0.0));
+    let rg = max(r, vec2<f32>(1e-6, 1e-6));
+    let el = length(outside / rg);
+    let grad = length(outside / (rg * rg)) / max(el, 1e-6);
+    d = min(max(qq.x, qq.y), 0.0) + (el - 1.0) / max(grad, 1e-6);
+  }
+  let cov = clamp(0.5 - d / e.k.x, 0.0, 1.0);
+  return select(cov, 1.0 - cov, excl);
 }
 // The op's own coverage texture at uv, or 1 when the shape is carried by the geometry itself.
 fn covTex(uv: vec2<f32>) -> f32 {
@@ -126,12 +131,9 @@ fn clipCovMapped(fc: vec2<f32>) -> f32 {
     let dmax = vec2<f32>(clip.size.z, clip.size.w) - fc;
     cov = clamp(0.5 + min(min(dmin.x, dmin.y), min(dmax.x, dmax.y)), 0.0, 1.0);
   }
-  // finv is affine, so a fragment step in the recording's space is one of its columns.
-  let ddx = vec2<f32>(clip.finv.x, clip.finv.y);
-  let ddy = vec2<f32>(clip.finv.z, clip.finv.w);
   // ctrl.x is the live count: a binding always spans at least one entry so the layout's minimum size holds.
   let n = u32(clip.ctrl.x);
-  for (var i = 0u; i < n; i = i + 1u) { cov = cov * entryCov(clip.entries[i], fc, ddx, ddy); }
+  for (var i = 0u; i < n; i = i + 1u) { cov = cov * entryCov(clip.entries[i], fc); }
   return cov;
 }
 ";

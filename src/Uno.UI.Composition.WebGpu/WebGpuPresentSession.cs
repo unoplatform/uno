@@ -421,7 +421,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	}
 
 	// The ClipU header (ctrl, size, xform, xoff, finv, own) followed by one entry per clip; match the WGSL.
-	internal const int ClipUHeaderBytes = 96, ClipEntryBytes = 80;
+	internal const int ClipUHeaderBytes = 96, ClipEntryBytes = 96;
 	// wgpu wants a binding to cover the header plus one array element, so an entry-less clip still binds one (zeroed).
 	internal const int ClipUMinBytes = ClipUHeaderBytes + ClipEntryBytes;
 	private const int ClipUHeaderFloats = ClipUHeaderBytes / sizeof(float), ClipEntryFloats = ClipEntryBytes / sizeof(float);
@@ -462,6 +462,9 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		cu[16] = finv.M11; cu[17] = finv.M12; cu[18] = finv.M21; cu[19] = finv.M22;
 		// own.x = the op's own coverage texture is bound (sampled by vertex uv); own.y = drawn scaled or rotated, so filtered.
 		if (cd.Coverage != 0) { cu[20] = 1f; cu[21] = cd.CoverageFiltered ? 1f : 0f; }
+		// A fragment step in the recording's space is a column of finv; through an entry's own matrix it is the entry's
+		// step per device pixel, constant under an affine, so it is computed once here rather than per fragment.
+		var ddx = new Vector2(finv.M11, finv.M12); var ddy = new Vector2(finv.M21, finv.M22);
 		for (int i = 0; i < n; i++)
 		{
 			var e = i < na ? entries[i] : masks[i - na]; int o = ClipUHeaderFloats + i * ClipEntryFloats;
@@ -470,6 +473,10 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 			cu[o + 8] = e.Rect.X; cu[o + 9] = e.Rect.Y; cu[o + 10] = e.Rect.Z; cu[o + 11] = e.Rect.W;
 			cu[o + 12] = e.Radii.X; cu[o + 13] = e.Radii.Y; cu[o + 14] = e.Radii.Z; cu[o + 15] = e.Radii.W;
 			cu[o + 16] = e.RadiiY.X; cu[o + 17] = e.RadiiY.Y; cu[o + 18] = e.RadiiY.Z; cu[o + 19] = e.RadiiY.W;
+			var qx = new Vector2(e.M.M11 * ddx.X + e.M.M21 * ddx.Y, e.M.M11 * ddy.X + e.M.M21 * ddy.Y);
+			var qy = new Vector2(e.M.M12 * ddx.X + e.M.M22 * ddx.Y, e.M.M12 * ddy.X + e.M.M22 * ddy.Y);
+			cu[o + 20] = MathF.Max(MathF.Max(qx.Length(), qy.Length()), 1e-6f);   // k.x
+			cu[o + 21] = e.Radii == e.RadiiY ? 1f : 0f;                            // k.y
 		}
 		return floats;
 	}

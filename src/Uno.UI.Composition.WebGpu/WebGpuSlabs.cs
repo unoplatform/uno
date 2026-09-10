@@ -178,7 +178,7 @@ internal sealed unsafe class WebGpuUniformSlab : IDisposable
 
 internal sealed unsafe class WebGpuClipSlab : IDisposable
 {
-	// A ClipU is its 96-byte header plus one 80-byte entry per analytic clip, so slots come in size classes: each
+	// A ClipU is its 96-byte header plus one 96-byte entry per clip, so slots come in size classes: each
 	// class is its own chunked buffer with fixed slots (storage bind offsets align to 256), a shadow copy and dirty
 	// tracking, and a handle names (class, slot). A slot is rewritten in place only within its class.
 	private sealed class Chunk
