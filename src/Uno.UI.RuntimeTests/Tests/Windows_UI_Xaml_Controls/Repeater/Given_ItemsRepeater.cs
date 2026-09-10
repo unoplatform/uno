@@ -239,6 +239,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 		}
 #endif
 
+		[TestMethod]
+		[RunsOnUIThread]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/21421")]
+		public async Task When_StartBringIntoView_On_Repeater_Itself_Then_Scrolls_Into_View()
+		{
+			var sut = new ItemsRepeater
+			{
+				ItemsSource = Enumerable.Range(0, 10).Select(i => $"Item #{i}").ToArray(),
+			};
+
+			var scroller = new ScrollViewer
+			{
+				Width = 200,
+				Height = 200,
+				Content = new StackPanel
+				{
+					Children =
+					{
+						// Pushes the repeater below the viewport, so bringing it into view has to scroll.
+						new Border { Height = 400, Background = new SolidColorBrush(Colors.LightGray) },
+						sut,
+					}
+				}
+			};
+
+			TestServices.WindowHelper.WindowContent = scroller;
+			await TestServices.WindowHelper.WaitForLoaded(sut);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			scroller.VerticalOffset.Should().Be(0, "the repeater starts below the viewport");
+
+			// The repeater itself is args.TargetElement here -- not one of its children.
+			// On WinUI this reaches ItemsRepeater.OnBringIntoViewRequested too; it fails internally
+			// there, but the failure is swallowed by the routed event dispatch, so the request still
+			// bubbles to the scroller and the caller sees no exception.
+			sut.StartBringIntoView();
+
+			// StartBringIntoView() asks for an animated scroll, so the offset settles over several frames.
+			await UITestHelper.WaitFor(
+				() => scroller.VerticalOffset > 0,
+				timeoutMS: 3000,
+				message: "StartBringIntoView on the ItemsRepeater itself should scroll it into view");
+		}
+
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
