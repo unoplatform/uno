@@ -2767,6 +2767,7 @@
 		  <!-- Uno-only public members removed/hidden to match WinUI (accessors paired in <Methods> below). -->
 		  <Member fullName="Microsoft.UI.Xaml.Data.UpdateSourceTrigger Microsoft.UI.Xaml.FrameworkPropertyMetadata::DefaultUpdateSourceTrigger()" reason="Removed Uno-only FrameworkPropertyMetadata.DefaultUpdateSourceTrigger (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border::ChildProperty()" reason="Removed Border.ChildProperty DP; Child is a plain CLR property in WinUI (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings::HiddenRootMarginProperty()" reason="Narrowed AppBarTemplateSettings.HiddenRootMarginProperty to internal; WinUI has no such DP and its siblings were already internal (breaking changes for 7.0, uno#8339)" />
 		  <!-- ScrollControllerPanRequestedEventArgs.PointerPoint retyped from Windows.UI.Input.PointerPoint to Microsoft.UI.Input.PointerPoint (getter/ctor paired in <Methods> below). -->
 		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs::PointerPoint()" reason="Retyped ScrollControllerPanRequestedEventArgs.PointerPoint to Microsoft.UI.Input.PointerPoint (BC41, breaking changes for 7.0)" />
 
@@ -3413,6 +3414,7 @@
 		  <!-- Uno-only public members removed/hidden to match WinUI. get_ accessors paired with the <Properties> entries above. -->
 		  <Member fullName="Microsoft.UI.Xaml.Data.UpdateSourceTrigger Microsoft.UI.Xaml.FrameworkPropertyMetadata.get_DefaultUpdateSourceTrigger()" reason="Removed Uno-only FrameworkPropertyMetadata.DefaultUpdateSourceTrigger (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border.get_ChildProperty()" reason="Removed Border.ChildProperty DP; Child is a plain CLR property in WinUI (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.get_HiddenRootMarginProperty()" reason="Narrowed AppBarTemplateSettings.HiddenRootMarginProperty to internal; WinUI has no such DP and its siblings were already internal (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ComboBox.OnIsDropDownOpenChanged(System.Boolean oldIsDropDownOpen, System.Boolean newIsDropDownOpen)" reason="Hid Uno-only ComboBox.OnIsDropDownOpenChanged (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Frame.set_BackStack(System.Collections.Generic.IList`1&lt;Microsoft.UI.Xaml.Navigation.PageStackEntry&gt; value)" reason="Removed Frame.BackStack setter to match WinUI get-only property (breaking changes for 7.0, uno#8339)" />
 
@@ -4201,6 +4203,7 @@
 		  <!-- Uno-only public members removed/hidden to match WinUI (accessors paired in <Methods> below). -->
 		  <Member fullName="Microsoft.UI.Xaml.Data.UpdateSourceTrigger Microsoft.UI.Xaml.FrameworkPropertyMetadata::DefaultUpdateSourceTrigger()" reason="Removed Uno-only FrameworkPropertyMetadata.DefaultUpdateSourceTrigger (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border::ChildProperty()" reason="Removed Border.ChildProperty DP; Child is a plain CLR property in WinUI (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings::HiddenRootMarginProperty()" reason="Narrowed AppBarTemplateSettings.HiddenRootMarginProperty to internal; WinUI has no such DP and its siblings were already internal (breaking changes for 7.0, uno#8339)" />
 		  <!-- ScrollControllerPanRequestedEventArgs.PointerPoint retyped from Windows.UI.Input.PointerPoint to Microsoft.UI.Input.PointerPoint (getter/ctor paired in <Methods> below). -->
 		  <Member fullName="Windows.UI.Input.PointerPoint Microsoft.UI.Xaml.Controls.Primitives.ScrollControllerPanRequestedEventArgs::PointerPoint()" reason="Retyped ScrollControllerPanRequestedEventArgs.PointerPoint to Microsoft.UI.Input.PointerPoint (BC41, breaking changes for 7.0)" />
 
@@ -4847,6 +4850,7 @@
 		  <!-- Uno-only public members removed/hidden to match WinUI. get_ accessors paired with the <Properties> entries above. -->
 		  <Member fullName="Microsoft.UI.Xaml.Data.UpdateSourceTrigger Microsoft.UI.Xaml.FrameworkPropertyMetadata.get_DefaultUpdateSourceTrigger()" reason="Removed Uno-only FrameworkPropertyMetadata.DefaultUpdateSourceTrigger (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Border.get_ChildProperty()" reason="Removed Border.ChildProperty DP; Child is a plain CLR property in WinUI (breaking changes for 7.0, uno#8339)" />
+		  <Member fullName="Microsoft.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.Primitives.AppBarTemplateSettings.get_HiddenRootMarginProperty()" reason="Narrowed AppBarTemplateSettings.HiddenRootMarginProperty to internal; WinUI has no such DP and its siblings were already internal (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.ComboBox.OnIsDropDownOpenChanged(System.Boolean oldIsDropDownOpen, System.Boolean newIsDropDownOpen)" reason="Hid Uno-only ComboBox.OnIsDropDownOpenChanged (breaking changes for 7.0, uno#8339)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.Frame.set_BackStack(System.Collections.Generic.IList`1&lt;Microsoft.UI.Xaml.Navigation.PageStackEntry&gt; value)" reason="Removed Frame.BackStack setter to match WinUI get-only property (breaking changes for 7.0, uno#8339)" />
 
