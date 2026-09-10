@@ -68,7 +68,7 @@ For the full skill catalog, update instructions, and other installation options,
     grep -rlE 'launchpadcontent\.net|ppa\.launchpad' /etc/apt/sources.list.d/ 2>/dev/null | xargs -r -I{} mv {} {}.disabled
 
     apt-get update -qq || true
-    apt-get install -y -qq dotnet-sdk-10.0
+    apt-get install -y dotnet-sdk-10.0
     dotnet --version
     ```
 
