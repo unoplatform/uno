@@ -103,9 +103,11 @@ These properties need to be set before the application is initialized. The best 
 
 If you intend to support both Windows and Unix-based systems for the Desktop target, make the path conditional utilizing `RuntimeInformation.IsOSPlatform(OSPlatform.Windows)`.
 
-## Settings storage on iOS, tvOS, and Mac Catalyst
+## Settings storage on iOS and tvOS
 
-On Apple platforms, `LocalSettings` and `RoamingSettings` are backed by a dedicated `NSUserDefaults` suite named `UnoApplicationData`, persisted as `Library/Preferences/UnoApplicationData.plist` inside the application sandbox. Both settings containers share this single backing store.
+On iOS and tvOS, `LocalSettings` and `RoamingSettings` are backed by a dedicated `NSUserDefaults` suite named `UnoApplicationData`, persisted as `Library/Preferences/UnoApplicationData.plist` inside the application sandbox. Both settings containers share this single backing store.
+
+Only the keys stored in that suite are visible through `ApplicationData`. The keys the OS and Apple frameworks keep in `NSUserDefaults.StandardUserDefaults`, and any your own native code writes there, are never enumerated by `Values.Keys` nor removed by `Values.Clear()`.
 
 If you need to access the stored values from native or interop code, open the suite explicitly:
 
@@ -114,4 +116,4 @@ var unoDefaults = new NSUserDefaults("UnoApplicationData", NSUserDefaultsType.Su
 ```
 
 > [!NOTE]
-> Before Uno Platform 7.0, settings were stored directly in `NSUserDefaults.StandardUserDefaults`. Existing values are migrated to the `UnoApplicationData` container automatically the first time settings are accessed. See the [Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7) for details.
+> Before Uno Platform 7.0, settings were stored directly in `NSUserDefaults.StandardUserDefaults`. Values written by those versions stay there, and remain invisible to `ApplicationData`, until the app explicitly migrates them. See the [Uno Platform 7.0 migration guide](xref:Uno.Development.MigratingToUno7) for details.
