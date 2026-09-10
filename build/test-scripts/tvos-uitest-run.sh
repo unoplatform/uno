@@ -209,7 +209,10 @@ echo "App PID: $APP_PID"
 UITEST_TEST_TIMEOUT_AS_MINUTES=${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1}
 TIMEOUT=$(($UITEST_TEST_TIMEOUT_AS_MINUTES * 60))
 INTERVAL=15
-END_TIME=$((SECONDS+TIMEOUT))
+# $SECONDS is script-relative, so this is a whole-step budget. Adding it to $SECONDS here would
+# charge the simulator boot and install twice and push the deadline past the job timeout, leaving
+# the agent to hard-kill us before we can copy results or list the failed tests.
+END_TIME=$TIMEOUT
 
 echo "Waiting for $SIMCTL_CHILD_UITEST_RUNTIME_AUTOSTART_RESULT_FILE to be available..."
 

@@ -166,7 +166,10 @@ else
 	TIMEOUT=$((${UITEST_TEST_TIMEOUT:0:${#UITEST_TEST_TIMEOUT}-1} * 60))
 fi
 
-END_TIME=$((SECONDS+TIMEOUT))
+# $SECONDS is script-relative, so this is a whole-step budget. Adding it to $SECONDS here would
+# charge the SDK download, AVD boot and install twice and push the deadline past the job timeout,
+# leaving the agent to hard-kill us before we can pull results or list the failed tests.
+END_TIME=$TIMEOUT
 
 echo "Waiting for $UITEST_RUNTIME_AUTOSTART_RESULT_DEVICE_PATH to be available..."
 
