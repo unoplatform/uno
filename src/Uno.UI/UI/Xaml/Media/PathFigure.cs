@@ -1,6 +1,7 @@
 ﻿using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Markup;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -83,7 +84,7 @@ namespace Microsoft.UI.Xaml.Media
 				typeof(bool),
 				typeof(PathFigure),
 				new FrameworkPropertyMetadata(
-					defaultValue: true,
+					defaultValue: Boxes.BooleanBoxes.BoxedTrue,
 					options: FrameworkPropertyMetadataOptions.AffectsRender
 				)
 			);
@@ -104,7 +105,7 @@ namespace Microsoft.UI.Xaml.Media
 				typeof(bool),
 				typeof(PathFigure),
 				new FrameworkPropertyMetadata(
-					defaultValue: false,
+					defaultValue: Boxes.BooleanBoxes.BoxedFalse,
 					options: FrameworkPropertyMetadataOptions.AffectsRender
 				)
 			);

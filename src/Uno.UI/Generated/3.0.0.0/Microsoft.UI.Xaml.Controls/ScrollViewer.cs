@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"CanContentRenderOutsideBounds", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property ComputedHorizontalScrollBarVisibilityProperty
 		// Skipping already declared property ComputedVerticalScrollBarVisibilityProperty
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"IsDeferredScrollingEnabled", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property IsHorizontalRailEnabledProperty
 		// Skipping already declared property IsHorizontalScrollChainingEnabledProperty
@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"IsZoomChainingEnabled", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -54,7 +54,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"IsZoomInertiaEnabled", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -72,7 +72,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ReduceViewportForCoreInputViewOcclusions), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.ScrollViewer),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property ScrollableHeightProperty
 		// Skipping already declared property ScrollableWidthProperty
@@ -129,7 +129,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(CanContentRenderOutsideBoundsProperty, value);
+				this.SetValue(CanContentRenderOutsideBoundsProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -154,7 +154,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsDeferredScrollingEnabledProperty, value);
+				this.SetValue(IsDeferredScrollingEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -173,7 +173,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsZoomChainingEnabledProperty, value);
+				this.SetValue(IsZoomChainingEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -187,7 +187,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsZoomInertiaEnabledProperty, value);
+				this.SetValue(IsZoomInertiaEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -217,7 +217,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(ReduceViewportForCoreInputViewOcclusionsProperty, value);
+				this.SetValue(ReduceViewportForCoreInputViewOcclusionsProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -310,7 +310,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static void SetIsZoomChainingEnabled(global::Microsoft.UI.Xaml.DependencyObject element, bool isZoomChainingEnabled)
 		{
-			element.SetValue(IsZoomChainingEnabledProperty, isZoomChainingEnabled);
+			element.SetValue(IsZoomChainingEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(isZoomChainingEnabled));
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetIsScrollInertiaEnabled(Microsoft.UI.Xaml.DependencyObject)
@@ -326,7 +326,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static void SetIsZoomInertiaEnabled(global::Microsoft.UI.Xaml.DependencyObject element, bool isZoomInertiaEnabled)
 		{
-			element.SetValue(IsZoomInertiaEnabledProperty, isZoomInertiaEnabled);
+			element.SetValue(IsZoomInertiaEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(isZoomInertiaEnabled));
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetHorizontalScrollMode(Microsoft.UI.Xaml.DependencyObject)
@@ -346,7 +346,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static void SetCanContentRenderOutsideBounds(global::Microsoft.UI.Xaml.DependencyObject element, bool canContentRenderOutsideBounds)
 		{
-			element.SetValue(CanContentRenderOutsideBoundsProperty, canContentRenderOutsideBounds);
+			element.SetValue(CanContentRenderOutsideBoundsProperty, global::Uno.UI.Helpers.Boxes.Box(canContentRenderOutsideBounds));
 		}
 #endif
 #if __SKIA__
@@ -360,7 +360,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static void SetIsDeferredScrollingEnabled(global::Microsoft.UI.Xaml.DependencyObject element, bool isDeferredScrollingEnabled)
 		{
-			element.SetValue(IsDeferredScrollingEnabledProperty, isDeferredScrollingEnabled);
+			element.SetValue(IsDeferredScrollingEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(isDeferredScrollingEnabled));
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetBringIntoViewOnFocusChange(Microsoft.UI.Xaml.DependencyObject)

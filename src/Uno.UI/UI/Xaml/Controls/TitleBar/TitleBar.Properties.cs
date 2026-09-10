@@ -1,8 +1,9 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference TitleBar.idl, TitleBar.properties.cpp, TitleBar.properties.h, commit fc2f82117
 
 using System.Diagnostics.CodeAnalysis;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -194,7 +195,7 @@ public partial class TitleBar
 			nameof(IsBackButtonVisible),
 			typeof(bool),
 			typeof(TitleBar),
-			new FrameworkPropertyMetadata(default(bool), OnPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnPropertyChanged));
 
 	/// <summary>
 	/// Identifies the IsBackButtonEnabled dependency property.
@@ -204,7 +205,7 @@ public partial class TitleBar
 			nameof(IsBackButtonEnabled),
 			typeof(bool),
 			typeof(TitleBar),
-			new FrameworkPropertyMetadata(true, OnPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue, OnPropertyChanged));
 
 	/// <summary>
 	/// Identifies the IsPaneToggleButtonVisible dependency property.
@@ -214,7 +215,7 @@ public partial class TitleBar
 			nameof(IsPaneToggleButtonVisible),
 			typeof(bool),
 			typeof(TitleBar),
-			new FrameworkPropertyMetadata(default(bool), OnPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnPropertyChanged));
 
 	/// <summary>
 	/// Identifies the TemplateSettings dependency property.
@@ -234,7 +235,7 @@ public partial class TitleBar
 			nameof(AutoRefreshDragRegions),
 			typeof(bool),
 			typeof(TitleBar),
-			new FrameworkPropertyMetadata(default(bool), OnPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnPropertyChanged));
 
 	/// <summary>
 	/// Identifies the IsDragRegion attached dependency property.

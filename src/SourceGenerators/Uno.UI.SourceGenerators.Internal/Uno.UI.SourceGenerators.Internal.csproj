@@ -9,6 +9,9 @@
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.4.0-2.final" ExcludeAssets="runtime" />
+		<!-- Required by BoxingCodeFixProvider. PrivateAssets keeps it out of the projects that
+		     reference this one for its generators, which pin a much newer Roslyn. -->
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.4.0-2.final" ExcludeAssets="runtime" PrivateAssets="all" />
 	</ItemGroup>
 
 	<Import Project="..\SourceGeneratorHelpers\SourceGeneratorHelpers.props" />

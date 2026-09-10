@@ -5,6 +5,7 @@
 using System.Windows.Input;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -188,7 +189,7 @@ partial class TeachingTip
 	/// Identifies the IsLightDismissEnabled dependency property.
 	/// </summary>
 	public static DependencyProperty IsLightDismissEnabledProperty { get; } =
-		DependencyProperty.Register(nameof(IsLightDismissEnabled), typeof(bool), typeof(TeachingTip), new FrameworkPropertyMetadata(false, OnPropertyChanged));
+		DependencyProperty.Register(nameof(IsLightDismissEnabled), typeof(bool), typeof(TeachingTip), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether the teaching tip is open.
@@ -203,7 +204,7 @@ partial class TeachingTip
 	/// Identifies the IsOpen dependency property.
 	/// </summary>
 	public static DependencyProperty IsOpenProperty { get; } =
-		DependencyProperty.Register(nameof(IsOpen), typeof(bool), typeof(TeachingTip), new FrameworkPropertyMetadata(false, OnPropertyChanged));
+		DependencyProperty.Register(nameof(IsOpen), typeof(bool), typeof(TeachingTip), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnPropertyChanged));
 
 	/// <summary>
 	/// Adds a margin between a targeted teaching tip and its target or between a non-targeted teaching tip and the xaml root.
@@ -249,7 +250,7 @@ partial class TeachingTip
 	/// Identifies the ShouldConstrainToRootBounds dependency property.
 	/// </summary>
 	public static DependencyProperty ShouldConstrainToRootBoundsProperty { get; } =
-		DependencyProperty.Register(nameof(ShouldConstrainToRootBounds), typeof(bool), typeof(TeachingTip), new FrameworkPropertyMetadata(true, OnPropertyChanged));
+		DependencyProperty.Register(nameof(ShouldConstrainToRootBounds), typeof(bool), typeof(TeachingTip), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether the teaching tip will constrain to the bounds of its xaml root.

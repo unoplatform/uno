@@ -3,6 +3,7 @@ using System;
 using System.Numerics;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Media.Media3D;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Media;
 
@@ -31,7 +32,7 @@ public partial class PlaneProjection : Projection
 	public double CenterOfRotationX
 	{
 		get => (double)GetValue(CenterOfRotationXProperty);
-		set => SetValue(CenterOfRotationXProperty, value);
+		set => SetValue(CenterOfRotationXProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -50,7 +51,7 @@ public partial class PlaneProjection : Projection
 	public double CenterOfRotationY
 	{
 		get => (double)GetValue(CenterOfRotationYProperty);
-		set => SetValue(CenterOfRotationYProperty, value);
+		set => SetValue(CenterOfRotationYProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -69,7 +70,7 @@ public partial class PlaneProjection : Projection
 	public double CenterOfRotationZ
 	{
 		get => (double)GetValue(CenterOfRotationZProperty);
-		set => SetValue(CenterOfRotationZProperty, value);
+		set => SetValue(CenterOfRotationZProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -80,7 +81,7 @@ public partial class PlaneProjection : Projection
 			nameof(CenterOfRotationZ),
 			typeof(double),
 			typeof(PlaneProjection),
-			new FrameworkPropertyMetadata(0.0, OnProjectionPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, OnProjectionPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the distance that the object is rotated along the x-axis of the plane of the object.
@@ -88,7 +89,7 @@ public partial class PlaneProjection : Projection
 	public double RotationX
 	{
 		get => (double)GetValue(RotationXProperty);
-		set => SetValue(RotationXProperty, value);
+		set => SetValue(RotationXProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -99,7 +100,7 @@ public partial class PlaneProjection : Projection
 			nameof(RotationX),
 			typeof(double),
 			typeof(PlaneProjection),
-			new FrameworkPropertyMetadata(0.0, OnProjectionPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, OnProjectionPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the number of degrees to rotate the object around the y-axis of rotation.
@@ -107,7 +108,7 @@ public partial class PlaneProjection : Projection
 	public double RotationY
 	{
 		get => (double)GetValue(RotationYProperty);
-		set => SetValue(RotationYProperty, value);
+		set => SetValue(RotationYProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -118,7 +119,7 @@ public partial class PlaneProjection : Projection
 			nameof(RotationY),
 			typeof(double),
 			typeof(PlaneProjection),
-			new FrameworkPropertyMetadata(0.0, OnProjectionPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, OnProjectionPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the number of degrees to rotate the object around the z-axis of rotation.
@@ -126,7 +127,7 @@ public partial class PlaneProjection : Projection
 	public double RotationZ
 	{
 		get => (double)GetValue(RotationZProperty);
-		set => SetValue(RotationZProperty, value);
+		set => SetValue(RotationZProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -137,7 +138,7 @@ public partial class PlaneProjection : Projection
 			nameof(RotationZ),
 			typeof(double),
 			typeof(PlaneProjection),
-			new FrameworkPropertyMetadata(0.0, OnProjectionPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, OnProjectionPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the distance the object is translated along the x-axis of the plane of the object.
@@ -145,7 +146,7 @@ public partial class PlaneProjection : Projection
 	public double LocalOffsetX
 	{
 		get => (double)GetValue(LocalOffsetXProperty);
-		set => SetValue(LocalOffsetXProperty, value);
+		set => SetValue(LocalOffsetXProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -156,7 +157,7 @@ public partial class PlaneProjection : Projection
 			nameof(LocalOffsetX),
 			typeof(double),
 			typeof(PlaneProjection),
-			new FrameworkPropertyMetadata(0.0, OnProjectionPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, OnProjectionPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the distance the object is translated along the y-axis of the plane of the object.
@@ -164,7 +165,7 @@ public partial class PlaneProjection : Projection
 	public double LocalOffsetY
 	{
 		get => (double)GetValue(LocalOffsetYProperty);
-		set => SetValue(LocalOffsetYProperty, value);
+		set => SetValue(LocalOffsetYProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -175,7 +176,7 @@ public partial class PlaneProjection : Projection
 			nameof(LocalOffsetY),
 			typeof(double),
 			typeof(PlaneProjection),
-			new FrameworkPropertyMetadata(0.0, OnProjectionPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, OnProjectionPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the distance the object is translated along the z-axis of the plane of the object.
@@ -183,7 +184,7 @@ public partial class PlaneProjection : Projection
 	public double LocalOffsetZ
 	{
 		get => (double)GetValue(LocalOffsetZProperty);
-		set => SetValue(LocalOffsetZProperty, value);
+		set => SetValue(LocalOffsetZProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -194,7 +195,7 @@ public partial class PlaneProjection : Projection
 			nameof(LocalOffsetZ),
 			typeof(double),
 			typeof(PlaneProjection),
-			new FrameworkPropertyMetadata(0.0, OnProjectionPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, OnProjectionPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the distance the object is translated along the x-axis of the screen.
@@ -202,7 +203,7 @@ public partial class PlaneProjection : Projection
 	public double GlobalOffsetX
 	{
 		get => (double)GetValue(GlobalOffsetXProperty);
-		set => SetValue(GlobalOffsetXProperty, value);
+		set => SetValue(GlobalOffsetXProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -213,7 +214,7 @@ public partial class PlaneProjection : Projection
 			nameof(GlobalOffsetX),
 			typeof(double),
 			typeof(PlaneProjection),
-			new FrameworkPropertyMetadata(0.0, OnProjectionPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, OnProjectionPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the distance the object is translated along the y-axis of the screen.
@@ -221,7 +222,7 @@ public partial class PlaneProjection : Projection
 	public double GlobalOffsetY
 	{
 		get => (double)GetValue(GlobalOffsetYProperty);
-		set => SetValue(GlobalOffsetYProperty, value);
+		set => SetValue(GlobalOffsetYProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -232,7 +233,7 @@ public partial class PlaneProjection : Projection
 			nameof(GlobalOffsetY),
 			typeof(double),
 			typeof(PlaneProjection),
-			new FrameworkPropertyMetadata(0.0, OnProjectionPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, OnProjectionPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the distance the object is translated along the z-axis of the screen.
@@ -240,7 +241,7 @@ public partial class PlaneProjection : Projection
 	public double GlobalOffsetZ
 	{
 		get => (double)GetValue(GlobalOffsetZProperty);
-		set => SetValue(GlobalOffsetZProperty, value);
+		set => SetValue(GlobalOffsetZProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -251,7 +252,7 @@ public partial class PlaneProjection : Projection
 			nameof(GlobalOffsetZ),
 			typeof(double),
 			typeof(PlaneProjection),
-			new FrameworkPropertyMetadata(0.0, OnProjectionPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, OnProjectionPropertyChanged));
 
 	/// <summary>
 	/// Gets the projection matrix that represents this PlaneProjection.

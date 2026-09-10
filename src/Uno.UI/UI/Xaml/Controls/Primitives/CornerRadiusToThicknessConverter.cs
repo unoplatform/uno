@@ -5,6 +5,7 @@
 #nullable enable
 
 using System;
+using Uno.UI.Helpers;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 
@@ -40,7 +41,7 @@ public sealed partial class CornerRadiusToThicknessConverter : DependencyObject,
 	public double Multiplier
 	{
 		get => (double)GetValue(MultiplierProperty);
-		set => SetValue(MultiplierProperty, value);
+		set => SetValue(MultiplierProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -51,7 +52,7 @@ public sealed partial class CornerRadiusToThicknessConverter : DependencyObject,
 			nameof(Multiplier),
 			typeof(double),
 			typeof(CornerRadiusToThicknessConverter),
-			new FrameworkPropertyMetadata(1.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One));
 
 	private static Thickness Convert(CornerRadius radius, CornerRadiusToThicknessConverterKind filterKind, double multiplier)
 	{

@@ -1,4 +1,5 @@
-﻿using Uno.UI.Xaml;
+﻿using Uno.UI.Helpers;
+using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Rendering;
 using Microsoft.UI.Xaml.Controls;
@@ -33,7 +34,7 @@ namespace Microsoft.UI.Xaml
 				typeof(bool),
 				typeof(UIElement),
 				new FrameworkPropertyMetadata(
-					(bool)false, // This is true for Control descendants (handled by overriding the default in the Control constructor
+					Boxes.BooleanBoxes.BoxedFalse, // This is true for Control descendants (handled by overriding the default in the Control constructor
 					(s, e) => ((UIElement)s)?.OnIsTabStopChanged((bool)e.OldValue, (bool)e.NewValue)
 				)
 			);

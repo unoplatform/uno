@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml
 			nameof(IsHitTestVisible),
 			typeof(bool),
 			typeof(UIElement),
-			new FrameworkPropertyMetadata(defaultValue: true, propertyChangedCallback: (s, e) => ((UIElement)s).OnIsHitTestVisibleChanged((bool)e.OldValue, (bool)e.NewValue))
+			new FrameworkPropertyMetadata(defaultValue: Boxes.BooleanBoxes.BoxedTrue, propertyChangedCallback: (s, e) => ((UIElement)s).OnIsHitTestVisibleChanged((bool)e.OldValue, (bool)e.NewValue))
 			{
 				PropMethodCall = HitTestVisible,
 			}
@@ -51,11 +51,11 @@ namespace Microsoft.UI.Xaml
 			{
 				element._isHitTestVisible = newValue;
 				// The value has changed.
-				return true;
+				return Boxes.BooleanBoxes.BoxedTrue;
 			}
 
 			// The value didn't change.
-			return false;
+			return Boxes.BooleanBoxes.BoxedFalse;
 		}
 #nullable restore
 

@@ -3,6 +3,7 @@
 // MUX Reference TreeViewItemTemplateSettings.properties.cpp, tag winui3/release/1.4.2
 
 using Microsoft.UI.Xaml;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -26,7 +27,7 @@ public partial class TreeViewItemTemplateSettings : DependencyObject
 	public int DragItemsCount
 	{
 		get => (int)GetValue(DragItemsCountProperty);
-		internal set => SetValue(DragItemsCountProperty, value);
+		internal set => SetValue(DragItemsCountProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -57,7 +58,7 @@ public partial class TreeViewItemTemplateSettings : DependencyObject
 	/// Identifies the DragItemsCount dependency property.
 	/// </summary>
 	public static DependencyProperty DragItemsCountProperty { get; } =
-		DependencyProperty.Register(nameof(DragItemsCount), typeof(int), typeof(TreeViewItemTemplateSettings), new FrameworkPropertyMetadata(0));
+		DependencyProperty.Register(nameof(DragItemsCount), typeof(int), typeof(TreeViewItemTemplateSettings), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
 
 	/// <summary>
 	/// Identifies the ExpandedGlyphVisibility dependency property.

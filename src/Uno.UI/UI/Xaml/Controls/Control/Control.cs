@@ -9,6 +9,7 @@ using System.ComponentModel;
 using Uno.UI.Xaml;
 using Windows.Foundation;
 using Uno;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using System.Diagnostics.CodeAnalysis;
@@ -162,7 +163,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (_suppressIsEnabled)
 			{
-				return false;
+				return Boxes.BooleanBoxes.BoxedFalse;
 			}
 
 			// The baseValue hasn't been set inside PropertyDetails yet, so we need to make sure we're not
@@ -175,7 +176,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// If the parent is disabled, this control must be disabled as well
 			if (parentValue is false)
 			{
-				return false;
+				return Boxes.BooleanBoxes.BoxedFalse;
 			}
 
 			// otherwise use the more local value
@@ -576,7 +577,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double FontSize
 		{
 			get { return (double)this.GetValue(FontSizeProperty); }
-			set { this.SetValue(FontSizeProperty, value); }
+			set { this.SetValue(FontSizeProperty, Boxes.Box(value)); }
 		}
 
 		public static DependencyProperty FontSizeProperty { get; } =
@@ -607,7 +608,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
-					true,
+					Boxes.BooleanBoxes.BoxedTrue,
 #if __SKIA__
 					// AffectsMeasure only needed where Uno's own measure path calls GetScaledFontSize().
 					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure

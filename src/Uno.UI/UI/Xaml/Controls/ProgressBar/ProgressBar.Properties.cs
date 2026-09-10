@@ -4,13 +4,14 @@
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls;
 
 public partial class ProgressBar
 {
 	public static DependencyProperty IsIndeterminateProperty { get; } = DependencyProperty.Register(
-		nameof(IsIndeterminate), typeof(bool), typeof(ProgressBar), new FrameworkPropertyMetadata(false, OnIsIndeterminateChanged));
+		nameof(IsIndeterminate), typeof(bool), typeof(ProgressBar), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnIsIndeterminateChanged));
 
 	public bool IsIndeterminate
 	{
@@ -19,7 +20,7 @@ public partial class ProgressBar
 	}
 
 	public static DependencyProperty ShowErrorProperty { get; } = DependencyProperty.Register(
-		nameof(ShowError), typeof(bool), typeof(ProgressBar), new FrameworkPropertyMetadata(false, OnShowErrorChanged));
+		nameof(ShowError), typeof(bool), typeof(ProgressBar), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnShowErrorChanged));
 
 	public bool ShowError
 	{
@@ -28,7 +29,7 @@ public partial class ProgressBar
 	}
 
 	public static DependencyProperty ShowPausedProperty { get; } = DependencyProperty.Register(
-		nameof(ShowPaused), typeof(bool), typeof(ProgressBar), new FrameworkPropertyMetadata(false, OnShowPausedChanged));
+		nameof(ShowPaused), typeof(bool), typeof(ProgressBar), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnShowPausedChanged));
 
 	public bool ShowPaused
 	{

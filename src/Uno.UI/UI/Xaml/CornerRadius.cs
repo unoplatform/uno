@@ -1,4 +1,4 @@
-using Uno.Extensions;
+﻿using Uno.Extensions;
 using System;
 using System.ComponentModel;
 using System.Globalization;
@@ -77,12 +77,16 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 			^ BottomLeft.GetHashCode()
 			^ BottomRight.GetHashCode();
 
+	// Compile-linked into Uno.UI.Composition, which cannot see Uno.UI.Helpers.Boxes - and these are
+	// diagnostic-only paths where the boxing does not matter.
+#pragma warning disable UnoInternal0002
 	/// <inheritdoc />
 	public override string ToString()
 		=> "TopLeft: {0}, TopRight: {1}, BottomRight: {2}, BottomLeft: {3}".InvariantCultureFormat(TopLeft, TopRight, BottomRight, BottomLeft);
 
 	internal string ToStringCompact()
 		=> string.Format(CultureInfo.InvariantCulture, "[CornerRadius: {0}-{1}-{2}-{3}]", TopLeft, TopRight, BottomRight, BottomLeft);
+#pragma warning restore UnoInternal0002
 
 	/// <summary>
 	/// Provides a Zero-valued corner radius.

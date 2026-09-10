@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ClosedLength), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -62,7 +62,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ContentTranslationOffset), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -70,7 +70,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(OffsetFromCenter), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(OpenedLength), typeof(double),
 			typeof(global::Microsoft.UI.Xaml.Media.Animation.SplitOpenThemeAnimation),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(double)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -106,7 +106,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 			set
 			{
-				this.SetValue(ClosedLengthProperty, value);
+				this.SetValue(ClosedLengthProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -190,7 +190,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 			set
 			{
-				this.SetValue(ContentTranslationOffsetProperty, value);
+				this.SetValue(ContentTranslationOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -204,7 +204,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 			set
 			{
-				this.SetValue(OffsetFromCenterProperty, value);
+				this.SetValue(OffsetFromCenterProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif
@@ -218,7 +218,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 			set
 			{
-				this.SetValue(OpenedLengthProperty, value);
+				this.SetValue(OpenedLengthProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif

@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(PreventKeyboardDisplayOnProgrammaticFocus), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.PasswordBox),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property SelectionFlyoutProperty
 		// Skipping already declared property SelectionHighlightColorProperty
@@ -58,7 +58,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty, value);
+				this.SetValue(PreventKeyboardDisplayOnProgrammaticFocusProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif

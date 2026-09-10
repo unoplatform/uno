@@ -16,6 +16,7 @@ using Microsoft.UI.Xaml.Resources;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Extensions;
+using Uno.UI.Helpers;
 using Uno.UI.Helpers.Xaml;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Markup;
@@ -1762,9 +1763,9 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			}
 			if (linePosition <= 0)
 			{
-				return string.Format(CultureInfo.InvariantCulture, "{0} [Line: {1}]", message, lineNumber);
+				return string.Format(CultureInfo.InvariantCulture, "{0} [Line: {1}]", message, Boxes.Box(lineNumber));
 			}
-			return string.Format(CultureInfo.InvariantCulture, "{0} [Line: {1} Position: {2}]", message, lineNumber, linePosition);
+			return string.Format(CultureInfo.InvariantCulture, "{0} [Line: {1} Position: {2}]", message, Boxes.Box(lineNumber), Boxes.Box(linePosition));
 		}
 
 		private void AddParseException(XamlParseException xamlParseException)

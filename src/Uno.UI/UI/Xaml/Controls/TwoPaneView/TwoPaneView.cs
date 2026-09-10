@@ -4,6 +4,7 @@
 
 using System;
 using Uno.Disposables;
+using Uno.UI.Helpers;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
@@ -306,7 +307,7 @@ public partial class TwoPaneView : Microsoft.UI.Xaml.Controls.Control
 			var clampedValue = Math.Max(0.0, value);
 			if (clampedValue != value)
 			{
-				SetValue(property, clampedValue);
+				SetValue(property, Boxes.Box(clampedValue));
 				return;
 			}
 		}

@@ -1,5 +1,6 @@
 using System;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -45,7 +46,7 @@ public partial class PasswordBox
 			nameof(CanPasteClipboardContent),
 			typeof(bool),
 			typeof(PasswordBox),
-			new FrameworkPropertyMetadata(defaultValue: false));
+			new FrameworkPropertyMetadata(defaultValue: Boxes.BooleanBoxes.BoxedFalse));
 
 	bool ITextBoxHost.CanPasteClipboardContent
 	{

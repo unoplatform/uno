@@ -20,6 +20,7 @@ using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
+using Uno.UI.Helpers;
 using Windows.Foundation.Metadata;
 using Uno.UI.Xaml.Core;
 
@@ -273,7 +274,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
-					true,
+					Boxes.BooleanBoxes.BoxedTrue,
 					propertyChangedCallback: OnBringIntoViewOnFocusChangeChanged));
 
 		private static void OnBringIntoViewOnFocusChangeChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -429,7 +430,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double ExtentHeight
 		{
 			get => (double)GetValue(ExtentHeightProperty);
-			private set => SetValue(ExtentHeightProperty, value);
+			private set => SetValue(ExtentHeightProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty ExtentHeightProperty { get; } =
@@ -437,14 +438,14 @@ namespace Microsoft.UI.Xaml.Controls
 				"ExtentHeight",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 		#endregion
 
 		#region ExtentWidth (DP - readonly)
 		public double ExtentWidth
 		{
 			get => (double)GetValue(ExtentWidthProperty);
-			private set => SetValue(ExtentWidthProperty, value);
+			private set => SetValue(ExtentWidthProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty ExtentWidthProperty { get; } =
@@ -452,14 +453,14 @@ namespace Microsoft.UI.Xaml.Controls
 				"ExtentWidth",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 		#endregion
 
 		#region ViewportHeight (DP - readonly)
 		public double ViewportHeight
 		{
 			get => (double)GetValue(ViewportHeightProperty);
-			private set => SetValue(ViewportHeightProperty, value);
+			private set => SetValue(ViewportHeightProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty ViewportHeightProperty { get; } =
@@ -467,14 +468,14 @@ namespace Microsoft.UI.Xaml.Controls
 				"ViewportHeight",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 		#endregion
 
 		#region ViewportWidth (DP - readonly)
 		public double ViewportWidth
 		{
 			get => (double)GetValue(ViewportWidthProperty);
-			private set => SetValue(ViewportWidthProperty, value);
+			private set => SetValue(ViewportWidthProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty ViewportWidthProperty { get; } =
@@ -482,7 +483,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"ViewportWidth",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 		#endregion
 
 		#region ComputedHorizontalScrollBarVisibility (DP - readonly)
@@ -519,7 +520,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double ScrollableHeight
 		{
 			get => (double)GetValue(ScrollableHeightProperty);
-			private set => SetValue(ScrollableHeightProperty, value);
+			private set => SetValue(ScrollableHeightProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty ScrollableHeightProperty { get; } =
@@ -527,14 +528,14 @@ namespace Microsoft.UI.Xaml.Controls
 				"ScrollableHeight",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 		#endregion
 
 		#region ScrollableWidth (DP - readonly)
 		public double ScrollableWidth
 		{
 			get => (double)GetValue(ScrollableWidthProperty);
-			private set => SetValue(ScrollableWidthProperty, value);
+			private set => SetValue(ScrollableWidthProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty ScrollableWidthProperty { get; } =
@@ -542,14 +543,14 @@ namespace Microsoft.UI.Xaml.Controls
 				"ScrollableWidth",
 				typeof(double),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(default(double)));
+				new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
 		#endregion
 
 		#region VerticalOffset (DP - readonly)
 		public double VerticalOffset
 		{
 			get => (double)GetValue(VerticalOffsetProperty);
-			private set => SetValue(VerticalOffsetProperty, value);
+			private set => SetValue(VerticalOffsetProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty VerticalOffsetProperty { get; } =
@@ -558,7 +559,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
-					defaultValue: (double)0,
+					defaultValue: Boxes.DoubleBoxes.Zero,
 					propertyChangedCallback: null
 				)
 			);
@@ -569,7 +570,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public double HorizontalOffset
 		{
 			get => (double)GetValue(HorizontalOffsetProperty);
-			private set => SetValue(HorizontalOffsetProperty, value);
+			private set => SetValue(HorizontalOffsetProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty HorizontalOffsetProperty { get; } =
@@ -578,7 +579,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(double),
 				typeof(ScrollViewer),
 				new FrameworkPropertyMetadata(
-					defaultValue: (double)0,
+					defaultValue: Boxes.DoubleBoxes.Zero,
 					propertyChangedCallback: null
 				)
 			);

@@ -12,6 +12,7 @@ using Uno.Extensions;
 using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Helpers;
 using _DragEventArgs = global::Microsoft.UI.Xaml.DragEventArgs;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
@@ -39,7 +40,7 @@ namespace Microsoft.UI.Xaml.Controls
 			nameof(CanReorderItems),
 			typeof(bool),
 			typeof(ListViewBase),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 		public bool CanReorderItems
 		{
@@ -53,7 +54,7 @@ namespace Microsoft.UI.Xaml.Controls
 			nameof(CanDragItems),
 			typeof(bool),
 			typeof(ListViewBase),
-			new FrameworkPropertyMetadata(default(bool), OnCanDragItemsChanged));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnCanDragItemsChanged));
 
 		public bool CanDragItems
 		{

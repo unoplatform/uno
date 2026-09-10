@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Animation;
 using Uno.UI;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml;
 
@@ -456,8 +457,8 @@ namespace Microsoft.UI.Xaml.Controls
 				_swipeStackPaneltransform.X = _desiredStackPanelPosition.X;
 
 				// This is a workaround. We shouldn't have to set the property using Animation precedence.
-				_transform.SetValue(TranslateTransform.XProperty, (double)_desiredPosition.X, DependencyPropertyValuePrecedences.Animations);
-				_swipeStackPaneltransform.SetValue(TranslateTransform.XProperty, (double)_desiredStackPanelPosition.X, DependencyPropertyValuePrecedences.Animations);
+				_transform.SetValue(TranslateTransform.XProperty, Boxes.Box((double)_desiredPosition.X), DependencyPropertyValuePrecedences.Animations);
+				_swipeStackPaneltransform.SetValue(TranslateTransform.XProperty, Boxes.Box((double)_desiredStackPanelPosition.X), DependencyPropertyValuePrecedences.Animations);
 			}
 			else
 			{
@@ -465,8 +466,8 @@ namespace Microsoft.UI.Xaml.Controls
 				_swipeStackPaneltransform.Y = _desiredStackPanelPosition.Y;
 
 				// This is a workaround. We shouldn't have to set the property using Animation precedence.
-				_transform.SetValue(TranslateTransform.YProperty, (double)_desiredPosition.Y, DependencyPropertyValuePrecedences.Animations);
-				_swipeStackPaneltransform.SetValue(TranslateTransform.YProperty, (double)_desiredStackPanelPosition.Y, DependencyPropertyValuePrecedences.Animations);
+				_transform.SetValue(TranslateTransform.YProperty, Boxes.Box((double)_desiredPosition.Y), DependencyPropertyValuePrecedences.Animations);
+				_swipeStackPaneltransform.SetValue(TranslateTransform.YProperty, Boxes.Box((double)_desiredStackPanelPosition.Y), DependencyPropertyValuePrecedences.Animations);
 			}
 		}
 

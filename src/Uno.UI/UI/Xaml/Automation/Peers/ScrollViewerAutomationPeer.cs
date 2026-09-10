@@ -7,6 +7,7 @@ using DirectUI;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Uno;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
@@ -379,7 +380,7 @@ public partial class ScrollViewerAutomationPeer : FrameworkElementAutomationPeer
 			//CValueBoxer::BoxValue(&valueOld, oldScrollable);
 			//CValueBoxer::BoxValue(&valueNew, newScrollable);
 			//CoreImports::AutomationRaiseAutomationPropertyChanged(pHandle, UIAXcp::APAutomationProperties::APHorizontallyScrollableProperty, valueOld, valueNew);
-			this.RaisePropertyChangedEvent(ScrollPatternIdentifiers.HorizontallyScrollableProperty, oldScrollable, newScrollable);
+			this.RaisePropertyChangedEvent(ScrollPatternIdentifiers.HorizontallyScrollableProperty, Boxes.Box(oldScrollable), Boxes.Box(newScrollable));
 		}
 
 		oldScrollable = AutomationIsScrollable(extentY, viewportY, minOffsetY);
@@ -389,7 +390,7 @@ public partial class ScrollViewerAutomationPeer : FrameworkElementAutomationPeer
 			//IFC(CValueBoxer::BoxValue(&valueOld, oldScrollable));
 			//IFC(CValueBoxer::BoxValue(&valueNew, newScrollable));
 			//IFC(CoreImports::AutomationRaiseAutomationPropertyChanged(pHandle, UIAXcp::APAutomationProperties::APVerticallyScrollableProperty, valueOld, valueNew));
-			this.RaisePropertyChangedEvent(ScrollPatternIdentifiers.VerticallyScrollableProperty, oldScrollable, newScrollable);
+			this.RaisePropertyChangedEvent(ScrollPatternIdentifiers.VerticallyScrollableProperty, Boxes.Box(oldScrollable), Boxes.Box(newScrollable));
 		}
 
 		oldViewSize = AutomationGetViewSize(extentX, viewportX, minOffsetX);
@@ -399,7 +400,7 @@ public partial class ScrollViewerAutomationPeer : FrameworkElementAutomationPeer
 			//IFC(CValueBoxer::BoxValue(&valueOld, oldViewSize));
 			//IFC(CValueBoxer::BoxValue(&valueNew, newViewSize));
 			//IFC(CoreImports::AutomationRaiseAutomationPropertyChanged(pHandle, UIAXcp::APAutomationProperties::APHorizontalViewSizeProperty, valueOld, valueNew));
-			this.RaisePropertyChangedEvent(ScrollPatternIdentifiers.HorizontalViewSizeProperty, oldViewSize, newViewSize);
+			this.RaisePropertyChangedEvent(ScrollPatternIdentifiers.HorizontalViewSizeProperty, Boxes.Box(oldViewSize), Boxes.Box(newViewSize));
 		}
 
 		oldViewSize = AutomationGetViewSize(extentY, viewportY, minOffsetY);
@@ -409,7 +410,7 @@ public partial class ScrollViewerAutomationPeer : FrameworkElementAutomationPeer
 			//IFC(CValueBoxer::BoxValue(&valueOld, oldViewSize));
 			//IFC(CValueBoxer::BoxValue(&valueNew, newViewSize));
 			//IFC(CoreImports::AutomationRaiseAutomationPropertyChanged(pHandle, UIAXcp::APAutomationProperties::APVerticalViewSizeProperty, valueOld, valueNew));
-			this.RaisePropertyChangedEvent(ScrollPatternIdentifiers.VerticalViewSizeProperty, oldViewSize, newViewSize);
+			this.RaisePropertyChangedEvent(ScrollPatternIdentifiers.VerticalViewSizeProperty, Boxes.Box(oldViewSize), Boxes.Box(newViewSize));
 		}
 
 		oldScrollPercent = AutomationGetScrollPercent(extentX, viewportX, offsetX, minOffsetX);
@@ -419,7 +420,7 @@ public partial class ScrollViewerAutomationPeer : FrameworkElementAutomationPeer
 			//IFC(CValueBoxer::BoxValue(&valueOld, oldScrollPercent));
 			//IFC(CValueBoxer::BoxValue(&valueNew, newScrollPercent));
 			//IFC(CoreImports::AutomationRaiseAutomationPropertyChanged(pHandle, UIAXcp::APAutomationProperties::APHorizontalScrollPercentProperty, valueOld, valueNew));
-			this.RaisePropertyChangedEvent(ScrollPatternIdentifiers.HorizontalScrollPercentProperty, oldScrollPercent, newScrollPercent);
+			this.RaisePropertyChangedEvent(ScrollPatternIdentifiers.HorizontalScrollPercentProperty, Boxes.Box(oldScrollPercent), Boxes.Box(newScrollPercent));
 		}
 
 		oldScrollPercent = AutomationGetScrollPercent(extentY, viewportY, offsetY, minOffsetY);
@@ -429,7 +430,7 @@ public partial class ScrollViewerAutomationPeer : FrameworkElementAutomationPeer
 			//IFC(CValueBoxer::BoxValue(&valueOld, oldScrollPercent));
 			//IFC(CValueBoxer::BoxValue(&valueNew, newScrollPercent));
 			//IFC(CoreImports::AutomationRaiseAutomationPropertyChanged(pHandle, UIAXcp::APAutomationProperties::APVerticalScrollPercentProperty, valueOld, valueNew));
-			this.RaisePropertyChangedEvent(ScrollPatternIdentifiers.VerticalScrollPercentProperty, oldScrollPercent, newScrollPercent);
+			this.RaisePropertyChangedEvent(ScrollPatternIdentifiers.VerticalScrollPercentProperty, Boxes.Box(oldScrollPercent), Boxes.Box(newScrollPercent));
 		}
 	}
 

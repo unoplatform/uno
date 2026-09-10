@@ -3,6 +3,7 @@
 
 // MUX Reference ItemContainer.properties.cpp, tag winui3/release/1.5.0
 
+using Uno.UI.Helpers;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -31,7 +32,7 @@ partial class ItemContainer
 		nameof(IsSelected),
 		typeof(bool),
 		typeof(ItemContainer),
-		new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: OnIsSelectedPropertyChanged));
+		new FrameworkPropertyMetadata(defaultValue: Boxes.BooleanBoxes.BoxedFalse, propertyChangedCallback: OnIsSelectedPropertyChanged));
 
 	internal static DependencyProperty MultiSelectModeProperty { get; } = DependencyProperty.Register(
 		nameof(MultiSelectMode),

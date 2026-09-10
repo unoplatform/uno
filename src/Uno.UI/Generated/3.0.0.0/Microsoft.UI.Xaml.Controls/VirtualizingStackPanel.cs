@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(AreScrollSnapPointsRegular), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.VirtualizingStackPanel),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(
 			"IsVirtualizing", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.VirtualizingStackPanel),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -50,7 +50,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(AreScrollSnapPointsRegularProperty, value);
+				this.SetValue(AreScrollSnapPointsRegularProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 			}
 		}
 #endif

@@ -1,4 +1,5 @@
 ﻿using System;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
@@ -44,7 +45,7 @@ public partial class BitmapIcon : IconElement, IThemeChangeAware
 		DependencyProperty.Register(
 			nameof(ShowAsMonochrome), typeof(bool),
 			typeof(BitmapIcon),
-			new FrameworkPropertyMetadata(true, (s, e) => (s as BitmapIcon)?.OnShowAsMonochromeChanged((bool)e.NewValue)));
+			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue, (s, e) => (s as BitmapIcon)?.OnShowAsMonochromeChanged((bool)e.NewValue)));
 
 	/// <summary>
 	/// Gets or sets the Uniform Resource Identifier (URI) of the graphics source file that generated this BitmapImage.

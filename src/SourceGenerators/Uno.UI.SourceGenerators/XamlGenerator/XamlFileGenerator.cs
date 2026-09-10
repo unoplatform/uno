@@ -322,6 +322,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				writer.AppendLineIndented("#pragma warning disable CS0114");
 				writer.AppendLineIndented("#pragma warning disable CS0108");
+				if (_generatorContext.GetMSBuildPropertyValue("_IsUnoUISolution") == "true")
+				{
+					// Uno.UI's boxing analyzer would otherwise flag the literals we emit here, which no
+					// hand-edit can fix.
+					writer.AppendLineIndented("#pragma warning disable UnoInternal0002");
+				}
+
 				writer.AppendLineIndented("using System;");
 				writer.AppendLineIndented("using System.Collections.Generic;");
 				writer.AppendLineIndented("using System.Diagnostics;");
