@@ -249,7 +249,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("CS0117").WithSpan(Path.Combine("Uno.UI.SourceGenerators", "Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator", "MainPage_0e3f323f9a22a3699cbcd4f0217eee4a.cs"), 49, 6, 49, 19).WithArguments("Microsoft.UI.Xaml.Controls.Grid", "InvalidMember")
+			DiagnosticResult.CompilerError("CS0117").WithSpan(Path.Join("Uno.UI.SourceGenerators", "Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator", "MainPage_0e3f323f9a22a3699cbcd4f0217eee4a.cs"), 49, 6, 49, 19).WithArguments("Microsoft.UI.Xaml.Controls.Grid", "InvalidMember")
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
@@ -279,7 +279,7 @@ public partial class Given_Parser
 		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
-			DiagnosticResult.CompilerError("CS0246").WithSpan(Path.Combine("Uno.UI.SourceGenerators", "Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator", "MainPage_0e3f323f9a22a3699cbcd4f0217eee4a.cs"), 53, 12, 53, 32).WithArguments("TypeThatDoesNotExist"),
+			DiagnosticResult.CompilerError("CS0246").WithSpan(Path.Join("Uno.UI.SourceGenerators", "Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator", "MainPage_0e3f323f9a22a3699cbcd4f0217eee4a.cs"), 53, 12, 53, 32).WithArguments("TypeThatDoesNotExist"),
 			// ==> When XAML is invalid, we still generate the class structure, so we should not miss InitializeComponent.
 		]);
 
