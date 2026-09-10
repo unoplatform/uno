@@ -13,7 +13,7 @@ uid: Uno.Features.WSPickers
 
 The following table shows which file picker experiences are available across Uno Platform targets. For detailed information, see the next sections.
 
-Legend
+## Legend
 
 * ✔  Supported
 * 💬 Partially supported (see below for more details)
