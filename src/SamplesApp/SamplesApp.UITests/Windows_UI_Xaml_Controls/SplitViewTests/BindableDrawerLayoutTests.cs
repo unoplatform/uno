@@ -1,4 +1,6 @@
-﻿using System;
+// [UITest -> runtime-test migration] NOT migrated to a runtime test:
+// BindableDrawerLayout is a native-Android-only control (wraps Android's DrawerLayout) used solely by the native Android SplitView drawer template in Generic.Native.xaml; the sample's <android:SplitView.Template> override is conditional XAML (xmlns:android + mc:Ignorable) that is skipped entirely on Skia, so under Skia the SplitView falls back to its normal (non-BindableDrawerLayout) template and this scenario cannot be exercised.
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
