@@ -40,7 +40,7 @@ partial class RepeaterAutomationPeer
 		}
 
 		// Sort peers by index.
-		realizedPeers.Sort((lhs, rhs) => lhs.Key - rhs.Key);
+		realizedPeers.Sort((lhs, rhs) => lhs.Key.CompareTo(rhs.Key));
 
 		// Select peers.
 		{
