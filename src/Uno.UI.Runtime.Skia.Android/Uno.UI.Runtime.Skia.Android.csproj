@@ -66,10 +66,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="build/*.*">
-			<Pack>true</Pack>
-			<PackagePath>build</PackagePath>
-		</Content>
+		<!-- None rather than Content: the Android SDK rejects @(Content) with XA0101, and these are
+		     packaging inputs only. -->
+		<None Include="build/*.*" Pack="true" PackagePath="build" />
 	</ItemGroup>
 
 	<!--<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />-->

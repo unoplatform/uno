@@ -473,26 +473,6 @@
 	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.props" />
 	<Import Condition="'$(_IsUIKit)' == 'true'" Project="..\..\Uno.UI.Runtime.Skia.AppleUIKit\build\*.Runtime.Skia.AppleUIKit.targets" />
 
-	<!--
-	WASM + mobile: Uno.UI.Tasks.targets retargets the head's Content (the Uno.UI.RuntimeTests assets
-	and fonts) into the wasm ms-appx manifest, AndroidAssets and iOS/tvOS BundleResources. Referencing
-	the framework from source means it does not arrive transitively, so import it explicitly. Desktop
-	is excluded — it loads ms-appx straight from the flat output dir.
-	-->
-	<PropertyGroup Condition="'$(_IsSkiaTfm)' == 'true' AND '$(_Platform)' != 'desktop'">
-		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
-	</PropertyGroup>
-	<Import Project="..\..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets"
-	        Condition="'$(_IsSkiaTfm)' == 'true' AND '$(_Platform)' != 'desktop' AND '$(SkipUnoResourceGeneration)' == ''" />
-
-	<!--
-	Android needs AndroidResourcesGenerator to emit the DrawableHelper.SetDrawableResolver call —
-	without it every ms-appx local asset lookup throws "Drawable resources were not initialized" at
-	runtime.
-	-->
-	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props"
-	        Condition="'$(_Platform)' == 'android'" />
-
 	<!-- ==================== Windows build configuration ==================== -->
 	<PropertyGroup Condition="'$(_Platform)' == 'windows'">
 		<TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
@@ -684,8 +664,16 @@
 		<CompilerVisibleProperty Include="SkipIcuDataInitializerGenerator" />
 	</ItemGroup>
 
-	<!-- The XAML and DependencyProperty generators, which the samples need on every Skia TFM. WinUI is
-	     excluded: it uses the real WinUI XAML compiler. -->
+	<!--
+	The XAML and DependencyProperty generators, which the samples need on every Skia TFM. WinUI is
+	excluded: it uses the real WinUI XAML compiler.
+
+	This import is also what brings in Uno.UI.Tasks.targets, which retargets the head's Content (the
+	Uno.UI.RuntimeTests assets and fonts) into the wasm ms-appx manifest, AndroidAssets and iOS/tvOS
+	BundleResources, and Uno.UI.SourceGenerators.props, which Android needs so AndroidResourcesGenerator
+	emits the DrawableHelper.SetDrawableResolver call. Referencing the framework from source means
+	neither arrives transitively.
+	-->
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" Condition="'$(_IsSkiaTfm)' == 'true'" />
 
 	<!-- Must stay below the Sdk.props import at the top: Directory.Build.props sets

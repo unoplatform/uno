@@ -7,5 +7,5 @@ namespace Microsoft.VisualStudio.TestTools.UnitTesting;
 // This only provides the minimal API so that runtimetests.engine can work.
 public sealed class ExpectedExceptionAttribute : Attribute
 {
-    public Type? ExceptionType => null;
+	public Type? ExceptionType => null;
 }
