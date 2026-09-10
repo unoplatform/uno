@@ -94,24 +94,24 @@ public sealed unsafe partial class WebGpuPresentSession
 					{
 						// A run of rects sharing a clip is one draw: their verts are contiguous in the pass buffer.
 						var cd = composer.Compose(outer, rc0.Clip, m, inv, direct);
-						int j = ci; int start = _solid.Count / VertexStride.Solid;
+						int j = ci; uint start = (uint)(_solid.Count / VertexStride.Solid);
 						while (j < cmds.Count && cmds[j] is RectCommand rcj && (j == ci || ClipDataEquals(rcj.Clip, rc0.Clip)))
 						{
 							var (p0, p1, p2, p3) = identity ? (rcj.P0, rcj.P1, rcj.P2, rcj.P3) : (Map(rcj.P0, m), Map(rcj.P1, m), Map(rcj.P2, m), Map(rcj.P3, m));
 							AppendSolidRect(_solid, p0, p1, p2, p3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
 							j++;
 						}
-						ops.Add(new DrawOp(DrawKind.Solid, VertexSource.PassBuffer, (uint)((j - ci) * 6), (nint)start, false, cd, (nint)MakeClipBg(cd)));
+						ops.Add(DrawOp.Shared(DrawKind.Solid, start, (uint)((j - ci) * 6), IntPtr.Zero, cd, MakeClipBg(cd)));
 						ci = j - 1;
 						break;
 					}
 				case RoundedRectCmd rri:
 					{
 						var cd = composer.Compose(outer, rri.Clip, m, inv, direct);
-						int st = _rrect.Count / RrectStride;
+						uint st = (uint)(_rrect.Count / VertexStride.RoundedRect);
 						if (identity) { AppendRrect(_rrect, rri, rri.P0, rri.P1, rri.P2, rri.P3); }
 						else { AppendRrect(_rrect, rri, Map(rri.P0, m), Map(rri.P1, m), Map(rri.P2, m), Map(rri.P3, m)); }
-						ops.Add(new DrawOp(DrawKind.RoundedRect, VertexSource.PassBuffer, 6, (nint)st, false, cd, (nint)MakeClipBg(cd)));
+						ops.Add(DrawOp.Shared(DrawKind.RoundedRect, st, 6, IntPtr.Zero, cd, MakeClipBg(cd)));
 						break;
 					}
 				case PathCmd pc:
@@ -151,7 +151,7 @@ public sealed unsafe partial class WebGpuPresentSession
 						var cd = composer.Compose(outer, bk.Clip, m, inv, direct);
 						var view = direct ? bk : new BackdropCmd { Effect = bk.Effect, Opacity = bk.Opacity, Clip = cd };
 						int bi = _backdrops.Count; _backdrops.Add(view);
-						ops.Add(new DrawOp(DrawKind.BackdropSegment, 0, 0, (nint)bi, false, cd, 0));
+						ops.Add(DrawOp.Backdrop(bi, cd));
 						break;
 					}
 				case ReplayRefCmd rr:
@@ -186,9 +186,9 @@ public sealed unsafe partial class WebGpuPresentSession
 	private void EmitImage(ImageCmd im, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, in ClipData cd, List<DrawOp> ops)
 	{
 		var bg = ImageBg(im, null);
-		var ioff = _quadVerts.Count * sizeof(float);
+		var first = (uint)(_quadVerts.Count / VertexStride.Quad);
 		AppendQuad(_quadVerts, p0, p1, p2, p3, im.U0, im.V0, im.U1, im.V1);
-		ops.Add(new DrawOp(DrawKind.Image, (nint)bg, 0, ioff, true, cd, (nint)MakeClipBg(cd)));
+		ops.Add(DrawOp.Shared(DrawKind.Image, first, 6, bg, cd, MakeClipBg(cd)));
 	}
 
 	private static void AppendQuad(List<float> dst, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float u0, float v0, float u1, float v1)
@@ -206,9 +206,9 @@ public sealed unsafe partial class WebGpuPresentSession
 		var (p0, p1, p2, p3) = identity ? (gc.P0, gc.P1, gc.P2, gc.P3) : (Map(gc.P0, m), Map(gc.P1, m), Map(gc.P2, m), Map(gc.P3, m));
 		Span<Vector2> cover = stackalloc Vector2[OctSides * 3];
 		var count = (uint)GradientCover(p0, p1, p2, p3, cd, cover);
-		var goff = _gradVerts.Count * sizeof(float);
+		var first = (uint)(_gradVerts.Count / VertexStride.Quad);
 		for (var t = 0; t < count; t++) { _gradVerts.Add(cover[t].X); _gradVerts.Add(cover[t].Y); _gradVerts.Add(0f); _gradVerts.Add(0f); }
-		ops.Add(new DrawOp(DrawKind.Gradient, (nint)gbg, count, goff, true, cd, (nint)MakeClipBg(cd)));
+		ops.Add(DrawOp.Shared(DrawKind.Gradient, first, count, gbg, cd, MakeClipBg(cd)));
 	}
 
 	private static float[] TransformedGradient(float[] src, in Matrix3x2 m)
@@ -285,7 +285,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			int maskBefore = ClipMasksBaked + FillMasksBaked + FillMaskHits;
 			bool atlasSafe = TryAtlasScale(rm, out var scale);
 			BuildCoalesced(rr.Commands, built, owned, atlasScale: atlasSafe ? scale : null, maskScale: atlasSafe ? scale : MaskScale(rm));
-			bool hasPathClip = false; foreach (var o in built) { if (o.clip.Paths is not null) { hasPathClip = true; break; } }
+			bool hasPathClip = false; foreach (var o in built) { if (o.Clip.Paths is not null) { hasPathClip = true; break; } }
 			entry = new WebGpuGeometryCache
 			{
 				Ops = built, Owned = owned, Device = _d,
@@ -317,13 +317,13 @@ public sealed unsafe partial class WebGpuPresentSession
 			{
 				var op = entry.Ops[i];
 				// The scissor: the op's own box under the transform, cut to the session's.
-				var scissorClip = op.clip;
-				if (IsFiniteAabb(op.clip.Aabb)) { scissorClip.Aabb = TransformBounds(op.clip.Aabb, rm); }
+				var scissorClip = op.Clip;
+				if (IsFiniteAabb(op.Clip.Aabb)) { scissorClip.Aabb = TransformBounds(op.Clip.Aabb, rm); }
 				var sa = session.Aabb;
 				scissorClip.Aabb = new Vector4(MathF.Max(scissorClip.Aabb.X, sa.X), MathF.Max(scissorClip.Aabb.Y, sa.Y), MathF.Min(scissorClip.Aabb.Z, sa.Z), MathF.Min(scissorClip.Aabb.W, sa.W));
-				scissorClip.ScissorInert = op.clip.ScissorInert && session.ScissorInert;
+				scissorClip.ScissorInert = op.Clip.ScissorInert && session.ScissorInert;
 				// The ClipU: the op's own clip (recording space) plus the session's, folded back through the transform.
-				var uClip = op.clip;
+				var uClip = op.Clip;
 				FoldSessionEntries(ref uClip, session.Entries, rm);
 				FoldSessionPaths(ref uClip, session.Paths, finv, ref pathsMemo);
 				if (IsFiniteAabb(session.Aabb)) { FoldSessionAabb(ref uClip, session.Aabb, finv, rm); }
@@ -331,7 +331,7 @@ public sealed unsafe partial class WebGpuPresentSession
 				{
 					scissorClip.AabbInClipU = RewriteClipU(bufs[i], uClip, rm, finv);
 					scissorClip.ScissorLoadBearing = !scissorClip.AabbInClipU;
-					stamped[i] = new DrawOp(op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, stamped[i].clipBg);
+					stamped[i] = op.WithClip(scissorClip, stamped[i].ClipBg);
 				}
 				else
 				{
@@ -339,7 +339,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					scissorClip.AabbInClipU = folded;
 					scissorClip.ScissorLoadBearing = !folded;
 					bufs.Add(buf);
-					stamped.Add(new DrawOp(op.kind, op.b0, op.u0, op.b1, op.flag, scissorClip, (nint)clipBg));
+					stamped.Add(op.WithClip(scissorClip, clipBg));
 				}
 			}
 			entry.StampOwned = stampOwned; entry.StampedOps = stamped; entry.StampBufs = bufs; entry.StampFrame = _d.FrameSeq;
@@ -371,7 +371,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		}
 		var blurView = RenderShadow(sh, out var origin, out var size, out var uv);
 		var bg = TintedImageBg(blurView, sh.Color);
-		ops.Add(new DrawOp(DrawKind.Image, (nint)bg, 0, (nint)MakeBuffer(TexturedQuad(origin, size, uv)), false, sh.Clip, (nint)MakeClipBg(sh.Clip)));
+		ops.Add(DrawOp.Own(DrawKind.Image, MakeBuffer(TexturedQuad(origin, size, uv)), 6, bg, sh.Clip, MakeClipBg(sh.Clip)));
 	}
 
 	// ----------------------------------------------------------------------------------------------------- layers
@@ -488,7 +488,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					blur = BlurPyramidRegion(surface.View, (int)tw, (int)th, rx - tx, ry - ty, rw, rh, fx.SigmaX, fx.SigmaY);
 				}
 				var sbg = TintedImageBg(blur, fx.Color);
-				ops.Add(new DrawOp(DrawKind.Image, (nint)sbg, 0, (nint)MakeBuffer(TexturedQuad(new Vector2(fx.Dx + rx, fx.Dy + ry), new Vector2(rw, rh), uv)), false, cd, (nint)MakeClipBg(cd)));
+				ops.Add(DrawOp.Own(DrawKind.Image, MakeBuffer(TexturedQuad(new Vector2(fx.Dx + rx, fx.Dy + ry), new Vector2(rw, rh), uv)), 6, sbg, cd, MakeClipBg(cd)));
 			}
 		}
 
@@ -506,9 +506,9 @@ public sealed unsafe partial class WebGpuPresentSession
 			compClip.ScissorLoadBearing = true;
 		}
 		var bg = LayerBg(surface.View, lyr.ColorMatrix);
-		var off = _quadVerts.Count * sizeof(float);
+		var first = (uint)(_quadVerts.Count / VertexStride.Quad);
 		AppendQuad(_quadVerts, new Vector2(tx, ty), new Vector2(tx + tw, ty), new Vector2(tx + tw, ty + th), new Vector2(tx, ty + th), cuv.X, cuv.Y, cuv.Z, cuv.W);
-		ops.Add(new DrawOp(lyr.CompositeMode == 1 ? DrawKind.Mask : DrawKind.Image, (nint)bg, 0, off, true, compClip, (nint)MakeClipBg(compClip)));
+		ops.Add(DrawOp.Shared(lyr.CompositeMode == 1 ? DrawKind.Mask : DrawKind.Image, first, 6, bg, compClip, MakeClipBg(compClip)));
 	}
 
 	// The image bind group for a layer composite: no tint, no edge antialiasing (the layer's own alpha is the shape),

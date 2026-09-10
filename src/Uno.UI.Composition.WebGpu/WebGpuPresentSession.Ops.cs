@@ -182,7 +182,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					PushVert(rcj.P0, vr, vg, vb, va); PushVert(rcj.P2, vr, vg, vb, va); PushVert(rcj.P3, vr, vg, vb, va);
 					j++;
 				}
-				ops.Add(new DrawOp(DrawKind.Solid, (nint)Vbuf(_scratch, owned), (uint)((j - ci) * 6), 0, false, rc0.Clip, (nint)MakeClipBg(rc0.Clip, owned)));
+				ops.Add(DrawOp.Own(DrawKind.Solid, Vbuf(_scratch, owned), (uint)((j - ci) * 6), IntPtr.Zero, rc0.Clip, MakeClipBg(rc0.Clip, owned)));
 				ci = j - 1;
 			}
 			else if (_pathAtlas && atlasScale is { } asc && TryAtlasBatch(cmds, ref ci, owned, asc, out var aop))
@@ -213,19 +213,19 @@ public sealed unsafe partial class WebGpuPresentSession
 	{
 		float r = pc.Color.R / 255f, g = pc.Color.G / 255f, b = pc.Color.B / 255f, a = pc.Color.A / 255f;
 		var off = pc.Offset; var tris = shape.Tris; var cov = shape.Cov;
-		var clipBg = (nint)MakeClipBg(pc.Clip, owned);
+		var clipBg = MakeClipBg(pc.Clip, owned);
 		var count = (uint)(tris.Length / 2);
 		var dst = owned is null ? _solid : _scratch;
 		if (owned is not null) { _scratch.Clear(); }
-		int start = dst.Count / VertexStride.Solid;
+		uint start = (uint)(dst.Count / VertexStride.Solid);
 		for (int i = 0; i < tris.Length; i += 2)
 		{
 			float ca = a * (cov is null ? 1f : cov[i >> 1]);
 			dst.Add(tris[i] + off.X); dst.Add(tris[i + 1] + off.Y); dst.Add(r); dst.Add(g); dst.Add(b); dst.Add(ca); dst.Add(0f); dst.Add(0f);
 		}
 		ops.Add(owned is null
-			? new DrawOp(DrawKind.Solid, VertexSource.PassBuffer, count, (nint)start, false, pc.Clip, clipBg)
-			: new DrawOp(DrawKind.Solid, (nint)Vbuf(_scratch, owned), count, 0, false, pc.Clip, clipBg));
+			? DrawOp.Shared(DrawKind.Solid, start, count, IntPtr.Zero, pc.Clip, clipBg)
+			: DrawOp.Own(DrawKind.Solid, Vbuf(_scratch, owned), count, IntPtr.Zero, pc.Clip, clipBg));
 	}
 
 	// A fill without tiling triangles (self-overlap, too thin for the ring, or simply refused) draws through an exact
@@ -251,7 +251,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					_scratch.Clear();
 					PushVert(rc.P0, c.X, c.Y, c.Z, c.W); PushVert(rc.P1, c.X, c.Y, c.Z, c.W); PushVert(rc.P2, c.X, c.Y, c.Z, c.W);
 					PushVert(rc.P0, c.X, c.Y, c.Z, c.W); PushVert(rc.P2, c.X, c.Y, c.Z, c.W); PushVert(rc.P3, c.X, c.Y, c.Z, c.W);
-					ops.Add(new DrawOp(DrawKind.Solid, (nint)Vbuf(_scratch, owned), 6, 0, false, rc.Clip, (nint)MakeClipBg(rc.Clip, owned)));
+					ops.Add(DrawOp.Own(DrawKind.Solid, Vbuf(_scratch, owned), 6, IntPtr.Zero, rc.Clip, MakeClipBg(rc.Clip, owned)));
 					break;
 				}
 			case PathCmd pf:
@@ -269,16 +269,15 @@ public sealed unsafe partial class WebGpuPresentSession
 					var bg = ImageBg(im, owned);
 					if (owned is null)
 					{
-						// flag == true: b1 is a BYTE offset into the pass's shared quad buffer.
-						var ioff = _quadVerts.Count * sizeof(float);
+						var first = (uint)(_quadVerts.Count / VertexStride.Quad);
 						AppendQuad(_quadVerts, im.P0, im.P1, im.P2, im.P3, im.U0, im.V0, im.U1, im.V1);
-						ops.Add(new DrawOp(DrawKind.Image, (nint)bg, 0, ioff, true, im.Clip, (nint)MakeClipBg(im.Clip, owned)));
+						ops.Add(DrawOp.Shared(DrawKind.Image, first, 6, bg, im.Clip, MakeClipBg(im.Clip, owned)));
 					}
 					else
 					{
 						var q = new List<float>(24);
 						AppendQuad(q, im.P0, im.P1, im.P2, im.P3, im.U0, im.V0, im.U1, im.V1);
-						ops.Add(new DrawOp(DrawKind.Image, (nint)bg, 0, (nint)Vbuf(q, owned), false, im.Clip, (nint)MakeClipBg(im.Clip, owned)));
+						ops.Add(DrawOp.Own(DrawKind.Image, Vbuf(q, owned), 6, bg, im.Clip, MakeClipBg(im.Clip, owned)));
 					}
 					break;
 				}
@@ -301,18 +300,18 @@ public sealed unsafe partial class WebGpuPresentSession
 					}
 					Span<Vector2> cover = stackalloc Vector2[OctSides * 3];
 					var count = (uint)GradientCover(gc.P0, gc.P1, gc.P2, gc.P3, gc.Clip, cover);
-					var clipBg = (nint)MakeClipBg(gc.Clip, owned);
+					var clipBg = MakeClipBg(gc.Clip, owned);
 					if (owned is null)
 					{
-						var goff = _gradVerts.Count * sizeof(float);
+						var first = (uint)(_gradVerts.Count / VertexStride.Quad);
 						for (var t = 0; t < count; t++) { _gradVerts.Add(cover[t].X); _gradVerts.Add(cover[t].Y); _gradVerts.Add(0f); _gradVerts.Add(0f); }
-						ops.Add(new DrawOp(DrawKind.Gradient, (nint)gbg, count, goff, true, gc.Clip, clipBg));
+						ops.Add(DrawOp.Shared(DrawKind.Gradient, first, count, gbg, gc.Clip, clipBg));
 					}
 					else
 					{
 						var gq = new float[count * 4];
 						for (var t = 0; t < count; t++) { gq[t * 4] = cover[t].X; gq[t * 4 + 1] = cover[t].Y; }
-						ops.Add(new DrawOp(DrawKind.Gradient, (nint)gbg, count, (nint)Vbuf(gq, owned), false, gc.Clip, clipBg));
+						ops.Add(DrawOp.Own(DrawKind.Gradient, Vbuf(gq, owned), count, gbg, gc.Clip, clipBg));
 					}
 					break;
 				}
@@ -322,7 +321,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					AppendRrect(tmp, rrc, rrc.P0, rrc.P1, rrc.P2, rrc.P3);
 					var buf = Vbuf(tmp, owned);
 					ReturnRrect(tmp);
-					ops.Add(new DrawOp(DrawKind.RoundedRect, (nint)buf, 6, 0, false, rrc.Clip, (nint)MakeClipBg(rrc.Clip, owned)));
+					ops.Add(DrawOp.Own(DrawKind.RoundedRect, buf, 6, IntPtr.Zero, rrc.Clip, MakeClipBg(rrc.Clip, owned)));
 					break;
 				}
 		}

@@ -9,54 +9,61 @@ using static Uno.WebGpu.Native.WGPU;
 
 namespace Uno.UI.Composition.WebGpu;
 
-/// <summary>Floats per vertex of the solid layout: position + colour + coverage uv.</summary>
+/// <summary>Floats per vertex of each vertex layout.</summary>
 internal static class VertexStride
 {
-	public const int Solid = 8;
-}
-
-/// <summary>
-/// Sentinel <see cref="DrawOp.b0"/> for solid and rounded-rect ops whose verts live in the pass's shared buffer
-/// (rebuilt each frame; <c>b1</c> = first vertex). Any other <c>b0</c> is the op's own vertex buffer handle.
-/// </summary>
-internal static class VertexSource
-{
-	public const int PassBuffer = 0;
+	public const int Solid = 8;         // position + colour + coverage uv: rects, atlas quads, path fans
+	public const int RoundedRect = 22;  // corner + local SDF params + colour + inner ring
+	public const int Quad = 4;          // position + uv: images, layer composites, gradients
 }
 
 /// <summary>What a <see cref="DrawOp"/> draws, and so which pipeline and vertex layout it is encoded with.</summary>
 internal enum DrawKind
 {
 	/// <summary>Solid-coloured triangles: rects, atlas quads and path fans (their coverage rides the vertex alpha).</summary>
-	Solid = 0,
-
-	/// <summary>Textured quad. b0 = bind group, b1 = quad verts (or a byte offset into the pass's quad buffer when flag).</summary>
-	Image = 2,
-
-	/// <summary>Gradient-filled geometry.</summary>
-	Gradient = 3,
-
+	Solid,
 	/// <summary>Analytic rounded rect / border ring (one SDF quad, no tessellation).</summary>
-	RoundedRect = 5,
-
-	/// <summary>Ends the pass segment so a backdrop can sample what is already drawn, then reopens it.</summary>
-	BackdropSegment = 6,
-
+	RoundedRect,
+	/// <summary>Textured quad.</summary>
+	Image,
 	/// <summary>A textured quad blended DstIn: the destination keeps only where the texture has alpha (a mask layer).</summary>
-	Mask = 7,
+	Mask,
+	/// <summary>Gradient-filled geometry.</summary>
+	Gradient,
+	/// <summary>Ends the pass segment so a backdrop can sample what is already drawn, then reopens it.</summary>
+	BackdropSegment,
 }
 
+/// <summary>
+/// One GPU draw of a pass: its pipeline (by kind), the vertices it draws (a range of a vertex buffer), the bind group
+/// of its texture or gradient, and the clip it draws under. Two consecutive ops merge into one draw when they differ
+/// only in their vertex range and that range is contiguous (see the encoder).
+/// </summary>
 internal struct DrawOp
 {
-	public DrawKind kind; public nint b0; public uint u0; public nint b1; public bool flag; public ClipData clip; public nint clipBg;
-	public DrawOp(DrawKind kind, nint b0, uint u0, nint b1, bool flag, ClipData clip, nint clipBg)
-	{
-		this.kind = kind; this.b0 = b0; this.u0 = u0; this.b1 = b1; this.flag = flag; this.clip = clip; this.clipBg = clipBg;
-	}
-	public readonly void Deconstruct(out DrawKind kind, out nint b0, out uint u0, out nint b1, out bool flag, out ClipData clip, out nint clipBg)
-	{
-		kind = this.kind; b0 = this.b0; u0 = this.u0; b1 = this.b1; flag = this.flag; clip = this.clip; clipBg = this.clipBg;
-	}
+	public DrawKind Kind;
+	public IntPtr Verts;       // the op's own vertex buffer, or Zero for the pass's shared buffer of its kind
+	public uint FirstVertex;   // into Verts
+	public uint Count;         // vertices; a BackdropSegment keeps its index into the pass's backdrops here
+	public IntPtr Group1;      // the image / gradient bind group; Zero for a solid or rounded rect
+	public ClipData Clip;
+	public IntPtr ClipBg;
+
+	/// <summary>An op drawing a range of the pass's shared buffer for its kind.</summary>
+	public static DrawOp Shared(DrawKind kind, uint firstVertex, uint count, IntPtr group1, in ClipData clip, IntPtr clipBg)
+		=> new() { Kind = kind, FirstVertex = firstVertex, Count = count, Group1 = group1, Clip = clip, ClipBg = clipBg };
+
+	/// <summary>An op drawing a vertex buffer of its own from its start.</summary>
+	public static DrawOp Own(DrawKind kind, IntPtr verts, uint count, IntPtr group1, in ClipData clip, IntPtr clipBg)
+		=> new() { Kind = kind, Verts = verts, Count = count, Group1 = group1, Clip = clip, ClipBg = clipBg };
+
+	public static DrawOp Backdrop(int index, in ClipData clip)
+		=> new() { Kind = DrawKind.BackdropSegment, Count = (uint)index, Clip = clip };
+
+	/// <summary>The same draw under another clip: what a restamp of an arena op produces.</summary>
+	public DrawOp WithClip(in ClipData clip, IntPtr clipBg) { var o = this; o.Clip = clip; o.ClipBg = clipBg; return o; }
+
+	public bool SharesBuffer => Verts == IntPtr.Zero;
 }
 
 /// <summary>
@@ -105,7 +112,7 @@ internal ref struct PassOps
 	public List<BackdropCmd> Backdrops;
 	public IntPtr SolidBuf, RrectBuf, GradBuf, QuadBuf;
 	public IntPtr PassBg;   // group 0 of every colour draw: this pass's projection
-	public nuint SolidBufBytes, GradBufBytes, QuadBufBytes;
+	public nuint SolidBufBytes, RrectBufBytes, GradBufBytes, QuadBufBytes;
 
 	public PassEncoder Enc;
 

@@ -242,8 +242,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	private List<float> RentRrect() => RentVerts();
 	private void ReturnRrect(List<float> s) => ReturnVerts(s);
 
-	private const int RrectStride = 22;   // floats per rounded-rect vertex: corner + local SDF params + colour + inner ring
-
 	// Appends one quad (two tris) as solid verts; returns the start vertex index.
 	private int AppendSolidRect(List<float> solid, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float r, float g, float b, float a)
 	{
@@ -485,7 +483,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		public float BasisOx, BasisOy, BasisW, BasisH;
 		public Vector4 Bound;   // device rect every scissor stays within: a sheet slot; the whole target otherwise
 		public nint SolidBuf, RrectBuf, GradBuf, QuadBuf;
-		public nuint SolidBufBytes, GradBufBytes, QuadBufBytes;
+		public nuint SolidBufBytes, RrectBufBytes, GradBufBytes, QuadBufBytes;
 		public IntPtr PassBg;
 	}
 
@@ -537,6 +535,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		b.SolidBuf = _solid.Count > 0 ? (nint)MakeBuffer(_solid) : IntPtr.Zero;
 		b.SolidBufBytes = (nuint)(_solid.Count * sizeof(float));
 		b.RrectBuf = _rrect.Count > 0 ? (nint)MakeBuffer(_rrect) : IntPtr.Zero;
+		b.RrectBufBytes = (nuint)(_rrect.Count * sizeof(float));
 		b.GradBuf = _gradVerts.Count > 0 ? (nint)MakeBuffer(_gradVerts) : IntPtr.Zero;
 		b.GradBufBytes = (nuint)(_gradVerts.Count * sizeof(float));
 		b.QuadBuf = _quadVerts.Count > 0 ? (nint)MakeBuffer(_quadVerts) : IntPtr.Zero;
@@ -580,7 +579,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 			{
 				Pass = pass, Target = target, Ops = b.Ops, Backdrops = b.Backdrops, PassBg = b.PassBg,
 				SolidBuf = b.SolidBuf, SolidBufBytes = b.SolidBufBytes,
-				RrectBuf = b.RrectBuf,
+				RrectBuf = b.RrectBuf, RrectBufBytes = b.RrectBufBytes,
 				GradBuf = b.GradBuf, GradBufBytes = b.GradBufBytes,
 				QuadBuf = b.QuadBuf, QuadBufBytes = b.QuadBufBytes,
 				Enc = enc,

@@ -121,27 +121,24 @@ public sealed unsafe partial class WebGpuPresentSession
 
 	/// <summary>
 	/// Encodes ops [<paramref name="start"/>, <paramref name="end"/>) into the pass, applying each op's scissor as it
-	/// goes. Runs of same-clip solids or rounded rects in the pass buffers collapse into one draw each.
+	/// goes. Consecutive ops that differ only in a contiguous vertex range merge into one draw.
 	/// </summary>
 	private void EncodeOps(int start, int end, ref PassOps pst)
 	{
-		var pass = pst.Pass;
 		var ops = pst.Ops;
-		var backdrops = pst.Backdrops;
-		var solidBuf = pst.SolidBuf; var solidBufBytes = pst.SolidBufBytes;
-		var rrectBuf = pst.RrectBuf;
-		var gradBuf = pst.GradBuf; var gradBufBytes = pst.GradBufBytes;
-		var quadBuf = pst.QuadBuf; var quadBufBytes = pst.QuadBufBytes;
-
 		for (int oi = start; oi < end; oi++)
 		{
-			var (kind, b0, u0, b1, flag, clip, clipBg) = ops[oi];
+			var op = ops[oi];
 			pst.Iters++;
-			if (_emitStats && kind is DrawKind.Image or DrawKind.Gradient && flag) { pst.SharedOps++; }
-			if (!TryScissor(clip.Aabb, out var sx, out var sy, out var sw, out var sh)) { continue; }
+			if (op.Kind == DrawKind.BackdropSegment)
+			{
+				pst.Pass = EncodeBackdropSegment(pst.Backdrops[(int)op.Count], ref pst);
+				continue;
+			}
+			if (!TryScissor(op.Clip.Aabb, out var sx, out var sy, out var sw, out var sh)) { continue; }
 			// A widenable op's tight AABB is cull-only (checked above); the applied scissor is the full
 			// surface, so consecutive such ops dedup to a single SetScissorRect.
-			if (ScissorWidenable(clip)) { sx = 0; sy = 0; sw = (int)BasisW; sh = (int)BasisH; }
+			if (ScissorWidenable(op.Clip)) { sx = 0; sy = 0; sw = (int)BasisW; sh = (int)BasisH; }
 			// On the layer sheet every draw stays inside its layer's slot, whatever its clip says.
 			if (_bound.X > float.MinValue)
 			{
@@ -152,103 +149,44 @@ public sealed unsafe partial class WebGpuPresentSession
 			}
 			pst.Enc.Scissor(sx, sy, sw, sh);
 			pst.Scissors++;
-			switch (kind)
+			if (_emitStats && op.SharesBuffer && op.Kind is DrawKind.Image or DrawKind.Gradient) { pst.SharedOps++; }
+
+			// The one merge rule: same draw state, and the next range starts where this one ends.
+			uint count = op.Count;
+			while (oi + 1 < end)
 			{
-				case DrawKind.Solid when b0 == VertexSource.PassBuffer:
-					{
-						// Coalesce the maximal following run that shares this clip and bind group: their verts are
-						// contiguous in the shared buffer by construction, so the whole run draws in ONE call.
-						int startVert = (int)b1; uint count = u0;
-						while (oi + 1 < end)
-						{
-							var nx = ops[oi + 1];
-							if (nx.kind != DrawKind.Solid || nx.b0 != VertexSource.PassBuffer || nx.clipBg != clipBg || nx.clip.Aabb != clip.Aabb) { break; }
-							count += nx.u0; oi++;
-						}
-						pst.Enc.Pipe(_d.SolidPipe);
-						pst.Enc.Bg(0, pst.PassBg);
-						pst.Enc.Bg(1, (IntPtr)clipBg);
-						pst.Enc.Vb(solidBuf, (nuint)(startVert * VertexStride.Solid * sizeof(float)), (nuint)(count * VertexStride.Solid * sizeof(float)));
-						pst.Enc.Draw(count);
-						break;
-					}
-				case DrawKind.Solid:
-					// b0 = the op's own vertex buffer; b1 = byte offset into it; u0 = vertex count.
-					pst.Enc.Pipe(_d.SolidPipe);
-					pst.Enc.Bg(0, pst.PassBg);
-					pst.Enc.Bg(1, (IntPtr)clipBg);
-					pst.Enc.Vb((IntPtr)b0, (nuint)b1, (nuint)(u0 * VertexStride.Solid * sizeof(float)));
-					pst.Enc.Draw(u0);
-					break;
-				case DrawKind.Image:
-				case DrawKind.Mask:
-					pst.Enc.Pipe(kind == DrawKind.Mask ? _d.ImageDstInPipe : _d.ImagePipe);
-					pst.Enc.Bg(0, pst.PassBg);
-					pst.Enc.Bg(1, (IntPtr)b0);
-					pst.Enc.Bg(2, (IntPtr)clipBg);
-					if (flag)
-					{
-						pst.Enc.Vb((IntPtr)quadBuf, 0, quadBufBytes);
-						pst.Enc.Draw(6, (uint)(b1 / (4 * sizeof(float))));
-					}
-					else
-					{
-						var verts = u0 == 0 ? 6u : u0;
-						pst.Enc.Vb((IntPtr)b1, 0, (nuint)(verts * 4 * sizeof(float)));
-						pst.Enc.Draw(verts);
-					}
-					break;
-				case DrawKind.Gradient:
-					{
-						var gn = u0 == 0 ? 6u : u0;   // 6 = quad, else the clip-tightened n-gon
-						pst.Enc.Pipe(_d.GradientPipe);
-						pst.Enc.Bg(0, pst.PassBg);
-						pst.Enc.Bg(1, (IntPtr)b0);
-						pst.Enc.Bg(2, (IntPtr)clipBg);
-						if (flag)
-						{
-							pst.Enc.Vb((IntPtr)gradBuf, 0, gradBufBytes);
-							pst.Enc.Draw(gn, (uint)(b1 / (4 * sizeof(float))));
-						}
-						else
-						{
-							pst.Enc.Vb((IntPtr)b1, 0, (nuint)(gn * 4 * sizeof(float)));
-							pst.Enc.Draw(gn);
-						}
-						break;
-					}
-				case DrawKind.BackdropSegment:
-					pass = EncodeBackdropSegment(backdrops[(int)b1], ref pst);
-					break;
-				case DrawKind.RoundedRect when b0 == VertexSource.PassBuffer:
-					{
-						// Shared rrect buffer (b1 = start vert, u0 = 6): the run of following rrect ops sharing this clip
-						// bind group and clip is contiguous, so it draws in ONE call.
-						int startVert = (int)b1; uint count = u0;
-						while (oi + 1 < end)
-						{
-							var nx = ops[oi + 1];
-							if (nx.kind != DrawKind.RoundedRect || nx.b0 != VertexSource.PassBuffer || nx.clipBg != clipBg || nx.clip.Aabb != clip.Aabb) { break; }
-							count += nx.u0; oi++;
-						}
-						pst.Enc.Pipe(_d.RrPipe);
-						pst.Enc.Bg(0, pst.PassBg);
-						pst.Enc.Bg(1, (IntPtr)clipBg);
-						pst.Enc.Vb(rrectBuf, (nuint)(startVert * RrectStride * sizeof(float)), (nuint)(count * RrectStride * sizeof(float)));
-						pst.Enc.Draw(count);
-						break;
-					}
-				case DrawKind.RoundedRect:
-					// b0 = the op's own vertex buffer; b1 = byte offset; u0 = vertex count.
-					pst.Enc.Pipe(_d.RrPipe);
-					pst.Enc.Bg(0, pst.PassBg);
-					pst.Enc.Bg(1, (IntPtr)clipBg);
-					pst.Enc.Vb((IntPtr)b0, (nuint)b1, (nuint)(u0 * RrectStride * sizeof(float)));
-					pst.Enc.Draw(u0);
-					break;
+				var nx = ops[oi + 1];
+				if (nx.Kind != op.Kind || nx.Verts != op.Verts || nx.Group1 != op.Group1 || nx.ClipBg != op.ClipBg
+					|| nx.Clip.Aabb != op.Clip.Aabb || nx.FirstVertex != op.FirstVertex + count) { break; }
+				count += nx.Count; oi++;
 			}
+
+			var (pipe, stride) = op.Kind switch
+			{
+				DrawKind.Solid => (_d.SolidPipe, VertexStride.Solid),
+				DrawKind.RoundedRect => (_d.RrPipe, VertexStride.RoundedRect),
+				DrawKind.Image => (_d.ImagePipe, VertexStride.Quad),
+				DrawKind.Mask => (_d.ImageDstInPipe, VertexStride.Quad),
+				_ => (_d.GradientPipe, VertexStride.Quad),
+			};
+			var (buf, bytes) = op.SharesBuffer ? SharedBuffer(op.Kind, ref pst) : (op.Verts, (nuint)((op.FirstVertex + count) * stride * sizeof(float)));
+			pst.Enc.Pipe(pipe);
+			pst.Enc.Bg(0, pst.PassBg);
+			if (op.Group1 != IntPtr.Zero) { pst.Enc.Bg(1, op.Group1); pst.Enc.Bg(2, op.ClipBg); }
+			else { pst.Enc.Bg(1, op.ClipBg); }
+			pst.Enc.Vb(buf, 0, bytes);
+			pst.Enc.Draw(count, op.FirstVertex);
 		}
 	}
+
+	// The pass's shared vertex buffer for a kind, bound whole so a run of its ops binds it once.
+	private static (IntPtr Buf, nuint Bytes) SharedBuffer(DrawKind kind, ref PassOps pst) => kind switch
+	{
+		DrawKind.Solid => (pst.SolidBuf, pst.SolidBufBytes),
+		DrawKind.RoundedRect => (pst.RrectBuf, pst.RrectBufBytes),
+		DrawKind.Gradient => (pst.GradBuf, pst.GradBufBytes),
+		_ => (pst.QuadBuf, pst.QuadBufBytes),
+	};
 
 	/// <summary>
 	/// Dumps the frame's encode counters (<c>UNO_WEBGPU_STATS=1</c>, every 60th frame) and clears them: how much got
