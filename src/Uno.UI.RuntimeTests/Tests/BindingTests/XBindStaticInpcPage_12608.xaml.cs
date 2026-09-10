@@ -1,4 +1,4 @@
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Controls;
 
@@ -12,6 +12,8 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		public TextBlock BoundTextBlock => BoundText;
+
+		public TextBlock NestedRootTextBlock => NestedRootText;
 	}
 
 	public class XBindStaticInpcObject_12608 : INotifyPropertyChanged
@@ -40,5 +42,11 @@ namespace Uno.UI.RuntimeTests.Tests
 	internal static class XBindStaticInpcApp_12608
 	{
 		public static XBindStaticInpcObject_12608 MyObj { get; set; } = new XBindStaticInpcObject_12608 { Value = 0 };
+
+		// Reached through a nested type, which the generator must not emit as an observation root.
+		internal static class Nested
+		{
+			public static XBindStaticInpcObject_12608 MyObj { get; set; } = new XBindStaticInpcObject_12608 { Value = 7 };
+		}
 	}
 }

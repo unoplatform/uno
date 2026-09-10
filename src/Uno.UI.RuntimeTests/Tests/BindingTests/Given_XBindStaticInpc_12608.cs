@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
@@ -35,6 +35,23 @@ namespace Uno.UI.RuntimeTests.Tests.XBindStaticInpcTests
 				page.BoundTextBlock.Text,
 				"x:Bind (OneWay) through a static-class root should propagate INPC updates. " +
 				"See https://github.com/unoplatform/uno/issues/12608");
+		}
+
+		// A path whose segment after the static type is a NESTED TYPE has no observable static root,
+		// so it falls back to the unobserved behavior. The point of the test is that the page still
+		// compiles and renders: emitting the nested type as an observation source is a CS0119.
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Static_Member_Root_Is_Nested_Type_12608()
+		{
+			XBindStaticInpcApp_12608.Nested.MyObj = new XBindStaticInpcObject_12608 { Value = 7 };
+
+			var page = new XBindStaticInpcPage_12608();
+			WindowHelper.WindowContent = page;
+			await WindowHelper.WaitForLoaded(page);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("7", page.NestedRootTextBlock.Text, "Initial bound text should reflect Value=7.");
 		}
 	}
 }
