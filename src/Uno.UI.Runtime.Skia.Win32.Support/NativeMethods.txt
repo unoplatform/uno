@@ -205,6 +205,7 @@ GetDC
 GetDeviceCaps
 GetDpiForWindow
 GetDpiForMonitor
+GetFocus
 GetIconInfo
 GetKeyState
 GetObject

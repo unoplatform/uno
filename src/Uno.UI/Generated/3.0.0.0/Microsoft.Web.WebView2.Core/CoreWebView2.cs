@@ -21,16 +21,7 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2CookieManager CookieManager
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "CookieManager");
-			}
-		}
-#endif
+		// Skipping already declared property CookieManager
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.Web.WebView2.Core.CoreWebView2DefaultDownloadDialogCornerAlignment DefaultDownloadDialogCornerAlignment
@@ -200,20 +191,8 @@ namespace Microsoft.Web.WebView2.Core
 			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "PrintAsync(CoreWebView2PrintSettings printSettings)");
 		}
 #endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void ShowPrintUI(global::Microsoft.Web.WebView2.Core.CoreWebView2PrintDialogKind printDialogKind)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "ShowPrintUI(CoreWebView2PrintDialogKind printDialogKind)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> PrintToPdfStreamAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings printSettings)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "PrintToPdfStreamAsync(CoreWebView2PrintSettings printSettings)");
-		}
-#endif
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.ShowPrintUI(Microsoft.Web.WebView2.Core.CoreWebView2PrintDialogKind)
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.PrintToPdfStreamAsync(Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings)
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public void PostSharedBufferToScript(global::Microsoft.Web.WebView2.Core.CoreWebView2SharedBuffer sharedBuffer, global::Microsoft.Web.WebView2.Core.CoreWebView2SharedBufferAccess access, string additionalDataAsJson)
@@ -323,20 +302,8 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.Navigate(string)
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.NavigateToString(string)
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Windows.Foundation.IAsyncOperation<string> AddScriptToExecuteOnDocumentCreatedAsync(string javaScript)
-		{
-			throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2", "AddScriptToExecuteOnDocumentCreatedAsync(string javaScript)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void RemoveScriptToExecuteOnDocumentCreated(string id)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "RemoveScriptToExecuteOnDocumentCreated(string id)");
-		}
-#endif
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(string)
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.RemoveScriptToExecuteOnDocumentCreated(string)
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.ExecuteScriptAsync(string)
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -346,20 +313,8 @@ namespace Microsoft.Web.WebView2.Core
 		}
 #endif
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.Reload()
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void PostWebMessageAsJson(string webMessageAsJson)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "PostWebMessageAsJson(string webMessageAsJson)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void PostWebMessageAsString(string webMessageAsString)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "PostWebMessageAsString(string webMessageAsString)");
-		}
-#endif
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.PostWebMessageAsJson(string)
+		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.PostWebMessageAsString(string)
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Windows.Foundation.IAsyncOperation<string> CallDevToolsProtocolMethodAsync(string methodName, string parametersAsJson)
@@ -553,22 +508,7 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2DOMContentLoadedEventArgs> DOMContentLoaded
-		{
-			[global::Uno.NotImplemented("__SKIA__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event DOMContentLoaded");
-			}
-			[global::Uno.NotImplemented("__SKIA__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event DOMContentLoaded");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.Web.WebView2.Core.CoreWebView2.DOMContentLoaded
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseReceivedEventArgs> WebResourceResponseReceived
@@ -761,22 +701,7 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2ContentLoadingEventArgs> ContentLoading
-		{
-			[global::Uno.NotImplemented("__SKIA__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ContentLoading");
-			}
-			[global::Uno.NotImplemented("__SKIA__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ContentLoading");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.Web.WebView2.Core.CoreWebView2.ContentLoading
 		// Skipping already declared event Microsoft.Web.WebView2.Core.CoreWebView2.DocumentTitleChanged
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
@@ -830,22 +755,7 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2ProcessFailedEventArgs> ProcessFailed
-		{
-			[global::Uno.NotImplemented("__SKIA__")]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ProcessFailed");
-			}
-			[global::Uno.NotImplemented("__SKIA__")]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "event ProcessFailed");
-			}
-		}
-#endif
+		// Skipping already declared event Microsoft.Web.WebView2.Core.CoreWebView2.ProcessFailed
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2, global::Microsoft.Web.WebView2.Core.CoreWebView2ScriptDialogOpeningEventArgs> ScriptDialogOpening

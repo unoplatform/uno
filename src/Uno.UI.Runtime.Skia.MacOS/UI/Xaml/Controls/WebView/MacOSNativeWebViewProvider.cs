@@ -20,11 +20,17 @@ internal class MacOSNativeWebViewProvider : INativeWebViewProvider
 			&MacOSNativeWebView.DidChangeValue,
 			&MacOSNativeWebView.DidReceiveScriptMessage,
 			&MacOSNativeWebView.NavigationFailingCallback);
+		NativeUno.uno_set_webview_lifecycle_callbacks(
+			&MacOSNativeWebView.ContentLoadingCallback,
+			&MacOSNativeWebView.DOMContentLoadedCallback);
 
 		NativeUno.uno_set_webview_new_window_requested_callback(&MacOSNativeWebView.NewWindowRequestedCallback);
 
 		// Register WebResourceRequested callback for header injection
 		NativeUno.uno_set_webview_resource_requested_callback(&MacOSNativeWebView.WebResourceRequestedCallback);
+
+		// Register capability callbacks (PDF generation, cookie enumeration).
+		MacOSNativeWebView.RegisterCapabilityCallbacks();
 
 		ApiExtensibility.Register<CoreWebView2>(typeof(INativeWebViewProvider), o => new MacOSNativeWebViewProvider(o));
 	}

@@ -114,6 +114,7 @@ internal class InternalClient : Android.Webkit.WebViewClient
 		//Reset Webview Success on page started so that if we have successful navigation we don't send an webView error if a previous error happened.
 		_coreWebViewSuccess = true;
 		_navigationCompletedRaised = false; // Reset for new navigation
+		_nativeWebViewWrapper.InjectDocumentCreatedScripts();
 	}
 
 #pragma warning disable 0672, 618, CA1422

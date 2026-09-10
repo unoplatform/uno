@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
 using Uno.UI.NativeElementHosting;
@@ -12,7 +13,7 @@ using Windows.Win32.UI.WindowsAndMessaging;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
-internal abstract class Win32NativeWebViewBase : INativeWebView
+internal abstract class Win32NativeWebViewBase : INativeWebView, IReportsCanceledNavigations
 {
 	private const string WindowClassName = "UnoPlatformWebViewWindow";
 	private const uint SC_MASK = 0xFFF0;
@@ -20,6 +21,8 @@ internal abstract class Win32NativeWebViewBase : INativeWebView
 	private static readonly WNDCLASSEXW _windowClass;
 	private static WeakReference<Win32NativeWebViewBase>? _webViewForNextCreateWindow;
 	private static readonly Dictionary<HWND, WeakReference<Win32NativeWebViewBase>> _hwndToWebView = new();
+	private int _destroyWindowRequested;
+	private HWND _temporaryParentHwnd;
 
 	protected ContentPresenter Presenter { get; }
 	protected HWND Hwnd { get; }
@@ -51,6 +54,11 @@ internal abstract class Win32NativeWebViewBase : INativeWebView
 
 		using var lpClassName = new Win32Helper.NativeNulTerminatedUtf16String(WindowClassName);
 
+		var parent = ParentHwnd;
+		if (parent == HWND.Null)
+		{
+			parent = EnsureTemporaryParent();
+		}
 		_webViewForNextCreateWindow = new WeakReference<Win32NativeWebViewBase>(this);
 		unsafe
 		{
@@ -63,7 +71,7 @@ internal abstract class Win32NativeWebViewBase : INativeWebView
 			PInvoke.CW_USEDEFAULT,
 			PInvoke.CW_USEDEFAULT,
 			PInvoke.CW_USEDEFAULT,
-			ParentHwnd,
+			parent,
 			HMENU.Null,
 			Win32Helper.GetHInstance(),
 			null);
@@ -72,6 +80,7 @@ internal abstract class Win32NativeWebViewBase : INativeWebView
 
 		if (Hwnd == HWND.Null)
 		{
+			DestroyTemporaryParent();
 			throw new InvalidOperationException($"{nameof(PInvoke.CreateWindowEx)} failed: {Win32Helper.GetErrorMessage()}");
 		}
 
@@ -99,10 +108,53 @@ internal abstract class Win32NativeWebViewBase : INativeWebView
 		presenter.Content = new Win32NativeWindow(Hwnd);
 	}
 
-	~Win32NativeWebViewBase()
+	private unsafe HWND EnsureTemporaryParent()
 	{
-		Presenter.DispatcherQueue.TryEnqueue(() =>
+		// The controller can be initialized before a XamlRoot exists, just as with MUX's temporary host HWND.
+		using var className = new Win32Helper.NativeNulTerminatedUtf16String("Static");
+		_temporaryParentHwnd = PInvoke.CreateWindowEx(
+			0, className, new PCWSTR(), WINDOW_STYLE.WS_OVERLAPPED, 0, 0, 0, 0,
+			HWND.Null, HMENU.Null, Win32Helper.GetHInstance(), null);
+		if (_temporaryParentHwnd == HWND.Null)
 		{
+			throw new InvalidOperationException($"Cannot create the temporary WebView2 parent: {Win32Helper.GetErrorMessage()}");
+		}
+		return _temporaryParentHwnd;
+	}
+
+	protected void ReleaseTemporaryParent()
+	{
+		if (_temporaryParentHwnd != HWND.Null && ParentHwnd is var parent && parent != HWND.Null)
+		{
+			PInvoke.SetParent(Hwnd, parent);
+			DestroyTemporaryParent();
+		}
+	}
+
+	private void DestroyTemporaryParent()
+	{
+		if (_temporaryParentHwnd != HWND.Null)
+		{
+			PInvoke.DestroyWindow(_temporaryParentHwnd);
+			_temporaryParentHwnd = HWND.Null;
+		}
+	}
+
+	~Win32NativeWebViewBase() => DestroyWindow();
+
+	protected void DestroyWindow()
+	{
+		void DestroyWindowCore()
+		{
+			if (Interlocked.Exchange(ref _destroyWindowRequested, 1) != 0)
+			{
+				return;
+			}
+
+			if (Presenter.Content is Win32NativeWindow window && (HWND)window.Hwnd == Hwnd)
+			{
+				Presenter.Content = null;
+			}
 			var success = PInvoke.DestroyWindow(Hwnd);
 			if (!success && this.Log().IsEnabled(LogLevel.Error))
 			{
@@ -113,7 +165,21 @@ internal abstract class Win32NativeWebViewBase : INativeWebView
 			{
 				_hwndToWebView.Remove(Hwnd);
 			}
-		});
+			DestroyTemporaryParent();
+		}
+
+		if (Presenter.DispatcherQueue.HasThreadAccess)
+		{
+			DestroyWindowCore();
+		}
+		else
+		{
+			if (!Presenter.DispatcherQueue.TryEnqueue(DestroyWindowCore)
+				&& this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().Warn("Unable to schedule WebView window cleanup because the dispatcher is shutting down.");
+			}
+		}
 	}
 
 	[UnmanagedCallersOnly(CallConvs = [typeof(CallConvStdcall)])]

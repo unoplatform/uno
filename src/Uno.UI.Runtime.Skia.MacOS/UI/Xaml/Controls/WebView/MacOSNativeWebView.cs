@@ -13,13 +13,14 @@ using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.MacOS;
 
-internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNativeWebView
+internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNativeWebView, ISupportsClose
 {
 	private readonly MacOSWindowNative _window;
 	private readonly CoreWebView2 _owner;
 	private string _previousTitle;
 	private bool _isHistoryChangeQueued;
 	private bool _isCancelling;
+	private bool _isClosed;
 	private string? _lastHtmlContent;
 	private nint _registeredHandle;
 
@@ -55,7 +56,11 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 		OkString = !string.IsNullOrEmpty(ok) ? ok : "OK";
 		CancelString = !string.IsNullOrEmpty(cancel) ? cancel : "Cancel";
 
-		NativeHandle = NativeUno.uno_webview_create(_window.Handle, OkString, CancelString);
+		NativeHandle = NativeUno.uno_webview_create(
+			_window.Handle,
+			OkString,
+			CancelString,
+			_owner.CustomControllerOptions?.IsInPrivateModeEnabled == true);
 
 		NativeUno.uno_webview_set_inspectable(NativeHandle, global::Uno.UI.FeatureConfiguration.WebView2.EnableDevTools);
 
@@ -74,7 +79,7 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 	{
 		handle = NativeHandle;
 
-		if (Disposed || handle == 0)
+		if (_isClosed || Disposed || handle == 0)
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
 			{
@@ -113,6 +118,21 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 
 			_registeredHandle = 0;
 		}
+	}
+
+	void ISupportsClose.Close()
+	{
+		if (_isClosed)
+		{
+			return;
+		}
+
+		((ICleanableNativeWebView)this).OnUnloaded();
+		if (TryGetHandle("close", out var handle))
+		{
+			NativeUno.uno_webview_stop(handle);
+		}
+		_isClosed = true;
 	}
 
 	public string DocumentTitle => TryGetHandle("read the document title of", out var handle)
@@ -417,6 +437,18 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 	}
 
 	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	internal static void ContentLoadingCallback(nint handle)
+	{
+		GetWebView(handle)?._owner.RaiseContentLoading();
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
+	internal static void DOMContentLoadedCallback(nint handle)
+	{
+		GetWebView(handle)?._owner.RaiseDOMContentLoaded();
+	}
+
+	[UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvCdecl) })]
 	internal static unsafe void NavigationFailingCallback(nint handle, sbyte* url, CoreWebView2WebErrorStatus status)
 	{
 		var webview = GetWebView(handle);
@@ -427,7 +459,7 @@ internal partial class MacOSNativeWebView : MacOSNativeElement, ICleanableNative
 				var s = url == null ? null : new string(url);
 				Uri.TryCreate(s, UriKind.Absolute, out var uri);
 				// url might be null
-				webview._owner.RaiseNavigationCompleted(uri, isSuccess: false, httpStatusCode: 0, errorStatus: CoreWebView2WebErrorStatus.Unknown, shouldSetSource: true);
+				webview._owner.RaiseNavigationCompleted(uri, isSuccess: false, httpStatusCode: 0, errorStatus: status, shouldSetSource: true);
 			}
 			else
 			{

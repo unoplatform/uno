@@ -1,10 +1,12 @@
 #if NET10_0_OR_GREATER
 using System;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 using DirectN;
 
 using Microsoft.Web.WebView2.Core;
+using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.Win32;
 
@@ -18,6 +20,9 @@ internal class Win32CoreWebView2EnvironmentStaticsExtension : ICoreWebView2Envir
 	public static Win32CoreWebView2EnvironmentStaticsExtension Instance { get; } = new();
 
 	private Win32CoreWebView2EnvironmentStaticsExtension() { }
+
+	public Task<INativeWebViewEnvironment> CreateEnvironmentAsync(CoreWebView2Environment environment) =>
+		Win32WebView2Environment.CreateAsync(environment);
 
 	public unsafe string GetAvailableBrowserVersionString(string? browserExecutableFolder)
 	{

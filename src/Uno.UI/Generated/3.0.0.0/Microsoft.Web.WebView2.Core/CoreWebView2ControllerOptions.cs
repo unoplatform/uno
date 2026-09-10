@@ -3,16 +3,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreWebView2ControllerOptions
 	{
-#if __SKIA__
-		internal CoreWebView2ControllerOptions()
-		{
-		}
-#endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool AllowHostInputProcessing
@@ -41,48 +36,9 @@ namespace Microsoft.Web.WebView2.Core
 			}
 		}
 #endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool IsInPrivateModeEnabled
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions", "IsInPrivateModeEnabled");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions", "IsInPrivateModeEnabled");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public string ProfileName
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions", "ProfileName");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions", "ProfileName");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public string ScriptLocale
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions", "ScriptLocale");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions", "ScriptLocale");
-			}
-		}
-#endif
+		// Skipping already declared property IsInPrivateModeEnabled
+		// Skipping already declared property ProfileName
+		// Skipping already declared property ScriptLocale
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.AllowHostInputProcessing.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.AllowHostInputProcessing.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions.DefaultBackgroundColor.get
