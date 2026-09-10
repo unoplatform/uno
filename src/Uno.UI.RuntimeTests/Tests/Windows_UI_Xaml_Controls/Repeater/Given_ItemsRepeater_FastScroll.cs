@@ -608,6 +608,44 @@ public class Given_ItemsRepeater_FastScroll
 #endif
 	}
 
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22495")]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.Wasm)]
+	public async Task When_BrowserScrollBarThumbTracked_Then_OffsetIsDeferredUntilDispatcher()
+	{
+#if HAS_UNO
+		var sut = CreateMixedTemplateSut(itemCount: 150, viewport: new Size(360, 600));
+		await LoadAsync(sut);
+
+		var scrollable = sut.Scroller.ScrollableHeight;
+		scrollable.Should().BeGreaterThan(400,
+			"the SUT must be tall enough for the deferred scrollbar thumb-track request to be observable.");
+
+		var verticalScrollBar = sut.Scroller.ElementVerticalScrollBar;
+		verticalScrollBar.Should().NotBeNull("the vertical scrollbar must be materialized to drive its Scroll handler.");
+
+		var initialOffset = sut.Scroller.VerticalOffset;
+		var target = scrollable * 0.5;
+
+		sut.Scroller.OnVerticalScrollBarScrolled(
+			verticalScrollBar,
+			new Microsoft.UI.Xaml.Controls.Primitives.ScrollEventArgs
+			{
+				ScrollEventType = Microsoft.UI.Xaml.Controls.Primitives.ScrollEventType.ThumbTrack,
+				NewValue = target,
+			});
+
+		sut.Scroller.VerticalOffset.Should().BeApproximately(initialOffset, OffsetTolerance,
+			"browser-hosted scrollbar thumb tracking should queue the content scroll instead of blocking the pointer move handler.");
+
+		await TestServices.WindowHelper.WaitFor(
+			() => sut.Scroller.VerticalOffset > scrollable * 0.3,
+			message: $"Timed out waiting for deferred thumb-track offset near {target:F2}. Current offset={sut.Scroller.VerticalOffset:F2}.");
+#else
+		Assert.Inconclusive("not applicable for winappsdk: no backdoor available");
+#endif
+	}
+
 	// ----- helpers -----
 
 	// Mixed-template sample SUT: mimics the studio.live multi-template subagent markdown UI's
