@@ -49,6 +49,9 @@
 		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="SkiaSharp.Views" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
+		<!-- Uno.WinRT's SAF storage binds AndroidX.DocumentFile, but its hand-authored nuspec declares no
+		     android dependencies. Declared here because this package generates its nuspec and ships in every Android head. -->
+		<PackageReference Include="Xamarin.AndroidX.DocumentFile" />
 		<!--<PackageReference Include="SkiaSharp.NativeAssets.Android" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.Android" />-->
 	</ItemGroup>
