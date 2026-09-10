@@ -75,6 +75,13 @@ public partial class ScrollContentPresenter
 	{
 		base.OnBringIntoViewRequested(args);
 
+		// The source-ported ScrollViewer owns bring-into-view handling for its ScrollContentPresenter.
+		// Running this legacy ScrollPresenter-based path as well scrolls the target twice.
+		if (GetScrollOwner() is ScrollViewer)
+		{
+			return;
+		}
+
 		UIElement content = RealContent as UIElement;
 
 		if (args.Handled ||
@@ -346,10 +353,7 @@ public partial class ScrollContentPresenter
 		GeneralTransform transform = descendant.TransformToVisual(content);
 		Thickness contentMargin = new Thickness();
 
-		// TODO Uno specific: We need to add presenter padding, as it is not accounted
-		// for when bringing into view nested ScrollViewer.
-		// This is not happening in the WinUI ScrollView control,
-		// but matches our ScrollViewer requirements.
+		// A nested ScrollViewer's padding is represented by its presenter margin.
 		if (descendant is ScrollViewer sv)
 		{
 			contentMargin = sv.Presenter.Margin;

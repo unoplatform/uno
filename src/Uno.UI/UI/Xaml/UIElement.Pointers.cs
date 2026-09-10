@@ -1244,6 +1244,7 @@ namespace Microsoft.UI.Xaml
 				currentPoint = args.GetCurrentPoint(this);
 				UpdateRaisedGestureEventsFlag(args);
 				GestureRecognizer.ProcessBeforeUpEvent(currentPoint, isOverOrCaptured && !ctx.IsCleanup);
+				args.GestureFollowing = GestureRecognizer.GetGestureFollowing(currentPoint, isOverOrCaptured && !ctx.IsCleanup);
 			}
 
 			handledInManaged |= SetPressed(args, false, ctx);

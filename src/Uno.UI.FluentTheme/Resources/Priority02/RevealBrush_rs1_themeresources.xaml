@@ -647,6 +647,7 @@
     <!-- <Style TargetType="GridViewItem" x:Key="GridViewItemRevealStyle" /> -->
     <Style TargetType="ComboBoxItem" x:Key="ComboBoxItemRevealStyle" />
     <Style TargetType="SemanticZoom" x:Key="SemanticZoomRevealStyle"/>
+    <Style TargetType="SemanticZoom" BasedOn="{StaticResource SemanticZoomRevealStyle}" />
     <Style TargetType="controls:DropDownButton" x:Key="DropDownButtonRevealStyle"/>
     <Style TargetType="controls:SplitButton" x:Key="SplitButtonRevealStyle" />
     <Style TargetType="ListViewItem" x:Key="ListViewItemRevealBackgroundShowsAboveContentStyle" />

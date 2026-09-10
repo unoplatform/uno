@@ -33,14 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property IncrementalLoadingThresholdProperty
 		// Skipping already declared property IncrementalLoadingTriggerProperty
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsActiveViewProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(IsActiveView), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ListViewBase),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
+		// Skipping already declared property IsActiveViewProperty
 		// Skipping already declared property IsItemClickEnabledProperty
 		// Skipping already declared property IsMultiSelectCheckBoxEnabledProperty
 #if __SKIA__
@@ -51,14 +44,7 @@ namespace Microsoft.UI.Xaml.Controls
 			typeof(global::Microsoft.UI.Xaml.Controls.ListViewBase),
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty IsZoomedInViewProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(IsZoomedInView), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ListViewBase),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
+		// Skipping already declared property IsZoomedInViewProperty
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ReorderModeProperty { get; } =
@@ -68,14 +54,7 @@ namespace Microsoft.UI.Xaml.Controls
 			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.ListViewReorderMode)));
 #endif
 		// Skipping already declared property SelectionModeProperty
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty SemanticZoomOwnerProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(SemanticZoomOwner), typeof(global::Microsoft.UI.Xaml.Controls.SemanticZoom),
-			typeof(global::Microsoft.UI.Xaml.Controls.ListViewBase),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(global::Microsoft.UI.Xaml.Controls.SemanticZoom)));
-#endif
+		// Skipping already declared property SemanticZoomOwnerProperty
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty ShowsScrollingPlaceholdersProperty { get; } =
@@ -122,20 +101,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 		// Skipping already declared property IncrementalLoadingThreshold
 		// Skipping already declared property IncrementalLoadingTrigger
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool IsActiveView
-		{
-			get
-			{
-				return (bool)this.GetValue(IsActiveViewProperty);
-			}
-			set
-			{
-				this.SetValue(IsActiveViewProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property IsActiveView
 		// Skipping already declared property IsItemClickEnabled
 		// Skipping already declared property IsMultiSelectCheckBoxEnabled
 #if __SKIA__
@@ -152,20 +118,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool IsZoomedInView
-		{
-			get
-			{
-				return (bool)this.GetValue(IsZoomedInViewProperty);
-			}
-			set
-			{
-				this.SetValue(IsZoomedInViewProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property IsZoomedInView
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Controls.ListViewReorderMode ReorderMode
@@ -192,20 +145,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 #endif
 		// Skipping already declared property SelectionMode
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public global::Microsoft.UI.Xaml.Controls.SemanticZoom SemanticZoomOwner
-		{
-			get
-			{
-				return (global::Microsoft.UI.Xaml.Controls.SemanticZoom)this.GetValue(SemanticZoomOwnerProperty);
-			}
-			set
-			{
-				this.SetValue(SemanticZoomOwnerProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property SemanticZoomOwner
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]
 		public bool ShowsScrollingPlaceholders
@@ -314,55 +254,13 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.DragItemsStarting.remove
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.ItemClick.add
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.ItemClick.remove
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void InitializeViewChange()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "InitializeViewChange()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void CompleteViewChange()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "CompleteViewChange()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void MakeVisible(global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation item)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "MakeVisible(SemanticZoomLocation item)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void StartViewChangeFrom(global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation source, global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation destination)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "StartViewChangeFrom(SemanticZoomLocation source, SemanticZoomLocation destination)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void StartViewChangeTo(global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation source, global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation destination)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "StartViewChangeTo(SemanticZoomLocation source, SemanticZoomLocation destination)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void CompleteViewChangeFrom(global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation source, global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation destination)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "CompleteViewChangeFrom(SemanticZoomLocation source, SemanticZoomLocation destination)");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void CompleteViewChangeTo(global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation source, global::Microsoft.UI.Xaml.Controls.SemanticZoomLocation destination)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ListViewBase", "CompleteViewChangeTo(SemanticZoomLocation source, SemanticZoomLocation destination)");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.InitializeViewChange()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.CompleteViewChange()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.MakeVisible(Microsoft.UI.Xaml.Controls.SemanticZoomLocation)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.StartViewChangeFrom(Microsoft.UI.Xaml.Controls.SemanticZoomLocation, Microsoft.UI.Xaml.Controls.SemanticZoomLocation)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.StartViewChangeTo(Microsoft.UI.Xaml.Controls.SemanticZoomLocation, Microsoft.UI.Xaml.Controls.SemanticZoomLocation)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.CompleteViewChangeFrom(Microsoft.UI.Xaml.Controls.SemanticZoomLocation, Microsoft.UI.Xaml.Controls.SemanticZoomLocation)
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ListViewBase.CompleteViewChangeTo(Microsoft.UI.Xaml.Controls.SemanticZoomLocation, Microsoft.UI.Xaml.Controls.SemanticZoomLocation)
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.CanDragItems.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.CanDragItems.set
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ListViewBase.CanReorderItems.get

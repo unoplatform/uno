@@ -8,29 +8,9 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 	public partial class ScrollContentPresenter : global::Microsoft.UI.Xaml.Controls.ContentPresenter
 	{
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public static global::Microsoft.UI.Xaml.DependencyProperty CanContentRenderOutsideBoundsProperty { get; } =
-		Microsoft.UI.Xaml.DependencyProperty.Register(
-			nameof(CanContentRenderOutsideBounds), typeof(bool),
-			typeof(global::Microsoft.UI.Xaml.Controls.ScrollContentPresenter),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-#endif
+		// Skipping already declared property CanContentRenderOutsideBoundsProperty
 		// Skipping already declared property SizesContentToTemplatedParentProperty
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public bool CanContentRenderOutsideBounds
-		{
-			get
-			{
-				return (bool)this.GetValue(CanContentRenderOutsideBoundsProperty);
-			}
-			set
-			{
-				this.SetValue(CanContentRenderOutsideBoundsProperty, value);
-			}
-		}
-#endif
+		// Skipping already declared property CanContentRenderOutsideBounds
 		// Skipping already declared property CanHorizontallyScroll
 		// Skipping already declared property CanVerticallyScroll
 		// Skipping already declared property ExtentHeight
@@ -45,90 +25,18 @@ namespace Microsoft.UI.Xaml.Controls
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.ScrollContentPresenter()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.CanContentRenderOutsideBoundsProperty.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.SizesContentToTemplatedParentProperty.get
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void LineUp()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollContentPresenter", "LineUp()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void LineDown()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollContentPresenter", "LineDown()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void LineLeft()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollContentPresenter", "LineLeft()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void LineRight()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollContentPresenter", "LineRight()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void PageUp()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollContentPresenter", "PageUp()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void PageDown()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollContentPresenter", "PageDown()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void PageLeft()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollContentPresenter", "PageLeft()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void PageRight()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollContentPresenter", "PageRight()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void MouseWheelUp()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollContentPresenter", "MouseWheelUp()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void MouseWheelDown()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollContentPresenter", "MouseWheelDown()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void MouseWheelLeft()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollContentPresenter", "MouseWheelLeft()");
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public void MouseWheelRight()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.ScrollContentPresenter", "MouseWheelRight()");
-		}
-#endif
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.LineUp()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.LineDown()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.LineLeft()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.LineRight()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.PageUp()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.PageDown()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.PageLeft()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.PageRight()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.MouseWheelUp()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.MouseWheelDown()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.MouseWheelLeft()
+		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.MouseWheelRight()
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.SetHorizontalOffset(double)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.SetVerticalOffset(double)
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollContentPresenter.MakeVisible(Microsoft.UI.Xaml.UIElement, Windows.Foundation.Rect)

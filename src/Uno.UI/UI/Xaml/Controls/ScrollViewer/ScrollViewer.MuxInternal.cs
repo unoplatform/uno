@@ -16,9 +16,11 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	partial class ScrollViewer
 	{
-		private IDisposable? _directManipulationHandlerSubscription;
-
 		private bool m_isPointerLeftButtonPressed;
+
+#if !__SKIA__
+		private IDisposable? _directManipulationHandlerSubscription;
+#endif
 
 		internal bool m_templatedParentHandlesMouseButton;
 
@@ -49,7 +51,12 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 			}
 		}
-		internal bool IsInDirectManipulation { get; }
+		internal bool IsInDirectManipulation
+#if __SKIA__
+			=> IsInDirectManipulationCore();
+#else
+		{ get; }
+#endif
 		internal bool TemplatedParentHandlesScrolling { get; set; }
 		internal Func<AutomationPeer>? AutomationPeerFactoryIndex { get; set; }
 
@@ -58,11 +65,52 @@ namespace Microsoft.UI.Xaml.Controls
 			bool skipAnimationWhileRunning,
 			bool animate)
 		{
+#if __SKIA__
+			if (m_hManipulationHandler is null)
+			{
+				return false;
+			}
+
+			GetCanManipulateElements(
+				out _,
+				out _,
+				out var canManipulateElementsWithBringIntoViewport);
+			if (!canManipulateElementsWithBringIntoViewport)
+			{
+				return false;
+			}
+
+			BringIntoViewportInternal(
+				bounds,
+				0.0f,
+				0.0f,
+				1.0f,
+				transformIsValid: false,
+				skipDuringTouchContact,
+				skipAnimationWhileRunning,
+				animate && IsAnimationEnabled,
+				applyAsManip: true,
+				isForMakeVisible: false,
+				out var handled);
+			return handled;
+#else
 			return ChangeView(bounds.X, bounds.Y, null, !animate);
+#endif
 		}
 
 		internal void SetDirectManipulationStateChangeHandler(IDirectManipulationStateChangeHandler? handler)
 		{
+#if __SKIA__
+			m_pDMStateChangeHandler = handler;
+
+			if (handler is not null)
+			{
+				// Consumers of the DM state machine (CalendarView, SemanticZoom) read the view
+				// characteristics right after a state change, so the view must not lag behind
+				// the presenter by a layout pass.
+				UpdatesMode = ScrollViewerUpdatesMode.Synchronous;
+			}
+#else
 			_directManipulationHandlerSubscription?.Dispose();
 
 			if (handler is null)
@@ -91,6 +139,7 @@ namespace Microsoft.UI.Xaml.Controls
 					h.NotifyStateChange(DMManipulationState.DMManipulationCompleted, default, default, default, default, default, default, default, default);
 				}
 			}
+#endif
 		}
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs pArgs)
@@ -120,19 +169,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (m_isPointerLeftButtonPressed)
 			{
-				//GestureModes gestureFollowing = GestureModes.None;
-
 				// Reset the pointer left button pressed state
 				m_isPointerLeftButtonPressed = false;
 
-				//var gestureFollowing = args.GestureFollowing;
+#if __SKIA__
+				var gestureFollowing = args.GestureFollowing;
 
-				//if (gestureFollowing == GestureModes.RightTapped)
-				//{
-				//	// Schedule the focus change for OnRightTappedUnhandled.
-				//	m_shouldFocusOnRightTapUnhandled = true;
-				//}
-				//else
+				if (gestureFollowing == GestureModes.RightTapped)
+				{
+					// Schedule the focus change for OnRightTappedUnhandled.
+					m_shouldFocusOnRightTapUnhandled = true;
+				}
+				else
+#endif
 				{
 					bool isFocusedOnLightDismissPopupOfFlyout = false;
 

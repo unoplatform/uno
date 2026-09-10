@@ -7,7 +7,7 @@ using View = Microsoft.UI.Xaml.UIElement;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : ContentPresenter, ILayoutConstraints
+	public sealed partial class ScrollContentPresenter : ContentPresenter, ILayoutConstraints
 	{
 		public ScrollContentPresenter()
 		{
@@ -47,11 +47,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private ScrollViewer Scroller => ScrollOwner as ScrollViewer;
 
-		internal double TargetHorizontalOffset =>
-			HorizontalOffset;
+		internal double TargetHorizontalOffset => HorizontalOffset;
 
-		internal double TargetVerticalOffset =>
-			VerticalOffset;
+		internal double TargetVerticalOffset => VerticalOffset;
 
 		public static DependencyProperty SizesContentToTemplatedParentProperty { get; } = DependencyProperty.Register(
 			nameof(SizesContentToTemplatedParent),
@@ -65,29 +63,12 @@ namespace Microsoft.UI.Xaml.Controls
 			set => SetValue(SizesContentToTemplatedParentProperty, value);
 		}
 
-		public Rect MakeVisible(UIElement visual, Rect rectangle)
-		{
-			// Simulate a BringIntoView request
-			var args = new BringIntoViewRequestedEventArgs()
-			{
-				AnimationDesired = true,
-				TargetRect = rectangle,
-				TargetElement = visual,
-				OriginalSource = visual
-			};
-			OnBringIntoViewRequested(args);
-
-			return args.TargetRect;
-		}
-
-#if __SKIA__
 		bool _forceChangeToCurrentView;
 		internal bool ForceChangeToCurrentView
 		{
 			get => _forceChangeToCurrentView;
 			set => _forceChangeToCurrentView = value;
 		}
-#endif
 
 		private void InitializeScrollContentPresenter()
 		{
@@ -129,114 +110,17 @@ namespace Microsoft.UI.Xaml.Controls
 		public double ViewportWidth => DesiredSize.Width - Margin.Left - Margin.Right;
 
 		protected override Size MeasureOverride(Size availableSize)
-		{
-			if (Content is UIElement child)
-			{
-				var (minSize, maxSize) = Scroller.GetMinMax();
-
-				var slotSize = availableSize
-					.AtMost(maxSize)
-					.AtLeast(minSize);
-
-				bool sizesContentToTemplatedParent = SizesContentToTemplatedParent;
-
-				if (ScrollOwner is ScrollViewer scrollViewer)
-				{
-					if (sizesContentToTemplatedParent)
-					{
-						slotSize = scrollViewer.ViewportMeasureSize;
-					}
-				}
-
-				// when set to true, this means that we wanted to set to infinity but were blocked in doing it.
-				bool childPreventsInfiniteAvailableWidth = false;
-				bool childPreventsInfiniteAvailableHeight = false;
-
-				// The decision to allow the content to overflow during measure is driven by ScrollBarVisibility,
-				// not by Can[H|V]erticallyScroll. The latter is tied to ScrollMode (user-input gate) and is used by
-				// the pointer-wheel and direct-manipulation paths; gating layout on it would also disable layout overflow
-				// whenever ScrollMode is Disabled (e.g. PipsPager), which then traps the content inside a viewport-sized
-				// layout slot and produces a LayoutClip that masks any content that scrolls in via programmatic
-				// ChangeView / BringIntoView.
-				var allowVerticalOverflow = ScrollOwner is not ScrollViewer verticallyOwningScrollViewer
-					|| verticallyOwningScrollViewer.VerticalScrollBarVisibility != ScrollBarVisibility.Disabled;
-				var allowHorizontalOverflow = ScrollOwner is not ScrollViewer horizontallyOwningScrollViewer
-					|| horizontallyOwningScrollViewer.HorizontalScrollBarVisibility != ScrollBarVisibility.Disabled;
-
-				if (allowVerticalOverflow)
-				{
-					childPreventsInfiniteAvailableHeight = !child.WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation.Vertical);
-					if (!sizesContentToTemplatedParent && !childPreventsInfiniteAvailableHeight)
-					{
-						slotSize.Height = double.PositiveInfinity;
-					}
-				}
-				if (allowHorizontalOverflow)
-				{
-					childPreventsInfiniteAvailableWidth = !child.WantsScrollViewerToObscureAvailableSizeBasedOnScrollBarVisibility(Orientation.Horizontal);
-					if (!sizesContentToTemplatedParent && !childPreventsInfiniteAvailableWidth)
-					{
-						slotSize.Width = double.PositiveInfinity;
-					}
-				}
-
-				if (child is ItemsPresenter itemsPresenter)
-				{
-					itemsPresenter.EvaluateAndSetNonClippingBehavior(childPreventsInfiniteAvailableWidth || childPreventsInfiniteAvailableHeight);
-				}
-
-				child.Measure(slotSize);
-
-				var desired = child.DesiredSize;
-
-				// Give opportunity to the the content to define the viewport size itself
-				(child as ICustomScrollInfo)?.ApplyViewport(ref desired);
-
-				// Mirror of ScrollViewer_Partial.cpp:9440 OnScrollContentPresenterMeasured.
-				// When the SCP is (re-)measured and the owning ScrollViewer has anchoring active,
-				// force ArrangeOverride to re-run so the anchoring offset correction fires.
-				Scroller?.OnScrollContentPresenterMeasured();
-
-				return new Size(
-					Math.Min(availableSize.Width, desired.Width),
-					Math.Min(availableSize.Height, desired.Height)
-				);
-			}
-
-			return new Size(0, 0);
-		}
+			=> MeasureOverridePort(availableSize);
 
 		protected override Size ArrangeOverride(Size finalSize)
-		{
-			if (Content is UIElement child)
-			{
-				Rect childRect = default;
-
-				var desiredSize = child.DesiredSize;
-
-				childRect.Width = Math.Max(finalSize.Width, desiredSize.Width);
-				// The keyboard-occlusion pad shrinks the viewport so the BringIntoView that follows lands the
-				// focused element right above the input pane. It must not re-arrange content that sizes itself
-				// to the viewport: arranging against the un-occluded height turns the pad into scrollable
-				// extent instead, so a centered or stretched layout stays where it was.
-				childRect.Height = Math.Max(finalSize.Height + _occludedRectPadding.Bottom, desiredSize.Height);
-
-				child.Arrange(childRect);
-
-				// Give opportunity to the the content to define the viewport size itself
-				(child as ICustomScrollInfo)?.ApplyViewport(ref finalSize);
-			}
-
-			return finalSize;
-		}
+			=> ArrangeOverridePort(finalSize);
 
 		internal override bool IsViewHit()
 			=> true;
 
 #if __CROSSRUNTIME__
-		// This may need to be adjusted if/when CanContentRenderOutsideBounds is implemented.
 		private protected override Rect? GetClipRect(bool needsClipToSlot, Point visualOffset, Rect finalRect, Size maxSize, Thickness margin)
-			=> new Rect(default, RenderSize);
+			=> CanContentRenderOutsideBounds ? null : new Rect(default, RenderSize);
 #endif
 
 		private void PointerWheelScroll(object sender, Input.PointerRoutedEventArgs e)
@@ -261,7 +145,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (e.KeyModifiers == VirtualKeyModifiers.Control)
 				{
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 					if (Scroller?.ZoomMode == ZoomMode.Enabled)
 					{
 						// Calculate zoom change (positive delta = zoom in, negative = zoom out)
@@ -288,14 +171,12 @@ namespace Microsoft.UI.Xaml.Controls
 								disableAnimation: false);
 						}
 					}
-#endif
 				}
 				else if (canScrollHorizontally && (properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
 				{
 					// IsHorizontalMouseWheel already carries the correct sign (positive = right). A Shift-redirected
 					// vertical wheel uses the vertical convention (positive = up), so negate to get positive = right.
 					var horizontalDelta = properties.IsHorizontalMouseWheel ? delta : -delta;
-
 					// Trackpad/touchpad-style scroll events can arrive at display-refresh rate (~60/s) with precise
 					// pixel-level deltas. The 1-second composition animation is NOT suitable because:
 					// 1. When many events have accumulated the target far ahead of the visual, the animation's

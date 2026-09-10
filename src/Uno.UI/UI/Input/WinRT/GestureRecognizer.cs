@@ -155,6 +155,13 @@ namespace Windows.UI.Input
 			_manipulation?.Remove(value);
 		}
 
+#if IS_UNO_UI_PROJECT
+		internal Microsoft.UI.Xaml.Input.GestureModes GetGestureFollowing(global::Microsoft.UI.Input.PointerPoint value, bool isRelevant)
+			=> isRelevant && _gestures.TryGetValue(value.Pointer, out var gesture)
+				? gesture.GetGestureFollowing(value)
+				: Microsoft.UI.Xaml.Input.GestureModes.None;
+#endif
+
 		public void ProcessUpEvent(global::Microsoft.UI.Input.PointerPoint value) => ProcessUpEvent(value, true);
 
 		internal void ProcessUpEvent(global::Microsoft.UI.Input.PointerPoint value, bool isRelevant)
