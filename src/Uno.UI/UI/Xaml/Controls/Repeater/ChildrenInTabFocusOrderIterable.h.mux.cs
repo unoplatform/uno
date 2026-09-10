@@ -23,10 +23,10 @@ partial class ChildrenInTabFocusOrderIterable
 				++m_index;
 				return (m_index < m_realizedChildren.Count);
 			}
-			else
-			{
-				throw new IndexOutOfRangeException();
-			}
+
+			// WinUI throws hresult_out_of_bounds here because WinRT callers guard with HasCurrent,
+			// but IEnumerator.MoveNext must keep returning false once the sequence is exhausted.
+			return false;
 		}
 
 		// #pragma endregion

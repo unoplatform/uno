@@ -38,7 +38,7 @@ partial class ChildrenInTabFocusOrderIterable
 			}
 
 			// Sort children by index.
-			m_realizedChildren.Sort((lhs, rhs) => lhs.Key - rhs.Key);
+			m_realizedChildren.Sort((lhs, rhs) => lhs.Key.CompareTo(rhs.Key));
 		}
 
 		object IEnumerator.Current => Current;

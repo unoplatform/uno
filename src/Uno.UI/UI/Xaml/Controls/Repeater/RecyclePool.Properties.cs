@@ -96,12 +96,12 @@ partial class RecyclePool
 
 	internal static DataTemplate GetOriginTemplate(UIElement element)
 	{
-		return (DataTemplate)element.GetValue(s_originTemplateProperty);
+		return (DataTemplate)element.GetValue(OriginTemplateProperty);
 	}
 
 	internal static void SetOriginTemplate(UIElement element, DataTemplate value)
 	{
-		element.SetValue(s_originTemplateProperty, value);
+		element.SetValue(OriginTemplateProperty, value);
 	}
 
 	// #pragma endregion
