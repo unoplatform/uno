@@ -629,21 +629,11 @@ namespace Microsoft.UI.Xaml.Data
 							bindingPath.SetWeakDataContext(weakDataContext);
 						}
 					}
-
-					_subscription.Disposable = new DisposableAction(() =>
-					{
-						foreach (var bindingPath in _updateSources)
-						{
-							bindingPath.Expression = null;
-						}
-					});
-
 				}
 				else
 				{
 					_bindingPath.Expression = this;
 					_bindingPath.SetWeakDataContext(weakDataContext);
-					_subscription.Disposable = new DisposableAction(() => _bindingPath.Expression = null);
 				}
 
 				// Static update sources have their DataContext pre-set to the static root objects.
@@ -655,6 +645,10 @@ namespace Microsoft.UI.Xaml.Data
 						bindingPath.Expression = this;
 					}
 				}
+
+				// A single subscription detaches every source, so that suspending or re-applying
+				// the binding stops the static-rooted sources as well.
+				_subscription.Disposable = new DisposableAction(ClearUpdateSourceExpressions);
 			}
 			else
 			{
@@ -683,6 +677,29 @@ namespace Microsoft.UI.Xaml.Data
 			}
 
 			_isBindingSuspended = false;
+		}
+
+		private void ClearUpdateSourceExpressions()
+		{
+			if (_updateSources != null)
+			{
+				foreach (var bindingPath in _updateSources)
+				{
+					bindingPath.Expression = null;
+				}
+			}
+			else
+			{
+				_bindingPath.Expression = null;
+			}
+
+			if (_staticUpdateSources != null)
+			{
+				foreach (var bindingPath in _staticUpdateSources)
+				{
+					bindingPath.Expression = null;
+				}
+			}
 		}
 
 		internal void OnValueChanged(object o)
@@ -936,7 +953,6 @@ namespace Microsoft.UI.Xaml.Data
 			{
 				foreach (var bindingPath in _staticUpdateSources)
 				{
-					bindingPath.Expression = null;
 					bindingPath.Dispose();
 				}
 			}
