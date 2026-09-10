@@ -6,6 +6,16 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 To upgrade to the latest version of Uno Platform, [follow our guide](xref:Uno.Development.UpgradeUnoNuget).
 
+## Uno Platform 7.0
+
+Uno Platform 7.0 is the Skia-unification major release: Skia is the rendering engine on every
+target, the native Android, iOS/UIKit and WebAssembly DOM renderers are retired, and the public
+API surface is realigned with WinUI. It carries the breaking changes deferred since 2022, so
+plan for a recompile of every Uno-dependent library rather than a drop-in package bump.
+
+**[Read the full "Migrating to Uno Platform 7.0" guide](xref:Uno.Development.MigratingToUno7)**
+for the removed APIs, type-hierarchy changes, behavioral changes and the migration checklist.
+
 ## Uno Platform 6.6
 
 Uno Platform 6.6 contains a breaking change related to the removal of legacy Windows Phone namespaces, along with a few platform behavior changes to be aware of when upgrading.

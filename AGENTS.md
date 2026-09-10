@@ -169,9 +169,11 @@ This applies to the **UI rendering layer** (`Uno.UI` native views), *not* to pla
 
 XAML files are parsed to C# via source generators (`XamlFileGenerator` in `Uno.UI.SourceGenerators`), not .xbf like WinUI. Generates `InitializeComponent()`, named fields, and x:Bind expressions.
 
-### DependencyObject on Mobile
+### DependencyObject
 
-On Android/iOS, `DependencyObject` is an **interface** (not base class) since `UIElement` must inherit from native view classes. Source generators provide the implementation via `DependencyObjectGenerator`.
+`DependencyObject` is a **class** on every target, as in WinUI — inherit from it directly.
+
+Before 7.0 it was an *interface*, because the native Android/iOS renderers forced `UIElement` to inherit a native view class, and a `DependencyObjectGenerator` supplied the implementation. Rendering is Skia everywhere now, so the interface and that generator are both gone.
 
 ### Project Organization
 
@@ -332,9 +334,9 @@ A GitHub Actions workflow enforces formatting on PRs that touch SamplesApp XAML 
 
 ## Common Pitfalls
 
-1. **DependencyObject is an interface** on Android/iOS - don't inherit, implement
+1. **DependencyObject is a class** - inherit from it directly, as in WinUI
 2. **Generated files are regenerated** - never edit `Generated/` folders
-3. **Visual tree differs by platform** - Android/iOS use native hierarchy; WebAssembly uses DOM; Skia uses rendering tree
+3. **The visual tree is the Skia rendering tree** on every target
 4. **Partial methods** used for extensibility: `OnLoaded()`, `OnUnloaded()`
 5. **NuGet cache corruption** - delete `%USERPROFILE%\.nuget\packages\uno.ui` if debugging fails
 6. **Long paths on Windows** - enable via registry if needed

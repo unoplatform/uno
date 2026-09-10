@@ -266,6 +266,17 @@
 		</PropertyGroup>
 	</Target>
 
+	<!--
+		Microsoft.TypeScript.MSBuild's TypeScriptDeleteOutputFromOtherConfigs deletes the files
+		listed by every Tsc*.out found under obj\ other than its own, assuming they belong to
+		another configuration. Under multi-targeting the sibling TFM's obj\<config>\<tfm>\ looks
+		exactly like that, so each inner build deletes the other's freshly emitted javascript\*.js
+		- which then breaks the embedded resource injection that reads it. The stale-configuration
+		cleanup buys us nothing: that JavaScript is embedded into the assembly, never read back
+		from bin\. This file is imported after the NuGet package targets, so this override wins.
+	-->
+	<Target Name="TypeScriptDeleteOutputFromOtherConfigs" />
+
 	<Import Project="Workaround-43339.targets" />
 
 	<ItemDefinitionGroup>

@@ -39,7 +39,11 @@ window.Activate();
 
 ### Support for secondary windows
 
-All Uno Platform desktop targets support displaying secondary windows. Attempt to create a second window on Android and iOS will result in a `InvalidOperation` exception. Support for multi-windowing in mobile targets is actively investigated.
+All Uno Platform desktop targets support displaying secondary windows.
+
+On **iOS**, secondary windows are backed by UIKit scenes, so the app has to opt in: it must declare a scene manifest (`UIApplicationSceneManifest`) in `Info.plist` with `UIApplicationSupportsMultipleScenes` set, and route scene callbacks through a `SceneDelegate`. Without that, the app stays single-window.
+
+On **Android**, secondary windows are not supported yet.
 
 ## Making the window full screen
 
