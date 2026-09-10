@@ -321,10 +321,6 @@ partial class AppBar
 			SetExpandButtonToolTip(m_tpExpandButton, isAppBarOpen);
 		}
 
-		// Get overlay opening/closing storyboards from template resources.
-		m_overlayOpeningStoryboard = GetTemplateChild<Storyboard>("OverlayOpeningAnimation");
-		m_overlayClosingStoryboard = GetTemplateChild<Storyboard>("OverlayClosingAnimation");
-
 		// Query compact & minimal height from resource dictionary.
 		var compactHeight = ResourceResolver.ResolveTopLevelResourceDouble("AppBarThemeCompactHeight");
 		CompactHeight = compactHeight;
@@ -332,9 +328,31 @@ partial class AppBar
 
 		MinimalHeight = ResourceResolver.ResolveTopLevelResourceDouble("AppBarThemeMinimalHeight");
 
+		// Lookup the animations to use for the window overlay.
+		// They are x:Key'd entries of LayoutRoot.Resources, not named template parts,
+		// so GetTemplateChild cannot resolve them.
+		if (m_tpLayoutRoot is not null)
+		{
+			var layoutRootResources = m_tpLayoutRoot.Resources;
+
+			if (layoutRootResources.TryGetValue("OverlayOpeningAnimation", out var boxedOverlayOpeningStoryboard)
+				&& boxedOverlayOpeningStoryboard is Storyboard windowOverlayOpeningStoryboard)
+			{
+				m_overlayOpeningStoryboard = windowOverlayOpeningStoryboard;
+			}
+
+			if (layoutRootResources.TryGetValue("OverlayClosingAnimation", out var boxedOverlayClosingStoryboard)
+				&& boxedOverlayClosingStoryboard is Storyboard windowOverlayClosingStoryboard)
+			{
+				m_overlayClosingStoryboard = windowOverlayClosingStoryboard;
+			}
+		}
+
 		// Refresh our heights and update template settings.
 		RefreshContentHeight();
 		UpdateTemplateSettings();
+
+		ReevaluateIsOverlayVisible();
 	}
 
 	protected override Size MeasureOverride(Size availableSize)
@@ -800,7 +818,6 @@ partial class AppBar
 	{
 		// If the AppBar is not live, then wait until it's loaded before
 		// responding to changes to opened state and firing our Opening/Opened events.
-		// Uno Specific: using IsLoaded instead of IsInLiveTree, which makes more sense because OnOpening (called below) -> SetupOverlayState expects OnApplyTemplate to have already been called
 		if (!IsInLiveTree)
 		{
 			return;
