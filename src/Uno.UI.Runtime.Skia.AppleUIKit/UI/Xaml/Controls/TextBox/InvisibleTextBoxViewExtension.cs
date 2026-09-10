@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -19,6 +20,7 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 	private readonly TextBoxView _owner;
 	private UIView? _latestNativeView;
 	private IInvisibleTextBoxView? _textBoxView;
+	private UIView? _keyboardDismissAccessory;
 
 	public InvisibleTextBoxViewExtension(TextBoxView view)
 	{
@@ -161,6 +163,8 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		var inputReturnType = TextBoxExtensions.GetInputReturnType(core.Owner);
 		_textBoxView.ReturnKeyType = inputReturnType.ToUIReturnKeyType();
 
+		UpdateKeyboardAccessoryView(core);
+
 		if (core.IsSpellCheckEnabled)
 		{
 			_textBoxView.AutocapitalizationType = UITextAutocapitalizationType.Sentences;
@@ -174,6 +178,38 @@ internal class InvisibleTextBoxViewExtension : IOverlayTextBoxViewExtension
 		if (_textBoxView is UIView nativeView)
 		{
 			UpdateNativeViewFrame(nativeView);
+		}
+	}
+
+	private void UpdateKeyboardAccessoryView(TextBoxCore core)
+	{
+		if (_textBoxView is null)
+		{
+			return;
+		}
+
+		if (!KeyboardDismissAccessory.IsSupported || !TextBoxExtensions.GetShowKeyboardDismissButton(core.Owner))
+		{
+			_textBoxView.SetKeyboardAccessoryView(null);
+			return;
+		}
+
+		// The toolbar is built on first opt-in and kept for the lifetime of the extension, so
+		// re-focusing the same TextBox does not rebuild it.
+		_keyboardDismissAccessory ??= KeyboardDismissAccessory.TryCreate(new WeakReference<InvisibleTextBoxViewExtension>(this));
+		_textBoxView.SetKeyboardAccessoryView(_keyboardDismissAccessory);
+	}
+
+	/// <summary>
+	/// Dismisses the soft keyboard, as the "Done" accessory button does. Resigning the native responder
+	/// ends the native editing session, which unfocuses the managed control through the delegate's
+	/// EditingEnded - the same path the Enter key takes on a single-line TextBox.
+	/// </summary>
+	internal void DismissKeyboard()
+	{
+		if (_textBoxView is { IsFirstResponder: true } view)
+		{
+			view.ResignFirstResponder();
 		}
 	}
 
