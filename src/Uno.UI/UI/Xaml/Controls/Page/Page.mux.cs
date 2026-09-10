@@ -341,7 +341,11 @@ public partial class Page
 	// MUX Reference Page_Partial.cpp, tag winui3/release/1.7.1
 	// Calculates how much size needs to be subtracted from arrange bounds to account for
 	// appbar occlusion. topHeight is the offset for the top bar, totalHeight is the total height consumed.
-#pragma warning disable IDE0051 // Remove unused private members - prepared for future layout bounds integration
+	// TODO Uno: no caller yet. WinUI's Page::ArrangeOverride subtracts this from the arrange
+	// bounds and hooks XamlRoot LayoutBoundsChanged, so a docked Top/BottomAppBar pushes page
+	// content out of the way; Uno's Page overrides neither Measure nor Arrange, so the bars
+	// currently overlay the content instead.
+#pragma warning disable IDE0051 // Remove unused private members - kept for the ArrangeOverride port above
 	private (double topHeight, double totalHeight) CalculateAppBarOcclusionDimensions()
 #pragma warning restore IDE0051
 	{
