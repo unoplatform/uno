@@ -18,18 +18,17 @@ using WColor = Windows.UI.Color;
 
 namespace Uno.UI.Composition.WebGpu;
 
-public sealed unsafe partial class WebGpuPresentSession
+internal sealed unsafe partial class WebGpuCoverage
 {
 	/// <summary>
 	/// Emits an atlased fill as a tinted quad, or returns false to leave it on the geometry path.
 	/// </summary>
-	private bool TryAtlasFill(PathCmd pf, WebGpuShapeCache.Shape shape, List<DrawOp> ops, OwnedResources owned, Vector2 scale, bool big = false, bool filtered = false)
+	internal bool TryAtlasFill(PathCmd pf, WebGpuShapeCache.Shape shape, List<DrawOp> ops, OwnedResources owned, Vector2 scale, bool big = false, bool filtered = false)
 	{
 		if (!TryAtlasOp(pf, shape, owned, scale, out var op, big, filtered)) { return false; }
 		ops.Add(op);
 		return true;
 	}
-
 
 	internal static int AtlasTried, AtlasNoKey, AtlasHit, AtlasBaked, AtlasNoRoom, AtlasNoEdges, ScaleBlocked;
 
@@ -56,7 +55,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// <paramref name="i"/> past them. Per-glyph geometry turns a string into N fills, and a draw apiece is far
 	/// worse than the single merged run it replaces - the quads all sample one page, so they batch trivially.
 	/// </summary>
-	private bool TryAtlasBatch(List<WebGpuCommand> cmds, ref int i, OwnedResources owned, Vector2 scale, out DrawOp result)
+	internal bool TryAtlasBatch(List<WebGpuCommand> cmds, ref int i, OwnedResources owned, Vector2 scale, out DrawOp result)
 	{
 		result = default;
 		if (cmds[i] is not PathCmd first) { return false; }
@@ -68,7 +67,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		while (j < cmds.Count && cmds[j] is PathCmd nx
 			&& nx.Color.R == first.Color.R && nx.Color.G == first.Color.G
 			&& nx.Color.B == first.Color.B && nx.Color.A == first.Color.A
-			&& ClipDataEquals(nx.Clip, first.Clip))
+			&& WebGpuFrame.ClipDataEquals(nx.Clip, first.Clip))
 		{
 			// A fill landing on ANOTHER page cannot share this draw's bind group. It stays baked, so the caller
 			// picks it up next and starts a fresh batch on what is by then a cache hit.
@@ -91,7 +90,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	private bool TryAtlasSlot(PathCmd pf, WebGpuShapeCache.Shape shape, OwnedResources owned, Vector2 scale, out WebGpuPathAtlas.Slot slot, out float ox, out float oy, bool big = false)
 	{
 		slot = null; ox = oy = 0;
-		if (!_pathAtlas) { return false; }
+		if (!AtlasEnabled) { return false; }
 		AtlasTried++;
 		// A cached recording OWNS the entries it bakes and frees them when released. A per-frame op has no such
 		// owner, so the ATLAS holds the reference and drops it after the entry goes idle (HoldForCache/SweepCache).
@@ -151,11 +150,11 @@ public sealed unsafe partial class WebGpuPresentSession
 
 	// A texture of the entry's own size, registered as its own atlas page so it shares the key, reference count and
 	// idle sweep of a shelf slot. Format follows what will be rendered into it.
-	private WebGpuPathAtlas.Slot AddStandaloneSlot(in WebGpuPathAtlas.Key key, int w, int h, float ox, float oy, WGPUTextureFormat format)
+	internal WebGpuPathAtlas.Slot AddStandaloneSlot(in WebGpuPathAtlas.Key key, int w, int h, float ox, float oy, WGPUTextureFormat format)
 		=> AddStandaloneSlot(key, w, h, ox, oy, format, w, h, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding);
 
 	// The entry draws w x h, over a texture of texW x texH: a blurred shadow is stored at its pyramid's top level.
-	private WebGpuPathAtlas.Slot AddStandaloneSlot(in WebGpuPathAtlas.Key key, int w, int h, float ox, float oy, WGPUTextureFormat format, int texW, int texH, WGPUTextureUsage usage)
+	internal WebGpuPathAtlas.Slot AddStandaloneSlot(in WebGpuPathAtlas.Key key, int w, int h, float ox, float oy, WGPUTextureFormat format, int texW, int texH, WGPUTextureUsage usage)
 	{
 		var td = new WGPUTextureDescriptor
 		{
@@ -206,54 +205,10 @@ public sealed unsafe partial class WebGpuPresentSession
 		return clip;
 	}
 
-	/// <summary>
-	/// Six vertices (pos.xy in pixels, uv.xy) for an axis-aligned textured quad covering the device rect at
-	/// <paramref name="origin"/>, sampling the texture rect <paramref name="uv"/> (x0, y0, x1, y1).
-	/// </summary>
-	private float[] TexturedQuad(Vector2 origin, Vector2 size, Vector4 uv)
-	{
-		var q = new float[24];
-		void V(int i, Vector2 pos, float u, float v)
-		{
-			q[i] = pos.X; q[i + 1] = pos.Y; q[i + 2] = u; q[i + 3] = v;
-		}
-
-		var tr = origin + new Vector2(size.X, 0);
-		var br = origin + size;
-		var bl = origin + new Vector2(0, size.Y);
-		V(0, origin, uv.X, uv.Y); V(4, tr, uv.Z, uv.Y); V(8, br, uv.Z, uv.W);
-		V(12, origin, uv.X, uv.Y); V(16, br, uv.Z, uv.W); V(20, bl, uv.X, uv.W);
-		return q;
-	}
-
-	private float[] TexturedQuad(Vector2 origin, Vector2 size) => TexturedQuad(origin, size, new Vector4(0f, 0f, 1f, 1f));
-
-	/// <summary>
-	/// Bind group for a SrcIn-tinted image draw: the texture carries coverage in its alpha and the colour comes
-	/// from <paramref name="tint"/> (see ImageWgsl op.y). Pass <paramref name="owned"/> for a cached recording so
-	/// the uniform is persistent - a per-frame one would be recycled and replay in another element's colour.
-	/// </summary>
-	private IntPtr TintedImageBg(IntPtr view, WColor tint, OwnedResources owned = null)
-	{
-		var ubuf = Ubuf(WebGpuDevice.ImageUniformBytes, owned);
-		var u = stackalloc float[36];
-		for (var zi = 0; zi < 36; zi++) { u[zi] = 0f; }
-		u[0] = 1f; u[1] = 1f;
-		u[4] = tint.R / 255f; u[5] = tint.G / 255f; u[6] = tint.B / 255f; u[7] = tint.A / 255f;
-		// Whole uniform, so a recycled buffer cannot leave the edge-AA flag set: the mask carries the coverage.
-		wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)u, WebGpuDevice.ImageUniformBytes);
-		var e = stackalloc WGPUBindGroupEntry[3];
-		e[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = view };
-		e[1] = new WGPUBindGroupEntry { Binding = 1, Sampler = _d.Smp };
-		e[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = ubuf, Offset = 0, Size = WebGpuDevice.ImageUniformBytes };
-		var bgd = new WGPUBindGroupDescriptor { Layout = _d.ImgBgl, EntryCount = 3, Entries = e };
-		return Bg(ref bgd, owned);
-	}
-
 	/// <summary>One solid draw for a batch of quads sharing a page, a colour and a clip; the page is their coverage.</summary>
 	private DrawOp MakeAtlasOp(PathCmd pf, WebGpuPathAtlas.Page page, List<float> quads, OwnedResources owned, bool filtered = false)
 	{
 		var clip = WithCoverage(pf.Clip, page.View, filtered);
-		return DrawOp.Own(DrawKind.Solid, Vbuf(quads, owned), (uint)(quads.Count / VertexStride.Solid), IntPtr.Zero, clip, MakeClipBg(clip, owned));
+		return DrawOp.Own(DrawKind.Solid, _f.Vbuf(quads, owned), (uint)(quads.Count / VertexStride.Solid), IntPtr.Zero, clip, _f.MakeClipBg(clip, owned));
 	}
 }

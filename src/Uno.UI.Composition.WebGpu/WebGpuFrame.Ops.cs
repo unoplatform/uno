@@ -11,41 +11,12 @@ using WColor = Windows.UI.Color;
 
 namespace Uno.UI.Composition.WebGpu;
 
-public sealed unsafe partial class WebGpuPresentSession
+internal sealed unsafe partial class WebGpuFrame
 {
-	public void Replay(IRenderRecord data)
-	{
-		// During an async backend switch (e.g. the browser's on-canvas WebGPU init) a frame recorded by the
-		// previous renderer can reach us; skip it rather than mis-cast — the next frame is recorded by this backend.
-		if (data is not WebGpuRenderRecord rd) { return; }
-		lock (_d.RenderGate)
-		{
-			_d.BeginFrameResources();   // reclaim last frame's pooled textures/buffers + release its bind groups
-			// The frame is recorded in logical coordinates; the root DPI scale is the walk's root matrix, applied at
-			// present and never folded into a recording. The render itself waits for Dispose so the immediate-mode
-			// overlay joins the same pass.
-			_pendingCmds = rd.Commands;
-			_pendingScale = _presentScale;
-			_pendingClear = _presentClear ?? rd.ClearColor;
-		}
-	}
-
-	// Renders WITHOUT the per-frame reset — for a nested offscreen render (RenderOffscreen) that may run inside an
-	// enclosing frame; resetting the shared pools mid-frame would free the enclosing frame's in-flight resources.
-	// The gate is reentrant, so a nested call inside an enclosing Replay is safe; an independent call is serialized.
-	public void ReplayNested(IRenderRecord data)
-	{
-		if (data is not WebGpuRenderRecord rd) { return; }
-		lock (_d.RenderGate)
-		{
-			RunFrame(rd.Commands, Matrix3x2.Identity, null, _presentClear ?? rd.ClearColor);
-		}
-	}
-
 	// VALUE equality: a recording's clip arrays are copy-on-write and immutable, so across frames they are almost
 	// always the same instance — compare by reference first, then by content, which is far cheaper than the rebuild
 	// or restamp a false "changed" would cause.
-	private static bool ClipDataEquals(in ClipData a, in ClipData b)
+	internal static bool ClipDataEquals(in ClipData a, in ClipData b)
 	{
 		// Scissor-inert clips emit the full-surface scissor, so their (tight, cull-only) AABBs don't affect drawing.
 		if (a.ScissorInert != b.ScissorInert) { return false; }
@@ -84,7 +55,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	{
 		scale = new Vector2(t.M11, t.M22);
 		var ok = MathF.Abs(t.M12) < 1e-4f && MathF.Abs(t.M21) < 1e-4f && t.M11 > 0f && t.M22 > 0f;
-		if (!ok) { ScaleBlocked++; }
+		if (!ok) { WebGpuCoverage.ScaleBlocked++; }
 		return ok;
 	}
 
@@ -117,26 +88,19 @@ public sealed unsafe partial class WebGpuPresentSession
 				ops.Add(DrawOp.Own(DrawKind.Solid, Vbuf(_scratch, owned), (uint)((j - ci) * 6), IntPtr.Zero, rc0.Clip, MakeClipBg(rc0.Clip, owned)));
 				ci = j - 1;
 			}
-			else if (_pathAtlas && atlasScale is { } asc && TryAtlasBatch(cmds, ref ci, owned, asc, out var aop))
+			else if (WebGpuCoverage.AtlasEnabled && atlasScale is { } asc && Coverage.TryAtlasBatch(cmds, ref ci, owned, asc, out var aop))
 			{
 				ops.Add(aop);
 			}
 			else if (cmds[ci] is PathCmd pc)
 			{
 				var density = maskScale ?? atlasScale ?? Vector2.One;
-				var shape = ShapeOf(pc, density);
+				var shape = Coverage.ShapeOf(pc, density);
 				if (shape.Tris is null) { TryBigFill(pc, shape, ops, owned, density, filtered: atlasScale is null); }
 				else { AddFan(pc, shape, ops, owned); }
 			}
 			else { BuildSimpleOp(cmds[ci], ops, owned, atlasScale, maskScale); }
 		}
-	}
-
-	// A path's rasterisation inputs at the density the GPU draws the op's space at (see WebGpuShapeCache).
-	private WebGpuShapeCache.Shape ShapeOf(PathCmd c, Vector2 scale)
-	{
-		var density = MathF.Max(scale.X, scale.Y);
-		return c.Stroke > 0f ? _d.Shapes.GetStroke(c.Geometry, c.M, c.Stroke, density) : _d.Shapes.Get(c.Geometry, c.M, density, c.EvenOdd);
 	}
 
 	// The single-pass fill: the shape's own triangles as solid verts, the ring's per-vertex coverage carrying the
@@ -166,8 +130,8 @@ public sealed unsafe partial class WebGpuPresentSession
 	// no longer land on pixels.
 	private bool TryBigFill(PathCmd pf, WebGpuShapeCache.Shape shape, List<DrawOp> ops, OwnedResources owned, Vector2 scale, bool filtered)
 	{
-		if (_pathAtlas && TryAtlasFill(pf, shape, ops, owned, scale, big: true, filtered: filtered)) { return true; }
-		if (TryMaskFill(pf, shape, owned, scale, filtered, out var op)) { ops.Add(op); return true; }
+		if (WebGpuCoverage.AtlasEnabled && Coverage.TryAtlasFill(pf, shape, ops, owned, scale, big: true, filtered: filtered)) { return true; }
+		if (Coverage.TryMaskFill(pf, shape, owned, scale, filtered, out var op)) { ops.Add(op); return true; }
 		return false;
 	}
 
@@ -180,9 +144,9 @@ public sealed unsafe partial class WebGpuPresentSession
 			case PathCmd pf:
 				{
 					var density = maskScale ?? atlasScale ?? Vector2.One;
-					var shape = ShapeOf(pf, density);
+					var shape = Coverage.ShapeOf(pf, density);
 					// A small axis-aligned shape (a glyph) draws from the coverage atlas: one tinted quad, antialiasing baked in.
-					if (atlasScale is { } asc && TryAtlasFill(pf, shape, ops, owned, asc)) { break; }
+					if (atlasScale is { } asc && Coverage.TryAtlasFill(pf, shape, ops, owned, asc)) { break; }
 					if (shape.Tris is null) { TryBigFill(pf, shape, ops, owned, density, filtered: atlasScale is null); break; }
 					AddFan(pf, shape, ops, owned);
 					break;

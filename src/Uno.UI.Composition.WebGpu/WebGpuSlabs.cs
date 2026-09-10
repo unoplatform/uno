@@ -77,7 +77,7 @@ internal sealed unsafe class WebGpuUniformSlab : IDisposable
 			if (_extraTexture != IntPtr.Zero) { e[n++] = new WGPUBindGroupEntry { Binding = 1, TextureView = _extraTexture }; }
 			if (_extraTexture2 != IntPtr.Zero) { e[n++] = new WGPUBindGroupEntry { Binding = 2, TextureView = _extraTexture2 }; }
 			if (_sampler != IntPtr.Zero) { e[n++] = new WGPUBindGroupEntry { Binding = 3, Sampler = _sampler }; }
-			if (_extraBuffer != IntPtr.Zero) { e[n++] = new WGPUBindGroupEntry { Binding = 4, Buffer = _extraBuffer, Offset = 0, Size = WebGpuPresentSession.ClipEntryBytes }; }
+			if (_extraBuffer != IntPtr.Zero) { e[n++] = new WGPUBindGroupEntry { Binding = 4, Buffer = _extraBuffer, Offset = 0, Size = WebGpuFrame.ClipEntryBytes }; }
 			var bgd = new WGPUBindGroupDescriptor { Layout = layout, EntryCount = (nuint)n, Entries = e };
 			c.Bgs[slot] = wgpuDeviceCreateBindGroup(_d.Dev, &bgd);
 		}
@@ -123,7 +123,7 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 		public int DirtyMax = -1;
 	}
 
-	private const int SlotBytes = (WebGpuPresentSession.ClipUBytes + 255) / 256 * 256;
+	private const int SlotBytes = (WebGpuFrame.ClipUBytes + 255) / 256 * 256;
 	private const int SlotFloats = SlotBytes / sizeof(float);
 	private const int ChunkSlots = (1 << 20) / SlotBytes;
 

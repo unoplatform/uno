@@ -9,7 +9,7 @@ using static Uno.WebGpu.Native.WGPU;
 
 namespace Uno.UI.Composition.WebGpu;
 
-public sealed unsafe partial class WebGpuPresentSession
+internal sealed unsafe partial class WebGpuFrame
 {
 	/// <summary>
 	/// Encodes one backdrop (the acrylic path): ends the open pass so the target holds the content BEHIND the backdrop,
@@ -28,10 +28,10 @@ public sealed unsafe partial class WebGpuPresentSession
 		// neighbours. The pyramid samples clamp-to-edge, so the element's own edge pixels extend outward instead.
 		var effect = backdrop.Effect;
 		var aabb = backdrop.Clip.Aabb;
-		float regionX = Math.Clamp(aabb.X, 0f, _s.Width), regionY = Math.Clamp(aabb.Y, 0f, _s.Height);
-		float regionW = MathF.Max(1f, MathF.Min(_s.Width, aabb.Z) - regionX);
-		float regionH = MathF.Max(1f, MathF.Min(_s.Height, aabb.W) - regionY);
-		var blurred = BlurPyramidRegion(target.View, _s.Width, _s.Height, regionX, regionY, regionW, regionH, effect.SigmaX, effect.SigmaY);
+		float regionX = Math.Clamp(aabb.X, 0f, Target.Width), regionY = Math.Clamp(aabb.Y, 0f, Target.Height);
+		float regionW = MathF.Max(1f, MathF.Min(Target.Width, aabb.Z) - regionX);
+		float regionH = MathF.Max(1f, MathF.Min(Target.Height, aabb.W) - regionY);
+		var blurred = Effects.BlurPyramidRegion(target.View, Target.Width, Target.Height, regionX, regionY, regionW, regionH, effect.SigmaX, effect.SigmaY);
 
 		var color = new WGPURenderPassColorAttachment
 		{
@@ -41,7 +41,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			StoreOp = WGPUStoreOp.Store,   // a following segment, or another backdrop, reloads it
 		};
 		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color };
-		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &desc);
+		var pass = wgpuCommandEncoderBeginRenderPass(Encoder, &desc);
 
 		pst.Pass = pass;
 		pst.Enc.Rebind(pass);
@@ -196,13 +196,13 @@ public sealed unsafe partial class WebGpuPresentSession
 	private void WriteFrameStats(int opCount, ref PassOps pst)
 	{
 		var line = new System.Text.StringBuilder(512);
-		line.Append($"[webgpu-stats] {_s.Width}x{_s.Height}:");
+		line.Append($"[webgpu-stats] {Target.Width}x{Target.Height}:");
 		line.Append($" ops={opCount} emitted={pst.Iters} sharedOps={pst.SharedOps}");
 		line.Append($" scissorChanges={pst.Scissors} clipUp={_d.ClipSlab.LastFlushBytes / 1024}KB");
 		line.Append($" arena={StatArenaHits} rebuilds={_statArenaRebuilds}(miss{_statArMiss}/masks{_statArMasks}) stamps={_statStamps}");
 		line.Append($" fan=refused{WebGpuShapeCache.StatFanRefused}/points{WebGpuShapeCache.StatTessPoints}/tri{WebGpuShapeCache.StatTessTri}/area{WebGpuShapeCache.StatTessArea}/fold{WebGpuShapeCache.StatTessFold}");
-		line.Append($" atlas=try{AtlasTried}/key-no{AtlasNoKey}/hit{AtlasHit}/baked{AtlasBaked} clipMasks={ClipMasksBaked} fillMasks={FillMasksBaked} sheet={SheetSlotsBaked} shadowSheet={ShadowSlotsBaked} bakes={BakeBatches} layerSheet={LayerSheetSlots}/{LayerSheetPasses}");
-		line.Append($"/full{AtlasNoRoom}/noedges{AtlasNoEdges}/scaleblk{ScaleBlocked}/big{WebGpuPathAtlas.RejBig}");
+		line.Append($" atlas=try{WebGpuCoverage.AtlasTried}/key-no{WebGpuCoverage.AtlasNoKey}/hit{WebGpuCoverage.AtlasHit}/baked{WebGpuCoverage.AtlasBaked} clipMasks={WebGpuCoverage.ClipMasksBaked} fillMasks={WebGpuCoverage.FillMasksBaked} sheet={WebGpuCoverage.SheetSlotsBaked} shadowSheet={WebGpuEffects.ShadowSlotsBaked} bakes={WebGpuCoverage.BakeBatches} layerSheet={WebGpuEffects.LayerSheetSlots}/{WebGpuEffects.LayerSheetPasses}");
+		line.Append($"/full{WebGpuCoverage.AtlasNoRoom}/noedges{WebGpuCoverage.AtlasNoEdges}/scaleblk{WebGpuCoverage.ScaleBlocked}/big{WebGpuPathAtlas.RejBig}");
 		line.Append($"/pages{_d.PathAtlas.Pages.Count}");
 		System.Console.WriteLine(line.ToString());
 		StatArenaHits = _statArenaRebuilds = _statArMiss = _statArMasks = _statStamps = 0;

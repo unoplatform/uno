@@ -1,5 +1,6 @@
-﻿// Signed-area coverage: rasterizes a path's exact per-pixel coverage analytically. The one producer behind every
-// atlas mask, path-clip mask and standalone fill mask.
+﻿// A frame's coverage masks: path clips and big fills baked by signed area, glyphs and small shapes placed from the
+// coverage atlas (WebGpuCoverage.Atlas.cs), every bake batched per target texture (WebGpuCoverage.Bakes.cs). The
+// atlas and the shape cache themselves live on the device and outlive the frame.
 #nullable disable
 using System;
 using System.Collections.Generic;
@@ -12,9 +13,29 @@ using WColor = Windows.UI.Color;
 
 namespace Uno.UI.Composition.WebGpu;
 
-public sealed unsafe partial class WebGpuPresentSession
+internal sealed unsafe partial class WebGpuCoverage
 {
+	private readonly WebGpuFrame _f;
+	private readonly WebGpuDevice _d;
+
+	internal WebGpuCoverage(WebGpuFrame f, WebGpuDevice d)
+	{
+		_f = f;
+		_d = d;
+	}
+
+	// Coverage atlas: ON by default - it is what makes arbitrary path edges and glyphs crisp without MSAA.
+	// UNO_WEBGPU_PATH_ATLAS=0 opts out (falls back to tessellated AA, which aliases on curved outlines).
+	internal static readonly bool AtlasEnabled = Environment.GetEnvironmentVariable("UNO_WEBGPU_PATH_ATLAS") is not "0";
+
 	internal static int ClipMasksBaked;
+
+	// A path's rasterisation inputs at the density the GPU draws the op's space at (see WebGpuShapeCache).
+	internal WebGpuShapeCache.Shape ShapeOf(PathCmd c, Vector2 scale)
+	{
+		var density = MathF.Max(scale.X, scale.Y);
+		return c.Stroke > 0f ? _d.Shapes.GetStroke(c.Geometry, c.M, c.Stroke, density) : _d.Shapes.Get(c.Geometry, c.M, density, c.EvenOdd);
+	}
 
 	// A clip's path masks: one mask entry per path (its slot in View), so nesting has no limit and no product bake. All
 	// of one clip's masks live in ONE texture, the single mask binding a draw has.
@@ -33,7 +54,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	private void MaskRect(PathClip p, bool clampToSurface, out int ox, out int oy, out int w, out int h)
 	{
 		float l = p.Bbox.X, t = p.Bbox.Y, r = p.Bbox.Z, b = p.Bbox.W;
-		if (clampToSurface) { l = MathF.Max(l, 0f); t = MathF.Max(t, 0f); r = MathF.Min(r, _s.Width); b = MathF.Min(b, _s.Height); }
+		if (clampToSurface) { l = MathF.Max(l, 0f); t = MathF.Max(t, 0f); r = MathF.Min(r, _f.Target.Width); b = MathF.Min(b, _f.Target.Height); }
 		ox = (int)MathF.Floor(l) - 1; oy = (int)MathF.Floor(t) - 1;
 		w = Math.Clamp((int)MathF.Ceiling(r) + 1 - ox, 1, 4096);
 		h = Math.Clamp((int)MathF.Ceiling(b) + 1 - oy, 1, 4096);
@@ -50,7 +71,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// The mask entries for a clip's path list, baking on first use this frame. One path: a cached entry when its key
 	/// is known or recurs, else a sheet slot. Several: slots reserved together on one texture. Runs during op BUILD.
 	/// </summary>
-	private MaskSet ResolveClipMasks(in ClipData cd, OwnedResources owned)
+	internal MaskSet ResolveClipMasks(in ClipData cd, OwnedResources owned)
 	{
 		if (!UsesMask(cd)) { return default; }
 		var key = (cd.Paths, owned);
@@ -67,7 +88,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	private bool TryCachedClipMask(PathClip p, OwnedResources owned, out MaskSet set)
 	{
 		set = default;
-		if (!_pathAtlas) { return false; }
+		if (!AtlasEnabled) { return false; }
 		var shape = ShapeOf(p);
 		if (shape.Edges is null) { return false; }
 		if (!WebGpuPathAtlas.TryKey(shape.Hash, Matrix4x4.Identity, new Vector2(p.Bbox.X, p.Bbox.Y), new Vector2(p.Bbox.Z, p.Bbox.W), Vector2.One,
@@ -120,7 +141,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	}
 
 	// A w x h mask in the device's swapchain format, which is what the resolve pipelines target -- not DefaultColorFormat.
-	private (IntPtr view, IntPtr tex) NewMaskTexture(int w, int h)
+	internal (IntPtr view, IntPtr tex) NewMaskTexture(int w, int h)
 	{
 		var td = new WGPUTextureDescriptor
 		{
@@ -140,7 +161,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// atlas and the ringed tiling fan take what they can first. <paramref name="scale"/> is the device
 	/// scale the GPU applies to the op's space afterwards, exactly as for the atlas.
 	/// </summary>
-	private bool TryMaskFill(PathCmd pf, WebGpuShapeCache.Shape shape, OwnedResources owned, Vector2 scale, bool filtered, out DrawOp op)
+	internal bool TryMaskFill(PathCmd pf, WebGpuShapeCache.Shape shape, OwnedResources owned, Vector2 scale, bool filtered, out DrawOp op)
 	{
 		op = default;
 		if (shape.Edges is not { Length: >= 12 } || scale.X <= 0 || scale.Y <= 0) { return false; }
@@ -181,7 +202,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		// draw an atlas entry uses, so it coalesces and re-stamps like one.
 		var clip = WithCoverage(pf.Clip, view, filtered);
 		var q = CoverageQuad(new Vector2(ox / scale.X, oy / scale.Y), new Vector2(w / scale.X, h / scale.Y), pf.Color, uv);
-		op = DrawOp.Own(DrawKind.Solid, Vbuf(q, owned), 6, IntPtr.Zero, clip, MakeClipBg(clip, owned));
+		op = DrawOp.Own(DrawKind.Solid, _f.Vbuf(q, owned), 6, IntPtr.Zero, clip, _f.MakeClipBg(clip, owned));
 		return true;
 	}
 }

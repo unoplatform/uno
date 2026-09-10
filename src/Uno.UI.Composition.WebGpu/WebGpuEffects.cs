@@ -1,4 +1,4 @@
-﻿// Effects rendered offscreen: shadows, the blur pyramid every blur-based effect shares, and the passes that
+﻿// A frame's effects: shadows, the layer sheets, the blur pyramid every blur-based effect shares, and the passes that
 // implement the neutral effect tree (blend, combine, colour function, noise).
 #nullable disable
 using System;
@@ -18,19 +18,30 @@ using WColor = Windows.UI.Color;
 
 namespace Uno.UI.Composition.WebGpu;
 
-public sealed unsafe partial class WebGpuPresentSession
+internal sealed unsafe class WebGpuEffects
 {
+	private readonly WebGpuFrame _f;
+	private readonly WebGpuDevice _d;
+	private readonly WebGpuCoverage _cov;
+
+	internal WebGpuEffects(WebGpuFrame f, WebGpuDevice d)
+	{
+		_f = f;
+		_d = d;
+		_cov = f.Coverage;
+	}
+
 	// The blurred shadow as a texture with its device-space placement. Cached in the atlas under the silhouette's
 	// geometry, transform and blur radius (a texture of its own, since a shadow is padded by its blur reach), so a
 	// static shadow bakes once: on a miss the silhouette's coverage is baked, blurred, and resampled into the entry.
-	private IntPtr RenderShadow(ShadowCmd sh, out Vector2 origin, out Vector2 size, out Vector4 uv)
+	internal IntPtr RenderShadow(ShadowCmd sh, out Vector2 origin, out Vector2 size, out Vector4 uv)
 	{
 		float pad = MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f;
 		var bbMin = sh.BbMin - new Vector2(pad); var bbMax = sh.BbMax + new Vector2(pad);
 		int sigmaKey = ((int)(sh.SigmaX * 16f) << 16) ^ (int)(sh.SigmaY * 16f);
 		var shape = _d.Shapes.Get(sh.Geometry, sh.M, 1f, sh.EvenOdd);
 		WebGpuPathAtlas.Key key = default; int w = 0, h = 0; float ox = 0f, oy = 0f;
-		var keyed = shape.Edges is not null && WebGpuPathAtlas.TryKey(shape.Hash, Matrix4x4.Identity, bbMin, bbMax, Vector2.One, out key, out w, out h, out ox, out oy, allowBig: true, extra: sigmaKey) && _pathAtlas;
+		var keyed = shape.Edges is not null && WebGpuPathAtlas.TryKey(shape.Hash, Matrix4x4.Identity, bbMin, bbMax, Vector2.One, out key, out w, out h, out ox, out oy, allowBig: true, extra: sigmaKey) && WebGpuCoverage.AtlasEnabled;
 		uv = new Vector4(0f, 0f, 1f, 1f);
 		if (keyed && _d.PathAtlas.TryGet(key, out var hit))
 		{
@@ -54,17 +65,17 @@ public sealed unsafe partial class WebGpuPresentSession
 		float sigma = MathF.Max(sh.SigmaX, sh.SigmaY);
 		if (TryReserveShadowSlot(sigma, w, h, out var sheet, out var sx, out var sy))
 		{
-			AddBake(sheet.Bake, sx, sy, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - sh.Offset, Vector2.One, sh.EvenOdd);
+			_cov.AddBake(sheet.Bake, sx, sy, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - sh.Offset, Vector2.One, sh.EvenOdd);
 			ShadowSlotsBaked++;
 			if (!(keyed && _d.PathAtlas.Recurring(key, _d.FrameSeq)))
 			{
-				uv = new Vector4(sx, sy, sx + w, sy + h) / SheetSize;
+				uv = new Vector4(sx, sy, sx + w, sy + h) / WebGpuCoverage.SheetSize;
 				return sheet.Blurred;
 			}
 			// The slot's texels on the top level, plus the one a bilinear tap at its far edge reads (the slot's gutter).
 			int step = 1 << BlurLevels(sigma);
 			int tw = (w + step - 1) / step + 1, th = (h + step - 1) / step + 1;
-			var slot = AddStandaloneSlot(key, w, h, ox, oy, WebGpuDevice.DefaultColorFormat, tw, th, WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopyDst);
+			var slot = _cov.AddStandaloneSlot(key, w, h, ox, oy, WebGpuDevice.DefaultColorFormat, tw, th, WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopyDst);
 			slot.Uv = new Vector4(0f, 0f, (float)w / step / tw, (float)h / step / th);
 			_d.PathAtlas.HoldForCache(slot, _d.FrameSeq);
 			_pendingCopies.Add((sheet.Blurred, sx / step, sy / step, slot.Owner.Texture, tw, th));
@@ -72,8 +83,8 @@ public sealed unsafe partial class WebGpuPresentSession
 			return slot.Owner.View;
 		}
 		// Too big for the sheet: its own bake and pyramid.
-		var (view, tex) = NewMaskTexture(w, h);
-		AddBake(BatchFor(view, w, h, load: false), 0, 0, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - sh.Offset, Vector2.One, sh.EvenOdd);
+		var (view, tex) = _cov.NewMaskTexture(w, h);
+		_cov.AddBake(_cov.BatchFor(view, w, h, load: false), 0, 0, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - sh.Offset, Vector2.One, sh.EvenOdd);
 		_d.DeferTextureRelease(view, tex);
 		return DeferBlur(view, w, h, sh.SigmaX, sh.SigmaY);
 	}
@@ -83,7 +94,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	// The kernel on the pyramid's top level is fixed and sigma only picks the depth, so a depth is a blur class.
 	private sealed class ShadowSheet
 	{
-		public BakeBatch Bake;
+		public WebGpuCoverage.BakeBatch Bake;
 		public IntPtr Blurred;     // the pyramid's top level for the whole sheet, rented up front so draws can bind it
 	}
 
@@ -101,19 +112,19 @@ public sealed unsafe partial class WebGpuPresentSession
 		var levels = BlurLevels(sigma);
 		int step = 1 << levels;
 		int gw = (w + step - 1) / step * step + step, gh = (h + step - 1) / step * step + step;
-		if (gw > SheetSize || gh > SheetSize) { return false; }
+		if (gw > WebGpuCoverage.SheetSize || gh > WebGpuCoverage.SheetSize) { return false; }
 		_shadowSheetByDepth.TryGetValue(levels, out var cur);
 		if (cur is not null && !cur.Bake.Shelf.TryReserve(gw, gh, step, out x, out y)) { cur = null; }
 		if (cur is null)
 		{
-			var view = _d.Pool.Rent(SheetSize, SheetSize, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, _d.ColorFormat);
-			int top = SheetSize >> levels;
+			var view = _d.Pool.Rent(WebGpuCoverage.SheetSize, WebGpuCoverage.SheetSize, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, _d.ColorFormat);
+			int top = WebGpuCoverage.SheetSize >> levels;
 			var blurred = _d.Pool.Rent(top, top, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopySrc, WebGpuDevice.DefaultColorFormat);
-			cur = new ShadowSheet { Bake = BatchFor(view, SheetSize, SheetSize, load: false), Blurred = blurred };
+			cur = new ShadowSheet { Bake = _cov.BatchFor(view, WebGpuCoverage.SheetSize, WebGpuCoverage.SheetSize, load: false), Blurred = blurred };
 			_shadowSheetByDepth[levels] = cur;
 			// The sigma that maps back to exactly this depth (see BlurLevels), so the pyramid builds the same levels.
 			float depthSigma = 2f * step;
-			_pendingBlurs.Add((view, SheetSize, SheetSize, depthSigma, depthSigma, blurred));
+			_pendingBlurs.Add((view, WebGpuCoverage.SheetSize, WebGpuCoverage.SheetSize, depthSigma, depthSigma, blurred));
 			cur.Bake.Shelf.TryReserve(gw, gh, step, out x, out y);
 		}
 		sheet = cur;
@@ -131,7 +142,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	}
 
 	// Runs the blurs queued behind the frame's bakes, once those are encoded.
-	private void FlushPendingBlurs()
+	internal void FlushPendingBlurs()
 	{
 		foreach (var b in _pendingBlurs) { BlurPyramidRegion(b.Src, b.W, b.H, 0f, 0f, b.W, b.H, b.SigmaX, b.SigmaY, b.Dst); }
 		_pendingBlurs.Clear();
@@ -141,27 +152,27 @@ public sealed unsafe partial class WebGpuPresentSession
 			var src = new WGPUTexelCopyTextureInfo { Texture = _d.Pool.TexForView(c.SrcView), MipLevel = 0, Origin = new WGPUOrigin3D { X = (uint)c.X, Y = (uint)c.Y }, Aspect = WGPUTextureAspect.All };
 			var dst = new WGPUTexelCopyTextureInfo { Texture = c.Dst, MipLevel = 0, Origin = default, Aspect = WGPUTextureAspect.All };
 			var ext = new WGPUExtent3D { Width = (uint)c.W, Height = (uint)c.H, DepthOrArrayLayers = 1 };
-			wgpuCommandEncoderCopyTextureToTexture(_frameEncoder, &src, &dst, &ext);
+			wgpuCommandEncoderCopyTextureToTexture(_f.Encoder, &src, &dst, &ext);
 		}
 		_pendingCopies.Clear();
 	}
 
 	// Pyramid depth for a blur radius: halve until the fixed 9-tap kernel on the top level spans the sigma.
-	private static int BlurLevels(float sigma) => Math.Clamp((int)MathF.Round(MathF.Log2(MathF.Max(sigma, 1f) / 2f)), 1, 5);
+	internal static int BlurLevels(float sigma) => Math.Clamp((int)MathF.Round(MathF.Log2(MathF.Max(sigma, 1f) / 2f)), 1, 5);
 
 	// ------------------------------------------------------------------------------------------------ layer sheet
 
-	private const int LayerSheetSize = 2048;
+	internal const int LayerSheetSize = 2048;
 
 	// The frame's size-to-content layers at one nesting depth, shelf-packed into one texture rendered in one pass;
 	// the blurs its shadows share, one pyramid per blur depth, run right after that pass. Sheets are per nesting
 	// depth because a layer's content composites the layers nested in it, so those must be rendered first, and a
 	// texture cannot be drawn into and sampled in the same pass.
-	private sealed class LayerSheet
+	internal sealed class LayerSheet
 	{
 		public WebGpuRenderSurface Surface;
 		public int Depth;
-		public readonly List<PassBuild> Builds = new();
+		public readonly List<WebGpuFrame.PassBuild> Builds = new();
 		public readonly Dictionary<int, IntPtr> Blurs = new();   // blur depth -> the pyramid's top level, rented up front
 		public Shelf Shelf = new(LayerSheetSize, LayerSheetSize);
 	}
@@ -171,19 +182,19 @@ public sealed unsafe partial class WebGpuPresentSession
 
 	// Reserves a w x h slot on the sheet for the current nesting depth, aligned to `step` (the shadow's top-level
 	// texel) with a texel of that size around it.
-	private bool TryReserveLayerSlot(int w, int h, int step, out LayerSheet sheet, out int x, out int y)
+	internal bool TryReserveLayerSlot(int w, int h, int step, out LayerSheet sheet, out int x, out int y)
 	{
 		sheet = null; x = y = 0;
 		int gw = (w + step - 1) / step * step + 2 * step, gh = (h + step - 1) / step * step + 2 * step;
 		if (gw > LayerSheetSize || gh > LayerSheetSize) { return false; }
 		LayerSheet cur = null;
-		for (int i = _layerSheets.Count - 1; i >= 0; i--) { if (_layerSheets[i].Depth == _layerDepth) { cur = _layerSheets[i]; break; } }
+		for (int i = _layerSheets.Count - 1; i >= 0; i--) { if (_layerSheets[i].Depth == _f.LayerDepth) { cur = _layerSheets[i]; break; } }
 		if (cur is not null && !cur.Shelf.TryReserve(gw, gh, step, out x, out y)) { cur = null; }
 		if (cur is null)
 		{
-			cur = new LayerSheet { Surface = new WebGpuRenderSurface(_d, LayerSheetSize, LayerSheetSize, _d.Pool), Depth = _layerDepth };
+			cur = new LayerSheet { Surface = new WebGpuRenderSurface(_d, LayerSheetSize, LayerSheetSize, _d.Pool), Depth = _f.LayerDepth };
 			_layerSheets.Add(cur);
-			_frameLayerSurfaces.Add(cur.Surface);
+			_f.LayerSurfaces.Add(cur.Surface);
 			cur.Shelf.TryReserve(gw, gh, step, out x, out y);
 		}
 		sheet = cur; x += step; y += step;
@@ -192,7 +203,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	}
 
 	// The blurred sheet for this depth, rented now so the shadow draws can bind it; the pyramid runs after the sheet's pass.
-	private IntPtr LayerSheetBlur(LayerSheet sheet, float sigma)
+	internal IntPtr LayerSheetBlur(LayerSheet sheet, float sigma)
 	{
 		var levels = BlurLevels(sigma);
 		if (!sheet.Blurs.TryGetValue(levels, out var blurred))
@@ -206,7 +217,7 @@ public sealed unsafe partial class WebGpuPresentSession
 
 	// Renders the sheets one level deeper than the pass about to open (the layers it composites), each followed by
 	// its shadow pyramids. A sheet's own pass flushes the level below it first, so the deepest render first.
-	private void FlushLayerSheets(int depth)
+	internal void FlushLayerSheets(int depth)
 	{
 		if (_layerSheets.Count == 0) { return; }
 		var sheets = new List<LayerSheet>();
@@ -214,11 +225,11 @@ public sealed unsafe partial class WebGpuPresentSession
 		{
 			if (_layerSheets[i].Depth == depth + 1) { sheets.Add(_layerSheets[i]); _layerSheets.RemoveAt(i); }
 		}
-		var saved = _layerDepth;
-		_layerDepth = depth + 1;
+		var saved = _f.LayerDepth;
+		_f.LayerDepth = depth + 1;
 		foreach (var sheet in sheets)
 		{
-			EncodePass(sheet.Surface, null, false, sheet.Builds);
+			_f.EncodePass(sheet.Surface, null, false, sheet.Builds);
 			LayerSheetPasses++;
 			foreach (var (levels, blurred) in sheet.Blurs)
 			{
@@ -226,7 +237,7 @@ public sealed unsafe partial class WebGpuPresentSession
 				BlurPyramidRegion(sheet.Surface.View, LayerSheetSize, LayerSheetSize, 0f, 0f, LayerSheetSize, LayerSheetSize, depthSigma, depthSigma, blurred);
 			}
 		}
-		_layerDepth = saved;
+		_f.LayerDepth = saved;
 	}
 
 	// Blur pyramid over a REGION of `src`: extract the device-px rect (rx,ry,rw,rh) out of the fullW×fullH source
@@ -234,7 +245,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	// gaussian on the small top level. Returns the region-sized blurred view; the caller maps screen px -> region uv
 	// in the composite (bilinear upscales it). Only the region behind the acrylic element is ever processed, and the
 	// per-pass kernel is constant, so a large blur is a few tiny passes instead of a full-frame O(sigma) kernel.
-	private IntPtr BlurPyramidRegion(IntPtr src, int fullW, int fullH, float rx, float ry, float rw, float rh, float sigmaX, float sigmaY, IntPtr dst = default)
+	internal IntPtr BlurPyramidRegion(IntPtr src, int fullW, int fullH, float rx, float ry, float rw, float rh, float sigmaX, float sigmaY, IntPtr dst = default)
 	{
 		int iw = Math.Max(1, (int)MathF.Round(rw)), ih = Math.Max(1, (int)MathF.Round(rh));
 		int levels = BlurLevels(MathF.Max(sigmaX, sigmaY));
@@ -270,47 +281,15 @@ public sealed unsafe partial class WebGpuPresentSession
 		=> BlurPyramidRegion(src, w, h, 0f, 0f, w, h, sigmaX, sigmaY);
 
 	/// <summary>
-	/// Opens the frame's command encoder unless an outer render already owns one. The effect entry points below run
-	/// during effect setup, which can happen inside a frame or on its own, so each must submit only what it opened.
-	/// </summary>
-	/// <returns>True when this caller opened the encoder and so must end it.</returns>
-	private bool BeginOwnedFrameEncoder()
-	{
-		var owns = _frameEncoder == IntPtr.Zero;
-		if (owns) { _frameEncoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null); _clipMasks.Clear(); }
-		return owns;
-	}
-
-	/// <summary>Submits and releases the frame encoder, if this caller was the one that opened it.</summary>
-	private void EndOwnedFrameEncoder(bool owns)
-	{
-		if (!owns)
-		{
-			return;
-		}
-
-		_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
-		_d.FlushFrameSlabs();
-		var cb = wgpuCommandEncoderFinish(_frameEncoder, null);
-		wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
-		// wgpu holds its own reference until the submission completes, so both handles are dropped here —
-		// otherwise every frame leaks an encoder + a command buffer into the handle table.
-		wgpuCommandBufferRelease(cb);
-		wgpuCommandEncoderRelease(_frameEncoder);
-		_ = wgpuDevicePoll(_d.Dev, 0u, null);
-		_frameEncoder = IntPtr.Zero;
-	}
-
-	/// <summary>
-	/// Draws one fullscreen effect pass into this session's target surface: opens a pass, draws the three-vertex
+	/// Draws one fullscreen effect pass into the frame's target surface: opens a pass, draws the three-vertex
 	/// covering triangle with the given pipeline and bind group, and ends the pass. The effect shaders emit the
 	/// finished pixel, so the pass clears rather than loads.
 	/// </summary>
 	private void DrawEffectPass(IntPtr pipeline, IntPtr bindGroup)
 	{
-		var color = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _s.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
+		var color = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = _f.Target.View, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
 		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color };
-		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &desc);
+		var pass = wgpuCommandEncoderBeginRenderPass(_f.Encoder, &desc);
 		wgpuRenderPassEncoderSetPipeline(pass, pipeline);
 		wgpuRenderPassEncoderSetBindGroup(pass, 0, bindGroup, 0, (uint*)null);
 		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);
@@ -318,13 +297,12 @@ public sealed unsafe partial class WebGpuPresentSession
 	}
 
 	// Standalone blur for the effect-graph evaluator's BlurEffectNode: blur `src` and draw it (upscaled from the
-	// pyramid) into this session's target surface _s. Mirrors RenderOffscreen's flow — own encoder + submit — so it
-	// runs during effect setup (RenderGate is reentrant); the pooled offscreen surface is detached by the factory.
+	// pyramid) into the frame's target surface, in a frame of its own; the factory detaches the surface's texture.
 	internal void BlurInto(WebGpuTexture src, float sigmaX, float sigmaY)
 	{
 		lock (_d.RenderGate)
 		{
-			var owns = BeginOwnedFrameEncoder();
+			_f.Begin();
 			try
 			{
 				var blurView = BlurPyramid(src.View, src.PixelWidth, src.PixelHeight, sigmaX, sigmaY);
@@ -335,7 +313,7 @@ public sealed unsafe partial class WebGpuPresentSession
 				var upscaled = _d.Pool.Rent(src.PixelWidth, src.PixelHeight, 1,
 					WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.DefaultColorFormat);
 				BlurPass(blurView, upscaled, default, default, downsample: true, Vector2.Zero, Vector2.One);
-				var idu = MakeUniform(WebGpuDevice.CompositeUniformBytes);
+				var idu = _f.MakeUniform(WebGpuDevice.CompositeUniformBytes);
 				var idc = stackalloc float[24]; idc[1] = 1f;   // params.x=0 (no colour matrix), params.y=1 (opacity)
 				wgpuQueueWriteBuffer(_d.Q, idu, 0, (IntPtr)idc, 96);
 				// Two entries, not three: the composite shader uses textureLoad, so its layout has no sampler.
@@ -348,7 +326,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			}
 			finally
 			{
-				EndOwnedFrameEncoder(owns);
+				_f.End();
 			}
 		}
 	}
@@ -360,10 +338,10 @@ public sealed unsafe partial class WebGpuPresentSession
 	{
 		lock (_d.RenderGate)
 		{
-			var owns = BeginOwnedFrameEncoder();
+			_f.Begin();
 			try
 			{
-				var ubuf = MakeUniform(WebGpuDevice.CompositeUniformBytes);
+				var ubuf = _f.MakeUniform(WebGpuDevice.CompositeUniformBytes);
 				var uc = stackalloc float[24]; uc[1] = 1f; uc[2] = shaderMode;   // params.x=0 (no matrix), y=1 (opacity), z=mode
 				wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)uc, 96);
 				var e = stackalloc WGPUBindGroupEntry[4];
@@ -377,7 +355,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			}
 			finally
 			{
-				EndOwnedFrameEncoder(owns);
+				_f.End();
 			}
 		}
 	}
@@ -388,10 +366,10 @@ public sealed unsafe partial class WebGpuPresentSession
 	{
 		lock (_d.RenderGate)
 		{
-			var owns = BeginOwnedFrameEncoder();
+			_f.Begin();
 			try
 			{
-				var ubuf = MakeUniform(32);
+				var ubuf = _f.MakeUniform(32);
 				var uc = stackalloc float[8]; uc[0] = k0; uc[1] = k1; uc[2] = k2; uc[3] = k3; uc[4] = alphaMask ? 1f : 0f;
 				wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)uc, 32);
 				var e = stackalloc WGPUBindGroupEntry[4];
@@ -405,7 +383,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			}
 			finally
 			{
-				EndOwnedFrameEncoder(owns);
+				_f.End();
 			}
 		}
 	}
@@ -416,10 +394,10 @@ public sealed unsafe partial class WebGpuPresentSession
 	{
 		lock (_d.RenderGate)
 		{
-			var owns = BeginOwnedFrameEncoder();
+			_f.Begin();
 			try
 			{
-				var ubuf = MakeUniform(80);
+				var ubuf = _f.MakeUniform(80);
 				fixed (float* p = u20) { wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)p, 80); }
 				var e = stackalloc WGPUBindGroupEntry[3];
 				e[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = src.View };
@@ -431,7 +409,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			}
 			finally
 			{
-				EndOwnedFrameEncoder(owns);
+				_f.End();
 			}
 		}
 	}
@@ -442,10 +420,10 @@ public sealed unsafe partial class WebGpuPresentSession
 	{
 		lock (_d.RenderGate)
 		{
-			var owns = BeginOwnedFrameEncoder();
+			_f.Begin();
 			try
 			{
-				var ubuf = MakeUniform(32);
+				var ubuf = _f.MakeUniform(32);
 				var uc = stackalloc float[8]; uc[0] = fx; uc[1] = fy; uc[2] = ox; uc[3] = oy; uc[4] = w; uc[5] = h;
 				wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)uc, 32);
 				var e = stackalloc WGPUBindGroupEntry[1];
@@ -456,7 +434,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			}
 			finally
 			{
-				EndOwnedFrameEncoder(owns);
+				_f.End();
 			}
 		}
 	}
@@ -467,7 +445,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		bu[0] = dir.X; bu[1] = dir.Y; bu[2] = texel.X; bu[3] = texel.Y;
 		bu[4] = downsample ? 1f : 0f; bu[5] = 0f;
 		bu[6] = srcOrigin.X; bu[7] = srcOrigin.Y; bu[8] = srcScale.X; bu[9] = srcScale.Y;
-		var ubuf = MakeUniform(48);
+		var ubuf = _f.MakeUniform(48);
 		fixed (float* p = bu) { wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)p, 48); }
 		var entries = stackalloc WGPUBindGroupEntry[3];
 		entries[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = src };
@@ -478,7 +456,7 @@ public sealed unsafe partial class WebGpuPresentSession
 
 		var color = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = dst, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
 		var desc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &color };
-		var pass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &desc);
+		var pass = wgpuCommandEncoderBeginRenderPass(_f.Encoder, &desc);
 		wgpuRenderPassEncoderSetPipeline(pass, _d.BlurPipe);
 		wgpuRenderPassEncoderSetBindGroup(pass, 0, bg, 0, (uint*)null);
 		wgpuRenderPassEncoderDraw(pass, 3, 1, 0, 0);

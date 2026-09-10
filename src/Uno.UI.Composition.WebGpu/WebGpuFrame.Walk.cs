@@ -11,7 +11,7 @@ using WColor = Windows.UI.Color;
 
 namespace Uno.UI.Composition.WebGpu;
 
-public sealed unsafe partial class WebGpuPresentSession
+internal sealed unsafe partial class WebGpuFrame
 {
 	// The clip in force for a command: the replay site's (device space) narrowed by the command's own, carried from
 	// the recording's space through m. Consecutive commands share their clip arrays, so the last result is kept.
@@ -257,7 +257,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		var rc = ComposeClip(outer, rr.Clip, m, inv, direct);
 		// A recording entirely clipped out or off-surface costs nothing.
 		var bounds = ClampToClip(TransformBounds(rr.Data.IdentityBounds ??= CmdListBounds(rr.Commands), rm), rc);
-		if (bounds.X >= bounds.Z || bounds.Y >= bounds.W || bounds.Z <= 0 || bounds.W <= 0 || bounds.X >= _s.Width || bounds.Y >= _s.Height)
+		if (bounds.X >= bounds.Z || bounds.Y >= bounds.W || bounds.Z <= 0 || bounds.W <= 0 || bounds.X >= Target.Width || bounds.Y >= Target.Height)
 		{
 			return;
 		}
@@ -285,18 +285,18 @@ public sealed unsafe partial class WebGpuPresentSession
 			var owned = new OwnedResources();
 			var built = new List<DrawOp>();
 			bool hasPath = false; foreach (var c in rr.Commands) { if (c is PathCmd) { hasPath = true; break; } }
-			int atlasBefore = AtlasHit + AtlasBaked;
-			int maskBefore = ClipMasksBaked + FillMasksBaked + FillMaskHits;
+			int atlasBefore = WebGpuCoverage.AtlasHit + WebGpuCoverage.AtlasBaked;
+			int maskBefore = WebGpuCoverage.ClipMasksBaked + WebGpuCoverage.FillMasksBaked + WebGpuCoverage.FillMaskHits;
 			bool atlasSafe = TryAtlasScale(rm, out var scale);
 			BuildCoalesced(rr.Commands, built, owned, atlasScale: atlasSafe ? scale : null, maskScale: atlasSafe ? scale : MaskScale(rm));
 			bool hasPathClip = false; foreach (var o in built) { if (o.Clip.Paths is not null) { hasPathClip = true; break; } }
 			entry = new WebGpuGeometryCache
 			{
 				Ops = built, Owned = owned, Device = _d,
-				HasAtlas = (AtlasHit + AtlasBaked) != atlasBefore,
-				HasClipMask = ClipMasksBaked + FillMasksBaked + FillMaskHits != maskBefore,
+				HasAtlas = (WebGpuCoverage.AtlasHit + WebGpuCoverage.AtlasBaked) != atlasBefore,
+				HasClipMask = WebGpuCoverage.ClipMasksBaked + WebGpuCoverage.FillMasksBaked + WebGpuCoverage.FillMaskHits != maskBefore,
 				HasPathClip = hasPathClip,
-				AtlasBlockedByScale = !atlasSafe && hasPath && _pathAtlas,
+				AtlasBlockedByScale = !atlasSafe && hasPath && WebGpuCoverage.AtlasEnabled,
 				AtlasScale = scale, MaskScale = MaskScale(rm),
 			};
 			StoreCompiled(rr.Data, entry);
@@ -369,11 +369,11 @@ public sealed unsafe partial class WebGpuPresentSession
 	{
 		var pad = MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f;
 		var ext = ClampToClip(Inflate(new Vector4(sh.BbMin.X, sh.BbMin.Y, sh.BbMax.X, sh.BbMax.Y), pad), sh.Clip);
-		if (ext.X >= ext.Z || ext.Y >= ext.W || ext.Z <= 0 || ext.W <= 0 || ext.X >= _s.Width || ext.Y >= _s.Height)
+		if (ext.X >= ext.Z || ext.Y >= ext.W || ext.Z <= 0 || ext.W <= 0 || ext.X >= Target.Width || ext.Y >= Target.Height)
 		{
 			return;
 		}
-		var blurView = RenderShadow(sh, out var origin, out var size, out var uv);
+		var blurView = Effects.RenderShadow(sh, out var origin, out var size, out var uv);
 		var bg = TintedImageBg(blurView, sh.Color);
 		ops.Add(DrawOp.Own(DrawKind.Image, MakeBuffer(TexturedQuad(origin, size, uv)), 6, bg, sh.Clip, MakeClipBg(sh.Clip)));
 	}
@@ -416,7 +416,7 @@ public sealed unsafe partial class WebGpuPresentSession
 				var spad = MathF.Ceiling(3f * MathF.Max(sfx.SigmaX, sfx.SigmaY)) + 2f;
 				vis = Union(vis, ClampToClip(Inflate(new Vector4(content.X + sfx.Dx, content.Y + sfx.Dy, content.Z + sfx.Dx, content.W + sfx.Dy), spad), cd));
 			}
-			if (vis.X >= vis.Z || vis.Y >= vis.W || vis.Z <= 0 || vis.W <= 0 || vis.X >= _s.Width || vis.Y >= _s.Height)
+			if (vis.X >= vis.Z || vis.Y >= vis.W || vis.Z <= 0 || vis.W <= 0 || vis.X >= Target.Width || vis.Y >= Target.Height)
 			{
 				return;
 			}
@@ -446,30 +446,30 @@ public sealed unsafe partial class WebGpuPresentSession
 		// Push the target. A sheet slot shares one pass with the frame's other layers at this depth and one blur
 		// pyramid per blur radius; slots carrying a shadow sit on that pyramid's top-level texel grid, a texel apart.
 		WebGpuRenderSurface surface;
-		LayerSheet sheet = null;
+		WebGpuEffects.LayerSheet sheet = null;
 		int slotX = 0, slotY = 0;
 		float tx = _basisOx, ty = _basisOy, tw = BasisW, th = BasisH;   // the target's device rect
-		_layerDepth++;
-		if (sub && TryReserveLayerSlot(subW, subH, lyr.ShadowEffect is { } sfe ? 1 << BlurLevels(MathF.Max(sfe.SigmaX, sfe.SigmaY)) : 1, out sheet, out slotX, out slotY))
+		LayerDepth++;
+		if (sub && Effects.TryReserveLayerSlot(subW, subH, lyr.ShadowEffect is { } sfe ? 1 << WebGpuEffects.BlurLevels(MathF.Max(sfe.SigmaX, sfe.SigmaY)) : 1, out sheet, out slotX, out slotY))
 		{
 			surface = sheet.Surface;
 			tx = subOx; ty = subOy; tw = subW; th = subH;
-			sheet.Builds.Add(BuildPass(lyr.Commands, m, outer, surface, subOx - slotX, subOy - slotY, LayerSheetSize, LayerSheetSize, new Vector4(subOx, subOy, subOx + subW, subOy + subH)));
+			sheet.Builds.Add(BuildPass(lyr.Commands, m, outer, surface, subOx - slotX, subOy - slotY, WebGpuEffects.LayerSheetSize, WebGpuEffects.LayerSheetSize, new Vector4(subOx, subOy, subOx + subW, subOy + subH)));
 		}
 		else if (sub)
 		{
 			surface = new WebGpuRenderSurface(_d, subW, subH, _d.Pool);
 			tx = subOx; ty = subOy; tw = subW; th = subH;
 			RenderInto(lyr.Commands, m, outer, surface, null, false, subOx, subOy, subW, subH);
-			_frameLayerSurfaces.Add(surface);
+			LayerSurfaces.Add(surface);
 		}
 		else
 		{
 			surface = new WebGpuRenderSurface(_d, (int)tw, (int)th, _d.Pool);
 			RenderInto(lyr.Commands, m, outer, surface, null, false, tx, ty, tw, th);
-			_frameLayerSurfaces.Add(surface);
+			LayerSurfaces.Add(surface);
 		}
-		_layerDepth--;
+		LayerDepth--;
 
 		// The shadow: the content's alpha blurred over its region padded by the blur reach, drawn tinted and offset.
 		if (lyr.ShadowEffect is { } fx)
@@ -483,13 +483,13 @@ public sealed unsafe partial class WebGpuPresentSession
 				IntPtr blur; var uv = new Vector4(0f, 0f, 1f, 1f);
 				if (sheet is not null)
 				{
-					blur = LayerSheetBlur(sheet, MathF.Max(fx.SigmaX, fx.SigmaY));
+					blur = Effects.LayerSheetBlur(sheet, MathF.Max(fx.SigmaX, fx.SigmaY));
 					float sx0 = rx - subOx + slotX, sy0 = ry - subOy + slotY;
-					uv = new Vector4(sx0, sy0, sx0 + rw, sy0 + rh) / LayerSheetSize;
+					uv = new Vector4(sx0, sy0, sx0 + rw, sy0 + rh) / WebGpuEffects.LayerSheetSize;
 				}
 				else
 				{
-					blur = BlurPyramidRegion(surface.View, (int)tw, (int)th, rx - tx, ry - ty, rw, rh, fx.SigmaX, fx.SigmaY);
+					blur = Effects.BlurPyramidRegion(surface.View, (int)tw, (int)th, rx - tx, ry - ty, rw, rh, fx.SigmaX, fx.SigmaY);
 				}
 				var sbg = TintedImageBg(blur, fx.Color);
 				ops.Add(DrawOp.Own(DrawKind.Image, MakeBuffer(TexturedQuad(new Vector2(fx.Dx + rx, fx.Dy + ry), new Vector2(rw, rh), uv)), 6, sbg, cd, MakeClipBg(cd)));
@@ -498,7 +498,7 @@ public sealed unsafe partial class WebGpuPresentSession
 
 		// Pop the target: the content as one textured quad over the target's rect, sampling its slot 1:1.
 		var cuv = sheet is not null
-			? new Vector4(slotX, slotY, slotX + tw, slotY + th) / LayerSheetSize
+			? new Vector4(slotX, slotY, slotX + tw, slotY + th) / WebGpuEffects.LayerSheetSize
 			: new Vector4(0f, 0f, 1f, 1f);
 		var compClip = cd;
 		if (plain && IsFiniteAabb(content))

@@ -50,7 +50,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// once and reused, so it must always be built with the same layout and bind the same size.
 	private WebGpuUniformSlab _clipBgSlab;
 
-	public WebGpuUniformSlab ClipBgSlab => _clipBgSlab ??= new WebGpuUniformSlab(this, WebGpuPresentSession.ClipUBytes, DummyTex, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst, DummyTex, Smp, DummyClipMore);
+	public WebGpuUniformSlab ClipBgSlab => _clipBgSlab ??= new WebGpuUniformSlab(this, WebGpuFrame.ClipUBytes, DummyTex, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst, DummyTex, Smp, DummyClipMore);
 
 	/// <summary>Uploads every per-frame uniform slab — call before any submit whose commands read them.</summary>
 	public void FlushFrameSlabs()
@@ -213,7 +213,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	{
 		CreatePipelines();
 		DummyTex = CreateColorTarget(1, 1);
-		var moreDesc = new WGPUBufferDescriptor { Size = WebGpuPresentSession.ClipEntryBytes, Usage = WGPUBufferUsage.Storage };
+		var moreDesc = new WGPUBufferDescriptor { Size = WebGpuFrame.ClipEntryBytes, Usage = WGPUBufferUsage.Storage };
 		DummyClipMore = wgpuDeviceCreateBuffer(Dev, &moreDesc);
 		Pool = new WebGpuTexturePool(this);
 		BufferPool = new WebGpuBufferPool(this);
@@ -342,7 +342,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	private IntPtr MakeClipPipeLayout()
 	{
 		const WGPUShaderStage vf = WGPUShaderStage.Vertex | WGPUShaderStage.Fragment;
-		ClipBgl = Bgl(UniformEntry(0, vf, WebGpuPresentSession.ClipUBytes), TextureEntry(1, WGPUTextureSampleType.Float), TextureEntry(2, WGPUTextureSampleType.Float), SamplerEntry(3), StorageEntry(4, vf, WebGpuPresentSession.ClipEntryBytes));
+		ClipBgl = Bgl(UniformEntry(0, vf, WebGpuFrame.ClipUBytes), TextureEntry(1, WGPUTextureSampleType.Float), TextureEntry(2, WGPUTextureSampleType.Float), SamplerEntry(3), StorageEntry(4, vf, WebGpuFrame.ClipEntryBytes));
 		PassBgl = Bgl(UniformEntry(0, WGPUShaderStage.Vertex, 16));
 		return ColourLayout(ClipBgl);
 	}

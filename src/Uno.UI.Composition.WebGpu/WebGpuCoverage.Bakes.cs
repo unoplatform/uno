@@ -11,11 +11,11 @@ using static Uno.WebGpu.Native.WGPU;
 
 namespace Uno.UI.Composition.WebGpu;
 
-public sealed unsafe partial class WebGpuPresentSession
+internal sealed unsafe partial class WebGpuCoverage
 {
-	private const int SheetSize = 2048;
+	internal const int SheetSize = 2048;
 
-	private sealed class BakeBatch
+	internal sealed class BakeBatch
 	{
 		public IntPtr Target;                          // the texture the resolve writes; consumers bind it right away
 		public int TargetW, TargetH;
@@ -34,7 +34,7 @@ public sealed unsafe partial class WebGpuPresentSession
 
 	// The batch writing into a texture this frame, opened on first use. Atlas pages Load: the resolve touches only
 	// the new slots and everything else on the page must survive.
-	private BakeBatch BatchFor(IntPtr target, int w, int h, bool load)
+	internal BakeBatch BatchFor(IntPtr target, int w, int h, bool load)
 	{
 		if (!_bakeByTarget.TryGetValue(target, out var b))
 		{
@@ -98,7 +98,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	// Queues one outline into a slot of the batch. Edges are in the shape's space (the fill's, less its offset, which
 	// the caller folds into origin) and map to target pixels by (e - origin) * scale + 1 (the one-pixel skirt) + the
 	// slot corner.
-	private void AddBake(BakeBatch b, int x, int y, int w, int h, float[] edges, Vector2 origin, Vector2 scale, bool evenOdd)
+	internal void AddBake(BakeBatch b, int x, int y, int w, int h, float[] edges, Vector2 origin, Vector2 scale, bool evenOdd)
 	{
 		float right = x + w;
 		for (var i = 0; i < edges.Length; i += 4)
@@ -123,9 +123,9 @@ public sealed unsafe partial class WebGpuPresentSession
 	// Bakes every pending batch: one accumulate pass over all its edges into a scratch accumulator covering the
 	// union of its slots, one resolve pass writing the slots into the target. Runs before a render pass begins, so
 	// the passes that sample the targets are encoded after them.
-	private void FlushPendingBakes()
+	internal void FlushPendingBakes()
 	{
-		if (_pendingBakes.Count == 0) { FlushPendingBlurs(); return; }
+		if (_pendingBakes.Count == 0) { _f.Effects.FlushPendingBlurs(); return; }
 		foreach (var b in _pendingBakes)
 		{
 			// Accumulator dims rounded up so the pool sees a few sizes per target, not one per frame.
@@ -155,7 +155,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			var accumBg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &abgd));
 			var acc = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = accView, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
 			var adesc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &acc };
-			var apass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &adesc);
+			var apass = wgpuCommandEncoderBeginRenderPass(_f.Encoder, &adesc);
 			wgpuRenderPassEncoderSetPipeline(apass, _d.CoverageSheetPipe);
 			wgpuRenderPassEncoderSetBindGroup(apass, 0, (IntPtr)accumBg, 0, (uint*)null);
 			wgpuRenderPassEncoderDraw(apass, (uint)(ext.Length * 6), 1, 0, 0);
@@ -179,10 +179,10 @@ public sealed unsafe partial class WebGpuPresentSession
 			var re = new WGPUBindGroupEntry { Binding = 0, TextureView = accView };
 			var rbgd = new WGPUBindGroupDescriptor { Layout = _d.CoverageResolveSheetBgl, EntryCount = 1, Entries = &re };
 			var resolveBg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &rbgd));
-			var quads = MakeBuffer(verts);
+			var quads = _f.MakeBuffer(verts);
 			var rca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = b.Target, LoadOp = b.Load ? WGPULoadOp.Load : WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = default };
 			var rdesc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &rca };
-			var rpass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rdesc);
+			var rpass = wgpuCommandEncoderBeginRenderPass(_f.Encoder, &rdesc);
 			wgpuRenderPassEncoderSetPipeline(rpass, _d.CoverageResolveSheetPipe);
 			wgpuRenderPassEncoderSetBindGroup(rpass, 0, (IntPtr)resolveBg, 0, (uint*)null);
 			wgpuRenderPassEncoderSetVertexBuffer(rpass, 0, quads, 0, (nuint)(verts.Length * sizeof(float)));
@@ -195,7 +195,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		_pendingBakes.Clear();
 		_bakeByTarget.Clear();
 		_sheet = null;
-		FlushPendingBlurs();
+		_f.Effects.FlushPendingBlurs();
 	}
 
 	internal static int SheetSlotsBaked, BakeBatches;

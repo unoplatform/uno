@@ -19,7 +19,7 @@ namespace Uno.UI.Composition.WebGpu;
 
 // One clip entry, reached from the space the clip is expressed in through M. Analytic: a rounded rect in its own
 // space, exact under any affine since the shape never leaves the space it was recorded in. Mask: M maps to the
-// mask's texels and Rect is its slot in the draw's mask texture (see WebGpuPresentSession.ResolveClipMasks).
+// mask's texels and Rect is its slot in the draw's mask texture (see WebGpuCoverage.ResolveClipMasks).
 internal struct ClipEntry
 {
 	public Matrix3x2 M;     // clip space -> this entry's space (a mask's texel space)
@@ -32,7 +32,6 @@ internal struct ClipEntry
 	// The same entry expressed in a space that reaches this one through `m` (p_here = Transform(p_new, m)).
 	public ClipEntry Under(in Matrix3x2 m) => new() { M = m * M, Rect = Rect, Radii = Radii, RadiiY = RadiiY, Exclude = Exclude, Mask = Mask };
 }
-
 
 // One path clip as recorded: the geometry and the matrix that was current, its fill rule, and whether it keeps the
 // inside (Intersect) or the outside (Difference). Its mask is baked at draw time (see WebGpuShapeCache). Immutable
@@ -145,7 +144,6 @@ internal sealed class RoundedRectCmd : WebGpuCommand
 	public Vector2 InnerCenter;
 	public Vector4 InnerRadii;
 }
-
 
 // A path, filled (Stroke == 0) or stroked Stroke wide in its own units, as recorded: the geometry and the matrix that
 // was current, so its rasterisation can wait for the density it is drawn at (see WebGpuShapeCache).
