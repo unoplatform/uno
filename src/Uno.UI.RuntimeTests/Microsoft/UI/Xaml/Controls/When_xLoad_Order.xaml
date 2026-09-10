@@ -9,19 +9,19 @@
 				x:FieldModifier="public" Background="Orange" Width="200" Height="200">
 		<Border x:Name="tb01"
 				x:FieldModifier="public"
-				x:Load="{x:Bind IsLoaded1, Mode=OneWay}" 
+				x:Load="{x:Bind IsLoaded1, Mode=OneTime}" 
 				Width="50" 
 				Height="50"
 				Background="Red" />
 		<Border x:Name="tb02"
 				x:FieldModifier="public"
-				x:Load="{x:Bind IsLoaded2, Mode=OneWay}"
+				x:Load="{x:Bind IsLoaded2, Mode=OneTime}"
 				Width="150"
 				Height="50"
 				Background="Green" />
 		<Border x:Name="tb03"
 				x:FieldModifier="public"
-				x:Load="{x:Bind IsLoaded3, Mode=OneWay}"
+				x:Load="{x:Bind IsLoaded3, Mode=OneTime}"
 				Width="50"
 				Height="150"
 				Background="Blue" />
