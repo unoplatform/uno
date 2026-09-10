@@ -795,7 +795,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates that setting ClosedDisplayMode to Hidden removes the AppBar from the visual tree.")]
-				public async Task CanHideAppBarWithHiddenClosedDisplayMode()
+		public async Task CanHideAppBarWithHiddenClosedDisplayMode()
 		{
 			TestCleanupWrapper cleanup;
 
@@ -866,7 +866,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates the focus stays on the current focused element and does not shift to the AppBar when a closed AppBar is added dynamically.")]
-				public async Task ValidateFocusShiftWhenClosedAppBarIsAdded()
+		public async Task ValidateFocusShiftWhenClosedAppBarIsAdded()
 		{
 			TestCleanupWrapper cleanup;
 
@@ -899,7 +899,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates the focus shift between last focused element and an opened AppBar when it is added dynamically.")]
-				public async Task ValidateFocusShiftWhenOpenedAppBarIsAdded()
+		public async Task ValidateFocusShiftWhenOpenedAppBarIsAdded()
 		{
 			TestCleanupWrapper cleanup;
 
@@ -934,7 +934,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates the focus shift between last focused element and the appBarButton of a closed AppBar when it is opened/closed.")]
-				public async Task ValidateFocusShiftWhenClosedUnfocusedAppBarIsOpenedAndClosed()
+		public async Task ValidateFocusShiftWhenClosedUnfocusedAppBarIsOpenedAndClosed()
 		{
 			TestCleanupWrapper cleanup;
 
@@ -985,7 +985,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates the focus stays on the AppBar if it was was already there before the AppBar was opened/closed.")]
-				public async Task ValidateFocusShiftWhenClosedFocusedAppBarIsOpenedAndClosed()
+		public async Task ValidateFocusShiftWhenClosedFocusedAppBarIsOpenedAndClosed()
 		{
 			TestCleanupWrapper cleanup;
 
@@ -1034,7 +1034,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates that resizing the AppBar after opening and closing causes its width to properly get updated.")]
-				public async Task CanResizeAppBarAfterOpeningAndClosing()
+		public async Task CanResizeAppBarAfterOpeningAndClosing()
 		{
 			TestCleanupWrapper cleanup;
 
@@ -1206,7 +1206,7 @@ namespace Windows.UI.Tests.Enterprise
 		[TestMethod]
 		[Description("Validates that setting AppBar.ClosedDisplayMode causes the tab experience to be different when closed depending on the visible items that exist.")]
 		[TestProperty("Hosting:Mode", "UAP")]
-				public async Task CanClosedDisplayModesAffectTabbingWhenClosed()
+		public async Task CanClosedDisplayModesAffectTabbingWhenClosed()
 		{
 			TestCleanupWrapper cleanup;
 			Page rootPage = null;
@@ -1310,7 +1310,7 @@ namespace Windows.UI.Tests.Enterprise
 		[TestMethod]
 		[Description("Validates that setting AppBar.ClosedDisplayMode to Hidden and IsSticky to false on all AppBars causes the WinBlue tabbing experience to occur.")]
 		[TestProperty("Hosting:Mode", "UAP")]
-				public async Task ValidateWinBlueTabbingIsPreserved()
+		public async Task ValidateWinBlueTabbingIsPreserved()
 		{
 			TestCleanupWrapper cleanup;
 			Page rootPage = null;
@@ -1410,7 +1410,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates that AppBars can be closed by pressing the Back button.")]
-				public async Task CanCloseAppBarUsingBackButton()
+		public async Task CanCloseAppBarUsingBackButton()
 		{
 			TestCleanupWrapper cleanup;
 
@@ -1426,14 +1426,14 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("Validates that AppBars can be closed by pressing the B button when using a gamepad.")]
-				public async Task CanCloseAppBarUsingGamepadB()
+		public async Task CanCloseAppBarUsingGamepadB()
 		{
 			await CanCloseAppBarUsingDevice(InputDevice.Gamepad);
 		}
 
 		[TestMethod]
 		[Description("Validates that AppBars can be closed by pressing the Escape keyboard key.")]
-				public async Task CanCloseAppBarUsingEsc()
+		public async Task CanCloseAppBarUsingEsc()
 		{
 			await CanCloseAppBarUsingDevice(InputDevice.Keyboard);
 		}
@@ -1473,7 +1473,7 @@ namespace Windows.UI.Tests.Enterprise
 
 		[TestMethod]
 		[Description("When the AppBar is Disabled, the expand button should be greyed out")]
-				public async Task ValidateExpandButtonVisualInDisabledState()
+		public async Task ValidateExpandButtonVisualInDisabledState()
 		{
 			TestCleanupWrapper cleanup;
 
