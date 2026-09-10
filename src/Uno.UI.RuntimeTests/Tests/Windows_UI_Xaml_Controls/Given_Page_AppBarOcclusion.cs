@@ -28,6 +28,11 @@ public class Given_Page_AppBarOcclusion
 
 	private const double Tolerance = 0.5;
 
+	/// <summary>How many consecutive idle rounds must report the same bar heights before we believe them.</summary>
+	private const int RequiredStableRounds = 3;
+
+	private const int MaxSettleRounds = 100;
+
 	[TestMethod]
 	[RequiresFullWindow]
 	public async Task When_No_AppBars_Then_Content_Fills_Page()
@@ -36,7 +41,7 @@ public class Given_Page_AppBarOcclusion
 
 		try
 		{
-			VerifyContentBounds(page, content, topInset: 0, totalInset: 0);
+			await VerifyContentBoundsAsync(page, content, topInset: 0, totalInset: 0);
 		}
 		finally
 		{
@@ -57,7 +62,7 @@ public class Given_Page_AppBarOcclusion
 			page.TopAppBar = CreateAppBar(AppBarClosedDisplayMode.Compact);
 			await TestServices.WindowHelper.WaitForIdle();
 
-			VerifyContentBounds(page, content, topInset: CompactHeight, totalInset: CompactHeight);
+			await VerifyContentBoundsAsync(page, content, topInset: CompactHeight, totalInset: CompactHeight);
 
 			// Page::ArrangeOverride returns the full arrangeSize - only the content is inset.
 			Assert.AreEqual(pageHeight, page.ActualHeight, Tolerance, "The page itself must not shrink.");
@@ -82,7 +87,7 @@ public class Given_Page_AppBarOcclusion
 
 			// The offset is the TOP bar's height alone, while the consumed height is the sum of both -
 			// Page_Partial.cpp sets Rect.Y to topAppBarHeight and Rect.Height to top + bottom.
-			VerifyContentBounds(page, content, topInset: CompactHeight, totalInset: 2 * CompactHeight);
+			await VerifyContentBoundsAsync(page, content, topInset: CompactHeight, totalInset: 2 * CompactHeight);
 		}
 		finally
 		{
@@ -102,7 +107,7 @@ public class Given_Page_AppBarOcclusion
 			page.BottomAppBar = CreateAppBar(AppBarClosedDisplayMode.Compact);
 			await TestServices.WindowHelper.WaitForIdle();
 
-			VerifyContentBounds(page, content, topInset: MinimalHeight, totalInset: MinimalHeight + CompactHeight);
+			await VerifyContentBoundsAsync(page, content, topInset: MinimalHeight, totalInset: MinimalHeight + CompactHeight);
 		}
 		finally
 		{
@@ -122,7 +127,7 @@ public class Given_Page_AppBarOcclusion
 			await TestServices.WindowHelper.WaitForIdle();
 
 			// AppBar::MeasureOverride pins the Hidden desired height to 0.
-			VerifyContentBounds(page, content, topInset: 0, totalInset: 0);
+			await VerifyContentBoundsAsync(page, content, topInset: 0, totalInset: 0);
 		}
 		finally
 		{
@@ -144,7 +149,7 @@ public class Given_Page_AppBarOcclusion
 			await TestServices.WindowHelper.WaitForIdle();
 
 			// Collapsed does not zero ActualHeight, so Page::GetAppBarClosedHeight has to report 0 itself.
-			VerifyContentBounds(page, content, topInset: 0, totalInset: 0);
+			await VerifyContentBoundsAsync(page, content, topInset: 0, totalInset: 0);
 		}
 		finally
 		{
@@ -169,7 +174,7 @@ public class Given_Page_AppBarOcclusion
 			page.TopAppBar = appBar;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			VerifyContentBounds(page, content, topInset: CompactHeight, totalInset: CompactHeight);
+			await VerifyContentBoundsAsync(page, content, topInset: CompactHeight, totalInset: CompactHeight);
 		}
 		finally
 		{
@@ -191,7 +196,7 @@ public class Given_Page_AppBarOcclusion
 			await TestServices.WindowHelper.WaitForIdle();
 
 			// IsSticky only drives the light-dismiss shield; nothing in Page reads it.
-			VerifyContentBounds(page, content, topInset: CompactHeight, totalInset: CompactHeight);
+			await VerifyContentBoundsAsync(page, content, topInset: CompactHeight, totalInset: CompactHeight);
 		}
 		finally
 		{
@@ -211,27 +216,27 @@ public class Given_Page_AppBarOcclusion
 			page.TopAppBar = appBar;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			VerifyContentBounds(page, content, topInset: CompactHeight, totalInset: CompactHeight);
+			await VerifyContentBoundsAsync(page, content, topInset: CompactHeight, totalInset: CompactHeight);
 
 			appBar.ClosedDisplayMode = AppBarClosedDisplayMode.Minimal;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			VerifyContentBounds(page, content, topInset: MinimalHeight, totalInset: MinimalHeight);
+			await VerifyContentBoundsAsync(page, content, topInset: MinimalHeight, totalInset: MinimalHeight);
 
 			appBar.Visibility = Visibility.Collapsed;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			VerifyContentBounds(page, content, topInset: 0, totalInset: 0);
+			await VerifyContentBoundsAsync(page, content, topInset: 0, totalInset: 0);
 
 			appBar.Visibility = Visibility.Visible;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			VerifyContentBounds(page, content, topInset: MinimalHeight, totalInset: MinimalHeight);
+			await VerifyContentBoundsAsync(page, content, topInset: MinimalHeight, totalInset: MinimalHeight);
 
 			page.TopAppBar = null;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			VerifyContentBounds(page, content, topInset: 0, totalInset: 0);
+			await VerifyContentBoundsAsync(page, content, topInset: 0, totalInset: 0);
 		}
 		finally
 		{
@@ -255,7 +260,7 @@ public class Given_Page_AppBarOcclusion
 			};
 			await TestServices.WindowHelper.WaitForIdle();
 
-			VerifyContentBounds(page, content, topInset: 0, totalInset: 0);
+			await VerifyContentBoundsAsync(page, content, topInset: 0, totalInset: 0);
 		}
 		finally
 		{
@@ -292,11 +297,42 @@ public class Given_Page_AppBarOcclusion
 		=> new AppBar { ClosedDisplayMode = closedDisplayMode };
 
 	/// <summary>
+	/// A docked bar is created, templated and measured across several layout passes, and a single
+	/// WaitForIdle can return while it still reports 0x0 - which reads exactly like "no bar" and
+	/// would let the zero-inset cases pass vacuously. Pump idle until both bars' heights hold still.
+	/// </summary>
+	private static async Task WaitForAppBarsSettledAsync(Page page)
+	{
+		var previousTop = double.NegativeInfinity;
+		var previousBottom = double.NegativeInfinity;
+		var stableRounds = 0;
+
+		for (var attempt = 0; attempt < MaxSettleRounds && stableRounds < RequiredStableRounds; attempt++)
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var top = ClosedHeightOf(page.TopAppBar);
+			var bottom = ClosedHeightOf(page.BottomAppBar);
+
+			stableRounds = top == previousTop && bottom == previousBottom ? stableRounds + 1 : 0;
+			previousTop = top;
+			previousBottom = bottom;
+		}
+
+		// -1 while a bar exists but has not been loaded yet, so an unmeasured bar can never be
+		// mistaken for the settled zero that "no bar at all" produces.
+		static double ClosedHeightOf(AppBar bar)
+			=> bar is null ? 0 : bar.IsLoaded ? bar.ActualHeight : -1;
+	}
+
+	/// <summary>
 	/// Asserts the content rect the page arranged, measured relative to the page itself so an
 	/// embedded test root or a title bar cannot shift the expectation.
 	/// </summary>
-	private static void VerifyContentBounds(Page page, FrameworkElement content, double topInset, double totalInset)
+	private static async Task VerifyContentBoundsAsync(Page page, FrameworkElement content, double topInset, double totalInset)
 	{
+		await WaitForAppBarsSettledAsync(page);
+
 		var origin = content.TransformToVisual(page).TransformPoint(new Point(0, 0));
 
 		Assert.AreEqual(0d, origin.X, Tolerance, "Content X");
