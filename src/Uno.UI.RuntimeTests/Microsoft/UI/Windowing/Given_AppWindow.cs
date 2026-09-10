@@ -6,6 +6,7 @@ using Combinatorial.MSTest;
 using AwesomeAssertions;
 using Microsoft.UI.Windowing;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
 using Windows.Graphics;
 
