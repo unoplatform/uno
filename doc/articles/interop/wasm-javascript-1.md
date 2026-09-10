@@ -12,9 +12,17 @@ Uno Platform fully embraces HTML5 as its display backend when targeting WebAssem
 
 In the HTML world, everything running in the browser is assets that must be downloaded from a server. To integrate existing JavaScript frameworks, they can be either downloaded from another location on the Internet (usually from a CDN service) or embedded and deployed with the app.
 
-The Uno Bootstrapper can automatically embed any asset and deploy it with the app. Some of them (CSS & JavaScript) can also be loaded with the app. Here's how to declare them in a *Uno Wasm* project:
+The Uno Bootstrapper can automatically deploy embedded assets with the app. JavaScript and CSS files placed in the WebAssembly folders are also loaded or referenced by the bootstrapper. Here's how to declare them in a *Uno Wasm* project:
 
-1. **JavaScript files** should be in the `Platforms/WebAssembly/WasmScripts` folder. They will be copied to the output folder and loaded automatically by the bootstrapper when the page loads.
+1. **JavaScript files** should be in the `Platforms/WebAssembly/WasmScripts` folder. In a project using `Uno.Sdk`, `AppManifest.js` is included automatically. Other scripts must be added as embedded resources to the project file:
+
+   ```xml
+   <ItemGroup>
+     <EmbeddedResource Include="Platforms\WebAssembly\WasmScripts\my-script.js" />
+   </ItemGroup>
+   ```
+
+   They will then be copied to the output folder and loaded automatically by the bootstrapper when the page loads. If the script is an npm package, copy or bundle the required files from `node_modules` into `WasmScripts` first; the bootstrapper does not resolve npm dependencies.
 
 2. **CSS Style files** should be in the `Platforms/WebAssembly/WasmCSS` folder. They will be copied to the output folder and referenced in the *HTML head* of the application.
 
@@ -177,3 +185,5 @@ Then from your C# code, add the following:
 * [Continue with Part 2](xref:Uno.Interop.WasmJavaScript2) - an integration of a syntax highlighter component.
 * [Continue with Part 3](xref:Uno.Interop.WasmJavaScript3) - an integration of a more complex library with callbacks to application.
 * Read the [Uno Wasm Bootstrapper](xref:UnoWasmBootstrap.Overview) documentation.
+* For a CDN-based integration, see [Part 3](xref:Uno.Interop.WasmJavaScript3).
+* For platform checks, see [platform-specific C#](xref:Uno.Development.PlatformSpecificCSharp), and for package dependencies, see [Using the Uno.Sdk](xref:Uno.Features.Uno.Sdk#implicit-packages).
