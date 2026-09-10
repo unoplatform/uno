@@ -26,6 +26,19 @@ public class Given_AppBar
 		Assert.IsNotNull(GetStoryboard(appBar, "m_overlayClosingStoryboard"), "OverlayClosingAnimation was not resolved.");
 	}
 
+	[TestMethod]
+	public void When_XcpRound_Then_Halves_Round_Up()
+	{
+		// XcpRound is floor(x + 0.5), so halves always go up - unlike Math.Round, which
+		// rounds them to even, and unlike MidpointRounding.AwayFromZero on negatives.
+		Assert.AreEqual(1d, AppBar.XcpRound(0.5));
+		Assert.AreEqual(2d, AppBar.XcpRound(1.5));
+		Assert.AreEqual(3d, AppBar.XcpRound(2.5));
+		Assert.AreEqual(0d, AppBar.XcpRound(-0.5));
+		Assert.AreEqual(-1d, AppBar.XcpRound(-1.5));
+		Assert.AreEqual(-2d, AppBar.XcpRound(-2.5));
+	}
+
 	private static Storyboard GetStoryboard(AppBar appBar, string fieldName)
 	{
 		var field = typeof(AppBar).GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
