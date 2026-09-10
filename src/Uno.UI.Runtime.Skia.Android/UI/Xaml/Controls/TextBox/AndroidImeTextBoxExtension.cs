@@ -30,6 +30,7 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 	private int _lastFullTextLength;
 	private bool _sessionActive;
 	private TextInputConnection? _subscribedConnection;
+	private XamlRoot? _xamlRoot;
 
 	public bool IsComposing => _isComposing;
 
@@ -38,7 +39,9 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 	public event EventHandler<ImeCompositionEventArgs>? CompositionCompleted;
 	public event EventHandler? CompositionEnded;
 
-	private static TextInputPlugin? Plugin => ApplicationActivity.RenderView?.TextInputPlugin;
+	// TODO #13827: the foreground-activity fallback is ambiguous once multiple windows exist.
+	private TextInputPlugin? Plugin
+		=> (AndroidSkiaXamlRootHost.GetActivity(_xamlRoot) ?? BaseActivity.Current as ApplicationActivity)?.RenderView?.TextInputPlugin;
 
 	public void StartImeSession(TextBoxCore core)
 	{
@@ -47,6 +50,7 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 			return;
 		}
 
+		_xamlRoot = core.Owner.XamlRoot;
 		_sessionActive = true;
 
 		if (Plugin is { } plugin)

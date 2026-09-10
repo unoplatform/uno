@@ -305,7 +305,7 @@ internal sealed class TextInputPlugin
 				// add this hack here specifically to support InputExtensions in
 				// Toolkit, which listens to KeyUp/KeyDown events to operate, but it would
 				// be more reasonable to treat Enter like any other key.
-				return ApplicationActivity.Instance.DispatchKeyEvent(keyEvent);
+				return (_view.Context as global::Android.App.Activity)?.DispatchKeyEvent(keyEvent) ?? false;
 			}
 		}
 
