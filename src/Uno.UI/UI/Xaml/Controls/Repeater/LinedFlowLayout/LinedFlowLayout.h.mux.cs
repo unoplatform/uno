@@ -40,7 +40,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return -1;
 			}
 
-			return m_elementManager.GetFirstRealizedDataIndex();
+			return m_elementManager.GetFirstRealizedDataIndex;
 		}
 
 		internal int LastRealizedItemIndexDbg()
@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			int realizedElementCount = m_elementManager.GetRealizedElementCount;
-			return realizedElementCount == 0 ? -1 : m_elementManager.GetFirstRealizedDataIndex() + realizedElementCount - 1;
+			return realizedElementCount == 0 ? -1 : m_elementManager.GetFirstRealizedDataIndex + realizedElementCount - 1;
 		}
 
 		internal int FirstFrozenItemIndexDbg() => m_firstFrozenItemIndex;
