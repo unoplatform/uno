@@ -43,7 +43,7 @@ public static class ApplicationDataMigrator
 
 		foreach (var pair in source.ToDictionary())
 		{
-			if (pair.Key is not NSString key || pair.Value is null || !IsLegacyValue(pair.Value.ToString()))
+			if (pair.Key is not NSString key || pair.Value is null || pair.Value.ToString() is not { } valueText || !IsLegacyValue(valueText))
 			{
 				continue;
 			}
