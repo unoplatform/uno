@@ -1,6 +1,7 @@
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Media.Animation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
@@ -37,6 +38,20 @@ public class Given_AppBar
 		Assert.AreEqual(0d, AppBar.XcpRound(-0.5));
 		Assert.AreEqual(-1d, AppBar.XcpRound(-1.5));
 		Assert.AreEqual(-2d, AppBar.XcpRound(-2.5));
+	}
+
+	[TestMethod]
+	public void When_Popup_Is_SubMenu_Then_It_Counts_As_LightDismiss()
+	{
+		var popup = new Popup { IsLightDismissEnabled = false };
+
+		Assert.IsFalse(popup.IsSelfOrAncestorLightDismiss());
+
+		popup.IsSubMenu = true;
+
+		// A sub-menu popup is always hosted by a light-dismiss parent menu, so the AppBar
+		// must not build a second, competing light-dismiss layer inside it.
+		Assert.IsTrue(popup.IsSelfOrAncestorLightDismiss());
 	}
 
 	private static Storyboard GetStoryboard(AppBar appBar, string fieldName)
