@@ -43,6 +43,26 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 
+		/// <summary>
+		/// Whether the clipboard holds text, answered from the clipboard's description where the
+		/// platform can tell without reading it. Reading is observable to the user -- Android raises
+		/// a "pasted from your clipboard" notice -- so callers that only need to decide whether a
+		/// Paste affordance is enabled must ask this rather than <see cref="GetContent"/>.
+		/// </summary>
+		internal static bool ContainsText()
+		{
+			bool? containsText = null;
+			TryGetContainsText(ref containsText);
+
+			return containsText ?? GetContent()?.Contains(StandardDataFormats.Text) == true;
+		}
+
+		/// <summary>
+		/// Set by platforms that can answer <see cref="ContainsText"/> without reading the clipboard.
+		/// Left untouched elsewhere, which falls back to reading it.
+		/// </summary>
+		static partial void TryGetContainsText(ref bool? containsText);
+
 #if __ANDROID__ || __IOS__ || __TVOS__ || __SKIA__ || __WASM__ || __TVOS__
 		private static void OnContentChanged()
 		{

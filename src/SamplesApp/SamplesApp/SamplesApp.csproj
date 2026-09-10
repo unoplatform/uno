@@ -1,4 +1,4 @@
-<Project>
+﻿<Project>
 	<!--
 	Uno.Sdk is imported by path rather than via Sdk="Uno.Sdk.Private": an Sdk attribute resolves through
 	NuGet at evaluation time, so a fresh clone could not load this project until the SDK had been packed.
@@ -285,6 +285,12 @@
 		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.10.0.1" />
 		<PackageReference Include="Xamarin.AndroidX.Core.SplashScreen" Version="1.2.0.3" />
 		<PackageReference Include="Xamarin.Google.Android.Material" Version="1.14.0.5" />
+	</ItemGroup>
+
+	<!-- Debug only: with AndroidLinkMode=None the SDK generates no JNI keep rules, so the pinned
+	     R8 would shrink away every managed-only AndroidX type. See the .cfg for details. -->
+	<ItemGroup Condition="'$(_Platform)' == 'android' and '$(Configuration)' == 'Debug'">
+		<ProguardConfiguration Include="Platforms\Android\proguard.cfg" />
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(_Platform)' == 'android'">

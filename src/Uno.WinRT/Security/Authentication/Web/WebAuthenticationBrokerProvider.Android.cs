@@ -25,7 +25,7 @@ namespace Uno.AuthenticationBroker
 		{
 			if (_schemes == null)
 			{
-				var appType = ContextHelper.Current.GetType();
+				var appType = ContextHelper.Current!.GetType();
 				var applicationTypes = appType.Assembly.GetTypes();
 
 				static IEnumerable<string> ExtractSchemes(IntentFilterAttribute a)
