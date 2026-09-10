@@ -222,13 +222,18 @@ internal class ApplicationBarService
 			RemoveApplicationBarFromVisualTree(appBar, AppBarMode.Bottom);
 		}
 
-		// Remove from list
+		// Remove from list, dropping entries whose bar was collected along the way - otherwise a
+		// bar that is never explicitly unregistered keeps Count above zero and pins the
+		// Window.Activated subscription for the lifetime of the service.
 		for (int i = m_applicationBars.Count - 1; i >= 0; i--)
 		{
-			if (m_applicationBars[i].TryGetTarget(out var registeredBar) && registeredBar == appBar)
+			if (!m_applicationBars[i].TryGetTarget(out var registeredBar))
 			{
 				m_applicationBars.RemoveAt(i);
-				break;
+			}
+			else if (registeredBar == appBar)
+			{
+				m_applicationBars.RemoveAt(i);
 			}
 		}
 
