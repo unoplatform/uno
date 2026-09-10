@@ -44,6 +44,17 @@
 		<AndroidJavaSource Include="..\Uno.UI.BindingHelper.Android\Uno\UI\UnoWebViewHandlerJavascriptInterface.java" />
 	</ItemGroup>
 
+	<!--
+	  _CompileBindingJava is what puts the compiled java in @(EmbeddedJar), and it only runs on the
+	  build path. The pack pass reaches _CreateAar through ResolveReferences instead, so it rewrites
+	  the .aar with no jar in it. Re-declare the jar so every pass produces the same .aar.
+	-->
+	<Target Name="_UnoKeepBindingJarInAar" BeforeTargets="_CreateAarCache" Condition="Exists('$(_AndroidIntermediateBindingClassesZip)')">
+		<ItemGroup>
+			<EmbeddedJar Include="$(_AndroidIntermediateBindingClassesZip)" Condition="'@(EmbeddedJar)' == ''" />
+		</ItemGroup>
+	</Target>
+
 	<ItemGroup>
 		<PackageReference Include="SkiaSharp" />
 		<PackageReference Include="HarfBuzzSharp" />
