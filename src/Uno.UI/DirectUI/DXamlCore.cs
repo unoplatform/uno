@@ -112,7 +112,11 @@ namespace DirectUI
 		internal Rect GetContentBoundsForElement(Microsoft.UI.Xaml.UIElement element)
 		{
 			// Returns the window/content bounds in which the element resides.
-			var xamlRoot = element?.XamlRoot;
+			// The UIElement.XamlRoot getter would create a XamlRoot for a detached element;
+			// a detached element has no content bounds to report, so ask for the existing one only.
+			var xamlRoot = element is null
+				? null
+				: Microsoft.UI.Xaml.XamlRoot.GetForElement(element, createIfNotExist: false);
 			if (xamlRoot is not null)
 			{
 				return new Rect(0, 0, xamlRoot.Size.Width, xamlRoot.Size.Height);
