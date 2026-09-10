@@ -70,7 +70,9 @@ public class Given_WindowId_Maps_Alc
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	private static (MUXWindowId WindowId, WeakReference WeakAppWindow) CreateRegisteredAppWindow()
 	{
-		var appWindow = new AppWindow();
+		// An AppWindow id is the native window handle it was created for. This test host has no native
+		// windows, so a fixed synthetic handle stands in for one.
+		var appWindow = new AppWindow(0xF00DBEEF);
 		_ = CoreDragDropManager.GetOrCreateForWindowId(appWindow.Id);
 
 		Assert.IsNotNull(AppWindow.GetFromWindowId(appWindow.Id), "Pre-condition: AppWindow must be registered.");
