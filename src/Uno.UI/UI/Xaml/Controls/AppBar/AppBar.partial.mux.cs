@@ -1572,12 +1572,15 @@ partial class AppBar
 
 		if (m_isOverlayVisible)
 		{
-			// Use ResourceResolver.ApplyResource to create a theme-aware binding for the overlay brush,
-			// matching the pattern used by Popup, FlyoutBase, and ComboBox.
-			ResourceResolver.ApplyResource(
-				m_overlayElement!, Shape.FillProperty,
-				"AppBarLightDismissOverlayBackground",
-				isThemeResourceExtension: true, isHotReloadSupported: true);
+			// TODO Uno: WinUI sets a ThemeResource binding here instead of a one-shot value.
+			// ResourceResolver.ApplyResource cannot be used yet: the overlay element is not in the
+			// tree at this point, so the eager resolution picks the ambient theme and yields a brush
+			// instance that differs from the one Application.Current.Resources exposes.
+			if (ResourceResolver.ResolveTopLevelResource("AppBarLightDismissOverlayBackground") is Brush brush
+				&& m_overlayElement is Shape overlayShape)
+			{
+				overlayShape.Fill = brush;
+			}
 		}
 		else
 		{
