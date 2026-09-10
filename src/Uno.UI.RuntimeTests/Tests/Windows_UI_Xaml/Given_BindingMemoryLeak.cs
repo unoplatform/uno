@@ -1,7 +1,9 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -237,6 +239,81 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.IsFalse(viewRef.IsAlive, "View should have been garbage collected after removal from visual tree.");
 			Assert.IsFalse(vmRef.IsAlive, "ViewModel should have been garbage collected after View removal from visual tree.");
+		}
+
+		[TestMethod]
+		public async Task When_Source_Outlives_Targets_Then_Subscriptions_Are_Dropped()
+		{
+			// A long-lived source bound by many short-lived targets must not accumulate PropertyChanged
+			// subscriptions. Asserted on the source's own handler count rather than on a WeakReference, so
+			// the test does not depend on the GC actually collecting anything to be meaningful.
+			var source = new CountingSource();
+			var root = new ContentControl();
+			TestServices.WindowHelper.WindowContent = root;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			const int Cycles = 30;
+			var targets = new List<WeakReference>();
+			for (var i = 0; i < Cycles; i++)
+			{
+				// The helper is a non-inlined sync method so the target does not survive in this async
+				// method's state machine, which would keep every binding alive and defeat the test.
+				targets.Add(AddAndRemoveBoundChild(root, source));
+				await TestServices.WindowHelper.WaitForIdle();
+			}
+
+			GC.Collect(2);
+			GC.WaitForPendingFinalizers();
+			GC.Collect(2);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// A raise is what gives a self-purging weak event the chance to drop dead subscriptions.
+			source.Value = "changed";
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var aliveTargets = targets.Count(t => t.IsAlive);
+
+			// The precise invariant: the source must never hold more subscriptions than there are live
+			// targets. Comparing against aliveTargets rather than a fixed number keeps the test meaningful
+			// even if the GC declines to collect some of them on a given run.
+			Assert.IsTrue(
+				source.SubscriberCount <= aliveTargets,
+				$"The source kept {source.SubscriberCount} PropertyChanged subscriptions after {Cycles} "
+				+ $"bound-then-removed targets, of which only {aliveTargets} are still alive: dead "
+				+ "subscriptions are not being dropped.");
+		}
+
+		[MethodImpl(MethodImplOptions.NoInlining)]
+		private static WeakReference AddAndRemoveBoundChild(ContentControl root, CountingSource source)
+		{
+			var child = new TextBlock { DataContext = source };
+			child.SetBinding(TextBlock.TextProperty, new Microsoft.UI.Xaml.Data.Binding { Path = new PropertyPath(nameof(CountingSource.Value)) });
+
+			root.Content = child;
+			root.UpdateLayout();
+			root.Content = null;
+			root.UpdateLayout();
+
+			return new WeakReference(child);
+		}
+
+		private sealed class CountingSource : System.ComponentModel.INotifyPropertyChanged
+		{
+			private string? _value;
+
+			public string? Value
+			{
+				get => _value;
+				set
+				{
+					_value = value;
+					PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(Value)));
+				}
+			}
+
+			public event System.ComponentModel.PropertyChangedEventHandler? PropertyChanged;
+
+			internal int SubscriberCount => PropertyChanged?.GetInvocationList().Length ?? 0;
 		}
 	}
 }
