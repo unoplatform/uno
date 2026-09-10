@@ -103,12 +103,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		int gw = (w + step - 1) / step * step + step, gh = (h + step - 1) / step * step + step;
 		if (gw > SheetSize || gh > SheetSize) { return false; }
 		_shadowSheetByDepth.TryGetValue(levels, out var cur);
-		if (cur is not null)
-		{
-			var b = cur.Bake;
-			if (b.CursorX + gw > SheetSize) { b.ShelfY += b.ShelfH; b.ShelfH = 0; b.CursorX = 0; }
-			if (b.ShelfY + gh > SheetSize) { cur = null; }
-		}
+		if (cur is not null && !cur.Bake.Shelf.TryReserve(gw, gh, step, out x, out y)) { cur = null; }
 		if (cur is null)
 		{
 			var view = _d.Pool.Rent(SheetSize, SheetSize, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, _d.ColorFormat);
@@ -119,11 +114,9 @@ public sealed unsafe partial class WebGpuPresentSession
 			// The sigma that maps back to exactly this depth (see BlurLevels), so the pyramid builds the same levels.
 			float depthSigma = 2f * step;
 			_pendingBlurs.Add((view, SheetSize, SheetSize, depthSigma, depthSigma, blurred));
+			cur.Bake.Shelf.TryReserve(gw, gh, step, out x, out y);
 		}
 		sheet = cur;
-		x = cur.Bake.CursorX; y = cur.Bake.ShelfY;
-		cur.Bake.CursorX += gw;
-		if (gh > cur.Bake.ShelfH) { cur.Bake.ShelfH = gh; }
 		return true;
 	}
 
@@ -170,7 +163,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		public int Depth;
 		public readonly List<PassBuild> Builds = new();
 		public readonly Dictionary<int, IntPtr> Blurs = new();   // blur depth -> the pyramid's top level, rented up front
-		public int CursorX, ShelfY, ShelfH;
+		public Shelf Shelf = new(LayerSheetSize, LayerSheetSize);
 	}
 
 	private readonly List<LayerSheet> _layerSheets = new();
@@ -185,23 +178,15 @@ public sealed unsafe partial class WebGpuPresentSession
 		if (gw > LayerSheetSize || gh > LayerSheetSize) { return false; }
 		LayerSheet cur = null;
 		for (int i = _layerSheets.Count - 1; i >= 0; i--) { if (_layerSheets[i].Depth == _layerDepth) { cur = _layerSheets[i]; break; } }
-		if (cur is not null)
-		{
-			int cx = (cur.CursorX + step - 1) / step * step;
-			if (cx + gw > LayerSheetSize) { cur.ShelfY += cur.ShelfH; cur.ShelfH = 0; cur.CursorX = 0; cx = 0; }
-			int sy = (cur.ShelfY + step - 1) / step * step;
-			if (sy + gh > LayerSheetSize) { cur = null; }
-			else { cur.CursorX = cx; cur.ShelfY = sy; }
-		}
+		if (cur is not null && !cur.Shelf.TryReserve(gw, gh, step, out x, out y)) { cur = null; }
 		if (cur is null)
 		{
 			cur = new LayerSheet { Surface = new WebGpuRenderSurface(_d, LayerSheetSize, LayerSheetSize, _d.Pool), Depth = _layerDepth };
 			_layerSheets.Add(cur);
 			_frameLayerSurfaces.Add(cur.Surface);
+			cur.Shelf.TryReserve(gw, gh, step, out x, out y);
 		}
-		sheet = cur; x = cur.CursorX + step; y = cur.ShelfY + step;
-		cur.CursorX += gw;
-		if (gh > cur.ShelfH) { cur.ShelfH = gh; }
+		sheet = cur; x += step; y += step;
 		LayerSheetSlots++;
 		return true;
 	}

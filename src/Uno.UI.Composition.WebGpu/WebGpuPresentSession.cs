@@ -289,11 +289,6 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 	private IntPtr Vbuf(List<float> data, OwnedResources owned)
 		=> owned is null ? MakeBuffer(data) : Vbuf(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(data).ToArray(), owned);
 
-	private void PushVert(Vector2 dev, float r, float g, float b, float a)
-	{
-		_scratch.Add(dev.X); _scratch.Add(dev.Y); _scratch.Add(r); _scratch.Add(g); _scratch.Add(b); _scratch.Add(a); _scratch.Add(0f); _scratch.Add(0f);
-	}
-
 	private IntPtr MakeUniform(int byteSize)
 		=> _d.BufferPool.Rent(byteSize, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
 

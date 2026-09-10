@@ -25,7 +25,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		public readonly List<float> Ext = new();       // per edge: the right bound of its slot, so its quad stops there
 		public readonly List<float> Slots = new();     // per slot: x, y, w, h, evenOdd, 0
 		public int Count;
-		public int CursorX, ShelfY, ShelfH;            // shelf packing; frame sheets only
+		public Shelf Shelf;
 	}
 
 	private readonly List<BakeBatch> _pendingBakes = new();
@@ -38,28 +38,23 @@ public sealed unsafe partial class WebGpuPresentSession
 	{
 		if (!_bakeByTarget.TryGetValue(target, out var b))
 		{
-			b = new BakeBatch { Target = target, TargetW = w, TargetH = h, Load = load };
+			b = new BakeBatch { Target = target, TargetW = w, TargetH = h, Load = load, Shelf = new Shelf(w, h) };
 			_bakeByTarget[target] = b;
 			_pendingBakes.Add(b);
 		}
 		return b;
 	}
 
-	// Shelf-packs rects into an areaW x areaH region from the given cursor state, advancing it; false, state untouched,
-	// when they do not all fit.
-	private static bool TryPack(ref int cursorX, ref int shelfY, ref int shelfH, int areaW, int areaH, (int Ox, int Oy, int W, int H)[] rects, (int X, int Y)[] pos)
+	// All the rects on the shelf, or none of them.
+	private static bool TryPack(ref Shelf shelf, (int Ox, int Oy, int W, int H)[] rects, (int X, int Y)[] pos)
 	{
-		int cx = cursorX, sy = shelfY, sh = shelfH;
+		var s = shelf;
 		for (var i = 0; i < rects.Length; i++)
 		{
-			int w = rects[i].W, h = rects[i].H;
-			if (w > areaW) { return false; }
-			if (cx + w > areaW) { sy += sh; sh = 0; cx = 0; }
-			if (sy + h > areaH) { return false; }
-			pos[i] = (cx, sy); cx += w;
-			if (h > sh) { sh = h; }
+			if (!s.TryReserve(rects[i].W, rects[i].H, 1, out var x, out var y)) { return false; }
+			pos[i] = (x, y);
 		}
-		cursorX = cx; shelfY = sy; shelfH = sh;
+		shelf = s;
 		return true;
 	}
 
@@ -68,16 +63,14 @@ public sealed unsafe partial class WebGpuPresentSession
 	private bool TryReserveSheetSlots((int Ox, int Oy, int W, int H)[] rects, (int X, int Y)[] pos, out BakeBatch sheet)
 	{
 		sheet = _sheet;
-		if (sheet is not null && TryPack(ref sheet.CursorX, ref sheet.ShelfY, ref sheet.ShelfH, SheetSize, SheetSize, rects, pos))
+		if (sheet is null || !TryPack(ref sheet.Shelf, rects, pos))
 		{
-			SheetSlotsBaked += rects.Length;
-			return true;
+			var fresh = new Shelf(SheetSize, SheetSize);
+			if (!TryPack(ref fresh, rects, pos)) { sheet = null; return false; }
+			var view = _d.Pool.Rent(SheetSize, SheetSize, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, _d.ColorFormat);
+			sheet = _sheet = BatchFor(view, SheetSize, SheetSize, load: false);
+			sheet.Shelf = fresh;
 		}
-		int cx = 0, sy = 0, sh = 0;
-		if (!TryPack(ref cx, ref sy, ref sh, SheetSize, SheetSize, rects, pos)) { sheet = null; return false; }
-		var view = _d.Pool.Rent(SheetSize, SheetSize, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, _d.ColorFormat);
-		sheet = _sheet = BatchFor(view, SheetSize, SheetSize, load: false);
-		sheet.CursorX = cx; sheet.ShelfY = sy; sheet.ShelfH = sh;
 		SheetSlotsBaked += rects.Length;
 		return true;
 	}
@@ -97,9 +90,9 @@ public sealed unsafe partial class WebGpuPresentSession
 		long area = 0; int maxW = 1;
 		foreach (var r in rects) { area += (long)r.W * r.H; maxW = Math.Max(maxW, r.W); }
 		w = Math.Max(maxW, (int)System.Numerics.BitOperations.RoundUpToPowerOf2((uint)Math.Ceiling(Math.Sqrt(area))));
-		int cx = 0, sy = 0, sh = 0;
-		TryPack(ref cx, ref sy, ref sh, w, int.MaxValue, rects, pos);
-		h = Math.Max(1, sy + sh);
+		var shelf = new Shelf(w, int.MaxValue);
+		TryPack(ref shelf, rects, pos);
+		h = Math.Max(1, shelf.Y + shelf.RowH);
 	}
 
 	// Queues one outline into a slot of the batch. Edges are in the shape's space (the fill's, less its offset, which
@@ -206,4 +199,33 @@ public sealed unsafe partial class WebGpuPresentSession
 	}
 
 	internal static int SheetSlotsBaked, BakeBatches;
+}
+
+/// <summary>
+/// Shelf packing into a fixed area: slots run left to right along a row and a new row opens when one does not fit.
+/// A value, so a caller wanting all-or-nothing reserves on a copy and stores it back on success.
+/// </summary>
+internal struct Shelf
+{
+	public int AreaW, AreaH;
+	public int X, Y, RowH;
+
+	public Shelf(int areaW, int areaH)
+	{
+		AreaW = areaW;
+		AreaH = areaH;
+	}
+
+	/// <summary>Reserves a w x h slot whose corner sits on a <paramref name="step"/> grid; false when it does not fit.</summary>
+	public bool TryReserve(int w, int h, int step, out int x, out int y)
+	{
+		x = y = 0;
+		int cx = (X + step - 1) / step * step;
+		if (cx + w > AreaW) { Y += RowH; RowH = 0; cx = 0; }
+		int sy = (Y + step - 1) / step * step;
+		if (w > AreaW || sy + h > AreaH) { return false; }
+		x = cx; y = sy;
+		X = cx + w; Y = sy; RowH = Math.Max(RowH, h);
+		return true;
+	}
 }

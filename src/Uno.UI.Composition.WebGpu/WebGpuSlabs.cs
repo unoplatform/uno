@@ -111,9 +111,9 @@ internal sealed unsafe class WebGpuUniformSlab : IDisposable
 
 internal sealed unsafe class WebGpuClipSlab : IDisposable
 {
-	// Owned ClipU slots: chunked uniform buffers with fixed 512-byte slots (uniform bind offsets align to 256), a
-	// shadow copy and dirty tracking, so a per-frame restamp is a shadow write flushed once per chunk. A slot whose
-	// draw has more than four clips also owns the storage buffer holding the rest.
+	// Owned ClipU slots: chunked uniform buffers of fixed slots (uniform bind offsets align to 256), a shadow copy
+	// and dirty tracking, so a per-frame restamp is a shadow write flushed once per chunk. A slot whose draw has
+	// more than four clips also owns the storage buffer holding the rest.
 	private sealed class Chunk
 	{
 		public IntPtr Buf;
@@ -123,78 +123,58 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 		public int DirtyMax = -1;
 	}
 
-	private sealed class SizeClass
-	{
-		public int SlotBytes, SlotFloats, ChunkSlots;
-		public readonly List<Chunk> Chunks = new();
-		public readonly Stack<int> Free = new();
-		public int Next;
-	}
+	private const int SlotBytes = (WebGpuPresentSession.ClipUBytes + 255) / 256 * 256;
+	private const int SlotFloats = SlotBytes / sizeof(float);
+	private const int ChunkSlots = (1 << 20) / SlotBytes;
 
 	private readonly WebGpuDevice _d;
-	private readonly List<SizeClass> _classes = new();
-	private readonly Dictionary<int, int> _classByBytes = new();
-	private const int SlotShift = 24;   // handle = (class << 24) | (slot + 1); 0 = none
+	private readonly List<Chunk> _chunks = new();
+	private readonly Stack<int> _free = new();
+	private int _next;
 
 	public WebGpuClipSlab(WebGpuDevice d) => _d = d;
 
-	private SizeClass ClassFor(int bytes)
+	/// <summary>A slot handle: its index plus one, so 0 means none.</summary>
+	public nint Alloc()
 	{
-		var slotBytes = (bytes + 255) / 256 * 256;
-		if (!_classByBytes.TryGetValue(slotBytes, out var ci))
-		{
-			ci = _classes.Count;
-			_classes.Add(new SizeClass { SlotBytes = slotBytes, SlotFloats = slotBytes / sizeof(float), ChunkSlots = Math.Max(64, (1 << 20) / slotBytes) });
-			_classByBytes[slotBytes] = ci;
-		}
-		return _classes[ci];
-	}
-
-	public nint Alloc() => Alloc(WebGpuPresentSession.ClipUBytes);
-
-	private nint Alloc(int bytes)
-	{
-		var sc = ClassFor(bytes);
-		var ci = _classByBytes[sc.SlotBytes];
 		int slot;
-		if (sc.Free.Count > 0) { slot = sc.Free.Pop(); }
+		if (_free.Count > 0) { slot = _free.Pop(); }
 		else
 		{
-			slot = sc.Next++;
-			if (slot / sc.ChunkSlots >= sc.Chunks.Count)
+			slot = _next++;
+			if (slot / ChunkSlots >= _chunks.Count)
 			{
-				var bd = new WGPUBufferDescriptor { Size = (nuint)(sc.ChunkSlots * sc.SlotBytes), Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
-				sc.Chunks.Add(new Chunk { Buf = wgpuDeviceCreateBuffer(_d.Dev, &bd), Shadow = new float[sc.ChunkSlots * sc.SlotFloats], More = new IntPtr[sc.ChunkSlots] });
+				var bd = new WGPUBufferDescriptor { Size = (nuint)(ChunkSlots * SlotBytes), Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
+				_chunks.Add(new Chunk { Buf = wgpuDeviceCreateBuffer(_d.Dev, &bd), Shadow = new float[ChunkSlots * SlotFloats], More = new IntPtr[ChunkSlots] });
 			}
 		}
-		return ((nint)ci << SlotShift) | (nint)(slot + 1);
+		return slot + 1;
 	}
 
 	public void Free(nint handle)
 	{
 		if (handle == 0) { return; }
-		var (sc, slot) = Decode(handle);
-		var c = sc.Chunks[slot / sc.ChunkSlots];
-		var idx = slot % sc.ChunkSlots;
+		var c = ChunkOf(handle, out var idx);
 		if (c.More[idx] != IntPtr.Zero) { _d.DeferReleaseBuffer(c.More[idx]); c.More[idx] = IntPtr.Zero; }
-		sc.Free.Push(slot);
+		_free.Push((int)handle - 1);
 	}
 
-	public IntPtr MoreOf(nint handle) { var (sc, slot) = Decode(handle); return sc.Chunks[slot / sc.ChunkSlots].More[slot % sc.ChunkSlots]; }
-	public void SetMore(nint handle, IntPtr buf) { var (sc, slot) = Decode(handle); sc.Chunks[slot / sc.ChunkSlots].More[slot % sc.ChunkSlots] = buf; }
+	private Chunk ChunkOf(nint handle, out int idx)
+	{
+		var slot = (int)handle - 1;
+		idx = slot % ChunkSlots;
+		return _chunks[slot / ChunkSlots];
+	}
 
-	private (SizeClass sc, int slot) Decode(nint handle) => (_classes[(int)(handle >> SlotShift)], (int)(handle & ((1 << SlotShift) - 1)) - 1);
-
-	public IntPtr BufferOf(nint handle) { var (sc, slot) = Decode(handle); return sc.Chunks[slot / sc.ChunkSlots].Buf; }
-	public uint OffsetOf(nint handle) { var (sc, slot) = Decode(handle); return (uint)(slot % sc.ChunkSlots * sc.SlotBytes); }
-	public int SlotBytesOf(nint handle) => Decode(handle).sc.SlotBytes;
+	public IntPtr MoreOf(nint handle) => ChunkOf(handle, out var idx).More[idx];
+	public void SetMore(nint handle, IntPtr buf) => ChunkOf(handle, out var idx).More[idx] = buf;
+	public IntPtr BufferOf(nint handle) => ChunkOf(handle, out _).Buf;
+	public uint OffsetOf(nint handle) { ChunkOf(handle, out var idx); return (uint)(idx * SlotBytes); }
 
 	public void Write(nint handle, float[] clipU, int floats)
 	{
-		var (sc, slot) = Decode(handle);
-		var c = sc.Chunks[slot / sc.ChunkSlots];
-		var idx = slot % sc.ChunkSlots;
-		Array.Copy(clipU, 0, c.Shadow, idx * sc.SlotFloats, Math.Min(floats, sc.SlotFloats));
+		var c = ChunkOf(handle, out var idx);
+		Array.Copy(clipU, 0, c.Shadow, idx * SlotFloats, Math.Min(floats, SlotFloats));
 		if (idx < c.DirtyMin) { c.DirtyMin = idx; }
 		if (idx > c.DirtyMax) { c.DirtyMax = idx; }
 	}
@@ -202,39 +182,27 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 	/// <summary>Bytes uploaded by the last <see cref="Flush"/>, for UNO_WEBGPU_STATS.</summary>
 	public long LastFlushBytes;
 
-	/// <summary>One queue write per dirty chunk range — call before any submit whose commands read clips.</summary>
+	/// <summary>One queue write per dirty chunk range - call before any submit whose commands read clips.</summary>
 	public void Flush()
 	{
 		LastFlushBytes = 0;
-		foreach (var sc in _classes)
+		foreach (var c in _chunks)
 		{
-			foreach (var c in sc.Chunks)
-			{
-				if (c.DirtyMax < 0) { continue; }
-				int lo = c.DirtyMin * sc.SlotFloats, len = (c.DirtyMax + 1 - c.DirtyMin) * sc.SlotFloats;
-				LastFlushBytes += len * sizeof(float);
-				fixed (float* p = &c.Shadow[lo]) { wgpuQueueWriteBuffer(_d.Q, c.Buf, (nuint)(lo * sizeof(float)), (IntPtr)p, (nuint)(len * sizeof(float))); }
-				c.DirtyMin = int.MaxValue;
-				c.DirtyMax = -1;
-			}
+			if (c.DirtyMax < 0) { continue; }
+			int lo = c.DirtyMin * SlotFloats, len = (c.DirtyMax + 1 - c.DirtyMin) * SlotFloats;
+			LastFlushBytes += len * sizeof(float);
+			fixed (float* p = &c.Shadow[lo]) { wgpuQueueWriteBuffer(_d.Q, c.Buf, (nuint)(lo * sizeof(float)), (IntPtr)p, (nuint)(len * sizeof(float))); }
+			c.DirtyMin = int.MaxValue;
+			c.DirtyMax = -1;
 		}
 	}
 
 	public void Dispose()
 	{
-		foreach (var sc in _classes)
+		foreach (var c in _chunks)
 		{
-			foreach (var c in sc.Chunks)
-			{
-				if (c.Buf != IntPtr.Zero) { wgpuBufferRelease(c.Buf); }
-			}
-			sc.Chunks.Clear();
+			if (c.Buf != IntPtr.Zero) { wgpuBufferRelease(c.Buf); }
 		}
-		_classes.Clear();
-		_classByBytes.Clear();
+		_chunks.Clear();
 	}
 }
-
-// --- Device-bound factory ---
-
-/// <summary>A wgpu texture uploaded once from a neutral <see cref="IImage"/>'s pixels. Owned/disposed by the framework.</summary>

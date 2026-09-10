@@ -182,14 +182,19 @@ public sealed unsafe partial class WebGpuPresentSession
 		return new ShadowCmd { Geometry = sh.Geometry, M = sm, BbMin = min, BbMax = max, EvenOdd = sh.EvenOdd, Color = sh.Color, SigmaX = sh.SigmaX * ss, SigmaY = sh.SigmaY * ss, Additive = sh.Additive, Clip = cd };
 	}
 
-	// One textured quad into the pass's shared quad buffer.
-	private void EmitImage(ImageCmd im, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, in ClipData cd, List<DrawOp> ops)
+	// One textured quad: into the pass's shared quad buffer per frame, else into a buffer the recording owns.
+	private void EmitImage(ImageCmd im, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, in ClipData cd, List<DrawOp> ops, OwnedResources owned = null)
 	{
-		var bg = ImageBg(im, null);
-		var first = (uint)(_quadVerts.Count / VertexStride.Quad);
-		AppendQuad(_quadVerts, p0, p1, p2, p3, im.U0, im.V0, im.U1, im.V1);
-		ops.Add(DrawOp.Shared(DrawKind.Image, first, 6, bg, cd, MakeClipBg(cd)));
+		var dst = owned is null ? _quadVerts : new List<float>(6 * VertexStride.Quad);
+		var first = (uint)(dst.Count / VertexStride.Quad);
+		AppendQuad(dst, p0, p1, p2, p3, im.U0, im.V0, im.U1, im.V1);
+		ops.Add(QuadOp(DrawKind.Image, dst, first, ImageBg(im, owned), cd, owned));
 	}
+
+	private DrawOp QuadOp(DrawKind kind, List<float> verts, uint first, IntPtr group1, in ClipData cd, OwnedResources owned)
+		=> owned is null
+			? DrawOp.Shared(kind, first, 6, group1, cd, MakeClipBg(cd))
+			: DrawOp.Own(kind, Vbuf(verts, owned), 6, group1, cd, MakeClipBg(cd, owned));
 
 	private static void AppendQuad(List<float> dst, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float u0, float v0, float u1, float v1)
 	{
@@ -199,16 +204,15 @@ public sealed unsafe partial class WebGpuPresentSession
 
 	// The gradient's geometry is baked in its recording's space; under a replay transform the points move with it and
 	// the radial's unit-ellipse map absorbs the inverse, so the gradient stays aligned with its quad.
-	private void EmitGradient(GradientCmd gc, in Matrix3x2 m, bool identity, in ClipData cd, List<DrawOp> ops)
+	private void EmitGradient(GradientCmd gc, in Matrix3x2 m, bool identity, in ClipData cd, List<DrawOp> ops, OwnedResources owned = null)
 	{
 		var u = identity ? gc.Uniform : TransformedGradient(gc.Uniform, m);
-		var gbg = _d.GradSlab.Rent(_d.GradBgl, u);
+		var gbg = owned is null ? _d.GradSlab.Rent(_d.GradBgl, u) : GradientBg(u, owned);
 		var (p0, p1, p2, p3) = identity ? (gc.P0, gc.P1, gc.P2, gc.P3) : (Map(gc.P0, m), Map(gc.P1, m), Map(gc.P2, m), Map(gc.P3, m));
-		Span<Vector2> cover = stackalloc Vector2[OctSides * 3];
-		var count = (uint)GradientCover(p0, p1, p2, p3, cd, cover);
-		var first = (uint)(_gradVerts.Count / VertexStride.Quad);
-		for (var t = 0; t < count; t++) { _gradVerts.Add(cover[t].X); _gradVerts.Add(cover[t].Y); _gradVerts.Add(0f); _gradVerts.Add(0f); }
-		ops.Add(DrawOp.Shared(DrawKind.Gradient, first, count, gbg, cd, MakeClipBg(cd)));
+		var dst = owned is null ? _gradVerts : new List<float>(6 * VertexStride.Quad);
+		var first = (uint)(dst.Count / VertexStride.Quad);
+		AppendQuad(dst, p0, p1, p2, p3, 0f, 0f, 0f, 0f);
+		ops.Add(QuadOp(DrawKind.Gradient, dst, first, gbg, cd, owned));
 	}
 
 	private static float[] TransformedGradient(float[] src, in Matrix3x2 m)

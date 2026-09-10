@@ -493,8 +493,17 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 		if (texture is not WebGpuTexture t) { return; }
 		int w = t.PixelWidth, h = t.PixelHeight; if (w <= 0 || h <= 0) { return; }
 		TrackTexture(t);
-		// No per-frame upload — the texture is already resident; record its view for the present pass.
-		{ var ip0 = Map(x, y); var ip1 = Map(x + w, y); var ip2 = Map(x + w, y + h); var ip3 = Map(x, y + h); _target.Add(new ImageCmd { P0 = ip0, P1 = ip1, P2 = ip2, P3 = ip3, View = t.View, W = w, H = h, Opacity = opacity, ColorMatrix = _pendingColorMatrix, Clip = RelaxedClip(ip0, ip1, ip2, ip3) }); }
+		var cmd = ImageQuad(t, x, y, w, h, opacity);
+		cmd.ColorMatrix = _pendingColorMatrix;
+		_target.Add(cmd);
+	}
+
+	// The texture's quad over x, y, qw, qh in the recording's space, and the clip relaxed to it. The texture is
+	// already resident; the command only carries its view.
+	private ImageCmd ImageQuad(WebGpuTexture t, float x, float y, float qw, float qh, float opacity)
+	{
+		var p0 = Map(x, y); var p1 = Map(x + qw, y); var p2 = Map(x + qw, y + qh); var p3 = Map(x, y + qh);
+		return new ImageCmd { P0 = p0, P1 = p1, P2 = p2, P3 = p3, View = t.View, W = t.PixelWidth, H = t.PixelHeight, Opacity = opacity, Clip = RelaxedClip(p0, p1, p2, p3) };
 	}
 	public void DrawImageTiled(ITexture texture, in Rect destination, EdgeExtend extendX, EdgeExtend extendY, float opacity = 1f)
 	{
@@ -508,13 +517,9 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 		var dw = extendX == EdgeExtend.None ? MathF.Min((float)destination.Width, w) : (float)destination.Width;
 		var dh = extendY == EdgeExtend.None ? MathF.Min((float)destination.Height, h) : (float)destination.Height;
 		if (dw <= 0 || dh <= 0) { return; }
-		var p0 = Map(x, y); var p1 = Map(x + dw, y); var p2 = Map(x + dw, y + dh); var p3 = Map(x, y + dh);
-		_target.Add(new ImageCmd
-		{
-			P0 = p0, P1 = p1, P2 = p2, P3 = p3, View = t.View, W = w, H = h, Opacity = opacity,
-			U1 = dw / w, V1 = dh / h, ExtendX = extendX, ExtendY = extendY,
-			Clip = RelaxedClip(p0, p1, p2, p3),
-		});
+		var cmd = ImageQuad(t, x, y, dw, dh, opacity);
+		cmd.U1 = dw / w; cmd.V1 = dh / h; cmd.ExtendX = extendX; cmd.ExtendY = extendY;
+		_target.Add(cmd);
 	}
 
 	public void DrawImage(ITexture texture, float x, float y, IColorFilter colorFilter)
@@ -526,7 +531,9 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 		// The SrcIn blend-mode tint stays the fast path.
 		if (colorFilter is WebGpuColorFilter { Matrix: { } matrix })
 		{
-			{ var ip0 = Map(x, y); var ip1 = Map(x + w, y); var ip2 = Map(x + w, y + h); var ip3 = Map(x, y + h); _target.Add(new ImageCmd { P0 = ip0, P1 = ip1, P2 = ip2, P3 = ip3, View = t.View, W = w, H = h, Opacity = 1f, ColorMatrix = matrix, Clip = RelaxedClip(ip0, ip1, ip2, ip3) }); }
+			var mc = ImageQuad(t, x, y, w, h, 1f);
+			mc.ColorMatrix = matrix;
+			_target.Add(mc);
 			return;
 		}
 		var (mode, tint) = ResolveTint(colorFilter);
@@ -540,7 +547,9 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 			this.Log().Error($"WebGPU DrawImage reached with an unsupported IColorFilter ('{colorFilter.GetType().Name}'); only a SrcIn blend-mode tint or a colour matrix is honored. The filter is being ignored — this path is not expected to be taken.");
 		}
 
-		{ var ip0 = Map(x, y); var ip1 = Map(x + w, y); var ip2 = Map(x + w, y + h); var ip3 = Map(x, y + h); _target.Add(new ImageCmd { P0 = ip0, P1 = ip1, P2 = ip2, P3 = ip3, View = t.View, W = w, H = h, Opacity = 1f, TintMode = mode, Tint = tint, ColorMatrix = _pendingColorMatrix, Clip = RelaxedClip(ip0, ip1, ip2, ip3) }); }
+		var tc = ImageQuad(t, x, y, w, h, 1f);
+		tc.TintMode = mode; tc.Tint = tint; tc.ColorMatrix = _pendingColorMatrix;
+		_target.Add(tc);
 	}
 
 	// A tint WebGpuColorFilter → a straight-alpha tint; a colour matrix or a foreign filter → untinted.
