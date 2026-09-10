@@ -72,7 +72,7 @@ Determine what to run from the user's input:
 - **Specific test method**: e.g., `Given_Button.When_ContentSet` → resolve to fully qualified name
 - **Multiple tests**: Pipe-separated list of fully qualified names
 
-If the user provides partial names, search `src/Uno.UI.RuntimeTests/Tests/` to resolve fully qualified test names (namespace + class + method).
+If the user provides partial names, search `src/Uno.UI.RuntimeTests/` to resolve fully qualified test names (namespace + class + method).
 
 **Strict mode**: If the user input contains the keyword `strict`, omit the `-p:UnoFastDevBuild=true` flag from the MSBuild command in Phase 2 so the build runs with full CI-equivalent analyzer coverage. Use this only when verifying CI strictness — for normal iteration the fast-dev flag should be left on. (Note: `UnoTargetFrameworkOverride` does not apply here — the head collapses to a single TFM for the windows override, configured in Phase 1c.)
 
@@ -409,7 +409,7 @@ for m in re.finditer(r'<test-case\s+name=\"([^\"]+)\"[^>]*result=\"(\w+)\"', con
 - **CI YAML**: `build/ci/tests/.azure-devops-tests-winappsdk.yml`
 - **CI test script**: `build/test-scripts/run-winui-runtime-tests.ps1`
 - **Entry point**: `src/SamplesApp/SamplesApp.Shared/App.Tests.cs`
-- **Test location**: `src/Uno.UI.RuntimeTests/Tests/`
+- **Test location**: `src/Uno.UI.RuntimeTests/`
 - **Local thumbprint**: `~/.uno-dev-cert-thumbprint` (user home, shared across worktrees)
 
 ### Build Details
