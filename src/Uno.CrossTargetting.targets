@@ -95,16 +95,16 @@
 	</PropertyGroup>
 
 	<!--
-	  Android+NativeAOT fails with .NET 11 Preview 7 with error NU1102:
+	  Android+NativeAOT fails with .NET 11 Preview 7 *and* rc.1 with error NU1102:
 	    Unable to find package Microsoft.NETCore.App.Runtime.NativeAOT.android-arm64 with version (= 11.0.0-preview.7.26378.119)
 	  …because there is no published 11.0.0-preview.7.26378.119 package; it should be 11.0.0-preview.7.26381.103.
 
-	  This is the upstream fix: https://github.com/dotnet/android/pull/12356
+	  These are the upstream fixes: https://github.com/dotnet/android/pull/12356 https://github.com/dotnet/android/pull/12750
 
 	  For now, Update `$(MicrosoftNETCoreAppRefPackageVersion)` to the correct version so that NuGet versions are correct.
 	  -->
-	<PropertyGroup Condition=" $(IsAndroid) And '$(BundledNETCoreAppPackageVersion)' == '11.0.0-preview.7.26381.103' ">
-		<MicrosoftNETCoreAppRefPackageVersion>11.0.0-preview.7.26381.103</MicrosoftNETCoreAppRefPackageVersion>
+	<PropertyGroup Condition=" $(IsAndroid) And ('$(BundledNETCoreAppPackageVersion)' == '11.0.0-preview.7.26381.103' Or '$(BundledNETCoreAppPackageVersion)' == '11.0.0-rc.1.26428.117') ">
+		<MicrosoftNETCoreAppRefPackageVersion>$(BundledNETCoreAppPackageVersion)</MicrosoftNETCoreAppRefPackageVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(TargetFramework)' != 'uap10.0.19041' and $(TargetFramework.EndsWith('-windows10.0.19041.0')) != 'true' and '$(TargetPlatformIdentifier)' != 'UAP'">
