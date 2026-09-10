@@ -63,10 +63,9 @@ public partial class ContextRequestedEventArgs : RoutedEventArgs, IHandleableRou
 		if (targetElement != null)
 		{
 			var transform = targetElement.TransformToVisual(null);
-			var inverse = transform.Inverse;
-			if (inverse != null)
+			if (transform.TryTransformInverse(_globalPoint, out var transformed))
 			{
-				point = inverse.TransformPoint(_globalPoint);
+				point = transformed;
 				return true;
 			}
 

@@ -53,7 +53,17 @@ namespace Microsoft.UI.Xaml
 		internal ManagedWeakReference? GetTemplatedParentWeakRef() => _templatedParentWeakRef;
 
 		internal DependencyObject? GetTemplatedParent() => _templatedParentWeakRef?.Target as DependencyObject;
-		internal void SetTemplatedParent(DependencyObject? parent) => _templatedParentWeakRef = (parent as IWeakReferenceProvider)?.WeakReference;
+		internal void SetTemplatedParent(DependencyObject? parent)
+		{
+			var parentReference = (parent as IWeakReferenceProvider)?.WeakReference;
+			if (ReferenceEquals(_templatedParentWeakRef, parentReference))
+			{
+				return;
+			}
+
+			_templatedParentWeakRef = parentReference;
+			_properties.ApplyTemplateBindingParents();
+		}
 
 		private bool IsCandidateChild([NotNullWhen(true)] object? child)
 		{
@@ -390,15 +400,12 @@ namespace Microsoft.UI.Xaml
 		}
 
 		internal void SetTemplateBinding(DependencyProperty targetProperty, DependencyProperty sourceProperty)
+			=> SetTemplateBinding(targetProperty, sourceProperty, BindingExpression.GetTemplateBindingPath(sourceProperty));
+
+		internal void SetTemplateBinding(DependencyProperty targetProperty, DependencyProperty sourceProperty, string sourcePath)
 		{
-			SetBinding(
-				targetProperty,
-				new Binding
-				{
-					Path = sourceProperty.Name,
-					RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent),
-				}
-			);
+			TryRegisterInheritedProperties(force: true);
+			_properties.SetTemplateBinding(targetProperty, sourceProperty, sourcePath, SelfWeakReference);
 		}
 
 		/// <summary>
@@ -888,4 +895,3 @@ namespace Microsoft.UI.Xaml
 		}
 	}
 }
-

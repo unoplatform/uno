@@ -49,8 +49,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// UNO-FIX: Make the location relative to the Anchor
 			// **************************************************************************************
 			var target = Target;
-			var targetTransform = target.TransformToVisual(default).Inverse;
-			var relativeLocation = targetTransform.TransformPoint(rect.Location);
+			if (!target.TransformToVisual(default).TryTransformInverse(rect.Location, out var relativeLocation))
+			{
+				relativeLocation = rect.Location;
+			}
 			// **************************************************************************************
 
 

@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.UI.Xaml;
@@ -35,6 +36,16 @@ namespace Uno.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static DependencyObject GetDependencyObjectForXBind(this DependencyObject instance)
 			=> instance;
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void SetTemplateBinding(DependencyObject instance, DependencyProperty targetProperty, DependencyProperty sourceProperty)
+			=> SetTemplateBinding(instance, targetProperty, sourceProperty, BindingExpression.GetTemplateBindingPath(sourceProperty));
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static void SetTemplateBinding(DependencyObject instance, DependencyProperty targetProperty, DependencyProperty sourceProperty, string sourcePath)
+			=> instance.SetTemplateBinding(targetProperty, sourceProperty, sourcePath);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void ApplyXBind(this DependencyObject instance)

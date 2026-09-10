@@ -77,11 +77,20 @@ namespace Microsoft.UI.Xaml
 		private InheritedPropertiesDisposable? _inheritedProperties;
 		private ManagedWeakReference? _parentRef;
 		private object? _hardParentRef;
-		private readonly Dictionary<DependencyProperty, ManagedWeakReference> _inheritedForwardedProperties = new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default);
+		/// <summary>
+		/// Inherited properties forwarded from an ancestor which are not defined on this instance. Allocated on
+		/// first forward: a store exists for every DependencyObject, but only a subset ever forwards anything.
+		/// </summary>
+		private Dictionary<DependencyProperty, ManagedWeakReference>? _inheritedForwardedProperties;
 		private Stack<DependencyPropertyValuePrecedences?>? _overriddenPrecedences;
 
 		private static long _propertyChangedToken;
-		private readonly Dictionary<long, IDisposable> _propertyChangedTokens = new Dictionary<long, IDisposable>();
+
+		/// <summary>
+		/// Registrations made through the token-based <see cref="RegisterPropertyChangedCallback(DependencyProperty, DependencyPropertyChangedCallback)"/>
+		/// overload. Allocated on first registration: that public API is rarely used, unlike the store itself.
+		/// </summary>
+		private Dictionary<long, IDisposable>? _propertyChangedTokens;
 
 		private bool _registeringInheritedProperties;
 		private bool _unregisteringInheritedProperties;
@@ -107,6 +116,9 @@ namespace Microsoft.UI.Xaml
 				_inheritedProperties = value;
 			}
 		}
+
+		private Dictionary<DependencyProperty, ManagedWeakReference> InheritedForwardedProperties
+			=> _inheritedForwardedProperties ??= new Dictionary<DependencyProperty, ManagedWeakReference>(DependencyPropertyComparer.Default);
 
 		/// <summary>
 		/// Provides the parent Dependency Object of this dependency object
@@ -786,8 +798,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (object.ReferenceEquals(value, DependencyProperty.UnsetValue))
 			{
-				var hasTemplatedParentBinding =
-					propertyDetails.GetBinding()?.ParentBinding.RelativeSource?.Mode == RelativeSourceMode.TemplatedParent;
+				var hasTemplatedParentBinding = propertyDetails.GetBinding()?.IsTemplateBinding == true;
 
 				if (!hasTemplatedParentBinding)
 				{
@@ -803,7 +814,7 @@ namespace Microsoft.UI.Xaml
 				// Add inheritable attached properties to the inherited forwarded
 				// properties, so they can be automatically propagated when a child
 				// store is late added.
-				_inheritedForwardedProperties[property] = SelfWeakReference;
+				InheritedForwardedProperties[property] = SelfWeakReference;
 			}
 		}
 
@@ -928,16 +939,14 @@ namespace Microsoft.UI.Xaml
 		{
 			if (FeatureConfiguration.DependencyProperty.ValidatePropertyOwnerOnReadWrite)
 			{
-				var isFrameworkElement = _originalObjectType.Is(typeof(FrameworkElement));
-				var isMixinFrameworkElement = this is IFrameworkElement && !isFrameworkElement;
-
 				if (
 					!_originalObjectType.Is(property.OwnerType)
 					&& !property.IsAttached
 
 					// Don't fail validation for properties that are located on non-FrameworkElement types
 					// e.g. ScrollContentPresenter, for which using the Name property should not fail.
-					&& !isMixinFrameworkElement
+					// Evaluate the extra type checks last; validation runs on every property access in DEBUG.
+					&& !IsMixinFrameworkElement()
 				)
 				{
 					throw new InvalidOperationException(
@@ -945,6 +954,9 @@ namespace Microsoft.UI.Xaml
 					);
 				}
 			}
+
+			bool IsMixinFrameworkElement()
+				=> this is IFrameworkElement && !_originalObjectType.Is(typeof(FrameworkElement));
 		}
 
 		internal long RegisterPropertyChangedCallbackInternal(DependencyProperty property, DependencyPropertyChangedCallback callback)
@@ -953,18 +965,19 @@ namespace Microsoft.UI.Xaml
 
 			var registration = RegisterPropertyChangedCallback(property, (PropertyChangedCallback)((s, e) => callback((DependencyObject)s, property)));
 
-			_propertyChangedTokens.Add(_propertyChangedToken, registration);
+			(_propertyChangedTokens ??= new Dictionary<long, IDisposable>()).Add(_propertyChangedToken, registration);
 
 			return _propertyChangedToken;
 		}
 
 		internal void UnregisterPropertyChangedCallbackInternal(DependencyProperty property, long token)
 		{
-			if (_propertyChangedTokens.TryGetValue(token, out var registration))
+			if (_propertyChangedTokens is { } propertyChangedTokens
+				&& propertyChangedTokens.TryGetValue(token, out var registration))
 			{
 				registration.Dispose();
 
-				_propertyChangedTokens.Remove(token);
+				propertyChangedTokens.Remove(token);
 			}
 		}
 
@@ -1388,7 +1401,7 @@ namespace Microsoft.UI.Xaml
 			{
 				// Always update the inherited properties with the new value, the instance
 				// may change if a far ancestor changed.
-				_inheritedForwardedProperties[parentProperty] = sourceInstance;
+				InheritedForwardedProperties[parentProperty] = sourceInstance;
 
 				// If not, propagate the DP down to the child listeners, if any.
 				var localChildrenStores = _childrenStores;
@@ -1489,7 +1502,7 @@ namespace Microsoft.UI.Xaml
 			{
 				_unregisteringInheritedProperties = true;
 
-				_inheritedForwardedProperties.Clear();
+				_inheritedForwardedProperties?.Clear();
 
 				if (_updatedProperties is not null)
 				{
@@ -1668,7 +1681,7 @@ namespace Microsoft.UI.Xaml
 
 		private void PropagateInheritedNonLocalProperties(DependencyObject? childStore)
 		{
-			if (_inheritedForwardedProperties.Count == 0)
+			if (_inheritedForwardedProperties is not { Count: > 0 } inheritedForwardedProperties)
 			{
 				// Avoid unnecessary AncestorsDictionary allocation and ActualInstance resolution.
 				return;
@@ -1686,7 +1699,7 @@ namespace Microsoft.UI.Xaml
 			// call to IsAncestor.
 			var actualInstanceAlias = ActualInstance;
 
-			foreach (var sourceInstanceProperties in _inheritedForwardedProperties)
+			foreach (var sourceInstanceProperties in inheritedForwardedProperties)
 			{
 
 				if (
@@ -2179,6 +2192,34 @@ namespace Microsoft.UI.Xaml
 				valueFromBuiltInStyle != DependencyProperty.UnsetValue)
 			{
 				SetValueInternal(valueFromBuiltInStyle, DependencyPropertyValuePrecedences.BuiltInStyle, propertyDetails);
+			}
+		}
+
+		/// <summary>
+		/// Gets the precedence of the current base value (i.e. excluding animation and coercion), without
+		/// forcing the creation of the property details.
+		/// </summary>
+		/// <remarks>
+		/// Unlike <see cref="DependencyObjectExtensions.GetBaseValueSource"/>, this returns the raw precedence
+		/// used by <see cref="DependencyPropertyDetails.SetValue"/> to decide whether an incoming base value is
+		/// kept or discarded.
+		/// </remarks>
+		internal DependencyPropertyValuePrecedences GetBaseValueSourcePrecedence(DependencyProperty property)
+			=> _properties.FindPropertyDetails(property)?.GetBaseValueSource()
+				?? DependencyPropertyValuePrecedences.DefaultValue;
+
+		/// <summary>
+		/// Performs the resource binding cleanup that setting a value at <paramref name="precedence"/> would have
+		/// done, for a style setter whose application was skipped because a higher precedence already provides the
+		/// base value. This keeps a previously registered theme/hot-reload binding from resurfacing at that
+		/// precedence once the winning value is cleared.
+		/// </summary>
+		internal void ClearResourceBindingsForSkippedSetter(DependencyProperty property, DependencyPropertyValuePrecedences precedence)
+		{
+			if (!_isSettingPersistentResourceBinding)
+			{
+				_resourceBindings?.ClearBinding(property, precedence);
+				_themeResources?.Clear(property, precedence);
 			}
 		}
 

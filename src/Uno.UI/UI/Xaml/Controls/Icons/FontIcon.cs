@@ -18,6 +18,8 @@ public partial class FontIcon : IconElement, IThemeChangeAware
 
 	private ScaleTransform? _scaleTransform;
 
+	private protected override bool SupportsDirectChild => true;
+
 	/// <summary>
 	/// Initializes a new instance of the FontIcon class.
 	/// </summary>

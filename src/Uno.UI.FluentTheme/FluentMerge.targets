@@ -48,6 +48,8 @@
 	  ms-appx:///Microsoft.UI.Xaml/DensityStyles/Compact.xaml keeps resolving and Compact stays opt-in.
 	-->
 	<_NonMergedXamlResources Include="$(MSBuildThisFileDirectory)DensityStyles\**\*.xaml" />
+	<!-- Keep optimized templates as separate pages so they remain opt-in at runtime. -->
+	<_NonMergedXamlResources Include="$(MSBuildThisFileDirectory)Perf2026\**\*.xaml" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Reference'">
