@@ -104,7 +104,7 @@ namespace TestRepro
 
 		}
 		partial void OnInitializeCompleted();
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _NestedMemberSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _NestedMemberSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "NestedMember");
 		private global::Microsoft.UI.Xaml.Controls.Border NestedMember
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.Border)_NestedMemberSubject.ElementInstance;

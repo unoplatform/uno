@@ -928,7 +928,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						private global::Microsoft.UI.Xaml.Data.ElementNameSubject _{{fieldName}}SubjectBackingPseudoField { get; set; }
 						private global::Microsoft.UI.Xaml.Data.ElementNameSubject _{{fieldName}}Subject
 						{
-							get => _{{fieldName}}SubjectBackingPseudoField ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+							get => _{{fieldName}}SubjectBackingPseudoField ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "{{fieldName}}");
 						}
 						{{FormatAccessibility(backingFieldDefinition.Accessibility)}} {{backingFieldDefinition.GlobalizedTypeName}} {{fieldName}}
 						{
@@ -940,7 +940,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				else
 				{
 					writer.AppendMultiLineIndented($$"""
-						private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _{{fieldName}}Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+						private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _{{fieldName}}Subject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "{{fieldName}}");
 						{{FormatAccessibility(backingFieldDefinition.Accessibility)}} {{backingFieldDefinition.GlobalizedTypeName}} {{fieldName}}
 						{
 							get => ({{backingFieldDefinition.GlobalizedTypeName}})_{{fieldName}}Subject.ElementInstance;
@@ -4371,7 +4371,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						var containsCustomMarkup = bindingOptions.Any(x => IsCustomMarkupExtensionType(x.Objects.FirstOrDefault()?.Type));
 						var closure = containsCustomMarkup ? "___b" : default;
 						var setters = bindingOptions
-							.Select(x => BuildMemberPropertyValue(x, isTemplateBindingAttachedProperty, closure))
+							.SelectMany(x => BuildMemberPropertySetters(x, isTemplateBindingAttachedProperty, closure))
 							.Concat(additionalOptions ?? Array.Empty<string>())
 							.Where(x => !string.IsNullOrEmpty(x))
 							.ToArray();
@@ -4928,19 +4928,35 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string GetDefaultBindMode() => _currentDefaultBindMode.Peek();
 
-		private string BuildMemberPropertyValue(XamlMemberDefinition m, bool isTemplateBindingAttachedProperty, string? closure = null)
+		private IEnumerable<string> BuildMemberPropertySetters(XamlMemberDefinition m, bool isTemplateBindingAttachedProperty, string? closure = null)
 		{
 			if (IsCustomMarkupExtensionType(m.Objects.FirstOrDefault()?.Type))
 			{
 				// If the member contains a custom markup extension, build the inner part first
 				var propertyValue = GetCustomMarkupExtensionValue(m, closure);
-				return "{0} = {1}".InvariantCultureFormat(m.Member.Name, propertyValue);
+				yield return "{0} = {1}".InvariantCultureFormat(m.Member.Name, propertyValue);
 			}
 			else
 			{
-				return "{0} = {1}".InvariantCultureFormat(
-					m.Member.Name == "_PositionalParameters" ? "Path" : m.Member.Name,
-					BuildBindingOption(m, FindPropertyType(m.Member), isTemplateBindingAttachedProperty));
+				var memberName = m.Member.Name == "_PositionalParameters" ? "Path" : m.Member.Name;
+				var value = BuildBindingOption(m, FindPropertyType(m.Member), isTemplateBindingAttachedProperty);
+
+				if (memberName == "ElementName")
+				{
+					// ElementName is a string for WinUI parity; ElementNameSubject is the Uno-only seam routing
+					// the late binding. Both are assigned so assemblies compiled against this version keep
+					// resolving once the subject becomes optional. With the property-element syntax the name
+					// sits on an inner member rather than on the value.
+					var elementName = m.Value?.ToString()
+						?? m.Objects.SingleOrDefault()?.Members?.SingleOrDefault()?.Value?.ToString();
+
+					yield return "ElementName = \"{0}\"".InvariantCultureFormat(elementName);
+					yield return "ElementNameSubject = {0}".InvariantCultureFormat(value);
+				}
+				else
+				{
+					yield return "{0} = {1}".InvariantCultureFormat(memberName, value);
+				}
 			}
 		}
 

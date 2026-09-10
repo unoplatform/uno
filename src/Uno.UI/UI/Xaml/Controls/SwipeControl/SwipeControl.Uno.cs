@@ -486,7 +486,8 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				To = desiredPosition,
 				Duration = new Duration(TimeSpan.FromSeconds(duration)),
-				EasingFunction = useInertiaSpeed ? (IEasingFunction)LinearEase.Instance : new QuadraticEase()
+				// A null EasingFunction is interpolated linearly (the animator substitutes LinearEase).
+				EasingFunction = useInertiaSpeed ? null : new QuadraticEase()
 				{
 					EasingMode = EasingMode.EaseInOut
 				}
@@ -503,7 +504,8 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					To = stackDesiredPosition,
 					Duration = new Duration(TimeSpan.FromSeconds(duration)),
-					EasingFunction = useInertiaSpeed ? (IEasingFunction)LinearEase.Instance : new QuadraticEase()
+					// A null EasingFunction is interpolated linearly (the animator substitutes LinearEase).
+					EasingFunction = useInertiaSpeed ? null : new QuadraticEase()
 					{
 						EasingMode = EasingMode.EaseInOut
 					}
