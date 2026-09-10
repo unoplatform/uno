@@ -15,10 +15,10 @@ namespace Uno.HotReload.Microsoft;
 internal interface IWatchHotReloadService
 {
 	/// <summary>
-	/// Compiles <paramref name="solution"/> against the session baseline and
-	/// returns the metadata deltas plus the diagnostics produced by the emit.
+	/// Compiles <paramref name="solution"/> against the session baseline and returns everything the
+	/// Edit-and-Continue engine reports about the emit.
 	/// </summary>
-	Task<(ImmutableArray<Update> updates, ImmutableArray<Diagnostic> diagnostics)> EmitSolutionUpdateAsync(Solution solution, CancellationToken cancellationToken);
+	Task<HotReloadEmitResult> EmitSolutionUpdateAsync(Solution solution, CancellationToken cancellationToken);
 
 	/// <summary>
 	/// Ends the underlying edit-and-continue session.

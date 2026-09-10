@@ -14,6 +14,7 @@ using Microsoft.CodeAnalysis.Operations;
 using Microsoft.CodeAnalysis.Text;
 using Uno.HotReload;
 using Uno.HotReload.Microsoft;
+using Uno.HotReload.Tracking;
 using Uno.HotReload.Utils;
 using Uno.UI.SourceGenerators.Tests.Verifiers;
 
@@ -367,7 +368,7 @@ internal class HotReloadWorkspace : IDisposable
 		(await currentSolution.EmitCompilationOutputAsync(ct)).EnsureSuccess();
 
 		var metadataUpdateCaps = (_isMono ? MonoCapsRaw : NetCoreCapsRaw).Split(" ");
-		var hotReloadService = new WatchHotReloadService(workspace.Services, metadataUpdateCaps);
+		var hotReloadService = new WatchHotReloadService(workspace.Services, metadataUpdateCaps, new ConsoleReporter());
 		await hotReloadService.StartSessionAsync(currentSolution, ct);
 
 		_currentSolution = currentSolution;
@@ -436,9 +437,9 @@ internal class HotReloadWorkspace : IDisposable
 			throw new InvalidOperationException($"Initialize must be called before Update");
 		}
 
-		var (updates, diagnostics) = await _hotReloadService.EmitSolutionUpdateAsync(_currentSolution, CancellationToken.None);
+		var emit = await _hotReloadService.EmitSolutionUpdateAsync(_currentSolution, CancellationToken.None);
 
-		return new(diagnostics, updates);
+		return new(emit.Diagnostics, emit.Deltas);
 	}
 
 	private static PortableExecutableReference[] BuildFrameworkReferences()
