@@ -30,11 +30,11 @@ public sealed partial class ThemeResource_Theme_Changing_Override : Page
 
 public class ThemeResource_Theme_Changing_Override_Custom : ResourceDictionary
 {
-	private const string GreenUri = "ms-appx:///Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml/Controls/ThemeResource_TCO_MyColorGreen.xaml";
-	private const string RedUri = "ms-appx:///Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml/Controls/ThemeResource_TCO_MyColorRed.xaml";
-	private const string BrushUri = "ms-appx:///Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml/Controls/ThemeResource_TCO_MyBrush.xaml";
-	private const string AliasUri = "ms-appx:///Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml/Controls/ThemeResource_TCO_MyAlias.xaml";
-	private const string ButtonUri = "ms-appx:///Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml/Controls/ThemeResource_TCO_MyButton.xaml";
+	private const string GreenUri = "ms-appx:///Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/ThemeResource_TCO_MyColorGreen.xaml";
+	private const string RedUri = "ms-appx:///Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/ThemeResource_TCO_MyColorRed.xaml";
+	private const string BrushUri = "ms-appx:///Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/ThemeResource_TCO_MyBrush.xaml";
+	private const string AliasUri = "ms-appx:///Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/ThemeResource_TCO_MyAlias.xaml";
+	private const string ButtonUri = "ms-appx:///Uno.UI.RuntimeTests/Microsoft/UI/Xaml/Controls/ThemeResource_TCO_MyButton.xaml";
 
 	private string _mode;
 

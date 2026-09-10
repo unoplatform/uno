@@ -81,7 +81,7 @@ Determine what to run:
 - **Test method**: e.g. `Given_Button.When_ContentSet` → fully qualified
 - **Multiple**: pipe-separated fully qualified names
 
-Resolve partial names against `src/Uno.UI.RuntimeTests/Tests/`.
+Resolve partial names against `src/Uno.UI.RuntimeTests/`.
 
 Keywords in the user input:
 
@@ -243,7 +243,7 @@ The filter can also arrive via the `UITEST_RUNTIME_TESTS_FILTER` environment var
 - **App manifest**: `src/SamplesApp/SamplesApp/Package.appxmanifest` (alias `unosamplesapp.exe`)
 - **Build output**: `src/SamplesApp/SamplesApp/bin/x64/Release/<tfm>/win-x64`
 - **Entry point**: `src/SamplesApp/SamplesApp.Shared/App.Tests.cs`
-- **Tests**: `src/Uno.UI.RuntimeTests/Tests/`
+- **Tests**: `src/Uno.UI.RuntimeTests/`
 - **CI YAML / script**: `build/ci/tests/.azure-devops-tests-winappsdk.yml`, `build/test-scripts/run-winui-runtime-tests.ps1`
 - **SDK pin**: `build/ci/net11/_global.json`
 
