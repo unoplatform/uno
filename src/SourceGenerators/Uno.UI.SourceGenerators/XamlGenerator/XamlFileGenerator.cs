@@ -360,6 +360,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				BuildNameCache(topLevelControl);
 
+				ValidateNoDuplicateProperties(topLevelControl);
+
 				if (topLevelControl.Type.Name == "ResourceDictionary")
 				{
 					_isTopLevelDictionary = true;
@@ -2461,6 +2463,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var setterPrefix = string.IsNullOrWhiteSpace(closureName) ? string.Empty : closureName + ".";
 
 				var implicitContentChild = FindImplicitContentMember(topLevelControl);
+
+				// Skip the implicit content if it was flagged as a duplicate property assignment by
+				// ValidateNoDuplicateProperties — the explicit member with the same effective name
+				// will still be emitted via BuildExtendedProperties, and skipping here prevents the
+				// generated code from triggering a CS1912 "duplicate initialization" error.
+				if (implicitContentChild != null && _duplicatePropertyMembers.Contains(implicitContentChild))
+				{
+					implicitContentChild = null;
+				}
 
 				if (implicitContentChild != null)
 				{
@@ -6395,6 +6406,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			return objectDefinition
 				.Members
+				.Where(m => !_duplicatePropertyMembers.Contains(m))
 				.Where(m =>
 					(
 						m.Member.Name != "_UnknownContent"
