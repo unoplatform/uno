@@ -16,7 +16,7 @@ namespace Windows.UI.Notifications
 			}
 			else
 			{
-				Clear();
+				UIApplication.SharedApplication.ApplicationIconBadgeNumber = 0;
 			}
 		}
 	}

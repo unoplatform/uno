@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<node name="/">
+  <interface name="org.freedesktop.Notifications">
+    <method name="Notify">
+      <arg type="s" name="app_name" direction="in"/>
+      <arg type="u" name="replaces_id" direction="in"/>
+      <arg type="s" name="app_icon" direction="in"/>
+      <arg type="s" name="summary" direction="in"/>
+      <arg type="s" name="body" direction="in"/>
+      <arg type="as" name="actions" direction="in"/>
+      <arg type="a{sv}" name="hints" direction="in"/>
+      <arg type="i" name="expire_timeout" direction="in"/>
+      <arg type="u" name="id" direction="out"/>
+    </method>
+    <method name="CloseNotification">
+      <arg type="u" name="id" direction="in"/>
+    </method>
+  </interface>
+</node>
