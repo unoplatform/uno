@@ -35,13 +35,6 @@ namespace Uno.UI.Xaml.Core;
 
 internal partial class InputManager
 {
-	partial void ConstructPointerManager_Managed()
-	{
-		// Injector supports only pointers for now, so configure only in by managed pointer
-		// (should be moved to the InputManager ctor once the injector supports other input types)
-		InputInjector.SetTargetForCurrentThread(this);
-	}
-
 	partial void InitializePointers_Managed(object host)
 		=> Pointers.Init(host);
 
