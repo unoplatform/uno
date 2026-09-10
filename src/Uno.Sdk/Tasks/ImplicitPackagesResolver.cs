@@ -43,6 +43,8 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 	[Required]
 	public string ProjectName { get; set; } = null!;
 
+	public string? UnoVersion { get; set; }
+
 	public string? UnoExtensionsVersion { get; set; }
 
 	public string? UnoToolkitVersion { get; set; }
@@ -162,17 +164,19 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 			}
 
 			_manifest = new PackageManifest(Log, TargetFrameworkVersion);
+
+			// This needs to run before we get and Validate the Uno Features, and before the
+			// core version is read, as it may have been overridden through $(UnoVersion).
+			SetupRuntimePackageManifestUpdates(_manifest);
+
 			if (NuGetVersion.TryParse(_manifest.UnoVersion, out var unoVersion))
 			{
 				_unoVersion = unoVersion;
 			}
 			else
 			{
-				throw new InvalidOperationException("Unable to parse UnoVersion from the Package Manifest.");
+				throw new InvalidOperationException($"Unable to parse the Uno Platform version '{_manifest.UnoVersion}'.");
 			}
-
-			// This needs to run before we get and Validate the Uno Features
-			SetupRuntimePackageManifestUpdates(_manifest);
 
 			_unoFeatures = GetFeatures();
 			if (Log.HasLoggedErrors)
@@ -239,7 +243,10 @@ public sealed class ImplicitPackagesResolver_v0 : Task
 		// Checks any MSBuild parameters passed to the task to override the default versions from the bundled packages.json
 		// This set of updates must not be conditional to features, as those may not be defined yet when the task
 		// is invoked early.
-		manifest.UpdateManifest(PackageManifest.Group.WasmBootstrap, UnoWasmBootstrapVersion)
+		// The Core group moves as a unit: $(UnoVersion) repins every Uno.WinUI* package together, as mixing
+		// core package versions is not a supported configuration.
+		manifest.UpdateManifest(PackageManifest.Group.Core, UnoVersion)
+			.UpdateManifest(PackageManifest.Group.WasmBootstrap, UnoWasmBootstrapVersion)
 			.UpdateManifest(PackageManifest.Group.OSLogging, UnoLoggingVersion)
 			.UpdateManifest(PackageManifest.Group.VlcNativeWindowsAssets, VlcNativeWindowsAssetsVersion)
 			.UpdateManifest(PackageManifest.Group.MicrosoftWebView2, MicrosoftWebView2Version)

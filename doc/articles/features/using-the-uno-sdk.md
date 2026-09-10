@@ -141,6 +141,7 @@ Here are the supported properties:
 | `UnoThemesVersion`               | [Uno.Material.WinUI](https://www.nuget.org/packages/Uno.Material.WinUI) and similar packages                     | Supplies a variety of themes that can be applied to Uno Platform applications to enhance the UI.                                    |
 | `UnoToolkitVersion`              | [Uno.Toolkit.WinUI](https://www.nuget.org/packages/Uno.Toolkit.WinUI) and similar packages                       | Offers a collection of controls, helpers, and tools to complement the standard WinUI components.                                    |
 | `UnoUniversalImageLoaderVersion` | [Uno.UniversalImageLoader](https://www.nuget.org/packages/Uno.UniversalImageLoader)                              | Facilitates the loading and displaying of images across different platforms supported by Uno.                                       |
+| `UnoVersion`                     | [Uno.WinUI](https://www.nuget.org/packages/Uno.WinUI) and all other Uno Platform core packages                   | Overrides the version of the Uno Platform core packages. Defaults to the version bundled with the `Uno.Sdk`. See [Overriding the Uno Platform version](#overriding-the-uno-platform-version). |
 | `UnoWasmBootstrapVersion`        | [Uno.Wasm.Bootstrap](https://www.nuget.org/packages/Uno.Wasm.Bootstrap) and similar packages                     | Enables the bootstrapping of Uno Platform applications running on WebAssembly.                                                      |
 
 > [!NOTE]
@@ -209,6 +210,24 @@ Those properties can be set from `Directory.Build.props` or may be set in the `c
 ```
 
 In the sample above, we are overriding the default versions of the `UnoToolkit`, `MicrosoftLogging`, and `CommunityToolkitMvvm` packages.
+
+## Overriding the Uno Platform version
+
+The version of the Uno Platform core packages — `Uno.WinUI` and every package versioned alongside it, such as `Uno.WinUI.DevServer`, `Uno.WinUI.Graphics2DSK`, or the `Uno.WinUI.Runtime.Skia.*` packages — is normally determined by the `Uno.Sdk` version [set in `global.json`](xref:Uno.Development.UpgradeUnoNuget), so the SDK and the packages it references always match.
+
+Set the `UnoVersion` property to pin those packages to a different version, for instance to try a newer `Uno.WinUI` before the matching `Uno.Sdk` has been released:
+
+```xml
+<!-- Directory.Build.props or .csproj file -->
+<PropertyGroup>
+  <UnoVersion>6.4.0-dev.123</UnoVersion>
+</PropertyGroup>
+```
+
+The core packages always move together: `UnoVersion` repins all of them at once, as mixing versions between them is not a supported configuration.
+
+> [!WARNING]
+> A version that differs from the one bundled with the `Uno.Sdk` raises the [UNOB0004](xref:Build.Solution.error-codes) warning, as the combination is not tested and may fail to build or to run. Prefer updating the `Uno.Sdk` version in `global.json` whenever the version you need is available there. Once you have acknowledged the warning, silence it with `<NoWarn>$(NoWarn);UNOB0004</NoWarn>`.
 
 ## Using Central Package Management with implicit packages
 

@@ -42,16 +42,18 @@ internal class PackageManifest
 		Manifest = new List<ManifestGroup>(_defaultManifest);
 
 		var unoVersion = GetGroupVersion(Group.Core);
-		if (unoVersion is null || string.IsNullOrEmpty(unoVersion))
+		if (string.IsNullOrEmpty(unoVersion))
 		{
 			// This should never happen.
 			throw new InvalidOperationException("No Uno Version was set.");
 		}
-
-		UnoVersion = unoVersion;
 	}
 
-	public string UnoVersion { get; }
+	/// <summary>
+	/// The version of the Uno Platform core packages, which defaults to the version bundled
+	/// with the Uno.Sdk and may be overridden through the $(UnoVersion) property.
+	/// </summary>
+	public string UnoVersion => GetGroupVersion(Group.Core);
 
 	public List<ManifestGroup> Manifest { get; private set; }
 
@@ -78,11 +80,6 @@ internal class PackageManifest
 
 	public PackageManifest UpdateManifest(string groupName, string? version)
 	{
-		if (groupName.Equals(Group.Core, StringComparison.InvariantCultureIgnoreCase))
-		{
-			throw new InvalidOperationException("You cannot override the Core Package group.");
-		}
-
 		if (!string.IsNullOrEmpty(version))
 		{
 			if (Manifest.Any(x => x.Group.Equals(groupName, StringComparison.InvariantCultureIgnoreCase)))
