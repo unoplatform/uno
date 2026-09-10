@@ -125,6 +125,13 @@ internal sealed unsafe partial class WebGpuCoverage
 	// the passes that sample the targets are encoded after them.
 	internal void FlushPendingBakes()
 	{
+		long t0 = WebGpuFrame.EmitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
+		FlushPendingBakesCore();
+		if (WebGpuFrame.EmitStats) { WebGpuFrame.BakeTicks += System.Diagnostics.Stopwatch.GetTimestamp() - t0; }
+	}
+
+	private void FlushPendingBakesCore()
+	{
 		if (_pendingBakes.Count == 0) { _f.Effects.FlushPendingBlurs(); return; }
 		foreach (var b in _pendingBakes)
 		{

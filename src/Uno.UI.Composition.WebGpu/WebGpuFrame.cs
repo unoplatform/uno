@@ -38,7 +38,8 @@ internal sealed unsafe partial class WebGpuFrame
 
 	private static int _frameStatsCounter;
 	// Op-build vs pass-encode, accumulated across the frame's passes (UNO_WEBGPU_STATS).
-	internal static long OpsBuildTicks, EncodeTicks;
+	internal static long OpsBuildTicks, EncodeTicks, RebuildTicks, StampTicks, BakeTicks;
+	internal static bool EmitStats => _emitStats;
 
 	// One frame: the main list under its root matrix, the overlay (already in device pixels) on top, one submit.
 	internal void Run(List<WebGpuCommand> cmds, in Matrix3x2 m, List<WebGpuCommand> overlay, WColor? clear)
@@ -57,8 +58,8 @@ internal sealed unsafe partial class WebGpuFrame
 			{
 				long t2 = System.Diagnostics.Stopwatch.GetTimestamp();
 				double toMs = 1000.0 / System.Diagnostics.Stopwatch.Frequency;
-				System.Console.WriteLine($"[webgpu-frame] cmds={cmds.Count} renderInto={(t1 - t0) * toMs:F1}ms finishSubmit={(t2 - t1) * toMs:F1}ms opsBuild={OpsBuildTicks * toMs:F1}ms encode={EncodeTicks * toMs:F1}ms");
-				OpsBuildTicks = 0; EncodeTicks = 0;
+				System.Console.WriteLine($"[webgpu-frame] cmds={cmds.Count} renderInto={(t1 - t0) * toMs:F1}ms finishSubmit={(t2 - t1) * toMs:F1}ms opsBuild={OpsBuildTicks * toMs:F1}ms (rebuild={RebuildTicks * toMs:F1} stamp={StampTicks * toMs:F1} bake={BakeTicks * toMs:F1}) encode={EncodeTicks * toMs:F1}ms");
+				OpsBuildTicks = 0; EncodeTicks = 0; RebuildTicks = 0; StampTicks = 0; BakeTicks = 0;
 			}
 		}
 	}

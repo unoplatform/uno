@@ -116,6 +116,7 @@ internal sealed unsafe partial class WebGpuFrame
 					}
 				case PathCmd pc:
 					{
+						if (_emitStats) { StatWalkPaths++; }
 						var cd = composer.Compose(outer, pc.Clip, m, inv, direct);
 						BuildSimpleOp(direct ? pc : Under(pc, m, identity, cd), ops, null, atlasScale: Vector2.One);
 						break;
@@ -266,10 +267,10 @@ internal sealed unsafe partial class WebGpuFrame
 			return;
 		}
 		if (IsPlain(rr)) { EmitArena(rr, rm, rc, ops); }
-		else { Walk(rr.Commands, rm, rc, ops); }
+		else { if (_emitStats) { StatWalkedRecords++; } Walk(rr.Commands, rm, rc, ops); }
 	}
 
-	internal static int StatArenaHits;
+	internal static int StatArenaHits, StatWalkPaths, StatWalkedRecords;
 	private static int _statArenaRebuilds, _statArMiss, _statArMasks, _statStamps;
 
 	/// <summary>
@@ -282,6 +283,7 @@ internal sealed unsafe partial class WebGpuFrame
 		var entry = rr.Data.Compiled;
 		bool miss = entry is null;
 		if (_emitStats) { StatArenaHits++; }
+		long t0 = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 		if (miss || AtlasNeedsRebuild(entry, rm))
 		{
 			if (_emitStats) { _statArenaRebuilds++; if (miss) { _statArMiss++; } else { _statArMasks++; } }
@@ -304,6 +306,7 @@ internal sealed unsafe partial class WebGpuFrame
 				AtlasScale = scale, MaskScale = MaskScale(rm),
 			};
 			StoreCompiled(rr.Data, entry);
+			if (_emitStats) { RebuildTicks += System.Diagnostics.Stopwatch.GetTimestamp() - t0; t0 = System.Diagnostics.Stopwatch.GetTimestamp(); }
 		}
 		var basis = new Vector2(_basisOx, _basisOy);
 		if (!entry.HasStamp || entry.StampXform != rm || entry.StampBasis != basis || !ClipDataEquals(entry.StampClip, session))
@@ -352,6 +355,7 @@ internal sealed unsafe partial class WebGpuFrame
 			}
 			entry.StampOwned = stampOwned; entry.StampedOps = stamped; entry.StampBufs = bufs; entry.StampFrame = _d.FrameSeq;
 			entry.StampXform = rm; entry.StampClip = session; entry.StampBasis = basis; entry.StampSessionEntries = sessionEntries; entry.HasStamp = true;
+			if (_emitStats) { StampTicks += System.Diagnostics.Stopwatch.GetTimestamp() - t0; }
 		}
 		ops.AddRange(entry.StampedOps);
 	}
