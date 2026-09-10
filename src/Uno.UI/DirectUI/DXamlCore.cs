@@ -123,8 +123,10 @@ namespace DirectUI
 
 		internal Rect GetContentLayoutBoundsForElement(Microsoft.UI.Xaml.UIElement element)
 		{
-			// Returns the layout bounds (excluding system chrome like status bar).
-			// For now, same as content bounds since Uno handles safe areas differently.
+			// TODO Uno: WinUI returns the layout bounds here (window bounds shrunk by the input
+			// host / status bar via GetLayoutBounds), which is what makes AppBar decide to open up
+			// instead of down when the IME or a status bar covers the bottom edge. Uno has no
+			// equivalent visible-bounds source yet, so this reports the full content bounds.
 			return GetContentBoundsForElement(element);
 		}
 
