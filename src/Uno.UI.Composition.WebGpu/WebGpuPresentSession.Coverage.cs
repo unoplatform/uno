@@ -14,9 +14,6 @@ namespace Uno.UI.Composition.WebGpu;
 
 public sealed unsafe partial class WebGpuPresentSession
 {
-	/// <summary>True when <paramref name="pf"/> carries an outline to bake; a stroke strip has none.</summary>
-	internal static bool CanCoverageBake(PathFill pf) => pf.Edges is { Length: >= 12 };
-
 	internal static int ClipMasksBaked;
 
 	// A clip's path masks: one mask entry per path (its slot in View), so nesting has no limit and no product bake. All
@@ -41,6 +38,9 @@ public sealed unsafe partial class WebGpuPresentSession
 		w = Math.Clamp((int)MathF.Ceiling(r) + 1 - ox, 1, 4096);
 		h = Math.Clamp((int)MathF.Ceiling(b) + 1 - oy, 1, 4096);
 	}
+
+	// A clip path's rasterisation inputs in the clip's space (its masks bake at unit density there).
+	private WebGpuShapeCache.Shape ShapeOf(PathClip p) => _d.Shapes.Get(p.Geometry, p.M, 1f, p.EvenOdd);
 
 	// A mask entry whose texel (0,0), at slot (x, y), sits on pixel (ox, oy) of the clip's space.
 	private static ClipEntry MaskEntry(int ox, int oy, int x, int y, int w, int h, bool exclude)
@@ -68,7 +68,9 @@ public sealed unsafe partial class WebGpuPresentSession
 	{
 		set = default;
 		if (!_pathAtlas) { return false; }
-		if (!WebGpuPathAtlas.TryKey(p.GeomKey, p.GeomMatrix, new Vector2(p.Bbox.X, p.Bbox.Y), new Vector2(p.Bbox.Z, p.Bbox.W), Vector2.One,
+		var shape = ShapeOf(p);
+		if (shape.Edges is null) { return false; }
+		if (!WebGpuPathAtlas.TryKey(shape.Hash, Matrix4x4.Identity, new Vector2(p.Bbox.X, p.Bbox.Y), new Vector2(p.Bbox.Z, p.Bbox.W), Vector2.One,
 			out var key, out var w, out var h, out var ox, out var oy, allowBig: true)) { return false; }
 		if (_d.PathAtlas.TryGet(key, out var slot))
 		{
@@ -81,7 +83,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			slot = AddStandaloneSlot(key, w, h, ox, oy, _d.ColorFormat);
 			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
 			else { _d.PathAtlas.HoldForCache(slot, _d.FrameSeq); }
-			AddBake(BatchFor(slot.Owner.View, slot.Owner.W, slot.Owner.H, load: true), slot.X, slot.Y, w, h, p.Edges, new Vector2(ox + 1, oy + 1), Vector2.One, p.EvenOdd);
+			AddBake(BatchFor(slot.Owner.View, slot.Owner.W, slot.Owner.H, load: true), slot.X, slot.Y, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - p.Offset, Vector2.One, p.EvenOdd);
 			ClipMasksBaked++;
 		}
 		set = new MaskSet { View = slot.Owner.View, Entries = new[] { MaskEntry((int)slot.OriginX, (int)slot.OriginY, slot.X, slot.Y, slot.W, slot.H, p.Exclude) } };
@@ -109,7 +111,8 @@ public sealed unsafe partial class WebGpuPresentSession
 		for (var i = 0; i < n; i++)
 		{
 			var (ox, oy, w, h) = rects[i]; var (x, y) = pos[i];
-			AddBake(batch, x, y, w, h, paths[i].Edges, new Vector2(ox + 1, oy + 1), Vector2.One, paths[i].EvenOdd);
+			var shape = ShapeOf(paths[i]);
+			if (shape.Edges is not null) { AddBake(batch, x, y, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - paths[i].Offset, Vector2.One, paths[i].EvenOdd); }
 			entries[i] = MaskEntry(ox, oy, x, y, w, h, paths[i].Exclude);
 		}
 		ClipMasksBaked += n;
@@ -122,10 +125,10 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// batches, for a shadow whose blur must follow at once. <paramref name="scale"/> is device pixels per unit of
 	/// the paths' space. The caller owns the returned texture.
 	/// </summary>
-	private (IntPtr view, IntPtr tex) BakeCoverageMask(PathClip[] paths, int ox, int oy, int w, int h, Vector2 scale)
+	private (IntPtr view, IntPtr tex) BakeCoverageMask(float[] edges, Vector2 offset, bool evenOdd, int ox, int oy, int w, int h)
 	{
 		var (view, tex) = NewMaskTexture(w, h);
-		BakeCoverageMaskInto(paths, view, ox, oy, w, h, scale);
+		BakeCoverageMaskInto(edges, offset, evenOdd, view, ox, oy, w, h);
 		return (view, tex);
 	}
 
@@ -143,7 +146,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	}
 
 	// The immediate bake itself, into a w x h texture the caller owns.
-	private void BakeCoverageMaskInto(PathClip[] paths, IntPtr view, int ox, int oy, int w, int h, Vector2 scale)
+	private void BakeCoverageMaskInto(float[] edges, Vector2 offset, bool evenOdd, IntPtr view, int ox, int oy, int w, int h)
 	{
 		// Full-target quad; row 0 of the accumulator is the top, so v runs opposite to y (see the fill bake).
 		var q = new float[]
@@ -161,12 +164,9 @@ public sealed unsafe partial class WebGpuPresentSession
 		size[0] = w; size[1] = h;
 		wgpuQueueWriteBuffer(_d.Q, sizeBuf, 0, (IntPtr)size, 16);
 
-		for (var pi = 0; pi < paths.Length; pi++)
 		{
-			var path = paths[pi];
-			var edges = path.Edges;
 			var local = new float[edges.Length];
-			for (var i = 0; i < edges.Length; i += 2) { local[i] = edges[i] * scale.X - ox; local[i + 1] = edges[i + 1] * scale.Y - oy; }
+			for (var i = 0; i < edges.Length; i += 2) { local[i] = edges[i] + offset.X - ox; local[i + 1] = edges[i + 1] + offset.Y - oy; }
 			var edgeBuf = _d.BufferPool.Rent(local.Length * sizeof(float), WGPUBufferUsage.Storage | WGPUBufferUsage.CopyDst);
 			fixed (float* p = local) { wgpuQueueWriteBuffer(_d.Q, edgeBuf, 0, (IntPtr)p, (nuint)(local.Length * sizeof(float))); }
 
@@ -186,15 +186,15 @@ public sealed unsafe partial class WebGpuPresentSession
 
 			var ru = _d.BufferPool.Rent(16, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
 			var rp = stackalloc float[4];
-			rp[0] = path.EvenOdd ? 1f : 0f; rp[1] = path.Exclude ? 1f : 0f;
+			rp[0] = evenOdd ? 1f : 0f; rp[1] = 0f;
 			wgpuQueueWriteBuffer(_d.Q, ru, 0, (IntPtr)rp, 16);
 			var re = stackalloc WGPUBindGroupEntry[2];
 			re[0] = new WGPUBindGroupEntry { Binding = 0, TextureView = accView };
 			re[1] = new WGPUBindGroupEntry { Binding = 1, Buffer = ru, Offset = 0, Size = 16 };
 			var rbgd = new WGPUBindGroupDescriptor { Layout = _d.CoverageResolveBgl, EntryCount = 2, Entries = re };
 			var resolveBg = _d.TrackBg(wgpuDeviceCreateBindGroup(_d.Dev, &rbgd));
-			// The first path clears the mask to 1 and multiplies into it; each later one multiplies into the result.
-			var rca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = view, LoadOp = pi == 0 ? WGPULoadOp.Clear : WGPULoadOp.Load, StoreOp = WGPUStoreOp.Store, ClearValue = new WGPUColor { R = 1, G = 1, B = 1, A = 1 } };
+			// The mask clears to 1 and the resolve multiplies into it.
+			var rca = new WGPURenderPassColorAttachment { DepthSlice = uint.MaxValue, View = view, LoadOp = WGPULoadOp.Clear, StoreOp = WGPUStoreOp.Store, ClearValue = new WGPUColor { R = 1, G = 1, B = 1, A = 1 } };
 			var rdesc = new WGPURenderPassDescriptor { ColorAttachmentCount = 1, ColorAttachments = &rca };
 			var rpass = wgpuCommandEncoderBeginRenderPass(_frameEncoder, &rdesc);
 			wgpuRenderPassEncoderSetPipeline(rpass, _d.CoverageResolveMulPipe);
@@ -214,10 +214,10 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// atlas and the ringed tiling fan take what they can first. <paramref name="scale"/> is the device
 	/// scale the GPU applies to the op's space afterwards, exactly as for the atlas.
 	/// </summary>
-	private bool TryMaskFill(PathFill pf, OwnedResources owned, Vector2 scale, out DrawOp op)
+	private bool TryMaskFill(PathCmd pf, WebGpuShapeCache.Shape shape, OwnedResources owned, Vector2 scale, bool filtered, out DrawOp op)
 	{
 		op = default;
-		if (pf.Edges is not { Length: >= 12 } || scale.X <= 0 || scale.Y <= 0) { return false; }
+		if (shape.Edges is not { Length: >= 12 } || scale.X <= 0 || scale.Y <= 0) { return false; }
 		float dx0 = pf.BbMin.X * scale.X, dy0 = pf.BbMin.Y * scale.Y, dx1 = pf.BbMax.X * scale.X, dy1 = pf.BbMax.Y * scale.Y;
 		int ox = (int)MathF.Floor(dx0) - 1, oy = (int)MathF.Floor(dy0) - 1;
 		int w = (int)MathF.Ceiling(dx1) + 1 - ox, h = (int)MathF.Ceiling(dy1) + 1 - oy;
@@ -235,17 +235,17 @@ public sealed unsafe partial class WebGpuPresentSession
 
 		// A per-frame fill goes on the frame's sheet and samples its slot; a cached recording's gets a texture of its own.
 		IntPtr view; var uv = new Vector4(0f, 0f, 1f, 1f);
-		var origin = new Vector2((ox + 1) / scale.X, (oy + 1) / scale.Y);
+		var origin = new Vector2((ox + 1) / scale.X, (oy + 1) / scale.Y) - pf.Offset;
 		if (owned is null && TryReserveSheetSlot(w, h, out var sheet, out var sx, out var sy))
 		{
-			AddBake(sheet, sx, sy, w, h, pf.Edges, origin, scale, pf.EvenOdd);
+			AddBake(sheet, sx, sy, w, h, shape.Edges, origin, scale, pf.EvenOdd);
 			view = sheet.Target;
 			uv = new Vector4(sx, sy, sx + w, sy + h) / SheetSize;
 		}
 		else
 		{
 			(view, var tex) = NewMaskTexture(w, h);
-			AddBake(BatchFor(view, w, h, load: false), 0, 0, w, h, pf.Edges, origin, scale, pf.EvenOdd);
+			AddBake(BatchFor(view, w, h, load: false), 0, 0, w, h, shape.Edges, origin, scale, pf.EvenOdd);
 			if (owned is not null) { (owned.Textures ??= new()).Add(((nint)view, (nint)tex)); }
 			else { _d.DeferTextureRelease(view, tex); }
 		}
@@ -253,7 +253,7 @@ public sealed unsafe partial class WebGpuPresentSession
 
 		// A solid quad with the mask as its coverage, 1:1 with device pixels once the GPU applies the scale -- the same
 		// draw an atlas entry uses, so it coalesces and re-stamps like one.
-		var clip = WithCoverage(pf.Clip, view);
+		var clip = WithCoverage(pf.Clip, view, filtered);
 		var q = CoverageQuad(new Vector2(ox / scale.X, oy / scale.Y), new Vector2(w / scale.X, h / scale.Y), pf.Color, uv);
 		op = new DrawOp(DrawKind.Solid, (nint)Vbuf(q, owned), 6, 0, false, clip, (nint)MakeClipBg(clip, owned));
 		return true;

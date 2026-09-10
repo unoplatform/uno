@@ -28,7 +28,9 @@ public sealed unsafe partial class WebGpuPresentSession
 		float pad = MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f;
 		var bbMin = sh.BbMin - new Vector2(pad); var bbMax = sh.BbMax + new Vector2(pad);
 		int sigmaKey = ((int)(sh.SigmaX * 16f) << 16) ^ (int)(sh.SigmaY * 16f);
-		var keyed = WebGpuPathAtlas.TryKey(sh.GeomKey, sh.GeomMatrix, bbMin, bbMax, Vector2.One, out var key, out var w, out var h, out var ox, out var oy, allowBig: true, extra: sigmaKey) && _pathAtlas;
+		var shape = _d.Shapes.Get(sh.Geometry, sh.M, 1f, sh.EvenOdd);
+		WebGpuPathAtlas.Key key = default; int w = 0, h = 0; float ox = 0f, oy = 0f;
+		var keyed = shape.Edges is not null && WebGpuPathAtlas.TryKey(shape.Hash, Matrix4x4.Identity, bbMin, bbMax, Vector2.One, out key, out w, out h, out ox, out oy, allowBig: true, extra: sigmaKey) && _pathAtlas;
 		uv = new Vector4(0f, 0f, 1f, 1f);
 		if (keyed && _d.PathAtlas.TryGet(key, out var hit))
 		{
@@ -52,19 +54,18 @@ public sealed unsafe partial class WebGpuPresentSession
 		{
 			if (TryReserveShadowSlot(MathF.Max(sh.SigmaX, sh.SigmaY), w, h, out var sheet, out var sx, out var sy))
 			{
-				AddBake(sheet.Bake, sx, sy, w, h, sh.Edges, new Vector2(ox + 1, oy + 1), Vector2.One, sh.EvenOdd);
+				AddBake(sheet.Bake, sx, sy, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - sh.Offset, Vector2.One, sh.EvenOdd);
 				uv = new Vector4(sx, sy, sx + w, sy + h) / SheetSize;
 				ShadowSlotsBaked++;
 				return sheet.Blurred;
 			}
 			var (view, tex) = NewMaskTexture(w, h);
-			AddBake(BatchFor(view, w, h, load: false), 0, 0, w, h, sh.Edges, new Vector2(ox + 1, oy + 1), Vector2.One, sh.EvenOdd);
+			AddBake(BatchFor(view, w, h, load: false), 0, 0, w, h, shape.Edges, new Vector2(ox + 1, oy + 1) - sh.Offset, Vector2.One, sh.EvenOdd);
 			_d.DeferTextureRelease(view, tex);
 			return DeferBlur(view, w, h, sh.SigmaX, sh.SigmaY);
 		}
 
-		var path = new PathClip { Edges = sh.Edges, EvenOdd = sh.EvenOdd, Bbox = new Vector4(sh.BbMin.X, sh.BbMin.Y, sh.BbMax.X, sh.BbMax.Y) };
-		var (covView, covTex) = BakeCoverageMask(new[] { path }, (int)ox, (int)oy, w, h, Vector2.One);
+		var (covView, covTex) = BakeCoverageMask(shape.Edges, sh.Offset, sh.EvenOdd, (int)ox, (int)oy, w, h);
 		var blurred = BlurPyramid(covView, w, h, sh.SigmaX, sh.SigmaY);
 		_d.DeferTextureRelease(covView, covTex);
 		// The pyramid hands back its reduced top level; one linear tap brings it up to the entry's full size. The

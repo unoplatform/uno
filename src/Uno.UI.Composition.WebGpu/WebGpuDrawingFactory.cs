@@ -86,6 +86,7 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 	// texture CompositionNineGridBrush uploads). We keep them alive for every present of this recording, then release
 	// their GPU resources here at Dispose — resident textures (surface-owned) keep the composition's own reference.
 	internal List<WebGpuTexture> Textures;
+	internal List<IGeometry> Geometries;   // recorded path geometries, held like textures until this recording is disposed
 	// Guards Dispose against a second call: the texture Release()s below are refcount decrements, so a double Dispose
 	// would over-release and free a view an in-flight ReplayRef still holds. Interlocked because Dispose (UI thread)
 	// can race the render thread's Compiled rebuild.
@@ -119,6 +120,7 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 		// composition has disposed the texture AND every recording that captured its handle has released it — an outer
 		// frame's ReplayRef may still hold this command list (with the raw view handle) and be compiled after us.
 		if (Textures is { } textures) { foreach (var t in textures) { t.Release(); } }
+		if (Geometries is { } geometries) { foreach (var g in geometries) { g.Release(); } }
 		// Hand the compiled draw-list's GPU resources to the render thread for a deferred free (an in-flight frame may
 		// still reference them). Interlocked so a concurrent render-thread rebuild can't leak or double-free it.
 		var c = System.Threading.Interlocked.Exchange(ref Compiled, null);

@@ -17,7 +17,7 @@ using WColor = Windows.UI.Color;
 
 namespace Uno.UI.Composition.WebGpu;
 
-public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedPathSink
+public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 {
 	// A save frame carries the matrix/clip to restore. Layer frames additionally redirect emitted commands into
 	// a sub-list until Restore, which composites that sub-list (as a LayerCmd) back onto the parent.
@@ -181,7 +181,6 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 			return;
 		}
 
-		// Capture the flattened device-space contours for the per-fragment coverage mask (baked at present time).
 		// Tighten the scissor to the path bounds ONLY for Intersect (the path lies within its bounds). For
 		// Difference the visible region is OUTSIDE the path and extends past its bounds, so tightening to the
 		// bounds would wrongly clip everything beyond them — leave the scissor and let the mask do the exact cut.
@@ -189,24 +188,16 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		{
 			ClipRect(geometry.Bounds, operation);
 		}
-		_fan = new List<float>();
-		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
-		_allContours.Clear(); _contourPts.Clear();
-		geometry.StreamFlattened(this);
-		if (BuildEdges() is { } edges)
+		Geo.Bounds(geometry, M3, out var min, out var max);
+		_clip.Paths = ClipData.PushPath(_clip.Paths, new PathClip
 		{
-			_clip.Paths = ClipData.PushPath(_clip.Paths, new PathClip
-			{
-				Edges = edges,
-				EvenOdd = geometry.FillRule == GeometryFillRule.EvenOdd,
-				Exclude = operation == ClipOperation.Difference,
-				Bbox = new Vector4(_bbMin.X, _bbMin.Y, _bbMax.X, _bbMax.Y),
-				GeomKey = _edgeHash,
-				GeomMatrix = _m,
-			});
-		}
+			Geometry = Track(geometry),
+			M = M3,
+			EvenOdd = geometry.FillRule == GeometryFillRule.EvenOdd,
+			Exclude = operation == ClipOperation.Difference,
+			Bbox = new Vector4(min.X, min.Y, max.X, max.Y),
+		});
 		_clip.ScissorInert = false;
-		_fan = null;
 	}
 	public void Clear(WColor color) => _data.ClearColor = color;
 
@@ -297,28 +288,6 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		return clip;
 	}
 
-	private List<float> _fan;
-	private Vector2 _pivot, _prev, _bbMin, _bbMax;
-	private bool _firstInContour;
-	// Does the triangle fan tile the shape without overlap? True iff every triangle winds the same way, which is
-	// exactly sum(|area|) == |sum(area)|. Accumulated incrementally so the test is free.
-	private int _contourCount;
-	private double _fanAreaAbs, _fanAreaSigned;
-	// Contour points, buffered so the fan can pivot on the CENTROID. Fanning from the first vertex self-overlaps
-	// for any shape that is star-shaped about its middle rather than about that vertex (a blob, a star, a gauge
-	// arc), which is most of them — pivoting on the centroid is what lets FanTiles actually fire.
-	private readonly List<Vector2> _contourPts = new();
-	private bool _fanFromCentroid;
-	// Every contour of the current fill, kept so the path can be re-tessellated into a NON-overlapping
-	// triangulation with an analytic AA ring (PathTessellator) instead of going through a coverage mask.
-	private readonly List<List<Vector2>> _allContours = new();
-	private readonly List<float> _aaVerts = new(), _aaCov = new();
-	// Per-vertex AA coverage for the fill being recorded (null = no ring, edges rely on the attachment).
-	private float[] _fanCoverage;
-	// Stroke tessellation: contours collected in LOCAL space (offsetting must happen before the transform so a
-	// non-uniform scale strokes correctly, same as DrawLine).
-	private List<(List<Vector2> Pts, bool Closed)> _localContours;
-	private bool _collectLocal;
 
 	public void DrawRoundedRect(in Rect rect, Vector4 radii, WColor color)
 	{
@@ -370,228 +339,36 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		});
 	}
 
-	public void DrawPath(IGeometry geometry, WColor color)
-		=> FillGeometry(geometry, color, geometry.FillRule == GeometryFillRule.EvenOdd);
 
-	private void FillGeometry(IGeometry geometry, WColor color, bool evenOdd)
+	public void DrawPath(IGeometry geometry, WColor color) => AddPath(geometry, color, 0f);
+
+	// The path as recorded: its geometry and the current matrix. Flattening and tessellation wait for draw time,
+	// when the density it is drawn at (DPI, replay scale) is known.
+	private void AddPath(IGeometry geometry, WColor color, float stroke)
 	{
 		if (_pendingColorMatrix is { Length: >= 20 } pm) { color = ApplyColorMatrix(color, pm); }
-
-		_fan = new List<float>();
-		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
-		_contourCount = 0; _fanAreaAbs = 0; _fanAreaSigned = 0;
-		_allContours.Clear(); _fanCoverage = null;
-		// Even-odd parity depends on the fan decomposition, so only the non-zero path may move its pivot.
-		_fanFromCentroid = !evenOdd;
-		_contourPts.Clear();
-		geometry.StreamFlattened(this);
-		_fanFromCentroid = false;
-		if (_fan.Count > 0)
+		Geo.Bounds(geometry, M3, out var min, out var max);
+		if (stroke > 0f) { var half = new Vector2(stroke * 0.5f * MathF.Max(MathF.Abs(_m.M11), MathF.Abs(_m.M12)), stroke * 0.5f * MathF.Max(MathF.Abs(_m.M21), MathF.Abs(_m.M22))); min -= half; max += half; }
+		if (max.X <= min.X || max.Y <= min.Y) { return; }
+		_target.Add(new PathCmd
 		{
-			// A single contour whose fan tiles without overlap fills correctly in ONE pass, even when translucent:
-			// adjacent fan triangles share an edge exactly, so no sample is covered twice.
-			var tiles = !evenOdd && _contourCount == 1 && _fanAreaAbs > 0
-				&& Math.Abs(_fanAreaAbs - Math.Abs(_fanAreaSigned)) <= 1e-4 * _fanAreaAbs;
-			// Tessellate into non-overlapping triangles plus an analytic AA ring, so the fill runs in ONE pass
-			// over the ink alone and antialiases itself instead of leaning on the multisampled attachment. Under
-			// either fill rule: the tessellator admits only outlines on which the two rules agree.
-			var aa = TryTessellate(geometry);
-			if (aa) { tiles = true; }
-			else if (!tiles) { StatFanRefused++; }
-			_target.Add(new PathFill { FanDevice = _fan.ToArray(), FanCoverage = _fanCoverage, Edges = BuildEdges(), GeomKey = _edgeHash, GeomMatrix = _m, BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = evenOdd, FanTiles = tiles, Clip = RelaxedClip(_bbMin, _bbMax) });
-		}
-		_fan = null;
+			Geometry = Track(geometry),
+			M = M3,
+			Stroke = stroke,
+			Color = color,
+			EvenOdd = stroke == 0f && geometry.FillRule == GeometryFillRule.EvenOdd,
+			BbMin = min,
+			BbMax = max,
+			Clip = RelaxedClip(min, max),
+		});
 	}
 
-	void IFlattenedPathSink.BeginContour(Vector2 start)
-	{
-		if (_collectLocal) { _localContours.Add((new List<Vector2> { start }, false)); return; }
-		_pivot = Map(start.X, start.Y); _prev = _pivot; _firstInContour = true; _contourCount++; Include(_pivot);
-		// Collected whatever the fan strategy: the contours are the edge list the coverage rasterizer needs, and
-		// it serves the shapes the tessellator refuses, so capture cannot be conditional on tessellating.
-		_contourPts.Clear(); _contourPts.Add(_pivot);
-	}
-	void IFlattenedPathSink.LineTo(Vector2 point)
-	{
-		if (_collectLocal)
-		{
-			if (_localContours.Count > 0) { _localContours[^1].Pts.Add(point); }
-			return;
-		}
-		var p = Map(point.X, point.Y); Include(p);
-		_contourPts.Add(p);
-		if (_fanFromCentroid) { _prev = p; return; }
-		if (_firstInContour) { _firstInContour = false; }
-		else
-		{
-			_fan.Add(_pivot.X); _fan.Add(_pivot.Y); _fan.Add(_prev.X); _fan.Add(_prev.Y); _fan.Add(p.X); _fan.Add(p.Y);
-			double a = ((double)_prev.X - _pivot.X) * ((double)p.Y - _pivot.Y) - ((double)p.X - _pivot.X) * ((double)_prev.Y - _pivot.Y);
-			_fanAreaAbs += Math.Abs(a);
-			_fanAreaSigned += a;
-		}
-		_prev = p;
-	}
-	void IFlattenedPathSink.EndContour(bool closed)
-	{
-		if (_collectLocal)
-		{
-			if (_localContours.Count > 0) { _localContours[^1] = (_localContours[^1].Pts, closed); }
-			return;
-		}
-		var n = _contourPts.Count;
-		if (n < 3) { _contourPts.Clear(); return; }
-		_allContours.Add(new List<Vector2>(_contourPts));
-		if (!_fanFromCentroid)
-		{
-			_contourPts.Clear();
-			return;
-		}
+	// The current matrix as the pixel affine the commands store.
+	private Matrix3x2 M3 => new(_m.M11, _m.M12, _m.M21, _m.M22, _m.M41, _m.M42);
 
-		var c = Vector2.Zero;
-		for (int i = 0; i < n; i++) { c += _contourPts[i]; }
-		c /= n;
-		// Every edge gets a triangle, the closing one included — with a centroid pivot it is no longer degenerate.
-		for (int i = 0; i < n; i++)
-		{
-			var a0 = _contourPts[i];
-			var b0 = _contourPts[(i + 1) % n];
-			_fan.Add(c.X); _fan.Add(c.Y); _fan.Add(a0.X); _fan.Add(a0.Y); _fan.Add(b0.X); _fan.Add(b0.Y);
-			double ar = ((double)a0.X - c.X) * ((double)b0.Y - c.Y) - ((double)b0.X - c.X) * ((double)a0.Y - c.Y);
-			_fanAreaAbs += Math.Abs(ar);
-			_fanAreaSigned += ar;
-		}
-		_contourPts.Clear();
-	}
-	private void Include(Vector2 p) { _bbMin = Vector2.Min(_bbMin, p); _bbMax = Vector2.Max(_bbMax, p); }
-
-	/// <summary>
-	/// The captured contours as closed device-space edges (x0,y0,x1,y1 each) for the coverage rasterizer. Null
-	/// when the contours were truncated, since a partial outline rasterizes to the wrong coverage rather than to
-	/// less of it.
-	/// </summary>
-	private float[] BuildEdges()
-	{
-		if (_allContours.Count == 0)
-		{
-			return null;
-		}
-
-		var total = 0;
-		for (var i = 0; i < _allContours.Count; i++) { total += _allContours[i].Count; }
-		if (total < 3)
-		{
-			return null;
-		}
-
-		var edges = new float[total * 4];
-		var w = 0;
-		for (var i = 0; i < _allContours.Count; i++)
-		{
-			var pts = _allContours[i];
-			for (var k = 0; k < pts.Count; k++)
-			{
-				var a = pts[k];
-				var b = pts[(k + 1) % pts.Count];
-				edges[w++] = a.X; edges[w++] = a.Y; edges[w++] = b.X; edges[w++] = b.Y;
-			}
-		}
-
-		_edgeHash = EdgeHash(edges, _bbMin);
-		return edges;
-	}
-
-	// The outline's identity for the caches: its edges relative to its own bbox corner, quantised to 1/256 px. Two
-	// geometry objects with the same outline (an ItemsRepeater's identical cells) then share one atlas entry and one
-	// mask, which a reference key never let them do. Never zero, so zero can mean "no outline".
-	private long _edgeHash;
-	private static long EdgeHash(float[] edges, Vector2 origin)
-	{
-		ulong h = 14695981039346656037UL;
-		for (var i = 0; i < edges.Length; i++)
-		{
-			var v = (long)MathF.Round((edges[i] - (i % 2 == 0 ? origin.X : origin.Y)) * 256f);
-			h = (h ^ (ulong)v) * 1099511628211UL;
-		}
-		h = (h ^ (ulong)edges.Length) * 1099511628211UL;
-		return h == 0 ? 1 : (long)h;
-	}
-
-	// Triangulation topology, cached per geometry. Ear clipping is O(n^2) and these recordings re-record every
-	// frame, so tessellating per frame is a large LOSS. What makes it pay is that the
-	// triangle INDICES are affine-invariant: the same geometry re-flattened under a different transform yields
-	// the same indices, so the cache survives the per-frame transform changes that defeat device-space caches.
-	// The entry records the point count it was built for and is rejected unless it matches exactly, because
-	// flattening density is resolution-dependent and stale indices would tessellate the wrong shape.
-	private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<object, int[]> _triCache = new();
-
-	/// <summary>
-	/// Emit the analytic AA ring? Set from the device's sample count: the ring REPLACES multisampling, so running
-	/// both would antialias every edge twice and spread ink half a pixel too far.
-	/// </summary>
-	public static bool AnalyticAa;
-
-
-	/// <summary>
-	/// Replaces the fan with a non-overlapping triangulation plus a one-pixel analytic AA ring, so the fill can
-	/// take the single-pass path and antialias itself. Leaves the fan untouched (returning false) whenever the
-	/// result cannot be trusted. Holes are found by even-odd depth and the area check rejects every outline whose
-	/// non-zero region differs, so a success is valid under both fill rules -- which lets XAML shapes, even-odd by
-	/// default, take the fan instead of a mask.
-	/// </summary>
-	private bool TryTessellate(IGeometry geometry)
-	{
-		if (_allContours.Count != _contourCount) { StatTessContours++; return false; }
-		PathTessellator.Simplify(_allContours);
-		var total = 0;
-		for (var i = 0; i < _allContours.Count; i++) { total += _allContours[i].Count; }
-		if (_allContours.Count == 0 || total < 3 || total > PathTessellator.MaxPoints) { StatTessPoints++; return false; }
-
-		if (!_triCache.TryGetValue(geometry, out var tris) || tris is null || tris.Length < 4 || tris[0] != total)
-		{
-			var built = PathTessellator.TryTriangulate(_allContours);
-			if (built is null) { StatTessTri++; return false; }
-			tris = new int[built.Length + 1];
-			tris[0] = total;
-			Array.Copy(built, 0, tris, 1, built.Length);
-			_triCache.Remove(geometry);
-			_triCache.Add(geometry, tris);
-		}
-
-		var idx = new int[tris.Length - 1];
-		Array.Copy(tris, 1, idx, 0, idx.Length);
-
-		// The triangulation must cover the same area the winding rule fills; if it does not, the two rules
-		// disagree on this path (self-intersection, same-wound overlap) and the fan is the safe answer. Both
-		// quantities are twice the true area, so they compare directly.
-		double triArea = 0;
-		for (var t = 0; t + 2 < idx.Length; t += 3)
-		{
-			var a = ContourPoint(idx[t]); var b = ContourPoint(idx[t + 1]); var c = ContourPoint(idx[t + 2]);
-			triArea += Math.Abs((double)(b.X - a.X) * (c.Y - a.Y) - (double)(c.X - a.X) * (b.Y - a.Y));
-		}
-		double windArea = 0;
-		for (var i = 0; i < _allContours.Count; i++) { windArea += PathTessellator.SignedArea2(_allContours[i]); }
-		if (Math.Abs(triArea - Math.Abs(windArea)) > 1e-2 * Math.Max(triArea, 1)) { StatTessArea++; return false; }
-
-		// Half the ramp, in device pixels (the points are already device-space). Zero when the attachment is
-		// multisampled: the triangulation still pays for itself by filling only the ink, and MSAA keeps the edges.
-		if (!PathTessellator.BuildGeometry(_allContours, idx, AnalyticAa ? 0.5f : 0f, _aaVerts, _aaCov)) { StatTessFold++; return false; }
-
-		_fan.Clear();
-		_fan.AddRange(_aaVerts);
-		_fanCoverage = _aaCov.ToArray();
-		return true;
-	}
-
-	private Vector2 ContourPoint(int global)
-	{
-		for (var c = 0; c < _allContours.Count; c++)
-		{
-			if (global < _allContours[c].Count) { return _allContours[c][global]; }
-			global -= _allContours[c].Count;
-		}
-		return default;
-	}
+	// Keeps a recorded geometry alive for the recording's lifetime, like a texture: the caller may dispose it right
+	// after drawing (a stroke's outline is), and the shape is only rasterised at draw time.
+	private IGeometry Track(IGeometry g) { g.AddRef(); (_data.Geometries ??= new()).Add(g); return g; }
 
 	public void DrawRect(in Rect rect, IShader shader)
 	{
@@ -668,118 +445,25 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	}
 	public void DrawShadow(IGeometry silhouette, WColor color, float sigmaX, float sigmaY, bool additive)
 	{
-		_fan = new List<float>();
-		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
-		_allContours.Clear(); _contourPts.Clear();
-		silhouette.StreamFlattened(this);
-		if (BuildEdges() is { } edges)
+		Geo.Bounds(silhouette, M3, out var min, out var max);
+		if (max.X <= min.X || max.Y <= min.Y) { return; }
+		_target.Add(new ShadowCmd
 		{
-			_target.Add(new ShadowCmd
-			{
-				Edges = edges,
-				BbMin = _bbMin,
-				BbMax = _bbMax,
-				EvenOdd = silhouette.FillRule == GeometryFillRule.EvenOdd,
-				Color = color,
-				SigmaX = sigmaX,
-				SigmaY = sigmaY,
-				Additive = additive,
-				GeomKey = _edgeHash,
-				GeomMatrix = _m,
-				Clip = _clip,
-			});
-		}
-		_fan = null;
+			Geometry = Track(silhouette),
+			M = M3,
+			BbMin = min,
+			BbMax = max,
+			EvenOdd = silhouette.FillRule == GeometryFillRule.EvenOdd,
+			Color = color,
+			SigmaX = sigmaX,
+			SigmaY = sigmaY,
+			Additive = additive,
+			Clip = _clip,
+		});
 	}
 	public void StrokePath(IGeometry geometry, WColor color, float strokeWidth)
 	{
-		if (strokeWidth > 0 && TryStrokeAsStrip(geometry, color, strokeWidth)) { return; }
-		using var sg = geometry.GetStrokeFillGeometry(new StrokeStyle { Thickness = strokeWidth, LineJoin = StrokeJoin.Miter, MiterLimit = 10f });
-		FillGeometry(sg, color, evenOdd: false);
-	}
-
-	/// <summary>
-	/// Strokes by tessellating the polyline into a miter-joined triangle strip, which TILES — so it fills in one
-	/// pass (see PathFill.FanTiles) instead of baking the stroke OUTLINE into a bbox-sized coverage mask, whose cost
-	/// is the bbox rather than the ink: a 2px outline around a 600x500 blob would pay for the whole blob.
-	/// Consecutive quads share their join edge exactly, so a translucent stroke does not double-blend — except
-	/// where the polyline crosses ITSELF, which this does not detect.
-	/// </summary>
-	private bool TryStrokeAsStrip(IGeometry geometry, WColor color, float strokeWidth)
-	{
-		if (_pendingColorMatrix is { Length: >= 20 } pm) { color = ApplyColorMatrix(color, pm); }
-		_localContours ??= new();
-		_localContours.Clear();
-		_collectLocal = true;
-		try { geometry.StreamFlattened(this); }
-		finally { _collectLocal = false; }
-		if (_localContours.Count == 0) { return false; }
-
-		var h = strokeWidth * 0.5f;
-		_fan = new List<float>();
-		_bbMin = new Vector2(float.MaxValue); _bbMax = new Vector2(float.MinValue);
-		foreach (var (pts, closed) in _localContours)
-		{
-			EmitStrokeStrip(pts, closed, h);
-		}
-		var ok = _fan.Count > 0;
-		if (ok) { WgStrokeStats.Strips++; }
-		if (ok)
-		{
-			_target.Add(new PathFill { FanDevice = _fan.ToArray(), BbMin = _bbMin, BbMax = _bbMax, Color = color, EvenOdd = false, FanTiles = true, Clip = RelaxedClip(_bbMin, _bbMax) });
-		}
-		_fan = null;
-		return ok;
-	}
-
-	private void EmitStrokeStrip(List<Vector2> pts, bool closed, float h)
-	{
-		// Drop repeated points: a zero-length segment has no direction to offset along.
-		for (int i = pts.Count - 1; i > 0; i--)
-		{
-			if ((pts[i] - pts[i - 1]).LengthSquared() < 1e-12f) { pts.RemoveAt(i); }
-		}
-		if (closed && pts.Count > 1 && (pts[^1] - pts[0]).LengthSquared() < 1e-12f) { pts.RemoveAt(pts.Count - 1); }
-		var n = pts.Count;
-		if (n < 2) { return; }
-
-		// Per-vertex offset: the miter, so the quads on either side share this edge exactly and the strip tiles.
-		var off = new Vector2[n];
-		for (int i = 0; i < n; i++)
-		{
-			var hasPrev = i > 0 || closed;
-			var hasNext = i < n - 1 || closed;
-			var prev = pts[(i - 1 + n) % n];
-			var next = pts[(i + 1) % n];
-			var n1 = hasPrev ? Norm(pts[i] - prev) : Vector2.Zero;
-			var n2 = hasNext ? Norm(next - pts[i]) : Vector2.Zero;
-			if (!hasPrev) { off[i] = Perp(n2) * h; continue; }
-			if (!hasNext) { off[i] = Perp(n1) * h; continue; }
-			var m = Perp(n1) + Perp(n2);
-			var ml = m.Length();
-			if (ml < 1e-5f) { off[i] = Perp(n1) * h; continue; }   // 180 degree reversal: no finite miter
-			m /= ml;
-			// miterLength = h / cos(theta/2); clamped so a near-degenerate corner cannot shoot off to infinity.
-			var cos = Vector2.Dot(m, Perp(n1));
-			var scale = MathF.Abs(cos) < 0.1f ? h * 10f : h / cos;
-			off[i] = m * MathF.Min(MathF.Abs(scale), h * 10f) * MathF.Sign(scale == 0 ? 1 : scale);
-		}
-
-		var segs = closed ? n : n - 1;
-		for (int i = 0; i < segs; i++)
-		{
-			var j = (i + 1) % n;
-			var a0 = Map(pts[i].X + off[i].X, pts[i].Y + off[i].Y);
-			var a1 = Map(pts[i].X - off[i].X, pts[i].Y - off[i].Y);
-			var b0 = Map(pts[j].X + off[j].X, pts[j].Y + off[j].Y);
-			var b1 = Map(pts[j].X - off[j].X, pts[j].Y - off[j].Y);
-			Include(a0); Include(a1); Include(b0); Include(b1);
-			_fan.Add(a0.X); _fan.Add(a0.Y); _fan.Add(b0.X); _fan.Add(b0.Y); _fan.Add(b1.X); _fan.Add(b1.Y);
-			_fan.Add(a0.X); _fan.Add(a0.Y); _fan.Add(b1.X); _fan.Add(b1.Y); _fan.Add(a1.X); _fan.Add(a1.Y);
-		}
-
-		static Vector2 Norm(Vector2 v) { var l = v.Length(); return l < 1e-6f ? Vector2.Zero : v / l; }
-		static Vector2 Perp(Vector2 v) => new(-v.Y, v.X);
+		if (strokeWidth > 0f) { AddPath(geometry, color, strokeWidth); }
 	}
 	public void DrawLine(Vector2 p0, Vector2 p1, WColor color, float strokeWidth)
 	{
@@ -946,8 +630,6 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	public IRenderRecord Finish() => _data;
 
 	internal static int StatBlockRef, StatBlockLayer, StatBlockShadow, StatBlockOther, StatBlockEmpty;
-	// Fills that took the mask route, and why tessellation refused (UNO_WEBGPU_STATS).
-	internal static int StatFanRefused, StatTessContours, StatTessPoints, StatTessTri, StatTessArea, StatTessFold;
 
 	/// <summary>
 	/// Whether a recording can be GPU-geometry-cached: only simple primitives (rect/rrect/path/image/gradient).
@@ -960,7 +642,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 		if (!ok) { StatBlockEmpty++; }
 		foreach (var c in d.Commands)
 		{
-			if (c is not (RectCommand or RoundedRectCmd or PathFill or ImageCmd or GradientCmd))
+			if (c is not (RectCommand or RoundedRectCmd or PathCmd or ImageCmd or GradientCmd))
 			{
 				ok = false;
 				switch (c)
@@ -1020,9 +702,16 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 	// be replayed. Balanced by this recording's Dispose (which Releases every entry in its Textures list).
 	private void TrackNestedTextures(WebGpuRenderRecord source)
 	{
-		if (source.Textures is not { } src) { return; }
-		var dst = _data.Textures ??= new();
-		foreach (var t in src) { t.AddRef(); dst.Add(t); }
+		if (source.Textures is { } src)
+		{
+			var dst = _data.Textures ??= new();
+			foreach (var t in src) { t.AddRef(); dst.Add(t); }
+		}
+		if (source.Geometries is { } geos)
+		{
+			var dst = _data.Geometries ??= new();
+			foreach (var g in geos) { g.AddRef(); dst.Add(g); }
+		}
 	}
 
 	private void ReplayInline(IRenderRecord data)
@@ -1044,57 +733,22 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder, IFlattenedP
 					// Local Half/Radii/Inner are intrinsic (transform-independent); only the device corners move.
 					_target.Add(new RoundedRectCmd { P0 = T(rrc.P0), P1 = T(rrc.P1), P2 = T(rrc.P2), P3 = T(rrc.P3), Half = rrc.Half, Radii = rrc.Radii, Color = rrc.Color, Opacity = rrc.Opacity, InnerHalf = rrc.InnerHalf, InnerCenter = rrc.InnerCenter, InnerRadii = rrc.InnerRadii, Clip = ClipCompose(rrc.Clip) });
 					break;
-				case PathFill p:
-					// A non-cacheable recording is replayed EVERY frame, and a path's fan is transformed point by
-					// point into a fresh array each time — thousands of points per glyph. The result depends only
-					// on (this command, this transform), so remember it: a static or merely re-replayed visual then
-					// costs nothing here, and the reused instance keeps the caches hanging off it (its
-					// slot-interleaved fan) alive too.
-					if (p.ReplayedAt(_m) is { } cachedFill)
+				case PathCmd p:
 					{
-						_target.Add(cachedFill);
+						// The geometry stays; only its matrix composes with this replay's. Bounds follow the new matrix.
+						var pm = p.M * M3;
+						Geo.Bounds(p.Geometry, pm, out var pmin, out var pmax);
+						_target.Add(new PathCmd { Geometry = p.Geometry, M = pm, Stroke = p.Stroke, Color = p.Color, EvenOdd = p.EvenOdd, BbMin = pmin, BbMax = pmax, Clip = ClipCompose(p.Clip) });
 						break;
 					}
-
-					var src = p.FanDevice; var dst = new float[src.Length];
-					var bbMin = new Vector2(float.MaxValue); var bbMax = new Vector2(float.MinValue);
-					for (int i = 0; i < src.Length; i += 2)
-					{
-						var q = T(new Vector2(src[i], src[i + 1])); dst[i] = q.X; dst[i + 1] = q.Y;
-						bbMin = Vector2.Min(bbMin, q); bbMax = Vector2.Max(bbMax, q);
-					}
-					// FanTiles carries over: an affine map scales every triangle area by the same determinant, so
-					// sum(|area|) == |sum(area)| still holds. Dropping it silently disabled the single-pass fill for
-					// every replayed (scrolled or transformed) recording. GeomMatrix carries the atlas key the same
-					// way — composed with this replay's transform, so a scaled instance keys to its own entry rather
-					// than reusing a mask baked at a different scale.
-					// The coverage rasterizer's edge list is device-space too, so it moves with the fan. Leaving it
-					// behind is invisible in the output -- the fill silently takes an older path instead -- so it
-					// stays next to the fan transforms rather than anywhere it could drift out of step.
-					float[] dstEdges = null;
-					if (p.Edges is { } srcEdges)
-					{
-						dstEdges = new float[srcEdges.Length];
-						for (int i = 0; i < srcEdges.Length; i += 2)
-						{
-							var qe = T(new Vector2(srcEdges[i], srcEdges[i + 1])); dstEdges[i] = qe.X; dstEdges[i + 1] = qe.Y;
-						}
-					}
-					var replayed = new PathFill { FanDevice = dst, FanCoverage = p.FanCoverage, Edges = dstEdges, BbMin = bbMin, BbMax = bbMax, Color = p.Color, EvenOdd = p.EvenOdd, FanTiles = p.FanTiles, GeomKey = p.GeomKey, GeomMatrix = p.GeomMatrix * _m, Clip = ClipCompose(p.Clip) };
-					p.StoreReplayed(_m, replayed);
-					_target.Add(replayed);
-					break;
 				case ShadowCmd sh:
-					var ssrc = sh.Edges; var sdst = new float[ssrc.Length];
-					var sbbMin = new Vector2(float.MaxValue); var sbbMax = new Vector2(float.MinValue);
-					for (int i = 0; i < ssrc.Length; i += 2)
 					{
-						var q = T(new Vector2(ssrc[i], ssrc[i + 1])); sdst[i] = q.X; sdst[i + 1] = q.Y;
-						sbbMin = Vector2.Min(sbbMin, q); sbbMax = Vector2.Max(sbbMax, q);
+						var sm = sh.M * M3;
+						Geo.Bounds(sh.Geometry, sm, out var smin, out var smax);
+						var ss = new Vector2(_m.M11, _m.M12).Length();
+						_target.Add(new ShadowCmd { Geometry = sh.Geometry, M = sm, BbMin = smin, BbMax = smax, EvenOdd = sh.EvenOdd, Color = sh.Color, SigmaX = sh.SigmaX * ss, SigmaY = sh.SigmaY * ss, Additive = sh.Additive, Clip = ClipCompose(sh.Clip) });
+						break;
 					}
-					var ss = new Vector2(_m.M11, _m.M12).Length();
-					_target.Add(new ShadowCmd { Edges = sdst, BbMin = sbbMin, BbMax = sbbMax, EvenOdd = sh.EvenOdd, Color = sh.Color, SigmaX = sh.SigmaX * ss, SigmaY = sh.SigmaY * ss, Additive = sh.Additive, GeomKey = sh.GeomKey, GeomMatrix = sh.GeomMatrix * _m, Clip = ClipCompose(sh.Clip) });
-					break;
 				case ImageCmd im:
 					_target.Add(new ImageCmd { P0 = T(im.P0), P1 = T(im.P1), P2 = T(im.P2), P3 = T(im.P3), View = im.View, W = im.W, H = im.H, Opacity = im.Opacity, U0 = im.U0, V0 = im.V0, U1 = im.U1, V1 = im.V1, TintMode = im.TintMode, Tint = im.Tint, ColorMatrix = im.ColorMatrix, Clip = ClipCompose(im.Clip) });
 					break;

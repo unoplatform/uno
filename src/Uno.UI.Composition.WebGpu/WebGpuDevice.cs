@@ -288,6 +288,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	public uint MsaaSamples { get; private set; } = 1;
 
 	public IntPtr CoverageResolveBgl;
+	/// <summary>Path rasterisation inputs, resolved at draw time at the density they are drawn at.</summary>
+	internal readonly WebGpuShapeCache Shapes = new();
 	// Same resolve with colour = src * dst, so successive path clips AND into one mask (its first pass clears to 1).
 	public IntPtr CoverageResolveMulPipe;
 
@@ -335,7 +337,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		MsaaSamples = ctx.SampleCount == 0 ? 1u : ctx.SampleCount;
 		// The analytic AA ring REPLACES multisampling; running both antialiases each edge twice and spreads ink
 		// half a pixel too far. It is emitted only when the attachment is single-sampled.
-		WebGpuCommandRecorder.AnalyticAa = MsaaSamples == 1;
+		Shapes.AnalyticAa = MsaaSamples == 1;
 		FinishInit();
 	}
 

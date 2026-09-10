@@ -37,7 +37,7 @@ internal sealed unsafe partial class WebGpuDevice
 // xform/xoff.xy = the op's pixel-space transform and finv/xoff.zw its inverse, which maps a fragment back into the
 // recording's space -- where the rect and the entries live. own.x > 0.5 = the op's own shape is a coverage texture (an
 // atlas page or a mask of its own), sampled by per-vertex uv: the innermost clip, carried in the vertices so many
-// small shapes (a glyph run) still draw as one.
+// small shapes (a glyph run) still draw as one; own.y > 0.5 = that texture is drawn scaled or rotated, so it filters.
 // Each entry is reached through its 2x3 (q = m.xz*p.x + m.yw*p.y + t.xy) and is one of two kinds. t.w < 0.5: a
 // rounded rect in its OWN space (rect = L,T,R,B; radX/radY = per-corner radii TL,TR,BR,BL), exact under any affine.
 // t.w > 0.5: a path mask, q being its texel and rect its slot (x, y, w, h) in clipMask, which one texture holds for
@@ -98,7 +98,13 @@ fn entryCov(e: ClipEntry, p: vec2<f32>, ddx: vec2<f32>, ddy: vec2<f32>) -> f32 {
 }
 // The op's own coverage texture at uv, or 1 when the shape is carried by the geometry itself.
 fn covTex(uv: vec2<f32>) -> f32 {
-  if (clip.own.x > 0.5) { return textureSampleLevel(coverageTex, covSmp, uv, 0.0).a; }
+  if (clip.own.x > 0.5) {
+    // A mask drawn 1:1 reads its texel outright: a filtered fetch at a texel centre is not exactly that texel on
+    // hardware with 8-bit sub-texel precision, and mixes in 1/256 of the neighbour. Only a mask drawn scaled or
+    // rotated (own.y) is filtered.
+    if (clip.own.y > 0.5) { return textureSampleLevel(coverageTex, covSmp, uv, 0.0).a; }
+    return textureLoad(coverageTex, vec2<i32>(uv * vec2<f32>(textureDimensions(coverageTex))), 0).a;
+  }
   return 1.0;
 }
 fn clipCov(fcRaw: vec2<f32>, uv: vec2<f32>) -> f32 {

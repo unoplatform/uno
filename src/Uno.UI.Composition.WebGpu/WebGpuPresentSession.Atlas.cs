@@ -23,9 +23,9 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// <summary>
 	/// Emits an atlased fill as a tinted quad, or returns false to leave it on the geometry path.
 	/// </summary>
-	private bool TryAtlasFill(PathFill pf, List<DrawOp> ops, OwnedResources owned, Vector2 scale, bool big = false)
+	private bool TryAtlasFill(PathCmd pf, WebGpuShapeCache.Shape shape, List<DrawOp> ops, OwnedResources owned, Vector2 scale, bool big = false, bool filtered = false)
 	{
-		if (!TryAtlasOp(pf, owned, scale, out var op, big)) { return false; }
+		if (!TryAtlasOp(pf, shape, owned, scale, out var op, big, filtered)) { return false; }
 		ops.Add(op);
 		return true;
 	}
@@ -39,13 +39,13 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// recording (identity-baked geometry mapped by the xform table). Getting that scale wrong bakes the mask at
 	/// the wrong size, which is what broke When_ShapeVisual_ViewBox_Shape_Combinations.
 	/// </summary>
-	private bool TryAtlasOp(PathFill pf, OwnedResources owned, Vector2 scale, out DrawOp result, bool big = false)
+	private bool TryAtlasOp(PathCmd pf, WebGpuShapeCache.Shape shape, OwnedResources owned, Vector2 scale, out DrawOp result, bool big = false, bool filtered = false)
 	{
 		result = default;
-		if (!TryAtlasSlot(pf, owned, scale, out var slot, out var ox, out var oy, big)) { return false; }
+		if (!TryAtlasSlot(pf, shape, owned, scale, out var slot, out var ox, out var oy, big)) { return false; }
 		_atlasQuads.Clear();
 		AppendAtlasQuad(_atlasQuads, slot, ox, oy, scale, pf.Color);
-		result = MakeAtlasOp(pf, slot.Owner, _atlasQuads, owned);
+		result = MakeAtlasOp(pf, slot.Owner, _atlasQuads, owned, filtered);
 		return true;
 	}
 
@@ -59,20 +59,20 @@ public sealed unsafe partial class WebGpuPresentSession
 	private bool TryAtlasBatch(List<WebGpuCommand> cmds, ref int i, OwnedResources owned, Vector2 scale, out DrawOp result)
 	{
 		result = default;
-		if (cmds[i] is not PathFill first) { return false; }
-		if (!TryAtlasSlot(first, owned, scale, out var slot0, out var ox0, out var oy0)) { return false; }
+		if (cmds[i] is not PathCmd first) { return false; }
+		if (!TryAtlasSlot(first, ShapeOf(first, scale), owned, scale, out var slot0, out var ox0, out var oy0)) { return false; }
 
 		_atlasQuads.Clear();
 		AppendAtlasQuad(_atlasQuads, slot0, ox0, oy0, scale, first.Color);
 		var j = i + 1;
-		while (j < cmds.Count && cmds[j] is PathFill nx
+		while (j < cmds.Count && cmds[j] is PathCmd nx
 			&& nx.Color.R == first.Color.R && nx.Color.G == first.Color.G
 			&& nx.Color.B == first.Color.B && nx.Color.A == first.Color.A
 			&& ClipDataEquals(nx.Clip, first.Clip))
 		{
 			// A fill landing on ANOTHER page cannot share this draw's bind group. It stays baked, so the caller
 			// picks it up next and starts a fresh batch on what is by then a cache hit.
-			if (!TryAtlasSlot(nx, owned, scale, out var slotN, out var oxN, out var oyN)) { break; }
+			if (!TryAtlasSlot(nx, ShapeOf(nx, scale), owned, scale, out var slotN, out var oxN, out var oyN)) { break; }
 			if (!ReferenceEquals(slotN.Owner, slot0.Owner)) { break; }
 			AppendAtlasQuad(_atlasQuads, slotN, oxN, oyN, scale, first.Color);
 			j++;
@@ -88,7 +88,7 @@ public sealed unsafe partial class WebGpuPresentSession
 	/// Resolves (baking on a miss) the atlas entry for one fill. <paramref name="big"/> admits fills too large for
 	/// a shared page as entries with a texture of their own -- the cached form of what used to be a per-frame mask.
 	/// </summary>
-	private bool TryAtlasSlot(PathFill pf, OwnedResources owned, Vector2 scale, out WebGpuPathAtlas.Slot slot, out float ox, out float oy, bool big = false)
+	private bool TryAtlasSlot(PathCmd pf, WebGpuShapeCache.Shape shape, OwnedResources owned, Vector2 scale, out WebGpuPathAtlas.Slot slot, out float ox, out float oy, bool big = false)
 	{
 		slot = null; ox = oy = 0;
 		if (!_pathAtlas) { return false; }
@@ -99,8 +99,8 @@ public sealed unsafe partial class WebGpuPresentSession
 		// the entry) but renders identical content crisp through the retained path and tessellated through the
 		// command-list fallback.
 		bool hitOnly = owned is null;
-		if (!CanCoverageBake(pf)) { AtlasNoEdges++; return false; }
-		if (!WebGpuPathAtlas.TryKey(pf.GeomKey, pf.GeomMatrix, pf.BbMin, pf.BbMax, scale, out var key, out var w, out var h, out ox, out oy, allowBig: big)) { AtlasNoKey++; return false; }
+		if (shape.Edges is null) { AtlasNoEdges++; return false; }
+		if (!WebGpuPathAtlas.TryKey(shape.Hash, Matrix4x4.Identity, pf.BbMin, pf.BbMax, scale, out var key, out var w, out var h, out ox, out oy, allowBig: big)) { AtlasNoKey++; return false; }
 
 		if (_d.PathAtlas.RegularPages == 0) { _d.AddPathAtlasPage(); }
 		if (_d.PathAtlas.TryGet(key, out slot))
@@ -142,7 +142,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			if (slot is null) { AtlasNoRoom++; return false; }
 			if (owned is not null) { (owned.AtlasSlots ??= new()).Add(slot); }
 			else { _d.PathAtlas.HoldForCache(slot, _d.FrameSeq); }
-			QueueEntryBake(pf, slot, scale);
+			QueueEntryBake(pf, shape, slot, scale);
 			if (big) { FillMasksBaked++; } else { AtlasBaked++; }
 		}
 
@@ -195,9 +195,10 @@ public sealed unsafe partial class WebGpuPresentSession
 	}
 
 	/// <summary>The op's clip with its own coverage texture as the innermost entry.</summary>
-	private static ClipData WithCoverage(ClipData clip, IntPtr view)
+	private static ClipData WithCoverage(ClipData clip, IntPtr view, bool filtered = false)
 	{
 		clip.Coverage = (nint)view;
+		clip.CoverageFiltered = filtered;
 		return clip;
 	}
 
@@ -246,9 +247,9 @@ public sealed unsafe partial class WebGpuPresentSession
 	}
 
 	/// <summary>One solid draw for a batch of quads sharing a page, a colour and a clip; the page is their coverage.</summary>
-	private DrawOp MakeAtlasOp(PathFill pf, WebGpuPathAtlas.Page page, List<float> quads, OwnedResources owned)
+	private DrawOp MakeAtlasOp(PathCmd pf, WebGpuPathAtlas.Page page, List<float> quads, OwnedResources owned, bool filtered = false)
 	{
-		var clip = WithCoverage(pf.Clip, page.View);
+		var clip = WithCoverage(pf.Clip, page.View, filtered);
 		return new DrawOp(DrawKind.Solid, (nint)Vbuf(quads, owned), (uint)(quads.Count / VertexStride.Solid), 0, false, clip, (nint)MakeClipBg(clip, owned));
 	}
 }

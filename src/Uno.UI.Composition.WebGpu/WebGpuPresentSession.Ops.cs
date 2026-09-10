@@ -63,7 +63,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		// across visuals whose only difference is the layout-clip rectangle.
 		if (a.ScissorInert != b.ScissorInert) { return false; }
 		if (!a.ScissorInert && a.Aabb != b.Aabb) { return false; }
-		if (a.Coverage != b.Coverage) { return false; }
+		if (a.Coverage != b.Coverage || a.CoverageFiltered != b.CoverageFiltered) { return false; }
 		// Both arrays are copy-on-write and a recording's clip is immutable, so across frames these are almost
 		// always the SAME instance — compare by reference before walking them. This runs per replayed recording
 		// per frame in every stamp guard, and the fan walk is O(fan length).
@@ -85,8 +85,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			{
 				var x = a.Paths[i]; var y = b.Paths[i];
 				if (ReferenceEquals(x, y)) { continue; }
-				if (x.EvenOdd != y.EvenOdd || x.Exclude != y.Exclude || x.Edges.Length != y.Edges.Length) { return false; }
-				if (!((ReadOnlySpan<float>)x.Edges).SequenceEqual(y.Edges)) { return false; }
+				if (x.EvenOdd != y.EvenOdd || x.Exclude != y.Exclude || !ReferenceEquals(x.Geometry, y.Geometry) || x.M != y.M) { return false; }
 			}
 		}
 		return true;
@@ -201,7 +200,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			// mask) is expressed in the recording's own space and sampled through that same finv, so a per-command
 			// clip never disqualifies. Rejecting path clips sent these to the rebuild-on-move path — 399 recordings
 			// per frame on RenderStress_Gradients.
-			if (c is not (RectCommand or ImageCmd or GradientCmd or PathFill)) { return false; }
+			if (c is not (RectCommand or ImageCmd or GradientCmd or PathCmd)) { return false; }
 		}
 		return cmds.Count > 0;
 	}
@@ -240,23 +239,12 @@ public sealed unsafe partial class WebGpuPresentSession
 				// after, so an atlas hook that only covers the live paths never sees a glyph.
 				ops.Add(aop0);
 			}
-			else if (cmds[ci] is PathFill mpf && !mpf.FanTiles && TryBigFill(mpf, ops, owned, maskScale ?? atlasScale ?? Vector2.One))
+			else if (cmds[ci] is PathCmd pc)
 			{
-			}
-			else if (cmds[ci] is PathFill pf0 && pf0.FanTiles)
-			{
-				// A ringed tessellation fills in one pass over its own triangles, the ring in the vertex coverage
-				// carrying the antialiasing. Everything the tessellator refused was taken by the mask above.
-				float sr = pf0.Color.R / 255f, sg = pf0.Color.G / 255f, sb = pf0.Color.B / 255f, sa = pf0.Color.A / 255f;
-				_scratch.Clear();
-				var sCov = pf0.FanCoverage;
-				for (int i = 0; i < pf0.FanDevice.Length; i += 2) { PushVertT(new Vector2(pf0.FanDevice[i], pf0.FanDevice[i + 1]), sr, sg, sb, sa * (sCov is null ? 1f : sCov[i >> 1]), slotBits); }
-				var sClip = pf0.Clip;
-				var sClipBg = MakeClipBg(sClip, owned);
-				var sCount = (uint)(pf0.FanDevice.Length / 2);
-				ops.Add(owned is null
-					? new DrawOp(DrawKind.TilingFan, AppendPathBlock(_scratch), sCount, 0, true, sClip, (nint)sClipBg)
-					: new DrawOp(DrawKind.TilingFan, (nint)Vbuf(_scratch, owned), sCount, 0, false, sClip, (nint)sClipBg));
+				var density = maskScale ?? atlasScale ?? Vector2.One;
+				var shape = ShapeOf(pc, density);
+				if (shape.Tris is null) { TryBigFill(pc, shape, ops, owned, density, filtered: atlasScale is null); }
+				else { AddFan(pc, shape, ops, owned, slotBits); }
 			}
 			else { BuildSimpleOp(cmds[ci], ops, owned, pathSlot, atlasScale, maskScale); }
 		}
@@ -281,13 +269,35 @@ public sealed unsafe partial class WebGpuPresentSession
 		return 6;
 	}
 
-	// A fill the tessellator refused (self-overlap, even-odd, or simply failed) draws through an exact coverage mask:
-	// a cached entry with a texture of its own when the geometry is keyable, else a per-frame bake. The scale is the
-	// device density to bake at, so a rotated replay still gets a mask and draws it through its quad.
-	private bool TryBigFill(PathFill pf, List<DrawOp> ops, OwnedResources owned, Vector2 scale)
+	// A path's rasterisation inputs at the density the GPU draws the op's space at (see WebGpuShapeCache).
+	private WebGpuShapeCache.Shape ShapeOf(PathCmd c, Vector2 scale)
 	{
-		if (_pathAtlas && TryAtlasFill(pf, ops, owned, scale, big: true)) { return true; }
-		if (TryMaskFill(pf, owned, scale, out var op)) { ops.Add(op); return true; }
+		var density = MathF.Max(scale.X, scale.Y);
+		return c.Stroke > 0f ? _d.Shapes.GetStroke(c.Geometry, c.M, c.Stroke, density) : _d.Shapes.Get(c.Geometry, c.M, density, c.EvenOdd);
+	}
+
+	// The single-pass fill: the shape's own triangles, the ring's per-vertex coverage carrying the antialiasing.
+	private void AddFan(PathCmd pc, WebGpuShapeCache.Shape shape, List<DrawOp> ops, OwnedResources owned, float slotBits)
+	{
+		float r = pc.Color.R / 255f, g = pc.Color.G / 255f, b = pc.Color.B / 255f, a = pc.Color.A / 255f;
+		var off = pc.Offset; var tris = shape.Tris; var cov = shape.Cov;
+		_scratch.Clear();
+		for (int i = 0; i < tris.Length; i += 2) { PushVertT(new Vector2(tris[i] + off.X, tris[i + 1] + off.Y), r, g, b, a * (cov is null ? 1f : cov[i >> 1]), slotBits); }
+		var clipBg = MakeClipBg(pc.Clip, owned);
+		var count = (uint)(tris.Length / 2);
+		ops.Add(owned is null
+			? new DrawOp(DrawKind.TilingFan, AppendPathBlock(_scratch), count, 0, true, pc.Clip, (nint)clipBg)
+			: new DrawOp(DrawKind.TilingFan, (nint)Vbuf(_scratch, owned), count, 0, false, pc.Clip, (nint)clipBg));
+	}
+
+	// A fill without tiling triangles (self-overlap, too thin for the ring, or simply refused) draws through an exact
+	// coverage mask: a cached entry when the shape is keyable, else a per-frame bake. The scale is the device density
+	// to bake at, so a rotated replay still gets a mask and draws it through its quad -- filtered, since its texels
+	// no longer land on pixels.
+	private bool TryBigFill(PathCmd pf, WebGpuShapeCache.Shape shape, List<DrawOp> ops, OwnedResources owned, Vector2 scale, bool filtered)
+	{
+		if (_pathAtlas && TryAtlasFill(pf, shape, ops, owned, scale, big: true, filtered: filtered)) { return true; }
+		if (TryMaskFill(pf, shape, owned, scale, filtered, out var op)) { ops.Add(op); return true; }
 		return false;
 	}
 
@@ -305,30 +315,14 @@ public sealed unsafe partial class WebGpuPresentSession
 					ops.Add(new DrawOp(DrawKind.Solid, (nint)Vbuf(v.ToArray(), owned), 6, 0, false, rClip, (nint)MakeClipBg(rClip, owned)));
 					break;
 				}
-			case PathFill pf:
+			case PathCmd pf:
 				{
-					// A small axis-aligned shape (a glyph) draws from the coverage atlas: one tinted quad, with
-					// antialiasing baked in.
-					if (atlasScale is { } asc1 && TryAtlasFill(pf, ops, owned, asc1)) { break; }
-					if (!pf.FanTiles && TryBigFill(pf, ops, owned, maskScale ?? atlasScale ?? Vector2.One)) { break; }
-					float slotBits = System.BitConverter.Int32BitsToSingle(pathSlot);
-					if (pf.FanTiles)
-					{
-						// The fan tiles the shape, so fill it in ONE pass with its own AA ring.
-						// TilingFan + flag => b0 is a byte offset into the shared path buffer.
-						float fr = pf.Color.R / 255f, fg = pf.Color.G / 255f, fb = pf.Color.B / 255f, fa = pf.Color.A / 255f;
-						_scratch.Clear();
-						var tCov = pf.FanCoverage;
-						for (int i = 0; i < pf.FanDevice.Length; i += 2) { PushVertT(new Vector2(pf.FanDevice[i], pf.FanDevice[i + 1]), fr, fg, fb, fa * (tCov is null ? 1f : tCov[i >> 1]), slotBits); }
-						var tClip = pf.Clip;
-						var tClipBg = MakeClipBg(tClip, owned);
-						var tCount = (uint)(pf.FanDevice.Length / 2);
-						ops.Add(owned is null
-							? new DrawOp(DrawKind.TilingFan, AppendPathBlock(_scratch), tCount, 0, true, tClip, (nint)tClipBg)
-							: new DrawOp(DrawKind.TilingFan, (nint)Vbuf(_scratch, owned), tCount, 0, false, tClip, (nint)tClipBg));
-						break;
-					}
-					// A ringless fill with no usable outline has no area to draw.
+					var density = maskScale ?? atlasScale ?? Vector2.One;
+					var shape = ShapeOf(pf, density);
+					// A small axis-aligned shape (a glyph) draws from the coverage atlas: one tinted quad, antialiasing baked in.
+					if (atlasScale is { } asc1 && TryAtlasFill(pf, shape, ops, owned, asc1)) { break; }
+					if (shape.Tris is null) { TryBigFill(pf, shape, ops, owned, density, filtered: atlasScale is null); break; }
+					AddFan(pf, shape, ops, owned, System.BitConverter.Int32BitsToSingle(pathSlot));
 					break;
 				}
 			case ImageCmd im:
@@ -444,7 +438,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		for (int i = 0; i < cmds.Count; i++)
 		{
 			var c = cmds[i];
-			if (c is not (RectCommand or RoundedRectCmd or PathFill) || c.Clip.Paths is not null) { return false; }
+			if (c is not (RectCommand or RoundedRectCmd or PathCmd) || c.Clip.Paths is not null) { return false; }
 		}
 		return true;
 	}

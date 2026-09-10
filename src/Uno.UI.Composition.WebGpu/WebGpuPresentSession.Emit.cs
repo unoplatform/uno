@@ -43,7 +43,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			int tableAtlasBefore = AtlasHit + AtlasBaked;
 			int tableMaskBefore = ClipMasksBaked + FillMasksBaked + FillMaskHits;
 			bool tableAtlasSafe = TryAtlasScale(rr.Transform, out var tableScale);
-			bool tableHasPath = false; for (int _i = 0; _i < tcmds.Count; _i++) { if (tcmds[_i] is PathFill) { tableHasPath = true; break; } }
+			bool tableHasPath = false; for (int _i = 0; _i < tcmds.Count; _i++) { if (tcmds[_i] is PathCmd) { tableHasPath = true; break; } }
 			int slot = (fe is not null && fe.XformSlot >= 0) ? fe.XformSlot : _d.AllocXformSlot();
 			float slotBits = System.BitConverter.Int32BitsToSingle(slot);
 			for (int ti = 0; ti < tcmds.Count; ti++)
@@ -183,7 +183,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			var tmp = new List<DrawOp>();
 			var tcmds = new List<WebGpuCommand>();
 			foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { tcmds.Add(tc); }
-			bool fHasPath = false; foreach (var c in tcmds) { if (c is PathFill) { fHasPath = true; break; } }
+			bool fHasPath = false; foreach (var c in tcmds) { if (c is PathCmd) { fHasPath = true; break; } }
 			int fSlot = fHasPath ? ((!repeat && fe is not null && fe.XformSlot >= 0) ? fe.XformSlot : _d.AllocXformSlot()) : -1;
 			if (fHasPath && repeat) { _xformTransient.Add(fSlot); }
 			for (int ti = 0; ti < tcmds.Count; ti++)
@@ -286,7 +286,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			var aOps = new List<DrawOp>();
 			var aList = new List<WebGpuCommand>();
 			foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, Matrix4x4.Identity, ClipData.None)) { aList.Add(tc); }
-			bool aHasPath = false, aPure = aList.Count > 0; foreach (var c in aList) { if (c is PathFill) { aHasPath = true; } else { aPure = false; } }
+			bool aHasPath = false, aPure = aList.Count > 0; foreach (var c in aList) { if (c is PathCmd) { aHasPath = true; } else { aPure = false; } }
 			if (aHasPath && aSlot < 0) { aSlot = _d.AllocXformSlot(); }
 			int atlasBefore = AtlasHit + AtlasBaked;
 			int maskBefore = ClipMasksBaked + FillMasksBaked + FillMaskHits;
@@ -384,7 +384,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			var subOwned = new OwnedResources();
 			var subList = new List<WebGpuCommand>();
 			foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { subList.Add(tc); }
-			bool subHasPath = false; foreach (var c in subList) { if (c is PathFill) { subHasPath = true; break; } }
+			bool subHasPath = false; foreach (var c in subList) { if (c is PathCmd) { subHasPath = true; break; } }
 			var subSlot = -1;
 			if (subHasPath) { subSlot = _d.AllocXformSlot(); _xformTransient.Add(subSlot); WriteXform(subSlot, Matrix4x4.Identity); }
 			var subOps = new List<DrawOp>();
@@ -433,7 +433,7 @@ public sealed unsafe partial class WebGpuPresentSession
 			var cachedOps = new List<DrawOp>();
 			var cList = new List<WebGpuCommand>();
 			foreach (var tc in WebGpuCommandRecorder.TransformFor(rr.Commands, rr.Transform, rr.Clip)) { cList.Add(tc); }
-			bool cHasPath = false; foreach (var c in cList) { if (c is PathFill) { cHasPath = true; break; } }
+			bool cHasPath = false; foreach (var c in cList) { if (c is PathCmd) { cHasPath = true; break; } }
 			if (cHasPath && cSlot < 0) { cSlot = _d.AllocXformSlot(); }
 			BuildCoalesced(cList, cachedOps, owned, cSlot, atlasScale: Vector2.One);
 			entry = new WebGpuGeometryCache { Ops = cachedOps, Owned = owned, Transform = rr.Transform, Clip = rr.Clip, Device = _d, XformSlot = cSlot };

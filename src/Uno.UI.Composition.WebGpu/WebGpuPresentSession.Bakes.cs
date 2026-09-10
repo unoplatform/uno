@@ -102,8 +102,9 @@ public sealed unsafe partial class WebGpuPresentSession
 		h = Math.Max(1, sy + sh);
 	}
 
-	// Queues one outline into a slot of the batch. Edges are in the fill's space and map to target pixels by
-	// (e - origin) * scale + 1 (the one-pixel skirt) + the slot corner.
+	// Queues one outline into a slot of the batch. Edges are in the shape's space (the fill's, less its offset, which
+	// the caller folds into origin) and map to target pixels by (e - origin) * scale + 1 (the one-pixel skirt) + the
+	// slot corner.
 	private void AddBake(BakeBatch b, int x, int y, int w, int h, float[] edges, Vector2 origin, Vector2 scale, bool evenOdd)
 	{
 		float right = x + w;
@@ -123,8 +124,8 @@ public sealed unsafe partial class WebGpuPresentSession
 
 	// One atlas entry's bake, on the placement AppendAtlasQuad draws with: the fill's own origin, shifted a pixel so
 	// an edge sitting exactly on the bbox boundary still has the pixel it partly covers.
-	private void QueueEntryBake(PathFill pf, WebGpuPathAtlas.Slot slot, Vector2 scale)
-		=> AddBake(BatchFor(slot.Owner.View, slot.Owner.W, slot.Owner.H, load: true), slot.X, slot.Y, slot.W, slot.H, pf.Edges, new Vector2(slot.OriginX, slot.OriginY), scale, pf.EvenOdd);
+	private void QueueEntryBake(PathCmd pf, WebGpuShapeCache.Shape shape, WebGpuPathAtlas.Slot slot, Vector2 scale)
+		=> AddBake(BatchFor(slot.Owner.View, slot.Owner.W, slot.Owner.H, load: true), slot.X, slot.Y, slot.W, slot.H, shape.Edges, new Vector2(slot.OriginX, slot.OriginY) - pf.Offset, scale, pf.EvenOdd);
 
 	// Bakes every pending batch: one accumulate pass over all its edges into a scratch accumulator covering the
 	// union of its slots, one resolve pass writing the slots into the target. Runs before a render pass begins, so

@@ -33,31 +33,39 @@ internal struct ClipEntry
 	public ClipEntry Under(in Matrix3x2 m) => new() { M = m * M, Rect = Rect, Radii = Radii, RadiiY = RadiiY, Exclude = Exclude, Mask = Mask };
 }
 
-// One arbitrary path clip as the coverage rasterizer consumes it: closed device-space edges (x0,y0,x1,y1 each),
-// its fill rule, and whether it keeps the inside (Intersect) or the outside (Difference). Immutable once built, so
-// a composed clip can share it by reference.
+
+// One path clip as recorded: the geometry and the matrix that was current, its fill rule, and whether it keeps the
+// inside (Intersect) or the outside (Difference). Its mask is baked at draw time (see WebGpuShapeCache). Immutable
+// once built, so a composed clip can share it by reference.
 internal sealed class PathClip
 {
-	public float[] Edges;
+	public IGeometry Geometry;
+	public Matrix3x2 M;      // the geometry's space -> the clip's
 	public bool EvenOdd;
 	public bool Exclude;
-	public Vector4 Bbox;   // device L,T,R,B of the edges
-	public long GeomKey;         // outline hash + GeomMatrix: the mask's cache key, like a fill's (see ResolveClipMasks)
-	public Matrix4x4 GeomMatrix;
+	public Vector4 Bbox;     // L,T,R,B in the clip's space
+	public Vector2 Offset => new(M.M31, M.M32);
 
 	public PathClip Transformed(in Matrix3x2 m)
 	{
-		var e = new float[Edges.Length];
-		var bbMin = new Vector2(float.MaxValue); var bbMax = new Vector2(float.MinValue);
-		for (int i = 0; i < e.Length; i += 2)
-		{
-			float x = Edges[i], y = Edges[i + 1];
-			var q = new Vector2(x * m.M11 + y * m.M21 + m.M31, x * m.M12 + y * m.M22 + m.M32);
-			e[i] = q.X; e[i + 1] = q.Y;
-			bbMin = Vector2.Min(bbMin, q); bbMax = Vector2.Max(bbMax, q);
-		}
-		var m4 = new Matrix4x4(m.M11, m.M12, 0, 0, m.M21, m.M22, 0, 0, 0, 0, 1, 0, m.M31, m.M32, 0, 1);
-		return new PathClip { Edges = e, EvenOdd = EvenOdd, Exclude = Exclude, Bbox = new Vector4(bbMin.X, bbMin.Y, bbMax.X, bbMax.Y), GeomKey = GeomKey, GeomMatrix = GeomMatrix * m4 };
+		var mm = M * m;
+		Geo.Bounds(Geometry, mm, out var min, out var max);
+		return new PathClip { Geometry = Geometry, M = mm, EvenOdd = EvenOdd, Exclude = Exclude, Bbox = new Vector4(min.X, min.Y, max.X, max.Y) };
+	}
+}
+
+internal static class Geo
+{
+	/// <summary>The geometry's bounds under <paramref name="m"/>, as the box of the mapped corners.</summary>
+	public static void Bounds(IGeometry g, in Matrix3x2 m, out Vector2 min, out Vector2 max)
+	{
+		var b = g.Bounds;
+		var p0 = Vector2.Transform(new Vector2((float)b.Left, (float)b.Top), m);
+		var p1 = Vector2.Transform(new Vector2((float)b.Right, (float)b.Top), m);
+		var p2 = Vector2.Transform(new Vector2((float)b.Right, (float)b.Bottom), m);
+		var p3 = Vector2.Transform(new Vector2((float)b.Left, (float)b.Bottom), m);
+		min = Vector2.Min(Vector2.Min(p0, p1), Vector2.Min(p2, p3));
+		max = Vector2.Max(Vector2.Max(p0, p1), Vector2.Max(p2, p3));
 	}
 }
 
@@ -73,6 +81,8 @@ internal struct ClipData
 	// The op's own shape as a coverage texture (an atlas page or a mask of its own), sampled by the op's vertex uv:
 	// the innermost clip. 0 = the geometry carries the shape. Set by the present session, never by the recorder.
 	public nint Coverage;
+	// The coverage texture is drawn scaled or rotated rather than texel for pixel, so it is sampled filtered.
+	public bool CoverageFiltered;
 	public static ClipData None => new() { Aabb = new Vector4(-1e9f, -1e9f, 1e9f, 1e9f), ScissorInert = true };
 
 	// The op's geometry is provably inside Aabb (containment proven at record time), so the scissor is not
@@ -136,53 +146,18 @@ internal sealed class RoundedRectCmd : WebGpuCommand
 	public Vector4 InnerRadii;
 }
 
-internal static class WgStrokeStats
-{
-	public static int Strips;
-}
 
-internal sealed class PathFill : WebGpuCommand
+// A path, filled (Stroke == 0) or stroked Stroke wide in its own units, as recorded: the geometry and the matrix that
+// was current, so its rasterisation can wait for the density it is drawn at (see WebGpuShapeCache).
+internal sealed class PathCmd : WebGpuCommand
 {
-	public float[] FanDevice;
-	public Vector2 BbMin, BbMax;
+	public IGeometry Geometry;
+	public Matrix3x2 M;            // the geometry's space -> the recording's
+	public float Stroke;
 	public WColor Color;
 	public bool EvenOdd;
-	/// <summary>The fan tiles the shape without overlap, so it can be filled directly.</summary>
-	public bool FanTiles;
-
-	/// <summary>
-	/// Per-vertex AA coverage (one per FanDevice point), multiplied into alpha so the shape antialiases itself
-	/// instead of relying on a multisampled attachment. Null when the fill has no ring.
-	/// </summary>
-	public float[] FanCoverage;
-
-	/// <summary>
-	/// The flattened outline as device-space edges (x0,y0,x1,y1 per edge), for the signed-area coverage
-	/// rasterizer. Independent of the triangulation: coverage needs the boundary, not the interior, which is
-	/// why it is available for shapes the tessellator refuses. Null when the contours could not be captured.
-	/// </summary>
-	public float[] Edges;
-	/// <summary>Outline hash (WebGpuCommandRecorder.EdgeHash) + transform: the atlas key, shared by every identical shape.</summary>
-	public long GeomKey;
-	public Matrix4x4 GeomMatrix;
-
-	// The fan the GPU consumes: FanDevice with the transform-table slot interleaved as a third float.
-	// Recordings are cached, so FanDevice never changes — rebuilding this element by element every frame is pure
-	// waste, and a giant glyph flattens to thousands of points. Keyed by the slot it was built for.
-
-	// The transformed copy this command produced for a given replay transform. Inline replay runs every frame and
-	// is otherwise a full transform + allocation of the whole fan each time.
-	private PathFill _replayed;
-	private Matrix4x4 _replayedM;
-
-	public PathFill ReplayedAt(in Matrix4x4 m) => _replayed is not null && _replayedM == m ? _replayed : null;
-
-	public void StoreReplayed(in Matrix4x4 m, PathFill value)
-	{
-		_replayed = value;
-		_replayedM = m;
-	}
-
+	public Vector2 BbMin, BbMax;   // in the recording's space
+	public Vector2 Offset => new(M.M31, M.M32);
 }
 
 internal sealed unsafe class ImageCmd : WebGpuCommand
@@ -208,14 +183,14 @@ internal sealed class GradientCmd : WebGpuCommand
 // separably gaussian-blurred (SigmaX/Y), then composited tinted by Color. Same fan/bbox form as PathFill.
 internal sealed class ShadowCmd : WebGpuCommand
 {
-	public float[] Edges;   // the silhouette as device-space edges (x0,y0,x1,y1 each), for the coverage bake
-	public Vector2 BbMin, BbMax;
+	public IGeometry Geometry;     // the silhouette, with the matrix that was current: baked at draw time
+	public Matrix3x2 M;
+	public Vector2 BbMin, BbMax;   // in the recording's space
 	public bool EvenOdd;
 	public WColor Color;
 	public float SigmaX, SigmaY;
 	public bool Additive;
-	public long GeomKey;         // outline hash + GeomMatrix: the blurred shadow's cache key (see RenderShadow)
-	public Matrix4x4 GeomMatrix;
+	public Vector2 Offset => new(M.M31, M.M32);
 }
 
 // A SaveLayer group: its Commands are rendered into a full-size offscreen surface, then composited onto the

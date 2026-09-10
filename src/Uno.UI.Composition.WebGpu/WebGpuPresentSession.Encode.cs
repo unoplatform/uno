@@ -242,7 +242,7 @@ public sealed unsafe partial class WebGpuPresentSession
 					break;
 
 				case DrawKind.TilingFan:
-					// Single-pass fill of a tiling fan (see PathFill.FanTiles).
+					// Single-pass fill of a tiling fan (see PathCmd.FanTiles).
 					pst.Enc.Pipe(_d.PathTablePipe);
 					pst.Enc.Bg(0, pst.PassBg);
 					pst.Enc.Bg(1, (IntPtr)xformBg);
@@ -396,7 +396,7 @@ public sealed unsafe partial class WebGpuPresentSession
 		line.Append($" block=ref{WebGpuCommandRecorder.StatBlockRef}/layer{WebGpuCommandRecorder.StatBlockLayer}");
 		line.Append($"/shadow{WebGpuCommandRecorder.StatBlockShadow}/other{WebGpuCommandRecorder.StatBlockOther}");
 		line.Append($"/empty{WebGpuCommandRecorder.StatBlockEmpty}");
-		line.Append($" fan=refused{WebGpuCommandRecorder.StatFanRefused}/contours{WebGpuCommandRecorder.StatTessContours}/points{WebGpuCommandRecorder.StatTessPoints}/tri{WebGpuCommandRecorder.StatTessTri}/area{WebGpuCommandRecorder.StatTessArea}/fold{WebGpuCommandRecorder.StatTessFold}");
+		line.Append($" fan=refused{WebGpuShapeCache.StatFanRefused}/points{WebGpuShapeCache.StatTessPoints}/tri{WebGpuShapeCache.StatTessTri}/area{WebGpuShapeCache.StatTessArea}/fold{WebGpuShapeCache.StatTessFold}");
 
 		// Rebuilt anyway, and why
 		line.Append($" tableRebuilds={_statTableRebuilds} arenaRebuilds={_statArenaRebuilds}(miss{_statArMiss}/flip{_statArFlip}/masks{_statArMasks}) stamps={_statStamps}");

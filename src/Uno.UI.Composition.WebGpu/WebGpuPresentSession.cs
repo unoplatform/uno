@@ -177,7 +177,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 				RoundedRectCmd rr => QuadBounds(rr.P0, rr.P1, rr.P2, rr.P3, rr.Clip),
 				ImageCmd im => QuadBounds(im.P0, im.P1, im.P2, im.P3, im.Clip),
 				GradientCmd g => QuadBounds(g.P0, g.P1, g.P2, g.P3, g.Clip),
-				PathFill p => ClampToClip(new Vector4(p.BbMin.X, p.BbMin.Y, p.BbMax.X, p.BbMax.Y), p.Clip),
+				PathCmd p => ClampToClip(new Vector4(p.BbMin.X, p.BbMin.Y, p.BbMax.X, p.BbMax.Y), p.Clip),
 				ShadowCmd sh => ClampToClip(Inflate(new Vector4(sh.BbMin.X, sh.BbMin.Y, sh.BbMax.X, sh.BbMax.Y), MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f), sh.Clip),
 				LayerCmd l => ClampToClip(LayerBounds(l), l.Clip),
 				ReplayRefCmd rr => ClampToClip(TransformBounds(rr.Data.IdentityBounds ??= CmdListBounds(rr.Commands), rr.Transform), rr.Clip),
@@ -456,8 +456,8 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 		cu[14] = finv.M31 + finv.M11 * _basisOx + finv.M21 * _basisOy;
 		cu[15] = finv.M32 + finv.M12 * _basisOx + finv.M22 * _basisOy;
 		cu[16] = finv.M11; cu[17] = finv.M12; cu[18] = finv.M21; cu[19] = finv.M22;
-		// own.x = the op's own coverage texture is bound (sampled by vertex uv).
-		if (cd.Coverage != 0) { cu[20] = 1f; }
+		// own.x = the op's own coverage texture is bound (sampled by vertex uv); own.y = drawn scaled or rotated, so filtered.
+		if (cd.Coverage != 0) { cu[20] = 1f; cu[21] = cd.CoverageFiltered ? 1f : 0f; }
 		for (int i = 0; i < n; i++)
 		{
 			var e = i < na ? entries[i] : masks[i - na]; int o = ClipUHeaderFloats + i * ClipEntryFloats;
@@ -589,7 +589,7 @@ public sealed unsafe partial class WebGpuPresentSession : IPresentSession
 						ci = j - 1;   // the for-loop's ci++ advances past the run
 						break;
 					}
-				case PathFill:
+				case PathCmd:
 					BuildSimpleOp(cmd, ops, null, AllocTransientPathSlot(), atlasScale: Vector2.One);   // pooled (per-frame); transient table slot
 					break;
 				case ImageCmd:

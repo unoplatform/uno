@@ -45,7 +45,6 @@ internal sealed unsafe class WebGpuPathAtlas
 	internal static int RejBig;
 
 	/// <summary>Subpixel phases per axis. 4 is the usual quality/footprint compromise.</summary>
-	public const int SubPixel = 4;
 
 	/// <summary>
 	/// W/H are part of the key because the scale is quantised: two nearby scales can share a key while needing
@@ -331,19 +330,19 @@ internal sealed unsafe class WebGpuPathAtlas
 		w = (int)MathF.Ceiling(bbMax.X * scale.X - oxDev) + 2;
 		h = (int)MathF.Ceiling(bbMax.Y * scale.Y - oyDev) + 2;
 
-		// Subpixel phase HORIZONTALLY only. Vertical phase would multiply the entry count for no visible gain on
-		// horizontal text, and it is what makes a scrolling list miss the cache on every frame: with Y quantised,
-		// a list scrolled by whole pixels reuses its glyphs instead of re-rasterising them.
-		var phaseX = (int)MathF.Floor((devMinX - oxDev) * SubPixel);
-		var phaseY = 0;
+		// The subpixel phase on both axes, bit for bit: entries are keyed by outline content, so a shape shares an
+		// entry with any other drawn at the same fraction, and only then. Any coarser and two shapes a fraction of a
+		// pixel apart share one mask that one of them draws misplaced, depending on which baked first.
+		var phaseX = BitConverter.SingleToInt32Bits(devMinX - oxDev);
+		var phaseY = BitConverter.SingleToInt32Bits(devMinY - oyDev);
 		key = new Key(
 			shape,
 			(int)MathF.Round(matrix.M11 * scale.X * 64f),
 			(int)MathF.Round(matrix.M12 * scale.X * 64f),
 			(int)MathF.Round(matrix.M21 * scale.Y * 64f),
 			(int)MathF.Round(matrix.M22 * scale.Y * 64f),
-			Math.Clamp(phaseX, 0, SubPixel - 1),
-			Math.Clamp(phaseY, 0, SubPixel - 1),
+			phaseX,
+			phaseY,
 			w,
 			h,
 			extra);
