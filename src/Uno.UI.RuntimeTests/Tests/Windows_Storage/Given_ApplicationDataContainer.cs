@@ -164,6 +164,25 @@ namespace Uno.UI.Samples.Tests.Windows_Storage
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaUIKit)]
+		public void When_Cleared_Then_Only_Own_Keys_Are_Visible()
+		{
+			// On Apple platforms the settings live in their own NSUserDefaults suite. Enumeration must
+			// report that suite alone - not the keys the OS and Apple frameworks keep in the standard
+			// and global domains, which a merged dictionaryRepresentation would also return.
+			var SUT = ApplicationData.Current.LocalSettings;
+
+			SUT.Values.Clear();
+			Assert.IsEmpty(SUT.Values);
+			Assert.AreEqual(0, SUT.Values.Count);
+
+			SUT.Values["only_key"] = "1";
+
+			Assert.AreEqual(1, SUT.Values.Count);
+			Assert.AreEqual("only_key", SUT.Values.Keys.Single());
+		}
+
+		[TestMethod]
 		public void When_GetAllKeys()
 		{
 			var SUT = ApplicationData.Current.LocalSettings;
