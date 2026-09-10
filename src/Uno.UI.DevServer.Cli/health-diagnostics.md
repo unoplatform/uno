@@ -71,6 +71,9 @@ These are added directly by `HealthService.BuildHealthReport()`:
 | `HostUnreachable` | Warning | Started but not yet connected |
 | `HostMcpEndpointNotAvailable` | Fatal | Host responds to HTTP but `/mcp` returns 404/400 — the host version predates MCP support (requires 6.6 or later). The MCP bridge cannot function without this endpoint. Remediation: upgrade the Uno.WinUI.DevServer package. |
 | `UpstreamError` | Fatal | Upstream task faulted |
+| `UnoSdkUpdateAvailable` | Warning | Pinned `Uno.Sdk` is behind the recommended version from the manifest (public `Uno.Sdk` only; skipped for `Uno.Sdk.Private`). **Non-degrading** (advisory only). |
+
+> Note: `UnoSdkUpdateAvailable` is produced by `HealthReportFactory.Create(...)` — shared by both the MCP `uno_health` tool and the one-shot `uno.devserver health` command — rather than by `HealthService.BuildHealthReport()` directly.
 
 ## Non-Mapped `IssueCode` Values
 
@@ -120,13 +123,13 @@ The CLI also forwards the Host subprocess stdout/stderr at Debug level on succes
 ## Health Status
 
 ```
-Fatal issue present --> Unhealthy
-Warning(s) only     --> Degraded
-No issues           --> Healthy
+Fatal issue present                                  --> Unhealthy
+Warning(s) present (excluding UnoSdkUpdateAvailable) --> Degraded
+Advisory-only (UnoSdkUpdateAvailable) or no issues   --> Healthy
 ```
 
 ## Adding New IssueCode Values
 
 1. Add the new value to the `IssueCode` enum in `Mcp/HealthReport.cs`
-2. Add mapping logic in `DiscoveryIssueMapper.cs` (if discovery-related) or `HealthService.BuildHealthReport()` (if runtime-related)
-3. Add test in `Given_DiscoveryIssueMapper.cs` verifying the trigger condition and severity
+2. Add mapping logic in `DiscoveryIssueMapper.cs` (if discovery-related), `HealthService.BuildHealthReport()` (if MCP-path-only runtime), or `HealthReportFactory.Create()` (if it must appear on both the MCP and CLI one-shot paths, e.g. `UnoSdkUpdateAvailable`)
+3. Add a test verifying the trigger condition and severity — in `Given_DiscoveryIssueMapper.cs` (discovery-related) or `Given_HealthReportFactory_SdkUpdate.cs` (runtime-related)

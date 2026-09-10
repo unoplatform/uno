@@ -20,6 +20,11 @@ internal static class HealthReportFormatter
 		builder.AppendLine($"Resolution: {report.ResolutionKind?.ToString() ?? "<unknown>"}");
 		builder.AppendLine($"Selection: {report.SelectionSource?.ToString() ?? "<unknown>"}");
 		builder.AppendLine($"Tools: {report.ToolCount}");
+		builder.AppendLine($"{report.UnoSdkPackage ?? "Uno.Sdk"}: {report.UnoSdkVersion ?? "<unknown>"}");
+		if (report.LatestUnoSdkVersion is not null)
+		{
+			builder.AppendLine($"Recommended {report.UnoSdkPackage ?? "Uno.Sdk"}: {report.LatestUnoSdkVersion}{(report.UnoSdkUpdateAvailable ? " (update available)" : "")}");
+		}
 
 		if (report.CandidateSolutions is { Count: > 0 })
 		{
