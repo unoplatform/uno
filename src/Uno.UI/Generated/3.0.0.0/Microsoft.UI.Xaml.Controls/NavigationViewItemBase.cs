@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class NavigationViewItemBase
+	public partial class NavigationViewItemBase : global::Microsoft.UI.Xaml.Controls.ContentControl
 	{
 		// Skipping already declared property IsSelectedProperty
 		// Skipping already declared property IsSelected

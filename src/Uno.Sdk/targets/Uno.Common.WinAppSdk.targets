@@ -2,7 +2,7 @@
 	<PropertyGroup>
 		<IsWinAppSdk>true</IsWinAppSdk>
 		<UseRidGraph>true</UseRidGraph>
-		<TargetPlatformMinVersion Condition=" $(TargetPlatformMinVersion) == '' ">10.0.18362.0</TargetPlatformMinVersion>
+		<TargetPlatformMinVersion Condition=" $(TargetPlatformMinVersion) == '' ">10.0.19041.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition=" $(SupportedOSPlatformVersion) == '' ">$(TargetPlatformMinVersion)</SupportedOSPlatformVersion>
 
 		<!-- Set EnableMsixTooling to true only for executables - setting this on class libraries prevents assets from being correctly copied to windows target -->

@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ScrollContentPresenter
+	public partial class ScrollContentPresenter : global::Microsoft.UI.Xaml.Controls.ContentPresenter
 	{
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]

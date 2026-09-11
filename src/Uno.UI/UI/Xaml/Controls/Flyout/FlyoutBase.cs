@@ -537,6 +537,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 
 			ForwardTargetPropertiesToPresenter();
+			ForwardPopupFlowDirection();
 
 			// Capture the input device that triggered this flyout (mirrors WinUI ValidateAndSetParameters)
 			var contentRoot = VisualTree.GetContentRootForElement(placementTarget);
@@ -724,14 +725,33 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		/// <summary>
-		/// Forwards DataContext and theme from the placement target to the presenter.
+		/// Forwards the placement target's flow direction to the popup so that the flyout content is laid out (and mirrored) like the target.
+		/// Ported from WinUI: FlyoutBase_partial.cpp ForwardPopupFlowDirection.
+		/// </summary>
+		private void ForwardPopupFlowDirection()
+		{
+			if (_popup is not null)
+			{
+				// The popup is reused across openings, so a missing target resets the direction rather than keeping the previous target's.
+				_popup.FlowDirection = Target?.FlowDirection ?? FlowDirection.LeftToRight;
+			}
+		}
+
+		/// <summary>
+		/// Forwards DataContext, flow direction and theme from the placement target to the presenter.
 		/// Ported from WinUI: FlyoutBase_partial.cpp ForwardTargetPropertiesToPresenter.
 		/// </summary>
 		private void ForwardTargetPropertiesToPresenter()
 		{
-			if (_popup?.Child is FrameworkElement presenter && Target is { } target)
+			if (_popup?.Child is FrameworkElement presenter)
 			{
-				presenter.DataContext = target.DataContext;
+				if (Target is { } target)
+				{
+					presenter.DataContext = target.DataContext;
+				}
+
+				// The presenter is reused across openings, so a missing target resets the direction rather than keeping the previous target's.
+				presenter.FlowDirection = Target?.FlowDirection ?? FlowDirection.LeftToRight;
 			}
 
 			ForwardThemeToPresenter();

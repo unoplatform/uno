@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class AppBar
+	public partial class AppBar : global::Microsoft.UI.Xaml.Controls.ContentControl
 	{
 		// Skipping already declared property ClosedDisplayModeProperty
 		// Skipping already declared property IsOpenProperty
