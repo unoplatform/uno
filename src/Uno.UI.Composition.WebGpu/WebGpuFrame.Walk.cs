@@ -88,10 +88,16 @@ internal sealed unsafe partial class WebGpuFrame
 		for (int ci = 0; ci < cmds.Count; ci++)
 		{
 			var cmd = cmds[ci];
-			switch (cmd)
+			switch (cmd.Kind)
 			{
-				case RectCommand rc0:
+				// A replayed recording first: a long list is nothing else, and every kind tested before it is
+				// a test every one of its thousands of records would pay.
+				case CmdKind.ReplayRef:
+					EmitReplay((ReplayRefCmd)cmd, m, inv, outer, direct, ops);
+					break;
+				case CmdKind.Rect:
 					{
+						var rc0 = (RectCommand)cmd;
 						// A run of rects sharing a clip is one draw: their verts are contiguous in the pass buffer.
 						var cd = composer.Compose(outer, rc0.Clip, m, inv, direct);
 						int j = ci; uint start = (uint)(_solid.Count / VertexStride.Solid);
@@ -105,8 +111,9 @@ internal sealed unsafe partial class WebGpuFrame
 						ci = j - 1;
 						break;
 					}
-				case RoundedRectCmd rri:
+				case CmdKind.RoundedRect:
 					{
+						var rri = (RoundedRectCmd)cmd;
 						var cd = composer.Compose(outer, rri.Clip, m, inv, direct);
 						uint st = (uint)(_rrect.Count / VertexStride.RoundedRect);
 						if (identity) { AppendRrect(_rrect, rri, rri.P0, rri.P1, rri.P2, rri.P3); }
@@ -114,40 +121,46 @@ internal sealed unsafe partial class WebGpuFrame
 						ops.Add(DrawOp.Shared(DrawKind.RoundedRect, st, 6, IntPtr.Zero, cd, MakeClipBg(cd)));
 						break;
 					}
-				case PathCmd pc:
+				case CmdKind.Path:
 					{
+						var pc = (PathCmd)cmd;
 						if (_emitStats) { StatWalkPaths++; }
 						var cd = composer.Compose(outer, pc.Clip, m, inv, direct);
 						BuildSimpleOp(direct ? pc : Under(pc, m, identity, cd), ops, null, atlasScale: Vector2.One);
 						break;
 					}
-				case ImageCmd im:
+				case CmdKind.Image:
 					{
+						var im = (ImageCmd)cmd;
 						var cd = composer.Compose(outer, im.Clip, m, inv, direct);
 						if (identity) { EmitImage(im, im.P0, im.P1, im.P2, im.P3, cd, ops); }
 						else { EmitImage(im, Map(im.P0, m), Map(im.P1, m), Map(im.P2, m), Map(im.P3, m), cd, ops); }
 						break;
 					}
-				case GradientCmd gc:
+				case CmdKind.Gradient:
 					{
+						var gc = (GradientCmd)cmd;
 						var cd = composer.Compose(outer, gc.Clip, m, inv, direct);
 						EmitGradient(gc, m, identity, cd, ops);
 						break;
 					}
-				case ShadowCmd sh:
+				case CmdKind.Shadow:
 					{
+						var sh = (ShadowCmd)cmd;
 						var cd = composer.Compose(outer, sh.Clip, m, inv, direct);
 						EmitShadow(direct ? sh : Under(sh, m, identity, cd), ops);
 						break;
 					}
-				case LayerCmd lyr:
+				case CmdKind.Layer:
 					{
+						var lyr = (LayerCmd)cmd;
 						var cd = composer.Compose(outer, lyr.Clip, m, inv, direct);
 						EmitLayer(lyr, m, outer, cd, ops);
 						break;
 					}
-				case BackdropCmd bk:
+				case CmdKind.Backdrop:
 					{
+						var bk = (BackdropCmd)cmd;
 						// A backdrop splits the pass here so it samples the framebuffer resolved so far (see EncodeBackdropSegment).
 						var cd = composer.Compose(outer, bk.Clip, m, inv, direct);
 						var view = direct ? bk : new BackdropCmd { Effect = bk.Effect, Opacity = bk.Opacity, Clip = cd };
@@ -155,9 +168,6 @@ internal sealed unsafe partial class WebGpuFrame
 						ops.Add(DrawOp.Backdrop(bi, cd));
 						break;
 					}
-				case ReplayRefCmd rr:
-					EmitReplay(rr, m, inv, outer, direct, ops);
-					break;
 			}
 		}
 	}
@@ -256,7 +266,7 @@ internal sealed unsafe partial class WebGpuFrame
 	{
 		for (int i = 0; i < cmds.Count; i++)
 		{
-			if (cmds[i] is not (RectCommand or RoundedRectCmd or PathCmd or ImageCmd or GradientCmd)) { return false; }
+			if (cmds[i].Kind > CmdKind.Gradient) { return false; }
 		}
 		return cmds.Count > 0;
 	}

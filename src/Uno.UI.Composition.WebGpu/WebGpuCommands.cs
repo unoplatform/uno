@@ -117,14 +117,23 @@ internal struct ClipData
 
 }
 
+/// <summary>Which command a <see cref="WebGpuCommand"/> is, so the walk dispatches on a field rather than on a
+/// chain of type tests: a list of thousands of recordings would otherwise test every earlier kind for each one.</summary>
+internal enum CmdKind : byte { Rect, RoundedRect, Path, Image, Gradient, Shadow, Layer, Backdrop, ReplayRef }
+
 // Draw commands share one ordered stream so cross-type z-order (rect over path over image) is preserved.
 internal abstract class WebGpuCommand
 {
+	public readonly CmdKind Kind;
 	public ClipData Clip;
+
+	protected WebGpuCommand(CmdKind kind) => Kind = kind;
 }
 
 internal sealed class RectCommand : WebGpuCommand
 {
+	public RectCommand() : base(CmdKind.Rect) { }
+
 	public WColor Color;
 	public Vector2 P0, P1, P2, P3;
 }
@@ -136,6 +145,8 @@ internal sealed class RectCommand : WebGpuCommand
 // Radii = (TopLeft, TopRight, BottomRight, BottomLeft).
 internal sealed class RoundedRectCmd : WebGpuCommand
 {
+	public RoundedRectCmd() : base(CmdKind.RoundedRect) { }
+
 	public Vector2 P0, P1, P2, P3;   // device-space corners: TL, TR, BR, BL (matches RectCommand order)
 	public Vector2 Half;             // local half-size
 	public Vector4 Radii;            // local per-corner
@@ -149,6 +160,8 @@ internal sealed class RoundedRectCmd : WebGpuCommand
 // was current, so its rasterisation can wait for the density it is drawn at (see WebGpuShapeCache).
 internal sealed class PathCmd : WebGpuCommand
 {
+	public PathCmd() : base(CmdKind.Path) { }
+
 	public IGeometry Geometry;
 	public Matrix3x2 M;            // the geometry's space -> the recording's
 	public float Stroke;
@@ -160,6 +173,8 @@ internal sealed class PathCmd : WebGpuCommand
 
 internal sealed unsafe class ImageCmd : WebGpuCommand
 {
+	public ImageCmd() : base(CmdKind.Image) { }
+
 	public Vector2 P0, P1, P2, P3;
 	public IntPtr View;   // the pre-uploaded WebGpuTexture view (no per-frame upload)
 	public int W, H;
@@ -173,6 +188,8 @@ internal sealed unsafe class ImageCmd : WebGpuCommand
 
 internal sealed class GradientCmd : WebGpuCommand
 {
+	public GradientCmd() : base(CmdKind.Gradient) { }
+
 	public Vector2 P0, P1, P2, P3;   // device-space quad
 	public float[] Uniform;          // packed Grad struct (WebGpuDevice.GradientUniformBytes / 4 floats)
 }
@@ -181,6 +198,8 @@ internal sealed class GradientCmd : WebGpuCommand
 // composited tinted by Color.
 internal sealed class ShadowCmd : WebGpuCommand
 {
+	public ShadowCmd() : base(CmdKind.Shadow) { }
+
 	public IGeometry Geometry;     // the silhouette, with the matrix that was current: baked at draw time
 	public Matrix3x2 M;
 	public Vector2 BbMin, BbMax;   // in the recording's space
@@ -195,6 +214,8 @@ internal sealed class ShadowCmd : WebGpuCommand
 // parent with CompositeMode (0 = SrcOver, 1 = DstIn mask) and an optional color matrix (SaveLayer(IColorFilter)).
 internal sealed class LayerCmd : WebGpuCommand
 {
+	public LayerCmd() : base(CmdKind.Layer) { }
+
 	public List<WebGpuCommand> Commands;
 	public int CompositeMode;   // 0 = SrcOver, 1 = DstIn
 	public float[] ColorMatrix; // null, or 20-float (4x5) color matrix applied at composite
@@ -206,6 +227,8 @@ internal sealed class LayerCmd : WebGpuCommand
 // simplified to blur + tint (the dominant acrylic visual), not the full IGraphicsEffect DAG.
 internal sealed class BackdropCmd : WebGpuCommand
 {
+	public BackdropCmd() : base(CmdKind.Backdrop) { }
+
 	public WebGpuEffectFilter Effect;
 	public float Opacity;
 }
@@ -217,6 +240,8 @@ internal sealed class BackdropCmd : WebGpuCommand
 // main thread may Dispose the recording.
 internal sealed class ReplayRefCmd : WebGpuCommand
 {
+	public ReplayRefCmd() : base(CmdKind.ReplayRef) { }
+
 	public WebGpuRenderRecord Data;
 	public System.Collections.Generic.List<WebGpuCommand> Commands;
 	public System.Numerics.Matrix4x4 Transform;

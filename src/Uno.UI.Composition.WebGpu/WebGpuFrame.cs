@@ -150,19 +150,18 @@ internal sealed unsafe partial class WebGpuFrame
 		var b = _emptyBounds;
 		foreach (var cmd in cmds)
 		{
-			var cb = cmd switch
+			var cb = cmd.Kind switch
 			{
-				RectCommand r => QuadBounds(r.P0, r.P1, r.P2, r.P3, r.Clip),
-				RoundedRectCmd rr => QuadBounds(rr.P0, rr.P1, rr.P2, rr.P3, rr.Clip),
-				ImageCmd im => QuadBounds(im.P0, im.P1, im.P2, im.P3, im.Clip),
-				GradientCmd g => QuadBounds(g.P0, g.P1, g.P2, g.P3, g.Clip),
-				PathCmd p => ClampToClip(new Vector4(p.BbMin.X, p.BbMin.Y, p.BbMax.X, p.BbMax.Y), p.Clip),
-				ShadowCmd sh => ClampToClip(Inflate(new Vector4(sh.BbMin.X, sh.BbMin.Y, sh.BbMax.X, sh.BbMax.Y), MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f), sh.Clip),
-				LayerCmd l => ClampToClip(LayerBounds(l), l.Clip),
-				ReplayRefCmd rr => ClampToClip(TransformBounds(rr.Data.IdentityBounds ??= CmdListBounds(rr.Commands), rr.Transform), rr.Clip),
+				CmdKind.Rect when cmd is RectCommand r => QuadBounds(r.P0, r.P1, r.P2, r.P3, r.Clip),
+				CmdKind.RoundedRect when cmd is RoundedRectCmd rr => QuadBounds(rr.P0, rr.P1, rr.P2, rr.P3, rr.Clip),
+				CmdKind.Image when cmd is ImageCmd im => QuadBounds(im.P0, im.P1, im.P2, im.P3, im.Clip),
+				CmdKind.Gradient when cmd is GradientCmd g => QuadBounds(g.P0, g.P1, g.P2, g.P3, g.Clip),
+				CmdKind.Path when cmd is PathCmd p => ClampToClip(new Vector4(p.BbMin.X, p.BbMin.Y, p.BbMax.X, p.BbMax.Y), p.Clip),
+				CmdKind.Shadow when cmd is ShadowCmd sh => ClampToClip(Inflate(new Vector4(sh.BbMin.X, sh.BbMin.Y, sh.BbMax.X, sh.BbMax.Y), MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f), sh.Clip),
+				CmdKind.Layer when cmd is LayerCmd l => ClampToClip(LayerBounds(l), l.Clip),
+				CmdKind.ReplayRef when cmd is ReplayRefCmd rr => ClampToClip(TransformBounds(rr.Data.IdentityBounds ??= CmdListBounds(rr.Commands), rr.Transform), rr.Clip),
 				// A backdrop samples/draws within its clip; with no finite clip it can cover the whole surface.
-				BackdropCmd bk => IsFiniteAabb(bk.Clip.Aabb) ? bk.Clip.Aabb : new Vector4(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue),
-				_ => new Vector4(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue),
+				_ => IsFiniteAabb(cmd.Clip.Aabb) && cmd.Kind == CmdKind.Backdrop ? cmd.Clip.Aabb : new Vector4(float.MinValue, float.MinValue, float.MaxValue, float.MaxValue),
 			};
 			b = new Vector4(MathF.Min(b.X, cb.X), MathF.Min(b.Y, cb.Y), MathF.Max(b.Z, cb.Z), MathF.Max(b.W, cb.W));
 		}

@@ -142,7 +142,7 @@ internal sealed unsafe partial class WebGpuFrame
 	{
 		for (int ci = 0; ci < cmds.Count; ci++)
 		{
-			if (cmds[ci] is RectCommand rc0)
+			if (cmds[ci].Kind == CmdKind.Rect && cmds[ci] is RectCommand rc0)
 			{
 				_scratch.Clear();
 				int j = ci;
@@ -158,7 +158,7 @@ internal sealed unsafe partial class WebGpuFrame
 			{
 				ops.Add(aop);
 			}
-			else if (cmds[ci] is PathCmd pc)
+			else if (cmds[ci].Kind == CmdKind.Path && cmds[ci] is PathCmd pc)
 			{
 				var density = maskScale ?? atlasScale ?? Vector2.One;
 				var shape = Coverage.ShapeOf(pc, density);
@@ -206,10 +206,11 @@ internal sealed unsafe partial class WebGpuFrame
 	// (`owned` null) join the pass buffers instead.
 	private void BuildSimpleOp(WebGpuCommand cmd, List<DrawOp> ops, OwnedResources owned, Vector2? atlasScale = null, Vector2? maskScale = null)
 	{
-		switch (cmd)
+		switch (cmd.Kind)
 		{
-			case PathCmd pf:
+			case CmdKind.Path:
 				{
+					var pf = (PathCmd)cmd;
 					var density = maskScale ?? atlasScale ?? Vector2.One;
 					var shape = Coverage.ShapeOf(pf, density);
 					// A small axis-aligned shape (a glyph) draws from the coverage atlas: one tinted quad, antialiasing baked in.
@@ -218,14 +219,21 @@ internal sealed unsafe partial class WebGpuFrame
 					AddFan(pf, shape, ops, owned);
 					break;
 				}
-			case ImageCmd im:
-				EmitImage(im, im.P0, im.P1, im.P2, im.P3, im.Clip, ops, owned);
-				break;
-			case GradientCmd gc:
-				EmitGradient(gc, Matrix3x2.Identity, true, gc.Clip, ops, owned);
-				break;
-			case RoundedRectCmd rrc:
+			case CmdKind.Image:
 				{
+					var im = (ImageCmd)cmd;
+					EmitImage(im, im.P0, im.P1, im.P2, im.P3, im.Clip, ops, owned);
+					break;
+				}
+			case CmdKind.Gradient:
+				{
+					var gc = (GradientCmd)cmd;
+					EmitGradient(gc, Matrix3x2.Identity, true, gc.Clip, ops, owned);
+					break;
+				}
+			case CmdKind.RoundedRect:
+				{
+					var rrc = (RoundedRectCmd)cmd;
 					var tmp = RentRrect();
 					AppendRrect(tmp, rrc, rrc.P0, rrc.P1, rrc.P2, rrc.P3);
 					var buf = Vbuf(tmp, owned);
