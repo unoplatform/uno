@@ -2170,6 +2170,7 @@ namespace Windows.UI.Tests.Enterprise
 #if __ANDROID__
 		[Ignore("Test is failing on Android https://github.com/unoplatform/uno/issues/17984")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task ValidateMenuSizingForDifferentInputModes()
 		{
 			TestCleanupWrapper cleanup;
@@ -2768,6 +2769,7 @@ namespace Windows.UI.Tests.Enterprise
 		[TestMethod]
 
 		[Description("Validates the overflow button is hidden when told to be hidden, or when there's nothing to be shown by clicking it, with primary app bar buttons.")]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task ValidateOverflowButtonHidesWhenAppropriateWithPrimaryAppBarButtons()
 		{
 			await ValidateOverflowButtonHidesWhenAppropriate(addPrimary: true, addSecondary: false);
@@ -4145,6 +4147,7 @@ namespace Windows.UI.Tests.Enterprise
 #if !__SKIA__
 		[Ignore("Test is failing on non-Skia targets https://github.com/unoplatform/uno/issues/17984")]
 #endif
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task ValidateResetingTheStateOfAppBarButton()
 		{
 			TestCleanupWrapper cleanup;

@@ -4415,6 +4415,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[Ignore("https://github.com/unoplatform/uno/issues/15093")]
 #endif
 		// For this test to work, make sure you are running the SampleApp with LightTheme enabled.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaTvOS)] // tvOS: see uno-private#2337
 		public async Task When_ThemeChange()
 		{
 			const double TotalHeight = 500; // The ListView height.

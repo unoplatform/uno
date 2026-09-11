@@ -19,12 +19,10 @@
 		<dependencies>
 			<group targetFramework="net10.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="System.Json" version="4.7.1" />
 			</group>
 
 			<group targetFramework="net11.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-				<dependency id="System.Json" version="4.7.1" />
 			</group>
 
 			<group targetFramework="net10.0-android">

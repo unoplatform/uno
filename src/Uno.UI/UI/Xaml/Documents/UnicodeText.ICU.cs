@@ -77,8 +77,11 @@ internal readonly partial struct UnicodeText
 					}
 				}
 			}
-			else if (OperatingSystem.IsIOS())
+			else if (OperatingSystem.IsIOS() || OperatingSystem.IsTvOS())
 			{
+				// On iOS and tvOS, ICU is statically linked into the executable from the
+				// uno.icu-ios / uno.icu-tvos packages, so there is no library to load and
+				// the symbols are reached through the IOSICUSymbols DllImports below.
 				_icuVersion = 77;
 				libicuuc = IntPtr.Zero;
 			}
@@ -236,9 +239,9 @@ internal readonly partial struct UnicodeText
 		{
 			if (!_lookupCache.TryGetValue(typeof(T), out var value))
 			{
-				if (OperatingSystem.IsIOS() || OperatingSystem.IsBrowser())
+				if (OperatingSystem.IsIOS() || OperatingSystem.IsTvOS() || OperatingSystem.IsBrowser())
 				{
-					// iOS doesn't support NativeLibrary.TryGetExport so we have to make DllImport declarations to
+					// iOS and tvOS don't support NativeLibrary.TryGetExport so we have to make DllImport declarations to
 					// the exact symbol names at compile times (even DllImport.EntryPoint doesn't work) and do the
 					// method mapping by reflection.
 					// On WASM, NativeLibrary.TryGetExport is supported, but not on NativeAOT.

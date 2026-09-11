@@ -155,7 +155,6 @@ Here are the supported properties:
 | `AndroidXAppCompatVersion`          | [Xamarin.AndroidX.AppCompat](https://www.nuget.org/packages/Xamarin.AndroidX.AppCompat)                              | Offers backward-compatible versions of Android components with AndroidX.                                       |
 | `AndroidXBrowserVersion`            | [Xamarin.AndroidX.Browser](https://www.nuget.org/packages/Xamarin.AndroidX.Browser)                                  | Contains components to implement browser features with AndroidX.                                               |
 | `AndroidXCollectionVersion`         | [Xamarin.AndroidX.Collection](https://www.nuget.org/packages/Xamarin.AndroidX.Collection) and similar packages       | Provides AndroidX extensions for collections like sparse arrays and bundles.                                   |
-| `AndroidXLegacySupportV4Version`    | [Xamarin.AndroidX.Legacy.Support.V4](https://www.nuget.org/packages/Xamarin.AndroidX.Legacy.Support.V4)              | Supports older Android versions with AndroidX compatibility libraries.                                         |
 | `AndroidXSplashScreenVersion`    | [Xamarin.AndroidX.Core.SplashScreen](https://www.nuget.org/packages/Xamarin.AndroidX.Core.SplashScreen)              | Support for Android splash screen customization.                                         |
 | `AndroidXNavigationVersion`         | [Xamarin.AndroidX.Navigation.UI](https://www.nuget.org/packages/Xamarin.AndroidX.Navigation.UI) and similar packages | Facilitates navigation within an Android app using AndroidX.                                                   |
 | `AndroidXRecyclerViewVersion`       | [Xamarin.AndroidX.RecyclerView](https://www.nuget.org/packages/Xamarin.AndroidX.RecyclerView)                        | Implements a flexible view for providing a limited window into large datasets with AndroidX.                   |
@@ -173,7 +172,6 @@ Here are the supported properties:
 | `WinAppSdkBuildToolsVersion`        | [Microsoft.Windows.SDK.BuildTools](https://www.nuget.org/packages/Microsoft.Windows.SDK.BuildTools)                  | Contains the tools required to build applications for the Microsoft Windows App SDK.                           |
 | `WinAppSdkBuildToolsWinAppVersion`  | [Microsoft.Windows.SDK.BuildTools.WinApp](https://www.nuget.org/packages/Microsoft.Windows.SDK.BuildTools.WinApp)    | Enables `dotnet run` to launch the packaged WinAppSDK app with package identity. See [Running packaged WinUI apps with `dotnet run`](#running-packaged-winui-apps-with-dotnet-run). |
 | `WinAppSdkVersion`                  | [Microsoft.WindowsAppSDK](https://www.nuget.org/packages/Microsoft.WindowsAppSDK)                                    | Provides project templates and tools for building Windows applications.                                        |
-| `WindowsCompatibilityVersion`       | [Microsoft.Windows.Compatibility](https://www.nuget.org/packages/Microsoft.Windows.Compatibility)                    | Enables Windows desktop apps to use .NET Core by providing access to additional Windows APIs.                  |
 
 ---
 
