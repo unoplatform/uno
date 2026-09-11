@@ -228,7 +228,12 @@ internal static class PathTessellator
 			at += n;
 		}
 
-		// Reject shapes thinner than the ramp: insetting would fold them inside out, which reads as missing ink.
+		// A shape thinner than the ramp would fold inside out when inset, which reads as missing ink. Rejecting it
+		// outright sent the whole fill to a coverage-mask bake -- the expensive route -- even though the
+		// triangulation was good. A widened stroke outline is exactly this case: 2px wide, inset half a pixel from
+		// each side. So shrink the ramp instead, to the largest width no edge reverses at.
+		// Along one edge, inset(s) = e + s * (d1 - d0), so dot(e, inset(s)) >= 0 holds while s <= |e|^2 / -dot(e, d1-d0).
+		var ringScale = 1f;
 		at = 0;
 		for (var c = 0; c < contours.Count; c++)
 		{
@@ -237,11 +242,21 @@ internal static class PathTessellator
 			for (var i = 0; i < n; i++)
 			{
 				var a = pts[i]; var b = pts[(i + 1) % n];
-				var ia = a + inset[at + i]; var ib = b + inset[at + (i + 1) % n];
-				var e = b - a; var ie = ib - ia;
-				if (Vector2.Dot(e, ie) < 0) { return false; }
+				var e = b - a;
+				var delta = inset[at + (i + 1) % n] - inset[at + i];
+				var ed = Vector2.Dot(e, delta);
+				if (ed >= 0) { continue; }
+				var s = Vector2.Dot(e, e) / -ed;
+				if (s < ringScale) { ringScale = s; }
 			}
 			at += n;
+		}
+		if (ringScale < 1f)
+		{
+			// A margin below the fold point; a ramp that collapses to nothing still draws the shape, hard-edged,
+			// which is far better than not drawing it through this path at all.
+			ringScale = Math.Max(0f, ringScale * 0.9f);
+			for (var i = 0; i < inset.Length; i++) { inset[i] *= ringScale; }
 		}
 
 		for (var t = 0; t + 2 < indices.Length; t += 3)
