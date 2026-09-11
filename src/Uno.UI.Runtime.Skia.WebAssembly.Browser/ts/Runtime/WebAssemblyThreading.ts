@@ -2,7 +2,7 @@
 	export class WebAssemblyThreading {
 		public static isThreadingEnabled() {
 			return (<any>globalThis).crossOriginIsolated &&
-				typeof SharedArrayBuffer !== undefined &&
+				typeof SharedArrayBuffer !== "undefined" &&
 				(<any>Module).PThread !== undefined;
 		}
 
