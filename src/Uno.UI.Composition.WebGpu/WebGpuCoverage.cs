@@ -154,6 +154,9 @@ internal sealed unsafe partial class WebGpuCoverage
 	}
 
 	internal static int FillMasksBaked, FillMaskHits;
+	// Of those bakes, the ones with no cache behind them at all: a fill the keyed route refused, which pays a
+	// texture and a bake on EVERY build. A high count next to a low hit count is the signal that the key is unstable.
+	internal static int FillMaskUncached;
 
 	/// <summary>
 	/// Draws a fill through an exact coverage mask: the route for every fill the atlas refused (too large, no key)
@@ -196,7 +199,7 @@ internal sealed unsafe partial class WebGpuCoverage
 			if (owned is not null) { (owned.Textures ??= new()).Add(((nint)view, (nint)tex)); }
 			else { _d.DeferTextureRelease(view, tex); }
 		}
-		FillMasksBaked++;
+		FillMasksBaked++; FillMaskUncached++;
 
 		// A solid quad with the mask as its coverage, 1:1 with device pixels once the GPU applies the scale -- the same
 		// draw an atlas entry uses, so it coalesces and re-stamps like one.
