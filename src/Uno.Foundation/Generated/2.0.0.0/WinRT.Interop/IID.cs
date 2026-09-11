@@ -30,6 +30,16 @@ namespace WinRT.Interop
 #endif
 #if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+		public static global::System.Guid IID_IWeakReferenceSource
+		{
+			get
+			{
+				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("WinRT.Interop.IID", "IID_IWeakReferenceSource");
+			}
+		}
+#endif
+#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::System.Guid IID_IActivationFactory
 		{
 			get
@@ -90,6 +100,7 @@ namespace WinRT.Interop
 #endif
 		// Forced skipping of method WinRT.Interop.IID.IID_IUnknown.get
 		// Forced skipping of method WinRT.Interop.IID.IID_IInspectable.get
+		// Forced skipping of method WinRT.Interop.IID.IID_IWeakReferenceSource.get
 		// Forced skipping of method WinRT.Interop.IID.IID_IActivationFactory.get
 		// Forced skipping of method WinRT.Interop.IID.IID_IAgileObject.get
 		// Forced skipping of method WinRT.Interop.IID.IID_IMarshal.get
