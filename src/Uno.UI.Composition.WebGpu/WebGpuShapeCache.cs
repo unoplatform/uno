@@ -274,6 +274,10 @@ internal sealed class WebGpuShapeCache
 		{
 			if ((pts[i] - pts[i - 1]).LengthSquared() < 1e-12f) { pts.RemoveAt(i); }
 		}
+		// A closed contour arrives with its closing point still on it (only the fill flattener drops that), and the
+		// wrap segment from it to the start is then zero-length with no direction. Both ends of the contour would
+		// take the no-miter fallback below and spike ten half-widths out of the first vertex.
+		if (closed && pts.Count > 2 && (pts[^1] - pts[0]).LengthSquared() < 1e-12f) { pts.RemoveAt(pts.Count - 1); }
 		var n = pts.Count;
 		if (n < 2) { return; }
 
@@ -284,16 +288,17 @@ internal sealed class WebGpuShapeCache
 			var hasNext = i < n - 1 || closed;
 			var n1 = hasPrev ? Norm(pts[i] - pts[(i - 1 + n) % n]) : Vector2.Zero;
 			var n2 = hasNext ? Norm(pts[(i + 1) % n] - pts[i]) : Vector2.Zero;
-			if (!hasPrev) { off[i] = Perp(n2) * h; continue; }
-			if (!hasNext) { off[i] = Perp(n1) * h; continue; }
+			if (!hasPrev || n1 == Vector2.Zero) { off[i] = Perp(n2) * h; continue; }
+			if (!hasNext || n2 == Vector2.Zero) { off[i] = Perp(n1) * h; continue; }
 			var mid = Perp(n1) + Perp(n2);
 			var ml = mid.Length();
 			if (ml < 1e-5f) { off[i] = Perp(n1) * h; continue; }   // 180 degree reversal: no finite miter
 			mid /= ml;
 			// miterLength = h / cos(theta/2); clamped so a near-degenerate corner cannot shoot off to infinity.
+			// miterLength = h / cos(theta/2), bevelled rather than extended once the corner is sharp enough that the
+			// miter would run away (a spike is never the right answer; it is what a degenerate corner used to draw).
 			var cos = Vector2.Dot(mid, Perp(n1));
-			var scale = MathF.Abs(cos) < 0.1f ? h * 10f : h / cos;
-			off[i] = mid * MathF.Min(MathF.Abs(scale), h * 10f) * MathF.Sign(scale == 0 ? 1 : scale);
+			off[i] = MathF.Abs(cos) < 0.25f ? Perp(n1) * h : mid * (h / cos);
 		}
 
 		var segs = closed ? n : n - 1;
