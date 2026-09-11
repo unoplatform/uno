@@ -39,6 +39,12 @@ internal sealed unsafe partial class WebGpuFrame
 	private static int _frameStatsCounter;
 	// Op-build vs pass-encode, accumulated across the frame's passes (UNO_WEBGPU_STATS).
 	internal static long OpsBuildTicks, EncodeTicks, RebuildTicks, StampTicks, BakeTicks;
+	// WalkTicks spans the whole traversal (so the traversal's own share is WalkTicks minus rebuild/stamp/bake);
+	// UploadTicks is the per-pass shared vertex buffers and the pass bind group.
+	internal static long WalkTicks, UploadTicks;
+	// Layers build nested passes from inside the walk; only the outermost one is timed, else the nested
+	// time is counted once per level and the total exceeds opsBuild.
+	private static int _passDepth;
 	internal static bool EmitStats => _emitStats;
 
 	// One frame: the main list under its root matrix, the overlay (already in device pixels) on top, one submit.
@@ -58,8 +64,9 @@ internal sealed unsafe partial class WebGpuFrame
 			{
 				long t2 = System.Diagnostics.Stopwatch.GetTimestamp();
 				double toMs = 1000.0 / System.Diagnostics.Stopwatch.Frequency;
-				System.Console.WriteLine($"[webgpu-frame] cmds={cmds.Count} renderInto={(t1 - t0) * toMs:F1}ms finishSubmit={(t2 - t1) * toMs:F1}ms opsBuild={OpsBuildTicks * toMs:F1}ms (rebuild={RebuildTicks * toMs:F1} stamp={StampTicks * toMs:F1} bake={BakeTicks * toMs:F1}) encode={EncodeTicks * toMs:F1}ms");
+				System.Console.WriteLine($"[webgpu-frame] cmds={cmds.Count} renderInto={(t1 - t0) * toMs:F1}ms finishSubmit={(t2 - t1) * toMs:F1}ms opsBuild={OpsBuildTicks * toMs:F1}ms (walk={WalkTicks * toMs:F1} rebuild={RebuildTicks * toMs:F1} stamp={StampTicks * toMs:F1} bake={BakeTicks * toMs:F1} upload={UploadTicks * toMs:F1}) encode={EncodeTicks * toMs:F1}ms");
 				OpsBuildTicks = 0; EncodeTicks = 0; RebuildTicks = 0; StampTicks = 0; BakeTicks = 0;
+				WalkTicks = 0; UploadTicks = 0;
 			}
 		}
 	}
@@ -403,7 +410,9 @@ internal sealed unsafe partial class WebGpuFrame
 		int more = Math.Max(0, n - ClipUniformEntries);
 		if (_clipMore.Length < more * ClipEntryFloats) { _clipMore = new float[Math.Max(more * ClipEntryFloats, _clipMore.Length * 2)]; }
 		var cu = _clipU;
-		Array.Clear(cu);
+		// Only the header needs zeroing: its fields are written conditionally, while every entry slot the
+		// shader will read is fully overwritten below, and slots past ctrl.x are never read.
+		Array.Clear(cu, 0, ClipUHeaderFloats);
 		// Fold the clip's finite AABB into the dedicated rect slot (ctrl.y flag; min in ctrl.zw, max in
 		// size.zw): the shader then owns the rect edge and the emit widens the scissor to cull-only
 		// (see AabbInClipU).
@@ -488,10 +497,18 @@ internal sealed unsafe partial class WebGpuFrame
 	// In-place restamp of an existing owned ClipU slab slot: the shadow write flushes as part of ONE per-chunk
 	// queue write before submit (queue-ordered, so frames already submitted read the old floats); the bind group
 	// survives, making a per-frame restamp free of native calls.
+	/// <summary>How much of the ClipU a draw actually reads: the header plus its live entries. The rest of the
+	/// slot holds stale floats the shader never samples, so it is neither cleared nor copied.</summary>
+	private static int LiveClipUFloats(in ClipData cd, ClipEntry[] masks)
+	{
+		var n = (cd.Entries?.Length ?? 0) + (masks?.Length ?? 0);
+		return ClipUHeaderFloats + Math.Min(n, ClipUniformEntries) * ClipEntryFloats;
+	}
+
 	private bool RewriteClipU(nint slot, ClipData cd, Matrix3x2 xform, Matrix3x2 finv)
 	{
 		var more = FillClipU(cd, xform, finv, null, out var folded);
-		_d.ClipSlab.Write(slot, _clipU, ClipUFloats);
+		_d.ClipSlab.Write(slot, _clipU, LiveClipUFloats(cd, null));
 		// The caller's reuse guard keeps the entry count unchanged, so the overflow buffer fits.
 		if (more > 0) { WriteClipMore(more, _d.ClipSlab.MoreOf(slot)); }
 		return folded;
@@ -503,7 +520,7 @@ internal sealed unsafe partial class WebGpuFrame
 		var masks = Coverage.ResolveClipMasks(cd, owned);
 		var more = FillClipU(cd, xform, finv, masks.Entries, out aabbInClipU);
 		var slot = _d.ClipSlab.Alloc();
-		_d.ClipSlab.Write(slot, _clipU, ClipUFloats);
+		_d.ClipSlab.Write(slot, _clipU, LiveClipUFloats(cd, masks.Entries));
 		if (more > 0) { _d.ClipSlab.SetMore(slot, WriteClipMore(more, IntPtr.Zero)); }   // freed with the slot
 		(owned.ClipSlots ??= new()).Add(slot);
 		var e = stackalloc WGPUBindGroupEntry[5];
@@ -581,12 +598,11 @@ internal sealed unsafe partial class WebGpuFrame
 	private readonly PassBuild[] _singleBuild = new PassBuild[1];
 
 	/// <summary>Timestamp the current build started, for the op-build half of the stats line.</summary>
-	private long _renderIntoStart;
 
 	// Builds the ops for one command list under a basis: the whole draw-side work of a pass, none of the encoding.
 	internal PassBuild BuildPass(List<WebGpuCommand> cmds, in Matrix3x2 m, in ClipData outer, WebGpuRenderSurface target, float basisOx, float basisOy, float basisW, float basisH, Vector4 bound, List<WebGpuCommand> overlay = null)
 	{
-		_renderIntoStart = System.Diagnostics.Stopwatch.GetTimestamp();
+		long passStart = _emitStats && _passDepth == 0 ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 
 		var savedBasis = (_basisOx, _basisOy, _basisW, _basisH);
 		_basisOx = basisOx;
@@ -603,8 +619,13 @@ internal sealed unsafe partial class WebGpuFrame
 		_quadVerts = b.Quad = RentVerts();
 		_backdrops = b.Backdrops = new List<BackdropCmd>();
 
+		long walkStart = _emitStats && _passDepth == 0 ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
+		_passDepth++;
 		Walk(cmds, m, outer, b.Ops);
 		if (overlay is not null) { Walk(overlay, Matrix3x2.Identity, ClipData.None, b.Ops); }
+		_passDepth--;
+		if (_emitStats && _passDepth == 0) { WalkTicks += System.Diagnostics.Stopwatch.GetTimestamp() - walkStart; }
+		long uploadStart = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 
 		// Upload the whole pass's shared geometry in ONE buffer per layout; the ops index them.
 		b.SolidBuf = _solid.Count > 0 ? (nint)MakeBuffer(_solid) : IntPtr.Zero;
@@ -617,7 +638,12 @@ internal sealed unsafe partial class WebGpuFrame
 		b.QuadBufBytes = (nuint)(_quadVerts.Count * sizeof(float));
 		b.PassBg = MakePassBg();
 
-		if (_emitStats) { OpsBuildTicks += System.Diagnostics.Stopwatch.GetTimestamp() - _renderIntoStart; }
+		if (_emitStats)
+		{
+			var now = System.Diagnostics.Stopwatch.GetTimestamp();
+			UploadTicks += now - uploadStart;
+			if (_passDepth == 0) { OpsBuildTicks += now - passStart; }
+		}
 
 		(_solid, _rrect, _gradVerts, _quadVerts, _backdrops) = saved;
 		(_basisOx, _basisOy, _basisW, _basisH) = savedBasis;
