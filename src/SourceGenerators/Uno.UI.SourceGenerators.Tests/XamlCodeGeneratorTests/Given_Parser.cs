@@ -214,7 +214,14 @@ public partial class Given_Parser
 				"""),
 		};
 
-		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState =
+			{
+				Sources = { _emptyCodeBehind }
+			},
+			ReferenceAssemblies = _Dotnet.Current.ReferenceAssemblies,
+		}.AddGeneratedSources();
 
 		test.ExpectedDiagnostics.AddRange([
 			DiagnosticResult.CompilerError("UXAML0001").WithSpan("//Project/0/MainPage.xaml", 13, 5, 13, 5).WithArguments("Member 'PaneTitle' cannot have properties [Line: 13 Position: 5]")
