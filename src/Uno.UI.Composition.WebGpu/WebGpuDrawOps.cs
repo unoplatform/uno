@@ -99,6 +99,11 @@ internal sealed class WebGpuGeometryCache
 	// counts the live recordings pointing here; the pool's own reference is deliberately uncounted so an entry at
 	// zero stays claimable until the idle sweep takes it.
 	public int Refs;
+	// Replay sites seen in a frame. A template drawn at more sites than the entry keeps stamps makes them evict
+	// each other, and every evicted site re-mints a slab slot and a bind group per op on the next frame, so the
+	// cap follows demand rather than a fixed guess.
+	public int SitesThisFrame, SitesLastFrame;
+	public long SitesFrame;
 	public long ContentKey;
 	public long IdleSince;
 	// The command list this was built from, kept for the equality check that guards against a hash collision.

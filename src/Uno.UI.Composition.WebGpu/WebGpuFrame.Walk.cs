@@ -290,6 +290,8 @@ internal sealed unsafe partial class WebGpuFrame
 	// How many stamps one recording keeps: enough for a template replayed at a handful of sites in a frame
 	// without holding slab slots for sites that are long gone.
 	private const int MaxStampsPerEntry = 4;
+	// Ceiling on the adaptive cap: past this the slab slots and bind groups cost more than the re-stamping saves.
+	private const int MaxStampsPerEntryHard = 64;
 
 	// Arena entries offered for sharing, keyed by the content of the recording that built them. A templated list
 	// records the same commands once per item, so without this every item builds and stores its own copy of one
@@ -521,6 +523,13 @@ internal sealed unsafe partial class WebGpuFrame
 			StoreCompiled(rr.Data, entry);
 			if (_emitStats) { RebuildTicks += System.Diagnostics.Stopwatch.GetTimestamp() - t0; t0 = System.Diagnostics.Stopwatch.GetTimestamp(); }
 		}
+		if (entry.SitesFrame != _d.FrameSeq)
+		{
+			entry.SitesLastFrame = entry.SitesThisFrame;
+			entry.SitesThisFrame = 0;
+			entry.SitesFrame = _d.FrameSeq;
+		}
+		entry.SitesThisFrame++;
 		var basis = new Vector2(_basisOx, _basisOy);
 		// The stamp for this replay site, if it already holds the right transform and clip: its ops go out untouched.
 		StampSlot slot = null;
@@ -544,7 +553,9 @@ internal sealed unsafe partial class WebGpuFrame
 					if (st.Frame != _d.FrameSeq && st.Bufs is not null && st.Bufs.Count == entry.Ops.Count && st.SessionEntries == sessionEntries) { reuse = st; break; }
 				}
 			}
-			if (reuse is null && entry.Stamps.Count >= Math.Max(MaxStampsPerEntry, entry.Refs))
+			// Hold a stamp for every site the entry served last frame, so a wall of cards stops evicting itself.
+			var cap = Math.Clamp(Math.Max(entry.SitesLastFrame, entry.Refs), MaxStampsPerEntry, MaxStampsPerEntryHard);
+			if (reuse is null && entry.Stamps.Count >= cap)
 			{
 				// At the cap: take the least recently used one, dropping what it held.
 				foreach (var st in entry.Stamps) { if (reuse is null || st.Frame < reuse.Frame) { reuse = st; } }
