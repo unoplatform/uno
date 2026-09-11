@@ -122,7 +122,11 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 		// Hand the arena entry's GPU resources to the render thread for a deferred free (an in-flight frame may
 		// still reference them). Interlocked so a concurrent render-thread rebuild can't leak or double-free it.
 		var c = System.Threading.Interlocked.Exchange(ref Compiled, null);
-		if (c is { Device: { } dev }) { dev.DeferCompiledRelease(c.Owned, c.StampOwned); }
+		if (c is { Device: { } dev })
+		{
+			foreach (var st in c.Stamps) { dev.DeferCompiledRelease(null, st.Owned); }
+			dev.DeferCompiledRelease(c.Owned, null);
+		}
 		Commands = null;
 		GC.SuppressFinalize(this);
 	}

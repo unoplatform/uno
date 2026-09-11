@@ -287,6 +287,10 @@ internal sealed unsafe partial class WebGpuFrame
 		else { if (_emitStats) { StatWalkedRecords++; } Walk(rr.Commands, rm, rc, ops); }
 	}
 
+	// How many stamps one recording keeps: enough for a template replayed at a handful of sites in a frame
+	// without holding slab slots for sites that are long gone.
+	private const int MaxStampsPerEntry = 4;
+
 	internal static int StatArenaHits, StatWalkPaths, StatWalkedRecords;
 	private static int _statArenaRebuilds, _statArMiss, _statArMasks, _statStamps;
 
@@ -304,7 +308,7 @@ internal sealed unsafe partial class WebGpuFrame
 		if (miss || AtlasNeedsRebuild(entry, rm))
 		{
 			if (_emitStats) { _statArenaRebuilds++; if (miss) { _statArMiss++; } else { _statArMasks++; } }
-			if (entry is not null) { _d.DeferRelease(entry.Owned); _d.DeferRelease(entry.StampOwned); }
+			if (entry is not null) { _d.DeferRelease(entry.Owned); foreach (var st in entry.Stamps) { _d.DeferRelease(st.Owned); } }
 			var owned = new OwnedResources();
 			var built = new List<DrawOp>();
 			bool hasPath = false; foreach (var c in rr.Commands) { if (c is PathCmd) { hasPath = true; break; } }
@@ -326,20 +330,41 @@ internal sealed unsafe partial class WebGpuFrame
 			if (_emitStats) { RebuildTicks += System.Diagnostics.Stopwatch.GetTimestamp() - t0; t0 = System.Diagnostics.Stopwatch.GetTimestamp(); }
 		}
 		var basis = new Vector2(_basisOx, _basisOy);
-		if (!entry.HasStamp || entry.StampXform != rm || entry.StampBasis != basis || !ClipDataEquals(entry.StampClip, session))
+		// The stamp for this replay site, if it already holds the right transform and clip: its ops go out untouched.
+		StampSlot slot = null;
+		foreach (var st in entry.Stamps)
+		{
+			if (st.Xform == rm && st.Basis == basis && ClipDataEquals(st.Clip, session)) { slot = st; break; }
+		}
+		if (slot is null)
 		{
 			if (_emitStats) { _statStamps++; }
 			var finv = Matrix3x2.Invert(rm, out var inv) ? inv : Matrix3x2.Identity;
-			// An in-place rewrite keeps the slots and bind groups, so the entry count must match the last stamp's, the
-			// last stamp must not be in this frame's submit (its draws still read those uniforms), and no path mask may
-			// need baking into a fresh bag.
 			var sessionEntries = SessionEntryCount(session, finv);
-			var reuse = entry.HasStamp && entry.StampBufs is not null && entry.StampBufs.Count == entry.Ops.Count && entry.StampFrame != _d.FrameSeq
-				&& session.Paths is null && !entry.HasPathClip && entry.StampSessionEntries == sessionEntries;
-			if (!reuse && entry.StampOwned is not null) { _d.DeferRelease(entry.StampOwned); }
-			var stampOwned = reuse ? entry.StampOwned : new OwnedResources();
-			var stamped = reuse ? entry.StampedOps : new List<DrawOp>(entry.Ops.Count);
-			var bufs = reuse ? entry.StampBufs : new List<nint>(entry.Ops.Count);
+			// An in-place rewrite keeps the slots and bind groups, so take the stamp this frame has not used yet (its
+			// draws would still be reading those uniforms), whose op count matches, and with no path mask to bake into
+			// a fresh bag. Failing that, add a stamp of its own, up to the cap.
+			StampSlot reuse = null;
+			if (session.Paths is null && !entry.HasPathClip)
+			{
+				foreach (var st in entry.Stamps)
+				{
+					if (st.Frame != _d.FrameSeq && st.Bufs is not null && st.Bufs.Count == entry.Ops.Count && st.SessionEntries == sessionEntries) { reuse = st; break; }
+				}
+			}
+			if (reuse is null && entry.Stamps.Count >= MaxStampsPerEntry)
+			{
+				// At the cap: take the least recently used one, dropping what it held.
+				foreach (var st in entry.Stamps) { if (reuse is null || st.Frame < reuse.Frame) { reuse = st; } }
+				if (reuse.Owned is not null) { _d.DeferRelease(reuse.Owned); }
+				reuse.Owned = null; reuse.Bufs = null; reuse.Ops = null;
+			}
+			var fresh = reuse is null || reuse.Bufs is null;
+			slot = reuse ?? new StampSlot();
+			if (reuse is null) { entry.Stamps.Add(slot); }
+			var stampOwned = fresh ? new OwnedResources() : slot.Owned;
+			var stamped = fresh ? new List<DrawOp>(entry.Ops.Count) : slot.Ops;
+			var bufs = fresh ? new List<nint>(entry.Ops.Count) : slot.Bufs;
 			Dictionary<PathClip[], PathClip[]> pathsMemo = null;
 			for (int i = 0; i < entry.Ops.Count; i++)
 			{
@@ -355,7 +380,7 @@ internal sealed unsafe partial class WebGpuFrame
 				FoldSessionEntries(ref uClip, session.Entries, rm);
 				FoldSessionPaths(ref uClip, session.Paths, finv, ref pathsMemo);
 				if (IsFiniteAabb(session.Aabb)) { FoldSessionAabb(ref uClip, session.Aabb, finv, rm); }
-				if (reuse)
+				if (!fresh)
 				{
 					scissorClip.AabbInClipU = RewriteClipU(bufs[i], uClip, rm, finv);
 					scissorClip.ScissorLoadBearing = !scissorClip.AabbInClipU;
@@ -370,11 +395,12 @@ internal sealed unsafe partial class WebGpuFrame
 					stamped.Add(op.WithClip(scissorClip, clipBg));
 				}
 			}
-			entry.StampOwned = stampOwned; entry.StampedOps = stamped; entry.StampBufs = bufs; entry.StampFrame = _d.FrameSeq;
-			entry.StampXform = rm; entry.StampClip = session; entry.StampBasis = basis; entry.StampSessionEntries = sessionEntries; entry.HasStamp = true;
+			slot.Owned = stampOwned; slot.Ops = stamped; slot.Bufs = bufs;
+			slot.Xform = rm; slot.Clip = session; slot.Basis = basis; slot.SessionEntries = sessionEntries;
 			if (_emitStats) { StampTicks += System.Diagnostics.Stopwatch.GetTimestamp() - t0; }
 		}
-		ops.AddRange(entry.StampedOps);
+		slot.Frame = _d.FrameSeq;
+		ops.AddRange(slot.Ops);
 	}
 
 	// An atlas quad or mask is baked for one replay scale; a different one, or a transform that now allows the

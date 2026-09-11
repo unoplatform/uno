@@ -87,17 +87,24 @@ internal sealed class WebGpuGeometryCache
 	public bool AtlasBlockedByScale;
 	public Vector2 AtlasScale;
 	public Vector2 MaskScale;
-	// The stamp: per-op clip bind groups for one (transform, clip, pass basis). Reused verbatim while those hold; a
-	// change rewrites the ClipU slots in place when the entry count is unchanged, else stamps afresh.
-	public List<DrawOp> StampedOps;
-	public OwnedResources StampOwned;
-	public List<nint> StampBufs;
-	public long StampFrame;
-	public Matrix3x2 StampXform;
-	public ClipData StampClip;
-	public Vector2 StampBasis;
-	public int StampSessionEntries;
-	public bool HasStamp;
+	// The stamps: each is the per-op clip bind groups for one (transform, clip, pass basis), reused verbatim while
+	// those hold and rewritten in place when only the transform moved. There are several because one recording is
+	// commonly replayed at several sites in a frame (a card template across a wall of cards), and a single stamp
+	// would make every replay after the first mint a slab slot and a bind group per op, on every frame.
+	public readonly List<StampSlot> Stamps = new();
+}
+
+/// <summary>One stamp of an arena entry: its ops carrying the clip groups for one replay site.</summary>
+internal sealed class StampSlot
+{
+	public List<DrawOp> Ops;
+	public OwnedResources Owned;
+	public List<nint> Bufs;
+	public long Frame;
+	public Matrix3x2 Xform;
+	public ClipData Clip;
+	public Vector2 Basis;
+	public int SessionEntries;
 }
 
 /// <summary>

@@ -96,7 +96,8 @@ internal sealed unsafe partial class WebGpuFrame
 		rec.Compiled = fe;
 		if (rec.Commands is null && System.Threading.Interlocked.Exchange(ref rec.Compiled, null) is { } orphan)
 		{
-			_d.DeferCompiledRelease(orphan.Owned, orphan.StampOwned);
+			foreach (var st in orphan.Stamps) { _d.DeferCompiledRelease(null, st.Owned); }
+			_d.DeferCompiledRelease(orphan.Owned, null);
 		}
 	}
 
