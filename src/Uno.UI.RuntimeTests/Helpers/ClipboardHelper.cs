@@ -10,6 +10,22 @@ namespace Uno.UI.RuntimeTests.Helpers;
 public static class ClipboardHelper
 {
 	/// <summary>
+	/// True when the platform has a working clipboard. An <c>IClipboardExtension</c> provides
+	/// the clipboard on skia desktop targets, while on the browser, Android, and iOS the
+	/// WinRT layer provides the implementation directly.
+	/// </summary>
+	public static bool IsAvailable =>
+#if HAS_UNO
+		OperatingSystem.IsBrowser() ||
+		OperatingSystem.IsAndroid() ||
+		OperatingSystem.IsIOS() ||
+		Uno.Foundation.Extensibility.ApiExtensibility.IsRegistered<Uno.ApplicationModel.DataTransfer.IClipboardExtension>();
+#else
+		true;
+#endif
+
+
+	/// <summary>
 	/// Reads the clipboard, polling until it returns <paramref name="expected"/> (or attempts run out), and
 	/// returns the last-read value for the caller to assert on.
 	/// </summary>
