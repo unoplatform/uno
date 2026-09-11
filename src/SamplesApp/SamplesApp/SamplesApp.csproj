@@ -113,6 +113,10 @@
 
 	<!-- Provision the modern-ABI wgpu-native next to the app so the WebGPU backend's DllImportResolver finds it. -->
 	<Import Project="..\..\Uno.UI.Composition.WebGpu\wgpu-native.targets" Condition="'$(UnoDrawingBackendWebGpu)'!='false'" />
+	<!-- The browser has no wgpu-native: Dawn's emdawnwebgpu is linked into dotnet.native.wasm instead, so the same
+	     [DllImport("webgpu")] resolves there. Without it the WebGPU backend fails graphics init with a
+	     DllNotFoundException and the app never leaves its loading screen. -->
+	<Import Project="..\..\Uno.UI.Composition.WebGpu.Init\wgpu-wasm.targets" Condition="'$(_Platform)' == 'browserwasm' AND '$(UnoDrawingBackendWebGpu)'!='false'" />
 
 	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true'">
 		<ProjectReference Include="..\..\Uno.UI.Composition.Managed\Uno.UI.Composition.Managed.csproj" />
