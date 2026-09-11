@@ -353,6 +353,11 @@ public partial class ScrollBar
 
 	private void AttachEvents()
 	{
+		// Uno specific: WinUI has every interactive part ignore touch, as the bar is only an indicator there.
+		// A bar which opted into touch thumb dragging keeps them responsive. This is also the only place the
+		// flag can be honoured reliably, as the parts are re-attached whenever the template is (re)applied.
+		var ignoreTouchInput = !IsTouchThumbDragEnabled;
+
 		if (m_tpElementHorizontalThumb != null || m_tpElementVerticalThumb != null)
 		{
 			if (m_tpElementHorizontalThumb != null)
@@ -363,7 +368,7 @@ public partial class ScrollBar
 				m_ElementHorizontalThumbDragDeltaToken.Disposable = Disposable.Create(() => m_tpElementHorizontalThumb.DragDelta -= OnThumbDragDelta);
 				m_tpElementHorizontalThumb.DragCompleted += OnThumbDragCompleted;
 				m_ElementHorizontalThumbDragCompletedToken.Disposable = Disposable.Create(() => m_tpElementHorizontalThumb.DragCompleted -= OnThumbDragCompleted);
-				m_tpElementHorizontalThumb.IgnoreTouchInput = true;
+				m_tpElementHorizontalThumb.IgnoreTouchInput = ignoreTouchInput;
 			}
 
 			if (m_tpElementVerticalThumb != null)
@@ -374,7 +379,7 @@ public partial class ScrollBar
 				m_ElementVerticalThumbDragDeltaToken.Disposable = Disposable.Create(() => m_tpElementVerticalThumb.DragDelta -= OnThumbDragDelta);
 				m_tpElementVerticalThumb.DragCompleted += OnThumbDragCompleted;
 				m_ElementVerticalThumbDragCompletedToken.Disposable = Disposable.Create(() => m_tpElementVerticalThumb.DragCompleted -= OnThumbDragCompleted);
-				m_tpElementVerticalThumb.IgnoreTouchInput = true;
+				m_tpElementVerticalThumb.IgnoreTouchInput = ignoreTouchInput;
 			}
 		}
 
@@ -384,14 +389,14 @@ public partial class ScrollBar
 			{
 				m_tpElementHorizontalLargeDecrease.Click += LargeDecrement;
 				m_ElementHorizontalLargeDecreaseClickToken.Disposable = Disposable.Create(() => m_tpElementHorizontalLargeDecrease.Click -= LargeDecrement);
-				m_tpElementHorizontalLargeDecrease.IgnoreTouchInput = true;
+				m_tpElementHorizontalLargeDecrease.IgnoreTouchInput = ignoreTouchInput;
 			}
 
 			if (m_tpElementVerticalLargeDecrease != null)
 			{
 				m_tpElementVerticalLargeDecrease.Click += LargeDecrement;
 				m_ElementVerticalLargeDecreaseClickToken.Disposable = Disposable.Create(() => m_tpElementVerticalLargeDecrease.Click -= LargeDecrement);
-				m_tpElementVerticalLargeDecrease.IgnoreTouchInput = true;
+				m_tpElementVerticalLargeDecrease.IgnoreTouchInput = ignoreTouchInput;
 			}
 		}
 
@@ -401,14 +406,14 @@ public partial class ScrollBar
 			{
 				m_tpElementHorizontalLargeIncrease.Click += LargeIncrement;
 				m_ElementHorizontalLargeIncreaseClickToken.Disposable = Disposable.Create(() => m_tpElementHorizontalLargeIncrease.Click -= LargeIncrement);
-				m_tpElementHorizontalLargeIncrease.IgnoreTouchInput = true;
+				m_tpElementHorizontalLargeIncrease.IgnoreTouchInput = ignoreTouchInput;
 			}
 
 			if (m_tpElementVerticalLargeIncrease != null)
 			{
 				m_tpElementVerticalLargeIncrease.Click += LargeIncrement;
 				m_ElementVerticalLargeIncreaseClickToken.Disposable = Disposable.Create(() => m_tpElementVerticalLargeIncrease.Click -= LargeIncrement);
-				m_tpElementVerticalLargeIncrease.IgnoreTouchInput = true;
+				m_tpElementVerticalLargeIncrease.IgnoreTouchInput = ignoreTouchInput;
 			}
 		}
 
@@ -418,14 +423,14 @@ public partial class ScrollBar
 			{
 				m_tpElementHorizontalSmallDecrease.Click += SmallDecrement;
 				m_ElementHorizontalSmallDecreaseClickToken.Disposable = Disposable.Create(() => m_tpElementHorizontalSmallDecrease.Click -= SmallDecrement);
-				m_tpElementHorizontalSmallDecrease.IgnoreTouchInput = true;
+				m_tpElementHorizontalSmallDecrease.IgnoreTouchInput = ignoreTouchInput;
 			}
 
 			if (m_tpElementVerticalSmallDecrease != null)
 			{
 				m_tpElementVerticalSmallDecrease.Click += SmallDecrement;
 				m_ElementVerticalSmallDecreaseClickToken.Disposable = Disposable.Create(() => m_tpElementVerticalSmallDecrease.Click -= SmallDecrement);
-				m_tpElementVerticalSmallDecrease.IgnoreTouchInput = true;
+				m_tpElementVerticalSmallDecrease.IgnoreTouchInput = ignoreTouchInput;
 			}
 		}
 
@@ -435,14 +440,14 @@ public partial class ScrollBar
 			{
 				m_tpElementHorizontalSmallIncrease.Click += SmallIncrement;
 				m_ElementHorizontalSmallIncreaseClickToken.Disposable = Disposable.Create(() => m_tpElementHorizontalSmallIncrease.Click -= SmallIncrement);
-				m_tpElementHorizontalSmallIncrease.IgnoreTouchInput = true;
+				m_tpElementHorizontalSmallIncrease.IgnoreTouchInput = ignoreTouchInput;
 			}
 
 			if (m_tpElementVerticalSmallIncrease != null)
 			{
 				m_tpElementVerticalSmallIncrease.Click += SmallIncrement;
 				m_ElementVerticalSmallIncreaseClickToken.Disposable = Disposable.Create(() => m_tpElementVerticalSmallIncrease.Click -= SmallIncrement);
-				m_tpElementVerticalSmallIncrease.IgnoreTouchInput = true;
+				m_tpElementVerticalSmallIncrease.IgnoreTouchInput = ignoreTouchInput;
 			}
 		}
 	}

@@ -120,3 +120,32 @@ You can also apply `FromJson` directly inside `Page.DataContext`, either by refe
 ```
 
 If the JSON string is empty or invalid, the extension throws a `XamlParseException`, allowing issues to surface early during page initialization.
+
+## ScrollBar - dragging the thumb with a finger
+
+WinUI has the `ScrollBar` parts ignore touch on purpose: touch scrolling goes through direct manipulation, and the bar is only an indicator, so a finger on the thumb does nothing. A pointer reveals the interactive bar on hover, and touch has no hover. That is the default in Uno Platform as well.
+
+On a touch-only target - a browser on a tablet most notably - there is no pointer to reveal that bar with, so the user has nothing to drag. Opt into an interactive bar with `ScrollBarExtensions.IsTouchThumbDragEnabled`:
+
+```xml
+xmlns:toolkit="using:Uno.UI.Toolkit"
+```
+
+```xml
+<ScrollBar Orientation="Vertical"
+           toolkit:ScrollBarExtensions.IsTouchThumbDragEnabled="True" />
+```
+
+While enabled, the bar keeps its interactive (mouse) indicator instead of the thin touch indicator, which both keeps it visible and lets a finger drag the thumb. This also shows on a device with both a mouse and a touch screen: after a finger pan the bar stays expanded instead of switching to the thin indicator. Panning the content with a finger is unaffected.
+
+The property is honoured wherever scroll bar input is handled by Uno Platform's own `ScrollBar` - that is, on every Skia target: Desktop (Windows, macOS, Linux), WebAssembly, Android, and iOS. It has no effect on Windows (WinAppSDK), where the WinUI `ScrollBar` handles the input. The native Android, iOS, and WebAssembly UI backends are not supported targets for this opt-in - touch scrolling there is performed by the OS - so leave the property unset on them.
+
+The bar of a `ScrollViewer` is a template part, so it cannot be addressed directly. Reach it with an implicit `Style` in your application - or page - resources, which is also how the bars inside a third-party control such as the CommunityToolkit `DataGrid` are reached:
+
+```xml
+<Style TargetType="ScrollBar">
+    <Setter Property="toolkit:ScrollBarExtensions.IsTouchThumbDragEnabled" Value="True" />
+</Style>
+```
+
+A known limitation: a finger pan which *starts* on a visible bar does not scroll the content, because hit-testing resolves into the `ScrollBar` and the content presenter is a sibling of it. Start the pan over the content instead.
