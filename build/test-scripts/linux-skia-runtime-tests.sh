@@ -9,6 +9,16 @@ export UNO_TEST_RESULT_LABEL=${UNO_TEST_RESULT_LABEL:-}
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-skia-linux${UNO_TEST_RESULT_LABEL}-runtimetests-$UITEST_RUNTIME_TEST_GROUP.txt
 export TEST_RESULTS_FILE=$BUILD_SOURCESDIRECTORY/build/skia-linux${UNO_TEST_RESULT_LABEL}-runtime-tests-results.xml
 
+## The pipeline arms this as "false" before the dependency install; flipping it here tells the
+## publish tasks the test step actually started, so they only report a missing results file
+## when there is a real harness failure rather than a killed job.
+echo "##vso[task.setvariable variable=UNO_TESTS_STEP_RAN]true"
+
+## Create the failed-tests directory up front: every abort path below (a crashed harness,
+## a killed app, a non-zero transform tool) otherwise skips the mkdir and leaves
+## `PublishBuildArtifacts@1` retrying a missing PathtoPublish for minutes.
+mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
+
 if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
 	export UITEST_RUNTIME_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST | base64 -w 0`
 
@@ -27,14 +37,13 @@ sudo chmod a+rw /dev/fb* 2>/dev/null || true
 
 cd $SamplesAppArtifactPath
 if [ "$USE_XVFB" = "true" ]; then
-	xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE' || true # sometimes we crash during app shutdown, so we're forcing a 0 exit code
+	xvfb-run --auto-servernum --server-args='-screen 0 1280x1024x24' sh -c '{ fluxbox & } ; dotnet SamplesApp.dll --runtime-tests=$TEST_RESULTS_FILE' || true # sometimes we crash during app shutdown, so we're forcing a 0 exit code
 else
-	dotnet SamplesApp.Skia.Generic.dll --runtime-tests=$TEST_RESULTS_FILE || true
+	dotnet SamplesApp.dll --runtime-tests=$TEST_RESULTS_FILE || true
 fi
 
 ## Export the failed tests list for reuse in a pipeline retry
 pushd $BUILD_SOURCESDIRECTORY/src/Uno.NUnitTransformTool
-mkdir -p $(dirname ${UNO_TESTS_FAILED_LIST})
 
 echo "Running NUnitTransformTool"
 

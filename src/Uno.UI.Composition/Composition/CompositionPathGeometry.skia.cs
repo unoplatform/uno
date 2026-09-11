@@ -11,6 +11,7 @@ using Windows.Graphics.Interop;
 using static Uno.FoundationFeatureConfiguration;
 using Windows.Graphics.Interop.Direct2D;
 
+
 namespace Microsoft.UI.Composition;
 
 public partial class CompositionPathGeometry : CompositionGeometry, ID2D1GeometrySink
@@ -19,6 +20,10 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 	private List<CompositionPathCommand> _commands = new();
 
 	internal override IGeometrySource2D? BuildGeometry() => _geometrySource2D;
+
+	// The built SKPath for this geometry's current Path, used by PathKeyFrameAnimation to morph
+	// between keyframe geometries.
+	internal SKPath? GetSKPath() => _geometrySource2D?.Geometry;
 
 	private void InternalBuildGeometry()
 	{
@@ -82,7 +87,7 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 
 	private SkiaGeometrySource2D? InternalBuildPathGeometry()
 	{
-		SKPath path = new();
+		var builder = new SKPathBuilder();
 		foreach (var command in _commands)
 		{
 			switch (command.Type)
@@ -90,7 +95,7 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 				case CompositionPathCommandType.SetFillMode:
 					{
 						var parameters = ValidateCommandParameters(command, expectedParameterCount: 1);
-						path.FillType = ((D2D1FillMode)parameters[0]).ToSkia();
+						builder.FillType = ((D2D1FillMode)parameters[0]).ToSkia();
 						break;
 					}
 				case CompositionPathCommandType.SetSegmentFlags:
@@ -99,14 +104,14 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 					{
 						var parameters = ValidateCommandParameters(command, expectedParameterCount: 2);
 						var point = (Point)parameters[0];
-						path.MoveTo(point.ToSkia());
+						builder.MoveTo(point.ToSkia());
 						break;
 					}
 				case CompositionPathCommandType.AddLine:
 					{
 						var parameters = ValidateCommandParameters(command, expectedParameterCount: 1);
 						var point = (Point)parameters[0];
-						path.LineTo(point.ToSkia());
+						builder.LineTo(point.ToSkia());
 						break;
 					}
 				case CompositionPathCommandType.AddLines:
@@ -116,7 +121,7 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 
 						foreach (var point in points)
 						{
-							path.LineTo(point.ToSkia());
+							builder.LineTo(point.ToSkia());
 						}
 
 						break;
@@ -125,7 +130,7 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 					{
 						var parameters = ValidateCommandParameters(command, expectedParameterCount: 1);
 						var bezier = (D2D1BezierSegment)parameters[0];
-						path.CubicTo(bezier.Point1.ToSkia(), bezier.Point2.ToSkia(), bezier.Point3.ToSkia());
+						builder.CubicTo(bezier.Point1.ToSkia(), bezier.Point2.ToSkia(), bezier.Point3.ToSkia());
 						break;
 					}
 				case CompositionPathCommandType.AddBeziers:
@@ -135,7 +140,7 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 
 						foreach (var bezier in beziers)
 						{
-							path.CubicTo(bezier.Point1.ToSkia(), bezier.Point2.ToSkia(), bezier.Point3.ToSkia());
+							builder.CubicTo(bezier.Point1.ToSkia(), bezier.Point2.ToSkia(), bezier.Point3.ToSkia());
 						}
 
 						break;
@@ -144,7 +149,7 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 					{
 						var parameters = ValidateCommandParameters(command, expectedParameterCount: 1);
 						var bezier = (D2D1QuadraticBezierSegment)parameters[0];
-						path.QuadTo(bezier.Point1.ToSkia(), bezier.Point2.ToSkia());
+						builder.QuadTo(bezier.Point1.ToSkia(), bezier.Point2.ToSkia());
 						break;
 					}
 				case CompositionPathCommandType.AddQuadraticBeziers:
@@ -154,7 +159,7 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 
 						foreach (var bezier in beziers)
 						{
-							path.QuadTo(bezier.Point1.ToSkia(), bezier.Point2.ToSkia());
+							builder.QuadTo(bezier.Point1.ToSkia(), bezier.Point2.ToSkia());
 						}
 
 						break;
@@ -163,7 +168,7 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 					{
 						var parameters = ValidateCommandParameters(command, expectedParameterCount: 1);
 						var arc = (D2D1ArcSegment)parameters[0];
-						path.ArcTo(new((float)arc.Size.Width, (float)arc.Size.Height), arc.RotationAngle, arc.ArcSize.ToSkia(), arc.SweepDirection.ToSkia(), arc.Point.ToSkia());
+						builder.ArcTo(new((float)arc.Size.Width, (float)arc.Size.Height), arc.RotationAngle, arc.ArcSize.ToSkia(), arc.SweepDirection.ToSkia(), arc.Point.ToSkia());
 						break;
 					}
 				case CompositionPathCommandType.EndFigure:
@@ -173,7 +178,7 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 
 						if (end is D2D1FigureEnd.Closed)
 						{
-							path.Close();
+							builder.Close();
 						}
 
 						break;
@@ -183,7 +188,7 @@ public partial class CompositionPathGeometry : CompositionGeometry, ID2D1Geometr
 			}
 		}
 
-		return new SkiaGeometrySource2D(path);
+		return new SkiaGeometrySource2D(builder.Detach());
 	}
 
 	private static object[] ValidateCommandParameters(CompositionPathCommand command, int expectedParameterCount)

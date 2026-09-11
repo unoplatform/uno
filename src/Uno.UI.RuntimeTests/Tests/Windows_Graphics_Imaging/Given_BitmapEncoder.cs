@@ -12,7 +12,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Graphics_Imaging
 	{
 		[TestMethod]
 		[DynamicData(nameof(GetEncoders))]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_CreateAsync_With(Guid encoderId, bool notImplementedException)
 		{
 			Exception excption = default;

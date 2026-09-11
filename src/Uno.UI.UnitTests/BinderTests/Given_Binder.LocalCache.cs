@@ -1,5 +1,4 @@
-﻿using CommonServiceLocator;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
@@ -54,7 +53,7 @@ namespace Uno.UI.Tests.BinderTests
 			SUT.SetValue(BinderLocalCache_Data.MyValueProperty, 42);
 			Assert.AreEqual(42, SUT.MyValue);
 
-			SUT.SetValue(BinderLocalCache_Data.MyValueProperty, 43, DependencyPropertyValuePrecedences.ImplicitStyle);
+			SUT.SetValue(BinderLocalCache_Data.MyValueProperty, 43, DependencyPropertyValuePrecedences.BuiltInStyle);
 			Assert.AreEqual(42, SUT.MyValue);
 		}
 

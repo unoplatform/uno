@@ -84,6 +84,9 @@ public sealed class InProcessDevServer : IAsyncDisposable
 		services.AddScoped<RemoteControlServer>();
 		services.AddScoped<IRemoteControlServer>(static sp => sp.GetRequiredService<RemoteControlServer>());
 		services.AddScoped<IRemoteControlServerConnection>(static sp => sp.GetRequiredService<RemoteControlServer>());
+		// Concurrent hot-reload workspace cap (see #24205).
+		services.AddOptions<Uno.UI.RemoteControl.Server.HotReloadWorkspaceOptions>();
+		services.AddSingleton<Uno.UI.RemoteControl.Server.HotReloadWorkspaceRegistry>();
 
 		options.ConfigureServices?.Invoke(services);
 

@@ -105,7 +105,7 @@ internal partial class BrowserMediaPlayerPresenterExtension : IMediaPlayerPresen
 	{
 		if (_elementIdToMediaPlayerPresenter.TryGetValue(id, out var weakRef) && weakRef.Target is BrowserMediaPlayerPresenterExtension @this)
 		{
-			if (@this._presenter.TemplatedParent is MediaPlayerElement mpe)
+			if (@this._presenter.GetTemplatedParent() is MediaPlayerElement mpe)
 			{
 				mpe.IsFullWindow = false;
 			}

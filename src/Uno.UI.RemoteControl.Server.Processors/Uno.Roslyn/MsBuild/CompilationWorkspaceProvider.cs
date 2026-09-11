@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
 using Uno.HotReload;
+using Uno.HotReload.Roslyn;
 using Uno.HotReload.Tracking;
 using Uno.HotReload.Utils;
 
@@ -53,6 +54,14 @@ public static class CompilationWorkspaceProvider
 	private const string UnoIsHotReloadHostProperty = "UnoIsHotReloadHost";
 
 	/// <summary>
+	/// The MSBuild property pinning the analyzer-flavor selection to the embedded Roslyn (spec
+	/// 053 R1). Workspace-only for the same reason as <see cref="UnoIsHotReloadHostProperty"/>:
+	/// the application's own restore ran with the SDK's value, so the recovery restore must not
+	/// see ours.
+	/// </summary>
+	private const string CompilerApiVersionProperty = "CompilerApiVersion";
+
+	/// <summary>
 	/// Opens the hot-reload <see cref="MSBuildWorkspace"/> for <paramref name="projectPath"/>: the
 	/// projects are evaluated with the whitelisted global properties only (see
 	/// <see cref="_globalPropertiesAllowList"/>). The workspace owns the MSBuild services and is
@@ -87,6 +96,15 @@ public static class CompilationWorkspaceProvider
 			// Flag the current build as created for hot reload, which allows for running targets
 			// or setting props/items in the context of the hot reload workspace.
 			[UnoIsHotReloadHostProperty] = "True",
+
+			// The workspace compiles with the embedded Microsoft.CodeAnalysis, not with the SDK's
+			// csc: force the analyzer multi-targeting (analyzers/dotnet/roslyn{X.Y} folders) to
+			// select flavors loadable by the embedded Roslyn. Without this, an SDK newer than the
+			// embedded Roslyn selects flavors that fail to type-load, and
+			// AnalyzerFileReference.GetGenerators() silently returns zero generators (missing
+			// generated code in every compile of the affected projects). As a GLOBAL property this
+			// is immutable for the evaluation, so the SDK's own unconditional assignment is ignored.
+			[CompilerApiVersionProperty] = EmbeddedRoslyn.CompilerApiVersion,
 		};
 
 		foreach (var property in _globalPropertiesAllowList)
@@ -115,16 +133,25 @@ public static class CompilationWorkspaceProvider
 			var diagnostics = new ConcurrentQueue<WorkspaceDiagnostic>();
 			workspaceDiagnostics = diagnostics;
 
-			workspace.WorkspaceFailed += (_sender, diag) =>
+			// In some cases, load failures may be incorrectly reported such as this one:
+			// https://github.com/dotnet/roslyn/blob/fd45aeb5fbc97d09d4043cef9c9c5142f7638e5c/src/Workspaces/Core/MSBuild/MSBuild/MSBuildProjectLoader.Worker.cs#L245-L259
+			// Since the text may be localized we cannot rely on it, so we never fail the project loading for now.
+			// The diagnostics are buffered: when the load leaves a head flavor unresolved they
+			// are the only trace of the root cause and get re-emitted as warnings (below).
+			void OnWorkspaceFailed(WorkspaceDiagnostic diagnostic)
 			{
-				// In some cases, load failures may be incorrectly reported such as this one:
-				// https://github.com/dotnet/roslyn/blob/fd45aeb5fbc97d09d4043cef9c9c5142f7638e5c/src/Workspaces/Core/MSBuild/MSBuild/MSBuildProjectLoader.Worker.cs#L245-L259
-				// Since the text may be localized we cannot rely on it, so we never fail the project loading for now.
-				// The diagnostics are buffered: when the load leaves a head flavor unresolved they
-				// are the only trace of the root cause and get re-emitted as warnings (below).
-				diagnostics.Enqueue(diag.Diagnostic);
-				reporter.Verbose($"MSBuildWorkspace {diag.Diagnostic}");
-			};
+				diagnostics.Enqueue(diagnostic);
+				reporter.Verbose($"MSBuildWorkspace {diagnostic}");
+			}
+
+#if NET10_0_OR_GREATER
+			// Roslyn 5.x obsoleted the WorkspaceFailed event (handlers are no longer marshaled
+			// to a UI thread — a non-event for this server); the returned registration lives as
+			// long as the workspace, nothing to dispose separately.
+			_ = workspace.RegisterWorkspaceFailedHandler(args => OnWorkspaceFailed(args.Diagnostic));
+#else
+			workspace.WorkspaceFailed += (_sender, diag) => OnWorkspaceFailed(diag.Diagnostic);
+#endif
 
 			try
 			{
@@ -164,11 +191,13 @@ public static class CompilationWorkspaceProvider
 					"(missing targeting pack at design time); attempting to recover with 'dotnet restore'.");
 				workspace.Dispose();
 
-				// Restore under the same allow-listed evaluation context the workspace used (minus the
-				// workspace-only hot-reload marker), so a property-conditioned targeting pack is
-				// restored for the graph that was actually opened.
+				// Restore under the same allow-listed evaluation context the workspace used (minus
+				// the workspace-only properties — the hot-reload marker and the CompilerApiVersion
+				// pin — which must not make the recovery restore diverge from the application's
+				// own), so a property-conditioned targeting pack is restored for the graph that
+				// was actually opened.
 				var restoreProperties = globalProperties
-					.Where(entry => entry.Key != UnoIsHotReloadHostProperty)
+					.Where(entry => entry.Key is not (UnoIsHotReloadHostProperty or CompilerApiVersionProperty))
 					.ToDictionary(entry => entry.Key, entry => entry.Value);
 				await DotnetRestoreRunner.TryRestoreAsync(projectPath, restoreProperties, reporter, ct);
 				continue;
@@ -178,6 +207,12 @@ public static class CompilationWorkspaceProvider
 		}
 
 		ReportUnresolvedHeadFlavors(workspace.CurrentSolution, projectPath, workspaceDiagnostics, reporter);
+
+		// NOTE: analyzer load-failure detection (EmbeddedRoslyn.WarnOnAnalyzerLoadFailures) runs on
+		// the consumer's solution snapshot, after WithCollectibleAnalyzerReferences rewired the
+		// analyzer loaders — running it here would force-load through the workspace's default
+		// loaders, which cannot load anything under Roslyn 5.x in this host (see
+		// CollectibleAnalyzerAssemblyLoader).
 
 		return workspace;
 	}

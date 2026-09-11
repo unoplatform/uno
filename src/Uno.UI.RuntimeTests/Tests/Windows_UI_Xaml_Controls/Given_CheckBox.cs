@@ -31,7 +31,7 @@ public class Given_CheckBox
 		var repeater = new ItemsRepeater
 		{
 			ItemsSource = source,
-			ItemTemplate = new DataTemplate(() =>
+			ItemTemplate = new DataTemplate(null, (_, _) =>
 			{
 				var cb = new CheckBox();
 				cb.SetBinding(

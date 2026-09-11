@@ -51,8 +51,11 @@ jobs:
       dotnet build build/Uno.UI.Build.csproj /m /t:BuildCIReference "/p:CombinedConfiguration=$(CombinedConfiguration)" -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true /detailedsummary /bl:$(build.artifactstagingdirectory)/build-Reference-$(XAML_FLAVOR_BUILD).binlog
     displayName: Building Reference Binaries
 
+  # This job builds only to run the tests, and consumes no package. Packable projects pack on
+  # any Release build, and without a PackageVersion they pack at the src/Directory.Build.props
+  # sentinel (255.255.255.255) - a stable version, which trips NU5104 on a prerelease dependency.
   - pwsh: |
-      dotnet build src/Uno.UI-UnitTests-only.slnf -c Release -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -bl:$(build.artifactstagingdirectory)\unit-tests-build-$(XAML_FLAVOR_BUILD).binlog
+      dotnet build src/Uno.UI-UnitTests-only.slnf -c Release -p:GeneratePackageOnBuild=false -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true -bl:$(build.artifactstagingdirectory)\unit-tests-build-$(XAML_FLAVOR_BUILD).binlog
     displayName: Build unit tests solution filter
 
   - pwsh: |

@@ -6,7 +6,7 @@ namespace Uno.UI.Hosting;
 public enum X11RenderingBackend
 {
 	/// <summary>
-	/// Platform default: try OpenGL, fall back to software.
+	/// Platform default: try Vulkan, fall back to OpenGL, then software.
 	/// </summary>
 	Default,
 

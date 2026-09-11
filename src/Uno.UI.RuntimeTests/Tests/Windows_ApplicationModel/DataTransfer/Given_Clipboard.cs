@@ -46,7 +46,8 @@ partial class Given_Clipboard
 	[TestMethod]
 	[RunsOnUIThread]
 	// note: do not enable this for wasm, without adjust default clipboard permission
-	[PlatformCondition(Include, NativeIOS | NativeAndroid | SkiaWin32)]
+	[PlatformCondition(Include, NativeIOS | NativeAndroid | SkiaWin32 | SkiaIOS)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23962")]
 	public async Task When_GetSet_Clipboard_Text()
 	{
 		var package = new DataPackage();
@@ -57,6 +58,9 @@ partial class Given_Clipboard
 		await DelayForClipboard();
 
 		var view = Clipboard.GetContent();
+
+		Assert.IsTrue(view.Contains(StandardDataFormats.Text));
+
 		var text = await view.GetTextAsync();
 
 		Assert.AreEqual(TestString, text);

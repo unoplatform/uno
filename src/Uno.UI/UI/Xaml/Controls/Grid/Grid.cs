@@ -191,8 +191,11 @@ namespace Microsoft.UI.Xaml.Controls
 			DefinitionCollectionBase definitions,
 			bool treatStarAsAuto)
 		{
-			foreach (var def in definitions.GetItems())
+			// By index: GetItems() hands back the DependencyObjectCollection as an IEnumerable<T>, whose
+			// GetEnumerator boxes. This runs twice per Grid measure, once for rows and once for columns.
+			for (var defIndex = 0; defIndex < definitions.Count; defIndex++)
 			{
+				var def = definitions.GetItem(defIndex);
 
 				bool useLayoutRounding = GetUseLayoutRounding();
 				var userSize = double.PositiveInfinity;
@@ -354,12 +357,13 @@ namespace Microsoft.UI.Xaml.Controls
 			ref CellCacheStackVector cellCacheVector)
 		{
 
-			SpanStoreStackVector spanStore = new SpanStoreStackVector();
-
 			if (cellsHead >= cellCount)
 			{
 				return;
 			}
+
+			// Rented from the shared ArrayPool, so it must not be created before an exit that skips the Dispose below.
+			SpanStoreStackVector spanStore = new SpanStoreStackVector();
 
 			do
 			{
@@ -1362,12 +1366,6 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					foreach (var currentChild in children)
 					{
-#if __APPLE_UIKIT__ // Uno specific: On iOS an additional non-UIElement is added the the parent of a focused TextBox control, we need to skip it.
-						if (currentChild is null)
-						{
-							continue;
-						}
-#endif
 						ASSERT(currentChild is { });
 
 						currentChild.EnsureLayoutStorage();
@@ -1408,12 +1406,6 @@ namespace Microsoft.UI.Xaml.Controls
 				for (Xuint childIndex = 0; childIndex < count; childIndex++)
 				{
 					UIElement currentChild = children[childIndex];
-#if __APPLE_UIKIT__ // Uno specific: On iOS an additional non-UIElement is added the the parent of a focused TextBox control, we need to skip it.
-					if (currentChild is null)
-					{
-						continue;
-					}
-#endif
 					ASSERT(currentChild is { });
 
 					DefinitionBase row = GetRowNoRef(currentChild);

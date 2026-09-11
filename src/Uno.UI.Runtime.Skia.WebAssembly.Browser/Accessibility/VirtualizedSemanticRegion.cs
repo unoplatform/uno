@@ -72,6 +72,7 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 		_realizedHandles[index] = itemHandle;
 		_realizedHandleSet.Add(itemHandle);
 		NativeMethods.AddVirtualizedItem(_containerHandle, itemHandle, index, totalCount, x, y, width, height, role, label);
+		WebAssemblyAccessibility.Instance.QueueRelationshipRefresh();
 	}
 
 	/// <summary>
@@ -105,6 +106,7 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 		}
 		_realizedHandleSet.Remove(itemHandle);
 		NativeMethods.RemoveVirtualizedItem(itemHandle);
+		WebAssemblyAccessibility.Instance.QueueRelationshipRefresh();
 	}
 
 	/// <summary>
@@ -158,6 +160,7 @@ internal sealed partial class VirtualizedSemanticRegion : IDisposable
 			_realizedHandles.Clear();
 			_realizedHandleSet.Clear();
 			NativeMethods.UnregisterVirtualizedContainer(_containerHandle);
+			WebAssemblyAccessibility.Instance.QueueRelationshipRefresh();
 		}
 	}
 

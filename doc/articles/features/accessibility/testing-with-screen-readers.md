@@ -45,7 +45,7 @@ When testing WASM apps with a screen reader, the browser choice affects results:
 
 The `AccessibilityScreenReaderPage` sample in the Uno SamplesApp includes test sections for common control types:
 
-1. Build and run the SamplesApp (`SamplesApp.Skia.Generic`)
+1. Build and run the SamplesApp (`SamplesApp`, `net11.0-desktop`)
 2. Navigate to the `Accessibility_ScreenReader` sample
 3. Enable your screen reader and Tab into the app
 4. On WASM, activate the "Enable accessibility" button first

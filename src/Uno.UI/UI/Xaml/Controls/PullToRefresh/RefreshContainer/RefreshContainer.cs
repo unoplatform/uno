@@ -17,19 +17,11 @@ public partial class RefreshContainer : ContentControl
 		//	return;
 		//}
 
-#if !__ANDROID__ && !__IOS__
 		m_refreshInfoProviderAdapter = new ScrollViewerIRefreshInfoProviderAdapter(PullDirection, null);
-#else
-		m_refreshInfoProviderAdapter = new NativeRefreshInfoProviderAdapter(this);
-#endif
 	}
 
 	private void SetDefaultRefreshVisualizer()
 	{
-#if !__ANDROID__ && !__IOS__
 		Visualizer = new RefreshVisualizer();
-#else
-		Visualizer = new NativeRefreshVisualizer();
-#endif
 	}
 }

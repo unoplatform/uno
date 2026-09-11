@@ -28,7 +28,7 @@ public partial class TreeViewNode : DependencyObject, ICustomPropertyProvider, I
 		collection.VectorChanged += ChildVectorChanged;
 	}
 
-	public TreeViewNode Parent
+	public new TreeViewNode Parent
 	{
 		get
 		{

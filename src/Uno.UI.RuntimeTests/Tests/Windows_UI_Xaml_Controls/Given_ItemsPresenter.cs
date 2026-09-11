@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Microsoft.UI.Xaml.Controls;
@@ -18,12 +19,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 public class Given_ItemsPresenter
 {
 	// Due to physical/logical pixel conversion on Android, measurements aren't exact
-	private float Epsilon =>
-#if XAMARIN
-			0.5f;
-#else
-		0.0f;
-#endif
+	private float Epsilon => OperatingSystem.IsAndroid() ? 0.5f : 0.0f;
 
 	[TestMethod]
 	[RunsOnUIThread]

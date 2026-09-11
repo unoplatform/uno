@@ -16,6 +16,8 @@ namespace Uno.UI.Xaml.Controls;
 
 internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 {
+	public virtual bool IsClosingCancellable => NativeWindowFactory.SupportsClosingCancellation;
+
 	public const int InitialWidth = 1024;
 	public const int InitialHeight = 640;
 
@@ -306,8 +308,4 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	public virtual void SetSystemBackdrop(Microsoft.UI.Xaml.Media.SystemBackdrop? backdrop)
 	{
 	}
-
-#if __APPLE_UIKIT__
-	public abstract Size GetWindowSize();
-#endif
 }
