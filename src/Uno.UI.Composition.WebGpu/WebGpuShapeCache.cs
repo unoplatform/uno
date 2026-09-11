@@ -284,27 +284,20 @@ internal sealed class WebGpuShapeCache
 
 		var wedged = join is StrokeJoin.Round or StrokeJoin.Bevel;
 
-		// The four corners each vertex contributes: two for the segment arriving at it, two for the one leaving.
-		// A miter join shares one point per side, so arrive == leave; a round or bevel join holds each segment's
-		// OUTER corner on its own perpendicular and lets Wedge bridge the gap. The INNER side stays shared either
-		// way -- it lies inside the ink, and meeting there is what keeps consecutive quads from double-blending a
-		// translucent stroke. Sign convention throughout: +Perp is the inner side of a left turn.
-		var inA = new Vector2[n]; var outA = new Vector2[n];     // arriving segment, +Perp and -Perp corners
-		var inL = new Vector2[n]; var outL = new Vector2[n];     // leaving segment
-		var wedge = new (Vector2 From, Vector2 To)[n];
-		var apex = new Vector2[n];   // the join fan's centre: the inner corner the two quads already share
+		// One Joint per vertex, in one array: a miter join is the common case and must cost what it always did.
+		var joints = new Joint[n];
 		for (int i = 0; i < n; i++)
 		{
 			var hasPrev = i > 0 || closed;
 			var hasNext = i < n - 1 || closed;
 			var n1 = hasPrev ? Norm(pts[i] - pts[(i - 1 + n) % n]) : Vector2.Zero;
 			var n2 = hasNext ? Norm(pts[(i + 1) % n] - pts[i]) : Vector2.Zero;
-			if (!hasPrev || n1 == Vector2.Zero) { Same(Perp(n2) * h, i); continue; }
-			if (!hasNext || n2 == Vector2.Zero) { Same(Perp(n1) * h, i); continue; }
+			if (!hasPrev || n1 == Vector2.Zero) { joints[i] = Joint.Shared(Perp(n2) * h); continue; }
+			if (!hasNext || n2 == Vector2.Zero) { joints[i] = Joint.Shared(Perp(n1) * h); continue; }
 
 			var mid = Perp(n1) + Perp(n2);
 			var ml = mid.Length();
-			if (ml < 1e-5f) { Same(Perp(n1) * h, i); continue; }   // 180 degree reversal: no finite miter
+			if (ml < 1e-5f) { joints[i] = Joint.Shared(Perp(n1) * h); continue; }   // 180 degree reversal: no finite miter
 			mid /= ml;
 			// miterLength = h / cos(theta/2), bevelled rather than extended once the corner is sharp enough that the
 			// miter would run away (a spike is never the right answer; it is what a degenerate corner used to draw).
@@ -312,7 +305,7 @@ internal sealed class WebGpuShapeCache
 			var miter = MathF.Abs(cos) < 0.25f ? Perp(n1) * h : mid * (h / cos);
 
 			var turn = n1.X * n2.Y - n1.Y * n2.X;
-			if (!wedged || turn == 0f) { Same(miter, i); continue; }
+			if (!wedged || turn == 0f) { joints[i] = Joint.Shared(miter); continue; }
 
 			// The shared inner point sits |miter| back along the bisector; past the shorter neighbouring segment it
 			// would reach beyond that segment's far end and fold its quad inside out. Fall back to the two
@@ -320,29 +313,26 @@ internal sealed class WebGpuShapeCache
 			var lim = MathF.Min((pts[i] - pts[(i - 1 + n) % n]).Length(), (pts[(i + 1) % n] - pts[i]).Length());
 			var split = miter.LengthSquared() > lim * lim;
 
+			// +Perp is the inner side of a left turn, so the OUTER corners are the -Perp ones there, and vice versa.
 			var p1 = Perp(n1) * h; var p2 = Perp(n2) * h;
-			if (turn > 0f)
+			var inner = turn > 0f ? miter : -miter;
+			joints[i] = new Joint
 			{
-				inA[i] = split ? p1 : miter; inL[i] = split ? p2 : miter;
-				outA[i] = -p1; outL[i] = -p2;
-				wedge[i] = (-p1, -p2);
-				apex[i] = split ? Vector2.Zero : miter;
-			}
-			else
-			{
-				outA[i] = split ? -p1 : -miter; outL[i] = split ? -p2 : -miter;
-				inA[i] = p1; inL[i] = p2;
-				wedge[i] = (p1, p2);
-				apex[i] = split ? Vector2.Zero : -miter;
-			}
+				ArrivePlus = turn > 0f ? (split ? p1 : inner) : p1,
+				LeavePlus = turn > 0f ? (split ? p2 : inner) : p2,
+				ArriveMinus = turn > 0f ? -p1 : (split ? -p1 : inner),
+				LeaveMinus = turn > 0f ? -p2 : (split ? -p2 : inner),
+				Apex = split ? Vector2.Zero : inner,
+				Outer = (sbyte)(turn > 0f ? -1 : 1),
+			};
 		}
 
 		var segs = closed ? n : n - 1;
 		for (int i = 0; i < segs; i++)
 		{
 			var j = (i + 1) % n;
-			var a0 = Vector2.Transform(pts[i] + inL[i], m); var a1 = Vector2.Transform(pts[i] + outL[i], m);
-			var b0 = Vector2.Transform(pts[j] + inA[j], m); var b1 = Vector2.Transform(pts[j] + outA[j], m);
+			var a0 = Vector2.Transform(pts[i] + joints[i].LeavePlus, m); var a1 = Vector2.Transform(pts[i] + joints[i].LeaveMinus, m);
+			var b0 = Vector2.Transform(pts[j] + joints[j].ArrivePlus, m); var b1 = Vector2.Transform(pts[j] + joints[j].ArriveMinus, m);
 			Emit(a0, tris, ref bbMin, ref bbMax); Emit(b0, tris, ref bbMin, ref bbMax); Emit(b1, tris, ref bbMin, ref bbMax);
 			Emit(a0, tris, ref bbMin, ref bbMax); Emit(b1, tris, ref bbMin, ref bbMax); Emit(a1, tris, ref bbMin, ref bbMax);
 		}
@@ -353,17 +343,35 @@ internal sealed class WebGpuShapeCache
 			var last = closed ? n : n - 1;
 			for (int i = first; i < last; i++)
 			{
-				if (wedge[i].From != wedge[i].To)
+				ref var jt = ref joints[i];
+				if (jt.Outer == 0) { continue; }
+				var from = jt.Outer > 0 ? jt.ArrivePlus : jt.ArriveMinus;
+				var to = jt.Outer > 0 ? jt.LeavePlus : jt.LeaveMinus;
+				if (from != to)
 				{
-					Wedge(pts[i], apex[i], wedge[i].From, wedge[i].To, h, join == StrokeJoin.Round, deviceScale, m, tris, ref bbMin, ref bbMax);
+					Wedge(pts[i], jt.Apex, from, to, h, join == StrokeJoin.Round, deviceScale, m, tris, ref bbMin, ref bbMax);
 				}
 			}
 		}
 
-		void Same(Vector2 off, int i) { inA[i] = inL[i] = off; outA[i] = outL[i] = -off; }
-
 		static Vector2 Norm(Vector2 v) { var l = v.Length(); return l < 1e-6f ? Vector2.Zero : v / l; }
 		static Vector2 Perp(Vector2 v) => new(-v.Y, v.X);
+	}
+
+	/// <summary>
+	/// What one vertex contributes to the strip: the corner each adjoining segment uses on each side. A miter join
+	/// shares one point per side, so arrive == leave and <see cref="Outer"/> is 0; a round or bevel join holds each
+	/// segment's OUTER corner on its own perpendicular and <see cref="Wedge"/> bridges them from <see cref="Apex"/>.
+	/// The inner side stays shared either way -- it lies inside the ink, and meeting there is what keeps
+	/// consecutive quads from double-blending a translucent stroke.
+	/// </summary>
+	private struct Joint
+	{
+		public Vector2 ArrivePlus, ArriveMinus, LeavePlus, LeaveMinus;
+		public Vector2 Apex;
+		public sbyte Outer;   // 0 = no join fan; +1 = the +Perp side is the outer one; -1 = the -Perp side is
+
+		public static Joint Shared(Vector2 off) => new() { ArrivePlus = off, LeavePlus = off, ArriveMinus = -off, LeaveMinus = -off };
 	}
 
 	// The outer corner of a join: the region bounded by the two segments' outer corners, the arc between them (one
