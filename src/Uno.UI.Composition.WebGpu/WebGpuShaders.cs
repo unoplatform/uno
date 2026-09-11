@@ -448,6 +448,8 @@ struct VO { @builtin(position) p: vec4<f32>, @location(0) uv: vec2<f32> };
 	private const string GradientWgsl = @"
 struct Grad { header: vec4<f32>, geo: vec4<f32>, colors: array<vec4<f32>, 64>, stops: array<vec4<f32>, 16>, origin: vec4<f32>, ramp: array<vec4<f32>, 8> };
 @group(1) @binding(0) var<uniform> g: Grad;
+@group(1) @binding(1) var ramps: texture_2d<f32>;
+@group(1) @binding(3) var rampSmp: sampler;
 @group(2) @binding(0) var<uniform> clip: ClipU;
 @group(2) @binding(4) var<storage, read> clipMore: array<ClipEntry>;
 @group(2) @binding(1) var clipMask: texture_2d<f32>;
@@ -504,6 +506,11 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
   else { let f = fract(t * 0.5) * 2.0; if (f > 1.0) { t = 2.0 - f; } else { t = f; } }
   let n = i32(g.header.y);
   var col = g.colors[0];
+  // header.w >= 0: the gradient's colours are a row of the ramp texture, so the whole stop walk is one fetch.
+  if (g.header.w >= 0.0) {
+    let rc = textureSampleLevel(ramps, rampSmp, vec2<f32>(t * (255.0 / 256.0) + (0.5 / 256.0), g.header.w), 0.0);
+    return vec4<f32>(rc.rgb, rc.a * covTex(i.uv) * clipCovMapped(gfc));
+  }
   // Fast path for <=4 stops (the overwhelmingly common case): each interval's colour is t * scale + bias from the
   // uniform's ramp, picked at constant indices (a loop variable into a uniform array spills on Intel-class GPUs).
   // Past the LAST stop is tested before before-the-first, because coincident stops satisfy both: two stops at

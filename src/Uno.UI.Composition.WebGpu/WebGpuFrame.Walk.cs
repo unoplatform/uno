@@ -221,6 +221,7 @@ internal sealed unsafe partial class WebGpuFrame
 	private void EmitGradient(GradientCmd gc, in Matrix3x2 m, bool identity, in ClipData cd, List<DrawOp> ops, OwnedResources owned = null)
 	{
 		var u = identity ? gc.Uniform : TransformedGradient(gc.Uniform, m);
+		u[3] = _d.RampRow(u, (int)u[1]);
 		var gbg = owned is null ? _d.GradSlab.Rent(_d.GradBgl, u) : GradientBg(u, owned);
 		var (p0, p1, p2, p3) = identity ? (gc.P0, gc.P1, gc.P2, gc.P3) : (Map(gc.P0, m), Map(gc.P1, m), Map(gc.P2, m), Map(gc.P3, m));
 		Span<Vector2> cover = stackalloc Vector2[OctSides * 3];

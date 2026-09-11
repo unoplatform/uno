@@ -250,8 +250,11 @@ internal sealed unsafe partial class WebGpuFrame
 		var bytes = (nuint)WebGpuDevice.GradientUniformBytes;
 		var ubuf = Ubuf((int)bytes, owned);
 		fixed (float* p = uniform) { wgpuQueueWriteBuffer(_d.Q, ubuf, 0, (IntPtr)p, bytes); }
-		var entry = new WGPUBindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = bytes };
-		var bgd = new WGPUBindGroupDescriptor { Layout = _d.GradBgl, EntryCount = 1, Entries = &entry };
+		var e = stackalloc WGPUBindGroupEntry[3];
+		e[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = ubuf, Offset = 0, Size = bytes };
+		e[1] = new WGPUBindGroupEntry { Binding = 1, TextureView = _d.RampView };
+		e[2] = new WGPUBindGroupEntry { Binding = 3, Sampler = _d.Smp };
+		var bgd = new WGPUBindGroupDescriptor { Layout = _d.GradBgl, EntryCount = 3, Entries = e };
 		return Bg(ref bgd, owned);
 	}
 

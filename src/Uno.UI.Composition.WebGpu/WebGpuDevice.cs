@@ -41,6 +41,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	public IntPtr EffectNoise;          // procedural WhiteNoise generator (no input)
 	public IntPtr EffectNoiseBgl;
 	public IntPtr DummyTex;                 // 1x1 placeholder for the clip coverage binding when no path clip
+	public IntPtr RampTex, RampView;        // one row per gradient: its colour ramp sampled by t (see RampRow)
 	public IntPtr DummyClipMore;            // one-entry placeholder for the clip overflow binding when a draw has four clips or fewer
 	public WebGpuTexturePool Pool;                // transient offscreen pool (reused across frames)
 	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
@@ -216,10 +217,21 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		DummyTex = CreateColorTarget(1, 1);
 		var moreDesc = new WGPUBufferDescriptor { Size = WebGpuFrame.ClipEntryBytes, Usage = WGPUBufferUsage.Storage };
 		DummyClipMore = wgpuDeviceCreateBuffer(Dev, &moreDesc);
+		var rampDesc = new WGPUTextureDescriptor
+		{
+			Size = new WGPUExtent3D { Width = RampWidth, Height = RampRows, DepthOrArrayLayers = 1 },
+			Format = WGPUTextureFormat.RGBA8Unorm,
+			MipLevelCount = 1,
+			SampleCount = 1,
+			Dimension = WGPUTextureDimension._2D,
+			Usage = WGPUTextureUsage.TextureBinding | WGPUTextureUsage.CopyDst,
+		};
+		RampTex = wgpuDeviceCreateTexture(Dev, &rampDesc);
+		RampView = wgpuTextureCreateView(RampTex, null);
 		Pool = new WebGpuTexturePool(this);
 		BufferPool = new WebGpuBufferPool(this);
 		ClipSlab = new WebGpuClipSlab(this);
-		GradSlab = new WebGpuUniformSlab(this, GradientUniformBytes);
+		GradSlab = new WebGpuUniformSlab(this, GradientUniformBytes, RampView, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst, default, Smp);
 		System.Console.WriteLine($"[webgpu] engine init — colorFormat={ColorFormat}");
 	}
 
@@ -360,7 +372,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 
 		SolidPipe = Pipeline(Module(ClipStructFn + ColoredWgsl), clipLayout, &straight, ColorFormat, F2, F4, F2);   // pos, colour, coverage uv
 		RrPipe = Pipeline(Module(ClipStructFn + RoundedRectWgsl), clipLayout, &straight, ColorFormat, F2, F2, F2, F4, F4, F2, F2, F4);   // corner, local p, half size, radii, colour, inner half, inner centre, inner radii
-		GradBgl = Bgl(UniformEntry(0, WGPUShaderStage.Fragment, GradientUniformBytes));
+		GradBgl = Bgl(UniformEntry(0, WGPUShaderStage.Fragment, GradientUniformBytes), TextureEntry(1, WGPUTextureSampleType.Float), SamplerEntry(3));
 		GradientPipe = Pipeline(Module(ClipStructFn + GradientWgsl), ColourLayout(GradBgl, ClipBgl), &straight, ColorFormat, F2, F2);
 		ImgBgl = Bgl(TextureEntry(0, WGPUTextureSampleType.Float), SamplerEntry(1), UniformEntry(2, WGPUShaderStage.Fragment, ImageUniformBytes));
 		var image = Module(ClipStructFn + ImageWgsl);
@@ -403,6 +415,56 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 				_tiledSmp[(x * 4) + y] = wgpuDeviceCreateSampler(Dev, &td);
 			}
 		}
+	}
+
+	// Gradient colour ramps: one 256-texel row per distinct gradient, so the fragment shader reads its colour with
+	// one filtered fetch instead of walking the stops. Measured on a UHD 620: stripping the stop walk entirely took
+	// OverlayStack 52.8 -> 34.4 ms and RadialGlow 32.0 -> 17.0, i.e. that walk was a third to a half of the frame.
+	private const uint RampWidth = 256, RampRows = 256;
+	private readonly Dictionary<long, int> _rampRows = new();
+	private int _rampNext;
+
+	/// <summary>
+	/// The ramp row for a gradient uniform, as the v coordinate to sample at, or -1 to keep the per-stop path.
+	/// Refused when two stops sit closer than a texel, because the ramp would smear a hard colour switch (a focused
+	/// TextBox puts two stops at the same offset to get an accent underline), and once the table is full.
+	/// </summary>
+	public float RampRow(float[] u, int count)
+	{
+		if (count < 2 || count > MaxGradientStops) { return -1f; }
+		long key = count;
+		for (var i = 0; i < count; i++)
+		{
+			key = key * 31 + BitConverter.SingleToInt32Bits(u[GradStopsBase + i]);
+			for (var ch = 0; ch < 4; ch++) { key = key * 31 + BitConverter.SingleToInt32Bits(u[GradColorsBase + i * 4 + ch]); }
+		}
+		if (_rampRows.TryGetValue(key, out var row)) { return (row + 0.5f) / RampRows; }
+		for (var i = 1; i < count; i++)
+		{
+			if (u[GradStopsBase + i] - u[GradStopsBase + i - 1] < 1f / RampWidth) { return -1f; }
+		}
+		if (_rampNext >= RampRows) { return -1f; }
+		row = _rampNext++;
+		var px = new byte[RampWidth * 4];
+		int seg = 0;
+		for (var x = 0; x < RampWidth; x++)
+		{
+			float t = (x + 0.5f) / RampWidth;
+			while (seg < count - 2 && t > u[GradStopsBase + seg + 1]) { seg++; }
+			float s0 = u[GradStopsBase + seg], s1 = u[GradStopsBase + seg + 1];
+			float f = t <= s0 ? 0f : t >= s1 ? 1f : (t - s0) / (s1 - s0);
+			for (var ch = 0; ch < 4; ch++)
+			{
+				float c = u[GradColorsBase + seg * 4 + ch] + (u[GradColorsBase + (seg + 1) * 4 + ch] - u[GradColorsBase + seg * 4 + ch]) * f;
+				px[x * 4 + ch] = (byte)Math.Clamp((int)MathF.Round(c * 255f), 0, 255);
+			}
+		}
+		var dst = new WGPUTexelCopyTextureInfo { Texture = RampTex, Aspect = WGPUTextureAspect.All, MipLevel = 0, Origin = new WGPUOrigin3D { X = 0, Y = (uint)row, Z = 0 } };
+		var layout = new WGPUTexelCopyBufferLayout { Offset = 0, BytesPerRow = RampWidth * 4, RowsPerImage = 1 };
+		var ext = new WGPUExtent3D { Width = RampWidth, Height = 1, DepthOrArrayLayers = 1 };
+		fixed (byte* p = px) { wgpuQueueWriteTexture(Q, &dst, (IntPtr)p, (nuint)px.Length, &layout, &ext); }
+		_rampRows[key] = row;
+		return (row + 0.5f) / RampRows;
 	}
 
 	/// <summary>Single-channel float so accumulation can exceed 1 and go negative; blendable, unlike r32float.</summary>

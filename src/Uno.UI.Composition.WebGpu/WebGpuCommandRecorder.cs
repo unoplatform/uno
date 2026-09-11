@@ -397,6 +397,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 		}
 
 		var u = new float[WebGpuDevice.GradientUniformBytes / 4];
+		u[3] = -1f;   // header.w: no ramp row yet; the draw assigns one (see WebGpuDevice.RampRow)
 		u[0] = g.Radial ? 1f : 0f;
 		u[1] = count;
 		u[2] = g.TileMode switch { GradientTileMode.Repeat => 1f, GradientTileMode.Mirror => 2f, _ => 0f };
