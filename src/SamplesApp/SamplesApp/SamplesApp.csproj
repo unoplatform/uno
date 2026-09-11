@@ -284,6 +284,53 @@
 		-->
 		<WasmShellWebAppBasePath>./</WasmShellWebAppBasePath>
 	</PropertyGroup>
+	<!-- Opt-in AOT publish for the perf lane (-p:UnoWasmAot=true). Head-scoped: RunAOTCompilation/PublishTrimmed set
+	     globally break the netstandard2.0 generator projects in the graph. Only the opt-in (BCL) assemblies are trimmed:
+	     full trimming strips the reflection-resolved drawing seams and the app fails at Build() with no backend. -->
+	<PropertyGroup Condition="'$(_Platform)' == 'browserwasm' AND '$(UnoWasmAot)' == 'true'">
+		<RunAOTCompilation>true</RunAOTCompilation>
+		<PublishTrimmed>true</PublishTrimmed>
+		<TrimMode>partial</TrimMode>
+	</PropertyGroup>
+	<!-- Interpreted under AOT: the cross-compiler runs out of memory on the giant ones, the Windows-compat shims reference
+	     assemblies absent from the publish set, and the rest is sample/test infrastructure off the render path. The
+	     perf-critical Uno.UI / Composition assemblies stay AOT'd. -->
+	<ItemGroup Condition="'$(_Platform)' == 'browserwasm' AND '$(UnoWasmAot)' == 'true'">
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Graph.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\SamplesApp.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Uno.UI.RuntimeTests.dll" />
+		<!-- The WebGPU interop layer stays interpreted: its wgpu callbacks take WGPUStringView by value, and an
+		     AOT-compiled call site and Dawn disagree on that shape, so the app traps with "function signature
+		     mismatch" on the first render. Nothing on the hot path lives here - the renderer itself is AOT. -->
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Uno.UI.Composition.WebGpu.Init.dll" />
+		<!-- HarfBuzz reaches back into managed code through DelegateProxies.ReferenceTableProxyImplementation
+		     while creating a font; AOT-compiled, that native-to-managed wrapper does not match what HarfBuzz
+		     calls, and the app dies during startup with "function signature mismatch" (symbolicated stack:
+		     hb_font_create -> hb_font_set_variations -> the proxy wrapper). Shaping stays fast regardless:
+		     the work is in native hb, and only the thin managed binding is interpreted. -->
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\HarfBuzzSharp.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\AwesomeAssertions.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.CodeAnalysis.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.CodeAnalysis.CSharp.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Private.Windows.Core.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Drawing.Common.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Management.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Speech.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Data.SqlClient.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Win32.Registry.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Win32.SystemEvents.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Diagnostics.EventLog.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\BenchmarkDotNet.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Graph.Core.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Identity.Client.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Azure.Core.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\MSTest.TestFramework.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Private.ServiceModel.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Skia.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Model.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Custom.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Silk.NET.OpenGL.dll" />
+	</ItemGroup>
 	<PropertyGroup Condition="'$(_Platform)' == 'browserwasm' AND '$(Configuration)'=='Debug'">
 		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
 		<DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
