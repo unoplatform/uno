@@ -30,11 +30,25 @@ internal class ImeCompositionEventArgs : EventArgs
 	/// </summary>
 	public bool TextAlreadyApplied { get; }
 
-	public ImeCompositionEventArgs(string text, int cursorPosition = -1, int resolvedLength = 0, bool textAlreadyApplied = false)
+	/// <summary>
+	/// Index of the composition within the text when the platform reports it, or -1 to keep
+	/// the caret position captured when the composition started.
+	/// </summary>
+	public int StartIndex { get; }
+
+	/// <summary>
+	/// When true, the platform applied a text change for this update and reports it right after
+	/// this event, so TextCompositionChanged is raised once that text is in place.
+	/// </summary>
+	public bool TextChangePending { get; }
+
+	public ImeCompositionEventArgs(string text, int cursorPosition = -1, int resolvedLength = 0, bool textAlreadyApplied = false, int startIndex = -1, bool textChangePending = false)
 	{
 		Text = text;
 		CursorPosition = cursorPosition;
 		ResolvedLength = resolvedLength;
 		TextAlreadyApplied = textAlreadyApplied;
+		StartIndex = startIndex;
+		TextChangePending = textChangePending;
 	}
 }

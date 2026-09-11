@@ -26,17 +26,39 @@
 		private static isInSelectionChange: boolean;
 		private static acceptsReturn: boolean;
 		private static isComposing: boolean;
-		private static suppressNextInput: boolean;
+		// Value of the input when the current composition started, and the latest preedit string the
+		// IME reported: together they locate the preedit inside the input's value.
+		private static compositionBaseValue: string;
+		private static compositionText: string;
+		private static compositionStart: number;
+		// Value last reported to (or written from) the TextBox, to tell whether the input holds
+		// text the TextBox has not seen yet.
+		private static lastSyncedValue: string;
 		private static enterHandledByKeyDown: boolean;
-
-		private static waitingAsyncOnSelectionChange: boolean;
-		private static nextSelectionStart: number;
-		private static nextSelectionEnd: number;
-		private static nextSelectionDirection: "forward" | "backward" | "none";
 
 		// Android soft keyboards report all key events with keyCode 229 ("Unidentified").
 		// Text changes are synced via the oninput handler instead.
 		private static readonly ANDROID_IME_KEYCODE = 229;
+
+		// Soft keyboards report key events without a physical code (Backspace, Enter, ...). The
+		// browser must handle those itself so the IME's view of the text stays consistent: editing
+		// the input's value from managed code in response resets the IME mid-word.
+		private static isSoftKeyboardKey(ev: KeyboardEvent): boolean {
+			return ev.keyCode === BrowserInvisibleTextBoxViewExtension.ANDROID_IME_KEYCODE || ev.code === "" || ev.code === "Unidentified";
+		}
+
+		// focus() may replace the input while the browser still owes the old one a compositionend (it
+		// ends the composition when the element goes away); such stragglers must not be applied to
+		// the TextBox that owns the replacement.
+		private static isCurrentInput(input: HTMLInputElement | HTMLTextAreaElement): boolean {
+			return input === BrowserInvisibleTextBoxViewExtension.inputElement;
+		}
+
+		// The TextBox stores line breaks as CR while the input stores them as LF; text is compared
+		// and written in the input's form so a line break doesn't read as a change to write back.
+		private static toInputText(text: string): string {
+			return text.replace(/\r\n?/g, "\n");
+		}
 
 		public static initialize() {
 			if (BrowserInvisibleTextBoxViewExtension._exports == undefined) {
@@ -49,22 +71,17 @@
 
 				document.onselectionchange = () => {
 					let input = document.activeElement;
-					if (input instanceof HTMLInputElement) {
+					if (input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) {
 						BrowserInvisibleTextBoxViewExtension.isInSelectionChange = true;
-
-						if (BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange) {
-							BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange = false;
-							input.setSelectionRange(BrowserInvisibleTextBoxViewExtension.nextSelectionStart, BrowserInvisibleTextBoxViewExtension.nextSelectionEnd, BrowserInvisibleTextBoxViewExtension.nextSelectionDirection);
-						}
-						else {
+						try {
 							if (input.selectionDirection == "backward") {
 								BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionEnd, input.selectionStart - input.selectionEnd);
 							} else {
 								BrowserInvisibleTextBoxViewExtension._exports.OnSelectionChanged(input.selectionStart, input.selectionEnd - input.selectionStart);
 							}
+						} finally {
+							BrowserInvisibleTextBoxViewExtension.isInSelectionChange = false;
 						}
-
-						BrowserInvisibleTextBoxViewExtension.isInSelectionChange = false;
 					}
 				}
 			}
@@ -109,12 +126,11 @@
 			document.addEventListener("click", swallow, { capture: true });
 		}
 
-		private static createInput(isPasswordBox: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string) {
+		private static createInput(isPasswordBox: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string, isReadOnly: boolean) {
 			BrowserInvisibleTextBoxViewExtension.acceptsReturn = acceptsReturn;
 			// A previous input may have been removed mid-composition without a compositionend;
 			// never carry that state over to a fresh element.
 			BrowserInvisibleTextBoxViewExtension.isComposing = false;
-			BrowserInvisibleTextBoxViewExtension.suppressNextInput = false;
 			const input = document.createElement(acceptsReturn && !isPasswordBox ? "textarea" : "input");
 			// The keydown/keyup handlers capture acceptsReturn by closure; record it so canRetarget
 			// only reuses the element when the captured behavior still matches.
@@ -127,6 +143,7 @@
 			input.id = UnoDomIds.input;
 			input.tabIndex = -1;
 			input.spellcheck = false;
+			input.readOnly = isReadOnly;
 			input.style.whiteSpace = "pre-wrap";
 			input.style.position = "absolute";
 			input.style.padding = "0px";
@@ -143,24 +160,19 @@
 			input.style.zIndex = "99";
 			input.style.top = "0px";
 			input.style.left = "0px";
-			input.value = text;
+			input.value = BrowserInvisibleTextBoxViewExtension.toInputText(text);
+			BrowserInvisibleTextBoxViewExtension.lastSyncedValue = input.value;
 
 			input.setAttribute("inputmode", inputMode);
 			input.setAttribute("enterkeyhint", enterKeyHint);
 
-			input.oninput = ev => {
-				// During IME composition, text state is managed by the composition event path.
-				// The oninput event still fires but we must skip the normal text sync.
-				// Also suppress the final input event after compositionend (browser fires input after compositionend).
-				if (BrowserInvisibleTextBoxViewExtension.isComposing || BrowserInvisibleTextBoxViewExtension.suppressNextInput) {
-					BrowserInvisibleTextBoxViewExtension.suppressNextInput = false;
-					return;
-				}
-				let input = ev.target as HTMLInputElement;
-				if (input.selectionDirection == "backward") {
-					BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionEnd, input.selectionStart - input.selectionEnd);
-				} else {
-					BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart);
+			// The input's value is the source of truth for the text; composition events only report
+			// which range of it is the active preedit. Chrome fires the committed preedit's input event
+			// before compositionend, so no input event may be skipped based on composition state:
+			// the next one would be the space or punctuation that committed the word.
+			input.oninput = () => {
+				if (BrowserInvisibleTextBoxViewExtension.isCurrentInput(input)) {
+					BrowserInvisibleTextBoxViewExtension.syncFromInput(input);
 				}
 			};
 
@@ -183,7 +195,9 @@
 			// Handle Enter key from Android virtual keyboards which don't fire keydown events.
 			// Android keyboards typically fire beforeinput with inputType "insertLineBreak" or "insertParagraph" instead.
 			input.addEventListener("beforeinput", (ev: InputEvent) => {
-				if ((ev.inputType === "insertLineBreak" || ev.inputType === "insertParagraph") && !BrowserInvisibleTextBoxViewExtension.acceptsReturn) {
+				if ((ev.inputType === "insertLineBreak" || ev.inputType === "insertParagraph")
+					&& !BrowserInvisibleTextBoxViewExtension.acceptsReturn
+					&& BrowserInvisibleTextBoxViewExtension.isCurrentInput(input)) {
 					ev.preventDefault();
 
 					BrowserInvisibleTextBoxViewExtension._exports.OnEnterKeyPressed();
@@ -193,25 +207,40 @@
 			BrowserInvisibleTextBoxViewExtension.attachTextInputKeyHandlers(input, acceptsReturn);
 
 			input.addEventListener("compositionstart", () => {
+				if (!BrowserInvisibleTextBoxViewExtension.isCurrentInput(input)) {
+					return;
+				}
 				BrowserInvisibleTextBoxViewExtension.isComposing = true;
+				BrowserInvisibleTextBoxViewExtension.compositionBaseValue = input.value;
+				BrowserInvisibleTextBoxViewExtension.compositionText = "";
+				BrowserInvisibleTextBoxViewExtension.compositionStart = -1;
 				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionStarted();
 			});
 
 			input.addEventListener("compositionupdate", (ev: CompositionEvent) => {
-				// Use input.selectionStart for cursor position when available,
-				// as the IME may place the caret within the preedit string.
-				const selectionStart = input.selectionStart;
-				const cursorPosition = selectionStart === null
-					? ev.data.length
-					: Math.max(0, Math.min(selectionStart, ev.data.length));
-				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionUpdated(ev.data, cursorPosition);
+				if (!BrowserInvisibleTextBoxViewExtension.isCurrentInput(input)) {
+					return;
+				}
+				// The value isn't updated yet; the preedit is reported from the input event that follows.
+				BrowserInvisibleTextBoxViewExtension.compositionText = ev.data;
 			});
 
 			input.addEventListener("compositionend", (ev: CompositionEvent) => {
+				// The browser still fires compositionend for a composition that a text change from
+				// managed code already ended; that one has nothing left to report.
+				if (!BrowserInvisibleTextBoxViewExtension.isCurrentInput(input) || !BrowserInvisibleTextBoxViewExtension.isComposing) {
+					return;
+				}
+				// Safari fires the committed preedit's input event after compositionend; the value is
+				// already final here, so report it before completing rather than after.
+				if (input.value !== BrowserInvisibleTextBoxViewExtension.lastSyncedValue) {
+					BrowserInvisibleTextBoxViewExtension.syncFromInput(input);
+					// A handler may have moved focus, replacing the input; the composition then belongs to the past.
+					if (!BrowserInvisibleTextBoxViewExtension.isCurrentInput(input)) {
+						return;
+					}
+				}
 				BrowserInvisibleTextBoxViewExtension.isComposing = false;
-				// The browser fires an input event after compositionend with the committed text.
-				// Suppress it to avoid double-inserting — the commit is handled by OnCompositionCompleted.
-				BrowserInvisibleTextBoxViewExtension.suppressNextInput = true;
 				if (ev.data.length > 0) {
 					BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionCompleted(ev.data);
 				} else {
@@ -221,6 +250,78 @@
 
 			document.body.appendChild(input);
 			BrowserInvisibleTextBoxViewExtension.inputElement = input;
+		}
+
+		private static syncFromInput(input: HTMLInputElement | HTMLTextAreaElement) {
+			if (BrowserInvisibleTextBoxViewExtension.isComposing) {
+				BrowserInvisibleTextBoxViewExtension.compositionStart = BrowserInvisibleTextBoxViewExtension.findCompositionStart(input);
+				BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionUpdated(
+					BrowserInvisibleTextBoxViewExtension.compositionText,
+					BrowserInvisibleTextBoxViewExtension.compositionStart,
+					input.value !== BrowserInvisibleTextBoxViewExtension.lastSyncedValue);
+				// A handler may have moved focus, replacing the input; its value is not the new TextBox's.
+				if (!BrowserInvisibleTextBoxViewExtension.isCurrentInput(input)) {
+					return;
+				}
+			}
+			BrowserInvisibleTextBoxViewExtension.lastSyncedValue = input.value;
+			if (input.selectionDirection == "backward") {
+				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionEnd, input.selectionStart - input.selectionEnd);
+			} else {
+				BrowserInvisibleTextBoxViewExtension._exports.OnInputTextChanged(input.value, input.selectionStart, input.selectionEnd - input.selectionStart);
+			}
+		}
+
+		// Locates the preedit inside the input's value. The IME may have opened the composition on
+		// text that was already in the input (e.g. Gboard extending a committed word), so the
+		// preedit can start before the caret position the composition started at.
+		private static findCompositionStart(input: HTMLInputElement | HTMLTextAreaElement): number {
+			const base = BrowserInvisibleTextBoxViewExtension.compositionBaseValue;
+			const text = BrowserInvisibleTextBoxViewExtension.compositionText;
+			const value = input.value;
+
+			const maxCommon = Math.min(base.length, value.length);
+			let prefix = 0;
+			while (prefix < maxCommon && base[prefix] === value[prefix]) {
+				prefix++;
+			}
+			let suffix = 0;
+			while (suffix < maxCommon - prefix && base[base.length - 1 - suffix] === value[value.length - 1 - suffix]) {
+				suffix++;
+			}
+
+			const caret = input.selectionEnd ?? value.length;
+			const previous = BrowserInvisibleTextBoxViewExtension.compositionStart;
+
+			// An emptied preedit stays where it was; before it ever had text, it sits where the edit was
+			// or, with nothing edited yet, at the caret.
+			if (text.length === 0) {
+				if (previous >= 0 && previous <= value.length) {
+					return previous;
+				}
+				return value === base ? Math.min(caret, value.length) : prefix;
+			}
+
+			// A start is plausible when the value is the base with the preedit in place of some of its
+			// text at that position. Several starts can be when the preedit repeats adjacent text: the
+			// start found for the previous update is kept while it still fits (the IME may have moved
+			// the caret inside the preedit since), then the caret decides, as the IME leaves it at the
+			// end of a preedit it just inserted, then the edit.
+			const isPlausibleStart = (start: number) =>
+				start >= 0
+				&& start + text.length <= value.length
+				&& value.startsWith(text, start)
+				&& base.startsWith(value.slice(0, start))
+				&& base.endsWith(value.slice(start + text.length));
+			const editEnd = value.length - suffix;
+			for (const start of [previous, caret - text.length, editEnd - text.length, prefix]) {
+				if (isPlausibleStart(start)) {
+					return start;
+				}
+			}
+
+			const beforeCaret = value.lastIndexOf(text, caret);
+			return beforeCaret >= 0 ? beforeCaret : Math.max(0, Math.min(prefix, value.length - text.length));
 		}
 
 		// Applies the same keydown/keyup guards used on the invisible <input> to any text input
@@ -256,12 +357,10 @@
 					return;
 				}
 
-				// Android soft keyboards fire all keys as keyCode 229 / key "Unidentified".
-				// The C# side cannot identify these (maps to VirtualKey.None), so let the browser
-				// handle them natively. Text changes sync via the oninput handler.
-				// stopPropagation prevents the document-level BrowserKeyboardInputSource from
-				// calling preventDefault() on the event.
-				if (ev.keyCode === BrowserInvisibleTextBoxViewExtension.ANDROID_IME_KEYCODE) {
+				// Let the browser handle soft keyboard keys natively; text changes sync via the
+				// oninput handler. stopPropagation prevents the document-level
+				// BrowserKeyboardInputSource from calling preventDefault() on the event.
+				if (BrowserInvisibleTextBoxViewExtension.isSoftKeyboardKey(ev)) {
 					ev.stopPropagation();
 					return;
 				}
@@ -289,7 +388,7 @@
 					BrowserInvisibleTextBoxViewExtension.enterHandledByKeyDown = false;
 				}
 
-				if (BrowserInvisibleTextBoxViewExtension.isComposing || ev.keyCode === BrowserInvisibleTextBoxViewExtension.ANDROID_IME_KEYCODE) {
+				if (BrowserInvisibleTextBoxViewExtension.isComposing || BrowserInvisibleTextBoxViewExtension.isSoftKeyboardKey(ev)) {
 					ev.stopPropagation();
 				}
 			});
@@ -302,6 +401,13 @@
 			}
 		}
 
+		public static setReadOnly(isReadOnly: boolean) {
+			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
+			if (input) {
+				input.readOnly = isReadOnly;
+			}
+		}
+
 		public static setInputMode(inputMode: string) {
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 			if (input) {
@@ -309,7 +415,7 @@
 			}
 		}
 
-		public static focus(handle: number, isPassword: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string): boolean {
+		public static focus(handle: number, isPassword: boolean, text: string, acceptsReturn: boolean, inputMode: string, enterKeyHint: string, isReadOnly: boolean): boolean {
 			// Supersede any detach a preceding managed blur scheduled: focus is moving between
 			// TextBoxes, and detaching in between would dismiss the soft keyboard (see blur).
 			BrowserInvisibleTextBoxViewExtension.detachGeneration++;
@@ -321,13 +427,16 @@
 			}
 
 			const existingInput = BrowserInvisibleTextBoxViewExtension.inputElement;
+			const wasComposing = BrowserInvisibleTextBoxViewExtension.isComposing;
 			if (existingInput != null && BrowserInvisibleTextBoxViewExtension.canRetarget(existingInput, isPassword, acceptsReturn)) {
 				// Reuse the shared input in place: mobile browsers keep the soft keyboard up across
 				// a TextBox-to-TextBox move only while an editable element stays focused throughout.
 				BrowserInvisibleTextBoxViewExtension.acceptsReturn = acceptsReturn;
 				existingInput.setAttribute("inputmode", inputMode);
 				existingInput.setAttribute("enterkeyhint", enterKeyHint);
+				existingInput.readOnly = isReadOnly;
 				BrowserInvisibleTextBoxViewExtension.setText(text);
+				BrowserInvisibleTextBoxViewExtension.lastSyncedValue = existingInput.value;
 
 				// It's necessary to actually focus the native input, not just make it visible. This is particularly
 				// important to mobile browsers (to open the software keyboard) and for assistive technology to not steal
@@ -343,7 +452,7 @@
 				// would dismiss the soft keyboard. The implicit blur of the old element is
 				// managed-initiated, so suppress its notification.
 				existingInput?.removeAttribute("id");
-				this.createInput(isPassword, text, acceptsReturn, inputMode, enterKeyHint);
+				this.createInput(isPassword, text, acceptsReturn, inputMode, enterKeyHint, isReadOnly);
 				BrowserInvisibleTextBoxViewExtension.runSuppressingBlur(() => {
 					BrowserInvisibleTextBoxViewExtension.inputElement.focus();
 					existingInput?.remove();
@@ -351,6 +460,13 @@
 			}
 
 			BrowserInvisibleTextBoxViewExtension.currentHandle = Number(handle);
+
+			// The replaced element's compositionend is ignored (see isCurrentInput), so a composition
+			// that was still open is ended for the TextBox here: the same TextBox re-entering when a
+			// tap moves the caret would otherwise never see it end.
+			if (wasComposing) {
+				BrowserInvisibleTextBoxViewExtension.endComposition();
+			}
 
 			// The retarget path keeps the input focused, so no focusin fires and the trailing-click
 			// guard never arms; arm it here for both paths (see installTrailingClickGuard).
@@ -399,6 +515,12 @@
 			BrowserInvisibleTextBoxViewExtension.inputElement?.blur();
 			BrowserInvisibleTextBoxViewExtension.inputElement?.remove();
 			BrowserInvisibleTextBoxViewExtension.inputElement = null;
+			// The removed element's compositionend is ignored (see isCurrentInput), so a composition
+			// still open is ended for the TextBox here; when the TextBox keeps focus (accessibility
+			// handing it over to its semantic element) nothing else would.
+			if (BrowserInvisibleTextBoxViewExtension.isComposing) {
+				BrowserInvisibleTextBoxViewExtension.endComposition();
+			}
 		}
 
 		public static blur(handle: number) {
@@ -435,27 +557,23 @@
 		public static setText(text: string) {
 			const input = BrowserInvisibleTextBoxViewExtension.inputElement;
 			if (input != null) {
-				// During IME composition the browser manages the hidden input's value.
-				// Overwriting it would destroy the native composition state and cursor.
-				if (BrowserInvisibleTextBoxViewExtension.isComposing) {
-					return;
-				}
+				// The value being reported echoes back here unchanged and is a no-op. Any other text
+				// (the TextBox rejecting or coercing the input, the delete button, Text set from code)
+				// does have to reach the input, and ends the composition like it would in a native app.
+				const inputText = BrowserInvisibleTextBoxViewExtension.toInputText(text);
+				if (input.value != inputText) {
+					// Replacing the value moves the caret to the end. Put it back right away rather than on the
+					// selectionchange the browser fires later: by then the IME may already be composing the next
+					// word, and a stale caret applied under it lands that word in the wrong place.
+					const { selectionStart, selectionEnd, selectionDirection } = input;
+					input.value = inputText;
+					BrowserInvisibleTextBoxViewExtension.lastSyncedValue = input.value;
+					input.setSelectionRange(selectionStart, selectionEnd, selectionDirection ?? "none");
 
-				// input could be null beccause we could call setText without focusing first
-
-				if (input.value != text) {
-					// When setting input.value, the browser will try to set the selection to the end, which isn't what we want.
-					// The browser doesn't raise onselectionchange synchronously though, so we set a flag that we're waiting
-					// for a future selection change that is the result of setting value.
-					// And we set the existing values of selection start and selection end.
-					// On the next onselectionchange event, we will ignore the browser provided selection and use these values.
-					// Also, in case we got a managed selection in between here and the next onselectionchange, we will
-					// use that instead (see updateSelection below).
-					BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange = true;
-					BrowserInvisibleTextBoxViewExtension.nextSelectionStart = input.selectionStart;
-					BrowserInvisibleTextBoxViewExtension.nextSelectionEnd = input.selectionEnd;
-					BrowserInvisibleTextBoxViewExtension.nextSelectionDirection = input.selectionDirection;
-					input.value = text;
+					// Notified last: a handler may set the text again, and its write must not be overwritten.
+					if (BrowserInvisibleTextBoxViewExtension.isComposing) {
+						BrowserInvisibleTextBoxViewExtension.endComposition();
+					}
 				}
 			}
 		}
@@ -477,22 +595,30 @@
 		}
 
 		public static updateSelection(start: number, length: number, direction: "forward" | "backward") {
-			// During IME composition the browser manages the hidden input's selection.
-			if (BrowserInvisibleTextBoxViewExtension.isComposing) {
-				return;
-			}
 			if (!BrowserInvisibleTextBoxViewExtension.isInSelectionChange) {
 				const input = BrowserInvisibleTextBoxViewExtension.inputElement;
-
-				// See comment in setText.
-				if (BrowserInvisibleTextBoxViewExtension.waitingAsyncOnSelectionChange) {
-					BrowserInvisibleTextBoxViewExtension.nextSelectionStart = start;
-					BrowserInvisibleTextBoxViewExtension.nextSelectionEnd = start + length;
-					BrowserInvisibleTextBoxViewExtension.nextSelectionDirection = direction;
+				if (input == null) {
+					return;
 				}
 
-				input?.setSelectionRange(start, start + length, direction);
+				// The selection an input event reported echoes back here and already matches the input;
+				// re-applying it would only notify the IME for nothing. Anything else (a tap, Select from
+				// code, even while composing) has to reach the input, where the browser then finishes
+				// the composition and typing continues at the new caret.
+				const end = start + length;
+				if (input.selectionStart === start && input.selectionEnd === end && (length === 0 || input.selectionDirection === direction)) {
+					return;
+				}
+
+				input.setSelectionRange(start, end, direction);
 			}
+		}
+
+		// The composition was ended by a text change from managed code rather than by the IME; the
+		// browser drops its composition state when the value is replaced, without a compositionend.
+		private static endComposition() {
+			BrowserInvisibleTextBoxViewExtension.isComposing = false;
+			BrowserInvisibleTextBoxViewExtension._imeExports.OnCompositionEnded();
 		}
 	}
 }
