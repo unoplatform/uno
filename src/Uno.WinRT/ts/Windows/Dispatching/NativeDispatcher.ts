@@ -4,14 +4,13 @@
 
 		static _isReady: boolean;
 
-		public static init(isReady : Promise<boolean>) {
+		public static init() {
 
-			isReady.then(() => {
+			if (!(<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
 				NativeDispatcher._dispatcherCallback = (<any>globalThis).DotnetExports.UnoUIDispatching.Uno.UI.Dispatching.NativeDispatcher.DispatcherCallback;
-
 				NativeDispatcher.WakeUp(true);
 				NativeDispatcher._isReady = true;
-			});;
+			}
 		}
 
 		// Queues a dispatcher callback on the event loop

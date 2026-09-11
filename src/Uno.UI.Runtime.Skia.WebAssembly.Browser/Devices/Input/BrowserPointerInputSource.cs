@@ -1,20 +1,22 @@
 using System;
-using Windows.Devices.Input;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
+
 using Microsoft.UI.Input;
-using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
-using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
-using Windows.Foundation;
-using Windows.UI.Core;
 using Microsoft.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
-using System.Runtime.InteropServices.JavaScript;
-
-using _PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
-using _PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
-using System.Runtime.InteropServices;
-using Windows.System;
 using Uno.UI.Dispatching;
 using Uno.UI.Xaml;
+using Windows.Devices.Input;
+using Windows.Foundation;
+using Windows.System;
+using Windows.UI.Core;
+
+using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
+using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
+using _PointerIdentifier = Windows.Devices.Input.PointerIdentifier; // internal type (should be in Uno namespace)
+using _PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -53,6 +55,14 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 		((BrowserPointerInputSource)inputSource)._bootTime = (ulong)bootTime;
 
 		_trace?.Invoke("Complete initialization of BrowserPointerInputSource, we are now ready to receive pointer events!");
+	}
+
+	[JSExport]
+	private static Task OnInitializedAsync([JSMarshalAs<JSType.Any>] object inputSource, double bootTime)
+	{
+		OnInitialized(inputSource, bootTime);
+
+		return Task.CompletedTask;
 	}
 
 	[JSExport]
@@ -165,13 +175,37 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 	}
 
 	[JSExport]
-	[return: JSMarshalAs<JSType.Number>]
-	private static int OnNativeScrollDelta(
-		[JSMarshalAs<JSType.Number>] nint unoElementId,
+	private static Task OnNativeEventAsync(
+		[JSMarshalAs<JSType.Any>] object inputSource,
+		byte @event,
+		double timestamp,
+		int deviceType,
+		double pointerId,
+		double x,
+		double y,
+		bool ctrl,
+		bool shift,
+		int buttons,
+		int buttonUpdate,
+		double pressure,
+		double wheelDeltaX,
+		double wheelDeltaY,
+		bool hasRelatedTarget)
+	{
+		OnNativeEvent(inputSource, @event, timestamp, deviceType, pointerId,
+			x, y, ctrl, shift, buttons, buttonUpdate, pressure,
+			wheelDeltaX, wheelDeltaY, hasRelatedTarget);
+
+		return Task.CompletedTask;
+	}
+
+	[JSExport]
+	private static bool OnNativeScrollDelta(
+		nint unoElementId,
 		double horizontalDelta,
 		double verticalDelta,
-		[JSMarshalAs<JSType.Boolean>] bool isIntermediate,
-		[JSMarshalAs<JSType.Boolean>] bool isInertial)
+		bool isIntermediate,
+		bool isInertial)
 	{
 		try
 		{
@@ -179,9 +213,7 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 			// ViewChanged and running layout) from outside the dispatcher.
 			using var syncContextScope = NativeDispatcher.Main.SynchronizationContext.Apply();
 
-			return BrowserNativeElementHostingExtension.ApplyNegotiatedScroll(unoElementId, horizontalDelta, verticalDelta, isIntermediate, isInertial)
-				? 1
-				: 0;
+			return BrowserNativeElementHostingExtension.ApplyNegotiatedScroll(unoElementId, horizontalDelta, verticalDelta, isIntermediate, isInertial);
 		}
 		catch (Exception error)
 		{
@@ -190,12 +222,21 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 				_log.Error($"Failed to apply negotiated native scroll: {error}");
 			}
 
-			return 0;
+			return false;
 		}
 	}
 
 	[JSExport]
-	private static void OnNativeScrollCompleted([JSMarshalAs<JSType.Number>] nint unoElementId)
+	private static Task<bool> OnNativeScrollDeltaAsync(
+		nint unoElementId,
+		double horizontalDelta,
+		double verticalDelta,
+		bool isIntermediate,
+		bool isInertial)
+		=> Task.FromResult(OnNativeScrollDelta(unoElementId, horizontalDelta, verticalDelta, isIntermediate, isInertial));
+
+	[JSExport]
+	private static void OnNativeScrollCompleted(nint unoElementId)
 	{
 		try
 		{
@@ -210,6 +251,14 @@ internal unsafe partial class BrowserPointerInputSource : IUnoCorePointerInputSo
 				_log.Error($"Failed to complete negotiated native scroll: {error}");
 			}
 		}
+	}
+
+	[JSExport]
+	private static Task OnNativeScrollCompletedAsync(nint unoElementId)
+	{
+		OnNativeScrollCompleted(unoElementId);
+
+		return Task.CompletedTask;
 	}
 
 	[NotImplemented] public bool HasCapture => false;

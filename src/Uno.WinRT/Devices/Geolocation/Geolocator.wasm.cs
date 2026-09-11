@@ -108,7 +108,7 @@ namespace Windows.Devices.Geolocation
 			});
 		}
 
-		internal static int DispatchGeoposition(string serializedGeoposition, string requestId)
+		internal static void DispatchGeoposition(string serializedGeoposition, string requestId)
 		{
 			BroadcastStatusChanged(PositionStatus.Ready); //whenever a location is successfully retrieved, GPS has state of Ready
 			var geocoordinate = ParseGeocoordinate(serializedGeoposition);
@@ -120,8 +120,6 @@ namespace Windows.Devices.Geolocation
 			{
 				geolocator.OnPositionChanged(new Geoposition(geocoordinate));
 			}
-
-			return 0;
 		}
 
 		/// <summary>
@@ -133,7 +131,7 @@ namespace Windows.Devices.Geolocation
 			_positionChangedWrapper.Event?.Invoke(this, new PositionChangedEventArgs(geoposition));
 		}
 
-		internal static int DispatchError(string currentPositionRequestResult, string requestId)
+		internal static void DispatchError(string currentPositionRequestResult, string requestId)
 		{
 			if (_pendingGeopositionRequests.TryRemove(requestId, out var geopositionCompletionSource))
 			{
@@ -165,15 +163,13 @@ namespace Windows.Devices.Geolocation
 							nameof(currentPositionRequestResult), "DispatchError position status must be an error status");
 				}
 			}
-			return 0;
 		}
 
 		/// <summary>
 		/// Handles result of Geolocation access request (initiated by <see cref="RequestAccessAsync"/>.
 		/// </summary>
 		/// <param name="serializedAccessStatus">Serialized string value from the <see cref="GeolocationAccessStatus"/> enum</param>
-		/// <returns>0 - needed to bind method from WASM</returns>
-		internal static int DispatchAccessRequest(string serializedAccessStatus)
+		internal static void DispatchAccessRequest(string serializedAccessStatus)
 		{
 			if (serializedAccessStatus is null)
 			{
@@ -195,7 +191,6 @@ namespace Windows.Devices.Geolocation
 				}
 				_pendingAccessRequests.Clear();
 			}
-			return 0;
 		}
 
 		/// <summary>
@@ -265,16 +260,39 @@ namespace Uno.Devices.Geolocation
 	public sealed partial class Geolocator
 	{
 		[JSExport]
-		internal static int DispatchAccessRequest(string serializedAccessStatus)
+		internal static void DispatchAccessRequest(string serializedAccessStatus)
 			=> global::Windows.Devices.Geolocation.Geolocator.DispatchAccessRequest(serializedAccessStatus);
 
 		[JSExport]
-		internal static int DispatchGeoposition(string serializedGeoposition, string requestId)
+		internal static Task DispatchAccessRequestAsync(string serializedAccessStatus)
+		{
+			global::Windows.Devices.Geolocation.Geolocator.DispatchAccessRequest(serializedAccessStatus);
+
+			return Task.CompletedTask;
+		}
+
+		[JSExport]
+		internal static void DispatchGeoposition(string serializedGeoposition, string requestId)
 			=> global::Windows.Devices.Geolocation.Geolocator.DispatchGeoposition(serializedGeoposition, requestId);
 
 		[JSExport]
-		internal static int DispatchError(string currentPositionRequestResult, string requestId)
+		internal static Task DispatchGeopositionAsync(string serializedGeoposition, string requestId)
+		{
+			global::Windows.Devices.Geolocation.Geolocator.DispatchGeoposition(serializedGeoposition, requestId);
+
+			return Task.CompletedTask;
+		}
+
+		[JSExport]
+		internal static void DispatchError(string currentPositionRequestResult, string requestId)
 			=> global::Windows.Devices.Geolocation.Geolocator.DispatchError(currentPositionRequestResult, requestId);
 
+		[JSExport]
+		internal static Task DispatchErrorAsync(string currentPositionRequestResult, string requestId)
+		{
+			global::Windows.Devices.Geolocation.Geolocator.DispatchError(currentPositionRequestResult, requestId);
+
+			return Task.CompletedTask;
+		}
 	}
 }

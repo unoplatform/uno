@@ -17,16 +17,16 @@ namespace Windows.Devices.Sensors {
 
 	export class Accelerometer {
 
-		private static dispatchReading: (x: number, y: number, z: number) => number;
+		private static dispatchReading: (x: number, y: number, z: number) => (void | Promise<void>);
 		private static accelerometer: any;
 
 		public static initialize(): boolean {
 			try {
 				if (typeof window.Accelerometer === "function") {
-					if ((<any>globalThis).DotnetExports !== undefined) {
-						Accelerometer.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.Accelerometer.DispatchReading;
+					if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+						Accelerometer.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.Accelerometer.DispatchReadingAsync;
 					} else {
-						throw `Accelerometer: Unable to find dotnet exports`;
+						Accelerometer.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.Accelerometer.DispatchReading;
 					}
 					const AccelerometerClass: any = window.Accelerometer;
 					Accelerometer.accelerometer = new AccelerometerClass({ frequency: 60 });

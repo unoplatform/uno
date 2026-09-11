@@ -1,8 +1,8 @@
 ﻿namespace Windows.Gaming.Input {
 	export class Gamepad {
 
-		private static dispatchGamepadAdded: (id: number) => number;
-		private static dispatchGamepadRemoved: (id: number) => number;
+		private static dispatchGamepadAdded: (id: number) => (void | Promise<void>);
+		private static dispatchGamepadRemoved: (id: number) => (void | Promise<void>);
 
 		public static getConnectedGamepadIds(): string {
 			const gamepads = navigator.getGamepads();
@@ -65,10 +65,10 @@
 
 		private static onGamepadConnected(e: any) {
 			if (!Gamepad.dispatchGamepadAdded) {
-				if ((<any>globalThis).DotnetExports !== undefined) {
-					Gamepad.dispatchGamepadAdded = (<any>globalThis).DotnetExports.Uno.Windows.Gaming.Input.Gamepad.DispatchGamepadAdded;
+				if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+					Gamepad.dispatchGamepadAdded = (<any>globalThis).DotnetExports.Uno.Windows.Gaming.Input.Gamepad.DispatchGamepadAddedAsync;
 				} else {
-					throw `Gamepad: Unable to find dotnet exports`;
+					Gamepad.dispatchGamepadAdded = (<any>globalThis).DotnetExports.Uno.Windows.Gaming.Input.Gamepad.DispatchGamepadAdded;
 				}
 			}
 			Gamepad.dispatchGamepadAdded(e.gamepad.index);
@@ -76,10 +76,10 @@
 
 		private static onGamepadDisconnected(e: any) {
 			if (!Gamepad.dispatchGamepadRemoved) {
-				if ((<any>globalThis).DotnetExports !== undefined) {
-					Gamepad.dispatchGamepadRemoved = (<any>globalThis).DotnetExports.Uno.Windows.Gaming.Input.Gamepad.DispatchGamepadRemoved;
+				if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+					Gamepad.dispatchGamepadRemoved = (<any>globalThis).DotnetExports.Uno.Windows.Gaming.Input.Gamepad.DispatchGamepadRemovedAsync;
 				} else {
-					throw `Gamepad: Unable to find dotnet exports`;
+					Gamepad.dispatchGamepadRemoved = (<any>globalThis).DotnetExports.Uno.Windows.Gaming.Input.Gamepad.DispatchGamepadRemoved;
 				}
 			}
 			Gamepad.dispatchGamepadRemoved(e.gamepad.index);

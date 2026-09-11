@@ -1,4 +1,3 @@
-﻿
 // eslint-disable-next-line @typescript-eslint/no-namespace
 namespace MonoSupport {
 
@@ -104,30 +103,8 @@ namespace MonoSupport {
 		private static getMethodMapId(methodHandle: number) {
 			return methodHandle + "";
 		}
-	
-		public static invokeOnMainThread() {
-
-			if (!jsCallDispatcher.dispatcherCallback) {
-				jsCallDispatcher.dispatcherCallback = (<any>globalThis).DotnetExports.UnoUIDispatching.Uno.UI.Dispatching.NativeDispatcher.DispatcherCallback;
-			}
-
-			// Use setImmediate to return avoid blocking the background thread
-			// on a sync call.
-			(<any>window).setImmediate(() => {
-				try {
-					jsCallDispatcher.dispatcherCallback();
-				}
-				catch (e) {
-					console.error(`Unhandled dispatcher exception: ${e} (${e.stack})`);
-					throw e;
-				}
-			});
-		}
 	}
 }
 
 // Export the DotNet helper for WebAssembly.JSInterop.InvokeJSUnmarshalled
 (<any>window).DotNet = MonoSupport;
-
-// Export the main thread invoker for threading support
-(<any>MonoSupport).invokeOnMainThread = MonoSupport.jsCallDispatcher.invokeOnMainThread;

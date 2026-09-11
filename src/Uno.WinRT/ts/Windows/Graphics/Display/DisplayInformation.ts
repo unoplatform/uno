@@ -13,8 +13,7 @@
 		private static lastDpi: number;
 		private static dpiWatcher: number;
 
-		private static dispatchOrientationChanged: (type: string) => number;
-		private static dispatchDpiChanged: (dpi: number) => number;
+		private static dispatchDisplayMetricsChanged: () => (void | Promise<void>);
 
 		private static lockingSupported: boolean | null;
 
@@ -141,27 +140,31 @@
 		private static updateDpi() {
 			const currentDpi = window.devicePixelRatio;
 			if (Math.abs(DisplayInformation.lastDpi - currentDpi) > 0.001) {
-				if (DisplayInformation.dispatchDpiChanged == null) {
-					if ((<any>globalThis).DotnetExports !== undefined) {
-						DisplayInformation.dispatchDpiChanged = (<any>globalThis).DotnetExports.Uno.Windows.Graphics.Display.DisplayInformation.DispatchDpiChanged;
+				if (DisplayInformation.dispatchDisplayMetricsChanged == null) {
+					if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+						DisplayInformation.dispatchDisplayMetricsChanged =
+							(<any>globalThis).DotnetExports.Uno.Windows.Graphics.Display.DisplayInformation.DispatchDisplayMetricsChangedAsync;
 					} else {
-						throw `DisplayInformation: Unable to find dotnet exports`;
+						DisplayInformation.dispatchDisplayMetricsChanged =
+							(<any>globalThis).DotnetExports.Uno.Windows.Graphics.Display.DisplayInformation.DispatchDisplayMetricsChanged;
 					}
 				}
-				DisplayInformation.dispatchDpiChanged(currentDpi);
+				DisplayInformation.dispatchDisplayMetricsChanged();
 			}
 			DisplayInformation.lastDpi = currentDpi;
 		}
 
 		private static onOrientationChange() {
-			if (DisplayInformation.dispatchOrientationChanged == null) {
-				if ((<any>globalThis).DotnetExports !== undefined) {
-					DisplayInformation.dispatchOrientationChanged = (<any>globalThis).DotnetExports.Uno.Windows.Graphics.Display.DisplayInformation.DispatchOrientationChanged;
+			if (DisplayInformation.dispatchDisplayMetricsChanged == null) {
+				if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+					DisplayInformation.dispatchDisplayMetricsChanged =
+						(<any>globalThis).DotnetExports.Uno.Windows.Graphics.Display.DisplayInformation.DispatchDisplayMetricsChangedAsync;
 				} else {
-					throw `DisplayInformation: Unable to find dotnet exports`;
+					DisplayInformation.dispatchDisplayMetricsChanged =
+						(<any>globalThis).DotnetExports.Uno.Windows.Graphics.Display.DisplayInformation.DispatchDisplayMetricsChanged;
 				}
 			}
-			DisplayInformation.dispatchOrientationChanged(window.screen.orientation.type);
+			DisplayInformation.dispatchDisplayMetricsChanged();
 		}
 	}
 }

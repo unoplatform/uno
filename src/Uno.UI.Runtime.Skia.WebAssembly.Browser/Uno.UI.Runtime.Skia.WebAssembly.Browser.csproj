@@ -50,7 +50,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="build/*.*">
+		<Content Include="build/**/*.*">
 			<Pack>true</Pack>
 			<PackagePath>build</PackagePath>
 		</Content>
