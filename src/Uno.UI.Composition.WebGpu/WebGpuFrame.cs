@@ -195,6 +195,10 @@ internal sealed unsafe partial class WebGpuFrame
 
 	private static Vector4 Inflate(Vector4 b, float pad) => new(b.X - pad, b.Y - pad, b.Z + pad, b.W + pad);
 
+	/// <summary>True when a device-space box contributes no pixels to the target: empty, or wholly outside it.</summary>
+	private bool Culled(Vector4 b)
+		=> b.X >= b.Z || b.Y >= b.W || b.Z <= 0 || b.W <= 0 || b.X >= Target.Width || b.Y >= Target.Height;
+
 	// The bounds of both; an empty (inverted) side contributes nothing.
 	private static Vector4 Union(Vector4 a, Vector4 b)
 	{

@@ -264,13 +264,14 @@ internal sealed unsafe partial class WebGpuFrame
 	private void EmitReplay(ReplayRefCmd rr, in Matrix3x2 m, in Matrix3x2 inv, in ClipData outer, bool direct, List<DrawOp> ops)
 	{
 		var rm = m.IsIdentity ? To3x2(rr.Transform) : To3x2(rr.Transform) * m;
+		var db = TransformBounds(rr.Data.IdentityBounds ??= CmdListBounds(rr.Commands), rm);
+		// Cull against the replay site's clip BEFORE composing this record's own: the composed clip is the
+		// intersection of the two, so whatever the site rejects the composition rejects as well. A list of
+		// thousands of moving rows hands the walk every one of its records each frame (the visual tree culls
+		// leaves, never recordings), and the scrolled-out ones must cost a transform and a compare, nothing more.
+		if (Culled(ClampToClip(db, outer))) { return; }
 		var rc = ComposeClip(outer, rr.Clip, m, inv, direct);
-		// A recording entirely clipped out or off-surface costs nothing.
-		var bounds = ClampToClip(TransformBounds(rr.Data.IdentityBounds ??= CmdListBounds(rr.Commands), rm), rc);
-		if (bounds.X >= bounds.Z || bounds.Y >= bounds.W || bounds.Z <= 0 || bounds.W <= 0 || bounds.X >= Target.Width || bounds.Y >= Target.Height)
-		{
-			return;
-		}
+		if (Culled(ClampToClip(db, rc))) { return; }
 		if (IsPlain(rr)) { EmitArena(rr, rm, rc, ops); }
 		else { if (_emitStats) { StatWalkedRecords++; } Walk(rr.Commands, rm, rc, ops); }
 	}
@@ -382,7 +383,7 @@ internal sealed unsafe partial class WebGpuFrame
 	{
 		var pad = MathF.Ceiling(3f * MathF.Max(sh.SigmaX, sh.SigmaY)) + 2f;
 		var ext = ClampToClip(Inflate(new Vector4(sh.BbMin.X, sh.BbMin.Y, sh.BbMax.X, sh.BbMax.Y), pad), sh.Clip);
-		if (ext.X >= ext.Z || ext.Y >= ext.W || ext.Z <= 0 || ext.W <= 0 || ext.X >= Target.Width || ext.Y >= Target.Height)
+		if (Culled(ext))
 		{
 			return;
 		}
@@ -429,10 +430,7 @@ internal sealed unsafe partial class WebGpuFrame
 				var spad = MathF.Ceiling(3f * MathF.Max(sfx.SigmaX, sfx.SigmaY)) + 2f;
 				vis = Union(vis, ClampToClip(Inflate(new Vector4(content.X + sfx.Dx, content.Y + sfx.Dy, content.Z + sfx.Dx, content.W + sfx.Dy), spad), cd));
 			}
-			if (vis.X >= vis.Z || vis.Y >= vis.W || vis.Z <= 0 || vis.W <= 0 || vis.X >= Target.Width || vis.Y >= Target.Height)
-			{
-				return;
-			}
+			if (Culled(vis)) { return; }
 		}
 
 		// Size to content: a plain group with no backdrop inside needs a target only as big as what it draws (plus,
