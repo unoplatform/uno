@@ -69,6 +69,14 @@ namespace Uno.UI.Xaml
 #endif
 
 		/// <summary>
+		/// Name of the weak property carrying an object's XAML declaration site. Declared here because
+		/// this file is linked into the XAML generator, so the name that is emitted and the name that is
+		/// read come from one place. <c>MarkupHelper.OriginalSourceLocationPropertyName</c> exposes it to
+		/// the runtime's consumers and documents the value's format.
+		/// </summary>
+		public const string OriginalSourceLocationPropertyName = "OriginalSourceLocation";
+
+		/// <summary>
 		/// Convert relative source path to absolute path.
 		/// </summary>
 		internal static string ResolveAbsoluteSource(string origin, string relativeTargetPath)

@@ -51,6 +51,16 @@ namespace Windows.UI.Input
 
 		public bool IsActive => _gestures.Count > 0 || _manipulation != null;
 
+		/// <summary>
+		/// Indicates that the pointer of the last processed down event landed while a manipulation was coasting,
+		/// i.e. that press is what aborted the inertia.
+		/// This is informative only: the gestures of that press are still recognized as usual, like on WinUI where
+		/// gesture recognition is independent of the inertia of another element. Owners which want the OS-like
+		/// "the first press only stops the momentum" behavior opt into it explicitly
+		/// (cf. Uno.UI.Xaml.ManipulationExtensions.IsTapToStopInertiaEnabled).
+		/// </summary>
+		internal bool LastDownStoppedInertia { get; private set; }
+
 		internal bool IsTracking(PointerIdentifier pointer)
 			=> _gestures.ContainsKey(pointer) || _manipulation?.IsActive(pointer) is true;
 
@@ -82,6 +92,10 @@ namespace Windows.UI.Input
 
 		public void ProcessDownEvent(global::Microsoft.UI.Input.PointerPoint value)
 		{
+			// Must be evaluated before the manipulation is updated below, as a press which lands while the
+			// manipulation is coasting aborts it.
+			LastDownStoppedInertia = _isManipulationOrDragEnabled && _manipulation?.IsCoasting is true;
+
 			// Sanity validation. This is pretty important as the Gesture now has an internal state for the Holding state.
 			if (_gestures.TryGetValue(value.Pointer, out var previousGesture))
 			{

@@ -31,7 +31,7 @@
 	<ItemGroup>
 		<PackageReference Include="System.Reactive" Version="6.0.0" />
 		<PackageReference Include="Uno.Core.Extensions" />
-		<PackageReference Include="Uno.Core.Extensions.Threading" Version="4.0.1" />
+		<PackageReference Include="Uno.Core.Extensions.Threading" />
 		<PackageReference Include="Uno.Core.Extensions.Disposables" />
 
 		<!-- Override the vulnerable System.Security.Cryptography.Xml that Microsoft.Build.Tasks.Core

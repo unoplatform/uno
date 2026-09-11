@@ -76,10 +76,10 @@ The following lines need to be added to your AndroidManifest.xml:
 * The app must be packaged as an `.app` bundle when running speech recognition — macOS only displays the TCC authorization prompt for bundled apps. Launching the executable directly from a terminal (`dotnet run`) will result in `SFSpeechRecognizer` returning `Denied` without prompting.
 
 > [!NOTE]
-> For contributors: The Uno samples app (`SamplesApp.Skia.Generic`) ships a build target that automatically produces a minimal `.app` bundle next to the regular output on macOS. After `dotnet build`, launch it with:
+> For contributors: The Uno Platform samples app (`SamplesApp`) ships a build target that automatically produces a minimal `.app` bundle next to the regular output on macOS. After `dotnet build`, launch it with:
 >
 > ```bash
-> open src/SamplesApp/SamplesApp.Skia.Generic/bin/Debug/net10.0/SamplesApp.Skia.Generic.app
+> open src/SamplesApp/SamplesApp/bin/Debug/net11.0-desktop/SamplesApp.app
 > ```
 
 ### WebAssembly

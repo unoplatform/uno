@@ -34,7 +34,7 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 
 		private async void OpenDialogButton_Click(object sender, RoutedEventArgs e)
 		{
-			var webView = new WebView2 { MinWidth = 500, MinHeight = 300 };
+			var webView = new Microsoft.UI.Xaml.Controls.WebView2 { MinWidth = 500, MinHeight = 300 };
 
 			var webViewHost = new Border
 			{

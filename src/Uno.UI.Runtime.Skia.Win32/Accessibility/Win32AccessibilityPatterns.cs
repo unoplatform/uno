@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -697,7 +698,12 @@ internal sealed class UiaTextRangeProviderWrapper : IUiaTextRangeProvider
 		return range is not null ? new UiaTextRangeProviderWrapper(range, _accessibility) : null;
 	}
 
-	public object? GetAttributeValue(int attributeId) => _inner.GetAttributeValue(attributeId);
+	public object? GetAttributeValue(int attributeId)
+		=> _inner.GetAttributeValue(attributeId)
+			// UIA requires the reserved "not supported" sentinel — not VT_EMPTY — for attributes a
+			// range does not implement, matching CUIATextRangeProviderWrapper::GetAttributeValue,
+			// which maps E_NOT_SUPPORTED onto m_punkNotSupportedValue.
+			?? Win32UIAutomationInterop.GetReservedNotSupportedValue();
 
 	public double[] GetBoundingRectangles()
 	{
@@ -745,12 +751,21 @@ internal sealed class UiaTextRangeProviderWrapper : IUiaTextRangeProvider
 			return null;
 		}
 
-		var result = new object[children.Length];
+		// The inner range yields managed peer-backed providers. UIA needs COM providers, so each
+		// child is resolved through the same provider cache the rest of the tree uses — WinUI does
+		// the equivalent CreateProviderForAP + QueryInterface(IUnknown) in
+		// CUIATextRangeProviderWrapper::GetChildren.
+		var result = new List<object>(children.Length);
 		for (var i = 0; i < children.Length; i++)
 		{
-			result[i] = children[i];
+			if (children[i]?.AutomationPeer is { } peer
+				&& _accessibility.GetProviderForPeer(peer) is { } provider)
+			{
+				result.Add(provider);
+			}
 		}
-		return result;
+
+		return result.Count == 0 ? null : result.ToArray();
 	}
 }
 

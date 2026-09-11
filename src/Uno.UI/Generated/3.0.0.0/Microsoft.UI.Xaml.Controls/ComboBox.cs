@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ComboBox
+	public partial class ComboBox : global::Microsoft.UI.Xaml.Controls.Primitives.Selector
 	{
 		// Skipping already declared property DescriptionProperty
 		// Skipping already declared property HeaderProperty

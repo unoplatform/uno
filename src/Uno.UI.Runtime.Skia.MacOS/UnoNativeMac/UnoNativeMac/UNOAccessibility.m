@@ -357,6 +357,11 @@ UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window
 	return _unoHelp;
 }
 
+- (NSString *)accessibilityIdentifier {
+	// AutomationProperties.AutomationId → NSAccessibility identifier (XCUITest / Appium lookup).
+	return _unoIdentifier;
+}
+
 - (NSString *)accessibilityPlaceholderValue {
 	// accessibilityPlaceholderValue is announced for empty text fields.
 	// It maps to the description (PlaceholderText when Header is set).
@@ -586,7 +591,9 @@ UNOAccessibilityContext * _Nullable uno_a11y_context_for_window(NSWindow *window
 		[actions addObject:NSAccessibilityPressAction];
 	}
 
-	if (_unoHasRangeValue && role == NSAccessibilitySliderRole) {
+	// Increment/decrement actions apply to any range widget VoiceOver drives with the
+	// increment/decrement gestures — Slider and ScrollBar both expose RangeValue.
+	if (_unoHasRangeValue && (role == NSAccessibilitySliderRole || role == NSAccessibilityScrollBarRole)) {
 		[actions addObject:NSAccessibilityIncrementAction];
 		[actions addObject:NSAccessibilityDecrementAction];
 	}
@@ -1163,6 +1170,13 @@ void uno_accessibility_update_help(intptr_t handle, const char* help) {
 	}
 }
 
+void uno_accessibility_update_identifier(intptr_t handle, const char* identifier) {
+	UNOAccessibilityElement *element = findElementGlobal(handle);
+	if (element) {
+		element.unoIdentifier = identifier ? [NSString stringWithUTF8String:identifier] : nil;
+	}
+}
+
 void uno_accessibility_update_description(intptr_t handle, const char* description) {
 	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
@@ -1174,6 +1188,7 @@ void uno_accessibility_update_role_description(intptr_t handle, const char* role
 	UNOAccessibilityElement *element = findElementGlobal(handle);
 	if (element) {
 		element.unoRoleDescription = roleDescription ? [NSString stringWithUTF8String:roleDescription] : nil;
+		NSAccessibilityPostNotification(element, NSAccessibilityLayoutChangedNotification);
 	}
 }
 
@@ -1236,6 +1251,13 @@ void uno_accessibility_update_selected(intptr_t handle, bool isSelected) {
 	if (element) {
 		element.unoIsSelected = isSelected;
 		NSAccessibilityPostNotification(element, NSAccessibilitySelectedChildrenChangedNotification);
+		// RadioButton / Tab / TabItem expose SelectionItem (not Toggle), but VoiceOver reads their
+		// checked state from accessibilityValue (_unoValue), which otherwise stays at its initial
+		// value after a selection change. Keep it in sync and announce the value change.
+		if ([element accessibilityRole] == NSAccessibilityRadioButtonRole) {
+			element.unoValue = isSelected ? @"1" : @"0";
+			NSAccessibilityPostNotification(element, NSAccessibilityValueChangedNotification);
+		}
 	}
 }
 
