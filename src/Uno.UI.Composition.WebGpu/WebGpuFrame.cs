@@ -60,7 +60,9 @@ internal sealed unsafe partial class WebGpuFrame
 		{
 			long t1 = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
 			End();
-			if (_emitStats && (_frameStatsCounter++ % 60) == 0)
+			// Same cadence as the stats line, so UNO_WEBGPU_STATS_EVERY=1 gives a per-FRAME phase breakdown rather
+			// than a 60-frame average - the only way to see a distribution instead of a mean.
+			if (_emitStats && (_frameStatsCounter++ % _emitStatsEvery) == 0)
 			{
 				long t2 = System.Diagnostics.Stopwatch.GetTimestamp();
 				double toMs = 1000.0 / System.Diagnostics.Stopwatch.Frequency;
