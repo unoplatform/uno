@@ -149,3 +149,45 @@ The bar of a `ScrollViewer` is a template part, so it cannot be addressed direct
 ```
 
 A known limitation: a finger pan which *starts* on a visible bar does not scroll the content, because hit-testing resolves into the `ScrollBar` and the content presenter is a sibling of it. Start the pan over the content instead.
+
+## ManipulationMode panning - press to stop the momentum
+
+An element which pans its own content through `ManipulationMode` (as the CommunityToolkit `DataGrid` does for its rows) keeps recognizing gestures while its content is coasting: the press which stops the momentum also activates the item under the finger, so a row gets selected by the very tap the user meant as "stop scrolling". This is the WinUI behavior — there, gesture recognition is per element and independent of the inertia of an ancestor — and it stays the default in Uno Platform.
+
+On a touch-only target such as a browser on a tablet, users expect the OS convention instead: the first press only stops the momentum. Opt into it with `ManipulationExtensions.IsTapToStopInertiaEnabled` on the panning element:
+
+```xml
+xmlns:toolkit="using:Uno.UI.Toolkit"
+```
+
+```xml
+<Border ManipulationMode="TranslateY,TranslateInertia"
+        toolkit:ManipulationExtensions.IsTapToStopInertiaEnabled="True">
+    <!-- content whose items act on Tapped -->
+</Border>
+```
+
+While enabled, the press which aborts the inertia raises no `Tapped`, `DoubleTapped`, `RightTapped` or `Holding` on the element, its ancestors or its descendants, so a second tap is needed to act on the pointed item. A tap while the content is at rest is unaffected.
+
+### Platform reach
+
+| Target | Behavior |
+| --- | --- |
+| Skia (Desktop, and Skia on Android, iOS and WebAssembly) | Supported and validated. |
+| WebAssembly (native backend) | Supported — it uses the same managed pointer pipeline. |
+| Windows (WinAppSDK) | Inert. The property stores its value and nothing reads it, so cross-platform XAML stays valid. |
+| Android and iOS (native backends) | Not supported. Pointer events bubble natively there, so the order the gestures are muted in has not been validated. |
+
+The property is intentionally not gated per target: setting it where it does nothing is harmless — the default behavior is unchanged unless it is set — and a setter that silently refuses a value is harder to diagnose than one documented as inert.
+
+Panning elements which are template parts of a third-party control cannot be addressed directly. Reach them with an implicit `Style` in your application resources instead — for the CommunityToolkit `DataGrid`, whose rows are panned by its `DataGridRowsPresenter`:
+
+```xml
+xmlns:primitives="using:CommunityToolkit.WinUI.UI.Controls.Primitives"
+```
+
+```xml
+<Style TargetType="primitives:DataGridRowsPresenter">
+    <Setter Property="toolkit:ManipulationExtensions.IsTapToStopInertiaEnabled" Value="True" />
+</Style>
+```
