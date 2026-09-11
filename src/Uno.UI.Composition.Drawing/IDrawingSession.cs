@@ -138,8 +138,12 @@ public interface IDrawingSession
 	/// </summary>
 	void DrawShadow(IGeometry silhouette, Color color, float sigmaX, float sigmaY, bool additive);
 
-	/// <summary>Strokes the outline of <paramref name="geometry"/>.</summary>
-	void StrokePath(IGeometry geometry, Color color, float strokeWidth);
+	/// <summary>
+	/// Strokes the outline of <paramref name="geometry"/>. Only backends that advertise
+	/// <see cref="DrawingCapabilities.NativeStroking"/> are handed strokes this way, and they are expected to honour
+	/// every <see cref="StrokeJoin"/>; flat caps and no dashing are implied, the caller widens anything else itself.
+	/// </summary>
+	void StrokePath(IGeometry geometry, Color color, float strokeWidth, StrokeJoin join = StrokeJoin.Miter);
 
 	void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth);
 

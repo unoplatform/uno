@@ -34,7 +34,7 @@ internal sealed unsafe partial class WebGpuCoverage
 	internal WebGpuShapeCache.Shape ShapeOf(PathCmd c, Vector2 scale)
 	{
 		var density = MathF.Max(scale.X, scale.Y);
-		return c.Stroke > 0f ? _d.Shapes.GetStroke(c.Geometry, c.M, c.Stroke, density) : _d.Shapes.Get(c.Geometry, c.M, density, c.EvenOdd);
+		return c.Stroke > 0f ? _d.Shapes.GetStroke(c.Geometry, c.M, c.Stroke, density, c.Join) : _d.Shapes.Get(c.Geometry, c.M, density, c.EvenOdd);
 	}
 
 	// A clip's path masks: one mask entry per path (its slot in View), so nesting has no limit and no product bake. All

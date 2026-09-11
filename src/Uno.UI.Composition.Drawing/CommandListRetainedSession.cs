@@ -274,10 +274,10 @@ internal sealed class CommandListRecorder : ICommandRecorder
 		_commands.Add(ctx => ctx.Target.DrawShadow(g, color, sigmaX, sigmaY, additive));
 	}
 
-	public void StrokePath(IGeometry geometry, Color color, float strokeWidth)
+	public void StrokePath(IGeometry geometry, Color color, float strokeWidth, StrokeJoin join = StrokeJoin.Miter)
 	{
 		var g = Retain(geometry);
-		_commands.Add(ctx => ctx.Target.StrokePath(g, color, strokeWidth));
+		_commands.Add(ctx => ctx.Target.StrokePath(g, color, strokeWidth, join));
 	}
 
 	public void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth)

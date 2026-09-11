@@ -339,11 +339,11 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 	}
 
 
-	public void DrawPath(IGeometry geometry, WColor color) => AddPath(geometry, color, 0f);
+	public void DrawPath(IGeometry geometry, WColor color) => AddPath(geometry, color, 0f, StrokeJoin.Miter);
 
 	// The path as recorded: its geometry and the current matrix. Flattening and tessellation wait for draw time,
 	// when the density it is drawn at (DPI, replay scale) is known.
-	private void AddPath(IGeometry geometry, WColor color, float stroke)
+	private void AddPath(IGeometry geometry, WColor color, float stroke, StrokeJoin join)
 	{
 		if (_pendingColorMatrix is { Length: >= 20 } pm) { color = ApplyColorMatrix(color, pm); }
 		Geo.Bounds(geometry, M3, out var min, out var max);
@@ -354,6 +354,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 			Geometry = Track(geometry),
 			M = M3,
 			Stroke = stroke,
+			Join = join,
 			Color = color,
 			EvenOdd = stroke == 0f && geometry.FillRule == GeometryFillRule.EvenOdd,
 			BbMin = min,
@@ -478,9 +479,9 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 			Clip = _clip,
 		});
 	}
-	public void StrokePath(IGeometry geometry, WColor color, float strokeWidth)
+	public void StrokePath(IGeometry geometry, WColor color, float strokeWidth, StrokeJoin join = StrokeJoin.Miter)
 	{
-		if (strokeWidth > 0f) { AddPath(geometry, color, strokeWidth); }
+		if (strokeWidth > 0f) { AddPath(geometry, color, strokeWidth, join); }
 	}
 	public void DrawLine(Vector2 p0, Vector2 p1, WColor color, float strokeWidth)
 	{

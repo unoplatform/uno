@@ -159,10 +159,9 @@ namespace Microsoft.UI.Composition
 						&& stroke is CompositionColorBrush nativeStrokeColor && stroke.CanPaint()
 						&& _strokeDashArray is not { Count: > 0 }
 						&& (Geometry?.TrimStart ?? 0f) == 0f && (Geometry?.TrimEnd ?? 0f) == 0f
-						&& StrokeLineJoin == CompositionStrokeLineJoin.Miter
 						&& StrokeStartCap == CompositionStrokeCap.Flat && StrokeEndCap == CompositionStrokeCap.Flat)
 					{
-						session.Session.StrokePath(geometryWithTransformations, WithOpacity(nativeStrokeColor.Color, session.Opacity), StrokeThickness);
+						session.Session.StrokePath(geometryWithTransformations, WithOpacity(nativeStrokeColor.Color, session.Opacity), StrokeThickness, ToDrawingJoin(StrokeLineJoin));
 						return;
 					}
 
@@ -324,6 +323,14 @@ namespace Microsoft.UI.Composition
 			DashOffset = StrokeDashOffset,
 			TrimStart = trimStart,
 			TrimEnd = trimEnd,
+		};
+
+		private static Uno.UI.Composition.Drawing.StrokeJoin ToDrawingJoin(CompositionStrokeLineJoin join) => join switch
+		{
+			CompositionStrokeLineJoin.Round => Uno.UI.Composition.Drawing.StrokeJoin.Round,
+			CompositionStrokeLineJoin.Bevel => Uno.UI.Composition.Drawing.StrokeJoin.Bevel,
+			CompositionStrokeLineJoin.MiterOrBevel => Uno.UI.Composition.Drawing.StrokeJoin.MiterOrBevel,
+			_ => Uno.UI.Composition.Drawing.StrokeJoin.Miter,
 		};
 
 		/// <summary>Strokes <paramref name="geometry"/> through the resolved trim window (see <see cref="TryResolveTrim"/>).</summary>

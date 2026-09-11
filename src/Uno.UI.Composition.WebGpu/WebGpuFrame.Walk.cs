@@ -182,7 +182,7 @@ internal sealed unsafe partial class WebGpuFrame
 			var half = new Vector2(pc.Stroke * 0.5f * MathF.Max(MathF.Abs(pm.M11), MathF.Abs(pm.M12)), pc.Stroke * 0.5f * MathF.Max(MathF.Abs(pm.M21), MathF.Abs(pm.M22)));
 			min -= half; max += half;
 		}
-		return new PathCmd { Geometry = pc.Geometry, M = pm, Stroke = pc.Stroke, Color = pc.Color, EvenOdd = pc.EvenOdd, BbMin = min, BbMax = max, Clip = cd };
+		return new PathCmd { Geometry = pc.Geometry, M = pm, Stroke = pc.Stroke, Join = pc.Join, Color = pc.Color, EvenOdd = pc.EvenOdd, BbMin = min, BbMax = max, Clip = cd };
 	}
 
 	private static ShadowCmd Under(ShadowCmd sh, in Matrix3x2 m, bool identity, in ClipData cd)

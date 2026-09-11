@@ -279,9 +279,9 @@ public class Given_SvgImageSource_ManagedEngine
 		public void DrawPath(IGeometry geometry, Color color) =>
 			_ops.Add(new Op(geometry, default, color, null, _ctm, _clips.ToArray()));
 
-		public void StrokePath(IGeometry geometry, Color color, float strokeWidth)
+		public void StrokePath(IGeometry geometry, Color color, float strokeWidth, StrokeJoin join = StrokeJoin.Miter)
 		{
-			var stroke = geometry.GetStrokeFillGeometry(new StrokeStyle { Thickness = strokeWidth, MiterLimit = 4f });
+			var stroke = geometry.GetStrokeFillGeometry(new StrokeStyle { Thickness = strokeWidth, MiterLimit = 4f, LineJoin = join });
 			_ops.Add(new Op(stroke, default, color, null, _ctm, _clips.ToArray()));
 		}
 

@@ -30,22 +30,23 @@ internal sealed class WebGpuShapeCache
 	public static float DensityClass(float scale) => MathF.Max(1f / 16f, MathF.Round(scale * 16f) / 16f);
 	private static long Q(float v) => (long)MathF.Round(v * 64f);
 
-	private readonly record struct Key(long M11, long M12, long M21, long M22, float Density, bool EvenOdd, float Stroke);
+	private readonly record struct Key(long M11, long M12, long M21, long M22, float Density, bool EvenOdd, float Stroke, StrokeJoin Join);
 	private readonly ConditionalWeakTable<IGeometry, Dictionary<Key, Shape>> _byGeometry = new();
 
 	// Why fills took the mask route, and why tessellation refused (UNO_WEBGPU_STATS).
 	internal static int StatFanRefused, StatTessPoints, StatTessTri, StatTessArea, StatTessFold;
 
+
 	/// <summary>The fill of <paramref name="g"/> under the linear part of <paramref name="m"/>, at <paramref name="scale"/> device pixels per unit.</summary>
-	public Shape Get(IGeometry g, in Matrix3x2 m, float scale, bool evenOdd) => Resolve(g, m, scale, evenOdd, 0f);
+	public Shape Get(IGeometry g, in Matrix3x2 m, float scale, bool evenOdd) => Resolve(g, m, scale, evenOdd, 0f, StrokeJoin.Miter);
 
 	/// <summary>The stroke of <paramref name="g"/>, <paramref name="width"/> wide in its own units, as a tiling strip.</summary>
-	public Shape GetStroke(IGeometry g, in Matrix3x2 m, float width, float scale) => Resolve(g, m, scale, false, width);
+	public Shape GetStroke(IGeometry g, in Matrix3x2 m, float width, float scale, StrokeJoin join) => Resolve(g, m, scale, false, width, join);
 
-	private Shape Resolve(IGeometry g, in Matrix3x2 m, float scale, bool evenOdd, float stroke)
+	private Shape Resolve(IGeometry g, in Matrix3x2 m, float scale, bool evenOdd, float stroke, StrokeJoin join)
 	{
 		var density = DensityClass(scale);
-		var key = new Key(Q(m.M11), Q(m.M12), Q(m.M21), Q(m.M22), density, evenOdd, stroke);
+		var key = new Key(Q(m.M11), Q(m.M12), Q(m.M21), Q(m.M22), density, evenOdd, stroke, join);
 		var shapes = _byGeometry.GetValue(g, static _ => new Dictionary<Key, Shape>());
 		lock (shapes)
 		{
@@ -53,7 +54,7 @@ internal sealed class WebGpuShapeCache
 			{
 				if (shapes.Count >= 8) { shapes.Clear(); }   // a zoom's worth of classes; the geometry bounds the lifetime
 				var linear = new Matrix3x2(m.M11, m.M12, m.M21, m.M22, 0f, 0f);
-				s = stroke > 0f ? BuildStrip(g, linear, stroke, density) : BuildFill(g, linear, density, evenOdd);
+				s = stroke > 0f ? BuildStrip(g, linear, stroke, density, join) : BuildFill(g, linear, density, evenOdd);
 				shapes[key] = s;
 			}
 			return s;
@@ -229,11 +230,11 @@ internal sealed class WebGpuShapeCache
 
 	// ------------------------------------------------------------------------------------------------ strokes
 
-	// A stroke as a miter-joined triangle strip, which tiles, so it fills in one pass instead of baking the stroke's
+	// A stroke as a joined triangle strip, which tiles, so it fills in one pass instead of baking the stroke's
 	// OUTLINE into a bbox-sized mask whose cost is the bbox rather than the ink. Offsets are computed in the
 	// geometry's own space before the linear map, so a non-uniform scale strokes correctly. Consecutive quads share
 	// their join edge exactly, so a translucent stroke does not double-blend, except where the polyline crosses itself.
-	private static Shape BuildStrip(IGeometry g, in Matrix3x2 linear, float width, float density)
+	private static Shape BuildStrip(IGeometry g, in Matrix3x2 linear, float width, float density, StrokeJoin join)
 	{
 		// Flattened in local space at the density the linear map will produce.
 		var scale = MathF.Max(new Vector2(linear.M11, linear.M12).Length(), new Vector2(linear.M21, linear.M22).Length());
@@ -244,7 +245,7 @@ internal sealed class WebGpuShapeCache
 		var h = width * 0.5f;
 		foreach (var (pts, closed) in flat.Contours)
 		{
-			Strip(pts, closed, h, linear, tris, ref bbMin, ref bbMax);
+			Strip(pts, closed, h, join, density * scale, linear, tris, ref bbMin, ref bbMax);
 		}
 		if (tris.Count == 0) { return Shape.Empty; }
 		return new Shape { Tris = tris.ToArray(), BbMin = bbMin, BbMax = bbMax };
@@ -268,7 +269,7 @@ internal sealed class WebGpuShapeCache
 		}
 	}
 
-	private static void Strip(List<Vector2> pts, bool closed, float h, in Matrix3x2 m, List<float> tris, ref Vector2 bbMin, ref Vector2 bbMax)
+	private static void Strip(List<Vector2> pts, bool closed, float h, StrokeJoin join, float deviceScale, in Matrix3x2 m, List<float> tris, ref Vector2 bbMin, ref Vector2 bbMax)
 	{
 		for (int i = pts.Count - 1; i > 0; i--)
 		{
@@ -281,40 +282,125 @@ internal sealed class WebGpuShapeCache
 		var n = pts.Count;
 		if (n < 2) { return; }
 
-		var off = new Vector2[n];
+		var wedged = join is StrokeJoin.Round or StrokeJoin.Bevel;
+
+		// The four corners each vertex contributes: two for the segment arriving at it, two for the one leaving.
+		// A miter join shares one point per side, so arrive == leave; a round or bevel join holds each segment's
+		// OUTER corner on its own perpendicular and lets Wedge bridge the gap. The INNER side stays shared either
+		// way -- it lies inside the ink, and meeting there is what keeps consecutive quads from double-blending a
+		// translucent stroke. Sign convention throughout: +Perp is the inner side of a left turn.
+		var inA = new Vector2[n]; var outA = new Vector2[n];     // arriving segment, +Perp and -Perp corners
+		var inL = new Vector2[n]; var outL = new Vector2[n];     // leaving segment
+		var wedge = new (Vector2 From, Vector2 To)[n];
+		var apex = new Vector2[n];   // the join fan's centre: the inner corner the two quads already share
 		for (int i = 0; i < n; i++)
 		{
 			var hasPrev = i > 0 || closed;
 			var hasNext = i < n - 1 || closed;
 			var n1 = hasPrev ? Norm(pts[i] - pts[(i - 1 + n) % n]) : Vector2.Zero;
 			var n2 = hasNext ? Norm(pts[(i + 1) % n] - pts[i]) : Vector2.Zero;
-			if (!hasPrev || n1 == Vector2.Zero) { off[i] = Perp(n2) * h; continue; }
-			if (!hasNext || n2 == Vector2.Zero) { off[i] = Perp(n1) * h; continue; }
+			if (!hasPrev || n1 == Vector2.Zero) { Same(Perp(n2) * h, i); continue; }
+			if (!hasNext || n2 == Vector2.Zero) { Same(Perp(n1) * h, i); continue; }
+
 			var mid = Perp(n1) + Perp(n2);
 			var ml = mid.Length();
-			if (ml < 1e-5f) { off[i] = Perp(n1) * h; continue; }   // 180 degree reversal: no finite miter
+			if (ml < 1e-5f) { Same(Perp(n1) * h, i); continue; }   // 180 degree reversal: no finite miter
 			mid /= ml;
-			// miterLength = h / cos(theta/2); clamped so a near-degenerate corner cannot shoot off to infinity.
 			// miterLength = h / cos(theta/2), bevelled rather than extended once the corner is sharp enough that the
 			// miter would run away (a spike is never the right answer; it is what a degenerate corner used to draw).
 			var cos = Vector2.Dot(mid, Perp(n1));
-			off[i] = MathF.Abs(cos) < 0.25f ? Perp(n1) * h : mid * (h / cos);
+			var miter = MathF.Abs(cos) < 0.25f ? Perp(n1) * h : mid * (h / cos);
+
+			var turn = n1.X * n2.Y - n1.Y * n2.X;
+			if (!wedged || turn == 0f) { Same(miter, i); continue; }
+
+			// The shared inner point sits |miter| back along the bisector; past the shorter neighbouring segment it
+			// would reach beyond that segment's far end and fold its quad inside out. Fall back to the two
+			// perpendiculars there: a sliver of overlap inside the ink, rather than a fold that shows as missing ink.
+			var lim = MathF.Min((pts[i] - pts[(i - 1 + n) % n]).Length(), (pts[(i + 1) % n] - pts[i]).Length());
+			var split = miter.LengthSquared() > lim * lim;
+
+			var p1 = Perp(n1) * h; var p2 = Perp(n2) * h;
+			if (turn > 0f)
+			{
+				inA[i] = split ? p1 : miter; inL[i] = split ? p2 : miter;
+				outA[i] = -p1; outL[i] = -p2;
+				wedge[i] = (-p1, -p2);
+				apex[i] = split ? Vector2.Zero : miter;
+			}
+			else
+			{
+				outA[i] = split ? -p1 : -miter; outL[i] = split ? -p2 : -miter;
+				inA[i] = p1; inL[i] = p2;
+				wedge[i] = (p1, p2);
+				apex[i] = split ? Vector2.Zero : -miter;
+			}
 		}
 
 		var segs = closed ? n : n - 1;
 		for (int i = 0; i < segs; i++)
 		{
 			var j = (i + 1) % n;
-			var a0 = Vector2.Transform(pts[i] + off[i], m); var a1 = Vector2.Transform(pts[i] - off[i], m);
-			var b0 = Vector2.Transform(pts[j] + off[j], m); var b1 = Vector2.Transform(pts[j] - off[j], m);
-			foreach (var p in new[] { a0, b0, b1, a0, b1, a1 })
+			var a0 = Vector2.Transform(pts[i] + inL[i], m); var a1 = Vector2.Transform(pts[i] + outL[i], m);
+			var b0 = Vector2.Transform(pts[j] + inA[j], m); var b1 = Vector2.Transform(pts[j] + outA[j], m);
+			Emit(a0, tris, ref bbMin, ref bbMax); Emit(b0, tris, ref bbMin, ref bbMax); Emit(b1, tris, ref bbMin, ref bbMax);
+			Emit(a0, tris, ref bbMin, ref bbMax); Emit(b1, tris, ref bbMin, ref bbMax); Emit(a1, tris, ref bbMin, ref bbMax);
+		}
+
+		if (wedged)
+		{
+			var first = closed ? 0 : 1;
+			var last = closed ? n : n - 1;
+			for (int i = first; i < last; i++)
 			{
-				tris.Add(p.X); tris.Add(p.Y);
-				bbMin = Vector2.Min(bbMin, p); bbMax = Vector2.Max(bbMax, p);
+				if (wedge[i].From != wedge[i].To)
+				{
+					Wedge(pts[i], apex[i], wedge[i].From, wedge[i].To, h, join == StrokeJoin.Round, deviceScale, m, tris, ref bbMin, ref bbMax);
+				}
 			}
 		}
 
+		void Same(Vector2 off, int i) { inA[i] = inL[i] = off; outA[i] = outL[i] = -off; }
+
 		static Vector2 Norm(Vector2 v) { var l = v.Length(); return l < 1e-6f ? Vector2.Zero : v / l; }
 		static Vector2 Perp(Vector2 v) => new(-v.Y, v.X);
+	}
+
+	// The outer corner of a join: the region bounded by the two segments' outer corners, the arc between them (one
+	// step for a bevel), and the inner corner both quads already share. Fanned from that inner corner rather than
+	// from the vertex, because each quad's end edge runs to it -- a fan centred on the vertex would leave a thin
+	// uncovered triangle on each side, which shows as a hole at every join.
+	private static void Wedge(Vector2 v, Vector2 apex, Vector2 from, Vector2 to, float h, bool round, float deviceScale, in Matrix3x2 m, List<float> tris, ref Vector2 bbMin, ref Vector2 bbMax)
+	{
+		var total = MathF.Acos(Math.Clamp(Vector2.Dot(from, to) / MathF.Max(h * h, 1e-12f), -1f, 1f));
+		var steps = 1;
+		if (round)
+		{
+			// Chord sagitta r(1 - cos(step/2)) held under the same fifth of a device pixel the outline is flattened
+			// to; a 2px stroke then needs two or three steps even for a full reversal.
+			var radius = MathF.Max(h * deviceScale, 1e-3f);
+			var maxStep = 2f * MathF.Acos(Math.Clamp(1f - FlattenTolerancePx / radius, -1f, 1f));
+			steps = Math.Clamp((int)MathF.Ceiling(total / MathF.Max(maxStep, 1e-3f)), 1, 24);
+		}
+
+		// Sweep the short way, which is the side the ink is on.
+		var side = from.X * to.Y - from.Y * to.X < 0f ? -1f : 1f;
+		var vm = Vector2.Transform(v + apex, m);
+		var prev = Vector2.Transform(v + from, m);
+		for (var k = 1; k <= steps; k++)
+		{
+			var a = side * total * k / steps;
+			var c = MathF.Cos(a); var sn = MathF.Sin(a);
+			var p = k == steps ? to : new Vector2(from.X * c - from.Y * sn, from.X * sn + from.Y * c);
+			var cur = Vector2.Transform(v + p, m);
+			Emit(vm, tris, ref bbMin, ref bbMax); Emit(prev, tris, ref bbMin, ref bbMax); Emit(cur, tris, ref bbMin, ref bbMax);
+			prev = cur;
+		}
+	}
+
+	private static void Emit(Vector2 p, List<float> tris, ref Vector2 bbMin, ref Vector2 bbMax)
+	{
+		tris.Add(p.X); tris.Add(p.Y);
+		bbMin = Vector2.Min(bbMin, p); bbMax = Vector2.Max(bbMax, p);
 	}
 }

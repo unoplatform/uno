@@ -10,7 +10,9 @@ public static class DrawingCapabilities
 {
 	/// <summary>
 	/// The backend strokes a path better than the caller can by pre-converting it to a fill geometry, so callers
-	/// should hand it the path + thickness via <see cref="IDrawingSession.StrokePath"/>.
+	/// should hand it the path + thickness + join via <see cref="IDrawingSession.StrokePath"/>. Setting this is a
+	/// promise to honour every <see cref="StrokeJoin"/>: widening the path instead costs the caller a stroke-to-fill
+	/// per frame and hands the backend a self-overlapping outline, which is the expensive shape to rasterise.
 	/// </summary>
 	public static bool NativeStroking { get; set; }
 }

@@ -241,10 +241,17 @@ internal class SkiaDrawingSession : IDrawingSession
 		}
 	}
 
-	public void StrokePath(IGeometry geometry, Color color, float strokeWidth)
+	public void StrokePath(IGeometry geometry, Color color, float strokeWidth, StrokeJoin join = StrokeJoin.Miter)
 	{
 		using var lease = SkiaGeometryInterop.Lease(geometry);
-		_canvas.DrawPath(lease.Path, StrokePaint(color, strokeWidth));
+		var paint = StrokePaint(color, strokeWidth);
+		paint.StrokeJoin = join switch
+		{
+			StrokeJoin.Round => SKStrokeJoin.Round,
+			StrokeJoin.Bevel => SKStrokeJoin.Bevel,
+			_ => SKStrokeJoin.Miter,
+		};
+		_canvas.DrawPath(lease.Path, paint);
 	}
 
 	public void DrawLine(Vector2 p0, Vector2 p1, Color color, float strokeWidth)

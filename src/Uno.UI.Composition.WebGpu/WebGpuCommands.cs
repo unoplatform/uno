@@ -165,6 +165,7 @@ internal sealed class PathCmd : WebGpuCommand
 	public IGeometry Geometry;
 	public Matrix3x2 M;            // the geometry's space -> the recording's
 	public float Stroke;
+	public StrokeJoin Join;
 	public WColor Color;
 	public bool EvenOdd;
 	public Vector2 BbMin, BbMax;   // in the recording's space
