@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using Windows.Foundation;
-
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
+using System.Numerics;
+using SkiaSharp;
+using Microsoft.UI.Composition;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -42,34 +41,10 @@ namespace Microsoft.UI.Xaml.Media
 
 		#region Geometry implementation (not implemented)
 
-#if __ANDROID__
-		public override APath ToPath()
-		{
-			throw new NotImplementedException();
-		}
-#endif
-
 		public override void Dispose()
 		{
 			throw new NotImplementedException();
 		}
-
-#if __APPLE_UIKIT__
-		public override UIImage ToNativeImage()
-		{
-			throw new NotImplementedException();
-		}
-
-		public override UIImage ToNativeImage(CoreGraphics.CGSize targetSize, UIColor color = null, Thickness margin = default(Thickness))
-		{
-			throw new NotImplementedException();
-		}
-
-		public override CoreGraphics.CGPath ToCGPath()
-		{
-			throw new NotImplementedException();
-		}
-#endif
 
 		#endregion
 
@@ -84,5 +59,8 @@ namespace Microsoft.UI.Xaml.Media
 				return Rect;
 			}
 		}
+
+		internal override SKPath GetSKPath() =>
+			CompositionGeometry.BuildRectangleGeometry(offset: new Vector2((float)Rect.X, (float)Rect.Y), size: new Vector2((float)Rect.Width, (float)Rect.Height));
 	}
 }

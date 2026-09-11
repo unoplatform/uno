@@ -23,8 +23,8 @@
              Link="Lottie\%(RecursiveDir)%(Filename)%(Extension)" />
     <Content Include="$(MSBuildThisFileDirectory)Asset_GetFileFromApplicationUriAsync.xml"
              Link="Asset_GetFileFromApplicationUriAsync.xml" />
-    <Content Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\BeginTime_MultipleAnimations_Expected.gif"
-             Link="Windows_UI_Xaml_Media_Animation\BeginTime_MultipleAnimations_Expected.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Media\Animation\BeginTime_MultipleAnimations_Expected.gif"
+             Link="Windows\UI\Xaml\Media\Animation\BeginTime_MultipleAnimations_Expected.gif" />
 
     <PRIResource Include="$(MSBuildThisFileDirectory)UITestsStrings\**\*.resw"
                  Link="UITestsStrings\%(RecursiveDir)%(Filename)%(Extension)" />
@@ -56,19 +56,19 @@
 
   <!-- Incomplete/dead samples that don't compile (preserved on disk for reference). -->
   <ItemGroup>
-    <Page Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ItemsViewTests\ItemsView_Nested.xaml" />
-    <Compile Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ItemsViewTests\ItemsView_Nested.xaml.cs" />
+    <Page Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\ItemsViewTests\ItemsView_Nested.xaml" />
+    <Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\ItemsViewTests\ItemsView_Nested.xaml.cs" />
 
-    <Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Core\SystemNavigationManagerTests\HardwareBackButton_Modes.xaml" />
-    <Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Core\SystemNavigationManagerTests\HardwareBackButton_Modes.xaml.cs" />
+    <Page Remove="$(MSBuildThisFileDirectory)Windows\UI\Core\SystemNavigationManagerTests\HardwareBackButton_Modes.xaml" />
+    <Compile Remove="$(MSBuildThisFileDirectory)Windows\UI\Core\SystemNavigationManagerTests\HardwareBackButton_Modes.xaml.cs" />
 
-    <Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml\EventTrigger_Loaded.xaml" />
-    <Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml\EventTrigger_Loaded.xaml.cs" />
+    <Page Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\EventTrigger_Loaded.xaml" />
+    <Compile Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\EventTrigger_Loaded.xaml.cs" />
 
-    <Page Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_FontFallback.xaml" />
-    <Compile Remove="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_FontFallback.xaml.cs" />
+    <Page Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Controls\TextBlockControl\TextBlock_FontFallback.xaml" />
+    <Compile Remove="$(MSBuildThisFileDirectory)Windows\UI\Xaml\Controls\TextBlockControl\TextBlock_FontFallback.xaml.cs" />
 
-    <Compile Remove="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ScrollViewTests\ScrollViewTestHooksHelper.cs" />
+    <Compile Remove="$(MSBuildThisFileDirectory)Microsoft\UI\Xaml\Controls\ScrollViewTests\ScrollViewTestHooksHelper.cs" />
   </ItemGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)ItemExclusions.props" />

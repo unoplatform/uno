@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetReferencePreviousAndCurrent)</TargetFrameworks>
-		<UnoDisableTargetFrameworkPlatformOverride>true</UnoDisableTargetFrameworkPlatformOverride>
+		<UnoShouldUseNoPlatformOverride>true</UnoShouldUseNoPlatformOverride>
 	</PropertyGroup>
 	<Import Project="../../targetframework-override.props" />
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
@@ -22,7 +22,7 @@
 		<DefineConstants>$(DefineConstants);CROSSRUNTIME</DefineConstants>
 	</PropertyGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Reference.csproj" PrivateAssets="all" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" PrivateAssets="all" />
 	</ItemGroup>
 	
 

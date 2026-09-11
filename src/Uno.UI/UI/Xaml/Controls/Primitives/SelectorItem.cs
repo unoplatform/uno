@@ -11,9 +11,6 @@ using Uno.UI.Xaml.Core;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Windows.Devices.Input;
-#if __APPLE_UIKIT__
-using UIKit;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
@@ -359,24 +356,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
-#if __ANDROID__
-			Focusable = true;
-			FocusableInTouchMode = true;
-#endif
 
 			UpdateVisualStates(true);
 		}
-
-#if __APPLE_UIKIT__
-		private bool _pressedOverride;
-		private new bool IsPointerPressed => _pressedOverride || base.IsPointerPressed;
-
-		/// <summary>
-		/// Used by the legacy list view to set the item pressed
-		/// </summary>
-		internal void LegacySetPressed(bool isPressed)
-			=> _pressedOverride = isPressed;
-#endif
 
 		private static readonly ManipulationStartedEventHandler _onManipulationStarted = (snd, _) =>
 		{
@@ -473,13 +455,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private IDisposable InterceptSetNeedsLayout()
 		{
-#if __APPLE_UIKIT__
-			bool match(UIView view) => view is ListViewBaseInternalContainer || view is Selector;
-			var cell = this.FindFirstParent<UIView>(predicate: match);
-			return (cell as ListViewBaseInternalContainer)?.InterceptSetNeedsLayout();
-#else
 			return null;
-#endif
 		}
 
 		private protected override void ChangeVisualState(bool useTransitions)

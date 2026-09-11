@@ -1,9 +1,12 @@
-﻿namespace Microsoft.UI.Xaml.Automation.Peers;
+﻿#nullable enable
+
+namespace Microsoft.UI.Xaml.Automation.Peers;
 
 internal interface IAutomationPeerListener
 {
 	void NotifyPropertyChangedEvent(AutomationPeer peer, AutomationProperty automationProperty, object oldValue, object newValue);
 	void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId);
+	void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer? child);
 
 	/// <summary>
 	/// Mirrors WinUI's <c>CAutomationPeer::InvalidatePeer</c>: re-evaluate the peer's
@@ -15,6 +18,7 @@ internal interface IAutomationPeerListener
 	/// </summary>
 	void NotifyInvalidatePeer(AutomationPeer peer);
 	void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId);
+	void NotifyTextEditTextChangedEvent(AutomationPeer peer, global::Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, global::System.Collections.Generic.IReadOnlyList<string> changedData);
 	void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId);
 	bool ListenerExistsHelper(AutomationEvents eventId);
 }

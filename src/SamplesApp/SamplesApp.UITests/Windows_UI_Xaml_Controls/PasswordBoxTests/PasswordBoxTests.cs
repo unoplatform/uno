@@ -44,7 +44,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PasswordBoxTests
 
 			using var screenshot2 = TakeScreenshot("PasswordBox_Second_123.");
 
-			var pwd = passwordBox.GetDependencyPropertyValue<string>("Text");
+			var pwd = passwordBox.GetDependencyPropertyValue<string>("Password");
 			Assert.AreEqual("123123", pwd);
 		}
 	}

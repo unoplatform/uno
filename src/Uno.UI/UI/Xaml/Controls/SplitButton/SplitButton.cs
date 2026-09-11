@@ -79,9 +79,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public
-#if __ANDROID__
-			new
-#endif
 			event TypedEventHandler<SplitButton, SplitButtonClickEventArgs> Click;
 
 		protected override void OnApplyTemplate()

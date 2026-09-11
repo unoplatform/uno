@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-#if __APPLE_UIKIT__ || __SKIA__ || __ANDROID__ || __WASM__
+#if __SKIA__
 using System;
 using System.Linq;
 using Windows.Foundation;
@@ -11,20 +11,8 @@ using Uno.UI;
 using static System.Double;
 using System.Diagnostics;
 
-#if __APPLE_UIKIT__
-using NativePath = CoreGraphics.CGPath;
-using ObjCRuntime;
-using NativeSingle = System.Runtime.InteropServices.NFloat;
-#elif __SKIA__
+#if __SKIA__
 using NativePath = Microsoft.UI.Composition.SkiaGeometrySource2D;
-using NativeSingle = System.Double;
-
-#elif __ANDROID__
-using NativePath = Android.Graphics.Path;
-using NativeSingle = System.Double;
-
-#elif __WASM__
-using NativePath = Microsoft.UI.Xaml.Shapes.Shape;
 using NativeSingle = System.Double;
 #endif
 

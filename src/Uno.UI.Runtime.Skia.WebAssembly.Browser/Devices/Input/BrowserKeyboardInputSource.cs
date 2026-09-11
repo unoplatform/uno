@@ -15,6 +15,7 @@ internal partial class BrowserKeyboardInputSource : IUnoKeyboardInputSource
 
 	public event TypedEventHandler<object, KeyEventArgs>? KeyDown;
 	public event TypedEventHandler<object, KeyEventArgs>? KeyUp;
+	event TypedEventHandler<object, CharacterReceivedEventArgs>? IUnoKeyboardInputSource.CharacterReceived { add { } remove { } }
 
 	internal static bool LastTabWasForward { get; private set; } = true;
 
@@ -39,7 +40,7 @@ internal partial class BrowserKeyboardInputSource : IUnoKeyboardInputSource
 	{
 		if (_log.IsEnabled(LogLevel.Debug))
 		{
-			_log.Debug($"Native Keyboard Event: down={down}, ctrl={ctrl}, shift={shift}, meta={meta}, code={code}, key=${key}");
+			_log.Debug($"Native Keyboard Event: down={down}, ctrl={ctrl}, shift={shift}, alt={alt}, meta={meta}, code={code}, key={key}");
 		}
 
 		// Ensure that the async context is set properly, since we're raising

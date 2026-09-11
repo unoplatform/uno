@@ -1,0 +1,24 @@
+﻿#nullable enable
+
+using System;
+using System.Globalization;
+
+namespace Microsoft.UI.Composition;
+
+internal sealed class ModFloatFloatFunctionSpecification : IAnimationFunctionSpecification
+{
+	private ModFloatFloatFunctionSpecification()
+	{
+	}
+
+	public static ModFloatFloatFunctionSpecification Instance { get; } = new();
+
+	public int ParametersLength => 2;
+
+	public string MethodName => "Mod";
+
+	public string? ClassName => null;
+
+	public object Evaluate(params object[] parameters)
+		=> Convert.ToSingle(parameters[0], CultureInfo.InvariantCulture) % Convert.ToSingle(parameters[1], CultureInfo.InvariantCulture);
+}

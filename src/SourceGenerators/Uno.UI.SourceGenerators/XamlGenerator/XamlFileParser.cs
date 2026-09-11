@@ -166,6 +166,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						error);
 				}
 
+				if (ctx.HasClrNamespaceDeclarations)
+				{
+					ctx.ReportUnsupportedClrNamespaces(XamlNamespaceValidation.GetRootIgnorablePrefixes(xamlFileDefinition.Content));
+				}
+
 				xamlFileDefinition = xamlFileDefinition with
 				{
 					ParsingErrors = ctx.GetErrors()
@@ -371,26 +376,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return content.Insert(insertPos, injections.ToString());
 		}
 
-		private static bool IsSkiaNotConditional(string localName, string namespaceUri)
-		{
-			// Not ideal, but we want to avoid breaking changes.
-			// See discussion at https://github.com/unoplatform/uno/issues/17028
-			// For xmlns that are named "skia", there are 3 scenarios:
-			// 1. If project being built is for Skia, we just include that element.
-			// 2. If project being built is not for Skia and namespaceUri is using SkiaSharp, it's not conditional XAML and we should include that element
-			// 3. If project being built is not for Skia and namespaceUri is not using SkiaSharp, this is conditional XAML.
-			// For case 1, IsIncluded will return ForceInclude
-			// For case 2, we'll go through regular rules, as with any xmlns (rely on Ignorable and normal XAML conditional rules).
-			// For case 3, this method will return false and IsIncluded will return ForceExclude.
-			// Above explains the "current" behavior meant by this code.
-			// The ideal behavior is really that we ignore localName completely and just rely on namespaceUris
-			// NOTE: We check StartsWith("using") as well as Contains("SkiaSharp") to avoid breaking scenarios like
-			// xmlns:skia="http://uno.ui/skia#using:SkiaSharp.Views.Windows"
-			return localName == "skia" &&
-				namespaceUri.StartsWith("using:", StringComparison.Ordinal) &&
-				namespaceUri.Contains("SkiaSharp", StringComparison.Ordinal);
-		}
-
 		private __uno::Uno.Xaml.IsIncludedResult IsIncluded(string localName, string namespaceUri)
 		{
 			if (_includeXamlNamespaces.Contains(localName))
@@ -400,7 +385,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					? result
 					: result.WithUpdatedNamespace(XamlConstants.PresentationXamlXmlNamespace);
 			}
-			else if (_excludeXamlNamespaces.Contains(localName) && !IsSkiaNotConditional(localName, namespaceUri))
+			else if (_excludeXamlNamespaces.Contains(localName))
 			{
 				return __uno::Uno.Xaml.IsIncludedResult.ForceExclude;
 			}
@@ -468,6 +453,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					case XamlNodeType.NamespaceDeclaration:
 						xamlFile.Namespaces.Add(reader.Namespace);
+						TrackClrNamespaceDeclaration(reader, ref ctx);
 						break;
 
 					default:
@@ -475,6 +461,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 			while (reader.Read());
+		}
+
+		/// <summary>
+		/// Records a <c>clr-namespace:</c> declaration for later validation. Reporting is deferred because
+		/// the reader yields namespace nodes before the element's <c>mc:Ignorable</c> attribute is read.
+		/// </summary>
+		private static void TrackClrNamespaceDeclaration(XamlXmlReader reader, ref XamlFileParserContext ctx)
+		{
+			if (reader.Namespace is { } declaration && XamlNamespaceValidation.IsClrNamespace(declaration.Namespace))
+			{
+				ctx.TrackClrNamespaceDeclaration(declaration.Prefix, declaration.Namespace, reader.LineNumber, reader.LinePosition);
+			}
 		}
 
 		private void WriteState(XamlXmlReader reader)
@@ -619,6 +617,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						lastWasLiteralInline = false;
 						lastWasTrimSurroundingWhiteSpace = false;
 						(namespaces ??= new List<NamespaceDeclaration>()).Add(reader.Namespace);
+						TrackClrNamespaceDeclaration(reader, ref ctx);
 						// Skip
 						break;
 

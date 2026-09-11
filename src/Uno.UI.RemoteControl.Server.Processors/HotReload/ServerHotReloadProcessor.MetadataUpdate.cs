@@ -14,12 +14,14 @@ using Uno.Extensions;
 using Uno.HotReload;
 using Uno.HotReload.Microsoft;
 using Uno.HotReload.Diffing;
+using Uno.HotReload.Roslyn;
 using Uno.HotReload.Tracking;
 using Uno.HotReload.Utils;
 using Uno.Roslyn.MSBuild;
 using Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.Messaging.HotReload;
+using Uno.UI.RemoteControl.Server;
 
 namespace Uno.UI.RemoteControl.Host.HotReload
 {
@@ -101,10 +103,18 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 						// compilation errors or fail the initial emit (they were never built). Then re-point the
 						// kept flavor's compilation outputs to the assembly the running application was actually
 						// built from (RID-specific paths) — before the watch session starts, as EnC captures its
-						// baselines from those paths.
-						return workspace.CurrentSolution
+						// baselines from those paths. Finally rewire the analyzer references onto collectible
+						// load contexts (the workspace's own loaders cannot load ANY analyzer in this host under
+						// Roslyn 5.x — see CollectibleAnalyzerAssemblyLoader) and force-load them so a residual
+						// failure is warned about now instead of surfacing as missing generated code mid-session.
+						var solution = workspace.CurrentSolution
 							.FilterHeadProjectTargetFramework(configureServer.ProjectPath, runtimeTargetFramework, _reporter)
-							.AlignHeadProjectCompilationOutputs(configureServer.ProjectPath, runtimeIdentifier, _reporter, ct2);
+							.AlignHeadProjectCompilationOutputs(configureServer.ProjectPath, runtimeIdentifier, _reporter, ct2)
+							.WithCollectibleAnalyzerReferences(_reporter);
+
+						EmbeddedRoslyn.WarnOnAnalyzerLoadFailures(solution, _reporter, ct2);
+
+						return solution;
 					}
 
 					var manager = await HotReloadManager.CreateAsync(LoadSolutionFromDisk, configureServer.MetadataUpdateCapabilities, new DelegateHotReloadHandler(SendUpdates), _tracker, ct);
@@ -120,6 +130,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					// file-system observer is active, so a flushed edit can neither be folded into the
 					// baseline nor go unobserved.
 					_fileUpdater.ReportWorkspaceState(HotReloadWorkspaceState.Ready);
+
+					// Enforce the concurrent-workspace cap (see #24205): register this now-active app
+					// workspace. If the dev-server is already at capacity, the oldest workspace(s) get
+					// their hot reload disabled (workspace disposed, connection kept, app notified).
+					// IDE-driven connections never reach this path, so only app workspaces are counted.
+					// The capacity comes from HotReloadWorkspaceOptions via the injected registry.
+					_workspaceRegistry.Register(this);
 
 					return manager;
 				}

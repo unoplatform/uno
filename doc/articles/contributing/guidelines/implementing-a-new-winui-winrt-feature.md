@@ -6,8 +6,8 @@ uid: Uno.Contributing.ImplementWinUIWinRTAPI
 
 Implementing a new WinUI/WinRT API generally requires:
 
-- Finding the generated API source file (e.g. `src\Uno.UWP\Generated\3.0.0.0\Windows.Data.Pdf\PdfDocument.cs`).
-- Copying the file to the non-generated location (e.g. `src\Uno.UWP\Data.Pdf\PdfDocument.cs`).
+- Finding the generated API source file (e.g. `src\Uno.WinRT\Generated\3.0.0.0\Windows.Data.Pdf\PdfDocument.cs`).
+- Copying the file to the non-generated location (e.g. `src\Uno.WinRT\Data.Pdf\PdfDocument.cs`).
 - Keeping only the members that need to be implemented in the non-generated location.
 - Removing (completely or partially depending on the platforms) the implemented members in the generated file.
 

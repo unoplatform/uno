@@ -68,15 +68,27 @@ namespace Uno.ReferenceImplComparer
 				failedTests.Add(simpleName);
 			}
 
+			// Parameterized cases collapse onto the same name once the arguments are stripped, so the
+			// same test would otherwise be listed -- and re-run -- once per failing case.
+			var distinctTests = failedTests.Distinct().ToList();
+
+			// Reported before the sentinel is appended, so the count is the number of real failures,
+			// and named so the retry decision can be made from this log even when the results file
+			// never reached PublishTestResults.
+			Console.WriteLine($"Found {distinctTests.Count} failed tests in {inputFile}.");
+
+			foreach (var failedTest in distinctTests)
+			{
+				Console.WriteLine($"  {failedTest}");
+			}
+
 			// Add a dummy line to be used to rerun the test running in case 
 			// tests get canceled. This condition happens when running nunit-console
 			// and the retry attribute which markes runners as cancelled and fails any
 			// subsequent test.
-			failedTests.Add("invalid-test-for-retry");
+			distinctTests.Add("invalid-test-for-retry");
 
-			File.WriteAllText(outputFile, string.Join(" | ", failedTests));
-
-			Console.WriteLine($"Found {failedTests.Count} failed tests in {inputFile}.");
+			File.WriteAllText(outputFile, string.Join(" | ", distinctTests));
 
 			return 0;
 		}

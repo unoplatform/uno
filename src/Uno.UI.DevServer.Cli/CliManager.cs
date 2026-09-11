@@ -355,23 +355,40 @@ internal class CliManager
 			return 1; // errors already logged
 		}
 
+		// `login --headless` runs the settings app as a CLI rather than opening its window. It prints the
+		// loopback redirect URI the sign-in has to complete on, and exits with a meaningful code. Both are
+		// lost on the windowed path below, which buffers the child's streams and treats "still running after
+		// the grace period" as success — so let the child own the console and wait for it to finish,
+		// forwarding its exit code without adding parent output that would interleave with the prompt.
+		if (originalArgs.Any(a => string.Equals(a, "--headless", StringComparison.OrdinalIgnoreCase)))
+		{
+			var headlessStartInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(
+				studioExecutable,
+				originalArgs,
+				workingDirectory,
+				redirectOutput: false);
+
+			return await DevServerProcessHelper.RunInteractiveProcessAsync(headlessStartInfo, _logger);
+		}
+
 		var startInfo = DevServerProcessHelper.CreateDotnetProcessStartInfo(studioExecutable, originalArgs, workingDirectory, redirectOutput: true);
 
 		var (exitCode, stdOut, stdErr) = await DevServerProcessHelper.RunGuiProcessAsync(startInfo, _logger, TimeSpan.FromSeconds(3));
 
 		if (exitCode is not null)
 		{
-			// Display output for debugging purposes
-			if (!string.IsNullOrWhiteSpace(stdOut))
-			{
-				_logger.LogDebug("Settings application stdout:\n{Stdout}", stdOut);
-			}
-			if (!string.IsNullOrWhiteSpace(stdErr))
-			{
-				_logger.LogError("Settings application stderr:\n{Stderr}", stdErr);
-			}
+			// The settings app writes its exit reason to its output; surface it so the cause is
+			// visible instead of a bare exit code.
+			var reason = FormatSettingsExitReason(stdOut, stdErr);
 
-			_logger.LogError("Settings application exited with code {ExitCode}", exitCode);
+			if (!string.IsNullOrWhiteSpace(reason))
+			{
+				_logger.LogError("Settings application exited with code {ExitCode}: {Reason}", exitCode, reason);
+			}
+			else
+			{
+				_logger.LogError("Settings application exited with code {ExitCode} (no diagnostic output captured).", exitCode);
+			}
 
 			return 1;
 		}
@@ -380,6 +397,28 @@ internal class CliManager
 			_logger.LogInformation("Settings application started successfully");
 			return 0;
 		}
+	}
+
+	/// <summary>
+	/// Labels stdout/stderr (stdout first — the app writes its exit reason there) and collapses
+	/// internal whitespace so the reason stays a single log line.
+	/// </summary>
+	internal static string FormatSettingsExitReason(string? stdOut, string? stdErr)
+	{
+		var parts = new List<string>();
+		if (!string.IsNullOrWhiteSpace(stdOut))
+		{
+			parts.Add($"stdout: {CollapseWhitespace(stdOut)}");
+		}
+		if (!string.IsNullOrWhiteSpace(stdErr))
+		{
+			parts.Add($"stderr: {CollapseWhitespace(stdErr)}");
+		}
+
+		return string.Join("; ", parts);
+
+		static string CollapseWhitespace(string value)
+			=> string.Join(" ", value.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
 	}
 
 	private async Task<int> RunMcpProxyAsync(string[] args, string requestedWorkingDirectory, WorkspaceResolution workspaceResolution)

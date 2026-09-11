@@ -6,6 +6,7 @@
 	"ambiently",
 	"Anonymization",
 	"appmanifest",
+	"bidi",
 	"binlog",
 	"Blazor",
 	"blockquotes",
@@ -98,6 +99,7 @@
 	"resw",
 	"riscv64",
 	"roadmap",
+	"retarget",
 	"retargeting",
 	"sandboxed",
 	"Segoe",
@@ -246,7 +248,8 @@
 	"settingscard",
 	"trackpad",
 	"COEP",
-	"TFMs"
+	"TFMs",
+	"dedup"
   ],
   "patterns": [
 	{

@@ -119,7 +119,7 @@ public class Given_DependencyPropertyGenerator
 							}
 						}
 
-						""", Encoding.UTF8))
+						""", Encoding.UTF8, SourceHashAlgorithm.Sha256))
 					}
 				}
 			},
@@ -246,7 +246,7 @@ public class Given_DependencyPropertyGenerator
 							}
 						}
 
-						""", Encoding.UTF8))
+						""", Encoding.UTF8, SourceHashAlgorithm.Sha256))
 					}
 				}
 			},
@@ -371,7 +371,7 @@ public class Given_DependencyPropertyGenerator
 							}
 						}
 
-						""", Encoding.UTF8))
+						""", Encoding.UTF8, SourceHashAlgorithm.Sha256))
 					}
 				}
 			},

@@ -10,6 +10,7 @@ internal class X11KeyboardInputSource : IUnoKeyboardInputSource
 {
 	public event TypedEventHandler<object, KeyEventArgs>? KeyDown;
 	public event TypedEventHandler<object, KeyEventArgs>? KeyUp;
+	event TypedEventHandler<object, CharacterReceivedEventArgs>? IUnoKeyboardInputSource.CharacterReceived { add { } remove { } }
 
 	private readonly X11XamlRootHost _host;
 

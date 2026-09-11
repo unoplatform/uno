@@ -351,7 +351,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			bool flyoutClosed = false;
 			datePickerFlyout.Closed += (s, e) => flyoutClosed = true;
-			datePickerFlyout.Close();
+			datePickerFlyout.Hide();
 
 			await TestServices.WindowHelper.WaitFor(() => flyoutClosed, message: "Flyout did not close");
 
@@ -394,7 +394,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			finally
 			{
-				datePickerFlyout.Close();
+				datePickerFlyout.Hide();
 			}
 		}
 #endif
@@ -457,6 +457,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				CultureInfo.DefaultThreadCurrentUICulture = defaultThreadCurrentUICulture;
 			});
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+		public async Task When_UseNativeMinMaxDates_Then_Forwarded_To_Native_Flyout()
+		{
+			var datePicker = new DatePicker
+			{
+				UseNativeStyle = true,
+				UseNativeMinMaxDates = true,
+			};
+
+			TestServices.WindowHelper.WindowContent = datePicker;
+			await TestServices.WindowHelper.WaitForLoaded(datePicker);
+
+			try
+			{
+				await DateTimePickerHelper.OpenDateTimePicker(datePicker);
+
+				var flyout = FlyoutBase.OpenFlyouts.Single();
+				flyout.Should().BeAssignableTo<INativeDatePickerFlyout>();
+				((INativeDatePickerFlyout)flyout).UseNativeMinMaxDates.Should().BeTrue();
+			}
+			finally
+			{
+				VisualTreeHelper.CloseAllPopups(TestServices.WindowHelper.XamlRoot);
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+#endif
 
 		private static void CheckDateTimeTextBlockPartPosition(DatePicker datePicker, string id, int expectedColumn)
 		{
