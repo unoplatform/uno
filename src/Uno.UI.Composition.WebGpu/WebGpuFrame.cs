@@ -65,7 +65,11 @@ internal sealed unsafe partial class WebGpuFrame
 	}
 
 	/// <summary>Opens the frame's command encoder; every pass, bake and blur of the frame encodes into it.</summary>
-	internal void Begin() => Encoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null);
+	internal void Begin()
+	{
+		SweepEntryPool();
+		Encoder = wgpuDeviceCreateCommandEncoder(_d.Dev, null);
+	}
 
 	/// <summary>Submits the frame and hands its layer textures back to the pool.</summary>
 	internal void End()
@@ -96,8 +100,7 @@ internal sealed unsafe partial class WebGpuFrame
 		rec.Compiled = fe;
 		if (rec.Commands is null && System.Threading.Interlocked.Exchange(ref rec.Compiled, null) is { } orphan)
 		{
-			foreach (var st in orphan.Stamps) { _d.DeferCompiledRelease(null, st.Owned); }
-			_d.DeferCompiledRelease(orphan.Owned, null);
+			ReleaseEntry(orphan);
 		}
 	}
 

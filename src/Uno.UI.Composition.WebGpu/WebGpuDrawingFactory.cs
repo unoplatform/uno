@@ -76,6 +76,8 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 	// Memoised scans of the immutable command list: every command is a plain draw (the recording lives in the arena);
 	// some command, directly or through a nested recording, is a backdrop; the union of the commands' bounds.
 	internal bool? PlainMemo, HasBackdropMemo;
+	// Memoised content key of the immutable command list: 0 once computed and found unpoolable.
+	internal long? ContentKeyMemo;
 	internal Vector4? IdentityBounds;
 	// The arena entry for this recording (the persistent retained state IRenderRecord is contracted to hold): built
 	// once on the render thread at first replay, reused every frame, freed (deferred to the render thread) when this
@@ -122,10 +124,16 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 		// Hand the arena entry's GPU resources to the render thread for a deferred free (an in-flight frame may
 		// still reference them). Interlocked so a concurrent render-thread rebuild can't leak or double-free it.
 		var c = System.Threading.Interlocked.Exchange(ref Compiled, null);
-		if (c is { Device: { } dev })
+		// A shared entry outlives this recording: only the last holder hands the GPU resources over, and even then
+		// the entry stays in the pool (claimable by an identical recording) until the idle sweep frees it.
+		if (c is { Device: { } dev } && System.Threading.Interlocked.Decrement(ref c.Refs) <= 0)
 		{
-			foreach (var st in c.Stamps) { dev.DeferCompiledRelease(null, st.Owned); }
-			dev.DeferCompiledRelease(c.Owned, null);
+			c.IdleSince = dev.FrameSeq;
+			if (c.ContentKey == 0)
+			{
+				foreach (var st in c.Stamps) { dev.DeferCompiledRelease(null, st.Owned); }
+				dev.DeferCompiledRelease(c.Owned, null);
+			}
 		}
 		Commands = null;
 		GC.SuppressFinalize(this);

@@ -92,6 +92,17 @@ internal sealed class WebGpuGeometryCache
 	// commonly replayed at several sites in a frame (a card template across a wall of cards), and a single stamp
 	// would make every replay after the first mint a slab slot and a bind group per op, on every frame.
 	public readonly List<StampSlot> Stamps = new();
+
+	// Shared-entry state. The geometry is built in the recording's own space and positioned by the transform the
+	// stamp carries, so two recordings whose commands are identical can draw from ONE entry -- which is the common
+	// case for a templated list (a wall of bars records the same rect, only the visual's transform differs). Refs
+	// counts the live recordings pointing here; the pool's own reference is deliberately uncounted so an entry at
+	// zero stays claimable until the idle sweep takes it.
+	public int Refs;
+	public long ContentKey;
+	public long IdleSince;
+	// The command list this was built from, kept for the equality check that guards against a hash collision.
+	public List<WebGpuCommand> Src;
 }
 
 /// <summary>One stamp of an arena entry: its ops carrying the clip groups for one replay site.</summary>

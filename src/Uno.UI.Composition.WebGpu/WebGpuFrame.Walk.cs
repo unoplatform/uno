@@ -291,6 +291,172 @@ internal sealed unsafe partial class WebGpuFrame
 	// without holding slab slots for sites that are long gone.
 	private const int MaxStampsPerEntry = 4;
 
+	// Arena entries offered for sharing, keyed by the content of the recording that built them. A templated list
+	// records the same commands once per item, so without this every item builds and stores its own copy of one
+	// geometry. Render-thread only. The pool's reference is uncounted: an entry whose recordings have all gone
+	// stays here, claimable, until SweepEntryPool frees it.
+	private static readonly Dictionary<long, WebGpuGeometryCache> s_entryPool = new();
+	// How long an unreferenced entry stays claimable. A re-recorded visual reappears within a frame or two.
+	private const long EntryPoolIdleFrames = 120;
+	internal static int StatPoolHits, StatPoolAdds;
+
+	/// <summary>Drops one hold on an entry, freeing its GPU resources once nothing holds it and the pool has let
+	/// it go. A pooled entry survives at zero holders -- that is what makes it claimable again.</summary>
+	private void ReleaseEntry(WebGpuGeometryCache e)
+	{
+		if (System.Threading.Interlocked.Decrement(ref e.Refs) > 0) { return; }
+		e.IdleSince = _d.FrameSeq;
+		if (e.ContentKey != 0) { return; }
+		foreach (var st in e.Stamps) { _d.DeferCompiledRelease(null, st.Owned); }
+		_d.DeferCompiledRelease(e.Owned, null);
+	}
+
+	/// <summary>
+	/// Frees pooled entries no recording has held for a while. Called once per frame, before the walk.
+	/// </summary>
+	internal void SweepEntryPool()
+	{
+		if (s_entryPool.Count == 0) { return; }
+		List<long> drop = null;
+		foreach (var kv in s_entryPool)
+		{
+			var e = kv.Value;
+			if (e.Refs > 0 || !ReferenceEquals(e.Device, _d) || _d.FrameSeq - e.IdleSince < EntryPoolIdleFrames) { continue; }
+			(drop ??= new()).Add(kv.Key);
+			foreach (var st in e.Stamps) { _d.DeferCompiledRelease(null, st.Owned); }
+			_d.DeferCompiledRelease(e.Owned, null);
+		}
+		if (drop is not null) { foreach (var k in drop) { s_entryPool.Remove(k); } }
+	}
+
+	/// <summary>
+	/// The content key of a recording, or 0 when it must not be shared. Only commands that reference no GPU
+	/// resource of their own qualify: a pooled entry outlives the recording that built it, and an image view or a
+	/// path geometry would be released out from under it. Memoised, since the command list is immutable.
+	/// </summary>
+	private static long ContentKey(WebGpuRenderRecord data, List<WebGpuCommand> cmds)
+	{
+		if (data.ContentKeyMemo is { } memo) { return memo; }
+		long h = 1469598103934665603L;
+		void Mix(long v) => h = unchecked((h ^ v) * 1099511628211L);
+		void MixF(float f) => Mix(BitConverter.SingleToInt32Bits(f));
+		void MixV2(Vector2 v) { MixF(v.X); MixF(v.Y); }
+		void MixV4(Vector4 v) { MixF(v.X); MixF(v.Y); MixF(v.Z); MixF(v.W); }
+
+		Mix(cmds.Count);
+		foreach (var c in cmds)
+		{
+			if (c.Kind is not (CmdKind.Rect or CmdKind.RoundedRect or CmdKind.Gradient) || c.Clip.Paths is not null)
+			{
+				data.ContentKeyMemo = 0;
+				return 0;
+			}
+			Mix((long)c.Kind);
+			// By VALUE, never by array identity: each recording allocates its own clip array, so identity would give
+			// two identical recordings different keys and they would never reach the equality check.
+			Mix(c.Clip.ScissorInert ? 1 : 0);
+			if (!c.Clip.ScissorInert) { MixV4(c.Clip.Aabb); }
+			Mix(c.Clip.Coverage);
+			Mix(c.Clip.CoverageFiltered ? 1 : 0);
+			Mix(c.Clip.Entries?.Length ?? 0);
+			if (c.Clip.Entries is { } ents)
+			{
+				foreach (var e in ents)
+				{
+					MixF(e.M.M11); MixF(e.M.M12); MixF(e.M.M21); MixF(e.M.M22); MixF(e.M.M31); MixF(e.M.M32);
+					MixV4(e.Rect); MixV4(e.Radii); MixV4(e.RadiiY); Mix(e.Exclude ? 1 : 0); Mix(e.Mask ? 1 : 0);
+				}
+			}
+			switch (c)
+			{
+				case RectCommand r:
+					Mix(Argb(r.Color)); MixV2(r.P0); MixV2(r.P1); MixV2(r.P2); MixV2(r.P3);
+					break;
+				case RoundedRectCmd rr:
+					Mix(Argb(rr.Color)); MixF(rr.Opacity); MixV2(rr.P0); MixV2(rr.P1); MixV2(rr.P2); MixV2(rr.P3);
+					MixV2(rr.Half); MixV4(rr.Radii); MixV2(rr.InnerHalf); MixV2(rr.InnerCenter); MixV4(rr.InnerRadii);
+					break;
+				case GradientCmd g:
+					MixV2(g.P0); MixV2(g.P1); MixV2(g.P2); MixV2(g.P3);
+					// Skips slot 3 for the same reason as SameContent: it is assigned during op building.
+					if (g.Uniform is { } u) { for (int j = 0; j < u.Length; j++) { if (j != 3) { MixF(u[j]); } } }
+					break;
+			}
+		}
+		// 0 is the "not poolable" marker, so never hand it back as a real key.
+		if (h == 0) { h = 1; }
+		data.ContentKeyMemo = h;
+		return h;
+	}
+
+	private static int Argb(WColor c) => (c.A << 24) | (c.R << 16) | (c.G << 8) | c.B;
+
+	// Bit equality, not value equality: the key hashes float BITS, so the check that guards it has to agree. They
+	// differ on exactly one value -- NaN, which is never == to itself and would reject every candidate.
+	private static bool Same(float a, float b) => BitConverter.SingleToInt32Bits(a) == BitConverter.SingleToInt32Bits(b);
+	private static bool Same(Vector2 a, Vector2 b) => Same(a.X, b.X) && Same(a.Y, b.Y);
+	private static bool Same(Vector4 a, Vector4 b) => Same(a.X, b.X) && Same(a.Y, b.Y) && Same(a.Z, b.Z) && Same(a.W, b.W);
+	private static bool Same(Matrix3x2 a, Matrix3x2 b)
+		=> Same(a.M11, b.M11) && Same(a.M12, b.M12) && Same(a.M21, b.M21) && Same(a.M22, b.M22) && Same(a.M31, b.M31) && Same(a.M32, b.M32);
+
+	private static bool SameClip(in ClipData a, in ClipData b)
+	{
+		if (a.ScissorInert != b.ScissorInert) { return false; }
+		if (!a.ScissorInert && !Same(a.Aabb, b.Aabb)) { return false; }
+		if (a.Coverage != b.Coverage || a.CoverageFiltered != b.CoverageFiltered) { return false; }
+		if (a.Paths is not null || b.Paths is not null) { return false; }
+		int an = a.Entries?.Length ?? 0, bn = b.Entries?.Length ?? 0;
+		if (an != bn) { return false; }
+		for (int i = 0; i < an; i++)
+		{
+			var x = a.Entries[i]; var y = b.Entries[i];
+			if (!Same(x.M, y.M) || !Same(x.Rect, y.Rect) || !Same(x.Radii, y.Radii) || !Same(x.RadiiY, y.RadiiY)
+				|| x.Exclude != y.Exclude || x.Mask != y.Mask) { return false; }
+		}
+		return true;
+	}
+
+	/// <summary>Whether two command lists would build the same geometry -- the guard against a key collision.</summary>
+	private static bool SameContent(List<WebGpuCommand> a, List<WebGpuCommand> b)
+	{
+		if (ReferenceEquals(a, b)) { return true; }
+		if (a is null || b is null || a.Count != b.Count) { return false; }
+		for (int i = 0; i < a.Count; i++)
+		{
+			WebGpuCommand x = a[i], y = b[i];
+			if (x.Kind != y.Kind || !SameClip(x.Clip, y.Clip)) { return false; }
+			switch (x)
+			{
+				case RectCommand r when y is RectCommand r2:
+					if (Argb(r.Color) != Argb(r2.Color) || !Same(r.P0, r2.P0) || !Same(r.P1, r2.P1)
+						|| !Same(r.P2, r2.P2) || !Same(r.P3, r2.P3)) { return false; }
+					break;
+				case RoundedRectCmd u when y is RoundedRectCmd u2:
+					if (Argb(u.Color) != Argb(u2.Color) || !Same(u.Opacity, u2.Opacity)
+						|| !Same(u.P0, u2.P0) || !Same(u.P1, u2.P1) || !Same(u.P2, u2.P2) || !Same(u.P3, u2.P3)
+						|| !Same(u.Half, u2.Half) || !Same(u.Radii, u2.Radii) || !Same(u.InnerHalf, u2.InnerHalf)
+						|| !Same(u.InnerCenter, u2.InnerCenter) || !Same(u.InnerRadii, u2.InnerRadii)) { return false; }
+					break;
+				case GradientCmd g when y is GradientCmd g2:
+					if (!Same(g.P0, g2.P0) || !Same(g.P1, g2.P1) || !Same(g.P2, g2.P2) || !Same(g.P3, g2.P3)) { return false; }
+					if ((g.Uniform is null) != (g2.Uniform is null)) { return false; }
+					if (g.Uniform is { } ga && g2.Uniform is { } gb)
+					{
+						if (ga.Length != gb.Length) { return false; }
+						// Slot 3 (header.w) is the ramp-texture row, which op building assigns and writes BACK into
+						// the recorded command. It is derived from the stops that follow it, so two commands equal
+						// everywhere else resolve to the same row; comparing it would only ever reject an entry for
+						// having been built already.
+						for (int j = 0; j < ga.Length; j++) { if (j != 3 && !Same(ga[j], gb[j])) { return false; } }
+					}
+					break;
+				default:
+					return false;
+			}
+		}
+		return true;
+	}
+
 	internal static int StatArenaHits, StatWalkPaths, StatWalkedRecords;
 	private static int _statArenaRebuilds, _statArMiss, _statArMasks, _statStamps;
 
@@ -302,13 +468,25 @@ internal sealed unsafe partial class WebGpuFrame
 	private void EmitArena(ReplayRefCmd rr, in Matrix3x2 rm, in ClipData session, List<DrawOp> ops)
 	{
 		var entry = rr.Data.Compiled;
-		bool miss = entry is null;
 		if (_emitStats) { StatArenaHits++; }
 		long t0 = _emitStats ? System.Diagnostics.Stopwatch.GetTimestamp() : 0;
+		var key = entry is null ? ContentKey(rr.Data, rr.Commands) : 0;
+		if (entry is null && key != 0
+			&& s_entryPool.TryGetValue(key, out var shared) && ReferenceEquals(shared.Device, _d)
+			&& SameContent(shared.Src, rr.Commands))
+		{
+			// Another recording already built this exact geometry: take a reference rather than build it again.
+			System.Threading.Interlocked.Increment(ref shared.Refs);
+			entry = shared;
+			StoreCompiled(rr.Data, entry);
+			if (_emitStats) { StatPoolHits++; }
+		}
+		bool miss = entry is null;
 		if (miss || AtlasNeedsRebuild(entry, rm))
 		{
 			if (_emitStats) { _statArenaRebuilds++; if (miss) { _statArMiss++; } else { _statArMasks++; } }
-			if (entry is not null) { _d.DeferRelease(entry.Owned); foreach (var st in entry.Stamps) { _d.DeferRelease(st.Owned); } }
+			// Shared entries are released by their last holder (or the pool sweep), never by whoever rebuilds first.
+			if (entry is not null) { ReleaseEntry(entry); }
 			var owned = new OwnedResources();
 			var built = new List<DrawOp>();
 			bool hasPath = false; foreach (var c in rr.Commands) { if (c is PathCmd) { hasPath = true; break; } }
@@ -326,6 +504,20 @@ internal sealed unsafe partial class WebGpuFrame
 				AtlasBlockedByScale = !atlasSafe && hasPath && WebGpuCoverage.AtlasEnabled,
 				AtlasScale = scale, MaskScale = MaskScale(rm),
 			};
+			entry.Refs = 1;
+			entry.ContentKey = key;
+			if (key != 0)
+			{
+				if (s_entryPool.TryGetValue(key, out var displaced) && !ReferenceEquals(displaced, entry))
+				{
+					// Unpooled from here on, so whoever still holds it frees it on release.
+					displaced.ContentKey = 0;
+					if (displaced.Refs <= 0) { ReleaseEntry(displaced); }
+				}
+				entry.Src = rr.Commands;
+				s_entryPool[key] = entry;
+				if (_emitStats) { StatPoolAdds++; }
+			}
 			StoreCompiled(rr.Data, entry);
 			if (_emitStats) { RebuildTicks += System.Diagnostics.Stopwatch.GetTimestamp() - t0; t0 = System.Diagnostics.Stopwatch.GetTimestamp(); }
 		}
@@ -352,7 +544,7 @@ internal sealed unsafe partial class WebGpuFrame
 					if (st.Frame != _d.FrameSeq && st.Bufs is not null && st.Bufs.Count == entry.Ops.Count && st.SessionEntries == sessionEntries) { reuse = st; break; }
 				}
 			}
-			if (reuse is null && entry.Stamps.Count >= MaxStampsPerEntry)
+			if (reuse is null && entry.Stamps.Count >= Math.Max(MaxStampsPerEntry, entry.Refs))
 			{
 				// At the cap: take the least recently used one, dropping what it held.
 				foreach (var st in entry.Stamps) { if (reuse is null || st.Frame < reuse.Frame) { reuse = st; } }
@@ -366,6 +558,8 @@ internal sealed unsafe partial class WebGpuFrame
 			var stamped = fresh ? new List<DrawOp>(entry.Ops.Count) : slot.Ops;
 			var bufs = fresh ? new List<nint>(entry.Ops.Count) : slot.Bufs;
 			Dictionary<PathClip[], PathClip[]> pathsMemo = null;
+			Dictionary<ClipEntry[], ClipEntry[]> entsMemo = null;
+			ClipEntry[] entsNoneFolded = null;
 			for (int i = 0; i < entry.Ops.Count; i++)
 			{
 				var op = entry.Ops[i];
@@ -377,7 +571,7 @@ internal sealed unsafe partial class WebGpuFrame
 				scissorClip.ScissorInert = op.Clip.ScissorInert && session.ScissorInert;
 				// The ClipU: the op's own clip (recording space) plus the session's, folded back through the transform.
 				var uClip = op.Clip;
-				FoldSessionEntries(ref uClip, session.Entries, rm);
+				FoldSessionEntries(ref uClip, session.Entries, rm, ref entsMemo, ref entsNoneFolded);
 				FoldSessionPaths(ref uClip, session.Paths, finv, ref pathsMemo);
 				if (IsFiniteAabb(session.Aabb)) { FoldSessionAabb(ref uClip, session.Aabb, finv, rm); }
 				if (!fresh)

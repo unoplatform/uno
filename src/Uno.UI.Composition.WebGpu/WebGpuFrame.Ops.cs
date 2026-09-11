@@ -326,7 +326,39 @@ internal sealed unsafe partial class WebGpuFrame
 	private static void FoldSessionEntries(ref ClipData local, ClipEntry[] sessionEntries, in Matrix3x2 t2)
 	{
 		if (sessionEntries is not { Length: > 0 }) { return; }
-		foreach (var src in sessionEntries) { ClipData.PushEntry(ref local, src.Under(t2)); }
+		local.Entries = Folded(local.Entries, sessionEntries, t2);
+	}
+
+	/// <summary>
+	/// The op's entries followed by the session's, mapped into the op's space. One allocation of the final size,
+	/// where pushing one at a time allocated (and copied) once per session entry.
+	/// </summary>
+	private static ClipEntry[] Folded(ClipEntry[] own, ClipEntry[] sessionEntries, in Matrix3x2 t2)
+	{
+		int n = own?.Length ?? 0;
+		var arr = new ClipEntry[n + sessionEntries.Length];
+		if (n > 0) { Array.Copy(own, arr, n); }
+		for (int i = 0; i < sessionEntries.Length; i++) { arr[n + i] = sessionEntries[i].Under(t2); }
+		return arr;
+	}
+
+	/// <summary>
+	/// <see cref="FoldSessionEntries"/> memoised over one stamp. The session's entries and the replay transform are
+	/// fixed there, so the result depends only on the op's own entries array -- and a run of commands shares one,
+	/// because the recorder's clip arrays are copy-on-write. Turns a per-op allocation into one per distinct clip.
+	/// </summary>
+	private static void FoldSessionEntries(ref ClipData local, ClipEntry[] sessionEntries, in Matrix3x2 t2,
+		ref Dictionary<ClipEntry[], ClipEntry[]> memo, ref ClipEntry[] noneFolded)
+	{
+		if (sessionEntries is not { Length: > 0 }) { return; }
+		if (local.Entries is not { } own)
+		{
+			local.Entries = noneFolded ??= Folded(null, sessionEntries, t2);
+			return;
+		}
+		memo ??= new Dictionary<ClipEntry[], ClipEntry[]>(ReferenceEqualityComparer.Instance);
+		if (!memo.TryGetValue(own, out var folded)) { memo[own] = folded = Folded(own, sessionEntries, t2); }
+		local.Entries = folded;
 	}
 
 	// How many entries a stamp adds beyond the op's own: the session's, plus its finite AABB under a rotation.
