@@ -171,6 +171,24 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 	public IntPtr BufferOf(nint handle) => ChunkOf(handle, out _).Buf;
 	public uint OffsetOf(nint handle) { ChunkOf(handle, out var idx); return (uint)(idx * SlotBytes); }
 
+	/// <summary>
+	/// The slot's own floats, to patch in place. A restamp that only moves a recording changes a dozen of the
+	/// hundred-odd floats in a ClipU, so writing those directly beats rebuilding the whole thing and copying it.
+	/// Call <see cref="MarkDirty"/> after writing.
+	/// </summary>
+	public Span<float> SlotSpan(nint handle)
+	{
+		var c = ChunkOf(handle, out var idx);
+		return c.Shadow.AsSpan(idx * SlotFloats, SlotFloats);
+	}
+
+	public void MarkDirty(nint handle)
+	{
+		var c = ChunkOf(handle, out var idx);
+		if (idx < c.DirtyMin) { c.DirtyMin = idx; }
+		if (idx > c.DirtyMax) { c.DirtyMax = idx; }
+	}
+
 	public void Write(nint handle, float[] clipU, int floats)
 	{
 		var c = ChunkOf(handle, out var idx);

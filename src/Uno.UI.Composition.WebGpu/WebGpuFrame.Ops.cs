@@ -16,6 +16,29 @@ internal sealed unsafe partial class WebGpuFrame
 	// VALUE equality: a recording's clip arrays are copy-on-write and immutable, so across frames they are almost
 	// always the same instance — compare by reference first, then by content, which is far cheaper than the rebuild
 	// or restamp a false "changed" would cause.
+	/// <summary>
+	/// Whether two session clips differ only in where they sit: same entries, same shapes, same linear parts, with
+	/// the translations free to move. That is what an in-place restamp needs -- every entry's <c>k</c> comes from
+	/// the linear parts alone, so it survives, and the translations are recomputed anyway. A scrolling card's clip
+	/// moves with it every frame, so requiring full equality here would reject exactly the case worth patching.
+	/// </summary>
+	internal static bool SessionShapeUnchanged(in ClipData a, in ClipData b)
+	{
+		if (a.Paths is not null || b.Paths is not null) { return false; }
+		if (a.Coverage != b.Coverage || a.CoverageFiltered != b.CoverageFiltered) { return false; }
+		int n = a.Entries?.Length ?? 0;
+		if (n != (b.Entries?.Length ?? 0)) { return false; }
+		for (int i = 0; i < n; i++)
+		{
+			ref readonly var x = ref a.Entries[i];
+			ref readonly var y = ref b.Entries[i];
+			if (x.Exclude != y.Exclude || x.Mask != y.Mask) { return false; }
+			if (x.Rect != y.Rect || x.Radii != y.Radii || x.RadiiY != y.RadiiY) { return false; }
+			if (x.M.M11 != y.M.M11 || x.M.M12 != y.M.M12 || x.M.M21 != y.M.M21 || x.M.M22 != y.M.M22) { return false; }
+		}
+		return true;
+	}
+
 	internal static bool ClipDataEquals(in ClipData a, in ClipData b)
 	{
 		// Scissor-inert clips emit the full-surface scissor, so their (tight, cull-only) AABBs don't affect drawing.

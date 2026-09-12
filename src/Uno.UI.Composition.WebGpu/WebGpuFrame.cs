@@ -515,6 +515,99 @@ internal sealed unsafe partial class WebGpuFrame
 		return ClipUHeaderFloats + Math.Min(n, ClipUniformEntries) * ClipEntryFloats;
 	}
 
+	/// <summary>
+	/// A restamp where the replay transform moved but did not rotate or scale, and the session clip is the one the
+	/// slot already holds. Then the op's own entries, every entry's <c>k</c> (a function of the linear parts alone)
+	/// and all the shape fields are already right: only the placement, the session entries' translation, the rect
+	/// and the inner box move. Patching those in place skips folding an array per op, rewriting twenty-four floats
+	/// per entry and copying the slot -- the work a scrolling wall was doing for every op of every card, every frame.
+	/// </summary>
+	private bool PatchClipU(nint slot, in ClipData own, in ClipData session, in Matrix3x2 xform, in Matrix3x2 finv)
+	{
+		var cu = _d.ClipSlab.SlotSpan(slot);
+		int na = own.Entries?.Length ?? 0;
+
+		// The rect slot: the op's own box, cut by the session's mapped back through finv (FoldSessionAabb).
+		var ab = own.Aabb;
+		bool rotated = finv.M12 != 0 || finv.M21 != 0;
+		if (IsFiniteAabb(session.Aabb) && !rotated)
+		{
+			var sa = session.Aabb;
+			var q0 = new Vector2(sa.X * finv.M11 + sa.Y * finv.M21 + finv.M31, sa.X * finv.M12 + sa.Y * finv.M22 + finv.M32);
+			var q1 = new Vector2(sa.Z * finv.M11 + sa.W * finv.M21 + finv.M31, sa.Z * finv.M12 + sa.W * finv.M22 + finv.M32);
+			ab = new Vector4(
+				MathF.Max(ab.X, MathF.Min(q0.X, q1.X)), MathF.Max(ab.Y, MathF.Min(q0.Y, q1.Y)),
+				MathF.Min(ab.Z, MathF.Max(q0.X, q1.X)), MathF.Min(ab.W, MathF.Max(q0.Y, q1.Y)));
+		}
+		bool foldedAabb = ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f;
+		cu[1] = foldedAabb ? 1f : 0f;
+		if (foldedAabb) { cu[2] = ab.X; cu[3] = ab.Y; cu[6] = ab.Z; cu[7] = ab.W; }
+
+		cu[12] = xform.M31; cu[13] = xform.M32;
+		cu[14] = finv.M31 + finv.M11 * _basisOx + finv.M21 * _basisOy;
+		cu[15] = finv.M32 + finv.M12 * _basisOx + finv.M22 * _basisOy;
+
+		float ix = -1e30f, iy = -1e30f, iz = 1e30f, iw = 1e30f;
+		if (foldedAabb) { ix = ab.X + 1f; iy = ab.Y + 1f; iz = ab.Z - 1f; iw = ab.W - 1f; }
+		int n = na + (session.Entries?.Length ?? 0);
+		for (int i = 0; i < n; i++)
+		{
+			// Only a session entry moves: its matrix is the session's under the replay transform.
+			float m11, m12, m21, m22, m31, m32, rx, ry, rz, rw, radX, radY, radZ, radW, ryX, ryY, ryZ, ryW, k;
+			bool excluded, masked;
+			if (i < na)
+			{
+				ref readonly var e = ref own.Entries[i];
+				m11 = e.M.M11; m12 = e.M.M12; m21 = e.M.M21; m22 = e.M.M22; m31 = e.M.M31; m32 = e.M.M32;
+				rx = e.Rect.X; ry = e.Rect.Y; rz = e.Rect.Z; rw = e.Rect.W;
+				radX = e.Radii.X; radY = e.Radii.Y; radZ = e.Radii.Z; radW = e.Radii.W;
+				ryX = e.RadiiY.X; ryY = e.RadiiY.Y; ryZ = e.RadiiY.Z; ryW = e.RadiiY.W;
+				excluded = e.Exclude; masked = e.Mask;
+			}
+			else
+			{
+				ref readonly var e = ref session.Entries[i - na];
+				var sm = e.M;
+				m11 = xform.M11 * sm.M11 + xform.M12 * sm.M21; m12 = xform.M11 * sm.M12 + xform.M12 * sm.M22;
+				m21 = xform.M21 * sm.M11 + xform.M22 * sm.M21; m22 = xform.M21 * sm.M12 + xform.M22 * sm.M22;
+				m31 = xform.M31 * sm.M11 + xform.M32 * sm.M21 + sm.M31;
+				m32 = xform.M31 * sm.M12 + xform.M32 * sm.M22 + sm.M32;
+				rx = e.Rect.X; ry = e.Rect.Y; rz = e.Rect.Z; rw = e.Rect.W;
+				radX = e.Radii.X; radY = e.Radii.Y; radZ = e.Radii.Z; radW = e.Radii.W;
+				ryX = e.RadiiY.X; ryY = e.RadiiY.Y; ryZ = e.RadiiY.Z; ryW = e.RadiiY.W;
+				excluded = e.Exclude; masked = e.Mask;
+				if (i < ClipUniformEntries)
+				{
+					int o2 = ClipUHeaderFloats + i * ClipEntryFloats;
+					cu[o2 + 4] = m31; cu[o2 + 5] = m32;
+				}
+				else
+				{
+					// An overflow entry lives in the storage buffer, which this path does not hold; the caller's
+					// guard keeps those on the full rewrite.
+					return foldedAabb;
+				}
+			}
+
+			if (iz <= ix) { continue; }
+			k = i < ClipUniformEntries ? cu[ClipUHeaderFloats + i * ClipEntryFloats + 20] : 0f;
+			if (masked || excluded || MathF.Abs(m12) > 1e-6f || MathF.Abs(m21) > 1e-6f || MathF.Abs(m11) < 1e-9f || MathF.Abs(m22) < 1e-9f)
+			{
+				ix = 1f; iz = 0f;
+				continue;
+			}
+			const float inset = 0.2929f;
+			float qL = rx + MathF.Max(radX, radW) * inset + k, qR = rz - MathF.Max(radY, radZ) * inset - k;
+			float qT = ry + MathF.Max(ryX, ryY) * inset + k, qB = rw - MathF.Max(ryZ, ryW) * inset - k;
+			float pL = (qL - m31) / m11, pR = (qR - m31) / m11, pT = (qT - m32) / m22, pB = (qB - m32) / m22;
+			ix = MathF.Max(ix, MathF.Min(pL, pR)); iz = MathF.Min(iz, MathF.Max(pL, pR));
+			iy = MathF.Max(iy, MathF.Min(pT, pB)); iw = MathF.Min(iw, MathF.Max(pT, pB));
+		}
+		cu[24] = ix; cu[25] = iy; cu[26] = iz; cu[27] = iw;
+		_d.ClipSlab.MarkDirty(slot);
+		return foldedAabb;
+	}
+
 	private bool RewriteClipU(nint slot, ClipData cd, Matrix3x2 xform, Matrix3x2 finv)
 	{
 		var more = FillClipU(cd, xform, finv, null, out var folded);

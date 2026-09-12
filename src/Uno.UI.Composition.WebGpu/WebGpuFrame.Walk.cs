@@ -604,6 +604,20 @@ internal sealed unsafe partial class WebGpuFrame
 			var stampOwned = fresh ? new OwnedResources() : slot.Owned;
 			var stamped = fresh ? new List<DrawOp>(entry.Ops.Count) : slot.Ops;
 			var bufs = fresh ? new List<nint>(entry.Ops.Count) : slot.Bufs;
+			// A move, not a rotation or a scale, onto the clip the slot already holds: then only placement changes
+			// and each op's ClipU can be patched where it lies. This is the scrolling case, which is the one that
+			// restamps every op of every record every frame.
+			// The site MOVED but did not rotate or scale, onto a clip of the same shape: then every op's ClipU is
+			// right except for where it sits, and can be patched where it lies instead of folded, rebuilt and
+			// copied. This is the scrolling case -- the one that restamps every op of every record every frame.
+			// The basis is free to move with it: it reaches the ClipU only through two finv translation floats,
+			// which the patch recomputes.
+			var moved = !fresh
+				&& session.Paths is null && !entry.HasPathClip
+				&& slot.Xform.M11 == rm.M11 && slot.Xform.M12 == rm.M12
+				&& slot.Xform.M21 == rm.M21 && slot.Xform.M22 == rm.M22
+				&& !(IsFiniteAabb(session.Aabb) && (finv.M12 != 0 || finv.M21 != 0))
+				&& SessionShapeUnchanged(slot.Clip, session);
 			Dictionary<PathClip[], PathClip[]> pathsMemo = null;
 			Dictionary<ClipEntry[], ClipEntry[]> entsMemo = null;
 			ClipEntry[] entsNoneFolded = null;
@@ -616,6 +630,15 @@ internal sealed unsafe partial class WebGpuFrame
 				var sa = session.Aabb;
 				scissorClip.Aabb = new Vector4(MathF.Max(scissorClip.Aabb.X, sa.X), MathF.Max(scissorClip.Aabb.Y, sa.Y), MathF.Min(scissorClip.Aabb.Z, sa.Z), MathF.Min(scissorClip.Aabb.W, sa.W));
 				scissorClip.ScissorInert = op.Clip.ScissorInert && session.ScissorInert;
+				// Overflow entries live in a storage buffer the patch does not hold, so those stay on the rebuild.
+				if (moved && op.Clip.Paths is null
+					&& (op.Clip.Entries?.Length ?? 0) + (session.Entries?.Length ?? 0) <= ClipUniformEntries)
+				{
+					scissorClip.AabbInClipU = PatchClipU(bufs[i], op.Clip, session, rm, finv);
+					scissorClip.ScissorLoadBearing = !scissorClip.AabbInClipU;
+					stamped[i] = op.WithClip(scissorClip, stamped[i].ClipBg);
+					continue;
+				}
 				// The ClipU: the op's own clip (recording space) plus the session's, folded back through the transform.
 				var uClip = op.Clip;
 				FoldSessionEntries(ref uClip, session.Entries, rm, ref entsMemo, ref entsNoneFolded);
