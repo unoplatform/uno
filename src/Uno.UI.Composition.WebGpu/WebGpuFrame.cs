@@ -351,6 +351,10 @@ internal sealed unsafe partial class WebGpuFrame
 		return buf;
 	}
 
+	internal void SetSiteScissor(nint slot, Vector4 box) => _d.SetSiteScissor(slot, box);
+
+	private Vector4 SiteScissor(nint slot) => _d.SiteScissor(slot);
+
 	/// <summary>The site's clip entries the uniform can hold before one has to be folded per op instead.</summary>
 	internal const int SiteUniformEntries = 4;
 

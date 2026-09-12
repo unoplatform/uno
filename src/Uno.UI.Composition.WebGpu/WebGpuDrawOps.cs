@@ -50,6 +50,8 @@ internal struct DrawOp
 	public IntPtr ClipBg;
 	/// <summary>Where the recording this op belongs to sits. Zero = it is already in device space.</summary>
 	public IntPtr SiteBg;
+	/// <summary>Its site's slot, whose scissor box the encode reads. Zero = the op carries its own.</summary>
+	public nint SiteSlot;
 
 	/// <summary>An op drawing a range of the pass's shared buffer for its kind.</summary>
 	public static DrawOp Shared(DrawKind kind, uint firstVertex, uint count, IntPtr group1, in ClipData clip, IntPtr clipBg)
@@ -65,7 +67,7 @@ internal struct DrawOp
 	/// <summary>The same draw under another clip: what a restamp of an arena op produces.</summary>
 	public DrawOp WithClip(in ClipData clip, IntPtr clipBg) { var o = this; o.Clip = clip; o.ClipBg = clipBg; return o; }
 
-	public DrawOp WithClipSite(in ClipData clip, IntPtr clipBg, IntPtr siteBg) { var o = this; o.Clip = clip; o.ClipBg = clipBg; o.SiteBg = siteBg; return o; }
+	public DrawOp WithClipSite(in ClipData clip, IntPtr clipBg, IntPtr siteBg, nint siteSlot) { var o = this; o.Clip = clip; o.ClipBg = clipBg; o.SiteBg = siteBg; o.SiteSlot = siteSlot; return o; }
 
 	public bool SharesBuffer => Verts == IntPtr.Zero;
 }
@@ -127,6 +129,8 @@ internal sealed class StampSlot
 	public int SessionEntries;
 	public nint SiteSlot;
 	public IntPtr SiteBg;
+	/// <summary>Its ops were built independent of where the site sits, so a move can reuse them untouched.</summary>
+	public bool SiteOps;
 }
 
 /// <summary>

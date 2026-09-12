@@ -47,6 +47,18 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
 	public WebGpuClipSlab ClipSlab;               // size-classed storage slab backing every owned/restamped ClipU
 	public WebGpuSiteSlab SiteSlab;
+	// One device scissor box per site slot. A site's ops all share it, so a move writes it once instead of
+	// rewriting a box into every op -- which is what lets a moved recording reuse its op list untouched. It lives
+	// here, not on the frame: a site slot outlives any one frame, and a stamp that HITS never rewrites its box.
+	private Vector4[] _siteScissor = new Vector4[256];
+
+	public void SetSiteScissor(nint slot, Vector4 box)
+	{
+		if (slot >= _siteScissor.Length) { Array.Resize(ref _siteScissor, Math.Max((int)slot + 1, _siteScissor.Length * 2)); }
+		_siteScissor[slot] = box;
+	}
+
+	public Vector4 SiteScissor(nint slot) => slot < _siteScissor.Length ? _siteScissor[slot] : ClipData.None.Aabb;
 	private IntPtr _identitySiteBg;
 
 	/// <summary>The site group for ops whose geometry is already in device space: an identity placement.</summary>
