@@ -276,6 +276,11 @@ public partial class NavigationView : ContentControl
 	private void OnSelectionModelSelectionChanged(SelectionModel selectionModel, SelectionModelSelectionChangedEventArgs e)
 	{
 		var selectedItem = selectionModel.SelectedItem;
+		if (m_appliedTemplate && (selectedItem is null || selectedItem != SelectedItem))
+		{
+			// An index-only change preserves ancestor identities and may precede repeater index updates.
+			UpdateIsChildSelected(selectionModel.SelectedIndex);
+		}
 
 		// Ignore this callback if:
 		// 1. the SelectedItem property of NavigationView is already set to the item
@@ -1032,7 +1037,7 @@ public partial class NavigationView : ContentControl
 					}
 					else if (!IsPaneOpen && indexPath.GetSize() == 0)
 					{
-						UpdateIsChildSelected(indexPathFromModel, null); // Update IsChildSelected Property of Parent Chain
+						UpdateIsChildSelected(null); // Update IsChildSelected Property of Parent Chain
 						if (m_prevIndicator == null && m_nextIndicator == null && m_activeIndicator != null)
 						{
 							// Remove selection indication if we are not in the middle of an ongoing animation
@@ -1353,6 +1358,7 @@ public partial class NavigationView : ContentControl
 				SetNavigationViewItemRevokers(nvi);
 
 				var item = MenuItemFromContainer(nvi);
+				UpdateIsChildSelectedForContainer(nvi);
 
 				if (SelectedItem == item && IsVisible(nvi))
 				{
@@ -1399,6 +1405,11 @@ public partial class NavigationView : ContentControl
 	{
 		if (args.Element is NavigationViewItemBase nvib)
 		{
+			if (nvib is NavigationViewItem item)
+			{
+				SetIsChildSelected(item, false);
+			}
+
 			var nvibImpl = nvib;
 			nvibImpl.Depth = 0;
 			nvibImpl.IsTopLevelItem = false;
@@ -2654,37 +2665,53 @@ public partial class NavigationView : ContentControl
 
 	private void UpdateSelectionModelSelection(IndexPath ip)
 	{
-		var prevIndexPath = m_selectionModel.SelectedIndex;
 		m_selectionModel.SelectAt(ip);
-		UpdateIsChildSelected(prevIndexPath, ip);
+		UpdateIsChildSelected(m_selectionModel.SelectedIndex);
 	}
 
-	private void UpdateIsChildSelected(IndexPath prevIP, IndexPath nextIP)
+	private void UpdateIsChildSelected(IndexPath nextIP)
 	{
-		if (prevIP != null && prevIP.GetSize() > 0)
+		var selectedItem = m_selectionModel.SelectedItem;
+		// The old path may already refer to different rows after a collection mutation.
+		while (m_selectedAncestors.Count > 0)
 		{
-			UpdateIsChildSelectedForIndexPath(prevIP, false /*isChildSelected*/);
+			var index = m_selectedAncestors.Count - 1;
+			var ancestor = m_selectedAncestors[index];
+			m_selectedAncestors.RemoveAt(index);
+			if (ancestor.TryGetTarget(out var container))
+			{
+				container.IsChildSelected = false;
+			}
+			if (m_selectionModel.SelectedItem != selectedItem)
+			{
+				return;
+			}
 		}
 
-		if (nextIP != null && nextIP.GetSize() > 0)
+		if (nextIP != null && nextIP.GetSize() > 2)
 		{
-			UpdateIsChildSelectedForIndexPath(nextIP, true /*isChildSelected*/);
+			UpdateIsChildSelectedForIndexPath(nextIP);
 		}
 	}
 
-	private void UpdateIsChildSelectedForIndexPath(IndexPath ip, bool isChildSelected)
+	private void UpdateIsChildSelectedForIndexPath(IndexPath ip)
 	{
+		var selectedItem = m_selectionModel.SelectedItem;
 		// Update the isChildSelected property for every container on the IndexPath (with the exception of the actual container pointed to by the indexpath)
 		var container = GetContainerForIndex(ip.GetAt(1), ip.GetAt(0) == c_footerMenuBlockIndex /*inFooter*/);
 		// first index is fo mainmenu or footer
 		// second is index of item in mainmenu or footer
 		// next in menuitem children
 		var index = 2;
-		while (container != null)
+		while (container != null && index < ip.GetSize())
 		{
 			if (container is NavigationViewItem nvi)
 			{
-				nvi.IsChildSelected = isChildSelected;
+				SetIsChildSelected(nvi, true);
+				if (m_selectionModel.SelectedItem != selectedItem)
+				{
+					return;
+				}
 				var nextIR = nvi.GetRepeater();
 				if (nextIR != null)
 				{
@@ -2698,6 +2725,34 @@ public partial class NavigationView : ContentControl
 			}
 			container = null;
 		}
+	}
+
+	private void UpdateIsChildSelectedForContainer(NavigationViewItem container)
+	{
+		var selectedPath = m_selectionModel.SelectedIndex;
+		var containerPath = GetIndexPathForContainer(container);
+		var isAncestor = selectedPath != null && containerPath.GetSize() > 1 && containerPath.GetSize() < selectedPath.GetSize();
+		for (var index = 0; isAncestor && index < containerPath.GetSize(); index++)
+		{
+			isAncestor = containerPath.GetAt(index) == selectedPath.GetAt(index);
+		}
+		SetIsChildSelected(container, isAncestor);
+	}
+
+	private void SetIsChildSelected(NavigationViewItem container, bool isChildSelected)
+	{
+		for (var index = m_selectedAncestors.Count - 1; index >= 0; index--)
+		{
+			if (!m_selectedAncestors[index].TryGetTarget(out var ancestor) || ancestor == container)
+			{
+				m_selectedAncestors.RemoveAt(index);
+			}
+		}
+		if (isChildSelected)
+		{
+			m_selectedAncestors.Add(new global::System.WeakReference<NavigationViewItem>(container));
+		}
+		container.IsChildSelected = isChildSelected;
 	}
 
 	private void RaiseItemInvoked(
