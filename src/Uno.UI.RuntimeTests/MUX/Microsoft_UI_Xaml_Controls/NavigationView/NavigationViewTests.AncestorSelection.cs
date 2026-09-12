@@ -8,7 +8,9 @@ using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Markup;
 using Private.Infrastructure;
+using Uno.UI.RuntimeTests;
 using Uno.UI.RuntimeTests.Helpers;
+using static Private.Infrastructure.TestServices;
 
 namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests;
 
@@ -16,6 +18,7 @@ public partial class NavigationViewTests
 {
 	[TestMethod]
 	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24508")]
 	public async Task When_SelectedChildMovesBetweenParents_OnlyCurrentAncestorsStaySelected()
 	{
 		var selected = new AncestorSelectionNode("Selected");
@@ -49,6 +52,7 @@ public partial class NavigationViewTests
 
 			source.Children.Remove(selected);
 			destination.Children.Add(selected);
+			await WindowHelper.WaitForIdle();
 			navigation.SelectedItem = selected;
 			await WindowHelper.WaitForIdle();
 
@@ -81,6 +85,7 @@ public partial class NavigationViewTests
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24508")]
 	[DataRow(false)]
 	[DataRow(true)]
 	public async Task When_AncestorIndexChanges_DeselectClearsOriginalAncestor(bool changePaneMode)
@@ -147,6 +152,7 @@ public partial class NavigationViewTests
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24508")]
 	public async Task When_SelectedChildMovesIntoCollapsedParent_SelectionFollowsItsNewAncestor()
 	{
 		var selected = new AncestorSelectionNode("Selected");
