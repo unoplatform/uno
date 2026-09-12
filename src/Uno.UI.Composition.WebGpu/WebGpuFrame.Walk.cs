@@ -78,6 +78,39 @@ internal sealed unsafe partial class WebGpuFrame
 	/// Emits the ops of a command list into the current build. <paramref name="m"/> maps the list's space to device
 	/// pixels; <paramref name="outer"/> is the clip in force where the list is replayed, in device space.
 	/// </summary>
+	// Bounds of each run of CullChunk replayed records, in the list's own space. The visual tree culls leaves but
+	// never recordings, so a list hands the walk every record it has -- thousands, of which a screenful survives.
+	// Rejecting them a chunk at a time makes that cost follow what is on screen rather than what exists. Keyed on
+	// the command list, which never changes once recorded.
+	private const int CullChunk = 32;
+	private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<List<WebGpuCommand>, Vector4[]> s_chunkBounds = new();
+
+	/// <summary>
+	/// Chunk boxes for a list, or null when it is too short to be worth it. A chunk holding anything but a
+	/// replayed record gets an unbounded box, so it is never rejected as a group.
+	/// </summary>
+	private static Vector4[] ChunkBounds(List<WebGpuCommand> cmds)
+	{
+		if (cmds.Count < CullChunk * 2) { return null; }
+		if (s_chunkBounds.TryGetValue(cmds, out var cached)) { return cached; }
+		var chunks = new Vector4[(cmds.Count + CullChunk - 1) / CullChunk];
+		for (int c = 0; c < chunks.Length; c++)
+		{
+			int lo = c * CullChunk, hi = Math.Min(lo + CullChunk, cmds.Count);
+			var box = new Vector4(float.MaxValue, float.MaxValue, float.MinValue, float.MinValue);
+			for (int i = lo; i < hi; i++)
+			{
+				if (cmds[i] is not ReplayRefCmd rr) { box = ClipData.None.Aabb; break; }
+				var b = TransformBounds(rr.Data.IdentityBounds ??= CmdListBounds(rr.Commands), rr.Transform2);
+				if (!IsFiniteAabb(b)) { box = ClipData.None.Aabb; break; }
+				box = new Vector4(MathF.Min(box.X, b.X), MathF.Min(box.Y, b.Y), MathF.Max(box.Z, b.Z), MathF.Max(box.W, b.W));
+			}
+			chunks[c] = box;
+		}
+		s_chunkBounds.Add(cmds, chunks);
+		return chunks;
+	}
+
 	private void Walk(List<WebGpuCommand> cmds, in Matrix3x2 m, in ClipData outer, List<DrawOp> ops)
 	{
 		bool identity = m.IsIdentity;
@@ -85,8 +118,18 @@ internal sealed unsafe partial class WebGpuFrame
 		if (!identity && !Matrix3x2.Invert(m, out inv)) { return; }   // a collapsed transform draws nothing
 		bool direct = identity && IsNone(outer);
 		var composer = new ClipComposer();
+		var chunks = ChunkBounds(cmds);
 		for (int ci = 0; ci < cmds.Count; ci++)
 		{
+			if (chunks is not null && (ci % CullChunk) == 0)
+			{
+				var cb = chunks[ci / CullChunk];
+				if (IsFiniteAabb(cb) && Culled(ClampToClip(TransformBounds(cb, m), outer)))
+				{
+					ci += CullChunk - 1;
+					continue;
+				}
+			}
 			var cmd = cmds[ci];
 			switch (cmd.Kind)
 			{
