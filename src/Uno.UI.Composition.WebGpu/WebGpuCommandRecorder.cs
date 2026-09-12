@@ -665,7 +665,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 		// The nested list (with its raw image view handles) is captured by reference and may be drawn after the
 		// nested recording is disposed, so this recording holds its textures and geometries alive too.
 		TrackNestedTextures(rec);
-		_target.Add(new ReplayRefCmd { Data = rec, Commands = rec.Commands, Transform = _m, Clip = _clip });
+		_target.Add(new ReplayRefCmd { Data = rec, Commands = rec.Commands, Transform = _m, Transform2 = new Matrix3x2(_m.M11, _m.M12, _m.M21, _m.M22, _m.M41, _m.M42), Clip = _clip });
 	}
 
 	// Take a ref to every texture and geometry the nested recording references, so an outer frame keeps them alive as

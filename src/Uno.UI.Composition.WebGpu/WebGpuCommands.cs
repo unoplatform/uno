@@ -246,4 +246,10 @@ internal sealed class ReplayRefCmd : WebGpuCommand
 	public WebGpuRenderRecord Data;
 	public System.Collections.Generic.List<WebGpuCommand> Commands;
 	public System.Numerics.Matrix4x4 Transform;
+
+	/// <summary>
+	/// <see cref="Transform"/>'s 2D part, built once with the command. An un-virtualised list hands the walk every
+	/// one of its records each frame, so converting the 4x4 per site per frame is thousands of needless copies.
+	/// </summary>
+	public System.Numerics.Matrix3x2 Transform2;
 }

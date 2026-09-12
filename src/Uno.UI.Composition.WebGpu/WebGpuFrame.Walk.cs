@@ -274,13 +274,49 @@ internal sealed unsafe partial class WebGpuFrame
 
 	private void EmitReplay(ReplayRefCmd rr, in Matrix3x2 m, in Matrix3x2 inv, in ClipData outer, bool direct, List<DrawOp> ops)
 	{
-		var rm = m.IsIdentity ? To3x2(rr.Transform) : To3x2(rr.Transform) * m;
-		var db = TransformBounds(rr.Data.IdentityBounds ??= CmdListBounds(rr.Commands), rm);
 		// Cull against the replay site's clip BEFORE composing this record's own: the composed clip is the
 		// intersection of the two, so whatever the site rejects the composition rejects as well. A list of
 		// thousands of moving rows hands the walk every one of its records each frame (the visual tree culls
-		// leaves, never recordings), and the scrolled-out ones must cost a transform and a compare, nothing more.
-		if (Culled(ClampToClip(db, outer))) { return; }
+		// leaves, never recordings), so the scrolled-out ones are the hot path here. Composed and tested in
+		// scalars: wasm copies the Matrix3x2/Vector4 forms rather than intrinsifying them, and at four thousand
+		// records a frame that difference is milliseconds.
+		var t = rr.Transform2;
+		float a11 = t.M11, a12 = t.M12, a21 = t.M21, a22 = t.M22, a31 = t.M31, a32 = t.M32;
+		if (!m.IsIdentity)
+		{
+			float b11 = m.M11, b12 = m.M12, b21 = m.M21, b22 = m.M22;
+			float c11 = a11 * b11 + a12 * b21, c12 = a11 * b12 + a12 * b22;
+			float c21 = a21 * b11 + a22 * b21, c22 = a21 * b12 + a22 * b22;
+			float c31 = a31 * b11 + a32 * b21 + m.M31, c32 = a31 * b12 + a32 * b22 + m.M32;
+			a11 = c11; a12 = c12; a21 = c21; a22 = c22; a31 = c31; a32 = c32;
+		}
+		var rm = new Matrix3x2(a11, a12, a21, a22, a31, a32);
+		var ib = rr.Data.IdentityBounds ??= CmdListBounds(rr.Commands);
+		Vector4 db;
+		if (a12 == 0f && a21 == 0f && ib.X <= ib.Z && ib.Y <= ib.W && IsFiniteAabb(ib))
+		{
+			float x0 = ib.X * a11 + a31, x1 = ib.Z * a11 + a31;
+			float y0 = ib.Y * a22 + a32, y1 = ib.W * a22 + a32;
+			float lo = x0 < x1 ? x0 : x1, hi = x0 < x1 ? x1 : x0;
+			float top = y0 < y1 ? y0 : y1, bot = y0 < y1 ? y1 : y0;
+			// The site's clip folds into the same compare, so a rejected record never touches ClipData again.
+			float cx0 = lo, cy0 = top, cx1 = hi, cy1 = bot;
+			var oa = outer.Aabb;
+			if (IsFiniteAabb(oa))
+			{
+				if (cx0 < oa.X) { cx0 = oa.X; }
+				if (cy0 < oa.Y) { cy0 = oa.Y; }
+				if (cx1 > oa.Z) { cx1 = oa.Z; }
+				if (cy1 > oa.W) { cy1 = oa.W; }
+			}
+			if (cx0 >= cx1 || cy0 >= cy1 || cx1 <= 0f || cy1 <= 0f || cx0 >= Target.Width || cy0 >= Target.Height) { return; }
+			db = new Vector4(lo, top, hi, bot);
+		}
+		else
+		{
+			db = TransformBounds(ib, rm);
+			if (Culled(ClampToClip(db, outer))) { return; }
+		}
 		var rc = ComposeClip(outer, rr.Clip, m, inv, direct);
 		if (Culled(ClampToClip(db, rc))) { return; }
 		if (IsPlain(rr)) { EmitArena(rr, rm, rc, ops); }

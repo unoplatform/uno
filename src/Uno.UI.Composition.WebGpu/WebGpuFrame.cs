@@ -226,6 +226,14 @@ internal sealed unsafe partial class WebGpuFrame
 	{
 		if (b.X > b.Z || b.Y > b.W || !IsFiniteAabb(b)) { return b; }
 		if (m.IsIdentity) { return b; }
+		// No rotation or skew: the box maps to a box, so two opposite corners settle it. A scrolling list is in
+		// this case and walks here once per record per frame.
+		if (m.M12 == 0f && m.M21 == 0f)
+		{
+			float ax = b.X * m.M11 + m.M31, bx = b.Z * m.M11 + m.M31;
+			float ay = b.Y * m.M22 + m.M32, by = b.W * m.M22 + m.M32;
+			return new Vector4(MathF.Min(ax, bx), MathF.Min(ay, by), MathF.Max(ax, bx), MathF.Max(ay, by));
+		}
 		var q0 = Map(new Vector2(b.X, b.Y), m); var q1 = Map(new Vector2(b.Z, b.Y), m);
 		var q2 = Map(new Vector2(b.Z, b.W), m); var q3 = Map(new Vector2(b.X, b.W), m);
 		var min = Vector2.Min(Vector2.Min(q0, q1), Vector2.Min(q2, q3));
