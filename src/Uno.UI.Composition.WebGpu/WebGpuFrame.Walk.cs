@@ -601,6 +601,15 @@ internal sealed unsafe partial class WebGpuFrame
 			var fresh = reuse is null || reuse.Bufs is null;
 			slot = reuse ?? new StampSlot();
 			if (reuse is null) { entry.Stamps.Add(slot); }
+			if (slot.SiteSlot == 0)
+			{
+				slot.SiteSlot = _d.SiteSlab.Alloc();
+				slot.SiteBg = MakeSiteBg(slot.SiteSlot);
+			}
+			// When the site's clip can ride the site uniform, no op's clip depends on where the recording sits any
+			// more -- so a move writes THIS block and nothing else.
+			var siteCarries = SiteCanCarry(session);
+			WriteSite(slot.SiteSlot, rm, session, siteCarries);
 			var stampOwned = fresh ? new OwnedResources() : slot.Owned;
 			var stamped = fresh ? new List<DrawOp>(entry.Ops.Count) : slot.Ops;
 			var bufs = fresh ? new List<nint>(entry.Ops.Count) : slot.Bufs;
@@ -630,25 +639,35 @@ internal sealed unsafe partial class WebGpuFrame
 				var sa = session.Aabb;
 				scissorClip.Aabb = new Vector4(MathF.Max(scissorClip.Aabb.X, sa.X), MathF.Max(scissorClip.Aabb.Y, sa.Y), MathF.Min(scissorClip.Aabb.Z, sa.Z), MathF.Min(scissorClip.Aabb.W, sa.W));
 				scissorClip.ScissorInert = op.Clip.ScissorInert && session.ScissorInert;
+				if (siteCarries && !fresh)
+				{
+					scissorClip.AabbInClipU = stamped[i].Clip.AabbInClipU;
+					scissorClip.ScissorLoadBearing = stamped[i].Clip.ScissorLoadBearing;
+					stamped[i] = op.WithClipSite(scissorClip, stamped[i].ClipBg, slot.SiteBg);
+					continue;
+				}
 				// Overflow entries live in a storage buffer the patch does not hold, so those stay on the rebuild.
 				if (moved && op.Clip.Paths is null
 					&& (op.Clip.Entries?.Length ?? 0) + (session.Entries?.Length ?? 0) <= ClipUniformEntries)
 				{
 					scissorClip.AabbInClipU = PatchClipU(bufs[i], op.Clip, session, rm, finv);
 					scissorClip.ScissorLoadBearing = !scissorClip.AabbInClipU;
-					stamped[i] = op.WithClip(scissorClip, stamped[i].ClipBg);
+					stamped[i] = op.WithClipSite(scissorClip, stamped[i].ClipBg, slot.SiteBg);
 					continue;
 				}
 				// The ClipU: the op's own clip (recording space) plus the session's, folded back through the transform.
 				var uClip = op.Clip;
-				FoldSessionEntries(ref uClip, session.Entries, rm, ref entsMemo, ref entsNoneFolded);
-				FoldSessionPaths(ref uClip, session.Paths, finv, ref pathsMemo);
-				if (IsFiniteAabb(session.Aabb)) { FoldSessionAabb(ref uClip, session.Aabb, finv, rm); }
+				if (!siteCarries)
+				{
+					FoldSessionEntries(ref uClip, session.Entries, rm, ref entsMemo, ref entsNoneFolded);
+					FoldSessionPaths(ref uClip, session.Paths, finv, ref pathsMemo);
+					if (IsFiniteAabb(session.Aabb)) { FoldSessionAabb(ref uClip, session.Aabb, finv, rm); }
+				}
 				if (!fresh)
 				{
 					scissorClip.AabbInClipU = RewriteClipU(bufs[i], uClip, rm, finv);
 					scissorClip.ScissorLoadBearing = !scissorClip.AabbInClipU;
-					stamped[i] = op.WithClip(scissorClip, stamped[i].ClipBg);
+					stamped[i] = op.WithClipSite(scissorClip, stamped[i].ClipBg, slot.SiteBg);
 				}
 				else
 				{
@@ -656,7 +675,7 @@ internal sealed unsafe partial class WebGpuFrame
 					scissorClip.AabbInClipU = folded;
 					scissorClip.ScissorLoadBearing = !folded;
 					bufs.Add(buf);
-					stamped.Add(op.WithClip(scissorClip, clipBg));
+					stamped.Add(op.WithClipSite(scissorClip, clipBg, slot.SiteBg));
 				}
 			}
 			slot.Owned = stampOwned; slot.Ops = stamped; slot.Bufs = bufs;

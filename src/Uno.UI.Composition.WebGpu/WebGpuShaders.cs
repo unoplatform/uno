@@ -54,6 +54,32 @@ struct ClipU { ctrl: vec4<f32>, size: vec4<f32>, xform: vec4<f32>, xoff: vec4<f3
 // cached geometry for free.
 struct PassU { basis: vec4<f32> };
 @group(0) @binding(0) var<uniform> proj: PassU;
+// Where the recording this draw belongs to sits, in pixels: xform = [m00 m01 m10 m11], xoff.xy = translation.
+// One per REPLAY SITE rather than per op, so moving a cached visual rewrites eight floats instead of every op's
+// clip uniform. Bound at group 3 of every colour pipeline (solid and rounded-rect pad group 2 to keep the index
+// the same everywhere).
+// ctrl.x = live entry count, ctrl.y = the rect clip is on, ctrl.zw = its min; rect.zw = its max; inner = the
+// largest device rect every session clip covers in full. The entries are the REPLAY SITE's clips, kept in device
+// space rather than folded into each op: that is what lets a move rewrite this one block instead of every op's.
+struct SiteU { xform: vec4<f32>, xoff: vec4<f32>, ctrl: vec4<f32>, rect: vec4<f32>, inner: vec4<f32>, entries: array<ClipEntry, 4> };
+@group(3) @binding(0) var<uniform> site: SiteU;
+// The site's clips at dp, the fragment's DEVICE position - the space they were recorded in.
+fn siteCov(dp: vec2<f32>) -> f32 {
+  if (site.ctrl.x < 0.5 && site.ctrl.y < 0.5) { return 1.0; }
+  if (all(dp >= site.inner.xy) && all(dp <= site.inner.zw)) { return 1.0; }
+  var cov = 1.0;
+  if (site.ctrl.y > 0.5) {
+    let dmin = dp - vec2<f32>(site.ctrl.z, site.ctrl.w);
+    let dmax = vec2<f32>(site.rect.z, site.rect.w) - dp;
+    cov = clamp(0.5 + min(min(dmin.x, dmin.y), min(dmax.x, dmax.y)), 0.0, 1.0);
+  }
+  let n = u32(site.ctrl.x);
+  if (n > 0u) { cov = cov * entryCov(site.entries[0], dp); }
+  if (n > 1u) { cov = cov * entryCov(site.entries[1], dp); }
+  if (n > 2u) { cov = cov * entryCov(site.entries[2], dp); }
+  if (n > 3u) { cov = cov * entryCov(site.entries[3], dp); }
+  return cov;
+}
 fn project(p: vec2<f32>) -> vec4<f32> {
   return vec4<f32>((p.x - proj.basis.x) / proj.basis.z * 2.0 - 1.0, 1.0 - (p.y - proj.basis.y) / proj.basis.w * 2.0, 0.0, 1.0);
 }
@@ -61,8 +87,8 @@ fn project(p: vec2<f32>) -> vec4<f32> {
 // geometry built where it lands), then the pass projection. Re-stamped as one uniform write when a cached visual
 // moves, so its geometry is reused, not rebuilt.
 fn place(pos: vec2<f32>) -> vec4<f32> {
-  return project(vec2<f32>(clip.xform.x * pos.x + clip.xform.y * pos.y + clip.xoff.x,
-                           clip.xform.z * pos.x + clip.xform.w * pos.y + clip.xoff.y));
+  return project(vec2<f32>(site.xform.x * pos.x + site.xform.y * pos.y + site.xoff.x,
+                           site.xform.z * pos.x + site.xform.w * pos.y + site.xoff.y));
 }
 // Coverage of one clip entry at p (recording space). ddx/ddy = how p moves per fragment step, so the entry's own
 // pixel scale follows from its matrix and the SDF distance converts to pixels without derivative builtins.
@@ -112,8 +138,8 @@ fn covTex(uv: vec2<f32>) -> f32 {
 }
 // Coverage at rp, the fragment's position in the recording's space (the vertex position interpolated, exact under
 // an affine placement), times the op's own coverage texture.
-fn clipCov(rp: vec2<f32>, uv: vec2<f32>) -> f32 {
-  let own = covTex(uv);
+fn clipCov(rp: vec2<f32>, uv: vec2<f32>, dp: vec2<f32>) -> f32 {
+  let own = covTex(uv) * siteCov(dp);
   if (clip.ctrl.x < 0.5 && clip.ctrl.y < 0.5) { return own; }
   return own * clipCovMapped(rp);
 }
@@ -206,7 +232,7 @@ struct VOut { @builtin(position) p: vec4<f32>, @location(0) c: vec4<f32>, @locat
 @vertex fn vs(@location(0) pos: vec2<f32>, @location(1) col: vec4<f32>, @location(2) uv: vec2<f32>) -> VOut {
   var o: VOut; o.p = place(pos); o.c = col; o.uv = uv; o.rp = pos; return o;
 }
-@fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.rp, i.uv)); }";
+@fragment fn fs(i: VOut) -> @location(0) vec4<f32> { return vec4<f32>(i.c.rgb, i.c.a * clipCov(i.rp, i.uv, i.p.xy)); }";
 	// Draws a texture over the whole target (a fullscreen triangle, exact texel fetch): the effect evaluator's final
 	// draw. Optional colour matrix (params.x); params.z = a sub-rect at m1.xy of size m0.zw.
 	private const string CompositeWgsl = @"
@@ -509,7 +535,7 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
   // header.w >= 0: the gradient's colours are a row of the ramp texture, so the whole stop walk is one fetch.
   if (g.header.w >= 0.0) {
     let rc = textureSampleLevel(ramps, rampSmp, vec2<f32>(t * (255.0 / 256.0) + (0.5 / 256.0), g.header.w), 0.0);
-    return vec4<f32>(rc.rgb, rc.a * covTex(i.uv) * clipCovMapped(gfc));
+    return vec4<f32>(rc.rgb, rc.a * covTex(i.uv) * clipCovMapped(gfc) * siteCov(i.p.xy));
   }
   // Fast path for <=4 stops (the overwhelmingly common case): each interval's colour is t * scale + bias from the
   // uniform's ramp, picked at constant indices (a loop variable into a uniform array spills on Intel-class GPUs).
@@ -528,7 +554,7 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
       let bi = select(select(g.ramp[1], g.ramp[3], i1), g.ramp[5], i2);
       col = t * sc + bi;
     }
-    return vec4<f32>(col.rgb, col.a * covTex(i.uv) * clipCovMapped(gfc));
+    return vec4<f32>(col.rgb, col.a * covTex(i.uv) * clipCovMapped(gfc) * siteCov(i.p.xy));
   }
   if (t >= stopAt(n - 1)) { col = g.colors[n - 1]; }
   else if (t <= stopAt(0)) { col = g.colors[0]; }
@@ -543,7 +569,7 @@ fn stopAt(i: i32) -> f32 { return g.stops[i / 4][i % 4]; }
       }
     }
   }
-  return vec4<f32>(col.rgb, col.a * covTex(i.uv) * clipCovMapped(gfc));
+  return vec4<f32>(col.rgb, col.a * covTex(i.uv) * clipCovMapped(gfc) * siteCov(i.p.xy));
 }";
 	// Analytic rounded-rect / border-ring fill. The SDF is evaluated in LOCAL
 	// centred space (`p`/`hf`/`radii` interpolated per-vertex) so it's exact under any affine transform; the four
@@ -581,7 +607,7 @@ fn sdRR(p: vec2<f32>, hf: vec2<f32>, radii: vec4<f32>) -> f32 {
   // APPLIED when one is present.
   let di = sdRR(i.p - i.icenter, i.ihalf, i.iradii);
   if (i.ihalf.x >= 0.0) { cov = cov * clamp(0.5 + di / sxy, 0.0, 1.0); }
-  cov = cov * clipCov(i.rp, vec2<f32>(0.0));
+  cov = cov * clipCov(i.rp, vec2<f32>(0.0), i.pos.xy);
   return vec4<f32>(i.col.rgb, i.col.a * cov);
 }";
 	private const string ImageWgsl = @"
@@ -631,6 +657,6 @@ struct U { op: vec4<f32>, tint: vec4<f32>, m0: vec4<f32>, m1: vec4<f32>, m2: vec
     rgb = clamp(rgb + vec3<f32>(nz), vec3<f32>(0.0), vec3<f32>(1.0));
     c = vec4<f32>(rgb, 1.0);
   }
-  return c * u.op.x * cov * clipCov(i.rp, vec2<f32>(0.0));
+  return c * u.op.x * cov * clipCov(i.rp, vec2<f32>(0.0), i.p.xy);
 }";
 }

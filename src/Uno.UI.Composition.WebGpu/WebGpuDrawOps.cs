@@ -48,6 +48,8 @@ internal struct DrawOp
 	public IntPtr Group1;      // the image / gradient bind group; Zero for a solid or rounded rect
 	public ClipData Clip;
 	public IntPtr ClipBg;
+	/// <summary>Where the recording this op belongs to sits. Zero = it is already in device space.</summary>
+	public IntPtr SiteBg;
 
 	/// <summary>An op drawing a range of the pass's shared buffer for its kind.</summary>
 	public static DrawOp Shared(DrawKind kind, uint firstVertex, uint count, IntPtr group1, in ClipData clip, IntPtr clipBg)
@@ -62,6 +64,8 @@ internal struct DrawOp
 
 	/// <summary>The same draw under another clip: what a restamp of an arena op produces.</summary>
 	public DrawOp WithClip(in ClipData clip, IntPtr clipBg) { var o = this; o.Clip = clip; o.ClipBg = clipBg; return o; }
+
+	public DrawOp WithClipSite(in ClipData clip, IntPtr clipBg, IntPtr siteBg) { var o = this; o.Clip = clip; o.ClipBg = clipBg; o.SiteBg = siteBg; return o; }
 
 	public bool SharesBuffer => Verts == IntPtr.Zero;
 }
@@ -121,6 +125,8 @@ internal sealed class StampSlot
 	public ClipData Clip;
 	public Vector2 Basis;
 	public int SessionEntries;
+	public nint SiteSlot;
+	public IntPtr SiteBg;
 }
 
 /// <summary>
@@ -153,7 +159,7 @@ internal ref struct PassOps
 internal unsafe struct PassEncoder
 {
 	private IntPtr _pass;
-	private IntPtr _pipe, _bg0, _bg1, _bg2, _vb;
+	private IntPtr _pipe, _bg0, _bg1, _bg2, _bg3, _vb;
 	private nuint _vbOffset, _vbSize;
 	private int _sx, _sy, _sw, _sh;
 
@@ -175,7 +181,7 @@ internal unsafe struct PassEncoder
 
 	public void Reset()
 	{
-		_pipe = -1; _bg0 = -1; _bg1 = -1; _bg2 = -1; _vb = -1;
+		_pipe = -1; _bg0 = -1; _bg1 = -1; _bg2 = -1; _bg3 = -1; _vb = -1;
 		_vbOffset = unchecked((nuint)ulong.MaxValue);
 		_vbSize = 0;
 		_sx = _sy = _sw = _sh = -1;
@@ -201,6 +207,7 @@ internal unsafe struct PassEncoder
 		if (group == 0) { if (bg == _bg0) { return; } _bg0 = bg; }
 		else if (group == 1) { if (bg == _bg1) { return; } _bg1 = bg; }
 		else if (group == 2) { if (bg == _bg2) { return; } _bg2 = bg; }
+		else if (group == 3) { if (bg == _bg3) { return; } _bg3 = bg; }
 		wgpuRenderPassEncoderSetBindGroup(_pass, group, bg, 0, (uint*)null);
 	}
 

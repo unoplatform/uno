@@ -46,6 +46,25 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	public WebGpuTexturePool Pool;                // transient offscreen pool (reused across frames)
 	public WebGpuBufferPool BufferPool;           // transient vertex/uniform buffer pool (reused across frames)
 	public WebGpuClipSlab ClipSlab;               // size-classed storage slab backing every owned/restamped ClipU
+	public WebGpuSiteSlab SiteSlab;
+	private IntPtr _identitySiteBg;
+
+	/// <summary>The site group for ops whose geometry is already in device space: an identity placement.</summary>
+	public IntPtr IdentitySiteBg
+	{
+		get
+		{
+			if (_identitySiteBg == IntPtr.Zero)
+			{
+				var slot = SiteSlab.Alloc();
+				SiteSlab.Write(slot, Matrix3x2.Identity);
+				var e = new WGPUBindGroupEntry { Binding = 0, Buffer = SiteSlab.BufferOf(slot), Offset = SiteSlab.OffsetOf(slot), Size = WebGpuFrame.SiteUBytes };
+				var d = new WGPUBindGroupDescriptor { Layout = SiteBgl, EntryCount = 1, Entries = &e };
+				_identitySiteBg = wgpuDeviceCreateBindGroup(Dev, &d);
+			}
+			return _identitySiteBg;
+		}
+	}
 	public WebGpuUniformSlab GradSlab;            // per-frame gradient uniforms, one queue write per chunk
 	// Per-frame ClipU slabs for IMMEDIATE ops, one per (bind-group layout, byte size): a slot's bind group is created
 	// once and reused, so it must always be built with the same layout and bind the same size.
@@ -145,6 +164,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// Explicit SHARED ClipU layout: every colour pipeline binds it at its last group, so a single ClipU bind group
 	// binds to any of them (auto-derived layouts are pipeline-exclusive).
 	public IntPtr ClipBgl;
+	public IntPtr SiteBgl;
+	private IntPtr _emptyBgl;
 	// Group 0 of every colour pipeline: the pass projection (16 bytes), one bind group per pass.
 	public IntPtr PassBgl;
 	public IntPtr Smp;
@@ -231,6 +252,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		Pool = new WebGpuTexturePool(this);
 		BufferPool = new WebGpuBufferPool(this);
 		ClipSlab = new WebGpuClipSlab(this);
+		SiteSlab = new WebGpuSiteSlab(this);
 		GradSlab = new WebGpuUniformSlab(this, GradientUniformBytes, RampView, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst, default, Smp);
 		System.Console.WriteLine($"[webgpu] engine init — colorFormat={ColorFormat}");
 	}
@@ -357,7 +379,9 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		const WGPUShaderStage vf = WGPUShaderStage.Vertex | WGPUShaderStage.Fragment;
 		ClipBgl = Bgl(UniformEntry(0, vf, WebGpuFrame.ClipUBytes), TextureEntry(1, WGPUTextureSampleType.Float), TextureEntry(2, WGPUTextureSampleType.Float), SamplerEntry(3), StorageEntry(4, vf, WebGpuFrame.ClipEntryBytes));
 		PassBgl = Bgl(UniformEntry(0, WGPUShaderStage.Vertex, 16));
-		return ColourLayout(ClipBgl);
+		SiteBgl = Bgl(UniformEntry(0, vf, WebGpuFrame.SiteUBytes));   // the vertex shader places, the fragment clips
+		_emptyBgl = Bgl();
+		return ColourLayout(ClipBgl, _emptyBgl, SiteBgl);
 	}
 
 	private void CreatePipelines()
@@ -373,10 +397,10 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		SolidPipe = Pipeline(Module(ClipStructFn + ColoredWgsl), clipLayout, &straight, ColorFormat, F2, F4, F2);   // pos, colour, coverage uv
 		RrPipe = Pipeline(Module(ClipStructFn + RoundedRectWgsl), clipLayout, &straight, ColorFormat, F2, F2, F2, F4, F4, F2, F2, F4);   // corner, local p, half size, radii, colour, inner half, inner centre, inner radii
 		GradBgl = Bgl(UniformEntry(0, WGPUShaderStage.Fragment, GradientUniformBytes), TextureEntry(1, WGPUTextureSampleType.Float), SamplerEntry(3));
-		GradientPipe = Pipeline(Module(ClipStructFn + GradientWgsl), ColourLayout(GradBgl, ClipBgl), &straight, ColorFormat, F2, F2);
+		GradientPipe = Pipeline(Module(ClipStructFn + GradientWgsl), ColourLayout(GradBgl, ClipBgl, SiteBgl), &straight, ColorFormat, F2, F2);
 		ImgBgl = Bgl(TextureEntry(0, WGPUTextureSampleType.Float), SamplerEntry(1), UniformEntry(2, WGPUShaderStage.Fragment, ImageUniformBytes));
 		var image = Module(ClipStructFn + ImageWgsl);
-		var imageLayout = ColourLayout(ImgBgl, ClipBgl);
+		var imageLayout = ColourLayout(ImgBgl, ClipBgl, SiteBgl);
 		ImagePipe = Pipeline(image, imageLayout, &over, ColorFormat, F2, F2);
 		ImageDstInPipe = Pipeline(image, imageLayout, &dstIn, ColorFormat, F2, F2);
 

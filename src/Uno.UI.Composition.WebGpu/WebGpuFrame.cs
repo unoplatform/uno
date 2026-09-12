@@ -84,6 +84,7 @@ internal sealed unsafe partial class WebGpuFrame
 	internal void End()
 	{
 		_d.ClipSlab.Flush();   // one queue write per dirty chunk, before the submit that reads the clips
+		_d.SiteSlab.Flush();
 		_d.FlushFrameSlabs();
 		var cb = wgpuCommandEncoderFinish(Encoder, null);
 		wgpuQueueSubmit(_d.Q, 1, (IntPtr)(&cb));
@@ -350,6 +351,85 @@ internal sealed unsafe partial class WebGpuFrame
 		return buf;
 	}
 
+	/// <summary>The site's clip entries the uniform can hold before one has to be folded per op instead.</summary>
+	internal const int SiteUniformEntries = 4;
+
+	/// <summary>
+	/// Whether a replay site's clip can ride the site uniform rather than being folded into every op's. Mask
+	/// entries cannot: they sample the clip mask bound with the OP, which the site block has no access to.
+	/// </summary>
+	internal static bool SiteCanCarry(in ClipData session)
+	{
+		if (session.Paths is not null) { return false; }
+		var e = session.Entries;
+		if (e is null) { return true; }
+		if (e.Length > SiteUniformEntries) { return false; }
+		for (int i = 0; i < e.Length; i++) { if (e[i].Mask) { return false; } }
+		return true;
+	}
+
+	/// <summary>
+	/// Fills a site slot: where the recording sits, and the site's own clip in DEVICE space. Writing this is the
+	/// whole cost of moving a cached recording, in place of a rewrite of every one of its ops' clip uniforms.
+	/// </summary>
+	private void WriteSite(nint slot, in Matrix3x2 rm, in ClipData session, bool carry)
+	{
+		var u = _d.SiteSlab.SlotSpan(slot);
+		u[0] = rm.M11; u[1] = rm.M21; u[2] = rm.M12; u[3] = rm.M22;
+		u[4] = rm.M31; u[5] = rm.M32; u[6] = 0f; u[7] = 0f;
+		int n = carry ? (session.Entries?.Length ?? 0) : 0;
+		u[8] = n;
+		var ab = carry ? session.Aabb : new Vector4(-1e9f, -1e9f, 1e9f, 1e9f);
+		bool rect = ab.X > -1e8f || ab.Y > -1e8f || ab.Z < 1e8f || ab.W < 1e8f;
+		u[9] = rect ? 1f : 0f;
+		u[10] = ab.X; u[11] = ab.Y;
+		u[12] = 0f; u[13] = 0f; u[14] = ab.Z; u[15] = ab.W;
+
+		float ix = -1e30f, iy = -1e30f, iz = 1e30f, iw = 1e30f;
+		if (rect) { ix = ab.X + 1f; iy = ab.Y + 1f; iz = ab.Z - 1f; iw = ab.W - 1f; }
+		for (int i = 0; i < n; i++)
+		{
+			ref readonly var e = ref session.Entries[i];
+			int o = SiteUHeaderFloats + i * ClipEntryFloats;
+			u[o + 0] = e.M.M11; u[o + 1] = e.M.M12; u[o + 2] = e.M.M21; u[o + 3] = e.M.M22;
+			u[o + 4] = e.M.M31; u[o + 5] = e.M.M32; u[o + 6] = e.Exclude ? 1f : 0f; u[o + 7] = 0f;
+			u[o + 8] = e.Rect.X; u[o + 9] = e.Rect.Y; u[o + 10] = e.Rect.Z; u[o + 11] = e.Rect.W;
+			u[o + 12] = e.Radii.X; u[o + 13] = e.Radii.Y; u[o + 14] = e.Radii.Z; u[o + 15] = e.Radii.W;
+			u[o + 16] = e.RadiiY.X; u[o + 17] = e.RadiiY.Y; u[o + 18] = e.RadiiY.Z; u[o + 19] = e.RadiiY.W;
+			// A device pixel in the entry's own units: the longer image of the two unit steps.
+			var kx = new Vector2(e.M.M11, e.M.M12).Length();
+			var ky = new Vector2(e.M.M21, e.M.M22).Length();
+			u[o + 20] = MathF.Max(MathF.Max(kx, ky), 1e-6f);
+			u[o + 21] = e.Radii == e.RadiiY ? 1f : 0f;
+			u[o + 22] = 0f; u[o + 23] = 0f;
+
+			if (iz <= ix) { continue; }
+			if (e.Exclude || MathF.Abs(e.M.M12) > 1e-6f || MathF.Abs(e.M.M21) > 1e-6f
+				|| MathF.Abs(e.M.M11) < 1e-9f || MathF.Abs(e.M.M22) < 1e-9f)
+			{
+				ix = 1f; iz = 0f;
+				continue;
+			}
+			const float inset = 0.2929f;
+			float k = u[o + 20];
+			float qL = e.Rect.X + MathF.Max(e.Radii.X, e.Radii.W) * inset + k, qR = e.Rect.Z - MathF.Max(e.Radii.Y, e.Radii.Z) * inset - k;
+			float qT = e.Rect.Y + MathF.Max(e.RadiiY.X, e.RadiiY.Y) * inset + k, qB = e.Rect.W - MathF.Max(e.RadiiY.Z, e.RadiiY.W) * inset - k;
+			float pL = (qL - e.M.M31) / e.M.M11, pR = (qR - e.M.M31) / e.M.M11;
+			float pT = (qT - e.M.M32) / e.M.M22, pB = (qB - e.M.M32) / e.M.M22;
+			ix = MathF.Max(ix, MathF.Min(pL, pR)); iz = MathF.Min(iz, MathF.Max(pL, pR));
+			iy = MathF.Max(iy, MathF.Min(pT, pB)); iw = MathF.Min(iw, MathF.Max(pT, pB));
+		}
+		u[16] = ix; u[17] = iy; u[18] = iz; u[19] = iw;
+	}
+
+	/// <summary>The bind group for one site slot. Lives as long as the stamp, so a move rebinds nothing.</summary>
+	private IntPtr MakeSiteBg(nint slot)
+	{
+		var e = new WGPUBindGroupEntry { Binding = 0, Buffer = _d.SiteSlab.BufferOf(slot), Offset = _d.SiteSlab.OffsetOf(slot), Size = SiteUBytes };
+		var d = new WGPUBindGroupDescriptor { Layout = _d.SiteBgl, EntryCount = 1, Entries = &e };
+		return wgpuDeviceCreateBindGroup(_d.Dev, &d);
+	}
+
 	internal IntPtr Bg(ref WGPUBindGroupDescriptor bgd, OwnedResources owned)
 	{
 		var bg = wgpuDeviceCreateBindGroup(_d.Dev, (WGPUBindGroupDescriptor*)Unsafe.AsPointer(ref bgd));
@@ -407,6 +487,9 @@ internal sealed unsafe partial class WebGpuFrame
 	// bound beside it (see ClipBgl). Uniform reads are what make the common one-to-four-clip draw cheap.
 	internal const int ClipUniformEntries = 4;
 	internal const int ClipUBytes = ClipUHeaderBytes + ClipUniformEntries * ClipEntryBytes;
+	/// <summary>Placement, clip header and the site's first four clip entries.</summary>
+	internal const int SiteUBytes = 464;
+	private const int SiteUHeaderFloats = 20;
 	private const int ClipUHeaderFloats = ClipUHeaderBytes / sizeof(float), ClipEntryFloats = ClipEntryBytes / sizeof(float), ClipUFloats = ClipUBytes / sizeof(float);
 
 	// Writes the op's ClipU into _clipU (and the entries past the uniform's four into _clipMore): the analytic entries,

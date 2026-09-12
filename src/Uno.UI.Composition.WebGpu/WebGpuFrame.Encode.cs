@@ -156,7 +156,7 @@ internal sealed unsafe partial class WebGpuFrame
 			while (oi + 1 < end)
 			{
 				var nx = ops[oi + 1];
-				if (nx.Kind != op.Kind || nx.Verts != op.Verts || nx.Group1 != op.Group1 || nx.ClipBg != op.ClipBg
+				if (nx.Kind != op.Kind || nx.Verts != op.Verts || nx.Group1 != op.Group1 || nx.ClipBg != op.ClipBg || nx.SiteBg != op.SiteBg
 					|| nx.Clip.Aabb != op.Clip.Aabb || nx.FirstVertex != op.FirstVertex + count) { break; }
 				count += nx.Count; oi++;
 			}
@@ -174,6 +174,7 @@ internal sealed unsafe partial class WebGpuFrame
 			pst.Enc.Bg(0, pst.PassBg);
 			if (op.Group1 != IntPtr.Zero) { pst.Enc.Bg(1, op.Group1); pst.Enc.Bg(2, op.ClipBg); }
 			else { pst.Enc.Bg(1, op.ClipBg); }
+			pst.Enc.Bg(3, op.SiteBg != IntPtr.Zero ? op.SiteBg : _d.IdentitySiteBg);
 			pst.Enc.Vb(buf, 0, bytes);
 			pst.Enc.Draw(count, op.FirstVertex);
 		}

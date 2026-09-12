@@ -109,6 +109,96 @@ internal sealed unsafe class WebGpuUniformSlab : IDisposable
 	}
 }
 
+/// <summary>
+/// Where each replay site sits, one slot per stamp: a uniform buffer of 256-byte slots with a shadow copy and a
+/// dirty range, flushed once a frame. A move rewrites eight floats here instead of every op's clip uniform.
+/// </summary>
+internal sealed unsafe class WebGpuSiteSlab : IDisposable
+{
+	private sealed class Chunk
+	{
+		public IntPtr Buf;
+		public float[] Shadow;
+		public int DirtyMin = int.MaxValue;
+		public int DirtyMax = -1;
+	}
+
+	// Two vec4s of placement, three of clip header, then four entries.
+	private const int SlotBytes = 512;
+	private const int SlotFloats = SlotBytes / sizeof(float);
+	private const int ChunkSlots = (1 << 19) / SlotBytes;
+
+	private readonly WebGpuDevice _d;
+	private readonly List<Chunk> _chunks = new();
+	private readonly Stack<int> _free = new();
+	private int _next;
+
+	public WebGpuSiteSlab(WebGpuDevice d) => _d = d;
+
+	public nint Alloc()
+	{
+		int slot;
+		if (_free.Count > 0) { slot = _free.Pop(); }
+		else
+		{
+			slot = _next++;
+			if (slot / ChunkSlots >= _chunks.Count)
+			{
+				var bd = new WGPUBufferDescriptor { Size = (nuint)(ChunkSlots * SlotBytes), Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
+				_chunks.Add(new Chunk { Buf = wgpuDeviceCreateBuffer(_d.Dev, &bd), Shadow = new float[ChunkSlots * SlotFloats] });
+			}
+		}
+		return slot + 1;
+	}
+
+	public void Free(nint handle) { if (handle != 0) { _free.Push((int)handle - 1); } }
+
+	private Chunk ChunkOf(nint handle, out int idx)
+	{
+		var slot = (int)handle - 1;
+		idx = slot % ChunkSlots;
+		return _chunks[slot / ChunkSlots];
+	}
+
+	public IntPtr BufferOf(nint handle) => ChunkOf(handle, out _).Buf;
+	public uint OffsetOf(nint handle) { ChunkOf(handle, out var idx); return (uint)(idx * SlotBytes); }
+
+	/// <summary>The slot's floats, to fill in place. Call <see cref="MarkDirty"/> after.</summary>
+	public Span<float> SlotSpan(nint handle)
+	{
+		var c = ChunkOf(handle, out var idx);
+		if (idx < c.DirtyMin) { c.DirtyMin = idx; }
+		if (idx > c.DirtyMax) { c.DirtyMax = idx; }
+		return c.Shadow.AsSpan(idx * SlotFloats, SlotFloats);
+	}
+
+	/// <summary>The site's placement: the linear part then the translation.</summary>
+	public void Write(nint handle, in Matrix3x2 m)
+	{
+		var s = SlotSpan(handle);
+		s[0] = m.M11; s[1] = m.M21; s[2] = m.M12; s[3] = m.M22;
+		s[4] = m.M31; s[5] = m.M32;
+	}
+
+	public void Flush()
+	{
+		foreach (var c in _chunks)
+		{
+			if (c.DirtyMax < 0) { continue; }
+			int lo = c.DirtyMin * SlotFloats, len = (c.DirtyMax + 1 - c.DirtyMin) * SlotFloats;
+			fixed (float* p = &c.Shadow[lo]) { wgpuQueueWriteBuffer(_d.Q, c.Buf, (nuint)(lo * sizeof(float)), (IntPtr)p, (nuint)(len * sizeof(float))); }
+			c.DirtyMin = int.MaxValue;
+			c.DirtyMax = -1;
+		}
+	}
+
+	public void Dispose()
+	{
+		foreach (var c in _chunks) { if (c.Buf != IntPtr.Zero) { wgpuBufferRelease(c.Buf); } }
+		_chunks.Clear();
+	}
+}
+
 internal sealed unsafe class WebGpuClipSlab : IDisposable
 {
 	// Owned ClipU slots: chunked uniform buffers of fixed slots (uniform bind offsets align to 256), a shadow copy
