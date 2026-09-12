@@ -663,24 +663,16 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 	{
 		if (data is not WebGpuRenderRecord rec) { return; }
 		// The nested list (with its raw image view handles) is captured by reference and may be drawn after the
-		// nested recording is disposed, so this recording holds its textures and geometries alive too.
-		TrackNestedTextures(rec);
+		// nested recording is disposed, so this recording holds a reference to it.
+		TrackNested(rec);
 		_target.Add(new ReplayRefCmd { Data = rec, Commands = rec.Commands, Transform = _m, Transform2 = new Matrix3x2(_m.M11, _m.M12, _m.M21, _m.M22, _m.M41, _m.M42), Clip = _clip });
 	}
 
-	// Take a ref to every texture and geometry the nested recording references, so an outer frame keeps them alive as
-	// long as it can be replayed. Balanced by this recording's Dispose (which Releases every entry in its lists).
-	private void TrackNestedTextures(WebGpuRenderRecord source)
+	// Take a ref to the nested recording, so an outer frame keeps it -- and with it every texture and geometry it
+	// holds -- alive as long as it can be replayed. Balanced by this recording's Release.
+	private void TrackNested(WebGpuRenderRecord source)
 	{
-		if (source.Textures is { } src)
-		{
-			var dst = _data.Textures ??= new();
-			foreach (var t in src) { t.AddRef(); dst.Add(t); }
-		}
-		if (source.Geometries is { } geos)
-		{
-			var dst = _data.Geometries ??= new();
-			foreach (var g in geos) { g.AddRef(); dst.Add(g); }
-		}
+		source.AddRef();
+		(_data.Nested ??= new()).Add(source);
 	}
 }

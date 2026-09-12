@@ -88,10 +88,16 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 	// their GPU resources here at Dispose — resident textures (surface-owned) keep the composition's own reference.
 	internal List<WebGpuTexture> Textures;
 	internal List<IGeometry> Geometries;   // recorded path geometries, held like textures until this recording is disposed
-	// Guards Dispose against a second call: the texture Release()s below are refcount decrements, so a double Dispose
-	// would over-release and free a view an in-flight ReplayRef still holds. Interlocked because Dispose (UI thread)
-	// can race the render thread's Compiled rebuild.
+	// The recordings nested into this one, each holding a ref taken at Replay. Holding the nested RECORD is what
+	// keeps its textures and geometries alive, so nesting costs one refcount rather than one per resource it
+	// transitively holds -- which a deep tree pays again at every level.
+	internal List<WebGpuRenderRecord> Nested;
+	// Guards the owner's Dispose against a second call, which would drop a reference it never took. Interlocked
+	// because Dispose (UI thread) can race the render thread's Compiled rebuild.
 	private int _disposed;
+	// The owner's reference, plus one per recording that nests this one. The teardown below runs when the last
+	// goes, so an outer frame can still replay a recording its owning visual has already disposed.
+	private int _refs = 1;
 
 	// Backend-bound: dispatches to the WebGpu session that must consume it (guaranteed same-backend by the single
 	// registered backend). A recorder nests it as a ReplayRef; a present session encodes and submits it as the frame.
@@ -108,11 +114,23 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 		}
 	}
 
-	// Dispose only nulls the field; the command LIST object stays alive while any in-flight frame's ReplayRef
-	// still references it (captured by reference), and the device's geometry cache is keyed on that list.
+	internal void AddRef() => System.Threading.Interlocked.Increment(ref _refs);
+
 	public void Dispose()
 	{
+		// The owner disposes once; a second call must not drop a reference it never took.
 		if (System.Threading.Interlocked.Exchange(ref _disposed, 1) != 0)
+		{
+			return;
+		}
+		Release();
+	}
+
+	// Teardown only nulls the command list; the LIST object stays alive while any in-flight frame's ReplayRef
+	// still references it (captured by reference), and the device's geometry cache is keyed on that list.
+	internal void Release()
+	{
+		if (System.Threading.Interlocked.Decrement(ref _refs) > 0)
 		{
 			return;
 		}
@@ -135,6 +153,7 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 				dev.DeferCompiledRelease(c.Owned, null);
 			}
 		}
+		if (Nested is { } nested) { foreach (var n in nested) { n.Release(); } }
 		Commands = null;
 		GC.SuppressFinalize(this);
 	}
