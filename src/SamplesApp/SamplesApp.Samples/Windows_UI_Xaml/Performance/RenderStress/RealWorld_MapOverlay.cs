@@ -34,7 +34,9 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 		protected override string ScenarioName => "MapOverlay";
 
 		/// <summary>Number of large translucent overlay polygons.</summary>
-		protected override int DefaultCount => 36;   // 36 zones = 25.6ms (39fps) on Skia, draw 61% with record 1.4ms
+		// Sized so the reference renderer is off the vsync ceiling: at 36 both backends sat at 16.7 ms on wasm and
+		// the scene measured nothing. 54 zones puts Skia at ~33 ms there, leaving the comparison something to say.
+		protected override int DefaultCount => 54;
 
 		protected override UIElement BuildStage(int count)
 		{

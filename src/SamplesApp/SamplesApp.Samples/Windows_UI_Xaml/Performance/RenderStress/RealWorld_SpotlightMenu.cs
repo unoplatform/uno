@@ -32,7 +32,9 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 		protected override string ScenarioName => "SpotlightMenu";
 
 		/// <summary>Number of tiles on the wall.</summary>
-		protected override int DefaultCount => 60;
+		// Sized so the reference renderer is off the vsync ceiling: at 60 both backends sat at 16.7 ms on wasm.
+		// 240 tiles puts Skia at ~22 ms there. Past ~1.5x this the scene falls off a cliff that is not the renderer.
+		protected override int DefaultCount => 240;
 
 		protected override UIElement BuildStage(int count)
 		{
