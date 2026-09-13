@@ -21,7 +21,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// <c>count</c> is the number of acrylic panels. They deliberately overlap, so each one blurs a region that
 	/// already contains earlier panels' output and the cost compounds the way a real flyout-over-pane does.
 	/// </summary>
-	[Sample("Performance", Name = "RealWorld_AcrylicShell", Description = "Real-UI perf: content scrolling behind N overlapping ACRYLIC panels (nav pane, command bar, properties pane, modal). Backdrop blur is the most expensive per-pixel op in real UI and scales with area, so this is draw-bound. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RealWorld_AcrylicShell", Description = "Real-UI perf: content scrolling behind N overlapping ACRYLIC panels (nav pane, command bar, properties pane, modal). Backdrop blur is the most expensive per-pixel op in real UI and scales with area, so this is draw-bound. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RealWorld_AcrylicShell : PerfBenchBase
 	{
 		private ScrollViewer _sv = null!;

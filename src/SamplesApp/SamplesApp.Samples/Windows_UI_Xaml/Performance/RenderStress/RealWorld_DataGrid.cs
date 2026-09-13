@@ -13,7 +13,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// Table archetype (js-framework-benchmark style): thousands of text cells in a scrolling grid, with a slice of
 	/// values churning every frame — stresses text render + per-frame invalidation at scale.
 	/// </summary>
-	[Sample("Performance", Name = "RealWorld_DataGrid", Description = "Real-UI perf: a large scrolling data table with per-frame value churn. Stresses text at scale. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RealWorld_DataGrid", Description = "Real-UI perf: a large scrolling data table with per-frame value churn. Stresses text at scale. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RealWorld_DataGrid : PerfBenchBase
 	{
 		private static readonly string[] _cols = { "ID", "Name", "Status", "Value", "Δ", "Updated" };

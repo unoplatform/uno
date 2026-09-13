@@ -24,7 +24,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// at 60fps because the extra posters simply scrolled out of view (record FELL as count rose, which is the
 	/// tell). Each layer is a full-surface bitmap sample plus a blend.
 	/// </summary>
-	[Sample("Performance", Name = "RealWorld_HeroScrim", Description = "Real-UI perf: a full-bleed hero image with stacked gradient scrims plus N large poster cards, each scrimmed and rounded-clipped. Scales image sampling and blending by AREA, so it is draw-bound. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RealWorld_HeroScrim", Description = "Real-UI perf: a full-bleed hero image with stacked gradient scrims plus N large poster cards, each scrimmed and rounded-clipped. Scales image sampling and blending by AREA, so it is draw-bound. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RealWorld_HeroScrim : PerfBenchBase
 	{
 		private const string Hero = "ms-appx:///Assets/LargeWisteria.jpg";

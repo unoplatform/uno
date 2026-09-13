@@ -14,7 +14,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// its own clip established and torn down. That is the avatar/chip/badge archetype — a list full of small
 	/// rounded, clipped thumbnails.
 	/// </summary>
-	[Sample("Performance", Name = "RenderStress_ClipGrid", Description = "Renderer stress: N small gradient-filled ellipses — dominated by per-clip setup rather than fill rate. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RenderStress_ClipGrid", Description = "Renderer stress: N small gradient-filled ellipses — dominated by per-clip setup rather than fill rate. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RenderStress_ClipGrid : RenderStressBase
 	{
 		protected override string ScenarioName => "Clip grid (per-clip cost)";

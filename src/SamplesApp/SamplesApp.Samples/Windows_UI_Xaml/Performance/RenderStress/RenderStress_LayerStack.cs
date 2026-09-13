@@ -22,7 +22,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// Group opacity is the everyday source of these layers: hover and disabled states, fade transitions, and any
 	/// panel given an Opacity in markup.
 	/// </summary>
-	[Sample("Performance", Name = "RenderStress_LayerStack", Description = "Renderer stress: N small groups each with its own opacity, forcing one isolation layer apiece — measures per-layer cost rather than fill rate. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RenderStress_LayerStack", Description = "Renderer stress: N small groups each with its own opacity, forcing one isolation layer apiece — measures per-layer cost rather than fill rate. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RenderStress_LayerStack : RenderStressBase
 	{
 		protected override string ScenarioName => "Layer stack (per-layer cost)";

@@ -11,7 +11,7 @@ using Uno.UI.Samples.Controls;
 namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 {
 	/// <summary>Media-gallery archetype: a dense, scrolling grid of image tiles — stresses image draw (sample/scale) at scale.</summary>
-	[Sample("Performance", Name = "RealWorld_ImageGrid", Description = "Real-UI perf: a dense scrolling image grid (media gallery). Stresses image draws + scroll. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RealWorld_ImageGrid", Description = "Real-UI perf: a dense scrolling image grid (media gallery). Stresses image draws + scroll. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RealWorld_ImageGrid : PerfBenchBase
 	{
 		private static readonly string[] _imgs =

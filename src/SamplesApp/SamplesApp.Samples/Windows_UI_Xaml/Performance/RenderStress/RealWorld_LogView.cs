@@ -18,7 +18,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// </para>
 	/// <c>count</c> is the number of rows; scrolling keeps them re-rasterizing every frame without re-recording.
 	/// </summary>
-	[Sample("Performance", Name = "RealWorld_LogView", Description = "Real-UI perf: a dense scrolling log of small text rows — thousands of glyphs per frame. Stresses per-glyph rasterization rather than fill area. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RealWorld_LogView", Description = "Real-UI perf: a dense scrolling log of small text rows — thousands of glyphs per frame. Stresses per-glyph rasterization rather than fill area. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RealWorld_LogView : PerfBenchBase
 	{
 		private static readonly string[] Levels = { "TRACE", "DEBUG", "INFO ", "WARN ", "ERROR" };

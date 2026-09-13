@@ -10,7 +10,7 @@ using Microsoft.UI.Xaml.Media;
 namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 {
 	/// <summary>
-	/// Base page for drawing-backend stress samples used to compare renderers (e.g. Skia vs the WebGPU/ProGPU
+	/// Base page for drawing-backend stress samples used to compare renderers (e.g. Skia vs the WebGPU
 	/// backends). Each subclass fills a host <see cref="Canvas"/> with <c>Count</c> instances of one primitive kind
 	/// (paths, strokes, gradients, shadows, text, transparency layers). A per-frame rotation on the host forces the
 	/// WHOLE set to redraw every frame — damage-region culling would otherwise leave a static scene unmeasured — so
@@ -171,8 +171,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 		}
 
 		private static string RendererName()
-			=> Environment.GetEnvironmentVariable("UNO_PROGPU") is "1" or "true" or "webgpu" ? "ProGPU"
-				: Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "neutral" or "swapchain" ? "WebGPU"
+			=> Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "neutral" or "swapchain" ? "WebGPU"
 				: "Skia";
 
 		/// <summary>Deterministic pseudo-random so each run/renderer draws the identical scene (fair comparison).</summary>

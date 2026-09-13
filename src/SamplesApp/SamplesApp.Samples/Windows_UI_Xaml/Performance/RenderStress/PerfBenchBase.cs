@@ -14,7 +14,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// continuously at scale). A subclass builds the stage (<see cref="BuildStage"/>) and advances motion each frame
 	/// (<see cref="Tick"/> — scroll for lists, data churn for the dashboard); the base owns the fps / avg+max frame
 	/// time overlay, the ± count controls, and the per-frame measurement. <c>UNO_PERF_COUNT</c> seeds the count;
-	/// <c>UNO_LOG_FPS=1</c> prints to the console. Compare the same sample across the Skia and WebGPU/ProGPU builds.
+	/// <c>UNO_LOG_FPS=1</c> prints to the console. Compare the same sample across the Skia and WebGPU builds.
 	/// </summary>
 	public abstract class PerfBenchBase : Page
 	{
@@ -139,8 +139,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 		}
 
 		private protected static string RendererName
-			=> Environment.GetEnvironmentVariable("UNO_PROGPU") is "1" or "true" or "webgpu" ? "ProGPU"
-				: Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "neutral" or "swapchain" ? "WebGPU"
+			=> Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "neutral" or "swapchain" ? "WebGPU"
 				: "Skia";
 
 		/// <summary>Deterministic PRNG so every renderer draws the identical scene.</summary>

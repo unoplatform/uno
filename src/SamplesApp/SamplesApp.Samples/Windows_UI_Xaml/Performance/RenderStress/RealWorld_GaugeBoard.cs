@@ -23,7 +23,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// No other RealWorld scene uses radial gradients, and they are the most reliably GPU-bound brush here: every
 	/// covered pixel maps into the unit ellipse and solves along the ray.
 	/// </summary>
-	[Sample("Performance", Name = "RealWorld_GaugeBoard", Description = "Real-UI perf: a scrolling wall of radial-gradient gauges with gradient-stroked arcs and glows — deliberately GPU-bound (per-pixel shading over trivial geometry). Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RealWorld_GaugeBoard", Description = "Real-UI perf: a scrolling wall of radial-gradient gauges with gradient-stroked arcs and glows — deliberately GPU-bound (per-pixel shading over trivial geometry). Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RealWorld_GaugeBoard : PerfBenchBase
 	{
 		private ScrollViewer _sv = null!;

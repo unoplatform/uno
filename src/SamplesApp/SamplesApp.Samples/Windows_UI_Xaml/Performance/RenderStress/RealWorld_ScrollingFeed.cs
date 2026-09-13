@@ -18,10 +18,10 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// A realistic app screen — a continuously auto-scrolling card feed (thumbnail image + gradient accent bar +
 	/// rounded border + shadow + title/body text + a category chip) — rather than isolated primitive stress. It
 	/// exercises the mix a real feed hits every frame (image, gradient, clip/rounded-rect, text, shadow) while the
-	/// viewport repaints during scroll, and reports fps / avg+max frame time. Compare across the Skia and WebGPU/ProGPU
+	/// viewport repaints during scroll, and reports fps / avg+max frame time. Compare across the Skia and WebGPU
 	/// builds; <c>UNO_PERF_COUNT</c> sets the card count, <c>UNO_LOG_FPS=1</c> prints to the console.
 	/// </summary>
-	[Sample("Performance", Name = "RealWorld_ScrollingFeed", Description = "Real-UI perf: an auto-scrolling card feed (image+gradient+text+shadow), the mix a real app repaints while scrolling. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RealWorld_ScrollingFeed", Description = "Real-UI perf: an auto-scrolling card feed (image+gradient+text+shadow), the mix a real app repaints while scrolling. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RealWorld_ScrollingFeed : Page
 	{
 		private static readonly string[] _thumbs =
@@ -257,8 +257,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 		}
 
 		private static string RendererName()
-			=> Environment.GetEnvironmentVariable("UNO_PROGPU") is "1" or "true" or "webgpu" ? "ProGPU"
-				: Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "neutral" or "swapchain" ? "WebGPU"
+			=> Environment.GetEnvironmentVariable("UNO_WEBGPU") is "1" or "true" or "neutral" or "swapchain" ? "WebGPU"
 				: "Skia";
 	}
 }

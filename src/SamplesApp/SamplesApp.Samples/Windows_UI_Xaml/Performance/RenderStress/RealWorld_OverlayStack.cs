@@ -23,7 +23,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// <c>count</c> is the number of stacked panes, so draw should scale close to linearly with it while record
 	/// and layout stay flat.
 	/// </summary>
-	[Sample("Performance", Name = "RealWorld_OverlayStack", Description = "Real-UI perf: a busy page under N full-viewport translucent overlay panes (modal-over-flyout-over-scrim). Each pane is a screen-sized isolation layer + gradient, so this scales OVERDRAW — the draw-phase worst case. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RealWorld_OverlayStack", Description = "Real-UI perf: a busy page under N full-viewport translucent overlay panes (modal-over-flyout-over-scrim). Each pane is a screen-sized isolation layer + gradient, so this scales OVERDRAW — the draw-phase worst case. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RealWorld_OverlayStack : PerfBenchBase
 	{
 		private readonly List<LinearGradientBrush> _paneBrushes = new();

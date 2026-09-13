@@ -9,7 +9,7 @@ using Uno.UI.Samples.Controls;
 namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 {
 	/// <summary>Thick multi-segment stroked polylines — stresses stroke expansion / joins / caps.</summary>
-	[Sample("Performance", Name = "RenderStress_Strokes", Description = "Renderer stress: N thick stroked polylines redrawn every frame. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RenderStress_Strokes", Description = "Renderer stress: N thick stroked polylines redrawn every frame. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RenderStress_Strokes : RenderStressBase
 	{
 		protected override string ScenarioName => "Strokes (thick polylines)";

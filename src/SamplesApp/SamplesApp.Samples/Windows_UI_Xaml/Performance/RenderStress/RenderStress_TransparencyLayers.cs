@@ -13,7 +13,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// Overlapping sub-1 opacity groups — each element with content and <c>Opacity &lt; 1</c> forces an offscreen
 	/// transparency layer (SaveLayer), which the review flagged as a WebGPU weak spot (full-target offscreen alloc).
 	/// </summary>
-	[Sample("Performance", Name = "RenderStress_TransparencyLayers", Description = "Renderer stress: N sub-1-opacity groups → offscreen layers, redrawn every frame. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RenderStress_TransparencyLayers", Description = "Renderer stress: N sub-1-opacity groups → offscreen layers, redrawn every frame. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RenderStress_TransparencyLayers : RenderStressBase
 	{
 		protected override string ScenarioName => "Transparency layers (opacity)";

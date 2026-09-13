@@ -25,7 +25,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// The per-frame tick only scrolls, so nothing re-measures and no shadow silhouette is invalidated:
 	/// the moving viewport re-composites the whole visible wall, so the frame cost lands in draw.
 	/// </summary>
-	[Sample("Performance", Name = "RealWorld_MediaWall", Description = "Real-UI perf: an un-virtualized wall of elevated photo cards (shadow blur + opacity layer + scaled image + gradient scrim each). Deliberately fill-rate bound — the draw-phase worst case. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RealWorld_MediaWall", Description = "Real-UI perf: an un-virtualized wall of elevated photo cards (shadow blur + opacity layer + scaled image + gradient scrim each). Deliberately fill-rate bound — the draw-phase worst case. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RealWorld_MediaWall : PerfBenchBase
 	{
 		private const int Columns = 6;

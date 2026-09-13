@@ -17,7 +17,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// and a live line chart (per-frame polyline) — stresses gradients, shadows, transforms and stroked-geometry
 	/// churn together, no scroll. <c>count</c> scales the number of bars / line points.
 	/// </summary>
-	[Sample("Performance", Name = "RealWorld_Dashboard", Description = "Real-UI perf: an analytics dashboard with animated bar + line charts, gradient/shadow KPI cards. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RealWorld_Dashboard", Description = "Real-UI perf: an analytics dashboard with animated bar + line charts, gradient/shadow KPI cards. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RealWorld_Dashboard : PerfBenchBase
 	{
 		private readonly List<ScaleTransform> _bars = new();

@@ -18,7 +18,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// timescale zooms in. Modelled on the real schedule view, where the cost is thousands of small stroked
 	/// geometries plus scale labels rather than text rows.
 	/// </summary>
-	[Sample("Performance", Name = "RealWorld_GanttSchedule", Description = "Real-UI perf: a non-virtualized Gantt schedule (task bars, dependency arrows, dual date scales) scrolling per frame. Stresses stroked geometry at scale. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RealWorld_GanttSchedule", Description = "Real-UI perf: a non-virtualized Gantt schedule (task bars, dependency arrows, dual date scales) scrolling per frame. Stresses stroked geometry at scale. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RealWorld_GanttSchedule : PerfBenchBase
 	{
 		private const double RowHeight = 26;

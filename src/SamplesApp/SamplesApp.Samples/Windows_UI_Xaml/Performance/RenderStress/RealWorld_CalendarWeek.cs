@@ -16,7 +16,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// its own ItemsControl over a vertical StackPanel inside one ScrollViewer, so every slot and every pill in
 	/// the week is realized at once regardless of viewport.
 	/// </summary>
-	[Sample("Performance", Name = "RealWorld_CalendarWeek", Description = "Real-UI perf: a non-virtualized week calendar (7 day columns of time slots + booking pills) with a moving now-line. Stresses slot/pill count at scale. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RealWorld_CalendarWeek", Description = "Real-UI perf: a non-virtualized week calendar (7 day columns of time slots + booking pills) with a moving now-line. Stresses slot/pill count at scale. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RealWorld_CalendarWeek : PerfBenchBase
 	{
 		private const int DayColumns = 7;

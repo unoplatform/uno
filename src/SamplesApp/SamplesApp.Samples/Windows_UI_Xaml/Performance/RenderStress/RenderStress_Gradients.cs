@@ -9,7 +9,7 @@ using Uno.UI.Samples.Controls;
 namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 {
 	/// <summary>Linear-gradient-filled rectangles — stresses gradient shader setup + fill.</summary>
-	[Sample("Performance", Name = "RenderStress_Gradients", Description = "Renderer stress: N linear-gradient rectangles redrawn every frame. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RenderStress_Gradients", Description = "Renderer stress: N linear-gradient rectangles redrawn every frame. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RenderStress_Gradients : RenderStressBase
 	{
 		protected override string ScenarioName => "Gradients (linear fill)";

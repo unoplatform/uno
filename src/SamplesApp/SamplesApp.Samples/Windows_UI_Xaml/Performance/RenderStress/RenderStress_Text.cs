@@ -7,10 +7,10 @@ using Uno.UI.Samples.Controls;
 namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 {
 	/// <summary>Many short text runs — stresses glyph shaping/rasterization and the glyph draw path.</summary>
-	[Sample("Performance", Name = "RenderStress_Text", Description = "Renderer stress: N text runs redrawn every frame. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RenderStress_Text", Description = "Renderer stress: N text runs redrawn every frame. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RenderStress_Text : RenderStressBase
 	{
-		private static readonly string[] _words = { "Uno", "Platform", "WebGPU", "Skia", "ProGPU", "render", "glyph", "frame", "0123", "MMMM" };
+		private static readonly string[] _words = { "Uno", "Platform", "WebGPU", "Skia", "Vulkan", "render", "glyph", "frame", "0123", "MMMM" };
 
 		protected override string ScenarioName => "Text (glyph runs)";
 		protected override int DefaultCount => 600;

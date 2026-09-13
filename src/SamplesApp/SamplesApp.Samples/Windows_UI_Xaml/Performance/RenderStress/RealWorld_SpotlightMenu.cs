@@ -22,7 +22,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// The full-viewport vignette on top means every pixel is shaded at least twice, which is what a real
 	/// launcher does and what makes this a fill-rate scene rather than a geometry one.
 	/// </summary>
-	[Sample("Performance", Name = "RealWorld_SpotlightMenu", Description = "Real-UI perf: a launcher tile wall under a moving radial spotlight and a full-viewport vignette — GPU-bound per-pixel shading with an animated light. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RealWorld_SpotlightMenu", Description = "Real-UI perf: a launcher tile wall under a moving radial spotlight and a full-viewport vignette — GPU-bound per-pixel shading with an animated light. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RealWorld_SpotlightMenu : PerfBenchBase
 	{
 		private TranslateTransform _spot = null!;

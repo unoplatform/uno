@@ -13,7 +13,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// Elevated borders casting a <see cref="ThemeShadow"/> onto a receiver — the shadow blur pass is the case the
 	/// rendering-contract review measured as the WebGPU backend's slowest primitive, so it's the sharpest comparator.
 	/// </summary>
-	[Sample("Performance", Name = "RenderStress_Shadows", Description = "Renderer stress: N elevated ThemeShadow casters redrawn every frame (shadow blur = the review's slowest WebGPU case). Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RenderStress_Shadows", Description = "Renderer stress: N elevated ThemeShadow casters redrawn every frame (shadow blur = the review's slowest WebGPU case). Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RenderStress_Shadows : RenderStressBase
 	{
 		protected override string ScenarioName => "Shadows (ThemeShadow blur)";

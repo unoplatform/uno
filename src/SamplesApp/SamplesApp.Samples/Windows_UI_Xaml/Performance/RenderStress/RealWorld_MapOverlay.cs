@@ -22,7 +22,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// <c>count</c> is the number of overlay polygons; each is sized as a large fraction of the viewport, so cost
 	/// scales with AREA and stays in the draw phase.
 	/// </summary>
-	[Sample("Performance", Name = "RealWorld_MapOverlay", Description = "Real-UI perf: N large irregular translucent polygons (map zones / heat regions) plus stroked routes, overlapping over a grid. Stresses anti-aliased PATH FILL coverage by area, so it is draw-bound. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RealWorld_MapOverlay", Description = "Real-UI perf: N large irregular translucent polygons (map zones / heat regions) plus stroked routes, overlapping over a grid. Stresses anti-aliased PATH FILL coverage by area, so it is draw-bound. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RealWorld_MapOverlay : PerfBenchBase
 	{
 		private const int Sides = 44;

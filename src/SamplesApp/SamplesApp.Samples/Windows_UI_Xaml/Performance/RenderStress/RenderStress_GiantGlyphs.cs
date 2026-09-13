@@ -12,7 +12,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// area per glyph is a large fraction of the viewport — this isolates anti-aliased PATH COVERAGE cost from
 	/// the per-glyph overhead that a normal text run measures.
 	/// </summary>
-	[Sample("Performance", Name = "RenderStress_GiantGlyphs", Description = "Renderer stress: N enormous overlapping glyphs — anti-aliased path coverage over huge areas with almost no geometry. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RenderStress_GiantGlyphs", Description = "Renderer stress: N enormous overlapping glyphs — anti-aliased path coverage over huge areas with almost no geometry. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RenderStress_GiantGlyphs : RenderStressBase
 	{
 		private const string Glyphs = "@#&%WM8Q0BR";

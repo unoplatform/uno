@@ -20,7 +20,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// </para>
 	/// <c>count</c> is the number of cards; off-screen ones are culled, so roughly 30 layers are live at 1080p.
 	/// </summary>
-	[Sample("Performance", Name = "RealWorld_CardVeil", Description = "Real-UI perf: a scrolling grid of translucent cards, each a SMALL isolation layer. Measures whether per-layer cost scales with layer size or with window size. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RealWorld_CardVeil", Description = "Real-UI perf: a scrolling grid of translucent cards, each a SMALL isolation layer. Measures whether per-layer cost scales with layer size or with window size. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RealWorld_CardVeil : PerfBenchBase
 	{
 		private const int Columns = 5;

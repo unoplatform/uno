@@ -19,7 +19,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// diagram canvases and icon-dense dashboards.
 	/// </para>
 	/// </summary>
-	[Sample("Performance", Name = "RenderStress_ShapeSwarm", Description = "Renderer stress: N small distinct polygons — bound by per-shape op building and batching rather than fill rate. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RenderStress_ShapeSwarm", Description = "Renderer stress: N small distinct polygons — bound by per-shape op building and batching rather than fill rate. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RenderStress_ShapeSwarm : RenderStressBase
 	{
 		protected override string ScenarioName => "Shape swarm (per-op cost)";

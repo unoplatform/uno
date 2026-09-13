@@ -13,7 +13,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// ellipse, then solve along the ray) and each glow covers a large share of the viewport, so the cost is
 	/// per-pixel shading rather than geometry — the archetype for spotlights, glows and hero backdrops.
 	/// </summary>
-	[Sample("Performance", Name = "RenderStress_RadialGlow", Description = "Renderer stress: N large overlapping radial-gradient glows — per-pixel gradient maths over big areas with trivial geometry. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RenderStress_RadialGlow", Description = "Renderer stress: N large overlapping radial-gradient glows — per-pixel gradient maths over big areas with trivial geometry. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RenderStress_RadialGlow : RenderStressBase
 	{
 		protected override string ScenarioName => "Radial glow (per-pixel gradient)";

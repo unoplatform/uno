@@ -11,7 +11,7 @@ using Uno.UI.Samples.Controls;
 namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 {
 	/// <summary>Filled cubic-Bézier paths — stresses geometry tessellation + solid fill.</summary>
-	[Sample("Performance", Name = "RenderStress_Paths", Description = "Renderer stress: N filled Bézier paths redrawn every frame. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RenderStress_Paths", Description = "Renderer stress: N filled Bézier paths redrawn every frame. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RenderStress_Paths : RenderStressBase
 	{
 		protected override string ScenarioName => "Paths (filled Bézier)";

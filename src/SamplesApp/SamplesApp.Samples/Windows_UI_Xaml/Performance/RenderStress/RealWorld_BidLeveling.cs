@@ -16,7 +16,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 	/// (nested ItemsControls inside a ScrollViewer, no virtualization at any level), which is where a comparison
 	/// grid gets expensive: cell count is bidders × line items and every cell carries several visuals.
 	/// </summary>
-	[Sample("Performance", Name = "RealWorld_BidLeveling", Description = "Real-UI perf: a non-virtualized bid-comparison matrix (bidders × line items) with per-frame recalc. Stresses cell count + text at scale. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RealWorld_BidLeveling", Description = "Real-UI perf: a non-virtualized bid-comparison matrix (bidders × line items) with per-frame recalc. Stresses cell count + text at scale. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RealWorld_BidLeveling : PerfBenchBase
 	{
 		private const int Bidders = 6;

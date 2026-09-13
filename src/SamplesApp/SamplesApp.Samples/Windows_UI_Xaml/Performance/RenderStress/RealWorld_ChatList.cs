@@ -10,13 +10,13 @@ using Uno.UI.Samples.Controls;
 namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 {
 	/// <summary>Messaging archetype: a scrolling chat with avatars + rounded bubbles + wrapped text + opacity — text and layer stress.</summary>
-	[Sample("Performance", Name = "RealWorld_ChatList", Description = "Real-UI perf: a scrolling chat (avatars, rounded bubbles, wrapped text, opacity). Stresses text + layers. Compare fps/frame-time across Skia and the WebGPU/ProGPU builds.")]
+	[Sample("Performance", Name = "RealWorld_ChatList", Description = "Real-UI perf: a scrolling chat (avatars, rounded bubbles, wrapped text, opacity). Stresses text + layers. Compare fps/frame-time across Skia and the WebGPU builds.")]
 	public sealed class RealWorld_ChatList : PerfBenchBase
 	{
 		private static readonly string[] _msgs =
 		{
 			"Hey! Did you see the new renderer benchmark numbers?",
-			"Yeah — ProGPU on the M3 was almost 2x Skia.",
+			"Yeah — WebGPU on the M3 was almost 2x Skia.",
 			"On software it's the other way around though, careful with lavapipe.",
 			"Right, GPU-resident retained scene needs a real GPU to pay off.",
 			"Let's get the WASM lane wired next.",
