@@ -841,6 +841,7 @@ internal sealed partial class TextBoxCore
 	{
 		OnIsReadonlyChangedPartial();
 		UpdateButtonStates();
+		TextBoxView?.UpdateProperties();
 	}
 
 	internal void OnHeaderChanged()
