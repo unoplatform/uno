@@ -388,9 +388,9 @@ namespace UITests.Windows_ApplicationModel
 			{
 				return await getter(package);
 			}
-			catch (InvalidOperationException)
+			catch (InvalidOperationException e) when (e.InnerException is not UnauthorizedAccessException)
 			{
-				// Advertised optimistically but not present in the arrived paste.
+				// Advertised optimistically but not present in the arrived paste; a denied read is reported.
 				return null;
 			}
 		}
