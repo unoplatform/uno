@@ -623,7 +623,7 @@ internal sealed unsafe partial class WebGpuFrame
 			var sessionEntries = SessionEntryCount(session, finv);
 			// An in-place rewrite keeps the slots and bind groups, so take the stamp this frame has not used yet (its
 			// draws would still be reading those uniforms), whose op count matches, and with no path mask to bake into
-			// a fresh bag. Failing that, add a stamp of its own, up to the cap.
+			// a fresh bag. Failing that, add a stamp of its own.
 			StampSlot reuse = null;
 			if (session.Paths is null && !entry.HasPathClip)
 			{
@@ -636,10 +636,16 @@ internal sealed unsafe partial class WebGpuFrame
 			var cap = Math.Clamp(Math.Max(entry.SitesLastFrame, entry.Refs), MaxStampsPerEntry, MaxStampsPerEntryHard);
 			if (reuse is null && entry.Stamps.Count >= cap)
 			{
-				// At the cap: take the least recently used one, dropping what it held.
-				foreach (var st in entry.Stamps) { if (reuse is null || st.Frame < reuse.Frame) { reuse = st; } }
-				if (reuse.Owned is not null) { _d.DeferRelease(reuse.Owned); }
-				reuse.Owned = null; reuse.Bufs = null; reuse.Ops = null;
+				// At the cap: take the least recently used one, dropping what it held. Only a stamp this frame has
+				// not replayed can be taken -- its site uniform is still what the ops already queued for it read,
+				// so rewriting it would draw that earlier site at THIS one's placement. An entry with more live
+				// sites than the cap therefore grows past it: a site being drawn has to have a site slot.
+				foreach (var st in entry.Stamps) { if (st.Frame != _d.FrameSeq && (reuse is null || st.Frame < reuse.Frame)) { reuse = st; } }
+				if (reuse is not null)
+				{
+					if (reuse.Owned is not null) { _d.DeferRelease(reuse.Owned); }
+					reuse.Owned = null; reuse.Bufs = null; reuse.Ops = null;
+				}
 			}
 			var fresh = reuse is null || reuse.Bufs is null;
 			slot = reuse ?? new StampSlot();
