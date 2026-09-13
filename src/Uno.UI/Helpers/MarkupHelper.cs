@@ -152,6 +152,22 @@ namespace Uno.UI.Helpers
 			=> settings?.OnMemberCreated(target);
 
 		/// <summary>
+		/// Sets the parent of a <see cref="DependencyObject"/> that was created outside its owner's normal
+		/// content-property assignment path -- for example, an item added by generated code to a collection
+		/// property -- so that it inherits DataContext and other ambient/inherited properties from
+		/// <paramref name="parent"/> as though it had been parsed as part of the declaration.
+		/// Passing <see langword="null"/> detaches the object, clearing the inherited values.
+		/// </summary>
+		/// <remarks>
+		/// <see cref="DependencyObject"/>'s Parent is internal -- WinUI has no equivalent public member, as its
+		/// Parent is computed by the engine from the live visual tree -- so generated code, which compiles into
+		/// the consuming app's assembly, reaches it through this helper.
+		/// </remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void SetParent(DependencyObject target, object? parent)
+			=> target.SetParent(parent);
+
+		/// <summary>
 		/// Creates a <see cref="DataTemplate"/> from a factory.
 		/// </summary>
 		/// <remarks>
@@ -172,6 +188,12 @@ namespace Uno.UI.Helpers
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static ItemsPanelTemplate CreateItemsPanelTemplate(object? owner, FrameworkTemplateBuilder? factory) => new(owner, factory);
+
+		/// <summary>
+		/// Creates a <see cref="FrameworkTemplate"/> from a factory. See <see cref="CreateDataTemplate"/>.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static FrameworkTemplate CreateFrameworkTemplate(object? owner, FrameworkTemplateBuilder? factory) => new(owner, factory);
 
 		/// <summary>
 		/// Helper for XAML code generation. Not intended to be used in apps outside of XAML generator.

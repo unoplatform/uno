@@ -1,0 +1,90 @@
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_UI_Xaml_Automation.AutomationProperties_StructureAndProps"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:automation="using:Microsoft.UI.Xaml.Automation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <StackPanel Padding="16" Spacing="12">
+        <TextBlock Text="IsPeripheral / Culture UIA properties + dynamic child add/remove (StructureChanged)." TextWrapping="Wrap" />
+
+        <TextBlock
+            x:Name="PeripheralText"
+            automation:AutomationProperties.Culture="1033"
+            automation:AutomationProperties.IsPeripheral="True"
+            AutomationProperties.AutomationId="prop-peripheral"
+            Text="Peripheral element (Culture=1033, IsPeripheral=True)" />
+
+        <Slider
+            x:Name="ClickSlider"
+            AutomationProperties.AutomationId="click-slider"
+            Maximum="100"
+            Minimum="0"
+            Value="50" />
+        <ScrollBar
+            x:Name="ClickScrollBar"
+            Width="200"
+            AutomationProperties.AutomationId="click-scrollbar"
+            Maximum="100"
+            Minimum="0"
+            Orientation="Horizontal"
+            Value="50" />
+
+        <TextBlock
+            x:Name="AnnoComment"
+            AutomationProperties.AutomationId="anno-comment"
+            Text="Comment target for the annotation" />
+        <TextBlock
+            x:Name="AnnoTarget"
+            AutomationProperties.AutomationId="anno-target"
+            Text="Annotated element (Comment annotation -&gt; anno-comment)" />
+
+        <AutoSuggestBox
+            x:Name="Asb"
+            AutomationProperties.AutomationId="asb-layout"
+            PlaceholderText="AutoSuggestBox (LayoutInvalidated)" />
+        <Button
+            x:Name="AsbUpdateButton"
+            AutomationProperties.AutomationId="asb-update"
+            Click="OnAsbUpdate"
+            Content="Update suggestions" />
+
+        <TextBox
+            x:Name="TextEditTarget"
+            AutomationProperties.AutomationId="textedit-target"
+            PlaceholderText="TextEdit target" />
+        <Button
+            x:Name="TextEditButton"
+            AutomationProperties.AutomationId="textedit-raise"
+            Click="OnRaiseTextEdit"
+            Content="Raise TextEditTextChanged" />
+
+        <Button
+            x:Name="AddButton"
+            AutomationProperties.AutomationId="struct-add"
+            Click="OnAdd"
+            Content="Add child" />
+        <Button
+            x:Name="AddCollapsedButton"
+            AutomationProperties.AutomationId="struct-add-collapsed"
+            Click="OnAddCollapsed"
+            Content="Add collapsed child" />
+        <Button
+            x:Name="RemoveButton"
+            AutomationProperties.AutomationId="struct-remove"
+            Click="OnRemove"
+            Content="Remove child" />
+        <Button
+            x:Name="ReAddButton"
+            AutomationProperties.AutomationId="struct-readd-btn"
+            Click="OnRemoveReadd"
+            Content="Remove+re-add (same tick)" />
+
+        <StackPanel
+            x:Name="DynamicContainer"
+            AutomationProperties.AutomationId="struct-container"
+            Spacing="4" />
+    </StackPanel>
+</UserControl>

@@ -12,8 +12,6 @@ namespace Microsoft.UI.Composition;
 
 public partial class ShapeVisual
 {
-	private bool _needsContinuousUpdates;
-
 	/// <inheritdoc />
 	internal override void Paint(in PaintingSession session)
 	{
@@ -49,18 +47,81 @@ public partial class ShapeVisual
 		base.Paint(in session);
 	}
 
-	private protected override void OnPropertyChangedCore(string? propertyName, bool isSubPropertyChange)
+	// Queried once per shape element per frame, so these walk the collection by index: the LINQ chains
+	// they replace allocated an OfType iterator, a Select iterator and a closure on every frame.
+	internal override bool RequiresRepaintOnEveryFrame
 	{
-		base.OnPropertyChangedCore(propertyName, isSubPropertyChange);
-		if (propertyName == nameof(Shapes))
+		get
 		{
-			_needsContinuousUpdates = _shapes?.OfType<CompositionSpriteShape>().Any(s => s.FillBrush?.RequiresRepaintOnEveryFrame ?? false) ?? false;
+			if (_shapes is not { Count: not 0 } shapes)
+			{
+				return false;
+			}
+
+			for (var i = 0; i < shapes.Count; i++)
+			{
+				if (shapes[i] is CompositionSpriteShape { FillBrush: { } fill } && fill.RequiresRepaintOnEveryFrame)
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 
-	internal override bool RequiresRepaintOnEveryFrame => _needsContinuousUpdates;
+	internal override float DamageRegionSamplingMargin
+	{
+		get
+		{
+			if (_shapes is not { Count: not 0 } shapes)
+			{
+				return 0;
+			}
 
-	internal override bool CanPaint() => base.CanPaint() || (_shapes?.Any(s => s.CanPaint()) ?? false);
+			// `seen` keeps the DefaultIfEmpty(0f) semantics: 0 only when there is no sprite shape at all,
+			// rather than clamping a set of margins up to 0.
+			var max = 0f;
+			var seen = false;
+			for (var i = 0; i < shapes.Count; i++)
+			{
+				if (shapes[i] is not CompositionSpriteShape sprite)
+				{
+					continue;
+				}
+
+				var margin = sprite.FillBrush?.DamageRegionSamplingMargin ?? 0;
+				if (!seen || margin > max)
+				{
+					max = margin;
+					seen = true;
+				}
+			}
+
+			return seen ? max : 0;
+		}
+	}
+
+	internal override bool CanPaint()
+	{
+		if (base.CanPaint())
+		{
+			return true;
+		}
+
+		if (_shapes is { Count: not 0 } shapes)
+		{
+			for (var i = 0; i < shapes.Count; i++)
+			{
+				if (shapes[i].CanPaint())
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
 
 	internal override bool TryGetLocalContentBounds(out Rect localBounds)
 	{

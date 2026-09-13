@@ -178,10 +178,6 @@
 			"description": "Provides an explicit override for the version of Uno Logging to use.",
 			"type": "nuget-version"
 		},
-		"WindowsCompatibilityVersion": {
-			"description": "Provides an explicit override for the version of Windows.Compatibility to use.",
-			"type": "nuget-version"
-		},
 		"UnoWasmBootstrapVersion": {
 			"description": "Provides an explicit override for the version of the Uno.Wasm.Bootstrap packages to use.",
 			"type": "nuget-version"
@@ -192,10 +188,6 @@
 		},
 		"AndroidMaterialVersion": {
 			"description": "Provides an explicit override for the version of Android Material to use.",
-			"type": "nuget-version"
-		},
-		"AndroidXLegacySupportV4Version": {
-			"description": "Provides an explicit override for the version of AndroidX.Legacy.Support.V4 to use.",
 			"type": "nuget-version"
 		},
 		"AndroidXSplashScreenVersion": {

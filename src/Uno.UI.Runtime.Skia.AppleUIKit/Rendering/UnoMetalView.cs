@@ -150,14 +150,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 			_link.Paused = true;
 
-			var size = DrawableSize;
-
-			var width = (int)size.Width;
-			var height = (int)size.Height;
-
-#if __TVOS__ // TODO: tvOS is not supported yet.
-			return;
-#else
 			ICAMetalDrawable? drawable = null;
 			IMTLCommandBuffer? commandBuffer = null;
 
@@ -183,7 +175,6 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				((IDisposable?)commandBuffer)?.Dispose();
 				((IDisposable?)drawable)?.Dispose();
 			}
-#endif
 		}
 
 	}

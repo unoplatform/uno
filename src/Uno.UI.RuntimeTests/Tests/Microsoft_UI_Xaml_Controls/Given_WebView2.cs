@@ -426,6 +426,7 @@ public class Given_WebView2
 		// Fails on Android+NativeAOT: https://github.com/dotnet/android/issues/12542
 		| RuntimeTestPlatforms.SkiaAndroid
 #endif // RUNTIME_NATIVE_AOT
+		| RuntimeTestPlatforms.SkiaTvOS // tvOS: see uno-private#2337
 	)]
 	public async Task When_WebMessageReceived()
 	{
@@ -501,6 +502,7 @@ public class Given_WebView2
 		// Hangs on Android+NativeAOT: https://github.com/dotnet/android/issues/12542
 		| RuntimeTestPlatforms.SkiaAndroid
 #endif // RUNTIME_NATIVE_AOT
+		| RuntimeTestPlatforms.SkiaTvOS // tvOS: see uno-private#2337
 	)]
 	public async Task When_WebMessageReceived_After_RemoveAdd()
 	{
@@ -608,7 +610,7 @@ public class Given_WebView2
 #if !WINAPPSDK && !__ANDROID__
 	[TestMethod]
 	[CombinatorialData]
-	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.NativeUIKit)] // Flaky on iOS Skia / Native UIKit https://github.com/unoplatform/uno/issues/9080
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.SkiaX11 | RuntimeTestPlatforms.SkiaWin32 | RuntimeTestPlatforms.SkiaMacOS | RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS | RuntimeTestPlatforms.NativeUIKit | RuntimeTestPlatforms.SkiaTvOS)] // Flaky on iOS Skia / Native UIKit https://github.com/unoplatform/uno/issues/9080
 	public async Task When_Navigate_Unsupported_Scheme(bool handled)
 	{
 		var border = new Border();

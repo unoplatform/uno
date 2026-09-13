@@ -2,6 +2,7 @@ trigger:
   branches:
     include:
       - master
+      - servicing/*
       - release/beta/*
       - release/stable/*
       - feature/*
@@ -24,6 +25,7 @@ pr:
   branches:
     include:
       - master
+      - servicing/*
       - release/beta/*
       - release/stable/*
       - feature/*

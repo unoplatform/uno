@@ -74,6 +74,8 @@
 		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' " />
 	<Import Project="Uno.Common.iOS.targets"
 		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' " />
+	<Import Project="Uno.Common.tvOS.targets"
+		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tvos' " />
 	<Import Project="Uno.Common.Desktop.targets"
 		Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'desktop' " />
 	<Import Project="Uno.Common.Wasm.targets"

@@ -70,6 +70,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly Stack<LogicalScope> _logicalScopeStack = new Stack<LogicalScope>();
 		private readonly Stack<XLoadScope> _xLoadScopeStack = new Stack<XLoadScope>();
 		private int _resourceOwner;
+		private int _fieldBackedResourceOwner;
 		private readonly XamlFileDefinition _fileDefinition;
 		private readonly string _defaultNamespace;
 		private readonly RoslynMetadataHelper _metadataHelper;
@@ -341,17 +342,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				writer.AppendLineInvariantIndented("using {0};", _defaultNamespace);
 
-				// For Subclass build functionality
+				// For Subclass build functionality.
+				// _View is the return type of every generated FrameworkTemplate builder, and those
+				// builders are converted to Uno.UI.FrameworkTemplateBuilder, which returns UIElement.
+				// Native view rendering is gone, so UIElement is the only correct alias on every target.
 				writer.AppendLineIndented("");
-				writer.AppendLineIndented("#if HAS_UNO_SKIA");
 				writer.AppendLineIndented("using _View = Microsoft.UI.Xaml.UIElement;");
-				writer.AppendLineIndented("#elif __ANDROID__");
-				writer.AppendLineIndented("using _View = Android.Views.View;");
-				writer.AppendLineIndented("#elif __APPLE_UIKIT__ || __IOS__ || __TVOS__");
-				writer.AppendLineIndented("using _View = UIKit.UIView;");
-				writer.AppendLineIndented("#else");
-				writer.AppendLineIndented("using _View = Microsoft.UI.Xaml.UIElement;");
-				writer.AppendLineIndented("#endif");
 
 				writer.AppendLineIndented("");
 
@@ -1027,7 +1023,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								BuildBaseUri(writer);
 
-								using (ResourceOwnerScope())
+								using (ResourceOwnerScope(declaredAsField: true))
 								{
 									writer.AppendLineIndented("global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();");
 									writer.AppendLineIndented($"global::System.Object {CurrentResourceOwner};");
@@ -2306,6 +2302,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Determine if the type is a custom markup extension
 			GetMarkupExtensionType(xamlType, allowExtensionSuffix) != null;
 
+		/// <summary>
+		/// Determines if an object is a markup extension usage (e.g. <c>{local:ResourceString Name=Foo}</c>)
+		/// rather than an element.
+		/// </summary>
+		/// <remarks>
+		/// The "Extension" suffix is only considered when the name does not resolve to an element type, so a
+		/// control with a companion "&lt;Name&gt;Extension" markup extension is not misdetected (#21992).
+		/// </remarks>
+		private bool IsMarkupExtensionObject(XamlObjectDefinition objectDefinition)
+			=> FindType(objectDefinition.Type) is { } type
+				? type.Is(Generation.MarkupExtensionSymbol.Value)
+				: IsCustomMarkupExtensionType(objectDefinition.Type);
+
 		private bool IsXamlTypeConverter(INamedTypeSymbol? symbol)
 		{
 			return symbol?.GetAttributes().Any(a => a.AttributeClass?.Equals(Generation.CreateFromStringAttributeSymbol.Value, SymbolEqualityComparer.Default) == true) == true;
@@ -3336,12 +3345,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var isInsideFrameworkTemplate = IsMemberInsideFrameworkTemplate(objectDefinition).isInside;
-				// Template members get their templated parent from the materializing template's settings, so the
-				// apply block needs access to it. Computed before the block so it can shape the callback signature.
+				// Template members get their templated parent from the materializing template's settings. This only
+				// gates the OnTemplateMemberCreated call below; the signature is shaped by isInsideFrameworkTemplate.
 				var needsTemplatedParent = isInsideFrameworkTemplate
 					&& IsType(objectDefinitionType, Generation.DependencyObjectSymbol.Value);
 
-				using (var writer = CreateApplyBlock(outerwriter, objectDefinition, passTemplateSettings: needsTemplatedParent))
+				// Every apply block inside a template takes the settings, even when the object itself has no
+				// templated parent to receive: a nested apply for a descendant that does need them passes
+				// __settings along from here, so it has to be in scope even here.
+				using (var writer = CreateApplyBlock(outerwriter, objectDefinition, passTemplateSettings: isInsideFrameworkTemplate))
 				{
 					XamlMemberDefinition? uidMember = null;
 					XamlMemberDefinition? nameMember = null;
@@ -4227,7 +4239,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				xamlApplyPrefix: appliedType != null && !_isHotReloadEnabled ? _fileUniqueId : null,
 				delegateType,
 				!_isTopLevelDictionary,
-				passTemplateSettings);
+				passTemplateSettings,
+				LocalResourceOwner);
 		}
 
 		private void RegisterPartial(string format, params object[] values)
@@ -6817,7 +6830,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			foreach (var member in xamlObject.Members)
 			{
-				foreach (var element in EnumerateSubElements(member.Objects, stoppingCondition))
+				// A markup extension's members are values handed to the extension, not members of an
+				// element, so its subtree is not part of the element tree. Walking it would mistake
+				// e.g. `{local:ResourceString Name=Foo}` for an element named "Foo".
+				foreach (var element in EnumerateSubElements(member.Objects, stoppingCondition, skipMarkupExtensions: true))
 				{
 					yield return element;
 				}
@@ -6831,11 +6847,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private IEnumerable<XamlObjectDefinition> EnumerateSubElements(IEnumerable<XamlObjectDefinition> objects, Func<XamlObjectDefinition, bool>? stoppingCondition)
+		private IEnumerable<XamlObjectDefinition> EnumerateSubElements(IEnumerable<XamlObjectDefinition> objects, Func<XamlObjectDefinition, bool>? stoppingCondition, bool skipMarkupExtensions = false)
 		{
 			foreach (var child in objects.Safe())
 			{
 				if (stoppingCondition != null && stoppingCondition(child))
+				{
+					continue;
+				}
+
+				if (skipMarkupExtensions && IsMarkupExtensionObject(child))
 				{
 					continue;
 				}
@@ -7395,6 +7416,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private string CurrentResourceOwnerName
 			=> CurrentResourceOwner ?? "this";
 
+		/// <summary>
+		/// The current resource owner when it only exists as a lambda or method parameter, and is
+		/// therefore invisible to the class-level ApplyTo_* methods the apply blocks are hoisted into.
+		/// Such an owner has to be forwarded to them explicitly.
+		/// </summary>
+		private string? LocalResourceOwner
+			=> _resourceOwner != _fieldBackedResourceOwner ? CurrentResourceOwner : null;
+
 		public bool HasImplicitViewPinning
 			=> Generation.IOSViewSymbol.Value is not null || Generation.AppKitViewSymbol.Value is not null;
 
@@ -7406,11 +7435,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// in order for FrameworkTemplates contents to access the code-behind context, without
 		/// causing circular references and case memory leaks.
 		/// </remarks>
-		private IDisposable ResourceOwnerScope()
+		/// <param name="declaredAsField">
+		/// Set when the owner is also stored in a field of the generated class, which keeps it reachable
+		/// from the class-level methods. Otherwise it lives only for the duration of a lambda or method.
+		/// </param>
+		private IDisposable ResourceOwnerScope(bool declaredAsField = false)
 		{
 			_resourceOwner++;
 
-			return new DisposableAction(() => _resourceOwner--);
+			var previousFieldBacked = _fieldBackedResourceOwner;
+			if (declaredAsField)
+			{
+				_fieldBackedResourceOwner = _resourceOwner;
+			}
+
+			return new DisposableAction(() =>
+			{
+				_fieldBackedResourceOwner = previousFieldBacked;
+				_resourceOwner--;
+			});
 		}
 
 		/// <summary>

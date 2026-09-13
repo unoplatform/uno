@@ -3553,6 +3553,12 @@
 		  <Member fullName="Uno.UI.FluentTheme.v2" reason="Merged the Uno.UI.FluentTheme.v2 assembly into Uno.UI.FluentTheme; the v2 suffix was an artifact of the removed Fluent V1/V2 split (BC71, breaking changes for 7.0)" />
 	  </Assemblies>
 	  <Types>
+		  <!-- Uno.UI.Lottie shipped a vendored copy of the corefx System.Json parser as public types; it was replaced by the in-box System.Text.Json. -->
+		  <Member fullName="System.Json.JsonValue" reason="Removed the vendored System.Json parser from Uno.UI.Lottie in favour of System.Text.Json" />
+		  <Member fullName="System.Json.JsonObject" reason="Removed the vendored System.Json parser from Uno.UI.Lottie in favour of System.Text.Json" />
+		  <Member fullName="System.Json.JsonArray" reason="Removed the vendored System.Json parser from Uno.UI.Lottie in favour of System.Text.Json" />
+		  <Member fullName="System.Json.JsonPrimitive" reason="Removed the vendored System.Json parser from Uno.UI.Lottie in favour of System.Text.Json" />
+		  <Member fullName="System.Json.JsonType" reason="Removed the vendored System.Json parser from Uno.UI.Lottie in favour of System.Text.Json" />
 		  <!-- Fluent V1 public surface, removed with the Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.XamlControlsResourcesV1" reason="Removed XamlControlsResourcesV1; it sourced an empty V1 dictionary and had no consumers (BC71, breaking changes for 7.0)" />
 		  <Member fullName="Uno.UI.FluentTheme.v1.GlobalStaticResources" reason="Generated with the removed Uno.UI.FluentTheme.v1 assembly (BC71, breaking changes for 7.0)" />

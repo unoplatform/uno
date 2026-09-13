@@ -32,7 +32,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Json" />
 		<PackageReference Include="HarfBuzzSharp" />
 	</ItemGroup>
 
