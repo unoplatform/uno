@@ -89,6 +89,7 @@ internal sealed unsafe partial class WebGpuFrame
 		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 0, pst.PassBg, 0, (uint*)null);
 		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 1, (IntPtr)imageBg, 0, (uint*)null);
 		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 2, (IntPtr)clipBg, 0, (uint*)null);
+		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 3, _d.IdentitySiteBg, 0, (uint*)null);
 		wgpuRenderPassEncoderSetVertexBuffer(pst.Pass, 0, (IntPtr)verts, 0, (nuint)(24 * sizeof(float)));
 		pst.Enc.Reset();
 		pst.Enc.Draw(6);
@@ -114,6 +115,7 @@ internal sealed unsafe partial class WebGpuFrame
 		pst.Enc.Pipe(_d.SolidPipe);
 		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 0, pst.PassBg, 0, (uint*)null);
 		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 1, (IntPtr)clipBg, 0, (uint*)null);
+		wgpuRenderPassEncoderSetBindGroup(pst.Pass, 3, _d.IdentitySiteBg, 0, (uint*)null);
 		wgpuRenderPassEncoderSetVertexBuffer(pst.Pass, 0, (IntPtr)buf, 0, (nuint)(6 * VertexStride.Solid * sizeof(float)));
 		pst.Enc.Reset();
 		pst.Enc.Draw(6);
