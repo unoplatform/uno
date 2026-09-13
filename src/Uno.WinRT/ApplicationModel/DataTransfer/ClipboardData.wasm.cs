@@ -6,24 +6,6 @@ using Uno.Storage.Internal;
 
 namespace Windows.ApplicationModel.DataTransfer;
 
-internal sealed class ClipboardSnapshotFormats
-{
-	[JsonPropertyName("pasteFormats")]
-	public string[]? PasteFormats { get; set; }
-
-	[JsonPropertyName("pasteHasFiles")]
-	public bool PasteHasFiles { get; set; }
-
-	[JsonPropertyName("pasteHasImage")]
-	public bool PasteHasImage { get; set; }
-
-	[JsonPropertyName("pasteImminent")]
-	public bool PasteImminent { get; set; }
-
-	[JsonPropertyName("ownFormats")]
-	public string[]? OwnFormats { get; set; }
-}
-
 internal sealed class ClipboardContentData
 {
 	[JsonPropertyName("status")]
@@ -37,6 +19,12 @@ internal sealed class ClipboardContentData
 
 	[JsonPropertyName("image")]
 	public NativeStorageItemInfo? Image { get; set; }
+
+	[JsonPropertyName("handles")]
+	public string[] Handles { get; set; } = Array.Empty<string>();
+
+	[JsonPropertyName("pasteShortcutTime")]
+	public double PasteShortcutTime { get; set; } = -1;
 }
 
 internal sealed class ClipboardTextEntry
@@ -60,7 +48,6 @@ internal sealed class ClipboardWriteEntry
 	public bool Custom { get; set; }
 }
 
-[JsonSerializable(typeof(ClipboardSnapshotFormats))]
 [JsonSerializable(typeof(ClipboardContentData))]
 [JsonSerializable(typeof(ClipboardWriteEntry[]))]
 internal partial class ClipboardSerializationContext : JsonSerializerContext

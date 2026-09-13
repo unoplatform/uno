@@ -9,17 +9,20 @@ namespace __Windows.ApplicationModel.DataTransfer
 		{
 			private const string JsType = "globalThis.Uno.Utils.Clipboard";
 
-			[JSImport($"{JsType}.getSnapshotFormats")]
-			internal static partial string GetSnapshotFormats();
+			[JSImport($"{JsType}.getSnapshot")]
+			internal static partial string GetSnapshot();
 
 			[JSImport($"{JsType}.getContentAsync")]
-			internal static partial Task<string> GetContentAsync(bool fromPaste);
+			internal static partial Task<string> GetContentAsync(double pasteShortcutTime);
+
+			[JSImport($"{JsType}.releaseHandles")]
+			internal static partial void ReleaseHandles(string ids);
 
 			[JSImport($"{JsType}.setContentAsync")]
-			internal static partial Task SetContentAsync(string entriesJson, byte[] imageBytes, string imageMimeType);
+			internal static partial Task SetContentAsync(int generation, string entriesJson, byte[] imageBytes, string imageMimeType);
 
 			[JSImport($"{JsType}.clearAsync")]
-			internal static partial Task ClearAsync();
+			internal static partial Task ClearAsync(int generation);
 
 			[JSImport($"{JsType}.startContentChanged")]
 			internal static partial void StartContentChanged();

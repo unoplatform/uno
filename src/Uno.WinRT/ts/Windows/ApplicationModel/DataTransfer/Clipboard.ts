@@ -49,6 +49,20 @@ namespace Uno.Utils {
 	interface OwnContent {
 		texts: ClipboardTextEntry[];
 		imageBlob: Blob;
+		// The File registered for the image, created once so every view shares one registration.
+		imageFile: File;
+	}
+
+	// What managed code gets for a view: the content itself when it is known (a captured paste or
+	// this application's own write), or the status telling it how the content is to be read.
+	interface ClipboardContent {
+		status: string;
+		texts: ClipboardTextEntry[];
+		files: Uno.Storage.NativeStorageItemInfo[];
+		image: Uno.Storage.NativeStorageItemInfo;
+		// The native file registrations this content holds; released by the managed side.
+		handles: string[];
+		pasteShortcutTime: number;
 	}
 
 	export class Clipboard {
@@ -66,7 +80,17 @@ namespace Uno.Utils {
 		// Serving reads from this cache avoids permission-gated clipboard reads for content
 		// this application wrote itself.
 		private static ownContent: OwnContent = null;
-		private static blurredSinceOwnWrite = false;
+		private static blurredSinceKnownContent = false;
+
+		// Managed SetContent/Clear calls are numbered; one overtaken by a later call while
+		// preparing its data must neither write nor publish, or the clipboard would end up with
+		// content older than the last call's.
+		private static latestWriteGeneration = 0;
+
+		// Files handed to managed code are registered as native storage items; a registration is
+		// shared by every view built from the same content and counted per view, so it is only
+		// removed once the managed side has released the last one.
+		private static handleReferences: Map<string, number> = new Map<string, number>();
 
 		private static readonly pasteFreshnessMs = 2000;
 		private static readonly pasteRetentionMs = 30000;
@@ -83,18 +107,23 @@ namespace Uno.Utils {
 			document.addEventListener("keydown", Clipboard.onKeyDownCaptured, true);
 
 			// In-page copy/cut and returning from another window can change the clipboard content,
-			// making the last managed write no longer authoritative. Focus alone is not enough —
-			// spurious focus events fire at startup and around browser UI (e.g. permission
-			// bubbles), so invalidation requires an actual blur since the last write.
-			const invalidateOwnContent = () => { Clipboard.ownContent = null; };
-			document.addEventListener("copy", invalidateOwnContent);
-			document.addEventListener("cut", invalidateOwnContent);
-			window.addEventListener("blur", () => { Clipboard.blurredSinceOwnWrite = true; });
+			// making the known content (the last managed write, or the last captured paste) no
+			// longer authoritative. Focus alone is not enough — spurious focus events fire at
+			// startup and around browser UI (e.g. permission bubbles), so invalidation requires an
+			// actual blur since the content became known.
+			document.addEventListener("copy", Clipboard.invalidateKnownContent);
+			document.addEventListener("cut", Clipboard.invalidateKnownContent);
+			window.addEventListener("blur", () => { Clipboard.blurredSinceKnownContent = true; });
 			window.addEventListener("focus", () => {
-				if (Clipboard.blurredSinceOwnWrite) {
-					Clipboard.ownContent = null;
+				if (Clipboard.blurredSinceKnownContent) {
+					Clipboard.invalidateKnownContent();
 				}
 			});
+		}
+
+		private static invalidateKnownContent() {
+			Clipboard.ownContent = null;
+			Clipboard.lastPaste = null;
 		}
 
 		private static onKeyDownCaptured(event: KeyboardEvent) {
@@ -113,7 +142,11 @@ namespace Uno.Utils {
 					return;
 				}
 
+				// The paste is what the clipboard holds now; an earlier own write is no longer
+				// what a read should return once the snapshot is no longer fresh.
 				Clipboard.lastPaste = snapshot;
+				Clipboard.ownContent = null;
+				Clipboard.blurredSinceKnownContent = false;
 
 				if (Clipboard.pasteWaiters.length > 0) {
 					const waiters = Clipboard.pasteWaiters.splice(0, Clipboard.pasteWaiters.length);
@@ -123,8 +156,8 @@ namespace Uno.Utils {
 				}
 
 				// The snapshot is only advertised while fresh, but is retained longer so a view
-				// built from it can still resolve its providers; release the file references
-				// once no such view can reasonably remain.
+				// built for a paste shortcut can still resolve against it; the files themselves
+				// live on with the views that registered them.
 				setTimeout(() => {
 					if (Clipboard.lastPaste === snapshot) {
 						Clipboard.lastPaste = null;
@@ -192,8 +225,8 @@ namespace Uno.Utils {
 				: null;
 		}
 
-		private static emptyContent(status: string) {
-			return { status: status, texts: <ClipboardTextEntry[]>[], files: <any[]>[], image: <any>null };
+		private static emptyContent(status: string): ClipboardContent {
+			return { status: status, texts: [], files: [], image: null, handles: [], pasteShortcutTime: -1 };
 		}
 
 		// Web custom formats surface with a "web " prefix; managed code uses the bare id.
@@ -206,56 +239,50 @@ namespace Uno.Utils {
 				(performance.now() - Clipboard.lastPasteShortcutTime) <= Clipboard.pasteShortcutCorrelationMs;
 		}
 
-		private static getOwnFormats(): string[] {
-			const own = Clipboard.ownContent;
-			if (!own) {
-				return null;
-			}
-
-			const formats = own.texts.map(t => t.type);
-			if (own.imageBlob) {
-				formats.push(own.imageBlob.type);
-			}
-			return formats;
-		}
-
-		// Synchronous probe used by the managed GetContent() to decide which formats to advertise.
-		public static getSnapshotFormats(): string {
+		// Synchronous probe used by the managed GetContent(). Known content is handed over
+		// whole, so the view holds what it advertised whatever happens to the clipboard next.
+		public static getSnapshot(): string {
 			const snapshot = Clipboard.getFreshPasteSnapshot();
-			return JSON.stringify({
-				ownFormats: Clipboard.getOwnFormats(),
-				pasteFormats: snapshot ? snapshot.texts.map(t => t.type) : null,
-				pasteHasFiles: snapshot ? snapshot.files.length > 0 : false,
-				pasteHasImage: snapshot ? !!Clipboard.getPasteImageFile(snapshot) : false,
-				pasteImminent: !snapshot && Clipboard.isPasteImminent(),
-			});
-		}
-
-		// fromPaste is true when the caller built its view from a paste snapshot (or an imminent
-		// paste) and must resolve against it even once it is no longer fresh.
-		public static async getContentAsync(fromPaste: boolean): Promise<string> {
-			let snapshot = fromPaste ? Clipboard.lastPaste : Clipboard.getFreshPasteSnapshot();
-
-			// A paste shortcut newer than the retained snapshot means new content is incoming;
-			// wait for it rather than serving the previous paste.
-			if (snapshot && Clipboard.lastPasteShortcutTime > snapshot.time) {
-				snapshot = null;
-			}
-
-			if (!snapshot && Clipboard.isPasteImminent()) {
-				// The paste shortcut can reach managed code before the DOM paste event fires;
-				// wait briefly for the event instead of falling back to a permission-gated read.
-				snapshot = await Clipboard.waitForPasteAsync();
-			}
-
-			let content: any;
+			let content: ClipboardContent;
 			if (snapshot) {
 				content = Clipboard.buildContentFromPaste(snapshot);
+			} else if (Clipboard.isPasteImminent()) {
+				// A paste shortcut was just pressed; the paste event carrying the content is on its way.
+				content = Clipboard.emptyContent("imminent");
+				content.pasteShortcutTime = Clipboard.lastPasteShortcutTime;
 			} else if (Clipboard.ownContent) {
 				content = Clipboard.buildContentFromOwn(Clipboard.ownContent);
 			} else {
-				content = await Clipboard.readAsyncClipboard();
+				content = Clipboard.emptyContent((navigator as NavigatorClipboard).clipboard ? "unknown" : "unavailable");
 			}
+			return JSON.stringify(content);
+		}
+
+		// Resolves a view whose content was not known when it was built: for a paste shortcut
+		// (pasteShortcutTime >= 0) the paste captured at or after it, which may still be on its
+		// way; otherwise whatever the clipboard holds now.
+		public static async getContentAsync(pasteShortcutTime: number): Promise<string> {
+			if (pasteShortcutTime >= 0) {
+				let snapshot = Clipboard.lastPaste;
+				if (snapshot && snapshot.time < pasteShortcutTime) {
+					// The retained paste predates the shortcut; new content is incoming.
+					snapshot = null;
+				}
+
+				if (!snapshot && Clipboard.isPasteImminent()) {
+					// The paste shortcut can reach managed code before the DOM paste event fires;
+					// wait briefly for the event instead of falling back to a permission-gated read.
+					snapshot = await Clipboard.waitForPasteAsync();
+				}
+
+				if (snapshot) {
+					return JSON.stringify(Clipboard.buildContentFromPaste(snapshot));
+				}
+			}
+
+			const content = Clipboard.ownContent
+				? Clipboard.buildContentFromOwn(Clipboard.ownContent)
+				: await Clipboard.readAsyncClipboard();
 
 			return JSON.stringify(content);
 		}
@@ -274,31 +301,71 @@ namespace Uno.Utils {
 			});
 		}
 
-		private static buildContentFromPaste(snapshot: PasteSnapshot) {
+		private static buildContentFromPaste(snapshot: PasteSnapshot): ClipboardContent {
 			// Registering the files as native storage items lets managed code stream them
 			// on demand instead of copying their content eagerly.
-			const files = snapshot.files.length > 0
-				? Uno.Storage.NativeStorageItem.getInfos(...snapshot.files)
-				: [];
+			const content = Clipboard.emptyContent("paste");
+			content.texts = snapshot.texts;
+			content.files = Clipboard.retainHandles(snapshot.files, content);
 
 			const imageFile = Clipboard.getPasteImageFile(snapshot);
-			const image = imageFile ? Uno.Storage.NativeStorageItem.getInfos(imageFile)[0] : null;
-
-			return { status: "paste", texts: snapshot.texts, files: files, image: image };
-		}
-
-		private static buildContentFromOwn(own: OwnContent) {
-			let image: any = null;
-			if (own.imageBlob) {
-				const fileName = "clipboard" + Clipboard.getImageExtension(own.imageBlob.type);
-				const file = new File([own.imageBlob], fileName, { type: own.imageBlob.type });
-				image = Uno.Storage.NativeStorageItem.getInfos(file)[0];
+			if (imageFile) {
+				content.image = content.files[snapshot.files.indexOf(imageFile)];
 			}
 
-			return { status: "own", texts: own.texts, files: <any[]>[], image: image };
+			return content;
 		}
 
-		private static async readAsyncClipboard() {
+		private static buildContentFromOwn(own: OwnContent): ClipboardContent {
+			const content = Clipboard.emptyContent("own");
+			content.texts = own.texts;
+
+			if (own.imageBlob) {
+				if (!own.imageFile) {
+					const fileName = "clipboard" + Clipboard.getImageExtension(own.imageBlob.type);
+					own.imageFile = new File([own.imageBlob], fileName, { type: own.imageBlob.type });
+				}
+				content.image = Clipboard.retainHandles([own.imageFile], content)[0];
+			}
+
+			return content;
+		}
+
+		// Registers the files (a File already registered keeps its id) and counts a reference
+		// to each on behalf of the content, which the managed side releases when it is done.
+		private static retainHandles(files: File[], content: ClipboardContent): Uno.Storage.NativeStorageItemInfo[] {
+			if (files.length === 0) {
+				return [];
+			}
+
+			const infos = Uno.Storage.NativeStorageItem.getInfos(...files);
+			for (const info of infos) {
+				if (content.handles.indexOf(info.id) < 0) {
+					content.handles.push(info.id);
+					Clipboard.handleReferences.set(info.id, (Clipboard.handleReferences.get(info.id) || 0) + 1);
+				}
+			}
+
+			return infos;
+		}
+
+		public static releaseHandles(ids: string) {
+			for (const id of ids.split(";")) {
+				const references = Clipboard.handleReferences.get(id);
+				if (!references) {
+					continue;
+				}
+
+				if (references > 1) {
+					Clipboard.handleReferences.set(id, references - 1);
+				} else {
+					Clipboard.handleReferences.delete(id);
+					Uno.Storage.NativeStorageItem.removeItem(id);
+				}
+			}
+		}
+
+		private static async readAsyncClipboard(): Promise<ClipboardContent> {
 			const nav = navigator as NavigatorClipboard;
 			if (!nav.clipboard) {
 				return Clipboard.emptyContent("unavailable");
@@ -307,16 +374,15 @@ namespace Uno.Utils {
 			if (nav.clipboard.read) {
 				try {
 					const items = await nav.clipboard.read();
-					const texts: ClipboardTextEntry[] = [];
-					let image: any = null;
+					const content = Clipboard.emptyContent("async");
 
 					for (const item of items) {
 						for (const type of item.types) {
 							if (type.startsWith("image/")) {
-								if (!image) {
+								if (!content.image) {
 									const blob = await item.getType(type);
 									const file = new File([blob], "clipboard" + Clipboard.getImageExtension(type), { type: type });
-									image = Uno.Storage.NativeStorageItem.getInfos(file)[0];
+									content.image = Clipboard.retainHandles([file], content)[0];
 								}
 							} else {
 								const blob = await item.getType(type);
@@ -324,14 +390,16 @@ namespace Uno.Utils {
 								// An empty payload is treated as absent: on the web an empty text
 								// write is the representation of a cleared clipboard.
 								if (value) {
-									texts.push({ type: Clipboard.toManagedType(type), value: value });
+									content.texts.push({ type: Clipboard.toManagedType(type), value: value });
 								}
 							}
 						}
 					}
 
-					const status = (texts.length > 0 || image) ? "async" : "empty";
-					return { status: status, texts: texts, files: <any[]>[], image: image };
+					if (content.texts.length === 0 && !content.image) {
+						content.status = "empty";
+					}
+					return content;
 				} catch (e) {
 					console.error(`Clipboard: failed to read from clipboard: ${e}`);
 					return Clipboard.emptyContent("denied");
@@ -341,9 +409,11 @@ namespace Uno.Utils {
 			// Older engines without read(): plain text is the best we can do.
 			try {
 				const text = await nav.clipboard.readText();
-				return text
-					? { status: "async", texts: [{ type: "text/plain", value: text }], files: <any[]>[], image: <any>null }
-					: Clipboard.emptyContent("empty");
+				const content = Clipboard.emptyContent(text ? "async" : "empty");
+				if (text) {
+					content.texts.push({ type: "text/plain", value: text });
+				}
+				return content;
 			} catch (e) {
 				console.error(`Clipboard: failed to read text from clipboard: ${e}`);
 				return Clipboard.emptyContent("denied");
@@ -361,7 +431,30 @@ namespace Uno.Utils {
 			}
 		}
 
-		public static async setContentAsync(entriesJson: string, imageBytes: any, imageMimeType: string): Promise<void> {
+		// The call is dropped when a later SetContent/Clear got here first.
+		private static beginWrite(generation: number): boolean {
+			if (generation < Clipboard.latestWriteGeneration) {
+				return false;
+			}
+			Clipboard.latestWriteGeneration = generation;
+			return true;
+		}
+
+		private static publishOwnContent(ownContent: OwnContent) {
+			Clipboard.ownContent = ownContent;
+			// The write replaces whatever a paste captured before it.
+			Clipboard.lastPaste = null;
+			Clipboard.lastPasteShortcutTime = -1;
+			// A write issued while the window is already blurred must still invalidate on refocus.
+			Clipboard.blurredSinceKnownContent = !document.hasFocus();
+			Clipboard.onClipboardChanged();
+		}
+
+		public static async setContentAsync(generation: number, entriesJson: string, imageBytes: any, imageMimeType: string): Promise<void> {
+			if (!Clipboard.beginWrite(generation)) {
+				return;
+			}
+
 			const entries: ClipboardWriteEntry[] = JSON.parse(entriesJson);
 			const nav = navigator as NavigatorClipboard;
 			const hasImage = !!imageMimeType && !!imageBytes;
@@ -377,12 +470,10 @@ namespace Uno.Utils {
 			// reads round-trip with full fidelity as they would on WinUI.
 			const ownContent: OwnContent = {
 				imageBlob: imageBlob,
+				imageFile: null,
 				texts: entries.map(e => ({ type: e.type, value: e.value })),
 			};
-			Clipboard.ownContent = ownContent;
-			// A write issued while the window is already blurred must still invalidate on refocus.
-			Clipboard.blurredSinceOwnWrite = !document.hasFocus();
-			Clipboard.onClipboardChanged();
+			Clipboard.publishOwnContent(ownContent);
 
 			// The system-clipboard write below is best-effort: browsers reject it outside a user
 			// gesture. The cache above keeps the content readable in-process either way (matching
@@ -412,6 +503,12 @@ namespace Uno.Utils {
 						imageBlob = png;
 						ownContent.imageBlob = png;
 					}
+
+					// A later call may have written while the image was being transcoded; this
+					// write must not land on top of it.
+					if (generation !== Clipboard.latestWriteGeneration) {
+						return;
+					}
 				}
 
 				if (imageBlob) {
@@ -428,6 +525,10 @@ namespace Uno.Utils {
 					// A single ClipboardItem so all formats are written atomically, as WinUI does.
 					const item = new ClipboardItem(record);
 					await nav.clipboard.write([item]);
+				} else {
+					// Nothing the browser can carry, but SetContent replaces the clipboard: the
+					// previous content must not stay visible to other applications.
+					await nav.clipboard.writeText("");
 				}
 
 				return;
@@ -448,9 +549,11 @@ namespace Uno.Utils {
 			document.body.removeChild(textarea);
 
 			// execCommand dispatched a copy event, which the invalidation listener handled;
-			// restore the cache it just cleared.
-			Clipboard.ownContent = ownContent;
-			Clipboard.blurredSinceOwnWrite = !document.hasFocus();
+			// restore the cache it just cleared (unless a later call has replaced it since).
+			if (generation === Clipboard.latestWriteGeneration) {
+				Clipboard.ownContent = ownContent;
+				Clipboard.blurredSinceKnownContent = !document.hasFocus();
+			}
 		}
 
 		// Guarded so an engine rejecting an unparsable format id cannot abort the whole write.
@@ -487,12 +590,12 @@ namespace Uno.Utils {
 			}
 		}
 
-		public static async clearAsync(): Promise<void> {
-			Clipboard.lastPaste = null;
+		public static async clearAsync(generation: number): Promise<void> {
+			if (!Clipboard.beginWrite(generation)) {
+				return;
+			}
 
-			Clipboard.ownContent = { texts: [], imageBlob: null };
-			Clipboard.blurredSinceOwnWrite = !document.hasFocus();
-			Clipboard.onClipboardChanged();
+			Clipboard.publishOwnContent({ texts: [], imageBlob: null, imageFile: null });
 
 			const nav = navigator as NavigatorClipboard;
 			if (nav.clipboard) {

@@ -4,11 +4,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation.Logging;
 using Uno.Helpers.Serialization;
+using Uno.Storage.Internal;
 using Windows.Storage;
 using Windows.Storage.Streams;
 
@@ -25,12 +27,19 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		private static readonly char[] _newLineChars = new[] { '\r', '\n' };
 
-		public static void Clear() =>
+		// SetContent and Clear prepare their data asynchronously, so a later call can be ready to
+		// write before an earlier one; the earlier one is dropped rather than overwriting it.
+		private static int _writeGeneration;
+
+		public static void Clear()
+		{
+			var generation = Interlocked.Increment(ref _writeGeneration);
+
 			RunOnMainThread(async () =>
 			{
 				try
 				{
-					await NativeMethods.ClearAsync();
+					await NativeMethods.ClearAsync(generation);
 				}
 				catch (Exception e)
 				{
@@ -40,18 +49,20 @@ namespace Windows.ApplicationModel.DataTransfer
 					}
 				}
 			});
+		}
 
 		public static void SetContent(DataPackage content)
 		{
 			ArgumentNullException.ThrowIfNull(content);
 
 			var data = content.GetView(); // Freezes the DataPackage
+			var generation = Interlocked.Increment(ref _writeGeneration);
 
 			RunOnMainThread(async () =>
 			{
 				try
 				{
-					await SetContentAsync(data);
+					await SetContentAsync(data, generation);
 				}
 				catch (Exception e)
 				{
@@ -79,7 +90,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 
-		internal static async Task SetContentAsync(DataPackageView data)
+		private static async Task SetContentAsync(DataPackageView data, int generation)
 		{
 			var entries = new List<ClipboardWriteEntry>();
 
@@ -150,8 +161,14 @@ namespace Windows.ApplicationModel.DataTransfer
 				(imageBytes, imageMimeType) = await ReadBitmapAsync(data);
 			}
 
+			if (generation != Volatile.Read(ref _writeGeneration))
+			{
+				// A later SetContent or Clear has already replaced what this one was preparing.
+				return;
+			}
+
 			var entriesJson = JsonHelper.Serialize(entries.ToArray(), ClipboardSerializationContext.Default);
-			await NativeMethods.SetContentAsync(entriesJson, imageBytes, imageMimeType);
+			await NativeMethods.SetContentAsync(generation, entriesJson, imageBytes, imageMimeType);
 		}
 
 		// WinUI exposes URIs as dedicated formats; browsers can only carry them as text.
@@ -194,109 +211,83 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		public static DataPackageView GetContent()
 		{
-			var formats = JsonHelper.Deserialize<ClipboardSnapshotFormats>(
-				NativeMethods.GetSnapshotFormats(), ClipboardSerializationContext.Default);
+			var snapshot = JsonHelper.Deserialize<ClipboardContentData>(
+				NativeMethods.GetSnapshot(), ClipboardSerializationContext.Default);
 
 			var package = new DataPackage();
 
-			// All providers of this view share a single clipboard read, resolved against the
-			// same source the advertised formats were derived from.
-			var fromPaste = formats.PasteFormats is not null || formats.PasteImminent;
-			var content = new Lazy<Task<ClipboardContentData>>(
-				() => GetClipboardContentAsync(fromPaste),
-				LazyThreadSafetyMode.ExecutionAndPublication);
+			switch (snapshot.Status)
+			{
+				case "paste":
+				case "own":
+					// A recent paste gesture was captured, or the clipboard still holds the last
+					// content written by this application: the content is known and the view
+					// holds it, whatever happens to the clipboard afterwards.
+					SetKnownContent(package, snapshot);
+					break;
 
-			if (formats.PasteFormats is { } pasteFormats)
-			{
-				// A recent paste gesture was captured; its formats are known exactly.
-				foreach (var mimeType in pasteFormats)
-				{
-					AddTextProvider(package, content, mimeType);
-				}
+				case "imminent":
+					// A paste shortcut was just pressed; advertise everything and let the
+					// providers resolve from the incoming paste event.
+					AddPendingContent(package, snapshot.PasteShortcutTime, includeStorageItems: true);
+					break;
 
-				if (formats.PasteHasFiles)
-				{
-					AddStorageItemsProvider(package, content);
-				}
+				case "unknown":
+					// Advertise the formats the async clipboard API may provide.
+					AddPendingContent(package, pasteShortcutTime: -1, includeStorageItems: false);
+					break;
 
-				if (formats.PasteHasImage)
-				{
-					AddBitmapProvider(package, content);
-				}
-			}
-			else if (formats.PasteImminent)
-			{
-				// A paste shortcut was just pressed; advertise everything and let the
-				// providers resolve from the incoming paste event.
-				AddTextProvider(package, content, PlainTextMimeType);
-				AddTextProvider(package, content, HtmlMimeType);
-				AddBitmapProvider(package, content);
-				AddStorageItemsProvider(package, content);
-			}
-			else if (formats.OwnFormats is { } ownFormats)
-			{
-				// The clipboard still holds the last content written by this application.
-				foreach (var mimeType in ownFormats)
-				{
-					if (mimeType.StartsWith("image/", StringComparison.Ordinal))
-					{
-						AddBitmapProvider(package, content);
-					}
-					else
-					{
-						AddTextProvider(package, content, mimeType);
-					}
-				}
-			}
-			else
-			{
-				// Unknown clipboard state: advertise the formats the async clipboard API may provide.
-				AddTextProvider(package, content, PlainTextMimeType);
-				AddTextProvider(package, content, HtmlMimeType);
-				AddBitmapProvider(package, content);
+				default:
+					// No clipboard API in this context and nothing captured: nothing can be read.
+					break;
 			}
 
 			return package.GetView();
 		}
 
-		private static void AddTextProvider(DataPackage package, Lazy<Task<ClipboardContentData>> content, string mimeType)
+		private static void SetKnownContent(DataPackage package, ClipboardContentData data)
 		{
-			if (mimeType == UriListMimeType)
-			{
-				// https://datatracker.ietf.org/doc/html/rfc2483#section-5
-				package.SetDataProvider(StandardDataFormats.WebLink, async ct =>
-				{
-					var uri = (await GetTextValue(content, mimeType) ?? "")
-						.Split(_newLineChars, StringSplitOptions.RemoveEmptyEntries)
-						.FirstOrDefault(line => !line.StartsWith('#'));
+			var lease = data.Handles.Length > 0 ? new ClipboardHandleLease(data.Handles) : null;
 
-					return uri is null
-						? throw new InvalidOperationException("The clipboard uri-list does not contain a URI.")
-						: new Uri(uri);
-				});
-				return;
+			foreach (var entry in data.Texts)
+			{
+				if (entry.Type == UriListMimeType)
+				{
+					if (ParseUriList(entry.Value) is { } uri)
+					{
+						package.SetWebLink(uri);
+					}
+				}
+				else
+				{
+					package.SetData(ToFormatId(entry.Type), entry.Value);
+				}
 			}
 
-			var formatId = mimeType switch
+			if (data.Files.Length > 0)
 			{
-				PlainTextMimeType => StandardDataFormats.Text,
-				HtmlMimeType => StandardDataFormats.Html,
-				RtfMimeType => StandardDataFormats.Rtf,
-				_ => mimeType, // Custom format ids pass through unchanged
-			};
+				package.SetStorageItems(data.Files.Select(info => CreateStorageFile(info, lease)));
+			}
+
+			if (data.Image is { } image)
+			{
+				package.SetBitmap(RandomAccessStreamReference.CreateFromFile(CreateStorageFile(image, lease)));
+			}
+		}
+
+		// The content is not known yet; all providers of this view share a single clipboard read.
+		private static void AddPendingContent(DataPackage package, double pasteShortcutTime, bool includeStorageItems)
+		{
+			var lease = new ClipboardHandleLease();
+			var content = new Lazy<Task<ClipboardContentData>>(
+				() => GetClipboardContentAsync(pasteShortcutTime, lease),
+				LazyThreadSafetyMode.ExecutionAndPublication);
 
 			// Missing resolves to empty: browsers cannot distinguish an empty clipboard from an
 			// empty string, so the absent/empty distinction does not exist on this platform.
-			package.SetDataProvider(formatId, async ct => await GetTextValue(content, mimeType) ?? "");
-		}
+			package.SetDataProvider(StandardDataFormats.Text, async ct => await GetTextValue(content, PlainTextMimeType) ?? "");
+			package.SetDataProvider(StandardDataFormats.Html, async ct => await GetTextValue(content, HtmlMimeType) ?? "");
 
-		private static async Task<string?> GetTextValue(Lazy<Task<ClipboardContentData>> content, string mimeType)
-		{
-			var data = await content.Value;
-			return data.Texts.FirstOrDefault(entry => entry.Type == mimeType)?.Value;
-		}
-
-		private static void AddBitmapProvider(DataPackage package, Lazy<Task<ClipboardContentData>> content) =>
 			package.SetDataProvider(StandardDataFormats.Bitmap, async ct =>
 			{
 				var data = await content.Value;
@@ -306,22 +297,33 @@ namespace Windows.ApplicationModel.DataTransfer
 				}
 
 				// The image is registered as a native file handle on the JS side and streamed on demand.
-				return RandomAccessStreamReference.CreateFromFile(StorageFile.GetFromNativeInfo(data.Image));
+				return RandomAccessStreamReference.CreateFromFile(CreateStorageFile(data.Image, lease));
 			});
 
-		private static void AddStorageItemsProvider(DataPackage package, Lazy<Task<ClipboardContentData>> content) =>
-			package.SetDataProvider(StandardDataFormats.StorageItems, async ct =>
+			if (includeStorageItems)
 			{
-				// A paste gesture that carried no files resolves to an empty list rather than
-				// failing, so optimistic paste handlers degrade to a graceful no-op.
-				var data = await content.Value;
-				return (IReadOnlyList<IStorageItem>)data.Files.Select(StorageFile.GetFromNativeInfo).ToList();
-			});
+				package.SetDataProvider(StandardDataFormats.StorageItems, async ct =>
+				{
+					// A paste gesture that carried no files resolves to an empty list rather than
+					// failing, so optimistic paste handlers degrade to a graceful no-op.
+					var data = await content.Value;
+					return (IReadOnlyList<IStorageItem>)data.Files.Select(info => CreateStorageFile(info, lease)).ToList();
+				});
+			}
+		}
 
-		private static async Task<ClipboardContentData> GetClipboardContentAsync(bool fromPaste)
+		private static async Task<string?> GetTextValue(Lazy<Task<ClipboardContentData>> content, string mimeType)
+		{
+			var data = await content.Value;
+			return data.Texts.FirstOrDefault(entry => entry.Type == mimeType)?.Value;
+		}
+
+		private static async Task<ClipboardContentData> GetClipboardContentAsync(double pasteShortcutTime, ClipboardHandleLease lease)
 		{
 			var data = JsonHelper.Deserialize<ClipboardContentData>(
-				await NativeMethods.GetContentAsync(fromPaste), ClipboardSerializationContext.Default);
+				await NativeMethods.GetContentAsync(pasteShortcutTime), ClipboardSerializationContext.Default);
+
+			lease.Add(data.Handles);
 
 			return data.Status switch
 			{
@@ -331,6 +333,31 @@ namespace Windows.ApplicationModel.DataTransfer
 					"The browser clipboard API is not available in this context. A secure context (HTTPS) is required."),
 				_ => data,
 			};
+		}
+
+		private static StorageFile CreateStorageFile(NativeStorageItemInfo info, ClipboardHandleLease? lease)
+		{
+			var file = StorageFile.GetFromNativeInfo(info);
+			lease?.Own(file);
+			return file;
+		}
+
+		private static string ToFormatId(string mimeType) => mimeType switch
+		{
+			PlainTextMimeType => StandardDataFormats.Text,
+			HtmlMimeType => StandardDataFormats.Html,
+			RtfMimeType => StandardDataFormats.Rtf,
+			_ => mimeType, // Custom format ids pass through unchanged
+		};
+
+		// https://datatracker.ietf.org/doc/html/rfc2483#section-5
+		private static Uri? ParseUriList(string uriList)
+		{
+			var uri = uriList
+				.Split(_newLineChars, StringSplitOptions.RemoveEmptyEntries)
+				.FirstOrDefault(line => !line.StartsWith('#'));
+
+			return uri is null ? null : new Uri(uri);
 		}
 
 		private static string GetImageMimeType(IRandomAccessStreamWithContentType ras, byte[] data)
@@ -404,6 +431,50 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			OnContentChanged();
 			return 0;
+		}
+
+		// The files a view exposes are registered on the JS side so they can be streamed on
+		// demand. The registrations are released once neither the view nor a storage item handed
+		// out from it can be reached anymore, so a file the application holds on to keeps working.
+		private sealed class ClipboardHandleLease
+		{
+			private static readonly ConditionalWeakTable<object, ClipboardHandleLease> _owners = new();
+
+			private readonly List<string> _handles = new();
+
+			public ClipboardHandleLease()
+			{
+			}
+
+			public ClipboardHandleLease(IEnumerable<string> handles)
+			{
+				_handles.AddRange(handles);
+			}
+
+			public void Add(IEnumerable<string> handles)
+			{
+				lock (_handles)
+				{
+					_handles.AddRange(handles);
+				}
+			}
+
+			// Keeps the lease alive for as long as the owner is.
+			public void Own(object owner) => _owners.AddOrUpdate(owner, this);
+
+			~ClipboardHandleLease()
+			{
+				string[] handles;
+				lock (_handles)
+				{
+					handles = _handles.ToArray();
+				}
+
+				if (handles.Length > 0)
+				{
+					Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(() => NativeMethods.ReleaseHandles(string.Join(";", handles)));
+				}
+			}
 		}
 	}
 }
