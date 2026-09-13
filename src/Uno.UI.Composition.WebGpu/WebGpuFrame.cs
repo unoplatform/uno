@@ -243,7 +243,7 @@ internal sealed unsafe partial class WebGpuFrame
 	}
 
 	// Reused so the per-frame op build does not allocate a list and an array per primitive.
-	private readonly List<float> _scratch = new();
+	private readonly VertBuf _scratch = new();
 	private readonly float[] _clipU = new float[ClipUFloats];   // the uniform: header + the first ClipUniformEntries entries
 	private float[] _clipMore = new float[4 * ClipEntryFloats];  // the entries past those, for the overflow buffer; grows
 
@@ -258,24 +258,19 @@ internal sealed unsafe partial class WebGpuFrame
 	// The pass's shared vertex buffers, one per layout: every per-frame draw appends its verts here in op order, so
 	// adjacent ops sharing a clip occupy a contiguous range and encode as ONE draw, and the whole pass uploads each
 	// buffer once. Fields rather than locals because the builders append to them; saved/restored around a nested build.
-	private List<float> _solid, _rrect, _gradVerts, _quadVerts;
+	private VertBuf _solid, _rrect, _gradVerts, _quadVerts;
 	private List<BackdropCmd> _backdrops;
-	private readonly Stack<List<float>> _vertsPool = new();
-	private List<float> RentVerts() { var l = _vertsPool.Count > 0 ? _vertsPool.Pop() : new List<float>(4096); l.Clear(); return l; }
-	private void ReturnVerts(List<float> s) { s.Clear(); _vertsPool.Push(s); }
-	private List<float> RentRrect() => RentVerts();
-	private void ReturnRrect(List<float> s) => ReturnVerts(s);
+	private readonly Stack<VertBuf> _vertsPool = new();
+	private VertBuf RentVerts() { var l = _vertsPool.Count > 0 ? _vertsPool.Pop() : new VertBuf(); l.Clear(); return l; }
+	private void ReturnVerts(VertBuf s) { s.Clear(); _vertsPool.Push(s); }
+	private VertBuf RentRrect() => RentVerts();
+	private void ReturnRrect(VertBuf s) => ReturnVerts(s);
 
-	/// <summary>Grows the list by <paramref name="n"/> floats and returns the new tail to write into.</summary>
-	internal static Span<float> Grow(List<float> list, int n)
-	{
-		int c = list.Count;
-		System.Runtime.InteropServices.CollectionsMarshal.SetCount(list, c + n);
-		return System.Runtime.InteropServices.CollectionsMarshal.AsSpan(list).Slice(c, n);
-	}
+	/// <summary>Grows the buffer by <paramref name="n"/> floats and returns the new tail to write into.</summary>
+	internal static Span<float> Grow(VertBuf buf, int n) => buf.Grow(n);
 
 	// Appends one quad (two tris) as solid verts; returns the start vertex index.
-	private static int AppendSolidRect(List<float> solid, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float r, float g, float b, float a)
+	private static int AppendSolidRect(VertBuf solid, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float r, float g, float b, float a)
 	{
 		int start = solid.Count / VertexStride.Solid;
 		var v = Grow(solid, 6 * VertexStride.Solid);
@@ -288,7 +283,7 @@ internal sealed unsafe partial class WebGpuFrame
 	}
 
 	// Appends one rounded rect at the given corners: per-vertex SDF params in its own centred space (transform-invariant).
-	private void AppendRrect(List<float> rr, RoundedRectCmd rrc, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
+	private void AppendRrect(VertBuf rr, RoundedRectCmd rrc, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3)
 	{
 		var hf = rrc.Half; var rad = rrc.Radii; var ih = rrc.InnerHalf; var ic = rrc.InnerCenter; var ir = rrc.InnerRadii;
 		float cr = rrc.Color.R / 255f, cg = rrc.Color.G / 255f, cb = rrc.Color.B / 255f, color = rrc.Color.A / 255f * rrc.Opacity;
@@ -315,18 +310,17 @@ internal sealed unsafe partial class WebGpuFrame
 		return buf;
 	}
 
-	// List overload: uploads directly from the list's backing store (no ToArray copy).
-	internal IntPtr MakeBuffer(List<float> data)
+	// Uploads directly from the buffer's backing array (no copy).
+	internal IntPtr MakeBuffer(VertBuf data)
 	{
-		var span = System.Runtime.InteropServices.CollectionsMarshal.AsSpan(data);
-		var size = span.Length * sizeof(float);
+		var size = data.Count * sizeof(float);
 		var buf = _d.BufferPool.Rent(size, WGPUBufferUsage.Vertex | WGPUBufferUsage.CopyDst);
-		fixed (float* p = span) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, (nuint)size); }
+		fixed (float* p = data.A) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, (nuint)size); }
 		return buf;
 	}
 
-	internal IntPtr Vbuf(List<float> data, OwnedResources owned)
-		=> owned is null ? MakeBuffer(data) : Vbuf(System.Runtime.InteropServices.CollectionsMarshal.AsSpan(data).ToArray(), owned);
+	internal IntPtr Vbuf(VertBuf data, OwnedResources owned)
+		=> owned is null ? MakeBuffer(data) : Vbuf(data.Span.ToArray(), owned);
 
 	internal IntPtr MakeUniform(int byteSize)
 		=> _d.BufferPool.Rent(byteSize, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
@@ -761,7 +755,7 @@ internal sealed unsafe partial class WebGpuFrame
 	{
 		public List<DrawOp> Ops;
 		public List<BackdropCmd> Backdrops;
-		public List<float> Solid, Rrect, Grad, Quad;
+		public VertBuf Solid, Rrect, Grad, Quad;
 		public float BasisOx, BasisOy, BasisW, BasisH;
 		public Vector4 Bound;   // device rect every scissor stays within: a sheet slot; the whole target otherwise
 		public nint SolidBuf, RrectBuf, GradBuf, QuadBuf;

@@ -99,7 +99,7 @@ internal sealed unsafe partial class WebGpuFrame
 	{
 		var c = backdrop.Effect.Color;
 		float r = c.R / 255f, g = c.G / 255f, b = c.B / 255f, a = c.A / 255f;
-		var verts = new List<float>(48);
+		var verts = new VertBuf();
 		void Vert(float x, float y)
 		{
 			verts.Add(x); verts.Add(y); verts.Add(r); verts.Add(g); verts.Add(b); verts.Add(a); verts.Add(0f); verts.Add(0f);

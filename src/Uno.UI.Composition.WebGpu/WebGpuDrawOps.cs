@@ -9,6 +9,42 @@ using static Uno.WebGpu.Native.WGPU;
 
 namespace Uno.UI.Composition.WebGpu;
 
+/// <summary>
+/// A growable float buffer for vertex data. Deliberately a plain array rather than a <c>List&lt;float&gt;</c>:
+/// reaching a list's storage goes through <c>CollectionsMarshal.SetCount&lt;T&gt;</c> and <c>AsSpan&lt;T&gt;</c>,
+/// generic methods over a value type that Mono's AOT does not specialise, so on wasm every vertex append ran in
+/// the interpreter. Growth copies with the non-generic <see cref="Array.Copy(Array, Array, int)"/> for the same
+/// reason.
+/// </summary>
+internal sealed class VertBuf
+{
+	public float[] A = new float[4096];
+	public int Count;
+
+	public void Clear() => Count = 0;
+
+	/// <summary>Reserves <paramref name="n"/> floats at the end and returns them to write into.</summary>
+	public Span<float> Grow(int n)
+	{
+		int need = Count + n;
+		if (need > A.Length)
+		{
+			int cap = A.Length;
+			while (cap < need) { cap <<= 1; }
+			var bigger = new float[cap];
+			Array.Copy(A, bigger, Count);
+			A = bigger;
+		}
+		int at = Count;
+		Count = need;
+		return new Span<float>(A, at, n);
+	}
+
+	public void Add(float v) => Grow(1)[0] = v;
+
+	public ReadOnlySpan<float> Span => new(A, 0, Count);
+}
+
 /// <summary>Floats per vertex of each vertex layout.</summary>
 internal static class VertexStride
 {

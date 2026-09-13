@@ -48,7 +48,7 @@ internal sealed unsafe partial class WebGpuCoverage
 		return true;
 	}
 
-	private readonly List<float> _atlasQuads = new();
+	private readonly VertBuf _atlasQuads = new();
 
 	/// <summary>
 	/// Emits a RUN of consecutive fills sharing an atlas page, a colour and a clip as ONE draw, advancing
@@ -167,7 +167,7 @@ internal sealed unsafe partial class WebGpuCoverage
 	}
 
 	/// <summary>Appends one entry as 6 solid vertices (pos, colour, coverage uv), placed at the fill's OWN origin.</summary>
-	private void AppendAtlasQuad(List<float> dst, WebGpuPathAtlas.Slot slot, float ox, float oy, Vector2 scale, WColor color)
+	private void AppendAtlasQuad(VertBuf dst, WebGpuPathAtlas.Slot slot, float ox, float oy, Vector2 scale, WColor color)
 	{
 		float cr = color.R / 255f, cg = color.G / 255f, cb = color.B / 255f, ca = color.A / 255f;
 		// The quad lives in the op's own space; one device pixel is 1/scale there, so a slot.W-wide mask needs a
@@ -206,7 +206,7 @@ internal sealed unsafe partial class WebGpuCoverage
 	}
 
 	/// <summary>One solid draw for a batch of quads sharing a page, a colour and a clip; the page is their coverage.</summary>
-	private DrawOp MakeAtlasOp(PathCmd pf, WebGpuPathAtlas.Page page, List<float> quads, OwnedResources owned, bool filtered = false)
+	private DrawOp MakeAtlasOp(PathCmd pf, WebGpuPathAtlas.Page page, VertBuf quads, OwnedResources owned, bool filtered = false)
 	{
 		var clip = WithCoverage(pf.Clip, page.View, filtered);
 		return DrawOp.Own(DrawKind.Solid, _f.Vbuf(quads, owned), (uint)(quads.Count / VertexStride.Solid), IntPtr.Zero, clip, _f.MakeClipBg(clip, owned));
