@@ -119,6 +119,9 @@ internal sealed unsafe class WebGpuSiteSlab : IDisposable
 	{
 		public IntPtr Buf;
 		public float[] Shadow;
+		// Which slots changed, not just the span they fall in: the sites written in a frame are scattered over the
+		// chunk, so the enclosing range covers most of it while a screenful is a few dozen slots.
+		public bool[] Dirty;
 		public int DirtyMin = int.MaxValue;
 		public int DirtyMax = -1;
 	}
@@ -145,7 +148,7 @@ internal sealed unsafe class WebGpuSiteSlab : IDisposable
 			if (slot / ChunkSlots >= _chunks.Count)
 			{
 				var bd = new WGPUBufferDescriptor { Size = (nuint)(ChunkSlots * SlotBytes), Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
-				_chunks.Add(new Chunk { Buf = wgpuDeviceCreateBuffer(_d.Dev, &bd), Shadow = new float[ChunkSlots * SlotFloats] });
+				_chunks.Add(new Chunk { Buf = wgpuDeviceCreateBuffer(_d.Dev, &bd), Shadow = new float[ChunkSlots * SlotFloats], Dirty = new bool[ChunkSlots] });
 			}
 		}
 		return slot + 1;
@@ -167,6 +170,7 @@ internal sealed unsafe class WebGpuSiteSlab : IDisposable
 	public Span<float> SlotSpan(nint handle)
 	{
 		var c = ChunkOf(handle, out var idx);
+		c.Dirty[idx] = true;
 		if (idx < c.DirtyMin) { c.DirtyMin = idx; }
 		if (idx > c.DirtyMax) { c.DirtyMax = idx; }
 		return c.Shadow.AsSpan(idx * SlotFloats, SlotFloats);
@@ -180,13 +184,23 @@ internal sealed unsafe class WebGpuSiteSlab : IDisposable
 		s[4] = m.M31; s[5] = m.M32;
 	}
 
+	/// <summary>One queue write per RUN of changed slots, so an untouched slot between two written ones is not
+	/// re-uploaded. A run costs a native call, which is still far less than the bytes the enclosing range carried.</summary>
 	public void Flush()
 	{
 		foreach (var c in _chunks)
 		{
 			if (c.DirtyMax < 0) { continue; }
-			int lo = c.DirtyMin * SlotFloats, len = (c.DirtyMax + 1 - c.DirtyMin) * SlotFloats;
-			fixed (float* p = &c.Shadow[lo]) { wgpuQueueWriteBuffer(_d.Q, c.Buf, (nuint)(lo * sizeof(float)), (IntPtr)p, (nuint)(len * sizeof(float))); }
+			for (int i = c.DirtyMin; i <= c.DirtyMax; i++)
+			{
+				if (!c.Dirty[i]) { continue; }
+				int end = i;
+				while (end <= c.DirtyMax && c.Dirty[end]) { c.Dirty[end] = false; end++; }
+				int lo = i * SlotFloats, len = (end - i) * SlotFloats;
+				fixed (float* p = &c.Shadow[lo]) { wgpuQueueWriteBuffer(_d.Q, c.Buf, (nuint)(lo * sizeof(float)), (IntPtr)p, (nuint)(len * sizeof(float))); }
+				i = end;
+			}
+			Array.Clear(c.Dirty, c.DirtyMin, c.DirtyMax + 1 - c.DirtyMin);
 			c.DirtyMin = int.MaxValue;
 			c.DirtyMax = -1;
 		}
@@ -209,6 +223,7 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 		public IntPtr Buf;
 		public float[] Shadow;
 		public IntPtr[] More;
+		public bool[] Dirty;
 		public int DirtyMin = int.MaxValue;
 		public int DirtyMax = -1;
 	}
@@ -235,7 +250,7 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 			if (slot / ChunkSlots >= _chunks.Count)
 			{
 				var bd = new WGPUBufferDescriptor { Size = (nuint)(ChunkSlots * SlotBytes), Usage = WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst };
-				_chunks.Add(new Chunk { Buf = wgpuDeviceCreateBuffer(_d.Dev, &bd), Shadow = new float[ChunkSlots * SlotFloats], More = new IntPtr[ChunkSlots] });
+				_chunks.Add(new Chunk { Buf = wgpuDeviceCreateBuffer(_d.Dev, &bd), Shadow = new float[ChunkSlots * SlotFloats], More = new IntPtr[ChunkSlots], Dirty = new bool[ChunkSlots] });
 			}
 		}
 		return slot + 1;
@@ -275,6 +290,7 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 	public void MarkDirty(nint handle)
 	{
 		var c = ChunkOf(handle, out var idx);
+		c.Dirty[idx] = true;
 		if (idx < c.DirtyMin) { c.DirtyMin = idx; }
 		if (idx > c.DirtyMax) { c.DirtyMax = idx; }
 	}
@@ -283,6 +299,7 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 	{
 		var c = ChunkOf(handle, out var idx);
 		Array.Copy(clipU, 0, c.Shadow, idx * SlotFloats, Math.Min(floats, SlotFloats));
+		c.Dirty[idx] = true;
 		if (idx < c.DirtyMin) { c.DirtyMin = idx; }
 		if (idx > c.DirtyMax) { c.DirtyMax = idx; }
 	}
@@ -297,9 +314,17 @@ internal sealed unsafe class WebGpuClipSlab : IDisposable
 		foreach (var c in _chunks)
 		{
 			if (c.DirtyMax < 0) { continue; }
-			int lo = c.DirtyMin * SlotFloats, len = (c.DirtyMax + 1 - c.DirtyMin) * SlotFloats;
-			LastFlushBytes += len * sizeof(float);
-			fixed (float* p = &c.Shadow[lo]) { wgpuQueueWriteBuffer(_d.Q, c.Buf, (nuint)(lo * sizeof(float)), (IntPtr)p, (nuint)(len * sizeof(float))); }
+			for (int i = c.DirtyMin; i <= c.DirtyMax; i++)
+			{
+				if (!c.Dirty[i]) { continue; }
+				int end = i;
+				while (end <= c.DirtyMax && c.Dirty[end]) { c.Dirty[end] = false; end++; }
+				int lo = i * SlotFloats, len = (end - i) * SlotFloats;
+				LastFlushBytes += len * sizeof(float);
+				fixed (float* p = &c.Shadow[lo]) { wgpuQueueWriteBuffer(_d.Q, c.Buf, (nuint)(lo * sizeof(float)), (IntPtr)p, (nuint)(len * sizeof(float))); }
+				i = end;
+			}
+			Array.Clear(c.Dirty, c.DirtyMin, c.DirtyMax + 1 - c.DirtyMin);
 			c.DirtyMin = int.MaxValue;
 			c.DirtyMax = -1;
 		}
