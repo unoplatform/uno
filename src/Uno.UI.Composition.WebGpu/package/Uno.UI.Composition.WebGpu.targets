@@ -1,0 +1,30 @@
+<Project>
+
+	<!--
+	Consumer-side native wiring for the WebGpu backend.
+
+	Every other platform resolves its native through runtimes/<rid>/native at load time, so it needs nothing here.
+	iOS is the exception: Apple apps cannot dlopen a library from outside the bundle, so wgpu-native is linked
+	STATICALLY into the app image and WebGpuLoader resolves "webgpu" to the main program handle. A static archive
+	is never picked up from runtimes/, so it has to be handed to the Apple SDK as a NativeReference, which is
+	what this file does. The slices ship in this package, so this only selects one; nothing is downloaded.
+	-->
+	<Target Name="_UnoWebGpuLinkIosNative"
+			BeforeTargets="_SanitizeNativeReferences;_ExpandNativeReferences;_ResolveAssemblies;BeforeBuild"
+			Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+		<PropertyGroup>
+			<!-- The RID is empty on the outer restore/build pass; default to the device slice so the item exists. -->
+			<_UnoWgpuIosRid>$(RuntimeIdentifier)</_UnoWgpuIosRid>
+			<_UnoWgpuIosRid Condition="'$(_UnoWgpuIosRid)' == ''">ios-arm64</_UnoWgpuIosRid>
+			<_UnoWgpuIosLib>$(MSBuildThisFileDirectory)native\$(_UnoWgpuIosRid)\libwgpu_native.a</_UnoWgpuIosLib>
+		</PropertyGroup>
+		<ItemGroup Condition="Exists('$(_UnoWgpuIosLib)')">
+			<NativeReference Include="$(_UnoWgpuIosLib)">
+				<Kind>Static</Kind>
+				<ForceLoad>True</ForceLoad>
+				<SmartLink>False</SmartLink>
+			</NativeReference>
+		</ItemGroup>
+	</Target>
+
+</Project>

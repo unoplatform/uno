@@ -105,6 +105,11 @@
 			<_WgpuPackRid Include="android-arm"><Asset>wgpu-android-armv7-release.zip</Asset><Native>libwgpu_native.so</Native></_WgpuPackRid>
 			<_WgpuPackRid Include="android-x64"><Asset>wgpu-android-x86_64-release.zip</Asset><Native>libwgpu_native.so</Native></_WgpuPackRid>
 			<_WgpuPackRid Include="android-x86"><Asset>wgpu-android-i686-release.zip</Asset><Native>libwgpu_native.so</Native></_WgpuPackRid>
+			<!-- iOS links the STATIC archive into the app image (WebGpuLoader resolves "webgpu" to the main
+			     program handle there), so these ship as .a and the package's own targets references them. -->
+			<_WgpuPackRid Include="ios-arm64"><Asset>wgpu-ios-aarch64-release.zip</Asset><Native>libwgpu_native.a</Native></_WgpuPackRid>
+			<_WgpuPackRid Include="iossimulator-arm64"><Asset>wgpu-ios-aarch64-simulator-release.zip</Asset><Native>libwgpu_native.a</Native></_WgpuPackRid>
+			<_WgpuPackRid Include="iossimulator-x64"><Asset>wgpu-ios-x86_64-simulator-release.zip</Asset><Native>libwgpu_native.a</Native></_WgpuPackRid>
 		</ItemGroup>
 		<MakeDir Directories="$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\" />
 		<DownloadFile Condition="!Exists('$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\%(_WgpuPackRid.Asset)')"
