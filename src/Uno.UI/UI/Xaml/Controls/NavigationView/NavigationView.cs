@@ -280,6 +280,11 @@ public partial class NavigationView : ContentControl
 		{
 			// An index-only change preserves ancestor identities and may precede repeater index updates.
 			UpdateIsChildSelected(selectionModel.SelectedIndex);
+			// Ancestor property callbacks may supersede this selection synchronously.
+			if (selectedItem != selectionModel.SelectedItem)
+			{
+				return;
+			}
 		}
 
 		// Ignore this callback if:
