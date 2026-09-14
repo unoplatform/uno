@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
-using System.IO.Pipes;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
@@ -21,7 +20,6 @@ using Microsoft.Internal.VisualStudio.Shell;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using StreamJsonRpc;
 using Uno.IDE;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.Messaging.IdeChannel;
@@ -32,6 +30,7 @@ using Uno.UI.RemoteControl.VS.Notifications;
 using Uno.UI.RemoteControl.VS.AppLaunch;
 using ILogger = Uno.UI.RemoteControl.VS.Helpers.ILogger;
 using Task = System.Threading.Tasks.Task;
+using VsThreading = Microsoft.VisualStudio.Threading;
 using _udeiMsg = Uno.UI.RemoteControl.Messaging.IdeChannel.DevelopmentEnvironmentStatusIdeMessage;
 
 #pragma warning disable VSTHRD010
@@ -39,13 +38,18 @@ using _udeiMsg = Uno.UI.RemoteControl.Messaging.IdeChannel.DevelopmentEnvironmen
 
 namespace Uno.UI.RemoteControl.VS;
 
-public partial class EntryPoint : IDisposable
+// System.IAsyncDisposable for modern callers, the VS-Threading flavor as the binding-redirect-free probe target
+// for the VSIX, and IDisposable for VSIX versions that only know the synchronous contract.
+public partial class EntryPoint : IDisposable, IAsyncDisposable, VsThreading.IAsyncDisposable
 {
 	private const string UnoPlatformOutputPane = "Uno Platform";
 	private const string RemoteControlServerPortProperty = "UnoRemoteControlPort";
 	private const string UnoVSExtensionLoadedProperty = "_UnoVSExtensionLoaded";
+	private static readonly TimeSpan InitializationJoinTimeout = TimeSpan.FromSeconds(5);
 
 	private readonly CancellationTokenSource _ct = new();
+	private readonly VsThreading.JoinableTask _initialization;
+	private readonly VsThreading.AsyncLazy<bool> _disposal;
 	private readonly DTE _dte;
 	private readonly DTE2 _dte2;
 	private readonly string _toolsPath;
@@ -60,7 +64,7 @@ public partial class EntryPoint : IDisposable
 	private SemaphoreSlim _devServerGate = new(1);
 	private IServiceProvider? _visualStudioServiceProvider;
 	private bool _closing;
-	private bool _isDisposed;
+	private VsixChannel? _vsixChannel;
 	private IdeChannelClient? _ideChannelClient;
 	private ProfilesObserver? _debuggerObserver;
 	private InfoBarFactory? _infoBarFactory;
@@ -90,14 +94,14 @@ public partial class EntryPoint : IDisposable
 		_asyncPackage = asyncPackage;
 		_commands = new(new Logger(this), ("VS.RC", CommonCommandHandlers.OpenBrowser), ("Dev Server", new DevServerCommandHandler(this)));
 		_fileUpdater = new VisualStudioFileUpdater(_dte, _dte2, asyncPackage, () => _ideChannelClient, msg => _debugAction?.Invoke(msg), _ct.Token);
+		_disposal = new(DisposeCoreAsync, asyncPackage.JoinableTaskFactory);
 
-		_ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
+		_initialization = asyncPackage.JoinableTaskFactory.RunAsync(() => RunInitializationAsync(ct =>
 		{
 			globalPropertiesProvider(OnProvideGlobalPropertiesAsync);
 
-			var services = new SimpleServiceProvider();
-			await InitializeAsync(asyncPackage, services, _ct.Token);
-		});
+			return Task.FromResult<IServiceProvider>(new SimpleServiceProvider(new Logger(this)));
+		}));
 	}
 
 	// Current API v3
@@ -113,10 +117,11 @@ public partial class EntryPoint : IDisposable
 		_asyncPackage = asyncPackage;
 		_commands = new(new Logger(this), ("VS.RC", CommonCommandHandlers.OpenBrowser), ("Dev Server", new DevServerCommandHandler(this)));
 		_fileUpdater = new VisualStudioFileUpdater(_dte, _dte2, asyncPackage, () => _ideChannelClient, msg => _debugAction?.Invoke(msg), _ct.Token);
+		_disposal = new(DisposeCoreAsync, asyncPackage.JoinableTaskFactory);
 
-		_ = ThreadHelper.JoinableTaskFactory.RunAsync(async () =>
+		_initialization = asyncPackage.JoinableTaskFactory.RunAsync(() => RunInitializationAsync(async ct =>
 		{
-			var services = await InitializeVsixChannelAsync(
+			_vsixChannel = await VsixChannel.ConnectAsync(
 				vsixChannelHandle,
 				remoteServices: [
 					typeof(Uno.IDE.IUnoDevelopmentEnvironmentIndicator)
@@ -125,45 +130,34 @@ public partial class EntryPoint : IDisposable
 					(typeof(Uno.IDE.IGlobalPropertiesProvider), new GlobalPropertiesProvider(OnProvideGlobalPropertiesAsync)),
 					(typeof(Uno.IDE.ICommandHandler), _commands)
 				],
-				_ct.Token);
+				new Logger(this),
+				ct);
 
-			await InitializeAsync(asyncPackage, services, _ct.Token);
-		});
+			return _vsixChannel.Services;
+		}));
 	}
 
-	private async Task<IServiceProvider> InitializeVsixChannelAsync(string vsixChannelHandle, Type[] remoteServices, (Type type, object instance)[] localServices, CancellationToken ct)
+	private async Task RunInitializationAsync(Func<CancellationToken, Task<IServiceProvider>> connectServices)
 	{
-		var rpcStream = new NamedPipeClientStream(
-			serverName: ".",
-			pipeName: vsixChannelHandle,
-			direction: PipeDirection.InOut,
-			options: PipeOptions.Asynchronous | PipeOptions.WriteThrough);
-		await rpcStream.ConnectAsync(ct).ConfigureAwait(false);
-
-		var rpc = new JsonRpc(rpcStream);
-		ct.Register(rpc.Dispose);
-
-		foreach (var service in localServices)
+		try
 		{
-			rpc.AddLocalRpcTarget(service.type, service.instance, null);
+			var services = await connectServices(_ct.Token);
+			await InitializeAsync(_asyncPackage, services, _ct.Token);
 		}
-
-		var services = new SimpleServiceProvider();
-		ct.Register(services.Dispose);
-
-		foreach (var service in remoteServices)
+		catch (OperationCanceledException) when (_ct.IsCancellationRequested)
 		{
-			services.Register(service, rpc.Attach(service));
+			// Disposed before initialization completed.
 		}
-
-		rpc.StartListening();
-
-		return services;
+		catch (Exception e)
+		{
+			LogLifecycle($"Failed to initialize Remote Control entry point: {e}");
+		}
 	}
 
 	private async Task InitializeAsync(AsyncPackage asyncPackage, IServiceProvider services, CancellationToken ct)
 	{
-		await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+		await asyncPackage.JoinableTaskFactory.SwitchToMainThreadAsync(ct);
+		ct.ThrowIfCancellationRequested();
 
 		SetupOutputWindow();
 		_udei = services.GetService<IUnoDevelopmentEnvironmentIndicator>();
@@ -199,7 +193,7 @@ public partial class EntryPoint : IDisposable
 		if (await _asyncPackage.GetServiceAsync(typeof(SVsShell)) is IVsShell shell
 			&& await _asyncPackage.GetServiceAsync(typeof(SVsInfoBarUIFactory)) is IVsInfoBarUIFactory infoBarFactory)
 		{
-			_infoBarFactory = new InfoBarFactory(infoBarFactory, shell);
+			_infoBarFactory = new InfoBarFactory(asyncPackage, infoBarFactory, shell);
 
 			_globalJsonObserver = new GlobalJsonObserver(asyncPackage, _dte, _infoBarFactory, _debugAction, _infoAction, _warningAction, _errorAction);
 		}
@@ -354,7 +348,6 @@ public partial class EntryPoint : IDisposable
 		_closing = true;
 
 		// Everything is bound to the closing solution, and legacy VSIX versions never dispose us explicitly.
-		StopDevServer();
 		Dispose();
 	}
 
@@ -416,7 +409,7 @@ public partial class EntryPoint : IDisposable
 	private async Task EnsureServerAsync()
 	{
 		var devServerCt = default(CancellationTokenSource);
-		if (_isDisposed || _closing)
+		if (IsDisposed || _closing)
 		{
 			return;
 		}
@@ -521,6 +514,12 @@ public partial class EntryPoint : IDisposable
 			}
 
 			_debugAction?.Invoke($"Using available port {port}");
+
+			// Teardown may have started while the awaits above were pending; do not spawn a host nobody will stop.
+			if (_ct.IsCancellationRequested)
+			{
+				return;
+			}
 
 			var version = GetDotnetMajorVersion();
 			if (version < 7)
@@ -876,53 +875,137 @@ public partial class EntryPoint : IDisposable
 		return true; // HasChanged
 	}
 
+	private bool IsDisposed => _disposal.IsValueCreated;
+
+	// The teardown runs once as a JoinableTask: a caller blocked on the main thread still executes its UI hops.
 	public void Dispose()
+		=> _disposal.GetValue();
+
+	Task VsThreading.IAsyncDisposable.DisposeAsync()
+		=> _disposal.GetValueAsync();
+
+	public ValueTask DisposeAsync()
+		=> new(_disposal.GetValueAsync());
+
+	private async Task<bool> DisposeCoreAsync()
 	{
-		if (_isDisposed)
+		try
 		{
-			return;
+			_ct.Cancel(false);
 		}
-		_isDisposed = true;
+		catch (AggregateException e)
+		{
+			LogLifecycle($"Failed to cancel pending work: {e}");
+		}
+
+		await JoinInitializationAsync();
 
 		try
 		{
-			// DTE events, InfoBars and menu commands are UI-thread-affine COM objects, but Dispose
-			// can be invoked from any thread (e.g. the Studio VSIX disposes the entry point from a
-			// thread-pool task while the solution is closing).
-			if (ThreadHelper.CheckAccess())
-			{
-				DisposeCore();
-			}
-			else
-			{
-				ThreadHelper.JoinableTaskFactory.Run(async () =>
-				{
-					await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+			StopDevServer();
+		}
+		catch (Exception e)
+		{
+			LogLifecycle($"Failed to stop the dev server: {e}");
+		}
 
-					DisposeCore();
-				});
+		// UI-thread-affine components hop on their own; the VSIX channel goes last so the UDEI stays reachable until the end.
+		await DisposeServiceAsync(_appLaunchStateConsumer);
+		await DisposeServiceAsync(_globalJsonObserver);
+		await DisposeServiceAsync(_debuggerObserver);
+		await DisposeServiceAsync(_infoBarFactory);
+		await DisposeServiceAsync(_unoMenuCommand);
+		await DisposeServiceAsync(_appLaunchIdeBridge);
+		await UnhookDteEventsAsync();
+		await DisposeServiceAsync(_vsixChannel);
+
+		return true;
+	}
+
+	private async Task JoinInitializationAsync()
+	{
+		try
+		{
+			// Bounded: a VSIX hand-off that never completes must not stall solution close.
+			using var timeout = CancellationTokenSource.CreateLinkedTokenSource(_asyncPackage.DisposalToken);
+			timeout.CancelAfter(InitializationJoinTimeout);
+
+			await _initialization.JoinAsync(timeout.Token);
+		}
+		catch (OperationCanceledException)
+		{
+			LogLifecycle("Initialization is still running; continuing teardown without it.");
+		}
+		catch (Exception e)
+		{
+			LogLifecycle($"Initialization did not complete cleanly: {e}");
+		}
+	}
+
+	private async Task UnhookDteEventsAsync()
+	{
+		try
+		{
+			// DTE sinks are UI-thread-affine; the package's DisposalToken bounds the hop at VS shutdown.
+			await _asyncPackage.JoinableTaskFactory.SwitchToMainThreadAsync(_asyncPackage.DisposalToken);
+
+			_dte.Events.SolutionEvents.BeforeClosing -= _closeHandler;
+			_dte.Events.BuildEvents.OnBuildBegin -= _onBuildBeginHandler;
+			_dte.Events.BuildEvents.OnBuildDone -= _onBuildDoneHandler;
+			_dte.Events.BuildEvents.OnBuildProjConfigBegin -= _onBuildProjConfigBeginHandler;
+		}
+		catch (Exception e)
+		{
+			LogLifecycle($"Failed to unhook DTE events: {e}");
+		}
+	}
+
+	private async ValueTask DisposeServiceAsync(IAsyncDisposable? service)
+	{
+		try
+		{
+			if (service is not null)
+			{
+				await service.DisposeAsync();
 			}
 		}
 		catch (Exception e)
 		{
-			_debugAction?.Invoke($"Failed to dispose Remote Control server: {e}");
+			LogLifecycle($"Failed to dispose {service!.GetType().Name}: {e}");
 		}
 	}
 
-	private void DisposeCore()
+	private ValueTask DisposeServiceAsync(IDisposable? service)
 	{
-		ThreadHelper.ThrowIfNotOnUIThread();
+		try
+		{
+			service?.Dispose();
+		}
+		catch (Exception e)
+		{
+			LogLifecycle($"Failed to dispose {service!.GetType().Name}: {e}");
+		}
 
-		_ct.Cancel(false);
-		_dte.Events.BuildEvents.OnBuildBegin -= _onBuildBeginHandler;
-		_dte.Events.BuildEvents.OnBuildDone -= _onBuildDoneHandler;
-		_dte.Events.BuildEvents.OnBuildProjConfigBegin -= _onBuildProjConfigBeginHandler;
-		_globalJsonObserver?.Dispose();
-		_debuggerObserver?.Dispose();
-		_infoBarFactory?.Dispose();
-		_unoMenuCommand?.Dispose();
-		_appLaunchIdeBridge?.Dispose();
-		_appLaunchStateConsumer?.Dispose();
+		return default;
+	}
+
+	// Lifecycle failures must never throw out of a catch, and must stay visible when the Output pane is absent or muted.
+	private void LogLifecycle(string message)
+	{
+		if (_warningAction is { } log && !_closing)
+		{
+			try
+			{
+				log(message);
+				return;
+			}
+			catch
+			{
+				// The pane is UI-thread-affine COM; fall back to the free-threaded activity log.
+			}
+		}
+
+		ActivityLog.TryLogWarning(nameof(EntryPoint), message);
 	}
 
 	protected IServiceProvider VisualStudioServiceProvider
