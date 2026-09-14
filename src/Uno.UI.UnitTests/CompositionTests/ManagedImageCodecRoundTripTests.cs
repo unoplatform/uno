@@ -370,6 +370,7 @@ public class Given_ManagedImageDecoder_Hardening
 		bmp[18] = 0x20; bmp[19] = 0x4E; // width  = 20000 (LE)
 		bmp[22] = 0x20; bmp[23] = 0x4E; // height = 20000 (LE)
 		bmp[28] = 32;   // bpp
+
 		// compression (offset 30) = 0
 
 		Assert.IsFalse(ManagedImageDecoder.TryDecode(bmp, null, null, out _));
