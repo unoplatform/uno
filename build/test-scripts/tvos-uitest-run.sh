@@ -199,7 +199,12 @@ fi
 echo "Starting runtime tests group ${UITEST_RUNTIME_TEST_GROUP} of ${UITEST_RUNTIME_TEST_GROUP_COUNT}"
 
 UNO_TVOS_TESTS_STARTED=true
-xcrun simctl launch "$UITEST_TVOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID"
+# Capture the app's own output into the published logs. Without this a startup failure leaves nothing to go
+# on: the managed exception reaches neither the device log nor the crash report. stderr matters most -- simctl
+# notes that log output usually goes there.
+APP_STDOUT="$LOG_FILEPATH/app-stdout-${UITEST_RUNTIME_TEST_GROUP}.log"
+APP_STDERR="$LOG_FILEPATH/app-stderr-${UITEST_RUNTIME_TEST_GROUP}.log"
+xcrun simctl launch --stdout="$APP_STDOUT" --stderr="$APP_STDERR" "$UITEST_TVOSDEVICE_ID" "$SAMPLESAPP_BUNDLE_ID"
 
 # get the process id for the app
 export APP_PID=`xcrun simctl spawn "$UITEST_TVOSDEVICE_ID" launchctl list | grep "$SAMPLESAPP_BUNDLE_ID" | awk '{print $1}'`
