@@ -133,6 +133,10 @@ internal sealed unsafe partial class WebGpuCoverage
 	private void FlushPendingBakesCore()
 	{
 		if (_pendingBakes.Count == 0) { _f.Effects.FlushPendingBlurs(); return; }
+
+		// Hoisted: a stackalloc inside the loop would grow the frame once per batch.
+		var size = stackalloc float[4];
+		var ae = stackalloc WGPUBindGroupEntry[3];
 		foreach (var b in _pendingBakes)
 		{
 			// Accumulator dims rounded up so the pool sees a few sizes per target, not one per frame.
@@ -150,11 +154,10 @@ internal sealed unsafe partial class WebGpuCoverage
 			var sizeBuf = _d.BufferPool.Rent(16, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
 			fixed (float* p = edges) { wgpuQueueWriteBuffer(_d.Q, edgeBuf, 0, (IntPtr)p, (nuint)edgeBytes); }
 			fixed (float* p = ext) { wgpuQueueWriteBuffer(_d.Q, extBuf, 0, (IntPtr)p, (nuint)extBytes); }
-			var size = stackalloc float[4] { aw, ah, 0f, 0f };
+			size[0] = aw; size[1] = ah; size[2] = 0f; size[3] = 0f;
 			wgpuQueueWriteBuffer(_d.Q, sizeBuf, 0, (IntPtr)size, 16);
 
 			var accView = _d.Pool.Rent(aw, ah, 1, WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding, WebGpuDevice.CoverageFormat);
-			var ae = stackalloc WGPUBindGroupEntry[3];
 			ae[0] = new WGPUBindGroupEntry { Binding = 0, Buffer = edgeBuf, Offset = 0, Size = (nuint)edgeBytes };
 			ae[1] = new WGPUBindGroupEntry { Binding = 1, Buffer = extBuf, Offset = 0, Size = (nuint)extBytes };
 			ae[2] = new WGPUBindGroupEntry { Binding = 2, Buffer = sizeBuf, Offset = 0, Size = 16 };
