@@ -293,10 +293,17 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 					_borderPathOuterRect = ToRoundRect(outerArea, fullCornerRadius.Outer);
 					SetPath((CompositionPathGeometry)_borderShape!.Geometry!, BuildRoundRectRingPath(outerArea, fullCornerRadius.Outer, innerArea, fullCornerRadius.Inner));
 					// Let a supporting backend fill the border as one analytic annulus (SDF) instead of a ring path.
+					// Not when the ring is empty: the analytic form is outer MINUS inner, and with a zero thickness
+					// those are the same shape drawn with two ANTIALIASED edges, whose coverage cancels on the straight
+					// sides but not around the corners -- leaving a faint arc where nothing should be drawn. The ring
+					// path built above is genuinely empty, so leaving the hint off draws nothing, as it should.
+					var hasThickness = _borderThickness.Left > 0 || _borderThickness.Top > 0
+						|| _borderThickness.Right > 0 || _borderThickness.Bottom > 0;
 					var or = fullCornerRadius.Outer; var ir = fullCornerRadius.Inner;
-					_borderShape!.RoundedRectBorderHint = (
-						outerArea, new Vector4(or.TopLeft.X, or.TopRight.X, or.BottomRight.X, or.BottomLeft.X),
-						innerArea, new Vector4(ir.TopLeft.X, ir.TopRight.X, ir.BottomRight.X, ir.BottomLeft.X));
+					_borderShape!.RoundedRectBorderHint = hasThickness
+						? (outerArea, new Vector4(or.TopLeft.X, or.TopRight.X, or.BottomRight.X, or.BottomLeft.X),
+							innerArea, new Vector4(ir.TopLeft.X, ir.TopRight.X, ir.BottomRight.X, ir.BottomLeft.X))
+						: null;
 				}
 				else if (_borderShape is not null)
 				{
