@@ -1,5 +1,4 @@
 ﻿using System;
-using Uno.UI.Composition.Drawing;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;

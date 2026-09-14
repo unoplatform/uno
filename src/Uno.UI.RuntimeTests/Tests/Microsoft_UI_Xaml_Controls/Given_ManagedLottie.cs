@@ -1,5 +1,7 @@
 #nullable enable
 
+#if __SKIA__
+
 using System;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -148,3 +150,5 @@ public class Given_ManagedLottie
 		return count;
 	}
 }
+
+#endif

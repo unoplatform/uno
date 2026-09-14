@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using SkiaSharp;
+
+#if CROSSRUNTIME
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
+using Uno.UI.Composition.Drawing;
+#endif
 
 namespace Uno.WinUI.Graphics2DSK;
 
