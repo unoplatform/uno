@@ -31,10 +31,20 @@
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\bin\Release\net11.0\Uno.UI.Composition.WebGpu.dll" target="lib\net11.0" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\bin\Release\net11.0\Uno.UI.Composition.WebGpu.pdb" target="lib\net11.0" />
 
-		<!-- wgpu-native runtime (pinned v29.0.1.1), fetched by wgpu-native.targets. Shipped under the DllImport's own
-		     name (webgpu) so the runtime's default [DllImport("webgpu")] resolution finds it in runtimes/<rid>/native. -->
-		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\lib\libwgpu_native.so" target="runtimes\linux-x64\native\libwebgpu.so" />
-		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\lib\wgpu_native.dll" target="runtimes\win-x64\native\webgpu.dll" />
+		<!-- wgpu-native runtime (pinned v29.0.1.1), fetched per RID by ProvisionWgpuNativeForPack in
+		     wgpu-native.targets. KEEP THE TWO LISTS IN STEP. Desktop ships under the DllImport's own name
+		     (webgpu) so default [DllImport("webgpu")] resolution finds it in runtimes/<rid>/native; Android keeps
+		     wgpu-native's own name, which the resolver loads by bare name there. -->
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\win-x64\lib\wgpu_native.dll" target="runtimes\win-x64\native\webgpu.dll" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\win-arm64\lib\wgpu_native.dll" target="runtimes\win-arm64\native\webgpu.dll" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\linux-x64\lib\libwgpu_native.so" target="runtimes\linux-x64\native\libwebgpu.so" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\linux-arm64\lib\libwgpu_native.so" target="runtimes\linux-arm64\native\libwebgpu.so" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\osx-x64\lib\libwgpu_native.dylib" target="runtimes\osx-x64\native\libwebgpu.dylib" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\osx-arm64\lib\libwgpu_native.dylib" target="runtimes\osx-arm64\native\libwebgpu.dylib" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\android-arm64\lib\libwgpu_native.so" target="runtimes\android-arm64\native\libwgpu_native.so" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\android-arm\lib\libwgpu_native.so" target="runtimes\android-arm\native\libwgpu_native.so" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\android-x64\lib\libwgpu_native.so" target="runtimes\android-x64\native\libwgpu_native.so" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\android-x86\lib\libwgpu_native.so" target="runtimes\android-x86\native\libwgpu_native.so" />
 	</files>
 
 </package>

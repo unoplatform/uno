@@ -86,21 +86,33 @@
 			SourceFiles="$(WgpuNativeCacheDir)$(_WgpuAsset)" DestinationFolder="$(WgpuNativeCacheDir)" />
 	</Target>
 
-	<!-- Packaging needs EVERY desktop native the nuspec ships, not just the build host's. The packages job runs on
-	     Windows, so the Linux binary is otherwise absent and `nuget pack` fails with NU5019. Fetching another
-	     platform's release is just HTTP + unzip, and each one unzips under its own file name, so they share this
-	     cache directory. Invoked by the packaging build; keep the shipped set in step with the nuspec's runtimes\. -->
+	<!-- Packaging provisions every RID the package ships, not just the build host's: the packages job runs on one
+	     OS, so the rest are otherwise absent and `nuget pack` fails NU5019. Fetching another platform's release is
+	     plain HTTP + unzip. Each RID unzips into its OWN directory because the archives all carry the same file
+	     name per OS family (both Windows arches give wgpu_native.dll, all four Android ABIs give
+	     libwgpu_native.so), so a shared directory would have them overwrite each other.
+	     KEEP IN STEP with the runtimes\ entries in build/nuget/Uno.UI.Composition.WebGpu.nuspec. -->
 	<Target Name="ProvisionWgpuNativeForPack">
 		<ItemGroup>
-			<_WgpuPackAsset Include="wgpu-windows-x86_64-msvc-release.zip"><Native>wgpu_native.dll</Native></_WgpuPackAsset>
-			<_WgpuPackAsset Include="wgpu-linux-x86_64-release.zip"><Native>libwgpu_native.so</Native></_WgpuPackAsset>
+			<_WgpuPackRid Include="win-x64"><Asset>wgpu-windows-x86_64-msvc-release.zip</Asset><Native>wgpu_native.dll</Native></_WgpuPackRid>
+			<_WgpuPackRid Include="win-arm64"><Asset>wgpu-windows-aarch64-msvc-release.zip</Asset><Native>wgpu_native.dll</Native></_WgpuPackRid>
+			<_WgpuPackRid Include="linux-x64"><Asset>wgpu-linux-x86_64-release.zip</Asset><Native>libwgpu_native.so</Native></_WgpuPackRid>
+			<_WgpuPackRid Include="linux-arm64"><Asset>wgpu-linux-aarch64-release.zip</Asset><Native>libwgpu_native.so</Native></_WgpuPackRid>
+			<_WgpuPackRid Include="osx-x64"><Asset>wgpu-macos-x86_64-release.zip</Asset><Native>libwgpu_native.dylib</Native></_WgpuPackRid>
+			<_WgpuPackRid Include="osx-arm64"><Asset>wgpu-macos-aarch64-release.zip</Asset><Native>libwgpu_native.dylib</Native></_WgpuPackRid>
+			<!-- Android keeps wgpu-native's own file name: the resolver loads it by bare name there. -->
+			<_WgpuPackRid Include="android-arm64"><Asset>wgpu-android-aarch64-release.zip</Asset><Native>libwgpu_native.so</Native></_WgpuPackRid>
+			<_WgpuPackRid Include="android-arm"><Asset>wgpu-android-armv7-release.zip</Asset><Native>libwgpu_native.so</Native></_WgpuPackRid>
+			<_WgpuPackRid Include="android-x64"><Asset>wgpu-android-x86_64-release.zip</Asset><Native>libwgpu_native.so</Native></_WgpuPackRid>
+			<_WgpuPackRid Include="android-x86"><Asset>wgpu-android-i686-release.zip</Asset><Native>libwgpu_native.so</Native></_WgpuPackRid>
 		</ItemGroup>
-		<MakeDir Directories="$(WgpuNativeCacheDir)" />
-		<DownloadFile Condition="!Exists('$(WgpuNativeCacheDir)%(_WgpuPackAsset.Identity)')"
-			SourceUrl="https://github.com/gfx-rs/wgpu-native/releases/download/$(WgpuNativeVersion)/%(_WgpuPackAsset.Identity)"
-			DestinationFolder="$(WgpuNativeCacheDir)" Retries="3" />
-		<Microsoft.Build.Tasks.Unzip Condition="!Exists('$(WgpuNativeCacheDir)lib\%(_WgpuPackAsset.Native)')"
-			SourceFiles="$(WgpuNativeCacheDir)%(_WgpuPackAsset.Identity)" DestinationFolder="$(WgpuNativeCacheDir)" />
+		<MakeDir Directories="$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\" />
+		<DownloadFile Condition="!Exists('$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\%(_WgpuPackRid.Asset)')"
+			SourceUrl="https://github.com/gfx-rs/wgpu-native/releases/download/$(WgpuNativeVersion)/%(_WgpuPackRid.Asset)"
+			DestinationFolder="$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\" Retries="3" />
+		<Microsoft.Build.Tasks.Unzip Condition="!Exists('$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\lib\%(_WgpuPackRid.Native)')"
+			SourceFiles="$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\%(_WgpuPackRid.Asset)"
+			DestinationFolder="$(WgpuNativeCacheDir)pack\%(_WgpuPackRid.Identity)\" />
 	</Target>
 
 	<!-- Run-from-build: drop the native next to the build output so the DllImportResolver finds it when running the
