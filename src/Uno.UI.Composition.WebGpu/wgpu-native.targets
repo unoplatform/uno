@@ -86,6 +86,23 @@
 			SourceFiles="$(WgpuNativeCacheDir)$(_WgpuAsset)" DestinationFolder="$(WgpuNativeCacheDir)" />
 	</Target>
 
+	<!-- Packaging needs EVERY desktop native the nuspec ships, not just the build host's. The packages job runs on
+	     Windows, so the Linux binary is otherwise absent and `nuget pack` fails with NU5019. Fetching another
+	     platform's release is just HTTP + unzip, and each one unzips under its own file name, so they share this
+	     cache directory. Invoked by the packaging build; keep the shipped set in step with the nuspec's runtimes\. -->
+	<Target Name="ProvisionWgpuNativeForPack">
+		<ItemGroup>
+			<_WgpuPackAsset Include="wgpu-windows-x86_64-msvc-release.zip"><Native>wgpu_native.dll</Native></_WgpuPackAsset>
+			<_WgpuPackAsset Include="wgpu-linux-x86_64-release.zip"><Native>libwgpu_native.so</Native></_WgpuPackAsset>
+		</ItemGroup>
+		<MakeDir Directories="$(WgpuNativeCacheDir)" />
+		<DownloadFile Condition="!Exists('$(WgpuNativeCacheDir)%(_WgpuPackAsset.Identity)')"
+			SourceUrl="https://github.com/gfx-rs/wgpu-native/releases/download/$(WgpuNativeVersion)/%(_WgpuPackAsset.Identity)"
+			DestinationFolder="$(WgpuNativeCacheDir)" Retries="3" />
+		<Microsoft.Build.Tasks.Unzip Condition="!Exists('$(WgpuNativeCacheDir)lib\%(_WgpuPackAsset.Native)')"
+			SourceFiles="$(WgpuNativeCacheDir)%(_WgpuPackAsset.Identity)" DestinationFolder="$(WgpuNativeCacheDir)" />
+	</Target>
+
 	<!-- Run-from-build: drop the native next to the build output so the DllImportResolver finds it when running the
 	     app straight out of bin/. Guard on OutDir (AfterTargets=Build also fires in the outer multi-TFM pass where
 	     OutDir is empty → an unguarded Copy throws MSB3023). Only for app heads (OutputType != Library): a referenced

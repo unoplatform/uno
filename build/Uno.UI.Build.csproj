@@ -200,6 +200,10 @@
 		<Error Text="The Uno.UI.Extras PRI file is not present in src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release"
 					 Condition="!exists('..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$(NetUWPOrWinUI)\Uno.UI.Extras.pri')" />
 
+		<!-- The WebGpu package ships a native per desktop RID, but a build only provisions its own host's. This
+		     fetches the rest so the pack does not fail NU5019 on the Windows packaging agent. -->
+		<MSBuild Projects="..\src\Uno.UI.Composition.WebGpu\Uno.UI.Composition.WebGpu.csproj" Targets="ProvisionWgpuNativeForPack" />
+
 		<!-- Create the packages -->
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.UI.Composition.Skia.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
