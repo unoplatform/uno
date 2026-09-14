@@ -291,19 +291,24 @@ internal class BorderVisual(Compositor compositor) : ContainerVisual(compositor)
 				if (_borderBrush is not null)
 				{
 					_borderPathOuterRect = ToRoundRect(outerArea, fullCornerRadius.Outer);
-					SetPath((CompositionPathGeometry)_borderShape!.Geometry!, BuildRoundRectRingPath(outerArea, fullCornerRadius.Outer, innerArea, fullCornerRadius.Inner));
-					// Let a supporting backend fill the border as one analytic annulus (SDF) instead of a ring path.
-					// Not when the ring is empty: the analytic form is outer MINUS inner, and with a zero thickness
-					// those are the same shape drawn with two ANTIALIASED edges, whose coverage cancels on the straight
-					// sides but not around the corners -- leaving a faint arc where nothing should be drawn. The ring
-					// path built above is genuinely empty, so leaving the hint off draws nothing, as it should.
-					var hasThickness = _borderThickness.Left > 0 || _borderThickness.Top > 0
-						|| _borderThickness.Right > 0 || _borderThickness.Bottom > 0;
-					var or = fullCornerRadius.Outer; var ir = fullCornerRadius.Inner;
-					_borderShape!.RoundedRectBorderHint = hasThickness
-						? (outerArea, new Vector4(or.TopLeft.X, or.TopRight.X, or.BottomRight.X, or.BottomLeft.X),
-							innerArea, new Vector4(ir.TopLeft.X, ir.TopRight.X, ir.BottomRight.X, ir.BottomLeft.X))
-						: null;
+					// A ring of zero thickness covers nothing, so the shape gets no path at all rather than an empty
+					// one: an empty path still reaches the clip-and-fill route, which costs a coverage mask per visual
+					// on WebGPU, and every Fluent control carries a border brush at whatever thickness.
+					if (_borderThickness.Left > 0 || _borderThickness.Top > 0
+						|| _borderThickness.Right > 0 || _borderThickness.Bottom > 0)
+					{
+						SetPath((CompositionPathGeometry)_borderShape!.Geometry!, BuildRoundRectRingPath(outerArea, fullCornerRadius.Outer, innerArea, fullCornerRadius.Inner));
+						// Let a supporting backend fill the border as one analytic annulus (SDF) instead of a ring path.
+						var or = fullCornerRadius.Outer; var ir = fullCornerRadius.Inner;
+						_borderShape!.RoundedRectBorderHint = (
+							outerArea, new Vector4(or.TopLeft.X, or.TopRight.X, or.BottomRight.X, or.BottomLeft.X),
+							innerArea, new Vector4(ir.TopLeft.X, ir.TopRight.X, ir.BottomRight.X, ir.BottomLeft.X));
+					}
+					else
+					{
+						SetPath((CompositionPathGeometry)_borderShape!.Geometry!, null);
+						_borderShape!.RoundedRectBorderHint = null;
+					}
 				}
 				else if (_borderShape is not null)
 				{
