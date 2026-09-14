@@ -21,6 +21,11 @@ namespace Uno.UI.Composition.Drawing;
 public static class FontFallback
 {
 	private static IFontFallbackService? _noto;
+	// One IFont per resolved family+style: text segmentation breaks wherever the font instance changes, so
+	// minting a new one per codepoint would split a fallback run into single-character segments and lose the
+	// shaping across them (joining scripts render disconnected).
+	private static readonly Dictionary<(IFontProvider, string, FontWeight, FontStretch, FontStyle, float), IFont?> _fetched = new();
+	private static readonly object _fetchedGate = new();
 	private static (byte[] bytes, IFont probe)[]? _androidSystemFonts;
 	private static readonly object _androidGate = new();
 
@@ -40,8 +45,30 @@ public static class FontFallback
 				return null;
 			}
 
+			var key = (provider, family, weight, stretch, style, fontSize);
+			lock (_fetchedGate)
+			{
+				if (_fetched.TryGetValue(key, out var cached))
+				{
+					return cached;
+				}
+			}
+
 			using var stream = await noto.GetFontStreamForFontFamily(family, weight, stretch, style);
-			return stream is null ? null : provider.CreateFont(ReadAllBytes(stream), family, weight, stretch, style, fontSize);
+			var font = stream is null ? null : provider.CreateFont(ReadAllBytes(stream), family, weight, stretch, style, fontSize);
+			lock (_fetchedGate)
+			{
+				// A concurrent miss may have raced us here; keep whichever instance got stored first so every
+				// caller segments against the same one.
+				if (_fetched.TryGetValue(key, out var raced))
+				{
+					return raced;
+				}
+
+				_fetched[key] = font;
+			}
+
+			return font;
 		}
 
 		if (OperatingSystem.IsAndroid())
