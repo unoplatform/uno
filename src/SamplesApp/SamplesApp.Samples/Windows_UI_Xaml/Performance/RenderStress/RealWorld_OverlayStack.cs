@@ -113,7 +113,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 										{
 											Text = $"Confirm transmittal ({i + 1})",
 											FontSize = 16,
-											Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+											Foreground = new SolidColorBrush(Microsoft.UI.Colors.White),
 										},
 										new TextBlock
 										{

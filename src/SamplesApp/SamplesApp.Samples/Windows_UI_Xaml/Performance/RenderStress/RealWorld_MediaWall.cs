@@ -117,7 +117,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 							{
 								Text = $"DWG-{2400 + i} Rev {(char)('A' + (i % 4))}",
 								FontSize = 12,
-								Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+								Foreground = new SolidColorBrush(Microsoft.UI.Colors.White),
 							},
 							new TextBlock
 							{

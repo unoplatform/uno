@@ -60,7 +60,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 		private readonly StackPanel _feed = new() { Spacing = 12, Padding = new Thickness(16) };
 		private readonly TextBlock _overlay = new();
 		private readonly ThemeShadow _shadow = new();
-		private readonly Border _shadowReceiver = new() { Background = new SolidColorBrush(Windows.UI.Colors.Transparent) };
+		private readonly Border _shadowReceiver = new() { Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent) };
 
 		private EventHandler<object>? _renderHandler;
 		private int _framesThisWindow;
@@ -96,7 +96,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 				Padding = new Thickness(8),
 				Spacing = 6,
 			};
-			_overlay.Foreground = new SolidColorBrush(Windows.UI.Colors.LightGreen);
+			_overlay.Foreground = new SolidColorBrush(Microsoft.UI.Colors.LightGreen);
 			_overlay.FontSize = 18;
 			_overlay.FontFamily = new FontFamily("Consolas");
 			var controls = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 8 };
@@ -192,7 +192,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 				CornerRadius = new CornerRadius(4),
 				Padding = new Thickness(6, 1, 6, 1),
 				HorizontalAlignment = HorizontalAlignment.Left,
-				Child = new TextBlock { Text = cat, FontSize = 10, Foreground = new SolidColorBrush(Windows.UI.Colors.White) },
+				Child = new TextBlock { Text = cat, FontSize = 10, Foreground = new SolidColorBrush(Microsoft.UI.Colors.White) },
 			};
 			text.Children.Add(chip);
 			text.Children.Add(new TextBlock
@@ -200,7 +200,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 				Text = _titles[i % _titles.Length],
 				FontSize = 16,
 				FontWeight = Microsoft.UI.Text.FontWeights.SemiBold,
-				Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+				Foreground = new SolidColorBrush(Microsoft.UI.Colors.White),
 				TextWrapping = TextWrapping.Wrap,
 			});
 			text.Children.Add(new TextBlock

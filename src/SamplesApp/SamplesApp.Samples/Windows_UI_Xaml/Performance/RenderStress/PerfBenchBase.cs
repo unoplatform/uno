@@ -53,7 +53,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 				Padding = new Thickness(8),
 				Spacing = 6,
 			};
-			_overlay.Foreground = new SolidColorBrush(Windows.UI.Colors.LightGreen);
+			_overlay.Foreground = new SolidColorBrush(Microsoft.UI.Colors.LightGreen);
 			_overlay.FontSize = 16;
 			_overlay.FontFamily = new FontFamily("Consolas");
 			var controls = new StackPanel { Orientation = Orientation.Horizontal, Spacing = 6 };

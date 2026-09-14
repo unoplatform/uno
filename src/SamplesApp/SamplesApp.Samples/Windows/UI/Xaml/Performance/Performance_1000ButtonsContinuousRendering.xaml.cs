@@ -15,8 +15,10 @@ namespace UITests.Windows_UI_Xaml.Performance
 	public sealed partial class Performance_1000ButtonsContinuousRendering : Page
 	{
 		private EventHandler<object> _fpsHandler;
+#if __SKIA__
 		private int _fpsFrames;
 		private DateTime _fpsWindowStart;
+#endif
 
 		public Performance_1000ButtonsContinuousRendering()
 		{

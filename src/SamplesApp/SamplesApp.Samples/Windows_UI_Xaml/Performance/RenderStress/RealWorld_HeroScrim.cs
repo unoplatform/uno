@@ -119,7 +119,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 								{
 									Text = $"Feature {index + 1}",
 									FontSize = 17,
-									Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+									Foreground = new SolidColorBrush(Microsoft.UI.Colors.White),
 								},
 								new TextBlock
 								{

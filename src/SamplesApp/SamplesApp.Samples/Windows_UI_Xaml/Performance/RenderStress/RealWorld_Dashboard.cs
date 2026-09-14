@@ -35,7 +35,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 			_kpi.Clear();
 			var rng = new Rng(44);
 
-			var receiver = new Border { Background = new SolidColorBrush(Windows.UI.Colors.Transparent) };
+			var receiver = new Border { Background = new SolidColorBrush(Microsoft.UI.Colors.Transparent) };
 			var root = new Grid { Padding = new Thickness(16), RowSpacing = 16 };
 			root.Children.Add(receiver);
 			_shadow.Receivers.Add(receiver);
@@ -62,7 +62,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 				var card = new Border { CornerRadius = new CornerRadius(12), Background = bg, Padding = new Thickness(14), Shadow = _shadow, Translation = new System.Numerics.Vector3(0, 0, 20) };
 				var st = new StackPanel { Spacing = 4 };
 				st.Children.Add(new TextBlock { Text = label, Foreground = new SolidColorBrush(Color.FromArgb(0xD0, 0xFF, 0xFF, 0xFF)), FontSize = 12 });
-				var num = new TextBlock { Text = "0", Foreground = new SolidColorBrush(Windows.UI.Colors.White), FontSize = 26, FontWeight = Microsoft.UI.Text.FontWeights.Bold };
+				var num = new TextBlock { Text = "0", Foreground = new SolidColorBrush(Microsoft.UI.Colors.White), FontSize = 26, FontWeight = Microsoft.UI.Text.FontWeights.Bold };
 				_kpi.Add(num);
 				st.Children.Add(num);
 				card.Child = st;

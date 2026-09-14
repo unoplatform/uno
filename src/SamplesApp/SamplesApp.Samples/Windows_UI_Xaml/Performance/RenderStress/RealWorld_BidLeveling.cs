@@ -78,7 +78,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 					{
 						Text = amount.ToString("N0"),
 						FontSize = 12,
-						Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+						Foreground = new SolidColorBrush(Microsoft.UI.Colors.White),
 						HorizontalAlignment = HorizontalAlignment.Right,
 					};
 					var varianceText = new TextBlock
@@ -143,7 +143,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 						Text = _vendors[b],
 						FontSize = 12,
 						FontWeight = Microsoft.UI.Text.FontWeights.Bold,
-						Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+						Foreground = new SolidColorBrush(Microsoft.UI.Colors.White),
 					},
 				});
 			}

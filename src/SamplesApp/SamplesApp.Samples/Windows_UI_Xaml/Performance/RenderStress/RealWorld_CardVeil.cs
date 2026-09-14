@@ -100,7 +100,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 						{
 							Text = $"Submittal {2400 + index}",
 							FontSize = 15,
-							Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+							Foreground = new SolidColorBrush(Microsoft.UI.Colors.White),
 						},
 						new TextBlock
 						{

@@ -70,7 +70,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 				strip.Child = new TextBlock
 				{
 					Text = $"Photo {i}",
-					Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+					Foreground = new SolidColorBrush(Microsoft.UI.Colors.White),
 					FontSize = 12,
 					VerticalAlignment = VerticalAlignment.Bottom,
 				};

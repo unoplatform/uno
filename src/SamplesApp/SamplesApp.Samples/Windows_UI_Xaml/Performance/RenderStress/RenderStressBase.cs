@@ -73,7 +73,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 				Background = new SolidColorBrush(Color.FromArgb(0xB0, 0, 0, 0)),
 				Padding = new Thickness(8),
 			};
-			_title.Foreground = new SolidColorBrush(Windows.UI.Colors.White);
+			_title.Foreground = new SolidColorBrush(Microsoft.UI.Colors.White);
 			_title.FontSize = 14;
 			_overlay.Foreground = new SolidColorBrush(Colors.LightGreen);
 			_overlay.FontSize = 20;

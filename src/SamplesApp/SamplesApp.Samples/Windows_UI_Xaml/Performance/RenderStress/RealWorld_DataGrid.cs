@@ -48,7 +48,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 
 			for (var c = 0; c < _cols.Length; c++)
 			{
-				var h = new TextBlock { Text = _cols[c], FontWeight = Microsoft.UI.Text.FontWeights.Bold, Foreground = new SolidColorBrush(Windows.UI.Colors.White), Margin = new Thickness(6, 4, 6, 4) };
+				var h = new TextBlock { Text = _cols[c], FontWeight = Microsoft.UI.Text.FontWeights.Bold, Foreground = new SolidColorBrush(Microsoft.UI.Colors.White), Margin = new Thickness(6, 4, 6, 4) };
 				Grid.SetColumn(h, c);
 				Grid.SetRow(h, 0);
 				grid.Children.Add(h);
@@ -67,9 +67,9 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 					grid.Children.Add(bg);
 				}
 				AddCell(grid, r + 1, 0, r.ToString(), Color.FromArgb(0xFF, 0xA0, 0xA8, 0xC0));
-				AddCell(grid, r + 1, 1, _names[r % _names.Length] + "-" + r, Windows.UI.Colors.White);
+				AddCell(grid, r + 1, 1, _names[r % _names.Length] + "-" + r, Microsoft.UI.Colors.White);
 				AddCell(grid, r + 1, 2, _status[r % _status.Length], Color.FromArgb(0xFF, 0x60, 0xD0, 0x80));
-				var valueCell = AddCell(grid, r + 1, 3, v.ToString(), Windows.UI.Colors.White);
+				var valueCell = AddCell(grid, r + 1, 3, v.ToString(), Microsoft.UI.Colors.White);
 				_valueCells.Add(valueCell);
 				AddCell(grid, r + 1, 4, "+0", Color.FromArgb(0xFF, 0x80, 0xC0, 0xF0));
 				AddCell(grid, r + 1, 5, "just now", Color.FromArgb(0xFF, 0x90, 0x98, 0xB0));

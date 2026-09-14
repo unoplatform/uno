@@ -52,7 +52,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 				stack.Children.Add(new TextBlock
 				{
 					Text = _msgs[i % _msgs.Length],
-					Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+					Foreground = new SolidColorBrush(Microsoft.UI.Colors.White),
 					TextWrapping = TextWrapping.Wrap,
 					FontSize = 14,
 				});

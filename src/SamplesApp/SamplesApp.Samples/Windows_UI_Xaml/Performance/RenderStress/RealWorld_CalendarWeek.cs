@@ -64,7 +64,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 						Text = _days[d],
 						FontSize = 12,
 						FontWeight = Microsoft.UI.Text.FontWeights.Bold,
-						Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+						Foreground = new SolidColorBrush(Microsoft.UI.Colors.White),
 						HorizontalAlignment = HorizontalAlignment.Center,
 						VerticalAlignment = VerticalAlignment.Center,
 					},
@@ -138,7 +138,7 @@ namespace UITests.Windows_UI_Xaml.Performance.RenderStress
 					{
 						Text = _crews[rng.Int(0, _crews.Length)],
 						FontSize = 11,
-						Foreground = new SolidColorBrush(Windows.UI.Colors.White),
+						Foreground = new SolidColorBrush(Microsoft.UI.Colors.White),
 					};
 					_pillLabels.Add(label);
 
