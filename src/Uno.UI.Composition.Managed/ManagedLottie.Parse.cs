@@ -10,6 +10,8 @@ namespace Uno.UI.Composition.Drawing;
 
 internal sealed partial class ManagedLottie
 {
+	private static readonly float[] _zeroVector = [0f, 0f];
+
 	public static bool TryParse(string json, out ManagedLottie? animation)
 	{
 		animation = null;
@@ -181,7 +183,7 @@ internal sealed partial class ManagedLottie
 		if (!IsAnimated(prop))
 		{
 			var arr = ReadFloatArray(k);
-			return AnimatedVector.FromTrack(Track.Const(arr.Length > 0 ? arr : new[] { 0f, 0f }));
+			return AnimatedVector.FromTrack(Track.Const(arr.Length > 0 ? arr : _zeroVector));
 		}
 		return AnimatedVector.FromTrack(ParseValueKeyframes(k));
 	}

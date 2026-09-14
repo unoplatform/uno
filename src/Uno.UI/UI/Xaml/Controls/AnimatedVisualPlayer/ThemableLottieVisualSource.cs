@@ -236,10 +236,12 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					{
 
 						k.Clear();
-						k.Add(colorComponents[0]);
-						k.Add(colorComponents[1]);
-						k.Add(colorComponents[2]);
-						k.Add(colorComponents[3]);
+						// JsonValue.Create's float overload, added as a JsonNode: JsonArray.Add<T> is annotated
+						// RequiresDynamicCode and would break the trimmed and NativeAOT heads.
+						k.Add((JsonNode?)JsonValue.Create(colorComponents[0]));
+						k.Add((JsonNode?)JsonValue.Create(colorComponents[1]));
+						k.Add((JsonNode?)JsonValue.Create(colorComponents[2]));
+						k.Add((JsonNode?)JsonValue.Create(colorComponents[3]));
 
 						changed = true;
 					}

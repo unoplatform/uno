@@ -80,8 +80,22 @@ namespace Uno.UI.Xaml.Core
 				: 0L;
 			try
 			{
+				UpdateLayoutForAllRoots();
+			}
+			finally
+			{
+				if (phaseTicksT0 != 0)
+				{
+					Microsoft.UI.Xaml.Media.CompositionTarget.PhaseAddLayout(global::System.Diagnostics.Stopwatch.GetTimestamp() - phaseTicksT0);
+				}
+			}
+#else
+			UpdateLayoutForAllRoots();
 #endif
+		}
 
+		private static void UpdateLayoutForAllRoots()
+		{
 			// NOTE: The below code should really be replaced with just this:
 			// ----------------------------
 			//if (GetXamlRoot()?.VisualTree?.RootElement is { } root)
@@ -128,16 +142,6 @@ namespace Uno.UI.Xaml.Core
 				(root.XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
 #endif
 			}
-#if __SKIA__
-			}
-			finally
-			{
-				if (phaseTicksT0 != 0)
-				{
-					Microsoft.UI.Xaml.Media.CompositionTarget.PhaseAddLayout(global::System.Diagnostics.Stopwatch.GetTimestamp() - phaseTicksT0);
-				}
-			}
-#endif
 		}
 
 		// TODO Uno: This will not be a singleton when multi-window setups are supported.

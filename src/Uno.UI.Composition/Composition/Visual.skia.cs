@@ -824,9 +824,9 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 	/// uses to detect elements clipped entirely out of view (e.g. scrolled outside a ScrollViewer).
 	/// </summary>
 	internal Rect GetTotalClipRectInRootCoordinates()
+	{
 		// skipPostPaintingClipping: true — a visual's own post-painting clip only affects its children,
 		// not the visual itself. Ancestor post-painting clips are still applied via the parent recursion.
-	{
 		var clip = GetTotalClipPath(skipPostPaintingClipping: true);
 		var bounds = clip.Bounds;
 		clip.Release();
@@ -1293,6 +1293,7 @@ public partial class Visual : global::Microsoft.UI.Composition.CompositionObject
 		MatrixDirty = 8,
 		PaintDirty = 16,
 		ChildrenSKPictureInvalid = 32, // some child in the subtree of this visual is dirty.
+
 		// The subtree's CONTENT or internal layout changed, so cached shadow silhouettes/recordings are stale.
 		// Unlike ChildrenSKPictureInvalid this is NOT set by the matrix-dirty cascade of a pure ancestor move
 		// (e.g. scrolling): shadow caches are local-space, so only relative changes inside the subtree matter.
