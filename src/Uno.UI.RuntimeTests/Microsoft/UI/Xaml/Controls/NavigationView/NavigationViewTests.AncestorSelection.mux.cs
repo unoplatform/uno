@@ -63,7 +63,9 @@ public partial class NavigationViewTests
 			Assert.IsFalse(selectedContainer.IsChildSelected);
 
 			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(sourceContainer);
-			((IExpandCollapseProvider)peer.GetPattern(PatternInterface.ExpandCollapse)).Collapse();
+			var expandCollapse = peer.GetPattern(PatternInterface.ExpandCollapse) as IExpandCollapseProvider;
+			Assert.IsNotNull(expandCollapse);
+			expandCollapse.Collapse();
 			await WindowHelper.WaitForIdle();
 			Assert.AreSame(selected, navigation.SelectedItem);
 			Assert.IsTrue(selectedContainer.IsSelected);
@@ -135,8 +137,18 @@ public partial class NavigationViewTests
 			Assert.IsFalse(selected.IsChildSelected);
 			Assert.IsTrue(topLevel.IsSelected);
 
+			// Compact mode closes the pane after leaf selection; restore the visible hierarchy.
+			navigation.IsPaneOpen = true;
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(navigation.IsPaneOpen);
 			navigation.SelectedItem = selected;
 			await WindowHelper.WaitForIdle();
+			Assert.AreSame(selected, navigation.SelectedItem);
+			Assert.IsTrue(parent.IsChildSelected);
+			// Leaf selection closes compact panes again, recycling their nested containers.
+			navigation.IsPaneOpen = true;
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(navigation.IsPaneOpen);
 			Assert.IsTrue(parent.IsChildSelected);
 			Assert.IsTrue(innerParent.IsChildSelected);
 			navigation.SelectedItem = null;
@@ -195,6 +207,69 @@ public partial class NavigationViewTests
 		}
 		finally
 		{
+			WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24508")]
+	[DataRow(false)]
+	[DataRow(true)]
+	public async Task When_AncestorDeselectionCallbackSelectsFallback_NewSelectionIsPreserved(bool nestedFallback)
+	{
+		var selected = new NavigationViewItem { Content = "Selected" };
+		var parent = new NavigationViewItem { Content = "Parent", IsExpanded = true };
+		parent.MenuItems.Add(selected);
+		var fallback = new NavigationViewItem { Content = "Fallback" };
+		var fallbackParent = new NavigationViewItem { Content = "Fallback parent", IsExpanded = true };
+		if (nestedFallback)
+		{
+			fallbackParent.MenuItems.Add(fallback);
+		}
+		var navigation = new NavigationView
+		{
+			PaneDisplayMode = NavigationViewPaneDisplayMode.Left,
+			IsPaneOpen = true,
+			Width = 600,
+			Height = 500,
+			MenuItemsSource = new ObservableCollection<object> { parent, nestedFallback ? fallbackParent : fallback }
+		};
+		long? callbackToken = null;
+		var callbackCount = 0;
+
+		try
+		{
+			await UITestHelper.Load(navigation);
+			navigation.SelectedItem = selected;
+			await WindowHelper.WaitForIdle();
+			Assert.IsTrue(parent.IsChildSelected);
+
+			callbackToken = parent.RegisterPropertyChangedCallback(NavigationViewItem.IsChildSelectedProperty, (_, _) =>
+			{
+				if (!parent.IsChildSelected)
+				{
+					callbackCount++;
+					navigation.SelectedItem = fallback;
+				}
+			});
+
+			parent.MenuItems.Remove(selected);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, callbackCount);
+			Assert.AreSame(fallback, navigation.SelectedItem);
+			Assert.IsTrue(fallback.IsSelected);
+			Assert.IsFalse(fallback.IsChildSelected);
+			Assert.AreEqual(nestedFallback, fallbackParent.IsChildSelected);
+			Assert.IsFalse(parent.IsChildSelected);
+		}
+		finally
+		{
+			if (callbackToken is { } token)
+			{
+				parent.UnregisterPropertyChangedCallback(NavigationViewItem.IsChildSelectedProperty, token);
+			}
 			WindowHelper.WindowContent = null;
 		}
 	}
