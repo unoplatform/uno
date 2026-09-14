@@ -71,8 +71,8 @@ internal static class Geo
 internal struct ClipData
 {
 	public Vector4 Aabb;    // device L,T,R,B scissor
-	// Every analytic clip in force, all ANDed per-fragment (clipCov). null/empty = none. Copy-on-write: each push
-	// allocates a fresh array so Save/Restore snapshots and sibling commands keep their own reference.
+							// Every analytic clip in force, all ANDed per-fragment (clipCov). null/empty = none. Copy-on-write: each push
+							// allocates a fresh array so Save/Restore snapshots and sibling commands keep their own reference.
 	public ClipEntry[] Entries;
 	// Every path clip in force, innermost last; each becomes a mask entry at op build (see ResolveClipMasks), so
 	// nesting has no limit. Copy-on-write like Entries.

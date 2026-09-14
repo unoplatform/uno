@@ -58,6 +58,7 @@ public sealed class WebGpuEffectFilter : DrawingResource, IEffectFilter
 	public WColor Color;      // acrylic tint (composited SrcOver on top) / drop-shadow color
 	public WColor LumColor;   // acrylic luminosity color (SrcOver over the blurred backdrop == mix(blurred, lum.rgb, lum.a))
 	public float Noise;       // acrylic procedural-grain opacity (0 = none); baked into the backdrop composite
+
 	// General non-backdrop effect-graph evaluator result: the whole tree rendered to a texture (drawn as-is on
 	// Restore). When set, this filter is NOT the acrylic backdrop shape — DrawEffectBackdrop just draws it.
 	public ITexture EvaluatedTexture;
@@ -88,6 +89,7 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 	// their GPU resources here at Dispose — resident textures (surface-owned) keep the composition's own reference.
 	internal List<WebGpuTexture> Textures;
 	internal List<IGeometry> Geometries;   // recorded path geometries, held like textures until this recording is disposed
+
 	// The recordings nested into this one, each holding a ref taken at Replay. Holding the nested RECORD is what
 	// keeps its textures and geometries alive, so nesting costs one refcount rather than one per resource it
 	// transitively holds -- which a deep tree pays again at every level.
@@ -493,7 +495,7 @@ public sealed partial class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRender
 		var present = new WebGpuPresentSession(_device, surface, this);
 		var record = recorder.Finish();
 		present.ReplayNested(record);   // encodes + submits the nested render into the surface's color texture
-		// The recording referenced every texture it drew; the pass is submitted, so hand those references back.
+										// The recording referenced every texture it drew; the pass is submitted, so hand those references back.
 		record.Dispose();
 		// Take ownership of the resolved color texture; disposing the surface releases only the (finished) MSAA + depth targets.
 		var (tex, view) = surface.DetachColor();

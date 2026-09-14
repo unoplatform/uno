@@ -578,12 +578,15 @@ internal sealed unsafe partial class WebGpuFrame
 			bool hasPathClip = false; foreach (var o in built) { if (o.Clip.Paths is not null) { hasPathClip = true; break; } }
 			entry = new WebGpuGeometryCache
 			{
-				Ops = built, Owned = owned, Device = _d,
+				Ops = built,
+				Owned = owned,
+				Device = _d,
 				HasAtlas = (WebGpuCoverage.AtlasHit + WebGpuCoverage.AtlasBaked) != atlasBefore,
 				HasClipMask = WebGpuCoverage.ClipMasksBaked + WebGpuCoverage.FillMasksBaked + WebGpuCoverage.FillMaskHits != maskBefore,
 				HasPathClip = hasPathClip,
 				AtlasBlockedByScale = !atlasSafe && hasPath && WebGpuCoverage.AtlasEnabled,
-				AtlasScale = scale, MaskScale = MaskScale(rm),
+				AtlasScale = scale,
+				MaskScale = MaskScale(rm),
 			};
 			entry.Refs = 1;
 			entry.ContentKey = key;

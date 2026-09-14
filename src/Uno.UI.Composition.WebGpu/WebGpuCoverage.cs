@@ -146,7 +146,10 @@ internal sealed unsafe partial class WebGpuCoverage
 		var td = new WGPUTextureDescriptor
 		{
 			Size = new WGPUExtent3D { Width = (uint)w, Height = (uint)h, DepthOrArrayLayers = 1 },
-			Format = _d.ColorFormat, MipLevelCount = 1, SampleCount = 1, Dimension = WGPUTextureDimension._2D,
+			Format = _d.ColorFormat,
+			MipLevelCount = 1,
+			SampleCount = 1,
+			Dimension = WGPUTextureDimension._2D,
 			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.TextureBinding,
 		};
 		var tex = wgpuDeviceCreateTexture(_d.Dev, &td);

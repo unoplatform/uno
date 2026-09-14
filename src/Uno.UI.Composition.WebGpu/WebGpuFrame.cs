@@ -520,6 +520,7 @@ internal sealed unsafe partial class WebGpuFrame
 		// xform = the op's pixel-space transform: px = M11*x + M21*y + M31, py = M12*x + M22*y + M32.
 		cu[8] = xform.M11; cu[9] = xform.M21; cu[10] = xform.M12; cu[11] = xform.M22;
 		cu[12] = xform.M31; cu[13] = xform.M32;   // xoff.xy
+
 		// finv maps the device fragment position back to the recording's own space. Under a size-to-content layer the
 		// fragment position is sub-LOCAL while the clip is ABSOLUTE device, so the basis shift folds into its
 		// translation (xoff.zw); a zero basis leaves this unchanged.
@@ -862,11 +863,19 @@ internal sealed unsafe partial class WebGpuFrame
 			_bound = b.Bound;
 			var pst = new PassOps
 			{
-				Pass = pass, Target = target, Ops = b.Ops, Backdrops = b.Backdrops, PassBg = b.PassBg,
-				SolidBuf = b.SolidBuf, SolidBufBytes = b.SolidBufBytes,
-				RrectBuf = b.RrectBuf, RrectBufBytes = b.RrectBufBytes,
-				GradBuf = b.GradBuf, GradBufBytes = b.GradBufBytes,
-				QuadBuf = b.QuadBuf, QuadBufBytes = b.QuadBufBytes,
+				Pass = pass,
+				Target = target,
+				Ops = b.Ops,
+				Backdrops = b.Backdrops,
+				PassBg = b.PassBg,
+				SolidBuf = b.SolidBuf,
+				SolidBufBytes = b.SolidBufBytes,
+				RrectBuf = b.RrectBuf,
+				RrectBufBytes = b.RrectBufBytes,
+				GradBuf = b.GradBuf,
+				GradBufBytes = b.GradBufBytes,
+				QuadBuf = b.QuadBuf,
+				QuadBufBytes = b.QuadBufBytes,
 				Enc = enc,
 			};
 			EncodeOps(0, b.Ops.Count, ref pst);

@@ -29,6 +29,7 @@ public sealed unsafe class WebGpuCommandRecorder : ICommandRecorder
 	private float[] _pendingColorMatrix;   // active effect colour matrix, applied per DrawImage in the image shader
 	private readonly WebGpuRenderRecord _data = new();
 	private List<WebGpuCommand> _target;   // current emit target (root command list, or a layer's list)
+
 	// The owning drawing factory, surfaced as IDrawingSession.Factory so an add-in painting into this recording mints
 	// session-native textures within the paint scope.
 	private readonly IDrawingFactory _factory;

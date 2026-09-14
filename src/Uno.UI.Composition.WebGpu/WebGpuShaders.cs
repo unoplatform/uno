@@ -24,6 +24,8 @@ internal sealed unsafe partial class WebGpuDevice
 	/// disagrees with the layout is rejected at draw time, and one that disagrees with the struct reads garbage.
 	/// </summary>
 	public const int ImageUniformBytes = 144;   // op+tint+m0..m3+off (112) + edge + ctrl2 (32); match ImageWgsl
+
+	/// <summary>
 	/// Bytes in the composite uniform block (24 floats: opacity plus a 4x5 colour matrix), as declared by
 	/// <see cref="CompositeWgsl"/> and <see cref="CompositeBlendWgsl"/>. Same agreement requirement as above.
 	/// </summary>

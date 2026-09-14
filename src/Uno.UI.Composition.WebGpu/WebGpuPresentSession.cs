@@ -44,9 +44,9 @@ public sealed class WebGpuPresentSession : IPresentSession
 		lock (_d.RenderGate)
 		{
 			_d.BeginFrameResources();   // reclaim last frame's pooled textures/buffers + release its bind groups
-			// The frame is recorded in logical coordinates; the root DPI scale is the walk's root matrix, applied at
-			// present and never folded into a recording. The render itself waits for Dispose so the immediate-mode
-			// overlay joins the same pass.
+										// The frame is recorded in logical coordinates; the root DPI scale is the walk's root matrix, applied at
+										// present and never folded into a recording. The render itself waits for Dispose so the immediate-mode
+										// overlay joins the same pass.
 			_pendingCmds = rd.Commands;
 			_pendingScale = _presentScale;
 			_pendingClear = _presentClear ?? rd.ClearColor;

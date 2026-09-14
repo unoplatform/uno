@@ -78,6 +78,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		}
 	}
 	public WebGpuUniformSlab GradSlab;            // per-frame gradient uniforms, one queue write per chunk
+
 	// Per-frame ClipU slabs for IMMEDIATE ops, one per (bind-group layout, byte size): a slot's bind group is created
 	// once and reused, so it must always be built with the same layout and bind the same size.
 	private WebGpuUniformSlab _clipBgSlab;
