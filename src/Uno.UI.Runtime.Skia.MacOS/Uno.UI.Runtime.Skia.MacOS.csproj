@@ -25,6 +25,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<!-- Native asset only, no managed SkiaSharp: libUnoNativeMac.dylib links @rpath/libSkiaSharp.dylib
+		     (see UnoNativeMac.xcodeproj), so the host fails to dlopen at startup without it. -->
+		<PackageReference Include="SkiaSharp.NativeAssets.macos" />
 		<PackageReference Include="HarfBuzzSharp.NativeAssets.macOS" />
 		<PackageReference Include="HarfBuzzSharp" />
 		<PackageReference Include="Uno.icu-macos" />

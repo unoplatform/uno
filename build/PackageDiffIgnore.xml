@@ -2390,6 +2390,16 @@
 
 		  <!-- SVG moved behind the drawing-backend seam: the renderer is supplied through the host builder instead of an ApiExtension-registered public interface. -->
 		  <Member fullName="Uno.UI.Xaml.Media.Imaging.Svg.ISvgProvider" reason="Replaced by the internal Uno.UI.Composition.Drawing.ISvgRenderer, supplied through IUnoPlatformHostBuilder.SvgRenderer() (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Svg.SvgProvider" reason="The Uno.UI.Svg add-in now implements the internal ISvgRenderer as SkiaSvgRenderer; it is registered through the host builder rather than exposed as a public provider (breaking changes for 7.0)" />
+
+		  <!-- The Lottie source types moved out of the Uno.UI.Lottie add-in into Uno.UI, where the SkiaSharp-free
+		       managed engine lives; the add-in keeps only the internal Skottie-backed renderer. Same namespaces and
+		       same public shape, so they read as removed only against the Uno.WinUI.Lottie package. -->
+		  <Member fullName="Uno.UI.Lottie.LottieVisualSourceProvider" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.LottieVisualOptions" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.LottieVisualSource" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.ThemableLottieVisualSource" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
 	  </Types>
 	  <Fields>
 		  <!-- Members of the removed ControlsResourcesVersion enum (see the <Types> entry above), listed in case the diff reports them independently of their declaring type (BC71, breaking changes for 7.0). -->
@@ -3833,6 +3843,16 @@
 
 		  <!-- SVG moved behind the drawing-backend seam: the renderer is supplied through the host builder instead of an ApiExtension-registered public interface. -->
 		  <Member fullName="Uno.UI.Xaml.Media.Imaging.Svg.ISvgProvider" reason="Replaced by the internal Uno.UI.Composition.Drawing.ISvgRenderer, supplied through IUnoPlatformHostBuilder.SvgRenderer() (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Svg.SvgProvider" reason="The Uno.UI.Svg add-in now implements the internal ISvgRenderer as SkiaSvgRenderer; it is registered through the host builder rather than exposed as a public provider (breaking changes for 7.0)" />
+
+		  <!-- The Lottie source types moved out of the Uno.UI.Lottie add-in into Uno.UI, where the SkiaSharp-free
+		       managed engine lives; the add-in keeps only the internal Skottie-backed renderer. Same namespaces and
+		       same public shape, so they read as removed only against the Uno.WinUI.Lottie package. -->
+		  <Member fullName="Uno.UI.Lottie.LottieVisualSourceProvider" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.LottieVisualOptions" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.LottieVisualSource" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.LottieVisualSourceBase" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
+		  <Member fullName="CommunityToolkit.WinUI.Lottie.ThemableLottieVisualSource" reason="Moved from the Uno.UI.Lottie add-in to Uno.UI with the managed Lottie engine (breaking changes for 7.0)" />
 	  </Types>
 	  <Fields>
 		  <!-- Members of the removed ControlsResourcesVersion enum (see the <Types> entry above), listed in case the diff reports them independently of their declaring type (BC71, breaking changes for 7.0). -->
