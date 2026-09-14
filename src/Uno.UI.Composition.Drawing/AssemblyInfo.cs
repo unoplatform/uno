@@ -23,3 +23,6 @@ using System.Runtime.CompilerServices;
 
 // Runtime tests drive the registration seam directly to record frames outside a host.
 [assembly: InternalsVisibleTo("Uno.UI.RuntimeTests")]
+
+// Unit tests run without a host builder, so their assembly initializer registers the seams itself.
+[assembly: InternalsVisibleTo("Uno.UI.UnitTests")]
