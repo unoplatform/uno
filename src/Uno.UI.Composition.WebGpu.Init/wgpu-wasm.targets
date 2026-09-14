@@ -8,29 +8,16 @@
 		<EmdawnTag>v20260624.223603</EmdawnTag>
 		<EmdawnCacheDir>$(MSBuildThisFileDirectory)obj\emdawnwebgpu\$(EmdawnTag)\</EmdawnCacheDir>
 		<EmdawnPkgDir>$(EmdawnCacheDir)emdawnwebgpu_pkg\</EmdawnPkgDir>
+		<UnoWebGpuPortDir>$(EmdawnPkgDir)</UnoWebGpuPortDir>
+		<UnoWebGpuStubPath>$(MSBuildThisFileDirectory)Native\wgpu_wasm_stubs.c</UnoWebGpuStubPath>
 		<!-- A writable emcc cache (a copy of the SDK's) so emcc can build the port + its extra stdlibs; pointing
 		     WasmCachePath off the SDK's default dir makes the SDK pass EM_FROZEN_CACHE=0 (BrowserWasmApp.targets).
 		     On Windows this is relocated next to the SDK cache (see _AnchorWgpuWasmCacheToToolchainDrive below);
 		     this obj\ default is the non-Windows path and the last-resort fallback. -->
 		<WgpuWasmCacheDir>$(MSBuildThisFileDirectory)obj\wgpu-wasm-emcache\</WgpuWasmCacheDir>
 		<WasmCachePath>$(WgpuWasmCacheDir)</WasmCachePath>
-		<!-- Forward slashes: this flag is appended verbatim to emcc's link response file, whose parser treats a
-		     backslash as an escape char and eats it — so a Windows path would arrive with its separators stripped.
-		     emcc accepts forward slashes on Windows, and they pass through the response-file parser untouched. -->
-		<EmdawnPortPath>$(EmdawnPkgDir)emdawnwebgpu.port.py</EmdawnPortPath>
-		<EmdawnPortPath>$(EmdawnPortPath.Replace('\', '/'))</EmdawnPortPath>
-		<EmccExtraLDFlags>$(EmccExtraLDFlags) --use-port=$(EmdawnPortPath) -sDEFAULT_TO_CXX=1</EmccExtraLDFlags>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<!-- Satisfy the static link of the wgpu-native-only imports Dawn doesn't export (ScanForPInvokes=false:
-		     this file is not itself a P/Invoke module). -->
-		<NativeFileReference Include="$(MSBuildThisFileDirectory)Native\wgpu_wasm_stubs.c" ScanForPInvokes="false" />
-		<!-- NOTE: the emdawnwebgpu bridge is small (a browser-API shim, a few hundred KB in the final .wasm) and is
-		     linked UNCONDITIONALLY so the host's direct WebGpuContext reference always resolves — no reflection, no
-		     opt-in-link fragility. Activating the WebGPU render path (the UNO_WEBGPU env) stays opt-in and is set by
-		     the app head, not here. -->
-	</ItemGroup>
 
 	<UsingTask TaskName="PatchEmdawnLibraryJs" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
 		<ParameterGroup>
@@ -121,10 +108,8 @@
 	     cannot be asked to patch it themselves: the port would live in the shared, read-only NuGet folder. -->
 	<Target Name="ProvisionEmdawnForPack" DependsOnTargets="_ProvisionEmdawnWebGpu" />
 
-	<!-- Register "webgpu" as a statically-linked P/Invoke module (else the runtime can't resolve wgpu* imports). -->
-	<Target Name="_AddWebGpuPInvokeModule" BeforeTargets="_GenerateManagedToNative">
-		<ItemGroup>
-			<_WasmPInvokeModules Include="webgpu" />
-		</ItemGroup>
-	</Target>
+	<!-- The wiring an external app gets, imported against this repo's provisioned copies so a repo wasm
+	     build exercises exactly that code. Last, so the roots set above win. -->
+	<Import Project="..\Uno.UI.Composition.WebGpu\package\Uno.UI.Composition.WebGpu.targets" />
+
 </Project>

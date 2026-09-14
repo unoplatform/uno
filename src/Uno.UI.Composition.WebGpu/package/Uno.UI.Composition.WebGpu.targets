@@ -1,5 +1,13 @@
 <Project>
 
+	<!-- Where the payloads live. Defaults to this package's own layout; the in-repo heads override them to
+	     their obj cache and import this file, so repo builds exercise the very wiring consumers get. -->
+	<PropertyGroup>
+		<UnoWebGpuIosLibDir Condition="'$(UnoWebGpuIosLibDir)' == ''">$(MSBuildThisFileDirectory)native\</UnoWebGpuIosLibDir>
+		<UnoWebGpuPortDir Condition="'$(UnoWebGpuPortDir)' == ''">$(MSBuildThisFileDirectory)emdawnwebgpu\emdawnwebgpu_pkg\</UnoWebGpuPortDir>
+		<UnoWebGpuStubPath Condition="'$(UnoWebGpuStubPath)' == ''">$(MSBuildThisFileDirectory)emdawnwebgpu\wgpu_wasm_stubs.c</UnoWebGpuStubPath>
+	</PropertyGroup>
+
 	<!--
 	Consumer-side native wiring for the WebGpu backend.
 
@@ -16,7 +24,7 @@
 			<!-- The RID is empty on the outer restore/build pass; default to the device slice so the item exists. -->
 			<_UnoWgpuIosRid>$(RuntimeIdentifier)</_UnoWgpuIosRid>
 			<_UnoWgpuIosRid Condition="'$(_UnoWgpuIosRid)' == ''">ios-arm64</_UnoWgpuIosRid>
-			<_UnoWgpuIosLib>$(MSBuildThisFileDirectory)native\$(_UnoWgpuIosRid)\libwgpu_native.a</_UnoWgpuIosLib>
+			<_UnoWgpuIosLib>$(UnoWebGpuIosLibDir)$(_UnoWgpuIosRid)\libwgpu_native.a</_UnoWgpuIosLib>
 		</PropertyGroup>
 		<ItemGroup Condition="Exists('$(_UnoWgpuIosLib)')">
 			<NativeReference Include="$(_UnoWgpuIosLib)">
@@ -33,11 +41,11 @@
 	at publish, so the port ships here (already patched at pack time, since the package folder is shared and
 	read-only) and this only points emcc at it.
 	-->
-	<PropertyGroup Condition="'$(_UnoWebGpuWasm)' == '' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser'">
+	<PropertyGroup Condition="'$(_UnoWebGpuWasm)' == '' and ($([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browserwasm' or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser')">
 		<_UnoWebGpuWasm>true</_UnoWebGpuWasm>
 		<!-- Forward slashes: the flag is appended verbatim to emcc's link response file, whose parser treats a
 		     backslash as an escape and eats it, so a Windows path would lose its separators. -->
-		<_UnoWgpuPortPath>$(MSBuildThisFileDirectory)emdawnwebgpu\emdawnwebgpu_pkg\emdawnwebgpu.port.py</_UnoWgpuPortPath>
+		<_UnoWgpuPortPath>$(UnoWebGpuPortDir)emdawnwebgpu.port.py</_UnoWgpuPortPath>
 		<_UnoWgpuPortPath>$(_UnoWgpuPortPath.Replace('\', '/'))</_UnoWgpuPortPath>
 		<EmccExtraLDFlags>$(EmccExtraLDFlags) --use-port=$(_UnoWgpuPortPath) -sDEFAULT_TO_CXX=1</EmccExtraLDFlags>
 		<!-- emcc must BUILD the port, which needs a writable cache; the SDK's own is frozen. -->
@@ -47,7 +55,7 @@
 
 	<ItemGroup Condition="'$(_UnoWebGpuWasm)' == 'true'">
 		<!-- The wgpu-native-only imports Dawn does not export, so the static link resolves. Never called on WASM. -->
-		<NativeFileReference Include="$(MSBuildThisFileDirectory)emdawnwebgpu\wgpu_wasm_stubs.c" ScanForPInvokes="false" />
+		<NativeFileReference Include="$(UnoWebGpuStubPath)" ScanForPInvokes="false" />
 	</ItemGroup>
 
 	<!-- On Windows the writable cache must sit on the emscripten toolchain's drive: building a system-lib variant
