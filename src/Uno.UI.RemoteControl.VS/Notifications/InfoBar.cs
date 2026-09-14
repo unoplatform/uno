@@ -59,9 +59,19 @@ public class InfoBarFactory
 
 	internal void Dispose()
 	{
-		ThreadHelper.ThrowIfNotOnUIThread();
+		// IVsInfoBar* objects are UI-thread-affine, but Dispose can be invoked from any thread.
+		if (ThreadHelper.CheckAccess())
+		{
+			RemoveAllInfoBars();
+			return;
+		}
 
-		RemoveAllInfoBars();
+		ThreadHelper.JoinableTaskFactory.Run(async () =>
+		{
+			await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+			RemoveAllInfoBars();
+		});
 	}
 }
 
