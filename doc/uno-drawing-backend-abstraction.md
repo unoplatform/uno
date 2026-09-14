@@ -56,6 +56,7 @@ interface.
 ## Registration & factory
 
 ### `IDrawingFactory` — the resource + frame factory
+
 Manufactures the stateful handles that cross the boundary (textures, shaders, filters, the drop-shadow /
 effect-tree filter), owns offscreen rendering + CPU snapshot, and starts recordings. The former separate
 `IRenderBackend` was merged in: `CreateRecording()` is here, and the present half is the typed
@@ -97,6 +98,7 @@ sources and flags into a backend-independent node tree first), so the backend ne
 `CompositionBrush`.
 
 ### Holder & registration
+
 `DrawingFactory.Current` (an **internal** process-wide holder) is installed **once, by graphics negotiation**
 (`GraphicsRegistry`), at the winning backend — there is no public default-and-swap and no `[ModuleInitializer]`
 default.
@@ -169,9 +171,11 @@ non-`SKCanvas` backend is: rasterize to an offscreen → read the pixels → `se
 ambient `DrawingFactory.Current` for its sessionless texture/resource creation.
 
 ### Retained rendering — always available
+
 ```csharp
 ICommandRecorder CreateRecording();   // on IDrawingFactory: start a recording; Finish() → IRenderRecord
 ```
+
 `ICommandRecorder : IDrawingSession` adds `IRenderRecord Finish()`. `IRenderRecord : IDisposable` is the opaque
 recorded frame (Skia: an `SKPicture`) and exposes `void Replay(IDrawingSession into)`.
 
@@ -194,6 +198,7 @@ is merged into the factory:
 ICommandRecorder CreateRecording();          // phase 1 (UI thread): tree walks into this; Finish() -> IRenderRecord
 IPresentSession BeginPresent(TTarget target);   // phase 2 (vsync): on IDrawingFactory<TTarget>, compose onto the target
 ```
+
 `IPresentSession : IDrawingSession, IDisposable` — the present-time session lets overlays (e.g. the FPS
 counter) compose *before* the frame is finalized; disposing it flushes/finalizes. The recorded frame is
 replayed into it via `IRenderRecord.Replay(present)` (native replay, or the command-list fallback).
@@ -245,6 +250,7 @@ IGeometry BuildGlyphRunOutline(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2
 bool HasColorGlyphs { get; }
 void AppendColorGlyphImages(ReadOnlySpan<ushort> glyphs, ReadOnlySpan<Vector2> positions, float baselineY, IList<PositionedGlyphImage> output);
 ```
+
 Outline glyphs → one filled `IGeometry` (drawn via `DrawPath`); color glyphs (emoji: COLR/CBDT/sbix/SVG) →
 positioned backend textures (`PositionedGlyphImage.Image` is an `ITexture`, drawn via `DrawImage` and
 disposed by the caller). Obtained from `FontDetails.FontHandle`.
@@ -418,7 +424,7 @@ parses encoded bytes → BGRA-premultiplied pixel frames; the backend wraps them
 | BMP | uncompressed 8/24/32-bit |
 | JPEG | **baseline + progressive** (Huffman/IDCT/YCbCr/restart, coefficient-buffer model), EXIF orientation, bilinear chroma |
 | WebP | **lossless (VP8L)**: LZ77 + color cache + meta-Huffman + 4 transforms |
-| _fallback → Skia codec_ | WebP lossy (VP8) + animated WebP, TIFF, ICO |
+| *fallback → Skia codec* | WebP lossy (VP8) + animated WebP, TIFF, ICO |
 
 Validated pixel-perfect (maxDiff=0) vs Skia for PNG/GIF/BMP/VP8L; JPEG within avgDiff ~0.01.
 
@@ -498,6 +504,7 @@ Neutral structs on the verbs: `RoundRectangle`, `StrokeStyle`, `PositionedGlyphI
   `ManagedSvg` (primary; no toggle needed).
 
 ### Validation methodology
+
 Each seam is proven by building the *same artifact two independent ways and comparing*: an alternative
 backend renders/decodes with zero SkiaSharp, and its output is compared pixel-for-pixel against the Skia
 backend (e.g. `Given_IFont_AlternativeBackend`, and pixel-parity of the managed decoders/SVG). Identical
@@ -660,7 +667,7 @@ Two ordered lists — the app's **provider list** and each provider's **`Preferr
 never needs to know Skia prefers Vulkan over GL). Nothing is created speculatively; the host makes a
 window+context per kind on demand until one binds:
 
-```
+```text
 foreach provider in registeredProviders:            // app's order
     foreach kind in provider.PreferredContexts:      // backend's order
         ISwapChain? ctx = await ContextFactory(kind) // host builds window+context, or null to decline
@@ -863,6 +870,7 @@ Dawn's `webgpu.h` emscripten port via `Uno.UI.Composition.WebGpu.Init/wgpu-wasm.
 WASM host's direct `WebGpuContext` reference resolves; the browser device is imported from `navigator.gpu`).
 
 **Still Skia (the remaining path to fully dropping SkiaSharp):**
+
 1. **The rasterizer itself** — the default `IDrawingSession`/`RenderOffscreen` pixel work is SkiaSharp. A
    fully Skia-free runtime needs an alternative `IDrawingFactory` that rasterizes (the largest remaining piece).
 2. **Image decode fallbacks** — WebP **lossy (VP8)** and animated WebP (both need the ~2000-line RFC 6386

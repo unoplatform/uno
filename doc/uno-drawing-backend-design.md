@@ -618,13 +618,16 @@ build (null), first survivor wins. `Initialize` is shared; only the `IGraphicsCo
 ## P. Install points (statics)
 
 **Composition-root inputs (pluggable choices, set independently):**
+
 ```csharp
 GraphicsRegistry.Register(new IGraphicsProvider[] { new SkiaGraphicsProvider() });   // renderer(s)
 DrawingFactory.Register(new SkiaManagedGeometryDrawingFactory());                    // any path implementor = a backend
 ImageDecoder.Current = new ManagedImageDecoderBackend();                             // or Skia / platform codec
 FontProvider.Current  = new ManagedFontProvider();                                  // or Skia / CoreText / DirectWrite
 ```
+
 **`Initialize`-derived outputs (never user-assigned):**
+
 ```csharp
 DrawingFactory.Current           // winning session's IDrawingFactory
 CompositionTarget.Renderer  // winning session's IRenderer

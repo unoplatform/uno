@@ -30,6 +30,7 @@ Also present (single-digit): `SKRuntimeEffectUniforms`, `SKRuntimeEffectChildren
 ## Instance methods by type
 
 ### SKCanvas
+
 State: `Save`, `SaveLayer`, `Restore`, `RestoreToCount`, `SaveCount`
 Transform: `SetMatrix`, `Concat`, `Scale`, `Translate`, `TotalMatrix`
 Clip: `ClipRect`, `ClipPath`, `ClipRoundRect`, `DeviceClipBounds`, `IsClipRect`
@@ -37,23 +38,29 @@ Draw: `DrawRect`, `DrawPath`, `DrawLine`, `DrawCircle`, `DrawImage`, `DrawBitmap
 Misc: `Clear`, `Flush`, `Handle`, `Context`
 
 ### SKPaint
+
 `Color`, `Reset`, `IsAntialias`, `IsDither`, `Style`, `IsStroke`, `StrokeWidth`, `StrokeCap`, `StrokeJoin`, `StrokeMiter`, `Shader`, `ColorFilter`, `PathEffect`, `BlendMode`, `GetFillPath`, `Handle`
 
 ### SKPath / SKPathBuilder
+
 Build: `MoveTo`, `LineTo`, `RLineTo`, `CubicTo`, `QuadTo`, `ArcTo`, `AddRect`, `AddRoundRect`, `AddOval`, `AddArc`, `AddPoly`, `AddPath`, `Close`
 Edit/query: `Reset`, `Rewind`, `Detach` (builder → path), `Op` (boolean), `GetFillPath` (stroke→fill), `Contains`, `Bounds`, `TightBounds`, `CreateIterator`
 `SKPathAddMode.Append` is the add mode used with `AddPath`.
 
 ### SKPathMeasure
+
 `GetPositionAndTangent`, `NextContour`, `Length`, `IsClosed` (used for stroke cap/dash synthesis)
 
 ### SKMatrix / SKMatrix44
+
 `PostConcat`, `PreConcat`, `Concat`, `Invert`, `TryInvert`, `MapRect`, `MapPoint`; constructed via `CreateScale`/`CreateTranslation`/`CreateRotation`/`CreateIdentity`/`Identity`
 
 ### SKRoundRect
+
 `SetRectRadii` (+ the raw `UnoSkiaApi.sk_rrect_set_rect_radii`)
 
 ### SKImage / SKBitmap / SKSurface
+
 `SKImage.FromBitmap`, `SKImage.FromPixels`, `SKImage.FromPixelCopy`; `SKBitmap.FromImage`, `GetPixels`, `ReadPixels`; `SKSurface.Create`, `.Snapshot()`; `SKColor.WithAlpha`
 
 ---
@@ -61,21 +68,26 @@ Edit/query: `Reset`, `Rewind`, `Detach` (builder → path), `Op` (boolean), `Get
 ## Static factories & constructors
 
 ### Geometry / paint effects
+
 - `SKShader.CreateLinearGradient`, `CreateRadialGradient`, `CreateTwoPointConicalGradient`, `CreateColor`, `CreateCompose`
 - `SKPathEffect.CreateTrim`, `CreateDash`, `CreateSum`
 - `SKMaskFilter.CreateBlur`
 - `SKColorFilter.CreateColorMatrix`, `CreateBlendMode`, `CreateLumaColor`
 
 ### Image-filter graph (the effect brush DAG)
+
 `SKImageFilter.` — `CreateColorFilter` (×22), `CreateBlendMode`, `CreateOffset`, `CreateBlur`, `CreateMerge`, `CreateMatrix`, `CreateTile`, `CreateShader`, `CreatePicture`, `CreateArithmetic`, `CreateDropShadow`, `CreateMatrixConvolution`, `CreateCompose`, `Create{Spot,Point,Distant}Lit{Specular,Diffuse}`, plus `CropRect`.
 
 ### Runtime shaders (SkSL)
+
 `SKRuntimeEffect.CreateShader` (×6) with `SKRuntimeEffectUniforms` / `SKRuntimeEffectChildren` — acrylic + effect brushes.
 
 ### Images / codecs / surfaces
+
 `SKImage.From*`, `SKBitmap.FromImage`, `SKSurface.Create`, `SKCodec.Create`, `SKManagedStream`, `SKImageInfo.PlatformColorType`, `SKCubicResampler.CatmullRom`, `SKSamplingOptions.Default`.
 
 ### Retained mode
+
 `SKPictureRecorder` (`.BeginRecording`) + raw P/Invoke (below); `SKPicture`.
 
 ---
