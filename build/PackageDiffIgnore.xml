@@ -2509,6 +2509,11 @@
 		  <!-- Reference compilation produced are gone. _fullyInitialized sat under !UNO_HAS_ENHANCED_LIFECYCLE, -->
 		  <!-- which Skia defines, so it never existed in the build lib/ now ships.                            -->
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.NavigationViewItemBase::_fullyInitialized" reason="Reference flavor folded into Skia; field was compiled only under !UNO_HAS_ENHANCED_LIFECYCLE (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- The Win32 host no longer has a "pick for me" backend value: the graphics registry negotiates the
+		       order, and the host opts out of kinds instead (ForceRenderingBackend/DisableRenderingBackends). -->
+		  <Member fullName="Uno.UI.Hosting.Win32RenderingBackend Uno.UI.Hosting.Win32RenderingBackend::Default" reason="Removed the Default value; graphics negotiation chooses the backend order (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Hosting.X11RenderingBackend Uno.UI.Hosting.X11RenderingBackend::Default" reason="Removed the Default value; graphics negotiation chooses the backend order (breaking changes for 7.0)" />
 	  </Fields>
 	  <Properties>
 		  <!-- Fluent resources-version selector removed: only version 2 exists and WinAppSDK has no equivalent surface. Accessors paired in the <Methods> block below (BC71, breaking changes for 7.0). -->
@@ -3317,6 +3322,11 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.UIElement.set_EventsBubblingInManagedCode(Uno.UI.Xaml.RoutedEventFlag value)" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
 		  <!-- Binary-compat shim for the removed Setter<T> (see <Types> above); no source callers. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.SetterBase.set_Property(System.String name)" reason="Removed SetterBase.set_Property shim (BC63, breaking changes for 7.0)" />
+
+		  <!-- Renamed to ForceRenderingBackend, paired with the new DisableRenderingBackends: with negotiation in
+		       place the old name read as "prefer", when it actually pinned a single backend. -->
+		  <Member fullName="Uno.UI.Hosting.Win32HostBuilder Uno.UI.Hosting.Win32HostBuilder.RenderingBackend(Uno.UI.Hosting.Win32RenderingBackend backend)" reason="Renamed to ForceRenderingBackend now that the graphics registry negotiates (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Hosting.X11HostBuilder Uno.UI.Hosting.X11HostBuilder.RenderingBackend(Uno.UI.Hosting.X11RenderingBackend backend)" reason="Renamed to ForceRenderingBackend now that the graphics registry negotiates (breaking changes for 7.0)" />
 
 		  <!-- DependencyObject is now a base class (BC26). The dependency-property store, binder and TemplatedParent
 		       members it used to surface on every type (via the DependencyObjectGenerator per-type mixin) are now
@@ -3962,6 +3972,11 @@
 		  <!-- Reference compilation produced are gone. _fullyInitialized sat under !UNO_HAS_ENHANCED_LIFECYCLE, -->
 		  <!-- which Skia defines, so it never existed in the build lib/ now ships.                            -->
 		  <Member fullName="System.Boolean Microsoft.UI.Xaml.Controls.NavigationViewItemBase::_fullyInitialized" reason="Reference flavor folded into Skia; field was compiled only under !UNO_HAS_ENHANCED_LIFECYCLE (breaking changes for 7.0, uno#8339)" />
+
+		  <!-- The Win32 host no longer has a "pick for me" backend value: the graphics registry negotiates the
+		       order, and the host opts out of kinds instead (ForceRenderingBackend/DisableRenderingBackends). -->
+		  <Member fullName="Uno.UI.Hosting.Win32RenderingBackend Uno.UI.Hosting.Win32RenderingBackend::Default" reason="Removed the Default value; graphics negotiation chooses the backend order (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Hosting.X11RenderingBackend Uno.UI.Hosting.X11RenderingBackend::Default" reason="Removed the Default value; graphics negotiation chooses the backend order (breaking changes for 7.0)" />
 	  </Fields>
 	  <Properties>
 		  <!-- Fluent resources-version selector removed: only version 2 exists and WinAppSDK has no equivalent surface. Accessors paired in the <Methods> block below (BC71, breaking changes for 7.0). -->
@@ -4770,6 +4785,11 @@
 		  <Member fullName="System.Void Microsoft.UI.Xaml.UIElement.set_EventsBubblingInManagedCode(Uno.UI.Xaml.RoutedEventFlag value)" reason="Removed EventsBubblingInManagedCode DP (BC04, breaking changes for 7.0)" />
 		  <!-- Binary-compat shim for the removed Setter<T> (see <Types> above); no source callers. -->
 		  <Member fullName="System.Void Microsoft.UI.Xaml.SetterBase.set_Property(System.String name)" reason="Removed SetterBase.set_Property shim (BC63, breaking changes for 7.0)" />
+
+		  <!-- Renamed to ForceRenderingBackend, paired with the new DisableRenderingBackends: with negotiation in
+		       place the old name read as "prefer", when it actually pinned a single backend. -->
+		  <Member fullName="Uno.UI.Hosting.Win32HostBuilder Uno.UI.Hosting.Win32HostBuilder.RenderingBackend(Uno.UI.Hosting.Win32RenderingBackend backend)" reason="Renamed to ForceRenderingBackend now that the graphics registry negotiates (breaking changes for 7.0)" />
+		  <Member fullName="Uno.UI.Hosting.X11HostBuilder Uno.UI.Hosting.X11HostBuilder.RenderingBackend(Uno.UI.Hosting.X11RenderingBackend backend)" reason="Renamed to ForceRenderingBackend now that the graphics registry negotiates (breaking changes for 7.0)" />
 
 		  <!-- DependencyObject is now a base class (BC26). The dependency-property store, binder and TemplatedParent
 		       members it used to surface on every type (via the DependencyObjectGenerator per-type mixin) are now
