@@ -351,11 +351,11 @@ public partial class EntryPoint : IDisposable
 
 	private void SolutionEvents_BeforeClosing()
 	{
-		// Detach event handler to avoid this being called multiple times
-		_dte.Events.SolutionEvents.BeforeClosing -= _closeHandler;
-
 		_closing = true;
+
+		// Everything is bound to the closing solution, and legacy VSIX versions never dispose us explicitly.
 		StopDevServer();
+		Dispose();
 	}
 
 	private int GetDotnetMajorVersion()
@@ -647,9 +647,6 @@ public partial class EntryPoint : IDisposable
 				ct.Cancel();
 				devServer.Kill();
 				_debugAction?.Invoke($"Terminated Remote Control server (pid: {devServer.Id})");
-
-				_ideChannelClient?.Dispose();
-				_ideChannelClient = null;
 			}
 			catch (Exception e)
 			{
@@ -657,10 +654,9 @@ public partial class EntryPoint : IDisposable
 			}
 			finally
 			{
+				_ideChannelClient?.Dispose();
+				_ideChannelClient = null;
 				_devServer = null;
-
-				// Invoke Dispose to make sure other event handlers are detached
-				Dispose();
 			}
 		}
 	}
