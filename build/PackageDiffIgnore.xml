@@ -2381,6 +2381,15 @@
 		  <Member fullName="Microsoft.UI.Xaml.FrameworkTemplateBuilder" reason="BC01: legacy template builder delegate removed with the ambient TemplatedParentScope (uno#18672, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.NewFrameworkTemplateBuilder" reason="BC01: replaced by Uno.UI.FrameworkTemplateBuilder, declared next to TemplateManager instead of in the WinUI namespace (uno#18672, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.TemplateMaterializationSettings" reason="BC01: moved to the Uno.UI namespace, alongside FrameworkTemplateBuilder and TemplateManager -- it is Uno plumbing with no WinUI counterpart (uno#18672, breaking changes for 7.0)" />
+
+		  <!-- Font fallback moved behind the drawing-backend seam into Uno.UI.Composition.Drawing and became internal; it was Uno plumbing sitting in a WinUI namespace, with no WinUI counterpart. -->
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.IFontFallbackService" reason="Font fallback moved to the internal Uno.UI.Composition.Drawing.IFontFallbackService behind the drawing seam (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.CoverageTableFontFallbackService" reason="Font fallback moved to the internal Uno.UI.Composition.Drawing.CoverageTableFontFallbackService behind the drawing seam (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.FontFallbackCoverageRange" reason="Font fallback moved to the internal Uno.UI.Composition.Drawing.FontFallbackCoverageRange behind the drawing seam (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.EmptyFontFallbackService" reason="Removed the no-op fallback service; the seam represents the absence of a fallback service as no service at all (breaking changes for 7.0)" />
+
+		  <!-- SVG moved behind the drawing-backend seam: the renderer is supplied through the host builder instead of an ApiExtension-registered public interface. -->
+		  <Member fullName="Uno.UI.Xaml.Media.Imaging.Svg.ISvgProvider" reason="Replaced by the internal Uno.UI.Composition.Drawing.ISvgRenderer, supplied through IUnoPlatformHostBuilder.SvgRenderer() (breaking changes for 7.0)" />
 	  </Types>
 	  <Fields>
 		  <!-- Members of the removed ControlsResourcesVersion enum (see the <Types> entry above), listed in case the diff reports them independently of their declaring type (BC71, breaking changes for 7.0). -->
@@ -3815,6 +3824,15 @@
 		  <Member fullName="Microsoft.UI.Xaml.FrameworkTemplateBuilder" reason="BC01: legacy template builder delegate removed with the ambient TemplatedParentScope (uno#18672, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.NewFrameworkTemplateBuilder" reason="BC01: replaced by Uno.UI.FrameworkTemplateBuilder, declared next to TemplateManager instead of in the WinUI namespace (uno#18672, breaking changes for 7.0)" />
 		  <Member fullName="Microsoft.UI.Xaml.TemplateMaterializationSettings" reason="BC01: moved to the Uno.UI namespace, alongside FrameworkTemplateBuilder and TemplateManager -- it is Uno plumbing with no WinUI counterpart (uno#18672, breaking changes for 7.0)" />
+
+		  <!-- Font fallback moved behind the drawing-backend seam into Uno.UI.Composition.Drawing and became internal; it was Uno plumbing sitting in a WinUI namespace, with no WinUI counterpart. -->
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.IFontFallbackService" reason="Font fallback moved to the internal Uno.UI.Composition.Drawing.IFontFallbackService behind the drawing seam (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.CoverageTableFontFallbackService" reason="Font fallback moved to the internal Uno.UI.Composition.Drawing.CoverageTableFontFallbackService behind the drawing seam (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.FontFallbackCoverageRange" reason="Font fallback moved to the internal Uno.UI.Composition.Drawing.FontFallbackCoverageRange behind the drawing seam (breaking changes for 7.0)" />
+		  <Member fullName="Microsoft.UI.Xaml.Documents.TextFormatting.EmptyFontFallbackService" reason="Removed the no-op fallback service; the seam represents the absence of a fallback service as no service at all (breaking changes for 7.0)" />
+
+		  <!-- SVG moved behind the drawing-backend seam: the renderer is supplied through the host builder instead of an ApiExtension-registered public interface. -->
+		  <Member fullName="Uno.UI.Xaml.Media.Imaging.Svg.ISvgProvider" reason="Replaced by the internal Uno.UI.Composition.Drawing.ISvgRenderer, supplied through IUnoPlatformHostBuilder.SvgRenderer() (breaking changes for 7.0)" />
 	  </Types>
 	  <Fields>
 		  <!-- Members of the removed ControlsResourcesVersion enum (see the <Types> entry above), listed in case the diff reports them independently of their declaring type (BC71, breaking changes for 7.0). -->

@@ -104,6 +104,8 @@
 	-->
 	<PropertyGroup>
 		<UnoDrawingBackendSkia Condition="'$(UnoDrawingBackendSkia)'==''">true</UnoDrawingBackendSkia>
+		<!-- wgpu-native publishes no tvOS slice, so the backend's P/Invokes have nothing to link against there. -->
+		<UnoDrawingBackendWebGpu Condition="'$(UnoDrawingBackendWebGpu)'=='' and '$(_Platform)' == 'tvos'">false</UnoDrawingBackendWebGpu>
 		<UnoDrawingBackendWebGpu Condition="'$(UnoDrawingBackendWebGpu)'==''">true</UnoDrawingBackendWebGpu>
 		<DefineConstants Condition="'$(UnoDrawingBackendSkia)'=='true'">$(DefineConstants);UNO_DRAWING_SKIA</DefineConstants>
 		<DefineConstants Condition="'$(UnoDrawingBackendWebGpu)'=='true'">$(DefineConstants);UNO_DRAWING_WEBGPU</DefineConstants>
