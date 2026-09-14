@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -73,11 +74,27 @@ public static class FontFallback
 
 		if (OperatingSystem.IsAndroid())
 		{
-			foreach (var (bytes, probe) in GetAndroidSystemFonts(provider))
+			var fonts = GetAndroidSystemFonts(provider);
+			for (var i = 0; i < fonts.Length; i++)
 			{
-				if (probe.ContainsGlyph(codepoint))
+				if (!fonts[i].probe.ContainsGlyph(codepoint))
 				{
-					return provider.CreateFont(bytes, null, weight, stretch, style, fontSize);
+					continue;
+				}
+
+				// Keyed by index rather than family: these are bare font files, so the provider gets no name to
+				// key on and every call would otherwise mint a distinct instance.
+				var androidKey = (provider, i.ToString(CultureInfo.InvariantCulture), weight, stretch, style, fontSize);
+				lock (_fetchedGate)
+				{
+					if (_fetched.TryGetValue(androidKey, out var cachedAndroid))
+					{
+						return cachedAndroid;
+					}
+
+					var created = provider.CreateFont(fonts[i].bytes, null, weight, stretch, style, fontSize);
+					_fetched[androidKey] = created;
+					return created;
 				}
 			}
 		}
