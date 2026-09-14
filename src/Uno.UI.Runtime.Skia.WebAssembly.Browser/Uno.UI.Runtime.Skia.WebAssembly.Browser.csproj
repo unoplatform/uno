@@ -54,10 +54,6 @@
 			<Pack>true</Pack>
 			<PackagePath>build</PackagePath>
 		</Content>
-		<Content Include="build/native/*.*">
-			<Pack>true</Pack>
-			<PackagePath>build/native</PackagePath>
-		</Content>
 	</ItemGroup>
 
 	<!-- Typescript setup -->
