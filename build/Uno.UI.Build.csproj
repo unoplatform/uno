@@ -204,6 +204,10 @@
 		     fetches the rest so the pack does not fail NU5019 on the Windows packaging agent. -->
 		<MSBuild Projects="..\src\Uno.UI.Composition.WebGpu\Uno.UI.Composition.WebGpu.csproj" Targets="ProvisionWgpuNativeForPack" />
 
+		<!-- The WebGpu package also ships the emdawnwebgpu port for WASM, already patched: a consumer cannot
+		     patch it themselves in the shared, read-only NuGet folder. -->
+		<MSBuild Projects="..\src\Uno.UI.Composition.WebGpu.Init\wgpu-wasm.targets" Targets="ProvisionEmdawnForPack" />
+
 		<!-- Create the packages -->
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.UI.Composition.Skia.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />

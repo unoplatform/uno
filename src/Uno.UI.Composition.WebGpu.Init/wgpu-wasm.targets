@@ -117,6 +117,10 @@
 			SkipUnchangedFiles="true" />
 	</Target>
 
+	<!-- Packaging entry point: fetch and PATCH the port so the package can ship it already patched. A consumer
+	     cannot be asked to patch it themselves: the port would live in the shared, read-only NuGet folder. -->
+	<Target Name="ProvisionEmdawnForPack" DependsOnTargets="_ProvisionEmdawnWebGpu" />
+
 	<!-- Register "webgpu" as a statically-linked P/Invoke module (else the runtime can't resolve wgpu* imports). -->
 	<Target Name="_AddWebGpuPInvokeModule" BeforeTargets="_GenerateManagedToNative">
 		<ItemGroup>

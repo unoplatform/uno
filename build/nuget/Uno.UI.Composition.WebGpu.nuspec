@@ -52,6 +52,12 @@
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\ios-arm64\lib\libwgpu_native.a" target="buildTransitive\native\ios-arm64\libwgpu_native.a" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\iossimulator-arm64\lib\libwgpu_native.a" target="buildTransitive\native\iossimulator-arm64\libwgpu_native.a" />
 		<file src="..\..\src\Uno.UI.Composition.WebGpu\obj\wgpu-native\v29.0.1.1\pack\iossimulator-x64\lib\libwgpu_native.a" target="buildTransitive\native\iossimulator-x64\libwgpu_native.a" />
+
+		<!-- WebAssembly: emscripten compiles Dawn INTO dotnet.native.wasm, so there is no library to load. The
+		     port ships already patched (the package folder is shared and read-only) and the targets points emcc
+		     at it. -->
+		<file src="..\..\src\Uno.UI.Composition.WebGpu.Init\obj\emdawnwebgpu\v20260624.223603\emdawnwebgpu_pkg\**" target="buildTransitive\emdawnwebgpu\emdawnwebgpu_pkg" />
+		<file src="..\..\src\Uno.UI.Composition.WebGpu.Init\Native\wgpu_wasm_stubs.c" target="buildTransitive\emdawnwebgpu" />
 	</files>
 
 </package>

@@ -27,4 +27,58 @@
 		</ItemGroup>
 	</Target>
 
+
+	<!--
+	WebAssembly: there is no library to load. Dawn's emdawnwebgpu is compiled INTO dotnet.native.wasm by emscripten
+	at publish, so the port ships here (already patched at pack time, since the package folder is shared and
+	read-only) and this only points emcc at it.
+	-->
+	<PropertyGroup Condition="'$(_UnoWebGpuWasm)' == '' and $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'browser'">
+		<_UnoWebGpuWasm>true</_UnoWebGpuWasm>
+		<!-- Forward slashes: the flag is appended verbatim to emcc's link response file, whose parser treats a
+		     backslash as an escape and eats it, so a Windows path would lose its separators. -->
+		<_UnoWgpuPortPath>$(MSBuildThisFileDirectory)emdawnwebgpu\emdawnwebgpu_pkg\emdawnwebgpu.port.py</_UnoWgpuPortPath>
+		<_UnoWgpuPortPath>$(_UnoWgpuPortPath.Replace('\', '/'))</_UnoWgpuPortPath>
+		<EmccExtraLDFlags>$(EmccExtraLDFlags) --use-port=$(_UnoWgpuPortPath) -sDEFAULT_TO_CXX=1</EmccExtraLDFlags>
+		<!-- emcc must BUILD the port, which needs a writable cache; the SDK's own is frozen. -->
+		<WgpuWasmCacheDir Condition="'$(WgpuWasmCacheDir)' == ''">$(IntermediateOutputPath)wgpu-wasm-emcache\</WgpuWasmCacheDir>
+		<WasmCachePath>$(WgpuWasmCacheDir)</WasmCachePath>
+	</PropertyGroup>
+
+	<ItemGroup Condition="'$(_UnoWebGpuWasm)' == 'true'">
+		<!-- The wgpu-native-only imports Dawn does not export, so the static link resolves. Never called on WASM. -->
+		<NativeFileReference Include="$(MSBuildThisFileDirectory)emdawnwebgpu\wgpu_wasm_stubs.c" ScanForPInvokes="false" />
+	</ItemGroup>
+
+	<!-- On Windows the writable cache must sit on the emscripten toolchain's drive: building a system-lib variant
+	     computes a relpath between the two, which throws across drives. Resolved in a target because the workload
+	     sets EmscriptenSdkToolsPath after this file is imported. -->
+	<Target Name="_UnoWebGpuAnchorWasmCache" BeforeTargets="_PrepareForBrowserWasmBuildNative"
+			Condition="'$(_UnoWebGpuWasm)' == 'true' and '$(OS)' == 'Windows_NT' and '$(EmscriptenSdkToolsPath)' != ''">
+		<PropertyGroup>
+			<_UnoWgpuDrive>$([System.IO.Path]::GetPathRoot($(EmscriptenSdkToolsPath)))</_UnoWgpuDrive>
+			<WgpuWasmCacheDir>$([MSBuild]::NormalizeDirectory($(_UnoWgpuDrive), 'uno-wgpu-wasm-emcache'))</WgpuWasmCacheDir>
+			<WgpuWasmCacheDir Condition="'$(LOCALAPPDATA)' != '' and '$([System.IO.Path]::GetPathRoot($(LOCALAPPDATA)))' == '$(_UnoWgpuDrive)'">$([MSBuild]::NormalizeDirectory($(LOCALAPPDATA), 'Uno', 'wgpu-wasm-emcache'))</WgpuWasmCacheDir>
+			<WasmCachePath>$(WgpuWasmCacheDir)</WasmCachePath>
+		</PropertyGroup>
+	</Target>
+
+	<!-- Seed the writable cache from the SDK's once, so only the port and its extra stdlibs get built. -->
+	<Target Name="_UnoWebGpuSeedWasmCache" BeforeTargets="_PrepareForBrowserWasmBuildNative"
+			Condition="'$(_UnoWebGpuWasm)' == 'true' and !Exists('$(WgpuWasmCacheDir)sysroot') and '$(EmscriptenCacheSdkCacheDir)' != '' and Exists('$(EmscriptenCacheSdkCacheDir)')">
+		<ItemGroup>
+			<_UnoWgpuSdkCache Include="$(EmscriptenCacheSdkCacheDir)\**\*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(_UnoWgpuSdkCache)"
+			DestinationFiles="@(_UnoWgpuSdkCache->'$(WgpuWasmCacheDir)%(RecursiveDir)%(Filename)%(Extension)')"
+			SkipUnchangedFiles="true" />
+	</Target>
+
+	<!-- Register "webgpu" as a statically-linked P/Invoke module so the runtime resolves the wgpu* imports. -->
+	<Target Name="_UnoWebGpuAddWasmPInvokeModule" BeforeTargets="_GenerateManagedToNative" Condition="'$(_UnoWebGpuWasm)' == 'true'">
+		<ItemGroup>
+			<_WasmPInvokeModules Include="webgpu" />
+		</ItemGroup>
+	</Target>
+
 </Project>
