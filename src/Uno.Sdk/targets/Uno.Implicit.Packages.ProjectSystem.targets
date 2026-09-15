@@ -11,19 +11,22 @@
 		<_UnoProjectSystemPackageReference Include="Uno.Settings.DevServer" ProjectSystem="true" PrivateAssets="all" />
 	</ItemGroup>
 
+	<!--
+		The development-time packages below are absent from the Release graph, not merely asset-excluded.
+		IncludeAssets="None" still resolves, downloads and audits the whole closure, and does not stop the
+		package's analyzers from loading (dotnet/sdk#1212) - so re-adding an "excluded" Release entry here
+		puts them back in every shipped app's dependency closure.
+	-->
 	<ItemGroup Condition=" ('$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe') AND '$(UnoDisableHotDesign)' != 'true' ">
 		<_UnoProjectSystemPackageReference Include="Uno.UI.HotDesign" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
-		<_UnoProjectSystemPackageReference Include="Uno.UI.HotDesign" ProjectSystem="true" Exclude="all" IncludeAssets="None" Condition="$(Optimize) == 'true'" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" ('$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe') AND '$(UnoDisableMCPSupport)' != 'true' ">
 		<_UnoProjectSystemPackageReference Include="Uno.UI.App.Mcp" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
-		<_UnoProjectSystemPackageReference Include="Uno.UI.App.Mcp" ProjectSystem="true" Exclude="all" IncludeAssets="None" Condition="$(Optimize) == 'true'" />
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(_ImplicitRestoreOutputType)' == 'WinExe' OR '$(_ImplicitRestoreOutputType)' == 'Exe' ">
 		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" Condition="$(Optimize) != 'true'" />
-		<_UnoProjectSystemPackageReference Include="Uno.WinUI.DevServer" ProjectSystem="true" Exclude="all" IncludeAssets="None" Condition="$(Optimize) == 'true'" />
 	</ItemGroup>
 
 	<Choose>
