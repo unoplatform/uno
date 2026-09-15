@@ -583,6 +583,11 @@ internal static class AccessibilityPeerHelper
 
 	internal static Func<XamlRoot, AccessibilityNativeNodeSnapshot[]?>? IOSAllNodeSnapshotsForRootAccessor { get; set; }
 
+	/// <summary>
+	/// Reads values from the live native AXCustomContent objects without trim-unsafe test reflection.
+	/// </summary>
+	internal static Func<UIElement, string[]?>? IOSAccessibilityCustomContentValuesAccessor { get; set; }
+
 	internal static Func<UIElement, AccessibilityNativeNodeSnapshot?>? AndroidAccessibilityNodeSnapshotAccessor { get; set; }
 
 	internal static Func<XamlRoot, AccessibilityNativeNodeSnapshot[]?>? AndroidAllNodeSnapshotsForRootAccessor { get; set; }
