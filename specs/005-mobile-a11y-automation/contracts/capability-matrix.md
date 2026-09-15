@@ -187,8 +187,9 @@ Separate `RaiseNotificationEvent` contract:
 - iOS exposes text values but does not yet provide a native `UITextInput` selection/granularity
   bridge from managed `UIAccessibilityElement` instances.
 - Unrealized item peers have no native node until a real container exists. Native container
-  scrolling performs realization; realized item occurrences and noncanonical/ownerless peers
-  are peer-keyed, and a recycled container receives a new native ID when rebound.
+  scrolling performs realization; realized item peers and noncanonical/ownerless peers are
+  peer-keyed, and a recycled container receives a new native ID when rebound. Reusing the same
+  data instance in multiple containers preserves WinUI's single item-peer/provider identity.
 - Move, resize, rotate, absolute zoom, dock, and window-state operations remain available to
   automation hooks with explicit arguments. Only fixed, meaningful actions are advertised to
   TalkBack or VoiceOver.
