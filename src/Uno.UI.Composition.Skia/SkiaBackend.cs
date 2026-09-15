@@ -12,13 +12,14 @@ namespace Uno.UI.Composition.Skia;
 /// </summary>
 public static class SkiaBackend
 {
-	// Per-seam Skia defaults, each returning a public seam instance the host builder registers. Kept internal:
-	// reflection reaches them with BindingFlags.NonPublic, so no IVT is required.
-	internal static IFontProvider CreateFontProvider() => new SkiaFontProvider();
+	// Per-seam Skia defaults, each returning a public seam instance the host builder registers. Public because a
+	// trimmed or AOT head (iOS, tvOS) cannot be reached by the host builder's reflective light-up and has to
+	// register them itself; the implementations stay internal.
+	public static IFontProvider CreateFontProvider() => new SkiaFontProvider();
 
-	internal static IImageEncoderDecoder CreateImageDecoder() => new SkiaImageDecoderBackend();
+	public static IImageEncoderDecoder CreateImageDecoder() => new SkiaImageDecoderBackend();
 
-	internal static IGeometryFactory CreateGeometryFactory() => new SkiaGeometryFactory();
+	public static IGeometryFactory CreateGeometryFactory() => new SkiaGeometryFactory();
 
 	/// <summary>The Skia graphics provider (the backend negotiation picks a context and builds its drawing factory).</summary>
 	internal static IGraphicsProvider CreateGraphicsProvider() => new SkiaGraphicsProvider();

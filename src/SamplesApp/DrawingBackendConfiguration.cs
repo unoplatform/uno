@@ -29,6 +29,12 @@ internal static class DrawingBackendConfiguration
 		{
 #if UNO_DRAWING_SKIA
 			builder.GraphicsBackend(new SkiaGraphicsProvider());
+			// The host builder otherwise discovers these reflectively, which a trimmed/AOT head (iOS, tvOS) cannot
+			// do -- it then fails Build() with every content seam unregistered. Registering them here is what the
+			// light-up's own trimming suppressions point at.
+			builder.FontProvider(global::Uno.UI.Composition.Skia.SkiaBackend.CreateFontProvider());
+			builder.ImageEncoderDecoder(global::Uno.UI.Composition.Skia.SkiaBackend.CreateImageDecoder());
+			builder.GeometryFactory(global::Uno.UI.Composition.Skia.SkiaBackend.CreateGeometryFactory());
 			// UNO_MANAGED_GEOMETRY swaps the geometry seam to the managed engine (rasterized on Skia pixels).
 			if (Environment.GetEnvironmentVariable("UNO_MANAGED_GEOMETRY") is "1" or "true")
 			{
