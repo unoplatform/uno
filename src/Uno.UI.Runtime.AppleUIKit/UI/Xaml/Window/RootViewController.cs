@@ -37,7 +37,7 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	// IAccessibilityOwner
 
-	SkiaAccessibilityBase? IAccessibilityOwner.Accessibility => _accessibility;
+	public SkiaAccessibilityBase? Accessibility => _accessibility;
 
 	internal void SetAccessibility(AppleUIKitAccessibility accessibility)
 		=> _accessibility = accessibility;
