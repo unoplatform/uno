@@ -145,14 +145,33 @@ public partial class Given_MobileAccessibilityTree
 	public void When_Unavailable_Peer_Throws_Then_Siblings_Remain()
 	{
 		var root = new TestPeer("root", isControlElement: true);
-		root.Children.Add(new UnavailableTestPeer());
-		root.Children.Add(new TestPeer("available", isControlElement: true));
+		var unavailable = new UnavailableTestPeer();
+		var exception = Assert.ThrowsExactly<AutomationPeerUnavailableException>(
+			() => unavailable.IsControlElement());
+		Assert.AreEqual(unchecked((int)0x80131509), exception.HResult);
+
+		root.Children.Add(new TestPeer("before", isControlElement: true));
+		root.Children.Add(unavailable);
+		root.Children.Add(new TestPeer("after", isControlElement: true));
 
 		var nodes = MobileAccessibilityTestHelper.GetPeerTree(root);
 
 		CollectionAssert.AreEqual(
-			new[] { "root", "available" },
+			new[] { "root", "before", "after" },
 			nodes.Select(node => node.Peer.GetName()).ToArray());
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Peer_Throws_Unrelated_InvalidOperation_Then_It_Propagates()
+	{
+		var root = new TestPeer("root", isControlElement: true);
+		root.Children.Add(new FaultingTestPeer());
+
+		var exception = Assert.ThrowsExactly<InvalidOperationException>(
+			() => MobileAccessibilityTestHelper.GetPeerTree(root));
+
+		StringAssert.Contains(exception.Message, "Unexpected peer failure");
 	}
 
 	private class TestPeer : AutomationPeer
@@ -190,7 +209,21 @@ public partial class Given_MobileAccessibilityTree
 		}
 
 		protected override bool IsControlElementCore()
-			=> throw new InvalidOperationException("UIA element is not available");
+		{
+			ThrowElementNotAvailableError();
+			return false;
+		}
+	}
+
+	private sealed class FaultingTestPeer : TestPeer
+	{
+		public FaultingTestPeer()
+			: base("faulting")
+		{
+		}
+
+		protected override bool IsControlElementCore()
+			=> throw new InvalidOperationException("Unexpected peer failure");
 	}
 
 	private sealed class InvokableTestPeer : TestPeer, IInvokeProvider
