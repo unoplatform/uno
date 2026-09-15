@@ -48,4 +48,26 @@ partial class StackLayout
 	private Size MinorMajorSize(float minor, float major)
 		=> ((OrientationBasedMeasures)this).MinorMajorSize(minor, major);
 #pragma warning restore IDE0051
+
+	private double StabilizeExtentMajorStart(
+		StackLayoutState stackState,
+		int firstRealizedItemIndex,
+		Rect firstRealizedLayoutBounds,
+		double formulaMajorStart)
+	{
+		var previousMajorStart = stackState.Uno_LastReportedExtentMajorStart;
+		var hasPreviousMajorStart = !double.IsNaN(previousMajorStart);
+
+		// Uno's ScrollContentPresenter does not compensate ItemsRepeater origin shifts.
+		// Keep the origin stable while the running size estimate changes during scrolling.
+		var itemsExtendAbovePreviousOrigin =
+			hasPreviousMajorStart && MajorStart(firstRealizedLayoutBounds) < previousMajorStart;
+		var majorStart =
+			!hasPreviousMajorStart || firstRealizedItemIndex == 0 || itemsExtendAbovePreviousOrigin
+				? formulaMajorStart
+				: previousMajorStart;
+
+		stackState.Uno_LastReportedExtentMajorStart = majorStart;
+		return majorStart;
+	}
 }
