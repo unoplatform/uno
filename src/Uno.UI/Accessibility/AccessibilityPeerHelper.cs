@@ -592,6 +592,8 @@ internal static class AccessibilityPeerHelper
 
 	internal static Func<XamlRoot, AccessibilityNativeNodeSnapshot[]?>? AndroidAllNodeSnapshotsForRootAccessor { get; set; }
 
+	internal static Func<UIElement, AccessibilityNativeCollectionItemDetails?>? AndroidAccessibilityCollectionItemAccessor { get; set; }
+
 	internal static Func<XamlRoot, string>? AndroidAccessibilityDiagnosticsAccessor { get; set; }
 
 	internal static Func<UIElement, AccessibilityNativeActionRequest, bool>? AndroidAccessibilityActionAccessor { get; set; }
