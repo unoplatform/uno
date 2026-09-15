@@ -44,6 +44,7 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 
 		MacOSAnalyticsInfoExtension.Register();
 		MacOSApplicationViewExtension.Register();
+		MacOSAppNotificationManagerBackend.RegisterExtension();
 		MacOSBadgeUpdaterExtension.Register();
 		MacOSClipboardExtension.Register();
 		MacOSDragDropExtension.Register();
@@ -188,6 +189,10 @@ public class MacSkiaHost : SkiaHost, ISkiaApplicationHost
 
 			// Create the native NSApplication and a main window
 			var result = NativeUno.uno_app_initialize(ref metal);
+			if (result)
+			{
+				MacOSAppNotificationRuntime.Initialize();
+			}
 
 			switch (FeatureConfiguration.Rendering.UseMetalOnMacOS)
 			{
