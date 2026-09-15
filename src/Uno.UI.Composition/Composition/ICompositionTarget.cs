@@ -4,9 +4,7 @@ using System.Collections.Generic;
 using Windows.ApplicationModel.VoiceCommands;
 using Windows.Foundation;
 using Microsoft.UI.Composition.Interactions;
-#if __SKIA__
 using SkiaSharp;
-#endif
 
 namespace Uno.UI.Composition;
 
@@ -18,11 +16,15 @@ internal interface ICompositionTarget
 
 	event EventHandler? RasterizationScaleChanged;
 
-#if __SKIA__
+	/// <summary>Raised once per presented frame, before layout and before the record.</summary>
+	event EventHandler<long>? FrameStarting;
+
+	/// <summary>Estimated interval between presented frames, for drivers that need a nominal step.</summary>
+	long FrameIntervalInTicks { get; }
+
 	void RequestNewFrame();
 
 	void AddDamage(SKRect bounds);
 
 	void AddDamage(SKPath region);
-#endif
 }

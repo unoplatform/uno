@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -32,6 +32,9 @@ public partial class CompositionTarget
 
 	static CompositionTarget()
 	{
+		// An InteractionTracker carries no visual, so it cannot reach a target the way a presenter can.
+		Compositor.FrameDriverTargetResolver = static () => MainFrameDriverTarget;
+
 		XamlRootMap.Unregistered += (_, xamlRoot) =>
 		{
 			var target = xamlRoot.VisualTree.ContentRoot.CompositionTarget;
@@ -146,7 +149,17 @@ public partial class CompositionTarget
 			}
 
 			damageSnapshot = _damageSnapshotPool.Count > 0 ? _damageSnapshotPool.Pop() : new SKPath();
-			_pendingDamage.SnapshotAndReset(damageSnapshot, frameRect);
+			try
+			{
+				_pendingDamage.SnapshotAndReset(damageSnapshot, frameRect);
+			}
+			catch
+			{
+				// The snapshot is never published (the region kept this frame's damage for the next one),
+				// so hand it back to the pool rather than orphaning a native path per failed frame.
+				_damageSnapshotPool.Push(damageSnapshot);
+				throw;
+			}
 
 			_lastRenderedFrame = (framePicture, path, damageSnapshot);
 
@@ -156,9 +169,11 @@ public partial class CompositionTarget
 			{
 				_damageSnapshotPool.Push(superseded);
 			}
-		}
 
-		_fpsHelper.OnFrameRecorded();
+			// Under the same gate as the publish: a Draw acquiring it in between would see the fresh
+			// picture against the stale generation and record a dropped frame that never happened.
+			_fpsHelper.OnFrameRecorded();
+		}
 
 		if (previousFrame is { } prev)
 		{
@@ -516,10 +531,19 @@ public partial class CompositionTarget
 
 	private static void OnTargetUnregistered(CompositionTarget target)
 	{
+		target.ClearFrameDrivers();
 		_targets.Remove(target);
 		if (_latestFrames.Remove(target, out var picture))
 		{
 			picture.Release(pictureAccessed: false);
+		}
+
+		// Last, and under the gate the record publishes beneath, so this can't free the region's paths while a
+		// record is snapshotting them. A render callback enqueued before the host went away can still run after
+		// this point; the region drops contributions once disposed rather than writing to freed native memory.
+		lock (target._frameGate)
+		{
+			target._pendingDamage.Dispose();
 		}
 	}
 

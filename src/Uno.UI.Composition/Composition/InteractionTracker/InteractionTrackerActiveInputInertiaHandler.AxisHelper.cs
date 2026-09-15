@@ -139,7 +139,7 @@ internal sealed partial class InteractionTrackerActiveInputInertiaHandler
 			if (currentPosition < minPosition || currentPosition > maxPosition)
 			{
 				// This is an overpan from Interacting state. Use damping animation.
-				_dampingStateTimeInSeconds = Handler._stopwatch!.ElapsedMilliseconds / 1000.0f;
+				_dampingStateTimeInSeconds = Handler.ElapsedInSeconds;
 				_dampingStatePosition = currentPosition;
 			}
 
