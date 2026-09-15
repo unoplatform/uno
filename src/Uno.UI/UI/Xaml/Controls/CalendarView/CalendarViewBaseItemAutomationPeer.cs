@@ -21,13 +21,9 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				object ppReturnValue = null;
 
-				bool isItemVisible = false;
-
-				isItemVisible = IsItemVisible();
-
 				// For the GridItem pattern, make sure the item is visible otherwise we might end up returning a negative row value
 				// for it.  An item may not be visible if it has been scrolled out of view..
-				if (patternInterface == PatternInterface.GridItem && isItemVisible ||
+				if (patternInterface == PatternInterface.GridItem && IsItemVisible() ||
 					patternInterface == PatternInterface.ScrollItem)
 				{
 					ppReturnValue = this;
@@ -103,21 +99,20 @@ namespace Microsoft.UI.Xaml.Controls
 
 			private bool IsItemVisible()
 			{
-				var isVisible = false;
-
-				UIElement owner;
-				owner = Owner;
-
-				var parent = (owner as CalendarViewBaseItem).GetParentCalendarView();
+				if (Owner is not CalendarViewBaseItem owner ||
+					owner.GetParentCalendarView() is not { } parent)
+				{
+					return false;
+				}
 
 				CalendarViewGeneratorHost host;
 				parent.GetActiveGeneratorHost(out host);
 
-				var calendarPanel = host.Panel;
+				var calendarPanel = host?.Panel;
 				if (calendarPanel is { })
 				{
 					DateTime date = default;
-					date = (owner as CalendarViewBaseItem).DateBase;
+					date = owner.DateBase;
 
 					int itemIndex = 0;
 					itemIndex = host.CalculateOffsetFromMinDate(date);
@@ -128,10 +123,10 @@ namespace Microsoft.UI.Xaml.Controls
 					int lastVisibleIndex = 0;
 					lastVisibleIndex = calendarPanel.LastVisibleIndex;
 
-					isVisible = (itemIndex >= firstVisibleIndex && itemIndex <= lastVisibleIndex);
+					return itemIndex >= firstVisibleIndex && itemIndex <= lastVisibleIndex;
 				}
 
-				return isVisible;
+				return false;
 			}
 		}
 	}
