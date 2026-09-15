@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Xaml;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
 
@@ -102,7 +103,8 @@ public class Given_MobileMultiWindowAccessibility
 		var button = new Button { Content = "Primary" };
 		await UITestHelper.Load(button);
 
-		var exception = Assert.ThrowsExactly<InvalidOperationException>(() => new Window());
+		var exception = Assert.ThrowsExactly<InvalidOperationException>(
+			() => new Window(WindowType.DesktopXamlSource));
 		StringAssert.Contains(
 			exception.Message,
 			"secondary windows",
