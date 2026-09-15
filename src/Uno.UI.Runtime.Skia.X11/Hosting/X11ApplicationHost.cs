@@ -135,6 +135,7 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 			}
 		}
 
+		LinuxPasswordVaultExtensions.Register();
 		CompositionTarget.FrameRenderingOptions = (true, true);
 	}
 
