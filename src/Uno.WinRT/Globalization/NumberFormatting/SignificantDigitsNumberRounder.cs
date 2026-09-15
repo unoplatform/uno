@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using Uno;
 using Uno.Globalization.NumberFormatting;
 
 namespace Windows.Globalization.NumberFormatting;
@@ -43,57 +42,79 @@ public partial class SignificantDigitsNumberRounder : INumberRounder
 	{
 	}
 
-	[NotImplemented]
-	public int RoundInt32(int value)
-	{
-		throw new global::System.NotImplementedException("The member int SignificantDigitsNumberRounder.RoundInt32(int value) is not implemented in Uno.");
-	}
+	public int RoundInt32(int value) => IntegralRounding.ToInt32(RoundInt64(value));
 
-	[NotImplemented]
-	public uint RoundUInt32(uint value)
-	{
-		throw new global::System.NotImplementedException("The member uint SignificantDigitsNumberRounder.RoundUInt32(uint value) is not implemented in Uno.");
-	}
+	public uint RoundUInt32(uint value) => IntegralRounding.ToUInt32(RoundUInt64(value));
 
-	[NotImplemented]
 	public long RoundInt64(long value)
 	{
-		throw new global::System.NotImplementedException("The member long SignificantDigitsNumberRounder.RoundInt64(long value) is not implemented in Uno.");
+		var magnitude = IntegralRounding.GetMagnitude(value, out var isNegative);
+		var rounded = RoundMagnitude(magnitude, isNegative);
+
+		return IntegralRounding.ToInt64(rounded, isNegative);
 	}
 
-	[NotImplemented]
-	public ulong RoundUInt64(ulong value)
+	public ulong RoundUInt64(ulong value) => RoundMagnitude(value, false);
+
+	private ulong RoundMagnitude(ulong magnitude, bool isNegative)
 	{
-		throw new global::System.NotImplementedException("The member ulong SignificantDigitsNumberRounder.RoundUInt64(ulong value) is not implemented in Uno.");
+		var digitCount = Rounder.GetDigitCount(magnitude);
+
+		if (digitCount <= SignificantDigits)
+		{
+			return magnitude;
+		}
+
+		var increment = Rounder.GetPowerOfTen(digitCount - (int)SignificantDigits);
+
+		return Rounder.RoundMagnitude(magnitude, increment, isNegative, RoundingAlgorithm);
 	}
 
 	public float RoundSingle(float value)
 	{
-		return (float)Math.Round(value, (int)SignificantDigits, MidpointRounding.AwayFromZero);
+		if (!float.IsFinite(value))
+		{
+			return float.NaN;
+		}
+
+		// WinRT uses binary32 scaling here, with more than eight significant digits left unchanged.
+		if (value == 0 || SignificantDigits > 8)
+		{
+			return value;
+		}
+
+		var exponent = (int)MathF.Floor(MathF.Log10(MathF.Abs(value)));
+		var decimalPlaces = (int)SignificantDigits - 1 - exponent;
+		if (decimalPlaces > 38)
+		{
+			return Rounder.RoundSingle(value * 1E38f, decimalPlaces - 38, RoundingAlgorithm) / 1E38f;
+		}
+
+		return Rounder.RoundSingle(value, decimalPlaces, RoundingAlgorithm);
 	}
 
 	public double RoundDouble(double value)
 	{
-		if (double.IsNaN(value) ||
-			double.IsInfinity(value))
+		if (!double.IsFinite(value))
 		{
 			return double.NaN;
 		}
 
-		var integerPart = (int)Math.Truncate(value);
-		var integerPartLength = (uint)integerPart.GetLength();
-		var diffLength = SignificantDigits - integerPartLength;
-
-		if (SignificantDigits < integerPartLength)
+		// Exact zero preserves its sign without treating subnormal inputs as zero.
+		if (value == 0 || SignificantDigits > 17)
 		{
-			diffLength = integerPartLength - SignificantDigits;
-			var pow10 = Math.Pow(10, diffLength);
-			value /= pow10;
-			value = Rounder.Round(value, 0, RoundingAlgorithm);
-			value *= pow10;
 			return value;
 		}
 
-		return Rounder.Round(value, (int)diffLength, RoundingAlgorithm);
+		// Match WinRT's decimal scaling order, including binary rounding at decade boundaries.
+		var exponent = (int)Math.Floor(Math.Log10(Math.Abs(value)));
+		var decimalPlaces = (int)SignificantDigits - 1 - exponent;
+		if (decimalPlaces > 308)
+		{
+			// Split an otherwise overflowing factor; do not renormalize through a rounded tiny divisor.
+			return Rounder.Round(value * 1E308, decimalPlaces - 308, RoundingAlgorithm) / 1E308;
+		}
+
+		return Rounder.Round(value, decimalPlaces, RoundingAlgorithm);
 	}
 }

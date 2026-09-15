@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference src\controls\dev\Generated\NumberBox.properties.cpp, tag winui3/release/1.7.1, commit 5f27a786ac9
+// MUX Reference controls\dev\Generated\NumberBox.properties.cpp, commit b8cfb849061c00df624ebb29ac4727b9e58ea99c
 
 #pragma warning disable 109 // Member does not hide an inherited member; new keyword is not required
 
@@ -31,6 +31,7 @@ partial class NumberBox
 			nameof(AcceptsExpression),
 			typeof(bool),
 			typeof(NumberBox),
+			// Uno-specific: Update InputScope when expression mode changes.
 			new FrameworkPropertyMetadata(false, (s, e) => (s as NumberBox)?.OnAcceptsExpressionPropertyChanged(e)));
 
 	/// <summary>
@@ -250,7 +251,11 @@ partial class NumberBox
 	/// <summary>
 	/// Gets or sets the flyout that is shown when text is selected, or null if no flyout is shown.
 	/// </summary>
-	[Uno.NotImplemented] // TODO:
+	// Uno specific: SelectionFlyout propagates via TemplateBinding to the InputBox TextBox part (see NumberBox.xaml),
+	// whose SelectionFlyout is only implemented on Skia (see TextBox.skia.cs). Match TextBox's platform support here.
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__ || __NETSTD_REFERENCE__
+	[Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__", "__NETSTD_REFERENCE__")]
+#endif
 	public FlyoutBase SelectionFlyout
 	{
 		get => (FlyoutBase)GetValue(SelectionFlyoutProperty);
@@ -260,6 +265,9 @@ partial class NumberBox
 	/// <summary>
 	/// Identifies the SelectionFlyout dependency property.
 	/// </summary>
+#if __ANDROID__ || __APPLE_UIKIT__ || __WASM__ || __NETSTD_REFERENCE__
+	[Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "__WASM__", "__NETSTD_REFERENCE__")]
+#endif
 	public static DependencyProperty SelectionFlyoutProperty { get; } =
 		DependencyProperty.Register(
 			nameof(SelectionFlyout),

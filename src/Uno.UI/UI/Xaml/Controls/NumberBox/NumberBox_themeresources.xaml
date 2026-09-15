@@ -1,5 +1,5 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
-<!-- MUX Reference NumberBox_themeresources.xaml, commit 2337f7b828eddb33b75a97154f3ca9575d732657 -->
+<!-- MUX Reference controls\dev\NumberBox\NumberBox_themeresources.xaml, commit b8cfb849061c00df624ebb29ac4727b9e58ea99c -->
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:contract7Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract,7)"
@@ -22,6 +22,7 @@
             <Thickness x:Key="NumberBoxPopupSpinButtonBorderThickness">0</Thickness>
         </ResourceDictionary>
 
+        <!-- Uno-specific: Legacy/UWP theme dictionaries use "Dark"; FluentTheme.v2 uses WinUI's "Default". -->
         <ResourceDictionary x:Key="Dark">
             <StaticResource x:Key="NumberBoxPopupIndicatorForeground" ResourceKey="TextFillColorSecondaryBrush" />
             <contract7NotPresent:StaticResource x:Key="SystemControlDescriptionTextForegroundBrush" ResourceKey="TextFillColorSecondaryBrush" />
