@@ -45,6 +45,12 @@ public class Given_ItemsRepeater_FastScroll
 		</DataTemplate>
 		""";
 
+	private const string ItemTemplateSquareXaml = """
+		<DataTemplate xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+			<Border Width="{Binding Height}" Height="{Binding Height}" Background="{Binding Background}" />
+		</DataTemplate>
+		""";
+
 	[TestMethod]
 #if __ANDROID__ || __IOS__ || __WASM__
 	[Ignore("Fails due to async native scrolling.")]
@@ -498,6 +504,131 @@ public class Given_ItemsRepeater_FastScroll
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_ItemsSourceReplaced_Then_ExtentOriginIsReset()
+	{
+#if HAS_UNO
+		var sut = CreateMixedTemplateSut(itemCount: 150, viewport: new Size(360, 600));
+		await LoadAsync(sut);
+		await ScrollInStepsAsync(sut, 1200);
+
+		var state = GetStackLayoutState(sut.Repeater);
+		double.IsNaN(state.Uno_LastReportedExtentMajorStart).Should().BeFalse();
+
+		var replacement = new ObservableCollection<ItemModel>(
+			Enumerable.Range(0, 150)
+				.Select(i => new ItemModel(1000 + i, 48, ColorForIndex(i))));
+		sut.Repeater.ItemsSource = replacement;
+
+		double.IsNaN(state.Uno_LastReportedExtentMajorStart).Should().BeTrue(
+			"source replacement raises Reset and must invalidate the origin derived from the old item sizes");
+
+		sut.Scroller.ChangeView(null, 0, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+		sut.Repeater.UpdateLayout();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		double.IsNaN(state.Uno_LastReportedExtentMajorStart).Should().BeFalse(
+			"the replacement source must establish a new origin during its first layout");
+		var first = sut.Repeater.TryGetElement(0) as FrameworkElement;
+		first.Should().NotBeNull();
+		first!.TransformToVisual(sut.Scroller).TransformPoint(new Point(0, 0)).Y
+			.Should().BeApproximately(0, OffsetTolerance);
+#else
+		Assert.Inconclusive("Uno-specific extent-origin state is unavailable on native WinUI.");
+#endif
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_OrientationChanges_Then_ExtentOriginUsesNewConfiguration()
+	{
+#if HAS_UNO
+		var sut = CreateOrientationChangeSut(itemCount: 150, viewport: new Size(400, 400));
+		await LoadAsync(sut);
+		await ScrollInStepsAsync(sut, 1200);
+
+		var layout = (StackLayout)sut.Repeater.Layout;
+		var state = GetStackLayoutState(sut.Repeater);
+		state.Uno_ExtentMajorStartConfigurationVersion
+			.Should().Be(layout.Uno_ExtentMajorStartConfigurationVersion);
+
+		layout.Orientation = Orientation.Horizontal;
+		state.Uno_ExtentMajorStartConfigurationVersion
+			.Should().NotBe(layout.Uno_ExtentMajorStartConfigurationVersion,
+				"changing the major axis must invalidate the origin calculated for the previous axis");
+
+		sut.Scroller.ChangeView(1200, 0, null, disableAnimation: true);
+		await TestServices.WindowHelper.WaitForIdle();
+		sut.Repeater.UpdateLayout();
+		await TestServices.WindowHelper.WaitForIdle();
+
+		state.Uno_ExtentMajorStartConfigurationVersion
+			.Should().Be(layout.Uno_ExtentMajorStartConfigurationVersion);
+		AssertNoOverlapHorizontal(sut);
+		foreach (var child in EnumerateRepeaterChildren(sut.Repeater).Where(child => child.ActualWidth > 0))
+		{
+			double.IsFinite(child.ActualOffset.X).Should().BeTrue();
+		}
+#else
+		Assert.Inconclusive("Uno-specific extent-origin state is unavailable on native WinUI.");
+#endif
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_LayoutStateReusedForNewContext_Then_ExtentOriginIsReset()
+	{
+#if HAS_UNO
+		var sharedState = new StackLayoutState();
+		var sharedLayout = new StackLayout();
+		var first = CreateSutWithLayoutState(
+			Enumerable.Range(0, 150)
+				.Select(i => new ItemModel(i, MixedTemplateHeight(i), ColorForIndex(i)))
+				.ToArray(),
+			new Size(360, 600),
+			sharedLayout,
+			sharedState);
+
+		try
+		{
+			await LoadAsync(first);
+			await ScrollInStepsAsync(first, 1200);
+			double.IsNaN(sharedState.Uno_LastReportedExtentMajorStart).Should().BeFalse();
+
+			first.Repeater.Layout = new StackLayout();
+			double.IsNaN(sharedState.Uno_LastReportedExtentMajorStart).Should().BeTrue(
+				"detaching a layout must invalidate origin state tied to its old context");
+
+			TestServices.WindowHelper.WindowContent = null;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var second = CreateSutWithLayoutState(
+				Enumerable.Range(0, 150)
+					.Select(i => new ItemModel(1000 + i, 48, ColorForIndex(i)))
+					.ToArray(),
+				new Size(360, 600),
+				sharedLayout,
+				sharedState);
+			await LoadAsync(second);
+
+			double.IsNaN(sharedState.Uno_LastReportedExtentMajorStart).Should().BeFalse(
+				"the reused state must establish an origin for the new context");
+			var firstElement = second.Repeater.TryGetElement(0) as FrameworkElement;
+			firstElement.Should().NotBeNull();
+			firstElement!.TransformToVisual(second.Scroller).TransformPoint(new Point(0, 0)).Y
+				.Should().BeApproximately(0, OffsetTolerance);
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+#else
+		Assert.Inconclusive("Uno-specific extent-origin state is unavailable on native WinUI.");
+#endif
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 #if __ANDROID__ || __IOS__ || __WASM__
 	[Ignore("Fails due to async native scrolling.")]
 #endif
@@ -665,6 +796,69 @@ public class Given_ItemsRepeater_FastScroll
 
 		return new SutHandle(scroller, repeater, source);
 	}
+
+	private static SutHandle CreateOrientationChangeSut(int itemCount, Size viewport)
+	{
+		var source = new ObservableCollection<ItemModel>(
+			Enumerable.Range(0, itemCount)
+				.Select(i => new ItemModel(i, MixedTemplateHeight(i), ColorForIndex(i))));
+		var template = (DataTemplate)XamlReader.Load(ItemTemplateSquareXaml);
+
+		ItemsRepeater repeater = new()
+		{
+			ItemsSource = source,
+			Layout = new StackLayout { Orientation = Orientation.Vertical },
+			ItemTemplate = template,
+		};
+
+		ScrollViewer scroller = new()
+		{
+			Width = viewport.Width,
+			Height = viewport.Height,
+			Content = repeater,
+			HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+			VerticalScrollBarVisibility = ScrollBarVisibility.Visible,
+		};
+
+		return new SutHandle(scroller, repeater, source);
+	}
+
+#if HAS_UNO
+	private static SutHandle CreateSutWithLayoutState(
+		IReadOnlyList<ItemModel> items,
+		Size viewport,
+		StackLayout layout,
+		StackLayoutState layoutState)
+	{
+		var source = new ObservableCollection<ItemModel>(items);
+		var template = (DataTemplate)XamlReader.Load(ItemTemplateXaml);
+		var repeater = new ItemsRepeater
+		{
+			LayoutState = layoutState,
+			Layout = layout,
+			ItemsSource = source,
+			ItemTemplate = template,
+			VerticalAlignment = VerticalAlignment.Bottom,
+		};
+		var scroller = new ScrollViewer
+		{
+			Width = viewport.Width,
+			Height = viewport.Height,
+			Content = repeater,
+			HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+			VerticalScrollBarVisibility = ScrollBarVisibility.Visible,
+		};
+
+		return new SutHandle(scroller, repeater, source);
+	}
+
+	private static StackLayoutState GetStackLayoutState(ItemsRepeater repeater)
+	{
+		var state = repeater.LayoutState as StackLayoutState;
+		state.Should().NotBeNull();
+		return state!;
+	}
+#endif
 
 	private static SutHandle CreateSut(IReadOnlyList<ItemModel> items, Size viewport)
 	{

@@ -10,6 +10,9 @@ namespace Microsoft.UI.Xaml.Controls;
 partial class StackLayout
 {
 	private ScrollOrientation _scrollOrientation;
+	private uint _extentMajorStartConfigurationVersion;
+
+	internal uint Uno_ExtentMajorStartConfigurationVersion => _extentMajorStartConfigurationVersion;
 
 	ScrollOrientation OrientationBasedMeasures.ScrollOrientation
 	{
@@ -49,6 +52,8 @@ partial class StackLayout
 		=> ((OrientationBasedMeasures)this).MinorMajorSize(minor, major);
 #pragma warning restore IDE0051
 
+	private void InvalidateExtentMajorStart() => _extentMajorStartConfigurationVersion++;
+
 	private double StabilizeExtentMajorStart(
 		StackLayoutState stackState,
 		int firstRealizedItemIndex,
@@ -56,7 +61,9 @@ partial class StackLayout
 		double formulaMajorStart)
 	{
 		var previousMajorStart = stackState.Uno_LastReportedExtentMajorStart;
-		var hasPreviousMajorStart = !double.IsNaN(previousMajorStart);
+		var hasPreviousMajorStart =
+			stackState.Uno_ExtentMajorStartConfigurationVersion == _extentMajorStartConfigurationVersion &&
+			!double.IsNaN(previousMajorStart);
 
 		// Uno's ScrollContentPresenter does not compensate ItemsRepeater origin shifts.
 		// Keep the origin stable while the running size estimate changes during scrolling.
@@ -68,6 +75,7 @@ partial class StackLayout
 				: previousMajorStart;
 
 		stackState.Uno_LastReportedExtentMajorStart = majorStart;
+		stackState.Uno_ExtentMajorStartConfigurationVersion = _extentMajorStartConfigurationVersion;
 		return majorStart;
 	}
 }

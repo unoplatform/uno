@@ -365,10 +365,16 @@ partial class StackLayout
 			SetScrollOrientation(scrollOrientation);
 
 			UpdateIndexBasedLayoutOrientation(orientation);
+#if HAS_UNO
+			InvalidateExtentMajorStart();
+#endif
 		}
 		else if (property == SpacingProperty)
 		{
 			m_itemSpacing = (double)args.NewValue;
+#if HAS_UNO
+			InvalidateExtentMajorStart();
+#endif
 		}
 
 		InvalidateLayout();
