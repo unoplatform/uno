@@ -170,6 +170,9 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			AccessibilityPeerHelper.IOSAllNodeSnapshotsForRootAccessor =
 				root => FindAdapterForRoot(root)?.GetAllSnapshotsForRoot(root);
 
+			AccessibilityPeerHelper.IOSAccessibilityCustomContentValuesAccessor =
+				element => FindAdapterForElement(element)?.GetCustomContentValuesForOwner(element);
+
 			AccessibilityPeerHelper.IOSAccessibilityActionAccessor =
 				(element, request) =>
 					FindAdapterForElement(element)?.ExecuteAction(element, request) ?? false;
@@ -424,6 +427,13 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			.Select(CreateSnapshot)
 			.ToArray();
 	}
+
+	private string[]? GetCustomContentValuesForOwner(UIElement owner)
+		=> GetElementForOwner(owner) is UnoUIAccessibilityElement element
+			? element.AccessibilityCustomContent?
+				.Select(static content => content.Value)
+				.ToArray()
+			: null;
 
 	private void SetAccessibilityElements(
 		UnoSKMetalView metalView,
