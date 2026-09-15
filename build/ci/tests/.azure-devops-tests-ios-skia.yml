@@ -35,7 +35,7 @@ jobs:
       JobTimeoutInMinutes: 90
       vmImage: ${{ parameters.vmMacImageTest }}
       UITEST_SNAPSHOTS_ONLY: false
-      UITEST_TEST_TIMEOUT: '90m'
+      UITEST_TEST_TIMEOUT: '75m'
       UITEST_AUTOMATED_GROUP: RuntimeTests
       UITEST_RUNTIME_TEST_GROUP: ${{ RuntimeTestGroup.key }}
       UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.IOS_RUNTIME_TEST_GROUP_COUNT }}
