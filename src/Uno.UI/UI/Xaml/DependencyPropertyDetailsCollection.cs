@@ -13,8 +13,13 @@ namespace Microsoft.UI.Xaml
 	/// </summary>
 	partial class DependencyPropertyDetailsCollection : IDisposable
 	{
-		private readonly ManagedWeakReference _ownerReference;
-		private object? _hardOwnerReference;
+		// The owning DependencyObject is held strongly, which is safe only because this collection never
+		// escapes it: the DO <-> collection cycle is then unreachable as a unit and the tracing GC
+		// collects it whole. Holding it strongly avoids renting a pooled weak self-handle
+		// (ManagedGCHandle) per DependencyObject.
+		// INVARIANT: never store this collection, or a closure capturing it, outside the owning
+		// DependencyObject. Doing so would transitively pin the owner and every object it references.
+		private readonly DependencyObject _owner;
 		// Null when the owner is not a FrameworkElement (DataContext is FrameworkElement-only).
 		private readonly DependencyProperty? _dataContextProperty;
 		private DependencyPropertyDetails? _dataContextPropertyDetails;
@@ -29,14 +34,14 @@ namespace Microsoft.UI.Xaml
 
 		private const int BucketSize = 16;
 
-		private object? Owner => _hardOwnerReference ?? _ownerReference.Target;
+		private DependencyObject Owner => _owner;
 
 		/// <summary>
 		/// Creates an instance using the specified DependencyObject <see cref="Type"/>
 		/// </summary>
-		public DependencyPropertyDetailsCollection(ManagedWeakReference ownerReference, DependencyProperty? dataContextProperty)
+		public DependencyPropertyDetailsCollection(DependencyObject owner, DependencyProperty? dataContextProperty)
 		{
-			_ownerReference = ownerReference;
+			_owner = owner;
 
 			_dataContextProperty = dataContextProperty;
 
@@ -147,8 +152,9 @@ namespace Microsoft.UI.Xaml
 				// Offsets have not been initialized or need to be resized
 				if (entryOffsets == null || bucketIndex >= entryOffsets.Length)
 				{
-					// Rent the next multiple of BucketSize available : 0 -> 16, 16 -> 32, 32 -> 64 ...
-					var newOffsets = _offsetsPool.Rent((bucketIndex * BucketSize) + 1);
+					// Indexed by bucketIndex alone, so bucketIndex + 1 slots are enough. The pool rounds the
+					// request up to a power-of-two bucket, which already provides amortized growth.
+					var newOffsets = _offsetsPool.Rent(bucketIndex + 1);
 
 					// Since newOffsets is an Int16 array we can memset it with 0xFFs, 0xFFFF is -1, regardless of endianness
 					// This avoids the slow path in Span<T>.Fill()
@@ -231,14 +237,5 @@ namespace Microsoft.UI.Xaml
 			// If _entries is null, it means we were already disposed. Gracefully return empty so that the caller doesn't have anything to do.
 			=> _entries ?? _empty;
 
-		internal void TryEnableHardReferences()
-		{
-			_hardOwnerReference = _ownerReference.Target;
-		}
-
-		internal void DisableHardReferences()
-		{
-			_hardOwnerReference = null;
-		}
 	}
 }

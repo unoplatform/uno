@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DatePickerFlyoutPresenter
+	public partial class DatePickerFlyoutPresenter : global::Microsoft.UI.Xaml.Controls.Control
 	{
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]

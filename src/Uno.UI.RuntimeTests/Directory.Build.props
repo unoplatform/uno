@@ -2,5 +2,13 @@
 	<Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
 	<PropertyGroup>
 		<UnoGenerateXamlSourcesProvider>True</UnoGenerateXamlSourcesProvider>
+
+		<!--
+		The AlcApp / HRApp / HRUnoLib helper projects live under Tests/, inside this project's glob cone.
+		The repo-wide exclusion is `obj/**;bin/**`, which is relative to the project directory and so does
+		not cover theirs — once any of them has been built, their generated AssemblyAttributes.cs is picked
+		up here and the compile fails with CS0579.
+		-->
+		<DefaultItemExcludes>$(DefaultItemExcludes);Tests/**/obj/**;Tests/**/bin/**</DefaultItemExcludes>
 	</PropertyGroup>
 </Project>

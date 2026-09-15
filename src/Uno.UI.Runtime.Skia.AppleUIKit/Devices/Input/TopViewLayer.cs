@@ -13,6 +13,11 @@ namespace Uno.WinUI.Runtime.Skia.AppleUIKit.UI.Xaml;
 /// </summary>
 internal partial class TopViewLayer : UIView
 {
+	/// <summary>
+	/// This view's own pointer input source. One per window - see <see cref="AppleUIKitCorePointerInputSource"/>.
+	/// </summary>
+	internal AppleUIKitCorePointerInputSource PointerInputSource { get; } = new();
+
 	public TopViewLayer()
 	{
 #if __IOS__
@@ -49,7 +54,7 @@ internal partial class TopViewLayer : UIView
 	private UIPanGestureRecognizer CreateScrollGesture(UIScrollTypeMask scrollTypeMask, bool isDiscrete)
 	{
 		void HandleScrollGesture(UIPanGestureRecognizer gesture) =>
-			AppleUIKitCorePointerInputSource.Instance.HandleScrollFromGesture(this, gesture, _isNaturalScrollingEnabled, isDiscrete);
+			PointerInputSource.HandleScrollFromGesture(this, gesture, _isNaturalScrollingEnabled, isDiscrete);
 		return new UIPanGestureRecognizer(HandleScrollGesture)
 		{
 			AllowedScrollTypesMask = scrollTypeMask,
@@ -93,25 +98,25 @@ internal partial class TopViewLayer : UIView
 
 	public override void TouchesBegan(NSSet touches, UIEvent? evt)
 	{
-		AppleUIKitCorePointerInputSource.Instance.TouchesBegan(this, touches, evt);
+		PointerInputSource.TouchesBegan(this, touches, evt);
 		base.TouchesBegan(touches, evt);
 	}
 
 	public override void TouchesMoved(NSSet touches, UIEvent? evt)
 	{
-		AppleUIKitCorePointerInputSource.Instance.TouchesMoved(this, touches, evt);
+		PointerInputSource.TouchesMoved(this, touches, evt);
 		base.TouchesMoved(touches, evt);
 	}
 
 	public override void TouchesEnded(NSSet touches, UIEvent? evt)
 	{
-		AppleUIKitCorePointerInputSource.Instance.TouchesEnded(this, touches, evt);
+		PointerInputSource.TouchesEnded(this, touches, evt);
 		base.TouchesEnded(touches, evt);
 	}
 
 	public override void TouchesCancelled(NSSet touches, UIEvent? evt)
 	{
-		AppleUIKitCorePointerInputSource.Instance.TouchesCancelled(this, touches, evt);
+		PointerInputSource.TouchesCancelled(this, touches, evt);
 		base.TouchesCancelled(touches, evt);
 	}
 }
