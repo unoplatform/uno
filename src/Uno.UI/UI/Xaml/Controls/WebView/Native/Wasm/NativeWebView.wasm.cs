@@ -4,6 +4,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Net.Http;
 using System.Runtime.InteropServices.JavaScript;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Web.WebView2.Core;
@@ -20,10 +21,105 @@ using ElementId = System.IntPtr;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-internal partial class NativeWebView : ICleanableNativeWebView
+internal partial class NativeWebView : ICleanableNativeWebView, Uno.UI.Xaml.Controls.ISupportsClose, Uno.UI.Xaml.Controls.ISupportsUserAgent, Uno.UI.Xaml.Controls.ISupportsScriptEnabled, Uno.UI.Xaml.Controls.ISupportsZoomControl, Uno.UI.Xaml.Controls.ISupportsPostWebMessage, Uno.UI.Xaml.Controls.ISupportsDocumentCreatedScripts, Uno.UI.Xaml.Controls.ISupportsCookieManager, Uno.UI.Xaml.Controls.ISupportsPrint
 {
+	Task<global::System.IO.Stream> Uno.UI.Xaml.Controls.ISupportsPrint.PrintToPdfStreamAsync(CoreWebView2PrintSettings? settings, CancellationToken ct)
+		=> throw new NotSupportedException(
+			"CoreWebView2.PrintToPdfStreamAsync is not supported on the WebAssembly browser host: " +
+			"the browser does not expose an API for the parent document to render iframe content to a PDF stream.");
+
+	async Task<CoreWebView2PrintStatus> Uno.UI.Xaml.Controls.ISupportsPrint.ShowPrintUIAsync(CoreWebView2PrintDialogKind dialogKind, CancellationToken ct)
+	{
+		ct.ThrowIfCancellationRequested();
+		NativeMethods.ShowPrintUI(_elementId);
+		await Task.Yield();
+		return CoreWebView2PrintStatus.Succeeded;
+	}
+
+	private const string WasmCookiesNotSupported =
+		"CoreWebView2.CookieManager is not supported on the WebAssembly browser host: " +
+		"the browser same-origin policy prevents the host from enumerating or mutating an iframe's cookie store.";
+
+	Task<global::System.Collections.Generic.IReadOnlyList<CoreWebView2Cookie>> Uno.UI.Xaml.Controls.ISupportsCookieManager.GetCookiesAsync(string uri, CancellationToken ct)
+		=> throw new NotSupportedException(WasmCookiesNotSupported);
+
+	void Uno.UI.Xaml.Controls.ISupportsCookieManager.AddOrUpdateCookie(CoreWebView2Cookie cookie) => throw new NotSupportedException(WasmCookiesNotSupported);
+
+	void Uno.UI.Xaml.Controls.ISupportsCookieManager.DeleteCookie(CoreWebView2Cookie cookie) => throw new NotSupportedException(WasmCookiesNotSupported);
+
+	void Uno.UI.Xaml.Controls.ISupportsCookieManager.DeleteCookies(string name, string? uri) => throw new NotSupportedException(WasmCookiesNotSupported);
+
+	void Uno.UI.Xaml.Controls.ISupportsCookieManager.DeleteCookiesWithDomainAndPath(string name, string domain, string path) => throw new NotSupportedException(WasmCookiesNotSupported);
+
+	void Uno.UI.Xaml.Controls.ISupportsCookieManager.DeleteAllCookies() => throw new NotSupportedException(WasmCookiesNotSupported);
+
+	Task<string> Uno.UI.Xaml.Controls.ISupportsDocumentCreatedScripts.AddScriptToExecuteOnDocumentCreatedAsync(string javaScript, CancellationToken ct)
+		=> throw new NotSupportedException(
+			"AddScriptToExecuteOnDocumentCreatedAsync is not supported on the WebAssembly browser host: " +
+			"the browser does not expose an iframe document-start hook to its host page.");
+
+	void Uno.UI.Xaml.Controls.ISupportsDocumentCreatedScripts.RemoveScriptToExecuteOnDocumentCreated(string id) =>
+		throw new NotSupportedException(
+			"RemoveScriptToExecuteOnDocumentCreated is not supported on the WebAssembly browser host: " +
+			"the browser does not expose an iframe document-start hook to its host page.");
+
+	private string? _requestedUserAgent;
+	private bool _requestedIsScriptEnabled = true;
+	private bool _requestedIsZoomControlEnabled = true;
+
+	string? Uno.UI.Xaml.Controls.ISupportsUserAgent.UserAgent
+	{
+		get => _requestedUserAgent;
+		set
+		{
+			if (value is not null)
+			{
+				throw new NotSupportedException("CoreWebView2Settings.UserAgent cannot override the browser user agent on WebAssembly.");
+			}
+
+			_requestedUserAgent = value;
+		}
+	}
+
+	bool Uno.UI.Xaml.Controls.ISupportsScriptEnabled.IsScriptEnabled
+	{
+		get => _requestedIsScriptEnabled;
+		set
+		{
+			if (!value)
+			{
+				throw new NotSupportedException("CoreWebView2Settings.IsScriptEnabled cannot disable scripts in an iframe on WebAssembly.");
+			}
+
+			_requestedIsScriptEnabled = value;
+		}
+	}
+
+	bool Uno.UI.Xaml.Controls.ISupportsZoomControl.IsZoomControlEnabled
+	{
+		get => _requestedIsZoomControlEnabled;
+		set
+		{
+			if (!value)
+			{
+				throw new NotSupportedException("CoreWebView2Settings.IsZoomControlEnabled cannot disable browser zoom on WebAssembly.");
+			}
+
+			_requestedIsZoomControlEnabled = value;
+		}
+	}
+
+	void Uno.UI.Xaml.Controls.ISupportsPostWebMessage.PostWebMessageAsJson(string json) =>
+		NativeMethods.PostWebMessage(_elementId, json, isJson: true);
+
+	void Uno.UI.Xaml.Controls.ISupportsPostWebMessage.PostWebMessageAsString(string message) =>
+		NativeMethods.PostWebMessage(_elementId, message, isJson: false);
+
 	private readonly CoreWebView2 _coreWebView;
 	private readonly ElementId _elementId;
+	private bool _navigationPending;
+	private bool _isClosed;
+	private Uri? _pendingNavigationUri;
 	private static readonly ConcurrentDictionary<ElementId, NativeWebView> _elementIdToNativeWebView = new();
 
 	public NativeWebView(CoreWebView2 coreWebView, ElementId elementId)
@@ -86,18 +182,23 @@ internal partial class NativeWebView : ICleanableNativeWebView
 
 	private void OnNavigationCompleted(object sender, string? absoluteUrl)
 	{
-		if (_coreWebView is null)
+		if (!_navigationPending)
 		{
 			return;
 		}
 
-		var uriString = string.IsNullOrEmpty(absoluteUrl) ? NativeMethods.GetAttribute(_elementId, "src") : absoluteUrl;
-		Uri uri = CoreWebView2.BlankUri;
-		if (!string.IsNullOrEmpty(uriString))
+		_navigationPending = false;
+		var uri = _pendingNavigationUri ?? CoreWebView2.BlankUri;
+		if (uri != CoreWebView2.BlankUri
+			&& !string.IsNullOrEmpty(absoluteUrl)
+			&& Uri.TryCreate(absoluteUrl, UriKind.Absolute, out var actualUri))
 		{
-			uri = new Uri(uriString);
+			uri = actualUri;
 		}
+		_pendingNavigationUri = null;
 
+		_coreWebView.RaiseContentLoading();
+		_coreWebView.RaiseDOMContentLoaded();
 		_coreWebView.OnDocumentTitleChanged();
 		_coreWebView.RaiseNavigationCompleted(uri, true, 200, CoreWebView2WebErrorStatus.Unknown);
 	}
@@ -105,24 +206,26 @@ internal partial class NativeWebView : ICleanableNativeWebView
 	public async Task<string?> ExecuteScriptAsync(string script, CancellationToken token)
 	{
 		await Task.Yield();
-		var result = NativeMethods.ExecuteScript(_elementId, script);
-
-		// String needs to be wrapped in quotes to match Windows behavior
-		return $"\"{result?.Replace("\"", "\\\"")}\"";
+		return NativeMethods.ExecuteScript(_elementId, script);
 	}
 
-	public Task<string?> InvokeScriptAsync(string script, string[]? arguments, CancellationToken token) =>
-		throw new NotSupportedException("InvokeScriptAsync with arguments is not yet supported on this platform.");
+	public Task<string?> InvokeScriptAsync(string script, string[]? arguments, CancellationToken token)
+	{
+		var serializedArguments = arguments is null ? string.Empty : JsonSerializer.Serialize(arguments)[1..^1];
+		return ExecuteScriptAsync($"{script}({serializedArguments})", token);
+	}
 
-	private void ScheduleNavigationStarting(string? url, Action loadAction)
+	private void ScheduleNavigationStarting(object navigationData, Uri completionUri, Action loadAction)
 	{
 		_ = _coreWebView.Owner.Dispatcher.RunAsync(global::Windows.UI.Core.CoreDispatcherPriority.High, () =>
 		{
-			_coreWebView.RaiseNavigationStarting(url, out var cancel);
+			_coreWebView.RaiseNavigationStarting(navigationData, out var cancel);
 
 			if (!cancel)
 			{
-				loadAction?.Invoke();
+				_pendingNavigationUri = completionUri;
+				_navigationPending = true;
+				loadAction.Invoke();
 			}
 		});
 	}
@@ -154,18 +257,50 @@ internal partial class NativeWebView : ICleanableNativeWebView
 			}
 		}
 
-		ScheduleNavigationStarting(uriString, () => NativeMethods.Navigate(_elementId, uriString));
-		OnNavigationCompleted(this, null);
+		ScheduleNavigationStarting(uri, uri, () => NativeMethods.Navigate(_elementId, uriString));
 	}
 
 	public void ProcessNavigation(string html)
 	{
-		ScheduleNavigationStarting(null, () => NativeMethods.SetAttribute(_elementId, "srcdoc", html));
-		OnNavigationCompleted(this, null);
+		ScheduleNavigationStarting(html, CoreWebView2.BlankUri, () => NativeMethods.SetAttribute(_elementId, "srcdoc", AddWebMessageBridge(html)));
+	}
+
+	private static string AddWebMessageBridge(string html)
+	{
+		const string bridge = """
+			<script>
+			(function () {
+				window.chrome = window.chrome || {};
+				var webview = window.chrome.webview = window.chrome.webview || {};
+				if (webview.__unoListeners) { return; }
+				var listeners = webview.__unoListeners = [];
+				webview.addEventListener = function (type, handler) {
+					if (type === 'message' && typeof handler === 'function') { listeners.push(handler); }
+				};
+				webview.removeEventListener = function (type, handler) {
+					if (type !== 'message') { return; }
+					var index = listeners.indexOf(handler);
+					if (index >= 0) { listeners.splice(index, 1); }
+				};
+				webview.postMessage = function (message) {
+					var payload = JSON.stringify(message);
+					window.parent.Microsoft.UI.Xaml.Controls.WebView.dispatchWebMessage(window.frameElement.id, payload === undefined ? 'null' : payload);
+				};
+				webview.__unoDispatchMessage = function (data) {
+					var event = typeof MessageEvent === 'function' ? new MessageEvent('message', { data: data }) : { data: data };
+					listeners.slice().forEach(function (handler) { try { handler(event); } catch (_) {} });
+				};
+			})();
+			</script>
+			""";
+
+		var doctypeEnd = html.StartsWith("<!doctype", StringComparison.OrdinalIgnoreCase) ? html.IndexOf('>') : -1;
+		return doctypeEnd >= 0 ? html.Insert(doctypeEnd + 1, bridge) : bridge + html;
 	}
 
 	public void ProcessNavigation(HttpRequestMessage httpRequestMessage)
 	{
+		throw new NotSupportedException("NavigateWithHttpRequestMessage is not supported by an HTML iframe on WebAssembly.");
 	}
 
 	public void Reload() => NativeMethods.Reload(_elementId);
@@ -178,17 +313,27 @@ internal partial class NativeWebView : ICleanableNativeWebView
 
 	public void SetScrollingEnabled(bool isScrollingEnabled) { }
 
-	public void Dispose()
+	void Uno.UI.Xaml.Controls.ISupportsClose.Close()
 	{
-		// Todo call this and reattach if needed
+		if (_isClosed)
+		{
+			return;
+		}
+
+		_isClosed = true;
 		_elementIdToNativeWebView.TryRemove(_elementId, out _);
+		NativeMethods.Close(_elementId);
 	}
 
 	public void OnLoaded()
 	{
+		if (_isClosed)
+		{
+			return;
+		}
+
 		_elementIdToNativeWebView.TryAdd(_elementId, this);
 		NativeMethods.SetupEvents(_elementId);
-		DispatchLoadEvent(_elementId, null);
 	}
 
 	public void OnUnloaded()
