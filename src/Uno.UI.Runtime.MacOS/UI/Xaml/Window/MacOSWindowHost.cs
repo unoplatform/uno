@@ -341,7 +341,7 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 
 	public UIElement? RootElement => _winUIWindow.RootElement;
 
-	SkiaAccessibilityBase? IAccessibilityOwner.Accessibility => _accessibility;
+	public SkiaAccessibilityBase? Accessibility => _accessibility;
 
 	internal nint NativeWindowHandle => _nativeWindow.Handle;
 
