@@ -4,10 +4,20 @@ parameters:
   haveCheckout: true
 
 steps:
-  - bash: |
-      rm global.json
+  - pwsh: |
       # The file is named _global.json to avoid being picked up by the UseDotnet@2 task
-      cp build/ci/${{ parameters.globalJsonSubdir }}/_global.json global.json
+      Copy-Item build/ci/${{ parameters.globalJsonSubdir }}/_global.json global.json -Force
+
+      # UseDotNet@2's useGlobalJson mode globs **/global.json across the whole checkout and warns
+      # once per file that carries no sdk.version -- which every src/SolutionTemplate global.json
+      # does, since they only pin Uno.Sdk.Private. Read the version here instead and install it by
+      # name, which also skips the repository-wide scan.
+      $sdkVersion = (Get-Content global.json -Raw | ConvertFrom-Json).sdk.version
+      if ([string]::IsNullOrWhiteSpace($sdkVersion)) {
+        throw "build/ci/${{ parameters.globalJsonSubdir }}/_global.json does not declare an sdk.version."
+      }
+      Write-Host "##vso[task.setvariable variable=GlobalJsonSdkVersion]$sdkVersion"
+      Write-Host "Pinned .NET SDK version: $sdkVersion"
     displayName: "Using .NET global.json from build/ci/${{ parameters.globalJsonSubdir }}"
     condition: ${{ eq(parameters.haveCheckout, true) }}
 
@@ -29,7 +39,8 @@ steps:
     condition: ${{ eq(parameters.haveCheckout, true) }}
     inputs:
       packageType: sdk
-      useGlobalJson: true
+      useGlobalJson: false
+      version: $(GlobalJsonSdkVersion)
       includePreviewVersions: true
       installationPath: $(DOTNET_INSTALL_DIR)
 
