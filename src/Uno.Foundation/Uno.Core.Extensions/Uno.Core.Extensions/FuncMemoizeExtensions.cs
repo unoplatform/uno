@@ -263,7 +263,7 @@ namespace Uno.Extensions
 		/// <returns>A memoized value</returns>
 		public static Func<TArg1, TArg2, TArg3, TResult> AsLockedMemoized<TArg1, TArg2, TArg3, TResult>(this Func<TArg1, TArg2, TArg3, TResult> func)
 		{
-#if XAMARIN
+#if __ANDROID__ || __APPLE_UIKIT__
 			var values = new Dictionary<CachedTuple<TArg1, TArg2, TArg3>, TResult>(CachedTuple<TArg1, TArg2, TArg3>.Comparer);
 
 			return (arg1, arg2, arg3) =>
@@ -305,7 +305,7 @@ namespace Uno.Extensions
 		/// <returns>A memoized value</returns>
 		public static Func<TArg1, TArg2, TArg3, TArg4, TResult> AsLockedMemoized<TArg1, TArg2, TArg3, TArg4, TResult>(this Func<TArg1, TArg2, TArg3, TArg4, TResult> func)
 		{
-#if XAMARIN
+#if __ANDROID__ || __APPLE_UIKIT__
 			var values = new Dictionary<CachedTuple<TArg1, TArg2, TArg3, TArg4>, TResult>(CachedTuple<TArg1, TArg2, TArg3, TArg4>.Comparer);
 
 			return (arg1, arg2, arg3, arg4) =>

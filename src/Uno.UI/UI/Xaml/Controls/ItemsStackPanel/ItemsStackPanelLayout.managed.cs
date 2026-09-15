@@ -1,5 +1,4 @@
-﻿#if !IS_UNIT_TESTS
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
@@ -9,16 +8,8 @@ using static System.Math;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __ANDROID__ || __APPLE_UIKIT__
-	internal partial class ManagedItemsStackPanelLayout : ManagedVirtualizingPanelLayout
-#else
 	partial class ItemsStackPanelLayout
-#endif
 	{
-#if __ANDROID__ || __APPLE_UIKIT__
-		public override Orientation ScrollOrientation => Orientation;
-#endif
-
 		private protected override Line CreateLine(GeneratorDirection fillDirection, double extentOffset, double availableBreadth, Uno.UI.IndexPath nextVisibleItem)
 		{
 			// The !IsMaterialized() check is what keeps this from generating a SECOND container for an index that
@@ -64,4 +55,3 @@ namespace Microsoft.UI.Xaml.Controls
 	}
 }
 
-#endif

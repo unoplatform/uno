@@ -74,7 +74,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				hasItems = true;
 
-				if (item is IDependencyObjectStoreProvider provider)
+				if (item is DependencyObject provider)
 				{
 					item.SetParent(null);
 				}

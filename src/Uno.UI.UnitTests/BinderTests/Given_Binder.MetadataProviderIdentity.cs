@@ -102,7 +102,7 @@ namespace Uno.UI.Tests.BinderTests
 			public IBindableType GetBindableTypeByFullName(string fullName) => _result;
 		}
 
-		public partial class MetadataIdentityControl : DependencyObject
+		public partial class MetadataIdentityControl : FrameworkElement
 		{
 			public string MyProperty
 			{

@@ -24,10 +24,10 @@ partial class InsetClip
 		}
 		if (_clipPath is null || _clipPath.Value.bounds != bounds)
 		{
-			var path = new SKPath();
+			var builder = new SKPathBuilder();
 			var rect = bounds.ToSKRect();
-			path.AddRect(rect);
-			_clipPath = (bounds, path);
+			builder.AddRect(rect);
+			_clipPath = (bounds, builder.Detach());
 		}
 		return _clipPath.Value.path;
 	}

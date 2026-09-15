@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-#if !IS_UNIT_TESTS
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +8,7 @@ using System.Text;
 
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-#if __ANDROID__ || __APPLE_UIKIT__
-using _VirtualizingPanelLayout = Microsoft.UI.Xaml.Controls.ManagedVirtualizingPanelLayout;
-#else
 using _VirtualizingPanelLayout = Microsoft.UI.Xaml.Controls.VirtualizingPanelLayout;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -368,4 +363,3 @@ namespace Microsoft.UI.Xaml.Controls
 	}
 }
 
-#endif

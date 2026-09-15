@@ -22,15 +22,7 @@ using Uno.UI.Helpers;
 using Uno.UI.Helpers.Xaml;
 using MyProject;
 
-#if HAS_UNO_SKIA
 using _View = Microsoft.UI.Xaml.UIElement;
-#elif __ANDROID__
-using _View = Android.Views.View;
-#elif __APPLE_UIKIT__ || __IOS__ || __TVOS__
-using _View = UIKit.UIView;
-#else
-using _View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace TestRepro
 {
@@ -53,8 +45,8 @@ namespace TestRepro
 			{
 				return 
 					global::MyProject.GlobalStaticResources.__PreserveProperties(
-						new global::Microsoft.UI.Xaml.DataTemplate(__ResourceOwner_1, Build_Pag_ResΞ0_DatTem)
-						.GenericApply(__that, __nameScope, ApplyTo_Pag_ResΞ0_DatTem)
+						global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(__ResourceOwner_1, Build_Pag_ResΞ0_DatTem)
+						.GenericApply(__that, __nameScope, __ResourceOwner_1, ApplyTo_Pag_ResΞ0_DatTem)
 					)
 				;
 			}
@@ -84,7 +76,7 @@ namespace TestRepro
 								IsParsing = true,
 								Name = "ButtonWithEmptyDataTemplate",
 								ContentTemplate = 								global::MyProject.GlobalStaticResources.__PreserveProperties(
-									new global::Microsoft.UI.Xaml.DataTemplate(this, Build_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem)
+									global::Uno.UI.Helpers.MarkupHelper.CreateDataTemplate(this, Build_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem)
 									.GenericApply(__that, __nameScope, ApplyTo_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem)
 								)
 								,
@@ -110,7 +102,7 @@ namespace TestRepro
 			((global::Microsoft.UI.Xaml.FrameworkElement)this).Unloaded += __StopTracking;
 		}
 		partial void OnInitializeCompleted();
-		private _View Build_Pag_ResΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private _View Build_Pag_ResΞ0_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 		{
 			"57da9b656b835e38693ff13bc03602d0df7d40b5".ToString(); // Forces this method to be updated (and use updated sub class type) when the file is being updated through Hot Reload
 			return new __EmptyDataTemplatePage_14a64d66c7071a2b54a8c9a36712e00c.__Pag_ResΞ0_DatTem().Build(__owner, __settings);
@@ -118,7 +110,7 @@ namespace TestRepro
 
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2026", Justification = "Generated code")]
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
-		private void ApplyTo_Pag_ResΞ0_DatTem(global::Microsoft.UI.Xaml.DataTemplate __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
+		private void ApplyTo_Pag_ResΞ0_DatTem(global::Microsoft.UI.Xaml.DataTemplate __p1, EmptyDataTemplatePage __that, global::Microsoft.UI.Xaml.NameScope __nameScope, object __ResourceOwner_1)
 		{
 			global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(__p1, "OriginalSourceLocation", "file://///Project/0/EmptyDataTemplatePage.xaml#L7:4");
 		}
@@ -134,7 +126,7 @@ namespace TestRepro
 			__p1.CreationComplete();
 		}
 
-		private _View Build_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem(object __owner, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+		private _View Build_PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem(object __owner, global::Uno.UI.TemplateMaterializationSettings __settings)
 		{
 			"57da9b656b835e38693ff13bc03602d0df7d40b5".ToString(); // Forces this method to be updated (and use updated sub class type) when the file is being updated through Hot Reload
 			return new __EmptyDataTemplatePage_14a64d66c7071a2b54a8c9a36712e00c.__PagΞ0_StaPanΞ1_But_ConTemΞ0_DatTem().Build(__owner, __settings);
@@ -223,7 +215,7 @@ namespace TestRepro
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
-				public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+				public _View Build(object __ResourceOwner_1, global::Uno.UI.TemplateMaterializationSettings __settings)
 				{
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;
@@ -254,7 +246,7 @@ namespace TestRepro
 				global::Microsoft.UI.Xaml.NameScope __nameScope = new global::Microsoft.UI.Xaml.NameScope();
 				global::System.Object __ResourceOwner_1;
 				_View __rootInstance = null;
-				public _View Build(object __ResourceOwner_1, global::Microsoft.UI.Xaml.TemplateMaterializationSettings __settings)
+				public _View Build(object __ResourceOwner_1, global::Uno.UI.TemplateMaterializationSettings __settings)
 				{
 					var __that = this;
 					this.__ResourceOwner_1 = __ResourceOwner_1;

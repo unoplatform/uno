@@ -75,20 +75,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void InitPartial()
 		{
-#if __IOS__ || __ANDROID__
-			DatePickerFlyout CreateFlyout()
-			{
-				var f = UseNativeStyle
-					? new NativeDatePickerFlyout()
-					: CreateManagedDatePickerFlyout();
-
-				f.DatePicked += OnPicked;
-
-				return f;
-			}
-
-			_lazyFlyout = new Lazy<DatePickerFlyout>(CreateFlyout);
-#elif __SKIA__
+#if __SKIA__
 			_lazyFlyout = new Lazy<DatePickerFlyout>(() =>
 			{
 				// UseNativeStyle has to be inside the lambda because InitPartial is called in the constructor, at which point the user didn't yet had the chance to set UseNativeStyle.

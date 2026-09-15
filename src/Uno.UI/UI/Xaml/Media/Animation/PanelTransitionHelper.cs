@@ -7,17 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Core;
-#if __ANDROID__
-using Android.Views;
-using View = Android.Views.View;
-using Point = Android.Graphics.Point;
-#elif __APPLE_UIKIT__
-using UIKit;
-using View = UIKit.UIView;
-using Point = System.Drawing.PointF;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -50,19 +40,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		private Dictionary<View, Point> GetChildrenPositionsFromSource()
 		{
 			var elements = new Dictionary<View, Point>();
-#if __ANDROID__
-			foreach (View item in _source.Children)
-			{
-				elements.Add(item, new Point((int)item.GetX(), (int)item.GetY()));
-			}
-#elif __APPLE_UIKIT__
-			foreach (View item in _source.Children)
-			{
-				var x = (int)item.Frame.X;
-				var y = (int)item.Frame.Y;
-				elements.Add(item, new Point(x, y));
-			}
-#endif
 			return elements;
 		}
 
@@ -78,11 +55,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			_previouslyAddedElements.Add(element);
 
 			//Hide the view before animation starts otherwise it will be seen as soon as its laid out
-#if __APPLE_UIKIT__
-			((UIKit.UIView)element).Hidden = true;
-#elif __ANDROID__
-			((AView)element).Visibility = ViewStates.Invisible;
-#endif
 
 			if (_onLoadedisAnimating)
 			{
@@ -118,11 +90,6 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 
 				//Restore the view before animating
-#if __APPLE_UIKIT__
-				((UIKit.UIView)child).Hidden = false;
-#elif __ANDROID__
-				((AView)child).Visibility = ViewStates.Visible;
-#endif
 
 				if (child.Transitions.Safe().Any() || !_elements.Contains(child))
 				{

@@ -22,15 +22,7 @@ using Uno.UI.Helpers;
 using Uno.UI.Helpers.Xaml;
 using MyProject;
 
-#if HAS_UNO_SKIA
 using _View = Microsoft.UI.Xaml.UIElement;
-#elif __ANDROID__
-using _View = Android.Views.View;
-#elif __APPLE_UIKIT__ || __IOS__ || __TVOS__
-using _View = UIKit.UIView;
-#else
-using _View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace TestRepro
 {
@@ -98,7 +90,7 @@ namespace TestRepro
 		[global::System.Diagnostics.CodeAnalysis.UnconditionalSuppressMessage("Trimming", "IL2111", Justification = "Generated code")]
 		private void ApplyTo_PagΞ0_Gri(global::Microsoft.UI.Xaml.Controls.Grid __p1, MainPage __that, global::Microsoft.UI.Xaml.NameScope __nameScope)
 		{
-			global::Uno.UI.Toolkit.VisibleBoundsPadding.SetPaddingMask(__p1, global::Uno.UI.Toolkit.VisibleBoundsPadding.PaddingMask.Top);
+			global::Uno.UI.Behaviors.VisibleBoundsPadding.SetPaddingMask(__p1, global::Uno.UI.Behaviors.VisibleBoundsPadding.PaddingMask.Top);
 			global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a, "file://///Project/0/MainPage.xaml", 8, 3);
 			__p1.CreationComplete();
 		}

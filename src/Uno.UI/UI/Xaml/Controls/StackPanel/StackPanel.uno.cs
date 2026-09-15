@@ -3,13 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
-#if __ANDROID__
-using Android.Views;
-#elif __APPLE_UIKIT__
-using View = UIKit.UIView;
-#else
 using View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Microsoft.UI.Xaml.Controls;
 

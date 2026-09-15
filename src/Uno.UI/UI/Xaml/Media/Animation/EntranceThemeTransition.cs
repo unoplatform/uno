@@ -81,7 +81,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 			animation.Duration = TimeSpan.FromMilliseconds(_duration.TimeSpan.TotalMilliseconds / 2); ;
 
-			Storyboard.SetTarget(animation, element);
+			Storyboard.SetTarget(animation, (DependencyObject)element);
 			Storyboard.SetTargetProperty(animation, "Opacity");
 
 			storyBoard.Children.Add(animation);

@@ -23,8 +23,7 @@ using Color = Windows.UI.Color;
 using Point = Windows.Foundation.Point;
 #if HAS_INPUT_INJECTOR
 using Windows.UI.Input.Preview.Injection;
-using Uno.UI.Toolkit.DevTools.Input;
-using Uno.UI.Toolkit.Extensions;
+using Uno.UI.DevTools.Input;
 #endif
 #if __APPLE_UIKIT__
 using UIKit;
@@ -424,7 +423,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 		[TestMethod]
 		[RequiresFullWindow]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/20193")]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI | RuntimeTestPlatforms.SkiaTvOS)]
 		public async Task When_TopNav_Resize_SelectedItem_Moves_To_Overflow_Does_Not_Throw()
 		{
 			// Issue #20193: resizing a Top-mode NavigationView so the selected item moves into the

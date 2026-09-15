@@ -18,33 +18,33 @@ internal sealed class Win32TextBoxNotificationsProviderSingleton : ITextBoxNotif
 	{
 	}
 
-	public void OnFocused(TextBox textBox)
+	public void OnFocused(TextBoxCore core)
 	{
 		_activeManager?.Deactivate();
 		_activeManager = null;
 
-		if (!TryGetHwnd(textBox, out var hwnd))
+		if (!TryGetHwnd(core, out var hwnd))
 		{
 			return;
 		}
 
 		_activeManager = new Win32ImeCaretManager(hwnd);
 
-		var (x, y) = GetCaretClientPixelPosition(textBox);
+		var (x, y) = GetCaretClientPixelPosition(core);
 		_activeManager.Activate(x, y);
 	}
 
-	public void OnUnfocused(TextBox textBox)
+	public void OnUnfocused(TextBoxCore core)
 	{
 		_activeManager?.Deactivate();
 		_activeManager = null;
 	}
 
-	public void OnEnteredVisualTree(TextBox textBox)
+	public void OnEnteredVisualTree(TextBoxCore core)
 	{
 	}
 
-	public void OnLeaveVisualTree(TextBox textBox)
+	public void OnLeaveVisualTree(TextBoxCore core)
 	{
 	}
 
@@ -52,40 +52,40 @@ internal sealed class Win32TextBoxNotificationsProviderSingleton : ITextBoxNotif
 	{
 	}
 
-	public void NotifyValueChanged(TextBox textBox)
+	public void NotifyValueChanged(TextBoxCore core)
 	{
-		UpdateCaretPosition(textBox);
+		UpdateCaretPosition(core);
 	}
 
-	public void NotifySelectionChanged(TextBox textBox)
+	public void NotifySelectionChanged(TextBoxCore core)
 	{
-		UpdateCaretPosition(textBox);
+		UpdateCaretPosition(core);
 	}
 
-	private void UpdateCaretPosition(TextBox textBox)
+	private void UpdateCaretPosition(TextBoxCore core)
 	{
 		if (_activeManager is null)
 		{
 			return;
 		}
 
-		var (x, y) = GetCaretClientPixelPosition(textBox);
+		var (x, y) = GetCaretClientPixelPosition(core);
 		_activeManager.UpdatePosition(x, y);
 	}
 
 	/// <summary>
 	/// Computes the caret position in client-area physical pixels.
 	/// </summary>
-	private static (int x, int y) GetCaretClientPixelPosition(TextBox textBox)
+	private static (int x, int y) GetCaretClientPixelPosition(TextBoxCore core)
 	{
-		var textBoxView = textBox.TextBoxView;
-		if (textBoxView?.DisplayBlock?.ParsedText is null || textBox.XamlRoot is null)
+		var textBoxView = core.TextBoxView;
+		if (textBoxView?.DisplayBlock?.ParsedText is null || core.Owner.XamlRoot is null)
 		{
 			return (0, 0);
 		}
 
 		// Get the character index at the caret position (caret is at SelectionStart for backward selections)
-		var index = textBox.IsBackwardSelection ? textBox.SelectionStart : textBox.SelectionStart + textBox.SelectionLength;
+		var index = core.IsBackwardSelection ? core.SelectionStart : core.SelectionStart + core.SelectionLength;
 
 		// Get the rect for the character at the caret position (in DisplayBlock-local DIPs)
 		var rect = textBoxView.DisplayBlock.ParsedText.GetRectForIndex(index);
@@ -95,15 +95,15 @@ internal sealed class Win32TextBoxNotificationsProviderSingleton : ITextBoxNotif
 		var point = transform.TransformPoint(new Point(rect.Left, rect.Top));
 
 		// Convert from DIPs to client-area physical pixels
-		var scale = textBox.XamlRoot.RasterizationScale;
+		var scale = core.Owner.XamlRoot.RasterizationScale;
 		return ((int)(point.X * scale), (int)(point.Y * scale));
 	}
 
-	private static bool TryGetHwnd(TextBox textBox, out HWND hwnd)
+	private static bool TryGetHwnd(TextBoxCore core, out HWND hwnd)
 	{
 		hwnd = HWND.Null;
 
-		if (textBox.XamlRoot is not { } xamlRoot)
+		if (core.Owner.XamlRoot is not { } xamlRoot)
 		{
 			return false;
 		}

@@ -10,12 +10,7 @@ namespace Microsoft.UI.Xaml
 	internal class DependencyPropertyDescriptor
 	{
 		private static readonly bool CanUseTypeGetType =
-#if __WASM__
-			// Workaround for https://github.com/dotnet/runtime/issues/45078
-			Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_MONO_RUNTIME_MODE") == "Interpreter";
-#else
 			true;
-#endif
 		public DependencyPropertyDescriptor(Type ownerType, string name)
 		{
 			OwnerType = ownerType;

@@ -151,7 +151,7 @@ This situation is due to an MSBuild property overriding bug found in the .NET SD
 
 ### UNOB0017: A reference to either Uno.WinUI.Runtime.WebAssembly or Uno.WinUI.WebAssembly has been detected
 
-When the `SkiaRenderer` feature is enabled, the `Uno.WinUI.Runtime.WebAssembly` and `Uno.WinUI.WebAssembly` packages must not be referenced directly.
+The `Uno.WinUI.Runtime.WebAssembly` and `Uno.WinUI.WebAssembly` packages must not be referenced directly alongside the Skia browser head. Removing the explicit reference resolves the diagnostic.
 
 This is generally a package authoring error, make sure to open an issue in the Uno Platform repository to report the problem.
 
@@ -177,6 +177,24 @@ To fix this issue:
 <ItemGroup Condition="'$(Configuration)' == 'Debug'">
   <PackageReference Include="Uno.WinUI.DevServer" Version="X.X.X" />
 </ItemGroup>
+```
+
+### UNOB0020: A referenced platform-specific assembly uses Uno Platform types that no longer exist
+
+On an iOS, Android, or tvOS head, a referenced package that multi-targets provides its `netX.0-ios`, `netX.0-android`, or `netX.0-tvos` assembly, and that assembly is the one your application compiles against and deploys. This diagnostic reports that the assembly references types from `Uno.UI` that are not present in the version of Uno Platform in use, which means it was built against an earlier release and will fail at runtime.
+
+Update the package to a version built for the Uno Platform release you are using. If no such version exists, reference a package version that does, or remove the reference.
+
+Before Uno Platform 7.0, the platform-specific assembly of such a package was silently replaced by its platform-neutral `netX.0` assembly, which hid this incompatibility — at the cost of discarding the package's `#if __IOS__` and `#if __ANDROID__` code. That substitution no longer happens.
+
+The diagnostic compares type references only, so it cannot detect a package that uses a type which still exists but whose members changed. Treat it as a signal to update the package rather than as an exhaustive compatibility check.
+
+To suppress it:
+
+```xml
+<PropertyGroup>
+  <UnoDisableUNOB0020Validation>true</UnoDisableUNOB0020Validation>
+</PropertyGroup>
 ```
 
 ## Compiler Errors
@@ -225,6 +243,21 @@ window.EnableHotReload();
 ### UNOX0001
 
 The `ProgressRing` control [needs an additional Lottie](xref:Uno.Features.Lottie) dependency to be enabled.
+
+### UXAML0006
+
+**The 'clr-namespace:' XAML namespace form is not supported**
+
+WinUI only supports the `using:` xmlns form. The WPF/Silverlight `clr-namespace:` form was accepted by Uno before version 7.0 and is now an error.
+
+```diff
+- xmlns:local="clr-namespace:MyApp.Controls;assembly=MyLib"
++ xmlns:local="using:MyApp.Controls"
+```
+
+The assembly is inferred from the compilation, so the `;assembly=` token has no replacement — drop it. The declaration is rejected even when its prefix is never used; the only exemption is a prefix listed in `mc:Ignorable` on the root element.
+
+The same rule is enforced at run time by `XamlReader.Load` and Hot Reload, which throw a `XamlParseException`.
 
 ## VS Code Errors
 

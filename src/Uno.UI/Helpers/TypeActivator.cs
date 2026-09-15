@@ -11,7 +11,7 @@ namespace Uno.UI.Helpers;
 /// </summary>
 /// <remarks>
 /// Kept out of <see cref="TypeMappings"/> on purpose: that file is linked into
-/// <c>Uno.UI.Toolkit.Windows</c>, where <c>Uno.UI.DataBinding</c> does not exist.
+/// <c>Uno.UI.Extras.Windows</c>, where <c>Uno.UI.DataBinding</c> does not exist.
 /// </remarks>
 internal static class TypeActivator
 {

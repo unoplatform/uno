@@ -66,7 +66,7 @@ namespace Microsoft.UI.Xaml
 
 		/// <summary>
 		/// Normally, when a property is updated and the coerced value is equal to
-		/// the value being updated to, the coerced value is thrown away. <seealso cref="DependencyObjectStore.ApplyCoercion"/>
+		/// the value being updated to, the coerced value is thrown away. <seealso cref="DependencyObject.ApplyCoercion"/>
 		/// This property is added specifically for Control.IsEnabledProperty in order
 		/// to override this behaviour.
 		/// </summary>

@@ -56,7 +56,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_header = this.GetTemplateChild("Header") as PivotHeaderPanel;
 			_headerClipperGeometry = this.GetTemplateChild("HeaderClipperGeometry") as RectangleGeometry;
 			_headerClipper = this.GetTemplateChild("HeaderClipper") as ContentControl;
-			_pivotItemTemplate = new DataTemplate(() => new PivotItem());
+			_pivotItemTemplate = new DataTemplate(null, (_, _) => new PivotItem());
 
 			_isUWPTemplate = _staticHeader != null;
 
@@ -69,7 +69,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			UpdatePivotProperties();
 
-#if __WASM__ || __SKIA__
+#if __SKIA__
 			//TODO: Workaround for https://github.com/unoplatform/uno/issues/5144
 			//OnApplyTemplate() is comming too late when using bindings
 			UpdateItems(null);

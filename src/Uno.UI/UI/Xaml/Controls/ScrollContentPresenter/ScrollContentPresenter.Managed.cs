@@ -1,5 +1,4 @@
-#if UNO_HAS_MANAGED_SCROLL_PRESENTER
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
@@ -25,7 +24,7 @@ using _PointerDeviceType = global::Microsoft.UI.Input.PointerDeviceType;
 namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : ContentPresenter, IDirectManipulationHandler
-#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+#if !__CROSSRUNTIME__
 		, ICustomClippingElement
 #endif
 	{
@@ -835,7 +834,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return direction;
 		}
 
-#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+#if !__CROSSRUNTIME__
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => true; // force scrollviewer to always clip
 #endif
@@ -898,4 +897,3 @@ namespace Microsoft.UI.Xaml.Controls
 	/// </param>
 	internal record struct ScrollOptions(bool DisableAnimation = false, bool IsTouch = false, bool IsIntermediate = false);
 }
-#endif

@@ -88,7 +88,7 @@ internal static class ExternalDllDiscoveryHelper
 		}
 		else
 		{
-			frameworks.Add("net10.0");
+			frameworks.Add("net11.0");
 		}
 #pragma warning restore SYSLIB1045
 		if (additionalTargetFrameworks is not null)
@@ -127,7 +127,7 @@ internal static class ExternalDllDiscoveryHelper
 	/// <param name="logger">Logger used for diagnostics.</param>
 	/// <param name="assemblyLocation">Typically the current test assembly directory.</param>
 	/// <param name="configurations">Configurations to probe (e.g., Debug/Release).</param>
-	/// <param name="frameworks">Target frameworks to probe (e.g., net9.0, net10.0).</param>
+	/// <param name="frameworks">Target frameworks to probe (e.g., net10.0, net11.0).</param>
 	/// <param name="projectName">The project folder name in the repo (e.g., "Uno.UI.RemoteControl.Host").</param>
 	/// <param name="dllFileName">The DLL file name to locate (e.g., "Uno.UI.RemoteControl.Host.dll").</param>
 	/// <returns>The full path to the DLL if found; otherwise null.</returns>

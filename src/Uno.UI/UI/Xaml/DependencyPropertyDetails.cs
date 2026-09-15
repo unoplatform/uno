@@ -246,7 +246,7 @@ namespace Microsoft.UI.Xaml
 
 		/// <summary>
 		/// Pre-seeds a <see cref="ModifiedValue"/> with the real base value from the backing field.
-		/// Called by <see cref="DependencyObjectStore"/> before setting Coercion/Animation on a
+		/// Called by <see cref="DependencyObject"/> before setting Coercion/Animation on a
 		/// PropMethodCall DP, so that <see cref="EnsureModifiedValue"/> doesn't capture stale <c>_value</c>.
 		/// </summary>
 		internal void InitializeModifiedValue(object? baseValue)

@@ -5,13 +5,9 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:u="using:Uno.UI.Controls"
-	xmlns:ios="http://uno.ui/ios"
-	xmlns:android="http://uno.ui/android"
-	xmlns:wasm="http://uno.ui/wasm"
-	xmlns:netstdref="http://uno.ui/netstdref"
-	xmlns:skia="http://uno.ui/skia"
+	xmlns:not_winappsdk="http://uno.ui/not_winappsdk"
 	xmlns:uBehaviors="using:Uno.UI.Behaviors"
-	mc:Ignorable="d ios android wasm netstdref skia">
+	mc:Ignorable="d not_winappsdk">
 
 	<!-- Default style for Microsoft.UI.Xaml.Controls.Primitives.ScrollBar -->
 
@@ -1041,8 +1037,6 @@
 		</Setter>
 	</Style>
 
-	<netstdref:Style TargetType="ScrollBar" BasedOn="{StaticResource XamlNoAnimationScrollBar}" />
-	<ios:Style TargetType="ScrollBar" BasedOn="{StaticResource XamlDefaultScrollBar}" />
-	<android:Style TargetType="ScrollBar" BasedOn="{StaticResource XamlDefaultScrollBar}" />
+	<not_winappsdk:Style TargetType="ScrollBar" BasedOn="{StaticResource XamlNoAnimationScrollBar}" />
 
 </ResourceDictionary>

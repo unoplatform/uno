@@ -196,30 +196,6 @@ public partial class Given_VisualStateManager
 	}
 
 	[TestMethod]
-	public void When_TransitionAndSetter_InCompatibilityMode_Then_SetterAppliedBefore()
-	{
-		try
-		{
-			FeatureConfiguration.VisualState.ApplySettersBeforeTransition = true;
-
-			var (control, group) = SetupVsmTest();
-			group.Transitions.Add(MakeTransition(control, from: 1, to: 2, frames: 0));
-
-			var tags = new List<string> { (string)control.Tag };
-			control.RegisterPropertyChangedCallback(Control.TagProperty, (_, __) => tags.Add((string)control.Tag));
-
-			VisualStateManager.GoToState(control, "state1", true);
-			VisualStateManager.GoToState(control, "state2", true);
-
-			Assert.IsTrue(new[] { "initial", "state1", "state2", "transition_from_state1_to_state2_frame_0" }.SequenceEqual(tags));
-		}
-		finally
-		{
-			FeatureConfiguration.VisualState.ApplySettersBeforeTransition = false;
-		}
-	}
-
-	[TestMethod]
 	public void When_CustomManager_Then_UseIt()
 	{
 		var (control, _) = SetupVsmTest();
@@ -238,7 +214,7 @@ public partial class Given_VisualStateManager
 		{
 			Name = "control",
 			Tag = "initial",
-			Template = new ControlTemplate(() => new Grid()),
+			Template = new ControlTemplate(null, (_, _) => new Grid()),
 		};
 		var group = new VisualStateGroup { States = { State(1), State(2) } };
 

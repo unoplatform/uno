@@ -22,15 +22,7 @@ using Uno.UI.Helpers;
 using Uno.UI.Helpers.Xaml;
 using MyProject;
 
-#if HAS_UNO_SKIA
 using _View = Microsoft.UI.Xaml.UIElement;
-#elif __ANDROID__
-using _View = Android.Views.View;
-#elif __APPLE_UIKIT__ || __IOS__ || __TVOS__
-using _View = UIKit.UIView;
-#else
-using _View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace TestRepro
 {
@@ -78,7 +70,7 @@ namespace TestRepro
 				}
 				.MainPage_0e3f323f9a22a3699cbcd4f0217eee4a_XamlApply((MainPage_0e3f323f9a22a3699cbcd4f0217eee4aXamlApplyExtensions.XamlApplyHandler1)(__p1 => 
 				{
-				global::Uno.UI.Toolkit.VisibleBoundsPadding.SetPaddingMask(__p1, global::Uno.UI.Toolkit.VisibleBoundsPadding.PaddingMask.Top);
+				global::Uno.UI.Behaviors.VisibleBoundsPadding.SetPaddingMask(__p1, global::Uno.UI.Behaviors.VisibleBoundsPadding.PaddingMask.Top);
 				global::Uno.UI.FrameworkElementHelper.SetBaseUri(__p1, __baseUri_MainPage_0e3f323f9a22a3699cbcd4f0217eee4a);
 				__p1.CreationComplete();
 				}

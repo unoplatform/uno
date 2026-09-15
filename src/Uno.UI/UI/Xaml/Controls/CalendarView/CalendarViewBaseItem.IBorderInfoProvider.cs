@@ -67,7 +67,5 @@ partial class CalendarViewBaseItem : IBorderInfoProvider
 
 	CornerRadius IBorderInfoProvider.CornerRadius => GetItemCornerRadius();
 
-#if UNO_HAS_BORDER_VISUAL
 	BorderVisual IBorderInfoProvider.BorderVisual => Visual as BorderVisual ?? throw new InvalidCastException($"{nameof(IBorderInfoProvider)}s should use a {nameof(BorderVisual)}.");
-#endif
 }

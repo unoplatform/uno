@@ -6,12 +6,10 @@
 #nullable enable
 
 using Microsoft.UI.Xaml;
-#if UNO_HAS_ENHANCED_LIFECYCLE
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Data;
 using Uno.UI;
 using Uno.UI.Xaml.Media;
-#endif
 
 namespace Uno.UI.Xaml.Core;
 
@@ -58,7 +56,6 @@ internal partial class CoreServices
 	/// </summary>
 	internal bool HasThemeEverChanged { get; private set; }
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 	// MUX Reference: CCoreServices::m_elementsWithThemeChangedListener — corep.h:2320,
 	//   containers::vector_map<CFrameworkElement*, unsigned int>
 	// Elements with at least one ActualThemeChanged subscription, ref-counted per subscription, so
@@ -102,9 +99,7 @@ internal partial class CoreServices
 			_elementsWithThemeChangedListener.Remove(fe);
 		}
 	}
-#endif
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 	//------------------------------------------------------------------------
 	//
 	//  Method:   NotifyThemeChange
@@ -119,12 +114,13 @@ internal partial class CoreServices
 	{
 		using var endOnExit = ThemeWalkResourceCache.BeginCachingThemeResources();
 
-		// TODO Uno: UpdateColorAndBrushResources (xcpcore.cpp:8017-8026) creates/updates the
-		// SystemColor*/SystemAccentColor color and brush resources in the global theme resources from
-		// FrameworkTheming's ColorAndBrushResourceInfo list. Uno's system palette is provided by the
-		// generated Uno.Themes/Fluent resources instead, so there is no first-create short-circuit.
+		ResourceResolver.UpdateSystemColorAndBrushResources(
+			Theming.GetColorAndBrushResourceInfoList(),
+			restoreDefaults: !Theming.HasHighContrastTheme());
+
+		// MUX UpdateColorAndBrushResources has a first-create short-circuit. Uno's system resources
+		// are generated before this path runs, so there is no first-create case.
 		//   bool wasFirstCreateForResources = false;
-		//   IFC_RETURN(UpdateColorAndBrushResources(&wasFirstCreateForResources));
 		//   // We skip the rest of the theme notification if we just created
 		//   // our color and brush resources
 		//   if (wasFirstCreateForResources)
@@ -169,7 +165,7 @@ internal partial class CoreServices
 		{
 			if (contentRoot.VisualTree?.RootElement is IRootElement rootElement)
 			{
-				rootElement.SetBackgroundColor(ThemingHelper.GetRootVisualBackground());
+				rootElement.SetBackgroundColor(ThemingHelper.FromArgb(Theming.GetRootVisualBackground()));
 			}
 		}
 
@@ -259,14 +255,6 @@ internal partial class CoreServices
 			IsSwitchingTheme = false;
 		}
 	}
-#else
-	// Native (non-enhanced-lifecycle) targets keep their Application-driven theme flow
-	// (Application.OnRequestedThemeChanged → OnResourcesChanged); the FrameworkTheming
-	// notify callback is inert there.
-	private void NotifyThemeChange()
-	{
-	}
-#endif
 
 	/// <summary>
 	/// Looks up a top-level (system or application) resource by key; an Application.Resources

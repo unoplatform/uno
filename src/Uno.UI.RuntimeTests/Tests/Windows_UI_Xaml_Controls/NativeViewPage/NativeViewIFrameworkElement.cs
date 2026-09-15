@@ -111,8 +111,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		public event SizeChangedEventHandler SizeChanged { add { } remove { } }
 #endif
 
-		public Size AdjustArrange(Size finalSize) => finalSize;
-
 		public void ApplyBindingPhase(int phase) { }
 
 		public void CreationComplete() { }

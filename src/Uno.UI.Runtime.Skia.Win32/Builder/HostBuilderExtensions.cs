@@ -12,6 +12,9 @@ public static class HostBuilderExtensions
 
 	public static IUnoPlatformHostBuilder UseWin32(this IUnoPlatformHostBuilder builder, Action<Win32HostBuilder> action)
 	{
+		// Eager: AddHostBuilder defers the callback, so a null would only fault when the host is built.
+		ArgumentNullException.ThrowIfNull(action);
+
 		builder.AddHostBuilder(() =>
 		{
 			var win32Builder = new Win32HostBuilder();
