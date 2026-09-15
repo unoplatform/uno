@@ -48,7 +48,7 @@
 	},
 	{
 		"group": "CoreLogging",
-		"version": "4.1.1",
+		"version": "5.0.0-dev.28",
 		"packages": [
 			"Uno.Core.Extensions.Logging.Singleton"
 		]
@@ -187,16 +187,6 @@
 		],
 		"versionOverride": {
 			"net11.0": "1.14.0.5"
-		}
-	},
-	{
-		"group": "AndroidXLegacySupportV4",
-		"version": "1.0.0.33",
-		"packages": [
-			"Xamarin.AndroidX.Legacy.Support.V4"
-		],
-		"versionOverride": {
-			"net11.0": "1.0.0.37"
 		}
 	},
 	{

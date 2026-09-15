@@ -44,7 +44,8 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			var isEnabled = IsEnabled();
 			if (!isEnabled)
 			{
-				return;
+				// UIA_E_ELEMENTNOTENABLED — match WinUI: check enabled before acting.
+				throw new ElementNotEnabledException();
 			}
 
 			(Owner as RadioButton)?.AutomationRadioButtonOnToggle();

@@ -55,6 +55,9 @@ jobs:
       contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.pull_request.author_association)
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    # Advisory check: a flaky agent run must not turn the PR red. This flag
+    # greens the run, the step flags below green the PR check.
+    continue-on-error: true
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -66,6 +69,7 @@ jobs:
 
       - name: Load review prompt
         id: review_prompt
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -80,6 +84,9 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Claude Code Review
+        id: review
+        if: steps.review_prompt.outcome == 'success'
+        continue-on-error: true
         # SECURITY: pinned to a full commit SHA (not the mutable `@v1` tag) so a
         # repointed/compromised tag can't pull unexpected action code — the
         # supply-chain risk the RyotaK disclosure centers on. Dependabot
@@ -101,3 +108,8 @@ jobs:
           claude_args: |
             --model "claude-sonnet-5"
             --allowedTools "mcp__github_inline_comment__create_inline_comment,mcp__github_comment__update_claude_comment,Bash(gh pr diff:*),Bash(gh pr view:*)"
+
+      - name: Report failure as a warning
+        if: always() && steps.review.outcome != 'success'
+        run: |
+          echo "::warning title=Claude Code Review did not complete::The review step reported '${{ steps.review.outcome }}' - see the job log. This check is advisory and does not block the PR."
