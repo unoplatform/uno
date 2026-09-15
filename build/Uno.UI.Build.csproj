@@ -185,25 +185,40 @@
 
 	<Target Name="BuildNuGetPackage" AfterTargets="Build" DependsOnTargets="PrepareBuildAssets" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(Configuration)'=='Release'">
 		<PropertyGroup>
-			<!-- NU5123: Long paths - disabled as tragets in Uno.UI.Runtime.Skia.WebAssembly.Browser\buildTransitive have too long paths -->
-			<NuSpecProperties>NoWarn=NU5100,NU5105,NU5131;NU5123;branch=$(NBGV_BuildingRef);commitid=$(NBGV_GitCommitId)</NuSpecProperties>
+			<!--
+				NoWarn codes are comma-separated: a semicolon would end the property and drop the rest of the list.
+				NU5123: Long paths - disabled as tragets in Uno.UI.Runtime.Skia.WebAssembly.Browser\buildTransitive have too long paths
+			-->
+			<NuSpecNoWarn>NU5100,NU5105,NU5131,NU5123</NuSpecNoWarn>
+			<NuSpecProperties>branch=$(NBGV_BuildingRef);commitid=$(NBGV_GitCommitId)</NuSpecProperties>
 			<NuSpecProperties>$(NuSpecProperties);winuisourcepath=$(NetUWPOrWinUI);winuitargetpath=$(NetUWPOrWinUI)</NuSpecProperties>
 		</PropertyGroup>
+
+		<!--
+			Per-package NoWarn, so a code waived for one layout keeps reporting on the others:
+			- NU5129 (Uno.WinUI): buildTransitive holds helper targets that the per-TFM entry points import by
+			  relative path, so there is deliberately no buildTransitive\Uno.WinUI.targets to pair them with.
+			- NU5128 (Lottie, Svg): one netX.0 assembly serves every head, but the mobile heads need extra
+			  SkiaSharp native-asset dependencies, so those groups have no lib folder of their own.
+		-->
+		<ItemGroup>
+			<_NuSpecPackage Include="Uno.WinUI" NoWarn="$(NuSpecNoWarn),NU5129" />
+			<_NuSpecPackage Include="Uno.Foundation" NoWarn="$(NuSpecNoWarn)" />
+			<_NuSpecPackage Include="Uno.WinRT" NoWarn="$(NuSpecNoWarn)" />
+			<_NuSpecPackage Include="Uno.WinUI.Lottie" NoWarn="$(NuSpecNoWarn),NU5128" />
+			<_NuSpecPackage Include="Uno.WinUI.MSAL" NoWarn="$(NuSpecNoWarn)" />
+			<_NuSpecPackage Include="Uno.WinUI.Graphics2DSK" NoWarn="$(NuSpecNoWarn)" />
+			<_NuSpecPackage Include="Uno.WinUI.Svg" NoWarn="$(NuSpecNoWarn),NU5128" />
+			<_NuSpecPackage Include="Uno.WinUI.DevServer" NoWarn="$(NuSpecNoWarn)" />
+			<_NuSpecPackage Include="Uno.WinUI.XamlHost" NoWarn="$(NuSpecNoWarn)" />
+		</ItemGroup>
 
 		<!-- Pre-validation of contents to be packed -->
 		<Error Text="The Uno.UI.Extras PRI file is not present in src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release"
 					 Condition="!exists('..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$(NetUWPOrWinUI)\Uno.UI.Extras.pri')" />
 
 		<!-- Create the packages -->
-		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
-		<Exec Command="$(NuGetBin) pack nuget\Uno.Foundation.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
-		<Exec Command="$(NuGetBin) pack nuget\Uno.WinRT.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
-		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.Lottie.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
-		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.MSAL.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
-		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.Graphics2DSK.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
-		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.Svg.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
-		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.DevServer.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
-		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.XamlHost.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack nuget\%(_NuSpecPackage.Identity).nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;NoWarn=%(_NuSpecPackage.NoWarn);$(NuSpecProperties)&quot;" />
 	</Target>
 
 	<!-- 7.0 is Skia-only: fail the pack if a native UI rendering head package is produced. -->

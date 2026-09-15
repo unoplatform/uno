@@ -509,6 +509,13 @@
 		<AppxAutoIncrementPackageRevision>false</AppxAutoIncrementPackageRevision>
 		<GenerateAppxPackageOnBuild>false</GenerateAppxPackageOnBuild>
 		<ApplicationManifest>Platforms\Windows\app.manifest</ApplicationManifest>
+		<!--
+		Roslyn, MSTest and System.CommandLine ship localized satellite assemblies with no neutral
+		variant, which MakePri reports as PRI263. Nothing here reads their translated messages, so
+		keep only the neutral ones. The app's own localization tests use .resw, which goes into PRI
+		and is unaffected.
+		-->
+		<SatelliteResourceLanguages>en</SatelliteResourceLanguages>
 	</PropertyGroup>
 	<ItemGroup Condition="'$(_Platform)' == 'windows'">
 		<AppxManifest Include="Package.appxmanifest">
@@ -700,8 +707,34 @@
 		<Content Update="@(Content)" CopyToOutputDirectory="PreserveNewest" />
 	</ItemGroup>
 
+	<!--
+	The shared project carries lowercase copies of the MSIX tile assets that Platforms\Windows\Assets
+	also provides. Both link to Assets\<name>, and the packaging tooling reports the collision as
+	APPX1102 before dropping the shared copy anyway — drop it here instead. Must stay below the shared
+	import that adds them.
+	-->
+	<ItemGroup Condition="'$(_Platform)' == 'windows'">
+		<Content Remove="..\SamplesApp.Shared\Assets\lockscreenlogo.scale-200.png" />
+		<Content Remove="..\SamplesApp.Shared\Assets\splashscreen.scale-200.png" />
+		<Content Remove="..\SamplesApp.Shared\Assets\square150x150logo.scale-200.png" />
+		<Content Remove="..\SamplesApp.Shared\Assets\square44x44logo.scale-200.png" />
+		<Content Remove="..\SamplesApp.Shared\Assets\StoreLogo.png" />
+		<Content Remove="..\SamplesApp.Shared\Assets\wide310x150logo.scale-200.png" />
+	</ItemGroup>
+
 	<!-- Must stay the last import: replaces the implicit bottom import an Sdk attribute would have added. -->
 	<Import Project="$(MSBuildThisFileDirectory)..\..\Uno.Sdk\Sdk\Sdk.targets" />
+
+	<!--
+	Uno.Sdk points every WinAppSDK head at Properties\PublishProfiles\win-$(Platform).pubxml. Apps from
+	the templates ship one; this head does not, and must not — the template profile turns on trimming,
+	ReadyToRun and self-contained, none of which a reflection-driven test host survives. CI passes
+	RuntimeIdentifier and Platform on the command line instead, so clear the default and its NETSDK1198.
+	Has to sit below the import that sets it.
+	-->
+	<PropertyGroup Condition="'$(_Platform)' == 'windows'">
+		<PublishProfile />
+	</PropertyGroup>
 
 	<!--
 	Uno.Resizetizer decides "is this a Skia app" from $(UnoRuntimeIdentifier) alone, which this head sets
