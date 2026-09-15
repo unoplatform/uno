@@ -253,10 +253,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			{
 				if (entry.Type == UriListMimeType)
 				{
-					if (ParseUriList(entry.Value) is { } uri)
-					{
-						package.SetWebLink(uri);
-					}
+					SetUriListContent(package, entry.Value);
 				}
 				else
 				{
@@ -351,13 +348,27 @@ namespace Windows.ApplicationModel.DataTransfer
 		};
 
 		// https://datatracker.ietf.org/doc/html/rfc2483#section-5
-		private static Uri? ParseUriList(string uriList)
+		private static void SetUriListContent(DataPackage package, string uriList)
 		{
-			var uri = uriList
+			var line = uriList
 				.Split(_newLineChars, StringSplitOptions.RemoveEmptyEntries)
 				.FirstOrDefault(line => !line.StartsWith('#'));
 
-			return uri is null ? null : new Uri(uri);
+			// The list comes from another application; a malformed entry is dropped rather
+			// than failing the whole view.
+			if (!Uri.TryCreate(line, UriKind.Absolute, out var uri))
+			{
+				return;
+			}
+
+			if (DataPackage.IsUriWebLink(line))
+			{
+				package.SetWebLink(uri);
+			}
+			else
+			{
+				package.SetApplicationLink(uri);
+			}
 		}
 
 		private static string GetImageMimeType(IRandomAccessStreamWithContentType ras, byte[] data)

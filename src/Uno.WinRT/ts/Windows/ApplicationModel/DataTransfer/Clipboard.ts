@@ -372,9 +372,9 @@ namespace Uno.Utils {
 			}
 
 			if (nav.clipboard.read) {
+				const content = Clipboard.emptyContent("async");
 				try {
 					const items = await nav.clipboard.read();
-					const content = Clipboard.emptyContent("async");
 
 					for (const item of items) {
 						for (const type of item.types) {
@@ -402,6 +402,10 @@ namespace Uno.Utils {
 					return content;
 				} catch (e) {
 					console.error(`Clipboard: failed to read from clipboard: ${e}`);
+					// An image registered before a later representation failed is never handed out.
+					if (content.handles.length > 0) {
+						Clipboard.releaseHandles(content.handles.join(";"));
+					}
 					return Clipboard.emptyContent("denied");
 				}
 			}
