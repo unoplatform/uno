@@ -88,7 +88,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		void ThrowElementNotAvailableException()
 		{
 			//return UIA_E_INVALIDOPERATION;
-			throw new InvalidOperationException();
+			ThrowElementNotAvailableError();
 		}
 
 		void GetContainerAutomationPeer(
