@@ -77,6 +77,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 	private bool _rebuildPending;
 	private bool _isRebuildingTree;
+	private int _rebuildGeneration;
 	private bool _initialBuildDone;
 	private bool _forceStructureNotification;
 	private bool _screenChangeRequested;
@@ -184,6 +185,9 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 			AccessibilityPeerHelper.IOSClearAccessibilityEventsAction =
 				root => FindAdapterForRoot(root)?.ClearEventsForRoot(root);
+
+			AccessibilityPeerHelper.IOSAccessibilityRebuildGenerationAccessor =
+				root => FindAdapterForRoot(root)?._rebuildGeneration ?? 0;
 
 			_staticDispatchersInstalled = true;
 		}
@@ -516,6 +520,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		try
 		{
 			RebuildTreeCore();
+			_rebuildGeneration++;
 		}
 		finally
 		{
@@ -2299,12 +2304,6 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 		switch (eventId)
 		{
-			case AutomationEvents.StructureChanged:
-			case AutomationEvents.LayoutInvalidated:
-			case AutomationEvents.AsyncContentLoaded:
-				RecordEvent(AccessibilityNativeEventKind.StructureChanged);
-				break;
-
 			case AutomationEvents.TextPatternOnTextChanged:
 			case AutomationEvents.TextEditTextChanged:
 			case AutomationEvents.ConversionTargetChanged:
@@ -2356,7 +2355,9 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 				break;
 
-				// SelectionPatternOnInvalidated: base schedules a rebuild.
+				// StructureChanged, LayoutInvalidated, and AsyncContentLoaded are recorded when
+				// the rebuild scheduled by base posts the coalesced native notification.
+				// SelectionPatternOnInvalidated is recorded above and also schedules that rebuild.
 				// LiveRegionChanged: base announces with correct assertiveness via AnnounceOnPlatform.
 		}
 	}
