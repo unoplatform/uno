@@ -111,7 +111,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	// Modal state
 	// Handle of the modal peer owner element while a modal is active.
 	private nint _activeModalHandle;
-	private nint _modalScopeHandle;
+	private WeakReference<UIElement>? _modalScopeOwner;
 	private volatile bool _modalScopeDirty = true;
 
 	private readonly List<(nint ModalHandle, nint PreviousFocusHandle)> _modalFocusStack = new();
@@ -266,8 +266,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 	protected override bool IsBlockedByActiveModal(UIElement element)
 	{
-		var modalHandle = GetCurrentModalScopeHandle();
-		return modalHandle != 0 && !IsDescendantOf(element, modalHandle);
+		var modalOwner = GetCurrentModalScopeOwner();
+		return modalOwner is not null && !IsWithinModalScope(element, modalOwner);
 	}
 
 	private void Trace(string message)
@@ -575,7 +575,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			_screenChangeRequested = false;
 			_screenChangeTargetHandle = 0;
 			_activeModalHandle = 0;
-			_modalScopeHandle = 0;
+			_modalScopeOwner = null;
 			_modalScopeDirty = true;
 			_modalFocusStack.Clear();
 			_pendingNativeFocusHandle = 0;
@@ -707,7 +707,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		// Apply modal filtering if an active modal is present in the tree.
 		var modalOwner = FindActiveModalOwner(nodes, out int modalNodeIndex);
 		var currentModalHandle = modalOwner?.Visual.Handle ?? 0;
-		_modalScopeHandle = currentModalHandle;
+		_modalScopeOwner = modalOwner is null ? null : new(modalOwner);
 		_modalScopeDirty = false;
 		var screenChangeHandled = false;
 
@@ -748,7 +748,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 			// Filter to only the modal's peer subtree.
 			var modalElements = FilterToModalSubtree(
-				nodes, modalNodeIndex, orderedElements, handleToNodeIndex);
+				nodes, modalOwner!, modalNodeIndex, orderedElements, handleToNodeIndex);
 
 			// Mark the modal owner element so VoiceOver excludes background peers.
 			if (FindNodeForOwnerHandle(currentModalHandle) is { } modalEl)
@@ -873,7 +873,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	/// that ContentDialog popups (IsLightDismissEnabled=false, no pattern exposed) are
 	/// also matched.
 	/// </summary>
-	private static UIElement? FindActiveModalOwner(
+	private UIElement? FindActiveModalOwner(
 		IReadOnlyList<AccessibilityPeerNode> nodes,
 		out int modalNodeIndex)
 	{
@@ -895,78 +895,82 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 				continue;
 			}
 
-			// Primary: Window pattern (respects ShouldExposeWindowPattern gating).
-			var wp = peer.GetPattern(PatternInterface.Window) as IWindowProvider;
-
-			// Secondary: direct cast for Window-typed peers whose pattern is gated off
-			// (e.g., Popup with IsLightDismissEnabled=false used by ContentDialog).
-			if (wp is null &&
-				peer is PopupAutomationPeer { Owner: Popup { IsOpen: true } } popupPeer)
+			try
 			{
-				wp = popupPeer;
-			}
+				// Primary: Window pattern (respects ShouldExposeWindowPattern gating).
+				var wp = peer.GetPattern(PatternInterface.Window) as IWindowProvider;
 
-			if (wp is not null)
-			{
-				bool isModal;
-				try
+				// Secondary: direct cast for Window-typed peers whose pattern is gated off
+				// (e.g., Popup with IsLightDismissEnabled=false used by ContentDialog).
+				if (wp is null &&
+					peer is PopupAutomationPeer { Owner: Popup { IsOpen: true } } popupPeer)
 				{
-					isModal = wp.IsModal;
-				}
-				catch (ElementNotAvailableException)
-				{
-					isModal = false;
-				}
-				catch (InvalidOperationException)
-				{
-					isModal = false;
+					wp = popupPeer;
 				}
 
-				if (isModal)
+				if (wp?.IsModal is true)
 				{
 					modalOwner = owner;
 					modalNodeIndex = i;
 				}
+			}
+			catch (ElementNotAvailableException exception)
+			{
+				Trace($"Ignored unavailable modal peer: {exception.Message}");
+			}
+			catch (AutomationPeerUnavailableException exception)
+			{
+				Trace($"Ignored unavailable modal peer: {exception.Message}");
+			}
+			catch (ElementNotEnabledException exception)
+			{
+				Trace($"Ignored disabled modal peer: {exception.Message}");
 			}
 		}
 
 		return modalOwner;
 	}
 
-	private nint GetCurrentModalScopeHandle()
+	private UIElement? GetCurrentModalScopeOwner()
 	{
 		if (!_modalScopeDirty)
 		{
-			return _modalScopeHandle;
+			return _modalScopeOwner?.TryGetTarget(out var cachedOwner) is true
+				? cachedOwner
+				: null;
 		}
 
 		var root = _xamlRoot.Content as UIElement ?? _xamlRoot.VisualTree.RootElement;
 		var modalOwner = root is null
 			? null
 			: FindActiveModalOwner(AccessibilityPeerHelper.GetPeerTree(root), out _);
-		_modalScopeHandle = modalOwner?.Visual.Handle ?? 0;
+		_modalScopeOwner = modalOwner is null ? null : new(modalOwner);
 		_modalScopeDirty = false;
-		return _modalScopeHandle;
+		return modalOwner;
 	}
+
+	private static bool IsWithinModalScope(UIElement element, UIElement modalOwner)
+		=> IsDescendantOf(element, modalOwner.Visual.Handle)
+			|| (modalOwner is Popup { Child: UIElement popupChild }
+				&& IsDescendantOf(element, popupChild.Visual.Handle));
 
 	/// <summary>
 	/// Returns the subset of <paramref name="allElements"/> whose peer nodes are the modal
-	/// peer itself or one of its descendants (determined via the <see cref="AccessibilityPeerNode.ParentIndex"/>
-	/// chain, which follows DFS parent-before-child order).
+	/// peer itself or one of its logical, popup-content, or peer-tree descendants.
 	/// </summary>
 	private static List<UIAccessibilityElement> FilterToModalSubtree(
 		IReadOnlyList<AccessibilityPeerNode> nodes,
+		UIElement modalOwner,
 		int modalNodeIndex,
 		List<UIAccessibilityElement> allElements,
 		Dictionary<nint, int> handleToNodeIndex)
 	{
-		// Single forward pass is sufficient because parents always precede children
-		// in DFS order, so once a node is in modalIndices its children appear later.
-		var modalIndices = new HashSet<int> { modalNodeIndex };
-		for (int i = modalNodeIndex + 1; i < nodes.Count; i++)
+		var modalIndices = new HashSet<int>();
+		for (int i = 0; i < nodes.Count; i++)
 		{
-			if (nodes[i].ParentIndex.HasValue &&
-				modalIndices.Contains(nodes[i].ParentIndex!.Value))
+			if (i == modalNodeIndex ||
+				(nodes[i].Owner is { } owner && IsWithinModalScope(owner, modalOwner)) ||
+				(nodes[i].ParentIndex is { } parentIndex && modalIndices.Contains(parentIndex)))
 			{
 				modalIndices.Add(i);
 			}
@@ -1255,7 +1259,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			UIAccessibilityScrollDirection.Right or
 			UIAccessibilityScrollDirection.Down or
 			UIAccessibilityScrollDirection.Next;
-		var amount = forward ? ScrollAmount.SmallIncrement : ScrollAmount.SmallDecrement;
+		var amount = forward ? ScrollAmount.LargeIncrement : ScrollAmount.LargeDecrement;
 
 		bool scrolled;
 		bool horizontal;
@@ -2083,6 +2087,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		_screenChangeTargetHandle = 0;
 		_lastOrderedHandles.Clear();
 		_nextOrderedHandles.Clear();
+		_modalScopeOwner = null;
 		_modalFocusStack.Clear();
 		_allScrollSources.Clear();
 		_recordedEvents.Clear();

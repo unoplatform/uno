@@ -350,14 +350,17 @@ public class Given_MobileAccessibilityEvents_iOS
 	[RunsOnUIThread]
 	public async Task When_StructureChanged_AutomationEvent_Raised_Then_One_Coalesced_Record()
 	{
-		var panel = new StackPanel { Children = { new Button { Content = "Item" } } };
+		var item = new Button { Content = "Item" };
+		var panel = new StackPanel { Children = { item } };
 		await UITestHelper.Load(panel);
 		var root = panel.XamlRoot!;
 
 		ClearEvents(root);
 		var rebuildGeneration =
 			AccessibilityPeerHelper.IOSAccessibilityRebuildGenerationAccessor?.Invoke(root) ?? 0;
-		panel.GetOrCreateAutomationPeer()?.RaiseAutomationEvent(AutomationEvents.StructureChanged);
+		var peer = item.GetOrCreateAutomationPeer();
+		Assert.IsNotNull(peer);
+		peer.RaiseAutomationEvent(AutomationEvents.StructureChanged);
 
 		await UITestHelper.WaitFor(
 			() => (AccessibilityPeerHelper.IOSAccessibilityRebuildGenerationAccessor?.Invoke(root) ?? 0) > rebuildGeneration,
