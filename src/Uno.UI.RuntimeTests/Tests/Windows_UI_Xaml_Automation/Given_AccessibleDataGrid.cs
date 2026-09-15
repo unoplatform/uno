@@ -691,18 +691,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				Assert.AreEqual(1, nativeItem.GetType().GetProperty("ColumnIndex")?.GetValue(nativeItem));
 			}
 
-			if (AccessibilityPeerHelper.IOSAccessibilityElementAccessor?.Invoke(control) is { } nativeElement)
+			if (AccessibilityPeerHelper.IOSAccessibilityElementAccessor is not null)
 			{
-				var customContent = nativeElement
-					.GetType()
-					.GetProperty("AccessibilityCustomContent")
-					?.GetValue(nativeElement) as Array;
-				Assert.IsNotNull(customContent, "iOS AX custom content must expose GridItem coordinates.");
-				var values = customContent
-					.Cast<object>()
-					.Select(item => item.GetType().GetProperty("Value")?.GetValue(item) as string)
-					.Where(value => value is not null)
-					.ToArray();
+				Assert.IsNotNull(AccessibilityPeerHelper.IOSAccessibilityCustomContentValuesAccessor);
+				var values = AccessibilityPeerHelper.IOSAccessibilityCustomContentValuesAccessor(control);
+				Assert.IsNotNull(values, "iOS AX custom content must expose GridItem coordinates.");
 				CollectionAssert.Contains(values, "5", "AX custom content must expose the one-based row.");
 				CollectionAssert.Contains(values, "2", "AX custom content must expose the one-based column.");
 			}

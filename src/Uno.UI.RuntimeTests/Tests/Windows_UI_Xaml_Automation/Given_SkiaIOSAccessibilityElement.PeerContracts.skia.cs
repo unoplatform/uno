@@ -84,16 +84,16 @@ public partial class Given_SkiaIOSAccessibilityElement
 			Assert.IsNotNull(firstNode);
 			Assert.IsNotNull(secondNode);
 			Assert.AreNotSame(firstNode.NativeNode, secondNode.NativeNode);
-			CollectionAssert.Contains(GetNativeCustomContentValues(firstNode.NativeNode), "before");
-			CollectionAssert.Contains(GetNativeCustomContentValues(secondNode.NativeNode), "before");
+			CollectionAssert.Contains(GetNativeCustomContentValues(first), "before");
+			CollectionAssert.Contains(GetNativeCustomContentValues(second), "before");
 
 			source.ItemTypeValue = "after";
 			first.GetOrCreateAutomationPeer()!.RaisePropertyChangedEvent(
 				AutomationElementIdentifiers.ItemTypeProperty, "before", "after");
 			await UITestHelper.WaitForIdle();
 
-			CollectionAssert.Contains(GetNativeCustomContentValues(firstNode.NativeNode), "after");
-			CollectionAssert.Contains(GetNativeCustomContentValues(secondNode.NativeNode), "after");
+			CollectionAssert.Contains(GetNativeCustomContentValues(first), "after");
+			CollectionAssert.Contains(GetNativeCustomContentValues(second), "after");
 		}
 		finally
 		{
@@ -303,15 +303,12 @@ public partial class Given_SkiaIOSAccessibilityElement
 		return language.GetValue(element) as string;
 	}
 
-	private static string[] GetNativeCustomContentValues(object element)
+	private static string[] GetNativeCustomContentValues(UIElement element)
 	{
-		var content = element.GetType().GetProperty("AccessibilityCustomContent")?.GetValue(element)
-			as System.Collections.IEnumerable;
-		Assert.IsNotNull(content);
-		return content.Cast<object>()
-			.Select(item => item.GetType().GetProperty("Value")?.GetValue(item))
-			.OfType<string>()
-			.ToArray();
+		Assert.IsNotNull(AccessibilityPeerHelper.IOSAccessibilityCustomContentValuesAccessor);
+		var values = AccessibilityPeerHelper.IOSAccessibilityCustomContentValuesAccessor(element);
+		Assert.IsNotNull(values);
+		return values;
 	}
 
 	private sealed partial class VirtualPeerHost : Grid

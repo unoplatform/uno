@@ -514,21 +514,16 @@ public class Given_MobileAccessibilityRichControls
 			Assert.AreEqual(snapshot.Details.LocalizedControlType, snapshot.NativeRoleDescription);
 		}
 
-		if (AccessibilityPeerHelper.IOSAccessibilityElementAccessor?.Invoke(button) is { } nativeElement)
+		if (AccessibilityPeerHelper.IOSAccessibilityElementAccessor is not null)
 		{
-			var customContent = nativeElement
-				.GetType()
-				.GetProperty("AccessibilityCustomContent")
-				?.GetValue(nativeElement) as Array;
-			Assert.IsNotNull(customContent);
+			Assert.IsNotNull(AccessibilityPeerHelper.IOSAccessibilityCustomContentValuesAccessor);
+			var customContentValues =
+				AccessibilityPeerHelper.IOSAccessibilityCustomContentValuesAccessor(button);
+			Assert.IsNotNull(customContentValues);
 			Assert.IsTrue(
-				customContent
-					.Cast<object>()
-					.Any(item =>
-						string.Equals(
-							item.GetType().GetProperty("Value")?.GetValue(item) as string,
-							snapshot.Details.LocalizedControlType,
-							StringComparison.Ordinal)),
+				customContentValues.Contains(
+					snapshot.Details.LocalizedControlType,
+					StringComparer.Ordinal),
 				"iOS AX custom content must expose the localized control type.");
 		}
 	}
