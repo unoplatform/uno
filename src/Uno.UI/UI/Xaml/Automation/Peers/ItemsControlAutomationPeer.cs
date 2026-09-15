@@ -40,14 +40,10 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 		internal ItemAutomationPeer Peer { get; }
 	}
 
-	private ItemAutomationPeer? GetOrCreateRealizedItemPeer(
-		UIElement container,
-		object item,
-		IList<ItemAutomationPeer>? assignedInThisPass)
+	private ItemAutomationPeer? GetOrCreateRealizedItemPeer(UIElement container, object item)
 	{
 		if (_realizedItemPeers.TryGetValue(container, out var entry) &&
-			ReferenceEquals(entry.Item, item) &&
-			!IsAssignedInPass(entry.Peer, assignedInThisPass))
+			ReferenceEquals(entry.Item, item))
 		{
 			entry.Peer.SetRealizedContainer(container);
 			return entry.Peer;
@@ -58,9 +54,6 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 		// MUX parity (ItemsControlAutomationPeer::GetModernItemsControlChildrenChildrenHelper):
 		// reuse the peer already cached for the item so the children tree and the pattern
 		// providers (CreateItemAutomationPeer / GetSelection) hand out the same instance.
-		// A cached peer already claimed by another container in this pass belongs to a
-		// duplicate occurrence of the item and cannot be shared, otherwise both containers
-		// would resolve to the same index.
 		_itemPeers.TryGetValue(item, out var peer);
 		if (peer is null)
 		{
@@ -72,11 +65,6 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 			GetItemPeerFromItemContainerCache(item, out peer, out _);
 		}
 
-		if (peer is not null && IsAssignedInPass(peer, assignedInThisPass))
-		{
-			peer = null;
-		}
-
 		if (peer is null)
 		{
 			peer = OnCreateItemAutomationPeer(item);
@@ -85,35 +73,12 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 				return null;
 			}
 
-			// The first realized occurrence owns the item-keyed identity shared with
-			// CreateItemAutomationPeer; later duplicate occurrences keep their own peer.
-			if (!_itemPeers.ContainsKey(item))
-			{
-				_itemPeers[item] = peer;
-			}
+			_itemPeers[item] = peer;
 		}
 
 		peer.SetRealizedContainer(container);
 		_realizedItemPeers.Add(container, new RealizedItemPeerEntry(item, peer));
 		return peer;
-	}
-
-	private static bool IsAssignedInPass(ItemAutomationPeer peer, IList<ItemAutomationPeer>? assignedInThisPass)
-	{
-		if (assignedInThisPass is null)
-		{
-			return false;
-		}
-
-		for (var i = 0; i < assignedInThisPass.Count; i++)
-		{
-			if (ReferenceEquals(assignedInThisPass[i], peer))
-			{
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	public ItemsControlAutomationPeer(ItemsControl owner) : base(owner)
@@ -354,7 +319,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 				continue;
 			}
 
-			var itemPeer = GetOrCreateRealizedItemPeer(itemContainer, item, newChildrenCollection);
+			var itemPeer = GetOrCreateRealizedItemPeer(itemContainer, item);
 			if (itemPeer != null)
 			{
 				var containerPeer = itemPeer.GetContainerPeer();
@@ -583,7 +548,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 
 							if (spItem != null && visibility != Visibility.Collapsed)
 							{
-								var spItemPeer = GetOrCreateRealizedItemPeer(spItemContainer, spItem, spNewChildrenCollection);
+								var spItemPeer = GetOrCreateRealizedItemPeer(spItemContainer, spItem);
 
 								if (spItemPeer != null)
 								{
