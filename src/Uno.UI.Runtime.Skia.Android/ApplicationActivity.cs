@@ -404,12 +404,15 @@ namespace Microsoft.UI.Xaml
 			base.OnConfigurationChanged(newConfig);
 
 			RaiseConfigurationChanges();
+			// Read the settled configuration after Android has propagated it through the decor view.
+			Window?.DecorView?.Post(() =>
+				Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(
+					global::Windows.UI.ViewManagement.UISettings.GetTextScaleFactorValue()));
 		}
 
 		private void RaiseConfigurationChanges()
 		{
 			NativeWindowWrapper.Instance.RaiseNativeSizeChanged();
-			//ViewHelper.RefreshFontScale();
 			DisplayInformation.GetForCurrentView().HandleConfigurationChange();
 			SystemThemeHelper.RefreshSystemTheme();
 		}
