@@ -86,7 +86,14 @@ internal sealed class AndroidVulkanGraphicsContext : ISwapChain, IVulkanDeviceCo
 
 	public void Dispose()
 	{
-		_frameLock?.Dispose();
+		// SurfaceDestroyed reaches here on the UI thread while the render thread may still own this frame's device
+		// lock; releasing it from here is a cross-thread Monitor.Exit, which throws and takes the app down during an
+		// activity relaunch. The owning thread releases it in Present.
+		if (_vk.IsLockedByCurrentThread)
+		{
+			_frameLock?.Dispose();
+		}
+
 		_frameLock = null;
 		_vk.Dispose();
 	}

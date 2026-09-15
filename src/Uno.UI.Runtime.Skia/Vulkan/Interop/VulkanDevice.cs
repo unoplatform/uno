@@ -40,6 +40,10 @@ internal partial class VulkanDevice : IVulkanDevice, IDisposable
 		return f;
 	}
 
+	/// <summary>Whether the calling thread is the one holding <see cref="Lock"/>, so a teardown path can tell a
+	/// lock it may release from one another thread owns.</summary>
+	public bool IsLockedByCurrentThread => _lockedByThread == Thread.CurrentThread;
+
 	public IDisposable Lock()
 	{
 		Monitor.Enter(_lock);

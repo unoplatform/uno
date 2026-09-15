@@ -66,6 +66,10 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 	/// <summary>Acquires the device lock for a frame (held across the backend's render + this context's present).</summary>
 	public IDisposable Lock() => _device!.Lock();
 
+	/// <summary>Whether the calling thread owns <see cref="Lock"/>; a teardown path uses this to avoid
+	/// releasing a frame lock another thread holds.</summary>
+	public bool IsLockedByCurrentThread => _device?.IsLockedByCurrentThread ?? false;
+
 	/// <summary>The intermediate render image described neutrally, for the backend to wrap as its surface.</summary>
 	public IVulkanRenderTarget CurrentRenderTarget => new VulkanRenderTarget(_renderImage!, _device!.GraphicsQueueFamilyIndex);
 
