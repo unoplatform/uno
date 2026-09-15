@@ -918,6 +918,7 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug($"Called {nameof(OnItemsSourceSingleCollectionChanged)}(), Action={args.Action}, NoOfItems={NumberOfItems}");
 			}
 			UpdateItems(args);
+			(FrameworkElementAutomationPeer.FromElement(this) as ItemsControlAutomationPeer)?.OnItemsChanged(args);
 		}
 
 		/// <summary>
@@ -930,6 +931,7 @@ namespace Microsoft.UI.Xaml.Controls
 				this.Log().LogDebug($"Called {nameof(OnItemsSourceGroupsChanged)}(), Action={args.Action}, NoOfItems={NumberOfItems}, NoOfGroups={NumberOfGroups}");
 			}
 			UpdateItems(args);
+			(FrameworkElementAutomationPeer.FromElement(this) as ItemsControlAutomationPeer)?.OnItemsChanged(args);
 		}
 
 		internal virtual void OnGroupPropertyChanged(ICollectionViewGroup group, int groupIndex)
