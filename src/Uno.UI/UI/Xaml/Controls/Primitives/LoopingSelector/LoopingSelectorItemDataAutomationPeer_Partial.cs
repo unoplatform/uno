@@ -104,7 +104,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 				LoopingSelectorItemAutomationPeer spLSIAP;
 				spParent.GetContainerAutomationPeerForItem(_tpItem, out spLSIAP);
 
-				if (spLSIAP == null)
+				if (spLSIAP is not { Owner: not null })
 				{
 					// If the item has not been realized, spLSIAP will be null.
 					// Realize the item on demand now and try again
@@ -112,7 +112,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 					spParent.GetContainerAutomationPeerForItem(_tpItem, out spLSIAP);
 				}
 
-				if (spLSIAP is { })
+				if (spLSIAP is { Owner: not null })
 				{
 					//spLSIAP.CopyTo(ppContainer);
 					ppContainer = spLSIAP;
