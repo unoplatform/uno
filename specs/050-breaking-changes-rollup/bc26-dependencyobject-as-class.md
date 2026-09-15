@@ -39,7 +39,7 @@ The interface only ever existed because **native mobile `UIElement` had to inher
 
 - **End-state: a class on every remaining target**, not the Skia/Wasm-only scoping of the original 2024 issue. `src/Uno.UI/UI/Xaml/DependencyObject.cs` is now `public partial class DependencyObject : IDependencyObjectInternal, IWeakReferenceProvider`.
 - **The whole mixin folded into the base class.** Rather than trimming what `DependencyObjectGenerator` emitted, the generator was removed outright (deleted in `c371084bb52`); DO detection is now by base type. Nothing DO-related is emitted per-type any more.
-- Phase 2 went further than this spec anticipated: `DependencyObjectStore` was **dropped entirely** (uno-private#2210) and its storage folded onto `DependencyObject` itself — see `DependencyObject.Store.cs` / `.Binder.cs`.
+- Phase 2 went further than this spec anticipated: `DependencyObjectStore` was **dropped entirely** (unoplatform/uno#23702) and its storage folded onto `DependencyObject` itself — see `DependencyObject.Store.cs` / `.Binder.cs`.
 
 ## As implemented
 
@@ -47,7 +47,7 @@ The interface only ever existed because **native mobile `UIElement` had to inher
 - `src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs` — **deleted**; DO-derived types are detected by base type instead.
 - `DependencyObjectStore` — removed; storage now lives on `DependencyObject` (`DependencyObject.Store.cs`, `DependencyObject.Binder.cs`).
 - Removals covered in `build/PackageDiffIgnore.xml` (regex entries keyed on `Microsoft.UI.Xaml.DependencyObjectStore`).
-- Landed via unoplatform/uno#23537 and #23702; the `DependencyObjectStore` drop via uno-private#2210.
+- Landed via unoplatform/uno#23537 and #23702, the latter being the `DependencyObjectStore` drop.
 - Consumer- and contributor-facing docs updated: `doc/articles/api-differences.md`, `doc/articles/uno-development/uno-internals-overview.md`, `AGENTS.md`, `.claude/rules/dependency-properties.md`, `.claude/agents/architect.md`.
 
 ## Validation strategy
