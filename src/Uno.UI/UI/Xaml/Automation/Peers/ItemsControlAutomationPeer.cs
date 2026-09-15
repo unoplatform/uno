@@ -12,6 +12,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Provider;
@@ -429,8 +430,6 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 			return children;
 		}
 
-		PruneItemAutomationPeerCache(spItemsControl);
-
 		var spItemsHostPanel = spItemsControl.ItemsPanelRoot;
 		var isGrouping = spItemsControl.IsGrouping;
 
@@ -592,15 +591,28 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 		return children;
 	}
 
+	internal void OnItemsChanged(NotifyCollectionChangedEventArgs args)
+	{
+		if (args.Action == NotifyCollectionChangedAction.Reset ||
+			(Owner is ItemsControl { IsGrouping: true } &&
+				args.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Replace))
+		{
+			ClearItemAutomationPeerCache();
+		}
+		else if (args.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Replace &&
+			Owner is ItemsControl itemsControl)
+		{
+			PruneItemAutomationPeerCache(itemsControl);
+		}
+	}
+
 	private void PruneItemAutomationPeerCache(ItemsControl itemsControl)
 	{
-		if (_itemPeers.Count == 0 || itemsControl.IsGrouping)
+		if (_itemPeers.Count == 0)
 		{
 			return;
 		}
 
-		// Native accessibility tree walks create item peers eagerly. Mirror MUX cache cleanup
-		// so removed data items and recycled container EventsSource links can be collected.
 		var currentItems = new HashSet<object>(Uno.ReferenceEqualityComparer<object>.Default);
 		foreach (var item in itemsControl.Items)
 		{
