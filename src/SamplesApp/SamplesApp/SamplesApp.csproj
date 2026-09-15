@@ -764,4 +764,24 @@
 			<_NativeExecutableFrameworks Remove="System" />
 		</ItemGroup>
 	</Target>
+
+	<!--
+	Every CI build has to ship a distinct app version: App Store Connect rejects an upload whose
+	CFBundleVersion it has already seen under the same short version. The timestamp goes in the display
+	version rather than in the build number, so an NBGV height reset — which every version.json bump
+	causes — still yields a version pair Apple has not seen before.
+	-->
+	<Target Name="GenerateVersion"
+			BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName"
+			Condition="'$(NBGV_AssemblyInformationalVersion)' != ''">
+		<PropertyGroup>
+			<_VersionCode>$(NBGV_VersionHeight)</_VersionCode>
+			<_VersionCode Condition="'$(_VersionCode)' == ''">0</_VersionCode>
+			<_VersionCode Condition="'$(VersionCodeOffset)' != ''">$([MSBuild]::Add($(_VersionCode), $(VersionCodeOffset)))</_VersionCode>
+
+			<ApplicationDisplayVersion>$([System.DateTime]::Now.ToString(`yyMMddHHmm`)).$(_VersionCode)</ApplicationDisplayVersion>
+			<ApplicationVersion>$(_VersionCode)</ApplicationVersion>
+			<InformationalVersion>$(NBGV_AssemblyInformationalVersion)</InformationalVersion>
+		</PropertyGroup>
+	</Target>
 </Project>
