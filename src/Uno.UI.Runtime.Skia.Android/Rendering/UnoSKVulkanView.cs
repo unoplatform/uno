@@ -122,6 +122,14 @@ internal sealed partial class UnoSKVulkanView : SurfaceView, ISurfaceHolderCallb
 		}
 
 		_surfaceReady = false;
+
+		// Android can destroy the surface after the activity's OnDestroy, by which point
+		// TeardownRenderer has stopped the render thread and released everything below.
+		if (_disposed)
+		{
+			return;
+		}
+
 		_renderEvent.Set(); // Wake the render thread so it can exit
 		_renderThread?.Join(TimeSpan.FromSeconds(2));
 		_renderThread = null;
