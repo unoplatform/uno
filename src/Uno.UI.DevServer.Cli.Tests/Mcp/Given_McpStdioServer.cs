@@ -394,7 +394,7 @@ public class Given_McpStdioServer
 		var monitor = new DevServerMonitor(services, Microsoft.Extensions.Logging.Abstractions.NullLogger<DevServerMonitor>.Instance);
 		var upstreamClient = new McpUpstreamClient(Microsoft.Extensions.Logging.Abstractions.NullLogger<McpUpstreamClient>.Instance, monitor);
 		var toolListManager = new ToolListManager(Microsoft.Extensions.Logging.Abstractions.NullLogger<ToolListManager>.Instance, upstreamClient);
-		var healthService = new HealthService(upstreamClient, monitor, toolListManager);
+		var healthService = new HealthService(upstreamClient, monitor, toolListManager, Microsoft.Extensions.Logging.Abstractions.NullLogger<HealthService>.Instance, _ => System.Threading.Tasks.Task.FromResult<string?>(null));
 		return new McpStdioServer(Microsoft.Extensions.Logging.Abstractions.NullLogger<McpStdioServer>.Instance, toolListManager, healthService, upstreamClient);
 	}
 }
