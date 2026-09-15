@@ -1,70 +1,121 @@
 #nullable enable
 
 using System;
+using CoreAnimation;
+using Metal;
 using Uno.UI.Composition.Drawing;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
 
 /// <summary>
-/// A context that consumes the per-frame <c>MTLTexture</c> the MTKView supplies, rather than a swapchain-owning
-/// context that sources its own drawable.
+/// Neutral Metal <see cref="ISwapChain"/> for AppleUIKit. The frame composes into a texture this context owns and
+/// keeps, and <see cref="Present"/> blits that onto the view's drawable.
+///
+/// The drawable is deliberately acquired inside <see cref="Present"/> rather than before the frame: a CAMetalLayer
+/// vends only two or three, so holding one across the frame's CPU work starves the pool and throttles rendering
+/// (<c>[CAMetalLayer nextDrawable] returning nil because allocation failed</c>). Owning the target is also what lets
+/// this report <see cref="PreservesContents"/>, so the compositor can repaint only the damaged region — the Vulkan
+/// and software hosts do the same.
 /// </summary>
-internal interface IAppleNativeTextureSink
+internal sealed class AppleMetalGraphicsContext : ISwapChain, IMetalDeviceContext
 {
-	/// <summary>Pushes the texture for the frame about to be acquired.</summary>
-	void SetCurrentTexture(nint texture);
-}
+	private readonly IMTLDevice _device;
+	private readonly IMTLCommandQueue _queue;
+	private readonly Func<ICAMetalDrawable?> _acquireDrawable;
 
-/// <summary>
-/// Neutral native-texture Metal <see cref="ISwapChain"/> for AppleUIKit: holds the MTKView's device/queue and wraps the
-/// per-frame drawable <c>MTLTexture</c> as an <see cref="IMetalRenderTarget"/>. The MTKView owns and presents the
-/// drawable, so <see cref="Present"/> is a no-op.
-/// </summary>
-internal sealed class AppleMetalGraphicsContext : ISwapChain, IAppleNativeTextureSink, IMetalDeviceContext
-{
-	private readonly nint _device;
-	private readonly nint _queue;
-	private nint _currentTexture;
+	private IMTLTexture? _offscreen;
 	private AppleMetalRenderTarget? _target;
+	private int _width;
+	private int _height;
 
-	public AppleMetalGraphicsContext(nint device, nint queue)
+	public AppleMetalGraphicsContext(IMTLDevice device, IMTLCommandQueue queue, Func<ICAMetalDrawable?> acquireDrawable)
 	{
 		_device = device;
 		_queue = queue;
+		_acquireDrawable = acquireDrawable;
 	}
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Metal;
 
-	public nint Device => _device;
-	public nint Queue => _queue;
+	public nint Device => _device.Handle;
+	public nint Queue => _queue.Handle;
 
-	// Metal presents to the MTKView's per-frame drawable with no host-retained surface yet, so the drawable is
-	// undefined each frame — the compositor repaints the whole frame.
-	public bool PreservesContents => false;
-
-	public void SetCurrentTexture(nint texture) => _currentTexture = texture;
+	/// <summary>The frame composes into a texture kept across frames, so last frame's pixels are still there.</summary>
+	public bool PreservesContents => true;
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
 		width = Math.Max(1, width);
 		height = Math.Max(1, height);
-		// Cache the target across frames while the size is unchanged; the wrapped drawable texture is read live
-		// from the context, so a per-frame texture swap is reflected without reallocating the target.
-		if (_target is null || _target.Width != width || _target.Height != height)
+
+		if (_offscreen is null || width != _width || height != _height)
 		{
-			_target = new AppleMetalRenderTarget(this, width, height);
+			_offscreen?.Dispose();
+
+			var descriptor = MTLTextureDescriptor.CreateTexture2DDescriptor(MTLPixelFormat.BGRA8Unorm, (nuint)width, (nuint)height, false);
+			// RenderTarget for Skia to draw into, ShaderRead so the blit can source it; Private keeps it GPU-only.
+			descriptor.Usage = MTLTextureUsage.RenderTarget | MTLTextureUsage.ShaderRead;
+			descriptor.StorageMode = MTLStorageMode.Private;
+
+			_offscreen = _device.CreateTexture(descriptor);
+			_width = width;
+			_height = height;
+			_target = _offscreen is null ? null : new AppleMetalRenderTarget(this, width, height);
 		}
-		return _target;
+
+		return _target ?? throw new InvalidOperationException("Failed to allocate the Metal render texture.");
 	}
 
-	// The MTKView owns the drawable and commits after its Draw returns.
-	public void Present() { }
+	public void Present()
+	{
+		if (_offscreen is null)
+		{
+			return;
+		}
 
-	public void Dispose() { }
+		// Acquired here, not before the frame: the drawable is held only for the blit and present.
+		var drawable = _acquireDrawable();
+		if (drawable is null)
+		{
+			return;
+		}
+
+		try
+		{
+			var destination = drawable.Texture;
+			// A mismatch means the layer resized under us; that frame's blit is skipped and the next acquire resizes.
+			var copyWidth = (nuint)Math.Min(_width, (int)destination.Width);
+			var copyHeight = (nuint)Math.Min(_height, (int)destination.Height);
+
+			using var commandBuffer = _queue.CommandBuffer()!;
+			using (var blit = commandBuffer.BlitCommandEncoder!)
+			{
+				blit.CopyFromTexture(
+					_offscreen, 0, 0, new MTLOrigin(0, 0, 0), new MTLSize((nint)copyWidth, (nint)copyHeight, 1),
+					destination, 0, 0, new MTLOrigin(0, 0, 0));
+				blit.EndEncoding();
+			}
+
+			commandBuffer.PresentDrawable(drawable);
+			commandBuffer.Commit();
+		}
+		finally
+		{
+			// Hand the drawable back immediately; the pool is small.
+			drawable.Dispose();
+		}
+	}
+
+	public void Dispose()
+	{
+		_offscreen?.Dispose();
+		_offscreen = null;
+		_target = null;
+	}
 
 	private sealed class AppleMetalRenderTarget(AppleMetalGraphicsContext context, int width, int height) : IMetalRenderTarget
 	{
-		public nint Texture => context._currentTexture;
+		public nint Texture => context._offscreen?.Handle ?? 0;
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Bgra8888;

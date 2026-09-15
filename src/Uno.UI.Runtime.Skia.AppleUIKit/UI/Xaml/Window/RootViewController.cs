@@ -119,13 +119,6 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 
 	public void SetXamlRoot(XamlRoot xamlRoot) => _xamlRoot = xamlRoot;
 
-	// Push the Skia-on-Metal view's per-frame drawable texture into the negotiated context, then render.
-	internal void OnMetalFrame(nint texture)
-	{
-		(_context as IAppleNativeTextureSink)?.SetCurrentTexture(texture);
-		OnFrameRequested();
-	}
-
 	// Neutral per-frame loop: acquire the negotiated context's target, render, and present.
 	internal void OnFrameRequested()
 	{

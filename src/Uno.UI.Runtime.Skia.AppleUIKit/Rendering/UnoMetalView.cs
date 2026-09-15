@@ -126,7 +126,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		/// </summary>
 		internal Uno.UI.Composition.Drawing.ISwapChain? CreateGraphicsContext()
 			=> Device is { } device && _queue is { } queue
-				? new AppleMetalGraphicsContext(device.Handle, queue.Handle)
+				? new AppleMetalGraphicsContext(device, queue, () => CurrentDrawable)
 				: null;
 
 		public void QueueRender()
@@ -154,31 +154,10 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 			_link.Paused = true;
 
-			ICAMetalDrawable? drawable = null;
-			IMTLCommandBuffer? commandBuffer = null;
-
-			try
-			{
-				drawable = CurrentDrawable;
-				if (drawable is null)
-				{
-					return;
-				}
-
-				// Push the drawable's texture into the negotiated Metal context and render through the neutral loop.
-				_owner?.OnMetalFrame(drawable.Texture.Handle);
-
-				commandBuffer = _queue!.CommandBuffer()!;
-				commandBuffer.PresentDrawable(drawable);
-				commandBuffer.Commit();
-			}
-			finally
-			{
-				// Release the drawable as soon as possible
-				// See : https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/MTLBestPracticesGuide/Drawables.html
-				((IDisposable?)commandBuffer)?.Dispose();
-				((IDisposable?)drawable)?.Dispose();
-			}
+			// The drawable is acquired by the context at present time, not here: holding one across the frame's CPU
+			// work drains CAMetalLayer's small pool and stalls every frame.
+			// See : https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/MTLBestPracticesGuide/Drawables.html
+			_owner?.OnFrameRequested();
 		}
 
 	}
