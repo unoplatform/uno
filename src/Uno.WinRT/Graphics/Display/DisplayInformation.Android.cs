@@ -123,7 +123,7 @@ namespace Windows.Graphics.Display
 		{
 			using (var windowManager = CreateWindowManager())
 			{
-				var orientation = ContextHelper.Current!.Resources!.Configuration!.Orientation;
+				var orientation = ContextHelper.Current?.Resources?.Configuration?.Orientation ?? Android.Content.Res.Orientation.Undefined;
 				if (orientation == Android.Content.Res.Orientation.Undefined)
 				{
 					return DisplayOrientations.None;
@@ -210,7 +210,7 @@ namespace Windows.Graphics.Display
 
 		private IWindowManager CreateWindowManager()
 		{
-			if (ContextHelper.Current!.GetSystemService(Context.WindowService) is { } windowService)
+			if (ContextHelper.Current?.GetSystemService(Context.WindowService) is { } windowService)
 			{
 				return windowService.JavaCast<IWindowManager>();
 			}
