@@ -1,0 +1,19 @@
+﻿<ContentDialog
+    x:Class="UITests.Microsoft_UI_Xaml_Controls.ColorPickerTests.ColorPickerDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Pick color"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    PrimaryButtonText="Save"
+    SecondaryButtonClick="ContentDialog_SecondaryButtonClick"
+    SecondaryButtonText="Cancel"
+    Style="{ThemeResource DefaultContentDialogStyle}">
+    <Grid>
+        <ColorPicker
+            x:Name="Picker"
+            IsAlphaEnabled="True"
+            IsAlphaSliderVisible="True"
+            IsAlphaTextInputVisible="True" />
+    </Grid>
+</ContentDialog>
