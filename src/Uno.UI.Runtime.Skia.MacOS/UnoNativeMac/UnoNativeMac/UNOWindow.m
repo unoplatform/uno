@@ -321,8 +321,8 @@ NSWindow* uno_window_create(double width, double height)
     id device = uno_application_get_metal_device();
     if (device) {
         UNOMetalFlippedView *v = [[UNOMetalFlippedView alloc] initWithFrame:size device:device];
-        // Disable MTKView auto-draw; frames are driven by the managed render thread via
-        // uno_window_acquire_next_frame / uno_window_present_frame.
+        // Disable MTKView auto-draw; frames are driven by the managed render thread, which composes
+        // into its own texture and hands it to uno_window_present_texture.
         v.paused = YES;
         v.enableSetNeedsDisplay = NO;
         v.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;

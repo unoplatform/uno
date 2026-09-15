@@ -374,13 +374,17 @@ internal static partial class NativeUno
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]
-	internal static partial bool uno_window_acquire_next_frame(nint window, out nint texture, out double width, out double height);
+	internal static partial bool uno_window_get_drawable_size(nint window, out double width, out double height);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_window_present_frame(nint window);
+	internal static partial nint uno_window_create_render_texture(nint window, int width, int height);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_window_discard_frame(nint window);
+	internal static partial void uno_window_release_texture(nint texture);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_window_present_texture(nint window, nint texture);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_move(nint window, double x, double y);

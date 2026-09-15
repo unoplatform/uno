@@ -349,17 +349,6 @@ void uno_window_get_metal_handles(UNOWindow* window, void*_Nonnull* _Nonnull dev
 /// Returns 0 when it cannot be determined, in which case the caller keeps its configured rate.
 double uno_window_get_refresh_rate(NSWindow* window);
 
-/// Acquires the next drawable from the window's CAMetalLayer (texture handle + size).
-/// Called from the managed render thread.
-bool uno_window_acquire_next_frame(NSWindow* window, void* _Nullable * _Nonnull texture, double* width, double* height);
-
-/// Presents the previously acquired drawable via a Metal command buffer.
-/// Called from the managed render thread after drawing is complete.
-void uno_window_present_frame(NSWindow* window);
-/// Releases the drawable acquired by uno_window_acquire_next_frame without presenting it.
-/// Called from the managed render thread when the frame could not be drawn.
-void uno_window_discard_frame(NSWindow* window);
-
 
 typedef void (*window_did_change_screen_fn_ptr)(NSWindow* window, uint32 width, uint32 height, CGFloat backingScaleFactor);
 window_did_change_screen_fn_ptr uno_get_window_did_change_screen_callback(void);

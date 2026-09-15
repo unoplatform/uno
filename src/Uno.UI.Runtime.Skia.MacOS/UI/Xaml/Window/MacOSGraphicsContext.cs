@@ -7,63 +7,79 @@ using Uno.UI.Composition.Drawing;
 namespace Uno.UI.Runtime.Skia.MacOS;
 
 /// <summary>
-/// A context that consumes the per-frame <c>MTLTexture</c> the native draw callback supplies (Skia-on-Metal),
-/// as opposed to a swapchain-owning context (WebGPU) that sources its own drawable.
+/// Neutral Skia-on-Metal <see cref="ISwapChain"/> for macOS: the frame composes into a texture this context owns
+/// and keeps, and <see cref="Present"/> blits that onto the window layer's drawable.
+///
+/// The drawable is deliberately acquired inside <see cref="Present"/> rather than before the frame: a CAMetalLayer
+/// vends only three, so holding one across the frame's CPU work starves the pool and makes every later
+/// <c>nextDrawable</c> block for ~1s and then return nil. Owning the target is also what lets this report
+/// <see cref="PreservesContents"/>, so the compositor can repaint only the damaged region.
 /// </summary>
-internal interface IMacOSNativeTextureSink
+internal sealed class MacOSMetalGraphicsContext : ISwapChain, IMetalDeviceContext
 {
-	/// <summary>Pushes the texture for the frame about to be acquired.</summary>
-	void SetCurrentTexture(nint texture);
-}
-
-/// <summary>
-/// Neutral Skia-on-Metal <see cref="ISwapChain"/> for macOS: wraps the per-frame native <c>MTLTexture</c> as an
-/// <see cref="IMetalRenderTarget"/>. The native MTKView owns the drawable and commits, so <see cref="Present"/> is a no-op.
-/// </summary>
-internal sealed class MacOSMetalGraphicsContext : ISwapChain, IMacOSNativeTextureSink, IMetalDeviceContext
-{
+	private readonly nint _window;
 	private readonly nint _device;
 	private readonly nint _queue;
-	private nint _currentTexture;
+	private nint _texture;
 	private MacOSMetalRenderTarget? _target;
+	private int _width;
+	private int _height;
 
-	public MacOSMetalGraphicsContext(nint device, nint queue)
+	public MacOSMetalGraphicsContext(nint window, nint device, nint queue)
 	{
+		_window = window;
 		_device = device;
 		_queue = queue;
 	}
 
 	public GraphicsContextKind Kind => GraphicsContextKind.Metal;
 
-	// The native MTKView presents to a per-frame drawable with no host-retained surface, so the back buffer is
-	// undefined each frame and the compositor repaints the whole frame.
-	public bool PreservesContents => false;
+	/// <summary>The frame composes into a texture kept across frames, so last frame's pixels are still there.</summary>
+	public bool PreservesContents => true;
 
 	public nint Device => _device;
 	public nint Queue => _queue;
 
-	public void SetCurrentTexture(nint texture) => _currentTexture = texture;
+	/// <summary>Whether the last <see cref="Present"/> reached the screen; false when the layer vended no drawable.</summary>
+	internal bool LastPresentSucceeded { get; private set; }
 
 	public IRenderTarget AcquireRenderTarget(int width, int height)
 	{
 		width = Math.Max(1, width);
 		height = Math.Max(1, height);
-		if (_target is null || _target.Width != width || _target.Height != height)
+
+		if (_texture == 0 || width != _width || height != _height)
 		{
-			_target = new MacOSMetalRenderTarget(this, width, height);
+			ReleaseTexture();
+
+			_texture = NativeUno.uno_window_create_render_texture(_window, width, height);
+			_width = width;
+			_height = height;
+			_target = _texture == 0 ? null : new MacOSMetalRenderTarget(this, width, height);
 		}
-		return _target;
+
+		return _target ?? throw new InvalidOperationException("Failed to allocate the Metal render texture.");
 	}
 
-	// The native MTKView owns the drawable and commits after drawInMTKView returns.
-	public void Present() { }
+	public void Present()
+		=> LastPresentSucceeded = _texture != 0 && NativeUno.uno_window_present_texture(_window, _texture);
 
-	public void Dispose() { }
+	public void Dispose() => ReleaseTexture();
 
-	// Reads the per-frame texture live off the context, so the cached target reflects each SetCurrentTexture swap.
+	private void ReleaseTexture()
+	{
+		if (_texture != 0)
+		{
+			NativeUno.uno_window_release_texture(_texture);
+			_texture = 0;
+		}
+
+		_target = null;
+	}
+
 	private sealed class MacOSMetalRenderTarget(MacOSMetalGraphicsContext owner, int width, int height) : IMetalRenderTarget
 	{
-		public nint Texture => owner._currentTexture;
+		public nint Texture => owner._texture;
 		public int Width => width;
 		public int Height => height;
 		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Rgba8888;
