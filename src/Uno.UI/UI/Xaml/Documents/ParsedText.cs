@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -10,7 +10,13 @@ using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Microsoft.UI.Xaml.Media;
 using SkiaSharp;
 using Uno.Extensions;
+using Uno.UI;
 using WinUIColor = Windows.UI.Color;
+
+// Aliased rather than imported: the RichTextServices namespace also declares a TextFormatting type,
+// which would collide with the TextFormatting namespace imported above.
+using ObjectRun = Microsoft.UI.Xaml.Documents.RichTextServices.ObjectRun;
+using ObjectRunMetrics = Microsoft.UI.Xaml.Documents.RichTextServices.ObjectRunMetrics;
 
 namespace Microsoft.UI.Xaml.Documents;
 
@@ -62,10 +68,12 @@ internal readonly struct ParsedText : IParsedText
 		int maxLines,
 		float lineHeight,
 		LineStackingStrategy lineStackingStrategy,
+		TextLineBounds textLineBounds,
 		TextAlignment textAlignment,
 		TextWrapping textWrapping,
 		FlowDirection flowDirection,
-		out Size desiredSize)
+		out Size desiredSize,
+		IReadOnlyDictionary<InlineUIContainer, (ObjectRun Run, ObjectRunMetrics Metrics)>? inlineObjects = null)
 	{
 		lineStackingStrategy = lineHeight == 0 ? LineStackingStrategy.MaxHeight : lineStackingStrategy;
 
@@ -83,11 +91,41 @@ internal readonly struct ParsedText : IParsedText
 		{
 			if (inline is LineBreak lineBreak)
 			{
-				Segment breakSegment = new(lineBreak);
+				// A <LineBreak/> is one flat character (CLineBreak::GetRun yields a single \x2028), matching the
+				// "\n" InlineExtensions.GetText already put in _text. It renders no glyph, so FullGlyphsLength stays 0.
+				Segment breakSegment = new(lineBreak, lineBreakLength: 1);
 				RenderSegmentSpan breakSegmentSpan = new(breakSegment, 0, 0, 0, 0, 0, 0, 0, 0);
 				lineSegmentSpans.Add(breakSegmentSpan);
 
 				MoveToNextLine(currentLineWrapped: false);
+			}
+			else if (inline is InlineUIContainer container)
+			{
+				// Only containers the caller measured occupy space. Formatting outside a block-layout
+				// host (so with no embedded element host to measure against) leaves them zero-sized.
+				if (inlineObjects is null || !inlineObjects.TryGetValue(container, out var inlineObject))
+				{
+					continue;
+				}
+
+				if (maxLines > 0 && renderLines.Count == maxLines)
+				{
+					goto MaxLinesHit;
+				}
+
+				var objectWidth = inlineObject.Metrics.Width;
+
+				if (x > 0 && objectWidth > availableWidth - x)
+				{
+					// The object doesn't fit in what's left of the line, and there is content before it,
+					// so wrap it whole onto the next line. An object never breaks internally.
+					MoveToNextLine(currentLineWrapped: true);
+				}
+
+				Segment objectSegment = new(container, flowDirection, inlineObject.Run, inlineObject.Metrics);
+				RenderSegmentSpan objectSegmentSpan = new(objectSegment, 0, 0, 0, 0, 0, objectWidth, objectWidth, 0);
+				lineSegmentSpans.Add(objectSegmentSpan);
+				x += objectWidth;
 			}
 			else if (inline is Run run)
 			{
@@ -282,7 +320,9 @@ internal readonly struct ParsedText : IParsedText
 			lineHeight = defaultLineHeight;
 			lineStackingStrategy = LineStackingStrategy.BlockLineHeight;
 
-			// this bit isn't strictly necessary but it maintains the invariant that RenderLines always have a span
+			// this bit isn't strictly necessary but it maintains the invariant that RenderLines always have a span.
+			// lineBreakLength stays 0: the newline it stands for was already counted by the preceding Run's
+			// LineBreakLength (or there is no newline at all), so it must not be counted twice.
 			Segment breakSegment = new(new LineBreak());
 			RenderSegmentSpan breakSegmentSpan = new(breakSegment, 0, 0, 0, 0, 0, 0, 0, 0);
 			lineSegmentSpans.Add(breakSegmentSpan);
@@ -323,7 +363,7 @@ internal readonly struct ParsedText : IParsedText
 
 		void MoveToNextLine(bool currentLineWrapped)
 		{
-			var renderLine = new RenderLine(lineSegmentSpans, lineStackingStrategy, lineHeight, renderLines.Count == 0, currentLineWrapped);
+			var renderLine = new RenderLine(lineSegmentSpans, lineStackingStrategy, lineHeight, renderLines.Count == 0, currentLineWrapped, textLineBounds);
 			renderLines.Add(renderLine);
 			lineSegmentSpans.Clear();
 
@@ -345,10 +385,15 @@ internal readonly struct ParsedText : IParsedText
 	// composition underline rendering is implemented by UnicodeText (the actual
 	// renderer used by TextBlock/TextBox). ParsedText is only the initial empty
 	// fallback and never has an active composition to render.
+	/// <param name="firstLine">Index of the first line to paint. Lines before it still advance the
+	/// character index so highlight and selection ranges stay in the paragraph's own space.</param>
+	/// <param name="lineCount">Number of lines to paint, for a paragraph split across a page break.</param>
 	public void Draw(UIElement owner, in Visual.PaintingSession session,
 		(int index, CompositionBrush brush, float thickness)? caret,
 		IEnumerable<TextHighlighter> highlighters,
-		(int startIndex, int length)? compositionRange)
+		(int startIndex, int length)? compositionRange,
+		int firstLine = 0,
+		int lineCount = int.MaxValue)
 	{
 		var useHighContrastAdjustment = owner.UseHighContrastAdjustment();
 		var effectiveOpacity = useHighContrastAdjustment && session.Opacity > 0
@@ -358,6 +403,15 @@ internal readonly struct ParsedText : IParsedText
 			useHighContrastAdjustment
 				? owner.GetHighContrastTextColors()
 				: default;
+
+		// Resolved once for the whole draw: the merged regions and their line spans depend only on the
+		// highlighters, not on the segment being painted.
+		var highlightRegions = new List<(HighlightRegion Region, SelectionDetails Details)>();
+		foreach (var region in MergeHighlighters(highlighters))
+		{
+			// HighlightRegion is inclusive, CalculateSelection takes an exclusive end.
+			highlightRegions.Add((region, CalculateSelection(region.StartIndex, region.EndIndex + 1)));
+		}
 
 		if (_renderLines.Count == 0)
 		{
@@ -372,7 +426,7 @@ internal readonly struct ParsedText : IParsedText
 		}
 
 		var canvas = session.Canvas;
-		var alignment = _textAlignment;
+		var alignment = ResolvedTextAlignment;
 		if (_flowDirection == FlowDirection.RightToLeft)
 		{
 			alignment = alignment switch
@@ -387,10 +441,23 @@ internal readonly struct ParsedText : IParsedText
 
 		float y = 0;
 
-		for (var lineIndex = 0; lineIndex < _renderLines.Count; lineIndex++)
+		var lastLine = lineCount == int.MaxValue ? int.MaxValue : firstLine + lineCount;
+
+		for (var lineIndex = 0; lineIndex < _renderLines.Count && lineIndex < lastLine; lineIndex++)
 		{
 			var line = _renderLines[lineIndex];
 			// TODO: (Performance) Stop rendering when the lines exceed the available height
+
+			if (lineIndex < firstLine)
+			{
+				// Not on this page, but its characters still count towards the index space.
+				foreach (var skipped in line.SegmentSpans)
+				{
+					characterCountSoFar += skipped.FullGlyphsLength + (SpanEndsInNewLine(skipped) ? skipped.Segment.LineBreakLength : 0);
+				}
+
+				continue;
+			}
 
 			(float x, float justifySpaceOffset) = line.GetOffsets((float)_availableSize.Width, alignment);
 
@@ -403,6 +470,14 @@ internal readonly struct ParsedText : IParsedText
 				var segmentSpan = line.RenderOrderedSegmentSpans[s];
 
 				var segment = segmentSpan.Segment;
+
+				if (segment.IsInlineObject)
+				{
+					// Inline objects do not render content directly. They are rendering through UIElement tree render walk.
+					x += segmentSpan.Width;
+					continue;
+				}
+
 				var inline = segment.Inline;
 				var fontInfo = segment.FallbackFont ?? inline.FontInfo;
 
@@ -518,30 +593,32 @@ internal readonly struct ParsedText : IParsedText
 					DrawBackplate(canvas, xBeforeGlyphOffsets, y, line.Height, backplateWidth, highContrastBackground, effectiveOpacity);
 				}
 
-				// limited support for highlighters
-				var highlighter = highlighters.FirstOrDefault();
-				var selection = highlighter?.Ranges?.FirstOrDefault();
-				if (selection is not null)
+				if (highlightRegions.Count > 0)
 				{
-					var selectionDetails = CalculateSelection(selection.Value.StartIndex, selection.Value.StartIndex + selection.Value.Length);
-					HandleSelection(
-						selectionDetails,
-						lineIndex,
-						characterCountSoFar,
-						positionsSpan,
-						x,
-						justifySpaceOffset,
-						segmentSpan,
-						segment,
-						fontInfo,
-						y,
-						line,
-						canvas,
-						highlighter!.Background.GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()),
-						effectiveOpacity,
-						useHighContrastAdjustment ? ToSkColor(highContrastSelectionBackground, effectiveOpacity) : null);
-					RenderText(
-						selectionDetails,
+					// Backgrounds first: merged regions never overlap, so they compose without repainting
+					// one another, and the text is then drawn once across the whole segment.
+					foreach (var (region, details) in highlightRegions)
+					{
+						HandleSelection(
+							details,
+							lineIndex,
+							characterCountSoFar,
+							positionsSpan,
+							x,
+							justifySpaceOffset,
+							segmentSpan,
+							segment,
+							fontInfo,
+							y,
+							line,
+							canvas,
+							(region.BackgroundBrush ?? DefaultHighlighterBackground).GetOrCreateCompositionBrush(Compositor.GetSharedCompositor()),
+							effectiveOpacity,
+							useHighContrastAdjustment ? ToSkColor(highContrastSelectionBackground, effectiveOpacity) : null);
+					}
+
+					RenderHighlightedText(
+						highlightRegions,
 						lineIndex,
 						characterCountSoFar,
 						segmentSpan,
@@ -597,6 +674,12 @@ internal readonly struct ParsedText : IParsedText
 				ArrayPool<SKPoint>.Shared.Return(positions);
 				ArrayPool<ushort>.Shared.Return(glyphs);
 			}
+
+			// A line collapsed by text trimming paints its ellipsis after the glyphs that were kept.
+			if (line.CollapsingSymbol is { } collapsingSymbol)
+			{
+				DrawCollapsingSymbol(collapsingSymbol, canvas, x, y + baselineOffsetY);
+			}
 		}
 
 		static void DrawDecoration(SKCanvas canvas, float x, float y, float width, float thickness, SKPaint paint)
@@ -634,15 +717,20 @@ internal readonly struct ParsedText : IParsedText
 
 	// Warning: this is only tested and currently used by TextBox
 	/// <remarks>Takes an already adjusted-for-surrogate-pairs index</remarks>
-	public Rect GetRectForIndex(int adjustedIndex)
+	public Rect GetRectForIndex(int adjustedIndex) => GetRectForUnadjustedIndex(_text[..adjustedIndex].EnumerateRunes().Count());
+
+	/// <remarks>
+	/// Takes an unadjusted (glyph-space) index — the same space as the RenderLine glyph counts, and
+	/// therefore as the RichTextServices TextLine character indices.
+	/// </remarks>
+	internal Rect GetRectForUnadjustedIndex(int index)
 	{
 		var characterCount = 0;
 		float y = 0, x = 0;
-		var index = _text[..adjustedIndex].EnumerateRunes().Count(); // unadjust
 
 		foreach (var line in _renderLines)
 		{
-			(x, var justifySpaceOffset) = line.GetOffsets((float)_availableSize.Width, _textAlignment);
+			(x, var justifySpaceOffset) = line.GetOffsets((float)_availableSize.Width, ResolvedTextAlignment);
 
 			var spans = line.RenderOrderedSegmentSpans;
 			foreach (var span in spans)
@@ -653,7 +741,13 @@ internal readonly struct ParsedText : IParsedText
 				{
 					// we found the right span
 					var segment = span.Segment;
-					var run = (Run)segment.Inline;
+
+					// A <LineBreak/> (or inline-object) span has no glyphs; the caret sits at the span's left edge.
+					if (segment.Inline is not Run run)
+					{
+						return new Rect(x, y, 0, line.Height);
+					}
+
 					var characterSpacing = (float)run.FontSize * run.CharacterSpacing / 1000;
 
 					var glyphStart = span.GlyphsStart;
@@ -697,23 +791,49 @@ internal readonly struct ParsedText : IParsedText
 	{
 		var start = 0;
 		var hyperlinks = new List<(int start, int end, Hyperlink hyperlink)>();
+
+		// Only leaves carry text, and _inlines may be either the leaf list (RichTextBlock feeds the
+		// formatter through ISkiaParagraphSource.GetLeafInlines) or a pre-order walk. Deriving the
+		// ranges from the leaves and walking up to the containing Hyperlink handles both.
 		foreach (var inline in _inlines)
 		{
-			switch (inline)
+			if (inline is Span)
 			{
-				case Hyperlink h:
-					hyperlinks.Add((start, start + h.GetText().Length, h));
-					break;
-				case Span:
-					break;
-				default: // Leaf node
-					start += inline.GetText().Length;
-					break;
+				// Container - its leaves contribute the text.
+				continue;
 			}
+
+			var length = inline.GetText().Length;
+
+			if (FindContainingHyperlink(inline) is { } hyperlink)
+			{
+				hyperlinks.Add((start, start + length, hyperlink));
+			}
+
+			start += length;
 		}
 		var characterIndex = ((IParsedText)this).GetIndexAt(point, ignoreEndingNewLine: false, extendedSelection: false);
 		return hyperlinks.FirstOrDefault(h => h.start <= characterIndex && h.end > characterIndex)
 			.hyperlink;
+	}
+
+	// Nearest Hyperlink ancestor of a leaf inline, or null when the leaf is not inside one.
+	private static Hyperlink? FindContainingHyperlink(Inline inline)
+	{
+		for (DependencyObject? current = inline; current is not null; current = current.GetParent() as DependencyObject)
+		{
+			if (current is Hyperlink hyperlink)
+			{
+				return hyperlink;
+			}
+
+			if (current is Microsoft.UI.Xaml.Controls.TextBlock or Microsoft.UI.Xaml.Controls.RichTextBlock)
+			{
+				break;
+			}
+		}
+
+		return null;
 	}
 
 	public (int start, int length) GetWordAt(int index, bool right)
@@ -814,6 +934,49 @@ internal readonly struct ParsedText : IParsedText
 	}
 
 	public bool IsBaseDirectionRightToLeft => false;
+
+	internal int LineCount => _renderLines.Count;
+
+	// True when the paragraph carries no text at all; SkiaTextLine uses it to stand in for
+	// WinUI's EndOfParagraphRun (ParagraphTextSource::GetTextRun).
+	internal bool IsEmpty => _text.Length == 0;
+
+	// Bridge accessors used by the RichTextServices Skia formatter (SkiaTextLine /
+	// SkiaTextFormatter) to vend per-line metrics over the parsed layout.
+	internal IReadOnlyList<RenderLine> RenderLines => _renderLines;
+
+	// Top of a line within the paragraph. A page that starts partway in draws its first line at the
+	// top, so hit-testing has to add back the height of the lines it skipped.
+	internal float GetLineTop(int lineIndex)
+	{
+		var top = 0f;
+		for (var i = 0; i < lineIndex && i < _renderLines.Count; i++)
+		{
+			top += _renderLines[i].Height;
+		}
+
+		return top;
+	}
+
+	// Text trimming collapses a line in place: the formatter hands the same ParsedText back for every
+	// line of the paragraph, so the collapsed line has to replace the original for Draw to pick it up.
+	internal void ReplaceRenderLine(int index, RenderLine line) => _renderLines[index] = line;
+
+	public float FirstLineBaseline => _renderLines.Count > 0 ? _renderLines[0].Height + _renderLines[0].BaselineOffsetY : _defaultLineHeight;
+
+	internal Size AvailableSize => _availableSize;
+
+	internal TextAlignment TextAlignment => ResolvedTextAlignment;
+
+	// WinUI resolves DetectFromContent to a concrete edge in one place, against the paragraph's
+	// detected reading order (ParagraphNode::CalculateLineOffset), and nothing downstream ever
+	// sees the enum value. Resolving it here keeps every consumer on that contract.
+	private TextAlignment ResolvedTextAlignment
+		=> _textAlignment == TextAlignment.DetectFromContent
+			? (IsBaseDirectionRightToLeft ? TextAlignment.Right : TextAlignment.Left)
+			: _textAlignment;
+
+	internal FlowDirection FlowDirection => _flowDirection;
 
 	#endregion
 
@@ -979,16 +1142,116 @@ internal readonly struct ParsedText : IParsedText
 			}
 		}
 
-		static void DrawText(FontDetails fontInfo, Span<SKPoint> positions, Span<ushort> glyphs,
-			SKCanvas canvas, float y, SKPaint paint)
+	}
+
+	private static void DrawCollapsingSymbol(CollapsedLineSymbol symbol, SKCanvas canvas, float x, float y)
+	{
+		var positions = new SKPoint[symbol.Glyphs.Length];
+		var pen = x;
+
+		for (var i = 0; i < symbol.Glyphs.Length; i++)
 		{
-			_textBlobBuilder.AddPositionedRun(glyphs, fontInfo.SKFont, positions);
-			// Roughly equivalent to:
-			//   using var textBlob = _textBlobBuilder.Build();
-			//   canvas.DrawText(textBlob, 0f, y, paint);
-			var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
-			UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
-			UnoSkiaApi.sk_textblob_unref(textBlobHandle);
+			positions[i] = new SKPoint(pen, 0);
+			pen += symbol.Advances[i];
+		}
+
+		DrawText(symbol.Font, positions, symbol.Glyphs, canvas, y, _spareDrawPaint);
+	}
+
+	private static void DrawText(FontDetails fontInfo, Span<SKPoint> positions, Span<ushort> glyphs,
+		SKCanvas canvas, float y, SKPaint paint)
+	{
+		_textBlobBuilder.AddPositionedRun(glyphs, fontInfo.SKFont, positions);
+		// Roughly equivalent to:
+		//   using var textBlob = _textBlobBuilder.Build();
+		//   canvas.DrawText(textBlob, 0f, y, paint);
+		var textBlobHandle = UnoSkiaApi.sk_textblob_builder_make(_textBlobBuilder.Handle);
+		UnoSkiaApi.sk_canvas_draw_text_blob(canvas.Handle, textBlobHandle, 0f, y, paint.Handle);
+		UnoSkiaApi.sk_textblob_unref(textBlobHandle);
+	}
+
+	// TextHighlightRenderer::GetDefaultHighlighterBrushes — the fallback when a highlighter's brush is
+	// unset or not a SolidColorBrush.
+	private static SolidColorBrush DefaultHighlighterBackground =>
+		ResourceResolver.ResolveResourceStatic<SolidColorBrush>("TextControlHighlighterBackground")
+		?? new SolidColorBrush(Microsoft.UI.Colors.Yellow);
+
+	// TextHighlightRenderer::IterateMergedHighlighters — collapse every highlighter's ranges into
+	// non-overlapping regions where a later entry wins. The caller appends the selection last, so it
+	// takes precedence wherever it overlaps an app highlighter.
+	private static List<HighlightRegion> MergeHighlighters(IEnumerable<TextHighlighter> highlighters)
+	{
+		TextHighlightMerge merge = new();
+
+		foreach (var highlighter in highlighters)
+		{
+			if (highlighter?.Ranges is not { Count: > 0 } ranges)
+			{
+				continue;
+			}
+
+			// WinUI resolves highlighter brushes to SolidColorBrush and falls back to the theme default.
+			var foreground = highlighter.Foreground as SolidColorBrush;
+			var background = highlighter.Background as SolidColorBrush;
+
+			foreach (var range in ranges)
+			{
+				if (range.Length <= 0)
+				{
+					continue;
+				}
+
+				// HighlightRegion ranges are inclusive; TextRange carries a length.
+				merge.AddRegion(new HighlightRegion(range.StartIndex, range.StartIndex + range.Length - 1, foreground, background));
+			}
+		}
+
+		return new List<HighlightRegion>(merge.Regions);
+	}
+
+	// Renders one segment split across the merged highlight regions: unhighlighted runs keep the base
+	// colour, each highlighted run takes its region's foreground. Regions are disjoint and ordered, so a
+	// single left-to-right pass covers the segment without overdrawing it.
+	private void RenderHighlightedText(List<(HighlightRegion Region, SelectionDetails Details)> regions,
+		int lineIndex, int characterCountSoFar, RenderSegmentSpan segmentSpan, FontDetails fontInfo,
+		Span<SKPoint> positions, Span<ushort> glyphs, SKCanvas canvas, float y, SKPaint paint,
+		SKColor? highContrastSelectionColor)
+	{
+		var glyphsLength = segmentSpan.GlyphsLength;
+		var baseColor = paint.Color;
+		var cursor = 0;
+
+		foreach (var (region, details) in regions)
+		{
+			if (details.StartLine > lineIndex || lineIndex > details.EndLine)
+			{
+				continue;
+			}
+
+			var start = Math.Clamp(details.StartIndex - characterCountSoFar, 0, glyphsLength);
+			var end = Math.Clamp(details.EndIndex - characterCountSoFar, 0, glyphsLength);
+
+			if (end <= start)
+			{
+				continue;
+			}
+
+			if (start > cursor)
+			{
+				DrawText(fontInfo, positions.Slice(cursor, start - cursor), glyphs.Slice(cursor, start - cursor), canvas, y, paint);
+			}
+
+			paint.Color = highContrastSelectionColor
+				?? (region.ForegroundBrush is { } fg ? ToSkColor(fg.Color, baseColor.Alpha / 255f) : new SKColor(255, 255, 255, 255));
+			DrawText(fontInfo, positions.Slice(start, end - start), glyphs.Slice(start, end - start), canvas, y, paint);
+			paint.Color = baseColor;
+
+			cursor = end;
+		}
+
+		if (cursor < glyphsLength)
+		{
+			DrawText(fontInfo, positions.Slice(cursor, glyphsLength - cursor), glyphs.Slice(cursor, glyphsLength - cursor), canvas, y, paint);
 		}
 	}
 
@@ -1051,7 +1314,7 @@ internal readonly struct ParsedText : IParsedText
 	}
 
 	// Warning: this is only tested and currently used by TextBox
-	private List<(int start, int length)> GetLineIntervals()
+	internal List<(int start, int length)> GetLineIntervals()
 	{
 		var lineIntervals = new List<(int start, int length)>(_renderLines.Count);
 
@@ -1126,7 +1389,7 @@ internal readonly struct ParsedText : IParsedText
 		}
 
 		RenderSegmentSpan span;
-		(float spanX, float justifySpaceOffset) = line.GetOffsets((float)_availableSize.Width, _textAlignment);
+		(float spanX, float justifySpaceOffset) = line.GetOffsets((float)_availableSize.Width, ResolvedTextAlignment);
 		int i = 0;
 
 		do
@@ -1168,7 +1431,7 @@ internal readonly struct ParsedText : IParsedText
 		return count;
 	}
 
-	private int GetIndexAtUnadjusted(Point p, bool ignoreEndingSpace, bool extendedSelection)
+	internal int GetIndexAtUnadjusted(Point p, bool ignoreEndingSpace, bool extendedSelection)
 	{
 		var line = GetRenderLineAt(p.Y, extendedSelection)?.line;
 
@@ -1238,6 +1501,12 @@ internal readonly struct ParsedText : IParsedText
 	private static bool SpanEndsInNewLine(RenderSegmentSpan segmentSpan)
 	{
 		var segment = segmentSpan.Segment;
+
+		// A LineBreak segment has no Text to inspect (Segment.Text throws); the break is its whole content.
+		if (segment.Inline is LineBreak)
+		{
+			return segment.LineBreakLength > 0;
+		}
 
 		return segment is { Inline: Run, LineBreakAfter: true } &&
 			   segment.Text.TrimEnd().Length <= segmentSpan.GlyphsStart + segmentSpan.GlyphsLength; // last in segment
