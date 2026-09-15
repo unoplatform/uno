@@ -23,18 +23,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		public async Task When_DescribedBy_Set_Then_Peer_Returns_It()
 		{
 			var target = new TextBlock { Text = "Description", Name = "DescTarget" };
-			var described = new TextBox();
+			var described = new TextBox { PlaceholderText = "Enter value" };
 			var panel = new StackPanel { Children = { target, described } };
 			await UITestHelper.Load(panel);
 
 			AutomationProperties.GetDescribedBy(described).Add(target);
 
 			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(described);
+			var targetPeer = FrameworkElementAutomationPeer.CreatePeerForElement(target);
 			Assert.IsNotNull(peer);
+			Assert.IsNotNull(targetPeer);
 
 			var describedBy = peer.GetDescribedBy()?.ToList();
 			Assert.IsNotNull(describedBy, "DescribedBy must not be null when set");
-			Assert.IsTrue(describedBy.Count > 0, "DescribedBy must include the target peer");
+			Assert.IsTrue(describedBy.Contains(targetPeer), "DescribedBy must include the configured target peer");
 		}
 #endif
 
