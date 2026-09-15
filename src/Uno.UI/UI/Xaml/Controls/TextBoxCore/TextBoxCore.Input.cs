@@ -476,7 +476,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 			_timer.Start(); // restart
 		}
 
-		if (selectionChanged)
+		if (selectionChanged && !_inSelectInternal)
 		{
 			UpdateScrolling();
 		}
@@ -1442,18 +1442,43 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 	/// Takes a possibly-negative selection length, indicating a selection that goes backwards.
 	/// This makes the calculations a lot more natural.
 	/// </summary>
-	internal void SelectInternal(int selectionStart, int selectionLength)
+	internal bool SelectInternal(int selectionStart, int selectionLength)
 	{
+		var originalSelection = _selection;
+		var originalCaretXOffset = _caretXOffset;
+		var normalizedStart = Math.Min(selectionStart, selectionStart + selectionLength);
+		var normalizedLength = Math.Abs(selectionLength);
+
 		_inSelectInternal = true;
-		_selection.selectionEndsAtTheStart = selectionLength < 0;
-		if (DisplayBlockInlines is { }) // this check is important because on start up, the Inlines haven't been created yet.
+		try
 		{
-			_caretXOffset = selectionLength >= 0 ?
-				(float)TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength).Left :
-				(float)TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength).Right;
+			// The native overlay reads IsBackwardSelection during Select, before this method returns.
+			// Publish the direction first, then restore it below if SelectionChanging rejects the update.
+			_selection.selectionEndsAtTheStart = selectionLength < 0;
+			if (DisplayBlockInlines is { })
+			{
+				_caretXOffset = selectionLength >= 0 ?
+					(float)TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength).Left :
+					(float)TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength).Right;
+			}
+
+			Select(normalizedStart, normalizedLength);
+			if (SelectionStart != normalizedStart || SelectionLength != normalizedLength)
+			{
+				_selection = originalSelection;
+				_caretXOffset = originalCaretXOffset;
+				UpdateDisplaySelection();
+				return false;
+			}
+
+			UpdateDisplaySelection();
+			UpdateScrolling();
+			return true;
 		}
-		Select(Math.Min(selectionStart, selectionStart + selectionLength), Math.Abs(selectionLength));
-		_inSelectInternal = false;
+		finally
+		{
+			_inSelectInternal = false;
+		}
 	}
 
 	private void TimerOnTick(object sender, object e)
