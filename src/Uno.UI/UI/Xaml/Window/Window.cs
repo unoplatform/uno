@@ -1,7 +1,6 @@
 #nullable enable
 
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using Microsoft.UI;
 using Uno.Disposables;
@@ -405,9 +404,6 @@ public partial class Window
 
 #if __SKIA__
 	private Microsoft.UI.Xaml.Media.SystemBackdrop? _systemBackdrop;
-	private readonly Dictionary<DependencyObject, Brush?> _savedBackdropBackgrounds = new();
-	private readonly HashSet<FrameworkElement> _backdropLoadedSubscriptions = new();
-	private bool _backdropBackgroundsApplied;
 
 	/// <summary>
 	/// Gets or sets the system backdrop used to render materials like Mica and Acrylic.
@@ -417,178 +413,48 @@ public partial class Window
 		get => _systemBackdrop;
 		set
 		{
-			if (value is not null && !IsBackdropImplemented(value))
+			_systemBackdrop = value;
+
+			if (value is not null)
 			{
-				this.LogWarn()?.Warn($"{nameof(SystemBackdrop)} currently supports only {nameof(Media.MicaBackdrop)} and {nameof(Media.DesktopAcrylicBackdrop)} on Skia. '{value.GetType().Name}' will not be applied natively.");
+				if (!IsBackdropImplemented(value))
+				{
+					this.LogWarn()?.Warn($"{nameof(SystemBackdrop)} currently supports only {nameof(Media.MicaBackdrop)} and {nameof(Media.DesktopAcrylicBackdrop)} on Skia. '{value.GetType().Name}' will not be applied natively.");
+				}
+				else if (!IsBackdropSupported(value))
+				{
+					this.LogInfo()?.Info($"'{value.GetType().Name}' is not supported on this platform. As documented for WinUI, a solid themed color is used instead of the material.");
+				}
 			}
 
-			_systemBackdrop = value;
 			NativeWrapper?.SetSystemBackdrop(value);
 			UpdateRootVisualBackgroundForBackdrop(value);
 		}
 	}
 
+	/// <summary>
+	/// Follows MUX DesktopWindowImpl::SetXamlIslandRootBackground: a window with a backdrop drops the
+	/// island root's solid background so the material shows through. App content is left alone, so an
+	/// opaque page still hides the material - as it does in WinUI.
+	/// </summary>
+	/// <remarks>
+	/// Uno diverges from MUX by gating on <see cref="IsBackdropSupported"/>. MUX transparentizes on the
+	/// mere presence of a SystemBackdrop, because its MicaController always hands the target a brush -
+	/// painting FallbackColor when the material can't be rendered. Uno has no such controller: the
+	/// material comes from the native window (DWM on Win32, NSVisualEffectView on macOS), and every
+	/// other head has no implementation at all. Transparentizing there would leave nothing behind the
+	/// root, so keeping the themed background is Uno's equivalent of MUX's FallbackColor.
+	/// </remarks>
 	private void UpdateRootVisualBackgroundForBackdrop(Media.SystemBackdrop? backdrop)
 	{
-		// Always tear down first so subscriptions and saved backgrounds are released even when the
-		// root has already been torn down (RootElement is null), avoiding stale strong references.
-		if (backdrop is null || !IsBackdropSupported(backdrop))
+		if (RootElement is Uno.UI.Xaml.Islands.XamlIslandRoot islandRoot)
 		{
-			ClearBackdropLoadedSubscriptions();
-			RestoreSavedBackdropBackgrounds();
-			return;
-		}
-
-		if (RootElement is null)
-		{
-			return;
-		}
-
-		ApplyTransparentBackgroundsForBackdrop();
-	}
-
-	private void ApplyTransparentBackgroundsForBackdrop()
-	{
-		RestoreSavedBackdropBackgrounds();
-
-		if (RootElement is not { } root)
-		{
-			return;
-		}
-
-		var transparent = new Media.SolidColorBrush(Microsoft.UI.Colors.Transparent);
-		var pending = new Stack<DependencyObject>();
-		var visited = new HashSet<DependencyObject>();
-		pending.Push(root);
-
-		while (pending.Count > 0)
-		{
-			var current = pending.Pop();
-			if (!visited.Add(current))
-			{
-				continue;
-			}
-
-			if (TryGetOpaqueBackground(current, out var originalBrush))
-			{
-				_savedBackdropBackgrounds[current] = originalBrush;
-				SetElementBackground(current, transparent);
-			}
-
-			// Listen for new descendants being loaded (for example after Frame.Navigate) so we can
-			// re-walk and transparentize their backgrounds as well, and for them being unloaded so we
-			// can drop the subscription and release the element instead of retaining it indefinitely.
-			if (current is FrameworkElement fe && _backdropLoadedSubscriptions.Add(fe))
-			{
-				fe.Loaded += OnBackdropElementLoaded;
-				fe.Unloaded += OnBackdropElementUnloaded;
-			}
-
-			for (var i = Media.VisualTreeHelper.GetChildrenCount(current) - 1; i >= 0; i--)
-			{
-				pending.Push(Media.VisualTreeHelper.GetChild(current, i));
-			}
-		}
-
-		_backdropBackgroundsApplied = true;
-	}
-
-	private void RestoreSavedBackdropBackgrounds()
-	{
-		if (!_backdropBackgroundsApplied)
-		{
-			return;
-		}
-
-		foreach (var (element, original) in _savedBackdropBackgrounds)
-		{
-			SetElementBackground(element, original);
-		}
-
-		_savedBackdropBackgrounds.Clear();
-		_backdropBackgroundsApplied = false;
-	}
-
-	private void ClearBackdropLoadedSubscriptions()
-	{
-		foreach (var element in _backdropLoadedSubscriptions)
-		{
-			element.Loaded -= OnBackdropElementLoaded;
-			element.Unloaded -= OnBackdropElementUnloaded;
-		}
-
-		_backdropLoadedSubscriptions.Clear();
-	}
-
-	private void OnBackdropElementLoaded(object sender, RoutedEventArgs e)
-	{
-		if (_systemBackdrop is null || !IsBackdropSupported(_systemBackdrop))
-		{
-			return;
-		}
-
-		// Re-walk so descendants newly added under the loaded element (for example a page
-		// inserted by Frame.Navigate) are picked up and transparentized.
-		ApplyTransparentBackgroundsForBackdrop();
-	}
-
-	private void OnBackdropElementUnloaded(object sender, RoutedEventArgs e)
-	{
-		// Drop the subscription when an element leaves the tree so it can be collected and we stop
-		// re-walking from stale elements. Restore its original background first so that, if it is
-		// re-inserted later, the re-walk captures the real value instead of our transparent override.
-		if (sender is FrameworkElement fe && _backdropLoadedSubscriptions.Remove(fe))
-		{
-			fe.Loaded -= OnBackdropElementLoaded;
-			fe.Unloaded -= OnBackdropElementUnloaded;
-
-			if (_savedBackdropBackgrounds.Remove(fe, out var original))
-			{
-				SetElementBackground(fe, original);
-			}
-		}
-	}
-
-	private static bool TryGetOpaqueBackground(DependencyObject element, out Brush? originalBrush)
-	{
-		// Panel/Border/ContentPresenter derive from FrameworkElement while Control (Page, UserControl,
-		// ContentControl, NavigationView, ...) is a separate branch, so these cases never overlap.
-		switch (element)
-		{
-			case Controls.Panel panel when panel.Background is Media.SolidColorBrush panelBrush && panelBrush.Color.A > 0:
-				originalBrush = panel.Background;
-				return true;
-			case Controls.Border border when border.Background is Media.SolidColorBrush borderBrush && borderBrush.Color.A > 0:
-				originalBrush = border.Background;
-				return true;
-			case Controls.ContentPresenter presenter when presenter.Background is Media.SolidColorBrush presenterBrush && presenterBrush.Color.A > 0:
-				originalBrush = presenter.Background;
-				return true;
-			case Controls.Control control when control.Background is Media.SolidColorBrush controlBrush && controlBrush.Color.A > 0:
-				originalBrush = control.Background;
-				return true;
-			default:
-				originalBrush = null;
-				return false;
-		}
-	}
-
-	private static void SetElementBackground(DependencyObject element, Brush? brush)
-	{
-		switch (element)
-		{
-			case Controls.Panel panel:
-				panel.Background = brush;
-				break;
-			case Controls.Border border:
-				border.Background = brush;
-				break;
-			case Controls.ContentPresenter presenter:
-				presenter.Background = brush;
-				break;
-			case Controls.Control control:
-				control.Background = brush;
-				break;
+			islandRoot.SetBackdropBackground(
+				backdrop is null
+					? Uno.UI.Xaml.Islands.BackdropBackgroundMode.None
+					: IsBackdropSupported(backdrop)
+						? Uno.UI.Xaml.Islands.BackdropBackgroundMode.Transparent
+						: Uno.UI.Xaml.Islands.BackdropBackgroundMode.Fallback);
 		}
 	}
 
@@ -600,12 +466,17 @@ public partial class Window
 		_ => false,
 	};
 
-	private static bool IsBackdropSupported(Media.SystemBackdrop? backdrop) => backdrop switch
-	{
-		Media.MicaBackdrop => Microsoft.UI.Composition.SystemBackdrops.MicaController.IsSupported(),
-		Media.DesktopAcrylicBackdrop => Microsoft.UI.Composition.SystemBackdrops.DesktopAcrylicController.IsSupported(),
-		_ => false,
-	};
+	/// <summary>
+	/// Asks the native window whether it can actually render <paramref name="backdrop"/>.
+	/// </summary>
+	/// <remarks>
+	/// The OS-level <c>MicaController.IsSupported()</c> is not enough on its own: it answers for the
+	/// operating system, not for this head. Headless, X11, FrameBuffer, Android, iOS and WASM all
+	/// inherit a no-op SetSystemBackdrop, so on Windows 11 they would pass an OS-version check and then
+	/// render no material at all.
+	/// </remarks>
+	private bool IsBackdropSupported(Media.SystemBackdrop? backdrop)
+		=> backdrop is not null && NativeWrapper?.IsSystemBackdropSupported(backdrop) is true;
 #endif
 
 	internal Brush? Background

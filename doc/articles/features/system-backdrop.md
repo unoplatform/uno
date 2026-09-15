@@ -56,8 +56,24 @@ App.MainWindow.SystemBackdrop = null;
 
 Tips:
 
-- Make the page/window background transparent so the backdrop shows through (for example: `Page.Background = new SolidColorBrush(Colors.Transparent)` or via XAML). The SamplesApp test performs a traversal of the visual tree and temporarily replaces opaque backgrounds with transparent brushes so the effect is visible.
+- Make your own page and control backgrounds transparent so the backdrop shows through (for example: `Page.Background = new SolidColorBrush(Colors.Transparent)` or via XAML). Setting a backdrop drops the window's own root background, but your content is left untouched — as in WinUI, an opaque page hides the material.
 - On Windows, ensure your app is running on a supported Windows 11 build (22621+). Uno logs a warning when an unsupported backdrop is requested on older builds.
+
+## Unsupported platforms
+
+Materials are drawn by the native window: DWM on Windows and `NSVisualEffectView` on macOS. Heads
+that have no such window — Linux (X11 and FrameBuffer), Android, iOS and WebAssembly — and Windows
+builds older than 11 22621 cannot render one.
+
+Setting `SystemBackdrop` there is safe and never leaves a hole in the window: it paints the regular
+window background instead, and Uno logs an informational message saying so. This matches the
+behaviour documented for WinUI, where "Mica isn't supported on all systems. Where it's not
+supported, a solid color is used instead of the Mica effect." — WinUI paints
+`MicaController.FallbackColor`, and Uno paints `ApplicationPageBackgroundThemeBrush`.
+
+Under the Fluent styles that resolves to `SolidBackgroundFillColorBase` — `#202020` in dark and
+`#F3F3F3` in light, the same colours WinUI 3 uses — and to the system window colour under high
+contrast. It follows the active theme and updates on a theme change.
 
 ## Limitations and recommendations
 
