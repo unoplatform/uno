@@ -255,9 +255,10 @@ namespace Microsoft.UI.Xaml.Controls
 			float? zoomFactor = null,
 			bool disableAnimation = false,
 			bool isIntermediate = false,
+			bool isTouch = false,
 			[CallerMemberName] string callerName = "",
 			[CallerLineNumber] int callerLine = -1)
-			=> Set(horizontalOffset, verticalOffset, zoomFactor, options: new(disableAnimation, IsIntermediate: isIntermediate), callerName, callerLine);
+			=> Set(horizontalOffset, verticalOffset, zoomFactor, options: new(disableAnimation, IsTouch: isTouch, IsIntermediate: isIntermediate), callerName, callerLine);
 
 		private bool Set(
 			double? horizontalOffset = null,

@@ -9,7 +9,7 @@
 		<UnoEnableAlcAppSupport>true</UnoEnableAlcAppSupport>
 
 		<!-- in-solution build -->
-		<_UnoBaseReferenceBinPath Condition="exists('$(MSBuildThisFileDirectory)../../../../SamplesApp')">$(MSBuildThisFileDirectory)../../../../SamplesApp/SamplesApp.Skia.Generic/bin/$(Configuration)/$(TargetFramework)</_UnoBaseReferenceBinPath>
+		<_UnoBaseReferenceBinPath Condition="exists('$(MSBuildThisFileDirectory)../../../../SamplesApp')">$(MSBuildThisFileDirectory)../../../../SamplesApp/SamplesApp/bin/$(Configuration)/$(NetCurrent)-desktop</_UnoBaseReferenceBinPath>
 
 		<!-- CI runtime test job -->
 		<_UnoBaseReferenceBinPath Condition="exists('$(SamplesAppArtifactPath)')">$(SamplesAppArtifactPath)</_UnoBaseReferenceBinPath>
@@ -33,7 +33,6 @@
 		<Reference Include="$(_UnoBaseReferenceBinPath)/*.dll" 
 				   Exclude="@(UnoReferenceExclusion)" />
 
-		<!-- C:/s/uno.github/uno/src/Uno.UI.RuntimeTests/Tests/HotReload/Frame/HRApp/../../../../SamplesApp/SamplesApp.Skia.Gtk/bin -->
 		
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
 		
@@ -44,7 +43,7 @@
 		<PackageReference Include="HarfBuzzSharp" Version="14.2.0" />
 		<PackageReference Include="Uno.UI.RuntimeTests.Engine" Version="0.36.0-dev.124" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
-		<PackageReference Include="Uno.Fonts.OpenSans" Version="2.7.1" />
+		<PackageReference Include="Uno.Fonts.OpenSans" />
 
 		<!--
 		<PackageReference Include="Uno.Resizetizer" Version="1.0.4" />

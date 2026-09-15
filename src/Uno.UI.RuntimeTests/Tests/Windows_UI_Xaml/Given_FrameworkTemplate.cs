@@ -62,6 +62,21 @@ partial class Given_FrameworkTemplate // tests
 	}
 
 	[TestMethod]
+	public void When_CreatedThroughMarkupHelper_Then_BehavesLikeDirectConstruction()
+	{
+		// Arrange
+		FrameworkTemplateBuilder factory = (_, _) => new Border();
+		var viaCtor = new FrameworkTemplate(null, factory);
+
+		// Act
+		var viaMarkupHelper = Uno.UI.Helpers.MarkupHelper.CreateFrameworkTemplate(null, factory);
+
+		// Assert
+		Assert.AreEqual(viaCtor, viaMarkupHelper);
+		Assert.AreEqual(viaCtor.GetHashCode(), viaMarkupHelper.GetHashCode());
+	}
+
+	[TestMethod]
 	public async Task InstancedFactory_ShouldNotLeak()
 	{
 		// Arrange

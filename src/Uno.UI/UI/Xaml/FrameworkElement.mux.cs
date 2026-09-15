@@ -60,5 +60,13 @@ namespace Microsoft.UI.Xaml
 			return false;
 		}
 
+		/// <summary>
+		/// Returns the <see cref="BindingExpression"/> that represents the binding on the specified property.
+		/// </summary>
+		/// <param name="dp">The binding target property from which to retrieve the binding expression.</param>
+		/// <returns>The binding expression, or null if the property is not bound.</returns>
+		public BindingExpression GetBindingExpression(DependencyProperty dp)
+			=> GetBindingExpressionInternal(dp);
+
 	}
 }

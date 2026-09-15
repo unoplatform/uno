@@ -65,6 +65,11 @@ internal sealed partial class WindowChrome : ContentControl
 
 	private void ResizeCaptionButtons()
 	{
+		if (_window.AppWindow?.NativeAppWindow is null)
+		{
+			return;
+		}
+
 		var scale = _window.AppWindow.NativeAppWindow.RasterizationScale;
 		var height = _window.AppWindow.TitleBar.Height / scale;
 		if (height > 0)
@@ -242,7 +247,7 @@ internal sealed partial class WindowChrome : ContentControl
 
 	private void UpdateAllNonClientRegions()
 	{
-		if (_window?.AppWindow is null)
+		if (_window?.AppWindow is null || _window.AppWindow.NativeAppWindow is null)
 		{
 			return;
 		}
@@ -473,6 +478,15 @@ internal sealed partial class WindowChrome : ContentControl
 	{
 		if (!AppWindowTitleBar.IsCustomizationSupported())
 		{
+			return;
+		}
+
+		if (_window.AppWindow.NativeAppWindow is null)
+		{
+			// Defensive only: the native window can still be pending when the window is created
+			// ahead of its backing surface (e.g. an iOS scene that has not connected yet). There is
+			// no retry hook for this transition, but every platform that reports customization as
+			// supported already has its native window by the time chrome is configured.
 			return;
 		}
 

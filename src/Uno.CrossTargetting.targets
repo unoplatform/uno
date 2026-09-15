@@ -86,6 +86,7 @@
 
 	<PropertyGroup Condition="$(IsAppleUIKit)">
 		<DefineConstants>$(DefineConstants);__APPLE_UIKIT__</DefineConstants>
+		<SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(IsAndroid)">

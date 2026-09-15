@@ -96,10 +96,8 @@ namespace SamplesApp.Droid
 		{
 			base.OnCreate();
 
-			// Initialize Android-specific extensions.
-			// These would be generally registered automatically by App.xaml generator,
-			// but in our case it runs in context of SamplesApp.Skia, which does not reference
-			// this Android-specific addin.
+			// Registered by hand because the App.xaml generator does not see these
+			// Android-only add-ins.
 			ApiExtensibility.Register(typeof(IStoreContextExtension), o => new global::Uno.UI.GooglePlay.StoreContextExtension(o));
 			ApiExtensibility.Register(typeof(INativeHingeAngleSensor), o => new FoldableHingeAngleSensor(o));
 			ApiExtensibility.Register(typeof(IApplicationViewSpanningRects), o => new FoldableApplicationViewSpanningRects(o));
