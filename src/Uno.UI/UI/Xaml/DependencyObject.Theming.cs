@@ -720,17 +720,17 @@ public partial class DependencyObject
 				(propertyValue is ICollection || propertyValue is DependencyObjectCollectionBase)
 			)
 			{
-				foreach (var innerValue in dependencyObjectCollection)
+				foreach (var innerValue in new DependencyObjectItems(dependencyObjectCollection))
 				{
-					UpdateResourceBindingsIfNeeded(innerValue, updateReason, resourceContextProvider);
+					UpdateResourceBindingsIfNeeded((DependencyObject)innerValue, updateReason, resourceContextProvider);
 				}
 			}
 
 			if (propertyValue is IAdditionalChildrenProvider updateable)
 			{
-				foreach (var innerValue in updateable.GetAdditionalChildObjects())
+				foreach (var innerValue in new DependencyObjectItems(updateable.GetAdditionalChildObjects()))
 				{
-					UpdateResourceBindingsIfNeeded(innerValue, updateReason, resourceContextProvider);
+					UpdateResourceBindingsIfNeeded((DependencyObject)innerValue, updateReason, resourceContextProvider);
 				}
 			}
 
