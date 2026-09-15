@@ -277,7 +277,15 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		public bool Protected => _info.IsProtected;
 		public int Width => _info.PixelSize.Width;
 		public int Height => _info.PixelSize.Height;
-		public GraphicsColorFormat ColorFormat => GraphicsColorFormat.Bgra8888;
+
+		// The render image takes the surface's own format, and BGRA8 is not universally offered (Android surfaces
+		// typically vend RGBA8), so the backend must be told which one it actually got.
+		public GraphicsColorFormat ColorFormat => (VkFormat)_info.Format switch
+		{
+			VkFormat.VK_FORMAT_R8G8B8A8_UNORM or VkFormat.VK_FORMAT_R8G8B8A8_SRGB => GraphicsColorFormat.Rgba8888,
+			_ => GraphicsColorFormat.Bgra8888,
+		};
+
 		public void Dispose() { }
 	}
 
