@@ -22,7 +22,7 @@ internal sealed class AndroidSkiaXamlRootHost : IXamlRootHost, IAccessibilityOwn
 	}
 
 	// IAccessibilityOwner
-	SkiaAccessibilityBase? IAccessibilityOwner.Accessibility => _accessibility;
+	public SkiaAccessibilityBase? Accessibility => _accessibility;
 
 	/// <summary>
 	/// Tries to connect the accessibility adapter to the render view's helper.
