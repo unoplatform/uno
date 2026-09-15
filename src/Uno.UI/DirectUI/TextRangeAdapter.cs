@@ -73,6 +73,10 @@ internal sealed class TextRangeAdapter : ITextRangeProvider
 				_start = 0;
 				_end = text.Length;
 				break;
+			case TextUnit.Paragraph when _owner is TextBlock:
+				_start = 0;
+				_end = text.Length;
+				break;
 			case TextUnit.Paragraph:
 			case TextUnit.Line:
 			case TextUnit.Word:
