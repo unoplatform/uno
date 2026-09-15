@@ -20,8 +20,8 @@ internal sealed class UnoUIAccessibilityElement : UIAccessibilityElement, IAXCus
 	private readonly WeakReference<AppleUIKitAccessibility> _adapterRef;
 	private AXCustomContent[]? _customContent;
 	private UIAccessibilityCustomAction[]? _customActions;
-	private bool _customContentInitialized;
-	private bool _customActionsInitialized;
+	private bool _hasCustomContentOverride;
+	private bool _hasCustomActionsOverride;
 
 	/// <summary>
 	/// When true, VoiceOver treats this element as a modal container and ignores sibling
@@ -73,20 +73,19 @@ internal sealed class UnoUIAccessibilityElement : UIAccessibilityElement, IAXCus
 				return handler();
 			}
 
-			if (!_customContentInitialized)
+			if (_hasCustomContentOverride)
 			{
-				_customContent = _adapterRef.TryGetTarget(out var adapter)
-					? adapter.GetCustomContent(_nodeId)
-					: null;
-				_customContentInitialized = true;
+				return _customContent;
 			}
 
-			return _customContent;
+			return _adapterRef.TryGetTarget(out var adapter)
+				? adapter.GetCustomContent(_nodeId)
+				: null;
 		}
 		set
 		{
 			_customContent = value;
-			_customContentInitialized = true;
+			_hasCustomContentOverride = true;
 		}
 	}
 
@@ -141,29 +140,28 @@ internal sealed class UnoUIAccessibilityElement : UIAccessibilityElement, IAXCus
 	{
 		get
 		{
-			if (!_customActionsInitialized)
+			if (_hasCustomActionsOverride)
 			{
-				_customActions = _adapterRef.TryGetTarget(out var adapter)
-					? adapter.GetCustomActions(_nodeId)
-					: null;
-				_customActionsInitialized = true;
+				return _customActions;
 			}
 
-			return _customActions;
+			return _adapterRef.TryGetTarget(out var adapter)
+				? adapter.GetCustomActions(_nodeId)
+				: null;
 		}
 		set
 		{
 			_customActions = value;
-			_customActionsInitialized = true;
+			_hasCustomActionsOverride = true;
 		}
 	}
 
 	internal void InvalidateCachedAccessibilityData()
 	{
 		_customContent = null;
-		_customContentInitialized = false;
+		_hasCustomContentOverride = false;
 		_customActions = null;
-		_customActionsInitialized = false;
+		_hasCustomActionsOverride = false;
 	}
 
 	// Modal containment

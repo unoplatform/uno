@@ -24,6 +24,7 @@ public partial class Given_SkiaIOSAccessibilityElement
 		try
 		{
 			await UITestHelper.Load(host);
+			await UITestHelper.WaitForIdle();
 			var root = host.XamlRoot;
 			Assert.IsNotNull(root);
 			var snapshots = GetOrderedSnapshots(root)
