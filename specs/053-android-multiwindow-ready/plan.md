@@ -30,7 +30,7 @@ Apple UIKit runtime already use, making the architecture **multi-window-ready**.
 - Flipping `SupportsMultipleWindows` to `true` and driving a *live* second Activity —
   that needs Activity↔Window lifecycle orchestration and on-device validation, and
   mirrors how iOS staged its own multi-window behind scene adoption (#8341).
-- Threading an explicit owning-window `Context` through every `Uno.UWP`/AddIn
+- Threading an explicit owning-window `Context` through every `Uno.WinRT`/AddIn
   `ContextHelper.Current` consumer. While only one window is live this is a no-op;
   those callers stay on the (now-correct) foreground activity until live multi-window lands.
 - `XamlRootMap.Unregister` on window close. There is no window-close path while
@@ -55,14 +55,14 @@ ContentRoot/VisualTree → XamlRoot`, plus `XamlRootMap` and `NativeWindowWrappe
    `_nativeLayerHost` / `RelativeLayout` / `_started`
    (`src/Uno.UI.Runtime.Skia.Android/ApplicationActivity.cs`).
 3. **`ContextHelper.Current`** — app-global `Android.Content.Context`
-   (`src/Uno.UWP/ContextHelper.cs`); ~40 activity-specific reads, ~55 app-context reads.
+   (`src/Uno.WinRT/ContextHelper.cs`); ~40 activity-specific reads, ~55 app-context reads.
 
 `BaseActivity` (`src/Uno.UI.Runtime.Skia.Android/UI/Xaml/Controls/BaseActivity.cs`) already
 maintains a multi-activity registry (`_instances`, `Current`, `CurrentChanged`) — the seed
 the foreground fallback and per-window ownership build on.
 
 Reference: native Android UI is dropped on this branch — this is purely a Skia-Android host
-consolidation; the `Uno.UWP`/`Uno.Foundation` Android assemblies must keep compiling.
+consolidation; the `Uno.WinRT`/`Uno.Foundation` Android assemblies must keep compiling.
 
 ## Target shape (mirrors Win32/X11/iOS)
 
