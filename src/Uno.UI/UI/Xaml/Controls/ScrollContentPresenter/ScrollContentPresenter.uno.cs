@@ -4,7 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DirectUI;
 using Microsoft.UI.Xaml;
+using Windows.Foundation;
 
 namespace Uno.UI.Xaml.Controls
 {
@@ -64,5 +66,27 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		partial void OnIsPointerWheelReversedChanged(bool isReversed);
+
+		void IScrollInfo.LineUp() => LineUp();
+
+		void IScrollInfo.LineDown() => LineDown();
+
+		void IScrollInfo.LineLeft() => LineLeft();
+
+		void IScrollInfo.LineRight() => LineRight();
+
+		void IScrollInfo.PageUp() => PageUp();
+
+		void IScrollInfo.PageDown() => PageDown();
+
+		void IScrollInfo.PageLeft() => PageLeft();
+
+		void IScrollInfo.PageRight() => PageRight();
+
+		void IScrollInfo.SetHorizontalOffset(double offset) => SetHorizontalOffset(offset);
+
+		void IScrollInfo.SetVerticalOffset(double offset) => SetVerticalOffset(offset);
+
+		Rect IScrollInfo.MakeVisible(UIElement visual, Rect rectangle) => MakeVisible(visual, rectangle);
 	}
 }

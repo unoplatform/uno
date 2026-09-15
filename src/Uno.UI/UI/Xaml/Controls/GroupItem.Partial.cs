@@ -6,19 +6,17 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class GroupItem
 	{
+		private ItemsControl? m_tpItemsControl;
+
 		protected override AutomationPeer OnCreateAutomationPeer()
 			=> new GroupItemAutomationPeer(this);
 
-		/// <summary>
-		/// Minimal compatibility shim used by automation peers to retrieve the templated ItemsControl inside a GroupItem.
-		/// Returns null when not available.
-		/// </summary>
-		public ItemsControl? GetTemplatedItemsControl()
+		protected override void OnApplyTemplate()
 		{
-			// TODO: Uno's GroupItem doesn't currently expose this helper; callers that need the templated items
-			// control should fall back to visual-tree based lookup. Returning null forces callers to
-			// use the fallback path which is safe for compilation and runtime.
-			return null;
+			base.OnApplyTemplate();
+			m_tpItemsControl = GetTemplateChild("ItemsControl") as ItemsControl;
 		}
+
+		internal ItemsControl? GetTemplatedItemsControl() => m_tpItemsControl;
 	}
 }

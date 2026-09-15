@@ -4136,8 +4136,8 @@
 				Value="Enabled" />
 		<Setter Property="ScrollViewer.IsVerticalRailEnabled"
 				Value="True" />
-		<!--ZoomMode attached property is currently not supported-->
-		<!--<Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />-->
+		<Setter Property="ScrollViewer.ZoomMode"
+				Value="Disabled" />
 		<Setter Property="ScrollViewer.IsDeferredScrollingEnabled"
 				Value="False" />
 		<Setter Property="ScrollViewer.BringIntoViewOnFocusChange"
@@ -4214,7 +4214,8 @@
 				Value="Enabled" />
 		<Setter Property="ScrollViewer.IsVerticalRailEnabled"
 				Value="True" />
-		<!--<Setter Property="ScrollViewer.ZoomMode" Value="Disabled" />-->
+		<Setter Property="ScrollViewer.ZoomMode"
+				Value="Disabled" />
 		<Setter Property="ScrollViewer.IsDeferredScrollingEnabled"
 				Value="False" />
 		<Setter Property="ScrollViewer.BringIntoViewOnFocusChange"

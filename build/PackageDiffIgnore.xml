@@ -2788,6 +2788,8 @@
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.TemplateMaterializationSettings::(TemplatedParent|TemplateMemberCreatedCallback)\(\)" reason="BC01: type moved to Uno.UI; TemplateMemberCreatedCallback replaced by OnMemberCreated (uno#18672, breaking changes for 7.0)" isRegex="true" />
 	  </Properties>
 	  <Methods>
+		  <!-- Breaking change: this Uno compatibility shim was public, but WinUI declares it as an implementation-only GroupItem helper and omits it from MIDL. -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ItemsControl Microsoft.UI.Xaml.Controls.GroupItem.GetTemplatedItemsControl()" reason="Breaking change: align GroupItem.GetTemplatedItemsControl with WinUI's internal implementation surface" />
 		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ControlsResourcesVersion Microsoft.UI.Xaml.Controls.XamlControlsResources.get_ControlsResourcesVersion()" reason="Removed with the XamlControlsResources.ControlsResourcesVersion property (BC71, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.XamlControlsResources.set_ControlsResourcesVersion(Microsoft.UI.Xaml.Controls.ControlsResourcesVersion value)" reason="Removed with the XamlControlsResources.ControlsResourcesVersion property (BC71, breaking changes for 7.0)" />
@@ -4222,6 +4224,8 @@
 		  <Member fullName=".+ Microsoft\.UI\.Xaml\.TemplateMaterializationSettings::(TemplatedParent|TemplateMemberCreatedCallback)\(\)" reason="BC01: type moved to Uno.UI; TemplateMemberCreatedCallback replaced by OnMemberCreated (uno#18672, breaking changes for 7.0)" isRegex="true" />
 	  </Properties>
 	  <Methods>
+		  <!-- Breaking change: this Uno compatibility shim was public, but WinUI declares it as an implementation-only GroupItem helper and omits it from MIDL. -->
+		  <Member fullName="Microsoft.UI.Xaml.Controls.ItemsControl Microsoft.UI.Xaml.Controls.GroupItem.GetTemplatedItemsControl()" reason="Breaking change: align GroupItem.GetTemplatedItemsControl with WinUI's internal implementation surface" />
 		  <!-- Fluent resources-version accessors, paired with the <Properties> entries above (BC71, breaking changes for 7.0). -->
 		  <Member fullName="Microsoft.UI.Xaml.Controls.ControlsResourcesVersion Microsoft.UI.Xaml.Controls.XamlControlsResources.get_ControlsResourcesVersion()" reason="Removed with the XamlControlsResources.ControlsResourcesVersion property (BC71, breaking changes for 7.0)" />
 		  <Member fullName="System.Void Microsoft.UI.Xaml.Controls.XamlControlsResources.set_ControlsResourcesVersion(Microsoft.UI.Xaml.Controls.ControlsResourcesVersion value)" reason="Removed with the XamlControlsResources.ControlsResourcesVersion property (BC71, breaking changes for 7.0)" />
