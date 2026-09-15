@@ -26,6 +26,10 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
+
+		<EmbeddedResource Include="LinkerDefinition.xml">
+			<LogicalName>ILLink.Descriptors.xml</LogicalName>
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
