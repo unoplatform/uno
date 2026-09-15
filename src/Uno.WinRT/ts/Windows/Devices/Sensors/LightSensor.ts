@@ -15,16 +15,16 @@ namespace Windows.Devices.Sensors {
 
 	export class LightSensor {
 
-		private static dispatchReading: (lux: number) => number;
+		private static dispatchReading: (lux: number) => (void | Promise<void>);
 		private static ambientLightSensor: AmbientLightSensor;
 
 		public static initialize(): boolean {
 			try {
 				if (typeof window.AmbientLightSensor === "function") {
-					if ((<any>globalThis).DotnetExports !== undefined) {
-						LightSensor.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.LightSensor.DispatchReading;
+					if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+						LightSensor.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.LightSensor.DispatchReadingAsync;
 					} else {
-						throw `LightSensor: Unable to find dotnet exports`;
+						LightSensor.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.LightSensor.DispatchReading;
 					}
 					const AmbientLightSensorClass: any = window.AmbientLightSensor;
 					LightSensor.ambientLightSensor = new AmbientLightSensorClass();

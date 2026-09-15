@@ -11,16 +11,16 @@ namespace Windows.Devices.Sensors {
 
 	export class Gyrometer {
 
-		private static dispatchReading: (x: number, y: number, z: number) => number;		
+		private static dispatchReading: (x: number, y: number, z: number) => (void | Promise<void>);		
 		private static gyroscope: any;
 
 		public static initialize(): boolean {
 			try {
 				if (typeof window.Gyroscope === "function") {
-					if ((<any>globalThis).DotnetExports !== undefined) {
-						this.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.Gyrometer.DispatchReading;
+					if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+						this.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.Gyrometer.DispatchReadingAsync;
 					} else {
-						throw `Gyrometer: Unable to find dotnet exports`;
+						this.dispatchReading = (<any>globalThis).DotnetExports.Uno.Windows.Devices.Sensors.Gyrometer.DispatchReading;
 					}
 					let GyroscopeClass: any = window.Gyroscope;
 					this.gyroscope = new GyroscopeClass({ referenceFrame: "device" });

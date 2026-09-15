@@ -47,19 +47,34 @@
 				}
 			}
 
-			let result = BrowserKeyboardInputSource._exports.OnNativeKeyboardEvent(
-				BrowserKeyboardInputSource._source,
-				evt.type == "keydown",
-				evt.ctrlKey,
-				evt.shiftKey,
-				evt.altKey,
-				evt.metaKey,
-				evt.code,
-				evt.key
-			);
+			if (WebAssemblyThreading.isThreadingEnabled()) {
+				BrowserKeyboardInputSource._exports.OnNativeKeyboardEventAsync(
+					BrowserKeyboardInputSource._source,
+					evt.type == "keydown",
+					evt.ctrlKey,
+					evt.shiftKey,
+					evt.altKey,
+					evt.metaKey,
+					evt.code,
+					evt.key);
 
-			if (result == HtmlEventDispatchResult.PreventDefault) {
+				// preventDefault() is always called because we cannot wait for the C# result.
 				evt.preventDefault();
+			}
+			else {
+				let result = BrowserKeyboardInputSource._exports.OnNativeKeyboardEvent(
+					BrowserKeyboardInputSource._source,
+					evt.type == "keydown",
+					evt.ctrlKey,
+					evt.shiftKey,
+					evt.altKey,
+					evt.metaKey,
+					evt.code,
+					evt.key);
+
+				if (result == HtmlEventDispatchResult.PreventDefault) {
+					evt.preventDefault();
+				}
 			}
 		}
 	}

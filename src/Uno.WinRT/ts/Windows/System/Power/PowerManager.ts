@@ -24,13 +24,26 @@ namespace Windows.System.Power {
 	export class PowerManager {
 
 		private static battery: BatteryManager;
-		private static dispatchChargingChanged: () => void;
-		private static dispatchRemainingChargePercentChanged: () => void;
-		private static dispatchRemainingDischargeTimeChanged: () => void;
+		private static dispatchChargingChanged: () => (void | Promise<void>);
+		private static dispatchRemainingChargePercentChanged: () => (void | Promise<void>);
+		private static dispatchRemainingDischargeTimeChanged: () => (void | Promise<void>);
 
 		public static async initializeAsync(): Promise<string> {
 			if (!PowerManager.battery) {
 				PowerManager.battery = await navigator.getBattery();
+
+				if ((<any>globalThis).Uno.UI.Runtime.Skia.WebAssemblyThreading.isThreadingEnabled()) {
+					PowerManager.dispatchChargingChanged =
+						(<any>globalThis).DotnetExports.Uno.Windows.System.Power.PowerManager.DispatchChargingChangedAsync;
+					PowerManager.dispatchRemainingChargePercentChanged =
+						(<any>globalThis).DotnetExports.Uno.Windows.System.Power.PowerManager.DispatchRemainingChargePercentChangedAsync;
+					PowerManager.dispatchRemainingDischargeTimeChanged =
+						(<any>globalThis).DotnetExports.Uno.Windows.System.Power.PowerManager.DispatchRemainingDischargeTimeChangedAsync;
+				} else {
+					PowerManager.dispatchChargingChanged = (<any>globalThis).DotnetExports.Uno.Windows.System.Power.PowerManager.DispatchChargingChanged;
+					PowerManager.dispatchRemainingChargePercentChanged = (<any>globalThis).DotnetExports.Uno.Windows.System.Power.PowerManager.DispatchRemainingChargePercentChanged;
+					PowerManager.dispatchRemainingDischargeTimeChanged = (<any>globalThis).DotnetExports.Uno.Windows.System.Power.PowerManager.DispatchRemainingDischargeTimeChanged;
+				}
 			}
 
 			return null;
@@ -96,23 +109,14 @@ namespace Windows.System.Power {
 		}
 
 		private static onChargingChange() {
-			if (!PowerManager.dispatchChargingChanged) {
-				PowerManager.dispatchChargingChanged = (<any>globalThis).DotnetExports.Uno.Windows.System.Power.PowerManager.DispatchChargingChanged;
-			}
 			PowerManager.dispatchChargingChanged();
 		}
 
 		private static onDischargingTimeChange() {
-			if (!PowerManager.dispatchRemainingDischargeTimeChanged) {
-				PowerManager.dispatchChargingChanged = (<any>globalThis).DotnetExports.Uno.Windows.System.Power.PowerManager.DispatchRemainingDischargeTimeChanged;
-			}
 			PowerManager.dispatchRemainingDischargeTimeChanged();
 		}
 
 		private static onLevelChange() {
-			if (!PowerManager.dispatchRemainingChargePercentChanged) {
-				PowerManager.dispatchChargingChanged = (<any>globalThis).DotnetExports.Uno.Windows.System.Power.PowerManager.DispatchRemainingChargePercentChanged;
-			}
 			PowerManager.dispatchRemainingChargePercentChanged();
 		}
 	}

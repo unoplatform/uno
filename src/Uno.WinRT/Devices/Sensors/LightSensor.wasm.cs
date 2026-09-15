@@ -2,6 +2,7 @@
 
 using System;
 using System.Runtime.InteropServices.JavaScript;
+using System.Threading.Tasks;
 using Uno;
 
 using NativeMethods = __Windows.Devices.Sensors.LightSensor.NativeMethods;
@@ -26,12 +27,19 @@ namespace Windows.Devices.Sensors
 		}
 
 		[JSExport]
-		internal static int DispatchReading(float lux)
+		internal static void DispatchReading(float lux)
 		{
 			var reading = new LightSensorReading(lux, DateTimeOffset.UtcNow);
 			OnReadingChanged(reading);
-
-			return 0;
 		}
+
+		[JSExport]
+		internal static Task DispatchReadingAsync(float lux)
+		{
+			DispatchReading(lux);
+
+			return Task.CompletedTask;
+		}
+
 	}
 }
