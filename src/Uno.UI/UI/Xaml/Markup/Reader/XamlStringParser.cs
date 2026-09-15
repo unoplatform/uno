@@ -15,6 +15,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 	internal class XamlStringParser
 	{
 		private int _depth;
+		private List<(string Prefix, string Namespace, int LineNumber, int LinePosition)> _clrNamespaceDeclarations;
 
 		public XamlStringParser()
 		{
@@ -25,7 +26,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			var document = XmlReader.Create(new StringReader(content));
 
 			// Initialize the reader using an empty context, because when the tasl
-			// is run under the BeforeCompile in VS IDE, the loaded assemblies are used 
+			// is run under the BeforeCompile in VS IDE, the loaded assemblies are used
 			// to interpret the meaning of objects, which is not correct in Uno.UI context.
 			var context = new XamlSchemaContext(Enumerable.Empty<Assembly>());
 
@@ -36,11 +37,48 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 			{
 				if (reader.Read())
 				{
-					return Visit(reader);
+					var definition = Visit(reader);
+
+					ValidateClrNamespaceDeclarations(content);
+
+					return definition;
 				}
 			}
 
 			return null;
+		}
+
+		/// <summary>
+		/// Records a <c>clr-namespace:</c> declaration for later validation. Reporting is deferred because
+		/// the reader yields namespace nodes before the element's <c>mc:Ignorable</c> attribute is read.
+		/// </summary>
+		private void TrackClrNamespaceDeclaration(XamlXmlReader reader)
+		{
+			if (reader.Namespace is { } declaration && XamlNamespaceValidation.IsClrNamespace(declaration.Namespace))
+			{
+				(_clrNamespaceDeclarations ??= new()).Add((declaration.Prefix, declaration.Namespace, reader.LineNumber, reader.LinePosition));
+			}
+		}
+
+		private void ValidateClrNamespaceDeclarations(string content)
+		{
+			if (_clrNamespaceDeclarations is null)
+			{
+				return;
+			}
+
+			var ignorablePrefixes = XamlNamespaceValidation.GetRootIgnorablePrefixes(content);
+
+			foreach (var (prefix, @namespace, lineNumber, linePosition) in _clrNamespaceDeclarations)
+			{
+				if (prefix.Length > 0 && ignorablePrefixes.Contains(prefix))
+				{
+					continue;
+				}
+
+				throw new XamlParseException(
+					XamlNamespaceValidation.FormatUnsupportedClrNamespaceMessage(prefix, @namespace, lineNumber, linePosition));
+			}
 		}
 
 		private XamlFileDefinition Visit(XamlXmlReader reader)
@@ -60,6 +98,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 
 					case XamlNodeType.NamespaceDeclaration:
 						xamlFile.Namespaces.Add(reader.Namespace);
+						TrackClrNamespaceDeclaration(reader);
 						break;
 
 					default:
@@ -180,6 +219,7 @@ namespace Microsoft.UI.Xaml.Markup.Reader
 					case XamlNodeType.NamespaceDeclaration:
 						lastWasLiteralInline = false;
 						lastWasTrimSurroundingWhiteSpace = false;
+						TrackClrNamespaceDeclaration(reader);
 						// Skip
 						break;
 

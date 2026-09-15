@@ -23,7 +23,7 @@ if ($packages) {
 
 # Optionally clean build artifacts
 if ($CleanBuild -and $RepoRoot) {
-    $appPackagesDir = Join-Path $RepoRoot "src\SamplesApp\SamplesApp.Windows\AppPackages"
+    $appPackagesDir = Join-Path $RepoRoot "src\SamplesApp\SamplesApp\AppPackages"
     if (Test-Path $appPackagesDir) {
         Write-Host "Removing: $appPackagesDir"
         Remove-Item $appPackagesDir -Recurse -Force

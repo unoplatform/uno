@@ -53,12 +53,20 @@ namespace Microsoft.UI.Xaml
 			Style activeStyle = GetActiveStyle();
 			if (activeStyle is not null)
 			{
-				return activeStyle.TryGetPropertyValue(dp, out value, this);
+				return activeStyle.TryGetPropertyValue(dp, out value);
 			}
 
 			value = null;
 			return false;
 		}
+
+		/// <summary>
+		/// Returns the <see cref="BindingExpression"/> that represents the binding on the specified property.
+		/// </summary>
+		/// <param name="dp">The binding target property from which to retrieve the binding expression.</param>
+		/// <returns>The binding expression, or null if the property is not bound.</returns>
+		public BindingExpression GetBindingExpression(DependencyProperty dp)
+			=> GetBindingExpressionInternal(dp);
 
 	}
 }

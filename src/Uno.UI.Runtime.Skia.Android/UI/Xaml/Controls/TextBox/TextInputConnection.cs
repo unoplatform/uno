@@ -33,7 +33,7 @@ class TextInputConnection : BaseInputConnection
 	private readonly DynamicLayout _layout;
 	private readonly EditorInfo _editorInfo;
 
-	private TextBox? _activeTextBox;
+	private TextBoxCore? _activeTextBox;
 	private bool _endingBatch;
 	private bool _duringTextBoxSelectionChanged;
 	private CursorAnchorInfo.Builder? _cursorAnchorInfoBuilder;
@@ -79,7 +79,7 @@ class TextInputConnection : BaseInputConnection
 	public override IEditable? Editable
 		=> _editable;
 
-	public TextBox? ActiveTextBox
+	public TextBoxCore? ActiveTextBox
 	{
 		get => _activeTextBox;
 		internal set
@@ -130,7 +130,7 @@ class TextInputConnection : BaseInputConnection
 		}
 	}
 
-	private void OnActiveTextBoxSelectionChanged(object sender, RoutedEventArgs e)
+	private void OnActiveTextBoxSelectionChanged(object? sender, RoutedEventArgs e)
 	{
 		if (_activeTextBox is not null
 			&& _editable is not null
@@ -490,7 +490,7 @@ class TextInputConnection : BaseInputConnection
 
 		// Set insertion marker location so the IME candidate window
 		// appears near the caret rather than at a default position.
-		if (_activeTextBox is { TextBoxView.DisplayBlock.ParsedText: { } parsedText, XamlRoot: { } xamlRoot })
+		if (_activeTextBox is { TextBoxView.DisplayBlock.ParsedText: { } parsedText, Owner.XamlRoot: { } xamlRoot })
 		{
 			var selEnd = _activeTextBox.SelectionStart + _activeTextBox.SelectionLength;
 			var caretRect = parsedText.GetRectForIndex(selEnd);

@@ -3,16 +3,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Media
 {
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 	public enum FastPlayFallbackBehaviour
 	{
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Skip = 0,
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Hide = 1,
 #endif
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
+#if __SKIA__
 		Disable = 2,
 #endif
 	}

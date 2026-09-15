@@ -196,7 +196,7 @@ public class Given_StandardUICommand
 
 	/// <summary>
 	/// Gets the expected modifier key based on the virtual key and platform.
-	/// On Apple platforms (macOS, iOS, Mac Catalyst) and WASM on Apple devices,
+	/// On Apple platforms (macOS, iOS) and WASM on Apple devices,
 	/// uses VirtualKeyModifiers.Windows (which maps to the Command key).
 	/// On other platforms, uses Control key.
 	/// </summary>

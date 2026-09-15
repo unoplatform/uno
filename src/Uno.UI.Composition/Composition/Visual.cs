@@ -150,6 +150,8 @@ namespace Microsoft.UI.Composition
 			set => SetProperty(ref _opacity, value);
 		}
 
+		internal bool IsHighContrastOpacityOverrideActive { get; set; }
+
 		public Vector3 RotationAxis
 		{
 			get => _rotationAxis;
@@ -195,7 +197,7 @@ namespace Microsoft.UI.Composition
 #if __SKIA__
 			if (propertyName == nameof(Opacity))
 			{
-				RecursiveInvalidate(this);
+				InvalidateSubtreePaint();
 
 				// Render() early-returns when Opacity is 0, so PaintStep never runs to damage the vacated
 				// region. Mirror OnIsVisibleChanged and damage the last-rendered region (recursively).
@@ -204,15 +206,14 @@ namespace Microsoft.UI.Composition
 					DamageLastRenderedRegion(target);
 				}
 			}
-
-			void RecursiveInvalidate(Visual visual)
+			else if (propertyName is nameof(Clip) or LayoutClipPropertyName)
 			{
-				visual.InvalidatePaint();
-				var children = visual.GetChildrenInRenderOrder();
-				foreach (var child in children)
-				{
-					RecursiveInvalidate(child);
-				}
+				// The clip reveals or hides part of this subtree while descendants keep their content and
+				// transform, so they would report no damage on their own. Raise the signal Render carries down
+				// to them, and drop this visual's own cached children picture — otherwise the subtree is not
+				// walked at all, and no descendant gets the chance to report it.
+				_clipChangedSincePaint = true;
+				InvalidateParentChildrenPicture(includeSelf: true);
 			}
 #endif
 		}

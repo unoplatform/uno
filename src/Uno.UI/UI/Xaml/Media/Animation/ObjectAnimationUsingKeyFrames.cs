@@ -333,9 +333,9 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			// (WinUI GetKeyOverrideFromApplicationResourcesNoRef, Resources.cpp:668-682).
 			foreach (var keyFrame in KeyFrames)
 			{
-				if (keyFrame is IDependencyObjectStoreProvider provider)
+				if (keyFrame is DependencyObject provider)
 				{
-					provider.Store.UpdateAllThemeReferences(targetElement, preferAppResourceOverride: true);
+					provider.UpdateAllThemeReferences(targetElement, preferAppResourceOverride: true);
 				}
 			}
 		}

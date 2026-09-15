@@ -4,6 +4,9 @@ uid: uno.features.renderer.native
 
 # The Native Renderer
 
+> [!IMPORTANT]
+> The native renderer was **removed in Uno Platform 7.0** — [Skia](xref:uno.features.renderer.skia) is now the only renderer on every target, including Android, iOS, and WebAssembly. This page describes the legacy native renderer available in Uno Platform 6.x and earlier.
+
 The native renderer is our oldest backend, which uses the native components and APIs to render the UI.
 
 Each supported platform (iOS, Android, and WebAssembly) has its own set of platform interactions, listed below, allowing for deep integration of native components into the visual tree. Each `UIElement` has a corresponding native element (`div` on WebAssembly, `UIView` on iOS, `ViewGroup` on Android).

@@ -1,4 +1,8 @@
-﻿using System.Numerics;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX Reference ScrollPresenterPrimitives.idl, commit b8cfb8490
+
+using System.Numerics;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml.Media;
 using Windows.Foundation;
@@ -63,7 +67,7 @@ public partial class ScrollPresenter :
 	 FrameworkElement,
 	 IScrollAnchorProvider
 {
-	public new Brush Background
+	public Brush Background
 	{
 		get => (Brush)GetValue(BackgroundProperty);
 		set => SetValue(BackgroundProperty, value);
@@ -186,8 +190,10 @@ public partial class ScrollPresenter :
 	public event TypedEventHandler<ScrollPresenter, ScrollingZoomCompletedEventArgs> ZoomCompleted;
 	public event TypedEventHandler<ScrollPresenter, ScrollingBringingIntoViewEventArgs> BringingIntoView;
 	public event TypedEventHandler<ScrollPresenter, ScrollingAnchorRequestedEventArgs> AnchorRequested;
+	public event TypedEventHandler<ScrollPresenter, ScrollingScrollStartingEventArgs> ScrollStarting;
+	public event TypedEventHandler<ScrollPresenter, ScrollingZoomStartingEventArgs> ZoomStarting;
 
-	public new static DependencyProperty BackgroundProperty { get; } = DependencyProperty.Register(
+	public static DependencyProperty BackgroundProperty { get; } = DependencyProperty.Register(
 		nameof(Background),
 		typeof(Brush),
 		typeof(ScrollPresenter),

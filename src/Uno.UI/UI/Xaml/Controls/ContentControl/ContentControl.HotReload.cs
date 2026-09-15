@@ -102,8 +102,8 @@ internal static partial class ContentControlElementMetadataUpdateHandler
 		// Same transfer the walk's ReplaceViewInstance does. It moves local values only — including
 		// attached properties (region/route properties set by navigation frameworks) and bindings —
 		// so an inherited DataContext keeps flowing from the host instead of being pinned here.
-		((IDependencyObjectStoreProvider)currentContent).Store
-			.ClonePropertiesToAnotherStoreForHotReload(((IDependencyObjectStoreProvider)newContent).Store);
+		((DependencyObject)currentContent)
+			.ClonePropertiesToAnotherStoreForHotReload((DependencyObject)newContent);
 
 		return newContent;
 	}

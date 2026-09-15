@@ -40,11 +40,7 @@ namespace Uno.UI.Samples.Converters
 		[UnconditionalSuppressMessage("Trimming", "IL2067", Justification = "Types manipulated here have been marked earlier")]
 		private static object GetDefaultValue(Type targetType)
 		{
-#if SILVERLIGHT
-			return targetType.IsValueType ?
-#else
 			return targetType.GetTypeInfo().IsValueType ?
-#endif
 				Activator.CreateInstance(targetType) :
 				null;
 		}

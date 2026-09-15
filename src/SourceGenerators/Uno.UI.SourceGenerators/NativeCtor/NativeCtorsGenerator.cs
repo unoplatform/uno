@@ -206,7 +206,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 						builder.Append("#endif");
 						builder.AppendLine();
 
-						builder.Append("#if __APPLE_UIKIT__ || __IOS__ || __TVOS__ || __MACCATALYST__");
+						builder.Append("#if __APPLE_UIKIT__ || __IOS__ || __TVOS__");
 						builder.AppendLine();
 						builder.AppendLineIndented("/// <summary>");
 						builder.AppendLineIndented("/// Native constructor, do not use explicitly.");
