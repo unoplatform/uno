@@ -47,7 +47,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public void When_Detached_CalendarViewDayItem_Patterns_Are_Queried()
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public void When_Uno_Detached_CalendarViewDayItem_Patterns_Are_Queried()
 		{
 			var item = new CalendarViewDayItem();
 			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(item);
