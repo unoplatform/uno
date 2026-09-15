@@ -194,7 +194,7 @@ public class Given_MobileAccessibilityLifecycle_US7_Android
 
 	[TestMethod]
 	[RunsOnUIThread]
-	public async Task When_Same_Item_Instance_Appears_Twice_Then_Each_Occurrence_Has_Its_Own_Id()
+	public async Task When_Same_Item_Instance_Appears_Twice_Then_Shared_Peer_Has_Stable_Id()
 	{
 		var sharedItem = new SharedItem("Shared");
 		var listView = new ListView
@@ -212,22 +212,25 @@ public class Given_MobileAccessibilityLifecycle_US7_Android
 		var firstPeers = listPeer.GetChildren()?.OfType<ItemAutomationPeer>().ToArray();
 		Assert.IsNotNull(firstPeers);
 		Assert.AreEqual(2, firstPeers.Length);
-		Assert.AreNotSame(firstPeers[0], firstPeers[1]);
+		Assert.AreSame(
+			firstPeers[0],
+			firstPeers[1],
+			"WinUI reuses the item-keyed peer when the same data instance occurs more than once.");
 
 		_ = GetAllSnapshots(listView.XamlRoot!);
 		var firstId = AccessibilityPeerHelper.AndroidAccessibilityPeerVirtualIdAccessor?.Invoke(firstPeers[0]);
 		var secondId = AccessibilityPeerHelper.AndroidAccessibilityPeerVirtualIdAccessor?.Invoke(firstPeers[1]);
 		Assert.IsNotNull(firstId);
 		Assert.IsNotNull(secondId);
-		Assert.AreNotEqual(firstId, secondId);
+		Assert.AreEqual(firstId, secondId);
 
 		var rebuiltPeers = listPeer.GetChildren()?.OfType<ItemAutomationPeer>().ToArray();
 		Assert.IsNotNull(rebuiltPeers);
 		Assert.AreSame(firstPeers[0], rebuiltPeers[0]);
-		Assert.AreSame(firstPeers[1], rebuiltPeers[1]);
+		Assert.AreSame(firstPeers[0], rebuiltPeers[1]);
 
 		Assert.IsTrue(
-			AccessibilityPeerHelper.AndroidAccessibilityRawActionAccessor?.Invoke(secondId.Value, 0x10));
+			AccessibilityPeerHelper.AndroidAccessibilityRawActionAccessor?.Invoke(firstId.Value, 0x10));
 		Assert.AreEqual(1, listView.SelectedIndex);
 	}
 
