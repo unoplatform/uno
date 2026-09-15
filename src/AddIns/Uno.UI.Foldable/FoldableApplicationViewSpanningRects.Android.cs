@@ -56,7 +56,10 @@ namespace Uno.UI.Foldable
 		}
 		private void OnStartEvent(object sender, EventArgs args)
 		{
-			windowInfoTrackerCallbackAdapter.AddWindowLayoutInfoListener(ContextHelper.Current as Activity, runOnUiThreadExecutor(), this); // `this` is the IConsumer implementation
+			// The adapter is only built in OnCreateEvent. This extension is created on first use,
+			// which can be after the activity it attaches to has already been created -- and with
+			// multiple windows a second activity raises Start/Stop having never raised Create here.
+			windowInfoTrackerCallbackAdapter?.AddWindowLayoutInfoListener(ContextHelper.Current as Activity, runOnUiThreadExecutor(), this); // `this` is the IConsumer implementation
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().Debug($"DualMode: FoldableApplicationViewSpanningRects.OnStartEvent");
@@ -64,7 +67,7 @@ namespace Uno.UI.Foldable
 		}
 		private void OnStopEvent(object sender, EventArgs args)
 		{
-			windowInfoTrackerCallbackAdapter.RemoveWindowLayoutInfoListener(this);
+			windowInfoTrackerCallbackAdapter?.RemoveWindowLayoutInfoListener(this);
 		}
 		public IReadOnlyList<Rect> GetSpanningRects()
 		{
