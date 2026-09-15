@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml;
@@ -121,6 +122,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				() => GetSemanticAttribute(field, "aria-describedby") == string.Empty,
 				timeoutMS: 5000,
 				message: "aria-describedby must be removed when every remaining target lacks a semantic node.");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_DescribedBy_Default_Collection_Changes_During_Peer_Read_Then_IdRef_Is_Preserved()
+		{
+			var target = new TextBlock { Text = "Description" };
+			var field = new TextBox { PlaceholderText = "Enter value" };
+			var panel = new StackPanel { Children = { target, field } };
+
+			try
+			{
+				await UITestHelper.Load(panel);
+				EnableAccessibilityThroughDom();
+				await UITestHelper.WaitFor(
+					() => SemanticElementExists(target) && SemanticElementExists(field),
+					timeoutMS: 5000,
+					message: "Timed out waiting for the relation source and target semantic elements.");
+
+				AutomationProperties.GetDescribedBy(field).Add(target);
+				var targetId = GetSemanticElementId(target);
+				await UITestHelper.WaitFor(
+					() => GetSemanticAttribute(field, "aria-describedby")
+						.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+						.Contains(targetId),
+					timeoutMS: 5000,
+					message: "aria-describedby must retain the configured target after source-aligned relation updates.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+				await UITestHelper.WaitForIdle();
+			}
 		}
 #endif
 	}
