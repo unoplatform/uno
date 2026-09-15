@@ -342,6 +342,12 @@ namespace Microsoft.UI.Xaml
 			if (!_isContentViewSet && Wrapper.Window is { RootElement: not null } existingWindow)
 			{
 				EnsureContentView();
+
+				if (existingWindow.RootElement.XamlRoot is { } xamlRoot && _nativeLayerHost is { } nativeLayerHost)
+				{
+					AndroidSkiaNativeElementHostingExtension.AdoptNativeElements(xamlRoot, nativeLayerHost);
+				}
+
 				_renderView?.ResetRendererContext();
 				existingWindow.Activate();
 				InvalidateRender();
@@ -536,11 +542,10 @@ namespace Microsoft.UI.Xaml
 			_renderViewAsView = null;
 			_nativeLayerHost = null;
 
-			// Only signal the managed window as closing when this activity is not being re-created
-			// and still owns the window. IsChangingConfigurations — not IsFinishing — is the
-			// complement of "being re-created": a finishing activity is also the one replaced by
-			// the StartActivity/Finish restart idiom, where the successor already took the wrapper.
-			if (!IsChangingConfigurations && _wrapper is { } wrapper && ReferenceEquals(wrapper.CurrentActivity, this))
+			// Only a finishing activity that still owns the window closes it. The system also destroys
+			// activities it re-creates later (configuration changes, reclaiming memory), and in the
+			// StartActivity/Finish restart idiom the successor has already taken the wrapper.
+			if (IsFinishing && _wrapper is { } wrapper && ReferenceEquals(wrapper.CurrentActivity, this))
 			{
 				wrapper.OnNativeClosed();
 			}
