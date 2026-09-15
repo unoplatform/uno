@@ -982,7 +982,7 @@ internal partial class Win32WindowWrapper : NativeWindowWrapperBase, IXamlRootHo
 		_accessibility = new Win32Accessibility(_hwnd.Value, rootElement, rootElement.DispatcherQueue);
 	}
 
-	SkiaAccessibilityBase? IAccessibilityOwner.Accessibility => _accessibility;
+	public SkiaAccessibilityBase? Accessibility => _accessibility;
 
 	UIElement? IXamlRootHost.RootElement => Window?.RootElement;
 
