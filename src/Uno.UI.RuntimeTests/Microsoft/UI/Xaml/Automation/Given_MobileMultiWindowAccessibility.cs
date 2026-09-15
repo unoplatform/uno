@@ -98,17 +98,41 @@ public class Given_MobileMultiWindowAccessibility
 	}
 
 	[TestMethod]
-	public async Task When_Secondary_Window_Is_Created_Then_Current_Limitation_Is_Explicit()
+	public async Task When_Secondary_Window_Is_Created_Then_Roots_Are_Isolated_When_Supported()
 	{
-		var button = new Button { Content = "Primary" };
-		await UITestHelper.Load(button);
+		var primaryButton = new Button { Content = "Primary" };
+		await UITestHelper.Load(primaryButton);
 
-		var exception = Assert.ThrowsExactly<InvalidOperationException>(
-			() => new Window(WindowType.DesktopXamlSource));
-		StringAssert.Contains(
-			exception.Message,
-			"secondary windows",
-			"The test must be updated to validate cross-root isolation when mobile secondary windows become supported.");
+		if (RuntimeTestsPlatformHelper.CurrentPlatform == RuntimeTestPlatforms.SkiaAndroid)
+		{
+			var exception = Assert.ThrowsExactly<InvalidOperationException>(
+				() => new Window(WindowType.DesktopXamlSource));
+			StringAssert.Contains(exception.Message, "secondary windows");
+			return;
+		}
+
+		var secondary = new Window(WindowType.DesktopXamlSource);
+		try
+		{
+			var secondaryButton = new Button { Content = "Secondary" };
+			secondary.Content = secondaryButton;
+			secondary.Activate();
+			await TestServices.WindowHelper.WaitForLoaded(secondaryButton);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var primarySnapshots = GetSnapshots(primaryButton.XamlRoot!);
+			var secondarySnapshots = GetSnapshots(secondaryButton.XamlRoot!);
+
+			Assert.IsTrue(primarySnapshots.Any(snapshot => snapshot.Name == "Primary"));
+			Assert.IsFalse(primarySnapshots.Any(snapshot => snapshot.Name == "Secondary"));
+			Assert.IsTrue(secondarySnapshots.Any(snapshot => snapshot.Name == "Secondary"));
+			Assert.IsFalse(secondarySnapshots.Any(snapshot => snapshot.Name == "Primary"));
+		}
+		finally
+		{
+			secondary.Close();
+			await TestServices.WindowHelper.WaitForIdle();
+		}
 	}
 }
 
