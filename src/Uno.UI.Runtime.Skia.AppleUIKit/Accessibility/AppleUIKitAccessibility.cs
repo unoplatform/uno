@@ -711,6 +711,12 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		_modalScopeDirty = false;
 		var screenChangeHandled = false;
 
+		// UIKit may query these immediately when the native element array is assigned.
+		foreach (var element in orderedElements.OfType<UnoUIAccessibilityElement>())
+		{
+			element.RefreshCachedAccessibilityData();
+		}
+
 		if (currentModalHandle != 0)
 		{
 			var isNewModal = _activeModalHandle != currentModalHandle;
@@ -1259,7 +1265,6 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			UIAccessibilityScrollDirection.Right or
 			UIAccessibilityScrollDirection.Down or
 			UIAccessibilityScrollDirection.Next;
-		var amount = forward ? ScrollAmount.LargeIncrement : ScrollAmount.LargeDecrement;
 
 		bool scrolled;
 		bool horizontal;
@@ -1267,18 +1272,33 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		{
 			horizontal = true;
 			scrolled = provider.HorizontallyScrollable &&
-				AccessibilityPeerHelper.TryScroll(peer, amount, ScrollAmount.NoAmount);
+				TryScrollByPage(
+					peer,
+					provider.HorizontalScrollPercent,
+					provider.HorizontalViewSize,
+					forward,
+					horizontal: true);
 		}
 		else if (provider.VerticallyScrollable)
 		{
 			horizontal = false;
-			scrolled = AccessibilityPeerHelper.TryScroll(peer, ScrollAmount.NoAmount, amount);
+			scrolled = TryScrollByPage(
+				peer,
+				provider.VerticalScrollPercent,
+				provider.VerticalViewSize,
+				forward,
+				horizontal: false);
 		}
 		else
 		{
 			horizontal = true;
 			scrolled = provider.HorizontallyScrollable &&
-				AccessibilityPeerHelper.TryScroll(peer, amount, ScrollAmount.NoAmount);
+				TryScrollByPage(
+					peer,
+					provider.HorizontalScrollPercent,
+					provider.HorizontalViewSize,
+					forward,
+					horizontal: true);
 		}
 
 		if (scrolled)
@@ -1290,6 +1310,36 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		}
 
 		return scrolled;
+	}
+
+	private static bool TryScrollByPage(
+		AutomationPeer peer,
+		double currentPercent,
+		double viewSize,
+		bool forward,
+		bool horizontal)
+	{
+		if (!double.IsFinite(currentPercent) ||
+			!double.IsFinite(viewSize) ||
+			currentPercent < 0 ||
+			viewSize <= 0)
+		{
+			return false;
+		}
+
+		var targetPercent = Math.Clamp(
+			currentPercent + (forward ? viewSize : -viewSize),
+			0,
+			100);
+		if (targetPercent == currentPercent)
+		{
+			return false;
+		}
+
+		return AccessibilityPeerHelper.TrySetScrollPercent(
+			peer,
+			horizontal ? targetPercent : ScrollPatternIdentifiers.NoScroll,
+			horizontal ? ScrollPatternIdentifiers.NoScroll : targetPercent);
 	}
 
 	private void PostScrollPositionAnnouncement(IScrollProvider provider, bool horizontal)
@@ -1838,7 +1888,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		}
 	}
 
-	private static bool InvokeMatchingCustomAction(
+	private bool InvokeMatchingCustomAction(
 		UnoUIAccessibilityElement el,
 		AccessibilityNativeActionRequest request)
 	{
@@ -1867,7 +1917,21 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		{
 			if (action.Name == actionName)
 			{
-				return action.ActionHandler?.Invoke(action) ?? false;
+				if (action.ActionHandler is { } handler)
+				{
+					return handler(action);
+				}
+
+				var peer = ResolvePeer(el.NodeId);
+				return peer is not null &&
+					(request.Action switch
+					{
+						AccessibilityNativeAction.Expand => AccessibilityPeerHelper.TryExpand(peer),
+						AccessibilityNativeAction.Collapse => AccessibilityPeerHelper.TryCollapse(peer),
+						AccessibilityNativeAction.ScrollIntoView => AccessibilityPeerHelper.TryScrollIntoView(peer),
+						AccessibilityNativeAction.Realize => AccessibilityPeerHelper.TryRealize(peer),
+						_ => false,
+					});
 			}
 		}
 
@@ -2195,7 +2259,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
-		element.InvalidateCachedAccessibilityData();
+		element.RefreshCachedAccessibilityData();
 		_pendingInvalidationHandles.Add(nodeId);
 		if (!_invalidationFlushScheduled)
 		{

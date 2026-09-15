@@ -164,6 +164,20 @@ internal sealed class UnoUIAccessibilityElement : UIAccessibilityElement, IAXCus
 		_hasCustomActionsOverride = false;
 	}
 
+	internal void RefreshCachedAccessibilityData()
+	{
+		if (!_adapterRef.TryGetTarget(out var adapter))
+		{
+			InvalidateCachedAccessibilityData();
+			return;
+		}
+
+		_customContent = adapter.GetCustomContent(_nodeId);
+		_hasCustomContentOverride = true;
+		_customActions = adapter.GetCustomActions(_nodeId);
+		_hasCustomActionsOverride = true;
+	}
+
 	// Modal containment
 
 	/// <summary>
