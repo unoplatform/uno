@@ -63,7 +63,7 @@ namespace Windows.Storage
 				{
 					if (DrawableHelper.FindResourceIdFromPath(path, logFailure: false) is { } resourceId)
 					{
-						return ContextHelper.Current!.Resources!.OpenRawResource(resourceId);
+						return ContextHelper.ApplicationContext.Resources!.OpenRawResource(resourceId);
 					}
 					else
 					{
@@ -88,8 +88,12 @@ namespace Windows.Storage
 			{
 				var packageVersion = ApplicationModel.Package.Current.Id.Version;
 
+				// The activity's type identifies the app assembly; the application context type can live in Mono.Android.
+				var activity = ContextHelper.Current
+					?? throw new InvalidOperationException("Resolving the app ID requires an activity deriving from Microsoft.UI.Xaml.ApplicationActivity.");
+
 				_currentAppID =
-					ContextHelper.Current!.GetType().Assembly.GetModules().First().ModuleVersionId.ToString()
+					activity.GetType().Assembly.GetModules().First().ModuleVersionId.ToString()
 					+ $"_{packageVersion.Major}.{packageVersion.Minor}.{packageVersion.Build}.{packageVersion.Revision}";
 			}
 		}
