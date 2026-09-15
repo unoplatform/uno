@@ -351,7 +351,9 @@ namespace Uno.UI
 				BaseActivity? next;
 				lock (_instances)
 				{
-					next = _instances.Values.FirstOrDefault(activity => !ReferenceEquals(activity, this));
+					// _instances is only pruned on Dispose, so it can still hold activities already torn down.
+					next = _instances.Values.FirstOrDefault(activity =>
+						!ReferenceEquals(activity, this) && !activity.IsDestroyed && !activity.IsFinishing);
 				}
 
 				ContextHelper.SetForeground(next);
