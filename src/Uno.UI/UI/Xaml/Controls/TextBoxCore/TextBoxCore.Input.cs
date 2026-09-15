@@ -481,7 +481,7 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 			_timer.Start(); // restart
 		}
 
-		if (selectionChanged)
+		if (selectionChanged && !_inSelectInternal)
 		{
 			UpdateScrolling();
 		}
@@ -1457,6 +1457,16 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 		_inSelectInternal = true;
 		try
 		{
+			// The native overlay reads IsBackwardSelection during Select, before this method returns.
+			// Publish the direction first, then restore it below if SelectionChanging rejects the update.
+			_selection.selectionEndsAtTheStart = selectionLength < 0;
+			if (DisplayBlockInlines is { })
+			{
+				_caretXOffset = selectionLength >= 0 ?
+					(float)TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength).Left :
+					(float)TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength).Right;
+			}
+
 			Select(normalizedStart, normalizedLength);
 			if (SelectionStart != normalizedStart || SelectionLength != normalizedLength)
 			{
@@ -1464,14 +1474,6 @@ internal sealed partial class TextBoxCore : ITextSelectionGripperHost
 				_caretXOffset = originalCaretXOffset;
 				UpdateDisplaySelection();
 				return false;
-			}
-
-			_selection.selectionEndsAtTheStart = selectionLength < 0;
-			if (DisplayBlockInlines is { })
-			{
-				_caretXOffset = selectionLength >= 0 ?
-					(float)TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength).Left :
-					(float)TextBoxView.DisplayBlock.ParsedText.GetRectForIndex(selectionStart + selectionLength).Right;
 			}
 
 			UpdateDisplaySelection();
