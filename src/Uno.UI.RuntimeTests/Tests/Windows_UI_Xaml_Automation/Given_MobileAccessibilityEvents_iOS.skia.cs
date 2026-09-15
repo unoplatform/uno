@@ -348,19 +348,26 @@ public class Given_MobileAccessibilityEvents_iOS
 
 	[TestMethod]
 	[RunsOnUIThread]
-	public async Task When_StructureChanged_AutomationEvent_Raised_Then_StructureChanged_Recorded()
+	public async Task When_StructureChanged_AutomationEvent_Raised_Then_One_Coalesced_Record()
 	{
 		var panel = new StackPanel { Children = { new Button { Content = "Item" } } };
 		await UITestHelper.Load(panel);
 		var root = panel.XamlRoot!;
 
 		ClearEvents(root);
+		var rebuildGeneration =
+			AccessibilityPeerHelper.IOSAccessibilityRebuildGenerationAccessor?.Invoke(root) ?? 0;
 		panel.GetOrCreateAutomationPeer()?.RaiseAutomationEvent(AutomationEvents.StructureChanged);
-		await UITestHelper.WaitForIdle();
 
-		Assert.IsTrue(
-			GetEvents(root).Any(e => e.Kind == AccessibilityNativeEventKind.StructureChanged),
-			"Expected StructureChanged when StructureChanged automation event is raised.");
+		await UITestHelper.WaitFor(
+			() => (AccessibilityPeerHelper.IOSAccessibilityRebuildGenerationAccessor?.Invoke(root) ?? 0) > rebuildGeneration,
+			timeoutMS: 5000,
+			message: "Timed out waiting for the coalesced native accessibility rebuild.");
+		var count = GetEvents(root).Count(e => e.Kind == AccessibilityNativeEventKind.StructureChanged);
+		Assert.AreEqual(
+			1,
+			count,
+			"One automation event must produce one coalesced native StructureChanged notification.");
 	}
 
 	// Announcements
