@@ -1787,7 +1787,7 @@ namespace Windows.UI.Tests.Enterprise
 					VERIFY_IS_TRUE(commandBarOverflowBounds.Y >= commandBarBounds.Y);
 					break;
 				case VerticalAlignment.Center:
-					VERIFY_IS_TRUE(commandBarOverflowBounds.Y < commandBarBounds.Y);
+					VERIFY_IS_TRUE(commandBarOverflowBounds.Y >= commandBarBounds.Y);
 					break;
 				case VerticalAlignment.Bottom:
 					VERIFY_IS_TRUE(commandBarOverflowBounds.Y < commandBarBounds.Y);

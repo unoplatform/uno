@@ -9,5 +9,5 @@ internal enum AppBarMode
 	Floating,
 	Top,
 	Bottom,
-	Inline,
+	Inline, // Similar to floating, except it doesn't register with appbarservice.
 }
