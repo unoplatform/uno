@@ -127,10 +127,10 @@ FeatureConfiguration.Rendering.UseVulkanOnWin32 = false;
 
 ## Fallback Behavior
 
-When Vulkan is unavailable, the application automatically falls back to the next available backend:
+When Vulkan is unavailable or has been disabled, the application automatically falls back to the next available backend:
 
-1. **Vulkan** (if requested)
-2. **OpenGL / OpenGL ES** (platform default)
+1. **Vulkan** (the default on Android, Linux (X11) and Windows (Win32))
+2. **OpenGL / OpenGL ES**
 3. **Software rendering** (CPU-based)
 
 No user intervention is required. A diagnostic log message is emitted indicating which backend was selected and why.

@@ -324,7 +324,7 @@ _Danger 4-5. Ship last, never batched — each lands as its own separately-stabi
   - Keep `DataContext` internal so `FlyoutBase`->`Popup` forwarding still works; hide only the public surface. **Folded into the BC58 spec.**
   - Files: `src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs`, `src/Uno.UI/UI/Xaml/Controls/Flyout/FlyoutBase.cs`, `src/Uno.UI/UI/Xaml/DependencyObjectStore.Binder.cs`
 - [x] **BC26** — `DependencyObject` becomes a class  `d4·L` · #17099 · PR #23537, #23702 · **[impact spec](bc26-dependencyobject-as-class.md)**
-  - Landed as a class on every target; `DependencyObjectGenerator` was deleted outright rather than trimmed, and phase 2 (uno-private#2210) went on to drop `DependencyObjectStore` and fold its storage onto `DependencyObject`.
+  - Landed as a class on every target; `DependencyObjectGenerator` was deleted outright rather than trimmed, and phase 2 (#23702) went on to drop `DependencyObjectStore` and fold its storage onto `DependencyObject`.
   - Files: `src/Uno.UI/UI/Xaml/DependencyObject.cs`, `src/Uno.UI/UI/Xaml/DependencyObject.Store.cs`, `src/Uno.UI/UI/Xaml/DependencyObject.Binder.cs`, `src/Uno.UI/UI/Xaml/UIElement.skia.cs`
 - [ ] **BC14** — `UserControl` inherits `Control`  `d5·L` · **[impact spec](bc14-usercontrol-to-control.md)**
   - Reparent to match WinUI.

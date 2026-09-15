@@ -656,12 +656,17 @@ member through a base type that never had it in WinUI.
   subscribing to its `DataContextChanged`, is now a compile error, as is referencing
   `Brush.DataContextProperty` and friends.
 
-  **This one can break silently.** Uno let a non-`FrameworkElement` inherit the ambient
-  `DataContext`, so `{Binding}` on a `Brush`, `Transform` or `Setter` resolved against the
-  surrounding view model — a pattern WinUI never supported. Those bindings no longer resolve,
-  and nothing fails to compile: the binding simply never fires. Bind on the element that
-  *uses* the brush or transform instead (bind `Rectangle.Fill` rather than
-  `SolidColorBrush.Color`), or set the value from code.
+  **`{Binding}` on these objects keeps working.** A non-`FrameworkElement` has no
+  `DataContext` of its own, but — as in WinUI — its bindings resolve against the
+  `DataContext` of the `FrameworkElement` it is attached to, through its inheritance
+  context. `ColumnDefinition.Width`, `RowDefinition.Height`, `Run.Text` and
+  `StateTrigger.IsActive` all still bind to the surrounding view model. The change is to the
+  API surface only: an object like this can no longer be given a `DataContext` of its own, so
+  bind on the owning element or set the value from code instead.
+
+  The inheritance context follows WinUI's rules. An object shared by several owners — a brush
+  resource used by more than one element, say — stops receiving one once a second owner
+  attaches it. Don't rely on `{Binding}` in `Setter.Value` either; WinUI does not resolve it.
 
   Flyouts are the most commonly hit case, and they keep working: `FlyoutBase` no longer
   carries a `DataContext`, but the placement target's `DataContext` is forwarded onto the
@@ -937,8 +942,9 @@ New apps get Skia heads only. Existing apps should drop native `*.Mobile` / nati
 14. Move `Background` reads/writes off `FrameworkElement`-typed references and off
    `TextBlock`/`Image`/`Shape`, and re-point `FrameworkElement.BackgroundProperty` at the
    declaring type.
-15. Re-check every `{Binding}` on a `Brush`, `Transform` or `Setter` — those no longer
-   inherit the ambient `DataContext` and fail silently.
+15. Move `.DataContext` reads/writes and `DataContextChanged` subscriptions off
+   non-`FrameworkElement` objects (`Brush`, `Transform`, `FlyoutBase`, …) onto the owning
+   element — `{Binding}` on those objects still resolves.
 16. Raise `SupportedOSPlatformVersion` to **15.0** (iOS/tvOS) and **24.0** (Android), and
    `TargetPlatformMinVersion` to **10.0.19041.0** (WinAppSDK), in any head that pins them
    explicitly.
