@@ -257,7 +257,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		private readonly UnoExploreByTouchHelper _owner;
 		private readonly AccessibilityNodeProviderCompat _innerProvider;
 
-		internal FilteringNodeProvider(
+		public FilteringNodeProvider(
 			UnoExploreByTouchHelper owner,
 			AccessibilityNodeProviderCompat innerProvider)
 		{
