@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 // MUX Reference AnimatedVisualPlayer.idl, commit 3cae15f0
 
@@ -8,6 +8,7 @@ using System;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -62,7 +63,7 @@ partial class AnimatedVisualPlayer
 		nameof(AutoPlay),
 		typeof(bool),
 		typeof(AnimatedVisualPlayer),
-		new FrameworkPropertyMetadata(true, OnAutoPlayPropertyChanged));
+		new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue, OnAutoPlayPropertyChanged));
 
 	/// <summary>
 	/// Identifies the <see cref="IsAnimatedVisualLoaded"/> dependency property.
@@ -71,7 +72,7 @@ partial class AnimatedVisualPlayer
 		nameof(IsAnimatedVisualLoaded),
 		typeof(bool),
 		typeof(AnimatedVisualPlayer),
-		new FrameworkPropertyMetadata(false));
+		new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Identifies the <see cref="IsPlaying"/> dependency property.
@@ -80,7 +81,7 @@ partial class AnimatedVisualPlayer
 		nameof(IsPlaying),
 		typeof(bool),
 		typeof(AnimatedVisualPlayer),
-		new FrameworkPropertyMetadata(false));
+		new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Identifies the <see cref="PlaybackRate"/> dependency property.
@@ -89,7 +90,7 @@ partial class AnimatedVisualPlayer
 		nameof(PlaybackRate),
 		typeof(double),
 		typeof(AnimatedVisualPlayer),
-		new FrameworkPropertyMetadata(1.0, OnPlaybackRatePropertyChanged));
+		new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One, OnPlaybackRatePropertyChanged));
 
 	/// <summary>
 	/// Identifies the <see cref="AnimationOptimization"/> dependency property.
@@ -186,7 +187,7 @@ partial class AnimatedVisualPlayer
 	public double PlaybackRate
 	{
 		get => (double)GetValue(PlaybackRateProperty);
-		set => SetValue(PlaybackRateProperty, value);
+		set => SetValue(PlaybackRateProperty, Boxes.Box(value));
 	}
 
 	/// <summary>

@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
 using Uno.UI;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Automation.Peers;
@@ -116,7 +117,7 @@ namespace Microsoft.UI.Xaml.Documents
 		public double FontSize
 		{
 			get { return (double)this.GetValue(FontSizeProperty); }
-			set { this.SetValue(FontSizeProperty, value); }
+			set { this.SetValue(FontSizeProperty, Boxes.Box(value)); }
 		}
 
 		public static DependencyProperty FontSizeProperty { get; } =
@@ -154,7 +155,7 @@ namespace Microsoft.UI.Xaml.Documents
 				typeof(bool),
 				typeof(TextElement),
 				new FrameworkPropertyMetadata(
-					defaultValue: true,
+					defaultValue: Boxes.BooleanBoxes.BoxedTrue,
 					options: FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) => ((TextElement)s).OnIsTextScaleFactorEnabledChanged()
 				)
@@ -234,7 +235,7 @@ namespace Microsoft.UI.Xaml.Documents
 		public int CharacterSpacing
 		{
 			get => (int)GetValue(CharacterSpacingProperty);
-			set => SetValue(CharacterSpacingProperty, value);
+			set => SetValue(CharacterSpacingProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty CharacterSpacingProperty { get; } =
@@ -243,7 +244,7 @@ namespace Microsoft.UI.Xaml.Documents
 				typeof(int),
 				typeof(TextElement),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0,
+					defaultValue: Boxes.IntegerBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) => ((TextElement)s).OnCharacterSpacingChanged()
 				)

@@ -54,7 +54,13 @@ public sealed class DependencyPropertyMixinGenerator : IIncrementalGenerator
 					sb.AppendLine($"\t\t{dp.Modifier}public {dp.PropertyType} {dp.Name}");
 					sb.AppendLine("\t\t{");
 					sb.AppendLine($"\t\t\tget {{ return ({dp.PropertyType})this.GetValue({dp.Name}Property); }}");
-					sb.AppendLine($"\t\t\tset {{ this.SetValue({dp.Name}Property, value); }}");
+					// SetValue takes an object, so a value type would be boxed on every set. Uno.UI already
+					// keeps boxes for the common values, and these properties are set often enough for the
+					// allocation to be worth avoiding.
+					var setterValue = dp.PropertyType is "bool" or "int" or "double"
+						? "global::Uno.UI.Helpers.Boxes.Box(value)"
+						: "value";
+					sb.AppendLine($"\t\t\tset {{ this.SetValue({dp.Name}Property, {setterValue}); }}");
 					sb.AppendLine("\t\t}");
 					sb.AppendLine();
 
@@ -65,7 +71,7 @@ public sealed class DependencyPropertyMixinGenerator : IIncrementalGenerator
 					sb.AppendLine($"\t\t\t\ttypeof({dp.PropertyType}),");
 					sb.AppendLine($"\t\t\t\ttypeof({cls.Name}),");
 					sb.AppendLine($"\t\t\t\tnew FrameworkPropertyMetadata(");
-					sb.AppendLine($"\t\t\t\t\tdefaultValue: ({dp.PropertyType}){dp.DefaultValue},");
+					sb.AppendLine($"\t\t\t\t\tdefaultValue: {GetBoxedDefaultValue(dp.PropertyType, dp.DefaultValue)},");
 					sb.AppendLine($"\t\t\t\t\toptions: FrameworkPropertyMetadataOptions.{dp.FrameworkPropertyOption},");
 					sb.AppendLine($"\t\t\t\t\tpropertyChangedCallback: (s, e) => (({cls.Name})s)?.On{dp.Name}Changed(({dp.PropertyType})e.OldValue, ({dp.PropertyType})e.NewValue)");
 					sb.AppendLine($"\t\t\t\t)");
@@ -142,6 +148,23 @@ using View = Android.Views.View;
 using Color = System.Object;
 using View = Microsoft.UI.Xaml.FrameworkElement;
 #endif";
+
+	/// <summary>
+	/// The cached box for a default value literal, or the original cast expression when there is no box for it.
+	/// Keep the recognised values in sync with <c>Boxes.Box</c> and the BoxingDiagnosticAnalyzer.
+	/// </summary>
+	private static string GetBoxedDefaultValue(string propertyType, string defaultValue)
+		=> (propertyType, defaultValue) switch
+		{
+			("bool", "false") => "global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse",
+			("bool", "true") => "global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedTrue",
+			("int", "-1") => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.NegativeOne",
+			("int", "0") => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero",
+			("int", "1") => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.One",
+			("double", "0" or "0.0" or "0d" or "0.0d") => "global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero",
+			("double", "1" or "1.0" or "1d" or "1.0d") => "global::Uno.UI.Helpers.Boxes.DoubleBoxes.One",
+			_ => $"({propertyType}){defaultValue}",
+		};
 
 	#region Data Model
 

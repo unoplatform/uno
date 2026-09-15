@@ -5,6 +5,7 @@
 #nullable enable
 
 using System;
+using Uno.UI.Helpers;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 
@@ -41,7 +42,7 @@ public partial class CornerRadiusFilterConverter : DependencyObject, IValueConve
 	public double Scale
 	{
 		get => (double)GetValue(ScaleProperty);
-		set => SetValue(ScaleProperty, value);
+		set => SetValue(ScaleProperty, Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -52,7 +53,7 @@ public partial class CornerRadiusFilterConverter : DependencyObject, IValueConve
 			nameof(Scale),
 			typeof(double),
 			typeof(CornerRadiusFilterConverter),
-			new FrameworkPropertyMetadata(1.0));
+			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One));
 
 	private static CornerRadius Convert(CornerRadius radius, CornerRadiusFilterKind filterKind)
 	{
@@ -115,7 +116,7 @@ public partial class CornerRadiusFilterConverter : DependencyObject, IValueConve
 			if (filterType == CornerRadiusFilterKind.TopLeftValue ||
 				filterType == CornerRadiusFilterKind.BottomRightValue)
 			{
-				return GetDoubleValue(cornerRadius, filterType);
+				return Boxes.Box(GetDoubleValue(cornerRadius, filterType));
 			}
 
 			return Convert(cornerRadius, filterType);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 using Windows.Foundation;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -42,83 +43,83 @@ namespace Microsoft.UI.Xaml.Media
 		public double CenterX
 		{
 			get => (double)this.GetValue(CenterXProperty);
-			set => this.SetValue(CenterXProperty, value);
+			set => this.SetValue(CenterXProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty CenterXProperty { get; } =
-			DependencyProperty.Register("CenterX", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(0.0d, NotifyChangedCallback));
+			DependencyProperty.Register("CenterX", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, NotifyChangedCallback));
 
 		public double CenterY
 		{
 			get => (double)this.GetValue(CenterYProperty);
-			set => this.SetValue(CenterYProperty, value);
+			set => this.SetValue(CenterYProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty CenterYProperty { get; } =
-			DependencyProperty.Register("CenterY", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(0.0d, NotifyChangedCallback));
+			DependencyProperty.Register("CenterY", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, NotifyChangedCallback));
 
 		public double Rotation
 		{
 			get => (double)this.GetValue(RotationProperty);
-			set => this.SetValue(RotationProperty, value);
+			set => this.SetValue(RotationProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty RotationProperty { get; } =
-			DependencyProperty.Register("Rotation", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(0.0d, NotifyChangedCallback));
+			DependencyProperty.Register("Rotation", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, NotifyChangedCallback));
 
 		public double ScaleX
 		{
 			get => (double)this.GetValue(ScaleXProperty);
-			set => this.SetValue(ScaleXProperty, value);
+			set => this.SetValue(ScaleXProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty ScaleXProperty { get; } =
-			DependencyProperty.Register("ScaleX", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(1.0d, NotifyChangedCallback));
+			DependencyProperty.Register("ScaleX", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One, NotifyChangedCallback));
 
 		public double ScaleY
 		{
 			get => (double)this.GetValue(ScaleYProperty);
-			set => this.SetValue(ScaleYProperty, value);
+			set => this.SetValue(ScaleYProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty ScaleYProperty { get; } =
-			DependencyProperty.Register("ScaleY", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(1.0d, NotifyChangedCallback));
+			DependencyProperty.Register("ScaleY", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One, NotifyChangedCallback));
 
 		public double SkewX
 		{
 			get => (double)this.GetValue(SkewXProperty);
-			set => this.SetValue(SkewXProperty, value);
+			set => this.SetValue(SkewXProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty SkewXProperty { get; } =
-			DependencyProperty.Register("SkewX", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(0.0d, NotifyChangedCallback));
+			DependencyProperty.Register("SkewX", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, NotifyChangedCallback));
 
 		public double SkewY
 		{
 			get => (double)this.GetValue(SkewYProperty);
-			set => this.SetValue(SkewYProperty, value);
+			set => this.SetValue(SkewYProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty SkewYProperty { get; } =
-			DependencyProperty.Register("SkewY", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(0.0d, NotifyChangedCallback));
+			DependencyProperty.Register("SkewY", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, NotifyChangedCallback));
 
 		public double TranslateX
 		{
 			get => (double)this.GetValue(TranslateXProperty);
-			set => this.SetValue(TranslateXProperty, value);
+			set => this.SetValue(TranslateXProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty TranslateXProperty { get; } =
-			DependencyProperty.Register("TranslateX", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(0.0d, NotifyChangedCallback));
+			DependencyProperty.Register("TranslateX", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, NotifyChangedCallback));
 
 		public double TranslateY
 		{
 			get => (double)this.GetValue(TranslateYProperty);
-			set => this.SetValue(TranslateYProperty, value);
+			set => this.SetValue(TranslateYProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty TranslateYProperty { get; } =
-			DependencyProperty.Register("TranslateY", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(0.0d, NotifyChangedCallback));
+			DependencyProperty.Register("TranslateY", typeof(double), typeof(CompositeTransform), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, NotifyChangedCallback));
 
 	}
 }

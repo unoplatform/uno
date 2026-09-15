@@ -2,6 +2,7 @@
 
 using System;
 using Uno.Collections;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml;
 
@@ -30,7 +31,7 @@ public partial class DependencyObject
 		}
 
 		internal void Set(object key, bool isAncestor)
-			=> _entries[key] = isAncestor;
+			=> _entries[key] = Boxes.Box(isAncestor);
 
 		internal void Clear()
 			=> _entries.Clear();

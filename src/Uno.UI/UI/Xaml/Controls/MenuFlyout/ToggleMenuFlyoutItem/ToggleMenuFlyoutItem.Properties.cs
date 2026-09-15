@@ -23,5 +23,5 @@ partial class ToggleMenuFlyoutItem
 			nameof(IsChecked),
 			typeof(bool),
 			typeof(ToggleMenuFlyoutItem),
-			new FrameworkPropertyMetadata(false));
+			new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 }

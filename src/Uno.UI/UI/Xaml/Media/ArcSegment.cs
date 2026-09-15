@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.UI.Xaml.Shapes;
 using Windows.Foundation;
+using Uno.UI.Helpers;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -58,7 +59,7 @@ namespace Microsoft.UI.Xaml.Media
 		public double RotationAngle
 		{
 			get => (double)this.GetValue(RotationAngleProperty);
-			set => this.SetValue(RotationAngleProperty, value);
+			set => this.SetValue(RotationAngleProperty, Boxes.Box(value));
 		}
 
 		public static DependencyProperty RotationAngleProperty { get; } =
@@ -67,7 +68,7 @@ namespace Microsoft.UI.Xaml.Media
 				typeof(double),
 				typeof(ArcSegment),
 				new FrameworkPropertyMetadata(
-					defaultValue: 0.0,
+					defaultValue: Boxes.DoubleBoxes.Zero,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
@@ -109,7 +110,7 @@ namespace Microsoft.UI.Xaml.Media
 				typeof(bool),
 				typeof(ArcSegment),
 				new FrameworkPropertyMetadata(
-					defaultValue: false,
+					defaultValue: Boxes.BooleanBoxes.BoxedFalse,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);

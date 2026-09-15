@@ -12,6 +12,7 @@ using System.Linq;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Automation.Text;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 using static Microsoft.UI.Xaml.Controls._Tracing;
 
@@ -620,7 +621,7 @@ partial class AutomationPeer
 	/// </summary>
 	private static void RaisePropertyChangedEventById(AutomationPeer? peer, AutomationProperty propertyId, bool oldValue, bool newValue)
 	{
-		peer?.RaisePropertyChangedEvent(propertyId, oldValue, newValue);
+		peer?.RaisePropertyChangedEvent(propertyId, Boxes.Box(oldValue), Boxes.Box(newValue));
 	}
 
 	/// <summary>

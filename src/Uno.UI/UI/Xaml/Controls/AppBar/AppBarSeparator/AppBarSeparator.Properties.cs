@@ -12,7 +12,7 @@ partial class AppBarSeparator
 	public int DynamicOverflowOrder
 	{
 		get => (int)GetValue(DynamicOverflowOrderProperty);
-		set => SetValue(DynamicOverflowOrderProperty, value);
+		set => SetValue(DynamicOverflowOrderProperty, global::Uno.UI.Helpers.Boxes.Box(value));
 	}
 
 	/// <summary>
@@ -23,7 +23,7 @@ partial class AppBarSeparator
 			nameof(DynamicOverflowOrder),
 			typeof(int),
 			typeof(AppBarSeparator),
-			new FrameworkPropertyMetadata(default(int)));
+			new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero));
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether the separator is shown with reduced padding.
@@ -42,7 +42,7 @@ partial class AppBarSeparator
 		nameof(IsCompact),
 		typeof(bool),
 		typeof(AppBarSeparator),
-		new FrameworkPropertyMetadata(default(bool))
+		new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse)
 	);
 
 	/// <summary>
@@ -62,7 +62,7 @@ partial class AppBarSeparator
 			nameof(IsInOverflow),
 			typeof(bool),
 			typeof(AppBarSeparator),
-			new FrameworkPropertyMetadata(default(bool)));
+			new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
 
 	bool ICommandBarElement3.IsInOverflow
 	{
@@ -87,6 +87,6 @@ partial class AppBarSeparator
 			nameof(UseOverflowStyle),
 			typeof(bool),
 			typeof(AppBarSeparator),
-			new FrameworkPropertyMetadata(default(bool))
+			new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse)
 		);
 }

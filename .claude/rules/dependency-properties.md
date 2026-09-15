@@ -17,7 +17,7 @@ For full templates, copy from existing controls — `Canvas` (attached + `[Gener
   ```
   The `= Create…Property()` assignment is **mandatory** (omitting it mis-generates silently). Use `ChangedCallbackName = nameof(OnXChanged)` to point at an existing callback; omit it to get a default `OnXChanged`.
 - **Manual registration** uses `FrameworkPropertyMetadata` (not bare `PropertyMetadata`). Constructor arg order is fixed: `(defaultValue, propertyChangedCallback, coerceValueCallback)`. Swapping changed/coerce compiles but fails at runtime.
-- **Box primitive defaults with `default(T)`** — `default(bool)`, `default(int)` — not bare `false`/`0`.
+- **Primitive defaults use the cached boxes** — `Boxes.BooleanBoxes.BoxedFalse`, `Boxes.IntegerBoxes.Zero`, `Boxes.DoubleBoxes.Zero` (from `Uno.UI.Helpers`), not `default(T)` or a bare `false`/`0`, which allocate on every registration. Match the box family to the property's declared type: a `typeof(double)` property takes `DoubleBoxes.Zero`, never `IntegerBoxes.Zero` — the wrong family compiles and then throws on the first `(double)GetValue(...)`. For a non-constant, use `Boxes.Box(value)`. The `UnoInternal0002` analyzer enforces this.
 - The DP field is `public static DependencyProperty XProperty { get; }` (get-only auto-property), never mutable.
 - Callback signatures:
   - changed: `private static void OnXChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)`
