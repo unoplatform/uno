@@ -621,6 +621,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		AccessibilityPeerHelper.AndroidAllNodesForRootAccessor = GetAllNodesForRoot;
 		AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor = GetSnapshotForElement;
 		AccessibilityPeerHelper.AndroidAllNodeSnapshotsForRootAccessor = GetAllSnapshotsForRoot;
+		AccessibilityPeerHelper.AndroidAccessibilityCollectionItemAccessor = GetCollectionItemForElement;
 		AccessibilityPeerHelper.AndroidAccessibilityDiagnosticsAccessor = GetDiagnostics;
 
 		// The focus accessor lets callers request native accessibility focus
@@ -2890,6 +2891,21 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			? BuildNodeDetails(effectivePeer, element, controlType, virtualId)
 			: null;
 		return CreateSnapshot(node, details, GetCheckedState(effectivePeer));
+	}
+
+	private AccessibilityNativeCollectionItemDetails? GetCollectionItemForElement(UIElement element)
+	{
+		if (GetNodeForElement(element) is not AccessibilityNodeInfoCompat node ||
+			node.CollectionItemInfo is not { } item)
+		{
+			return null;
+		}
+
+		return new AccessibilityNativeCollectionItemDetails(
+			item.RowIndex,
+			item.ColumnIndex,
+			item.RowSpan,
+			item.ColumnSpan);
 	}
 
 	private AccessibilityNativeNodeSnapshot[]? GetAllSnapshotsForRoot(XamlRoot xamlRoot)

@@ -682,13 +682,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 			if (AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor is not null)
 			{
-				var nativeItem = snapshot.NativeNode
-					.GetType()
-					.GetProperty("CollectionItemInfo")
-					?.GetValue(snapshot.NativeNode);
+				Assert.IsNotNull(AccessibilityPeerHelper.AndroidAccessibilityCollectionItemAccessor);
+				var nativeItem = AccessibilityPeerHelper.AndroidAccessibilityCollectionItemAccessor(control);
 				Assert.IsNotNull(nativeItem, "Android CollectionItemInfo must be populated for a Custom GridItem peer.");
-				Assert.AreEqual(4, nativeItem.GetType().GetProperty("RowIndex")?.GetValue(nativeItem));
-				Assert.AreEqual(1, nativeItem.GetType().GetProperty("ColumnIndex")?.GetValue(nativeItem));
+				Assert.AreEqual(4, nativeItem.Row);
+				Assert.AreEqual(1, nativeItem.Column);
 			}
 
 			if (AccessibilityPeerHelper.IOSAccessibilityElementAccessor is not null)
