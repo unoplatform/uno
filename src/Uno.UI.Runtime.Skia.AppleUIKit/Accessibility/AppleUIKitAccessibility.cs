@@ -433,7 +433,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			}
 
 			_currentAccessibilityElements = Array.Empty<UIAccessibilityElement>();
-			metalView.SetValueForKey(null!, _accessibilityElementsKey);
+			using var emptyArray = NSArray.FromNSObjects(_currentAccessibilityElements);
+			metalView.SetValueForKey(emptyArray, _accessibilityElementsKey);
 			metalView.AutomationElements = null;
 			return;
 		}
@@ -2298,6 +2299,12 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 		switch (eventId)
 		{
+			case AutomationEvents.StructureChanged:
+			case AutomationEvents.LayoutInvalidated:
+			case AutomationEvents.AsyncContentLoaded:
+				RecordEvent(AccessibilityNativeEventKind.StructureChanged);
+				break;
+
 			case AutomationEvents.TextPatternOnTextChanged:
 			case AutomationEvents.TextEditTextChanged:
 			case AutomationEvents.ConversionTargetChanged:
@@ -2349,9 +2356,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 				break;
 
-				// StructureChanged, LayoutInvalidated, AsyncContentLoaded, SelectionPatternOnInvalidated:
-				// base schedules a rebuild; StructureChanged is recorded in RebuildTree when the
-				// rebuild detects an actual change in element order or membership.
+				// SelectionPatternOnInvalidated: base schedules a rebuild.
 				// LiveRegionChanged: base announces with correct assertiveness via AnnounceOnPlatform.
 		}
 	}

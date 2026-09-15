@@ -330,7 +330,7 @@ public class Given_MobileAccessibilityEvents_iOS
 	public async Task When_Multiple_Children_Added_Then_One_Coalesced_StructureChanged()
 	{
 		var panel = new StackPanel();
-		await UITestHelper.Load(panel);
+		await UITestHelper.Load(panel, element => element.IsLoaded);
 		var root = panel.XamlRoot!;
 
 		ClearEvents(root);
