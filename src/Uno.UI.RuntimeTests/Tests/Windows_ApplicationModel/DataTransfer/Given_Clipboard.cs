@@ -268,6 +268,51 @@ partial class Given_Clipboard
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(Include, Wasm)]
+	public async Task When_GetSet_Clipboard_ApplicationLink()
+	{
+		var package = new DataPackage();
+		var uri = new Uri("uno-test://open/item");
+		package.SetApplicationLink(uri);
+
+		Clipboard.SetContent(package);
+
+		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(StandardDataFormats.ApplicationLink));
+
+		// A non-web URI must come back as an application link, not be promoted to a web link.
+		var view = Clipboard.GetContent();
+
+		Assert.IsFalse(view.Contains(StandardDataFormats.WebLink));
+		Assert.AreEqual(uri, await view.GetApplicationLinkAsync());
+		Assert.AreEqual(uri.ToString(), await view.GetTextAsync());
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
+	public async Task When_Paste_Event_With_Malformed_Uri_List()
+	{
+#if HAS_UNO
+		DispatchSyntheticPaste(
+			"""
+			const dt = new DataTransfer();
+			dt.items.add('paste-text-payload', 'text/plain');
+			dt.items.add('not a uri', 'text/uri-list');
+			""");
+
+		// A malformed link from another application is dropped; the other formats stay readable.
+		var view = Clipboard.GetContent();
+
+		Assert.IsFalse(view.Contains(StandardDataFormats.WebLink));
+		Assert.IsFalse(view.Contains(StandardDataFormats.ApplicationLink));
+		Assert.AreEqual("paste-text-payload", await view.GetTextAsync());
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
 	public async Task When_Paste_Shortcut_Precedes_Paste_Event()
 	{
 #if HAS_UNO
