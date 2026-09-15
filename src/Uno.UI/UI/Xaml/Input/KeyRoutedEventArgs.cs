@@ -25,9 +25,6 @@ namespace Microsoft.UI.Xaml.Input
 
 		public VirtualKey Key { get; }
 
-#if __ANDROID__ || __APPLE_UIKIT__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__APPLE_UIKIT__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-#endif
 		public CorePhysicalKeyStatus KeyStatus
 		{
 			get

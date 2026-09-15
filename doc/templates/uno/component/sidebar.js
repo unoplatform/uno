@@ -153,6 +153,11 @@ function renderSidebar() {
             return;
         }
         tocPath = tocPath.replace(/\\/g, '/');
+        // DocFX 2.73.2 sets tocrel to toc.json, but toc.html has the proper
+        // structure with expand-stubs and nested items, so always load HTML.
+        if (tocPath.endsWith('.json')) {
+            tocPath = tocPath.replace(/\.json$/, '.html');
+        }
         $('#sidetoc').load(tocPath + " #sidetoggle > div", function () {
             const index = tocPath.lastIndexOf('/');
             let tocrel = '';

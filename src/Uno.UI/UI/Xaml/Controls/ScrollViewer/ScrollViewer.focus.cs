@@ -1,5 +1,4 @@
 ﻿#nullable enable
-#if !__ANDROID__ && !__APPLE_UIKIT__ && !__WASM__
 using Microsoft.UI.Xaml.Input;
 using Windows.Foundation;
 using static Microsoft.UI.Xaml.Controls._Tracing;
@@ -165,4 +164,3 @@ partial class ScrollViewer
 		return FocusManager.FindNextElement(focusDirection, findNextElementOptions);
 	}
 }
-#endif

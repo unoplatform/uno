@@ -1,0 +1,242 @@
+<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<!-- MUX Reference TitleBar_themeresources.xaml, commit 5f9e85113 -->
+<ResourceDictionary
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+	xmlns:animatedvisuals="using:Microsoft.UI.Xaml.Controls.AnimatedVisuals"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+
+	<ResourceDictionary.ThemeDictionaries>
+		<ResourceDictionary x:Key="Default">
+			<StaticResource x:Key="TitleBarForegroundBrush" ResourceKey="TextFillColorPrimaryBrush" />
+			<StaticResource x:Key="TitleBarDeactivatedForegroundBrush" ResourceKey="TextFillColorTertiaryBrush" />
+			<StaticResource x:Key="TitleBarSubtitleForegroundBrush" ResourceKey="TextFillColorSecondaryBrush" />
+			<StaticResource x:Key="TitleBarSubtitleDeactivatedForegroundBrush" ResourceKey="TextFillColorTertiaryBrush" />
+			<StaticResource x:Key="TitleBarBackButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
+			<StaticResource x:Key="TitleBarBackButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+			<StaticResource x:Key="TitleBarBackButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+			<StaticResource x:Key="TitleBarBackButtonBackgroundDisabled" ResourceKey="ControlFillColorDisabledBrush" />
+			<StaticResource x:Key="TitleBarBackButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
+			<StaticResource x:Key="TitleBarBackButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+			<StaticResource x:Key="TitleBarBackButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
+			<StaticResource x:Key="TitleBarBackButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonBackgroundDisabled" ResourceKey="ControlFillColorDisabledBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+		</ResourceDictionary>
+		<ResourceDictionary x:Key="Light">
+			<StaticResource x:Key="TitleBarForegroundBrush" ResourceKey="TextFillColorPrimaryBrush" />
+			<StaticResource x:Key="TitleBarDeactivatedForegroundBrush" ResourceKey="TextFillColorTertiaryBrush" />
+			<StaticResource x:Key="TitleBarSubtitleForegroundBrush" ResourceKey="TextFillColorSecondaryBrush" />
+			<StaticResource x:Key="TitleBarSubtitleDeactivatedForegroundBrush" ResourceKey="TextFillColorTertiaryBrush" />
+			<StaticResource x:Key="TitleBarBackButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
+			<StaticResource x:Key="TitleBarBackButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+			<StaticResource x:Key="TitleBarBackButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+			<StaticResource x:Key="TitleBarBackButtonBackgroundDisabled" ResourceKey="ControlFillColorDisabledBrush" />
+			<StaticResource x:Key="TitleBarBackButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
+			<StaticResource x:Key="TitleBarBackButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+			<StaticResource x:Key="TitleBarBackButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
+			<StaticResource x:Key="TitleBarBackButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonBackground" ResourceKey="SubtleFillColorTransparentBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonBackgroundDisabled" ResourceKey="ControlFillColorDisabledBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonForeground" ResourceKey="TextFillColorPrimaryBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonForegroundDisabled" ResourceKey="TextFillColorDisabledBrush" />
+		</ResourceDictionary>
+		<ResourceDictionary x:Key="HighContrast">
+			<StaticResource x:Key="TitleBarForegroundBrush" ResourceKey="SystemControlForegroundBaseHighBrush" />
+			<StaticResource x:Key="TitleBarDeactivatedForegroundBrush" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+			<StaticResource x:Key="TitleBarSubtitleForegroundBrush" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+			<StaticResource x:Key="TitleBarSubtitleDeactivatedForegroundBrush" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+			<StaticResource x:Key="TitleBarBackButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+			<StaticResource x:Key="TitleBarBackButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
+			<StaticResource x:Key="TitleBarBackButtonBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
+			<StaticResource x:Key="TitleBarBackButtonBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+			<StaticResource x:Key="TitleBarBackButtonForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+			<StaticResource x:Key="TitleBarBackButtonForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+			<StaticResource x:Key="TitleBarBackButtonForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+			<StaticResource x:Key="TitleBarBackButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+			<StaticResource x:Key="TitleBarPaneToggleButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+		</ResourceDictionary>
+	</ResourceDictionary.ThemeDictionaries>
+
+	<x:Double x:Key="TitleBarCompactHeight">32</x:Double>
+	<x:Double x:Key="TitleBarExpandedHeight">48</x:Double>
+	<x:Double x:Key="TitleBarBackButtonWidth">40</x:Double>
+	<x:Double x:Key="TitleBarPaneToggleButtonWidth">40</x:Double>
+	<x:Double x:Key="TitleBarLeftPaddingWidth">2</x:Double>
+	<x:Double x:Key="TitleBarRightPaddingWidth">0</x:Double>
+	<x:Double x:Key="TitleBarLeftHeaderPaddingWidth">14</x:Double>
+	<x:Double x:Key="TitleBarHeaderNegativeInsetPaddingWidth">2</x:Double>
+	<x:Double x:Key="TitleBarMinDragRegionWidth">48</x:Double>
+	<x:Double x:Key="TitleBarDeactivatedOpacity">0.5</x:Double>
+	<Thickness x:Key="TitleBarCompactContentMargin">0,0,16,0</Thickness>
+	<x:Double x:Key="TitleBarIconMaxWidth">16</x:Double>
+	<x:Double x:Key="TitleBarIconMaxHeight">16</x:Double>
+	<x:Double x:Key="TitleBarTitleMinWidth">0</x:Double>
+	<x:Double x:Key="TitleBarSubtitleMinWidth">0</x:Double>
+	<Thickness x:Key="TitleBarIconMargin">0,0,16,0</Thickness>
+	<Thickness x:Key="TitleBarTitleMargin">0,0,8,0</Thickness>
+	<Thickness x:Key="TitleBarSubtitleMargin">0,0,16,0</Thickness>
+	<HorizontalAlignment x:Key="TitleBarLeftHeaderHorizontalAlignment">Left</HorizontalAlignment>
+	<VerticalAlignment x:Key="TitleBarLeftHeaderVerticalAlignment">Center</VerticalAlignment>
+	<HorizontalAlignment x:Key="TitleBarContentHorizontalAlignment">Center</HorizontalAlignment>
+	<VerticalAlignment x:Key="TitleBarContentVerticalAlignment">Center</VerticalAlignment>
+	<HorizontalAlignment x:Key="TitleBarRightHeaderHorizontalAlignment">Right</HorizontalAlignment>
+	<VerticalAlignment x:Key="TitleBarRightHeaderVerticalAlignment">Center</VerticalAlignment>
+
+	<Style x:Key="TitleBarBackButtonStyle" TargetType="Button">
+		<Setter Property="Background" Value="{ThemeResource TitleBarBackButtonBackground}" />
+		<Setter Property="Foreground" Value="{ThemeResource TitleBarBackButtonForeground}" />
+		<Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
+		<Setter Property="FontSize" Value="16" />
+		<Setter Property="Width" Value="{ThemeResource TitleBarBackButtonWidth}" />
+		<Setter Property="VerticalAlignment" Value="Stretch" />
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+		<Setter Property="Content" Value="&#xE72B;" />
+		<Setter Property="Margin" Value="2" />
+		<Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Grid x:Name="RootGrid" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}">
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<VisualState x:Name="Normal" />
+								<VisualState x:Name="PointerOver">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarBackButtonBackgroundPointerOver}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarBackButtonForegroundPointerOver}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+									<VisualState.Setters>
+										<Setter Target="Content.(AnimatedIcon.State)" Value="PointerOver" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="Pressed">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarBackButtonBackgroundPressed}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarBackButtonForegroundPressed}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+									<VisualState.Setters>
+										<Setter Target="Content.(AnimatedIcon.State)" Value="Pressed" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="Disabled">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarBackButtonBackgroundDisabled}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarBackButtonForegroundDisabled}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+						<controls:AnimatedIcon x:Name="Content" Height="16" Width="16" controls:AnimatedIcon.State="Normal" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw">
+							<animatedvisuals:AnimatedBackVisualSource />
+							<controls:AnimatedIcon.FallbackIconSource>
+								<controls:FontIconSource FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}" FontFamily="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontFamily}" Glyph="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" MirroredWhenRightToLeft="True" />
+							</controls:AnimatedIcon.FallbackIconSource>
+						</controls:AnimatedIcon>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="TitleBarPaneToggleButtonStyle" TargetType="Button">
+		<Setter Property="Background" Value="{ThemeResource TitleBarPaneToggleButtonBackground}" />
+		<Setter Property="Foreground" Value="{ThemeResource TitleBarPaneToggleButtonForeground}" />
+		<Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
+		<Setter Property="FontSize" Value="16" />
+		<Setter Property="Width" Value="{ThemeResource TitleBarPaneToggleButtonWidth}" />
+		<Setter Property="VerticalAlignment" Value="Stretch" />
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+		<Setter Property="Content" Value="&#xE700;" />
+		<Setter Property="Margin" Value="2" />
+		<Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Grid x:Name="RootGrid" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}">
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<VisualState x:Name="Normal" />
+								<VisualState x:Name="PointerOver">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarPaneToggleButtonBackgroundPointerOver}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarPaneToggleButtonForegroundPointerOver}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+									<VisualState.Setters>
+										<Setter Target="Content.(AnimatedIcon.State)" Value="PointerOver" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="Pressed">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarPaneToggleButtonBackgroundPressed}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarPaneToggleButtonForegroundPressed}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+									<VisualState.Setters>
+										<Setter Target="Content.(AnimatedIcon.State)" Value="Pressed" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="Disabled">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="RootGrid" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarPaneToggleButtonBackgroundDisabled}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Content" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TitleBarPaneToggleButtonForegroundDisabled}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+						<controls:AnimatedIcon x:Name="Content" Height="16" Width="16" controls:AnimatedIcon.State="Normal" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw">
+							<animatedvisuals:AnimatedGlobalNavigationButtonVisualSource />
+							<controls:AnimatedIcon.FallbackIconSource>
+								<controls:FontIconSource FontSize="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontSize}" FontFamily="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=FontFamily}" Glyph="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" MirroredWhenRightToLeft="True" />
+							</controls:AnimatedIcon.FallbackIconSource>
+						</controls:AnimatedIcon>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+</ResourceDictionary>

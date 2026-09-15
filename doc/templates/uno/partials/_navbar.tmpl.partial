@@ -1,6 +1,6 @@
 {{!Copyright (c) Microsoft. All rights reserved. Licensed under the MIT license. See LICENSE file in the project root for full license information.}}
 
-<nav class="navbar ng-scope" id="header-container" role="navigation">
+<nav class="navbar ng-scope" id="header-container" role="navigation" data-docsearch-exclude>
     <div id="header-logo-container">
         {{>partials/logo}}
     </div>

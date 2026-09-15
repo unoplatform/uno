@@ -8,13 +8,15 @@
 #nullable enable
 
 using System;
+using Microsoft.UI.Input;
+using static Microsoft.UI.Input.PointerUpdateKind;
+using PointerEventArgs = global::Windows.UI.Core.PointerEventArgs;
+using PointerDeviceType = global::Windows.Devices.Input.PointerDeviceType;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Input;
 using Uno.UI.Runtime.Skia.Native;
 using static Uno.UI.Runtime.Skia.Native.LibInput;
-using static Windows.UI.Input.PointerUpdateKind;
 using static Uno.UI.Runtime.Skia.Native.libinput_event_type;
 using Uno.Foundation.Logging;
 using System.Collections.Generic;
@@ -84,7 +86,7 @@ unsafe internal partial class FrameBufferPointerInputSource
 			properties.IsLeftButtonPressed = rawEventType != LIBINPUT_EVENT_TOUCH_UP && rawEventType != LIBINPUT_EVENT_TOUCH_CANCEL;
 
 			var timestampInMicroseconds = timestamp;
-			var pointerPoint = new Windows.UI.Input.PointerPoint(
+			var pointerPoint = new global::Microsoft.UI.Input.PointerPoint(
 				frameId: (uint)timestamp, // UNO TODO: How should set the frame, timestamp may overflow.
 				timestamp: timestampInMicroseconds,
 				device: PointerDevice.For(PointerDeviceType.Touch),

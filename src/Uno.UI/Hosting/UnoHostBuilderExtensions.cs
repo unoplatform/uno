@@ -22,12 +22,16 @@ public static class UnoPlatformHostBuilderExtensions
 	///
 	/// Using a closed <c>Func&lt;Application&gt;</c> parameter lets the user's lambda bind
 	/// covariantly without instantiating any per-app-type generic, so no host-LA pin is created.
-	/// The concrete app type is recovered from <c>appBuilder.Method.ReturnType</c>.
+	///
+	/// The concrete app type is deliberately *not* recovered from <c>appBuilder.Method.ReturnType</c>:
+	/// for a lambda that yields the delegate's declared return type rather than the concrete one, and
+	/// retrieving a <c>MethodInfo</c> for a compiler-generated delegate is not supported under NativeAOT.
+	/// No platform host builder consumes the app type.
 	/// </remarks>
 	public static IUnoPlatformHostBuilder App(this IUnoPlatformHostBuilder builder, Func<Microsoft.UI.Xaml.Application> appBuilder)
 	{
 		builder.AppBuilder = appBuilder;
-		builder.SetAppType(appBuilder.Method.ReturnType);
+		builder.SetAppType(typeof(Microsoft.UI.Xaml.Application));
 		return builder;
 	}
 

@@ -17,6 +17,9 @@ public static class HeadlessHostBuilderExtensions
 
 	public static IUnoPlatformHostBuilder UseHeadless(this IUnoPlatformHostBuilder builder, Action<HeadlessHostBuilder> action)
 	{
+		// Eager: AddHostBuilder defers the callback, so a null would only fault when the host is built.
+		ArgumentNullException.ThrowIfNull(action);
+
 		builder.AddHostBuilder(() =>
 		{
 			var headlessBuilder = new HeadlessHostBuilder();

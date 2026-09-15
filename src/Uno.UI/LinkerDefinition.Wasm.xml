@@ -25,7 +25,7 @@
 		</type>
 	</assembly>
 
-	<assembly fullname="Uno">
+	<assembly fullname="Uno.WinRT">
 		<type fullname="Windows.ApplicationModel.DataTransfer.Clipboard" required="false">
 			<method name="DispatchContentChanged" />
 		</type>

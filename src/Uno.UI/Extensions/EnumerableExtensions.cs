@@ -5,14 +5,7 @@ using System.Text;
 using Uno.Extensions;
 using Microsoft.UI.Xaml.Controls;
 
-#if __ANDROID__
-using _View = Android.Views.View;
-#elif __APPLE_UIKIT__
-using _View = UIKit.UIView;
-using UIKit;
-#else
 using _View = Microsoft.UI.Xaml.UIElement;
-#endif
 
 namespace Uno.UI.Extensions
 {

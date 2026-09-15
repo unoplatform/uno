@@ -1,0 +1,27 @@
+<Project>
+
+	<!--
+		Single source of truth for the Roslyn and MSBuild lines embedded by the dev-server host
+		projects (Uno.HotReload, Uno.UI.RemoteControl.Server.Processors): one flavor per served
+		SDK line (spec 053 R2). Bump the pair here — duplicating the versions per project is how
+		a mixed 4.x/5.x graph ships in one host flavor, the same skew class spec 053 fixes.
+	-->
+	<PropertyGroup Condition="'$(TargetFramework)'=='net9.0'">
+		<DevServerRoslynVersion>4.14.0</DevServerRoslynVersion>
+		<DevServerMSBuildVersion>17.7.2</DevServerMSBuildVersion>
+		<DevServerMSBuildToolsVersion>17.8.43</DevServerMSBuildToolsVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='net10.0'">
+		<DevServerRoslynVersion>5.6.0</DevServerRoslynVersion>
+		<DevServerMSBuildVersion>18.0.2</DevServerMSBuildVersion>
+		<DevServerMSBuildToolsVersion>18.0.2</DevServerMSBuildToolsVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetFramework)'=='net11.0'">
+		<DevServerRoslynVersion>5.6.0</DevServerRoslynVersion>
+		<DevServerMSBuildVersion>18.7.1</DevServerMSBuildVersion>
+		<DevServerMSBuildToolsVersion>18.7.1</DevServerMSBuildToolsVersion>
+	</PropertyGroup>
+
+</Project>

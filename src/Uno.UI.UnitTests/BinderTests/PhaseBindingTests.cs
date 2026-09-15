@@ -25,7 +25,7 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual("June", border.Tag);
 
 			border.DataContext = null;
-			var store = (border as IDependencyObjectStoreProvider).Store;
+			var store = (border as DependencyObject);
 			store.SuspendBindings();
 			store.ResumeBindings();
 			store.SuspendBindings();

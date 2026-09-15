@@ -211,12 +211,6 @@ namespace Microsoft.UI.Xaml
 				}
 
 				_state = State.Completing;
-#if __WASM__
-				// firing OverAsync then DropAsync without a layout cycle in-between breaks ListView dragging
-				// (since it causes a Refresh that clears all the containers and then waits for MeasureOverride
-				// to recreate them). So on WASM, we don't call OverAsync, which shouldn't be too problematic.
-				if (NativeDispatcher.IsThreadingSupported)
-#endif
 				{
 					await _target.OverAsync(Info, _viewOverride).AsTask(ct);
 					// give a chance for layout updates, etc. This is similar to what happens on WinUI.

@@ -21,6 +21,7 @@ internal sealed class AndroidKeyboardInputSource : IUnoKeyboardInputSource
 
 	public event TypedEventHandler<object, KeyEventArgs>? KeyDown;
 	public event TypedEventHandler<object, KeyEventArgs>? KeyUp;
+	event TypedEventHandler<object, CharacterReceivedEventArgs>? IUnoKeyboardInputSource.CharacterReceived { add { } remove { } }
 
 	internal bool OnNativeKeyEvent(KeyEvent e)
 	{

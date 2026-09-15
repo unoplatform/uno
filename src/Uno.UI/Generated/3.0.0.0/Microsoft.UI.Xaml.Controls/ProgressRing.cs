@@ -3,10 +3,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || false || false || false || false
+#if false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ProgressRing
+	public partial class ProgressRing : global::Microsoft.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property IsActiveProperty
 		// Skipping already declared property IsIndeterminateProperty
@@ -17,8 +17,8 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property IsIndeterminate
 		// Skipping already declared property Maximum
 		// Skipping already declared property Minimum
-#if __ANDROID__ || __IOS__ || __TVOS__ || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__TVOS__", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#if __SKIA__
+		[global::Uno.NotImplemented("__SKIA__")]
 		public global::Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings TemplateSettings
 		{
 			get

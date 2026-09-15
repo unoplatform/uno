@@ -13,9 +13,6 @@ public partial class TextElement
 	/// Gets or sets the XamlRoot in which this element is being viewed.
 	/// </summary>
 	public
-#if __WASM__
-	new
-#endif
 	XamlRoot? XamlRoot
 	{
 		get => XamlRoot.GetForElement(this);

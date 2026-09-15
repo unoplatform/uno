@@ -22,6 +22,7 @@ internal class FrameBufferKeyboardInputSource : IUnoKeyboardInputSource
 
 	public event TypedEventHandler<object, KeyEventArgs>? KeyDown;
 	public event TypedEventHandler<object, KeyEventArgs>? KeyUp;
+	event TypedEventHandler<object, CharacterReceivedEventArgs>? IUnoKeyboardInputSource.CharacterReceived { add { } remove { } }
 
 	private readonly IntPtr _xkbState;
 	private HashSet<libinput_key> _pressedKeys = new HashSet<libinput_key>();

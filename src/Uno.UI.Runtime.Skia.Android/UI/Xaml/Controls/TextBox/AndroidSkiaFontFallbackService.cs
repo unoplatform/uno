@@ -8,6 +8,7 @@ using SkiaSharp;
 using Microsoft.UI.Xaml.Documents.TextFormatting;
 using Windows.UI.Text;
 
+
 namespace Uno.WinUI.Runtime.Skia.Android.UI.Xaml.Controls.TextBox;
 
 internal class AndroidSkiaFontFallbackService : IFontFallbackService
@@ -29,7 +30,8 @@ internal class AndroidSkiaFontFallbackService : IFontFallbackService
 	{
 		foreach (var (fontName, _, typeface) in await _fonts)
 		{
-			if (typeface.ContainsGlyph(codepoint))
+			using var font = new SKFont(typeface);
+			if (font.ContainsGlyph(codepoint))
 			{
 				return fontName;
 			}

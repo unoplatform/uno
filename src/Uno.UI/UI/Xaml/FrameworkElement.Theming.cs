@@ -40,7 +40,7 @@ public partial class FrameworkElement
 	/// In Uno, Foreground IS inherited (FrameworkPropertyMetadataOptions.Inherits),
 	/// so a parent setting Foreground auto-cascades to ALL descendants, bypassing
 	/// the theme walk's early-return at elements with explicit RequestedTheme.
-	/// This property lets DependencyObjectStore block that cascade at theme boundaries.
+	/// This property lets DependencyObject block that cascade at theme boundaries.
 	/// </remarks>
 	internal bool IsForegroundInheritanceBlocked => _isForegroundFrozen;
 
@@ -64,7 +64,6 @@ public partial class FrameworkElement
 	// MUX Reference: CFrameworkElement::OnRequestedThemeChanged — framework.cpp:3501-3559
 	private void OnRequestedThemeChanged(ElementTheme oldValue, ElementTheme newValue)
 	{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 		var theme = Theme.None;
 		bool setIsSwitchingTheme = false;
 		var core = Uno.UI.Xaml.Core.CoreServices.Instance;
@@ -79,9 +78,9 @@ public partial class FrameworkElement
 				break;
 			case ElementTheme.Default:
 				// Use parent's theme if cleared
-				if (this.GetParent() is IDependencyObjectStoreProvider parentProvider)
+				if (this.GetParent() is DependencyObject parentProvider)
 				{
-					theme = parentProvider.Store.GetTheme();
+					theme = parentProvider.GetTheme();
 				}
 				if (theme == Theme.None)
 				{
@@ -114,32 +113,10 @@ public partial class FrameworkElement
 				core.IsSwitchingTheme = false;
 			}
 		}
-#else
-		SyncRootRequestedTheme();
-		if (_actualThemeChanged != null)
-		{
-			var actualThemeChanged =
-				(oldValue == ElementTheme.Default && Application.Current?.ActualElementTheme != newValue) ||
-				(oldValue != ElementTheme.Default && oldValue != ActualTheme);
-			if (actualThemeChanged)
-			{
-				_actualThemeChanged?.Invoke(this, null!);
-			}
-		}
-#endif
 	}
 
 	#endregion
 
-#if !UNO_HAS_ENHANCED_LIFECYCLE
-	private void SyncRootRequestedTheme()
-	{
-		if (XamlRoot?.Content == this)
-		{
-			Application.Current.SyncRequestedThemeFromXamlRoot(XamlRoot);
-		}
-	}
-#endif
 
 	#region Theme propagation
 
@@ -154,7 +131,6 @@ public partial class FrameworkElement
 	{
 		get
 		{
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			// Get base (non-HighContrast) theme.
 			// Fall back to default (system or app) theme if the local theme isn't set.
 			// MUX: framework.cpp:3978-3989 — FrameworkTheming::GetBaseTheme() when m_theme is None.
@@ -164,11 +140,6 @@ public partial class FrameworkElement
 				baseTheme = Uno.UI.Xaml.Core.CoreServices.Instance.Theming.GetBaseTheme();
 			}
 			return Theming.ToElementTheme(baseTheme);
-#else
-			return RequestedTheme == ElementTheme.Default
-				? (Application.Current?.ActualElementTheme ?? ElementTheme.Light)
-				: RequestedTheme;
-#endif
 		}
 	}
 
@@ -186,13 +157,11 @@ public partial class FrameworkElement
 				return;
 			}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			// MUX Reference: CFrameworkElement::AddEventListener — framework.cpp:3996-4014:
 			// "Register to receive theme change notifications so we can raise the event
 			//  for default (system/app) theme changes when the element happens to be outside
 			//  the live tree (i.e. not included in the theme walk from root)."
 			Uno.UI.Xaml.Core.CoreServices.Instance.AddThemeChangedListener(this);
-#endif
 			_actualThemeChanged += value;
 		}
 		remove
@@ -202,10 +171,8 @@ public partial class FrameworkElement
 				return;
 			}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			// MUX Reference: CFrameworkElement::RemoveEventListener — framework.cpp:4016-4028
 			Uno.UI.Xaml.Core.CoreServices.Instance.RemoveThemeChangedListener(this);
-#endif
 			_actualThemeChanged -= value;
 		}
 	}
@@ -237,7 +204,6 @@ public partial class FrameworkElement
 		return theme;
 	}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 	//------------------------------------------------------------------------
 	//
 	//  Synopsis:
@@ -459,7 +425,6 @@ public partial class FrameworkElement
 		_themeForeground = parentThemeForeground;
 		this.SetValue(foregroundProperty, parentThemeForeground, DependencyPropertyValuePrecedences.Inheritance);
 	}
-#endif
 
 	// MUX Reference framework.cpp, lines 3401-3492
 	/// <summary>
@@ -489,27 +454,30 @@ public partial class FrameworkElement
 			DependencyProperty? foregroundProperty = GetForegroundProperty();
 
 			// MUX Reference framework.cpp line 3423-3429:
-			// WinUI skips the entire freeze when Foreground is set locally or by style,
-			// relying on PullInheritedTextFormatting to propagate the styled value.
-			// In Uno, Foreground is an inherited DP, so children auto-cascade from
-			// the parent. We still need _themeForeground for children that don't
-			// inherit via DP (e.g., popup/template content), but we skip the SetValue
-			// to avoid overriding the styled value on THIS element.
-			bool skipSetValue = false;
+			// "If this element has a Foreground property and it is set locally, by style or
+			//  animated, there is nothing to do, because that value will be used."
+			// The explicit value cascades to children through DP inheritance, so the boundary
+			// must not freeze the theme's default foreground over it (e.g. the focused TextBox
+			// ContentElement with RequestedTheme=Light in NumberBox/ComboBox templates, #24021).
 			if (foregroundProperty is not null)
 			{
 				var precedence = this.GetCurrentHighestValuePrecedence(foregroundProperty);
 				if (precedence != DependencyPropertyValuePrecedences.DefaultValue
 					&& precedence != DependencyPropertyValuePrecedences.Inheritance)
 				{
-					skipSetValue = true;
+					// Clear only the brush an earlier walk (when Foreground was still default) may
+					// have stored, so children don't re-pull it — Uno keeps it in a separate field
+					// while WinUI shares the local Foreground slot. The freeze flag stays, as
+					// WinUI's bail writes no freeze state and the boundary keeps blocking
+					// cross-boundary Foreground inheritance.
+					_themeForeground = null;
+					return;
 				}
 			}
 
 			// Resolve the theme's default text foreground brush against the element's own theme. MUX:
 			// CFrameworkElement::NotifyThemeChangedForInheritedProperties resolves the default text
 			// foreground from the element's theme (framework.cpp:3401-3492).
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			// MUX Reference: framework.cpp:3441-3487 — the element's theme is pushed onto the core
 			// requested-theme-for-subtree slot around the CCoreServices::LookupThemeResource call and
 			// the foreground freeze; the resolution leaf reads the slot (EnsureActiveThemeDictionary,
@@ -522,27 +490,21 @@ public partial class FrameworkElement
 				core.SetRequestedThemeForSubTree(theme);
 				popSlotTheme = true;
 			}
-#endif
 
 			// On non-enhanced targets the try below compiles out, leaving a plain scope block so the
 			// body keeps a single indentation shape across both compilations.
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			try
-#endif
 			{
 				// MUX: core->LookupThemeResource(L"DefaultTextForegroundThemeBrush") under the pushed slot.
 				var brush = (Brush?)Uno.UI.Xaml.Core.CoreServices.Instance.LookupThemeResource(
 					"DefaultTextForegroundThemeBrush");
 				if (brush is not null)
 				{
-					// Always store for child inheritance (popup content, template children)
+					// Store for child inheritance (popup content, template children)
 					_themeForeground = brush;
 					_isForegroundFrozen = true;
 
-					// Only set the DP when Foreground isn't already set by a higher
-					// precedence (local/style). This matches WinUI's skip behavior
-					// while preserving _themeForeground for child propagation.
-					if (foregroundProperty is not null && !skipSetValue)
+					if (foregroundProperty is not null)
 					{
 						this.SetValue(
 							foregroundProperty, brush,
@@ -550,7 +512,6 @@ public partial class FrameworkElement
 					}
 				}
 			}
-#if UNO_HAS_ENHANCED_LIFECYCLE
 			finally
 			{
 				// Scope-restore the slot (framework.cpp:3487).
@@ -559,7 +520,6 @@ public partial class FrameworkElement
 					core.SetRequestedThemeForSubTree(prevSlotTheme);
 				}
 			}
-#endif
 		}
 		else
 		{
@@ -607,7 +567,6 @@ public partial class FrameworkElement
 		return null;
 	}
 
-#if UNO_HAS_ENHANCED_LIFECYCLE
 	/// <summary>
 	/// Clears inherited theme-foreground state when unloading from the visual tree.
 	/// Called from <see cref="OnUnloadedPartial"/> to prevent a stale frozen foreground
@@ -616,7 +575,7 @@ public partial class FrameworkElement
 	/// <remarks>
 	/// MUX Reference: CDependencyObject keeps m_theme across Leave; it is re-established (or overridden
 	/// by a different ancestor theme) when the element re-enters the tree via the EnterImpl theme block
-	/// (depends.cpp:1044-1069), ported to DependencyObjectStore.EnterImpl (DependencyObjectStore.mux.cs). So
+	/// (depends.cpp:1044-1069), ported to DependencyObject.EnterImpl (DependencyObject.mux.cs). So
 	/// this method clears only the inherited foreground brush and intentionally does <b>not</b> reset _theme.
 	/// </remarks>
 	private void ClearThemeStateOnUnloaded()
@@ -629,15 +588,13 @@ public partial class FrameworkElement
 			_themeForeground = null;
 		}
 	}
-#endif
 
 	/// <summary>
 	/// Update ThemeResource references.
 	/// </summary>
 	internal virtual void UpdateThemeBindings(ResourceUpdateReason updateReason)
 	{
-#if UNO_HAS_ENHANCED_LIFECYCLE
-		var store = ((IDependencyObjectStoreProvider)this).Store;
+		var store = ((DependencyObject)this);
 
 		if (store.IsProcessingThemeWalk)
 		{
@@ -662,27 +619,6 @@ public partial class FrameworkElement
 
 		// Don't fire ActualThemeChanged here anymore - it's now fired
 		// in NotifyThemeChangedCore when the theme actually changes
-#else
-		TryGetResources()?.UpdateThemeBindings(updateReason);
-		((IDependencyObjectStoreProvider)this).Store.UpdateResourceBindings(updateReason);
-		if (updateReason == ResourceUpdateReason.ThemeResource)
-		{
-			if (_actualThemeChanged != null && RequestedTheme == ElementTheme.Default)
-			{
-				try
-				{
-					_actualThemeChanged?.Invoke(this, null!);
-				}
-				catch (Exception e)
-				{
-					if (this.Log().IsEnabled(LogLevel.Error))
-					{
-						this.Log().Error("ActualThemeChanged handler threw an exception", e);
-					}
-				}
-			}
-		}
-#endif
 	}
 
 	#endregion

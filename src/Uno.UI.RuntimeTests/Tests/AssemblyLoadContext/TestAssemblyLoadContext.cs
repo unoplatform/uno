@@ -34,7 +34,6 @@ internal class TestAssemblyLoadContext : System.Runtime.Loader.AssemblyLoadConte
 		// Let Uno assemblies be loaded from the default ALC (shared)
 		if (name != null && (
 			name.StartsWith("Uno.", StringComparison.OrdinalIgnoreCase) ||
-			name.Equals("Uno", StringComparison.OrdinalIgnoreCase) ||
 			name.StartsWith("Microsoft.UI.", StringComparison.OrdinalIgnoreCase) ||
 			name.StartsWith("Windows.", StringComparison.OrdinalIgnoreCase) ||
 			name.StartsWith("Microsoft.Extensions.", StringComparison.OrdinalIgnoreCase) ||
