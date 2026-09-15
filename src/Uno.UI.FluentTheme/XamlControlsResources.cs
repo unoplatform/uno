@@ -21,10 +21,26 @@ namespace Microsoft.UI.Xaml.Controls
 
 			Source = new Uri(XamlFilePathHelper.AppXIdentifier + XamlFilePathHelper.WinUIThemeResourceURL);
 
+			ApplyStyleOptimizations();
+
 			// Our ported Fluent dictionaries omit the TintLuminosityOpacity that WinUI sets
 			// inline on these AcrylicBrush resources; without it the luminosity layer computes
 			// an alpha far too low and acrylic renders nearly opaque.
 			UpdateAcrylicBrushes();
+		}
+
+		/// <summary>
+		/// Overlays the optimized (perf2026) control styles when the app opted in through
+		/// <see cref="Uno.UI.FeatureConfiguration.Style.UseDefaultStyleOptimizations"/>.
+		/// </summary>
+		private void ApplyStyleOptimizations()
+		{
+#if !__NETSTD_REFERENCE__
+			if (Uno.UI.FeatureConfiguration.Style.UseDefaultStyleOptimizations)
+			{
+				OverlayFrom(new Uno.UI.FluentTheme.Perf2026Resources());
+			}
+#endif
 		}
 
 		private void UpdateAcrylicBrushes()

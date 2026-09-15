@@ -66,7 +66,7 @@ public partial class CompositionTarget
 	//             | Repeat... |-|                                       |                                                                                                                 |                        |                                 |
 	//             |-----------| |                                       |                                                                                                                 |                        |                                 |
 	//                           |                                       |                                                                                                                 |                        |                                 |
-	private readonly object _renderingStateGate = new();
+	private readonly Lock _renderingStateGate = new();
 
 	private bool _renderRequested; // only set or read under _renderingStateGate
 	private bool _renderedAheadOfTime; // only set or read under _renderingStateGate

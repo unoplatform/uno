@@ -13,6 +13,7 @@ namespace Uno.UI
 		public static void ClearCache(Type[] types)
 		{
 			DataBinding.BindingPropertyHelper.ClearCaches();
+			DirectUI.MetadataAPI.ClearDependencyPropertyReflectionCache();
 		}
 	}
 }
