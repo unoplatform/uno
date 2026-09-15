@@ -72,7 +72,7 @@ namespace Microsoft.UI.Xaml
 			// Same activity class as the one already running: the app declares exactly one, and a
 			// second instance of it is what hosts the second window.
 			var intent = new Intent(launcher, launcher.GetType());
-			intent.AddFlags(ActivityFlags.NewDocument | ActivityFlags.MultipleTask);
+			intent.AddFlags(global::Android.Content.ActivityFlags.NewDocument | global::Android.Content.ActivityFlags.MultipleTask);
 			intent.PutExtra(WindowIdExtra, id);
 
 			launcher.StartActivity(intent);
