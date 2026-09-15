@@ -459,7 +459,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_Range_Expanded_To_Paragraph_Then_Only_Current_Paragraph_Is_Covered()
+		public async Task When_Range_Expanded_To_Paragraph_Then_Document_Is_Covered()
 		{
 			var textBlock = new TextBlock { Text = "First paragraph line.\nSecond paragraph line." };
 			await UITestHelper.Load(textBlock);
@@ -473,18 +473,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			var range = textProvider!.DocumentRange;
 			Assert.IsNotNull(range);
 
-			// Collapse onto the second paragraph, then expand: the range must cover that
-			// paragraph only, not the whole document.
+			// TextBlock does not expose paragraph boundaries through the native WinUI
+			// provider, so paragraph expansion falls back to the document unit.
 			range.MoveEndpointByUnit(TextPatternRangeEndpoint.Start, TextUnit.Paragraph, 1);
 			range.MoveEndpointByUnit(TextPatternRangeEndpoint.End, TextUnit.Paragraph, -1);
 			range.ExpandToEnclosingUnit(TextUnit.Paragraph);
 
 			var expanded = range.GetText(-1);
-			Assert.AreNotEqual(
+			Assert.AreEqual(
 				textBlock.Text,
 				expanded,
-				"Expanding to a paragraph must not return the whole document.");
-			StringAssert.Contains(expanded, "Second paragraph line.");
+				"Paragraph expansion must match WinUI's document-unit fallback.");
 		}
 
 		[TestMethod]

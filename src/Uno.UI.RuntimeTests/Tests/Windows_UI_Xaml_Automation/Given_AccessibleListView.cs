@@ -247,7 +247,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_Items_Are_Duplicated_Then_Each_Container_Gets_Its_Own_Peer()
+		public async Task When_Items_Are_Duplicated_Then_Item_Peer_Is_Reused()
 		{
 			var duplicate = "Same";
 			var listView = new ListView
@@ -272,10 +272,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 			}
 
 			Assert.AreEqual(2, itemPeers.Count, "Both duplicate occurrences must be projected.");
-			Assert.AreNotSame(
+			Assert.AreSame(
 				itemPeers[0],
 				itemPeers[1],
-				"Duplicate item values must not share a peer, otherwise both resolve to the same index.");
+				"WinUI reuses the item-keyed peer when the same item instance occurs more than once.");
 		}
 
 	}
