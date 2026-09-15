@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -139,6 +140,21 @@ public partial class Given_MobileAccessibilityTree
 		Assert.IsNull(nodes[1].Owner);
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	public void When_Unavailable_Peer_Throws_Then_Siblings_Remain()
+	{
+		var root = new TestPeer("root", isControlElement: true);
+		root.Children.Add(new UnavailableTestPeer());
+		root.Children.Add(new TestPeer("available", isControlElement: true));
+
+		var nodes = MobileAccessibilityTestHelper.GetPeerTree(root);
+
+		CollectionAssert.AreEqual(
+			new[] { "root", "available" },
+			nodes.Select(node => node.Peer.GetName()).ToArray());
+	}
+
 	private class TestPeer : AutomationPeer
 	{
 		private readonly string _name;
@@ -164,6 +180,17 @@ public partial class Given_MobileAccessibilityTree
 		protected override bool IsControlElementCore() => _isControlElement;
 
 		protected override bool IsContentElementCore() => _isContentElement;
+	}
+
+	private sealed class UnavailableTestPeer : TestPeer
+	{
+		public UnavailableTestPeer()
+			: base("unavailable")
+		{
+		}
+
+		protected override bool IsControlElementCore()
+			=> throw new InvalidOperationException("UIA element is not available");
 	}
 
 	private sealed class InvokableTestPeer : TestPeer, IInvokeProvider

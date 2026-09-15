@@ -1311,13 +1311,17 @@ internal static class AccessibilityPeerHelper
 		var owner = GetOwner(providerPeer) ?? GetOwner(peer);
 		var childParentIndex = parentIndex;
 
-		if (peer.IsControlElement() || peer.IsContentElement())
+		if (!TryGetPeerTreeState(peer, prefetchedChildren, out var isIncluded, out var children))
+		{
+			return;
+		}
+
+		if (isIncluded)
 		{
 			childParentIndex = nodes.Count;
 			nodes.Add(new AccessibilityPeerNode(peer, providerPeer, owner, parentIndex, depth));
 		}
 
-		var children = prefetchedChildren ?? peer.GetChildren();
 		if (children is not { Count: > 0 })
 		{
 			return;
@@ -1348,9 +1352,8 @@ internal static class AccessibilityPeerHelper
 
 		if (element.GetOrCreateAutomationPeer() is { } peer)
 		{
-			var isIncluded = peer.IsControlElement() || peer.IsContentElement();
-			var peerChildren = peer.GetChildren();
-			if (isIncluded || peerChildren is { Count: > 0 })
+			if (TryGetPeerTreeState(peer, prefetchedChildren: null, out var isIncluded, out var peerChildren) &&
+				(isIncluded || peerChildren is { Count: > 0 }))
 			{
 				AppendPeer(peer, parentIndex, depth, nodes, visitedPeers, peerChildren);
 				return;
@@ -1363,6 +1366,32 @@ internal static class AccessibilityPeerHelper
 			{
 				AppendElement(uiElement, parentIndex, depth + 1, nodes, visitedPeers, visitedElements);
 			}
+		}
+	}
+
+	private static bool TryGetPeerTreeState(
+		AutomationPeer peer,
+		IList<AutomationPeer>? prefetchedChildren,
+		out bool isIncluded,
+		out IList<AutomationPeer>? children)
+	{
+		try
+		{
+			isIncluded = peer.IsControlElement() || peer.IsContentElement();
+			children = prefetchedChildren ?? peer.GetChildren();
+			return true;
+		}
+		catch (ElementNotAvailableException)
+		{
+			isIncluded = false;
+			children = null;
+			return false;
+		}
+		catch (InvalidOperationException)
+		{
+			isIncluded = false;
+			children = null;
+			return false;
 		}
 	}
 
