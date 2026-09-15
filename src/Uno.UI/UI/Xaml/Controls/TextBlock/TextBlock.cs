@@ -1373,7 +1373,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool _grippersShown;
 		private Microsoft.UI.Input.PointerPoint? _lastPointerDownPoint;
 
-		private (Size availableSize, Size outSize, TextAlignment? alignment) _lastParsedTextCreationValues = (Size.Empty, Size.Empty, TextAlignment.Left);
+		private (Size availableSize, Size outSize, TextAlignment? alignment, bool heightTruncated) _lastParsedTextCreationValues = (Size.Empty, Size.Empty, TextAlignment.Left, false);
 		internal IParsedText ParsedText { get; private set; } = Microsoft.UI.Xaml.Documents.ParsedText.Empty;
 
 		internal event EventHandler? DrawingFinished;
@@ -1494,7 +1494,7 @@ namespace Microsoft.UI.Xaml.Controls
 				size.Width += CaretThickness;
 			}
 
-			_lastParsedTextCreationValues = (availableSizeWithoutPadding, size, adjustedTextAlignment);
+			_lastParsedTextCreationValues = (availableSizeWithoutPadding, size, adjustedTextAlignment, ret.IsHeightTruncated);
 			return ret;
 		}
 
@@ -1561,12 +1561,13 @@ namespace Microsoft.UI.Xaml.Controls
 			var padding = Padding;
 			var availableSizeWithoutPadding = finalSize.Subtract(padding);
 
-			// There's no reason to re-parse the text if the available size hasn't changed since the last measure/arrange.
-			// Note that MeasureOverride doesn't have these checks. If something in the text block has changed that would
-			// require a re-parse, the ParseText call during the measure pass will catch it. There are no changes that
-			// would require a re-parse that would invalidate arrange but not measure, except TextAlignment, which we explicitly check.
+			// There's no reason to re-parse the text if the constraint that shaped it hasn't changed since the last
+			// measure/arrange. Note that MeasureOverride doesn't have these checks. If something in the text block has
+			// changed that would require a re-parse, the ParseText call during the measure pass will catch it. There are
+			// no changes that would require a re-parse that would invalidate arrange but not measure, except
+			// TextAlignment, which we explicitly check.
 			var arrangedSize = _lastParsedTextCreationValues.outSize;
-			if (_lastParsedTextCreationValues.availableSize != availableSizeWithoutPadding || _lastParsedTextCreationValues.alignment != GetAdjustedTextAlignment())
+			if (NeedsReparseForArrange(availableSizeWithoutPadding))
 			{
 				ParsedText = ParseText(availableSizeWithoutPadding, out arrangedSize);
 			}
@@ -1577,6 +1578,27 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateIsTextTrimmed();
 
 			return result;
+		}
+
+		/// <summary>
+		/// The arrange-time counterpart of WinUI's <c>BlockNode::CanBypassMeasure</c>: the width must match, but the
+		/// height only has to match when the previous layout was actually cut short by it. Otherwise it is enough that
+		/// the text still fits, which is the common case — a panel measures with an unconstrained (or generous) height
+		/// and then arranges at the desired height, and re-shaping there would produce the exact same lines.
+		/// </summary>
+		private bool NeedsReparseForArrange(Size availableSizeWithoutPadding)
+		{
+			var last = _lastParsedTextCreationValues;
+
+			if (last.availableSize.Width != availableSizeWithoutPadding.Width
+				|| last.alignment != GetAdjustedTextAlignment())
+			{
+				return true;
+			}
+
+			return last.heightTruncated
+				? last.availableSize.Height != availableSizeWithoutPadding.Height
+				: last.outSize.Height > availableSizeWithoutPadding.Height;
 		}
 
 		internal bool RenderSelection
