@@ -211,7 +211,7 @@
 
 	<!-- Windows / WinAppSDK packages (real WinUI) -->
 	<ItemGroup Condition="'$(_Platform)' == 'windows'">
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="2.3.1" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.28000.2526" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools.WinApp" Version="0.6.0" PrivateAssets="all" />
 		<PackageReference Include="CommunityToolkit.WinUI.Lottie" Version="8.0.0-rc" />
@@ -336,8 +336,8 @@
 	</ItemGroup>
 
 	<PropertyGroup Condition="'$(_IsUIKit)' == 'true'">
-		<!-- 13.0 is the floor the .NET 11 iOS/tvOS SDKs enforce -->
-		<SupportedOSPlatformVersion>13.0</SupportedOSPlatformVersion>
+		<!-- Xcode 27 (.NET 11) refuses deployment targets below 15.0 -->
+		<SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
 		<!-- iOS 17 compatibility -->
 		<MtouchExtraArgs>$(MtouchExtraArgs) --weak-framework=NewsstandKit</MtouchExtraArgs>
 		<!-- AOT currently fails (uno-private #648): interpret instead -->
@@ -395,6 +395,12 @@
 		<!-- https://github.com/dotnet/runtime/issues/109966 -->
 		<_IsDedupEnabled>false</_IsDedupEnabled>
 		<RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">iossimulator-x64</RuntimeIdentifier>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(_Platform)' == 'ios' AND '$(BuildForTestFlight)' == 'true'">
+		<CodesignKey>iPhone Distribution</CodesignKey>
+		<RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
+		<DefineConstants>$(DefineConstants);TESTFLIGHT</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(_Platform)' == 'tvos'">
@@ -489,7 +495,7 @@
 
 	<!-- ==================== Windows build configuration ==================== -->
 	<PropertyGroup Condition="'$(_Platform)' == 'windows'">
-		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+		<TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
 		<UseWinUI>true</UseWinUI>
 		<EnableMsixTooling>true</EnableMsixTooling>
 		<DefineConstants>$(DefineConstants);WINAPPSDK</DefineConstants>

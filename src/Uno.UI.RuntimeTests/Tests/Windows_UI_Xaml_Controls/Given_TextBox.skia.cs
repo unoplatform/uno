@@ -6898,7 +6898,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		// When_Scrolled_Out_Of_View_Grippers_Are_Hidden.
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno-private/issues/753")]
-		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop | RuntimeTestPlatforms.SkiaAndroid)] // mobile conventions: run on Desktop (dev) + real Android only
+		// Flaky on Android Skia: the injected drag only partly reaches the ScrollViewer (37px of a 200px drag), so
+		// it runs on Desktop only for now. https://github.com/unoplatform/uno/issues/24480
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaDesktop)] // mobile conventions: run on Desktop (dev)
 		public async Task When_Touch_Focused_Then_Scrolled_Away_The_Scroll_Sticks()
 		{
 			var SUT = new TextBox
