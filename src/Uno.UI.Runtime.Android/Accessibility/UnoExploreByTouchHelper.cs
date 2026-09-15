@@ -1330,8 +1330,13 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	// XAML keyboard focus if the element is keyboard-focusable, using the
 	// _settingNativeFocus guard to break the potential
 	// XAML-focus-changed -> SetNativeFocus -> OnPopulateEventForVirtualView loop.
-	protected override void OnPopulateEventForVirtualView(int virtualViewId, AccessibilityEvent e)
+	protected override void OnPopulateEventForVirtualView(int virtualViewId, [AllowNull] AccessibilityEvent e)
 	{
+		if (e is null)
+		{
+			return;
+		}
+
 		base.OnPopulateEventForVirtualView(virtualViewId, e);
 
 		var eventType = (int)e.EventType;
