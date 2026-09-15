@@ -15,6 +15,8 @@ public partial class Package
 	private static Assembly? _entryAssembly;
 	private string _displayName = "";
 
+	internal static Assembly? EntryAssembly => _entryAssembly;
+
 	partial void InitializePlatform()
 	{
 	}
