@@ -49,6 +49,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 			return entry.Peer;
 		}
 
+		entry?.Peer.ReleaseRealizedContainer(container);
 		_realizedItemPeers.Remove(container);
 
 		// MUX parity (ItemsControlAutomationPeer::GetModernItemsControlChildrenChildrenHelper):
@@ -90,7 +91,17 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 
 	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.List;
 
-	protected void ClearItemAutomationPeerCache() => _itemPeers.Clear();
+	protected void ClearItemAutomationPeerCache()
+	{
+		foreach (var peer in _itemPeers.Values)
+		{
+			ReleaseRealizedItemPeers(peer);
+		}
+
+		_itemPeers.Clear();
+		_itemPeerStorage.Clear();
+		_itemPeerStorageForPattern.Clear();
+	}
 
 	public ItemAutomationPeer CreateItemAutomationPeer(object item)
 		=> item == null ? null : _itemPeers.TryGetValue(item, out var peer) ? peer : AddItemAutomationPeer(item);
@@ -418,6 +429,8 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 			return children;
 		}
 
+		PruneItemAutomationPeerCache(spItemsControl);
+
 		var spItemsHostPanel = spItemsControl.ItemsPanelRoot;
 		var isGrouping = spItemsControl.IsGrouping;
 
@@ -577,6 +590,73 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 		}
 
 		return children;
+	}
+
+	private void PruneItemAutomationPeerCache(ItemsControl itemsControl)
+	{
+		if (_itemPeers.Count == 0 || itemsControl.IsGrouping)
+		{
+			return;
+		}
+
+		// Native accessibility tree walks create item peers eagerly. Mirror MUX cache cleanup
+		// so removed data items and recycled container EventsSource links can be collected.
+		var currentItems = new HashSet<object>(Uno.ReferenceEqualityComparer<object>.Default);
+		foreach (var item in itemsControl.Items)
+		{
+			if (item is not null)
+			{
+				currentItems.Add(item);
+			}
+		}
+
+		List<object>? staleItems = null;
+		foreach (var (item, peer) in _itemPeers)
+		{
+			if (currentItems.Contains(item))
+			{
+				continue;
+			}
+
+			ReleaseRealizedItemPeers(peer);
+
+			_itemPeerStorage.RemoveAll(candidate => ReferenceEquals(candidate, peer));
+			_itemPeerStorageForPattern.RemoveAll(candidate => ReferenceEquals(candidate, peer));
+			(staleItems ??= new()).Add(item);
+		}
+
+		if (staleItems is null)
+		{
+			return;
+		}
+
+		foreach (var item in staleItems)
+		{
+			_itemPeers.Remove(item);
+		}
+	}
+
+	private void ReleaseRealizedItemPeers(ItemAutomationPeer peer)
+	{
+		List<UIElement>? containers = null;
+		foreach (var (container, entry) in _realizedItemPeers)
+		{
+			if (ReferenceEquals(entry.Peer, peer))
+			{
+				(containers ??= new()).Add(container);
+			}
+		}
+
+		if (containers is null)
+		{
+			return;
+		}
+
+		foreach (var container in containers)
+		{
+			peer.ReleaseRealizedContainer(container);
+			_realizedItemPeers.Remove(container);
+		}
 	}
 
 	// Internal storage mimicking C++ m_tpItemPeerStorage and m_tpItemPeerStorageForPattern

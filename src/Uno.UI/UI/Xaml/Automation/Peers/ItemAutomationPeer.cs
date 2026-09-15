@@ -62,6 +62,21 @@ public partial class ItemAutomationPeer : AutomationPeer, IVirtualizedItemProvid
 		_realizedContainer.SetTarget(container);
 	}
 
+	internal void ReleaseRealizedContainer(UIElement container)
+	{
+		if (FrameworkElementAutomationPeer.FromElement(container) is { } containerPeer &&
+			ReferenceEquals(containerPeer.EventsSource, this))
+		{
+			containerPeer.EventsSource = null;
+		}
+
+		if (_realizedContainer?.TryGetTarget(out var realizedContainer) is true &&
+			ReferenceEquals(realizedContainer, container))
+		{
+			_realizedContainer = null;
+		}
+	}
+
 	internal int GetItemIndex()
 	{
 		if (_itemsControlAutomationPeer.Owner is ItemsControl itemsControl)
