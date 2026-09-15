@@ -104,6 +104,14 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 		}
 
 		_surfaceReady = false;
+
+		// Android can destroy the surface after the activity's OnDestroy, by which point
+		// TeardownRenderer has stopped the render thread and released everything below.
+		if (_disposed)
+		{
+			return;
+		}
+
 		_renderEvent.Set();
 		_renderThread?.Join(TimeSpan.FromSeconds(2));
 		_renderThread = null;
