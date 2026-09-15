@@ -162,13 +162,13 @@ namespace TestRepro
 			this.Bindings.StopTracking();
 		}
 
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _innerTextBlockSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _innerTextBlockSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "innerTextBlock");
 		public global::Microsoft.UI.Xaml.Controls.TextBlock innerTextBlock
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.TextBlock)_innerTextBlockSubject.ElementInstance;
 			set => _innerTextBlockSubject.ElementInstance = value;
 		}
-		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelContentSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+		private readonly global::Microsoft.UI.Xaml.Data.ElementNameSubject _topLevelContentSubject = new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "topLevelContent");
 		public global::Microsoft.UI.Xaml.Controls.ContentControl topLevelContent
 		{
 			get => (global::Microsoft.UI.Xaml.Controls.ContentControl)_topLevelContentSubject.ElementInstance;
