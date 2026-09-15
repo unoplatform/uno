@@ -19,7 +19,7 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+		<UnoRuntimeFlavor>Generic</UnoRuntimeFlavor>
 		<PlatformItemsBasePath>.\</PlatformItemsBasePath>
 	</PropertyGroup>
 
@@ -30,7 +30,7 @@
 	</ItemGroup>
 
 	<!--
-		Skia sets UnoRuntimeIdentifier, so _UnoOverrideNuget skips this project; the Reference head
+		Skia sets UnoRuntimeFlavor, so _UnoOverrideNuget skips this project; the Reference head
 		that used to do the copy is gone. Uno.WinUI.XamlHost ships lib/ only.
 	-->
 	<Target Name="_UnoUIXamlHostOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
