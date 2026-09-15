@@ -507,11 +507,11 @@ public partial class AutomationPeer : DependencyObject
 	#region Error Handling
 
 	/// <summary>
-	/// Throws an ElementNotAvailableException for UIA.
+	/// Throws the internal unavailable-peer exception using UIA_E_INVALIDOPERATION.
 	/// </summary>
 	public void ThrowElementNotAvailableError()
 	{
-		throw new InvalidOperationException("UIA element is not available");
+		throw new AutomationPeerUnavailableException();
 	}
 
 	#endregion

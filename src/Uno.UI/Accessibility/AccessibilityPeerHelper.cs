@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Automation.Text;
 using Microsoft.UI.Xaml.Controls;
+using Uno.Foundation.Logging;
 using Windows.Foundation;
 
 namespace Uno.UI;
@@ -609,6 +610,8 @@ internal static class AccessibilityPeerHelper
 	internal static Func<XamlRoot, AccessibilityNativeEventRecord[]?>? IOSAccessibilityEventsAccessor { get; set; }
 
 	internal static Action<XamlRoot>? IOSClearAccessibilityEventsAction { get; set; }
+
+	internal static Func<XamlRoot, int>? IOSAccessibilityRebuildGenerationAccessor { get; set; }
 
 	internal static IReadOnlyList<AccessibilityPeerNode> GetPeerTree(AutomationPeer root)
 	{
@@ -1376,17 +1379,30 @@ internal static class AccessibilityPeerHelper
 			children = prefetchedChildren ?? peer.GetChildren();
 			return true;
 		}
-		catch (ElementNotAvailableException)
+		catch (ElementNotAvailableException exception)
 		{
+			LogUnavailablePeer(peer, exception);
 			isIncluded = false;
 			children = null;
 			return false;
 		}
-		catch (InvalidOperationException)
+		catch (AutomationPeerUnavailableException exception)
 		{
+			LogUnavailablePeer(peer, exception);
 			isIncluded = false;
 			children = null;
 			return false;
+		}
+	}
+
+	private static void LogUnavailablePeer(AutomationPeer peer, Exception exception)
+	{
+		var log = typeof(AccessibilityPeerHelper).Log();
+		if (log.IsEnabled(LogLevel.Debug))
+		{
+			log.Debug(
+				$"Skipping unavailable automation peer {peer.GetType().Name} while building the native accessibility tree: "
+				+ $"{exception.GetType().Name}: {exception.Message}");
 		}
 	}
 
