@@ -70,6 +70,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsTrue(SUT.Focus(FocusState.Programmatic), "TextBox should take focus");
 				Assert.AreEqual(SUT, FocusManager.GetFocusedElement(SUT.XamlRoot), "TextBox should own the entry session");
 
+				// Accessibility routes text entry through the per-element semantic <input> and detaches the shared
+				// one, so the placement policy only applies when it is off. Any earlier accessibility test latches
+				// it on for the rest of the browser session, which is how the suite reaches this test on CI.
+				if (SemanticElementExists(SUT))
+				{
+					Assert.IsTrue(await SettlesTo(() => GetHiddenInputRect() is null),
+						$"accessibility owns text entry, so the shared input should be detached; it is {DescribeHiddenInput()}");
+					return;
+				}
+
 				var placement = ExpectedPlacementForHost();
 				// Reported after the wait, not through WaitFor's message, which is formatted at call time and so
 				// would describe the state before the wait rather than the state that failed it.
