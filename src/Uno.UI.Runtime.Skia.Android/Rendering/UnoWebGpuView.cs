@@ -337,8 +337,22 @@ internal sealed partial class UnoWebGpuView : SurfaceView, ISurfaceHolderCallbac
 
 		_disposed = true;
 		_renderEvent.Set();
-		_renderThread?.Join(TimeSpan.FromSeconds(2));
+		var stopped = _renderThread?.Join(TimeSpan.FromSeconds(2)) ?? true;
 		_renderThread = null;
+
+		if (!stopped)
+		{
+			// The render thread is still inside a frame, holding the WebGPU context and the native
+			// window. Releasing them here would free objects it is about to touch, so leave them to
+			// the process teardown rather than corrupt the driver.
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error("The WebGPU render thread did not stop within the timeout; its resources are left to the process teardown.");
+			}
+
+			return;
+		}
+
 		// The backend owns device objects built on the swapchain, so it goes first.
 		(_renderer as IDisposable)?.Dispose();
 		_renderer = null;

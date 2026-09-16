@@ -65,8 +65,29 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 
 	public void TeardownRenderer()
 	{
-		_renderer.ResetContext();
-		_renderer.Dispose();
+		// GLSurfaceView drives IRenderer.OnDrawFrame on its own GL thread, so freeing the Skia and
+		// GL state from the UI thread can race a frame in flight. Queue the teardown there and wait
+		// for it; the renderer refuses to rebuild its context afterwards.
+		using var torndown = new ManualResetEventSlim(false);
+
+		QueueEvent(new Java.Lang.Runnable(() =>
+		{
+			try
+			{
+				_renderer.TeardownOnRenderThread();
+			}
+			finally
+			{
+				torndown.Set();
+			}
+		}));
+
+		if (!torndown.Wait(TimeSpan.FromSeconds(2)) && this.Log().IsEnabled(LogLevel.Warning))
+		{
+			// The GL thread can already be gone (surface destroyed first), in which case the queued
+			// work never runs and its context went away with the thread.
+			this.Log().Warn("The GL thread did not run the renderer teardown within the timeout.");
+		}
 	}
 
 	public void InvalidateRender()
@@ -155,11 +176,20 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 		private readonly UnoCanvasView _view = view;
 		private readonly ApplicationActivity _activity = view._activity;
 
+		private bool _torndown;
+
 		private ISwapChain? _context;
 		private IDrawingFactory? _renderer;
 
 		void IRenderer.OnDrawFrame(IGL10? gl)
 		{
+			if (_torndown)
+			{
+				// A frame queued before the teardown ran would rebuild the context below, leaving GL
+				// state behind with nothing left to present it.
+				return;
+			}
+
 			GLES20.GlClear(GLES20.GlColorBufferBit | GLES20.GlDepthBufferBit | GLES20.GlStencilBufferBit);
 
 			// Negotiating lazily here keeps a lost race self-healing: ResetContext() runs on the UI thread when the
@@ -206,6 +236,11 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 
 		void IRenderer.OnSurfaceCreated(IGL10? gl, Javax.Microedition.Khronos.Egl.EGLConfig? config)
 		{
+			if (_torndown)
+			{
+				return;
+			}
+
 			// Fires again after a genuine EGL context loss (despite PreserveEGLContextOnPause), so the previous
 			// backend and context must go before re-negotiating against the new one.
 			FreeContext();
@@ -253,5 +288,16 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 		}
 
 		internal void ResetContext() => FreeContext();
+
+		/// <summary>
+		/// Frees the GL and Skia state from the thread that owns it. Must run on the GL thread,
+		/// which is where every other access to these objects happens.
+		/// </summary>
+		internal void TeardownOnRenderThread()
+		{
+			_torndown = true;
+			FreeContext();
+			Dispose();
+		}
 	}
 }

@@ -377,8 +377,22 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 
 		_disposed = true;
 		_renderEvent.Set();
-		_renderThread?.Join(TimeSpan.FromSeconds(2));
+		var stopped = _renderThread?.Join(TimeSpan.FromSeconds(2)) ?? true;
 		_renderThread = null;
+
+		if (!stopped)
+		{
+			// The render thread is still inside a frame, holding the Vulkan context and the native
+			// window. Releasing them here would free objects it is about to touch, so leave them to
+			// the process teardown rather than corrupt the driver.
+			if (this.Log().IsEnabled(LogLevel.Error))
+			{
+				this.Log().Error("The Vulkan render thread did not stop within the timeout; its resources are left to the process teardown.");
+			}
+
+			return;
+		}
+
 		// Strictly innermost-first: the backend's GRContext-Vulkan owns pipelines and pools built on the
 		// swapchain, which in turn is built on the device — vkDestroyDevice must be last.
 		(_renderer as IDisposable)?.Dispose();
