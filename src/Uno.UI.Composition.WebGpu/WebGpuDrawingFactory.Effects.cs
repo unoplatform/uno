@@ -75,7 +75,7 @@ public sealed partial class WebGpuDrawingFactory
 	private ITexture RunBlend(WebGpuTexture bg, WebGpuTexture fg, int shaderMode)
 	{
 		int w = Math.Max(bg.PixelWidth, fg.PixelWidth), h = Math.Max(bg.PixelHeight, fg.PixelHeight);
-		var surface = new WebGpuRenderSurface(_device, w, h);
+		var surface = new WebGpuRenderSurface(_device, w, h, "offscreen-effect1");
 		new WebGpuFrame(_device, surface).Effects.BlendInto(bg, fg, shaderMode);
 		var (tex, view) = surface.DetachColor();
 		surface.Dispose();
@@ -86,7 +86,7 @@ public sealed partial class WebGpuDrawingFactory
 	private ITexture RunCombine(WebGpuTexture a, WebGpuTexture b, float k0, float k1, float k2, float k3, bool alphaMask)
 	{
 		int w = Math.Max(a.PixelWidth, b.PixelWidth), h = Math.Max(a.PixelHeight, b.PixelHeight);
-		var surface = new WebGpuRenderSurface(_device, w, h);
+		var surface = new WebGpuRenderSurface(_device, w, h, "offscreen-effect2");
 		new WebGpuFrame(_device, surface).Effects.CombineInto(a, b, k0, k1, k2, k3, alphaMask);
 		var (tex, view) = surface.DetachColor();
 		surface.Dispose();
@@ -95,7 +95,7 @@ public sealed partial class WebGpuDrawingFactory
 
 	private ITexture RunNoise(int w, int h, System.Numerics.Vector2 freq, System.Numerics.Vector2 offset)
 	{
-		var surface = new WebGpuRenderSurface(_device, w, h);
+		var surface = new WebGpuRenderSurface(_device, w, h, "offscreen-effect3");
 		new WebGpuFrame(_device, surface).Effects.NoiseInto(freq.X, freq.Y, offset.X, offset.Y, w, h);
 		var (tex, view) = surface.DetachColor();
 		surface.Dispose();
@@ -105,7 +105,7 @@ public sealed partial class WebGpuDrawingFactory
 	private WebGpuTexture Blur(WebGpuTexture src, float sigma)
 	{
 		int w = src.PixelWidth, h = src.PixelHeight;
-		var surface = new WebGpuRenderSurface(_device, w, h);
+		var surface = new WebGpuRenderSurface(_device, w, h, "offscreen-effect4");
 		new WebGpuFrame(_device, surface).Effects.BlurInto(src, sigma, sigma);
 		var (tex, view) = surface.DetachColor();
 		surface.Dispose();
@@ -116,7 +116,7 @@ public sealed partial class WebGpuDrawingFactory
 	private ITexture RunColorFunc(WebGpuTexture src, float[] u20)
 	{
 		int w = src.PixelWidth, h = src.PixelHeight;
-		var surface = new WebGpuRenderSurface(_device, w, h);
+		var surface = new WebGpuRenderSurface(_device, w, h, "offscreen-effect5");
 		new WebGpuFrame(_device, surface).Effects.ColorFuncInto(src, u20);
 		var (tex, view) = surface.DetachColor();
 		surface.Dispose();

@@ -151,7 +151,7 @@ public sealed class WebGpuRenderRecord : IRenderRecord
 			c.IdleSince = dev.FrameSeq;
 			if (c.ContentKey == 0)
 			{
-				foreach (var st in c.Stamps) { dev.DeferCompiledRelease(null, st.Owned); }
+				foreach (var st in c.Stamps) { dev.DeferCompiledRelease(null, st.Owned); dev.DeferSiteRelease(st.SiteBg, st.SiteSlot); }
 				dev.DeferCompiledRelease(c.Owned, null);
 			}
 		}
@@ -219,6 +219,10 @@ public sealed unsafe class WebGpuTexture : DrawingResource, ITexture
 
 	// Adopts an already-rendered offscreen texture (from RenderOffscreen) as a sampleable, disposable handle —
 	// no upload, no readback. Deferred release is shared with the upload path (refcount + DisposeRequested).
+	/// <summary>Set for a colour that came from <see cref="WebGpuDrawingFactory.RenderOffscreen"/>: its release
+	/// returns it to the offscreen pool rather than freeing it.</summary>
+	internal bool Recycle;
+
 	internal WebGpuTexture(WebGpuDevice device, IntPtr tex, IntPtr view, int width, int height)
 	{
 		_d = device;
@@ -319,7 +323,10 @@ public sealed unsafe class WebGpuTexture : DrawingResource, ITexture
 	// last present's submit), like the per-frame bind groups and buffers.
 	protected override void Free()
 	{
-		if (View != IntPtr.Zero || Tex != IntPtr.Zero) { _d.DeferTextureRelease(View, Tex); View = IntPtr.Zero; Tex = IntPtr.Zero; }
+		if (View == IntPtr.Zero && Tex == IntPtr.Zero) { return; }
+		if (Recycle) { _d.DeferTextureRecycle(View, Tex, PixelWidth, PixelHeight); }
+		else { _d.DeferTextureRelease(View, Tex); }
+		View = IntPtr.Zero; Tex = IntPtr.Zero;
 	}
 
 	// Nothing can reach View/Tex once this object is collected, so a missed Release would strand the allocation for
@@ -491,7 +498,7 @@ public sealed partial class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRender
 	{
 		var recorder = new WebGpuCommandRecorder(this);
 		render(recorder);
-		var surface = new WebGpuRenderSurface(_device, pixelWidth, pixelHeight);
+		var surface = new WebGpuRenderSurface(_device, pixelWidth, pixelHeight, "offscreen-render");
 		var present = new WebGpuPresentSession(_device, surface, this);
 		var record = recorder.Finish();
 		present.ReplayNested(record);   // encodes + submits the nested render into the surface's color texture
@@ -500,7 +507,7 @@ public sealed partial class WebGpuDrawingFactory : IDrawingFactory<IWebGpuRender
 		// Take ownership of the resolved color texture; disposing the surface releases only the (finished) MSAA + depth targets.
 		var (tex, view) = surface.DetachColor();
 		surface.Dispose();
-		return new WebGpuTexture(_device, tex, view, pixelWidth, pixelHeight);
+		return new WebGpuTexture(_device, tex, view, pixelWidth, pixelHeight) { Recycle = true };
 	}
 
 	// GPU→CPU read of a texture produced by this factory. Off-browser a native thread drives the map (blocking);

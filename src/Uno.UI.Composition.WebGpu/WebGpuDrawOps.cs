@@ -161,7 +161,10 @@ internal sealed class StampSlot
 	public long Frame;
 	public Matrix3x2 Xform;
 	public ClipData Clip;
-	public Vector2 Basis;
+	/// <summary>The target rect the ops were baked against. The SIZE belongs here as much as the origin: the ops
+	/// carry geometry in the target's own normalised space, so replaying a stamp built for the window into a small
+	/// offscreen of the same origin puts every draw at the wrong scale.</summary>
+	public Vector4 Basis;
 	public int SessionEntries;
 	public nint SiteSlot;
 	public IntPtr SiteBg;

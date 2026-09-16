@@ -102,6 +102,11 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// Transient image textures whose owning IRenderRecord was disposed; drained (GPU-released) at the next frame start.
 	// Concurrent because a frame is disposed on the UI thread while BeginFrameResources runs on the render thread.
 	private readonly System.Collections.Concurrent.ConcurrentQueue<(nint view, nint tex)> _pendingTextures = new();
+	// Offscreen colours on their way back to the recycling pool. Deferred like a release, for the same reason: a
+	// recording built this frame may still reference the view.
+	private readonly System.Collections.Concurrent.ConcurrentQueue<(nint view, nint tex, int w, int h)> _pendingRecycle = new();
+	internal readonly WebGpuOffscreenPool OffscreenPool = new();
+	internal void DeferTextureRecycle(IntPtr view, IntPtr tex, int w, int h) => _pendingRecycle.Enqueue(((nint)view, (nint)tex, w, h));
 	// Per-recording compiled GPU draw-list. It lives ON the recording's WebGpuRenderRecord (IRenderRecord is, by its own
 	// contract, "backend-defined retained state"), built once and replayed cheaply — no global cache, no per-frame
 	// eviction scan. When the owning IRenderRecord is disposed (UI thread, on a content change), its compiled state is
@@ -111,6 +116,15 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 	// WebGpuDevice (init tier) free of any renderer type.
 	private readonly System.Collections.Concurrent.ConcurrentQueue<(OwnedResources Owned, OwnedResources StampOwned)> _pendingCompiled = new();
 	internal void DeferCompiledRelease(OwnedResources owned, OwnedResources stampOwned) => _pendingCompiled.Enqueue((owned, stampOwned));
+
+	// A stamp's site uniform slot and the bind group over it live as long as the stamp, not the frame, so they sit
+	// outside the per-frame tracking — which means the stamp's death is the only place they can be reclaimed.
+	// Primitives rather than the renderer's stamp type, to keep this tier free of renderer types.
+	private readonly System.Collections.Concurrent.ConcurrentQueue<(nint Bg, nint SiteSlot)> _pendingSites = new();
+	internal void DeferSiteRelease(nint siteBg, nint siteSlot)
+	{
+		if (siteBg != 0 || siteSlot != 0) { _pendingSites.Enqueue((siteBg, siteSlot)); }
+	}
 
 	// Per-frame bind groups reference the frame's pooled buffers, so they're released at the next frame start once
 	// the previous frame's GPU work has completed (present DevicePolls). A cached recording's persistent resources
@@ -134,6 +148,8 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		// Release (refcount) rather than Destroy (immediate) the transient one-shot textures: wgpu then frees them
 		// only once the GPU has finished the frames that used them — safe even when the per-frame drain is skipped.
 		while (_pendingTextures.TryDequeue(out var t)) { if (t.view != IntPtr.Zero) { wgpuTextureViewRelease((IntPtr)t.view); } if (t.tex != IntPtr.Zero) { wgpuTextureRelease((IntPtr)t.tex); } }
+		while (_pendingRecycle.TryDequeue(out var rc)) { OffscreenPool.Return((IntPtr)rc.tex, (IntPtr)rc.view, rc.w, rc.h); }
+		OffscreenPool.BeginFrame();
 		_pendingBindGroups.Clear();
 		_pendingBuffers.Clear();
 		// Clip-slab slots ride the same deferred pipeline as the buffers/bind groups that referenced them.
@@ -146,6 +162,13 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 
 		// Free the arena entries whose owning recording was disposed.
 		while (_pendingCompiled.TryDequeue(out var c)) { DeferRelease(c.Owned); DeferRelease(c.StampOwned); }
+
+		// ... and the site slots/bind groups of the stamps that went with them.
+		while (_pendingSites.TryDequeue(out var s))
+		{
+			if (s.Bg != 0) { wgpuBindGroupRelease(s.Bg); }
+			if (s.SiteSlot != 0) { SiteSlab.Free(s.SiteSlot); }
+		}
 	}
 
 	public IntPtr TrackBg(IntPtr bg) { _pendingBindGroups.Add((nint)bg); return bg; }
@@ -293,6 +316,7 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		var image = new WebGpuReadbackImage(w, h, new ReadOnlySpan<byte>(mp, (int)total), padded, sourceIsBgra);
 		wgpuBufferUnmap(buf);
 		wgpuBufferDestroy(buf);
+		wgpuBufferRelease(buf);
 		return image;
 	}
 
@@ -317,7 +341,9 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 		padded = (int)pad;
 	}
 
-	public void DestroyBuffer(IntPtr buf) => wgpuBufferDestroy(buf);
+	// Destroy frees the allocation now; without the Release the handle (and wgpu's accounting of it) stays for the
+	// life of the device.
+	public void DestroyBuffer(IntPtr buf) { wgpuBufferDestroy(buf); wgpuBufferRelease(buf); }
 
 	/// <summary>Set by the browser head at WebGPU init: maps a readback buffer (by wgpu handle ptr) off the JS
 	/// event loop and returns its raw (row-padded) bytes. The only way to complete a GPU→CPU map on WASM, where a

@@ -183,7 +183,7 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		_w = width;
 		_h = height;
 		if (_presentView != IntPtr.Zero) { wgpuTextureViewRelease(_presentView); _presentView = IntPtr.Zero; }
-		if (_presentTex != IntPtr.Zero) { wgpuTextureDestroy(_presentTex); _presentTex = IntPtr.Zero; }
+		if (_presentTex != IntPtr.Zero) { wgpuTextureDestroy(_presentTex); wgpuTextureRelease(_presentTex); _presentTex = IntPtr.Zero; }
 
 		// Offscreen single-sample resolve target: the scene's MSAA pass (owned by the render backend) resolves into
 		// this, and it is sampled by the present blit. TextureBinding so the blit can sample it; CopySrc so
@@ -281,7 +281,7 @@ fn s2l(c: f32) -> f32 { if (c <= 0.04045) { return c / 12.92; } return pow((c + 
 		_disposed = true;
 		if (_blitBg != IntPtr.Zero) { wgpuBindGroupRelease(_blitBg); _blitBg = IntPtr.Zero; }
 		if (_presentView != IntPtr.Zero) { wgpuTextureViewRelease(_presentView); _presentView = IntPtr.Zero; }
-		if (_presentTex != IntPtr.Zero) { wgpuTextureDestroy(_presentTex); _presentTex = IntPtr.Zero; }
+		if (_presentTex != IntPtr.Zero) { wgpuTextureDestroy(_presentTex); wgpuTextureRelease(_presentTex); _presentTex = IntPtr.Zero; }
 		if (_surface != IntPtr.Zero) { wgpuSurfaceRelease(_surface); _surface = IntPtr.Zero; }
 		// The device is shared process-wide and deliberately NOT released here - see WebGpuInitDevice.GetShared.
 	}

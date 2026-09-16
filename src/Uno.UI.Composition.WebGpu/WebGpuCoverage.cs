@@ -208,7 +208,7 @@ internal sealed unsafe partial class WebGpuCoverage
 		// draw an atlas entry uses, so it coalesces and re-stamps like one.
 		var clip = WithCoverage(pf.Clip, view, filtered);
 		var q = CoverageQuad(new Vector2(ox / scale.X, oy / scale.Y), new Vector2(w / scale.X, h / scale.Y), pf.Color, uv);
-		op = DrawOp.Own(DrawKind.Solid, _f.Vbuf(q, owned), 6, IntPtr.Zero, clip, _f.MakeClipBg(clip, owned));
+		op = DrawOp.Own(DrawKind.Solid, _f.Vbuf(q, VertexStride.Solid, owned), 6, IntPtr.Zero, clip, _f.MakeClipBg(clip, owned));
 		return true;
 	}
 }

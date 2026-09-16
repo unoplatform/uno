@@ -212,6 +212,6 @@ internal sealed unsafe partial class WebGpuCoverage
 	private DrawOp MakeAtlasOp(PathCmd pf, WebGpuPathAtlas.Page page, VertBuf quads, OwnedResources owned, bool filtered = false)
 	{
 		var clip = WithCoverage(pf.Clip, page.View, filtered);
-		return DrawOp.Own(DrawKind.Solid, _f.Vbuf(quads, owned), (uint)(quads.Count / VertexStride.Solid), IntPtr.Zero, clip, _f.MakeClipBg(clip, owned));
+		return DrawOp.Own(DrawKind.Solid, _f.Vbuf(quads, VertexStride.Solid, owned), (uint)(quads.Count / VertexStride.Solid), IntPtr.Zero, clip, _f.MakeClipBg(clip, owned));
 	}
 }

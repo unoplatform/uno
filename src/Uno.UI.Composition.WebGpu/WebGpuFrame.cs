@@ -319,21 +319,67 @@ internal sealed unsafe partial class WebGpuFrame
 		return buf;
 	}
 
-	internal IntPtr Vbuf(VertBuf data, OwnedResources owned)
-		=> owned is null ? MakeBuffer(data) : Vbuf(data.Span.ToArray(), owned);
+	internal IntPtr Vbuf(VertBuf data, int stride, OwnedResources owned)
+		=> owned is null ? MakeBuffer(data) : PackVerts(owned, data.Span, stride);
 
 	internal IntPtr MakeUniform(int byteSize)
 		=> _d.BufferPool.Rent(byteSize, WGPUBufferUsage.Uniform | WGPUBufferUsage.CopyDst);
 
-	internal IntPtr Vbuf(float[] data, OwnedResources owned)
+	internal IntPtr Vbuf(float[] data, int stride, OwnedResources owned)
+		=> owned is null ? MakeBuffer(data) : PackVerts(owned, data, stride);
+
+	/// <summary>A bag's arena is split once it reaches this, so one recording's geometry can never ask for a
+	/// buffer larger than the device allows (wgpu's default maximum is 256 MB).</summary>
+	private const int MaxArenaBytes = 64 << 20;
+
+	/// <summary>Appends an op's vertices to its bag's current arena chunk, aligned so the range starts on a vertex
+	/// boundary of its own stride, and returns the chunk and first-vertex index tagged negative:
+	/// <see cref="RealizeOwnedVertices"/> swaps it for that chunk's buffer.</summary>
+	private static IntPtr PackVerts(OwnedResources owned, ReadOnlySpan<float> data, int stride)
 	{
-		if (owned is null) { return MakeBuffer(data); }
-		int size = data.Length * sizeof(float);
-		var bd = new WGPUBufferDescriptor { Size = (nuint)size, Usage = WGPUBufferUsage.Vertex | WGPUBufferUsage.CopyDst };
-		var buf = wgpuDeviceCreateBuffer(_d.Dev, &bd);
-		fixed (float* p = data) { wgpuQueueWriteBuffer(_d.Q, buf, 0, (IntPtr)p, (nuint)size); }
-		owned.Buffers.Add((nint)buf);
-		return buf;
+		var arenas = owned.VertexArenas ??= new List<VertBuf>();
+		if (arenas.Count == 0) { arenas.Add(new VertBuf()); }
+		var arena = arenas[arenas.Count - 1];
+		if (arena.Count > 0 && ((long)arena.Count + stride + data.Length) * sizeof(float) > MaxArenaBytes)
+		{
+			arena = new VertBuf();
+			arenas.Add(arena);
+		}
+
+		var misaligned = arena.Count % stride;
+		if (misaligned != 0) { arena.Grow(stride - misaligned).Clear(); }
+		var first = arena.Count / stride;
+		data.CopyTo(arena.Grow(data.Length));
+		return (IntPtr)(-(((long)(arenas.Count - 1) << 40) | (uint)first) - 1);
+	}
+
+	/// <summary>Uploads a finished bag's arena chunks and points every op at the chunk it landed in.</summary>
+	internal void RealizeOwnedVertices(List<DrawOp> ops, OwnedResources owned)
+	{
+		if (owned?.VertexArenas is not { Count: > 0 } arenas) { return; }
+		var buffers = new IntPtr[arenas.Count];
+		for (var c = 0; c < arenas.Count; c++)
+		{
+			var arena = arenas[c];
+			if (arena.Count == 0) { continue; }
+			var size = arena.Count * sizeof(float);
+			var bd = new WGPUBufferDescriptor { Size = (nuint)size, Usage = WGPUBufferUsage.Vertex | WGPUBufferUsage.CopyDst };
+			buffers[c] = wgpuDeviceCreateBuffer(_d.Dev, &bd);
+			fixed (float* p = arena.A) { wgpuQueueWriteBuffer(_d.Q, buffers[c], 0, (IntPtr)p, (nuint)size); }
+			owned.Buffers.Add((nint)buffers[c]);
+		}
+
+		owned.VertexArenas = null;
+		for (var i = 0; i < ops.Count; i++)
+		{
+			var tag = (nint)ops[i].Verts;
+			if (tag >= 0) { continue; }
+			var packed = -tag - 1;
+			var op = ops[i];
+			op.Verts = buffers[(int)(packed >> 40)];
+			op.FirstVertex = (uint)(packed & 0xFFFFFFFF);
+			ops[i] = op;
+		}
 	}
 
 	internal IntPtr Ubuf(int size, OwnedResources owned)

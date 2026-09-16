@@ -248,7 +248,7 @@ internal sealed unsafe partial class WebGpuFrame
 	private DrawOp QuadOp(DrawKind kind, VertBuf verts, uint first, IntPtr group1, in ClipData cd, OwnedResources owned)
 		=> owned is null
 			? DrawOp.Shared(kind, first, 6, group1, cd, MakeClipBg(cd))
-			: DrawOp.Own(kind, Vbuf(verts, owned), 6, group1, cd, MakeClipBg(cd, owned));
+			: DrawOp.Own(kind, Vbuf(verts, VertexStride.Quad, owned), 6, group1, cd, MakeClipBg(cd, owned));
 
 	private static void AppendQuad(VertBuf dst, Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float u0, float v0, float u1, float v1)
 	{
@@ -274,7 +274,7 @@ internal sealed unsafe partial class WebGpuFrame
 		for (var t = 0; t < count; t++) { dst.Add(cover[t].X); dst.Add(cover[t].Y); dst.Add(0f); dst.Add(0f); }
 		ops.Add(owned is null
 			? DrawOp.Shared(DrawKind.Gradient, first, count, gbg, cd, MakeClipBg(cd))
-			: DrawOp.Own(DrawKind.Gradient, Vbuf(dst, owned), count, gbg, cd, MakeClipBg(cd, owned)));
+			: DrawOp.Own(DrawKind.Gradient, Vbuf(dst, VertexStride.Quad, owned), count, gbg, cd, MakeClipBg(cd, owned)));
 	}
 
 	private static float[] TransformedGradient(float[] src, in Matrix3x2 m)
@@ -388,7 +388,7 @@ internal sealed unsafe partial class WebGpuFrame
 		if (System.Threading.Interlocked.Decrement(ref e.Refs) > 0) { return; }
 		e.IdleSince = _d.FrameSeq;
 		if (e.ContentKey != 0) { return; }
-		foreach (var st in e.Stamps) { _d.DeferCompiledRelease(null, st.Owned); }
+		foreach (var st in e.Stamps) { _d.DeferCompiledRelease(null, st.Owned); _d.DeferSiteRelease(st.SiteBg, st.SiteSlot); }
 		_d.DeferCompiledRelease(e.Owned, null);
 	}
 
@@ -404,7 +404,7 @@ internal sealed unsafe partial class WebGpuFrame
 			var e = kv.Value;
 			if (e.Refs > 0 || !ReferenceEquals(e.Device, _d) || _d.FrameSeq - e.IdleSince < EntryPoolIdleFrames) { continue; }
 			(drop ??= new()).Add(kv.Key);
-			foreach (var st in e.Stamps) { _d.DeferCompiledRelease(null, st.Owned); }
+			foreach (var st in e.Stamps) { _d.DeferCompiledRelease(null, st.Owned); _d.DeferSiteRelease(st.SiteBg, st.SiteSlot); }
 			_d.DeferCompiledRelease(e.Owned, null);
 		}
 		if (drop is not null) { foreach (var k in drop) { s_entryPool.Remove(k); } }
@@ -575,6 +575,7 @@ internal sealed unsafe partial class WebGpuFrame
 			int maskBefore = WebGpuCoverage.ClipMasksBaked + WebGpuCoverage.FillMasksBaked + WebGpuCoverage.FillMaskHits;
 			bool atlasSafe = TryAtlasScale(rm, out var scale);
 			BuildCoalesced(rr.Commands, built, owned, atlasScale: atlasSafe ? scale : null, maskScale: atlasSafe ? scale : MaskScale(rm));
+			RealizeOwnedVertices(built, owned);
 			bool hasPathClip = false; foreach (var o in built) { if (o.Clip.Paths is not null) { hasPathClip = true; break; } }
 			entry = new WebGpuGeometryCache
 			{
@@ -612,7 +613,7 @@ internal sealed unsafe partial class WebGpuFrame
 			entry.SitesFrame = _d.FrameSeq;
 		}
 		entry.SitesThisFrame++;
-		var basis = new Vector2(_basisOx, _basisOy);
+		var basis = new Vector4(_basisOx, _basisOy, BasisW, BasisH);
 		// The stamp for this replay site, if it already holds the right transform and clip: its ops go out untouched.
 		StampSlot slot = null;
 		foreach (var st in entry.Stamps)
@@ -737,6 +738,14 @@ internal sealed unsafe partial class WebGpuFrame
 			slot.Xform = rm; slot.Clip = session; slot.Basis = basis; slot.SessionEntries = sessionEntries;
 			if (_emitStats) { StampTicks += System.Diagnostics.Stopwatch.GetTimestamp() - t0; }
 		}
+		else
+		{
+			// A matched stamp keeps its ops, but the site block they read is per-slot GPU state that another
+			// render may have moved on from - rewrite it so the ops are placed and scissored for THIS replay.
+			WriteSite(slot.SiteSlot, rm, session, slot.SiteOps);
+			SetSiteScissor(slot.SiteSlot, IsFiniteAabb(session.Aabb) ? session.Aabb : ClipData.None.Aabb);
+		}
+
 		slot.Frame = _d.FrameSeq;
 		ops.AddRange(slot.Ops);
 	}
@@ -823,6 +832,12 @@ internal sealed unsafe partial class WebGpuFrame
 			float ax0 = MathF.Max(_basisOx, MathF.Floor(lb.X)), ay0 = MathF.Max(_basisOy, MathF.Floor(lb.Y));
 			float ax1 = MathF.Min(_basisOx + BasisW, MathF.Ceiling(lb.Z)), ay1 = MathF.Min(_basisOy + BasisH, MathF.Ceiling(lb.W));
 			int rw = (int)(ax1 - ax0), rh = (int)(ay1 - ay0);
+			// Round the target up to a coarse grid. Content bounds move by a pixel between frames, and every
+			// distinct size is a texture the pool cannot reuse - which costs committed GPU memory for good, since
+			// the allocator never hands a freed block back. The extra margin is transparent and scissored out.
+			const int SizeQuantum = 64;
+			rw = Math.Min((rw + SizeQuantum - 1) / SizeQuantum * SizeQuantum, (int)(_basisOx + BasisW - ax0));
+			rh = Math.Min((rh + SizeQuantum - 1) / SizeQuantum * SizeQuantum, (int)(_basisOy + BasisH - ay0));
 			if (rw >= 1 && rh >= 1 && ((float)rw < BasisW || (float)rh < BasisH))
 			{
 				sub = true; subOx = ax0; subOy = ay0; subW = rw; subH = rh;

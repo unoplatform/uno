@@ -174,7 +174,7 @@ internal sealed unsafe partial class WebGpuFrame
 					AppendSolidRect(_scratch, rcj.P0, rcj.P1, rcj.P2, rcj.P3, rcj.Color.R / 255f, rcj.Color.G / 255f, rcj.Color.B / 255f, rcj.Color.A / 255f);
 					j++;
 				}
-				ops.Add(DrawOp.Own(DrawKind.Solid, Vbuf(_scratch, owned), (uint)((j - ci) * 6), IntPtr.Zero, rc0.Clip, MakeClipBg(rc0.Clip, owned)));
+				ops.Add(DrawOp.Own(DrawKind.Solid, Vbuf(_scratch, VertexStride.Solid, owned), (uint)((j - ci) * 6), IntPtr.Zero, rc0.Clip, MakeClipBg(rc0.Clip, owned)));
 				ci = j - 1;
 			}
 			else if (WebGpuCoverage.AtlasEnabled && atlasScale is { } asc && Coverage.TryAtlasBatch(cmds, ref ci, owned, asc, out var aop))
@@ -211,7 +211,7 @@ internal sealed unsafe partial class WebGpuFrame
 		}
 		ops.Add(owned is null
 			? DrawOp.Shared(DrawKind.Solid, start, count, IntPtr.Zero, pc.Clip, clipBg)
-			: DrawOp.Own(DrawKind.Solid, Vbuf(_scratch, owned), count, IntPtr.Zero, pc.Clip, clipBg));
+			: DrawOp.Own(DrawKind.Solid, Vbuf(_scratch, VertexStride.Solid, owned), count, IntPtr.Zero, pc.Clip, clipBg));
 	}
 
 	// A fill without tiling triangles (self-overlap, too thin for the ring, or simply refused) draws through an exact
@@ -259,7 +259,7 @@ internal sealed unsafe partial class WebGpuFrame
 					var rrc = (RoundedRectCmd)cmd;
 					var tmp = RentRrect();
 					AppendRrect(tmp, rrc, rrc.P0, rrc.P1, rrc.P2, rrc.P3);
-					var buf = Vbuf(tmp, owned);
+					var buf = Vbuf(tmp, VertexStride.RoundedRect, owned);
 					ReturnRrect(tmp);
 					ops.Add(DrawOp.Own(DrawKind.RoundedRect, buf, 6, IntPtr.Zero, rrc.Clip, MakeClipBg(rrc.Clip, owned)));
 					break;

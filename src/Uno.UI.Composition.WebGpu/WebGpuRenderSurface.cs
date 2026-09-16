@@ -35,12 +35,12 @@ internal sealed unsafe class WebGpuRenderSurface
 	{
 		if (!_ownsColor) { return; }
 		if (View != IntPtr.Zero) { wgpuTextureViewRelease(View); View = IntPtr.Zero; }
-		if (Tex != IntPtr.Zero) { wgpuTextureDestroy(Tex); Tex = IntPtr.Zero; }
+		if (Tex != IntPtr.Zero) { wgpuTextureDestroy(Tex); wgpuTextureRelease(Tex); Tex = IntPtr.Zero; }
 	}
 
 	// A dedicated offscreen (RenderOffscreen, effect evaluation): TextureBinding so the result can be sampled, CopySrc
 	// so it can be read back.
-	public WebGpuRenderSurface(WebGpuDevice device, int width, int height)
+	public WebGpuRenderSurface(WebGpuDevice device, int width, int height, string what = "offscreen")
 	{
 		Width = width; Height = height;
 		_ownsColor = true;
@@ -53,6 +53,13 @@ internal sealed unsafe class WebGpuRenderSurface
 			Dimension = WGPUTextureDimension._2D,
 			Usage = WGPUTextureUsage.RenderAttachment | WGPUTextureUsage.CopySrc | WGPUTextureUsage.TextureBinding,
 		};
+		if (device.OffscreenPool.TryRent(width, height, out var pooled, out var pooledView))
+		{
+			Tex = pooled;
+			View = pooledView;
+			return;
+		}
+
 		Tex = wgpuDeviceCreateTexture(device.Dev, &td);
 		View = wgpuTextureCreateView(Tex, null);
 	}
@@ -83,6 +90,11 @@ internal sealed unsafe class WebGpuRenderSurface
 internal sealed class OwnedResources
 {
 	public System.Collections.Generic.List<nint> Buffers = new();
+	// This bag's vertex data, packed into as few GPU buffers as possible when the build ends. A buffer per op
+	// costs a whole placed-resource slot on the GPU (64 KB on D3D12), so a few thousand small ops commit hundreds
+	// of MB; packing also lets the encoder's merge rule fire, which a buffer per op makes impossible. Split into
+	// chunks because a recording's geometry can exceed the device's maximum buffer size on its own.
+	internal System.Collections.Generic.List<VertBuf> VertexArenas;
 	public System.Collections.Generic.List<nint> BindGroups = new();
 	// Clip-slab slot handles this bag's bind groups reference; freed with the bag (see WebGpuClipSlab).
 	public System.Collections.Generic.List<nint> ClipSlots;

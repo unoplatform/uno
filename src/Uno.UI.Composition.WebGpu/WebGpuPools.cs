@@ -31,6 +31,7 @@ internal sealed unsafe class WebGpuTexturePool : IDisposable
 	private int _frameNo;
 	// Release entries not rented for this many frames. Without eviction, every window resize strands a whole
 	// generation of full-window MSAA colour + depth textures (they no longer match a Rent key) until process exit.
+	// Measured: holding idle entries longer costs more than the churn it saves, so the horizon stays short.
 	private const int EvictAfterFrames = 16;
 
 	public WebGpuTexturePool(WebGpuDevice d) => _d = d;
@@ -45,11 +46,14 @@ internal sealed unsafe class WebGpuTexturePool : IDisposable
 				if (!e.InUse && _frameNo - e.LastUsed > EvictAfterFrames)
 				{
 					if (e.View != IntPtr.Zero) { wgpuTextureViewRelease(e.View); }
-					if (e.Tex != IntPtr.Zero) { wgpuTextureDestroy(e.Tex); }
+					// Destroy frees the allocation now; Release drops the handle, which wgpu would otherwise
+					// keep registered (and its memory attributed) for the life of the device.
+					if (e.Tex != IntPtr.Zero) { wgpuTextureDestroy(e.Tex); wgpuTextureRelease(e.Tex); }
 					_entries.RemoveAt(i);
 				}
 				else { e.InUse = false; }
 			}
+
 			_frameNo++;
 		}
 	}
@@ -94,7 +98,7 @@ internal sealed unsafe class WebGpuTexturePool : IDisposable
 			foreach (var e in _entries)
 			{
 				if (e.View != IntPtr.Zero) { wgpuTextureViewRelease(e.View); }
-				if (e.Tex != IntPtr.Zero) { wgpuTextureDestroy(e.Tex); }
+				if (e.Tex != IntPtr.Zero) { wgpuTextureDestroy(e.Tex); wgpuTextureRelease(e.Tex); }
 			}
 			_entries.Clear();
 		}
@@ -108,14 +112,34 @@ internal sealed unsafe class WebGpuTexturePool : IDisposable
 internal sealed unsafe class WebGpuBufferPool : IDisposable
 {
 	private readonly WebGpuDevice _d;
-	private sealed class Entry { public IntPtr Buf; public int Cap; public WGPUBufferUsage Usage; public bool InUse; }
+	private sealed class Entry { public IntPtr Buf; public int Cap; public WGPUBufferUsage Usage; public bool InUse; public int LastUsed; }
 	private readonly System.Collections.Generic.List<Entry> _entries = new();
 	// Shared per-device; guard against concurrent Add invalidating Rent's enumeration (see WebGpuTexturePool).
 	private readonly object _gate = new();
+	private int _frameNo;
+	// Without eviction the pool keeps the whole session's high-water mark: one heavy frame (a flyout's clip and
+	// stamp buffers, thousands of them) is then held until process exit. Same horizon as the texture pool.
+	private const int EvictAfterFrames = 16;
 
 	public WebGpuBufferPool(WebGpuDevice d) => _d = d;
 
-	public void BeginFrame() { lock (_gate) { foreach (var e in _entries) { e.InUse = false; } } }
+	public void BeginFrame()
+	{
+		lock (_gate)
+		{
+			for (var i = _entries.Count - 1; i >= 0; i--)
+			{
+				var e = _entries[i];
+				if (!e.InUse && _frameNo - e.LastUsed > EvictAfterFrames)
+				{
+					if (e.Buf != IntPtr.Zero) { wgpuBufferDestroy(e.Buf); wgpuBufferRelease(e.Buf); }
+					_entries.RemoveAt(i);
+				}
+				else { e.InUse = false; }
+			}
+			_frameNo++;
+		}
+	}
 
 	public void Dispose()
 	{
@@ -132,13 +156,89 @@ internal sealed unsafe class WebGpuBufferPool : IDisposable
 		{
 			foreach (var e in _entries)
 			{
-				if (!e.InUse && e.Usage == usage && e.Cap >= byteSize) { e.InUse = true; return e.Buf; }
+				if (!e.InUse && e.Usage == usage && e.Cap >= byteSize) { e.InUse = true; e.LastUsed = _frameNo; return e.Buf; }
 			}
 			int cap = Math.Max(byteSize, 256);
 			var bd = new WGPUBufferDescriptor { Size = (nuint)cap, Usage = usage };
 			var buf = wgpuDeviceCreateBuffer(_d.Dev, &bd);
-			_entries.Add(new Entry { Buf = buf, Cap = cap, Usage = usage, InUse = true });
+			_entries.Add(new Entry { Buf = buf, Cap = cap, Usage = usage, InUse = true, LastUsed = _frameNo });
 			return buf;
+		}
+	}
+}
+
+/// <summary>
+/// Recycles the dedicated colour textures <see cref="WebGpuDrawingFactory.RenderOffscreen"/> hands out. An effect
+/// brush rasterizes each of its sources on every paint, so without recycling every paint churns a fresh GPU texture
+/// through the allocator — which commits blocks it never gives back, even though the live count stays flat.
+/// A texture comes back only at a frame boundary, so an in-flight recording can never be handed someone else's.
+/// </summary>
+internal sealed unsafe class WebGpuOffscreenPool : IDisposable
+{
+	private sealed class Entry { public IntPtr Tex, View; public int W, H; public int LastUsed; }
+	private readonly System.Collections.Generic.List<Entry> _free = new();
+	private readonly object _gate = new();
+	private int _frameNo;
+	// Long enough that a brush repainting every few frames always hits, short enough that a size that stops
+	// being asked for is given back rather than held for the process's life.
+	private const int EvictAfterFrames = 240;
+	private const int MaxEntries = 48;
+
+	public void BeginFrame()
+	{
+		lock (_gate)
+		{
+			for (var i = _free.Count - 1; i >= 0; i--)
+			{
+				if (_frameNo - _free[i].LastUsed <= EvictAfterFrames) { continue; }
+				Destroy(_free[i]);
+				_free.RemoveAt(i);
+			}
+
+			_frameNo++;
+		}
+	}
+
+	public bool TryRent(int w, int h, out IntPtr tex, out IntPtr view)
+	{
+		lock (_gate)
+		{
+			for (var i = 0; i < _free.Count; i++)
+			{
+				if (_free[i].W != w || _free[i].H != h) { continue; }
+				tex = _free[i].Tex; view = _free[i].View;
+				_free.RemoveAt(i);
+				return true;
+			}
+		}
+
+		tex = IntPtr.Zero; view = IntPtr.Zero;
+		return false;
+	}
+
+	public void Return(IntPtr tex, IntPtr view, int w, int h)
+	{
+		var entry = new Entry { Tex = tex, View = view, W = w, H = h };
+		lock (_gate)
+		{
+			if (_free.Count >= MaxEntries) { Destroy(entry); return; }
+			entry.LastUsed = _frameNo;
+			_free.Add(entry);
+		}
+	}
+
+	private static void Destroy(Entry e)
+	{
+		if (e.View != IntPtr.Zero) { wgpuTextureViewRelease(e.View); }
+		if (e.Tex != IntPtr.Zero) { wgpuTextureDestroy(e.Tex); wgpuTextureRelease(e.Tex); }
+	}
+
+	public void Dispose()
+	{
+		lock (_gate)
+		{
+			foreach (var e in _free) { Destroy(e); }
+			_free.Clear();
 		}
 	}
 }
