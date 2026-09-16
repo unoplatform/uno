@@ -127,7 +127,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			foreach (var formatId in data.AvailableFormats)
 			{
 				// Only string data can be written; what a provider yields is known once it has run.
-				if (!IsStandardFormat(formatId) && data.FindRawData(formatId) is string or DataProviderHandler)
+				if (IsCustomFormat(formatId) && data.FindRawData(formatId) is string or DataProviderHandler)
 				{
 					formats.Add(new ClipboardWriteFormat { Type = formatId, Custom = true });
 				}
@@ -174,7 +174,7 @@ namespace Windows.ApplicationModel.DataTransfer
 
 				foreach (var formatId in data.AvailableFormats)
 				{
-					if (IsStandardFormat(formatId))
+					if (!IsCustomFormat(formatId))
 					{
 						continue;
 					}
@@ -232,6 +232,34 @@ namespace Windows.ApplicationModel.DataTransfer
 
 			return string.IsNullOrEmpty(uri) ? null : uri;
 		}
+
+		// A custom format is written under its id as MIME type, so one named like a standard
+		// representation would collide with it and is left out.
+		private static bool IsCustomFormat(string formatId)
+		{
+			if (IsStandardFormat(formatId))
+			{
+				return false;
+			}
+
+			if (IsReservedMimeType(formatId))
+			{
+				if (typeof(Clipboard).Log().IsEnabled(LogLevel.Warning))
+				{
+					typeof(Clipboard).Log().Warn($"Custom format '{formatId}' is the MIME type of a standard format and was skipped; use the standard format instead.");
+				}
+				return false;
+			}
+
+			return true;
+		}
+
+		private static bool IsReservedMimeType(string formatId) =>
+			formatId.Equals(PlainTextMimeType, StringComparison.OrdinalIgnoreCase) ||
+			formatId.Equals(HtmlMimeType, StringComparison.OrdinalIgnoreCase) ||
+			formatId.Equals(RtfMimeType, StringComparison.OrdinalIgnoreCase) ||
+			formatId.Equals(UriListMimeType, StringComparison.OrdinalIgnoreCase) ||
+			formatId.Equals(PngMimeType, StringComparison.OrdinalIgnoreCase);
 
 		private static bool IsStandardFormat(string formatId) =>
 			formatId == StandardDataFormats.Text ||
