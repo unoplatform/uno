@@ -1441,10 +1441,11 @@ namespace Microsoft.UI.Xaml
 
 		private readonly struct InheritedPropertiesDisposable : IDisposable
 		{
-			private readonly IDisposable _inheritedPropertiesCallback;
+			// Typed concretely: the only caller passes this struct, and an IDisposable field would box it.
+			private readonly InheritedPropertyChangedCallbackDisposable _inheritedPropertiesCallback;
 			private readonly DependencyObject _owner;
 
-			public InheritedPropertiesDisposable(DependencyObject owner, IDisposable inheritedPropertiesCallback)
+			public InheritedPropertiesDisposable(DependencyObject owner, InheritedPropertyChangedCallbackDisposable inheritedPropertiesCallback)
 			{
 				_owner = owner;
 				_inheritedPropertiesCallback = inheritedPropertiesCallback;
@@ -2188,7 +2189,11 @@ namespace Microsoft.UI.Xaml
 		/// <param name="previousValue">The previous value</param>
 		/// <param name="newValue">The new value</param>
 		/// <returns>True if different, otherwise false</returns>
-		/// <remarks>This comparison uses value for value types, references for reference types.</remarks>
+		/// <remarks>
+		/// This comparison uses value for value types, references for reference types. Callers depend on
+		/// that: coercions that return a shared box per constant (see UIElement.CoerceHitTestVisibility)
+		/// stay value-equal here, so a ReferenceEquals fast path would change change-detection for them.
+		/// </remarks>
 		internal static bool AreDifferent(object? previousValue, object? newValue)
 		{
 			if (newValue is ValueType || newValue is string)
