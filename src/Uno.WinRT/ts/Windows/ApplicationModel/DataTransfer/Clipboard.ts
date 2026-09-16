@@ -709,26 +709,59 @@ namespace Uno.Utils {
 
 		private static async tryTranscodeToPng(blob: Blob): Promise<Blob> {
 			try {
-				if (typeof createImageBitmap === "undefined" || typeof (globalThis as any).OffscreenCanvas === "undefined") {
-					return null;
-				}
-
-				const bitmap = await createImageBitmap(blob);
+				const source = await Clipboard.decodeImageAsync(blob);
 				try {
-					const canvas = new (globalThis as any).OffscreenCanvas(bitmap.width, bitmap.height);
+					const width = source instanceof HTMLImageElement ? source.naturalWidth : source.width;
+					const height = source instanceof HTMLImageElement ? source.naturalHeight : source.height;
+
+					// OffscreenCanvas is preferred; an ordinary canvas serves engines without it.
+					if (typeof (globalThis as any).OffscreenCanvas !== "undefined") {
+						const canvas = new (globalThis as any).OffscreenCanvas(width, height);
+						const context = canvas.getContext("2d");
+						if (!context) {
+							return null;
+						}
+						context.drawImage(source, 0, 0);
+						return await canvas.convertToBlob({ type: "image/png" });
+					}
+
+					const canvas = document.createElement("canvas");
+					canvas.width = width;
+					canvas.height = height;
 					const context = canvas.getContext("2d");
 					if (!context) {
 						return null;
 					}
-
-					context.drawImage(bitmap, 0, 0);
-					return await canvas.convertToBlob({ type: "image/png" });
+					context.drawImage(source, 0, 0);
+					return await new Promise<Blob>(resolve => canvas.toBlob(resolve, "image/png"));
 				} finally {
-					bitmap.close();
+					if (!(source instanceof HTMLImageElement)) {
+						source.close();
+					}
 				}
 			} catch (e) {
 				console.warn(`Clipboard: failed to transcode image to PNG: ${e}`);
 				return null;
+			}
+		}
+
+		private static async decodeImageAsync(blob: Blob): Promise<ImageBitmap | HTMLImageElement> {
+			if (typeof createImageBitmap !== "undefined") {
+				return await createImageBitmap(blob);
+			}
+
+			// Engines without createImageBitmap decode through an image element instead.
+			const url = URL.createObjectURL(blob);
+			try {
+				const image = new Image();
+				await new Promise<void>((resolve, reject) => {
+					image.onload = () => resolve();
+					image.onerror = () => reject(new Error("The image could not be decoded."));
+					image.src = url;
+				});
+				return image;
+			} finally {
+				URL.revokeObjectURL(url);
 			}
 		}
 

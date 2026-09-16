@@ -93,6 +93,7 @@ declare namespace Uno.Utils {
         private static retainHandles;
         static releaseHandles(ids: string): void;
         private static readAsyncClipboard;
+        private static failedRead;
         private static getImageExtension;
         private static beginGeneration;
         private static failDeferredWrite;
@@ -103,6 +104,7 @@ declare namespace Uno.Utils {
         static abortWrite(generation: number): void;
         private static supportsCustomFormat;
         private static tryTranscodeToPng;
+        private static decodeImageAsync;
         static clearAsync(generation: number): Promise<void>;
         static startContentChanged(): void;
         static stopContentChanged(): void;
