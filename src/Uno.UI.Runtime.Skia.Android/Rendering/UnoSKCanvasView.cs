@@ -67,8 +67,29 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 
 	public void TeardownRenderer()
 	{
-		_renderer.ResetContext();
-		_renderer.Dispose();
+		// GLSurfaceView drives IRenderer.OnDrawFrame on its own GL thread, so freeing the Skia and
+		// GL state from the UI thread can race a frame in flight. Queue the teardown there and wait
+		// for it; the renderer refuses to rebuild its context afterwards.
+		using var torndown = new ManualResetEventSlim(false);
+
+		QueueEvent(new Java.Lang.Runnable(() =>
+		{
+			try
+			{
+				_renderer.TeardownOnRenderThread();
+			}
+			finally
+			{
+				torndown.Set();
+			}
+		}));
+
+		if (!torndown.Wait(TimeSpan.FromSeconds(2)) && this.Log().IsEnabled(LogLevel.Warning))
+		{
+			// The GL thread can already be gone (surface destroyed first), in which case the queued
+			// work never runs and its context went away with the thread.
+			this.Log().Warn("The GL thread did not run the renderer teardown within the timeout.");
+		}
 	}
 
 	public void InvalidateRender()
@@ -165,6 +186,7 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 		internal bool HardwareAccelerated => _hardwareAccelerated;
 
 		private bool _firstFrameSignaled;
+		private bool _torndown;
 
 		private GRContext? _context;
 		private GRGlFramebufferInfo _glInfo;
@@ -177,6 +199,13 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 
 		void IRenderer.OnDrawFrame(IGL10? gl)
 		{
+			if (_torndown)
+			{
+				// A frame queued before the teardown ran would rebuild the context below, leaving GL
+				// state behind with nothing left to present it.
+				return;
+			}
+
 			GLES20.GlClear(GLES20.GlColorBufferBit | GLES20.GlDepthBufferBit | GLES20.GlStencilBufferBit);
 
 			// create the contexts if not done already
@@ -301,5 +330,16 @@ internal sealed partial class UnoSKCanvasView : GLSurfaceView, IUnoSkiaRenderVie
 		}
 
 		internal void ResetContext() => FreeContext();
+
+		/// <summary>
+		/// Frees the GL and Skia state from the thread that owns it. Must run on the GL thread,
+		/// which is where every other access to these objects happens.
+		/// </summary>
+		internal void TeardownOnRenderThread()
+		{
+			_torndown = true;
+			FreeContext();
+			Dispose();
+		}
 	}
 }
