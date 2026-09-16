@@ -47,13 +47,25 @@ internal sealed partial class UnoWebGpuMetalView : UIView, IAppleUIKitRenderView
 
 	void IAppleUIKitRenderView.SetOwner(RootViewController owner) => SetOwner(owner);
 
+	public void StopRender()
+	{
+		_stopped = true;
+
+		if (_link is { } link)
+		{
+			link.Paused = true;
+		}
+	}
+
 	public void QueueRender()
 	{
-		if (_link is { } link)
+		if (!_stopped && _link is { } link)
 		{
 			link.Paused = false;
 		}
 	}
+
+	private volatile bool _stopped;
 
 	private void StartRenderThread()
 	{

@@ -314,6 +314,12 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		_renderView?.QueueRender();
 	}
 
+	/// <summary>
+	/// Stops this window's render loop. Its display link lives on a thread of its own and would otherwise keep
+	/// calling back for the lifetime of the process, driving frames into a context that is being torn down.
+	/// </summary>
+	internal void StopRendering() => _renderView?.StopRender();
+
 	public UIElement? RootElement => _xamlRoot?.VisualTree.RootElement;
 
 	public UIView TextInputLayer => _textInputLayer!;

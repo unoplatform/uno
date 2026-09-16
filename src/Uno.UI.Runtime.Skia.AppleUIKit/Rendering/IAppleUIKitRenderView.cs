@@ -9,4 +9,8 @@ internal interface IAppleUIKitRenderView
 	void SetOwner(RootViewController owner);
 
 	void QueueRender();
+
+	/// <summary>Stops driving frames for good. A view whose window is gone would otherwise keep rendering into a
+	/// context being torn down.</summary>
+	void StopRender();
 }

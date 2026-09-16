@@ -23,6 +23,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		private CADisplayLink _link;
 		private Thread? _renderThread;
 		private int _renderRequested;
+		private int _stopped;
 
 		/// <summary>
 		/// Creates a new instance of <see cref="UnoMetalView"/>.
@@ -130,8 +131,19 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 				? new AppleMetalGraphicsContext(device, queue, () => CurrentDrawable)
 				: null;
 
+		public void StopRender()
+		{
+			Volatile.Write(ref _stopped, 1);
+			_link.Paused = true;
+		}
+
 		public void QueueRender()
 		{
+			if (Volatile.Read(ref _stopped) != 0)
+			{
+				return;
+			}
+
 			// Ordered before the un-pause: Draw clears this and then decides whether to pause, so a request that
 			// lands while a frame is in flight is still seen even if its un-pause is overwritten.
 			Volatile.Write(ref _renderRequested, 1);
@@ -155,6 +167,12 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 #if REPORT_FPS
 			_drawFpsLogger.ReportFrame();
 #endif
+
+			if (Volatile.Read(ref _stopped) != 0)
+			{
+				_link.Paused = true;
+				return;
+			}
 
 			// This frame answers every request made so far; anything asked from here on has to keep the link
 			// running, which is why this is cleared before rendering rather than after.
