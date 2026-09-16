@@ -94,6 +94,25 @@ internal sealed class AndroidSkiaNativeElementHostingExtension : ContentPresente
 		}
 	}
 
+	/// <summary>
+	/// Drops the native views of <paramref name="xamlRoot"/>. Closing a window finishes the task
+	/// hosting it rather than unloading its tree, so no presenter detaches them and their entries
+	/// would pin the views — and through them the finished activity — for the life of the process.
+	/// </summary>
+	internal static void ReleaseNativeElements(XamlRoot xamlRoot)
+	{
+		var views = _attachedViews
+			.Where(entry => entry.Value.XamlRoot == xamlRoot)
+			.Select(entry => entry.Key)
+			.ToList();
+
+		foreach (var view in views)
+		{
+			_attachedViews.Remove(view);
+			(view.Parent as ViewGroup)?.RemoveView(view);
+		}
+	}
+
 	public void ChangeNativeElementOpacity(object content, double opacity)
 	{
 		if (content is View view)
