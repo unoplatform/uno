@@ -405,6 +405,8 @@ namespace Windows.ApplicationModel.DataTransfer
 			{
 				ClipboardContentStatus.Denied => throw new UnauthorizedAccessException(
 					"Access to the clipboard was denied by the browser. Reading the clipboard requires user permission or a paste gesture."),
+				ClipboardContentStatus.Failed => throw new InvalidOperationException(
+					"The browser failed to read the clipboard. See the browser console for details."),
 				ClipboardContentStatus.Unavailable => throw new NotSupportedException(
 					"The browser clipboard API is not available in this context. A secure context (HTTPS) is required."),
 				_ => data,

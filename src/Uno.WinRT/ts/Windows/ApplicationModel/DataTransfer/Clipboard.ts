@@ -83,6 +83,7 @@ namespace Uno.Utils {
 		Async = "async",
 		Empty = "empty",
 		Denied = "denied",
+		Failed = "failed",
 		Unavailable = "unavailable",
 	}
 
@@ -422,12 +423,19 @@ namespace Uno.Utils {
 			}
 
 			if (nav.clipboard.read) {
-				const content = Clipboard.emptyContent(ClipboardContentStatus.Async);
+				let items: ClipboardItem[];
 				try {
-					const items = await nav.clipboard.read();
+					items = await nav.clipboard.read();
+				} catch (e) {
+					return Clipboard.failedRead(e);
+				}
 
-					for (const item of items) {
-						for (const type of item.types) {
+				const content = Clipboard.emptyContent(ClipboardContentStatus.Async);
+				for (const item of items) {
+					for (const type of item.types) {
+						// A representation that cannot be loaded is left out rather than failing
+						// the formats that can.
+						try {
 							if (type.startsWith("image/")) {
 								if (!content.image) {
 									const blob = await item.getType(type);
@@ -443,21 +451,16 @@ namespace Uno.Utils {
 									content.texts.push({ type: Clipboard.toManagedType(type), value: value });
 								}
 							}
+						} catch (e) {
+							console.warn(`Clipboard: the '${type}' representation could not be read and was skipped: ${e}`);
 						}
 					}
-
-					if (content.texts.length === 0 && !content.image) {
-						content.status = ClipboardContentStatus.Empty;
-					}
-					return content;
-				} catch (e) {
-					console.error(`Clipboard: failed to read from clipboard: ${e}`);
-					// An image registered before a later representation failed is never handed out.
-					if (content.handles.length > 0) {
-						Clipboard.releaseHandles(content.handles.join(";"));
-					}
-					return Clipboard.emptyContent(ClipboardContentStatus.Denied);
 				}
+
+				if (content.texts.length === 0 && !content.image) {
+					content.status = ClipboardContentStatus.Empty;
+				}
+				return content;
 			}
 
 			// Older engines without read(): plain text is the best we can do.
@@ -469,9 +472,16 @@ namespace Uno.Utils {
 				}
 				return content;
 			} catch (e) {
-				console.error(`Clipboard: failed to read text from clipboard: ${e}`);
-				return Clipboard.emptyContent(ClipboardContentStatus.Denied);
+				return Clipboard.failedRead(e);
 			}
+		}
+
+		// The browser refusing the read (no permission, no gesture, no focus) is reported as a
+		// denial; anything else is a failure the application cannot do anything about.
+		private static failedRead(error: any): ClipboardContent {
+			console.error(`Clipboard: failed to read from clipboard: ${error}`);
+			const denied = error instanceof DOMException && (error.name === "NotAllowedError" || error.name === "SecurityError");
+			return Clipboard.emptyContent(denied ? ClipboardContentStatus.Denied : ClipboardContentStatus.Failed);
 		}
 
 		private static getImageExtension(mimeType: string): string {
@@ -671,7 +681,9 @@ namespace Uno.Utils {
 				textarea.select();
 				Clipboard.copyingWithCommand = true;
 				try {
-					document.execCommand("copy");
+					if (!document.execCommand("copy")) {
+						throw new Error("The browser rejected the copy command.");
+					}
 				} finally {
 					Clipboard.copyingWithCommand = false;
 					document.body.removeChild(textarea);

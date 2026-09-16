@@ -21,6 +21,7 @@ internal static class ClipboardContentStatus
 	public const string Async = "async";
 	public const string Empty = "empty";
 	public const string Denied = "denied";
+	public const string Failed = "failed";
 	public const string Unavailable = "unavailable";
 }
 
