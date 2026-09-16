@@ -40,9 +40,17 @@ public sealed class BoxingCodeFixProvider : CodeFixProvider
 				var generator = SyntaxGenerator.GetGenerator(document);
 				var boxesIdentifier = (ExpressionSyntax)generator.TypeExpression(boxesType).WithAdditionalAnnotations(Simplifier.AddImportsAnnotation);
 
-				if (node is LiteralExpressionSyntax literalExpression)
+				// An explicit boxing is reported on the cast, whose type is object: box its operand instead,
+				// keeping any inner conversion such as (object)(int)value.
+				var valueNode = node is CastExpressionSyntax castExpression ? castExpression.Expression : node;
+				while (valueNode is ParenthesizedExpressionSyntax parenthesizedExpression)
 				{
-					var typeInfo = model.GetTypeInfo(node, ct);
+					valueNode = parenthesizedExpression.Expression;
+				}
+
+				if (valueNode is LiteralExpressionSyntax literalExpression)
+				{
+					var typeInfo = model.GetTypeInfo(valueNode, ct);
 					string? boxClassName = null;
 					string? boxMemberName = null;
 					if (typeInfo.Type!.SpecialType == SpecialType.System_Int32)
@@ -89,9 +97,9 @@ public sealed class BoxingCodeFixProvider : CodeFixProvider
 						return document.WithSyntaxRoot(root.ReplaceNode(node, newNode));
 					}
 				}
-				else if (node is ExpressionSyntax expressionSyntax)
+				else if (valueNode is ExpressionSyntax expressionSyntax)
 				{
-					var typeInfo = model.GetTypeInfo(node, ct);
+					var typeInfo = model.GetTypeInfo(valueNode, ct);
 					if (typeInfo.Type!.SpecialType is SpecialType.System_Int32 or SpecialType.System_Boolean or SpecialType.System_Double ||
 						typeInfo.Type.Name == "RoutedEventFlag")
 					{
