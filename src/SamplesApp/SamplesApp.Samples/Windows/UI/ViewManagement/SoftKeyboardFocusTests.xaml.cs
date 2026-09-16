@@ -11,7 +11,12 @@ namespace UITests.Windows_UI_ViewManagement
 	//  1. Tapping a TextBox must keep the keyboard open (no self-dismiss).
 	//  2. LostFocus must fire when the keyboard is dismissed / focus leaves the field.
 	//  3. The focused field near the bottom must scroll above the on-screen keyboard.
-	// These reproduce only on a real touch device (iPad Safari/Chrome), not desktop or the iOS Simulator.
+	//  4. Moving focus between fields of a side panel must keep the keyboard open and must not let Safari
+	//     pan the page (the panel's ScrollViewer is the only thing allowed to move).
+	//  5. Dragging inside the side panel scrolls the panel, not the whole page.
+	// 1-3 reproduce only on a real touch device (iPad Safari/Chrome). 4-5 also reproduce in the iOS Simulator:
+	// with the field focused, toggle I/O > Keyboard > Connect Hardware Keyboard on and off to force a keyboard
+	// frame change.
 	[Sample("Windows.UI.ViewManagement", Description = "On-device checks for Skia WASM soft-keyboard focus (auto-dismiss, LostFocus, bring-into-view).", IsManualTest = true, IgnoreInSnapshotTests = true)]
 	public sealed partial class SoftKeyboardFocusTests : Page
 	{
@@ -35,6 +40,12 @@ namespace UITests.Windows_UI_ViewManagement
 		{
 			_lostFocusCount++;
 			UpdateFocusState();
+		}
+
+		private void OnPanelFieldGotFocus(object sender, RoutedEventArgs e)
+		{
+			var name = (sender as FrameworkElement)?.Name;
+			PanelFocusTextBlock.Text = $"Focused field: {(string.IsNullOrEmpty(name) ? sender.GetType().Name : name)}   Panel offset: {SidePanelScrollViewer.VerticalOffset:0}";
 		}
 
 		private void UpdateFocusState()
