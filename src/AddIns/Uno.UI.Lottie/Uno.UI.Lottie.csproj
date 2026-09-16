@@ -27,14 +27,6 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
 
-		<!-- Two names for one descriptor: ILLink reads the first, and the Apple SDK's linker only reads a resource
-		     named after the assembly (the same pair of hoops Uno.UI.MSAL jumps through). -->
-		<EmbeddedResource Include="LinkerDefinition.xml">
-			<LogicalName>ILLink.Descriptors.xml</LogicalName>
-		</EmbeddedResource>
-		<EmbeddedResource Include="LinkerDefinition.Apple.xml">
-			<LogicalName>$(AssemblyName).xml</LogicalName>
-		</EmbeddedResource>
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

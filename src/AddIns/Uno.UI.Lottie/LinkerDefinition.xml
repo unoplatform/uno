@@ -1,8 +1,0 @@
-﻿<linker>
-	<!-- The host builder finds this type by name (UnoPlatformHostBuilder.TryLightUpLottieRenderer), so nothing
-	     references it statically and a trimmed head (iOS/tvOS publish with MtouchLink=Full) drops it, leaving
-	     Lottie playback silently unavailable. -->
-	<assembly fullname="Uno.UI.Lottie">
-		<type fullname="Uno.UI.Lottie.SkottieLottieRenderer" preserve="all" />
-	</assembly>
-</linker>
