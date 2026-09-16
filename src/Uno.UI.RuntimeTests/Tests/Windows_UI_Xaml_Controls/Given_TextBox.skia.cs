@@ -49,6 +49,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24526")]
 		public async Task When_Focused_In_Browser_Then_Hidden_Input_Tracks_TextBox()
 		{
 			var SUT = new TextBox
@@ -58,34 +59,66 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				HorizontalAlignment = HorizontalAlignment.Left,
 				VerticalAlignment = VerticalAlignment.Top,
 			};
-			await UITestHelper.Load(new Grid { Width = 400, Height = 400, Children = { SUT } });
 
-			SUT.Focus(FocusState.Programmatic);
-			await UITestHelper.WaitFor(() => GetHiddenInputPlacement() == "tracking", timeoutMS: 3000, message: "hidden input created with the tracking placement");
+			try
+			{
+				await UITestHelper.Load(new Grid { Width = 400, Height = 400, Children = { SUT } });
 
-			var bounds = SUT.TransformToVisual(null).TransformBounds(new Rect(0, 0, SUT.ActualWidth, SUT.ActualHeight));
-			await UITestHelper.WaitFor(() => bounds.Contains(GetHiddenInputPosition()), timeoutMS: 3000, message: $"hidden input positioned inside the focused TextBox {bounds}");
+				SUT.Focus(FocusState.Programmatic);
+				await UITestHelper.WaitFor(() => GetHiddenInputPlacement() == "tracking", timeoutMS: 3000, message: "hidden input created with the tracking placement");
 
-			SUT.Margin = new Thickness(40, 200, 0, 0);
-			await WindowHelper.WaitForIdle();
+				var bounds = SUT.TransformToVisual(null).TransformBounds(new Rect(0, 0, SUT.ActualWidth, SUT.ActualHeight));
+				await UITestHelper.WaitFor(() => Covers(bounds, GetHiddenInputRect()), timeoutMS: 3000, message: $"hidden input placed and sized inside the focused TextBox {bounds}");
 
-			var moved = SUT.TransformToVisual(null).TransformBounds(new Rect(0, 0, SUT.ActualWidth, SUT.ActualHeight));
-			Assert.IsTrue(moved.Y >= bounds.Y + 100, $"TextBox should have moved down, was {bounds}, now {moved}");
-			await UITestHelper.WaitFor(() => moved.Contains(GetHiddenInputPosition()), timeoutMS: 3000, message: $"hidden input followed the TextBox to {moved}");
+				SUT.Margin = new Thickness(40, 200, 0, 0);
+				await WindowHelper.WaitForIdle();
+
+				var moved = SUT.TransformToVisual(null).TransformBounds(new Rect(0, 0, SUT.ActualWidth, SUT.ActualHeight));
+				Assert.IsTrue(moved.Y >= bounds.Y + 100, $"TextBox should have moved down, was {bounds}, now {moved}");
+				await UITestHelper.WaitFor(() => Covers(moved, GetHiddenInputRect()), timeoutMS: 3000, message: $"hidden input followed the TextBox to {moved}");
+			}
+			finally
+			{
+				// The runtime-test engine only unloads test content when IsUnloadingTestContent is set, which the
+				// CI/headless path does not: leaving a focused TextBox would keep the shared input in the DOM for
+				// whatever runs next.
+				WindowHelper.WindowContent = null;
+				await WindowHelper.WaitForIdle();
+			}
 		}
+
+		// The hidden input is placed over the TextBox's inner text block, so it sits within the TextBox bounds
+		// and is smaller than them by the padding and border.
+		private static bool Covers(Rect textBox, Rect input)
+			=> input.Width > 0 && input.Height > 0
+				&& input.Width <= textBox.Width + 1 && input.Height <= textBox.Height + 1
+				&& input.X >= textBox.X - 1 && input.Y >= textBox.Y - 1
+				&& input.Right <= textBox.Right + 1 && input.Bottom <= textBox.Bottom + 1;
 
 		private static string GetHiddenInputPlacement()
 			=> InvokeBrowserJs("(function(){const e = document.getElementById('uno-input'); return e ? (e.dataset.unoPlacement ?? '') : '';})()");
 
-		private static Point GetHiddenInputPosition()
+		// Reads the rendered rect rather than the inline styles, so a CSS-level placement or sizing regression
+		// is caught too.
+		private static Rect GetHiddenInputRect()
 		{
-			var raw = InvokeBrowserJs("(function(){const e = document.getElementById('uno-input'); return e ? parseFloat(e.style.left) + ',' + parseFloat(e.style.top) : '';})()");
+			var raw = InvokeBrowserJs("(function(){const e = document.getElementById('uno-input'); if (!e) { return ''; } const r = e.getBoundingClientRect(); return r.x + ',' + r.y + ',' + r.width + ',' + r.height;})()");
 			var parts = raw.Split(',');
-			return parts.Length == 2
-				&& double.TryParse(parts[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var x)
-				&& double.TryParse(parts[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var y)
-				? new Point(x, y)
-				: new Point(double.NaN, double.NaN);
+			if (parts.Length != 4)
+			{
+				return default;
+			}
+
+			var values = new double[4];
+			for (var i = 0; i < 4; i++)
+			{
+				if (!double.TryParse(parts[i], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out values[i]))
+				{
+					return default;
+				}
+			}
+
+			return new Rect(values[0], values[1], values[2], values[3]);
 		}
 
 		[TestMethod]
