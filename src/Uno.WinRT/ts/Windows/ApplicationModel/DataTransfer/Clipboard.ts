@@ -244,6 +244,10 @@ namespace Uno.Utils {
 				}
 			}
 
+			// No usable entry does not mean an empty clipboard: representations the DataTransfer
+			// cannot carry, such as web custom formats, are invisible here, so what is known of
+			// the content stays known. An emptied clipboard is caught by the copy, cut and focus
+			// events instead.
 			if (texts.length === 0 && files.length === 0) {
 				return null;
 			}
@@ -727,7 +731,9 @@ namespace Uno.Utils {
 			if (nav.clipboard) {
 				// Browsers cannot truly empty the clipboard; an empty text write is the closest
 				// equivalent. The cleared state is kept for in-process reads even when the
-				// browser rejects the write (no user gesture).
+				// browser rejects the write (no user gesture). Without the clipboard API there
+				// is nothing to fall back to: the copy command copies nothing from an empty
+				// selection.
 				await Clipboard.commitWriteAsync(generation, () => nav.clipboard.writeText(""));
 			}
 		}

@@ -743,6 +743,40 @@ partial class Given_Clipboard
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(Include, Wasm)]
+	public async Task When_Clipboard_Read_Is_Denied()
+	{
+#if HAS_UNO
+		InvokeJs(
+			"""
+			const denied = () => Promise.reject(new DOMException('Read permission denied.', 'NotAllowedError'));
+			navigator.clipboard.read = denied;
+			navigator.clipboard.readText = denied;
+			// An in-page copy leaves the content unknown, so the read goes to the browser.
+			document.dispatchEvent(new ClipboardEvent('copy', { bubbles: true }));
+			return 'ok';
+			""");
+		try
+		{
+			// The formats are advertised, and a denied read is told apart from empty content
+			// by the exception it surfaces.
+			var view = Clipboard.GetContent();
+			Assert.IsTrue(view.Contains(StandardDataFormats.Text));
+
+			var exception = await Assert.ThrowsExactlyAsync<InvalidOperationException>(async () => await view.GetTextAsync());
+			Assert.IsInstanceOfType<UnauthorizedAccessException>(exception.InnerException);
+		}
+		finally
+		{
+			InvokeJs("delete navigator.clipboard.read; delete navigator.clipboard.readText; return 'ok';");
+		}
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
 	public async Task When_Paste_Handled_By_Target_Raises_ContentChanged()
 	{
 #if HAS_UNO
