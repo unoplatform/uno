@@ -90,13 +90,28 @@ public partial class CompositionTarget
 				sf.damage?.Dispose();
 			}
 
-			if (target.ContentRoot?.VisualTree?.RootElement?.Visual is { } rootVisual)
+			// The hosts assign Renderer from their rendering thread, and walking the tree from there races the UI
+			// thread building and tearing down visuals mid-test (a null child, then a NullReferenceException deep
+			// in the walk). A renderer change is rare, so costing it one frame of stale recordings is cheap.
+			if (NativeDispatcher.Main.HasThreadAccess)
 			{
-				rootVisual.InvalidatePaintRecursive();
+				InvalidateRecordingsCore(target);
 			}
-
-			((ICompositionTarget)target).RequestNewFrame();
+			else
+			{
+				NativeDispatcher.Main.Enqueue(() => InvalidateRecordingsCore(target), NativeDispatcherPriority.Normal);
+			}
 		}
+	}
+
+	private static void InvalidateRecordingsCore(CompositionTarget target)
+	{
+		if (target.ContentRoot?.VisualTree?.RootElement?.Visual is { } rootVisual)
+		{
+			rootVisual.InvalidatePaintRecursive();
+		}
+
+		((ICompositionTarget)target).RequestNewFrame();
 	}
 
 	private static readonly long _start = Stopwatch.GetTimestamp();
