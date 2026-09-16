@@ -216,13 +216,10 @@
 	},
 	{
 		"group": "AndroidXBrowser",
-		"version": "1.8.0.11",
+		"version": "1.10.0.1",
 		"packages": [
 			"Xamarin.AndroidX.Browser"
-		],
-		"versionOverride": {
-			"net11.0": "1.10.0.1"
-		}
+		]
 	},
 	{
 		"group": "AndroidXSwipeRefreshLayout",
