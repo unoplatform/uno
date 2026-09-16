@@ -159,8 +159,6 @@
 			// a negative left would be scrollable overflow in a right-to-left document.
 			input.style.top = BrowserInvisibleTextBoxViewExtension.keepsInputOffscreen ? BrowserInvisibleTextBoxViewExtension.offscreenTop : "0px";
 			input.style.left = "0px";
-			// Inspectable from the Web Inspector when diagnosing keyboard or IME placement reports.
-			input.dataset.unoPlacement = BrowserInvisibleTextBoxViewExtension.keepsInputOffscreen ? "offscreen" : "tracking";
 			input.value = text;
 
 			input.setAttribute("inputmode", inputMode);
@@ -369,6 +367,12 @@
 			}
 
 			BrowserInvisibleTextBoxViewExtension.currentHandle = Number(handle);
+
+			// Set for whichever element ends up live: the shared input is reused across TextBoxes, so tagging
+			// it only on creation leaves the policy unreported for every retargeted entry session. Inspectable
+			// from the Web Inspector when diagnosing keyboard or IME placement reports.
+			BrowserInvisibleTextBoxViewExtension.inputElement.dataset.unoPlacement =
+				BrowserInvisibleTextBoxViewExtension.keepsInputOffscreen ? "offscreen" : "tracking";
 
 			// The retarget path keeps the input focused, so no focusin fires and the trailing-click
 			// guard never arms; arm it here for both paths (see installTrailingClickGuard).
