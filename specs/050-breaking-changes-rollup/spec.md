@@ -325,7 +325,7 @@ _Danger 4-5. Ship last, never batched — each lands as its own separately-stabi
   - Files: `src/Uno.UI/UI/Xaml/Controls/Flyout/FlyoutBase.cs`
 - [x] **BC26** — `DependencyObject` becomes a class  `d4·L` · #17099 · PR #23537, #23702 · **[impact spec](bc26-dependencyobject-as-class.md)**
   - Landed as a class on every target; `DependencyObjectGenerator` was deleted outright rather than trimmed, and phase 2 (#23702) went on to drop `DependencyObjectStore` and fold its storage onto `DependencyObject`.
-  - Files: `src/Uno.UI/UI/Xaml/DependencyObject.cs`, `src/Uno.UI/UI/Xaml/DependencyObject.Store.cs`, `src/Uno.UI/UI/Xaml/DependencyObject.Binder.cs`, `src/Uno.UI/UI/Xaml/UIElement.skia.cs`
+  - Files: `src/Uno.UI/UI/Xaml/DependencyObject.cs`, `src/Uno.UI/UI/Xaml/DependencyObject.Store.cs`, `src/Uno.UI/UI/Xaml/DependencyObject.Binder.cs`, `src/Uno.UI/UI/Xaml/UIElement.cs`
 - [x] **BC14** — `UserControl` inherits `Control`  `d5·L` · PR #23566 · **[impact spec](bc14-usercontrol-to-control.md)**
   - Reparented to match WinUI, with its own `UIElement`-typed `Content`. `ContentControl` itself was not touched.
   - Files: `src/Uno.UI/UI/Xaml/Controls/UserControl/UserControl.cs`, `src/Uno.UI/UI/Xaml/Controls/UserControl/UserControl.Properties.cs`, `src/Uno.UI/UI/Xaml/IFrameworkElement.cs`
