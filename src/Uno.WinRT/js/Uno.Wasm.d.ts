@@ -75,6 +75,7 @@ declare namespace Uno.Utils {
         private static readonly pasteWaitTimeoutMs;
         private static readonly pasteShortcutCorrelationMs;
         static setup(): void;
+        private static copyingWithCommand;
         private static invalidateKnownContent;
         private static onKeyDownCaptured;
         private static onPasteCaptured;

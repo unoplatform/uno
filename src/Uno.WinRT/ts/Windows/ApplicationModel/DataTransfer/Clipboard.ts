@@ -157,7 +157,14 @@ namespace Uno.Utils {
 			});
 		}
 
+		// Set while the copy-command fallback runs: the copy event it dispatches is this
+		// write's own doing, not a change to react to.
+		private static copyingWithCommand = false;
+
 		private static invalidateKnownContent() {
+			if (Clipboard.copyingWithCommand) {
+				return;
+			}
 			Clipboard.ownContent = null;
 			Clipboard.lastPaste = null;
 		}
@@ -658,14 +665,12 @@ namespace Uno.Utils {
 				textarea.value = text ? text.value : "";
 				document.body.appendChild(textarea);
 				textarea.select();
-				document.execCommand("copy");
-				document.body.removeChild(textarea);
-
-				// execCommand dispatched a copy event, which the invalidation listener handled;
-				// restore the cache it just cleared (unless a handler replaced it meanwhile).
-				if (generation === Clipboard.latestWriteGeneration) {
-					Clipboard.ownContent = ownContent;
-					Clipboard.blurredSinceKnownContent = !document.hasFocus();
+				Clipboard.copyingWithCommand = true;
+				try {
+					document.execCommand("copy");
+				} finally {
+					Clipboard.copyingWithCommand = false;
+					document.body.removeChild(textarea);
 				}
 			});
 		}
@@ -749,6 +754,9 @@ namespace Uno.Utils {
 		}
 
 		private static onClipboardChanged() {
+			if (Clipboard.copyingWithCommand) {
+				return;
+			}
 			if (!Clipboard.dispatchContentChanged) {
 				if ((<any>globalThis).DotnetExports !== undefined) {
 					Clipboard.dispatchContentChanged = (<any>globalThis).DotnetExports.Uno.Windows.ApplicationModel.DataTransfer.Clipboard.DispatchContentChanged;
