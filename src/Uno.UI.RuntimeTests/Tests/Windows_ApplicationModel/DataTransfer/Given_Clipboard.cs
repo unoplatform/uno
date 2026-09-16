@@ -743,6 +743,130 @@ partial class Given_Clipboard
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(Include, Wasm)]
+	public async Task When_Custom_Format_Is_Standard_Mime_Type()
+	{
+#if HAS_UNO
+		InstallClipboardWriteRecorder();
+		try
+		{
+			// A custom format named like a standard representation would collide with it on
+			// both the system clipboard and the read-back; it is left out.
+			var package = new DataPackage();
+			package.SetText("standard");
+			package.SetData("text/plain", "custom");
+
+			Clipboard.SetContent(package);
+
+			await WaitForClipboardAsync(() => GetRecordedClipboardWrites().Contains("item:text/plain"));
+
+			CollectionAssert.AreEqual(new[] { "item:text/plain" }, GetRecordedClipboardWrites());
+			var view = Clipboard.GetContent();
+			Assert.IsFalse(view.Contains("text/plain"));
+			Assert.AreEqual("standard", await view.GetTextAsync());
+		}
+		finally
+		{
+			RemoveClipboardWriteRecorder();
+		}
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
+	public async Task When_Bitmap_Transcoded_Without_OffscreenCanvas()
+	{
+#if HAS_UNO
+		InstallClipboardWriteRecorder();
+		InvokeJs("window.__unoOffscreenCanvas = window.OffscreenCanvas; window.OffscreenCanvas = undefined; window.createImageBitmap = undefined; return 'ok';");
+		try
+		{
+			// Engines without OffscreenCanvas still get the bitmap as PNG, through a canvas element.
+			var package = new DataPackage();
+			package.SetText(TestString);
+			package.SetBitmap(await ToRAReferenceAsync(Convert.FromBase64String(TestBmpBase64)));
+
+			Clipboard.SetContent(package);
+
+			await WaitForClipboardAsync(() => GetRecordedClipboardWrites().Length > 0);
+			CollectionAssert.AreEqual(new[] { "item:image/png,text/plain" }, GetRecordedClipboardWrites());
+		}
+		finally
+		{
+			InvokeJs("window.OffscreenCanvas = window.__unoOffscreenCanvas; delete window.__unoOffscreenCanvas; return 'ok';");
+			RemoveClipboardWriteRecorder();
+		}
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
+	public async Task When_Clipboard_Representation_Fails_To_Read()
+	{
+#if HAS_UNO
+		InvokeJs(
+			"""
+			navigator.clipboard.read = () => Promise.resolve([{
+				types: ['text/plain', 'text/html'],
+				getType: type => type === 'text/html'
+					? Promise.reject(new DOMException('The representation is gone.', 'DataError'))
+					: Promise.resolve(new Blob(['from-browser'], { type: 'text/plain' })),
+			}]);
+			document.dispatchEvent(new ClipboardEvent('copy', { bubbles: true }));
+			return 'ok';
+			""");
+		try
+		{
+			// One representation failing to load must not take the others down with it.
+			var view = Clipboard.GetContent();
+			Assert.AreEqual("from-browser", await view.GetTextAsync());
+			Assert.AreEqual("", await view.GetHtmlFormatAsync());
+		}
+		finally
+		{
+			InvokeJs("delete navigator.clipboard.read; return 'ok';");
+		}
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
+	public async Task When_Clipboard_Read_Fails()
+	{
+#if HAS_UNO
+		InvokeJs(
+			"""
+			navigator.clipboard.read = () => Promise.reject(new DOMException('The clipboard is unreadable.', 'DataError'));
+			document.dispatchEvent(new ClipboardEvent('copy', { bubbles: true }));
+			return 'ok';
+			""");
+		try
+		{
+			// A read failing for a reason other than permission is not reported as a denial.
+			var view = Clipboard.GetContent();
+			var exception = await Assert.ThrowsExactlyAsync<InvalidOperationException>(async () => await view.GetTextAsync());
+			Assert.IsNotInstanceOfType<UnauthorizedAccessException>(exception.InnerException);
+		}
+		finally
+		{
+			InvokeJs("delete navigator.clipboard.read; return 'ok';");
+		}
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
 	public async Task When_Clipboard_Read_Is_Denied()
 	{
 #if HAS_UNO
@@ -965,7 +1089,15 @@ partial class Given_Clipboard
 				// Like a browser, the write completes once every representation has resolved and
 				// fails if one of them rejects.
 				for (const item of items) {
-					await Promise.all(Array.from(item.types).map(type => item.getType(type)));
+					const blobs = await Promise.all(Array.from(item.types).map(type => item.getType(type)));
+					const png = blobs[Array.from(item.types).indexOf('image/png')];
+					if (png) {
+						const head = new Uint8Array(await png.slice(0, 8).arrayBuffer());
+						if (png.type !== 'image/png' || [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A].some((b, i) => head[i] !== b)) {
+							window.__unoClipboardWrites.push('item:invalid-png');
+							return;
+						}
+					}
 				}
 				if ({{writeDelayMs}} > 0) {
 					await new Promise(resolve => setTimeout(resolve, {{writeDelayMs}}));
