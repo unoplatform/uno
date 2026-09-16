@@ -181,53 +181,38 @@
 	},
 	{
 		"group": "AndroidMaterial",
-		"version": "1.12.0.5",
+		"version": "1.14.0.6",
 		"packages": [
 			"Xamarin.Google.Android.Material"
-		],
-		"versionOverride": {
-			"net11.0": "1.14.0.5"
-		}
+		]
 	},
 	{
 		"group": "AndroidXSplashScreen",
-		"version": "1.0.1.14",
+		"version": "1.2.0.3",
 		"packages": [
 			"Xamarin.AndroidX.Core.SplashScreen"
-		],
-		"versionOverride": {
-			"net11.0": "1.2.0.3"
-		}
+		]
 	},
 	{
 		"group": "AndroidXAppCompat",
-		"version": "1.7.1.1",
+		"version": "1.8.0",
 		"packages": [
 			"Xamarin.AndroidX.AppCompat"
-		],
-		"versionOverride": {
-			"net11.0": "1.7.1.4"
-		}
+		]
 	},
 	{
 		"group": "AndroidXRecyclerView",
-		"version": "1.4.0.5",
+		"version": "1.4.0.6",
 		"packages": [
 			"Xamarin.AndroidX.RecyclerView"
-		],
-		"versionOverride": {
-			"net11.0": "1.4.0.6"
-		}
+		]
 	},
 	{
 		"group": "AndroidXActivity",
-		"version": "1.12.4.1",
+		"version": "1.13.0.1",
 		"packages": [
 			"Xamarin.AndroidX.Activity"
-		],
-		"versionOverride": {
-			"net11.0": "1.13.0.1"
-		}
+		]
 	},
 	{
 		"group": "AndroidXBrowser",
@@ -241,13 +226,10 @@
 	},
 	{
 		"group": "AndroidXSwipeRefreshLayout",
-		"version": "1.2.0.2",
+		"version": "1.2.0.3",
 		"packages": [
 			"Xamarin.AndroidX.SwipeRefreshLayout"
-		],
-		"versionOverride": {
-			"net11.0": "1.2.0.3"
-		}
+		]
 	},
 	{
 		"group": "AndroidXLeanback",
@@ -304,14 +286,11 @@
 	},
 	{
 		"group": "AndroidXCollection",
-		"version": "1.5.0.5",
+		"version": "1.6.0.1",
 		"packages": [
 			"Xamarin.AndroidX.Collection",
 			"Xamarin.AndroidX.Collection.Ktx"
-		],
-		"versionOverride": {
-			"net11.0": "1.6.0.1"
-		}
+		]
 	},
 	{
 		"group": "Maui",
