@@ -68,6 +68,8 @@ These load **automatically** when you touch matching files — you don't invoke 
 | `.reference.cs` | Reference implementation |
 | `.crossruntime.cs` | Skia + WebAssembly + Reference (shared) |
 
+Only projects that build per-platform variants compile the platform suffixes: the WinRT layer (`Uno.WinRT`, `Uno.Foundation`, `Uno.UI.Dispatching`) and platform-specific runtime or add-in projects. `Uno.UI` builds once, for Skia, so a `.Android.cs`, `.UIKit.cs` or `.wasm.cs` partial there is never compiled.
+
 ### Key Source Directories
 
 - `src/Uno.UI/` - Core UI framework (WinUI controls, layout, XAML runtime)
@@ -143,27 +145,22 @@ dotnet test Uno.UI.UnitTests/Uno.UI.UnitTests.csproj    # Unit tests (40-60s)
 
 ### Platform Abstraction
 
-Single C#/XAML codebase → WinUI 3 API → Platform-specific runtimes (Skia, WebAssembly, Native)
+Single C#/XAML codebase → WinUI 3 API → Skia-rendered UI, hosted by a Skia runtime per platform (Desktop Win32/macOS/X11/framebuffer, Android, iOS/tvOS, WebAssembly)
 
-### Rendering Engines
+### Rendering Engine
 
-- **Skia**: Cross-platform (Desktop Win32, macOS, Linux, Skia Android/iOS)
-- **Native**: Platform controls (UIKit, Android Views, DOM elements)
+- **Skia** renders the UI on every target: Desktop Win32, macOS and Linux, plus Android, iOS/tvOS and WebAssembly.
+- The native renderers (Android Views, UIKit, WASM DOM) were removed in 7.0. A native view can still be embedded alongside the Skia tree through the host embedding APIs (`doc/articles/native-views.md`).
 
-### Development scope: Skia-first (IMPORTANT)
+### Development scope: Skia-only UI (IMPORTANT)
 
-**Unless a task explicitly states otherwise, new features and enhancements target the Skia targets only** (Desktop Win32/macOS/Linux and Skia-on-Android/iOS/WASM). The **native targets** — native Android Views, native iOS/UIKit, WASM DOM — are **maintenance-only**: don't build new features for them, but **don't break them either** (keep them compiling and behaving as-is).
+**The UI layer (`Uno.UI` and everything built on it) is Skia-only.** There are no native UI renderers to maintain or extend. Don't reintroduce native-view inheritance, DOM rendering or per-platform UI partials. Put platform-specific UI behavior behind `OperatingSystem.IsX()` checks or `ApiExtensibility`, as described in `.claude/rules/platform-targeting.md`.
 
-This applies to the **UI rendering layer** (`Uno.UI` native views), *not* to platform APIs. **Platform-specific non-UI WinRT APIs (in `Uno.WinRT`/`Uno.Foundation`) are still actively enhanced**, because the Skia targets compile and consume those same per-platform implementations (e.g. Skia-on-Android uses the Android implementation of a file picker, sensor, contacts, etc.).
+This covers the UI rendering layer, *not* platform APIs. **Platform-specific non-UI WinRT APIs (in `Uno.WinRT`/`Uno.Foundation`) keep per-platform implementations and are still actively enhanced**, because the Skia targets consume them (e.g. Skia-on-Android uses the Android implementation of a file picker, sensor, contacts, etc.).
 
 ### Platform Base Classes
 
-| Platform | Inheritance |
-|----------|-------------|
-| Android native | `ViewGroup` → `UnoViewGroup` (Java) → `BindableView` → `UIElement` |
-| iOS native | `UIView` → `BindableUIView` → `UIElement` |
-| WebAssembly native | UIElements map to DOM elements (default: "div") |
-| Skia | `IRenderer` interface for rendering pipeline |
+`UIElement` derives from `DependencyObject` on every target; there is no native view base class. Each element's composition `Visual` is drawn onto a Skia surface supplied by the platform's host.
 
 ### XAML Compilation
 
@@ -273,7 +270,7 @@ Add tests to `Uno.UI.RuntimeTests`. Key helpers:
 ### Partial Classes
 
 Extensive use for:
-- Platform-specific code: `MyControl.Android.cs`, `MyControl.iOS.cs`
+- Platform-specific code in per-platform projects: `MyApi.Android.cs`, `MyApi.UIKit.cs`
 - Generated code: `MyPage.xaml.g.cs`
 - Logical separation: `MyControl.Properties.cs` for DependencyProperties
 
