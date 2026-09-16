@@ -114,6 +114,11 @@ public partial class CompositionTarget
 			else if (_renderedAheadOfTime)
 			{
 				_renderRequestedAfterAheadOfTimePaint = true;
+
+				// Still ask for a frame. Clearing this state depends on one arriving to run the render callback,
+				// and the only other request is the one the ahead-of-time paint made, so if that is lost nothing
+				// asks again and rendering waits for the stall recovery instead.
+				shouldEnqueue = true;
 			}
 			AssertRenderStateMachine();
 			LogRenderState();
