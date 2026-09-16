@@ -317,21 +317,21 @@ _Danger 3-4. Heavier multi-file changes: remove the legacy templated-parent mech
 
 _Danger 4-5. Ship last, never batched — each lands as its own separately-stabilized PR with full runtime-test passes. See the dedicated spec per item for Pros/Cons and impact._
 
-- [ ] **BC58** — `DataContext` on `FrameworkElement` only  `d4·M` · #13201 · **[impact spec](bc58-datacontext-frameworkelement-only.md)**
-  - Adjust signature to match WinUI.
-  - Files: `src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs`, `src/Uno.UI/UI/Xaml/DependencyObjectStore.Binder.cs`, `src/Uno.UI.UnitTests/DependencyProperty/Given_DependencyProperty.DataContext.cs`
-- [ ] **BC54** — `FlyoutBase.DataContext` -> non-public  `d4·L` · #12491
-  - Keep `DataContext` internal so `FlyoutBase`->`Popup` forwarding still works; hide only the public surface. **Folded into the BC58 spec.**
-  - Files: `src/SourceGenerators/Uno.UI.SourceGenerators/DependencyObject/DependencyObjectGenerator.cs`, `src/Uno.UI/UI/Xaml/Controls/Flyout/FlyoutBase.cs`, `src/Uno.UI/UI/Xaml/DependencyObjectStore.Binder.cs`
+- [x] **BC58** — `DataContext` on `FrameworkElement` only  `d4·M` · #13201 · PR #23547 · **[impact spec](bc58-datacontext-frameworkelement-only.md)**
+  - Declared once on `FrameworkElement` instead of being generated onto every `DependencyObject`. `{Binding}` on a non-`FrameworkElement` object still resolves through its inheritance context.
+  - Files: `src/Uno.UI/UI/Xaml/FrameworkElement.DataContext.cs`, `src/Uno.UI/UI/Xaml/Controls/Flyout/FlyoutBase.cs`, `src/Uno.UI.RuntimeTests/Tests/Windows_UI_Xaml/Given_NonFE_DataContextBinding.cs`, `build/PackageDiffIgnore.xml`
+- [x] **BC54** — `FlyoutBase.DataContext` -> non-public  `d4·L` · #12491 · PR #23547
+  - Resolved by BC58. `FlyoutBase` no longer has a `DataContext`; instead of the planned internal `FlyoutBase`->`Popup` forwarding, the placement target's `DataContext` is copied onto the presenter when the flyout opens and cleared when it closes, as in WinUI. **Folded into the BC58 spec.**
+  - Files: `src/Uno.UI/UI/Xaml/Controls/Flyout/FlyoutBase.cs`
 - [x] **BC26** — `DependencyObject` becomes a class  `d4·L` · #17099 · PR #23537, #23702 · **[impact spec](bc26-dependencyobject-as-class.md)**
   - Landed as a class on every target; `DependencyObjectGenerator` was deleted outright rather than trimmed, and phase 2 (#23702) went on to drop `DependencyObjectStore` and fold its storage onto `DependencyObject`.
   - Files: `src/Uno.UI/UI/Xaml/DependencyObject.cs`, `src/Uno.UI/UI/Xaml/DependencyObject.Store.cs`, `src/Uno.UI/UI/Xaml/DependencyObject.Binder.cs`, `src/Uno.UI/UI/Xaml/UIElement.skia.cs`
-- [ ] **BC14** — `UserControl` inherits `Control`  `d5·L` · **[impact spec](bc14-usercontrol-to-control.md)**
-  - Reparent to match WinUI.
-  - Files: `src/Uno.UI/UI/Xaml/Controls/UserControl/UserControl.cs`, `src/Uno.UI/UI/Xaml/Controls/Page/Page.cs`, `src/Uno.UI/UI/Xaml/Controls/ContentControl/ContentControl.cs`
-- [ ] **BC38** — Move `Background` `FrameworkElement` -> `Control`  `d4·L` · **[impact spec](bc38-background-to-control.md)**
-  - Reparent to match WinUI.
-  - Files: `src/Uno.UI/UI/Xaml/FrameworkElement.Interface.skia.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.Interface.wasm.cs`, `src/Uno.UI/UI/Xaml/FrameworkElement.Interface.reference.cs`
+- [x] **BC14** — `UserControl` inherits `Control`  `d5·L` · PR #23566 · **[impact spec](bc14-usercontrol-to-control.md)**
+  - Reparented to match WinUI, with its own `UIElement`-typed `Content`. `ContentControl` itself was not touched.
+  - Files: `src/Uno.UI/UI/Xaml/Controls/UserControl/UserControl.cs`, `src/Uno.UI/UI/Xaml/Controls/UserControl/UserControl.Properties.cs`, `src/Uno.UI/UI/Xaml/IFrameworkElement.cs`
+- [x] **BC38** — Move `Background` `FrameworkElement` -> `Control`  `d4·L` · PR #23573 · **[impact spec](bc38-background-to-control.md)**
+  - Removed from `FrameworkElement` and declared individually on the WinUI declarers (`Control`, `Panel`, `Border`, `ContentPresenter`, `ItemsRepeater`, `ScrollPresenter`).
+  - Files: `src/Uno.UI/UI/Xaml/IFrameworkElement.cs`, `src/Uno.UI/UI/Xaml/Controls/Control/Control.cs`, `src/Uno.UI/UI/Xaml/Controls/Panel/Panel.cs`, `src/Uno.UI/UI/Xaml/Controls/Border/Border.cs`
 
 ---
 

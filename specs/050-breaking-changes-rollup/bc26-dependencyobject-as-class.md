@@ -14,7 +14,9 @@ The interface only ever existed because **native mobile `UIElement` had to inher
 - `UIElement.skia.cs` / `.wasm.cs` / `.reference.cs` already declared `: DependencyObject`. Only the native partials inherited native views.
 - `DependencyObjectGenerator` emitted the store mixin into every DO-derived class.
 
-## What changes
+## Original plan (superseded)
+
+_Kept for the record. Step 1 shipped. Step 2 did not: `DependencyObjectGenerator` was deleted rather than trimmed. `DependencyObjectStore.cs` from step 3 was removed in phase 2. See **Decision** and **As implemented**._
 
 1. Convert `DependencyObject` from interface → class (a `partial class` carrying the store and `GetValue`/`SetValue`).
 2. Rework `DependencyObjectGenerator` to **stop emitting** the parts now provided by the base class, while keeping per-type generated bits that genuinely must stay per-type (e.g. property registrations).
@@ -50,7 +52,7 @@ The interface only ever existed because **native mobile `UIElement` had to inher
 - Landed via unoplatform/uno#23537 and #23702, the latter being the `DependencyObjectStore` drop.
 - Consumer- and contributor-facing docs updated: `doc/articles/api-differences.md`, `doc/articles/uno-development/uno-internals-overview.md`, `AGENTS.md`, `.claude/rules/dependency-properties.md`, `.claude/agents/architect.md`.
 
-## Validation strategy
+## Validation strategy (original plan)
 
 - Full `Uno.UI.RuntimeTests` pass on Skia Desktop + WASM; DP precedence, inheritance, weak-event, and binding suites are the canaries.
 - `Uno.UI.SourceGenerators.Tests` golden regeneration + review of a representative generated control before/after.
@@ -58,4 +60,4 @@ The interface only ever existed because **native mobile `UIElement` had to inher
 
 ## Sequencing
 
-Orthogonal to **BC58** (DataContext-on-FE-only) in principle, but both rewrite `DependencyObjectGenerator` output — **do BC58 first** to settle generator emission, which de-risks this change. Land as its own stabilized PR; never batch.
+Orthogonal to **BC58** (DataContext-on-FE-only) in principle, but both rewrite `DependencyObjectGenerator` output — **do BC58 first** to settle generator emission, which de-risks this change. Land as its own stabilized PR; never batch. _(This order held: BC58's #23547 merged before #23537.)_
