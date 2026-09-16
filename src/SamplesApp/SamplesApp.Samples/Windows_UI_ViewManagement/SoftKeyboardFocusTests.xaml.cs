@@ -20,6 +20,7 @@ namespace UITests.Windows_UI_ViewManagement
 	[Sample("Windows.UI.ViewManagement", Description = "On-device checks for Skia WASM soft-keyboard focus (auto-dismiss, LostFocus, bring-into-view).", IsManualTest = true, IgnoreInSnapshotTests = true)]
 	public sealed partial class SoftKeyboardFocusTests : Page
 	{
+		private string _focusedFieldName = "(none)";
 		private int _gotFocusCount;
 		private int _lostFocusCount;
 
@@ -45,8 +46,16 @@ namespace UITests.Windows_UI_ViewManagement
 		private void OnPanelFieldGotFocus(object sender, RoutedEventArgs e)
 		{
 			var name = (sender as FrameworkElement)?.Name;
-			PanelFocusTextBlock.Text = $"Focused field: {(string.IsNullOrEmpty(name) ? sender.GetType().Name : name)}   Panel offset: {SidePanelScrollViewer.VerticalOffset:0}";
+			_focusedFieldName = string.IsNullOrEmpty(name) ? sender.GetType().Name : name;
+			UpdatePanelState();
 		}
+
+		// The offset has to follow the panel, not just the focus: checks 4 and 5 are about which element moves,
+		// so the readout is only useful if it keeps up during the bring-into-view and the drag.
+		private void OnSidePanelViewChanged(object sender, ScrollViewerViewChangedEventArgs e) => UpdatePanelState();
+
+		private void UpdatePanelState()
+			=> PanelFocusTextBlock.Text = $"Focused field: {_focusedFieldName}   Panel offset: {SidePanelScrollViewer.VerticalOffset:0}";
 
 		private void UpdateFocusState()
 		{
@@ -68,7 +77,9 @@ namespace UITests.Windows_UI_ViewManagement
 			var inputPane = InputPane.GetForCurrentView();
 			inputPane.Showing += OnInputPaneShowing;
 			inputPane.Hiding += OnInputPaneHiding;
+			SidePanelScrollViewer.ViewChanged += OnSidePanelViewChanged;
 			UpdateFocusState();
+			UpdatePanelState();
 		}
 
 		private void OnUnloaded(object sender, RoutedEventArgs e)
@@ -76,6 +87,7 @@ namespace UITests.Windows_UI_ViewManagement
 			var inputPane = InputPane.GetForCurrentView();
 			inputPane.Showing -= OnInputPaneShowing;
 			inputPane.Hiding -= OnInputPaneHiding;
+			SidePanelScrollViewer.ViewChanged -= OnSidePanelViewChanged;
 		}
 	}
 }
