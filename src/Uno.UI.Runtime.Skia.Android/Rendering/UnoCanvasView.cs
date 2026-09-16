@@ -68,7 +68,7 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 		// GLSurfaceView drives IRenderer.OnDrawFrame on its own GL thread, so freeing the Skia and
 		// GL state from the UI thread can race a frame in flight. Queue the teardown there and wait
 		// for it; the renderer refuses to rebuild its context afterwards.
-		using var torndown = new ManualResetEventSlim(false);
+		var torndown = new ManualResetEventSlim(false);
 
 		QueueEvent(new Java.Lang.Runnable(() =>
 		{
@@ -82,10 +82,15 @@ internal sealed partial class UnoCanvasView : GLSurfaceView, IUnoRenderView
 			}
 		}));
 
-		if (!torndown.Wait(TimeSpan.FromSeconds(2)) && this.Log().IsEnabled(LogLevel.Warning))
+		if (torndown.Wait(TimeSpan.FromSeconds(2)))
 		{
-			// The GL thread can already be gone (surface destroyed first), in which case the queued
-			// work never runs and its context went away with the thread.
+			torndown.Dispose();
+		}
+		else if (this.Log().IsEnabled(LogLevel.Warning))
+		{
+			// Either the GL thread is gone (the surface was destroyed first, so the queued work never
+			// runs) or it is merely slow and will still signal this event, which is why it is left to
+			// the GC rather than disposed from under it.
 			this.Log().Warn("The GL thread did not run the renderer teardown within the timeout.");
 		}
 	}
