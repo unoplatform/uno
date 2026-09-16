@@ -1329,19 +1329,11 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		bool forward,
 		bool horizontal)
 	{
-		if (!double.IsFinite(currentPercent) ||
-			!double.IsFinite(viewSize) ||
-			currentPercent < 0 ||
-			viewSize <= 0)
-		{
-			return false;
-		}
-
-		var targetPercent = Math.Clamp(
-			currentPercent + (forward ? viewSize : -viewSize),
-			0,
-			100);
-		if (targetPercent == currentPercent)
+		if (!AccessibilityPeerHelper.TryGetPageScrollTargetPercent(
+			currentPercent,
+			viewSize,
+			forward,
+			out var targetPercent))
 		{
 			return false;
 		}

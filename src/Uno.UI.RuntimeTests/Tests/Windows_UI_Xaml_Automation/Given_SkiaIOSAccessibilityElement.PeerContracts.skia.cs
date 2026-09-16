@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -253,23 +254,33 @@ public partial class Given_SkiaIOSAccessibilityElement
 
 	[TestMethod]
 	[RunsOnUIThread]
-	[DataRow(false)]
-	[DataRow(true)]
-	public async Task When_Child_Scroll_Gesture_Routes_To_Ancestor(bool rawScrollViewer)
+	[DataRow(false, false)]
+	[DataRow(true, false)]
+	[DataRow(false, true)]
+	[DataRow(true, true)]
+	public async Task When_Child_Scroll_Gesture_Routes_To_Ancestor(
+		bool rawScrollViewer,
+		bool horizontal)
 	{
-		var button = new Button { Content = "Scroll from here", Height = 44 };
-		var scroller = new ScrollViewer
+		var button = new Button { Content = "Scroll from here", Width = 44, Height = 44 };
+		var content = new StackPanel
 		{
-			Width = 150,
-			Height = 100,
-			Content = new StackPanel
+			Orientation = horizontal ? Orientation.Horizontal : Orientation.Vertical,
+			Children =
 			{
-				Children =
+				button,
+				new Border
 				{
-					button,
-					new Border { Height = 300 },
+					Width = horizontal ? 300 : 100,
+					Height = horizontal ? 100 : 300,
 				},
 			},
+		};
+		var scroller = new ScrollViewer
+		{
+			Width = horizontal ? 100 : 150,
+			Height = horizontal ? 150 : 100,
+			Content = content,
 		};
 		if (rawScrollViewer)
 		{
@@ -279,15 +290,65 @@ public partial class Given_SkiaIOSAccessibilityElement
 		try
 		{
 			await UITestHelper.Load(scroller);
-			Assert.AreEqual(0, scroller.VerticalOffset);
+			await UITestHelper.WaitForIdle();
+			var viewport = horizontal ? scroller.ViewportWidth : scroller.ViewportHeight;
+			var scrollable = horizontal ? scroller.ScrollableWidth : scroller.ScrollableHeight;
+			Assert.IsTrue(viewport > 0);
+			Assert.IsTrue(scrollable > viewport);
+			Assert.IsFalse(InvokeAction(button, AccessibilityNativeAction.ScrollBackward));
+
 			Assert.IsTrue(InvokeAction(button, AccessibilityNativeAction.ScrollForward));
-			await TestServices.WindowHelper.WaitFor(() => scroller.VerticalOffset > 0);
+			await TestServices.WindowHelper.WaitFor(() => GetOffset(scroller, horizontal) > 0);
+			Assert.AreEqual(viewport, GetOffset(scroller, horizontal), 0.5);
+
+			Assert.IsTrue(InvokeAction(button, AccessibilityNativeAction.ScrollBackward));
+			await TestServices.WindowHelper.WaitFor(() => GetOffset(scroller, horizontal) < 0.5);
+			Assert.AreEqual(0, GetOffset(scroller, horizontal), 0.5);
+
+			scroller.ChangeView(
+				horizontal ? scrollable : null,
+				horizontal ? null : scrollable,
+				null,
+				disableAnimation: true);
+			await TestServices.WindowHelper.WaitFor(
+				() => Math.Abs(GetOffset(scroller, horizontal) - scrollable) < 0.5);
+			Assert.IsFalse(InvokeAction(button, AccessibilityNativeAction.ScrollForward));
 		}
 		finally
 		{
 			TestServices.WindowHelper.WindowContent = null;
 		}
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_NonScrollable_Ancestor_Receives_Scroll_Gesture_Then_Returns_False()
+	{
+		var button = new Button { Content = "No scrolling", Width = 44, Height = 44 };
+		var scroller = new ScrollViewer
+		{
+			Width = 150,
+			Height = 100,
+			Content = button,
+		};
+
+		try
+		{
+			await UITestHelper.Load(scroller);
+			await UITestHelper.WaitForIdle();
+			Assert.AreEqual(0, scroller.ScrollableWidth);
+			Assert.AreEqual(0, scroller.ScrollableHeight);
+			Assert.IsFalse(InvokeAction(button, AccessibilityNativeAction.ScrollForward));
+			Assert.IsFalse(InvokeAction(button, AccessibilityNativeAction.ScrollBackward));
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	private static double GetOffset(ScrollViewer scrollViewer, bool horizontal)
+		=> horizontal ? scrollViewer.HorizontalOffset : scrollViewer.VerticalOffset;
 
 	private static bool ActivateNativeElement(object element)
 	{
