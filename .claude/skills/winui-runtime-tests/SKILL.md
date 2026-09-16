@@ -66,6 +66,8 @@ Every item below was hit in practice, not theorized:
 
 13. **MAX_PATH (260 chars)**: the PRI generator uses Win32 APIs with the 260-char limit. `PRI175`/`PRI252` errors mean the repo path is too long — shorten it or use a `subst` drive.
 
+14. **Use folder mode, not project mode.** `winapp run <csproj>` (and therefore `dotnet run`, which the head's `Microsoft.Windows.SDK.BuildTools.WinApp` reference routes through `winapp`) drives `dotnet build` and failed here with `PRI175` / `PRI252: … .xbf not found`, while the same sources built fine through `MSBuild.exe -t:Build` — project mode's deeper intermediate paths run into the MAX_PATH-sensitive PRI generator. Build with `build-app.ps1`, then point `run-tests.ps1` at the **output folder**.
+
 ---
 
 ## Execution Workflow
