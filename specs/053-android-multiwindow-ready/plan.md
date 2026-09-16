@@ -26,10 +26,14 @@ Apple UIKit runtime already use, making the architecture **multi-window-ready**.
   to the application context** — falling back would break the `(Activity)Current` hard-casts and
   `Current == null` guards in existing callers — and is typed `Context?` to say so honestly.
 
-**Out of scope (deliberate follow-ups):**
+**Out of scope of the de-singletoning work, delivered by the follow-up on this branch:**
 - Flipping `SupportsMultipleWindows` to `true` and driving a *live* second Activity —
-  that needs Activity↔Window lifecycle orchestration and on-device validation, and
-  mirrors how iOS staged its own multi-window behind scene adoption (#8341).
+  it needs Activity↔Window lifecycle orchestration and on-device validation, and
+  mirrors how iOS staged its own multi-window behind scene adoption (#8341). The
+  orchestration (`LaunchForWindow`/`ResolveWrapper`/`CompleteDeferredShow`, per-task
+  activities, caption-bar insets, foreground handover on top-resume) and a
+  `MultiWindowShowcase` sample now land here; see the validation section for what that
+  flip was and was not exercised against.
 - Threading an explicit owning-window `Context` through every `Uno.WinRT`/AddIn
   `ContextHelper.Current` consumer. While only one window is live this is a no-op;
   those callers stay on the (now-correct) foreground activity until live multi-window lands.
