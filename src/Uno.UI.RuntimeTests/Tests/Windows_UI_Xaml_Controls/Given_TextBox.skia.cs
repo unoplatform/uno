@@ -43,14 +43,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	/// </summary>
 	public partial class Given_TextBox
 	{
-		// The browser head types through one shared hidden <input> placed over the focused TextBox. Pins the
-		// desktop placement (position and size track the TextBox); iOS parks it off-screen instead, see
-		// keepsInputOffscreen in BrowserInvisibleTextBoxViewExtension.ts.
+		// The browser head types through one shared hidden <input>. Where it is placed is per-host: desktop
+		// browsers keep it over the focused TextBox, iOS parks it off-screen so WebKit has nothing to reveal
+		// and cannot pan the page (see keepsInputOffscreen in BrowserInvisibleTextBoxViewExtension.ts). The
+		// runtime tests run in whichever browser hosts them, so assert the invariant of the reported policy.
 		[TestMethod]
 		[RunsOnUIThread]
 		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24526")]
-		public async Task When_Focused_In_Browser_Then_Hidden_Input_Tracks_TextBox()
+		public async Task When_Focused_In_Browser_Then_Hidden_Input_Placement_Matches_Host()
 		{
 			var SUT = new TextBox
 			{
@@ -65,17 +66,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await UITestHelper.Load(new Grid { Width = 400, Height = 400, Children = { SUT } });
 
 				SUT.Focus(FocusState.Programmatic);
-				await UITestHelper.WaitFor(() => GetHiddenInputPlacement() == "tracking", timeoutMS: 3000, message: "hidden input created with the tracking placement");
+				await UITestHelper.WaitFor(() => GetHiddenInputPlacement() is "tracking" or "offscreen", timeoutMS: 3000, message: "hidden input created with a known placement");
+				var placement = GetHiddenInputPlacement();
 
 				var bounds = SUT.TransformToVisual(null).TransformBounds(new Rect(0, 0, SUT.ActualWidth, SUT.ActualHeight));
-				await UITestHelper.WaitFor(() => Covers(bounds, GetHiddenInputRect()), timeoutMS: 3000, message: $"hidden input placed and sized inside the focused TextBox {bounds}");
+				await UITestHelper.WaitFor(() => IsPlacedFor(placement, bounds, GetHiddenInputRect()), timeoutMS: 3000, message: $"hidden input placed for '{placement}' against the focused TextBox {bounds}");
 
 				SUT.Margin = new Thickness(40, 200, 0, 0);
 				await WindowHelper.WaitForIdle();
 
 				var moved = SUT.TransformToVisual(null).TransformBounds(new Rect(0, 0, SUT.ActualWidth, SUT.ActualHeight));
 				Assert.IsTrue(moved.Y >= bounds.Y + 100, $"TextBox should have moved down, was {bounds}, now {moved}");
-				await UITestHelper.WaitFor(() => Covers(moved, GetHiddenInputRect()), timeoutMS: 3000, message: $"hidden input followed the TextBox to {moved}");
+				await UITestHelper.WaitFor(() => IsPlacedFor(placement, moved, GetHiddenInputRect()), timeoutMS: 3000, message: $"hidden input still placed for '{placement}' after the TextBox moved to {moved}");
 			}
 			finally
 			{
@@ -87,13 +89,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		// The hidden input is placed over the TextBox's inner text block, so it sits within the TextBox bounds
-		// and is smaller than them by the padding and border.
-		private static bool Covers(Rect textBox, Rect input)
-			=> input.Width > 0 && input.Height > 0
-				&& input.Width <= textBox.Width + 1 && input.Height <= textBox.Height + 1
-				&& input.X >= textBox.X - 1 && input.Y >= textBox.Y - 1
-				&& input.Right <= textBox.Right + 1 && input.Bottom <= textBox.Bottom + 1;
+		// "tracking": the input sits over the TextBox's inner text block, so it is within the TextBox bounds and
+		// smaller than them by the padding and border. "offscreen": entirely above the viewport, whatever the
+		// TextBox does, so there is no rect for the browser to scroll into view.
+		private static bool IsPlacedFor(string placement, Rect textBox, Rect input)
+			=> placement == "offscreen"
+				? input.Bottom <= 0
+				: input.Width > 0 && input.Height > 0
+					&& input.Width <= textBox.Width + 1 && input.Height <= textBox.Height + 1
+					&& input.X >= textBox.X - 1 && input.Y >= textBox.Y - 1
+					&& input.Right <= textBox.Right + 1 && input.Bottom <= textBox.Bottom + 1;
 
 		private static string GetHiddenInputPlacement()
 			=> InvokeBrowserJs("(function(){const e = document.getElementById('uno-input'); return e ? (e.dataset.unoPlacement ?? '') : '';})()");
