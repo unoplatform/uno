@@ -30,6 +30,7 @@ using Uno.ApplicationModel.DataTransfer;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Xaml.Controls.Extensions;
 using static Private.Infrastructure.TestServices;
+using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper;
 using Color = Windows.UI.Color;
 using Point = Windows.Foundation.Point;
 
@@ -42,6 +43,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	/// </summary>
 	public partial class Given_TextBox
 	{
+		// The browser head types through one shared hidden <input> placed over the focused TextBox. Pins the
+		// desktop placement (position and size track the TextBox); iOS parks it off-screen instead, see
+		// keepsInputOffscreen in BrowserInvisibleTextBoxViewExtension.ts.
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaWasm)]
+		public async Task When_Focused_In_Browser_Then_Hidden_Input_Tracks_TextBox()
+		{
+			var SUT = new TextBox
+			{
+				Width = 200,
+				Margin = new Thickness(40, 60, 0, 0),
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+			await UITestHelper.Load(new Grid { Width = 400, Height = 400, Children = { SUT } });
+
+			SUT.Focus(FocusState.Programmatic);
+			await UITestHelper.WaitFor(() => GetHiddenInputPlacement() == "tracking", timeoutMS: 3000, message: "hidden input created with the tracking placement");
+
+			var bounds = SUT.TransformToVisual(null).TransformBounds(new Rect(0, 0, SUT.ActualWidth, SUT.ActualHeight));
+			await UITestHelper.WaitFor(() => bounds.Contains(GetHiddenInputPosition()), timeoutMS: 3000, message: $"hidden input positioned inside the focused TextBox {bounds}");
+
+			SUT.Margin = new Thickness(40, 200, 0, 0);
+			await WindowHelper.WaitForIdle();
+
+			var moved = SUT.TransformToVisual(null).TransformBounds(new Rect(0, 0, SUT.ActualWidth, SUT.ActualHeight));
+			Assert.IsTrue(moved.Y >= bounds.Y + 100, $"TextBox should have moved down, was {bounds}, now {moved}");
+			await UITestHelper.WaitFor(() => moved.Contains(GetHiddenInputPosition()), timeoutMS: 3000, message: $"hidden input followed the TextBox to {moved}");
+		}
+
+		private static string GetHiddenInputPlacement()
+			=> InvokeBrowserJs("(function(){const e = document.getElementById('uno-input'); return e ? (e.dataset.unoPlacement ?? '') : '';})()");
+
+		private static Point GetHiddenInputPosition()
+		{
+			var raw = InvokeBrowserJs("(function(){const e = document.getElementById('uno-input'); return e ? parseFloat(e.style.left) + ',' + parseFloat(e.style.top) : '';})()");
+			var parts = raw.Split(',');
+			return parts.Length == 2
+				&& double.TryParse(parts[0], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var x)
+				&& double.TryParse(parts[1], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var y)
+				? new Point(x, y)
+				: new Point(double.NaN, double.NaN);
+		}
+
 		[TestMethod]
 		public async Task When_Basic_Input()
 		{
