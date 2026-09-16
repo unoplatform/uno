@@ -74,6 +74,13 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	/// </summary>
 	internal event EventHandler CurrentActivityChanged;
 
+	/// <summary>
+	/// Raises <see cref="CurrentActivityChanged"/> again once the activity holding this window has
+	/// built its render view. The handover itself happens in OnCreate, before anything bound to the
+	/// render view (such as the IME plugin) exists to rebind to.
+	/// </summary>
+	internal void NotifyDrivingActivityReady() => CurrentActivityChanged?.Invoke(this, EventArgs.Empty);
+
 	// Per-window input sources, resolved by each window's InputManager via its IXamlRootHost
 	// and fed by the driving activity's native event dispatch.
 	internal AndroidCorePointerInputSource PointerSource { get; } = new();
