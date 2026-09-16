@@ -13,10 +13,10 @@ using Android.Widget;
 using AndroidX.Activity;
 using AndroidX.Core.Graphics;
 using Microsoft.UI.Xaml.Media;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.Helpers.Theming;
 using Uno.UI;
+using Uno.UI.Composition.Drawing;
 using Uno.UI.Dispatching;
 using Uno.UI.Runtime.Skia.Android;
 using Uno.UI.Xaml.Controls;
@@ -32,11 +32,11 @@ namespace Microsoft.UI.Xaml
 	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public partial class ApplicationActivity : Controls.NativePage
 	{
-		private static IUnoSkiaRenderView? _renderView;
+		private static IUnoRenderView? _renderView;
 		private static View? _renderViewAsView;
 		private static ClippedRelativeLayout? _nativeLayerHost;
 
-		internal static IUnoSkiaRenderView? RenderView => _renderView;
+		internal static IUnoRenderView? RenderView => _renderView;
 
 		private InputPane _inputPane;
 
@@ -166,7 +166,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var nativelyHandled = false;
-			if (_nativeLayerHost?.Path.Contains(ev.GetX(), ev.GetY()) ?? false)
+			if (_nativeLayerHost?.Path?.FillContains(new global::System.Numerics.Vector2(ev.GetX(), ev.GetY())) ?? false)
 			{
 				// We don't call the base method if NativeLayerHost.Path doesn't contain (X, Y).
 				// This is due to the way Android handles hit-testing with Canvas.ClipPath, where even if the ClipPath
@@ -193,7 +193,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var nativelyHandled = false;
-			if (_nativeLayerHost?.Path.Contains(ev.GetX(), ev.GetY()) ?? false)
+			if (_nativeLayerHost?.Path?.FillContains(new global::System.Numerics.Vector2(ev.GetX(), ev.GetY())) ?? false)
 			{
 				// We don't call the base method if NativeLayerHost.Path doesn't contain (X, Y).
 				// This is due to the way Android handles hit-testing with Canvas.ClipPath, where even if the ClipPath
@@ -297,34 +297,38 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		private IUnoSkiaRenderView CreateRenderView()
+		private IUnoRenderView CreateRenderView()
 		{
-			if (FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid)
+			// Pick the Android view class matching the registered backend's context kind (host reads the neutral kind).
+			if (global::Uno.UI.Composition.Drawing.GraphicsRegistry.HasBackendPreferring(
+				global::Uno.UI.Composition.Drawing.GraphicsContextKind.WebGpu))
 			{
-				if (!PackageManager?.HasSystemFeature(PackageManager.FeatureVulkanHardwareLevel) ?? true)
+				try
 				{
-					typeof(ApplicationActivity).Log().Warn($"Device does not support Vulkan. Falling back to OpenGL ES.");
+					return new UnoWebGpuView(this);
 				}
-				else
+				catch (Exception ex)
 				{
-					// Vulkan feature flags are static device configuration and can be declared even when
-					// the driver cannot actually render (common on emulators) — the view constructor
-					// creates the Vulkan device and throws when the driver is unusable.
-					try
-					{
-						return new UnoSKVulkanView(this);
-					}
-					catch (Exception ex)
-					{
-						if (typeof(ApplicationActivity).Log().IsEnabled(LogLevel.Warning))
-						{
-							typeof(ApplicationActivity).Log().Warn($"Vulkan rendering not available: {ex.Message}. Falling back to OpenGL ES.");
-						}
-					}
+					typeof(ApplicationActivity).Log().Warn($"WebGPU rendering not available: {ex.Message}. Falling back.");
 				}
 			}
 
-			return new UnoSKCanvasView(this);
+			// Default (UseVulkan): Vulkan when supported, else the canvas view. Vulkan can fail at runtime, so a
+			// failed bring-up falls through to the canvas view rather than aborting.
+			if (FeatureConfiguration.Rendering.UseVulkanOnSkiaAndroid)
+			{
+				try
+				{
+					return new UnoVulkanView(this);
+				}
+				catch (Exception ex)
+				{
+					typeof(ApplicationActivity).Log().Warn($"Vulkan rendering not available: {ex.Message}. Falling back.");
+				}
+			}
+
+			// The canvas view renders GLES or software per UseOpenGLOnSkiaAndroid (chosen in its OnSurfaceCreated).
+			return new UnoCanvasView(this);
 		}
 
 		internal void InvalidateRender()
@@ -496,7 +500,7 @@ namespace Microsoft.UI.Xaml
 
 		internal partial class ClippedRelativeLayout : RelativeLayout
 		{
-			private SKPath _path = new SKPath();
+			private IGeometry? _path;
 			private Path _androidPath = new Path();
 			private string _svgClipPath = "";
 
@@ -505,24 +509,22 @@ namespace Microsoft.UI.Xaml
 				SetWillNotDraw(false);
 			}
 
-			public SKPath Path
+			// Neutral clip geometry: SVG path data + fill rule drive the Android clip path, FillContains hit-testing.
+			public IGeometry? Path
 			{
 				get => _path;
 				set
 				{
-					var svgClipPath = value.ToSvgPathData();
+					var svgClipPath = value?.ToSvgPathData() ?? "";
 					if (_svgClipPath != svgClipPath)
 					{
 						_path = value;
 						_svgClipPath = svgClipPath;
 						_androidPath = PathParser.CreatePathFromPathData(_svgClipPath)!;
-						_androidPath.SetFillType(value.FillType switch
+						_androidPath.SetFillType((value?.FillRule ?? GeometryFillRule.NonZero) switch
 						{
-							SKPathFillType.Winding => APath.FillType.Winding!,
-							SKPathFillType.EvenOdd => APath.FillType.EvenOdd!,
-							SKPathFillType.InverseWinding => APath.FillType.InverseWinding!,
-							SKPathFillType.InverseEvenOdd => APath.FillType.InverseEvenOdd!,
-							_ => throw new ArgumentOutOfRangeException()
+							GeometryFillRule.EvenOdd => APath.FillType.EvenOdd!,
+							_ => APath.FillType.Winding!,
 						});
 						Invalidate();
 					}

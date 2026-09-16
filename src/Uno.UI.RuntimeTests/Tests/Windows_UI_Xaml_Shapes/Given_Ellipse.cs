@@ -1,4 +1,6 @@
 #if __SKIA__ || WINAPPSDK
+using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
@@ -73,6 +75,38 @@ public class Given_Ellipse
 
 		ImageAssert.HasColorAt(screenshot, 20, 20, Colors.White, tolerance: 5);
 		ImageAssert.HasColorAt(screenshot, 20, 130, Colors.Red, tolerance: 5);
+	}
+	// The fill's antialiasing ring must be one DEVICE pixel wide whatever the scale. A ring sized when the shape was
+	// recorded, in DIPs, is four pixels wide at 4x and reads as a blurry edge.
+	[TestMethod]
+	[RequiresScaling(4f)]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_Fill_Edge_Is_One_Device_Pixel_At_4x()
+	{
+		var grid = new Grid
+		{
+			Width = 200,
+			Height = 200,
+			Background = new SolidColorBrush(Colors.White),
+			Children = { new Ellipse { Width = 200, Height = 200, Fill = new SolidColorBrush(Colors.LimeGreen) } },
+		};
+
+		await UITestHelper.Load(grid);
+		var screenshot = await UITestHelper.ScreenShot(grid);
+
+		// Along the row through the centre the edge is vertical, so walking device pixels from the left crosses it
+		// perpendicularly: white, at most one pixel between 5% and 95% covered, then solid green. A four-pixel ring
+		// puts three or four pixels in that band.
+		var bitmap = screenshot.Bitmap;
+		var pixels = (await bitmap.GetPixelsAsync()).ToArray();
+		int w = bitmap.PixelWidth, row = bitmap.PixelHeight / 2, partial = 0;
+		for (var x = 0; x < w / 2; x++)
+		{
+			var r = pixels[(row * w + x) * 4 + 2];   // BGRA
+			if (r > 60 && r < 245) { partial++; }
+			else if (r <= 60) { break; }             // solid green reached
+		}
+		Assert.IsTrue(partial <= 1, $"{partial} partially covered pixels across the edge at 4x; the ring must be one device pixel wide");
 	}
 }
 #endif

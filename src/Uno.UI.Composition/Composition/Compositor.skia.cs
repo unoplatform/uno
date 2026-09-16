@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using SkiaSharp;
 using Uno.Foundation.Logging;
 using Uno.UI.Composition;
 using Uno.UI.Dispatching;
@@ -24,20 +23,7 @@ public partial class Compositor
 	private int _frameNumber;
 #endif
 
-	static partial void Initialize()
-	{
-		UnoSkiaApi.Initialize();
-	}
-
-	/// <summary>
-	/// Whether the scene is rasterized on the CPU rather than by a GPU-backed surface.
-	/// Set by the active render backend once its renderer is selected; null until then.
-	/// Consulted while recording (e.g. by effect brushes to generate filters the target
-	/// surface can rasterize) and temporarily overridden by RenderTargetBitmap.
-	/// </summary>
 	internal bool? IsSoftwareRenderer { get; set; }
-
-	internal static bool SkipVisualTreePainting { get; set; }
 
 	internal bool IsAnimating => _runningAnimations.Count > 0;
 
@@ -196,13 +182,21 @@ public partial class Compositor
 		return false;
 	}
 
-	internal void RenderRootVisual(SKCanvas canvas, ContainerVisual rootVisual, DamageRegion? damage = null)
+	// UNO_LOG_FRAME_PHASES=1 splits the record phase into animation-tick vs visual-walk time (benchmarking);
+	// pairs with the frame-level [frame-phases] line in CompositionTarget.
+	private static readonly bool _logRecordPhases =
+		Environment.GetEnvironmentVariable("UNO_LOG_FRAME_PHASES") is "1" or "true";
+	private static long _recAnimationTicks, _recWalkTicks;
+	private static int _recPhaseFrames;
+
+	internal void RenderRootVisual(Uno.UI.Composition.Drawing.IDrawingSession drawingSession, ContainerVisual rootVisual, DamageRegion? damage = null)
 	{
 		if (rootVisual is null)
 		{
 			throw new ArgumentNullException(nameof(rootVisual));
 		}
 
+		var recPhaseT0 = _logRecordPhases ? Stopwatch.GetTimestamp() : 0;
 		foreach (var animation in _runningAnimations.Keys.ToArray())
 		{
 			try
@@ -224,11 +218,19 @@ public partial class Compositor
 #if PRINT_FRAME_TIMES
 		var start = Stopwatch.GetTimestamp();
 #endif
-		// Skip only the paint walk: animations above still tick and transitions/frame
-		// re-requests below still run, so the scene stays live without producing pixels.
-		if (!SkipVisualTreePainting)
+		var recPhaseT1 = _logRecordPhases ? Stopwatch.GetTimestamp() : 0;
+		rootVisual.RenderRootVisual(drawingSession, null, damage);
+		if (_logRecordPhases)
 		{
-			rootVisual.RenderRootVisual(canvas, null, damage);
+			var recPhaseT2 = Stopwatch.GetTimestamp();
+			_recAnimationTicks += recPhaseT1 - recPhaseT0;
+			_recWalkTicks += recPhaseT2 - recPhaseT1;
+			if (++_recPhaseFrames >= 60)
+			{
+				Console.WriteLine($"[record-phases] animations={_recAnimationTicks * 1000.0 / Stopwatch.Frequency / _recPhaseFrames:F1}ms walk={_recWalkTicks * 1000.0 / Stopwatch.Frequency / _recPhaseFrames:F1}ms (avg/frame, {_runningAnimations.Count} running animations)");
+				_recAnimationTicks = _recWalkTicks = 0;
+				_recPhaseFrames = 0;
+			}
 		}
 #if PRINT_FRAME_TIMES
 		var span = Stopwatch.GetElapsedTime(start);

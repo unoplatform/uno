@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
@@ -14,7 +14,6 @@ using Rectangle = System.Drawing.Rectangle;
 using System;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.Interactions;
-using SkiaSharp;
 using Uno.UI.Composition;
 #endif
 
@@ -144,9 +143,9 @@ public class Given_Visual_ArrangePending
 
 		public void RequestNewFrame() => NewFrameRequests++;
 
-		public void AddDamage(SKRect bounds) { }
+		public void AddDamage(Windows.Foundation.Rect bounds) { }
 
-		public void AddDamage(SKPath region) { }
+		public void AddDamage(Uno.UI.Composition.Drawing.IGeometry region) { }
 
 		public void TryRedirectForManipulation(Microsoft.UI.Input.PointerPoint pointerPoint, InteractionTracker tracker) { }
 	}

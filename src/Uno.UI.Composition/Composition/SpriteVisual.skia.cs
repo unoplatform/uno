@@ -1,8 +1,9 @@
 ﻿#nullable enable
 
 using System.Collections.Generic;
-using SkiaSharp;
 using Uno.UI.Composition;
+using Uno.UI.Composition.Drawing;
+using Windows.Foundation;
 
 using Color = global::Windows.UI.Color;
 
@@ -10,11 +11,8 @@ namespace Microsoft.UI.Composition
 {
 	public partial class SpriteVisual : ContainerVisual
 	{
-		internal override SKPath? Paint(in PaintingSession session)
-		{
-			Brush?.Paint(session.Canvas, session.Opacity, new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y));
-			return null;
-		}
+		internal override void Paint(in PaintingSession session)
+			=> Brush?.TryPaint(session.Session, session.Opacity, new Rect(0, 0, Size.X, Size.Y));
 
 		internal override bool CanPaint() => Brush?.CanPaint() ?? false;
 
@@ -23,28 +21,41 @@ namespace Microsoft.UI.Composition
 
 		internal override bool RequiresRepaintOnEveryFrame => Brush?.RequiresRepaintOnEveryFrame ?? false;
 
-		internal override float DamageRegionSamplingMargin => Brush?.DamageRegionSamplingMargin ?? 0;
-
-		private protected override bool TryAddShadowPaths(List<(SKPath path, float alpha)> output)
+		private protected override bool TryAddShadowPaths(List<(IGeometry path, float alpha)> output)
 		{
-			// SpriteVisual fills its bounds with its Brush. Only solid-color brushes are describable
-			// analytically
+			// SpriteVisual fills its bounds with its Brush.
 			if (Brush is null)
 			{
 				return true;
 			}
-			if (Brush is not CompositionColorBrush color)
-			{
-				return false;
-			}
-			if (color.Color.A == 0 || Size.X <= 0 || Size.Y <= 0)
+			if (Size.X <= 0 || Size.Y <= 0)
 			{
 				return true;
 			}
 
-			var builder = new SKPathBuilder();
-			builder.AddRect(new SKRect(0, 0, Size.X, Size.Y));
-			output.Add((builder.Detach(), color.Color.A / 255f));
+			var brush = Brush;
+			while (brush is CompositionBrushWrapper wrapper)
+			{
+				brush = wrapper.WrappedBrush;
+			}
+			// Surface (image) content: ShadowState only ever carries an elevation shadow (ThemeShadow /
+			// ElevatedView), which WinUI casts from the element's BOUNDS, not its sampled alpha — a full-alpha
+			// rect silhouette is parity-correct and keeps the walk analytic for image-bearing subtrees.
+			if (brush is CompositionSurfaceBrush or CompositionNineGridBrush)
+			{
+				output.Add((GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, Size.X, Size.Y)), 1f));
+				return true;
+			}
+			if (!TryGetShadowBrushAlpha(brush, out var alpha))
+			{
+				return false;
+			}
+			if (alpha <= 0)
+			{
+				return true;
+			}
+
+			output.Add((GeometryFactory.Current.CreateRectangleGeometry(new Rect(0, 0, Size.X, Size.Y)), alpha));
 			return true;
 		}
 	}

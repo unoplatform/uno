@@ -94,6 +94,41 @@
 
 	</PropertyGroup>
 
+	<!-- ==================== Drawing backends ==================== -->
+
+	<!--
+	  Drawing-backend build flags (app level; the framework is backend-agnostic and packaged once). Both default on
+	  = current behaviour. A build supplies the flags to pick backends, e.g. `-p:UnoDrawingBackendSkia=false` for a
+	  SkiaSharp-free app. The DefineConstants gate the registration in DrawingBackendConfiguration. NOTE: a fully
+	  Skia-free closure additionally needs the Skia runtime hosts gated (they still reference the backend).
+	-->
+	<PropertyGroup>
+		<UnoDrawingBackendSkia Condition="'$(UnoDrawingBackendSkia)'==''">true</UnoDrawingBackendSkia>
+		<!-- wgpu-native publishes no tvOS slice, so the backend's P/Invokes have nothing to link against there. -->
+		<UnoDrawingBackendWebGpu Condition="'$(UnoDrawingBackendWebGpu)'=='' and '$(_Platform)' == 'tvos'">false</UnoDrawingBackendWebGpu>
+		<UnoDrawingBackendWebGpu Condition="'$(UnoDrawingBackendWebGpu)'==''">true</UnoDrawingBackendWebGpu>
+		<DefineConstants Condition="'$(UnoDrawingBackendSkia)'=='true'">$(DefineConstants);UNO_DRAWING_SKIA</DefineConstants>
+		<DefineConstants Condition="'$(UnoDrawingBackendWebGpu)'=='true'">$(DefineConstants);UNO_DRAWING_WEBGPU</DefineConstants>
+		<!-- RenderDocCapture uses unmanaged function pointers into the injected renderdoc.dll. -->
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<!-- Provision the modern-ABI wgpu-native next to the app so the WebGPU backend's DllImportResolver finds it. -->
+	<Import Project="..\..\Uno.UI.Composition.WebGpu\wgpu-native.targets" Condition="'$(UnoDrawingBackendWebGpu)'!='false'" />
+	<!-- The browser has no wgpu-native: Dawn's emdawnwebgpu is linked into dotnet.native.wasm instead, so the same
+	     [DllImport("webgpu")] resolves there. Without it the WebGPU backend fails graphics init with a
+	     DllNotFoundException and the app never leaves its loading screen. -->
+	<Import Project="..\..\Uno.UI.Composition.WebGpu.Init\wgpu-wasm.targets" Condition="'$(_Platform)' == 'browserwasm' AND '$(UnoDrawingBackendWebGpu)'!='false'" />
+
+	<ItemGroup Condition="'$(_IsSkiaTfm)' == 'true'">
+		<ProjectReference Include="..\..\Uno.UI.Composition.Managed\Uno.UI.Composition.Managed.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Composition.Skia\Uno.UI.Composition.SkiaBackend.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
+		<ProjectReference Include="..\..\Uno.UI.Composition.WebGpu\Uno.UI.Composition.WebGpu.csproj" Condition="'$(UnoDrawingBackendWebGpu)'!='false'" />
+
+		<!-- Backend registration shared by every head's entry point. -->
+		<Compile Include="..\DrawingBackendConfiguration.cs" Link="DrawingBackendConfiguration.cs" />
+	</ItemGroup>
+
 	<!-- ==================== Framework via ProjectReference ==================== -->
 
 	<!-- Cross-Skia framework + AddIns shared by every Skia TFM (desktop/wasm/android/ios/tvos), NOT windows -->
@@ -106,11 +141,12 @@
 		<ProjectReference Include="..\..\Uno.UI.Extras\Uno.UI.Extras.Skia.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Skia.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.csproj" />
+		<!-- Lottie, Svg and Graphics2DSK are SkiaSharp-backed: a Skia-free build drops them. -->
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Svg\Uno.UI.Svg.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.SpellChecking\Uno.WinUI.SpellChecking.csproj" />
 		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics3DGL\Uno.WinUI.Graphics3DGL.csproj" />
-		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.WinUI.Graphics2DSK\Uno.WinUI.Graphics2DSK.Crossruntime.csproj" Condition="'$(UnoDrawingBackendSkia)'!='false'" />
 
 	</ItemGroup>
 
@@ -224,6 +260,11 @@
 
 	<!-- ==================== WASM build configuration ==================== -->
 	<PropertyGroup Condition="'$(_Platform)' == 'browserwasm'">
+		<!-- Emscripten defaults MAXIMUM_MEMORY to 2GB, which caps the app's TOTAL linear memory: managed heap,
+		     Mono runtime, native Skia/wgpu and JS glue together. The perf samples deliberately build very large
+		     scenes (RealWorld_LogView at a few thousand rows) and hit that ceiling, which surfaces as a .NET heap
+		     OOM abort mid-render rather than as an obvious limit. 4GB is the wasm32 maximum. -->
+		<EmccMaximumHeapSize>4294967296</EmccMaximumHeapSize>
 		<!-- Required for net9+ workloads -->
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<NoWarn>$(NoWarn);NU1903;NU1902</NoWarn>
@@ -246,6 +287,53 @@
 		-->
 		<WasmShellWebAppBasePath>./</WasmShellWebAppBasePath>
 	</PropertyGroup>
+	<!-- Opt-in AOT publish for the perf lane (-p:UnoWasmAot=true). Head-scoped: RunAOTCompilation/PublishTrimmed set
+	     globally break the netstandard2.0 generator projects in the graph. Only the opt-in (BCL) assemblies are trimmed:
+	     full trimming strips the reflection-resolved drawing seams and the app fails at Build() with no backend. -->
+	<PropertyGroup Condition="'$(_Platform)' == 'browserwasm' AND '$(UnoWasmAot)' == 'true'">
+		<RunAOTCompilation>true</RunAOTCompilation>
+		<PublishTrimmed>true</PublishTrimmed>
+		<TrimMode>partial</TrimMode>
+	</PropertyGroup>
+	<!-- Interpreted under AOT: the cross-compiler runs out of memory on the giant ones, the Windows-compat shims reference
+	     assemblies absent from the publish set, and the rest is sample/test infrastructure off the render path. The
+	     perf-critical Uno.UI / Composition assemblies stay AOT'd. -->
+	<ItemGroup Condition="'$(_Platform)' == 'browserwasm' AND '$(UnoWasmAot)' == 'true'">
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Graph.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\SamplesApp.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Uno.UI.RuntimeTests.dll" />
+		<!-- The WebGPU interop layer stays interpreted: its wgpu callbacks take WGPUStringView by value, and an
+		     AOT-compiled call site and Dawn disagree on that shape, so the app traps with "function signature
+		     mismatch" on the first render. Nothing on the hot path lives here - the renderer itself is AOT. -->
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Uno.UI.Composition.WebGpu.Init.dll" />
+		<!-- HarfBuzz reaches back into managed code through DelegateProxies.ReferenceTableProxyImplementation
+		     while creating a font; AOT-compiled, that native-to-managed wrapper does not match what HarfBuzz
+		     calls, and the app dies during startup with "function signature mismatch" (symbolicated stack:
+		     hb_font_create -> hb_font_set_variations -> the proxy wrapper). Shaping stays fast regardless:
+		     the work is in native hb, and only the thin managed binding is interpreted. -->
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\HarfBuzzSharp.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\AwesomeAssertions.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.CodeAnalysis.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.CodeAnalysis.CSharp.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Private.Windows.Core.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Drawing.Common.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Management.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Speech.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Data.SqlClient.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Win32.Registry.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Win32.SystemEvents.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Diagnostics.EventLog.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\BenchmarkDotNet.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Graph.Core.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Microsoft.Identity.Client.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Azure.Core.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\MSTest.TestFramework.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\System.Private.ServiceModel.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Skia.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Model.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Svg.Custom.dll" />
+		<_AOT_InternalForceInterpretAssemblies Include="aot-skip\Silk.NET.OpenGL.dll" />
+	</ItemGroup>
 	<PropertyGroup Condition="'$(_Platform)' == 'browserwasm' AND '$(Configuration)'=='Debug'">
 		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
 		<DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>

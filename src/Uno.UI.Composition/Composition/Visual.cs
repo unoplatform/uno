@@ -203,7 +203,7 @@ namespace Microsoft.UI.Composition
 				// region. Mirror OnIsVisibleChanged and damage the last-rendered region (recursively).
 				if (Opacity == 0 && CompositionTarget is { } target)
 				{
-					DamageLastRenderedRegion(target);
+					ContributeRemovalDamage(target);
 				}
 			}
 			else if (propertyName is nameof(Clip) or LayoutClipPropertyName)

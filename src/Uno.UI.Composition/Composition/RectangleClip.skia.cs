@@ -1,18 +1,12 @@
 ﻿#nullable enable
 
-using System;
-using System.Numerics;
-using SkiaSharp;
-using Uno.Extensions;
+using Uno.UI.Composition.Drawing;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Composition;
 
 partial class RectangleClip
 {
-	private SKRoundRect? _skRoundRect;
-	private static readonly SKPathBuilder _spareClipPathBuilder = new();
-
 	private protected override Rect? GetBoundsCore(Visual visual)
 	{
 		return new Rect(
@@ -22,24 +16,26 @@ partial class RectangleClip
 			height: Bottom - Top);
 	}
 
-	// The path returned here is reused, do not cache
-	internal override SKPath GetClipPath(Visual visual)
+	internal override IGeometry? GetClipPath(Visual visual)
 	{
-		var builder = _spareClipPathBuilder;
-		builder.Reset();
-		builder.AddRoundRect(GetClipRoundedRect(visual), SKPathDirection.Clockwise);
+		if (GetBounds(visual) is not { } bounds)
+		{
+			return null;
+		}
 
-		return builder.Detach();
+		var builder = GeometryFactory.Current.CreatePrimitiveGeometryBuilder();
+		builder.AddRoundedRectangle(bounds, _topLeftRadius, _topRightRadius, _bottomRightRadius, _bottomLeftRadius);
+		return builder.Build();
 	}
 
-	private protected override SKRect? GetClipRect(Visual visual)
+	private protected override Rect? GetClipRect(Visual visual)
 	{
 		if (_topLeftRadius.X is 0 && _topLeftRadius.Y is 0 &&
 			_topRightRadius.X is 0 && _topRightRadius.Y is 0 &&
 			_bottomLeftRadius.X is 0 && _bottomLeftRadius.Y is 0 &&
 			_bottomRightRadius.X is 0 && _bottomRightRadius.Y is 0)
 		{
-			return GetBounds(visual)?.ToSKRect();
+			return GetBounds(visual);
 		}
 		else
 		{
@@ -47,23 +43,18 @@ partial class RectangleClip
 		}
 	}
 
-	private protected override SKRoundRect? GetClipRoundedRect(Visual visual)
+	private protected override RoundRectangle? GetClipRoundedRect(Visual visual)
 	{
 		if (GetBounds(visual) is { } bounds)
 		{
-			_skRoundRect ??= new SKRoundRect();
-
-			Span<SKPoint> radii = stackalloc SKPoint[]
+			return new RoundRectangle
 			{
-				new SKPoint(_topLeftRadius.X, _topLeftRadius.Y),
-				new SKPoint(_topRightRadius.X, _topRightRadius.Y),
-				new SKPoint(_bottomRightRadius.X, _bottomRightRadius.Y),
-				new SKPoint(_bottomLeftRadius.X, _bottomLeftRadius.Y),
+				Rect = bounds,
+				TopLeft = _topLeftRadius,
+				TopRight = _topRightRadius,
+				BottomRight = _bottomRightRadius,
+				BottomLeft = _bottomLeftRadius,
 			};
-
-			_skRoundRect.SetRectRadii(bounds.ToSKRect(), radii);
-
-			return _skRoundRect;
 		}
 		else
 		{

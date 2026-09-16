@@ -1,8 +1,8 @@
 #nullable enable
 
-using System;
 using System.Collections.Generic;
-using SkiaSharp;
+using Uno.UI.Composition.Drawing;
+using Windows.Foundation;
 
 namespace Uno.UI.Composition.Composition;
 
@@ -14,44 +14,35 @@ namespace Uno.UI.Composition.Composition;
 /// unchanged and splits each translucent region by intersection with the standard
 /// <c>new_α = α_in + α_existing × (1 − α_in)</c> rule.
 /// </summary>
-internal sealed class ShadowPathAccumulator : IDisposable
+/// <remarks>
+/// Geometries are immutable <see cref="IGeometry"/> handles; combining produces new geometries rather
+/// than mutating in place, and the intermediates are reclaimed by the GC (the Skia backend's native
+/// path has a finalizer), so the accumulator holds no unmanaged resources of its own.
+/// </remarks>
+internal sealed class ShadowPathAccumulator
 {
-	private readonly List<(SKPath Path, float Alpha)> _regions = new();
-	private readonly List<(SKPath Path, float Alpha)> _swap = new();
+	private readonly List<(IGeometry Path, float Alpha)> _regions = new();
+	private readonly List<(IGeometry Path, float Alpha)> _swap = new();
 
 	// Single α=1 region (or null). By construction never overlaps any entry in _regions.
-	private SKPath? _opaqueSilhouette;
-	private SKRect _opaqueBounds;
+	private IGeometry? _opaqueSilhouette;
+	private Rect _opaqueBounds;
 
 	/// <summary>Translucent (α&lt;1) regions. Disjoint from each other and from <see cref="OpaqueSilhouette"/>.</summary>
-	internal IReadOnlyList<(SKPath Path, float Alpha)> Regions => _regions;
+	internal IReadOnlyList<(IGeometry Path, float Alpha)> Regions => _regions;
 
 	/// <summary>The single α=1 region, or <c>null</c> if no opaque contribution has been made.</summary>
-	internal SKPath? OpaqueSilhouette => _opaqueSilhouette;
+	internal IGeometry? OpaqueSilhouette => _opaqueSilhouette;
 
 	/// <summary>Total number of distinct regions held by the accumulator (opaque counts as one).</summary>
 	internal int Count => (_opaqueSilhouette is not null ? 1 : 0) + _regions.Count;
-
-	void IDisposable.Dispose()
-	{
-		foreach (var (path, _) in _regions)
-		{
-			path.Dispose();
-		}
-
-		_regions.Clear();
-		_swap.Clear();
-		_opaqueSilhouette?.Dispose();
-		_opaqueSilhouette = null;
-		_opaqueBounds = default;
-	}
 
 	/// <summary>
 	/// Returns true if <paramref name="candidate"/> is entirely contained in <see cref="OpaqueSilhouette"/>.
 	/// Used by the walker to skip visuals whose maximum drawing extent is already absorbed by an opaque
 	/// region.
 	/// </summary>
-	internal bool IsFullyCovered(SKPath candidate)
+	internal bool IsFullyCovered(IGeometry candidate)
 	{
 		if (_opaqueSilhouette is null)
 		{
@@ -62,20 +53,15 @@ internal sealed class ShadowPathAccumulator : IDisposable
 			return true;
 		}
 
-		if (!_opaqueBounds.Contains(candidate.Bounds))
+		if (!ContainsRect(_opaqueBounds, candidate.Bounds))
 		{
 			return false;
 		}
 
-		using var diff = new SKPath();
-		if (!candidate.Op(_opaqueSilhouette, SKPathOp.Difference, diff))
-		{
-			return false;
-		}
-		return diff.IsEmpty;
+		return candidate.Combine(_opaqueSilhouette, GeometryCombineMode.Difference).IsEmpty;
 	}
 
-	internal void Add(SKPath path, float alpha)
+	internal void Add(IGeometry path, float alpha)
 	{
 		if (alpha <= 0f || path.IsEmpty)
 		{
@@ -92,17 +78,12 @@ internal sealed class ShadowPathAccumulator : IDisposable
 		}
 	}
 
-	private void AddOpaque(SKPath path)
+	private void AddOpaque(IGeometry path)
 	{
 		// Union the new path into _opaqueSilhouette. Common case (no translucent regions yet) ends here.
-		if (_opaqueSilhouette is null)
-		{
-			_opaqueSilhouette = new SKPath(path);
-		}
-		else
-		{
-			_opaqueSilhouette.Op(path, SKPathOp.Union, _opaqueSilhouette);
-		}
+		_opaqueSilhouette = _opaqueSilhouette is null
+			? path
+			: _opaqueSilhouette.Combine(path, GeometryCombineMode.Union);
 		_opaqueBounds = _opaqueSilhouette.Bounds;
 
 		if (_regions.Count == 0)
@@ -110,18 +91,13 @@ internal sealed class ShadowPathAccumulator : IDisposable
 			return;
 		}
 
-		// Strip the newly-opaque area out of every translucent region (in place — R is the only
-		// reference, and either survives in _swap as its own leftover or is disposed if fully consumed).
+		// Strip the newly-opaque area out of every translucent region; fully-consumed regions drop out.
 		foreach (var (R, alphaR) in _regions)
 		{
-			R.Op(path, SKPathOp.Difference, R);
-			if (R.IsEmpty)
+			var leftover = R.Combine(path, GeometryCombineMode.Difference);
+			if (!leftover.IsEmpty)
 			{
-				R.Dispose();
-			}
-			else
-			{
-				_swap.Add((R, alphaR));
+				_swap.Add((leftover, alphaR));
 			}
 		}
 
@@ -130,18 +106,17 @@ internal sealed class ShadowPathAccumulator : IDisposable
 		_swap.Clear();
 	}
 
-	private void AddTranslucent(SKPath path, float alpha)
+	private void AddTranslucent(IGeometry path, float alpha)
 	{
-		var remainder = new SKPath(path);
+		var remainder = path;
 
 		// Areas already covered by the opaque silhouette stay at α=1 (Porter-Duff: α + 1·(1−α) = 1) and
 		// don't need to be added anywhere. Strip them from the remainder before processing translucents.
 		if (_opaqueSilhouette is not null)
 		{
-			remainder.Op(_opaqueSilhouette, SKPathOp.Difference, remainder);
+			remainder = remainder.Combine(_opaqueSilhouette, GeometryCombineMode.Difference);
 			if (remainder.IsEmpty)
 			{
-				remainder.Dispose();
 				return;
 			}
 		}
@@ -150,26 +125,22 @@ internal sealed class ShadowPathAccumulator : IDisposable
 		// combined α stays strictly < 1 and never gets promoted into _opaqueSilhouette.
 		foreach (var (R, alphaR) in _regions)
 		{
-			using var intersect = new SKPath();
-			if (R.Op(remainder, SKPathOp.Intersect, intersect) && !intersect.IsEmpty)
+			var intersect = R.Combine(remainder, GeometryCombineMode.Intersect);
+			if (!intersect.IsEmpty)
 			{
 				var combined = alpha + alphaR * (1f - alpha);
-				_swap.Add((new SKPath(intersect), combined));
+				_swap.Add((intersect, combined));
 
 				// R becomes R - intersect (= R - remainder). We use `intersect` rather than `remainder` so
-				// the subsequent `remainder - intersect` step is unaffected by us mutating R here.
-				R.Op(intersect, SKPathOp.Difference, R);
-				if (R.IsEmpty)
+				// the subsequent `remainder - intersect` step is unaffected.
+				var rLeftover = R.Combine(intersect, GeometryCombineMode.Difference);
+				if (!rLeftover.IsEmpty)
 				{
-					R.Dispose();
-				}
-				else
-				{
-					_swap.Add((R, alphaR));
+					_swap.Add((rLeftover, alphaR));
 				}
 
 				// Strip the just-processed area from remainder (= remainder - R via the same identity).
-				remainder.Op(intersect, SKPathOp.Difference, remainder);
+				remainder = remainder.Combine(intersect, GeometryCombineMode.Difference);
 			}
 			else
 			{
@@ -181,13 +152,13 @@ internal sealed class ShadowPathAccumulator : IDisposable
 		{
 			_swap.Add((remainder, alpha));
 		}
-		else
-		{
-			remainder.Dispose();
-		}
 
 		_regions.Clear();
 		_regions.AddRange(_swap);
 		_swap.Clear();
 	}
+
+	private static bool ContainsRect(Rect outer, Rect inner)
+		=> inner.Left >= outer.Left && inner.Top >= outer.Top
+			&& inner.Right <= outer.Right && inner.Bottom <= outer.Bottom;
 }

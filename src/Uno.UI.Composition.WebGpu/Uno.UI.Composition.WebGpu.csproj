@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
+		<Nullable>enable</Nullable>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	</PropertyGroup>
+
+	<Import Project="../targetframework-override-noplatform.props" />
+
+	<PropertyGroup>
+		<AssemblyName>Uno.UI.Composition.WebGpu</AssemblyName>
+		<RootNamespace>Uno.UI.Composition.WebGpu</RootNamespace>
+		<UnoRuntimeIdentifier>Skia</UnoRuntimeIdentifier>
+		<UseCommonOverridePackage>true</UseCommonOverridePackage>
+		<CommonOverridePackageId>Uno.UI</CommonOverridePackageId>
+		<Description>WebGPU drawing backend for Uno Platform (implements the neutral IRenderBackend seam).</Description>
+	</PropertyGroup>
+
+	<!-- Modern-ABI native (wgpu-native, pinned) provisioned at build via a GitHub-release fetch;
+	     the generated binding in Native/WebGpuInterop.cs P/Invokes it via a DllImportResolver. -->
+	<Import Project="wgpu-native.targets" />
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.UI.Composition\Uno.UI.Composition.csproj" />
+		<!-- The renderer builds on the init half (device/context/bindings). The init half carries no native assets;
+		     this renderer project provisions them (wgpu-native.targets above), so they ship only with an app that
+		     references this renderer (i.e. opts into WebGPU). -->
+		<ProjectReference Include="..\Uno.UI.Composition.WebGpu.Init\Uno.UI.Composition.WebGpu.Init.csproj" />
+	</ItemGroup>
+</Project>
