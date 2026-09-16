@@ -92,6 +92,12 @@ internal sealed partial class UnoVulkanView : SurfaceView, ISurfaceHolderCallbac
 		_renderThread?.Join(TimeSpan.FromSeconds(2));
 		_renderThread = null;
 
+		// Before the device: the backend built its own command pools, images and pipelines on it, and destroying
+		// the device while those are still alive leaves the driver dereferencing them (a SIGSEGV inside
+		// vkDestroyDevice). Surface re-creation negotiates a fresh backend along with the new device.
+		(_renderer as IDisposable)?.Dispose();
+		_renderer = null;
+
 		_context?.Dispose();
 		_context = null;
 
