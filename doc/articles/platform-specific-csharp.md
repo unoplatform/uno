@@ -60,7 +60,7 @@ The following conditional symbols are predefined for each Uno platform:
 | iOS or tvOS     | `__APPLE_UIKIT__`  | Defined inside the Uno Platform repository only — **not** in consumer projects. In your own code write `__IOS__ \|\| __TVOS__`. |
 | WebAssembly     | `__WASM__`         | Only available in the `net10.0-browserwasm` target framework |
 | Desktop         | `__DESKTOP__`      | Only available in the `net10.0-desktop` target framework. |
-| Skia            | `__UNO_SKIA__`     | Defined by the `Uno.WinUI.Runtime.Skia.*` packages, which the Uno.Sdk references only for executables. A **class library** does not get it — use `__DESKTOP__`, `__WASM__` or a runtime check instead. |
+| Skia            | `__UNO_SKIA__`     | Defined by the `Uno.WinUI.Runtime.Skia.*` packages. A class library targeting `net10.0-android`, `net10.0-ios`, `net10.0-tvos` or `net10.0-browserwasm` gets it too, through the runtime package's build assets. A class library targeting `net10.0-desktop` or plain `net10.0` does **not** — use `__DESKTOP__` or a runtime check there. |
 | _Non-Windows_   | `__UNO__`          | To learn about symbols available when `__UNO__` is not present, see [below](xref:Uno.Development.PlatformSpecificCSharp#windows-specific-code) |
 | _Non-Windows_   | `HAS_UNO`          | Identical to `__UNO__`. This is the C# equivalent of the `not_winappsdk:` XAML prefix and of `*.crossruntime.cs` |
 | _Non-Windows_   | `UNO_REFERENCE_API`| Identical to `HAS_UNO`, under a legacy name. Despite the name it has nothing to do with reference assemblies, and it _is_ defined on `net10.0-android` and `net10.0-ios`. Prefer `HAS_UNO` in new code |

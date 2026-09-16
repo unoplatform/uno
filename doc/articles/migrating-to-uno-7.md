@@ -664,9 +664,15 @@ member through a base type that never had it in WinUI.
   API surface only: an object like this can no longer be given a `DataContext` of its own, so
   bind on the owning element or set the value from code instead.
 
-  The inheritance context follows WinUI's rules. An object shared by several owners — a brush
-  resource used by more than one element, say — stops receiving one once a second owner
-  attaches it. Don't rely on `{Binding}` in `Setter.Value` either; WinUI does not resolve it.
+  Uno tracks the inheritance context more strictly than WinUI. An object shared by several
+  owners permanently loses its inheritance context once a second owner attaches it. WinUI makes
+  two exceptions that Uno does not implement: an object whose first parent is a
+  `ResourceDictionary` keeps the dictionary owner's context however many elements use it, and
+  one whose first parent is a `ContentControl` keeps its context for up to two parents. A brush
+  declared as a resource and used by more than one element is the common case: its
+  `{Binding}`s still resolve on WinUI but stop resolving on Uno, so don't rely on bindings
+  inside shared resources. Don't rely on `{Binding}` in `Setter.Value` either; WinUI does not resolve
+  it.
 
   Flyouts are the most commonly hit case, and they keep working: `FlyoutBase` no longer
   carries a `DataContext`, but the placement target's `DataContext` is forwarded onto the
