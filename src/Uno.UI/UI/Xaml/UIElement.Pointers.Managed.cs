@@ -50,6 +50,12 @@ namespace Microsoft.UI.Xaml
 			set => SetHitTestVisibilityValue(value);
 		}
 
+		// The coercion returns object, and HitTestVisibilityProperty inherits, so a single change coerces
+		// a whole subtree: share the three boxes instead of allocating one per element per coercion.
+		private static readonly object s_hitTestCollapsed = HitTestability.Collapsed;
+		private static readonly object s_hitTestInvisible = HitTestability.Invisible;
+		private static readonly object s_hitTestVisible = HitTestability.Visible;
+
 		/// <summary>
 		/// This calculates the final hit-test visibility of an element.
 		/// </summary>
@@ -58,7 +64,7 @@ namespace Microsoft.UI.Xaml
 		{
 			if (this is RootVisual or XamlIslandRoot)
 			{
-				return HitTestability.Visible;
+				return s_hitTestVisible;
 			}
 
 			// The HitTestVisibilityProperty is never set directly. This means that baseValue is always the result of the parent's CoerceHitTestVisibility.
@@ -69,7 +75,7 @@ namespace Microsoft.UI.Xaml
 			// If the parent is collapsed, we should be collapsed as well. This takes priority over everything else, even if we would be visible otherwise.
 			if (parentValue == HitTestability.Collapsed)
 			{
-				return HitTestability.Collapsed;
+				return s_hitTestCollapsed;
 			}
 
 			// If we're not locally hit-test visible, visible, or enabled, we should be collapsed. Our children will be collapsed as well.
@@ -77,17 +83,17 @@ namespace Microsoft.UI.Xaml
 				!IsLoaded ||
 				!IsHitTestVisible || Visibility != Visibility.Visible || !IsEnabledOverride())
 			{
-				return HitTestability.Collapsed;
+				return s_hitTestCollapsed;
 			}
 
 			// If we're not hit (usually means we don't have a Background/Fill), we're invisible. Our children will be visible or not, depending on their state.
 			if (!IsViewHit())
 			{
-				return HitTestability.Invisible;
+				return s_hitTestInvisible;
 			}
 
 			// If we're not collapsed or invisible, we can be targeted by hit-testing. This means that we can be the source of pointer events.
-			return HitTestability.Visible;
+			return s_hitTestVisible;
 		}
 	}
 }
