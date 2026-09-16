@@ -278,13 +278,16 @@ namespace Uno.Utils {
 		// whole, so the view holds what it advertised whatever happens to the clipboard next.
 		public static getSnapshot(): string {
 			const snapshot = Clipboard.getFreshPasteSnapshot();
+			// A paste shortcut pressed since the snapshot was taken announces new content on its
+			// way; a view built for it must not be bound to the previous paste.
+			const shortcutPending = Clipboard.isPasteImminent() &&
+				(!snapshot || snapshot.time <= Clipboard.lastPasteShortcutTime);
 			let content: ClipboardContent;
-			if (snapshot) {
-				content = Clipboard.buildContentFromPaste(snapshot);
-			} else if (Clipboard.isPasteImminent()) {
-				// A paste shortcut was just pressed; the paste event carrying the content is on its way.
+			if (shortcutPending) {
 				content = Clipboard.emptyContent(ClipboardContentStatus.Imminent);
 				content.pasteShortcutTime = Clipboard.lastPasteShortcutTime;
+			} else if (snapshot) {
+				content = Clipboard.buildContentFromPaste(snapshot);
 			} else if (Clipboard.ownContent) {
 				content = Clipboard.buildContentFromOwn(Clipboard.ownContent);
 			} else {
