@@ -6,6 +6,24 @@ using Uno.Storage.Internal;
 
 namespace Windows.ApplicationModel.DataTransfer;
 
+// Values of ClipboardContentData.Status; mirrored by ClipboardContentStatus in Clipboard.ts.
+internal static class ClipboardContentStatus
+{
+	// The content is known and handed over whole: a recent paste, or this application's own write.
+	public const string Paste = "paste";
+	public const string Own = "own";
+
+	// The content is not known yet and is resolved by the providers.
+	public const string Imminent = "imminent";
+	public const string Unknown = "unknown";
+
+	// Outcomes of an async read.
+	public const string Async = "async";
+	public const string Empty = "empty";
+	public const string Denied = "denied";
+	public const string Unavailable = "unavailable";
+}
+
 internal sealed class ClipboardContentData
 {
 	[JsonPropertyName("status")]

@@ -218,21 +218,21 @@ namespace Windows.ApplicationModel.DataTransfer
 
 			switch (snapshot.Status)
 			{
-				case "paste":
-				case "own":
+				case ClipboardContentStatus.Paste:
+				case ClipboardContentStatus.Own:
 					// A recent paste gesture was captured, or the clipboard still holds the last
 					// content written by this application: the content is known and the view
 					// holds it, whatever happens to the clipboard afterwards.
 					SetKnownContent(package, snapshot);
 					break;
 
-				case "imminent":
+				case ClipboardContentStatus.Imminent:
 					// A paste shortcut was just pressed; advertise everything and let the
 					// providers resolve from the incoming paste event.
 					AddPendingContent(package, snapshot.PasteShortcutTime, includeStorageItems: true);
 					break;
 
-				case "unknown":
+				case ClipboardContentStatus.Unknown:
 					// Advertise the formats the async clipboard API may provide.
 					AddPendingContent(package, pasteShortcutTime: -1, includeStorageItems: false);
 					break;
@@ -324,9 +324,9 @@ namespace Windows.ApplicationModel.DataTransfer
 
 			return data.Status switch
 			{
-				"denied" => throw new UnauthorizedAccessException(
+				ClipboardContentStatus.Denied => throw new UnauthorizedAccessException(
 					"Access to the clipboard was denied by the browser. Reading the clipboard requires user permission or a paste gesture."),
-				"unavailable" => throw new NotSupportedException(
+				ClipboardContentStatus.Unavailable => throw new NotSupportedException(
 					"The browser clipboard API is not available in this context. A secure context (HTTPS) is required."),
 				_ => data,
 			};

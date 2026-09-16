@@ -53,10 +53,25 @@ namespace Uno.Utils {
 		imageFile: File;
 	}
 
+	// Mirrored by ClipboardContentStatus in ClipboardData.wasm.cs.
+	enum ClipboardContentStatus {
+		// The content is known and handed over whole: a recent paste, or this application's own write.
+		Paste = "paste",
+		Own = "own",
+		// The content is not known yet and is resolved by the providers.
+		Imminent = "imminent",
+		Unknown = "unknown",
+		// Outcomes of an async read.
+		Async = "async",
+		Empty = "empty",
+		Denied = "denied",
+		Unavailable = "unavailable",
+	}
+
 	// What managed code gets for a view: the content itself when it is known (a captured paste or
 	// this application's own write), or the status telling it how the content is to be read.
 	interface ClipboardContent {
-		status: string;
+		status: ClipboardContentStatus;
 		texts: ClipboardTextEntry[];
 		files: Uno.Storage.NativeStorageItemInfo[];
 		image: Uno.Storage.NativeStorageItemInfo;
@@ -226,7 +241,7 @@ namespace Uno.Utils {
 				: null;
 		}
 
-		private static emptyContent(status: string): ClipboardContent {
+		private static emptyContent(status: ClipboardContentStatus): ClipboardContent {
 			return { status: status, texts: [], files: [], image: null, handles: [], pasteShortcutTime: -1 };
 		}
 
@@ -249,12 +264,12 @@ namespace Uno.Utils {
 				content = Clipboard.buildContentFromPaste(snapshot);
 			} else if (Clipboard.isPasteImminent()) {
 				// A paste shortcut was just pressed; the paste event carrying the content is on its way.
-				content = Clipboard.emptyContent("imminent");
+				content = Clipboard.emptyContent(ClipboardContentStatus.Imminent);
 				content.pasteShortcutTime = Clipboard.lastPasteShortcutTime;
 			} else if (Clipboard.ownContent) {
 				content = Clipboard.buildContentFromOwn(Clipboard.ownContent);
 			} else {
-				content = Clipboard.emptyContent((navigator as NavigatorClipboard).clipboard ? "unknown" : "unavailable");
+				content = Clipboard.emptyContent((navigator as NavigatorClipboard).clipboard ? ClipboardContentStatus.Unknown : ClipboardContentStatus.Unavailable);
 			}
 			return JSON.stringify(content);
 		}
@@ -305,7 +320,7 @@ namespace Uno.Utils {
 		private static buildContentFromPaste(snapshot: PasteSnapshot): ClipboardContent {
 			// Registering the files as native storage items lets managed code stream them
 			// on demand instead of copying their content eagerly.
-			const content = Clipboard.emptyContent("paste");
+			const content = Clipboard.emptyContent(ClipboardContentStatus.Paste);
 			content.texts = snapshot.texts;
 			content.files = Clipboard.retainHandles(snapshot.files, content);
 
@@ -318,7 +333,7 @@ namespace Uno.Utils {
 		}
 
 		private static buildContentFromOwn(own: OwnContent): ClipboardContent {
-			const content = Clipboard.emptyContent("own");
+			const content = Clipboard.emptyContent(ClipboardContentStatus.Own);
 			content.texts = own.texts;
 
 			if (own.imageBlob) {
@@ -369,11 +384,11 @@ namespace Uno.Utils {
 		private static async readAsyncClipboard(): Promise<ClipboardContent> {
 			const nav = navigator as NavigatorClipboard;
 			if (!nav.clipboard) {
-				return Clipboard.emptyContent("unavailable");
+				return Clipboard.emptyContent(ClipboardContentStatus.Unavailable);
 			}
 
 			if (nav.clipboard.read) {
-				const content = Clipboard.emptyContent("async");
+				const content = Clipboard.emptyContent(ClipboardContentStatus.Async);
 				try {
 					const items = await nav.clipboard.read();
 
@@ -398,7 +413,7 @@ namespace Uno.Utils {
 					}
 
 					if (content.texts.length === 0 && !content.image) {
-						content.status = "empty";
+						content.status = ClipboardContentStatus.Empty;
 					}
 					return content;
 				} catch (e) {
@@ -407,21 +422,21 @@ namespace Uno.Utils {
 					if (content.handles.length > 0) {
 						Clipboard.releaseHandles(content.handles.join(";"));
 					}
-					return Clipboard.emptyContent("denied");
+					return Clipboard.emptyContent(ClipboardContentStatus.Denied);
 				}
 			}
 
 			// Older engines without read(): plain text is the best we can do.
 			try {
 				const text = await nav.clipboard.readText();
-				const content = Clipboard.emptyContent(text ? "async" : "empty");
+				const content = Clipboard.emptyContent(text ? ClipboardContentStatus.Async : ClipboardContentStatus.Empty);
 				if (text) {
 					content.texts.push({ type: "text/plain", value: text });
 				}
 				return content;
 			} catch (e) {
 				console.error(`Clipboard: failed to read text from clipboard: ${e}`);
-				return Clipboard.emptyContent("denied");
+				return Clipboard.emptyContent(ClipboardContentStatus.Denied);
 			}
 		}
 
