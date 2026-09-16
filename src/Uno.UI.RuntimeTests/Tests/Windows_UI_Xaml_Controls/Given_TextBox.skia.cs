@@ -71,7 +71,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(SUT, FocusManager.GetFocusedElement(SUT.XamlRoot), "TextBox should own the entry session");
 
 				var placement = ExpectedPlacementForHost();
-				await UITestHelper.WaitFor(() => GetHiddenInputPlacement() == placement, timeoutMS: 3000, message: $"hidden input reports the '{placement}' placement expected of this host");
+				// Reported after the wait, not through WaitFor's message, which is formatted at call time and so
+				// would describe the state before the wait rather than the state that failed it.
+				Assert.IsTrue(await SettlesTo(() => GetHiddenInputPlacement() == placement),
+					$"expected the hidden input to report '{placement}'; it is {DescribeHiddenInput()}");
 
 				var bounds = SUT.TransformToVisual(null).TransformBounds(new Rect(0, 0, SUT.ActualWidth, SUT.ActualHeight));
 				await UITestHelper.WaitFor(() => IsPlacedFor(placement, bounds, GetHiddenInputRect()), timeoutMS: 3000, message: $"hidden input placed for '{placement}' against the focused TextBox {bounds}");
@@ -82,6 +85,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var moved = SUT.TransformToVisual(null).TransformBounds(new Rect(0, 0, SUT.ActualWidth, SUT.ActualHeight));
 				Assert.IsTrue(moved.Y >= bounds.Y + 100, $"TextBox should have moved down, was {bounds}, now {moved}");
 				await UITestHelper.WaitFor(() => IsPlacedFor(placement, moved, GetHiddenInputRect()), timeoutMS: 3000, message: $"hidden input still placed for '{placement}' after the TextBox moved to {moved}");
+
+				// Moving focus to a second TextBox reuses the shared input instead of creating one, which is how
+				// every entry session after the first behaves once another control has already used it.
+				var second = new TextBox { Width = 200, Margin = new Thickness(40, 20, 0, 0), HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+				((Grid)WindowHelper.WindowContent).Children.Add(second);
+				await UITestHelper.WaitForLoaded(second);
+
+				Assert.IsTrue(second.Focus(FocusState.Programmatic), "second TextBox should take focus");
+				var secondBounds = second.TransformToVisual(null).TransformBounds(new Rect(0, 0, second.ActualWidth, second.ActualHeight));
+				Assert.IsTrue(await SettlesTo(() => GetHiddenInputPlacement() == placement),
+					$"expected the reused input to report '{placement}'; it is {DescribeHiddenInput()}");
+				await UITestHelper.WaitFor(() => IsPlacedFor(placement, secondBounds, GetHiddenInputRect()), timeoutMS: 3000, message: $"reused input placed for '{placement}' against the second TextBox {secondBounds}");
 			}
 			finally
 			{
@@ -105,6 +120,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 						&& input.Width <= textBox.Width + 1 && input.Height <= textBox.Height + 1
 						&& input.X >= textBox.X - 1 && input.Y >= textBox.Y - 1
 						&& input.Right <= textBox.Right + 1 && input.Bottom <= textBox.Bottom + 1);
+
+		// Polls instead of UITestHelper.WaitFor so the caller can assert with state captured after the wait.
+		private static async Task<bool> SettlesTo(Func<bool> condition, int timeoutMS = 5000)
+		{
+			var giveUp = DateTimeOffset.UtcNow.AddMilliseconds(timeoutMS);
+			while (DateTimeOffset.UtcNow < giveUp)
+			{
+				if (condition())
+				{
+					return true;
+				}
+
+				await WindowHelper.WaitForIdle();
+			}
+
+			return condition();
+		}
+
+		// Everything a failure needs to tell "the input was never created" apart from "it was placed wrongly".
+		private static string DescribeHiddenInput()
+			=> InvokeBrowserJs("(function(){const e = document.getElementById('uno-input'); const a = document.activeElement; const active = a ? (a.id || a.tagName) : 'none'; if (!e) { return 'absent (activeElement=' + active + ')'; } const r = e.getBoundingClientRect(); return \"placement='\" + (e.dataset.unoPlacement ?? '') + \"' rect=\" + [r.x, r.y, r.width, r.height].map(Math.round).join(',') + ' activeElement=' + active + ' focused=' + (a === e);})()");
 
 		// Restates the host predicate rather than reading back what the page reports: deriving the expectation
 		// from data-uno-placement would pass even if the gate itself regressed (off-screen on a desktop
