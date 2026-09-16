@@ -63,6 +63,12 @@ namespace Microsoft.UI.Xaml
 
 		private bool _defaultStyleApplied;
 
+		/// <summary>
+		/// Set by a live Enter, which has just applied the styles; consumed and cleared by the Loading
+		/// pass that follows it. A non-live Enter applies no style, so it clears the flag instead.
+		/// </summary>
+		private bool _stylesAppliedOnEnter;
+
 		private ResourceDictionary _resources;
 
 		private static readonly Uri DefaultBaseUri = new Uri("ms-appx://local");
@@ -394,8 +400,18 @@ namespace Microsoft.UI.Xaml
 
 			var effectiveTheme = GetTheme();
 
-			// Apply active style and default style when we enter the visual tree.
-			ApplyStyles();
+			// Apply active style and default style when we enter the visual tree. When the live Enter that
+			// precedes this pass already applied them, the ancestor scope hasn't changed since, so the
+			// implicit style would resolve to the same Style — only the default style still needs a look.
+			if (_stylesAppliedOnEnter)
+			{
+				_stylesAppliedOnEnter = false;
+				ApplyDefaultStyle();
+			}
+			else
+			{
+				ApplyStyles();
+			}
 
 			// This is replicating the UpdateAllThemeReferences call in Enter in WinUI.
 			// Updates theme references to account for new ancestor theme dictionaries.
