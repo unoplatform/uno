@@ -37,6 +37,9 @@ internal static class DrawingBackendConfiguration
 			builder.FontProvider(global::Uno.UI.Composition.Skia.SkiaBackend.CreateFontProvider());
 			builder.ImageEncoderDecoder(global::Uno.UI.Composition.Skia.SkiaBackend.CreateImageDecoder());
 			builder.GeometryFactory(global::Uno.UI.Composition.Skia.SkiaBackend.CreateGeometryFactory());
+			// Same story for the Lottie renderer: unregistered it reports "No ILottieRenderer is registered" and
+			// the player silently shows its fallback content instead of the animation.
+			builder.LottieRenderer(global::Uno.UI.Lottie.LottieBackend.CreateLottieRenderer());
 #endif
 			// UNO_MANAGED_GEOMETRY swaps the geometry seam to the managed engine (rasterized on Skia pixels).
 			if (Environment.GetEnvironmentVariable("UNO_MANAGED_GEOMETRY") is "1" or "true")
