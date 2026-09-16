@@ -54,6 +54,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		// WebAssembly runs in a single browser tab; disposal is not part of the
 		// per-window lifecycle exercised by the Skia-Desktop router.
 		_relationshipPeers.Clear();
+		_relationshipUpdatesInProgress.Clear();
+		_pendingRelationshipUpdates.Clear();
 	}
 
 	private bool _isAccessibilityEnabled;
@@ -185,6 +187,8 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 	/// </summary>
 	private readonly List<(IntPtr Handle, WeakReference<AutomationPeer> Peer)> _pendingLabelledBy = new();
 	private readonly Dictionary<IntPtr, WeakReference<AutomationPeer>> _relationshipPeers = new();
+	private readonly HashSet<IntPtr> _relationshipUpdatesInProgress = new();
+	private readonly HashSet<IntPtr> _pendingRelationshipUpdates = new();
 	private bool _relationshipRefreshQueued;
 
 	/// <summary>
@@ -1366,6 +1370,35 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 	internal void UpdateRelationships(AutomationPeer peer, IntPtr handle)
 	{
+		if (!_relationshipUpdatesInProgress.Add(handle))
+		{
+			// Relation getters can source-align their collections and synchronously raise another update.
+			// Coalesce that notification into a final pass after the current registration completes.
+			_pendingRelationshipUpdates.Add(handle);
+			return;
+		}
+
+		try
+		{
+			while (true)
+			{
+				_pendingRelationshipUpdates.Remove(handle);
+				UpdateRelationshipsCore(peer, handle);
+				if (!_pendingRelationshipUpdates.Remove(handle))
+				{
+					break;
+				}
+			}
+		}
+		finally
+		{
+			_pendingRelationshipUpdates.Remove(handle);
+			_relationshipUpdatesInProgress.Remove(handle);
+		}
+	}
+
+	private void UpdateRelationshipsCore(AutomationPeer peer, IntPtr handle)
+	{
 		var wasTracked = _relationshipPeers.TryGetValue(handle, out var reference);
 		if (SemanticElementFactory.ApplyRelationshipAttributes(peer, handle, clearMissing: wasTracked))
 		{
@@ -2088,6 +2121,12 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 	protected override void AnnounceOnPlatform(string text, bool assertive)
 	{
+		if (!NativeDispatcher.Main.HasThreadAccess)
+		{
+			NativeDispatcher.Main.Enqueue(() => AnnounceOnPlatform(text, assertive));
+			return;
+		}
+
 		if (assertive)
 		{
 			NativeMethods.AnnounceAssertive(text);
