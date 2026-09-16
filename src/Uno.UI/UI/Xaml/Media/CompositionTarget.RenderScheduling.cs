@@ -78,12 +78,16 @@ public partial class CompositionTarget
 	// the UI thread.
 	private long _lastNativeFrameTimestamp = Stopwatch.GetTimestamp();
 	private long _lastStalledRenderLogTimestamp;
+	private int _stalledRenderReports;
 
 	/// <summary>How long a render request may stay outstanding before it is reported as a stall.</summary>
 	private const int StalledRenderReportMs = 2000;
 
 	/// <summary>Minimum interval between stall reports, so a stalled window logs once rather than per request.</summary>
 	private const int StalledRenderReportIntervalMs = 5000;
+
+	/// <summary>Reports per stall, so a window the host legitimately stopped drawing (minimized) doesn't log forever.</summary>
+	private const int MaxStalledRenderReports = 3;
 
 	private bool RenderRequested
 	{
@@ -115,7 +119,9 @@ public partial class CompositionTarget
 			LogRenderState();
 		}
 
-		if (shouldEnqueue)
+		// Re-invalidating a request the host never answered is what keeps a lost frame from stopping rendering
+		// for good: the request latches, every later one coalesces into it, and nothing else would ever ask again.
+		if (shouldEnqueue || IsRenderRequestStalled())
 		{
 			if (ContentRoot.XamlRoot is { } xamlRoot && XamlRootMap.GetHostForRoot(xamlRoot) is { } host)
 			{
@@ -126,39 +132,46 @@ public partial class CompositionTarget
 		else
 		{
 			this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(ICompositionTarget.RequestNewFrame)} found no need to invalidate render.");
-			ReportStalledRenderRequest();
 		}
 	}
 
 	/// <summary>
-	/// Reports a render request that has been outstanding while the host produced no frame. Rendering is then
-	/// stopped for good — animations never tick again and anything awaiting a rendered frame hangs — so this is
-	/// the only signal that separates "the host stopped drawing" from "nothing asked for a frame".
+	/// Whether a render request has been outstanding while the host produced no frame, so the request should be
+	/// re-issued. Rate-limited, so a host that is merely slow re-asks at most once per
+	/// <see cref="StalledRenderReportIntervalMs"/> rather than on every request. Also reports it: a stall that
+	/// recovers this way is invisible otherwise, and it is the one signal that separates "the host stopped
+	/// drawing" from "nothing asked for a frame".
 	/// </summary>
-	private void ReportStalledRenderRequest()
+	private bool IsRenderRequestStalled()
 	{
-		if (!this.Log().IsEnabled(LogLevel.Warning))
-		{
-			return;
-		}
-
 		var sinceFrameMs = (long)Stopwatch.GetElapsedTime(Interlocked.Read(ref _lastNativeFrameTimestamp)).TotalMilliseconds;
 		if (sinceFrameMs < StalledRenderReportMs)
 		{
-			return;
+			return false;
 		}
 
 		var lastLog = Interlocked.Read(ref _lastStalledRenderLogTimestamp);
 		if (lastLog != 0 && Stopwatch.GetElapsedTime(lastLog).TotalMilliseconds < StalledRenderReportIntervalMs)
 		{
-			return;
+			return false;
 		}
 
 		Interlocked.Exchange(ref _lastStalledRenderLogTimestamp, Stopwatch.GetTimestamp());
-		this.Log().Warn(
-			$"CompositionTarget#{GetHashCode()}: a render request has been outstanding for {sinceFrameMs}ms with no "
-			+ $"frame from the host (renderRequested={_renderRequested}, renderedAheadOfTime={_renderedAheadOfTime}, "
-			+ $"requestedAfterAheadOfTimePaint={_renderRequestedAfterAheadOfTimePaint}).");
+
+		// The frame we are about to ask for has to reach the UI thread, and this handshake is the other half that
+		// can be left holding a lost frame: it is cleared when a frame is taken and only set again by the render
+		// callback that frame was supposed to schedule.
+		Interlocked.Exchange(ref _shouldEnqueueRenderOnNextNativePlatformFrameRequested, true);
+
+		if (_stalledRenderReports++ < MaxStalledRenderReports && this.Log().IsEnabled(LogLevel.Warning))
+		{
+			this.Log().Warn(
+				$"CompositionTarget#{GetHashCode()}: a render request has been outstanding for {sinceFrameMs}ms with no "
+				+ $"frame from the host (renderRequested={_renderRequested}, renderedAheadOfTime={_renderedAheadOfTime}, "
+				+ $"requestedAfterAheadOfTimePaint={_renderRequestedAfterAheadOfTimePaint}); asking again.");
+		}
+
+		return true;
 	}
 
 	private void EnqueueRenderCallback()
@@ -212,6 +225,7 @@ public partial class CompositionTarget
 		this.LogTrace()?.Trace($"CompositionTarget#{GetHashCode()}: {nameof(OnNativePlatformFrameRequested)}");
 
 		Interlocked.Exchange(ref _lastNativeFrameTimestamp, Stopwatch.GetTimestamp());
+		_stalledRenderReports = 0;
 
 		if (Interlocked.Exchange(ref _shouldEnqueueRenderOnNextNativePlatformFrameRequested, false))
 		{
