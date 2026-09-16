@@ -56,8 +56,23 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase, INativeWindowWrapp
 	internal ApplicationActivity CurrentActivity
 	{
 		get => _activity;
-		set => _activity = value;
+		set
+		{
+			if (ReferenceEquals(_activity, value))
+			{
+				return;
+			}
+
+			_activity = value;
+			CurrentActivityChanged?.Invoke(this, EventArgs.Empty);
+		}
 	}
+
+	/// <summary>
+	/// Raised when another activity takes over this window, so state bound to the previous
+	/// activity's render view (such as an active IME session) can rebind.
+	/// </summary>
+	internal event EventHandler CurrentActivityChanged;
 
 	// Per-window input sources, resolved by each window's InputManager via its IXamlRootHost
 	// and fed by the driving activity's native event dispatch.
