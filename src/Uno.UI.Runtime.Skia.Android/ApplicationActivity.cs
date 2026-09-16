@@ -342,6 +342,10 @@ namespace Microsoft.UI.Xaml
 				RelativeLayout.AddView(NativeLayerHost);
 			}
 
+			// The window was handed over in OnCreate, before this render view existed; state bound to
+			// it, such as an IME session's plugin, can only rebind now.
+			_wrapper?.NotifyDrivingActivityReady();
+
 			base.OnStart();
 
 			// On activity re-creation (deep-link, process restore) the managed Window already

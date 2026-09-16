@@ -79,6 +79,14 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 	/// </summary>
 	private void BindToPlugin(TextInputPlugin? plugin)
 	{
+		if (plugin is null)
+		{
+			// The activity takes the window in OnCreate and only builds its render view -- and with
+			// it the plugin -- in OnStart. Keep the current binding until one exists, rather than
+			// unbinding the session into nothing.
+			return;
+		}
+
 		if (ReferenceEquals(plugin, _subscribedPlugin))
 		{
 			return;
@@ -91,11 +99,6 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 
 		UnsubscribeFromConnection();
 		_subscribedPlugin = plugin;
-
-		if (plugin is null)
-		{
-			return;
-		}
 
 		plugin.InputConnectionCreated += OnInputConnectionCreated;
 		SubscribeToConnection(plugin.ActiveInputConnection);
