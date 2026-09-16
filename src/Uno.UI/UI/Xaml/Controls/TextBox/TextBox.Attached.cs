@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -66,7 +67,7 @@ public class TextBoxExtensions
 			typeof(bool),
 			typeof(TextBox),
 			new FrameworkPropertyMetadata(
-				defaultValue: false,
+				defaultValue: Boxes.BooleanBoxes.BoxedFalse,
 				options: FrameworkPropertyMetadataOptions.Inherits,
 				propertyChangedCallback: OnShowKeyboardDismissButtonChanged));
 
