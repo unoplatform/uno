@@ -361,7 +361,8 @@ namespace Windows.ApplicationModel.DataTransfer
 				return;
 			}
 
-			if (DataPackage.IsUriWebLink(line))
+			// WinUI reserves WebLink for http and https; any other scheme is an application link.
+			if (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps)
 			{
 				package.SetWebLink(uri);
 			}
