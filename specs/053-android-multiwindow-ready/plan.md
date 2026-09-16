@@ -42,8 +42,10 @@ Apple UIKit runtime already use, making the architecture **multi-window-ready**.
   other single-window Skia hosts (macOS, Linux.FrameBuffer, WASM, AppleUIKit) likewise don't
   unregister. Needed only once a close/reopen cycle exists.
 
-`SupportsMultipleWindows` stays **`false`**. Definition of done for this work is:
-**per-window instances everywhere, and zero single-window regressions.**
+The de-singletoning work keeps `SupportsMultipleWindows` **`false`**; the follow-up above flips
+it to `true`. Definition of done for the de-singletoning is **per-window instances everywhere,
+and zero single-window regressions**; the follow-up adds **a live second Activity that neither
+disturbs the first window nor leaks it**.
 
 ## Current architecture — the three anchors
 
