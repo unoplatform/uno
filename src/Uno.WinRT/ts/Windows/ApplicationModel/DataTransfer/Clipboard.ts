@@ -567,7 +567,8 @@ namespace Uno.Utils {
 				deferred.completion = Clipboard.commitWriteAsync(generation, () => nav.clipboard.writeText(""));
 			}
 
-			// resolveWriteAsync reports the outcome; a write failed by abortWrite has no one left to.
+			// resolveWriteAsync reports the outcome; a write failed by abortWrite has no one left to
+			// observe it.
 			deferred.completion.catch(() => { });
 			Clipboard.deferredWrite = deferred;
 		}
@@ -635,7 +636,8 @@ namespace Uno.Utils {
 						if (!value) {
 							console.warn(`Clipboard: no data was available for format '${entry.type}'; it was written empty.`);
 						}
-						entry.resolve(new Blob([value ? value.value : ""], { type: key }));
+						// The key carries the "web " prefix of a custom format; the blob's type is the MIME type.
+						entry.resolve(new Blob([value ? value.value : ""], { type: entry.type }));
 					}
 				}
 
