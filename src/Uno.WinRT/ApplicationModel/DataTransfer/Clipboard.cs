@@ -54,7 +54,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			bool? containsText = null;
 			TryGetContainsText(ref containsText);
 
-			return containsText ?? GetContent()?.Contains(StandardDataFormats.Text) == true;
+			return containsText ?? GetContent()?.Contains(StandardDataFormats.Text) ?? false;
 		}
 
 		/// <summary>
