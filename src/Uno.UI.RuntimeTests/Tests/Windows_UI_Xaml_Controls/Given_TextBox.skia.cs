@@ -91,27 +91,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		// "tracking": the input sits over the TextBox's inner text block, so it is within the TextBox bounds and
 		// smaller than them by the padding and border. "offscreen": entirely above the viewport, whatever the
-		// TextBox does, so there is no rect for the browser to scroll into view.
-		private static bool IsPlacedFor(string placement, Rect textBox, Rect input)
-			=> placement == "offscreen"
-				? input.Bottom <= 0
-				: input.Width > 0 && input.Height > 0
-					&& input.Width <= textBox.Width + 1 && input.Height <= textBox.Height + 1
-					&& input.X >= textBox.X - 1 && input.Y >= textBox.Y - 1
-					&& input.Right <= textBox.Right + 1 && input.Bottom <= textBox.Bottom + 1;
+		// TextBox does, so there is no rect for the browser to scroll into view. A missing input reads as null
+		// and satisfies neither: an empty rect would otherwise pass the off-screen check by default.
+		private static bool IsPlacedFor(string placement, Rect textBox, Rect? inputRect)
+			=> inputRect is { } input
+				&& (placement == "offscreen"
+					? input.Bottom < 0
+					: input.Width > 0 && input.Height > 0
+						&& input.Width <= textBox.Width + 1 && input.Height <= textBox.Height + 1
+						&& input.X >= textBox.X - 1 && input.Y >= textBox.Y - 1
+						&& input.Right <= textBox.Right + 1 && input.Bottom <= textBox.Bottom + 1);
 
 		private static string GetHiddenInputPlacement()
 			=> InvokeBrowserJs("(function(){const e = document.getElementById('uno-input'); return e ? (e.dataset.unoPlacement ?? '') : '';})()");
 
 		// Reads the rendered rect rather than the inline styles, so a CSS-level placement or sizing regression
-		// is caught too.
-		private static Rect GetHiddenInputRect()
+		// is caught too. Null when the input is absent or the rect cannot be read, which is never a pass.
+		private static Rect? GetHiddenInputRect()
 		{
 			var raw = InvokeBrowserJs("(function(){const e = document.getElementById('uno-input'); if (!e) { return ''; } const r = e.getBoundingClientRect(); return r.x + ',' + r.y + ',' + r.width + ',' + r.height;})()");
 			var parts = raw.Split(',');
 			if (parts.Length != 4)
 			{
-				return default;
+				return null;
 			}
 
 			var values = new double[4];
@@ -119,7 +121,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				if (!double.TryParse(parts[i], System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out values[i]))
 				{
-					return default;
+					return null;
 				}
 			}
 
