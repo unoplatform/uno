@@ -146,8 +146,9 @@ namespace Uno.Utils {
 			// longer authoritative. Focus alone is not enough — spurious focus events fire at
 			// startup and around browser UI (e.g. permission bubbles), so invalidation requires an
 			// actual blur since the content became known.
-			document.addEventListener("copy", Clipboard.invalidateKnownContent);
-			document.addEventListener("cut", Clipboard.invalidateKnownContent);
+			// Capture-phase too, so a control handling the event itself cannot hide the change.
+			document.addEventListener("copy", Clipboard.invalidateKnownContent, true);
+			document.addEventListener("cut", Clipboard.invalidateKnownContent, true);
 			window.addEventListener("blur", () => { Clipboard.blurredSinceKnownContent = true; });
 			window.addEventListener("focus", () => {
 				if (Clipboard.blurredSinceKnownContent) {
@@ -725,8 +726,11 @@ namespace Uno.Utils {
 		}
 
 		public static startContentChanged() {
+			// Capture-phase like the paste snapshot, so a control that stops the event from
+			// bubbling cannot leave subscribers unaware of content the snapshot already holds.
+			// Registered after the snapshot listener, so the snapshot is in place when raised.
 			['cut', 'copy', 'paste'].forEach(function (event) {
-				document.addEventListener(event, Clipboard.onClipboardChanged);
+				document.addEventListener(event, Clipboard.onClipboardChanged, true);
 			});
 
 			// Browsers cannot observe external clipboard changes; re-raising on focus lets
@@ -736,7 +740,7 @@ namespace Uno.Utils {
 
 		public static stopContentChanged() {
 			['cut', 'copy', 'paste'].forEach(function (event) {
-				document.removeEventListener(event, Clipboard.onClipboardChanged);
+				document.removeEventListener(event, Clipboard.onClipboardChanged, true);
 			});
 
 			window.removeEventListener("focus", Clipboard.onClipboardChanged);
