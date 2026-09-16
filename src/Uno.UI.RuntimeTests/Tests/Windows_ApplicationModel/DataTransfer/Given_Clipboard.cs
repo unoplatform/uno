@@ -268,10 +268,12 @@ partial class Given_Clipboard
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(Include, Wasm)]
-	public async Task When_GetSet_Clipboard_ApplicationLink()
+	[DataRow("uno-test://open/item")]
+	[DataRow("httpx://open/item")]
+	public async Task When_GetSet_Clipboard_ApplicationLink(string address)
 	{
 		var package = new DataPackage();
-		var uri = new Uri("uno-test://open/item");
+		var uri = new Uri(address);
 		package.SetApplicationLink(uri);
 
 		Clipboard.SetContent(package);
@@ -595,6 +597,80 @@ partial class Given_Clipboard
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(Include, Wasm)]
+	public async Task When_ContentChanged_Handler_Clears_During_SetContent()
+	{
+#if HAS_UNO
+		InstallClipboardWriteRecorder();
+		var cleared = false;
+		EventHandler<object> onContentChanged = (_, _) =>
+		{
+			if (!cleared)
+			{
+				cleared = true;
+				Clipboard.Clear();
+			}
+		};
+		Clipboard.ContentChanged += onContentChanged;
+		try
+		{
+			// The handler reacts to the write by clearing the clipboard, which is the newer
+			// call; the write it reacted to must not land on top of it.
+			var package = new DataPackage();
+			package.SetText(TestString);
+			Clipboard.SetContent(package);
+
+			await WaitForClipboardAsync(() => GetRecordedClipboardWrites().Contains("text:"));
+			await Task.Delay(1000);
+
+			CollectionAssert.AreEqual(new[] { "text:" }, GetRecordedClipboardWrites());
+			Assert.IsFalse(Clipboard.GetContent().Contains(StandardDataFormats.Text));
+		}
+		finally
+		{
+			Clipboard.ContentChanged -= onContentChanged;
+			RemoveClipboardWriteRecorder();
+		}
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
+	public async Task When_Clear_While_Write_Pending()
+	{
+#if HAS_UNO
+		InstallClipboardWriteRecorder(writeDelayMs: 300);
+		try
+		{
+			// The text has been handed to the browser, which is still committing it, when Clear
+			// is issued; the clear must reach the clipboard after the text, not race it.
+			var package = new DataPackage();
+			package.SetText(TestString);
+			Clipboard.SetContent(package);
+
+			await WaitForClipboardAsync(IsClipboardWriteIssued);
+			Clipboard.Clear();
+
+			await WaitForClipboardAsync(() => GetRecordedClipboardWrites().Length == 2);
+			await Task.Delay(1000);
+
+			CollectionAssert.AreEqual(new[] { "item:text/plain", "text:" }, GetRecordedClipboardWrites());
+			Assert.IsFalse(Clipboard.GetContent().Contains(StandardDataFormats.Text));
+		}
+		finally
+		{
+			RemoveClipboardWriteRecorder();
+		}
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
 	public async Task When_SetContent_Empty_Package()
 	{
 #if HAS_UNO
@@ -730,18 +806,28 @@ partial class Given_Clipboard
 
 	// Records the system clipboard writes instead of performing them, which needs no user gesture,
 	// and slows image decoding down so a transcode is still pending when a later call lands.
-	private static void InstallClipboardWriteRecorder()
+	// Records what reaches the browser clipboard, in completion order; writeDelayMs makes
+	// ClipboardItem writes take that long to complete, like a browser still committing one.
+	private static void InstallClipboardWriteRecorder(int writeDelayMs = 0)
 		=> InvokeJs(
-			"""
+			$$"""
 			const clipboard = navigator.clipboard;
 			window.__unoClipboardWrites = [];
+			window.__unoClipboardWriteIssued = false;
 			window.__unoCreateImageBitmap = window.createImageBitmap;
 			window.createImageBitmap = (...args) => new Promise(resolve => setTimeout(() => resolve(window.__unoCreateImageBitmap.apply(window, args)), 300));
 			clipboard.write = items => {
-				for (const item of items) {
-					window.__unoClipboardWrites.push('item:' + Array.from(item.types).sort().join(','));
+				window.__unoClipboardWriteIssued = true;
+				const record = () => {
+					for (const item of items) {
+						window.__unoClipboardWrites.push('item:' + Array.from(item.types).sort().join(','));
+					}
+				};
+				if ({{writeDelayMs}} === 0) {
+					record();
+					return Promise.resolve();
 				}
-				return Promise.resolve();
+				return new Promise(resolve => setTimeout(() => { record(); resolve(); }, {{writeDelayMs}}));
 			};
 			clipboard.writeText = text => {
 				window.__unoClipboardWrites.push('text:' + text);
@@ -751,7 +837,11 @@ partial class Given_Clipboard
 			""");
 
 	private static void RemoveClipboardWriteRecorder()
-		=> InvokeJs("delete navigator.clipboard.write; delete navigator.clipboard.writeText; delete window.__unoClipboardWrites; window.createImageBitmap = window.__unoCreateImageBitmap; return 'ok';");
+		=> InvokeJs("delete navigator.clipboard.write; delete navigator.clipboard.writeText; delete window.__unoClipboardWrites; delete window.__unoClipboardWriteIssued; window.createImageBitmap = window.__unoCreateImageBitmap; return 'ok';");
+
+	// True once a ClipboardItem write has been handed to the browser, complete or not.
+	private static bool IsClipboardWriteIssued()
+		=> InvokeJs("return String(window.__unoClipboardWriteIssued);") == "true";
 
 	private static async Task SetContentAndWaitAsync(DataPackage package)
 	{
