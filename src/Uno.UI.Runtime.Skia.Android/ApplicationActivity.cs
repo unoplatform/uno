@@ -82,6 +82,14 @@ namespace Microsoft.UI.Xaml
 		private protected override void OnNativeVisibilityChanged(bool isVisible)
 			=> Wrapper.OnNativeVisibilityChanged(isVisible);
 
+		/// <summary>
+		/// False once another activity has taken over this activity's window. An outgoing activity
+		/// still runs OnPause/OnStop after its replacement resumed, and forwarding those would
+		/// deactivate and background the window the replacement now drives.
+		/// </summary>
+		private protected override bool IsDrivingWindow
+			=> _wrapper is null || ReferenceEquals(_wrapper.CurrentActivity, this);
+
 		internal RelativeLayout RelativeLayout { get; private set; } = null!;
 
 		private LayoutProvider? _layoutProvider;
@@ -446,6 +454,13 @@ namespace Microsoft.UI.Xaml
 
 		internal void InvalidateRender()
 		{
+			// The wrapper resolves this activity from OnCreate onwards, so a render request can
+			// reach it before OnStart has built the render stack this invalidates.
+			if (!_started)
+			{
+				return;
+			}
+
 			_renderView?.InvalidateRender();
 			RelativeLayout.Invalidate();
 		}
