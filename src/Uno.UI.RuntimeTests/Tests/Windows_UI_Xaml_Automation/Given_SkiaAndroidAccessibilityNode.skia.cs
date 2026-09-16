@@ -472,6 +472,7 @@ public partial class Given_SkiaAndroidAccessibilityNode
 			},
 		};
 		await UITestHelper.Load(canvas);
+		await TestServices.WindowHelper.WaitForIdle();
 
 		var topId = AccessibilityPeerHelper.AndroidAccessibilityVirtualIdAccessor?.Invoke(top);
 		Assert.IsNotNull(topId);
