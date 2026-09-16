@@ -34,15 +34,10 @@
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'net10.0-android' ">
+	<ItemGroup Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' ">
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.10.0.1" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'net11.0-android'">
-		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
-		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.10.0.1" />
-		<PackageReference Include="Xamarin.AndroidX.DocumentFile" Version="1.1.0.4" />
+		<PackageReference Include="Xamarin.AndroidX.DocumentFile" />
 	</ItemGroup>
 
 	<ItemGroup>

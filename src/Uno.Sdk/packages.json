@@ -230,56 +230,41 @@
 	},
 	{
 		"group": "AndroidXLeanback",
-		"version": "1.0.0.31",
+		"version": "1.2.0.4",
 		"packages": [
 			"Xamarin.AndroidX.Leanback"
-		],
-		"versionOverride": {
-			"net11.0": "1.2.0.4"
-		}
+		]
 	},
 	{
 		"group": "AndroidXCarApp",
-		"version": "1.4.0.3",
+		"version": "1.7.0.4",
 		"packages": [
 			"Xamarin.AndroidX.Car.App.App"
-		],
-		"versionOverride": {
-			"net11.0": "1.7.0.4"
-		}
+		]
 	},
 	{
 		"group": "AndroidXWear",
-		"version": "1.4.0.1",
+		"version": "1.4.0.2",
 		"packages": [
 			"Xamarin.AndroidX.Wear"
-		],
-		"versionOverride": {
-			"net11.0": "1.4.0.2"
-		}
+		]
 	},
 	{
 		"group": "AndroidXWearTiles",
-		"version": "1.4.1",
+		"version": "1.6.1",
 		"packages": [
 			"Xamarin.AndroidX.Wear.Tiles"
-		],
-		"versionOverride": {
-			"net11.0": "1.6.1"
-		}
+		]
 	},
 	{
 		"group": "AndroidXNavigation",
-		"version": "2.9.2.1",
+		"version": "2.9.8.1",
 		"packages": [
 			"Xamarin.AndroidX.Navigation.UI",
 			"Xamarin.AndroidX.Navigation.Fragment",
 			"Xamarin.AndroidX.Navigation.Runtime",
 			"Xamarin.AndroidX.Navigation.Common"
-		],
-		"versionOverride": {
-			"net11.0": "2.9.8.1"
-		}
+		]
 	},
 	{
 		"group": "AndroidXCollection",
