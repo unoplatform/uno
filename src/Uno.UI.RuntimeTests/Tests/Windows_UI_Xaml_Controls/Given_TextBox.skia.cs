@@ -65,9 +65,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				await UITestHelper.Load(new Grid { Width = 400, Height = 400, Children = { SUT } });
 
-				SUT.Focus(FocusState.Programmatic);
-				await UITestHelper.WaitFor(() => GetHiddenInputPlacement() is "tracking" or "offscreen", timeoutMS: 3000, message: "hidden input created with a known placement");
-				var placement = GetHiddenInputPlacement();
+				// Focus has to land on this TextBox: the input is shared, so a failed focus could otherwise be
+				// assessed against an element a previous test left behind.
+				Assert.IsTrue(SUT.Focus(FocusState.Programmatic), "TextBox should take focus");
+				Assert.AreEqual(SUT, FocusManager.GetFocusedElement(SUT.XamlRoot), "TextBox should own the entry session");
+
+				var placement = ExpectedPlacementForHost();
+				await UITestHelper.WaitFor(() => GetHiddenInputPlacement() == placement, timeoutMS: 3000, message: $"hidden input reports the '{placement}' placement expected of this host");
 
 				var bounds = SUT.TransformToVisual(null).TransformBounds(new Rect(0, 0, SUT.ActualWidth, SUT.ActualHeight));
 				await UITestHelper.WaitFor(() => IsPlacedFor(placement, bounds, GetHiddenInputRect()), timeoutMS: 3000, message: $"hidden input placed for '{placement}' against the focused TextBox {bounds}");
@@ -101,6 +105,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 						&& input.Width <= textBox.Width + 1 && input.Height <= textBox.Height + 1
 						&& input.X >= textBox.X - 1 && input.Y >= textBox.Y - 1
 						&& input.Right <= textBox.Right + 1 && input.Bottom <= textBox.Bottom + 1);
+
+		// Restates the host predicate rather than reading back what the page reports: deriving the expectation
+		// from data-uno-placement would pass even if the gate itself regressed (off-screen on a desktop
+		// browser, or tracking on iOS), which is the contract this test exists to pin.
+		private static string ExpectedPlacementForHost()
+			=> InvokeBrowserJs("(function(){const p = navigator.platform ?? ''; return (/iP(ad|hone|od)/.test(p) || (p === 'MacIntel' && (navigator.maxTouchPoints ?? 0) > 1)) ? 'offscreen' : 'tracking';})()");
 
 		private static string GetHiddenInputPlacement()
 			=> InvokeBrowserJs("(function(){const e = document.getElementById('uno-input'); return e ? (e.dataset.unoPlacement ?? '') : '';})()");
