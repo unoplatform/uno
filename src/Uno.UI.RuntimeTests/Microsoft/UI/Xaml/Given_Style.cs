@@ -85,6 +85,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(HorizontalAlignment.Left, cc.HorizontalContentAlignment);
 		}
 
+		/// <remarks>
+		/// The implicit-style lookup walks the dictionaries in scope nearest-first and ends at the
+		/// application resources. A walk that visited them in the wrong order, or dropped the application
+		/// tail, still satisfies the single-level tests above.
+		/// </remarks>
+		[TestMethod]
+		[RunsOnUIThread]
+#if __ANDROID__
+		[Ignore("ContentControl implicit styles don't pass in CI on Android, as for When_ImplicitStyle")]
+#endif
+		public async Task When_ImplicitStyle_Nearest_Scope_Wins()
+		{
+			var appStyle = new Style()
+			{
+				Setters = { new Setter(ContentControl.HorizontalContentAlignmentProperty, HorizontalAlignment.Right) },
+				TargetType = typeof(ContentControl),
+			};
+
+			var ancestorStyle = new Style()
+			{
+				Setters = { new Setter(ContentControl.HorizontalContentAlignmentProperty, HorizontalAlignment.Stretch) },
+				TargetType = typeof(ContentControl),
+			};
+
+			Application.Current.Resources.Add(typeof(ContentControl), appStyle);
+
+			try
+			{
+				var fromAppResources = new ContentControl() { Width = 100, Height = 100, Content = new Border() { Width = 100, Height = 100 } };
+				var nearestScope = new Border() { Child = fromAppResources };
+				var root = new Border() { Child = nearestScope };
+
+				await UITestHelper.Load(root);
+
+				Assert.AreEqual(HorizontalAlignment.Right, fromAppResources.HorizontalContentAlignment, "the application-level implicit style should apply");
+
+				TestServices.WindowHelper.WindowContent = null;
+
+				var fromNearestScope = new ContentControl() { Width = 100, Height = 100, Content = new Border() { Width = 100, Height = 100 } };
+				nearestScope.Resources.Add(typeof(ContentControl), ancestorStyle);
+				nearestScope.Child = fromNearestScope;
+
+				await UITestHelper.Load(root);
+
+				Assert.AreEqual(HorizontalAlignment.Stretch, fromNearestScope.HorizontalContentAlignment, "the nearest scope should win over the application resources");
+			}
+			finally
+			{
+				Application.Current.Resources.Remove(typeof(ContentControl));
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Style_Flows_To_Popup()

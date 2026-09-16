@@ -430,8 +430,7 @@ public partial class DependencyObject
 			// don't resolve here and fall through to the parse-time pinned dictionary in Phase B.
 			if (owner is UIElement { IsActiveInVisualTree: true })
 			{
-				var dicts = GetResourceDictionaries(includeAppResources: false);
-				foreach (var dict in dicts)
+				foreach (var dict in EnumerateResourceDictionaries(includeAppResources: false))
 				{
 					if (dict.TryGetValue(themeRef.ResourceKey, out var ancestorValue, shouldCheckSystem: false))
 					{
