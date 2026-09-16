@@ -768,6 +768,13 @@ namespace Uno.UI.Runtime.Android
 				}
 				else
 				{
+					// A secondary window goes away with its task instead of unloading its tree, so the native
+					// elements it hosted are never detached by their presenters.
+					if (_adoptedWindowId > 0 && RootElement?.XamlRoot is { } xamlRoot)
+					{
+						AndroidSkiaNativeElementHostingExtension.ReleaseNativeElements(xamlRoot);
+					}
+
 					wrapper.OnNativeClosed();
 
 					// The window and its host outlive this activity: the next one adopts them in OnStart.
