@@ -86,6 +86,7 @@ namespace Uno.Utils {
 		// preparing its data must neither write nor publish, or the clipboard would end up with
 		// content older than the last call's.
 		private static latestWriteGeneration = 0;
+		private static pendingWrite: Promise<void> = Promise.resolve();
 
 		// Files handed to managed code are registered as native storage items; a registration is
 		// shared by every view built from the same content and counted per view, so it is only
@@ -444,6 +445,22 @@ namespace Uno.Utils {
 			return true;
 		}
 
+		// Native writes are issued one at a time, each only if its call is still the latest
+		// when its turn comes, so the browser clipboard ends in the state of the last managed
+		// call even when an earlier write is still pending or a ContentChanged handler issued
+		// a newer call while this one was being published.
+		private static commitWriteAsync(generation: number, write: () => Promise<void>): Promise<void> {
+			const commit = Clipboard.pendingWrite.then(() => {
+				if (generation !== Clipboard.latestWriteGeneration) {
+					return;
+				}
+				return write();
+			});
+			// A rejected write (no user gesture) must not hold up the ones after it.
+			Clipboard.pendingWrite = commit.catch(() => { });
+			return commit;
+		}
+
 		private static publishOwnContent(ownContent: OwnContent) {
 			Clipboard.ownContent = ownContent;
 			// The write replaces whatever a paste captured before it.
@@ -507,12 +524,6 @@ namespace Uno.Utils {
 						imageBlob = png;
 						ownContent.imageBlob = png;
 					}
-
-					// A later call may have written while the image was being transcoded; this
-					// write must not land on top of it.
-					if (generation !== Clipboard.latestWriteGeneration) {
-						return;
-					}
 				}
 
 				if (imageBlob) {
@@ -528,11 +539,11 @@ namespace Uno.Utils {
 				if (Object.keys(record).length > 0) {
 					// A single ClipboardItem so all formats are written atomically, as WinUI does.
 					const item = new ClipboardItem(record);
-					await nav.clipboard.write([item]);
+					await Clipboard.commitWriteAsync(generation, () => nav.clipboard.write([item]));
 				} else {
 					// Nothing the browser can carry, but SetContent replaces the clipboard: the
 					// previous content must not stay visible to other applications.
-					await nav.clipboard.writeText("");
+					await Clipboard.commitWriteAsync(generation, () => nav.clipboard.writeText(""));
 				}
 
 				return;
@@ -541,23 +552,25 @@ namespace Uno.Utils {
 			// Fallbacks can only carry plain text.
 			const text = entries.find(e => e.type === "text/plain");
 			if (nav.clipboard) {
-				await nav.clipboard.writeText(text ? text.value : "");
+				await Clipboard.commitWriteAsync(generation, () => nav.clipboard.writeText(text ? text.value : ""));
 				return;
 			}
 
-			const textarea = document.createElement("textarea");
-			textarea.value = text ? text.value : "";
-			document.body.appendChild(textarea);
-			textarea.select();
-			document.execCommand("copy");
-			document.body.removeChild(textarea);
+			await Clipboard.commitWriteAsync(generation, async () => {
+				const textarea = document.createElement("textarea");
+				textarea.value = text ? text.value : "";
+				document.body.appendChild(textarea);
+				textarea.select();
+				document.execCommand("copy");
+				document.body.removeChild(textarea);
 
-			// execCommand dispatched a copy event, which the invalidation listener handled;
-			// restore the cache it just cleared (unless a later call has replaced it since).
-			if (generation === Clipboard.latestWriteGeneration) {
-				Clipboard.ownContent = ownContent;
-				Clipboard.blurredSinceKnownContent = !document.hasFocus();
-			}
+				// execCommand dispatched a copy event, which the invalidation listener handled;
+				// restore the cache it just cleared (unless a handler replaced it meanwhile).
+				if (generation === Clipboard.latestWriteGeneration) {
+					Clipboard.ownContent = ownContent;
+					Clipboard.blurredSinceKnownContent = !document.hasFocus();
+				}
+			});
 		}
 
 		// Guarded so an engine rejecting an unparsable format id cannot abort the whole write.
@@ -606,7 +619,7 @@ namespace Uno.Utils {
 				// Browsers cannot truly empty the clipboard; an empty text write is the closest
 				// equivalent. The cleared state is kept for in-process reads even when the
 				// browser rejects the write (no user gesture).
-				await nav.clipboard.writeText("");
+				await Clipboard.commitWriteAsync(generation, () => nav.clipboard.writeText(""));
 			}
 		}
 

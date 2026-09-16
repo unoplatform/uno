@@ -67,6 +67,7 @@ declare namespace Uno.Utils {
         private static ownContent;
         private static blurredSinceKnownContent;
         private static latestWriteGeneration;
+        private static pendingWrite;
         private static handleReferences;
         private static readonly pasteFreshnessMs;
         private static readonly pasteRetentionMs;
@@ -92,6 +93,7 @@ declare namespace Uno.Utils {
         private static readAsyncClipboard;
         private static getImageExtension;
         private static beginWrite;
+        private static commitWriteAsync;
         private static publishOwnContent;
         static setContentAsync(generation: number, entriesJson: string, imageBytes: any, imageMimeType: string): Promise<void>;
         private static supportsCustomFormat;
