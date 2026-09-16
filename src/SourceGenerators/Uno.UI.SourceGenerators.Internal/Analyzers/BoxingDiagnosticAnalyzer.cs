@@ -1,9 +1,12 @@
 #nullable enable
 
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Threading;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
 
@@ -15,7 +18,7 @@ namespace Uno.UI.SourceGenerators.Internal;
 /// (e.g. a <c>float</c> reaching a <c>double</c> overload), which would store the wrong boxed type.
 /// </summary>
 [DiagnosticAnalyzer(LanguageNames.CSharp)]
-internal sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
+public sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 {
 	private static readonly DiagnosticDescriptor s_descriptorBoxing = new(
 		"UnoInternal0002",
@@ -58,7 +61,7 @@ internal sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 					conversionOperation.Syntax.Parent is not { } parent ||
 					parent.IsKind(SyntaxKind.AttributeArgument) ||
 					IsStringConcatenationOperand(conversionOperation) ||
-					IsInOmittedConditionalCall(conversionOperation))
+					IsInOmittedConditionalCall(conversionOperation, context.CancellationToken))
 				{
 					return;
 				}
@@ -101,11 +104,11 @@ internal sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 			binary.Type?.SpecialType == SpecialType.System_String;
 
 	/// <summary>
-	/// Whether the conversion is an argument to a <see cref="System.Diagnostics.ConditionalAttribute"/> method whose
-	/// symbol is undefined. The whole call is dropped at emit, so the boxing never happens - reporting it would only
-	/// churn tracing code (REPEATER_TRACE_INFO and friends) for no runtime gain.
+	/// Whether the conversion is an argument to a <see cref="System.Diagnostics.ConditionalAttribute"/> call that is
+	/// omitted at this location. The whole call is dropped at emit, so the boxing never happens - reporting it would
+	/// only churn tracing code (REPEATER_TRACE_INFO and friends) for no runtime gain.
 	/// </summary>
-	private static bool IsInOmittedConditionalCall(IConversionOperation operation)
+	private static bool IsInOmittedConditionalCall(IConversionOperation operation, CancellationToken cancellationToken)
 	{
 		// A params argument is wrapped in an implicit array creation, so walk up rather than
 		// expecting the argument to be the direct parent.
@@ -120,24 +123,61 @@ internal sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 			return false;
 		}
 
-		var definedSymbols = (operation.Syntax.SyntaxTree.Options as CSharpParseOptions)?.PreprocessorSymbolNames;
-		if (definedSymbols is null)
-		{
-			return false;
-		}
-
+		HashSet<string>? definedSymbols = null;
+		var isConditional = false;
 		foreach (var attribute in invocation.TargetMethod.GetAttributes())
 		{
 			if (attribute.AttributeClass?.Name == "ConditionalAttribute" &&
 				attribute.ConstructorArguments.Length == 1 &&
-				attribute.ConstructorArguments[0].Value is string condition &&
-				!definedSymbols.Contains(condition))
+				attribute.ConstructorArguments[0].Value is string condition)
 			{
-				return true;
+				definedSymbols ??= GetDefinedSymbols(operation.Syntax, cancellationToken);
+
+				// Conditions are ORed: a single defined symbol keeps the call.
+				if (definedSymbols is null || definedSymbols.Contains(condition))
+				{
+					return false;
+				}
+
+				isConditional = true;
 			}
 		}
 
-		return false;
+		return isConditional;
+	}
+
+	/// <summary>
+	/// The preprocessor symbols defined at <paramref name="node"/>, including the file's own <c>#define</c> and
+	/// <c>#undef</c> directives, which the parse options do not carry.
+	/// </summary>
+	private static HashSet<string>? GetDefinedSymbols(SyntaxNode node, CancellationToken cancellationToken)
+	{
+		if (node.SyntaxTree.Options is not CSharpParseOptions parseOptions)
+		{
+			return null;
+		}
+
+		HashSet<string> symbols = new(parseOptions.PreprocessorSymbolNames);
+		var directive = node.SyntaxTree.GetCompilationUnitRoot(cancellationToken).GetFirstDirective();
+		while (directive is not null && directive.SpanStart < node.SpanStart)
+		{
+			if (directive.IsActive)
+			{
+				switch (directive)
+				{
+					case DefineDirectiveTriviaSyntax define:
+						symbols.Add(define.Name.ValueText);
+						break;
+					case UndefDirectiveTriviaSyntax undef:
+						symbols.Remove(undef.Name.ValueText);
+						break;
+				}
+			}
+
+			directive = directive.GetNextDirective();
+		}
+
+		return symbols;
 	}
 
 	private static bool HasSpecialBox(IConversionOperation operation, IMethodSymbol hasFlagMethod)
