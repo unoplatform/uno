@@ -68,8 +68,6 @@ internal static class Program
 		// SkiaSharp-free build). Shared with every SamplesApp head.
 		DrawingBackendConfiguration.Configure(builder);
 
-		RenderDocCapture.ArmFromEnvironment();
-
 		host = builder
 			.Build();
 
