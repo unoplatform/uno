@@ -31,6 +31,8 @@ public sealed partial class MultiWindowShowcase : Page
 
 	private static int _windowCount;
 
+	private static int GetNextWindowIndex() => ++_windowCount;
+
 	public MultiWindowShowcase()
 	{
 		InitializeComponent();
