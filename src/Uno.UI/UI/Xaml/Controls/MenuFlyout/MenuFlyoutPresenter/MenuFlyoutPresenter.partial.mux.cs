@@ -368,7 +368,7 @@ partial class MenuFlyoutPresenter : IMenuPresenter
 
 		if (parentMenuFlyout is not null)
 		{
-			return parentMenuFlyout.GetValue(FrameworkElement.NameProperty) as string; // TODO Uno: Should be DependencyObject.Name
+			return (NameScope.GetNameScope(parentMenuFlyout) as NameScope)?.FindNameForObject(parentMenuFlyout);
 		}
 
 		return null;
