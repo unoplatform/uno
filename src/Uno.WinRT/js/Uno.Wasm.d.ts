@@ -68,6 +68,7 @@ declare namespace Uno.Utils {
         private static blurredSinceKnownContent;
         private static latestWriteGeneration;
         private static pendingWrite;
+        private static deferredWrite;
         private static handleReferences;
         private static readonly pasteFreshnessMs;
         private static readonly pasteRetentionMs;
@@ -92,10 +93,13 @@ declare namespace Uno.Utils {
         static releaseHandles(ids: string): void;
         private static readAsyncClipboard;
         private static getImageExtension;
-        private static beginWrite;
+        private static beginGeneration;
+        private static failDeferredWrite;
         private static commitWriteAsync;
         private static publishOwnContent;
-        static setContentAsync(generation: number, entriesJson: string, imageBytes: any, imageMimeType: string): Promise<void>;
+        static beginWrite(generation: number, formatsJson: string): void;
+        static resolveWriteAsync(generation: number, entriesJson: string, imageBytes: any, imageMimeType: string): Promise<void>;
+        static abortWrite(generation: number): void;
         private static supportsCustomFormat;
         private static tryTranscodeToPng;
         static clearAsync(generation: number): Promise<void>;

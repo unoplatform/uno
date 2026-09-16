@@ -37,7 +37,25 @@ namespace Uno.Utils {
 	interface ClipboardWriteEntry {
 		type: string;
 		value: string;
+	}
+
+	interface ClipboardWriteFormat {
+		type: string;
 		custom: boolean;
+	}
+
+	interface DeferredEntry {
+		type: string;
+		resolve: (blob: Blob) => void;
+		reject: (reason: any) => void;
+	}
+
+	// A write issued before its data was read: one promise per ClipboardItem key, settled by
+	// resolveWriteAsync, and the outcome of the write itself.
+	interface DeferredWrite {
+		generation: number;
+		entries: Map<string, DeferredEntry>;
+		completion: Promise<void>;
 	}
 
 	interface PasteSnapshot {
@@ -102,6 +120,7 @@ namespace Uno.Utils {
 		// content older than the last call's.
 		private static latestWriteGeneration = 0;
 		private static pendingWrite: Promise<void> = Promise.resolve();
+		private static deferredWrite: DeferredWrite = null;
 
 		// Files handed to managed code are registered as native storage items; a registration is
 		// shared by every view built from the same content and counted per view, so it is only
@@ -451,25 +470,42 @@ namespace Uno.Utils {
 			}
 		}
 
-		// The call is dropped when a later SetContent/Clear got here first.
-		private static beginWrite(generation: number): boolean {
+		// The call is dropped when a later SetContent/Clear got here first; a write the earlier
+		// call had issued is failed so it cannot land after this one.
+		private static beginGeneration(generation: number): boolean {
 			if (generation < Clipboard.latestWriteGeneration) {
 				return false;
 			}
 			Clipboard.latestWriteGeneration = generation;
+			Clipboard.failDeferredWrite("The write was superseded by a later one.");
 			return true;
+		}
+
+		private static failDeferredWrite(reason: string) {
+			const deferred = Clipboard.deferredWrite;
+			if (deferred) {
+				Clipboard.deferredWrite = null;
+				for (const entry of deferred.entries.values()) {
+					entry.reject(new Error(reason));
+				}
+			}
 		}
 
 		// Native writes are issued one at a time, each only if its call is still the latest
 		// when its turn comes, so the browser clipboard ends in the state of the last managed
 		// call even when an earlier write is still pending or a ContentChanged handler issued
-		// a newer call while this one was being published.
+		// a newer call while this one was being published. A write failing after it was
+		// superseded is expected and not reported.
 		private static commitWriteAsync(generation: number, write: () => Promise<void>): Promise<void> {
 			const commit = Clipboard.pendingWrite.then(() => {
 				if (generation !== Clipboard.latestWriteGeneration) {
 					return;
 				}
-				return write();
+				return write().catch(e => {
+					if (generation === Clipboard.latestWriteGeneration) {
+						throw e;
+					}
+				});
 			});
 			// A rejected write (no user gesture) must not hold up the ones after it.
 			Clipboard.pendingWrite = commit.catch(() => { });
@@ -486,24 +522,73 @@ namespace Uno.Utils {
 			Clipboard.onClipboardChanged();
 		}
 
-		public static async setContentAsync(generation: number, entriesJson: string, imageBytes: any, imageMimeType: string): Promise<void> {
-			if (!Clipboard.beginWrite(generation)) {
+		// Issues the system-clipboard write of a managed SetContent before its data is read.
+		// Browsers only accept the write inside the user activation the call was made in, and a
+		// ClipboardItem takes a promise per format to be filled in afterwards; the formats
+		// themselves are known up front.
+		public static beginWrite(generation: number, formatsJson: string): void {
+			if (!Clipboard.beginGeneration(generation)) {
+				return;
+			}
+
+			const nav = navigator as NavigatorClipboard;
+			if (!(nav.clipboard && nav.clipboard.write && typeof ClipboardItem !== "undefined")) {
+				// The fallbacks can only carry plain text, written once it is known.
+				return;
+			}
+
+			const formats: ClipboardWriteFormat[] = JSON.parse(formatsJson);
+			const record: Record<string, Promise<Blob>> = {};
+			const entries = new Map<string, DeferredEntry>();
+			for (const format of formats) {
+				const key = format.custom ? "web " + format.type : format.type;
+				if (format.custom && !Clipboard.supportsCustomFormat(key)) {
+					console.warn(`Clipboard: custom format '${format.type}' is not supported by this browser and was skipped.`);
+					continue;
+				}
+				const representation = new Promise<Blob>((resolve, reject) => entries.set(key, { type: format.type, resolve: resolve, reject: reject }));
+				// A write dropped before the browser took it leaves no one to observe the rejection.
+				representation.catch(() => { });
+				record[key] = representation;
+			}
+
+			const deferred: DeferredWrite = { generation: generation, entries: entries, completion: null };
+			if (entries.size > 0) {
+				// A single ClipboardItem so all formats are written atomically, as WinUI does.
+				const item = new ClipboardItem(record);
+				deferred.completion = Clipboard.commitWriteAsync(generation, () => nav.clipboard.write([item]));
+			} else {
+				// Nothing the browser can carry, but SetContent replaces the clipboard: the
+				// previous content must not stay visible to other applications.
+				deferred.completion = Clipboard.commitWriteAsync(generation, () => nav.clipboard.writeText(""));
+			}
+
+			// resolveWriteAsync reports the outcome; a write failed by abortWrite has no one left to.
+			deferred.completion.catch(() => { });
+			Clipboard.deferredWrite = deferred;
+		}
+
+		// Hands over the data of the write beginWrite issued (or, without ClipboardItem support,
+		// writes the plain text now) and reports how the write went.
+		public static async resolveWriteAsync(generation: number, entriesJson: string, imageBytes: any, imageMimeType: string): Promise<void> {
+			if (generation !== Clipboard.latestWriteGeneration) {
 				return;
 			}
 
 			const entries: ClipboardWriteEntry[] = JSON.parse(entriesJson);
-			const nav = navigator as NavigatorClipboard;
-			const hasImage = !!imageMimeType && !!imageBytes;
-
 			let imageBlob: Blob = null;
-			if (hasImage) {
+			if (!!imageMimeType && !!imageBytes) {
 				const bytes = imageBytes instanceof Uint8Array ? imageBytes : new Uint8Array(imageBytes);
 				imageBlob = new Blob([bytes], { type: imageMimeType });
 			}
 
 			// Cache optimistically (with every entry, even formats the browser rejects) so a
 			// GetContent immediately following SetContent sees the new state, and in-process
-			// reads round-trip with full fidelity as they would on WinUI.
+			// reads round-trip with full fidelity as they would on WinUI. The system-clipboard
+			// write is best-effort: browsers reject it outside a user gesture. The cache keeps
+			// the content readable in-process either way (matching WinUI semantics); only
+			// sharing with other applications is lost. A rejection propagates so the managed
+			// side can log it.
 			const ownContent: OwnContent = {
 				imageBlob: imageBlob,
 				imageFile: null,
@@ -511,27 +596,13 @@ namespace Uno.Utils {
 			};
 			Clipboard.publishOwnContent(ownContent);
 
-			// The system-clipboard write below is best-effort: browsers reject it outside a user
-			// gesture. The cache above keeps the content readable in-process either way (matching
-			// WinUI semantics); only sharing with other applications is lost. A rejection
-			// propagates so the managed side can log it.
-			if (nav.clipboard && nav.clipboard.write && typeof ClipboardItem !== "undefined") {
-				const record: Record<string, Blob> = {};
+			// A ContentChanged handler may have issued a newer call, dropping this write.
+			if (generation !== Clipboard.latestWriteGeneration) {
+				return;
+			}
 
-				for (const entry of entries) {
-					if (entry.custom) {
-						const webType = "web " + entry.type;
-						if (Clipboard.supportsCustomFormat(webType)) {
-							// The blob type must match the ClipboardItem key or the write is rejected.
-							record[webType] = new Blob([entry.value], { type: webType });
-						} else {
-							console.warn(`Clipboard: custom format '${entry.type}' is not supported by this browser and was skipped.`);
-						}
-					} else {
-						record[entry.type] = new Blob([entry.value], { type: entry.type });
-					}
-				}
-
+			const deferred = Clipboard.deferredWrite;
+			if (deferred && deferred.generation === generation) {
 				if (imageBlob && imageBlob.type !== "image/png") {
 					// Browsers only accept image/png for clipboard writes.
 					const png = await Clipboard.tryTranscodeToPng(imageBlob);
@@ -539,33 +610,38 @@ namespace Uno.Utils {
 						imageBlob = png;
 						ownContent.imageBlob = png;
 					}
-				}
 
-				if (imageBlob) {
-					if (imageBlob.type === "image/png") {
-						record[imageBlob.type] = imageBlob;
-					} else {
-						// Including a non-PNG blob would make the whole atomic write reject,
-						// losing the other formats too; the cache still serves the image in-process.
-						console.warn("Clipboard: the image could not be transcoded to PNG and was not written to the system clipboard.");
+					// Superseded while transcoding: the entries have been failed already.
+					if (Clipboard.deferredWrite !== deferred) {
+						return;
 					}
 				}
 
-				if (Object.keys(record).length > 0) {
-					// A single ClipboardItem so all formats are written atomically, as WinUI does.
-					const item = new ClipboardItem(record);
-					await Clipboard.commitWriteAsync(generation, () => nav.clipboard.write([item]));
-				} else {
-					// Nothing the browser can carry, but SetContent replaces the clipboard: the
-					// previous content must not stay visible to other applications.
-					await Clipboard.commitWriteAsync(generation, () => nav.clipboard.writeText(""));
+				Clipboard.deferredWrite = null;
+				for (const [key, entry] of deferred.entries) {
+					if (key === "image/png") {
+						if (imageBlob && imageBlob.type === "image/png") {
+							entry.resolve(imageBlob);
+						} else {
+							// This fails the write as a whole; the cache still serves the image in-process.
+							entry.reject(new Error("The image could not be transcoded to PNG."));
+						}
+					} else {
+						const value = entries.find(e => e.type === entry.type);
+						if (!value) {
+							console.warn(`Clipboard: no data was available for format '${entry.type}'; it was written empty.`);
+						}
+						entry.resolve(new Blob([value ? value.value : ""], { type: key }));
+					}
 				}
 
+				await deferred.completion;
 				return;
 			}
 
 			// Fallbacks can only carry plain text.
 			const text = entries.find(e => e.type === "text/plain");
+			const nav = navigator as NavigatorClipboard;
 			if (nav.clipboard) {
 				await Clipboard.commitWriteAsync(generation, () => nav.clipboard.writeText(text ? text.value : ""));
 				return;
@@ -586,6 +662,13 @@ namespace Uno.Utils {
 					Clipboard.blurredSinceKnownContent = !document.hasFocus();
 				}
 			});
+		}
+
+		// The data of the write beginWrite issued could not be prepared.
+		public static abortWrite(generation: number) {
+			if (Clipboard.deferredWrite && Clipboard.deferredWrite.generation === generation) {
+				Clipboard.failDeferredWrite("The data to write could not be prepared.");
+			}
 		}
 
 		// Guarded so an engine rejecting an unparsable format id cannot abort the whole write.
@@ -623,7 +706,7 @@ namespace Uno.Utils {
 		}
 
 		public static async clearAsync(generation: number): Promise<void> {
-			if (!Clipboard.beginWrite(generation)) {
+			if (!Clipboard.beginGeneration(generation)) {
 				return;
 			}
 

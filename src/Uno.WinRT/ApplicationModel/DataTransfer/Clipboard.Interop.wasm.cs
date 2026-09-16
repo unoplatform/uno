@@ -18,8 +18,14 @@ namespace __Windows.ApplicationModel.DataTransfer
 			[JSImport($"{JsType}.releaseHandles")]
 			internal static partial void ReleaseHandles(string ids);
 
-			[JSImport($"{JsType}.setContentAsync")]
-			internal static partial Task SetContentAsync(int generation, string entriesJson, byte[] imageBytes, string imageMimeType);
+			[JSImport($"{JsType}.beginWrite")]
+			internal static partial void BeginWrite(int generation, string formatsJson);
+
+			[JSImport($"{JsType}.resolveWriteAsync")]
+			internal static partial Task ResolveWriteAsync(int generation, string entriesJson, byte[] imageBytes, string imageMimeType);
+
+			[JSImport($"{JsType}.abortWrite")]
+			internal static partial void AbortWrite(int generation);
 
 			[JSImport($"{JsType}.clearAsync")]
 			internal static partial Task ClearAsync(int generation);

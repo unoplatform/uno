@@ -24,6 +24,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		private const string HtmlMimeType = "text/html";
 		private const string RtfMimeType = "text/rtf";
 		private const string UriListMimeType = "text/uri-list";
+		private const string PngMimeType = "image/png";
 
 		private static readonly char[] _newLineChars = new[] { '\r', '\n' };
 
@@ -92,83 +93,133 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		private static async Task SetContentAsync(DataPackageView data, int generation)
 		{
-			var entries = new List<ClipboardWriteEntry>();
+			// The browser only accepts the write inside the user activation SetContent was called
+			// in, so it is issued now with the formats, which are known up front; the data follows
+			// once it has been read.
+			var hasUri = data.Contains(StandardDataFormats.WebLink) || data.Contains(StandardDataFormats.ApplicationLink);
+			var formats = new List<ClipboardWriteFormat>();
 
-			var uriText = await GetUriFallbackText(data);
-
-			var text = data.Contains(StandardDataFormats.Text)
-				? await data.GetTextAsync()
-				: uriText;
-
-			if (text is not null)
+			if (data.Contains(StandardDataFormats.Text) || hasUri)
 			{
-				entries.Add(new ClipboardWriteEntry { Type = PlainTextMimeType, Value = text });
+				formats.Add(new ClipboardWriteFormat { Type = PlainTextMimeType });
 			}
 
-			if (uriText is not null)
+			if (hasUri)
 			{
-				// Round-trips GetWebLinkAsync/GetUriAsync through GetContent (browsers have no
-				// dedicated link format); on Chromium this also transfers as a web custom format.
-				entries.Add(new ClipboardWriteEntry { Type = UriListMimeType, Value = uriText, Custom = true });
+				formats.Add(new ClipboardWriteFormat { Type = UriListMimeType, Custom = true });
 			}
 
 			if (data.Contains(StandardDataFormats.Html))
 			{
-				entries.Add(new ClipboardWriteEntry { Type = HtmlMimeType, Value = await data.GetHtmlFormatAsync() });
+				formats.Add(new ClipboardWriteFormat { Type = HtmlMimeType });
 			}
 
 			if (data.Contains(StandardDataFormats.Rtf))
 			{
-				entries.Add(new ClipboardWriteEntry { Type = RtfMimeType, Value = await data.GetRtfAsync(), Custom = true });
+				formats.Add(new ClipboardWriteFormat { Type = RtfMimeType, Custom = true });
 			}
 
-			if (data.Contains(StandardDataFormats.StorageItems) && typeof(Clipboard).Log().IsEnabled(LogLevel.Warning))
+			if (data.Contains(StandardDataFormats.Bitmap))
 			{
-				typeof(Clipboard).Log().Warn("Storage items cannot be written to the browser clipboard and were skipped.");
+				formats.Add(new ClipboardWriteFormat { Type = PngMimeType });
 			}
 
 			foreach (var formatId in data.AvailableFormats)
 			{
-				if (IsStandardFormat(formatId))
+				// Only string data can be written; what a provider yields is known once it has run.
+				if (!IsStandardFormat(formatId) && data.FindRawData(formatId) is string or DataProviderHandler)
 				{
-					continue;
-				}
-
-				try
-				{
-					if (await data.GetDataAsync(formatId) is string value)
-					{
-						entries.Add(new ClipboardWriteEntry { Type = formatId, Value = value, Custom = true });
-					}
-					else if (typeof(Clipboard).Log().IsEnabled(LogLevel.Warning))
-					{
-						typeof(Clipboard).Log().Warn($"Only string data can be written to the clipboard for custom format '{formatId}'.");
-					}
-				}
-				catch (Exception e)
-				{
-					if (typeof(Clipboard).Log().IsEnabled(LogLevel.Warning))
-					{
-						typeof(Clipboard).Log().Warn($"Failed to retrieve the data for custom format '{formatId}'.", e);
-					}
+					formats.Add(new ClipboardWriteFormat { Type = formatId, Custom = true });
 				}
 			}
 
-			var imageBytes = Array.Empty<byte>();
-			var imageMimeType = string.Empty;
-			if (data.Contains(StandardDataFormats.Bitmap))
+			NativeMethods.BeginWrite(generation, JsonHelper.Serialize(formats.ToArray(), ClipboardSerializationContext.Default));
+
+			try
 			{
-				(imageBytes, imageMimeType) = await ReadBitmapAsync(data);
-			}
+				var entries = new List<ClipboardWriteEntry>();
 
-			if (generation != Volatile.Read(ref _writeGeneration))
+				var uriText = await GetUriFallbackText(data);
+
+				var text = data.Contains(StandardDataFormats.Text)
+					? await data.GetTextAsync()
+					: uriText;
+
+				if (text is not null)
+				{
+					entries.Add(new ClipboardWriteEntry { Type = PlainTextMimeType, Value = text });
+				}
+
+				if (uriText is not null)
+				{
+					// Round-trips GetWebLinkAsync/GetUriAsync through GetContent (browsers have no
+					// dedicated link format); on Chromium this also transfers as a web custom format.
+					entries.Add(new ClipboardWriteEntry { Type = UriListMimeType, Value = uriText });
+				}
+
+				if (data.Contains(StandardDataFormats.Html))
+				{
+					entries.Add(new ClipboardWriteEntry { Type = HtmlMimeType, Value = await data.GetHtmlFormatAsync() });
+				}
+
+				if (data.Contains(StandardDataFormats.Rtf))
+				{
+					entries.Add(new ClipboardWriteEntry { Type = RtfMimeType, Value = await data.GetRtfAsync() });
+				}
+
+				if (data.Contains(StandardDataFormats.StorageItems) && typeof(Clipboard).Log().IsEnabled(LogLevel.Warning))
+				{
+					typeof(Clipboard).Log().Warn("Storage items cannot be written to the browser clipboard and were skipped.");
+				}
+
+				foreach (var formatId in data.AvailableFormats)
+				{
+					if (IsStandardFormat(formatId))
+					{
+						continue;
+					}
+
+					try
+					{
+						if (await data.GetDataAsync(formatId) is string value)
+						{
+							entries.Add(new ClipboardWriteEntry { Type = formatId, Value = value });
+						}
+						else if (typeof(Clipboard).Log().IsEnabled(LogLevel.Warning))
+						{
+							typeof(Clipboard).Log().Warn($"Only string data can be written to the clipboard for custom format '{formatId}'.");
+						}
+					}
+					catch (Exception e)
+					{
+						if (typeof(Clipboard).Log().IsEnabled(LogLevel.Warning))
+						{
+							typeof(Clipboard).Log().Warn($"Failed to retrieve the data for custom format '{formatId}'.", e);
+						}
+					}
+				}
+
+				var imageBytes = Array.Empty<byte>();
+				var imageMimeType = string.Empty;
+				if (data.Contains(StandardDataFormats.Bitmap))
+				{
+					(imageBytes, imageMimeType) = await ReadBitmapAsync(data);
+				}
+
+				if (generation != Volatile.Read(ref _writeGeneration))
+				{
+					// A later SetContent or Clear has replaced this one, and dropped the write it issued.
+					return;
+				}
+
+				var entriesJson = JsonHelper.Serialize(entries.ToArray(), ClipboardSerializationContext.Default);
+				await NativeMethods.ResolveWriteAsync(generation, entriesJson, imageBytes, imageMimeType);
+			}
+			catch
 			{
-				// A later SetContent or Clear has already replaced what this one was preparing.
-				return;
+				NativeMethods.AbortWrite(generation);
+				throw;
 			}
-
-			var entriesJson = JsonHelper.Serialize(entries.ToArray(), ClipboardSerializationContext.Default);
-			await NativeMethods.SetContentAsync(generation, entriesJson, imageBytes, imageMimeType);
 		}
 
 		// WinUI exposes URIs as dedicated formats; browsers can only carry them as text.

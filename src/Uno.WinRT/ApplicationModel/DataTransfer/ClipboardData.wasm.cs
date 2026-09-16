@@ -61,13 +61,21 @@ internal sealed class ClipboardWriteEntry
 
 	[JsonPropertyName("value")]
 	public string Value { get; set; } = "";
+}
 
+internal sealed class ClipboardWriteFormat
+{
+	[JsonPropertyName("type")]
+	public string Type { get; set; } = "";
+
+	// Written as a web custom format rather than a standard one.
 	[JsonPropertyName("custom")]
 	public bool Custom { get; set; }
 }
 
 [JsonSerializable(typeof(ClipboardContentData))]
 [JsonSerializable(typeof(ClipboardWriteEntry[]))]
+[JsonSerializable(typeof(ClipboardWriteFormat[]))]
 internal partial class ClipboardSerializationContext : JsonSerializerContext
 {
 }
