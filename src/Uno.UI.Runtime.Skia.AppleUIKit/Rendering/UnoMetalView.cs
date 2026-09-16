@@ -22,6 +22,7 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 		private RootViewController? _owner;
 		private CADisplayLink _link;
 		private Thread? _renderThread;
+		private int _renderRequested;
 
 		/// <summary>
 		/// Creates a new instance of <see cref="UnoMetalView"/>.
@@ -131,6 +132,9 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 
 		public void QueueRender()
 		{
+			// Ordered before the un-pause: Draw clears this and then decides whether to pause, so a request that
+			// lands while a frame is in flight is still seen even if its un-pause is overwritten.
+			Volatile.Write(ref _renderRequested, 1);
 			_link.Paused = false;
 		}
 
@@ -152,12 +156,32 @@ namespace Uno.UI.Runtime.Skia.AppleUIKit
 			_drawFpsLogger.ReportFrame();
 #endif
 
-			_link.Paused = true;
+			// This frame answers every request made so far; anything asked from here on has to keep the link
+			// running, which is why this is cleared before rendering rather than after.
+			Volatile.Write(ref _renderRequested, 0);
 
-			// The drawable is acquired by the context at present time, not here: holding one across the frame's CPU
-			// work drains CAMetalLayer's small pool and stalls every frame.
-			// See : https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/MTLBestPracticesGuide/Drawables.html
-			_owner?.OnFrameRequested();
+			try
+			{
+				// The drawable is acquired by the context at present time, not here: holding one across the frame's
+				// CPU work drains CAMetalLayer's small pool and stalls every frame.
+				// See : https://developer.apple.com/library/archive/documentation/3DDrawing/Conceptual/MTLBestPracticesGuide/Drawables.html
+				_owner?.OnFrameRequested();
+			}
+			finally
+			{
+				// Pausing is what loses a request: QueueRender un-pauses, and pausing afterwards overwrites that
+				// with no trace, so the link never fires again and rendering stops for good. Pause only when
+				// nothing is pending, then re-check for a request that raced the pause itself.
+				if (Volatile.Read(ref _renderRequested) == 0)
+				{
+					_link.Paused = true;
+
+					if (Volatile.Read(ref _renderRequested) != 0)
+					{
+						_link.Paused = false;
+					}
+				}
+			}
 		}
 
 	}
