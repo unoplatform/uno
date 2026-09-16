@@ -230,22 +230,32 @@ internal sealed class VulkanContext : IVulkanPlatformGraphicsContext, IDisposabl
 		if (_disposed) return;
 		_disposed = true;
 
-		if (_device != null)
+		var device = _device;
+
+		// Every other use of the device is serialized on this lock, and it has to cover the destruction too: a
+		// render thread still inside a frame re-takes the lock the moment a narrower one is released, and
+		// vkDestroyDevice then runs against a device that thread is still calling into (SIGSEGV).
+		var deviceLock = device?.Lock();
+		try
 		{
-			using (_device.Lock())
+			if (device is not null)
 			{
 				_deviceApi?.DeviceWaitIdle(DeviceHandle);
 			}
+
+			_renderImage?.Dispose();
+			_renderImage = null;
+
+			_display?.Dispose();
+			_display = null;
+
+			device?.Dispose();
+			_device = null;
 		}
-
-		_renderImage?.Dispose();
-		_renderImage = null;
-
-		_display?.Dispose();
-		_display = null;
-
-		_device?.Dispose();
-		_device = null;
+		finally
+		{
+			deviceLock?.Dispose();
+		}
 
 		(_instance as IDisposable)?.Dispose();
 		_instance = null;
