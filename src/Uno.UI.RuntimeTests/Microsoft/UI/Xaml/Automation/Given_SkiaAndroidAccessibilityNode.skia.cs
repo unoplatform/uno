@@ -181,6 +181,71 @@ public partial class Given_SkiaAndroidAccessibilityNode
 
 	[TestMethod]
 	[RunsOnUIThread]
+	[RequiresFullWindow]
+	public async Task When_MenuFlyout_Submenu_Is_Traversed_Then_Descendant_Ids_And_Placement_Are_Preserved()
+	{
+		var leaf = new MenuFlyoutItem { Text = "Nested item" };
+		var subItem = new MenuFlyoutSubItem
+		{
+			Text = "Open submenu",
+			Items =
+			{
+				leaf,
+			},
+		};
+		AutomationProperties.SetAutomationId(subItem, "menuSubitem");
+		AutomationProperties.SetAutomationId(leaf, "menuLeaf");
+		var flyout = new MenuFlyout
+		{
+			Items =
+			{
+				subItem,
+			},
+		};
+		var button = new Button
+		{
+			HorizontalAlignment = HorizontalAlignment.Right,
+			Content = "Open flyout",
+			Flyout = flyout,
+		};
+
+		try
+		{
+			await UITestHelper.Load(button);
+			button.AutomationPeerClick();
+			await TestServices.WindowHelper.WaitForLoaded(subItem);
+			subItem.Open();
+			await TestServices.WindowHelper.WaitForLoaded(leaf);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var subItemBounds = subItem.GetAbsoluteBounds();
+			var leafBounds = leaf.GetAbsoluteBounds();
+			Assert.IsLessThanOrEqualTo(5d, Math.Abs(subItemBounds.X - leafBounds.Right));
+
+			var firstNodes = GetAllNodes(button.XamlRoot!);
+			var firstSubItem = firstNodes.Single(node => node.AutomationId == "menuSubitem");
+			var firstLeaf = firstNodes.Single(node => node.AutomationId == "menuLeaf");
+			Assert.IsTrue(firstSubItem.NativeAutomationId?.EndsWith(":id/menuSubitem", StringComparison.Ordinal) is true);
+			Assert.IsTrue(firstLeaf.NativeAutomationId?.EndsWith(":id/menuLeaf", StringComparison.Ordinal) is true);
+
+			var secondNodes = GetAllNodes(button.XamlRoot!);
+			Assert.AreEqual(
+				firstSubItem.NativeAutomationId,
+				secondNodes.Single(node => node.AutomationId == "menuSubitem").NativeAutomationId);
+			Assert.AreEqual(
+				firstLeaf.NativeAutomationId,
+				secondNodes.Single(node => node.AutomationId == "menuLeaf").NativeAutomationId);
+		}
+		finally
+		{
+			subItem.Close();
+			flyout.Hide();
+			TestServices.WindowHelper.WindowContent = null;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_Element_Has_Raw_Accessibility_View_Then_It_Is_Excluded()
 	{
 		var panel = new StackPanel();
