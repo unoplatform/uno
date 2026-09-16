@@ -106,7 +106,11 @@ jobs:
       $env:UNO_UITEST_PLATFORM = "Android"
       $env:UNO_UITEST_APP_ID = "uno.platform.samplesapp.skia"
       $env:UITEST_VARIANT = "skia"
-      Remove-Item Env:UNO_UITEST_ANDROIDAPK_PATH -ErrorAction SilentlyContinue
+      $env:UNO_UITEST_ANDROIDAPK_PATH = "$(build.sourcesdirectory)/build/$(SAMPLEAPP_ARTIFACT_NAME)/android/$($env:UNO_UITEST_APP_ID)-Signed.apk"
+      if (-not (Test-Path -LiteralPath $env:UNO_UITEST_ANDROIDAPK_PATH))
+      {
+        throw "Android Skia APK not found at $($env:UNO_UITEST_ANDROIDAPK_PATH)."
+      }
 
       $adb = Join-Path $env:ANDROID_HOME "platform-tools/adb"
       $device = (& $adb devices) |
