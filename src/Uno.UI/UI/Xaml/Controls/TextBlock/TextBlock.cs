@@ -1313,9 +1313,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (_inlines is not null)
 			{
-				foreach (var inline in _inlines)
+				var enumerator = _inlines.GetEnumeratorFast();
+				while (enumerator.MoveNext())
 				{
-					((DependencyObject)inline).UpdateResourceBindings(updateReason, resourceContextProvider: this);
+					((DependencyObject)enumerator.Current).UpdateResourceBindings(updateReason, resourceContextProvider: this);
 				}
 			}
 		}
