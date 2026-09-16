@@ -23,10 +23,17 @@ namespace Windows.Networking.Connectivity
 		}
 
 		[JSExport]
-		internal static int DispatchStatusChanged()
+		internal static void DispatchStatusChanged()
 		{
 			OnNetworkStatusChanged();
-			return 0;
+		}
+
+		[JSExport]
+		internal static Task DispatchStatusChangedAsync()
+		{
+			OnNetworkStatusChanged();
+
+			return Task.CompletedTask;
 		}
 	}
 }

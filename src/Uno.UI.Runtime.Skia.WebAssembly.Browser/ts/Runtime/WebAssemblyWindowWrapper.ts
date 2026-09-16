@@ -41,8 +41,15 @@ namespace Uno.UI.Runtime.Skia {
 
 		private async build() {
 			WebAssemblyWindowWrapper.assemblyExports = await (<any>window).Module.getAssemblyExports("Uno.UI.Runtime.Skia.WebAssembly.Browser");
-			this.onResize = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnResize;
-			this.onViewportOcclusionChanged = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnViewportOcclusionChanged;
+
+			if (WebAssemblyThreading.isThreadingEnabled()) {
+				this.onResize = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnResizeAsync;
+				this.onViewportOcclusionChanged = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnViewportOcclusionChangedAsync;
+			}
+			else {
+				this.onResize = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnResize;
+				this.onViewportOcclusionChanged = WebAssemblyWindowWrapper.assemblyExports.Uno.UI.Runtime.Skia.WebAssemblyWindowWrapper.OnViewportOcclusionChanged;
+			}
 
 			this.containerElement = (document.getElementById("uno-body") as HTMLDivElement);
 
@@ -59,7 +66,7 @@ namespace Uno.UI.Runtime.Skia {
 			this.canvasElement.setAttribute("aria-hidden", "true");
 			this.containerElement.appendChild(this.canvasElement);
 
-			Accessibility.setup();
+			await Accessibility.setup();
 
 			window.addEventListener("resize", x => this.resize());
 			this.observeViewportSize();

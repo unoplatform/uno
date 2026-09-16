@@ -4,12 +4,12 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.JavaScript;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
 using Uno.Extensions.Specialized;
 using Uno.Foundation;
-using System.Threading;
 
 using NativeMethods = __Windows.ApplicationModel.DataTransfer.Clipboard.NativeMethods;
 
@@ -195,10 +195,17 @@ namespace Windows.ApplicationModel.DataTransfer
 		}
 
 		[JSExport]
-		internal static int DispatchContentChanged()
+		internal static void DispatchContentChanged()
 		{
 			OnContentChanged();
-			return 0;
+		}
+
+		[JSExport]
+		internal static Task DispatchContentChangedAsync()
+		{
+			OnContentChanged();
+
+			return Task.CompletedTask;
 		}
 	}
 }
