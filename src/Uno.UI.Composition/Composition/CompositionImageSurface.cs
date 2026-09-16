@@ -1,0 +1,20 @@
+﻿#nullable enable
+
+
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using Uno.Extensions;
+using Uno.Foundation.Logging;
+using Windows.Graphics;
+
+namespace Microsoft.UI.Composition
+{
+	internal partial class CompositionImageSurface : ICompositionSurface
+	{
+		internal CompositionImageSurface()
+		{
+		}
+	}
+}

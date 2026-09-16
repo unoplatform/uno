@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using SamplesApp.UITests;
 using Uno.Disposables;
 
-#if __SKIA__
+#if UNO_DRAWING_SKIA
 using SkiaSharp;
 using Uno.WinUI.Graphics2DSK;
 #endif
@@ -90,7 +90,7 @@ namespace UITests.Windows_UI_Xaml.Performance
 				}));
 			}
 
-#if __SKIA__
+#if UNO_DRAWING_SKIA
 			grid.Children.Add(new InvalidatingSKCanvasElement());
 			Loaded += (s, e) =>
 			{
@@ -113,7 +113,7 @@ namespace UITests.Windows_UI_Xaml.Performance
 #endif
 		}
 
-#if __SKIA__
+#if UNO_DRAWING_SKIA
 		private class InvalidatingSKCanvasElement : SKCanvasElement
 		{
 			protected override void RenderOverride(SKCanvas canvas, Size area) => Invalidate();

@@ -8,9 +8,8 @@ using Uno.UI.Extensions;
 
 #if __SKIA__
 using Microsoft.UI.Composition;
-using Path = SkiaSharp.SKPath;
-using SkiaSharp;
-using Uno.UI.UI.Xaml.Media;
+using Path = Uno.UI.Composition.Drawing.IGeometry;
+using Uno.UI.Composition.Drawing;
 #else
 using Path = System.Object;
 #endif
@@ -35,27 +34,16 @@ namespace Uno.Media
 		}
 
 #if __SKIA__
-		internal override SKPath GetSKPath()
-		{
-			bezierPath.FillType = FillRule.ToSkiaFillType();
-			return bezierPath;
-		}
+		internal override IGeometry GetGeometry() => bezierPath;
 
 		private protected override Windows.Foundation.Rect ComputeBounds()
 		{
-			if (bezierPath is null)
+			if (bezierPath is null || bezierPath.IsEmpty)
 			{
 				return default;
 			}
 
-			var path = GetSKPath();
-			if (path.IsEmpty)
-			{
-				return default;
-			}
-
-			var b = path.Bounds;
-			var rect = new Windows.Foundation.Rect(b.Left, b.Top, b.Width, b.Height);
+			var rect = bezierPath.Bounds;
 			return Transform is { } transform ? transform.TransformBounds(rect) : rect;
 		}
 #endif

@@ -89,8 +89,9 @@
 
 	<Target Name="BuildCIReference">
 
+		<!-- Graphics2DSK reaches Graphics3DGL for its GL island; this agent has no mobile workloads. -->
 		<MSBuild
-			Properties="Configuration=Release;InformationalVersion=$(NBGV_AssemblyInformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(NBGV_SemVer2)"
+			Properties="Configuration=Release;InformationalVersion=$(NBGV_AssemblyInformationalVersion);CI_Build=true;_IsCIBuild=true;BuildGraphics3DGLSkiaOnly=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(NBGV_SemVer2)"
 			Projects="filters\Uno.UI-packages-reference.slnf"
 			Targets="Restore;Build"
 			RebaseOutputs="false"
@@ -148,6 +149,9 @@
 
 		<ItemGroup>
 			<_NuspecFiles Include=".\nuget\Uno.WinUI.nuspec" />
+			<_NuspecFiles Include=".\nuget\Uno.UI.Composition.Skia.nuspec" />
+			<_NuspecFiles Include=".\nuget\Uno.UI.Composition.WebGpu.Init.nuspec" />
+			<_NuspecFiles Include=".\nuget\Uno.UI.Composition.WebGpu.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.Foundation.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.WinRT.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.WinUI.Lottie.nuspec" />
@@ -166,6 +170,9 @@
 		
 		<!-- Update Uno.WinRT references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinRT']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
+
+		<!-- Update Uno.UI.Composition.WebGpu.Init references version (the WebGpu renderer depends on it) -->
+		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.UI.Composition.WebGpu.Init']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
 
 		<!-- Update Uno.WinUI.DevServer.Messaging references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.DevServer.Messaging']/@version" Value="$(NBGV_SemVer2)" Namespaces="$(NugetNamespace)" />
@@ -194,8 +201,19 @@
 		<Error Text="The Uno.UI.Extras PRI file is not present in src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release"
 					 Condition="!exists('..\src\Uno.UI.Extras\bin\Uno.UI.Extras.Windows\Release\$(NetUWPOrWinUI)\Uno.UI.Extras.pri')" />
 
+		<!-- The WebGpu package ships a native per desktop RID, but a build only provisions its own host's. This
+		     fetches the rest so the pack does not fail NU5019 on the Windows packaging agent. -->
+		<MSBuild Projects="..\src\Uno.UI.Composition.WebGpu\Uno.UI.Composition.WebGpu.csproj" Targets="ProvisionWgpuNativeForPack" />
+
+		<!-- The WebGpu package also ships the emdawnwebgpu port for WASM, already patched: a consumer cannot
+		     patch it themselves in the shared, read-only NuGet folder. -->
+		<MSBuild Projects="..\src\Uno.UI.Composition.WebGpu.Init\wgpu-wasm.targets" Targets="ProvisionEmdawnForPack" />
+
 		<!-- Create the packages -->
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack nuget\Uno.UI.Composition.Skia.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack nuget\Uno.UI.Composition.WebGpu.Init.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack nuget\Uno.UI.Composition.WebGpu.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.Foundation.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinRT.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.Lottie.nuspec -Verbosity Detailed -Version &quot;$(NBGV_SemVer2)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />

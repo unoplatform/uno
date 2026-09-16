@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Composition.Interactions;
 using Microsoft.UI.Input;
@@ -114,11 +114,11 @@ public class CompositionPropertySetTests
 			remove { }
 		}
 
-		public void AddDamage(SKRect bounds)
+		public void AddDamage(Windows.Foundation.Rect bounds)
 		{
 		}
 
-		public void AddDamage(SKPath region)
+		public void AddDamage(Uno.UI.Composition.Drawing.IGeometry region)
 		{
 		}
 

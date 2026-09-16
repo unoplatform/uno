@@ -41,10 +41,34 @@ internal static class Program
 					global::Uno.Foundation.Extensibility.ApiExtensibility.Register<Microsoft.Web.WebView2.Core.CoreWebView2>(typeof(Microsoft.Web.WebView2.Core.INativeWebViewProvider), o => new global::Uno.UI.WebView.Skia.X11.X11NativeWebViewProvider(o));
 				}
 			})
-			.UseX11(hostBuilder => hostBuilder.PreloadMediaPlayer(true))
-			.UseWin32(hostBuilder => hostBuilder.PreloadMediaPlayer(true))
+			.UseX11(hostBuilder =>
+			{
+				hostBuilder.PreloadMediaPlayer(true);
+				// Dev/test affordance: force the X11 render backend via env (e.g. UNO_X11_RENDERER=Vulkan|OpenGL|OpenGLES|Software).
+				if (Environment.GetEnvironmentVariable("UNO_X11_RENDERER") is { } rb
+					&& Enum.TryParse<global::Uno.UI.Hosting.X11RenderingBackend>(rb, ignoreCase: true, out var backend))
+				{
+					hostBuilder.ForceRenderingBackend(backend);
+				}
+			})
+			.UseWin32(hostBuilder =>
+			{
+				hostBuilder.PreloadMediaPlayer(true);
+				// Dev/test affordance: force the Win32 render backend via env (e.g. UNO_WIN32_RENDERER=Vulkan|OpenGL|Software).
+				if (Environment.GetEnvironmentVariable("UNO_WIN32_RENDERER") is { } rb
+					&& Enum.TryParse<global::Uno.UI.Hosting.Win32RenderingBackend>(rb, ignoreCase: true, out var backend))
+				{
+					hostBuilder.ForceRenderingBackend(backend);
+				}
+			})
 			.UseLinuxFrameBuffer(hostBuilder => hostBuilder.XkbKeymap(new(layout: "us,ara", options: "grp:alt_shift_toggle")))
 			.UseMacOS();
+
+		// Register the drawing backend + content seams (Skia by default; WebGPU + managed seams for a
+		// SkiaSharp-free build). Shared with every SamplesApp head.
+		DrawingBackendConfiguration.Configure(builder);
+
+		RenderDocCapture.ArmFromEnvironment();
 
 		host = builder
 			.Build();

@@ -190,6 +190,14 @@ partial class App
 			return false;
 		}
 
+		// System.CommandLine's parse-error path calls Console.ResetColor(), which throws PlatformNotSupportedException
+		// on WASM. Only invoke it for an actual --auto-screenshots command so other launch args (e.g. "sample=...")
+		// fall through to TryNavigateToLaunchSample instead of crashing launch-argument handling.
+		if (!args.Contains("--auto-screenshots", StringComparison.Ordinal))
+		{
+			return false;
+		}
+
 		var autoScreenshotsOption = new Option<string>("--auto-screenshots");
 		var totalGroupsOption = new Option<int>("--total-groups", getDefaultValue: () => 1);
 		var currentGroupIndexOption = new Option<int>("--current-group-index", getDefaultValue: () => 0);
@@ -267,11 +275,17 @@ partial class App
 
 			args = args.Substring(samplePrefix.Length);
 
+			// The deep link is the first token only — further space-separated launch args (e.g.
+			// --FeatureConfiguration overrides) and additional URL query parameters (&key=value on WASM)
+			// are not part of the sample path.
+			args = args.Split(new[] { ' ', '&' }, 2)[0];
+
 			var pathParts = args.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries);
 			var category = pathParts[0];
 			var sampleName = pathParts[1];
 
-			SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, category, sampleName);
+			// Sample discovery is async and races the launch: retry until the chooser knows the sample.
+			_ = NavigateWithRetriesAsync(category, sampleName);
 			return true;
 		}
 		catch (Exception ex)
@@ -279,6 +293,31 @@ partial class App
 			_log?.Error($"Could not navigate to initial sample - {ex}");
 		}
 		return false;
+	}
+
+	private static async Task NavigateWithRetriesAsync(string category, string sampleName)
+	{
+		try
+		{
+			for (var i = 0; i < 40; i++)
+			{
+				if (SampleControl.Presentation.SampleChooserViewModel.Instance is { } vm
+					&& vm.TrySetSelectedSample(CancellationToken.None, category, sampleName))
+				{
+					Console.WriteLine($"Navigated to launch sample {category}/{sampleName}");
+					return;
+				}
+
+				await Task.Delay(250);
+			}
+
+			Console.WriteLine($"Launch sample {category}/{sampleName} was not found.");
+			Console.WriteLine(SampleControl.Presentation.SampleChooserViewModel.Instance?.DumpSampleIndexForDiagnostics(category) ?? "no view model");
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Launch sample navigation failed: {ex}");
+		}
 	}
 
 #if __IOS__

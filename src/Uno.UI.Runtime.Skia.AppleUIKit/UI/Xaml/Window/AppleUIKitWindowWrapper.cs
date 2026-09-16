@@ -242,6 +242,10 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		Close();
 
+		// Before the map loses the host: the render loop is driven by a display link on its own thread and keeps
+		// calling back for the lifetime of the process otherwise, rendering into a context being torn down.
+		_mainController.StopRendering();
+
 		XamlRootMap.Unregister(_xamlRoot);
 		_nativeWindow = null;
 	}

@@ -361,18 +361,30 @@ internal static partial class NativeUno
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_get_metal_handles(nint window, out nint device, out nint queue);
 
+	// The rendering MTKView's CAMetalLayer (for a Metal-surface backend's CreateMetalSurface); 0 if no Metal view.
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial nint uno_window_get_metal_layer(nint window);
+
+	// Hand CAMetalLayer ownership to the negotiated context (native drawInMTKView stops presenting its own drawable).
+	[LibraryImport("libUnoNativeMac.dylib")]
+	internal static partial void uno_window_set_external_present(nint window, [MarshalAs(UnmanagedType.I1)] bool enabled);
+
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial double uno_window_get_refresh_rate(nint window);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	[return: MarshalAs(UnmanagedType.I1)]
-	internal static partial bool uno_window_acquire_next_frame(nint window, out nint texture, out double width, out double height);
+	internal static partial bool uno_window_get_drawable_size(nint window, out double width, out double height);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_window_present_frame(nint window);
+	internal static partial nint uno_window_create_render_texture(nint window, int width, int height);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
-	internal static partial void uno_window_discard_frame(nint window);
+	internal static partial void uno_window_release_texture(nint texture);
+
+	[LibraryImport("libUnoNativeMac.dylib")]
+	[return: MarshalAs(UnmanagedType.I1)]
+	internal static partial bool uno_window_present_texture(nint window, nint texture);
 
 	[LibraryImport("libUnoNativeMac.dylib")]
 	internal static partial void uno_window_move(nint window, double x, double y);
