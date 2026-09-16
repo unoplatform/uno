@@ -303,7 +303,10 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			OnNativeActivationChanged(CoreWindowActivationState.Deactivated);
+			if (IsDrivingWindow)
+			{
+				OnNativeActivationChanged(CoreWindowActivationState.Deactivated);
+			}
 		}
 
 		protected override void OnStop()
@@ -323,6 +326,13 @@ namespace Uno.UI
 		partial void InnerStop()
 		{
 			ResignCurrent();
+
+			// An outgoing activity reaches OnStop after its replacement has resumed and taken the
+			// window. Hiding and suspending from here would apply to the live replacement.
+			if (!IsDrivingWindow)
+			{
+				return;
+			}
 
 			OnNativeVisibilityChanged(false);
 			Microsoft.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Microsoft.UI.Xaml.Application.Current?.RaiseSuspending());
@@ -391,6 +401,12 @@ namespace Uno.UI
 		private protected virtual void OnNativeVisibilityChanged(bool isVisible)
 		{
 		}
+
+		/// <summary>
+		/// Whether this activity still drives the window it was bound to. Lifecycle callbacks of an
+		/// activity that has already handed its window over must not reach that window.
+		/// </summary>
+		private protected virtual bool IsDrivingWindow => true;
 		#endregion
 
 		#region Instance discovery management
