@@ -671,6 +671,116 @@ partial class Given_Clipboard
 	[TestMethod]
 	[RunsOnUIThread]
 	[PlatformCondition(Include, Wasm)]
+	public async Task When_SetContent_Write_Is_Issued_Before_Data_Is_Ready()
+	{
+#if HAS_UNO
+		InstallClipboardWriteRecorder();
+		try
+		{
+			// The browser only accepts the write inside the user activation SetContent runs in,
+			// so it is issued at once and the data, here from a provider that has not run yet,
+			// follows.
+			var ready = new TaskCompletionSource();
+			var package = new DataPackage();
+			package.SetDataProvider(StandardDataFormats.Text, async request =>
+			{
+				var deferral = request.GetDeferral();
+				await ready.Task;
+				request.SetData("provided");
+				deferral.Complete();
+			});
+
+			Clipboard.SetContent(package);
+
+			await WaitForClipboardAsync(IsClipboardWriteIssued);
+			Assert.AreEqual(0, GetRecordedClipboardWrites().Length);
+
+			ready.SetResult();
+
+			await WaitForClipboardAsync(() => GetRecordedClipboardWrites().Contains("item:text/plain"));
+			Assert.AreEqual("provided", await Clipboard.GetContent().GetTextAsync());
+		}
+		finally
+		{
+			RemoveClipboardWriteRecorder();
+		}
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
+	public async Task When_Paste_Shortcut_Follows_Fresh_Paste()
+	{
+#if HAS_UNO
+		DispatchSyntheticPaste(
+			"""
+			const dt = new DataTransfer();
+			dt.items.add('first', 'text/plain');
+			""");
+
+		Assert.AreEqual("first", await Clipboard.GetContent().GetTextAsync());
+
+		// A second shortcut inside the freshness window announces new content; the view built
+		// for it must not be bound to the previous paste.
+		InvokeJs("document.dispatchEvent(new KeyboardEvent('keydown', { key: 'v', ctrlKey: true, bubbles: true })); return 'ok';");
+		var view = Clipboard.GetContent();
+
+		DispatchSyntheticPaste(
+			"""
+			const dt = new DataTransfer();
+			dt.items.add('second', 'text/plain');
+			""");
+
+		Assert.AreEqual("second", await view.GetTextAsync());
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
+	public async Task When_Paste_Handled_By_Target_Raises_ContentChanged()
+	{
+#if HAS_UNO
+		var raised = false;
+		EventHandler<object> onContentChanged = (_, _) => raised = true;
+		Clipboard.ContentChanged += onContentChanged;
+		try
+		{
+			// A control handling the paste itself stops it from bubbling; the snapshot is taken
+			// in the capture phase regardless, and so must be the notification.
+			raised = false;
+			InvokeJs(
+				"""
+				const target = document.createElement('div');
+				document.body.appendChild(target);
+				target.addEventListener('paste', e => e.stopPropagation());
+				const dt = new DataTransfer();
+				dt.items.add('handled', 'text/plain');
+				target.dispatchEvent(new ClipboardEvent('paste', { clipboardData: dt, bubbles: true, cancelable: true }));
+				target.remove();
+				return 'ok';
+				""");
+
+			Assert.IsTrue(raised);
+			Assert.AreEqual("handled", await Clipboard.GetContent().GetTextAsync());
+		}
+		finally
+		{
+			Clipboard.ContentChanged -= onContentChanged;
+		}
+#else
+		await Task.CompletedTask;
+#endif
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(Include, Wasm)]
 	public async Task When_SetContent_Empty_Package()
 	{
 #if HAS_UNO
@@ -816,18 +926,19 @@ partial class Given_Clipboard
 			window.__unoClipboardWriteIssued = false;
 			window.__unoCreateImageBitmap = window.createImageBitmap;
 			window.createImageBitmap = (...args) => new Promise(resolve => setTimeout(() => resolve(window.__unoCreateImageBitmap.apply(window, args)), 300));
-			clipboard.write = items => {
+			clipboard.write = async items => {
 				window.__unoClipboardWriteIssued = true;
-				const record = () => {
-					for (const item of items) {
-						window.__unoClipboardWrites.push('item:' + Array.from(item.types).sort().join(','));
-					}
-				};
-				if ({{writeDelayMs}} === 0) {
-					record();
-					return Promise.resolve();
+				// Like a browser, the write completes once every representation has resolved and
+				// fails if one of them rejects.
+				for (const item of items) {
+					await Promise.all(Array.from(item.types).map(type => item.getType(type)));
 				}
-				return new Promise(resolve => setTimeout(() => { record(); resolve(); }, {{writeDelayMs}}));
+				if ({{writeDelayMs}} > 0) {
+					await new Promise(resolve => setTimeout(resolve, {{writeDelayMs}}));
+				}
+				for (const item of items) {
+					window.__unoClipboardWrites.push('item:' + Array.from(item.types).sort().join(','));
+				}
 			};
 			clipboard.writeText = text => {
 				window.__unoClipboardWrites.push('text:' + text);
