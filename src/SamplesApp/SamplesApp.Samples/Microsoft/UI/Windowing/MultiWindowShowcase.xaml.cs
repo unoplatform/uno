@@ -53,7 +53,7 @@ public sealed partial class MultiWindowShowcase : Page
 
 	private void OnOpenWindow(object sender, RoutedEventArgs args)
 	{
-		var index = ++_windowCount;
+		var index = GetNextWindowIndex();
 		var accent = _accents[(index - 1) % _accents.Length];
 
 		var window = new Window { Title = $"Uno Platform window {index}" };
