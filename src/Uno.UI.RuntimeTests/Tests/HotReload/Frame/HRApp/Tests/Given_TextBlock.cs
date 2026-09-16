@@ -120,7 +120,7 @@ public class Given_TextBlock : BaseTestClass
 			SecondPageTextBlockOriginalText + Environment.NewLine,
 			true)
 			.WithExtendedTimeouts(); // Required for CI
-		
+
 		try
 		{
 			await hr.UpdateFileAsync(req, ct);
