@@ -41,6 +41,19 @@ namespace Microsoft.UI.Xaml
 				: null;
 		}
 
+		internal string FindNameForObject(object scopedElement)
+		{
+			foreach (var entry in _names)
+			{
+				if (ReferenceEquals(entry.Value.Target, scopedElement))
+				{
+					return entry.Key;
+				}
+			}
+
+			return null;
+		}
+
 		public void RegisterName(string name, object scopedElement)
 		{
 			if (_names.ContainsKey(name))

@@ -318,6 +318,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_Presenter_AutomationId_Is_Requested_Then_Registered_Flyout_Name_Is_Used()
+		{
+			var button = new Button { Content = "Open flyout" };
+			var flyout = new MenuFlyout
+			{
+				Items =
+				{
+					new MenuFlyoutItem { Text = "First item" },
+				},
+			};
+			var nameScope = new NameScope();
+			NameScope.SetNameScope(flyout, nameScope);
+			nameScope.RegisterName("namedMenuFlyout", flyout);
+
+			try
+			{
+				await UITestHelper.Load(button);
+				flyout.ShowAt(button);
+				await WindowHelper.WaitForIdle();
+
+				var presenter = flyout.GetPresenter() as MenuFlyoutPresenter;
+				Assert.IsNotNull(presenter);
+				var peer = new MenuFlyoutPresenterAutomationPeer(presenter);
+
+				Assert.AreEqual("namedMenuFlyout", peer.GetAutomationId());
+			}
+			finally
+			{
+				flyout.Hide();
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		[RequiresFullWindow]
 #if __APPLE_UIKIT__
 		[Ignore("https://github.com/unoplatform/uno/issues/13314")]
