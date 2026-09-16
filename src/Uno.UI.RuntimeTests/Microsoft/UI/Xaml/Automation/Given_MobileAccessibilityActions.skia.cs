@@ -141,6 +141,33 @@ public partial class Given_MobileAccessibilityActions
 	}
 
 	[TestMethod]
+	[DataRow(0d, 40d, true, true, 66.66666666666667d)]
+	[DataRow(66.66666666666667d, 40d, false, true, 0d)]
+	[DataRow(90d, 40d, true, true, 100d)]
+	[DataRow(10d, 40d, false, true, 0d)]
+	[DataRow(0d, 40d, false, false, 0d)]
+	[DataRow(100d, 40d, true, false, 100d)]
+	[DataRow(-1d, 40d, true, false, -1d)]
+	[DataRow(0d, 0d, true, false, 0d)]
+	[DataRow(0d, 100d, true, false, 0d)]
+	public void When_Page_Scroll_Target_Is_Calculated_Then_Viewport_Uses_Scrollable_Range(
+		double currentPercent,
+		double viewSize,
+		bool forward,
+		bool expectedResult,
+		double expectedTarget)
+	{
+		var result = AccessibilityPeerHelper.TryGetPageScrollTargetPercent(
+			currentPercent,
+			viewSize,
+			forward,
+			out var targetPercent);
+
+		Assert.AreEqual(expectedResult, result);
+		Assert.AreEqual(expectedTarget, targetPercent, 0.000001);
+	}
+
+	[TestMethod]
 	public void When_Realize_And_ChangeView_Requested_Then_Providers_Are_Invoked()
 	{
 		var virtualized = new VirtualizedItemProvider();

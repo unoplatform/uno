@@ -1023,6 +1023,30 @@ internal static class AccessibilityPeerHelper
 			PatternInterface.Scroll,
 			provider => provider.SetScrollPercent(horizontalPercent, verticalPercent));
 
+	internal static bool TryGetPageScrollTargetPercent(
+		double currentPercent,
+		double viewSize,
+		bool forward,
+		out double targetPercent)
+	{
+		targetPercent = currentPercent;
+		if (!double.IsFinite(currentPercent) ||
+			!double.IsFinite(viewSize) ||
+			currentPercent is < 0 or > 100 ||
+			viewSize is <= 0 or >= 100)
+		{
+			return false;
+		}
+
+		// View size is relative to the extent; scroll percent is relative to the scrollable range.
+		var pagePercent = 100d * viewSize / (100d - viewSize);
+		targetPercent = Math.Clamp(
+			currentPercent + (forward ? pagePercent : -pagePercent),
+			0,
+			100);
+		return targetPercent != currentPercent;
+	}
+
 	internal static bool TryScrollIntoView(AutomationPeer peer)
 		=> TryPerformProvider<IScrollItemProvider>(
 			peer,
