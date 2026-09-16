@@ -75,6 +75,8 @@ internal class RootViewController : UINavigationController, IAppleUIKitXamlRootH
 		var init = GraphicsRegistry.Initialize();
 		_context = init.Context;
 		_renderer = init.Renderer;
+		// Effect brushes read this while recording, so it must be set as soon as the renderer is known.
+		Microsoft.UI.Composition.Compositor.GetSharedCompositor().IsSoftwareRenderer = init.Context.Kind == GraphicsContextKind.Software;
 
 		var renderView = (UIView)_renderView!;
 		renderView.Frame = view.Bounds;
