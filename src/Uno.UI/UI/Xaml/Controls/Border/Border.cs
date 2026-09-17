@@ -103,13 +103,7 @@ public partial class Border : FrameworkElement
 	private static CornerRadius GetCornerRadiusDefaultValue() => default(CornerRadius);
 
 	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange)]
-	public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
-
-	public CornerRadius CornerRadius
-	{
-		get => GetCornerRadiusValue();
-		set => SetCornerRadiusValue(value);
-	}
+	public partial CornerRadius CornerRadius { get; set; }
 
 	private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 	{
@@ -168,13 +162,7 @@ public partial class Border : FrameworkElement
 	private static Thickness GetPaddingDefaultValue() => default(Thickness);
 
 	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
-	public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
-
-	public Thickness Padding
-	{
-		get => GetPaddingValue();
-		set => SetPaddingValue(value);
-	}
+	public partial Thickness Padding { get; set; }
 
 	private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 	{
@@ -185,13 +173,8 @@ public partial class Border : FrameworkElement
 
 	#region BackgroundSizing DepedencyProperty
 	[GeneratedDependencyProperty(DefaultValue = default(BackgroundSizing), ChangedCallback = true)]
-	public static DependencyProperty BackgroundSizingProperty { get; } = CreateBackgroundSizingProperty();
+	public partial BackgroundSizing BackgroundSizing { get; set; }
 
-	public BackgroundSizing BackgroundSizing
-	{
-		get => GetBackgroundSizingValue();
-		set => SetBackgroundSizingValue(value);
-	}
 	private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 	{
 		this.UpdateBackgroundSizing();
@@ -203,13 +186,7 @@ public partial class Border : FrameworkElement
 	private static Thickness GetBorderThicknessDefaultValue() => default(Thickness);
 
 	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
-	public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
-
-	public Thickness BorderThickness
-	{
-		get => GetBorderThicknessValue();
-		set => SetBorderThicknessValue(value);
-	}
+	public partial Thickness BorderThickness { get; set; }
 
 	private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
 	{
@@ -225,19 +202,10 @@ public partial class Border : FrameworkElement
 	private IDisposable _brushChangedSubscription;
 #endif
 
-	public Brush BorderBrush
-	{
-		get => GetBorderBrushValue();
-		set
-		{
-			SetBorderBrushValue(value);
-		}
-	}
+	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
+	public partial Brush BorderBrush { get; set; }
 
 	private static Brush GetBorderBrushDefaultValue() => SolidColorBrushHelper.Transparent;
-
-	[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
-	public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
 
 	private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 	{
