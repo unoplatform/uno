@@ -142,6 +142,7 @@
 		<ProjectReference Include="..\Uno.UI.Tests.ViewLibraryProps\Uno.UI.Tests.ViewLibraryProps.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 		<ProjectReference Include="..\Uno.UI.Extras\Uno.UI.Extras.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UI.Runtime.Skia.X11\Uno.UI.Runtime.Skia.X11.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
