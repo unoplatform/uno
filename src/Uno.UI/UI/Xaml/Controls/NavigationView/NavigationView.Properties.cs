@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Math = System.Math;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -26,7 +26,7 @@ public partial class NavigationView
 	/// Identifies the AlwaysShowHeader dependency property.
 	/// </summary>
 	public static DependencyProperty AlwaysShowHeaderProperty { get; } =
-		DependencyProperty.Register(nameof(AlwaysShowHeader), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True, OnPropertyChanged));
+		DependencyProperty.Register(nameof(AlwaysShowHeader), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(BoolBoxes.True, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets an AutoSuggestBox to be displayed in the NavigationView.
@@ -53,7 +53,7 @@ public partial class NavigationView
 		{
 			var coercedValue = value;
 			CoerceToGreaterThanZero(ref coercedValue);
-			SetValue(CompactModeThresholdWidthProperty, Boxes.Box(coercedValue));
+			SetValue(CompactModeThresholdWidthProperty, Boxer.Box(coercedValue));
 		}
 	}
 
@@ -73,7 +73,7 @@ public partial class NavigationView
 		{
 			var coercedValue = value;
 			CoerceToGreaterThanZero(ref coercedValue);
-			SetValue(CompactPaneLengthProperty, Boxes.Box(coercedValue));
+			SetValue(CompactPaneLengthProperty, Boxer.Box(coercedValue));
 		}
 	}
 
@@ -123,7 +123,7 @@ public partial class NavigationView
 		{
 			var coercedValue = value;
 			CoerceToGreaterThanZero(ref coercedValue);
-			SetValue(ExpandedModeThresholdWidthProperty, Boxes.Box(coercedValue));
+			SetValue(ExpandedModeThresholdWidthProperty, Boxer.Box(coercedValue));
 		}
 	}
 
@@ -221,7 +221,7 @@ public partial class NavigationView
 	/// Identifies the IsBackEnabled dependency property.
 	/// </summary>
 	public static DependencyProperty IsBackEnabledProperty { get; } =
-		DependencyProperty.Register(nameof(IsBackEnabled), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnPropertyChanged));
+		DependencyProperty.Register(nameof(IsBackEnabled), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(BoolBoxes.False, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets a value that specifies whether the NavigationView pane is expanded to its full width.
@@ -236,7 +236,7 @@ public partial class NavigationView
 	/// Identifies the IsPaneOpen dependency property.
 	/// </summary>
 	public static DependencyProperty IsPaneOpenProperty { get; } =
-		DependencyProperty.Register(nameof(IsPaneOpen), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True, OnPropertyChanged));
+		DependencyProperty.Register(nameof(IsPaneOpen), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(BoolBoxes.True, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether the menu toggle button is shown.
@@ -251,7 +251,7 @@ public partial class NavigationView
 	/// Identifies the IsPaneToggleButtonVisible dependency property.
 	/// </summary>
 	public static DependencyProperty IsPaneToggleButtonVisibleProperty { get; } =
-		DependencyProperty.Register(nameof(IsPaneToggleButtonVisible), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True, OnPropertyChanged));
+		DependencyProperty.Register(nameof(IsPaneToggleButtonVisible), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(BoolBoxes.True, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets a value that determines whether the pane is shown.
@@ -266,7 +266,7 @@ public partial class NavigationView
 	/// Identifies the IsPaneVisible dependency property.
 	/// </summary>
 	public static DependencyProperty IsPaneVisibleProperty { get; } =
-		DependencyProperty.Register(nameof(IsPaneVisible), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True, OnPropertyChanged));
+		DependencyProperty.Register(nameof(IsPaneVisible), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(BoolBoxes.True, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether the settings button is shown.
@@ -281,7 +281,7 @@ public partial class NavigationView
 	/// Identifies the IsSettingsVisible dependency property.
 	/// </summary>
 	public static DependencyProperty IsSettingsVisibleProperty { get; } =
-		DependencyProperty.Register(nameof(IsSettingsVisible), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True, OnPropertyChanged));
+		DependencyProperty.Register(nameof(IsSettingsVisible), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(BoolBoxes.True, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether top padding is added to the navigation view's header when used with a custom title bar.
@@ -296,7 +296,7 @@ public partial class NavigationView
 	/// Identifies the IsTitleBarAutoPaddingEnabled dependency property.
 	/// </summary>
 	public static DependencyProperty IsTitleBarAutoPaddingEnabledProperty { get; } =
-		DependencyProperty.Register(nameof(IsTitleBarAutoPaddingEnabled), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True, OnPropertyChanged));
+		DependencyProperty.Register(nameof(IsTitleBarAutoPaddingEnabled), typeof(bool), typeof(NavigationView), new FrameworkPropertyMetadata(BoolBoxes.True, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the style that is used when rendering the menu item containers.
@@ -400,7 +400,7 @@ public partial class NavigationView
 		{
 			var coercedValue = value;
 			CoerceToGreaterThanZero(ref coercedValue);
-			SetValue(OpenPaneLengthProperty, Boxes.Box(coercedValue));
+			SetValue(OpenPaneLengthProperty, Boxer.Box(coercedValue));
 		}
 	}
 
@@ -608,7 +608,7 @@ public partial class NavigationView
 		// MUX compares with memcmp for a bit-exact check that also sidesteps NaN; DoubleToInt64Bits mirrors it.
 		if (global::System.BitConverter.DoubleToInt64Bits(coercedValue) != global::System.BitConverter.DoubleToInt64Bits(value))
 		{
-			sender.SetValue(args.Property, Boxes.Box(coercedValue));
+			sender.SetValue(args.Property, Boxer.Box(coercedValue));
 			return;
 		}
 
@@ -627,7 +627,7 @@ public partial class NavigationView
 		// MUX compares with memcmp for a bit-exact check that also sidesteps NaN; DoubleToInt64Bits mirrors it.
 		if (global::System.BitConverter.DoubleToInt64Bits(coercedValue) != global::System.BitConverter.DoubleToInt64Bits(value))
 		{
-			sender.SetValue(args.Property, Boxes.Box(coercedValue));
+			sender.SetValue(args.Property, Boxer.Box(coercedValue));
 			return;
 		}
 
@@ -646,7 +646,7 @@ public partial class NavigationView
 		// MUX compares with memcmp for a bit-exact check that also sidesteps NaN; DoubleToInt64Bits mirrors it.
 		if (global::System.BitConverter.DoubleToInt64Bits(coercedValue) != global::System.BitConverter.DoubleToInt64Bits(value))
 		{
-			sender.SetValue(args.Property, Boxes.Box(coercedValue));
+			sender.SetValue(args.Property, Boxer.Box(coercedValue));
 			return;
 		}
 
@@ -665,7 +665,7 @@ public partial class NavigationView
 		// MUX compares with memcmp for a bit-exact check that also sidesteps NaN; DoubleToInt64Bits mirrors it.
 		if (global::System.BitConverter.DoubleToInt64Bits(coercedValue) != global::System.BitConverter.DoubleToInt64Bits(value))
 		{
-			sender.SetValue(args.Property, Boxes.Box(coercedValue));
+			sender.SetValue(args.Property, Boxer.Box(coercedValue));
 			return;
 		}
 

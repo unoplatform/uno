@@ -98,7 +98,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			set
 			{
-				this.SetValue(ColorFontPaletteIndexProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(ColorFontPaletteIndexProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -126,7 +126,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			set
 			{
-				this.SetValue(FontRenderingEmSizeProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(FontRenderingEmSizeProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -168,7 +168,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			set
 			{
-				this.SetValue(IsColorFontEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsColorFontEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -182,7 +182,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			set
 			{
-				this.SetValue(OriginXProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(OriginXProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -196,7 +196,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			set
 			{
-				this.SetValue(OriginYProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(OriginYProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

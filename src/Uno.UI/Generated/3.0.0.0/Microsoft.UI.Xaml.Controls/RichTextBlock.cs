@@ -254,7 +254,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(CharacterSpacingProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(CharacterSpacingProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -302,7 +302,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(FontSizeProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(FontSizeProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -396,7 +396,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsColorFontEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsColorFontEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -411,7 +411,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsTextSelectionEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsTextSelectionEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -435,7 +435,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(LineHeightProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(LineHeightProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -463,7 +463,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(MaxLinesProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(MaxLinesProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -615,7 +615,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(TextIndentProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(TextIndentProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

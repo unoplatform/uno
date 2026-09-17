@@ -1,7 +1,7 @@
 ﻿using System;
 using Uno;
 using Windows.UI;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -71,7 +71,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		DependencyProperty.Register(
 			"EnableDependentAnimation", typeof(bool),
 			typeof(ColorAnimation),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
+			new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		public static DependencyProperty FromProperty { get; } =
 		DependencyProperty.Register(

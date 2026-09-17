@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using CommandBar = Microsoft.UI.Xaml.Controls.CommandBar;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"IsCompact",
 				typeof(bool),
 				typeof(AppBarElementContainer),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False)
+				new FrameworkPropertyMetadata(BoolBoxes.False)
 			);
 
 		#endregion
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public int DynamicOverflowOrder
 		{
 			get => (int)this.GetValue(DynamicOverflowOrderProperty);
-			set => this.SetValue(DynamicOverflowOrderProperty, Boxes.Box(value));
+			set => this.SetValue(DynamicOverflowOrderProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty DynamicOverflowOrderProperty { get; } =
@@ -41,7 +41,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"DynamicOverflowOrder",
 				typeof(int),
 				typeof(AppBarElementContainer),
-				new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero)
+				new FrameworkPropertyMetadata(IntegerBoxes.Zero)
 			);
 
 		#endregion
@@ -65,7 +65,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"IsInOverflow",
 				typeof(bool),
 				typeof(AppBarElementContainer),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
+				new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		#endregion
 
@@ -88,7 +88,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(UseOverflowStyle),
 				typeof(bool),
 				typeof(AppBarElementContainer),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False)
+				new FrameworkPropertyMetadata(BoolBoxes.False)
 			);
 
 		#endregion

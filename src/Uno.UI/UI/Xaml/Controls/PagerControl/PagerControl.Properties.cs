@@ -3,7 +3,7 @@
 // MUX reference PagerControl.properties.cpp, tag winui3/release/1.7.3, commit 65718e2813a9
 
 using System.Windows.Input;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
 
@@ -18,7 +18,7 @@ public partial class PagerControl
 	}
 
 	public static DependencyProperty ButtonPanelAlwaysShowFirstLastPageIndexProperty { get; } =
-		DependencyProperty.Register(nameof(ButtonPanelAlwaysShowFirstLastPageIndex), typeof(bool), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True, OnPropertyChanged));
+		DependencyProperty.Register(nameof(ButtonPanelAlwaysShowFirstLastPageIndex), typeof(bool), typeof(PagerControl), new FrameworkPropertyMetadata(BoolBoxes.True, OnPropertyChanged));
 
 	public PagerControlDisplayMode DisplayMode
 	{
@@ -111,11 +111,11 @@ public partial class PagerControl
 	public int NumberOfPages
 	{
 		get => (int)GetValue(NumberOfPagesProperty);
-		set => SetValue(NumberOfPagesProperty, Boxes.Box(value));
+		set => SetValue(NumberOfPagesProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty NumberOfPagesProperty { get; } =
-		DependencyProperty.Register(nameof(NumberOfPages), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero, OnPropertyChanged));
+		DependencyProperty.Register(nameof(NumberOfPages), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(IntegerBoxes.Zero, OnPropertyChanged));
 
 	public string PrefixText
 	{
@@ -156,11 +156,11 @@ public partial class PagerControl
 	public int SelectedPageIndex
 	{
 		get => (int)GetValue(SelectedPageIndexProperty);
-		set => SetValue(SelectedPageIndexProperty, Boxes.Box(value));
+		set => SetValue(SelectedPageIndexProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty SelectedPageIndexProperty { get; } =
-		DependencyProperty.Register(nameof(SelectedPageIndex), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero, OnPropertyChanged));
+		DependencyProperty.Register(nameof(SelectedPageIndex), typeof(int), typeof(PagerControl), new FrameworkPropertyMetadata(IntegerBoxes.Zero, OnPropertyChanged));
 
 	public string SuffixText
 	{

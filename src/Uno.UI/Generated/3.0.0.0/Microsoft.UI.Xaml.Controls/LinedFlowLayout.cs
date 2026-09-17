@@ -104,7 +104,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(LineHeightProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(LineHeightProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -118,7 +118,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(LineSpacingProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(LineSpacingProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -132,7 +132,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(MinItemSpacingProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(MinItemSpacingProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

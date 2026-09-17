@@ -6,32 +6,32 @@ namespace Uno.UI.SourceGenerators.Tests.BoxingAnalyzerTests;
 public class Given_BoxingCodeFixProvider
 {
 	[TestMethod]
-	[DataRow("object M() => true;", "object M() => Boxes.BoolBoxes.True;")]
-	[DataRow("object M() => 1;", "object M() => Boxes.IntegerBoxes.One;")]
-	[DataRow("object M() => 0.0;", "object M() => Boxes.DoubleBoxes.Zero;")]
-	[DataRow("object M(int value) => value;", "object M(int value) => Boxes.Box(value);")]
-	[DataRow("object M(byte value) => (int)value;", "object M(byte value) => Boxes.Box((int)value);")]
-	[DataRow("object M(byte value) => ((int)value);", "object M(byte value) => (Boxes.Box((int)value));")]
+	[DataRow("object M() => true;", "object M() => BoolBoxes.True;")]
+	[DataRow("object M() => 1;", "object M() => IntegerBoxes.One;")]
+	[DataRow("object M() => 0.0;", "object M() => DoubleBoxes.Zero;")]
+	[DataRow("object M(int value) => value;", "object M(int value) => Boxer.Box(value);")]
+	[DataRow("object M(byte value) => (int)value;", "object M(byte value) => Boxer.Box((int)value);")]
+	[DataRow("object M(byte value) => ((int)value);", "object M(byte value) => (Boxer.Box((int)value));")]
 	public async Task When_Implicit_Boxing(string member, string expected)
 		=> await AssertFixAsync(member, expected);
 
 	[TestMethod]
-	[DataRow("object M() => (object)true;", "object M() => Boxes.BoolBoxes.True;")]
-	[DataRow("object M() => (object)1;", "object M() => Boxes.IntegerBoxes.One;")]
-	[DataRow("object M() => (object)1.0;", "object M() => Boxes.DoubleBoxes.One;")]
-	[DataRow("object M() => (object)(false);", "object M() => Boxes.BoolBoxes.False;")]
-	[DataRow("object M(int value) => (object)value;", "object M(int value) => Boxes.Box(value);")]
-	[DataRow("object M(bool value) => (object)(value);", "object M(bool value) => Boxes.Box(value);")]
+	[DataRow("object M() => (object)true;", "object M() => BoolBoxes.True;")]
+	[DataRow("object M() => (object)1;", "object M() => IntegerBoxes.One;")]
+	[DataRow("object M() => (object)1.0;", "object M() => DoubleBoxes.One;")]
+	[DataRow("object M() => (object)(false);", "object M() => BoolBoxes.False;")]
+	[DataRow("object M(int value) => (object)value;", "object M(int value) => Boxer.Box(value);")]
+	[DataRow("object M(bool value) => (object)(value);", "object M(bool value) => Boxer.Box(value);")]
 	public async Task When_Explicit_Boxing_Cast(string member, string expected)
 		=> await AssertFixAsync(member, expected);
 
 	[TestMethod]
 	public async Task When_Explicit_Boxing_Cast_Of_Inner_Conversion_Then_Inner_Conversion_Is_Kept()
-		=> await AssertFixAsync("object M(byte value) => (object)(int)value;", "object M(byte value) => Boxes.Box((int)value);");
+		=> await AssertFixAsync("object M(byte value) => (object)(int)value;", "object M(byte value) => Boxer.Box((int)value);");
 
 	[TestMethod]
 	public async Task When_RoutedEventFlag()
-		=> await AssertFixAsync("object M(global::Uno.UI.Xaml.RoutedEventFlag flag) => flag;", "object M(global::Uno.UI.Xaml.RoutedEventFlag flag) => Boxes.Box(flag);");
+		=> await AssertFixAsync("object M(global::Uno.UI.Xaml.RoutedEventFlag flag) => flag;", "object M(global::Uno.UI.Xaml.RoutedEventFlag flag) => Boxer.Box(flag);");
 
 	[TestMethod]
 	public async Task When_Unrelated_Enum_Named_RoutedEventFlag_Then_Not_Rewritten()

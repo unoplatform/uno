@@ -4,7 +4,7 @@
 
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -19,7 +19,7 @@ public partial class TwoPaneView : Microsoft.UI.Xaml.Controls.Control
 	public double MinTallModeHeight
 	{
 		get => (double)GetValue(MinTallModeHeightProperty);
-		set => SetValue(MinTallModeHeightProperty, Boxes.Box(value));
+		set => SetValue(MinTallModeHeightProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -41,7 +41,7 @@ public partial class TwoPaneView : Microsoft.UI.Xaml.Controls.Control
 	public double MinWideModeWidth
 	{
 		get => (double)GetValue(MinWideModeWidthProperty);
-		set => SetValue(MinWideModeWidthProperty, Boxes.Box(value));
+		set => SetValue(MinWideModeWidthProperty, Boxer.Box(value));
 	}
 
 	/// <summary>

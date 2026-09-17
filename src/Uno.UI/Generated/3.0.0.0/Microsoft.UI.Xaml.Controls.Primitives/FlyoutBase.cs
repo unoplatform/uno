@@ -69,7 +69,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			set
 			{
-				this.SetValue(AreOpenCloseAnimationsEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(AreOpenCloseAnimationsEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -112,7 +112,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			}
 			set
 			{
-				this.SetValue(ShouldConstrainToRootBoundsProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(ShouldConstrainToRootBoundsProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

@@ -129,7 +129,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(CanContentRenderOutsideBoundsProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(CanContentRenderOutsideBoundsProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -154,7 +154,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsDeferredScrollingEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsDeferredScrollingEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -173,7 +173,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsZoomChainingEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsZoomChainingEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -187,7 +187,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(IsZoomInertiaEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsZoomInertiaEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -217,7 +217,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(ReduceViewportForCoreInputViewOcclusionsProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(ReduceViewportForCoreInputViewOcclusionsProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -310,7 +310,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static void SetIsZoomChainingEnabled(global::Microsoft.UI.Xaml.DependencyObject element, bool isZoomChainingEnabled)
 		{
-			element.SetValue(IsZoomChainingEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(isZoomChainingEnabled));
+			element.SetValue(IsZoomChainingEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(isZoomChainingEnabled));
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetIsScrollInertiaEnabled(Microsoft.UI.Xaml.DependencyObject)
@@ -326,7 +326,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static void SetIsZoomInertiaEnabled(global::Microsoft.UI.Xaml.DependencyObject element, bool isZoomInertiaEnabled)
 		{
-			element.SetValue(IsZoomInertiaEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(isZoomInertiaEnabled));
+			element.SetValue(IsZoomInertiaEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(isZoomInertiaEnabled));
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetHorizontalScrollMode(Microsoft.UI.Xaml.DependencyObject)
@@ -346,7 +346,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static void SetCanContentRenderOutsideBounds(global::Microsoft.UI.Xaml.DependencyObject element, bool canContentRenderOutsideBounds)
 		{
-			element.SetValue(CanContentRenderOutsideBoundsProperty, global::Uno.UI.Helpers.Boxes.Box(canContentRenderOutsideBounds));
+			element.SetValue(CanContentRenderOutsideBoundsProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(canContentRenderOutsideBounds));
 		}
 #endif
 #if __SKIA__
@@ -360,7 +360,7 @@ namespace Microsoft.UI.Xaml.Controls
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static void SetIsDeferredScrollingEnabled(global::Microsoft.UI.Xaml.DependencyObject element, bool isDeferredScrollingEnabled)
 		{
-			element.SetValue(IsDeferredScrollingEnabledProperty, global::Uno.UI.Helpers.Boxes.Box(isDeferredScrollingEnabled));
+			element.SetValue(IsDeferredScrollingEnabledProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(isDeferredScrollingEnabled));
 		}
 #endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.ScrollViewer.GetBringIntoViewOnFocusChange(Microsoft.UI.Xaml.DependencyObject)

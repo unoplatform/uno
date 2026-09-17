@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented("__SKIA__")]
 		public static void SetKeepInteriorCornersSquare(global::Microsoft.UI.Xaml.Controls.ComboBox comboBox, bool value)
 		{
-			comboBox.SetValue(KeepInteriorCornersSquareProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+			comboBox.SetValue(KeepInteriorCornersSquareProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 		}
 #endif
 #if __SKIA__

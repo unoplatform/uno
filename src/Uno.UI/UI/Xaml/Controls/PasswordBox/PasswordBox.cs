@@ -7,7 +7,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Media;
 using Windows.System;
 using Windows.UI.Text;
@@ -304,7 +304,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public int MaxLength
 		{
 			get => (int)this.GetValue(MaxLengthProperty);
-			set => this.SetValue(MaxLengthProperty, Boxes.Box(value));
+			set => this.SetValue(MaxLengthProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty MaxLengthProperty { get; } =
@@ -313,7 +313,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(int),
 				typeof(PasswordBox),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.IntegerBoxes.Zero,
+					defaultValue: IntegerBoxes.Zero,
 					propertyChangedCallback: (s, e) => ((PasswordBox)s)?._core.OnMaxLengthChanged((int)e.NewValue)
 				)
 			);
@@ -358,7 +358,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(PasswordBox),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.BoolBoxes.True,
+					defaultValue: BoolBoxes.True,
 					propertyChangedCallback: (s, e) => ((PasswordBox)s)?.OnIsPasswordRevealButtonEnabledChanged(e)
 				)
 			);

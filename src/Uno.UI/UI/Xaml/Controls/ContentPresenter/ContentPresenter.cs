@@ -16,7 +16,7 @@ using Microsoft.UI.Xaml.Media;
 using Windows.UI.Text;
 using Microsoft.UI.Composition;
 using Uno.UI.Controls;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 
@@ -244,7 +244,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	public double FontSize
 	{
 		get { return (double)this.GetValue(FontSizeProperty); }
-		set { this.SetValue(FontSizeProperty, Boxes.Box(value)); }
+		set { this.SetValue(FontSizeProperty, Boxer.Box(value)); }
 	}
 
 	public static DependencyProperty FontSizeProperty { get; } =
@@ -275,7 +275,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(bool),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
-				Boxes.BoolBoxes.True,
+				BoolBoxes.True,
 #if __SKIA__
 				// AffectsMeasure only needed where Uno's own measure path calls GetScaledFontSize().
 				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
@@ -374,7 +374,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	public int MaxLines
 	{
 		get { return (int)this.GetValue(MaxLinesProperty); }
-		set { this.SetValue(MaxLinesProperty, Boxes.Box(value)); }
+		set { this.SetValue(MaxLinesProperty, Boxer.Box(value)); }
 	}
 
 	public static DependencyProperty MaxLinesProperty { get; } =
@@ -383,7 +383,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(int),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
-				defaultValue: Boxes.IntegerBoxes.Zero,
+				defaultValue: IntegerBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) => ((ContentPresenter)s).OnMaxLinesChanged()
 			)

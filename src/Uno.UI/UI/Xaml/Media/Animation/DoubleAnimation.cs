@@ -8,7 +8,7 @@ using Uno.Diagnostics.Eventing;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using System.Globalization;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -57,7 +57,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		bool IAnimation<float>.EnableDependentAnimation => EnableDependentAnimation;
 
 		public static DependencyProperty EnableDependentAnimationProperty { get; } =
-			DependencyProperty.Register("EnableDependentAnimation", typeof(bool), typeof(DoubleAnimation), new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
+			DependencyProperty.Register("EnableDependentAnimation", typeof(bool), typeof(DoubleAnimation), new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		public IEasingFunction EasingFunction
 		{

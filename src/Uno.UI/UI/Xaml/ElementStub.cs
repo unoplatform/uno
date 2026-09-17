@@ -7,7 +7,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml;
 using Windows.Foundation;
 
@@ -74,7 +74,7 @@ namespace Microsoft.UI.Xaml
 		// Using a DependencyProperty as the backing store for Load.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty LoadProperty =
 			DependencyProperty.Register("Load", typeof(bool), typeof(ElementStub), new FrameworkPropertyMetadata(
-				Boxes.BoolBoxes.False, OnLoadChanged));
+				BoolBoxes.False, OnLoadChanged));
 
 		/// <summary>
 		/// Determines if the current ElementStub has been materialized to its target View.

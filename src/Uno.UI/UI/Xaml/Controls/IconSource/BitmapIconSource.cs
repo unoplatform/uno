@@ -4,7 +4,7 @@
 // MUX Reference BitmapIconSource_Partial.cpp, tag winui3/release/1.4.2
 
 using System;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation.Metadata;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -29,7 +29,7 @@ public partial class BitmapIconSource : IconSource
 	}
 
 	public static DependencyProperty ShowAsMonochromeProperty { get; } =
-		DependencyProperty.Register(nameof(ShowAsMonochrome), typeof(bool), typeof(BitmapIconSource), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True, OnPropertyChanged));
+		DependencyProperty.Register(nameof(ShowAsMonochrome), typeof(bool), typeof(BitmapIconSource), new FrameworkPropertyMetadata(BoolBoxes.True, OnPropertyChanged));
 
 	protected override IconElement CreateIconElementCore()
 	{

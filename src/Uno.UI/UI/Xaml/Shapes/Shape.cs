@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno;
 using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Microsoft.UI.Composition;
 using SkiaSharp;
 using System.Numerics;
@@ -115,7 +116,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double StrokeThickness
 		{
 			get => (double)this.GetValue(StrokeThicknessProperty);
-			set => this.SetValue(StrokeThicknessProperty, Boxes.Box(value));
+			set => this.SetValue(StrokeThicknessProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty StrokeThicknessProperty { get; } = DependencyProperty.Register(
@@ -123,7 +124,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
-				defaultValue: Boxes.DoubleBoxes.One,
+				defaultValue: DoubleBoxes.One,
 				propertyChangedCallback: (s, e) => ((Shape)s).OnStrokeThicknessChanged()
 			) // Perf: WinUI uses AffectsMeasure, we optimize this and only invalidate measure if Stroke is not null
 		);
@@ -232,7 +233,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double StrokeMiterLimit
 		{
 			get => (double)this.GetValue(StrokeMiterLimitProperty);
-			set => this.SetValue(StrokeMiterLimitProperty, Boxes.Box(value));
+			set => this.SetValue(StrokeMiterLimitProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty StrokeMiterLimitProperty { get; } = DependencyProperty.Register(
@@ -268,7 +269,7 @@ namespace Microsoft.UI.Xaml.Shapes
 		public double StrokeDashOffset
 		{
 			get => (double)this.GetValue(StrokeDashOffsetProperty);
-			set => this.SetValue(StrokeDashOffsetProperty, Boxes.Box(value));
+			set => this.SetValue(StrokeDashOffsetProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty StrokeDashOffsetProperty { get; } = DependencyProperty.Register(
@@ -276,7 +277,7 @@ namespace Microsoft.UI.Xaml.Shapes
 			typeof(double),
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
-				defaultValue: Boxes.DoubleBoxes.Zero,
+				defaultValue: DoubleBoxes.Zero,
 				options: FrameworkPropertyMetadataOptions.AffectsArrange
 			)
 		);

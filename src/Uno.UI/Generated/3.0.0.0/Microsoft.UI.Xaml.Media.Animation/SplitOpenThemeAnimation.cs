@@ -106,7 +106,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 			set
 			{
-				this.SetValue(ClosedLengthProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(ClosedLengthProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -190,7 +190,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 			set
 			{
-				this.SetValue(ContentTranslationOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(ContentTranslationOffsetProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -204,7 +204,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 			set
 			{
-				this.SetValue(OffsetFromCenterProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(OffsetFromCenterProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -218,7 +218,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 			set
 			{
-				this.SetValue(OpenedLengthProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(OpenedLengthProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

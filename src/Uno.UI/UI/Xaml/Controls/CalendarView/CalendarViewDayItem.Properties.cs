@@ -1,4 +1,4 @@
-﻿using Uno.UI.Helpers;
+﻿using Uno.UI.Helpers.Boxes;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -48,6 +48,6 @@ namespace Microsoft.UI.Xaml.Controls
 			Microsoft.UI.Xaml.DependencyProperty.Register(
 				nameof(IsBlackout), typeof(bool),
 				typeof(global::Microsoft.UI.Xaml.Controls.CalendarViewDayItem),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
+				new FrameworkPropertyMetadata(BoolBoxes.False));
 	}
 }

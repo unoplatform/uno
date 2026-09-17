@@ -4,7 +4,7 @@
 // MUX Reference ItemsView.properties.cpp, tag winui3/release/1.5.0
 
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -15,13 +15,13 @@ partial class ItemsView
 		nameof(CurrentItemIndex),
 		typeof(int),
 		typeof(ItemsView),
-		new FrameworkPropertyMetadata(defaultValue: Boxes.IntegerBoxes.NegativeOne, propertyChangedCallback: OnCurrentItemIndexPropertyChanged));
+		new FrameworkPropertyMetadata(defaultValue: IntegerBoxes.NegativeOne, propertyChangedCallback: OnCurrentItemIndexPropertyChanged));
 
 	public static DependencyProperty IsItemInvokedEnabledProperty { get; } = DependencyProperty.Register(
 		nameof(IsItemInvokedEnabled),
 		typeof(bool),
 		typeof(ItemsView),
-		new FrameworkPropertyMetadata(defaultValue: Boxes.BoolBoxes.False, propertyChangedCallback: OnIsItemInvokedEnabledPropertyChanged));
+		new FrameworkPropertyMetadata(defaultValue: BoolBoxes.False, propertyChangedCallback: OnIsItemInvokedEnabledPropertyChanged));
 
 	public static DependencyProperty ItemsSourceProperty { get; } = DependencyProperty.Register(
 		nameof(ItemsSource),
@@ -154,7 +154,7 @@ partial class ItemsView
 	public int CurrentItemIndex
 	{
 		get => (int)GetValue(CurrentItemIndexProperty);
-		private set => SetValue(CurrentItemIndexProperty, Boxes.Box(value));
+		private set => SetValue(CurrentItemIndexProperty, Boxer.Box(value));
 	}
 
 	public bool IsItemInvokedEnabled

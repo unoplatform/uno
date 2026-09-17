@@ -72,7 +72,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			set
 			{
-				this.SetValue(LineHeightProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(LineHeightProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

@@ -19,6 +19,7 @@ using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml.Media;
 
 using _View = Microsoft.UI.Xaml.UIElement;
@@ -551,14 +552,14 @@ namespace Microsoft.UI.Xaml
 			{
 				if (forType.IsAssignableTo(typeof(UserControl)))
 				{
-					return Boxes.BoolBoxes.False;
+					return BoolBoxes.False;
 				}
 				else if (forType.IsAssignableTo(typeof(Control)))
 				{
-					return Boxes.BoolBoxes.True;
+					return BoolBoxes.True;
 				}
 
-				return Boxes.BoolBoxes.False;
+				return BoolBoxes.False;
 			}
 
 #if __SKIA__
@@ -581,7 +582,7 @@ namespace Microsoft.UI.Xaml
 			{
 				if (forType == typeof(Rectangle) || forType == typeof(Ellipse))
 				{
-					return Boxes.StretchBoxes.Fill;
+					return StretchBoxes.Fill;
 				}
 			}
 

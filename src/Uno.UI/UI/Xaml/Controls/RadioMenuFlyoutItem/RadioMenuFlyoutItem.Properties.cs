@@ -4,7 +4,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"AreCheckStatesEnabled",
 				typeof(bool),
 				typeof(RadioMenuFlyoutItem),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnAreCheckStatesEnabledPropertyChanged));
+				new FrameworkPropertyMetadata(BoolBoxes.False, OnAreCheckStatesEnabledPropertyChanged));
 
 		public string GroupName
 		{
@@ -40,6 +40,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsCheckedProperty { get; } =
-			DependencyProperty.Register(nameof(IsChecked), typeof(bool), typeof(RadioMenuFlyoutItem), new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, (s, e) => (s as RadioMenuFlyoutItem)?.OnPropertyChanged(e)));
+			DependencyProperty.Register(nameof(IsChecked), typeof(bool), typeof(RadioMenuFlyoutItem), new FrameworkPropertyMetadata(BoolBoxes.False, (s, e) => (s as RadioMenuFlyoutItem)?.OnPropertyChanged(e)));
 	}
 }

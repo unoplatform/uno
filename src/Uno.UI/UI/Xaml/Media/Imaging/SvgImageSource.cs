@@ -14,7 +14,7 @@ using Windows.Application­Model;
 using Microsoft.UI.Composition;
 using SkiaSharp;
 using System.Reflection;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media.Imaging;
 
@@ -201,7 +201,7 @@ public partial class SvgImageSource : ImageSource
 							new SKSizeI((int)sourceSize.Width, (int)sourceSize.Height),
 							Pointer.Box(&matrix, typeof(SKMatrix*)),
 							new SKPaint(),
-							Boxes.BoolBoxes.False,
+							BoolBoxes.False,
 							SKColorSpace.CreateSrgb(),
 							new SKSurfaceProperties(SKPixelGeometry.Unknown)
 					]);
