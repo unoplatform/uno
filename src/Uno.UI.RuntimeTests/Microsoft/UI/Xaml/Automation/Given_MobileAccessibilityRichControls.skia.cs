@@ -228,6 +228,35 @@ public class Given_MobileAccessibilityRichControls
 
 	[TestMethod]
 	[RunsOnUIThread]
+	public async Task When_ListView_Items_Are_Duplicated_Then_Native_Occurrences_Remain_Distinct()
+	{
+		var duplicate = "Duplicate item";
+		var listView = new ListView
+		{
+			ItemsSource = new List<string> { duplicate, duplicate },
+			Height = 300,
+		};
+
+		await UITestHelper.Load(listView);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var snapshots =
+			AccessibilityPeerHelper.AndroidAllNodeSnapshotsForRootAccessor?.Invoke(listView.XamlRoot!) ??
+			AccessibilityPeerHelper.IOSAllNodeSnapshotsForRootAccessor?.Invoke(listView.XamlRoot!) ??
+			Array.Empty<AccessibilityNativeNodeSnapshot>();
+		var duplicateSnapshots = snapshots
+			.Where(snapshot => snapshot.Name == duplicate)
+			.ToArray();
+
+		Assert.AreEqual(2, duplicateSnapshots.Length, "Both realized duplicate occurrences must be exposed.");
+		Assert.AreNotEqual(
+			duplicateSnapshots[0].Bounds.Y,
+			duplicateSnapshots[1].Bounds.Y,
+			"Duplicate occurrences must retain their own container bounds.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
 	public async Task When_ListView_Multiple_Selection_On_Mobile_Then_Collection_CanSelectMultiple()
 	{
 		var listView = new ListView

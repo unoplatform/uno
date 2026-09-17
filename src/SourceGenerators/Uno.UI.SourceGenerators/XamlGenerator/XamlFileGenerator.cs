@@ -32,6 +32,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		private const string GlobalPrefix = "global::";
 		private const string QualifiedNamespaceMarker = ".";
+		private const string XamlNamePropertyName = "__UnoXamlName";
 
 		private static readonly char[] _dotArray = new[] { '.' };
 		private static readonly char[] _parenthesesArray = new[] { '(', ')' };
@@ -3539,6 +3540,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								ValidateName(value, member);
 
 								writer.AppendLineIndented($@"__nameScope.RegisterName(""{value}"", {writer.AppliedParameterName});");
+								if (objectDefinition.Type.Name == "MenuFlyout")
+								{
+									writer.AppendLineIndented(
+										$@"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({writer.AppliedParameterName}, ""{XamlNamePropertyName}"", ""{value}"");");
+								}
 							}
 
 							if (

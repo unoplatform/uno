@@ -72,6 +72,9 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 	// service state; unsolicited events are gated in AnnounceOnPlatform.
 	public override bool IsAccessibilityEnabled => true;
 
+	protected override bool IsAutomationListenerActive
+		=> _recordEvents || _helper?.IsAccessibilityServiceEnabled == true;
+
 	protected override bool ShouldInvalidateOnScroll
 		=> _helper?.IsTouchExplorationEnabled == true;
 
@@ -81,11 +84,14 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 	public override void NotifyInvalidatePeer(AutomationPeer peer)
 	{
 		base.NotifyInvalidatePeer(peer);
-		var virtualId = _helper?.GetCurrentVirtualIdForPeer(peer);
+		var virtualIds = _helper?.GetCurrentVirtualIdsForPeer(peer) ?? Array.Empty<int>();
 		_helper?.MarkAccessibilityTreeDirty();
-		if (virtualId is { } id)
+		if (virtualIds.Length > 0)
 		{
-			ScheduleInvalidation(id);
+			foreach (var id in virtualIds)
+			{
+				ScheduleInvalidation(id);
+			}
 		}
 		else if (
 			peer.ResolveProviderPeer(resolveEventsSource: true).TryGetProviderOwner(out var owner))
@@ -101,15 +107,18 @@ internal sealed class AndroidSkiaAccessibility : SkiaAccessibilityBase
 		object newValue)
 	{
 		base.NotifyPropertyChangedEvent(peer, automationProperty, oldValue, newValue);
-		if (_helper?.GetCurrentVirtualIdForPeer(peer) is { } id)
+		if (_helper?.GetCurrentVirtualIdsForPeer(peer) is { Length: > 0 } ids)
 		{
-			ScheduleInvalidation(id);
+			foreach (var id in ids)
+			{
+				ScheduleInvalidation(id);
+			}
 		}
 	}
 
 	internal UIElement? RootElement
 		=> _xamlRootRef.TryGetTarget(out var root)
-			? root.Content as UIElement ?? root.VisualTree.RootElement
+			? root.VisualTree.RootElement
 			: null;
 
 	internal void Configure(UnoExploreByTouchHelper helper)

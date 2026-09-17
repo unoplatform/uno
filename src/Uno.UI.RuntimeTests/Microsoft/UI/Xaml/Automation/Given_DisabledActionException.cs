@@ -1,10 +1,12 @@
 using System.Threading.Tasks;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
+using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
@@ -60,6 +62,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 		{
 			var provider = (ISelectionItemProvider)CreatePeer(new RadioButton { Content = "X", IsEnabled = false }, PatternInterface.SelectionItem);
 			Assert.ThrowsExactly<ElementNotEnabledException>(() => provider.Select());
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Disabled_SelectorItem_Provider_Is_Queried_Then_Throws()
+		{
+			var listView = new ListView
+			{
+				IsEnabled = false,
+				ItemsSource = new[] { "Item" },
+			};
+			await UITestHelper.Load(listView);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var listPeer = (ItemsControlAutomationPeer)FrameworkElementAutomationPeer.CreatePeerForElement(listView);
+			var itemPeer = listPeer.GetChildren()!.OfType<SelectorItemAutomationPeer>().Single();
+			var provider = (ISelectionItemProvider)itemPeer.GetPattern(PatternInterface.SelectionItem);
+
+			var selectedError = Assert.ThrowsExactly<ElementNotEnabledException>(
+				() => _ = provider.IsSelected);
+			Assert.AreEqual(UIA_E_ELEMENTNOTENABLED, selectedError.HResult);
+			Assert.ThrowsExactly<ElementNotEnabledException>(() => provider.Select());
+			Assert.ThrowsExactly<ElementNotEnabledException>(() => provider.AddToSelection());
+			Assert.ThrowsExactly<ElementNotEnabledException>(() => provider.RemoveFromSelection());
 		}
 
 		[TestMethod]

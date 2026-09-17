@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using Uno.UI;
+using Uno.UI.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
@@ -368,7 +369,7 @@ partial class MenuFlyoutPresenter : IMenuPresenter
 
 		if (parentMenuFlyout is not null)
 		{
-			return (NameScope.GetNameScope(parentMenuFlyout) as NameScope)?.FindNameForObject(parentMenuFlyout);
+			return MarkupHelper.GetXamlName(parentMenuFlyout);
 		}
 
 		return null;
