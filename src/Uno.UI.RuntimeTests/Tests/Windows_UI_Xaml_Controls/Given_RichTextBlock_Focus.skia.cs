@@ -6,6 +6,8 @@ using Microsoft.UI.Xaml.Documents;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
+using Windows.System;
+using Windows.UI.Core;
 using static Private.Infrastructure.TestServices;
 
 #nullable enable
@@ -144,6 +146,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var clicks = 0;
 			hyperlink.Click += (_, _) => clicks++;
 
+			// CHyperlink leaves the key unhandled, so it keeps bubbling through its non-public parents.
+			var hostKeyUps = 0;
+			SUT.AddHandler(UIElement.KeyUpEvent, new KeyEventHandler((_, _) => hostKeyUps++), handledEventsToo: true);
+
 			try
 			{
 				await UITestHelper.Load(SUT);
@@ -151,18 +157,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.IsTrue(hyperlink.Focus(FocusState.Keyboard), "The Hyperlink should take focus");
 				await WindowHelper.WaitForIdle();
 
-				await KeyboardHelper.PressKeySequence("$d$_enter#$u$_enter#", SUT);
-				await WindowHelper.WaitForIdle();
+				await TapKey(VirtualKey.Enter);
 				Assert.AreEqual(1, clicks, "Enter should activate the focused Hyperlink");
 
-				await KeyboardHelper.PressKeySequence("$d$_space#$u$_space#", SUT);
+				await TapKey(VirtualKey.Space);
+				Assert.AreEqual(2, clicks, "Space should activate the focused Hyperlink");
+
+				Assert.AreEqual(2, hostKeyUps, "The key should bubble from the Hyperlink to its RichTextBlock");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Focused_Hyperlink_In_TextBlock_Activated_By_Keyboard()
+		{
+			var hyperlink = new Hyperlink();
+			hyperlink.Inlines.Add(new Run { Text = "activate me" });
+			var SUT = new TextBlock { FontSize = 20 };
+			SUT.Inlines.Add(hyperlink);
+
+			var clicks = 0;
+			hyperlink.Click += (_, _) => clicks++;
+
+			try
+			{
+				await UITestHelper.Load(SUT);
+
+				Assert.IsTrue(hyperlink.Focus(FocusState.Keyboard), "The Hyperlink should take focus");
 				await WindowHelper.WaitForIdle();
+
+				await TapKey(VirtualKey.Enter);
+				Assert.AreEqual(1, clicks, "Enter should activate the focused Hyperlink");
+
+				await TapKey(VirtualKey.Space);
 				Assert.AreEqual(2, clicks, "Space should activate the focused Hyperlink");
 			}
 			finally
 			{
 				WindowHelper.WindowContent = null;
 			}
+		}
+
+		// Goes through the InputManager, so the key is routed from the focused element like a real key press.
+		private static async Task TapKey(VirtualKey key)
+		{
+			var keyboard = WindowHelper.XamlRoot!.VisualTree.ContentRoot.InputManager.Keyboard;
+
+			keyboard.OnKeyTestingOnly(new KeyEventArgs("test", key, VirtualKeyModifiers.None, new CorePhysicalKeyStatus()), true);
+			await WindowHelper.WaitForIdle();
+
+			keyboard.OnKeyTestingOnly(new KeyEventArgs("test", key, VirtualKeyModifiers.None, new CorePhysicalKeyStatus()), false);
+			await WindowHelper.WaitForIdle();
 		}
 	}
 }

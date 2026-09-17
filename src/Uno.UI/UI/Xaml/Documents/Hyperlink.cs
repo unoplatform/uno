@@ -189,31 +189,25 @@ namespace Microsoft.UI.Xaml.Documents
 		// CHyperlink::IsLinkNavigationKey
 		private static bool IsLinkNavigationKey(VirtualKey key) => key is VirtualKey.Enter or VirtualKey.Space;
 
-		// CHyperlink::KeyDownEventListener
-		internal bool OnKeyDown(VirtualKey key)
+		// CHyperlink::KeyDownEventListener - leaves the event unhandled, so it keeps bubbling to the host.
+		internal void OnKeyDown(VirtualKey key)
 		{
-			if (!IsLinkNavigationKey(key))
+			if (IsLinkNavigationKey(key))
 			{
-				return false;
+				_isLinkNavigationKeyDown = true;
+				SetCurrentForeground();
 			}
-
-			_isLinkNavigationKeyDown = true;
-			SetCurrentForeground();
-			return true;
 		}
 
-		// CHyperlink::KeyUpEventListener - only navigate when this link saw the matching key down.
-		internal bool OnKeyUp(VirtualKey key)
+		// CHyperlink::KeyUpEventListener - only navigate when this link saw a navigation key down.
+		internal void OnKeyUp(VirtualKey key)
 		{
-			if (!_isLinkNavigationKeyDown || !IsLinkNavigationKey(key))
+			if (_isLinkNavigationKeyDown && IsLinkNavigationKey(key))
 			{
-				return false;
+				_isLinkNavigationKeyDown = false;
+				SetCurrentForeground();
+				OnClick();
 			}
-
-			_isLinkNavigationKeyDown = false;
-			SetCurrentForeground();
-			OnClick();
-			return true;
 		}
 
 		internal bool AbortPointerPressed(Pointer pointer)
