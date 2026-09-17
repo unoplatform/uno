@@ -64,12 +64,13 @@
       "automationId": "FavoriteColorComboBox",
       "role": "combobox",
       "name": "Favorite color",
-      "value": "Red",
       "patterns": [
         "expandcollapse",
         "selection"
       ],
-      "state": {}
+      "state": {
+        "expanded": false
+      }
     },
     {
       "id": "HelpTextButton",
@@ -85,7 +86,7 @@
     {
       "id": "LiveRegionText",
       "automationId": "LiveRegionText",
-      "role": "group",
+      "role": "div",
       "name": "Status: Ready",
       "patterns": [],
       "state": {

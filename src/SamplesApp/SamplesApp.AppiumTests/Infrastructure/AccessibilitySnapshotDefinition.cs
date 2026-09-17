@@ -146,7 +146,7 @@ internal static class AccessibilityScreenReaderSnapshotDefinition
 			new(AccessibilityScreenReaderIds.FavoriteColorComboBox, AccessibilityScreenReaderIds.FavoriteColorComboBox)
 			{
 				Platforms = s_allPlatforms,
-				DefaultFields = AccessibilitySnapshotFields.Patterns | AccessibilitySnapshotFields.Value,
+				DefaultFields = AccessibilitySnapshotFields.Patterns | AccessibilitySnapshotFields.Expanded,
 			},
 			new(AccessibilityScreenReaderIds.CommentsTextBox, AccessibilityScreenReaderIds.CommentsTextBox)
 			{

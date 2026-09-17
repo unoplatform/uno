@@ -1133,10 +1133,29 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 
 		if (GCHandle.FromIntPtr(handle).Target is ContainerVisual { Owner.Target: UIElement owner })
 		{
-			var peer = owner.GetOrCreateAutomationPeer();
-			if (peer?.GetPattern(PatternInterface.SelectionItem) is ISelectionItemProvider selectionItemProvider)
+			var peer = owner.GetOrCreateAutomationPeer()?.ResolveProviderPeer(resolveEventsSource: true);
+			var selectionItemProvider = peer?.GetPattern(PatternInterface.SelectionItem) as ISelectionItemProvider;
+			if (selectionItemProvider is null &&
+				owner is ComboBoxItem comboBoxItem &&
+				ItemsControl.ItemsControlFromItemContainer(comboBoxItem) is ComboBox comboBox)
 			{
-				selectionItemProvider.Select();
+				var index = comboBox.IndexFromContainer(comboBoxItem);
+				if (index >= 0 &&
+					comboBox.GetOrCreateAutomationPeer() is ComboBoxAutomationPeer comboBoxPeer)
+				{
+					selectionItemProvider = comboBoxPeer
+						.CreateItemAutomationPeer(comboBox.Items[index])
+						?.GetPattern(PatternInterface.SelectionItem) as ISelectionItemProvider;
+				}
+			}
+
+			if (selectionItemProvider is ComboBoxItemDataAutomationPeer comboBoxItemDataPeer)
+			{
+				comboBoxItemDataPeer.Select();
+			}
+			else
+			{
+				selectionItemProvider?.Select();
 			}
 		}
 	}

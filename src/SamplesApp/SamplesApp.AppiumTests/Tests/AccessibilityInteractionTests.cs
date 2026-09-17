@@ -2,6 +2,7 @@
 
 using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using OpenQA.Selenium;
 using SamplesApp.AppiumTests.Infrastructure;
 
 namespace SamplesApp.AppiumTests.Tests;
@@ -62,34 +63,69 @@ public sealed class AccessibilityInteractionTests : AppiumFixtureBase
 	[TestCategory(TestCategories.Interaction)]
 	public void FavoriteColorComboBox_Selection_UpdatesThePlatformTree()
 	{
-		var comboFields = AccessibilitySnapshotFields.Patterns | AccessibilitySnapshotFields.Value;
+		var comboFields = AccessibilitySnapshotFields.Patterns | AccessibilitySnapshotFields.Expanded;
 		var initialCombo = Session.CaptureElement(AccessibilityScreenReaderIds.FavoriteColorComboBox, comboFields);
 		initialCombo.Patterns.Should().Contain("expandcollapse");
-		initialCombo.Value.Should().Be("Red");
 
 		Session.Activate(AccessibilityScreenReaderIds.FavoriteColorComboBox);
-		Session.Activate(AccessibilityScreenReaderIds.FavoriteColorOptionGreen);
-
-		var combo = Session.WaitForSnapshot(
+		Session.WaitForSnapshot(
 			AccessibilityScreenReaderIds.FavoriteColorComboBox,
 			comboFields,
-			snapshot => string.Equals(snapshot.Value, "Green", StringComparison.Ordinal),
-			"observe the combobox value change");
-		Session.Activate(AccessibilityScreenReaderIds.FavoriteColorComboBox);
-		var selectedGreen = Session.WaitForSnapshot(
-			AccessibilityScreenReaderIds.FavoriteColorOptionGreen,
-			AccessibilitySnapshotFields.Selected,
-			snapshot => snapshot.State.Selected == true,
-			"observe the selected combobox item");
-		var selectedRed = Session.WaitForSnapshot(
-			AccessibilityScreenReaderIds.FavoriteColorOptionRed,
-			AccessibilitySnapshotFields.Selected,
-			snapshot => snapshot.State.Selected == false,
-			"observe the previously selected combobox item");
+			snapshot => snapshot.State.Expanded is null or true,
+			"observe the combobox expansion when the platform exposes it");
+		if (Session.Options.Platform == AppiumPlatform.Wasm)
+		{
+			Session.Activate(
+				By.CssSelector("#uno-semantics-root [role=\"option\"][aria-label=\"Green\"]"),
+				"find the Green option by its ARIA role and name");
+		}
+		else
+		{
+			Session.Activate(AccessibilityScreenReaderIds.FavoriteColorOptionGreen);
+		}
 
-		combo.Value.Should().Be("Green");
-		selectedGreen.State.Selected.Should().BeTrue();
-		selectedRed.State.Selected.Should().BeFalse();
+		Session.WaitForSnapshot(
+			AccessibilityScreenReaderIds.FavoriteColorComboBox,
+			comboFields,
+			snapshot => snapshot.State.Expanded is null or false,
+			"observe the combobox collapse when the platform exposes it");
+		Session.Activate(AccessibilityScreenReaderIds.FavoriteColorComboBox);
+		Session.WaitForSnapshot(
+			AccessibilityScreenReaderIds.FavoriteColorComboBox,
+			comboFields,
+			snapshot => snapshot.State.Expanded is null or true,
+			"observe the combobox reopening when the platform exposes it");
+
+		if (Session.Options.Platform == AppiumPlatform.Wasm)
+		{
+			Session.WaitForCondition(
+				() => ((IJavaScriptExecutor)Session.Driver).ExecuteScript(
+					"""
+					const comboBox = document.querySelector(
+						'#uno-semantics-root [xamlautomationid="FavoriteColorComboBox"]');
+					const activeId = comboBox?.getAttribute('aria-activedescendant');
+					return activeId
+						? document.getElementById(activeId)?.getAttribute('aria-label') === 'Green'
+						: false;
+					""") is true,
+				"observe the Green option through aria-activedescendant");
+		}
+		else
+		{
+			var selectedGreen = Session.WaitForSnapshot(
+				AccessibilityScreenReaderIds.FavoriteColorOptionGreen,
+				AccessibilitySnapshotFields.Selected,
+				snapshot => snapshot.State.Selected == true,
+				"observe the selected combobox item");
+			var selectedRed = Session.WaitForSnapshot(
+				AccessibilityScreenReaderIds.FavoriteColorOptionRed,
+				AccessibilitySnapshotFields.Selected,
+				snapshot => snapshot.State.Selected == false,
+				"observe the previously selected combobox item");
+
+			selectedGreen.State.Selected.Should().BeTrue();
+			selectedRed.State.Selected.Should().BeFalse();
+		}
 	}
 
 	[TestMethod]

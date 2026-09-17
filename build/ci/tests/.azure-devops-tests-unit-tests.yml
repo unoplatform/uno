@@ -63,6 +63,7 @@ jobs:
     displayName: Run unit tests
 
   - pwsh: |
+      $env:UNO_APPIUM_SNAPSHOTS_DIR = Join-Path "$(Build.SourcesDirectory)" "src/SamplesApp/SamplesApp.AppiumTests/Snapshots"
       dotnet test --project src/SamplesApp/SamplesApp.AppiumTests/SamplesApp.AppiumTests.csproj -c Release -p:UNO_DISABLE_ANALYZERS_IN_SAMPLES=true --filter TestCategory=HostIndependent --no-progress --report-trx --results-directory $(Build.SourcesDirectory)/artifacts/TestResults
     displayName: Run Appium host-independent tests
 

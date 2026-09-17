@@ -11,8 +11,8 @@ using OpenQA.Selenium.Remote;
 namespace SamplesApp.AppiumTests.Infrastructure;
 
 /// <summary>
-/// Drives SamplesApp.Skia.WebAssembly.Browser via ChromeDriver against the
-/// running browser. The Skia semantic DOM is the automation tree: Uno publishes
+/// Drives the SamplesApp browser target via ChromeDriver against the running
+/// browser. The Skia semantic DOM is the automation tree: Uno publishes
 /// <c>xamlautomationid</c> on semantic elements, and roles/states flow from the
 /// ARIA mapping done by Uno's Skia WebAssembly accessibility bridge.
 /// </summary>

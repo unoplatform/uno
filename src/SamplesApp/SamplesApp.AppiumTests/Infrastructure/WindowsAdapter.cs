@@ -10,8 +10,8 @@ using OpenQA.Selenium.Appium.Windows;
 namespace SamplesApp.AppiumTests.Infrastructure;
 
 /// <summary>
-/// Drives SamplesApp.Skia.Generic on Windows via the Appium Windows driver,
-/// which forwards to the Win32 UIAutomation provider tree exposed by
+/// Drives the SamplesApp desktop target on Windows via the Appium Windows
+/// driver, which forwards to the Win32 UIAutomation provider tree exposed by
 /// Uno.UI.Runtime.Skia.Win32.
 /// </summary>
 public sealed class WindowsAdapter : IPlatformAdapter

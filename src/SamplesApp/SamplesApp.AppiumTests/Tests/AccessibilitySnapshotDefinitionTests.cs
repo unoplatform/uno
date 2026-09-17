@@ -27,10 +27,25 @@ public sealed class AccessibilitySnapshotDefinitionTests
 	[TestCategory(TestCategories.HostIndependent)]
 	public void SnapshotPath_RequiresOverride_WhenCallerPathIsUnavailable()
 	{
+		using var scope = new EnvironmentVariableScope();
+		scope.Set(AppiumTestOptions.EnvVarSnapshotsDir, null);
+
 		var action = () => SnapshotPaths.ResolveSnapshotsDirectory(callerFilePath: @"Z:\unavailable\AccessibilitySnapshotTests.cs");
 
 		action.Should().Throw<InvalidDataException>()
 			.WithMessage($"*{AppiumTestOptions.EnvVarSnapshotsDir}*");
+	}
+
+	[TestMethod]
+	[TestCategory(TestCategories.HostIndependent)]
+	public void SnapshotPath_UsesEnvironmentOverride_WhenCallerPathIsUnavailable()
+	{
+		using var scope = new EnvironmentVariableScope();
+		var snapshotsDirectory = Path.GetFullPath("Snapshots");
+		scope.Set(AppiumTestOptions.EnvVarSnapshotsDir, snapshotsDirectory);
+
+		SnapshotPaths.ResolveSnapshotsDirectory(callerFilePath: @"Z:\unavailable\AccessibilitySnapshotTests.cs")
+			.Should().Be(snapshotsDirectory);
 	}
 
 	[TestMethod]

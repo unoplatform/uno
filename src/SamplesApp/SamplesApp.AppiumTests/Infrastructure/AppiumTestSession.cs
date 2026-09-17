@@ -177,16 +177,43 @@ public sealed class AppiumTestSession : IDisposable
 			cancellationToken)
 			?? throw new InvalidOperationException($"Failed to resolve element '{automationId}' ({DiagnosticContext}).");
 
+	public IWebElement WaitForElement(
+		By locator,
+		string description,
+		CancellationToken cancellationToken = default)
+		=> WaitUntil(
+			() => TryFindVisibleElement(locator),
+			element => element is not null,
+			description,
+			cancellationToken)
+			?? throw new InvalidOperationException($"Failed to resolve {description} ({DiagnosticContext}).");
+
 	public void Activate(
 		string automationId,
 		CancellationToken cancellationToken = default)
 		=> Adapter.Activate(Driver, WaitForElement(automationId, cancellationToken));
+
+	public void Activate(
+		By locator,
+		string description,
+		CancellationToken cancellationToken = default)
+		=> Adapter.Activate(Driver, WaitForElement(locator, description, cancellationToken));
 
 	public void EnterText(
 		string automationId,
 		string value,
 		CancellationToken cancellationToken = default)
 		=> Adapter.EnterText(Driver, WaitForElement(automationId, cancellationToken), value);
+
+	public void WaitForCondition(
+		Func<bool> predicate,
+		string description,
+		CancellationToken cancellationToken = default)
+		=> WaitUntil(
+			() => predicate() ? string.Empty : null,
+			_ => true,
+			description,
+			cancellationToken);
 
 	public string WriteActualSnapshot(string snapshotId, AccessibilitySnapshot snapshot)
 	{
@@ -304,8 +331,11 @@ public sealed class AppiumTestSession : IDisposable
 	}
 
 	private IWebElement? TryFindVisibleElement(string automationId)
+		=> TryFindVisibleElement(Adapter.ByAutomationId(automationId));
+
+	private IWebElement? TryFindVisibleElement(By locator)
 	{
-		var matches = Driver.FindElements(Adapter.ByAutomationId(automationId));
+		var matches = Driver.FindElements(locator);
 		return matches.FirstOrDefault(element => element.Displayed) ?? matches.FirstOrDefault();
 	}
 

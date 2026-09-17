@@ -35,10 +35,10 @@ dotnet test --project src\SamplesApp\SamplesApp.AppiumTests\SamplesApp.AppiumTes
 ```
 
 `HostRequired` tests are opt-in on machines that actually have the matching
-host, app build, and driver available. The Skia-WASM runtime-test lane also
-runs all `HostRequired` tests once (matrix group 0) against the published app
-with a version-matched ChromeDriver. Windows and macOS host-backed runs remain
-manual until those CI lanes provide Appium and the required OS permissions.
+host, app build, and driver available. The Skia-WASM accessibility automation
+job runs all `HostRequired` tests against the published app with a
+version-matched ChromeDriver. Windows and macOS host-backed runs remain manual
+until those CI lanes provide Appium and the required OS permissions.
 If you intentionally select host-backed tests without the required
 environment, they fail fast with a configuration error; they never silently
 skip or auto-bless baselines.
@@ -69,9 +69,10 @@ Per `AGENTS.md`, use a single-target override for local iteration.
 ### Windows / macOS Skia
 
 ```powershell
-dotnet build src\SamplesApp\SamplesApp.Skia.Generic\SamplesApp.Skia.Generic.csproj `
+dotnet build src\SamplesApp\SamplesApp\SamplesApp.csproj `
   -c Release `
-  -p:UnoTargetFrameworkOverride=net10.0 `
+  -f net10.0-desktop `
+  -p:UnoTargetFrameworkOverride=net10.0-desktop `
   -p:UnoFastDevBuild=true
 ```
 
@@ -81,10 +82,10 @@ dotnet build src\SamplesApp\SamplesApp.Skia.Generic\SamplesApp.Skia.Generic.cspr
 ### WASM
 
 ```powershell
-dotnet publish src\SamplesApp\SamplesApp.Skia.WebAssembly.Browser\SamplesApp.Skia.WebAssembly.Browser.csproj `
+dotnet publish src\SamplesApp\SamplesApp\SamplesApp.csproj `
   -c Release `
-  -f net10.0 `
-  -p:UnoTargetFrameworkOverride=net10.0 `
+  -f net10.0-browserwasm `
+  -p:UnoTargetFrameworkOverride=net10.0-browserwasm `
   -p:UnoFastDevBuild=true
 ```
 
@@ -92,7 +93,7 @@ Serve the built dist folder from any reachable URL, for example:
 
 ```powershell
 dotnet tool install --global dotnet-serve
-dotnet serve --directory src\SamplesApp\SamplesApp.Skia.WebAssembly.Browser\bin\Release\net10.0\publish\wwwroot --port 8000
+dotnet serve --directory src\SamplesApp\SamplesApp\bin\Release\net10.0-browserwasm\publish\wwwroot --port 8000
 ```
 
 Start a ChromeDriver whose major version matches Chrome/Chromium:
@@ -119,7 +120,7 @@ dotnet test --project src\SamplesApp\SamplesApp.AppiumTests\SamplesApp.AppiumTes
 
 ```powershell
 $env:UNO_APPIUM_PLATFORM = 'windows'
-$env:UNO_APPIUM_SAMPLESAPP = 'C:\path\to\SamplesApp.Skia.Generic.exe'
+$env:UNO_APPIUM_SAMPLESAPP = 'C:\path\to\SamplesApp.exe'
 dotnet test --project src\SamplesApp\SamplesApp.AppiumTests\SamplesApp.AppiumTests.csproj `
   -c Release `
   --filter "TestCategory=HostRequired"
@@ -131,7 +132,7 @@ dotnet test --project src\SamplesApp\SamplesApp.AppiumTests\SamplesApp.AppiumTes
 
 ```bash
 export UNO_APPIUM_PLATFORM=mac
-export UNO_APPIUM_SAMPLESAPP="$PWD/src/SamplesApp/SamplesApp.Skia.Generic/bin/Release/net10.0/SamplesApp.Skia.Generic.dll"
+export UNO_APPIUM_SAMPLESAPP="$PWD/src/SamplesApp/SamplesApp/bin/Release/net10.0-desktop/SamplesApp.dll"
 dotnet test --project src/SamplesApp/SamplesApp.AppiumTests/SamplesApp.AppiumTests.csproj \
   -c Release \
   --filter "TestCategory=HostRequired"
@@ -223,7 +224,7 @@ level, landmark, or live setting.
 
 ```powershell
 $env:UNO_APPIUM_PLATFORM = 'windows'
-$env:UNO_APPIUM_SAMPLESAPP = 'C:\path\to\SamplesApp.Skia.Generic.exe'
+$env:UNO_APPIUM_SAMPLESAPP = 'C:\path\to\SamplesApp.exe'
 dotnet test --project src\SamplesApp\SamplesApp.AppiumTests\SamplesApp.AppiumTests.csproj `
   -c Release `
   --filter "TestCategory=Snapshot"
@@ -265,7 +266,7 @@ The live suite currently checks that the platform tree reflects these actions:
 
 - checkbox invoke -> toggle state changes
 - radio selection -> selected state moves
-- combobox selection -> value and selected item change
+- combobox expansion and selection -> expanded state plus the selected provider/ARIA active item
 - textbox typing -> value and focus update
 - disable button -> enabled/focusable state changes
 - live-region update -> accessible text changes, with live setting where exposed

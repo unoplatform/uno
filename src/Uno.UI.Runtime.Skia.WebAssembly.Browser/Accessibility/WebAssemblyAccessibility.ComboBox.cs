@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
@@ -156,7 +157,16 @@ internal partial class WebAssemblyAccessibility
 
 		var totalCount = comboBox.Items.Count;
 		var offset = GetOffsetRelativeToSemanticParent(item, region.ContainerHandle);
-		var label = item.GetOrCreateAutomationPeer()?.GetName() ?? string.Empty;
+		var itemPeer = item.GetOrCreateAutomationPeer();
+		if (itemPeer is not null &&
+			comboBox.GetOrCreateAutomationPeer() is ComboBoxAutomationPeer comboBoxPeer &&
+			comboBoxPeer.CreateItemAutomationPeer(comboBox.Items[index]) is { } itemDataPeer)
+		{
+			// Semantic realization bypasses the automation child walk, so establish the same
+			// container-to-data-peer route before exposing the option.
+			itemPeer.EventsSource = itemDataPeer;
+		}
+		var label = itemPeer?.GetName() ?? string.Empty;
 
 		region.OnItemRealized(
 			item.Visual.Handle,

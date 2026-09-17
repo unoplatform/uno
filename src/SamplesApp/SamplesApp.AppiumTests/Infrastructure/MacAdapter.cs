@@ -12,7 +12,7 @@ using OpenQA.Selenium.Appium.Mac;
 namespace SamplesApp.AppiumTests.Infrastructure;
 
 /// <summary>
-/// Drives SamplesApp.Skia.Generic on macOS via the Appium Mac2 driver, which
+/// Drives the SamplesApp desktop target on macOS via the Appium Mac2 driver, which
 /// forwards to the native NSAccessibility tree built by
 /// Uno.UI.Runtime.Skia.MacOS (see UNOAccessibilityElement + MacOSAccessibility.cs).
 /// </summary>

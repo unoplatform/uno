@@ -1,5 +1,6 @@
 #nullable enable
 
+using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -11,9 +12,15 @@ internal static class SnapshotPaths
 		AppiumTestOptions? options = null,
 		[CallerFilePath] string? callerFilePath = null)
 	{
-		if (!string.IsNullOrWhiteSpace(options?.SnapshotsDirectoryOverride))
+		var snapshotsDirectoryOverride = options?.SnapshotsDirectoryOverride;
+		if (string.IsNullOrWhiteSpace(snapshotsDirectoryOverride))
 		{
-			return Path.GetFullPath(options.SnapshotsDirectoryOverride!);
+			snapshotsDirectoryOverride = Environment.GetEnvironmentVariable(AppiumTestOptions.EnvVarSnapshotsDir);
+		}
+
+		if (!string.IsNullOrWhiteSpace(snapshotsDirectoryOverride))
+		{
+			return Path.GetFullPath(snapshotsDirectoryOverride);
 		}
 
 		if (!string.IsNullOrWhiteSpace(callerFilePath) && File.Exists(callerFilePath))

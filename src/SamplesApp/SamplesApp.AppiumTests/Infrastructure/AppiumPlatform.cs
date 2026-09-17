@@ -238,7 +238,7 @@ public sealed class AppiumTestOptions
 				ValidateAbsoluteFilePath(
 					appPath,
 					EnvVarAppPath,
-					"Windows Appium tests require the built SamplesApp.Skia.Generic executable path.");
+					"Windows Appium tests require the built SamplesApp desktop executable path.");
 				if (!appPath.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
 				{
 					throw new InvalidOperationException(
