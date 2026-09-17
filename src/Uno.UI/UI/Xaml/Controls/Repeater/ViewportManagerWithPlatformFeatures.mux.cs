@@ -821,8 +821,7 @@ partial class ViewportManagerWithPlatformFeatures
 	private void RegisterCacheBuildWork()
 	{
 		MUX_ASSERT(!m_managingViewportDisabled);
-		if (m_owner.Layout != null &&
-			m_cacheBuildAction == null)
+		if (m_cacheBuildAction == null)
 		{
 			// We capture 'owner' (a strong refernce on ItemsRepeater) to make sure ItemsRepeater is still around
 			// when the async action completes. By protecting ItemsRepeater, we also ensure that this instance

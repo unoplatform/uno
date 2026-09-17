@@ -100,7 +100,12 @@ partial class UniformGridLayout
 	/// <inheritdoc />
 	protected internal override void OnItemsChangedCore(VirtualizingLayoutContext context, object source, NotifyCollectionChangedEventArgs args)
 	{
-		GetFlowAlgorithm(context).OnItemsSourceChanged(source, args, context);
+		if (context.LayoutState is { } layoutState &&
+			GetAsGridState(layoutState) is { } gridState)
+		{
+			gridState.FlowAlgorithm.OnItemsSourceChanged(source, args, context);
+		}
+
 		// Always invalidate layout to keep the view accurate.
 		InvalidateLayout();
 	}

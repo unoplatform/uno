@@ -566,6 +566,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_No_Layout_Set_Then_Default_StackLayout_Grows_Cache()
+		{
+			var repeater = new ItemsRepeater
+			{
+				ItemsSource = Enumerable.Range(0, 100).ToArray(),
+				ItemTemplate = XamlHelper.LoadXaml<DataTemplate>("""
+					<DataTemplate>
+						<Border Height="20" />
+					</DataTemplate>
+				"""),
+			};
+			var scroller = new ScrollViewer
+			{
+				Width = 200,
+				Height = 100,
+				Content = repeater,
+			};
+
+			TestServices.WindowHelper.WindowContent = scroller;
+			try
+			{
+				await TestServices.WindowHelper.WaitForLoaded(scroller);
+				Assert.IsNull(repeater.Layout);
+
+				await UITestHelper.WaitFor(
+					() => repeater.TryGetElement(8) is not null,
+					timeoutMS: 5000,
+					message: "The default StackLayout cache buffer should grow beyond the immediate viewport.");
+			}
+			finally
+			{
+				TestServices.WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_NumberBox_In_Repeater_Then_CanFocus_And_Edit()
 		{
 			var sut = SUT.Create(

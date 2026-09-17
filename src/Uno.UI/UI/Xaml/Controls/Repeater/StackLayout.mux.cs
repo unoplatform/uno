@@ -406,7 +406,7 @@ partial class StackLayout
 
 		if (!stackState.AreElementsMeasuredRegular)
 		{
-			averageElementSize = Math.Round(averageElementSize);
+			averageElementSize = Math.Round(averageElementSize, MidpointRounding.AwayFromZero);
 		}
 
 		return averageElementSize;

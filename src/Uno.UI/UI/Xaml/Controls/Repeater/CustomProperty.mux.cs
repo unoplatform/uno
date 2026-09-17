@@ -30,11 +30,21 @@ partial class CustomProperty
 
 	public object GetValue(object target)
 	{
+		if (!CanRead)
+		{
+			throw new InvalidOperationException($"Property {Name} is not readable.");
+		}
+
 		return m_getter(target);
 	}
 
 	public void SetValue(object target, object value)
 	{
+		if (!CanWrite)
+		{
+			throw new InvalidOperationException($"Property {Name} is not writable.");
+		}
+
 		m_setter(target, value);
 	}
 

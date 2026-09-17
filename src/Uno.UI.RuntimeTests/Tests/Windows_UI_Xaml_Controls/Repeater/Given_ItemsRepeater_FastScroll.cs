@@ -313,7 +313,11 @@ public class Given_ItemsRepeater_FastScroll
 	}
 
 	[TestMethod]
-	[Ignore("Disabled temporarily (uno#23041): regressed by the ItemsRepeater/layout WinUI sync. Fails on Skia Desktop (2 of 3 local runs) while passing on master, because realization-driven extent estimation can again move the offset backward mid-wheel. This guard is Uno-only -- it is NotExecuted on the WinUI leg, which has no InputInjector -- so parity of the ported layout sources does not cover it. Re-enable once forward progress holds on Skia.")]
+#if !HAS_INPUT_INJECTOR
+	[Ignore("InputInjector is not supported on this platform.")]
+#elif __ANDROID__ || __IOS__ || __WASM__
+	[Ignore("Fails due to async native scrolling.")]
+#endif
 	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/23041")]
 	public async Task When_WheelScrollDownThroughVarianceList_Then_OffsetMonotonicallyAdvances()
 	{
@@ -500,6 +504,42 @@ public class Given_ItemsRepeater_FastScroll
 		report.Should().BeEmpty(
 			"No item should change its IR-local Y between successive wheel ticks (the user perceives that as the list jumping). "
 			+ $"Captured discrepancies:{Environment.NewLine}{string.Join(Environment.NewLine, report)}");
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_ScrollingForward_Then_ExtentOriginRemainsStable()
+	{
+#if HAS_UNO
+		var sut = CreateMixedTemplateSut(itemCount: 150, viewport: new Size(360, 600));
+		try
+		{
+			await LoadAsync(sut);
+
+			var state = GetStackLayoutState(sut.Repeater);
+			var initialOrigin = state.Uno_LastReportedExtentMajorStart;
+			double.IsNaN(initialOrigin).Should().BeFalse();
+
+			for (var targetOffset = 200.0; targetOffset <= 1600.0; targetOffset += 200.0)
+			{
+				sut.Scroller.ChangeView(null, targetOffset, null, disableAnimation: true);
+				await TestServices.WindowHelper.WaitForIdle();
+				sut.Repeater.UpdateLayout();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				state.Uno_LastReportedExtentMajorStart.Should().BeApproximately(
+					initialOrigin,
+					OffsetTolerance,
+					$"forward scrolling to {targetOffset:F0} must not shift the StackLayout extent origin");
+			}
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+#else
+		Assert.Inconclusive("Uno-specific extent-origin state is unavailable on native WinUI.");
+#endif
 	}
 
 	[TestMethod]
