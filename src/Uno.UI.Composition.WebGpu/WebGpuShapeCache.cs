@@ -138,7 +138,7 @@ internal sealed class WebGpuShapeCache
 		foreach (var c in contours) { total += c.Count; foreach (var p in c) { bbMin = Vector2.Min(bbMin, p); bbMax = Vector2.Max(bbMax, p); } }
 		s.BbMin = bbMin; s.BbMax = bbMax;
 		s.Edges = Edges(contours, total);
-		s.Hash = EdgeHash(s.Edges, bbMin);
+		s.Hash = EdgeHash(s.Edges, bbMin, evenOdd);
 
 		// Non-overlapping triangles plus the ring: the single-pass fill. The tessellator finds holes by even-odd depth
 		// and the area check rejects outlines on which the two fill rules disagree, so a success serves either rule.
@@ -167,7 +167,7 @@ internal sealed class WebGpuShapeCache
 	// The outline's identity for the atlas: its edges relative to its own bbox corner, bit for bit, so two geometry
 	// objects with the same outline share one entry and nothing that differs by even a rounding step does (a shared
 	// mask must render exactly as a fresh bake would). Never zero, so zero can mean "no outline".
-	private static long EdgeHash(float[] edges, Vector2 origin)
+	private static long EdgeHash(float[] edges, Vector2 origin, bool evenOdd)
 	{
 		ulong h = 14695981039346656037UL;
 		for (var i = 0; i < edges.Length; i++)
@@ -176,6 +176,9 @@ internal sealed class WebGpuShapeCache
 			h = (h ^ v) * 1099511628211UL;
 		}
 		h = (h ^ (ulong)edges.Length) * 1099511628211UL;
+		// The rule is part of the identity, not just the outline: nested contours of the same winding fill solid
+		// under non-zero and leave a hole under even-odd, so a mask baked for one must never serve the other.
+		h = (h ^ (evenOdd ? 1UL : 2UL)) * 1099511628211UL;
 		return h == 0 ? 1 : (long)h;
 	}
 
