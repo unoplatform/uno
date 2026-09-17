@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsFullWindowButtonVisible),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
 
 		#endregion
 
@@ -36,7 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsPlaybackRateEnabled),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		#endregion
 
@@ -53,7 +53,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsFastRewindEnabled),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		#endregion
 
@@ -70,7 +70,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsFastRewindButtonVisible),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		#endregion
 
@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsFullWindowEnabled),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
 
 		#endregion
 
@@ -104,7 +104,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsFastForwardEnabled),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		#endregion
 
@@ -121,7 +121,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsCompact),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		#endregion
 
@@ -138,7 +138,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsSeekEnabled),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
 
 		#endregion
 
@@ -155,7 +155,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsStopEnabled),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		#endregion
 
@@ -172,7 +172,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsFastForwardButtonVisible),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		#endregion
 
@@ -189,7 +189,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsStopButtonVisible),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		#endregion
 
@@ -206,7 +206,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsVolumeButtonVisible),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
 
 		#endregion
 
@@ -223,7 +223,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsSeekBarVisible),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
 
 		#endregion
 
@@ -240,7 +240,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsPlaybackRateButtonVisible),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		#endregion
 
@@ -257,7 +257,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsZoomEnabled),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
 
 		#endregion
 
@@ -274,7 +274,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsZoomButtonVisible),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
 
 		#endregion
 
@@ -291,7 +291,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsVolumeEnabled),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
 
 		#endregion
 
@@ -308,7 +308,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsSkipBackwardButtonVisible),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		#endregion
 
@@ -325,7 +325,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsNextTrackButtonVisible),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		#endregion
 
@@ -359,7 +359,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsSkipForwardEnabled),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		#endregion
 
@@ -376,7 +376,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsPreviousTrackButtonVisible),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		#endregion
 
@@ -393,7 +393,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsSkipForwardButtonVisible),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		#endregion
 
@@ -410,7 +410,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsSkipBackwardEnabled),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		#endregion
 
@@ -427,7 +427,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(ShowAndHideAutomatically),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
 
 		#endregion
 
@@ -444,7 +444,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsRepeatButtonVisible),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		#endregion
 
@@ -461,7 +461,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsRepeatEnabled),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		#endregion
 
@@ -478,7 +478,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsCompactOverlayEnabled),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		#endregion
 
@@ -495,7 +495,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsCompactOverlayButtonVisible),
 				typeof(bool),
 				typeof(MediaTransportControls),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		#endregion
 	}

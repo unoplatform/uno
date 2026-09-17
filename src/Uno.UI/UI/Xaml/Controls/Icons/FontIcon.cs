@@ -153,7 +153,7 @@ public partial class FontIcon : IconElement, IThemeChangeAware
 			typeof(bool),
 			typeof(FontIcon),
 			new FrameworkPropertyMetadata(
-				Boxes.BoolBoxes.BoxedTrue,
+				Boxes.BoolBoxes.True,
 				(s, e) => ((FontIcon)s)._textBlock.IsTextScaleFactorEnabled = (bool)e.NewValue));
 
 	/// <summary>
@@ -174,7 +174,7 @@ public partial class FontIcon : IconElement, IThemeChangeAware
 			typeof(bool),
 			typeof(FontIcon),
 			new FrameworkPropertyMetadata(
-				Boxes.BoolBoxes.BoxedFalse,
+				Boxes.BoolBoxes.False,
 				propertyChangedCallback: (s, e) => ((FontIcon)s).UpdateMirroring()));
 
 	private void SynchronizeProperties()

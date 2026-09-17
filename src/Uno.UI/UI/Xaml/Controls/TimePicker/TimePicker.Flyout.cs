@@ -34,7 +34,7 @@ partial class TimePicker
 		"UseNativeMinMaxDates",
 		typeof(bool),
 		typeof(TimePicker),
-		new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+		new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 	/// <summary>
 	/// [UnoOnly] When using native pickers (through the UseNativeStyle property),

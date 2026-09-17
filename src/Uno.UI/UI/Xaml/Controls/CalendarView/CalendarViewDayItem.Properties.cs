@@ -48,6 +48,6 @@ namespace Microsoft.UI.Xaml.Controls
 			Microsoft.UI.Xaml.DependencyProperty.Register(
 				nameof(IsBlackout), typeof(bool),
 				typeof(global::Microsoft.UI.Xaml.Controls.CalendarViewDayItem),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 	}
 }
