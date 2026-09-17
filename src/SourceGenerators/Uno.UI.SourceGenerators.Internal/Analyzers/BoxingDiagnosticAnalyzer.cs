@@ -22,7 +22,9 @@ namespace Uno.UI.SourceGenerators.Internal;
 public sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 {
 	private static readonly DiagnosticDescriptor s_descriptorBoxing = new(
+#pragma warning disable RS2008 // Enable analyzer release tracking
 		"UnoInternal0002",
+#pragma warning restore RS2008 // Enable analyzer release tracking
 		"Avoid boxing allocation",
 		"Avoid boxing allocation, use 'Uno.UI.Helpers.Boxes' instead",
 		"Performance",
@@ -30,7 +32,9 @@ public sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 		isEnabledByDefault: true);
 
 	private static readonly DiagnosticDescriptor s_descriptorConversion = new(
+#pragma warning disable RS2008 // Enable analyzer release tracking
 		"UnoInternal0003",
+#pragma warning restore RS2008 // Enable analyzer release tracking
 		"Possibly incorrect conversion",
 		"Argument is implicitly converted to '{0}' before reaching this overload, which would store the wrong boxed type",
 		"Correctness",
