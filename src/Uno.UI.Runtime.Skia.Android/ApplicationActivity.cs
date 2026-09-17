@@ -404,10 +404,6 @@ namespace Microsoft.UI.Xaml
 			base.OnConfigurationChanged(newConfig);
 
 			RaiseConfigurationChanges();
-			// Read the settled configuration after Android has propagated it through the decor view.
-			Window?.DecorView?.Post(() =>
-				Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(
-					global::Windows.UI.ViewManagement.UISettings.GetTextScaleFactorValue()));
 		}
 
 		private void RaiseConfigurationChanges()
@@ -415,7 +411,21 @@ namespace Microsoft.UI.Xaml
 			NativeWindowWrapper.Instance.RaiseNativeSizeChanged();
 			DisplayInformation.GetForCurrentView().HandleConfigurationChange();
 			SystemThemeHelper.RefreshSystemTheme();
+			ScheduleFontScaleRefresh(Window?.DecorView);
 		}
+
+		private static void ScheduleFontScaleRefresh(View? decorView)
+		{
+			// Defer until Android has propagated the new configuration.
+			// The dispatcher covers calls before a decor view exists.
+			if (decorView?.Post(RefreshFontScale) is not true)
+			{
+				NativeDispatcher.Main.Enqueue(RefreshFontScale);
+			}
+		}
+
+		private static void RefreshFontScale() =>
+			WinUICoreServices.Instance.UpdateFontScale(UISettings.GetTextScaleFactorValue());
 
 #pragma warning disable CS0618 // deprecated members
 #pragma warning disable CS0672 // deprecated members
