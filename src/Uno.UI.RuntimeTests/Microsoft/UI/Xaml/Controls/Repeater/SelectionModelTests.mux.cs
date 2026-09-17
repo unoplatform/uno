@@ -967,7 +967,11 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				var icpp = (ICustomPropertyProvider)selectionModel;
 				var selectedItemProperty = icpp.GetCustomProperty("SelectedItem");
 				Verify.IsTrue(selectedItemProperty.CanRead);
+				Verify.IsFalse(selectedItemProperty.CanWrite);
 				Verify.AreEqual(3, selectedItemProperty.GetValue(selectionModel));
+#if HAS_UNO
+				Verify.Throws<InvalidOperationException>(() => selectedItemProperty.SetValue(selectionModel, 4));
+#endif
 			});
 		}
 

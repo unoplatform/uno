@@ -61,8 +61,8 @@ partial class FlowLayout
 			availableSize,
 			context,
 			true, /* isWrapping*/
-			m_minItemSpacing,
-			m_lineSpacing,
+			EffectiveMinItemSpacing,
+			EffectiveLineSpacing,
 			uint.MaxValue /* maxItemsPerLine */,
 			GetScrollOrientation(),
 			true /* isVirtualizationEnabled */,
@@ -139,7 +139,7 @@ partial class FlowLayout
 			var lastExtent = flowState.FlowAlgorithm.LastExtent();
 
 			double averageItemsPerLine = 0;
-			double averageLineSize = GetAverageLineInfo(availableSize, context, flowState, out averageItemsPerLine) + m_lineSpacing;
+			double averageLineSize = GetAverageLineInfo(availableSize, context, flowState, out averageItemsPerLine) + EffectiveLineSpacing;
 			MUX_ASSERT(averageItemsPerLine != 0);
 
 			double extentMajorSize = MajorSize(lastExtent) == 0 ? (itemsCount / averageItemsPerLine) * averageLineSize : MajorSize(lastExtent);
@@ -175,7 +175,7 @@ partial class FlowLayout
 			var state = context.LayoutState;
 			var flowState = GetAsFlowState(state);
 			double averageItemsPerLine = 0;
-			double averageLineSize = GetAverageLineInfo(availableSize, context, flowState, out averageItemsPerLine) + m_lineSpacing;
+			double averageLineSize = GetAverageLineInfo(availableSize, context, flowState, out averageItemsPerLine) + EffectiveLineSpacing;
 			int lineIndex = (int)(targetIndex / averageItemsPerLine);
 			offset = lineIndex * averageLineSize + MajorStart(flowState.FlowAlgorithm.LastExtent());
 		}
@@ -208,7 +208,7 @@ partial class FlowLayout
 			var state = context.LayoutState;
 			var flowState = GetAsFlowState(state);
 			double averageItemsPerLine = 0;
-			double averageLineSize = GetAverageLineInfo(availableSize, context, flowState, out averageItemsPerLine) + m_lineSpacing;
+			double averageLineSize = GetAverageLineInfo(availableSize, context, flowState, out averageItemsPerLine) + EffectiveLineSpacing;
 
 			MUX_ASSERT(averageItemsPerLine != 0);
 			if (firstRealized != null)
@@ -230,15 +230,17 @@ partial class FlowLayout
 			else
 			{
 				// We dont have anything realized. make an educated guess.
+				var lineSpacing = EffectiveLineSpacing;
+				var minItemSpacing = EffectiveMinItemSpacing;
 				int numLines = (int)Math.Ceiling(itemsCount / averageItemsPerLine);
 				extent =
 					availableSizeMinor.IsFinite()
-						? MinorMajorRect(0, 0, availableSizeMinor, Math.Max(0.0f, (float)(numLines * averageLineSize - m_lineSpacing)))
+						? MinorMajorRect(0, 0, availableSizeMinor, Math.Max(0.0f, (float)(numLines * averageLineSize - lineSpacing)))
 						: MinorMajorRect(
 							0,
 							0,
-							Math.Max(0.0f, (float)((Minor(flowState.SpecialElementDesiredSize) + m_minItemSpacing) * itemsCount - m_minItemSpacing)),
-							Math.Max(0.0f, (float)(averageLineSize - m_lineSpacing)));
+							Math.Max(0.0f, (float)((Minor(flowState.SpecialElementDesiredSize) + minItemSpacing) * itemsCount - minItemSpacing)),
+							Math.Max(0.0f, (float)(averageLineSize - lineSpacing)));
 				REPEATER_TRACE_INFO("%*s: \tEstimating extent with no realized elements. \n", context.Indent, LayoutId);
 			}
 
@@ -387,10 +389,22 @@ partial class FlowLayout
 		else if (property == MinItemSpacingProperty)
 		{
 			m_minItemSpacing = (double)args.NewValue;
+			m_useLegacySpacingProperties = false;
 		}
 		else if (property == LineSpacingProperty)
 		{
 			m_lineSpacing = (double)args.NewValue;
+			m_useLegacySpacingProperties = false;
+		}
+		else if (property == MinColumnSpacingProperty)
+		{
+			m_minColumnSpacing = (double)args.NewValue;
+			m_useLegacySpacingProperties = true;
+		}
+		else if (property == MinRowSpacingProperty)
+		{
+			m_minRowSpacing = (double)args.NewValue;
+			m_useLegacySpacingProperties = true;
 		}
 		else if (property == LineAlignmentProperty)
 		{
@@ -425,7 +439,7 @@ partial class FlowLayout
 		}
 
 		avgCountInLine = Math.Max(1.0, flowState.TotalItemsPerLine / flowState.TotalLinesMeasured);
-		avgLineSize = Math.Round(flowState.TotalLineSize / flowState.TotalLinesMeasured);
+		avgLineSize = Math.Round(flowState.TotalLineSize / flowState.TotalLinesMeasured, MidpointRounding.AwayFromZero);
 
 		return avgLineSize;
 	}

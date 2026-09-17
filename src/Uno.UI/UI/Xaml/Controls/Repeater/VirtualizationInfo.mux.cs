@@ -28,8 +28,8 @@ partial class VirtualizationInfo
 	public void UpdatePhasingInfo(int phase, object data, IDataTemplateComponent component)
 	{
 		m_phase = phase;
-		m_data = new WeakReference<object>(data);
-		m_dataTemplateComponent = new WeakReference<IDataTemplateComponent>(component);
+		m_data = data is null ? null : new WeakReference<object>(data);
+		m_dataTemplateComponent = component is null ? null : new WeakReference<IDataTemplateComponent>(component);
 	}
 
 	// #pragma region Ownership state machine

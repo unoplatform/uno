@@ -481,6 +481,42 @@ public class Given_ItemsRepeater_FastScroll
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+	public async Task When_ScrollingForward_Then_ExtentOriginRemainsStable()
+	{
+#if HAS_UNO
+		var sut = CreateMixedTemplateSut(itemCount: 150, viewport: new Size(360, 600));
+		try
+		{
+			await LoadAsync(sut);
+
+			var state = GetStackLayoutState(sut.Repeater);
+			var initialOrigin = state._lastReportedExtentMajorStart;
+			double.IsNaN(initialOrigin).Should().BeFalse();
+
+			for (var targetOffset = 200.0; targetOffset <= 1600.0; targetOffset += 200.0)
+			{
+				sut.Scroller.ChangeView(null, targetOffset, null, disableAnimation: true);
+				await TestServices.WindowHelper.WaitForIdle();
+				sut.Repeater.UpdateLayout();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				state._lastReportedExtentMajorStart.Should().BeApproximately(
+					initialOrigin,
+					OffsetTolerance,
+					$"forward scrolling to {targetOffset:F0} must not shift the StackLayout extent origin");
+			}
+		}
+		finally
+		{
+			TestServices.WindowHelper.WindowContent = null;
+		}
+#else
+		Assert.Inconclusive("Uno-specific extent-origin state is unavailable on native WinUI.");
+#endif
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
 	public async Task When_ItemsSourceReplaced_Then_ExtentOriginIsReset()
 	{
 #if HAS_UNO
@@ -606,9 +642,6 @@ public class Given_ItemsRepeater_FastScroll
 
 	[TestMethod]
 	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-#if __ANDROID__ || __IOS__ || __WASM__
-	[Ignore("Fails due to async native scrolling.")]
-#endif
 	public async Task When_ScrollBarThumbDragged_Then_OffsetTracksRequestMonotonically()
 	{
 		// Reproduces the "scrollbar drag becomes unresponsive" symptom reported on the studio.live
