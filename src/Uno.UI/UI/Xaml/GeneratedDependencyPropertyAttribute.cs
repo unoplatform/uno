@@ -8,53 +8,47 @@ using Microsoft.UI.Xaml;
 namespace Uno.UI.Xaml
 {
 	/// <summary>
-	/// Attribute to control the automatic generation of dependency property generation
+	/// Generates a dependency property: put it on a partial property definition for an instance property, or on a
+	/// static partial <c>Get{Name}</c> method definition for an attached property. The generator implements the partial
+	/// members and declares the <c>{Name}Property</c> identifier.
 	/// </summary>
-	[System.AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+	[System.AttributeUsage(AttributeTargets.Property | AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
 	internal sealed class GeneratedDependencyPropertyAttribute : Attribute
 	{
-		// This is a positional argument
-		public GeneratedDependencyPropertyAttribute()
-		{
-		}
-
 		/// <summary>
-		/// The set of <see cref="FrameworkPropertyMetadataOptions"/> options for the property
+		/// The <see cref="FrameworkPropertyMetadataOptions"/> of the property.
 		/// </summary>
 		public FrameworkPropertyMetadataOptions Options { get; set; }
 
 		/// <summary>
-		/// The DefaultValue to use for the property
+		/// The default value of the property. When not set, a static parameterless <c>Get{Name}DefaultValue()</c>
+		/// method provides it, or <c>default(T)</c> when there is none.
 		/// </summary>
 		public object? DefaultValue { get; set; }
 
 		/// <summary>
-		/// Declares that the property must define a <see cref="CoerceValueCallback"/>.
+		/// Requires a <c>Coerce{Name}</c> coerce callback. A method with that name is used even when this is not set.
 		/// </summary>
 		public bool CoerceCallback { get; set; }
 
 		/// <summary>
-		/// Declares that the property must define a <see cref="PropertyChangedCallback"/>.
+		/// Requires an <c>On{Name}Changed</c> property changed callback. A method with that name is used even when this is not set.
 		/// </summary>
 		public bool ChangedCallback { get; set; }
 
 		/// <summary>
-		/// Declares that the property uses a local cache of the dependency property.
+		/// Whether the value is cached in a backing field, which is kept up to date by the property system.
+		/// Attached properties are only cached when <see cref="AttachedBackingFieldOwner"/> is set.
 		/// </summary>
 		public bool LocalCache { get; set; } = true;
 
 		/// <summary>
-		/// Declares that the dependency property is attached
-		/// </summary>
-		public bool Attached { get; set; }
-
-		/// <summary>
-		/// Declares that the dependency property is attached
+		/// The partial type that holds the local cache of an attached property; the cache is used for targets of that type.
 		/// </summary>
 		public Type? AttachedBackingFieldOwner { get; set; }
 
 		/// <summary>
-		/// Declares an optional PropertyChanged callback name
+		/// The name of the property changed callback, when it isn't <c>On{Name}Changed</c>.
 		/// </summary>
 		public string? ChangedCallbackName { get; set; }
 	}

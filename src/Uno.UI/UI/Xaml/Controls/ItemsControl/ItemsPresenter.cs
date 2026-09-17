@@ -28,16 +28,10 @@ namespace Microsoft.UI.Xaml.Controls
 		private Orientation Orientation =>
 				(Panel as Panel)?.PhysicalOrientation ?? Orientation.Horizontal;
 
-		public object Header
-		{
-			get => GetHeaderValue();
-			set => SetHeaderValue(value);
-		}
+		[GeneratedDependencyProperty(ChangedCallback = true)]
+		public partial object Header { get; set; }
 
 		private static object GetHeaderDefaultValue() => null;
-
-		[GeneratedDependencyProperty(ChangedCallback = true)]
-		public static DependencyProperty HeaderProperty { get; } = CreateHeaderProperty();
 
 		private void OnHeaderChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -47,16 +41,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public object Footer
-		{
-			get => GetFooterValue();
-			set => SetFooterValue(value);
-		}
+		[GeneratedDependencyProperty(ChangedCallback = true)]
+		public partial object Footer { get; set; }
 
 		private static object GetFooterDefaultValue() => null;
-
-		[GeneratedDependencyProperty(ChangedCallback = true)]
-		public static DependencyProperty FooterProperty { get; } = CreateFooterProperty();
 
 		private void OnFooterChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -68,14 +56,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static DataTemplate GetHeaderTemplateDefaultValue() => null;
 
-		public DataTemplate HeaderTemplate
-		{
-			get => GetHeaderTemplateValue();
-			set => SetHeaderTemplateValue(value);
-		}
-
 		[GeneratedDependencyProperty(ChangedCallback = true)]
-		public static DependencyProperty HeaderTemplateProperty { get; } = CreateHeaderTemplateProperty();
+		public partial DataTemplate HeaderTemplate { get; set; }
 
 		private void OnHeaderTemplateChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -85,16 +67,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public DataTemplate FooterTemplate
-		{
-			get => GetFooterTemplateValue();
-			set => SetFooterTemplateValue(value);
-		}
+		[GeneratedDependencyProperty(ChangedCallback = true)]
+		public partial DataTemplate FooterTemplate { get; set; }
 
 		private static DataTemplate GetFooterTemplateDefaultValue() => null;
-
-		[GeneratedDependencyProperty(ChangedCallback = true)]
-		public static DependencyProperty FooterTemplateProperty { get; } = CreateFooterTemplateProperty();
 
 		private void OnFooterTemplateChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -104,16 +80,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public TransitionCollection HeaderTransitions
-		{
-			get => GetHeaderTransitionsValue();
-			set => SetHeaderTransitionsValue(value);
-		}
+		[GeneratedDependencyProperty(ChangedCallback = true)]
+		public partial TransitionCollection HeaderTransitions { get; set; }
 
 		private static TransitionCollection GetHeaderTransitionsDefaultValue() => new TransitionCollection();
-
-		[GeneratedDependencyProperty(ChangedCallback = true)]
-		public static DependencyProperty HeaderTransitionsProperty { get; } = CreateHeaderTransitionsProperty();
 
 		private void OnHeaderTransitionsChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -123,16 +93,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public TransitionCollection FooterTransitions
-		{
-			get => GetFooterTransitionsValue();
-			set => SetFooterTransitionsValue(value);
-		}
+		[GeneratedDependencyProperty(ChangedCallback = true)]
+		public partial TransitionCollection FooterTransitions { get; set; }
 
 		private static TransitionCollection GetFooterTransitionsDefaultValue() => new TransitionCollection();
-
-		[GeneratedDependencyProperty(ChangedCallback = true)]
-		public static DependencyProperty FooterTransitionsProperty { get; } = CreateFooterTransitionsProperty();
 
 		private void OnFooterTransitionsChanged(DependencyPropertyChangedEventArgs args)
 		{
