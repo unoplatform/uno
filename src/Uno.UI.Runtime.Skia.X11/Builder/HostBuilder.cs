@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia;
 using Windows.UI.WebUI;
 
 namespace Uno.UI.Hosting;
@@ -13,6 +14,7 @@ public static class HostBuilder
 	public static IUnoPlatformHostBuilder UseX11(this IUnoPlatformHostBuilder builder)
 	{
 		builder.AddHostBuilder(() => new X11HostBuilder());
+		LinuxPasswordVaultExtensions.Register();
 		return builder;
 	}
 
@@ -24,6 +26,7 @@ public static class HostBuilder
 		builder.AddHostBuilder(() =>
 		{
 			var x11Builder = new X11HostBuilder();
+			LinuxPasswordVaultExtensions.Register();
 			if (((IPlatformHostBuilder)x11Builder).IsSupported)
 			{
 				action.Invoke(x11Builder);
