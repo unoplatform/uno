@@ -420,7 +420,9 @@ internal sealed unsafe partial class WebGpuFrame
 	{
 		var u = _d.SiteSlab.SlotSpan(slot);
 		u[0] = rm.M11; u[1] = rm.M21; u[2] = rm.M12; u[3] = rm.M22;
-		u[4] = rm.M31; u[5] = rm.M32; u[6] = 0f; u[7] = 0f;
+		// xoff.zw: the session clips written below are absolute device, while the fragment position the shader
+		// tests them at is relative to the target - a layer sheet slot does not share the window's origin.
+		u[4] = rm.M31; u[5] = rm.M32; u[6] = _basisOx; u[7] = _basisOy;
 		int n = carry ? (session.Entries?.Length ?? 0) : 0;
 		u[8] = n;
 		var ab = carry ? session.Aabb : new Vector4(-1e9f, -1e9f, 1e9f, 1e9f);
