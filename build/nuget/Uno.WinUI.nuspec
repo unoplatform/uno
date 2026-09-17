@@ -35,7 +35,7 @@
 
 				nuspec does not expand MSBuild properties, so the SkiaSharp/HarfBuzzSharp versions
 				below are literals that must be updated by hand to match $(SkiaSharpVersion) and
-				$(HarfbuzzSharpVersion) in src/Directory.Build.targets whenever those are bumped.
+				$(HarfbuzzSharpVersion) in src/Directory.Packages.props whenever those are bumped.
 			-->
 
 			<!--

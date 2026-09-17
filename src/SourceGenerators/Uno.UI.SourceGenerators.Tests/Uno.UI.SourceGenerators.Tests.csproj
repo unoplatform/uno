@@ -39,18 +39,18 @@
 
 	<ItemGroup>
 		<PackageReference Include="MSTest" />
-		<PackageReference Include="coverlet.collector" Version="6.0.0" />
+		<PackageReference Include="coverlet.collector" />
 		<!-- Versions come from Uno.DevServer.Roslyn.props (imported above) — the same per-TFM matrix
 		     Uno.HotReload uses. Pinning a version here instead is what produced the NU1107 + snapshot
 		     skew that got the MetadataUpdate suite disabled (see uno#24071): this project references
 		     Uno.HotReload, so its Roslyn line must be that project's line, by construction. -->
-		<PackageReference Include="Microsoft.CodeAnalysis" Version="$(DevServerRoslynVersion)" />
-		<PackageReference Include="Microsoft.CodeAnalysis.Features" Version="$(DevServerRoslynVersion)" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="$(DevServerRoslynVersion)" />
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing" Version="1.1.3" />
+		<PackageReference Include="Microsoft.CodeAnalysis" />
+		<PackageReference Include="Microsoft.CodeAnalysis.Features" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.SourceGenerators.Testing" />
 		<PackageReference Include="AwesomeAssertions" />
 		<PackageReference Include="CommunityToolkit.Mvvm" />
-		<PackageReference Include="NuGet.Packaging" Version="6.3.4" />
+		<PackageReference Include="NuGet.Packaging" />
 		<Reference Include="$(NuGetPackageRoot)\communitytoolkit.mvvm\$(CommunityToolkitMvvmVersion)\analyzers\dotnet\roslyn4.3\cs\CommunityToolkit.Mvvm.SourceGenerators.dll" />
 	</ItemGroup>
 
