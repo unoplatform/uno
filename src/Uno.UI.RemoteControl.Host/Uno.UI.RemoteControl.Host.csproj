@@ -19,24 +19,24 @@
 	<Import Project="../targetframework-override-noplatform.props" />
 
 	<ItemGroup>
-		<PackageReference Include="ModelContextProtocol" Version="1.1.0" />
-		<PackageReference Include="ModelContextProtocol.AspNetCore" Version="1.1.0" />
-		<PackageReference Include="Mono.Options" Version="6.12.0.148" />
-		<PackageReference Include="System.Reactive" Version="6.0.0" />
-		<PackageReference Include="Unity" Version="5.11.10" />
+		<PackageReference Include="ModelContextProtocol" />
+		<PackageReference Include="ModelContextProtocol.AspNetCore" />
+		<PackageReference Include="Mono.Options" />
+		<PackageReference Include="System.Reactive" />
+		<PackageReference Include="Unity" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
-		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
-		<PackageReference Include="StreamJsonRpc" Version="2.17.11" />
-		<PackageReference Include="MessagePack" Version="3.1.7" />
-		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.3.3" />
-		<PackageReference Include="Microsoft.VisualStudio.SolutionPersistence" Version="1.0.52" />
+		<PackageReference Include="Microsoft.IO.RecyclableMemoryStream" />
+		<PackageReference Include="StreamJsonRpc" />
+		<PackageReference Include="MessagePack" />
+		<PackageReference Include="Uno.DevTools.Telemetry" />
+		<PackageReference Include="Microsoft.VisualStudio.SolutionPersistence" />
 
 		<!-- StreamJsonRpc 2.14.24 brings in Microsoft.VisualStudio.Threading (and in turn -->
 		<!-- Microsoft.VisualStudio.Threading.Analyzers) version 17.1.46 -->
 		<!-- Analyzers version 17.1.46 has a performance issue that is fixed in 17.5.21 -->
 		<!-- commit: https://github.com/microsoft/vs-threading/commit/c7ceed01d1c73d7d5f2f6c0dd427245b3c7c8d96 -->
 		<!-- We explicitly add the reference here (same we do for Uno.UI.RemoteControl.VS.csproj) so we get a version with fast analyzers -->
-		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.9.28" />
+		<PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" />
 	</ItemGroup>
 
 	<ItemGroup>

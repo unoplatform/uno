@@ -10,8 +10,8 @@
 
 
 	<ItemGroup>
-		<PackageReference Include="Uno.DevTools.Telemetry" Version="1.3.3" />
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1" />
+		<PackageReference Include="Uno.DevTools.Telemetry" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" />
 	</ItemGroup>
 
