@@ -79,6 +79,8 @@ public class Given_BoxingDiagnosticAnalyzer
 	[TestMethod]
 	[DataRow("object M(global::Uno.UI.Xaml.RoutedEventFlag flag) => flag;", true)]
 	[DataRow("object M(RoutedEventFlag flag) => flag;", false)]
+	[DataRow("object M() => global::Uno.UI.Xaml.RoutedEventFlag.PointerPressed;", true)]
+	[DataRow("object M() => global::Uno.UI.Xaml.RoutedEventFlag.PointerPressed | global::Uno.UI.Xaml.RoutedEventFlag.PointerReleased;", false)]
 	public async Task When_RoutedEventFlag(string member, bool expected)
 		=> await AssertReportedAsync(Member(member, "public enum RoutedEventFlag { None }"), expected);
 
@@ -86,11 +88,18 @@ public class Given_BoxingDiagnosticAnalyzer
 	[DataRow("void SetValue(global::Microsoft.UI.Xaml.DependencyProperty property, double value) { }", "SetValue(null, 1.0f)", true)]
 	[DataRow("void SetValue(global::Microsoft.UI.Xaml.DependencyProperty property, double value) { }", "SetValue(null, 1.0)", false)]
 	[DataRow("void SetValue(string key, double value) { }", "SetValue(\"key\", 1.0f)", false)]
+	[DataRow("void SetValue(global::Microsoft.UI.Xaml.DependencyProperty property, double value) { }", "SetValue(value: 1.0f, property: default(global::Microsoft.UI.Xaml.DependencyProperty))", true)]
+	[DataRow("void SetValue(global::Microsoft.UI.Xaml.DependencyProperty property, double value) { }", "SetValue(value: 1.0, property: default(global::Microsoft.UI.Xaml.DependencyProperty))", false)]
 	public async Task When_Typed_SetValue_Receives_Converted_Argument(string setValue, string call, bool expected)
 	{
 		var diagnostics = await GetDiagnosticsAsync(CreateDocument(Member($"{setValue}\r\n\t\tpublic void M() => {call};")));
 
-		diagnostics.Any(d => d.Id == "UnoInternal0003").Should().Be(expected);
+		var reported = diagnostics.Where(d => d.Id == "UnoInternal0003").ToArray();
+		reported.Any().Should().Be(expected);
+		foreach (var diagnostic in reported)
+		{
+			diagnostic.Location.SourceTree!.GetText().ToString(diagnostic.Location.SourceSpan).Should().Contain("1.0f", "the diagnostic belongs on the value argument");
+		}
 	}
 
 	private static async Task AssertReportedAsync(string source, bool expected, params string[] preprocessorSymbols)

@@ -10,6 +10,8 @@ public class Given_BoxingCodeFixProvider
 	[DataRow("object M() => 1;", "object M() => Boxes.IntegerBoxes.One;")]
 	[DataRow("object M() => 0.0;", "object M() => Boxes.DoubleBoxes.Zero;")]
 	[DataRow("object M(int value) => value;", "object M(int value) => Boxes.Box(value);")]
+	[DataRow("object M(byte value) => (int)value;", "object M(byte value) => Boxes.Box((int)value);")]
+	[DataRow("object M(byte value) => ((int)value);", "object M(byte value) => (Boxes.Box((int)value));")]
 	public async Task When_Implicit_Boxing(string member, string expected)
 		=> await AssertFixAsync(member, expected);
 
