@@ -23,6 +23,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Helpers;
 using Uno.UI.Dispatching;
+using Uno.UI.Extensions;
 
 namespace Uno.UI.Runtime;
 
@@ -2797,8 +2798,14 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		AccessibilityView oldValue,
 		AccessibilityView newValue)
 	{
-		if (element.GetParent() is not UIElement parent)
+		var parent = element.GetParent() as UIElement
+			?? element.GetParentInternal(publicParentOnly: false) as UIElement;
+		if (parent is null)
 		{
+			if (WebAssemblyWindowWrapper.Instance?.Window?.RootElement is { } rootElement)
+			{
+				RebuildSemanticTree(rootElement);
+			}
 			return;
 		}
 
@@ -2806,6 +2813,30 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 		var index = children.IndexOf(element);
 		OnChildRemoved(parent, element);
 		OnChildAdded(parent, element, index >= 0 ? index : null);
+	}
+
+	private void RebuildSemanticTree(UIElement rootElement)
+	{
+		foreach (var child in rootElement.GetChildren().ToList())
+		{
+			OnChildRemoved(rootElement, child);
+		}
+
+		NativeMethods.RemoveSemanticElement(IntPtr.Zero, _rootElementHandle);
+		_semanticParentMap.Clear();
+		_prunedHandles.Clear();
+		_pendingLabelledBy.Clear();
+		_relationshipPeers.Clear();
+
+		_isCreatingAOM = true;
+		try
+		{
+			CreateAOM(rootElement);
+		}
+		finally
+		{
+			_isCreatingAOM = false;
+		}
 	}
 
 	protected override void OnNativeStructureChanged() { }

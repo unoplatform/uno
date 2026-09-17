@@ -129,7 +129,7 @@ internal static class AccessibilityNodeInfoCompatJni
 			{
 				if (classRef != IntPtr.Zero)
 				{
-					JNIEnv.DeleteLocalRef(classRef);
+					JNIEnv.DeleteGlobalRef(classRef);
 				}
 			}
 
