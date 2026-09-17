@@ -69,7 +69,13 @@ internal sealed unsafe partial class WebGpuDevice : IDisposable
 			if (_identitySiteBg == IntPtr.Zero)
 			{
 				var slot = SiteSlab.Alloc();
-				SiteSlab.Write(slot, Matrix3x2.Identity);
+				// The WHOLE block, not just the placement: slots are recycled, so anything left unwritten here is
+				// the clip of whatever site held this slot before - which would clip away every device-space op.
+				var u = SiteSlab.SlotSpan(slot);
+				u.Clear();
+				u[0] = 1f; u[3] = 1f;                                             // identity placement
+				u[10] = -1e9f; u[11] = -1e9f; u[14] = 1e9f; u[15] = 1e9f;         // no site aabb...
+				u[16] = -1e30f; u[17] = -1e30f; u[18] = 1e30f; u[19] = 1e30f;     // ...so everything is inside it
 				var e = new WGPUBindGroupEntry { Binding = 0, Buffer = SiteSlab.BufferOf(slot), Offset = SiteSlab.OffsetOf(slot), Size = WebGpuFrame.SiteUBytes };
 				var d = new WGPUBindGroupDescriptor { Layout = SiteBgl, EntryCount = 1, Entries = &e };
 				_identitySiteBg = wgpuDeviceCreateBindGroup(Dev, &d);
