@@ -9,8 +9,8 @@ using Uno.UI.Samples.Controls;
 namespace UITests.Windows_UI_Xaml_Controls.RichTextBlockTests;
 
 [Sample("RichTextBlock", Name = "RichTextBlock_SelectionInteraction", Description =
-	"Selection playground. Drag to select, double-click a word, Shift+click to extend, Ctrl+A/Ctrl+C, " +
-	"right-click for the Copy flyout. Use the controls to toggle selection, change the highlight color, " +
+	"Selection playground. Drag to select, double-click a word, Shift+click to extend, Ctrl+A/Ctrl+C. " +
+	"Use the controls to toggle selection, change the highlight color, " +
 	"and drive selection programmatically. Verify SelectedText and the SelectionChanged log update correctly.",
 	IsManualTest = true)]
 public sealed partial class RichTextBlock_SelectionInteraction : Page

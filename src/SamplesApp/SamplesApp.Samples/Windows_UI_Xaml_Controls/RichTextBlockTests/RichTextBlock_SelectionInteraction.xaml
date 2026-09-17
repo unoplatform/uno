@@ -17,8 +17,7 @@
                 2) Double-click a word to select that word.
                 3) Click once, then Shift+click elsewhere to extend the selection.
                 4) Ctrl+A selects all, Ctrl+C copies the selection.
-                5) Right-click the selection to open the context flyout (Copy).
-                6) Use the buttons below to drive selection programmatically and toggle settings.
+                5) Use the buttons below to drive selection programmatically and toggle settings.
                 Watch "Selected text" and the event log update as SelectionChanged fires.
             </TextBlock>
 
