@@ -208,5 +208,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(SUT, VisualTreeHelper.GetParent(child), "Re-measuring at the same width must keep the child hosted");
 		}
+
+		[TestMethod]
+		[DataRow(TextTrimming.CharacterEllipsis)]
+		[DataRow(TextTrimming.WordEllipsis)]
+		public async Task When_Container_Overflows_Trimmed_Line(TextTrimming trimming)
+		{
+			// LsTextLine::Collapse always collapses; an overflowing object must not leave the line untrimmed.
+			var child = CreateChild(200, 20);
+			var SUT = CreateSUT(child);
+			SUT.Width = 100;
+			SUT.TextWrapping = TextWrapping.NoWrap;
+			SUT.TextTrimming = trimming;
+
+			await UITestHelper.Load(SUT);
+
+			Assert.IsTrue(SUT.IsTextTrimmed);
+
+			// The collapsed line ends before the object, so the page parks the child below its content.
+			var offset = child.TransformToVisual(SUT).TransformPoint(new Point(0, 0));
+			Assert.IsTrue(offset.Y >= SUT.ActualHeight - 1, $"Expected the trimmed child below the text, but Y was {offset.Y} (ActualHeight {SUT.ActualHeight}).");
+		}
 	}
 }

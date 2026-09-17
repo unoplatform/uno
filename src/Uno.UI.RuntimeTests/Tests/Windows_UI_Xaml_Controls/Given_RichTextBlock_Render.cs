@@ -323,6 +323,65 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresScaling(1f)]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_CharacterEllipsis_First_Glyph_Does_Not_Fit(bool narrowerThanEllipsis)
+		{
+			// Line Services never formats an empty line: with no room left, the collapsed line keeps its first
+			// character and the ellipsis, overflowing the control rather than painting the untrimmed line.
+			var glyphWidth = await MeasureRunWidth("W", 40);
+			var ellipsisWidth = await MeasureRunWidth("…", 40);
+
+			var SUT = new RichTextBlock
+			{
+				Width = narrowerThanEllipsis ? ellipsisWidth / 2 : ellipsisWidth + glyphWidth / 2,
+				FontSize = 40,
+				TextWrapping = TextWrapping.NoWrap,
+				TextTrimming = TextTrimming.CharacterEllipsis,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red),
+			};
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = "WWWWWWWWWW" });
+			SUT.Blocks.Add(paragraph);
+
+			var host = new Border { Width = 400, Height = 80, Background = new SolidColorBrush(Microsoft.UI.Colors.White), Child = SUT };
+
+			try
+			{
+				WindowHelper.WindowContent = host;
+				await WindowHelper.WaitForLoaded(host);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(SUT.IsTextTrimmed, "A line too long for the control should report as trimmed");
+
+				var shot = await UITestHelper.ScreenShot(host);
+				var collapsedEnd = (int)Math.Ceiling(glyphWidth + ellipsisWidth);
+
+				ImageAssert.HasColorInRectangle(shot, new Rectangle(0, 0, collapsedEnd, 80), Microsoft.UI.Colors.Red, tolerance: 16);
+				ImageAssert.DoesNotHaveColorInRectangle(shot, new Rectangle(collapsedEnd + 4, 0, 400 - collapsedEnd - 4, 80), Microsoft.UI.Colors.Red, tolerance: 16);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		private static async Task<double> MeasureRunWidth(string text, double fontSize)
+		{
+			var probe = new RichTextBlock { FontSize = fontSize, TextWrapping = TextWrapping.NoWrap, HorizontalAlignment = HorizontalAlignment.Left };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = text });
+			probe.Blocks.Add(paragraph);
+
+			await UITestHelper.Load(probe);
+
+			return probe.ActualWidth;
+		}
+
+		[TestMethod]
+		[RequiresScaling(1f)]
 		public async Task When_Overflow_Continues_Mid_Paragraph()
 		{
 			// A paragraph split across a page break: the overflow hosts the continuation, so its first

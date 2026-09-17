@@ -235,11 +235,8 @@ internal sealed class SkiaTextLine : TextLine
 			return this;
 		}
 
-		var available = (float)(collapsingWidth - symbol.Width);
-		if (available <= 0)
-		{
-			return this;
-		}
+		// LsTextLine::FormatCollapsed - the formatting width excludes the symbol and never goes negative.
+		var available = Math.Max(0f, (float)(collapsingWidth - symbol.Width));
 
 		var kept = TrimSpansToWidth(_renderLine.RenderOrderedSegmentSpans, available, collapsingStyle);
 		if (kept is null)
@@ -256,7 +253,8 @@ internal sealed class SkiaTextLine : TextLine
 	}
 
 	// Returns the spans to keep, or null when the line already fits. CharacterEllipsis cuts at the last
-	// glyph that fits; WordEllipsis then backs up to the end of the previous word.
+	// glyph that fits; WordEllipsis then backs up to the end of the previous word. Line Services never
+	// formats an empty line, so a line with no room keeps its first cluster or object and overflows.
 	private static List<RenderSegmentSpan>? TrimSpansToWidth(
 		IReadOnlyList<RenderSegmentSpan> spans,
 		float available,
@@ -277,7 +275,12 @@ internal sealed class SkiaTextLine : TextLine
 			// This span is where the line runs out of room. Keep as many of its glyphs as fit.
 			if (span.Segment.IsInlineObject)
 			{
-				break;
+				if (kept.Count == 0)
+				{
+					kept.Add(span);
+				}
+
+				return kept;
 			}
 
 			var glyphs = span.Segment.Glyphs;
@@ -317,6 +320,23 @@ internal sealed class SkiaTextLine : TextLine
 				}
 			}
 
+			if (keptGlyphs == 0 && kept.Count == 0)
+			{
+				if (span.GlyphsLength == 0)
+				{
+					kept.Add(span);
+					return kept;
+				}
+
+				var cluster = glyphs[span.GlyphsStart].Cluster;
+				do
+				{
+					keptWidth += GetGlyphAdvance(glyphs[span.GlyphsStart + keptGlyphs], span.CharacterSpacing);
+					keptGlyphs++;
+				}
+				while (keptGlyphs < span.GlyphsLength && glyphs[span.GlyphsStart + keptGlyphs].Cluster == cluster);
+			}
+
 			if (keptGlyphs > 0)
 			{
 				kept.Add(span with
@@ -330,7 +350,7 @@ internal sealed class SkiaTextLine : TextLine
 			}
 
 			// The line did not fit, so it is collapsed even when no glyph of this span survives.
-			return kept.Count > 0 ? kept : null;
+			return kept;
 		}
 
 		return null;
