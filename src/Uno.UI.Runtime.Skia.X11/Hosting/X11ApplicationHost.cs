@@ -135,6 +135,8 @@ public partial class X11ApplicationHost : SkiaHost, ISkiaApplicationHost, IDispo
 			}
 		}
 
+		AccessibilityRouter.EnsureInitialized();
+
 		CompositionTarget.FrameRenderingOptions = (true, true);
 	}
 
