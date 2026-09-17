@@ -908,7 +908,7 @@ internal sealed class TextRangeAdapter : ITextRangeProvider
 	private static IParsedText? GetParsedText(FrameworkElement? owner)
 		=> owner switch
 		{
-			TextBox textBox => textBox.TextBoxView.DisplayBlock.ParsedText,
+			ITextBoxHost { Core: { IsPassword: false } core } => core.TextBoxView?.DisplayBlock?.ParsedText,
 			TextBlock textBlock => textBlock.ParsedText,
 			_ => null,
 		};

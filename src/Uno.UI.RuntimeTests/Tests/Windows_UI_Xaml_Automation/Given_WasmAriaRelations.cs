@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Controls;
 using Uno.UI.RuntimeTests.Helpers;
 using Private.Infrastructure;
 
-#if HAS_UNO && __SKIA__ && __WASM__
+#if HAS_UNO
 using static Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation.WasmSemanticDomHelper;
 #endif
 
@@ -84,7 +84,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 #endif
 		}
 
-#if HAS_UNO && __SKIA__ && __WASM__
+#if HAS_UNO
 		[TestCleanup]
 		public void Cleanup() => TestServices.WindowHelper.WindowContent = null;
 
