@@ -45,32 +45,39 @@ internal static class AccessibilityNodeInfoCompatJni
 	{
 		EnsureInitialized();
 
-		if (_setCheckedIntId != IntPtr.Zero)
+		try
 		{
-			// AndroidX.Core 1.17+: setChecked(int) with full three-state support.
-			JNIEnv.CallVoidMethod(node.Handle, _setCheckedIntId, new JValue(checkState));
-			return true;
-		}
+			if (_setCheckedIntId != IntPtr.Zero)
+			{
+				// AndroidX.Core 1.17+: setChecked(int) with full three-state support.
+				JNIEnv.CallVoidMethod(node.Handle, _setCheckedIntId, new JValue(checkState));
+				return true;
+			}
 
-		if (_setCheckedBoolId != IntPtr.Zero)
+			if (_setCheckedBoolId != IntPtr.Zero)
+			{
+				// AndroidX.Core 1.16 and earlier: setChecked(boolean).
+				// Indeterminate (checkState == 2) degrades gracefully to false (unchecked).
+				JNIEnv.CallVoidMethod(
+					node.Handle,
+					_setCheckedBoolId,
+					new JValue(checkState == CheckedStateTrue));
+			}
+
+			if (checkState == CheckedStateMixed &&
+				OperatingSystem.IsAndroidVersionAtLeast(36) &&
+				node.Unwrap() is { } nativeNode)
+			{
+				nativeNode.CheckedState = CheckedState.Partial;
+				return true;
+			}
+
+			return checkState != CheckedStateMixed;
+		}
+		finally
 		{
-			// AndroidX.Core 1.16 and earlier: setChecked(boolean).
-			// Indeterminate (checkState == 2) degrades gracefully to false (unchecked).
-			JNIEnv.CallVoidMethod(
-				node.Handle,
-				_setCheckedBoolId,
-				new JValue(checkState == CheckedStateTrue));
+			GC.KeepAlive(node);
 		}
-
-		if (checkState == CheckedStateMixed &&
-			OperatingSystem.IsAndroidVersionAtLeast(36) &&
-			node.Unwrap() is { } nativeNode)
-		{
-			nativeNode.CheckedState = CheckedState.Partial;
-			return true;
-		}
-
-		return checkState != CheckedStateMixed;
 	}
 
 	internal static void SetChecked(AccessibilityNodeInfoCompat node, bool isChecked)
@@ -122,7 +129,7 @@ internal static class AccessibilityNodeInfoCompatJni
 			{
 				if (classRef != IntPtr.Zero)
 				{
-					JNIEnv.DeleteGlobalRef(classRef);
+					JNIEnv.DeleteLocalRef(classRef);
 				}
 			}
 
@@ -144,7 +151,7 @@ internal static class AccessibilityNodeInfoCompatJni
 		{
 			return JNIEnv.GetMethodID(classRef, name, signature);
 		}
-		catch (Java.Lang.NoSuchMethodError)
+		catch (Java.Lang.Throwable)
 		{
 			return IntPtr.Zero;
 		}

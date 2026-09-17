@@ -145,6 +145,19 @@ namespace SamplesApp.Droid
 			}
 		}
 
+		protected override void OnDestroy()
+		{
+			var thread = _pixelCopyHandlerThread;
+			_pixelCopyHandlerThread = null;
+			if (thread is not null)
+			{
+				thread.QuitSafely();
+				thread.Dispose();
+			}
+
+			base.OnDestroy();
+		}
+
 		// Required for the MSAL sample "MsalLoginAndGraph"
 		protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent data)
 		{

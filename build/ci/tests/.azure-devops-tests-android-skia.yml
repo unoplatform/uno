@@ -106,11 +106,7 @@ jobs:
       $env:UNO_UITEST_PLATFORM = "Android"
       $env:UNO_UITEST_APP_ID = "uno.platform.samplesapp.skia"
       $env:UITEST_VARIANT = "skia"
-      $env:UNO_UITEST_ANDROIDAPK_PATH = "$(build.sourcesdirectory)/build/$(SAMPLEAPP_ARTIFACT_NAME)/android/$($env:UNO_UITEST_APP_ID)-Signed.apk"
-      if (-not (Test-Path -LiteralPath $env:UNO_UITEST_ANDROIDAPK_PATH))
-      {
-        throw "Android Skia APK not found at $($env:UNO_UITEST_ANDROIDAPK_PATH)."
-      }
+      Remove-Item Env:UNO_UITEST_ANDROIDAPK_PATH -ErrorAction Ignore
 
       $adb = Join-Path $env:ANDROID_HOME "platform-tools/adb"
       $device = (& $adb devices) |
@@ -122,6 +118,11 @@ jobs:
         throw "No Android emulator is available for the Skia UIAutomator tests."
       }
       $env:ANDROID_SERIAL = ($device -split "\s+")[0]
+      $installedPackage = & $adb -s $env:ANDROID_SERIAL shell pm path $env:UNO_UITEST_APP_ID
+      if ($LASTEXITCODE -ne 0 -or -not ($installedPackage -match "^package:"))
+      {
+        throw "Android Skia package $($env:UNO_UITEST_APP_ID) is not installed on $($env:ANDROID_SERIAL)."
+      }
 
       dotnet test "$(build.sourcesdirectory)/src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj" `
         -c Release `
