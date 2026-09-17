@@ -47,7 +47,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public SwipeItem GetAt(uint index)
+		// Uno: the IVector<T> members are internal because WinUI's C# projection exposes IList<T> only.
+		internal SwipeItem GetAt(uint index)
 		{
 			if (index >= m_items.Count)
 			{
@@ -57,9 +58,9 @@ namespace Microsoft.UI.Xaml.Controls
 			return m_items[(int)index];
 		}
 
-		public uint Size => (uint)m_items.Count;
+		internal uint Size => (uint)m_items.Count;
 
-		public bool IndexOf(SwipeItem value, out uint index)
+		internal bool IndexOf(SwipeItem value, out uint index)
 		{
 			var i = m_items.IndexOf(value);
 			if (i < 0)
@@ -74,7 +75,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public void SetAt(uint index, SwipeItem value)
+		internal void SetAt(uint index, SwipeItem value)
 		{
 			if (index >= m_items.Count)
 			{
@@ -85,7 +86,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_vectorChangedEventSource?.Invoke(this, null);
 		}
 
-		public void InsertAt(uint index, SwipeItem value)
+		internal void InsertAt(uint index, SwipeItem value)
 		{
 			if (Mode == SwipeMode.Execute && m_items.Count > 0)
 			{
@@ -101,7 +102,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_vectorChangedEventSource?.Invoke(this, null);
 		}
 
-		public void RemoveAt(uint index)
+		internal void RemoveAt(uint index)
 		{
 			if (index >= m_items.Count)
 			{
@@ -112,7 +113,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_vectorChangedEventSource?.Invoke(this, null);
 		}
 
-		public void Append(SwipeItem value)
+		internal void Append(SwipeItem value)
 		{
 			if (Mode == SwipeMode.Execute && m_items.Count > 0)
 			{
@@ -123,7 +124,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_vectorChangedEventSource?.Invoke(this, null);
 		}
 
-		public void RemoveAtEnd()
+		internal void RemoveAtEnd()
 		{
 			// Vector.h's VectorInnerImpl::RemoveAtEnd leaves an empty vector untouched.
 			if (m_items.Count > 0)
@@ -146,7 +147,8 @@ namespace Microsoft.UI.Xaml.Controls
 		//	return m_items.GetView();
 		//}
 
-		public event VectorChangedEventHandler<SwipeItem> VectorChanged
+		// Upstream implements IObservableVector<SwipeItem> outside the IDL, so it is reachable only by casting.
+		event VectorChangedEventHandler<SwipeItem> IObservableVector<SwipeItem>.VectorChanged
 		{
 			add => m_vectorChangedEventSource += value;
 			remove => m_vectorChangedEventSource -= value;
