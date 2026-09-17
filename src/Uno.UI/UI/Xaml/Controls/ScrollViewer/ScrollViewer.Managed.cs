@@ -41,7 +41,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsScrollInertiaEnabled),
 				typeof(bool),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
 		#endregion
 
 		#region IsHorizontalScrollChainingEnabled (Attached DP)
@@ -66,7 +66,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"IsHorizontalScrollChainingEnabled",
 				typeof(bool),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
 		#endregion
 
 		#region IsHorizontalRailEnabled (Attached DP)
@@ -91,7 +91,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"IsHorizontalRailEnabled",
 				typeof(bool),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
 		#endregion
 
 		#region IsVerticalScrollChainingEnabled (Attached DP)
@@ -117,7 +117,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"IsVerticalScrollChainingEnabled",
 				typeof(bool),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
 		#endregion
 
 		#region IsVerticalRailEnabled (Attached DP)
@@ -142,7 +142,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"IsVerticalRailEnabled",
 				typeof(bool),
 				typeof(ScrollViewer),
-				new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
 		#endregion
 
 		internal Size ScrollBarSize => (_presenter as ScrollContentPresenter)?.ScrollBarSize ?? default;

@@ -29,7 +29,7 @@ public partial class BitmapIconSource : IconSource
 	}
 
 	public static DependencyProperty ShowAsMonochromeProperty { get; } =
-		DependencyProperty.Register(nameof(ShowAsMonochrome), typeof(bool), typeof(BitmapIconSource), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue, OnPropertyChanged));
+		DependencyProperty.Register(nameof(ShowAsMonochrome), typeof(bool), typeof(BitmapIconSource), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue, OnPropertyChanged));
 
 	protected override IconElement CreateIconElementCore()
 	{

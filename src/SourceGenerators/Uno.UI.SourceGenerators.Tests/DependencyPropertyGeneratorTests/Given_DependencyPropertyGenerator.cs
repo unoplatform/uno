@@ -405,13 +405,13 @@ public class Given_DependencyPropertyGenerator
 					{
 						internal static class Boxes
 						{
-							internal static class BooleanBoxes
+							internal static class BoolBoxes
 							{
 								public static readonly object BoxedTrue = true;
 								public static readonly object BoxedFalse = false;
 							}
 
-							public static object Box(bool value) => value ? BooleanBoxes.BoxedTrue : BooleanBoxes.BoxedFalse;
+							public static object Box(bool value) => value ? BoolBoxes.BoxedTrue : BoolBoxes.BoxedFalse;
 						}
 					}
 
@@ -504,7 +504,7 @@ public class Given_DependencyPropertyGenerator
 									propertyType: typeof(bool),
 									ownerType: typeof(global::Mynamespace.C),
 									typeMetadata: new global::Microsoft.UI.Xaml.FrameworkPropertyMetadata(
-										defaultValue: global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedTrue /* GetMyValueDefaultValue(), global::Mynamespace.C */
+										defaultValue: global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedTrue /* GetMyValueDefaultValue(), global::Mynamespace.C */
 										, backingFieldUpdateCallback: OnMyValueBackingFieldUpdate
 								));
 								private static void OnMyValueBackingFieldUpdate(object instance, object newValue)

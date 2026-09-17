@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			set => this.SetValue(EnableDependentAnimationProperty, value);
 		}
 		public static DependencyProperty EnableDependentAnimationProperty { get; } =
-			DependencyProperty.Register("EnableDependentAnimation", typeof(bool), typeof(DoubleAnimationUsingKeyFrames), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+			DependencyProperty.Register("EnableDependentAnimation", typeof(bool), typeof(DoubleAnimationUsingKeyFrames), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 		public DoubleAnimationUsingKeyFrames()
 		{

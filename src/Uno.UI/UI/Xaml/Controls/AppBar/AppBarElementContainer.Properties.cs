@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"IsCompact",
 				typeof(bool),
 				typeof(AppBarElementContainer),
-				new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse)
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse)
 			);
 
 		#endregion
@@ -65,7 +65,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"IsInOverflow",
 				typeof(bool),
 				typeof(AppBarElementContainer),
-				new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 		#endregion
 
@@ -88,7 +88,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(UseOverflowStyle),
 				typeof(bool),
 				typeof(AppBarElementContainer),
-				new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse)
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse)
 			);
 
 		#endregion

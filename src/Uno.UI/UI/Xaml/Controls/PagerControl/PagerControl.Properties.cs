@@ -18,7 +18,7 @@ public partial class PagerControl
 	}
 
 	public static DependencyProperty ButtonPanelAlwaysShowFirstLastPageIndexProperty { get; } =
-		DependencyProperty.Register(nameof(ButtonPanelAlwaysShowFirstLastPageIndex), typeof(bool), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue, OnPropertyChanged));
+		DependencyProperty.Register(nameof(ButtonPanelAlwaysShowFirstLastPageIndex), typeof(bool), typeof(PagerControl), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue, OnPropertyChanged));
 
 	public PagerControlDisplayMode DisplayMode
 	{

@@ -66,7 +66,7 @@ public sealed class BoxingCodeFixProvider : CodeFixProvider
 					}
 					else if (typeInfo.Type!.SpecialType == SpecialType.System_Boolean)
 					{
-						boxClassName = "BooleanBoxes";
+						boxClassName = "BoolBoxes";
 						boxMemberName = literalExpression.Token.Value switch
 						{
 							true => "BoxedTrue",

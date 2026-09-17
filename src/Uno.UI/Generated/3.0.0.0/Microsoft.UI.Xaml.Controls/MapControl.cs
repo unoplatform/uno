@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(InteractiveControlsVisible), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.MapControl),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]

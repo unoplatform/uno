@@ -21,7 +21,7 @@ public sealed partial class Thumb : Control
 			nameof(IsDragging),
 			typeof(bool),
 			typeof(Thumb),
-			new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Fires when the Thumb control loses mouse capture.

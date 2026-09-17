@@ -275,7 +275,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 			typeof(bool),
 			typeof(ContentPresenter),
 			new FrameworkPropertyMetadata(
-				Boxes.BooleanBoxes.BoxedTrue,
+				Boxes.BoolBoxes.BoxedTrue,
 #if __SKIA__
 				// AffectsMeasure only needed where Uno's own measure path calls GetScaledFontSize().
 				FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure

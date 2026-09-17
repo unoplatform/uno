@@ -6,7 +6,7 @@ namespace Uno.UI.SourceGenerators.Tests.BoxingAnalyzerTests;
 public class Given_BoxingCodeFixProvider
 {
 	[TestMethod]
-	[DataRow("object M() => true;", "object M() => Boxes.BooleanBoxes.BoxedTrue;")]
+	[DataRow("object M() => true;", "object M() => Boxes.BoolBoxes.BoxedTrue;")]
 	[DataRow("object M() => 1;", "object M() => Boxes.IntegerBoxes.One;")]
 	[DataRow("object M() => 0.0;", "object M() => Boxes.DoubleBoxes.Zero;")]
 	[DataRow("object M(int value) => value;", "object M(int value) => Boxes.Box(value);")]
@@ -14,10 +14,10 @@ public class Given_BoxingCodeFixProvider
 		=> await AssertFixAsync(member, expected);
 
 	[TestMethod]
-	[DataRow("object M() => (object)true;", "object M() => Boxes.BooleanBoxes.BoxedTrue;")]
+	[DataRow("object M() => (object)true;", "object M() => Boxes.BoolBoxes.BoxedTrue;")]
 	[DataRow("object M() => (object)1;", "object M() => Boxes.IntegerBoxes.One;")]
 	[DataRow("object M() => (object)1.0;", "object M() => Boxes.DoubleBoxes.One;")]
-	[DataRow("object M() => (object)(false);", "object M() => Boxes.BooleanBoxes.BoxedFalse;")]
+	[DataRow("object M() => (object)(false);", "object M() => Boxes.BoolBoxes.BoxedFalse;")]
 	[DataRow("object M(int value) => (object)value;", "object M(int value) => Boxes.Box(value);")]
 	[DataRow("object M(bool value) => (object)(value);", "object M(bool value) => Boxes.Box(value);")]
 	public async Task When_Explicit_Boxing_Cast(string member, string expected)

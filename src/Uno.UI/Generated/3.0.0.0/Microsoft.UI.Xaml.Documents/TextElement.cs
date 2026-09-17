@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ExitDisplayModeOnAccessKeyInvoked), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.TextElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property FontFamilyProperty
 		// Skipping already declared property FontSizeProperty
@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml.Documents
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsAccessKeyScope), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Documents.TextElement),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property IsTextScaleFactorEnabledProperty
 #if __SKIA__

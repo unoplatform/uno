@@ -802,7 +802,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				nameof(IsSelectionActive),
 				typeof(bool),
 				typeof(Selector),
-				new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 		// This method returns a value indicating whether the object is selectable.
 		private protected bool IsSelectableHelper(object obj)

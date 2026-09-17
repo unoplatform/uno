@@ -25,7 +25,7 @@ public partial class ListViewBase
 			nameof(SingleSelectionFollowsFocus),
 			typeof(bool),
 			typeof(ListViewBase),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
 
 	public bool IsMultiSelectCheckBoxEnabled
 	{
@@ -37,7 +37,7 @@ public partial class ListViewBase
 		DependencyProperty.Register(
 			nameof(IsMultiSelectCheckBoxEnabled), typeof(bool),
 			typeof(ListViewBase),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue, (o, args) => ((ListViewBase)o).OnIsMultiSelectCheckBoxEnabledPropertyChanged(args)));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue, (o, args) => ((ListViewBase)o).OnIsMultiSelectCheckBoxEnabledPropertyChanged(args)));
 
 	private void OnIsMultiSelectCheckBoxEnabledPropertyChanged(DependencyPropertyChangedEventArgs args)
 	{

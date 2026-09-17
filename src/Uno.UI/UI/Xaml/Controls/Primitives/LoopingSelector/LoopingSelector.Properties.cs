@@ -102,6 +102,6 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			DependencyProperty.Register(
 				nameof(ShouldLoop), typeof(bool),
 				typeof(Primitives.LoopingSelector),
-				new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, propertyChangedCallback: (sender, args) => ((LoopingSelector)sender).OnPropertyChanged(args)));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, propertyChangedCallback: (sender, args) => ((LoopingSelector)sender).OnPropertyChanged(args)));
 	}
 }

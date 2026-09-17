@@ -67,7 +67,7 @@ partial class AppBarButton
 			nameof(IsCompact),
 			typeof(bool),
 			typeof(AppBarButton),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Gets a value that indicates whether this item is in the overflow menu.
@@ -86,7 +86,7 @@ partial class AppBarButton
 			nameof(IsInOverflow),
 			typeof(bool),
 			typeof(AppBarButton),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Gets or sets a string that overrides the default key combination string associated with a keyboard accelerator.
@@ -179,7 +179,7 @@ partial class AppBarButton
 			nameof(UseOverflowStyle),
 			typeof(bool),
 			typeof(AppBarButton),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 	bool ICommandBarElement3.IsInOverflow
 	{

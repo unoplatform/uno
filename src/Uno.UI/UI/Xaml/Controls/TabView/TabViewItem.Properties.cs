@@ -68,7 +68,7 @@ public partial class TabViewItem
 	/// Identifies the IsClosable dependency property.
 	/// </summary>
 	public static DependencyProperty IsClosableProperty { get; } =
-		DependencyProperty.Register(nameof(IsClosable), typeof(bool), typeof(TabViewItem), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue, OnIsClosablePropertyChanged));
+		DependencyProperty.Register(nameof(IsClosable), typeof(bool), typeof(TabViewItem), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue, OnIsClosablePropertyChanged));
 
 	/// <summary>
 	/// Gets an object that provides calculated values that can be referenced as {TemplateBinding} markup extension

@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		DependencyProperty.Register(
 			"IsStaggeringEnabled", typeof(bool),
 			typeof(CommonNavigationTransitionInfo),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse)
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse)
 		);
 
 		#endregion
@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		} = DependencyProperty.RegisterAttached(
 			"IsStaggerElement", typeof(bool),
 			typeof(CommonNavigationTransitionInfo),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse)
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse)
 		);
 
 		#endregion

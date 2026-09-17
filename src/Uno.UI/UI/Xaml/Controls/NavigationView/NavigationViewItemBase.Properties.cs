@@ -23,7 +23,7 @@ public partial class NavigationViewItemBase
 	/// Identifies the IsSelected dependency property.
 	/// </summary>
 	public static DependencyProperty IsSelectedProperty { get; } =
-		DependencyProperty.Register(nameof(IsSelected), typeof(bool), typeof(NavigationViewItemBase), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnIsSelectedPropertyChanged));
+		DependencyProperty.Register(nameof(IsSelected), typeof(bool), typeof(NavigationViewItemBase), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, OnIsSelectedPropertyChanged));
 
 	private static void OnIsSelectedPropertyChanged(
 		DependencyObject sender,

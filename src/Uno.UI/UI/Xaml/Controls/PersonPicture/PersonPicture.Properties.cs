@@ -134,14 +134,14 @@ public partial class PersonPicture : Control
 			nameof(IsGroup),
 			typeof(bool),
 			typeof(PersonPicture),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, OnPropertyChanged));
 
 	public static DependencyProperty PreferSmallImageProperty { get; } =
 		DependencyProperty.Register(
 			nameof(PreferSmallImage),
 			typeof(bool),
 			typeof(PersonPicture),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, OnPropertyChanged));
 
 	public static DependencyProperty ProfilePictureProperty { get; } =
 		DependencyProperty.Register(

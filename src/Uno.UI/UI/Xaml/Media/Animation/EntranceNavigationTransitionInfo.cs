@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		} = DependencyProperty.RegisterAttached(
 			"IsTargetElement", typeof(bool),
 			typeof(EntranceNavigationTransitionInfo),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse)
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse)
 		);
 
 		#endregion

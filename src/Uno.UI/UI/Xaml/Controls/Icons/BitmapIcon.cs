@@ -45,7 +45,7 @@ public partial class BitmapIcon : IconElement, IThemeChangeAware
 		DependencyProperty.Register(
 			nameof(ShowAsMonochrome), typeof(bool),
 			typeof(BitmapIcon),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue, (s, e) => (s as BitmapIcon)?.OnShowAsMonochromeChanged((bool)e.NewValue)));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue, (s, e) => (s as BitmapIcon)?.OnShowAsMonochromeChanged((bool)e.NewValue)));
 
 	/// <summary>
 	/// Gets or sets the Uniform Resource Identifier (URI) of the graphics source file that generated this BitmapImage.

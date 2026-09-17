@@ -84,7 +84,7 @@ namespace Microsoft.UI.Xaml.Media
 				typeof(bool),
 				typeof(PathFigure),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.BooleanBoxes.BoxedTrue,
+					defaultValue: Boxes.BoolBoxes.BoxedTrue,
 					options: FrameworkPropertyMetadataOptions.AffectsRender
 				)
 			);
@@ -105,7 +105,7 @@ namespace Microsoft.UI.Xaml.Media
 				typeof(bool),
 				typeof(PathFigure),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.BooleanBoxes.BoxedFalse,
+					defaultValue: Boxes.BoolBoxes.BoxedFalse,
 					options: FrameworkPropertyMetadataOptions.AffectsRender
 				)
 			);

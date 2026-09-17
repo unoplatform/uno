@@ -18,7 +18,7 @@ internal static class BoxingAnalyzerHarness
 		{
 			internal static class Boxes
 			{
-				public static class BooleanBoxes
+				public static class BoolBoxes
 				{
 					public static readonly object BoxedTrue = true;
 					public static readonly object BoxedFalse = false;
@@ -37,7 +37,7 @@ internal static class BoxingAnalyzerHarness
 					public static readonly object One = 1.0d;
 				}
 
-				public static object Box(bool value) => value ? BooleanBoxes.BoxedTrue : BooleanBoxes.BoxedFalse;
+				public static object Box(bool value) => value ? BoolBoxes.BoxedTrue : BoolBoxes.BoxedFalse;
 
 				public static object Box(int value) => value;
 

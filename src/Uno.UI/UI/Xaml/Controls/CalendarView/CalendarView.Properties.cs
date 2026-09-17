@@ -858,19 +858,19 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsGroupLabelVisible), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.CalendarView),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsOutOfScopeEnabledProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsOutOfScopeEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.CalendarView),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
 
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsTodayHighlightedProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsTodayHighlighted), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.CalendarView),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
 
 		public static global::Microsoft.UI.Xaml.DependencyProperty MaxDateProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(

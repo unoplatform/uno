@@ -93,7 +93,7 @@ namespace Microsoft.UI.Xaml.Controls
 			bool isContained = true;
 			if (rc.Left > rc.Right || rc.Top > rc.Bottom)
 			{
-				typeof(ToolTipPositioning).Log().LogError("This rect is ill formed.", Boxes.BooleanBoxes.BoxedFalse);
+				typeof(ToolTipPositioning).Log().LogError("This rect is ill formed.", Boxes.BoolBoxes.BoxedFalse);
 				isContained = false;
 			}
 			if (rc.Left < container.Left || rc.Right > container.Right || rc.Top < container.Top || rc.Bottom > container.Bottom)

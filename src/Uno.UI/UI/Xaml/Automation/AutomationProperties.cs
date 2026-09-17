@@ -158,7 +158,7 @@ public partial class AutomationProperties
 			"IsDataValidForForm",
 			typeof(bool),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue, OnIsDataValidForFormChanged));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue, OnIsDataValidForFormChanged));
 
 	/// <summary>
 	/// Identifies the IsDialog attached property, which indicates whether the element represents a dialog.
@@ -168,7 +168,7 @@ public partial class AutomationProperties
 			"IsDialog",
 			typeof(bool),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Identifies the IsPeripheral attached property, which indicates whether the element is peripheral to the main UI experience.
@@ -178,7 +178,7 @@ public partial class AutomationProperties
 			"IsPeripheral",
 			typeof(bool),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Identifies the IsRequiredForForm attached property, which indicates whether the element requires user input before form submission.
@@ -188,7 +188,7 @@ public partial class AutomationProperties
 			"IsRequiredForForm",
 			typeof(bool),
 			typeof(AutomationProperties),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Identifies the ItemStatus attached property, which conveys status information about an element (for example, “New” or “Busy”).
