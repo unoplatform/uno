@@ -63,16 +63,24 @@ partial class RichTextBlockOverflow
 
 	private void OnPointerReleasedForLinks(object sender, PointerRoutedEventArgs e)
 	{
-		if (FindHyperlinkAt(e) is { } hyperlink && hyperlink.ReleasePointerPressed(e.Pointer))
+		// Only a press on a link captures, and WinUI raises no PointerCaptureLost for a link click.
+		if (!IsCaptured(e.Pointer))
+		{
+			return;
+		}
+
+		var hyperlink = FindHyperlinkAt(e);
+		ReleasePointerCapture(e.Pointer.UniqueId, muteEvent: true);
+
+		if (hyperlink?.ReleasePointerPressed(e.Pointer) ?? false)
 		{
 			e.Handled = true;
 		}
 		else
 		{
+			// The muted release raises no PointerCaptureLost, so the press has to be cleared here.
 			AbortHyperlinkPress(e);
 		}
-
-		ReleasePointerCapture(e.Pointer);
 	}
 
 	private void OnPointerMovedForLinks(object sender, PointerRoutedEventArgs e)
