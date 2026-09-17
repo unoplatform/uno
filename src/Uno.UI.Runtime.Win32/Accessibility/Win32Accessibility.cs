@@ -5,8 +5,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
@@ -1272,38 +1272,6 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		}
 	}
 
-	public override void NotifyTextEditTextChangedEvent(
-		AutomationPeer peer,
-		AutomationTextEditChangeType changeType,
-		IReadOnlyList<string> changedData)
-	{
-		if (!IsAccessibilityEnabled
-			|| changeType == AutomationTextEditChangeType.None
-			|| FindExistingProviderForPeer(peer, resolveEventsSource: true) is not { } provider)
-		{
-			return;
-		}
-
-		var data = changedData as string[];
-		if (data is null)
-		{
-			data = new string[changedData.Count];
-			for (var i = 0; i < changedData.Count; i++)
-			{
-				data[i] = changedData[i] ?? string.Empty;
-			}
-		}
-
-		var result = Win32UIAutomationInterop.UiaRaiseTextEditTextChangedEvent(
-			provider,
-			(int)changeType,
-			data);
-		if (result < 0 && this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().Debug($"UiaRaiseTextEditTextChangedEvent failed with HRESULT 0x{result:X8}.");
-		}
-	}
-
 	public override void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)
 	{
 		if (!IsAccessibilityEnabled
@@ -1362,13 +1330,17 @@ internal sealed class Win32Accessibility : SkiaAccessibilityBase
 		var dataArray = new string[changedData.Count];
 		for (var i = 0; i < changedData.Count; i++)
 		{
-			dataArray[i] = changedData[i];
+			dataArray[i] = changedData[i] ?? string.Empty;
 		}
 
 		try
 		{
 			// Uno's AutomationTextEditChangeType values match UIA TextEditChangeType exactly.
-			_ = Win32UIAutomationInterop.UiaRaiseTextEditTextChangedEvent(target, (int)changeType, dataArray);
+			var result = Win32UIAutomationInterop.UiaRaiseTextEditTextChangedEvent(target, (int)changeType, dataArray);
+			if (result < 0 && this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"UiaRaiseTextEditTextChangedEvent failed with HRESULT 0x{result:X8}.");
+			}
 		}
 		catch (Exception ex) when (
 			ex is System.Runtime.InteropServices.COMException
