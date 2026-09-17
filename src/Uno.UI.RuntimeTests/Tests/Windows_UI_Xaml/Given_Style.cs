@@ -95,9 +95,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		/// </remarks>
 		[TestMethod]
 		[RunsOnUIThread]
-#if __ANDROID__
-		[Ignore("ContentControl implicit styles don't pass in CI on Android, as for When_ImplicitStyle")]
-#endif
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/24522")]
+		// ContentControl implicit styles don't pass in CI on Android, as for When_ImplicitStyle above.
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeAndroid | RuntimeTestPlatforms.SkiaAndroid)]
 		public async Task When_ImplicitStyle_Nearest_Scope_Wins()
 		{
 			var appStyle = new Style()
