@@ -757,6 +757,30 @@ recompile against 7.0 rather than swapping assemblies in place.
   + GuidHelper.Equals(first, second);
   ```
 
+- **`SwipeItems` exposes only its `IList<SwipeItem>` members.** WinUI projects the
+  underlying `IVector<SwipeItem>` as `IList<SwipeItem>`, so the raw vector methods Uno also
+  made public are gone. `First`, `GetMany` and `ReplaceAll` are removed, and `GetAt`, `Size`,
+  `SetAt`, `InsertAt`, `RemoveAt(uint)`, `Append`, `RemoveAtEnd` and
+  `IndexOf(SwipeItem, out uint)` are no longer public. Use the list members instead:
+
+  ```diff
+  - var first = items.GetAt(0);
+  + var first = items[0];
+
+  - if (items.Size > 0) { }
+  + if (items.Count > 0) { }
+
+  - items.Append(item);
+  + items.Add(item);
+  ```
+
+  `VectorChanged` is still raised, but only through `IObservableVector<SwipeItem>`:
+
+  ```diff
+  - items.VectorChanged += OnItemsChanged;
+  + ((IObservableVector<SwipeItem>)items).VectorChanged += OnItemsChanged;
+  ```
+
 ### Custom `IAnimatedVisualSource` implementations
 
 `Microsoft.UI.Xaml.Controls.IAnimatedVisualSource` was a nine-method Uno-only contract. WinUI's
