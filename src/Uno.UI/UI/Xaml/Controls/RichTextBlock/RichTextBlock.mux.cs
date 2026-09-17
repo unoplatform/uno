@@ -723,35 +723,66 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnTextHighlightersChanged(object? sender, NotifyCollectionChangedEventArgs e)
 		{
-			if (e.OldItems is not null)
+			if (e.Action == NotifyCollectionChangedAction.Reset)
 			{
-				foreach (var item in e.OldItems)
+				// Clear() raises Reset without OldItems: only what is still in the collection stays tracked.
+				foreach (var disposable in _textHighlighterDisposables.Values)
 				{
-					if (item is TextHighlighter highlighter && _textHighlighterDisposables.Remove(highlighter, out var disposable))
-					{
-						disposable.Dispose();
-					}
+					disposable.Dispose();
+				}
+
+				_textHighlighterDisposables.Clear();
+
+				foreach (var highlighter in TextHighlighters)
+				{
+					TrackTextHighlighter(highlighter);
 				}
 			}
-
-			if (e.NewItems is not null)
+			else
 			{
-				foreach (var item in e.NewItems)
+				if (e.OldItems is not null)
 				{
-					if (item is TextHighlighter highlighter)
+					foreach (var item in e.OldItems)
 					{
-						var composite = new CompositeDisposable();
-						composite.Add(highlighter.RegisterDisposablePropertyChangedCallback(TextHighlighter.BackgroundProperty, (_, _) => InvalidateInlineAndRequireRepaint()));
-						composite.Add(highlighter.RegisterDisposablePropertyChangedCallback(TextHighlighter.ForegroundProperty, (_, _) => InvalidateInlineAndRequireRepaint()));
-						NotifyCollectionChangedEventHandler onCollectionChanged = (_, _) => InvalidateInlineAndRequireRepaint();
-						((ObservableCollection<TextRange>)highlighter.Ranges).CollectionChanged += onCollectionChanged;
-						composite.Add(Disposable.Create(() => ((ObservableCollection<TextRange>)highlighter.Ranges).CollectionChanged -= onCollectionChanged));
-						_textHighlighterDisposables.Add(highlighter, composite);
+						// A moved or duplicated instance is still in the collection.
+						if (item is TextHighlighter highlighter
+							&& !TextHighlighters.Contains(highlighter)
+							&& _textHighlighterDisposables.Remove(highlighter, out var disposable))
+						{
+							disposable.Dispose();
+						}
+					}
+				}
+
+				if (e.NewItems is not null)
+				{
+					foreach (var item in e.NewItems)
+					{
+						if (item is TextHighlighter highlighter)
+						{
+							TrackTextHighlighter(highlighter);
+						}
 					}
 				}
 			}
 
 			InvalidateInlineAndRequireRepaint();
+		}
+
+		private void TrackTextHighlighter(TextHighlighter highlighter)
+		{
+			if (_textHighlighterDisposables.ContainsKey(highlighter))
+			{
+				return;
+			}
+
+			var composite = new CompositeDisposable();
+			composite.Add(highlighter.RegisterDisposablePropertyChangedCallback(TextHighlighter.BackgroundProperty, (_, _) => InvalidateInlineAndRequireRepaint()));
+			composite.Add(highlighter.RegisterDisposablePropertyChangedCallback(TextHighlighter.ForegroundProperty, (_, _) => InvalidateInlineAndRequireRepaint()));
+			NotifyCollectionChangedEventHandler onCollectionChanged = (_, _) => InvalidateInlineAndRequireRepaint();
+			((ObservableCollection<TextRange>)highlighter.Ranges).CollectionChanged += onCollectionChanged;
+			composite.Add(Disposable.Create(() => ((ObservableCollection<TextRange>)highlighter.Ranges).CollectionChanged -= onCollectionChanged));
+			_textHighlighterDisposables.Add(highlighter, composite);
 		}
 
 		#endregion

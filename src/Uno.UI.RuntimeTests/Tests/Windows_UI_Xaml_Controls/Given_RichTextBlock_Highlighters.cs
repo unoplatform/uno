@@ -57,6 +57,51 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		public async Task When_Cleared_Highlighter_Is_Mutated_And_ReAdded()
+		{
+			var SUT = new RichTextBlock
+			{
+				Width = 400,
+				FontSize = 24,
+				TextWrapping = TextWrapping.NoWrap,
+				Foreground = new SolidColorBrush(Colors.Black),
+			};
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = "AAAAAAAAAA BBBBBBBBBB" });
+			SUT.Blocks.Add(paragraph);
+
+			var highlighter = new TextHighlighter { Background = new SolidColorBrush(Colors.Red) };
+			highlighter.Ranges.Add(new TextRange { StartIndex = 0, Length = 10 });
+			SUT.TextHighlighters.Add(highlighter);
+
+			try
+			{
+				await UITestHelper.Load(SUT);
+
+				// Clear() leaves the highlighter detached from the control, so changes to it must not paint.
+				SUT.TextHighlighters.Clear();
+				highlighter.Background = new SolidColorBrush(Colors.Blue);
+				highlighter.Ranges.Add(new TextRange { StartIndex = 11, Length = 10 });
+				await WindowHelper.WaitForIdle();
+
+				var cleared = await UITestHelper.ScreenShot(SUT);
+				var full = new System.Drawing.Rectangle(0, 0, cleared.Width, cleared.Height);
+				ImageAssert.DoesNotHaveColorInRectangle(cleared, full, Colors.Red, tolerance: 5);
+				ImageAssert.DoesNotHaveColorInRectangle(cleared, full, Colors.Blue, tolerance: 5);
+
+				SUT.TextHighlighters.Add(highlighter);
+				highlighter.Background = new SolidColorBrush(Colors.Lime);
+				await WindowHelper.WaitForIdle();
+
+				ImageAssert.HasColorInRectangle(await UITestHelper.ScreenShot(SUT), full, Colors.Lime, tolerance: 5);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
 		// Horizontal extent of a colour across the whole bitmap, as (minX, maxX); (-1, -1) when absent.
 		private static (int Min, int Max) HorizontalExtent(RawBitmap bitmap, Windows.UI.Color color)
 		{
