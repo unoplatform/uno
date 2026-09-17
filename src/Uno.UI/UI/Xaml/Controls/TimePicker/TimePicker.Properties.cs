@@ -111,7 +111,7 @@ partial class TimePicker
 			new FrameworkPropertyMetadata(
 				defaultValue: IntegerBoxes.One,
 				options: FrameworkPropertyMetadataOptions.None,
-				propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnMinuteIncrementChanged(Boxer.Box((int)e.OldValue), Boxer.Box((int)e.NewValue))
+				propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnMinuteIncrementChanged(e.OldValue, e.NewValue)
 			));
 
 	/// <summary>
