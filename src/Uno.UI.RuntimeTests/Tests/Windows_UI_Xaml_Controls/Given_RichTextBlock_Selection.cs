@@ -155,7 +155,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var preChangeEnd = SUT.SelectionEnd;
 				if (preChangeStart is null || preChangeEnd is null)
 				{
-					Assert.Fail($"Precondition: SelectAll should produce non-null selection endpoints (start={preChangeStart}, end={preChangeEnd})");
+					Assert.Fail($"Precondition: SelectAll should produce non-null selection endpoints (start is null: {preChangeStart is null}, end is null: {preChangeEnd is null})");
 					return;
 				}
 
@@ -168,7 +168,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var postChangeEnd = SUT.SelectionEnd;
 				if (postChangeStart is null || postChangeEnd is null)
 				{
-					Assert.Fail($"Selection endpoints should be non-null after a content change (start={postChangeStart}, end={postChangeEnd})");
+					Assert.Fail($"Selection endpoints should be non-null after a content change (start is null: {postChangeStart is null}, end is null: {postChangeEnd is null})");
 					return;
 				}
 
@@ -207,7 +207,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var preChangeEnd = SUT.SelectionEnd;
 				if (preChangeStart is null || preChangeEnd is null)
 				{
-					Assert.Fail($"Precondition: SelectAll should produce non-null selection endpoints (start={preChangeStart}, end={preChangeEnd})");
+					Assert.Fail($"Precondition: SelectAll should produce non-null selection endpoints (start is null: {preChangeStart is null}, end is null: {preChangeEnd is null})");
 					return;
 				}
 
@@ -223,7 +223,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var postChangeEnd = SUT.SelectionEnd;
 				if (postChangeStart is null || postChangeEnd is null)
 				{
-					Assert.Fail($"Selection endpoints should be non-null after a content change (start={postChangeStart}, end={postChangeEnd})");
+					Assert.Fail($"Selection endpoints should be non-null after a content change (start is null: {postChangeStart is null}, end is null: {postChangeEnd is null})");
 					return;
 				}
 
@@ -302,7 +302,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				if (near is null || far is null)
 				{
-					Assert.Fail($"GetPositionFromPoint should return non-null positions (near={near}, far={far})");
+					Assert.Fail($"GetPositionFromPoint should return non-null positions (near is null: {near is null}, far is null: {far is null})");
 					return;
 				}
 
