@@ -45,23 +45,7 @@ namespace Uno.UI.Xaml
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void SetTemplateBinding(DependencyObject instance, DependencyProperty targetProperty, DependencyProperty sourceProperty, string sourcePath)
-		{
-			if (instance is IDependencyObjectStoreProvider provider)
-			{
-				provider.Store.SetTemplateBinding(targetProperty, sourceProperty, sourcePath);
-			}
-			else
-			{
-				BindingOperations.SetBinding(
-					instance,
-					targetProperty,
-					new Binding
-					{
-						Path = new PropertyPath(sourcePath),
-						RelativeSource = RelativeSource.TemplatedParent,
-					});
-			}
-		}
+			=> instance.SetTemplateBinding(targetProperty, sourceProperty, sourcePath);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void ApplyXBind(this DependencyObject instance)

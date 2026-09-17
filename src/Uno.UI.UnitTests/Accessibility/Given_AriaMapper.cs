@@ -25,6 +25,7 @@ public class Given_AriaMapper
 	[DataRow(AutomationControlType.Hyperlink, "link")]
 	[DataRow(AutomationControlType.Header, "heading")]
 	[DataRow(AutomationControlType.DataGrid, "grid")]
+	[DataRow(AutomationControlType.Separator, "separator")]
 	[DataRow(AutomationControlType.Window, "dialog")]
 	// Thumb and Slider intentionally share the same role.
 	[DataRow(AutomationControlType.Slider, "slider")]
@@ -37,7 +38,6 @@ public class Given_AriaMapper
 	// Plain text must carry no explicit role (the ARIA "label" role is for labelling form elements).
 	[DataRow(AutomationControlType.Text)]
 	[DataRow(AutomationControlType.Calendar)]
-	[DataRow(AutomationControlType.Separator)]
 	public void When_Unmapped_ControlType(AutomationControlType controlType)
 		=> Assert.IsNull(AriaMapper.GetAriaRole(controlType));
 }

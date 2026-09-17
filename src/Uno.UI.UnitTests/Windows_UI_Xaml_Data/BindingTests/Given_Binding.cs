@@ -232,9 +232,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 			var firstParent = new ContentControl { Content = "First" };
 			var secondParent = new ContentControl { Content = "Second" };
 			var target = new TextBlock();
-			var targetStore = ((IDependencyObjectStoreProvider)target).Store;
 
-			targetStore.SetTemplatedParent2(firstParent);
+			target.SetTemplatedParent(firstParent);
 			BindingHelper.SetTemplateBinding(target, TextBlock.TextProperty, ContentControl.ContentProperty);
 
 			Assert.AreEqual("First", target.Text);
@@ -246,14 +245,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 			firstParent.Content = "First updated";
 			Assert.AreEqual("First updated", target.Text);
 
-			targetStore.SuspendBindings();
+			target.SuspendBindings();
 			firstParent.Content = "While suspended";
 			Assert.AreEqual("First updated", target.Text);
 
-			targetStore.ResumeBindings();
+			target.ResumeBindings();
 			Assert.AreEqual("While suspended", target.Text);
 
-			targetStore.SetTemplatedParent2(secondParent);
+			target.SetTemplatedParent(secondParent);
 			Assert.AreEqual("Second", target.Text);
 
 			firstParent.Content = "Ignored";
@@ -262,12 +261,25 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 			secondParent.Content = "Second updated";
 			Assert.AreEqual("Second updated", target.Text);
 
+			target.SetTemplatedParent(null);
+			Assert.AreEqual(string.Empty, target.Text);
+			secondParent.Content = "Ignored while detached";
+			Assert.AreEqual(string.Empty, target.Text);
+
+			target.SuspendBindings();
+			target.SetTemplatedParent(firstParent);
+			Assert.AreEqual(string.Empty, target.Text);
+			target.ResumeBindings();
+			Assert.AreEqual("Ignored", target.Text);
+			target.SetTemplatedParent(secondParent);
+			Assert.AreEqual("Ignored while detached", target.Text);
+
 			Assert.AreEqual(nameof(ContentControl.Content), expression.ParentBinding.Path.Path);
 			Assert.AreEqual(RelativeSourceMode.TemplatedParent, expression.ParentBinding.RelativeSource.Mode);
 
 			var attachedExpression = new TextBlock();
 			firstParent.SetValue(ScrollViewer.HorizontalScrollModeProperty, ScrollMode.Enabled);
-			((IDependencyObjectStoreProvider)attachedExpression).Store.SetTemplatedParent2(firstParent);
+			attachedExpression.SetTemplatedParent(firstParent);
 			BindingHelper.SetTemplateBinding(
 				attachedExpression,
 				ScrollViewer.HorizontalScrollModeProperty,

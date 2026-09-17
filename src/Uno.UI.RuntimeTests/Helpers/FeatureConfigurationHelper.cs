@@ -33,7 +33,6 @@ namespace Uno.UI.RuntimeTests.Helpers
 			});
 #endif
 		}
-
 		/// <summary>
 		/// Enables or disables the Grid-less <see cref="Microsoft.UI.Xaml.Controls.IconElement"/> visual tree
 		/// (Uno only) for the duration of a single test.

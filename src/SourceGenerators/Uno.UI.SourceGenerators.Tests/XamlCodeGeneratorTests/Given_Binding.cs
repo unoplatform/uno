@@ -803,7 +803,27 @@ public class Given_Binding
 				"""),
 		};
 
-		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState = { Sources = { _emptyCodeBehind } },
+			TestBehaviors = TestBehaviors.SkipGeneratedSourcesCheck,
+			GeneratedSourcesVerifier = generatedSources =>
+			{
+				var generated = generatedSources.Single(source => source.Key.Contains("MainPage_", StringComparison.Ordinal)).Value;
+
+				Assert.AreEqual(
+					2,
+					generated.Split("global::Uno.UI.Xaml.BindingHelper.SetTemplateBinding(", StringSplitOptions.None).Length - 1);
+				StringAssert.Contains(
+					generated,
+					"ContentPresenter.ContentProperty, global::Microsoft.UI.Xaml.Controls.Button.ContentProperty, @\"Content\"");
+				StringAssert.Contains(generated, "__p1.SetBinding(");
+				StringAssert.Contains(generated, "Path = @\"Tag\"");
+				StringAssert.Contains(
+					generated,
+					"ScrollViewer.HorizontalScrollModeProperty, global::Microsoft.UI.Xaml.Controls.ScrollViewer.HorizontalScrollModeProperty, @\"(Microsoft.UI.Xaml.Controls:ScrollViewer.HorizontalScrollMode)\"");
+			},
+		};
 
 		await test.RunAsync();
 	}
@@ -836,7 +856,19 @@ public class Given_Binding
 				"""),
 		};
 
-		var test = new Verify.Test(xamlFiles) { TestState = { Sources = { _emptyCodeBehind } } }.AddGeneratedSources();
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState = { Sources = { _emptyCodeBehind } },
+			TestBehaviors = TestBehaviors.SkipGeneratedSourcesCheck,
+			GeneratedSourcesVerifier = generatedSources =>
+			{
+				var generated = generatedSources.Single(source => source.Key.Contains("MainPage_", StringComparison.Ordinal)).Value;
+
+				StringAssert.Contains(
+					generated,
+					"global::Uno.UI.Xaml.BindingHelper.SetTemplateBinding(__p1, global::Microsoft.UI.Xaml.Controls.Grid.RowProperty, global::Microsoft.UI.Xaml.Controls.Button.TabIndexProperty, @\"TabIndex\")");
+			},
+		};
 
 		await test.RunAsync();
 	}
