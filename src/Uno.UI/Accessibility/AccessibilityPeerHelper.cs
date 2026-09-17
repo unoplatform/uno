@@ -625,8 +625,8 @@ internal static class AccessibilityPeerHelper
 		ArgumentNullException.ThrowIfNull(root);
 
 		var nodes = new List<AccessibilityPeerNode>();
-		var visited = new HashSet<AutomationPeer>(ReferenceEqualityComparer.Instance);
-		AppendPeer(root, parentIndex: null, depth: 0, nodes, visited);
+		var activePath = new HashSet<AutomationPeer>(ReferenceEqualityComparer.Instance);
+		AppendPeer(root, parentIndex: null, depth: 0, nodes, activePath);
 		return nodes;
 	}
 
@@ -635,9 +635,9 @@ internal static class AccessibilityPeerHelper
 		ArgumentNullException.ThrowIfNull(root);
 
 		var nodes = new List<AccessibilityPeerNode>();
-		var visitedPeers = new HashSet<AutomationPeer>(ReferenceEqualityComparer.Instance);
+		var activePeerPath = new HashSet<AutomationPeer>(ReferenceEqualityComparer.Instance);
 		var visitedElements = new HashSet<UIElement>(ReferenceEqualityComparer.Instance);
-		AppendElement(root, parentIndex: null, depth: 0, nodes, visitedPeers, visitedElements);
+		AppendElement(root, parentIndex: null, depth: 0, nodes, activePeerPath, visitedElements);
 		return nodes;
 	}
 
@@ -1328,42 +1328,72 @@ internal static class AccessibilityPeerHelper
 		int? parentIndex,
 		int depth,
 		List<AccessibilityPeerNode> nodes,
-		HashSet<AutomationPeer> visited,
-		IList<AutomationPeer>? prefetchedChildren = null)
+		HashSet<AutomationPeer> activePath,
+		IList<AutomationPeer>? prefetchedChildren = null,
+		UIElement? occurrenceOwner = null)
 	{
-		if (depth > MaxTreeDepth || !visited.Add(peer))
+		if (depth > MaxTreeDepth || !activePath.Add(peer))
 		{
 			return;
 		}
 
-		var providerPeer = ResolveProviderPeer(peer);
-		var owner = GetOwner(providerPeer) ?? GetOwner(peer);
-		var childParentIndex = parentIndex;
-
-		if (!TryGetPeerTreeState(peer, prefetchedChildren, out var isIncluded, out var children))
+		try
 		{
-			return;
-		}
+			var providerPeer = ResolveProviderPeer(peer);
+			var owner = occurrenceOwner ?? GetOwner(providerPeer) ?? GetOwner(peer);
+			var childParentIndex = parentIndex;
 
-		if (isIncluded)
-		{
-			childParentIndex = nodes.Count;
-			nodes.Add(new AccessibilityPeerNode(peer, providerPeer, owner, parentIndex, depth));
-		}
-
-		if (children is not { Count: > 0 })
-		{
-			return;
-		}
-
-		foreach (var child in children)
-		{
-			if (child is not null)
+			if (!TryGetPeerTreeState(peer, prefetchedChildren, out var isIncluded, out var children))
 			{
-				AppendPeer(child, childParentIndex, depth + 1, nodes, visited);
+				return;
+			}
+
+			if (isIncluded)
+			{
+				childParentIndex = nodes.Count;
+				nodes.Add(new AccessibilityPeerNode(peer, providerPeer, owner, parentIndex, depth));
+			}
+
+			if (children is not { Count: > 0 })
+			{
+				return;
+			}
+
+			for (var childIndex = 0; childIndex < children.Count; childIndex++)
+			{
+				if (children[childIndex] is not { } child)
+				{
+					continue;
+				}
+
+				UIElement? childOccurrenceOwner = null;
+				if (peer is ItemsControlAutomationPeer itemsControlPeer)
+				{
+					itemsControlPeer.TryGetChildOccurrenceOwner(
+						childIndex,
+						child,
+						out childOccurrenceOwner);
+				}
+
+				var occurrenceChildren =
+					child is ItemAutomationPeer itemPeer &&
+					childOccurrenceOwner is not null
+						? itemPeer.GetChildrenForContainer(childOccurrenceOwner)
+						: null;
+				AppendPeer(
+					child,
+					childParentIndex,
+					depth + 1,
+					nodes,
+					activePath,
+					prefetchedChildren: occurrenceChildren,
+					occurrenceOwner: childOccurrenceOwner);
 			}
 		}
-
+		finally
+		{
+			activePath.Remove(peer);
+		}
 	}
 
 	private static void AppendElement(
@@ -1371,7 +1401,7 @@ internal static class AccessibilityPeerHelper
 		int? parentIndex,
 		int depth,
 		List<AccessibilityPeerNode> nodes,
-		HashSet<AutomationPeer> visitedPeers,
+		HashSet<AutomationPeer> activePeerPath,
 		HashSet<UIElement> visitedElements)
 	{
 		if (depth > MaxTreeDepth || !visitedElements.Add(element))
@@ -1384,7 +1414,7 @@ internal static class AccessibilityPeerHelper
 			if (TryGetPeerTreeState(peer, prefetchedChildren: null, out var isIncluded, out var peerChildren) &&
 				(isIncluded || peerChildren is { Count: > 0 }))
 			{
-				AppendPeer(peer, parentIndex, depth, nodes, visitedPeers, peerChildren);
+				AppendPeer(peer, parentIndex, depth, nodes, activePeerPath, peerChildren);
 				return;
 			}
 		}
@@ -1393,7 +1423,7 @@ internal static class AccessibilityPeerHelper
 		{
 			if (child is UIElement uiElement)
 			{
-				AppendElement(uiElement, parentIndex, depth + 1, nodes, visitedPeers, visitedElements);
+				AppendElement(uiElement, parentIndex, depth + 1, nodes, activePeerPath, visitedElements);
 			}
 		}
 	}
