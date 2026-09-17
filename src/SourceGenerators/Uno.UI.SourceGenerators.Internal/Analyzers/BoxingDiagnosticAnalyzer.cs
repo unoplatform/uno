@@ -75,9 +75,10 @@ public sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 				var invocationOperation = (IInvocationOperation)context.Operation;
 				if (invocationOperation.TargetMethod is { Name: "SetValue", Parameters.Length: 2 } targetMethod &&
 					IsType(targetMethod.Parameters[0].Type, "Microsoft.UI.Xaml", "DependencyProperty") &&
-					targetMethod.Parameters[1].Type.SpecialType != SpecialType.System_Object)
+					targetMethod.Parameters[1].Type.SpecialType != SpecialType.System_Object &&
+					GetArgumentForParameter(invocationOperation, ordinal: 1) is { } valueArgument)
 				{
-					var argumentOperation = invocationOperation.Arguments[1].Value;
+					var argumentOperation = valueArgument.Value;
 					while (argumentOperation is IConversionOperation conversion && conversion.IsImplicit)
 					{
 						argumentOperation = conversion.Operand;
@@ -88,7 +89,7 @@ public sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 					{
 						context.ReportDiagnostic(Diagnostic.Create(
 							s_descriptorConversion,
-							invocationOperation.Arguments[1].Syntax.GetLocation(),
+							valueArgument.Syntax.GetLocation(),
 							targetMethod.Parameters[1].Type.ToDisplayString()));
 					}
 				}
@@ -106,6 +107,34 @@ public sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 		=> operation.IsImplicit &&
 			operation.Parent is IBinaryOperation { OperatorKind: BinaryOperatorKind.Add } or ICompoundAssignmentOperation { OperatorKind: BinaryOperatorKind.Add } &&
 			operation.Parent.Type?.SpecialType == SpecialType.System_String;
+
+	// Arguments are in evaluation order, which differs from parameter order when named arguments are reordered.
+	private static IArgumentOperation? GetArgumentForParameter(IInvocationOperation invocation, int ordinal)
+	{
+		foreach (var argument in invocation.Arguments)
+		{
+			if (argument.Parameter?.Ordinal == ordinal)
+			{
+				return argument;
+			}
+		}
+
+		return null;
+	}
+
+	// Boxes.Box(RoutedEventFlag) caches every declared member, but not their combinations.
+	private static bool IsDeclaredEnumMember(ITypeSymbol enumType, object? value)
+	{
+		foreach (var member in enumType.GetMembers())
+		{
+			if (member is IFieldSymbol { HasConstantValue: true } field && Equals(field.ConstantValue, value))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 
 	internal static bool IsType(ITypeSymbol? type, string containingNamespace, string name)
 		=> type?.Name == name && type.ContainingNamespace?.ToDisplayString() == containingNamespace;
@@ -214,7 +243,7 @@ public sealed class BoxingDiagnosticAnalyzer : DiagnosticAnalyzer
 		}
 		else if (IsType(operandType, "Uno.UI.Xaml", "RoutedEventFlag") && !IsOptimizedHasFlagCall(operation, hasFlagMethod))
 		{
-			return true;
+			return !operation.Operand.ConstantValue.HasValue || IsDeclaredEnumMember(operandType, operation.Operand.ConstantValue.Value);
 		}
 
 		return false;
