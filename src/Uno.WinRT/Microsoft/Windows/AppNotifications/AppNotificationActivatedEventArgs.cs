@@ -1,27 +1,18 @@
+// Copyright (c) Microsoft Corporation and Contributors.
+// Licensed under the MIT License.
+
+// Windows App SDK Reference dev/AppNotifications/AppNotificationActivatedEventArgs.h, commit 6b178e79e59d28efb10ef5c8c68b051d2615c3e6
+
 #nullable enable
 
-using System.Collections.Generic;
-using Microsoft.Windows.AppNotifications.Internal;
 using Windows.Foundation.Metadata;
 
 namespace Microsoft.Windows.AppNotifications;
 
+/// <summary>
+/// Provides the arguments and user input from an app notification activation.
+/// </summary>
 [ContractVersion(typeof(AppNotificationsContract), 1 * 0x10000u)]
-public sealed class AppNotificationActivatedEventArgs
+public sealed partial class AppNotificationActivatedEventArgs
 {
-	internal AppNotificationActivatedEventArgs(string argument, IDictionary<string, string>? userInput = null)
-	{
-		Argument = argument ?? string.Empty;
-		Arguments = AppNotificationArgumentCodec.Decode(Argument);
-		UserInput = userInput is null
-			? new Dictionary<string, string>()
-			: new Dictionary<string, string>(userInput);
-	}
-
-	public string Argument { get; }
-
-	[ContractVersion(typeof(AppNotificationsContract), 3 * 0x10000u)]
-	public IDictionary<string, string> Arguments { get; }
-
-	public IDictionary<string, string> UserInput { get; }
 }

@@ -375,20 +375,14 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 		var priority = (AppNotificationPriority)reader.ReadInt32();
 		var suppressDisplay = reader.ReadBoolean();
 		var postingState = (AppNotificationPostingState)reader.ReadInt32();
-		AppNotificationProgressSnapshot? progress = null;
-		if (reader.ReadBoolean())
-		{
-			progress = new AppNotificationProgressSnapshot(
-				reader.ReadUInt32(),
-				ReadString(reader),
-				reader.ReadDouble(),
-				ReadString(reader),
-				ReadString(reader));
-		}
+		var progress = ReadProgress(reader);
 		var deliveryCorrelation = schemaVersion >= 2 ? ReadString(reader) : string.Empty;
 		var revision = schemaVersion >= 4 ? reader.ReadInt64() : 1;
 		var operationOwner = schemaVersion >= 4 ? ReadString(reader) : "legacy";
 		var operationLeaseExpirationUtc = schemaVersion >= 4 ? ReadDateTimeOffset(reader) : DateTimeOffset.MinValue;
+		var isProgressUpdate = schemaVersion >= 5 && reader.ReadBoolean();
+		// Older schemas only retained the current progress snapshot.
+		var postedProgress = schemaVersion >= 6 ? ReadProgress(reader) : progress;
 		return new AppNotificationStateRecord(
 			id,
 			payload,
@@ -405,7 +399,11 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 			deliveryCorrelation,
 			revision,
 			operationOwner,
-			operationLeaseExpirationUtc);
+			operationLeaseExpirationUtc,
+			isProgressUpdate)
+		{
+			PostedProgress = postedProgress,
+		};
 	}
 
 	private static void WriteRecord(BinaryWriter writer, AppNotificationStateRecord record)
@@ -421,8 +419,29 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 		writer.Write((int)record.Priority);
 		writer.Write(record.SuppressDisplay);
 		writer.Write((int)record.PostingState);
-		writer.Write(record.Progress is not null);
-		if (record.Progress is { } progress)
+		WriteProgress(writer, record.Progress);
+		WriteString(writer, record.DeliveryCorrelation);
+		writer.Write(record.Revision);
+		WriteString(writer, record.OperationOwner);
+		WriteDateTimeOffset(writer, record.OperationLeaseExpirationUtc);
+		writer.Write(record.IsProgressUpdate);
+		WriteProgress(writer, record.PostedProgress);
+	}
+
+	private static AppNotificationProgressSnapshot? ReadProgress(BinaryReader reader)
+		=> reader.ReadBoolean()
+			? new(
+				reader.ReadUInt32(),
+				ReadString(reader),
+				reader.ReadDouble(),
+				ReadString(reader),
+				ReadString(reader))
+			: null;
+
+	private static void WriteProgress(BinaryWriter writer, AppNotificationProgressSnapshot? progress)
+	{
+		writer.Write(progress is not null);
+		if (progress is not null)
 		{
 			writer.Write(progress.SequenceNumber);
 			WriteString(writer, progress.Title);
@@ -430,10 +449,6 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 			WriteString(writer, progress.ValueStringOverride);
 			WriteString(writer, progress.Status);
 		}
-		WriteString(writer, record.DeliveryCorrelation);
-		writer.Write(record.Revision);
-		WriteString(writer, record.OperationOwner);
-		WriteDateTimeOffset(writer, record.OperationLeaseExpirationUtc);
 	}
 
 	private static DateTimeOffset ReadDateTimeOffset(BinaryReader reader)
@@ -502,18 +517,15 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 				throw new InvalidDataException("App notification state contains a null record.");
 			}
 			ValidateRecord(record, ids);
+			encodedBytes += sizeof(bool);
 			encodedBytes += GetEncodedByteCount(record.Payload);
 			encodedBytes += GetEncodedByteCount(record.Tag);
 			encodedBytes += GetEncodedByteCount(record.Group);
 			encodedBytes += GetEncodedByteCount(record.DeliveryCorrelation);
 			encodedBytes += GetEncodedByteCount(record.OperationOwner);
 			encodedBytes += record.BootIdentifier is null ? 0 : GetEncodedByteCount(record.BootIdentifier);
-			if (record.Progress is { } progress)
-			{
-				encodedBytes += GetEncodedByteCount(progress.Title);
-				encodedBytes += GetEncodedByteCount(progress.ValueStringOverride);
-				encodedBytes += GetEncodedByteCount(progress.Status);
-			}
+			encodedBytes += GetEncodedProgressByteCount(record.Progress);
+			encodedBytes += GetEncodedProgressByteCount(record.PostedProgress);
 			if (encodedBytes > MaxSnapshotBytes)
 			{
 				throw new InvalidDataException("App notification state exceeds the maximum snapshot size.");
@@ -544,7 +556,8 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 		}
 		if (record.Payload is null || record.Tag is null || record.Group is null || record.DeliveryCorrelation is null ||
 			record.OperationOwner is null || record.Revision <= 0 ||
-			record.Progress is { Title: null } or { ValueStringOverride: null } or { Status: null })
+			record.Progress is { Title: null } or { ValueStringOverride: null } or { Status: null } ||
+			record.PostedProgress is { Title: null } or { ValueStringOverride: null } or { Status: null })
 		{
 			throw new InvalidDataException("App notification state contains a null string.");
 		}
@@ -556,9 +569,13 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 		{
 			throw new InvalidDataException("App notification state contains an unknown enum value.");
 		}
-		if (record.Progress is { SequenceNumber: 0 })
+		if (record.Progress is { SequenceNumber: 0 } || record.PostedProgress is { SequenceNumber: 0 })
 		{
 			throw new InvalidDataException("App notification state contains an invalid progress sequence.");
+		}
+		if (record.IsProgressUpdate && record.Progress is null)
+		{
+			throw new InvalidDataException("App notification state contains a progress update without progress data.");
 		}
 		if (record.PostingState != AppNotificationPostingState.Shown && record.OperationOwner.Length == 0)
 		{
@@ -566,13 +583,22 @@ internal sealed class FileAppNotificationStatePersistence : IAppNotificationStat
 		}
 		try
 		{
-			AppNotificationPayloadParser.Parse(record.Payload);
+			// The store also serves native Windows payloads outside the portable translation subset.
+			AppNotificationPayloadParser.ValidateXml(record.Payload);
 		}
 		catch (Exception exception) when (exception is ArgumentException or InvalidOperationException or FormatException or NotSupportedException or XmlException)
 		{
 			throw new InvalidDataException("App notification state contains an invalid payload.", exception);
 		}
 	}
+
+	private static int GetEncodedProgressByteCount(AppNotificationProgressSnapshot? progress)
+		=> sizeof(bool) + (progress is null
+			? 0
+			: sizeof(uint) + sizeof(double) +
+				GetEncodedByteCount(progress.Title) +
+				GetEncodedByteCount(progress.ValueStringOverride) +
+				GetEncodedByteCount(progress.Status));
 
 	private static int GetEncodedByteCount(string value)
 	{

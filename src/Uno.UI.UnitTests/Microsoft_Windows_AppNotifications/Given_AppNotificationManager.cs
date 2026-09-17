@@ -183,6 +183,46 @@ public class Given_AppNotificationManager
 	}
 
 	[TestMethod]
+	[DataRow("<toast><header id='thread' title='Thread' arguments='open'/><visual><binding template='ToastGeneric'><group><subgroup><text>Grouped</text></subgroup></group></binding></visual></toast>")]
+	[DataRow("<toast><visual><binding template='ToastText01'><text id='1'>Legacy template</text></binding></visual></toast>")]
+	public async Task When_Backend_Consumes_Raw_Xml_Then_Extended_Windows_Payload_Is_Preserved(string payload)
+	{
+		var persistence = new InMemoryAppNotificationStatePersistence();
+		var backend = new RawPayloadTestBackend();
+		var manager = new AppNotificationManager(backend, persistence);
+		manager.Register();
+		var notification = new AppNotification(payload) { Tag = "native", Group = "group" };
+
+		manager.Show(notification);
+
+		Assert.AreNotEqual(0U, notification.Id);
+		Assert.AreEqual(payload, backend.Shown.Single().RawPayload);
+		Assert.IsNull(backend.Shown.Single().ParsedPayload);
+
+		var replacement = new AppNotification(payload) { Tag = "native", Group = "group" };
+		manager.Show(replacement);
+		Assert.AreEqual(notification.Id, replacement.Id);
+		var update = backend.Updated.Single().ToEnvelope(parsePayload: false);
+		Assert.AreEqual(payload, update.RawPayload);
+		Assert.IsNull(update.ParsedPayload);
+
+		var restored = await new AppNotificationManager(new RawPayloadTestBackend(), persistence).GetAllAsync();
+		Assert.AreEqual(payload, restored.Single().Payload);
+	}
+
+	[TestMethod]
+	public void When_Backend_Needs_Portable_Translation_Then_Extended_Payload_Is_Not_Silently_Truncated()
+	{
+		const string payload = "<toast><visual><binding template='ToastGeneric'><group><subgroup><text>Grouped</text></subgroup></group></binding></visual></toast>";
+		var backend = new TestBackend();
+		var manager = new AppNotificationManager(backend);
+		manager.Register();
+
+		Assert.ThrowsExactly<NotSupportedException>(() => manager.Show(new AppNotification(payload)));
+		Assert.AreEqual(0, backend.Shown.Count);
+	}
+
+	[TestMethod]
 	public void When_Backend_Rejects_Show_Id_Remains_Zero_And_Reserved_Id_Is_Not_Reused()
 	{
 		var backend = new TestBackend { AcceptShow = false };
@@ -581,13 +621,14 @@ public class Given_AppNotificationManager
 	}
 
 	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22462")]
 	public async Task When_Remove_Arguments_Are_Invalid_Manager_Throws()
 	{
 		var manager = new AppNotificationManager(new TestBackend(), new InMemoryAppNotificationStatePersistence());
 
 		await Assert.ThrowsExactlyAsync<ArgumentException>(() => manager.RemoveByIdAsync(0).AsTask());
 		await Assert.ThrowsExactlyAsync<ArgumentException>(() => manager.RemoveByTagAsync(string.Empty).AsTask());
-		await manager.RemoveByTagAndGroupAsync("tag", string.Empty);
+		await Assert.ThrowsExactlyAsync<ArgumentException>(() => manager.RemoveByTagAndGroupAsync("tag", string.Empty).AsTask());
 		await Assert.ThrowsExactlyAsync<ArgumentException>(() => manager.RemoveByGroupAsync(string.Empty).AsTask());
 	}
 
@@ -607,6 +648,115 @@ public class Given_AppNotificationManager
 		Assert.AreEqual(AppNotificationProgressResult.Succeeded, stale);
 		Assert.AreEqual(1, backend.Updated.Count);
 		Assert.AreEqual(5u, backend.Updated[0].Progress?.SequenceNumber);
+	}
+
+	[TestMethod]
+	[DataRow(false)]
+	[DataRow(true)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22462")]
+	public async Task When_Progress_And_Content_Are_Updated_Their_Operation_Kinds_Are_Distinct(bool useAsyncBackend)
+	{
+		TestBackend backend = useAsyncBackend ? new AsyncTestBackend() : new TestBackend();
+		var manager = new AppNotificationManager(backend, new InMemoryAppNotificationStatePersistence());
+		manager.Register();
+		manager.Show(CreateNotification("progress", "group"));
+
+		var result = await manager.UpdateAsync(new PublicAppNotificationProgressData(1), "progress", "group");
+		manager.Show(CreateNotification("progress", "group"));
+
+		Assert.AreEqual(AppNotificationProgressResult.Succeeded, result);
+		CollectionAssert.AreEqual(
+			new[] { true, false },
+			backend.Updated.Select(record => record.IsProgressUpdate).ToArray());
+	}
+
+	[TestMethod]
+	[DataRow(0U)]
+	[DataRow(1U)]
+	[DataRow(7U)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22462")]
+	public async Task When_Progress_Changes_History_Preserves_Posted_Properties(uint postedSequence)
+	{
+		var persistence = new InMemoryAppNotificationStatePersistence();
+		var backend = new TestBackend();
+		var manager = new AppNotificationManager(backend, persistence);
+		var notification = CreateNotification("progress", "group");
+		notification.Progress = postedSequence == 0
+			? null
+			: new PublicAppNotificationProgressData(postedSequence)
+			{
+				Title = "Posted",
+				Status = "Starting",
+				Value = 0.1,
+				ValueStringOverride = "10%",
+			};
+		manager.Register();
+		manager.Show(notification);
+
+		var result = await manager.UpdateAsync(
+			new PublicAppNotificationProgressData(8)
+			{
+				Title = "Updated",
+				Status = "Running",
+				Value = 0.75,
+				ValueStringOverride = "75%",
+			},
+			notification.Tag,
+			notification.Group);
+		var reloaded = new AppNotificationManager(backend, persistence);
+		var history = (await reloaded.GetAllAsync()).Single();
+
+		Assert.AreEqual(AppNotificationProgressResult.Succeeded, result);
+		if (postedSequence == 0)
+		{
+			Assert.IsNull(history.Progress);
+		}
+		else
+		{
+			Assert.IsNotNull(history.Progress);
+			Assert.AreEqual(1U, history.Progress.SequenceNumber);
+			Assert.AreEqual(0.1, history.Progress.Value);
+			Assert.AreEqual("Starting", history.Progress.Status);
+			Assert.AreEqual("Posted", history.Progress.Title);
+			Assert.AreEqual("10%", history.Progress.ValueStringOverride);
+		}
+		Assert.AreEqual(8U, new AppNotificationStateStore(persistence).GetShown().Single().Progress?.SequenceNumber);
+	}
+
+	[TestMethod]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22462")]
+	public async Task When_Replacement_Throws_A_Progress_Update_Still_Delivers_The_Replacement()
+	{
+		var backend = new TestBackend();
+		var manager = new AppNotificationManager(backend, new InMemoryAppNotificationStatePersistence());
+		manager.Register();
+		manager.Show(CreateNotification("progress", "group"));
+		var replacement = new AppNotification("<toast><visual><binding template='ToastGeneric'><text>Replacement</text></binding></visual></toast>")
+		{
+			Tag = "progress",
+			Group = "group",
+			Progress = new PublicAppNotificationProgressData(1) { Status = "Starting", Value = 0.1 },
+		};
+		backend.UpdateException = new InvalidOperationException("The native replacement was not acknowledged.");
+
+		Assert.ThrowsExactly<InvalidOperationException>(() => manager.Show(replacement));
+
+		backend.UpdateException = null;
+		var result = await manager.UpdateAsync(
+			new PublicAppNotificationProgressData(2) { Status = "Running", Value = 0.5 },
+			replacement.Tag,
+			replacement.Group);
+
+		Assert.AreEqual(AppNotificationProgressResult.Succeeded, result);
+		var retried = backend.Updated.Last();
+		Assert.IsFalse(retried.IsProgressUpdate);
+		Assert.AreEqual(replacement.Payload, retried.Payload);
+		Assert.AreEqual(2U, retried.Progress?.SequenceNumber);
+		Assert.AreEqual(retried.Progress, retried.PostedProgress);
+		var history = (await manager.GetAllAsync()).Single();
+		Assert.AreEqual(replacement.Payload, history.Payload);
+		Assert.AreEqual(1U, history.Progress?.SequenceNumber);
+		Assert.AreEqual(0.5, history.Progress?.Value);
 	}
 
 	[TestMethod]
@@ -1017,12 +1167,16 @@ public class Given_AppNotificationManager
 	}
 
 	[TestMethod]
-	public void When_Deferred_Update_Is_Recovered_It_Remains_Pending_Until_Completion()
+	[DataRow(false)]
+	[DataRow(true)]
+	[GitHubWorkItem("https://github.com/unoplatform/uno/issues/22462")]
+	public void When_Deferred_Update_Is_Recovered_It_Remains_Pending_Until_Completion(bool isProgressUpdate)
 	{
 		var pending = CreateStateRecord(7, AppNotificationPostingState.Updating) with
 		{
 			CreatedUtc = DateTimeOffset.UtcNow.Subtract(TimeSpan.FromMinutes(2)),
 			Progress = new AppNotificationProgressSnapshot(1, "Title", 0.5, "50%", "Running"),
+			IsProgressUpdate = isProgressUpdate,
 		};
 		var persistence = new InMemoryAppNotificationStatePersistence(new AppNotificationStateSnapshot(
 			AppNotificationStateSnapshot.CurrentSchemaVersion,
@@ -1034,6 +1188,7 @@ public class Given_AppNotificationManager
 		manager.GetAll();
 
 		Assert.AreEqual(1, backend.Updated.Count);
+		Assert.AreEqual(isProgressUpdate, backend.Updated[0].IsProgressUpdate);
 		Assert.AreEqual(AppNotificationPostingState.Updating, new AppNotificationStateStore(persistence).GetPendingUpdates().Single().PostingState);
 		var operation = backend.GetPendingOperations(pending.Id).Single();
 		backend.CompleteOperation(operation, succeeded: true);
@@ -1214,6 +1369,8 @@ public class Given_AppNotificationManager
 
 		public Exception? RegisterException { get; set; }
 
+		public Exception? UpdateException { get; set; }
+
 		public Exception? RemoveException { get; set; }
 
 		public Exception? UnregisterAllException { get; set; }
@@ -1268,6 +1425,10 @@ public class Given_AppNotificationManager
 		public bool TryUpdate(AppNotificationStateRecord notification)
 		{
 			Updated.Add(notification);
+			if (UpdateException is not null)
+			{
+				throw UpdateException;
+			}
 			return AcceptUpdate;
 		}
 
@@ -1283,6 +1444,11 @@ public class Given_AppNotificationManager
 		public void RemoveAll() => Calls.Add("RemoveAll");
 
 		public IReadOnlyCollection<uint>? GetActiveNotificationIds() => ActiveNotificationIds;
+	}
+
+	private sealed class RawPayloadTestBackend : TestBackend, IAppNotificationRawPayloadCapability
+	{
+		public bool SupportsRawPayload => true;
 	}
 
 	private sealed class AsyncTestBackend : TestBackend, IAsyncAppNotificationManagerBackend, IAppNotificationActiveIdRefreshCapability

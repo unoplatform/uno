@@ -8,15 +8,17 @@ uid: Uno.Features.AppNotifications
 > This article covers Uno-specific information for the `Microsoft.Windows.AppNotifications` namespace. For a full description of the feature and instructions on using it, see [Microsoft.Windows.AppNotifications Namespace](https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/microsoft.windows.appnotifications).
 
 * The `Microsoft.Windows.AppNotifications` namespace posts, updates, and removes app notifications, and raises `AppNotificationManager.NotificationInvoked` when the user interacts with one.
-* Notification content is authored with `Microsoft.Windows.AppNotifications.Builder.AppNotificationBuilder`, which produces the same `ToastGeneric` XML payload on every target. Each platform translates that payload to its own notification API, ignoring the parts it cannot express.
+* Notification content is authored with `Microsoft.Windows.AppNotifications.Builder.AppNotificationBuilder`, which produces a `ToastGeneric` XML payload. Portable backends translate the supported payload model to their notification APIs. Unsupported structures are rejected rather than silently truncated.
+* The Windows backend passes the original XML to Windows App SDK unchanged. Native-only structures such as adaptive groups, notification headers, and legacy Windows templates also survive storage, replacement, and history retrieval; they do not have to fit the portable translation model.
 
 ## Supported features
 
-| Feature | Windows | Android | iOS/tvOS | Web (WASM) | macOS | Linux (Skia) |
+| Feature | Windows | Android | iOS | Web (WASM) | macOS | Linux (Skia) |
 |---|---|---|---|---|---|---|
 | `Register` / `Unregister` / `UnregisterAll` | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
 | `IsSupported()` and `Setting` | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
 | `Show` (text, images, audio, scenario) | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
+| Raw Windows XML beyond the portable payload model | ✔ | ✖ | ✖ | ✖ | ✖ | ✖ |
 | Buttons, text boxes, combo boxes | ✔ | ✔ | ✔ | ✔ (buttons, service-worker mode only) | ✔ | ✔ (buttons only) |
 | `NotificationInvoked` activation, including user input | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
 | Cold-start activation (app launched by the notification) | ✔ | ✔ | ✔ | ✔ (service-worker mode) | ✔ | ✔ |
@@ -33,7 +35,16 @@ Notes and platform constraints:
 * **Linux** uses the `org.freedesktop.Notifications` D-Bus service. When no notification daemon is running, `AppNotificationManager.IsSupported()` is `false` and the remove operations fault instead of reporting a success that did not happen.
 * **Web (WASM)** requires a secure context (`https://` or `localhost`) and user-granted notification permission. Scheduling (`ToastNotifier.AddToSchedule`) has no browser equivalent and is not emulated.
 * **Windows** uses the Windows App SDK notification platform. For non-packaged Skia Win32 applications, the Windows App Runtime bootstrapper is initialized automatically; when it is unavailable, `IsSupported()` returns `false` and `Setting` returns `AppNotificationSetting.Unsupported`.
+* **tvOS** has no app notification backend; `IsSupported()` returns `false`.
 * On every target, notification state is persisted so that ids, tags, groups, progress data and pending activations survive a process restart.
+* **Windows progress updates** call the native `UpdateAsync` operation rather than showing another toast. Durable recovery distinguishes progress-only updates from content replacements.
+* **History progress** retains the originally posted values and restores the transient sequence number as `1`, matching Windows App SDK. The latest update sequence is tracked separately for ordering and recovery. Older persisted schemas retain their available progress snapshot when upgraded.
+
+## Source alignment
+
+The notification objects, builder components, and activation-argument decoder follow the [Windows App SDK notification sources](https://github.com/microsoft/WindowsAppSDK/tree/6b178e79e59d28efb10ef5c8c68b051d2615c3e6/dev/AppNotifications). Platform registration, delivery, and durable state remain Uno adapters; the Windows backend delegates presentation and progress changes to Windows App SDK.
+
+CLR collection and XML-safety adaptations preserve mutable raw input and escape it once when creating XML, rather than exposing the native builder's encoded storage. These adaptations also handle empty collections safely. Calling-preview and conferencing additions are outside the implemented contract versions.
 
 ## Using app notifications with Uno
 

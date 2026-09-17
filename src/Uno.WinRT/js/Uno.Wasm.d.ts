@@ -756,6 +756,7 @@ declare namespace Windows.UI.Notifications {
         private static readonly activationStateLockName;
         private static readonly activationStateLockTimeoutMilliseconds;
         private static readonly activationStateLockLeaseMilliseconds;
+        private static readonly blockedProtocolSchemes;
         private static readonly activeNotifications;
         private static readonly activeIds;
         private static readonly expirationTimers;

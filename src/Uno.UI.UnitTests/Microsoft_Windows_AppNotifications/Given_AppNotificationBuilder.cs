@@ -125,6 +125,29 @@ public class Given_AppNotificationBuilder
 	}
 
 	[TestMethod]
+	public void When_Button_Style_Was_Used_The_Builder_Retains_The_Native_Sticky_Flag()
+	{
+		var button = new AppNotificationButton("Open").SetButtonStyle(AppNotificationButtonStyle.Success);
+		var builder = new AppNotificationBuilder().AddButton(button);
+
+		Assert.AreEqual("<toast useButtonStyle='true'><visual><binding template='ToastGeneric'></binding></visual><actions><action content='Open' arguments='' hint-buttonStyle='Success'/></actions></toast>", builder.BuildNotification().Payload);
+
+		button.SetButtonStyle(AppNotificationButtonStyle.Default);
+
+		Assert.AreEqual("<toast useButtonStyle='true'><visual><binding template='ToastGeneric'></binding></visual><actions><action content='Open' arguments=''/></actions></toast>", builder.BuildNotification().Payload);
+	}
+
+	[TestMethod]
+	public void When_Querying_20H1_Features_The_Result_Matches_The_Host_OS()
+	{
+		var expected = OperatingSystem.IsWindowsVersionAtLeast(10, 0, 19041);
+
+		Assert.AreEqual(expected, AppNotificationBuilder.IsUrgentScenarioSupported());
+		Assert.AreEqual(expected, AppNotificationButton.IsToolTipSupported());
+		Assert.AreEqual(expected, AppNotificationButton.IsButtonStyleSupported());
+	}
+
+	[TestMethod]
 	public void When_Arguments_Contain_Reserved_Characters_They_Are_Encoded_Once()
 	{
 		var notification = new AppNotificationBuilder()

@@ -265,7 +265,9 @@ public sealed class AppNotificationManager
 				throw new COMException("The notification has already been posted.", unchecked((int)0x803E0106));
 			}
 
-			var payload = AppNotificationPayloadParser.Parse(snapshot.Payload);
+			var payload = backend is IAppNotificationRawPayloadCapability { SupportsRawPayload: true }
+				? null
+				: AppNotificationPayloadParser.Parse(snapshot.Payload);
 			if (backend.Setting != AppNotificationSetting.Enabled)
 			{
 				return AppNotificationPostingResult.NotPosted;
@@ -454,7 +456,7 @@ public sealed class AppNotificationManager
 			return Task.CompletedTask.AsAsyncAction();
 		}
 		ValidateIdentifier(tag, nameof(tag));
-		ValidateGroup(group, nameof(group));
+		ValidateIdentifier(group, nameof(group));
 		if (GetBackend() is IAsyncAppNotificationManagerBackend asyncBackend)
 		{
 			return RemoveAsyncCore(asyncBackend, store => store.GetByTagAndGroup(tag, group)).AsAsyncAction();
@@ -1357,7 +1359,8 @@ public sealed class AppNotificationManager
 			Group = record.Group,
 			Expiration = record.ExpirationUtc,
 			ExpiresOnReboot = record.ExpiresOnReboot,
-			Progress = record.Progress?.ToProgressData(),
+			// Native history preserves posted progress properties but resets the transient sequence.
+			Progress = record.PostedProgress?.ToProgressData(sequenceNumber: 1),
 		};
 		notification.SetNotificationId(record.Id);
 		return notification;

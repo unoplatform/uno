@@ -65,6 +65,11 @@ internal interface IAppNotificationProgressUpdateCapability
 	bool SupportsProgressUpdates { get; }
 }
 
+internal interface IAppNotificationRawPayloadCapability
+{
+	bool SupportsRawPayload { get; }
+}
+
 internal interface IAppNotificationActiveIdRefreshCapability
 {
 	bool RequiresActiveIdsForStateChanges { get; }

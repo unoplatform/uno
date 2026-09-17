@@ -1,3 +1,10 @@
+// Copyright (c) Microsoft Corporation and Contributors.
+// Licensed under the MIT License.
+
+// Windows App SDK Reference dev/AppNotifications/AppNotificationBuilder/AppNotificationBuilder.idl, commit 6b178e79e59d28efb10ef5c8c68b051d2615c3e6
+
+#nullable enable
+
 using Windows.Foundation.Metadata;
 
 namespace Microsoft.Windows.AppNotifications.Builder;
@@ -5,8 +12,8 @@ namespace Microsoft.Windows.AppNotifications.Builder;
 [ContractVersion(typeof(AppNotificationBuilderContract), 1 * 0x10000u)]
 public enum AppNotificationAudioLooping
 {
-	None = 0,
-	Loop = 1,
+	None = 0, // Audio will not loop
+	Loop = 1, // Audio will loop for the duration of the AppNotification
 }
 
 [ContractVersion(typeof(AppNotificationBuilderContract), 1 * 0x10000u)]
@@ -20,25 +27,25 @@ public enum AppNotificationButtonStyle
 [ContractVersion(typeof(AppNotificationBuilderContract), 1 * 0x10000u)]
 public enum AppNotificationDuration
 {
-	Default = 0,
-	Long = 1,
+	Default = 0, // Default value. AppNotification appears for a short while and then goes into Notification Center.
+	Long = 1, // AppNotification stays on-screen for longer, and then goes into Notification Center.
 }
 
 [ContractVersion(typeof(AppNotificationBuilderContract), 1 * 0x10000u)]
 public enum AppNotificationImageCrop
 {
-	Default = 0,
-	Circle = 1,
+	Default = 0, // Uses the default renderer to display the image
+	Circle = 1, // Crops the image as a circle.
 }
 
 [ContractVersion(typeof(AppNotificationBuilderContract), 1 * 0x10000u)]
 public enum AppNotificationScenario
 {
-	Default = 0,
-	Reminder = 1,
-	Alarm = 2,
-	IncomingCall = 3,
-	Urgent = 4,
+	Default = 0, // The normal AppNotification behavior. The AppNotification appears for a short duration, and then automatically dismisses into Notification Center.
+	Reminder = 1, // The notification will stay on screen until the user dismisses it or takes action.
+	Alarm = 2, // Alarms behave like Reminder, but alarms will additionally loop audio with a default alarm sound.
+	IncomingCall = 3, // Incoming call notifications are displayed pre-expanded in a special call format and stay on the user's screen till dismissed.
+	Urgent = 4, // Important notifications allow users to have more control over what 1st party and 3rd party apps can send them high-priority AppNotifications (urgent/important) that can break through Focus Assist.
 }
 
 [ContractVersion(typeof(AppNotificationBuilderContract), 1 * 0x10000u)]

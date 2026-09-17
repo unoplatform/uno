@@ -156,6 +156,7 @@ public class Given_AppNotificationApiContract
 			M:Microsoft.Windows.AppNotifications.Builder.AppNotificationButton SetInvokeUri(System.Uri protocolUri)
 			M:Microsoft.Windows.AppNotifications.Builder.AppNotificationButton SetInvokeUri(System.Uri protocolUri,System.String targetAppId)
 			M:Microsoft.Windows.AppNotifications.Builder.AppNotificationButton SetToolTip(System.String value)
+			M:System.String ToString()
 			""");
 		AssertSurface<AppNotificationComboBox>("""
 			C:(System.String id)
@@ -165,6 +166,7 @@ public class Given_AppNotificationApiContract
 			M:Microsoft.Windows.AppNotifications.Builder.AppNotificationComboBox AddItem(System.String id,System.String content)
 			M:Microsoft.Windows.AppNotifications.Builder.AppNotificationComboBox SetSelectedItem(System.String id)
 			M:Microsoft.Windows.AppNotifications.Builder.AppNotificationComboBox SetTitle(System.String value)
+			M:System.String ToString()
 			""");
 		AssertSurface<AppNotificationProgressBar>("""
 			C:()
@@ -180,6 +182,7 @@ public class Given_AppNotificationApiContract
 			M:Microsoft.Windows.AppNotifications.Builder.AppNotificationProgressBar SetTitle(System.String value)
 			M:Microsoft.Windows.AppNotifications.Builder.AppNotificationProgressBar SetValue(System.Double value)
 			M:Microsoft.Windows.AppNotifications.Builder.AppNotificationProgressBar SetValueStringOverride(System.String value)
+			M:System.String ToString()
 			""");
 		AssertSurface<AppNotificationTextProperties>("""
 			C:()
@@ -189,6 +192,7 @@ public class Given_AppNotificationApiContract
 			M:Microsoft.Windows.AppNotifications.Builder.AppNotificationTextProperties SetIncomingCallAlignment()
 			M:Microsoft.Windows.AppNotifications.Builder.AppNotificationTextProperties SetLanguage(System.String value)
 			M:Microsoft.Windows.AppNotifications.Builder.AppNotificationTextProperties SetMaxLines(System.Int32 value)
+			M:System.String ToString()
 			""");
 	}
 

@@ -25,7 +25,10 @@ internal sealed record AppNotificationProgressSnapshot(
 		=> new(data.SequenceNumber, data.Title, data.Value, data.ValueStringOverride, data.Status);
 
 	public global::Microsoft.Windows.AppNotifications.AppNotificationProgressData ToProgressData()
-		=> new(SequenceNumber)
+		=> ToProgressData(SequenceNumber);
+
+	public global::Microsoft.Windows.AppNotifications.AppNotificationProgressData ToProgressData(uint sequenceNumber)
+		=> new(sequenceNumber)
 		{
 			Title = Title,
 			Value = Value,
@@ -50,12 +53,15 @@ internal sealed record AppNotificationStateRecord(
 	string DeliveryCorrelation = "",
 	long Revision = 1,
 	string OperationOwner = "legacy",
-	DateTimeOffset OperationLeaseExpirationUtc = default)
+	DateTimeOffset OperationLeaseExpirationUtc = default,
+	bool IsProgressUpdate = false)
 {
-	public AppNotificationEnvelope ToEnvelope()
+	public AppNotificationProgressSnapshot? PostedProgress { get; init; } = Progress;
+
+	public AppNotificationEnvelope ToEnvelope(bool parsePayload = true)
 		=> new(
 			Id,
-			AppNotificationPayloadParser.Parse(Payload),
+			parsePayload ? AppNotificationPayloadParser.Parse(Payload) : null,
 			Tag,
 			Group,
 			ExpirationUtc,
@@ -72,7 +78,7 @@ internal sealed record AppNotificationStateSnapshot(
 	IReadOnlyList<AppNotificationStateRecord> Records,
 	IReadOnlyList<string>? DeliveryReceipts = null)
 {
-	public const int CurrentSchemaVersion = 4;
+	public const int CurrentSchemaVersion = 6;
 
 	public static AppNotificationStateSnapshot Empty { get; } = new(
 		CurrentSchemaVersion,
@@ -844,13 +850,19 @@ internal sealed class AppNotificationStateStore
 				result = AppNotificationProgressResult.Succeeded;
 				updates = matches
 					.Where(record => record.Progress is null || progress.SequenceNumber > record.Progress.SequenceNumber)
-					.Select(record => record with
+					.Select(record =>
 					{
-						Progress = progress,
-						PostingState = AppNotificationPostingState.Updating,
-						Revision = NextRevision(record),
-						OperationOwner = operationOwner,
-						OperationLeaseExpirationUtc = operationLeaseExpiration.ToUniversalTime(),
+						var isPendingReplacement = record.PostingState == AppNotificationPostingState.Updating && !record.IsProgressUpdate;
+						return record with
+						{
+							Progress = progress,
+							PostedProgress = isPendingReplacement ? progress : record.PostedProgress,
+							PostingState = AppNotificationPostingState.Updating,
+							IsProgressUpdate = !isPendingReplacement,
+							Revision = NextRevision(record),
+							OperationOwner = operationOwner,
+							OperationLeaseExpirationUtc = operationLeaseExpiration.ToUniversalTime(),
+						};
 					})
 					.ToArray();
 				if (updates.Count == 0)

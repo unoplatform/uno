@@ -49,29 +49,7 @@ internal static class AppNotificationArgumentCodec
 	}
 
 	public static IDictionary<string, string> Decode(string encodedArguments)
-	{
-		var arguments = new Dictionary<string, string>();
-		if (encodedArguments.Length == 0)
-		{
-			return arguments;
-		}
-
-		foreach (var encodedArgument in encodedArguments.Split(';'))
-		{
-			var separatorIndex = encodedArgument.IndexOf('=');
-			if (separatorIndex < 0)
-			{
-				arguments[DecodeComponent(encodedArgument)] = string.Empty;
-				continue;
-			}
-
-			var key = DecodeComponent(encodedArgument[..separatorIndex]);
-			var value = DecodeComponent(encodedArgument[(separatorIndex + 1)..]);
-			arguments[key] = value;
-		}
-
-		return arguments;
-	}
+		=> AppNotificationActivatedEventArgs.DecodeArguments(encodedArguments);
 
 	private static void AppendEncoded(StringBuilder encoded, string value)
 	{
@@ -92,7 +70,7 @@ internal static class AppNotificationArgumentCodec
 		}
 	}
 
-	private static string DecodeComponent(string value)
+	internal static string DecodeComponent(string value)
 	{
 		var decoded = new StringBuilder(value.Length);
 

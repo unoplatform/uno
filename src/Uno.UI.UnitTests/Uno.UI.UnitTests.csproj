@@ -106,7 +106,7 @@
 		<Compile Include="..\Uno.UI.RemoteControl.VS\AbsolutePathComparer.cs">
 		  <Link>Helpers\AbsolutePathComparer.cs</Link>
 		</Compile>
-		<Compile Include="..\Uno.UWP\UI\Notifications\Internal\AndroidToastNotificationBootReceiverLifecycle.Android.cs">
+		<Compile Include="..\Uno.WinRT\UI\Notifications\Internal\AndroidToastNotificationBootReceiverLifecycle.Android.cs">
 			<Link>Microsoft_Windows_AppNotifications\AndroidToastNotificationBootReceiverLifecycle.Android.cs</Link>
 		</Compile>
 		<Compile Include="..\Uno.UI.RuntimeTests\Helpers\SizeAssertion.cs" Link="Extensions\SizeAssertion.cs" />
