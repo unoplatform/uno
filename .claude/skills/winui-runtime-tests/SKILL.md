@@ -30,6 +30,7 @@ An **MSIX fallback** remains for the rare cases that need a real package (see *M
 | `run-tests.ps1` | Register the build output via `winapp` and run the tests **(default path)** |
 | `parse-results.ps1` | Summarize the UTF-16 NUnit results, including Inconclusive |
 | `cleanup.ps1` | Remove the package (MSIX-installed or `winapp`-registered) |
+| `dotnet-root.ps1` | Dot-sourced by both runners — points `DOTNET_ROOT` at the install holding the app's exact runtime |
 | `setup-cert.ps1` | *MSIX fallback only* — generate + trust a signing certificate (admin, once) |
 | `install-msix.ps1` | *MSIX fallback only* — remove old package + install the built MSIX |
 | `run-tests-msix.ps1` | *MSIX fallback only* — launch via execution alias, poll for results |
@@ -86,7 +87,7 @@ Keywords in the user input:
 
 | Keyword | Effect |
 |---------|--------|
-| `strict` | Build with full CI analyzer coverage (`build-app.ps1 -Strict`, drops `UnoFastDevBuild`) |
+| `strict` | Build with full CI analyzer coverage (`build-app.ps1 -Strict`, passes `UnoFastDevBuild=false`) |
 | `debug` | Run with `-DebugOutput` — captures `OutputDebugString`, first-chance exceptions and, on a crash, a stowed-exception triage pass |
 | `msix` | Use the MSIX fallback path instead of `winapp` |
 
@@ -97,7 +98,6 @@ Keywords in the user input:
    <Project>
      <PropertyGroup>
        <UnoTargetFrameworkOverride>net11.0-windows10.0.19041.0</UnoTargetFrameworkOverride>
-       <UnoFastDevBuild>true</UnoFastDevBuild>
      </PropertyGroup>
    </Project>
    ```
@@ -113,7 +113,7 @@ No certificate and no elevation are needed on this path.
 pwsh -NoProfile -ExecutionPolicy Bypass -File .claude/skills/winui-runtime-tests/build-app.ps1
 ```
 
-Add `-Strict` for `strict` mode. The script pins the SDK, swaps and restores `global.json`, passes `-p:BuildGraphics3DGLForWindows=true` (so the add-in gets its Windows TFM — no separate restore step) and `-p:UnoFastDevBuild=true`.
+Add `-Strict` for `strict` mode. The script pins the SDK, swaps and restores `global.json`, passes `-p:BuildGraphics3DGLForWindows=true` (so the add-in gets its Windows TFM — no separate restore step) and `-p:UnoFastDevBuild=true` (`false` with `-Strict`; the command-line value wins over one set in `crosstargeting_override.props`). Concurrent runs in the same checkout wait for each other, since they share `global.json` and the head's `obj` folders.
 
 #### Build failure diagnostics
 
