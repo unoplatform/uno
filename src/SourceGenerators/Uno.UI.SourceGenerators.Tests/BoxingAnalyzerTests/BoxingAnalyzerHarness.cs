@@ -49,10 +49,12 @@ internal static class BoxingAnalyzerHarness
 
 		namespace Uno.UI.Xaml
 		{
-			public enum RoutedEventFlag
+			[System.Flags]
+			public enum RoutedEventFlag : ulong
 			{
-				None,
-				PointerPressed,
+				None = 0,
+				PointerPressed = 1UL << 0,
+				PointerReleased = 1UL << 1,
 			}
 		}
 
