@@ -49,7 +49,6 @@ namespace SamplesApp.UITests
 			AppInitializer.TestEnvironment.AndroidAppName = Constants.EffectiveAndroidAppName;
 			AppInitializer.TestEnvironment.WebAssemblyDefaultUri = Constants.WebAssemblyDefaultUri;
 			AppInitializer.TestEnvironment.iOSAppName = Constants.EffectiveIOSAppName;
-			AppInitializer.TestEnvironment.AndroidAppName = Constants.EffectiveAndroidAppName;
 			AppInitializer.TestEnvironment.iOSDeviceNameOrId = Constants.iOSDeviceNameOrId;
 			AppInitializer.TestEnvironment.CurrentPlatform = Constants.CurrentPlatform;
 
