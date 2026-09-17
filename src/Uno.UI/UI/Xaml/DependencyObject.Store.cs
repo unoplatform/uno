@@ -1590,7 +1590,7 @@ namespace Microsoft.UI.Xaml
 		/// Walks the ResourceDictionaries in scope, nearest first: the containing dictionary, then each
 		/// ancestor's non-empty Resources, then the application resources.
 		/// </summary>
-		internal struct ResourceDictionaryWalker
+		internal struct ResourceDictionaryWalker : IDisposable
 		{
 			private readonly bool _includeAppResources;
 			private ResourceDictionary? _containingDictionary;
@@ -1664,6 +1664,19 @@ namespace Microsoft.UI.Xaml
 			public readonly ResourceDictionary Current => _current!;
 
 			public readonly ResourceDictionaryWalker GetEnumerator() => this;
+
+			/// <summary>
+			/// Clears the references the walk accumulated. Every call site stops at the first match, and an
+			/// early exit otherwise leaves the ancestor and dictionary it stopped on rooted in the
+			/// enumerator's stack slot. foreach calls this from a finally, so they don't outlive the loop.
+			/// </summary>
+			public void Dispose()
+			{
+				_containingDictionary = null;
+				_candidate = null;
+				_advanceFrom = null;
+				_current = null;
+			}
 		}
 
 		/// <summary>
