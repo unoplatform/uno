@@ -350,7 +350,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.BoolBoxes.BoxedFalse,
+					defaultValue: Boxes.BoolBoxes.False,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?._core.OnAcceptsReturnChanged((bool)e.NewValue)
 				)
 			);
@@ -430,7 +430,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
-					Boxes.BoolBoxes.BoxedFalse,
+					Boxes.BoolBoxes.False,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?._core.OnIsReadonlyChanged()
 				)
 			);
@@ -494,7 +494,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.BoolBoxes.BoxedTrue,
+					defaultValue: Boxes.BoolBoxes.True,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?._core.OnIsSpellCheckEnabledChanged((bool)e.NewValue)
 				)
 			);
@@ -519,7 +519,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.BoolBoxes.BoxedTrue,
+					defaultValue: Boxes.BoolBoxes.True,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?._core.OnIsTextPredictionEnabledChanged((bool)e.NewValue)
 				)
 			);

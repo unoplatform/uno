@@ -71,8 +71,8 @@ public sealed class BoxingCodeFixProvider : CodeFixProvider
 						boxClassName = "BoolBoxes";
 						boxMemberName = literalExpression.Token.Value switch
 						{
-							true => "BoxedTrue",
-							false => "BoxedFalse",
+							true => "True",
+							false => "False",
 							_ => null,
 						};
 					}

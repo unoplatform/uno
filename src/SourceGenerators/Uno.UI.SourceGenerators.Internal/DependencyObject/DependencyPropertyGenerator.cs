@@ -750,8 +750,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 		private static string? GetBoxedDefaultValueExpression(string propertyTypeName, object? defaultValue)
 			=> (propertyTypeName, defaultValue) switch
 			{
-				("bool", false) => "global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse",
-				("bool", true) => "global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedTrue",
+				("bool", false) => "global::Uno.UI.Helpers.Boxes.BoolBoxes.False",
+				("bool", true) => "global::Uno.UI.Helpers.Boxes.BoolBoxes.True",
 				("int", -1) => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.NegativeOne",
 				("int", 0) => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero",
 				("int", 1) => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.One",

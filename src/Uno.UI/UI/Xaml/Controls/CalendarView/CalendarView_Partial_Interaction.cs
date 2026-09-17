@@ -230,7 +230,7 @@ namespace Microsoft.UI.Xaml.Controls
 								lastFocusedIndex,
 								ElementType.ItemContainer,
 								action,
-								Boxes.BoolBoxes.BoxedFalse, // !XboxUtility.IsGamepadNavigationDirection(originalKey),  /* allowWrap */
+								Boxes.BoolBoxes.False, // !XboxUtility.IsGamepadNavigationDirection(originalKey),  /* allowWrap */
 								-1,  /* itemIndexHintForHeaderNavigation */
 								out newFocusedIndexUint,
 								out newFocusedType,

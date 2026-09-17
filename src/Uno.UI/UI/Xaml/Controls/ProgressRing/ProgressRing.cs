@@ -41,7 +41,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsActiveProperty { get; } = DependencyProperty.Register(
-			nameof(IsActive), typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue, OnIsActivePropertyChanged));
+			nameof(IsActive), typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True, OnIsActivePropertyChanged));
 
 		// Hides the internal DependencyObject.IsActive (live-tree state).
 		public new bool IsActive
@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsIndeterminateProperty { get; } = DependencyProperty.Register(
-			nameof(IsIndeterminate), typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue, OnIsIndeterminatePropertyChanged));
+			nameof(IsIndeterminate), typeof(bool), typeof(ProgressRing), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True, OnIsIndeterminatePropertyChanged));
 
 
 		public bool IsIndeterminate

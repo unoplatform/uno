@@ -110,7 +110,7 @@ namespace Microsoft.UI.Xaml.Media
 				typeof(bool),
 				typeof(ArcSegment),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.BoolBoxes.BoxedFalse,
+					defaultValue: Boxes.BoolBoxes.False,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);

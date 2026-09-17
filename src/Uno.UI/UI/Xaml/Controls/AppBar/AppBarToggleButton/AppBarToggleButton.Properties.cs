@@ -62,7 +62,7 @@ partial class AppBarToggleButton
 			nameof(IsCompact),
 			typeof(bool),
 			typeof(AppBarToggleButton),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse)
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False)
 		);
 
 	/// <summary>
@@ -82,7 +82,7 @@ partial class AppBarToggleButton
 			nameof(IsInOverflow),
 			typeof(bool),
 			typeof(AppBarToggleButton),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 	// TODO:MZ: Does the getter/setter only apply when retrieved via the public property or also via DP GetValue/SetValue?
 	/// <summary>
@@ -176,7 +176,7 @@ partial class AppBarToggleButton
 			nameof(UseOverflowStyle),
 			typeof(bool),
 			typeof(AppBarToggleButton),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 	bool ICommandBarElement3.IsInOverflow
 	{

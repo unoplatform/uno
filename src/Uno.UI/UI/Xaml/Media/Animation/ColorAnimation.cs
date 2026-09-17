@@ -71,7 +71,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		DependencyProperty.Register(
 			"EnableDependentAnimation", typeof(bool),
 			typeof(ColorAnimation),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		public static DependencyProperty FromProperty { get; } =
 		DependencyProperty.Register(

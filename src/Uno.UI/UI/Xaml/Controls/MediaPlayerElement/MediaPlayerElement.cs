@@ -114,7 +114,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(AutoPlay),
 				typeof(bool),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue, OnAutoPlayChanged));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.True, OnAutoPlayChanged));
 
 		private static void OnAutoPlayChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -142,7 +142,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsFullWindow),
 				typeof(bool),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, FrameworkPropertyMetadataOptions.AffectsMeasure, OnIsFullWindowChanged));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, FrameworkPropertyMetadataOptions.AffectsMeasure, OnIsFullWindowChanged));
 
 
 		private static void OnIsFullWindowChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
@@ -283,7 +283,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(AreTransportControlsEnabled),
 				typeof(bool),
 				typeof(MediaPlayerElement),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, FrameworkPropertyMetadataOptions.AffectsMeasure));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 

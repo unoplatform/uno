@@ -182,7 +182,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(SelectionCheckMarkVisualEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.False));
 #endif
 #if __SKIA__
 		[global::Uno.NotImplemented("__SKIA__")]

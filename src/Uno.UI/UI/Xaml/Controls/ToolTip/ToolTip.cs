@@ -101,7 +101,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty.Register(
 				"IsOpen", typeof(bool),
 				typeof(ToolTip),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, OnOpenChanged));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnOpenChanged));
 
 		public bool IsOpen
 		{

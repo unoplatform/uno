@@ -82,7 +82,7 @@ public partial class Slider
 			nameof(IsDirectionReversed),
 			typeof(bool),
 			typeof(Slider),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 	/// <summary>
 	/// Gets or sets a value that determines whether the slider value
@@ -102,7 +102,7 @@ public partial class Slider
 			nameof(IsThumbToolTipEnabled),
 			typeof(bool),
 			typeof(Slider),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
 
 	/// <summary>
 	/// Gets or sets the orientation of a Slider.

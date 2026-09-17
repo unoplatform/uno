@@ -33,6 +33,6 @@ public partial class Slider : RangeBase
 			nameof(IsTrackerEnabled),
 			typeof(bool),
 			typeof(Slider),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
 }
 

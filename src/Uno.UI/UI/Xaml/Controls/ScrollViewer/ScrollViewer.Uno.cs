@@ -91,7 +91,7 @@ namespace Uno.UI.Xaml.Controls
 		[DynamicDependency(nameof(GetShouldFallBackToNativeScrollBars))]
 		[DynamicDependency(nameof(SetShouldFallBackToNativeScrollBars))]
 		public static readonly DependencyProperty ShouldFallBackToNativeScrollBarsProperty =
-			DependencyProperty.RegisterAttached("ShouldFallBackToNativeScrollBars", typeof(bool), typeof(ScrollViewer), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
+			DependencyProperty.RegisterAttached("ShouldFallBackToNativeScrollBars", typeof(bool), typeof(ScrollViewer), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
 
 
 	}

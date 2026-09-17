@@ -56,7 +56,7 @@ public partial class TabView
 	/// Identifies the AllowDropTabs dependency property.
 	/// </summary>
 	public static DependencyProperty AllowDropTabsProperty { get; } =
-		DependencyProperty.Register(nameof(AllowDropTabs), typeof(bool), typeof(TabView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
+		DependencyProperty.Register(nameof(AllowDropTabs), typeof(bool), typeof(TabView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether tabs can be dragged as a data payload.
@@ -71,7 +71,7 @@ public partial class TabView
 	/// Gets or sets a value that indicates whether tabs can be dragged as a data payload.
 	/// </summary>
 	public static DependencyProperty CanDragTabsProperty { get; } =
-		DependencyProperty.Register(nameof(CanDragTabs), typeof(bool), typeof(TabView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+		DependencyProperty.Register(nameof(CanDragTabs), typeof(bool), typeof(TabView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether the tabs in the TabStrip can be reordered through user interaction.
@@ -86,7 +86,7 @@ public partial class TabView
 	/// Identifies the CanReorderTabs dependency property.
 	/// </summary>
 	public static DependencyProperty CanReorderTabsProperty { get; } =
-		DependencyProperty.Register(nameof(CanReorderTabs), typeof(bool), typeof(TabView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
+		DependencyProperty.Register(nameof(CanReorderTabs), typeof(bool), typeof(TabView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
 
 	/// <summary>
 	/// Gets or sets a value indicating whether tabs can be torn off to create new windows.
@@ -101,7 +101,7 @@ public partial class TabView
 	/// Identifies the CanTearOutTabs dependency property.
 	/// </summary>
 	public static DependencyProperty CanTearOutTabsProperty { get; } =
-		DependencyProperty.Register(nameof(CanTearOutTabs), typeof(bool), typeof(TabView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+		DependencyProperty.Register(nameof(CanTearOutTabs), typeof(bool), typeof(TabView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 	/// <summary>
 	/// Gets or sets a value that indicates the behavior of the close button within tabs.
@@ -131,7 +131,7 @@ public partial class TabView
 	/// Identifies the IsAddTabButtonVisible dependency property.
 	/// </summary>
 	public static DependencyProperty IsAddTabButtonVisibleProperty { get; } =
-		DependencyProperty.Register(nameof(IsAddTabButtonVisible), typeof(bool), typeof(TabView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
+		DependencyProperty.Register(nameof(IsAddTabButtonVisible), typeof(bool), typeof(TabView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
 
 	/// <summary>
 	/// Gets or sets the index of the selected item.

@@ -107,13 +107,13 @@ public partial class TreeView
 	/// Identifies the CanDragItems dependency property.
 	/// </summary>
 	public static DependencyProperty CanDragItemsProperty { get; } =
-		DependencyProperty.Register(nameof(CanDragItems), typeof(bool), typeof(TreeView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
+		DependencyProperty.Register(nameof(CanDragItems), typeof(bool), typeof(TreeView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
 
 	/// <summary>
 	/// Identifies the CanReorderItems dependency property.
 	/// </summary>
 	public static DependencyProperty CanReorderItemsProperty { get; } =
-		DependencyProperty.Register(nameof(CanReorderItems), typeof(bool), typeof(TreeView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
+		DependencyProperty.Register(nameof(CanReorderItems), typeof(bool), typeof(TreeView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
 
 	/// <summary>
 	/// Identifies the ItemContainerStyle dependency property.

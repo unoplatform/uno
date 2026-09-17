@@ -26,7 +26,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty MirroredWhenRightToLeftProperty { get; } =
-			DependencyProperty.Register(nameof(MirroredWhenRightToLeft), typeof(bool), typeof(AnimatedIcon), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, OnMirroredWhenRightToLeftPropertyChanged));
+			DependencyProperty.Register(nameof(MirroredWhenRightToLeft), typeof(bool), typeof(AnimatedIcon), new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnMirroredWhenRightToLeftPropertyChanged));
 
 		public IAnimatedVisualSource2 Source
 		{

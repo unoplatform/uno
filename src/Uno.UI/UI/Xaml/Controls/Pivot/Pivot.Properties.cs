@@ -134,7 +134,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"IsLocked", typeof(bool),
 			typeof(Pivot),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		public static DependencyProperty SelectedIndexProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(

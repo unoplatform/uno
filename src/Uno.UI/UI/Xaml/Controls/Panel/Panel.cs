@@ -138,7 +138,7 @@ public partial class Panel : FrameworkElement, IPanel
 
 	#region IsItemsHost DependencyProperty
 	public static DependencyProperty IsItemsHostProperty { get; } = DependencyProperty.Register(
-		"IsItemsHost", typeof(bool), typeof(Panel), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+		"IsItemsHost", typeof(bool), typeof(Panel), new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 	public bool IsItemsHost
 	{

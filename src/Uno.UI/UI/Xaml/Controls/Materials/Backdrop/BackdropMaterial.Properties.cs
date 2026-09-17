@@ -39,6 +39,6 @@ namespace Microsoft.UI.Xaml.Controls
 				"ApplyToRootOrPageBackground",
 				typeof(bool),
 				typeof(BackdropMaterial),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, OnApplyToRootOrPageBackgroundChanged));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnApplyToRootOrPageBackgroundChanged));
 	}
 }

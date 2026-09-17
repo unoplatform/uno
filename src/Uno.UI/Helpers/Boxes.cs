@@ -14,8 +14,8 @@ internal static class Boxes
 {
 	public static class BoolBoxes
 	{
-		public static readonly object BoxedTrue = true;
-		public static readonly object BoxedFalse = false;
+		public static readonly object True = true;
+		public static readonly object False = false;
 	}
 
 	public static class IntegerBoxes
@@ -103,7 +103,7 @@ internal static class Boxes
 		public static readonly object ContextCanceled = RoutedEventFlag.ContextCanceled;
 	}
 
-	public static object Box(bool value) => value ? BoolBoxes.BoxedTrue : BoolBoxes.BoxedFalse;
+	public static object Box(bool value) => value ? BoolBoxes.True : BoolBoxes.False;
 
 	public static object Box(int value) => value switch
 	{

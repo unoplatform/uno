@@ -118,21 +118,21 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			name: nameof(IsPointerOver),
 			propertyType: typeof(bool),
 			ownerType: typeof(ButtonBase),
-			typeMetadata: new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+			typeMetadata: new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		public static DependencyProperty IsPressedProperty { get; } =
 		DependencyProperty.Register(
 			name: nameof(IsPressed),
 			propertyType: typeof(bool),
 			ownerType: typeof(ButtonBase),
-			typeMetadata: new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+			typeMetadata: new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		private protected override object CoerceIsEnabled(object baseValue, DependencyPropertyValuePrecedences precedence)
 		{
 			if (Command != null
 				&& !Command.CanExecute(CommandParameter))
 			{
-				return Boxes.BoolBoxes.BoxedFalse;
+				return Boxes.BoolBoxes.False;
 			}
 
 			return base.CoerceIsEnabled(baseValue, precedence);

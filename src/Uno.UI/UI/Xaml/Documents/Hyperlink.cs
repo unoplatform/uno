@@ -311,7 +311,7 @@ namespace Microsoft.UI.Xaml.Documents
 				nameof(IsTabStop),
 				typeof(bool),
 				typeof(Hyperlink),
-				new FrameworkPropertyMetadata(defaultValue: Boxes.BoolBoxes.BoxedTrue)
+				new FrameworkPropertyMetadata(defaultValue: Boxes.BoolBoxes.True)
 			);
 
 		public int TabIndex

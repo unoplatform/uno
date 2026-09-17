@@ -32,7 +32,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			"EnableDependentAnimation",
 			typeof(bool),
 			typeof(ColorAnimationUsingKeyFrames),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 		public bool EnableDependentAnimation
 		{
 			get => (bool)GetValue(EnableDependentAnimationProperty);

@@ -87,7 +87,7 @@ partial class ComboBox
 		   nameof(IsDropDownOpen),
 		   typeof(bool),
 		   typeof(ComboBox),
-		   new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+		   new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether the user can
@@ -107,7 +107,7 @@ partial class ComboBox
 			nameof(IsEditable),
 			typeof(bool),
 			typeof(ComboBox),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 	/// <summary>
 	/// Gets whether the SelectionBoxItem is highlighted.
@@ -131,7 +131,7 @@ partial class ComboBox
 			nameof(IsTextSearchEnabled),
 			typeof(bool),
 			typeof(ComboBox),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
 
 	/// <summary>
 	/// Gets or sets a value that specifies whether the area outside of a light-dismiss UI is darkened.

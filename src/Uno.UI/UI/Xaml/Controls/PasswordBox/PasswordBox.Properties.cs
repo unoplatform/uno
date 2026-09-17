@@ -46,7 +46,7 @@ public partial class PasswordBox
 			nameof(CanPasteClipboardContent),
 			typeof(bool),
 			typeof(PasswordBox),
-			new FrameworkPropertyMetadata(defaultValue: Boxes.BoolBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(defaultValue: Boxes.BoolBoxes.False));
 
 	bool ITextBoxHost.CanPasteClipboardContent
 	{

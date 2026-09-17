@@ -128,7 +128,7 @@ namespace Microsoft.UI.Xaml.Media
 					// on platforms other than WASM and Skia, we default to using fallback where not completely safe
 					// When this is explicitly set to false, Acrylic will be displayed
 #if __SKIA__
-					Boxes.BoolBoxes.BoxedFalse
+					Boxes.BoolBoxes.False
 #else
 					true
 #endif
