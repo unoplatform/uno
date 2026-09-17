@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #if HAS_UNO || IS_UNIT_TESTS
 using Uno.Globalization.NumberFormatting;
@@ -17,6 +18,14 @@ namespace Uno.UI.Tests.Windows_Globalization
 		{
 			var rounded = Rounder.Round(value, digits, RoundingAlgorithm.RoundHalfAwayFromZero);
 			Assert.AreEqual(expected, rounded);
+		}
+
+		[TestMethod]
+		[DataRow(-1)]
+		[DataRow(20)]
+		public void When_GettingPowerOfTenOutsideUInt64Range_Then_Throws(int exponent)
+		{
+			Assert.ThrowsExactly<ArithmeticException>(() => Rounder.GetPowerOfTen(exponent));
 		}
 
 		[TestMethod]

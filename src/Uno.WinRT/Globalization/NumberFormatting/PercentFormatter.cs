@@ -59,6 +59,11 @@ public partial class PercentFormatter : INumberFormatterOptions, INumberFormatte
 		if (NumberRounder != null)
 		{
 			value = NumberRounder.RoundDouble(value);
+
+			if (!_formatterHelper.TryValidate(value, out text))
+			{
+				return text;
+			}
 		}
 
 		var stringBuilder = StringBuilderCache.Acquire();

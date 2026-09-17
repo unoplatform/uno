@@ -51,6 +51,13 @@ namespace Uno.UI.Tests.Windows_Globalization
 		}
 
 		[TestMethod]
+		public void When_LanguagesContainsNull_Then_Throw()
+		{
+			Assert.ThrowsExactly<ArgumentException>(() => new NumeralSystemTranslator(new string[] { null! }));
+			Assert.ThrowsExactly<ArgumentException>(() => new NumeralSystemTranslator(new[] { "en-US", null! }));
+		}
+
+		[TestMethod]
 		#region DataRows
 		[DataRow("aa", "Latn", "aa")]
 		[DataRow("aa-DJ", "Latn", "aa-Latn-DJ")]
