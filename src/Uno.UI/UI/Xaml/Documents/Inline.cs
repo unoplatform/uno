@@ -62,7 +62,8 @@ namespace Microsoft.UI.Xaml.Documents
 			|| property == CharacterSpacingProperty
 			|| property == TextDecorationsProperty
 			|| property == IsTextScaleFactorEnabledProperty
-			|| property == BaseLineAlignmentProperty;
+			|| property == BaseLineAlignmentProperty
+			|| property == Run.FlowDirectionProperty;
 
 #nullable enable
 		private FontDetails? _fontInfo;

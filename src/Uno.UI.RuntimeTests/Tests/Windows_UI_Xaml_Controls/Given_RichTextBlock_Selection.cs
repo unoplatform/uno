@@ -187,11 +187,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[DataRow("ClearFontSize", true)]
 		[DataRow("SetFontSize", true)]
+		[DataRow("SetFlowDirection", true)]
 		[DataRow("SetForeground", false)]
+		[DataRow("OwnerFlowDirection", false)]
 		public async Task When_Local_Inline_Format_Is_Written(string change, bool clearsSelection)
 		{
 			// ClearValue goes through CTextElement::SetValue -> MarkDirty just like a set, even though the value is
-			// inherited again afterwards. CRichTextBlock::OnContentChanged treats a Foreground change as render-only.
+			// inherited again afterwards. CRichTextBlock::OnContentChanged treats a Foreground change as render-only,
+			// and the owner's own FlowDirection only invalidates its content (CRichTextBlock::SetValue).
 			var run = new Run { Text = LongText, FontSize = 22 };
 			var paragraph = new Paragraph();
 			paragraph.Inlines.Add(run);
@@ -220,6 +223,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 						break;
 					case "SetFontSize":
 						run.FontSize = 18;
+						break;
+					case "SetFlowDirection":
+						run.FlowDirection = Microsoft.UI.Xaml.FlowDirection.RightToLeft;
+						break;
+					case "OwnerFlowDirection":
+						SUT.FlowDirection = Microsoft.UI.Xaml.FlowDirection.RightToLeft;
 						break;
 					default:
 						run.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
