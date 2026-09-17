@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -143,6 +144,63 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				Assert.IsNotNull(SkiaTextFormatter.Instance.FormatLine(source, 0, wrappingWidth, wrap, null, null).TextLineBreak, "Precondition: the text wraps");
 				Assert.IsNull(SkiaTextFormatter.Instance.FormatLine(source, 0, wrappingWidth, noWrap, null, null).TextLineBreak, "NoWrap at the same width must format a single line");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Clusters_Span_Several_Code_Units()
+		{
+			// TextLine lengths and character hits are source positions, so a surrogate pair covers two of them.
+			var run = new Run { Text = string.Concat(Enumerable.Repeat("a\U0001F600b ", 12)) };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(run);
+			var SUT = new RichTextBlock { Width = 120 };
+			SUT.Blocks.Add(paragraph);
+
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				await WindowHelper.WaitForIdle();
+
+				var inlines = paragraph.Inlines.TraversedTree.leafTree;
+				var (defaultFont, _) = FontDetailsCache.GetFont(SUT.FontFamily?.Source, (float)SUT.FontSize, SUT.FontWeight, SUT.FontStretch, SUT.FontStyle);
+
+				var source = new TestParagraphSource(inlines, defaultFont.SKFontSize);
+				var runProperties = new TextRunProperties(defaultFont, SUT.FontSize, false, false, 0, null, CultureInfo.CurrentCulture, CultureInfo.CurrentCulture);
+				var paragraphProperties = new TextParagraphProperties(FlowDirection.LeftToRight, runProperties, 0, TextWrapping.Wrap, TextLineBounds.Full, TextAlignment.Left);
+				var wrappingWidth = SUT.ActualWidth;
+
+				var lines = new List<TextLine>();
+				TextLineBreak? previousBreak = null;
+				var firstCharIndex = 0u;
+				do
+				{
+					var line = SkiaTextFormatter.Instance.FormatLine(source, firstCharIndex, wrappingWidth, paragraphProperties, previousBreak, null);
+					lines.Add(line);
+					firstCharIndex += line.Length;
+					previousBreak = line.TextLineBreak;
+				}
+				while (previousBreak is not null);
+
+				Assert.IsTrue(lines.Count > 1, "Precondition: the text wraps");
+				Assert.AreEqual((uint)run.Text.Length, firstCharIndex, "The lines should cover every UTF-16 code unit of the paragraph");
+
+				// Resuming at a character index, as the next link of a chain does, starts at that character.
+				var resumed = SkiaTextFormatter.Instance.FormatLine(source, lines[0].Length, wrappingWidth, paragraphProperties, null, null);
+				Assert.AreEqual(lines[1].Length, resumed.Length, "A line resumed at the second line's first character should match it");
+
+				// "a" is at 0, the surrogate pair at 1-2 and "b" at 3.
+				var first = lines[0];
+				Assert.AreEqual(new CharacterHit(1, 2), first.GetNextCaretCharacterHit(new CharacterHit(1, 0)), "Moving forward over the pair should cover both code units");
+				Assert.AreEqual(new CharacterHit(3, 1), first.GetNextCaretCharacterHit(new CharacterHit(1, 2)), "Moving forward from the pair's trailing edge should cover the next character");
+				Assert.AreEqual(new CharacterHit(1, 0), first.GetPreviousCaretCharacterHit(new CharacterHit(3, 0)), "Moving back from the next character should land before the pair");
+				Assert.AreEqual(first.GetDistanceFromCharacterHit(new CharacterHit(3, 0)), first.GetDistanceFromCharacterHit(new CharacterHit(1, 2)), 0.01, "The pair's trailing edge is the next character's leading edge");
+				Assert.IsTrue(first.GetDistanceFromCharacterHit(new CharacterHit(3, 0)) > first.GetDistanceFromCharacterHit(new CharacterHit(1, 0)), "The pair should have a width");
 			}
 			finally
 			{

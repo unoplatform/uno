@@ -25,9 +25,9 @@ internal sealed class SkiaTextLine : TextLine
 	private readonly int _lineIndex;
 	private readonly TextParagraphProperties _paragraphProperties;
 
-	// Paragraph-relative (glyph-space) index of this line's first character, and the top of the line
-	// within the paragraph. The glyph space matches TextLine.Length, which ParagraphNode accumulates
-	// into LineMetrics.FirstCharIndex.
+	// Paragraph-relative UTF-16 index of this line's first character, and the top of the line within the
+	// paragraph. The index space matches TextLine.Length, which ParagraphNode accumulates into
+	// LineMetrics.FirstCharIndex.
 	private readonly int _startIndex;
 	private readonly float _lineTop;
 
@@ -117,7 +117,7 @@ internal sealed class SkiaTextLine : TextLine
 	private static FlowDirection DetectedDirection(ParsedText parsedText)
 		=> parsedText.IsBaseDirectionRightToLeft ? FlowDirection.RightToLeft : FlowDirection.LeftToRight;
 
-	// One past this line's last character, in the same glyph space as _startIndex.
+	// One past this line's last character, in the same space as _startIndex.
 	private int LineEndIndex => _startIndex + (int)m_length;
 
 	// The render line this text line wraps.
@@ -131,9 +131,8 @@ internal sealed class SkiaTextLine : TextLine
 	// The zero-based index of this line within its paragraph.
 	internal int LineIndex => _lineIndex;
 
-	// Replicates ParsedText's per-line character counting (see GlyphsLengthWithCR /
-	// GetLineIntervals there) so that character offsets reported by the layout tree
-	// line up with ParsedText hit-testing.
+	// Counts UTF-16 code units like ParsedText.GetLineIntervals, so that character offsets reported by the
+	// layout tree line up with ParsedText hit-testing.
 	private static void ComputeCharacterCounts(
 		RenderLine line,
 		out uint length,
@@ -148,42 +147,18 @@ internal sealed class SkiaTextLine : TextLine
 		for (var i = 0; i < spans.Count; i++)
 		{
 			var span = spans[i];
-			total += (uint)span.FullGlyphsLength;
-
-			if (SpanEndsInNewLine(span))
-			{
-				total += (uint)span.Segment.LineBreakLength;
-
-				if (i == spans.Count - 1)
-				{
-					newline = (uint)span.Segment.LineBreakLength;
-				}
-			}
+			total += (uint)span.CharacterLengthWithNewLine;
 
 			if (i == spans.Count - 1)
 			{
 				trailing = (uint)span.TrailingSpaces;
+				newline = span.EndsInNewLine ? (uint)span.Segment.LineBreakLength : 0;
 			}
 		}
 
 		length = total;
 		trailingWhitespaceLength = trailing;
 		newlineLength = newline;
-	}
-
-	private static bool SpanEndsInNewLine(RenderSegmentSpan segmentSpan)
-	{
-		var segment = segmentSpan.Segment;
-
-		// A LineBreak segment has no Text to inspect (Segment.Text throws); the break is its whole content.
-		// Mirrors ParsedText.SpanEndsInNewLine - keep the two in step.
-		if (segment.Inline is LineBreak)
-		{
-			return segment.LineBreakLength > 0;
-		}
-
-		return segment is { Inline: Run, LineBreakAfter: true } &&
-			segment.Text.TrimEnd().Length <= segmentSpan.GlyphsStart + segmentSpan.GlyphsLength;
 	}
 
 	// Adds the containers of every embedded object on this line to the given set.
@@ -301,11 +276,18 @@ internal sealed class SkiaTextLine : TextLine
 				keptGlyphs++;
 			}
 
+			// A cluster is never split.
+			while (keptGlyphs > 0 && keptGlyphs < span.GlyphsLength && glyphs[span.GlyphsStart + keptGlyphs].Cluster == glyphs[span.GlyphsStart + keptGlyphs - 1].Cluster)
+			{
+				keptGlyphs--;
+				keptWidth -= GetGlyphAdvance(glyphs[span.GlyphsStart + keptGlyphs], span.CharacterSpacing);
+			}
+
 			if (collapsingStyle == TextTrimming.WordEllipsis)
 			{
 				// Back up to the end of the previous word so the ellipsis does not cut mid-word.
 				var wordEnd = keptGlyphs;
-				while (wordEnd > 0 && !IsBreakOpportunity(span, glyphs, wordEnd - 1))
+				while (wordEnd > 0 && !IsBreakOpportunity(span, wordEnd - 1))
 				{
 					wordEnd--;
 				}
@@ -344,7 +326,7 @@ internal sealed class SkiaTextLine : TextLine
 				kept.Add(span with
 				{
 					GlyphsLength = keptGlyphs,
-					FullGlyphsLength = keptGlyphs,
+					CharacterLength = span.GetCharacterOffset(keptGlyphs),
 					TrailingSpaces = 0,
 					Width = keptWidth,
 					WidthWithoutTrailingSpaces = keptWidth,
@@ -361,11 +343,11 @@ internal sealed class SkiaTextLine : TextLine
 	private static float GetGlyphAdvance(GlyphInfo glyph, float characterSpacing)
 		=> glyph.AdvanceX > 0 ? glyph.AdvanceX + characterSpacing : glyph.AdvanceX;
 
-	private static bool IsBreakOpportunity(RenderSegmentSpan span, IReadOnlyList<GlyphInfo> glyphs, int index)
+	private static bool IsBreakOpportunity(RenderSegmentSpan span, int index)
 	{
 		var text = span.Segment.Text;
-		var cluster = glyphs[span.GlyphsStart + index].Cluster;
-		return cluster >= 0 && cluster < text.Length && char.IsWhiteSpace(text[cluster]);
+		var offset = span.Segment.GetCharacterOffset(span.GlyphsStart + index);
+		return offset >= 0 && offset < text.Length && char.IsWhiteSpace(text[offset]);
 	}
 
 	private static CollapsedLineSymbol ShapeSymbol(TextCollapsingCharacters symbol)
@@ -406,7 +388,7 @@ internal sealed class SkiaTextLine : TextLine
 	public override CharacterHit GetCharacterHitFromDistance(double distance)
 	{
 		var point = new Point(m_start + distance, _lineTop + _renderLine.Height / 2.0);
-		var index = _parsedText.GetIndexAtUnadjusted(point, ignoreEndingSpace: false, extendedSelection: false);
+		var index = _parsedText.GetIndexAt(point, ignoreEndingNewLine: false, extendedSelection: false);
 
 		return new CharacterHit(Math.Clamp(index, _startIndex, LineEndIndex), 0);
 	}
@@ -421,7 +403,7 @@ internal sealed class SkiaTextLine : TextLine
 		}
 
 		var index = Math.Clamp(characterHit.FirstCharacterIndex + characterHit.TrailingLength, _startIndex, LineEndIndex);
-		return _parsedText.GetRectForUnadjustedIndex(index).X - m_start;
+		return _parsedText.GetRectForIndex(index).X - m_start;
 	}
 
 	// Returns the leading edge of the nearest preceding cluster. If there is no previous character,
@@ -429,17 +411,20 @@ internal sealed class SkiaTextLine : TextLine
 	// characterHit references the trailing edge of the indicated cluster.
 	public override CharacterHit GetPreviousCaretCharacterHit(CharacterHit characterHit)
 	{
-		if (characterHit.TrailingLength != 0)
+		var (stopStart, _) = _parsedText.GetCaretStop(characterHit.FirstCharacterIndex);
+
+		// From a leading edge exactly at a caret stop, move to the leading edge of the preceding cluster.
+		if (characterHit.TrailingLength == 0 && stopStart == characterHit.FirstCharacterIndex)
 		{
-			return new CharacterHit(characterHit.FirstCharacterIndex, 0);
+			if (stopStart <= _startIndex)
+			{
+				return characterHit;
+			}
+
+			(stopStart, _) = _parsedText.GetCaretStop(stopStart - 1);
 		}
 
-		if (characterHit.FirstCharacterIndex <= _startIndex)
-		{
-			return characterHit;
-		}
-
-		return new CharacterHit(characterHit.FirstCharacterIndex - 1, 0);
+		return new CharacterHit(stopStart, 0);
 	}
 
 	// Returns the trailing edge of the nearest following cluster. If there is no next character, the
@@ -447,16 +432,20 @@ internal sealed class SkiaTextLine : TextLine
 	// the trailing edge of the returned cluster.
 	public override CharacterHit GetNextCaretCharacterHit(CharacterHit characterHit)
 	{
-		var start = characterHit.TrailingLength == 0
-			? characterHit.FirstCharacterIndex
-			: characterHit.FirstCharacterIndex + characterHit.TrailingLength;
+		var (stopStart, stopLength) = _parsedText.GetCaretStop(characterHit.FirstCharacterIndex);
 
-		if (start >= LineEndIndex)
+		// From the trailing edge of a caret stop, move to the trailing edge of the following cluster.
+		if (characterHit.TrailingLength != 0 && characterHit.FirstCharacterIndex + characterHit.TrailingLength == stopStart + stopLength)
+		{
+			(stopStart, stopLength) = _parsedText.GetCaretStop(stopStart + stopLength);
+		}
+
+		if (stopStart >= LineEndIndex)
 		{
 			return characterHit;
 		}
 
-		return new CharacterHit(start, 1);
+		return new CharacterHit(stopStart, stopLength);
 	}
 
 	public override TextBounds[] GetTextBounds(int firstCharacterIndex, int textLength)
@@ -477,9 +466,12 @@ internal sealed class SkiaTextLine : TextLine
 		double runStart = 0, runEnd = 0;
 		var hasRun = false;
 
-		for (var i = start; i < end; i++)
+		for (var i = start; i < end;)
 		{
-			var rect = _parsedText.GetRectForUnadjustedIndex(i);
+			var rect = _parsedText.GetRectForIndex(i);
+			var (stopStart, stopLength) = _parsedText.GetCaretStop(i);
+			i = Math.Max(i + 1, stopStart + stopLength);
+
 			var left = rect.X - m_start;
 			var right = left + rect.Width;
 

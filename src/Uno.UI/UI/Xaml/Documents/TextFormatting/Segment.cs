@@ -97,6 +97,44 @@ namespace Microsoft.UI.Xaml.Documents.TextFormatting
 		/// </summary>
 		public IReadOnlyList<GlyphInfo> Glyphs => _glyphs ?? throw new InvalidOperationException("Glyphs can only be retrieved for segments representing part of a Run.");
 
+		/// <summary>
+		/// Gets the number of UTF-16 code units of the Run element text this segment represents, excluding the line break. Returns 0 for segments that
+		/// represent a LineBreak element or an inline object.
+		/// </summary>
+		public int ContentLength => Inline is Run ? Length - LineBreakLength : 0;
+
+		private int ContentGlyphCount => _glyphs is null ? 0 : (LineBreakAfter ? _glyphs.Count - 1 : _glyphs.Count);
+
+		/// <summary>
+		/// Gets the offset, in UTF-16 code units from the segment start, of the cluster the glyph at <paramref name="glyphIndex"/> belongs to. A glyph index
+		/// past the last content glyph maps to <see cref="ContentLength"/>.
+		/// </summary>
+		public int GetCharacterOffset(int glyphIndex) => glyphIndex < ContentGlyphCount ? _glyphs![glyphIndex].Cluster - Start : ContentLength;
+
+		/// <summary>
+		/// Gets the index of the first glyph whose cluster starts at or after <paramref name="characterOffset"/>, so an offset inside a cluster maps to the
+		/// following cluster.
+		/// </summary>
+		public int GetGlyphIndex(int characterOffset)
+		{
+			var glyphIndex = 0;
+			while (glyphIndex < ContentGlyphCount && GetCharacterOffset(glyphIndex) < characterOffset)
+			{
+				glyphIndex++;
+			}
+
+			return glyphIndex;
+		}
+
+		/// <summary>
+		/// Gets the [Start, End) offsets of the cluster containing <paramref name="characterOffset"/>, which must be less than <see cref="ContentLength"/>.
+		/// </summary>
+		public (int Start, int End) GetClusterRange(int characterOffset)
+		{
+			var nextGlyph = GetGlyphIndex(characterOffset + 1);
+			return (nextGlyph > 0 ? GetCharacterOffset(nextGlyph - 1) : 0, GetCharacterOffset(nextGlyph));
+		}
+
 		private string DebugText => Inline switch
 		{
 			Run => Text.ToString(),
