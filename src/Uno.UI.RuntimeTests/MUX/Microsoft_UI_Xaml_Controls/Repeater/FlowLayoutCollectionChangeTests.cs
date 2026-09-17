@@ -4,6 +4,7 @@
 using Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
 using MUXControlsTestApp.Utilities;
 using System;
+using System.Collections.Specialized;
 using System.Linq;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -39,6 +40,38 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 	[TestClass]
 	public class FlowLayoutCollectionChangeTests : MUXApiTestBase
 	{
+		[TestMethod]
+		public void CollectionChangeWithoutLayoutStateDoesNotThrow()
+		{
+			RunOnUIThread.Execute(() =>
+			{
+#if HAS_UNO
+				var context = new RepeaterLayoutContext(new ItemsRepeater());
+				var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+				var source = Array.Empty<object>();
+
+				new FlowLayoutForCollectionChanges().NotifyItemsChanged(context, source, args);
+				new UniformGridLayoutForCollectionChanges().NotifyItemsChanged(context, source, args);
+#else
+				Log.Comment("RepeaterLayoutContext is Uno-specific.");
+#endif
+			});
+		}
+
+#if HAS_UNO
+		private sealed class FlowLayoutForCollectionChanges : FlowLayout
+		{
+			public void NotifyItemsChanged(VirtualizingLayoutContext context, object source, NotifyCollectionChangedEventArgs args)
+				=> OnItemsChangedCore(context, source, args);
+		}
+
+		private sealed class UniformGridLayoutForCollectionChanges : Microsoft.UI.Xaml.Controls.UniformGridLayout
+		{
+			public void NotifyItemsChanged(VirtualizingLayoutContext context, object source, NotifyCollectionChangedEventArgs args)
+				=> OnItemsChangedCore(context, source, args);
+		}
+#endif
+
 		[TestMethod]
 		public void ValidateInserts()
 		{
@@ -520,7 +553,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				repeater.UpdateLayout();
 
 				// Make sure data was requested because during a normal reset elements (already bound with data) are not reused.
-				Verify.AreEqual(3, dataSource.GetAtCallCount);
+				Verify.AreEqual(4, dataSource.GetAtCallCount);
 				var realized = VerifyRealizedRange(repeater, dataSource);
 				Verify.AreEqual(3, realized);
 			});

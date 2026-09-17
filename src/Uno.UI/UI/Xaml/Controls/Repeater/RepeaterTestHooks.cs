@@ -58,5 +58,17 @@ namespace Microsoft.UI.Private.Controls
 				instance.LayoutId = id;
 			}
 		}
+
+		/* static */
+		public static int GetLogItemIndex()
+		{
+			return ItemsRepeater.GetLogItemIndex();
+		}
+
+		/* static */
+		public static void SetLogItemIndex(int logItemIndex)
+		{
+			ItemsRepeater.SetLogItemIndex(logItemIndex);
+		}
 	}
 }
