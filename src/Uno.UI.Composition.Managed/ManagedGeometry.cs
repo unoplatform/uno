@@ -445,9 +445,12 @@ internal sealed partial class ManagedGeometry : DrawingResource, IGeometry, IGeo
 
 	private static IEnumerable<float> SolveQuadratic(float a, float b, float c)
 	{
-		if (MathF.Abs(a) < 1e-7f)
+		// "Almost linear" has to be measured against b, not an absolute epsilon: these coefficients are in
+		// pixels, so a symmetric curve whose a cancels to a few millionths still clears any fixed threshold
+		// while being negligible beside a b in the hundreds.
+		if (MathF.Abs(a) <= 1e-6f * MathF.Abs(b))
 		{
-			if (MathF.Abs(b) > 1e-7f)
+			if (MathF.Abs(b) > 1e-12f)
 			{
 				yield return -c / b;
 			}
@@ -461,9 +464,16 @@ internal sealed partial class ManagedGeometry : DrawingResource, IGeometry, IGeo
 			yield break;
 		}
 
+		// The stable pair: taking the root whose numerator would cancel as c/q instead of (-b +/- sqrt)/2a.
+		// The naive form loses it entirely once a is small - it came back as 0 for a curve whose real
+		// extremum sits at t = 0.5, which is how a symmetric bulge vanished from the bounds.
 		var sqrt = MathF.Sqrt(disc);
-		yield return (-b + sqrt) / (2 * a);
-		yield return (-b - sqrt) / (2 * a);
+		var q = -0.5f * (b + (b < 0f ? -sqrt : sqrt));
+		yield return q / a;
+		if (MathF.Abs(q) > 1e-30f)
+		{
+			yield return c / q;
+		}
 	}
 
 	internal static Vector2 EvaluateCubic(Vector2 p0, Vector2 p1, Vector2 p2, Vector2 p3, float t)
