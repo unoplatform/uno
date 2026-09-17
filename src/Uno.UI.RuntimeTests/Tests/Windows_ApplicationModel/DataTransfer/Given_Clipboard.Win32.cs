@@ -132,7 +132,7 @@ partial class Given_Clipboard // Win32 contention
 		Assert.IsTrue(holderExited, "the holder thread did not exit, so it may still be holding the clipboard");
 
 		// And the payload, which does need the lock, must be readable once the contention is over.
-		await DelayForClipboard();
+		await WaitForClipboardAsync(() => Clipboard.GetContent().Contains(StandardDataFormats.Text));
 		Assert.AreEqual(ContendedText, await Clipboard.GetContent()!.GetTextAsync());
 	}
 }

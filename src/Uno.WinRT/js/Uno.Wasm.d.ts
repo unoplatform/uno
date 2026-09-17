@@ -44,6 +44,7 @@ interface ClipboardItem {
 }
 interface ClipboardItemConstructor {
     new (items: Record<string, Blob | string | Promise<Blob | string>>): ClipboardItem;
+    supports?(type: string): boolean;
 }
 declare var ClipboardItem: ClipboardItemConstructor;
 interface Clipboard {
@@ -60,15 +61,53 @@ interface Navigator extends NavigatorClipboard {
 declare namespace Uno.Utils {
     class Clipboard {
         private static dispatchContentChanged;
-        private static dispatchGetContent;
+        private static lastPaste;
+        private static lastPasteShortcutTime;
+        private static pasteWaiters;
+        private static ownContent;
+        private static blurredSinceKnownContent;
+        private static latestWriteGeneration;
+        private static pendingWrite;
+        private static deferredWrite;
+        private static handleReferences;
+        private static readonly pasteFreshnessMs;
+        private static readonly pasteRetentionMs;
+        private static readonly pasteWaitTimeoutMs;
+        private static readonly pasteShortcutCorrelationMs;
+        static setup(): void;
+        private static copyingWithCommand;
+        private static invalidateKnownContent;
+        private static onKeyDownCaptured;
+        private static onPasteCaptured;
+        private static capturePaste;
+        private static getFreshPasteSnapshot;
+        private static getPasteImageFile;
+        private static emptyContent;
+        private static toManagedType;
+        private static isPasteImminent;
+        static getSnapshot(): string;
+        static getContentAsync(pasteShortcutTime: number): Promise<string>;
+        private static waitForPasteAsync;
+        private static buildContentFromPaste;
+        private static buildContentFromOwn;
+        private static retainHandles;
+        static releaseHandles(ids: string): void;
+        private static readAsyncClipboard;
+        private static failedRead;
+        private static getImageExtension;
+        private static beginGeneration;
+        private static failDeferredWrite;
+        private static commitWriteAsync;
+        private static publishOwnContent;
+        static beginWrite(generation: number, formatsJson: string): void;
+        static resolveWriteAsync(generation: number, entriesJson: string, imageBytes: any, imageMimeType: string): Promise<void>;
+        static abortWrite(generation: number): void;
+        private static supportsCustomFormat;
+        private static tryTranscodeToPng;
+        private static decodeImageAsync;
+        static clearAsync(generation: number): Promise<void>;
         static startContentChanged(): void;
         static stopContentChanged(): void;
-        static setText(text: string): string;
-        static getText(): Promise<string>;
-        static getHtml(): Promise<string>;
-        static getImage(): Promise<string>;
-        static setImage(base64: string, mimeType: string): Promise<void>;
-        static setHtml(html: string, text: string): Promise<void>;
         private static onClipboardChanged;
     }
 }
