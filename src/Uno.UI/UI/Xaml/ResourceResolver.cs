@@ -62,6 +62,12 @@ namespace Uno.UI
 		private static readonly ConditionalWeakTable<ResourceDictionary, HighContrastResourceState>
 			_highContrastResourceStates = [];
 
+		/// <summary>
+		/// <see cref="ConditionalWeakTable{TKey, TValue}"/> exposes no count, so track separately whether
+		/// any high-contrast override has ever been recorded in this process.
+		/// </summary>
+		private static bool _hasHighContrastResourceStates;
+
 		private static readonly object _alcDictionariesLock = new();
 
 		private static int _assemblyRef = -1;
@@ -1276,6 +1282,14 @@ namespace Uno.UI
 			IReadOnlyList<ColorAndBrushResourceInfo> resources,
 			bool restoreDefaults = false)
 		{
+			// An override is only ever recorded while high contrast is active, so restoring defaults
+			// before that has happened cannot change a value. Skipping the walk keeps the HighContrast
+			// theme dictionaries lazy, which is what this costs at startup on a normal machine.
+			if (restoreDefaults && !_hasHighContrastResourceStates)
+			{
+				return;
+			}
+
 			var visited = new HashSet<ResourceDictionary>(ReferenceEqualityComparer.Instance);
 			UpdateSystemColorAndBrushResourcesCore(rootDictionary, resources, restoreDefaults, visited);
 		}
@@ -1347,7 +1361,11 @@ namespace Uno.UI
 					{
 						state ??= _highContrastResourceStates.GetValue(
 							themeDictionary,
-							static _ => new HighContrastResourceState());
+							static _ =>
+							{
+								_hasHighContrastResourceStates = true;
+								return new HighContrastResourceState();
+							});
 						var targetColor = state.GetTargetColor(
 							resource.ColorKey,
 							currentColor,
@@ -1366,7 +1384,11 @@ namespace Uno.UI
 					{
 						state ??= _highContrastResourceStates.GetValue(
 							themeDictionary,
-							static _ => new HighContrastResourceState());
+							static _ =>
+							{
+								_hasHighContrastResourceStates = true;
+								return new HighContrastResourceState();
+							});
 						var targetColor = state.GetTargetColor(
 							brushKey,
 							brush.Color,
