@@ -23,7 +23,7 @@
 		public double Spacing
 		{
 			get { return (double)GetValue(SpacingProperty); }
-			set { SetValue(SpacingProperty, global::Uno.UI.Helpers.Boxes.Box(value)); }
+			set { SetValue(SpacingProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value)); }
 		}
 		#endregion
 

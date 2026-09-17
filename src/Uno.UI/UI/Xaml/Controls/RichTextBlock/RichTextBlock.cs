@@ -30,6 +30,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Uno;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
 
@@ -123,7 +124,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(RichTextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.BoolBoxes.True,
+					defaultValue: BoolBoxes.True,
 					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);

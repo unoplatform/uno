@@ -3,106 +3,106 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
 using Uno.UI.Xaml;
 
-namespace Uno.UI.Helpers;
+namespace Uno.UI.Helpers.Boxes;
 
 #pragma warning disable UnoInternal0002 // This is the special boxes implementation :)
 
 // Note: More Boxes can be added here, e.g, for commonly used enums.
 // In this case, make sure to update the BoxingDiagnosticAnalyzer.
 
-internal static class Boxes
+internal static class BoolBoxes
 {
-	public static class BoolBoxes
-	{
-		public static readonly object True = true;
-		public static readonly object False = false;
-	}
+	public static readonly object True = true;
+	public static readonly object False = false;
+}
 
-	public static class IntegerBoxes
-	{
-		public static readonly object NegativeOne = -1;
-		public static readonly object Zero = 0;
-		public static readonly object One = 1;
-	}
+internal static class IntegerBoxes
+{
+	public static readonly object NegativeOne = -1;
+	public static readonly object Zero = 0;
+	public static readonly object One = 1;
+}
 
-	public static class DoubleBoxes
-	{
-		public static readonly object Zero = 0.0d;
-		public static readonly object One = 1.0d;
-	}
+internal static class DoubleBoxes
+{
+	public static readonly object Zero = 0.0d;
+	public static readonly object One = 1.0d;
+}
 
-	public static class NullableDoubleBoxes
-	{
-		// The CLR boxes a Nullable<T> as a boxed T (or null), so a boxed double? is
-		// indistinguishable from a boxed double and there is nothing separate to cache.
-		public static readonly object Zero = DoubleBoxes.Zero;
-		public static readonly object One = DoubleBoxes.One;
-	}
+internal static class NullableDoubleBoxes
+{
+	// The CLR boxes a Nullable<T> as a boxed T (or null), so a boxed double? is
+	// indistinguishable from a boxed double and there is nothing separate to cache.
+	public static readonly object Zero = DoubleBoxes.Zero;
+	public static readonly object One = DoubleBoxes.One;
+}
 
-	public static class VerticalAlignmentBoxes
-	{
-		public static readonly object Top = VerticalAlignment.Top;
-		public static readonly object Bottom = VerticalAlignment.Bottom;
-		public static readonly object Stretch = VerticalAlignment.Stretch;
-		public static readonly object Center = VerticalAlignment.Center;
-	}
+internal static class VerticalAlignmentBoxes
+{
+	public static readonly object Top = VerticalAlignment.Top;
+	public static readonly object Bottom = VerticalAlignment.Bottom;
+	public static readonly object Stretch = VerticalAlignment.Stretch;
+	public static readonly object Center = VerticalAlignment.Center;
+}
 
-	public static class StretchBoxes
-	{
-		public static readonly object None = Stretch.None;
-		public static readonly object Fill = Stretch.Fill;
-		public static readonly object Uniform = Stretch.Uniform;
-		public static readonly object UniformToFill = Stretch.UniformToFill;
-	}
+internal static class StretchBoxes
+{
+	public static readonly object None = Stretch.None;
+	public static readonly object Fill = Stretch.Fill;
+	public static readonly object Uniform = Stretch.Uniform;
+	public static readonly object UniformToFill = Stretch.UniformToFill;
+}
 
-	public static class RoutedEventFlagBoxes
-	{
-		public static readonly object None = RoutedEventFlag.None;
+internal static class RoutedEventFlagBoxes
+{
+	public static readonly object None = RoutedEventFlag.None;
 
-		public static readonly object PointerPressed = RoutedEventFlag.PointerPressed;
-		public static readonly object PointerReleased = RoutedEventFlag.PointerReleased;
-		public static readonly object PointerEntered = RoutedEventFlag.PointerEntered;
-		public static readonly object PointerExited = RoutedEventFlag.PointerExited;
-		public static readonly object PointerMoved = RoutedEventFlag.PointerMoved;
-		public static readonly object PointerCanceled = RoutedEventFlag.PointerCanceled;
-		public static readonly object PointerCaptureLost = RoutedEventFlag.PointerCaptureLost;
-		public static readonly object PointerWheelChanged = RoutedEventFlag.PointerWheelChanged;
+	public static readonly object PointerPressed = RoutedEventFlag.PointerPressed;
+	public static readonly object PointerReleased = RoutedEventFlag.PointerReleased;
+	public static readonly object PointerEntered = RoutedEventFlag.PointerEntered;
+	public static readonly object PointerExited = RoutedEventFlag.PointerExited;
+	public static readonly object PointerMoved = RoutedEventFlag.PointerMoved;
+	public static readonly object PointerCanceled = RoutedEventFlag.PointerCanceled;
+	public static readonly object PointerCaptureLost = RoutedEventFlag.PointerCaptureLost;
+	public static readonly object PointerWheelChanged = RoutedEventFlag.PointerWheelChanged;
 
-		public static readonly object PreviewKeyDown = RoutedEventFlag.PreviewKeyDown;
-		public static readonly object KeyDown = RoutedEventFlag.KeyDown;
-		public static readonly object PreviewKeyUp = RoutedEventFlag.PreviewKeyUp;
-		public static readonly object KeyUp = RoutedEventFlag.KeyUp;
-		public static readonly object CharacterReceived = RoutedEventFlag.CharacterReceived;
+	public static readonly object PreviewKeyDown = RoutedEventFlag.PreviewKeyDown;
+	public static readonly object KeyDown = RoutedEventFlag.KeyDown;
+	public static readonly object PreviewKeyUp = RoutedEventFlag.PreviewKeyUp;
+	public static readonly object KeyUp = RoutedEventFlag.KeyUp;
+	public static readonly object CharacterReceived = RoutedEventFlag.CharacterReceived;
 
-		public static readonly object GettingFocus = RoutedEventFlag.GettingFocus;
-		public static readonly object GotFocus = RoutedEventFlag.GotFocus;
-		public static readonly object LosingFocus = RoutedEventFlag.LosingFocus;
-		public static readonly object LostFocus = RoutedEventFlag.LostFocus;
-		public static readonly object NoFocusCandidateFound = RoutedEventFlag.NoFocusCandidateFound;
-		public static readonly object BringIntoViewRequested = RoutedEventFlag.BringIntoViewRequested;
+	public static readonly object GettingFocus = RoutedEventFlag.GettingFocus;
+	public static readonly object GotFocus = RoutedEventFlag.GotFocus;
+	public static readonly object LosingFocus = RoutedEventFlag.LosingFocus;
+	public static readonly object LostFocus = RoutedEventFlag.LostFocus;
+	public static readonly object NoFocusCandidateFound = RoutedEventFlag.NoFocusCandidateFound;
+	public static readonly object BringIntoViewRequested = RoutedEventFlag.BringIntoViewRequested;
 
-		public static readonly object DragStarting = RoutedEventFlag.DragStarting;
-		public static readonly object DragEnter = RoutedEventFlag.DragEnter;
-		public static readonly object DragLeave = RoutedEventFlag.DragLeave;
-		public static readonly object DragOver = RoutedEventFlag.DragOver;
-		public static readonly object Drop = RoutedEventFlag.Drop;
-		public static readonly object DropCompleted = RoutedEventFlag.DropCompleted;
+	public static readonly object DragStarting = RoutedEventFlag.DragStarting;
+	public static readonly object DragEnter = RoutedEventFlag.DragEnter;
+	public static readonly object DragLeave = RoutedEventFlag.DragLeave;
+	public static readonly object DragOver = RoutedEventFlag.DragOver;
+	public static readonly object Drop = RoutedEventFlag.Drop;
+	public static readonly object DropCompleted = RoutedEventFlag.DropCompleted;
 
-		public static readonly object ManipulationStarting = RoutedEventFlag.ManipulationStarting;
-		public static readonly object ManipulationStarted = RoutedEventFlag.ManipulationStarted;
-		public static readonly object ManipulationDelta = RoutedEventFlag.ManipulationDelta;
-		public static readonly object ManipulationInertiaStarting = RoutedEventFlag.ManipulationInertiaStarting;
-		public static readonly object ManipulationCompleted = RoutedEventFlag.ManipulationCompleted;
+	public static readonly object ManipulationStarting = RoutedEventFlag.ManipulationStarting;
+	public static readonly object ManipulationStarted = RoutedEventFlag.ManipulationStarted;
+	public static readonly object ManipulationDelta = RoutedEventFlag.ManipulationDelta;
+	public static readonly object ManipulationInertiaStarting = RoutedEventFlag.ManipulationInertiaStarting;
+	public static readonly object ManipulationCompleted = RoutedEventFlag.ManipulationCompleted;
 
-		public static readonly object Tapped = RoutedEventFlag.Tapped;
-		public static readonly object DoubleTapped = RoutedEventFlag.DoubleTapped;
-		public static readonly object RightTapped = RoutedEventFlag.RightTapped;
-		public static readonly object Holding = RoutedEventFlag.Holding;
+	public static readonly object Tapped = RoutedEventFlag.Tapped;
+	public static readonly object DoubleTapped = RoutedEventFlag.DoubleTapped;
+	public static readonly object RightTapped = RoutedEventFlag.RightTapped;
+	public static readonly object Holding = RoutedEventFlag.Holding;
 
-		public static readonly object ContextRequested = RoutedEventFlag.ContextRequested;
-		public static readonly object ContextCanceled = RoutedEventFlag.ContextCanceled;
-	}
+	public static readonly object ContextRequested = RoutedEventFlag.ContextRequested;
+	public static readonly object ContextCanceled = RoutedEventFlag.ContextCanceled;
+}
 
+internal static class Boxer
+{
 	public static object Box(bool value) => value ? BoolBoxes.True : BoolBoxes.False;
 
 	public static object Box(int value) => value switch

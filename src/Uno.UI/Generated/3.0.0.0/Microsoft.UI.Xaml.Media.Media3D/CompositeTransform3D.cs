@@ -114,7 +114,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(CenterXProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(CenterXProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -128,7 +128,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(CenterYProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(CenterYProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -142,7 +142,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(CenterZProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(CenterZProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -156,7 +156,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(RotationXProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(RotationXProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -170,7 +170,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(RotationYProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(RotationYProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -184,7 +184,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(RotationZProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(RotationZProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -198,7 +198,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(ScaleXProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(ScaleXProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -212,7 +212,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(ScaleYProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(ScaleYProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -226,7 +226,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(ScaleZProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(ScaleZProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -240,7 +240,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(TranslateXProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(TranslateXProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -254,7 +254,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(TranslateYProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(TranslateYProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -268,7 +268,7 @@ namespace Microsoft.UI.Xaml.Media.Media3D
 			}
 			set
 			{
-				this.SetValue(TranslateZProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(TranslateZProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

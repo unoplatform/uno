@@ -2,7 +2,7 @@ using System;
 using System.ComponentModel;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation;
 
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
@@ -92,7 +92,7 @@ namespace Microsoft.UI.Xaml
 		public double MinWindowHeight
 		{
 			get => (double)this.GetValue(MinWindowHeightProperty);
-			set => this.SetValue(MinWindowHeightProperty, Boxes.Box(value));
+			set => this.SetValue(MinWindowHeightProperty, Boxer.Box(value));
 		}
 
 		// Using a DependencyProperty as the backing store for MinWindowHeight.  This enables animation, styling, binding, etc...
@@ -111,7 +111,7 @@ namespace Microsoft.UI.Xaml
 		public double MinWindowWidth
 		{
 			get => (double)GetValue(MinWindowWidthProperty);
-			set => SetValue(MinWindowWidthProperty, Boxes.Box(value));
+			set => SetValue(MinWindowWidthProperty, Boxer.Box(value));
 		}
 
 		// Using a DependencyProperty as the backing store for MinWindowWidthProperty.  This enables animation, styling, binding, etc...

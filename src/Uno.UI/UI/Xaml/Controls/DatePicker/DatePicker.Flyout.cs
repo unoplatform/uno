@@ -2,7 +2,7 @@
 using Uno;
 using Uno.Foundation.Extensibility;
 using Uno.UI;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -15,7 +15,7 @@ namespace Microsoft.UI.Xaml.Controls
 			"UseNativeStyle",
 			typeof(bool),
 			typeof(DatePicker),
-			new FrameworkPropertyMetadata(Boxes.Box(DEFAULT_NATIVE_STYLE)));
+			new FrameworkPropertyMetadata(Boxer.Box(DEFAULT_NATIVE_STYLE)));
 
 		/// <summary>
 		/// [UnoOnly] If we should use the native picker for the platform.
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 			"UseNativeMinMaxDates",
 			typeof(bool),
 			typeof(DatePicker),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
+			new FrameworkPropertyMetadata(BoolBoxes.False));
 
 		/// <summary>
 		/// [UnoOnly] When using native pickers (through the UseNativeStyle property),

@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			set
 			{
-				this.SetValue(CacheLengthProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(CacheLengthProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

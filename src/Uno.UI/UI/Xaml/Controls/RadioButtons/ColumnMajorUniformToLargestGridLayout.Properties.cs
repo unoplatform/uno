@@ -1,5 +1,5 @@
 ﻿using Microsoft.UI.Xaml;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
@@ -8,29 +8,29 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public double ColumnSpacing
 		{
 			get => (double)GetValue(ColumnSpacingProperty);
-			set => SetValue(ColumnSpacingProperty, Boxes.Box(value));
+			set => SetValue(ColumnSpacingProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty ColumnSpacingProperty { get; } =
-			DependencyProperty.Register(nameof(ColumnSpacing), typeof(double), typeof(ColumnMajorUniformToLargestGridLayout), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, OnColumnSpacingPropertyChanged));
+			DependencyProperty.Register(nameof(ColumnSpacing), typeof(double), typeof(ColumnMajorUniformToLargestGridLayout), new FrameworkPropertyMetadata(DoubleBoxes.Zero, OnColumnSpacingPropertyChanged));
 
 		public int MaxColumns
 		{
 			get => (int)GetValue(MaxColumnsProperty);
-			set => SetValue(MaxColumnsProperty, Boxes.Box(value));
+			set => SetValue(MaxColumnsProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty MaxColumnsProperty { get; } =
-			DependencyProperty.Register(nameof(MaxColumns), typeof(int), typeof(ColumnMajorUniformToLargestGridLayout), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero, OnMaxColumnsPropertyChanged));
+			DependencyProperty.Register(nameof(MaxColumns), typeof(int), typeof(ColumnMajorUniformToLargestGridLayout), new FrameworkPropertyMetadata(IntegerBoxes.Zero, OnMaxColumnsPropertyChanged));
 
 		public double RowSpacing
 		{
 			get => (double)GetValue(RowSpacingProperty);
-			set => SetValue(RowSpacingProperty, Boxes.Box(value));
+			set => SetValue(RowSpacingProperty, Boxer.Box(value));
 		}
 
 		public static DependencyProperty RowSpacingProperty { get; } =
-			DependencyProperty.Register(nameof(RowSpacing), typeof(double), typeof(ColumnMajorUniformToLargestGridLayout), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, OnRowSpacingPropertyChanged));
+			DependencyProperty.Register(nameof(RowSpacing), typeof(double), typeof(ColumnMajorUniformToLargestGridLayout), new FrameworkPropertyMetadata(DoubleBoxes.Zero, OnRowSpacingPropertyChanged));
 
 		private static void OnColumnSpacingPropertyChanged(
 			DependencyObject sender,
@@ -51,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			owner.ValidateGreaterThanZero(coercedValue);
 			if (value != coercedValue)
 			{
-				sender.SetValue(args.Property, Boxes.Box(coercedValue));
+				sender.SetValue(args.Property, Boxer.Box(coercedValue));
 				return;
 			}
 

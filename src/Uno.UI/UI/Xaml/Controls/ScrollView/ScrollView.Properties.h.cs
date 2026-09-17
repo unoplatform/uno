@@ -2,7 +2,7 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using Microsoft.UI.Xaml.Controls.Primitives;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -90,7 +90,7 @@ public partial class ScrollView : Control
 	public double HorizontalAnchorRatio
 	{
 		get => (double)GetValue(HorizontalAnchorRatioProperty);
-		set => SetValue(HorizontalAnchorRatioProperty, Boxes.Box(value));
+		set => SetValue(HorizontalAnchorRatioProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty HorizontalAnchorRatioProperty { get; } =
@@ -98,7 +98,7 @@ public partial class ScrollView : Control
 			nameof(HorizontalAnchorRatio),
 			typeof(double),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, propertyChangedCallback: OnHorizontalAnchorRatioPropertyChanged));
+			new FrameworkPropertyMetadata(DoubleBoxes.Zero, propertyChangedCallback: OnHorizontalAnchorRatioPropertyChanged));
 
 	public ScrollingScrollBarVisibility HorizontalScrollBarVisibility
 	{
@@ -162,7 +162,7 @@ public partial class ScrollView : Control
 	public double MaxZoomFactor
 	{
 		get => (double)GetValue(MaxZoomFactorProperty);
-		set => SetValue(MaxZoomFactorProperty, Boxes.Box(value));
+		set => SetValue(MaxZoomFactorProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty MaxZoomFactorProperty { get; } =
@@ -175,7 +175,7 @@ public partial class ScrollView : Control
 	public double MinZoomFactor
 	{
 		get => (double)GetValue(MinZoomFactorProperty);
-		set => SetValue(MinZoomFactorProperty, Boxes.Box(value));
+		set => SetValue(MinZoomFactorProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty MinZoomFactorProperty { get; } =
@@ -223,7 +223,7 @@ public partial class ScrollView : Control
 	public double VerticalAnchorRatio
 	{
 		get => (double)GetValue(VerticalAnchorRatioProperty);
-		set => SetValue(VerticalAnchorRatioProperty, Boxes.Box(value));
+		set => SetValue(VerticalAnchorRatioProperty, Boxer.Box(value));
 	}
 
 	public static DependencyProperty VerticalAnchorRatioProperty { get; } =
@@ -231,7 +231,7 @@ public partial class ScrollView : Control
 			nameof(VerticalAnchorRatio),
 			typeof(double),
 			typeof(ScrollView),
-			new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero, propertyChangedCallback: OnVerticalAnchorRatioPropertyChanged));
+			new FrameworkPropertyMetadata(DoubleBoxes.Zero, propertyChangedCallback: OnVerticalAnchorRatioPropertyChanged));
 
 	public ScrollingScrollBarVisibility VerticalScrollBarVisibility
 	{

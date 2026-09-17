@@ -19,7 +19,7 @@ using System.Numerics;
 using Windows.Graphics.Display;
 using Microsoft.UI.Composition;
 using Uno.UI.Composition.Drawing;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media.Imaging
 {
@@ -66,7 +66,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty PixelWidthProperty { get; } = DependencyProperty.Register(
-			"PixelWidth", typeof(int), typeof(RenderTargetBitmap), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
+			"PixelWidth", typeof(int), typeof(RenderTargetBitmap), new FrameworkPropertyMetadata(IntegerBoxes.Zero));
 
 #if !HAS_RENDER_TARGET_BITMAP
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
@@ -74,7 +74,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		public int PixelWidth
 		{
 			get => (int)GetValue(PixelWidthProperty);
-			private set => SetValue(PixelWidthProperty, Boxes.Box(value));
+			private set => SetValue(PixelWidthProperty, Boxer.Box(value));
 		}
 		#endregion
 
@@ -84,7 +84,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
 		public static DependencyProperty PixelHeightProperty { get; } = DependencyProperty.Register(
-			"PixelHeight", typeof(int), typeof(RenderTargetBitmap), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
+			"PixelHeight", typeof(int), typeof(RenderTargetBitmap), new FrameworkPropertyMetadata(IntegerBoxes.Zero));
 
 #if !HAS_RENDER_TARGET_BITMAP
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
@@ -92,7 +92,7 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 		public int PixelHeight
 		{
 			get => (int)GetValue(PixelHeightProperty);
-			private set => SetValue(PixelHeightProperty, Boxes.Box(value));
+			private set => SetValue(PixelHeightProperty, Boxer.Box(value));
 		}
 		#endregion
 

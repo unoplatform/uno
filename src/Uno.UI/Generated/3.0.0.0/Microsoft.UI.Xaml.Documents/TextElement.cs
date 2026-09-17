@@ -126,7 +126,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			set
 			{
-				this.SetValue(ExitDisplayModeOnAccessKeyInvokedProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(ExitDisplayModeOnAccessKeyInvokedProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -146,7 +146,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			set
 			{
-				this.SetValue(IsAccessKeyScopeProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(IsAccessKeyScopeProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -161,7 +161,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			set
 			{
-				this.SetValue(KeyTipHorizontalOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(KeyTipHorizontalOffsetProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -189,7 +189,7 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 			set
 			{
-				this.SetValue(KeyTipVerticalOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(KeyTipVerticalOffsetProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

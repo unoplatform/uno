@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 			set
 			{
-				this.SetValue(HorizontalOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(HorizontalOffsetProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif
@@ -48,7 +48,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			}
 			set
 			{
-				this.SetValue(VerticalOffsetProperty, global::Uno.UI.Helpers.Boxes.Box(value));
+				this.SetValue(VerticalOffsetProperty, global::Uno.UI.Helpers.Boxes.Boxer.Box(value));
 			}
 		}
 #endif

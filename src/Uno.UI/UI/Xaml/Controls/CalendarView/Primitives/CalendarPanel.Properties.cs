@@ -9,7 +9,7 @@
 //
 //------------------------------------------------------------------------
 
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Windows.UI.Core;
 using DateTime = Windows.Foundation.WindowsFoundationDateTime;
 
@@ -20,21 +20,21 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		private void CheckThread() => CoreDispatcher.CheckThreadAccess();
 
 		internal static readonly DependencyProperty CacheLengthProperty = DependencyProperty.Register(
-			"CacheLength", typeof(double), typeof(CalendarPanel), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
+			"CacheLength", typeof(double), typeof(CalendarPanel), new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 
 		internal double CacheLength
 		{
 			get { return (double)GetValue(CacheLengthProperty); }
-			set { SetValue(CacheLengthProperty, Boxes.Box(value)); }
+			set { SetValue(CacheLengthProperty, Boxer.Box(value)); }
 		}
 
 		internal static readonly DependencyProperty ColsProperty = DependencyProperty.Register(
-			"Cols", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
+			"Cols", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(IntegerBoxes.Zero));
 
 		internal int Cols
 		{
 			get { return (int)GetValue(ColsProperty); }
-			set { SetValue(ColsProperty, Boxes.Box(value)); }
+			set { SetValue(ColsProperty, Boxer.Box(value)); }
 		}
 
 		internal int FirstCacheIndex
@@ -59,21 +59,21 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 
 		internal static readonly DependencyProperty ItemMinHeightProperty = DependencyProperty.Register(
-			"ItemMinHeight", typeof(double), typeof(CalendarPanel), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
+			"ItemMinHeight", typeof(double), typeof(CalendarPanel), new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 
 		internal double ItemMinHeight
 		{
 			get { return (double)GetValue(ItemMinHeightProperty); }
-			set { SetValue(ItemMinHeightProperty, Boxes.Box(value)); }
+			set { SetValue(ItemMinHeightProperty, Boxer.Box(value)); }
 		}
 
 		internal static readonly DependencyProperty ItemMinWidthProperty = DependencyProperty.Register(
-			"ItemMinWidth", typeof(double), typeof(CalendarPanel), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
+			"ItemMinWidth", typeof(double), typeof(CalendarPanel), new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 
 		internal double ItemMinWidth
 		{
 			get { return (double)GetValue(ItemMinWidthProperty); }
-			set { SetValue(ItemMinWidthProperty, Boxes.Box(value)); }
+			set { SetValue(ItemMinWidthProperty, Boxer.Box(value)); }
 		}
 
 		internal int LastCacheIndex
@@ -108,12 +108,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		}
 
 		internal static readonly DependencyProperty RowsProperty = DependencyProperty.Register(
-			"Rows", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
+			"Rows", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(IntegerBoxes.Zero));
 
 		internal int Rows
 		{
 			get { return (int)GetValue(RowsProperty); }
-			set { SetValue(RowsProperty, Boxes.Box(value)); }
+			set { SetValue(RowsProperty, Boxer.Box(value)); }
 		}
 
 #if false
@@ -129,12 +129,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #endif
 
 		internal static readonly DependencyProperty StartIndexProperty = DependencyProperty.Register(
-			"StartIndex", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
+			"StartIndex", typeof(int), typeof(CalendarPanel), new FrameworkPropertyMetadata(IntegerBoxes.Zero));
 
 		internal int StartIndex
 		{
 			get { return (int)GetValue(StartIndexProperty); }
-			set { SetValue(StartIndexProperty, Boxes.Box(value)); }
+			set { SetValue(StartIndexProperty, Boxer.Box(value)); }
 		}
 	}
 }

@@ -1,7 +1,7 @@
 ﻿#nullable enable
 
 using System;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Windows.System;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Input;
@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public int Delay
 		{
 			get => (int)GetValue(DelayProperty);
-			set => SetValue(DelayProperty, Boxes.Box(value));
+			set => SetValue(DelayProperty, Boxer.Box(value));
 		}
 
 		/// <summary>
@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		public int Interval
 		{
 			get => (int)GetValue(IntervalProperty);
-			set => SetValue(IntervalProperty, Boxes.Box(value));
+			set => SetValue(IntervalProperty, Boxer.Box(value));
 		}
 
 		/// <summary>

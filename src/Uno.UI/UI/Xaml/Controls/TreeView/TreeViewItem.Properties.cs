@@ -4,7 +4,7 @@
 
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Media;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -43,7 +43,7 @@ public partial class TreeViewItem
 	public double GlyphOpacity
 	{
 		get => (double)GetValue(GlyphOpacityProperty);
-		set => SetValue(GlyphOpacityProperty, Boxes.Box(value));
+		set => SetValue(GlyphOpacityProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -52,7 +52,7 @@ public partial class TreeViewItem
 	public double GlyphSize
 	{
 		get => (double)GetValue(GlyphSizeProperty);
-		set => SetValue(GlyphSizeProperty, Boxes.Box(value));
+		set => SetValue(GlyphSizeProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -113,7 +113,7 @@ public partial class TreeViewItem
 	/// Identifies the GlyphOpacity dependency property.
 	/// </summary>
 	public static DependencyProperty GlyphOpacityProperty { get; } =
-		DependencyProperty.Register(nameof(GlyphOpacity), typeof(double), typeof(TreeViewItem), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.One));
+		DependencyProperty.Register(nameof(GlyphOpacity), typeof(double), typeof(TreeViewItem), new FrameworkPropertyMetadata(DoubleBoxes.One));
 
 	/// <summary>
 	/// Identifies the GlyphSize dependency property.
@@ -125,13 +125,13 @@ public partial class TreeViewItem
 	/// Identifies the HasUnrealizedChildren dependency property.
 	/// </summary>
 	public static DependencyProperty HasUnrealizedChildrenProperty { get; } =
-		DependencyProperty.Register(nameof(HasUnrealizedChildren), typeof(bool), typeof(TreeViewItem), new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnHasUnrealizedChildrenPropertyChanged));
+		DependencyProperty.Register(nameof(HasUnrealizedChildren), typeof(bool), typeof(TreeViewItem), new FrameworkPropertyMetadata(BoolBoxes.False, OnHasUnrealizedChildrenPropertyChanged));
 
 	/// <summary>
 	/// Identifies the IsExpanded dependency property.
 	/// </summary>
 	public static DependencyProperty IsExpandedProperty { get; } =
-		DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(TreeViewItem), new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnIsExpandedPropertyChanged));
+		DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(TreeViewItem), new FrameworkPropertyMetadata(BoolBoxes.False, OnIsExpandedPropertyChanged));
 
 	/// <summary>
 	/// Identifies the ItemsSource dependency property.

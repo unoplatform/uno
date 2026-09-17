@@ -30,15 +30,16 @@ public sealed class BoxingCodeFixProvider : CodeFixProvider
 				var model = await document.GetSemanticModelAsync(ct).ConfigureAwait(false);
 				var root = await model!.SyntaxTree.GetRootAsync(ct).ConfigureAwait(false);
 				var node = root.FindNode(context.Span, getInnermostNodeForTie: true);
-				var boxesType = model.Compilation.GetTypeByMetadataName("Uno.UI.Helpers.Boxes");
-				if (boxesType is null ||
-					!model.Compilation.IsSymbolAccessibleWithin(boxesType, model.Compilation.Assembly))
+				var boxerType = model.Compilation.GetTypeByMetadataName("Uno.UI.Helpers.Boxes.Boxer");
+				if (boxerType is null ||
+					!model.Compilation.IsSymbolAccessibleWithin(boxerType, model.Compilation.Assembly))
 				{
 					return document;
 				}
 
 				var generator = SyntaxGenerator.GetGenerator(document);
-				var boxesIdentifier = (ExpressionSyntax)generator.TypeExpression(boxesType).WithAdditionalAnnotations(Simplifier.AddImportsAnnotation);
+				ExpressionSyntax TypeExpression(ITypeSymbol type)
+					=> (ExpressionSyntax)generator.TypeExpression(type).WithAdditionalAnnotations(Simplifier.AddImportsAnnotation);
 
 				// An explicit boxing is reported on the (object) cast itself: box its operand instead, keeping any
 				// inner conversion such as (object)(int)value. Any other cast, like (int)value, is the value being boxed.
@@ -87,14 +88,12 @@ public sealed class BoxingCodeFixProvider : CodeFixProvider
 						};
 					}
 
-					if (boxMemberName is not null && boxClassName is not null)
+					if (boxMemberName is not null && boxClassName is not null &&
+						model.Compilation.GetTypeByMetadataName($"Uno.UI.Helpers.Boxes.{boxClassName}") is { } boxClassType)
 					{
 						var newNode = SyntaxFactory.MemberAccessExpression(
 							SyntaxKind.SimpleMemberAccessExpression,
-							SyntaxFactory.MemberAccessExpression(
-								SyntaxKind.SimpleMemberAccessExpression,
-								boxesIdentifier,
-								SyntaxFactory.IdentifierName(boxClassName)),
+							TypeExpression(boxClassType),
 							SyntaxFactory.IdentifierName(boxMemberName));
 						return document.WithSyntaxRoot(root.ReplaceNode(node, newNode));
 					}
@@ -108,7 +107,7 @@ public sealed class BoxingCodeFixProvider : CodeFixProvider
 						var newNode = SyntaxFactory.InvocationExpression(
 							SyntaxFactory.MemberAccessExpression(
 								SyntaxKind.SimpleMemberAccessExpression,
-								boxesIdentifier,
+								TypeExpression(boxerType),
 								SyntaxFactory.IdentifierName("Box")))
 						.WithArgumentList(
 							SyntaxFactory.ArgumentList(

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using DirectUI;
 using Uno.UI;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
@@ -311,7 +311,7 @@ namespace Microsoft.UI.Xaml.Documents
 				nameof(IsTabStop),
 				typeof(bool),
 				typeof(Hyperlink),
-				new FrameworkPropertyMetadata(defaultValue: Boxes.BoolBoxes.True)
+				new FrameworkPropertyMetadata(defaultValue: BoolBoxes.True)
 			);
 
 		public int TabIndex

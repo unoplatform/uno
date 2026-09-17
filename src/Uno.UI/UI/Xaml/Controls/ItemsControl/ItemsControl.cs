@@ -14,7 +14,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using System.Diagnostics.CodeAnalysis;
 
 using _View = Microsoft.UI.Xaml.UIElement;
@@ -361,7 +361,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsGroupingProperty { get; } =
-			DependencyProperty.Register("IsGrouping", typeof(bool), typeof(ItemsControl), new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
+			DependencyProperty.Register("IsGrouping", typeof(bool), typeof(ItemsControl), new FrameworkPropertyMetadata(BoolBoxes.False));
 		#endregion
 
 		#region Internal Attached Properties
@@ -371,7 +371,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"IndexForItemContainer",
 				typeof(int),
 				typeof(ItemsControl),
-				new FrameworkPropertyMetadata(Boxes.IntegerBoxes.NegativeOne)
+				new FrameworkPropertyMetadata(IntegerBoxes.NegativeOne)
 			);
 
 		internal static DependencyProperty ItemsControlForItemContainerProperty { get; } =
@@ -387,7 +387,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"ItemHasManualBindingExpression",
 				typeof(bool),
 				typeof(ItemsControl),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False)
+				new FrameworkPropertyMetadata(BoolBoxes.False)
 			);
 
 		#endregion
@@ -1051,7 +1051,7 @@ namespace Microsoft.UI.Xaml.Controls
 				for (var i = startingIndex; i < count; i++)
 				{
 					var container = children[i];
-					container.SetValue(IndexForItemContainerProperty, Boxes.Box(i));
+					container.SetValue(IndexForItemContainerProperty, Boxer.Box(i));
 				}
 			}
 
@@ -1358,7 +1358,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_containerBeingPrepared = container;
 
 			// This must be set before calling PrepareContainerForItemOverride
-			container.SetValue(IndexForItemContainerProperty, Boxes.Box(index));
+			container.SetValue(IndexForItemContainerProperty, Boxer.Box(index));
 
 			var item = ItemFromIndex(index);
 			PrepareContainerForItemOverride(container, item);
@@ -1455,7 +1455,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			var index = IndexFromItem(item);
-			var containerFromIndex = index == -1 ? null : MaterializedContainers.FirstOrDefault(materializedContainer => Equals(Boxes.Box(IndexFromContainer(materializedContainer)), Boxes.Box(index)));
+			var containerFromIndex = index == -1 ? null : MaterializedContainers.FirstOrDefault(materializedContainer => Equals(Boxer.Box(IndexFromContainer(materializedContainer)), Boxer.Box(index)));
 			EnsureContainerItemsControlProperty(containerFromIndex);
 			return containerFromIndex;
 		}
@@ -1520,7 +1520,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal virtual DependencyObject ContainerFromIndexInner(int index)
 		{
-			return MaterializedContainers.FirstOrDefault(materializedContainer => Equals(materializedContainer.GetValue(IndexForItemContainerProperty), Boxes.Box(index)));
+			return MaterializedContainers.FirstOrDefault(materializedContainer => Equals(materializedContainer.GetValue(IndexForItemContainerProperty), Boxer.Box(index)));
 		}
 
 		/// <summary>

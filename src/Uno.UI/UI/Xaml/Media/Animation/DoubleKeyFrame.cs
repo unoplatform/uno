@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Media.Animation
 {
@@ -31,10 +31,10 @@ namespace Microsoft.UI.Xaml.Media.Animation
 		public double Value
 		{
 			get { return (double)this.GetValue(ValueProperty); }
-			set { this.SetValue(ValueProperty, Boxes.Box(value)); }
+			set { this.SetValue(ValueProperty, Boxer.Box(value)); }
 		}
 		public static DependencyProperty ValueProperty { get; } =
-			DependencyProperty.Register("Value", typeof(double), typeof(DoubleKeyFrame), new FrameworkPropertyMetadata(Boxes.DoubleBoxes.Zero));
+			DependencyProperty.Register("Value", typeof(double), typeof(DoubleKeyFrame), new FrameworkPropertyMetadata(DoubleBoxes.Zero));
 
 		/// <summary>
 		/// The time at which the key frame's current value should be equal to its Value property.
@@ -53,7 +53,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 
 		public override string ToString()
 		{
-			return "KeyTime: {0}, Value: {1}".InvariantCultureFormat(KeyTime, Boxes.Box(Value));
+			return "KeyTime: {0}, Value: {1}".InvariantCultureFormat(KeyTime, Boxer.Box(Value));
 		}
 	}
 }

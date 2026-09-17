@@ -1,5 +1,5 @@
 ﻿using Microsoft.UI.Xaml.Controls.Primitives;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -13,7 +13,7 @@ partial class AppBarToggleButton
 	public int DynamicOverflowOrder
 	{
 		get => (int)GetValue(DynamicOverflowOrderProperty);
-		set => SetValue(DynamicOverflowOrderProperty, Boxes.Box(value));
+		set => SetValue(DynamicOverflowOrderProperty, Boxer.Box(value));
 	}
 
 	/// <summary>
@@ -24,7 +24,7 @@ partial class AppBarToggleButton
 			nameof(DynamicOverflowOrder),
 			typeof(int),
 			typeof(AppBarToggleButton),
-			new FrameworkPropertyMetadata(Boxes.IntegerBoxes.Zero));
+			new FrameworkPropertyMetadata(IntegerBoxes.Zero));
 
 	/// <summary>
 	/// Gets or sets the graphic content of the app bar toggle button.
@@ -62,7 +62,7 @@ partial class AppBarToggleButton
 			nameof(IsCompact),
 			typeof(bool),
 			typeof(AppBarToggleButton),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False)
+			new FrameworkPropertyMetadata(BoolBoxes.False)
 		);
 
 	/// <summary>
@@ -82,7 +82,7 @@ partial class AppBarToggleButton
 			nameof(IsInOverflow),
 			typeof(bool),
 			typeof(AppBarToggleButton),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
+			new FrameworkPropertyMetadata(BoolBoxes.False));
 
 	// TODO:MZ: Does the getter/setter only apply when retrieved via the public property or also via DP GetValue/SetValue?
 	/// <summary>
@@ -176,7 +176,7 @@ partial class AppBarToggleButton
 			nameof(UseOverflowStyle),
 			typeof(bool),
 			typeof(AppBarToggleButton),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
+			new FrameworkPropertyMetadata(BoolBoxes.False));
 
 	bool ICommandBarElement3.IsInOverflow
 	{

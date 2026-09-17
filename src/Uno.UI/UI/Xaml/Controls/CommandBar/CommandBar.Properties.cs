@@ -4,7 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 using Windows.Foundation.Collections;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set { this.SetValue(IsDynamicOverflowEnabledProperty, value); }
 		}
 		public static DependencyProperty IsDynamicOverflowEnabledProperty { get; } =
-			DependencyProperty.Register(nameof(IsDynamicOverflowEnabled), typeof(bool), typeof(CommandBar), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True));
+			DependencyProperty.Register(nameof(IsDynamicOverflowEnabled), typeof(bool), typeof(CommandBar), new FrameworkPropertyMetadata(BoolBoxes.True));
 
 		public CommandBarOverflowButtonVisibility OverflowButtonVisibility
 		{

@@ -5,7 +5,7 @@
 using System.Windows.Input;
 using Windows.Foundation;
 using Microsoft.UI.Xaml;
-using Uno.UI.Helpers;
+using Uno.UI.Helpers.Boxes;
 
 namespace Microsoft.UI.Xaml.Controls;
 
@@ -189,7 +189,7 @@ partial class TeachingTip
 	/// Identifies the IsLightDismissEnabled dependency property.
 	/// </summary>
 	public static DependencyProperty IsLightDismissEnabledProperty { get; } =
-		DependencyProperty.Register(nameof(IsLightDismissEnabled), typeof(bool), typeof(TeachingTip), new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnPropertyChanged));
+		DependencyProperty.Register(nameof(IsLightDismissEnabled), typeof(bool), typeof(TeachingTip), new FrameworkPropertyMetadata(BoolBoxes.False, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether the teaching tip is open.
@@ -204,7 +204,7 @@ partial class TeachingTip
 	/// Identifies the IsOpen dependency property.
 	/// </summary>
 	public static DependencyProperty IsOpenProperty { get; } =
-		DependencyProperty.Register(nameof(IsOpen), typeof(bool), typeof(TeachingTip), new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnPropertyChanged));
+		DependencyProperty.Register(nameof(IsOpen), typeof(bool), typeof(TeachingTip), new FrameworkPropertyMetadata(BoolBoxes.False, OnPropertyChanged));
 
 	/// <summary>
 	/// Adds a margin between a targeted teaching tip and its target or between a non-targeted teaching tip and the xaml root.
@@ -250,7 +250,7 @@ partial class TeachingTip
 	/// Identifies the ShouldConstrainToRootBounds dependency property.
 	/// </summary>
 	public static DependencyProperty ShouldConstrainToRootBoundsProperty { get; } =
-		DependencyProperty.Register(nameof(ShouldConstrainToRootBounds), typeof(bool), typeof(TeachingTip), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True, OnPropertyChanged));
+		DependencyProperty.Register(nameof(ShouldConstrainToRootBounds), typeof(bool), typeof(TeachingTip), new FrameworkPropertyMetadata(BoolBoxes.True, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether the teaching tip will constrain to the bounds of its xaml root.
