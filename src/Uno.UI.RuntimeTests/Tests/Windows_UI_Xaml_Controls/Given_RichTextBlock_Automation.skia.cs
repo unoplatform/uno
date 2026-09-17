@@ -53,5 +53,48 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = null;
 			}
 		}
+
+		[TestMethod]
+		public void When_Hyperlink_Peer_Requested_Repeatedly()
+		{
+			// TextElement::GetOrCreateAutomationPeer caches the peer in m_tpAP for the element's lifetime.
+			var hyperlink = new Hyperlink();
+			hyperlink.Inlines.Add(new Run { Text = "the link" });
+
+			var first = hyperlink.GetOrCreateAutomationPeer();
+
+			Assert.IsInstanceOfType(first, typeof(HyperlinkAutomationPeer));
+			Assert.AreSame(first, hyperlink.GetOrCreateAutomationPeer());
+		}
+
+		[TestMethod]
+		public async Task When_Hyperlink_Peer_Reached_Through_Children_Walk()
+		{
+			var SUT = new RichTextBlock { Width = 400 };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = "Leading text " });
+			var hyperlink = new Hyperlink();
+			hyperlink.Inlines.Add(new Run { Text = "the link" });
+			paragraph.Inlines.Add(hyperlink);
+			SUT.Blocks.Add(paragraph);
+
+			try
+			{
+				await UITestHelper.Load(SUT);
+
+				var peer = FrameworkElementAutomationPeer.CreatePeerForElement(SUT);
+				var first = (peer.GetChildren() ?? new List<AutomationPeer>()).OfType<HyperlinkAutomationPeer>().SingleOrDefault();
+				var second = (peer.GetChildren() ?? new List<AutomationPeer>()).OfType<HyperlinkAutomationPeer>().SingleOrDefault();
+
+				Assert.IsNotNull(first, "The RichTextBlock peer should expose a peer for the Hyperlink");
+				Assert.AreSame(first, second, "Repeated children walks should return the same live peer");
+				Assert.AreSame(first, hyperlink.GetOrCreateAutomationPeer());
+				Assert.AreSame(peer, first!.GetParent(), "The parent set by the children walk should persist");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
 	}
 }

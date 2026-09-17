@@ -343,11 +343,13 @@ namespace Microsoft.UI.Xaml.Documents
 
 		// WASM specific as on WASM BaseClass is UIElement
 
-		// MUX Reference CTextElement::OnCreateAutomationPeer — most text elements have no peer; the ones
-		// that do (Hyperlink) override OnCreateAutomationPeerCore. WinUI caches the peer; Uno re-creates it,
-		// which is acceptable for the read-only AP children walk.
-		// TODO Uno: cache the created peer for parity with WinUI's GetOrCreateAutomationPeer.
-		internal Automation.Peers.AutomationPeer GetOrCreateAutomationPeer() => OnCreateAutomationPeerCore();
+		private Automation.Peers.AutomationPeer _textElementAutomationPeer;
+
+		// MUX Reference TextElement::GetOrCreateAutomationPeer — most text elements have no peer; the ones
+		// that do (Hyperlink) override OnCreateAutomationPeerCore. Like m_tpAP, a created peer is kept for the
+		// element's lifetime.
+		internal Automation.Peers.AutomationPeer GetOrCreateAutomationPeer()
+			=> _textElementAutomationPeer ??= OnCreateAutomationPeerCore();
 
 		private protected virtual Automation.Peers.AutomationPeer OnCreateAutomationPeerCore() => null;
 
