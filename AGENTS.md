@@ -190,7 +190,9 @@ Auto-generated stubs marked with `[Uno.NotImplemented]` allow compilation but wa
 
 ### Public Documentation and Spec References (MANDATORY)
 
-When editing specifications, documentation, or other repo-tracked design artifacts intended to be shareable:
+These rules cover files committed to the repo: specifications, documentation, and other repo-tracked design artifacts intended to be shareable. They do not cover pull request descriptions or PR and issue comments, which may link to private issues, pull requests, and repositories (see [Pull Requests & Issues](#pull-requests--issues)).
+
+When editing those files:
 
 1. **Do not reference private artifacts** from the document.
    - Do not link to private issues, private pull requests, private boards, private docs, or private repositories.
@@ -380,6 +382,7 @@ When asked to open a PR or file an issue, **base it on the repo's existing templ
 - **PRs** → fill out every section of `.github/PULL_REQUEST_TEMPLATE.md` and submit it as the body (e.g. `gh pr create --body-file <filled>.md`).
 - **Issues** → pick the matching GitHub issue **form** under `.github/ISSUE_TEMPLATE/` (`bug-report`, `enhancement`, `documentation-issue`/`-request`, `samples-issue`/`-request`, `feedback`, `support-request`, `success-story`) and fill its required fields (`gh issue create --template <name>.yml`).
 - **Every PR must reference an associated issue** (unless it's a pure-documentation change). Before opening the PR, settle the issue: use the one identified in the conversation; else search for an existing match (`gh issue list --search "<keywords>"`); else create one from the forms above. Put its number on the template's first line — `**GitHub Issue:** closes #XYZ` — so merging the PR auto-closes the issue.
+- **The associated issue may live in a private repository.** Link it rather than creating a public duplicate, using the `owner/repo#N` form (e.g. `closes unoplatform/<private-repo>#123`) so GitHub resolves it across repositories. PR descriptions and comments may also link related private pull requests.
 
 ---
 
