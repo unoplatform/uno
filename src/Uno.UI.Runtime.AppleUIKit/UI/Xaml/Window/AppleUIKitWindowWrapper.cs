@@ -53,11 +53,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		XamlRootMap.Register(xamlRoot, _mainController);
 		_mainController.View!.BackgroundColor = UIColor.Clear;
 		_mainController.NavigationBarHidden = true;
-
 		// Initialize the per-window accessibility adapter. Activation is deferred
 		// until the window is actually shown or receives a native activation signal.
 		var accessibility = new AppleUIKitAccessibility(xamlRoot, _mainController);
 		_mainController.SetAccessibility(accessibility);
+
 
 		_inputPane = InputPane.GetForCurrentView();
 
@@ -164,7 +164,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		{
 			return;
 		}
-
 		AccessibilityRouter.SetActive(_mainController);
 
 		if (_xamlRoot.Content is FrameworkElement { IsLoaded: false } fe)
