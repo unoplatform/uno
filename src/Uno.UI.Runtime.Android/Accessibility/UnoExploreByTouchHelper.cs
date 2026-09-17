@@ -2026,9 +2026,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		return request.Action switch
 		{
 			AccessibilityNativeAction.ChangeView
-				when double.IsFinite(request.Number) &&
-					request.Number == System.Math.Truncate(request.Number)
-				=> AccessibilityPeerHelper.TryChangeView(peer, (int)request.Number),
+				=> AccessibilityPeerHelper.TryChangeView(peer, request.Number),
 			AccessibilityNativeAction.ZoomIn
 				=> AccessibilityPeerHelper.TryZoomByUnit(peer, ZoomUnit.SmallIncrement),
 			AccessibilityNativeAction.ZoomOut
@@ -2734,7 +2732,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		if (effectivePeer.GetLabeledBy() is { } labeledByPeer &&
 			TryGetVirtualId(labeledByPeer, out var labeledById))
 		{
-			node.SetLabeledBy(_host, labeledById);
+			node.AddLabeledBy(_host, labeledById);
 		}
 
 		if (effectivePeer.GetDescribedBy() is { } describedByPeers)
