@@ -35,13 +35,7 @@ namespace Microsoft.UI.Xaml
 		#region Transitions Dependency Property
 
 		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
-		public static DependencyProperty TransitionsProperty { get; } = CreateTransitionsProperty();
-
-		public TransitionCollection Transitions
-		{
-			get => GetTransitionsValue();
-			set => SetTransitionsValue(value);
-		}
+		public partial TransitionCollection Transitions { get; set; }
 
 		private void OnTransitionsChanged(DependencyPropertyChangedEventArgs args)
 		{

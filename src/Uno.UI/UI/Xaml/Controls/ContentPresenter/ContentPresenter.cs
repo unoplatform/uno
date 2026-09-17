@@ -179,13 +179,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	#region BackgroundSizing DepedencyProperty
 	[GeneratedDependencyProperty(DefaultValue = default(BackgroundSizing), ChangedCallback = true)]
-	public static DependencyProperty BackgroundSizingProperty { get; } = CreateBackgroundSizingProperty();
-
-	public BackgroundSizing BackgroundSizing
-	{
-		get => GetBackgroundSizingValue();
-		set => SetBackgroundSizingValue(value);
-	}
+	public partial BackgroundSizing BackgroundSizing { get; set; }
 	private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 	{
 		this.UpdateBackgroundSizing();
@@ -331,14 +325,8 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 
 	#region FontStretch
 
-	public FontStretch FontStretch
-	{
-		get => GetFontStretchValue();
-		set => SetFontStretchValue(value);
-	}
-
 	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits)]
-	public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
+	public partial FontStretch FontStretch { get; set; }
 	#endregion
 
 	#region TextWrapping Dependency Property
@@ -582,13 +570,7 @@ public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePool
 	private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
 
 	[GeneratedDependencyProperty(ChangedCallback = true)]
-	public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
-
-	public CornerRadius CornerRadius
-	{
-		get => GetCornerRadiusValue();
-		set => SetCornerRadiusValue(value);
-	}
+	public partial CornerRadius CornerRadius { get; set; }
 
 	private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
 	{

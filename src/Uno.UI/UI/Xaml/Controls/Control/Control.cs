@@ -114,13 +114,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
 
 		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals)]
-		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
-
-		public bool IsEnabled
-		{
-			get => GetIsEnabledValue();
-			set => SetIsEnabledValue(value);
-		}
+		public partial bool IsEnabled { get; set; }
 
 		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -664,14 +658,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region FontStretch
 
-		public FontStretch FontStretch
-		{
-			get => GetFontStretchValue();
-			set => SetFontStretchValue(value);
-		}
-
 		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits)]
-		public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
+		public partial FontStretch FontStretch { get; set; }
 		#endregion
 
 		#region Padding DependencyProperty
@@ -744,16 +732,10 @@ namespace Microsoft.UI.Xaml.Controls
 				)
 			);
 
-		public CornerRadius CornerRadius
-		{
-			get => GetCornerRadiusValue();
-			set => SetCornerRadiusValue(value);
-		}
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnCornerRadiusChanged))]
+		public partial CornerRadius CornerRadius { get; set; }
 
 		public static CornerRadius GetCornerRadiusDefaultValue() => default(CornerRadius);
-
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnCornerRadiusChanged))]
-		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
 
 		private protected virtual void OnCornerRadiusChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -779,46 +761,24 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
-		public static bool GetIsTemplateFocusTarget(FrameworkElement element) =>
-			GetIsTemplateFocusTargetValue(element);
+		[GeneratedDependencyProperty(DefaultValue = false, AttachedBackingFieldOwner = typeof(Control))]
+		public static partial bool GetIsTemplateFocusTarget(FrameworkElement element);
 
-		public static void SetIsTemplateFocusTarget(FrameworkElement element, bool value) =>
-			SetIsTemplateFocusTargetValue(element, value);
-
-		[GeneratedDependencyProperty(DefaultValue = false, AttachedBackingFieldOwner = typeof(Control), Attached = true)]
-		public static DependencyProperty IsTemplateFocusTargetProperty { get; } = CreateIsTemplateFocusTargetProperty();
+		public static partial void SetIsTemplateFocusTarget(FrameworkElement element, bool value);
 
 		/// <summary>
 		/// Get or sets a value that indicates whether focus is constrained
 		/// within the control boundaries (for game pad/remote interaction).
 		/// </summary>
-		public bool IsFocusEngaged
-		{
-			get => GetIsFocusEngagedValue();
-			set => SetIsFocusEngagedValue(value);
-		}
-
-		/// <summary>
-		/// Identifies the IsFocusEngaged dependency property.
-		/// </summary>
 		[GeneratedDependencyProperty(DefaultValue = false)]
-		public static DependencyProperty IsFocusEngagedProperty { get; } = CreateIsFocusEngagedProperty();
+		public partial bool IsFocusEngaged { get; set; }
 
 		/// <summary>
 		/// Get or sets a value that indicates whether focus can be constrained within
 		/// the control boundaries (for game pad/remote interaction).
 		/// </summary>
-		public bool IsFocusEngagementEnabled
-		{
-			get => GetIsFocusEngagementEnabledValue();
-			set => SetIsFocusEngagementEnabledValue(value);
-		}
-
-		/// <summary>
-		/// Identifies the IsFocusEngagementEnabled dependency property.
-		/// </summary>
 		[GeneratedDependencyProperty(DefaultValue = false)]
-		public static DependencyProperty IsFocusEngagementEnabledProperty { get; } = CreateIsFocusEngagementEnabledProperty();
+		public partial bool IsFocusEngagementEnabled { get; set; }
 
 		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
 		{

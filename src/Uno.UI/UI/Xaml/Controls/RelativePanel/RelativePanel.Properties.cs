@@ -10,17 +10,8 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets or sets a value that indicates how far the background extends in relation to this element's border.
 	/// </summary>
-	public BackgroundSizing BackgroundSizing
-	{
-		get => GetBackgroundSizingValue();
-		set => SetBackgroundSizingValue(value);
-	}
-
-	/// <summary>
-	/// Identifies the BackgroundSizing dependency property.
-	/// </summary>
 	[GeneratedDependencyProperty(DefaultValue = default(BackgroundSizing), ChangedCallback = true)]
-	public static DependencyProperty BackgroundSizingProperty { get; } = CreateBackgroundSizingProperty();
+	public partial BackgroundSizing BackgroundSizing { get; set; }
 
 	private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e) =>
 		base.OnBackgroundSizingChangedInnerPanel(e);
@@ -28,19 +19,10 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets or sets a brush that describes the border fill of the panel.
 	/// </summary>
-	public Brush BorderBrush
-	{
-		get => GetBorderBrushValue();
-		set => SetBorderBrushValue(value);
-	}
+	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderBrushPropertyChanged), Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
+	public partial Brush BorderBrush { get; set; }
 
 	private static Brush GetBorderBrushDefaultValue() => SolidColorBrushHelper.Transparent;
-
-	/// <summary>
-	/// Identifies the BorderBrush dependency property.
-	/// </summary>
-	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderBrushPropertyChanged), Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
-	public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
 
 	private void OnBorderBrushPropertyChanged(Brush oldValue, Brush newValue)
 	{
@@ -51,19 +33,10 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets or sets the border thickness of the panel.
 	/// </summary>
-	public Thickness BorderThickness
-	{
-		get => GetBorderThicknessValue();
-		set => SetBorderThicknessValue(value);
-	}
+	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
+	public partial Thickness BorderThickness { get; set; }
 
 	private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
-
-	/// <summary>
-	/// Identifies the BorderThickness dependency property.
-	/// </summary>
-	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnBorderThicknessPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
-	public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
 	private void OnBorderThicknessPropertyChanged(Thickness oldValue, Thickness newValue)
 	{
@@ -74,19 +47,10 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets or sets the distance between the border and its child object.
 	/// </summary>
-	public Thickness Padding
-	{
-		get => GetPaddingValue();
-		set => SetPaddingValue(value);
-	}
+	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnPaddingPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
+	public partial Thickness Padding { get; set; }
 
 	private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
-
-	/// <summary>
-	/// Identifies the Padding dependency property.
-	/// </summary>
-	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnPaddingPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
-	public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
 
 	private void OnPaddingPropertyChanged(Thickness oldValue, Thickness newValue)
 	{
@@ -97,19 +61,10 @@ public partial class RelativePanel
 	/// <summary>
 	/// Gets or sets the radius for the corners of the panel's border.
 	/// </summary>
-	public CornerRadius CornerRadius
-	{
-		get => GetCornerRadiusValue();
-		set => SetCornerRadiusValue(value);
-	}
+	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnCornerRadiusPropertyChanged))]
+	public partial CornerRadius CornerRadius { get; set; }
 
 	private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
-
-	/// <summary>
-	/// Identifies the CornerRadius dependency property.
-	/// </summary>
-	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnCornerRadiusPropertyChanged))]
-	public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
 
 	private void OnCornerRadiusPropertyChanged(CornerRadius oldValue, CornerRadius newValue)
 	{
