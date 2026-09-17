@@ -38,7 +38,7 @@ namespace Microsoft.UI.Xaml.Media.Animation
 			{
 				if (_targetedProperties == null)
 				{
-					_targetedProperties = Items
+					_targetedProperties = this
 						.Select(i => i.GetTimelineTargetFullName())
 						.Distinct()
 						.ToArray();

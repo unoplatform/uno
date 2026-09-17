@@ -4,6 +4,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Shapes;
 using MUXControlsTestApp.Utilities;
 using Uno.Extensions;
@@ -131,6 +132,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			slider.Value.Should().BeInRange(74, 76, "we dragged the thumb 1/4 of width on right");
 
 			mouse.Release();
+		}
+
+		[TestMethod]
+#if !HAS_INPUT_INJECTOR
+		[Ignore("InputInjector is not supported on this platform.")]
+#endif
+		public async Task When_Slider_Pressed_With_RenderTransform()
+		{
+			// Exercises Slider's inverse transform path: the pointer position is given in root
+			// coordinates and has to be mapped back through the slider's render transform.
+			var slider = new Slider
+			{
+				Minimum = 0,
+				Maximum = 100,
+				Value = 0,
+				Orientation = Orientation.Horizontal,
+				Width = 200,
+				HorizontalAlignment = HorizontalAlignment.Left,
+				VerticalAlignment = VerticalAlignment.Top,
+				RenderTransform = new ScaleTransform { ScaleX = 2, ScaleY = 2 },
+			};
+			var container = new Grid { Width = 500, Height = 200, Children = { slider } };
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			try
+			{
+				await UITestHelper.Load(container);
+
+				mouse.Press(slider.GetAbsoluteBounds().GetCenter());
+				await WindowHelper.WaitForIdle();
+				mouse.Release();
+
+				slider.Value.Should().BeInRange(48, 52, "the press was at the center of the scaled slider");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 #endif
 

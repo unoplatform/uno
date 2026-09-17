@@ -100,6 +100,7 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 
 			public bool EnableFuzzyMatching { get; set; } = true;
 			public Dictionary<string, string>? GlobalConfigOverride { get; set; }
+			public Action<IReadOnlyDictionary<string, string>>? GeneratedSourcesVerifier { get; set; }
 
 			protected TestBase(XamlFile xamlFile, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
 				: this([xamlFile], testFilePath, testMethodName)
@@ -298,11 +299,18 @@ build_metadata.AdditionalFiles.Link = 0/Strings/{resourceFile.Locale}/{resourceF
 
 				var (compilation, generatorDiagnostics) = await base.GetProjectCompilationAsync(project, verifier, cancellationToken);
 				var expectedNames = new HashSet<string>();
+				var generatedSources = GeneratedSourcesVerifier is null
+					? null
+					: new Dictionary<string, string>();
 				foreach (var tree in compilation.SyntaxTrees.Skip(project.DocumentIds.Count))
 				{
 					WriteTreeToDiskIfNecessary(tree, resourceDirectory);
-					expectedNames.Add(GetFileNameFromTree(tree));
+					var fileName = GetFileNameFromTree(tree);
+					expectedNames.Add(fileName);
+					generatedSources?.Add(fileName, tree.GetText(cancellationToken).ToString());
 				}
+
+				GeneratedSourcesVerifier?.Invoke(generatedSources!);
 
 				var currentTestPrefix = $"Uno.UI.SourceGenerators.Tests.XamlCodeGeneratorTests.{TestOutputFolderName}.{Path.GetFileNameWithoutExtension(_testFilePath)}.{_testMethodName}.";
 				foreach (var name in GetType().Assembly.GetManifestResourceNames())
