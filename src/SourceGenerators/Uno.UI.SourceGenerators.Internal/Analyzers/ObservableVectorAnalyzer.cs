@@ -22,9 +22,11 @@ namespace Uno.UI.SourceGenerators.Internal;
 internal sealed class ObservableVectorAnalyzer : DiagnosticAnalyzer
 {
 	private static DiagnosticDescriptor _missingAddOverrideDescriptor = new(
+#pragma warning disable RS2008 // Enable analyzer release tracking
 		"UnoInternal0001",
+#pragma warning restore RS2008 // Enable analyzer release tracking
 		"Implement or override 'Add' to call 'Append'",
-		"Type '{0}' should implement or override 'Add' to call 'Append'.",
+		"Type '{0}' should implement or override 'Add' to call 'Append'",
 		"Correctness",
 		DiagnosticSeverity.Error,
 		isEnabledByDefault: true);
