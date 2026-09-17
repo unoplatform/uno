@@ -1,23 +1,26 @@
 <Project>
-	<!-- Uno Developers should comment this target out if they need to override UnoVersion for dev testing -->
 	<Target Name="UnoSdkVersionCheck"
 			AfterTargets="ResolveReferences"
-			BeforeTargets="BeforeBuild"
-			Condition="'$(PkgUno_WinUI)' != ''">
-		<Error Code="UNOB0004"
+			BeforeTargets="BeforeBuild">
+		<!--
+			$(UnoVersion) pins every Uno Platform core package. Setting it to a version other than the one
+			bundled with the Uno.Sdk is allowed, so that a newer Uno.WinUI can be tested before the matching
+			Uno.Sdk ships, but the combination is not tested and is reported as a warning.
+		-->
+		<Warning Code="UNOB0004"
 			HelpLink="https://aka.platform.uno/UNOB0004"
-			Text="The '%24(UnoVersion)' property must match the version of the Uno.Sdk defined in global.json (found $(UnoVersion) and expected DefaultUnoVersion). For more information about updating Uno Platform packages, visit https://aka.platform.uno/upgrade-uno-packages"
+			Text="The Uno Platform core packages are pinned to $(UnoVersion) through the '%24(UnoVersion)' property, while the Uno.Sdk defined in global.json ships DefaultUnoVersion. This combination is not tested and may fail to build or to run. Add UNOB0004 to '%24(NoWarn)' to silence this warning. For more information about updating Uno Platform packages, visit https://aka.platform.uno/upgrade-uno-packages"
 			Condition=" '$(UnoVersion)' != 'DefaultUnoVersion' " />
 
-		<!-- Check if the Uno.WinUI version matches DefaultUnoVersion -->
-		<PropertyGroup>
+		<!-- Check if the resolved Uno.WinUI version matches the requested core version -->
+		<PropertyGroup Condition=" '$(PkgUno_WinUI)' != '' ">
 			<_UnoSdkVersionCheck_Resolved_UnoWinUI>$([System.IO.Path]::GetFileName($(PkgUno_WinUI)))</_UnoSdkVersionCheck_Resolved_UnoWinUI>
 		</PropertyGroup>
 
 		<Error Code="UNOB0005"
 			HelpLink="https://aka.platform.uno/UNOB0005"
-			Text="The version of Uno.WinUI must match the version of the Uno.Sdk found in global.json (found $(_UnoSdkVersionCheck_Resolved_UnoWinUI) and expected DefaultUnoVersion). If the version was recently changed in global.json, make sure to restart your IDE. For more information about updating Uno Platform packages, visit https://aka.platform.uno/upgrade-uno-packages"
-			Condition="$(_UnoSdkVersionCheck_Resolved_UnoWinUI) != 'DefaultUnoVersion'" />
+			Text="The version of Uno.WinUI must match the Uno Platform version used by the build (found $(_UnoSdkVersionCheck_Resolved_UnoWinUI) and expected $(UnoVersion)). If the version was recently changed in global.json or through the '%24(UnoVersion)' property, make sure to restart your IDE. For more information about updating Uno Platform packages, visit https://aka.platform.uno/upgrade-uno-packages"
+			Condition=" '$(PkgUno_WinUI)' != '' AND '$(_UnoSdkVersionCheck_Resolved_UnoWinUI)' != '$(UnoVersion)' " />
 	</Target>
 
 	<!--
