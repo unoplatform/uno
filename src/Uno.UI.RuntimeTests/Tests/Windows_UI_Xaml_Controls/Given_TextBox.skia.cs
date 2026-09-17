@@ -118,18 +118,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-		// "tracking": the input sits over the TextBox's inner text block, so it is within the TextBox bounds and
-		// smaller than them by the padding and border. "offscreen": entirely above the viewport, whatever the
-		// TextBox does, so there is no rect for the browser to scroll into view. A missing input reads as null
-		// and satisfies neither: an empty rect would otherwise pass the off-screen check by default.
+		// "tracking": the input sits over the TextBox's inner text block, so it is within the TextBox bounds
+		// (inflated by a pixel to absorb device-pixel rounding between the XAML and DOM rects). "offscreen":
+		// entirely above the viewport, whatever the TextBox does, so there is no rect for the browser to
+		// scroll into view. A missing input reads as null and satisfies neither: an empty rect would
+		// otherwise pass the off-screen check by default.
 		private static bool IsPlacedFor(string placement, Rect textBox, Rect? inputRect)
 			=> inputRect is { } input
 				&& (placement == "offscreen"
 					? input.Bottom < 0
-					: input.Width > 0 && input.Height > 0
-						&& input.Width <= textBox.Width + 1 && input.Height <= textBox.Height + 1
-						&& input.X >= textBox.X - 1 && input.Y >= textBox.Y - 1
-						&& input.Right <= textBox.Right + 1 && input.Bottom <= textBox.Bottom + 1);
+					: input.Width > 0 && input.Height > 0 && textBox.InflateBy(new Thickness(1)).Contains(input));
 
 		// Polls instead of UITestHelper.WaitFor so the caller can assert with state captured after the wait.
 		private static async Task<bool> SettlesTo(Func<bool> condition, int timeoutMS = 5000)
@@ -150,22 +148,56 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		// Everything a failure needs to tell "the input was never created" apart from "it was placed wrongly".
 		private static string DescribeHiddenInput()
-			=> InvokeBrowserJs("(function(){const e = document.getElementById('uno-input'); const a = document.activeElement; const active = a ? (a.id || a.tagName) : 'none'; if (!e) { return 'absent (activeElement=' + active + ')'; } const r = e.getBoundingClientRect(); return \"placement='\" + (e.dataset.unoPlacement ?? '') + \"' rect=\" + [r.x, r.y, r.width, r.height].map(Math.round).join(',') + ' activeElement=' + active + ' focused=' + (a === e);})()");
+			=> InvokeBrowserJs("""
+				(function() {
+					const e = document.getElementById('uno-input');
+					const a = document.activeElement;
+					const active = a ? (a.id || a.tagName) : 'none';
+					if (!e) {
+						return 'absent (activeElement=' + active + ')';
+					}
+
+					const r = e.getBoundingClientRect();
+					return "placement='" + (e.dataset.unoPlacement ?? '') + "' rect=" + [r.x, r.y, r.width, r.height].map(Math.round).join(',')
+						+ ' activeElement=' + active + ' focused=' + (a === e);
+				})()
+				""");
 
 		// Restates the host predicate rather than reading back what the page reports: deriving the expectation
 		// from data-uno-placement would pass even if the gate itself regressed (off-screen on a desktop
 		// browser, or tracking on iOS), which is the contract this test exists to pin.
 		private static string ExpectedPlacementForHost()
-			=> InvokeBrowserJs("(function(){const p = navigator.platform ?? ''; return (/iP(ad|hone|od)/.test(p) || (p === 'MacIntel' && (navigator.maxTouchPoints ?? 0) > 1)) ? 'offscreen' : 'tracking';})()");
+			=> InvokeBrowserJs("""
+				(function() {
+					const p = navigator.platform ?? '';
+					const isIOS = /iP(ad|hone|od)/.test(p) || (p === 'MacIntel' && (navigator.maxTouchPoints ?? 0) > 1);
+					return isIOS ? 'offscreen' : 'tracking';
+				})()
+				""");
 
 		private static string GetHiddenInputPlacement()
-			=> InvokeBrowserJs("(function(){const e = document.getElementById('uno-input'); return e ? (e.dataset.unoPlacement ?? '') : '';})()");
+			=> InvokeBrowserJs("""
+				(function() {
+					const e = document.getElementById('uno-input');
+					return e ? (e.dataset.unoPlacement ?? '') : '';
+				})()
+				""");
 
 		// Reads the rendered rect rather than the inline styles, so a CSS-level placement or sizing regression
 		// is caught too. Null when the input is absent or the rect cannot be read, which is never a pass.
 		private static Rect? GetHiddenInputRect()
 		{
-			var raw = InvokeBrowserJs("(function(){const e = document.getElementById('uno-input'); if (!e) { return ''; } const r = e.getBoundingClientRect(); return r.x + ',' + r.y + ',' + r.width + ',' + r.height;})()");
+			var raw = InvokeBrowserJs("""
+				(function() {
+					const e = document.getElementById('uno-input');
+					if (!e) {
+						return '';
+					}
+
+					const r = e.getBoundingClientRect();
+					return r.x + ',' + r.y + ',' + r.width + ',' + r.height;
+				})()
+				""");
 			var parts = raw.Split(',');
 			if (parts.Length != 4)
 			{
