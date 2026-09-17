@@ -30,34 +30,16 @@ public partial class FauxGradientBorderPresenter : ContentPresenter
 	/// <summary>
 	/// Gets or sets the border brush that is supposed to be displayed.
 	/// </summary>
-	public Brush RequestedBorderBrush
-	{
-		get => GetRequestedBorderBrushValue();
-		set => SetRequestedBorderBrushValue(value);
-	}
-
-	/// <summary>
-	/// Identifies the RequestedBorderBrush dependency property.
-	/// </summary>
 	[GeneratedDependencyProperty(DefaultValue = null)]
-	public static DependencyProperty RequestedBorderBrushProperty { get; } = CreateRequestedBorderBrushProperty();
+	public partial Brush RequestedBorderBrush { get; set; }
 
 	private void OnRequestedBorderBrushChanged() => OnBorderChanged();
 
 	/// <summary>
 	/// Gets or sets the thickness of the border that should be displayed.
 	/// </summary>
-	public Thickness RequestedBorderThickness
-	{
-		get => GetRequestedBorderThicknessValue();
-		set => SetRequestedBorderThicknessValue(value);
-	}
-
-	/// <summary>
-	/// Identifies the RequestedBorderThickness dependency property.
-	/// </summary>
 	[GeneratedDependencyProperty]
-	public static DependencyProperty RequestedBorderThicknessProperty { get; } = CreateRequestedBorderThicknessProperty();
+	public partial Thickness RequestedBorderThickness { get; set; }
 
 	private static Thickness GetRequestedBorderThicknessDefaultValue() => Thickness.Empty;
 
@@ -66,17 +48,8 @@ public partial class FauxGradientBorderPresenter : ContentPresenter
 	/// <summary>
 	/// Gets or sets the corner radius of the border that should be displayed.
 	/// </summary>
-	public CornerRadius RequestedCornerRadius
-	{
-		get => GetRequestedCornerRadiusValue();
-		set => SetRequestedCornerRadiusValue(value);
-	}
-
-	/// <summary>
-	/// Identifies the RequestedCornerRadius dependency property.
-	/// </summary>
 	[GeneratedDependencyProperty]
-	public static DependencyProperty RequestedCornerRadiusProperty { get; } = CreateRequestedCornerRadiusProperty();
+	public partial CornerRadius RequestedCornerRadius { get; set; }
 
 	private static CornerRadius GetRequestedCornerRadiusDefaultValue() => CornerRadius.None;
 

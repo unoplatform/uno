@@ -38,13 +38,7 @@ namespace Microsoft.UI.Xaml
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static DependencyProperty HorizontalAlignmentProperty { get; } = CreateHorizontalAlignmentProperty();
-
-		public HorizontalAlignment HorizontalAlignment
-		{
-			get => GetHorizontalAlignmentValue();
-			set => SetHorizontalAlignmentValue(value);
-		}
+		public partial HorizontalAlignment HorizontalAlignment { get; set; }
 		#endregion
 
 		#region VerticalAlignment Dependency Property
@@ -55,13 +49,7 @@ namespace Microsoft.UI.Xaml
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static DependencyProperty VerticalAlignmentProperty { get; } = CreateVerticalAlignmentProperty();
-
-		public VerticalAlignment VerticalAlignment
-		{
-			get => GetVerticalAlignmentValue();
-			set => SetVerticalAlignmentValue(value);
-		}
+		public partial VerticalAlignment VerticalAlignment { get; set; }
 		#endregion
 
 		#region Width Dependency Property
@@ -72,13 +60,7 @@ namespace Microsoft.UI.Xaml
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static DependencyProperty WidthProperty { get; } = CreateWidthProperty();
-
-		public double Width
-		{
-			get => GetWidthValue();
-			set => SetWidthValue(value);
-		}
+		public partial double Width { get; set; }
 		#endregion
 
 		#region Height Dependency Property
@@ -89,13 +71,7 @@ namespace Microsoft.UI.Xaml
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static DependencyProperty HeightProperty { get; } = CreateHeightProperty();
-
-		public double Height
-		{
-			get => GetHeightValue();
-			set => SetHeightValue(value);
-		}
+		public partial double Height { get; set; }
 		#endregion
 
 		#region MinWidth Dependency Property
@@ -106,13 +82,7 @@ namespace Microsoft.UI.Xaml
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static DependencyProperty MinWidthProperty { get; } = CreateMinWidthProperty();
-
-		public double MinWidth
-		{
-			get => GetMinWidthValue();
-			set => SetMinWidthValue(value);
-		}
+		public partial double MinWidth { get; set; }
 		#endregion
 
 		#region MinHeight Dependency Property
@@ -124,13 +94,7 @@ namespace Microsoft.UI.Xaml
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static DependencyProperty MinHeightProperty { get; } = CreateMinHeightProperty();
-
-		public double MinHeight
-		{
-			get => GetMinHeightValue();
-			set => SetMinHeightValue(value);
-		}
+		public partial double MinHeight { get; set; }
 		#endregion
 
 		#region MaxWidth Dependency Property
@@ -141,13 +105,7 @@ namespace Microsoft.UI.Xaml
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static DependencyProperty MaxWidthProperty { get; } = CreateMaxWidthProperty();
-
-		public double MaxWidth
-		{
-			get => GetMaxWidthValue();
-			set => SetMaxWidthValue(value);
-		}
+		public partial double MaxWidth { get; set; }
 		#endregion
 
 		#region MaxHeight Dependency Property
@@ -159,13 +117,7 @@ namespace Microsoft.UI.Xaml
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static DependencyProperty MaxHeightProperty { get; } = CreateMaxHeightProperty();
-
-		public double MaxHeight
-		{
-			get => GetMaxHeightValue();
-			set => SetMaxHeightValue(value);
-		}
+		public partial double MaxHeight { get; set; }
 		#endregion
 
 		#region Margin Dependency Property
@@ -175,13 +127,8 @@ namespace Microsoft.UI.Xaml
 			, ChangedCallbackName = nameof(OnGenericPropertyUpdated)
 #endif
 		)]
-		public static DependencyProperty MarginProperty { get; } = CreateMarginProperty();
+		public partial Thickness Margin { get; set; }
 
-		public Thickness Margin
-		{
-			get => GetMarginValue();
-			set => SetMarginValue(value);
-		}
 		private static Thickness GetMarginDefaultValue() => Thickness.Empty;
 		#endregion
 
