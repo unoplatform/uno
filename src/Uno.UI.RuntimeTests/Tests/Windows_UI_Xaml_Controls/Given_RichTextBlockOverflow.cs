@@ -177,5 +177,60 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				WindowHelper.WindowContent = null;
 			}
 		}
+
+		[TestMethod]
+		[DataRow(4, 400)]
+		[DataRow(8, 400)]
+		[DataRow(2, 120)]
+		public async Task When_Overflow_Resumes_At_Master_Break(int maxLines, int overflowWidth)
+		{
+			// A link formats from the previous link's character break at its own width; line boundaries of the
+			// master's narrower layout do not carry over.
+			var master = new RichTextBlock { Width = 120, MaxLines = maxLines };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = LongText });
+			master.Blocks.Add(paragraph);
+
+			var overflow = new RichTextBlockOverflow { Width = overflowWidth };
+			master.OverflowContentTarget = overflow;
+
+			var reference = new RichTextBlock { Width = 400 };
+			var referenceParagraph = new Paragraph();
+			referenceParagraph.Inlines.Add(new Run { Text = LongText });
+			reference.Blocks.Add(referenceParagraph);
+
+			var panel = new StackPanel();
+			panel.Children.Add(master);
+			panel.Children.Add(overflow);
+			panel.Children.Add(reference);
+
+			try
+			{
+				WindowHelper.WindowContent = panel;
+				await WindowHelper.WaitForLoaded(panel);
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(master.HasOverflowContent, "Master should overflow into the target");
+
+				var masterEnd = master.ContentEnd;
+				var overflowStart = overflow.ContentStart;
+				if (masterEnd is null || overflowStart is null)
+				{
+					Assert.Fail($"The content pointers should be non-null (master end is null: {masterEnd is null}, overflow start is null: {overflowStart is null})");
+					return;
+				}
+
+				Assert.AreEqual(masterEnd.Offset, overflowStart.Offset, "The overflow should start where the master ends");
+
+				var firstHit = overflow.GetPositionFromPoint(new Point(0, 1));
+				Assert.AreEqual(masterEnd.Offset, firstHit?.Offset, "The overflow's first line should start at the master's break");
+
+				Assert.AreEqual(reference.ContentEnd?.Offset, overflow.ContentEnd?.Offset, "The overflow should end with the paragraph's last character");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
 	}
 }

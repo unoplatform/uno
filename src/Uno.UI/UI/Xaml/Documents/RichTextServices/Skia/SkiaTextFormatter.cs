@@ -35,13 +35,21 @@ internal sealed class SkiaTextFormatter : TextFormatter
 		TextRunCache? textRunCache)
 	{
 		var previousBreak = previousLineBreak as SkiaTextLineBreak;
-		var index = previousBreak?.NextLineIndex ?? 0;
 
-		// A continuation resumes its own pass. Another source (an overflow's paragraph) re-formats, which
-		// also hosts its inline objects there.
-		var parsed = previousBreak is not null && ReferenceEquals(previousBreak.TextSource, textSource) && previousBreak.WrappingWidth == wrappingWidth
-			? previousBreak.ParsedText
-			: Parse((ISkiaParagraphSource)textSource, wrappingWidth, textParagraphProperties);
+		ParsedText parsed;
+		int index;
+		if (previousBreak is not null && ReferenceEquals(previousBreak.TextSource, textSource) && previousBreak.WrappingWidth == wrappingWidth)
+		{
+			// A continuation resumes its own pass.
+			parsed = previousBreak.ParsedText;
+			index = previousBreak.NextLineIndex;
+		}
+		else
+		{
+			// Another source (an overflow's paragraph, which also hosts its inline objects) or width re-formats.
+			// Line ordinals don't carry across layouts, so resume at the character break as LsCreateLine does.
+			parsed = Parse((ISkiaParagraphSource)textSource, wrappingWidth, textParagraphProperties, (int)firstCharIndex, out index);
+		}
 
 		var lines = parsed.RenderLines;
 		var renderLine = lines[index];
@@ -50,7 +58,7 @@ internal sealed class SkiaTextFormatter : TextFormatter
 		return new SkiaTextLine(parsed, renderLine, index, nextBreak, textParagraphProperties);
 	}
 
-	private static ParsedText Parse(ISkiaParagraphSource source, double wrappingWidth, TextParagraphProperties textParagraphProperties)
+	private static ParsedText Parse(ISkiaParagraphSource source, double wrappingWidth, TextParagraphProperties textParagraphProperties, int resumeCharIndex, out int resumeLineIndex)
 		=> ParsedText.ParseText(
 			new Size(wrappingWidth, double.PositiveInfinity),
 			source.GetLeafInlines(),
@@ -63,5 +71,7 @@ internal sealed class SkiaTextFormatter : TextFormatter
 			textParagraphProperties.TextWrapping,
 			textParagraphProperties.FlowDirection,
 			out _,
+			resumeCharIndex,
+			out resumeLineIndex,
 			source.FormatInlineObjects((float)wrappingWidth));
 }

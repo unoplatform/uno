@@ -74,6 +74,28 @@ internal readonly struct ParsedText : IParsedText
 		FlowDirection flowDirection,
 		out Size desiredSize,
 		IReadOnlyDictionary<InlineUIContainer, (ObjectRun Run, ObjectRunMetrics Metrics)>? inlineObjects = null)
+		=> ParseText(availableSize, inlines, defaultLineHeight, maxLines, lineHeight, lineStackingStrategy, textLineBounds, textAlignment, textWrapping, flowDirection, out desiredSize, resumeCharIndex: 0, out _, inlineObjects);
+
+	/// <summary>
+	/// Measures a block-level inline collection whose layout resumes at <paramref name="resumeCharIndex"/>, where a
+	/// previous link of a linked chain broke at its own width.
+	/// </summary>
+	/// <param name="resumeLineIndex">Index of the first line laid out from <paramref name="resumeCharIndex"/>.</param>
+	internal static ParsedText ParseText(
+		Size availableSize,
+		Inline[] inlines, // traversed pre-orderly
+		float defaultLineHeight,
+		int maxLines,
+		float lineHeight,
+		LineStackingStrategy lineStackingStrategy,
+		TextLineBounds textLineBounds,
+		TextAlignment textAlignment,
+		TextWrapping textWrapping,
+		FlowDirection flowDirection,
+		out Size desiredSize,
+		int resumeCharIndex,
+		out int resumeLineIndex,
+		IReadOnlyDictionary<InlineUIContainer, (ObjectRun Run, ObjectRunMetrics Metrics)>? inlineObjects = null)
 	{
 		lineStackingStrategy = lineHeight == 0 ? LineStackingStrategy.MaxHeight : lineStackingStrategy;
 
@@ -81,14 +103,23 @@ internal readonly struct ParsedText : IParsedText
 		List<RenderSegmentSpan> lineSegmentSpans = new();
 		bool previousLineWrapped = false;
 
-		float availableWidth = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
+		float wrappingWidth = textWrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
 		float widestLineWidth = 0, widestLineHeight = 0;
+
+		// Like Line Services resuming at cpFirst, the text before resumeCharIndex belongs to a previous link. It is kept
+		// as unwrapped, never-painted lines so line character intervals stay paragraph-relative.
+		bool inPrefix = resumeCharIndex > 0;
+		float availableWidth = inPrefix ? float.PositiveInfinity : wrappingWidth;
+		int charIndex = 0;
+		int resumeLine = 0;
 
 		float x = 0;
 		float height = 0;
 
 		foreach (var inline in inlines)
 		{
+			EndPrefixIfReached();
+
 			if (inline is LineBreak lineBreak)
 			{
 				// A <LineBreak/> is one flat character (CLineBreak::GetRun yields a single \x2028), matching the
@@ -97,10 +128,21 @@ internal readonly struct ParsedText : IParsedText
 				RenderSegmentSpan breakSegmentSpan = new(breakSegment, 0, 0, 0, 0, 0, 0, 0, 0);
 				lineSegmentSpans.Add(breakSegmentSpan);
 
+				if (inPrefix)
+				{
+					charIndex += GlyphsLengthWithCR(breakSegmentSpan);
+				}
+
 				MoveToNextLine(currentLineWrapped: false);
 			}
 			else if (inline is InlineUIContainer container)
 			{
+				if (inPrefix)
+				{
+					// An object takes no character position; one before the break was laid out by the previous link.
+					continue;
+				}
+
 				// Only containers the caller measured occupy space. Formatting outside a block-layout
 				// host (so with no embedded element host to measure against) leaves them zero-sized.
 				if (inlineObjects is null || !inlineObjects.TryGetValue(container, out var inlineObject))
@@ -139,8 +181,39 @@ internal readonly struct ParsedText : IParsedText
 
 					// Exclude leading spaces at the start of the line only if the previous line ended because it was wrapped and not because of a line break
 
+					EndPrefixIfReached();
+
 					int start = x == 0 && previousLineWrapped ? segment.LeadingSpaces : 0;
 					int skippedLeadingSpaces = start;
+
+					if (inPrefix)
+					{
+						var glyphCount = segment.LineBreakAfter ? segment.Glyphs.Count - 1 : segment.Glyphs.Count;
+						RenderSegmentSpan wholeSpan = new(segment, 0, glyphCount, 0, 0, characterSpacing, 0, 0, glyphCount);
+						var wholeLength = GlyphsLengthWithCR(wholeSpan);
+
+						if (charIndex + wholeLength <= resumeCharIndex)
+						{
+							lineSegmentSpans.Add(wholeSpan);
+							charIndex += wholeLength;
+
+							if (segment.LineBreakAfter)
+							{
+								MoveToNextLine(currentLineWrapped: false);
+							}
+
+							continue;
+						}
+
+						// The previous link wrapped inside this segment, so the continuation starts at that glyph.
+						var resumeGlyph = resumeCharIndex - charIndex;
+						lineSegmentSpans.Add(new(segment, 0, resumeGlyph, 0, 0, characterSpacing, 0, 0, resumeGlyph));
+						charIndex = resumeCharIndex;
+						EndPrefixIfReached();
+
+						start = resumeGlyph;
+						skippedLeadingSpaces = 0;
+					}
 
 				BeginSegmentFitting:
 
@@ -338,6 +411,13 @@ internal readonly struct ParsedText : IParsedText
 
 	MaxLinesHit:
 
+		if (inPrefix)
+		{
+			// A break past the content: there is nothing left to continue with but the last line.
+			resumeLine = Math.Max(0, renderLines.Count - 1);
+		}
+
+		resumeLineIndex = resumeLine;
 		desiredSize = renderLines.Count == 0 ? new Size(0, defaultLineHeight) : new Size(widestLineWidth, height);
 		return new(inlines, renderLines, availableSize, textAlignment, textWrapping, defaultLineHeight, flowDirection);
 
@@ -376,6 +456,24 @@ internal readonly struct ParsedText : IParsedText
 			x = 0;
 			height += renderLine.Height;
 			previousLineWrapped = currentLineWrapped;
+		}
+
+		void EndPrefixIfReached()
+		{
+			if (!inPrefix || charIndex < resumeCharIndex)
+			{
+				return;
+			}
+
+			if (lineSegmentSpans.Count > 0)
+			{
+				// The previous link's line wrapped here; after a hard break the line has already moved on.
+				MoveToNextLine(currentLineWrapped: true);
+			}
+
+			inPrefix = false;
+			availableWidth = wrappingWidth;
+			resumeLine = renderLines.Count;
 		}
 	}
 
