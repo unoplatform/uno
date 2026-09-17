@@ -41,7 +41,7 @@ internal sealed class AppleUIKitImeTextBoxExtension : IImeTextBoxExtension
 
 	public void StartImeSession(IImeSessionHost host, ImeSessionActivation activation)
 	{
-		if (host is PasswordBox)
+		if (host is TextBoxCore { IsPassword: true })
 		{
 			return;
 		}

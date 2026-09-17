@@ -49,7 +49,7 @@ internal sealed class AndroidImeTextBoxExtension : IImeTextBoxExtension
 
 	public void StartImeSession(IImeSessionHost host, ImeSessionActivation activation)
 	{
-		if (host is PasswordBox)
+		if (host is TextBoxCore { IsPassword: true })
 		{
 			return;
 		}

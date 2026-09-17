@@ -8169,8 +8169,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual("A你haoB", SUT.Text);
 			Assert.IsTrue(SUT.IsComposing);
-			Assert.AreEqual(2, SUT.CompositionStartIndex);
-			Assert.AreEqual(3, SUT.CompositionLength);
+			Assert.AreEqual(2, ((ITextBoxHost)SUT).Core.CompositionStartIndex);
+			Assert.AreEqual(3, ((ITextBoxHost)SUT).Core.CompositionLength);
 
 			fake.SimulateCompositionUpdate("ha");
 			fake.SimulateCompositionComplete("好");
@@ -8566,13 +8566,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				CompositionEnded?.Invoke(this, EventArgs.Empty);
 			}
 
-			public void SimulateDirectCommit(string text)
-			{
-				CompositionStarted?.Invoke(this, EventArgs.Empty);
-				CompositionCompleted?.Invoke(this, new ImeCompositionEventArgs(text));
-				CompositionEnded?.Invoke(this, EventArgs.Empty);
-			}
-
 			public void SimulateCompositionPartialCommit(
 				string committedText,
 				string compositionText,
@@ -8588,6 +8581,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 						cursorPosition,
 						resolvedLength,
 						textAlreadyApplied));
+			}
+
+			public void SimulateDirectCommit(string text)
+			{
+				CompositionStarted?.Invoke(this, EventArgs.Empty);
+				CompositionCompleted?.Invoke(this, new ImeCompositionEventArgs(text));
+				CompositionEnded?.Invoke(this, EventArgs.Empty);
 			}
 
 			public void SimulateCompositionCancel()

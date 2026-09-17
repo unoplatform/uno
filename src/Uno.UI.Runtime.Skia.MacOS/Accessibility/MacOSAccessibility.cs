@@ -924,12 +924,12 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 				break;
 
 			case AutomationEvents.TextPatternOnTextSelectionChanged when TryGetPeerOwner(peer, out var textElement):
-				if (textElement is ITextBoxHost { Core: { } core })
+				if (textElement is ITextBoxHost { Core: { } textBox })
 				{
 					NativeUno.uno_accessibility_update_selection(
 						textElement.Visual.Handle,
-						core.SelectionStart,
-						core.SelectionLength,
+						textBox.SelectionStart,
+						textBox.SelectionLength,
 						false);
 				}
 				else if (textElement is RichEditBox richEditBox)

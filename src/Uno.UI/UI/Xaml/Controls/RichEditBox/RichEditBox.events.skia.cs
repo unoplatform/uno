@@ -29,59 +29,17 @@ namespace Microsoft.UI.Xaml.Controls
 	// RichEditBox clipboard methods (see RichEditBox.clipboard.skia.cs) before the corresponding
 	// clipboard operation; a handler setting Handled = true suppresses the default behavior. Cut raises
 	// CuttingToClipboard (not CopyingToClipboard), matching WinUI.
-	public partial class RichEditBox
+	partial class RichEditBox
 	{
-		/// <summary>
-		/// Occurs when the content of the text box changes, i.e. the plain text of the underlying
-		/// <see cref="Document"/> differs from its previous value.
-		/// </summary>
-		public event RoutedEventHandler? TextChanged;
-
-		/// <summary>
-		/// Occurs when the selection (caret position or selected span) of the text box changes.
-		/// </summary>
-		public event RoutedEventHandler? SelectionChanged;
-
-		/// <summary>
-		/// Occurs just before the text content of the text box changes.
-		/// </summary>
-		public event global::Windows.Foundation.TypedEventHandler<RichEditBox, RichEditBoxTextChangingEventArgs>? TextChanging
+		private void AddTextChangingHandler(global::Windows.Foundation.TypedEventHandler<RichEditBox, RichEditBoxTextChangingEventArgs>? value)
 		{
-			add
+			if (_textChanging is null)
 			{
-				if (_textChanging is null)
-				{
-					_lastObservedText = GetPlainTextContent();
-					_lastObservedTextVersion = Document.TextVersion;
-				}
-				_textChanging += value;
+				_lastObservedText = GetPlainTextContent();
+				_lastObservedTextVersion = Document.TextVersion;
 			}
-			remove => _textChanging -= value;
+			_textChanging += value;
 		}
-
-		/// <summary>
-		/// Occurs just before the selection changes. A handler may cancel the pending change by setting
-		/// <see cref="RichEditBoxSelectionChangingEventArgs.Cancel"/> to <c>true</c>.
-		/// </summary>
-		public event global::Windows.Foundation.TypedEventHandler<RichEditBox, RichEditBoxSelectionChangingEventArgs>? SelectionChanging;
-
-		/// <summary>
-		/// Occurs when text is copied to the clipboard. A handler may set
-		/// <see cref="TextControlCopyingToClipboardEventArgs.Handled"/> to suppress the default copy.
-		/// </summary>
-		public event global::Windows.Foundation.TypedEventHandler<RichEditBox, TextControlCopyingToClipboardEventArgs>? CopyingToClipboard;
-
-		/// <summary>
-		/// Occurs when text is cut to the clipboard. A handler may set
-		/// <see cref="TextControlCuttingToClipboardEventArgs.Handled"/> to suppress the default cut.
-		/// </summary>
-		public event global::Windows.Foundation.TypedEventHandler<RichEditBox, TextControlCuttingToClipboardEventArgs>? CuttingToClipboard;
-
-		/// <summary>
-		/// Occurs when text is pasted from the clipboard. A handler may set
-		/// <see cref="TextControlPasteEventArgs.Handled"/> to suppress the default paste.
-		/// </summary>
-		public event TextControlPasteEventHandler? Paste;
 
 		private string _lastObservedText = string.Empty;
 		private long _lastObservedTextVersion;
@@ -129,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls
 				_isInvokingTextChanging = true;
 				try
 				{
-					textChanging.Invoke(this, new RichEditBoxTextChangingEventArgs(isContentChanging));
+					OnTextChangingHandler(isContentChanging);
 				}
 				catch (Exception error)
 				{
@@ -210,22 +168,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private readonly record struct TextChangeNotification(long Version);
-
-		/// <summary>
-		/// Raises the cancellable <see cref="SelectionChanging"/> event for a proposed interactive
-		/// selection change and returns whether a handler cancelled it.
-		/// </summary>
-		private bool RaiseSelectionChangingIsCancelled(int selectionStart, int selectionLength)
-		{
-			if (SelectionChanging is not { } handler)
-			{
-				return false;
-			}
-
-			var args = new RichEditBoxSelectionChangingEventArgs(selectionStart, selectionLength);
-			handler.Invoke(this, args);
-			return args.Cancel;
-		}
 
 		/// <summary>Raises <see cref="CopyingToClipboard"/> and returns whether a handler suppressed it.</summary>
 		private bool RaiseCopyingToClipboardIsHandled()

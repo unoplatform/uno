@@ -1047,6 +1047,14 @@ void uno_set_ime_active(UNOWindow* window, bool active)
     }
 }
 
+void uno_notify_ime_position_changed(UNOWindow* window)
+{
+    // Object getters and void messages to nil are safe; the container contentView is not the text-input client.
+    NSView *renderingView = window.renderingView;
+    NSTextInputContext *inputContext = renderingView.inputContext;
+    [inputContext invalidateCharacterCoordinates];
+}
+
 double uno_window_get_refresh_rate(NSWindow* window)
 {
     NSScreen* screen = window.screen;
@@ -1069,14 +1077,6 @@ double uno_window_get_refresh_rate(NSWindow* window)
         }
     }
     return 0;
-}
-
-void uno_notify_ime_position_changed(UNOWindow* window)
-{
-    // Object getters and void messages to nil are safe; the container contentView is not the text-input client.
-    NSView *renderingView = window.renderingView;
-    NSTextInputContext *inputContext = renderingView.inputContext;
-    [inputContext invalidateCharacterCoordinates];
 }
 
 void uno_window_get_metal_handles(UNOWindow* window, void** device, void** queue)

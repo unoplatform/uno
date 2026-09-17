@@ -4,9 +4,12 @@
 
 namespace Microsoft.UI.Xaml.Controls;
 
-/// <summary>
-/// Represents a rich text editing control that supports formatted text, hyperlinks, images, math equations, and other rich content.
-/// </summary>
-public partial class RichEditBox : Control
+partial class RichEditBoxTextChangingEventArgs
 {
+	/// <summary>Gets a value that indicates whether the text content is changing.</summary>
+	public bool IsContentChanging
+	{
+		get => GetIsContentChanging();
+		internal set => SetIsContentChanging(value);
+	}
 }

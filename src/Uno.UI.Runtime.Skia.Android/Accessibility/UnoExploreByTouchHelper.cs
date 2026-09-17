@@ -316,7 +316,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			PopulateVirtualTextObjectNode(peer, node);
 			return;
 		}
-		if (element is UIElement uiElement)
+
 		if (element is UIElement uiElement)
 		{
 			var transform = UIElement.GetTransform(from: uiElement, to: null);

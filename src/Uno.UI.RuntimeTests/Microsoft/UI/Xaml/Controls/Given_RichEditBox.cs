@@ -166,20 +166,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/3848")]
 		public async Task When_Header_Presenter_Visibility_Follows_Header()
 		{
 			var SUT = new RichEditBox();
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForLoaded(SUT);
-			await WindowHelper.WaitForIdle();
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+				await WindowHelper.WaitForIdle();
+				Assert.IsNull(SUT.FindFirstChild<ContentPresenter>(cp => cp.Name == "HeaderContentPresenter"));
 
-			var header = SUT.FindFirstChild<ContentPresenter>(cp => cp.Name == "HeaderContentPresenter");
-			Assert.IsNotNull(header);
-			Assert.AreEqual(Visibility.Collapsed, header.Visibility);
+				SUT.Header = "A header";
+				await WindowHelper.WaitForIdle();
+				var header = SUT.FindFirstChild<ContentPresenter>(cp => cp.Name == "HeaderContentPresenter");
+				Assert.IsNotNull(header);
+				Assert.AreEqual(Visibility.Visible, header.Visibility);
+				Assert.AreEqual("A header", header.Content);
 
-			SUT.Header = "A header";
-			await WindowHelper.WaitForIdle();
-			Assert.AreEqual(Visibility.Visible, header.Visibility);
+				SUT.Header = null;
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(Visibility.Collapsed, header.Visibility);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
 		}
 #endif
 

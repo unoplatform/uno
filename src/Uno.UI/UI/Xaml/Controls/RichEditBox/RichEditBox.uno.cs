@@ -9,8 +9,11 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Internal;
 using Microsoft.UI.Xaml.Media;
-using Uno.UI;
+using Microsoft.UI.Xaml.Media.Animation;
+using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
+using Uno.UI;
 using Uno.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.UI.Text;
@@ -18,16 +21,14 @@ using Windows.UI.Text;
 namespace Microsoft.UI.Xaml.Controls
 {
 	// Skia uses the shared managed text surface while preserving RichEditBox's document semantics.
-	public partial class RichEditBox : ITextBoxViewHost, ITextSelectionGripperHost, IFocusRequestOriginHandler
+	partial class RichEditBox : ITextBoxViewHost, ITextSelectionGripperHost, IFocusRequestOriginHandler
 	{
+		Control ITextBoxViewHost.Owner => this;
+
 		private TextBoxView? _textBoxView;
 		private TextSelectionGripperPresenter? _gripperPresenter;
 		private ContentControl? _contentElement;
-		private ContentPresenter? _headerPresenter;
-		private UIElement? _placeholderTextPresenter;
 		private global::Microsoft.UI.Text.RichEditTextDocument? _document;
-		private bool _isInitializing = true;
-		private bool _propertyChangedCallbacksRegistered;
 		private bool _pointerPressedHandlerRegistered;
 		private bool _isPointerOver;
 		private FocusState _imeFocusOrigin;
@@ -38,21 +39,14 @@ namespace Microsoft.UI.Xaml.Controls
 		private int? _bringIntoViewTargetIndex;
 		private ScrollViewer? _imeScrollViewer;
 		private bool _isImeLayoutTrackingAttached;
+		private Storyboard? _heightAnimation;
+		private readonly SerialDisposable _placeholderTextChangedSubscription = new();
+		private global::Windows.Foundation.TypedEventHandler<RichEditBox, CandidateWindowBoundsChangedEventArgs>? _candidateWindowBoundsChanged;
+		private DisabledFormattingAccelerators _enabledFormattingAccelerators =
+			DisabledFormattingAccelerators.Bold | DisabledFormattingAccelerators.Italic | DisabledFormattingAccelerators.Underline;
 
-		/// <summary>
-		/// Gets an object that facilitates programmatic access to the text and formatting properties
-		/// of the content of the <see cref="RichEditBox"/>.
-		/// </summary>
-		public global::Microsoft.UI.Text.RichEditTextDocument Document => _document ??= new global::Microsoft.UI.Text.RichEditTextDocument(this);
-
-		/// <summary>
-		/// Gets an object that enables you to access and modify the text in a rich edit control.
-		/// </summary>
-		public global::Microsoft.UI.Text.RichEditTextDocument TextDocument => Document;
-
-		protected override void OnApplyTemplate()
+		private void ApplyManagedTemplate()
 		{
-			base.OnApplyTemplate();
 			DetachImeGeometryTracking();
 			var focusState = FocusState;
 			if (focusState != FocusState.Unfocused)
@@ -65,9 +59,7 @@ namespace Microsoft.UI.Xaml.Controls
 			_gripperPresenter = null;
 			_textBoxView = null;
 
-			_placeholderTextPresenter = GetTemplateChild(TextBoxConstants.PlaceHolderPartName) as UIElement;
 			_contentElement = GetTemplateChild(TextBoxConstants.ContentElementPartName) as ContentControl;
-			_headerPresenter = GetTemplateChild(TextBoxConstants.HeaderContentPartName) as ContentPresenter;
 
 			if (_contentElement is { })
 			{
@@ -76,14 +68,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			UpdateTextBoxView();
 			InitializeTextBoxViewProperties();
-			RegisterPropertyChangedCallbacks();
 			RegisterPointerPressedHandler();
 
-			UpdateHeaderPresenterVisibility();
-			UpdatePlaceholderTextPresenterVisibility(GetPlainTextLength() == 0);
+			OnApplyTemplateHandler();
 			UpdateDescriptionVisibility(initialization: true);
-
-			_isInitializing = false;
 
 			UpdateVisualState();
 			DispatchUpdateScrolling();
@@ -138,23 +126,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void RegisterPropertyChangedCallbacks()
-		{
-			if (_propertyChangedCallbacksRegistered)
-			{
-				return;
-			}
-
-			_propertyChangedCallbacksRegistered = true;
-
-			// Ported intent from RichEditBox_Partial.cpp OnPropertyChanged2: keep the header and
-			// placeholder presenters in sync when the relevant properties change after templating.
-			RegisterPropertyChangedCallback(HeaderProperty, (s, _) => ((RichEditBox)s).OnHeaderChanged());
-			RegisterPropertyChangedCallback(HeaderTemplateProperty, (s, _) => ((RichEditBox)s).OnHeaderChanged());
-			RegisterPropertyChangedCallback(PlaceholderTextProperty, (s, _) => ((RichEditBox)s).OnPlaceholderTextChanged());
-			RegisterPropertyChangedCallback(DescriptionProperty, (s, _) => ((RichEditBox)s).UpdateDescriptionVisibility(initialization: false));
-		}
-
 		private void RegisterPointerPressedHandler()
 		{
 			if (_pointerPressedHandlerRegistered)
@@ -164,23 +135,6 @@ namespace Microsoft.UI.Xaml.Controls
 
 			_pointerPressedHandlerRegistered = true;
 			AddHandler(PointerPressedEvent, new PointerEventHandler(OnPointerPressedHandledEventsToo), handledEventsToo: true);
-		}
-
-		private void OnHeaderChanged()
-		{
-			if (!_isInitializing)
-			{
-				UpdateHeaderPresenterVisibility();
-			}
-		}
-
-		private void OnPlaceholderTextChanged()
-		{
-			if (!_isInitializing)
-			{
-				UpdatePlaceholderTextPresenterVisibility(GetPlainTextLength() == 0);
-			}
-			Uno.Helpers.UIElementAccessibilityHelper.NotifyTextControlStateChanged(this);
 		}
 
 		private void UpdateDescriptionVisibility(bool initialization)
@@ -214,15 +168,13 @@ namespace Microsoft.UI.Xaml.Controls
 			// (guarded so composition-internal edits don't self-cancel).
 			CancelCompositionOnExternalChange();
 
-			var textChange = PrepareTextChangedNotification(isContentChanging);
+			OnContentChanged(isContentChanging);
 
 			RenderDocument();
-			UpdatePlaceholderTextPresenterVisibility(GetPlainTextLength() == 0);
 			(FrameworkElementAutomationPeer.FromElement(this) as RichEditBoxAutomationPeer)?.OnDocumentAccessibilityChanged();
 
 			OnDocumentTextChangedInteractive();
 			DispatchUpdateScrolling();
-			QueueTextChangedNotification(textChange);
 			ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
 		}
 
@@ -271,9 +223,8 @@ namespace Microsoft.UI.Xaml.Controls
 			_imeWasFocusedBeforeRequest = false;
 		}
 
-		protected override void OnGotFocus(RoutedEventArgs e)
+		private void OnGotFocusManaged(RoutedEventArgs e)
 		{
-			base.OnGotFocus(e);
 			_forceFocusedVisualState = false;
 			UpdateSelectionHighlightColor();
 			UpdateVisualState();
@@ -289,9 +240,8 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnLostFocus(RoutedEventArgs e)
+		private void OnLostFocusManaged(RoutedEventArgs e)
 		{
-			base.OnLostFocus(e);
 			_forceFocusedVisualState = ShouldForceFocusedVisualState();
 			if (_forceFocusedVisualState
 				&& ShouldHideGrippersOnFlyoutOpening()
@@ -314,12 +264,16 @@ namespace Microsoft.UI.Xaml.Controls
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
+			OnManagedPlaceholderPresenterChanged(m_tpPlaceholderTextPresenter);
+			ShowPlaceholderTextHandler(IsEmpty());
 			AttachImeGeometryTracking();
 			DispatchUpdateScrolling();
 		}
 
 		private protected override void OnUnloaded()
 		{
+			_placeholderTextChangedSubscription.Disposable = null;
+			StopHeightAnimation();
 			EndImeSession();
 			DetachImeGeometryTracking();
 			_gripperPresenter?.Hide();
@@ -374,12 +328,6 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnImeScrollViewerViewChanged(object? sender, ScrollViewerViewChangedEventArgs args)
 			=> ImeSessionCoordinator.UpdateSession(this, ImeSessionUpdate.TextAndSelection);
 
-		private protected override void OnIsEnabledChanged(IsEnabledChangedEventArgs e)
-		{
-			base.OnIsEnabledChanged(e);
-			UpdateVisualState();
-		}
-
 		protected override void OnBringIntoViewRequested(BringIntoViewRequestedEventArgs e)
 		{
 			base.OnBringIntoViewRequested(e);
@@ -397,26 +345,6 @@ namespace Microsoft.UI.Xaml.Controls
 					Width = Math.Max(TextBlock.CaretThickness, caretRect.Width),
 				};
 				e.TargetRect = displayBlock.TransformToVisual(this).TransformBounds(caretRect);
-			}
-		}
-
-		internal override void UpdateVisualState(bool useTransitions = true)
-		{
-			if (!IsEnabled)
-			{
-				VisualStateManager.GoToState(this, "Disabled", useTransitions);
-			}
-			else if (FocusState != FocusState.Unfocused || _forceFocusedVisualState)
-			{
-				VisualStateManager.GoToState(this, "Focused", useTransitions);
-			}
-			else if (_isPointerOver)
-			{
-				VisualStateManager.GoToState(this, "PointerOver", useTransitions);
-			}
-			else
-			{
-				VisualStateManager.GoToState(this, "Normal", useTransitions);
 			}
 		}
 
@@ -468,17 +396,6 @@ namespace Microsoft.UI.Xaml.Controls
 			view.OnSelectionHighlightColorChanged(brush ?? DefaultBrushes.SelectionHighlightColor);
 			UpdateDisplaySelection();
 		}
-
-#if SUPPORTS_RTL
-		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
-		{
-			base.OnPropertyChanged2(args);
-			if (args.Property == FrameworkElement.FlowDirectionProperty)
-			{
-				_textBoxView?.SetFlowDirection();
-			}
-		}
-#endif
 
 		#region ITextBoxViewHost
 
@@ -534,7 +451,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// control-level TextAlignment DP precedence.
 		bool ITextBoxViewHost.IsTextAlignmentSetToDefault =>
 			_paragraphAlignmentOverride is null
-			&& (this as IDependencyObjectStoreProvider)?.Store
+			&& ((DependencyObject)this)
 				.GetCurrentHighestValuePrecedence(TextAlignmentProperty) is DependencyPropertyValuePrecedences.DefaultValue;
 
 		#endregion
@@ -619,7 +536,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void UpdateScrollingToIndex(int index)
 		{
-			if (Document.HasPendingDisplayUpdates)
+			if (Document.HasPendingDisplayUpdates || !m_ensureRectVisibleEnabled)
 			{
 				_pendingScrollingTargetIndex = index;
 				return;
@@ -653,6 +570,101 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal (CaretWithStemAndThumb start, CaretWithStemAndThumb end)? SelectionGrippersForTesting
 			=> _gripperPresenter?.VisibleGrippersForTesting;
+
+		internal bool IsHeightAnimationRunningForTesting => m_isAnimatingHeight;
+
+		private void InvalidateView() => _textBoxView?.DisplayBlock.InvalidateMeasure();
+
+		private UIElement? FindMaterializedHeaderPresenter()
+		{
+			if (GetTemplateRoot() is not UIElement root)
+			{
+				return null;
+			}
+			if (NameScope.GetNameScope(root)?.FindName("HeaderContentPresenter") is UIElement presenter
+				&& presenter is not ElementStub)
+			{
+				return presenter;
+			}
+
+			// Runtime-loaded templates can expose realized parts through the tree rather than a registered namescope.
+			return FindRealizedPart(root);
+
+			UIElement? FindRealizedPart(UIElement element)
+			{
+				if (element is ElementStub
+					|| element.GetTemplatedParent() is { } parent && !ReferenceEquals(parent, this))
+				{
+					return null;
+				}
+				if (element is FrameworkElement { Name: "HeaderContentPresenter" })
+				{
+					return element;
+				}
+				for (var i = 0; i < VisualTreeHelper.GetChildrenCount(element); i++)
+				{
+					if (VisualTreeHelper.GetChild(element, i) is UIElement child
+						&& FindRealizedPart(child) is { } found)
+					{
+						return found;
+					}
+				}
+				return null;
+			}
+		}
+
+		private void OnManagedPlaceholderPresenterChanged(UIElement? presenter)
+		{
+			_placeholderTextChangedSubscription.Disposable = null;
+			if (presenter is TextBlock textBlock)
+			{
+				// TemplateBinding updates the child after the owner's OnPropertyChanged2 callback.
+				var token = textBlock.RegisterPropertyChangedCallback(
+					TextBlock.TextProperty, (_, _) => ShowPlaceholderTextHandler(IsEmpty()));
+				_placeholderTextChangedSubscription.Disposable = Disposable.Create(
+					() => textBlock.UnregisterPropertyChangedCallback(TextBlock.TextProperty, token));
+			}
+		}
+
+		private void StopHeightAnimation()
+		{
+			_heightAnimation?.Stop();
+			_heightAnimation = null;
+			m_storyboardCompletedToken.Disposable = null;
+			m_isAnimatingHeight = false;
+			EnableEnsureRectVisible();
+		}
+
+		private void OnManagedPropertyChanged(DependencyPropertyChangedEventArgs args)
+		{
+			if (args.Property == FlowDirectionProperty)
+			{
+				_textBoxView?.SetFlowDirection();
+			}
+			else if (args.Property == DescriptionProperty && !m_isInitializing)
+			{
+				UpdateDescriptionVisibility(initialization: false);
+			}
+			else if (args.Property == PlaceholderTextProperty)
+			{
+				Uno.Helpers.UIElementAccessibilityHelper.NotifyTextControlStateChanged(this);
+			}
+		}
+
+		private void EnableManagedCandidateWindowBoundsTracking()
+		{
+			try
+			{
+				ImeSessionCoordinator.Initialize();
+			}
+			catch (Exception error) when (global::Microsoft.UI.Text.RichEditTextDocument.FindFatalException(error) is null)
+			{
+				typeof(RichEditBox).LogWarn()?.Warn("Candidate-window tracking is unavailable.", error);
+			}
+		}
+
+		private void SetLinkCursor(InputSystemCursorShape shape)
+			=> _contentElement?.SetProtectedCursor(InputSystemCursor.Create(shape));
 
 		#endregion
 	}

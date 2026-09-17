@@ -1,5 +1,8 @@
 ﻿#nullable enable
 
+using System.Collections.Generic;
+using Microsoft.UI.Xaml.Automation;
+
 namespace Microsoft.UI.Xaml.Automation.Peers;
 
 internal interface IAutomationPeerListener
@@ -18,7 +21,7 @@ internal interface IAutomationPeerListener
 	/// </summary>
 	void NotifyInvalidatePeer(AutomationPeer peer);
 	void NotifyNotificationEvent(AutomationPeer peer, AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId);
-	void NotifyTextEditTextChangedEvent(AutomationPeer peer, global::Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, global::System.Collections.Generic.IReadOnlyList<string> changedData);
+	void NotifyTextEditTextChangedEvent(AutomationPeer peer, AutomationTextEditChangeType changeType, IReadOnlyList<string> changedData);
 	void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId);
 	bool ListenerExistsHelper(AutomationEvents eventId);
 }
