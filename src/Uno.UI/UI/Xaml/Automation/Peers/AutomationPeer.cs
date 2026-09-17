@@ -507,7 +507,7 @@ public partial class AutomationPeer : DependencyObject
 	#region Error Handling
 
 	/// <summary>
-	/// Throws the internal unavailable-peer exception using UIA_E_INVALIDOPERATION.
+	/// Throws the internal unavailable-peer exception using UIA_E_ELEMENTNOTAVAILABLE.
 	/// </summary>
 	public void ThrowElementNotAvailableError()
 	{
