@@ -3,6 +3,7 @@
 // MUX Reference SelectorItemAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
 
 using System;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -57,7 +58,7 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 	{
 		if (!IsEnabled())
 		{
-			throw new Exception("Element is not enabled.");
+			throw new ElementNotEnabledException();
 		}
 
 		if (ItemsControlAutomationPeer is { } parent)
@@ -79,7 +80,7 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 	{
 		if (!IsEnabled())
 		{
-			throw new Exception("Element is not enabled.");
+			throw new ElementNotEnabledException();
 		}
 
 		if (ItemsControlAutomationPeer is { } parent)
@@ -101,7 +102,7 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 	{
 		if (!IsEnabled())
 		{
-			throw new Exception("Element is not enabled.");
+			throw new ElementNotEnabledException();
 		}
 
 		if (ItemsControlAutomationPeer is { } parent)
@@ -123,6 +124,11 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 	{
 		get
 		{
+			if (!IsEnabled())
+			{
+				throw new ElementNotEnabledException();
+			}
+
 			if (ItemsControlAutomationPeer is { } parent)
 			{
 				if (parent.Owner is ISelector selector)

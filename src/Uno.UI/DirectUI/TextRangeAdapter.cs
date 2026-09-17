@@ -69,9 +69,27 @@ internal sealed class TextRangeAdapter : ITextRangeProvider
 		switch (unit)
 		{
 			case TextUnit.Document:
-			case TextUnit.Page:
 				_start = 0;
 				_end = text.Length;
+				break;
+			case TextUnit.Page:
+				if (TryGetEnclosingTextSegment(
+					_owner,
+					text,
+					unit,
+					_start,
+					_end,
+					out var pageStart,
+					out var pageEnd))
+				{
+					_start = pageStart;
+					_end = pageEnd;
+				}
+				else
+				{
+					_start = 0;
+					_end = text.Length;
+				}
 				break;
 			case TextUnit.Paragraph when _owner is TextBlock:
 				_start = 0;
@@ -80,9 +98,14 @@ internal sealed class TextRangeAdapter : ITextRangeProvider
 			case TextUnit.Paragraph:
 			case TextUnit.Line:
 			case TextUnit.Word:
-				// Reuse the same segmentation the endpoint moves use so that "current line",
-				// "current paragraph" and "current word" agree with traversal.
-				if (TryGetTextSegment(_owner, text, unit, _start, forward: true, out var segmentStart, out var segmentEnd))
+				if (TryGetEnclosingTextSegment(
+					_owner,
+					text,
+					unit,
+					_start,
+					_end,
+					out var segmentStart,
+					out var segmentEnd))
 				{
 					_start = segmentStart;
 					_end = segmentEnd;
@@ -105,6 +128,69 @@ internal sealed class TextRangeAdapter : ITextRangeProvider
 				_end = text.Length;
 				break;
 		}
+	}
+
+	private static bool TryGetEnclosingTextSegment(
+		FrameworkElement owner,
+		string text,
+		TextUnit unit,
+		int rangeStart,
+		int rangeEnd,
+		out int start,
+		out int end)
+	{
+		start = -1;
+		end = -1;
+		if (text.Length == 0)
+		{
+			return false;
+		}
+
+		var firstPosition = Math.Clamp(rangeStart, 0, text.Length);
+		var lastPosition = rangeEnd > rangeStart
+			? Math.Clamp(rangeEnd - 1, 0, text.Length - 1)
+			: firstPosition;
+		var cursor = 0;
+		var lastSegmentStart = -1;
+		var lastSegmentEnd = -1;
+
+		while (cursor <= text.Length &&
+			TryGetTextSegment(
+				owner,
+				text,
+				unit,
+				cursor,
+				forward: true,
+				out var segmentStart,
+				out var segmentEnd))
+		{
+			if (segmentEnd <= cursor)
+			{
+				break;
+			}
+
+			lastSegmentStart = segmentStart;
+			lastSegmentEnd = segmentEnd;
+			if (start < 0 && firstPosition < segmentEnd)
+			{
+				start = segmentStart;
+			}
+
+			if (start >= 0 && lastPosition < segmentEnd)
+			{
+				end = segmentEnd;
+				return true;
+			}
+
+			cursor = segmentEnd;
+		}
+
+		if (start < 0)
+		{
+			start = lastSegmentStart;
+		}
+		end = lastSegmentEnd;
+		return start >= 0 && end > start;
 	}
 
 	public ITextRangeProvider? FindAttribute(int attributeId, object value, bool backward) => null;
@@ -323,7 +409,7 @@ internal sealed class TextRangeAdapter : ITextRangeProvider
 		}
 
 		var direction = Math.Sign(count);
-		var remaining = Math.Abs(count);
+		var remaining = Math.Min(Math.Abs((long)count), (long)text.Length + 1);
 		while (remaining-- > 0 &&
 			TryGetTextSegment(owner, text, unit, position, direction > 0, out var start, out var end))
 		{

@@ -18,6 +18,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using UIKit;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers.WinUI;
 using Uno.UI.Dispatching;
 
 namespace Uno.UI.Runtime.Skia.AppleUIKit;
@@ -41,6 +42,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	private readonly Dictionary<nint, UnoUIAccessibilityElement> _nodeElements = new();
 	private readonly Dictionary<nint, PeerBinding> _nodePeers = new();
 	private readonly ConditionalWeakTable<AutomationPeer, NodeIdentity> _peerToNodeId = new();
+	private readonly ConditionalWeakTable<UIElement, PeerOccurrenceNodeIdentity> _peerOccurrenceToNodeId = new();
 	private readonly ConditionalWeakTable<AutomationPeer, List<nint>> _nodeIdsByProviderPeer = new();
 	private readonly Dictionary<nint, nint> _nodeIdByHandle = new();
 	private readonly Dictionary<nint, List<nint>> _nodeIdsByHandle = new();
@@ -52,6 +54,31 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	private sealed class NodeIdentity
 	{
 		internal nint Value { get; init; }
+	}
+
+	private sealed class PeerOccurrenceNodeIdentity
+	{
+		internal PeerOccurrenceNodeIdentity(
+			AutomationPeer peer,
+			AutomationPeer providerPeer,
+			nint value)
+		{
+			Peer = new(peer);
+			ProviderPeer = new(providerPeer);
+			Value = value;
+		}
+
+		internal WeakReference<AutomationPeer> Peer { get; }
+
+		internal WeakReference<AutomationPeer> ProviderPeer { get; }
+
+		internal nint Value { get; }
+
+		internal bool Matches(AccessibilityPeerNode node)
+			=> Peer.TryGetTarget(out var peer) &&
+				ReferenceEquals(peer, node.Peer) &&
+				ProviderPeer.TryGetTarget(out var providerPeer) &&
+				ReferenceEquals(providerPeer, node.ProviderPeer);
 	}
 
 	private sealed class PeerBinding
@@ -263,6 +290,9 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 	// IAccessibilityOwner
 
 	public override bool IsAccessibilityEnabled => true;
+
+	protected override bool IsAutomationListenerActive
+		=> _recordEvents || UIAccessibility.IsVoiceOverRunning || UIAccessibility.IsSwitchControlRunning;
 
 	protected override bool ShouldInvalidateOnScroll
 		=> UIAccessibility.IsVoiceOverRunning || UIAccessibility.IsSwitchControlRunning;
@@ -575,6 +605,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			_nodeElements.Clear();
 			_nodePeers.Clear();
 			_peerToNodeId.Clear();
+			_peerOccurrenceToNodeId.Clear();
 			_nodeIdsByProviderPeer.Clear();
 			_nodeIdByHandle.Clear();
 			_nodeIdsByHandle.Clear();
@@ -638,11 +669,20 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			handleToNodeIndex.TryAdd(handle, i);
 			_nodeIdsByProviderPeer.GetValue(node.ProviderPeer, static _ => new()).Add(handle);
 
+			var refreshCachedData = false;
 			if (!_nodeElements.TryGetValue(handle, out var el))
 			{
 				el = new UnoUIAccessibilityElement(metalView, handle, _selfRef);
 				_nodeElements[handle] = el;
 				_nodePeers[handle] = new PeerBinding(node);
+				refreshCachedData = true;
+			}
+			else if (!_nodePeers.TryGetValue(handle, out var binding) ||
+				!binding.Matches(node))
+			{
+				_nodePeers[handle] = new PeerBinding(node);
+				el.InvalidateCachedAccessibilityData();
+				refreshCachedData = true;
 			}
 
 			if (owner is not null)
@@ -662,7 +702,10 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 				}
 			}
 
-			el.InvalidateCachedAccessibilityData();
+			if (refreshCachedData)
+			{
+				el.RefreshCachedAccessibilityData();
+			}
 			orderedElements.Add(el);
 		}
 
@@ -720,12 +763,6 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		_modalScopeOwner = modalOwner is null ? null : new(modalOwner);
 		_modalScopeDirty = false;
 		var screenChangeHandled = false;
-
-		// UIKit may query these immediately when the native element array is assigned.
-		foreach (var element in orderedElements.OfType<UnoUIAccessibilityElement>())
-		{
-			element.RefreshCachedAccessibilityData();
-		}
 
 		if (currentModalHandle != 0)
 		{
@@ -1399,7 +1436,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			if (ec.ExpandCollapseState is ExpandCollapseState.Collapsed)
 			{
 				list.Add(CreateCustomAction(
-					Localize("Expand"),
+					GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionExpand),
 					_ =>
 					{
 						if (!weakSelf.TryGetTarget(out var self))
@@ -1413,7 +1450,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			else if (ec.ExpandCollapseState is ExpandCollapseState.Expanded)
 			{
 				list.Add(CreateCustomAction(
-					Localize("Collapse"),
+					GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionCollapse),
 					_ =>
 					{
 						if (!weakSelf.TryGetTarget(out var self))
@@ -1435,8 +1472,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					CanSelectMultiple: true,
 				};
 			var label = canSelectMultiple && selectionItem.IsSelected
-				? Localize("Deselect")
-				: Localize("Select");
+				? GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionDeselect)
+				: GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionSelect);
 			list.Add(CreateCustomAction(
 				label,
 				_ =>
@@ -1454,7 +1491,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			(scrollProvider.HorizontallyScrollable || scrollProvider.VerticallyScrollable))
 		{
 			list.Add(CreateCustomAction(
-				Localize("Scroll Forward"),
+				GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionScrollForward),
 				_ =>
 				{
 					if (!weakSelf.TryGetTarget(out var self))
@@ -1464,7 +1501,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					return self.Scroll(handle, UIAccessibilityScrollDirection.Down);
 				}));
 			list.Add(CreateCustomAction(
-				Localize("Scroll Backward"),
+				GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionScrollBackward),
 				_ =>
 				{
 					if (!weakSelf.TryGetTarget(out var self))
@@ -1478,7 +1515,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		if (peer.GetPattern(PatternInterface.ScrollItem) is IScrollItemProvider)
 		{
 			list.Add(CreateCustomAction(
-				Localize("Scroll Into View"),
+				GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionScrollIntoView),
 				_ =>
 				{
 					if (!weakSelf.TryGetTarget(out var self))
@@ -1493,7 +1530,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		if (peer.GetPattern(PatternInterface.VirtualizedItem) is IVirtualizedItemProvider)
 		{
 			list.Add(CreateCustomAction(
-				Localize("Realize"),
+				GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionRealize),
 				_ =>
 				{
 					if (!weakSelf.TryGetTarget(out var self))
@@ -1508,7 +1545,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		if (peer.GetPattern(PatternInterface.Window) is IWindowProvider wp)
 		{
 			list.Add(CreateCustomAction(
-				Localize("Dismiss"),
+				GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionDismiss),
 				_ =>
 				{
 					if (!weakSelf.TryGetTarget(out var self))
@@ -1528,7 +1565,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			if (canMax && visualState != WindowVisualState.Maximized)
 			{
 				list.Add(CreateCustomAction(
-					Localize("Maximize"),
+					GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionMaximize),
 					_ =>
 					{
 						if (!weakSelf.TryGetTarget(out var self))
@@ -1544,7 +1581,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			if (canMin && visualState != WindowVisualState.Minimized)
 			{
 				list.Add(CreateCustomAction(
-					Localize("Minimize"),
+					GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionMinimize),
 					_ =>
 					{
 						if (!weakSelf.TryGetTarget(out var self))
@@ -1560,7 +1597,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			if (visualState is WindowVisualState.Maximized or WindowVisualState.Minimized)
 			{
 				list.Add(CreateCustomAction(
-					Localize("Restore"),
+					GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionRestore),
 					_ =>
 					{
 						if (!weakSelf.TryGetTarget(out var self))
@@ -1594,11 +1631,14 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 					if (string.IsNullOrEmpty(viewLabel))
 					{
-						viewLabel = $"View {viewId}";
+						viewLabel = string.Format(
+							CultureInfo.CurrentCulture,
+							GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionViewFormat),
+							viewId);
 					}
 
 					list.Add(CreateCustomAction(
-						Localize(viewLabel),
+						viewLabel,
 						_ =>
 						{
 							if (!weakSelf.TryGetTarget(out var self))
@@ -1617,7 +1657,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		if (peer.GetPattern(PatternInterface.Transform2) is ITransformProvider2 t2 && t2.CanZoom)
 		{
 			list.Add(CreateCustomAction(
-				Localize("Zoom In"),
+				GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionZoomIn),
 				_ =>
 				{
 					if (!weakSelf.TryGetTarget(out var self))
@@ -1628,7 +1668,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					return p is not null && AccessibilityPeerHelper.TryZoomByUnit(p, ZoomUnit.SmallIncrement);
 				}));
 			list.Add(CreateCustomAction(
-				Localize("Zoom Out"),
+				GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionZoomOut),
 				_ =>
 				{
 					if (!weakSelf.TryGetTarget(out var self))
@@ -1655,18 +1695,8 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 					continue;
 				}
 				var capturedPos = pos;
-				var posLabel = pos switch
-				{
-					DockPosition.Top => "Dock to Top",
-					DockPosition.Left => "Dock to Left",
-					DockPosition.Bottom => "Dock to Bottom",
-					DockPosition.Right => "Dock to Right",
-					DockPosition.Fill => "Dock to Fill",
-					DockPosition.None => "Undock",
-					_ => $"Dock {pos}",
-				};
 				list.Add(CreateCustomAction(
-					Localize(posLabel),
+					GetDockActionLabel(pos),
 					_ =>
 					{
 						if (!weakSelf.TryGetTarget(out var self))
@@ -1900,21 +1930,21 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 			return false;
 		}
 
-		var actionKey = request.Action switch
+		var actionResourceKey = request.Action switch
 		{
-			AccessibilityNativeAction.Expand => "Expand",
-			AccessibilityNativeAction.Collapse => "Collapse",
-			AccessibilityNativeAction.ScrollIntoView => "Scroll Into View",
-			AccessibilityNativeAction.Realize => "Realize",
+			AccessibilityNativeAction.Expand => ResourceAccessor.SR_AccessibilityActionExpand,
+			AccessibilityNativeAction.Collapse => ResourceAccessor.SR_AccessibilityActionCollapse,
+			AccessibilityNativeAction.ScrollIntoView => ResourceAccessor.SR_AccessibilityActionScrollIntoView,
+			AccessibilityNativeAction.Realize => ResourceAccessor.SR_AccessibilityActionRealize,
 			_ => null,
 		};
 
-		if (actionKey is null)
+		if (actionResourceKey is null)
 		{
 			return false;
 		}
 
-		var actionName = Localize(actionKey);
+		var actionName = GetLocalizedActionLabel(actionResourceKey);
 		foreach (var action in actions)
 		{
 			if (action.Name == actionName)
@@ -2161,6 +2191,7 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		_nodeElements.Clear();
 		_nodePeers.Clear();
 		_peerToNodeId.Clear();
+		_peerOccurrenceToNodeId.Clear();
 		_nodeIdsByProviderPeer.Clear();
 		_nodeIdByHandle.Clear();
 		_nodeIdsByHandle.Clear();
@@ -2456,6 +2487,28 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 	private nint GetOrCreateNodeId(AccessibilityPeerNode node)
 	{
+		if (node.Peer is ItemAutomationPeer && node.Owner is { } owner)
+		{
+			if (_peerOccurrenceToNodeId.TryGetValue(owner, out var occurrence))
+			{
+				if (occurrence.Matches(node))
+				{
+					return occurrence.Value;
+				}
+
+				_peerOccurrenceToNodeId.Remove(owner);
+			}
+
+			var occurrenceNodeId = checked(++_nextNodeId);
+			_peerOccurrenceToNodeId.Add(
+				owner,
+				new PeerOccurrenceNodeIdentity(
+					node.Peer,
+					node.ProviderPeer,
+					occurrenceNodeId));
+			return occurrenceNodeId;
+		}
+
 		if (_peerToNodeId.TryGetValue(node.Peer, out var identity) &&
 			_nodePeers.TryGetValue(identity.Value, out var binding) &&
 			binding.Matches(node))
@@ -2784,16 +2837,30 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 		// ISelectionProvider without grid: derive item count from peer children.
 		if (peer.GetPattern(PatternInterface.Selection) is ISelectionProvider selOnly)
 		{
-			var children = peer.GetChildren();
-			int rowCount = children?.Count ?? 0;
 			return new AccessibilityNativeCollectionDetails(
-				rowCount: rowCount,
+				rowCount: GetCollectionSize(peer),
 				columnCount: 1,
 				canSelectMultiple: selOnly.CanSelectMultiple,
 				isSelectionRequired: selOnly.IsSelectionRequired);
 		}
 
 		return null;
+	}
+
+	private static int GetCollectionSize(AutomationPeer peer)
+	{
+		var sizeOfSet = peer.GetSizeOfSet();
+		if (sizeOfSet > 0)
+		{
+			return sizeOfSet;
+		}
+
+		if (peer is FrameworkElementAutomationPeer { Owner: ItemsControl itemsControl })
+		{
+			return itemsControl.Items.Count;
+		}
+
+		return peer.GetChildren()?.Count ?? 0;
 	}
 
 	private static AccessibilityNativeCollectionItemDetails? BuildCollectionItem(AutomationPeer peer)
@@ -3027,6 +3094,21 @@ internal sealed class AppleUIKitAccessibility : SkiaAccessibilityBase
 
 	private static string Localize(string key)
 		=> NSBundle.MainBundle.GetLocalizedString(key, key, null).ToString();
+
+	private static string GetLocalizedActionLabel(string resourceKey)
+		=> ResourceAccessor.GetLocalizedStringResource(resourceKey);
+
+	private static string GetDockActionLabel(DockPosition position)
+		=> GetLocalizedActionLabel(position switch
+		{
+			DockPosition.Top => ResourceAccessor.SR_AccessibilityActionDockTop,
+			DockPosition.Left => ResourceAccessor.SR_AccessibilityActionDockLeft,
+			DockPosition.Bottom => ResourceAccessor.SR_AccessibilityActionDockBottom,
+			DockPosition.Right => ResourceAccessor.SR_AccessibilityActionDockRight,
+			DockPosition.Fill => ResourceAccessor.SR_AccessibilityActionDockFill,
+			DockPosition.None => ResourceAccessor.SR_AccessibilityActionUndock,
+			_ => ResourceAccessor.SR_AccessibilityActionUndock,
+		});
 
 	private static UIAccessibilityCustomAction CreateCustomAction(
 		string name,

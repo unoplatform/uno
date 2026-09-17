@@ -276,6 +276,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				itemPeers[0],
 				itemPeers[1],
 				"WinUI reuses the item-keyed peer when the same item instance occurs more than once.");
+
+#if HAS_UNO
+			var nativePeerTree = MobileAccessibilityTestHelper.GetPeerTree(listView);
+			var occurrences = new List<AccessibilityPeerNode>();
+			foreach (var node in nativePeerTree)
+			{
+				if (ReferenceEquals(node.Peer, itemPeers[0]))
+				{
+					occurrences.Add(node);
+				}
+			}
+
+			Assert.AreEqual(2, occurrences.Count, "Both realized occurrences must remain in the promoted peer tree.");
+			Assert.IsNotNull(occurrences[0].Owner);
+			Assert.IsNotNull(occurrences[1].Owner);
+			Assert.AreNotSame(
+				occurrences[0].Owner,
+				occurrences[1].Owner,
+				"Each duplicate occurrence must retain its own realized container.");
+			Assert.AreEqual(0, listView.IndexFromContainer(occurrences[0].Owner));
+			Assert.AreEqual(1, listView.IndexFromContainer(occurrences[1].Owner));
+#endif
 		}
 
 	}

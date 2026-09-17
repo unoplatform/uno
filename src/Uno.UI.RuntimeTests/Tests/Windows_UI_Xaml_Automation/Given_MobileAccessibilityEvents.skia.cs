@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
@@ -108,8 +109,54 @@ public class Given_MobileAccessibilityEvents
 		}
 	}
 
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_AccessibilityView_Changes_Then_Membership_Notification_Does_Not_Require_A_Listener()
+	{
+		var button = new Button { Content = "Target" };
+		await UITestHelper.Load(button);
+
+		var listener = new RecordingListener { HasListeners = false };
+		var previous = AutomationPeer.TestAutomationPeerListener;
+		try
+		{
+			AutomationPeer.TestAutomationPeerListener = listener;
+
+			AutomationProperties.SetAccessibilityView(button, AccessibilityView.Raw);
+
+			CollectionAssert.Contains(listener.Events, AutomationEvents.StructureChanged);
+		}
+		finally
+		{
+			AutomationPeer.TestAutomationPeerListener = previous;
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
+	public async Task When_AccessibilityView_Changes_Then_Native_Membership_Is_Rebuilt()
+	{
+		var button = new Button { Content = "Membership target" };
+		AutomationProperties.SetAccessibilityView(button, AccessibilityView.Raw);
+		await UITestHelper.Load(button);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.IsNull(MobileAccessibilityTestHelper.TryGetNativeSnapshot(button));
+
+		AutomationProperties.SetAccessibilityView(button, AccessibilityView.Content);
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.IsNotNull(MobileAccessibilityTestHelper.TryGetNativeSnapshot(button));
+
+		AutomationProperties.SetAccessibilityView(button, AccessibilityView.Raw);
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.IsNull(MobileAccessibilityTestHelper.TryGetNativeSnapshot(button));
+	}
+
 	private sealed class RecordingListener : IAutomationPeerListener
 	{
+		public bool HasListeners { get; init; } = true;
+
 		public List<AutomationProperty> Properties { get; } = new();
 
 		public List<AutomationEvents> Events { get; } = new();
@@ -151,6 +198,6 @@ public class Given_MobileAccessibilityEvents
 
 		public void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId) { }
 
-		public bool ListenerExistsHelper(AutomationEvents eventId) => true;
+		public bool ListenerExistsHelper(AutomationEvents eventId) => HasListeners;
 	}
 }

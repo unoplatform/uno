@@ -1,7 +1,9 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using Microsoft.UI.Composition;
 using Microsoft.UI.Xaml;
@@ -41,6 +43,73 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	private long _assertiveThrottleTimestamp;
 	private string? _lastAnnouncedPoliteContent;
 	private string? _lastAnnouncedAssertiveContent;
+	private readonly NotificationAnnouncementChannel _politeNotificationChannel = new();
+	private readonly NotificationAnnouncementChannel _assertiveNotificationChannel = new();
+
+	private sealed class NotificationAnnouncementChannel
+	{
+		internal Queue<PendingNotificationAnnouncement> Pending { get; } = new();
+
+		internal Dictionary<NotificationCoalescingKey, PendingNotificationAnnouncement> MostRecent { get; } =
+			new(NotificationCoalescingKeyComparer.Instance);
+
+		internal Timer? Timer { get; set; }
+
+		internal long Version { get; set; }
+	}
+
+	private sealed class PendingNotificationAnnouncement
+	{
+		internal PendingNotificationAnnouncement(
+			string content,
+			WeakReference<UIElement>? source,
+			NotificationCoalescingKey? coalescingKey,
+			bool retainCurrent)
+		{
+			Content = content;
+			Source = source;
+			CoalescingKey = coalescingKey;
+			RetainCurrent = retainCurrent;
+		}
+
+		internal string Content { get; set; }
+
+		internal WeakReference<UIElement>? Source { get; set; }
+
+		internal NotificationCoalescingKey? CoalescingKey { get; }
+
+		internal bool RetainCurrent { get; }
+	}
+
+	private sealed class NotificationCoalescingKey
+	{
+		internal NotificationCoalescingKey(object source, string activityId)
+		{
+			Source = source;
+			ActivityId = activityId;
+		}
+
+		internal object Source { get; }
+
+		internal string ActivityId { get; }
+	}
+
+	private sealed class NotificationCoalescingKeyComparer : IEqualityComparer<NotificationCoalescingKey>
+	{
+		internal static NotificationCoalescingKeyComparer Instance { get; } = new();
+
+		public bool Equals(NotificationCoalescingKey? x, NotificationCoalescingKey? y)
+			=> ReferenceEquals(x, y) ||
+				(x is not null &&
+					y is not null &&
+					ReferenceEquals(x.Source, y.Source) &&
+					string.Equals(x.ActivityId, y.ActivityId, StringComparison.Ordinal));
+
+		public int GetHashCode(NotificationCoalescingKey obj)
+			=> HashCode.Combine(
+				RuntimeHelpers.GetHashCode(obj.Source),
+				StringComparer.Ordinal.GetHashCode(obj.ActivityId));
+	}
 
 	// Focus tracking
 	private WeakReference<UIElement>? _trackedFocusedElement;
@@ -68,6 +137,8 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 	/// <summary>Whether accessibility is currently enabled and the tree is initialized.</summary>
 	public abstract bool IsAccessibilityEnabled { get; }
+
+	protected virtual bool IsAutomationListenerActive => IsAccessibilityEnabled;
 
 	protected virtual bool ShouldInvalidateOnScroll => IsAccessibilityEnabled;
 
@@ -110,6 +181,11 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 
 	protected abstract void SetNativeFocus(nint handle);
 	protected abstract void OnNativeStructureChanged();
+	protected virtual void OnAccessibilityViewChanged(
+		UIElement element,
+		AccessibilityView oldValue,
+		AccessibilityView newValue)
+		=> OnNativeStructureChanged();
 
 	// ──────────────────────────────────────────────────────────────
 	//  Abstract: Announcements
@@ -406,6 +482,19 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		OnNativeStructureChanged();
 	}
 
+	public virtual void NotifyAccessibilityViewChanged(
+		UIElement element,
+		AccessibilityView oldValue,
+		AccessibilityView newValue)
+	{
+		if (_isDisposed || !IsAccessibilityEnabled)
+		{
+			return;
+		}
+
+		OnAccessibilityViewChanged(element, oldValue, newValue);
+	}
+
 	public virtual void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
 	{
 		if (_isDisposed || !IsAccessibilityEnabled)
@@ -499,14 +588,13 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		var assertive = notificationProcessing == AutomationNotificationProcessing.ImportantAll ||
 						notificationProcessing == AutomationNotificationProcessing.ImportantMostRecent;
 
-		if (assertive)
-		{
-			AnnounceAssertive(displayString, sourceElement);
-		}
-		else
-		{
-			AnnouncePolite(displayString, sourceElement);
-		}
+		QueueNotificationAnnouncement(
+			displayString,
+			sourceElement,
+			(object?)sourceElement ?? sourcePeer,
+			activityId ?? string.Empty,
+			assertive,
+			notificationProcessing);
 	}
 
 	public virtual void NotifyTextEditTextChangedEvent(AutomationPeer peer, Microsoft.UI.Xaml.Automation.AutomationTextEditChangeType changeType, System.Collections.Generic.IReadOnlyList<string> changedData)
@@ -541,7 +629,7 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 	}
 
 	public virtual bool ListenerExistsHelper(AutomationEvents eventId)
-		=> !_isDisposed && IsAccessibilityEnabled;
+		=> !_isDisposed && IsAutomationListenerActive;
 
 	public virtual void OnAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
 		=> NotifyAutomationEvent(peer, eventId);
@@ -1032,6 +1120,155 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 		AnnounceOnPlatformIfAllowed(content, assertive: true, source);
 	}
 
+	private void QueueNotificationAnnouncement(
+		string content,
+		UIElement? source,
+		object sourceKey,
+		string activityId,
+		bool assertive,
+		AutomationNotificationProcessing processing)
+	{
+		lock (_announcementGate)
+		{
+			if (_isDisposed)
+			{
+				return;
+			}
+
+			var channel = assertive ? _assertiveNotificationChannel : _politeNotificationChannel;
+			var retainAll = processing is
+				AutomationNotificationProcessing.ImportantAll or
+				AutomationNotificationProcessing.All;
+			var retainCurrent =
+				processing == AutomationNotificationProcessing.CurrentThenMostRecent;
+			NotificationCoalescingKey? coalescingKey = null;
+			if (!retainAll)
+			{
+				coalescingKey = new NotificationCoalescingKey(sourceKey, activityId);
+				if (channel.MostRecent.TryGetValue(coalescingKey, out var pending))
+				{
+					if (!retainCurrent || !pending.RetainCurrent)
+					{
+						pending.Content = content;
+						pending.Source = source is null ? null : new WeakReference<UIElement>(source);
+						return;
+					}
+				}
+			}
+
+			var announcement = new PendingNotificationAnnouncement(
+				content,
+				source is null ? null : new WeakReference<UIElement>(source),
+				coalescingKey,
+				retainCurrent && !channel.MostRecent.ContainsKey(coalescingKey!));
+			channel.Pending.Enqueue(announcement);
+			if (coalescingKey is not null)
+			{
+				channel.MostRecent[coalescingKey] = announcement;
+			}
+
+			if (channel.Timer is null)
+			{
+				ScheduleNotificationFlush(channel, assertive, AnnouncementDebounceMs);
+			}
+		}
+	}
+
+	private void ScheduleNotificationFlush(
+		NotificationAnnouncementChannel channel,
+		bool assertive,
+		int delay)
+	{
+		var version = ++channel.Version;
+		channel.Timer?.Dispose();
+		channel.Timer = new Timer(
+			_ => FlushNotificationAnnouncement(channel, assertive, version),
+			null,
+			delay,
+			Timeout.Infinite);
+	}
+
+	private void FlushNotificationAnnouncement(
+		NotificationAnnouncementChannel channel,
+		bool assertive,
+		long version)
+	{
+		PendingNotificationAnnouncement announcement;
+		lock (_announcementGate)
+		{
+			if (_isDisposed || version != channel.Version)
+			{
+				return;
+			}
+
+			channel.Timer?.Dispose();
+			channel.Timer = null;
+			if (channel.Pending.Count == 0)
+			{
+				return;
+			}
+
+			var now = Environment.TickCount64;
+			var lastTimestamp = assertive
+				? _assertiveThrottleTimestamp
+				: _politeThrottleTimestamp;
+			var throttle = assertive ? AssertiveThrottleMs : PoliteThrottleMs;
+			if (now - lastTimestamp < throttle)
+			{
+				ScheduleNotificationFlush(
+					channel,
+					assertive,
+					throttle - (int)(now - lastTimestamp));
+				return;
+			}
+
+			announcement = channel.Pending.Dequeue();
+			if (announcement.CoalescingKey is { } coalescingKey &&
+				channel.MostRecent.TryGetValue(coalescingKey, out var pending) &&
+				ReferenceEquals(pending, announcement))
+			{
+				channel.MostRecent.Remove(coalescingKey);
+			}
+
+			if (assertive)
+			{
+				if (string.Equals(
+					announcement.Content,
+					_lastAnnouncedAssertiveContent,
+					StringComparison.Ordinal))
+				{
+					announcement.Content += "\uFEFF";
+				}
+
+				_assertiveThrottleTimestamp = now;
+				_lastAnnouncedAssertiveContent = announcement.Content;
+			}
+			else
+			{
+				if (string.Equals(
+					announcement.Content,
+					_lastAnnouncedPoliteContent,
+					StringComparison.Ordinal))
+				{
+					announcement.Content += "\uFEFF";
+				}
+
+				_politeThrottleTimestamp = now;
+				_lastAnnouncedPoliteContent = announcement.Content;
+			}
+
+			if (channel.Pending.Count > 0)
+			{
+				ScheduleNotificationFlush(channel, assertive, throttle);
+			}
+		}
+
+		AnnounceOnPlatformIfAllowed(
+			announcement.Content,
+			assertive,
+			announcement.Source);
+	}
+
 	private void AnnounceOnPlatformIfAllowed(
 		string content,
 		bool assertive,
@@ -1116,6 +1353,16 @@ internal abstract class SkiaAccessibilityBase : IUnoAccessibility, IAutomationPe
 				_pendingAssertiveContent = null;
 				_pendingPoliteSource = null;
 				_pendingAssertiveSource = null;
+				_politeNotificationChannel.Timer?.Dispose();
+				_politeNotificationChannel.Timer = null;
+				_politeNotificationChannel.Pending.Clear();
+				_politeNotificationChannel.MostRecent.Clear();
+				_politeNotificationChannel.Version++;
+				_assertiveNotificationChannel.Timer?.Dispose();
+				_assertiveNotificationChannel.Timer = null;
+				_assertiveNotificationChannel.Pending.Clear();
+				_assertiveNotificationChannel.MostRecent.Clear();
+				_assertiveNotificationChannel.Version++;
 				_politeAnnouncementVersion++;
 				_assertiveAnnouncementVersion++;
 			}

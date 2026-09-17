@@ -509,5 +509,54 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				$"Move(Word) must move by a word, not a character (got '{word}').");
 			StringAssert.Contains(word, "beta");
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Collapsed_Range_Is_Inside_A_Word_Then_Expansion_Returns_The_Whole_Word()
+		{
+			var textBlock = new TextBlock { Text = "alpha beta" };
+			await UITestHelper.Load(textBlock);
+
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBlock);
+			var textProvider = peer!.GetPattern(PatternInterface.Text) as ITextProvider;
+			Assert.IsNotNull(textProvider);
+
+			var range = textProvider!.DocumentRange.Clone();
+			range.MoveEndpointByUnit(TextPatternRangeEndpoint.Start, TextUnit.Character, 1);
+			range.MoveEndpointByRange(
+				TextPatternRangeEndpoint.End,
+				range,
+				TextPatternRangeEndpoint.Start);
+			range.ExpandToEnclosingUnit(TextUnit.Word);
+
+			Assert.AreEqual("alpha", range.GetText(-1).Trim());
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
+		public async Task When_Range_Moves_By_Int32_MinValue_Then_It_Clamps_Without_Overflow()
+		{
+			var textBlock = new TextBlock { Text = "alpha beta gamma" };
+			await UITestHelper.Load(textBlock);
+
+			var peer = FrameworkElementAutomationPeer.CreatePeerForElement(textBlock);
+			var textProvider = peer!.GetPattern(PatternInterface.Text) as ITextProvider;
+			Assert.IsNotNull(textProvider);
+
+			var range = textProvider!.DocumentRange.Clone();
+			range.MoveEndpointByRange(
+				TextPatternRangeEndpoint.Start,
+				range,
+				TextPatternRangeEndpoint.End);
+
+			var moved = range.Move(TextUnit.Word, int.MinValue);
+
+			Assert.IsTrue(moved < 0);
+			Assert.AreEqual(0, range.CompareEndpoints(
+				TextPatternRangeEndpoint.Start,
+				textProvider.DocumentRange,
+				TextPatternRangeEndpoint.Start));
+		}
 	}
 }

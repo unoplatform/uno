@@ -2598,6 +2598,23 @@ internal partial class WebAssemblyAccessibility : SkiaAccessibilityBase
 			NativeMethods.FocusSemanticElement(handle);
 		}
 	}
+
+	protected override void OnAccessibilityViewChanged(
+		UIElement element,
+		AccessibilityView oldValue,
+		AccessibilityView newValue)
+	{
+		if (element.GetParent() is not UIElement parent)
+		{
+			return;
+		}
+
+		var children = parent.GetChildren();
+		var index = children.IndexOf(element);
+		OnChildRemoved(parent, element);
+		OnChildAdded(parent, element, index >= 0 ? index : null);
+	}
+
 	protected override void OnNativeStructureChanged() { }
 
 	internal void SyncTextBoxValueAndSelection(TextBoxCore core)

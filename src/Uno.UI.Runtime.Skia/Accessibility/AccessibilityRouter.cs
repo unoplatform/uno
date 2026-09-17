@@ -199,6 +199,12 @@ internal static class AccessibilityRouter
 		public void NotifyAutomationEvent(AutomationPeer peer, AutomationEvents eventId)
 			=> Resolve(peer)?.NotifyAutomationEvent(peer, eventId);
 
+		public void NotifyAccessibilityViewChanged(
+			UIElement element,
+			AccessibilityView oldValue,
+			AccessibilityView newValue)
+			=> Resolve(element)?.NotifyAccessibilityViewChanged(element, oldValue, newValue);
+
 		public void NotifyStructureChangedEvent(AutomationPeer peer, AutomationStructureChangeType structureChangeType, AutomationPeer? child)
 			=> Resolve(peer)?.NotifyStructureChangedEvent(peer, structureChangeType, child);
 

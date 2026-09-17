@@ -251,11 +251,13 @@ public sealed partial class AutomationProperties
 		DependencyPropertyChangedEventArgs args)
 	{
 #if __SKIA__
-		if (AutomationPeer.AutomationPeerListener?.ListenerExistsHelper(AutomationEvents.StructureChanged) == true &&
-			dependencyObject is UIElement element &&
-			element.GetOrCreateAutomationPeer() is { } peer)
+		if (AutomationPeer.AutomationPeerListener is { } listener &&
+			dependencyObject is UIElement element)
 		{
-			AutomationPeer.AutomationPeerListener.NotifyAutomationEvent(peer, AutomationEvents.StructureChanged);
+			listener.NotifyAccessibilityViewChanged(
+				element,
+				(AccessibilityView)args.OldValue,
+				(AccessibilityView)args.NewValue);
 		}
 #endif
 	}

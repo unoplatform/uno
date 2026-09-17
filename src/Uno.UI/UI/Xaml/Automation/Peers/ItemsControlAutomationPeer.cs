@@ -27,6 +27,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 {
 	private readonly Dictionary<object, ItemAutomationPeer> _itemPeers = new(Uno.ReferenceEqualityComparer<object>.Default);
 	private readonly ConditionalWeakTable<UIElement, RealizedItemPeerEntry> _realizedItemPeers = new();
+	private IReadOnlyList<ChildPeerOccurrence> _lastChildPeerOccurrences = Array.Empty<ChildPeerOccurrence>();
 
 	private sealed class RealizedItemPeerEntry
 	{
@@ -39,6 +40,19 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 		internal object Item { get; }
 
 		internal ItemAutomationPeer Peer { get; }
+	}
+
+	private sealed class ChildPeerOccurrence
+	{
+		internal ChildPeerOccurrence(AutomationPeer peer, UIElement? owner)
+		{
+			Peer = new(peer);
+			Owner = owner is null ? null : new(owner);
+		}
+
+		internal WeakReference<AutomationPeer> Peer { get; }
+
+		internal WeakReference<UIElement>? Owner { get; }
 	}
 
 	private ItemAutomationPeer? GetOrCreateRealizedItemPeer(UIElement container, object item)
@@ -304,6 +318,25 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 
 	protected override IList<AutomationPeer> GetChildrenCore() => GetItemsControlChildrenChildren();
 
+	internal bool TryGetChildOccurrenceOwner(
+		int childIndex,
+		AutomationPeer child,
+		out UIElement? owner)
+	{
+		if (childIndex >= 0 &&
+			childIndex < _lastChildPeerOccurrences.Count &&
+			_lastChildPeerOccurrences[childIndex] is { } occurrence &&
+			occurrence.Peer.TryGetTarget(out var occurrencePeer) &&
+			ReferenceEquals(occurrencePeer, child) &&
+			occurrence.Owner?.TryGetTarget(out owner) == true)
+		{
+			return true;
+		}
+
+		owner = null;
+		return false;
+	}
+
 
 	private void GetItemsControlChildrenChildrenHelper(
 		ItemsControl owner,
@@ -421,12 +454,20 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 	private IList<AutomationPeer> GetItemsControlChildrenChildren()
 	{
 		var children = new List<AutomationPeer>();
+		var childOccurrences = new List<ChildPeerOccurrence>();
+
+		void AddChild(AutomationPeer child, UIElement? owner)
+		{
+			children.Add(child);
+			childOccurrences.Add(new ChildPeerOccurrence(child, owner));
+		}
 
 		// In C++, 'pAPChildren' is usually an argument or member. 
 		// Here we accumulate into a local list to return.
 
 		if (Owner is not ItemsControl spItemsControl)
 		{
+			_lastChildPeerOccurrences = childOccurrences;
 			return children;
 		}
 
@@ -471,7 +512,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 										var spItemPeerAsAP = spHeaderElementAsUIE.GetOrCreateAutomationPeer();
 										if (spItemPeerAsAP != null)
 										{
-											children.Add(spItemPeerAsAP);
+											AddChild(spItemPeerAsAP, spHeaderElementAsUIE);
 										}
 									}
 								}
@@ -491,7 +532,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 							var spItemPeerAsAP = spItemContainer.GetOrCreateAutomationPeer();
 							if (spItemPeerAsAP != null)
 							{
-								children.Add(spItemPeerAsAP);
+								AddChild(spItemPeerAsAP, spItemContainer);
 							}
 
 							// We need to add the leaf elements to the new short term cache, spNewChildrenCollection, 
@@ -539,7 +580,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 							var spItemAP = spNewChildrenCollection[idx];
 							if (spItemAP != null)
 							{
-								children.Add(spItemAP);
+								AddChild(spItemAP, spItemAP.GetContainer());
 							}
 						}
 					}
@@ -571,7 +612,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 										// Set the EventsSource so UIA events from container bubble as DataItem
 										pContainerItemPeer.EventsSource = spItemPeer;
 
-										children.Add(spItemPeer);
+										AddChild(spItemPeer, spItemContainer);
 										spNewChildrenCollection.Add(spItemPeer);
 									}
 								}
@@ -588,6 +629,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 			}
 		}
 
+		_lastChildPeerOccurrences = childOccurrences;
 		return children;
 	}
 

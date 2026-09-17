@@ -24,6 +24,7 @@ using Microsoft.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
+using Uno.UI.Helpers.WinUI;
 
 namespace Uno.UI.Runtime.Skia.Android;
 
@@ -49,7 +50,8 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 	private readonly ConditionalWeakTable<DependencyObject, VirtualIdBox> _elementToId = new();
 	private readonly ConditionalWeakTable<AutomationPeer, VirtualIdBox> _peerToId = new();
-	private readonly Dictionary<AutomationPeer, int> _currentIdByPeer = new(ReferenceEqualityComparer.Instance);
+	private readonly ConditionalWeakTable<UIElement, PeerOccurrenceVirtualId> _peerOccurrenceToId = new();
+	private readonly Dictionary<AutomationPeer, List<int>> _currentIdsByPeer = new(ReferenceEqualityComparer.Instance);
 	private readonly Dictionary<int, WeakReference<DependencyObject>> _idToWeakElement = new();
 	private readonly Dictionary<int, WeakReference<AutomationPeer>> _idToWeakPeer = new();
 	private readonly Dictionary<nint, int> _handleToId = new();
@@ -59,6 +61,31 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	private sealed class VirtualIdBox
 	{
 		public int Value { get; init; }
+	}
+
+	private sealed class PeerOccurrenceVirtualId
+	{
+		internal PeerOccurrenceVirtualId(
+			AutomationPeer peer,
+			AutomationPeer providerPeer,
+			int value)
+		{
+			Peer = new(peer);
+			ProviderPeer = new(providerPeer);
+			Value = value;
+		}
+
+		internal WeakReference<AutomationPeer> Peer { get; }
+
+		internal WeakReference<AutomationPeer> ProviderPeer { get; }
+
+		internal int Value { get; }
+
+		internal bool Matches(AutomationPeer peer, AutomationPeer providerPeer)
+			=> Peer.TryGetTarget(out var existingPeer) &&
+				ReferenceEquals(existingPeer, peer) &&
+				ProviderPeer.TryGetTarget(out var existingProviderPeer) &&
+				ReferenceEquals(existingProviderPeer, providerPeer);
 	}
 
 	// Per-scan caches rebuilt by GetVisibleVirtualViews.
@@ -415,6 +442,10 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		=> _host.Context?.GetSystemService(global::Android.Content.Context.AccessibilityService) is
 			AccessibilityManager { IsEnabled: true, IsTouchExplorationEnabled: true };
 
+	internal bool IsAccessibilityServiceEnabled
+		=> _host.Context?.GetSystemService(global::Android.Content.Context.AccessibilityService) is
+			AccessibilityManager { IsEnabled: true };
+
 	internal void InvalidateAccessibilityRoot()
 	{
 		MarkAccessibilityTreeDirty();
@@ -424,7 +455,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	internal void MarkAccessibilityTreeDirty()
 	{
 		_peerTreeRevision++;
-		_currentIdByPeer.Clear();
+		_currentIdsByPeer.Clear();
 		_peerTreeDirty = true;
 		_visibleTreeBuilt = false;
 		_cachedPeerTreeRoot = null;
@@ -654,6 +685,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			AccessibilityPeerHelper.AndroidAllNodesForRootAccessor = null;
 			AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor = null;
 			AccessibilityPeerHelper.AndroidAllNodeSnapshotsForRootAccessor = null;
+			AccessibilityPeerHelper.AndroidAccessibilityCollectionItemAccessor = null;
 			AccessibilityPeerHelper.AndroidAccessibilityDiagnosticsAccessor = null;
 		}
 
@@ -698,7 +730,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		_idToWeakElement.Clear();
 		_handleToId.Clear();
 		_idsByHandle.Clear();
-		_currentIdByPeer.Clear();
+		_currentIdsByPeer.Clear();
 		_orderedIdSet.Clear();
 		_cachedPeerTree = Array.Empty<AccessibilityPeerNode>();
 		_cachedPeerTreeRoot = null;
@@ -766,13 +798,18 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		}
 	}
 
-	internal int? GetCurrentVirtualIdForPeer(AutomationPeer peer)
+	internal int[] GetCurrentVirtualIdsForPeer(AutomationPeer peer)
 	{
 		var resolvedPeer = peer.ResolveProviderPeer(resolveEventsSource: true);
-		return _currentIdByPeer.TryGetValue(peer, out var id) ||
-			!ReferenceEquals(peer, resolvedPeer) && _currentIdByPeer.TryGetValue(resolvedPeer, out id)
-				? id
-				: null;
+		if (_currentIdsByPeer.TryGetValue(peer, out var ids))
+		{
+			return ids.ToArray();
+		}
+
+		return !ReferenceEquals(peer, resolvedPeer) &&
+			_currentIdsByPeer.TryGetValue(resolvedPeer, out ids)
+				? ids.ToArray()
+				: Array.Empty<int>();
 	}
 
 	internal bool InvalidateForVirtualId(int virtualId)
@@ -1090,6 +1127,44 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		return box.Value;
 	}
 
+	private int GetOrCreatePeerOccurrenceVirtualId(
+		AutomationPeer peer,
+		AutomationPeer providerPeer,
+		UIElement owner)
+	{
+		if (_peerOccurrenceToId.TryGetValue(owner, out var occurrence))
+		{
+			if (occurrence.Matches(peer, providerPeer))
+			{
+				SetWeakTarget(_idToWeakPeer, occurrence.Value, providerPeer);
+				return occurrence.Value;
+			}
+
+			_peerOccurrenceToId.Remove(owner);
+		}
+
+		var id = Interlocked.Increment(ref _nextId);
+		_peerOccurrenceToId.Add(
+			owner,
+			new PeerOccurrenceVirtualId(peer, providerPeer, id));
+		SetWeakTarget(_idToWeakPeer, id, providerPeer);
+		return id;
+	}
+
+	private void AddCurrentVirtualId(AutomationPeer peer, int id)
+	{
+		if (!_currentIdsByPeer.TryGetValue(peer, out var ids))
+		{
+			ids = new List<int>();
+			_currentIdsByPeer[peer] = ids;
+		}
+
+		if (!ids.Contains(id))
+		{
+			ids.Add(id);
+		}
+	}
+
 	private void BindVirtualId(
 		int id,
 		AccessibilityPeerNode node,
@@ -1178,11 +1253,18 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 	private bool TryGetVirtualId(AutomationPeer peer, out int id)
 	{
 		var resolvedPeer = peer.ResolveProviderPeer(resolveEventsSource: true);
-		if ((_currentIdByPeer.TryGetValue(peer, out id) ||
-			!ReferenceEquals(peer, resolvedPeer) && _currentIdByPeer.TryGetValue(resolvedPeer, out id)) &&
-			_orderedIdSet.Contains(id))
+		if ((_currentIdsByPeer.TryGetValue(peer, out var ids) ||
+			!ReferenceEquals(peer, resolvedPeer) && _currentIdsByPeer.TryGetValue(resolvedPeer, out ids)) &&
+			ids.Count > 0)
 		{
-			return true;
+			foreach (var currentId in ids)
+			{
+				if (_orderedIdSet.Contains(currentId))
+				{
+					id = currentId;
+					return true;
+				}
+			}
 		}
 
 		if (resolvedPeer.TryGetProviderOwner(out var owner))
@@ -1203,15 +1285,24 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 		EnsureVisibleTreeBuilt();
 		var resolvedPeer = peer.ResolveProviderPeer(resolveEventsSource: true);
-		if ((_currentIdByPeer.TryGetValue(peer, out var id) ||
-			!ReferenceEquals(peer, resolvedPeer) && _currentIdByPeer.TryGetValue(resolvedPeer, out id)) &&
-			_orderedIdSet.Contains(id))
+		if (!_currentIdsByPeer.TryGetValue(peer, out var ids) &&
+			(ReferenceEquals(peer, resolvedPeer) ||
+				!_currentIdsByPeer.TryGetValue(resolvedPeer, out ids)))
 		{
-			InvalidateVirtualView(id);
-			return true;
+			return false;
 		}
 
-		return false;
+		var invalidated = false;
+		foreach (var id in ids)
+		{
+			if (_orderedIdSet.Contains(id))
+			{
+				InvalidateVirtualView(id);
+				invalidated = true;
+			}
+		}
+
+		return invalidated;
 	}
 
 	private bool TryGetElement(int virtualViewId, [NotNullWhen(true)] out DependencyObject? element)
@@ -1635,7 +1726,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		_childrenByVirtualId.Clear();
 		_rowIndexByVirtualId.Clear();
 		_idsByHandle.Clear();
-		_currentIdByPeer.Clear();
+		_currentIdsByPeer.Clear();
 
 		// Item and virtual peers are keyed by provider identity so recycled or shared
 		// owners cannot transfer a logical node's native ID to another peer.
@@ -1658,12 +1749,14 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 				node.Owner is null ||
 				!ReferenceEquals(node.Peer, node.ProviderPeer) ||
 				!isCanonicalProvider;
-			var id = usePeerIdentity
-				? GetOrCreatePeerVirtualId(node.ProviderPeer)
-				: GetOrCreateElementVirtualId(node.Owner!);
+			var id = node.Peer is ItemAutomationPeer && node.Owner is { } itemOwner
+				? GetOrCreatePeerOccurrenceVirtualId(node.Peer, node.ProviderPeer, itemOwner)
+				: usePeerIdentity
+					? GetOrCreatePeerVirtualId(node.ProviderPeer)
+					: GetOrCreateElementVirtualId(node.Owner!);
 			BindVirtualId(id, node, mapOwnerHandle: node.Owner is not null && isCanonicalProvider);
-			_currentIdByPeer[node.Peer] = id;
-			_currentIdByPeer[node.ProviderPeer] = id;
+			AddCurrentVirtualId(node.Peer, id);
+			AddCurrentVirtualId(node.ProviderPeer, id);
 			if (_orderedIdSet.Add(id))
 			{
 				_orderedIds.Add(id);
@@ -2285,7 +2378,10 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 				var label = multipleView.GetViewName(viewId);
 				if (string.IsNullOrEmpty(label))
 				{
-					label = $"View {viewId}";
+					label = string.Format(
+						CultureInfo.CurrentCulture,
+						GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionViewFormat),
+						viewId);
 				}
 
 				Add(
@@ -2302,11 +2398,11 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		{
 			Add(
 				CustomActionZoomIn,
-				"Zoom in",
+				GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionZoomIn),
 				new AccessibilityNativeActionRequest(AccessibilityNativeAction.ZoomIn));
 			Add(
 				CustomActionZoomOut,
-				"Zoom out",
+				GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionZoomOut),
 				new AccessibilityNativeActionRequest(AccessibilityNativeAction.ZoomOut));
 		}
 
@@ -2314,7 +2410,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		{
 			Add(
 				CustomActionScrollIntoView,
-				"Scroll into view",
+				GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionScrollIntoView),
 				new AccessibilityNativeActionRequest(AccessibilityNativeAction.ScrollIntoView));
 		}
 
@@ -2322,7 +2418,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		{
 			Add(
 				CustomActionRealize,
-				"Realize",
+				GetLocalizedActionLabel(ResourceAccessor.SR_AccessibilityActionRealize),
 				new AccessibilityNativeActionRequest(AccessibilityNativeAction.Realize));
 		}
 
@@ -2338,7 +2434,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 
 				Add(
 					CustomActionDockBase + (int)position,
-					position == DockPosition.None ? "Undock" : $"Dock {position}",
+					GetDockActionLabel(position),
 					new AccessibilityNativeActionRequest(
 						AccessibilityNativeAction.SetDockPosition,
 						number: (int)position));
@@ -2350,6 +2446,21 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			_customActionsByVirtualId[virtualViewId] = actions;
 		}
 	}
+
+	private static string GetLocalizedActionLabel(string resourceKey)
+		=> ResourceAccessor.GetLocalizedStringResource(resourceKey);
+
+	private static string GetDockActionLabel(DockPosition position)
+		=> GetLocalizedActionLabel(position switch
+		{
+			DockPosition.Top => ResourceAccessor.SR_AccessibilityActionDockTop,
+			DockPosition.Left => ResourceAccessor.SR_AccessibilityActionDockLeft,
+			DockPosition.Bottom => ResourceAccessor.SR_AccessibilityActionDockBottom,
+			DockPosition.Right => ResourceAccessor.SR_AccessibilityActionDockRight,
+			DockPosition.Fill => ResourceAccessor.SR_AccessibilityActionDockFill,
+			DockPosition.None => ResourceAccessor.SR_AccessibilityActionUndock,
+			_ => ResourceAccessor.SR_AccessibilityActionUndock,
+		});
 
 	// Range info for Slider, ProgressBar, and custom range providers.
 	// typeInt: 0 = INT, 1 = FLOAT, 2 = PERCENT (Android RangeInfo type constants).
@@ -2514,13 +2625,50 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 		}
 		else
 		{
-			// Use the total peer-child count (includes unrealized/ownerless items) so
-			// TalkBack announces the full list size, not just the realized window.
-			int rowCount = effectivePeer.GetChildren()?.Count ?? 0;
 			node.SetCollectionInfo(AccessibilityNodeInfoCompat.CollectionInfoCompat.Obtain(
-				rowCount, 1, hierarchical, selectionMode));
+				GetCollectionSize(effectivePeer), 1, hierarchical, selectionMode));
 		}
 	}
+
+	private static int GetCollectionSize(AutomationPeer peer)
+	{
+		var sizeOfSet = peer.GetSizeOfSet();
+		if (sizeOfSet > 0)
+		{
+			return sizeOfSet;
+		}
+
+		if (peer is FrameworkElementAutomationPeer { Owner: ItemsControl itemsControl })
+		{
+			return itemsControl.Items.Count;
+		}
+
+		var children = peer.GetChildren();
+		if (children is not { Count: > 0 })
+		{
+			return 0;
+		}
+
+		var itemCount = 0;
+		foreach (var child in children)
+		{
+			if (child is not null &&
+				IsCollectionItemControlType(child.GetAutomationControlType()))
+			{
+				itemCount++;
+			}
+		}
+
+		return itemCount > 0 ? itemCount : children.Count;
+	}
+
+	private static bool IsCollectionItemControlType(AutomationControlType controlType)
+		=> controlType is AutomationControlType.ListItem
+			or AutomationControlType.DataItem
+			or AutomationControlType.TreeItem
+			or AutomationControlType.TabItem
+			or AutomationControlType.MenuItem
+			or AutomationControlType.HeaderItem;
 
 	private void SetCollectionItemInfo(
 		AccessibilityNodeInfoCompat node,
@@ -2542,12 +2690,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			return;
 		}
 
-		var isItem = controlType is AutomationControlType.ListItem
-			or AutomationControlType.DataItem
-			or AutomationControlType.TreeItem
-			or AutomationControlType.TabItem
-			or AutomationControlType.MenuItem
-			or AutomationControlType.HeaderItem;
+		var isItem = IsCollectionItemControlType(controlType);
 
 		if (!isItem)
 		{
@@ -3351,9 +3494,8 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 			}
 			else
 			{
-				int rowCount = effectivePeer.GetChildren()?.Count ?? 0;
 				collection = new AccessibilityNativeCollectionDetails(
-					rowCount, 1, canSelectMultiple, isSelectionRequired);
+					GetCollectionSize(effectivePeer), 1, canSelectMultiple, isSelectionRequired);
 			}
 		}
 
@@ -3367,12 +3509,7 @@ internal sealed class UnoExploreByTouchHelper : ExploreByTouchHelper
 				gridItemProvider.ColumnSpan);
 		}
 
-		var isItem = controlType is AutomationControlType.ListItem
-			or AutomationControlType.DataItem
-			or AutomationControlType.TreeItem
-			or AutomationControlType.TabItem
-			or AutomationControlType.MenuItem
-			or AutomationControlType.HeaderItem;
+		var isItem = IsCollectionItemControlType(controlType);
 		if (collectionItem is null && isItem)
 		{
 			// PositionInSet default is -1 (unset); only use when > 0 to avoid row -2.

@@ -38,7 +38,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
 	[RunsOnUIThread]
-	public class Given_MenuFlyout
+	public partial class Given_MenuFlyout
 	{
 		[TestMethod]
 		[RequiresFullWindow]
@@ -314,41 +314,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					flyout.Hide();
 				}
-			}
-		}
-
-		[TestMethod]
-		[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWinUI)]
-		public async Task When_Presenter_AutomationId_Is_Requested_Then_Registered_Flyout_Name_Is_Used()
-		{
-			var button = new Button { Content = "Open flyout" };
-			var flyout = new MenuFlyout
-			{
-				Items =
-				{
-					new MenuFlyoutItem { Text = "First item" },
-				},
-			};
-			var nameScope = new NameScope();
-			NameScope.SetNameScope(flyout, nameScope);
-			nameScope.RegisterName("namedMenuFlyout", flyout);
-
-			try
-			{
-				await UITestHelper.Load(button);
-				flyout.ShowAt(button);
-				await WindowHelper.WaitForIdle();
-
-				var presenter = flyout.GetPresenter() as MenuFlyoutPresenter;
-				Assert.IsNotNull(presenter);
-				var peer = new MenuFlyoutPresenterAutomationPeer(presenter);
-
-				Assert.AreEqual("namedMenuFlyout", peer.GetAutomationId());
-			}
-			finally
-			{
-				flyout.Hide();
-				WindowHelper.WindowContent = null;
 			}
 		}
 
