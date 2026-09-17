@@ -40,6 +40,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 	private bool _isCreatingAOM;
 	private nint _activeModalHandle;
 	private nint _modalTriggerHandle;
+	private WeakReference<UIElement>? _rootElement;
 
 	/// <summary>
 	/// Registers the process-wide native callbacks. Must be called once from
@@ -368,6 +369,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 			return;
 		}
 
+		_rootElement = new(rootElement);
 		_accessibilityTreeInitialized = true;
 		InitializeAccessibilityTree(rootElement);
 		NativeUno.uno_accessibility_post_layout_changed(_windowHandle);
@@ -1018,6 +1020,23 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 	protected override void SetNativeFocus(nint handle)
 		=> NativeUno.uno_accessibility_set_focused(handle);
 
+	protected override void OnAccessibilityViewChanged(
+		UIElement element,
+		AccessibilityView oldValue,
+		AccessibilityView newValue)
+	{
+		if (!_accessibilityTreeInitialized ||
+			_rootElement is null ||
+			!_rootElement.TryGetTarget(out var rootElement))
+		{
+			return;
+		}
+
+		NativeUno.uno_accessibility_init_context(_windowHandle);
+		InitializeAccessibilityTree(rootElement);
+		NativeUno.uno_accessibility_post_children_changed(_windowHandle);
+	}
+
 	protected override void OnNativeStructureChanged()
 		=> NativeUno.uno_accessibility_post_children_changed(_windowHandle);
 
@@ -1045,6 +1064,7 @@ internal sealed class MacOSAccessibility : SkiaAccessibilityBase
 		_byWindow.Remove(windowHandle);
 		_windowHandle = nint.Zero;
 		_accessibilityTreeInitialized = false;
+		_rootElement = null;
 		_activeModalHandle = nint.Zero;
 		_modalTriggerHandle = nint.Zero;
 
