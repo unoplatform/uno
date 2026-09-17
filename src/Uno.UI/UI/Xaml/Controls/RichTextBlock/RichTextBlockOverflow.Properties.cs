@@ -27,7 +27,8 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(RichTextBlockOverflow),
 				new FrameworkPropertyMetadata(
 					defaultValue: 0,
-					options: FrameworkPropertyMetadataOptions.AffectsMeasure));
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: OnContentMeasurePropertyChanged));
 
 		#endregion
 
@@ -46,7 +47,12 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(RichTextBlockOverflow),
 				new FrameworkPropertyMetadata(
 					(Thickness)Thickness.Empty,
-					FrameworkPropertyMetadataOptions.AffectsMeasure));
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					OnContentMeasurePropertyChanged));
+
+		// CRichTextBlockOverflow::SetValue - Padding and MaxLines invalidate measure of this and all subsequent overflows.
+		private static void OnContentMeasurePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+			=> InvalidateAllOverflowContentMeasure((RichTextBlockOverflow)sender);
 
 		#endregion
 

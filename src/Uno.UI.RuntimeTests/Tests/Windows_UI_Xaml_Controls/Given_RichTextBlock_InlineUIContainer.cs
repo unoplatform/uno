@@ -210,6 +210,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Child_Size_Changes_At_Same_Width(bool alsoInvalidateOwner)
+		{
+			// CRichTextBlock::OnChildDesiredSizeChanged invalidates the page node, so the line re-formats around the new size.
+			var child = CreateChild(40, 20);
+			var marker = CreateChild(10, 10);
+
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = "AB" });
+			paragraph.Inlines.Add(new InlineUIContainer { Child = child });
+			paragraph.Inlines.Add(new Run { Text = "CD" });
+			paragraph.Inlines.Add(new InlineUIContainer { Child = marker });
+
+			var SUT = new RichTextBlock { FontSize = 20, Width = 300 };
+			SUT.Blocks.Add(paragraph);
+
+			await UITestHelper.Load(SUT);
+			var before = marker.TransformToVisual(SUT).TransformPoint(new Point(0, 0)).X;
+
+			child.Width = 200;
+			if (alsoInvalidateOwner)
+			{
+				// The owner is dirty itself, so its MeasureOverride has to measure the dirty child.
+				SUT.Height = 100;
+			}
+
+			await WindowHelper.WaitForIdle();
+			SUT.UpdateLayout();
+
+			var after = marker.TransformToVisual(SUT).TransformPoint(new Point(0, 0)).X;
+			Assert.AreEqual(before + 160, after, 2, "Content after the resized child should move by its growth");
+		}
+
+		[TestMethod]
 		[DataRow(TextTrimming.CharacterEllipsis)]
 		[DataRow(TextTrimming.WordEllipsis)]
 		public async Task When_Container_Overflows_Trimmed_Line(TextTrimming trimming)

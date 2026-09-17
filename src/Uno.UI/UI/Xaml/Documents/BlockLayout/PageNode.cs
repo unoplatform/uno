@@ -66,9 +66,8 @@ internal sealed class PageNode : ContainerNode
 		m_firstChildIndex = 0;
 	}
 
-	// ~PageNode override - ClearEmbeddedElements() is called on disposal.
-	// TODO Uno (integrate): C++ destructor calls ClearEmbeddedElements(); wire this into the
-	// lead's BlockNode disposal/cleanup path (e.g. CleanupRealizations / IDisposable).
+	// ~PageNode - must be called when the page is dropped, or its embedded elements stay parented to the page owner.
+	public void Dispose() => ClearEmbeddedElements();
 
 	//---------------------------------------------------------------------------
 	//

@@ -201,6 +201,18 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 	{
 		Size desiredSize = default;
 
+		// Ensure any embedded UIElements are measured: when this element is dirty itself, the base
+		// measure does not walk to dirty children. A size change invalidates the page node through
+		// OnChildDesiredSizeChanged.
+		foreach (var child in GetChildren())
+		{
+			if (child.IsMeasureDirtyOrMeasureDirtyPath)
+			{
+				child.EnsureLayoutStorage();
+				child.Measure(child.m_previousAvailableSize);
+			}
+		}
+
 		SetupLinkedBlockLayout();
 
 		// Always use the RichTextBlockBreak object to retrieve the old page break.
@@ -242,8 +254,7 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 				else
 				{
 					// There's no content here - delete the page node.
-					_pPageNode = null;
-					_pTextView = null;
+					DeletePageNode();
 					SetBreak(null);
 				}
 			}
@@ -610,11 +621,27 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 	//  using the previous master's BLE.
 	//
 	//------------------------------------------------------------------------
+	// CRichTextBlockOverflow::OnChildDesiredSizeChanged
+	private protected override void OnChildDesiredSizeChanged(UIElement child)
+	{
+		_pPageNode?.OnChildDesiredSizeChanged(child);
+		_isBreakValid = false;
+		base.OnChildDesiredSizeChanged(child);
+	}
+
 	private void ResetMaster()
 	{
 		_pMaster = null;
+		DeletePageNode();
+	}
+
+	// delete m_pPageNode; delete m_pTextView; - the render data built from the page goes with it.
+	private void DeletePageNode()
+	{
+		_pPageNode?.Dispose();
 		_pPageNode = null;
 		_pTextView = null;
+		_paragraphLayouts.Clear();
 	}
 
 	// Static helpers: propagate invalidation/reset/selection through the full chain of overflow links,

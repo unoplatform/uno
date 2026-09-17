@@ -106,8 +106,28 @@ namespace Microsoft.UI.Xaml.Controls
 			TextSelectionManager.Destroy(ref _pSelectionManager);
 		}
 
+		// CRichTextBlock::OnChildDesiredSizeChanged
+		private protected override void OnChildDesiredSizeChanged(UIElement child)
+		{
+			_pageNode?.OnChildDesiredSizeChanged(child);
+			_isBreakValid = false;
+			base.OnChildDesiredSizeChanged(child);
+		}
+
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			// Ensure any embedded UIElements are measured: when this element is dirty itself, the base
+			// measure does not walk to dirty children. A size change invalidates the page node through
+			// OnChildDesiredSizeChanged.
+			foreach (var child in GetChildren())
+			{
+				if (child.IsMeasureDirtyOrMeasureDirtyPath)
+				{
+					child.EnsureLayoutStorage();
+					child.Measure(child.m_previousAvailableSize);
+				}
+			}
+
 			RebuildBlockLayout();
 
 			Size desiredSize = default;

@@ -1,10 +1,15 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Microsoft.UI;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
+using Rectangle = System.Drawing.Rectangle;
 
 #nullable enable
 
@@ -231,6 +236,133 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				WindowHelper.WindowContent = null;
 			}
+		}
+
+		[TestMethod]
+		[RequiresScaling(1f)]
+		public async Task When_Overflow_Detached_Stops_Painting()
+		{
+			// CRichTextBlockOverflow::ResetMaster deletes the page node, and the text rendered from it goes too.
+			var (master, overflow, host) = CreatePaintedChain();
+
+			try
+			{
+				WindowHelper.WindowContent = CreateSideBySide(master, host);
+				await WindowHelper.WaitForLoaded(host);
+				await WindowHelper.WaitForIdle();
+
+				ImageAssert.HasColorInRectangle(await UITestHelper.ScreenShot(host), new Rectangle(0, 0, 180, 300), Colors.Red, tolerance: 10);
+
+				master.OverflowContentTarget = null;
+				await WindowHelper.WaitForIdle();
+
+				ImageAssert.DoesNotHaveColorInRectangle(await UITestHelper.ScreenShot(host), new Rectangle(0, 0, 180, 300), Colors.Red, tolerance: 10);
+				Assert.IsNull(overflow.ContentStart, "A detached overflow has no content");
+
+				master.OverflowContentTarget = overflow;
+				await WindowHelper.WaitForIdle();
+
+				ImageAssert.HasColorInRectangle(await UITestHelper.ScreenShot(host), new Rectangle(0, 0, 180, 300), Colors.Red, tolerance: 10);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RequiresScaling(1f)]
+		public async Task When_Master_Content_Removed_Overflow_Stops_Painting()
+		{
+			var (master, _, host) = CreatePaintedChain();
+
+			try
+			{
+				WindowHelper.WindowContent = CreateSideBySide(master, host);
+				await WindowHelper.WaitForLoaded(host);
+				await WindowHelper.WaitForIdle();
+
+				ImageAssert.HasColorInRectangle(await UITestHelper.ScreenShot(host), new Rectangle(0, 0, 180, 300), Colors.Red, tolerance: 10);
+
+				master.Blocks.Clear();
+				await WindowHelper.WaitForIdle();
+				master.UpdateLayout();
+
+				Assert.IsFalse(master.HasOverflowContent, "An empty master has nothing to overflow");
+				ImageAssert.DoesNotHaveColorInRectangle(await UITestHelper.ScreenShot(host), new Rectangle(0, 0, 180, 300), Colors.Red, tolerance: 10);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Overflow_Padding_Changes_At_Same_Width()
+		{
+			// CRichTextBlockOverflow::SetValue invalidates the content measure of the chain for a Padding change.
+			var master = new RichTextBlock { Width = 200, MaxLines = 1 };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = LongText });
+			master.Blocks.Add(paragraph);
+
+			var overflow = new RichTextBlockOverflow { Width = 200 };
+			master.OverflowContentTarget = overflow;
+
+			var panel = new StackPanel();
+			panel.Children.Add(master);
+			panel.Children.Add(overflow);
+
+			try
+			{
+				WindowHelper.WindowContent = panel;
+				await WindowHelper.WaitForLoaded(panel);
+				await WindowHelper.WaitForIdle();
+
+				var heightBefore = overflow.ActualHeight;
+
+				// Horizontal padding only: the height can grow only by re-wrapping the text.
+				overflow.Padding = new Thickness(0, 0, 100, 0);
+				await WindowHelper.WaitForIdle();
+				panel.UpdateLayout();
+
+				Assert.IsTrue(overflow.ActualHeight > heightBefore, $"Narrowing the content box should re-wrap the text (height {heightBefore} -> {overflow.ActualHeight})");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		private static (RichTextBlock Master, RichTextBlockOverflow Overflow, Grid Host) CreatePaintedChain()
+		{
+			var master = new RichTextBlock
+			{
+				Width = 180,
+				MaxLines = 2,
+				FontSize = 32,
+				Foreground = new SolidColorBrush(Colors.Red),
+				VerticalAlignment = VerticalAlignment.Top,
+			};
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = LongText });
+			master.Blocks.Add(paragraph);
+
+			var overflow = new RichTextBlockOverflow { Width = 180, VerticalAlignment = VerticalAlignment.Top };
+			master.OverflowContentTarget = overflow;
+
+			var host = new Grid { Width = 180, Height = 300, Background = new SolidColorBrush(Colors.White) };
+			host.Children.Add(overflow);
+
+			return (master, overflow, host);
+		}
+
+		private static StackPanel CreateSideBySide(UIElement master, UIElement host)
+		{
+			var panel = new StackPanel { Orientation = Orientation.Horizontal };
+			panel.Children.Add(master);
+			panel.Children.Add(host);
+			return panel;
 		}
 	}
 }
