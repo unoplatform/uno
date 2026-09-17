@@ -1,3 +1,5 @@
+using System;
+using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Documents;
@@ -215,6 +217,71 @@ public class Given_TextBlock_TextScaling
 		{
 			FeatureConfiguration.Font.TextScaleFactor = originalOverride;
 			global::Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(originalOverride ?? 1.0);
+		}
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+	public async Task When_ConfigurationRefresh_Reevaluates_TextScale()
+	{
+		var activityType = GetApplicationActivityType();
+		var activity = activityType
+			.GetProperty("Instance", BindingFlags.NonPublic | BindingFlags.Static)
+			?.GetValue(null);
+		var raiseConfigurationChanges = activityType.GetMethod(
+			"RaiseConfigurationChanges",
+			BindingFlags.NonPublic | BindingFlags.Instance);
+
+		Assert.IsNotNull(activity);
+		Assert.IsNotNull(raiseConfigurationChanges);
+
+		await AssertTextScaleIsRefreshed(() => raiseConfigurationChanges.Invoke(activity, null));
+	}
+
+	[TestMethod]
+	[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid)]
+	public async Task When_FontScaleRefresh_Has_No_DecorView()
+	{
+		var scheduleFontScaleRefresh = GetApplicationActivityType().GetMethod(
+			"ScheduleFontScaleRefresh",
+			BindingFlags.NonPublic | BindingFlags.Static);
+
+		Assert.IsNotNull(scheduleFontScaleRefresh);
+
+		await AssertTextScaleIsRefreshed(() => scheduleFontScaleRefresh.Invoke(null, [null]));
+	}
+
+	private static Type GetApplicationActivityType()
+	{
+		var activityType = Type.GetType("Microsoft.UI.Xaml.ApplicationActivity, Uno.UI.Runtime.Skia.Android");
+		Assert.IsNotNull(activityType);
+		return activityType;
+	}
+
+	private static async Task AssertTextScaleIsRefreshed(Action refresh)
+	{
+		var originalOverride = FeatureConfiguration.Font.TextScaleFactor;
+		var uiSettings = new UISettings();
+		var changeCount = 0;
+
+		void OnTextScaleFactorChanged(UISettings sender, object args) => changeCount++;
+
+		try
+		{
+			FeatureConfiguration.Font.TextScaleFactor = 1.0;
+			global::Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(uiSettings.TextScaleFactor);
+			uiSettings.TextScaleFactorChanged += OnTextScaleFactorChanged;
+
+			FeatureConfiguration.Font.TextScaleFactor = 1.5;
+			refresh();
+
+			await TestServices.WindowHelper.WaitFor(() => changeCount > 0);
+		}
+		finally
+		{
+			uiSettings.TextScaleFactorChanged -= OnTextScaleFactorChanged;
+			FeatureConfiguration.Font.TextScaleFactor = originalOverride;
+			global::Uno.UI.Xaml.Core.CoreServices.Instance.UpdateFontScale(uiSettings.TextScaleFactor);
 		}
 	}
 #endif
