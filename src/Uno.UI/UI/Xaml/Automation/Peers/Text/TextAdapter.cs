@@ -462,6 +462,7 @@ internal sealed partial class TextAdapter : ITextProvider
 
 	// Helper to get the ITextView specific to the different control. For a RTB or RTBOverflow, returns the
 	// TextView for just this element (no knowledge of linked layout) — the single-element view.
+	// TODO Uno: WinUI also returns CTextBlock::GetTextView(); Uno's TextBlock renders through UnicodeText and has no ITextView.
 	internal static ITextView? GetTextView(FrameworkElement? pObject) => pObject switch
 	{
 		RichTextBlock pRTbl => pRTbl.GetSingleElementTextView(),

@@ -175,7 +175,7 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 			MUX_ASSERT(_pMaster is not null);
 			if (OverflowContentTarget is null)
 			{
-				if (_pMaster?.Blocks.GetTextContainer() is { } container)
+				if (_pMaster!.Blocks.GetTextContainer() is { } container)
 				{
 					uint contentStart = GetContentStartPosition();
 					container.GetPositionCount(out var containerLength);
@@ -201,17 +201,7 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 	{
 		Size desiredSize = default;
 
-		// Ensure any embedded UIElements are measured: when this element is dirty itself, the base
-		// measure does not walk to dirty children. A size change invalidates the page node through
-		// OnChildDesiredSizeChanged.
-		foreach (var child in GetChildren())
-		{
-			if (child.IsMeasureDirtyOrMeasureDirtyPath)
-			{
-				child.EnsureLayoutStorage();
-				child.Measure(child.m_previousAvailableSize);
-			}
-		}
+		RichTextBlock.MeasureDirtyEmbeddedElements(this);
 
 		SetupLinkedBlockLayout();
 

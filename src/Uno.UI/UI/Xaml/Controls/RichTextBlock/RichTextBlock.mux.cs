@@ -114,12 +114,12 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnChildDesiredSizeChanged(child);
 		}
 
-		protected override Size MeasureOverride(Size availableSize)
+		// Ensures the embedded UIElements of a RichTextBlock or RichTextBlockOverflow are measured: when the owner
+		// is dirty itself, the base measure does not walk to dirty children. A size change invalidates the page
+		// node through OnChildDesiredSizeChanged.
+		internal static void MeasureDirtyEmbeddedElements(FrameworkElement owner)
 		{
-			// Ensure any embedded UIElements are measured: when this element is dirty itself, the base
-			// measure does not walk to dirty children. A size change invalidates the page node through
-			// OnChildDesiredSizeChanged.
-			foreach (var child in GetChildren())
+			foreach (var child in owner.GetChildren())
 			{
 				if (child.IsMeasureDirtyOrMeasureDirtyPath)
 				{
@@ -127,6 +127,11 @@ namespace Microsoft.UI.Xaml.Controls
 					child.Measure(child.m_previousAvailableSize);
 				}
 			}
+		}
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			MeasureDirtyEmbeddedElements(this);
 
 			RebuildBlockLayout();
 
