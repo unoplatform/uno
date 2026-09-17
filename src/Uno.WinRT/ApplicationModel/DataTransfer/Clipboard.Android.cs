@@ -242,7 +242,8 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			lock (_syncLock)
 			{
-				var timestampMatches = Build.VERSION.SdkInt < BuildVersionCodes.O ||
+				var timestampMatches =
+					Build.VERSION.SdkInt >= BuildVersionCodes.O &&
 					_locallySetClipTimestamp == description?.Timestamp;
 				if (_locallySetContent is not null &&
 					!_clipboardKnownCleared &&
@@ -283,8 +284,20 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 
 			var clip = manager.PrimaryClip;
-			return clip is { ItemCount: > 0 } &&
-				!string.IsNullOrEmpty(clip.GetItemAt(0)?.Text);
+			if (clip is not { ItemCount: > 0 })
+			{
+				return false;
+			}
+
+			for (var index = 0; index < clip.ItemCount; index++)
+			{
+				if (!string.IsNullOrEmpty(clip.GetItemAt(index)?.Text))
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
 		public static void Clear()
