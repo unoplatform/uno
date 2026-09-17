@@ -146,13 +146,17 @@ jobs:
       # see https://github.com/unoplatform/uno/issues/6714
       failTaskOnFailedTests: true
 
-  - task: PublishBuildArtifacts@1
-    condition: always()
-    retryCountOnTaskFailure: 10
-    inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: ${{ parameters.TEST_KIND }}-tests-tvos-${{ parameters.UITEST_VARIANT }}-results
-      ArtifactType: Container
+  # The staging directory only ever receives the NUnit UI-test harness's screenshots, and the runtime
+  # kind does not run that harness: tvos-uitest-run.sh launches the app and polls for its own results
+  # file. Publishing it on a runtime job just reports an empty directory on the build summary.
+  - ${{ if ne(parameters.TEST_KIND, 'runtime') }}:
+    - task: PublishBuildArtifacts@1
+      condition: always()
+      retryCountOnTaskFailure: 10
+      inputs:
+        PathtoPublish: $(build.artifactstagingdirectory)
+        ArtifactName: ${{ parameters.TEST_KIND }}-tests-tvos-${{ parameters.UITEST_VARIANT }}-results
+        ArtifactType: Container
 
   # logs files are large, so we create them outside of `artifactstagingdirectory` and publish
   # them in a separate artifacts container.

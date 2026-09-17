@@ -155,21 +155,27 @@ jobs:
       # see https://github.com/unoplatform/uno/issues/6714
       failTaskOnFailedTests: true
 
-  - task: PublishTestResults@2
-    condition: always()
-    inputs:
-      testResultsFiles: '$(build.sourcesdirectory)/build/RuntimeTestResults*.xml'
-      testRunTitle: ${{ parameters.TestRunName }}
-      testResultsFormat: 'NUnit'
-      failTaskOnFailedTests: true
+  # Both outputs below come from the NUnit UI-test harness (SamplesApp.UITests), which the runtime
+  # kind never runs: ios-uitest-run.sh launches the app with simctl and polls for its own results
+  # file, which lands in TestResult-original.xml above. RuntimeTestResults*.xml and the screenshots
+  # under the staging directory therefore stay empty on a runtime job, and publishing them anyway
+  # only reports "no files found" / "directory is empty" on the build summary.
+  - ${{ if ne(parameters.TEST_KIND, 'runtime') }}:
+    - task: PublishTestResults@2
+      condition: always()
+      inputs:
+        testResultsFiles: '$(build.sourcesdirectory)/build/RuntimeTestResults*.xml'
+        testRunTitle: ${{ parameters.TestRunName }}
+        testResultsFormat: 'NUnit'
+        failTaskOnFailedTests: true
 
-  - task: PublishBuildArtifacts@1
-    condition: always()
-    retryCountOnTaskFailure: 10
-    inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: ${{ parameters.TEST_KIND }}-tests-ios-${{ parameters.UITEST_VARIANT }}-results
-      ArtifactType: Container
+    - task: PublishBuildArtifacts@1
+      condition: always()
+      retryCountOnTaskFailure: 10
+      inputs:
+        PathtoPublish: $(build.artifactstagingdirectory)
+        ArtifactName: ${{ parameters.TEST_KIND }}-tests-ios-${{ parameters.UITEST_VARIANT }}-results
+        ArtifactType: Container
 
   # logs files are large, so we create them outside of `artifactstagingdirectory` and publish
   # them in a separate artifacts container.

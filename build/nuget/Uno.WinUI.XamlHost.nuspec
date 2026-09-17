@@ -10,25 +10,12 @@
 		<description>This package provides the XAML hosting capabilities for an Uno Platform application.</description>
 		<copyright>Uno Platform</copyright>
 		<repository type="git" url="https://github.com/unoplatform/uno.git" branch="$branch$" commit="$commitid$" />
+		<!-- The package only ships netX.0 assemblies; the mobile heads resolve those same groups. -->
 		<dependencies>
-			<group targetFramework="UAP10.0.19041">
-			</group>
-			<group targetFramework="net10.0-android30.0">
+			<group targetFramework="net10.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
-			<group targetFramework="net10.0-ios26.0">
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-			</group>
-			<group targetFramework="net10.0-tvos26.0">
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-			</group>
-			<group targetFramework="net11.0-android37.0">
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-			</group>
-			<group targetFramework="net11.0-ios26.5">
-				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
-			</group>
-			<group targetFramework="net11.0-tvos26.0">
+			<group targetFramework="net11.0">
 				<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 			</group>
 		</dependencies>
