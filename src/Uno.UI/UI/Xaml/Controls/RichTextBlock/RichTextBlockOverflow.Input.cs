@@ -13,8 +13,8 @@ using Microsoft.UI.Xaml.Input;
 
 namespace Microsoft.UI.Xaml.Controls;
 
-// An overflow column hosts the master's content, so it has to answer for the links inside its own
-// slice: without this every column after the first is inert - no cursor, no click.
+// An overflow column hosts the master's content, so it has to answer for the links and the selection inside
+// its own slice: without this every column after the first is inert - no cursor, no click, no selection.
 partial class RichTextBlockOverflow
 {
 	private Hyperlink? _hyperlinkOver;
@@ -38,53 +38,69 @@ partial class RichTextBlockOverflow
 
 	private void SubscribeToInput()
 	{
-		PointerPressed += OnPointerPressedForLinks;
-		PointerReleased += OnPointerReleasedForLinks;
-		PointerMoved += OnPointerMovedForLinks;
+		PointerPressed += OnOverflowPointerPressed;
+		PointerReleased += OnOverflowPointerReleased;
+		PointerMoved += OnOverflowPointerMoved;
 		PointerExited += OnPointerExitedForLinks;
 		PointerCanceled += OnPointerCanceledForLinks;
 		PointerCaptureLost += OnPointerCanceledForLinks;
 	}
 
-	private void OnPointerPressedForLinks(object sender, PointerRoutedEventArgs e)
+	// CRichTextBlockOverflow::OnPointerPressed/Moved/Released feed the master's TextSelectionManager. Like the
+	// master, the column resolves the hit through its own view.
+	private TextSelectionManager? SelectionManagerForInput
+		=> _pMaster is { IsTextSelectionEnabled: true } master && _pTextView is not null ? master.GetSelectionManager() : null;
+
+	private void OnOverflowPointerPressed(object sender, PointerRoutedEventArgs e)
 	{
 		if (!e.GetCurrentPoint(null).Properties.IsLeftButtonPressed)
 		{
 			return;
 		}
 
-		if (FindHyperlinkAt(e) is { } hyperlink && CapturePointer(e.Pointer))
+		// Hyperlink clicks are prioritized above selection.
+		if (FindHyperlinkAt(e) is { } hyperlink)
 		{
-			hyperlink.SetPointerPressed(e.Pointer);
-			e.Handled = true;
-			CompleteGesture();
+			if (CapturePointer(e.Pointer))
+			{
+				hyperlink.SetPointerPressed(e.Pointer);
+				e.Handled = true;
+				CompleteGesture();
+			}
+		}
+		else if (SelectionManagerForInput is { } manager)
+		{
+			manager.OnPointerPressed(this, e, _pTextView!);
 		}
 	}
 
-	private void OnPointerReleasedForLinks(object sender, PointerRoutedEventArgs e)
+	private void OnOverflowPointerReleased(object sender, PointerRoutedEventArgs e)
 	{
-		// Only a press on a link captures, and WinUI raises no PointerCaptureLost for a link click.
-		if (!IsCaptured(e.Pointer))
+		// WinUI raises no PointerCaptureLost for a link click or a selection drag.
+		if (IsCaptured(e.Pointer))
 		{
-			return;
+			var hyperlink = FindHyperlinkAt(e);
+			ReleasePointerCapture(e.Pointer.UniqueId, muteEvent: true);
+
+			if (hyperlink?.ReleasePointerPressed(e.Pointer) ?? false)
+			{
+				e.Handled = true;
+			}
+			else
+			{
+				// The muted release raises no PointerCaptureLost, so the press has to be cleared here.
+				AbortHyperlinkPress(e);
+			}
 		}
 
-		var hyperlink = FindHyperlinkAt(e);
-		ReleasePointerCapture(e.Pointer.UniqueId, muteEvent: true);
-
-		if (hyperlink?.ReleasePointerPressed(e.Pointer) ?? false)
-		{
-			e.Handled = true;
-		}
-		else
-		{
-			// The muted release raises no PointerCaptureLost, so the press has to be cleared here.
-			AbortHyperlinkPress(e);
-		}
+		SelectionManagerForInput?.OnPointerReleased(this, e, _pTextView!);
 	}
 
-	private void OnPointerMovedForLinks(object sender, PointerRoutedEventArgs e)
-		=> HyperlinkOver = FindHyperlinkAt(e);
+	private void OnOverflowPointerMoved(object sender, PointerRoutedEventArgs e)
+	{
+		HyperlinkOver = FindHyperlinkAt(e);
+		SelectionManagerForInput?.OnPointerMoved(this, e, _pTextView!);
+	}
 
 	private void OnPointerExitedForLinks(object sender, PointerRoutedEventArgs e)
 		=> HyperlinkOver = null;

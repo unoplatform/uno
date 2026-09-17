@@ -84,6 +84,50 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_PointerDrag_In_Overflow_Selects_Range()
+		{
+			// CRichTextBlockOverflow::OnPointerPressed/Moved/Released feed the master's TextSelectionManager, so a
+			// selection can be made inside any column of the chain.
+			var master = CreateSingleLine("First line fits here", width: 400);
+			master.Blocks.Add(new Paragraph { Inlines = { new Run { Text = "Overflowing words to select" } } });
+			master.MaxLines = 1;
+
+			var overflow = new RichTextBlockOverflow { Width = 400 };
+			master.OverflowContentTarget = overflow;
+
+			var panel = new StackPanel();
+			panel.Children.Add(master);
+			panel.Children.Add(overflow);
+
+			try
+			{
+				await UITestHelper.Load(panel);
+				Assert.IsTrue(master.HasOverflowContent, "Precondition: the second paragraph should overflow");
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var mouse = injector.GetMouse();
+
+				var bounds = overflow.GetAbsoluteBounds();
+				var midY = bounds.Y + bounds.Height / 2;
+
+				mouse.MoveTo(new Point(bounds.X + 2, midY));
+				await WindowHelper.WaitForIdle();
+				mouse.Press();
+				await WindowHelper.WaitForIdle();
+				mouse.MoveTo(new Point(bounds.Right - 2, midY));
+				await WindowHelper.WaitForIdle();
+				mouse.Release();
+				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(master.SelectedText.Contains("words"), $"Dragging across the overflow should select its text (was '{master.SelectedText}')");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_DoubleClick_Selects_Word()
 		{
 			var SUT = CreateSingleLine("Wonderful sunny afternoon");
