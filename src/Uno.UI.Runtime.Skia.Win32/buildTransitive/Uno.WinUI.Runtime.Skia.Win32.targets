@@ -21,4 +21,37 @@
 		</ItemGroup>
 	</Target>
 
+	<Target Name="_UnoIncludeWin32AppNotificationAssets" BeforeTargets="AssignTargetPaths" Condition="'$(IsUnoHead)'=='true'">
+		<PropertyGroup>
+			<_UnoWin32AppRuntimeArchitecture Condition="'$(RuntimeIdentifier)' != '' and $(RuntimeIdentifier.EndsWith('-x86'))">x86</_UnoWin32AppRuntimeArchitecture>
+			<_UnoWin32AppRuntimeArchitecture Condition="'$(RuntimeIdentifier)' != '' and $(RuntimeIdentifier.EndsWith('-x64'))">x64</_UnoWin32AppRuntimeArchitecture>
+			<_UnoWin32AppRuntimeArchitecture Condition="'$(RuntimeIdentifier)' != '' and $(RuntimeIdentifier.EndsWith('-arm64'))">arm64</_UnoWin32AppRuntimeArchitecture>
+			<_UnoWin32AppRuntimeArchitecture Condition="'$(_UnoWin32AppRuntimeArchitecture)' == '' and ('$(PlatformTarget)' == 'x86' or '$(Platform)' == 'x86' or '$(Platform)' == 'Win32')">x86</_UnoWin32AppRuntimeArchitecture>
+			<_UnoWin32AppRuntimeArchitecture Condition="'$(_UnoWin32AppRuntimeArchitecture)' == '' and ('$(PlatformTarget)' == 'x64' or '$(Platform)' == 'x64')">x64</_UnoWin32AppRuntimeArchitecture>
+			<_UnoWin32AppRuntimeArchitecture Condition="'$(_UnoWin32AppRuntimeArchitecture)' == '' and ('$(PlatformTarget)' == 'arm64' or '$(Platform)' == 'arm64')">arm64</_UnoWin32AppRuntimeArchitecture>
+			<_UnoWin32AppRuntimeArchitecture Condition="'$(_UnoWin32AppRuntimeArchitecture)' == '' and '$(NETCoreSdkRuntimeIdentifier)' == 'win-x86'">x86</_UnoWin32AppRuntimeArchitecture>
+			<_UnoWin32AppRuntimeArchitecture Condition="'$(_UnoWin32AppRuntimeArchitecture)' == '' and '$(NETCoreSdkRuntimeIdentifier)' == 'win-x64'">x64</_UnoWin32AppRuntimeArchitecture>
+			<_UnoWin32AppRuntimeArchitecture Condition="'$(_UnoWin32AppRuntimeArchitecture)' == '' and '$(NETCoreSdkRuntimeIdentifier)' == 'win-arm64'">arm64</_UnoWin32AppRuntimeArchitecture>
+			<_UnoWin32AppRuntimeBootstrapPath Condition="'$(_UnoWin32AppRuntimeArchitecture)' != ''">$(MSBuildThisFileDirectory)..\runtimes\win-$(_UnoWin32AppRuntimeArchitecture)\native\Microsoft.WindowsAppRuntime.Bootstrap.dll</_UnoWin32AppRuntimeBootstrapPath>
+		</PropertyGroup>
+		<Error
+			Condition="'$(_UnoWin32AppRuntimeArchitecture)' == '' and $([MSBuild]::IsOsPlatform('Windows'))"
+			Text="Unable to determine the Windows architecture for Microsoft.WindowsAppRuntime.Bootstrap.dll." />
+		<Error
+			Condition="'$(_UnoWin32AppRuntimeBootstrapPath)' != '' and !Exists('$(_UnoWin32AppRuntimeBootstrapPath)')"
+			Text="The Windows App SDK bootstrap DLL was not found at '$(_UnoWin32AppRuntimeBootstrapPath)'." />
+		<ItemGroup>
+			<Content Include="$(_UnoWin32AppRuntimeBootstrapPath)" Condition="'$(_UnoWin32AppRuntimeBootstrapPath)' != ''">
+				<TargetPath>Microsoft.WindowsAppRuntime.Bootstrap.dll</TargetPath>
+				<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			</Content>
+			<Content Include="$(MSBuildThisFileDirectory)..\runtimes\win\native\Microsoft.Windows.AppNotifications.winmd" Condition="Exists('$(MSBuildThisFileDirectory)..\runtimes\win\native\Microsoft.Windows.AppNotifications.winmd')">
+				<TargetPath>Microsoft.Windows.AppNotifications.winmd</TargetPath>
+				<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			</Content>
+		</ItemGroup>
+	</Target>
+
 </Project>
