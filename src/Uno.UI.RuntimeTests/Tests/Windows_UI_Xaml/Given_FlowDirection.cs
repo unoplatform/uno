@@ -699,6 +699,37 @@ public class Given_FlowDirection
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresFullWindow]
+	[PlatformCondition(ConditionMode.Exclude, RuntimeTestPlatforms.NativeWasm)] // RenderTargetBitmap (screenshots) is not available on native WebAssembly
+	public async Task When_RTL_Element_Overflows_LTR_Slot()
+	{
+		// A right-to-left element at the boundary of a left-to-right layout is the element being mirrored, so its layout clip (the slot on
+		// the left of its parent) must be mirrored along with its content: the visible part is what the element lays out on its left, which
+		// is its last column.
+		var content = new Grid
+		{
+			ColumnDefinitions = { new ColumnDefinition(), new ColumnDefinition() },
+		};
+		var first = new Border { Background = new SolidColorBrush(Colors.Red) };
+		var second = new Border { Background = new SolidColorBrush(Colors.Lime) };
+		Grid.SetColumn(second, 1);
+		content.Children.Add(first);
+		content.Children.Add(second);
+
+		var rtlElement = new Border { Width = 200, Height = 40, FlowDirection = FlowDirection.RightToLeft, HorizontalAlignment = HorizontalAlignment.Left, Child = content };
+		var host = new Grid { Width = 100, Height = 40, Background = new SolidColorBrush(Colors.White), Children = { rtlElement } };
+		var root = new Grid { Children = { host }, HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Top };
+
+		TestServices.WindowHelper.WindowContent = root;
+		await TestServices.WindowHelper.WaitForLoaded(root);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		var screenshot = await UITestHelper.ScreenShot(host);
+		ImageAssert.HasColorAt(screenshot, new Point(50, 20), Colors.Lime, tolerance: 20);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
 	public async Task When_Flyout_Opened_From_RTL_Target()
 	{
 		// The flow direction of the placement target is forwarded to the popup and presenter (WinUI: ForwardPopupFlowDirection /
