@@ -107,7 +107,7 @@ public partial class Expander
 			typeof(bool),
 			typeof(Expander),
 			new FrameworkPropertyMetadata(
-				Boxes.BooleanBoxes.BoxedFalse,
+				Boxes.BoolBoxes.BoxedFalse,
 				(s, e) => (s as Expander)?.OnIsExpandedPropertyChanged(e)));
 
 	/// <summary>

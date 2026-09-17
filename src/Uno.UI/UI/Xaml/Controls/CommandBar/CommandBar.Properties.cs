@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set { this.SetValue(IsDynamicOverflowEnabledProperty, value); }
 		}
 		public static DependencyProperty IsDynamicOverflowEnabledProperty { get; } =
-			DependencyProperty.Register(nameof(IsDynamicOverflowEnabled), typeof(bool), typeof(CommandBar), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
+			DependencyProperty.Register(nameof(IsDynamicOverflowEnabled), typeof(bool), typeof(CommandBar), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
 
 		public CommandBarOverflowButtonVisibility OverflowButtonVisibility
 		{

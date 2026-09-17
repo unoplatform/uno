@@ -361,7 +361,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsGroupingProperty { get; } =
-			DependencyProperty.Register("IsGrouping", typeof(bool), typeof(ItemsControl), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+			DependencyProperty.Register("IsGrouping", typeof(bool), typeof(ItemsControl), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 		#endregion
 
 		#region Internal Attached Properties
@@ -387,7 +387,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"ItemHasManualBindingExpression",
 				typeof(bool),
 				typeof(ItemsControl),
-				new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse)
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse)
 			);
 
 		#endregion

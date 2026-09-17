@@ -19,7 +19,7 @@ public partial class WebView : Control
 	/// Identifies the CanGoBack dependency property.
 	/// </summary>
 	public static DependencyProperty CanGoBackProperty { get; } =
-		DependencyProperty.Register(nameof(CanGoBack), typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+		DependencyProperty.Register(nameof(CanGoBack), typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether forward navigation is possible.
@@ -34,7 +34,7 @@ public partial class WebView : Control
 	/// Identifies the CanGoForward dependency property.
 	/// </summary>
 	public static DependencyProperty CanGoForwardProperty { get; } =
-		DependencyProperty.Register(nameof(CanGoForward), typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+		DependencyProperty.Register(nameof(CanGoForward), typeof(bool), typeof(WebView), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Gets or sets the URI of the current top level document.
@@ -86,7 +86,7 @@ public partial class WebView : Control
 			typeof(bool),
 			typeof(WebView),
 			new FrameworkPropertyMetadata(
-				Boxes.BooleanBoxes.BoxedTrue,
+				Boxes.BoolBoxes.BoxedTrue,
 				(s, e) => ((WebView)s)?.CoreWebView2.OnScrollEnabledChanged((bool)e.NewValue)));
 
 #pragma warning disable 67

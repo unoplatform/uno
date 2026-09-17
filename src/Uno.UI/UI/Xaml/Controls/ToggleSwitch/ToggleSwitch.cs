@@ -107,7 +107,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/// Identifies the IsOn dependency property.
 		/// </summary>
 		public static DependencyProperty IsOnProperty { get; } =
-			DependencyProperty.Register(nameof(IsOn), typeof(bool), typeof(ToggleSwitch), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, FrameworkPropertyMetadataOptions.AffectsMeasure));
+			DependencyProperty.Register(nameof(IsOn), typeof(bool), typeof(ToggleSwitch), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 

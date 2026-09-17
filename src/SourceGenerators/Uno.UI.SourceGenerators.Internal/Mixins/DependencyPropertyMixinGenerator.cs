@@ -156,8 +156,8 @@ using View = Microsoft.UI.Xaml.FrameworkElement;
 	private static string GetBoxedDefaultValue(string propertyType, string defaultValue)
 		=> (propertyType, defaultValue) switch
 		{
-			("bool", "false") => "global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse",
-			("bool", "true") => "global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedTrue",
+			("bool", "false") => "global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse",
+			("bool", "true") => "global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedTrue",
 			("int", "-1") => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.NegativeOne",
 			("int", "0") => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero",
 			("int", "1") => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.One",

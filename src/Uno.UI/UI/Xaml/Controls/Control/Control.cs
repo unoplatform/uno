@@ -163,7 +163,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (_suppressIsEnabled)
 			{
-				return Boxes.BooleanBoxes.BoxedFalse;
+				return Boxes.BoolBoxes.BoxedFalse;
 			}
 
 			// The baseValue hasn't been set inside PropertyDetails yet, so we need to make sure we're not
@@ -176,7 +176,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// If the parent is disabled, this control must be disabled as well
 			if (parentValue is false)
 			{
-				return Boxes.BooleanBoxes.BoxedFalse;
+				return Boxes.BoolBoxes.BoxedFalse;
 			}
 
 			// otherwise use the more local value
@@ -608,7 +608,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
-					Boxes.BooleanBoxes.BoxedTrue,
+					Boxes.BoolBoxes.BoxedTrue,
 #if __SKIA__
 					// AffectsMeasure only needed where Uno's own measure path calls GetScaledFontSize().
 					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure

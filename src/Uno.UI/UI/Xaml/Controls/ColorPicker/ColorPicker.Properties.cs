@@ -65,7 +65,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(ColorPicker),
 				new FrameworkPropertyMetadata(
-					Boxes.BooleanBoxes.BoxedFalse,
+					Boxes.BoolBoxes.BoxedFalse,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
 		public bool IsAlphaSliderVisible
@@ -80,7 +80,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(ColorPicker),
 				new FrameworkPropertyMetadata(
-					Boxes.BooleanBoxes.BoxedTrue,
+					Boxes.BoolBoxes.BoxedTrue,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
 		public bool IsAlphaTextInputVisible
@@ -95,7 +95,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(ColorPicker),
 				new FrameworkPropertyMetadata(
-					Boxes.BooleanBoxes.BoxedTrue,
+					Boxes.BoolBoxes.BoxedTrue,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
 		public bool IsColorChannelTextInputVisible
@@ -110,7 +110,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(ColorPicker),
 				new FrameworkPropertyMetadata(
-					Boxes.BooleanBoxes.BoxedTrue,
+					Boxes.BoolBoxes.BoxedTrue,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
 		public bool IsColorPreviewVisible
@@ -125,7 +125,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(ColorPicker),
 				new FrameworkPropertyMetadata(
-					Boxes.BooleanBoxes.BoxedTrue,
+					Boxes.BoolBoxes.BoxedTrue,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
 		public bool IsColorSliderVisible
@@ -140,7 +140,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(ColorPicker),
 				new FrameworkPropertyMetadata(
-					Boxes.BooleanBoxes.BoxedTrue,
+					Boxes.BoolBoxes.BoxedTrue,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
 		public bool IsColorSpectrumVisible
@@ -155,7 +155,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(ColorPicker),
 				new FrameworkPropertyMetadata(
-					Boxes.BooleanBoxes.BoxedTrue,
+					Boxes.BoolBoxes.BoxedTrue,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
 		public bool IsHexInputVisible
@@ -170,7 +170,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(ColorPicker),
 				new FrameworkPropertyMetadata(
-					Boxes.BooleanBoxes.BoxedTrue,
+					Boxes.BoolBoxes.BoxedTrue,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
 		public bool IsMoreButtonVisible
@@ -185,7 +185,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(ColorPicker),
 				new FrameworkPropertyMetadata(
-					Boxes.BooleanBoxes.BoxedFalse,
+					Boxes.BoolBoxes.BoxedFalse,
 					(s, e) => (s as ColorPicker)?.OnPropertyChanged(e)));
 
 		public int MaxHue
