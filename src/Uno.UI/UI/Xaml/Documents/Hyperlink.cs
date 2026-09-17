@@ -291,14 +291,8 @@ namespace Microsoft.UI.Xaml.Documents
 			}
 		}
 
-		public FocusState FocusState
-		{
-			get => GetFocusStateValue();
-			set => SetFocusStateValue(value);
-		}
-
 		[GeneratedDependencyProperty(DefaultValue = default(FocusState))]
-		public static DependencyProperty FocusStateProperty { get; } = CreateFocusStateProperty();
+		public partial FocusState FocusState { get; set; }
 
 		public bool IsTabStop
 		{
@@ -314,85 +308,31 @@ namespace Microsoft.UI.Xaml.Documents
 				new FrameworkPropertyMetadata(defaultValue: BoolBoxes.True)
 			);
 
-		public int TabIndex
-		{
-			get => GetTabIndexValue();
-			set => SetTabIndexValue(value);
-		}
-
 		[GeneratedDependencyProperty(DefaultValue = int.MaxValue)]
-		public static DependencyProperty TabIndexProperty { get; } = CreateTabIndexProperty();
-
-		public DependencyObject XYFocusUp
-		{
-			get => GetXYFocusUpValue();
-			set => SetXYFocusUpValue(value);
-		}
+		public partial int TabIndex { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = default(DependencyObject))]
-		public static DependencyProperty XYFocusUpProperty { get; } = CreateXYFocusUpProperty();
-
-		public DependencyObject XYFocusDown
-		{
-			get => GetXYFocusDownValue();
-			set => SetXYFocusDownValue(value);
-		}
+		public partial DependencyObject XYFocusUp { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = default(DependencyObject))]
-		public static DependencyProperty XYFocusDownProperty { get; } = CreateXYFocusDownProperty();
-
-		public DependencyObject XYFocusLeft
-		{
-			get => GetXYFocusLeftValue();
-			set => SetXYFocusLeftValue(value);
-		}
+		public partial DependencyObject XYFocusDown { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = default(DependencyObject))]
-		public static DependencyProperty XYFocusLeftProperty { get; } = CreateXYFocusLeftProperty();
-
-		public DependencyObject XYFocusRight
-		{
-			get => GetXYFocusRightValue();
-			set => SetXYFocusRightValue(value);
-		}
+		public partial DependencyObject XYFocusLeft { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = default(DependencyObject))]
-		public static DependencyProperty XYFocusRightProperty { get; } = CreateXYFocusRightProperty();
-
-		public XYFocusNavigationStrategy XYFocusDownNavigationStrategy
-		{
-			get => GetXYFocusDownNavigationStrategyValue();
-			set => SetXYFocusDownNavigationStrategyValue(value);
-		}
+		public partial DependencyObject XYFocusRight { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = default(XYFocusNavigationStrategy))]
-		public static DependencyProperty XYFocusDownNavigationStrategyProperty { get; } = CreateXYFocusDownNavigationStrategyProperty();
-
-		public XYFocusNavigationStrategy XYFocusLeftNavigationStrategy
-		{
-			get => GetXYFocusLeftNavigationStrategyValue();
-			set => SetXYFocusLeftNavigationStrategyValue(value);
-		}
+		public partial XYFocusNavigationStrategy XYFocusDownNavigationStrategy { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = default(XYFocusNavigationStrategy))]
-		public static DependencyProperty XYFocusLeftNavigationStrategyProperty { get; } = CreateXYFocusLeftNavigationStrategyProperty();
-
-		public XYFocusNavigationStrategy XYFocusRightNavigationStrategy
-		{
-			get => GetXYFocusRightNavigationStrategyValue();
-			set => SetXYFocusRightNavigationStrategyValue(value);
-		}
+		public partial XYFocusNavigationStrategy XYFocusLeftNavigationStrategy { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = default(XYFocusNavigationStrategy))]
-		public static DependencyProperty XYFocusRightNavigationStrategyProperty { get; } = CreateXYFocusRightNavigationStrategyProperty();
-
-		public XYFocusNavigationStrategy XYFocusUpNavigationStrategy
-		{
-			get => GetXYFocusUpNavigationStrategyValue();
-			set => SetXYFocusUpNavigationStrategyValue(value);
-		}
+		public partial XYFocusNavigationStrategy XYFocusRightNavigationStrategy { get; set; }
 
 		[GeneratedDependencyProperty(DefaultValue = default(XYFocusNavigationStrategy))]
-		public static DependencyProperty XYFocusUpNavigationStrategyProperty { get; } = CreateXYFocusUpNavigationStrategyProperty();
+		public partial XYFocusNavigationStrategy XYFocusUpNavigationStrategy { get; set; }
 	}
 }

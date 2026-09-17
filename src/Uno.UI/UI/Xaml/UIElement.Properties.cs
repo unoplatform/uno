@@ -62,26 +62,13 @@ namespace Microsoft.UI.Xaml
 
 
 		[GeneratedDependencyProperty(DefaultValue = 1.0, ChangedCallback = true)]
-		public static DependencyProperty OpacityProperty { get; } = CreateOpacityProperty();
-
-		public double Opacity
-		{
-			get => GetOpacityValue();
-			set => SetOpacityValue(value);
-		}
+		public partial double Opacity { get; set; }
 
 		/// <summary>
 		/// Sets the visibility of the current view
 		/// </summary>
 		[GeneratedDependencyProperty(DefaultValue = Visibility.Visible, ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
-		public static DependencyProperty VisibilityProperty { get; } = CreateVisibilityProperty();
-
-		public
-		Visibility Visibility
-		{
-			get => GetVisibilityValue();
-			set => SetVisibilityValue(value);
-		}
+		public partial Visibility Visibility { get; set; }
 
 		/// <summary>
 		/// Represents the final cursor shape of the element that is set using ProtectedCursor.
@@ -93,34 +80,18 @@ namespace Microsoft.UI.Xaml
 		/// The type is nullable because we need a state that indicates that the cursor should be hidden. We choose that state to be null.
 		/// </remarks>
 		[GeneratedDependencyProperty(DefaultValue = InputSystemCursorShape.Arrow, Options = FrameworkPropertyMetadataOptions.Inherits, ChangedCallback = false)]
-		internal static DependencyProperty CalculatedFinalCursorProperty { get; } = CreateCalculatedFinalCursorProperty();
-
-		internal InputSystemCursorShape? CalculatedFinalCursor
-		{
-			get => GetCalculatedFinalCursorValue();
-			private set => SetCalculatedFinalCursorValue(value);
-		}
+		internal partial InputSystemCursorShape? CalculatedFinalCursor { get; private set; }
 
 		// ValueDoesNotInheritDataContext prevents standard parent-chain DataContext propagation.
 		// Instead, the mentor mechanism in DependencyObject.Binder propagates DataContext
 		// via a weak reference, matching WinUI's SetParentForInheritanceContextOnly / GetMentor pattern.
 		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext)]
-		public static DependencyProperty ContextFlyoutProperty { get; } = CreateContextFlyoutProperty();
+		public partial FlyoutBase ContextFlyout { get; set; }
 
-		public FlyoutBase ContextFlyout
-		{
-			get => GetContextFlyoutValue();
-			set => SetContextFlyoutValue(value);
-		}
+		internal static partial DependencyProperty KeyboardAcceleratorsProperty { get; }
 
 		[GeneratedDependencyProperty(DefaultValue = null, ChangedCallback = true)]
-		internal static DependencyProperty KeyboardAcceleratorsProperty { get; } = CreateKeyboardAcceleratorsProperty();
-
-		public IList<KeyboardAccelerator> KeyboardAccelerators
-		{
-			get => GetKeyboardAcceleratorsValue();
-			private set => SetKeyboardAcceleratorsValue(value);
-		}
+		public partial IList<KeyboardAccelerator> KeyboardAccelerators { get; private set; }
 
 		private void OnKeyboardAcceleratorsChanged(IList<KeyboardAccelerator> oldValue, IList<KeyboardAccelerator> newValue)
 		{

@@ -220,14 +220,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region FontStretch Dependency Property
 
-		public FontStretch FontStretch
-		{
-			get => GetFontStretchValue();
-			set => SetFontStretchValue(value);
-		}
-
 		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure)]
-		public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
+		public partial FontStretch FontStretch { get; set; }
 
 		private void OnFontStretchChanged()
 		{
@@ -661,14 +655,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region TextAlignment Dependency Property
 
-		public new TextAlignment TextAlignment
-		{
-			get => GetTextAlignmentValue();
-			set => SetTextAlignmentValue(value);
-		}
-
 		[GeneratedDependencyProperty(DefaultValue = TextAlignment.Left, ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.AffectsArrange, ChangedCallbackName = nameof(OnTextAlignmentChanged))]
-		public static DependencyProperty TextAlignmentProperty { get; } = CreateTextAlignmentProperty();
+		public new partial TextAlignment TextAlignment { get; set; }
 
 		private void OnTextAlignmentChanged()
 		{

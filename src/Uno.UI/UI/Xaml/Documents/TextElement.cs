@@ -94,14 +94,8 @@ namespace Microsoft.UI.Xaml.Documents
 
 		#region FontStretch Dependency Property
 
-		public FontStretch FontStretch
-		{
-			get => GetFontStretchValue();
-			set => SetFontStretchValue(value);
-		}
-
 		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnFontStretchChanged), DefaultValue = FontStretch.Normal, Options = FrameworkPropertyMetadataOptions.Inherits)]
-		public static DependencyProperty FontStretchProperty { get; } = CreateFontStretchProperty();
+		public partial FontStretch FontStretch { get; set; }
 
 		protected virtual void OnFontStretchChanged()
 		{
@@ -261,14 +255,8 @@ namespace Microsoft.UI.Xaml.Documents
 
 		#region TextDecorations
 
-		public TextDecorations TextDecorations
-		{
-			get => GetTextDecorationsValue();
-			set => SetTextDecorationsValue(value);
-		}
-
 		[GeneratedDependencyProperty(DefaultValue = TextDecorations.None, Options = FrameworkPropertyMetadataOptions.Inherits, ChangedCallback = true, ChangedCallbackName = nameof(OnTextDecorationsChanged))]
-		public static DependencyProperty TextDecorationsProperty { get; } = CreateTextDecorationsProperty();
+		public partial TextDecorations TextDecorations { get; set; }
 
 		protected virtual void OnTextDecorationsChanged()
 		{
@@ -311,19 +299,10 @@ namespace Microsoft.UI.Xaml.Documents
 		#region AllowFocusOnInteraction Dependency Property
 
 		/// <summary>
-		/// Identifies for the AllowFocusOnInteraction dependency property.
-		/// </summary>
-		[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
-		public static DependencyProperty AllowFocusOnInteractionProperty { get; } = CreateAllowFocusOnInteractionProperty();
-
-		/// <summary>
 		/// Gets or sets a value that indicates whether the element automatically gets focus when the user interacts with it.
 		/// </summary>
-		public bool AllowFocusOnInteraction
-		{
-			get => GetAllowFocusOnInteractionValue();
-			set => SetAllowFocusOnInteractionValue(value);
-		}
+		[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		public partial bool AllowFocusOnInteraction { get; set; }
 
 		#endregion
 

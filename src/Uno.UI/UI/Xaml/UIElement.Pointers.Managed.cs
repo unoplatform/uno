@@ -42,13 +42,7 @@ namespace Microsoft.UI.Xaml
 		/// This property should never be directly set, and its value should always be calculated through coercion (see <see cref="CoerceHitTestVisibility(DependencyObject, object, bool)"/>.
 		/// </remarks>
 		[GeneratedDependencyProperty(DefaultValue = HitTestability.Collapsed, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
-		internal static DependencyProperty HitTestVisibilityProperty { get; } = CreateHitTestVisibilityProperty();
-
-		internal HitTestability HitTestVisibility
-		{
-			get => GetHitTestVisibilityValue();
-			set => SetHitTestVisibilityValue(value);
-		}
+		internal partial HitTestability HitTestVisibility { get; set; }
 
 		/// <summary>
 		/// This calculates the final hit-test visibility of an element.

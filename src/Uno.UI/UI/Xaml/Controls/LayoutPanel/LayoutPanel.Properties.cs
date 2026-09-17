@@ -8,61 +8,37 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		#region BorderBrush DependencyProperty
 
-		public Brush BorderBrush
-		{
-			get => GetBorderBrushValue();
-			set => SetBorderBrushValue(value);
-		}
+		[GeneratedDependencyProperty(ChangedCallback = true, ChangedCallbackName = nameof(OnPropertyChanged), Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
+		public partial Brush BorderBrush { get; set; }
 
 		private static Brush GetBorderBrushDefaultValue() => SolidColorBrushHelper.Transparent;
-
-		[GeneratedDependencyProperty(ChangedCallback = true, ChangedCallbackName = nameof(OnPropertyChanged), Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
-		public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
 
 		#endregion
 
 		#region BorderThickness DependencyProperty
 
-		public Thickness BorderThickness
-		{
-			get => GetBorderThicknessValue();
-			set => SetBorderThicknessValue(value);
-		}
+		[GeneratedDependencyProperty(ChangedCallback = true, ChangedCallbackName = nameof(OnPropertyChanged))]
+		public partial Thickness BorderThickness { get; set; }
 
 		private static Thickness GetBorderThicknessDefaultValue() => Thickness.Empty;
-
-		[GeneratedDependencyProperty(ChangedCallback = true, ChangedCallbackName = nameof(OnPropertyChanged))]
-		public static DependencyProperty BorderThicknessProperty { get; } = CreateBorderThicknessProperty();
 
 		#endregion
 
 		#region Padding DependencyProperty
 
-		public Thickness Padding
-		{
-			get => GetPaddingValue();
-			set => SetPaddingValue(value);
-		}
+		[GeneratedDependencyProperty(ChangedCallback = true, ChangedCallbackName = nameof(OnPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
+		public partial Thickness Padding { get; set; }
 
 		private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
-
-		[GeneratedDependencyProperty(ChangedCallback = true, ChangedCallbackName = nameof(OnPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
-		public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
 
 		#endregion
 
 		#region CornerRadius DependencyProperty
 
-		public CornerRadius CornerRadius
-		{
-			get => GetCornerRadiusValue();
-			set => SetCornerRadiusValue(value);
-		}
+		[GeneratedDependencyProperty(ChangedCallback = true, ChangedCallbackName = nameof(OnPropertyChanged))]
+		public partial CornerRadius CornerRadius { get; set; }
 
 		private static CornerRadius GetCornerRadiusDefaultValue() => CornerRadius.None;
-
-		[GeneratedDependencyProperty(ChangedCallback = true, ChangedCallbackName = nameof(OnPropertyChanged))]
-		public static DependencyProperty CornerRadiusProperty { get; } = CreateCornerRadiusProperty();
 
 		#endregion
 

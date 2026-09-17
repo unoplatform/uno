@@ -287,17 +287,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// <summary>
 		/// Gets or sets whether a disabled control can receive focus.
 		/// </summary>
-		public bool AllowFocusWhenDisabled
-		{
-			get => GetAllowFocusWhenDisabledValue();
-			set => SetAllowFocusWhenDisabledValue(value);
-		}
-
-		/// <summary>
-		/// Identifies the AllowFocusWhenDisabled  dependency property.
-		/// </summary>
 		[GeneratedDependencyProperty(DefaultValue = false, Options = FrameworkPropertyMetadataOptions.Inherits, ChangedCallback = true)]
-		public static DependencyProperty AllowFocusWhenDisabledProperty { get; } = CreateAllowFocusWhenDisabledProperty();
+		public partial bool AllowFocusWhenDisabled { get; set; }
 
 		private void OnAllowFocusWhenDisabledChanged(bool oldValue, bool newValue) =>
 			SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, Boxer.Box(AllowFocusWhenDisabled));
@@ -305,17 +296,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		/// <summary>
 		/// Gets or sets a value that indicates whether the element automatically gets focus when the user interacts with it.
 		/// </summary>
-		public bool AllowFocusOnInteraction
-		{
-			get => GetAllowFocusOnInteractionValue();
-			set => SetAllowFocusOnInteractionValue(value);
-		}
-
-		/// <summary>
-		/// Identifies for the AllowFocusOnInteraction dependency property.
-		/// </summary>
 		[GeneratedDependencyProperty(DefaultValue = true, Options = FrameworkPropertyMetadataOptions.Inherits, ChangedCallback = true)]
-		public static DependencyProperty AllowFocusOnInteractionProperty { get; } = CreateAllowFocusOnInteractionProperty();
+		public partial bool AllowFocusOnInteraction { get; set; }
 
 		/// <summary>
 		/// Gets or sets a value that indicates how a flyout behaves when shown.
