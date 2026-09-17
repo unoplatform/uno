@@ -418,7 +418,7 @@ namespace Microsoft.UI.Xaml.Documents
 		// MUX Reference TextElement::AppendAutomationPeerChildren — base is a no-op; subclasses
 		// (Block/Paragraph, Span/Hyperlink) override to recurse into their inline content. The
 		// collection-append shape matches WinUI (the peer's GetChildrenCore owns the collection).
-		internal protected virtual void AppendAutomationPeerChildren(IList<AutomationPeer> automationPeerChildren, int startPos, int endPos)
+		internal virtual void AppendAutomationPeerChildren(IList<AutomationPeer> automationPeerChildren, int startPos, int endPos)
 		{
 		}
 
