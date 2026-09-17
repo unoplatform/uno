@@ -33,7 +33,7 @@ namespace Uno.UI.Dispatching
 
 		private readonly object _gate = new();
 
-		private readonly Dictionary<object, (Action? renderAction, int normalItemsToProcessBeforeNextRenderAction)> _compositionTargets = new();
+		private readonly Dictionary<object, (Action? renderAction, int itemsToProcessBeforeNextRenderAction)> _compositionTargets = new();
 
 		/// <summary>
 		/// Removes composition-target render registrations matching the predicate. Nothing else
@@ -125,6 +125,10 @@ namespace Uno.UI.Dispatching
 		}
 
 #if __ANDROID__ || __WASM__ || __SKIA__ || __APPLE_UIKIT__ || IS_UNIT_TESTS
+		// Bounds how long a deep Low/Idle backlog can hold rendering back. Normal items stay uncapped, which
+		// keeps the existing Normal-vs-render pacing unchanged.
+		private const int MaxLowPriorityItemsBeforeRender = 2;
+
 		private static void DispatchItems()
 		{
 			// Currently, we have a singleton NativeDispatcher.
@@ -147,22 +151,27 @@ namespace Uno.UI.Dispatching
 
 							@this._currentPriority = (NativeDispatcherPriority)p;
 
+							// High is excluded on purpose: the render pipeline posts a High item of its own on every
+							// frame (CompositionTarget.RaiseRendering), so counting it would let rendering consume
+							// the budget that exists to let the other queues through. Applied before EnqueueNative,
+							// which dispatches inline (and re-entrantly) under IS_UNIT_TESTS.
+							if (@this._currentPriority != NativeDispatcherPriority.High)
+							{
+								foreach (var (compositionTarget, details) in @this._compositionTargets)
+								{
+									if (details.itemsToProcessBeforeNextRenderAction > 0)
+									{
+										@this._compositionTargets[compositionTarget] = details with { itemsToProcessBeforeNextRenderAction = details.itemsToProcessBeforeNextRenderAction - 1 };
+									}
+								}
+							}
+
 							@this.LogTrace()?.Trace($"Running next job in dispatcher queue: priority: {@this._currentPriority} queue states=[{string.Join("] [", @this._queues.Select(q => q.Count))}]");
 							if (Interlocked.Decrement(ref @this._globalCount) > 0)
 							{
 								@this.EnqueueNative(@this._currentPriority);
 							}
 
-							if (@this._currentPriority == NativeDispatcherPriority.Normal)
-							{
-								foreach (var (compositionTarget, details) in @this._compositionTargets)
-								{
-									if (details.normalItemsToProcessBeforeNextRenderAction > 0)
-									{
-										@this._compositionTargets[compositionTarget] = details with { normalItemsToProcessBeforeNextRenderAction = details.normalItemsToProcessBeforeNextRenderAction - 1 };
-									}
-								}
-							}
 							break;
 						}
 					}
@@ -211,9 +220,9 @@ namespace Uno.UI.Dispatching
 				{
 					if (details.renderAction is not null)
 					{
-						if (details.normalItemsToProcessBeforeNextRenderAction == 0)
+						if (details.itemsToProcessBeforeNextRenderAction == 0)
 						{
-							_compositionTargets[compositionTarget] = (renderAction: null, normalItemsToProcessBeforeNextRenderAction: _queues[(int)NativeDispatcherPriority.Normal].Count);
+							_compositionTargets[compositionTarget] = (renderAction: null, itemsToProcessBeforeNextRenderAction: GetItemsToProcessBeforeNextRenderAction());
 
 							_currentPriority = NativeDispatcherPriority.High;
 
@@ -232,6 +241,20 @@ namespace Uno.UI.Dispatching
 
 			return null;
 		}
+
+		/// <summary>
+		/// Number of queued items that must run before the next render action. Must be called under <see cref="_gate"/>.
+		/// </summary>
+		/// <remarks>
+		/// A render action outranks every queue and usually requests the next frame as it runs, so on a host without
+		/// a frame pacer this budget is the only thing that lets queued work run at all. Low and Idle were not
+		/// counted here, which starved <see cref="EnqueueIdleOperation"/> continuations indefinitely.
+		/// </remarks>
+		private int GetItemsToProcessBeforeNextRenderAction()
+			=> _queues[(int)NativeDispatcherPriority.Normal].Count
+				+ Math.Min(
+					_queues[(int)NativeDispatcherPriority.Low].Count + _queues[(int)NativeDispatcherPriority.Idle].Count,
+					MaxLowPriorityItemsBeforeRender);
 #endif
 
 		public void EnqueueRender(object compositionTarget, Action handler)
