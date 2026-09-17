@@ -15,6 +15,10 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 	private readonly TextBoxView _view;
 	private bool _isNativeInputActive;
 
+	// Selection the TextBox had when the input last reported a change, which is where a rejected
+	// change (BeforeTextChanging, coercion) puts the caret back.
+	private static (int start, int length) _selectionBeforeInput;
+
 	public BrowserInvisibleTextBoxViewExtension(TextBoxView view)
 	{
 		_view = view;
@@ -30,8 +34,21 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		// We are expecting this to be called only when the control is focused, as it's the result of an interaction with the native HTML input.
 		if (FocusManager.GetFocusedElement(xamlRoot!) is ITextBoxHost { Core: { } core })
 		{
+			_selectionBeforeInput = (core.SelectionStart, core.SelectionLength);
+			// Applied by the text change itself, so the caret moves straight to where the input has it
+			// rather than through the start of the text first.
+			core.SetPendingSelection(selectionStart, selectionLength);
 			core.TextBoxView.UpdateTextFromNative(text);
-			core.SelectInternal(selectionStart, selectionLength);
+			if (core.Text == text.Replace('\n', '\r'))
+			{
+				core.SelectInternal(selectionStart, selectionLength);
+			}
+			else
+			{
+				// The change was rejected or coerced and the TextBox's text written back to the input, whose
+				// caret then has to follow the TextBox's; an unchanged selection would not be pushed on its own.
+				core.TextBoxView.Select(core.SelectionStart, core.SelectionLength);
+			}
 		}
 	}
 
@@ -112,7 +129,8 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 			_view.Core?.Text,
 			_view.Core?.AcceptsReturn ?? false,
 			GetInputModeValue(),
-			GetEnterKeyHintValue());
+			GetEnterKeyHintValue(),
+			_view.Core?.IsReadOnly ?? false);
 
 		if (_isNativeInputActive)
 		{
@@ -203,12 +221,13 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		{
 			NativeMethods.SetEnterKeyHint(enterKeyHintValue);
 		}
+		NativeMethods.SetReadOnly(_view.Core?.IsReadOnly ?? false);
 	}
 
 	public int GetSelectionStart() => 0;
 	public int GetSelectionLength() => 0;
-	public int GetSelectionStartBeforeKeyDown() => 0;
-	public int GetSelectionLengthBeforeKeyDown() => 0;
+	public int GetSelectionStartBeforeKeyDown() => _selectionBeforeInput.start;
+	public int GetSelectionLengthBeforeKeyDown() => _selectionBeforeInput.length;
 
 	private string GetEnterKeyHintValue()
 	{
@@ -238,7 +257,7 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 		public static partial void SetText(string text);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.focus")]
-		public static partial bool Focus(IntPtr handle, bool isPassword, string? text, bool acceptsReturn, string inputMode, string enterKeyHint);
+		public static partial bool Focus(IntPtr handle, bool isPassword, string? text, bool acceptsReturn, string inputMode, string enterKeyHint, bool isReadOnly);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.blur")]
 		public static partial void Blur(IntPtr handle);
@@ -260,6 +279,9 @@ internal partial class BrowserInvisibleTextBoxViewExtension : IOverlayTextBoxVie
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.setEnterKeyHint")]
 		public static partial void SetEnterKeyHint(string setEnterKeyHint);
+
+		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.setReadOnly")]
+		public static partial void SetReadOnly(bool isReadOnly);
 
 		[JSImport("globalThis.Uno.UI.Runtime.Skia.BrowserInvisibleTextBoxViewExtension.setInputMode")]
 		public static partial void SetInputMode(string inputMode);
