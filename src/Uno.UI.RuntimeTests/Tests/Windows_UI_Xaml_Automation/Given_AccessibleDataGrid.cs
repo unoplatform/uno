@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -7,6 +9,7 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Private.Infrastructure;
+using Uno.UI;
 using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO
@@ -36,7 +39,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 	///     real <c>#uno-semantics-root</c> overlay (the same tree an external runner inspects).
 	/// </summary>
 	[TestClass]
-	public class Given_AccessibleDataGrid
+	public partial class Given_AccessibleDataGrid
 	{
 #if HAS_UNO
 		[TestMethod]
@@ -657,6 +660,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation
 				var old = _isSelected;
 				_isSelected = value;
 				RaisePropertyChangedEvent(SelectionItemPatternIdentifiers.IsSelectedProperty, old, value);
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		[PlatformCondition(ConditionMode.Include, RuntimeTestPlatforms.SkiaAndroid | RuntimeTestPlatforms.SkiaIOS)]
+		public async Task When_GridCell_On_Mobile_Then_Native_CollectionItem_Details_Match_Provider()
+		{
+			var control = new GridCellControl();
+			await UITestHelper.Load(control, x => x.IsLoaded);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var snapshot = MobileAccessibilityTestHelper.TryGetNativeSnapshot(control);
+			Assert.IsNotNull(snapshot, "Native snapshot must be available on mobile Skia.");
+			Assert.IsNotNull(snapshot.Details?.CollectionItem, "CollectionItem must be populated for a GridItem peer.");
+
+			var item = snapshot.Details!.CollectionItem!;
+			Assert.AreEqual(4, item.Row, "CollectionItem.Row must match IGridItemProvider.Row.");
+			Assert.AreEqual(1, item.Column, "CollectionItem.Column must match IGridItemProvider.Column.");
+
+			if (AccessibilityPeerHelper.AndroidAccessibilityNodeSnapshotAccessor is not null)
+			{
+				Assert.IsNotNull(AccessibilityPeerHelper.AndroidAccessibilityCollectionItemAccessor);
+				var nativeItem = AccessibilityPeerHelper.AndroidAccessibilityCollectionItemAccessor(control);
+				Assert.IsNotNull(nativeItem, "Android CollectionItemInfo must be populated for a Custom GridItem peer.");
+				Assert.AreEqual(4, nativeItem.Row);
+				Assert.AreEqual(1, nativeItem.Column);
+			}
+
+			if (AccessibilityPeerHelper.IOSAccessibilityElementAccessor is not null)
+			{
+				Assert.IsNotNull(AccessibilityPeerHelper.IOSAccessibilityCustomContentValuesAccessor);
+				var values = AccessibilityPeerHelper.IOSAccessibilityCustomContentValuesAccessor(control);
+				Assert.IsNotNull(values, "iOS AX custom content must expose GridItem coordinates.");
+				CollectionAssert.Contains(values, "5", "AX custom content must expose the one-based row.");
+				CollectionAssert.Contains(values, "2", "AX custom content must expose the one-based column.");
 			}
 		}
 #endif

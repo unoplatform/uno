@@ -3,6 +3,7 @@
 // MUX Reference SelectorItemAutomationPeer_Partial.cpp, tag winui3/release/1.8.4
 
 using System;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
 
@@ -57,18 +58,18 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 	{
 		if (!IsEnabled())
 		{
-			throw new Exception("Element is not enabled.");
+			throw new ElementNotEnabledException();
 		}
 
 		if (ItemsControlAutomationPeer is { } parent)
 		{
-			if (parent.Owner is not ISelector selector)
+			if (parent.Owner is not Selector selector)
 			{
-				throw new Exception("Operation cannot be performed.");
+				throw new InvalidOperationException("Operation cannot be performed.");
 			}
 
-			var index = (selector as Selector).Items.IndexOf(Item);
-			(selector as Selector).MakeSingleSelection(index, false /*animateIfBringIntoView*/, Item, default);
+			var index = GetItemIndex();
+			selector.MakeSingleSelection(index, false /*animateIfBringIntoView*/, Item, default);
 		}
 	}
 
@@ -79,18 +80,18 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 	{
 		if (!IsEnabled())
 		{
-			throw new Exception("Element is not enabled.");
+			throw new ElementNotEnabledException();
 		}
 
 		if (ItemsControlAutomationPeer is { } parent)
 		{
-			if (parent.Owner is not ISelector selector)
+			if (parent.Owner is not Selector selector)
 			{
-				throw new Exception("Operation cannot be performed.");
+				throw new InvalidOperationException("Operation cannot be performed.");
 			}
 
-			var index = (selector as Selector).Items.IndexOf(Item);
-			(selector as Selector).AutomationPeerAddToSelection(index, Item);
+			var index = GetItemIndex();
+			selector.AutomationPeerAddToSelection(index, Item);
 		}
 	}
 
@@ -101,18 +102,18 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 	{
 		if (!IsEnabled())
 		{
-			throw new Exception("Element is not enabled.");
+			throw new ElementNotEnabledException();
 		}
 
 		if (ItemsControlAutomationPeer is { } parent)
 		{
-			if (parent.Owner is not ISelector selector)
+			if (parent.Owner is not Selector selector)
 			{
-				throw new Exception("Operation cannot be performed.");
+				throw new InvalidOperationException("Operation cannot be performed.");
 			}
 
-			var index = (selector as Selector).Items.IndexOf(Item);
-			(selector as Selector).AutomationPeerRemoveFromSelection(index, Item);
+			var index = GetItemIndex();
+			selector.AutomationPeerRemoveFromSelection(index, Item);
 		}
 	}
 
@@ -125,14 +126,14 @@ public partial class SelectorItemAutomationPeer : ItemAutomationPeer, Provider.I
 		{
 			if (!IsEnabled())
 			{
-				throw new Exception("Element is not enabled.");
+				throw new ElementNotEnabledException();
 			}
 
 			if (ItemsControlAutomationPeer is { } parent)
 			{
 				if (parent.Owner is ISelector selector)
 				{
-					return (selector as Selector).AutomationPeerIsSelected(Item);
+					return (selector as Selector).AutomationPeerIsSelected(GetItemIndex(), Item);
 				}
 			}
 

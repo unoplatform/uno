@@ -2978,6 +2978,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
+		[TestMethod]
+		public async Task When_SelectInternal_Request_Is_Clamped_Then_Original_Selection_Is_Restored()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var textBox = new TextBox { Text = "hello world" };
+			await UITestHelper.Load(textBox);
+			textBox.Select(1, 3);
+
+			var selected = textBox.Core.SelectInternal(100, 2);
+
+			Assert.IsFalse(selected);
+			Assert.AreEqual(1, textBox.SelectionStart);
+			Assert.AreEqual(3, textBox.SelectionLength);
+		}
+
 
 		[TestMethod]
 		[GitHubWorkItem("https://github.com/unoplatform/uno/issues/18371")]

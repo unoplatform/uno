@@ -12,6 +12,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Runtime.CompilerServices;
 using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
@@ -24,6 +26,76 @@ namespace Microsoft.UI.Xaml.Automation.Peers;
 public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer, IItemContainerProvider
 {
 	private readonly Dictionary<object, ItemAutomationPeer> _itemPeers = new(Uno.ReferenceEqualityComparer<object>.Default);
+	private readonly ConditionalWeakTable<UIElement, RealizedItemPeerEntry> _realizedItemPeers = new();
+	private IReadOnlyList<ChildPeerOccurrence> _lastChildPeerOccurrences = Array.Empty<ChildPeerOccurrence>();
+
+	private sealed class RealizedItemPeerEntry
+	{
+		internal RealizedItemPeerEntry(object item, ItemAutomationPeer peer)
+		{
+			Item = item;
+			Peer = peer;
+		}
+
+		internal object Item { get; }
+
+		internal ItemAutomationPeer Peer { get; }
+	}
+
+	private sealed class ChildPeerOccurrence
+	{
+		internal ChildPeerOccurrence(AutomationPeer peer, UIElement? owner)
+		{
+			Peer = new(peer);
+			Owner = owner is null ? null : new(owner);
+		}
+
+		internal WeakReference<AutomationPeer> Peer { get; }
+
+		internal WeakReference<UIElement>? Owner { get; }
+	}
+
+	private ItemAutomationPeer? GetOrCreateRealizedItemPeer(UIElement container, object item)
+	{
+		if (_realizedItemPeers.TryGetValue(container, out var entry) &&
+			ReferenceEquals(entry.Item, item))
+		{
+			entry.Peer.SetRealizedContainer(container);
+			return entry.Peer;
+		}
+
+		entry?.Peer.ReleaseRealizedContainer(container);
+		_realizedItemPeers.Remove(container);
+
+		// MUX parity (ItemsControlAutomationPeer::GetModernItemsControlChildrenChildrenHelper):
+		// reuse the peer already cached for the item so the children tree and the pattern
+		// providers (CreateItemAutomationPeer / GetSelection) hand out the same instance.
+		_itemPeers.TryGetValue(item, out var peer);
+		if (peer is null)
+		{
+			GetItemPeerFromChildrenCache(item, out peer);
+		}
+
+		if (peer is null)
+		{
+			GetItemPeerFromItemContainerCache(item, out peer, out _);
+		}
+
+		if (peer is null)
+		{
+			peer = OnCreateItemAutomationPeer(item);
+			if (peer is null)
+			{
+				return null;
+			}
+
+			_itemPeers[item] = peer;
+		}
+
+		peer.SetRealizedContainer(container);
+		_realizedItemPeers.Add(container, new RealizedItemPeerEntry(item, peer));
+		return peer;
+	}
 
 	public ItemsControlAutomationPeer(ItemsControl owner) : base(owner)
 	{
@@ -34,7 +106,17 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 
 	protected override AutomationControlType GetAutomationControlTypeCore() => AutomationControlType.List;
 
-	protected void ClearItemAutomationPeerCache() => _itemPeers.Clear();
+	protected void ClearItemAutomationPeerCache()
+	{
+		foreach (var peer in _itemPeers.Values)
+		{
+			ReleaseRealizedItemPeers(peer);
+		}
+
+		_itemPeers.Clear();
+		_itemPeerStorage.Clear();
+		_itemPeerStorageForPattern.Clear();
+	}
 
 	public ItemAutomationPeer CreateItemAutomationPeer(object item)
 		=> item == null ? null : _itemPeers.TryGetValue(item, out var peer) ? peer : AddItemAutomationPeer(item);
@@ -236,6 +318,25 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 
 	protected override IList<AutomationPeer> GetChildrenCore() => GetItemsControlChildrenChildren();
 
+	internal bool TryGetChildOccurrenceOwner(
+		int childIndex,
+		AutomationPeer child,
+		out UIElement? owner)
+	{
+		if (childIndex >= 0 &&
+			childIndex < _lastChildPeerOccurrences.Count &&
+			_lastChildPeerOccurrences[childIndex] is { } occurrence &&
+			occurrence.Peer.TryGetTarget(out var occurrencePeer) &&
+			ReferenceEquals(occurrencePeer, child) &&
+			occurrence.Owner?.TryGetTarget(out owner) == true)
+		{
+			return true;
+		}
+
+		owner = null;
+		return false;
+	}
+
 
 	private void GetItemsControlChildrenChildrenHelper(
 		ItemsControl owner,
@@ -263,12 +364,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 				continue;
 			}
 
-			// Try to get an existing peer, otherwise create one
-			if (!_itemPeers.TryGetValue(item, out var itemPeer))
-			{
-				itemPeer = CreateItemAutomationPeer(item);
-			}
-
+			var itemPeer = GetOrCreateRealizedItemPeer(itemContainer, item);
 			if (itemPeer != null)
 			{
 				var containerPeer = itemPeer.GetContainerPeer();
@@ -358,12 +454,20 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 	private IList<AutomationPeer> GetItemsControlChildrenChildren()
 	{
 		var children = new List<AutomationPeer>();
+		var childOccurrences = new List<ChildPeerOccurrence>();
+
+		void AddChild(AutomationPeer child, UIElement? owner)
+		{
+			children.Add(child);
+			childOccurrences.Add(new ChildPeerOccurrence(child, owner));
+		}
 
 		// In C++, 'pAPChildren' is usually an argument or member. 
 		// Here we accumulate into a local list to return.
 
 		if (Owner is not ItemsControl spItemsControl)
 		{
+			_lastChildPeerOccurrences = childOccurrences;
 			return children;
 		}
 
@@ -408,7 +512,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 										var spItemPeerAsAP = spHeaderElementAsUIE.GetOrCreateAutomationPeer();
 										if (spItemPeerAsAP != null)
 										{
-											children.Add(spItemPeerAsAP);
+											AddChild(spItemPeerAsAP, spHeaderElementAsUIE);
 										}
 									}
 								}
@@ -428,7 +532,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 							var spItemPeerAsAP = spItemContainer.GetOrCreateAutomationPeer();
 							if (spItemPeerAsAP != null)
 							{
-								children.Add(spItemPeerAsAP);
+								AddChild(spItemPeerAsAP, spItemContainer);
 							}
 
 							// We need to add the leaf elements to the new short term cache, spNewChildrenCollection, 
@@ -476,7 +580,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 							var spItemAP = spNewChildrenCollection[idx];
 							if (spItemAP != null)
 							{
-								children.Add(spItemAP);
+								AddChild(spItemAP, spItemAP.GetContainer());
 							}
 						}
 					}
@@ -497,21 +601,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 
 							if (spItem != null && visibility != Visibility.Collapsed)
 							{
-								ItemAutomationPeer spItemPeer = null;
-
-								// Check caches
-								GetItemPeerFromChildrenCache(spItem, out spItemPeer);
-
-								if (spItemPeer == null)
-								{
-									bool bFoundInCache = false;
-									GetItemPeerFromItemContainerCache(spItem, out spItemPeer, out bFoundInCache);
-								}
-
-								if (spItemPeer == null)
-								{
-									spItemPeer = OnCreateItemAutomationPeerProtected(spItem);
-								}
+								var spItemPeer = GetOrCreateRealizedItemPeer(spItemContainer, spItem);
 
 								if (spItemPeer != null)
 								{
@@ -522,7 +612,7 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 										// Set the EventsSource so UIA events from container bubble as DataItem
 										pContainerItemPeer.EventsSource = spItemPeer;
 
-										children.Add(spItemPeer);
+										AddChild(spItemPeer, spItemContainer);
 										spNewChildrenCollection.Add(spItemPeer);
 									}
 								}
@@ -539,7 +629,88 @@ public partial class ItemsControlAutomationPeer : FrameworkElementAutomationPeer
 			}
 		}
 
+		_lastChildPeerOccurrences = childOccurrences;
 		return children;
+	}
+
+	internal void OnItemsChanged(NotifyCollectionChangedEventArgs args)
+	{
+		if (args.Action == NotifyCollectionChangedAction.Reset ||
+			(Owner is ItemsControl { IsGrouping: true } &&
+				args.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Replace))
+		{
+			ClearItemAutomationPeerCache();
+		}
+		else if (args.Action is NotifyCollectionChangedAction.Remove or NotifyCollectionChangedAction.Replace &&
+			Owner is ItemsControl itemsControl)
+		{
+			PruneItemAutomationPeerCache(itemsControl);
+		}
+	}
+
+	private void PruneItemAutomationPeerCache(ItemsControl itemsControl)
+	{
+		if (_itemPeers.Count == 0)
+		{
+			return;
+		}
+
+		var currentItems = new HashSet<object>(Uno.ReferenceEqualityComparer<object>.Default);
+		foreach (var item in itemsControl.Items)
+		{
+			if (item is not null)
+			{
+				currentItems.Add(item);
+			}
+		}
+
+		List<object>? staleItems = null;
+		foreach (var (item, peer) in _itemPeers)
+		{
+			if (currentItems.Contains(item))
+			{
+				continue;
+			}
+
+			ReleaseRealizedItemPeers(peer);
+
+			_itemPeerStorage.RemoveAll(candidate => ReferenceEquals(candidate, peer));
+			_itemPeerStorageForPattern.RemoveAll(candidate => ReferenceEquals(candidate, peer));
+			(staleItems ??= new()).Add(item);
+		}
+
+		if (staleItems is null)
+		{
+			return;
+		}
+
+		foreach (var item in staleItems)
+		{
+			_itemPeers.Remove(item);
+		}
+	}
+
+	private void ReleaseRealizedItemPeers(ItemAutomationPeer peer)
+	{
+		List<UIElement>? containers = null;
+		foreach (var (container, entry) in _realizedItemPeers)
+		{
+			if (ReferenceEquals(entry.Peer, peer))
+			{
+				(containers ??= new()).Add(container);
+			}
+		}
+
+		if (containers is null)
+		{
+			return;
+		}
+
+		foreach (var container in containers)
+		{
+			peer.ReleaseRealizedContainer(container);
+			_realizedItemPeers.Remove(container);
+		}
 	}
 
 	// Internal storage mimicking C++ m_tpItemPeerStorage and m_tpItemPeerStorageForPattern

@@ -165,4 +165,67 @@
   <data name="FILE_SAVER_ACCEPT_LABEL" xml:space="preserve">
     <value>Submit</value>
   </data>
+  <data name="AccessibilityActionExpand" xml:space="preserve">
+    <value>Expand</value>
+  </data>
+  <data name="AccessibilityActionCollapse" xml:space="preserve">
+    <value>Collapse</value>
+  </data>
+  <data name="AccessibilityActionSelect" xml:space="preserve">
+    <value>Select</value>
+  </data>
+  <data name="AccessibilityActionDeselect" xml:space="preserve">
+    <value>Deselect</value>
+  </data>
+  <data name="AccessibilityActionScrollForward" xml:space="preserve">
+    <value>Scroll forward</value>
+  </data>
+  <data name="AccessibilityActionScrollBackward" xml:space="preserve">
+    <value>Scroll backward</value>
+  </data>
+  <data name="AccessibilityActionScrollIntoView" xml:space="preserve">
+    <value>Scroll into view</value>
+  </data>
+  <data name="AccessibilityActionRealize" xml:space="preserve">
+    <value>Realize</value>
+  </data>
+  <data name="AccessibilityActionDismiss" xml:space="preserve">
+    <value>Dismiss</value>
+  </data>
+  <data name="AccessibilityActionMaximize" xml:space="preserve">
+    <value>Maximize</value>
+  </data>
+  <data name="AccessibilityActionMinimize" xml:space="preserve">
+    <value>Minimize</value>
+  </data>
+  <data name="AccessibilityActionRestore" xml:space="preserve">
+    <value>Restore</value>
+  </data>
+  <data name="AccessibilityActionViewFormat" xml:space="preserve">
+    <value>View {0}</value>
+  </data>
+  <data name="AccessibilityActionZoomIn" xml:space="preserve">
+    <value>Zoom in</value>
+  </data>
+  <data name="AccessibilityActionZoomOut" xml:space="preserve">
+    <value>Zoom out</value>
+  </data>
+  <data name="AccessibilityActionDockTop" xml:space="preserve">
+    <value>Dock to top</value>
+  </data>
+  <data name="AccessibilityActionDockLeft" xml:space="preserve">
+    <value>Dock to left</value>
+  </data>
+  <data name="AccessibilityActionDockBottom" xml:space="preserve">
+    <value>Dock to bottom</value>
+  </data>
+  <data name="AccessibilityActionDockRight" xml:space="preserve">
+    <value>Dock to right</value>
+  </data>
+  <data name="AccessibilityActionDockFill" xml:space="preserve">
+    <value>Dock to fill</value>
+  </data>
+  <data name="AccessibilityActionUndock" xml:space="preserve">
+    <value>Undock</value>
+  </data>
 </root>
