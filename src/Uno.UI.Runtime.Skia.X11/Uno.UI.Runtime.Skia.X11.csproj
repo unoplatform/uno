@@ -22,8 +22,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Tmds.DBus.Protocol" Version="0.92.0" />
-		<PackageReference Include="Tmds.DBus.Generator" Version="0.92.0" />
+		<PackageReference Include="Tmds.DBus.Protocol" />
+		<PackageReference Include="Tmds.DBus.Generator" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,0 +1,5 @@
+<Project>
+
+	<!-- Intentionally empty: the templates must restore like standalone apps, not with the versions in src/Directory.Packages.props. -->
+
+</Project>

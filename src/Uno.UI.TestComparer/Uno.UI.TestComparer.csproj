@@ -16,16 +16,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.AppCenter" Version="5.0.3" />
-		<PackageReference Include="Microsoft.VisualStudio.Services.InteractiveClient" Version="16.153.0" />
-		<PackageReference Include="Microsoft.TeamFoundationServer.Client" Version="16.153.0" />
-		<PackageReference Include="Refit" Version="8.0.0" />
-		<PackageReference Include="Mono.Options" Version="6.12.0.148" />
+		<PackageReference Include="Microsoft.AppCenter" />
+		<PackageReference Include="Microsoft.VisualStudio.Services.InteractiveClient" />
+		<PackageReference Include="Microsoft.TeamFoundationServer.Client" />
+		<PackageReference Include="Refit" />
+		<PackageReference Include="Mono.Options" />
 
 		<!-- BEGIN WORKAROUND: These dependencies already come transitively, but the version that comes transitively has security vulnerabilities reported by NuGet -->
-		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" Version="8.0.1" />
-		<PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
-		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.1" />
+		<PackageReference Include="Microsoft.IdentityModel.JsonWebTokens" />
+		<PackageReference Include="System.Data.SqlClient" />
+		<PackageReference Include="System.IdentityModel.Tokens.Jwt" />
 		<!-- END WORKAROUND -->
 	</ItemGroup>
 

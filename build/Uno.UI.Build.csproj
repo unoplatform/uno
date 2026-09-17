@@ -20,6 +20,7 @@
 
 	<ItemGroup>
 		<None Include="..\src\Directory.Build.targets" Link="Directory.Build.targets" />
+		<None Include="..\src\Directory.Packages.props" Link="Directory.Packages.props" />
 	</ItemGroup>
 
 	<PropertyGroup>

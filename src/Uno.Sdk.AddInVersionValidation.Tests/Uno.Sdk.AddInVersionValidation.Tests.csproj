@@ -115,13 +115,13 @@
 
 		<ItemGroup>
 			<PackageReference Include="Uno.Settings.DevServer"
-			                  Version="$(_UnoSettingsDevServerVersion)"
+			                  VersionOverride="$(_UnoSettingsDevServerVersion)"
 			                  GeneratePathProperty="true" />
 			<PackageReference Include="Uno.UI.HotDesign"
-			                  Version="$(_UnoUIHotDesignVersion)"
+			                  VersionOverride="$(_UnoUIHotDesignVersion)"
 			                  GeneratePathProperty="true" />
 			<PackageReference Include="Uno.UI.App.Mcp"
-			                  Version="$(_UnoUIAppMcpVersion)"
+			                  VersionOverride="$(_UnoUIAppMcpVersion)"
 			                  GeneratePathProperty="true" />
 		</ItemGroup>
 	</Target>
