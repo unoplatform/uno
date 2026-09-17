@@ -179,12 +179,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 
 			var parts = new List<string>();
-			foreach (var block in Blocks)
+			foreach (var paragraph in Blocks.OfType<Paragraph>())
 			{
-				if (block is Paragraph paragraph)
-				{
-					parts.Add(string.Concat(paragraph.Inlines.Select(GetPlainTextOf)));
-				}
+				parts.Add(string.Concat(paragraph.Inlines.Select(GetPlainTextOf)));
 			}
 
 			// Every paragraph is terminated, the last one included: each Paragraph's reserved

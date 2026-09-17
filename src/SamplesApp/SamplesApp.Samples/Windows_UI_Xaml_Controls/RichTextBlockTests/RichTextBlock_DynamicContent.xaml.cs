@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -104,12 +105,9 @@ public sealed partial class RichTextBlock_DynamicContent : Page
 	private static int GetTextLength(BlockCollection blocks)
 	{
 		var total = 0;
-		foreach (var block in blocks)
+		foreach (var paragraph in blocks.OfType<Paragraph>())
 		{
-			if (block is Paragraph paragraph)
-			{
-				total += GetTextLength(paragraph.Inlines);
-			}
+			total += GetTextLength(paragraph.Inlines);
 		}
 
 		return total;
