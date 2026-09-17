@@ -44,7 +44,7 @@ namespace Uno.UI.Xaml.Core
 			EventManager = EventManager.Create();
 		}
 
-		private static XamlRoot? GetXamlRoot()
+		internal static XamlRoot? GetXamlRoot()
 		{
 			if (CoreServices.Instance.ContentRootCoordinator.ContentRoots.Count > 0)
 			{
@@ -89,8 +89,12 @@ namespace Uno.UI.Xaml.Core
 			// However, as we don't yet have XamlIslandRootCollection, we will need to enumerate the windows through ApplicationHelper.Windows.
 
 			// This happens for Islands.
-			if (GetXamlRoot() is { HostWindow: null, VisualTree.RootElement: { } xamlIsland })
+			if (GetXamlRoot() is { HostWindow: null, VisualTree.RootElement: { } xamlIsland } islandRoot)
 			{
+				// An island presents frames like a window does, so its drivers have to be ticked here too:
+				// they are subscribed either way, and one that is never ticked never stops.
+				islandRoot.VisualTree.ContentRoot.CompositionTarget.RaiseFrameStarting();
+
 				xamlIsland.UpdateLayout();
 
 				if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
@@ -107,6 +111,13 @@ namespace Uno.UI.Xaml.Core
 					continue;
 				}
 
+				// Before layout and before the record: a driver's write is then an ordinary pre-frame
+				// invalidation rather than a mid-record one, and the layout it dirties is cleaned by this
+				// same tick instead of dirtying the tree for the next.
+				// Resolved through the ContentRoot rather than Window.Content: a driver subscribes to the
+				// target either way, so a window whose content is not set yet would leave it never ticked.
+				root.XamlRoot?.VisualTree.ContentRoot.CompositionTarget.RaiseFrameStarting();
+
 				root.UpdateLayout();
 
 				if (CoreServices.Instance.EventManager.ShouldRaiseLoadedEvent)
@@ -115,9 +126,7 @@ namespace Uno.UI.Xaml.Core
 					root.UpdateLayout();
 				}
 
-#if __SKIA__
 				(root.XamlRoot?.Content?.Visual.CompositionTarget as CompositionTarget)?.OnRenderFrameOpportunity();
-#endif
 			}
 		}
 

@@ -114,6 +114,15 @@ public class CompositionPropertySetTests
 			remove { }
 		}
 
+		// Nothing here drives per-frame motion, so no driver ever subscribes.
+		public event EventHandler<long> FrameStarting
+		{
+			add { }
+			remove { }
+		}
+
+		public long FrameIntervalInTicks => TimeSpan.TicksPerSecond / 60;
+
 		public void AddDamage(SKRect bounds)
 		{
 		}

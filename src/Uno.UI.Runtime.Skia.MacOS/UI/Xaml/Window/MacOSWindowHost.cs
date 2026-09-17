@@ -892,7 +892,11 @@ internal class MacOSWindowHost : IXamlRootHost, IUnoKeyboardInputSource, IUnoCor
 				window._metalRenderThread?.Dispose();
 				window._metalRenderThread = null;
 				Unregister(handle);
+				// Destroyed() tears down accessibility first, so the router still sees a well-formed
+				// map while it picks a new active owner. Unregistering the XamlRoot only after that
+				// releases what the closed target still holds (frame drivers, pending render jobs).
 				window._nativeWindow.Destroyed();
+				XamlRootMap.Unregister(window._xamlRoot);
 				window.Closed?.Invoke(window, EventArgs.Empty);
 			}
 		}
