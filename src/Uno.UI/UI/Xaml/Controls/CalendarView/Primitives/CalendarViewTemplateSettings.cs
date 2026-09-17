@@ -147,7 +147,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			"HasMoreContentAfter",
 			typeof(bool),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 		/// <summary>Gets a value that indicates whether the CalendarView has more content before the displayed content.</summary>
 		/// <returns>**true** if the CalendarView has more content after the displayed content; otherwise, **false**.</returns>
@@ -161,7 +161,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			"HasMoreContentBefore",
 			typeof(bool),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 		/// <summary>Gets a value that indicates whether the CalendarView has more views (like year or decade) that can be shown.</summary>
 		/// <returns>**true** if the CalendarView has more views (like year or decade) that can be shown; otherwise, **false**.</returns>
@@ -175,7 +175,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			"HasMoreViews",
 			typeof(bool),
 			typeof(CalendarViewTemplateSettings),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 		/// <summary>Gets the rectangle used to clip the CalendarView.</summary>
 		/// <returns>The rectangle used to clip the CalendarView.</returns>

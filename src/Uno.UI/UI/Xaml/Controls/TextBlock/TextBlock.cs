@@ -481,7 +481,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.BooleanBoxes.BoxedTrue,
+					defaultValue: Boxes.BoolBoxes.BoxedTrue,
 					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);
@@ -634,7 +634,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.BooleanBoxes.BoxedFalse,
+					defaultValue: Boxes.BoolBoxes.BoxedFalse,
 					propertyChangedCallback: (s, _) => ((TextBlock)s).OnIsTextSelectionEnabledChanged()
 				)
 			);
@@ -906,7 +906,7 @@ namespace Microsoft.UI.Xaml.Controls
 			nameof(IsTextTrimmed),
 			typeof(bool),
 			typeof(TextBlock),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, propertyChangedCallback: (s, e) => ((TextBlock)s).OnIsTextTrimmedChanged()));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, propertyChangedCallback: (s, e) => ((TextBlock)s).OnIsTextTrimmedChanged()));
 
 		public bool IsTextTrimmed
 		{

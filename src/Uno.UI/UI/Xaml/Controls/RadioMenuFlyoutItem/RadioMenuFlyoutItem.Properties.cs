@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"AreCheckStatesEnabled",
 				typeof(bool),
 				typeof(RadioMenuFlyoutItem),
-				new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnAreCheckStatesEnabledPropertyChanged));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, OnAreCheckStatesEnabledPropertyChanged));
 
 		public string GroupName
 		{
@@ -40,6 +40,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty IsCheckedProperty { get; } =
-			DependencyProperty.Register(nameof(IsChecked), typeof(bool), typeof(RadioMenuFlyoutItem), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, (s, e) => (s as RadioMenuFlyoutItem)?.OnPropertyChanged(e)));
+			DependencyProperty.Register(nameof(IsChecked), typeof(bool), typeof(RadioMenuFlyoutItem), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, (s, e) => (s as RadioMenuFlyoutItem)?.OnPropertyChanged(e)));
 	}
 }

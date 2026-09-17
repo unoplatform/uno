@@ -74,7 +74,7 @@ namespace Microsoft.UI.Xaml
 		// Using a DependencyProperty as the backing store for Load.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty LoadProperty =
 			DependencyProperty.Register("Load", typeof(bool), typeof(ElementStub), new FrameworkPropertyMetadata(
-				Boxes.BooleanBoxes.BoxedFalse, OnLoadChanged));
+				Boxes.BoolBoxes.BoxedFalse, OnLoadChanged));
 
 		/// <summary>
 		/// Determines if the current ElementStub has been materialized to its target View.

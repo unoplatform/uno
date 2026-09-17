@@ -109,7 +109,7 @@ namespace Microsoft.UI.Xaml
 			nameof(CanDrag),
 			typeof(bool),
 			typeof(UIElement),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnCanDragChanged));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, OnCanDragChanged));
 
 		private static void OnCanDragChanged(DependencyObject snd, DependencyPropertyChangedEventArgs args)
 		{
@@ -134,7 +134,7 @@ namespace Microsoft.UI.Xaml
 			nameof(AllowDrop),
 			typeof(bool),
 			typeof(UIElement),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 		public bool AllowDrop
 		{

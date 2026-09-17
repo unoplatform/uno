@@ -112,14 +112,14 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"UpdateTextOnSelect", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: Boxes.BooleanBoxes.BoxedTrue)
+			new FrameworkPropertyMetadata(defaultValue: Boxes.BoolBoxes.BoxedTrue)
 		);
 
 		public static global::Microsoft.UI.Xaml.DependencyProperty AutoMaximizeSuggestionAreaProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"AutoMaximizeSuggestionArea", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: Boxes.BooleanBoxes.BoxedFalse)
+			new FrameworkPropertyMetadata(defaultValue: Boxes.BoolBoxes.BoxedFalse)
 		);
 
 		public static global::Microsoft.UI.Xaml.DependencyProperty HeaderProperty { get; } =
@@ -133,7 +133,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"IsSuggestionListOpen", typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: Boxes.BooleanBoxes.BoxedFalse, propertyChangedCallback: (s, e) => (s as AutoSuggestBox)?.OnIsSuggestionListOpenChanged(e))
+			new FrameworkPropertyMetadata(defaultValue: Boxes.BoolBoxes.BoxedFalse, propertyChangedCallback: (s, e) => (s as AutoSuggestBox)?.OnIsSuggestionListOpenChanged(e))
 		);
 
 		public static global::Microsoft.UI.Xaml.DependencyProperty QueryIconProperty { get; } =

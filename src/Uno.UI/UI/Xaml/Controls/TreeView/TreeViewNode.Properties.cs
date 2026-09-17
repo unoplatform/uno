@@ -40,10 +40,10 @@ public partial class TreeViewNode
 		DependencyProperty.Register(nameof(Depth), typeof(int), typeof(TreeViewNode), new FrameworkPropertyMetadata(Boxes.IntegerBoxes.NegativeOne));
 
 	public static DependencyProperty HasChildrenProperty { get; } =
-		DependencyProperty.Register(nameof(HasChildren), typeof(bool), typeof(TreeViewNode), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnHasChildrenPropertyChanged));
+		DependencyProperty.Register(nameof(HasChildren), typeof(bool), typeof(TreeViewNode), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, OnHasChildrenPropertyChanged));
 
 	public static DependencyProperty IsExpandedProperty { get; } =
-		DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(TreeViewNode), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnIsExpandedPropertyChanged));
+		DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(TreeViewNode), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, OnIsExpandedPropertyChanged));
 
 	private static void OnHasChildrenPropertyChanged(
 		DependencyObject sender,

@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 			"UseNativeMinMaxDates",
 			typeof(bool),
 			typeof(DatePicker),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 		/// <summary>
 		/// [UnoOnly] When using native pickers (through the UseNativeStyle property),

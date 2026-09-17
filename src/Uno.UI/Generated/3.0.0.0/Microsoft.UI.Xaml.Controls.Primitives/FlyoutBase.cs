@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(AreOpenCloseAnimationsEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property AttachedFlyoutProperty
 #if __SKIA__
@@ -38,7 +38,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(ShouldConstrainToRootBounds), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.Primitives.FlyoutBase),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property ShowModeProperty
 #if __SKIA__

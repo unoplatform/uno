@@ -1190,5 +1190,5 @@ partial class TimePickerFlyoutPresenter
 		return minuteIncrement;
 	}
 
-	private static object GetDefaultIsDefaultShadowEnabled() => Boxes.BooleanBoxes.BoxedTrue;
+	private static object GetDefaultIsDefaultShadowEnabled() => Boxes.BoolBoxes.BoxedTrue;
 }

@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			nameof(IsHeaderItemsCarouselEnabled), typeof(bool),
 			typeof(global::Microsoft.UI.Xaml.Controls.Pivot),
-			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
+			new Microsoft.UI.Xaml.FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
 #endif
 		// Skipping already declared property IsLockedProperty
 		// Skipping already declared property LeftHeaderProperty

@@ -34,7 +34,7 @@ namespace Microsoft.UI.Xaml
 				typeof(bool),
 				typeof(UIElement),
 				new FrameworkPropertyMetadata(
-					Boxes.BooleanBoxes.BoxedFalse, // This is true for Control descendants (handled by overriding the default in the Control constructor
+					Boxes.BoolBoxes.BoxedFalse, // This is true for Control descendants (handled by overriding the default in the Control constructor
 					(s, e) => ((UIElement)s)?.OnIsTabStopChanged((bool)e.OldValue, (bool)e.NewValue)
 				)
 			);

@@ -1932,7 +1932,7 @@ namespace Microsoft.UI.Xaml
 				typeof(bool),
 				typeof(UIElement),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.BooleanBoxes.BoxedFalse,
+					defaultValue: Boxes.BoolBoxes.BoxedFalse,
 					propertyChangedCallback: OnCanBeScrollAnchorChangedStatic));
 
 		/// <summary>

@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 				propertyType: typeof(bool),
 				ownerType: typeof(DatePicker),
 				typeMetadata: new FrameworkPropertyMetadata(
-					defaultValue: Boxes.BooleanBoxes.BoxedTrue,
+					defaultValue: Boxes.BoolBoxes.BoxedTrue,
 					propertyChangedCallback: (s, e) => ((DatePicker)s).OnDayVisibleChangedPartial()));
 
 		partial void OnDayVisibleChangedPartial();
@@ -65,7 +65,7 @@ namespace Microsoft.UI.Xaml.Controls
 				propertyType: typeof(bool),
 				ownerType: typeof(DatePicker),
 				typeMetadata: new FrameworkPropertyMetadata(
-					defaultValue: Boxes.BooleanBoxes.BoxedTrue,
+					defaultValue: Boxes.BoolBoxes.BoxedTrue,
 					propertyChangedCallback: (s, e) => ((DatePicker)s).OnMonthVisibleChangedPartial()));
 
 		partial void OnMonthVisibleChangedPartial();
@@ -84,7 +84,7 @@ namespace Microsoft.UI.Xaml.Controls
 				propertyType: typeof(bool),
 				ownerType: typeof(DatePicker),
 				typeMetadata: new FrameworkPropertyMetadata(
-					defaultValue: Boxes.BooleanBoxes.BoxedTrue,
+					defaultValue: Boxes.BoolBoxes.BoxedTrue,
 					propertyChangedCallback: (s, e) => ((DatePicker)s).OnYearVisibleChangedPartial()));
 
 		partial void OnYearVisibleChangedPartial();

@@ -27,7 +27,7 @@ public partial class NavigationViewItem
 	}
 
 	public static DependencyProperty HasUnrealizedChildrenProperty { get; } =
-		DependencyProperty.Register(nameof(HasUnrealizedChildren), typeof(bool), typeof(NavigationViewItem), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnHasUnrealizedChildrenPropertyChanged));
+		DependencyProperty.Register(nameof(HasUnrealizedChildren), typeof(bool), typeof(NavigationViewItem), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, OnHasUnrealizedChildrenPropertyChanged));
 
 	public IconElement Icon
 	{
@@ -54,7 +54,7 @@ public partial class NavigationViewItem
 	}
 
 	public static DependencyProperty IsChildSelectedProperty { get; } =
-		DependencyProperty.Register(nameof(IsChildSelected), typeof(bool), typeof(NavigationViewItem), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+		DependencyProperty.Register(nameof(IsChildSelected), typeof(bool), typeof(NavigationViewItem), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 	public bool IsExpanded
 	{
@@ -63,7 +63,7 @@ public partial class NavigationViewItem
 	}
 
 	public static DependencyProperty IsExpandedProperty { get; } =
-		DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(NavigationViewItem), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnIsExpandedPropertyChanged));
+		DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(NavigationViewItem), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, OnIsExpandedPropertyChanged));
 
 	public IList<object> MenuItems
 	{
@@ -90,7 +90,7 @@ public partial class NavigationViewItem
 	}
 
 	public static DependencyProperty SelectsOnInvokedProperty { get; } =
-		DependencyProperty.Register(nameof(SelectsOnInvoked), typeof(bool), typeof(NavigationViewItem), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
+		DependencyProperty.Register(nameof(SelectsOnInvoked), typeof(bool), typeof(NavigationViewItem), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
 
 	private static void OnHasUnrealizedChildrenPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 	{
