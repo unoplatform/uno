@@ -37,8 +37,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var start = SUT.ContentStart;
 				var end = SUT.ContentEnd;
 
-				Assert.IsNotNull(start, "ContentStart should be non-null on populated content");
-				Assert.IsNotNull(end, "ContentEnd should be non-null on populated content");
+				if (start is null || end is null)
+				{
+					Assert.Fail($"ContentStart and ContentEnd should be non-null on populated content (start is null: {start is null}, end is null: {end is null})");
+					return;
+				}
+
 				Assert.IsTrue(end.Offset > start.Offset, $"ContentEnd ({end.Offset}) should be past ContentStart ({start.Offset})");
 			}
 			finally
@@ -143,9 +147,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var probe = new Point(SUT.ActualWidth > 0 ? 120 : 0, SUT.ActualHeight / 2);
 				var pointer = SUT.GetPositionFromPoint(probe);
 
-				Assert.IsNotNull(pointer, "Hit-testing inside the text should yield a position");
+				if (pointer is null)
+				{
+					Assert.Fail("Hit-testing inside the text should yield a position");
+					return;
+				}
 
-				var rect = pointer!.GetCharacterRect(LogicalDirection.Forward);
+				var rect = pointer.GetCharacterRect(LogicalDirection.Forward);
 				Assert.IsTrue(
 					System.Math.Abs(rect.X - probe.X) < 20,
 					$"The rect for the hit-tested position should land back near the probe (probe {probe.X}, rect {rect.X}, offset {pointer.Offset})");

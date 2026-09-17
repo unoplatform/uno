@@ -101,7 +101,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var end = SUT.SelectionEnd;
 				if (start is null || end is null)
 				{
-					Assert.Fail($"SelectAll should produce non-null selection endpoints (start={start}, end={end})");
+					Assert.Fail($"SelectAll should produce non-null selection endpoints (start is null: {start is null}, end is null: {end is null})");
 					return;
 				}
 
@@ -115,7 +115,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var remeasuredEnd = SUT.SelectionEnd;
 				if (remeasuredStart is null || remeasuredEnd is null)
 				{
-					Assert.Fail($"Selection endpoints should stay non-null across a re-measure (start={remeasuredStart}, end={remeasuredEnd})");
+					Assert.Fail($"Selection endpoints should stay non-null across a re-measure (start is null: {remeasuredStart is null}, end is null: {remeasuredEnd is null})");
 					return;
 				}
 

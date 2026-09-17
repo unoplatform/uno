@@ -71,7 +71,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var end = SUT.SelectionEnd;
 				if (start is null || end is null)
 				{
-					Assert.Fail($"A press-drag-release should produce non-null selection endpoints (start={start}, end={end})");
+					Assert.Fail($"A press-drag-release should produce non-null selection endpoints (start is null: {start is null}, end is null: {end is null})");
 					return;
 				}
 
@@ -152,7 +152,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				var end = SUT.SelectionEnd;
 				if (start is null || end is null)
 				{
-					Assert.Fail($"Shift+click should produce non-null selection endpoints (start={start}, end={end})");
+					Assert.Fail($"Shift+click should produce non-null selection endpoints (start is null: {start is null}, end is null: {end is null})");
 					return;
 				}
 
