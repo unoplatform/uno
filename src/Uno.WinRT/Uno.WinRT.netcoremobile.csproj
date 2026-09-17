@@ -36,7 +36,7 @@
 
 	<ItemGroup Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' ">
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
-		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.10.0.1" />
+		<PackageReference Include="Xamarin.AndroidX.Browser" />
 		<PackageReference Include="Xamarin.AndroidX.DocumentFile" />
 	</ItemGroup>
 

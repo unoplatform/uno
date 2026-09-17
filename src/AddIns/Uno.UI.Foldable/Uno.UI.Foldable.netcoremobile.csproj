@@ -30,7 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' ">
-		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" Version="1.5.1.3" />
+		<PackageReference Include="Xamarin.AndroidX.Window.WindowJava" />
 	</ItemGroup>
 
 	<ItemGroup>
