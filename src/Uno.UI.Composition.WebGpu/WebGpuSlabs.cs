@@ -176,14 +176,6 @@ internal sealed unsafe class WebGpuSiteSlab : IDisposable
 		return c.Shadow.AsSpan(idx * SlotFloats, SlotFloats);
 	}
 
-	/// <summary>The site's placement: the linear part then the translation.</summary>
-	public void Write(nint handle, in Matrix3x2 m)
-	{
-		var s = SlotSpan(handle);
-		s[0] = m.M11; s[1] = m.M21; s[2] = m.M12; s[3] = m.M22;
-		s[4] = m.M31; s[5] = m.M32;
-	}
-
 	/// <summary>One queue write per RUN of changed slots, so an untouched slot between two written ones is not
 	/// re-uploaded. A run costs a native call, which is still far less than the bytes the enclosing range carried.</summary>
 	public void Flush()
