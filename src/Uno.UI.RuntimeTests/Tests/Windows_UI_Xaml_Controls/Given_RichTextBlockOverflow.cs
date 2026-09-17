@@ -491,6 +491,97 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+		[TestMethod]
+		public async Task When_Master_Hit_Tests_With_Overflow()
+		{
+			// CRichTextBlock::GetTextPositionFromPoint queries this element's standalone view, not the linked view
+			// of the whole chain, so attaching an overflow must not change what a point in the master resolves to.
+			var master = new RichTextBlock { Width = 200, MaxLines = 3 };
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = LongText });
+			master.Blocks.Add(paragraph);
+
+			var overflow = new RichTextBlockOverflow { Width = 200 };
+			master.OverflowContentTarget = overflow;
+
+			var reference = new RichTextBlock { Width = 200 };
+			var referenceParagraph = new Paragraph();
+			referenceParagraph.Inlines.Add(new Run { Text = LongText });
+			reference.Blocks.Add(referenceParagraph);
+
+			var panel = new StackPanel();
+			panel.Children.Add(master);
+			panel.Children.Add(overflow);
+			panel.Children.Add(reference);
+
+			try
+			{
+				WindowHelper.WindowContent = panel;
+				await WindowHelper.WaitForLoaded(panel);
+				await WindowHelper.WaitForIdle();
+				panel.UpdateLayout();
+
+				Assert.IsTrue(master.HasOverflowContent, "Precondition: the content should overflow");
+
+				var probe = new Point(master.ActualWidth / 2, master.ActualHeight / 2);
+				var hit = master.GetPositionFromPoint(probe);
+				var referenceHit = reference.GetPositionFromPoint(probe);
+				if (hit is null || referenceHit is null)
+				{
+					Assert.Fail($"Hit-testing should yield positions (hit is null: {hit is null}, reference is null: {referenceHit is null})");
+					return;
+				}
+
+				Assert.AreEqual(referenceHit.Offset, hit.Offset, "A point in the master should resolve as it does without an overflow");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[RequiresScaling(1f)]
+		[DataRow("Selection")]
+		[DataRow("Highlighter")]
+		public async Task When_Master_Highlight_Changes_Overflow_Repaints(string change)
+		{
+			// CRichTextBlock::InvalidateRender and the NotifyAllOverflowContentSelection* walks reach every overflow
+			// column, which paints the master's selection and highlighters over its own slice.
+			var (master, _, host) = CreatePaintedChain();
+			master.IsTextSelectionEnabled = true;
+			master.SelectionHighlightColor = new SolidColorBrush(Colors.Blue);
+
+			try
+			{
+				WindowHelper.WindowContent = CreateSideBySide(master, host);
+				await WindowHelper.WaitForLoaded(host);
+				await WindowHelper.WaitForIdle();
+
+				ImageAssert.DoesNotHaveColorInRectangle(await UITestHelper.ScreenShot(host), new Rectangle(0, 0, 180, 300), Colors.Blue, tolerance: 10);
+
+				if (change == "Selection")
+				{
+					master.Focus(FocusState.Programmatic);
+					master.SelectAll();
+				}
+				else
+				{
+					var highlighter = new TextHighlighter { Background = new SolidColorBrush(Colors.Blue) };
+					highlighter.Ranges.Add(new TextRange { StartIndex = 0, Length = LongText.Length });
+					master.TextHighlighters.Add(highlighter);
+				}
+
+				await WindowHelper.WaitForIdle();
+
+				ImageAssert.HasColorInRectangle(await UITestHelper.ScreenShot(host), new Rectangle(0, 0, 180, 300), Colors.Blue, tolerance: 10);
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
 		private static (RichTextBlock Master, RichTextBlockOverflow Overflow, Grid Host) CreatePaintedChain()
 		{
 			var master = new RichTextBlock

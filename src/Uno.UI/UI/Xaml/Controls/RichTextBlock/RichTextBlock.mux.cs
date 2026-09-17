@@ -493,10 +493,15 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		// CRichTextBlock::InvalidateRender - the overflow columns paint from this element's state too.
 		private void InvalidateInlineAndRequireRepaint()
 		{
-			Visual.Compositor.InvalidateRender(Visual);
+			InvalidateSelectionRender();
+			RichTextBlockOverflow.InvalidateAllOverflowRender(_pOverflowTarget);
 		}
+
+		// CRichTextBlock::InvalidateSelectionRender
+		private void InvalidateSelectionRender() => Visual.Compositor.InvalidateRender(Visual);
 
 		partial void InvalidateRichTextBlockPartial()
 		{

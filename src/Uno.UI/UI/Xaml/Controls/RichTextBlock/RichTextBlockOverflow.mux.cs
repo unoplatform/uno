@@ -677,11 +677,31 @@ partial class RichTextBlockOverflow : ILinkedTextContainer
 		}
 	}
 
+	// CRichTextBlockOverflow::NotifyAllOverflowContentSelectionChanged
+	internal static void NotifyAllOverflowContentSelectionChanged(
+		RichTextBlockOverflow? pFirst,
+		uint previousSelectionStartOffset,
+		uint previousSelectionEndOffset,
+		uint newSelectionStartOffset,
+		uint newSelectionEndOffset)
+	{
+		for (var pOverflow = pFirst; pOverflow is not null; pOverflow = pOverflow.OverflowContentTarget)
+		{
+			pOverflow.OnSelectionChanged(previousSelectionStartOffset, previousSelectionEndOffset, newSelectionStartOffset, newSelectionEndOffset);
+		}
+	}
+
+	// CRichTextBlockOverflow::NotifyAllOverflowContentSelectionVisibilityChanged
+	internal static void NotifyAllOverflowContentSelectionVisibilityChanged(RichTextBlockOverflow? pFirst, uint selectionStartOffset, uint selectionEndOffset)
+	{
+		for (var pOverflow = pFirst; pOverflow is not null; pOverflow = pOverflow.OverflowContentTarget)
+		{
+			pOverflow.OnSelectionVisibilityChanged(selectionStartOffset, selectionEndOffset);
+		}
+	}
+
 	// Selection changed notification from the master's TextSelectionManager. Determines whether this element
 	// is affected by the change (newly/previously selected) and invalidates its render if so.
-	// TODO Uno (Stage 9 overflow selection): drive these from the master's OnSelectionChanged once the manager
-	// notifies the whole chain (NotifyAllOverflowContentSelectionChanged); selection rendering for the slice
-	// is not yet wired into Draw.
 	internal void OnSelectionChanged(
 		uint previousSelectionStartOffset,
 		uint previousSelectionEndOffset,

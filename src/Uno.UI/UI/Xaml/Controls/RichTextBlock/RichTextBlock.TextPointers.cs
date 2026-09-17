@@ -151,10 +151,11 @@ partial class RichTextBlock
 	private TextPointer? GetTextPositionFromPoint(Point point)
 	{
 		EnsureBlockLayout();
-		var view = GetTextView();
+		var view = _pTextView;
 
-		// Use this element's view to query the pixel position. No coordinate transformation is
-		// necessary - this API is assumed to be called with element-relative coordinates.
+		// Use this element's standalone view to query the pixel position (the linked view needs an input
+		// context). No coordinate transformation is necessary - this API is assumed to be called with
+		// element-relative coordinates.
 		if (view is not null)
 		{
 			// Recognise hits after newline = false (matches WinUI's PixelPositionToTextPosition call).

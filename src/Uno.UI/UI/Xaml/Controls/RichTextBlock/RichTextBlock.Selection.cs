@@ -51,13 +51,23 @@ partial class RichTextBlock : ITextSelectionManagerOwner, ITextViewHost
 		int flatStart = _pTextView?.GetCharacterIndex((int)newSelectionStartOffset) ?? (int)newSelectionStartOffset;
 		int flatEnd = _pTextView?.GetCharacterIndex((int)newSelectionEndOffset) ?? (int)newSelectionEndOffset;
 		SetSelectionInternal(new Range(flatStart, flatEnd));
-		InvalidateInlineAndRequireRepaint();
+		InvalidateSelectionRender();
+
+		RichTextBlockOverflow.NotifyAllOverflowContentSelectionChanged(
+			_pOverflowTarget,
+			previousSelectionStartOffset,
+			previousSelectionEndOffset,
+			newSelectionStartOffset,
+			newSelectionEndOffset);
 	}
 
 	void ITextSelectionManagerOwner.OnSelectionVisibilityChanged(
 		uint selectionStartOffset,
 		uint selectionEndOffset)
-		=> InvalidateInlineAndRequireRepaint();
+	{
+		InvalidateSelectionRender();
+		RichTextBlockOverflow.NotifyAllOverflowContentSelectionVisibilityChanged(_pOverflowTarget, selectionStartOffset, selectionEndOffset);
+	}
 
 	bool ITextSelectionManagerOwner.IsFocused => IsFocused;
 
