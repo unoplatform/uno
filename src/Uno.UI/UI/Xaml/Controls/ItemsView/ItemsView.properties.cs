@@ -21,7 +21,7 @@ partial class ItemsView
 		nameof(IsItemInvokedEnabled),
 		typeof(bool),
 		typeof(ItemsView),
-		new FrameworkPropertyMetadata(defaultValue: Boxes.BoolBoxes.BoxedFalse, propertyChangedCallback: OnIsItemInvokedEnabledPropertyChanged));
+		new FrameworkPropertyMetadata(defaultValue: Boxes.BoolBoxes.False, propertyChangedCallback: OnIsItemInvokedEnabledPropertyChanged));
 
 	public static DependencyProperty ItemsSourceProperty { get; } = DependencyProperty.Register(
 		nameof(ItemsSource),

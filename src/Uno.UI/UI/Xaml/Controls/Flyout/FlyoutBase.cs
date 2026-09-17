@@ -209,7 +209,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			DependencyProperty.Register(
 				nameof(IsOpen), typeof(bool),
 				typeof(FlyoutBase),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		#region Placement
 
@@ -364,7 +364,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				nameof(InputDevicePrefersPrimaryCommands),
 				typeof(bool),
 				typeof(FlyoutBase),
-				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 		private void OnAllowFocusOnInteractionChanged(bool oldValue, bool newValue) =>
 			SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, Boxes.Box(AllowFocusOnInteraction));

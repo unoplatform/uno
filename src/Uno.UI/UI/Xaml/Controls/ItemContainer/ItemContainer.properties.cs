@@ -32,7 +32,7 @@ partial class ItemContainer
 		nameof(IsSelected),
 		typeof(bool),
 		typeof(ItemContainer),
-		new FrameworkPropertyMetadata(defaultValue: Boxes.BoolBoxes.BoxedFalse, propertyChangedCallback: OnIsSelectedPropertyChanged));
+		new FrameworkPropertyMetadata(defaultValue: Boxes.BoolBoxes.False, propertyChangedCallback: OnIsSelectedPropertyChanged));
 
 	internal static DependencyProperty MultiSelectModeProperty { get; } = DependencyProperty.Register(
 		nameof(MultiSelectMode),

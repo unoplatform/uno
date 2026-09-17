@@ -123,7 +123,7 @@ public partial class NavigationViewTemplateSettings : DependencyObject
 	/// Identifies the SingleSelectionFollowsFocus dependency property.
 	/// </summary>
 	public static DependencyProperty SingleSelectionFollowsFocusProperty { get; } =
-		DependencyProperty.Register(nameof(SingleSelectionFollowsFocus), typeof(bool), typeof(NavigationViewTemplateSettings), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
+		DependencyProperty.Register(nameof(SingleSelectionFollowsFocus), typeof(bool), typeof(NavigationViewTemplateSettings), new FrameworkPropertyMetadata(Boxes.BoolBoxes.False));
 
 	/// <summary>
 	/// Gets the smaller pane toggle button width.

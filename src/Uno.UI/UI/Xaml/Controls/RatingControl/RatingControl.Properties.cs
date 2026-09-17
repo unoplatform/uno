@@ -64,7 +64,7 @@ partial class RatingControl
 		DependencyProperty.Register(
 			nameof(IsClearEnabled),
 			typeof(bool),
-			typeof(RatingControl), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue, OnPropertyChanged));
+			typeof(RatingControl), new FrameworkPropertyMetadata(Boxes.BoolBoxes.True, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets the value that determines if the user can change the rating.
@@ -83,7 +83,7 @@ partial class RatingControl
 			nameof(IsReadOnly),
 			typeof(bool),
 			typeof(RatingControl),
-			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, OnPropertyChanged));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.False, OnPropertyChanged));
 
 	/// <summary>
 	/// Gets or sets info about the visual states of the items that represent a rating.
