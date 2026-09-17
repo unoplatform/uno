@@ -62,6 +62,11 @@ namespace Uno.UI.Samples.Tests
 		private readonly TimeSpan DefaultUnitTestTimeout = TimeSpan.FromSeconds(60);
 #endif
 
+		// Ceiling for a test body that declares no [Timeout]. Deliberately far above any real test
+		// — the shape parity tests measure ~77s on WebAssembly — because its only job is to turn a
+		// hung test into one named failure rather than a whole shard whose results are never written.
+		private static readonly TimeSpan DefaultTestMethodTimeout = TimeSpan.FromMinutes(5);
+
 #if !WINAPPSDK
 		private ApplicationView _applicationView;
 #endif
@@ -1013,27 +1018,26 @@ namespace Uno.UI.Samples.Tests
 								if (test.Method.ReturnType == typeof(Task))
 								{
 									var task = (Task)returnValue;
-									var timeout = GetTestTimeout(test);
-									if (timeout.HasValue)
+									var timeout = GetTestTimeout(test) ?? DefaultTestMethodTimeout;
+
+									using var timeoutCancellation = new CancellationTokenSource();
+									var timeoutTask = Task.Delay(timeout, timeoutCancellation.Token);
+
+									var resultingTask = await Task.WhenAny(task, timeoutTask);
+
+									if (resultingTask == timeoutTask)
 									{
-										var timeoutTask = Task.Delay(timeout.Value);
-
-										var resultingTask = await Task.WhenAny(task, timeoutTask);
-
-										if (resultingTask == timeoutTask)
-										{
-											throw new TimeoutException(
-												$"Test execution timed out after {timeout.Value}");
-										}
-
-										// Rethrow exception if failed OR task cancelled if task **internally** raised
-										// a TaskCancelledException (we don't provide any cancellation token).
-										await resultingTask;
+										throw new TimeoutException(
+											$"Test execution timed out after {timeout}");
 									}
-									else
-									{
-										await task;
-									}
+
+									// Release the timer, so the default timeout does not leave one pending
+									// per test for the remainder of the run.
+									timeoutCancellation.Cancel();
+
+									// Rethrow exception if failed OR task cancelled if task **internally** raised
+									// a TaskCancelledException (we don't provide any cancellation token).
+									await resultingTask;
 								}
 
 								var console = consoleRecorder?.GetContentAndReset();
