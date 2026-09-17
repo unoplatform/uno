@@ -5,10 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Automation;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Automation.Provider;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Automation;
@@ -148,7 +150,7 @@ public partial class Given_MobileAccessibilityTree
 		var unavailable = new UnavailableTestPeer();
 		var exception = Assert.ThrowsExactly<AutomationPeerUnavailableException>(
 			() => unavailable.IsControlElement());
-		Assert.AreEqual(unchecked((int)0x80131509), exception.HResult);
+		Assert.AreEqual(unchecked((int)0x80040201), exception.HResult);
 
 		root.Children.Add(new TestPeer("before", isControlElement: true));
 		root.Children.Add(unavailable);
@@ -159,6 +161,51 @@ public partial class Given_MobileAccessibilityTree
 		CollectionAssert.AreEqual(
 			new[] { "root", "before", "after" },
 			nodes.Select(node => node.Peer.GetName()).ToArray());
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	[RequiresFullWindow]
+	public async Task When_MenuFlyout_Submenu_Is_Open_Then_XamlRoot_Tree_Contains_Both_Popup_Levels()
+	{
+		var leaf = new MenuFlyoutItem { Text = "Leaf" };
+		var subItem = new MenuFlyoutSubItem
+		{
+			Text = "Submenu",
+			Items = { leaf },
+		};
+		AutomationProperties.SetAutomationId(subItem, "submenu");
+		AutomationProperties.SetAutomationId(leaf, "leaf");
+		var flyout = new MenuFlyout
+		{
+			Items = { subItem },
+		};
+		var button = new Button
+		{
+			Content = "Open",
+			Flyout = flyout,
+		};
+
+		try
+		{
+			await UITestHelper.Load(button);
+			flyout.ShowAt(button);
+			await TestServices.WindowHelper.WaitForLoaded(subItem);
+			subItem.Open();
+			await TestServices.WindowHelper.WaitForLoaded(leaf);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var nodes = MobileAccessibilityTestHelper.GetPeerTree(
+				button.XamlRoot!.VisualTree.RootElement);
+			Assert.IsTrue(nodes.Any(node => node.Peer.GetAutomationId() == "submenu"));
+			Assert.IsTrue(nodes.Any(node => node.Peer.GetAutomationId() == "leaf"));
+		}
+		finally
+		{
+			subItem.Close();
+			flyout.Hide();
+			TestServices.WindowHelper.WindowContent = null;
+		}
 	}
 
 	[TestMethod]

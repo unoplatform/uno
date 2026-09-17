@@ -65,6 +65,33 @@ public class Given_MobileAccessibilityEvents_Android
 		return false;
 	}
 
+	private static async Task<string[]> WaitForAnnouncementsAsync(
+		XamlRoot root,
+		int count,
+		int timeoutMs = 5000)
+	{
+		var announcements = new List<string>();
+		var deadline = System.DateTimeOffset.UtcNow.AddMilliseconds(timeoutMs);
+		do
+		{
+			await TestServices.WindowHelper.WaitForIdle();
+			announcements.AddRange(
+				GetAndClearEvents(root)
+					.Where(e => e.Kind == AccessibilityNativeEventKind.Announcement)
+					.Select(e => e.Text?.TrimEnd('\uFEFF'))
+					.OfType<string>());
+			if (announcements.Count >= count)
+			{
+				return announcements.ToArray();
+			}
+
+			await Task.Delay(25);
+		}
+		while (System.DateTimeOffset.UtcNow < deadline);
+
+		return announcements.ToArray();
+	}
+
 	// Hook registration ---------------------------------------------------------
 
 	[TestMethod]
@@ -282,6 +309,97 @@ public class Given_MobileAccessibilityEvents_Android
 		Assert.IsTrue(
 			await WaitForAnnouncementAsync(button.XamlRoot!, "Test announcement text"),
 			"Expected Announcement event with the notification text.");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_ImportantAll_Notifications_Are_Queued_Then_All_Are_Announced()
+	{
+		var button = new Button { Content = "Announce all" };
+		await UITestHelper.Load(button);
+		var root = button.XamlRoot!;
+		GetAndClearEvents(root);
+		var peer = button.GetOrCreateAutomationPeer()!;
+
+		peer.RaiseNotificationEvent(
+			AutomationNotificationKind.ItemAdded,
+			AutomationNotificationProcessing.ImportantAll,
+			"First notification",
+			"shared-activity");
+		peer.RaiseNotificationEvent(
+			AutomationNotificationKind.ItemAdded,
+			AutomationNotificationProcessing.ImportantAll,
+			"Second notification",
+			"shared-activity");
+
+		var announcements = await WaitForAnnouncementsAsync(root, 2);
+		CollectionAssert.AreEqual(
+			new[] { "First notification", "Second notification" },
+			announcements);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_MostRecent_Notifications_Have_Different_Activities_Then_Each_Activity_Is_Announced()
+	{
+		var button = new Button { Content = "Announce recent" };
+		await UITestHelper.Load(button);
+		var root = button.XamlRoot!;
+		GetAndClearEvents(root);
+		var peer = button.GetOrCreateAutomationPeer()!;
+
+		peer.RaiseNotificationEvent(
+			AutomationNotificationKind.Other,
+			AutomationNotificationProcessing.MostRecent,
+			"Superseded notification",
+			"activity-a");
+		peer.RaiseNotificationEvent(
+			AutomationNotificationKind.Other,
+			AutomationNotificationProcessing.MostRecent,
+			"Latest notification",
+			"activity-a");
+		peer.RaiseNotificationEvent(
+			AutomationNotificationKind.Other,
+			AutomationNotificationProcessing.MostRecent,
+			"Independent notification",
+			"activity-b");
+
+		var announcements = await WaitForAnnouncementsAsync(root, 2);
+		CollectionAssert.AreEqual(
+			new[] { "Latest notification", "Independent notification" },
+			announcements);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_CurrentThenMostRecent_Notifications_Arrive_Then_Current_And_Latest_Are_Announced()
+	{
+		var button = new Button { Content = "Announce current" };
+		await UITestHelper.Load(button);
+		var root = button.XamlRoot!;
+		GetAndClearEvents(root);
+		var peer = button.GetOrCreateAutomationPeer()!;
+
+		peer.RaiseNotificationEvent(
+			AutomationNotificationKind.Other,
+			AutomationNotificationProcessing.CurrentThenMostRecent,
+			"Current notification",
+			"activity");
+		peer.RaiseNotificationEvent(
+			AutomationNotificationKind.Other,
+			AutomationNotificationProcessing.CurrentThenMostRecent,
+			"Superseded recent notification",
+			"activity");
+		peer.RaiseNotificationEvent(
+			AutomationNotificationKind.Other,
+			AutomationNotificationProcessing.CurrentThenMostRecent,
+			"Latest recent notification",
+			"activity");
+
+		var announcements = await WaitForAnnouncementsAsync(root, 2);
+		CollectionAssert.AreEqual(
+			new[] { "Current notification", "Latest recent notification" },
+			announcements);
 	}
 
 	[TestMethod]

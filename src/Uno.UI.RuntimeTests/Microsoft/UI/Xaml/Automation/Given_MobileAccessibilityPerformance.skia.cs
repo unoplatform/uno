@@ -239,6 +239,7 @@ public class Given_MobileAccessibilityPerformance
 			Height = 300,
 			SelectionMode = ListViewSelectionMode.None,
 		};
+		AutomationProperties.SetAutomationId(listView, "virtualized-list");
 
 		await UITestHelper.Load(listView);
 		await TestServices.WindowHelper.WaitForIdle();
@@ -255,6 +256,13 @@ public class Given_MobileAccessibilityPerformance
 		Assert.IsTrue(
 			snapshots.Length < baselineCount + 200,
 			$"Virtualized ListView must add fewer than 200 native nodes for {itemCount} items; baseline={baselineCount}, got {snapshots.Length}.");
+
+		var listSnapshot = MobileAccessibilityTestHelper.TryGetNativeSnapshot(listView);
+		Assert.IsNotNull(listSnapshot?.Details?.Collection);
+		Assert.AreEqual(
+			itemCount,
+			listSnapshot.Details.Collection.RowCount,
+			"Collection size must report the full item count, not the realized accessibility window.");
 	}
 
 	[TestMethod]
