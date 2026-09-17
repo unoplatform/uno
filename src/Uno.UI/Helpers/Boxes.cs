@@ -12,7 +12,7 @@ namespace Uno.UI.Helpers;
 
 internal static class Boxes
 {
-	public static class BooleanBoxes
+	public static class BoolBoxes
 	{
 		public static readonly object BoxedTrue = true;
 		public static readonly object BoxedFalse = false;
@@ -103,7 +103,7 @@ internal static class Boxes
 		public static readonly object ContextCanceled = RoutedEventFlag.ContextCanceled;
 	}
 
-	public static object Box(bool value) => value ? BooleanBoxes.BoxedTrue : BooleanBoxes.BoxedFalse;
+	public static object Box(bool value) => value ? BoolBoxes.BoxedTrue : BoolBoxes.BoxedFalse;
 
 	public static object Box(int value) => value switch
 	{

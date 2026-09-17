@@ -120,7 +120,7 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"FullSizeDesired", typeof(bool),
 			typeof(Controls.ContentDialog),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, UpdateVisualState));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, UpdateVisualState));
 
 		private static void UpdateVisualState(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs newValue)
 			=> (dependencyObject as ContentDialog).UpdateVisualState();
@@ -129,13 +129,13 @@ namespace Microsoft.UI.Xaml.Controls
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"IsPrimaryButtonEnabled", typeof(bool),
 			typeof(Controls.ContentDialog),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
 
 		public static DependencyProperty IsSecondaryButtonEnabledProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(
 			"IsSecondaryButtonEnabled", typeof(bool),
 			typeof(Controls.ContentDialog),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
 
 		public static DependencyProperty PrimaryButtonCommandParameterProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(

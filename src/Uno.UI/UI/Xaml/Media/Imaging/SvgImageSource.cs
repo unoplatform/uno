@@ -201,7 +201,7 @@ public partial class SvgImageSource : ImageSource
 							new SKSizeI((int)sourceSize.Width, (int)sourceSize.Height),
 							Pointer.Box(&matrix, typeof(SKMatrix*)),
 							new SKPaint(),
-							Boxes.BooleanBoxes.BoxedFalse,
+							Boxes.BoolBoxes.BoxedFalse,
 							SKColorSpace.CreateSrgb(),
 							new SKSurfaceProperties(SKPixelGeometry.Unknown)
 					]);

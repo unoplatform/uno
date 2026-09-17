@@ -169,7 +169,7 @@ namespace Microsoft.UI.Xaml.Controls
 				nameof(IsFullWindow),
 				typeof(bool),
 				typeof(MediaPlayerPresenter),
-				new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, FrameworkPropertyMetadataOptions.AffectsMeasure));
+				new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		#endregion
 

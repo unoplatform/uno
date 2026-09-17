@@ -36,7 +36,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(RichTextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.BooleanBoxes.BoxedTrue,
+					defaultValue: Boxes.BoolBoxes.BoxedTrue,
 					options: FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure
 				)
 			);

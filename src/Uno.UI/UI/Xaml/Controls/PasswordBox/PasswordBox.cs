@@ -358,7 +358,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(bool),
 				typeof(PasswordBox),
 				new FrameworkPropertyMetadata(
-					defaultValue: Boxes.BooleanBoxes.BoxedTrue,
+					defaultValue: Boxes.BoolBoxes.BoxedTrue,
 					propertyChangedCallback: (s, e) => ((PasswordBox)s)?.OnIsPasswordRevealButtonEnabledChanged(e)
 				)
 			);

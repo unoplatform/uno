@@ -42,7 +42,7 @@ partial class AppBarSeparator
 		nameof(IsCompact),
 		typeof(bool),
 		typeof(AppBarSeparator),
-		new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse)
+		new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse)
 	);
 
 	/// <summary>
@@ -62,7 +62,7 @@ partial class AppBarSeparator
 			nameof(IsInOverflow),
 			typeof(bool),
 			typeof(AppBarSeparator),
-			new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse));
 
 	bool ICommandBarElement3.IsInOverflow
 	{
@@ -87,6 +87,6 @@ partial class AppBarSeparator
 			nameof(UseOverflowStyle),
 			typeof(bool),
 			typeof(AppBarSeparator),
-			new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BooleanBoxes.BoxedFalse)
+			new FrameworkPropertyMetadata(global::Uno.UI.Helpers.Boxes.BoolBoxes.BoxedFalse)
 		);
 }

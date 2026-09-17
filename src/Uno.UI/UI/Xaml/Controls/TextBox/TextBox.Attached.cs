@@ -67,7 +67,7 @@ public class TextBoxExtensions
 			typeof(bool),
 			typeof(TextBox),
 			new FrameworkPropertyMetadata(
-				defaultValue: Boxes.BooleanBoxes.BoxedFalse,
+				defaultValue: Boxes.BoolBoxes.BoxedFalse,
 				options: FrameworkPropertyMetadataOptions.Inherits,
 				propertyChangedCallback: OnShowKeyboardDismissButtonChanged));
 

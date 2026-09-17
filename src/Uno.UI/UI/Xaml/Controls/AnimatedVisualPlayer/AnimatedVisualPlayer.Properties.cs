@@ -63,7 +63,7 @@ partial class AnimatedVisualPlayer
 		nameof(AutoPlay),
 		typeof(bool),
 		typeof(AnimatedVisualPlayer),
-		new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue, OnAutoPlayPropertyChanged));
+		new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue, OnAutoPlayPropertyChanged));
 
 	/// <summary>
 	/// Identifies the <see cref="IsAnimatedVisualLoaded"/> dependency property.
@@ -72,7 +72,7 @@ partial class AnimatedVisualPlayer
 		nameof(IsAnimatedVisualLoaded),
 		typeof(bool),
 		typeof(AnimatedVisualPlayer),
-		new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+		new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Identifies the <see cref="IsPlaying"/> dependency property.
@@ -81,7 +81,7 @@ partial class AnimatedVisualPlayer
 		nameof(IsPlaying),
 		typeof(bool),
 		typeof(AnimatedVisualPlayer),
-		new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+		new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Identifies the <see cref="PlaybackRate"/> dependency property.

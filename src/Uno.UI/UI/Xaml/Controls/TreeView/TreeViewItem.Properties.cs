@@ -125,13 +125,13 @@ public partial class TreeViewItem
 	/// Identifies the HasUnrealizedChildren dependency property.
 	/// </summary>
 	public static DependencyProperty HasUnrealizedChildrenProperty { get; } =
-		DependencyProperty.Register(nameof(HasUnrealizedChildren), typeof(bool), typeof(TreeViewItem), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnHasUnrealizedChildrenPropertyChanged));
+		DependencyProperty.Register(nameof(HasUnrealizedChildren), typeof(bool), typeof(TreeViewItem), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, OnHasUnrealizedChildrenPropertyChanged));
 
 	/// <summary>
 	/// Identifies the IsExpanded dependency property.
 	/// </summary>
 	public static DependencyProperty IsExpandedProperty { get; } =
-		DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(TreeViewItem), new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse, OnIsExpandedPropertyChanged));
+		DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(TreeViewItem), new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse, OnIsExpandedPropertyChanged));
 
 	/// <summary>
 	/// Identifies the ItemsSource dependency property.

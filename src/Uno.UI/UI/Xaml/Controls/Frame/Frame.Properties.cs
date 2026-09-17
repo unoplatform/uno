@@ -90,7 +90,7 @@ partial class Frame
 			nameof(CanGoBack),
 			typeof(bool),
 			typeof(Frame),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedFalse));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedFalse));
 
 	/// <summary>
 	/// Gets a value that indicates whether there is at least one entry in forward navigation history.
@@ -109,7 +109,7 @@ partial class Frame
 			nameof(CanGoForward),
 			typeof(bool),
 			typeof(Frame),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
 
 	/// <summary>
 	/// Gets a type reference for the content that is currently displayed.
@@ -168,7 +168,7 @@ partial class Frame
 			nameof(IsNavigationStackEnabled),
 			typeof(bool),
 			typeof(Frame),
-			new FrameworkPropertyMetadata(Boxes.BooleanBoxes.BoxedTrue));
+			new FrameworkPropertyMetadata(Boxes.BoolBoxes.BoxedTrue));
 
 	/// <summary>
 	/// Gets or sets a type reference of the current content, or the content that should be navigated to.
