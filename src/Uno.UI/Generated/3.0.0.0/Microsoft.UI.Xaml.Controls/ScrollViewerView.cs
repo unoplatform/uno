@@ -3,46 +3,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if __SKIA__
+#if false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class ScrollViewerView
 	{
-#if __SKIA__
-		internal ScrollViewerView()
-		{
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public double HorizontalOffset
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ScrollViewerView", "HorizontalOffset");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public double VerticalOffset
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ScrollViewerView", "VerticalOffset");
-			}
-		}
-#endif
-#if __SKIA__
-		[global::Uno.NotImplemented("__SKIA__")]
-		public float ZoomFactor
-		{
-			get
-			{
-				throw global::Windows.Foundation.Metadata.ApiInformation.CreateNotImplementedException("Microsoft.UI.Xaml.Controls.ScrollViewerView", "ZoomFactor");
-			}
-		}
-#endif
+		// Skipping already declared property HorizontalOffset
+		// Skipping already declared property VerticalOffset
+		// Skipping already declared property ZoomFactor
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerView.HorizontalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerView.VerticalOffset.get
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ScrollViewerView.ZoomFactor.get
