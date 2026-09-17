@@ -40,9 +40,11 @@ public sealed class BoxingCodeFixProvider : CodeFixProvider
 				var generator = SyntaxGenerator.GetGenerator(document);
 				var boxesIdentifier = (ExpressionSyntax)generator.TypeExpression(boxesType).WithAdditionalAnnotations(Simplifier.AddImportsAnnotation);
 
-				// An explicit boxing is reported on the cast, whose type is object: box its operand instead,
-				// keeping any inner conversion such as (object)(int)value.
-				var valueNode = node is CastExpressionSyntax castExpression ? castExpression.Expression : node;
+				// An explicit boxing is reported on the (object) cast itself: box its operand instead, keeping any
+				// inner conversion such as (object)(int)value. Any other cast, like (int)value, is the value being boxed.
+				var valueNode = node is CastExpressionSyntax castExpression && model.GetTypeInfo(castExpression, ct).Type?.SpecialType == SpecialType.System_Object
+					? castExpression.Expression
+					: node;
 				while (valueNode is ParenthesizedExpressionSyntax parenthesizedExpression)
 				{
 					valueNode = parenthesizedExpression.Expression;
