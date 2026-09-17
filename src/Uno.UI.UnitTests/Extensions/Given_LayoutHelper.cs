@@ -181,6 +181,22 @@ namespace Uno.UI.Tests.Extensions
 				.Be(ParseNullableRect(expected));
 		}
 
+		[DataRow("0,0,100,100", "0,0,100,100", true)]
+		[DataRow("0,0,100,100", "10,10,10,10", true)]
+		[DataRow("0,0,100,100", "90,90,10,10", true)]
+		[DataRow("0,0,100,100", "50,50,0,0", true)]
+		[DataRow("0,0,100,100", "50,50,100,100", false)]
+		[DataRow("0,0,100,100", "-1,0,10,10", false)]
+		[DataRow("0,0,10,10", "20,20,10,10", false)]
+		[TestMethod]
+		public void LayoutHelper_Contains(string rect, string other, bool expected)
+		{
+			((Rect)rect)
+				.Contains((Rect)other)
+				.Should()
+				.Be(expected);
+		}
+
 		private static Size ParseSize(string s)
 		{
 			var parts = s.Split(',');
