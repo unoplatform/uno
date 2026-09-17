@@ -755,7 +755,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 				("int", -1) => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.NegativeOne",
 				("int", 0) => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.Zero",
 				("int", 1) => "global::Uno.UI.Helpers.Boxes.IntegerBoxes.One",
-				("double", 0.0d) => "global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero",
+				// By bit pattern, like Boxes.Box(double): -0.0 == 0.0 but must not take the positive zero's box.
+				("double", double value) when BitConverter.DoubleToInt64Bits(value) == 0 => "global::Uno.UI.Helpers.Boxes.DoubleBoxes.Zero",
 				("double", 1.0d) => "global::Uno.UI.Helpers.Boxes.DoubleBoxes.One",
 				_ => null,
 			};
@@ -796,6 +797,8 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					double d when double.IsPositiveInfinity(d) => "double.PositiveInfinity",
 					double d when double.IsNegativeInfinity(d) => "double.NegativInfinity",
 					double d when double.IsNaN(d) => "double.NaN",
+					// A bare "-0" is integer negation, which would register positive zero.
+					double d when BitConverter.DoubleToInt64Bits(d) == long.MinValue => "-0d",
 					double d => d.ToString(CultureInfo.InvariantCulture),
 					float d when float.IsPositiveInfinity(d) => "float.PositiveInfinity",
 					float d when float.IsNegativeInfinity(d) => "float.NegativInfinity",
