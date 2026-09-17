@@ -375,8 +375,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var expression = textBlock.GetBindingExpression(TextBlock.WidthProperty);
 			Assert.IsNotNull(expression);
 			Assert.AreEqual("Width", expression.ParentBinding.Path.Path);
-			Assert.IsInstanceOfType(expression.ParentBinding.ElementName, typeof(ElementNameSubject));
-			Assert.AreEqual(stackPanel, ((ElementNameSubject)expression.ParentBinding.ElementName).ElementInstance);
+			Assert.AreEqual("rootPanel", expression.ParentBinding.ElementName);
+			Assert.IsNotNull(expression.ParentBinding.ElementNameSubject);
+			Assert.AreEqual(stackPanel, expression.ParentBinding.ElementNameSubject.ElementInstance);
 			Assert.AreEqual(42.0, textBlock.Width);
 		}
 

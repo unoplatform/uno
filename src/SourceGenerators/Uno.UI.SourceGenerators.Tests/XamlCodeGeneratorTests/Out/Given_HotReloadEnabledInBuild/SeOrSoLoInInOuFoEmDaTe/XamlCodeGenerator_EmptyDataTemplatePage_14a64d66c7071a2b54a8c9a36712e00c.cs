@@ -191,7 +191,7 @@ namespace TestRepro
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _ButtonWithEmptyDataTemplateSubjectBackingPseudoField { get; set; }
 		private global::Microsoft.UI.Xaml.Data.ElementNameSubject _ButtonWithEmptyDataTemplateSubject
 		{
-			get => _ButtonWithEmptyDataTemplateSubjectBackingPseudoField ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject();
+			get => _ButtonWithEmptyDataTemplateSubjectBackingPseudoField ??= new global::Microsoft.UI.Xaml.Data.ElementNameSubject(isRuntimeBound: false, name: "ButtonWithEmptyDataTemplate");
 		}
 		private global::Microsoft.UI.Xaml.Controls.Button ButtonWithEmptyDataTemplate
 		{
