@@ -254,7 +254,7 @@ internal sealed class SkiaTextLine : TextLine
 
 	// Returns the spans to keep, or null when the line already fits. CharacterEllipsis cuts at the last
 	// glyph that fits; WordEllipsis then backs up to the end of the previous word. Line Services never
-	// formats an empty line, so a line with no room keeps its first cluster or object and overflows.
+	// formats an empty line, so a line with no room keeps its first cluster and overflows.
 	private static List<RenderSegmentSpan>? TrimSpansToWidth(
 		IReadOnlyList<RenderSegmentSpan> spans,
 		float available,
@@ -275,11 +275,8 @@ internal sealed class SkiaTextLine : TextLine
 			// This span is where the line runs out of room. Keep as many of its glyphs as fit.
 			if (span.Segment.IsInlineObject)
 			{
-				if (kept.Count == 0)
-				{
-					kept.Add(span);
-				}
-
+				// An object never breaks: as in WinUI, the collapsed line keeps the one that overflows.
+				kept.Add(span);
 				return kept;
 			}
 

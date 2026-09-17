@@ -214,7 +214,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[DataRow(TextTrimming.WordEllipsis)]
 		public async Task When_Container_Overflows_Trimmed_Line(TextTrimming trimming)
 		{
-			// LsTextLine::Collapse always collapses; an overflowing object must not leave the line untrimmed.
+			// LsTextLine::Collapse always collapses, and an object that overflows stays on the collapsed line.
 			var child = CreateChild(200, 20);
 			var SUT = CreateSUT(child);
 			SUT.Width = 100;
@@ -225,9 +225,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsTrue(SUT.IsTextTrimmed);
 
-			// The collapsed line ends before the object, so the page parks the child below its content.
 			var offset = child.TransformToVisual(SUT).TransformPoint(new Point(0, 0));
-			Assert.IsTrue(offset.Y >= SUT.ActualHeight - 1, $"Expected the trimmed child below the text, but Y was {offset.Y} (ActualHeight {SUT.ActualHeight}).");
+			Assert.IsTrue(offset.Y < SUT.ActualHeight / 2, $"Expected the child to stay on the trimmed line, but Y was {offset.Y} (ActualHeight {SUT.ActualHeight}).");
+
+#if __SKIA__
+			var paragraphNode = SUT.GetPageNode()?.GetFirstChild() as Microsoft.UI.Xaml.Documents.BlockLayout.ParagraphNode;
+			Assert.IsNotNull(paragraphNode?.GetParsedText()?.RenderLines[0].CollapsingSymbol, "The overflowing line should be collapsed with an ellipsis");
+#endif
 		}
 	}
 }
