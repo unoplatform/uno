@@ -215,14 +215,13 @@ internal sealed class ParagraphTextSource : TextSource, ISkiaParagraphSource
 	// Mirrors the InlineUIContainer branch of ParagraphTextSource::GetTextRun: an open-nesting
 	// InlineUIContainer yields a PageHostedObjectRun, whose Format measures the child against the
 	// embedded element host and caches its size and baseline on the container.
-	IReadOnlyDictionary<InlineUIContainer, (ObjectRun Run, ObjectRunMetrics Metrics)>? ISkiaParagraphSource.FormatInlineObjects(float paragraphWidth)
+	(ObjectRun Run, ObjectRunMetrics Metrics)? ISkiaParagraphSource.FormatInlineObject(InlineUIContainer pUIContainer, float paragraphWidth)
 	{
-		Dictionary<InlineUIContainer, (ObjectRun Run, ObjectRunMetrics Metrics)>? inlineObjects = null;
 		uint characterIndex = 0;
 
 		foreach (var inline in ((ISkiaParagraphSource)this).GetLeafInlines())
 		{
-			if (inline is InlineUIContainer pUIContainer)
+			if (ReferenceEquals(inline, pUIContainer))
 			{
 				TextRunProperties pTextProperties = new(
 					pUIContainer.FontInfo,
@@ -237,19 +236,14 @@ internal sealed class ParagraphTextSource : TextSource, ISkiaParagraphSource
 				PageHostedObjectRun pTextRun = new(pUIContainer, characterIndex, pTextProperties);
 				pTextRun.Format(this, paragraphWidth, default, out var metrics);
 
-				inlineObjects ??= new();
-				inlineObjects[pUIContainer] = (pTextRun, metrics);
+				return (pTextRun, metrics);
+			}
 
-				// InlineUIContainer only has 2 positions - Open/Close.
-				characterIndex += 2;
-			}
-			else
-			{
-				characterIndex += (uint)inline.GetText().Length;
-			}
+			// InlineUIContainer only has 2 positions - Open/Close.
+			characterIndex += inline is InlineUIContainer ? 2u : (uint)inline.GetText().Length;
 		}
 
-		return inlineObjects;
+		return null;
 	}
 
 	float ISkiaParagraphSource.DefaultLineHeight

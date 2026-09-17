@@ -348,6 +348,113 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Inline_Objects_Split_Across_The_Break()
+		{
+			// Each link formats only the objects it lays out, so an object stays hosted by the page that shows it.
+			var masterChild = new Border { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Blue) };
+			var overflowChild = new Border { Width = 20, Height = 20, Background = new SolidColorBrush(Colors.Green) };
+
+			var paragraph = new Paragraph();
+			paragraph.Inlines.Add(new Run { Text = "AB" });
+			paragraph.Inlines.Add(new InlineUIContainer { Child = masterChild });
+			paragraph.Inlines.Add(new Run { Text = LongText });
+			paragraph.Inlines.Add(new InlineUIContainer { Child = overflowChild });
+
+			var master = new RichTextBlock { Width = 300, MaxLines = 1 };
+			master.Blocks.Add(paragraph);
+
+			var overflow = new RichTextBlockOverflow { Width = 300 };
+			master.OverflowContentTarget = overflow;
+
+			var panel = new StackPanel();
+			panel.Children.Add(master);
+			panel.Children.Add(overflow);
+
+			try
+			{
+				WindowHelper.WindowContent = panel;
+				await WindowHelper.WaitForLoaded(panel);
+				await WindowHelper.WaitForIdle();
+				panel.UpdateLayout();
+
+				Assert.IsTrue(master.HasOverflowContent, "Precondition: the text should overflow");
+				Assert.AreSame(master, VisualTreeHelper.GetParent(masterChild), "An object before the break should stay hosted by the master");
+				Assert.AreSame(overflow, VisualTreeHelper.GetParent(overflowChild), "An object past the break should be hosted by the overflow");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
+		[DataRow(false)]
+		[DataRow(true)]
+		public async Task When_Overflow_Resumes_After_Hard_Break(bool useLineBreakElement)
+		{
+			// The master's page ends on a hard line break, so the overflow starts exactly past it.
+			Paragraph CreateParagraph()
+			{
+				var paragraph = new Paragraph();
+				if (useLineBreakElement)
+				{
+					paragraph.Inlines.Add(new Run { Text = "First" });
+					paragraph.Inlines.Add(new LineBreak());
+					paragraph.Inlines.Add(new Run { Text = LongText });
+				}
+				else
+				{
+					paragraph.Inlines.Add(new Run { Text = "First\r\n" + LongText });
+				}
+
+				return paragraph;
+			}
+
+			var master = new RichTextBlock { Width = 300, MaxLines = 1 };
+			master.Blocks.Add(CreateParagraph());
+
+			var overflow = new RichTextBlockOverflow { Width = 300 };
+			master.OverflowContentTarget = overflow;
+
+			var reference = new RichTextBlock { Width = 300 };
+			reference.Blocks.Add(CreateParagraph());
+
+			var panel = new StackPanel();
+			panel.Children.Add(master);
+			panel.Children.Add(overflow);
+			panel.Children.Add(reference);
+
+			try
+			{
+				WindowHelper.WindowContent = panel;
+				await WindowHelper.WaitForLoaded(panel);
+				await WindowHelper.WaitForIdle();
+				panel.UpdateLayout();
+
+				Assert.IsTrue(master.HasOverflowContent, "Precondition: the content should overflow");
+
+				var masterEnd = master.ContentEnd;
+				var overflowStart = overflow.ContentStart;
+				var firstHit = overflow.GetPositionFromPoint(new Point(0, 1));
+
+				// The unsplit reference's second line starts with the same character as the overflow.
+				var referenceHit = reference.GetPositionFromPoint(new Point(0, master.ActualHeight + 1));
+				if (masterEnd is null || overflowStart is null || firstHit is null || referenceHit is null)
+				{
+					Assert.Fail($"The pointers should be non-null (master end is null: {masterEnd is null}, overflow start is null: {overflowStart is null}, hit is null: {firstHit is null}, reference is null: {referenceHit is null})");
+					return;
+				}
+
+				Assert.AreEqual(masterEnd.Offset, overflowStart.Offset, "The overflow should start where the master ends");
+				Assert.AreEqual(referenceHit.Offset, firstHit.Offset, "The overflow's first line should start right past the hard break");
+			}
+			finally
+			{
+				WindowHelper.WindowContent = null;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_Overflow_Padding_Changes_At_Same_Width()
 		{
 			// CRichTextBlockOverflow::SetValue invalidates the content measure of the chain for a Padding change.

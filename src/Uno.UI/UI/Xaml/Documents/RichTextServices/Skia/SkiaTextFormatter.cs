@@ -73,5 +73,5 @@ internal sealed class SkiaTextFormatter : TextFormatter
 			out _,
 			resumeCharIndex,
 			out resumeLineIndex,
-			source.FormatInlineObjects((float)wrappingWidth));
+			container => source.FormatInlineObject(container, (float)wrappingWidth));
 }

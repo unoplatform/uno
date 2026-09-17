@@ -73,8 +73,8 @@ internal readonly struct ParsedText : IParsedText
 		TextWrapping textWrapping,
 		FlowDirection flowDirection,
 		out Size desiredSize,
-		IReadOnlyDictionary<InlineUIContainer, (ObjectRun Run, ObjectRunMetrics Metrics)>? inlineObjects = null)
-		=> ParseText(availableSize, inlines, defaultLineHeight, maxLines, lineHeight, lineStackingStrategy, textLineBounds, textAlignment, textWrapping, flowDirection, out desiredSize, resumeCharIndex: 0, out _, inlineObjects);
+		Func<InlineUIContainer, (ObjectRun Run, ObjectRunMetrics Metrics)?>? formatInlineObject = null)
+		=> ParseText(availableSize, inlines, defaultLineHeight, maxLines, lineHeight, lineStackingStrategy, textLineBounds, textAlignment, textWrapping, flowDirection, out desiredSize, resumeCharIndex: 0, out _, formatInlineObject);
 
 	/// <summary>
 	/// Measures a block-level inline collection whose layout resumes at <paramref name="resumeCharIndex"/>, where a
@@ -95,7 +95,7 @@ internal readonly struct ParsedText : IParsedText
 		out Size desiredSize,
 		int resumeCharIndex,
 		out int resumeLineIndex,
-		IReadOnlyDictionary<InlineUIContainer, (ObjectRun Run, ObjectRunMetrics Metrics)>? inlineObjects = null)
+		Func<InlineUIContainer, (ObjectRun Run, ObjectRunMetrics Metrics)?>? formatInlineObject = null)
 	{
 		lineStackingStrategy = lineHeight == 0 ? LineStackingStrategy.MaxHeight : lineStackingStrategy;
 
@@ -143,9 +143,9 @@ internal readonly struct ParsedText : IParsedText
 					continue;
 				}
 
-				// Only containers the caller measured occupy space. Formatting outside a block-layout
+				// Only containers the caller formats occupy space. Formatting outside a block-layout
 				// host (so with no embedded element host to measure against) leaves them zero-sized.
-				if (inlineObjects is null || !inlineObjects.TryGetValue(container, out var inlineObject))
+				if (formatInlineObject?.Invoke(container) is not { } inlineObject)
 				{
 					continue;
 				}
@@ -202,6 +202,7 @@ internal readonly struct ParsedText : IParsedText
 								MoveToNextLine(currentLineWrapped: false);
 							}
 
+							EndPrefixIfReached();
 							continue;
 						}
 
@@ -411,9 +412,9 @@ internal readonly struct ParsedText : IParsedText
 
 	MaxLinesHit:
 
-		if (inPrefix)
+		if (inPrefix || resumeLine >= renderLines.Count)
 		{
-			// A break past the content: there is nothing left to continue with but the last line.
+			// A break at or past the content's end: there is nothing left to continue with but the last line.
 			resumeLine = Math.Max(0, renderLines.Count - 1);
 		}
 
